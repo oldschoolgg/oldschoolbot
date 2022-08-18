@@ -6,6 +6,7 @@ import { userhasDiaryTier, WildernessDiary } from '../../../lib/diaries';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
 export const gloriesInventorySize = 26;
 export const gloriesInventoryTime = Time.Minute * 2.2;
@@ -25,7 +26,7 @@ export async function chargeGloriesCommand(user: KlasaUser, channelID: bigint, q
 		invDuration /= 3;
 	}
 
-	const maxTripLength = user.maxTripLength('GloryCharging');
+	const maxTripLength = calcMaxTripLength(user, 'GloryCharging');
 
 	const max = Math.min(amountHas / gloriesInventorySize, Math.floor(maxTripLength / invDuration));
 	if (!quantity) {

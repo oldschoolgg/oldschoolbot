@@ -1,7 +1,7 @@
 import { reduceNumByPercent } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { MAX_INT_JAVA } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -10,7 +10,7 @@ import { clamp, itemID, toKMB, updateBankSetting, updateGPTrackSetting } from '.
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { handleMahojiConfirmation, mahojiUsersSettingsFetch, userStatsUpdate } from '../mahojiSettings';
 
 /**
  * - Hardcoded prices
@@ -31,8 +31,18 @@ export function sellPriceOfItem(item: Item, taxRate = 20): { price: number; base
 	let basePrice = customPrices[item.id] ?? item.price;
 	let price = basePrice;
 	price = reduceNumByPercent(price, taxRate);
-	price = clamp(Math.floor(price), 0, MAX_INT_JAVA);
-	return { price: Math.floor(price), basePrice: Math.floor(basePrice) };
+	price = clamp(price, 0, MAX_INT_JAVA);
+	return { price, basePrice };
+}
+
+export function sellStorePriceOfItem(item: Item, qty: number): { price: number; basePrice: number } {
+	if (!item.cost || !item.lowalch) return { price: 0, basePrice: 0 };
+	let basePrice = item.cost;
+	// Sell price decline with stock by 3% until 10% of item value and is always low alch price when stock is 0.
+	const percentageFirstEleven = (0.4 - 0.015 * Math.min(qty - 1, 10)) * Math.min(qty, 11);
+	let price = ((percentageFirstEleven + Math.max(qty - 11, 0) * 0.1) * item.cost) / qty;
+	price = clamp(price, 0, MAX_INT_JAVA);
+	return { price, basePrice };
 }
 
 export const sellCommand: OSBMahojiCommand = {
@@ -91,6 +101,22 @@ export const sellCommand: OSBMahojiCommand = {
 			return `You exchanged ${moleBank} and received: ${loot}.`;
 		}
 
+		if (bankToSell.has('Golden tench')) {
+			const loot = new Bank();
+			const tenchBank = new Bank();
+			tenchBank.add('Golden tench', bankToSell.amount('Golden tench'));
+
+			loot.add('Molch pearl', tenchBank.amount('Golden tench') * 100);
+
+			await handleMahojiConfirmation(
+				interaction,
+				`${user}, please confirm you want to sell ${tenchBank} for **${loot}**.`
+			);
+			await user.removeItemsFromBank(tenchBank);
+			await user.addItemsToBank({ items: loot, collectionLog: false });
+			return `You exchanged ${tenchBank} and received: ${loot}.`;
+		}
+
 		let totalPrice = 0;
 		const taxRatePercent = 20;
 
@@ -99,9 +125,10 @@ export const sellCommand: OSBMahojiCommand = {
 			if (specialPrice) {
 				totalPrice += Math.floor(specialPrice * qty);
 			} else {
-				if (user.isIronman) return "Iron players can't sell items.";
-				const { price } = sellPriceOfItem(item, taxRatePercent);
-				totalPrice += price * qty;
+				const { price } = user.isIronman
+					? sellStorePriceOfItem(item, qty)
+					: sellPriceOfItem(item, taxRatePercent);
+				totalPrice += Math.floor(price * qty);
 			}
 		}
 
@@ -115,11 +142,19 @@ export const sellCommand: OSBMahojiCommand = {
 		await user.removeItemsFromBank(bankToSell.bank);
 		await user.addItemsToBank({ items: new Bank().add('Coins', totalPrice) });
 
-		updateGPTrackSetting('gp_sell', totalPrice);
-		updateBankSetting(globalClient, ClientSettings.EconomyStats.SoldItemsBank, bankToSell.bank);
+		await Promise.all([
+			updateGPTrackSetting('gp_sell', totalPrice),
+			updateBankSetting(globalClient, ClientSettings.EconomyStats.SoldItemsBank, bankToSell.bank),
+			userStatsUpdate(user.id, userStats => ({
+				items_sold_bank: new Bank(userStats.items_sold_bank as ItemBank).add(bankToSell).bank,
+				sell_gp: {
+					increment: totalPrice
+				}
+			}))
+		]);
 
-		return `Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${toKMB(
-			totalPrice
-		)})** (${taxRatePercent}% below market price).`;
+		return `Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${toKMB(totalPrice)})**${
+			user.isIronman ? ' (General store price)' : ` (${taxRatePercent}% below market price)`
+		}.`;
 	}
 };

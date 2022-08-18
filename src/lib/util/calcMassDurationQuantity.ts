@@ -2,6 +2,7 @@ import { KlasaUser } from 'klasa';
 
 import { reducedTimeForGroup } from '../minions/functions';
 import { KillableMonster } from '../minions/types';
+import { calcMaxTripLength } from './calcMaxTripLength';
 
 export default async function calcDurQty(
 	users: KlasaUser[],
@@ -19,7 +20,7 @@ export default async function calcDurQty(
 		perKillTime = Math.min(max, perKillTime);
 	}
 
-	const maxQty = Math.floor(users[0].maxTripLength('GroupMonsterKilling') / perKillTime);
+	const maxQty = Math.floor(calcMaxTripLength(users[0], 'GroupMonsterKilling') / perKillTime);
 	if (!quantity) quantity = maxQty;
 	if (quantity > maxQty) {
 		throw `The max amount of ${monster.name} this party can kill per trip is ${maxQty}.`;

@@ -63,7 +63,7 @@ export default class extends Task {
 			const piece = this.client.pieceStores.get(store).get(name.replace(extname(name), ''));
 
 			await this.reloadPiece(name, _path, piece);
-			await mahojiClient.loadStores();
+			await mahojiClient.commands.load();
 		};
 
 		for (const event of ['add', 'change', 'unlink']) {

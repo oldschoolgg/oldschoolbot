@@ -1,9 +1,8 @@
-import { KlasaMessage } from 'klasa';
+import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { UserSettings } from '../../settings/types/UserSettings';
-import getOSItem from '../../util/getOSItem';
-import { parseStringBank } from '../../util/parseStringBank';
+import getOSItem, { getItem } from '../../util/getOSItem';
 import { BlowpipeData } from '../types';
 
 export const blowpipeDarts = [
@@ -27,37 +26,31 @@ export function validateBlowpipeData(data: BlowpipeData) {
 	if (data.dartQuantity < 0 || data.scales < 0) throw new Error('Less than 0 scales/darts');
 }
 
-export async function blowpipeCommand(msg: KlasaMessage, input: string) {
-	if (typeof input !== 'string') input = '';
+export async function blowpipeCommand(
+	user: KlasaUser,
+	removeDarts: boolean | undefined,
+	uncharge: boolean | undefined,
+	add: string | undefined,
+	quantity: number | undefined
+) {
+	if (removeDarts) return removeDartsCommand(user);
 
-	if (input === 'removedarts') {
-		return removeDarts(msg);
+	if (uncharge) return unchargeCommand(user);
+
+	if (add) {
+		return addCommand(user, add, quantity);
 	}
 
-	if (input === 'uncharge') {
-		return uncharge(msg);
-	}
-
-	const split = input.split(' ');
-
-	if (split[0] === 'add') {
-		return add(msg, input.split(' ').slice(1).join(' '));
-	}
-
-	const rawBlowpipeData = { ...msg.author.settings.get(UserSettings.Blowpipe) };
-	const hasBlowpipe = msg.author.owns('Toxic blowpipe') || msg.author.owns('Toxic blowpipe (empty)');
-	if (!hasBlowpipe) {
-		return msg.channel.send("You don't own a Toxic blowpipe.");
-	}
+	const rawBlowpipeData = { ...user.settings.get(UserSettings.Blowpipe) };
+	const hasBlowpipe = user.owns('Toxic blowpipe') || user.owns('Toxic blowpipe (empty)');
+	if (!hasBlowpipe) return "You don't own a Toxic blowpipe.";
 
 	try {
 		validateBlowpipeData(rawBlowpipeData);
 	} catch (err: any) {
-		await msg.author.settings.reset(UserSettings.Blowpipe);
+		await user.settings.reset(UserSettings.Blowpipe);
 
-		return msg.channel.send(
-			`Your blowpipe got corrupted somehow (${err.message}), this shouldn't happen! It's a bug. Your blowpipe was reset.`
-		);
+		return `Your blowpipe got corrupted somehow (${err.message}), this shouldn't happen! It's a bug. Your blowpipe was reset.`;
 	}
 	let str = `**Toxic Blowpipe** <:Toxic_blowpipe:887011870068838450>
 
@@ -69,56 +62,47 @@ Zulrah's scales: ${rawBlowpipeData.scales.toLocaleString()}x
 		str += `${item.name}'s: ${rawBlowpipeData.dartQuantity!.toLocaleString()}x`;
 	}
 
-	return msg.channel.send(str);
+	return str;
 }
 
-async function add(msg: KlasaMessage, _items: string) {
-	if (msg.author.minionIsBusy) {
-		return msg.channel.send("You can't add to your blowpipe, because your minion is out on a trip.");
+async function addCommand(user: KlasaUser, itemName: string, quantity = 1) {
+	if (user.minionIsBusy) {
+		return "You can't add to your blowpipe, because your minion is out on a trip.";
 	}
-	if (!msg.author.owns('Toxic blowpipe') && msg.author.owns('Toxic blowpipe (empty)')) {
-		await msg.author.removeItemsFromBank(new Bank().add('Toxic blowpipe (empty)'));
-		await msg.author.addItemsToBank({ items: new Bank().add('Toxic blowpipe'), collectionLog: false });
+	if (!user.owns('Toxic blowpipe') && user.owns('Toxic blowpipe (empty)')) {
+		await user.removeItemsFromBank(new Bank().add('Toxic blowpipe (empty)'));
+		await user.addItemsToBank({ items: new Bank().add('Toxic blowpipe'), collectionLog: false });
 	}
 
-	const hasBlowpipe = msg.author.owns('Toxic blowpipe');
+	const hasBlowpipe = user.owns('Toxic blowpipe');
 
 	if (!hasBlowpipe) {
-		return msg.channel.send("You don't own a Toxic blowpipe.");
+		return "You don't own a Toxic blowpipe.";
 	}
 
-	const userBank = msg.author.bank();
+	const item = getItem(itemName);
+	if (!item) return 'Invalid item.';
 
-	const items = parseStringBank(_items);
+	const userBank = user.bank();
+
 	let itemsToRemove = new Bank();
-	for (const [item, quantity] of items) {
-		if (!blowpipeDarts.includes(item) && item !== getOSItem("Zulrah's scales")) {
-			return msg.channel.send("You can only charge your blowpipe with darts and Zulrah's scales.");
-		}
-		itemsToRemove.add(item.id, Math.max(1, quantity || userBank.amount(item.id)));
-		if (itemsToRemove.length >= 2) break;
+	if (!blowpipeDarts.includes(item) && item !== getOSItem("Zulrah's scales")) {
+		return "You can only charge your blowpipe with darts and Zulrah's scales.";
 	}
-
-	if (itemsToRemove.length === 0) {
-		return msg.channel.send(
-			`You didn't specify what items to add to your blowpipe, for example: \`${msg.cmdPrefix}m bp add 10 Dragon dart, 10 Zulrah's scales\``
-		);
-	}
+	itemsToRemove.add(item.id, Math.max(1, quantity || userBank.amount(item.id)));
 
 	const dart = itemsToRemove.items().find(i => blowpipeDarts.includes(i[0]));
 
-	const rawBlowpipeData = { ...msg.author.settings.get(UserSettings.Blowpipe) };
+	const rawBlowpipeData = { ...user.settings.get(UserSettings.Blowpipe) };
 	validateBlowpipeData(rawBlowpipeData);
 	if (dart && !itemsToRemove.amount(dart[0].id)) {
 		throw new Error('wtf! not meant to happen');
 	}
 
 	if (rawBlowpipeData.dartID !== null && dart && rawBlowpipeData.dartID !== dart[0].id) {
-		return msg.channel.send(
-			`You already have ${getOSItem(rawBlowpipeData.dartID).name}'s in your Blowpipe, do \`${
-				msg.cmdPrefix
-			}m blowpipe removedarts\` to remove the darts from it.`
-		);
+		return `You already have ${
+			getOSItem(rawBlowpipeData.dartID).name
+		}'s in your Blowpipe, do \`/minion blowpipe remove_darts:true\` to remove them first.`;
 	}
 
 	let currentData: BlowpipeData = { ...rawBlowpipeData };
@@ -134,47 +118,47 @@ async function add(msg: KlasaMessage, _items: string) {
 	}
 	validateBlowpipeData(currentData);
 	if (!userBank.has(itemsToRemove.bank)) {
-		return msg.channel.send(`You don't own ${itemsToRemove}.`);
+		return `You don't own ${itemsToRemove}.`;
 	}
-	await msg.author.removeItemsFromBank(itemsToRemove);
-	await msg.author.settings.update(UserSettings.Blowpipe, currentData);
-	return msg.channel.send(`You added ${itemsToRemove} to your Toxic blowpipe.`);
+	await user.removeItemsFromBank(itemsToRemove);
+	await user.settings.update(UserSettings.Blowpipe, currentData);
+	return `You added ${itemsToRemove} to your Toxic blowpipe.`;
 }
 
-async function removeDarts(msg: KlasaMessage) {
-	if (msg.author.minionIsBusy) {
-		return msg.channel.send("You can't remove darts from your blowpipe, because your minion is out on a trip.");
+async function removeDartsCommand(user: KlasaUser) {
+	if (user.minionIsBusy) {
+		return "You can't remove darts from your blowpipe, because your minion is out on a trip.";
 	}
-	const hasBlowpipe = msg.author.owns('Toxic blowpipe');
+	const hasBlowpipe = user.owns('Toxic blowpipe');
 	if (!hasBlowpipe) {
-		return msg.channel.send("You don't own a Toxic blowpipe.");
+		return "You don't own a Toxic blowpipe.";
 	}
 
-	const rawBlowpipeData = { ...msg.author.settings.get(UserSettings.Blowpipe) };
+	const rawBlowpipeData = { ...user.settings.get(UserSettings.Blowpipe) };
 	validateBlowpipeData(rawBlowpipeData);
 	if (!rawBlowpipeData.dartID || rawBlowpipeData.dartQuantity === 0) {
-		return msg.channel.send('Your Toxic blowpipe has no darts in it.');
+		return 'Your Toxic blowpipe has no darts in it.';
 	}
 	validateBlowpipeData(rawBlowpipeData);
 	const returnedBank = new Bank().add(rawBlowpipeData.dartID, rawBlowpipeData.dartQuantity);
 	rawBlowpipeData.dartID = null;
 	rawBlowpipeData.dartQuantity = 0;
-	await msg.author.addItemsToBank({ items: returnedBank, collectionLog: false });
-	await msg.author.settings.update(UserSettings.Blowpipe, rawBlowpipeData);
+	await user.addItemsToBank({ items: returnedBank, collectionLog: false });
+	await user.settings.update(UserSettings.Blowpipe, rawBlowpipeData);
 	validateBlowpipeData(rawBlowpipeData);
-	return msg.channel.send(`You removed ${returnedBank} from your Toxic blowpipe.`);
+	return `You removed ${returnedBank} from your Toxic blowpipe.`;
 }
 
-async function uncharge(msg: KlasaMessage) {
-	if (msg.author.minionIsBusy) {
-		return msg.channel.send("You can't uncharge your blowpipe, because your minion is out on a trip.");
+async function unchargeCommand(user: KlasaUser) {
+	if (user.minionIsBusy) {
+		return "You can't uncharge your blowpipe, because your minion is out on a trip.";
 	}
-	const hasBlowpipe = msg.author.owns('Toxic blowpipe');
+	const hasBlowpipe = user.owns('Toxic blowpipe');
 	if (!hasBlowpipe) {
-		return msg.channel.send("You don't own a Toxic blowpipe.");
+		return "You don't own a Toxic blowpipe.";
 	}
 
-	const rawBlowpipeData = { ...msg.author.settings.get(UserSettings.Blowpipe) };
+	const rawBlowpipeData = { ...user.settings.get(UserSettings.Blowpipe) };
 	let returnedBank = new Bank();
 	if (rawBlowpipeData.scales) {
 		returnedBank.add("Zulrah's scales", rawBlowpipeData.scales);
@@ -184,11 +168,11 @@ async function uncharge(msg: KlasaMessage) {
 	}
 
 	if (returnedBank.length === 0) {
-		return msg.channel.send('You have no darts or scales in your Blowpipe.');
+		return 'You have no darts or scales in your Blowpipe.';
 	}
 
-	await msg.author.addItemsToBank({ items: returnedBank, collectionLog: false });
-	await msg.author.settings.update(UserSettings.Blowpipe, { scales: 0, dartID: null, dartQuantity: 0 });
+	await user.addItemsToBank({ items: returnedBank, collectionLog: false });
+	await user.settings.update(UserSettings.Blowpipe, { scales: 0, dartID: null, dartQuantity: 0 });
 
-	return msg.channel.send(`You removed ${returnedBank} from your Toxic blowpipe.`);
+	return `You removed ${returnedBank} from your Toxic blowpipe.`;
 }

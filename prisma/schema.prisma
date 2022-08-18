@@ -19,7 +19,6 @@ model Activity {
   channel_id     BigInt
   data           Json               @db.Json
 
-
   @@index([group_activity])
   @@index([completed])
   @@index([user_id, type])
@@ -128,7 +127,7 @@ model ClientStorage {
 
 model GearPreset {
   user_id    String @db.VarChar(19)
-  name       String @db.VarChar(12)
+  name       String @db.VarChar(24)
   two_handed Int?
   body       Int?
   cape       Int?
@@ -457,6 +456,7 @@ model Minigame {
   tob_hard                Int    @default(0)
   lms                     Int    @default(0)
   trouble_brewing         Int    @default(0)
+  puro_puro               Int    @default(0)
 
   new_user NewUser?
 
@@ -545,9 +545,20 @@ model StashUnit {
   items_contained Int[]
   has_built       Boolean
 
-
   @@unique([stash_id, user_id])
   @@map("stash_unit")
+}
+
+model UserStats {
+  user_id                BigInt @id
+  sell_gp                BigInt @default(0)
+  items_sold_bank        Json   @default("{}") @db.Json
+  puropuro_implings_bank Json   @default("{}") @db.Json
+  passive_implings_bank  Json   @default("{}") @db.Json
+  create_cost_bank       Json   @default("{}") @db.Json
+  create_loot_bank       Json   @default("{}") @db.Json
+
+  @@map("user_stats")
 }
 
 enum command_usage_status {
@@ -630,6 +641,7 @@ enum activity_type_enum {
   TokkulShop
   Nex
   TroubleBrewing
+  PuroPuro
   Easter
 }
 

@@ -106,7 +106,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 
 		let totalPrice = 0;
 		for (const [item, qty] of bankToSac.items()) {
-			totalPrice += sellPriceOfItem(item, 0).basePrice * qty;
+			totalPrice += Math.floor(sellPriceOfItem(item, 0).basePrice * qty);
 		}
 
 		await handleMahojiConfirmation(

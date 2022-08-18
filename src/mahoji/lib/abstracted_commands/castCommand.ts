@@ -9,6 +9,7 @@ import { Castables } from '../../../lib/skilling/skills/magic/castables';
 import { CastingActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../../lib/util/determineRunes';
 
 export async function castCommand(channelID: bigint, user: KlasaUser, name: string, quantity: number | undefined) {
@@ -37,7 +38,7 @@ export async function castCommand(channelID: bigint, user: KlasaUser, name: stri
 
 	let timeToEnchantTen = spell.ticks * Time.Second * 0.6 + Time.Second / 4;
 
-	const maxTripLength = user.maxTripLength('Casting');
+	const maxTripLength = calcMaxTripLength(user, 'Casting');
 
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / timeToEnchantTen);
@@ -96,9 +97,16 @@ export async function castCommand(channelID: bigint, user: KlasaUser, name: stri
 		).toLocaleString()} Crafting XP/Hr**`;
 	}
 
+	let prayerXpHr = '';
+	if (spell.prayerXp) {
+		prayerXpHr = `and** ${Math.round(
+			((spell.prayerXp * quantity) / (duration / Time.Minute)) * 60
+		).toLocaleString()} Prayer XP/Hr**`;
+	}
+
 	return `${user.minionName} is now casting ${quantity}x ${spell.name}, it'll take around ${formatDuration(
 		duration
 	)} to finish. Removed ${cost}${
 		spell.gpCost ? ` and ${gpCost} Coins` : ''
-	} from your bank. **${magicXpHr}** ${craftXpHr}`;
+	} from your bank. **${magicXpHr}** ${craftXpHr}${prayerXpHr}`;
 }

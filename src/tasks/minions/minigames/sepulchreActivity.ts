@@ -20,6 +20,7 @@ export default class extends Task {
 		const completedFloors = sepulchreFloors.filter(fl => floors.includes(fl.number));
 		const loot = new Bank();
 		let agilityXP = 0;
+		let thievingXP = 0;
 		let numCoffinsOpened = 0;
 
 		for (let i = 0; i < quantity; i++) {
@@ -31,10 +32,11 @@ export default class extends Task {
 				const numCoffinsToOpen = 1;
 				numCoffinsOpened += numCoffinsToOpen;
 				for (let i = 0; i < numCoffinsToOpen; i++) {
-					loot.add(openCoffin(floor.number, user.cl()));
+					loot.add(openCoffin(floor.number, user));
 				}
 
 				agilityXP += floor.xp;
+				thievingXP = 200 * numCoffinsOpened;
 			}
 			if (roll(completedFloors[completedFloors.length - 1].petChance)) {
 				loot.add('Giant squirrel');
@@ -49,6 +51,12 @@ export default class extends Task {
 			duration
 		});
 
+		let thievingXpRes = await user.addXP({
+			skillName: SkillsEnum.Thieving,
+			amount: thievingXP,
+			duration
+		});
+
 		await trackLoot({
 			loot: itemsAdded,
 			id: 'sepulchre',
@@ -60,7 +68,7 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished doing the Hallowed Sepulchre ${quantity}x times (floor ${
 			floors[0]
-		}-${floors[floors.length - 1]}), and opened ${numCoffinsOpened}x coffins.\n\n${xpRes}`;
+		}-${floors[floors.length - 1]}), and opened ${numCoffinsOpened}x coffins.\n\n${xpRes}\n${thievingXpRes}`;
 
 		const image = await makeBankImage({
 			bank: itemsAdded,

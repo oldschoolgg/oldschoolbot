@@ -436,7 +436,7 @@ export const eliteStashes: StashUnitTier = {
 		{
 			id: 76,
 			desc: 'Entrance of the cavern under the whirlpool',
-			items: resolveItems(['Granite shield', 'Splitbark body', 'Rune heraldic helm'])
+			items: deepResolveItems(['Granite shield', 'Splitbark body', resolveItems(runeHeraldicHelms)])
 		},
 		{
 			id: 77,
@@ -626,7 +626,7 @@ export const allStashUnitsFlat = allStashUnitTiers.map(i => i.units).flat();
 export async function getParsedStashUnits(userID: string): Promise<ParsedUnit[]> {
 	const currentStashUnits = await prisma.stashUnit.findMany({
 		where: {
-			user_id: Number(userID)
+			user_id: BigInt(userID)
 		}
 	});
 	const parsed = [];
@@ -724,7 +724,7 @@ export async function stashUnitBuildAllCommand(klasaUser: KlasaUser, user: User)
 	await klasaUser.removeItemsFromBank(costBank);
 	await prisma.stashUnit.createMany({
 		data: toBuild.map(parsedUnit => ({
-			user_id: Number(user.id),
+			user_id: BigInt(user.id),
 			stash_id: parsedUnit.unit.id,
 			items_contained: [],
 			has_built: true
@@ -772,7 +772,7 @@ export async function stashUnitFillAllCommand(user: KlasaUser, mahojiUser: User)
 			prisma.stashUnit.update({
 				where: {
 					stash_id_user_id: {
-						user_id: Number(user.id),
+						user_id: BigInt(user.id),
 						stash_id: i.unit.id
 					}
 				},
@@ -801,7 +801,7 @@ export async function stashUnitUnfillCommand(klasaUser: KlasaUser, user: User, u
 		where: {
 			stash_id_user_id: {
 				stash_id: unit.unit.id,
-				user_id: Number(user.id)
+				user_id: BigInt(user.id)
 			}
 		},
 		data: {

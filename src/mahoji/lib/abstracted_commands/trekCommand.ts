@@ -13,6 +13,7 @@ import { SkillsEnum } from '../../../lib/skilling/types';
 import { TempleTrekkingActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, itemNameFromID, percentChance, rand, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { handleMahojiConfirmation } from '../../mahojiSettings';
 
 export async function trekCommand(
@@ -132,7 +133,7 @@ export async function trekCommand(
 		tripTime *= flailBoost;
 	}
 
-	const maxTripLength = user.maxTripLength('Trekking');
+	const maxTripLength = calcMaxTripLength(user, 'Trekking');
 	const maxTrips = Math.floor(maxTripLength / tripTime);
 	if (quantity === undefined || quantity === null) {
 		quantity = maxTrips;

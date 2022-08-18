@@ -15,6 +15,8 @@ import { logError } from './logError';
 
 const webhookCache: Map<string, WebhookClient> = new Map();
 
+export const webhookMessageCache = new Map<string, WebhookClient>();
+
 export async function resolveChannel(channelID: string): Promise<WebhookClient | TextChannel | undefined> {
 	const channel = globalClient.channels.cache.get(channelID);
 	if (!channel) return undefined;
@@ -134,10 +136,12 @@ async function webhookSend(channel: WebhookClient, input: MessageOptions) {
 		}
 		return;
 	}
-	return channel.send({
+	const res = await channel.send({
 		content: input.content,
 		embeds: input.embeds,
 		files: input.files,
 		components: input.components
 	});
+	webhookMessageCache.set(res.id, channel);
+	return res;
 }

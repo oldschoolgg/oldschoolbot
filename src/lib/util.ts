@@ -42,6 +42,7 @@ import {
 	TheatreOfBloodTaskOptions
 } from './types/minions';
 import { calcMaxTripLength } from './util/calcMaxTripLength';
+import { getItem } from './util/getOSItem';
 import itemID from './util/itemID';
 import { logError } from './util/logError';
 import { userHasItemsEquippedAnywhere } from './util/minionUtils';
@@ -669,6 +670,11 @@ export function sanitizeBank(bank: Bank) {
 		// round it down.
 		if (!Number.isInteger(value)) {
 			bank.bank[key] = Math.floor(value);
+		}
+
+		const item = getItem(key);
+		if (!item) {
+			delete bank.bank[key];
 		}
 	}
 }

@@ -6,7 +6,7 @@ import { deduplicateClueScrolls } from '../src/lib/clues/clueUtils';
 import getUserFoodFromBank from '../src/lib/minions/functions/getUserFoodFromBank';
 import { sanitizeBank, stripEmojis, truncateString } from '../src/lib/util';
 import getOSItem from '../src/lib/util/getOSItem';
-import { sellPriceOfItem } from '../src/mahoji/commands/sell';
+import { sellPriceOfItem, sellStorePriceOfItem } from '../src/mahoji/commands/sell';
 import { getSkillsOfMahojiUser } from '../src/mahoji/mahojiSettings';
 import { mockUser } from './utils';
 
@@ -69,9 +69,22 @@ describe('util', () => {
 	test('sellPriceOfItem', () => {
 		const item = getOSItem('Dragon pickaxe');
 		const { price } = item;
-		let expected = Math.floor(reduceNumByPercent(price, 20));
+		let expected = reduceNumByPercent(price, 20);
 		expect(sellPriceOfItem(item)).toEqual({ price: expected, basePrice: price });
 		expect(sellPriceOfItem(getOSItem('A yellow square'))).toEqual({ price: 0, basePrice: 0 });
+	});
+
+	test('sellStorePriceOfItem', () => {
+		const item = getOSItem('Dragon pickaxe');
+		const { cost } = item;
+
+		let expectedOneQty =
+			(((0.4 - 0.015 * Math.min(1 - 1, 10)) * Math.min(1, 11) + Math.max(1 - 11, 0) * 0.1) * cost) / 1;
+		let expectedTwentytwoQty =
+			(((0.4 - 0.015 * Math.min(22 - 1, 10)) * Math.min(22, 11) + Math.max(22 - 11, 0) * 0.1) * cost) / 22;
+		expect(sellStorePriceOfItem(item, 1)).toEqual({ price: expectedOneQty, basePrice: cost });
+		expect(sellStorePriceOfItem(item, 22)).toEqual({ price: expectedTwentytwoQty, basePrice: cost });
+		expect(sellStorePriceOfItem(getOSItem('A yellow square'), 1)).toEqual({ price: 0, basePrice: 0 });
 	});
 
 	test('getSkillsOfMahojiUser', () => {

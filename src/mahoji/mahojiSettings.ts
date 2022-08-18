@@ -1,14 +1,8 @@
-import type { ClientStorage, Guild, Prisma, User } from '@prisma/client';
+import type { ClientStorage, Guild, Prisma, User, UserStats } from '@prisma/client';
 import { Guild as DJSGuild, MessageButton } from 'discord.js';
 import { Time } from 'e';
 import { KlasaUser } from 'klasa';
-import {
-	APIInteractionDataResolvedGuildMember,
-	APIUser,
-	InteractionResponseType,
-	InteractionType,
-	MessageFlags
-} from 'mahoji';
+import { InteractionResponseType, InteractionType, MessageFlags } from 'mahoji';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
@@ -72,7 +66,7 @@ export async function handleMahojiConfirmation(interaction: SlashCommandInteract
 
 	return new Promise<void>(async (resolve, reject) => {
 		const collector = confirmMessage.createMessageComponentInteractionCollector({
-			time: Time.Second * 10
+			time: Time.Second * 15
 		});
 
 		async function confirm(id: bigint) {
@@ -233,11 +227,6 @@ export async function mahojiGuildSettingsUpdate(guild: string | DJSGuild, data: 
 	return { newGuild };
 }
 
-export interface MahojiUserOption {
-	user: APIUser;
-	member: APIInteractionDataResolvedGuildMember;
-}
-
 export function getSkillsOfMahojiUser(user: User, levels = false): Required<TSkills> {
 	const skills: Required<TSkills> = {
 		agility: Number(user.skills_agility),
@@ -292,7 +281,7 @@ export function patronMsg(tierNeeded: number) {
 }
 
 // Is not typesafe, returns only what is selected, but will say it contains everything.
-export async function mahojiClientSettingsFetch(select: Prisma.ClientStorageSelect) {
+export async function mahojiClientSettingsFetch(select?: Prisma.ClientStorageSelect) {
 	const clientSettings = await prisma.clientStorage.findFirst({
 		where: {
 			id: CLIENT_ID
@@ -314,4 +303,30 @@ export async function mahojiClientSettingsUpdate(data: Prisma.ClientStorageUpdat
 
 export function getMahojiBank(user: User) {
 	return new Bank(user.bank as ItemBank);
+}
+
+export async function userStatsUpdate(userID: string, data: (u: UserStats) => Prisma.UserStatsUpdateInput) {
+	const id = BigInt(userID);
+	const userStats = await prisma.userStats.upsert({
+		create: {
+			user_id: id
+		},
+		update: {},
+		where: {
+			user_id: id
+		}
+	});
+	await prisma.userStats.update({
+		data: data(userStats),
+		where: {
+			user_id: id
+		}
+	});
+}
+
+type UserStatsBankKey = 'puropuro_implings_bank' | 'passive_implings_bank' | 'create_cost_bank' | 'create_loot_bank';
+export async function userStatsBankUpdate(userID: string, key: UserStatsBankKey, bank: Bank) {
+	await userStatsUpdate(userID, u => ({
+		[key]: bank.clone().add(u[key] as ItemBank).bank
+	}));
 }

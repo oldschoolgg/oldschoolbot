@@ -10,6 +10,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { FishingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemID, itemNameFromID, rand } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -126,7 +127,7 @@ export const fishCommand: OSBMahojiCommand = {
 			);
 		}
 
-		const maxTripLength = user.maxTripLength('Fishing');
+		const maxTripLength = calcMaxTripLength(user, 'Fishing');
 
 		let { quantity } = options;
 		if (!quantity) quantity = Math.floor(maxTripLength / scaledTimePerFish);

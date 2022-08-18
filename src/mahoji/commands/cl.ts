@@ -50,12 +50,22 @@ export const collectionLogCommand: OSBMahojiCommand = {
 			description: 'The flag you want to pass.',
 			required: false,
 			choices: CollectionLogFlags.map(i => ({ name: `${toTitleCase(i.name)} (${i.description})`, value: i.name }))
+		},
+		{
+			type: ApplicationCommandOptionType.Boolean,
+			name: 'all',
+			description: 'Show all items?',
+			required: false
 		}
 	],
-	run: async ({ options, userID }: CommandRunOptions<{ name: string; type?: CollectionLogType; flag?: string }>) => {
+	run: async ({
+		options,
+		userID
+	}: CommandRunOptions<{ name: string; type?: CollectionLogType; flag?: string; all?: boolean }>) => {
 		const user = await globalClient.fetchUser(userID);
 		let flags: Record<string, string> = {};
 		if (options.flag) flags[options.flag] = options.flag;
+		if (options.all) flags.all = 'all';
 		const result = await (globalClient.tasks.get('collectionLogTask') as CollectionLogTask)!.generateLogImage({
 			user,
 			type: options.type ?? 'collection',
