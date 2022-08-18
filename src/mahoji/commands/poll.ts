@@ -19,7 +19,12 @@ export const pollCommand: OSBMahojiCommand = {
 		if (!channelIsSendable(channel)) return { flags: MessageFlags.Ephemeral, content: 'Invalid channel.' };
 		await interaction.deferReply({ ephemeral: true });
 		try {
-			const message = await channel.send(`**Poll from ${user.username}:** ${options.question}`);
+			const message = await channel.send({
+				content: `**Poll from ${user.username}:** ${options.question}`,
+				allowedMentions: {
+					parse: []
+				}
+			});
 			await message.react('380915244760825857');
 			await message.react('380915244652036097');
 			return 'Poll created. Users can click on the two reactions to vote.';
