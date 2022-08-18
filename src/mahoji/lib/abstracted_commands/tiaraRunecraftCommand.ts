@@ -56,10 +56,11 @@ export async function tiaraRunecraftCommand({
 	}
 
 	const makeTiaraTime = Time.Second * 0.6;
-	const adjTripTime = tripLength + TIARAS_PER_INVENTORY * makeTiaraTime;
+	const adjTripTime = tripLength + (TIARAS_PER_INVENTORY * makeTiaraTime);
 	const maxCanDoOwned = numTiaraOwned < numTalismansOwned ? numTiaraOwned : numTalismansOwned;
 	const maxTripLength = calcMaxTripLength(user, 'Runecraft');
-	const maxCanDo = Math.floor(maxTripLength / adjTripTime);
+	const maxCanDo = (maxTripLength / adjTripTime);
+
 	if (!quantity) {
 		quantity = maxCanDoOwned < maxCanDo ? maxCanDoOwned : maxCanDo;
 	}
@@ -70,11 +71,13 @@ export async function tiaraRunecraftCommand({
 		return `You don't have enough talismans to craft ${quantity}x ${tiaraObj.name}. You can acquire some through drops, or purchasing from other players.`;
 	}
 
-	const numberOfInventories = Math.ceil(quantity / TIARAS_PER_INVENTORY);
+	const numberOfInventories = Math.floor(quantity / TIARAS_PER_INVENTORY); 
 	const quantityInLastInv = quantity % 14;
 	const duration = numberOfInventories * adjTripTime + (tripLength + makeTiaraTime * quantityInLastInv);
 
-	console.log(duration);
+	console.log(numberOfInventories);
+	console.log(adjTripTime);
+	console.log(tripLength);
 
 	if (duration > maxTripLength) {
 		return `${user.minionName} can't go on trips longer than ${formatDuration(
@@ -106,7 +109,7 @@ export async function tiaraRunecraftCommand({
 		tiaraObj.name
 	}, it'll take around ${formatDuration(
 		duration
-	)} to finish, this will take ${numberOfInventories}x trips to the altar.\n\n**Boosts:** ${boosts.join(', ')}`;
+	)} to finish, this will take ${numberOfInventories + 1}x trips to the altar.\n\n**Boosts:** ${boosts.join(', ')}`;
 
 	return response;
 }
