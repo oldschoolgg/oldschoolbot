@@ -66,7 +66,7 @@ export async function handleMahojiConfirmation(interaction: SlashCommandInteract
 
 	return new Promise<void>(async (resolve, reject) => {
 		const collector = confirmMessage.createMessageComponentInteractionCollector({
-			time: Time.Second * 10
+			time: Time.Second * 15
 		});
 
 		async function confirm(id: bigint) {

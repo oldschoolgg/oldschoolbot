@@ -5,8 +5,8 @@ import { Emoji } from '../../lib/constants';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
-export const balCommand: OSBMahojiCommand = {
-	name: 'bal',
+export const gpCommand: OSBMahojiCommand = {
+	name: 'gp',
 	description: 'See your current GP balance.',
 	options: [],
 	run: async ({ user }: CommandRunOptions<{ question: string }>) => {
