@@ -204,7 +204,7 @@ export const createCommand: OSBMahojiCommand = {
 			if (!onCreateResult.result) {
 				return onCreateResult.message;
 			}
-			extraMessage += `\n\n${onCreateResult.message}`;
+			if (onCreateResult.message) extraMessage += `\n\n${onCreateResult.message}`;
 		}
 
 		await user.removeItemsFromBank(inItems);
