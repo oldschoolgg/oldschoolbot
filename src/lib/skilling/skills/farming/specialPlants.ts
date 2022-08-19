@@ -1050,7 +1050,7 @@ const specialPlants: Plant[] = [
 		aliases: ['grand crystal tree', 'grand crystal', 'grand'],
 		petChance: 9000,
 		seedType: 'crystal',
-		growthTime: 1,
+		growthTime: 480,
 		numOfStages: 6,
 		chance1: 0,
 		chance99: 0,
