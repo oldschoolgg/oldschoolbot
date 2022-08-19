@@ -32,9 +32,35 @@ describe('Gear', () => {
 		const gear = new Gear({ cape: 'Max cape' });
 		const allItems = gear.allItems(true).map(itemNameFromID).sort();
 		expect(allItems).toEqual(
-			['Max cape', 'Graceful cape', 'Attack cape', 'Crafting cape', 'Runecraft cape', 'Farming cape'].sort()
+			[
+				'Max cape',
+				'Graceful cape',
+				'Agility cape',
+				'Attack cape',
+				'Construct. cape',
+				'Cooking cape',
+				'Crafting cape',
+				'Defence cape',
+				'Farming cape',
+				'Firemaking cape',
+				'Fishing cape',
+				'Fletching cape',
+				'Herblore cape',
+				'Hitpoints cape',
+				'Hunter cape',
+				'Magic cape',
+				'Mining cape',
+				'Prayer cape',
+				'Ranging cape',
+				'Runecraft cape',
+				'Slayer cape',
+				'Smithing cape',
+				'Strength cape',
+				'Thieving cape',
+				'Woodcutting cape'
+			].sort()
 		);
-		expect(allItems.length).toEqual(6);
+		expect(allItems.length).toEqual(25);
 	});
 
 	test('equippedWeapon', () => {
