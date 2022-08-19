@@ -14,9 +14,15 @@ import {
 	User as DJSUser,
 	Util
 } from 'discord.js';
-import { calcWhatPercent, objectEntries, round, Time } from 'e';
+import { calcWhatPercent, chunk, objectEntries, round, Time } from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults } from 'klasa';
-import { APIInteractionGuildMember, APIUser } from 'mahoji';
+import {
+	APIButtonComponentWithCustomId,
+	APIInteractionGuildMember,
+	APIInteractionResponseCallbackData,
+	APIUser,
+	ComponentType
+} from 'mahoji';
 import { CommandResponse, InteractionResponseDataWithBufferAttachments } from 'mahoji/dist/lib/structures/ICommand';
 import murmurHash from 'murmurhash';
 import { gzip } from 'node:zlib';
@@ -795,4 +801,10 @@ export function getUsername(id: string | bigint) {
 export function shuffleRandom<T>(input: number, arr: readonly T[]): T[] {
 	const engine = MersenneTwister19937.seed(input);
 	return shuffle(engine, [...arr]);
+}
+
+export function makeComponents(
+	components: APIButtonComponentWithCustomId[]
+): APIInteractionResponseCallbackData['components'] {
+	return chunk(components, 5).map(i => ({ components: i, type: ComponentType.ActionRow }));
 }

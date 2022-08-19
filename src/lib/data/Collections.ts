@@ -945,7 +945,7 @@ function getLeftList(
 	return leftList;
 }
 
-export function getBank(user: KlasaUser, type: 'sacrifice' | 'bank' | 'collection' | 'temp') {
+export function getBank(user: KlasaUser, mahojiUser: User, type: 'sacrifice' | 'bank' | 'collection' | 'temp') {
 	const userCheckBank = new Bank();
 	switch (type) {
 		case 'collection':
@@ -958,15 +958,15 @@ export function getBank(user: KlasaUser, type: 'sacrifice' | 'bank' | 'collectio
 			userCheckBank.add(user.settings.get(UserSettings.SacrificedBank));
 			break;
 		case 'temp':
-			userCheckBank.add(user.settings.get(UserSettings.TempCL));
+			userCheckBank.add(mahojiUser.temp_cl as ItemBank);
 			break;
 	}
 	return userCheckBank;
 }
 
 // Get the total items the user has in its CL and the total items to collect
-export function getTotalCl(user: KlasaUser, logType: 'sacrifice' | 'bank' | 'collection' | 'temp') {
-	return getUserClData(getBank(user, logType).bank, allCLItemsFiltered);
+export function getTotalCl(user: KlasaUser, mahojiUser: User, logType: 'sacrifice' | 'bank' | 'collection' | 'temp') {
+	return getUserClData(getBank(user, mahojiUser, logType).bank, allCLItemsFiltered);
 }
 
 export function getPossibleOptions() {
@@ -1049,6 +1049,7 @@ for (const mon of killableMonsters) allClNames.push(mon.name);
 // Main function that gets the user collection based on its search parameter
 export async function getCollection(options: {
 	user: KlasaUser;
+	mahojiUser: User;
 	search: string;
 	flags: { [key: string]: string | number };
 	logType?: 'collection' | 'sacrifice' | 'bank' | 'temp';
@@ -1060,7 +1061,7 @@ export async function getCollection(options: {
 	const allItems = Boolean(flags.all);
 	if (logType === undefined) logType = 'collection';
 
-	const userCheckBank = getBank(user, logType);
+	const userCheckBank = getBank(user, options.mahojiUser, logType);
 	let clItems = getCollectionItems(search, allItems, logType === 'sacrifice');
 
 	if (Boolean(flags.missing)) {
