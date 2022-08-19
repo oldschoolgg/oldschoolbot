@@ -221,7 +221,7 @@ const killableMonsters: KillableMonster[] = [
 		id: Monsters.Sarachnis.id,
 		name: Monsters.Sarachnis.name,
 		aliases: Monsters.Sarachnis.aliases,
-		timeToFinish: Time.Minute * 2.35,
+		timeToFinish: Time.Minute * 1.85,
 		table: Monsters.Sarachnis,
 		emoji: '<:Sraracha:608231007803670529>',
 		wildy: false,
@@ -231,6 +231,17 @@ const killableMonsters: KillableMonster[] = [
 		itemInBankBoosts: [
 			{
 				[itemID('Dragon claws')]: 5
+			},
+			{
+				[itemID('Abyssal bludgeon')]: 8,
+				[itemID("Inquisitor's mace")]: 12,
+				[itemID('Scythe of vitur')]: 15
+			},
+			{
+				[itemID("Karil's leathertop")]: 3
+			},
+			{
+				[itemID("Karil's leatherskirt")]: 2
 			}
 		],
 		levelRequirements: {
