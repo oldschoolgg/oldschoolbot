@@ -55,7 +55,6 @@ export namespace UserSettings {
 	export const KourendFavour = T<UserKourendFavour>('kourend_favour');
 	export const IronmanAlts = T<readonly string[]>('ironman_alts');
 	export const MainAccount = T<string | null>('main_account');
-	export const TempCL = T<Readonly<ItemBank>>('temp_cl');
 
 	export const InfernoAttempts = T<number>('inferno_attempts');
 	export const InfernoCapeSacrifices = T<number>('inferno_cape_sacrifices');
