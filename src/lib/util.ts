@@ -695,9 +695,11 @@ export function convertAttackStyleToGearSetup(style: OffenceGearStat | DefenceGe
 
 	switch (style) {
 		case GearStat.AttackMagic:
+		case GearStat.DefenceMagic:
 			setup = 'mage';
 			break;
 		case GearStat.AttackRanged:
+		case GearStat.DefenceRanged:
 			setup = 'range';
 			break;
 		default:

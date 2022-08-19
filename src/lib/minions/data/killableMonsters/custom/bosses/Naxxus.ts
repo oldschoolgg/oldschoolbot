@@ -1,10 +1,11 @@
 import { Time } from 'e';
+import { Monsters } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { naxxusCL } from '../../../../../data/CollectionsExport';
 import { GearStat } from '../../../../../gear';
 import { KillableMonster } from '../../../../../minions/types';
-import { makeKillTable } from '../../../../../util/setCustomMonster';
+import setCustomMonster, { makeKillTable } from '../../../../../util/setCustomMonster';
 
 const runes = new LootTable()
 	.add('Air rune', [5000, 15_000])
@@ -75,6 +76,8 @@ export const NaxxusLootTable = new LootTable()
 	.tertiary(10, 'Korulsi seed')
 	.tertiary(25, 'Grand crystal acorn');
 
+export const NAXXUS_HP = 3900;
+
 export const Naxxus: KillableMonster = {
 	id: 294_820,
 	name: 'Naxxus',
@@ -86,6 +89,7 @@ export const Naxxus: KillableMonster = {
 	wildy: false,
 	difficultyRating: 10,
 	qpRequired: 0,
+	customMonsterHP: NAXXUS_HP,
 	groupKillable: false,
 	respawnTime: Time.Second * 10,
 	levelRequirements: {
@@ -108,4 +112,8 @@ export const Naxxus: KillableMonster = {
 	}
 };
 
-export const NAXXUS_HP = 3900;
+setCustomMonster(Naxxus.id, 'Naxxus', NaxxusLootTable, Monsters.GeneralGraardor, {
+	id: Naxxus.id,
+	name: 'Naxxus',
+	aliases: ['naxxus', 'naxx']
+});

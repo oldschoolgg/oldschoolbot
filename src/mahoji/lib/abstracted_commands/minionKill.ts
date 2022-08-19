@@ -162,6 +162,20 @@ function applySkillBoost(user: KlasaUser, duration: number, styles: AttackStyles
 	return [newDuration, str];
 }
 
+function attackStyleSkillToGearSetup(attackSkill: SkillsEnum | AttackStyles): GearSetupType {
+	let result = 'melee';
+	switch (attackSkill) {
+		case 'magic':
+			result = 'mage';
+			break;
+		case 'ranged':
+			result = 'range';
+			break;
+		default:
+	}
+	return result as GearSetupType;
+}
+
 export async function minionKillCommand(
 	interaction: SlashCommandInteraction,
 	user: KlasaUser,
@@ -290,9 +304,8 @@ export async function minionKillCommand(
 	const degItemBeingUsed = [];
 	for (const degItemCanUse of degradeableItemsCanUse) {
 		const isUsing =
-			monster.attackStyleToUse &&
-			convertAttackStyleToGearSetup(monster.attackStyleToUse) === degItemCanUse.attackStyle &&
-			user.getGear(degItemCanUse.attackStyle).hasEquipped(degItemCanUse.item.id);
+			attackStyles.map(attackStyleSkillToGearSetup).includes(degItemCanUse.attackStyle as GearSetupType) &&
+			user.getGear(degItemCanUse.attackStyle as GearSetupType).hasEquipped(degItemCanUse.item.id);
 		if (isUsing) {
 			const estimatedChargesNeeded = degItemCanUse.charges(
 				monster,
@@ -705,18 +718,6 @@ export async function minionKillCommand(
 	} else if (user.hasItemEquippedAnywhere('Attack master cape')) {
 		duration *= 0.85;
 		boosts.push('15% for Attack master cape');
-	}
-	// Some degrading items use charges based on DURATION
-	// It is important this is after duration modifiers so that the item isn't over-charged
-	for (const degItem of degItemBeingUsed) {
-		boosts.push(`${degItem.boost}% for ${degItem.item.name}`);
-		duration = reduceNumByPercent(duration, degItem.boost);
-		const chargesNeeded = degItem.charges(monster, osjsMon!, monsterHP * quantity, duration, user);
-		await degradeItem({
-			item: degItem.item,
-			chargesToDegrade: chargesNeeded,
-			user
-		});
 	}
 	if (hasBlessing && prayerPotsNeeded) {
 		const prayerPotsBank = new Bank().add('Prayer potion(4)', prayerPotsNeeded);
