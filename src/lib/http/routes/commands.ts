@@ -10,6 +10,7 @@ const mahojiCommands = globalClient.mahojiClient.commands.values;
 
 const commandData = allAbstractCommands(globalClient.mahojiClient)
 	.filter(c => typeof c.attributes?.description === 'string' && c.attributes.description.length > 1)
+	.filter(i => !['admin'].includes(i.name))
 	.map((cmd: AbstractCommand) => {
 		const botCommand = globalClient.commands.get(cmd.name);
 		const mahojiCommand = mahojiCommands.find(i => stringMatches(i.name, cmd.name));
