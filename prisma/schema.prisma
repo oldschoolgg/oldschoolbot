@@ -384,6 +384,10 @@ model User {
 
   minion_bought_date DateTime? @db.Timestamp(6)
 
+  bingo_tickets_bought Int    @default(0)
+  bingo_gp_contributed BigInt @default(0)
+
+  @@index([bingo_tickets_bought])
   @@map("users")
 }
 
@@ -559,6 +563,16 @@ model UserStats {
   create_loot_bank       Json   @default("{}") @db.Json
 
   @@map("user_stats")
+}
+
+model BingoTeam {
+  id Int @id @unique @default(autoincrement())
+
+  first_user  String @unique @db.VarChar(19)
+  second_user String @unique @db.VarChar(19)
+  third_user  String @unique @db.VarChar(19)
+
+  @@map("bingo_team")
 }
 
 enum command_usage_status {

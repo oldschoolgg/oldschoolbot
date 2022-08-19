@@ -2,6 +2,7 @@ import { MessageButton } from 'discord.js';
 import { Time } from 'e';
 import { APIInteraction, InteractionType, Routes } from 'mahoji';
 
+import { buyBingoTicketCommand } from '../../mahoji/commands/bingo';
 import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { Cooldowns } from '../../mahoji/lib/Cooldowns';
 import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
@@ -36,7 +37,8 @@ const globalInteractionActions = [
 	'CANCEL_TRIP',
 	'AUTO_FARM',
 	'AUTO_FARMING_CONTRACT',
-	'BUY_MINION'
+	'BUY_MINION',
+	'BUY_BINGO_TICKET'
 ] as const;
 type GlobalInteractionAction = typeof globalInteractionActions[number];
 function isValidGlobalInteraction(str: string): str is GlobalInteractionAction {
@@ -205,6 +207,10 @@ export async function interactionHook(data: APIInteraction) {
 			bypassInhibitors: true,
 			...options
 		});
+	}
+
+	if (id === 'BUY_BINGO_TICKET') {
+		return buttonReply(await buyBingoTicketCommand(null, userID, 1));
 	}
 
 	if (minionIsBusy(user.id)) {

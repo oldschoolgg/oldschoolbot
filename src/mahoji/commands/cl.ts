@@ -8,6 +8,7 @@ import CollectionLogTask, {
 	collectionLogTypes
 } from '../../tasks/collectionLogTask';
 import { OSBMahojiCommand } from '../lib/util';
+import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const collectionLogCommand: OSBMahojiCommand = {
 	name: 'cl',
@@ -68,6 +69,7 @@ export const collectionLogCommand: OSBMahojiCommand = {
 		if (options.all) flags.all = 'all';
 		const result = await (globalClient.tasks.get('collectionLogTask') as CollectionLogTask)!.generateLogImage({
 			user,
+			mahojiUser: await mahojiUsersSettingsFetch(userID),
 			type: options.type ?? 'collection',
 			flags,
 			collection: options.name
