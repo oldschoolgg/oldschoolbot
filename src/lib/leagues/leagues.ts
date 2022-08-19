@@ -16,8 +16,14 @@ import {
 	personalSpellCastStats,
 	personalWoodcuttingStats
 } from '../../mahoji/lib/abstracted_commands/statCommand';
-import { getSkillsOfMahojiUser, getUserGear, mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
+import {
+	getSkillsOfMahojiUser,
+	getUserGear,
+	mahojiUserSettingsUpdate,
+	mahojiUsersSettingsFetch
+} from '../../mahoji/mahojiSettings';
 import { getParsedStashUnits } from '../clues/stashUnits';
+import { BitField } from '../constants';
 import { calcCLDetails } from '../data/Collections';
 import { roboChimpUserFetch } from '../roboChimp';
 import { getMinigameEntity } from '../settings/minigames';
@@ -249,6 +255,41 @@ ${resStr}`,
 	};
 }
 
+const unlockables: {
+	name: string;
+	points: number;
+	onUnlock: (user: User) => Promise<string>;
+	hasUnlockedAlready: (user: User) => boolean;
+}[] = [
+	{
+		name: 'Brain lee pet',
+		points: 40_000,
+		onUnlock: async (user: User) => {
+			const klasaUser = await globalClient.fetchUser(user.id);
+			await klasaUser.addItemsToBank({ items: new Bank().add('Brain lee'), collectionLog: true });
+			return 'You received a very brainly Brain lee!';
+		},
+		hasUnlockedAlready: (user: User) => {
+			return new Bank(user.collectionLogBank as ItemBank).has('Brain lee');
+		}
+	},
+	{
+		name: '+1m max trip length',
+		points: 50_000,
+		onUnlock: async (user: User) => {
+			await mahojiUserSettingsUpdate(user.id, {
+				bitfield: {
+					push: BitField.HasLeaguesOneMinuteLengthBoost
+				}
+			});
+			return "You've unlocked a global +1minute trip length boost!";
+		},
+		hasUnlockedAlready: (user: User) => {
+			return user.bitfield.includes(BitField.HasLeaguesOneMinuteLengthBoost);
+		}
+	}
+];
+
 export async function leaguesClaimCommand(userID: bigint, finishedTaskIDs: number[]) {
 	const roboChimpUser = await roboChimpUserFetch(userID);
 	const newlyFinishedTasks = finishedTaskIDs.filter(i => !roboChimpUser.leagues_completed_tasks_ids.includes(i));
@@ -282,8 +323,18 @@ export async function leaguesClaimCommand(userID: bigint, finishedTaskIDs: numbe
 		}
 	});
 
+	const unlockMessages: string[] = [];
+	const mahojiUser = await mahojiUsersSettingsFetch(userID);
+	const newTotal = newUser.leagues_points_total;
+	for (const unl of unlockables) {
+		if (newTotal >= unl.points && !unl.hasUnlockedAlready(mahojiUser)) {
+			const result = await unl.onUnlock(mahojiUser);
+			unlockMessages.push(result);
+		}
+	}
+
 	let response: Awaited<CommandResponse> = {
-		content: `You claimed ${newlyFinishedTasks.length} tasks, and received ${pointsToAward} points. You now have a balance of ${newUser.leagues_points_balance_osb} OSB points and ${newUser.leagues_points_balance_bso} BSO points, and ${newUser.leagues_points_total} total points. You have completed a total of ${newUser.leagues_completed_tasks_ids.length} tasks.`
+		content: `You claimed ${newlyFinishedTasks.length} tasks, and received ${pointsToAward} points. You now have a balance of ${newUser.leagues_points_balance_osb} OSB points and ${newUser.leagues_points_balance_bso} BSO points, and ${newTotal} total points. You have completed a total of ${newUser.leagues_completed_tasks_ids.length} tasks.`
 	};
 
 	if (newlyFinishedTasks.length > 10) {
@@ -293,6 +344,10 @@ export async function leaguesClaimCommand(userID: bigint, finishedTaskIDs: numbe
 		];
 	} else {
 		response.content += `\n**Finished Tasks:** ${fullNewlyFinishedTasks.map(i => i.name).join(', ')}.`;
+	}
+
+	if (unlockMessages.length > 0) {
+		response.content += `\n\n**You unlocked...** ${unlockMessages.join(', ')}`;
 	}
 
 	return response;

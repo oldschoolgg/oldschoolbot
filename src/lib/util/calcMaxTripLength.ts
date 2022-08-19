@@ -2,7 +2,7 @@ import { activity_type_enum, User } from '@prisma/client';
 import { calcPercentOfNum, calcWhatPercent, Time } from 'e';
 import { KlasaUser } from 'klasa';
 
-import { PerkTier } from '../constants';
+import { BitField, PerkTier } from '../constants';
 import { UserSettings } from '../settings/types/UserSettings';
 import { SkillsEnum } from '../skilling/types';
 import getUsersPerkTier, { patronMaxTripCalc } from './getUsersPerkTier';
@@ -78,5 +78,11 @@ export function calcMaxTripLength(user: User | KlasaUser, activity?: activity_ty
 	const sacPercent = Math.min(100, calcWhatPercent(sac, isIronman ? 5_000_000_000 : 10_000_000_000));
 	const perkTier = getUsersPerkTier(user);
 	max += calcPercentOfNum(sacPercent, perkTier >= PerkTier.Four ? Time.Minute * 3 : Time.Minute);
+
+	const bitfield = user instanceof KlasaUser ? user.settings.get(UserSettings.BitField) : user.bitfield;
+	if (bitfield.includes(BitField.HasLeaguesOneMinuteLengthBoost)) {
+		max += Time.Minute;
+	}
+
 	return max;
 }
