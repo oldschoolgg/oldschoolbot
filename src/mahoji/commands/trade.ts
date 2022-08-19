@@ -72,14 +72,17 @@ export const askCommand: OSBMahojiCommand = {
 		if (recipientKlasaUser.bot) return "You can't trade a bot.";
 		if (recipientKlasaUser.isBusy) return 'That user is busy right now.';
 
-		const itemsSent = parseBank({
-			inputBank: senderKlasaUser.bank({ withGP: true }),
-			inputStr: options.send,
-			maxSize: 70,
-			flags: { tradeables: 'tradeables' },
-			filters: [options.filter],
-			search: options.search
-		}).filter(i => itemIsTradeable(i.id, true));
+		const itemsSent =
+			!options.search && !options.filter && !options.send
+				? new Bank()
+				: parseBank({
+						inputBank: senderKlasaUser.bank({ withGP: true }),
+						inputStr: options.send,
+						maxSize: 70,
+						flags: { tradeables: 'tradeables' },
+						filters: [options.filter],
+						search: options.search
+				  }).filter(i => itemIsTradeable(i.id, true));
 		const itemsReceived = parseBank({
 			inputStr: options.receive,
 			maxSize: 70,
