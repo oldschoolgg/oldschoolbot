@@ -492,8 +492,6 @@ export const adminCommand: OSBMahojiCommand = {
 
 		const adminUser = await mahojiUsersSettingsFetch(userID);
 		const isMod = adminUser.bitfield.includes(BitField.isModerator);
-		if (!guildID || !isMod || (production && guildID.toString() !== '342983479501389826')) return randArrItem(gifs);
-
 		if (options.wipe_bingo_temp_cls) {
 			if (userID.toString() !== '319396464402890753' && !isMod) return randArrItem(gifs);
 			const usersToReset = await prisma.user.findMany({
@@ -519,6 +517,8 @@ export const adminCommand: OSBMahojiCommand = {
 			});
 			return `${res.count} temp CLs reset.`;
 		}
+
+		if (!guildID || !isMod || (production && guildID.toString() !== '342983479501389826')) return randArrItem(gifs);
 
 		/**
 		 *
