@@ -252,25 +252,23 @@ export const mineCommand: OSBMahojiCommand = {
 		// For each pickaxe, if they have it, give them its' bonus and break.
 
 		for (const pickaxe of pickaxes) {
-			if (hasItemsEquippedOrInBank(user, [pickaxe.id]) && skills.mining >= pickaxe.miningLvl) {
-				currentPickaxe = pickaxe;
-				boosts.push(`**${pickaxe.ticksBetweenRolls}** ticks between rolls for ${itemNameFromID(pickaxe.id)}`);
-				break;
-			}
+			if (!hasItemsEquippedOrInBank(user, [pickaxe.id]) || skills.mining < pickaxe.miningLvl) continue;
+			currentPickaxe = pickaxe;
+			boosts.push(`**${pickaxe.ticksBetweenRolls}** ticks between rolls for ${itemNameFromID(pickaxe.id)}`);
+			break;
 		}
 
 		let glovesRate = 0;
 		if (skills.mining >= 60) {
 			for (const glove of gloves) {
-				if (userHasItemsEquippedAnywhere(user, glove.id)) {
-					for (const [name, value] of Object.entries(glove)) {
-						if (name !== ore.name) continue;
-						glovesRate = value;
-						if (value !== 0) {
-							boosts.push(`Lowered rock depletion rate by **${value}%** for ${itemNameFromID(glove.id)}`);
-						}
-						break;
+				if (!userHasItemsEquippedAnywhere(user, glove.id)) continue;
+				for (const [name, value] of Object.entries(glove)) {
+					if (name !== ore.name) continue;
+					glovesRate = value;
+					if (value !== 0) {
+						boosts.push(`Lowered rock depletion rate by **${value}%** for ${itemNameFromID(glove.id)}`);
 					}
+					break;
 				}
 				if (glovesRate !== 0) {
 					break;
@@ -280,15 +278,14 @@ export const mineCommand: OSBMahojiCommand = {
 
 		let armourEffect = 0;
 		for (const armour of varrockArmours) {
-			if (hasItemsEquippedOrInBank(user, [armour.id])) {
-				for (const [name, value] of Object.entries(armour)) {
-					if (name !== ore.name) continue;
-					armourEffect = value;
-					if (value !== 0) {
-						boosts.push(`**${value}%** chance to mine an extra ore using ${itemNameFromID(armour.id)}`);
-					}
-					break;
+			if (!hasItemsEquippedOrInBank(user, [armour.id])) continue;
+			for (const [name, value] of Object.entries(armour)) {
+				if (name !== ore.name) continue;
+				armourEffect = value;
+				if (value !== 0) {
+					boosts.push(`**${value}%** chance to mine an extra ore using ${itemNameFromID(armour.id)}`);
 				}
+				break;
 			}
 			if (armourEffect !== 0) {
 				break;
