@@ -178,7 +178,9 @@ export function determineMiningTime(
 
 	let newQuantity = 0;
 
-	while (timeElapsed < calcMaxTripLength(user, 'Mining') / (Time.Second * 0.6)) {
+	const userMaxTripTicks = calcMaxTripLength(user, 'Mining') / (Time.Second * 0.6);
+
+	while (timeElapsed < userMaxTripTicks) {
 		while (!percentChance(chanceOfSuccess)) {
 			timeElapsed += ticksBetweenRolls;
 		}

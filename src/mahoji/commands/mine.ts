@@ -164,7 +164,7 @@ const varrockArmours = [
 	}
 ];
 
-const miningCape = {
+const miningCapeOreEffect = {
 	id: itemID('Mining cape'),
 	Clay: 5,
 	'Copper ore': 5,
@@ -246,8 +246,9 @@ export const mineCommand: OSBMahojiCommand = {
 			boosts.push('+4 invisible Mining lvls for Celestial ring');
 			miningLevel += 4;
 		}
+		// Default bronze pickaxe, last in the array
+		let currentPickaxe = pickaxes[length - 1];
 
-		let currentPickaxe = null;
 		// For each pickaxe, if they have it, give them its' bonus and break.
 
 		for (const pickaxe of pickaxes) {
@@ -258,24 +259,21 @@ export const mineCommand: OSBMahojiCommand = {
 			}
 		}
 
-		if (currentPickaxe === null) {
-			return 'You need to own a pickaxe suitable for your mining level.';
-		}
-
 		let glovesRate = 0;
 		if (skills.mining >= 60) {
 			for (const glove of gloves) {
 				if (userHasItemsEquippedAnywhere(user, glove.id)) {
 					for (const [name, value] of Object.entries(glove)) {
-						if (name === ore.name) {
-							glovesRate = value;
-							if (value !== 0)
-								boosts.push(
-									`Lowered rock depletion rate by **${value}%** for ${itemNameFromID(glove.id)}`
-								);
-							break;
+						if (name !== ore.name) continue;
+						glovesRate = value;
+						if (value !== 0) {
+							boosts.push(`Lowered rock depletion rate by **${value}%** for ${itemNameFromID(glove.id)}`);
 						}
+						break;
 					}
+				}
+				if (glovesRate !== 0) {
+					break;
 				}
 			}
 		}
@@ -284,12 +282,12 @@ export const mineCommand: OSBMahojiCommand = {
 		for (const armour of varrockArmours) {
 			if (hasItemsEquippedOrInBank(user, [armour.id])) {
 				for (const [name, value] of Object.entries(armour)) {
-					if (name === ore.name) {
-						armourEffect = value;
-						if (value !== 0)
-							boosts.push(`**${value}%** chance to mine an extra ore using ${itemNameFromID(armour.id)}`);
-						break;
+					if (name !== ore.name) continue;
+					armourEffect = value;
+					if (value !== 0) {
+						boosts.push(`**${value}%** chance to mine an extra ore using ${itemNameFromID(armour.id)}`);
 					}
+					break;
 				}
 			}
 			if (armourEffect !== 0) {
@@ -304,14 +302,16 @@ export const mineCommand: OSBMahojiCommand = {
 		}
 
 		let miningCapeEffect = 0;
-		if (hasItemsEquippedOrInBank(user, [miningCape.id])) {
-			for (const [name, value] of Object.entries(miningCape)) {
-				if (name === ore.name) {
-					miningCapeEffect = value;
-					if (value !== 0)
-						boosts.push(`**${value}%** chance to mine an extra ore using ${itemNameFromID(miningCape.id)}`);
-					break;
+		if (hasItemsEquippedOrInBank(user, [miningCapeOreEffect.id])) {
+			for (const [name, value] of Object.entries(miningCapeOreEffect)) {
+				if (name !== ore.name) continue;
+				miningCapeEffect = value;
+				if (value !== 0) {
+					boosts.push(
+						`**${value}%** chance to mine an extra ore using ${itemNameFromID(miningCapeOreEffect.id)}`
+					);
 				}
+				break;
 			}
 		}
 
