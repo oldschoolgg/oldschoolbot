@@ -17,6 +17,7 @@ import { ActivityTaskOptions } from '../types/minions';
 import { channelIsSendable, updateGPTrackSetting } from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
 import {
+	makeBirdHouseTripButton,
 	makeDoClueButton,
 	makeNewSlayerTaskButton,
 	makeOpenCasketButton,
