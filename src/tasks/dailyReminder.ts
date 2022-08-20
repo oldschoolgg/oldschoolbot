@@ -2,6 +2,7 @@ import { noOp, Time } from 'e';
 import { Task, TaskStore } from 'klasa';
 
 import { production } from '../config';
+import { prisma } from '../lib/settings/prisma';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { logError } from '../lib/util/logError';
 
@@ -22,7 +23,7 @@ export default class extends Task {
 		}
 		const ticker = async () => {
 			try {
-				const result = await globalClient.query<{ id: string }[]>(
+				const result = await prisma.$queryRawUnsafe<{ id: string }[]>(
 					'SELECT id FROM users WHERE bitfield && \'{2,3,4,5,6,7,8}\'::int[] AND "lastDailyTimestamp" != -1 AND to_timestamp("lastDailyTimestamp" / 1000) < now() - interval \'12 hours\';'
 				);
 

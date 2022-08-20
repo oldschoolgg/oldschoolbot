@@ -38,6 +38,7 @@ async function createOrEditGearSetup(
 	gearInput: InputGear
 ) {
 	name = cleanString(name).toLowerCase();
+	if (name.length > 24) return 'Gear preset names must be less than 25 characters long.';
 	if (!name) return "You didn't supply a name.";
 	if (!isUpdating && !isValidNickname(name)) {
 		return 'Invalid name.';

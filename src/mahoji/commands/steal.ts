@@ -1,5 +1,4 @@
 import { APIUser, ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
-import { Bank } from 'oldschooljs';
 
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
@@ -11,11 +10,12 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, rand, rogueOutfitPercentBonus, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
 import { logError } from '../../lib/util/logError';
 import { calcLootXPPickpocketing } from '../../tasks/minions/pickpocketActivity';
 import { OSBMahojiCommand } from '../lib/util';
-import { allItemsOwned, getSkillsOfMahojiUser, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { getSkillsOfMahojiUser, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const stealCommand: OSBMahojiCommand = {
 	name: 'steal',
@@ -71,10 +71,12 @@ export const stealCommand: OSBMahojiCommand = {
 			} a ${stealable.name}.`;
 		}
 
-		if (stealable.itemsRequired && !allItemsOwned(user).has(stealable.itemsRequired)) {
-			return `You need these items to ${
-				stealable.type === 'pickpockable' ? 'pickpocket this NPC' : 'steal from this stall'
-			}: ${new Bank(stealable.itemsRequired)}.`;
+		if (stealable.fireCapeRequired) {
+			if (user.cl().amount('Fire cape') === 0) {
+				return `In order to ${
+					stealable.type === 'pickpockable' ? 'pickpocket this NPC' : 'steal from this stall'
+				}, you need a fire cape in your collection log.`;
+			}
 		}
 
 		if (user.skillLevel(SkillsEnum.Thieving) < stealable.level) {
@@ -99,7 +101,7 @@ export const stealCommand: OSBMahojiCommand = {
 			return 'This NPC/Stall is missing variable respawnTime.';
 		}
 
-		const maxTripLength = user.maxTripLength('Pickpocket');
+		const maxTripLength = calcMaxTripLength(user, 'Pickpocket');
 
 		let { quantity } = options;
 		if (!quantity) quantity = Math.floor(maxTripLength / timeToTheft);

@@ -7,7 +7,6 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { Events, PerkTier } from '../../lib/constants';
 import { readableStatName } from '../../lib/gear';
 import { KillableMonster } from '../../lib/minions/types';
-import { prisma } from '../../lib/settings/prisma';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { Skills } from '../../lib/types';
 import { formatItemReqs, itemNameFromID } from '../../lib/util';
@@ -107,13 +106,6 @@ export default class extends Extendable {
 	// @ts-ignore 2784
 	public get perkTier(this: User): PerkTier {
 		return getUsersPerkTier(this);
-	}
-
-	public async getPOH(this: User) {
-		const poh = await prisma.playerOwnedHouse.findFirst({ where: { user_id: this.id } });
-		if (poh !== null) return poh;
-		const createdPoh = await prisma.playerOwnedHouse.create({ data: { user_id: this.id } });
-		return createdPoh;
 	}
 
 	public getUserFavAlchs(this: User, duration: number): Item[] {

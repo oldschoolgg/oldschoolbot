@@ -10,6 +10,7 @@ import { Skills } from '../../lib/types';
 import { ConstructionActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
 import { OSBMahojiCommand } from '../lib/util';
 import { getSkillsOfMahojiUser, mahojiUsersSettingsFetch } from '../mahojiSettings';
@@ -101,7 +102,7 @@ export const buildCommand: OSBMahojiCommand = {
 		const userBank = user.bank();
 		const planksHas = userBank.amount(plank);
 
-		const maxTripLength = user.maxTripLength('Construction');
+		const maxTripLength = calcMaxTripLength(user, 'Construction');
 
 		let { quantity } = options;
 		if (!quantity) {

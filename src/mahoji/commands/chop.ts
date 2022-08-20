@@ -8,6 +8,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
 import { determineScaledLogTime, formatDuration, itemNameFromID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import itemID from '../../lib/util/itemID';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -102,7 +103,7 @@ export const chopCommand: OSBMahojiCommand = {
 			}
 		}
 
-		const maxTripLength = user.maxTripLength('Woodcutting');
+		const maxTripLength = calcMaxTripLength(user, 'Woodcutting');
 
 		let { quantity } = options;
 		if (!quantity) quantity = Math.floor(maxTripLength / timetoChop);
