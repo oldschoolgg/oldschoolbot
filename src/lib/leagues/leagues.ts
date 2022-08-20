@@ -292,7 +292,21 @@ const unlockables: {
 
 export async function leaguesClaimCommand(userID: bigint, finishedTaskIDs: number[]) {
 	const roboChimpUser = await roboChimpUserFetch(userID);
+	const mahojiUser = await mahojiUsersSettingsFetch(userID);
 	const newlyFinishedTasks = finishedTaskIDs.filter(i => !roboChimpUser.leagues_completed_tasks_ids.includes(i));
+
+	const unlockMessages: string[] = [];
+	for (const unl of unlockables) {
+		if (roboChimpUser.leagues_points_total >= unl.points && !unl.hasUnlockedAlready(mahojiUser)) {
+			const result = await unl.onUnlock(mahojiUser);
+			unlockMessages.push(result);
+		}
+	}
+
+	if (unlockMessages.length > 0) {
+		return `**You unlocked...** ${unlockMessages.join(', ')}`;
+	}
+
 	if (newlyFinishedTasks.length === 0) return "You don't have any unclaimed points.";
 
 	const fullNewlyFinishedTasks: Task[] = [];
@@ -323,15 +337,7 @@ export async function leaguesClaimCommand(userID: bigint, finishedTaskIDs: numbe
 		}
 	});
 
-	const unlockMessages: string[] = [];
-	const mahojiUser = await mahojiUsersSettingsFetch(userID);
 	const newTotal = newUser.leagues_points_total;
-	for (const unl of unlockables) {
-		if (newTotal >= unl.points && !unl.hasUnlockedAlready(mahojiUser)) {
-			const result = await unl.onUnlock(mahojiUser);
-			unlockMessages.push(result);
-		}
-	}
 
 	let response: Awaited<CommandResponse> = {
 		content: `You claimed ${newlyFinishedTasks.length} tasks, and received ${pointsToAward} points. You now have a balance of ${newUser.leagues_points_balance_osb} OSB points and ${newUser.leagues_points_balance_bso} BSO points, and ${newTotal} total points. You have completed a total of ${newUser.leagues_completed_tasks_ids.length} tasks.`
@@ -344,10 +350,6 @@ export async function leaguesClaimCommand(userID: bigint, finishedTaskIDs: numbe
 		];
 	} else {
 		response.content += `\n**Finished Tasks:** ${fullNewlyFinishedTasks.map(i => i.name).join(', ')}.`;
-	}
-
-	if (unlockMessages.length > 0) {
-		response.content += `\n\n**You unlocked...** ${unlockMessages.join(', ')}`;
 	}
 
 	return response;
