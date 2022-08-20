@@ -163,7 +163,7 @@ const flagToMaterialMap: [DisassembleFlag, MaterialType][] = [
 
 function flagEffectsInDisassembly(item: DisassemblyItem, loot: MaterialBank) {
 	const tertiaryChance = item.lvl;
-	let success = roll(tertiaryChance);
+	let success = percentChance(tertiaryChance);
 	if (!success) return;
 	for (const [flag, mat] of flagToMaterialMap) {
 		if (item.flags?.has(flag)) {
