@@ -1342,7 +1342,7 @@ function getLeftList(
 	return leftList;
 }
 
-export async function getBank(user: KlasaUser, type: CollectionLogType) {
+export async function getBank(user: KlasaUser, mahojiUser: User, type: CollectionLogType) {
 	const userCheckBank = new Bank();
 	switch (type) {
 		case 'collection':
@@ -1359,7 +1359,7 @@ export async function getBank(user: KlasaUser, type: CollectionLogType) {
 			return getUsersTamesCollectionLog(user);
 		}
 		case 'temp':
-			userCheckBank.add(user.settings.get(UserSettings.TempCL));
+			userCheckBank.add(mahojiUser.temp_cl as ItemBank);
 			break;
 		case 'disassembly': {
 			const items = await mahojiUsersSettingsFetch(user.id, { disassembled_items_bank: true });
@@ -1371,8 +1371,8 @@ export async function getBank(user: KlasaUser, type: CollectionLogType) {
 }
 
 // Get the total items the user has in its CL and the total items to collect
-export async function getTotalCl(user: KlasaUser, logType: CollectionLogType) {
-	const b = await getBank(user, logType);
+export async function getTotalCl(user: KlasaUser, mahojiUser: User, logType: CollectionLogType) {
+	const b = await getBank(user, mahojiUser, logType);
 	return getUserClData(b, allCLItemsFiltered);
 }
 
@@ -1456,6 +1456,7 @@ for (const mon of killableMonsters) allClNames.push(mon.name);
 // Main function that gets the user collection based on its search parameter
 export async function getCollection(options: {
 	user: KlasaUser;
+	mahojiUser: User;
 	search: string;
 	flags: { [key: string]: string | number };
 	logType?: CollectionLogType;
@@ -1469,7 +1470,8 @@ export async function getCollection(options: {
 	if (flags.tame) {
 		logType = 'tame';
 	}
-	const userCheckBank = await getBank(user, logType);
+	const userCheckBank = await getBank(user, options.mahojiUser, logType);
+
 	let clItems = getCollectionItems(search, allItems, logType === 'sacrifice');
 
 	if (Boolean(flags.missing)) {

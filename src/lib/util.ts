@@ -16,6 +16,7 @@ import {
 } from 'discord.js';
 import {
 	calcWhatPercent,
+	chunk,
 	increaseNumByPercent,
 	objectEntries,
 	randArrItem,
@@ -26,7 +27,13 @@ import {
 	Time
 } from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults } from 'klasa';
-import { APIInteractionGuildMember, APIUser } from 'mahoji';
+import {
+	APIButtonComponentWithCustomId,
+	APIInteractionGuildMember,
+	APIInteractionResponseCallbackData,
+	APIUser,
+	ComponentType
+} from 'mahoji';
 import { CommandResponse, InteractionResponseDataWithBufferAttachments } from 'mahoji/dist/lib/structures/ICommand';
 import murmurHash from 'murmurhash';
 import { gzip } from 'node:zlib';
@@ -978,4 +985,10 @@ export function clAdjustedDroprate(
 		newRate *= increaseMultiplier;
 	}
 	return Math.floor(newRate);
+}
+
+export function makeComponents(
+	components: APIButtonComponentWithCustomId[]
+): APIInteractionResponseCallbackData['components'] {
+	return chunk(components, 5).map(i => ({ components: i, type: ComponentType.ActionRow }));
 }

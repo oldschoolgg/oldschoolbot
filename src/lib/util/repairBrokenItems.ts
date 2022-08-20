@@ -1,29 +1,21 @@
 import { Prisma, User } from '@prisma/client';
 import { notEmpty } from 'e';
-import { KlasaUser } from 'klasa';
 import { Items } from 'oldschooljs';
 
 import { mahojiUserSettingsUpdate } from '../../mahoji/mahojiSettings';
 import { GearSetup, GearSetupTypes } from '../gear';
-import { UserSettings } from '../settings/types/UserSettings';
 import { ItemBank } from '../types';
 import { moidLink } from '../util';
 
-export async function repairBrokenItemsFromUser(user: User | KlasaUser): Promise<[string] | [string, any[]]> {
+export async function repairBrokenItemsFromUser(user: User): Promise<[string] | [string, any[]]> {
 	const changes: Prisma.UserUpdateArgs['data'] = {};
-	const rawBank = user instanceof KlasaUser ? user.settings.get(UserSettings.Bank) : (user.bank as ItemBank);
-	const rawCL =
-		user instanceof KlasaUser
-			? user.settings.get(UserSettings.CollectionLogBank)
-			: (user.collectionLogBank as ItemBank);
-	const rawTempCL = user instanceof KlasaUser ? user.settings.get(UserSettings.TempCL) : (user.temp_cl as ItemBank);
-	const rawSB =
-		user instanceof KlasaUser ? user.settings.get(UserSettings.SacrificedBank) : (user.sacrificedBank as ItemBank);
-	const favorites = user instanceof KlasaUser ? user.settings.get(UserSettings.FavoriteItems) : user.favoriteItems;
+	const rawBank = user.bank as ItemBank;
+	const rawCL = user.collectionLogBank as ItemBank;
+	const rawTempCL = user.temp_cl as ItemBank;
+	const rawSB = user.sacrificedBank as ItemBank;
+	const favorites = user.favoriteItems;
 
-	const rawAllGear = GearSetupTypes.map(i =>
-		user instanceof KlasaUser ? user.settings.get(`gear.${i}`) : user[`gear_${i}`]
-	);
+	const rawAllGear = GearSetupTypes.map(i => user[`gear_${i}`]);
 	const allGearItemIDs = rawAllGear
 		.filter(notEmpty)
 		.map((b: any) =>
@@ -66,9 +58,7 @@ export async function repairBrokenItemsFromUser(user: User | KlasaUser): Promise
 	}
 
 	for (const setupType of GearSetupTypes) {
-		const _gear = (
-			user instanceof KlasaUser ? user.settings.get(`gear.${setupType}`) : user[`gear_${setupType}`]
-		) as GearSetup | null;
+		const _gear = user[`gear_${setupType}`] as GearSetup | null;
 		if (_gear === null) continue;
 		const gear = { ..._gear };
 		for (const [key, value] of Object.entries(gear)) {
