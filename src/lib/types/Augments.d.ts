@@ -1,49 +1,30 @@
-import { activity_type_enum } from '@prisma/client';
 import { FSWatcher } from 'chokidar';
 import { MessageOptions, MessagePayload } from 'discord.js';
 import { KlasaMessage, KlasaUser, Settings, SettingsUpdateResult } from 'klasa';
 import { Bank } from 'oldschooljs';
 import PQueue from 'p-queue';
 import { Image } from 'skia-canvas/lib';
-import { CommentStream, SubmissionStream } from 'snoostorm';
 
 import { GetUserBankOptions } from '../../extendables/User/Bank';
-import { BankImageResult } from '../../tasks/bankImage';
 import { BitField, PerkTier } from '../constants';
 import { GearSetupType, UserFullGearSetup } from '../gear/types';
 import { AttackStyles } from '../minions/functions';
-import { AddXpParams, Flags, KillableMonster } from '../minions/types';
+import { AddXpParams, KillableMonster } from '../minions/types';
 import { MinigameName } from '../settings/minigames';
 import { CustomGet } from '../settings/types/UserSettings';
 import { Creature, SkillsEnum } from '../skilling/types';
 import { Gear } from '../structures/Gear';
-import { chatHeads } from '../util/chatHeadImage';
-import { ItemBank, MakePartyOptions, Skills } from '.';
-
-type SendBankImageFn = (options: {
-	bank: Bank;
-	content?: string;
-	title?: string;
-	background?: number;
-	flags?: Record<string, string | number>;
-	user?: KlasaUser;
-	cl?: Bank;
-}) => Promise<KlasaMessage>;
+import { ItemBank, Skills } from '.';
 
 declare module 'klasa' {
 	interface KlasaClient {
 		oneCommandAtATimeCache: Set<string>;
 		secondaryUserBusyCache: Set<string>;
-		public cacheItemPrice(itemID: number): Promise<number>;
-		public query<T>(query: string, values?: string[]): Promise<T>;
 		settings: Settings;
 		production: boolean;
 		_fileChangeWatcher?: FSWatcher;
 		_badgeCache: Map<string, string>;
 		_peakIntervalCache: Peak[];
-		public wtf(error: Error): void;
-		commentStream?: CommentStream;
-		submissionStream?: SubmissionStream;
 		fastifyServer: FastifyInstance;
 		minionTicker: NodeJS.Timeout;
 		dailyReminderTicker: NodeJS.Timeout;
@@ -64,24 +45,7 @@ declare module 'klasa' {
 	}
 
 	interface Task {
-		generateBankImage(
-			bank: Bank,
-			title?: string,
-			showValue?: boolean,
-			flags?: Flags,
-			user?: KlasaUser,
-			cl?: Bank
-		): Promise<BankImageResult>;
 		getItemImage(itemID: number, quantity: number): Promise<Image>;
-	}
-
-	interface KlasaMessage {
-		cmdPrefix: string;
-
-		makePartyAwaiter(options: MakePartyOptions): Promise<KlasaUser[]>;
-		removeAllReactions(): void;
-		confirm(this: KlasaMessage, str: string): Promise<void>;
-		chatHeadImage(head: keyof typeof chatHeads, content: string, messageContent?: string): Promise<KlasaMessage>;
 	}
 
 	interface SettingsFolder {
@@ -118,9 +82,6 @@ declare module 'discord.js' {
 		readonly readable: boolean;
 	}
 
-	interface Client {
-		public query<T>(query: string): Promise<T>;
-	}
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	interface User {
 		addItemsToBank(options: {
@@ -133,7 +94,6 @@ declare module 'discord.js' {
 		specialRemoveItems(items: Bank): Promise<{ realCost: Bank }>;
 		addItemsToCollectionLog(options: { items: Bank; dontAddToTempCL?: boolean }): Promise<SettingsUpdateResult>;
 		incrementMonsterScore(monsterID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
-		incrementClueScore(clueID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
 		incrementCreatureScore(creatureID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
 		log(stringLog: string): void;
 		addQP(amount: number): Promise<SettingsUpdateResult>;
@@ -190,13 +150,6 @@ declare module 'discord.js' {
 		setAttackStyle(newStyles: AttackStyles[]): Promise<void>;
 		getAttackStyles(): AttackStyles[];
 		owns(bank: ItemBank | Bank | string | number): boolean;
-		completion(): {
-			percent: number;
-			notOwned: number[];
-			owned: number[];
-			debugBank: Bank;
-		};
-
 		/**
 		 * Get item boosts the user has available for the given `KillableMonster`.
 		 */
@@ -219,28 +172,8 @@ declare module 'discord.js' {
 		minionName: string;
 		hasMinion: boolean;
 		isIronman: boolean;
-		maxTripLength(activity?: activity_type_enum): number;
 		rawSkills: Skills;
 		bitfield: readonly BitField[];
 		combatLevel: number;
-	}
-
-	interface TextChannel {
-		sendBankImage: SendBankImageFn;
-	}
-
-	interface Newshannel {
-		sendBankImage: SendBankImageFn;
-	}
-	interface ThreadChannel {
-		sendBankImage: SendBankImageFn;
-	}
-
-	interface DMChannel {
-		sendBankImage: SendBankImageFn;
-	}
-
-	interface NewsChannel {
-		sendBankImage: SendBankImageFn;
 	}
 }

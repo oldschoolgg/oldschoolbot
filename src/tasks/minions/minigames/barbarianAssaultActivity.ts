@@ -13,7 +13,7 @@ export default class extends Task {
 		const [klasaUser, user] = await Promise.all([globalClient.fetchUser(userID), mahojiUsersSettingsFetch(userID)]);
 		let basePoints = 35;
 
-		let resultStr = `The base amount of points is 35. Your Honour Level is ${user.honour_level}.`;
+		let resultStr = `The base amount of points is 35. Your Honour Level is ${user.honour_level}. `;
 
 		const teamSkillPercent = calcWhatPercent(user.honour_level, 5);
 
@@ -23,7 +23,7 @@ export default class extends Task {
 		const [hasDiary] = await userhasDiaryTier(klasaUser, KandarinDiary.hard);
 		if (hasDiary) {
 			pts *= 1.1;
-			resultStr += `${klasaUser.username} 10% extra pts for Kandarin Hard diary. `;
+			resultStr += `${klasaUser.username} received 10% extra pts for Kandarin Hard diary. `;
 		}
 		let totalPoints = Math.floor(pts * quantity);
 

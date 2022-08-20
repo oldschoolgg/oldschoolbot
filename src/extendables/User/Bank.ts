@@ -4,12 +4,13 @@ import { Extendable, ExtendableStore } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
+import { deduplicateClueScrolls } from '../../lib/clues/clueUtils';
 import { projectiles } from '../../lib/constants';
 import { blowpipeDarts, validateBlowpipeData } from '../../lib/minions/functions/blowpipeCommand';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { filterLootReplace } from '../../lib/slayer/slayerUtil';
 import { ItemBank } from '../../lib/types';
-import { bankHasAllItemsFromBank, deduplicateClueScrolls, itemNameFromID, sanitizeBank } from '../../lib/util';
+import { bankHasAllItemsFromBank, itemNameFromID, sanitizeBank } from '../../lib/util';
 import { determineRunes } from '../../lib/util/determineRunes';
 import itemID from '../../lib/util/itemID';
 import { mahojiUserSettingsUpdate } from '../../mahoji/mahojiSettings';

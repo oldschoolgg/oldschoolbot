@@ -1,8 +1,6 @@
 import { bold } from '@discordjs/builders';
 import { User } from '@prisma/client';
 import { PaginatedMessage } from '@sapphire/discord.js-utilities';
-import { exec } from 'child_process';
-import crypto from 'crypto';
 import {
 	Channel,
 	Client,
@@ -16,23 +14,27 @@ import {
 	User as DJSUser,
 	Util
 } from 'discord.js';
-import { calcWhatPercent, objectEntries, round, Time } from 'e';
+import { calcWhatPercent, chunk, objectEntries, round, Time } from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults } from 'klasa';
-import { APIInteractionGuildMember, APIUser } from 'mahoji';
+import {
+	APIButtonComponentWithCustomId,
+	APIInteractionGuildMember,
+	APIInteractionResponseCallbackData,
+	APIUser,
+	ComponentType
+} from 'mahoji';
 import { CommandResponse, InteractionResponseDataWithBufferAttachments } from 'mahoji/dist/lib/structures/ICommand';
 import murmurHash from 'murmurhash';
 import { gzip } from 'node:zlib';
 import { Bank, LootTable } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
-import { bool, integer, nodeCrypto, real } from 'random-js';
-import { promisify } from 'util';
+import { bool, integer, MersenneTwister19937, nodeCrypto, real, shuffle } from 'random-js';
 
 import { CLIENT_ID } from '../config';
-import { getSkillsOfMahojiUser } from '../mahoji/mahojiSettings';
+import { getSkillsOfMahojiUser, mahojiUserSettingsUpdate } from '../mahoji/mahojiSettings';
 import { skillEmoji, SupportServer, usernameCache } from './constants';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
-import clueTiers from './minions/data/clueTiers';
 import { Consumable } from './minions/types';
 import { POHBoosts } from './poh';
 import { prisma } from './settings/prisma';
@@ -45,6 +47,7 @@ import {
 	RaidsOptions,
 	TheatreOfBloodTaskOptions
 } from './types/minions';
+import { getItem } from './util/getOSItem';
 import itemID from './util/itemID';
 import { logError } from './util/logError';
 import resolveItems from './util/resolveItems';
@@ -259,10 +262,6 @@ export function isNexActivity(data: any): data is NexTaskOptions {
 	return 'wipedKill' in data && 'userDetails' in data && 'leader' in data;
 }
 
-export function sha256Hash(x: string) {
-	return crypto.createHash('sha256').update(x, 'utf8').digest('hex');
-}
-
 export function countSkillsAtleast99(user: KlasaUser | User) {
 	const skills =
 		user instanceof KlasaUser
@@ -447,10 +446,39 @@ export function updateBankSetting(
 	return client.settings.update(setting, newBank.bank);
 }
 
-export function updateGPTrackSetting(client: KlasaClient | KlasaUser, setting: string, amount: number) {
-	const current = client.settings.get(setting) as number;
-	const newValue = current + amount;
-	return client.settings.update(setting, newValue);
+export async function updateGPTrackSetting(
+	setting:
+		| 'gp_luckypick'
+		| 'gp_daily'
+		| 'gp_open'
+		| 'gp_dice'
+		| 'gp_slots'
+		| 'gp_sell'
+		| 'gp_pvm'
+		| 'gp_alch'
+		| 'gp_pickpocket'
+		| 'duelTaxBank',
+	amount: number,
+	user?: KlasaUser
+) {
+	if (!user) {
+		await prisma.clientStorage.update({
+			where: {
+				id: CLIENT_ID
+			},
+			data: {
+				[setting]: {
+					increment: amount
+				}
+			}
+		});
+		return;
+	}
+	await mahojiUserSettingsUpdate(user.id, {
+		[setting]: {
+			increment: amount
+		}
+	});
 }
 
 export async function wipeDBArrayByKey(user: KlasaUser, key: string): Promise<SettingsUpdateResults> {
@@ -540,8 +568,6 @@ export async function makePaginatedMessage(message: KlasaMessage, pages: Message
 	}
 }
 
-export const asyncExec = promisify(exec);
-
 export function assert(condition: boolean, desc?: string, context?: Record<string, string>) {
 	if (!condition) {
 		logError(new Error(desc ?? 'Failed assertion'), context);
@@ -596,22 +622,6 @@ export function convertAttackStyleToGearSetup(style: OffenceGearStat | DefenceGe
 	return setup;
 }
 
-/**
- * Removes extra clue scrolls from loot, if they got more than 1 or if they already own 1.
- */
-export function deduplicateClueScrolls({ loot, currentBank }: { loot: Bank; currentBank: Bank }) {
-	const newLoot = loot.clone();
-	for (const { scrollID } of clueTiers) {
-		if (!newLoot.has(scrollID)) continue;
-		if (currentBank.has(scrollID)) {
-			newLoot.remove(scrollID, newLoot.amount(scrollID));
-		} else {
-			newLoot.bank[scrollID] = 1;
-		}
-	}
-	return newLoot;
-}
-
 export function sanitizeBank(bank: Bank) {
 	for (const [key, value] of Object.entries(bank.bank)) {
 		if (value < 1) {
@@ -621,6 +631,11 @@ export function sanitizeBank(bank: Bank) {
 		// round it down.
 		if (!Number.isInteger(value)) {
 			bank.bank[key] = Math.floor(value);
+		}
+
+		const item = getItem(key);
+		if (!item) {
+			delete bank.bank[key];
 		}
 	}
 }
@@ -813,4 +828,15 @@ export function skillingPetDropRate(
 
 export function getUsername(id: string | bigint) {
 	return usernameCache.get(id.toString()) ?? 'Unknown';
+}
+
+export function shuffleRandom<T>(input: number, arr: readonly T[]): T[] {
+	const engine = MersenneTwister19937.seed(input);
+	return shuffle(engine, [...arr]);
+}
+
+export function makeComponents(
+	components: APIButtonComponentWithCustomId[]
+): APIInteractionResponseCallbackData['components'] {
+	return chunk(components, 5).map(i => ({ components: i, type: ComponentType.ActionRow }));
 }

@@ -5,6 +5,7 @@ import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommand
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { BitField } from '../../../lib/constants';
+import { roboChimpUserFetch } from '../../../lib/roboChimp';
 import { prisma } from '../../../lib/settings/prisma';
 import { assert } from '../../../lib/util';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
@@ -107,6 +108,21 @@ After becoming an ironman:
 		await prisma.xPGain.deleteMany({ where: { user_id: BigInt(user.id) } }).catch(noOp);
 		await prisma.newUser.delete({ where: { id: user.id } }).catch(noOp);
 		await prisma.activity.deleteMany({ where: { user_id: BigInt(user.id) } }).catch(noOp);
+		await prisma.stashUnit.deleteMany({ where: { user_id: BigInt(user.id) } }).catch(noOp);
+		await prisma.userStats.deleteMany({ where: { user_id: BigInt(user.id) } }).catch(noOp);
+
+		// Refund the leagues points they spent
+		const roboChimpUser = await roboChimpUserFetch(BigInt(user.id));
+		if (roboChimpUser.leagues_points_total >= 0) {
+			await roboChimpClient.user.update({
+				where: {
+					id: BigInt(user.id)
+				},
+				data: {
+					leagues_points_balance_osb: roboChimpUser.leagues_points_balance_osb
+				}
+			});
+		}
 	} catch (_) {}
 
 	const { newUser } = await mahojiUserSettingsUpdate(user.id, {

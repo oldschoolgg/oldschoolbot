@@ -9,16 +9,18 @@ import { SkillsEnum } from '../../../lib/skilling/types';
 import { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
 import { roll, skillingPetDropRate } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { makeBankImage } from '../../../lib/util/makeBankImage';
 
 export default class extends Task {
 	async run(data: SepulchreActivityTaskOptions) {
-		const { channelID, quantity, floors, userID } = data;
+		const { channelID, quantity, floors, userID, duration } = data;
 		const user = await this.client.fetchUser(userID);
 		await incrementMinigameScore(userID, 'sepulchre', quantity);
 
 		const completedFloors = sepulchreFloors.filter(fl => floors.includes(fl.number));
 		const loot = new Bank();
 		let agilityXP = 0;
+		let thievingXP = 0;
 		let numCoffinsOpened = 0;
 		let { petDropRate } = skillingPetDropRate(
 			user,
@@ -34,10 +36,11 @@ export default class extends Task {
 				const numCoffinsToOpen = 1;
 				numCoffinsOpened += numCoffinsToOpen;
 				for (let i = 0; i < numCoffinsToOpen; i++) {
-					loot.add(openCoffin(floor.number, user.cl()));
+					loot.add(openCoffin(floor.number, user));
 				}
 
 				agilityXP += floor.xp;
+				thievingXP = 200 * numCoffinsOpened;
 			}
 			if (roll(petDropRate)) {
 				loot.add('Giant squirrel');
@@ -45,7 +48,18 @@ export default class extends Task {
 		}
 
 		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
-		const xpStr = await user.addXP({ skillName: SkillsEnum.Agility, amount: agilityXP });
+
+		let xpRes = await user.addXP({
+			skillName: SkillsEnum.Agility,
+			amount: agilityXP,
+			duration
+		});
+
+		let thievingXpRes = await user.addXP({
+			skillName: SkillsEnum.Thieving,
+			amount: thievingXP,
+			duration
+		});
 
 		await trackLoot({
 			loot: itemsAdded,
@@ -58,25 +72,21 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished doing the Hallowed Sepulchre ${quantity}x times (floor ${
 			floors[0]
-		}-${floors[floors.length - 1]}), and opened ${numCoffinsOpened}x coffins.\n\n${xpStr}`;
+		}-${floors[floors.length - 1]}), and opened ${numCoffinsOpened}x coffins.\n\n${xpRes}\n${thievingXpRes}`;
 
-		const { image } = await this.client.tasks
-			.get('bankImage')!
-			.generateBankImage(
-				itemsAdded,
-				`Loot From ${quantity}x Hallowed Sepulchre:`,
-				true,
-				{ showNewCL: 1 },
-				user,
-				previousCL
-			);
+		const image = await makeBankImage({
+			bank: itemsAdded,
+			title: `Loot From ${quantity}x Hallowed Sepulchre`,
+			user,
+			previousCL
+		});
 
 		handleTripFinish(
 			user,
 			channelID,
 			str,
 			['minigames', { sepulchre: { start: {} } }, true],
-			image!,
+			image.file.buffer,
 			data,
 			itemsAdded
 		);

@@ -7,7 +7,9 @@ import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import { convertLVLtoXP, itemID } from 'oldschooljs/dist/util';
 
 import { production } from '../../config';
+import { allStashUnitsFlat, allStashUnitTiers } from '../../lib/clues/stashUnits';
 import { BitField, MAX_QP } from '../../lib/constants';
+import { leaguesCreatables } from '../../lib/data/creatables/leagueCreatables';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { allOpenables } from '../../lib/openables';
@@ -111,8 +113,8 @@ async function resetAccount(user: KlasaUser) {
 	await prisma.minigame.deleteMany({ where: { user_id: user.id } });
 	await prisma.newUser.deleteMany({ where: { id: user.id } });
 	await prisma.playerOwnedHouse.deleteMany({ where: { user_id: user.id } });
-	await prisma.slayerTask.deleteMany({ where: { user_id: user.id } });
 	await prisma.user.deleteMany({ where: { id: user.id } });
+	await prisma.slayerTask.deleteMany({ where: { user_id: user.id } });
 	await user.settings.sync(true);
 	return 'Reset all your data.';
 }
@@ -160,12 +162,27 @@ farmingPreset.add('Ultracompost', 10_000);
 const usables = new Bank();
 for (const usable of allUsableItems) usables.add(usable, 100);
 
+const leaguesPreset = new Bank();
+for (const a of leaguesCreatables) leaguesPreset.add(a.outputItems);
+
+const allStashUnitItems = new Bank();
+for (const unit of allStashUnitsFlat) {
+	for (const i of [unit.items].flat(2)) {
+		allStashUnitItems.add(i);
+	}
+}
+for (const tier of allStashUnitTiers) {
+	allStashUnitItems.add(tier.cost.clone().multiply(tier.units.length));
+}
+
 const spawnPresets = [
 	['openables', openablesBank],
 	['random', new Bank()],
 	['equippables', equippablesBank],
 	['farming', farmingPreset],
-	['usables', usables]
+	['usables', usables],
+	['leagues', leaguesPreset],
+	['stashunits', allStashUnitItems]
 ] as const;
 
 const nexSupplies = new Bank()
@@ -425,6 +442,20 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					return `You now ${!current ? 'ARE' : 'ARE NOT'} an ironman.`;
 				}
 				if (options.max) {
+					await roboChimpClient.user.upsert({
+						where: {
+							id: BigInt(user.id)
+						},
+						create: {
+							id: BigInt(user.id),
+							leagues_points_balance_osb: 25_000
+						},
+						update: {
+							leagues_points_balance_osb: {
+								increment: 25_000
+							}
+						}
+					});
 					return giveMaxStats(user);
 				}
 				if (options.patron) {

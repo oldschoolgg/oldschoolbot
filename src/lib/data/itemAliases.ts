@@ -247,3 +247,29 @@ setItemAlias(21_198, 'Lava battlestaff (or)');
 // Trouble Brewing
 setItemAlias(8940, 'Red rum (trouble brewing)');
 setItemAlias(8941, 'Blue rum (trouble brewing)');
+
+setItemAlias(25_376, 'Dragon pickaxe (or) (Trailblazer)');
+
+setItemAlias(3343, 'Bruise blue snelm (pointed)');
+setItemAlias(3337, 'Myre snelm (pointed)');
+setItemAlias(3339, "Blood'n'tar snelm (pointed)");
+setItemAlias(3341, 'Ochre snelm (pointed)');
+
+setItemAlias(7112, 'Pirate bandana (white)');
+setItemAlias(7110, 'Stripy pirate shirt (white)');
+setItemAlias(7116, 'Pirate leggings (white)');
+
+setItemAlias(7130, 'Pirate bandana (blue)');
+setItemAlias(7134, 'Stripy pirate shirt (blue)');
+setItemAlias(7132, 'Pirate leggings (blue)');
+
+setItemAlias(7136, 'Pirate bandana (brown)');
+setItemAlias(7128, 'Stripy pirate shirt (brown)');
+setItemAlias(7138, 'Pirate leggings (brown)');
+
+setItemAlias(7124, 'Pirate bandana (red)');
+setItemAlias(7122, 'Stripy pirate shirt (red)');
+setItemAlias(7126, 'Pirate leggings (red)');
+
+setItemAlias(6107, 'Ghostly robe top');
+setItemAlias(6108, 'Ghostly robe bottom');

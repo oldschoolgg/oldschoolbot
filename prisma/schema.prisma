@@ -19,9 +19,9 @@ model Activity {
   channel_id     BigInt
   data           Json               @db.Json
 
-
-  @@index([group_activity], map: "IDX_73e0d6954aecafe0383b77d390")
-  @@index([completed], map: "IDX_d71ac68a9d4b4245287caab788")
+  @@index([group_activity])
+  @@index([completed])
+  @@index([user_id, type])
   @@map("activity")
 }
 
@@ -48,6 +48,8 @@ model Analytic {
   gpOpen             BigInt?
   gpDaily            BigInt?
   gpLuckypick        BigInt?
+  gpSlots            BigInt?
+  gpHotCold          BigInt?
 
   @@map("analytics_table")
 }
@@ -106,6 +108,8 @@ model ClientStorage {
   gp_open                      BigInt   @default(0)
   gp_daily                     BigInt   @default(0)
   gp_luckypick                 BigInt   @default(0)
+  gp_slots                     BigInt   @default(0)
+  gp_hotcold                   BigInt   @default(0)
   custom_prices                Json     @default("{}") @db.Json
   nightmare_cost               Json     @default("{}") @db.Json
   create_cost                  Json     @default("{}") @db.Json
@@ -123,7 +127,7 @@ model ClientStorage {
 
 model GearPreset {
   user_id    String @db.VarChar(19)
-  name       String @db.VarChar(12)
+  name       String @db.VarChar(24)
   two_handed Int?
   body       Int?
   cape       Int?
@@ -249,7 +253,6 @@ model User {
   bank                       Json     @default("{}") @db.Json
   collectionLogBank          Json     @default("{}") @db.JsonB
   creatureScores             Json     @default("{}") @db.Json
-  clueScores                 Json     @default("{}") @db.Json
   monsterScores              Json     @default("{}") @db.Json
   lapsScores                 Json     @default("{}") @db.Json
   bankBackground             Int      @default(1)
@@ -369,11 +372,11 @@ model User {
 
   gp_luckypick BigInt @default(0)
   gp_dice      BigInt @default(0)
+  gp_slots     BigInt @default(0)
+  gp_hotcold   BigInt @default(0)
 
   tob_cost Json @default("{}") @db.Json
   tob_loot Json @default("{}") @db.Json
-
-  weekly_buy_bank Json @default("{}") @db.Json
 
   total_gp_traded BigInt @default(0)
 
@@ -381,6 +384,10 @@ model User {
 
   minion_bought_date DateTime? @db.Timestamp(6)
 
+  bingo_tickets_bought Int    @default(0)
+  bingo_gp_contributed BigInt @default(0)
+
+  @@index([bingo_tickets_bought])
   @@map("users")
 }
 
@@ -401,8 +408,7 @@ model XPGain {
   artificial Boolean?
   post_max   Boolean             @default(false)
 
-  @@index([date])
-  @@index([skill])
+  @@index([date, skill])
   @@map("xp_gains")
 }
 
@@ -454,8 +460,11 @@ model Minigame {
   tob_hard                Int    @default(0)
   lms                     Int    @default(0)
   trouble_brewing         Int    @default(0)
+  puro_puro               Int    @default(0)
 
   new_user NewUser?
+
+  @@index([user_id])
   @@map("minigames")
 }
 
@@ -532,6 +541,38 @@ model EconomyTransaction {
   items_received Json? @default("{}") @db.Json
 
   @@map("economy_transaction")
+}
+
+model StashUnit {
+  stash_id        Int
+  user_id         BigInt
+  items_contained Int[]
+  has_built       Boolean
+
+  @@unique([stash_id, user_id])
+  @@map("stash_unit")
+}
+
+model UserStats {
+  user_id                BigInt @id
+  sell_gp                BigInt @default(0)
+  items_sold_bank        Json   @default("{}") @db.Json
+  puropuro_implings_bank Json   @default("{}") @db.Json
+  passive_implings_bank  Json   @default("{}") @db.Json
+  create_cost_bank       Json   @default("{}") @db.Json
+  create_loot_bank       Json   @default("{}") @db.Json
+
+  @@map("user_stats")
+}
+
+model BingoTeam {
+  id Int @id @unique @default(autoincrement())
+
+  first_user  String @unique @db.VarChar(19)
+  second_user String @unique @db.VarChar(19)
+  third_user  String @unique @db.VarChar(19)
+
+  @@map("bingo_team")
 }
 
 enum command_usage_status {
@@ -614,6 +655,7 @@ enum activity_type_enum {
   TokkulShop
   Nex
   TroubleBrewing
+  PuroPuro
   Easter
 }
 

@@ -50,13 +50,13 @@ export function convertKlasaCommandToAbstractCommand(command: BotCommand): Abstr
 }
 
 export interface OSBMahojiCommand extends ICommand {
-	attributes?: AbstractCommandAttributes;
+	attributes?: Omit<AbstractCommandAttributes, 'description'>;
 }
 
 export function convertMahojiCommandToAbstractCommand(command: OSBMahojiCommand): AbstractCommand {
 	return {
 		name: command.name,
-		attributes: command.attributes
+		attributes: { ...command.attributes, description: command.description }
 	};
 }
 
@@ -132,7 +132,9 @@ export function convertComponentDJSComponent(
 }
 export function allAbstractCommands(mahojiClient: MahojiClient): AbstractCommand[] {
 	return [
-		...Array.from(globalClient.commands.values() as any as BotCommand[]).map(convertKlasaCommandToAbstractCommand),
+		...Array.from(globalClient.commands.values() as any as BotCommand[])
+			.filter(i => !i.category.toLowerCase().includes('deprecated'))
+			.map(convertKlasaCommandToAbstractCommand),
 		...mahojiClient.commands.values.map(convertMahojiCommandToAbstractCommand)
 	];
 }

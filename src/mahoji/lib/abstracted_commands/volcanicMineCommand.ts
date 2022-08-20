@@ -9,6 +9,7 @@ import { ItemBank } from '../../../lib/types';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { formatDuration, formatSkillRequirements, resolveNameBank, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { handleMahojiConfirmation, mahojiUserSettingsUpdate } from '../../mahojiSettings';
 
 const skillReqs = {
@@ -100,7 +101,7 @@ export async function volcanicMineCommand(user: KlasaUser, channelID: bigint, ga
 			.filter(f => f)
 			.join(', ')}`;
 	}
-	const maxGamesUserCanDo = Math.floor(user.maxTripLength() / VolcanicMineGameTime);
+	const maxGamesUserCanDo = Math.floor(calcMaxTripLength(user) / VolcanicMineGameTime);
 	if (!gameQuantity || gameQuantity > maxGamesUserCanDo) gameQuantity = maxGamesUserCanDo;
 	const userMiningLevel = user.skillLevel(SkillsEnum.Mining);
 	const userPrayerLevel = user.skillLevel(SkillsEnum.Prayer);

@@ -11,7 +11,7 @@ import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
 import { stringMatches, updateBankSetting } from '../../lib/util';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation } from '../mahojiSettings';
+import { handleMahojiConfirmation, userStatsBankUpdate } from '../mahojiSettings';
 
 function showAllCreatables() {
 	let content = 'This are the items that you can create:';
@@ -162,7 +162,7 @@ export const createCommand: OSBMahojiCommand = {
 		const inItems = new Bank(createableItem.inputItems).multiply(quantity);
 
 		if (createableItem.GPCost) {
-			inItems.add('Coins', createableItem.GPCost);
+			inItems.add('Coins', createableItem.GPCost * quantity);
 		}
 
 		await user.settings.sync(true);
@@ -183,31 +183,27 @@ export const createCommand: OSBMahojiCommand = {
 		if (action === 'revert') {
 			await handleMahojiConfirmation(
 				interaction,
-				`${user}, please confirm that you want to revert **${inItems}${
-					createableItem.GPCost ? ` and ${(createableItem.GPCost * quantity).toLocaleString()} GP` : ''
-				}** into ${outItems}.`
+				`${user}, please confirm that you want to revert **${inItems}** into ${outItems}`
 			);
 		} else {
 			await handleMahojiConfirmation(
 				interaction,
-				`${user}, please confirm that you want to ${action} **${outItems}** using ${inItems}${
-					createableItem.GPCost ? ` and ${(createableItem.GPCost * quantity).toLocaleString()} GP` : ''
-				}.`
+				`${user}, please confirm that you want to ${action} **${outItems}** using ${inItems}`
 			);
 		}
 
 		// Ensure they have the required items to create the item.
 		if (!user.owns(inItems)) {
-			return `You don't have the required items to ${action} this item. You need: ${inItems}${
-				createableItem.GPCost ? ` and ${(createableItem.GPCost * quantity).toLocaleString()} GP` : ''
-			}.`;
+			return `You don't have the required items to ${action} this item. You need: ${inItems}.`;
 		}
 
 		await user.removeItemsFromBank(inItems);
 		await user.addItemsToBank({ items: outItems });
 
-		updateBankSetting(globalClient, ClientSettings.EconomyStats.CreateCost, inItems);
-		updateBankSetting(globalClient, ClientSettings.EconomyStats.CreateLoot, outItems);
+		await updateBankSetting(globalClient, ClientSettings.EconomyStats.CreateCost, inItems);
+		await updateBankSetting(globalClient, ClientSettings.EconomyStats.CreateLoot, outItems);
+		await userStatsBankUpdate(user.id, 'create_cost_bank', inItems);
+		await userStatsBankUpdate(user.id, 'create_loot_bank', outItems);
 
 		// Only allow +create to add items to CL
 		if (!createableItem.noCl && action === 'create') await user.addItemsToCollectionLog({ items: outItems });

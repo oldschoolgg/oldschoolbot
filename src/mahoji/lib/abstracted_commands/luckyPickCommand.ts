@@ -6,7 +6,6 @@ import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import { SILENT_ERROR } from '../../../lib/constants';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { channelIsSendable, updateGPTrackSetting } from '../../../lib/util';
 import { logError } from '../../../lib/util/logError';
@@ -123,14 +122,10 @@ export async function luckyPickCommand(
 		button: ButtonInstance;
 		interaction: MessageComponentInteraction;
 	}) => {
-		let amountReceived = button.mod(amount);
+		let amountReceived = Math.floor(button.mod(amount));
 		await klasaUser.addItemsToBank({ items: new Bank().add('Coins', amountReceived) });
-		await updateGPTrackSetting(
-			globalClient,
-			ClientSettings.EconomyStats.GPSourceLuckyPick,
-			amountReceived - amount
-		);
-		await updateGPTrackSetting(klasaUser, UserSettings.GPLuckyPick, amountReceived - amount);
+		await updateGPTrackSetting('gp_luckypick', amountReceived - amount);
+		await updateGPTrackSetting('gp_luckypick', amountReceived - amount, klasaUser);
 
 		await interaction.update({ components: getCurrentButtons({ showTrueNames: true }) }).catch(noOp);
 		return amountReceived === 0

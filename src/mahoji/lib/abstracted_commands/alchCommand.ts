@@ -31,7 +31,7 @@ const unlimitedFireRuneProviders = resolveItems([
 export const timePerAlch = Time.Second * 3;
 
 export async function alchCommand(
-	interaction: SlashCommandInteraction,
+	interaction: SlashCommandInteraction | null,
 	channelID: bigint,
 	user: KlasaUser,
 	item: string,
@@ -50,7 +50,7 @@ export async function alchCommand(
 		return 'You need level 55 Magic to cast High Alchemy';
 	}
 
-	const maxTripLength = user.maxTripLength('Alching');
+	const maxTripLength = calcMaxTripLength(user, 'Alching');
 
 	const maxCasts = Math.min(Math.floor(maxTripLength / timePerAlch), userBank.amount(osItem.id));
 
@@ -83,14 +83,16 @@ export async function alchCommand(
 	if (!user.owns(consumedItems)) {
 		return `You don't have the required items, you need ${consumedItems}`;
 	}
-	await handleMahojiConfirmation(
-		interaction,
-		`${user}, please confirm you want to alch ${quantity} ${osItem.name} (${toKMB(
-			alchValue
-		)}). This will take approximately ${formatDuration(duration)}, and consume ${
-			fireRuneCost > 0 ? `${fireRuneCost}x Fire rune` : ''
-		} ${quantity}x Nature runes.`
-	);
+	if (interaction) {
+		await handleMahojiConfirmation(
+			interaction,
+			`${user}, please confirm you want to alch ${quantity} ${osItem.name} (${toKMB(
+				alchValue
+			)}). This will take approximately ${formatDuration(duration)}, and consume ${
+				fireRuneCost > 0 ? `${fireRuneCost}x Fire rune` : ''
+			} ${quantity}x Nature runes.`
+		);
+	}
 
 	await user.removeItemsFromBank(consumedItems);
 	await updateBankSetting(globalClient, ClientSettings.EconomyStats.MagicCostBank, consumedItems);

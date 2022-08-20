@@ -13,6 +13,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { OfferingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';
@@ -59,7 +60,6 @@ export const mineCommand: OSBMahojiCommand = {
 	attributes: {
 		requiresMinion: true,
 		requiresMinionNotBusy: true,
-		description: 'Offer bones or bird eggs.',
 		examples: ['/offer name:Dragon bones']
 	},
 	options: [
@@ -204,7 +204,7 @@ export const mineCommand: OSBMahojiCommand = {
 			} to Barlak and received ${xp} Construction XP.`;
 		}
 
-		const speedMod = 4.8;
+		const speedMod = 1.5;
 
 		const bone = Prayer.Bones.find(
 			bone => stringMatches(bone.name, options.name) || stringMatches(bone.name.split(' ')[0], options.name)
@@ -223,7 +223,7 @@ export const mineCommand: OSBMahojiCommand = {
 		const amountOfThisBone = userBank.amount(bone.inputId);
 		if (!amountOfThisBone) return `You have no ${bone.name}.`;
 
-		const maxTripLength = user.maxTripLength('Offering');
+		const maxTripLength = calcMaxTripLength(user, 'Offering');
 
 		// If no quantity provided, set it to the max.
 		if (!quantity) {

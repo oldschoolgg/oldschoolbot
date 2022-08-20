@@ -156,7 +156,6 @@ const source: [string, (string | number)[]][] = [
 	['Graceful gloves', gracefulHands],
 	['Graceful boots', gracefulFeet],
 	['Graceful cape', gracefulCapes],
-	['Agility cape', ['Agility cape(t)']],
 	['Fire cape', ['Fire max cape', 'Fire max cape (l)']],
 	['Infernal cape', ['Infernal max cape', 'Infernal max cape (l)']],
 	['Ardougne cloak 4', ['Ardougne max cape']],
@@ -240,8 +239,6 @@ const source: [string, (string | number)[]][] = [
 			'Mystic mud staff'
 		]
 	],
-	['Attack cape', ['Max cape', 'Attack cape(t)']],
-	['Farming cape', ['Max cape', 'Farming cape(t)']],
 	['Ivandis flail', ['Blisterwood flail']],
 	['Angler hat', ['Spirit angler headband']],
 	['Angler top', ['Spirit angler top']],
@@ -262,17 +259,42 @@ const source: [string, (string | number)[]][] = [
 			'Uncharged toxic trident (e)'
 		]
 	],
-	['Runecraft cape', ['Max cape', 'Runecraft cape(t)']],
+	['Agility cape', ['Max cape', 'Agility cape(t)']],
+	['Attack cape', ['Max cape', 'Attack cape(t)']],
+	['Construct. cape', ['Max cape', 'Construct. cape(t)']],
+	['Cooking cape', ['Max cape', 'Cooking cape(t)']],
 	['Crafting cape', ['Max cape', 'Crafting cape(t)']],
+	['Defence cape', ['Max cape', 'Defence cape(t)']],
+	['Farming cape', ['Max cape', 'Farming cape(t)']],
+	['Firemaking cape', ['Max cape', 'Firemaking cape(t)']],
+	['Fishing cape', ['Max cape', 'Fishing cape(t)']],
+	['Fletching cape', ['Max cape', 'Fletching cape(t)']],
+	['Herblore cape', ['Max cape', 'Herblore cape(t)']],
+	['Hitpoints cape', ['Max cape', 'Hitpoints cape(t)']],
+	['Hunter cape', ['Max cape', 'Hunter cape(t)']],
+	['Magic cape', ['Max cape', 'Magic cape(t)']],
+	['Mining cape', ['Max cape', 'Mining cape(t)']],
+	['Prayer cape', ['Max cape', 'Prayer cape(t)']],
+	['Ranging cape', ['Max cape', 'Ranging cape(t)']],
+	['Runecraft cape', ['Max cape', 'Runecraft cape(t)']],
+	['Slayer cape', ['Max cape', 'Slayer cape(t)']],
+	['Smithing cape', ['Max cape', 'Smithing cape(t)']],
+	['Strength cape', ['Max cape', 'Strength cape(t)']],
+	['Thieving cape', ['Max cape', 'Thieving cape(t)']],
+	['Woodcutting cape', ['Max cape', 'Woodcut. cape(t)']],
 	['Salve amulet', ['Salve amulet(ei)', 'Salve amulet(i)', 'Salve amulet (e)']],
 	['Salve amulet (e)', ['Salve amulet(ei)']],
-	['Salve amulet (i)', ['Salve amulet(ei)']],
+	['Salve amulet(i)', ['Salve amulet(ei)']],
 	['Scythe of vitur', [...scytheChargedSimilar]],
 	['Scythe of vitur (uncharged)', [...scytheUnchargedSimilar]],
 	['Sanguinesti staff', ['Holy sanguinesti staff']],
 	['Sanguinesti staff (uncharged)', ['Holy sanguinesti staff (uncharged)']],
 	['Magic shortbow', ['Magic shortbow (i)']],
-	['Boots of stone', ['Boots of brimstone', 'Granite boots', "Rada's Blessing 4"]]
+	['Boots of stone', ['Boots of brimstone', 'Granite boots', "Rada's Blessing 4"]],
+	['Prospector jacket', ['Golden prospector jacket']],
+	['Prospector legs', ['Golden prospector legs']],
+	['Prospector boots', ['Golden prospector boots']],
+	['Prospector helmet', ['Golden prospector helmet']]
 ];
 
 export const similarItems: Map<number, number[]> = new Map(

@@ -131,6 +131,19 @@ export async function farmingContractCommand(userID: bigint, input?: ContractOpt
 	);
 }
 
+export async function canRunAutoContract(userID: string) {
+	const partialUser = await mahojiUsersSettingsFetch(userID, {
+		minion_farmingContract: true,
+		skills_farming: true
+	});
+	const farmingDetails = await getFarmingInfo(userID);
+	const contract = partialUser.minion_farmingContract as FarmingContract | null;
+	const contractedPlant = farmingDetails.patchesDetailed.find(p => p.plant?.name === contract?.plantToGrow);
+	return (
+		getSkillsOfMahojiUser(partialUser, true).farming > 45 && (!contractedPlant || contractedPlant.ready !== false)
+	);
+}
+
 export async function autoContract(klasaUser: KlasaUser, channelID: bigint, userID: bigint): CommandResponse {
 	const [farmingDetails, mahojiUser] = await Promise.all([getFarmingInfo(userID), mahojiUsersSettingsFetch(userID)]);
 	const contract = mahojiUser.minion_farmingContract as FarmingContract | null;

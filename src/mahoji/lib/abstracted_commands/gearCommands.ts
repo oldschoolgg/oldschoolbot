@@ -8,7 +8,7 @@ import { EquipmentSlot, ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { MAX_INT_JAVA, PATRON_ONLY_GEAR_SETUP, PerkTier } from '../../../lib/constants';
 import { defaultGear, GearSetup, GearSetupType, GearStat, globalPresets } from '../../../lib/gear';
-import { generateGearImage } from '../../../lib/gear/functions/generateGearImage';
+import { generateAllGearImage, generateGearImage } from '../../../lib/gear/functions/generateGearImage';
 import getUserBestGearFromBank from '../../../lib/minions/functions/getUserBestGearFromBank';
 import { unEquipAllCommand } from '../../../lib/minions/functions/unequipAllCommand';
 import { prisma } from '../../../lib/settings/prisma';
@@ -19,6 +19,7 @@ import {
 	formatSkillRequirements,
 	isValidGearSetup,
 	skillsMeetRequirements,
+	stringMatches,
 	toTitleCase
 } from '../../../lib/util';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
@@ -150,13 +151,6 @@ export async function gearEquipCommand(args: {
 	const allGear = getUserGear(user);
 	const currentEquippedGear = allGear[setup];
 
-	if (setup === 'wildy') {
-		await handleMahojiConfirmation(
-			interaction,
-			"You're trying to equip items into your *wildy* setup. ANY item in this setup can potentially be lost if doing Wilderness activities. Please confirm you understand this."
-		);
-	}
-
 	/**
 	 * Handle 2h items
 	 */
@@ -178,7 +172,7 @@ export async function gearEquipCommand(args: {
 		return "You can't equip more than 1 of this item at once, as it isn't stackable!";
 	}
 
-	if (itemToEquip.equipment?.requirements) {
+	if (itemToEquip.equipment.requirements) {
 		if (!skillsMeetRequirements(getSkillsOfMahojiUser(user), itemToEquip.equipment.requirements)) {
 			return `You can't equip a ${
 				itemToEquip.name
@@ -350,4 +344,60 @@ export async function gearStatsCommand(user: User, input: string): CommandRespon
 	}
 	const image = await generateGearImage(user, new Gear(gear), null, null);
 	return { attachments: [{ fileName: 'image.jpg', buffer: image }] };
+}
+
+export async function gearViewCommand(user: User, input: string, text: boolean): CommandResponse {
+	if (stringMatches(input, 'all')) {
+		const file = text
+			? {
+					buffer: Buffer.from(
+						Object.entries(getUserGear(user))
+							.map(i => `${i[0]}: ${i[1].toString()}`)
+							.join('\n')
+					),
+					fileName: 'gear.txt'
+			  }
+			: { buffer: await generateAllGearImage(user), fileName: 'osbot.png' };
+		return {
+			content: 'Here are all your gear setups',
+			attachments: [file]
+		};
+	}
+	if (!isValidGearSetup(input)) return 'Invalid setup.';
+	const gear = getUserGear(user)[input];
+	if (text) {
+		return gear.toString();
+	}
+	const image = await generateGearImage(user, gear, input, user.minion_equippedPet);
+	return { attachments: [{ buffer: image, fileName: 'gear.jpg' }] };
+}
+
+export async function gearSwapCommand(
+	interaction: SlashCommandInteraction,
+	user: User,
+	first: GearSetupType,
+	second: GearSetupType
+) {
+	if (!first || !second || first === second || !isValidGearSetup(first) || !isValidGearSetup(second)) {
+		return 'Invalid gear setups. You must provide two unique gear setups to switch gear between.';
+	}
+	if (first === 'wildy' || second === 'wildy') {
+		await handleMahojiConfirmation(
+			interaction,
+			'Are you sure you want to swap your gear with a wilderness setup? You can lose items on your wilderness setup!'
+		);
+	}
+
+	if ([first, second].includes('other') && getUsersPerkTier(user) < PerkTier.Four) {
+		return PATRON_ONLY_GEAR_SETUP;
+	}
+
+	const gear = getUserGear(user);
+
+	await mahojiUserSettingsUpdate(user.id, {
+		[`gear_${first}`]: gear[second],
+		[`gear_${second}`]: gear[first]
+	});
+
+	return `You swapped your ${first} gear with your ${second} gear.`;
 }

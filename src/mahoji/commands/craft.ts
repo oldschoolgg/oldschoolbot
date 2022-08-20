@@ -3,11 +3,13 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { Craftables } from '../../lib/skilling/skills/crafting/craftables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { CraftingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -17,7 +19,6 @@ export const craftCommand: OSBMahojiCommand = {
 	attributes: {
 		requiresMinion: true,
 		requiresMinionNotBusy: true,
-		description: 'Send your minion to mine things.',
 		examples: ['/craft name:Onyx necklace']
 	},
 	options: [
@@ -60,6 +61,17 @@ export const craftCommand: OSBMahojiCommand = {
 			sets = ' sets of';
 		}
 
+		const userQP = user.settings.get(UserSettings.QP);
+		const currentWoodcutLevel = user.skillLevel(SkillsEnum.Woodcutting);
+
+		if (craftable.qpRequired && userQP < craftable.qpRequired) {
+			return `${user.minionName} needs ${craftable.qpRequired} QP to craft ${craftable.name}.`;
+		}
+
+		if (craftable.wcLvl && currentWoodcutLevel < craftable.wcLvl) {
+			return `${user.minionName} needs ${craftable.wcLvl} Woodcutting Level to craft ${craftable.name}.`;
+		}
+
 		if (user.skillLevel(SkillsEnum.Crafting) < craftable.level) {
 			return `${user.minionName} needs ${craftable.level} Crafting to craft ${craftable.name}.`;
 		}
@@ -74,7 +86,7 @@ export const craftCommand: OSBMahojiCommand = {
 			timeToCraftSingleItem /= 3.25;
 		}
 
-		const maxTripLength = user.maxTripLength('Crafting');
+		const maxTripLength = calcMaxTripLength(user, 'Crafting');
 
 		if (!quantity) {
 			quantity = Math.floor(maxTripLength / timeToCraftSingleItem);

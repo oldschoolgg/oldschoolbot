@@ -16,26 +16,15 @@ export interface SlayerTaskUnlocks {
 }
 
 export enum SlayerTaskUnlocksEnum {
-	Dummy = 0,
-	// Not in use, but in theory gives 10% boost
-	GargoyleSmasher,
-	// Slayer helm unlock
-	MalevolentMasquerade,
-	// Create slayer rings
+	// Unlockables
+	MalevolentMasquerade = 2,
 	RingBling,
-	// Unlock Red Dragons (not in use)
 	SeeingRed,
-	// Unlock mith Dragons (not in use)
 	IHopeYouMithMe,
-	// Unlock aviansies (not in use)
 	WatchTheBirdie,
-	// TzHaar unlock (not in use)
 	HotStuff,
-	// Lizardman unlock (not in use)
 	ReptileGotRipped,
-	// Unlock boss tasks. Definitely will use this one for the preroll.
 	LikeABoss,
-	// Unlock superiors
 	BiggerAndBadder,
 	KingBlackBonnet,
 	KalphiteKhat,
@@ -95,7 +84,7 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		desc: 'Unlocks ability to create Slayer rings.',
 		slayerPointCost: 300,
 		canBeRemoved: false,
-		aliases: ['slayer ring', 'slayer rings']
+		aliases: ['unlock slayer ring', 'unlock slayer rings']
 	},
 	{
 		id: SlayerTaskUnlocksEnum.SeeingRed,

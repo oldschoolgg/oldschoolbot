@@ -85,7 +85,7 @@ function checkReqs(
 			}.`;
 		}
 
-		const cost = perUserCost(user, isPhosani, quantity);
+		const cost = perUserCost(isPhosani, quantity);
 		if (!user.owns(cost)) {
 			return `${user.username} doesn't own ${cost}`;
 		}
@@ -109,14 +109,14 @@ function checkReqs(
 	}
 }
 
-function perUserCost(_user: KlasaUser, isPhosani: boolean, quantity: number) {
+function perUserCost(isPhosani: boolean, quantity: number) {
 	const cost = new Bank();
 	if (isPhosani) {
 		cost.add('Super combat potion(4)', Math.max(1, Math.floor(quantity / 2)))
 			.add('Sanfew serum(4)', quantity)
 			.add('Super restore(4)', quantity)
-			.add('Fire rune', 11 * 100 * quantity)
-			.add('Air rune', 7 * 100 * quantity)
+			.add('Fire rune', 10 * 70 * quantity)
+			.add('Air rune', 7 * 70 * quantity)
 			.add('Wrath rune', 70 * quantity);
 	}
 	return cost;
@@ -231,22 +231,27 @@ export async function nightmareCommand(user: KlasaUser, channelID: bigint, name:
 	let soloFoodUsage: Bank | null = null;
 	for (const user of users) {
 		const [healAmountNeeded] = calculateMonsterFood(NightmareMonster, user);
-		const cost = perUserCost(user, isPhosani, quantity);
+		const cost = perUserCost(isPhosani, quantity);
 		if (!user.owns(cost)) {
 			return `${user} doesn't own ${cost}.`;
 		}
 		let healingMod = isPhosani ? 1.5 : 1;
-		const { foodRemoved } = await removeFoodFromUser({
-			user,
-			totalHealingNeeded: Math.ceil(healAmountNeeded / users.length) * quantity * healingMod,
-			healPerAction: Math.ceil(healAmountNeeded / quantity) * healingMod,
-			activityName: NightmareMonster.name,
-			attackStylesUsed: ['melee']
-		});
-		const { realCost } = await user.specialRemoveItems(cost);
-		soloFoodUsage = realCost.clone().add(foodRemoved);
+		try {
+			const { foodRemoved } = await removeFoodFromUser({
+				user,
+				totalHealingNeeded: Math.ceil(healAmountNeeded / users.length) * quantity * healingMod,
+				healPerAction: Math.ceil(healAmountNeeded / quantity) * healingMod,
+				activityName: NightmareMonster.name,
+				attackStylesUsed: ['melee']
+			});
 
-		totalCost.add(foodRemoved).add(realCost);
+			const { realCost } = await user.specialRemoveItems(cost);
+			soloFoodUsage = realCost.clone().add(foodRemoved);
+
+			totalCost.add(foodRemoved).add(realCost);
+		} catch (_err: any) {
+			return typeof _err === 'string' ? _err : _err.message;
+		}
 	}
 
 	await updateBankSetting(globalClient, ClientSettings.EconomyStats.NightmareCost, totalCost);

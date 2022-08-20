@@ -11,6 +11,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { AgilityActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, stringMatches, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { OSBMahojiCommand } from '../lib/util';
 
 const unlimitedFireRuneProviders = [
@@ -75,7 +76,6 @@ export const lapsCommand: OSBMahojiCommand = {
 	attributes: {
 		requiresMinion: true,
 		requiresMinionNotBusy: true,
-		description: 'Do laps on Agility courses to train Agility.',
 		examples: ['/laps name:Ardougne rooftop course']
 	},
 	options: [
@@ -128,7 +128,7 @@ export const lapsCommand: OSBMahojiCommand = {
 			return `You need atleast ${course.qpRequired} Quest Points to do this course.`;
 		}
 
-		const maxTripLength = user.maxTripLength('Agility');
+		const maxTripLength = calcMaxTripLength(user, 'Agility');
 
 		// If no quantity provided, set it to the max.
 		const timePerLap = course.lapTime * Time.Second;
