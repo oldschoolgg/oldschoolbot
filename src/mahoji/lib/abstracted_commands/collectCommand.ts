@@ -10,6 +10,7 @@ import { Skills } from '../../../lib/types';
 import { CollectingOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
 import { getPOH } from './pohCommand';
 
@@ -151,7 +152,7 @@ export async function collectCommand(
 			.join(', ')}.`;
 	}
 
-	const maxTripLength = user.maxTripLength('Collecting');
+	const maxTripLength = calcMaxTripLength(user, 'Collecting');
 	if (collectable.qpRequired && mahojiUser.QP < collectable.qpRequired) {
 		return `You need ${collectable.qpRequired} QP to collect ${collectable.item.name}.`;
 	}

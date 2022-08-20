@@ -1,12 +1,16 @@
 import { MessageButton } from 'discord.js';
+import { Time } from 'e';
 import { APIInteraction, InteractionType, Routes } from 'mahoji';
 
+import { buyBingoTicketCommand } from '../../mahoji/commands/bingo';
 import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
+import { Cooldowns } from '../../mahoji/lib/Cooldowns';
 import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 import { ClueTier } from '../clues/clueTiers';
-import { lastTripCache } from '../constants';
+import { lastTripCache, PerkTier } from '../constants';
 import { runCommand } from '../settings/settings';
-import { channelIsSendable, convertMahojiResponseToDJSResponse } from '../util';
+import { channelIsSendable, convertMahojiResponseToDJSResponse, formatDuration } from '../util';
+import getUsersPerkTier from './getUsersPerkTier';
 import { minionIsBusy } from './minionIsBusy';
 import { minionName } from './minionUtils';
 import { respondToButton } from './respondToButton';
@@ -34,6 +38,7 @@ const globalInteractionActions = [
 	'AUTO_FARM',
 	'AUTO_FARMING_CONTRACT',
 	'BUY_MINION',
+	'BUY_BINGO_TICKET',
 	'NEW_SLAYER_TASK'
 ] as const;
 type GlobalInteractionAction = typeof globalInteractionActions[number];
@@ -65,6 +70,25 @@ export function makeRepeatTripButton() {
 	return new MessageButton().setCustomID('REPEAT_TRIP').setLabel('Repeat Trip').setStyle('SECONDARY').setEmoji('🔁');
 }
 
+export function makeBirdHouseTripButton() {
+	return new MessageButton()
+		.setCustomID('DO_BIRDHOUSE_RUN')
+		.setLabel('Birdhouse Run')
+		.setStyle('SECONDARY')
+		.setEmoji('692946556399124520');
+}
+const reactionTimeLimits = {
+	0: Time.Hour * 12,
+	[PerkTier.One]: Time.Hour * 12,
+	[PerkTier.Two]: Time.Hour * 24,
+	[PerkTier.Three]: Time.Hour * 50,
+	[PerkTier.Four]: Time.Hour * 100,
+	[PerkTier.Five]: Time.Hour * 200,
+	[PerkTier.Six]: Time.Hour * 300
+} as const;
+
+const reactionTimeLimit = (perkTier: PerkTier | 0): number => reactionTimeLimits[perkTier] ?? Time.Hour * 12;
+
 export function makeNewSlayerTaskButton() {
 	return new MessageButton()
 		.setCustomID('NEW_SLAYER_TASK')
@@ -79,6 +103,7 @@ export async function interactionHook(data: APIInteraction) {
 	if (!isValidGlobalInteraction(id)) return;
 	const userID = data.member ? data.member.user?.id : data.user?.id;
 	if (!userID) return;
+
 	const user = await mahojiUsersSettingsFetch(userID);
 	const options = {
 		user,
@@ -88,8 +113,8 @@ export async function interactionHook(data: APIInteraction) {
 		guildID: data.guild_id
 	};
 
-	async function buttonReply(str?: string) {
-		await respondToButton(data.id, data.token, str);
+	async function buttonReply(str?: string, ephemeral = true) {
+		await respondToButton(data.id, data.token, str, ephemeral);
 
 		// Remove buttons, disabled for now
 		if (1 > 2 && data.message && data.channel_id) {
@@ -108,6 +133,27 @@ export async function interactionHook(data: APIInteraction) {
 				});
 			}
 		}
+	}
+
+	const cd = Cooldowns.get(userID, 'button', Time.Second * 3);
+	if (cd !== null) {
+		return buttonReply();
+	}
+
+	const timeSinceMessage = Date.now() - new Date(data.message.timestamp).getTime();
+	const timeLimit = reactionTimeLimit(getUsersPerkTier(user));
+	if (timeSinceMessage > Time.Day) {
+		console.log(
+			`${user.id} clicked Diff[${formatDuration(timeSinceMessage)}] Button[${id}] Message[${data.message.id}]`
+		);
+	}
+	if (1 > 2 && timeSinceMessage > timeLimit) {
+		return buttonReply(
+			`<@${userID}>, this button is too old, you can no longer use it. You can only only use buttons that are up to ${formatDuration(
+				timeLimit
+			)} old, up to 300 hours for patrons.`,
+			false
+		);
 	}
 
 	async function doClue(tier: ClueTier['name']) {
@@ -170,6 +216,10 @@ export async function interactionHook(data: APIInteraction) {
 			bypassInhibitors: true,
 			...options
 		});
+	}
+
+	if (id === 'BUY_BINGO_TICKET') {
+		return buttonReply(await buyBingoTicketCommand(null, userID, 1));
 	}
 
 	if (minionIsBusy(user.id)) {

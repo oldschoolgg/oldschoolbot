@@ -169,7 +169,7 @@ GROUP BY 1
 ORDER BY qty DESC, lastDate ASC
 LIMIT 10`;
 
-	const res = await globalClient.query<{ user_id: string; qty: number }[]>(query);
+	const res = await prisma.$queryRawUnsafe<{ user_id: string; qty: number }[]>(query);
 
 	if (res.length === 0) {
 		return 'No results found.';
@@ -341,7 +341,7 @@ async function dryStreakCommand(user: User, monsterName: string, itemName: strin
 	const { id } = mon;
 	const query = `SELECT "id", "${key}"->>'${id}' AS "KC" FROM users WHERE "collectionLogBank"->>'${item.id}' IS NULL AND "${key}"->>'${id}' IS NOT NULL ${ironmanPart} ORDER BY ("${key}"->>'${id}')::int DESC LIMIT 10;`;
 
-	const result = await globalClient.query<
+	const result = await prisma.$queryRawUnsafe<
 		{
 			id: string;
 			KC: string;
@@ -366,7 +366,7 @@ async function mostDrops(user: User, itemName: string, ironmanOnly: boolean) {
 
 	const query = `SELECT "id", "collectionLogBank"->>'${item.id}' AS "qty" FROM users WHERE "collectionLogBank"->>'${item.id}' IS NOT NULL ${ironmanPart} ORDER BY ("collectionLogBank"->>'${item.id}')::int DESC LIMIT 10;`;
 
-	const result = await globalClient.query<
+	const result = await prisma.$queryRawUnsafe<
 		{
 			id: string;
 			qty: string;

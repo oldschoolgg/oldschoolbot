@@ -11,7 +11,7 @@ import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
 import { stringMatches, updateBankSetting } from '../../lib/util';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation } from '../mahojiSettings';
+import { handleMahojiConfirmation, userStatsBankUpdate } from '../mahojiSettings';
 
 function showAllCreatables() {
 	let content = 'This are the items that you can create:';
@@ -200,8 +200,10 @@ export const createCommand: OSBMahojiCommand = {
 		await user.removeItemsFromBank(inItems);
 		await user.addItemsToBank({ items: outItems });
 
-		updateBankSetting(globalClient, ClientSettings.EconomyStats.CreateCost, inItems);
-		updateBankSetting(globalClient, ClientSettings.EconomyStats.CreateLoot, outItems);
+		await updateBankSetting(globalClient, ClientSettings.EconomyStats.CreateCost, inItems);
+		await updateBankSetting(globalClient, ClientSettings.EconomyStats.CreateLoot, outItems);
+		await userStatsBankUpdate(user.id, 'create_cost_bank', inItems);
+		await userStatsBankUpdate(user.id, 'create_loot_bank', outItems);
 
 		// Only allow +create to add items to CL
 		if (!createableItem.noCl && action === 'create') await user.addItemsToCollectionLog({ items: outItems });

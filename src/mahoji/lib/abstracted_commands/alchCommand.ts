@@ -50,7 +50,7 @@ export async function alchCommand(
 		return 'You need level 55 Magic to cast High Alchemy';
 	}
 
-	const maxTripLength = user.maxTripLength('Alching');
+	const maxTripLength = calcMaxTripLength(user, 'Alching');
 
 	const maxCasts = Math.min(Math.floor(maxTripLength / timePerAlch), userBank.amount(osItem.id));
 

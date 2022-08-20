@@ -4,7 +4,15 @@ import './lib/crons';
 import * as Sentry from '@sentry/node';
 import { Chart } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { APIInteraction, GatewayDispatchEvents, InteractionResponseType, InteractionType, MahojiClient } from 'mahoji';
+import {
+	APIInteraction,
+	GatewayDispatchEvents,
+	InteractionResponseType,
+	InteractionType,
+	MahojiClient,
+	MessageFlags,
+	Routes
+} from 'mahoji';
 import { SlashCommandResponse } from 'mahoji/dist/lib/types';
 import { join } from 'path';
 
@@ -76,13 +84,24 @@ global.globalClient = client;
 client.on('message', onMessage);
 client.on('raw', async event => {
 	if (![GatewayDispatchEvents.InteractionCreate].includes(event.t)) return;
-	// TODO: Ignore interactions if client not ready, they will error and fail to execute
-	// if they use things depending on the client being ready. For now, we have to
-	// just have them fail/error for the user.
-	if (!client.ready) return;
-
 	const data = event.d as APIInteraction;
-	client.emit('debug', `Received ${data.type} interaction`);
+
+	if (!client.ready) {
+		if (data.type === InteractionType.ApplicationCommand) {
+			await mahojiClient.restManager.post(Routes.interactionCallback(data.id, data.token), {
+				body: {
+					data: {
+						content:
+							'Old School Bot is currently down for maintenance/updates, please try again in a couple minutes! Thank you <3',
+						flags: MessageFlags.Ephemeral
+					},
+					type: InteractionResponseType.ChannelMessageWithSource
+				}
+			});
+		}
+		return;
+	}
+
 	interactionHook(data);
 	if (data.type === InteractionType.ModalSubmit) return modalInteractionHook(data);
 	const result = await mahojiClient.parseInteraction(data);
@@ -130,7 +149,10 @@ client.on('raw', async event => {
 		return result.interaction.respond(result);
 	}
 });
-client.on('ready', client.init);
-client.on('ready', onStartup);
-mahojiClient.start();
-client.login(botToken);
+async function main() {
+	await mahojiClient.start();
+	await client.login(botToken);
+	await client.init();
+	await onStartup();
+}
+main();

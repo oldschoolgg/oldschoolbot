@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { codeBlock, inlineCode } from '@discordjs/builders';
+import { ClientStorage } from '@prisma/client';
 import { Stopwatch } from '@sapphire/stopwatch';
 import { Duration } from '@sapphire/time-utilities';
 import Type from '@sapphire/type';
@@ -19,7 +20,14 @@ import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../../lib
 import { badges, BadgesEnum, BitField, BitFieldData, DISABLED_COMMANDS, OWNER_IDS } from '../../lib/constants';
 import { countUsersWithItemInCl, prisma } from '../../lib/settings/prisma';
 import { cancelTask, minionActivityCacheDelete } from '../../lib/settings/settings';
-import { convertBankToPerHourStats, formatDuration, stringMatches } from '../../lib/util';
+import {
+	calcPerHour,
+	convertBankToPerHourStats,
+	formatDuration,
+	sanitizeBank,
+	stringMatches,
+	toKMB
+} from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { logError } from '../../lib/util/logError';
@@ -119,6 +127,18 @@ async function evalCommand(userID: string, code: string): CommandResponse {
 		return err.message ?? err;
 	}
 }
+
+const viewableThings: {
+	name: string;
+	run: (clientSettings: ClientStorage) => Bank;
+}[] = [
+	{
+		name: 'ToB Cost',
+		run: clientSettings => {
+			return new Bank(clientSettings.tob_cost as ItemBank);
+		}
+	}
+];
 
 export const adminCommand: OSBMahojiCommand = {
 	name: 'admin',
@@ -412,6 +432,30 @@ export const adminCommand: OSBMahojiCommand = {
 					}
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'ltc',
+			description: 'Ltc?'
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'view',
+			description: 'View something',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'thing',
+					description: 'The thing',
+					required: true,
+					choices: viewableThings.map(i => ({ name: i.name, value: i.name }))
+				}
+			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'wipe_bingo_temp_cls',
+			description: 'Wipe all temp cls of bingo users'
 		}
 	],
 	run: async ({
@@ -440,11 +484,40 @@ export const adminCommand: OSBMahojiCommand = {
 		set_price?: { item: string; price: number };
 		most_active?: {};
 		bitfield?: { user: MahojiUserOption; add?: string; remove?: string };
+		ltc?: {};
+		view?: { thing: string };
+		wipe_bingo_temp_cls?: {};
 	}>) => {
 		await interaction.deferReply();
 
 		const adminUser = await mahojiUsersSettingsFetch(userID);
 		const isMod = adminUser.bitfield.includes(BitField.isModerator);
+		if (options.wipe_bingo_temp_cls) {
+			if (userID.toString() !== '319396464402890753' && !isMod) return randArrItem(gifs);
+			const usersToReset = await prisma.user.findMany({
+				where: {
+					bingo_tickets_bought: {
+						gt: 1
+					}
+				},
+				select: {
+					id: true
+				}
+			});
+			await handleMahojiConfirmation(interaction, `Reset the temp CL of ${usersToReset.length} users?`);
+			const res = await prisma.user.updateMany({
+				where: {
+					id: {
+						in: usersToReset.map(i => i.id)
+					}
+				},
+				data: {
+					temp_cl: {}
+				}
+			});
+			return `${res.count} temp CLs reset.`;
+		}
+
 		if (!guildID || !isMod || (production && guildID.toString() !== '342983479501389826')) return randArrItem(gifs);
 
 		/**
@@ -848,6 +921,49 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 			return `Gave ${formatDuration(ms)} of Tier ${tier} patron to ${
 				userToGive.user.username
 			}. They have ${formatDuration(newBalanceExpiryTime - Date.now())} remaining.`;
+		}
+
+		if (options.ltc) {
+			let str = '';
+			const results = await prisma.lootTrack.findMany();
+
+			str += `${['id', 'cost_h', 'cost', 'loot_h', 'loot', 'per_hour_h', 'per_hour', 'ratio'].join('\t')}\n`;
+			for (const res of results) {
+				if (!res.total_duration || !res.total_kc) continue;
+				if (Object.keys({ ...(res.cost as ItemBank), ...(res.loot as ItemBank) }).length === 0) continue;
+				const cost = new Bank(res.cost as ItemBank);
+				const loot = new Bank(res.loot as ItemBank);
+				sanitizeBank(cost);
+				sanitizeBank(loot);
+				const marketValueCost = Math.round(cost.value());
+				const marketValueLoot = Math.round(loot.value());
+				const ratio = marketValueLoot / marketValueCost;
+
+				if (!marketValueCost || !marketValueLoot || ratio === Infinity) continue;
+
+				str += `${[
+					res.id,
+					toKMB(marketValueCost),
+					marketValueCost,
+					toKMB(marketValueLoot),
+					marketValueLoot,
+					toKMB(calcPerHour(marketValueLoot, res.total_duration * Time.Minute)),
+					calcPerHour(marketValueLoot, res.total_duration * Time.Minute),
+					ratio
+				].join('\t')}\n`;
+			}
+
+			return {
+				attachments: [{ buffer: Buffer.from(str), fileName: 'output.txt' }]
+			};
+		}
+
+		if (options.view) {
+			const thing = viewableThings.find(i => i.name === options.view?.thing);
+			if (!thing) return 'Invalid';
+			const clientSettings = await mahojiClientSettingsFetch();
+			const image = await makeBankImage({ bank: thing.run(clientSettings), title: thing.name });
+			return { attachments: [image.file] };
 		}
 
 		return 'Invalid command.';

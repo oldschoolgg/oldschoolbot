@@ -7,6 +7,7 @@ import { SkillsEnum } from '../../../lib/skilling/types';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
 export async function roguesDenCommand(user: KlasaUser, channelID: bigint) {
 	if (user.minionIsBusy) return `${user.minionName} is busy.`;
@@ -28,13 +29,13 @@ export async function roguesDenCommand(user: KlasaUser, channelID: bigint) {
 
 	baseTime = reduceNumByPercent(baseTime, skillPercentage);
 
-	let quantity = Math.floor(user.maxTripLength('RoguesDenMaze') / baseTime);
+	let quantity = Math.floor(calcMaxTripLength(user, 'RoguesDenMaze') / baseTime);
 
 	if (user.hasItemEquippedOrInBank('Stamina potion(4)')) {
 		baseTime = reduceNumByPercent(baseTime, 50);
 
 		const potionsInBank = user.bank().amount('Stamina potion(4)');
-		const maxPossibleLaps = Math.floor(user.maxTripLength('RoguesDenMaze') / baseTime);
+		const maxPossibleLaps = Math.floor(calcMaxTripLength(user, 'RoguesDenMaze') / baseTime);
 
 		// do as many laps as possible with the current stamina potion supply
 		quantity = Math.min(potionsInBank * 4, maxPossibleLaps);

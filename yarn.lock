@@ -4022,10 +4022,10 @@ lru_map@^0.3.3:
   resolved "https://registry.yarnpkg.com/lru_map/-/lru_map-0.3.3.tgz#b5c8351b9464cbd750335a79650a0ec0e56118dd"
   integrity sha1-tcg1G5Rky9dQM1p5ZQoOwOVhGN0=
 
-mahoji@^0.0.56:
-  version "0.0.56"
-  resolved "https://registry.yarnpkg.com/mahoji/-/mahoji-0.0.56.tgz#70f1c59d3243bc1af4173bc88a6bb6a3aa940ad8"
-  integrity sha512-ywg3Lhz2nY55fRxkq4rXaEJmDv/AAN+ZfMchimP62sKCgabkwXcM6AdhBkmMZuB0rF/xptmdCwCY6r30+b4w5Q==
+mahoji@^0.0.57:
+  version "0.0.57"
+  resolved "https://registry.yarnpkg.com/mahoji/-/mahoji-0.0.57.tgz#5f0a2a4966256cc9330f9eaad294ec7c39ed1914"
+  integrity sha512-ib2k2YLi+4zNOPE7gLJ15nZB97JFSRc7vPGG3aFiH+eIVevLGOuG0SgcZzCvzlLyamsJ1URNSMokRz/xoZDp5Q==
   dependencies:
     "@discordjs/rest" "^0.4.1"
     fastify "^3.29.0"

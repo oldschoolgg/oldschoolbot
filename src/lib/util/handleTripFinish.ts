@@ -4,6 +4,7 @@ import { MessageAttachment, MessageCollector, MessageOptions } from 'discord.js'
 import { KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
 import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { ClueTiers } from '../clues/clueTiers';
 import { COINS_ID, Emoji, lastTripCache, LastTripRunArgs, PerkTier } from '../constants';
@@ -138,6 +139,8 @@ export async function handleTripFinish(
 	if (clueReceived && perkTier > PerkTier.One) components[0].push(makeDoClueButton(clueReceived));
 	const casketReceived = loot ? ClueTiers.find(i => loot?.has(i.id)) : undefined;
 	if (casketReceived) components[0].push(makeOpenCasketButton(casketReceived));
+	const birdHousedetails = await calculateBirdhouseDetails(user.id);
+	if (birdHousedetails.isReady && perkTier > PerkTier.One) components[0].push(makeBirdHouseTripButton());
 	const { currentTask } = await getUsersCurrentSlayerInfo(user.id);
 	if (
 		(currentTask === null || currentTask.quantity_remaining <= 0) &&

@@ -38,7 +38,7 @@
 		"he": "^1.2.0",
 		"jwt-simple": "^0.5.6",
 		"klasa": "https://github.com/gc/klasa.git#99ee76765f6b6172254cbeb363c73f4305d43f36",
-		"mahoji": "^0.0.56",
+		"mahoji": "^0.0.57",
 		"math-expression-evaluator": "^1.3.14",
 		"murmurhash": "^2.0.0",
 		"node-cron": "^3.0.0",

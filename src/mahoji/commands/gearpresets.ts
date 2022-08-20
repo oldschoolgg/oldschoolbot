@@ -38,6 +38,7 @@ async function createOrEditGearSetup(
 	gearInput: InputGear
 ) {
 	name = cleanString(name).toLowerCase();
+	if (name.length > 24) return 'Gear preset names must be less than 25 characters long.';
 	if (!name) return "You didn't supply a name.";
 	if (!isUpdating && !isValidNickname(name)) {
 		return 'Invalid name.';
@@ -215,7 +216,7 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{
 		equip?: { gear_setup: GearSetupType; preset: string };
 		create?: InputGear & { copy_setup?: GearSetupType; name: string };
-		edit?: InputGear & { name: string };
+		edit?: InputGear & { preset: string };
 		delete?: { preset: string };
 		view?: { preset: string };
 	}>) => {
@@ -231,7 +232,7 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 			);
 		}
 		if (options.edit) {
-			return createOrEditGearSetup(klasaUser, undefined, options.edit.name, true, options.edit);
+			return createOrEditGearSetup(klasaUser, undefined, options.edit.preset, true, options.edit);
 		}
 		if (options.delete) {
 			const preset = await prisma.gearPreset.findFirst({

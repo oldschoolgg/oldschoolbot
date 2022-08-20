@@ -36,15 +36,15 @@ export function mahojiParseNumber({
 	return parsed;
 }
 
-export async function handleMahojiConfirmation(interaction: SlashCommandInteraction, str: string, _users?: bigint[]) {
+export async function handleMahojiConfirmation(interaction: SlashCommandInteraction, str: string, _users?: string[]) {
 	const channel = globalClient.channels.cache.get(interaction.channelID.toString());
 	if (!channelIsSendable(channel)) throw new Error('Channel for confirmation not found.');
 	if (!interaction.deferred) {
 		await interaction.deferReply();
 	}
 
-	const users: BigInt[] = _users ?? [interaction.userID];
-	let confirmed: BigInt[] = [];
+	const users = _users ?? [interaction.userID.toString()];
+	let confirmed: string[] = [];
 	const isConfirmed = () => confirmed.length === users.length;
 	const confirmMessage = await channel.send({
 		content: str,
@@ -66,10 +66,10 @@ export async function handleMahojiConfirmation(interaction: SlashCommandInteract
 
 	return new Promise<void>(async (resolve, reject) => {
 		const collector = confirmMessage.createMessageComponentInteractionCollector({
-			time: Time.Second * 10
+			time: Time.Second * 15
 		});
 
-		async function confirm(id: bigint) {
+		async function confirm(id: string) {
 			if (confirmed.includes(id)) return;
 			confirmed.push(id);
 			if (!isConfirmed()) return;
@@ -97,7 +97,7 @@ export async function handleMahojiConfirmation(interaction: SlashCommandInteract
 		};
 
 		collector.on('collect', async i => {
-			const id = BigInt(i.user.id);
+			const { id } = i.user;
 			if (!users.includes(id)) {
 				i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
 				return false;
@@ -281,7 +281,7 @@ export function patronMsg(tierNeeded: number) {
 }
 
 // Is not typesafe, returns only what is selected, but will say it contains everything.
-export async function mahojiClientSettingsFetch(select: Prisma.ClientStorageSelect) {
+export async function mahojiClientSettingsFetch(select?: Prisma.ClientStorageSelect) {
 	const clientSettings = await prisma.clientStorage.findFirst({
 		where: {
 			id: CLIENT_ID
@@ -324,7 +324,7 @@ export async function userStatsUpdate(userID: string, data: (u: UserStats) => Pr
 	});
 }
 
-type UserStatsBankKey = 'puropuro_implings_bank' | 'passive_implings_bank';
+type UserStatsBankKey = 'puropuro_implings_bank' | 'passive_implings_bank' | 'create_cost_bank' | 'create_loot_bank';
 export async function userStatsBankUpdate(userID: string, key: UserStatsBankKey, bank: Bank) {
 	await userStatsUpdate(userID, u => ({
 		[key]: bank.clone().add(u[key] as ItemBank).bank
