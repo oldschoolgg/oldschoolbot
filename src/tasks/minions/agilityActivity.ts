@@ -4,7 +4,6 @@ import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Agility from '../../lib/skilling/skills/agility';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -63,9 +62,14 @@ export default class extends Task {
 			duration
 		});
 
-		const loot = new Bank({
-			'Mark of grace': totalMarks
-		});
+		const loot = new Bank();
+		if (course.marksPer60) loot.add('Mark of grace', totalMarks);
+
+		// Calculate Crystal Shards for Priff
+		if (course.name === 'Prifddinas Rooftop Course') {
+			// 15 Shards per hour
+			loot.add('Crystal shard', Math.floor((duration / Time.Hour) * 15));
+		}
 
 		if (alch) {
 			const alchedItem = getOSItem(alch.itemID);
@@ -76,13 +80,13 @@ export default class extends Task {
 				amount: alch.quantity * 65,
 				duration
 			})}`;
-			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceAlching, alchGP);
+			updateGPTrackSetting('gp_alch', alchGP);
 		}
 
 		let str = `${user}, ${user.minionName} finished ${quantity} ${
 			course.name
-		} laps and fell on ${lapsFailed} of them.\nYou received: ${loot} ${
-			diaryBonus ? '(25% bonus Marks for Ardougne Elite diary)' : ''
+		} laps and fell on ${lapsFailed} of them.\nYou received: ${loot}${
+			diaryBonus ? ' (25% bonus Marks for Ardougne Elite diary)' : ''
 		}.\n${xpRes}`;
 
 		if (course.id === 6) {

@@ -28,7 +28,6 @@ export namespace UserSettings {
 	export const CollectionLogBank = T<Readonly<ItemBank>>('collectionLogBank');
 	export const MonsterScores = T<Readonly<ItemBank>>('monsterScores');
 	export const CreatureScores = T<Readonly<ItemBank>>('creatureScores');
-	export const ClueScores = T<Readonly<ItemBank>>('clueScores');
 	export const LapsScores = T<Readonly<ItemBank>>('lapsScores');
 	export const LastDailyTimestamp = T<number>('lastDailyTimestamp');
 	export const LastTearsOfGuthixTimestamp = T<number>('lastTearsOfGuthixTimestamp');
@@ -41,8 +40,6 @@ export namespace UserSettings {
 	export const HonourLevel = T<number>('honour_level');
 	export const HonourPoints = T<number>('honour_points');
 	export const HighGambles = T<number>('high_gambles');
-	export const PatreonID = T<string | null>('patreon_id');
-	export const GithubID = T<number | null>('github_id');
 	export const CarpenterPoints = T<number>('carpenter_points');
 	export const ZealTokens = T<number>('zeal_tokens');
 	export const OpenableScores = T<Readonly<ItemBank>>('openable_scores');
@@ -58,7 +55,6 @@ export namespace UserSettings {
 	export const KourendFavour = T<UserKourendFavour>('kourend_favour');
 	export const IronmanAlts = T<readonly string[]>('ironman_alts');
 	export const MainAccount = T<string | null>('main_account');
-	export const TempCL = T<Readonly<ItemBank>>('temp_cl');
 
 	export const InfernoAttempts = T<number>('inferno_attempts');
 	export const InfernoCapeSacrifices = T<number>('inferno_cape_sacrifices');
@@ -161,6 +157,7 @@ export namespace UserSettings {
 	export const LMSPoints = T<number>('lms_points');
 	export const GPLuckyPick = T<number>('gp_luckypick');
 	export const GPDice = T<number>('gp_dice');
+	export const GPSlots = T<number>('gp_slots');
 
 	export const BankSortWeightings = T<Readonly<ItemBank>>('bank_sort_weightings');
 	export const BankSortMethod = T<BankSortMethod | null>('bank_sort_method');

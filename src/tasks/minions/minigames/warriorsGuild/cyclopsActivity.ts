@@ -7,6 +7,7 @@ import { ActivityTaskOptionsWithQuantity } from '../../../../lib/types/minions';
 import { roll } from '../../../../lib/util';
 import { handleTripFinish } from '../../../../lib/util/handleTripFinish';
 import itemID from '../../../../lib/util/itemID';
+import { makeBankImage } from '../../../../lib/util/makeBankImage';
 
 const cyclopsID = 2097;
 
@@ -77,16 +78,20 @@ export default class extends Task {
 		}.`;
 
 		await user.incrementMonsterScore(cyclopsID, quantity);
-		const { image } = await this.client.tasks
-			.get('bankImage')!
-			.generateBankImage(itemsAdded, `Loot From ${quantity}x Cyclops`, true, { showNewCL: 1 }, user, previousCL);
+
+		const image = await makeBankImage({
+			bank: itemsAdded,
+			title: `Loot From ${quantity}x Cyclops`,
+			user,
+			previousCL
+		});
 
 		handleTripFinish(
 			user,
 			channelID,
 			str,
 			['activities', { warriors_guild: { action: 'cyclops', quantity } }, true],
-			image!,
+			image.file.buffer,
 			data,
 			itemsAdded
 		);

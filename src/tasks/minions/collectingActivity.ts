@@ -11,7 +11,7 @@ import { collectables } from '../../mahoji/lib/abstracted_commands/collectComman
 
 export default class extends Task {
 	async run(data: CollectingOptions) {
-		let { collectableID, quantity, userID, channelID, duration } = data;
+		let { collectableID, quantity, userID, channelID, duration, noStaminas } = data;
 		const user = await this.client.fetchUser(userID);
 		const collectable = collectables.find(c => c.item.id === collectableID)!;
 		let colQuantity = collectable.quantity;
@@ -38,7 +38,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			['activities', { collect: { item: collectable.item.name, quantity } }],
+			['activities', { collect: { item: collectable.item.name, no_stams: noStaminas, quantity } }],
 			undefined,
 			data,
 			loot ?? null

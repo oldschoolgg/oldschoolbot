@@ -7,6 +7,7 @@ import { itemID } from 'oldschooljs/dist/util';
 import { BitField, Emoji, projectiles, ProjectileType } from '../../../lib/constants';
 import { getSimilarItems } from '../../../lib/data/similarItems';
 import { blowpipeDarts } from '../../../lib/minions/functions/blowpipeCommand';
+import { prisma } from '../../../lib/settings/prisma';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
@@ -118,7 +119,7 @@ function baseDuration(_attempts: number) {
 async function timesMadeToZuk(userID: string) {
 	const timesMadeToZuk = Number(
 		(
-			await globalClient.query<any>(`SELECT COUNT(*)
+			await prisma.$queryRawUnsafe<any>(`SELECT COUNT(*)
 FROM activity
 WHERE type = 'Inferno'
 AND user_id = ${userID}
@@ -455,9 +456,9 @@ export async function infernoStartCommand(user: KlasaUser, channelID: bigint): C
 		realDuration
 	} = res;
 
-	let realCost = new Bank();
+	const realCost = new Bank();
 	try {
-		realCost = (await user.specialRemoveItems(cost)).realCost;
+		realCost.add((await user.specialRemoveItems(cost)).realCost);
 	} catch (err: any) {
 		return {
 			attachments: [

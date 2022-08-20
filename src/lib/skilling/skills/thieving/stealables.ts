@@ -22,37 +22,33 @@ import Vyre from 'oldschooljs/dist/simulation/monsters/low/t-z/Vyre';
 import WarriorWoman from 'oldschooljs/dist/simulation/monsters/low/t-z/WarriorWoman';
 import YanilleWatchman from 'oldschooljs/dist/simulation/monsters/low/t-z/YanilleWatchman';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
-import { resolveNameBank } from 'oldschooljs/dist/util';
-
-import { ItemBank } from '../../../types';
 
 export interface Stealable {
 	name: string;
+	type: 'pickpockable' | 'stall';
+	aliases?: string[];
 	level: number;
 	xp: number;
 	qpRequired?: number;
-	itemsRequired?: ItemBank;
+	fireCapeRequired?: boolean;
 	table: LootTable;
 	id: number;
-}
-
-export interface Stall extends Stealable {
-	respawnTime: number;
-}
-
-export interface Pickpockable extends Stealable {
-	alias?: string[];
-	stunTime: number;
-	stunDamage: number;
-	slope: number;
-	intercept: number;
+	// Stall properties
+	respawnTime?: number;
+	lootPercent?: number;
+	// Pickpocket properties
+	stunTime?: number;
+	stunDamage?: number;
+	slope?: number;
+	intercept?: number;
 	customTickRate?: number;
-	itemsRequired?: ItemBank;
 }
 
-export const Stalls: Stall[] = [
+const stalls: Stealable[] = [
 	{
 		name: 'Vegetable stall',
+		type: 'stall',
+		aliases: ['veg stall', 'vegetable', 'veggi stall'],
 		level: 2,
 		xp: 10,
 		id: 4706,
@@ -64,34 +60,46 @@ export const Stalls: Stall[] = [
 			.add('Garlic')
 			.tertiary(206_777, 'Rocky'),
 		qpRequired: 3,
-		respawnTime: Time.Second * 2
+		respawnTime: Time.Second * 2,
+		lootPercent: 20
 	},
 	{
 		name: "Baker's stall",
+		type: 'stall',
+		aliases: ['baker stall', 'baker', 'bakers stall'],
 		level: 5,
 		xp: 16,
 		id: 4707,
 		table: new LootTable().add('Cake').add('Bread').add('Chocolate slice').tertiary(124_066, 'Rocky'),
-		respawnTime: Time.Second * 2
+		respawnTime: Time.Second * 2,
+		lootPercent: 20
 	},
 	{
 		name: 'Tea stall',
+		type: 'stall',
+		aliases: ['tea', 'tea stall'],
 		level: 5,
 		xp: 16,
 		id: 4708,
 		table: new LootTable().add('Cup of tea').tertiary(68_926, 'Rocky'),
-		respawnTime: Time.Second * 7
+		respawnTime: Time.Second * 7,
+		lootPercent: 35
 	},
 	{
 		name: 'Silk stall',
+		type: 'stall',
+		aliases: ['silk'],
 		level: 20,
 		xp: 24,
 		id: 4709,
 		table: new LootTable().add('Silk').tertiary(68_926, 'Rocky'),
-		respawnTime: Time.Second * 5
+		respawnTime: Time.Second * 5,
+		lootPercent: 30
 	},
 	{
 		name: 'Wine stall',
+		type: 'stall',
+		aliases: ['wine'],
 		level: 22,
 		xp: 27,
 		id: 4710,
@@ -102,12 +110,15 @@ export const Stalls: Stall[] = [
 			.add('Jug of water')
 			.add('Jug of wine')
 			.tertiary(36_490, 'Rocky'),
-		respawnTime: Time.Second * 10
+		respawnTime: Time.Second * 10,
+		lootPercent: 38
 	},
 	{
 		name: 'Fruit stall',
+		type: 'stall',
+		aliases: ['fruit', 'fruits'],
 		level: 25,
-		xp: 28.2,
+		xp: 28.5,
 		id: 4711,
 		table: new LootTable()
 			.add('Cooking apple', 1, 40)
@@ -115,19 +126,73 @@ export const Stalls: Stall[] = [
 			.add('Jangerberries', 1, 7)
 			.add('Lemon', 1, 5)
 			.add('Redberries', 1, 5)
+			.add('Pineapple', 1, 5)
 			.add('Lime', 1, 5)
 			.add('Strawberry', 1, 5)
 			.add('Strange fruit', 1, 5)
 			.add('Golovanova fruit top', 1, 2)
 			.add('Papaya fruit', 1, 1)
 			.tertiary(124_066, 'Rocky'),
-		respawnTime: Time.Second * 2
+		respawnTime: Time.Second * 2.6,
+		lootPercent: 25
+	},
+	{
+		name: 'Fur stall',
+		type: 'stall',
+		aliases: ['fur', 'furs'],
+		level: 35,
+		xp: 36,
+		id: 4712,
+		table: new LootTable().every('Grey wolf fur').tertiary(36_490, 'Rocky'),
+		respawnTime: Time.Second * 10,
+		lootPercent: 80
+	},
+	{
+		name: 'Fish stall',
+		type: 'stall',
+		aliases: ['fish', 'fishy'],
+		level: 42,
+		xp: 42,
+		id: 4713,
+		table: new LootTable().add('Raw salmon').add('Raw tuna').add('Raw lobster').tertiary(36_490, 'Rocky'),
+		respawnTime: Time.Second * 10,
+		lootPercent: 75
+	},
+	{
+		name: 'Silver stall',
+		type: 'stall',
+		aliases: ['silver'],
+		level: 50,
+		xp: 54,
+		id: 4714,
+		table: new LootTable().every('Silver ore').tertiary(36_490, 'Rocky'),
+		respawnTime: Time.Second * 16,
+		lootPercent: 80
+	},
+	{
+		name: 'Gem stall',
+		type: 'stall',
+		aliases: ['gem', 'gems'],
+		level: 75,
+		xp: 160,
+		id: 4715,
+		table: new LootTable()
+			.add('Uncut sapphire', 1, 105)
+			.add('Uncut emerald', 1, 17)
+			.add('Uncut ruby', 1, 5)
+			.add('Uncut diamond')
+			.tertiary(36_490, 'Rocky'),
+		// World hopping rate
+		respawnTime: Time.Second * 10,
+		lootPercent: 100
 	},
 	{
 		name: 'Ore stall',
+		type: 'stall',
+		aliases: ['ore', 'ores'],
 		level: 82,
 		xp: 180,
-		id: 4712,
+		id: 4716,
 		table: new LootTable()
 			.add('Iron ore', 1, 37)
 			.add('Silver ore', 1, 16)
@@ -137,13 +202,17 @@ export const Stalls: Stall[] = [
 			.add('Adamantite ore', 1, 15)
 			.add('Runite ore', 1, 2)
 			.tertiary(36_490, 'Rocky'),
-		respawnTime: Time.Second * 60
+		// World hopping rate
+		respawnTime: Time.Second * 15,
+		lootPercent: 100,
+		fireCapeRequired: true
 	}
 ];
 
-export const Pickpocketables: Pickpockable[] = [
+const pickpocketables: Stealable[] = [
 	{
 		name: 'Man',
+		type: 'pickpockable',
 		level: 1,
 		xp: 8,
 		table: Monsters.Man.pickpocketTable!,
@@ -155,6 +224,7 @@ export const Pickpocketables: Pickpockable[] = [
 	},
 	{
 		name: 'Woman',
+		type: 'pickpockable',
 		level: 1,
 		xp: 8,
 		table: Monsters.Woman.pickpocketTable!,
@@ -166,6 +236,7 @@ export const Pickpocketables: Pickpockable[] = [
 	},
 	{
 		name: 'Farmer',
+		type: 'pickpockable',
 		level: 10,
 		xp: 14.5,
 		table: Farmer.pickpocketTable!,
@@ -178,9 +249,10 @@ export const Pickpocketables: Pickpockable[] = [
 	},
 	{
 		name: 'Female H.A.M. member',
+		type: 'pickpockable',
 		level: 15,
 		xp: 18.5,
-		alias: ['female ham'],
+		aliases: ['female ham'],
 		table: FemaleHamMember.pickpocketTable!,
 		id: FemaleHamMember.id,
 		stunTime: 4,
@@ -190,9 +262,10 @@ export const Pickpocketables: Pickpockable[] = [
 	},
 	{
 		name: 'Male H.A.M. member',
+		type: 'pickpockable',
 		level: 20,
 		xp: 22.5,
-		alias: ['ham', 'male ham'],
+		aliases: ['ham', 'male ham'],
 		table: MaleHamMember.pickpocketTable!,
 		id: MaleHamMember.id,
 		stunTime: 4,
@@ -202,6 +275,7 @@ export const Pickpocketables: Pickpockable[] = [
 	},
 	{
 		name: 'Warrior woman',
+		type: 'pickpockable',
 		level: 25,
 		xp: 26,
 		table: WarriorWoman.pickpocketTable!,
@@ -214,6 +288,7 @@ export const Pickpocketables: Pickpockable[] = [
 	},
 	{
 		name: 'Rogue',
+		type: 'pickpockable',
 		level: 32,
 		xp: 35.5,
 		table: Rogue.pickpocketTable!,
@@ -225,9 +300,10 @@ export const Pickpocketables: Pickpockable[] = [
 	},
 	{
 		name: 'Cave goblin',
+		type: 'pickpockable',
 		level: 36,
 		xp: 40,
-		alias: ['goblin'],
+		aliases: ['goblin'],
 		table: CaveGoblin.pickpocketTable!,
 		id: CaveGoblin.id,
 		stunTime: 5,
@@ -238,9 +314,10 @@ export const Pickpocketables: Pickpockable[] = [
 	},
 	{
 		name: 'Master Farmer',
+		type: 'pickpockable',
 		level: 38,
 		xp: 43,
-		alias: ['mf', 'master'],
+		aliases: ['mf', 'master'],
 		table: MasterFarmer.pickpocketTable!,
 		id: MasterFarmer.id,
 		stunTime: 5,
@@ -250,6 +327,7 @@ export const Pickpocketables: Pickpockable[] = [
 	},
 	{
 		name: 'Guard',
+		type: 'pickpockable',
 		level: 40,
 		xp: 46.8,
 		table: Guard.pickpocketTable!,
@@ -261,9 +339,10 @@ export const Pickpocketables: Pickpockable[] = [
 	},
 	{
 		name: 'Fremennik Citizen',
+		type: 'pickpockable',
 		level: 45,
 		xp: 65,
-		alias: ['fremmy', 'fremennik'],
+		aliases: ['fremmy', 'fremennik'],
 		table: FremennikCitizen.pickpocketTable!,
 		id: FremennikCitizen.id,
 		stunTime: 5,
@@ -274,9 +353,10 @@ export const Pickpocketables: Pickpockable[] = [
 	},
 	{
 		name: 'Bearded Pollnivnian Bandit',
+		type: 'pickpockable',
 		level: 45,
 		xp: 65,
-		alias: ['bearded bandit', 'beard', 'beard bandit'],
+		aliases: ['bearded bandit', 'beard', 'beard bandit'],
 		table: BeardedBandit.pickpocketTable!,
 		id: BeardedBandit.id,
 		stunTime: 5,
@@ -288,9 +368,10 @@ export const Pickpocketables: Pickpockable[] = [
 	},
 	{
 		name: 'Desert Bandit',
+		type: 'pickpockable',
 		level: 53,
 		xp: 79.5,
-		alias: ['desert'],
+		aliases: ['desert'],
 		table: DesertBandit.pickpocketTable!,
 		id: 33_322,
 		stunTime: 5,
@@ -300,9 +381,10 @@ export const Pickpocketables: Pickpockable[] = [
 	},
 	{
 		name: 'Knight of Ardougne',
+		type: 'pickpockable',
 		level: 55,
 		xp: 84.3,
-		alias: ['knight', 'ardy knight'],
+		aliases: ['knight', 'ardy knight'],
 		table: KnightOfArdougne.pickpocketTable!,
 		id: KnightOfArdougne.id,
 		stunTime: 5,
@@ -312,6 +394,7 @@ export const Pickpocketables: Pickpockable[] = [
 	},
 	{
 		name: 'Pollnivnian Bandit',
+		type: 'pickpockable',
 		level: 55,
 		xp: 84.3,
 		table: PollnivnianBandit.pickpocketTable!,
@@ -325,9 +408,10 @@ export const Pickpocketables: Pickpockable[] = [
 	},
 	{
 		name: 'Yanille Watchman',
+		type: 'pickpockable',
 		level: 65,
 		xp: 137.5,
-		alias: ['yanille'],
+		aliases: ['yanille'],
 		table: YanilleWatchman.pickpocketTable!,
 		id: YanilleWatchman.id,
 		stunTime: 5,
@@ -337,9 +421,10 @@ export const Pickpocketables: Pickpockable[] = [
 	},
 	{
 		name: 'Menaphite Thug',
+		type: 'pickpockable',
 		level: 65,
 		xp: 137.5,
-		alias: ['thug'],
+		aliases: ['thug'],
 		table: MenaphiteThug.pickpocketTable!,
 		id: MenaphiteThug.id,
 		stunTime: 5,
@@ -350,6 +435,7 @@ export const Pickpocketables: Pickpockable[] = [
 	},
 	{
 		name: 'Paladin',
+		type: 'pickpockable',
 		level: 70,
 		xp: 151.7,
 		table: Paladin.pickpocketTable!,
@@ -361,6 +447,7 @@ export const Pickpocketables: Pickpockable[] = [
 	},
 	{
 		name: 'Gnome',
+		type: 'pickpockable',
 		level: 75,
 		xp: 198.5,
 		table: Gnome.pickpocketTable!,
@@ -372,6 +459,7 @@ export const Pickpocketables: Pickpockable[] = [
 	},
 	{
 		name: 'Hero',
+		type: 'pickpockable',
 		level: 80,
 		xp: 275,
 		table: Hero.pickpocketTable!,
@@ -383,6 +471,7 @@ export const Pickpocketables: Pickpockable[] = [
 	},
 	{
 		name: 'Vyre',
+		type: 'pickpockable',
 		level: 82,
 		xp: 306.9,
 		table: Vyre.pickpocketTable!,
@@ -394,6 +483,7 @@ export const Pickpocketables: Pickpockable[] = [
 	},
 	{
 		name: 'Elf',
+		type: 'pickpockable',
 		level: 85,
 		xp: 353,
 		table: PrifddinasElf.pickpocketTable!,
@@ -406,22 +496,23 @@ export const Pickpocketables: Pickpockable[] = [
 	},
 	{
 		name: 'TzHaar-Hur',
+		type: 'pickpockable',
 		level: 90,
 		xp: 103.4,
-		alias: ['tzhaar'],
+		aliases: ['tzhaar'],
 		table: TzHaarHur.pickpocketTable!,
 		id: TzHaarHur.id,
 		stunTime: 5,
 		stunDamage: 4,
 		slope: 1.611_25,
 		intercept: -80.993_75,
-		itemsRequired: resolveNameBank({
-			'Fire cape': 1
-		})
+		fireCapeRequired: true
 	}
 ];
 
-for (const entity of Pickpocketables) {
+export const stealables: Stealable[] = [...stalls, ...pickpocketables];
+
+for (const entity of stealables) {
 	if (!entity.table) {
 		console.error(`Warning! No table for ${entity.name}.`);
 	}

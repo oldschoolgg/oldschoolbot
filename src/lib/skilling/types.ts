@@ -146,6 +146,8 @@ export interface Craftable {
 	crushChance?: number[];
 	bankChest?: boolean;
 	outputMultiple?: number;
+	qpRequired?: number;
+	wcLvl?: number;
 }
 
 export interface Fletchable {

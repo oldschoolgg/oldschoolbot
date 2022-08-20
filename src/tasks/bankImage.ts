@@ -8,7 +8,7 @@ import { toKMB } from 'oldschooljs/dist/util/util';
 import * as path from 'path';
 import { Canvas, CanvasRenderingContext2D, FontLibrary, Image, loadImage } from 'skia-canvas/lib';
 
-import { bankImageCache, BitField, PerkTier } from '../lib/constants';
+import { BitField, PerkTier } from '../lib/constants';
 import { allCLItems } from '../lib/data/Collections';
 import { filterableTypes } from '../lib/data/filterables';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
@@ -16,13 +16,8 @@ import { BankBackground, FlagMap, Flags } from '../lib/minions/types';
 import { getUserSettings } from '../lib/settings/settings';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { BankSortMethod, BankSortMethods, sorts } from '../lib/sorts';
-import {
-	addArrayOfNumbers,
-	cleanString,
-	formatItemStackQuantity,
-	generateHexColorForCashStack,
-	sha256Hash
-} from '../lib/util';
+import { ItemBank } from '../lib/types';
+import { addArrayOfNumbers, cleanString, formatItemStackQuantity, generateHexColorForCashStack } from '../lib/util';
 import { drawImageWithOutline, fillTextXTimesInCtx, getClippedRegion } from '../lib/util/canvasUtil';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 import itemID from '../lib/util/itemID';
@@ -36,19 +31,10 @@ FontLibrary.use({
 	'RuneScape Quill 8': './src/lib/resources/osrs-font-quill-8.ttf'
 });
 
-export type BankImageResult =
-	| {
-			cachedURL: null;
-			image: Buffer;
-			cacheKey: string;
-			isTransparent: boolean;
-	  }
-	| {
-			cachedURL: string;
-			image: null;
-			cacheKey: string;
-			isTransparent: boolean;
-	  };
+export interface BankImageResult {
+	image: Buffer;
+	isTransparent: boolean;
+}
 
 const CACHE_DIR = './icon_cache';
 
@@ -198,6 +184,17 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Clue scroll (master)'), 'master'],
 	[i('Reward casket (master)'), 'master']
 ]);
+
+export const bankFlags = [
+	'show_price',
+	'show_alch',
+	'show_id',
+	'show_names',
+	'show_weights',
+	'show_all',
+	'wide'
+] as const;
+export type BankFlag = typeof bankFlags[number];
 
 export default class BankImageTask extends Task {
 	public itemIconsList: Set<number>;
@@ -397,7 +394,9 @@ export default class BankImageTask extends Task {
 		itemWidthSize: number,
 		items: [Item, number][],
 		flags: FlagMap,
-		currentCL: Bank | undefined
+		currentCL: Bank | undefined,
+		mahojiFlags: BankFlag[] | undefined,
+		weightings: Readonly<ItemBank> | undefined
 	) {
 		// Draw Items
 		ctx.textAlign = 'start';
@@ -456,14 +455,16 @@ export default class BankImageTask extends Task {
 
 			let bottomItemText: string | number | null = null;
 
-			if (flags.has('sv')) {
+			if (flags.has('sv') || mahojiFlags?.includes('show_price')) {
 				bottomItemText = item.price * quantity;
-			} else if (flags.has('av')) {
+			} else if (flags.has('av') || mahojiFlags?.includes('show_alch')) {
 				bottomItemText = (item.highalch ?? 0) * quantity;
-			} else if (flags.has('id')) {
+			} else if (flags.has('id') || mahojiFlags?.includes('show_id')) {
 				bottomItemText = item.id.toString();
-			} else if (flags.has('names')) {
+			} else if (flags.has('names') || mahojiFlags?.includes('show_names')) {
 				bottomItemText = item.name;
+			} else if (mahojiFlags?.includes('show_weights') && weightings && weightings[item.id]) {
+				bottomItemText = weightings[item.id];
 			}
 
 			const forcedShortName = forcedShortNameMap.get(item.id);
@@ -484,16 +485,18 @@ export default class BankImageTask extends Task {
 		}
 	}
 
-	async generateBankImage(
-		_bank: Bank,
-		title = '',
-		showValue = true,
-		_flags: Flags = {},
-		user?: KlasaUser,
-		collectionLog?: Bank
-	): Promise<BankImageResult> {
-		const bank = _bank.clone();
-		const flags = new Map(Object.entries(_flags));
+	async generateBankImage(opts: {
+		bank: Bank;
+		title?: string;
+		showValue?: boolean;
+		flags?: Flags;
+		user?: KlasaUser;
+		collectionLog?: Bank;
+		mahojiFlags?: BankFlag[];
+	}): Promise<BankImageResult> {
+		let { user, collectionLog, title = '', showValue = true } = opts;
+		const bank = opts.bank.clone();
+		const flags = new Map(Object.entries(opts.flags ?? {}));
 		let compact = flags.has('compact');
 		const spacer = compact ? 2 : 12;
 
@@ -503,7 +506,6 @@ export default class BankImageTask extends Task {
 		const bankBackgroundID = Number(settings?.get(UserSettings.BankBackground) ?? flags.get('background') ?? 1);
 		const rawCL = settings?.get(UserSettings.CollectionLogBank);
 		const currentCL: Bank | undefined = collectionLog ?? (rawCL === undefined ? undefined : new Bank(rawCL));
-		let partial = false;
 
 		// Filtering
 		const searchQuery = flags.get('search') as string | undefined;
@@ -512,7 +514,6 @@ export default class BankImageTask extends Task {
 			? filterableTypes.find(type => type.aliases.some(alias => filterInput === alias)) ?? null
 			: null;
 		if (filter || searchQuery) {
-			partial = true;
 			bank.filter(item => {
 				if (searchQuery) return cleanString(item.name).includes(cleanString(searchQuery));
 				return filter!.items(user!).includes(item.id);
@@ -564,13 +565,15 @@ export default class BankImageTask extends Task {
 		// Get page flag to show the current page, full and showNewCL to avoid showing page n of y
 		const page = flags.get('page');
 		const noBorder = flags.get('noBorder');
-		const wide = flags.get('wide');
+		const wide = flags.get('wide') || opts.mahojiFlags?.includes('wide');
 		if (Number(page) >= 0) {
 			title += ` - Page ${(Number(page) ? Number(page) : 0) + 1} of ${chunked.length}`;
 		}
 
+		const isShowingFullBankImage = wide || flags.has('full') || opts.mahojiFlags?.includes('show_all');
+
 		// Paging
-		if (typeof page === 'number' && !flags.has('full')) {
+		if (typeof page === 'number' && !isShowingFullBankImage) {
 			let pageLoot = chunked[page];
 			let asItem = Items.get(page + 1);
 			if (asItem && !pageLoot) {
@@ -620,36 +623,6 @@ export default class BankImageTask extends Task {
 				? true
 				: user.settings.get(UserSettings.BitField).includes(BitField.AlwaysSmallBank)
 			: true;
-
-		const cacheKey = [
-			title,
-			user?.id ?? 'nouser',
-			showValue,
-			bankBackgroundID,
-			searchQuery,
-			items.length,
-			partial,
-			page,
-			isPurple,
-			totalValue,
-			canvasHeight,
-			Object.entries(flags).toString(),
-			sha256Hash(items.map(i => `${i[0].id}-${i[1]}`).join('')),
-			hexColor ?? 'no-hex',
-			useSmallBank ? 'smallbank' : 'no-smallbank',
-			sort,
-			Math.random() * 190
-		].join('-');
-
-		let cached = bankImageCache.get(cacheKey);
-		if (cached && !flags.has('nocache')) {
-			return {
-				cachedURL: cached,
-				image: null,
-				cacheKey,
-				isTransparent
-			};
-		}
 
 		const canvas = new Canvas(width, useSmallBank ? canvasHeight : Math.max(331, canvasHeight));
 
@@ -703,14 +676,23 @@ export default class BankImageTask extends Task {
 		if (!isTransparent && noBorder !== 1) {
 			this.drawBorder(ctx, bgSprite, bgImage.name === 'Default');
 		}
-		await this.drawItems(ctx, compact, spacer, itemsPerRow, itemWidthSize, items, flags, currentCL);
+		await this.drawItems(
+			ctx,
+			compact,
+			spacer,
+			itemsPerRow,
+			itemWidthSize,
+			items,
+			flags,
+			currentCL,
+			opts.mahojiFlags,
+			weightings
+		);
 
 		const image = await canvas.toBuffer('png');
 
 		return {
 			image,
-			cacheKey,
-			cachedURL: null,
 			isTransparent
 		};
 	}

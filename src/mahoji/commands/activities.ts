@@ -4,6 +4,7 @@ import { KourendFavours } from '../../lib/minions/data/kourendFavour';
 import { Planks } from '../../lib/minions/data/planks';
 import Potions from '../../lib/minions/data/potions';
 import birdhouses from '../../lib/skilling/skills/hunter/birdHouseTrapping';
+import { Castables } from '../../lib/skilling/skills/magic/castables';
 import { Enchantables } from '../../lib/skilling/skills/magic/enchantables';
 import Prayer from '../../lib/skilling/skills/prayer';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
@@ -12,6 +13,7 @@ import { aerialFishingCommand } from '../lib/abstracted_commands/aerialFishingCo
 import { alchCommand } from '../lib/abstracted_commands/alchCommand';
 import { birdhouseCheckCommand, birdhouseHarvestCommand } from '../lib/abstracted_commands/birdhousesCommand';
 import { buryCommand } from '../lib/abstracted_commands/buryCommand';
+import { castCommand } from '../lib/abstracted_commands/castCommand';
 import { championsChallengeCommand } from '../lib/abstracted_commands/championsChallenge';
 import { chargeGloriesCommand } from '../lib/abstracted_commands/chargeGloriesCommand';
 import { chargeWealthCommand } from '../lib/abstracted_commands/chargeWealthCommand';
@@ -23,6 +25,7 @@ import { enchantCommand } from '../lib/abstracted_commands/enchantCommand';
 import { favourCommand } from '../lib/abstracted_commands/favourCommand';
 import { fightCavesCommand } from '../lib/abstracted_commands/fightCavesCommand';
 import { infernoStartCommand, infernoStatsCommand } from '../lib/abstracted_commands/infernoCommand';
+import puroOptions, { puroPuroStartCommand } from '../lib/abstracted_commands/puroPuroCommand';
 import { questCommand } from '../lib/abstracted_commands/questCommand';
 import { sawmillCommand } from '../lib/abstracted_commands/sawmillCommand';
 import { warriorsGuildCommand } from '../lib/abstracted_commands/warriorsGuildCommand';
@@ -110,6 +113,12 @@ export const activitiesCommand: OSBMahojiCommand = {
 							.map(p => ({ name: p.item.name, value: p.item.name }));
 					},
 					required: true
+				},
+				{
+					type: ApplicationCommandOptionType.Boolean,
+					name: 'no_stams',
+					description: "Enable if you don't want to use stamina potions when collecting.",
+					required: false
 				}
 			]
 		},
@@ -315,6 +324,27 @@ export const activitiesCommand: OSBMahojiCommand = {
 				}
 			]
 		},
+
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'puro_puro',
+			description: 'Hunt implings in Puro-Puro.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'impling',
+					description: 'The impling you want to hunt',
+					required: true,
+					choices: puroOptions.map(i => ({ name: i.name, value: i.name }))
+				},
+				{
+					type: ApplicationCommandOptionType.Boolean,
+					name: 'dark_lure',
+					description: 'Use the Dark Lure spell for increased implings?',
+					required: false
+				}
+			]
+		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'alch',
@@ -331,6 +361,31 @@ export const activitiesCommand: OSBMahojiCommand = {
 					min_value: 1
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'cast',
+			description: 'Cast spells to train Magic.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'spell',
+					description: 'The spell you want to cast.',
+					required: true,
+					autocomplete: async (value: string) => {
+						return Castables.filter(i =>
+							!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
+						).map(i => ({ name: i.name, value: i.name }));
+					}
+				},
+				{
+					type: ApplicationCommandOptionType.Integer,
+					name: 'quantity',
+					description: 'The quantity you want to cast (Optional).',
+					required: false,
+					min_value: 1
+				}
+			]
 		}
 	],
 	run: async ({
@@ -343,7 +398,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 		chompy_hunt?: { action: 'start' | 'claim' };
 		champions_challenge?: {};
 		warriors_guild?: { action: string; quantity?: number };
-		collect?: { item: string };
+		collect?: { item: string; no_stams?: boolean };
 		quest?: {};
 		favour?: { name?: string; no_stams?: boolean };
 		decant?: { potion_name: string; dose?: number };
@@ -355,7 +410,9 @@ export const activitiesCommand: OSBMahojiCommand = {
 		aerial_fishing?: {};
 		enchant?: { name: string; quantity?: number };
 		bury?: { name: string; quantity?: number };
+		puro_puro?: { impling: string; dark_lure?: boolean };
 		alch?: { item: string; quantity?: number };
+		cast?: { spell: string; quantity?: number };
 	}>) => {
 		const klasaUser = await globalClient.fetchUser(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
@@ -397,7 +454,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 			);
 		}
 		if (options.collect) {
-			return collectCommand(mahojiUser, klasaUser, channelID, options.collect.item);
+			return collectCommand(mahojiUser, klasaUser, channelID, options.collect.item, options.collect.no_stams);
 		}
 		if (options.quest) {
 			return questCommand(klasaUser, channelID);
@@ -433,6 +490,12 @@ export const activitiesCommand: OSBMahojiCommand = {
 		}
 		if (options.alch) {
 			return alchCommand(interaction, channelID, klasaUser, options.alch.item, options.alch.quantity);
+		}
+		if (options.puro_puro) {
+			return puroPuroStartCommand(klasaUser, channelID, options.puro_puro.impling, options.puro_puro.dark_lure);
+		}
+		if (options.cast) {
+			return castCommand(channelID, klasaUser, options.cast.spell, options.cast.quantity);
 		}
 
 		return 'Invalid command.';

@@ -29,14 +29,6 @@ export type ProviderConfig = null | {
 	postgres?: PostgresConfig;
 };
 
-export type RedditAppConfig = null | {
-	userAgent: string;
-	clientId: string;
-	clientSecret: string;
-	username: string;
-	password: string;
-};
-
 export type PatreonConfig = null | {
 	campaignID: number;
 	token: string;

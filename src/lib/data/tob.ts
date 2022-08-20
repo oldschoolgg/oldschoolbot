@@ -13,6 +13,7 @@ import { Gear } from '../structures/Gear';
 import { Skills } from '../types';
 import { assert, formatSkillRequirements, randFloat, randomVariation, skillsMeetRequirements } from '../util';
 import getOSItem from '../util/getOSItem';
+import { logError } from '../util/logError';
 import resolveItems from '../util/resolveItems';
 
 export const bareMinStats: Skills = {
@@ -653,6 +654,14 @@ export function createTOBTeam({
 	}
 
 	if (!wipedRoom) deathDuration = null;
+
+	if (wipedRoom !== null && (!TOBRooms.includes(wipedRoom) || [-1].includes(TOBRooms.indexOf(wipedRoom)))) {
+		logError(new Error('Had non-existant wiped room for tob'), {
+			room: JSON.stringify(wipedRoom),
+			team: JSON.stringify(parsedTeam)
+		});
+		wipedRoom = null;
+	}
 
 	return {
 		duration,

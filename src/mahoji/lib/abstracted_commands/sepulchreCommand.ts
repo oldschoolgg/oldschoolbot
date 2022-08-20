@@ -7,12 +7,18 @@ import { sepulchreBoosts, sepulchreFloors } from '../../../lib/minions/data/sepu
 import { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, itemNameFromID } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
 export async function sepulchreCommand(user: KlasaUser, channelID: bigint) {
 	const agilityLevel = user.skillLevel(SkillsEnum.Agility);
+	const thievingLevel = user.skillLevel(SkillsEnum.Thieving);
 	const minLevel = sepulchreFloors[0].agilityLevel;
 	if (agilityLevel < minLevel) {
 		return `You need atleast level ${minLevel} Agility to do the Hallowed Sepulchre.`;
+	}
+
+	if (thievingLevel < 66) {
+		return 'You need atleast level 66 Thieving to do the Hallowed Sepulchre.';
 	}
 
 	if (!user.hasGracefulEquipped()) {
@@ -40,7 +46,7 @@ export async function sepulchreCommand(user: KlasaUser, channelID: bigint) {
 			lapLength = reduceNumByPercent(lapLength, percent);
 		}
 	}
-	const maxLaps = Math.floor(user.maxTripLength('Sepulchre') / lapLength);
+	const maxLaps = Math.floor(calcMaxTripLength(user, 'Sepulchre') / lapLength);
 	const tripLength = maxLaps * lapLength;
 
 	await addSubTaskToActivityTask<SepulchreActivityTaskOptions>({

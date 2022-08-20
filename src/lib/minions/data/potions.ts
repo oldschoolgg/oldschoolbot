@@ -253,6 +253,10 @@ const Potions = [
 			'Extended super antifire(3)',
 			'Extended super antifire(4)'
 		])
+	},
+	{
+		name: 'Ancient brew',
+		items: resolveItems(['Ancient brew(1)', 'Ancient brew(2)', 'Ancient brew(3)', 'Ancient brew(4)'])
 	}
 ];
 

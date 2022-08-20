@@ -9,6 +9,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { HerbloreActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -18,7 +19,6 @@ export const mineCommand: OSBMahojiCommand = {
 	attributes: {
 		requiresMinion: true,
 		requiresMinionNotBusy: true,
-		description: 'Mix potions to train Herblore.',
 		examples: ['/mix name:Prayer potion']
 	},
 	options: [
@@ -100,7 +100,7 @@ export const mineCommand: OSBMahojiCommand = {
 			cost = "decided to pay Wesley 50 gp for each item so they don't have to go";
 		}
 
-		const maxTripLength = user.maxTripLength('Herblore');
+		const maxTripLength = calcMaxTripLength(user, 'Herblore');
 
 		let { quantity } = options;
 		if (!quantity) quantity = Math.floor(maxTripLength / timeToMixSingleItem);
@@ -109,7 +109,7 @@ export const mineCommand: OSBMahojiCommand = {
 
 		const maxCanDo = user.bank({ withGP: true }).fits(baseCost);
 		if (maxCanDo === 0) {
-			return "You don't have enough supplies to mix even one of this item!";
+			return `You don't have enough supplies to mix even one of this item!\nTo mix/clean a ${mixableItem.name}, you need to have ${baseCost}.`;
 		}
 		if (maxCanDo < quantity) {
 			quantity = maxCanDo;

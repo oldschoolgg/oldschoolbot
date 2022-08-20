@@ -4,17 +4,23 @@ import { MessageAttachment, MessageCollector, MessageOptions } from 'discord.js'
 import { KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { COINS_ID, lastTripCache, LastTripRunArgs, PerkTier } from '../constants';
+import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
+import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
+import { ClueTiers } from '../clues/clueTiers';
+import { COINS_ID, Emoji, lastTripCache, LastTripRunArgs, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
-import ClueTiers from '../minions/data/clueTiers';
 import { triggerRandomEvent } from '../randomEvents';
 import { runCommand } from '../settings/settings';
-import { ClientSettings } from '../settings/types/ClientSettings';
 import { ActivityTaskOptions } from '../types/minions';
 import { channelIsSendable, updateGPTrackSetting } from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
-import { makeDoClueButton, makeOpenCasketButton, makeRepeatTripButton } from './globalInteractions';
+import {
+	makeBirdHouseTripButton,
+	makeDoClueButton,
+	makeOpenCasketButton,
+	makeRepeatTripButton
+} from './globalInteractions';
 import { sendToChannelID } from './webhook';
 
 export const collectors = new Map<string, MessageCollector>();
@@ -36,7 +42,7 @@ const tripFinishEffects: {
 			if (loot && activitiesToTrackAsPVMGPSource.includes(data.type)) {
 				const GP = loot.amount(COINS_ID);
 				if (typeof GP === 'number') {
-					updateGPTrackSetting(globalClient, ClientSettings.EconomyStats.GPSourcePVMLoot, GP);
+					updateGPTrackSetting('gp_pvm', GP);
 				}
 			}
 		}
@@ -48,6 +54,7 @@ const tripFinishEffects: {
 			if (imp && imp.bank.length > 0) {
 				const many = imp.bank.length > 1;
 				messages.push(`Caught ${many ? 'some' : 'an'} impling${many ? 's' : ''}, you received: ${imp.bank}`);
+				userStatsBankUpdate(user.id, 'passive_implings_bank', imp.bank);
 				await user.addItemsToBank({ items: imp.bank, collectionLog: true });
 			}
 		}
@@ -76,7 +83,8 @@ export async function handleTripFinish(
 		| ((args: LastTripRunArgs) => Promise<KlasaMessage | KlasaMessage[] | null>),
 	attachment: MessageAttachment | Buffer | undefined,
 	data: ActivityTaskOptions,
-	loot: Bank | null
+	loot: Bank | null,
+	_messages?: string[]
 ) {
 	const perkTier = getUsersPerkTier(user);
 	const messages: string[] = [];
@@ -84,8 +92,13 @@ export async function handleTripFinish(
 
 	const clueReceived = loot ? ClueTiers.find(tier => loot.amount(tier.scrollID) > 0) : undefined;
 
+	if (_messages) messages.push(..._messages);
 	if (messages.length > 0) {
 		message += `\n**Messages:** ${messages.join(', ')}`;
+	}
+
+	if (clueReceived && perkTier < PerkTier.Two) {
+		message += `\n${Emoji.Casket} **You got a ${clueReceived.name} clue scroll** in your loot.`;
 	}
 
 	const existingCollector = collectors.get(user.id);
@@ -101,7 +114,7 @@ export async function handleTripFinish(
 	const runCmdOptions = {
 		channelID,
 		userID: user.id,
-		guildID: isGuildBasedChannel(channel) ? channel.guild.id : undefined,
+		guildID: isGuildBasedChannel(channel) && channel.guild ? channel.guild.id : undefined,
 		user,
 		member: null
 	};
@@ -126,7 +139,8 @@ export async function handleTripFinish(
 
 	const casketReceived = loot ? ClueTiers.find(i => loot?.has(i.id)) : undefined;
 	if (casketReceived) components[0].push(makeOpenCasketButton(casketReceived));
-
+	const birdHousedetails = await calculateBirdhouseDetails(user.id);
+	if (birdHousedetails.isReady && perkTier > PerkTier.One) components[0].push(makeBirdHouseTripButton());
 	sendToChannelID(channelID, {
 		content: message,
 		image: attachment,

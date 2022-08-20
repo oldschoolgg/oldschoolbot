@@ -9,6 +9,7 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { TokkulShopOptions } from '../../lib/types/minions';
 import { formatDuration, stringMatches, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { OSBMahojiCommand } from '../lib/util';
 import { handleMahojiConfirmation } from '../mahojiSettings';
 
@@ -23,7 +24,6 @@ export const tksCommand: OSBMahojiCommand = {
 	attributes: {
 		requiresMinion: true,
 		categoryFlags: ['minion'],
-		description: 'Purchase items from the Tzhaar shops using tokkul.',
 		examples: ['/tokkulshop buy Obsidian platebody', '/tokkulshop sell Chaos rune 5000']
 	},
 	options: [
@@ -100,7 +100,7 @@ export const tksCommand: OSBMahojiCommand = {
 			return `You are not worthy JalYt. Before you can buy/sell ${item.name}, you need to have defeated the might TzTok-Jad!`;
 		}
 		const bank = user.bank();
-		const maxTripLength = user.maxTripLength(activity_type_enum.TokkulShop);
+		const maxTripLength = calcMaxTripLength(user, activity_type_enum.TokkulShop);
 		let quantity = options.buy?.quantity ?? options.sell?.quantity ?? 1;
 		const cost = new Bank();
 		const loot = new Bank();

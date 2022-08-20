@@ -2,9 +2,10 @@ import { KlasaUser } from 'klasa';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
+import { ClueTiers } from '../../lib/clues/clueTiers';
 import { PerkTier } from '../../lib/constants';
-import ClueTiers from '../../lib/minions/data/clueTiers';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import { makeBankImage } from '../../lib/util/makeBankImage';
 import { Workers } from '../../lib/workers';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -59,12 +60,14 @@ export const casketCommand: OSBMahojiCommand = {
 
 		if (Object.keys(loot.bank).length === 0) return `${title} and got nothing :(`;
 
-		const { image } = await globalClient.tasks
-			.get('bankImage')!
-			.generateBankImage(new Bank(loot.bank), title, true, {}, user);
+		const image = await makeBankImage({
+			bank: new Bank(loot.bank),
+			title,
+			user
+		});
 
 		return {
-			attachments: [{ fileName: 'loot.jpg', buffer: image! }]
+			attachments: [image.file]
 		};
 	}
 };

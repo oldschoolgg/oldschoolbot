@@ -8,6 +8,7 @@ import { BitField } from '../../../lib/constants';
 import { assert } from '../../../lib/util';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
 import { mahojiUserSettingsUpdate } from '../../mahojiSettings';
+import { flowerTable } from './hotColdCommand';
 
 interface Usable {
 	items: Item[];
@@ -60,12 +61,23 @@ for (const usableUnlock of usableUnlocks) {
 	});
 }
 
-const genericUsables: { items: [Item, Item]; cost: Bank; loot: Bank | null; response: string }[] = [
+const genericUsables: {
+	items: [Item, Item] | [Item];
+	cost: Bank;
+	loot: Bank | (() => Bank) | null;
+	response: (loot: Bank) => string;
+}[] = [
 	{
 		items: [getOSItem('Banana'), getOSItem('Monkey')],
 		cost: new Bank().add('Banana').freeze(),
 		loot: null,
-		response: 'You fed a Banana to your Monkey!'
+		response: () => 'You fed a Banana to your Monkey!'
+	},
+	{
+		items: [getOSItem('Mithril seeds')],
+		cost: new Bank().add('Mithril seeds').freeze(),
+		loot: () => flowerTable.roll(),
+		response: loot => `You planted a Mithril seed and got ${loot}!`
 	}
 ];
 for (const genericU of genericUsables) {
@@ -73,8 +85,10 @@ for (const genericU of genericUsables) {
 		items: genericU.items,
 		run: async klasaUser => {
 			if (genericU.cost) await klasaUser.removeItemsFromBank(genericU.cost);
-			if (genericU.loot) await klasaUser.addItemsToBank({ items: genericU.loot });
-			return genericU.response;
+			const loot =
+				genericU.loot === null ? null : genericU.loot instanceof Bank ? genericU.loot : genericU.loot();
+			if (loot) await klasaUser.addItemsToBank({ items: loot });
+			return genericU.response(loot ?? new Bank());
 		}
 	});
 }

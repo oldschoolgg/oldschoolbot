@@ -5,7 +5,6 @@ import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommand
 import { Bank, Util } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { channelIsSendable, updateGPTrackSetting } from '../../../lib/util';
 import { mahojiParseNumber } from '../../mahojiSettings';
@@ -39,8 +38,6 @@ export async function duelCommand(
 	if (duelSourceUser.id === duelTargetUser.id) return 'You cant duel yourself.';
 	if (!(duelTargetUser instanceof User)) return "You didn't mention a user to duel.";
 	if (duelTargetUser.bot) return 'You cant duel a bot.';
-	if (duelSourceUser.minionIsBusy) return `${duelSourceUser.minionName} is busy.`;
-	if (duelTargetUser.minionIsBusy) return 'That user is busy right now.';
 
 	if (!(await checkBal(duelSourceUser, amount))) {
 		return 'You dont have have enough GP to duel that much.';
@@ -106,11 +103,7 @@ export async function duelCommand(
 		const tax = winningAmount - winningAmount * 0.95;
 
 		const dividedAmount = tax / 1_000_000;
-		updateGPTrackSetting(
-			globalClient,
-			ClientSettings.EconomyStats.DuelTaxBank,
-			Math.floor(Math.round(dividedAmount * 100) / 100)
-		);
+		updateGPTrackSetting('duelTaxBank', Math.floor(Math.round(dividedAmount * 100) / 100));
 
 		const winsOfWinner = winner.settings.get(UserSettings.Stats.DuelWins) as number;
 		winner.settings.update(UserSettings.Stats.DuelWins, winsOfWinner + 1);

@@ -4,7 +4,7 @@ import { NEX_ID, PVM_METHODS, PvMMethod, ZALCANO_ID } from '../../lib/constants'
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { revenantMonsters } from '../../lib/minions/data/killableMonsters/revs';
 import { prisma } from '../../lib/settings/prisma';
-import { minionKillCommand } from '../lib/abstracted_commands/minionKill';
+import { minionKillCommand, monsterInfo } from '../lib/abstracted_commands/minionKill';
 import { OSBMahojiCommand } from '../lib/util';
 
 const autocompleteMonsters = [
@@ -30,6 +30,12 @@ const autocompleteMonsters = [
 		aliases: ['zalcano'],
 		id: ZALCANO_ID,
 		emoji: '<:Smolcano:604670895113633802>'
+	},
+	{
+		name: 'Wintertodt',
+		aliases: ['wt', 'wintertodt', 'todt'],
+		id: -1,
+		emoji: '<:Phoenix:324127378223792129>'
 	}
 ];
 
@@ -51,9 +57,7 @@ export const killCommand: OSBMahojiCommand = {
 	description: 'Send your minion to kill things.',
 	attributes: {
 		requiresMinion: true,
-		requiresMinionNotBusy: true,
-		description: 'Send your minion to kill things.',
-		examples: ['/k zulrah']
+		examples: ['/k name:zulrah']
 	},
 	options: [
 		{
@@ -96,6 +100,12 @@ export const killCommand: OSBMahojiCommand = {
 			description: 'If you want to cannon/barrage/burst.',
 			required: false,
 			choices: PVM_METHODS.map(i => ({ name: i, value: i }))
+		},
+		{
+			type: ApplicationCommandOptionType.Boolean,
+			name: 'show_info',
+			description: 'Show information on this monster.',
+			required: false
 		}
 	],
 	run: async ({
@@ -103,8 +113,9 @@ export const killCommand: OSBMahojiCommand = {
 		userID,
 		channelID,
 		interaction
-	}: CommandRunOptions<{ name: string; quantity?: number; method?: PvMMethod }>) => {
+	}: CommandRunOptions<{ name: string; quantity?: number; method?: PvMMethod; show_info?: boolean }>) => {
 		const user = await globalClient.fetchUser(userID);
+		if (options.show_info) return monsterInfo(user, options.name);
 		return minionKillCommand(interaction, user, channelID, options.name, options.quantity, options.method);
 	}
 };

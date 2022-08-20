@@ -49,8 +49,6 @@ export default class extends Task {
 		} has finished. The total amount of points your team got is ${totalPoints.toLocaleString()}.\n`;
 		await Promise.all(allUsers.map(u => incrementMinigameScore(u.id, minigameID, 1)));
 
-		const onyxChance = users.length * 70;
-
 		for (let [userID, _userLoot] of Object.entries(loot)) {
 			const user = await this.client.fetchUser(userID).catch(noOp);
 			if (!user) continue;
@@ -68,10 +66,6 @@ export default class extends Task {
 				if (unownedPet) {
 					userLoot.add(unownedPet);
 				}
-			}
-
-			if (!totalLoot.has('Onyx') && roll(onyxChance)) {
-				userLoot.add('Onyx');
 			}
 
 			const { itemsAdded } = await user.addItemsToBank({ items: userLoot, collectionLog: true });

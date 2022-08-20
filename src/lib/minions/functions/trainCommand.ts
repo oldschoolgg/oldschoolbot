@@ -1,11 +1,17 @@
 import { uniqueArr } from 'e';
-import { KlasaMessage } from 'klasa';
+import { KlasaUser } from 'klasa';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { toTitleCase } from '../../util';
 import { AttackStyles } from '.';
 
-const validStyles = [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence, SkillsEnum.Ranged, SkillsEnum.Magic];
+const validStyles: AttackStyles[] = [
+	SkillsEnum.Attack,
+	SkillsEnum.Strength,
+	SkillsEnum.Defence,
+	SkillsEnum.Ranged,
+	SkillsEnum.Magic
+];
 
 function isValidAttackStyle(str: string): str is AttackStyles {
 	return (validStyles as string[]).includes(str);
@@ -15,19 +21,34 @@ const invalidCombinations: [AttackStyles, AttackStyles][] = [
 	[SkillsEnum.Attack, SkillsEnum.Magic],
 	[SkillsEnum.Strength, SkillsEnum.Magic],
 	[SkillsEnum.Attack, SkillsEnum.Ranged],
-	[SkillsEnum.Strength, SkillsEnum.Ranged]
+	[SkillsEnum.Strength, SkillsEnum.Ranged],
+	[SkillsEnum.Magic, SkillsEnum.Ranged]
 ];
 
-export async function trainCommand(msg: KlasaMessage, _styles: string | undefined) {
-	if (msg.author.minionIsBusy) {
-		return msg.channel.send("You can't change your attack style in the middle of a trip.");
+export const allPossibleStyles: string[] = uniqueArr([
+	'shared',
+	...validStyles,
+	...validStyles
+		.map(i => {
+			let styles = [];
+			for (const style of validStyles) {
+				if (style === i) continue;
+				if (invalidCombinations.some(t => t.includes(i) && t.includes(style))) continue;
+				styles.push([style, i].sort().reverse().join(' '));
+			}
+			return styles;
+		})
+		.flat(2)
+]);
+
+export async function trainCommand(user: KlasaUser, _styles: string | undefined) {
+	if (user.minionIsBusy) {
+		return "You can't change your attack style in the middle of a trip.";
 	}
 	if (!_styles || typeof _styles !== 'string') {
-		return msg.channel.send(
-			`Your current attack style is ${msg.author
-				.getAttackStyles()
-				.map(toTitleCase)}, the available styles are: Shared, Attack, Strength, Defence, Magic, Ranged.`
-		);
+		return `Your current attack style is ${user
+			.getAttackStyles()
+			.map(toTitleCase)}, the available styles are: Shared, Attack, Strength, Defence, Magic, Ranged.`;
 	}
 	const parsed = _styles
 		.toLowerCase()
@@ -35,9 +56,7 @@ export async function trainCommand(msg: KlasaMessage, _styles: string | undefine
 		.map(i => i.trim());
 
 	if (uniqueArr(parsed).length !== parsed.length || (_styles !== 'shared' && !parsed.every(isValidAttackStyle))) {
-		return msg.channel.send(
-			'That is not a valid attack style, the available styles are: Shared, Attack, Strength, Defence, Magic, Ranged.'
-		);
+		return 'That is not a valid attack style, the available styles are: Shared, Attack, Strength, Defence, Magic, Ranged.';
 	}
 	const styles: AttackStyles[] =
 		_styles === 'shared'
@@ -48,17 +67,13 @@ export async function trainCommand(msg: KlasaMessage, _styles: string | undefine
 
 	for (const comb of invalidCombinations) {
 		if (comb.every(i => styles.includes(i))) {
-			return msg.channel.send(
-				`That's not a valid attack style, you can't train these at the same time: ${comb.join(', ')}.`
-			);
+			return `That's not a valid attack style, you can't train these at the same time: ${comb.join(', ')}.`;
 		}
 	}
 
-	await msg.author.setAttackStyle(styles);
+	await user.setAttackStyle(styles);
 
-	return msg.channel.send(
-		`You're now training: ${styles
-			.map(toTitleCase)
-			.join(', ')}. When you do PvM, you will receive XP in these skills.`
-	);
+	return `You're now training: ${styles
+		.map(toTitleCase)
+		.join(', ')}. When you do PvM, you will receive XP in these skills.`;
 }
