@@ -6,11 +6,16 @@ import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import { MAX_INT_JAVA } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { NestBoxesTable } from '../../lib/simulation/misc';
-import { clamp, itemID, toKMB, updateBankSetting, updateGPTrackSetting } from '../../lib/util';
+import { clamp, itemID, toKMB, updateBankSetting } from '../../lib/util';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiUsersSettingsFetch, userStatsUpdate } from '../mahojiSettings';
+import {
+	handleMahojiConfirmation,
+	mahojiUsersSettingsFetch,
+	updateGPTrackSetting,
+	userStatsUpdate
+} from '../mahojiSettings';
 
 /**
  * - Hardcoded prices

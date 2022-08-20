@@ -5,7 +5,7 @@ import { KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
-import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
+import { updateGPTrackSetting, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { ClueTiers } from '../clues/clueTiers';
 import { COINS_ID, Emoji, lastTripCache, LastTripRunArgs, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
@@ -13,7 +13,7 @@ import { handlePassiveImplings } from '../implings';
 import { triggerRandomEvent } from '../randomEvents';
 import { runCommand } from '../settings/settings';
 import { ActivityTaskOptions } from '../types/minions';
-import { channelIsSendable, updateGPTrackSetting } from '../util';
+import { channelIsSendable } from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
 import {
 	makeBirdHouseTripButton,

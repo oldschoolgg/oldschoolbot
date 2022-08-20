@@ -3,9 +3,9 @@ import { randArrItem, randInt, roll } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { getSkillsOfMahojiUser } from '../../../mahoji/mahojiSettings';
 import { HighSeedPackTable, LowSeedPackTable, MediumSeedPackTable } from '../../data/seedPackTables';
 import { PlantTier } from '../../minions/farming/types';
+import { getSkillsOfMahojiUser } from '../../util';
 import { stringMatches } from '../../util/cleanString';
 import { SkillsEnum } from '../types';
 

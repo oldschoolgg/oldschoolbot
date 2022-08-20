@@ -2,7 +2,6 @@ import { FSWatcher } from 'chokidar';
 import { MessageOptions, MessagePayload } from 'discord.js';
 import { KlasaMessage, KlasaUser, Settings, SettingsUpdateResult } from 'klasa';
 import { Bank } from 'oldschooljs';
-import PQueue from 'p-queue';
 import { Image } from 'skia-canvas/lib';
 
 import { GetUserBankOptions } from '../../extendables/User/Bank';

@@ -16,8 +16,8 @@ import { prisma } from '../lib/settings/prisma';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { filterLootReplace } from '../lib/slayer/slayerUtil';
 import { Gear } from '../lib/structures/Gear';
-import type { ItemBank, Skills as TSkills } from '../lib/types';
-import { assert, channelIsSendable, convertXPtoLVL, sanitizeBank } from '../lib/util';
+import type { ItemBank } from '../lib/types';
+import { assert, channelIsSendable, sanitizeBank } from '../lib/util';
 import { logError } from '../lib/util/logError';
 import { respondToButton } from '../lib/util/respondToButton';
 
@@ -228,40 +228,6 @@ export async function mahojiGuildSettingsUpdate(guild: string | DJSGuild, data: 
 	untrustedGuildSettingsCache.set(newGuild.id, newGuild);
 	await (globalClient.gateways.get('guilds') as any)?.get(guildID)?.sync(true);
 	return { newGuild };
-}
-
-export function getSkillsOfMahojiUser(user: User, levels = false): Required<TSkills> {
-	const skills: Required<TSkills> = {
-		agility: Number(user.skills_agility),
-		cooking: Number(user.skills_cooking),
-		fishing: Number(user.skills_fishing),
-		mining: Number(user.skills_mining),
-		smithing: Number(user.skills_smithing),
-		woodcutting: Number(user.skills_woodcutting),
-		firemaking: Number(user.skills_firemaking),
-		runecraft: Number(user.skills_runecraft),
-		crafting: Number(user.skills_crafting),
-		prayer: Number(user.skills_prayer),
-		fletching: Number(user.skills_fletching),
-		farming: Number(user.skills_farming),
-		herblore: Number(user.skills_herblore),
-		thieving: Number(user.skills_thieving),
-		hunter: Number(user.skills_hunter),
-		construction: Number(user.skills_construction),
-		magic: Number(user.skills_magic),
-		attack: Number(user.skills_attack),
-		strength: Number(user.skills_strength),
-		defence: Number(user.skills_defence),
-		ranged: Number(user.skills_ranged),
-		hitpoints: Number(user.skills_hitpoints),
-		slayer: Number(user.skills_slayer)
-	};
-	if (levels) {
-		for (const [key, val] of Object.entries(skills) as [keyof TSkills, number][]) {
-			skills[key] = convertXPtoLVL(val);
-		}
-	}
-	return skills;
 }
 
 export function getUserGear(user: User) {
@@ -486,5 +452,40 @@ export async function removeItemsFromBank(userID: string, _itemBank: Readonly<It
 		return mahojiUserSettingsUpdate(userID, {
 			bank: newBank.bank
 		});
+	});
+}
+
+export async function updateGPTrackSetting(
+	setting:
+		| 'gp_luckypick'
+		| 'gp_daily'
+		| 'gp_open'
+		| 'gp_dice'
+		| 'gp_slots'
+		| 'gp_sell'
+		| 'gp_pvm'
+		| 'gp_alch'
+		| 'gp_pickpocket'
+		| 'duelTaxBank',
+	amount: number,
+	user?: KlasaUser
+) {
+	if (!user) {
+		await prisma.clientStorage.update({
+			where: {
+				id: CLIENT_ID
+			},
+			data: {
+				[setting]: {
+					increment: amount
+				}
+			}
+		});
+		return;
+	}
+	await mahojiUserSettingsUpdate(user.id, {
+		[setting]: {
+			increment: amount
+		}
 	});
 }
