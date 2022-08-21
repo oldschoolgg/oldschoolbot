@@ -380,6 +380,17 @@ interface TransactItemsArgs {
 	dontAddToTempCL?: boolean;
 }
 
+declare global {
+	const transactItems: typeof transactItemsFromBank;
+}
+declare global {
+	namespace NodeJS {
+		interface Global {
+			transactItems: typeof transactItemsFromBank;
+		}
+	}
+}
+global.transactItems = transactItemsFromBank;
 export async function transactItemsFromBank({
 	userID,
 	collectionLog = false,
@@ -470,26 +481,6 @@ export async function transactItemsFromBank({
 			newCL: new Bank(newUser.collectionLogBank as ItemBank),
 			newUser
 		};
-	});
-}
-
-export async function removeItemsFromBank(userID: string, _bankToRemove: Bank) {
-	const bankToRemove = _bankToRemove.clone();
-	return userQueueFn(userID, async () => {
-		const settings = await mahojiUsersSettingsFetch(userID);
-		const owned = allItemsOwned(settings);
-		if (!owned.has(bankToRemove)) {
-			throw new Error(
-				`Tried to remove ${bankToRemove} from ${userID} but failed because they don't own all these items.`
-			);
-		}
-
-		if (bankToRemove.length === 0) return;
-		const newBank = new Bank().add(settings.bank as ItemBank).remove(bankToRemove);
-		sanitizeBank(newBank);
-		return mahojiUserSettingsUpdate(userID, {
-			bank: newBank.bank
-		});
 	});
 }
 

@@ -10,7 +10,6 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../lib/types';
 import { itemNameFromID } from '../../lib/util';
 import { determineRunes } from '../../lib/util/determineRunes';
-import { transactItemsFromBank } from '../../mahoji/mahojiSettings';
 
 export interface GetUserBankOptions {
 	withGP?: boolean;
@@ -36,7 +35,7 @@ export default class extends Extendable {
 			dontAddToTempCL = false
 		}: { items: ItemBank | Bank; collectionLog?: boolean; filterLoot?: boolean; dontAddToTempCL?: boolean }
 	) {
-		return transactItemsFromBank({
+		return transactItems({
 			collectionLog,
 			itemsToAdd: new Bank(items),
 			filterLoot,
@@ -46,7 +45,7 @@ export default class extends Extendable {
 	}
 
 	public async removeItemsFromBank(this: User, _itemBank: Readonly<ItemBank>) {
-		return transactItemsFromBank({
+		return transactItems({
 			itemsToRemove: new Bank(_itemBank),
 			userID: this.id
 		});

@@ -80,7 +80,11 @@ export default class extends Task {
 			updateGPTrackSetting('gp_pickpocket', loot.amount('Coins'));
 		}
 
-		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
+		const { previousCL, itemsAdded } = await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 		const xpRes = await user.addXP({ skillName: SkillsEnum.Thieving, amount: xpReceived, duration });
 
 		let str = `${user}, ${user.minionName} finished ${

@@ -5,7 +5,7 @@ import { KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
-import { transactItemsFromBank, updateGPTrackSetting, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
+import { updateGPTrackSetting, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { ClueTiers } from '../clues/clueTiers';
 import { COINS_ID, Emoji, lastTripCache, LastTripRunArgs, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
@@ -55,7 +55,7 @@ const tripFinishEffects: {
 				const many = imp.bank.length > 1;
 				messages.push(`Caught ${many ? 'some' : 'an'} impling${many ? 's' : ''}, you received: ${imp.bank}`);
 				userStatsBankUpdate(user.id, 'passive_implings_bank', imp.bank);
-				await transactItemsFromBank({ userID: user.id, itemsToAdd: imp.bank, collectionLog: true });
+				await transactItems({ userID: user.id, itemsToAdd: imp.bank, collectionLog: true });
 			}
 		}
 	},

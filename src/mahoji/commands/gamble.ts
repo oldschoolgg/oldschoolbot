@@ -11,7 +11,7 @@ import { hotColdCommand } from '../lib/abstracted_commands/hotColdCommand';
 import { luckyPickCommand } from '../lib/abstracted_commands/luckyPickCommand';
 import { slotsCommand } from '../lib/abstracted_commands/slotsCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiUsersSettingsFetch, transactItemsFromBank } from '../mahojiSettings';
+import { handleMahojiConfirmation, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const gambleCommand: OSBMahojiCommand = {
 	name: 'gamble',
@@ -235,8 +235,8 @@ export const gambleCommand: OSBMahojiCommand = {
 			const [item, qty] = entry;
 			const loot = new Bank().add(item.id, qty);
 
-			await transactItemsFromBank({ userID: senderUser.id, itemsToAdd: loot });
-			await transactItemsFromBank({
+			await transactItems({ userID: senderUser.id, itemsToAdd: loot });
+			await transactItems({
 				userID: recipientKlasaUser.id,
 				itemsToAdd: loot,
 				collectionLog: false,

@@ -153,7 +153,11 @@ export default class extends Task {
 				messages
 			});
 		}
-		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
+		const { previousCL, itemsAdded } = await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 
 		await trackLoot({
 			loot: itemsAdded,

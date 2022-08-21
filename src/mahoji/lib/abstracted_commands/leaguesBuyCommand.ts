@@ -4,7 +4,6 @@ import { Bank } from 'oldschooljs';
 import { leagueBuyables } from '../../../lib/data/leaguesBuyables';
 import { roboChimpUserFetch } from '../../../lib/roboChimp';
 import { stringMatches } from '../../../lib/util';
-import { transactItemsFromBank } from '../../mahojiSettings';
 
 const pointsCostMultiplier = 150;
 
@@ -30,7 +29,7 @@ export async function leaguesBuyCommand(user: KlasaUser, itemName: string, quant
 	});
 
 	const loot = new Bank().add(item.item.id, quantity);
-	await transactItemsFromBank({
+	await transactItems({
 		userID: user.id,
 		itemsToAdd: loot,
 		collectionLog: true

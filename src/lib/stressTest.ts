@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 
 import { OWNER_ID } from '../config';
-import { mahojiUsersSettingsFetch, transactItemsFromBank } from '../mahoji/mahojiSettings';
+import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
 import { UserSettings } from './settings/types/UserSettings';
 import { ItemBank } from './types';
 import { assert } from './util';
@@ -17,12 +17,15 @@ function bankIsEqual(bank1: Bank, bank2: Bank) {
 	);
 }
 
+function diffBanks(bank1: Bank, bank2: Bank) {
+	return bank1.clone().remove(bank2).add(bank2.clone().remove(bank1));
+}
+
 export async function stressTest() {
 	const user = await globalClient.fetchUser(OWNER_ID);
 	const currentBank = user.bank();
 	const currentGP = user.settings.get(UserSettings.GP);
 	const gpBank = new Bank().add('Coins', currentGP);
-
 	async function assertGP(amnt: number) {
 		const mUser = await mahojiUsersSettingsFetch(OWNER_ID);
 		assert(Number(mUser.GP) === amnt, `1 GP should match ${amnt} === ${Number(mUser.GP)}`);
@@ -32,36 +35,58 @@ export async function stressTest() {
 		const mUser = await mahojiUsersSettingsFetch(OWNER_ID);
 		const mahojiBank = new Bank(mUser.bank as ItemBank);
 		assert(bankIsEqual(mahojiBank, newBank), 'Mahoji/Klasa bank should match');
-		assert(bankIsEqual(mahojiBank, currentBank), 'Updated bank should match');
+		assert(
+			bankIsEqual(mahojiBank, currentBank),
+			`Updated bank should match: ${diffBanks(mahojiBank, currentBank)}`
+		);
 		assert(currentGP === Number(mUser.GP), `2 GP should match ${currentGP} === ${Number(mUser.GP)}`);
 	}
+	async function fetchCL() {
+		const mUser = await mahojiUsersSettingsFetch(OWNER_ID);
+		const mahojiBank = new Bank(mUser.collectionLogBank as ItemBank);
+		return mahojiBank;
+	}
+	const currentCL = await fetchCL();
 
 	await assertBankMatches();
 
-	for (let i = 0; i < 3; i++) {
-		await transactItemsFromBank({ userID: OWNER_ID, itemsToRemove: currentBank });
-		await transactItemsFromBank({ userID: OWNER_ID, itemsToAdd: currentBank });
-		await assertBankMatches();
-		await user.removeItemsFromBank(currentBank);
-		await assertGP(currentGP);
-		await user.addItemsToBank({ items: currentBank });
-		await assertGP(currentGP);
-		await user.removeItemsFromBank(currentBank);
-		await user.addItemsToBank({ items: currentBank });
-		await assertBankMatches();
+	await transactItems({ userID: OWNER_ID, itemsToRemove: currentBank });
+	await transactItems({ userID: OWNER_ID, itemsToAdd: currentBank });
+	await assertBankMatches();
+	await user.removeItemsFromBank(currentBank);
+	await assertGP(currentGP);
+	await user.addItemsToBank({ items: currentBank });
+	await assertGP(currentGP);
+	await user.removeItemsFromBank(currentBank);
+	await user.addItemsToBank({ items: currentBank });
+	await assertBankMatches();
 
-		await assertGP(currentGP);
-		await transactItemsFromBank({ userID: OWNER_ID, itemsToRemove: gpBank });
-		await assertGP(0);
-		await transactItemsFromBank({ userID: OWNER_ID, itemsToAdd: gpBank });
-		await assertBankMatches();
-		await assertGP(currentGP);
+	await assertGP(currentGP);
+	await transactItems({ userID: OWNER_ID, itemsToRemove: gpBank });
+	await assertGP(0);
+	await transactItems({ userID: OWNER_ID, itemsToAdd: gpBank });
+	await assertBankMatches();
+	await assertGP(currentGP);
 
-		const everything = currentBank.clone().add(gpBank);
+	// Adding and removing at same time
+	const everything = currentBank.clone().add(gpBank);
+	await transactItems({ userID: OWNER_ID, itemsToRemove: everything, itemsToAdd: everything });
+	await assertBankMatches();
 
-		await transactItemsFromBank({ userID: OWNER_ID, itemsToRemove: everything, itemsToAdd: everything });
-		await assertBankMatches();
-	}
+	// Collection Log
+	const clBankChange = new Bank().add('Coins').add('Twisted bow').freeze();
+	assert(
+		bankIsEqual(currentCL, await fetchCL()),
+		`CL should not have changed ${diffBanks(currentCL, await fetchCL())}`
+	);
+	const { previousCL, newCL } = await transactItems({
+		userID: OWNER_ID,
+		itemsToAdd: clBankChange,
+		collectionLog: true
+	});
+	assert(bankIsEqual(newCL, currentCL.clone().add(clBankChange)), 'Should match 2');
+	assert(bankIsEqual(previousCL, currentCL), 'Should match 3');
+	await user.removeItemsFromBank(clBankChange);
 
 	await assertBankMatches();
 	await assertGP(currentGP);

@@ -10,7 +10,7 @@ import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { formatDuration, formatSkillRequirements, resolveNameBank, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { handleMahojiConfirmation, mahojiUserSettingsUpdate, transactItemsFromBank } from '../../mahojiSettings';
+import { handleMahojiConfirmation, mahojiUserSettingsUpdate } from '../../mahojiSettings';
 
 const skillReqs = {
 	[SkillsEnum.Prayer]: 70,
@@ -206,7 +206,7 @@ export async function volcanicMineShopCommand(
 	if (shopItem.clOnly) {
 		await klasaUser.addItemsToCollectionLog({ items: new Bank().add(shopItem.output).multiply(quantity) });
 	} else {
-		await transactItemsFromBank({
+		await transactItems({
 			userID: user.id,
 			collectionLog: true,
 			itemsToAdd: new Bank().add(shopItem.output).multiply(quantity)

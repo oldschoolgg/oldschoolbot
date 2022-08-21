@@ -5,7 +5,6 @@ import { ClueTiers } from '../../lib/clues/clueTiers';
 import { Events } from '../../lib/constants';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { transactItemsFromBank } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: ClueActivityTaskOptions) {
@@ -27,7 +26,7 @@ export default class extends Task {
 		} in your bank. You can open this casket using \`/open name:${clueTier.name}\``;
 
 		const loot = new Bank().add(clueTier.id, quantity);
-		await transactItemsFromBank({
+		await transactItems({
 			userID: user.id,
 			collectionLog: true,
 			itemsToAdd: loot

@@ -102,7 +102,11 @@ export const sellCommand: OSBMahojiCommand = {
 				loot.add(NestBoxesTable.roll());
 			}
 			await user.removeItemsFromBank(moleBank);
-			await user.addItemsToBank({ items: loot, collectionLog: true });
+			await transactItems({
+				userID: user.id,
+				collectionLog: true,
+				itemsToAdd: loot
+			});
 			return `You exchanged ${moleBank} and received: ${loot}.`;
 		}
 

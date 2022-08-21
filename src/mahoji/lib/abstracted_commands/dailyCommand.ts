@@ -101,7 +101,11 @@ async function reward(user: KlasaUser, triviaCorrect: boolean): CommandResponse 
 		updateGPTrackSetting('gp_daily', loot[COINS_ID]);
 	}
 
-	const { itemsAdded, previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
+	const { itemsAdded, previousCL } = await transactItems({
+		userID: user.id,
+		collectionLog: true,
+		itemsToAdd: new Bank(loot)
+	});
 	const image = await makeBankImage({
 		bank: itemsAdded,
 		title: `${user.username}'s Daily`,

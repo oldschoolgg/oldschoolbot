@@ -112,7 +112,11 @@ export default class extends Task {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
 		}
 
-		await user.addItemsToBank({ items: loot, collectionLog: true });
+		await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 
 		handleTripFinish(user, channelID, str, ['mine', { name: ore.name, quantity }, true], undefined, data, loot);
 	}

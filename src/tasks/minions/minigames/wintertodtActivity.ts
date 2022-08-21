@@ -122,7 +122,11 @@ export default class extends Task {
 		await user.addXP({ skillName: SkillsEnum.Firemaking, amount: fmXpToGive });
 		const newLevel = user.skillLevel(SkillsEnum.Firemaking);
 
-		const { itemsAdded, previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
+		const { itemsAdded, previousCL } = await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 		incrementMinigameScore(user.id, 'wintertodt', quantity);
 
 		const image = await makeBankImage({

@@ -5,7 +5,6 @@ import { Bank } from 'oldschooljs';
 import { Image } from 'skia-canvas/lib';
 
 import { GetUserBankOptions } from '../../extendables/User/Bank';
-import { transactItemsFromBank } from '../../mahoji/mahojiSettings';
 import { BitField, PerkTier } from '../constants';
 import { GearSetupType, UserFullGearSetup } from '../gear/types';
 import { AttackStyles } from '../minions/functions';
@@ -89,8 +88,8 @@ declare module 'discord.js' {
 			collectionLog?: boolean;
 			filterLoot?: boolean;
 			dontAddToTempCL?: boolean;
-		}): ReturnType<typeof transactItemsFromBank>;
-		removeItemsFromBank(items: ItemBank | Bank, collectionLog?: boolean): ReturnType<typeof transactItemsFromBank>;
+		}): ReturnType<typeof transactItems>;
+		removeItemsFromBank(items: ItemBank | Bank, collectionLog?: boolean): ReturnType<typeof transactItems>;
 		specialRemoveItems(items: Bank): Promise<{ realCost: Bank }>;
 		addItemsToCollectionLog(options: { items: Bank; dontAddToTempCL?: boolean }): Promise<SettingsUpdateResult>;
 		incrementMonsterScore(monsterID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;

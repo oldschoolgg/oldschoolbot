@@ -103,7 +103,11 @@ export default class extends Task {
 				} run!`
 			);
 
-			await user.addItemsToBank({ items: loot, collectionLog: true });
+			await transactItems({
+				userID: user.id,
+				collectionLog: true,
+				itemsToAdd: loot
+			});
 		}
 
 		const returnStr = `${harvestStr} ${bonusXpStr}\n\n${completedStr}${levelStr}${lootStr}\n`;
