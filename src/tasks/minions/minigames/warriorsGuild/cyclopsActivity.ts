@@ -50,7 +50,7 @@ export default class extends Task {
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { userID, channelID, quantity } = data;
 		const user = await this.client.fetchUser(userID);
-		const userBank = new Bank(user.settings.get(UserSettings.Bank));
+		const userBank = user.bank();
 
 		let loot = new Bank();
 

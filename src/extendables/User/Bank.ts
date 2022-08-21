@@ -8,10 +8,9 @@ import { projectiles } from '../../lib/constants';
 import { blowpipeDarts, validateBlowpipeData } from '../../lib/minions/functions/blowpipeCommand';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../lib/types';
-import { bankHasAllItemsFromBank, itemNameFromID } from '../../lib/util';
+import { itemNameFromID } from '../../lib/util';
 import { determineRunes } from '../../lib/util/determineRunes';
-import itemID from '../../lib/util/itemID';
-import { addItemsToBank } from '../../mahoji/mahojiSettings';
+import { transactItemsFromBank } from '../../mahoji/mahojiSettings';
 
 export interface GetUserBankOptions {
 	withGP?: boolean;
@@ -23,7 +22,7 @@ export default class extends Extendable {
 	}
 
 	public bank(this: User, { withGP = false }: GetUserBankOptions = {}) {
-		const bank = new Bank(this.settings.get(UserSettings.Bank));
+		const bank = new Bank(this.settings.get('bank') as any as ItemBank);
 		if (withGP) bank.add('Coins', this.settings.get(UserSettings.GP));
 		return bank;
 	}
@@ -36,8 +35,21 @@ export default class extends Extendable {
 			filterLoot = true,
 			dontAddToTempCL = false
 		}: { items: ItemBank | Bank; collectionLog?: boolean; filterLoot?: boolean; dontAddToTempCL?: boolean }
-	): Promise<{ previousCL: Bank; itemsAdded: Bank }> {
-		return addItemsToBank({ items, collectionLog, filterLoot, dontAddToTempCL, userID: this.id });
+	) {
+		return transactItemsFromBank({
+			collectionLog,
+			itemsToAdd: new Bank(items),
+			filterLoot,
+			dontAddToTempCL,
+			userID: this.id
+		});
+	}
+
+	public async removeItemsFromBank(this: User, _itemBank: Readonly<ItemBank>) {
+		return transactItemsFromBank({
+			itemsToRemove: new Bank(_itemBank),
+			userID: this.id
+		});
 	}
 
 	public async specialRemoveItems(this: User, _bank: Bank) {
@@ -154,13 +166,7 @@ export default class extends Extendable {
 	}
 
 	public owns(this: User, bank: ItemBank | Bank | string | number) {
-		if (typeof bank === 'string' || typeof bank === 'number') {
-			return Boolean(this.settings.get(UserSettings.Bank)[typeof bank === 'number' ? bank : itemID(bank)]);
-		}
-		const itemBank = bank instanceof Bank ? { ...bank.bank } : bank;
-		return bankHasAllItemsFromBank(
-			{ ...this.settings.get(UserSettings.Bank), 995: this.settings.get(UserSettings.GP) },
-			itemBank
-		);
+		const userBank = this.bank();
+		return userBank.has(bank);
 	}
 }

@@ -168,7 +168,7 @@ export async function mahojiUserSettingsUpdate(user: string | bigint | KlasaUser
 			'Patched user should match',
 			errorContext
 		);
-		const klasaBank = klasaUser.settings.get(UserSettings.Bank);
+		const klasaBank: Readonly<ItemBank> = klasaUser.settings.get('bank') as any;
 		const newBank = newUser.bank;
 		for (const [key, value] of Object.entries(klasaBank)) {
 			assert((newBank as any)[key] === value, `Item[${key}] in patched user should match`, errorContext);
@@ -337,117 +337,151 @@ export function getUserUpdateQueue(userID: string) {
 	return currentQueue;
 }
 
-async function userQueueFn(userID: string, fn: () => Promise<any>) {
+async function userQueueFn<T>(userID: string, fn: () => Promise<T>) {
 	const queue = getUserUpdateQueue(userID);
 	return queue.add(() => fn());
 }
 
-export async function addItemsToCollectionLog({
+async function calculateAddItemsToCLUpdates({
 	userID,
 	items,
-	dontAddToTempCL = false
+	dontAddToTempCL = false,
+	user
 }: {
+	user?: User;
 	items: Bank;
 	dontAddToTempCL?: boolean;
 	userID: string;
-}) {
-	return userQueueFn(userID, async () => {
-		const settings = await mahojiUsersSettingsFetch(userID);
-		const updates: Prisma.UserUpdateArgs['data'] = {
-			collectionLogBank: new Bank(settings.collectionLogBank as ItemBank).add(items).bank
-		};
+}): Promise<Prisma.UserUpdateArgs['data']> {
+	const settings: User = user ?? (await mahojiUsersSettingsFetch(userID));
+	const updates: Prisma.UserUpdateArgs['data'] = {
+		collectionLogBank: new Bank(settings.collectionLogBank as ItemBank).add(items).bank
+	};
 
-		if (!dontAddToTempCL) {
-			updates.temp_cl = new Bank(settings.temp_cl as ItemBank).add(items).bank;
-		}
+	if (!dontAddToTempCL) {
+		updates.temp_cl = new Bank(settings.temp_cl as ItemBank).add(items).bank;
+	}
+	return updates;
+}
 
-		return mahojiUserSettingsUpdate(userID, updates);
+export async function addItemsToCollectionLog(opts: { items: Bank; dontAddToTempCL?: boolean; userID: string }) {
+	return userQueueFn(opts.userID, async () => {
+		const updates = await calculateAddItemsToCLUpdates(opts);
+		return mahojiUserSettingsUpdate(opts.userID, updates);
 	});
 }
 
-export async function addItemsToBank({
-	items,
-	collectionLog = false,
-	filterLoot = true,
-	dontAddToTempCL = false,
-	userID
-}: {
+interface TransactItemsArgs {
 	userID: string;
-	items: ItemBank | Bank;
+	itemsToAdd?: Bank;
+	itemsToRemove?: Bank;
 	collectionLog?: boolean;
 	filterLoot?: boolean;
 	dontAddToTempCL?: boolean;
-}): Promise<{ previousCL: Bank; itemsAdded: Bank }> {
+}
+
+export async function transactItemsFromBank({
+	userID,
+	collectionLog = false,
+	filterLoot = true,
+	dontAddToTempCL = false,
+	...options
+}: TransactItemsArgs) {
+	let itemsToAdd = options.itemsToAdd ? options.itemsToAdd.clone() : undefined;
+	let itemsToRemove = options.itemsToRemove ? options.itemsToRemove.clone() : undefined;
 	return userQueueFn(userID, async () => {
 		const settings = await mahojiUsersSettingsFetch(userID);
 		const currentBank = new Bank().add(settings.bank as ItemBank);
 		const previousCL = new Bank().add(settings.collectionLogBank as ItemBank);
-
-		let loot = deduplicateClueScrolls({
-			loot: items instanceof Bank ? items.clone() : new Bank(items),
-			currentBank
-		});
-
-		const { bankLoot, clLoot } = filterLoot
-			? filterLootReplace(allItemsOwned(settings), loot)
-			: { bankLoot: loot, clLoot: loot };
-		loot = bankLoot;
-		if (collectionLog) {
-			// THIS WILL PROBABLY MAKE IT FREEZE LOL
-			await addItemsToCollectionLog({ items: clLoot, dontAddToTempCL, userID });
-		}
-
-		// Get the amount of coins in the loot and remove the coins from the items to be added to the user bank
-		const coinsInLoot = loot.amount('Coins');
-		if (coinsInLoot > 0) {
-			await mahojiUserSettingsUpdate(userID, {
-				GP: {
-					increment: coinsInLoot
-				}
+		let clUpdates: Prisma.UserUpdateArgs['data'] = {};
+		if (itemsToAdd) {
+			itemsToAdd = deduplicateClueScrolls({
+				loot: itemsToAdd?.clone(),
+				currentBank
 			});
-			loot.remove('Coins', loot.amount('Coins'));
+			const { bankLoot, clLoot } = filterLoot
+				? filterLootReplace(allItemsOwned(settings), itemsToAdd)
+				: { bankLoot: itemsToAdd, clLoot: itemsToAdd };
+			itemsToAdd = bankLoot;
+
+			clUpdates = collectionLog
+				? await calculateAddItemsToCLUpdates({ items: clLoot, dontAddToTempCL, userID })
+				: {};
 		}
 
-		const newBank = new Bank().add(currentBank).add(loot);
+		let gpUpdate: { increment: number } | undefined = undefined;
+		if (itemsToAdd) {
+			const coinsInLoot = itemsToAdd.amount('Coins');
+			if (coinsInLoot > 0) {
+				gpUpdate = {
+					increment: coinsInLoot
+				};
+				itemsToAdd.remove('Coins', itemsToAdd.amount('Coins'));
+			}
+		}
+
+		const newBank = new Bank().add(currentBank);
+		if (itemsToAdd) newBank.add(itemsToAdd);
+
 		sanitizeBank(newBank);
-		const newUser = await mahojiUserSettingsUpdate(userID, {
-			bank: newBank.bank
+
+		if (itemsToRemove) {
+			if (itemsToRemove.has('Coins')) {
+				if (!gpUpdate) {
+					gpUpdate = {
+						increment: itemsToRemove.amount('Coins')
+					};
+				} else {
+					gpUpdate.increment -= itemsToRemove.amount('Coins');
+				}
+				itemsToRemove.remove('Coins', itemsToRemove.amount('Coins'));
+			}
+			if (!newBank.has(itemsToRemove)) {
+				throw new Error(`Tried to remove ${itemsToRemove} from ${userID}. but they don't own them.`);
+			}
+			newBank.remove(itemsToRemove);
+		}
+
+		const { newUser } = await mahojiUserSettingsUpdate(userID, {
+			bank: newBank.bank,
+			GP: gpUpdate,
+			...clUpdates
 		});
 
-		// Re-add the coins to the loot
-		if (coinsInLoot > 0) loot.add('Coins', coinsInLoot);
+		const itemsAdded = new Bank().add(itemsToAdd);
+		if (itemsAdded && gpUpdate && gpUpdate.increment > 0) {
+			itemsAdded.add('Coins', gpUpdate.increment);
+		}
+
+		const itemsRemoved = new Bank().add(itemsToRemove);
+		if (itemsRemoved && gpUpdate && gpUpdate.increment < 0) {
+			itemsRemoved.add('Coins', gpUpdate.increment);
+		}
 
 		return {
 			previousCL,
-			itemsAdded: loot,
-			newBank: new Bank(newUser.newUser.bank as ItemBank),
-			newCL: new Bank(newUser.newUser.collectionLogBank as ItemBank)
+			itemsAdded,
+			itemsRemoved: itemsToRemove,
+			newBank: new Bank(newUser.bank as ItemBank),
+			newCL: new Bank(newUser.collectionLogBank as ItemBank),
+			newUser
 		};
 	});
 }
 
-export async function removeItemsFromBank(userID: string, _itemBank: Readonly<ItemBank>) {
+export async function removeItemsFromBank(userID: string, _bankToRemove: Bank) {
+	const bankToRemove = _bankToRemove.clone();
 	return userQueueFn(userID, async () => {
-		const itemBank = new Bank(_itemBank instanceof Bank ? { ..._itemBank.bank } : { ..._itemBank });
 		const settings = await mahojiUsersSettingsFetch(userID);
 		const owned = allItemsOwned(settings);
-		if (!owned.has(itemBank)) {
+		if (!owned.has(bankToRemove)) {
 			throw new Error(
-				`Tried to remove ${itemBank} from ${userID} but failed because they don't own all these items.`
+				`Tried to remove ${bankToRemove} from ${userID} but failed because they don't own all these items.`
 			);
 		}
 
-		if (itemBank.has('Coins')) {
-			await mahojiUserSettingsUpdate(userID, {
-				GP: {
-					decrement: itemBank.amount('Coins')
-				}
-			});
-			itemBank.remove('Coins', itemBank.amount('Coins'));
-		}
-
-		if (itemBank.length === 0) return;
-		const newBank = new Bank().add(settings.bank as ItemBank).remove(itemBank);
+		if (bankToRemove.length === 0) return;
+		const newBank = new Bank().add(settings.bank as ItemBank).remove(bankToRemove);
 		sanitizeBank(newBank);
 		return mahojiUserSettingsUpdate(userID, {
 			bank: newBank.bank
