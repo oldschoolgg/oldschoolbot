@@ -429,7 +429,7 @@ export async function transactItemsFromBank({
 			if (itemsToRemove.has('Coins')) {
 				if (!gpUpdate) {
 					gpUpdate = {
-						increment: itemsToRemove.amount('Coins')
+						increment: 0 - itemsToRemove.amount('Coins')
 					};
 				} else {
 					gpUpdate.increment -= itemsToRemove.amount('Coins');
@@ -437,7 +437,11 @@ export async function transactItemsFromBank({
 				itemsToRemove.remove('Coins', itemsToRemove.amount('Coins'));
 			}
 			if (!newBank.has(itemsToRemove)) {
-				throw new Error(`Tried to remove ${itemsToRemove} from ${userID}. but they don't own them.`);
+				throw new Error(
+					`Tried to remove ${itemsToRemove} from ${userID}. but they don't own them. Missing: ${itemsToRemove
+						.clone()
+						.remove(currentBank)}`
+				);
 			}
 			newBank.remove(itemsToRemove);
 		}

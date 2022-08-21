@@ -31,7 +31,7 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, MersenneTwister19937, nodeCrypto, real, shuffle } from 'random-js';
 
-import { CLIENT_ID } from '../config';
+import { CLIENT_ID, production } from '../config';
 import { skillEmoji, SupportServer, usernameCache } from './constants';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
 import { Consumable } from './minions/types';
@@ -567,7 +567,11 @@ export async function makePaginatedMessage(message: KlasaMessage, pages: Message
 
 export function assert(condition: boolean, desc?: string, context?: Record<string, string>) {
 	if (!condition) {
-		logError(new Error(desc ?? 'Failed assertion'), context);
+		if (production) {
+			logError(new Error(desc ?? 'Failed assertion'), context);
+		} else {
+			throw new Error(desc ?? 'Failed assertion');
+		}
 	}
 }
 
