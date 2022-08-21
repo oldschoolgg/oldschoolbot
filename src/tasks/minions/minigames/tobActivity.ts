@@ -6,7 +6,7 @@ import { Emoji, Events } from '../../../lib/constants';
 import { tobMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { TOBRooms, TOBUniques, TOBUniquesToAnnounce, totalXPFromRaid } from '../../../lib/data/tob';
 import { trackLoot } from '../../../lib/settings/prisma';
-import { incrementMinigameScore } from '../../../lib/settings/settings';
+import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { TheatreOfBlood } from '../../../lib/simulation/tob';
@@ -15,7 +15,7 @@ import { convertPercentChance, updateBankSetting } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { sendToChannelID } from '../../../lib/util/webhook';
-import { allItemsOwned, mUserFetch } from '../../../mahoji/mahojiSettings';
+import { allItemsOwned, mahojiUserSettingsUpdate, mUserFetch } from '../../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: TheatreOfBloodTaskOptions) {
@@ -51,9 +51,11 @@ export default class extends Task {
 		if (!diedToMaiden) {
 			await Promise.all(
 				allUsers.map(u => {
-					const key = hardMode ? UserSettings.Stats.TobHardModeAttempts : UserSettings.Stats.TobAttempts;
-					const currentAttempts = u.settings.get(key);
-					return u.settings.update(key, currentAttempts + 1);
+					return mahojiUserSettingsUpdate(u.id, {
+						[hardMode ? 'tob_hard_attempts' : 'tob_attempts']: {
+							increment: 1
+						}
+					});
 				})
 			);
 		}
@@ -98,7 +100,7 @@ Unique chance: ${result.percentChanceOfUnique.toFixed(2)}% (1 in ${convertPercen
 			const userLoot = new Bank(_userLoot);
 			const bank = allItemsOwned(user);
 
-			const cl = user.cl();
+			const { cl } = user;
 			if (hardMode && roll(30) && cl.has("Lil' zik") && cl.has('Sanguine dust')) {
 				const unownedPet = shuffleArr(tobMetamorphPets).find(pet => !bank.has(pet));
 				if (unownedPet) {
@@ -106,10 +108,12 @@ Unique chance: ${result.percentChanceOfUnique.toFixed(2)}% (1 in ${convertPercen
 				}
 			}
 
-			const { itemsAdded } = await user.addItemsToBank({
-				items: userLoot.clone().add('Coins', 100_000),
+			const { itemsAdded } = await transactItems({
+				userID: user.id,
+				itemsToAdd: userLoot.clone().add('Coins', 100_000),
 				collectionLog: true
 			});
+
 			totalLoot.add(itemsAdded);
 
 			const items = itemsAdded.items();
@@ -120,8 +124,10 @@ Unique chance: ${result.percentChanceOfUnique.toFixed(2)}% (1 in ${convertPercen
 				const itemsToAnnounce = itemsAdded.filter(item => TOBUniques.includes(item.id), false);
 				this.client.emit(
 					Events.ServerNotification,
-					`${Emoji.Purple} ${user.username} just received **${itemsToAnnounce}** on their ${formatOrdinal(
-						await user.getMinigameScore(minigameID)
+					`${Emoji.Purple} ${
+						user.usernameOrMention
+					} just received **${itemsToAnnounce}** on their ${formatOrdinal(
+						await getMinigameScore(user.id, minigameID)
 					)} raid.`
 				);
 			}

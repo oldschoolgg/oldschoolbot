@@ -10,7 +10,7 @@ import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { formatDuration, randomVariation, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { determineXPFromTickets } from '../../../mahoji/lib/abstracted_commands/agilityArenaCommand';
-import { mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings';
+import { mahojiUsersSettingsFetch, mUserFetch } from '../../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: ActivityTaskOptionsWithQuantity) {

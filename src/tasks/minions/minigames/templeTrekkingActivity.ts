@@ -16,6 +16,7 @@ import { percentChance, stringMatches } from '../../../lib/util';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
+import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	getLowestCountOutfitPiece(bank: Bank, user: User): number {
@@ -43,7 +44,7 @@ export default class extends Task {
 		const { channelID, quantity, userID, difficulty } = data;
 		const user = await mUserFetch(userID);
 		await incrementMinigameScore(user.id, 'temple_trekking', quantity);
-		const userBank = user.bank();
+		const userBank = user.bank;
 		let loot = new Bank();
 
 		const rewardToken = stringMatches(difficulty, 'hard')

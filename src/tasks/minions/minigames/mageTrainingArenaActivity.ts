@@ -8,6 +8,7 @@ import { SkillsEnum } from '../../../lib/skilling/types';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { randomVariation } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
 export const pizazzPointsPerHour = 100;
 

@@ -7,15 +7,14 @@ import { Emoji, Events } from '../../../lib/constants';
 import { chambersOfXericCL, chambersOfXericMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { createTeam } from '../../../lib/data/cox';
 import { trackLoot } from '../../../lib/settings/prisma';
-import { incrementMinigameScore } from '../../../lib/settings/settings';
+import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { RaidsOptions } from '../../../lib/types/minions';
 import { roll, updateBankSetting } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import resolveItems from '../../../lib/util/resolveItems';
-import { allItemsOwned } from '../../../mahoji/mahojiSettings';
+import { allItemsOwned, mahojiUserSettingsUpdate, mUserFetch } from '../../../mahoji/mahojiSettings';
 
 const notPurple = resolveItems(['Torn prayer scroll', 'Dark relic', 'Onyx']);
 const greenItems = resolveItems(['Twisted ancestral colour kit']);
@@ -55,13 +54,14 @@ export default class extends Task {
 			if (!user) continue;
 			const { personalPoints, deaths, deathChance } = team.find(u => u.id === user.id)!;
 
-			user.settings.update(
-				UserSettings.TotalCoxPoints,
-				user.settings.get(UserSettings.TotalCoxPoints) + personalPoints
-			);
+			await mahojiUserSettingsUpdate(user.id, {
+				total_cox_points: {
+					increment: personalPoints
+				}
+			});
 
 			const userLoot = new Bank(_userLoot);
-			if (challengeMode && roll(50) && user.cl().has('Metamorphic dust')) {
+			if (challengeMode && roll(50) && user.cl.has('Metamorphic dust')) {
 				const { bank } = allItemsOwned(user);
 				const unownedPet = shuffleArr(chambersOfXericMetamorphPets).find(pet => !bank[pet]);
 				if (unownedPet) {
@@ -69,7 +69,7 @@ export default class extends Task {
 				}
 			}
 
-			const { itemsAdded } = await user.addItemsToBank({ items: userLoot, collectionLog: true });
+			const { itemsAdded } = await transactItems({ userID: user.id, itemsToAdd: userLoot, collectionLog: true });
 			totalLoot.add(itemsAdded);
 
 			const items = itemsAdded.items();
@@ -82,8 +82,8 @@ export default class extends Task {
 				const itemsToAnnounce = itemsAdded.filter(item => purpleItems.includes(item.id), false);
 				this.client.emit(
 					Events.ServerNotification,
-					`${emote} ${user.username} just received **${itemsToAnnounce}** on their ${formatOrdinal(
-						await user.getMinigameScore(minigameID)
+					`${emote} ${user.usernameOrMention} just received **${itemsToAnnounce}** on their ${formatOrdinal(
+						await getMinigameScore(user.id, minigameID)
 					)} raid.`
 				);
 			}

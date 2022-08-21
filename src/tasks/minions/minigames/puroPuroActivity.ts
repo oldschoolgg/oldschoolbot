@@ -9,9 +9,14 @@ import { incrementMinigameScore } from '../../../lib/settings/minigames';
 import { PuroPuroActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
-import { minionName } from '../../../lib/util/minionUtils';
+import { userHasItemsEquippedAnywhere } from '../../../lib/util/minionUtils';
 import puroOptions from '../../../mahoji/lib/abstracted_commands/puroPuroCommand';
-import { mahojiUsersSettingsFetch, userHasGracefulEquipped, userStatsBankUpdate } from '../../../mahoji/mahojiSettings';
+import {
+	mahojiUsersSettingsFetch,
+	mUserFetch,
+	userHasGracefulEquipped,
+	userStatsBankUpdate
+} from '../../../mahoji/mahojiSettings';
 
 function singleImpHunt(minutes: number, user: User) {
 	let totalQty = 0;
@@ -118,7 +123,7 @@ export default class extends Task {
 				break;
 		}
 
-		let str = `<@${userID}>, ${minionName(user)} finished hunting in Puro-Puro. `;
+		let str = `<@${userID}>, ${user.minionName} finished hunting in Puro-Puro. `;
 
 		const xpStr = await user.addXP({ skillName: SkillsEnum.Hunter, amount: hunterXP });
 
@@ -131,7 +136,7 @@ export default class extends Task {
 		if (hunterXP > 0) {
 			str += `\n${xpStr}. You are getting ${hunterXpHr}.`;
 		} else {
-			str += `\n${minionName(user)} failed to spot any ${huntedImplingName} this trip.`;
+			str += `\n${user.minionName} failed to spot any ${huntedImplingName} this trip.`;
 			handleTripFinish(
 				user,
 				channelID,
@@ -153,7 +158,7 @@ export default class extends Task {
 			}, 0);
 
 			let savedRunes = 0;
-			if (user.hasItemEquippedAnywhere(bryophytasStaffId)) {
+			if (userHasItemsEquippedAnywhere(user.user, bryophytasStaffId)) {
 				for (let i = 0; i < spellsUsed; i++) {
 					if (roll(15)) savedRunes++;
 				}
@@ -196,8 +201,13 @@ export default class extends Task {
 
 		if (missed.length > 0) str += `\nYou missed out on ${missed} due to your hunter level being too low.`;
 
-		await user.addItemsToBank({ items: bank, collectionLog: true });
-		await user.removeItemsFromBank(itemCost);
+		await transactItems({
+			userID: user.id,
+			itemsToAdd: bank,
+			collectionLog: true,
+			itemsToRemove: itemCost
+		});
+
 		userStatsBankUpdate(user.id, 'puropuro_implings_bank', bank);
 
 		handleTripFinish(

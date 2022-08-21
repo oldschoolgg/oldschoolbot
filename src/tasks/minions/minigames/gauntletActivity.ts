@@ -3,7 +3,7 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../../lib/constants';
-import { incrementMinigameScore, MinigameName } from '../../../lib/settings/settings';
+import { getMinigameScore, incrementMinigameScore, MinigameName } from '../../../lib/settings/settings';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { gauntlet } from '../../../lib/simulation/gauntlet';
 import { GauntletOptions } from '../../../lib/types/minions';
@@ -11,6 +11,7 @@ import { updateBankSetting } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
+import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: GauntletOptions) {
@@ -18,7 +19,7 @@ export default class extends Task {
 		const user = await mUserFetch(userID);
 		const key: MinigameName = corrupted ? 'corrupted_gauntlet' : 'gauntlet';
 
-		const kc = await user.getMinigameScore(key);
+		const kc = await getMinigameScore(user.id, key);
 
 		let chanceOfDeath = corrupted ? 6 : 3;
 		chanceOfDeath += Math.max(0, calcWhatPercent(50 - kc, 50) / 2);
@@ -51,7 +52,7 @@ export default class extends Task {
 		});
 		const name = `${corrupted ? 'Corrupted' : 'Normal'} Gauntlet`;
 
-		const newKc = await user.getMinigameScore(key);
+		const newKc = await getMinigameScore(user.id, key);
 
 		let str = `${user}, ${user.minionName} finished completing ${quantity}x ${name}. **${chanceOfDeath}% chance of death**, you died in ${deaths}/${quantity} of the attempts.\nYour ${name} KC is now ${newKc}.`;
 
@@ -59,7 +60,7 @@ export default class extends Task {
 			str += "\n\n**You have a funny feeling you're being followed...**";
 			this.client.emit(
 				Events.ServerNotification,
-				`**${user.username}'s** minion, ${
+				`**${user.usernameOrMention}'s** minion, ${
 					user.minionName
 				}, just received a **Youngllef** <:Youngllef:604670894798798858> while doing the ${name} for the ${formatOrdinal(
 					newKc

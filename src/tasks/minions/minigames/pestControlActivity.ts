@@ -3,12 +3,11 @@ import { Task } from 'klasa';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import { incrementMinigameScore } from '../../../lib/settings/settings';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { combatLevel } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { getBoatType } from '../../../mahoji/lib/abstracted_commands/pestControlCommand';
-import { mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings';
+import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch, mUserFetch } from '../../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: MinigameActivityTaskOptions) {
@@ -21,17 +20,14 @@ export default class extends Task {
 		let points = pointsPerGame * quantity;
 
 		await incrementMinigameScore(userID, 'pest_control', quantity);
-		await user.settings.update(
-			UserSettings.PestControlPoints,
-			user.settings.get(UserSettings.PestControlPoints) + points
-		);
+		const { newUser } = await mahojiUserSettingsUpdate(user.id, {
+			pest_control_points: {
+				increment: points
+			}
+		});
 
 		let perHour = `(${toKMB((points / (duration / Time.Minute)) * 60)}/Hr)`;
-		let str = `${user}, ${
-			user.minionName
-		} finished ${quantity}x games of Pest Control on the ${boatType} boat. You received ${points}x Void Knight commendation points, you now have ${user.settings.get(
-			UserSettings.PestControlPoints
-		)} points. ${perHour}`;
+		let str = `${user}, ${user.minionName} finished ${quantity}x games of Pest Control on the ${boatType} boat. You received ${points}x Void Knight commendation points, you now have ${newUser.pest_control_points} points. ${perHour}`;
 
 		handleTripFinish(
 			user,

@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import { ActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { mUserFetch } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: ActivityTaskOptions) {

@@ -10,7 +10,7 @@ import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { anglerBoostPercent } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { allItemsOwned, mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings';
+import { allItemsOwned, mahojiUsersSettingsFetch, mUserFetch } from '../../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: ActivityTaskOptionsWithQuantity) {

@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 import { AnimatedArmourActivityTaskOptions } from '../../../../lib/types/minions';
 import { handleTripFinish } from '../../../../lib/util/handleTripFinish';
 import { Armours } from '../../../../mahoji/lib/abstracted_commands/warriorsGuildCommand';
+import { mUserFetch } from '../../../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: AnimatedArmourActivityTaskOptions) {

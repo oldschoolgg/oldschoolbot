@@ -15,6 +15,7 @@ import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 import { fightCavesCost } from '../../../mahoji/lib/abstracted_commands/fightCavesCommand';
+import { mahojiUserSettingsUpdate, mUserFetch } from '../../../mahoji/mahojiSettings';
 
 const TokkulID = itemID('Tokkul');
 
@@ -26,10 +27,13 @@ export default class extends Task {
 		const tokkulReward = rand(2000, 6000);
 		const diedToJad = percentChance(jadDeathChance);
 
-		const attempts = user.settings.get(UserSettings.Stats.FightCavesAttempts) ?? 0;
-		await user.settings.update(UserSettings.Stats.FightCavesAttempts, attempts + 1);
+		const { newUser } = await mahojiUserSettingsUpdate(user.id, {
+			stats_fightCavesAttempts: {
+				increment: 1
+			}
+		});
 
-		const attemptsStr = `You have tried Fight caves ${attempts + 1}x times.`;
+		const attemptsStr = `You have tried Fight caves ${newUser.stats_fightCavesAttempts}x times.`;
 
 		// Add slayer
 		const usersTask = await getUsersCurrentSlayerInfo(user.id);
@@ -66,7 +70,7 @@ export default class extends Task {
 				}
 			}
 
-			await user.addItemsToBank({ items: itemLootBank, collectionLog: false });
+			await transactItems({ userID: user.id, itemsToAdd: itemLootBank, collectionLog: false });
 
 			return handleTripFinish(
 				user,
@@ -86,7 +90,7 @@ export default class extends Task {
 
 		if (diedToJad) {
 			const failBank = new Bank({ [TokkulID]: tokkulReward });
-			await user.addItemsToBank({ items: failBank, collectionLog: true });
+			await transactItems({ userID: user.id, collectionLog: true, itemsToAdd: failBank });
 
 			const rangeXP = await user.addXP({ skillName: SkillsEnum.Ranged, amount: 46_080, duration });
 			const hpXP = await user.addXP({ skillName: SkillsEnum.Hitpoints, amount: 15_322, duration });
@@ -121,13 +125,13 @@ export default class extends Task {
 			);
 		}
 
-		await user.incrementKC(Monsters.TzTokJad.id);
+		await user.incrementKC(Monsters.TzTokJad.id, 1);
 		const loot = Monsters.TzTokJad.kill(1, { onSlayerTask: isOnTask });
 
 		if (loot.has('Tzrek-jad')) {
 			this.client.emit(
 				Events.ServerNotification,
-				`**${user.username}** just received their ${formatOrdinal(user.cl().amount('Tzrek-jad') + 1)} ${
+				`**${user.usernameOrMention}** just received their ${formatOrdinal(user.cl.amount('Tzrek-jad') + 1)} ${
 					Emoji.TzRekJad
 				} TzRek-jad pet by killing TzTok-Jad, on their ${formatOrdinal(user.getKC(TzTokJad.id))} kill!`
 			);
@@ -136,8 +140,8 @@ export default class extends Task {
 		if (user.cl().amount('Fire cape') === 0) {
 			this.client.emit(
 				Events.ServerNotification,
-				`**${user.username}** just received their first Fire cape on their ${formatOrdinal(
-					attempts + 1
+				`**${user.usernameOrMention}** just received their first Fire cape on their ${formatOrdinal(
+					newUser.stats_fightCavesAttempts
 				)} attempt!`
 			);
 		}

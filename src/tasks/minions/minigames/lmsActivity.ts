@@ -10,7 +10,7 @@ import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { addArrayOfNumbers, calcPerHour, clamp, gaussianRandom } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { mahojiUserSettingsUpdate } from '../../../mahoji/mahojiSettings';
+import { mahojiUserSettingsUpdate, mUserFetch } from '../../../mahoji/mahojiSettings';
 
 interface LMSGameSimulated {
 	position: number;

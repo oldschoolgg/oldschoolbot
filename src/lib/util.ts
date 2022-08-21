@@ -202,8 +202,8 @@ export const anglerBoosts = [
 	[itemID('Angler boots'), 0.2]
 ];
 
-export function anglerBoostPercent(user: KlasaUser) {
-	const skillingSetup = user.getGear('skilling');
+export function anglerBoostPercent(user: MUser) {
+	const skillingSetup = user.gear.skilling;
 	let amountEquipped = 0;
 	let boostPercent = 0;
 	for (const [id, percent] of anglerBoosts) {

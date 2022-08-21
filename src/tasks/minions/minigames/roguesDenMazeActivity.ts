@@ -7,7 +7,7 @@ import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { allItemsOwned } from '../../../mahoji/mahojiSettings';
+import { allItemsOwned, mUserFetch } from '../../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	getLowestCountOutfitPiece(bank: Bank): number {

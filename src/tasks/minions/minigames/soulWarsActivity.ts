@@ -5,7 +5,7 @@ import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { mahojiUserSettingsUpdate } from '../../../mahoji/mahojiSettings';
+import { mahojiUserSettingsUpdate, mUserFetch } from '../../../mahoji/mahojiSettings';
 
 function calcPoints() {
 	let base = 42.5;
