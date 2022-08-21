@@ -3,6 +3,7 @@ import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
+import { transactItemsFromBank } from '../mahoji/mahojiSettings';
 import { BitField } from './constants';
 import { UserSettings } from './settings/types/UserSettings';
 import resolveItems from './util/resolveItems';
@@ -158,6 +159,6 @@ export async function triggerRandomEvent(user: KlasaUser, duration: number, mess
 		}
 	}
 	loot.add(event.loot.roll());
-	await user.addItemsToBank({ items: loot, collectionLog: true });
+	await transactItemsFromBank({ userID: user.id, itemsToAdd: loot, collectionLog: true });
 	messages.push(`Did ${event.name} random event and got ${loot}`);
 }

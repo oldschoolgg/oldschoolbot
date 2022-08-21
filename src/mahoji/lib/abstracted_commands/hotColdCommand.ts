@@ -11,7 +11,8 @@ import {
 	handleMahojiConfirmation,
 	mahojiClientSettingsUpdate,
 	mahojiParseNumber,
-	mahojiUserSettingsUpdate
+	mahojiUserSettingsUpdate,
+	transactItemsFromBank
 } from '../../mahojiSettings';
 
 export const flowerTable = new LootTable()
@@ -56,7 +57,11 @@ export async function hotColdCommand(
 ${explanation}`
 	);
 
-	await klasaUser.addItemsToBank({ items: flowerLoot, collectionLog: true });
+	await transactItemsFromBank({
+		userID: klasaUser.id,
+		itemsToAdd: flowerLoot,
+		collectionLog: true
+	});
 
 	const embed = new Embed()
 		.setTitle(`You picked ${choice} and got '${flower.name}'!`)

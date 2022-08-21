@@ -11,7 +11,7 @@ import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
 import { stringMatches, updateBankSetting } from '../../lib/util';
 import { OSBMahojiCommand } from '../lib/util';
-import { allItemsOwned, handleMahojiConfirmation, userStatsBankUpdate } from '../mahojiSettings';
+import { allItemsOwned, handleMahojiConfirmation, transactItemsFromBank, userStatsBankUpdate } from '../mahojiSettings';
 
 function showAllCreatables() {
 	let content = 'This are the items that you can create:';
@@ -198,7 +198,7 @@ export const createCommand: OSBMahojiCommand = {
 		}
 
 		await user.removeItemsFromBank(inItems);
-		await user.addItemsToBank({ items: outItems });
+		await transactItemsFromBank({ userID: userID.toString(), itemsToAdd: outItems });
 
 		await updateBankSetting(globalClient, ClientSettings.EconomyStats.CreateCost, inItems);
 		await updateBankSetting(globalClient, ClientSettings.EconomyStats.CreateLoot, outItems);

@@ -4,13 +4,17 @@ import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
+import { transactItemsFromBank } from '../../mahoji/mahojiSettings';
 import { Events } from '../constants';
 import { prisma } from '../settings/prisma';
 import { logError } from './logError';
 import { Giveaway } from '.prisma/client';
 
 async function refundGiveaway(creator: KlasaUser, loot: Bank) {
-	await creator.addItemsToBank({ items: loot });
+	await transactItemsFromBank({
+		userID: creator.id,
+		itemsToAdd: loot
+	});
 	creator.send(`Your giveaway failed to finish, you were refunded the items: ${loot}.`).catch(noOp);
 }
 
@@ -59,7 +63,7 @@ export async function handleGiveawayCompletion(giveaway: Giveaway) {
 		}
 
 		const winner = randArrItem(users);
-		await winner.addItemsToBank({ items: loot });
+		await transactItemsFromBank({ userID: winner.id, itemsToAdd: loot });
 		await prisma.economyTransaction.create({
 			data: {
 				guild_id: undefined,

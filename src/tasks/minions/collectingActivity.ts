@@ -8,6 +8,7 @@ import { CollectingOptions } from '../../lib/types/minions';
 import { updateBankSetting } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { collectables } from '../../mahoji/lib/abstracted_commands/collectCommand';
+import { transactItemsFromBank } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: CollectingOptions) {
@@ -24,6 +25,11 @@ export default class extends Task {
 		const totalQuantity = quantity * colQuantity;
 		const loot = new Bank().add(collectable.item.id, totalQuantity);
 		await user.addItemsToBank({ items: loot, collectionLog: true });
+		await transactItemsFromBank({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 
 		let str = `${user}, ${user.minionName} finished collecting ${totalQuantity}x ${
 			collectable.item.name

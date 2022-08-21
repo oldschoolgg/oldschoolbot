@@ -11,7 +11,7 @@ import { hotColdCommand } from '../lib/abstracted_commands/hotColdCommand';
 import { luckyPickCommand } from '../lib/abstracted_commands/luckyPickCommand';
 import { slotsCommand } from '../lib/abstracted_commands/slotsCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { handleMahojiConfirmation, mahojiUsersSettingsFetch, transactItemsFromBank } from '../mahojiSettings';
 
 export const gambleCommand: OSBMahojiCommand = {
 	name: 'gamble',
@@ -233,13 +233,15 @@ export const gambleCommand: OSBMahojiCommand = {
 			const entry = randArrItem(bank);
 			if (!entry) return 'You have no items you can give away!';
 			const [item, qty] = entry;
-			await senderUser.removeItemsFromBank(new Bank().add(item.id, qty));
-			await recipientKlasaUser.addItemsToBank({
-				items: { [item.id]: qty },
+			const loot = new Bank().add(item.id, qty);
+
+			await transactItemsFromBank({ userID: senderUser.id, itemsToAdd: loot });
+			await transactItemsFromBank({
+				userID: recipientKlasaUser.id,
+				itemsToAdd: loot,
 				collectionLog: false,
 				filterLoot: false
 			});
-
 			let debug = new Bank();
 			for (const t of bank) debug.add(t[0].id);
 

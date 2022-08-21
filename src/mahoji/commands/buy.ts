@@ -24,7 +24,8 @@ import {
 	allItemsOwned,
 	handleMahojiConfirmation,
 	mahojiParseNumber,
-	mahojiUsersSettingsFetch
+	mahojiUsersSettingsFetch,
+	transactItemsFromBank
 } from '../mahojiSettings';
 
 const allBuyablesAutocomplete = [...Buyables, ...leagueBuyables.map(i => ({ name: i.item.name })), { name: 'Kitten' }];
@@ -83,7 +84,7 @@ export const buyCommand: OSBMahojiCommand = {
 			const loot = new Bank().add(kitten.id);
 
 			await user.removeItemsFromBank(cost);
-			await user.addItemsToBank({ items: loot, collectionLog: true });
+			await transactItemsFromBank({ userID: userID.toString(), itemsToAdd: loot, collectionLog: true });
 
 			return {
 				...(await mahojiChatHead({
@@ -186,8 +187,11 @@ export const buyCommand: OSBMahojiCommand = {
 		updateBankSetting(globalClient, ClientSettings.EconomyStats.BuyCostBank, econBankChanges);
 		updateBankSetting(globalClient, ClientSettings.EconomyStats.BuyLootBank, outItems);
 
-		await user.addItemsToBank({ items: outItems, collectionLog: true });
-
+		await transactItemsFromBank({
+			userID: user.id,
+			itemsToAdd: outItems,
+			collectionLog: true
+		});
 		return `You purchased ${outItems}.`;
 	}
 };
