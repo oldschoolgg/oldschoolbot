@@ -5,7 +5,7 @@ import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
-import { getMahojiBank, getSkillsOfMahojiUser } from '../../mahoji/mahojiSettings';
+import { getMahojiBank } from '../../mahoji/mahojiSettings';
 import { allTeamCapes } from '../data/buyables/buyables';
 import {
 	barrowsItemArr,
@@ -20,7 +20,7 @@ import {
 	stoles
 } from '../data/CollectionsExport';
 import { prisma } from '../settings/prisma';
-import { itemNameFromID, stringMatches } from '../util';
+import { getSkillsOfMahojiUser, itemNameFromID, stringMatches } from '../util';
 import { makeBankImage } from '../util/makeBankImage';
 import resolveItems, { deepResolveItems } from '../util/resolveItems';
 import { ClueTier } from './clueTiers';
