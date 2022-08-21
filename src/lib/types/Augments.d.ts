@@ -139,16 +139,10 @@ declare module 'discord.js' {
 		getGear(gearType: GearSetupType): Gear;
 		setAttackStyle(newStyles: AttackStyles[]): Promise<void>;
 		getAttackStyles(): AttackStyles[];
-		owns(bank: ItemBank | Bank | string | number): boolean;
 		/**
 		 * Get item boosts the user has available for the given `KillableMonster`.
 		 */
 		resolveAvailableItemBoosts(monster: KillableMonster): ItemBank;
-		/**
-		 * Returns true if the user has full Graceful equipped in any setup.
-		 */
-		hasGracefulEquipped(): boolean;
-		hasSkillReqs(reqs: Skills): [boolean, string | null];
 		perkTier: PerkTier;
 		sanitizedName: string;
 		badges: string;
@@ -164,6 +158,5 @@ declare module 'discord.js' {
 		isIronman: boolean;
 		rawSkills: Skills;
 		bitfield: readonly BitField[];
-		combatLevel: number;
 	}
 }

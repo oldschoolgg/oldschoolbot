@@ -7,7 +7,6 @@ import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { Emoji, Events, LEVEL_99_XP, MAX_QP, MAX_TOTAL_LEVEL, MAX_XP, skillEmoji } from '../../lib/constants';
 import { onMax } from '../../lib/events';
-import { hasGracefulEquipped } from '../../lib/gear';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { AttackStyles } from '../../lib/minions/functions';
 import { AddXpParams, KillableMonster } from '../../lib/minions/types';
@@ -17,16 +16,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
 import Creatures from '../../lib/skilling/skills/hunter/creatures';
 import { Creature, SkillsEnum } from '../../lib/skilling/types';
-import { Skills as TSkills } from '../../lib/types';
-import {
-	addItemToBank,
-	convertXPtoLVL,
-	formatSkillRequirements,
-	skillsMeetRequirements,
-	stringMatches,
-	toKMB,
-	toTitleCase
-} from '../../lib/util';
+import { addItemToBank, convertXPtoLVL, stringMatches, toKMB, toTitleCase } from '../../lib/util';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
@@ -112,14 +102,6 @@ export default class extends Extendable {
 	// @ts-ignore 2784
 	public get minionIsBusy(this: User): boolean {
 		return minionIsBusy(this.id);
-	}
-
-	public hasGracefulEquipped(this: User) {
-		const rawGear = this.rawGear();
-		for (const i of Object.values(rawGear)) {
-			if (hasGracefulEquipped(i)) return true;
-		}
-		return false;
 	}
 
 	// @ts-ignore 2784
@@ -355,31 +337,6 @@ export default class extends Extendable {
 			}
 		}
 		return boosts.bank;
-	}
-
-	public hasSkillReqs(this: User, reqs: TSkills): [boolean, string | null] {
-		const hasReqs = skillsMeetRequirements(this.rawSkills, reqs);
-		if (!hasReqs) {
-			return [false, formatSkillRequirements(reqs)];
-		}
-		return [true, null];
-	}
-
-	// @ts-ignore 2784
-	public get combatLevel(this: User): number {
-		const defence = this.skillLevel(SkillsEnum.Defence);
-		const ranged = this.skillLevel(SkillsEnum.Ranged);
-		const hitpoints = this.skillLevel(SkillsEnum.Hitpoints);
-		const magic = this.skillLevel(SkillsEnum.Magic);
-		const prayer = this.skillLevel(SkillsEnum.Prayer);
-		const attack = this.skillLevel(SkillsEnum.Attack);
-		const strength = this.skillLevel(SkillsEnum.Strength);
-
-		const base = 0.25 * (defence + hitpoints + Math.floor(prayer / 2));
-		const melee = 0.325 * (attack + strength);
-		const range = 0.325 * (Math.floor(ranged / 2) + ranged);
-		const mage = 0.325 * (Math.floor(magic / 2) + magic);
-		return Math.floor(base + Math.max(melee, range, mage));
 	}
 
 	getMinigameScore(this: User, id: MinigameName): Promise<number> {

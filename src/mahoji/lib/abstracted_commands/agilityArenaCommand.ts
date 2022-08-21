@@ -70,7 +70,7 @@ export function determineXPFromTickets(qty: number, user: KlasaUser, hasDiary: b
 export async function agilityArenaCommand(user: User, klasaUser: KlasaUser, channelID: bigint): CommandResponse {
 	const duration = calcMaxTripLength(user, 'AgilityArena');
 
-	if (!klasaUser.hasGracefulEquipped()) {
+	if (!klasauserHasGracefulEquipped(user)) {
 		return mahojiChatHead({
 			content: 'Ahoy there! You need full Graceful equipped to do the Brimhaven Agility Arena!',
 			head: 'izzy'

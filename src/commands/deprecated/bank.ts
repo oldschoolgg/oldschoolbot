@@ -19,7 +19,6 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [page = undefined, itemNameOrID = '']: [number | undefined, string | undefined]) {
-		await msg.author.settings.sync(true);
 		const baseBank = msg.author.bank({ withGP: true });
 
 		if (msg.commandText === 'bs') {

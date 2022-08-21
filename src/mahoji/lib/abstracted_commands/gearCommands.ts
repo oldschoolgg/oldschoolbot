@@ -173,7 +173,7 @@ export async function gearEquipCommand(args: {
 	}
 
 	if (itemToEquip.equipment.requirements) {
-		if (!skillsMeetRequirements(getSkillsOfMahojiUser(user), itemToEquip.equipment.requirements)) {
+		if (!skillsMeetRequirements(getSkillsOfMahojiUser(user, true), itemToEquip.equipment.requirements)) {
 			return `You can't equip a ${
 				itemToEquip.name
 			} because you don't have the required stats: ${formatSkillRequirements(

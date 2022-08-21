@@ -4,12 +4,12 @@ import { Bank, LootTable } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
 import { incrementMinigameScore } from '../../lib/settings/settings';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
 import { rand } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { VolcanicMineGameTime } from '../../mahoji/lib/abstracted_commands/volcanicMineCommand';
+import { mahojiUserSettingsUpdate, mUserFetch } from '../../mahoji/mahojiSettings';
 
 const fossilTable = new LootTable()
 	.add('Unidentified small fossil', 1, 10)
@@ -22,8 +22,8 @@ const fragmentTable = new LootTable({ limit: 175 }).add(numuliteTable, 1, 45).ad
 export default class extends Task {
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { quantity, userID, channelID, duration } = data;
-		const user = await this.client.fetchUser(userID);
-		const userSkillingGear = user.getGear('skilling');
+		const user = await mUserFetch(userID);
+		const userSkillingGear = user.gear.skilling;
 		const userMiningLevel = user.skillLevel(SkillsEnum.Mining);
 		let boost = 1;
 		// Activity boosts
@@ -52,13 +52,13 @@ export default class extends Task {
 
 		let warningMessage = '';
 
-		const currentUserPoints = user.settings.get(UserSettings.VolcanicMinePoints);
+		const currentUserPoints = user.user.volcanic_mine_points;
 		let pointsReceived = Math.round(xpReceived / 5.5);
 		const maxPoints = 2_097_151;
-		await user.settings.update(
-			UserSettings.VolcanicMinePoints,
-			Math.min(maxPoints, currentUserPoints + pointsReceived)
-		);
+
+		await mahojiUserSettingsUpdate(user.id, {
+			volcanic_mine_points: Math.min(maxPoints, currentUserPoints + pointsReceived)
+		});
 
 		if (currentUserPoints + pointsReceived > maxPoints) {
 			const lostPoints = currentUserPoints + pointsReceived - maxPoints;
@@ -86,7 +86,7 @@ export default class extends Task {
 			str += "\nYou have a funny feeling you're being followed...";
 			this.client.emit(
 				Events.ServerNotification,
-				`${Emoji.Mining} **${user.username}'s** minion, ${user.minionName}, just received ${
+				`${Emoji.Mining} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received ${
 					loot.amount('Rock golem') > 1 ? `${loot.amount('Rock golem')}x ` : 'a'
 				} Rock golem while mining on the Volcanic Mine at level ${userMiningLevel} Mining!`
 			);

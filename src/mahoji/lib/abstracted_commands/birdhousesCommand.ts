@@ -191,7 +191,7 @@ export async function birdhouseHarvestCommand(
 	let duration: number = birdhouseToPlant.runTime;
 
 	// Reduce time if user has graceful equipped
-	if (user.hasGracefulEquipped()) {
+	if (userHasGracefulEquipped(user)) {
 		boostStr.push('10% time for Graceful');
 		duration *= 0.9;
 	}

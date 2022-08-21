@@ -110,7 +110,7 @@ export const smeltingCommand: OSBMahojiCommand = {
 				boosts.push('60% for coal bag');
 				timeToSmithSingleBar *= 0.625;
 			}
-			if (!user.hasGracefulEquipped()) {
+			if (!userHasGracefulEquipped(user)) {
 				timeToSmithSingleBar *= 1.075;
 				boosts.push('-7.5% penalty for not having graceful equipped.');
 			}

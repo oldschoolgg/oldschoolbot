@@ -1,5 +1,6 @@
+import { User } from '@prisma/client';
 import { randInt, reduceNumByPercent, roll, Time } from 'e';
-import { KlasaUser, Task } from 'klasa';
+import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
@@ -10,27 +11,27 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 import { minionName } from '../../../lib/util/minionUtils';
 import puroOptions from '../../../mahoji/lib/abstracted_commands/puroPuroCommand';
-import { userStatsBankUpdate } from '../../../mahoji/mahojiSettings';
+import { mahojiUsersSettingsFetch, userHasGracefulEquipped, userStatsBankUpdate } from '../../../mahoji/mahojiSettings';
 
-function singleImpHunt(minutes: number, user: KlasaUser) {
+function singleImpHunt(minutes: number, user: User) {
 	let totalQty = 0;
 	for (let i = 0; i < minutes; i++) {
 		let qty = randInt(5, 6);
 		totalQty += qty;
 	}
-	if (!user.hasGracefulEquipped()) {
+	if (!userHasGracefulEquipped(user)) {
 		totalQty = Math.floor(reduceNumByPercent(totalQty, 20));
 	}
 	return totalQty;
 }
 
-function allImpHunt(minutes: number, user: KlasaUser) {
+function allImpHunt(minutes: number, user: User) {
 	let totalQty = 0;
 	for (let i = 0; i < minutes; i++) {
 		let qty = randInt(1, 3);
 		totalQty += qty;
 	}
-	if (!user.hasGracefulEquipped()) {
+	if (!userHasGracefulEquipped(user)) {
 		totalQty = Math.floor(reduceNumByPercent(totalQty, 20));
 	}
 	return totalQty;
@@ -42,6 +43,7 @@ export default class extends Task {
 	async run(data: PuroPuroActivityTaskOptions) {
 		const { channelID, userID, quantity, implingID, darkLure } = data;
 		const user = await this.client.fetchUser(userID);
+		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 
 		await incrementMinigameScore(userID, 'puro_puro', quantity);
 
@@ -54,8 +56,8 @@ export default class extends Task {
 
 		const hunterLevel = user.skillLevel(SkillsEnum.Hunter);
 
-		const allImpQty = allImpHunt(minutes, user);
-		const singleImpQty = singleImpHunt(minutes, user);
+		const allImpQty = allImpHunt(minutes, mahojiUser);
+		const singleImpQty = singleImpHunt(minutes, mahojiUser);
 		switch (implingID) {
 			case itemID('Dragon impling jar'): {
 				const dragonOdds = darkLure ? 25 : 45;

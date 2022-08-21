@@ -8,11 +8,19 @@ import { userhasDiaryTier, WesternProv } from '../../../lib/diaries';
 import { getMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, stringMatches, toTitleCase } from '../../../lib/util';
+import { combatLevel, formatDuration, stringMatches, toTitleCase } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
-import { handleMahojiConfirmation, mahojiUserSettingsUpdate } from '../../mahojiSettings';
+import { minionIsBusy } from '../../../lib/util/minionIsBusy';
+import { minionName } from '../../../lib/util/minionUtils';
+import {
+	getMahojiBank,
+	getUserGear,
+	handleMahojiConfirmation,
+	hasSkillReqs,
+	mahojiUserSettingsUpdate
+} from '../../mahojiSettings';
 
 let itemBoosts = [
 	[['Abyssal whip', 'Abyssal tentacle'].map(getOSItem), 12],
@@ -105,7 +113,7 @@ let xpMultiplier = {
 	hitpoints: 35
 };
 
-export async function pestControlBuyCommand(klasaUser: KlasaUser, user: User, input: string) {
+export async function pestControlBuyCommand(user: User, input: string) {
 	if (typeof input !== 'string') input = '';
 	const buyable = pestControlBuyables.find(i => stringMatches(input, i.item.name));
 	if (!buyable) {
@@ -120,45 +128,45 @@ export async function pestControlBuyCommand(klasaUser: KlasaUser, user: User, in
 		return `You don't have enough Void knight commendation points to buy the ${item.name}. You need ${cost}, but you have only ${balance}.`;
 	}
 
-	let [hasReqs, str] = klasaUser.hasSkillReqs(buyable.requiredStats);
+	let [hasReqs, str] = hasSkillReqs(user, buyable.requiredStats);
 	if (!hasReqs) {
 		return `You need ${str} to buy this item.`;
 	}
 
-	if (buyable.inputItem && !klasaUser.owns(buyable.inputItem.id)) {
+	const bank = getMahojiBank(user);
+	if (buyable.inputItem && !bank.has(buyable.inputItem.id)) {
 		return `This item requires that you own a ${buyable.inputItem.name}.`;
 	}
 
 	if (buyable.inputItem) {
-		const [hasDiary] = await userhasDiaryTier(klasaUser, WesternProv.hard);
+		const [hasDiary] = await userhasDiaryTier(user, WesternProv.hard);
 		if (!hasDiary) {
 			return "You can't buy this because you haven't completed the Western Provinces hard diary.";
 		}
-		await klasaUser.removeItemsFromBank(new Bank().add(buyable.inputItem.id));
+		await transactItems({ userID: user.id, itemsToRemove: new Bank().add(buyable.inputItem.id) });
 	}
 	await mahojiUserSettingsUpdate(user.id, {
 		pest_control_points: {
 			decrement: cost
 		}
 	});
+	const loot = new Bank().add(item.id);
+	await transactItems({ userID: user.id, itemsToAdd: loot, collectionLog: true });
 
-	await klasaUser.addItemsToBank({ items: { [item.id]: 1 }, collectionLog: true });
-
-	return `Successfully purchased 1x ${item.name} for ${cost} Void knight commendation points.`;
+	return `Successfully purchased ${loot} for ${cost} Void knight commendation points.`;
 }
 
-export async function pestControlStartCommand(klasaUser: KlasaUser, channelID: bigint) {
-	if (klasaUser.minionIsBusy) return `${klasaUser.minionName} is busy.`;
-	const { combatLevel } = klasaUser;
-	if (combatLevel < 40) {
+export async function pestControlStartCommand(user: User, channelID: bigint) {
+	if (minionIsBusy(user.id)) return `${minionName(user)} is busy.`;
+	if (combatLevel(user) < 40) {
 		return 'You need a combat level of at least 40 to do Pest Control.';
 	}
 
 	let gameLength = Time.Minute * 2.8;
-	const maxLength = calcMaxTripLength(klasaUser, 'PestControl');
+	const maxLength = calcMaxTripLength(user, 'PestControl');
+	const gear = getUserGear(user).melee;
 
 	let boosts = [];
-	const gear = klasaUser.getGear('melee');
 	for (const [items, percent] of itemBoosts) {
 		for (const item of items) {
 			if (gear.hasEquipped(item.name)) {
@@ -174,7 +182,7 @@ export async function pestControlStartCommand(klasaUser: KlasaUser, channelID: b
 	let duration = quantity * gameLength;
 
 	await addSubTaskToActivityTask<MinigameActivityTaskOptions>({
-		userID: klasaUser.id,
+		userID: user.id,
 		channelID: channelID.toString(),
 		duration,
 		type: 'PestControl',
@@ -182,11 +190,11 @@ export async function pestControlStartCommand(klasaUser: KlasaUser, channelID: b
 		minigameID: 'pest_control'
 	});
 
-	let [boat] = getBoatType(combatLevel);
+	let [boat] = getBoatType(combatLevel(user));
 
-	let str = `${
-		klasaUser.minionName
-	} is now doing ${quantity}x Pest Control games on the ${boat} boat. The trip will take ${formatDuration(
+	let str = `${minionName(
+		user
+	)} is now doing ${quantity}x Pest Control games on the ${boat} boat. The trip will take ${formatDuration(
 		duration
 	)}.`;
 

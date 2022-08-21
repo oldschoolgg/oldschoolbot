@@ -1,6 +1,7 @@
+import { User } from '@prisma/client';
 import { existsSync } from 'fs';
 import * as fs from 'fs/promises';
-import { KlasaUser, Task, TaskStore, util } from 'klasa';
+import { Task, TaskStore, util } from 'klasa';
 import fetch from 'node-fetch';
 import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
@@ -13,6 +14,7 @@ import { allCLItems } from '../lib/data/Collections';
 import { filterableTypes } from '../lib/data/filterables';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
 import { BankBackground, FlagMap, Flags } from '../lib/minions/types';
+import { MUser } from '../lib/MUser';
 import { getUserSettings } from '../lib/settings/settings';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { BankSortMethod, BankSortMethods, sorts } from '../lib/sorts';
@@ -490,7 +492,7 @@ export default class BankImageTask extends Task {
 		title?: string;
 		showValue?: boolean;
 		flags?: Flags;
-		user?: KlasaUser;
+		user?: MUser;
 		collectionLog?: Bank;
 		mahojiFlags?: BankFlag[];
 	}): Promise<BankImageResult> {

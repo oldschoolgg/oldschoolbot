@@ -134,7 +134,7 @@ export const huntCommand: OSBMahojiCommand = {
 		if (percentReduced >= 1) boosts.push(`${percentReduced}% for being experienced hunting this creature`);
 
 		// Reduce time by 5% if user has graceful equipped
-		if (!creature.wildy && user.hasGracefulEquipped()) {
+		if (!creature.wildy && userHasGracefulEquipped(user)) {
 			boosts.push('5% boost for using Graceful');
 			catchTime *= 0.95;
 		}

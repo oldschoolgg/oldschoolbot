@@ -16,6 +16,7 @@ import chatHeadImage from '../../../lib/util/chatHeadImage';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
+import { mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: InfernoOptions) {
@@ -40,8 +41,9 @@ export default class extends Task {
 
 		const percentMadeItThrough = deathTime === null ? 100 : calcWhatPercent(deathTime, fakeDuration);
 
+		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 		let tokkul = Math.ceil(calcPercentOfNum(calcWhatPercent(duration, fakeDuration), 16_440));
-		const [hasDiary] = await userhasDiaryTier(user, diariesObject.KaramjaDiary.elite);
+		const [hasDiary] = await userhasDiaryTier(mahojiUser, diariesObject.KaramjaDiary.elite);
 		if (hasDiary) tokkul *= 2;
 		const baseBank = new Bank().add('Tokkul', tokkul);
 

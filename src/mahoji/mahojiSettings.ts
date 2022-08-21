@@ -11,13 +11,21 @@ import { CLIENT_ID } from '../config';
 import { deduplicateClueScrolls } from '../lib/clues/clueUtils';
 import { SILENT_ERROR } from '../lib/constants';
 import { evalMathExpression } from '../lib/expressionParser';
-import { defaultGear } from '../lib/gear';
+import { defaultGear, hasGracefulEquipped } from '../lib/gear';
+import { MUser } from '../lib/MUser';
 import { prisma } from '../lib/settings/prisma';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { filterLootReplace } from '../lib/slayer/slayerUtil';
 import { Gear } from '../lib/structures/Gear';
-import type { ItemBank } from '../lib/types';
-import { assert, channelIsSendable, sanitizeBank } from '../lib/util';
+import type { ItemBank, Skills } from '../lib/types';
+import {
+	assert,
+	channelIsSendable,
+	formatSkillRequirements,
+	getSkillsOfMahojiUser,
+	sanitizeBank,
+	skillsMeetRequirements
+} from '../lib/util';
 import { logError } from '../lib/util/logError';
 import { respondToButton } from '../lib/util/respondToButton';
 
@@ -138,6 +146,11 @@ export async function mahojiUsersSettingsFetch(user: bigint | string, select?: P
 	});
 	if (!result) throw new Error(`mahojiUsersSettingsFetch returned no result for ${user}`);
 	return result as User;
+}
+
+export async function mUserFetch(userID: bigint | string) {
+	const user = await mahojiUsersSettingsFetch(userID);
+	return new MUser(user);
 }
 
 export async function mahojiUserSettingsUpdate(user: string | bigint | KlasaUser, data: Prisma.UserUpdateArgs['data']) {
@@ -300,17 +313,17 @@ export async function userStatsBankUpdate(userID: string, key: UserStatsBankKey,
 	}));
 }
 
-export function allItemsOwned(user: KlasaUser | User): Bank {
+export function allItemsOwned(user: KlasaUser | MUser): Bank {
 	const bank = new Bank();
 	if (user instanceof KlasaUser) {
 		bank.add(user.bank({ withGP: true }));
 		const equippedPet = user.settings.get(UserSettings.Minion.EquippedPet);
 		if (equippedPet) bank.add(equippedPet);
 	} else {
-		bank.add(user.bank as ItemBank);
-		bank.add('Coins', Number(user.GP));
-		if (user.minion_equippedPet) {
-			bank.add(user.minion_equippedPet);
+		bank.add(user.bank);
+		bank.add('Coins', Number(user.user.GP));
+		if (user.user.minion_equippedPet) {
+			bank.add(user.user.minion_equippedPet);
 		}
 	}
 
@@ -517,4 +530,20 @@ export async function updateGPTrackSetting(
 			increment: amount
 		}
 	});
+}
+
+export function hasSkillReqs(user: User, reqs: Skills): [boolean, string | null] {
+	const hasReqs = skillsMeetRequirements(getSkillsOfMahojiUser(user, true), reqs);
+	if (!hasReqs) {
+		return [false, formatSkillRequirements(reqs)];
+	}
+	return [true, null];
+}
+
+export function userHasGracefulEquipped(user: User) {
+	const rawGear = getUserGear(user);
+	for (const i of Object.values(rawGear)) {
+		if (hasGracefulEquipped(i)) return true;
+	}
+	return false;
 }

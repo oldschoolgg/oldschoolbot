@@ -1,15 +1,15 @@
+import { User } from '@prisma/client';
 import { objectEntries } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
+import { getMahojiBank, hasSkillReqs } from '../mahoji/mahojiSettings';
 import { MAX_QP } from './constants';
 import { getAllMinigameScores, MinigameName } from './settings/settings';
-import { UserSettings } from './settings/types/UserSettings';
 import Skillcapes from './skilling/skillcapes';
 import { courses } from './skilling/skills/agility';
-import { Skills } from './types';
-import { formatSkillRequirements, itemNameFromID } from './util';
+import { ItemBank, Skills } from './types';
+import { formatSkillRequirements, getSkillsOfMahojiUser, itemNameFromID } from './util';
 import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
 
@@ -23,7 +23,7 @@ export interface DiaryTier {
 	lapsReqs?: Record<string, number>;
 	qp?: number;
 	monsterScores?: Record<string, number>;
-	customReq?: (user: KlasaUser, summary: Boolean) => Promise<[true] | [false, string]>;
+	customReq?: (user: User, summary: Boolean) => Promise<[true] | [false, string]>;
 }
 interface Diary {
 	name: string;
@@ -34,20 +34,27 @@ interface Diary {
 	elite: DiaryTier;
 }
 
-export async function userhasDiaryTier(user: KlasaUser, tier: DiaryTier): Promise<[true] | [false, string]> {
-	const [hasSkillReqs] = user.hasSkillReqs(tier.skillReqs);
+export async function userhasDiaryTier(user: User, tier: DiaryTier): Promise<[true] | [false, string]> {
+	const [hasReqs] = hasSkillReqs(user, tier.skillReqs);
+	const skills = getSkillsOfMahojiUser(user, true);
 	let canDo = true;
 	const reasons: string[] = [];
-	if (!hasSkillReqs) {
+	if (!hasReqs) {
 		let failSkills: Skills = {};
-		for (const skill of objectEntries(tier.skillReqs))
-			if (user.skillLevel(skill[0]) < skill[1]!) failSkills[skill[0]] = skill[1]!;
-		canDo = false;
-		reasons.push(`You don't have these stats: ${formatSkillRequirements(failSkills)!}`);
+		for (const skill of objectEntries(tier.skillReqs)) {
+			if (skills[skill[0]] < skill[1]!) failSkills[skill[0]] = skill[1]!;
+			canDo = false;
+			reasons.push(`You don't have these stats: ${formatSkillRequirements(failSkills)!}`);
+		}
 	}
 
+	const bank = getMahojiBank(user);
+	const cl = new Bank(user.collectionLogBank as ItemBank);
+	const qp = user.QP;
+	const lapScores = user.lapsScores as ItemBank;
+	const monsterScores = user.monsterScores as ItemBank;
+
 	if (tier.ownedItems) {
-		const bank = user.bank();
 		const unownedItems = tier.ownedItems.filter(i => !bank.has(i));
 		if (unownedItems.length > 0) {
 			canDo = false;
@@ -56,7 +63,6 @@ export async function userhasDiaryTier(user: KlasaUser, tier: DiaryTier): Promis
 	}
 
 	if (tier.collectionLogReqs) {
-		const cl = new Bank(user.settings.get(UserSettings.CollectionLogBank));
 		const unownedItems = tier.collectionLogReqs.filter(i => !cl.has(i));
 		if (unownedItems.length > 0) {
 			canDo = false;
@@ -64,7 +70,7 @@ export async function userhasDiaryTier(user: KlasaUser, tier: DiaryTier): Promis
 		}
 	}
 
-	if (tier.qp && user.settings.get(UserSettings.QP) < tier.qp) {
+	if (tier.qp && qp < tier.qp) {
 		canDo = false;
 		reasons.push(`You don't have ${tier.qp} Quest Points`);
 	}
@@ -85,11 +91,10 @@ export async function userhasDiaryTier(user: KlasaUser, tier: DiaryTier): Promis
 
 	if (tier.lapsReqs) {
 		const entries = Object.entries(tier.lapsReqs);
-		const userLaps = user.settings.get(UserSettings.LapsScores);
 		for (const [name, score] of entries) {
 			const course = courses.find(c => c.name === name)!;
 
-			if (!userLaps[course.id] || userLaps[course.id] < score) {
+			if (!lapScores[course.id] || lapScores[course.id] < score) {
 				canDo = false;
 				reasons.push(`You don't have **${score}** laps at **${course.name}**`);
 			}
@@ -98,12 +103,13 @@ export async function userhasDiaryTier(user: KlasaUser, tier: DiaryTier): Promis
 
 	if (tier.monsterScores) {
 		const entries = Object.entries(tier.monsterScores);
-		const userScores = user.settings.get(UserSettings.MonsterScores);
 		for (const [name, score] of entries) {
 			const mon = Monsters.find(mon => mon.name === name)!;
-			if (!userScores[mon.id] || userScores[mon.id] < score) {
+			if (!monsterScores[mon.id] || monsterScores[mon.id] < score) {
 				canDo = false;
-				reasons.push(`You don't have **${score} ${mon.name}** KC, you have **${userScores[mon.id] ?? 0}** KC`);
+				reasons.push(
+					`You don't have **${score} ${mon.name}** KC, you have **${monsterScores[mon.id] ?? 0}** KC`
+				);
 			}
 		}
 	}
@@ -479,10 +485,11 @@ export const FaladorDiary: Diary = {
 		collectionLogReqs: resolveItems(['Air rune', 'Saradomin brew(3)']),
 		customReq: async (user, summary) => {
 			if (summary) return [false, 'Quest point cape or Skill cape.'];
-			const userBank = user.bank();
-			if (userBank.has('Quest point cape') && user.settings.get(UserSettings.QP) >= MAX_QP) return [true];
+			const userBank = getMahojiBank(user);
+			const skills = getSkillsOfMahojiUser(user, true);
+			if (userBank.has('Quest point cape') && user.QP >= MAX_QP) return [true];
 			for (const cape of Skillcapes) {
-				if ((userBank.has(cape.trimmed) || userBank.has(cape.untrimmed)) && user.skillLevel(cape.skill) >= 99) {
+				if ((userBank.has(cape.trimmed) || userBank.has(cape.untrimmed)) && skills[cape.skill] >= 99) {
 					return [true];
 				}
 			}
@@ -651,7 +658,7 @@ export const KandarinDiary: Diary = {
 		collectionLogReqs: resolveItems(['Grimy dwarf weed', 'Shark']),
 		customReq: async (user, summary) => {
 			if (summary) return [false, 'Barbarian Assault Honour Level of 5.'];
-			const honourLevel = user.settings.get(UserSettings.HonourLevel);
+			const honourLevel = user.honour_level;
 			if (honourLevel < 5) {
 				return [false, 'your Barbarian Assault Honour Level is less than 5'];
 			}

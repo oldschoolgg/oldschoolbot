@@ -8,15 +8,18 @@ import { CollectingOptions } from '../../lib/types/minions';
 import { updateBankSetting } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { collectables } from '../../mahoji/lib/abstracted_commands/collectCommand';
+import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: CollectingOptions) {
 		let { collectableID, quantity, userID, channelID, duration, noStaminas } = data;
 		const user = await this.client.fetchUser(userID);
+		const mahojiUser = await mahojiUsersSettingsFetch(userID);
+
 		const collectable = collectables.find(c => c.item.id === collectableID)!;
 		let colQuantity = collectable.quantity;
 
-		const [hasMoryHard] = await userhasDiaryTier(user, MorytaniaDiary.hard);
+		const [hasMoryHard] = await userhasDiaryTier(mahojiUser, MorytaniaDiary.hard);
 		const moryHardBoost = collectable.item.name === 'Mort myre fungus' && hasMoryHard;
 		if (moryHardBoost) {
 			colQuantity *= 2;

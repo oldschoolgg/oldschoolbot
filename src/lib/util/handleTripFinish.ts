@@ -1,7 +1,7 @@
-import { activity_type_enum } from '@prisma/client';
+import { activity_type_enum, User } from '@prisma/client';
 import { isGuildBasedChannel } from '@sapphire/discord.js-utilities';
 import { MessageAttachment, MessageCollector, MessageOptions } from 'discord.js';
-import { KlasaMessage, KlasaUser } from 'klasa';
+import { KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
@@ -10,6 +10,7 @@ import { ClueTiers } from '../clues/clueTiers';
 import { COINS_ID, Emoji, lastTripCache, LastTripRunArgs, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
+import { MUser } from '../MUser';
 import { triggerRandomEvent } from '../randomEvents';
 import { runCommand } from '../settings/settings';
 import { ActivityTaskOptions } from '../types/minions';
@@ -34,7 +35,7 @@ const activitiesToTrackAsPVMGPSource: activity_type_enum[] = [
 
 const tripFinishEffects: {
 	name: string;
-	fn: (options: { data: ActivityTaskOptions; user: KlasaUser; loot: Bank | null; messages: string[] }) => unknown;
+	fn: (options: { data: ActivityTaskOptions; user: User; loot: Bank | null; messages: string[] }) => unknown;
 }[] = [
 	{
 		name: 'Track GP Analytics',
@@ -74,7 +75,7 @@ const tripFinishEffects: {
 ];
 
 export async function handleTripFinish(
-	user: KlasaUser,
+	user: MUser,
 	channelID: string,
 	message: string,
 	onContinue:

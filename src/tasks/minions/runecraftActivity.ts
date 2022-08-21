@@ -7,11 +7,12 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { RunecraftActivityTaskOptions } from '../../lib/types/minions';
 import { calcMaxRCQuantity, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { mUserFetch } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: RunecraftActivityTaskOptions) {
 		const { runeID, essenceQuantity, userID, channelID, imbueCasts, duration, useStaminas } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
 		const rune = Runecraft.Runes.find(_rune => _rune.id === runeID)!;
 
@@ -42,7 +43,7 @@ export default class extends Task {
 			str += "\nYou have a funny feeling you're being followed...";
 			this.client.emit(
 				Events.ServerNotification,
-				`${Emoji.Runecraft} **${user.username}'s** minion, ${
+				`${Emoji.Runecraft} **${user.usernameOrMention}'s** minion, ${
 					user.minionName
 				}, just received a Rift guardian while crafting ${rune.name}s at level ${user.skillLevel(
 					SkillsEnum.Runecraft

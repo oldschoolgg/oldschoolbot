@@ -32,9 +32,11 @@ import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, MersenneTwister19937, nodeCrypto, real, shuffle } from 'random-js';
 
 import { CLIENT_ID, production } from '../config';
+import { getUserGear } from '../mahoji/mahojiSettings';
 import { skillEmoji, SupportServer, usernameCache } from './constants';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
 import { Consumable } from './minions/types';
+import { MUser } from './MUser';
 import { POHBoosts } from './poh';
 import { prisma } from './settings/prisma';
 import { Rune } from './skilling/skills/runecraft';
@@ -218,8 +220,8 @@ export function anglerBoostPercent(user: KlasaUser) {
 
 const rogueOutfit = resolveItems(['Rogue mask', 'Rogue top', 'Rogue trousers', 'Rogue gloves', 'Rogue boots']);
 
-export function rogueOutfitPercentBonus(user: KlasaUser): number {
-	const skillingSetup = user.getGear('skilling');
+export function rogueOutfitPercentBonus(user: User): number {
+	const skillingSetup = getUserGear(user).skilling;
 	let amountEquipped = 0;
 	for (const id of rogueOutfit) {
 		if (skillingSetup.hasEquipped([id])) {
@@ -666,8 +668,8 @@ export function calcPerHour(value: number, duration: number) {
 	return (value / (duration / Time.Minute)) * 60;
 }
 
-export function calcMaxRCQuantity(rune: Rune, user: KlasaUser) {
-	const level = user.skillLevel(SkillsEnum.Runecraft);
+export function calcMaxRCQuantity(rune: Rune, user: MUser) {
+	const level = user.skillLevel('runecraft');
 	for (let i = rune.levels.length; i > 0; i--) {
 		const [levelReq, qty] = rune.levels[i - 1];
 		if (level >= levelReq) return qty;
@@ -808,4 +810,15 @@ export function makeComponents(
 	components: APIButtonComponentWithCustomId[]
 ): APIInteractionResponseCallbackData['components'] {
 	return chunk(components, 5).map(i => ({ components: i, type: ComponentType.ActionRow }));
+}
+
+export function combatLevel(user: User): number {
+	const skills = getSkillsOfMahojiUser(user, true);
+	const { defence, ranged, hitpoints, magic, prayer, attack, strength } = skills;
+
+	const base = 0.25 * (defence + hitpoints + Math.floor(prayer / 2));
+	const melee = 0.325 * (attack + strength);
+	const range = 0.325 * (Math.floor(ranged / 2) + ranged);
+	const mage = 0.325 * (Math.floor(magic / 2) + magic);
+	return Math.floor(base + Math.max(melee, range, mage));
 }

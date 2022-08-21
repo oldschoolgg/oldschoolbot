@@ -1,6 +1,6 @@
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { MUser } from '../../MUser';
 import { birdsNestID, nestTable } from '../../simulation/birdsNest';
 import { SkillsEnum } from '../../skilling/types';
 import { addArrayOfNumbers, randFloat, roll } from '../../util';
@@ -14,7 +14,7 @@ const clues = [
 ];
 
 export default function addSkillingClueToLoot(
-	user: KlasaUser,
+	user: MUser,
 	skill: SkillsEnum,
 	quantity: number,
 	clueChance: number,
@@ -37,7 +37,7 @@ export default function addSkillingClueToLoot(
 		for (const clue of clues) {
 			if (clueRoll < clue[1] || nextTier) {
 				//  This if block is ONLY for OSB.
-				if (user.bank().amount(clue[0]) >= 1 || loot.amount(clue[0]) >= 1) {
+				if (user.bank.amount(clue[0]) >= 1 || loot.amount(clue[0]) >= 1) {
 					nextTier = true;
 					continue;
 				}

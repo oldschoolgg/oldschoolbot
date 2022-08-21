@@ -1,9 +1,11 @@
+import { userMention } from '@discordjs/builders';
+import { User } from '@prisma/client';
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Events } from '../../constants';
-import { UserSettings } from '../../settings/types/UserSettings';
-import { ArrayItemsResolved } from '../../types';
+import { Events, usernameCache } from '../../constants';
+import { ArrayItemsResolved, ItemBank } from '../../types';
+import { minionName } from '../../util/minionUtils';
 import { effectiveMonsters } from '../data/killableMonsters';
 
 export default async function announceLoot({
@@ -13,7 +15,7 @@ export default async function announceLoot({
 	loot,
 	team
 }: {
-	user: KlasaUser;
+	user: User;
 	monsterID: number;
 	notifyDrops?: number[] | ArrayItemsResolved;
 	loot: Bank;
@@ -21,7 +23,7 @@ export default async function announceLoot({
 }) {
 	if (!_notifyDrops) return;
 	const notifyDrops = _notifyDrops.flat(Infinity);
-	const kc = user.settings.get(UserSettings.MonsterScores)[monsterID] ?? 0;
+	const kc = (user.monsterScores as ItemBank)[monsterID] ?? 0;
 	const itemsToAnnounce = loot.clone().filter(i => notifyDrops.includes(i.id));
 	if (itemsToAnnounce.length > 0) {
 		let notif = '';
@@ -31,11 +33,15 @@ export default async function announceLoot({
 				effectiveMonsters.find(m => m.id === monsterID)!.name
 			}, **${team.lootRecipient.username}** just received **${itemsToAnnounce}**!`;
 		} else {
-			notif = `**${user.username}'s** minion, ${user.minionName}, just received **${itemsToAnnounce}**, their ${
+			const username = usernameCache.get(user.id);
+
+			notif = `**${username ?? userMention(user.id)}'s** minion, ${minionName(
+				user
+			)}, just received **${itemsToAnnounce}**, their ${
 				effectiveMonsters.find(m => m.id === monsterID)!.name
 			} KC is ${kc.toLocaleString()}!`;
 		}
 
-		user.client.emit(Events.ServerNotification, notif);
+		globalClient.emit(Events.ServerNotification, notif);
 	}
 }

@@ -1,17 +1,20 @@
+import { User } from '@prisma/client';
 import { objectEntries, reduceNumByPercent, Time } from 'e';
-import { KlasaUser } from 'klasa';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { addArrayOfNumbers } from 'oldschooljs/dist/util';
 
 import { sepulchreBoosts, sepulchreFloors } from '../../../lib/minions/data/sepulchre';
+import { getMinigameScore } from '../../../lib/settings/minigames';
 import { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, itemNameFromID } from '../../../lib/util';
+import { formatDuration, getSkillsOfMahojiUser, itemNameFromID } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import { hasItemsEquippedOrInBank, minionName } from '../../../lib/util/minionUtils';
+import { userHasGracefulEquipped } from '../../mahojiSettings';
 
-export async function sepulchreCommand(user: KlasaUser, channelID: bigint) {
-	const agilityLevel = user.skillLevel(SkillsEnum.Agility);
-	const thievingLevel = user.skillLevel(SkillsEnum.Thieving);
+export async function sepulchreCommand(user: User, channelID: bigint) {
+	const skills = getSkillsOfMahojiUser(user, true);
+	const agilityLevel = skills.agility;
+	const thievingLevel = skills.thieving;
 	const minLevel = sepulchreFloors[0].agilityLevel;
 	if (agilityLevel < minLevel) {
 		return `You need atleast level ${minLevel} Agility to do the Hallowed Sepulchre.`;
@@ -21,7 +24,7 @@ export async function sepulchreCommand(user: KlasaUser, channelID: bigint) {
 		return 'You need atleast level 66 Thieving to do the Hallowed Sepulchre.';
 	}
 
-	if (!user.hasGracefulEquipped()) {
+	if (!userHasGracefulEquipped(user)) {
 		return 'You need Graceful equipped in your Skilling setup to do the Hallowed Sepulchre.';
 	}
 
@@ -32,7 +35,7 @@ export async function sepulchreCommand(user: KlasaUser, channelID: bigint) {
 
 	// Every 1h becomes 1% faster to a cap of 10%
 	const percentReduced = Math.min(
-		Math.floor((await user.getMinigameScore('sepulchre')) / (Time.Hour / lapLength)),
+		Math.floor((await getMinigameScore(user.id, 'sepulchre')) / (Time.Hour / lapLength)),
 		10
 	);
 
@@ -41,7 +44,7 @@ export async function sepulchreCommand(user: KlasaUser, channelID: bigint) {
 	lapLength = reduceNumByPercent(lapLength, percentReduced);
 
 	for (const [id, percent] of objectEntries(sepulchreBoosts)) {
-		if (user.hasItemEquippedOrInBank(Number(id))) {
+		if (hasItemsEquippedOrInBank(user, [Number(id)])) {
 			boosts.push(`${percent}% for ${itemNameFromID(Number(id))}`);
 			lapLength = reduceNumByPercent(lapLength, percent);
 		}
@@ -59,7 +62,7 @@ export async function sepulchreCommand(user: KlasaUser, channelID: bigint) {
 		minigameID: 'sepulchre'
 	});
 
-	let str = `${user.minionName} is now doing ${maxLaps} laps of the Sepulchre, in each lap they are doing floors ${
+	let str = `${minionName(user)} is now doing ${maxLaps} laps of the Sepulchre, in each lap they are doing floors ${
 		completableFloors[0].number
 	}-${completableFloors[completableFloors.length - 1].number}, the trip will take ${formatDuration(
 		tripLength

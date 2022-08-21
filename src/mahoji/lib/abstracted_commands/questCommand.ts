@@ -1,20 +1,22 @@
+import { User } from '@prisma/client';
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
 
 import { MAX_QP } from '../../../lib/constants';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { ActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { minionIsBusy } from '../../../lib/util/minionIsBusy';
+import { minionName } from '../../../lib/util/minionUtils';
+import { userHasGracefulEquipped } from '../../mahojiSettings';
 
-export async function questCommand(user: KlasaUser, channelID: bigint) {
-	if (!user.hasMinion) {
+export async function questCommand(user: User, channelID: bigint) {
+	if (!user.minion_hasBought) {
 		return 'You need a minion to do a questing trip';
 	}
-	if (user.minionIsBusy) {
+	if (minionIsBusy(user.id)) {
 		return 'Your minion must not be busy to do a questing trip';
 	}
-	const currentQP = user.settings.get(UserSettings.QP);
+	const currentQP = user.QP;
 	if (currentQP >= MAX_QP) {
 		return 'You already have the maximum amount of Quest Points.';
 	}
@@ -23,7 +25,7 @@ export async function questCommand(user: KlasaUser, channelID: bigint) {
 
 	let duration = Time.Minute * 30;
 
-	if (user.hasGracefulEquipped()) {
+	if (userHasGracefulEquipped(user)) {
 		duration *= 0.9;
 		boosts.push('10% for Graceful');
 	}
@@ -34,7 +36,7 @@ export async function questCommand(user: KlasaUser, channelID: bigint) {
 		userID: user.id,
 		channelID: channelID.toString()
 	});
-	let response = `${user.minionName} is now completing quests, they'll come back in around ${formatDuration(
+	let response = `${minionName(user)} is now completing quests, they'll come back in around ${formatDuration(
 		duration
 	)}.`;
 

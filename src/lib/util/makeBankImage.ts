@@ -1,10 +1,10 @@
 import { MessageAttachment } from 'discord.js';
-import { KlasaUser } from 'klasa';
 import { MahojiAttachment } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
 import BankImageTask, { BankFlag } from '../../tasks/bankImage';
 import { Flags } from '../minions/types';
+import { MUser } from '../MUser';
 
 interface MakeBankImageOptions {
 	bank: Bank;
@@ -12,7 +12,7 @@ interface MakeBankImageOptions {
 	title?: string;
 	background?: number;
 	flags?: Record<string, string | number>;
-	user?: KlasaUser;
+	user?: MUser;
 	previousCL?: Bank;
 	showNewCL?: boolean;
 	mahojiFlags?: BankFlag[];

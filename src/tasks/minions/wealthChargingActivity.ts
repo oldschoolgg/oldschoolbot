@@ -5,11 +5,12 @@ import { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { wealthInventorySize } from '../../mahoji/lib/abstracted_commands/chargeWealthCommand';
+import { mUserFetch } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { quantity, userID, channelID } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		let deaths = 0;
 		let loot = new Bank();
 		for (let i = 0; i < quantity; i++) {

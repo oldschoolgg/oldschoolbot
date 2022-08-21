@@ -11,13 +11,14 @@ import { AgilityActivityTaskOptions } from '../../lib/types/minions';
 import { addItemToBank } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { updateGPTrackSetting } from '../../mahoji/mahojiSettings';
+import { mahojiUsersSettingsFetch, updateGPTrackSetting } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: AgilityActivityTaskOptions) {
 		let { courseID, quantity, userID, channelID, duration, alch } = data;
 		const user = await this.client.fetchUser(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Agility);
+		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 
 		const course = Agility.Courses.find(course => course.name === courseID)!;
 
@@ -44,7 +45,7 @@ export default class extends Task {
 			totalMarks = Math.ceil(totalMarks / 5);
 		}
 
-		const [hasArdyElite] = await userhasDiaryTier(user, ArdougneDiary.elite);
+		const [hasArdyElite] = await userhasDiaryTier(mahojiUser, ArdougneDiary.elite);
 		const diaryBonus = hasArdyElite && course.name === 'Ardougne Rooftop Course';
 		if (diaryBonus) {
 			totalMarks = Math.floor(increaseNumByPercent(totalMarks, 25));

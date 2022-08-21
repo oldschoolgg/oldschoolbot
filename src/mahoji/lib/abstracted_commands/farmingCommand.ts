@@ -74,7 +74,7 @@ export async function harvestCommand({
 	// 1.5 mins per patch --> ex: 10 patches = 15 mins
 	let duration = patch.lastQuantity * (timePerPatchTravel + timePerPatchHarvest);
 
-	if (user.hasGracefulEquipped()) {
+	if (userHasGracefulEquipped(user)) {
 		boostStr.push('10% time for Graceful');
 		duration *= 0.9;
 	}
@@ -215,7 +215,7 @@ export async function farmingPlantCommand({
 	}
 
 	// Reduce time if user has graceful equipped
-	if (user.hasGracefulEquipped()) {
+	if (userHasGracefulEquipped(user)) {
 		boostStr.push('10% time for Graceful');
 		duration *= 0.9;
 	}

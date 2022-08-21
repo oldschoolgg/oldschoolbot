@@ -7,6 +7,7 @@ import { Canvas } from 'skia-canvas/lib';
 
 import { getUserGear } from '../../../mahoji/mahojiSettings';
 import BankImageTask from '../../../tasks/bankImage';
+import { MUser } from '../../MUser';
 import { UserSettings } from '../../settings/types/UserSettings';
 import { Gear } from '../../structures/Gear';
 import { toTitleCase } from '../../util';
@@ -81,7 +82,7 @@ function drawText(canvas: Canvas, text: string, x: number, y: number, maxStat = 
 }
 
 export async function generateGearImage(
-	user: KlasaUser | User,
+	user: MUser,
 	gearSetup: Gear | GearSetup,
 	gearType: GearSetupType | null,
 	petID: number | null

@@ -61,7 +61,6 @@ export async function setupParty(
 				max: options.usersAllowed?.length ?? options.maxSize,
 				dispose: true,
 				filter: async (reaction: MessageReaction, user: KlasaUser) => {
-					await user.settings.sync();
 					if (
 						(!options.ironmanAllowed && user.isIronman) ||
 						user.bot ||

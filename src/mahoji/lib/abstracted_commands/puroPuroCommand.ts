@@ -1,16 +1,16 @@
+import { User } from '@prisma/client';
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
+import { UserKourendFavour } from '../../../lib/minions/data/kourendFavour';
 import { Skills } from '../../../lib/types';
 import { PuroPuroActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, itemID, stringMatches } from '../../../lib/util';
+import { formatDuration, getSkillsOfMahojiUser, itemID, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
 import { minionName } from '../../../lib/util/minionUtils';
+import { getMahojiBank, hasSkillReqs, userHasGracefulEquipped } from '../../mahojiSettings';
 
 interface PuroImpling {
 	name: string;
@@ -91,7 +91,7 @@ export const puroOptions: PuroImpling[] = [
 export default puroOptions;
 
 export async function puroPuroStartCommand(
-	user: KlasaUser,
+	user: User,
 	channelID: bigint,
 	impling: string,
 	darkLure: boolean | undefined
@@ -100,15 +100,16 @@ export async function puroPuroStartCommand(
 	const maxTripLength = calcMaxTripLength(user, 'PuroPuro');
 	const quantity = Math.floor(maxTripLength / timePerGame);
 	const duration = quantity * timePerGame;
-	const hunterLevel = user.skillLevel(SkillsEnum.Hunter);
-	const [hasSkillReqs, reason] = user.hasSkillReqs(puroPuroSkillRequirements);
-	const [hasDarkLureSkillReqs, lureReason] = user.hasSkillReqs(darkLureSkillRequirements);
+	const skills = getSkillsOfMahojiUser(user, true);
+	const hunterLevel = skills.hunter;
+	const [hasReqs, reason] = hasSkillReqs(user, puroPuroSkillRequirements);
+	const [hasDarkLureSkillReqs, lureReason] = hasSkillReqs(user, darkLureSkillRequirements);
 
-	if (!hasSkillReqs) {
+	if (!hasReqs) {
 		return `To hunt in Puro-Puro, you need: ${reason}.`;
 	}
 
-	if (user.settings.get(UserSettings.QP) < 3) {
+	if (user.QP < 3) {
 		return 'To hunt in Puro-Puro, you need 3 QP.';
 	}
 
@@ -131,7 +132,7 @@ export async function puroPuroStartCommand(
 	}
 
 	if (darkLure) {
-		if (user.settings.get(UserSettings.QP) < 9) {
+		if (user.QP < 9) {
 			return 'To use Dark Lure, you need 9 QP.';
 		}
 
@@ -139,20 +140,21 @@ export async function puroPuroStartCommand(
 			return `To use Dark Lure, you need: ${lureReason}.`;
 		}
 
-		const currentUserFavour = user.settings.get(UserSettings.KourendFavour);
-		for (const [key, value] of Object.entries(currentUserFavour)) {
+		const currentUserFavour = user.kourend_favour;
+		for (const [key, value] of Object.entries(currentUserFavour as any as UserKourendFavour)) {
 			if (value < 100) {
 				return `You don't have the required amount of Favour to cast Dark Lure.\n\nRequired: 100% ${key} Favour.`;
 			}
 		}
 
+		const bank = getMahojiBank(user);
 		const natureRuneID = itemID('Nature rune');
 		const deathRuneID = itemID('Death rune');
 		if (impToHunt.name === 'Dragon Implings') {
-			if (user.bank().amount(natureRuneID) < 100 || user.bank().amount(deathRuneID) < 100) {
+			if (bank.amount(natureRuneID) < 100 || bank.amount(deathRuneID) < 100) {
 				return "You don't have enough Nature and Death runes to start this trip, you need at least 100 of each.";
 			}
-		} else if (user.bank().amount(natureRuneID) < 300 || user.bank().amount(deathRuneID) < 300) {
+		} else if (bank.amount(natureRuneID) < 300 || bank.amount(deathRuneID) < 300) {
 			return "You don't have enough Nature and Death runes to start this trip, you need at least 300 of each.";
 		}
 	}
@@ -172,7 +174,7 @@ export async function puroPuroStartCommand(
 		duration
 	)} to finish.`;
 
-	if (!user.hasGracefulEquipped() && impToHunt.name !== 'Dragon Implings')
+	if (!userHasGracefulEquipped(user) && impToHunt.name !== 'Dragon Implings')
 		str += '\n20% less implings due to having no Graceful equipped.';
 
 	if (!impToHunt.spell) {

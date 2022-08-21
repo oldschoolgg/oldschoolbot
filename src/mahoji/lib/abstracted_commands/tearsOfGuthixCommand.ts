@@ -1,12 +1,14 @@
+import { User } from '@prisma/client';
 import { notEmpty, objectEntries, Time } from 'e';
-import { KlasaUser } from 'klasa';
 
 import { Emoji } from '../../../lib/constants';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, formatSkillRequirements } from '../../../lib/util';
+import { formatDuration, formatSkillRequirements, getSkillsOfMahojiUser } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { minionIsBusy } from '../../../lib/util/minionIsBusy';
+import { minionName } from '../../../lib/util/minionUtils';
+import { hasSkillReqs } from '../../mahojiSettings';
 
 const skillReqs = {
 	[SkillsEnum.Firemaking]: 49,
@@ -19,11 +21,10 @@ const ironmanExtraReqs = {
 	[SkillsEnum.Slayer]: 35
 };
 
-export async function tearsOfGuthixCommand(user: KlasaUser, channelID: bigint) {
-	if (user.minionIsBusy) return `${user.minionName} is busy.`;
-	await user.settings.sync();
+export async function tearsOfGuthixCommand(user: User, channelID: bigint) {
+	if (minionIsBusy(user.id)) return `${minionName(user)} is busy.`;
 	const currentDate = new Date().getTime();
-	const lastPlayedDate = user.settings.get(UserSettings.LastTearsOfGuthixTimestamp);
+	const lastPlayedDate = Number(user.lastTearsOfGuthixTimestamp);
 	const difference = currentDate - lastPlayedDate;
 
 	// If they have already claimed a ToG in the past 7days
@@ -33,17 +34,18 @@ export async function tearsOfGuthixCommand(user: KlasaUser, channelID: bigint) {
 	}
 
 	// 43 QP for the quest
-	const userQP = user.settings.get(UserSettings.QP);
+	const userQP = user.QP;
 	if (userQP < 43) {
 		return `**${Emoji.Snake} Juna says...** You can drink from the Tears of Guthix when you have 43+ QP.`;
 	}
 
+	const skills = getSkillsOfMahojiUser(user, true);
 	let missingIronmanSkills = false;
 	// Extra requirements if Ironman
-	if (user.isIronman) {
+	if (user.minion_ironman) {
 		let skillsMatch = 0;
 		Object.entries(ironmanExtraReqs).forEach(([skill, level]) => {
-			if (user.skillLevel(skill as SkillsEnum) >= level) skillsMatch += 1;
+			if (skills[skill as SkillsEnum] >= level) skillsMatch += 1;
 		});
 		if (skillsMatch === 0) {
 			missingIronmanSkills = true;
@@ -55,10 +57,10 @@ export async function tearsOfGuthixCommand(user: KlasaUser, channelID: bigint) {
 		true
 	)}`;
 	// Skills required for quest
-	if (!user.hasSkillReqs(skillReqs)[0]) {
+	if (!hasSkillReqs(user, skillReqs)[0]) {
 		const missingSkillsMessage = objectEntries(skillReqs)
 			.map(s => {
-				return user.skillLevel(s[0]) < s[1] ? formatSkillRequirements({ [s[0]]: s[1] }, true) : undefined;
+				return skills[s[0]] < s[1] ? formatSkillRequirements({ [s[0]]: s[1] }, true) : undefined;
 			})
 			.filter(notEmpty)
 			.join(', ');
@@ -83,7 +85,7 @@ export async function tearsOfGuthixCommand(user: KlasaUser, channelID: bigint) {
 		type: 'TearsOfGuthix'
 	});
 
-	return `${
-		user.minionName
-	} is now off to visit Juna and drink from the Tears of Guthix, their trip will take ${formatDuration(duration)}.`;
+	return `${minionName(
+		user
+	)} is now off to visit Juna and drink from the Tears of Guthix, their trip will take ${formatDuration(duration)}.`;
 }

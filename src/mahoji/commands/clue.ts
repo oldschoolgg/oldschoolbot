@@ -75,7 +75,7 @@ export const clueCommand: OSBMahojiCommand = {
 		const randomAddedDuration = randInt(1, 20);
 		duration += (randomAddedDuration * duration) / 100;
 
-		if (user.hasGracefulEquipped()) {
+		if (userHasGracefulEquipped(user)) {
 			boosts.push('10% for Graceful');
 			duration *= 0.9;
 		}

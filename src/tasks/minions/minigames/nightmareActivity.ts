@@ -11,6 +11,7 @@ import { randomVariation } from '../../../lib/util';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
+import { getMahojiBank, mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings';
 import { NightmareMonster } from './../../../lib/minions/data/killableMonsters/index';
 
 const RawNightmare = Misc.Nightmare;
@@ -22,6 +23,7 @@ export default class extends Task {
 		const monsterID = isPhosani ? PHOSANI_NIGHTMARE_ID : NightmareMonster.id;
 		const monsterName = isPhosani ? "Phosani's Nightmare" : 'Nightmare';
 		const user = await this.client.fetchUser(userID);
+		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 		const team = method === 'solo' ? [user.id] : [user.id, '1', '2', '3'];
 
 		const [userStats] = getNightmareGearStats(user, team, isPhosani);
@@ -56,7 +58,8 @@ export default class extends Task {
 			taskQuantity: null
 		});
 
-		if (user.owns('Slepey tablet') || user.bitfield.includes(BitField.HasSlepeyTablet)) {
+		const bank = getMahojiBank(mahojiUser);
+		if (bank.has('Slepey tablet') || mahojiUser.bitfield.includes(BitField.HasSlepeyTablet)) {
 			userLoot.remove('Slepey tablet', userLoot.amount('Slepey tablet'));
 		}
 		// Fix purple items on solo kills
@@ -65,7 +68,7 @@ export default class extends Task {
 		if (kc) await user.incrementMonsterScore(monsterID, kc);
 
 		announceLoot({
-			user,
+			user: mahojiUser,
 			monsterID,
 			loot: itemsAdded,
 			notifyDrops: NightmareMonster.notifyDrops

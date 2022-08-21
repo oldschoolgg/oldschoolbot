@@ -163,9 +163,4 @@ export default class extends Extendable {
 			realCost
 		};
 	}
-
-	public owns(this: User, bank: ItemBank | Bank | string | number) {
-		const userBank = this.bank();
-		return userBank.has(bank);
-	}
 }

@@ -16,6 +16,7 @@ import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
+import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: MonsterActivityTaskOptions) {
@@ -78,7 +79,12 @@ export default class extends Task {
 			superiorCount: newSuperiorCount
 		});
 
-		announceLoot({ user, monsterID: monster.id, loot, notifyDrops: monster.notifyDrops });
+		announceLoot({
+			user: await mahojiUsersSettingsFetch(user.id),
+			monsterID: monster.id,
+			loot,
+			notifyDrops: monster.notifyDrops
+		});
 
 		if (newSuperiorCount && newSuperiorCount > 0) {
 			const oldSuperiorCount = await user.settings.get(UserSettings.Slayer.SuperiorCount);

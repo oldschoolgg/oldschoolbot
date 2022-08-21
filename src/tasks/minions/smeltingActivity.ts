@@ -7,11 +7,13 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
+import { userHasItemsEquippedAnywhere } from '../../lib/util/minionUtils';
+import { mUserFetch } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: SmeltingActivityTaskOptions) {
 		let { barID, quantity, userID, channelID, duration, blastf } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
 		const bar = Smithing.Bars.find(bar => bar.id === barID)!;
 
@@ -29,7 +31,7 @@ export default class extends Task {
 
 		let xpReceived = quantity * bar.xp;
 
-		if (bar.id === itemID('Gold bar') && user.hasItemEquippedAnywhere('Goldsmith gauntlets')) {
+		if (bar.id === itemID('Gold bar') && userHasItemsEquippedAnywhere(user.user, 'Goldsmith gauntlets')) {
 			xpReceived = quantity * 56.2;
 		}
 

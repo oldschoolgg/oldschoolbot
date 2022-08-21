@@ -65,7 +65,7 @@ const minimumCostOwned = new Bank()
 
 export function checkNexUser(user: User): [false] | [true, string] {
 	const tag = userMention(user.id);
-	if (!skillsMeetRequirements(getSkillsOfMahojiUser(user), minStats)) {
+	if (!skillsMeetRequirements(getSkillsOfMahojiUser(user, true), minStats)) {
 		return [true, `${tag} doesn't have the skill requirements: ${formatSkillRequirements(minStats)}.`];
 	}
 	if (user.GP < 1_000_000) return [true, `${tag} needs atleast 1m GP to cover potential deaths.`];
