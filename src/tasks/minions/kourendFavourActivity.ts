@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { KourendFavourActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { mUserFetch } from '../../mahoji/mahojiSettings';
 import { KourendFavours, UserKourendFavour } from './../../lib/minions/data/kourendFavour';
 
 export default class extends Task {

@@ -75,4 +75,22 @@ export class MUser {
 
 		return this;
 	}
+
+	public async addItemsToBank(
+		this: User,
+		{
+			items,
+			collectionLog = false,
+			filterLoot = true,
+			dontAddToTempCL = false
+		}: { items: ItemBank | Bank; collectionLog?: boolean; filterLoot?: boolean; dontAddToTempCL?: boolean }
+	) {
+		return transactItems({
+			collectionLog,
+			itemsToAdd: new Bank(items),
+			filterLoot,
+			dontAddToTempCL,
+			userID: this.id
+		});
+	}
 }

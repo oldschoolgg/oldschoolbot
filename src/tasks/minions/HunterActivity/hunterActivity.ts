@@ -19,6 +19,7 @@ import { HunterActivityTaskOptions } from '../../../lib/types/minions';
 import { rand, roll, stringMatches, updateBankSetting } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
+import { mUserFetch } from '../../../mahoji/mahojiSettings';
 import { BLACK_CHIN_ID, HERBIBOAR_ID } from './../../../lib/constants';
 import { PeakTier } from './../../WildernessPeakInterval';
 
