@@ -63,7 +63,11 @@ export default class extends Task {
 
 		const xpStr = await user.addXP({ skillName: SkillsEnum.Fishing, amount: fXPtoGive, duration });
 
-		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
+		const { previousCL, itemsAdded } = await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 
 		const image = await makeBankImage({
 			bank: itemsAdded,

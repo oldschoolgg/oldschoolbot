@@ -28,7 +28,11 @@ export default class extends Task {
 			}
 		}
 
-		await user.addItemsToBank({ items: loot, collectionLog: true });
+		await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 		let str = `${user}, ${user.minionName} finished hunting Chompy Birds, they killed ${quantity}x Chompies. You have now have ${newScore} Chompies total. You received **${loot}**.`;
 
 		for (const [item, qty] of chompyHats) {
