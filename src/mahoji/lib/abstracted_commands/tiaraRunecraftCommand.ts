@@ -108,9 +108,7 @@ export async function tiaraRunecraftCommand({
 
 	let response = `${user.minionName} is now turning ${quantity}x Tiaras into ${
 		tiaraObj.name
-	}, it'll take around ${formatDuration(duration)} to finish, this will take ${
-		numberOfInventories % 14 === 0 ? numberOfInventories : numberOfInventories + 1
-	}x trips to the altar.`;
+	}, it'll take around ${formatDuration(duration)} to finish.`;
 
 	if (boosts.length > 0) response += `\n\n**Boosts:** ${boosts.join(', ')}`;
 
