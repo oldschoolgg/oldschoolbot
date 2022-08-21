@@ -128,7 +128,7 @@ async function finalizeOpening({
 }) {
 	if (!user.bank().has(cost)) return `You don't have ${cost}.`;
 	const newOpenableScores = await addToOpenablesScores(mahojiUser, kcBank);
-	await user.removeItemsFromBank(cost);
+	await transactItems({ userID: user.id, itemsToRemove: cost });
 	const { previousCL } = await user.addItemsToBank({
 		items: loot.bank,
 		collectionLog: true,

@@ -82,7 +82,7 @@ export const buyCommand: OSBMahojiCommand = {
 
 			const loot = new Bank().add(kitten.id);
 
-			await user.removeItemsFromBank(cost);
+			await transactItems({ userID: user.id, itemsToRemove: cost });
 			await transactItems({ userID: userID.toString(), itemsToAdd: loot, collectionLog: true });
 
 			return {
