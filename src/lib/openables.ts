@@ -108,7 +108,7 @@ for (const clueTier of ClueTiers) {
 			}
 
 			if (mimicNumber > 0) {
-				await user.incrementMonsterScore(MIMIC_MONSTER_ID, mimicNumber);
+				await user.incrementKC(MIMIC_MONSTER_ID, mimicNumber);
 			}
 
 			return { bank: loot, message };

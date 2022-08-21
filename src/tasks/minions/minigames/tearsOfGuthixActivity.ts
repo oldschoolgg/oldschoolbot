@@ -7,12 +7,12 @@ import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings';
+import { mahojiUsersSettingsFetch, mUserFetch } from '../../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { userID, channelID, duration } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		await incrementMinigameScore(userID, 'tears_of_guthix', 1);
 		await user.settings.update(UserSettings.LastTearsOfGuthixTimestamp, new Date().getTime());
 

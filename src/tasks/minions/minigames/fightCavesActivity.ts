@@ -21,7 +21,7 @@ const TokkulID = itemID('Tokkul');
 export default class extends Task {
 	async run(data: FightCavesActivityTaskOptions) {
 		const { userID, channelID, jadDeathChance, preJadDeathTime, duration, fakeDuration } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
 		const tokkulReward = rand(2000, 6000);
 		const diedToJad = percentChance(jadDeathChance);
@@ -121,7 +121,7 @@ export default class extends Task {
 			);
 		}
 
-		await user.incrementMonsterScore(Monsters.TzTokJad.id);
+		await user.incrementKC(Monsters.TzTokJad.id);
 		const loot = Monsters.TzTokJad.kill(1, { onSlayerTask: isOnTask });
 
 		if (loot.has('Tzrek-jad')) {

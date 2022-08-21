@@ -4,11 +4,12 @@ import { Castables } from '../../lib/skilling/skills/magic/castables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { CastingActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { mUserFetch } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: CastingActivityTaskOptions) {
 		let { spellID, quantity, userID, channelID, duration } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
 		const spell = Castables.find(i => i.id === spellID)!;
 

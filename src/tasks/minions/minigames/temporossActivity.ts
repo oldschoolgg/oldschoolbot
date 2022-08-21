@@ -14,7 +14,7 @@ import { makeBankImage } from '../../../lib/util/makeBankImage';
 export default class extends Task {
 	async run(data: TemporossActivityTaskOptions) {
 		const { userID, channelID, quantity, rewardBoost, duration } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
 		const previousScore = (await getMinigameEntity(user.id)).tempoross;
 		const { newScore } = await incrementMinigameScore(userID, 'tempoross', quantity);

@@ -14,7 +14,7 @@ import { makeBankImage } from '../../../lib/util/makeBankImage';
 export default class extends Task {
 	async run(data: SepulchreActivityTaskOptions) {
 		const { channelID, quantity, floors, userID, duration } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		await incrementMinigameScore(userID, 'sepulchre', quantity);
 
 		const completedFloors = sepulchreFloors.filter(fl => floors.includes(fl.number));

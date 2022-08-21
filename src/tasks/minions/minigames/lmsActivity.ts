@@ -102,7 +102,7 @@ function calculateResultOfLMSGames(qty: number, lmsStats: Awaited<ReturnType<typ
 export default class extends Task {
 	async run(data: MinigameActivityTaskOptions) {
 		const { channelID, quantity, userID, duration } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		await incrementMinigameScore(userID, 'lms', quantity);
 		const lmsStats = await getUsersLMSStats(user);
 

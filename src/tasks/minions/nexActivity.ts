@@ -8,6 +8,7 @@ import { handleNexKills } from '../../lib/simulation/nex';
 import { NexTaskOptions } from '../../lib/types/minions';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import { sendToChannelID } from '../../lib/util/webhook';
+import { mUserFetch } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: NexTaskOptions) {
@@ -25,9 +26,9 @@ export default class extends Task {
 		});
 
 		for (const [uID, uLoot] of loot.entries()) {
-			const user = await this.client.users.fetch(uID);
-			await user.addItemsToBank({ items: uLoot, collectionLog: true });
-			await user.incrementMonsterScore(NEX_ID, quantity - userDetails.find(i => i[0] === uID)![2].length);
+			await transactItems({ userID: uID, collectionLog: true, itemsToAdd: uLoot });
+			const user = await mUserFetch(uID);
+			await user.incrementKC(NEX_ID, quantity - userDetails.find(i => i[0] === uID)![2].length);
 		}
 
 		await trackLoot({

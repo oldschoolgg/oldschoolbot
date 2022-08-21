@@ -12,7 +12,7 @@ import { mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings';
 export default class extends Task {
 	async run(data: MinigameActivityTaskOptions) {
 		const { channelID, quantity, userID } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 		const previousScore = (await getMinigameEntity(user.id)).big_chompy_bird_hunting;

@@ -33,7 +33,7 @@ export default class extends Task {
 			currentDate,
 			autoFarmed
 		} = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 		const currentFarmingLevel = user.skillLevel(SkillsEnum.Farming);
 		const currentWoodcuttingLevel = user.skillLevel(SkillsEnum.Woodcutting);
@@ -341,7 +341,7 @@ export default class extends Task {
 
 			let tangleroot = false;
 			if (plantToHarvest.seedType === 'hespori') {
-				await user.incrementMonsterScore(Monsters.Hespori.id);
+				await user.incrementKC(Monsters.Hespori.id);
 				const hesporiLoot = Monsters.Hespori.kill(1, { farmingLevel: currentFarmingLevel });
 				loot = hesporiLoot;
 				if (hesporiLoot.amount('Tangleroot')) tangleroot = true;

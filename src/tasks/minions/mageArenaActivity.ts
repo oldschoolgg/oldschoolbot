@@ -7,7 +7,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 export default class extends Task {
 	async run(data: ActivityTaskOptions) {
 		let { userID, channelID } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const loot = new Bank().add('Saradomin cape').add('Zamorak cape').add('Guthix cape');
 		await transactItems({
 			userID: user.id,

@@ -9,11 +9,13 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import { rand } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { userHasItemsEquippedAnywhere } from '../../lib/util/minionUtils';
+import { mUserFetch } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: MiningActivityTaskOptions) {
 		const { oreID, quantity, userID, channelID, duration } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
 		const ore = Mining.Ores.find(ore => ore.id === oreID)!;
 
@@ -22,7 +24,7 @@ export default class extends Task {
 
 		// If they have the entire prospector outfit, give an extra 0.5% xp bonus
 		if (
-			user.getGear('skilling').hasEquipped(
+			user.gear.skilling.hasEquipped(
 				Object.keys(Mining.prospectorItems).map(i => parseInt(i)),
 				true
 			)
@@ -33,7 +35,7 @@ export default class extends Task {
 		} else {
 			// For each prospector item, check if they have it, give its' XP boost if so.
 			for (const [itemID, bonus] of Object.entries(Mining.prospectorItems)) {
-				if (user.hasItemEquippedAnywhere(parseInt(itemID))) {
+				if (userHasItemsEquippedAnywhere(user.user, parseInt(itemID))) {
 					const amountToAdd = Math.floor(xpReceived * (bonus / 100));
 					xpReceived += amountToAdd;
 					bonusXP += amountToAdd;
@@ -60,9 +62,9 @@ export default class extends Task {
 		if (ore.petChance && roll((ore.petChance - currentLevel * 25) / quantity)) {
 			loot.add('Rock golem');
 			str += "\nYou have a funny feeling you're being followed...";
-			this.client.emit(
+			globalClient.emit(
 				Events.ServerNotification,
-				`${Emoji.Mining} **${user.username}'s** minion, ${user.minionName}, just received a Rock golem while mining ${ore.name} at level ${currentLevel} Mining!`
+				`${Emoji.Mining} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Rock golem while mining ${ore.name} at level ${currentLevel} Mining!`
 			);
 		}
 

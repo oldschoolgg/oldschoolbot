@@ -22,7 +22,7 @@ export default class extends Task {
 
 		const monsterID = isPhosani ? PHOSANI_NIGHTMARE_ID : NightmareMonster.id;
 		const monsterName = isPhosani ? "Phosani's Nightmare" : 'Nightmare';
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 		const team = method === 'solo' ? [user.id] : [user.id, '1', '2', '3'];
 
@@ -65,7 +65,7 @@ export default class extends Task {
 		// Fix purple items on solo kills
 		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: userLoot, collectionLog: true });
 
-		if (kc) await user.incrementMonsterScore(monsterID, kc);
+		if (kc) await user.incrementKC(monsterID, kc);
 
 		announceLoot({
 			user: mahojiUser,

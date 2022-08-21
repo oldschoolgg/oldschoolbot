@@ -16,7 +16,7 @@ export default class extends Task {
 		const lootStr: string[] = [];
 		const levelStr: string[] = [];
 
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
 		const farmingLvl = user.skillLevel(SkillsEnum.Farming);
 		const titheFarmsCompleted = user.settings.get(UserSettings.Stats.TitheFarmsCompleted);

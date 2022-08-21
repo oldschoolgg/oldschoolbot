@@ -26,7 +26,7 @@ function calcPoints() {
 export default class extends Task {
 	async run(data: MinigameActivityTaskOptions) {
 		const { channelID, quantity, userID } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
 		let points = 0;
 		for (let i = 0; i < quantity; i++) {

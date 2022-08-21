@@ -15,7 +15,7 @@ import { makeBankImage } from '../../../lib/util/makeBankImage';
 export default class extends Task {
 	async run(data: GauntletOptions) {
 		const { channelID, quantity, userID, corrupted } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const key: MinigameName = corrupted ? 'corrupted_gauntlet' : 'gauntlet';
 
 		const kc = await user.getMinigameScore(key);

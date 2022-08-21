@@ -4,6 +4,7 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
 import { KaramjaDiary, userhasDiaryTier } from '../../../lib/diaries';
+import { MUser } from '../../../lib/MUser';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../../lib/util';
@@ -58,7 +59,7 @@ const brimhavenGraceful = new Bank({
 	'Brimhaven graceful cape': 1
 });
 
-export function determineXPFromTickets(qty: number, user: KlasaUser, hasDiary: boolean) {
+export function determineXPFromTickets(qty: number, user: User, hasDiary: boolean) {
 	let baseXP = ticketQuantities[qty as keyof typeof ticketQuantities] ?? ticketQuantities[1000];
 	// The experience reward from the tickets is increased by 5 per ticket for each Agility level above 40.
 	baseXP += 5 * (user.skillLevel(SkillsEnum.Agility) - 40);
@@ -165,7 +166,7 @@ export async function agilityArenaRecolorCommand(user: KlasaUser) {
 	});
 }
 
-export async function agilityArenaXPCommand(user: KlasaUser, qty: number): CommandResponse {
+export async function agilityArenaXPCommand(user: MUser, qty: number): CommandResponse {
 	const amountTicketsHas = user.bank().amount('Agility arena ticket');
 
 	if (!(qty in ticketQuantities)) {
@@ -176,7 +177,7 @@ export async function agilityArenaXPCommand(user: KlasaUser, qty: number): Comma
 	if (amountTicketsHas < qty) {
 		return "You don't have enough Agility arena tickets.";
 	}
-	const [hasKaramjaMed] = await userhasDiaryTier(user, KaramjaDiary.medium);
+	const [hasKaramjaMed] = await userhasDiaryTier(user.user, KaramjaDiary.medium);
 	const xpToGive = determineXPFromTickets(qty, user, hasKaramjaMed);
 	let str = `Redeemed ${qty}x Agility arena tickets for ${xpToGive.toLocaleString()} Agility XP. (${(
 		xpToGive / qty

@@ -15,7 +15,7 @@ export default class extends Task {
 
 		incrementMinigameScore(userID, 'castle_wars', quantity);
 
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const loot = new Bank();
 		for (let i = 0; i < quantity; i++) {
 			loot.add('Castle wars ticket', ticketTable.roll().item);

@@ -7,12 +7,13 @@ import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
+import { mUserFetch } from '../../../mahoji/mahojiSettings';
 import { PlunderActivityTaskOptions } from './../../../lib/types/minions';
 
 export default class extends Task {
 	async run(data: PlunderActivityTaskOptions) {
 		const { channelID, quantity, rooms, userID } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		await incrementMinigameScore(userID, 'pyramid_plunder', quantity);
 		const allRooms = plunderRooms.filter(room => rooms.includes(room.number));
 		const completedRooms = [

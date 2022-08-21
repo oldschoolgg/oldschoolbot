@@ -6,10 +6,10 @@ import { Events } from '../../lib/constants';
 import { Stealable, stealables } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
-import { getSkillsOfMahojiUser, rogueOutfitPercentBonus } from '../../lib/util';
+import { rogueOutfitPercentBonus } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
-import { mahojiUsersSettingsFetch, updateGPTrackSetting } from '../../mahoji/mahojiSettings';
+import { mUserFetch, updateGPTrackSetting } from '../../mahoji/mahojiSettings';
 
 export function calcLootXPPickpocketing(
 	currentLevel: number,
@@ -49,10 +49,9 @@ export function calcLootXPPickpocketing(
 export default class extends Task {
 	async run(data: PickpocketActivityTaskOptions) {
 		const { monsterID, quantity, successfulQuantity, userID, channelID, xpReceived, duration } = data;
-		const user = await mahojiUsersSettingsFetch(userID);
+		const user = await mUserFetch(userID);
 		const obj = stealables.find(_obj => _obj.id === monsterID)!;
-		const skills = getSkillsOfMahojiUser(user, true);
-		const currentLevel = skills.thieving;
+		const currentLevel = user.skillLevel('thieving');
 		let rogueOutfitBoostActivated = false;
 
 		const loot = new Bank();
@@ -109,7 +108,7 @@ export default class extends Task {
 			str += "\n**You have a funny feeling you're being followed...**";
 			this.client.emit(
 				Events.ServerNotification,
-				`**${user.username}'s** minion, ${
+				`**${user.usernameOrMention}'s** minion, ${
 					user.minionName
 				}, just received a **Rocky** <:Rocky:324127378647285771> while ${
 					obj.type === 'pickpockable' ? 'pickpocketing' : 'stealing'

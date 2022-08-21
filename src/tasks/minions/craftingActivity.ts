@@ -10,7 +10,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 export default class extends Task {
 	async run(data: CraftingActivityTaskOptions) {
 		const { craftableID, quantity, userID, channelID, duration } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Crafting);
 		const item = Craftables.find(craft => craft.id === craftableID)!;
 

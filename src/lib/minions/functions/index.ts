@@ -4,6 +4,7 @@ import { Monsters } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
 import { NIGHTMARES_HP } from '../../constants';
+import { MUser } from '../../MUser';
 import { SkillsEnum } from '../../skilling/types';
 import { randomVariation } from '../../util';
 import { xpCannonVaryPercent, xpPercentToCannon, xpPercentToCannonM } from '../data/combatConstants';
@@ -28,7 +29,7 @@ const miscHpMap: Record<number, number> = {
 };
 
 export function resolveAttackStyles(
-	user: KlasaUser,
+	user: MUser,
 	params: ResolveAttackStylesParams
 ): [KillableMonster | undefined, Monster | undefined, AttackStyles[]] {
 	const killableMon = killableMonsters.find(m => m.id === params.monsterID);
@@ -63,7 +64,7 @@ export function resolveAttackStyles(
 	return [killableMon, osjsMon, attackStyles];
 }
 
-export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) {
+export async function addMonsterXP(user: MUser, params: AddMonsterXpParams) {
 	const boostMethod = params.burstOrBarrage ? 'barrage' : 'none';
 
 	const [, osjsMon, attackStyles] = resolveAttackStyles(user, {

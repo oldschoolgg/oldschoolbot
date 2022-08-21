@@ -16,7 +16,7 @@ import { mahojiUsersSettingsFetch, updateGPTrackSetting } from '../../mahoji/mah
 export default class extends Task {
 	async run(data: AgilityActivityTaskOptions) {
 		let { courseID, quantity, userID, channelID, duration, alch } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Agility);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 

@@ -8,7 +8,6 @@ import { revenantMonsters } from '../../lib/minions/data/killableMonsters/revs';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import { runCommand } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { filterLootReplace } from '../../lib/slayer/slayerUtil';
 import { Gear } from '../../lib/structures/Gear';
@@ -80,7 +79,7 @@ export default class extends Task {
 			return;
 		}
 
-		await user.incrementMonsterScore(monsterID, quantity);
+		await user.incrementKC(monsterID, quantity);
 
 		const loot = monster.table.kill(quantity, { skulled });
 		let str =

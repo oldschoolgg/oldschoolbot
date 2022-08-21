@@ -78,7 +78,7 @@ export default class extends Task {
 			loot.add(tipTable.roll());
 		}
 
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		await transactItems({
 			userID: user.id,
 			collectionLog: true,

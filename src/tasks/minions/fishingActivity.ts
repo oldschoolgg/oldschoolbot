@@ -30,7 +30,7 @@ function radasBlessing(user: KlasaUser) {
 export default class extends Task {
 	async run(data: FishingActivityTaskOptions) {
 		let { fishID, quantity, userID, channelID, duration } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
 		const { blessingEquipped, blessingChance } = radasBlessing(user);
 

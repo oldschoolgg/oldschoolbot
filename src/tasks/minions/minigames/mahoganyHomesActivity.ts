@@ -11,7 +11,7 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 export default class extends Task {
 	async run(data: MahoganyHomesActivityTaskOptions) {
 		const { channelID, quantity, xp, duration, userID, points } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		await incrementMinigameScore(userID, 'mahogany_homes', quantity);
 
 		let bonusXP = 0;

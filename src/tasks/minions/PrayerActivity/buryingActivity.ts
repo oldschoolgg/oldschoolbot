@@ -5,11 +5,13 @@ import Prayer from '../../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { BuryingActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { hasItemsEquippedOrInBank, userHasItemsEquippedAnywhere } from '../../../lib/util/minionUtils';
+import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: BuryingActivityTaskOptions) {
 		const { boneID, quantity, userID, channelID } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
 		const currentLevel = user.skillLevel(SkillsEnum.Prayer);
 
@@ -32,13 +34,12 @@ export default class extends Task {
 		}
 
 		if (
-			user.hasItemEquippedAnywhere('Iron dagger') &&
-			user.hasItemEquippedAnywhere('Bronze arrow') &&
-			user.hasItemEquippedAnywhere('Iron med helm') &&
-			!user.hasItemEquippedOrInBank('Clue hunter garb')
+			userHasItemsEquippedAnywhere(user.user, ['Iron dagger', 'Bronze arrow', 'Iron med helm']) &&
+			!hasItemsEquippedOrInBank(user.user, ['Clue hunter garb'])
 		) {
-			await user.addItemsToBank({
-				items: new Bank({ 'Clue hunter garb': 1, 'Clue hunter trousers': 1 }),
+			await transactItems({
+				userID,
+				itemsToAdd: new Bank({ 'Clue hunter garb': 1, 'Clue hunter trousers': 1 }),
 				collectionLog: true
 			});
 			str += '\n\nWhile digging a hole to bury bones in, you find a garb and pair of trousers.';

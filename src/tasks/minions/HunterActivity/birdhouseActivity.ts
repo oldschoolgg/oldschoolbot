@@ -22,7 +22,7 @@ export default class extends Task {
 	async run(data: BirdhouseActivityTaskOptions) {
 		const { birdhouseName, birdhouseData, userID, channelID, duration, placing, gotCraft, currentDate } = data;
 
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const currentHunterLevel = user.skillLevel(SkillsEnum.Hunter);
 		const currentCraftingLevel = user.skillLevel(SkillsEnum.Crafting);
 		let hunterXP = 0;

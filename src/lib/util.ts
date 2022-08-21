@@ -220,8 +220,8 @@ export function anglerBoostPercent(user: KlasaUser) {
 
 const rogueOutfit = resolveItems(['Rogue mask', 'Rogue top', 'Rogue trousers', 'Rogue gloves', 'Rogue boots']);
 
-export function rogueOutfitPercentBonus(user: User): number {
-	const skillingSetup = getUserGear(user).skilling;
+export function rogueOutfitPercentBonus(user: MUser): number {
+	const skillingSetup = user.gear.skilling;
 	let amountEquipped = 0;
 	for (const id of rogueOutfit) {
 		if (skillingSetup.hasEquipped([id])) {

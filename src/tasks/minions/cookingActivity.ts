@@ -10,7 +10,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 export default class extends Task {
 	async run(data: CookingActivityTaskOptions) {
 		const { cookableID, quantity, userID, channelID, duration } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
 		const cookable = Cooking.Cookables.find(cookable => cookable.id === cookableID)!;
 

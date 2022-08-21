@@ -31,7 +31,7 @@ export default class extends Task {
 		incrementMinigameScore(userID, 'rogues_den', quantity);
 
 		const loot = new Bank();
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const userBankCopy = allItemsOwned(user);
 
 		let str = `<@${userID}>, ${user.minionName} finished completing ${quantity}x laps of the Rogues' Den Maze.`;

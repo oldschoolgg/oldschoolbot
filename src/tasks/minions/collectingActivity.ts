@@ -13,7 +13,7 @@ import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 export default class extends Task {
 	async run(data: CollectingOptions) {
 		let { collectableID, quantity, userID, channelID, duration, noStaminas } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 
 		const collectable = collectables.find(c => c.item.id === collectableID)!;

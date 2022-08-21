@@ -5,7 +5,7 @@ import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { Emoji, Events } from '../../../lib/constants';
 import { trackLoot } from '../../../lib/settings/prisma';
-import { incrementMinigameScore } from '../../../lib/settings/settings';
+import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
 import Firemaking from '../../../lib/skilling/skills/firemaking';
@@ -14,7 +14,8 @@ import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { updateBankSetting } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { allItemsOwned } from '../../../mahoji/mahojiSettings';
+import { userHasItemsEquippedAnywhere } from '../../../lib/util/minionUtils';
+import { allItemsOwned, mUserFetch } from '../../../mahoji/mahojiSettings';
 
 const PointsTable = new SimpleTable<number>()
 	.add(420)
@@ -42,7 +43,7 @@ const PointsTable = new SimpleTable<number>()
 export default class extends Task {
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { userID, channelID, quantity } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Firemaking);
 
 		let loot = new Bank();
@@ -68,10 +69,10 @@ export default class extends Task {
 		if (loot.has('Phoenix')) {
 			this.client.emit(
 				Events.ServerNotification,
-				`${Emoji.Phoenix} **${user.username}'s** minion, ${
+				`${Emoji.Phoenix} **${user.usernameOrMention}'s** minion, ${
 					user.minionName
 				}, just received a Phoenix! Their Wintertodt KC is ${
-					(await user.getMinigameScore('wintertodt')) + quantity
+					(await getMinigameScore(user.id, 'wintertodt')) + quantity
 				}, and their Firemaking level is ${user.skillLevel(SkillsEnum.Firemaking)}.`
 			);
 		}
@@ -99,7 +100,7 @@ export default class extends Task {
 
 		// If they have the entire pyromancer outfit, give an extra 0.5% xp bonus
 		if (
-			user.getGear('skilling').hasEquipped(
+			user.gear.skilling.hasEquipped(
 				Object.keys(Firemaking.pyromancerItems).map(i => parseInt(i)),
 				true
 			)
@@ -110,7 +111,7 @@ export default class extends Task {
 		} else {
 			// For each pyromancer item, check if they have it, give its' XP boost if so.
 			for (const [itemID, bonus] of Object.entries(Firemaking.pyromancerItems)) {
-				if (user.hasItemEquippedAnywhere(parseInt(itemID))) {
+				if (userHasItemsEquippedAnywhere(user.user, parseInt(itemID))) {
 					const amountToAdd = Math.floor(fmXpToGive * (bonus / 100));
 					fmXpToGive += amountToAdd;
 					fmBonusXP += amountToAdd;

@@ -1,13 +1,14 @@
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { UserSettings } from '../../../../lib/settings/types/UserSettings';
 import { CyclopsTable } from '../../../../lib/simulation/cyclops';
 import { ActivityTaskOptionsWithQuantity } from '../../../../lib/types/minions';
 import { roll } from '../../../../lib/util';
 import { handleTripFinish } from '../../../../lib/util/handleTripFinish';
 import itemID from '../../../../lib/util/itemID';
 import { makeBankImage } from '../../../../lib/util/makeBankImage';
+import { userHasItemsEquippedAnywhere } from '../../../../lib/util/minionUtils';
+import { mUserFetch } from '../../../../mahoji/mahojiSettings';
 
 const cyclopsID = 2097;
 
@@ -49,14 +50,17 @@ const defenders = [
 export default class extends Task {
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { userID, channelID, quantity } = data;
-		const user = await this.client.fetchUser(userID);
-		const userBank = user.bank();
+		const user = await mUserFetch(userID);
+		const userBank = user.bank;
 
 		let loot = new Bank();
 
 		for (let i = 0; i < quantity; i++) {
 			const highestDefenderOwned = defenders.find(
-				def => userBank.has(def.itemID) || user.hasItemEquippedAnywhere(def.itemID) || loot.has(def.itemID)
+				def =>
+					userBank.has(def.itemID) ||
+					userHasItemsEquippedAnywhere(user.user, def.itemID) ||
+					loot.has(def.itemID)
 			);
 			const possibleDefenderToDrop =
 				defenders[
@@ -78,10 +82,10 @@ export default class extends Task {
 		});
 
 		let str = `${user}, ${user.minionName} finished killing ${quantity} Cyclops. Your Cyclops KC is now ${
-			(user.settings.get(UserSettings.MonsterScores)[cyclopsID] ?? 0) + quantity
+			user.getKC(cyclopsID) + quantity
 		}.`;
 
-		await user.incrementMonsterScore(cyclopsID, quantity);
+		await user.incrementKC(cyclopsID, quantity);
 
 		const image = await makeBankImage({
 			bank: itemsAdded,

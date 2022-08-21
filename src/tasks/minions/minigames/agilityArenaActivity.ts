@@ -15,7 +15,7 @@ import { mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings';
 export default class extends Task {
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { channelID, duration, userID } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Agility);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 

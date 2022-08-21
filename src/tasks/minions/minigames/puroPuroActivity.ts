@@ -42,7 +42,7 @@ const bryophytasStaffId = itemID("Bryophyta's staff");
 export default class extends Task {
 	async run(data: PuroPuroActivityTaskOptions) {
 		const { channelID, userID, quantity, implingID, darkLure } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 
 		await incrementMinigameScore(userID, 'puro_puro', quantity);

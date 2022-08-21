@@ -8,7 +8,7 @@ import { Armours } from '../../../../mahoji/lib/abstracted_commands/warriorsGuil
 export default class extends Task {
 	async run(data: AnimatedArmourActivityTaskOptions) {
 		const { armourID, userID, channelID, quantity } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const armour = Armours.find(armour => armour.name === armourID)!;
 
 		const str = `${user}, ${user.minionName} finished killing ${quantity}x animated ${

@@ -8,6 +8,7 @@ import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
 import { PvMMethod } from '../constants';
 import { CombatOptionsEnum } from '../minions/data/combatConstants';
 import { KillableMonster } from '../minions/types';
+import { MUser } from '../MUser';
 import { prisma } from '../settings/prisma';
 import { getNewUser } from '../settings/settings';
 import { UserSettings } from '../settings/types/UserSettings';
@@ -65,7 +66,7 @@ export function determineBoostChoice(params: DetermineBoostParams) {
 	return boostChoice;
 }
 
-export async function calculateSlayerPoints(currentStreak: number, master: SlayerMaster, user: KlasaUser) {
+export async function calculateSlayerPoints(currentStreak: number, master: SlayerMaster, user: MUser) {
 	const streaks = [1000, 250, 100, 50, 10];
 	const multiplier = [50, 35, 25, 15, 5];
 
@@ -77,7 +78,7 @@ export async function calculateSlayerPoints(currentStreak: number, master: Slaye
 
 	// Boost points to 20 for Konar + Kourend Elites
 	if (master.name === 'Konar quo Maten') {
-		const [hasKourendElite] = await userhasDiaryTier(user, KourendKebosDiary.elite);
+		const [hasKourendElite] = await userhasDiaryTier(user.user, KourendKebosDiary.elite);
 		if (hasKourendElite) {
 			basePoints = 20;
 		}

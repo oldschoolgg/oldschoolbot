@@ -9,7 +9,7 @@ import { KourendFavours, UserKourendFavour } from './../../lib/minions/data/kour
 export default class extends Task {
 	async run(data: KourendFavourActivityTaskOptions) {
 		let { favour, quantity, userID, channelID } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const favourPoints = favour.pointsGain * quantity;
 		let shayzienDone = false;
 		let totalPoints: number | undefined = undefined;

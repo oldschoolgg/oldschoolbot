@@ -7,13 +7,14 @@ import { SkillsEnum } from '../../../lib/skilling/types';
 import { ZalcanoActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
+import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: ZalcanoActivityTaskOptions) {
 		const { channelID, quantity, duration, userID, performance, isMVP } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const kc = user.getKC(ZALCANO_ID);
-		await user.incrementMonsterScore(ZALCANO_ID, quantity);
+		await user.incrementKC(ZALCANO_ID, quantity);
 
 		const loot = new Bank();
 
@@ -43,7 +44,7 @@ export default class extends Task {
 		if (loot.amount('Smolcano') > 0) {
 			this.client.emit(
 				Events.ServerNotification,
-				`**${user.username}'s** minion, ${
+				`**${user.usernameOrMention}'s** minion, ${
 					user.minionName
 				}, just received **Smolcano**, their Zalcano KC is ${randInt(kc || 1, (kc || 1) + quantity)}!`
 			);

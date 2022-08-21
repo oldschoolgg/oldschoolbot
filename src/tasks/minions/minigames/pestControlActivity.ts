@@ -13,7 +13,7 @@ import { mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings';
 export default class extends Task {
 	async run(data: MinigameActivityTaskOptions) {
 		const { channelID, userID, quantity, duration } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(user.id);
 
 		const [boatType, pointsPerGame] = getBoatType(combatLevel(mahojiUser));

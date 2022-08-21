@@ -8,7 +8,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 export default class extends Task {
 	async run(data: EnchantingActivityTaskOptions) {
 		let { itemID, quantity, userID, channelID, duration } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
 		const enchantable = Enchantables.find(fletchable => fletchable.id === itemID)!;
 

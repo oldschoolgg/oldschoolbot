@@ -10,7 +10,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 export default class extends Task {
 	async run(data: ConstructionActivityTaskOptions) {
 		const { objectID, quantity, userID, channelID, duration } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const object = Constructables.find(object => object.id === objectID)!;
 		const xpReceived = quantity * object.xp;
 		let bonusXP = 0;

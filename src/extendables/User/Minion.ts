@@ -5,7 +5,7 @@ import { Bank } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
-import { Emoji, Events, LEVEL_99_XP, MAX_QP, MAX_TOTAL_LEVEL, MAX_XP, skillEmoji } from '../../lib/constants';
+import { Emoji, Events, LEVEL_99_XP, MAX_TOTAL_LEVEL, MAX_XP, skillEmoji } from '../../lib/constants';
 import { onMax } from '../../lib/events';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { AttackStyles } from '../../lib/minions/functions';
@@ -21,7 +21,7 @@ import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
 import { minionStatus } from '../../lib/util/minionStatus';
-import { getKC, minionName, skillLevel } from '../../lib/util/minionUtils';
+import { minionName, skillLevel } from '../../lib/util/minionUtils';
 import { activity_type_enum } from '.prisma/client';
 
 const suffixes = new SimpleTable<string>()
@@ -48,10 +48,6 @@ export default class extends Extendable {
 	// @ts-ignore 2784
 	public get minionStatus(this: User) {
 		return minionStatus(this);
-	}
-
-	getKC(this: KlasaUser, id: number) {
-		return getKC(this, id);
 	}
 
 	public async getKCByName(this: KlasaUser, kcName: string) {
@@ -255,33 +251,9 @@ export default class extends Extendable {
 		}
 	}
 
-	public async addQP(this: User, amount: number) {
-		await this.settings.sync(true);
-		const currentQP = this.settings.get(UserSettings.QP);
-		const newQP = Math.min(MAX_QP, currentQP + amount);
-
-		if (currentQP < MAX_QP && newQP === MAX_QP) {
-			this.client.emit(
-				Events.ServerNotification,
-				`${Emoji.QuestIcon} **${this.username}'s** minion, ${this.minionName}, just achieved the maximum amount of Quest Points!`
-			);
-		}
-		return this.settings.update(UserSettings.QP, newQP);
-	}
-
 	// @ts-ignore 2784
 	public get isIronman(this: User) {
 		return this.settings.get(UserSettings.Minion.Ironman);
-	}
-
-	public async incrementMonsterScore(this: User, monsterID: number, amountToAdd = 1) {
-		await this.settings.sync(true);
-		const currentMonsterScores = this.settings.get(UserSettings.MonsterScores);
-
-		return this.settings.update(
-			UserSettings.MonsterScores,
-			addItemToBank(currentMonsterScores, monsterID, amountToAdd)
-		);
 	}
 
 	public async incrementCreatureScore(this: User, creatureID: number, amountToAdd = 1) {
@@ -298,14 +270,6 @@ export default class extends Extendable {
 		await this.settings.update(UserSettings.AttackStyle, uniqueArr(newStyles), {
 			arrayAction: 'overwrite'
 		});
-	}
-
-	public getAttackStyles(this: User) {
-		const styles = this.settings.get(UserSettings.AttackStyle);
-		if (styles.length === 0) {
-			return [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence];
-		}
-		return styles;
 	}
 
 	public resolveAvailableItemBoosts(this: User, monster: KillableMonster) {

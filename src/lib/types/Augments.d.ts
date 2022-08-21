@@ -92,10 +92,8 @@ declare module 'discord.js' {
 		removeItemsFromBank(items: ItemBank | Bank, collectionLog?: boolean): ReturnType<typeof transactItems>;
 		specialRemoveItems(items: Bank): Promise<{ realCost: Bank }>;
 		addItemsToCollectionLog(options: { items: Bank; dontAddToTempCL?: boolean }): Promise<SettingsUpdateResult>;
-		incrementMonsterScore(monsterID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
 		incrementCreatureScore(creatureID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
 		log(stringLog: string): void;
-		addQP(amount: number): Promise<SettingsUpdateResult>;
 		addXP(params: AddXpParams): Promise<string>;
 		skillLevel(skillName: SkillsEnum): number;
 		totalLevel(returnXP = false): number;
@@ -116,10 +114,6 @@ declare module 'discord.js' {
 		 */
 		hasMonsterRequirements(monster: KillableMonster): [false, string] | [true];
 		/**
-		 * Returns the KC the user has for this monster.
-		 */
-		getKC(id: number): number;
-		/**
 		 * Returns a tuple where the first item is formatted KC entry name and second is the KC.
 		 * If the search doesn't return anything then returns [null, 0].
 		 */
@@ -138,7 +132,6 @@ declare module 'discord.js' {
 		getUserFavAlchs(duration: number): Item[];
 		getGear(gearType: GearSetupType): Gear;
 		setAttackStyle(newStyles: AttackStyles[]): Promise<void>;
-		getAttackStyles(): AttackStyles[];
 		/**
 		 * Get item boosts the user has available for the given `KillableMonster`.
 		 */

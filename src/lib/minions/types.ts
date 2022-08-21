@@ -1,10 +1,10 @@
-import { KlasaUser } from 'klasa';
 import { Bank, MonsterKillOptions } from 'oldschooljs';
 import SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
 import { Image } from 'skia-canvas/lib';
 
 import { BitField, PerkTier } from '../constants';
 import { GearSetupType, GearStat, OffenceGearStat } from '../gear/types';
+import { MUser } from '../MUser';
 import { POHBoosts } from '../poh';
 import { LevelRequirements, SkillsEnum } from '../skilling/types';
 import { ArrayItemsResolved, ItemBank, Skills } from '../types';
@@ -91,10 +91,10 @@ export interface KillableMonster {
 	canBarrage?: boolean;
 	canCannon?: boolean;
 	cannonMulti?: boolean;
-	specialLoot?: (loot: Bank, user: KlasaUser, data: MonsterActivityTaskOptions) => Promise<void>;
+	specialLoot?: (loot: Bank, user: MUser, data: MonsterActivityTaskOptions) => Promise<void>;
 	effect?: (opts: {
 		messages: string[];
-		user: KlasaUser;
+		user: MUser;
 		quantity: number;
 		monster: KillableMonster;
 		loot: Bank;

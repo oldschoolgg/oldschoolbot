@@ -15,7 +15,7 @@ import { allItemsOwned, mahojiUsersSettingsFetch } from '../../../mahoji/mahojiS
 export default class extends Task {
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { channelID, quantity, userID } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 		await incrementMinigameScore(userID, 'fishing_trawler', quantity);
 

@@ -8,7 +8,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 export default class extends Task {
 	async run(data: ActivityTaskOptions) {
 		let { userID, channelID } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
 		let str = '';
 		let loot: Bank | undefined = undefined;

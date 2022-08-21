@@ -34,7 +34,7 @@ const fishBonusLoot = [
 export default class extends Task {
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		let { quantity, userID, channelID, duration } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const currentHuntLevel = user.skillLevel(SkillsEnum.Hunter);
 		const currentFishLevel = user.skillLevel(SkillsEnum.Fishing);
 
