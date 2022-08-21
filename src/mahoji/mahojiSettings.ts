@@ -407,7 +407,7 @@ export async function transactItemsFromBank({
 		let clUpdates: Prisma.UserUpdateArgs['data'] = {};
 		if (itemsToAdd) {
 			itemsToAdd = deduplicateClueScrolls({
-				loot: itemsToAdd?.clone(),
+				loot: itemsToAdd.clone(),
 				currentBank: currentBank.clone().remove(itemsToRemove ?? {})
 			});
 			const { bankLoot, clLoot } = filterLoot
