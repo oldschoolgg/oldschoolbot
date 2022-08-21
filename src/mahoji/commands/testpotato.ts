@@ -433,6 +433,9 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					logError('Test command ran in production', { userID: userID.toString() });
 					return 'This will never happen...';
 				}
+				if (options.stresstest) {
+					return stressTest(userID.toString());
+				}
 				const user = await globalClient.fetchUser(userID.toString());
 				const mahojiUser = await mahojiUsersSettingsFetch(user.id);
 				if (options.irontoggle) {
@@ -581,9 +584,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					});
 					return userGrowingProgressStr((await getFarmingInfo(userID)).patchesDetailed);
 				}
-				if (options.stresstest) {
-					return stressTest();
-				}
+
 				return 'Nothin!';
 			}
 	  };

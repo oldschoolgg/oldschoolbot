@@ -408,7 +408,7 @@ export async function transactItemsFromBank({
 		if (itemsToAdd) {
 			itemsToAdd = deduplicateClueScrolls({
 				loot: itemsToAdd?.clone(),
-				currentBank
+				currentBank: currentBank.clone().remove(itemsToRemove ?? {})
 			});
 			const { bankLoot, clLoot } = filterLoot
 				? filterLootReplace(allItemsOwned(settings), itemsToAdd)
