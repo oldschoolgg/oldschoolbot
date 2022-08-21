@@ -37,7 +37,6 @@ const regularTable = new LootTable({ limit: 41 })
 	.add('Coins', [50_000, 200_000])
 	.add('Pure essence', [1500, 2500], 2)
 	.oneIn(1000, 'Ancient staff')
-	.tertiary(500, 'Uncut zenyte', [1, 3])
 
 	/* Sub Tables */
 	.add(RareSeedTable, 2, 3, { multiply: true });
@@ -49,7 +48,7 @@ export const NihilizLootTable = new LootTable()
 	.tertiary(4, rawFoodTable)
 	.tertiary(8, clueTable)
 	.tertiary(10, 'Nihil shard', [5, 20])
-	.tertiary(1200, 'Nihil horn')
-	.tertiary(900, 'Zaryte vambraces')
+	.tertiary(2000, 'Nihil horn')
+	.tertiary(1200, 'Zaryte vambraces')
 	.tertiary(150, 'Clue scroll (grandmaster)')
 	.tertiary(5000, 'Nexling');
