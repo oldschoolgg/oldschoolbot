@@ -50,7 +50,7 @@ export async function buryCommand(user: KlasaUser, channelID: bigint, boneName: 
 		)}.`;
 	}
 
-	await user.removeItemsFromBank(cost);
+	await transactItems({ userID: user.id, itemsToRemove: cost });
 
 	await addSubTaskToActivityTask<BuryingActivityTaskOptions>({
 		boneID: bone.inputId,

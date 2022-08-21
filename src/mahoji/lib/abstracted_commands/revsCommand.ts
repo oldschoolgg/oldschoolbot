@@ -87,7 +87,7 @@ export async function revsCommand(
 	}
 
 	updateBankSetting(user.client, ClientSettings.EconomyStats.PVMCost, cost);
-	await user.removeItemsFromBank(cost);
+	await transactItems({ userID: user.id, itemsToRemove: cost });
 
 	let deathChance = 5;
 	let defLvl = user.skillLevel(SkillsEnum.Defence);

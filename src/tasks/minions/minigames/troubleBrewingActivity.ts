@@ -12,7 +12,11 @@ export default class extends Task {
 		await incrementMinigameScore(user.id, 'trouble_brewing', quantity);
 		let loot = new Bank().add('Pieces of eight', quantity * 100);
 
-		await user.addItemsToBank({ items: loot, collectionLog: true });
+		await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 
 		let str = `${user}, ${user.minionName} finished doing ${quantity}x games of Trouble Brewing, you received: ${loot}.`;
 
