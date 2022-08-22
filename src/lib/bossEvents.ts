@@ -112,7 +112,7 @@ export const bossEvents: BossEvent[] = [
 						.add('Clue scroll (hard)', 1, 20)
 						.add('Clue scroll (elite)', 1, 10)
 						.add('Clue scroll (master)', 1, 5)
-						.add('Clue scroll (Grandmaster)', 1, 2)
+						.add('Clue scroll (grandmaster)', 1, 2)
 						.roll()
 				);
 			userLoot[specialLootRecipient.user.id].add(specialLoot);

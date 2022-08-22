@@ -606,6 +606,12 @@ export function minionStatus(user: KlasaUser) {
 				durationRemaining
 			)}.`;
 		}
+		case 'Naxxus': {
+			const data = currentTask as ActivityTaskOptionsWithQuantity;
+			return `${name} is currently fighting ${data.quantity} Naxxus. The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
 		case 'Disassembling': {
 			const data = currentTask as DisassembleTaskOptions;
 			return `${name} is currently disassembling ${data.qty}x ${itemNameFromID(

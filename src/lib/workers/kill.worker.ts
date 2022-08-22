@@ -1,6 +1,6 @@
 import '../customItems/customItems';
 import '../data/itemAliases';
-import '../minions/data/killableMonsters/custom/customMonsters';
+import '../minions/data/killableMonsters/index';
 
 import { Bank, Misc, Monsters } from 'oldschooljs';
 

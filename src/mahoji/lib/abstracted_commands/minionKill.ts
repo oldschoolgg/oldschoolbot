@@ -78,6 +78,7 @@ import { igneCommand } from './igneCommand';
 import { kgCommand } from './kgCommand';
 import { kkCommand } from './kkCommand';
 import { moktangCommand } from './moktangCommand';
+import { naxxusCommand } from './naxxusCommand';
 import { nexCommand } from './nexCommand';
 import { nightmareCommand } from './nightmareCommand';
 import { getPOH } from './pohCommand';
@@ -116,6 +117,28 @@ const degradeableItemsCanUse = [
 		attackStyle: 'melee',
 		charges: (_killableMon: KillableMonster, _monster: Monster, totalHP: number) => totalHP / 20,
 		boost: 3
+	},
+	{
+		item: getOSItem('Void staff'),
+		attackStyle: 'mage',
+		boost: 8,
+
+		charges: (
+			_killableMon: KillableMonster,
+			_monster: Monster,
+			_totalHP: number,
+			duration: number,
+			user: KlasaUser
+		) => {
+			const mageGear = user.getGear('mage');
+			const minutesDuration = Math.ceil(duration / Time.Minute);
+			if (user.hasItemEquippedAnywhere('Magic master cape')) {
+				return Math.ceil(minutesDuration / 3);
+			} else if (mageGear.hasEquipped('Vasa cloak')) {
+				return Math.ceil(minutesDuration / 2);
+			}
+			return minutesDuration;
+		}
 	}
 ];
 
@@ -137,6 +160,20 @@ function applySkillBoost(user: KlasaUser, duration: number, styles: AttackStyles
 	}
 
 	return [newDuration, str];
+}
+
+function attackStyleSkillToGearSetup(attackSkill: SkillsEnum | AttackStyles): GearSetupType {
+	let result: GearSetupType = 'melee';
+	switch (attackSkill) {
+		case 'magic':
+			result = 'mage';
+			break;
+		case 'ranged':
+			result = 'range';
+			break;
+		default:
+	}
+	return result;
 }
 
 export async function minionKillCommand(
@@ -173,6 +210,7 @@ export async function minionKillCommand(
 	if (name.toLowerCase().includes('kalphite king')) return kkCommand(interaction, user, channelID, name, quantity);
 	if (name.toLowerCase().includes('nex')) return nexCommand(interaction, user, channelID, name, quantity);
 	if (name.toLowerCase().includes('moktang')) return moktangCommand(user, channelID, quantity);
+	if (name.toLowerCase().includes('naxxus')) return naxxusCommand(user, channelID, quantity);
 
 	if (revenantMonsters.some(i => i.aliases.some(a => stringMatches(a, name)))) {
 		const mUser = await mahojiUsersSettingsFetch(user.id);
@@ -264,19 +302,29 @@ export async function minionKillCommand(
 	 *
 	 */
 	const degItemBeingUsed = [];
-	for (const degItem of degradeableItemsCanUse) {
+	for (const degItemCanUse of degradeableItemsCanUse) {
 		const isUsing =
-			monster.attackStyleToUse &&
-			convertAttackStyleToGearSetup(monster.attackStyleToUse) === degItem.attackStyle &&
-			user.getGear(degItem.attackStyle).hasEquipped(degItem.item.id);
+			attackStyles.map(attackStyleSkillToGearSetup).includes(degItemCanUse.attackStyle as GearSetupType) &&
+			user.getGear(degItemCanUse.attackStyle as GearSetupType).hasEquipped(degItemCanUse.item.id);
 		if (isUsing) {
-			const estimatedChargesNeeded = degItem.charges(monster, osjsMon!, totalMonsterHP);
-			await checkUserCanUseDegradeableItem({
-				item: degItem.item,
+			const estimatedChargesNeeded = degItemCanUse.charges(
+				monster,
+				osjsMon!,
+				totalMonsterHP,
+				estimatedQuantity * timeToFinish,
+				user
+			);
+
+			const res = checkUserCanUseDegradeableItem({
+				item: degItemCanUse.item,
 				chargesToDegrade: estimatedChargesNeeded,
 				user
 			});
-			degItemBeingUsed.push(degItem);
+
+			if (!res.hasEnough) {
+				return res.userMessage!;
+			}
+			degItemBeingUsed.push(degItemCanUse);
 		}
 	}
 
@@ -646,7 +694,7 @@ export async function minionKillCommand(
 	duration = randomVariation(duration, 3);
 
 	for (const degItem of degItemBeingUsed) {
-		const chargesNeeded = degItem.charges(monster, osjsMon!, monsterHP * quantity);
+		const chargesNeeded = degItem.charges(monster, osjsMon!, monsterHP * quantity, duration, user);
 		await degradeItem({
 			item: degItem.item,
 			chargesToDegrade: chargesNeeded,

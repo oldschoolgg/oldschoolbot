@@ -47,7 +47,7 @@ const contractTable = new LootTable()
 			.add('Clue scroll (hard)', 1, 20)
 			.add('Clue scroll (elite)', 1, 10)
 			.add('Clue scroll (master)', 1, 5)
-			.add('Clue scroll (Grandmaster)', 1, 2)
+			.add('Clue scroll (grandmaster)', 1, 2)
 	);
 
 const itemContractItemsSet = new Set([
