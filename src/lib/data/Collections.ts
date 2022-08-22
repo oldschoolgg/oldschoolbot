@@ -205,8 +205,8 @@ export const allCollectionLogs: ICollection = {
 			'The Gauntlet': {
 				alias: ['gauntlet', 'crystalline hunllef', 'hunllef'],
 				kcActivity: {
-					Default: user => user.getMinigameScore('gauntlet'),
-					Corrupted: user => user.getMinigameScore('corrupted_gauntlet')
+					Default: user => getMinigameScore(user.id, 'gauntlet'),
+					Corrupted: user => getMinigameScore(user.id, 'corrupted_gauntlet')
 				},
 				items: theGauntletCL
 			},
@@ -338,8 +338,8 @@ export const allCollectionLogs: ICollection = {
 			"Chamber's of Xeric": {
 				alias: ChambersOfXeric.aliases,
 				kcActivity: {
-					Default: user => user.getMinigameScore('raids'),
-					Challenge: user => user.getMinigameScore('raids_challenge_mode')
+					Default: user => getMinigameScore(user.id, 'raids'),
+					Challenge: user => getMinigameScore(user.id, 'raids_challenge_mode')
 				},
 				items: chambersOfXericCL,
 
@@ -348,8 +348,8 @@ export const allCollectionLogs: ICollection = {
 			'Theatre of Blood': {
 				alias: ['tob'],
 				kcActivity: {
-					Default: user => user.getMinigameScore('tob'),
-					Hard: user => user.getMinigameScore('tob_hard')
+					Default: user => getMinigameScore(user.id, 'tob'),
+					Hard: user => getMinigameScore(user.id, 'tob_hard')
 				},
 				items: theatreOfBLoodCL,
 
@@ -501,7 +501,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['ba', 'barb assault', 'barbarian assault'],
 				items: barbarianAssaultCL,
 				kcActivity: {
-					Default: async user => user.getMinigameScore('barb_assault'),
+					Default: async user => getMinigameScore(user.id, 'barb_assault'),
 					'High Gambles': async user => user.settings.get(UserSettings.HighGambles)
 				},
 				isActivity: true
@@ -557,7 +557,7 @@ export const allCollectionLogs: ICollection = {
 				items: lastManStandingCL,
 				isActivity: true,
 				kcActivity: {
-					Default: user => user.getMinigameScore('lms')
+					Default: user => getMinigameScore(user.id, 'lms')
 				},
 				alias: ['lms']
 			},

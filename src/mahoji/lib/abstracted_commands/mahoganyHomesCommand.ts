@@ -123,9 +123,9 @@ export async function mahoganyHomesBuildCommand(user: KlasaUser, channelID: bigi
 	await user.settings.sync(true);
 
 	const conLevel = user.skillLevel(SkillsEnum.Construction);
-	const kc = await user.getMinigameScore('mahogany_homes');
+	const kc = await getMinigameScore(user.id, 'mahogany_homes');
 
-	const hasSack = user.hasItemEquippedOrInBank('Plank sack');
+	const hasSack = user.hasEquippedOrInBank('Plank sack');
 	const [quantity, itemsNeeded, xp, duration, points] = calcTrip(
 		conLevel,
 		kc,

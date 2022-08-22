@@ -31,7 +31,7 @@ export async function roguesDenCommand(user: KlasaUser, channelID: bigint) {
 
 	let quantity = Math.floor(calcMaxTripLength(user, 'RoguesDenMaze') / baseTime);
 
-	if (user.hasItemEquippedOrInBank('Stamina potion(4)')) {
+	if (user.hasEquippedOrInBank('Stamina potion(4)')) {
 		baseTime = reduceNumByPercent(baseTime, 50);
 
 		const potionsInBank = user.bank().amount('Stamina potion(4)');

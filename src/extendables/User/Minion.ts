@@ -16,7 +16,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
 import Creatures from '../../lib/skilling/skills/hunter/creatures';
 import { Creature, SkillsEnum } from '../../lib/skilling/types';
-import { addItemToBank, convertXPtoLVL, stringMatches, toKMB, toTitleCase } from '../../lib/util';
+import { convertXPtoLVL, stringMatches, toKMB, toTitleCase } from '../../lib/util';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
@@ -254,16 +254,6 @@ export default class extends Extendable {
 	// @ts-ignore 2784
 	public get isIronman(this: User) {
 		return this.settings.get(UserSettings.Minion.Ironman);
-	}
-
-	public async incrementCreatureScore(this: User, creatureID: number, amountToAdd = 1) {
-		await this.settings.sync(true);
-		const currentCreatureScores = this.settings.get(UserSettings.CreatureScores);
-
-		return this.settings.update(
-			UserSettings.CreatureScores,
-			addItemToBank(currentCreatureScores, creatureID, amountToAdd)
-		);
 	}
 
 	public async setAttackStyle(this: User, newStyles: AttackStyles[]) {

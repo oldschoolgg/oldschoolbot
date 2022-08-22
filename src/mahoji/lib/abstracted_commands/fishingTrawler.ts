@@ -12,7 +12,7 @@ export async function fishingTrawlerCommand(klasaUser: KlasaUser, channelID: big
 		return 'You need atleast level 15 Fishing to do the Fishing Trawler.';
 	}
 
-	const tripsDone = await klasaUser.getMinigameScore('fishing_trawler');
+	const tripsDone = await klasagetMinigameScore(user.id, 'fishing_trawler');
 
 	let tripLength = Time.Minute * 13;
 	// 10% boost for 50 trips done

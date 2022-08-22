@@ -7,7 +7,6 @@ import { roll } from '../../../../lib/util';
 import { handleTripFinish } from '../../../../lib/util/handleTripFinish';
 import itemID from '../../../../lib/util/itemID';
 import { makeBankImage } from '../../../../lib/util/makeBankImage';
-import { userHasItemsEquippedAnywhere } from '../../../../lib/util/minionUtils';
 import { mUserFetch } from '../../../../mahoji/mahojiSettings';
 
 const cyclopsID = 2097;
@@ -57,10 +56,7 @@ export default class extends Task {
 
 		for (let i = 0; i < quantity; i++) {
 			const highestDefenderOwned = defenders.find(
-				def =>
-					userBank.has(def.itemID) ||
-					userHasItemsEquippedAnywhere(user.user, def.itemID) ||
-					loot.has(def.itemID)
+				def => userBank.has(def.itemID) || user.hasEquipped(def.itemID) || loot.has(def.itemID)
 			);
 			const possibleDefenderToDrop =
 				defenders[

@@ -36,7 +36,7 @@ export async function buryCommand(user: KlasaUser, channelID: bigint, boneName: 
 
 	const cost = new Bank({ [bone.inputId]: quantity });
 
-	if (!user.owns(cost)) {
+	if (!user.bank.has(cost)) {
 		return `You dont have ${cost}.`;
 	}
 

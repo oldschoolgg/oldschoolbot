@@ -3,9 +3,7 @@ import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { getUserGear } from '../../mahoji/mahojiSettings';
 import { Emoji } from '../constants';
-import { allPetIDs } from '../data/CollectionsExport';
 import { getSimilarItems } from '../data/similarItems';
 import { UserSettings } from '../settings/types/UserSettings';
 import { SkillsEnum } from '../skilling/types';
@@ -85,27 +83,6 @@ export const bolts = resolveItems([
 	'Iron bolts',
 	'Bronze bolts'
 ]);
-
-export function userHasItemsEquippedAnywhere(
-	user: User | KlasaUser,
-	_item: number | string | string[] | number[],
-	every = false
-): boolean {
-	const items = resolveItems(_item);
-	if (items.length === 1 && allPetIDs.includes(items[0])) {
-		const pet =
-			user instanceof KlasaUser ? user.settings.get(UserSettings.Minion.EquippedPet) : user.minion_equippedPet;
-		return pet === items[0];
-	}
-
-	const allGear = Object.values(user instanceof KlasaUser ? user.gear : getUserGear(user));
-	for (const gear of allGear) {
-		if (gear.hasEquipped(items, every)) {
-			return true;
-		}
-	}
-	return false;
-}
 
 export function hasItemsEquippedOrInBank(
 	user: User | KlasaUser,

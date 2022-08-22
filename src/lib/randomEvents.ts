@@ -151,7 +151,7 @@ export async function triggerRandomEvent(user: KlasaUser, duration: number, mess
 	const loot = new Bank();
 	if (event.outfit) {
 		for (const piece of event.outfit) {
-			if (!user.hasItemEquippedOrInBank(piece)) {
+			if (!user.hasEquippedOrInBank(piece)) {
 				loot.add(piece);
 				break;
 			}

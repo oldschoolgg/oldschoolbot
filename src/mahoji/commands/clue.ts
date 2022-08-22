@@ -69,7 +69,7 @@ export const clueCommand: OSBMahojiCommand = {
 		}
 
 		const cost = new Bank().add(clueTier.scrollID, quantity);
-		if (!user.owns(cost)) return `You don't own ${cost}.`;
+		if (!user.bank.has(cost)) return `You don't own ${cost}.`;
 		await user.removeItemsFromBank(new Bank().add(clueTier.scrollID, quantity));
 
 		const randomAddedDuration = randInt(1, 20);
@@ -85,7 +85,7 @@ export const clueCommand: OSBMahojiCommand = {
 			duration *= 0.9;
 		}
 
-		if (user.hasItemEquippedOrInBank('Achievement diary cape')) {
+		if (user.hasEquippedOrInBank('Achievement diary cape')) {
 			boosts.push('10% for Achievement diary cape');
 			duration *= 0.9;
 		}

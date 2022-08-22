@@ -4,11 +4,15 @@ import { Bank } from 'oldschooljs';
 
 import { getUserGear, mahojiUserSettingsUpdate } from '../mahoji/mahojiSettings';
 import { usernameCache } from './constants';
+import { allPetIDs } from './data/CollectionsExport';
 import { AddXpParams } from './minions/types';
 import { SkillsEnum } from './skilling/types';
 import { ItemBank } from './types';
-import { getSkillsOfMahojiUser } from './util';
-import { hasItemsEquippedOrInBank, minionName, userHasItemsEquippedAnywhere } from './util/minionUtils';
+import { addItemToBank, getSkillsOfMahojiUser } from './util';
+import getUsersPerkTier from './util/getUsersPerkTier';
+import { minionIsBusy } from './util/minionIsBusy';
+import { hasItemsEquippedOrInBank, minionName } from './util/minionUtils';
+import resolveItems from './util/resolveItems';
 
 export class MUser {
 	user: User;
@@ -17,6 +21,10 @@ export class MUser {
 	constructor(user: User) {
 		this.user = user;
 		this.id = user.id;
+	}
+
+	get perkTier() {
+		return getUsersPerkTier(this.user);
 	}
 
 	skillLevel(skill: xp_gains_skill_enum) {
@@ -80,26 +88,50 @@ export class MUser {
 		return this;
 	}
 
-	public async addItemsToBank(
-		this: User,
-		{
-			items,
-			collectionLog = false,
-			filterLoot = true,
-			dontAddToTempCL = false
-		}: { items: ItemBank | Bank; collectionLog?: boolean; filterLoot?: boolean; dontAddToTempCL?: boolean }
-	) {
-		return transactItems({
+	public async addItemsToBank({
+		items,
+		collectionLog = false,
+		filterLoot = true,
+		dontAddToTempCL = false
+	}: {
+		items: ItemBank | Bank;
+		collectionLog?: boolean;
+		filterLoot?: boolean;
+		dontAddToTempCL?: boolean;
+	}) {
+		const res = await transactItems({
 			collectionLog,
 			itemsToAdd: new Bank(items),
 			filterLoot,
 			dontAddToTempCL,
 			userID: this.id
 		});
+		this.user = res.newUser;
+		return res;
 	}
 
-	hasEquipped(args: Parameters<typeof userHasItemsEquippedAnywhere>['1']) {
-		return userHasItemsEquippedAnywhere(this.user, args);
+	async removeItemsFromBank(bankToRemove: Bank) {
+		const res = await transactItems({
+			userID: this.id,
+			itemsToRemove: bankToRemove
+		});
+		this.user = res.newUser;
+		return res;
+	}
+
+	hasEquipped(_item: number | string | string[] | number[], every = false) {
+		const items = resolveItems(_item);
+		if (items.length === 1 && allPetIDs.includes(items[0])) {
+			const pet = this.user.minion_equippedPet;
+			return pet === items[0];
+		}
+
+		for (const gear of Object.values(this.gear)) {
+			if (gear.hasEquipped(items, every)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	allItemsOwned() {
@@ -128,5 +160,17 @@ export class MUser {
 
 	get skillsAsXP() {
 		return getSkillsOfMahojiUser(this.user, false);
+	}
+
+	get minionIsBusy() {
+		return minionIsBusy(this.id);
+	}
+
+	async incrementCreatureScore(creatureID: number, amountToAdd = 1) {
+		const currentCreatureScores = this.user.creatureScores;
+		const { newUser } = await mahojiUserSettingsUpdate(this.id, {
+			creatureScores: addItemToBank(currentCreatureScores as ItemBank, creatureID, amountToAdd)
+		});
+		this.user = newUser;
 	}
 }

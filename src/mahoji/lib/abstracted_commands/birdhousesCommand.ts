@@ -1,16 +1,16 @@
 import { time } from '@discordjs/builders';
 import { User } from '@prisma/client';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { MUser } from '../../../lib/MUser';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import birdhouses, { Birdhouse } from '../../../lib/skilling/skills/hunter/birdHouseTrapping';
 import defaultBirdhouseTrap, { BirdhouseData } from '../../../lib/skilling/skills/hunter/defaultBirdHouseTrap';
 import { BirdhouseActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, getSkillsOfMahojiUser, itemID, stringMatches, updateBankSetting } from '../../../lib/util';
+import { formatDuration, getSkillsOfMahojiUser, itemID, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { minionName } from '../../../lib/util/minionUtils';
-import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
+import { mahojiUsersSettingsFetch, userHasGracefulEquipped } from '../../mahojiSettings';
 
 interface BirdhouseDetails {
 	raw: BirdhouseData;
@@ -149,12 +149,12 @@ export async function birdhouseCheckCommand(user: User) {
 }
 
 export async function birdhouseHarvestCommand(
-	user: KlasaUser,
+	user: MUser,
 	mahojiUser: User,
 	channelID: bigint,
 	inputBirdhouseName: string | undefined
 ) {
-	const userBank = user.bank();
+	const userBank = user.bank;
 	const currentDate = new Date().getTime();
 	const infoStr: string[] = [];
 	const boostStr: string[] = [];
@@ -191,14 +191,14 @@ export async function birdhouseHarvestCommand(
 	let duration: number = birdhouseToPlant.runTime;
 
 	// Reduce time if user has graceful equipped
-	if (userHasGracefulEquipped(user)) {
+	if (userHasGracefulEquipped(user.user)) {
 		boostStr.push('10% time for Graceful');
 		duration *= 0.9;
 	}
 	let gotCraft = false;
 	let removeBank = new Bank();
 	const premadeBankCost = birdhouseToPlant.houseItemReq.clone().multiply(4);
-	if (user.owns(premadeBankCost)) {
+	if (user.bank.has(premadeBankCost)) {
 		removeBank.add(premadeBankCost);
 	} else {
 		if (skills.crafting < birdhouseToPlant.craftLvl) {
@@ -222,10 +222,10 @@ export async function birdhouseHarvestCommand(
 	if (!canPay) {
 		return "You don't have enough seeds to bait the birdhouses.";
 	}
-	if (!user.owns(removeBank)) return `You don't own: ${removeBank}.`;
+	if (!user.bank.has(removeBank)) return `You don't own: ${removeBank}.`;
 
 	await updateBankSetting(globalClient, ClientSettings.EconomyStats.FarmingCostBank, removeBank);
-	await user.removeItemsFromBank(removeBank);
+	await transactItems({ userID: user.id, itemsToRemove: removeBank });
 
 	// If user does not have something already placed, just place the new birdhouses.
 	if (!existingBirdhouse.raw.birdhousePlaced) {

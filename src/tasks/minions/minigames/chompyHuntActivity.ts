@@ -7,7 +7,7 @@ import { getMinigameEntity, incrementMinigameScore } from '../../../lib/settings
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { chompyHats } from '../../../mahoji/lib/abstracted_commands/chompyHuntCommand';
-import { mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings';
+import { mahojiUsersSettingsFetch, mUserFetch } from '../../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: MinigameActivityTaskOptions) {

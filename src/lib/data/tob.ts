@@ -315,7 +315,7 @@ export async function checkTOBUser(
 		];
 	}
 
-	if (!user.owns(minimumTOBSuppliesNeeded)) {
+	if (!user.bank.has(minimumTOBSuppliesNeeded)) {
 		return [
 			true,
 			`${user.username} doesn't have enough items, you need a minimum of this amount of items: ${minimumTOBSuppliesNeeded}.`
@@ -328,7 +328,7 @@ export async function checkTOBUser(
 
 	const cost = await calcTOBInput(user);
 	cost.add('Coins', 100_000).add('Rune pouch');
-	if (!user.owns(cost)) {
+	if (!user.bank.has(cost)) {
 		return [true, `${user.username} doesn't own ${cost.remove(user.bank())}`];
 	}
 
@@ -370,7 +370,12 @@ export async function checkTOBUser(
 
 	// Range
 	const blowpipeData = user.settings.get(UserSettings.Blowpipe);
-	if (!user.owns('Toxic blowpipe') || !blowpipeData.scales || !blowpipeData.dartID || !blowpipeData.dartQuantity) {
+	if (
+		!user.bank.has('Toxic blowpipe') ||
+		!blowpipeData.scales ||
+		!blowpipeData.dartID ||
+		!blowpipeData.dartQuantity
+	) {
 		return [
 			true,
 			`${user.username} needs a Toxic blowpipe (with darts and scales equipped) in their bank to do the Theatre of Blood.`
@@ -564,7 +569,7 @@ export function createTOBTeam({
 			['Crystal halberd', 3]
 		] as const;
 		for (const [name, percent] of primarySpecWeaponBoosts) {
-			if (u.user.hasItemEquippedOrInBank(name)) {
+			if (u.user.hasEquippedOrInBank(name)) {
 				userPercentChange += percent;
 				break;
 			}
@@ -574,7 +579,7 @@ export function createTOBTeam({
 			['Bandos godsword', 3]
 		] as const;
 		for (const [name, percent] of secondarySpecWeaponBoosts) {
-			if (u.user.hasItemEquippedOrInBank(name)) {
+			if (u.user.hasEquippedOrInBank(name)) {
 				userPercentChange += percent;
 				break;
 			}

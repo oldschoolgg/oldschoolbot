@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { randFloat, roll } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
@@ -10,6 +11,7 @@ import { BirdhouseActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 import { sendToChannelID } from '../../../lib/util/webhook';
+import { mahojiUserSettingsUpdate, mUserFetch } from '../../../mahoji/mahojiSettings';
 
 const clues = [
 	[itemID('Clue scroll(elite)'), 1 / 10],
@@ -49,8 +51,9 @@ export default class extends Task {
 				birdhousePlaced: true,
 				birdhouseTime: currentDate + duration
 			};
-
-			await user.settings.update(UserSettings.Minion.BirdhouseTraps, updateBirdhouseData);
+			await mahojiUserSettingsUpdate(user.id, {
+				minion_birdhouseTraps: updateBirdhouseData as any as Prisma.InputJsonObject
+			});
 
 			str += `\n\n${user.minionName} tells you to come back after your birdhouses are full!`;
 
@@ -71,7 +74,7 @@ export default class extends Task {
 				let gotClue = false;
 				for (const clue of clues) {
 					if (nextTier || randFloat(0, 1) <= clue[1]) {
-						if (user.bank().amount(clue[0]) >= 1 || loot.amount(clue[0]) >= 1) {
+						if (user.bank.amount(clue[0]) >= 1 || loot.amount(clue[0]) >= 1) {
 							nextTier = true;
 							continue;
 						}

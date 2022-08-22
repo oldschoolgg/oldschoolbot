@@ -69,7 +69,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 
 		const sacVal = Number(mUser.sacrificedValue);
 
-		if (!user.owns(bankToSac)) {
+		if (!user.bank.has(bankToSac)) {
 			return `You don't own ${bankToSac}.`;
 		}
 

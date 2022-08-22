@@ -7,7 +7,6 @@ import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { revenantMonsters } from '../../lib/minions/data/killableMonsters/revs';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import { runCommand } from '../../lib/settings/settings';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { filterLootReplace } from '../../lib/slayer/slayerUtil';
 import { Gear } from '../../lib/structures/Gear';
@@ -47,7 +46,7 @@ export default class extends Task {
 				gear_wildy: calc.newGear as Prisma.InputJsonObject
 			});
 
-			updateBankSetting(globalClient, ClientSettings.EconomyStats.RevsCost, calc.lostItems);
+			updateBankSetting('revs_cost', calc.lostItems);
 
 			handleTripFinish(
 				user,

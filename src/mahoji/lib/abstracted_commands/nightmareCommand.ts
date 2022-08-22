@@ -86,7 +86,7 @@ function checkReqs(
 		}
 
 		const cost = perUserCost(isPhosani, quantity);
-		if (!user.owns(cost)) {
+		if (!user.bank.has(cost)) {
 			return `${user.username} doesn't own ${cost}`;
 		}
 
@@ -201,15 +201,15 @@ export async function nightmareCommand(user: KlasaUser, channelID: bigint, name:
 	}
 	if (isPhosani) {
 		effectiveTime = reduceNumByPercent(effectiveTime, 31);
-		if (user.hasItemEquippedOrInBank('Dragon claws')) {
+		if (user.hasEquippedOrInBank('Dragon claws')) {
 			effectiveTime = reduceNumByPercent(effectiveTime, 3);
 			soloBoosts.push('3% for Dragon claws');
 		}
-		if (user.hasItemEquippedOrInBank('Harmonised nightmare staff')) {
+		if (user.hasEquippedOrInBank('Harmonised nightmare staff')) {
 			effectiveTime = reduceNumByPercent(effectiveTime, 3);
 			soloBoosts.push('3% for Harmonised nightmare staff');
 		}
-		if (user.hasItemEquippedOrInBank('Elder maul')) {
+		if (user.hasEquippedOrInBank('Elder maul')) {
 			effectiveTime = reduceNumByPercent(effectiveTime, 3);
 			soloBoosts.push('3% for Elder maul');
 		}
@@ -232,7 +232,7 @@ export async function nightmareCommand(user: KlasaUser, channelID: bigint, name:
 	for (const user of users) {
 		const [healAmountNeeded] = calculateMonsterFood(NightmareMonster, user);
 		const cost = perUserCost(isPhosani, quantity);
-		if (!user.owns(cost)) {
+		if (!user.bank.has(cost)) {
 			return `${user} doesn't own ${cost}.`;
 		}
 		let healingMod = isPhosani ? 1.5 : 1;

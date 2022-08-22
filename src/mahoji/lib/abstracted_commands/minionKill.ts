@@ -231,13 +231,13 @@ export async function minionKillCommand(
 	// Removed vorkath because he has a special boost.
 	if (monster.name.toLowerCase() !== 'vorkath' && osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon)) {
 		if (
-			user.hasItemEquippedOrInBank('Dragon hunter lance') &&
+			user.hasEquippedOrInBank('Dragon hunter lance') &&
 			!attackStyles.includes(SkillsEnum.Ranged) &&
 			!attackStyles.includes(SkillsEnum.Magic)
 		) {
 			timeToFinish = reduceNumByPercent(timeToFinish, 15);
 			boosts.push('15% for Dragon hunter lance');
-		} else if (user.hasItemEquippedOrInBank('Dragon hunter crossbow') && attackStyles.includes(SkillsEnum.Ranged)) {
+		} else if (user.hasEquippedOrInBank('Dragon hunter crossbow') && attackStyles.includes(SkillsEnum.Ranged)) {
 			timeToFinish = reduceNumByPercent(timeToFinish, 15);
 			boosts.push('15% for Dragon hunter crossbow');
 		}
@@ -252,11 +252,11 @@ export async function minionKillCommand(
 
 	// Calculate Slayer helmet boost on task if they have black mask or similar
 	if (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic)) {
-		if (isOnTask && user.hasItemEquippedOrInBank('Black mask (i)')) {
+		if (isOnTask && user.hasEquippedOrInBank('Black mask (i)')) {
 			blackMaskBoost = oneSixthBoost;
 			blackMaskBoostMsg = `${blackMaskBoost}% for Black mask (i) on non-melee task`;
 		}
-	} else if (isOnTask && user.hasItemEquippedOrInBank('Black mask')) {
+	} else if (isOnTask && user.hasEquippedOrInBank('Black mask')) {
 		blackMaskBoost = oneSixthBoost;
 		blackMaskBoostMsg = `${blackMaskBoost}% for Black mask on melee task`;
 	}
@@ -264,15 +264,15 @@ export async function minionKillCommand(
 	// Calculate Salve amulet boost on task if the monster is undead or similar
 	const undeadMonster = osjsMon?.data?.attributes?.includes(MonsterAttribute.Undead);
 	if (undeadMonster && (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic))) {
-		if (user.hasItemEquippedOrInBank('Salve amulet(i)')) {
-			const enhancedBoost = user.hasItemEquippedOrInBank('Salve amulet(ei)');
+		if (user.hasEquippedOrInBank('Salve amulet(i)')) {
+			const enhancedBoost = user.hasEquippedOrInBank('Salve amulet(ei)');
 			salveAmuletBoost = enhancedBoost ? 20 : oneSixthBoost;
 			salveAmuletBoostMsg = `${salveAmuletBoost}% for Salve amulet${
 				enhancedBoost ? '(ei)' : '(i)'
 			} on non-melee task`;
 		}
-	} else if (undeadMonster && user.hasItemEquippedOrInBank('Salve amulet')) {
-		const enhancedBoost = user.hasItemEquippedOrInBank('Salve amulet(e)');
+	} else if (undeadMonster && user.hasEquippedOrInBank('Salve amulet')) {
+		const enhancedBoost = user.hasEquippedOrInBank('Salve amulet(e)');
 		salveAmuletBoost = enhancedBoost ? 20 : oneSixthBoost;
 		salveAmuletBoostMsg = `${salveAmuletBoost}% for Salve amulet${enhancedBoost ? ' (e)' : ''} on melee task`;
 	}
@@ -295,7 +295,7 @@ export async function minionKillCommand(
 	let usingCannon = false;
 	let cannonMulti = false;
 	let burstOrBarrage = 0;
-	const hasCannon = cannonBanks.some(i => user.owns(i));
+	const hasCannon = cannonBanks.some(i => user.bank.has(i));
 	if ((method === 'burst' || method === 'barrage') && !monster!.canBarrage) {
 		return `${monster!.name} cannot be barraged or burst.`;
 	}
@@ -387,9 +387,9 @@ export async function minionKillCommand(
 	if (consumableCosts.length > 0) {
 		for (const cc of consumableCosts) {
 			let consumable = cc;
-			if (consumable.alternativeConsumables && !user.owns(consumable.itemCost)) {
+			if (consumable.alternativeConsumables && !user.bank.has(consumable.itemCost)) {
 				for (const c of consumable.alternativeConsumables) {
-					if (user.owns(c.itemCost)) {
+					if (user.bank.has(c.itemCost)) {
 						consumable = c;
 						break;
 					}
@@ -439,7 +439,7 @@ export async function minionKillCommand(
 		lootToRemove.add(bank);
 	}
 	if (pvmCost) {
-		if (quantity === 0 || !user.owns(lootToRemove)) {
+		if (quantity === 0 || !user.bank.has(lootToRemove)) {
 			return `You don't have the items needed to kill any amount of ${
 				monster.name
 			}, you need: ${formatMissingItems(consumableCosts, timeToFinish)} per kill.`;
@@ -609,14 +609,14 @@ export async function monsterInfo(user: KlasaUser, name: string): CommandRespons
 	if (monster.name.toLowerCase() !== 'vorkath' && osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon)) {
 		isDragon = true;
 		if (
-			user.hasItemEquippedOrInBank('Dragon hunter lance') &&
+			user.hasEquippedOrInBank('Dragon hunter lance') &&
 			!attackStyles.includes(SkillsEnum.Ranged) &&
 			!attackStyles.includes(SkillsEnum.Magic)
 		) {
 			timeToFinish = reduceNumByPercent(timeToFinish, 15);
 			ownedBoostItems.push('Dragon hunter lance');
 			totalItemBoost += 15;
-		} else if (user.hasItemEquippedOrInBank('Dragon hunter crossbow') && attackStyles.includes(SkillsEnum.Ranged)) {
+		} else if (user.hasEquippedOrInBank('Dragon hunter crossbow') && attackStyles.includes(SkillsEnum.Ranged)) {
 			timeToFinish = reduceNumByPercent(timeToFinish, 15);
 			ownedBoostItems.push('Dragon hunter crossbow');
 			totalItemBoost += 15;

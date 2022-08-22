@@ -1,4 +1,3 @@
-import { User } from '@prisma/client';
 import { existsSync } from 'fs';
 import * as fs from 'fs/promises';
 import { Task, TaskStore, util } from 'klasa';

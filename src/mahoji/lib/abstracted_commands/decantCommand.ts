@@ -1,24 +1,21 @@
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import decantPotionFromBank from '../../../lib/minions/functions/decantPotionFromBank';
+import { MUser } from '../../../lib/MUser';
 
-export async function decantCommand(user: KlasaUser, itemName: string, dose = 4) {
+export async function decantCommand(user: MUser, itemName: string, dose = 4) {
 	if (![1, 2, 3, 4].includes(dose)) return 'Invalid dose number.';
-	const res = decantPotionFromBank(user.bank(), itemName, dose);
+	const res = decantPotionFromBank(user.bank, itemName, dose);
 	if (res.error !== null) return res.error;
 	const { potionsToAdd, sumOfPots, potionName, potionsToRemove } = res;
 
-	if (!user.owns(potionsToRemove)) {
+	if (!user.bank.has(potionsToRemove)) {
 		return `You don't own ${potionsToRemove}.`;
 	}
 	await user.removeItemsFromBank(potionsToRemove);
 	await user.addItemsToBank({ items: potionsToAdd });
 
-	if (
-		user.hasItemEquippedAnywhere(['Iron dagger', 'Bronze arrow'], true) &&
-		!user.hasItemEquippedOrInBank('Clue hunter gloves')
-	) {
+	if (user.hasEquipped(['Iron dagger', 'Bronze arrow']) && !user.hasEquippedOrInBank('Clue hunter gloves')) {
 		await user.addItemsToBank({ items: new Bank({ 'Clue hunter gloves': 1 }), collectionLog: true });
 	}
 

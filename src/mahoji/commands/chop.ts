@@ -96,7 +96,7 @@ export const chopCommand: OSBMahojiCommand = {
 		// If the user has an axe apply boost
 		const boosts = [];
 		for (const axe of axes) {
-			if (user.hasItemEquippedOrInBank(axe.id) && user.skillLevel(SkillsEnum.Woodcutting) >= axe.wcLvl) {
+			if (user.hasEquippedOrInBank(axe.id) && user.skillLevel(SkillsEnum.Woodcutting) >= axe.wcLvl) {
 				timetoChop = reduceNumByPercent(timetoChop, axe.reductionPercent);
 				boosts.push(`${axe.reductionPercent}% for ${itemNameFromID(axe.id)}`);
 				break;

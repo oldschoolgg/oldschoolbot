@@ -10,7 +10,7 @@ import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiParseNumber } from '../mahojiSettings';
+import { handleMahojiConfirmation, mahojiParseNumber, mUserFetch } from '../mahojiSettings';
 
 export const askCommand: OSBMahojiCommand = {
 	name: 'trade',
@@ -52,7 +52,8 @@ export const askCommand: OSBMahojiCommand = {
 		interaction,
 		userID,
 		guildID,
-		options
+		options,
+		user
 	}: CommandRunOptions<{
 		user: MahojiUserOption;
 		send?: string;
@@ -62,21 +63,25 @@ export const askCommand: OSBMahojiCommand = {
 		search?: string;
 	}>) => {
 		if (!guildID) return 'You can only run this in a server.';
-		const senderKlasaUser = await globalClient.fetchUser(userID);
-		const recipientKlasaUser = await globalClient.fetchUser(options.user.user.id);
+		const senderUser = await mUserFetch(userID);
+		const senderAPIUser = user;
+		const recipientUser = await mUserFetch(options.user.user.id);
+		const recipientAPIUser = options.user.user;
 
-		const isBlacklisted = BLACKLISTED_USERS.has(recipientKlasaUser.id);
+		const isBlacklisted = BLACKLISTED_USERS.has(recipientUser.id);
 		if (isBlacklisted) return "Blacklisted players can't buy items.";
-		if (senderKlasaUser.isIronman || recipientKlasaUser.isIronman) return "Iron players can't trade items.";
-		if (recipientKlasaUser.id === senderKlasaUser.id) return "You can't trade yourself.";
-		if (recipientKlasaUser.bot) return "You can't trade a bot.";
-		if (recipientKlasaUser.isBusy) return 'That user is busy right now.';
+		if (senderUser.user.minion_ironman || recipientUser.user.minion_ironman) {
+			return "Iron players can't trade items.";
+		}
+		if (recipientUser.id === senderUser.id) return "You can't trade yourself.";
+		if (recipientAPIUser.bot) return "You can't trade a bot.";
+		if (recipientUser.isBusy) return 'That user is busy right now.';
 
 		const itemsSent =
 			!options.search && !options.filter && !options.send
 				? new Bank()
 				: parseBank({
-						inputBank: senderKlasaUser.bank({ withGP: true }),
+						inputBank: senderUser.bank({ withGP: true }),
 						inputStr: options.send,
 						maxSize: 70,
 						flags: { tradeables: 'tradeables' },
@@ -102,32 +107,32 @@ export const askCommand: OSBMahojiCommand = {
 		}
 
 		if (itemsSent.length === 0 && itemsReceived.length === 0) return "You can't make an empty trade.";
-		if (!senderKlasaUser.owns(itemsSent)) return "You don't own those items.";
+		if (!senderUser.bank.has(itemsSent)) return "You don't own those items.";
 
 		await handleMahojiConfirmation(
 			interaction,
-			`**${senderKlasaUser}** is giving: ${truncateString(itemsSent.toString(), 950)}
-**${recipientKlasaUser}** is giving: ${truncateString(itemsReceived.toString(), 950)}
+			`**${senderUser}** is giving: ${truncateString(itemsSent.toString(), 950)}
+**${recipientUser}** is giving: ${truncateString(itemsReceived.toString(), 950)}
 
 Both parties must click confirm to make the trade.`,
-			[recipientKlasaUser.id, senderKlasaUser.id]
+			[recipientUser.id, senderUser.id]
 		);
 
-		if (!recipientKlasaUser.owns(itemsReceived)) return "They don't own those items.";
+		if (!recipientUser.bank.has(itemsReceived)) return "They don't own those items.";
 
 		await Promise.all([
-			senderKlasaUser.removeItemsFromBank(itemsSent),
-			senderKlasaUser.addItemsToBank({ items: itemsReceived, collectionLog: false }),
+			senderUser.removeItemsFromBank(itemsSent),
+			senderUser.addItemsToBank({ items: itemsReceived, collectionLog: false }),
 
-			recipientKlasaUser.removeItemsFromBank(itemsReceived),
-			recipientKlasaUser.addItemsToBank({ items: itemsSent, collectionLog: false })
+			recipientUser.removeItemsFromBank(itemsReceived),
+			recipientUser.addItemsToBank({ items: itemsSent, collectionLog: false })
 		]);
 
 		await prisma.economyTransaction.create({
 			data: {
 				guild_id: guildID,
-				sender: BigInt(senderKlasaUser.id),
-				recipient: BigInt(recipientKlasaUser.id),
+				sender: BigInt(senderUser.id),
+				recipient: BigInt(recipientUser.id),
 				items_sent: itemsSent.bank,
 				items_received: itemsReceived.bank,
 				type: 'trade'
@@ -135,17 +140,17 @@ Both parties must click confirm to make the trade.`,
 		});
 		globalClient.emit(
 			Events.EconomyLog,
-			`${senderKlasaUser.sanitizedName} sold ${itemsSent} to ${recipientKlasaUser.sanitizedName} for ${itemsReceived}.`
+			`${senderUser.usernameOrMention} sold ${itemsSent} to ${recipientUser.usernameOrMention} for ${itemsReceived}.`
 		);
 		if (itemsReceived.has('Coins')) {
-			addToGPTaxBalance(recipientKlasaUser.id, itemsReceived.amount('Coins'));
+			addToGPTaxBalance(recipientUser.id, itemsReceived.amount('Coins'));
 		}
 		if (itemsSent.has('Coins')) {
-			addToGPTaxBalance(senderKlasaUser.id, itemsSent.amount('Coins'));
+			addToGPTaxBalance(senderUser.id, itemsSent.amount('Coins'));
 		}
 
-		return `${discrimName(senderKlasaUser)} sold ${itemsSent} to ${discrimName(
-			recipientKlasaUser
+		return `${discrimName(senderAPIUser)} sold ${itemsSent} to ${discrimName(
+			recipientAPIUser
 		)} in return for ${itemsReceived}.`;
 	}
 };

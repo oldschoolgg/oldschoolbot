@@ -193,7 +193,7 @@ export const createCommand: OSBMahojiCommand = {
 		}
 
 		// Ensure they have the required items to create the item.
-		if (!user.owns(inItems)) {
+		if (!user.bank.has(inItems)) {
 			return `You don't have the required items to ${action} this item. You need: ${inItems}.`;
 		}
 

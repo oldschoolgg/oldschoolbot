@@ -27,7 +27,7 @@ export async function mageArena2Command(user: KlasaUser, channelID: bigint) {
 		'Blood rune': 300
 	});
 
-	if (!user.owns(itemsNeeded)) {
+	if (!user.bank.has(itemsNeeded)) {
 		return `You don't own the needed items to do the Mage Arena II, you need: ${itemsNeeded}.`;
 	}
 

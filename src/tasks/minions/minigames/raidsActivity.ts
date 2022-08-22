@@ -8,7 +8,6 @@ import { chambersOfXericCL, chambersOfXericMetamorphPets } from '../../../lib/da
 import { createTeam } from '../../../lib/data/cox';
 import { trackLoot } from '../../../lib/settings/prisma';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { RaidsOptions } from '../../../lib/types/minions';
 import { roll, updateBankSetting } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
@@ -95,7 +94,7 @@ export default class extends Task {
 			}${deathChance.toFixed(0)}%)`;
 		}
 
-		updateBankSetting(this.client, ClientSettings.EconomyStats.CoxLoot, totalLoot);
+		updateBankSetting('cox_loot', totalLoot);
 		await trackLoot({
 			loot: totalLoot,
 			id: minigameID,

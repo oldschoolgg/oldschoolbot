@@ -7,7 +7,6 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
-import { userHasItemsEquippedAnywhere } from '../../lib/util/minionUtils';
 import { mUserFetch } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
@@ -31,7 +30,7 @@ export default class extends Task {
 
 		let xpReceived = quantity * bar.xp;
 
-		if (bar.id === itemID('Gold bar') && userHasItemsEquippedAnywhere(user.user, 'Goldsmith gauntlets')) {
+		if (bar.id === itemID('Gold bar') && user.hasEquipped('Goldsmith gauntlets')) {
 			xpReceived = quantity * 56.2;
 		}
 

@@ -11,6 +11,7 @@ import { defaultGear, GearSetup, GearSetupType, GearStat, globalPresets } from '
 import { generateAllGearImage, generateGearImage } from '../../../lib/gear/functions/generateGearImage';
 import getUserBestGearFromBank from '../../../lib/minions/functions/getUserBestGearFromBank';
 import { unEquipAllCommand } from '../../../lib/minions/functions/unequipAllCommand';
+import { MUser } from '../../../lib/MUser';
 import { prisma } from '../../../lib/settings/prisma';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { Gear } from '../../../lib/structures/Gear';
@@ -235,18 +236,17 @@ export async function gearEquipCommand(args: {
 }
 
 export async function gearUnequipCommand(
-	klasaUser: KlasaUser,
-	user: User,
+	user: MUser,
 	gearSetup: string,
 	itemToUnequip: string | undefined,
 	unequipAll: boolean | undefined
 ): CommandResponse {
 	if (minionIsBusy(user.id)) {
-		return `${minionName(user)} is currently out on a trip, so you can't change their gear!`;
+		return `${user.minionName} is currently out on a trip, so you can't change their gear!`;
 	}
 	if (!isValidGearSetup(gearSetup)) return "That's not a valid gear setup.";
 	if (unequipAll) {
-		return unEquipAllCommand(klasaUser, gearSetup);
+		return unEquipAllCommand(user, gearSetup);
 	}
 
 	const currentEquippedGear = getUserGear(user)[gearSetup];
@@ -286,11 +286,7 @@ export async function gearUnequipCommand(
 	};
 }
 
-export async function autoEquipCommand(
-	user: KlasaUser,
-	gearSetup: GearSetupType,
-	equipmentType: string
-): CommandResponse {
+export async function autoEquipCommand(user: MUser, gearSetup: GearSetupType, equipmentType: string): CommandResponse {
 	if (gearSetup === 'other' && user.perkTier < PerkTier.Four) {
 		return PATRON_ONLY_GEAR_SETUP;
 	}
@@ -300,8 +296,8 @@ export async function autoEquipCommand(
 	}
 
 	const { gearToEquip, toRemoveFromBank, toRemoveFromGear } = getUserBestGearFromBank(
-		user.bank(),
-		user.getGear(gearSetup),
+		user.bank,
+		user.gear[gearSetup],
 		gearSetup,
 		user.skillsAsXP,
 		equipmentType as GearStat,
@@ -312,7 +308,7 @@ export async function autoEquipCommand(
 		return "Couldn't find anything to equip.";
 	}
 
-	if (!user.owns(toRemoveFromBank)) {
+	if (!user.bank.has(toRemoveFromBank)) {
 		return `You dont own ${toRemoveFromBank}!`;
 	}
 
@@ -334,7 +330,7 @@ export async function autoEquipCommand(
 	};
 }
 
-export async function gearStatsCommand(user: User, input: string): CommandResponse {
+export async function gearStatsCommand(user: MUser, input: string): CommandResponse {
 	const gear = { ...defaultGear };
 	for (const name of input.split(',')) {
 		const item = getOSItem(name);

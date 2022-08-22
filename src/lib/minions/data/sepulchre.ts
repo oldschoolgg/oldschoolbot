@@ -1,10 +1,9 @@
 import { randInt, Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 import { resolveNameBank } from 'oldschooljs/dist/util';
 
-import { allItemsOwned } from '../../../mahoji/mahojiSettings';
+import { MUser } from '../../MUser';
 import { ItemBank } from '../../types';
 import { roll } from '../../util';
 import resolveItems from '../../util/resolveItems';
@@ -137,7 +136,7 @@ const pages = resolveItems([
 	'Mysterious page 5'
 ]);
 
-export function openCoffin(floor: number, user: KlasaUser): ItemBank {
+export function openCoffin(floor: number, user: MUser): ItemBank {
 	const loot = new Bank();
 	const floorObj = sepulchreFloors[floor - 1];
 	if (roll(floorObj.lockpickCoffinChance)) {
@@ -149,7 +148,7 @@ export function openCoffin(floor: number, user: KlasaUser): ItemBank {
 	const page = pages[floor - 1];
 
 	if (roll(10)) {
-		const bank = allItemsOwned(user);
+		const bank = user.allItemsOwned();
 		if (!bank.has(page)) {
 			loot.add(page);
 		}

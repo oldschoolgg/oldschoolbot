@@ -200,7 +200,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 					1
 				)}x Binding necklace.`;
 			}
-			if (user.skillLevel(SkillsEnum.Crafting) >= 99 && user.hasItemEquippedOrInBank('Crafting cape')) {
+			if (user.skillLevel(SkillsEnum.Crafting) >= 99 && user.hasEquippedOrInBank('Crafting cape')) {
 				teleportReduction = 2;
 			}
 			removeTalismanAndOrRunes.add(

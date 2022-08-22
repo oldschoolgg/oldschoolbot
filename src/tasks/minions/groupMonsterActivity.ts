@@ -9,7 +9,7 @@ import announceLoot from '../../lib/minions/functions/announceLoot';
 import isImportantItemForMonster from '../../lib/minions/functions/isImportantItemForMonster';
 import { GroupMonsterActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
+import { mahojiUsersSettingsFetch, mUserFetch } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: GroupMonsterActivityTaskOptions) {

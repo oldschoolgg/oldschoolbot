@@ -196,7 +196,7 @@ export async function collectCommand(
 			duration *= 1.5;
 			cost.remove('Stamina potion(4)', cost.amount('Stamina potion (4)'));
 		}
-		if (!user.owns(cost)) {
+		if (!user.bank.has(cost)) {
 			return `You don't have the items needed for this trip, you need: ${cost}.`;
 		}
 		await transactItems({ userID: user.id, itemsToRemove: cost });

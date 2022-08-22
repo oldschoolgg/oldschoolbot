@@ -230,7 +230,7 @@ export async function slayerNewTaskCommand({
 	}
 
 	const has99SlayerCape =
-		klasaUser.skillLevel(SkillsEnum.Slayer) >= 99 && klasaUser.hasItemEquippedOrInBank('Slayer cape');
+		klasaUser.skillLevel(SkillsEnum.Slayer) >= 99 && klasauser.hasEquippedOrInBank('Slayer cape');
 
 	// Chooses a default slayer master:
 	const proposedDefaultMaster = slayerMasters

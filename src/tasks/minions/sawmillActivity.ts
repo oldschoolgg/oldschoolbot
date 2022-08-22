@@ -5,7 +5,7 @@ import { Planks } from '../../lib/minions/data/planks';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SawmillActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { hasItemsEquippedOrInBank, userHasItemsEquippedAnywhere } from '../../lib/util/minionUtils';
+import { hasItemsEquippedOrInBank } from '../../lib/util/minionUtils';
 import { mUserFetch } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
@@ -21,7 +21,7 @@ export default class extends Task {
 		let str = `${user}, ${user.minionName} finished creating planks, you received ${loot}.`;
 
 		if (
-			userHasItemsEquippedAnywhere(user.user, ['Iron dagger', 'Bronze arrow', 'Iron med helm']) &&
+			user.hasEquipped(['Iron dagger', 'Bronze arrow', 'Iron med helm']) &&
 			user.getAttackStyles().includes(SkillsEnum.Strength) &&
 			!hasItemsEquippedOrInBank(user.user, ['Helm of raedwald'])
 		) {

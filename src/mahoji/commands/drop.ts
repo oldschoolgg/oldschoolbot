@@ -50,7 +50,7 @@ export const dropCommand: OSBMahojiCommand = {
 			maxSize: 70
 		});
 
-		if (!user.owns(bank)) {
+		if (!user.bank.has(bank)) {
 			return `You don't own ${bank}.`;
 		}
 		if (bank.length === 0) {

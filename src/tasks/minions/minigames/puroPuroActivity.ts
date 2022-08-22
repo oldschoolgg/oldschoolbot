@@ -9,7 +9,6 @@ import { incrementMinigameScore } from '../../../lib/settings/minigames';
 import { PuroPuroActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
-import { userHasItemsEquippedAnywhere } from '../../../lib/util/minionUtils';
 import puroOptions from '../../../mahoji/lib/abstracted_commands/puroPuroCommand';
 import {
 	mahojiUsersSettingsFetch,
@@ -158,7 +157,7 @@ export default class extends Task {
 			}, 0);
 
 			let savedRunes = 0;
-			if (userHasItemsEquippedAnywhere(user.user, bryophytasStaffId)) {
+			if (user.hasEquipped(bryophytasStaffId)) {
 				for (let i = 0; i < spellsUsed; i++) {
 					if (roll(15)) savedRunes++;
 				}

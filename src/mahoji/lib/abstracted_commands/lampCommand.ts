@@ -158,7 +158,7 @@ export async function lampCommand(user: KlasaUser, itemToUse: string, skill: str
 
 	const qty = !_quantity ? 1 : clamp(_quantity, 1, 1000);
 	const toRemoveFromBank = new Bank().add(item.id, qty);
-	if (!user.owns(toRemoveFromBank)) {
+	if (!user.bank.has(toRemoveFromBank)) {
 		return `You don't have **${toRemoveFromBank}** in your bank.`;
 	}
 

@@ -24,7 +24,7 @@ export async function gnomeRestaurantCommand(user: KlasaUser, channelID: bigint)
 
 	const boosts = [];
 
-	const score = await user.getMinigameScore('gnome_restaurant');
+	const score = await getMinigameScore(user.id, 'gnome_restaurant');
 	const scoreBoost = Math.min(100, calcWhatPercent(score, 100)) / 5;
 	if (scoreBoost > 1) {
 		deliveryLength = reduceNumByPercent(deliveryLength, scoreBoost);
@@ -47,7 +47,7 @@ export async function gnomeRestaurantCommand(user: KlasaUser, channelID: bigint)
 	const bank = user.bank();
 	switch (randInt(1, 3)) {
 		case 1: {
-			if (user.hasItemEquippedOrInBank('Amulet of eternal glory')) {
+			if (user.hasEquippedOrInBank('Amulet of eternal glory')) {
 				deliveryLength = reduceNumByPercent(deliveryLength, 20);
 				boosts.push('20% for Amulet of eternal glory');
 			} else if (hasOrnateJewelleryBox) {
@@ -91,7 +91,7 @@ export async function gnomeRestaurantCommand(user: KlasaUser, channelID: bigint)
 		itemsToRemove.add('Law rune', Math.max(1, Math.floor(randInt(1, quantity * 1.5) / 2)));
 	}
 
-	if (!user.owns(itemsToRemove)) {
+	if (!user.bank.has(itemsToRemove)) {
 		return `You don't own the required items: ${itemsToRemove}.`;
 	}
 

@@ -5,7 +5,7 @@ import Prayer from '../../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { BuryingActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { hasItemsEquippedOrInBank, userHasItemsEquippedAnywhere } from '../../../lib/util/minionUtils';
+import { hasItemsEquippedOrInBank } from '../../../lib/util/minionUtils';
 import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
 export default class extends Task {
@@ -34,7 +34,7 @@ export default class extends Task {
 		}
 
 		if (
-			userHasItemsEquippedAnywhere(user.user, ['Iron dagger', 'Bronze arrow', 'Iron med helm']) &&
+			user.hasEquipped(['Iron dagger', 'Bronze arrow', 'Iron med helm'], true) &&
 			!hasItemsEquippedOrInBank(user.user, ['Clue hunter garb'])
 		) {
 			await transactItems({

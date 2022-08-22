@@ -70,7 +70,7 @@ export const lightCommand: OSBMahojiCommand = {
 		const duration = quantity * timeToLightSingleLog;
 
 		const cost = new Bank().add(log.inputLogs, quantity);
-		if (!user.owns(cost)) return `You dont have ${quantity}x ${log.name}.`;
+		if (!user.bank.has(cost)) return `You dont have ${quantity}x ${log.name}.`;
 
 		if (duration > maxTripLength) {
 			return `${user.minionName} can't go on trips longer than ${formatDuration(

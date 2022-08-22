@@ -1,8 +1,8 @@
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { GearSetupType } from './gear';
+import { MUser } from './MUser';
 import { ClientSettings } from './settings/types/ClientSettings';
 import { assert, updateBankSetting } from './util';
 import getOSItem from './util/getOSItem';
@@ -55,7 +55,7 @@ export function checkUserCanUseDegradeableItem({
 }: {
 	item: Item;
 	chargesToDegrade: number;
-	user: KlasaUser;
+	user: MUser;
 }): { hasEnough: true } | { hasEnough: false; userMessage: string } {
 	const degItem = degradeableItems.find(i => i.item === item);
 	if (!degItem) throw new Error('Invalid degradeable item');
@@ -65,7 +65,7 @@ export function checkUserCanUseDegradeableItem({
 	if (newCharges < 0) {
 		return {
 			hasEnough: false,
-			userMessage: `${user.username}, your ${item.name} has only ${currentCharges} charges remaining, but you need ${chargesToDegrade}.`
+			userMessage: `${user.usernameOrMention}, your ${item.name} has only ${currentCharges} charges remaining, but you need ${chargesToDegrade}.`
 		};
 	}
 	return {
@@ -80,7 +80,7 @@ export async function degradeItem({
 }: {
 	item: Item;
 	chargesToDegrade: number;
-	user: KlasaUser;
+	user: MUser;
 }) {
 	const degItem = degradeableItems.find(i => i.item === item);
 	if (!degItem) throw new Error('Invalid degradeable item');
@@ -92,7 +92,7 @@ export async function degradeItem({
 	if (newCharges <= 0) {
 		// If no more charges left, break and refund the item.
 		const hasEquipped = user.getGear(degItem.setup).equippedWeapon() === item;
-		const hasInBank = user.owns(item.id);
+		const hasInBank = user.bank.has(item.id);
 		await user.settings.update(degItem.settingsKey, 0);
 		const itemsDeleted = new Bank().add(item.id);
 
@@ -115,7 +115,7 @@ export async function degradeItem({
 		} else {
 			// If its not in bank OR equipped, something weird has gone on.
 			throw new Error(
-				`${user.sanitizedName} had missing ${item.name} when trying to degrade by ${chargesToDegrade}`
+				`${user.usernameOrMention} had missing ${item.name} when trying to degrade by ${chargesToDegrade}`
 			);
 		}
 

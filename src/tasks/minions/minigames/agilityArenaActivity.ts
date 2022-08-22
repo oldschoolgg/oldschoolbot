@@ -58,7 +58,7 @@ export default class extends Task {
 				str += "**\nYou have a funny feeling you're being followed...**";
 				this.client.emit(
 					Events.ServerNotification,
-					`${Emoji.Agility} **${user.username}'s** minion, ${user.minionName}, just received a Giant squirrel while running at the Agility Arena at level ${currentLevel} Agility!`
+					`${Emoji.Agility} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Giant squirrel while running at the Agility Arena at level ${currentLevel} Agility!`
 				);
 			}
 		}

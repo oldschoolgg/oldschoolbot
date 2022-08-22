@@ -57,7 +57,7 @@ export const buyCommand: OSBMahojiCommand = {
 		const quantity = mahojiParseNumber({ input: options.quantity, min: 1 }) ?? 1;
 		if (stringMatches(name, 'kitten')) {
 			const cost = new Bank().add('Coins', 1000);
-			if (!user.owns(cost)) {
+			if (!user.bank.has(cost)) {
 				return mahojiChatHead({
 					head: 'gertrude',
 					content: "You don't have enough GP to buy a kitten! They cost 1000 coins."
@@ -142,9 +142,9 @@ export const buyCommand: OSBMahojiCommand = {
 
 		if (buyable.minigameScoreReq) {
 			const [key, req] = buyable.minigameScoreReq;
-			let kc = await user.getMinigameScore(key);
+			let kc = await getMinigameScore(user.idkey);
 			if (key === 'tob') {
-				kc += await user.getMinigameScore('tob_hard');
+				kc += await getMinigameScore(user.id, 'tob_hard');
 			}
 			if (kc < req) {
 				return `You need ${req} KC in ${
@@ -160,7 +160,7 @@ export const buyCommand: OSBMahojiCommand = {
 		if (gpCost) singleCost.add('Coins', gpCost);
 
 		const totalCost = singleCost.clone().multiply(quantity);
-		if (!user.owns(totalCost)) {
+		if (!user.bank.has(totalCost)) {
 			return `You don't have the required items to purchase this. You need: ${totalCost}.`;
 		}
 

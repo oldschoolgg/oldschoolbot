@@ -45,7 +45,7 @@ const avas = [
 ] as const;
 
 export async function chompyHuntClaimCommand(user: KlasaUser) {
-	const chompyScore = await user.getMinigameScore('big_chompy_bird_hunting');
+	const chompyScore = await getMinigameScore(user.id, 'big_chompy_bird_hunting');
 	const userBank = user.bank();
 	const cl = user.cl();
 
@@ -99,7 +99,7 @@ export async function chompyHuntCommand(user: KlasaUser, channelID: bigint) {
 	}
 
 	const cost = new Bank().add('Ogre arrow', arrowsNeeded);
-	if (!user.owns(cost)) {
+	if (!user.bank.has(cost)) {
 		return `You don't have enough Ogre arrow's to kill ${quantity}x Chompy birds, you need ${arrowsNeeded}.`;
 	}
 

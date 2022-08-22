@@ -5,7 +5,6 @@ import { Emoji, Events } from '../../lib/constants';
 import { defaultFarmingContract, PatchTypes } from '../../lib/minions/farming';
 import { FarmingContract } from '../../lib/minions/farming/types';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
 import Farming from '../../lib/skilling/skills/farming';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -17,7 +16,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { logError } from '../../lib/util/logError';
 import { hasItemsEquippedOrInBank } from '../../lib/util/minionUtils';
 import { sendToChannelID } from '../../lib/util/webhook';
-import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
+import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch, mUserFetch } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: FarmingActivityTaskOptions) {
@@ -90,19 +89,19 @@ export default class extends Task {
 		if (patchType.lastPayment) chanceOfDeathReduction = 0;
 
 		// check bank for farmer's items
-		if (user.hasItemEquippedOrInBank("Farmer's strawhat")) {
+		if (user.hasEquippedOrInBank("Farmer's strawhat")) {
 			bonusXpMultiplier += 0.004;
 			farmersPiecesCheck++;
 		}
-		if (user.hasItemEquippedOrInBank("Farmer's jacket") || user.hasItemEquippedOrInBank("Farmer's shirt")) {
+		if (user.hasEquippedOrInBank("Farmer's jacket") || user.hasEquippedOrInBank("Farmer's shirt")) {
 			bonusXpMultiplier += 0.008;
 			farmersPiecesCheck++;
 		}
-		if (user.hasItemEquippedOrInBank("Farmer's boro trousers")) {
+		if (user.hasEquippedOrInBank("Farmer's boro trousers")) {
 			bonusXpMultiplier += 0.006;
 			farmersPiecesCheck++;
 		}
-		if (user.hasItemEquippedOrInBank("Farmer's boots")) {
+		if (user.hasEquippedOrInBank("Farmer's boots")) {
 			bonusXpMultiplier += 0.002;
 			farmersPiecesCheck++;
 		}
@@ -141,7 +140,7 @@ export default class extends Task {
 
 			if (loot.length > 0) str += `\n\nYou received: ${loot}.`;
 
-			updateBankSetting(globalClient, ClientSettings.EconomyStats.FarmingLootBank, loot);
+			updateBankSetting('farming_loot_bank', loot);
 			await transactItems({
 				userID: user.id,
 				collectionLog: true,
@@ -251,8 +250,7 @@ export default class extends Task {
 				if (currentWoodcuttingLevel >= plantToHarvest.treeWoodcuttingLevel) {
 					chopped = true;
 				} else {
-					await user.settings.sync(true);
-					const GP = user.settings.get(UserSettings.GP);
+					const GP = Number(user.user.GP);
 					const gpToCutTree = plantToHarvest.seedType === 'redwood' ? 2000 * alivePlants : 200 * alivePlants;
 					if (GP < gpToCutTree) {
 						return sendToChannelID(channelID, {
@@ -371,7 +369,7 @@ export default class extends Task {
 				infoStr.push('```');
 				this.client.emit(
 					Events.ServerNotification,
-					`${Emoji.Farming} **${user.username}'s** minion, ${user.minionName}, just received a Tangleroot while farming ${patchType.lastPlanted} at level ${currentFarmingLevel} Farming!`
+					`${Emoji.Farming} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Tangleroot while farming ${patchType.lastPlanted} at level ${currentFarmingLevel} Farming!`
 				);
 			}
 

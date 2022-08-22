@@ -7,6 +7,7 @@ import { darkAltarRunes } from '../../lib/minions/functions/darkAltarCommand';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { DarkAltarOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { mUserFetch } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: DarkAltarOptions) {
@@ -53,9 +54,11 @@ export default class extends Task {
 			str += "\n\n**You have a funny feeling you're being followed...**";
 			this.client.emit(
 				Events.ServerNotification,
-				`**${user.username}'s** minion, ${user.minionName}, just received a Rift guardian while crafting ${
-					runeData.item.name
-				}s at level ${user.skillLevel(SkillsEnum.Runecraft)} Runecrafting!`
+				`**${user.usernameOrMention}'s** minion, ${
+					user.minionName
+				}, just received a Rift guardian while crafting ${runeData.item.name}s at level ${user.skillLevel(
+					SkillsEnum.Runecraft
+				)} Runecrafting!`
 			);
 		}
 

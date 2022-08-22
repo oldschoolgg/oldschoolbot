@@ -6,7 +6,6 @@ import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 import { Emoji, Events } from '../../../lib/constants';
 import { trackLoot } from '../../../lib/settings/prisma';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
 import Firemaking from '../../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -14,7 +13,6 @@ import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { updateBankSetting } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { userHasItemsEquippedAnywhere } from '../../../lib/util/minionUtils';
 import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
 const PointsTable = new SimpleTable<number>()
@@ -64,7 +62,7 @@ export default class extends Task {
 		}
 
 		// Track loot in Economy Stats
-		await updateBankSetting(this.client, ClientSettings.EconomyStats.WintertodtLoot, loot);
+		await updateBankSetting('economyStats_wintertodtLoot', loot);
 
 		if (loot.has('Phoenix')) {
 			this.client.emit(
@@ -111,7 +109,7 @@ export default class extends Task {
 		} else {
 			// For each pyromancer item, check if they have it, give its' XP boost if so.
 			for (const [itemID, bonus] of Object.entries(Firemaking.pyromancerItems)) {
-				if (userHasItemsEquippedAnywhere(user.user, parseInt(itemID))) {
+				if (user.hasEquipped(parseInt(itemID))) {
 					const amountToAdd = Math.floor(fmXpToGive * (bonus / 100));
 					fmXpToGive += amountToAdd;
 					fmBonusXP += amountToAdd;

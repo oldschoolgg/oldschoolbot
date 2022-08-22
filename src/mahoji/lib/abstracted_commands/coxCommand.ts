@@ -40,8 +40,8 @@ const uniques = [
 
 export async function coxStatsCommand(user: KlasaUser) {
 	const [normal, cm] = await Promise.all([
-		user.getMinigameScore('raids'),
-		user.getMinigameScore('raids_challenge_mode')
+		getMinigameScore(user.id, 'raids'),
+		getMinigameScore(user.id, 'raids_challenge_mode')
 	]);
 	let totalUniques = 0;
 	const cl = user.cl();
@@ -87,13 +87,13 @@ export async function coxCommand(channelID: bigint, user: KlasaUser, type: 'solo
 
 	const minigameID = isChallengeMode ? 'raids_challenge_mode' : 'raids';
 
-	const userKC = await user.getMinigameScore(minigameID);
+	const userKC = await getMinigameScore(user.idminigameID);
 	if (!isChallengeMode && userKC < 50 && type === 'solo') {
 		return 'You need at least 50 Chambers of Xeric KC before you can attempt a solo raid.';
 	}
 
 	if (isChallengeMode) {
-		const normalKC = await user.getMinigameScore('raids');
+		const normalKC = await getMinigameScore(user.id, 'raids');
 		if (normalKC < 200) {
 			return 'You need atleast 200 completions of the Chambers of Xeric before you can attempt Challenge Mode.';
 		}
@@ -121,7 +121,7 @@ export async function coxCommand(channelID: bigint, user: KlasaUser, type: 'solo
 				return [true, "You don't meet the stat requirements to do the Chambers of Xeric."];
 			}
 
-			if (!user.owns(minimumCoxSuppliesNeeded)) {
+			if (!user.bank.has(minimumCoxSuppliesNeeded)) {
 				return [
 					true,
 					`You don't have enough items, you need a minimum of this amount of items: ${minimumCoxSuppliesNeeded}.`
@@ -135,8 +135,8 @@ export async function coxCommand(channelID: bigint, user: KlasaUser, type: 'solo
 
 			if (
 				isChallengeMode &&
-				!user.hasItemEquippedOrInBank('Dragon hunter crossbow') &&
-				!user.hasItemEquippedOrInBank('Twisted bow') &&
+				!user.hasEquippedOrInBank('Dragon hunter crossbow') &&
+				!user.hasEquippedOrInBank('Twisted bow') &&
 				!userHasItemsEquippedAnywhere(
 					user,
 					['Bow of faerdhinen (c)', 'Crystal helm', 'Crystal legs', 'Crystal body'],

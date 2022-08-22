@@ -16,6 +16,8 @@ import { ChambersOfXericOptions } from 'oldschooljs/dist/simulation/misc/Chamber
 
 import { checkUserCanUseDegradeableItem } from '../degradeableItems';
 import { constructGearSetup, GearStats } from '../gear';
+import { MUser } from '../MUser';
+import { getMinigameScore } from '../settings/minigames';
 import { SkillsEnum } from '../skilling/types';
 import { Gear } from '../structures/Gear';
 import { Skills } from '../types';
@@ -35,7 +37,7 @@ export const bareMinStats: Skills = {
 export const SANGUINESTI_CHARGES_PER_COX = 150;
 export const TENTACLE_CHARGES_PER_COX = 200;
 
-export function hasMinRaidsRequirements(user: KlasaUser) {
+export function hasMinRaidsRequirements(user: MUser) {
 	return skillsMeetRequirements(user.skillsAsXP, bareMinStats);
 }
 
@@ -52,7 +54,7 @@ function kcPointsEffect(kc: number) {
 }
 
 export async function createTeam(
-	users: KlasaUser[],
+	users: MUser[],
 	cm: boolean
 ): Promise<Array<{ deaths: number; deathChance: number } & ChambersOfXericOptions['team'][0]>> {
 	let res = [];
@@ -71,7 +73,7 @@ export async function createTeam(
 			deathChance -= calcPercentOfNum(total, 10);
 		}
 
-		const kc = await u.getMinigameScore(cm ? 'raids_challenge_mode' : 'raids');
+		const kc = await getMinigameScore(u.id, cm ? 'raids_challenge_mode' : 'raids');
 		const kcChange = kcPointsEffect(kc);
 		if (kcChange < 0) points = reduceNumByPercent(points, Math.abs(kcChange));
 		else points = increaseNumByPercent(points, kcChange);
@@ -106,11 +108,11 @@ export async function createTeam(
 
 		points = Math.floor(randomVariation(points, 5));
 		if (points < 1 || points > 60_000) {
-			captureMessage(`${u.username} had ${points} points in a team of ${users.length}.`);
+			captureMessage(`${u.usernameOrMention} had ${points} points in a team of ${users.length}.`);
 			points = 10_000;
 		}
 
-		const bank = u.bank();
+		const { bank } = u;
 		res.push({
 			id: u.id,
 			personalPoints: points,
@@ -237,7 +239,7 @@ export const minimumCoxSuppliesNeeded = new Bank({
 	'Super restore(4)': 5
 });
 
-export async function checkCoxTeam(users: KlasaUser[], cm: boolean): Promise<string | null> {
+export async function checkCoxTeam(users: MUser[], cm: boolean): Promise<string | null> {
 	const hasHerbalist = users.some(u => u.skillLevel(SkillsEnum.Herblore) >= 78);
 	if (!hasHerbalist) {
 		return 'nobody with atleast level 78 Herblore';
@@ -246,9 +248,9 @@ export async function checkCoxTeam(users: KlasaUser[], cm: boolean): Promise<str
 	if (!hasFarmer) {
 		return 'nobody with atleast level 55 Farming';
 	}
-	const userWithoutSupplies = users.find(u => !u.owns(minimumCoxSuppliesNeeded));
+	const userWithoutSupplies = users.find(u => !u.bank.has(minimumCoxSuppliesNeeded));
 	if (userWithoutSupplies) {
-		return `${userWithoutSupplies.username} doesn't have enough supplies`;
+		return `${userWithoutSupplies.usernameOrMention} doesn't have enough supplies`;
 	}
 
 	for (const user of users) {
@@ -257,33 +259,33 @@ export async function checkCoxTeam(users: KlasaUser[], cm: boolean): Promise<str
 			return "Your gear is terrible! You do not stand a chance in the Chamber's of Xeric.";
 		}
 		if (!hasMinRaidsRequirements(user)) {
-			return `${user.username} doesn't meet the stat requirements to do the Chamber's of Xeric.`;
+			return `${user.usernameOrMention} doesn't meet the stat requirements to do the Chamber's of Xeric.`;
 		}
 		if (cm) {
-			if (users.length === 1 && !user.hasItemEquippedOrInBank('Twisted bow')) {
-				return `${user.username} doesn't own a Twisted bow, which is required for solo Challenge Mode.`;
+			if (users.length === 1 && !user.hasEquippedOrInBank('Twisted bow')) {
+				return `${user.usernameOrMention} doesn't own a Twisted bow, which is required for solo Challenge Mode.`;
 			}
 			if (
 				users.length > 1 &&
-				!user.hasItemEquippedOrInBank('Dragon hunter crossbow') &&
-				!user.hasItemEquippedOrInBank('Twisted bow') &&
+				!user.hasEquippedOrInBank('Dragon hunter crossbow') &&
+				!user.hasEquippedOrInBank('Twisted bow') &&
 				!userHasItemsEquippedAnywhere(
 					user,
 					['Bow of faerdhinen (c)', 'Crystal helm', 'Crystal legs', 'Crystal body'],
 					true
 				)
 			) {
-				return `${user.username} doesn't own a Twisted bow, Bow of faerdhinen (c) or Dragon hunter crossbow, which is required for Challenge Mode.`;
+				return `${user.usernameOrMention} doesn't own a Twisted bow, Bow of faerdhinen (c) or Dragon hunter crossbow, which is required for Challenge Mode.`;
 			}
-			const kc = await user.getMinigameScore('raids');
+			const kc = await getMinigameScore(user.id, 'raids');
 			if (kc < 200) {
-				return `${user.username} doesn't have the 200 KC required for Challenge Mode.`;
+				return `${user.usernameOrMention} doesn't have the 200 KC required for Challenge Mode.`;
 			}
 		}
 		if (user.minionIsBusy) {
-			return `${user.username}'s minion is already doing an activity and cannot join.`;
+			return `${user.usernameOrMention}'s minion is already doing an activity and cannot join.`;
 		}
-		if (user.getGear('melee').hasEquipped('Abyssal tentacle')) {
+		if (user.gear.melee.hasEquipped('Abyssal tentacle')) {
 			const tentacleResult = checkUserCanUseDegradeableItem({
 				item: getOSItem('Abyssal tentacle'),
 				chargesToDegrade: TENTACLE_CHARGES_PER_COX,
@@ -293,7 +295,7 @@ export async function checkCoxTeam(users: KlasaUser[], cm: boolean): Promise<str
 				return tentacleResult.userMessage;
 			}
 		}
-		if (user.getGear('mage').hasEquipped('Sanguinesti staff')) {
+		if (user.gear.mage.hasEquipped('Sanguinesti staff')) {
 			const sangResult = checkUserCanUseDegradeableItem({
 				item: getOSItem('Sanguinesti staff'),
 				chargesToDegrade: SANGUINESTI_CHARGES_PER_COX,

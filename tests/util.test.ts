@@ -4,7 +4,13 @@ import { Bank } from 'oldschooljs';
 
 import { deduplicateClueScrolls } from '../src/lib/clues/clueUtils';
 import getUserFoodFromBank from '../src/lib/minions/functions/getUserFoodFromBank';
-import { getSkillsOfMahojiUser, sanitizeBank, stripEmojis, truncateString } from '../src/lib/util';
+import {
+	getSkillsOfMahojiUser,
+	sanitizeBank,
+	stripEmojis,
+	truncateString,
+	validateItemBankAndThrow
+} from '../src/lib/util';
 import getOSItem from '../src/lib/util/getOSItem';
 import { sellPriceOfItem, sellStorePriceOfItem } from '../src/mahoji/commands/sell';
 import { mockUser } from './utils';
@@ -89,5 +95,18 @@ describe('util', () => {
 	test('getSkillsOfMahojiUser', () => {
 		expect(getSkillsOfMahojiUser(mockUser(), true).agility).toEqual(73);
 		expect(getSkillsOfMahojiUser(mockUser()).agility).toEqual(1_000_000);
+	});
+
+	test('validateItemBankAndThrow', () => {
+		expect(() => validateItemBankAndThrow({ a: 'b' })).toThrow();
+		expect(() => validateItemBankAndThrow({ a: 1 })).toThrow();
+		expect(() => validateItemBankAndThrow(1)).toThrow();
+		expect(() => validateItemBankAndThrow('b')).toThrow();
+		expect(() => validateItemBankAndThrow(() => {})).toThrow();
+		// eslint-disable-next-line func-names
+		expect(() => validateItemBankAndThrow(function () {})).toThrow();
+		// eslint-disable-next-line @typescript-eslint/no-extraneous-class
+		expect(() => validateItemBankAndThrow(class {})).toThrow();
+		expect(validateItemBankAndThrow({ 1: 1 })).toEqual(true);
 	});
 });

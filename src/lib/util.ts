@@ -3,7 +3,6 @@ import { User } from '@prisma/client';
 import { PaginatedMessage } from '@sapphire/discord.js-utilities';
 import {
 	Channel,
-	Client,
 	DMChannel,
 	Guild,
 	GuildMember,
@@ -14,8 +13,8 @@ import {
 	User as DJSUser,
 	Util
 } from 'discord.js';
-import { calcWhatPercent, chunk, objectEntries, round, Time } from 'e';
-import { KlasaClient, KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults } from 'klasa';
+import { calcWhatPercent, chunk, isObject, objectEntries, round, Time } from 'e';
+import { KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults } from 'klasa';
 import {
 	APIButtonComponentWithCustomId,
 	APIInteractionGuildMember,
@@ -32,7 +31,7 @@ import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, MersenneTwister19937, nodeCrypto, real, shuffle } from 'random-js';
 
 import { CLIENT_ID, production } from '../config';
-import { getUserGear } from '../mahoji/mahojiSettings';
+import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../mahoji/mahojiSettings';
 import { skillEmoji, SupportServer, usernameCache } from './constants';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
 import { Consumable } from './minions/types';
@@ -468,17 +467,69 @@ export function formatPohBoosts(boosts: POHBoosts) {
 	return slotStr.join(', ');
 }
 
-// export function updateBankSetting(
-// 	_client: KlasaClient | KlasaUser | Client,
-// 	setting: string,
-// 	bankToAdd: Bank | ItemBank
-// ) {
-// 	const client = _client as KlasaClient | KlasaUser;
-// 	if (bankToAdd === undefined || bankToAdd === null) throw new Error(`Gave null bank for ${client} ${setting}`);
-// 	const current = new Bank(client.settings.get(setting) as ItemBank);
-// 	const newBank = current.add(bankToAdd);
-// 	return client.settings.update(setting, newBank.bank);
-// }
+type ClientBankKey =
+	| 'sold_items_bank'
+	| 'herblore_cost_bank'
+	| 'construction_cost_bank'
+	| 'farming_cost_bank'
+	| 'farming_loot_bank'
+	| 'buy_cost_bank'
+	| 'buy_loot_bank'
+	| 'magic_cost_bank'
+	| 'crafting_cost'
+	| 'gnome_res_cost'
+	| 'gnome_res_loot'
+	| 'rogues_den_cost'
+	| 'gauntlet_loot'
+	| 'cox_cost'
+	| 'cox_loot'
+	| 'collecting_cost'
+	| 'collecting_loot'
+	| 'mta_cost'
+	| 'bf_cost'
+	| 'mage_arena_cost'
+	| 'hunter_cost'
+	| 'hunter_loot'
+	| 'revs_cost'
+	| 'revs_loot'
+	| 'inferno_cost'
+	| 'dropped_items'
+	| 'runecraft_cost'
+	| 'smithing_cost'
+	| 'economyStats_dicingBank'
+	| 'economyStats_duelTaxBank'
+	| 'economyStats_dailiesAmount'
+	| 'economyStats_itemSellTaxBank'
+	| 'economyStats_bankBgCostBank'
+	| 'economyStats_sacrificedBank'
+	| 'economyStats_wintertodtCost'
+	| 'economyStats_wintertodtLoot'
+	| 'economyStats_fightCavesCost'
+	| 'economyStats_PVMCost'
+	| 'economyStats_thievingCost'
+	| 'nightmare_cost'
+	| 'create_cost'
+	| 'create_loot'
+	| 'tob_cost'
+	| 'tob_loot'
+	| 'degraded_items_cost'
+	| 'tks_cost'
+	| 'tks_loot';
+
+export async function updateBankSetting(key: ClientBankKey, bankToAdd: Bank) {
+	if (bankToAdd === undefined || bankToAdd === null) throw new Error(`Gave null bank for ${key}`);
+	const currentClientSettings = await mahojiClientSettingsFetch({
+		[key]: true
+	});
+	const current = currentClientSettings[key] as ItemBank;
+	validateItemBankAndThrow(current);
+	const newBank = new Bank().add(current).add(bankToAdd);
+
+	const res = await mahojiClientSettingsUpdate({
+		[key]: newBank.bank
+	});
+	return res;
+}
 
 export async function wipeDBArrayByKey(user: KlasaUser, key: string): Promise<SettingsUpdateResults> {
 	const active: any[] = user.settings.get(key) as any[];
@@ -726,7 +777,7 @@ export function exponentialPercentScale(percent: number, decay = 0.021) {
 	return 100 * Math.pow(Math.E, -decay * (100 - percent));
 }
 
-export function discrimName(user: KlasaUser | APIUser) {
+export function discrimName(user: APIUser) {
 	return `${user.username}#${user.discriminator}`;
 }
 
@@ -821,4 +872,20 @@ export function combatLevel(user: User): number {
 	const range = 0.325 * (Math.floor(ranged / 2) + ranged);
 	const mage = 0.325 * (Math.floor(magic / 2) + magic);
 	return Math.floor(base + Math.max(melee, range, mage));
+}
+
+export function validateItemBankAndThrow(input: any): input is ItemBank {
+	if (!isObject(input)) {
+		throw new Error('Invalid bank');
+	}
+	const numbers = [];
+	for (const [key, val] of Object.entries(input)) {
+		numbers.push(parseInt(key), val);
+	}
+	for (const num of numbers) {
+		if (isNaN(num) || typeof num !== 'number' || !Number.isInteger(num) || num < 0) {
+			throw new Error('Invalid bank');
+		}
+	}
+	return true;
 }

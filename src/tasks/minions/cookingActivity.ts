@@ -6,6 +6,7 @@ import Cooking from '../../lib/skilling/skills/cooking';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { CookingActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { mUserFetch } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: CookingActivityTaskOptions) {
@@ -17,7 +18,7 @@ export default class extends Task {
 		let burnedAmount = 0;
 		let stopBurningLvl = 0;
 
-		if (cookable.stopBurnAtCG && user.hasItemEquippedAnywhere('Cooking gauntlets')) {
+		if (cookable.stopBurnAtCG && user.hasEquipped('Cooking gauntlets')) {
 			stopBurningLvl = cookable.stopBurnAtCG;
 		} else {
 			stopBurningLvl = cookable.stopBurnAt;

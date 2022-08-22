@@ -7,7 +7,6 @@ import { tobMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { TOBRooms, TOBUniques, TOBUniquesToAnnounce, totalXPFromRaid } from '../../../lib/data/tob';
 import { trackLoot } from '../../../lib/settings/prisma';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { TheatreOfBlood } from '../../../lib/simulation/tob';
 import { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
@@ -69,11 +68,7 @@ export default class extends Task {
 				}`
 			});
 			// They each paid 100k tax, it doesn't get refunded, so track it in economy stats.
-			await updateBankSetting(
-				this.client,
-				ClientSettings.EconomyStats.TOBCost,
-				new Bank().add('Coins', users.length * 100_000)
-			);
+			await updateBankSetting('tob_cost', new Bank().add('Coins', users.length * 100_000));
 			return;
 		}
 
@@ -139,7 +134,7 @@ Unique chance: ${result.percentChanceOfUnique.toFixed(2)}% (1 in ${convertPercen
 			resultMessage += `\n${deathStr}**${user}** received: ${str}`;
 		}
 
-		updateBankSetting(this.client, ClientSettings.EconomyStats.TOBLoot, totalLoot);
+		updateBankSetting('tob_loot', totalLoot);
 		await trackLoot({
 			loot: totalLoot,
 			id: minigameID,

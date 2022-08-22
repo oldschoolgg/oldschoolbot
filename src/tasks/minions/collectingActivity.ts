@@ -3,23 +3,21 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { MorytaniaDiary, userhasDiaryTier } from '../../lib/diaries';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { CollectingOptions } from '../../lib/types/minions';
 import { updateBankSetting } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { collectables } from '../../mahoji/lib/abstracted_commands/collectCommand';
-import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
+import { mahojiUsersSettingsFetch, mUserFetch } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: CollectingOptions) {
 		let { collectableID, quantity, userID, channelID, duration, noStaminas } = data;
 		const user = await mUserFetch(userID);
-		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 
 		const collectable = collectables.find(c => c.item.id === collectableID)!;
 		let colQuantity = collectable.quantity;
 
-		const [hasMoryHard] = await userhasDiaryTier(mahojiUser, MorytaniaDiary.hard);
+		const [hasMoryHard] = await userhasDiaryTier(user.user, MorytaniaDiary.hard);
 		const moryHardBoost = collectable.item.name === 'Mort myre fungus' && hasMoryHard;
 		if (moryHardBoost) {
 			colQuantity *= 2;
@@ -44,7 +42,7 @@ export default class extends Task {
 			str += '\n\n**Boosts:** 2x for Morytania Hard diary';
 		}
 
-		updateBankSetting(this.client, ClientSettings.EconomyStats.CollectingLoot, loot);
+		updateBankSetting('collecting_loot', loot);
 
 		handleTripFinish(
 			user,

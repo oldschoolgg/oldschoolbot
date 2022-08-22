@@ -62,8 +62,8 @@ export async function gauntletCommand(user: KlasaUser, channelID: bigint, type: 
 	}
 
 	const [corruptedKC, normalKC] = await Promise.all([
-		user.getMinigameScore('corrupted_gauntlet'),
-		user.getMinigameScore('gauntlet')
+		getMinigameScore(user.id, 'corrupted_gauntlet'),
+		getMinigameScore(user.id, 'gauntlet')
 	]);
 
 	if (type === 'corrupted' && normalKC < 50) {

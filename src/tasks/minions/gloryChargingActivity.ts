@@ -6,6 +6,7 @@ import { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { gloriesInventorySize } from '../../mahoji/lib/abstracted_commands/chargeGloriesCommand';
+import { mUserFetch } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: ActivityTaskOptionsWithQuantity) {
@@ -42,7 +43,7 @@ export default class extends Task {
 			str += '\n**Your minion received an Amulet of eternal glory.**';
 			this.client.emit(
 				Events.ServerNotification,
-				`**${user.username}'s** minion, ${user.minionName}, just received **${loot.amount(
+				`**${user.usernameOrMention}'s** minion, ${user.minionName}, just received **${loot.amount(
 					'Amulet of eternal glory'
 				)}x Amulet of eternal glory**!`
 			);

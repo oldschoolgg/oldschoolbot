@@ -80,7 +80,7 @@ export const fishCommand: OSBMahojiCommand = {
 			return 'You are not worthy JalYt. Before you can fish Infernal Eels, you need to have defeated the mighty TzTok-Jad!';
 		}
 		const anglerOutfit = Object.keys(Fishing.anglerItems).map(i => itemNameFromID(parseInt(i)));
-		if (fish.name === 'Minnow' && anglerOutfit.some(test => !user.hasItemEquippedOrInBank(test!))) {
+		if (fish.name === 'Minnow' && anglerOutfit.some(test => !user.hasEquippedOrInBank(test!))) {
 			return 'You need to own the Angler Outfit to fish for Minnows.';
 		}
 

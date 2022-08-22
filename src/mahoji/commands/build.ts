@@ -90,7 +90,7 @@ export const buildCommand: OSBMahojiCommand = {
 			if (!hasDs2Requirements) {
 				return `In order to build a ${object.name}, you need: ${ds2Reason}.`;
 			}
-			if (!user.hasItemEquippedOrInBank('Mythical cape')) {
+			if (!user.hasEquippedOrInBank('Mythical cape')) {
 				return `${user.minionName} needs to own a Mythical cape to build a ${object.name}.`;
 			}
 		}
@@ -128,7 +128,7 @@ export const buildCommand: OSBMahojiCommand = {
 
 		const gpNeeded = Math.floor(10_000 * (invsPerTrip / 8));
 		cost.add('Coins', gpNeeded);
-		if (!user.owns(cost)) return `You don't own: ${cost}.`;
+		if (!user.bank.has(cost)) return `You don't own: ${cost}.`;
 
 		await transactItems({ userID: user.id, itemsToRemove: cost });
 

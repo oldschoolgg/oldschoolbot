@@ -167,7 +167,7 @@ async function infernoRun({
 	 * Item Requirements
 	 *
 	 */
-	if (!user.owns(itemRequirements)) {
+	if (!user.bank.has(itemRequirements)) {
 		return `To do the Inferno, you need these items: ${itemRequirements}.`;
 	}
 
@@ -296,7 +296,7 @@ async function infernoRun({
 	duration.add(user.bitfield.includes(BitField.HasArcaneScroll), -4, 'Arc. Prayer scroll');
 
 	// Slayer
-	const score = await user.getMinigameScore('inferno');
+	const score = await getMinigameScore(user.id, 'inferno');
 	const usersTask = await getUsersCurrentSlayerInfo(user.id);
 	const isOnTask =
 		usersTask.currentTask !== null &&
@@ -305,7 +305,7 @@ async function infernoRun({
 		score > 0 &&
 		usersTask.currentTask!.quantity_remaining === usersTask.currentTask!.quantity;
 
-	duration.add(isOnTask && user.hasItemEquippedOrInBank('Black mask (i)'), -9, `${Emoji.Slayer} Slayer Task`);
+	duration.add(isOnTask && user.hasEquippedOrInBank('Black mask (i)'), -9, `${Emoji.Slayer} Slayer Task`);
 
 	if (timesMadeToZuk > 0) {
 		zukDeathChance.add(
@@ -387,7 +387,7 @@ async function infernoRun({
 
 export async function infernoStatsCommand(user: KlasaUser): CommandResponse {
 	const attempts = user.settings.get(UserSettings.Stats.InfernoAttempts);
-	const zukKC = await user.getMinigameScore('inferno');
+	const zukKC = await getMinigameScore(user.id, 'inferno');
 
 	let str = 'You have never attempted the Inferno, I recommend you stay that way.';
 	if (attempts && !zukKC) {
@@ -423,7 +423,7 @@ export async function infernoStatsCommand(user: KlasaUser): CommandResponse {
 export async function infernoStartCommand(user: KlasaUser, channelID: bigint): CommandResponse {
 	const attempts = user.settings.get(UserSettings.Stats.InfernoAttempts);
 	const usersRangeStats = user.getGear('range').stats;
-	const zukKC = await user.getMinigameScore('inferno');
+	const zukKC = await getMinigameScore(user.id, 'inferno');
 
 	const res = await infernoRun({
 		user,

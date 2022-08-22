@@ -1,7 +1,6 @@
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { TokkulShopOptions } from '../../lib/types/minions';
 import { updateBankSetting } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
@@ -18,7 +17,7 @@ export default class extends Task {
 			collectionLog: false
 		});
 
-		await updateBankSetting(this.client, ClientSettings.EconomyStats.TKSLoot, loot);
+		await updateBankSetting('tks_loot', loot);
 		handleTripFinish(
 			user,
 			channelID,

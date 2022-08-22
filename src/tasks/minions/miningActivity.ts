@@ -9,7 +9,6 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import { rand } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { userHasItemsEquippedAnywhere } from '../../lib/util/minionUtils';
 import { mUserFetch } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
@@ -35,7 +34,7 @@ export default class extends Task {
 		} else {
 			// For each prospector item, check if they have it, give its' XP boost if so.
 			for (const [itemID, bonus] of Object.entries(Mining.prospectorItems)) {
-				if (userHasItemsEquippedAnywhere(user.user, parseInt(itemID))) {
+				if (user.hasEquipped(parseInt(itemID))) {
 					const amountToAdd = Math.floor(xpReceived * (bonus / 100));
 					xpReceived += amountToAdd;
 					bonusXP += amountToAdd;

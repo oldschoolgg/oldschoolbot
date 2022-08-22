@@ -104,7 +104,7 @@ export const smeltingCommand: OSBMahojiCommand = {
 
 			// Boosts
 			if (
-				user.hasItemEquippedOrInBank('Coal bag') &&
+				user.hasEquippedOrInBank('Coal bag') &&
 				resolveItems(['Steel bar', 'Mithril bar', 'Adamantite bar', 'Runite bar']).includes(bar.id)
 			) {
 				boosts.push('60% for coal bag');

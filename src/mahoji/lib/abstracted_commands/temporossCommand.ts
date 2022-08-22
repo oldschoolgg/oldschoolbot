@@ -24,7 +24,7 @@ export async function temporossCommand(user: KlasaUser, channelID: bigint, quant
 	if (fBoost > 1) messages.push(`${fBoost.toFixed(2)}% boost for Fishing level`);
 	durationPerRoss = reduceNumByPercent(durationPerRoss, fBoost);
 
-	const kc = await user.getMinigameScore('tempoross');
+	const kc = await getMinigameScore(user.id, 'tempoross');
 	const kcLearned = Math.min(100, calcWhatPercent(kc, 100));
 
 	if (kcLearned > 0) {

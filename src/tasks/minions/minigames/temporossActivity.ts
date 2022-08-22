@@ -54,7 +54,7 @@ export default class extends Task {
 		} else {
 			// For each angler item, check if they have it, give its' XP boost if so.
 			for (const [itemID, bonus] of Object.entries(Fishing.anglerItems)) {
-				if (user.hasItemEquippedAnywhere(parseInt(itemID))) {
+				if (user.hasEquipped(parseInt(itemID))) {
 					const amountToAdd = Math.floor(fXPtoGive * (bonus / 100));
 					fXPtoGive += amountToAdd;
 					fBonusXP += amountToAdd;

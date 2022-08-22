@@ -57,7 +57,7 @@ export async function driftNetCommand(
 		oneDriftNetTime = reduceNumByPercent(oneDriftNetTime, 50);
 	}
 
-	if (user.hasItemEquippedOrInBank('Stamina potion(4)') && noStams !== true) {
+	if (user.hasEquippedOrInBank('Stamina potion(4)') && noStams !== true) {
 		if (hasItemsEquippedOrInBank(user, ['Ring of endurance (uncharged)', 'Ring of endurance'])) {
 			oneDriftNetTime = reduceNumByPercent(oneDriftNetTime, 6);
 			boosts.push('6% boost for Ring of endurance');

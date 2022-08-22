@@ -6,6 +6,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { ConstructionActivityTaskOptions } from '../../lib/types/minions';
 import { calcConBonusXP } from '../../lib/util/calcConBonusXP';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { mUserFetch } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: ConstructionActivityTaskOptions) {
@@ -14,7 +15,7 @@ export default class extends Task {
 		const object = Constructables.find(object => object.id === objectID)!;
 		const xpReceived = quantity * object.xp;
 		let bonusXP = 0;
-		const outfitMultiplier = calcConBonusXP(user.getGear('skilling'));
+		const outfitMultiplier = calcConBonusXP(user.gear.skilling);
 		if (outfitMultiplier > 0) {
 			bonusXP = calcPercentOfNum(outfitMultiplier, xpReceived);
 		}

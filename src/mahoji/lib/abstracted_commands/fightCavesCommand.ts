@@ -36,7 +36,7 @@ function determineDuration(user: KlasaUser): [number, string] {
 	const percentIncreaseFromRangeStats = Math.floor(calcWhatPercent(usersRangeStats.attack_ranged, 236)) / 2;
 	baseTime = reduceNumByPercent(baseTime, percentIncreaseFromRangeStats);
 
-	if (user.hasItemEquippedOrInBank('Twisted bow')) {
+	if (user.hasEquippedOrInBank('Twisted bow')) {
 		debugStr += ', 15% from Twisted bow';
 		baseTime = reduceNumByPercent(baseTime, 15);
 	}
@@ -80,7 +80,7 @@ function checkGear(user: KlasaUser): string | undefined {
 		return 'JalYt, your ranged gear not strong enough! You die very quickly with your bad gear, come back with better range gear.';
 	}
 
-	if (!user.owns(fightCavesCost)) {
+	if (!user.bank.has(fightCavesCost)) {
 		return `JalYt, you need supplies to have a chance in the caves...come back with ${fightCavesCost}.`;
 	}
 
@@ -120,7 +120,7 @@ export async function fightCavesCommand(user: KlasaUser, channelID: bigint): Com
 		usersTask.currentTask!.quantity_remaining === usersTask.currentTask!.quantity;
 
 	// 15% boost for on task
-	if (isOnTask && user.hasItemEquippedOrInBank('Black mask (i)')) {
+	if (isOnTask && user.hasEquippedOrInBank('Black mask (i)')) {
 		duration *= 0.85;
 		debugStr += ', 15% on Task with Black mask (i)';
 	}

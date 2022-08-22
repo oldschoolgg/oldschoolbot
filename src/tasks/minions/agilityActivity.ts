@@ -95,7 +95,7 @@ export default class extends Task {
 			const currentLapCount = user.settings.get(UserSettings.LapsScores)[course.id];
 			for (const monkey of Agility.MonkeyBackpacks) {
 				if (currentLapCount < monkey.lapsRequired) break;
-				if (!user.hasItemEquippedOrInBank(monkey.id)) {
+				if (!user.hasEquippedOrInBank(monkey.id)) {
 					loot.add(monkey.id);
 					str += `\nYou received the ${monkey.name} monkey backpack!`;
 				}

@@ -27,8 +27,8 @@ import getOSItem from '../../../lib/util/getOSItem';
 import { mahojiParseNumber } from '../../mahojiSettings';
 
 export async function tobStatsCommand(user: KlasaUser) {
-	const hardKC = await user.getMinigameScore('tob_hard');
-	const kc = await user.getMinigameScore('tob');
+	const hardKC = await getMinigameScore(user.id, 'tob_hard');
+	const kc = await getMinigameScore(user.id, 'tob');
 	const attempts = await user.settings.get(UserSettings.Stats.TobAttempts);
 	const hardAttempts = await user.settings.get(UserSettings.Stats.TobHardModeAttempts);
 	const gear = calculateTOBUserGearPercents(user);
@@ -64,7 +64,7 @@ export async function tobStartCommand(user: KlasaUser, channelID: bigint, isHard
 	}
 
 	if (isHardMode) {
-		const normalKC = await user.getMinigameScore('tob');
+		const normalKC = await getMinigameScore(user.id, 'tob');
 		if (normalKC < 250) {
 			return 'You need atleast 250 completions of the Theatre of Blood before you can attempt Hard Mode.';
 		}

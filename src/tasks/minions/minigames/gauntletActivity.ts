@@ -4,7 +4,6 @@ import { Bank } from 'oldschooljs';
 
 import { Events } from '../../../lib/constants';
 import { getMinigameScore, incrementMinigameScore, MinigameName } from '../../../lib/settings/settings';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { gauntlet } from '../../../lib/simulation/gauntlet';
 import { GauntletOptions } from '../../../lib/types/minions';
 import { updateBankSetting } from '../../../lib/util';
@@ -39,7 +38,7 @@ export default class extends Task {
 				})
 			);
 		}
-		if (corrupted && !user.hasItemEquippedOrInBank('Gauntlet cape') && deaths < quantity) {
+		if (corrupted && !user.hasEquippedOrInBank('Gauntlet cape') && deaths < quantity) {
 			loot.add('Gauntlet cape');
 		}
 
@@ -68,7 +67,7 @@ export default class extends Task {
 			);
 		}
 
-		updateBankSetting(this.client, ClientSettings.EconomyStats.GauntletLoot, loot);
+		updateBankSetting('gauntlet_loot', loot);
 
 		const image = await makeBankImage({
 			bank: loot,
