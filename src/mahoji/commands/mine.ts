@@ -248,7 +248,7 @@ export const mineCommand: OSBMahojiCommand = {
 			miningLevel += 7;
 		}
 		// Checks if user own Celestial ring or Celestial signet
-		if (hasItemsEquippedOrInBank(user, ['Celestial ring'])) {
+		if (hasItemsEquippedOrInBank(user, ['Celestial ring (uncharged)'])) {
 			boosts.push('+4 invisible Mining lvls for Celestial ring');
 			miningLevel += 4;
 		}
