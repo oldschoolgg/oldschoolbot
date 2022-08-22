@@ -10,7 +10,7 @@ import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { anglerBoostPercent } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { allItemsOwned, mahojiUsersSettingsFetch, mUserFetch } from '../../../mahoji/mahojiSettings';
+import { mahojiUsersSettingsFetch, mUserFetch } from '../../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: ActivityTaskOptionsWithQuantity) {
@@ -21,7 +21,7 @@ export default class extends Task {
 
 		const fishingLevel = user.skillLevel(SkillsEnum.Fishing);
 
-		const allItemsOwnedBank = allItemsOwned(user).bank;
+		const allItemsOwnedBank = user.allItemsOwned().bank;
 		const loot = new Bank();
 
 		let totalXP = 0;

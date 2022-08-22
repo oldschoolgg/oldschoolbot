@@ -137,7 +137,7 @@ export default class extends Task {
 			);
 		}
 
-		if (user.cl().amount('Fire cape') === 0) {
+		if (user.cl.amount('Fire cape') === 0) {
 			this.client.emit(
 				Events.ServerNotification,
 				`**${user.usernameOrMention}** just received their first Fire cape on their ${formatOrdinal(

@@ -15,7 +15,7 @@ import { updateBankSetting } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { userHasItemsEquippedAnywhere } from '../../../lib/util/minionUtils';
-import { allItemsOwned, mUserFetch } from '../../../mahoji/mahojiSettings';
+import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
 const PointsTable = new SimpleTable<number>()
 	.add(420)
@@ -57,8 +57,8 @@ export default class extends Task {
 			loot.add(
 				WintertodtCrate.open({
 					points,
-					itemsOwned: allItemsOwned(user).clone().add(loot).bank,
-					skills: user.rawSkills
+					itemsOwned: user.allItemsOwned().clone().add(loot).bank,
+					skills: user.skillsAsXP
 				})
 			);
 		}

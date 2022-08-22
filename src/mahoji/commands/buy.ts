@@ -127,7 +127,7 @@ export const buyCommand: OSBMahojiCommand = {
 			}
 		}
 
-		if (buyable.skillsNeeded && !skillsMeetRequirements(user.rawSkills, buyable.skillsNeeded)) {
+		if (buyable.skillsNeeded && !skillsMeetRequirements(user.skillsAsXP, buyable.skillsNeeded)) {
 			return `You don't have the required stats to buy this item. You need ${formatSkillRequirements(
 				buyable.skillsNeeded
 			)}.`;

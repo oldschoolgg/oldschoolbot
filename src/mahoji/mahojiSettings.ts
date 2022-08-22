@@ -313,32 +313,6 @@ export async function userStatsBankUpdate(userID: string, key: UserStatsBankKey,
 	}));
 }
 
-export function allItemsOwned(user: KlasaUser | MUser): Bank {
-	const bank = new Bank();
-	if (user instanceof KlasaUser) {
-		bank.add(user.bank({ withGP: true }));
-		const equippedPet = user.settings.get(UserSettings.Minion.EquippedPet);
-		if (equippedPet) bank.add(equippedPet);
-	} else {
-		bank.add(user.bank);
-		bank.add('Coins', Number(user.user.GP));
-		if (user.user.minion_equippedPet) {
-			bank.add(user.user.minion_equippedPet);
-		}
-	}
-
-	const gear = user instanceof KlasaUser ? user.rawGear() : getUserGear(user);
-	for (const setup of Object.values(gear)) {
-		for (const equipped of Object.values(setup)) {
-			if (equipped?.item) {
-				bank.add(equipped.item, equipped.quantity);
-			}
-		}
-	}
-
-	return bank;
-}
-
 export const userQueues: Map<string, PromiseQueue> = new Map();
 export function getUserUpdateQueue(userID: string) {
 	let currentQueue = userQueues.get(userID);

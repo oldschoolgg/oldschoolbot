@@ -1,4 +1,3 @@
-import { User } from 'discord.js';
 import { randInt } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
@@ -10,6 +9,7 @@ import {
 	MediumEncounterLoot,
 	rewardTokens
 } from '../../../lib/minions/data/templeTrekking';
+import { MUser } from '../../../lib/MUser';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { TempleTrekkingActivityTaskOptions } from '../../../lib/types/minions';
 import { percentChance, stringMatches } from '../../../lib/util';
@@ -19,14 +19,14 @@ import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
 export default class extends Task {
-	getLowestCountOutfitPiece(bank: Bank, user: User): number {
+	getLowestCountOutfitPiece(bank: Bank, user: MUser): number {
 		let lowestCountPiece = 0;
 		let lowestCountAmount = -1;
 
 		for (const piece of templeTrekkingOutfit) {
 			let amount = bank.amount(piece);
 
-			for (const setup of Object.values(user.rawGear())) {
+			for (const setup of Object.values(user.gear)) {
 				const thisItemEquipped = Object.values(setup).find(setup => setup?.item === piece);
 				if (thisItemEquipped) amount += thisItemEquipped.quantity;
 			}

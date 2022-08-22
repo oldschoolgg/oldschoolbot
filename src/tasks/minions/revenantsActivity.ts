@@ -17,7 +17,6 @@ import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLost
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import {
-	allItemsOwned,
 	hasSkillReqs,
 	mahojiUserSettingsUpdate,
 	mahojiUsersSettingsFetch,
@@ -93,7 +92,7 @@ export default class extends Task {
 			notifyDrops: monster.notifyDrops
 		});
 
-		const { clLoot } = filterLootReplace(allItemsOwned(user), loot);
+		const { clLoot } = filterLootReplace(user.allItemsOwned(), loot);
 
 		await mahojiUserSettingsUpdate(user.id, {
 			collectionLogBank: new Bank(user.cl).add(clLoot).bank

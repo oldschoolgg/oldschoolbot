@@ -8,7 +8,7 @@ import { AddXpParams } from './minions/types';
 import { SkillsEnum } from './skilling/types';
 import { ItemBank } from './types';
 import { getSkillsOfMahojiUser } from './util';
-import { minionName } from './util/minionUtils';
+import { hasItemsEquippedOrInBank, minionName, userHasItemsEquippedAnywhere } from './util/minionUtils';
 
 export class MUser {
 	user: User;
@@ -40,8 +40,12 @@ export class MUser {
 		return minionName(this.user);
 	}
 
+	get mention() {
+		return userMention(this.id);
+	}
+
 	get usernameOrMention() {
-		return usernameCache.get(this.id) ?? userMention(this.id);
+		return usernameCache.get(this.id) ?? this.mention;
 	}
 
 	get QP() {
@@ -92,5 +96,37 @@ export class MUser {
 			dontAddToTempCL,
 			userID: this.id
 		});
+	}
+
+	hasEquipped(args: Parameters<typeof userHasItemsEquippedAnywhere>['1']) {
+		return userHasItemsEquippedAnywhere(this.user, args);
+	}
+
+	allItemsOwned() {
+		const bank = new Bank();
+
+		bank.add(this.bank);
+		bank.add('Coins', Number(this.user.GP));
+		if (this.user.minion_equippedPet) {
+			bank.add(this.user.minion_equippedPet);
+		}
+
+		for (const setup of Object.values(this.gear)) {
+			for (const equipped of Object.values(setup)) {
+				if (equipped?.item) {
+					bank.add(equipped.item, equipped.quantity);
+				}
+			}
+		}
+
+		return bank;
+	}
+
+	hasEquippedOrInBank(items: string | number | (string | number)[], type: 'every' | 'one' = 'one') {
+		return hasItemsEquippedOrInBank(this.user, Array.isArray(items) ? items : [items], type);
+	}
+
+	get skillsAsXP() {
+		return getSkillsOfMahojiUser(this.user, false);
 	}
 }

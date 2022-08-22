@@ -25,11 +25,6 @@ export default class extends Extendable {
 	}
 
 	// @ts-ignore 2784
-	public get rawSkills(this: User) {
-		return (this.settings.get('skills') as SettingsFolder).toJSON() as Skills;
-	}
-
-	// @ts-ignore 2784
 	public get bitfield(this: User) {
 		return this.settings.get(UserSettings.BitField);
 	}

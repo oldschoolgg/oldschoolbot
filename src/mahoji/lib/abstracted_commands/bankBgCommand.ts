@@ -44,7 +44,7 @@ export async function bankBgCommand(interaction: SlashCommandInteraction, user: 
 	}
 
 	if (selectedImage.skillsNeeded) {
-		const meets = skillsMeetRequirements(user.rawSkills, selectedImage.skillsNeeded);
+		const meets = skillsMeetRequirements(user.skillsAsXP, selectedImage.skillsNeeded);
 		if (!meets) {
 			return `You don't meet the skill requirements to use this background, you need: ${formatSkillRequirements(
 				selectedImage.skillsNeeded

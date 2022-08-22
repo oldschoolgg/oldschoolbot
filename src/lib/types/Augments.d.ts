@@ -149,7 +149,6 @@ declare module 'discord.js' {
 		minionName: string;
 		hasMinion: boolean;
 		isIronman: boolean;
-		rawSkills: Skills;
 		bitfield: readonly BitField[];
 	}
 }

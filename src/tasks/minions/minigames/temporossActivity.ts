@@ -10,6 +10,7 @@ import { TemporossActivityTaskOptions } from '../../../lib/types/minions';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
+import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: TemporossActivityTaskOptions) {
@@ -24,12 +25,12 @@ export default class extends Task {
 		if (rewardBoost > 0) {
 			rewardTokens = Math.ceil(increaseNumByPercent(rewardTokens, rewardBoost));
 		}
-		const loot = getTemporossLoot(rewardTokens, currentLevel, user.bank());
+		const loot = getTemporossLoot(rewardTokens, currentLevel, user.bank);
 
 		if (loot.has('Tiny tempor')) {
 			this.client.emit(
 				Events.ServerNotification,
-				`${Emoji.TinyTempor} **${user.username}'s** minion, ${
+				`${Emoji.TinyTempor} **${user.usernameOrMention}'s** minion, ${
 					user.minionName
 				}, just received a Tiny tempor! They got the pet on the ${formatOrdinal(
 					kcForPet
@@ -42,7 +43,7 @@ export default class extends Task {
 
 		// If they have the entire angler outfit, give an extra 0.5% xp bonus
 		if (
-			user.getGear('skilling').hasEquipped(
+			user.gear.skilling.hasEquipped(
 				Object.keys(Fishing.anglerItems).map(i => parseInt(i)),
 				true
 			)

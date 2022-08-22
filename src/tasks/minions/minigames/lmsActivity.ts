@@ -1,11 +1,11 @@
 import { percentChance } from 'e';
-import { KlasaUser, Task } from 'klasa';
+import { Task } from 'klasa';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { Emoji } from '../../../lib/constants';
+import { MUser } from '../../../lib/MUser';
 import { prisma } from '../../../lib/settings/prisma';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { addArrayOfNumbers, calcPerHour, clamp, gaussianRandom } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
@@ -18,7 +18,7 @@ interface LMSGameSimulated {
 	points: number;
 }
 
-export async function getUsersLMSStats(user: KlasaUser) {
+export async function getUsersLMSStats(user: MUser) {
 	const aggregations = await prisma.lastManStandingGame.aggregate({
 		_avg: {
 			kills: true,
@@ -48,7 +48,7 @@ export async function getUsersLMSStats(user: KlasaUser) {
 		highestKillInGame: aggregations._max.kills ?? 0,
 		totalGames: aggregations._count.user_id,
 		gamesWon,
-		points: user.settings.get(UserSettings.LMSPoints)
+		points: user.user.lms_points
 	};
 }
 
@@ -113,7 +113,7 @@ export default class extends Task {
 		});
 		const points = addArrayOfNumbers(result.map(i => i.points));
 
-		const { newUser } = await mahojiUserSettingsUpdate(user, {
+		const { newUser } = await mahojiUserSettingsUpdate(user.id, {
 			lms_points: {
 				increment: points
 			}

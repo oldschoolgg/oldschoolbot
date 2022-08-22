@@ -468,17 +468,17 @@ export function formatPohBoosts(boosts: POHBoosts) {
 	return slotStr.join(', ');
 }
 
-export function updateBankSetting(
-	_client: KlasaClient | KlasaUser | Client,
-	setting: string,
-	bankToAdd: Bank | ItemBank
-) {
-	const client = _client as KlasaClient | KlasaUser;
-	if (bankToAdd === undefined || bankToAdd === null) throw new Error(`Gave null bank for ${client} ${setting}`);
-	const current = new Bank(client.settings.get(setting) as ItemBank);
-	const newBank = current.add(bankToAdd);
-	return client.settings.update(setting, newBank.bank);
-}
+// export function updateBankSetting(
+// 	_client: KlasaClient | KlasaUser | Client,
+// 	setting: string,
+// 	bankToAdd: Bank | ItemBank
+// ) {
+// 	const client = _client as KlasaClient | KlasaUser;
+// 	if (bankToAdd === undefined || bankToAdd === null) throw new Error(`Gave null bank for ${client} ${setting}`);
+// 	const current = new Bank(client.settings.get(setting) as ItemBank);
+// 	const newBank = current.add(bankToAdd);
+// 	return client.settings.update(setting, newBank.bank);
+// }
 
 export async function wipeDBArrayByKey(user: KlasaUser, key: string): Promise<SettingsUpdateResults> {
 	const active: any[] = user.settings.get(key) as any[];

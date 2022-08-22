@@ -304,7 +304,7 @@ export async function checkTOBUser(
 		return [true, `${user.username} minion is busy`];
 	}
 
-	if (!skillsMeetRequirements(user.rawSkills, bareMinStats)) {
+	if (!skillsMeetRequirements(user.skillsAsXP, bareMinStats)) {
 		return [
 			true,
 			`${

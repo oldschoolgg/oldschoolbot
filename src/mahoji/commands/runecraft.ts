@@ -13,6 +13,7 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../lib/util/determineRunes';
 import { OSBMahojiCommand } from '../lib/util';
+import { mUserFetch, userHasGracefulEquipped } from '../mahojiSettings';
 
 export const runecraftCommand: OSBMahojiCommand = {
 	name: 'runecraft',
@@ -58,7 +59,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 		options,
 		channelID
 	}: CommandRunOptions<{ rune: string; quantity?: number; usestams?: boolean }>) => {
-		const user = await globalClient.fetchUser(userID.toString());
+		const user = await mUserFetch(userID.toString());
 		let { rune, quantity, usestams } = options;
 
 		rune = rune.toLowerCase().replace('rune', '').trim();
@@ -68,7 +69,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 		}
 
 		if (['blood', 'soul'].includes(rune)) {
-			return darkAltarCommand({ user, channelID, name: rune });
+			return darkAltarCommand({ user: user.user, channelID, name: rune });
 		}
 
 		const runeObj = Runecraft.Runes.find(
@@ -92,16 +93,16 @@ export const runecraftCommand: OSBMahojiCommand = {
 			return `${user.minionName} needs ${runeObj.levels[0][0]} Runecraft to create ${runeObj.name}s.`;
 		}
 
-		if (runeObj.qpRequired && user.settings.get(UserSettings.QP) < runeObj.qpRequired) {
+		if (runeObj.qpRequired && user.user.QP < runeObj.qpRequired) {
 			return `You need ${runeObj.qpRequired} QP to craft this rune.`;
 		}
 
-		const bank = user.bank();
+		const { bank } = user;
 		const numEssenceOwned = bank.amount('Pure essence');
 
 		let { tripLength } = runeObj;
 		const boosts = [];
-		if (userHasGracefulEquipped(user)) {
+		if (userHasGracefulEquipped(user.user)) {
 			tripLength -= tripLength * 0.1;
 			boosts.push('10% for Graceful');
 		}
@@ -117,7 +118,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 		if (!usestams) {
 			tripLength *= 3;
 			boosts.push('**3x slower** for no Stamina potion(4)s');
-		} else if (user.hasItemEquippedOrInBank('Ring of endurance')) {
+		} else if (user.hasEquippedOrInBank(['Ring of endurance'])) {
 			tripLength *= 0.99;
 			const ringStr = '1% boost for Ring of endurance';
 			boosts.push(ringStr);
@@ -135,7 +136,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 
 		if (
 			user.skillLevel(SkillsEnum.Runecraft) >= 99 &&
-			user.hasItemEquippedOrInBank('Runecraft cape') &&
+			user.hasEquippedOrInBank('Runecraft cape') &&
 			inventorySize > 28
 		) {
 			tripLength *= 0.97;
@@ -167,8 +168,8 @@ export const runecraftCommand: OSBMahojiCommand = {
 		let teleportReduction = 1;
 		let removeTalismanAndOrRunes = new Bank();
 		if (runeObj.inputTalisman) {
-			const tomeOfFire = user.hasItemEquippedAnywhere(['Tome of fire', 'Tome of fire (empty)']) ? 0 : 7;
-			const tomeOfWater = user.hasItemEquippedAnywhere(['Tome of water', 'Tome of water (empty)']) ? 0 : 7;
+			const tomeOfFire = user.hasEquipped(['Tome of fire', 'Tome of fire (empty)']) ? 0 : 7;
+			const tomeOfWater = user.hasEquipped(['Tome of water', 'Tome of water (empty)']) ? 0 : 7;
 			const magicImbueRuneCost = determineRunes(
 				user,
 				new Bank({ 'Astral rune': 2, 'Fire rune': tomeOfFire, 'Water rune': tomeOfWater })
@@ -225,7 +226,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 		}
 
 		totalCost.add('Pure essence', quantity);
-		if (!user.owns(totalCost)) return `You don't own: ${totalCost}.`;
+		if (!user.bank.has(totalCost)) return `You don't own: ${totalCost}.`;
 
 		await user.removeItemsFromBank(totalCost);
 		updateBankSetting(globalClient, ClientSettings.EconomyStats.RunecraftCost, totalCost);

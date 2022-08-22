@@ -7,7 +7,7 @@ import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { allItemsOwned, mUserFetch } from '../../../mahoji/mahojiSettings';
+import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	getLowestCountOutfitPiece(bank: Bank): number {
@@ -32,7 +32,7 @@ export default class extends Task {
 
 		const loot = new Bank();
 		const user = await mUserFetch(userID);
-		const userBankCopy = allItemsOwned(user);
+		const userBankCopy = user.allItemsOwned();
 
 		let str = `<@${userID}>, ${user.minionName} finished completing ${quantity}x laps of the Rogues' Den Maze.`;
 

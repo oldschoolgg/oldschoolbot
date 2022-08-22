@@ -135,7 +135,7 @@ export function userCanUseTask(
 	if (task.combatLevel && task.combatLevel > user.combatLevel) return false;
 	if (task.questPoints && task.questPoints > user.settings.get(UserSettings.QP)) return false;
 	if (task.slayerLevel && task.slayerLevel > user.skillLevel(SkillsEnum.Slayer)) return false;
-	if (task.levelRequirements && !skillsMeetRequirements(user.rawSkills, task.levelRequirements)) return false;
+	if (task.levelRequirements && !skillsMeetRequirements(user.skillsAsXP, task.levelRequirements)) return false;
 	const myBlockList = user.settings.get(UserSettings.Slayer.BlockedTasks) ?? [];
 	if (myBlockList.includes(task.monster.id)) return false;
 	const myUnlocks = user.settings.get(UserSettings.Slayer.SlayerUnlocks);

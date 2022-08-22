@@ -8,7 +8,6 @@ import { SkillsEnum } from '../../../lib/skilling/types';
 import { GnomeRestaurantActivityTaskOptions } from '../../../lib/types/minions';
 import { roll, updateBankSetting } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { minionName } from '../../../lib/util/minionUtils';
 import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
 const tipTable = new LootTable()
@@ -91,9 +90,7 @@ export default class extends Task {
 			duration
 		});
 
-		let str = `<@${userID}>, ${minionName(
-			user
-		)} finished completing ${quantity}x Gnome Restaurant deliveries. You received **${loot}**. ${xpRes}`;
+		let str = `<@${userID}>, ${user.minionName} finished completing ${quantity}x Gnome Restaurant deliveries. You received **${loot}**. ${xpRes}`;
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.GnomeRestaurantLootBank, loot);
 

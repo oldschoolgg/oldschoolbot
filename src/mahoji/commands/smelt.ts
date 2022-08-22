@@ -96,7 +96,7 @@ export const smeltingCommand: OSBMahojiCommand = {
 				[SkillsEnum.Smithing]: 20,
 				[SkillsEnum.Thieving]: 13
 			};
-			if (!skillsMeetRequirements(user.rawSkills, requiredSkills)) {
+			if (!skillsMeetRequirements(user.skillsAsXP, requiredSkills)) {
 				return `You don't have the required stats to use the Blast Furnace, you need: ${formatSkillRequirements(
 					requiredSkills
 				)}`;

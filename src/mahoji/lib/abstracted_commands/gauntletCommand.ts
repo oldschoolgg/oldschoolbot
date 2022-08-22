@@ -55,7 +55,7 @@ export async function gauntletCommand(user: KlasaUser, channelID: bigint, type: 
 	const readableName = `${toTitleCase(type)} Gauntlet`;
 	const requiredSkills = type === 'corrupted' ? corruptedRequirements : standardRequirements;
 
-	if (!skillsMeetRequirements(user.rawSkills, requiredSkills)) {
+	if (!skillsMeetRequirements(user.skillsAsXP, requiredSkills)) {
 		return `You don't have the required stats to do the ${readableName}, you need: ${formatSkillRequirements(
 			requiredSkills
 		)}.`;

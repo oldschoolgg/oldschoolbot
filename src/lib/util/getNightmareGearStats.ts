@@ -1,12 +1,12 @@
 import { calcWhatPercent } from 'e';
-import { KlasaUser } from 'klasa';
 
 import { NIGHTMARES_HP, PHOSANI_NIGHTMARE_ID, ZAM_HASTA_CRUSH } from '../constants';
 import { maxOtherStats } from '../gear';
 import { NightmareMonster } from '../minions/data/killableMonsters';
+import { MUser } from '../MUser';
 
 export function getNightmareGearStats(
-	user: KlasaUser,
+	user: MUser,
 	team: string[],
 	isPhosani: boolean
 ): [
@@ -22,7 +22,7 @@ export function getNightmareGearStats(
 	string
 ] {
 	const kc = user.getKC(isPhosani ? PHOSANI_NIGHTMARE_ID : NightmareMonster.id) || 1;
-	const gear = user.getGear('melee');
+	const gear = user.gear.melee;
 	const weapon = gear.equippedWeapon();
 	const gearStats = gear.stats;
 	const percentMeleeStrength = calcWhatPercent(gearStats.melee_strength, maxOtherStats.melee_strength);
@@ -58,11 +58,11 @@ export function getNightmareGearStats(
 		damageDone *= 0.8;
 	}
 
-	const debugString = `\n**${user.username}:** DamageDone[${Math.floor(damageDone)}HP] DeathChance[${Math.floor(
-		percentChanceOfDeath
-	)}%] WeaponStrength[${Math.floor(percentWeaponAttackCrush)}%] GearStrength[${Math.floor(
-		percentMeleeStrength
-	)}%] TotalGear[${totalGearPercent}%]\n`;
+	const debugString = `\n**${user.usernameOrMention}:** DamageDone[${Math.floor(
+		damageDone
+	)}HP] DeathChance[${Math.floor(percentChanceOfDeath)}%] WeaponStrength[${Math.floor(
+		percentWeaponAttackCrush
+	)}%] GearStrength[${Math.floor(percentMeleeStrength)}%] TotalGear[${totalGearPercent}%]\n`;
 
 	return [
 		{

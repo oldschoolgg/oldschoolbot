@@ -5,26 +5,26 @@ import { KandarinDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings';
+import { mahojiUserSettingsUpdate, mUserFetch } from '../../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: MinigameActivityTaskOptions) {
 		const { channelID, quantity, userID } = data;
-		const [klasaUser, user] = await Promise.all([globalClient.fetchUser(userID), mahojiUsersSettingsFetch(userID)]);
+		const user = await mUserFetch(userID);
 		let basePoints = 35;
 
-		let resultStr = `The base amount of points is 35. Your Honour Level is ${user.honour_level}. `;
+		let resultStr = `The base amount of points is 35. Your Honour Level is ${user.user.honour_level}. `;
 
-		const teamSkillPercent = calcWhatPercent(user.honour_level, 5);
+		const teamSkillPercent = calcWhatPercent(user.user.honour_level, 5);
 
 		basePoints += calcPercentOfNum(teamSkillPercent, 20);
 
 		let pts = basePoints + randInt(-3, 3);
 
-		const [hasDiary] = await userhasDiaryTier(user, KandarinDiary.hard);
+		const [hasDiary] = await userhasDiaryTier(user.user, KandarinDiary.hard);
 		if (hasDiary) {
 			pts *= 1.1;
-			resultStr += `${klasaUser.username} received 10% extra pts for Kandarin Hard diary. `;
+			resultStr += `${user.usernameOrMention} received 10% extra pts for Kandarin Hard diary. `;
 		}
 		let totalPoints = Math.floor(pts * quantity);
 
@@ -35,11 +35,11 @@ export default class extends Task {
 			}
 		});
 
-		resultStr = `${klasaUser}, ${klasaUser.minionName} finished doing ${quantity} waves of Barbarian Assault, you received ${totalPoints} Honour Points.
+		resultStr = `${user.mention}, ${user.minionName} finished doing ${quantity} waves of Barbarian Assault, you received ${totalPoints} Honour Points.
 ${resultStr}`;
 
 		handleTripFinish(
-			klasaUser,
+			user,
 			channelID,
 			resultStr,
 			['minigames', { barb_assault: { start: {} } }, true, 'play'],

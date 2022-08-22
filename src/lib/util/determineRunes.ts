@@ -1,7 +1,7 @@
 import { notEmpty } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { MUser } from '../MUser';
 import resolveItems from './resolveItems';
 
 const res = resolveItems;
@@ -22,8 +22,8 @@ const runeItems: [number[], number[]][] = [
 	[res(['Tome of fire (empty)', 'Tome of fire']), res(['Fire rune'])]
 ];
 
-export function determineRunes(user: KlasaUser, runeBank: Bank): Bank {
-	const allWeaponsAndShields = Object.values(user.rawGear())
+export function determineRunes(user: MUser, runeBank: Bank): Bank {
+	const allWeaponsAndShields = Object.values(user.gear)
 		.map(g => [g.weapon, g.shield])
 		.flat(2)
 		.filter(notEmpty)

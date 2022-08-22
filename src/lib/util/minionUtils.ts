@@ -98,7 +98,7 @@ export function userHasItemsEquippedAnywhere(
 		return pet === items[0];
 	}
 
-	const allGear = Object.values(user instanceof KlasaUser ? user.rawGear() : getUserGear(user));
+	const allGear = Object.values(user instanceof KlasaUser ? user.gear : getUserGear(user));
 	for (const gear of allGear) {
 		if (gear.hasEquipped(items, every)) {
 			return true;

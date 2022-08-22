@@ -62,7 +62,7 @@ async function createOrEditGearSetup(
 	}
 
 	const parsedInputGear = parseInputGear(gearInput);
-	let gearSetup = setupToCopy ? user.rawGear()[setupToCopy] : null;
+	let gearSetup = setupToCopy ? user.gear[setupToCopy] : null;
 
 	const gearData = {
 		head: gearSetup?.head?.item ?? parsedInputGear.head ?? null,

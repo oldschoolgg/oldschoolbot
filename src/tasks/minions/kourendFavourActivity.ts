@@ -1,10 +1,9 @@
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { KourendFavourActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { mUserFetch } from '../../mahoji/mahojiSettings';
+import { mahojiUserSettingsUpdate, mUserFetch } from '../../mahoji/mahojiSettings';
 import { KourendFavours, UserKourendFavour } from './../../lib/minions/data/kourendFavour';
 
 export default class extends Task {
@@ -14,12 +13,14 @@ export default class extends Task {
 		const favourPoints = favour.pointsGain * quantity;
 		let shayzienDone = false;
 		let totalPoints: number | undefined = undefined;
-		const currentUserFavour = user.settings.get(UserSettings.KourendFavour);
+		const currentUserFavour = user.user.kourend_favour as any as UserKourendFavour;
 		for (const [key, value] of Object.entries(currentUserFavour) as [keyof UserKourendFavour, number][]) {
 			if (key.toLowerCase() === favour.name.toLowerCase()) {
 				totalPoints = Math.min(Number(value) + favourPoints, 100);
 				currentUserFavour[key] = totalPoints;
-				await user.settings.update(UserSettings.KourendFavour, currentUserFavour);
+				await mahojiUserSettingsUpdate(user.id, {
+					kourend_favour: currentUserFavour as any
+				});
 				if (key === 'Shayzien' && totalPoints === 100) shayzienDone = true;
 				break;
 			}

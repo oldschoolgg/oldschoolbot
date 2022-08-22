@@ -3,6 +3,7 @@ import { increaseNumByPercent, reduceNumByPercent, Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
+import { hasSkillReqs } from '../../../mahoji/mahojiSettings';
 import { KourendKebosDiary, userhasDiaryTier } from '../../diaries';
 import { DarkAltarOptions } from '../../types/minions';
 import { formatDuration, getSkillsOfMahojiUser } from '../../util';
@@ -35,7 +36,7 @@ const mediumDiaryBoost = 20;
 export async function darkAltarCommand({ user, channelID, name }: { user: User; channelID: bigint; name: string }) {
 	if (!['blood', 'soul'].includes(name)) return 'Invalid rune.';
 	const stats = getSkillsOfMahojiUser(user, true);
-	const [hasReqs, neededReqs] = hasSkillReqs({
+	const [hasReqs, neededReqs] = hasSkillReqs(user, {
 		mining: 38,
 		crafting: 38
 	});

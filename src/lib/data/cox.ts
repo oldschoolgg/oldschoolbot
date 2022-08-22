@@ -36,7 +36,7 @@ export const SANGUINESTI_CHARGES_PER_COX = 150;
 export const TENTACLE_CHARGES_PER_COX = 200;
 
 export function hasMinRaidsRequirements(user: KlasaUser) {
-	return skillsMeetRequirements(user.rawSkills, bareMinStats);
+	return skillsMeetRequirements(user.skillsAsXP, bareMinStats);
 }
 
 function kcPointsEffect(kc: number) {

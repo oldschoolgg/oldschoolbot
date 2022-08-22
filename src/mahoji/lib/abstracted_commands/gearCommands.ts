@@ -303,7 +303,7 @@ export async function autoEquipCommand(
 		user.bank(),
 		user.getGear(gearSetup),
 		gearSetup,
-		user.rawSkills,
+		user.skillsAsXP,
 		equipmentType as GearStat,
 		null
 	);
