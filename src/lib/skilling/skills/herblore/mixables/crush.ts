@@ -119,18 +119,6 @@ const Crush: Mixable[] = [
 		tickRate: 2,
 		bankTimePerPotion: 0,
 		wesley: true
-	},
-	{
-		name: 'Crystal dust',
-		aliases: ['crystal', 'crystal shard', 'crystal dust'],
-		id: itemID('Crystal dust'),
-		level: 70,
-		xp: 0,
-		inputItems: resolveNameBank({ 'Crystal shard': 1 }),
-		tickRate: 2,
-		bankTimePerPotion: 0.17,
-		wesley: false,
-		outputMultiple: 10
 	}
 ];
 

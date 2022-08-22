@@ -2037,6 +2037,15 @@ const Createables: Createable[] = [
 			[itemID('Death tiara')]: 1
 		}
 	},
+	{
+		name: 'Crystal dust',
+		inputItems: new Bank({
+			'Crystal dust': 1
+		}),
+		outputItems: {
+			[itemID('Crystal dust')]: 10
+		}
+	},
 	...Reverteables,
 	...crystalTools,
 	...ornamentKits,
