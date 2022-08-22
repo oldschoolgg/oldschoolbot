@@ -163,7 +163,7 @@ function applySkillBoost(user: KlasaUser, duration: number, styles: AttackStyles
 }
 
 function attackStyleSkillToGearSetup(attackSkill: SkillsEnum | AttackStyles): GearSetupType {
-	let result = 'melee';
+	let result: GearSetupType = 'melee';
 	switch (attackSkill) {
 		case 'magic':
 			result = 'mage';
@@ -173,7 +173,7 @@ function attackStyleSkillToGearSetup(attackSkill: SkillsEnum | AttackStyles): Ge
 			break;
 		default:
 	}
-	return result as GearSetupType;
+	return result;
 }
 
 export async function minionKillCommand(
