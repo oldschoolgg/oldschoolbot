@@ -3,7 +3,8 @@ import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { userhasDiaryTier, WesternProv } from '../../../lib/diaries';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
+import { MUser } from '../../../lib/MUser';
+import { getMinigameScore } from '../../../lib/settings/minigames';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
@@ -59,12 +60,12 @@ export async function chompyHuntClaimCommand(user: KlasaUser) {
 	return `Added the following hats to your bank: ${missingHatsBank}`;
 }
 
-export async function chompyHuntCommand(user: KlasaUser, channelID: bigint) {
-	if (user.settings.get(UserSettings.QP) < 10) {
+export async function chompyHuntCommand(user: MUser, channelID: bigint) {
+	if (user.QP < 10) {
 		return 'You need atleast 10 QP to hunt Chompy birds.';
 	}
 
-	const rangeGear = user.getGear('range');
+	const rangeGear = user.gear.range;
 	if (!rangeGear.hasEquipped('Ogre bow')) {
 		return 'You need an Ogre bow equipped in your range outfit, and Ogre arrows to hunt Chompy birds!';
 	}

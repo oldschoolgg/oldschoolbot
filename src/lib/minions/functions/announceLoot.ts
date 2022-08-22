@@ -1,9 +1,9 @@
 import { userMention } from '@discordjs/builders';
 import { User } from '@prisma/client';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Events, usernameCache } from '../../constants';
+import { MUser } from '../../MUser';
 import { ArrayItemsResolved, ItemBank } from '../../types';
 import { minionName } from '../../util/minionUtils';
 import { effectiveMonsters } from '../data/killableMonsters';
@@ -19,7 +19,7 @@ export default async function announceLoot({
 	monsterID: number;
 	notifyDrops?: number[] | ArrayItemsResolved;
 	loot: Bank;
-	team?: { leader: KlasaUser; lootRecipient: KlasaUser; size: number };
+	team?: { leader: MUser; lootRecipient: MUser; size: number };
 }) {
 	if (!_notifyDrops) return;
 	const notifyDrops = _notifyDrops.flat(Infinity);
@@ -29,9 +29,9 @@ export default async function announceLoot({
 		let notif = '';
 
 		if (team && team.size > 1) {
-			notif = `In ${team.leader.username}'s party of ${team.size} minions killing ${
+			notif = `In ${team.leader.usernameOrMention}'s party of ${team.size} minions killing ${
 				effectiveMonsters.find(m => m.id === monsterID)!.name
-			}, **${team.lootRecipient.username}** just received **${itemsToAnnounce}**!`;
+			}, **${team.lootRecipient.usernameOrMention}** just received **${itemsToAnnounce}**!`;
 		} else {
 			const username = usernameCache.get(user.id);
 

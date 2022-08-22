@@ -1,5 +1,5 @@
 import { calcPercentOfNum, percentChance } from 'e';
-import { KlasaUser, Task } from 'klasa';
+import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';

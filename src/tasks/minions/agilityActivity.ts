@@ -1,24 +1,23 @@
 import { increaseNumByPercent, randInt, roll, Time } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
+import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { Emoji, Events } from '../../lib/constants';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Agility from '../../lib/skilling/skills/agility';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { AgilityActivityTaskOptions } from '../../lib/types/minions';
 import { addItemToBank } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { mahojiUsersSettingsFetch, updateGPTrackSetting } from '../../mahoji/mahojiSettings';
+import { mahojiUserSettingsUpdate, mUserFetch, updateGPTrackSetting } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: AgilityActivityTaskOptions) {
 		let { courseID, quantity, userID, channelID, duration, alch } = data;
 		const user = await mUserFetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Agility);
-		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 
 		const course = Agility.Courses.find(course => course.name === courseID)!;
 
@@ -45,7 +44,7 @@ export default class extends Task {
 			totalMarks = Math.ceil(totalMarks / 5);
 		}
 
-		const [hasArdyElite] = await userhasDiaryTier(mahojiUser, ArdougneDiary.elite);
+		const [hasArdyElite] = await userhasDiaryTier(user, ArdougneDiary.elite);
 		const diaryBonus = hasArdyElite && course.name === 'Ardougne Rooftop Course';
 		if (diaryBonus) {
 			totalMarks = Math.floor(increaseNumByPercent(totalMarks, 25));
@@ -53,10 +52,9 @@ export default class extends Task {
 
 		const xpReceived = (quantity - lapsFailed / 2) * course.xp;
 
-		await user.settings.update(
-			UserSettings.LapsScores,
-			addItemToBank(user.settings.get(UserSettings.LapsScores), course.id, quantity - lapsFailed)
-		);
+		await mahojiUserSettingsUpdate(user.id, {
+			lapsScores: addItemToBank(user.user.lapsScores as ItemBank, course.id, quantity - lapsFailed)
+		});
 
 		let xpRes = await user.addXP({
 			skillName: SkillsEnum.Agility,
@@ -92,7 +90,7 @@ export default class extends Task {
 		}.\n${xpRes}`;
 
 		if (course.id === 6) {
-			const currentLapCount = user.settings.get(UserSettings.LapsScores)[course.id];
+			const currentLapCount = (user.user.lapsScores as ItemBank)[course.id];
 			for (const monkey of Agility.MonkeyBackpacks) {
 				if (currentLapCount < monkey.lapsRequired) break;
 				if (!user.hasEquippedOrInBank(monkey.id)) {
@@ -108,7 +106,7 @@ export default class extends Task {
 			str += "\nYou have a funny feeling you're being followed...";
 			this.client.emit(
 				Events.ServerNotification,
-				`${Emoji.Agility} **${user.username}'s** minion, ${user.minionName}, just received a Giant squirrel while running ${course.name} laps at level ${currentLevel} Agility!`
+				`${Emoji.Agility} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Giant squirrel while running ${course.name} laps at level ${currentLevel} Agility!`
 			);
 		}
 

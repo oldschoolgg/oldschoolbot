@@ -1,17 +1,16 @@
 import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { Eatables } from '../../../lib/data/eatables';
 import { warmGear } from '../../../lib/data/filterables';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
+import { MUser } from '../../../lib/MUser';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
-export async function wintertodtCommand(user: KlasaUser, channelID: bigint) {
+export async function wintertodtCommand(user: MUser, channelID: bigint) {
 	const fmLevel = user.skillLevel(SkillsEnum.Firemaking);
 	const wcLevel = user.skillLevel(SkillsEnum.Woodcutting);
 	if (fmLevel < 50) {
@@ -32,7 +31,7 @@ export async function wintertodtCommand(user: KlasaUser, channelID: bigint) {
 	let warmGearAmount = 0;
 
 	for (const piece of warmGear) {
-		if (user.getGear('skilling').hasEquipped([piece])) {
+		if (user.gear.skilling.hasEquipped([piece])) {
 			warmGearAmount++;
 		}
 		if (warmGearAmount >= 4) break;
@@ -55,7 +54,7 @@ export async function wintertodtCommand(user: KlasaUser, channelID: bigint) {
 	for (const food of Eatables) {
 		const healAmount = typeof food.healAmount === 'number' ? food.healAmount : food.healAmount(user);
 		const amountNeeded = Math.ceil(healAmountNeeded / healAmount) * quantity;
-		if (user.bank().amount(food.id) < amountNeeded) {
+		if (user.bank.amount(food.id) < amountNeeded) {
 			if (Eatables.indexOf(food) === Eatables.length - 1) {
 				return `You don't have enough food to do Wintertodt! You can use these food items: ${Eatables.map(
 					i => i.name
@@ -68,11 +67,7 @@ export async function wintertodtCommand(user: KlasaUser, channelID: bigint) {
 		await user.removeItemsFromBank(new Bank().add(food.id, amountNeeded));
 
 		// Track this food cost in Economy Stats
-		await updateBankSetting(
-			globalClient,
-			ClientSettings.EconomyStats.WintertodtCost,
-			new Bank().add(food.id, amountNeeded)
-		);
+		await updateBankSetting('economyStats_wintertodtCost', new Bank().add(food.id, amountNeeded));
 
 		break;
 	}

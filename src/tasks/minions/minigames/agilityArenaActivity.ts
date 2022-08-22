@@ -10,14 +10,13 @@ import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { formatDuration, randomVariation, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { determineXPFromTickets } from '../../../mahoji/lib/abstracted_commands/agilityArenaCommand';
-import { mahojiUsersSettingsFetch, mUserFetch } from '../../../mahoji/mahojiSettings';
+import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { channelID, duration, userID } = data;
 		const user = await mUserFetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Agility);
-		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 
 		// You get 1 ticket per minute at best without diary
 		let timePerTicket = Time.Minute;
@@ -29,7 +28,7 @@ export default class extends Task {
 
 		// 10% bonus tickets for karamja med
 		let bonusTickets = 0;
-		const [hasKaramjaElite] = await userhasDiaryTier(mahojiUser, KaramjaDiary.elite);
+		const [hasKaramjaElite] = await userhasDiaryTier(user, KaramjaDiary.elite);
 		if (hasKaramjaElite) {
 			for (let i = 0; i < ticketsReceived; i++) {
 				if (roll(10)) bonusTickets++;

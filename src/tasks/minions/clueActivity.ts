@@ -5,6 +5,7 @@ import { ClueTiers } from '../../lib/clues/clueTiers';
 import { Events } from '../../lib/constants';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { mUserFetch } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: ClueActivityTaskOptions) {

@@ -5,6 +5,7 @@ import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommand
 import { Bank } from 'oldschooljs';
 
 import { userhasDiaryTier, WesternProv } from '../../../lib/diaries';
+import { MUser } from '../../../lib/MUser';
 import { getMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
@@ -14,13 +15,7 @@ import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 import { minionName } from '../../../lib/util/minionUtils';
-import {
-	getMahojiBank,
-	getUserGear,
-	handleMahojiConfirmation,
-	hasSkillReqs,
-	mahojiUserSettingsUpdate
-} from '../../mahojiSettings';
+import { getUserGear, handleMahojiConfirmation, hasSkillReqs, mahojiUserSettingsUpdate } from '../../mahojiSettings';
 
 let itemBoosts = [
 	[['Abyssal whip', 'Abyssal tentacle'].map(getOSItem), 12],
@@ -113,7 +108,7 @@ let xpMultiplier = {
 	hitpoints: 35
 };
 
-export async function pestControlBuyCommand(user: User, input: string) {
+export async function pestControlBuyCommand(user: MUser, input: string) {
 	if (typeof input !== 'string') input = '';
 	const buyable = pestControlBuyables.find(i => stringMatches(input, i.item.name));
 	if (!buyable) {
@@ -123,7 +118,7 @@ export async function pestControlBuyCommand(user: User, input: string) {
 	}
 
 	const { item, cost } = buyable;
-	const balance = user.pest_control_points;
+	const balance = user.user.pest_control_points;
 	if (balance < cost) {
 		return `You don't have enough Void knight commendation points to buy the ${item.name}. You need ${cost}, but you have only ${balance}.`;
 	}
@@ -133,8 +128,7 @@ export async function pestControlBuyCommand(user: User, input: string) {
 		return `You need ${str} to buy this item.`;
 	}
 
-	const bank = getMahojiBank(user);
-	if (buyable.inputItem && !bank.has(buyable.inputItem.id)) {
+	if (buyable.inputItem && !user.bank.has(buyable.inputItem.id)) {
 		return `This item requires that you own a ${buyable.inputItem.name}.`;
 	}
 

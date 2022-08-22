@@ -3,7 +3,7 @@ import { User, xp_gains_skill_enum } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 
 import { getUserGear, mahojiUserSettingsUpdate } from '../mahoji/mahojiSettings';
-import { usernameCache } from './constants';
+import { BitField, usernameCache } from './constants';
 import { allPetIDs } from './data/CollectionsExport';
 import { AddXpParams } from './minions/types';
 import { SkillsEnum } from './skilling/types';
@@ -15,12 +15,20 @@ import { hasItemsEquippedOrInBank, minionName } from './util/minionUtils';
 import resolveItems from './util/resolveItems';
 
 export class MUser {
-	user: User;
+	user: Readonly<User>;
 	id: string;
 
 	constructor(user: User) {
 		this.user = user;
 		this.id = user.id;
+	}
+
+	get GP() {
+		return Number(this.user.GP);
+	}
+
+	get bitfield() {
+		return this.user.bitfield as BitField[];
 	}
 
 	get perkTier() {
@@ -160,6 +168,10 @@ export class MUser {
 
 	get skillsAsXP() {
 		return getSkillsOfMahojiUser(this.user, false);
+	}
+
+	get skillsAsLevels() {
+		return getSkillsOfMahojiUser(this.user, true);
 	}
 
 	get minionIsBusy() {

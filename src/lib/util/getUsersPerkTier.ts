@@ -5,6 +5,7 @@ import { KlasaUser } from 'klasa';
 
 import { mahojiUserSettingsUpdate } from '../../mahoji/mahojiSettings';
 import { BitField, PerkTier, Roles } from '../constants';
+import { MUser } from '../MUser';
 import { UserSettings } from '../settings/types/UserSettings';
 import { getSupportGuild } from '../util';
 import { logError } from './logError';
@@ -16,7 +17,7 @@ const tier3ElligibleBits = [
 	BitField.IsWikiContributor
 ];
 
-export function patronMaxTripCalc(user: KlasaUser | MahojiUser) {
+export function patronMaxTripCalc(user: KlasaUser | MahojiUser | MUser) {
 	const perkTier = getUsersPerkTier(user);
 	if (perkTier === PerkTier.Two) return Time.Minute * 3;
 	else if (perkTier === PerkTier.Three) return Time.Minute * 6;
@@ -25,7 +26,7 @@ export function patronMaxTripCalc(user: KlasaUser | MahojiUser) {
 }
 
 export default function getUsersPerkTier(
-	userOrBitfield: KlasaUser | MahojiUser | readonly BitField[],
+	userOrBitfield: MUser | KlasaUser | MahojiUser | readonly BitField[],
 	noCheckOtherAccounts?: boolean
 ): PerkTier | 0 {
 	const isMahojiUser = typeof userOrBitfield === 'object' && 'main_account' in userOrBitfield;
@@ -63,11 +64,14 @@ export default function getUsersPerkTier(
 		return 10;
 	}
 
-	const bitfield = isMahojiUser
-		? userOrBitfield.bitfield
-		: userOrBitfield instanceof User
-		? userOrBitfield.settings.get(UserSettings.BitField)
-		: userOrBitfield;
+	const bitfield =
+		userOrBitfield instanceof MUser
+			? userOrBitfield.user.bitfield
+			: isMahojiUser
+			? userOrBitfield.bitfield
+			: userOrBitfield instanceof User
+			? userOrBitfield.settings.get(UserSettings.BitField)
+			: userOrBitfield;
 
 	if (isMahojiUser && userOrBitfield.premium_balance_tier !== null) {
 		const date = userOrBitfield.premium_balance_expiry_date;

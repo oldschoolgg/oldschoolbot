@@ -7,20 +7,19 @@ import { getMinigameEntity, incrementMinigameScore } from '../../../lib/settings
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { chompyHats } from '../../../mahoji/lib/abstracted_commands/chompyHuntCommand';
-import { mahojiUsersSettingsFetch, mUserFetch } from '../../../mahoji/mahojiSettings';
+import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: MinigameActivityTaskOptions) {
 		const { channelID, quantity, userID } = data;
 		const user = await mUserFetch(userID);
 
-		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 		const previousScore = (await getMinigameEntity(user.id)).big_chompy_bird_hunting;
 		const { newScore } = await incrementMinigameScore(userID, 'big_chompy_bird_hunting', quantity);
 
 		const loot = new Bank();
 
-		const [hasElite] = await userhasDiaryTier(mahojiUser, WesternProv.elite);
+		const [hasElite] = await userhasDiaryTier(user, WesternProv.elite);
 
 		for (let i = 0; i < quantity; i++) {
 			loot.add('Bones');

@@ -7,9 +7,9 @@ import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommand
 import { Monsters } from 'oldschooljs';
 
 import killableMonsters from '../../../lib/minions/data/killableMonsters';
+import { MUser } from '../../../lib/MUser';
 import { prisma } from '../../../lib/settings/prisma';
 import { runCommand } from '../../../lib/settings/settings';
-import { SkillsEnum } from '../../../lib/skilling/types';
 import { slayerMasters } from '../../../lib/slayer/slayerMasters';
 import { SlayerRewardsShop } from '../../../lib/slayer/slayerUnlocks';
 import {
@@ -23,7 +23,7 @@ import { AssignableSlayerTask } from '../../../lib/slayer/types';
 import { channelIsSendable, removeFromArr } from '../../../lib/util';
 import { stringMatches } from '../../../lib/util/cleanString';
 import { logError } from '../../../lib/util/logError';
-import { handleMahojiConfirmation, mahojiUserSettingsUpdate } from '../../mahojiSettings';
+import { handleMahojiConfirmation, mahojiUserSettingsUpdate, mUserFetch } from '../../mahojiSettings';
 
 const returnSuccessButtons = [
 	[
@@ -203,7 +203,7 @@ async function returnSuccess(channelID: bigint | string, mahojiUser: User, conte
 	}
 }
 export async function slayerNewTaskCommand({
-	mahojiUser,
+	userID,
 	interaction,
 	channelID,
 	extraContent,
@@ -211,7 +211,7 @@ export async function slayerNewTaskCommand({
 	saveDefaultSlayerMaster,
 	showButtons
 }: {
-	mahojiUser: User;
+	userID: string;
 	interaction: SlashCommandInteraction;
 	channelID: string | bigint;
 	extraContent?: string;
@@ -219,23 +219,22 @@ export async function slayerNewTaskCommand({
 	saveDefaultSlayerMaster?: boolean;
 	showButtons?: boolean;
 }) {
-	const klasaUser = await globalClient.fetchUser(mahojiUser.id);
-	const { currentTask } = await getUsersCurrentSlayerInfo(mahojiUser.id);
-	const { slayer_remember_master: rememberedSlayerMaster } = mahojiUser;
+	const user = await mUserFetch(userID);
+	const { currentTask } = await getUsersCurrentSlayerInfo(user.id);
+	const { slayer_remember_master: rememberedSlayerMaster } = user.user;
 
-	if (klasaUser.minionIsBusy) {
+	if (user.minionIsBusy) {
 		return `Your minion is busy, but you can still manage your block list: \`/slayer manage list_blocks\`${await slayerStatusCommand(
-			mahojiUser
+			user.user
 		)}`;
 	}
 
-	const has99SlayerCape =
-		klasaUser.skillLevel(SkillsEnum.Slayer) >= 99 && klasauser.hasEquippedOrInBank('Slayer cape');
+	const has99SlayerCape = user.skillLevel('slayer') >= 99 && user.hasEquippedOrInBank('Slayer cape');
 
 	// Chooses a default slayer master:
 	const proposedDefaultMaster = slayerMasters
 		.sort((a, b) => b.basePoints - a.basePoints)
-		.find(sm => userCanUseMaster(klasaUser, sm));
+		.find(sm => userCanUseMaster(user, sm));
 
 	// Contains (if matched) the slayer master requested, falling back on saved default, if they have requirements
 	const slayerMaster =
@@ -243,11 +242,11 @@ export async function slayerNewTaskCommand({
 			? slayerMasters.find(m => m.aliases.some(alias => stringMatches(alias, slayerMasterOverride))) ?? null
 			: slayerMasterOverride
 			? slayerMasters
-					.filter(m => userCanUseMaster(klasaUser, m))
+					.filter(m => userCanUseMaster(user, m))
 					.find(m => m.aliases.some(alias => stringMatches(alias, slayerMasterOverride))) ?? null
 			: rememberedSlayerMaster
 			? slayerMasters
-					.filter(m => userCanUseMaster(klasaUser, m))
+					.filter(m => userCanUseMaster(user, m))
 					.find(m => m.aliases.some(alias => stringMatches(alias, rememberedSlayerMaster))) ??
 			  proposedDefaultMaster
 			: proposedDefaultMaster;
@@ -280,8 +279,8 @@ export async function slayerNewTaskCommand({
 				quantity_remaining: 0
 			}
 		});
-		const { newUser: updatedMahojiUser } = await mahojiUserSettingsUpdate(mahojiUser.id, { slayer_task_streak: 0 });
-		const newSlayerTask = await assignNewSlayerTask(klasaUser, slayerMaster);
+		const { newUser: updatedMahojiUser } = await mahojiUserSettingsUpdate(user.id, { slayer_task_streak: 0 });
+		const newSlayerTask = await assignNewSlayerTask(user, slayerMaster);
 		let commonName = getCommonTaskName(newSlayerTask.assignedTask!.monster);
 		const returnMessage =
 			`Your task has been skipped.\n\n ${slayerMaster.name}` +
@@ -298,8 +297,7 @@ export async function slayerNewTaskCommand({
 	let resultMessage = '';
 	// Store favorite slayer master if requested:
 	if (saveDefaultSlayerMaster && slayerMaster) {
-		mahojiUser.slayer_remember_master = slayerMaster.name;
-		await mahojiUserSettingsUpdate(mahojiUser.id, { slayer_remember_master: slayerMaster.name });
+		await mahojiUserSettingsUpdate(user.id, { slayer_remember_master: slayerMaster.name });
 		resultMessage = `**Saved ${slayerMaster!.name} as default slayer master.**\n\n`;
 	}
 
@@ -315,22 +313,22 @@ export async function slayerNewTaskCommand({
 		}
 
 		let baseInfo = currentTask
-			? await slayerStatusCommand(mahojiUser)
+			? await slayerStatusCommand(user.user)
 			: 'You have no task at the moment, you can get a task using `/slayer task master:Turael`' +
 			  `All slayer Masters: ${slayerMasters.map(i => i.name).join(', ')}`;
 
 		resultMessage += `${warningInfo}${baseInfo}`;
 		if (currentTask && !warningInfo) {
 			if (showButtons) {
-				returnSuccess(channelID, mahojiUser, resultMessage);
+				returnSuccess(channelID, user.user, resultMessage);
 				return { content: 'Here is your current slayer task', flags: MessageFlags.Ephemeral };
 			}
 		}
 		return resultMessage;
 	}
 
-	const newSlayerTask = await assignNewSlayerTask(klasaUser, slayerMaster);
-	const myUnlocks = mahojiUser.slayer_unlocks ?? [];
+	const newSlayerTask = await assignNewSlayerTask(user, slayerMaster);
+	const myUnlocks = user.user.slayer_unlocks ?? [];
 	const extendReward = SlayerRewardsShop.find(
 		srs => srs.extendID && srs.extendID.includes(newSlayerTask.currentTask.monster_id)
 	);
@@ -362,36 +360,36 @@ export async function slayerNewTaskCommand({
 		newSlayerTask.currentTask.quantity
 	}x ${commonName}${getAlternateMonsterList(newSlayerTask.assignedTask)}.`;
 	if (showButtons) {
-		returnSuccess(channelID, mahojiUser, resultMessage);
+		returnSuccess(channelID, user.user, resultMessage);
 		return { content: 'Slayer task assigned.', flags: MessageFlags.Ephemeral };
 	}
 	return resultMessage;
 }
 
 export async function slayerSkipTaskCommand({
-	mahojiUser,
+	user,
 	block,
 	newTask,
 	interaction,
 	channelID
 }: {
-	mahojiUser: User;
+	user: MUser;
 	block: boolean;
 	newTask: boolean;
 	interaction: SlashCommandInteraction;
 	channelID: bigint | string;
 }) {
-	const { currentTask } = await getUsersCurrentSlayerInfo(mahojiUser.id);
-	const myBlockList = mahojiUser.slayer_blocked_ids;
-	const klasaUser = await globalClient.fetchUser(mahojiUser.id);
-	const maxBlocks = calcMaxBlockedTasks(mahojiUser);
+	const { currentTask } = await getUsersCurrentSlayerInfo(user.id);
+	const myBlockList = user.user.slayer_blocked_ids;
+	const klasaUser = await globalClient.fetchUser(user.id);
+	const maxBlocks = calcMaxBlockedTasks(user.user);
 	if (klasaUser.minionIsBusy) {
 		return 'You cannot change your task while your minion is busy.';
 	}
 	if (!currentTask) {
 		if (newTask) {
 			return slayerNewTaskCommand({
-				mahojiUser,
+				userID: user.id,
 				interaction,
 				channelID,
 				showButtons: true
@@ -407,7 +405,7 @@ export async function slayerSkipTaskCommand({
 			'`st --list` for list of blocked monsters and their IDs.'
 		);
 	}
-	let slayerPoints = mahojiUser.slayer_points ?? 0;
+	let slayerPoints = user.user.slayer_points ?? 0;
 	if (slayerPoints < (block ? 100 : 30)) {
 		return (
 			`You need ${block ? 100 : 30} points to ${block ? 'block' : 'cancel'},` +
@@ -424,7 +422,7 @@ export async function slayerSkipTaskCommand({
 				...removeFromArr(myBlockList, currentTask.monster_id),
 				currentTask.monster_id
 			];
-		const { newUser: updatedMahojiUser } = await mahojiUserSettingsUpdate(mahojiUser.id, updateData);
+		await mahojiUserSettingsUpdate(user.id, updateData);
 		await prisma.slayerTask.update({
 			where: {
 				id: currentTask.id
@@ -440,7 +438,7 @@ export async function slayerSkipTaskCommand({
 
 		if (newTask) {
 			return slayerNewTaskCommand({
-				mahojiUser: updatedMahojiUser,
+				userID: user.id,
 				interaction,
 				channelID,
 				extraContent: resultMessage,
@@ -450,7 +448,7 @@ export async function slayerSkipTaskCommand({
 		return resultMessage;
 	} catch (e) {
 		logError(e, {
-			user_id: mahojiUser.id.toString(),
+			user_id: user.id.toString(),
 			command: 'slayerSkipTaskCommand',
 			current_task_id: currentTask.id.toString(),
 			current_task: currentTask.monster_id.toString()

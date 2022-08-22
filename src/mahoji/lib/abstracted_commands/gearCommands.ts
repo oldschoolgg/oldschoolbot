@@ -114,7 +114,7 @@ export async function gearPresetEquipCommand(user: KlasaUser, gearSetup: string,
 
 export async function gearEquipCommand(args: {
 	interaction: SlashCommandInteraction;
-	user: User;
+	user: MUser;
 	klasaUser: KlasaUser;
 	setup: string;
 	item: string | undefined;
@@ -126,7 +126,7 @@ export async function gearEquipCommand(args: {
 	const { interaction, user, klasaUser, setup, item, preset, quantity: _quantity, auto } = args;
 	if (!isValidGearSetup(setup)) return 'Invalid gear setup.';
 	if (minionIsBusy(user.id)) {
-		return `${minionName(user)} is currently out on a trip, so you can't change their gear!`;
+		return `${user.minionName} is currently out on a trip, so you can't change their gear!`;
 	}
 
 	if (setup === 'other' && getUsersPerkTier(user) < PerkTier.Four) {
@@ -136,7 +136,7 @@ export async function gearEquipCommand(args: {
 		return gearPresetEquipCommand(klasaUser, setup, preset);
 	}
 	if (auto) {
-		return autoEquipCommand(klasaUser, setup, auto);
+		return autoEquipCommand(user, setup, auto);
 	}
 	const itemToEquip = getItem(item);
 	if (!itemToEquip) return "You didn't supply the name of an item or preset you want to equip.";
@@ -174,7 +174,7 @@ export async function gearEquipCommand(args: {
 	}
 
 	if (itemToEquip.equipment.requirements) {
-		if (!skillsMeetRequirements(getSkillsOfMahojiUser(user, true), itemToEquip.equipment.requirements)) {
+		if (!skillsMeetRequirements(getSkillsOfMahojiUser(user.user, true), itemToEquip.equipment.requirements)) {
 			return `You can't equip a ${
 				itemToEquip.name
 			} because you don't have the required stats: ${formatSkillRequirements(
@@ -278,7 +278,7 @@ export async function gearUnequipCommand(
 		[`gear_${gearSetup}`]: newGear
 	});
 
-	const image = await generateGearImage(user, new Gear(newGear), gearSetup, user.minion_equippedPet);
+	const image = await generateGearImage(user, new Gear(newGear), gearSetup, user.user.minion_equippedPet);
 
 	return {
 		content: `You unequipped ${item.name} from your ${toTitleCase(gearSetup)} setup.`,

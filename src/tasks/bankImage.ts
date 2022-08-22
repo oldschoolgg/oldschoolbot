@@ -14,7 +14,6 @@ import { filterableTypes } from '../lib/data/filterables';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
 import { BankBackground, FlagMap, Flags } from '../lib/minions/types';
 import { MUser } from '../lib/MUser';
-import { getUserSettings } from '../lib/settings/settings';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { BankSortMethod, BankSortMethods, sorts } from '../lib/sorts';
 import { ItemBank } from '../lib/types';
@@ -501,11 +500,8 @@ export default class BankImageTask extends Task {
 		let compact = flags.has('compact');
 		const spacer = compact ? 2 : 12;
 
-		const settings =
-			typeof user === 'undefined' ? null : typeof user === 'string' ? await getUserSettings(user) : user.settings;
-
 		const bankBackgroundID = Number(settings?.get(UserSettings.BankBackground) ?? flags.get('background') ?? 1);
-		const rawCL = settings?.get(UserSettings.CollectionLogBank);
+		const rawCL = user?.cl;
 		const currentCL: Bank | undefined = collectionLog ?? (rawCL === undefined ? undefined : new Bank(rawCL));
 
 		// Filtering

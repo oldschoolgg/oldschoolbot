@@ -18,14 +18,7 @@ import { UserSettings } from '../lib/settings/types/UserSettings';
 import { filterLootReplace } from '../lib/slayer/slayerUtil';
 import { Gear } from '../lib/structures/Gear';
 import type { ItemBank, Skills } from '../lib/types';
-import {
-	assert,
-	channelIsSendable,
-	formatSkillRequirements,
-	getSkillsOfMahojiUser,
-	sanitizeBank,
-	skillsMeetRequirements
-} from '../lib/util';
+import { assert, channelIsSendable, formatSkillRequirements, sanitizeBank, skillsMeetRequirements } from '../lib/util';
 import { logError } from '../lib/util/logError';
 import { respondToButton } from '../lib/util/respondToButton';
 
@@ -388,9 +381,9 @@ export async function transactItemsFromBank({
 	let itemsToAdd = options.itemsToAdd ? options.itemsToAdd.clone() : undefined;
 	let itemsToRemove = options.itemsToRemove ? options.itemsToRemove.clone() : undefined;
 	return userQueueFn(userID, async () => {
-		const settings = await mahojiUsersSettingsFetch(userID);
-		const currentBank = new Bank().add(settings.bank as ItemBank);
-		const previousCL = new Bank().add(settings.collectionLogBank as ItemBank);
+		const settings = await mUserFetch(userID);
+		const currentBank = new Bank().add(settings.user.bank as ItemBank);
+		const previousCL = new Bank().add(settings.user.collectionLogBank as ItemBank);
 		let clUpdates: Prisma.UserUpdateArgs['data'] = {};
 		if (itemsToAdd) {
 			itemsToAdd = deduplicateClueScrolls({
@@ -398,7 +391,7 @@ export async function transactItemsFromBank({
 				currentBank: currentBank.clone().remove(itemsToRemove ?? {})
 			});
 			const { bankLoot, clLoot } = filterLoot
-				? filterLootReplace(allItemsOwned(settings), itemsToAdd)
+				? filterLootReplace(settings.allItemsOwned(), itemsToAdd)
 				: { bankLoot: itemsToAdd, clLoot: itemsToAdd };
 			itemsToAdd = bankLoot;
 
@@ -506,8 +499,8 @@ export async function updateGPTrackSetting(
 	});
 }
 
-export function hasSkillReqs(user: User, reqs: Skills): [boolean, string | null] {
-	const hasReqs = skillsMeetRequirements(getSkillsOfMahojiUser(user, true), reqs);
+export function hasSkillReqs(user: MUser, reqs: Skills): [boolean, string | null] {
+	const hasReqs = skillsMeetRequirements(user.skillsAsLevels, reqs);
 	if (!hasReqs) {
 		return [false, formatSkillRequirements(reqs)];
 	}

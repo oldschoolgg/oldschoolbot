@@ -1,14 +1,13 @@
-import { User } from '@prisma/client';
 import { calcWhatPercent, percentChance, reduceNumByPercent, Time } from 'e';
 
 import { ZALCANO_ID } from '../../../lib/constants';
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
+import { MUser } from '../../../lib/MUser';
 import { Skills } from '../../../lib/types';
 import { ZalcanoActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, getSkillsOfMahojiUser } from '../../../lib/util';
+import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { getKC, minionName } from '../../../lib/util/minionUtils';
 import { hasSkillReqs, userHasGracefulEquipped } from '../../mahojiSettings';
 
 export const soteSkillRequirements: Skills = {
@@ -33,7 +32,7 @@ function calcPerformance(kcLearned: number, skillPercentage: number) {
 	return Math.min(100, basePerformance);
 }
 
-export async function zalcanoCommand(user: User, channelID: bigint) {
+export async function zalcanoCommand(user: MUser, channelID: bigint) {
 	const [hasReqs, reason] = hasSkillReqs(user, soteSkillRequirements);
 	if (!hasReqs) {
 		return `To fight Zalcano, you need: ${reason}.`;
@@ -42,7 +41,7 @@ export async function zalcanoCommand(user: User, channelID: bigint) {
 		return 'To fight Zalcano, you need 150 QP.';
 	}
 
-	const kc = getKC(user, ZALCANO_ID);
+	const kc = user.getKC(ZALCANO_ID);
 	const kcLearned = Math.min(100, calcWhatPercent(kc, 100));
 
 	const boosts = [];
@@ -50,13 +49,13 @@ export async function zalcanoCommand(user: User, channelID: bigint) {
 	baseTime = reduceNumByPercent(baseTime, kcLearned / 6);
 	boosts.push(`${(kcLearned / 6).toFixed(2)}% boost for experience`);
 
-	const skills = getSkillsOfMahojiUser(user, true);
+	const skills = user.skillsAsLevels;
 	const skillPercentage = skills.mining + skills.smithing;
 
 	baseTime = reduceNumByPercent(baseTime, skillPercentage / 40);
 	boosts.push(`${skillPercentage / 40}% boost for levels`);
 
-	if (!userHasGracefulEquipped(user)) {
+	if (!userHasGracefulEquipped(user.user)) {
 		baseTime *= 1.15;
 		boosts.push('-15% time penalty for not having graceful equipped');
 	}
@@ -87,7 +86,7 @@ export async function zalcanoCommand(user: User, channelID: bigint) {
 		isMVP: percentChance(80)
 	});
 
-	return `${minionName(user)} is now off to kill Zalcano ${quantity}x times, their trip will take ${formatDuration(
+	return `${user.minionName} is now off to kill Zalcano ${quantity}x times, their trip will take ${formatDuration(
 		duration
 	)}. (${formatDuration(baseTime)} per kill). Removed ${foodRemoved}.\n\n**Boosts:** ${boosts.join(', ')}.`;
 }

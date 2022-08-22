@@ -1,10 +1,10 @@
-import { User } from '@prisma/client';
 import { objectEntries } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
+import { Monsters } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { getMahojiBank, hasSkillReqs } from '../mahoji/mahojiSettings';
 import { MAX_QP } from './constants';
+import { MUser } from './MUser';
 import { getAllMinigameScores, MinigameName } from './settings/settings';
 import Skillcapes from './skilling/skillcapes';
 import { courses } from './skilling/skills/agility';
@@ -23,7 +23,7 @@ export interface DiaryTier {
 	lapsReqs?: Record<string, number>;
 	qp?: number;
 	monsterScores?: Record<string, number>;
-	customReq?: (user: User, summary: Boolean) => Promise<[true] | [false, string]>;
+	customReq?: (user: MUser, summary: Boolean) => Promise<[true] | [false, string]>;
 }
 interface Diary {
 	name: string;
@@ -34,9 +34,9 @@ interface Diary {
 	elite: DiaryTier;
 }
 
-export async function userhasDiaryTier(user: User, tier: DiaryTier): Promise<[true] | [false, string]> {
+export async function userhasDiaryTier(user: MUser, tier: DiaryTier): Promise<[true] | [false, string]> {
 	const [hasReqs] = hasSkillReqs(user, tier.skillReqs);
-	const skills = getSkillsOfMahojiUser(user, true);
+	const skills = user.skillsAsLevels;
 	let canDo = true;
 	const reasons: string[] = [];
 	if (!hasReqs) {
@@ -48,11 +48,11 @@ export async function userhasDiaryTier(user: User, tier: DiaryTier): Promise<[tr
 		}
 	}
 
-	const bank = getMahojiBank(user);
-	const cl = new Bank(user.collectionLogBank as ItemBank);
+	const { bank } = user;
+	const { cl } = user;
 	const qp = user.QP;
-	const lapScores = user.lapsScores as ItemBank;
-	const monsterScores = user.monsterScores as ItemBank;
+	const lapScores = user.user.lapsScores as ItemBank;
+	const monsterScores = user.user.monsterScores as ItemBank;
 
 	if (tier.ownedItems) {
 		const unownedItems = tier.ownedItems.filter(i => !bank.has(i));

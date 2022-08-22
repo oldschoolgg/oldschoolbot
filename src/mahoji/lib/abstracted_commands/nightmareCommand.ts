@@ -8,8 +8,8 @@ import { calculateMonsterFood } from '../../../lib/minions/functions';
 import hasEnoughFoodForMonster from '../../../lib/minions/functions/hasEnoughFoodForMonster';
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
 import { KillableMonster } from '../../../lib/minions/types';
+import { MUser } from '../../../lib/MUser';
 import { trackLoot } from '../../../lib/settings/prisma';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { Gear } from '../../../lib/structures/Gear';
 import { NightmareActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, updateBankSetting } from '../../../lib/util';
@@ -17,8 +17,9 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import calcDurQty from '../../../lib/util/calcMassDurationQuantity';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
 import resolveItems from '../../../lib/util/resolveItems';
+import { hasSkillReqs } from '../../mahojiSettings';
 
-function soloMessage(user: KlasaUser, duration: number, quantity: number, isPhosani: boolean) {
+function soloMessage(user: MUser, duration: number, quantity: number, isPhosani: boolean) {
 	const name = isPhosani ? "Phosani's Nightmare" : 'The Nightmare';
 	const kc = user.getKC(isPhosani ? PHOSANI_NIGHTMARE_ID : NightmareMonster.id);
 	let str = `${user.minionName} is now off to kill ${name} ${quantity} times.`;
@@ -56,30 +57,25 @@ export const phosaniBISGear = new Gear({
 	ammo: "Rada's blessing 4"
 });
 
-function checkReqs(
-	users: KlasaUser[],
-	monster: KillableMonster,
-	quantity: number,
-	isPhosani: boolean
-): string | undefined {
+function checkReqs(users: MUser[], monster: KillableMonster, quantity: number, isPhosani: boolean): string | undefined {
 	// Check if every user has the requirements for this monster.
 	for (const user of users) {
-		if (!user.hasMinion) {
-			return `${user.username} doesn't have a minion, so they can't join!`;
+		if (!user.user.minion_hasBought) {
+			return `${user.usernameOrMention} doesn't have a minion, so they can't join!`;
 		}
 
 		if (user.minionIsBusy) {
-			return `${user.username} is busy right now and can't join!`;
+			return `${user.usernameOrMention} is busy right now and can't join!`;
 		}
 
 		const [hasReqs, reason] = user.hasMonsterRequirements(monster);
 		if (!hasReqs) {
-			return `${user.username} doesn't have the requirements for this monster: ${reason}`;
+			return `${user.usernameOrMention} doesn't have the requirements for this monster: ${reason}`;
 		}
 
 		if (!hasEnoughFoodForMonster(monster, user, quantity, users.length)) {
 			return `${
-				users.length === 1 ? "You don't" : `${user.username} doesn't`
+				users.length === 1 ? "You don't" : `${user.usernameOrMention} doesn't`
 			} have enough food. You need at least ${monster.healAmountNeeded! * quantity} HP in food to ${
 				users.length === 1 ? 'start the mass' : 'enter the mass'
 			}.`;
@@ -87,11 +83,11 @@ function checkReqs(
 
 		const cost = perUserCost(isPhosani, quantity);
 		if (!user.bank.has(cost)) {
-			return `${user.username} doesn't own ${cost}`;
+			return `${user.usernameOrMention} doesn't own ${cost}`;
 		}
 
 		if (isPhosani) {
-			const requirements = user.hasSkillReqs({
+			const requirements = hasSkillReqs(user.user, {
 				prayer: 70,
 				attack: 90,
 				strength: 90,
@@ -100,7 +96,7 @@ function checkReqs(
 				hitpoints: 90
 			});
 			if (!requirements[0]) {
-				return `${user.username} doesn't meet the requirements: ${requirements[1]}`;
+				return `${user.usernameOrMention} doesn't meet the requirements: ${requirements[1]}`;
 			}
 			if (user.getKC(NightmareMonster.id) < 50) {
 				return "You need to have killed The Nightmare atleast 50 times before you can face the Phosani's Nightmare.";
@@ -122,7 +118,7 @@ function perUserCost(isPhosani: boolean, quantity: number) {
 	return cost;
 }
 
-export async function nightmareCommand(user: KlasaUser, channelID: bigint, name: string) {
+export async function nightmareCommand(user: MUser, channelID: bigint, name: string) {
 	name = name.toLowerCase();
 	let isPhosani = false;
 	let type: 'solo' | 'mass' = 'solo';
@@ -146,7 +142,7 @@ export async function nightmareCommand(user: KlasaUser, channelID: bigint, name:
 		isPhosani
 	);
 
-	const meleeGear = user.getGear('melee');
+	const meleeGear = user.gear.melee;
 
 	if (users.length === 1 && isPhosani) {
 		if (user.bitfield.includes(BitField.HasSlepeyTablet)) {
@@ -254,7 +250,7 @@ export async function nightmareCommand(user: KlasaUser, channelID: bigint, name:
 		}
 	}
 
-	await updateBankSetting(globalClient, ClientSettings.EconomyStats.NightmareCost, totalCost);
+	await updateBankSetting('nightmare_cost', totalCost);
 	await trackLoot({
 		id: 'nightmare',
 		cost: totalCost,

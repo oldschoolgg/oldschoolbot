@@ -18,7 +18,7 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { farmingPatchNames, findPlant, isPatchName } from '../../../lib/util/farmingHelpers';
 import { hasItemsEquippedOrInBank } from '../../../lib/util/minionUtils';
-import { handleMahojiConfirmation } from '../../mahojiSettings';
+import { handleMahojiConfirmation, mUserFetch } from '../../mahojiSettings';
 
 function treeCheck(plant: Plant, wcLevel: number, bal: number, quantity: number): string | null {
 	if (plant.needsChopForHarvest && plant.treeWoodcuttingLevel && wcLevel < plant.treeWoodcuttingLevel) {
@@ -123,25 +123,25 @@ ${boostStr.length > 0 ? '**Boosts**: ' : ''}${boostStr.join(', ')}`;
 }
 
 export async function farmingPlantCommand({
-	user,
 	plantName,
 	quantity,
 	autoFarmed,
 	channelID,
-	pay
+	pay,
+	userID
 }: {
-	user: KlasaUser;
+	userID: string;
 	plantName: string;
 	quantity: number | null;
 	autoFarmed: boolean;
 	channelID: bigint;
 	pay: boolean;
 }): Promise<string> {
-	await user.settings.sync(true);
+	const user = await mUserFetch(userID);
 	if (user.minionIsBusy) {
 		return 'Your minion must not be busy to use this command.';
 	}
-	const userBank = user.bank();
+	const userBank = user.bank;
 	const alwaysPay = user.settings.get(UserSettings.Minion.DefaultPay);
 	const questPoints = user.settings.get(UserSettings.QP);
 	const GP = user.settings.get(UserSettings.GP);

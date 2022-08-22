@@ -114,31 +114,31 @@ export function weightedPick(filteredTasks: AssignableSlayerTask[]) {
 	return task;
 }
 
-export function userCanUseMaster(user: KlasaUser, master: SlayerMaster) {
+export function userCanUseMaster(user: MUser, master: SlayerMaster) {
 	return (
-		user.settings.get(UserSettings.QP) >= (master.questPoints ?? 0) &&
+		user.QP >= (master.questPoints ?? 0) &&
 		user.skillLevel(SkillsEnum.Slayer) >= (master.slayerLvl ?? 0) &&
 		user.combatLevel >= (master.combatLvl ?? 0)
 	);
 }
 
 export function userCanUseTask(
-	user: KlasaUser,
+	user: MUser,
 	task: AssignableSlayerTask,
 	master: SlayerMaster,
 	allowBossTasks: boolean = false
 ) {
 	if (task.isBoss && !allowBossTasks) return false;
 	if (task.dontAssign) return false;
-	const myLastTask = user.settings.get(UserSettings.Slayer.LastTask);
+	const myLastTask = user.user.slayer_last_task;
 	if (myLastTask === task.monster.id) return false;
 	if (task.combatLevel && task.combatLevel > user.combatLevel) return false;
 	if (task.questPoints && task.questPoints > user.settings.get(UserSettings.QP)) return false;
 	if (task.slayerLevel && task.slayerLevel > user.skillLevel(SkillsEnum.Slayer)) return false;
 	if (task.levelRequirements && !skillsMeetRequirements(user.skillsAsXP, task.levelRequirements)) return false;
-	const myBlockList = user.settings.get(UserSettings.Slayer.BlockedTasks) ?? [];
+	const myBlockList = user.user.slayer_blocked_ids ?? [];
 	if (myBlockList.includes(task.monster.id)) return false;
-	const myUnlocks = user.settings.get(UserSettings.Slayer.SlayerUnlocks);
+	const myUnlocks = user.user.slayer_unlocks;
 	// Slayer unlock restrictions:
 	const lmon = task.monster.name.toLowerCase();
 	const lmast = master.name.toLowerCase();
@@ -164,12 +164,12 @@ export function userCanUseTask(
 	return true;
 }
 
-export async function assignNewSlayerTask(_user: KlasaUser, master: SlayerMaster) {
+export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 	// assignedTask is the task object, currentTask is the database row.
 	const baseTasks = [...master.tasks].filter(t => userCanUseTask(_user, t, master, false));
 	let bossTask = false;
 	if (
-		_user.settings.get(UserSettings.Slayer.SlayerUnlocks).includes(SlayerTaskUnlocksEnum.LikeABoss) &&
+		_user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.LikeABoss) &&
 		(master.name.toLowerCase() === 'konar quo maten' ||
 			master.name.toLowerCase() === 'duradel' ||
 			master.name.toLowerCase() === 'nieve' ||

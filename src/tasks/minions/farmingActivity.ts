@@ -4,7 +4,6 @@ import { Bank, Monsters } from 'oldschooljs';
 import { Emoji, Events } from '../../lib/constants';
 import { defaultFarmingContract, PatchTypes } from '../../lib/minions/farming';
 import { FarmingContract } from '../../lib/minions/farming/types';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
 import Farming from '../../lib/skilling/skills/farming';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -14,7 +13,6 @@ import chatHeadImage from '../../lib/util/chatHeadImage';
 import { getFarmingKeyFromName } from '../../lib/util/farmingHelpers';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { logError } from '../../lib/util/logError';
-import { hasItemsEquippedOrInBank } from '../../lib/util/minionUtils';
 import { sendToChannelID } from '../../lib/util/webhook';
 import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch, mUserFetch } from '../../mahoji/mahojiSettings';
 
@@ -61,11 +59,11 @@ export default class extends Task {
 
 		const plant = Farming.Plants.find(plant => plant.name === plantsName);
 
-		if (hasItemsEquippedOrInBank(user, ['Magic secateurs'])) {
+		if (user.hasEquippedOrInBank('Magic secateurs')) {
 			baseBonus += 0.1;
 		}
 
-		if (hasItemsEquippedOrInBank(user, ['Farming cape'])) {
+		if (user.hasEquippedOrInBank('Farming cape')) {
 			baseBonus += 0.05;
 		}
 
@@ -109,7 +107,7 @@ export default class extends Task {
 
 		if (!patchType.patchPlanted) {
 			if (!plant) {
-				logError(new Error(`${user.sanitizedName}'s new patch had no plant found.`), { user_id: user.id });
+				logError(new Error(`${user.usernameOrMention}'s new patch had no plant found.`), { user_id: user.id });
 				return;
 			}
 
@@ -431,7 +429,7 @@ export default class extends Task {
 				infoStr.push(`\n${user.minionName} tells you to come back after your plants have finished growing!`);
 			}
 
-			updateBankSetting(globalClient, ClientSettings.EconomyStats.FarmingLootBank, loot);
+			updateBankSetting('farming_loot_bank', loot);
 			await transactItems({
 				userID: user.id,
 				collectionLog: true,

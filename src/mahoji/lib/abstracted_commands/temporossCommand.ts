@@ -2,6 +2,7 @@ import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
+import { getMinigameScore } from '../../../lib/settings/minigames';
 import { TemporossActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';

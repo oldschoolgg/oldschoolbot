@@ -42,6 +42,7 @@ import { AttackStyles, calculateMonsterFood, resolveAttackStyles } from '../../.
 import reducedTimeFromKC from '../../../lib/minions/functions/reducedTimeFromKC';
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
 import { Consumable, KillableMonster } from '../../../lib/minions/types';
+import { MUser } from '../../../lib/MUser';
 import { calcPOHBoosts } from '../../../lib/poh';
 import { trackLoot } from '../../../lib/settings/prisma';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
@@ -67,7 +68,7 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import findMonster from '../../../lib/util/findMonster';
 import getOSItem from '../../../lib/util/getOSItem';
-import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
+import { mahojiUsersSettingsFetch, mUserFetch } from '../../mahojiSettings';
 import { nexCommand } from './nexCommand';
 import { nightmareCommand } from './nightmareCommand';
 import { getPOH } from './pohCommand';
@@ -116,13 +117,14 @@ function applySkillBoost(user: KlasaUser, duration: number, styles: AttackStyles
 }
 
 export async function minionKillCommand(
+	userID: string,
 	interaction: SlashCommandInteraction,
-	user: KlasaUser,
 	channelID: bigint,
 	name: string,
 	quantity: number | undefined,
 	method: PvMMethod | undefined
 ) {
+	const user = await mUserFetch(userID);
 	if (user.minionIsBusy) {
 		return 'Your minion is busy.';
 	}
@@ -216,7 +218,7 @@ export async function minionKillCommand(
 		const isUsing =
 			monster.attackStyleToUse &&
 			convertAttackStyleToGearSetup(monster.attackStyleToUse) === degItem.attackStyle &&
-			user.getGear(degItem.attackStyle).hasEquipped(degItem.item.id);
+			user.gear[degItem.attackStyle].hasEquipped(degItem.item.id);
 		if (isUsing) {
 			const estimatedChargesNeeded = degItem.charges(monster, osjsMon!, totalMonsterHP);
 			await checkUserCanUseDegradeableItem({
@@ -356,7 +358,7 @@ export async function minionKillCommand(
 			effectiveQtyRemaining = Math.ceil(effectiveQtyRemaining / 4);
 		} else if (
 			monster.id === Monsters.GrotesqueGuardians.id &&
-			user.settings.get(UserSettings.Slayer.SlayerUnlocks).includes(SlayerTaskUnlocksEnum.DoubleTrouble)
+			user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.DoubleTrouble)
 		) {
 			effectiveQtyRemaining = Math.ceil(effectiveQtyRemaining / 2);
 		}
@@ -381,7 +383,7 @@ export async function minionKillCommand(
 		consumableCosts.push(monster.itemCost);
 	}
 
-	const infiniteWaterRunes = user.hasItemEquippedAnywhere(getSimilarItems(itemID('Staff of water')));
+	const infiniteWaterRunes = user.hasEquipped(getSimilarItems(itemID('Staff of water')), false);
 	const perKillCost = new Bank();
 	// Calculate per kill cost:
 	if (consumableCosts.length > 0) {
@@ -400,9 +402,9 @@ export async function minionKillCommand(
 			if (itemMultiple) {
 				if (consumable.isRuneCost) {
 					// Free casts for kodai + sotd
-					if (user.hasItemEquippedAnywhere('Kodai wand')) {
+					if (user.hasEquipped('Kodai wand')) {
 						itemMultiple = Math.ceil(0.85 * itemMultiple);
-					} else if (user.hasItemEquippedAnywhere('Staff of the dead')) {
+					} else if (user.hasEquipped('Staff of the dead')) {
 						itemMultiple = Math.ceil((6 / 7) * itemMultiple);
 					}
 				}
@@ -530,7 +532,7 @@ export async function minionKillCommand(
 	}
 
 	if (lootToRemove.length > 0) {
-		updateBankSetting(globalClient, ClientSettings.EconomyStats.PVMCost, lootToRemove);
+		updateBankSetting('economyStats_PVMCost', lootToRemove);
 		await user.removeItemsFromBank(lootToRemove);
 		totalCost.add(lootToRemove);
 	}
@@ -578,7 +580,7 @@ export async function minionKillCommand(
 	return response;
 }
 
-export async function monsterInfo(user: KlasaUser, name: string): CommandResponse {
+export async function monsterInfo(user: MUser, name: string): CommandResponse {
 	const monster = findMonster(name);
 
 	if (stringMatches(name, 'nightmare')) {
@@ -593,7 +595,7 @@ export async function monsterInfo(user: KlasaUser, name: string): CommandRespons
 		monsterID: monster.id
 	});
 
-	const userKc = user.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0;
+	const userKc = user.getKC(monster.id);
 	let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, userKc);
 
 	// item boosts
@@ -661,7 +663,7 @@ export async function monsterInfo(user: KlasaUser, name: string): CommandRespons
 	const maxCanKillSlay = Math.floor(calcMaxTripLength(user, 'MonsterKilling') / reduceNumByPercent(timeToFinish, 15));
 	const maxCanKill = Math.floor(calcMaxTripLength(user, 'MonsterKilling') / timeToFinish);
 
-	const QP = user.settings.get(UserSettings.QP);
+	const { QP } = user;
 
 	str.push(`**Barrage/Burst**: ${monster.canBarrage ? 'Yes' : 'No'}`);
 	str.push(

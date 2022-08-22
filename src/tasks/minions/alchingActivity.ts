@@ -8,7 +8,7 @@ import { roll } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
-import { updateGPTrackSetting } from '../../mahoji/mahojiSettings';
+import { mUserFetch, updateGPTrackSetting } from '../../mahoji/mahojiSettings';
 
 const bryophytasStaffId = itemID("Bryophyta's staff");
 
@@ -23,7 +23,7 @@ export default class extends Task {
 		// If bryophyta's staff is equipped when starting the alch activity
 		// calculate how many runes have been saved
 		let savedRunes = 0;
-		if (user.hasItemEquippedAnywhere(bryophytasStaffId)) {
+		if (user.hasEquipped(bryophytasStaffId)) {
 			for (let i = 0; i < quantity; i++) {
 				if (roll(15)) savedRunes++;
 			}

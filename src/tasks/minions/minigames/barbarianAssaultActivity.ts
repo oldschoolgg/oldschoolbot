@@ -21,7 +21,7 @@ export default class extends Task {
 
 		let pts = basePoints + randInt(-3, 3);
 
-		const [hasDiary] = await userhasDiaryTier(user.user, KandarinDiary.hard);
+		const [hasDiary] = await userhasDiaryTier(user, KandarinDiary.hard);
 		if (hasDiary) {
 			pts *= 1.1;
 			resultStr += `${user.usernameOrMention} received 10% extra pts for Kandarin Hard diary. `;

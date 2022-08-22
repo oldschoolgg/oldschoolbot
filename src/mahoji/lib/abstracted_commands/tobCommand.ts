@@ -16,8 +16,8 @@ import {
 	TENTACLE_CHARGES_PER_RAID
 } from '../../../lib/data/tob';
 import { degradeItem } from '../../../lib/degradeableItems';
+import { getMinigameScore } from '../../../lib/settings/minigames';
 import { trackLoot } from '../../../lib/settings/prisma';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { MakePartyOptions } from '../../../lib/types';
 import { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
@@ -144,7 +144,7 @@ export async function tobStartCommand(user: KlasaUser, channelID: bigint, isHard
 		})
 	);
 
-	updateBankSetting(globalClient, ClientSettings.EconomyStats.TOBCost, totalCost);
+	updateBankSetting('tob_cost', totalCost);
 	await trackLoot({
 		cost: totalCost,
 		id: isHardMode ? 'tob_hard' : 'tob',

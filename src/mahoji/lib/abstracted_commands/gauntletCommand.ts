@@ -1,8 +1,8 @@
 import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
-import { KlasaUser } from 'klasa';
 
 import { BitField } from '../../../lib/constants';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
+import { MUser } from '../../../lib/MUser';
+import { getMinigameScore } from '../../../lib/settings/minigames';
 import { GauntletOptions } from '../../../lib/types/minions';
 import { formatDuration, formatSkillRequirements, skillsMeetRequirements, toTitleCase } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
@@ -47,15 +47,15 @@ const corruptedRequirements = {
 	woodcutting: 70
 };
 
-export async function gauntletCommand(user: KlasaUser, channelID: bigint, type: 'corrupted' | 'normal' = 'normal') {
+export async function gauntletCommand(user: MUser, channelID: bigint, type: 'corrupted' | 'normal' = 'normal') {
 	if (user.minionIsBusy) return `${user.minionName} is busy.`;
-	if (user.settings.get(UserSettings.QP) < 200) {
+	if (user.QP < 200) {
 		return 'You need atleast 200 QP to do the Gauntlet.';
 	}
 	const readableName = `${toTitleCase(type)} Gauntlet`;
 	const requiredSkills = type === 'corrupted' ? corruptedRequirements : standardRequirements;
 
-	if (!skillsMeetRequirements(user.skillsAsXP, requiredSkills)) {
+	if (!skillsMeetRequirements(user.skillsAsLevels, requiredSkills)) {
 		return `You don't have the required stats to do the ${readableName}, you need: ${formatSkillRequirements(
 			requiredSkills
 		)}.`;

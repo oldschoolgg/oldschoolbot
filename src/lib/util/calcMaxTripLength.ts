@@ -3,12 +3,13 @@ import { calcPercentOfNum, calcWhatPercent, Time } from 'e';
 import { KlasaUser } from 'klasa';
 
 import { PerkTier } from '../constants';
+import { MUser } from '../MUser';
 import { UserSettings } from '../settings/types/UserSettings';
 import { SkillsEnum } from '../skilling/types';
 import getUsersPerkTier, { patronMaxTripCalc } from './getUsersPerkTier';
 import { skillLevel } from './minionUtils';
 
-export function calcMaxTripLength(user: User | KlasaUser, activity?: activity_type_enum) {
+export function calcMaxTripLength(user: MUser | User | KlasaUser, activity?: activity_type_enum) {
 	let max = Time.Minute * 30;
 
 	max += patronMaxTripCalc(user);

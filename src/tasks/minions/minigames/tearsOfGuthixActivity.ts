@@ -6,7 +6,7 @@ import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch, mUserFetch } from '../../../mahoji/mahojiSettings';
+import { mahojiUserSettingsUpdate, mUserFetch } from '../../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: ActivityTaskOptionsWithQuantity) {
@@ -48,9 +48,8 @@ export default class extends Task {
 
 		let xpToGive = tears * scaledXPperTear;
 
-		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 		// 10% boost for Lumbridge&Draynor Hard
-		const [hasDiary] = await userhasDiaryTier(mahojiUser, LumbridgeDraynorDiary.hard);
+		const [hasDiary] = await userhasDiaryTier(user, LumbridgeDraynorDiary.hard);
 		if (hasDiary) xpToGive = increaseNumByPercent(xpToGive, 10);
 
 		const xpStr = await user.addXP({ skillName: lowestSkill, amount: xpToGive, duration });

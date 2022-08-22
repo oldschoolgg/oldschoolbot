@@ -29,7 +29,7 @@ export default class extends Task {
 		const user = await mUserFetch(userID);
 		if (died) {
 			// 1 in 20 to get smited without prayer potions and 1 in 300 if the user has prayer potions
-			const hasPrayerLevel = hasSkillReqs(user.user, { [SkillsEnum.Prayer]: 25 })[0];
+			const hasPrayerLevel = hasSkillReqs(user, { [SkillsEnum.Prayer]: 25 })[0];
 			const protectItem = roll(data.usingPrayerPots ? 300 : 20) ? false : hasPrayerLevel;
 			const userGear = { ...deepClone(user.gear.wildy.raw()) };
 

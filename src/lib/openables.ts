@@ -1,17 +1,15 @@
-import { userMention } from '@discordjs/builders';
-import type { User } from '@prisma/client';
 import { Bank, LootTable, Openables } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { Mimic } from 'oldschooljs/dist/simulation/misc';
 import { HallowedSackTable } from 'oldschooljs/dist/simulation/openables/HallowedSack';
 import { Implings } from 'oldschooljs/dist/simulation/openables/Implings';
 
-import { allItemsOwned } from '../mahoji/mahojiSettings';
 import { ClueTiers } from './clues/clueTiers';
-import { Emoji, Events, MIMIC_MONSTER_ID, usernameCache } from './constants';
+import { Emoji, Events, MIMIC_MONSTER_ID } from './constants';
 import { cluesRaresCL } from './data/CollectionsExport';
 import { defaultFarmingContract } from './minions/farming';
 import { FarmingContract } from './minions/farming/types';
+import { MUser } from './MUser';
 import {
 	BagFullOfGemsTable,
 	BuildersSupplyCrateTable,
@@ -24,12 +22,11 @@ import { ItemBank } from './types';
 import { itemID, roll } from './util';
 import { formatOrdinal } from './util/formatOrdinal';
 import getOSItem from './util/getOSItem';
-import { minionName } from './util/minionUtils';
 import resolveItems from './util/resolveItems';
 
 interface OpenArgs {
 	quantity: number;
-	user: User;
+	user: MUser;
 	self: UnifiedOpenable;
 }
 
@@ -77,14 +74,14 @@ for (const clueTier of ClueTiers) {
 				mimicNumber > 0 ? `with ${mimicNumber} mimic${mimicNumber > 1 ? 's' : ''}` : ''
 			}`;
 
-			const nthCasket = ((user.openable_scores as ItemBank)[clueTier.id] ?? 0) + quantity;
+			const nthCasket = ((user.user.openable_scores as ItemBank)[clueTier.id] ?? 0) + quantity;
 
 			// If this tier has a milestone reward, and their new score meets the req, and
 			// they don't own it already, add it to the loot.
 			if (
 				clueTier.milestoneReward &&
 				nthCasket >= clueTier.milestoneReward.scoreNeeded &&
-				allItemsOwned(user).amount(clueTier.milestoneReward.itemReward) === 0
+				user.allItemsOwned().amount(clueTier.milestoneReward.itemReward) === 0
 			) {
 				loot.add(clueTier.milestoneReward.itemReward);
 			}
@@ -95,11 +92,9 @@ for (const clueTier of ClueTiers) {
 			if (announcedLoot.length > 0) {
 				globalClient.emit(
 					Events.ServerNotification,
-					`**${usernameCache.get(user.id) ?? userMention(user.id)}'s** minion, ${minionName(
-						user
-					)}, just opened their ${formatOrdinal(nthCasket)} ${
-						clueTier.name
-					} casket and received **${announcedLoot}**!`
+					`**${user.usernameOrMention}'s** minion, ${user.minionName}, just opened their ${formatOrdinal(
+						nthCasket
+					)} ${clueTier.name} casket and received **${announcedLoot}**!`
 				);
 			}
 
@@ -259,7 +254,7 @@ const osjsOpenables: UnifiedOpenable[] = [
 			message?: string;
 		}> => {
 			const { plantTier } =
-				(args.mahojiUser.minion_farmingContract as FarmingContract | null) ?? defaultFarmingContract;
+				(args.user.user.minion_farmingContract as FarmingContract | null) ?? defaultFarmingContract;
 			const openLoot = new Bank();
 			for (let i = 0; i < args.quantity; i++) {
 				openLoot.add(openSeedPack(plantTier));

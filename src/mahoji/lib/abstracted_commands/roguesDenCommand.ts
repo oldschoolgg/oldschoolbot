@@ -1,15 +1,14 @@
 import { reduceNumByPercent, Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
+import { MUser } from '../../../lib/MUser';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
-export async function roguesDenCommand(user: KlasaUser, channelID: bigint) {
+export async function roguesDenCommand(user: MUser, channelID: bigint) {
 	if (user.minionIsBusy) return `${user.minionName} is busy.`;
 	if (user.skillLevel(SkillsEnum.Agility) < 50 || user.skillLevel(SkillsEnum.Thieving) < 50) {
 		return "To attempt the Rogues' Den maze you need 50 Agility and 50 Thieving.";
@@ -34,7 +33,7 @@ export async function roguesDenCommand(user: KlasaUser, channelID: bigint) {
 	if (user.hasEquippedOrInBank('Stamina potion(4)')) {
 		baseTime = reduceNumByPercent(baseTime, 50);
 
-		const potionsInBank = user.bank().amount('Stamina potion(4)');
+		const potionsInBank = user.bank.amount('Stamina potion(4)');
 		const maxPossibleLaps = Math.floor(calcMaxTripLength(user, 'RoguesDenMaze') / baseTime);
 
 		// do as many laps as possible with the current stamina potion supply
@@ -47,8 +46,8 @@ export async function roguesDenCommand(user: KlasaUser, channelID: bigint) {
 	const duration = quantity * baseTime;
 
 	if (staminasToRemove.length > 0) {
-		await user.removeItemsFromBank(staminasToRemove.bank);
-		await updateBankSetting(globalClient, ClientSettings.EconomyStats.RoguesDenStaminas, staminasToRemove);
+		await user.removeItemsFromBank(staminasToRemove);
+		await updateBankSetting('rogues_den_cost', staminasToRemove);
 	}
 
 	await addSubTaskToActivityTask<MinigameActivityTaskOptions>({
