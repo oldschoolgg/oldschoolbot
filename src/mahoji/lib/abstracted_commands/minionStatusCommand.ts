@@ -1,10 +1,11 @@
 import { ButtonStyle } from 'discord-api-types/v10';
-import { chunk } from 'e';
 import { APIButtonComponentWithCustomId, ComponentType } from 'mahoji';
+import { InteractionResponseDataWithBufferAttachments } from 'mahoji/dist/lib/structures/ICommand';
 
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { Emoji, lastTripCache, minionBuyButton, PerkTier } from '../../../lib/constants';
 import { getUsersTame, shortTameTripDesc, tameLastFinishedActivity } from '../../../lib/tames';
+import { makeComponents } from '../../../lib/util';
 import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
 import { minionStatus } from '../../../lib/util/minionStatus';
 import { getItemContractDetails } from '../../commands/ic';
@@ -17,10 +18,7 @@ import { canRunAutoContract } from './farmingContractCommand';
 export async function minionStatusCommand(
 	userID: bigint | string,
 	channelID: string
-): Promise<{
-	content: string;
-	components: { components: APIButtonComponentWithCustomId[]; type: ComponentType.ActionRow }[];
-}> {
+): Promise<InteractionResponseDataWithBufferAttachments> {
 	const user = await globalClient.fetchUser(userID);
 	const mahojiUser = await mahojiUsersSettingsFetch(userID);
 
@@ -169,6 +167,6 @@ export async function minionStatusCommand(
 
 	return {
 		content: status,
-		components: chunk(buttons, 5).map(i => ({ components: i, type: ComponentType.ActionRow }))
+		components: makeComponents(buttons)
 	};
 }

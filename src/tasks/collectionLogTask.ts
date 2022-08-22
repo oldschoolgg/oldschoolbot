@@ -1,3 +1,4 @@
+import { User } from '@prisma/client';
 import { calcWhatPercent, objectEntries } from 'e';
 import { KlasaUser, Task } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
@@ -111,6 +112,7 @@ export default class CollectionLogTask extends Task {
 
 	async generateLogImage(options: {
 		user: KlasaUser;
+		mahojiUser: User;
 		collection: string;
 		type: CollectionLogType;
 		flags: { [key: string]: string | number };
@@ -131,6 +133,7 @@ export default class CollectionLogTask extends Task {
 		if (collection) {
 			collectionLog = await getCollection({
 				user,
+				mahojiUser: options.mahojiUser,
 				search: collection,
 				flags,
 				logType: type
@@ -174,7 +177,7 @@ export default class CollectionLogTask extends Task {
 
 		const fullSize = flags.nl || !collectionLog.leftList;
 
-		const userTotalCl = await getTotalCl(user, type);
+		const userTotalCl = await getTotalCl(user, options.mahojiUser, type);
 		const leftListCanvas = this.drawLeftList(collectionLog, sprite);
 
 		let leftDivisor = 214;

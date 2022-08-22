@@ -11,6 +11,7 @@ import './nonCustomChanges';
 import './baxBath';
 import './dwarven';
 import './moktang';
+import './leagues';
 
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 

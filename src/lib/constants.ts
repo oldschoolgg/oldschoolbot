@@ -349,7 +349,8 @@ export enum BitField {
 	HasScrollOfTheHunt = 204,
 	HasBananaEnchantmentScroll = 205,
 	HasDaemonheimAgilityPass = 206,
-	DisabledGorajanBoneCrusher = 207
+	DisabledGorajanBoneCrusher = 207,
+	HasLeaguesOneMinuteLengthBoost = 208
 }
 
 interface BitFieldData {
@@ -401,6 +402,11 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 		userConfigurable: false
 	},
 	[BitField.PermanentIronman]: { name: 'Permanent Ironman', protected: false, userConfigurable: false },
+	[BitField.HasLeaguesOneMinuteLengthBoost]: {
+		name: 'Leagues One Minute Trip Length Boost',
+		protected: false,
+		userConfigurable: false
+	},
 
 	[BitField.AlwaysSmallBank]: { name: 'Always Use Small Banks', protected: false, userConfigurable: true },
 	[BitField.DisabledRandomEvents]: { name: 'Disabled Random Events', protected: false, userConfigurable: true },

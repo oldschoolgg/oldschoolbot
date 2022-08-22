@@ -3,6 +3,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { allCLItemsFiltered, calcCLDetails } from '../../lib/data/Collections';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { convertMahojiResponseToDJSResponse, itemNameFromID } from '../../lib/util';
+import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 import CollectionLogTask from '../../tasks/collectionLogTask';
 
 export default class extends BotCommand {
@@ -30,6 +31,7 @@ Go collect these items! ${notOwned.map(itemNameFromID).join(', ')}.`
 		}
 		const result = await (globalClient.tasks.get('collectionLogTask')! as CollectionLogTask).generateLogImage({
 			user: msg.author,
+			mahojiUser: await mahojiUsersSettingsFetch(msg.author.id),
 			type: 'collection',
 			flags: msg.flagArgs,
 			collection

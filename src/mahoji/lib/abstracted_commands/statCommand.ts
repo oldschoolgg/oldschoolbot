@@ -1043,7 +1043,7 @@ export async function statsCommand(user: User, type: string): CommandResponse {
 	if (!dataPoint) return 'Invalid stat name.';
 	const { perkTierNeeded } = dataPoint;
 	if (perkTierNeeded !== null && getUsersPerkTier(user) < perkTierNeeded) {
-		return `Sorry, you need to be a Tier ${perkTierNeeded + 1} Patron to see this stat.`;
+		return `Sorry, you need to be a Tier ${perkTierNeeded - 1} Patron to see this stat.`;
 	}
 	const userStats = await prisma.userStats.upsert({
 		where: {
