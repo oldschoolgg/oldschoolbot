@@ -253,10 +253,9 @@ export const mineCommand: OSBMahojiCommand = {
 			miningLevel += 4;
 		}
 		// Default bronze pickaxe, last in the array
-		let currentPickaxe = pickaxes[length - 1];
+		let currentPickaxe = pickaxes[pickaxes.length - 1];
 
 		// For each pickaxe, if they have it, give them its' bonus and break.
-
 		for (const pickaxe of pickaxes) {
 			if (!hasItemsEquippedOrInBank(user, [pickaxe.id]) || skills.mining < pickaxe.miningLvl) continue;
 			currentPickaxe = pickaxe;
