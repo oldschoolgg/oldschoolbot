@@ -173,9 +173,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 				if (boostResult.success) {
 					tripLength = reduceNumByPercent(tripLength, abyssalAmuletBoost.boost);
 					boosts.push(
-						`${
-							abyssalAmuletBoost.boost
-						}% boost for Abyssal amulet (Costs: ${boostResult.materialCost.toString()})`
+						`${abyssalAmuletBoost.boost}% boost for Abyssal amulet (Removed ${boostResult.materialCost})`
 					);
 				}
 			}
