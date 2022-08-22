@@ -37,6 +37,7 @@ import { Cooldowns } from '../lib/Cooldowns';
 import { itemOption } from '../lib/mahojiCommandOptions';
 import { allAbstractCommands, OSBMahojiCommand } from '../lib/util';
 import {
+	allItemsOwned,
 	handleMahojiConfirmation,
 	mahojiClientSettingsFetch,
 	mahojiClientSettingsUpdate,
@@ -451,6 +452,11 @@ export const adminCommand: OSBMahojiCommand = {
 					choices: viewableThings.map(i => ({ name: i.name, value: i.name }))
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'wipe_bingo_temp_cls',
+			description: 'Wipe all temp cls of bingo users'
 		}
 	],
 	run: async ({
@@ -481,11 +487,38 @@ export const adminCommand: OSBMahojiCommand = {
 		bitfield?: { user: MahojiUserOption; add?: string; remove?: string };
 		ltc?: {};
 		view?: { thing: string };
+		wipe_bingo_temp_cls?: {};
 	}>) => {
 		await interaction.deferReply();
 
 		const adminUser = await mahojiUsersSettingsFetch(userID);
 		const isMod = adminUser.bitfield.includes(BitField.isModerator);
+		if (options.wipe_bingo_temp_cls) {
+			if (userID.toString() !== '319396464402890753' && !isMod) return randArrItem(gifs);
+			const usersToReset = await prisma.user.findMany({
+				where: {
+					bingo_tickets_bought: {
+						gt: 1
+					}
+				},
+				select: {
+					id: true
+				}
+			});
+			await handleMahojiConfirmation(interaction, `Reset the temp CL of ${usersToReset.length} users?`);
+			const res = await prisma.user.updateMany({
+				where: {
+					id: {
+						in: usersToReset.map(i => i.id)
+					}
+				},
+				data: {
+					temp_cl: {}
+				}
+			});
+			return `${res.count} temp CLs reset.`;
+		}
+
 		if (!guildID || !isMod || (production && guildID.toString() !== '342983479501389826')) return randArrItem(gifs);
 
 		/**
@@ -745,7 +778,7 @@ LIMIT 10;
 		}
 		if (options.viewbank) {
 			const userToCheck = await globalClient.fetchUser(options.viewbank.user.user.id);
-			const bank = userToCheck.allItemsOwned();
+			const bank = allItemsOwned(userToCheck);
 			return { attachments: [(await makeBankImage({ bank, title: userToCheck.username })).file] };
 		}
 		if (options.reboot) {
