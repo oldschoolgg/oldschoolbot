@@ -160,7 +160,7 @@ async function infernoRun({
 		ranged: 92,
 		prayer: 77
 	};
-	const [hasReqs] = hasSkillReqs(user.user, skillReqs);
+	const [hasReqs] = hasSkillReqs(user, skillReqs);
 	if (!hasReqs) {
 		return `You not meet skill requirements, you need ${Object.entries(skillReqs)
 			.map(([name, lvl]) => `${lvl} ${name}`)

@@ -322,7 +322,7 @@ async function userQueueFn<T>(userID: string, fn: () => Promise<T>) {
 	return queue.add(() => fn());
 }
 
-async function calculateAddItemsToCLUpdates({
+export async function calculateAddItemsToCLUpdates({
 	userID,
 	items,
 	dontAddToTempCL = false,
@@ -507,8 +507,8 @@ export function hasSkillReqs(user: MUser, reqs: Skills): [boolean, string | null
 	return [true, null];
 }
 
-export function userHasGracefulEquipped(user: User) {
-	const rawGear = getUserGear(user);
+export function userHasGracefulEquipped(user: User | MUser) {
+	const rawGear = user instanceof MUser ? user.gear : getUserGear(user);
 	for (const i of Object.values(rawGear)) {
 		if (hasGracefulEquipped(i)) return true;
 	}

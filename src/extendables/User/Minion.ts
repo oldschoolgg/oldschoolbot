@@ -81,10 +81,6 @@ export default class extends Extendable {
 		return [null, 0];
 	}
 
-	getCreatureScore(this: KlasaUser, creature: Creature) {
-		return this.settings.get(UserSettings.CreatureScores)[creature.id] ?? 0;
-	}
-
 	// @ts-ignore 2784
 	public get hasMinion(this: User) {
 		return this.settings.get(UserSettings.Minion.HasBought);

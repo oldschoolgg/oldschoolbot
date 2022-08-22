@@ -1,14 +1,14 @@
 import { Bank } from 'oldschooljs';
 
-import { mahojiUserSettingsUpdate } from '../../../mahoji/mahojiSettings';
+import { mahojiUserSettingsUpdate, mUserFetch } from '../../../mahoji/mahojiSettings';
 import { defaultGear, GearSetupType, GearSetupTypes } from '../../gear';
-import { MUser } from '../../MUser';
 import { toTitleCase } from '../../util';
 
-export async function unEquipAllCommand(user: MUser, gearType: GearSetupType | undefined): Promise<string> {
+export async function unEquipAllCommand(userID: string, gearType: GearSetupType | undefined): Promise<string> {
 	if (!gearType || !GearSetupTypes.includes(gearType)) {
 		return `That's not a valid setup, the valid setups are: ${GearSetupTypes.join(', ')}.`;
 	}
+	const user = await mUserFetch(userID);
 	if (user.minionIsBusy) {
 		return `${user.minionName} is currently out on a trip, so you can't change their gear!`;
 	}

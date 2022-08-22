@@ -1,5 +1,4 @@
 import { calcWhatPercent } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { setupParty } from '../../../extendables/Message/Party';
@@ -14,14 +13,13 @@ import {
 	minimumCoxSuppliesNeeded
 } from '../../../lib/data/cox';
 import { degradeItem } from '../../../lib/degradeableItems';
+import { MUser } from '../../../lib/MUser';
+import { getMinigameScore } from '../../../lib/settings/minigames';
 import { trackLoot } from '../../../lib/settings/prisma';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { MakePartyOptions } from '../../../lib/types';
 import { RaidsOptions } from '../../../lib/types/minions';
 import { channelIsSendable, formatDuration, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { userHasItemsEquippedAnywhere } from '../../../lib/util/minionUtils';
 
 const uniques = [
 	'Dexterous prayer scroll',
@@ -38,17 +36,17 @@ const uniques = [
 	'Twisted bow'
 ];
 
-export async function coxStatsCommand(user: KlasaUser) {
+export async function coxStatsCommand(user: MUser) {
 	const [normal, cm] = await Promise.all([
 		getMinigameScore(user.id, 'raids'),
 		getMinigameScore(user.id, 'raids_challenge_mode')
 	]);
 	let totalUniques = 0;
-	const cl = user.cl();
+	const { cl } = user;
 	for (const item of uniques) {
 		totalUniques += cl.amount(item);
 	}
-	const totalPoints = user.settings.get(UserSettings.TotalCoxPoints);
+	const totalPoints = user.user.total_cox_points;
 	const { melee, range, mage, total } = calculateUserGearPercents(user);
 	const normalSolo = await calcCoxDuration([user], false);
 	const normalTeam = await calcCoxDuration(Array(2).fill(user), false);
@@ -80,14 +78,14 @@ export async function coxStatsCommand(user: KlasaUser) {
 **Total Gear Score:** ${Emoji.Gear} ${total.toFixed(1)}%`;
 }
 
-export async function coxCommand(channelID: bigint, user: KlasaUser, type: 'solo' | 'mass', isChallengeMode: boolean) {
+export async function coxCommand(channelID: bigint, user: MUser, type: 'solo' | 'mass', isChallengeMode: boolean) {
 	if (type !== 'mass' && type !== 'solo') {
 		return 'Specify your team setup for Chambers of Xeric, either solo or mass.';
 	}
 
 	const minigameID = isChallengeMode ? 'raids_challenge_mode' : 'raids';
 
-	const userKC = await getMinigameScore(user.idminigameID);
+	const userKC = await getMinigameScore(user.id, minigameID);
 	if (!isChallengeMode && userKC < 50 && type === 'solo') {
 		return 'You need at least 50 Chambers of Xeric KC before you can attempt a solo raid.';
 	}
@@ -107,11 +105,11 @@ export async function coxCommand(channelID: bigint, user: KlasaUser, type: 'solo
 		minSize: 2,
 		maxSize: 15,
 		ironmanAllowed: true,
-		message: `${user.username} is hosting a ${
+		message: `${user.usernameOrMention} is hosting a ${
 			isChallengeMode ? '**Challenge mode** ' : ''
 		}Chambers of Xeric mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
 		customDenier: async user => {
-			if (!user.hasMinion) {
+			if (!user.user.minion_hasBought) {
 				return [true, "you don't have a minion."];
 			}
 			if (user.minionIsBusy) {
@@ -137,11 +135,7 @@ export async function coxCommand(channelID: bigint, user: KlasaUser, type: 'solo
 				isChallengeMode &&
 				!user.hasEquippedOrInBank('Dragon hunter crossbow') &&
 				!user.hasEquippedOrInBank('Twisted bow') &&
-				!userHasItemsEquippedAnywhere(
-					user,
-					['Bow of faerdhinen (c)', 'Crystal helm', 'Crystal legs', 'Crystal body'],
-					true
-				)
+				!user.hasEquipped(['Bow of faerdhinen (c)', 'Crystal helm', 'Crystal legs', 'Crystal body'], true)
 			) {
 				return [
 					true,
@@ -155,7 +149,7 @@ export async function coxCommand(channelID: bigint, user: KlasaUser, type: 'solo
 	const channel = globalClient.channels.cache.get(channelID.toString());
 	if (!channelIsSendable(channel)) return 'No channel found.';
 
-	let users: KlasaUser[] = [];
+	let users: MUser[] = [];
 	if (type === 'mass') {
 		const [usersWhoConfirmed, reactionAwaiter] = await setupParty(channel, user, partyOptions);
 		await reactionAwaiter();
@@ -185,14 +179,13 @@ export async function coxCommand(channelID: bigint, user: KlasaUser, type: 'solo
 			await u.removeItemsFromBank(supplies);
 			totalCost.add(supplies);
 			const { total } = calculateUserGearPercents(u);
-			debugStr += `${u.username} (${Emoji.Gear}${total.toFixed(1)}% ${Emoji.CombatSword} ${calcWhatPercent(
-				reductions[u.id],
-				totalReduction
-			).toFixed(1)}%) used ${supplies}\n`;
+			debugStr += `${u.usernameOrMention} (${Emoji.Gear}${total.toFixed(1)}% ${
+				Emoji.CombatSword
+			} ${calcWhatPercent(reductions[u.id], totalReduction).toFixed(1)}%) used ${supplies}\n`;
 		})
 	]);
 
-	updateBankSetting(globalClient, ClientSettings.EconomyStats.CoxCost, totalCost);
+	updateBankSetting('cox_cost', totalCost);
 
 	await trackLoot({
 		id: minigameID,
@@ -215,8 +208,8 @@ export async function coxCommand(channelID: bigint, user: KlasaUser, type: 'solo
 		? `${user.minionName} is now doing a Chambers of Xeric raid. The total trip will take ${formatDuration(
 				duration
 		  )}.`
-		: `${partyOptions.leader.username}'s party (${users
-				.map(u => u.username)
+		: `${partyOptions.leader.usernameOrMention}'s party (${users
+				.map(u => u.usernameOrMention)
 				.join(', ')}) is now off to do a Chambers of Xeric raid - the total trip will take ${formatDuration(
 				duration
 		  )}.`;

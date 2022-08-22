@@ -79,7 +79,7 @@ export async function nexCommand(interaction: SlashCommandInteraction, user: MUs
 			changeType: 'cost'
 		}),
 		...details.team.map(async i => {
-			const klasaUser = await globalClient.fetchUser(i.id);
+			const klasaUser = await mUserFetch(i.id);
 			await klasaUser.specialRemoveItems(i.cost);
 		})
 	]);
@@ -97,11 +97,12 @@ export async function nexCommand(interaction: SlashCommandInteraction, user: MUs
 		wipedKill: details.wipedKill
 	});
 
-	let str = `${user.username}'s party (${usersWhoConfirmed.map(u => u.username).join(', ')}) is now off to kill ${
-		details.quantity
-	}x Nex! (${calcPerHour(details.quantity, details.fakeDuration).toFixed(
-		1
-	)}/hr) - the total trip will take ${formatDuration(details.fakeDuration)}.
+	let str = `${user.usernameOrMention}'s party (${usersWhoConfirmed
+		.map(u => u.usernameOrMention)
+		.join(', ')}) is now off to kill ${details.quantity}x Nex! (${calcPerHour(
+		details.quantity,
+		details.fakeDuration
+	).toFixed(1)}/hr) - the total trip will take ${formatDuration(details.fakeDuration)}.
 
 ${details.team
 	.map(i => {

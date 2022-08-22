@@ -1,10 +1,9 @@
 import { GearPreset, User } from '@prisma/client';
 import { objectValues } from 'e';
-import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
-import { EquipmentSlot, ItemBank } from 'oldschooljs/dist/meta/types';
+import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { MAX_INT_JAVA, PATRON_ONLY_GEAR_SETUP, PerkTier } from '../../../lib/constants';
 import { defaultGear, GearSetup, GearSetupType, GearStat, globalPresets } from '../../../lib/gear';
@@ -13,7 +12,6 @@ import getUserBestGearFromBank from '../../../lib/minions/functions/getUserBestG
 import { unEquipAllCommand } from '../../../lib/minions/functions/unequipAllCommand';
 import { MUser } from '../../../lib/MUser';
 import { prisma } from '../../../lib/settings/prisma';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { Gear } from '../../../lib/structures/Gear';
 import {
 	assert,
@@ -27,15 +25,15 @@ import {
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
 import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
-import { minionName } from '../../../lib/util/minionUtils';
 import {
 	getUserGear,
 	handleMahojiConfirmation,
 	mahojiParseNumber,
-	mahojiUserSettingsUpdate
+	mahojiUserSettingsUpdate,
+	mUserFetch
 } from '../../mahojiSettings';
 
-export async function gearPresetEquipCommand(user: KlasaUser, gearSetup: string, presetName: string): CommandResponse {
+export async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName: string): CommandResponse {
 	if (user.minionIsBusy) {
 		return `${user.minionName} is currently out on a trip, so you can't change their gear!`;
 	}
@@ -82,29 +80,24 @@ export async function gearPresetEquipCommand(user: KlasaUser, gearSetup: string,
 		toRemove.add(preset.ammo, preset.ammo_qty!);
 	}
 
-	const userBankWithEquippedItems = user.bank().clone();
-	for (const e of objectValues(user.getGear(gearSetup).raw())) {
+	const userBankWithEquippedItems = user.bank.clone();
+	for (const e of objectValues(user.gear[gearSetup].raw())) {
 		if (e) userBankWithEquippedItems.add(e.item, e.quantity);
 	}
 
 	if (!userBankWithEquippedItems.has(toRemove.bank)) {
-		return `You don't have the items in this preset. You're missing: ${toRemove.remove(user.bank())}.`;
+		return `You don't have the items in this preset. You're missing: ${toRemove.remove(user.bank)}.`;
 	}
 
-	await unEquipAllCommand(user, gearSetup);
+	await unEquipAllCommand(user.id, gearSetup);
 
-	await user.removeItemsFromBank(toRemove.bank);
+	await user.removeItemsFromBank(toRemove);
 
 	const { newUser } = await mahojiUserSettingsUpdate(user.id, {
 		[`gear_${gearSetup}`]: newGear
 	});
 	const updatedGear = getUserGear(newUser)[gearSetup];
-	const image = await generateGearImage(
-		user,
-		updatedGear,
-		gearSetup,
-		user.settings.get(UserSettings.Minion.EquippedPet)
-	);
+	const image = await generateGearImage(user, updatedGear, gearSetup, user.user.minion_equippedPet);
 
 	return {
 		content: `You equipped the ${preset.name} preset in your ${gearSetup} setup.`,
@@ -114,8 +107,7 @@ export async function gearPresetEquipCommand(user: KlasaUser, gearSetup: string,
 
 export async function gearEquipCommand(args: {
 	interaction: SlashCommandInteraction;
-	user: MUser;
-	klasaUser: KlasaUser;
+	userID: string;
 	setup: string;
 	item: string | undefined;
 	preset: string | undefined;
@@ -123,8 +115,9 @@ export async function gearEquipCommand(args: {
 	unEquippedItem: Bank | undefined;
 	auto: string | undefined;
 }): CommandResponse {
-	const { interaction, user, klasaUser, setup, item, preset, quantity: _quantity, auto } = args;
+	const { interaction, userID, setup, item, preset, quantity: _quantity, auto } = args;
 	if (!isValidGearSetup(setup)) return 'Invalid gear setup.';
+	const user = await mUserFetch(userID);
 	if (minionIsBusy(user.id)) {
 		return `${user.minionName} is currently out on a trip, so you can't change their gear!`;
 	}
@@ -133,7 +126,7 @@ export async function gearEquipCommand(args: {
 		return PATRON_ONLY_GEAR_SETUP;
 	}
 	if (preset) {
-		return gearPresetEquipCommand(klasaUser, setup, preset);
+		return gearPresetEquipCommand(user, setup, preset);
 	}
 	if (auto) {
 		return autoEquipCommand(user, setup, auto);
@@ -143,13 +136,13 @@ export async function gearEquipCommand(args: {
 	const quantity = mahojiParseNumber({ input: _quantity ?? 1, min: 1, max: MAX_INT_JAVA }) ?? 1;
 	if (!itemToEquip.equipable_by_player || !itemToEquip.equipment) return "This item isn't equipable.";
 
-	const bank = new Bank(user.bank as ItemBank);
+	const bank = new Bank(user.bank);
 	const cost = new Bank().add(itemToEquip.id, quantity);
 	if (!bank.has(cost)) return `You don't own ${cost}.`;
 
 	const { slot } = itemToEquip.equipment!;
 	const dbKey = `gear_${setup}` as const;
-	const allGear = getUserGear(user);
+	const allGear = user.gear;
 	const currentEquippedGear = allGear[setup];
 
 	/**
@@ -199,24 +192,23 @@ export async function gearEquipCommand(args: {
 		newGear[slot] = null;
 
 		const loot = new Bank().add(equippedInThisSlot.item, equippedInThisSlot.quantity);
-		await klasaUser.addItemsToBank({ items: loot, collectionLog: false });
-		const { newUser } = await mahojiUserSettingsUpdate(user.id, {
+		await user.addItemsToBank({ items: loot, collectionLog: false });
+		await mahojiUserSettingsUpdate(user.id, {
 			[dbKey]: newGear
 		});
 		return gearEquipCommand({
 			interaction,
-			user: newUser,
-			klasaUser,
 			setup,
 			item,
 			preset,
 			quantity,
 			unEquippedItem: loot,
-			auto: undefined
+			auto: undefined,
+			userID: user.id
 		});
 	}
 
-	await klasaUser.removeItemsFromBank(cost);
+	await user.removeItemsFromBank(cost);
 
 	const newGear = { ...currentEquippedGear.raw() };
 	newGear[slot] = {
@@ -227,7 +219,7 @@ export async function gearEquipCommand(args: {
 	const { newUser } = await mahojiUserSettingsUpdate(user.id, {
 		[dbKey]: newGear
 	});
-	const image = await generateGearImage(user, newUser[dbKey] as GearSetup, setup, user.minion_equippedPet);
+	const image = await generateGearImage(user, newUser[dbKey] as GearSetup, setup, user.user.minion_equippedPet);
 
 	return {
 		content: `You equipped ${itemToEquip.name} in your ${toTitleCase(setup)} setup.`,
@@ -246,10 +238,10 @@ export async function gearUnequipCommand(
 	}
 	if (!isValidGearSetup(gearSetup)) return "That's not a valid gear setup.";
 	if (unequipAll) {
-		return unEquipAllCommand(user, gearSetup);
+		return unEquipAllCommand(user.id, gearSetup);
 	}
 
-	const currentEquippedGear = getUserGear(user)[gearSetup];
+	const currentEquippedGear = user.gear[gearSetup];
 	const currentGear = currentEquippedGear.raw();
 
 	const item = getItem(itemToUnequip);
@@ -268,7 +260,7 @@ export async function gearUnequipCommand(
 	const newGear = { ...currentGear };
 	newGear[slot] = null;
 
-	await klasaUser.addItemsToBank({
+	await user.addItemsToBank({
 		items: {
 			[equippedInThisSlot!.item]: equippedInThisSlot!.quantity
 		},
@@ -318,12 +310,7 @@ export async function autoEquipCommand(user: MUser, gearSetup: GearSetupType, eq
 		[`gear_${gearSetup}`]: gearToEquip
 	});
 
-	const image = await generateGearImage(
-		user,
-		user.getGear(gearSetup),
-		gearSetup,
-		user.settings.get(UserSettings.Minion.EquippedPet)
-	);
+	const image = await generateGearImage(user, user.gear[gearSetup], gearSetup, user.user.minion_equippedPet);
 	return {
 		content: `You auto-equipped your best ${equipmentType} in your ${gearSetup} preset.`,
 		attachments: [{ fileName: 'gear.jpg', buffer: image }]
@@ -342,12 +329,12 @@ export async function gearStatsCommand(user: MUser, input: string): CommandRespo
 	return { attachments: [{ fileName: 'image.jpg', buffer: image }] };
 }
 
-export async function gearViewCommand(user: User, input: string, text: boolean): CommandResponse {
+export async function gearViewCommand(user: MUser, input: string, text: boolean): CommandResponse {
 	if (stringMatches(input, 'all')) {
 		const file = text
 			? {
 					buffer: Buffer.from(
-						Object.entries(getUserGear(user))
+						Object.entries(user.gear)
 							.map(i => `${i[0]}: ${i[1].toString()}`)
 							.join('\n')
 					),
@@ -360,11 +347,11 @@ export async function gearViewCommand(user: User, input: string, text: boolean):
 		};
 	}
 	if (!isValidGearSetup(input)) return 'Invalid setup.';
-	const gear = getUserGear(user)[input];
+	const gear = user.gear[input];
 	if (text) {
 		return gear.toString();
 	}
-	const image = await generateGearImage(user, gear, input, user.minion_equippedPet);
+	const image = await generateGearImage(user, gear, input, user.user.minion_equippedPet);
 	return { attachments: [{ buffer: image, fileName: 'gear.jpg' }] };
 }
 

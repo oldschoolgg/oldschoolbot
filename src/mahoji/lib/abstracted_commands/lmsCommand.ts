@@ -1,10 +1,10 @@
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
 import { LMSBuyables } from '../../../lib/data/CollectionsExport';
 import { lmsSimCommand } from '../../../lib/minions/functions/lmsSimCommand';
+import { MUser } from '../../../lib/MUser';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, randomVariation, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
@@ -19,7 +19,7 @@ export async function lmsCommand(
 		buy?: { name?: string; quantity?: number };
 		simulate?: { names?: string };
 	},
-	user: KlasaUser,
+	user: MUser,
 	channelID: bigint,
 	interaction: SlashCommandInteraction
 ) {
@@ -67,13 +67,13 @@ export async function lmsCommand(
 			return `You received ${loot}.`;
 		}
 
-		const { newUser } = await mahojiUserSettingsUpdate(user, {
+		const { newUser } = await mahojiUserSettingsUpdate(user.id, {
 			lms_points: {
 				decrement: cost
 			}
 		});
 		if (itemToBuy.onlyCL) {
-			await user.addItemsToCollectionLog({ items: loot });
+			await user.addItemsToCollectionLog(loot);
 		} else {
 			await transactItems({
 				userID: user.id,

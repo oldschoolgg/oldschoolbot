@@ -1,16 +1,15 @@
-import { User } from '@prisma/client';
 import { Time } from 'e';
 
 import { MAX_QP } from '../../../lib/constants';
+import { MUser } from '../../../lib/MUser';
 import { ActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
-import { minionName } from '../../../lib/util/minionUtils';
 import { userHasGracefulEquipped } from '../../mahojiSettings';
 
-export async function questCommand(user: User, channelID: bigint) {
-	if (!user.minion_hasBought) {
+export async function questCommand(user: MUser, channelID: bigint) {
+	if (!user.user.minion_hasBought) {
 		return 'You need a minion to do a questing trip';
 	}
 	if (minionIsBusy(user.id)) {
@@ -36,7 +35,7 @@ export async function questCommand(user: User, channelID: bigint) {
 		userID: user.id,
 		channelID: channelID.toString()
 	});
-	let response = `${minionName(user)} is now completing quests, they'll come back in around ${formatDuration(
+	let response = `${user.minionName} is now completing quests, they'll come back in around ${formatDuration(
 		duration
 	)}.`;
 

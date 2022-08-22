@@ -1,10 +1,10 @@
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { UserSettings } from '../settings/types/UserSettings';
+import { MUser } from '../MUser';
 import { gracefulItems } from '../skilling/skills/agility';
 import { Craftables } from '../skilling/skills/crafting/craftables';
 import { Fletchables } from '../skilling/skills/fletching/fletchables';
+import { ItemBank } from '../types';
 import resolveItems from '../util/resolveItems';
 import { allCollectionLogs } from './Collections';
 import {
@@ -917,7 +917,7 @@ const food = resolveItems(Eatables.map(food => food.name));
 interface Filterable {
 	name: string;
 	aliases: string[];
-	items: (user?: KlasaUser) => number[];
+	items: (user?: MUser) => number[];
 }
 
 export const baseFilters: Filterable[] = [
@@ -1114,9 +1114,8 @@ export const baseFilters: Filterable[] = [
 		aliases: ['not sacrificed', 'not sac'],
 		items: user => {
 			if (!user) return [];
-			const sacBank = new Bank(user.settings.get(UserSettings.SacrificedBank));
-			return user
-				.bank()
+			const sacBank = new Bank(user.user.sacrificedBank as ItemBank);
+			return user.bank
 				.items()
 				.filter(i => !sacBank.has(i[0].id))
 				.map(i => i[0].id);

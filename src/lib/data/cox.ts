@@ -23,7 +23,6 @@ import { Gear } from '../structures/Gear';
 import { Skills } from '../types';
 import { randomVariation, skillsMeetRequirements } from '../util';
 import getOSItem from '../util/getOSItem';
-import { userHasItemsEquippedAnywhere } from '../util/minionUtils';
 
 export const bareMinStats: Skills = {
 	attack: 80,
@@ -203,24 +202,24 @@ export const maxMeleeGear = constructGearSetup({
 });
 const maxMelee = new Gear(maxMeleeGear);
 
-export function calculateUserGearPercents(user: KlasaUser) {
+export function calculateUserGearPercents(user: MUser) {
 	const melee = calcSetupPercent(
 		maxMelee.stats,
-		user.getGear('melee').stats,
+		user.gear.melee.stats,
 		'melee_strength',
 		['attack_stab', 'attack_slash', 'attack_crush', 'attack_ranged', 'attack_magic'],
 		true
 	);
 	const range = calcSetupPercent(
 		maxRange.stats,
-		user.getGear('range').stats,
+		user.gear.range.stats,
 		'ranged_strength',
 		['attack_stab', 'attack_slash', 'attack_crush', 'attack_magic'],
 		false
 	);
 	const mage = calcSetupPercent(
 		maxMage.stats,
-		user.getGear('mage').stats,
+		user.gear.mage.stats,
 		'magic_damage',
 		['attack_stab', 'attack_slash', 'attack_crush', 'attack_ranged'],
 		false
@@ -310,8 +309,8 @@ export async function checkCoxTeam(users: MUser[], cm: boolean): Promise<string 
 	return null;
 }
 
-async function kcEffectiveness(u: KlasaUser, challengeMode: boolean, isSolo: boolean) {
-	const kc = await u.getMinigameScore(challengeMode ? 'raids_challenge_mode' : 'raids');
+async function kcEffectiveness(u: MUser, challengeMode: boolean, isSolo: boolean) {
+	const kc = await getMinigameScore(u.id, challengeMode ? 'raids_challenge_mode' : 'raids');
 	let cap = isSolo ? 250 : 400;
 	if (challengeMode) {
 		cap = isSolo ? 75 : 100;
@@ -433,13 +432,13 @@ const itemBoosts: ItemBoost[][] = [
 ];
 
 export async function calcCoxDuration(
-	_team: KlasaUser[],
+	_team: MUser[],
 	challengeMode: boolean
 ): Promise<{
 	reductions: Record<string, number>;
 	duration: number;
 	totalReduction: number;
-	degradeables: { item: Item; user: KlasaUser; chargesToDegrade: number }[];
+	degradeables: { item: Item; user: MUser; chargesToDegrade: number }[];
 }> {
 	const team = shuffleArr(_team).slice(0, 9);
 	const size = team.length;
@@ -449,7 +448,7 @@ export async function calcCoxDuration(
 	let reductions: Record<string, number> = {};
 
 	// Track degradeable items:
-	const degradeableItems: { item: Item; user: KlasaUser; chargesToDegrade: number }[] = [];
+	const degradeableItems: { item: Item; user: MUser; chargesToDegrade: number }[] = [];
 
 	for (const u of team) {
 		let userPercentChange = 0;
@@ -466,7 +465,7 @@ export async function calcCoxDuration(
 		itemBoosts.forEach(set => {
 			for (const item of set) {
 				if (item.mustBeCharged && item.requiredCharges) {
-					if (u.hasItemEquippedOrInBank(item.item.id)) {
+					if (u.hasEquippedOrInBank(item.item.id)) {
 						const testItem = {
 							item: item.item,
 							user: u,
@@ -480,14 +479,14 @@ export async function calcCoxDuration(
 						}
 					}
 				} else if (item.mustBeEquipped) {
-					if (item.setup && u.getGear(item.setup).hasEquipped(item.item.id)) {
+					if (item.setup && u.gear[item.setup].hasEquipped(item.item.id)) {
 						userPercentChange += item.boost;
 						break;
-					} else if (!item.setup && u.hasItemEquippedAnywhere(item.item.id)) {
+					} else if (!item.setup && u.hasEquipped(item.item.id)) {
 						userPercentChange += item.boost;
 						break;
 					}
-				} else if (u.hasItemEquippedOrInBank(item.item.id)) {
+				} else if (u.hasEquippedOrInBank(item.item.id)) {
 					userPercentChange += item.boost;
 					break;
 				}
@@ -512,9 +511,9 @@ export async function calcCoxDuration(
 	return { duration, reductions, totalReduction: totalSpeedReductions / size, degradeables: degradeableItems };
 }
 
-export async function calcCoxInput(u: KlasaUser, solo: boolean) {
+export async function calcCoxInput(u: MUser, solo: boolean) {
 	const items = new Bank();
-	const kc = await u.getMinigameScore('raids');
+	const kc = await getMinigameScore(u.id, 'raids');
 	items.add('Stamina potion(4)', solo ? 2 : 1);
 
 	let brewsNeeded = Math.max(1, 8 - Math.max(1, Math.ceil((kc + 1) / 30)));

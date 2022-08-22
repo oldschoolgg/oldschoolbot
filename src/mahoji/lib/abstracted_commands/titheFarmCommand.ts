@@ -1,4 +1,3 @@
-import { User } from '@prisma/client';
 import { Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
@@ -7,22 +6,22 @@ import { Bank } from 'oldschooljs';
 import { Emoji } from '../../../lib/constants';
 import TitheFarmBuyables from '../../../lib/data/buyables/titheFarmBuyables';
 import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
+import { MUser } from '../../../lib/MUser';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { TitheFarmActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, getSkillsOfMahojiUser, stringMatches } from '../../../lib/util';
+import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
-import { minionName } from '../../../lib/util/minionUtils';
 import { handleMahojiConfirmation, mahojiUserSettingsUpdate, userHasGracefulEquipped } from '../../mahojiSettings';
 
-function determineDuration(user: User): [number, string[]] {
+function determineDuration(user: MUser): [number, string[]] {
 	let baseTime = Time.Second * 1500;
 	let nonGracefulTimeAddition = Time.Second * 123;
 
 	const boostStr = [];
 
 	// Reduce time based on tithe farm completions
-	const titheFarmsCompleted = user.stats_titheFarmsCompleted;
+	const titheFarmsCompleted = user.user.stats_titheFarmsCompleted;
 	const percentIncreaseFromCompletions = Math.floor(Math.min(50, titheFarmsCompleted) / 2) / 100;
 	baseTime = Math.floor(baseTime * (1 - percentIncreaseFromCompletions));
 	Math.floor(percentIncreaseFromCompletions * 100) > 0
@@ -30,7 +29,7 @@ function determineDuration(user: User): [number, string[]] {
 		: boostStr.push('');
 
 	// Reduce time if user has graceful equipped
-	if (userHasGracefulEquipped(user)) {
+	if (userHasGracefulEquipped(user.user)) {
 		nonGracefulTimeAddition = 0;
 		boostStr.push('10% from graceful outfit');
 	}
@@ -40,17 +39,17 @@ function determineDuration(user: User): [number, string[]] {
 	return [totalTime, boostStr];
 }
 
-export async function titheFarmCommand(user: User, channelID: bigint) {
+export async function titheFarmCommand(user: MUser, channelID: bigint) {
 	if (minionIsBusy(user.id)) {
 		return 'Your minion must not be busy to use this command.';
 	}
-	const skills = getSkillsOfMahojiUser(user, true);
+	const skills = user.skillsAsLevels;
 	if (skills.farming < 34) {
-		return `${minionName(user)} needs 34 Farming to use the Tithe Farm!`;
+		return `${user} needs 34 Farming to use the Tithe Farm!`;
 	}
 	const [hasFavour, requiredPoints] = gotFavour(user, Favours.Hosidius, 100);
 	if (!hasFavour) {
-		return `${minionName(user)} needs ${requiredPoints}% Hosidius Favour to use the Tithe Farm!`;
+		return `${user.minionName} needs ${requiredPoints}% Hosidius Favour to use the Tithe Farm!`;
 	}
 
 	const [duration, boostStr] = determineDuration(user);

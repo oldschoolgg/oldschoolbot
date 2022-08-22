@@ -5,7 +5,6 @@ import TzTokJad from 'oldschooljs/dist/simulation/monsters/special/TzTokJad';
 
 import { Emoji, Events } from '../../../lib/constants';
 import { prisma } from '../../../lib/settings/prisma';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { FightCavesActivityTaskOptions } from '../../../lib/types/minions';
@@ -159,11 +158,17 @@ export default class extends Task {
 		if (isOnTask) {
 			// 25,250 for Jad + 11,760 for waves.
 			const slayerXP = 37_010;
-			const currentStreak = user.settings.get(UserSettings.Slayer.TaskStreak) + 1;
-			user.settings.update(UserSettings.Slayer.TaskStreak, currentStreak);
+			const currentStreak = user.user.slayer_task_streak;
 			const points = await calculateSlayerPoints(currentStreak, usersTask.slayerMaster!, user);
-			const newPoints = user.settings.get(UserSettings.Slayer.SlayerPoints) + points;
-			await user.settings.update(UserSettings.Slayer.SlayerPoints, newPoints);
+
+			const { newUser } = await mahojiUserSettingsUpdate(user.id, {
+				slayer_points: {
+					increment: points
+				},
+				slayer_task_streak: {
+					increment: 1
+				}
+			});
 
 			await prisma.slayerTask.update({
 				where: {
@@ -177,7 +182,7 @@ export default class extends Task {
 			const slayXP = await user.addXP({ skillName: SkillsEnum.Slayer, amount: slayerXP, duration });
 			const xpMessage = `${msg} ${slayXP}`;
 
-			msg = `Jad task completed. ${xpMessage}. \n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${newPoints}; return to a Slayer master.**`;
+			msg = `Jad task completed. ${xpMessage}. \n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${newUser.slayer_points}; return to a Slayer master.**`;
 			// End slayer code
 		}
 

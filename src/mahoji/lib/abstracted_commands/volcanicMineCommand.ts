@@ -4,26 +4,14 @@ import { KlasaUser } from 'klasa';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
+import { MUser } from '../../../lib/MUser';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ItemBank } from '../../../lib/types';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import {
-	formatDuration,
-	formatSkillRequirements,
-	getSkillsOfMahojiUser,
-	resolveNameBank,
-	stringMatches
-} from '../../../lib/util';
+import { formatDuration, formatSkillRequirements, resolveNameBank, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { minionName } from '../../../lib/util/minionUtils';
-import {
-	getMahojiBank,
-	getUserGear,
-	handleMahojiConfirmation,
-	hasSkillReqs,
-	mahojiUserSettingsUpdate
-} from '../../mahojiSettings';
+import { handleMahojiConfirmation, hasSkillReqs, mahojiUserSettingsUpdate } from '../../mahojiSettings';
 
 const skillReqs = {
 	[SkillsEnum.Prayer]: 70,
@@ -103,8 +91,8 @@ export const VolcanicMineShop: { name: string; output: ItemBank; cost: number; c
 	}
 ];
 
-export async function volcanicMineCommand(user: User, channelID: bigint, gameQuantity: number | undefined) {
-	const skills = getSkillsOfMahojiUser(user, true);
+export async function volcanicMineCommand(user: MUser, channelID: bigint, gameQuantity: number | undefined) {
+	const skills = user.skillsAsLevels;
 	if (!hasSkillReqs(user, skillReqs)[0]) {
 		return `You are not skilled enough to participate in the Volcanic Mine. You need the following requirements: ${objectEntries(
 			skillReqs
@@ -120,7 +108,7 @@ export async function volcanicMineCommand(user: User, channelID: bigint, gameQua
 	const userMiningLevel = skills.mining;
 	const userPrayerLevel = skills.prayer;
 	const userHitpointsLevel = skills.hitpoints;
-	const gear = getUserGear(user);
+	const { gear } = user;
 	const userSkillingGear = gear.skilling;
 	const boosts: string[] = [];
 
@@ -160,7 +148,7 @@ export async function volcanicMineCommand(user: User, channelID: bigint, gameQua
 	}
 
 	suppliesUsage.multiply(gameQuantity);
-	const bank = getMahojiBank(user);
+	const { bank } = user;
 	if (!bank.has(suppliesUsage)) {
 		return `You don't have all the required supplies for this number of games. You need ${suppliesUsage} for ${gameQuantity} games of Volcanic Mine.`;
 	}
@@ -169,9 +157,9 @@ export async function volcanicMineCommand(user: User, channelID: bigint, gameQua
 
 	let duration = VolcanicMineGameTime * gameQuantity;
 
-	const str = `${minionName(
-		user
-	)} is now playing ${gameQuantity}x games of Volcanic Mine. It will be back in ${formatDuration(duration)}.${
+	const str = `${
+		user.minionName
+	} is now playing ${gameQuantity}x games of Volcanic Mine. It will be back in ${formatDuration(duration)}.${
 		boosts.length > 0 ? `\n**Boosts**\n${boosts.join('\n')}` : ''
 	}\n**Supply Usage:** ${suppliesUsage}`;
 

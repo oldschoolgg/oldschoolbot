@@ -85,7 +85,7 @@ export const mineCommand: OSBMahojiCommand = {
 		const user = await mahojiUsersSettingsFetch(userID);
 		const skills = getSkillsOfMahojiUser(user, true);
 		if (skills.mining < ore.level) {
-			return `${minionName(user)} needs ${ore.level} Mining to mine ${ore.name}.`;
+			return `${user.minionName} needs ${ore.level} Mining to mine ${ore.name}.`;
 		}
 
 		// Calculate the time it takes to mine a single ore of this type, at this persons level.
@@ -124,7 +124,7 @@ export const mineCommand: OSBMahojiCommand = {
 		const duration = quantity * timeToMine;
 
 		if (duration > maxTripLength) {
-			return `${minionName(user)} can't go on trips longer than ${formatDuration(
+			return `${user.minionName} can't go on trips longer than ${formatDuration(
 				maxTripLength
 			)}, try a lower quantity. The highest amount of ${ore.name} you can mine is ${Math.floor(
 				maxTripLength / timeToMine
@@ -140,7 +140,7 @@ export const mineCommand: OSBMahojiCommand = {
 			type: 'Mining'
 		});
 
-		let response = `${minionName(user)} is now mining ${quantity}x ${ore.name}, it'll take around ${formatDuration(
+		let response = `${user.minionName} is now mining ${quantity}x ${ore.name}, it'll take around ${formatDuration(
 			duration
 		)} to finish.`;
 

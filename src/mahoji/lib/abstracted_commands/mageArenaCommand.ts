@@ -1,15 +1,14 @@
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
+import { MUser } from '../../../lib/MUser';
 import { ActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, randomVariation, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 
-export async function mageArenaCommand(user: KlasaUser, channelID: bigint) {
+export async function mageArenaCommand(user: MUser, channelID: bigint) {
 	if (user.skillLevel(SkillsEnum.Magic) < 60) {
 		return 'You need level 60 Magic to do the Mage Arena.';
 	}
@@ -38,7 +37,7 @@ export async function mageArenaCommand(user: KlasaUser, channelID: bigint) {
 
 	await user.removeItemsFromBank(itemsNeeded);
 
-	updateBankSetting(globalClient, ClientSettings.EconomyStats.MageArenaCost, totalCost);
+	updateBankSetting('mage_arena_cost', totalCost);
 
 	await addSubTaskToActivityTask<ActivityTaskOptions>({
 		userID: user.id,

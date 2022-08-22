@@ -1,22 +1,22 @@
 import { calcWhatPercent, randInt, reduceNumByPercent, Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
+import { MUser } from '../../../lib/MUser';
 import { getPOHObject } from '../../../lib/poh';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
+import { getMinigameScore } from '../../../lib/settings/minigames';
 import { GnomeRestaurantActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, randomVariation, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import { userHasGracefulEquipped } from '../../mahojiSettings';
 import { getPOH } from './pohCommand';
 
-export async function gnomeRestaurantCommand(user: KlasaUser, channelID: bigint) {
+export async function gnomeRestaurantCommand(user: MUser, channelID: bigint) {
 	let deliveryLength = Time.Minute * 7;
 
 	const itemsToRemove = new Bank();
-	const gp = user.settings.get(UserSettings.GP);
+	const gp = user.GP;
 	if (gp < 5000) {
 		return 'You need atleast 5k GP to work at the Gnome Restaurant.';
 	}
@@ -31,7 +31,7 @@ export async function gnomeRestaurantCommand(user: KlasaUser, channelID: bigint)
 		boosts.push(`${scoreBoost}% boost for experience in the minigame`);
 	}
 
-	if (userHasGracefulEquipped(user)) {
+	if (userHasGracefulEquipped(user.user)) {
 		deliveryLength = reduceNumByPercent(deliveryLength, 25);
 		boosts.push('25% for Graceful');
 	}
@@ -44,7 +44,7 @@ export async function gnomeRestaurantCommand(user: KlasaUser, channelID: bigint)
 	const poh = await getPOH(user.id);
 	const hasOrnateJewelleryBox = poh.jewellery_box === getPOHObject('Ornate jewellery box').id;
 	const hasJewelleryBox = poh.jewellery_box !== null;
-	const bank = user.bank();
+	const { bank } = user;
 	switch (randInt(1, 3)) {
 		case 1: {
 			if (user.hasEquippedOrInBank('Amulet of eternal glory')) {
@@ -95,9 +95,9 @@ export async function gnomeRestaurantCommand(user: KlasaUser, channelID: bigint)
 		return `You don't own the required items: ${itemsToRemove}.`;
 	}
 
-	await user.removeItemsFromBank(itemsToRemove.bank);
+	await user.removeItemsFromBank(itemsToRemove);
 
-	await updateBankSetting(globalClient, ClientSettings.EconomyStats.GnomeRestaurantCostBank, itemsToRemove);
+	await updateBankSetting('gnome_res_cost', itemsToRemove);
 	await addSubTaskToActivityTask<GnomeRestaurantActivityTaskOptions>({
 		userID: user.id,
 		channelID: channelID.toString(),

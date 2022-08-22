@@ -1,19 +1,18 @@
-import { User } from '@prisma/client';
 import { objectEntries, reduceNumByPercent, Time } from 'e';
 
 import { plunderBoosts, plunderRooms } from '../../../lib/minions/data/plunder';
+import { MUser } from '../../../lib/MUser';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { PlunderActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, getSkillsOfMahojiUser, itemNameFromID } from '../../../lib/util';
+import { formatDuration, itemNameFromID } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
-import { hasItemsEquippedOrInBank, minionName } from '../../../lib/util/minionUtils';
 import { userHasGracefulEquipped } from '../../mahojiSettings';
 
-export async function pyramidPlunderCommand(user: User, channelID: bigint) {
-	if (minionIsBusy(user.id)) return `${minionName(user)} is busy.`;
-	const skills = getSkillsOfMahojiUser(user, true);
+export async function pyramidPlunderCommand(user: MUser, channelID: bigint) {
+	if (minionIsBusy(user.id)) return `${user.minionName} is busy.`;
+	const skills = user.skillsAsLevels;
 	const thievingLevel = skills.thieving;
 	const minLevel = plunderRooms[0].thievingLevel;
 	if (thievingLevel < minLevel) {
@@ -42,7 +41,7 @@ export async function pyramidPlunderCommand(user: User, channelID: bigint) {
 	plunderTime = reduceNumByPercent(plunderTime, percentFaster);
 
 	for (const [id, percent] of objectEntries(plunderBoosts)) {
-		if (hasItemsEquippedOrInBank(user, [Number(id)])) {
+		if (user.hasEquippedOrInBank([Number(id)])) {
 			boosts.push(`${percent}% for ${itemNameFromID(Number(id))}`);
 			plunderTime = reduceNumByPercent(plunderTime, percent);
 		}
@@ -60,9 +59,9 @@ export async function pyramidPlunderCommand(user: User, channelID: bigint) {
 		minigameID: 'pyramid_plunder'
 	});
 
-	let str = `${minionName(
-		user
-	)} is now doing Pyramid Plunder ${maxQuantity} times, each cycle they are looting the last two rooms ${
+	let str = `${
+		user.minionName
+	} is now doing Pyramid Plunder ${maxQuantity} times, each cycle they are looting the last two rooms ${
 		completableRooms.length < 2 ? 1 : completableRooms[completableRooms.length - 2].number
 	} and ${completableRooms[completableRooms.length - 1].number}, the trip will take ${formatDuration(
 		tripLength

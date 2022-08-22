@@ -1,10 +1,10 @@
 import { objectEntries } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { growablePets } from '../growablePets';
 import { implings } from '../implings';
+import { MUser } from '../MUser';
 import getOSItem from '../util/getOSItem';
 import resolveItems from '../util/resolveItems';
 import {
@@ -34,7 +34,7 @@ export interface ILeftListStatus {
 }
 
 export interface IKCActivity {
-	[key: string]: string | string[] | ((user: KlasaUser) => Promise<number>);
+	[key: string]: string | string[] | ((user: MUser) => Promise<number>);
 }
 
 export interface ICollectionActivity {

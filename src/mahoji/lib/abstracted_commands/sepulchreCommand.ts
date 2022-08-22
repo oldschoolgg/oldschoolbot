@@ -1,18 +1,17 @@
-import { User } from '@prisma/client';
 import { objectEntries, reduceNumByPercent, Time } from 'e';
 import { addArrayOfNumbers } from 'oldschooljs/dist/util';
 
 import { sepulchreBoosts, sepulchreFloors } from '../../../lib/minions/data/sepulchre';
+import { MUser } from '../../../lib/MUser';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, getSkillsOfMahojiUser, itemNameFromID } from '../../../lib/util';
+import { formatDuration, itemNameFromID } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { hasItemsEquippedOrInBank, minionName } from '../../../lib/util/minionUtils';
 import { userHasGracefulEquipped } from '../../mahojiSettings';
 
-export async function sepulchreCommand(user: User, channelID: bigint) {
-	const skills = getSkillsOfMahojiUser(user, true);
+export async function sepulchreCommand(user: MUser, channelID: bigint) {
+	const skills = user.skillsAsLevels;
 	const agilityLevel = skills.agility;
 	const thievingLevel = skills.thieving;
 	const minLevel = sepulchreFloors[0].agilityLevel;
@@ -24,7 +23,7 @@ export async function sepulchreCommand(user: User, channelID: bigint) {
 		return 'You need atleast level 66 Thieving to do the Hallowed Sepulchre.';
 	}
 
-	if (!userHasGracefulEquipped(user)) {
+	if (!userHasGracefulEquipped(user.user)) {
 		return 'You need Graceful equipped in your Skilling setup to do the Hallowed Sepulchre.';
 	}
 
@@ -44,7 +43,7 @@ export async function sepulchreCommand(user: User, channelID: bigint) {
 	lapLength = reduceNumByPercent(lapLength, percentReduced);
 
 	for (const [id, percent] of objectEntries(sepulchreBoosts)) {
-		if (hasItemsEquippedOrInBank(user, [Number(id)])) {
+		if (user.hasEquippedOrInBank([Number(id)])) {
 			boosts.push(`${percent}% for ${itemNameFromID(Number(id))}`);
 			lapLength = reduceNumByPercent(lapLength, percent);
 		}
@@ -62,7 +61,7 @@ export async function sepulchreCommand(user: User, channelID: bigint) {
 		minigameID: 'sepulchre'
 	});
 
-	let str = `${minionName(user)} is now doing ${maxLaps} laps of the Sepulchre, in each lap they are doing floors ${
+	let str = `${user.minionName} is now doing ${maxLaps} laps of the Sepulchre, in each lap they are doing floors ${
 		completableFloors[0].number
 	}-${completableFloors[completableFloors.length - 1].number}, the trip will take ${formatDuration(
 		tripLength

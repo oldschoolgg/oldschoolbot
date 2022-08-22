@@ -76,7 +76,7 @@ export const stealCommand: OSBMahojiCommand = {
 		}
 
 		if (stealable.fireCapeRequired) {
-			if (user.cl().amount('Fire cape') === 0) {
+			if (user.cl.amount('Fire cape') === 0) {
 				return `In order to ${
 					stealable.type === 'pickpockable' ? 'pickpocket this NPC' : 'steal from this stall'
 				}, you need a fire cape in your collection log.`;
@@ -139,11 +139,11 @@ export const stealCommand: OSBMahojiCommand = {
 				user.skillLevel(SkillsEnum.Thieving),
 				stealable,
 				quantity,
-				user.hasItemEquippedAnywhere(['Thieving cape', 'Thieving cape(t)']),
+				user.hasEquipped(['Thieving cape', 'Thieving cape(t)']),
 				hasArdyHard
 			);
 
-			if (user.hasItemEquippedAnywhere(['Thieving cape', 'Thieving cape(t)'])) {
+			if (user.hasEquipped(['Thieving cape', 'Thieving cape(t)'])) {
 				boosts.push('+10% chance of success from Thieving cape');
 			}
 

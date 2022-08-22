@@ -74,7 +74,7 @@ import { minionName } from './minionUtils';
 
 export function minionStatus(user: KlasaUser) {
 	const currentTask = getActivityOfUser(user.id);
-	const name = minionName(user);
+	const name = user.minionName;
 	if (!currentTask) {
 		return `${name} is currently doing nothing.`;
 	}

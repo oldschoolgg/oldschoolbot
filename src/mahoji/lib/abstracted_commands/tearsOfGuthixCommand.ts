@@ -1,13 +1,12 @@
-import { User } from '@prisma/client';
 import { notEmpty, objectEntries, Time } from 'e';
 
 import { Emoji } from '../../../lib/constants';
+import { MUser } from '../../../lib/MUser';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, formatSkillRequirements, getSkillsOfMahojiUser } from '../../../lib/util';
+import { formatDuration, formatSkillRequirements } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
-import { minionName } from '../../../lib/util/minionUtils';
 import { hasSkillReqs } from '../../mahojiSettings';
 
 const skillReqs = {
@@ -21,10 +20,10 @@ const ironmanExtraReqs = {
 	[SkillsEnum.Slayer]: 35
 };
 
-export async function tearsOfGuthixCommand(user: User, channelID: bigint) {
-	if (minionIsBusy(user.id)) return `${minionName(user)} is busy.`;
+export async function tearsOfGuthixCommand(user: MUser, channelID: bigint) {
+	if (minionIsBusy(user.id)) return `${user.minionName} is busy.`;
 	const currentDate = new Date().getTime();
-	const lastPlayedDate = Number(user.lastTearsOfGuthixTimestamp);
+	const lastPlayedDate = Number(user.user.lastTearsOfGuthixTimestamp);
 	const difference = currentDate - lastPlayedDate;
 
 	// If they have already claimed a ToG in the past 7days
@@ -39,10 +38,10 @@ export async function tearsOfGuthixCommand(user: User, channelID: bigint) {
 		return `**${Emoji.Snake} Juna says...** You can drink from the Tears of Guthix when you have 43+ QP.`;
 	}
 
-	const skills = getSkillsOfMahojiUser(user, true);
+	const skills = user.skillsAsLevels;
 	let missingIronmanSkills = false;
 	// Extra requirements if Ironman
-	if (user.minion_ironman) {
+	if (user.user.minion_ironman) {
 		let skillsMatch = 0;
 		Object.entries(ironmanExtraReqs).forEach(([skill, level]) => {
 			if (skills[skill as SkillsEnum] >= level) skillsMatch += 1;
@@ -85,7 +84,7 @@ export async function tearsOfGuthixCommand(user: User, channelID: bigint) {
 		type: 'TearsOfGuthix'
 	});
 
-	return `${minionName(
-		user
-	)} is now off to visit Juna and drink from the Tears of Guthix, their trip will take ${formatDuration(duration)}.`;
+	return `${
+		user.minionName
+	} is now off to visit Juna and drink from the Tears of Guthix, their trip will take ${formatDuration(duration)}.`;
 }

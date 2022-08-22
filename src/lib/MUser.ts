@@ -1,14 +1,17 @@
 import { userMention } from '@discordjs/builders';
-import { User, xp_gains_skill_enum } from '@prisma/client';
+import { Prisma, User, xp_gains_skill_enum } from '@prisma/client';
 import { Bank } from 'oldschooljs';
+import { Item } from 'oldschooljs/dist/meta/types';
 
-import { getUserGear, mahojiUserSettingsUpdate } from '../mahoji/mahojiSettings';
-import { BitField, usernameCache } from './constants';
+import { calculateAddItemsToCLUpdates, getUserGear, mahojiUserSettingsUpdate } from '../mahoji/mahojiSettings';
+import { BitField, projectiles, usernameCache } from './constants';
 import { allPetIDs } from './data/CollectionsExport';
-import { AddXpParams } from './minions/types';
+import { blowpipeDarts, validateBlowpipeData } from './minions/functions/blowpipeCommand';
+import { AddXpParams, BlowpipeData } from './minions/types';
 import { SkillsEnum } from './skilling/types';
 import { ItemBank } from './types';
-import { addItemToBank, getSkillsOfMahojiUser } from './util';
+import { addItemToBank, getSkillsOfMahojiUser, itemNameFromID, percentChance } from './util';
+import { determineRunes } from './util/determineRunes';
 import getUsersPerkTier from './util/getUsersPerkTier';
 import { minionIsBusy } from './util/minionIsBusy';
 import { hasItemsEquippedOrInBank, minionName } from './util/minionUtils';
@@ -85,7 +88,7 @@ export class MUser {
 		return styles;
 	}
 
-	async incrementKC(monsterID: number, amountToAdd: number) {
+	async incrementKC(monsterID: number, amountToAdd = 1) {
 		const newKCs = new Bank().add(this.user.monsterScores as ItemBank).add(monsterID, amountToAdd);
 		const { newUser } = await mahojiUserSettingsUpdate(this.id, {
 			monsterScores: newKCs.bank
@@ -184,5 +187,129 @@ export class MUser {
 			creatureScores: addItemToBank(currentCreatureScores as ItemBank, creatureID, amountToAdd)
 		});
 		this.user = newUser;
+	}
+
+	get blowpipe() {
+		const blowpipe = this.user.blowpipe as any as BlowpipeData;
+		validateBlowpipeData(blowpipe);
+		return blowpipe;
+	}
+
+	async addItemsToCollectionLog(itemsToAdd: Bank) {
+		const updates = await calculateAddItemsToCLUpdates({
+			userID: this.id,
+			items: itemsToAdd
+		});
+		const { newUser } = await mahojiUserSettingsUpdate(this.id, updates);
+		this.user = newUser;
+	}
+
+	async specialRemoveItems(bankToRemove: Bank) {
+		bankToRemove = determineRunes(this, bankToRemove);
+		const bankRemove = new Bank();
+		let dart: [Item, number] | null = null;
+		let ammoRemove: [Item, number] | null = null;
+
+		const realCost = bankToRemove.clone();
+		const rangeGear = this.gear.range;
+		const hasAvas = rangeGear.hasEquipped("Ava's assembler");
+		const updates: Prisma.UserUpdateArgs['data'] = {};
+
+		for (const [item, quantity] of bankToRemove.items()) {
+			if (blowpipeDarts.includes(item)) {
+				if (dart !== null) throw new Error('Tried to remove more than 1 blowpipe dart.');
+				dart = [item, quantity];
+				continue;
+			}
+			if (Object.values(projectiles).flat(2).includes(item.id)) {
+				if (ammoRemove !== null) throw new Error('Tried to remove more than 1 ranged ammunition.');
+				ammoRemove = [item, quantity];
+				continue;
+			}
+			bankRemove.add(item.id, quantity);
+		}
+
+		if (ammoRemove) {
+			const equippedAmmo = rangeGear.ammo?.item;
+			if (!equippedAmmo) {
+				throw new Error('No ammo equipped.');
+			}
+			if (equippedAmmo !== ammoRemove[0].id) {
+				throw new Error(`Has ${itemNameFromID(equippedAmmo)}, but needs ${ammoRemove[0].name}.`);
+			}
+			const newRangeGear = { ...this.gear.range };
+			const ammo = newRangeGear.ammo?.quantity;
+
+			if (hasAvas) {
+				let ammoCopy = ammoRemove[1];
+				for (let i = 0; i < ammoCopy; i++) {
+					if (percentChance(80)) {
+						ammoRemove[1]--;
+						realCost.remove(ammoRemove[0].id, 1);
+					}
+				}
+			}
+			if (!ammo || ammo < ammoRemove[1])
+				throw new Error(
+					`Not enough ${ammoRemove[0].name} equipped in range gear, you need ${
+						ammoRemove![1]
+					} but you have only ${ammo}.`
+				);
+			newRangeGear.ammo!.quantity -= ammoRemove![1];
+			updates.gear_range = newRangeGear as any as Prisma.InputJsonObject;
+		}
+
+		if (dart) {
+			if (hasAvas) {
+				let copyDarts = dart![1];
+				for (let i = 0; i < copyDarts; i++) {
+					if (percentChance(80)) {
+						realCost.remove(dart[0].id, 1);
+						dart![1]--;
+					}
+				}
+			}
+			const scales = Math.ceil((10 / 3) * dart[1]);
+			const rawBlowpipeData = this.blowpipe;
+			if (!this.allItemsOwned().has('Toxic blowpipe') || !rawBlowpipeData) {
+				throw new Error("You don't have a Toxic blowpipe.");
+			}
+			if (!rawBlowpipeData.dartID || !rawBlowpipeData.dartQuantity) {
+				throw new Error('You have no darts in your Toxic blowpipe.');
+			}
+			if (rawBlowpipeData.dartQuantity < dart[1]) {
+				throw new Error(
+					`You don't have enough ${itemNameFromID(
+						rawBlowpipeData.dartID
+					)}s in your Toxic blowpipe, you need ${dart[1]}, but you have only ${rawBlowpipeData.dartQuantity}.`
+				);
+			}
+			if (!rawBlowpipeData.scales || rawBlowpipeData.scales < scales) {
+				throw new Error(
+					`You don't have enough Zulrah's scales in your Toxic blowpipe, you need ${scales} but you have only ${rawBlowpipeData.scales}.`
+				);
+			}
+			const bpData = { ...this.blowpipe };
+			bpData.dartQuantity -= dart![1];
+			bpData.scales -= scales;
+			validateBlowpipeData(bpData);
+			updates.blowpipe = bpData;
+		}
+
+		if (bankRemove.length > 0) {
+			if (!this.bank.has(bankRemove)) {
+				throw new Error(`You don't own: ${bankRemove.clone().remove(this.bank)}.`);
+			}
+			await transactItems({ userID: this.id, itemsToRemove: bankRemove });
+		}
+		const { newUser } = await mahojiUserSettingsUpdate(this.id, updates);
+		this.user = newUser;
+		return {
+			realCost
+		};
+	}
+
+	getCreatureScore(creatureID: number) {
+		return (this.user.creatureScores as ItemBank)[creatureID] ?? 0;
 	}
 }

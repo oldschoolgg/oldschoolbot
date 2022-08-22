@@ -3,7 +3,6 @@ import { randFloat, roll } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import birdhouses from '../../../lib/skilling/skills/hunter/birdHouseTrapping';
 import { BirdhouseData } from '../../../lib/skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -132,7 +131,9 @@ export default class extends Task {
 				};
 			}
 
-			await user.settings.update(UserSettings.Minion.BirdhouseTraps, updateBirdhouseData);
+			await mahojiUserSettingsUpdate(user.id, {
+				minion_birdhouseTraps: updateBirdhouseData as any as Prisma.InputJsonObject
+			});
 
 			if (!placing) {
 				str += '\nThe birdhouses have been cleared. The birdhouse spots are ready to have new birdhouses.';

@@ -3,11 +3,10 @@ import { User } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 
 import { MUser } from '../../../lib/MUser';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import birdhouses, { Birdhouse } from '../../../lib/skilling/skills/hunter/birdHouseTrapping';
 import defaultBirdhouseTrap, { BirdhouseData } from '../../../lib/skilling/skills/hunter/defaultBirdHouseTrap';
 import { BirdhouseActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, getSkillsOfMahojiUser, itemID, stringMatches } from '../../../lib/util';
+import { formatDuration, getSkillsOfMahojiUser, itemID, stringMatches, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { minionName } from '../../../lib/util/minionUtils';
 import { mahojiUsersSettingsFetch, userHasGracefulEquipped } from '../../mahojiSettings';
@@ -224,7 +223,7 @@ export async function birdhouseHarvestCommand(
 	}
 	if (!user.bank.has(removeBank)) return `You don't own: ${removeBank}.`;
 
-	await updateBankSetting(globalClient, ClientSettings.EconomyStats.FarmingCostBank, removeBank);
+	await updateBankSetting('farming_cost_bank', removeBank);
 	await transactItems({ userID: user.id, itemsToRemove: removeBank });
 
 	// If user does not have something already placed, just place the new birdhouses.

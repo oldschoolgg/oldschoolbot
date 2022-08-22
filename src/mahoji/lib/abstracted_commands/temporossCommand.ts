@@ -1,15 +1,14 @@
 import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
-import { KlasaUser } from 'klasa';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
 
+import { MUser } from '../../../lib/MUser';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { TemporossActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
-export async function temporossCommand(user: KlasaUser, channelID: bigint, quantity: number | undefined) {
-	const fLevel = user.skillLevel(SkillsEnum.Fishing);
+export async function temporossCommand(user: MUser, channelID: bigint, quantity: number | undefined) {
+	const fLevel = user.skillLevel('fishing');
 	if (fLevel < 35) {
 		return 'You need 35 Fishing to have a chance at defeating Tempoross.';
 	}
@@ -34,15 +33,15 @@ export async function temporossCommand(user: KlasaUser, channelID: bigint, quant
 		durationPerRoss = reduceNumByPercent(durationPerRoss, percentReduced);
 	}
 
-	if (user.getGear('skilling').hasEquipped('Crystal harpoon') && fLevel >= 71) {
+	if (user.gear.skilling.hasEquipped('Crystal harpoon') && fLevel >= 71) {
 		messages.push('30% boost for Crystal harpoon');
 		durationPerRoss = reduceNumByPercent(durationPerRoss, 30);
-	} else if (user.getGear('skilling').hasEquipped('Infernal harpoon') && fLevel >= 75) {
+	} else if (user.gear.skilling.hasEquipped('Infernal harpoon') && fLevel >= 75) {
 		messages.push('10% boost for Infernal harpoon');
 		durationPerRoss = reduceNumByPercent(durationPerRoss, 10);
 		messages.push('100% more item rewards for Infernal harpoon');
 		rewardBoost = 100;
-	} else if (user.getGear('skilling').hasEquipped('Dragon harpoon') && fLevel >= 61) {
+	} else if (user.gear.skilling.hasEquipped('Dragon harpoon') && fLevel >= 61) {
 		messages.push('10% boost for Dragon harpoon');
 		durationPerRoss = reduceNumByPercent(durationPerRoss, 10);
 	}

@@ -9,7 +9,6 @@ import {
 	Time,
 	uniqueArr
 } from 'e';
-import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank, Monsters } from 'oldschooljs';
@@ -67,7 +66,7 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import findMonster from '../../../lib/util/findMonster';
 import getOSItem from '../../../lib/util/getOSItem';
-import { mahojiUsersSettingsFetch, mUserFetch } from '../../mahojiSettings';
+import { mUserFetch } from '../../mahojiSettings';
 import { nexCommand } from './nexCommand';
 import { nightmareCommand } from './nightmareCommand';
 import { getPOH } from './pohCommand';
@@ -141,8 +140,7 @@ export async function minionKillCommand(
 	if (name.toLowerCase().includes('wintertodt')) return wintertodtCommand(user, channelID);
 
 	if (revenantMonsters.some(i => i.aliases.some(a => stringMatches(a, name)))) {
-		const mUser = await mahojiUsersSettingsFetch(user.id);
-		return revsCommand(user, mUser, channelID, interaction, name);
+		return revsCommand(user, channelID, interaction, name);
 	}
 
 	const monster = findMonster(name);

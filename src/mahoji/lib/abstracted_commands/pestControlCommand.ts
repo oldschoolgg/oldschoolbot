@@ -14,8 +14,7 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
-import { minionName } from '../../../lib/util/minionUtils';
-import { getUserGear, handleMahojiConfirmation, hasSkillReqs, mahojiUserSettingsUpdate } from '../../mahojiSettings';
+import { handleMahojiConfirmation, hasSkillReqs, mahojiUserSettingsUpdate } from '../../mahojiSettings';
 
 let itemBoosts = [
 	[['Abyssal whip', 'Abyssal tentacle'].map(getOSItem), 12],
@@ -150,15 +149,15 @@ export async function pestControlBuyCommand(user: MUser, input: string) {
 	return `Successfully purchased ${loot} for ${cost} Void knight commendation points.`;
 }
 
-export async function pestControlStartCommand(user: User, channelID: bigint) {
-	if (minionIsBusy(user.id)) return `${minionName(user)} is busy.`;
+export async function pestControlStartCommand(user: MUser, channelID: bigint) {
+	if (minionIsBusy(user.id)) return `${user.minionName} is busy.`;
 	if (combatLevel(user) < 40) {
 		return 'You need a combat level of at least 40 to do Pest Control.';
 	}
 
 	let gameLength = Time.Minute * 2.8;
 	const maxLength = calcMaxTripLength(user, 'PestControl');
-	const gear = getUserGear(user).melee;
+	const gear = user.gear.melee;
 
 	let boosts = [];
 	for (const [items, percent] of itemBoosts) {
@@ -186,9 +185,9 @@ export async function pestControlStartCommand(user: User, channelID: bigint) {
 
 	let [boat] = getBoatType(combatLevel(user));
 
-	let str = `${minionName(
-		user
-	)} is now doing ${quantity}x Pest Control games on the ${boat} boat. The trip will take ${formatDuration(
+	let str = `${
+		user.minionName
+	} is now doing ${quantity}x Pest Control games on the ${boat} boat. The trip will take ${formatDuration(
 		duration
 	)}.`;
 

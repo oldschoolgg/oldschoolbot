@@ -6,13 +6,12 @@ import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
 import { MUser } from '../../../lib/MUser';
 import { getPOHObject, itemsNotRefundable, PoHObjects } from '../../../lib/poh';
 import { prisma } from '../../../lib/settings/prisma';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { itemNameFromID, updateBankSetting } from '../../../lib/util';
 import { stringMatches } from '../../../lib/util/cleanString';
 import getOSItem from '../../../lib/util/getOSItem';
 import PoHImage from '../../../tasks/pohImage';
-import { handleMahojiConfirmation } from '../../mahojiSettings';
+import { handleMahojiConfirmation, mahojiUserSettingsUpdate } from '../../mahojiSettings';
 
 export const pohWallkits = [
 	{
@@ -58,7 +57,11 @@ export async function pohWallkitCommand(user: MUser, input: string) {
 	if (selectedKit.bitfield && !bitfield.includes(BitField.HasHosidiusWallkit)) {
 		if (selectedKit.imageID === 2 && userBank.has('Hosidius blueprints')) {
 			await user.removeItemsFromBank(new Bank().add('Hosidius blueprints'));
-			await user.settings.update(UserSettings.BitField, selectedKit.bitfield);
+			await mahojiUserSettingsUpdate(user.id, {
+				bitfield: {
+					push: selectedKit.bitfield
+				}
+			});
 		} else {
 			return `You haven't unlocked the ${selectedKit.name} wallkit!`;
 		}

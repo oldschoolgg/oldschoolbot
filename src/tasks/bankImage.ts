@@ -14,7 +14,6 @@ import { filterableTypes } from '../lib/data/filterables';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
 import { BankBackground, FlagMap, Flags } from '../lib/minions/types';
 import { MUser } from '../lib/MUser';
-import { UserSettings } from '../lib/settings/types/UserSettings';
 import { BankSortMethod, BankSortMethods, sorts } from '../lib/sorts';
 import { ItemBank } from '../lib/types';
 import { addArrayOfNumbers, cleanString, formatItemStackQuantity, generateHexColorForCashStack } from '../lib/util';
@@ -500,7 +499,7 @@ export default class BankImageTask extends Task {
 		let compact = flags.has('compact');
 		const spacer = compact ? 2 : 12;
 
-		const bankBackgroundID = Number(settings?.get(UserSettings.BankBackground) ?? flags.get('background') ?? 1);
+		const bankBackgroundID = Number(user?.user.bankBackground ?? flags.get('background') ?? 1);
 		const rawCL = user?.cl;
 		const currentCL: Bank | undefined = collectionLog ?? (rawCL === undefined ? undefined : new Bank(rawCL));
 
@@ -520,12 +519,10 @@ export default class BankImageTask extends Task {
 		let items = bank.items();
 
 		// Sorting
-		const favorites = settings?.get(UserSettings.FavoriteItems);
-		const weightings = settings?.get(UserSettings.BankSortWeightings);
-
+		const favorites = user?.user.favoriteItems;
+		const weightings = user?.user.bank_sort_weightings as ItemBank;
 		const perkTier = user ? getUsersPerkTier(user) : 0;
-		const defaultSort: BankSortMethod =
-			perkTier < PerkTier.Two ? 'value' : settings?.get(UserSettings.BankSortMethod) ?? 'value';
+		const defaultSort: BankSortMethod = perkTier < PerkTier.Two ? 'value' : user?.user.bank_sort_method ?? 'value';
 		const sortInput = flags.get('sort');
 		const sort = sortInput ? BankSortMethods.find(s => s === sortInput) ?? defaultSort : defaultSort;
 
@@ -613,13 +610,9 @@ export default class BankImageTask extends Task {
 
 		let actualBackground = isPurple && bgImage.hasPurple ? bgImage.purpleImage! : bgImage.image!;
 
-		const hexColor = user?.settings.get(UserSettings.BankBackgroundHex);
+		const hexColor = user?.user.bank_bg_hex;
 
-		const useSmallBank = user
-			? hasBgSprite
-				? true
-				: user.settings.get(UserSettings.BitField).includes(BitField.AlwaysSmallBank)
-			: true;
+		const useSmallBank = user ? (hasBgSprite ? true : user.bitfield.includes(BitField.AlwaysSmallBank)) : true;
 
 		const canvas = new Canvas(width, useSmallBank ? canvasHeight : Math.max(331, canvasHeight));
 

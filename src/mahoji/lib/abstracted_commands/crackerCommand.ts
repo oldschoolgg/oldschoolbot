@@ -1,5 +1,4 @@
 import { shuffleArr } from 'e';
-import { KlasaUser } from 'klasa';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank, LootTable } from 'oldschooljs';
 
@@ -26,20 +25,20 @@ const JunkTable = new LootTable()
 	.add('Law rune', 1, 1 / 25.3);
 
 export async function crackerCommand({
-	owner,
-	otherPerson,
+	ownerID,
+	otherPersonID,
 	interaction
 }: {
-	owner: KlasaUser;
-	otherPerson: KlasaUser;
+	ownerID: string;
+	otherPersonID: string;
 	interaction: SlashCommandInteraction;
 }) {
+	const otherPerson;
 	if (otherPerson.isIronman) return 'That person is an ironman, they stand alone.';
 	if (otherPerson.bot) return "Bot's don't have hands.";
 	if (otherPerson.id === owner.id) return 'Nice try.';
 	if (otherPerson.isBusy) return 'That user is busy right now.';
 
-	await Promise.all([otherPerson.settings.sync(true), owner.settings.sync(true)]);
 	if (!owner.owns('Christmas cracker')) {
 		return "You don't have any Christmas crackers.";
 	}

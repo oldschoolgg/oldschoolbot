@@ -14,6 +14,8 @@ import {
 	MediumEncounterLoot,
 	rewardTokens
 } from '../minions/data/templeTrekking';
+import { MUser } from '../MUser';
+import { getMinigameScore } from '../settings/minigames';
 import { UserSettings } from '../settings/types/UserSettings';
 import { NexNonUniqueTable, NexUniqueTable } from '../simulation/misc';
 import { allFarmingItems } from '../skilling/skills/farming';
@@ -898,10 +900,8 @@ export const allCLItemsFiltered = [
 	)
 ];
 
-export function calcCLDetails(user: User | KlasaUser) {
-	const clBank =
-		user instanceof KlasaUser ? user.settings.get(UserSettings.CollectionLogBank) : user.collectionLogBank;
-	const clItems = new Bank(clBank as ItemBank).filter(i => allCLItemsFiltered.includes(i.id), true);
+export function calcCLDetails(user: MUser) {
+	const clItems = user.cl.filter(i => allCLItemsFiltered.includes(i.id), true);
 	const debugBank = new Bank().add(clItems);
 	const owned = clItems.filter(i => allCLItemsFiltered.includes(i.id));
 	const notOwned = shuffleRandom(

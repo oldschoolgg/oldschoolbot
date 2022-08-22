@@ -93,7 +93,7 @@ export async function agilityArenaCommand(user: MUser, channelID: bigint): Comma
 		minigameID: 'agility_arena'
 	});
 
-	let str = `${minionName(user)} is now doing the Brimhaven Agility Arena for ${formatDuration(duration)}.`;
+	let str = `${user.minionName} is now doing the Brimhaven Agility Arena for ${formatDuration(duration)}.`;
 
 	if (boosts.length > 0) {
 		str += `\n\n**Boosts:** ${boosts.join(', ')}.`;

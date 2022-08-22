@@ -1,10 +1,9 @@
-import { KlasaUser } from 'klasa';
-
 import { Favours, gotFavour } from '../../minions/data/kourendFavour';
+import { MUser } from '../../MUser';
 import { rand } from '../../util';
 import { Plant, SkillsEnum } from '../types';
 
-export function calcNumOfPatches(plant: Plant, user: KlasaUser, qp: number): [number, string | undefined] {
+export function calcNumOfPatches(plant: Plant, user: MUser, qp: number): [number, string | undefined] {
 	let numOfPatches = plant.defaultNumOfPatches;
 	const farmingLevel = user.skillLevel(SkillsEnum.Farming);
 	const questPoints = qp;

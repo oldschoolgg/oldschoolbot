@@ -214,7 +214,7 @@ export async function interactionHook(data: APIInteraction) {
 	}
 
 	if (minionIsBusy(user.id)) {
-		return buttonReply(`${minionName(user)} is busy.`);
+		return buttonReply(`${user.minionName} is busy.`);
 	}
 
 	switch (id) {

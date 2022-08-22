@@ -90,7 +90,6 @@ declare module 'discord.js' {
 			dontAddToTempCL?: boolean;
 		}): ReturnType<typeof transactItems>;
 		removeItemsFromBank(items: ItemBank | Bank, collectionLog?: boolean): ReturnType<typeof transactItems>;
-		specialRemoveItems(items: Bank): Promise<{ realCost: Bank }>;
 		addItemsToCollectionLog(options: { items: Bank; dontAddToTempCL?: boolean }): Promise<SettingsUpdateResult>;
 		incrementCreatureScore(creatureID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
 		log(stringLog: string): void;
@@ -122,10 +121,6 @@ declare module 'discord.js' {
 		 * Returns minigame score
 		 */
 		getMinigameScore(id: MinigameName): Promise<number>;
-		/**
-		 * Returns Creature score
-		 */
-		getCreatureScore(creature: Creature): number;
 		rawGear(): UserFullGearSetup;
 		cl(): Bank;
 		bank(options?: GetUserBankOptions): Bank;

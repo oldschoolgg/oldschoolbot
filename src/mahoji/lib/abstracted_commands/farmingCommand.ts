@@ -6,8 +6,7 @@ import { Bank } from 'oldschooljs';
 import { superCompostables } from '../../../lib/data/filterables';
 import { ArdougneDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
+import { MUser } from '../../../lib/MUser';
 import { calcNumOfPatches } from '../../../lib/skilling/functions/calcsFarming';
 import { getFarmingInfo } from '../../../lib/skilling/functions/getFarmingInfo';
 import Farming, { CompostName } from '../../../lib/skilling/skills/farming';
@@ -17,8 +16,7 @@ import { formatDuration, stringMatches, updateBankSetting } from '../../../lib/u
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { farmingPatchNames, findPlant, isPatchName } from '../../../lib/util/farmingHelpers';
-import { hasItemsEquippedOrInBank } from '../../../lib/util/minionUtils';
-import { handleMahojiConfirmation, mUserFetch } from '../../mahojiSettings';
+import { handleMahojiConfirmation, mUserFetch, userHasGracefulEquipped } from '../../mahojiSettings';
 
 function treeCheck(plant: Plant, wcLevel: number, bal: number, quantity: number): string | null {
 	if (plant.needsChopForHarvest && plant.treeWoodcuttingLevel && wcLevel < plant.treeWoodcuttingLevel) {
@@ -35,14 +33,14 @@ export async function harvestCommand({
 	channelID,
 	seedType
 }: {
-	user: KlasaUser;
+	user: MUser;
 	channelID: bigint;
 	seedType: string;
 }) {
 	if (user.minionIsBusy) {
 		return 'Your minion must not be busy to use this command.';
 	}
-	const GP = user.settings.get(UserSettings.GP);
+	const { GP } = user;
 	const currentWoodcuttingLevel = user.skillLevel(SkillsEnum.Woodcutting);
 	const currentDate = new Date().getTime();
 	if (!isPatchName(seedType)) {
@@ -79,7 +77,7 @@ export async function harvestCommand({
 		duration *= 0.9;
 	}
 
-	if (hasItemsEquippedOrInBank(user, ['Ring of endurance'])) {
+	if (user.hasEquippedOrInBank(['Ring of endurance'])) {
 		boostStr.push('10% time for Ring of Endurance');
 		duration *= 0.9;
 	}
@@ -92,11 +90,11 @@ export async function harvestCommand({
 		)}, try a lower quantity.`;
 	}
 
-	if (hasItemsEquippedOrInBank(user, ['Magic secateurs'])) {
+	if (user.hasEquippedOrInBank(['Magic secateurs'])) {
 		boostStr.push('10% crop yield for Magic Secateurs');
 	}
 
-	if (hasItemsEquippedOrInBank(user, ['Farming cape'])) {
+	if (user.hasEquippedOrInBank(['Farming cape'])) {
 		boostStr.push('5% crop yield for Farming Skillcape');
 	}
 
@@ -142,9 +140,9 @@ export async function farmingPlantCommand({
 		return 'Your minion must not be busy to use this command.';
 	}
 	const userBank = user.bank;
-	const alwaysPay = user.settings.get(UserSettings.Minion.DefaultPay);
-	const questPoints = user.settings.get(UserSettings.QP);
-	const GP = user.settings.get(UserSettings.GP);
+	const alwaysPay = user.user.minion_defaultPay;
+	const questPoints = user.QP;
+	const { GP } = user;
 	const currentWoodcuttingLevel = user.skillLevel(SkillsEnum.Woodcutting);
 	const currentDate = new Date().getTime();
 
@@ -220,7 +218,7 @@ export async function farmingPlantCommand({
 		duration *= 0.9;
 	}
 
-	if (user.hasItemEquippedAnywhere('Ring of endurance')) {
+	if (user.hasEquipped('Ring of endurance')) {
 		boostStr.push('10% time for Ring of Endurance');
 		duration *= 0.9;
 	}
@@ -253,7 +251,7 @@ export async function farmingPlantCommand({
 		}
 	}
 
-	const compostTier = user.settings.get(UserSettings.Minion.DefaultCompostToUse) ?? 'compost';
+	const compostTier = (user.user.minion_defaultCompostToUse as CompostName) ?? 'compost';
 	let upgradeType: CompostName | null = null;
 	if ((didPay && plant.canCompostandPay) || (!didPay && plant.canCompostPatch && compostTier)) {
 		const compostCost = new Bank().add(compostTier, quantity);
@@ -267,15 +265,15 @@ export async function farmingPlantCommand({
 	if (!user.bank.has(cost)) return `You don't own ${cost}.`;
 	await transactItems({ userID: user.id, itemsToRemove: cost });
 
-	updateBankSetting(globalClient, ClientSettings.EconomyStats.FarmingCostBank, cost);
+	updateBankSetting('farming_cost_bank', cost);
 	// If user does not have something already planted, just plant the new seeds.
 	if (!patchType.patchPlanted) {
 		infoStr.unshift(`${user.minionName} is now planting ${quantity}x ${plant.name}.`);
 	} else if (patchType.patchPlanted) {
-		if (hasItemsEquippedOrInBank(user, ['Magic secateurs'])) {
+		if (user.hasEquippedOrInBank(['Magic secateurs'])) {
 			boostStr.push('10% crop yield for Magic Secateurs');
 		}
-		if (hasItemsEquippedOrInBank(user, ['Farming cape'])) {
+		if (user.hasEquippedOrInBank(['Farming cape'])) {
 			boostStr.push('5% crop yield for Farming Skillcape');
 		}
 

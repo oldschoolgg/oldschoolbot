@@ -31,7 +31,12 @@ import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, MersenneTwister19937, nodeCrypto, real, shuffle } from 'random-js';
 
 import { CLIENT_ID, production } from '../config';
-import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../mahoji/mahojiSettings';
+import {
+	mahojiClientSettingsFetch,
+	mahojiClientSettingsUpdate,
+	mahojiUserSettingsUpdate,
+	mahojiUsersSettingsFetch
+} from '../mahoji/mahojiSettings';
 import { skillEmoji, SupportServer, usernameCache } from './constants';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
 import { Consumable } from './minions/types';
@@ -531,6 +536,21 @@ export async function updateBankSetting(key: ClientBankKey, bankToAdd: Bank) {
 	return res;
 }
 
+export async function updateLegacyUserBankSetting(userID: string, key: 'tob_cost' | 'tob_loot', bankToAdd: Bank) {
+	if (bankToAdd === undefined || bankToAdd === null) throw new Error(`Gave null bank for ${key}`);
+	const currentUserSettings = await mahojiUsersSettingsFetch(userID, {
+		[key]: true
+	});
+	const current = currentUserSettings[key] as ItemBank;
+	validateItemBankAndThrow(current);
+	const newBank = new Bank().add(current).add(bankToAdd);
+
+	const res = await mahojiUserSettingsUpdate(userID, {
+		[key]: newBank.bank
+	});
+	return res;
+}
+
 export async function wipeDBArrayByKey(user: KlasaUser, key: string): Promise<SettingsUpdateResults> {
 	const active: any[] = user.settings.get(key) as any[];
 	return user.settings.update(key, active);
@@ -863,8 +883,8 @@ export function makeComponents(
 	return chunk(components, 5).map(i => ({ components: i, type: ComponentType.ActionRow }));
 }
 
-export function combatLevel(user: User): number {
-	const skills = getSkillsOfMahojiUser(user, true);
+export function combatLevel(user: User | MUser): number {
+	const skills = user instanceof MUser ? user.skillsAsLevels : getSkillsOfMahojiUser(user, true);
 	const { defence, ranged, hitpoints, magic, prayer, attack, strength } = skills;
 
 	const base = 0.25 * (defence + hitpoints + Math.floor(prayer / 2));

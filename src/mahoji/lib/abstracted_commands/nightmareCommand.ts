@@ -1,5 +1,4 @@
 import { reduceNumByPercent, Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { BitField, PHOSANI_NIGHTMARE_ID, ZAM_HASTA_CRUSH } from '../../../lib/constants';
@@ -87,7 +86,7 @@ function checkReqs(users: MUser[], monster: KillableMonster, quantity: number, i
 		}
 
 		if (isPhosani) {
-			const requirements = hasSkillReqs(user.user, {
+			const requirements = hasSkillReqs(user, {
 				prayer: 70,
 				attack: 90,
 				strength: 90,

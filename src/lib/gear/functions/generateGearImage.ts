@@ -1,11 +1,9 @@
 /* eslint-disable @typescript-eslint/restrict-plus-operands */
-import { User } from '@prisma/client';
 import * as fs from 'fs';
 import { KlasaUser } from 'klasa';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import { Canvas } from 'skia-canvas/lib';
 
-import { getUserGear } from '../../../mahoji/mahojiSettings';
 import BankImageTask from '../../../tasks/bankImage';
 import { MUser } from '../../MUser';
 import { UserSettings } from '../../settings/types/UserSettings';
@@ -92,12 +90,11 @@ export async function generateGearImage(
 		bankTask = globalClient.tasks.get('bankImage') as BankImageTask;
 	}
 
-	const bankBg =
-		(user instanceof KlasaUser ? user.settings.get(UserSettings.BankBackground) : user.bankBackground) ?? 1;
+	const bankBg = user.user.bankBackground ?? 1;
 
 	let { sprite, uniqueSprite, background: userBgImage } = bankTask.getBgAndSprite(bankBg);
 
-	const hexColor = user instanceof KlasaUser ? user.settings.get(UserSettings.BankBackgroundHex) : user.bank_bg_hex;
+	const hexColor = user.user.bank_bg_hex;
 
 	const gearStats = gearSetup instanceof Gear ? gearSetup.stats : new Gear(gearSetup).stats;
 	const gearTemplateImage = await canvasImageFromBuffer(gearTemplateFile);
@@ -251,7 +248,7 @@ export async function generateGearImage(
 	return canvas.toBuffer('png');
 }
 
-export async function generateAllGearImage(user: KlasaUser | User) {
+export async function generateAllGearImage(user: MUser) {
 	if (!bankTask) {
 		bankTask = globalClient.tasks.get('bankImage') as BankImageTask;
 	}
@@ -260,11 +257,9 @@ export async function generateAllGearImage(user: KlasaUser | User) {
 		sprite: bgSprite,
 		uniqueSprite: hasBgSprite,
 		background: userBg
-	} = bankTask.getBgAndSprite(
-		(user instanceof KlasaUser ? user.settings.get(UserSettings.BankBackground) : user.bankBackground) ?? 1
-	);
+	} = bankTask.getBgAndSprite(user.user.bankBackground ?? 1);
 
-	const hexColor = user instanceof KlasaUser ? user.settings.get(UserSettings.BankBackgroundHex) : user.bank_bg_hex;
+	const hexColor = user.user.bank_bg_hex;
 
 	const gearTemplateImage = await canvasImageFromBuffer(gearTemplateCompactFile);
 	const canvas = new Canvas((gearTemplateImage.width + 10) * 4 + 20, Number(gearTemplateImage.height) * 2 + 70);
@@ -305,7 +300,7 @@ export async function generateAllGearImage(user: KlasaUser | User) {
 			y += gearTemplateImage.height + 30;
 			i = 0;
 		}
-		const gear = user instanceof KlasaUser ? user.getGear(type) : getUserGear(user)[type];
+		const gear = user.gear[type];
 		ctx.save();
 		ctx.translate(15 + i * (gearTemplateImage.width + 10), y);
 		ctx.font = '16px RuneScape Bold 12';
@@ -335,7 +330,7 @@ export async function generateAllGearImage(user: KlasaUser | User) {
 	drawText(canvas, 'Pet', petX + 5, petY - 5);
 	ctx.drawImage(gearTemplateImage, 42, 1, 36, 36, petX, petY, 36, 36);
 	const userPet =
-		user instanceof KlasaUser ? user.settings.get(UserSettings.Minion.EquippedPet) : user.minion_equippedPet;
+		user instanceof KlasaUser ? user.settings.get(UserSettings.Minion.EquippedPet) : user.user.minion_equippedPet;
 	if (userPet) {
 		const image = await globalClient.tasks.get('bankImage')!.getItemImage(userPet, 1);
 		ctx.drawImage(image, petX, petY, image.width, image.height);

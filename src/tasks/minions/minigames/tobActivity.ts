@@ -7,10 +7,9 @@ import { tobMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { TOBRooms, TOBUniques, TOBUniquesToAnnounce, totalXPFromRaid } from '../../../lib/data/tob';
 import { trackLoot } from '../../../lib/settings/prisma';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { TheatreOfBlood } from '../../../lib/simulation/tob';
 import { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
-import { convertPercentChance, updateBankSetting } from '../../../lib/util';
+import { convertPercentChance, updateBankSetting, updateLegacyUserBankSetting } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { sendToChannelID } from '../../../lib/util/webhook';
@@ -75,7 +74,7 @@ export default class extends Task {
 		// Track loot for T3+ patrons
 		await Promise.all(
 			allUsers.map(user => {
-				return updateBankSetting(user, UserSettings.TOBLoot, result.loot[user.id]);
+				return updateLegacyUserBankSetting(user.id, 'tob_loot', new Bank(result.loot[user.id]));
 			})
 		);
 

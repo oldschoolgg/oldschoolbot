@@ -1,5 +1,4 @@
-import { KlasaUser } from 'klasa';
-
+import { MUser } from '../MUser';
 import { SkillsEnum } from '../skilling/types';
 
 export interface ItemBank {
@@ -52,12 +51,12 @@ export type ArrayItemsResolved = (number | number[])[];
 export interface MakePartyOptions {
 	maxSize: number;
 	minSize: number;
-	leader: KlasaUser;
+	leader: MUser;
 	message: string;
 	ironmanAllowed: boolean;
 	usersAllowed?: string[];
 	party?: boolean;
-	customDenier?(user: KlasaUser): Promise<[false] | [true, string]>;
+	customDenier?(user: MUser): Promise<[false] | [true, string]>;
 }
 
 export type Skills = Partial<{

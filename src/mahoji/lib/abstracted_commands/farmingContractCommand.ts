@@ -1,18 +1,16 @@
-import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
 import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
 import { defaultFarmingContract } from '../../../lib/minions/farming';
 import { ContractOption, FarmingContract, FarmingContractDifficultyLevel } from '../../../lib/minions/farming/types';
+import { MUser } from '../../../lib/MUser';
 import { getPlantToGrow } from '../../../lib/skilling/functions/calcFarmingContracts';
 import { getFarmingInfo } from '../../../lib/skilling/functions/getFarmingInfo';
-import { SkillsEnum } from '../../../lib/skilling/types';
 import { getSkillsOfMahojiUser, roughMergeMahojiResponse } from '../../../lib/util';
 import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import { findPlant } from '../../../lib/util/farmingHelpers';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
-import { minionName } from '../../../lib/util/minionUtils';
-import { getMahojiBank, mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../../mahojiSettings';
+import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch, mUserFetch } from '../../mahojiSettings';
 import { farmingPlantCommand, harvestCommand } from './farmingCommand';
 import { abstractedOpenCommand } from './openCommand';
 
@@ -28,11 +26,10 @@ const contractToFarmingLevel = {
 };
 
 export async function farmingContractCommand(userID: bigint, input?: ContractOption): CommandResponse {
-	const user = await mahojiUsersSettingsFetch(userID);
-	const bank = getMahojiBank(user);
-	const farmingLevel = getSkillsOfMahojiUser(user, true).farming;
+	const user = await mUserFetch(userID);
+	const farmingLevel = user.skillsAsLevels.farming;
 	const currentContract: FarmingContract =
-		(user.minion_farmingContract as FarmingContract | null) ?? defaultFarmingContract;
+		(user.user.minion_farmingContract as FarmingContract | null) ?? defaultFarmingContract;
 	const plant = currentContract.hasContract ? findPlant(currentContract.plantToGrow) : null;
 
 	if (!input) {
@@ -40,7 +37,7 @@ export async function farmingContractCommand(userID: bigint, input?: ContractOpt
 **Current Contract:** ${plant ? `${plant.name} - ${currentContract.difficultyLevel}` : 'None'}`;
 	}
 
-	if (bank.has('Seed pack')) {
+	if (user.bank.has('Seed pack')) {
 		return janeImage('You need to open your seed pack before receiving a new contract!');
 	}
 
@@ -50,7 +47,7 @@ export async function farmingContractCommand(userID: bigint, input?: ContractOpt
 
 	const [hasFavour, requiredPoints] = gotFavour(user, Favours.Hosidius, 60);
 	if (!hasFavour) {
-		return `${minionName(user)} needs ${requiredPoints}% Hosidius Favour to enter the Farming Guild!`;
+		return `${user.minionName} needs ${requiredPoints}% Hosidius Favour to enter the Farming Guild!`;
 	}
 
 	if (input !== 'easier' && farmingLevel < contractToFarmingLevel[input]) {
@@ -139,17 +136,17 @@ export async function canRunAutoContract(userID: string) {
 	);
 }
 
-export async function autoContract(klasaUser: KlasaUser, channelID: bigint, userID: bigint): CommandResponse {
+export async function autoContract(user: MUser, channelID: bigint, userID: bigint): CommandResponse {
 	const [farmingDetails, mahojiUser] = await Promise.all([getFarmingInfo(userID), mahojiUsersSettingsFetch(userID)]);
 	const contract = mahojiUser.minion_farmingContract as FarmingContract | null;
 	const plant = contract?.hasContract ? findPlant(contract?.plantToGrow) : null;
 	const patch = farmingDetails.patchesDetailed.find(p => p.plant === plant);
 	const bestContractTierCanDo = Object.entries(contractToFarmingLevel)
 		.sort((a, b) => b[1] - a[1])
-		.find(a => klasaUser.skillLevel(SkillsEnum.Farming) >= a[1])?.[0] as ContractOption | undefined;
+		.find(a => user.skillLevel('farming') >= a[1])?.[0] as ContractOption | undefined;
 
-	if (klasauser.bank.has('Seed pack')) {
-		const openResponse = await abstractedOpenCommand(null, klasaUser, mahojiUser, ['seed pack'], 'auto');
+	if (user.bank.has('Seed pack')) {
+		const openResponse = await abstractedOpenCommand(null, user.id, mahojiUser, ['seed pack'], 'auto');
 		const contractResponse = await farmingContractCommand(userID, bestContractTierCanDo);
 		return roughMergeMahojiResponse(openResponse, contractResponse);
 	}
@@ -161,7 +158,7 @@ export async function autoContract(klasaUser: KlasaUser, channelID: bigint, user
 		const contract = newUser.minion_farmingContract as FarmingContract | null;
 		if (!contract || !contract.plantToGrow) return contractResult;
 		return farmingPlantCommand({
-			user: klasaUser,
+			userID: user.id,
 			plantName: contract.plantToGrow,
 			pay: false,
 			autoFarmed: false,
@@ -173,7 +170,7 @@ export async function autoContract(klasaUser: KlasaUser, channelID: bigint, user
 	// If they have a contract, but nothing planted, plant it.
 	if (!patch) {
 		return farmingPlantCommand({
-			user: klasaUser,
+			userID: user.id,
 			plantName: plant!.name,
 			quantity: null,
 			autoFarmed: false,
@@ -184,7 +181,7 @@ export async function autoContract(klasaUser: KlasaUser, channelID: bigint, user
 
 	// If they have a contract, and its planted, and its ready, harvest it.
 	if (patch.ready) {
-		return harvestCommand({ user: klasaUser, channelID, seedType: patch.patchName });
+		return harvestCommand({ user, channelID, seedType: patch.patchName });
 	}
 
 	return 'Your current contract is still growing.';

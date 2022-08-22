@@ -1,16 +1,15 @@
-import { User } from '@prisma/client';
 import { Time } from 'e';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { UserKourendFavour } from '../../../lib/minions/data/kourendFavour';
+import { MUser } from '../../../lib/MUser';
 import { Skills } from '../../../lib/types';
 import { PuroPuroActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, getSkillsOfMahojiUser, itemID, stringMatches } from '../../../lib/util';
+import { formatDuration, itemID, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
-import { minionName } from '../../../lib/util/minionUtils';
-import { getMahojiBank, hasSkillReqs, userHasGracefulEquipped } from '../../mahojiSettings';
+import { hasSkillReqs, userHasGracefulEquipped } from '../../mahojiSettings';
 
 interface PuroImpling {
 	name: string;
@@ -91,7 +90,7 @@ export const puroOptions: PuroImpling[] = [
 export default puroOptions;
 
 export async function puroPuroStartCommand(
-	user: User,
+	user: MUser,
 	channelID: bigint,
 	impling: string,
 	darkLure: boolean | undefined
@@ -100,7 +99,7 @@ export async function puroPuroStartCommand(
 	const maxTripLength = calcMaxTripLength(user, 'PuroPuro');
 	const quantity = Math.floor(maxTripLength / timePerGame);
 	const duration = quantity * timePerGame;
-	const skills = getSkillsOfMahojiUser(user, true);
+	const skills = user.skillsAsLevels;
 	const hunterLevel = skills.hunter;
 	const [hasReqs, reason] = hasSkillReqs(user, puroPuroSkillRequirements);
 	const [hasDarkLureSkillReqs, lureReason] = hasSkillReqs(user, darkLureSkillRequirements);
@@ -122,9 +121,7 @@ export async function puroPuroStartCommand(
 	}
 
 	if (hunterLevel < impToHunt.hunterLevel) {
-		return `${minionName(user)} needs atleast level ${impToHunt.hunterLevel} hunter to hunt ${
-			impToHunt.name
-		} in Puro-Puro.`;
+		return `${user.minionName} needs atleast level ${impToHunt.hunterLevel} hunter to hunt ${impToHunt.name} in Puro-Puro.`;
 	}
 
 	if (!darkLure || (darkLure && !impToHunt.spell)) {
@@ -140,14 +137,14 @@ export async function puroPuroStartCommand(
 			return `To use Dark Lure, you need: ${lureReason}.`;
 		}
 
-		const currentUserFavour = user.kourend_favour;
+		const currentUserFavour = user.user.kourend_favour;
 		for (const [key, value] of Object.entries(currentUserFavour as any as UserKourendFavour)) {
 			if (value < 100) {
 				return `You don't have the required amount of Favour to cast Dark Lure.\n\nRequired: 100% ${key} Favour.`;
 			}
 		}
 
-		const bank = getMahojiBank(user);
+		const { bank } = user;
 		const natureRuneID = itemID('Nature rune');
 		const deathRuneID = itemID('Death rune');
 		if (impToHunt.name === 'Dragon Implings') {
@@ -170,11 +167,11 @@ export async function puroPuroStartCommand(
 		minigameID: 'puro_puro'
 	});
 
-	let str = `${minionName(user)} is now hunting ${impToHunt.name} in Puro-Puro! It will take ${formatDuration(
+	let str = `${user.minionName} is now hunting ${impToHunt.name} in Puro-Puro! It will take ${formatDuration(
 		duration
 	)} to finish.`;
 
-	if (!userHasGracefulEquipped(user) && impToHunt.name !== 'Dragon Implings')
+	if (!userHasGracefulEquipped(user.user) && impToHunt.name !== 'Dragon Implings')
 		str += '\n20% less implings due to having no Graceful equipped.';
 
 	if (!impToHunt.spell) {
