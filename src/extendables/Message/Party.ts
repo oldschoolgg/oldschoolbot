@@ -5,6 +5,7 @@ import { Extendable, ExtendableStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { ReactionEmoji, SILENT_ERROR } from '../../lib/constants';
+import { MUser } from '../../lib/MUser';
 import { CustomReactionCollector } from '../../lib/structures/CustomReactionCollector';
 import { MakePartyOptions } from '../../lib/types';
 
@@ -13,7 +14,7 @@ setInterval(() => partyLockCache.clear(), Time.Minute * 20);
 
 export async function setupParty(
 	channel: TextChannel,
-	user: KlasaUser,
+	user: MUser,
 	options: MakePartyOptions
 ): Promise<[KlasaUser[], () => Promise<KlasaUser[]>]> {
 	const usersWhoConfirmed: KlasaUser[] = [options.leader];

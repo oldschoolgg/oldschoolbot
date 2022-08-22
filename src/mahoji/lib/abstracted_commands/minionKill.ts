@@ -45,7 +45,6 @@ import { Consumable, KillableMonster } from '../../../lib/minions/types';
 import { MUser } from '../../../lib/MUser';
 import { calcPOHBoosts } from '../../../lib/poh';
 import { trackLoot } from '../../../lib/settings/prisma';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SlayerTaskUnlocksEnum } from '../../../lib/slayer/slayerUnlocks';
 import { determineBoostChoice, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
@@ -96,7 +95,7 @@ const degradeableItemsCanUse = [
 	}
 ];
 
-function applySkillBoost(user: KlasaUser, duration: number, styles: AttackStyles[]): [number, string] {
+function applySkillBoost(user: MUser, duration: number, styles: AttackStyles[]): [number, string] {
 	const skillTotal = addArrayOfNumbers(styles.map(s => user.skillLevel(s)));
 
 	let newDuration = duration;

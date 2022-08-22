@@ -3,8 +3,6 @@ import { APIUser, ApplicationCommandOptionType, CommandRunOptions } from 'mahoji
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { Stealable, stealables } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
@@ -21,7 +19,7 @@ import { stringMatches } from '../../lib/util/cleanString';
 import { logError } from '../../lib/util/logError';
 import { calcLootXPPickpocketing } from '../../tasks/minions/pickpocketActivity';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { mahojiUsersSettingsFetch, mUserFetch } from '../mahojiSettings';
 
 export const stealCommand: OSBMahojiCommand = {
 	name: 'steal',
@@ -58,7 +56,7 @@ export const stealCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
-		const user = await globalClient.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		stealables;
 		const stealable: Stealable | undefined = stealables.find(
 			obj =>
@@ -71,7 +69,7 @@ export const stealCommand: OSBMahojiCommand = {
 				.join(', ')}.`;
 		}
 
-		if (stealable.qpRequired && user.settings.get(UserSettings.QP) < stealable.qpRequired) {
+		if (stealable.qpRequired && user.QP < stealable.qpRequired) {
 			return `You need atleast **${stealable.qpRequired}** QP to ${
 				stealable.type === 'pickpockable' ? 'pickpocket' : 'steal from'
 			} a ${stealable.name}.`;
@@ -161,7 +159,7 @@ export const stealCommand: OSBMahojiCommand = {
 				attackStylesUsed: []
 			});
 
-			updateBankSetting(globalClient, ClientSettings.EconomyStats.ThievingCost, foodRemoved);
+			updateBankSetting('economyStats_thievingCost', foodRemoved);
 			str += ` Removed ${foodRemoved}.`;
 		} else {
 			// Up to 5% fail chance, random

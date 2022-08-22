@@ -1,4 +1,3 @@
-import { User } from '@prisma/client';
 import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
@@ -68,10 +67,10 @@ export function determineXPFromTickets(qty: number, user: MUser, hasDiary: boole
 	return xpToGive;
 }
 
-export async function agilityArenaCommand(user: User, channelID: bigint): CommandResponse {
+export async function agilityArenaCommand(user: MUser, channelID: bigint): CommandResponse {
 	const duration = calcMaxTripLength(user, 'AgilityArena');
 
-	if (!userHasGracefulEquipped(user)) {
+	if (!userHasGracefulEquipped(user.user)) {
 		return mahojiChatHead({
 			content: 'Ahoy there! You need full Graceful equipped to do the Brimhaven Agility Arena!',
 			head: 'izzy'
@@ -177,7 +176,7 @@ export async function agilityArenaXPCommand(user: MUser, qty: number): CommandRe
 	if (amountTicketsHas < qty) {
 		return "You don't have enough Agility arena tickets.";
 	}
-	const [hasKaramjaMed] = await userhasDiaryTier(user.user, KaramjaDiary.medium);
+	const [hasKaramjaMed] = await userhasDiaryTier(user, KaramjaDiary.medium);
 	const xpToGive = determineXPFromTickets(qty, user, hasKaramjaMed);
 	let str = `Redeemed ${qty}x Agility arena tickets for ${xpToGive.toLocaleString()} Agility XP. (${(
 		xpToGive / qty

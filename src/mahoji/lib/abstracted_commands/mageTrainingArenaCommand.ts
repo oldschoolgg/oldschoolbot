@@ -3,9 +3,9 @@ import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, LootTable } from 'oldschooljs';
 
+import { MUser } from '../../../lib/MUser';
 import { prisma } from '../../../lib/settings/prisma';
 import { getNewUser } from '../../../lib/settings/settings';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
@@ -66,7 +66,7 @@ export const mageTrainingArenaBuyables = [
 	}
 ];
 
-export async function mageTrainingArenaBuyCommand(user: KlasaUser, input = '') {
+export async function mageTrainingArenaBuyCommand(user: MUser, input = '') {
 	const buyable = mageTrainingArenaBuyables.find(i => stringMatches(input, i.item.name));
 	if (!buyable) {
 		return `Here are the items you can buy: \n\n${mageTrainingArenaBuyables
@@ -118,9 +118,8 @@ ${mageTrainingArenaBuyables
 Hint: Magic Training Arena is combined into 1 room, and 1 set of points - rewards take approximately the same amount of time to get. To get started use **/minigames mage_training_arena train**. You can buy rewards using **/minigames mage_training_arena buy**.`;
 }
 
-export async function mageTrainingArenaStartCommand(user: KlasaUser, channelID: bigint): CommandResponse {
+export async function mageTrainingArenaStartCommand(user: MUser, channelID: bigint): CommandResponse {
 	if (user.minionIsBusy) return `${user.minionName} is currently busy.`;
-	await user.settings.sync(true);
 
 	const roomDuration = Time.Minute * 14;
 	const quantity = Math.floor(calcMaxTripLength(user, 'MageTrainingArena') / roomDuration);
@@ -134,7 +133,7 @@ export async function mageTrainingArenaStartCommand(user: KlasaUser, channelID: 
 
 	await transactItems({ userID: user.id, itemsToRemove: cost });
 
-	await updateBankSetting(globalClient, ClientSettings.EconomyStats.MTACostBank, cost);
+	await updateBankSetting('mta_cost', cost);
 
 	await addSubTaskToActivityTask<MinigameActivityTaskOptions>({
 		userID: user.id,

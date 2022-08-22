@@ -1,11 +1,10 @@
 import { strikethrough } from '@discordjs/builders';
-import { KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { diaries, DiaryTier, userhasDiaryTier } from '../../../lib/diaries';
+import { MUser } from '../../../lib/MUser';
 import { Minigames } from '../../../lib/settings/minigames';
 import { formatSkillRequirements, itemNameFromID, stringMatches, toTitleCase } from '../../../lib/util';
-import { allItemsOwned } from '../../mahojiSettings';
 
 const lampRewards = {
 	Easy: 'Antique lamp 1',
@@ -14,7 +13,7 @@ const lampRewards = {
 	Elite: 'Antique lamp 4'
 } as const;
 
-async function howManyOfTierCompleted(user: KlasaUser, tiers: DiaryTier[]) {
+async function howManyOfTierCompleted(user: MUser, tiers: DiaryTier[]) {
 	let completed = 0;
 	for (const tier of tiers) {
 		const [has] = await userhasDiaryTier(user, tier);
@@ -23,7 +22,7 @@ async function howManyOfTierCompleted(user: KlasaUser, tiers: DiaryTier[]) {
 	return completed;
 }
 
-export async function achievementDiaryCommand(user: KlasaUser, diaryName: string) {
+export async function achievementDiaryCommand(user: MUser, diaryName: string) {
 	const diary = diaries.find(
 		d => stringMatches(d.name, diaryName) || d.alias?.some(a => stringMatches(a, diaryName))
 	);
@@ -97,7 +96,7 @@ export async function achievementDiaryCommand(user: KlasaUser, diaryName: string
 	return str;
 }
 
-export async function claimAchievementDiaryCommand(user: KlasaUser, diaryName: string) {
+export async function claimAchievementDiaryCommand(user: MUser, diaryName: string) {
 	const diary = diaries.find(
 		d => stringMatches(d.name, diaryName) || d.alias?.some(a => stringMatches(a, diaryName))
 	);
@@ -106,8 +105,8 @@ export async function claimAchievementDiaryCommand(user: KlasaUser, diaryName: s
 		return `These are the achievement diaries you can claim: ${diaries.map(d => d.name).join(', ')}.`;
 	}
 
-	const allItems = allItemsOwned(user);
-	const cl = user.cl();
+	const allItems = user.allItemsOwned();
+	const { cl } = user;
 
 	for (const tier of ['easy', 'medium', 'hard', 'elite'] as const) {
 		const diaryTier = diary[tier];

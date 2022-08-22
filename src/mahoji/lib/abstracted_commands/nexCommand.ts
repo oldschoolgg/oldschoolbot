@@ -1,21 +1,20 @@
 import { userMention } from '@discordjs/builders';
 import { TextChannel } from 'discord.js';
-import { KlasaUser } from 'klasa';
 import { MessageFlags } from 'mahoji';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
 import { setupParty } from '../../../extendables/Message/Party';
 import { Emoji, NEX_ID } from '../../../lib/constants';
+import { MUser } from '../../../lib/MUser';
 import { trackLoot } from '../../../lib/settings/prisma';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { calculateNexDetails, checkNexUser } from '../../../lib/simulation/nex';
 import { NexTaskOptions } from '../../../lib/types/minions';
 import { calcPerHour, formatDuration, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { allItemsOwned, mahojiUsersSettingsFetch } from '../../mahojiSettings';
+import { mahojiUsersSettingsFetch, mUserFetch } from '../../mahojiSettings';
 
-export async function nexCommand(interaction: SlashCommandInteraction, user: KlasaUser, channelID: bigint) {
+export async function nexCommand(interaction: SlashCommandInteraction, user: MUser, channelID: bigint) {
 	const channel = globalClient.channels.cache.get(channelID.toString());
 	if (!channel || channel.type !== 'text') return 'You need to run this in a text channel.';
 	const mahojiUser = await mahojiUsersSettingsFetch(user.id);
@@ -64,15 +63,15 @@ export async function nexCommand(interaction: SlashCommandInteraction, user: Kla
 
 	const totalCost = new Bank();
 	for (const user of details.team) {
-		const klasaUser = await globalClient.fetchUser(user.id);
-		if (!allItemsOwned(klasaUser).has(user.cost)) {
-			return `${klasaUser} doesn't have the required items: ${user.cost}.`;
+		const mUser = await mUserFetch(user.id);
+		if (!mUser.allItemsOwned().has(user.cost)) {
+			return `${mUser.usernameOrMention} doesn't have the required items: ${user.cost}.`;
 		}
 		totalCost.add(user.cost);
 	}
 
 	await Promise.all([
-		await updateBankSetting(globalClient, ClientSettings.EconomyStats.TOBCost, totalCost),
+		await updateBankSetting('tob_cost', totalCost),
 		await trackLoot({
 			cost: totalCost,
 			id: 'nex',

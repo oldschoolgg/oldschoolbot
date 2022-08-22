@@ -3,7 +3,7 @@ import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
+import { getMinigameScore } from '../../../lib/settings/minigames';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { Plank } from '../../../lib/skilling/skills/construction/constructables';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -125,7 +125,7 @@ export async function mahoganyHomesBuildCommand(user: KlasaUser, channelID: bigi
 	const conLevel = user.skillLevel(SkillsEnum.Construction);
 	const kc = await getMinigameScore(user.id, 'mahogany_homes');
 
-	const hasSack = user.hasEquippedOrInBank('Plank sack');
+	const hasSack = user.hasItemEquippedOrInBank('Plank sack');
 	const [quantity, itemsNeeded, xp, duration, points] = calcTrip(
 		conLevel,
 		kc,
@@ -138,7 +138,7 @@ export async function mahoganyHomesBuildCommand(user: KlasaUser, channelID: bigi
 	}
 	await user.removeItemsFromBank(itemsNeeded.bank);
 
-	updateBankSetting(globalClient, ClientSettings.EconomyStats.ConstructCostBank, itemsNeeded);
+	updateBankSetting('construction_cost_bank', itemsNeeded);
 
 	await addSubTaskToActivityTask<MahoganyHomesActivityTaskOptions>({
 		userID: user.id,
