@@ -3,8 +3,8 @@ import { Bank, Util } from 'oldschooljs';
 
 import { Emoji } from '../../../lib/constants';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
-import { rand, updateGPTrackSetting } from '../../../lib/util';
-import { mahojiParseNumber } from '../../mahojiSettings';
+import { rand } from '../../../lib/util';
+import { mahojiParseNumber, updateGPTrackSetting } from '../../mahojiSettings';
 
 export async function diceCommand(klasaUser: KlasaUser, diceamount?: string) {
 	const roll = rand(1, 100);

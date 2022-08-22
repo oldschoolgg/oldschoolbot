@@ -3,13 +3,13 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import Mining from '../../lib/skilling/skills/mining';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
-import { determineMiningTime, formatDuration, itemNameFromID, randomVariation } from '../../lib/util';
+import { determineMiningTime, formatDuration, getSkillsOfMahojiUser, itemNameFromID, randomVariation } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { stringMatches } from '../../lib/util/cleanString';
 import itemID from '../../lib/util/itemID';
 import { hasItemsEquippedOrInBank, minionName, userHasItemsEquippedAnywhere } from '../../lib/util/minionUtils';
 import { OSBMahojiCommand } from '../lib/util';
-import { getSkillsOfMahojiUser, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 const pickaxes = [
 	{

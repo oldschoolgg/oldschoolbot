@@ -37,6 +37,7 @@ import { Cooldowns } from '../lib/Cooldowns';
 import { itemOption } from '../lib/mahojiCommandOptions';
 import { allAbstractCommands, OSBMahojiCommand } from '../lib/util';
 import {
+	allItemsOwned,
 	handleMahojiConfirmation,
 	mahojiClientSettingsFetch,
 	mahojiClientSettingsUpdate,
@@ -777,7 +778,7 @@ LIMIT 10;
 		}
 		if (options.viewbank) {
 			const userToCheck = await globalClient.fetchUser(options.viewbank.user.user.id);
-			const bank = userToCheck.allItemsOwned();
+			const bank = allItemsOwned(userToCheck);
 			return { attachments: [(await makeBankImage({ bank, title: userToCheck.username })).file] };
 		}
 		if (options.reboot) {

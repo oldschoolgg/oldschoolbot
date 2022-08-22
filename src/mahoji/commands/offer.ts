@@ -108,7 +108,11 @@ export const mineCommand: OSBMahojiCommand = {
 			let loot = new Bank().add(whichOfferable.table.roll(quantity));
 
 			let score = 0;
-			const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
+			const { previousCL, itemsAdded } = await transactItems({
+				userID: user.id,
+				collectionLog: true,
+				itemsToAdd: loot
+			});
 			if (whichOfferable.economyCounter) {
 				score = user.settings.get(whichOfferable.economyCounter) as number;
 				user.settings.update(whichOfferable.economyCounter, score + quantity);
@@ -160,7 +164,11 @@ export const mineCommand: OSBMahojiCommand = {
 				amount: quantity * 100
 			});
 
-			const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
+			const { previousCL, itemsAdded } = await transactItems({
+				userID: user.id,
+				collectionLog: true,
+				itemsToAdd: loot
+			});
 
 			notifyUniques(user, egg.name, evilChickenOutfit, loot, quantity);
 

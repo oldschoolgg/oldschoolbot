@@ -6,8 +6,8 @@ import { Bank, Util } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
-import { channelIsSendable, updateGPTrackSetting } from '../../../lib/util';
-import { mahojiParseNumber } from '../../mahojiSettings';
+import { channelIsSendable } from '../../../lib/util';
+import { mahojiParseNumber, updateGPTrackSetting } from '../../mahojiSettings';
 
 async function checkBal(user: KlasaUser, amount: number) {
 	await user.settings.sync(true);
