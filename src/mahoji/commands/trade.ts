@@ -72,14 +72,17 @@ export const askCommand: OSBMahojiCommand = {
 		if (recipientKlasaUser.bot) return "You can't trade a bot.";
 		if (recipientKlasaUser.isBusy) return 'That user is busy right now.';
 
-		const itemsSent = parseBank({
-			inputBank: senderKlasaUser.bank({ withGP: true }),
-			inputStr: options.send,
-			maxSize: 70,
-			flags: { tradeables: 'tradeables' },
-			filters: [options.filter],
-			search: options.search
-		}).filter(i => itemIsTradeable(i.id, true));
+		const itemsSent =
+			!options.search && !options.filter && !options.send
+				? new Bank()
+				: parseBank({
+						inputBank: senderKlasaUser.bank({ withGP: true }),
+						inputStr: options.send,
+						maxSize: 70,
+						flags: { tradeables: 'tradeables' },
+						filters: [options.filter],
+						search: options.search
+				  }).filter(i => itemIsTradeable(i.id, true));
 		const itemsReceived = parseBank({
 			inputStr: options.receive,
 			maxSize: 70,
@@ -107,7 +110,7 @@ export const askCommand: OSBMahojiCommand = {
 **${recipientKlasaUser}** is giving: ${truncateString(itemsReceived.toString(), 950)}
 
 Both parties must click confirm to make the trade.`,
-			[BigInt(recipientKlasaUser.id), BigInt(senderKlasaUser.id)]
+			[recipientKlasaUser.id, senderKlasaUser.id]
 		);
 
 		if (!recipientKlasaUser.owns(itemsReceived)) return "They don't own those items.";

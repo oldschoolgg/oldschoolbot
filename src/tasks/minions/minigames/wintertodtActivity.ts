@@ -14,6 +14,7 @@ import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { updateBankSetting } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
+import { allItemsOwned } from '../../../mahoji/mahojiSettings';
 
 const PointsTable = new SimpleTable<number>()
 	.add(420)
@@ -55,7 +56,7 @@ export default class extends Task {
 			loot.add(
 				WintertodtCrate.open({
 					points,
-					itemsOwned: user.allItemsOwned().clone().add(loot).bank,
+					itemsOwned: allItemsOwned(user).clone().add(loot).bank,
 					skills: user.rawSkills
 				})
 			);
@@ -121,7 +122,11 @@ export default class extends Task {
 		await user.addXP({ skillName: SkillsEnum.Firemaking, amount: fmXpToGive });
 		const newLevel = user.skillLevel(SkillsEnum.Firemaking);
 
-		const { itemsAdded, previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
+		const { itemsAdded, previousCL } = await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 		incrementMinigameScore(user.id, 'wintertodt', quantity);
 
 		const image = await makeBankImage({

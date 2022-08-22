@@ -35,14 +35,32 @@ describe('Gear', () => {
 			[
 				'Max cape',
 				'Graceful cape',
+				'Agility cape',
 				'Attack cape',
+				'Construct. cape',
+				'Cooking cape',
 				'Crafting cape',
-				'Runecraft cape',
+				'Defence cape',
 				'Farming cape',
-				'Construct. cape'
+				'Firemaking cape',
+				'Fishing cape',
+				'Fletching cape',
+				'Herblore cape',
+				'Hitpoints cape',
+				'Hunter cape',
+				'Magic cape',
+				'Mining cape',
+				'Prayer cape',
+				'Ranging cape',
+				'Runecraft cape',
+				'Slayer cape',
+				'Smithing cape',
+				'Strength cape',
+				'Thieving cape',
+				'Woodcutting cape'
 			].sort()
 		);
-		expect(allItems.length).toEqual(7);
+		expect(allItems.length).toEqual(25);
 	});
 
 	test('equippedWeapon', () => {

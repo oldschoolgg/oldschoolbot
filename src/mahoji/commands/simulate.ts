@@ -85,9 +85,7 @@ export const simulateCommand: OSBMahojiCommand = {
 	name: 'simulate',
 	description: 'Simulate various OSRS related things.',
 	attributes: {
-		requiresMinion: true,
-		requiresMinionNotBusy: true,
-		examples: ['/smith name:Bronze platebody']
+		examples: ['/simulate cox quantity:1']
 	},
 	options: [
 		{

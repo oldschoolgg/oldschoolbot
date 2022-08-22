@@ -104,7 +104,11 @@ export async function titheFarmShopCommand(
 		}
 	});
 
-	await user.addItemsToBank({ items: loot, collectionLog: true });
+	await transactItems({
+		userID: user.id,
+		collectionLog: true,
+		itemsToAdd: loot
+	});
 
 	return `You purchased ${loot} for ${cost} Tithe Farm points.`;
 }

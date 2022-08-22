@@ -233,13 +233,15 @@ export const gambleCommand: OSBMahojiCommand = {
 			const entry = randArrItem(bank);
 			if (!entry) return 'You have no items you can give away!';
 			const [item, qty] = entry;
-			await senderUser.removeItemsFromBank(new Bank().add(item.id, qty));
-			await recipientKlasaUser.addItemsToBank({
-				items: { [item.id]: qty },
+			const loot = new Bank().add(item.id, qty);
+
+			await transactItems({ userID: senderUser.id, itemsToAdd: loot });
+			await transactItems({
+				userID: recipientKlasaUser.id,
+				itemsToAdd: loot,
 				collectionLog: false,
 				filterLoot: false
 			});
-
 			let debug = new Bank();
 			for (const t of bank) debug.add(t[0].id);
 
