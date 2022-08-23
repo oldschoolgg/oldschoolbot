@@ -10,6 +10,7 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { BitField, PerkTier } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { CombatOptionsArray, CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
+import { MUser } from '../../lib/MUser';
 import { prisma } from '../../lib/settings/prisma';
 import { autoslayChoices, slayerMasterChoices } from '../../lib/slayer/constants';
 import { setDefaultAutoslay, setDefaultSlayerMaster } from '../../lib/slayer/slayerUtil';
@@ -26,6 +27,7 @@ import {
 	mahojiGuildSettingsUpdate,
 	mahojiUserSettingsUpdate,
 	mahojiUsersSettingsFetch,
+	mUserFetch,
 	patronMsg
 } from '../mahojiSettings';
 
@@ -174,13 +176,12 @@ async function favAlchConfig(
 
 async function bankSortConfig(
 	user: MUser,
-	mahojiUser: User,
 	sortMethod: string | undefined,
 	addWeightingBank: string | undefined,
 	removeWeightingBank: string | undefined
 ): CommandResponse {
-	const currentMethod = mahojiUser.bank_sort_method;
-	const currentWeightingBank = new Bank(mahojiUser.bank_sort_weightings as ItemBank);
+	const currentMethod = user.user.bank_sort_method;
+	const currentWeightingBank = new Bank(user.user.bank_sort_weightings as ItemBank);
 
 	const perkTier = getUsersPerkTier(user);
 	if (perkTier < PerkTier.Two) {
@@ -203,7 +204,7 @@ async function bankSortConfig(
 					await makeBankImage({
 						bank: currentWeightingBank,
 						title: 'Bank Sort Weightings',
-						user: globalClient.users.cache.get(mahojiUser.id)
+						user
 					})
 				).file
 			];
@@ -215,7 +216,7 @@ async function bankSortConfig(
 		if (!(BankSortMethods as readonly string[]).includes(sortMethod)) {
 			return `That's not a valid bank sort method. Valid methods are: ${BankSortMethods.join(', ')}.`;
 		}
-		await mahojiUserSettingsUpdate(mahojiUser.id, {
+		await mahojiUserSettingsUpdate(user.id, {
 			bank_sort_method: sortMethod
 		});
 
@@ -232,11 +233,11 @@ async function bankSortConfig(
 	if (addWeightingBank) newBank.add(inputBank);
 	else if (removeWeightingBank) newBank.remove(inputBank);
 
-	const { newUser } = await mahojiUserSettingsUpdate(mahojiUser.id, {
+	await mahojiUserSettingsUpdate(user.id, {
 		bank_sort_weightings: newBank.bank
 	});
 
-	return bankSortConfig(user, newUser, undefined, undefined, undefined);
+	return bankSortConfig(await mUserFetch(user.id), undefined, undefined, undefined);
 }
 
 async function bgColorConfig(user: User, hex?: string) {
@@ -285,7 +286,8 @@ async function bgColorConfig(user: User, hex?: string) {
 
 async function handleChannelEnable(user: MUser, guild: Guild | null, channelID: bigint, choice: 'enable' | 'disable') {
 	if (!guild) return 'This command can only be run in servers.';
-	if (!(await hasBanMemberPerms(user, guild))) return "You need to be 'Ban Member' permissions to use this command.";
+	if (!(await hasBanMemberPerms(user.id, guild)))
+		return "You need to be 'Ban Member' permissions to use this command.";
 	const cID = channelID.toString();
 	const settings = await mahojiGuildSettingsFetch(guild);
 	const isDisabled = settings.staffOnlyChannels.includes(cID);
@@ -315,7 +317,8 @@ async function handlePetMessagesEnable(
 	choice: 'enable' | 'disable'
 ) {
 	if (!guild) return 'This command can only be run in servers.';
-	if (!(await hasBanMemberPerms(user, guild))) return "You need to be 'Ban Member' permissions to use this command.";
+	if (!(await hasBanMemberPerms(user.id, guild)))
+		return "You need to be 'Ban Member' permissions to use this command.";
 	const settings = await mahojiGuildSettingsFetch(guild);
 
 	const cID = channelID.toString();
@@ -344,7 +347,8 @@ async function handleJModCommentsEnable(
 	choice: 'enable' | 'disable'
 ) {
 	if (!guild) return 'This command can only be run in servers.';
-	if (!(await hasBanMemberPerms(user, guild))) return "You need to be 'Ban Member' permissions to use this command.";
+	if (!(await hasBanMemberPerms(user.id, guild)))
+		return "You need to be 'Ban Member' permissions to use this command.";
 	const cID = channelID.toString();
 	const settings = await mahojiGuildSettingsFetch(guild);
 
@@ -379,7 +383,8 @@ async function handleCommandEnable(
 	choice: 'enable' | 'disable'
 ) {
 	if (!guild) return 'This command can only be run in servers.';
-	if (!(await hasBanMemberPerms(user, guild))) return "You need to be 'Ban Member' permissions to use this command.";
+	if (!(await hasBanMemberPerms(user.id, guild)))
+		return "You need to be 'Ban Member' permissions to use this command.";
 	const settings = await mahojiGuildSettingsFetch(guild);
 	const command = allAbstractCommands(globalClient.mahojiClient).find(
 		i => i.name.toLowerCase() === commandName.toLowerCase()
@@ -410,7 +415,8 @@ async function handleCommandEnable(
 async function handlePrefixChange(user: MUser, guild: Guild | null, newPrefix: string) {
 	if (!newPrefix || newPrefix.length === 0 || newPrefix.length > 3) return 'Invalid prefix.';
 	if (!guild) return 'This command can only be run in servers.';
-	if (!(await hasBanMemberPerms(user, guild))) return "You need to be 'Ban Member' permissions to use this command.";
+	if (!(await hasBanMemberPerms(user.id, guild)))
+		return "You need to be 'Ban Member' permissions to use this command.";
 	await mahojiGuildSettingsUpdate(guild.id, {
 		prefix: newPrefix
 	});
@@ -892,7 +898,7 @@ export const configCommand: OSBMahojiCommand = {
 			slayer?: { master?: string; autoslay?: string };
 		};
 	}>) => {
-		const [user, mahojiUser] = await Promise.all([mUserFetch(userID), mahojiUsersSettingsFetch(userID)]);
+		const user = await mUserFetch(userID);
 		const guild = guildID ? globalClient.guilds.cache.get(guildID.toString()) ?? null : null;
 		if (options.server) {
 			if (options.server.channel) {
@@ -924,7 +930,7 @@ export const configCommand: OSBMahojiCommand = {
 				slayer
 			} = options.user;
 			if (toggle) {
-				return handleToggle(mahojiUser, toggle.name);
+				return handleToggle(user.user, toggle.name);
 			}
 			if (combat_options) {
 				return handleCombatOptions(user, combat_options.action, combat_options.input);
@@ -933,12 +939,11 @@ export const configCommand: OSBMahojiCommand = {
 				return handleRSN(user, set_rsn.username);
 			}
 			if (bg_color) {
-				return bgColorConfig(mahojiUser, bg_color.color);
+				return bgColorConfig(user.user, bg_color.color);
 			}
 			if (bank_sort) {
 				return bankSortConfig(
 					user,
-					mahojiUser,
 					bank_sort.sort_method,
 					bank_sort.add_weightings,
 					bank_sort.remove_weightings
@@ -946,7 +951,7 @@ export const configCommand: OSBMahojiCommand = {
 			}
 			if (favorite_alchs) {
 				return favAlchConfig(
-					mahojiUser,
+					user.user,
 					favorite_alchs.add,
 					favorite_alchs.remove,
 					favorite_alchs.add_many,
@@ -954,11 +959,11 @@ export const configCommand: OSBMahojiCommand = {
 				);
 			}
 			if (favorite_food) {
-				return favFoodConfig(mahojiUser, favorite_food.add, favorite_food.remove, Boolean(favorite_food.reset));
+				return favFoodConfig(user.user, favorite_food.add, favorite_food.remove, Boolean(favorite_food.reset));
 			}
 			if (favorite_items) {
 				return favItemConfig(
-					mahojiUser,
+					user.user,
 					favorite_items.add,
 					favorite_items.remove,
 					Boolean(favorite_items.reset)

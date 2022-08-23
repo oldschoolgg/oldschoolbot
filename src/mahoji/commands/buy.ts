@@ -6,9 +6,7 @@ import Buyables from '../../lib/data/buyables/buyables';
 import { leagueBuyables } from '../../lib/data/leaguesBuyables';
 import { kittens } from '../../lib/growablePets';
 import { gotFavour } from '../../lib/minions/data/kourendFavour';
-import { Minigames } from '../../lib/settings/minigames';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { getMinigameScore, Minigames } from '../../lib/settings/minigames';
 import {
 	formatSkillRequirements,
 	itemNameFromID,
@@ -20,12 +18,7 @@ import { mahojiChatHead } from '../../lib/util/chatHeadImage';
 import getOSItem from '../../lib/util/getOSItem';
 import { leaguesBuyCommand } from '../lib/abstracted_commands/leaguesBuyCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import {
-	allItemsOwned,
-	handleMahojiConfirmation,
-	mahojiParseNumber,
-	mahojiUsersSettingsFetch
-} from '../mahojiSettings';
+import { handleMahojiConfirmation, mahojiParseNumber, mahojiUsersSettingsFetch, mUserFetch } from '../mahojiSettings';
 
 const allBuyablesAutocomplete = [...Buyables, ...leagueBuyables.map(i => ({ name: i.item.name })), { name: 'Kitten' }];
 
@@ -63,14 +56,14 @@ export const buyCommand: OSBMahojiCommand = {
 					content: "You don't have enough GP to buy a kitten! They cost 1000 coins."
 				});
 			}
-			if (user.settings.get(UserSettings.QP) < 10) {
+			if (user.QP < 10) {
 				return mahojiChatHead({
 					head: 'gertrude',
 					content: "You haven't done enough quests to raise a kitten yet!"
 				});
 			}
 
-			const allItemsOwnedBank = allItemsOwned(user);
+			const allItemsOwnedBank = user.allItemsOwned();
 			if (kittens.some(kitten => allItemsOwnedBank.has(kitten))) {
 				return mahojiChatHead({
 					head: 'gertrude',
@@ -106,7 +99,7 @@ export const buyCommand: OSBMahojiCommand = {
 		if (!buyable) return "That's not a valid item you can buy.";
 
 		if (buyable.collectionLogReqs) {
-			const cl = new Bank(user.settings.get(UserSettings.CollectionLogBank));
+			const { cl } = user;
 			const unownedItems = buyable.collectionLogReqs.filter(i => !cl.has(i));
 			if (unownedItems.length > 0) {
 				return `You don't have **${unownedItems.map(itemNameFromID).join(', ')}** in your collection log`;
@@ -121,7 +114,7 @@ export const buyCommand: OSBMahojiCommand = {
 		}
 
 		if (buyable.qpRequired) {
-			const QP = user.settings.get(UserSettings.QP);
+			const { QP } = user;
 			if (QP < buyable.qpRequired) {
 				return `You need ${buyable.qpRequired} QP to purchase this item.`;
 			}
@@ -142,7 +135,7 @@ export const buyCommand: OSBMahojiCommand = {
 
 		if (buyable.minigameScoreReq) {
 			const [key, req] = buyable.minigameScoreReq;
-			let kc = await getMinigameScore(user.idkey);
+			let kc = await getMinigameScore(user.id, key);
 			if (key === 'tob') {
 				kc += await getMinigameScore(user.id, 'tob_hard');
 			}
@@ -183,8 +176,8 @@ export const buyCommand: OSBMahojiCommand = {
 		await user.removeItemsFromBank(totalCost);
 		econBankChanges.add(totalCost);
 
-		updateBankSetting(globalClient, ClientSettings.EconomyStats.BuyCostBank, econBankChanges);
-		updateBankSetting(globalClient, ClientSettings.EconomyStats.BuyLootBank, outItems);
+		updateBankSetting('buy_cost_bank', econBankChanges);
+		updateBankSetting('buy_loot_bank', outItems);
 
 		await transactItems({
 			userID: user.id,

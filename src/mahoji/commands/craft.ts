@@ -2,8 +2,6 @@ import { Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { Craftables } from '../../lib/skilling/skills/crafting/craftables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { CraftingActivityTaskOptions } from '../../lib/types/minions';
@@ -12,6 +10,7 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
 import { OSBMahojiCommand } from '../lib/util';
+import { mUserFetch } from '../mahojiSettings';
 
 export const craftCommand: OSBMahojiCommand = {
 	name: 'craft',
@@ -61,7 +60,7 @@ export const craftCommand: OSBMahojiCommand = {
 			sets = ' sets of';
 		}
 
-		const userQP = user.settings.get(UserSettings.QP);
+		const userQP = user.QP;
 		const currentWoodcutLevel = user.skillLevel(SkillsEnum.Woodcutting);
 
 		if (craftable.qpRequired && userQP < craftable.qpRequired) {
@@ -76,7 +75,6 @@ export const craftCommand: OSBMahojiCommand = {
 			return `${user.minionName} needs ${craftable.level} Crafting to craft ${craftable.name}.`;
 		}
 
-		await user.settings.sync(true);
 		const userBank = user.bankWithGP;
 
 		// Get the base time to craft the item then add on quarter of a second per item to account for banking/etc.
@@ -114,7 +112,7 @@ export const craftCommand: OSBMahojiCommand = {
 
 		await user.removeItemsFromBank(itemsNeeded);
 
-		updateBankSetting(globalClient, ClientSettings.EconomyStats.CraftingCost, itemsNeeded.bank);
+		updateBankSetting('crafting_cost', itemsNeeded);
 
 		await addSubTaskToActivityTask<CraftingActivityTaskOptions>({
 			craftableID: craftable.id,

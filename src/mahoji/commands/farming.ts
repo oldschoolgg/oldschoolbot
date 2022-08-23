@@ -4,7 +4,6 @@ import TitheFarmBuyables from '../../lib/data/buyables/titheFarmBuyables';
 import { superCompostables } from '../../lib/data/filterables';
 import { ContractOption, ContractOptions } from '../../lib/minions/farming/types';
 import { autoFarm } from '../../lib/minions/functions/autoFarm';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Farming, { CompostName, CompostTiers } from '../../lib/skilling/skills/farming';
 import { getSkillsOfMahojiUser, stringMatches } from '../../lib/util';
@@ -13,7 +12,7 @@ import { compostBinCommand, farmingPlantCommand, harvestCommand } from '../lib/a
 import { farmingContractCommand } from '../lib/abstracted_commands/farmingContractCommand';
 import { titheFarmCommand, titheFarmShopCommand } from '../lib/abstracted_commands/titheFarmCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch, mUserFetch } from '../mahojiSettings';
 
 export const farmingCommand: OSBMahojiCommand = {
 	name: 'farming',
@@ -184,7 +183,7 @@ export const farmingCommand: OSBMahojiCommand = {
 			return autoFarm(klasaUser, patchesDetailed, channelID);
 		}
 		if (options.always_pay) {
-			const isEnabled = klasaUser.settings.get(UserSettings.Minion.DefaultPay);
+			const isEnabled = klasaUser.user.minion_defaultPay;
 			await mahojiUserSettingsUpdate(userID, {
 				minion_defaultPay: !isEnabled
 			});
@@ -200,7 +199,7 @@ export const farmingCommand: OSBMahojiCommand = {
 		}
 		if (options.plant) {
 			return farmingPlantCommand({
-				user: MUser,
+				userID: klasaUser.id,
 				plantName: options.plant.plant_name,
 				quantity: options.plant.quantity ?? null,
 				autoFarmed: false,
@@ -210,7 +209,7 @@ export const farmingCommand: OSBMahojiCommand = {
 		}
 		if (options.harvest) {
 			return harvestCommand({
-				user: MUser,
+				user: klasaUser,
 				seedType: options.harvest.patch_name,
 				channelID
 			});

@@ -1,23 +1,18 @@
-import type { User } from '@prisma/client';
-import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { Emoji } from '../constants';
-import { getSimilarItems } from '../data/similarItems';
-import { UserSettings } from '../settings/types/UserSettings';
+import { MUser } from '../MUser';
 import { SkillsEnum } from '../skilling/types';
 import { convertXPtoLVL, Util } from '../util';
 import resolveItems from './resolveItems';
 
-export function skillLevel(user: MUser | User, skill: SkillsEnum) {
-	const xp =
-		user instanceof KlasaUser ? (user.settings.get(`skills.${skill}`) as number) : Number(user[`skills_${skill}`]);
+export function skillLevel(user: MUser, skill: SkillsEnum) {
+	const xp = Number(user.user[`skills_${skill}`]);
 	return convertXPtoLVL(xp);
 }
 
-export function getKC(user: MUser | User, id: number) {
-	const scores: Readonly<ItemBank> =
-		user instanceof KlasaUser ? user.settings.get(UserSettings.MonsterScores) : (user.monsterScores as ItemBank);
+export function getKC(user: MUser, id: number) {
+	const scores: Readonly<ItemBank> = user.user.monsterScores as ItemBank;
 	return scores[id] ?? 0;
 }
 
@@ -83,36 +78,8 @@ export const bolts = resolveItems([
 	'Bronze bolts'
 ]);
 
-export function hasItemsEquippedOrInBank(
-	user: User | KlasaUser,
-	_items: (string | number)[],
-	type: 'every' | 'one' = 'one'
-): boolean {
-	const bank = user instanceof KlasaUser ? user.bank : new Bank(user.bank as ItemBank);
-	const items = resolveItems(_items);
-	for (const baseID of items) {
-		const similarItems = [...getSimilarItems(baseID), baseID];
-		const hasOneEquipped = similarItems.some(id => userHasItemsEquippedAnywhere(user, id, true));
-		const hasOneInBank = similarItems.some(id => bank.has(id));
-		// If only one needs to be equipped, return true now if it is equipped.
-		if (type === 'one' && (hasOneEquipped || hasOneInBank)) return true;
-		// If all need to be equipped, return false now if not equipped.
-		else if (type === 'every' && !hasOneEquipped && !hasOneInBank) {
-			return false;
-		}
-	}
-	return type === 'one' ? false : true;
-}
-
-export function minionName(user: MUser | User) {
-	let [name, isIronman, icon] =
-		user instanceof KlasaUser
-			? [
-					user.settings.get(UserSettings.Minion.Name),
-					user.settings.get(UserSettings.Minion.Ironman),
-					user.settings.get(UserSettings.Minion.Icon)
-			  ]
-			: [user.minion_name, user.minion_ironman, user.minion_icon];
+export function minionName(user: MUser) {
+	let [name, isIronman, icon] = [user.user.minion_name, user.user.minion_ironman, user.user.minion_icon];
 
 	const prefix = isIronman ? Emoji.Ironman : '';
 	icon ??= Emoji.Minion;

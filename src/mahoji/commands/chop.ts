@@ -2,7 +2,6 @@ import { reduceNumByPercent } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
@@ -11,6 +10,7 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import itemID from '../../lib/util/itemID';
 import { OSBMahojiCommand } from '../lib/util';
+import { mUserFetch } from '../mahojiSettings';
 
 const axes = [
 	{
@@ -80,7 +80,7 @@ export const chopCommand: OSBMahojiCommand = {
 			return `${user.minionName} needs ${log.level} Woodcutting to chop ${log.name}.`;
 		}
 
-		const QP = user.settings.get(UserSettings.QP);
+		const { QP } = user;
 		if (QP < log.qpRequired) {
 			return `${user.minionName} needs ${log.qpRequired} QP to cut ${log.name}.`;
 		}

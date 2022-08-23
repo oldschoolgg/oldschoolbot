@@ -1,4 +1,4 @@
-import { GearPreset, User } from '@prisma/client';
+import { GearPreset } from '@prisma/client';
 import { objectValues } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
@@ -357,7 +357,7 @@ export async function gearViewCommand(user: MUser, input: string, text: boolean)
 
 export async function gearSwapCommand(
 	interaction: SlashCommandInteraction,
-	user: User,
+	user: MUser,
 	first: GearSetupType,
 	second: GearSetupType
 ) {
@@ -375,7 +375,7 @@ export async function gearSwapCommand(
 		return PATRON_ONLY_GEAR_SETUP;
 	}
 
-	const gear = getUserGear(user);
+	const { gear } = user;
 
 	await mahojiUserSettingsUpdate(user.id, {
 		[`gear_${first}`]: gear[second],

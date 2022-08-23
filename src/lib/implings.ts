@@ -1,10 +1,9 @@
-import { activity_type_enum, User } from '@prisma/client';
+import { activity_type_enum } from '@prisma/client';
 import { Time } from 'e';
 import { Bank, LootTable, Openables } from 'oldschooljs';
 
-import { SkillsEnum } from './skilling/types';
+import { MUser } from './MUser';
 import { ActivityTaskOptions } from './types/minions';
-import { getSkillsOfMahojiUser } from './util';
 import activityInArea, { WorldLocations } from './util/activityInArea';
 
 const {
@@ -97,7 +96,7 @@ const implingTableByWorldLocation = {
 	[WorldLocations.World]: new LootTable().oneIn(85, defaultImpTable)
 };
 
-export function handlePassiveImplings(user: User, data: ActivityTaskOptions) {
+export function handlePassiveImplings(user: MUser, data: ActivityTaskOptions) {
 	if (
 		[
 			'FightCaves',
@@ -115,7 +114,7 @@ export function handlePassiveImplings(user: User, data: ActivityTaskOptions) {
 	const minutes = Math.floor(data.duration / Time.Minute);
 
 	if (minutes < 4) return null;
-	const skills = getSkillsOfMahojiUser(user);
+	const skills = user.skillsAsLevels;
 	const level = skills.hunter;
 
 	let bank = new Bank();

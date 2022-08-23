@@ -12,6 +12,7 @@ import { parseBank } from '../../lib/util/parseStringBank';
 import { BankFlag, bankFlags } from '../../tasks/bankImage';
 import { filterOption, itemOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
+import { mUserFetch } from '../mahojiSettings';
 
 const bankFormats = ['json', 'text_paged', 'text_full'] as const;
 const bankItemsPerPage = 10;
@@ -87,7 +88,6 @@ export const askCommand: OSBMahojiCommand = {
 	}>) => {
 		await interaction.deferReply();
 		const klasaUser = await mUserFetch(user.id);
-		await klasaUser.settings.sync(true);
 		const baseBank = klasaUser.bankWithGP;
 		const mahojiFlags: BankFlag[] = [];
 
@@ -110,7 +110,7 @@ export const askCommand: OSBMahojiCommand = {
 				filter: options.filter
 			},
 			inputStr: options.item ?? options.items,
-			user: MUser,
+			user: klasaUser,
 			filters: options.filter ? [options.filter] : []
 		});
 
@@ -140,7 +140,9 @@ export const askCommand: OSBMahojiCommand = {
 			for (const page of chunk(textBank, bankItemsPerPage)) {
 				pages.push({
 					embeds: [
-						new MessageEmbed().setTitle(`${klasaUser.username}'s Bank`).setDescription(page.join('\n'))
+						new MessageEmbed()
+							.setTitle(`${klasaUser.usernameOrMention}'s Bank`)
+							.setDescription(page.join('\n'))
 					]
 				});
 			}
@@ -148,7 +150,7 @@ export const askCommand: OSBMahojiCommand = {
 			if (!channelIsSendable(channel)) return 'Failed to send paginated bank message, sorry.';
 			const bankMessage = await channel.send({ embeds: [new MessageEmbed().setDescription('Loading')] });
 
-			makePaginatedMessage(bankMessage, pages, klasaUser);
+			makePaginatedMessage(bankMessage, pages, await globalClient.fetchUser(user.id));
 			return { content: 'Here is your selected bank:', flags: MessageFlags.Ephemeral };
 		}
 		if (options.format === 'json') {
@@ -169,9 +171,9 @@ export const askCommand: OSBMahojiCommand = {
 				(
 					await makeBankImage({
 						bank,
-						title: `${klasaUser.username}'s Bank`,
+						title: `${klasaUser.usernameOrMention}'s Bank`,
 						flags,
-						user: MUser,
+						user: klasaUser,
 						mahojiFlags
 					})
 				).file

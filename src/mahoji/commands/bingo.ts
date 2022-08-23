@@ -22,7 +22,12 @@ import {
 	determineBingoProgress
 } from '../lib/bingo';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import {
+	handleMahojiConfirmation,
+	mahojiUserSettingsUpdate,
+	mahojiUsersSettingsFetch,
+	mUserFetch
+} from '../mahojiSettings';
 
 type MakeTeamOptions = {
 	first_user: MahojiUserOption;

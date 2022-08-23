@@ -4,7 +4,6 @@ import { Bank } from 'oldschooljs';
 import TzTokJad from 'oldschooljs/dist/simulation/monsters/special/TzTokJad';
 
 import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FishingActivityTaskOptions } from '../../lib/types/minions';
@@ -13,6 +12,7 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
 import { OSBMahojiCommand } from '../lib/util';
+import { mUserFetch } from '../mahojiSettings';
 
 export const fishCommand: OSBMahojiCommand = {
 	name: 'fish',
@@ -48,7 +48,6 @@ export const fishCommand: OSBMahojiCommand = {
 	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
 		const user = await mUserFetch(userID);
 
-		await user.settings.sync(true);
 		const fish = Fishing.Fishes.find(
 			fish =>
 				stringMatches(fish.name, options.name) || fish.alias?.some(alias => stringMatches(alias, options.name))
@@ -60,7 +59,7 @@ export const fishCommand: OSBMahojiCommand = {
 		}
 
 		if (fish.qpRequired) {
-			if (user.settings.get(UserSettings.QP) < fish.qpRequired) {
+			if (user.QP < fish.qpRequired) {
 				return `You need ${fish.qpRequired} qp to catch those!`;
 			}
 		}

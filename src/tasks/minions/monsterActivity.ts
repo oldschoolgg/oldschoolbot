@@ -15,7 +15,6 @@ import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
-import { hasItemsEquippedOrInBank } from '../../lib/util/minionUtils';
 import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch, mUserFetch } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
@@ -100,7 +99,7 @@ export default class extends Task {
 		if (
 			monster.id === Monsters.Unicorn.id &&
 			user.hasEquipped('Iron dagger') &&
-			!hasItemsEquippedOrInBank(user.user, ['Clue hunter cloak'])
+			!user.hasEquippedOrInBank(['Clue hunter cloak'])
 		) {
 			loot.add('Clue hunter cloak');
 			loot.add('Clue hunter boots');

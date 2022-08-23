@@ -11,7 +11,7 @@ import { hotColdCommand } from '../lib/abstracted_commands/hotColdCommand';
 import { luckyPickCommand } from '../lib/abstracted_commands/luckyPickCommand';
 import { slotsCommand } from '../lib/abstracted_commands/slotsCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { handleMahojiConfirmation, mahojiUsersSettingsFetch, mUserFetch } from '../mahojiSettings';
 
 export const gambleCommand: OSBMahojiCommand = {
 	name: 'gamble',
@@ -207,13 +207,13 @@ export const gambleCommand: OSBMahojiCommand = {
 		const mahojiUser = await mahojiUsersSettingsFetch(klasaUser.id);
 
 		if (options.hot_cold) {
-			return hotColdCommand(interaction, klasaUser, mahojiUser, options.hot_cold.choice, options.hot_cold.amount);
+			return hotColdCommand(interaction, klasaUser, options.hot_cold.choice, options.hot_cold.amount);
 		}
 
 		if (options.give_random_item) {
 			const senderUser = klasaUser;
 			const recipientKlasaUser = await mUserFetch(options.give_random_item.user.user.id);
-			if (recipientKlasaUser.bot || recipientKlasaUser.id === senderUser.id) {
+			if (recipientKlasaUser.id === senderUser.id) {
 				return "You can't do it with yourself.";
 			}
 
@@ -222,11 +222,10 @@ export const gambleCommand: OSBMahojiCommand = {
 			}
 			await handleMahojiConfirmation(
 				interaction,
-				`Are you sure you want to give a random stack of items from your bank to ${recipientKlasaUser.username}? Untradeable and favorited items are not included.`
+				`Are you sure you want to give a random stack of items from your bank to ${recipientKlasaUser.usernameOrMention}? Untradeable and favorited items are not included.`
 			);
 
-			const bank = senderUser
-				.bank()
+			const bank = senderUser.bank
 				.items()
 				.filter(i => itemIsTradeable(i[0].id))
 				.filter(i => !mahojiUser.favoriteItems.includes(i[0].id));
@@ -245,7 +244,7 @@ export const gambleCommand: OSBMahojiCommand = {
 			let debug = new Bank();
 			for (const t of bank) debug.add(t[0].id);
 
-			return `You gave ${qty.toLocaleString()}x ${item.name} to ${recipientKlasaUser.username}.`;
+			return `You gave ${qty.toLocaleString()}x ${item.name} to ${recipientKlasaUser.usernameOrMention}.`;
 		}
 
 		return 'Invalid command.';

@@ -5,14 +5,13 @@ import { APIInteraction, InteractionType, Routes } from 'mahoji';
 import { buyBingoTicketCommand } from '../../mahoji/commands/bingo';
 import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { Cooldowns } from '../../mahoji/lib/Cooldowns';
-import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
+import { mUserFetch } from '../../mahoji/mahojiSettings';
 import { ClueTier } from '../clues/clueTiers';
 import { lastTripCache, PerkTier } from '../constants';
 import { runCommand } from '../settings/settings';
 import { channelIsSendable, convertMahojiResponseToDJSResponse, formatDuration } from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
 import { minionIsBusy } from './minionIsBusy';
-import { minionName } from './minionUtils';
 import { respondToButton } from './respondToButton';
 import { webhookMessageCache } from './webhook';
 
@@ -95,7 +94,7 @@ export async function interactionHook(data: APIInteraction) {
 	const userID = data.member ? data.member.user?.id : data.user?.id;
 	if (!userID) return;
 
-	const user = await mahojiUsersSettingsFetch(userID);
+	const user = await mUserFetch(userID);
 	const options = {
 		user,
 		member: data.member ?? null,
@@ -283,11 +282,7 @@ export async function interactionHook(data: APIInteraction) {
 		}
 		case 'AUTO_FARMING_CONTRACT': {
 			await buttonReply();
-			const response = await autoContract(
-				await globalClient.fetchUser(user.id),
-				BigInt(options.channelID),
-				BigInt(user.id)
-			);
+			const response = await autoContract(await mUserFetch(user.id), BigInt(options.channelID), BigInt(user.id));
 			const channel = globalClient.channels.cache.get(options.channelID);
 			if (channelIsSendable(channel)) channel.send(convertMahojiResponseToDJSResponse(response));
 			break;

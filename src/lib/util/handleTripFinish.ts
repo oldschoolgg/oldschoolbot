@@ -1,4 +1,4 @@
-import { activity_type_enum, User } from '@prisma/client';
+import { activity_type_enum } from '@prisma/client';
 import { isGuildBasedChannel } from '@sapphire/discord.js-utilities';
 import { MessageAttachment, MessageCollector, MessageOptions } from 'discord.js';
 import { KlasaMessage } from 'klasa';
@@ -35,7 +35,7 @@ const activitiesToTrackAsPVMGPSource: activity_type_enum[] = [
 
 const tripFinishEffects: {
 	name: string;
-	fn: (options: { data: ActivityTaskOptions; user: User; loot: Bank | null; messages: string[] }) => unknown;
+	fn: (options: { data: ActivityTaskOptions; user: MUser; loot: Bank | null; messages: string[] }) => unknown;
 }[] = [
 	{
 		name: 'Track GP Analytics',

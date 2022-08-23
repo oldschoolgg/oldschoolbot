@@ -8,7 +8,7 @@ import CollectionLogTask, {
 	collectionLogTypes
 } from '../../tasks/collectionLogTask';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { mahojiUsersSettingsFetch, mUserFetch } from '../mahojiSettings';
 
 export const collectionLogCommand: OSBMahojiCommand = {
 	name: 'cl',

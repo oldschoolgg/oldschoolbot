@@ -5,6 +5,7 @@ import { itemNameMap } from 'oldschooljs/dist/structures/Items';
 
 import { filterableTypes } from '../data/filterables';
 import { evalMathExpression } from '../expressionParser';
+import { MUser } from '../MUser';
 import { cleanString, stringMatches } from '../util';
 import itemIsTradeable from './itemIsTradeable';
 
@@ -88,7 +89,7 @@ export function parseBankFromFlags({
 	flags: Record<string, string | undefined>;
 	excludeItems: readonly number[];
 	maxSize?: number;
-	user?: KlasaUser;
+	user?: MUser;
 }): Bank {
 	const newBank = new Bank();
 	const maxQuantity = Number(flags.qty) || Infinity;
@@ -130,7 +131,7 @@ interface ParseBankOptions {
 	filters?: (string | undefined)[];
 	search?: string;
 	maxSize?: number;
-	user?: KlasaUser;
+	user?: MUser;
 	noDuplicateItems?: true;
 }
 
@@ -191,7 +192,7 @@ interface ParseInputCostBankOptions {
 	flags?: Record<string, string>;
 	inputStr?: string;
 	excludeItems: readonly number[];
-	user?: KlasaUser;
+	user?: MUser;
 }
 export function parseInputCostBank({
 	usersBank,
@@ -228,7 +229,7 @@ export function parseInputBankWithPrice({
 	str: string;
 	flags: Record<string, string>;
 	excludeItems: readonly number[];
-	user?: KlasaUser;
+	user?: MUser;
 }) {
 	const split = str.split(' ');
 	const firstAsNumber = evalMathExpression(split[0]);

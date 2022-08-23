@@ -8,7 +8,6 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
 import itemID from '../../lib/util/itemID';
-import { hasItemsEquippedOrInBank } from '../../lib/util/minionUtils';
 import { OSBMahojiCommand } from '../lib/util';
 import { mUserFetch } from '../mahojiSettings';
 
@@ -94,7 +93,7 @@ export const mineCommand: OSBMahojiCommand = {
 		// For each pickaxe, if they have it, give them its' bonus and break.
 		const boosts = [];
 		for (const pickaxe of pickaxes) {
-			if (hasItemsEquippedOrInBank(user, [pickaxe.id]) && skills.mining >= pickaxe.miningLvl) {
+			if (user.hasEquippedOrInBank([pickaxe.id]) && skills.mining >= pickaxe.miningLvl) {
 				timeToMine = reduceNumByPercent(timeToMine, pickaxe.reductionPercent);
 				boosts.push(`${pickaxe.reductionPercent}% for ${itemNameFromID(pickaxe.id)}`);
 				break;

@@ -3,17 +3,20 @@ import { noOp, randArrItem } from 'e';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
+import { mUserFetch } from '../../mahoji/mahojiSettings';
 import { Events } from '../constants';
+import { MUser } from '../MUser';
 import { prisma } from '../settings/prisma';
 import { logError } from './logError';
 import { Giveaway } from '.prisma/client';
 
-async function refundGiveaway(creator: KlasaUser, loot: Bank) {
+async function refundGiveaway(creator: MUser, loot: Bank) {
 	await transactItems({
 		userID: creator.id,
 		itemsToAdd: loot
 	});
-	creator.send(`Your giveaway failed to finish, you were refunded the items: ${loot}.`).catch(noOp);
+	const user = await globalClient.fetchUser(creator.id);
+	user.send(`Your giveaway failed to finish, you were refunded the items: ${loot}.`).catch(noOp);
 }
 
 export async function handleGiveawayCompletion(giveaway: Giveaway) {
@@ -33,7 +36,7 @@ export async function handleGiveawayCompletion(giveaway: Giveaway) {
 			}
 		});
 
-		const creator = await globalClient.fetchUser(giveaway.user_id);
+		const creator = await mUserFetch(giveaway.user_id);
 		const channel = globalClient.channels.cache.get(giveaway.channel_id as Snowflake) as TextChannel | undefined;
 		if (!channel?.messages) {
 			await refundGiveaway(creator, loot);
@@ -42,13 +45,15 @@ export async function handleGiveawayCompletion(giveaway: Giveaway) {
 		const message = await channel?.messages.fetch(giveaway.message_id as Snowflake).catch(noOp);
 
 		const reactions = message ? message.reactions.cache.get(giveaway.reaction_id) : undefined;
-		const users: KlasaUser[] = !reactions
+		const users = !reactions
 			? []
-			: Array.from(
-					(await reactions.users.fetch())!
-						.filter(u => !u.isIronman && !u.bot && u.id !== giveaway.user_id)
-						.values()
-			  );
+			: (
+					await Promise.all(
+						Array.from((await reactions.users.fetch())!.values())
+							.filter(i => !i.bot)
+							.map(i => mUserFetch(i.id))
+					)
+			  ).filter(u => !u.isIronman && u.id !== giveaway.user_id);
 
 		if (users.length === 0 || !channel || !message) {
 			logError('Giveaway failed');
@@ -75,7 +80,7 @@ export async function handleGiveawayCompletion(giveaway: Giveaway) {
 
 		globalClient.emit(
 			Events.EconomyLog,
-			`${winner.username}[${winner.id}] won ${loot} in a giveaway of ${users.length} made by ${creator.username}[${creator.id}].`
+			`${winner.usernameOrMention}[${winner.id}] won ${loot} in a giveaway of ${users.length} made by ${creator.usernameOrMention}[${creator.id}].`
 		);
 
 		const str = `<@${giveaway.user_id}> **Giveaway finished:** ${users.length} users joined, the winner is... ||**${winner}**||

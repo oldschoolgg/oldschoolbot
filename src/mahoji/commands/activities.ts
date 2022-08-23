@@ -7,8 +7,6 @@ import birdhouses from '../../lib/skilling/skills/hunter/birdHouseTrapping';
 import { Castables } from '../../lib/skilling/skills/magic/castables';
 import { Enchantables } from '../../lib/skilling/skills/magic/enchantables';
 import Prayer from '../../lib/skilling/skills/prayer';
-import { minionIsBusy } from '../../lib/util/minionIsBusy';
-import { minionName } from '../../lib/util/minionUtils';
 import { aerialFishingCommand } from '../lib/abstracted_commands/aerialFishingCommand';
 import { alchCommand } from '../lib/abstracted_commands/alchCommand';
 import { birdhouseCheckCommand, birdhouseHarvestCommand } from '../lib/abstracted_commands/birdhousesCommand';
@@ -31,7 +29,7 @@ import { sawmillCommand } from '../lib/abstracted_commands/sawmillCommand';
 import { warriorsGuildCommand } from '../lib/abstracted_commands/warriorsGuildCommand';
 import { ownedItemOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { mUserFetch } from '../mahojiSettings';
 
 export const activitiesCommand: OSBMahojiCommand = {
 	name: 'activities',
@@ -415,22 +413,21 @@ export const activitiesCommand: OSBMahojiCommand = {
 		cast?: { spell: string; quantity?: number };
 	}>) => {
 		const klasaUser = await mUserFetch(userID);
-		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 
 		// Minion can be busy
 		if (options.decant) {
 			return decantCommand(klasaUser, options.decant.potion_name, options.decant.dose);
 		}
 		if (options.inferno?.action === 'stats') return infernoStatsCommand(klasaUser);
-		if (options.birdhouses?.action === 'check') return birdhouseCheckCommand(mahojiUser);
+		if (options.birdhouses?.action === 'check') return birdhouseCheckCommand(klasaUser.user);
 
 		// Minion must be free
-		const isBusy = minionIsBusy(mahojiUser.id);
-		const busyStr = `${minionName(mahojiUser)} is currently busy.`;
+		const isBusy = klasaUser.minionIsBusy;
+		const busyStr = `${klasaUser.minionName} is currently busy.`;
 		if (isBusy) return busyStr;
 
 		if (options.birdhouses?.action === 'harvest') {
-			return birdhouseHarvestCommand(klasaUser, mahojiUser, channelID, options.birdhouses.birdhouse);
+			return birdhouseHarvestCommand(klasaUser, channelID, options.birdhouses.birdhouse);
 		}
 		if (options.inferno?.action === 'start') return infernoStartCommand(klasaUser, channelID);
 		if (options.sawmill) {
@@ -454,13 +451,13 @@ export const activitiesCommand: OSBMahojiCommand = {
 			);
 		}
 		if (options.collect) {
-			return collectCommand(mahojiUser, klasaUser, channelID, options.collect.item, options.collect.no_stams);
+			return collectCommand(klasaUser, channelID, options.collect.item, options.collect.no_stams);
 		}
 		if (options.quest) {
 			return questCommand(klasaUser, channelID);
 		}
 		if (options.favour) {
-			return favourCommand(klasaUser, mahojiUser, options.favour.name, channelID, options.favour.no_stams);
+			return favourCommand(klasaUser, options.favour.name, channelID, options.favour.no_stams);
 		}
 		if (options.charge?.item === 'glory') {
 			return chargeGloriesCommand(klasaUser, channelID, options.charge.quantity);

@@ -6,9 +6,8 @@ import { MUser } from '../../../lib/MUser';
 import birdhouses, { Birdhouse } from '../../../lib/skilling/skills/hunter/birdHouseTrapping';
 import defaultBirdhouseTrap, { BirdhouseData } from '../../../lib/skilling/skills/hunter/defaultBirdHouseTrap';
 import { BirdhouseActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, getSkillsOfMahojiUser, itemID, stringMatches, updateBankSetting } from '../../../lib/util';
+import { formatDuration, itemID, stringMatches, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { minionName } from '../../../lib/util/minionUtils';
 import { mahojiUsersSettingsFetch, userHasGracefulEquipped } from '../../mahojiSettings';
 
 interface BirdhouseDetails {
@@ -147,19 +146,14 @@ export async function birdhouseCheckCommand(user: User) {
 	return `Your ${details.birdHouse.name}'s are ready ${time(details.readyAt!, 'R')} (${time(details.readyAt!)})`;
 }
 
-export async function birdhouseHarvestCommand(
-	user: MUser,
-	mahojiUser: User,
-	channelID: bigint,
-	inputBirdhouseName: string | undefined
-) {
+export async function birdhouseHarvestCommand(user: MUser, channelID: bigint, inputBirdhouseName: string | undefined) {
 	const userBank = user.bank;
 	const currentDate = new Date().getTime();
 	const infoStr: string[] = [];
 	const boostStr: string[] = [];
 
-	const existingBirdhouse = await calculateBirdhouseDetails(mahojiUser.id);
-	if (!existingBirdhouse.isReady && existingBirdhouse.raw.lastPlaced) return birdhouseCheckCommand(mahojiUser);
+	const existingBirdhouse = await calculateBirdhouseDetails(user.id);
+	if (!existingBirdhouse.isReady && existingBirdhouse.raw.lastPlaced) return birdhouseCheckCommand(user.user);
 
 	let birdhouseToPlant = inputBirdhouseName
 		? birdhouses.find(_birdhouse =>
@@ -178,13 +172,13 @@ export async function birdhouseHarvestCommand(
 			.join(', ')}.`;
 	}
 
-	const skills = getSkillsOfMahojiUser(mahojiUser, true);
+	const skills = user.skillsAsLevels;
 	if (skills.hunter < birdhouseToPlant.huntLvl) {
-		return `${minionName(mahojiUser)} needs ${birdhouseToPlant.huntLvl} Hunter to place ${birdhouseToPlant.name}.`;
+		return `${user.minionName} needs ${birdhouseToPlant.huntLvl} Hunter to place ${birdhouseToPlant.name}.`;
 	}
 
-	if (mahojiUser.QP < birdhouseToPlant.qpRequired) {
-		return `${minionName(mahojiUser)} needs ${birdhouseToPlant.qpRequired} QP to do Birdhouse runs.`;
+	if (user.QP < birdhouseToPlant.qpRequired) {
+		return `${user.minionName} needs ${birdhouseToPlant.qpRequired} QP to do Birdhouse runs.`;
 	}
 
 	let duration: number = birdhouseToPlant.runTime;

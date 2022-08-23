@@ -74,7 +74,7 @@ export const bossrecordCommand: OSBMahojiCommand = {
 		if (!channelIsSendable(channel)) return 'Invalid channel.';
 		const msg = await channel.send({ embeds: [new MessageEmbed().setDescription('Loading...')] });
 
-		await makePaginatedMessage(msg, pages, await mUserFetch(userID));
+		await makePaginatedMessage(msg, pages, await globalClient.fetchUser(userID));
 		return {
 			content: `Showing OSRS Boss Records for \`${options.rsn}\`.`,
 			flags: MessageFlags.Ephemeral

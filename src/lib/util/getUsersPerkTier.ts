@@ -25,7 +25,7 @@ export function patronMaxTripCalc(user: MUser | MahojiUser | MUser) {
 }
 
 export default function getUsersPerkTier(
-	userOrBitfield: MUser | KlasaUser | MahojiUser | readonly BitField[],
+	userOrBitfield: MUser | MahojiUser | readonly BitField[],
 	noCheckOtherAccounts?: boolean
 ): PerkTier | 0 {
 	const isMahojiUser = typeof userOrBitfield === 'object' && 'main_account' in userOrBitfield;
@@ -43,9 +43,9 @@ export default function getUsersPerkTier(
 
 		const highestAccountTier = Math.max(0, ...allAccountTiers);
 		return highestAccountTier;
-	} else if (noCheckOtherAccounts !== true && userOrBitfield instanceof KlasaUser) {
-		let main = userOrBitfield.settings.get(UserSettings.MainAccount);
-		const allAccounts: string[] = [...userOrBitfield.settings.get(UserSettings.IronmanAlts), userOrBitfield.id];
+	} else if (noCheckOtherAccounts !== true && userOrBitfield instanceof MUser) {
+		let main = userOrBitfield.user.main_account;
+		const allAccounts: string[] = [...userOrBitfield.user.ironman_alts, userOrBitfield.id];
 		if (main) {
 			allAccounts.push(main);
 		}

@@ -36,6 +36,7 @@ export default class extends Task {
 			try {
 				const now = Date.now();
 				for (const user of this.client.users.cache.values()) {
+					// asfdsadfasd;,dsf,asd'f
 					if (getUsersPerkTier(user) < PerkTier.Four) continue;
 					if (!user.settings.get(UserSettings.FarmingPatchReminders)) continue;
 					const { patches } = await getFarmingInfo(user.id);

@@ -1,4 +1,3 @@
-import { User } from '@prisma/client';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
@@ -137,13 +136,7 @@ export const collectables: Collectable[] = [
 	}
 ];
 
-export async function collectCommand(
-	mahojiUser: User,
-	user: MUser,
-	channelID: bigint,
-	objectName: string,
-	no_stams?: boolean
-) {
+export async function collectCommand(user: MUser, channelID: bigint, objectName: string, no_stams?: boolean) {
 	const collectable = collectables.find(c => stringMatches(c.item.name, objectName));
 	if (!collectable) {
 		return `That's not something your minion can collect, you can collect these things: ${collectables
@@ -152,7 +145,7 @@ export async function collectCommand(
 	}
 
 	const maxTripLength = calcMaxTripLength(user, 'Collecting');
-	if (collectable.qpRequired && mahojiUser.QP < collectable.qpRequired) {
+	if (collectable.qpRequired && user.QP < collectable.qpRequired) {
 		return `You need ${collectable.qpRequired} QP to collect ${collectable.item.name}.`;
 	}
 

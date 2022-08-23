@@ -9,6 +9,7 @@ import { calculateAddItemsToCLUpdates, getUserGear, mahojiUserSettingsUpdate } f
 import { addXP } from './addXP';
 import { BitField, projectiles, usernameCache } from './constants';
 import { allPetIDs } from './data/CollectionsExport';
+import { getSimilarItems } from './data/similarItems';
 import { CombatOptionsEnum } from './minions/data/combatConstants';
 import { UserKourendFavour } from './minions/data/kourendFavour';
 import { blowpipeDarts, validateBlowpipeData } from './minions/functions/blowpipeCommand';
@@ -21,7 +22,7 @@ import { determineRunes } from './util/determineRunes';
 import getOSItem from './util/getOSItem';
 import getUsersPerkTier from './util/getUsersPerkTier';
 import { minionIsBusy } from './util/minionIsBusy';
-import { hasItemsEquippedOrInBank, minionName } from './util/minionUtils';
+import { minionName } from './util/minionUtils';
 import resolveItems from './util/resolveItems';
 
 function alchPrice(bank: Bank, item: Item, tripLength: number) {
@@ -125,7 +126,7 @@ export class MUser {
 	}
 
 	get minionName() {
-		return minionName(this.user);
+		return minionName(this);
 	}
 
 	get mention() {
@@ -233,8 +234,21 @@ export class MUser {
 		return bank;
 	}
 
-	hasEquippedOrInBank(items: string | number | (string | number)[], type: 'every' | 'one' = 'one') {
-		return hasItemsEquippedOrInBank(this.user, Array.isArray(items) ? items : [items], type);
+	hasEquippedOrInBank(_items: string | number | (string | number)[], type: 'every' | 'one' = 'one') {
+		const { bank } = this;
+		const items = resolveItems(_items);
+		for (const baseID of items) {
+			const similarItems = [...getSimilarItems(baseID), baseID];
+			const hasOneEquipped = similarItems.some(id => this.hasEquipped(id, true));
+			const hasOneInBank = similarItems.some(id => bank.has(id));
+			// If only one needs to be equipped, return true now if it is equipped.
+			if (type === 'one' && (hasOneEquipped || hasOneInBank)) return true;
+			// If all need to be equipped, return false now if not equipped.
+			else if (type === 'every' && !hasOneEquipped && !hasOneInBank) {
+				return false;
+			}
+		}
+		return type === 'one' ? false : true;
 	}
 
 	get skillsAsXP() {

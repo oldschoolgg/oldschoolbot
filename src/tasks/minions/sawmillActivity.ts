@@ -5,7 +5,6 @@ import { Planks } from '../../lib/minions/data/planks';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SawmillActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { hasItemsEquippedOrInBank } from '../../lib/util/minionUtils';
 import { mUserFetch } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
@@ -23,7 +22,7 @@ export default class extends Task {
 		if (
 			user.hasEquipped(['Iron dagger', 'Bronze arrow', 'Iron med helm']) &&
 			user.getAttackStyles().includes(SkillsEnum.Strength) &&
-			!hasItemsEquippedOrInBank(user.user, ['Helm of raedwald'])
+			!user.hasEquippedOrInBank(['Helm of raedwald'])
 		) {
 			loot.add('Helm of raedwald');
 			str +=
