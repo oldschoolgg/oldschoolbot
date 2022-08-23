@@ -254,11 +254,15 @@ export const mineCommand: OSBMahojiCommand = {
 		}
 		// Default bronze pickaxe, last in the array
 		let currentPickaxe = pickaxes[pickaxes.length - 1];
+		boosts.push(
+			`**${currentPickaxe.ticksBetweenRolls}** ticks between rolls for ${itemNameFromID(currentPickaxe.id)}`
+		);
 
 		// For each pickaxe, if they have it, give them its' bonus and break.
 		for (const pickaxe of pickaxes) {
 			if (!hasItemsEquippedOrInBank(user, [pickaxe.id]) || skills.mining < pickaxe.miningLvl) continue;
 			currentPickaxe = pickaxe;
+			boosts.pop();
 			boosts.push(`**${pickaxe.ticksBetweenRolls}** ticks between rolls for ${itemNameFromID(pickaxe.id)}`);
 			break;
 		}
@@ -366,7 +370,7 @@ export const mineCommand: OSBMahojiCommand = {
 		} to finish.`;
 
 		if (boosts.length > 0) {
-			response += `\n\n **Boosts:** ${boosts.join(', ')}.`;
+			response += `\n\n**Boosts:** ${boosts.join(', ')}.`;
 		}
 
 		return response;
