@@ -1,6 +1,5 @@
 import { User } from '@prisma/client';
 import { increaseNumByPercent, reduceNumByPercent, Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { hasSkillReqs } from '../../../mahoji/mahojiSettings';

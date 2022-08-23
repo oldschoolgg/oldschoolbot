@@ -1,18 +1,17 @@
-import { KlasaUser } from 'klasa';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../../lib/constants';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
+import { MUser } from '../../../lib/MUser';
 import { roll } from '../../../lib/util';
 import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import getOSItem from '../../../lib/util/getOSItem';
-import { handleMahojiConfirmation } from '../../mahojiSettings';
+import { handleMahojiConfirmation, mahojiUserSettingsUpdate, mUserFetch } from '../../mahojiSettings';
 
-export async function capeGambleStatsCommand(user: KlasaUser) {
-	const firesGambled = user.settings.get(UserSettings.Stats.FireCapesSacrificed);
-	const infernalsGambled = user.settings.get(UserSettings.Stats.InfernalCapesSacrificed);
+export async function capeGambleStatsCommand(user: MUser) {
+	const firesGambled = user.user.stats_fireCapesSacrificed;
+	const infernalsGambled = user.user.infernal_cape_sacrifices;
 
 	return `You can gamble Fire capes and Infernal capes like this: \"\gamble cape fire/infernal\"
 
@@ -20,19 +19,23 @@ export async function capeGambleStatsCommand(user: KlasaUser) {
 **Infernal Cape's Gambled:** ${infernalsGambled}`;
 }
 
-export async function capeGambleCommand(user: KlasaUser, type: string, interaction: SlashCommandInteraction) {
+export async function capeGambleCommand(user: MUser, type: string, interaction: SlashCommandInteraction) {
 	const item = getOSItem(type === 'fire' ? 'Fire cape' : 'Infernal cape');
-	const key = type === 'fire' ? UserSettings.Stats.FireCapesSacrificed : UserSettings.Stats.InfernalCapesSacrificed;
-
-	const capesOwned = await user.bank().amount(item.id);
+	const key: 'infernal_cape_sacrifices' | 'stats_fireCapesSacrificed' =
+		type === 'fire' ? 'stats_fireCapesSacrificed' : 'infernal_cape_sacrifices';
+	const capesOwned = await user.bank.amount(item.id);
 
 	if (capesOwned < 1) return `You have no ${item.name}'s to gamble!`;
 
 	await handleMahojiConfirmation(interaction, `Are you sure you want to gamble a ${item.name}?`);
 
-	const newSacrificedCount = user.settings.get(key) + 1;
+	const newUser = await mahojiUserSettingsUpdate(user.id, {
+		[key]: {
+			increment: 1
+		}
+	});
+	const newSacrificedCount = newUser.newUser[key];
 	await user.removeItemsFromBank(new Bank().add(item.id));
-	await user.settings.update(key, newSacrificedCount);
 
 	const chance = type === 'fire' ? 200 : 100;
 	const pet = getOSItem(type === 'fire' ? 'Tzrek-Jad' : 'Jal-nib-rek');
@@ -41,9 +44,9 @@ export async function capeGambleCommand(user: KlasaUser, type: string, interacti
 		await user.addItemsToBank({ items: new Bank().add(pet.id), collectionLog: true });
 		globalClient.emit(
 			Events.ServerNotification,
-			`**${user.username}'s** just received their ${formatOrdinal(user.cl().amount(pet.id))} ${
-				pet.name
-			} pet by sacrificing a ${item.name} for the ${formatOrdinal(newSacrificedCount)} time!`
+			`**${user.usernameOrMention}'s** just received their ${formatOrdinal(
+				(await mUserFetch(user.id)).cl.amount(pet.id)
+			)} ${pet.name} pet by sacrificing a ${item.name} for the ${formatOrdinal(newSacrificedCount)} time!`
 		);
 		return {
 			attachments: [

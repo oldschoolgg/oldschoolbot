@@ -6,7 +6,7 @@ import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { Emoji, lastTripCache, minionBuyButton } from '../../../lib/constants';
 import { makeComponents } from '../../../lib/util';
 import { minionStatus } from '../../../lib/util/minionStatus';
-import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
+import { mahojiUsersSettingsFetch, mUserFetch } from '../../mahojiSettings';
 import { calculateBirdhouseDetails } from './birdhousesCommand';
 import { isUsersDailyReady } from './dailyCommand';
 import { canRunAutoContract } from './farmingContractCommand';
@@ -14,7 +14,7 @@ import { canRunAutoContract } from './farmingContractCommand';
 export async function minionStatusCommand(
 	userID: bigint | string
 ): Promise<InteractionResponseDataWithBufferAttachments> {
-	const user = await globalClient.fetchUser(userID);
+	const user = await mUserFetch(userID);
 	const mahojiUser = await mahojiUsersSettingsFetch(userID, { minion_hasBought: true });
 
 	if (!mahojiUser.minion_hasBought) {
@@ -105,7 +105,7 @@ export async function minionStatusCommand(
 		});
 	}
 
-	const bank = user.bank();
+	const { bank } = user;
 
 	if (!user.minionIsBusy) {
 		for (const tier of ClueTiers.filter(t => bank.has(t.scrollID))

@@ -59,7 +59,7 @@ export const lightCommand: OSBMahojiCommand = {
 
 		const maxTripLength = calcMaxTripLength(user, 'Firemaking');
 
-		const amountOfLogsOwned = user.bank().amount(log.inputLogs);
+		const amountOfLogsOwned = user.bank.amount(log.inputLogs);
 
 		let { quantity } = options;
 		// If no quantity provided, set it to the max.

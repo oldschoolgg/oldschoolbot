@@ -1,7 +1,7 @@
-import { Activity, NewUser, Prisma, User } from '@prisma/client';
+import { Activity, NewUser, Prisma } from '@prisma/client';
 import { GuildMember, MessageAttachment } from 'discord.js';
 import { roll } from 'e';
-import { Gateway, KlasaMessage, KlasaUser, Settings } from 'klasa';
+import { Gateway, KlasaMessage, Settings } from 'klasa';
 import { APIInteractionGuildMember } from 'mahoji';
 
 import { CommandArgs } from '../../mahoji/lib/inhibitors';
@@ -13,6 +13,7 @@ import {
 	convertKlasaCommandToAbstractCommand,
 	convertMahojiCommandToAbstractCommand
 } from '../../mahoji/lib/util';
+import { MUser } from '../MUser';
 import { BotCommand } from '../structures/BotCommand';
 import { ActivityTaskData } from '../types/minions';
 import { channelIsSendable, cleanUsername, isGroupActivity } from '../util';
@@ -115,7 +116,7 @@ export async function runMahojiCommand({
 	channelID: bigint | string;
 	userID: bigint | string;
 	guildID: bigint | string | undefined;
-	user: User | KlasaUser;
+	user: MUser;
 	member: APIInteractionGuildMember | GuildMember | null;
 }) {
 	const mahojiCommand = globalClient.mahojiClient.commands.values.find(c => c.name === commandName);
@@ -139,7 +140,7 @@ export async function runMahojiCommand({
 export interface RunCommandArgs {
 	commandName: string;
 	args: CommandArgs;
-	user: User | KlasaUser;
+	user: MUser;
 	channelID: string | bigint;
 	userID: string | bigint;
 	member: APIInteractionGuildMember | GuildMember | null;

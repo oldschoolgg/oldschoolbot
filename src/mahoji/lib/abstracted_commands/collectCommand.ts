@@ -1,10 +1,9 @@
 import { User } from '@prisma/client';
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
+import { MUser } from '../../../lib/MUser';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { Skills } from '../../../lib/types';
 import { CollectingOptions } from '../../../lib/types/minions';
@@ -140,7 +139,7 @@ export const collectables: Collectable[] = [
 
 export async function collectCommand(
 	mahojiUser: User,
-	user: KlasaUser,
+	user: MUser,
 	channelID: bigint,
 	objectName: string,
 	no_stams?: boolean
@@ -201,7 +200,7 @@ export async function collectCommand(
 		}
 		await transactItems({ userID: user.id, itemsToRemove: cost });
 
-		await updateBankSetting(user.client, ClientSettings.EconomyStats.CollectingCost, cost);
+		await updateBankSetting('collecting_cost', cost);
 	}
 
 	await addSubTaskToActivityTask<CollectingOptions>({

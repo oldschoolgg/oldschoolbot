@@ -146,7 +146,7 @@ export async function autoContract(user: MUser, channelID: bigint, userID: bigin
 		.find(a => user.skillLevel('farming') >= a[1])?.[0] as ContractOption | undefined;
 
 	if (user.bank.has('Seed pack')) {
-		const openResponse = await abstractedOpenCommand(null, user.id, mahojiUser, ['seed pack'], 'auto');
+		const openResponse = await abstractedOpenCommand(null, user.id, ['seed pack'], 'auto');
 		const contractResponse = await farmingContractCommand(userID, bestContractTierCanDo);
 		return roughMergeMahojiResponse(openResponse, contractResponse);
 	}

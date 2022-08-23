@@ -1,17 +1,16 @@
 import { User } from '@prisma/client';
 import { notEmpty, randFloat, randInt } from 'e';
-import { ArrayActions, KlasaUser } from 'klasa';
 import { Bank, Monsters, MonsterSlayerMaster } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
 import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
+import { mahojiUserSettingsUpdate } from '../../mahoji/mahojiSettings';
 import { PvMMethod } from '../constants';
 import { CombatOptionsEnum } from '../minions/data/combatConstants';
 import { KillableMonster } from '../minions/types';
 import { MUser } from '../MUser';
 import { prisma } from '../settings/prisma';
 import { getNewUser } from '../settings/settings';
-import { UserSettings } from '../settings/types/UserSettings';
 import { SkillsEnum } from '../skilling/types';
 import { bankHasItem, roll, skillsMeetRequirements, stringMatches } from '../util';
 import itemID from '../util/itemID';
@@ -35,7 +34,7 @@ export enum SlayerMasterEnum {
 
 export interface DetermineBoostParams {
 	cbOpts: CombatOptionsEnum[];
-	user: KlasaUser;
+	user: MUser;
 	monster: KillableMonster;
 	method?: PvMMethod | null;
 	isOnTask?: boolean;
@@ -78,7 +77,7 @@ export async function calculateSlayerPoints(currentStreak: number, master: Slaye
 
 	// Boost points to 20 for Konar + Kourend Elites
 	if (master.name === 'Konar quo Maten') {
-		const [hasKourendElite] = await userhasDiaryTier(user.user, KourendKebosDiary.elite);
+		const [hasKourendElite] = await userhasDiaryTier(user, KourendKebosDiary.elite);
 		if (hasKourendElite) {
 			basePoints = 20;
 		}
@@ -133,7 +132,7 @@ export function userCanUseTask(
 	const myLastTask = user.user.slayer_last_task;
 	if (myLastTask === task.monster.id) return false;
 	if (task.combatLevel && task.combatLevel > user.combatLevel) return false;
-	if (task.questPoints && task.questPoints > user.settings.get(UserSettings.QP)) return false;
+	if (task.questPoints && task.questPoints > user.QP) return false;
 	if (task.slayerLevel && task.slayerLevel > user.skillLevel(SkillsEnum.Slayer)) return false;
 	if (task.levelRequirements && !skillsMeetRequirements(user.skillsAsXP, task.levelRequirements)) return false;
 	const myBlockList = user.user.slayer_blocked_ids ?? [];
@@ -142,7 +141,7 @@ export function userCanUseTask(
 	// Slayer unlock restrictions:
 	const lmon = task.monster.name.toLowerCase();
 	const lmast = master.name.toLowerCase();
-	if (lmon === 'grotesque guardians' && !bankHasItem(user.bank().bank, itemID('Brittle key'))) return false;
+	if (lmon === 'grotesque guardians' && !bankHasItem(user.bank.bank, itemID('Brittle key'))) return false;
 	if (lmon === 'lizardman' && !myUnlocks.includes(SlayerTaskUnlocksEnum.ReptileGotRipped)) return false;
 	if (lmon === 'red dragon' && !myUnlocks.includes(SlayerTaskUnlocksEnum.SeeingRed)) return false;
 	if (lmon === 'mithril dragon' && !myUnlocks.includes(SlayerTaskUnlocksEnum.IHopeYouMithMe)) return false;
@@ -204,7 +203,9 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 			skipped: false
 		}
 	});
-	await _user.settings.update(UserSettings.Slayer.LastTask, assignedTask!.monster.id);
+	await mahojiUserSettingsUpdate(_user.id, {
+		slayer_last_task: assignedTask!.monster.id
+	});
 
 	return { currentTask, assignedTask };
 }
@@ -449,11 +450,13 @@ ORDER BY qty DESC;`;
 }
 
 export async function setDefaultSlayerMaster(
-	user: KlasaUser,
+	user: MUser,
 	newMaster: string
 ): Promise<{ success: boolean; message: string }> {
 	if (!newMaster || newMaster === 'clear') {
-		await user.settings.update(UserSettings.Slayer.RememberSlayerMaster, null);
+		await mahojiUserSettingsUpdate(user.id, {
+			slayer_remember_master: null
+		});
 		return { success: true, message: 'Saved Slayer master has been erased.' };
 	}
 	const master = slayerMasters.find(
@@ -465,17 +468,19 @@ export async function setDefaultSlayerMaster(
 	if (!userCanUseMaster(user, master)) {
 		return { success: false, message: `You cannot use ${master.name} to assign tasks yet.` };
 	}
-	await user.settings.update(UserSettings.Slayer.RememberSlayerMaster, master.name);
+	await mahojiUserSettingsUpdate(user.id, {
+		slayer_remember_master: master.name
+	});
 	return { success: true, message: `Slayer master updated to: ${master.name}` };
 }
 
 export async function setDefaultAutoslay(
-	user: KlasaUser,
+	user: MUser,
 	newAutoslayMode: string
 ): Promise<{ success: boolean; message: string }> {
 	if (!newAutoslayMode || newAutoslayMode === 'clear') {
-		await user.settings.update(UserSettings.Slayer.AutoslayOptions, [], {
-			arrayAction: ArrayActions.Overwrite
+		await mahojiUserSettingsUpdate(user.id, {
+			slayer_autoslay_options: []
 		});
 		return { success: true, message: 'Saved autoslay method has been erased.' };
 	}
@@ -486,8 +491,8 @@ export async function setDefaultAutoslay(
 	if (!autoslayOption) {
 		return { success: false, message: `Couldn't find matching autoslay option for '${newAutoslayMode}` };
 	}
-	await user.settings.update(UserSettings.Slayer.AutoslayOptions, [autoslayOption.key], {
-		arrayAction: ArrayActions.Overwrite
+	await mahojiUserSettingsUpdate(user.id, {
+		slayer_autoslay_options: [autoslayOption.key]
 	});
 	return { success: true, message: `Autoslay method updated to: ${autoslayOption.name} (${autoslayOption.focus})` };
 }

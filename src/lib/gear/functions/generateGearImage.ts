@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/restrict-plus-operands */
 import * as fs from 'fs';
-import { KlasaUser } from 'klasa';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import { Canvas } from 'skia-canvas/lib';
 

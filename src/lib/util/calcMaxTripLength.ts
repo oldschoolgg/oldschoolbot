@@ -1,6 +1,5 @@
 import { activity_type_enum, User } from '@prisma/client';
 import { calcPercentOfNum, calcWhatPercent, Time } from 'e';
-import { KlasaUser } from 'klasa';
 
 import { PerkTier } from '../constants';
 import { MUser } from '../MUser';

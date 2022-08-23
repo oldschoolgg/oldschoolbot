@@ -1,11 +1,10 @@
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { UserSettings } from '../../settings/types/UserSettings';
 import { itemNameFromID } from '../../util';
 import { logError } from '../../util/logError';
 
-export async function unequipPet(user: KlasaUser) {
+export async function unequipPet(user: MUser) {
 	const equippedPet = user.settings.get(UserSettings.Minion.EquippedPet);
 	if (!equippedPet) return "You don't have a pet equipped.";
 

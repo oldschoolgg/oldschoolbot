@@ -1,10 +1,8 @@
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
+import { MUser } from '../../../lib/MUser';
 import { Castables } from '../../../lib/skilling/skills/magic/castables';
 import { CastingActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches, updateBankSetting } from '../../../lib/util';
@@ -12,7 +10,7 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../../lib/util/determineRunes';
 
-export async function castCommand(channelID: bigint, user: KlasaUser, name: string, quantity: number | undefined) {
+export async function castCommand(channelID: bigint, user: MUser, name: string, quantity: number | undefined) {
 	const spell = Castables.find(spell => stringMatches(spell.name, name));
 
 	if (!spell) {
@@ -29,12 +27,11 @@ export async function castCommand(channelID: bigint, user: KlasaUser, name: stri
 		return `${user.minionName} needs ${spell.craftLevel} Crafting to cast ${spell.name}.`;
 	}
 
-	if (spell.qpRequired && user.settings.get(UserSettings.QP) < spell.qpRequired) {
+	if (spell.qpRequired && user.QP < spell.qpRequired) {
 		return `${user.minionName} needs ${spell.qpRequired} QP to cast ${spell.name}.`;
 	}
 
-	await user.settings.sync(true);
-	const userBank = user.bank();
+	const userBank = user.bank;
 
 	let timeToEnchantTen = spell.ticks * Time.Second * 0.6 + Time.Second / 4;
 
@@ -63,7 +60,7 @@ export async function castCommand(channelID: bigint, user: KlasaUser, name: stri
 		}, you're missing **${cost.clone().remove(userBank)}** (Cost: ${cost}).`;
 	}
 
-	const userGP = user.settings.get(UserSettings.GP);
+	const userGP = user.GP;
 
 	let gpCost = 0;
 	if (spell.gpCost) {
@@ -74,8 +71,8 @@ export async function castCommand(channelID: bigint, user: KlasaUser, name: stri
 		await user.removeItemsFromBank(new Bank().add('Coins', gpCost));
 	}
 
-	await user.removeItemsFromBank(cost.bank);
-	await updateBankSetting(globalClient, ClientSettings.EconomyStats.MagicCostBank, cost);
+	await user.removeItemsFromBank(cost);
+	await updateBankSetting('magic_cost_bank', cost);
 
 	await addSubTaskToActivityTask<CastingActivityTaskOptions>({
 		spellID: spell.id,

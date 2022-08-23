@@ -1,4 +1,3 @@
-import { KlasaUser } from 'klasa';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandOption } from 'mahoji/dist/lib/types';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
@@ -13,7 +12,7 @@ import { allEquippableItems, gearPresetOption, gearSetupOption } from '../lib/ma
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
-function maxPresets(user: KlasaUser) {
+function maxPresets(user: MUser) {
 	return user.perkTier * 2 + 3;
 }
 
@@ -31,7 +30,7 @@ function parseInputGear(inputGear: InputGear) {
 }
 
 async function createOrEditGearSetup(
-	user: KlasaUser,
+	user: MUser,
 	setupToCopy: GearSetupType | undefined,
 	name: string,
 	isUpdating: boolean,

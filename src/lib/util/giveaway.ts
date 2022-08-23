@@ -1,6 +1,5 @@
 import { Snowflake, TextChannel } from 'discord.js';
 import { noOp, randArrItem } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 

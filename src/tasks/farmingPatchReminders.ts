@@ -12,7 +12,7 @@ import { stringMatches } from '../lib/util';
 import { farmingPatchNames, getFarmingKeyFromName } from '../lib/util/farmingHelpers';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 import { logError } from '../lib/util/logError';
-import { mahojiUserSettingsUpdate } from '../mahoji/mahojiSettings';
+import { mahojiUserSettingsUpdate, mUserFetch } from '../mahoji/mahojiSettings';
 
 declare module 'klasa' {
 	interface KlasaClient {
@@ -109,7 +109,7 @@ export default class extends Task {
 									channelID: message.channel.id,
 									userID: message.author.id,
 									guildID: message.guild?.id,
-									user: message.author,
+									user: await mUserFetch(user.id),
 									member: message.member
 								});
 							}

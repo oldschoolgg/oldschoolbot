@@ -28,21 +28,27 @@ import { gzip } from 'node:zlib';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
+import Monster from 'oldschooljs/dist/structures/Monster';
 import { bool, integer, MersenneTwister19937, nodeCrypto, real, shuffle } from 'random-js';
 
 import { CLIENT_ID, production } from '../config';
 import {
+	hasSkillReqs,
 	mahojiClientSettingsFetch,
 	mahojiClientSettingsUpdate,
 	mahojiUserSettingsUpdate,
 	mahojiUsersSettingsFetch
 } from '../mahoji/mahojiSettings';
 import { skillEmoji, SupportServer, usernameCache } from './constants';
+import { readableStatName } from './gear';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
-import { Consumable } from './minions/types';
+import { effectiveMonsters } from './minions/data/killableMonsters';
+import { Consumable, KillableMonster } from './minions/types';
 import { MUser } from './MUser';
 import { POHBoosts } from './poh';
+import { getMinigameScore, Minigames } from './settings/minigames';
 import { prisma } from './settings/prisma';
+import creatures from './skilling/skills/hunter/creatures';
 import { Rune } from './skilling/skills/runecraft';
 import { SkillsEnum } from './skilling/types';
 import { ArrayItemsResolved, Skills } from './types';
@@ -52,6 +58,7 @@ import {
 	RaidsOptions,
 	TheatreOfBloodTaskOptions
 } from './types/minions';
+import { stringMatches } from './util/cleanString';
 import { getItem } from './util/getOSItem';
 import itemID from './util/itemID';
 import { logError } from './util/logError';
@@ -300,7 +307,7 @@ export function getSkillsOfMahojiUser(user: User, levels = false): Required<Skil
 	}
 	return skills;
 }
-export function countSkillsAtleast99(user: KlasaUser | User) {
+export function countSkillsAtleast99(user: MUser | User) {
 	const skills =
 		user instanceof KlasaUser
 			? ((user.settings.get('skills') as SettingsFolder).toJSON() as Record<string, number>)
@@ -551,7 +558,7 @@ export async function updateLegacyUserBankSetting(userID: string, key: 'tob_cost
 	return res;
 }
 
-export async function wipeDBArrayByKey(user: KlasaUser, key: string): Promise<SettingsUpdateResults> {
+export async function wipeDBArrayByKey(user: MUser, key: string): Promise<SettingsUpdateResults> {
 	const active: any[] = user.settings.get(key) as any[];
 	return user.settings.update(key, active);
 }
@@ -908,4 +915,116 @@ export function validateItemBankAndThrow(input: any): input is ItemBank {
 		}
 	}
 	return true;
+}
+
+export function hasMonsterRequirements(user: MUser, monster: KillableMonster) {
+	if (monster.qpRequired && user.QP < monster.qpRequired) {
+		return [
+			false,
+			`You need ${monster.qpRequired} QP to kill ${monster.name}. You can get Quest Points through questing with \`/activities quest\``
+		];
+	}
+
+	if (monster.itemsRequired) {
+		const itemsRequiredStr = formatItemReqs(monster.itemsRequired);
+		for (const item of monster.itemsRequired) {
+			if (Array.isArray(item)) {
+				if (!item.some(itemReq => user.hasEquippedOrInBank(itemReq as number))) {
+					return [false, `You need these items to kill ${monster.name}: ${itemsRequiredStr}`];
+				}
+			} else if (!user.hasEquippedOrInBank(item)) {
+				return [
+					false,
+					`You need ${itemsRequiredStr} to kill ${monster.name}. You're missing ${itemNameFromID(item)}.`
+				];
+			}
+		}
+	}
+
+	if (monster.levelRequirements) {
+		const [hasReqs, str] = hasSkillReqs(user, monster.levelRequirements);
+		if (!hasReqs) {
+			return [false, `You don't meet the skill requirements to kill ${monster.name}, you need: ${str}.`];
+		}
+	}
+
+	if (monster.minimumGearRequirements) {
+		for (const [setup, requirements] of objectEntries(monster.minimumGearRequirements)) {
+			const gear = user.gear[setup];
+			if (setup && requirements) {
+				const [meetsRequirements, unmetKey, has] = gear.meetsStatRequirements(requirements);
+				if (!meetsRequirements) {
+					return [
+						false,
+						`You don't have the requirements to kill ${monster.name}! Your ${readableStatName(
+							unmetKey!
+						)} stat in your ${setup} setup is ${has}, but you need atleast ${
+							monster.minimumGearRequirements[setup]![unmetKey!]
+						}.`
+					];
+				}
+			}
+		}
+	}
+
+	return [true];
+}
+
+export function resolveAvailableItemBoosts(user: MUser, monster: KillableMonster) {
+	const boosts = new Bank();
+	if (monster.itemInBankBoosts) {
+		for (const boostSet of monster.itemInBankBoosts) {
+			let highestBoostAmount = 0;
+			let highestBoostItem = 0;
+
+			// find the highest boost that the player has
+			for (const [itemID, boostAmount] of Object.entries(boostSet)) {
+				const parsedId = parseInt(itemID);
+				if (monster.wildy ? !user.hasEquipped(parsedId) : !user.hasEquippedOrInBank(parsedId)) {
+					continue;
+				}
+				if (boostAmount > highestBoostAmount) {
+					highestBoostAmount = boostAmount;
+					highestBoostItem = parsedId;
+				}
+			}
+
+			if (highestBoostAmount && highestBoostItem) {
+				boosts.add(highestBoostItem, highestBoostAmount);
+			}
+		}
+	}
+	return boosts.bank;
+}
+
+export async function getKCByName(user: MUser, kcName: string): Promise<[string, number] | [null, 0]> {
+	const mon = effectiveMonsters.find(
+		mon => stringMatches(mon.name, kcName) || mon.aliases.some(alias => stringMatches(alias, kcName))
+	);
+	if (mon) {
+		return [mon.name, user.getKC((mon as unknown as Monster).id)];
+	}
+
+	const minigame = Minigames.find(
+		game => stringMatches(game.name, kcName) || game.aliases.some(alias => stringMatches(alias, kcName))
+	);
+	if (minigame) {
+		return [minigame.name, await getMinigameScore(user.id, minigame.column)];
+	}
+
+	const creature = creatures.find(c => c.aliases.some(alias => stringMatches(alias, kcName)));
+	if (creature) {
+		return [creature.name, user.getCreatureScore(creature.id)];
+	}
+
+	const special: [string[], number][] = [
+		[['superior', 'superiors', 'superior slayer monster'], user.user.slayer_superior_count],
+		[['tithefarm', 'tithe'], user.user.stats_titheFarmsCompleted]
+	];
+	const res = special.find(s => s[0].includes(kcName));
+	if (res) {
+		return [res[0][0], res[1]];
+	}
+
+	return [null, 0];
 }

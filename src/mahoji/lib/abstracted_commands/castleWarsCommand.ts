@@ -1,20 +1,20 @@
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
 
+import { MUser } from '../../../lib/MUser';
 import { getMinigameEntity } from '../../../lib/settings/settings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
-export async function castleWarsStartCommand(klasaUser: KlasaUser, channelID: bigint) {
-	if (klasaUser.minionIsBusy) return `${klasaUser.minionName} is busy.`;
+export async function castleWarsStartCommand(user: MUser, channelID: bigint) {
+	if (user.minionIsBusy) return `${user.minionName} is busy.`;
 	const gameLength = Time.Minute * 18;
-	const quantity = Math.floor(calcMaxTripLength(klasaUser, 'CastleWars') / gameLength);
+	const quantity = Math.floor(calcMaxTripLength(user, 'CastleWars') / gameLength);
 	const duration = quantity * gameLength;
 
 	await addSubTaskToActivityTask<MinigameActivityTaskOptions>({
-		userID: klasaUser.id,
+		userID: user.id,
 		channelID: channelID.toString(),
 		duration,
 		type: 'CastleWars',
@@ -23,12 +23,12 @@ export async function castleWarsStartCommand(klasaUser: KlasaUser, channelID: bi
 	});
 
 	return `${
-		klasaUser.minionName
+		user.minionName
 	} is now doing ${quantity} games of Castle Wars. The trip will take around ${formatDuration(duration)}.`;
 }
-export async function castleWarsStatsCommand(klasaUser: KlasaUser) {
-	const bank = klasaUser.bank();
-	const kc = await getMinigameEntity(klasaUser.id);
+export async function castleWarsStatsCommand(user: MUser) {
+	const { bank } = user;
+	const kc = await getMinigameEntity(user.id);
 	return `You have **${bank.amount('Castle wars ticket')}** Castle wars tickets.
 You have played ${kc.castle_wars} Castle Wars games.`;
 }

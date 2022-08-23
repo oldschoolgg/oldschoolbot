@@ -1,17 +1,17 @@
 import { Prisma } from '@prisma/client';
 import { noOp } from 'e';
-import { KlasaUser } from 'klasa';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { BitField } from '../../../lib/constants';
+import { MUser } from '../../../lib/MUser';
 import { roboChimpUserFetch } from '../../../lib/roboChimp';
 import { prisma } from '../../../lib/settings/prisma';
 import { assert } from '../../../lib/util';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 import { handleMahojiConfirmation, mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../../mahojiSettings';
 
-export async function ironmanCommand(user: KlasaUser, interaction: SlashCommandInteraction, permanent?: boolean) {
+export async function ironmanCommand(user: MUser, interaction: SlashCommandInteraction, permanent?: boolean) {
 	if (minionIsBusy(user.id)) return 'Your minion is busy.';
 	if (user.isIronman) {
 		const isPerm = user.bitfield.includes(BitField.PermanentIronman);

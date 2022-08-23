@@ -8,12 +8,11 @@ import { GetUserBankOptions } from '../../extendables/User/Bank';
 import { BitField, PerkTier } from '../constants';
 import { GearSetupType, UserFullGearSetup } from '../gear/types';
 import { AttackStyles } from '../minions/functions';
-import { AddXpParams, KillableMonster } from '../minions/types';
+import { AddXpParams } from '../minions/types';
 import { MinigameName } from '../settings/minigames';
 import { CustomGet } from '../settings/types/UserSettings';
-import { Creature, SkillsEnum } from '../skilling/types';
 import { Gear } from '../structures/Gear';
-import { ItemBank, Skills } from '.';
+import { ItemBank } from '.';
 
 declare module 'klasa' {
 	interface KlasaClient {
@@ -90,33 +89,10 @@ declare module 'discord.js' {
 			dontAddToTempCL?: boolean;
 		}): ReturnType<typeof transactItems>;
 		removeItemsFromBank(items: ItemBank | Bank, collectionLog?: boolean): ReturnType<typeof transactItems>;
-		addItemsToCollectionLog(options: { items: Bank; dontAddToTempCL?: boolean }): Promise<SettingsUpdateResult>;
 		incrementCreatureScore(creatureID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
 		log(stringLog: string): void;
 		addXP(params: AddXpParams): Promise<string>;
-		skillLevel(skillName: SkillsEnum): number;
-		totalLevel(returnXP = false): number;
 		toggleBusy(busy: boolean): void;
-		/**
-		 * Returns true if the user has this item equipped in any of their setups.
-		 * @param itemID The item ID.
-		 */
-		hasItemEquippedAnywhere(_item: number | string | string[] | number[], every = false): boolean;
-		/**
-		 * Checks whether they have the given item in their bank OR equipped.
-		 * @param item
-		 */
-		hasItemEquippedOrInBank(item: number | string): boolean;
-		/**
-		 * Returns a tuple where the first item is true/false if they have the requirements,
-		 * the second item is a string containing the reason they don't have the requirements.
-		 */
-		hasMonsterRequirements(monster: KillableMonster): [false, string] | [true];
-		/**
-		 * Returns a tuple where the first item is formatted KC entry name and second is the KC.
-		 * If the search doesn't return anything then returns [null, 0].
-		 */
-		getKCByName(kcName: string): [string, number] | [null, 0];
 		/**
 		 * Returns minigame score
 		 */
@@ -127,10 +103,6 @@ declare module 'discord.js' {
 		getUserFavAlchs(duration: number): Item[];
 		getGear(gearType: GearSetupType): Gear;
 		setAttackStyle(newStyles: AttackStyles[]): Promise<void>;
-		/**
-		 * Get item boosts the user has available for the given `KillableMonster`.
-		 */
-		resolveAvailableItemBoosts(monster: KillableMonster): ItemBank;
 		perkTier: PerkTier;
 		sanitizedName: string;
 		badges: string;
@@ -143,7 +115,6 @@ declare module 'discord.js' {
 		minionStatus: string;
 		minionName: string;
 		hasMinion: boolean;
-		isIronman: boolean;
 		bitfield: readonly BitField[];
 	}
 }

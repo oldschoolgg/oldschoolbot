@@ -1,7 +1,6 @@
 import type { ClientStorage, Guild, Prisma, User, UserStats } from '@prisma/client';
 import { Guild as DJSGuild, MessageButton } from 'discord.js';
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { InteractionResponseType, InteractionType, MessageFlags } from 'mahoji';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
@@ -146,7 +145,7 @@ export async function mUserFetch(userID: bigint | string) {
 	return new MUser(user);
 }
 
-export async function mahojiUserSettingsUpdate(user: string | bigint | KlasaUser, data: Prisma.UserUpdateArgs['data']) {
+export async function mahojiUserSettingsUpdate(user: string | bigint, data: Prisma.UserUpdateArgs['data']) {
 	try {
 		const klasaUser =
 			typeof user === 'string' || typeof user === 'bigint' ? await globalClient.fetchUser(user) : user;
@@ -344,13 +343,6 @@ export async function calculateAddItemsToCLUpdates({
 	return updates;
 }
 
-export async function addItemsToCollectionLog(opts: { items: Bank; dontAddToTempCL?: boolean; userID: string }) {
-	return userQueueFn(opts.userID, async () => {
-		const updates = await calculateAddItemsToCLUpdates(opts);
-		return mahojiUserSettingsUpdate(opts.userID, updates);
-	});
-}
-
 interface TransactItemsArgs {
 	userID: string;
 	itemsToAdd?: Bank;
@@ -477,7 +469,7 @@ export async function updateGPTrackSetting(
 		| 'gp_pickpocket'
 		| 'duelTaxBank',
 	amount: number,
-	user?: KlasaUser
+	user?: MUser | User
 ) {
 	if (!user) {
 		await prisma.clientStorage.update({

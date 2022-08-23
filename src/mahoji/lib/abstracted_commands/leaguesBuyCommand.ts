@@ -1,13 +1,13 @@
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { leagueBuyables } from '../../../lib/data/leaguesBuyables';
+import { MUser } from '../../../lib/MUser';
 import { roboChimpUserFetch } from '../../../lib/roboChimp';
 import { stringMatches } from '../../../lib/util';
 
 const pointsCostMultiplier = 150;
 
-export async function leaguesBuyCommand(user: KlasaUser, itemName: string, quantity = 1) {
+export async function leaguesBuyCommand(user: MUser, itemName: string, quantity = 1) {
 	const item = leagueBuyables.find(i => stringMatches(i.item.name, itemName));
 	if (!item) return "That's not a valid item.";
 

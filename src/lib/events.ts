@@ -1,10 +1,10 @@
 import { Message, MessageActionRow, MessageButton } from 'discord.js';
 import { noOp } from 'e';
-import { KlasaUser } from 'klasa';
 
 import { CLIENT_ID, MAXING_MESSAGE } from '../config';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
 import { Events, LEVEL_99_XP, SupportServer } from './constants';
+import { MUser } from './MUser';
 import { prisma } from './settings/prisma';
 import Skills from './skilling/skills';
 import { channelIsSendable } from './util';
@@ -31,16 +31,19 @@ async function howManyMaxed() {
 	};
 }
 
-export async function onMax(user: KlasaUser) {
+export async function onMax(user: MUser) {
 	const { normies, irons } = await howManyMaxed();
 
-	const str = `🎉 ${user.username}'s minion just achieved level 99 in every skill, they are the **${formatOrdinal(
-		normies
-	)}** minion to be maxed${user.isIronman ? `, and the **${formatOrdinal(irons)}** ironman to max.` : '.'} 🎉`;
+	const str = `🎉 ${
+		user.usernameOrMention
+	}'s minion just achieved level 99 in every skill, they are the **${formatOrdinal(normies)}** minion to be maxed${
+		user.isIronman ? `, and the **${formatOrdinal(irons)}** ironman to max.` : '.'
+	} 🎉`;
 
-	user.client.emit(Events.ServerNotification, str);
+	globalClient.emit(Events.ServerNotification, str);
 	sendToChannelID(SupportServer, { content: str }).catch(noOp);
-	user.send(MAXING_MESSAGE).catch(noOp);
+	const kUser = await globalClient.fetchUser(user.id);
+	kUser.send(MAXING_MESSAGE).catch(noOp);
 }
 
 export async function onMessage(msg: Message) {

@@ -6,7 +6,6 @@ import { Emoji } from '../../constants';
 import { Eatables } from '../../data/eatables';
 import { GearSetupType } from '../../gear';
 import { MUser } from '../../MUser';
-import { ClientSettings } from '../../settings/types/ClientSettings';
 import { updateBankSetting } from '../../util';
 import getUserFoodFromBank from './getUserFoodFromBank';
 
@@ -56,7 +55,7 @@ export default async function removeFoodFromUser({
 	} else {
 		await transactItems({ userID: user.id, itemsToRemove: foodToRemove });
 
-		updateBankSetting(globalClient, ClientSettings.EconomyStats.PVMCost, foodToRemove);
+		updateBankSetting('economyStats_PVMCost', foodToRemove);
 
 		return {
 			foodRemoved: foodToRemove,

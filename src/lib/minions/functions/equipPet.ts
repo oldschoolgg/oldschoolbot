@@ -1,4 +1,3 @@
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { allPetIDs } from '../../data/CollectionsExport';
@@ -6,7 +5,7 @@ import { UserSettings } from '../../settings/types/UserSettings';
 import getOSItem from '../../util/getOSItem';
 import { unequipPet } from './unequipPet';
 
-export async function equipPet(user: KlasaUser, itemName: string) {
+export async function equipPet(user: MUser, itemName: string) {
 	const petItem = getOSItem(itemName);
 	const cost = new Bank().add(petItem.id);
 

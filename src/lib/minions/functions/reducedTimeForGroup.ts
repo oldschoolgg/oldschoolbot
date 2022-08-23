@@ -1,5 +1,3 @@
-import { KlasaUser } from 'klasa';
-
 import { calcPOHBoosts } from '../../poh';
 import { prisma } from '../../settings/prisma';
 import { UserSettings } from '../../settings/types/UserSettings';

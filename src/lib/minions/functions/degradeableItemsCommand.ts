@@ -1,4 +1,3 @@
-import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 
@@ -9,7 +8,7 @@ import { stringMatches, updateBankSetting } from '../../util';
 
 export async function degradeableItemsCommand(
 	interaction: SlashCommandInteraction,
-	user: KlasaUser,
+	user: MUser,
 	input: string | undefined,
 	quantity: number | undefined
 ): CommandResponse {

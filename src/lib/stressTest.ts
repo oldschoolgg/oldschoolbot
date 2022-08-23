@@ -1,7 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
-import { UserSettings } from './settings/types/UserSettings';
+import { mahojiUsersSettingsFetch, mUserFetch } from '../mahoji/mahojiSettings';
 import { ItemBank } from './types';
 import { assert } from './util';
 
@@ -21,16 +20,16 @@ function diffBanks(bank1: Bank, bank2: Bank) {
 }
 
 export async function stressTest(userID: string) {
-	const user = await globalClient.fetchUser(userID);
-	const currentBank = user.bank();
-	const currentGP = user.settings.get(UserSettings.GP);
+	const user = await mUserFetch(userID);
+	const currentBank = user.bank;
+	const currentGP = user.GP;
 	const gpBank = new Bank().add('Coins', currentGP);
 	async function assertGP(amnt: number) {
 		const mUser = await mahojiUsersSettingsFetch(userID);
 		assert(Number(mUser.GP) === amnt, `1 GP should match ${amnt} === ${Number(mUser.GP)}`);
 	}
 	async function assertBankMatches() {
-		const newBank = user.bank();
+		const newBank = user.bank;
 		const mUser = await mahojiUsersSettingsFetch(userID);
 		const mahojiBank = new Bank(mUser.bank as ItemBank);
 		assert(bankIsEqual(mahojiBank, newBank), 'Mahoji/Klasa bank should match');

@@ -1,7 +1,6 @@
 import { User } from '@prisma/client';
 import { MessageAttachment } from 'discord.js';
 import { calcWhatPercent, uniqueArr } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank, Clues, Monsters } from 'oldschooljs';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 import { table } from 'table';
@@ -20,7 +19,7 @@ import { UserSettings } from '../settings/types/UserSettings';
 import { NexNonUniqueTable, NexUniqueTable } from '../simulation/misc';
 import { allFarmingItems } from '../skilling/skills/farming';
 import { ItemBank } from '../types';
-import { addArrayOfNumbers, removeFromArr, shuffleRandom, stringMatches } from '../util';
+import { addArrayOfNumbers, getKCByName, removeFromArr, shuffleRandom, stringMatches } from '../util';
 import resolveItems from '../util/resolveItems';
 import {
 	abyssalSireCL,
@@ -945,17 +944,17 @@ function getLeftList(
 	return leftList;
 }
 
-export function getBank(user: KlasaUser, mahojiUser: User, type: 'sacrifice' | 'bank' | 'collection' | 'temp') {
+export function getBank(user: MUser, mahojiUser: User, type: 'sacrifice' | 'bank' | 'collection' | 'temp') {
 	const userCheckBank = new Bank();
 	switch (type) {
 		case 'collection':
-			userCheckBank.add(user.settings.get(UserSettings.CollectionLogBank));
+			userCheckBank.add(user.cl);
 			break;
 		case 'bank':
-			userCheckBank.add(user.bank({ withGP: true }));
+			userCheckBank.add(user.bankWithGP);
 			break;
 		case 'sacrifice':
-			userCheckBank.add(user.settings.get(UserSettings.SacrificedBank));
+			userCheckBank.add(user.user.sacrificedBank as ItemBank);
 			break;
 		case 'temp':
 			userCheckBank.add(mahojiUser.temp_cl as ItemBank);
@@ -965,7 +964,7 @@ export function getBank(user: KlasaUser, mahojiUser: User, type: 'sacrifice' | '
 }
 
 // Get the total items the user has in its CL and the total items to collect
-export function getTotalCl(user: KlasaUser, mahojiUser: User, logType: 'sacrifice' | 'bank' | 'collection' | 'temp') {
+export function getTotalCl(user: MUser, mahojiUser: User, logType: 'sacrifice' | 'bank' | 'collection' | 'temp') {
 	return getUserClData(getBank(user, mahojiUser, logType).bank, allCLItemsFiltered);
 }
 
@@ -1048,15 +1047,13 @@ for (const mon of killableMonsters) allClNames.push(mon.name);
 
 // Main function that gets the user collection based on its search parameter
 export async function getCollection(options: {
-	user: KlasaUser;
+	user: MUser;
 	mahojiUser: User;
 	search: string;
 	flags: { [key: string]: string | number };
 	logType?: 'collection' | 'sacrifice' | 'bank' | 'temp';
 }): Promise<false | IToReturnCollection> {
 	let { user, search, flags, logType } = options;
-
-	await user.settings.sync(true);
 
 	const allItems = Boolean(flags.all);
 	if (logType === undefined) logType = 'collection';
@@ -1093,23 +1090,23 @@ export async function getCollection(options: {
 				// Defaults to the activity name
 				if (attributes.kcActivity) {
 					if (typeof attributes.kcActivity === 'string') {
-						userKC.Default += (await user.getKCByName(attributes.kcActivity))[1];
+						userKC.Default += (await getKCByName(user, attributes.kcActivity))[1];
 					} else {
 						for (const [type, value] of Object.entries(attributes.kcActivity)) {
 							if (!userKC[type]) userKC[type] = 0;
 							if (Array.isArray(value)) {
 								for (const name of value) {
-									userKC[type] += (await user.getKCByName(name))[1];
+									userKC[type] += (await getKCByName(user, name))[1];
 								}
 							} else if (typeof value === 'function') {
 								userKC[type] += await value(user);
 							} else {
-								userKC[type] += (await user.getKCByName(value))[1];
+								userKC[type] += (await getKCByName(user, value))[1];
 							}
 						}
 					}
 				} else {
-					const defaultKc = await user.getKCByName(activityName);
+					const defaultKc = await getKCByName(user, activityName);
 					if (defaultKc[0] !== null) userKC.Default += defaultKc[1];
 					else userKC = undefined;
 				}

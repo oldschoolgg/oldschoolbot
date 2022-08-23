@@ -1,5 +1,4 @@
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
@@ -27,9 +26,9 @@ const unlimitedFireRuneProviders = [
 	'Tome of fire'
 ];
 
-function alching(user: KlasaUser, tripLength: number) {
+function alching(user: MUser, tripLength: number) {
 	if (user.skillLevel(SkillsEnum.Magic) < 55) return null;
-	const bank = user.bank();
+	const { bank } = user;
 	const favAlchables = user.getUserFavAlchs(tripLength) as Item[];
 
 	if (favAlchables.length === 0) {
@@ -42,7 +41,7 @@ function alching(user: KlasaUser, tripLength: number) {
 	const nats = bank.amount('Nature rune');
 	const fireRunes = bank.amount('Fire rune');
 
-	const hasInfiniteFireRunes = user.hasItemEquippedAnywhere(unlimitedFireRuneProviders);
+	const hasInfiniteFireRunes = user.hasEquipped(unlimitedFireRuneProviders);
 
 	let maxCasts = Math.floor(tripLength / (Time.Second * (3 + 10)));
 	maxCasts = Math.min(alchItemQty, maxCasts);

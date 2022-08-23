@@ -41,12 +41,7 @@ import resolveItems from '../../lib/util/resolveItems';
 import { dataPoints, statsCommand } from '../lib/abstracted_commands/statCommand';
 import { itemOption, monsterOption, skillOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import {
-	handleMahojiConfirmation,
-	mahojiUserSettingsUpdate,
-	mahojiUsersSettingsFetch,
-	patronMsg
-} from '../mahojiSettings';
+import { handleMahojiConfirmation, mahojiUserSettingsUpdate, mUserFetch, patronMsg } from '../mahojiSettings';
 
 const TimeIntervals = ['day', 'week'] as const;
 const skillsVals = Object.values(Skills);
@@ -708,28 +703,28 @@ export const toolsCommand: OSBMahojiCommand = {
 		};
 	}>) => {
 		interaction.deferReply();
-		const mahojiUser = await mahojiUsersSettingsFetch(userID);
+		const mahojiUser = await mUserFetch(userID);
 
 		if (options.patron) {
 			const { patron } = options;
 			if (patron.kc_gains) {
-				return kcGains(mahojiUser, patron.kc_gains.time, patron.kc_gains.monster);
+				return kcGains(mahojiUser.user, patron.kc_gains.time, patron.kc_gains.monster);
 			}
 			if (patron.drystreak) {
 				return dryStreakCommand(
-					mahojiUser,
+					mahojiUser.user,
 					patron.drystreak.monster,
 					patron.drystreak.item,
 					Boolean(patron.drystreak.ironman)
 				);
 			}
 			if (patron.mostdrops) {
-				return mostDrops(mahojiUser, patron.mostdrops.item, Boolean(patron.mostdrops.ironman));
+				return mostDrops(mahojiUser.user, patron.mostdrops.item, Boolean(patron.mostdrops.ironman));
 			}
 			if (patron.sacrificed_bank) {
 				if (getUsersPerkTier(mahojiUser) < PerkTier.Two) return patronMsg(PerkTier.Two);
 				const image = await makeBankImage({
-					bank: new Bank(mahojiUser.sacrificedBank as ItemBank),
+					bank: new Bank(mahojiUser.user.sacrificedBank as ItemBank),
 					title: 'Your Sacrificed Items'
 				});
 				return {
@@ -738,7 +733,7 @@ export const toolsCommand: OSBMahojiCommand = {
 			}
 			if (patron.cl_bank) {
 				if (getUsersPerkTier(mahojiUser) < PerkTier.Two) return patronMsg(PerkTier.Two);
-				const clBank = new Bank(mahojiUser.collectionLogBank as ItemBank);
+				const clBank = mahojiUser.cl;
 				if (patron.cl_bank.format === 'json') {
 					const json = JSON.stringify(clBank);
 					return {
@@ -760,11 +755,11 @@ export const toolsCommand: OSBMahojiCommand = {
 			if (patron.minion_stats) {
 				interaction.deferReply();
 				if (getUsersPerkTier(mahojiUser) < PerkTier.Four) return patronMsg(PerkTier.Four);
-				return minionStats(mahojiUser);
+				return minionStats(mahojiUser.user);
 			}
 			if (patron.activity_export) {
 				if (getUsersPerkTier(mahojiUser) < PerkTier.Four) return patronMsg(PerkTier.Four);
-				const promise = activityExport(mahojiUser);
+				const promise = activityExport(mahojiUser.user);
 				await handleMahojiConfirmation(
 					interaction,
 					'I will send a file containing ALL of your activities, intended for advanced users who want to use the data. Anyone in this channel will be able to see and download the file, are you sure you want to do this?'
@@ -779,7 +774,7 @@ export const toolsCommand: OSBMahojiCommand = {
 		if (options.user) {
 			if (options.user.mypets) {
 				let b = new Bank();
-				for (const [pet, qty] of Object.entries(mahojiUser.pets as ItemBank)) {
+				for (const [pet, qty] of Object.entries(mahojiUser.user.pets as ItemBank)) {
 					const petObj = pets.find(i => i.id === Number(pet));
 					if (!petObj) continue;
 					b.add(petObj.name, qty);
@@ -796,15 +791,15 @@ export const toolsCommand: OSBMahojiCommand = {
 		if (options.stash_units) {
 			if (options.stash_units.view) {
 				return stashUnitViewCommand(
-					mahojiUser,
+					mahojiUser.user,
 					options.stash_units.view.unit,
 					options.stash_units.view.not_filled
 				);
 			}
-			if (options.stash_units.build_all) return stashUnitBuildAllCommand(klasaUser, mahojiUser);
-			if (options.stash_units.fill_all) return stashUnitFillAllCommand(klasaUser, mahojiUser);
+			if (options.stash_units.build_all) return stashUnitBuildAllCommand(klasaUser, mahojiUser.user);
+			if (options.stash_units.fill_all) return stashUnitFillAllCommand(klasaUser, mahojiUser.user);
 			if (options.stash_units.unfill) {
-				return stashUnitUnfillCommand(klasaUser, mahojiUser, options.stash_units.unfill.unit);
+				return stashUnitUnfillCommand(klasaUser, mahojiUser.user, options.stash_units.unfill.unit);
 			}
 		}
 		if (options.user?.temp_cl) {

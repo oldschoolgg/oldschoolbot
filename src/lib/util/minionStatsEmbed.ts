@@ -1,6 +1,5 @@
 import { Embed } from '@discordjs/builders';
 import { shuffleArr } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { SkillsScore } from 'oldschooljs/dist/meta/types';
 import { convertXPtoLVL, toKMB } from 'oldschooljs/dist/util';
@@ -18,7 +17,7 @@ import { ItemBank, Skills } from '../types';
 import { addArrayOfNumbers, toTitleCase } from '../util';
 import { logError } from './logError';
 
-export async function minionStatsEmbed(user: KlasaUser): Promise<Embed> {
+export async function minionStatsEmbed(user: MUser): Promise<Embed> {
 	const { rawSkills } = user;
 	const QP = user.settings.get(UserSettings.QP);
 

@@ -93,25 +93,22 @@ export const fishCommand: OSBMahojiCommand = {
 			case itemID('Fishing bait'):
 				if (fish.name === 'Infernal eel') {
 					scaledTimePerFish *= 1;
-				} else if (user.hasItemEquippedAnywhere(itemID('Pearl fishing rod')) && fish.name !== 'Infernal eel') {
+				} else if (user.hasEquipped(itemID('Pearl fishing rod')) && fish.name !== 'Infernal eel') {
 					scaledTimePerFish *= 0.95;
 					boosts.push('5% for Pearl fishing rod');
 				}
 				break;
 			case itemID('Feather'):
-				if (fish.name === 'Barbarian fishing' && user.hasItemEquippedAnywhere(itemID('Pearl barbarian rod'))) {
+				if (fish.name === 'Barbarian fishing' && user.hasEquipped(itemID('Pearl barbarian rod'))) {
 					scaledTimePerFish *= 0.95;
 					boosts.push('5% for Pearl barbarian rod');
-				} else if (
-					user.hasItemEquippedAnywhere(itemID('Pearl fly fishing rod')) &&
-					fish.name !== 'Barbarian fishing'
-				) {
+				} else if (user.hasEquipped(itemID('Pearl fly fishing rod')) && fish.name !== 'Barbarian fishing') {
 					scaledTimePerFish *= 0.95;
 					boosts.push('5% for Pearl fly fishing rod');
 				}
 				break;
 			default:
-				if (user.hasItemEquippedAnywhere(itemID('Crystal harpoon'))) {
+				if (user.hasEquipped(itemID('Crystal harpoon'))) {
 					scaledTimePerFish *= 0.95;
 					boosts.push('5% for Crystal harpoon');
 				}
@@ -135,7 +132,7 @@ export const fishCommand: OSBMahojiCommand = {
 		if (fish.bait) {
 			const baseCost = new Bank().add(fish.bait);
 
-			const maxCanDo = user.bank().fits(baseCost);
+			const maxCanDo = user.bank.fits(baseCost);
 			if (maxCanDo === 0) {
 				return `You need ${itemNameFromID(fish.bait)} to fish ${fish.name}!`;
 			}

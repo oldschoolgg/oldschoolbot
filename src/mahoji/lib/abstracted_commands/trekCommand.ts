@@ -1,5 +1,4 @@
 import { objectEntries, reduceNumByPercent } from 'e';
-import { KlasaUser } from 'klasa';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
@@ -163,14 +162,13 @@ export async function trekCommand(user: MUser, channelID: BigInt, difficulty: st
 }
 
 export async function trekShop(
-	user: KlasaUser,
+	user: MUser,
 	reward: string,
 	difficulty: string,
 	quantity: number | undefined,
 	interaction: SlashCommandInteraction
 ) {
-	await user.settings.sync(true);
-	const userBank = user.bank();
+	const userBank = user.bank;
 	const specifiedItem = TrekShopItems.find(
 		item =>
 			stringMatches(reward, item.name) ||

@@ -365,9 +365,8 @@ model User {
   farmingPatches_mushroom    Json?    @map("farmingPatches.mushroom") @db.Json
   farmingPatches_belladonna  Json?    @map("farmingPatches.belladonna") @db.Json
   kourend_favour             Json?    @map("kourend_favour") @db.Json
+  bank_sort_method           String?  @db.VarChar(16)
   bank_sort_weightings       Json     @default("{}") @db.Json
-
-  bank_sort_method bank_sort_method_enum?
 
   premium_balance_tier        Int?
   premium_balance_expiry_date BigInt?

@@ -1,5 +1,4 @@
 import { percentChance, reduceNumByPercent, Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { userhasDiaryTier, WesternProv } from '../../../lib/diaries';
@@ -45,10 +44,10 @@ const avas = [
 	[getOSItem("Ava's assembler"), 80]
 ] as const;
 
-export async function chompyHuntClaimCommand(user: KlasaUser) {
+export async function chompyHuntClaimCommand(user: MUser) {
 	const chompyScore = await getMinigameScore(user.id, 'big_chompy_bird_hunting');
-	const userBank = user.bank();
-	const cl = user.cl();
+	const userBank = user.bank;
+	const { cl } = user;
 
 	const missingHats = chompyHats.filter(c => (!userBank.has(c[0].id) || !cl.has(c[0].id)) && chompyScore >= c[1]);
 

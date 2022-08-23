@@ -1,13 +1,12 @@
 import { MessageButton, MessageOptions } from 'discord.js';
 import { chunk, noOp, randInt, shuffleArr, sleep } from 'e';
-import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 import { toKMB } from 'oldschooljs/dist/util';
 
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
+import { MUser } from '../../../lib/MUser';
 import { channelIsSendable } from '../../../lib/util';
 import { handleMahojiConfirmation, mahojiParseNumber, updateGPTrackSetting } from '../../mahojiSettings';
 
@@ -85,7 +84,7 @@ function determineWinnings(bet: number, buttons: ButtonInstance[]) {
 
 export async function slotsCommand(
 	interaction: SlashCommandInteraction,
-	user: KlasaUser,
+	user: MUser,
 	_amount: string | undefined
 ): CommandResponse {
 	await interaction.deferReply();
@@ -112,7 +111,7 @@ ${buttonsData.map(b => `${b.name}: ${b.mod(1)}x`).join('\n')}`;
 		interaction,
 		`Are you sure you want to gamble ${toKMB(amount)}? You might lose it all, you might win a lot.`
 	);
-	const currentBalance = user.settings.get(UserSettings.GP);
+	const currentBalance = user.GP;
 	if (currentBalance < amount) {
 		return "You don't have enough GP to make this bet.";
 	}

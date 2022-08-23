@@ -1,5 +1,4 @@
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, LootTable } from 'oldschooljs';
 
@@ -106,7 +105,7 @@ export async function mageTrainingArenaBuyCommand(user: MUser, input = '') {
 	return `Successfully purchased 1x ${item.name} for ${cost} Pizazz Points.`;
 }
 
-export async function mageTrainingArenaPointsCommand(user: KlasaUser) {
+export async function mageTrainingArenaPointsCommand(user: MUser) {
 	const parsedUser = await getNewUser(user.id);
 
 	return `You have **${parsedUser.pizazz_points.toLocaleString()}** Pizazz points.

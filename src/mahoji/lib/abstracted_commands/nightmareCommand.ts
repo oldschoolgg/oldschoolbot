@@ -11,7 +11,7 @@ import { MUser } from '../../../lib/MUser';
 import { trackLoot } from '../../../lib/settings/prisma';
 import { Gear } from '../../../lib/structures/Gear';
 import { NightmareActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, updateBankSetting } from '../../../lib/util';
+import { formatDuration, hasMonsterRequirements, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../../lib/util/calcMassDurationQuantity';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
@@ -67,7 +67,7 @@ function checkReqs(users: MUser[], monster: KillableMonster, quantity: number, i
 			return `${user.usernameOrMention} is busy right now and can't join!`;
 		}
 
-		const [hasReqs, reason] = user.hasMonsterRequirements(monster);
+		const [hasReqs, reason] = hasMonsterRequirements(user, monster);
 		if (!hasReqs) {
 			return `${user.usernameOrMention} doesn't have the requirements for this monster: ${reason}`;
 		}

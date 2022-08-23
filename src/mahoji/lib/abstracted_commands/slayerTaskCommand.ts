@@ -116,7 +116,7 @@ export async function slayerStatusCommand(mahojiUser: User) {
 	);
 }
 
-async function returnSuccess(channelID: bigint | string, mahojiUser: User, content: string) {
+async function returnSuccess(channelID: bigint | string, user: MUser, content: string) {
 	const channel = globalClient.channels.cache.get(String(channelID));
 	if (!channelIsSendable(channel)) throw new Error('Channel for confirmation not found.');
 
@@ -124,16 +124,16 @@ async function returnSuccess(channelID: bigint | string, mahojiUser: User, conte
 
 	const options = {
 		channelID: channel.id,
-		userID: mahojiUser.id,
+		userID: user.id,
 		guildID: isGuildBasedChannel(channel) && channel.guild ? channel.guild.id : undefined,
-		user: mahojiUser,
+		user,
 		member: null
 	};
 
 	try {
 		const selection = await sentMessage.awaitMessageComponentInteraction({
 			filter: i => {
-				if (i.user.id !== mahojiUser.id) {
+				if (i.user.id !== user.id) {
 					i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
 					return false;
 				}
@@ -279,7 +279,7 @@ export async function slayerNewTaskCommand({
 				quantity_remaining: 0
 			}
 		});
-		const { newUser: updatedMahojiUser } = await mahojiUserSettingsUpdate(user.id, { slayer_task_streak: 0 });
+		await mahojiUserSettingsUpdate(user.id, { slayer_task_streak: 0 });
 		const newSlayerTask = await assignNewSlayerTask(user, slayerMaster);
 		let commonName = getCommonTaskName(newSlayerTask.assignedTask!.monster);
 		const returnMessage =
@@ -289,7 +289,7 @@ export async function slayerNewTaskCommand({
 			)}.`;
 
 		if (showButtons) {
-			returnSuccess(channelID, updatedMahojiUser, `${extraContent ?? ''}\n\n${returnMessage}`);
+			returnSuccess(channelID, await mUserFetch(user.id), `${extraContent ?? ''}\n\n${returnMessage}`);
 			return { content: 'Slayer task assigned.', flags: MessageFlags.Ephemeral };
 		}
 		return `${extraContent ?? ''}\n\n${returnMessage}`;
@@ -320,7 +320,7 @@ export async function slayerNewTaskCommand({
 		resultMessage += `${warningInfo}${baseInfo}`;
 		if (currentTask && !warningInfo) {
 			if (showButtons) {
-				returnSuccess(channelID, user.user, resultMessage);
+				returnSuccess(channelID, await mUserFetch(user.id), resultMessage);
 				return { content: 'Here is your current slayer task', flags: MessageFlags.Ephemeral };
 			}
 		}
@@ -360,25 +360,26 @@ export async function slayerNewTaskCommand({
 		newSlayerTask.currentTask.quantity
 	}x ${commonName}${getAlternateMonsterList(newSlayerTask.assignedTask)}.`;
 	if (showButtons) {
-		returnSuccess(channelID, user.user, resultMessage);
+		returnSuccess(channelID, await mUserFetch(user.id), resultMessage);
 		return { content: 'Slayer task assigned.', flags: MessageFlags.Ephemeral };
 	}
 	return resultMessage;
 }
 
 export async function slayerSkipTaskCommand({
-	user,
+	userID,
 	block,
 	newTask,
 	interaction,
 	channelID
 }: {
-	user: MUser;
+	userID: string;
 	block: boolean;
 	newTask: boolean;
 	interaction: SlashCommandInteraction;
 	channelID: bigint | string;
 }) {
+	const user = await mUserFetch(userID);
 	const { currentTask } = await getUsersCurrentSlayerInfo(user.id);
 	const myBlockList = user.user.slayer_blocked_ids;
 	const klasaUser = await globalClient.fetchUser(user.id);

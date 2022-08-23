@@ -1,21 +1,33 @@
 import { userMention } from '@discordjs/builders';
 import { Prisma, User, xp_gains_skill_enum } from '@prisma/client';
+import { sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
+import { timePerAlch } from '../mahoji/lib/abstracted_commands/alchCommand';
 import { calculateAddItemsToCLUpdates, getUserGear, mahojiUserSettingsUpdate } from '../mahoji/mahojiSettings';
+import { addXP } from './addXP';
 import { BitField, projectiles, usernameCache } from './constants';
 import { allPetIDs } from './data/CollectionsExport';
+import { CombatOptionsEnum } from './minions/data/combatConstants';
+import { UserKourendFavour } from './minions/data/kourendFavour';
 import { blowpipeDarts, validateBlowpipeData } from './minions/functions/blowpipeCommand';
 import { AddXpParams, BlowpipeData } from './minions/types';
 import { SkillsEnum } from './skilling/types';
+import { BankSortMethod } from './sorts';
 import { ItemBank } from './types';
-import { addItemToBank, getSkillsOfMahojiUser, itemNameFromID, percentChance } from './util';
+import { addItemToBank, assert, calcCombatLevel, getSkillsOfMahojiUser, itemNameFromID, percentChance } from './util';
 import { determineRunes } from './util/determineRunes';
+import getOSItem from './util/getOSItem';
 import getUsersPerkTier from './util/getUsersPerkTier';
 import { minionIsBusy } from './util/minionIsBusy';
 import { hasItemsEquippedOrInBank, minionName } from './util/minionUtils';
 import resolveItems from './util/resolveItems';
+
+function alchPrice(bank: Bank, item: Item, tripLength: number) {
+	const maxCasts = Math.min(Math.floor(tripLength / timePerAlch), bank.amount(item.id));
+	return maxCasts * (item.highalch ?? 0);
+}
 
 export class MUser {
 	user: Readonly<User>;
@@ -24,6 +36,63 @@ export class MUser {
 	constructor(user: User) {
 		this.user = user;
 		this.id = user.id;
+	}
+
+	favAlchs(duration: number) {
+		const { bank } = this;
+		return this.user.favorite_alchables
+			.filter(id => bank.has(id))
+			.map(getOSItem)
+			.filter(i => i.highalch !== undefined && i.highalch > 0 && i.tradeable)
+			.sort((a, b) => alchPrice(bank, b, duration) - alchPrice(bank, a, duration));
+	}
+
+	get bankWithGP() {
+		return this.bank.add('Coins', this.GP);
+	}
+
+	get combatLevel() {
+		return calcCombatLevel(this.skillsAsXP);
+	}
+
+	get kourendFavour() {
+		const favour = this.user.kourend_favour as any as UserKourendFavour;
+		assert(typeof favour.Arceuus === 'number', `kourendFavour should return valid data for ${this.id}`);
+		return favour;
+	}
+
+	get isBusy() {
+		return globalClient.oneCommandAtATimeCache.has(this.id) || globalClient.secondaryUserBusyCache.has(this.id);
+	}
+
+	/**
+	 * Toggle whether this user is busy or not, this adds another layer of locking the user
+	 * from economy actions.
+	 *
+	 * @param busy boolean Whether the new toggled state will be busy or not busy.
+	 */
+	toggleBusy(busy: boolean) {
+		if (busy) {
+			globalClient.secondaryUserBusyCache.add(this.id);
+		} else {
+			globalClient.secondaryUserBusyCache.delete(this.id);
+		}
+	}
+
+	get totalLevel() {
+		return sumArr(Object.values(this.skillsAsLevels));
+	}
+
+	get bankSortMethod() {
+		return this.user.bank_sort_method as BankSortMethod | null;
+	}
+
+	get combatOptions() {
+		return this.user.combat_options as readonly CombatOptionsEnum[];
+	}
+
+	get isIronman() {
+		return this.user.minion_ironman;
 	}
 
 	get GP() {
@@ -71,9 +140,8 @@ export class MUser {
 		return this.user.QP;
 	}
 
-	async addXP(params: AddXpParams) {
-		const user = await globalClient.fetchUser(this.id);
-		return user.addXP(params);
+	addXP(params: AddXpParams) {
+		return addXP(this.id, params);
 	}
 
 	getKC(monsterID: number) {

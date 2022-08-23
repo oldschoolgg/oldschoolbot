@@ -1,6 +1,5 @@
 import { User } from '@prisma/client';
 import { reduceNumByPercent, Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
@@ -200,8 +199,7 @@ export async function pestControlStartCommand(user: MUser, channelID: bigint) {
 
 export async function pestControlXPCommand(
 	interaction: SlashCommandInteraction,
-	klasaUser: KlasaUser,
-	user: User,
+	user: MUser,
 	skillName: string,
 	amount: number
 ) {
@@ -212,13 +210,13 @@ export async function pestControlXPCommand(
 		return "That's not a valid amount of points to spend.}";
 	}
 
-	const level = klasaUser.skillLevel(skillName as SkillsEnum);
+	const level = user.skillLevel(skillName as SkillsEnum);
 	if (level < 25) {
 		return 'You need at least level 25 to buy XP from Pest Control.';
 	}
 	const xpPerPoint = Math.floor(Math.pow(level, 2) / 600) * xpMultiplier[skillName as keyof typeof xpMultiplier];
 
-	const balance = user.pest_control_points;
+	const balance = user.user.pest_control_points;
 	if (balance < amount) {
 		return `You cannot afford this, because you have only ${balance} points.`;
 	}
@@ -231,7 +229,7 @@ export async function pestControlXPCommand(
 			decrement: amount
 		}
 	});
-	const xpRes = await klasaUser.addXP({
+	const xpRes = await user.addXP({
 		skillName: skillName as SkillsEnum,
 		amount: xpPerPoint * amount,
 		duration: undefined,

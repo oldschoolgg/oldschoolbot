@@ -1,7 +1,6 @@
 import { StashUnit, User } from '@prisma/client';
 import { assert } from 'console';
 import { partition } from 'e';
-import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
@@ -698,7 +697,7 @@ Contains: ${unit.builtUnit.items_contained.map(itemNameFromID).join(', ')}`;
 	return str;
 }
 
-export async function stashUnitBuildAllCommand(klasaUser: KlasaUser, user: User) {
+export async function stashUnitBuildAllCommand(klasauser: MUser, user: User) {
 	const parsedUnits = await getParsedStashUnits(user.id);
 	const notBuilt = parsedUnits.filter(i => i.builtUnit === undefined);
 	if (notBuilt.length === 0) return 'You have already built all STASH units.';
@@ -734,7 +733,7 @@ export async function stashUnitBuildAllCommand(klasaUser: KlasaUser, user: User)
 	return `You created ${toBuild.length} STASH units, using ${costBank}.`;
 }
 
-export async function stashUnitFillAllCommand(user: KlasaUser, mahojiUser: User): CommandResponse {
+export async function stashUnitFillAllCommand(user: MUser, mahojiUser: User): CommandResponse {
 	const parsedUnits = await getParsedStashUnits(user.id);
 	const notBuiltAndNotFilled = parsedUnits.filter(i => i.builtUnit !== undefined && !i.isFull);
 	if (notBuiltAndNotFilled.length === 0) return 'There are no STASH units left that you can fill.';
@@ -789,7 +788,7 @@ export async function stashUnitFillAllCommand(user: KlasaUser, mahojiUser: User)
 	return { attachments: [file], content: `You filled ${result.length} STASH units, with these items.` };
 }
 
-export async function stashUnitUnfillCommand(klasaUser: KlasaUser, user: User, unitID: string) {
+export async function stashUnitUnfillCommand(klasauser: MUser, user: User, unitID: string) {
 	const parsedUnits = await getParsedStashUnits(user.id);
 	const unit = parsedUnits.find(i => stringMatches(i.unit.id.toString(), unitID));
 	if (!unit || !unit.builtUnit) return 'Invald unit.';

@@ -6,18 +6,22 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { Events } from '../../lib/constants';
 import { cats } from '../../lib/growablePets';
 import minionIcons from '../../lib/minions/data/minionIcons';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { toKMB, updateBankSetting } from '../../lib/util';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import {
+	handleMahojiConfirmation,
+	mahojiUserSettingsUpdate,
+	mahojiUsersSettingsFetch,
+	mUserFetch
+} from '../mahojiSettings';
 import { sellPriceOfItem } from './sell';
 
 async function trackSacBank(user: User, bank: Bank) {
 	const currentSacBank = new Bank(user.sacrificedBank as ItemBank);
 	currentSacBank.add(bank);
-	updateBankSetting(globalClient, ClientSettings.EconomyStats.SacrificedBank, bank);
+	updateBankSetting('economyStats_sacrificedBank', bank);
 	await mahojiUserSettingsUpdate(user.id, {
 		sacrificedBank: currentSacBank.bank
 	});
@@ -55,11 +59,11 @@ export const sacrificeCommand: OSBMahojiCommand = {
 			return "You didn't provide any items, filter or search.";
 		}
 
-		const user = await globalClient.fetchUser(userID.toString());
+		const user = await mUserFetch(userID.toString());
 		const mUser = await mahojiUsersSettingsFetch(user.id);
 		const bankToSac = parseBank({
 			inputStr: options.items,
-			inputBank: user.bank({ withGP: true }),
+			inputBank: user.bankWithGP,
 			excludeItems: mUser.favoriteItems,
 			user,
 			search: options.search,
@@ -87,7 +91,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 
 			await handleMahojiConfirmation(
 				interaction,
-				`${user.username}.. are you sure you want to sacrifice your ${item.name}${
+				`${user.usernameOrMention}.. are you sure you want to sacrifice your ${item.name}${
 					bankToSac.length > 1 ? 's' : ''
 				} for ${deathRunes} death runes? *Note: These are cute, fluffy little cats.*`
 			);
@@ -101,7 +105,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 				totalCatsSacrificed += sacBank.amount(cat);
 			}
 
-			return `${user.username}, you sacrificed ${bankToSac} and received ${loot}. You've sacrificed ${totalCatsSacrificed} cats.`;
+			return `${user.usernameOrMention}, you sacrificed ${bankToSac} and received ${loot}. You've sacrificed ${totalCatsSacrificed} cats.`;
 		}
 
 		let totalPrice = 0;
@@ -117,7 +121,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 		);
 
 		if (totalPrice > 200_000_000) {
-			globalClient.emit(Events.ServerNotification, `${user.username} just sacrificed ${bankToSac}!`);
+			globalClient.emit(Events.ServerNotification, `${user.usernameOrMention} just sacrificed ${bankToSac}!`);
 		}
 
 		const { newUser } = await mahojiUserSettingsUpdate(user.id, {
@@ -126,7 +130,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 			}
 		});
 		const newValue = newUser.sacrificedValue;
-		await user.removeItemsFromBank(bankToSac.bank);
+		await user.removeItemsFromBank(bankToSac);
 
 		await trackSacBank(mUser, bankToSac);
 
@@ -142,7 +146,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 					str += `\n\nYou have now unlocked the **${icon.name}** minion icon!`;
 					globalClient.emit(
 						Events.ServerNotification,
-						`**${user.username}** just unlocked the ${icon.emoji} icon for their minion.`
+						`**${user.usernameOrMention}** just unlocked the ${icon.emoji} icon for their minion.`
 					);
 					break;
 				}

@@ -1,4 +1,3 @@
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { UserSettings } from '../../settings/types/UserSettings';
@@ -27,7 +26,7 @@ export function validateBlowpipeData(data: BlowpipeData) {
 }
 
 export async function blowpipeCommand(
-	user: KlasaUser,
+	user: MUser,
 	removeDarts: boolean | undefined,
 	uncharge: boolean | undefined,
 	add: string | undefined,
@@ -65,7 +64,7 @@ Zulrah's scales: ${rawBlowpipeData.scales.toLocaleString()}x
 	return str;
 }
 
-async function addCommand(user: KlasaUser, itemName: string, quantity = 1) {
+async function addCommand(user: MUser, itemName: string, quantity = 1) {
 	if (user.minionIsBusy) {
 		return "You can't add to your blowpipe, because your minion is out on a trip.";
 	}
@@ -83,7 +82,7 @@ async function addCommand(user: KlasaUser, itemName: string, quantity = 1) {
 	const item = getItem(itemName);
 	if (!item) return 'Invalid item.';
 
-	const userBank = user.bank();
+	const userBank = user.bank;
 
 	let itemsToRemove = new Bank();
 	if (!blowpipeDarts.includes(item) && item !== getOSItem("Zulrah's scales")) {
@@ -125,7 +124,7 @@ async function addCommand(user: KlasaUser, itemName: string, quantity = 1) {
 	return `You added ${itemsToRemove} to your Toxic blowpipe.`;
 }
 
-async function removeDartsCommand(user: KlasaUser) {
+async function removeDartsCommand(user: MUser) {
 	if (user.minionIsBusy) {
 		return "You can't remove darts from your blowpipe, because your minion is out on a trip.";
 	}
@@ -149,7 +148,7 @@ async function removeDartsCommand(user: KlasaUser) {
 	return `You removed ${returnedBank} from your Toxic blowpipe.`;
 }
 
-async function unchargeCommand(user: KlasaUser) {
+async function unchargeCommand(user: MUser) {
 	if (user.minionIsBusy) {
 		return "You can't uncharge your blowpipe, because your minion is out on a trip.";
 	}

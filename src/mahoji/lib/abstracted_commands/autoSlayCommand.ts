@@ -8,11 +8,10 @@ import { Monsters } from 'oldschooljs';
 import { PvMMethod } from '../../../lib/constants';
 import killableMonsters from '../../../lib/minions/data/killableMonsters';
 import { runCommand } from '../../../lib/settings/settings';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { autoslayModes, AutoslayOptionsEnum } from '../../../lib/slayer/constants';
 import { getCommonTaskName, getUsersCurrentSlayerInfo, SlayerMasterEnum } from '../../../lib/slayer/slayerUtil';
 import { stringMatches } from '../../../lib/util';
-import { mahojiUserSettingsUpdate } from '../../mahojiSettings';
+import { hasSkillReqs, mahojiUserSettingsUpdate, mUserFetch } from '../../mahojiSettings';
 import { slayerNewTaskCommand } from './slayerTaskCommand';
 
 interface AutoslayLink {
@@ -236,13 +235,13 @@ export async function autoSlayCommand({
 	saveMode?: boolean;
 	interaction: SlashCommandInteraction;
 }): Promise<CommandResponse> {
-	const user = await globalClient.fetchUser(mahojiUser.id);
-	const autoslayOptions = user.settings.get(UserSettings.Slayer.AutoslayOptions);
+	const user = await mUserFetch(mahojiUser.id);
+	const autoslayOptions = user.user.slayer_autoslay_options;
 	const usersTask = await getUsersCurrentSlayerInfo(user.id);
 	const isOnTask = usersTask.assignedTask !== null && usersTask.currentTask !== null;
 
 	if (!isOnTask) {
-		await slayerNewTaskCommand({ mahojiUser, channelID, interaction });
+		await slayerNewTaskCommand({ userID: user.id, channelID, interaction });
 		const newTaskCheck = await getUsersCurrentSlayerInfo(user.id);
 		const isOnTaskCheck = newTaskCheck.assignedTask !== null && newTaskCheck.currentTask !== null;
 		if (isOnTaskCheck) {
@@ -304,7 +303,7 @@ export async function autoSlayCommand({
 		const ehpKillable = killableMonsters.find(m => m.id === ehpMonster?.efficientMonster);
 
 		// If we don't have the requirements for the efficient monster, revert to default monster
-		if (ehpKillable?.levelRequirements !== undefined && !user.hasSkillReqs(ehpKillable.levelRequirements)[0]) {
+		if (ehpKillable?.levelRequirements !== undefined && !hasSkillReqs(user, ehpKillable.levelRequirements)[0]) {
 			runCommand({
 				commandName: 'k',
 				args: {
@@ -340,7 +339,7 @@ export async function autoSlayCommand({
 	}
 	if (method === 'boss') {
 		// This code handles the 'highest/boss' setting of autoslay.
-		const myQPs = await user.settings.get(UserSettings.QP);
+		const myQPs = await user.QP;
 		let commonName = getCommonTaskName(usersTask.assignedTask!.monster);
 		if (commonName === 'TzHaar') {
 			runCommand({
@@ -362,7 +361,7 @@ export async function autoSlayCommand({
 		for (const m of allMonsters) {
 			if (
 				(m.difficultyRating ?? 0) > maxDiff &&
-				(m.levelRequirements === undefined || user.hasSkillReqs(m.levelRequirements))
+				(m.levelRequirements === undefined || hasSkillReqs(user, m.levelRequirements))
 			) {
 				if (m.qpRequired === undefined || m.qpRequired <= myQPs) {
 					maxDiff = m.difficultyRating ?? 0;

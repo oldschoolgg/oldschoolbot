@@ -81,7 +81,7 @@ export const askCommand: OSBMahojiCommand = {
 			!options.search && !options.filter && !options.send
 				? new Bank()
 				: parseBank({
-						inputBank: senderUser.bank({ withGP: true }),
+						inputBank: senderUser.bankWithGP,
 						inputStr: options.send,
 						maxSize: 70,
 						flags: { tradeables: 'tradeables' },

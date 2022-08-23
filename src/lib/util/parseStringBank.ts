@@ -1,5 +1,4 @@
 import { notEmpty } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { itemNameMap } from 'oldschooljs/dist/structures/Items';

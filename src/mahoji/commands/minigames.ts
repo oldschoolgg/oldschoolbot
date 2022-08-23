@@ -63,7 +63,7 @@ import {
 	volcanicMineShopCommand
 } from '../lib/abstracted_commands/volcanicMineCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { mUserFetch } from '../mahojiSettings';
 
 export const minigamesCommand: OSBMahojiCommand = {
 	name: 'minigames',
@@ -871,8 +871,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 			start?: {};
 		};
 	}>) => {
-		const klasaUser = await globalClient.fetchUser(userID);
-		const user = await mahojiUsersSettingsFetch(userID);
+		const user = await mUserFetch(userID);
 
 		/**
 		 *
@@ -880,12 +879,11 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 *
 		 */
 		if (options.barb_assault?.start) {
-			return barbAssaultStartCommand(channelID, user, klasaUser);
+			return barbAssaultStartCommand(channelID, user);
 		}
 		if (options.barb_assault?.buy) {
 			return barbAssaultBuyCommand(
 				interaction,
-				klasaUser,
 				user,
 				options.barb_assault.buy.name,
 				options.barb_assault.buy.quantity
@@ -897,14 +895,13 @@ export const minigamesCommand: OSBMahojiCommand = {
 		if (options.barb_assault?.gamble) {
 			return barbAssaultGambleCommand(
 				interaction,
-				klasaUser,
 				user,
 				options.barb_assault.gamble.tier,
 				options.barb_assault.gamble.quantity
 			);
 		}
 		if (options.barb_assault?.stats) {
-			return barbAssaultStatsCommand(user);
+			return barbAssaultStatsCommand(user.user);
 		}
 
 		/**
@@ -913,10 +910,10 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 *
 		 */
 		if (options.castle_wars?.stats) {
-			return castleWarsStatsCommand(klasaUser);
+			return castleWarsStatsCommand(user);
 		}
 		if (options.castle_wars?.start) {
-			return castleWarsStartCommand(klasaUser, channelID);
+			return castleWarsStartCommand(user, channelID);
 		}
 
 		/**
@@ -924,28 +921,27 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 * LMS
 		 *
 		 */
-		if (options.lms) return lmsCommand(options.lms, klasaUser, channelID, interaction);
+		if (options.lms) return lmsCommand(options.lms, user, channelID, interaction);
 
 		/**
 		 *
 		 * Pest Control
 		 *
 		 */
-		if (options.pest_control?.stats) return pestControlStatsCommand(user);
+		if (options.pest_control?.stats) return pestControlStatsCommand(user.user);
 		if (options.pest_control?.xp) {
 			return pestControlXPCommand(
 				interaction,
-				klasaUser,
 				user,
 				options.pest_control.xp.skill,
 				options.pest_control.xp.amount
 			);
 		}
 		if (options.pest_control?.start) {
-			return pestControlStartCommand(klasaUser, channelID);
+			return pestControlStartCommand(user, channelID);
 		}
 		if (options.pest_control?.buy) {
-			return pestControlBuyCommand(klasaUser, user, options.pest_control.buy.name);
+			return pestControlBuyCommand(user, options.pest_control.buy.name);
 		}
 
 		/**
@@ -953,28 +949,28 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 * Fishing Trawler
 		 *
 		 */
-		if (options.fishing_trawler?.start) return fishingTrawlerCommand(klasaUser, channelID);
+		if (options.fishing_trawler?.start) return fishingTrawlerCommand(user, channelID);
 
 		/**
 		 *
 		 * Mage Arena
 		 *
 		 */
-		if (options.mage_arena?.start) return mageArenaCommand(klasaUser, channelID);
+		if (options.mage_arena?.start) return mageArenaCommand(user, channelID);
 
 		/**
 		 *
 		 * Mage Arena 2
 		 *
 		 */
-		if (options.mage_arena_2?.start) return mageArena2Command(klasaUser, channelID);
+		if (options.mage_arena_2?.start) return mageArena2Command(user, channelID);
 
 		/**
 		 *
 		 * Gnome Restaurant
 		 *
 		 */
-		if (options.gnome_restaurant?.start) return gnomeRestaurantCommand(klasaUser, channelID);
+		if (options.gnome_restaurant?.start) return gnomeRestaurantCommand(user, channelID);
 
 		/**
 		 *
@@ -984,11 +980,11 @@ export const minigamesCommand: OSBMahojiCommand = {
 		if (options.temple_trek) {
 			if (options.temple_trek.buy) {
 				let { reward, difficulty, quantity } = options.temple_trek.buy!;
-				return trekShop(klasaUser, reward, difficulty, quantity, interaction);
+				return trekShop(user, reward, difficulty, quantity, interaction);
 			}
 			if (options.temple_trek.start) {
 				let { difficulty, quantity } = options.temple_trek.start!;
-				return trekCommand(klasaUser, channelID, difficulty, quantity);
+				return trekCommand(user, channelID, difficulty, quantity);
 			}
 		}
 
@@ -997,7 +993,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 * Sepulchre
 		 *
 		 */
-		if (options.sepulchre?.start) return sepulchreCommand(klasaUser, channelID);
+		if (options.sepulchre?.start) return sepulchreCommand(user, channelID);
 
 		/**
 		 *
@@ -1005,7 +1001,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 *
 		 */
 		if (options.gauntlet?.start) {
-			return gauntletCommand(klasaUser, channelID, options.gauntlet.start.corrupted ? 'corrupted' : 'normal');
+			return gauntletCommand(user, channelID, options.gauntlet.start.corrupted ? 'corrupted' : 'normal');
 		}
 
 		/**
@@ -1015,13 +1011,13 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 */
 		if (options.mage_training_arena) {
 			if (options.mage_training_arena.buy) {
-				return mageTrainingArenaBuyCommand(klasaUser, options.mage_training_arena.buy.name);
+				return mageTrainingArenaBuyCommand(user, options.mage_training_arena.buy.name);
 			}
 			if (options.mage_training_arena.start) {
-				return mageTrainingArenaStartCommand(klasaUser, channelID);
+				return mageTrainingArenaStartCommand(user, channelID);
 			}
 			if (options.mage_training_arena.points) {
-				return mageTrainingArenaPointsCommand(klasaUser);
+				return mageTrainingArenaPointsCommand(user);
 			}
 		}
 
@@ -1033,13 +1029,13 @@ export const minigamesCommand: OSBMahojiCommand = {
 		if (options.mahogany_homes) {
 			if (options.mahogany_homes.buy) {
 				return mahoganyHomesBuyCommand(
-					klasaUser,
+					user,
 					options.mahogany_homes.buy.name,
 					options.mahogany_homes.buy.quantity
 				);
 			}
 			if (options.mahogany_homes.start) {
-				return mahoganyHomesBuildCommand(klasaUser, channelID);
+				return mahoganyHomesBuildCommand(user, channelID);
 			}
 		}
 
@@ -1049,7 +1045,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 *
 		 */
 		if (options.tears_of_guthix) {
-			return tearsOfGuthixCommand(klasaUser, channelID);
+			return tearsOfGuthixCommand(user, channelID);
 		}
 
 		/**
@@ -1058,7 +1054,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 *
 		 */
 		if (options.pyramid_plunder) {
-			return pyramidPlunderCommand(klasaUser, channelID);
+			return pyramidPlunderCommand(user, channelID);
 		}
 
 		/**
@@ -1067,7 +1063,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 *
 		 */
 		if (options.rogues_den) {
-			return roguesDenCommand(klasaUser, channelID);
+			return roguesDenCommand(user, channelID);
 		}
 
 		/**
@@ -1077,16 +1073,16 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 */
 		if (options.soul_wars) {
 			if (options.soul_wars.start) {
-				return soulWarsStartCommand(klasaUser, channelID);
+				return soulWarsStartCommand(user, channelID);
 			}
 			if (options.soul_wars.imbue) {
-				return soulWarsImbueCommand(klasaUser, options.soul_wars.imbue.name);
+				return soulWarsImbueCommand(user, options.soul_wars.imbue.name);
 			}
 			if (options.soul_wars.buy) {
-				return soulWarsBuyCommand(klasaUser, options.soul_wars.buy.name, options.soul_wars.buy.quantity);
+				return soulWarsBuyCommand(user, options.soul_wars.buy.name, options.soul_wars.buy.quantity);
 			}
 			if (options.soul_wars.tokens) {
-				return soulWarsTokensCommand(user);
+				return soulWarsTokensCommand(user.user);
 			}
 		}
 
@@ -1096,13 +1092,12 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 *
 		 */
 		if (options.volcanic_mine?.start) {
-			return volcanicMineCommand(klasaUser, channelID, options.volcanic_mine.start.quantity);
+			return volcanicMineCommand(user, channelID, options.volcanic_mine.start.quantity);
 		}
 		if (options.volcanic_mine?.buy) {
 			return volcanicMineShopCommand(
 				interaction,
 				user,
-				klasaUser,
 				options.volcanic_mine.buy.item,
 				options.volcanic_mine.buy.quantity
 			);
@@ -1114,20 +1109,16 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 *
 		 */
 		if (options.agility_arena?.start) {
-			return agilityArenaCommand(user, klasaUser, channelID);
+			return agilityArenaCommand(user, channelID);
 		}
 		if (options.agility_arena?.buy) {
-			return agilityArenaBuyCommand(
-				klasaUser,
-				options.agility_arena.buy.item,
-				options.agility_arena.buy.quantity
-			);
+			return agilityArenaBuyCommand(user, options.agility_arena.buy.item, options.agility_arena.buy.quantity);
 		}
 		if (options.agility_arena?.recolor) {
-			return agilityArenaRecolorCommand(klasaUser);
+			return agilityArenaRecolorCommand(user);
 		}
 		if (options.agility_arena?.xp) {
-			return agilityArenaXPCommand(klasaUser, options.agility_arena.xp.quantity);
+			return agilityArenaXPCommand(user, options.agility_arena.xp.quantity);
 		}
 
 		if (options.trouble_brewing) {

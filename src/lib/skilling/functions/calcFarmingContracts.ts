@@ -1,5 +1,4 @@
 import { randArrItem, randInt, roll } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { HighSeedPackTable, LowSeedPackTable, MediumSeedPackTable } from '../../data/seedPackTables';

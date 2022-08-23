@@ -1,12 +1,12 @@
-import { User } from '@prisma/client';
 import { ComponentType } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
 import { mahojiInformationalButtons } from '../../../lib/constants';
+import { MUser } from '../../../lib/MUser';
 import { mahojiUserSettingsUpdate } from '../../mahojiSettings';
 
-export async function minionBuyCommand(user: User, ironman: boolean): CommandResponse {
-	if (user.minion_hasBought) return 'You already have a minion!';
+export async function minionBuyCommand(user: MUser, ironman: boolean): CommandResponse {
+	if (user.user.minion_hasBought) return 'You already have a minion!';
 
 	await mahojiUserSettingsUpdate(user.id, {
 		minion_hasBought: true,

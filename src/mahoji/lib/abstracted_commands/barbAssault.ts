@@ -1,11 +1,11 @@
 import { User } from '@prisma/client';
 import { calcWhatPercent, reduceNumByPercent, roll, round, Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../../lib/constants';
 import { maxOtherStats } from '../../../lib/gear';
+import { MUser } from '../../../lib/MUser';
 import { countUsersWithItemInCl } from '../../../lib/settings/prisma';
 import { getMinigameScore } from '../../../lib/settings/settings';
 import { HighGambleTable, LowGambleTable, MediumGambleTable } from '../../../lib/simulation/baGamble';
@@ -90,13 +90,13 @@ export const GambleTiers = [
 	}
 ];
 
-export async function barbAssaultLevelCommand(user: User) {
-	const currentLevel = user.honour_level;
+export async function barbAssaultLevelCommand(user: MUser) {
+	const currentLevel = user.user.honour_level;
 	if (currentLevel === 5) {
 		return "You've already reached the highest possible Honour level.";
 	}
 
-	const points = user.honour_points;
+	const points = user.user.honour_points;
 
 	for (const level of levels) {
 		if (currentLevel >= level.level) continue;
@@ -116,8 +116,7 @@ export async function barbAssaultLevelCommand(user: User) {
 
 export async function barbAssaultBuyCommand(
 	interaction: SlashCommandInteraction,
-	klasaUser: KlasaUser,
-	user: User,
+	user: MUser,
 	input: string,
 	quantity?: number
 ) {
@@ -134,7 +133,7 @@ export async function barbAssaultBuyCommand(
 	}
 
 	const { item, cost } = buyable;
-	const balance = user.honour_points;
+	const balance = user.user.honour_points;
 	if (balance < cost * quantity) {
 		return `You don't have enough Honour Points to buy ${quantity.toLocaleString()}x ${item.name}. You need ${(
 			cost * quantity
@@ -152,7 +151,7 @@ export async function barbAssaultBuyCommand(
 		}
 	});
 
-	await klasaUser.addItemsToBank({ items: new Bank().add(item.id, quantity), collectionLog: true });
+	await user.addItemsToBank({ items: new Bank().add(item.id, quantity), collectionLog: true });
 
 	return `Successfully purchased ${quantity.toLocaleString()}x ${item.name} for ${(
 		cost * quantity
@@ -161,8 +160,7 @@ export async function barbAssaultBuyCommand(
 
 export async function barbAssaultGambleCommand(
 	interaction: SlashCommandInteraction,
-	klasaUser: KlasaUser,
-	user: User,
+	user: MUser,
 	tier: string,
 	quantity: number
 ) {
@@ -170,7 +168,7 @@ export async function barbAssaultGambleCommand(
 	if (!buyable) {
 		return 'You can gamble your points for the Low, Medium and High tiers. For example, `/minigames gamble low`.';
 	}
-	const balance = user.honour_points;
+	const balance = user.user.honour_points;
 	const { cost, name, table } = buyable;
 	if (balance < cost * quantity) {
 		return `You don't have enough Honour Points to do ${quantity.toLocaleString()}x ${name} gamble. You need ${(
@@ -197,14 +195,14 @@ export async function barbAssaultGambleCommand(
 
 		globalClient.emit(
 			Events.ServerNotification,
-			`<:Pet_penance_queen:324127377649303553> **${klasaUser.username}'s** minion, ${
-				klasaUser.minionName
+			`<:Pet_penance_queen:324127377649303553> **${user.usernameOrMention}'s** minion, ${
+				user.minionName
 			}, just received a Pet penance queen from their ${formatOrdinal(
 				newUser.high_gambles
 			)} High gamble! They are the ${formatOrdinal(amount + 1)} to it.`
 		);
 	}
-	const { itemsAdded, previousCL } = await klasaUser.addItemsToBank({ items: loot, collectionLog: true });
+	const { itemsAdded, previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
 
 	return {
 		content: `You spent ${(
@@ -214,7 +212,7 @@ export async function barbAssaultGambleCommand(
 			(
 				await makeBankImage({
 					bank: itemsAdded,
-					user: klasaUser,
+					user,
 					previousCL,
 					flags: { showNewCL: 1 }
 				})
@@ -223,20 +221,20 @@ export async function barbAssaultGambleCommand(
 	};
 }
 
-export async function barbAssaultStartCommand(channelID: bigint, user: User, klasaUser: KlasaUser) {
+export async function barbAssaultStartCommand(channelID: bigint, user: MUser) {
 	const boosts = [];
 
 	let waveTime = randomVariation(Time.Minute * 4, 10);
 
 	// Up to 12.5% speed boost for max strength
 	if (roll(4)) {
-		const gearStats = klasaUser.getGear('melee').stats;
+		const gearStats = user.gear.melee.stats;
 		const strengthPercent = round(calcWhatPercent(gearStats.melee_strength, maxOtherStats.melee_strength) / 8, 2);
 		waveTime = reduceNumByPercent(waveTime, strengthPercent);
-		boosts.push(`${strengthPercent}% for ${klasaUser.username}'s melee gear`);
+		boosts.push(`${strengthPercent}% for ${user.usernameOrMention}'s melee gear`);
 	}
 	// Up to 30% speed boost for honour level
-	const totalLevelPercent = user.honour_level * 6;
+	const totalLevelPercent = user.user.honour_level * 6;
 	boosts.push(`${totalLevelPercent}% for honour level`);
 	waveTime = reduceNumByPercent(waveTime, totalLevelPercent);
 
@@ -253,7 +251,7 @@ export async function barbAssaultStartCommand(channelID: bigint, user: User, kla
 	boosts.push(`Each wave takes ${formatDuration(waveTime)}`);
 
 	let str = `${
-		klasaUser.minionName
+		user.minionName
 	} is now off to do ${quantity} waves of Barbarian Assault. Each wave takes ${formatDuration(
 		waveTime
 	)} - the total trip will take ${formatDuration(duration)}. `;

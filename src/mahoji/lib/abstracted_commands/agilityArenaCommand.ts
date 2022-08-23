@@ -1,4 +1,3 @@
-import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
@@ -11,7 +10,6 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { mahojiChatHead, newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import getOSItem from '../../../lib/util/getOSItem';
-import { minionName } from '../../../lib/util/minionUtils';
 import { mahojiUserSettingsUpdate, userHasGracefulEquipped } from '../../mahojiSettings';
 
 export const agilityArenaBuyables = [
@@ -101,12 +99,12 @@ export async function agilityArenaCommand(user: MUser, channelID: bigint): Comma
 	return str;
 }
 
-export async function agilityArenaBuyCommand(user: KlasaUser, input: string, qty = 1): CommandResponse {
+export async function agilityArenaBuyCommand(user: MUser, input: string, qty = 1): CommandResponse {
 	const buyable = agilityArenaBuyables.find(
 		i => stringMatches(input, i.item.name) || i.aliases.some(alias => stringMatches(alias, input))
 	);
 
-	const bank = user.bank();
+	const { bank } = user;
 	const amountTicketsHas = bank.amount('Agility arena ticket');
 	if (amountTicketsHas === 0) {
 		return {
@@ -135,8 +133,8 @@ export async function agilityArenaBuyCommand(user: KlasaUser, input: string, qty
 	return 'Invalid options.';
 }
 
-export async function agilityArenaRecolorCommand(user: KlasaUser) {
-	const bank = user.bank();
+export async function agilityArenaRecolorCommand(user: MUser) {
+	const { bank } = user;
 	let cost = 250;
 	if (!bank.has(plainGraceful)) {
 		return mahojiChatHead({
@@ -158,7 +156,7 @@ export async function agilityArenaRecolorCommand(user: KlasaUser) {
 	await mahojiUserSettingsUpdate(user.id, {
 		bank: bank.bank
 	});
-	await user.addItemsToCollectionLog({ items: brimhavenGraceful });
+	await user.addItemsToCollectionLog(brimhavenGraceful);
 	return mahojiChatHead({
 		content: "I've recolored ye Graceful set, and taken your tickets!",
 		head: 'izzy'

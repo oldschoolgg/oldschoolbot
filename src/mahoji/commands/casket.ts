@@ -1,4 +1,3 @@
-import { KlasaUser } from 'klasa';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
@@ -9,7 +8,7 @@ import { makeBankImage } from '../../lib/util/makeBankImage';
 import { Workers } from '../../lib/workers';
 import { OSBMahojiCommand } from '../lib/util';
 
-function determineLimit(user: KlasaUser) {
+function determineLimit(user: MUser) {
 	const perkTier = getUsersPerkTier(user);
 	if (perkTier >= PerkTier.Six) return 300_000;
 	if (perkTier >= PerkTier.Five) return 200_000;

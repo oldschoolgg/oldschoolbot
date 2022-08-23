@@ -103,7 +103,7 @@ export default class PatreonTask extends Task {
 	async changeTier(userID: string, from: PerkTier, to: PerkTier) {
 		const user = await globalClient.fetchUser(userID);
 
-		const userBitfield = user.settings.get(UserSettings.BitField);
+		const userBitfield = user.bitfield;
 
 		const bitFieldToRemove = bitFieldFromPerkTier(from);
 		const bitFieldToAdd = bitFieldFromPerkTier(to);

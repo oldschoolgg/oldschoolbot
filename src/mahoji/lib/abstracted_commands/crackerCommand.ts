@@ -1,9 +1,10 @@
 import { shuffleArr } from 'e';
+import { APIUser } from 'mahoji';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { Emoji } from '../../../lib/constants';
-import { handleMahojiConfirmation } from '../../mahojiSettings';
+import { handleMahojiConfirmation, mUserFetch } from '../../mahojiSettings';
 
 const HatTable = new LootTable()
 	.add('Red partyhat', 1, 32)
@@ -27,19 +28,21 @@ const JunkTable = new LootTable()
 export async function crackerCommand({
 	ownerID,
 	otherPersonID,
-	interaction
+	interaction,
+	otherPersonAPIUser
 }: {
+	otherPersonAPIUser: APIUser;
 	ownerID: string;
 	otherPersonID: string;
 	interaction: SlashCommandInteraction;
 }) {
-	const otherPerson;
-	if (otherPerson.isIronman) return 'That person is an ironman, they stand alone.';
-	if (otherPerson.bot) return "Bot's don't have hands.";
+	const otherPerson = await mUserFetch(otherPersonID);
+	const owner = await mUserFetch(ownerID);
+	if (otherPerson.user.minion_ironman) return 'That person is an ironman, they stand alone.';
+	if (otherPersonAPIUser.bot) return "Bot's don't have hands.";
 	if (otherPerson.id === owner.id) return 'Nice try.';
-	if (otherPerson.isBusy) return 'That user is busy right now.';
 
-	if (!owner.owns('Christmas cracker')) {
+	if (!owner.bank.has('Christmas cracker')) {
 		return "You don't have any Christmas crackers.";
 	}
 

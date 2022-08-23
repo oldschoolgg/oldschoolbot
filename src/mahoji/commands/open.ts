@@ -8,7 +8,7 @@ import {
 	OpenUntilItems
 } from '../lib/abstracted_commands/openCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { mUserFetch } from '../mahojiSettings';
 
 export const openCommand: OSBMahojiCommand = {
 	name: 'open',
@@ -65,23 +65,19 @@ export const openCommand: OSBMahojiCommand = {
 		interaction
 	}: CommandRunOptions<{ name?: string; quantity?: number; open_until?: string }>) => {
 		if (interaction) await interaction.deferReply();
-		const user = await globalClient.fetchUser(userID);
-		const mahojiUser = await mahojiUsersSettingsFetch(userID);
+		const user = await mUserFetch(userID);
 		if (!options.name) {
 			return `You have... ${truncateString(
-				user
-					.bank()
-					.filter(item => allOpenablesIDs.has(item.id), false)
-					.toString(),
+				user.bank.filter(item => allOpenablesIDs.has(item.id), false).toString(),
 				1950
 			)}.`;
 		}
 		if (options.open_until) {
-			return abstractedOpenUntilCommand(interaction, user, mahojiUser, options.name, options.open_until);
+			return abstractedOpenUntilCommand(interaction, user.id, options.name, options.open_until);
 		}
 		if (options.name.toLowerCase() === 'all') {
-			return abstractedOpenCommand(interaction, user, mahojiUser, ['all'], 'auto');
+			return abstractedOpenCommand(interaction, user.id, ['all'], 'auto');
 		}
-		return abstractedOpenCommand(interaction, user, mahojiUser, [options.name], options.quantity);
+		return abstractedOpenCommand(interaction, user.id, [options.name], options.quantity);
 	}
 };

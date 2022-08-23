@@ -88,7 +88,7 @@ export const askCommand: OSBMahojiCommand = {
 		await interaction.deferReply();
 		const klasaUser = await globalClient.fetchUser(user.id);
 		await klasaUser.settings.sync(true);
-		const baseBank = klasaUser.bank({ withGP: true });
+		const baseBank = klasaUser.bankWithGP;
 		const mahojiFlags: BankFlag[] = [];
 
 		if (options.flag) mahojiFlags.push(options.flag);
@@ -110,7 +110,7 @@ export const askCommand: OSBMahojiCommand = {
 				filter: options.filter
 			},
 			inputStr: options.item ?? options.items,
-			user: klasaUser,
+			user: MUser,
 			filters: options.filter ? [options.filter] : []
 		});
 
@@ -171,7 +171,7 @@ export const askCommand: OSBMahojiCommand = {
 						bank,
 						title: `${klasaUser.username}'s Bank`,
 						flags,
-						user: klasaUser,
+						user: MUser,
 						mahojiFlags
 					})
 				).file

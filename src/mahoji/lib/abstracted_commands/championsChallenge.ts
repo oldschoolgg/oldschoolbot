@@ -1,14 +1,14 @@
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { championScrolls } from '../../../lib/data/CollectionsExport';
+import { MUser } from '../../../lib/MUser';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 
-export async function championsChallengeCommand(user: KlasaUser, channelID: bigint) {
-	const bank = user.bank();
+export async function championsChallengeCommand(user: MUser, channelID: bigint) {
+	const { bank } = user;
 	if (!bank.has(championScrolls)) {
 		return "You don't have a set of Champion Scrolls to do the Champion's Challenge! You need 1 of each.";
 	}

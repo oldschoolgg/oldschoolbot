@@ -200,7 +200,7 @@ export const farmingCommand: OSBMahojiCommand = {
 		}
 		if (options.plant) {
 			return farmingPlantCommand({
-				user: klasaUser,
+				user: MUser,
 				plantName: options.plant.plant_name,
 				quantity: options.plant.quantity ?? null,
 				autoFarmed: false,
@@ -210,7 +210,7 @@ export const farmingCommand: OSBMahojiCommand = {
 		}
 		if (options.harvest) {
 			return harvestCommand({
-				user: klasaUser,
+				user: MUser,
 				seedType: options.harvest.patch_name,
 				channelID
 			});

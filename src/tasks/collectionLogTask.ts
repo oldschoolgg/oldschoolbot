@@ -1,12 +1,12 @@
 import { User } from '@prisma/client';
 import { calcWhatPercent, objectEntries } from 'e';
-import { KlasaUser, Task } from 'klasa';
+import { Task } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Canvas, CanvasRenderingContext2D } from 'skia-canvas/lib';
 
 import { allCollectionLogs, getCollection, getTotalCl } from '../lib/data/Collections';
 import { IToReturnCollection } from '../lib/data/CollectionsExport';
-import { UserSettings } from '../lib/settings/types/UserSettings';
+import { MUser } from '../lib/MUser';
 import { formatItemStackQuantity, generateHexColorForCashStack, toKMB } from '../lib/util';
 import { fillTextXTimesInCtx, getClippedRegion } from '../lib/util/canvasUtil';
 import getOSItem from '../lib/util/getOSItem';
@@ -109,13 +109,13 @@ export default class CollectionLogTask extends Task {
 	}
 
 	async generateLogImage(options: {
-		user: KlasaUser;
+		user: MUser;
 		mahojiUser: User;
 		collection: string;
 		type: CollectionLogType;
 		flags: { [key: string]: string | number };
 	}): Promise<CommandResponse> {
-		const { sprite } = this.getTask().getBgAndSprite(options.user.settings.get(UserSettings.BankBackground));
+		const { sprite } = this.getTask().getBgAndSprite(options.user.user.bankBackground);
 
 		if (options.flags.temp) {
 			options.type = 'temp';
@@ -233,7 +233,7 @@ export default class CollectionLogTask extends Task {
 		ctx.save();
 		ctx.font = '16px RuneScape Bold 12';
 		ctx.fillStyle = '#FF981F';
-		const title = `${user.username}'s ${
+		const title = `${user.usernameOrMention}'s ${
 			type === 'sacrifice' ? 'Sacrifice' : type === 'collection' ? 'Collection' : 'Bank'
 		} Log - ${userTotalCl[1].toLocaleString()}/${userTotalCl[0].toLocaleString()} / ${calcWhatPercent(
 			userTotalCl[1],

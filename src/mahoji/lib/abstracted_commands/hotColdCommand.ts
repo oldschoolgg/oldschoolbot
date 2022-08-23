@@ -1,11 +1,10 @@
 import { Embed } from '@discordjs/builders';
-import { User } from '@prisma/client';
-import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { LootTable } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 
+import { MUser } from '../../../lib/MUser';
 import resolveItems from '../../../lib/util/resolveItems';
 import {
 	handleMahojiConfirmation,
@@ -37,12 +36,11 @@ const explanation =
 
 export async function hotColdCommand(
 	interaction: SlashCommandInteraction,
-	klasaUser: KlasaUser,
-	user: User,
+	user: MUser,
 	choice: 'hot' | 'cold' | undefined,
 	_amount: string | undefined
 ) {
-	if (user.minion_ironman) return 'Ironmen cannot gamble.';
+	if (user.isIronman) return 'Ironmen cannot gamble.';
 	const amount = mahojiParseNumber({ input: _amount, min: 1 });
 	if (!amount || !choice || !['hot', 'cold'].includes(choice) || !Number.isInteger(amount)) return explanation;
 	if (amount < 10_000_000 || amount > 500_000_000) return 'You must gamble between 10m and 500m.';
@@ -57,7 +55,7 @@ ${explanation}`
 	);
 
 	await transactItems({
-		userID: klasaUser.id,
+		userID: user.id,
 		itemsToAdd: flowerLoot,
 		collectionLog: true
 	});

@@ -1,13 +1,13 @@
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
 
+import { MUser } from '../../../lib/MUser';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { formatDuration, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
-export async function aerialFishingCommand(user: KlasaUser, channelID: bigint) {
+export async function aerialFishingCommand(user: MUser, channelID: bigint) {
 	if (user.skillLevel(SkillsEnum.Fishing) < 43 || user.skillLevel(SkillsEnum.Hunter) < 35) {
 		return 'You need atleast level 35 Hunter and 43 Fishing to do Aerial fishing.';
 	}

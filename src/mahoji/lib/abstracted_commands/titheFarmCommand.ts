@@ -1,5 +1,4 @@
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
@@ -7,7 +6,6 @@ import { Emoji } from '../../../lib/constants';
 import TitheFarmBuyables from '../../../lib/data/buyables/titheFarmBuyables';
 import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
 import { MUser } from '../../../lib/MUser';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { TitheFarmActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
@@ -70,7 +68,7 @@ export async function titheFarmCommand(user: MUser, channelID: bigint) {
 
 export async function titheFarmShopCommand(
 	interaction: SlashCommandInteraction,
-	user: KlasaUser,
+	user: MUser,
 	buyableName: string,
 	_quantity?: number
 ) {
@@ -91,7 +89,7 @@ export async function titheFarmShopCommand(
 	const loot = new Bank(buyable.outputItems).multiply(quantity);
 	const cost = buyable.titheFarmPoints * quantity;
 
-	const titheFarmPoints = user.settings.get(UserSettings.Stats.TitheFarmPoints);
+	const titheFarmPoints = user.user.stats_titheFarmPoints;
 
 	if (titheFarmPoints < cost) {
 		return `You need ${cost} Tithe Farm points to make this purchase.`;

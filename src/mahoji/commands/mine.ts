@@ -3,14 +3,14 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import Mining from '../../lib/skilling/skills/mining';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
-import { determineScaledOreTime, formatDuration, getSkillsOfMahojiUser, itemNameFromID } from '../../lib/util';
+import { determineScaledOreTime, formatDuration, itemNameFromID } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
 import itemID from '../../lib/util/itemID';
-import { hasItemsEquippedOrInBank, minionName, userHasItemsEquippedAnywhere } from '../../lib/util/minionUtils';
+import { hasItemsEquippedOrInBank } from '../../lib/util/minionUtils';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { mUserFetch } from '../mahojiSettings';
 
 const pickaxes = [
 	{
@@ -82,8 +82,8 @@ export const mineCommand: OSBMahojiCommand = {
 		}
 
 		let { quantity } = options;
-		const user = await mahojiUsersSettingsFetch(userID);
-		const skills = getSkillsOfMahojiUser(user, true);
+		const user = await mUserFetch(userID);
+		const skills = user.skillsAsLevels;
 		if (skills.mining < ore.level) {
 			return `${user.minionName} needs ${ore.level} Mining to mine ${ore.name}.`;
 		}
@@ -102,7 +102,7 @@ export const mineCommand: OSBMahojiCommand = {
 		}
 		if (skills.mining >= 60) {
 			for (const glove of gloves) {
-				if (userHasItemsEquippedAnywhere(user, glove.id)) {
+				if (user.hasEquipped(glove.id)) {
 					timeToMine = reduceNumByPercent(timeToMine, glove.reductionPercent);
 					boosts.push(`${glove.reductionPercent}% for ${itemNameFromID(glove.id)}`);
 					break;
@@ -110,7 +110,7 @@ export const mineCommand: OSBMahojiCommand = {
 			}
 		}
 		// Give gem rocks a speed increase for wearing a glory
-		if (ore.id === 1625 && userHasItemsEquippedAnywhere(user, 'Amulet of glory')) {
+		if (ore.id === 1625 && user.hasEquipped('Amulet of glory')) {
 			timeToMine = Math.floor(timeToMine / 2);
 			boosts.push('50% for having an Amulet of glory equipped');
 		}

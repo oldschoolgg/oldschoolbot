@@ -1,5 +1,4 @@
 import type { User } from '@prisma/client';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
@@ -10,13 +9,13 @@ import { SkillsEnum } from '../skilling/types';
 import { convertXPtoLVL, Util } from '../util';
 import resolveItems from './resolveItems';
 
-export function skillLevel(user: KlasaUser | User, skill: SkillsEnum) {
+export function skillLevel(user: MUser | User, skill: SkillsEnum) {
 	const xp =
 		user instanceof KlasaUser ? (user.settings.get(`skills.${skill}`) as number) : Number(user[`skills_${skill}`]);
 	return convertXPtoLVL(xp);
 }
 
-export function getKC(user: KlasaUser | User, id: number) {
+export function getKC(user: MUser | User, id: number) {
 	const scores: Readonly<ItemBank> =
 		user instanceof KlasaUser ? user.settings.get(UserSettings.MonsterScores) : (user.monsterScores as ItemBank);
 	return scores[id] ?? 0;
@@ -89,7 +88,7 @@ export function hasItemsEquippedOrInBank(
 	_items: (string | number)[],
 	type: 'every' | 'one' = 'one'
 ): boolean {
-	const bank = user instanceof KlasaUser ? user.bank() : new Bank(user.bank as ItemBank);
+	const bank = user instanceof KlasaUser ? user.bank : new Bank(user.bank as ItemBank);
 	const items = resolveItems(_items);
 	for (const baseID of items) {
 		const similarItems = [...getSimilarItems(baseID), baseID];
@@ -105,7 +104,7 @@ export function hasItemsEquippedOrInBank(
 	return type === 'one' ? false : true;
 }
 
-export function minionName(user: KlasaUser | User) {
+export function minionName(user: MUser | User) {
 	let [name, isIronman, icon] =
 		user instanceof KlasaUser
 			? [

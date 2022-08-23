@@ -13,6 +13,7 @@ import { OSBMahojiCommand } from '../lib/util';
 import {
 	handleMahojiConfirmation,
 	mahojiUsersSettingsFetch,
+	mUserFetch,
 	updateGPTrackSetting,
 	userStatsUpdate
 } from '../mahojiSettings';
@@ -77,10 +78,10 @@ export const sellCommand: OSBMahojiCommand = {
 		options,
 		interaction
 	}: CommandRunOptions<{ items: string; filter?: string; search?: string }>) => {
-		const user = await globalClient.fetchUser(userID.toString());
+		const user = await mUserFetch(userID.toString());
 		const mUser = await mahojiUsersSettingsFetch(user.id, { favoriteItems: true });
 		const bankToSell = parseBank({
-			inputBank: user.bank(),
+			inputBank: user.bank,
 			inputStr: options.items,
 			maxSize: 70,
 			filters: [options.filter],
@@ -148,12 +149,15 @@ export const sellCommand: OSBMahojiCommand = {
 			)}).`
 		);
 
-		await user.removeItemsFromBank(bankToSell.bank);
-		await user.addItemsToBank({ items: new Bank().add('Coins', totalPrice) });
+		await transactItems({
+			userID: user.id,
+			itemsToAdd: new Bank().add('Coins', totalPrice),
+			itemsToRemove: bankToSell
+		});
 
 		await Promise.all([
 			updateGPTrackSetting('gp_sell', totalPrice),
-			updateBankSetting(globalClient, ClientSettings.EconomyStats.SoldItemsBank, bankToSell.bank),
+			updateBankSetting('sold_items_bank', bankToSell),
 			userStatsUpdate(user.id, userStats => ({
 				items_sold_bank: new Bank(userStats.items_sold_bank as ItemBank).add(bankToSell).bank,
 				sell_gp: {

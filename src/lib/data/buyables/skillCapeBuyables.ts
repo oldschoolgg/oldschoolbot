@@ -1,5 +1,4 @@
 import { User } from '@prisma/client';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import Skillcapes from '../../skilling/skillcapes';
@@ -23,7 +22,7 @@ for (const skillcape of Skillcapes) {
 			return output;
 		},
 		gpCost: 99_000,
-		customReq: async (user: KlasaUser) => {
+		customReq: async (user: MUser) => {
 			if (user.skillLevel(skillcape.skill) < 99) {
 				return [false, `You need level ${99} ${toTitleCase(skillcape.skill)} to buy a cape of accomplishment.`];
 			}

@@ -13,7 +13,7 @@ import {
 } from '../lib/abstracted_commands/pohCommand';
 import { ownedItemOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { mahojiUsersSettingsFetch, mUserFetch } from '../mahojiSettings';
 
 export const pohCommand: OSBMahojiCommand = {
 	name: 'poh',
@@ -115,7 +115,7 @@ export const pohCommand: OSBMahojiCommand = {
 		destroy?: { name: string };
 		mount_item?: { name: string };
 	}>) => {
-		const user = await globalClient.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 		if (!mahojiUser.minion_hasBought) return "You don't own a minion yet, so you have no PoH!";
 		if (options.view) {

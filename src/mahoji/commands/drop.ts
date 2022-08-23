@@ -42,7 +42,7 @@ export const dropCommand: OSBMahojiCommand = {
 		const mUser = await mahojiUsersSettingsFetch(userID, { favoriteItems: true });
 		const bank = parseBank({
 			inputStr: options.items,
-			inputBank: user.bank(),
+			inputBank: user.bank,
 			excludeItems: mUser.favoriteItems,
 			user,
 			search: options.search,

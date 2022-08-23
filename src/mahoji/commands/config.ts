@@ -2,7 +2,6 @@ import { Embed, inlineCode } from '@discordjs/builders';
 import { User } from '@prisma/client';
 import { Guild, HexColorString, Util } from 'discord.js';
 import { uniqueArr } from 'e';
-import { KlasaUser } from 'klasa';
 import { APIUser, ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
@@ -174,7 +173,7 @@ async function favAlchConfig(
 }
 
 async function bankSortConfig(
-	user: KlasaUser,
+	user: MUser,
 	mahojiUser: User,
 	sortMethod: string | undefined,
 	addWeightingBank: string | undefined,
@@ -284,12 +283,7 @@ async function bgColorConfig(user: User, hex?: string) {
 	};
 }
 
-async function handleChannelEnable(
-	user: KlasaUser,
-	guild: Guild | null,
-	channelID: bigint,
-	choice: 'enable' | 'disable'
-) {
+async function handleChannelEnable(user: MUser, guild: Guild | null, channelID: bigint, choice: 'enable' | 'disable') {
 	if (!guild) return 'This command can only be run in servers.';
 	if (!(await hasBanMemberPerms(user, guild))) return "You need to be 'Ban Member' permissions to use this command.";
 	const cID = channelID.toString();
@@ -315,7 +309,7 @@ async function handleChannelEnable(
 }
 
 async function handlePetMessagesEnable(
-	user: KlasaUser,
+	user: MUser,
 	guild: Guild | null,
 	channelID: bigint,
 	choice: 'enable' | 'disable'
@@ -344,7 +338,7 @@ async function handlePetMessagesEnable(
 }
 
 async function handleJModCommentsEnable(
-	user: KlasaUser,
+	user: MUser,
 	guild: Guild | null,
 	channelID: bigint,
 	choice: 'enable' | 'disable'
@@ -379,7 +373,7 @@ async function handleJModCommentsEnable(
 }
 
 async function handleCommandEnable(
-	user: KlasaUser,
+	user: MUser,
 	guild: Guild | null,
 	commandName: string,
 	choice: 'enable' | 'disable'
@@ -413,7 +407,7 @@ async function handleCommandEnable(
 	return `Successfully disabled the \`${command.name}\` command.`;
 }
 
-async function handlePrefixChange(user: KlasaUser, guild: Guild | null, newPrefix: string) {
+async function handlePrefixChange(user: MUser, guild: Guild | null, newPrefix: string) {
 	if (!newPrefix || newPrefix.length === 0 || newPrefix.length > 3) return 'Invalid prefix.';
 	if (!guild) return 'This command can only be run in servers.';
 	if (!(await hasBanMemberPerms(user, guild))) return "You need to be 'Ban Member' permissions to use this command.";
@@ -424,7 +418,7 @@ async function handlePrefixChange(user: KlasaUser, guild: Guild | null, newPrefi
 }
 const priorityWarningMsg =
 	"\n\n**Important: By default, 'Always barrage/burst' will take priority if 'Always cannon' is also enabled.**";
-async function handleCombatOptions(user: KlasaUser, command: 'add' | 'remove' | 'list' | 'help', option?: string) {
+async function handleCombatOptions(user: MUser, command: 'add' | 'remove' | 'list' | 'help', option?: string) {
 	const settings = await mahojiUsersSettingsFetch(user.id);
 	if (!command || (command && command === 'list')) {
 		// List enabled combat options:
@@ -498,7 +492,7 @@ async function handleCombatOptions(user: KlasaUser, command: 'add' | 'remove' | 
 	return `${newcbopt.name} is now ${nextBool ? 'enabled' : 'disabled'} for you.${warningMsg}`;
 }
 
-async function handleRSN(user: KlasaUser, newRSN: string) {
+async function handleRSN(user: MUser, newRSN: string) {
 	const settings = await mahojiUsersSettingsFetch(user.id);
 	const { RSN } = settings;
 	if (!newRSN && RSN) {

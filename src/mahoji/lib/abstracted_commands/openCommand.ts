@@ -162,12 +162,11 @@ ${messages.join(', ')}`
 export async function abstractedOpenCommand(
 	interaction: SlashCommandInteraction | null,
 	userID: string,
-	mahojiUser: User,
 	_names: string[],
 	_quantity: number | 'auto' = 1
 ) {
 	const user = await mUserFetch(userID);
-	const favorites = mahojiUser.favoriteItems;
+	const favorites = user.user.favoriteItems;
 
 	const names = _names.map(i => i.replace(regex, '$1'));
 	const openables = names.includes('all')

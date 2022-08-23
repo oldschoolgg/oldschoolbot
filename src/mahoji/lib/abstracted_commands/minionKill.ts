@@ -44,7 +44,6 @@ import { Consumable, KillableMonster } from '../../../lib/minions/types';
 import { MUser } from '../../../lib/MUser';
 import { calcPOHBoosts } from '../../../lib/poh';
 import { trackLoot } from '../../../lib/settings/prisma';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SlayerTaskUnlocksEnum } from '../../../lib/slayer/slayerUnlocks';
 import { determineBoostChoice, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../../lib/types/minions';
@@ -56,9 +55,11 @@ import {
 	formatItemReqs,
 	formatMissingItems,
 	formatPohBoosts,
+	hasMonsterRequirements,
 	isWeekend,
 	itemNameFromID,
 	randomVariation,
+	resolveAvailableItemBoosts,
 	stringMatches,
 	updateBankSetting
 } from '../../../lib/util';
@@ -157,7 +158,7 @@ export async function minionKillCommand(
 	}
 
 	// Set chosen boost based on priority:
-	const myCBOpts = user.settings.get(UserSettings.CombatOptions);
+	const myCBOpts = user.combatOptions;
 	const boostChoice = determineBoostChoice({
 		cbOpts: myCBOpts as CombatOptionsEnum[],
 		user,
@@ -167,7 +168,7 @@ export async function minionKillCommand(
 	});
 
 	// Check requirements
-	const [hasReqs, reason] = user.hasMonsterRequirements(monster);
+	const [hasReqs, reason] = hasMonsterRequirements(user, monster);
 	if (!hasReqs) return reason ?? "You don't have the requirements to fight this monster";
 
 	const [hasFavour, requiredPoints] = gotFavour(user, Favours.Shayzien, 100);
@@ -196,7 +197,7 @@ export async function minionKillCommand(
 		}
 	}
 
-	for (const [itemID, boostAmount] of Object.entries(user.resolveAvailableItemBoosts(monster))) {
+	for (const [itemID, boostAmount] of Object.entries(resolveAvailableItemBoosts(user, monster))) {
 		timeToFinish *= (100 - boostAmount) / 100;
 		boosts.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
 	}
@@ -423,7 +424,7 @@ export async function minionKillCommand(
 		// This will be replaced with a generic function in another PR
 		if (infiniteWaterRunes) perKillCost.remove('Water rune', perKillCost.amount('Water rune'));
 		// Calculate how many monsters can be killed with that cost:
-		const fits = user.bank({ withGP: true }).fits(perKillCost);
+		const fits = user.bankWithGP.fits(perKillCost);
 		if (fits < Number(quantity)) {
 			duration = Math.floor(duration * (fits / Number(quantity)));
 			quantity = fits;
@@ -598,7 +599,7 @@ export async function monsterInfo(user: MUser, name: string): CommandResponse {
 	// item boosts
 	const ownedBoostItems = [];
 	let totalItemBoost = 0;
-	for (const [itemID, boostAmount] of Object.entries(user.resolveAvailableItemBoosts(monster))) {
+	for (const [itemID, boostAmount] of Object.entries(resolveAvailableItemBoosts(user, monster))) {
 		timeToFinish *= (100 - boostAmount) / 100;
 		totalItemBoost += boostAmount;
 		ownedBoostItems.push(itemNameFromID(parseInt(itemID)));

@@ -10,7 +10,7 @@ import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { Workers } from '../../lib/workers';
 
-export function determineKillLimit(user: KlasaUser) {
+export function determineKillLimit(user: MUser) {
 	if (globalClient.owners.has(user)) {
 		return Infinity;
 	}

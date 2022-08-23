@@ -77,7 +77,7 @@ export const craftCommand: OSBMahojiCommand = {
 		}
 
 		await user.settings.sync(true);
-		const userBank = user.bank({ withGP: true });
+		const userBank = user.bankWithGP;
 
 		// Get the base time to craft the item then add on quarter of a second per item to account for banking/etc.
 		let timeToCraftSingleItem = craftable.tickRate * Time.Second * 0.6 + Time.Second / 4;

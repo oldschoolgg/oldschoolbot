@@ -4,8 +4,6 @@ import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { darkAltarCommand } from '../../lib/minions/functions/darkAltarCommand';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import { RunecraftActivityTaskOptions } from '../../lib/types/minions';
 import { calcMaxRCQuantity, formatDuration, stringMatches, toTitleCase, updateBankSetting } from '../../lib/util';
@@ -188,13 +186,13 @@ export const runecraftCommand: OSBMahojiCommand = {
 				}
 			}
 			removeTalismanAndOrRunes.add(runeObj.inputRune?.clone().multiply(quantity));
-			if (!user.bank().has(removeTalismanAndOrRunes.bank)) {
+			if (!user.bank.has(removeTalismanAndOrRunes.bank)) {
 				return `You don't have enough runes for this trip. You need ${runeObj.inputRune
 					?.clone()
 					.multiply(quantity)}.`;
 			}
 			removeTalismanAndOrRunes.add('Binding necklace', Math.max(Math.floor(numberOfInventories / 8), 1));
-			if (!user.bank().has(removeTalismanAndOrRunes.bank)) {
+			if (!user.bank.has(removeTalismanAndOrRunes.bank)) {
 				return `You don't have enough Binding necklaces for this trip. You need ${Math.max(
 					Math.floor(numberOfInventories / 8),
 					1
@@ -207,7 +205,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 				'Ring of dueling(8)',
 				Math.ceil(numberOfInventories / (8 * teleportReduction))
 			);
-			if (!user.bank().has(removeTalismanAndOrRunes.bank)) {
+			if (!user.bank.has(removeTalismanAndOrRunes.bank)) {
 				return `You don't have enough Ring of dueling(8) for this trip. You need ${Math.ceil(
 					numberOfInventories / (8 * teleportReduction)
 				)}x Ring of dueling(8).`;
@@ -215,7 +213,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 
 			if (usestams) {
 				removeTalismanAndOrRunes.add('Stamina potion(4)', Math.max(Math.ceil(duration / (Time.Minute * 8)), 1));
-				if (!user.bank().has(removeTalismanAndOrRunes.bank)) {
+				if (!user.bank.has(removeTalismanAndOrRunes.bank)) {
 					return `You don't have enough Stamina potion(4) for this trip. You need ${Math.max(
 						Math.ceil(duration / (Time.Minute * 8)),
 						1
@@ -229,7 +227,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 		if (!user.bank.has(totalCost)) return `You don't own: ${totalCost}.`;
 
 		await user.removeItemsFromBank(totalCost);
-		updateBankSetting(globalClient, ClientSettings.EconomyStats.RunecraftCost, totalCost);
+		updateBankSetting('runecraft_cost', totalCost);
 
 		await addSubTaskToActivityTask<RunecraftActivityTaskOptions>({
 			runeID: runeObj.id,

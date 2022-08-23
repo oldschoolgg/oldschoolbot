@@ -1,10 +1,8 @@
 import { Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Fletching from '../../lib/skilling/skills/fletching';
 import { Fletchables } from '../../lib/skilling/skills/fletching/fletchables';
-import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
 import { FletchingActivityTaskOptions } from '../../lib/types/minions';
@@ -13,6 +11,7 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
 import { OSBMahojiCommand } from '../lib/util';
+import { mUserFetch } from '../mahojiSettings';
 
 export const fletchCommand: OSBMahojiCommand = {
 	name: 'fletch',
@@ -46,7 +45,7 @@ export const fletchCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
-		const user = await globalClient.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const fletchable = Fletching.Fletchables.find(item => stringMatches(item.name, options.name));
 
 		if (!fletchable) return 'That is not a valid fletchable item.';
@@ -55,12 +54,12 @@ export const fletchCommand: OSBMahojiCommand = {
 			sets = ' sets of';
 		}
 
-		if (user.skillLevel(SkillsEnum.Fletching) < fletchable.level) {
+		if (user.skillLevel('fletching') < fletchable.level) {
 			return `${user.minionName} needs ${fletchable.level} Fletching to fletch ${fletchable.name}.`;
 		}
 
 		if (fletchable.requiredSlayerUnlocks) {
-			let mySlayerUnlocks = user.settings.get(UserSettings.Slayer.SlayerUnlocks);
+			let mySlayerUnlocks = user.user.slayer_unlocks;
 
 			const { success, errors } = hasSlayerUnlock(
 				mySlayerUnlocks as SlayerTaskUnlocksEnum[],
@@ -71,8 +70,7 @@ export const fletchCommand: OSBMahojiCommand = {
 			}
 		}
 
-		await user.settings.sync(true);
-		const userBank = user.bank();
+		const userBank = user.bank;
 
 		// Get the base time to fletch the item then add on quarter of a second per item to account for banking/etc.
 		let timeToFletchSingleItem = fletchable.tickRate * Time.Second * 0.6 + Time.Second / 4;

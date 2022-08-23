@@ -11,7 +11,7 @@ import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { handleMahojiConfirmation, mahojiUsersSettingsFetch, mUserFetch } from '../mahojiSettings';
 
 export const giveawayCommand: OSBMahojiCommand = {
 	name: 'giveaway',
@@ -55,7 +55,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 		interaction,
 		channelID
 	}: CommandRunOptions<{ start?: { duration: string; items?: string; filter?: string; search?: string } }>) => {
-		const user = await globalClient.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		if (user.isIronman) return 'You cannot do giveaways!';
 		const mUser = await mahojiUsersSettingsFetch(user.id);
 		const channel = globalClient.channels.cache.get(channelID.toString());
@@ -82,7 +82,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 
 			const bank = parseBank({
 				inputStr: options.start.items,
-				inputBank: user.bank(),
+				inputBank: user.bank,
 				excludeItems: mUser.favoriteItems,
 				user,
 				search: options.start.search,
@@ -90,7 +90,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 				maxSize: 70
 			});
 
-			if (!user.bank().fits(bank)) {
+			if (!user.bank.fits(bank)) {
 				return "You don't own those items.";
 			}
 
@@ -129,7 +129,7 @@ React to this messsage with ${reaction} to enter.`,
 						(
 							await makeBankImage({
 								bank,
-								title: `${user.username}'s Giveaway`
+								title: `${user.usernameOrMention}'s Giveaway`
 							})
 						).file.buffer
 					)

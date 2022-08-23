@@ -1,5 +1,4 @@
 import { calcPercentOfNum, percentChance, randInt, roll, sumArr, Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, Monsters } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
@@ -12,7 +11,6 @@ import { BlowpipeData } from '../../../lib/minions/types';
 import { MUser } from '../../../lib/MUser';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { prisma } from '../../../lib/settings/prisma';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { PercentCounter } from '../../../lib/structures/PercentCounter';
 import { Skills } from '../../../lib/types';
@@ -389,8 +387,8 @@ async function infernoRun({
 	};
 }
 
-export async function infernoStatsCommand(user: KlasaUser): CommandResponse {
-	const attempts = user.settings.get(UserSettings.Stats.InfernoAttempts);
+export async function infernoStatsCommand(user: MUser): CommandResponse {
+	const attempts = user.user.inferno_attempts;
 	const zukKC = await getMinigameScore(user.id, 'inferno');
 
 	let str = 'You have never attempted the Inferno, I recommend you stay that way.';

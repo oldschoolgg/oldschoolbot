@@ -11,7 +11,7 @@ import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { KillableMonster } from '../../lib/minions/types';
 import { MUser } from '../../lib/MUser';
 import { GroupMonsterActivityTaskOptions } from '../../lib/types/minions';
-import { channelIsSendable, formatDuration } from '../../lib/util';
+import { channelIsSendable, formatDuration, hasMonsterRequirements } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../lib/util/calcMassDurationQuantity';
 import findMonster from '../../lib/util/findMonster';
@@ -33,7 +33,7 @@ function checkReqs(users: MUser[], monster: KillableMonster, quantity: number) {
 			throw `${user.usernameOrMention} is an ironman, so they can't join!`;
 		}
 
-		const [hasReqs, reason] = user.hasMonsterRequirements(monster);
+		const [hasReqs, reason] = hasMonsterRequirements(user, monster);
 		if (!hasReqs) {
 			throw `${user.usernameOrMention} doesn't have the requirements for this monster: ${reason}`;
 		}
@@ -87,7 +87,7 @@ export const massCommand: OSBMahojiCommand = {
 			minSize: 2,
 			maxSize: 10,
 			ironmanAllowed: false,
-			message: `${user.username} is doing a ${monster.name} mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
+			message: `${user.usernameOrMention} is doing a ${monster.name} mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
 			customDenier: async user => {
 				if (!user.user.minion_hasBought) {
 					return [true, "you don't have a minion."];
@@ -95,7 +95,7 @@ export const massCommand: OSBMahojiCommand = {
 				if (user.minionIsBusy) {
 					return [true, 'your minion is busy.'];
 				}
-				const [hasReqs, reason] = user.hasMonsterRequirements(monster);
+				const [hasReqs, reason] = hasMonsterRequirements(user, monster);
 				if (!hasReqs) {
 					return [true, `you don't have the requirements for this monster; ${reason}`];
 				}
@@ -166,7 +166,7 @@ export const massCommand: OSBMahojiCommand = {
 			killsPerHr += `\n\n${boostMsgs.join(', ')}.`;
 		}
 		return `${user.usernameOrMention}'s party (${users
-			.map(u => u.username)
+			.map(u => u.usernameOrMention)
 			.join(', ')}) is now off to kill ${quantity}x ${monster.name}. Each kill takes ${formatDuration(
 			perKillTime
 		)} instead of ${formatDuration(monster.timeToFinish)}- the total trip will take ${formatDuration(

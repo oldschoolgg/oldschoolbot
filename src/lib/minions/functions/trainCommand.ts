@@ -1,5 +1,4 @@
 import { uniqueArr } from 'e';
-import { KlasaUser } from 'klasa';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { toTitleCase } from '../../util';
@@ -41,7 +40,7 @@ export const allPossibleStyles: string[] = uniqueArr([
 		.flat(2)
 ]);
 
-export async function trainCommand(user: KlasaUser, _styles: string | undefined) {
+export async function trainCommand(user: MUser, _styles: string | undefined) {
 	if (user.minionIsBusy) {
 		return "You can't change your attack style in the middle of a trip.";
 	}

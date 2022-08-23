@@ -1,6 +1,4 @@
-import { User } from '@prisma/client';
 import { objectEntries, Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
@@ -176,12 +174,11 @@ export async function volcanicMineCommand(user: MUser, channelID: bigint, gameQu
 
 export async function volcanicMineShopCommand(
 	interaction: SlashCommandInteraction,
-	user: User,
-	klasaUser: KlasaUser,
+	user: MUser,
 	item: string | undefined,
 	quantity = 1
 ) {
-	const currentUserPoints = user.volcanic_mine_points;
+	const currentUserPoints = user.user.volcanic_mine_points;
 	if (!item) {
 		return `You currently have ${currentUserPoints.toLocaleString()} Volcanic Mine points.`;
 	}
@@ -208,7 +205,7 @@ export async function volcanicMineShopCommand(
 	);
 
 	if (shopItem.clOnly) {
-		await klasaUser.addItemsToCollectionLog({ items: new Bank().add(shopItem.output).multiply(quantity) });
+		await user.addItemsToCollectionLog(new Bank().add(shopItem.output).multiply(quantity));
 	} else {
 		await transactItems({
 			userID: user.id,

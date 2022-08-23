@@ -3,7 +3,6 @@ import { HexColorString } from 'discord.js';
 
 import { BitField } from '../../constants';
 import { GearSetup } from '../../gear';
-import { CombatOptionsEnum } from '../../minions/data/combatConstants';
 import { BlowpipeData } from '../../minions/types';
 import { CompostName } from '../../skilling/skills/farming';
 import { BirdhouseData } from '../../skilling/skills/hunter/defaultBirdHouseTrap';
@@ -46,7 +45,6 @@ export namespace UserSettings {
 	export const TotalCoxPoints = T<number>('total_cox_points');
 	export const FavoriteAlchables = T<readonly number[]>('favorite_alchables');
 	export const BankBackgroundHex = T<HexColorString | null>('bank_bg_hex');
-	export const CombatOptions = T<readonly CombatOptionsEnum[]>('combat_options');
 	export const FarmingPatchReminders = T<boolean>('farming_patch_reminders');
 	export const PestControlPoints = T<number>('pest_control_points');
 	export const VolcanicMinePoints = T<number>('volcanic_mine_points');

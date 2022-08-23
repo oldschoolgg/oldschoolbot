@@ -1,23 +1,23 @@
 import { TextChannel } from 'discord.js';
 import { roll, shuffleArr, Time, uniqueArr } from 'e';
-import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
+import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { COINS_ID, Emoji, SupportServer } from '../../../lib/constants';
 import pets from '../../../lib/data/pets';
 import { DynamicButtons } from '../../../lib/DynamicButtons';
+import { MUser } from '../../../lib/MUser';
 import { getRandomTriviaQuestions } from '../../../lib/roboChimp';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import dailyRoll from '../../../lib/simulation/dailyTable';
 import { channelIsSendable, formatDuration, isWeekend } from '../../../lib/util';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { updateGPTrackSetting } from '../../mahojiSettings';
+import { mahojiUserSettingsUpdate, updateGPTrackSetting } from '../../mahojiSettings';
 
-export function isUsersDailyReady(user: KlasaUser): { isReady: true } | { isReady: false; durationUntilReady: number } {
+export function isUsersDailyReady(user: MUser): { isReady: true } | { isReady: false; durationUntilReady: number } {
 	const currentDate = new Date().getTime();
-	const lastVoteDate = user.settings.get(UserSettings.LastDailyTimestamp);
+	const lastVoteDate = Number(user.user.lastDailyTimestamp);
 	const difference = currentDate - lastVoteDate;
 
 	if (difference < Time.Hour * 12) {
@@ -28,9 +28,9 @@ export function isUsersDailyReady(user: KlasaUser): { isReady: true } | { isRead
 	return { isReady: true };
 }
 
-async function reward(user: KlasaUser, triviaCorrect: boolean): CommandResponse {
+async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 	const guild = globalClient.guilds.cache.get(SupportServer);
-	const member = await guild?.members.fetch(user).catch(() => null);
+	const member = await guild?.members.fetch(user.id).catch(() => null);
 
 	const loot = dailyRoll(1, triviaCorrect);
 
@@ -46,7 +46,7 @@ async function reward(user: KlasaUser, triviaCorrect: boolean): CommandResponse 
 		bonuses.push(Emoji.OSBot);
 	}
 
-	if (user.hasMinion) {
+	if (user.user.minion_hasBought) {
 		loot[COINS_ID] /= 1.5;
 	}
 
@@ -86,13 +86,14 @@ async function reward(user: KlasaUser, triviaCorrect: boolean): CommandResponse 
 	if (triviaCorrect && roll(13)) {
 		const pet = pets[Math.floor(Math.random() * pets.length)];
 		const userPets = {
-			...user.settings.get(UserSettings.Pets)
+			...(user.user.pets as ItemBank)
 		};
 		if (!userPets[pet.id]) userPets[pet.id] = 1;
 		else userPets[pet.id]++;
 
-		await user.settings.sync(true);
-		await user.settings.update(UserSettings.Pets, { ...userPets });
+		await mahojiUserSettingsUpdate(user.id, {
+			pets: { ...userPets }
+		});
 
 		dmStr += `\n**${pet.name}** pet! ${pet.emoji}`;
 	}
@@ -108,7 +109,7 @@ async function reward(user: KlasaUser, triviaCorrect: boolean): CommandResponse 
 	});
 	const image = await makeBankImage({
 		bank: itemsAdded,
-		title: `${user.username}'s Daily`,
+		title: `${user.usernameOrMention}'s Daily`,
 		previousCL,
 		showNewCL: true
 	});
@@ -118,7 +119,7 @@ async function reward(user: KlasaUser, triviaCorrect: boolean): CommandResponse 
 export async function dailyCommand(
 	interaction: SlashCommandInteraction | null,
 	channelID: bigint,
-	user: KlasaUser
+	user: MUser
 ): CommandResponse {
 	if (interaction) await interaction.deferReply();
 	const channel = globalClient.channels.cache.get(channelID.toString());
@@ -130,7 +131,9 @@ export async function dailyCommand(
 		)}.`;
 	}
 
-	await user.settings.update(UserSettings.LastDailyTimestamp, new Date().getTime());
+	await mahojiUserSettingsUpdate(user.id, {
+		lastDailyTimestamp: new Date().getTime()
+	});
 
 	const [question, ...fakeQuestions] = await getRandomTriviaQuestions();
 
@@ -154,7 +157,9 @@ export async function dailyCommand(
 	}
 
 	await buttons.render({
-		messageOptions: { content: `**${Emoji.Diango} Diango asks ${user.username}...** ${question.question}` },
+		messageOptions: {
+			content: `**${Emoji.Diango} Diango asks ${user.usernameOrMention}...** ${question.question}`
+		},
 		isBusy: false
 	});
 	return reward(user, correctUser !== null);

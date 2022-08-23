@@ -1,27 +1,21 @@
 import { User } from 'discord.js';
 import { Time, uniqueArr } from 'e';
-import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
-import { Bank } from 'oldschooljs';
-import Monster from 'oldschooljs/dist/structures/Monster';
+import { Extendable, ExtendableStore } from 'klasa';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { Emoji, Events, LEVEL_99_XP, MAX_TOTAL_LEVEL, MAX_XP, skillEmoji } from '../../lib/constants';
 import { onMax } from '../../lib/events';
-import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { AttackStyles } from '../../lib/minions/functions';
-import { AddXpParams, KillableMonster } from '../../lib/minions/types';
+import { AddXpParams } from '../../lib/minions/types';
 import { prisma } from '../../lib/settings/prisma';
-import { getMinigameScore, MinigameName, Minigames } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
-import Creatures from '../../lib/skilling/skills/hunter/creatures';
-import { Creature, SkillsEnum } from '../../lib/skilling/types';
 import { convertXPtoLVL, stringMatches, toKMB, toTitleCase } from '../../lib/util';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
 import { minionStatus } from '../../lib/util/minionStatus';
-import { minionName, skillLevel } from '../../lib/util/minionUtils';
+import { minionName } from '../../lib/util/minionUtils';
 import { activity_type_enum } from '.prisma/client';
 
 const suffixes = new SimpleTable<string>()
@@ -48,37 +42,6 @@ export default class extends Extendable {
 	// @ts-ignore 2784
 	public get minionStatus(this: User) {
 		return minionStatus(this);
-	}
-
-	public async getKCByName(this: KlasaUser, kcName: string) {
-		const mon = effectiveMonsters.find(
-			mon => stringMatches(mon.name, kcName) || mon.aliases.some(alias => stringMatches(alias, kcName))
-		);
-		if (mon) {
-			return [mon.name, this.getKC((mon as unknown as Monster).id)];
-		}
-
-		const minigame = Minigames.find(
-			game => stringMatches(game.name, kcName) || game.aliases.some(alias => stringMatches(alias, kcName))
-		);
-		if (minigame) {
-			return [minigame.name, await this.getMinigameScore(minigame.column)];
-		}
-
-		const creature = Creatures.find(c => c.aliases.some(alias => stringMatches(alias, kcName)));
-		if (creature) {
-			return [creature.name, this.getCreatureScore(creature)];
-		}
-
-		const special = [
-			[['superior', 'superiors', 'superior slayer monster'], UserSettings.Slayer.SuperiorCount],
-			[['tithefarm', 'tithe'], UserSettings.Stats.TitheFarmsCompleted]
-		].find(s => s[0].includes(kcName));
-		if (special) {
-			return [special[0][0], await this.settings.get(special![1] as string)];
-		}
-
-		return [null, 0];
 	}
 
 	// @ts-ignore 2784
@@ -212,84 +175,9 @@ export default class extends Extendable {
 		return str;
 	}
 
-	public skillLevel(this: User, skillName: SkillsEnum) {
-		return skillLevel(this, skillName);
-	}
-
-	public totalLevel(this: User, returnXP = false) {
-		const userXPs = Object.values(this.rawSkills) as number[];
-		let totalLevel = 0;
-		for (const xp of userXPs) {
-			totalLevel += returnXP ? xp : convertXPtoLVL(xp);
-		}
-		return totalLevel;
-	}
-
-	// @ts-ignore 2784
-	get isBusy(this: User) {
-		const client = this.client as KlasaClient;
-		return client.oneCommandAtATimeCache.has(this.id) || client.secondaryUserBusyCache.has(this.id);
-	}
-
-	/**
-	 * Toggle whether this user is busy or not, this adds another layer of locking the user
-	 * from economy actions.
-	 *
-	 * @param busy boolean Whether the new toggled state will be busy or not busy.
-	 */
-	public toggleBusy(this: User, busy: boolean) {
-		const client = this.client as KlasaClient;
-
-		if (busy) {
-			client.secondaryUserBusyCache.add(this.id);
-		} else {
-			client.secondaryUserBusyCache.delete(this.id);
-		}
-	}
-
-	// @ts-ignore 2784
-	public get isIronman(this: User) {
-		return this.settings.get(UserSettings.Minion.Ironman);
-	}
-
 	public async setAttackStyle(this: User, newStyles: AttackStyles[]) {
 		await this.settings.update(UserSettings.AttackStyle, uniqueArr(newStyles), {
 			arrayAction: 'overwrite'
 		});
-	}
-
-	public resolveAvailableItemBoosts(this: User, monster: KillableMonster) {
-		const boosts = new Bank();
-		if (monster.itemInBankBoosts) {
-			for (const boostSet of monster.itemInBankBoosts) {
-				let highestBoostAmount = 0;
-				let highestBoostItem = 0;
-
-				// find the highest boost that the player has
-				for (const [itemID, boostAmount] of Object.entries(boostSet)) {
-					const parsedId = parseInt(itemID);
-					if (
-						monster.wildy
-							? !this.hasItemEquippedAnywhere(parsedId)
-							: !this.hasItemEquippedOrInBank(parsedId)
-					) {
-						continue;
-					}
-					if (boostAmount > highestBoostAmount) {
-						highestBoostAmount = boostAmount;
-						highestBoostItem = parsedId;
-					}
-				}
-
-				if (highestBoostAmount && highestBoostItem) {
-					boosts.add(highestBoostItem, highestBoostAmount);
-				}
-			}
-		}
-		return boosts.bank;
-	}
-
-	getMinigameScore(this: User, id: MinigameName): Promise<number> {
-		return getMinigameScore(this.id, id);
 	}
 }

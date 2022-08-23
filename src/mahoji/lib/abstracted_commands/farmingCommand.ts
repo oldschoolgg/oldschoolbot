@@ -1,5 +1,4 @@
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
@@ -315,7 +314,7 @@ ${boostStr.length > 0 ? '**Boosts**: ' : ''}${boostStr.join(', ')}`;
 
 export async function compostBinCommand(
 	interaction: SlashCommandInteraction,
-	user: KlasaUser,
+	user: MUser,
 	cropToCompost: string,
 	quantity: number | undefined
 ) {
@@ -324,7 +323,7 @@ export async function compostBinCommand(
 		return `That's not a valid crop to compost. The crops you can compost are: ${superCompostables.join(', ')}.`;
 	}
 
-	const userBank = user.bank();
+	const userBank = user.bank;
 	if (!quantity) quantity = userBank.amount(superCompostableCrop);
 	const cost = new Bank().add(superCompostableCrop, quantity);
 	const loot = new Bank().add('Supercompost', quantity);

@@ -9,7 +9,6 @@ import {
 	MessageEmbedOptions
 } from 'discord.js';
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
 import {
 	APIActionRowComponent,
 	APIEmbed,
@@ -139,8 +138,8 @@ export function allAbstractCommands(mahojiClient: MahojiClient): AbstractCommand
 	];
 }
 
-export async function hasBanMemberPerms(user: KlasaUser, guild: Guild) {
-	const member = await guild.members.fetch(user).catch(() => null);
+export async function hasBanMemberPerms(userID: string, guild: Guild) {
+	const member = await guild.members.fetch(userID).catch(() => null);
 	if (!member) return false;
 	return member.permissions.has('BAN_MEMBERS');
 }

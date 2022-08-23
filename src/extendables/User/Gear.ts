@@ -33,7 +33,7 @@ export default class extends Extendable {
 		};
 	}
 
-	public hasItemEquippedAnywhere(this: User, _item: number | string | string[] | number[], every = false): boolean {
+	public hasEquipped(this: User, _item: number | string | string[] | number[], every = false): boolean {
 		return userHasItemsEquippedAnywhere(this, _item, every);
 	}
 

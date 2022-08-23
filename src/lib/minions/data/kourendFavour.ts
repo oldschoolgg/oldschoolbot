@@ -1,5 +1,4 @@
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { MUser } from '../../MUser';
