@@ -10,6 +10,7 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
 import { OSBMahojiCommand } from '../lib/util';
+import { mUserFetch } from '../mahojiSettings';
 
 export const lightCommand: OSBMahojiCommand = {
 	name: 'light',
@@ -43,7 +44,7 @@ export const lightCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
-		const user = await globalClient.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const log = Firemaking.Burnables.find(
 			log => stringMatches(log.name, options.name) || stringMatches(log.name.split(' ')[0], options.name)
 		);

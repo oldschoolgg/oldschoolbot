@@ -414,7 +414,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 		alch?: { item: string; quantity?: number };
 		cast?: { spell: string; quantity?: number };
 	}>) => {
-		const klasaUser = await globalClient.fetchUser(userID);
+		const klasaUser = await mUserFetch(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 
 		// Minion can be busy

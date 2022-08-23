@@ -892,10 +892,7 @@ export const configCommand: OSBMahojiCommand = {
 			slayer?: { master?: string; autoslay?: string };
 		};
 	}>) => {
-		const [user, mahojiUser] = await Promise.all([
-			globalClient.fetchUser(userID),
-			mahojiUsersSettingsFetch(userID)
-		]);
+		const [user, mahojiUser] = await Promise.all([mUserFetch(userID), mahojiUsersSettingsFetch(userID)]);
 		const guild = guildID ? globalClient.guilds.cache.get(guildID.toString()) ?? null : null;
 		if (options.server) {
 			if (options.server.channel) {

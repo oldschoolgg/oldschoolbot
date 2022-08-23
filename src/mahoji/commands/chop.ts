@@ -66,7 +66,7 @@ export const chopCommand: OSBMahojiCommand = {
 		userID,
 		channelID
 	}: CommandRunOptions<{ name: string; quantity?: number; alch?: boolean }>) => {
-		const user = await globalClient.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const log = Woodcutting.Logs.find(
 			log =>
 				stringMatches(log.name, options.name) ||

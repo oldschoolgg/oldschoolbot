@@ -52,7 +52,7 @@ export const buyCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ options, userID, interaction }: CommandRunOptions<{ name: string; quantity?: string }>) => {
-		const user = await globalClient.fetchUser(userID.toString());
+		const user = await mUserFetch(userID.toString());
 		const { name } = options;
 		const quantity = mahojiParseNumber({ input: options.quantity, min: 1 }) ?? 1;
 		if (stringMatches(name, 'kitten')) {

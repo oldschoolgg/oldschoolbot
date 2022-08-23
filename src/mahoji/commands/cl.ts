@@ -63,7 +63,7 @@ export const collectionLogCommand: OSBMahojiCommand = {
 		options,
 		userID
 	}: CommandRunOptions<{ name: string; type?: CollectionLogType; flag?: string; all?: boolean }>) => {
-		const user = await globalClient.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		let flags: Record<string, string> = {};
 		if (options.flag) flags[options.flag] = options.flag;
 		if (options.all) flags.all = 'all';

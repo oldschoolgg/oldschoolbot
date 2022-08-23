@@ -551,8 +551,8 @@ export const adminCommand: OSBMahojiCommand = {
 		if (options.add_ironman_alt) {
 			const mainAccount = await mahojiUsersSettingsFetch(options.add_ironman_alt.main.user.id);
 			const altAccount = await mahojiUsersSettingsFetch(options.add_ironman_alt.ironman_alt.user.id);
-			const mainUser = await globalClient.fetchUser(mainAccount.id);
-			const altUser = await globalClient.fetchUser(altAccount.id);
+			const mainUser = await mUserFetch(mainAccount.id);
+			const altUser = await mUserFetch(altAccount.id);
 			if (mainAccount === altAccount) return "They're they same account.";
 			if (mainAccount.minion_ironman) return `${mainUser.username} is an ironman.`;
 			if (!altAccount.minion_ironman) return `${altUser.username} is not an ironman.`;
@@ -777,7 +777,7 @@ LIMIT 10;
 			return randArrItem(gifs);
 		}
 		if (options.viewbank) {
-			const userToCheck = await globalClient.fetchUser(options.viewbank.user.user.id);
+			const userToCheck = await mUserFetch(options.viewbank.user.user.id);
 			const bank = allItemsOwned(userToCheck);
 			return { attachments: [(await makeBankImage({ bank, title: userToCheck.username })).file] };
 		}

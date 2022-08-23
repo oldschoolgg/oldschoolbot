@@ -6,6 +6,7 @@ import { toTitleCase } from '../../lib/util';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { Workers } from '../../lib/workers';
 import { OSBMahojiCommand } from '../lib/util';
+import { mUserFetch } from '../mahojiSettings';
 
 export const killCommand: OSBMahojiCommand = {
 	name: 'kill',
@@ -38,7 +39,7 @@ export const killCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ options, userID, interaction }: CommandRunOptions<{ name: string; quantity: number }>) => {
-		const user = await globalClient.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		interaction.deferReply();
 
 		const result = await Workers.kill({

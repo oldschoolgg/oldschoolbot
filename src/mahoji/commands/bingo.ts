@@ -117,7 +117,7 @@ export async function buyBingoTicketCommand(
 	userID: string,
 	quantity = 1
 ): Promise<string> {
-	const klasaUser = await globalClient.fetchUser(userID);
+	const klasaUser = await mUserFetch(userID);
 	const mahojiUser = await mahojiUsersSettingsFetch(userID);
 
 	if (mahojiUser.minion_ironman && mahojiUser.bingo_tickets_bought === 0) {

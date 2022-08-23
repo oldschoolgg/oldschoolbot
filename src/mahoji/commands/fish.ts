@@ -46,7 +46,7 @@ export const fishCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
-		const user = await globalClient.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
 		await user.settings.sync(true);
 		const fish = Fishing.Fishes.find(

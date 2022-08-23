@@ -14,7 +14,7 @@ import {
 } from '../lib/abstracted_commands/gearCommands';
 import { equippedItemOption, gearPresetOption, gearSetupOption, ownedItemOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { getMahojiBank, mahojiUsersSettingsFetch, mUserFetch } from '../mahojiSettings';
 
 export const gearCommand: OSBMahojiCommand = {
 	name: 'gear',
@@ -172,7 +172,7 @@ export const gearCommand: OSBMahojiCommand = {
 		view?: { setup: string; text_format?: boolean };
 		swap?: { setup_one: GearSetupType; setup_two: GearSetupType };
 	}>) => {
-		const klasaUser = await globalClient.fetchUser(userID);
+		const klasaUser = await mUserFetch(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 		if (options.equip) {
 			return gearEquipCommand({

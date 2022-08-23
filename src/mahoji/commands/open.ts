@@ -20,9 +20,8 @@ export const openCommand: OSBMahojiCommand = {
 			description: 'The thing you want to open.',
 			required: false,
 			autocomplete: async (value, user) => {
-				const botUser = await globalClient.fetchUser(user.id);
-				return botUser
-					.bank()
+				const botUser = await mUserFetch(user.id);
+				return botUser.bank
 					.items()
 					.filter(i => allOpenablesIDs.has(i[0].id))
 					.filter(i => {

@@ -177,7 +177,7 @@ export const farmingCommand: OSBMahojiCommand = {
 		compost_bin?: { plant_name: string; quantity?: number };
 		contract?: { input?: ContractOption };
 	}>) => {
-		const klasaUser = await globalClient.fetchUser(userID);
+		const klasaUser = await mUserFetch(userID);
 		const { patchesDetailed } = await getFarmingInfo(userID);
 
 		if (options.auto_farm) {

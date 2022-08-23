@@ -25,6 +25,7 @@ import {
 } from '../../lib/util';
 import { sendToChannelID } from '../../lib/util/webhook';
 import { OSBMahojiCommand } from '../lib/util';
+import { mUserFetch } from '../mahojiSettings';
 
 const LB_PAGE_SIZE = 10;
 
@@ -52,7 +53,7 @@ async function doMenu(user: MUser, channelID: bigint, pages: string[], title: st
 	makePaginatedMessage(
 		message,
 		pages.map(p => ({ embeds: [new MessageEmbed().setTitle(title).setDescription(p)] })),
-		user
+		await globalClient.fetchUser(user.id)
 	);
 }
 
@@ -693,7 +694,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		cl?: { cl: string; ironmen_only?: boolean };
 	}>) => {
 		await interaction.deferReply();
-		const user = await globalClient.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const {
 			opens,
 			kc,

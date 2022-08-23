@@ -14,7 +14,7 @@ import {
 	Util
 } from 'discord.js';
 import { calcWhatPercent, chunk, isObject, objectEntries, round, Time } from 'e';
-import { KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults } from 'klasa';
+import { KlasaMessage, KlasaUser, SettingsFolder } from 'klasa';
 import {
 	APIButtonComponentWithCustomId,
 	APIInteractionGuildMember,
@@ -556,11 +556,6 @@ export async function updateLegacyUserBankSetting(userID: string, key: 'tob_cost
 		[key]: newBank.bank
 	});
 	return res;
-}
-
-export async function wipeDBArrayByKey(user: MUser, key: string): Promise<SettingsUpdateResults> {
-	const active: any[] = user.settings.get(key) as any[];
-	return user.settings.update(key, active);
 }
 
 function gaussianRand(rolls: number = 3) {

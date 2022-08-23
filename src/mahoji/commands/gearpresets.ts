@@ -4,13 +4,14 @@ import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { gearPresetToGear, GearSetupType, globalPresets } from '../../lib/gear';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
+import { MUser } from '../../lib/MUser';
 import { prisma } from '../../lib/settings/prisma';
 import { cleanString, isValidGearSetup, isValidNickname, stringMatches } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
 import { gearEquipCommand } from '../lib/abstracted_commands/gearCommands';
 import { allEquippableItems, gearPresetOption, gearSetupOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { mahojiUsersSettingsFetch, mUserFetch } from '../mahojiSettings';
 
 function maxPresets(user: MUser) {
 	return user.perkTier * 2 + 3;
@@ -219,7 +220,7 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 		delete?: { preset: string };
 		view?: { preset: string };
 	}>) => {
-		const klasaUser = await globalClient.fetchUser(userID);
+		const klasaUser = await mUserFetch(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 		if (options.create) {
 			return createOrEditGearSetup(
@@ -255,8 +256,7 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 		if (options.equip) {
 			return gearEquipCommand({
 				interaction,
-				user: mahojiUser,
-				klasaUser,
+				userID: mahojiUser.id,
 				setup: options.equip.gear_setup,
 				item: undefined,
 				preset: options.equip.preset,

@@ -174,7 +174,7 @@ export const gambleCommand: OSBMahojiCommand = {
 		hot_cold?: { choice?: 'hot' | 'cold'; amount?: string };
 		give_random_item?: { user: MahojiUserOption };
 	}>) => {
-		const klasaUser = await globalClient.fetchUser(userID);
+		const klasaUser = await mUserFetch(userID);
 
 		if (options.cape) {
 			if (options.cape.type) {
@@ -191,7 +191,7 @@ export const gambleCommand: OSBMahojiCommand = {
 			return duelCommand(
 				klasaUser,
 				interaction,
-				await globalClient.fetchUser(options.duel.user.user.id),
+				await mUserFetch(options.duel.user.user.id),
 				options.duel.amount
 			);
 		}
@@ -212,7 +212,7 @@ export const gambleCommand: OSBMahojiCommand = {
 
 		if (options.give_random_item) {
 			const senderUser = klasaUser;
-			const recipientKlasaUser = await globalClient.fetchUser(options.give_random_item.user.user.id);
+			const recipientKlasaUser = await mUserFetch(options.give_random_item.user.user.id);
 			if (recipientKlasaUser.bot || recipientKlasaUser.id === senderUser.id) {
 				return "You can't do it with yourself.";
 			}

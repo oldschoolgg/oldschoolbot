@@ -1,10 +1,8 @@
 import { Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
 
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { MUser } from '../../lib/MUser';
 import { courses } from '../../lib/skilling/skills/agility';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { AgilityActivityTaskOptions } from '../../lib/types/minions';
@@ -12,6 +10,7 @@ import { formatDuration, stringMatches, updateBankSetting } from '../../lib/util
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { OSBMahojiCommand } from '../lib/util';
+import { mUserFetch } from '../mahojiSettings';
 
 const unlimitedFireRuneProviders = [
 	'Staff of fire',
@@ -29,7 +28,7 @@ const unlimitedFireRuneProviders = [
 function alching(user: MUser, tripLength: number) {
 	if (user.skillLevel(SkillsEnum.Magic) < 55) return null;
 	const { bank } = user;
-	const favAlchables = user.getUserFavAlchs(tripLength) as Item[];
+	const favAlchables = user.favAlchs(tripLength);
 
 	if (favAlchables.length === 0) {
 		return null;
@@ -111,7 +110,7 @@ export const lapsCommand: OSBMahojiCommand = {
 		userID,
 		channelID
 	}: CommandRunOptions<{ name: string; quantity?: number; alch?: boolean }>) => {
-		const user = await globalClient.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
 		const course = courses.find(course => course.aliases.some(alias => stringMatches(alias, options.name)));
 
@@ -123,7 +122,7 @@ export const lapsCommand: OSBMahojiCommand = {
 			return `${user.minionName} needs ${course.level} agility to train at ${course.name}.`;
 		}
 
-		if (course.qpRequired && user.settings.get(UserSettings.QP) < course.qpRequired) {
+		if (course.qpRequired && user.QP < course.qpRequired) {
 			return `You need atleast ${course.qpRequired} Quest Points to do this course.`;
 		}
 
@@ -157,7 +156,7 @@ export const lapsCommand: OSBMahojiCommand = {
 
 			await user.removeItemsFromBank(alchResult.bankToRemove);
 			response += `\n\nYour minion is alching ${alchResult.maxCasts}x ${alchResult.itemToAlch.name} while training. Removed ${alchResult.bankToRemove} from your bank.`;
-			updateBankSetting(globalClient, ClientSettings.EconomyStats.MagicCostBank, alchResult.bankToRemove);
+			updateBankSetting('magic_cost_bank', alchResult.bankToRemove);
 		}
 
 		await addSubTaskToActivityTask<AgilityActivityTaskOptions>({

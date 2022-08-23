@@ -6,6 +6,7 @@ import { revenantMonsters } from '../../lib/minions/data/killableMonsters/revs';
 import { prisma } from '../../lib/settings/prisma';
 import { minionKillCommand, monsterInfo } from '../lib/abstracted_commands/minionKill';
 import { OSBMahojiCommand } from '../lib/util';
+import { mUserFetch } from '../mahojiSettings';
 
 const autocompleteMonsters = [
 	...killableMonsters,
@@ -114,8 +115,8 @@ export const killCommand: OSBMahojiCommand = {
 		channelID,
 		interaction
 	}: CommandRunOptions<{ name: string; quantity?: number; method?: PvMMethod; show_info?: boolean }>) => {
-		const user = await globalClient.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		if (options.show_info) return monsterInfo(user, options.name);
-		return minionKillCommand(interaction, user, channelID, options.name, options.quantity, options.method);
+		return minionKillCommand(user.id, interaction, channelID, options.name, options.quantity, options.method);
 	}
 };

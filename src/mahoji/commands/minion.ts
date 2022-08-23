@@ -53,7 +53,7 @@ const patMessages = [
 const randomPatMessage = (minionName: string) => randArrItem(patMessages).replace('{name}', minionName);
 
 export async function getUserInfo(user: MUser) {
-	const klasaUser = await globalClient.fetchUser(user.id);
+	const klasaUser = await mUserFetch(user.id);
 	const roboChimpUser = await roboChimpUserFetch(BigInt(user.id));
 
 	const bitfields = `${(user.bitfield as BitField[])
@@ -90,7 +90,7 @@ export async function getUserInfo(user: MUser) {
 	};
 	return {
 		...result,
-		everythingString: `${klasaUser.username}[${klasaUser.id}]
+		everythingString: `${klasaUser.usernameOrMention}[${klasaUser.id}]
 **Perk Tier:** ${result.perkTier}
 **Blacklisted:** ${result.isBlacklisted}
 **Badges:** ${result.badges.join(' ')}
@@ -511,7 +511,7 @@ export const minionCommand: OSBMahojiCommand = {
 			const skill = Object.values(Skills).find(i => i.id === options.level?.skill);
 			if (!skill) return 'Invalid skill.';
 			const level = user.skillLevel(skill.id);
-			const xp = user.settings.get(`skills.${skill.id}`) as number;
+			const xp = Number(user.user[`skills_${skill.id}`]);
 
 			let str = `${skill.emoji} Your ${skill.name} level is **${level}** (${xp.toLocaleString()} XP).`;
 			if (level < MAX_LEVEL) {

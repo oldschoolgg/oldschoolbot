@@ -86,7 +86,7 @@ export const askCommand: OSBMahojiCommand = {
 		flag_extra?: BankFlag;
 	}>) => {
 		await interaction.deferReply();
-		const klasaUser = await globalClient.fetchUser(user.id);
+		const klasaUser = await mUserFetch(user.id);
 		await klasaUser.settings.sync(true);
 		const baseBank = klasaUser.bankWithGP;
 		const mahojiFlags: BankFlag[] = [];
