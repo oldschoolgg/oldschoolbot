@@ -3,15 +3,15 @@ import { Time } from 'e';
 import { Task, TaskStore } from 'klasa';
 
 import { production } from '../config';
-import { PerkTier } from '../lib/constants';
+import { BitField } from '../lib/constants';
+import { prisma } from '../lib/settings/prisma';
 import { runCommand } from '../lib/settings/settings';
-import { UserSettings } from '../lib/settings/types/UserSettings';
 import { getFarmingInfo } from '../lib/skilling/functions/getFarmingInfo';
 import Farming from '../lib/skilling/skills/farming';
 import { stringMatches } from '../lib/util';
 import { farmingPatchNames, getFarmingKeyFromName } from '../lib/util/farmingHelpers';
-import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 import { logError } from '../lib/util/logError';
+import { minionIsBusy } from '../lib/util/minionIsBusy';
 import { mahojiUserSettingsUpdate, mUserFetch } from '../mahoji/mahojiSettings';
 
 declare module 'klasa' {
@@ -35,11 +35,25 @@ export default class extends Task {
 			if (!production) return;
 			try {
 				const now = Date.now();
-				for (const user of this.client.users.cache.values()) {
-					// asfdsadfasd;,dsf,asd'f
-					if (getUsersPerkTier(user) < PerkTier.Four) continue;
-					if (!user.settings.get(UserSettings.FarmingPatchReminders)) continue;
-					const { patches } = await getFarmingInfo(user.id);
+				const users = await prisma.user.findMany({
+					where: {
+						bitfield: {
+							hasSome: [
+								BitField.IsPatronTier3,
+								BitField.IsPatronTier4,
+								BitField.IsPatronTier5,
+								BitField.isContributor,
+								BitField.isModerator
+							]
+						},
+						farming_patch_reminders: true
+					},
+					select: {
+						id: true
+					}
+				});
+				for (const { id } of users) {
+					const { patches } = await getFarmingInfo(id);
 					for (const patchType of farmingPatchNames) {
 						const patch = patches[patchType];
 						if (!patch) continue;
@@ -58,13 +72,13 @@ export default class extends Task {
 						if (!planted) continue;
 						if (difference < planted.growthTime * Time.Minute) continue;
 						if (patch.wasReminded) continue;
-						await mahojiUserSettingsUpdate(user.id, {
+						await mahojiUserSettingsUpdate(id, {
 							[getFarmingKeyFromName(patchType)]: { ...patch, wasReminded: true }
 						});
 
 						// Build buttons (only show Harvest/replant if not busy):
 						const farmingReminderButtons: MessageActionRow = new MessageActionRow();
-						if (!user.minionIsBusy) {
+						if (!minionIsBusy(id)) {
 							farmingReminderButtons.addComponents(
 								new MessageButton()
 									.setLabel('Harvest & Replant')
@@ -79,8 +93,10 @@ export default class extends Task {
 								.setStyle('SECONDARY')
 								.setCustomID('DISABLE')
 						);
-						const message = await user.send({
-							content: `${user.username}, the ${planted.name} planted in your ${patchType} patches is ready to be harvested!`,
+						const user = await globalClient.users.cache.get(id);
+						if (!user) continue;
+						const message = await user?.send({
+							content: `The ${planted.name} planted in your ${patchType} patches is ready to be harvested!`,
 							components: [farmingReminderButtons]
 						});
 						try {
@@ -91,13 +107,13 @@ export default class extends Task {
 
 							// Check disable first so minion doesn't have to be free to disable reminders.
 							if (selection.customID === 'DISABLE') {
-								await user.settings.update(UserSettings.FarmingPatchReminders, false);
-								await user.send(
-									'Farming patch reminders have been disabled. You can enable them again using `+farm --enablereminders`.'
-								);
+								await mahojiUserSettingsUpdate(user.id, {
+									farming_patch_reminders: false
+								});
+								await user.send('Farming patch reminders have been disabled..');
 								return;
 							}
-							if (user.minionIsBusy) {
+							if (minionIsBusy(user.id)) {
 								selection.reply({ content: 'Your minion is busy.' });
 								return;
 							}

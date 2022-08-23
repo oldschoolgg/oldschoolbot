@@ -1,11 +1,12 @@
 import { Bank } from 'oldschooljs';
 
-import { UserSettings } from '../../settings/types/UserSettings';
+import { mahojiUserSettingsUpdate } from '../../../mahoji/mahojiSettings';
+import { MUser } from '../../MUser';
 import { itemNameFromID } from '../../util';
 import { logError } from '../../util/logError';
 
 export async function unequipPet(user: MUser) {
-	const equippedPet = user.settings.get(UserSettings.Minion.EquippedPet);
+	const equippedPet = user.user.minion_equippedPet;
 	if (!equippedPet) return "You don't have a pet equipped.";
 
 	const loot = new Bank().add(equippedPet);
@@ -19,7 +20,9 @@ export async function unequipPet(user: MUser) {
 		});
 		return 'Error removing pet, ask for help in the support server.';
 	}
-	await user.settings.update(UserSettings.Minion.EquippedPet, null);
+	await mahojiUserSettingsUpdate(user.id, {
+		minion_equippedPet: null
+	});
 
 	return `${user.minionName} picks up their ${itemNameFromID(equippedPet)} pet and places it back in their bank.`;
 }

@@ -1,6 +1,6 @@
-import { User } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 
+import { MUser } from '../../MUser';
 import Skillcapes from '../../skilling/skillcapes';
 import { countSkillsAtleast99, toTitleCase } from '../../util';
 import { Buyable } from './buyables';
@@ -10,7 +10,7 @@ export const skillCapeBuyables: Buyable[] = [];
 for (const skillcape of Skillcapes) {
 	skillCapeBuyables.push({
 		name: `${toTitleCase(skillcape.skill)} cape`,
-		outputItems: (user: User) => {
+		outputItems: (user: MUser) => {
 			const output = new Bank().add(skillcape.hood);
 
 			if (countSkillsAtleast99(user) > 1) {

@@ -18,7 +18,7 @@ import { mahojiChatHead } from '../../lib/util/chatHeadImage';
 import getOSItem from '../../lib/util/getOSItem';
 import { leaguesBuyCommand } from '../lib/abstracted_commands/leaguesBuyCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiParseNumber, mahojiUsersSettingsFetch, mUserFetch } from '../mahojiSettings';
+import { handleMahojiConfirmation, mahojiParseNumber, mUserFetch } from '../mahojiSettings';
 
 const allBuyablesAutocomplete = [...Buyables, ...leagueBuyables.map(i => ({ name: i.item.name })), { name: 'Kitten' }];
 
@@ -162,7 +162,7 @@ export const buyCommand: OSBMahojiCommand = {
 				? new Bank().add(buyable.name)
 				: buyable.outputItems instanceof Bank
 				? buyable.outputItems
-				: buyable.outputItems(await mahojiUsersSettingsFetch(user.id));
+				: buyable.outputItems(await mUserFetch(user.id));
 
 		const outItems = singleOutput.clone().multiply(quantity);
 

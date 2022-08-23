@@ -16,6 +16,7 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { getUserGear } from '../../mahoji/mahojiSettings';
 import { BitField, NEX_ID } from '../constants';
+import { MUser } from '../MUser';
 import { Skills } from '../types';
 import {
 	clamp,
@@ -174,15 +175,15 @@ export function handleNexKills({ quantity, team }: NexContext) {
 	return teamLoot;
 }
 
-export function calculateNexDetails({ team }: { team: User[] }) {
+export function calculateNexDetails({ team }: { team: MUser[] }) {
 	let maxTripLength = Math.max(...team.map(u => calcMaxTripLength(u)));
 	let lengthPerKill = Time.Minute * 35;
 	let resultTeam: TeamMember[] = [];
 
 	for (const member of team) {
-		let { offence, defence, rangeGear } = nexGearStats(member);
+		let { offence, defence, rangeGear } = nexGearStats(member.user);
 		let deathChance = 100;
-		let nexKC = (member.monsterScores as ItemBank)[NEX_ID] ?? 0;
+		let nexKC = member.getKC(NEX_ID);
 		const kcLearningCap = 500;
 		const kcPercent = clamp(calcWhatPercent(nexKC, kcLearningCap), 0, 100);
 		const messages: string[] = [];
@@ -282,7 +283,7 @@ export function calculateNexDetails({ team }: { team: User[] }) {
 	 * Ammo
 	 */
 	for (const user of team) {
-		const { rangeGear } = nexGearStats(user);
+		const { rangeGear } = nexGearStats(user.user);
 		const teamUser = resultTeam.findIndex(a => a.id === user.id);
 		const ammo = rangeGear.ammo?.item ?? itemID('Dragon arrow');
 		// Between 50-60 ammo per kill (before reductions)

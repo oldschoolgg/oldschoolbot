@@ -14,7 +14,7 @@ import {
 	Util
 } from 'discord.js';
 import { calcWhatPercent, chunk, isObject, objectEntries, round, Time } from 'e';
-import { KlasaMessage, KlasaUser, SettingsFolder } from 'klasa';
+import { KlasaMessage, KlasaUser } from 'klasa';
 import {
 	APIButtonComponentWithCustomId,
 	APIInteractionGuildMember,
@@ -307,12 +307,8 @@ export function getSkillsOfMahojiUser(user: User, levels = false): Required<Skil
 	}
 	return skills;
 }
-export function countSkillsAtleast99(user: MUser | User) {
-	const skills =
-		user instanceof KlasaUser
-			? ((user.settings.get('skills') as SettingsFolder).toJSON() as Record<string, number>)
-			: getSkillsOfMahojiUser(user);
-	return Object.values(skills).filter(xp => convertXPtoLVL(xp) >= 99).length;
+export function countSkillsAtleast99(user: MUser) {
+	return Object.values(user.skillsAsLevels).filter(lvl => lvl >= 99).length;
 }
 
 export function getSupportGuild(): Guild | null {

@@ -1,6 +1,9 @@
+import { Prisma } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 
-import { UserSettings } from '../../settings/types/UserSettings';
+import { mahojiUserSettingsUpdate } from '../../../mahoji/mahojiSettings';
+import { MUser } from '../../MUser';
+import { defaultBlowpipe } from '../../settings/schemas/UserSchema';
 import getOSItem, { getItem } from '../../util/getOSItem';
 import { BlowpipeData } from '../types';
 
@@ -40,14 +43,16 @@ export async function blowpipeCommand(
 		return addCommand(user, add, quantity);
 	}
 
-	const rawBlowpipeData = { ...user.settings.get(UserSettings.Blowpipe) };
+	const rawBlowpipeData = { ...user.blowpipe };
 	const hasBlowpipe = user.bank.has('Toxic blowpipe') || user.bank.has('Toxic blowpipe (empty)');
 	if (!hasBlowpipe) return "You don't own a Toxic blowpipe.";
 
 	try {
 		validateBlowpipeData(rawBlowpipeData);
 	} catch (err: any) {
-		await user.settings.reset(UserSettings.Blowpipe);
+		await mahojiUserSettingsUpdate(user.id, {
+			blowpipe: { ...defaultBlowpipe }
+		});
 
 		return `Your blowpipe got corrupted somehow (${err.message}), this shouldn't happen! It's a bug. Your blowpipe was reset.`;
 	}
@@ -92,7 +97,7 @@ async function addCommand(user: MUser, itemName: string, quantity = 1) {
 
 	const dart = itemsToRemove.items().find(i => blowpipeDarts.includes(i[0]));
 
-	const rawBlowpipeData = { ...user.settings.get(UserSettings.Blowpipe) };
+	const rawBlowpipeData = { ...user.blowpipe };
 	validateBlowpipeData(rawBlowpipeData);
 	if (dart && !itemsToRemove.amount(dart[0].id)) {
 		throw new Error('wtf! not meant to happen');
@@ -120,7 +125,9 @@ async function addCommand(user: MUser, itemName: string, quantity = 1) {
 		return `You don't own ${itemsToRemove}.`;
 	}
 	await user.removeItemsFromBank(itemsToRemove);
-	await user.settings.update(UserSettings.Blowpipe, currentData);
+	await mahojiUserSettingsUpdate(user.id, {
+		blowpipe: currentData as any as Prisma.InputJsonObject
+	});
 	return `You added ${itemsToRemove} to your Toxic blowpipe.`;
 }
 
@@ -133,7 +140,7 @@ async function removeDartsCommand(user: MUser) {
 		return "You don't own a Toxic blowpipe.";
 	}
 
-	const rawBlowpipeData = { ...user.settings.get(UserSettings.Blowpipe) };
+	const rawBlowpipeData = { ...user.blowpipe };
 	validateBlowpipeData(rawBlowpipeData);
 	if (!rawBlowpipeData.dartID || rawBlowpipeData.dartQuantity === 0) {
 		return 'Your Toxic blowpipe has no darts in it.';
@@ -143,7 +150,9 @@ async function removeDartsCommand(user: MUser) {
 	rawBlowpipeData.dartID = null;
 	rawBlowpipeData.dartQuantity = 0;
 	await user.addItemsToBank({ items: returnedBank, collectionLog: false });
-	await user.settings.update(UserSettings.Blowpipe, rawBlowpipeData);
+	await mahojiUserSettingsUpdate(user.id, {
+		blowpipe: rawBlowpipeData as any as Prisma.InputJsonObject
+	});
 	validateBlowpipeData(rawBlowpipeData);
 	return `You removed ${returnedBank} from your Toxic blowpipe.`;
 }
@@ -157,7 +166,7 @@ async function unchargeCommand(user: MUser) {
 		return "You don't own a Toxic blowpipe.";
 	}
 
-	const rawBlowpipeData = { ...user.settings.get(UserSettings.Blowpipe) };
+	const rawBlowpipeData = { ...user.blowpipe };
 	let returnedBank = new Bank();
 	if (rawBlowpipeData.scales) {
 		returnedBank.add("Zulrah's scales", rawBlowpipeData.scales);
@@ -171,7 +180,9 @@ async function unchargeCommand(user: MUser) {
 	}
 
 	await user.addItemsToBank({ items: returnedBank, collectionLog: false });
-	await user.settings.update(UserSettings.Blowpipe, { scales: 0, dartID: null, dartQuantity: 0 });
+	await mahojiUserSettingsUpdate(user.id, {
+		blowpipe: { scales: 0, dartID: null, dartQuantity: 0 }
+	});
 
 	return `You removed ${returnedBank} from your Toxic blowpipe.`;
 }

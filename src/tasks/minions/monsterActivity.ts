@@ -15,7 +15,7 @@ import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
-import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch, mUserFetch } from '../../mahoji/mahojiSettings';
+import { mahojiUserSettingsUpdate, mUserFetch } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: MonsterActivityTaskOptions) {
@@ -79,7 +79,7 @@ export default class extends Task {
 		});
 
 		announceLoot({
-			user: await mahojiUsersSettingsFetch(user.id),
+			user: await mUserFetch(user.id),
 			monsterID: monster.id,
 			loot,
 			notifyDrops: monster.notifyDrops

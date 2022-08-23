@@ -796,10 +796,10 @@ export const toolsCommand: OSBMahojiCommand = {
 					options.stash_units.view.not_filled
 				);
 			}
-			if (options.stash_units.build_all) return stashUnitBuildAllCommand(klasaUser, mahojiUser.user);
+			if (options.stash_units.build_all) return stashUnitBuildAllCommand(klasaUser);
 			if (options.stash_units.fill_all) return stashUnitFillAllCommand(klasaUser, mahojiUser.user);
 			if (options.stash_units.unfill) {
-				return stashUnitUnfillCommand(klasaUser, mahojiUser.user, options.stash_units.unfill.unit);
+				return stashUnitUnfillCommand(klasaUser, options.stash_units.unfill.unit);
 			}
 		}
 		if (options.user?.temp_cl) {

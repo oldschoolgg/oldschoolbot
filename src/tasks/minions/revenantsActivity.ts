@@ -15,12 +15,7 @@ import { updateBankSetting } from '../../lib/util';
 import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLostOnDeathWilderness';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
-import {
-	hasSkillReqs,
-	mahojiUserSettingsUpdate,
-	mahojiUsersSettingsFetch,
-	mUserFetch
-} from '../../mahoji/mahojiSettings';
+import { hasSkillReqs, mahojiUserSettingsUpdate, mUserFetch } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: RevenantOptions) {
@@ -85,7 +80,7 @@ export default class extends Task {
 			` Your ${monster.name} KC is now ${user.getKC(monsterID)}.\n`;
 
 		announceLoot({
-			user: await mahojiUsersSettingsFetch(user.id),
+			user: await mUserFetch(user.id),
 			monsterID: monster.id,
 			loot,
 			notifyDrops: monster.notifyDrops

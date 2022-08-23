@@ -67,7 +67,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 		}
 
 		if (['blood', 'soul'].includes(rune)) {
-			return darkAltarCommand({ user: user.user, channelID, name: rune });
+			return darkAltarCommand({ user, channelID, name: rune });
 		}
 
 		const runeObj = Runecraft.Runes.find(

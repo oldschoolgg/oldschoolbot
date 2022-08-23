@@ -1,10 +1,9 @@
 import { userMention } from '@discordjs/builders';
-import { User } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 
 import { Events, usernameCache } from '../../constants';
 import { MUser } from '../../MUser';
-import { ArrayItemsResolved, ItemBank } from '../../types';
+import { ArrayItemsResolved } from '../../types';
 import { minionName } from '../../util/minionUtils';
 import { effectiveMonsters } from '../data/killableMonsters';
 
@@ -15,7 +14,7 @@ export default async function announceLoot({
 	loot,
 	team
 }: {
-	user: User;
+	user: MUser;
 	monsterID: number;
 	notifyDrops?: number[] | ArrayItemsResolved;
 	loot: Bank;
@@ -23,7 +22,7 @@ export default async function announceLoot({
 }) {
 	if (!_notifyDrops) return;
 	const notifyDrops = _notifyDrops.flat(Infinity);
-	const kc = (user.monsterScores as ItemBank)[monsterID] ?? 0;
+	const kc = user.getKC(monsterID);
 	const itemsToAnnounce = loot.clone().filter(i => notifyDrops.includes(i.id));
 	if (itemsToAnnounce.length > 0) {
 		let notif = '';

@@ -13,6 +13,7 @@ import { KlasaMessage } from 'klasa';
 import murmurhash from 'murmurhash';
 
 import { BLACKLISTED_USERS } from './blacklists';
+import { minionIsBusy } from './util/minionIsBusy';
 
 type DynamicButtonFn = (opts: { message: KlasaMessage; interaction: MessageComponentInteraction }) => unknown;
 
@@ -96,7 +97,7 @@ export class DynamicButtons {
 			for (const button of this.buttons) {
 				if (collectedInteraction.customID === button.id) {
 					collectedInteraction.deferUpdate();
-					if (collectedInteraction.user.minionIsBusy && button.cantBeBusy) {
+					if (minionIsBusy(collectedInteraction.user.id) && button.cantBeBusy) {
 						return collectedInteraction.reply({
 							content: "Your action couldn't be performed, because your minion is busy.",
 							ephemeral: true

@@ -1,18 +1,10 @@
 import { FSWatcher } from 'chokidar';
 import { MessageOptions, MessagePayload } from 'discord.js';
-import { KlasaMessage, KlasaUser, Settings, SettingsUpdateResult } from 'klasa';
-import { Bank } from 'oldschooljs';
+import { KlasaMessage, KlasaUser, Settings } from 'klasa';
 import { Image } from 'skia-canvas/lib';
 
-import { GetUserBankOptions } from '../../extendables/User/Bank';
-import { BitField, PerkTier } from '../constants';
-import { GearSetupType, UserFullGearSetup } from '../gear/types';
-import { AttackStyles } from '../minions/functions';
-import { AddXpParams } from '../minions/types';
-import { MinigameName } from '../settings/minigames';
+import { BitField } from '../constants';
 import { CustomGet } from '../settings/types/UserSettings';
-import { Gear } from '../structures/Gear';
-import { ItemBank } from '.';
 
 declare module 'klasa' {
 	interface KlasaClient {
@@ -78,43 +70,5 @@ declare module 'discord.js' {
 		readonly embedable: boolean;
 		readonly postable: boolean;
 		readonly readable: boolean;
-	}
-
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	interface User {
-		addItemsToBank(options: {
-			items: ItemBank | Bank;
-			collectionLog?: boolean;
-			filterLoot?: boolean;
-			dontAddToTempCL?: boolean;
-		}): ReturnType<typeof transactItems>;
-		removeItemsFromBank(items: ItemBank | Bank, collectionLog?: boolean): ReturnType<typeof transactItems>;
-		incrementCreatureScore(creatureID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
-		log(stringLog: string): void;
-		addXP(params: AddXpParams): Promise<string>;
-		toggleBusy(busy: boolean): void;
-		/**
-		 * Returns minigame score
-		 */
-		getMinigameScore(id: MinigameName): Promise<number>;
-		rawGear(): UserFullGearSetup;
-		cl(): Bank;
-		bank(options?: GetUserBankOptions): Bank;
-		getUserFavAlchs(duration: number): Item[];
-		getGear(gearType: GearSetupType): Gear;
-		setAttackStyle(newStyles: AttackStyles[]): Promise<void>;
-		perkTier: PerkTier;
-		sanitizedName: string;
-		badges: string;
-		/**
-		 * If they are currently locked into a economy command, or
-		 * locked from being targeted in an economy command by another (duel, sellto, etc)
-		 */
-		isBusy: boolean;
-		minionIsBusy: boolean;
-		minionStatus: string;
-		minionName: string;
-		hasMinion: boolean;
-		bitfield: readonly BitField[];
 	}
 }

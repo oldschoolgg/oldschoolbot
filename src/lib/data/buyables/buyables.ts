@@ -1,4 +1,3 @@
-import { User } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
@@ -7,6 +6,7 @@ import { soteSkillRequirements } from '../../../mahoji/lib/abstracted_commands/z
 import { MAX_QP } from '../../constants';
 import { CombatCannonItemBank } from '../../minions/data/combatConstants';
 import { Favours } from '../../minions/data/kourendFavour';
+import { MUser } from '../../MUser';
 import { MinigameName } from '../../settings/settings';
 import { Skills } from '../../types';
 import getOSItem from '../../util/getOSItem';
@@ -27,7 +27,7 @@ import { troubleBrewingBuyables } from './troubleBrewingShop';
 
 export interface Buyable {
 	name: string;
-	outputItems?: Bank | ((user: User) => Bank);
+	outputItems?: Bank | ((user: MUser) => Bank);
 	qpRequired?: number;
 	gpCost?: number;
 	itemCost?: Bank;

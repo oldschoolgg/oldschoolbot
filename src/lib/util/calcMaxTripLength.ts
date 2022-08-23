@@ -1,14 +1,13 @@
-import { activity_type_enum, User } from '@prisma/client';
+import { activity_type_enum } from '@prisma/client';
 import { calcPercentOfNum, calcWhatPercent, Time } from 'e';
 
 import { PerkTier } from '../constants';
 import { MUser } from '../MUser';
-import { UserSettings } from '../settings/types/UserSettings';
 import { SkillsEnum } from '../skilling/types';
 import getUsersPerkTier, { patronMaxTripCalc } from './getUsersPerkTier';
 import { skillLevel } from './minionUtils';
 
-export function calcMaxTripLength(user: MUser | User | KlasaUser, activity?: activity_type_enum) {
+export function calcMaxTripLength(user: MUser, activity?: activity_type_enum) {
 	let max = Time.Minute * 30;
 
 	max += patronMaxTripCalc(user);
@@ -39,9 +38,8 @@ export function calcMaxTripLength(user: MUser | User | KlasaUser, activity?: act
 		}
 	}
 
-	const sac =
-		user instanceof KlasaUser ? user.settings.get(UserSettings.SacrificedValue) : Number(user.sacrificedValue);
-	const isIronman = user instanceof KlasaUser ? user.isIronman : user.minion_ironman;
+	const sac = Number(user.user.sacrificedValue);
+	const { isIronman } = user;
 	const sacPercent = Math.min(100, calcWhatPercent(sac, isIronman ? 5_000_000_000 : 10_000_000_000));
 	const perkTier = getUsersPerkTier(user);
 	max += calcPercentOfNum(sacPercent, perkTier >= PerkTier.Four ? Time.Minute * 3 : Time.Minute);

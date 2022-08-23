@@ -4,7 +4,7 @@ import { BlowpipeData } from '../../minions/types';
 import { SkillsEnum } from '../../skilling/types';
 import { baseUserKourendFavour } from './../../minions/data/kourendFavour';
 
-const defaultBlowpipe: BlowpipeData = {
+export const defaultBlowpipe: BlowpipeData = {
 	scales: 0,
 	dartID: null,
 	dartQuantity: 0

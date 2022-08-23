@@ -2,7 +2,7 @@ import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { farmingPlantCommand } from '../../../mahoji/lib/abstracted_commands/farmingCommand';
-import { UserSettings } from '../../settings/types/UserSettings';
+import { MUser } from '../../MUser';
 import { calcNumOfPatches } from '../../skilling/functions/calcsFarming';
 import { plants } from '../../skilling/skills/farming';
 import { IPatchDataDetailed } from '../farming/types';
@@ -16,7 +16,7 @@ export async function autoFarm(user: MUser, patchesDetailed: IPatchDataDetailed[
 	const elligible = [...plants]
 		.filter(p => {
 			if (p.level > farmingLevel) return false;
-			const [numOfPatches] = calcNumOfPatches(p, user, user.settings.get(UserSettings.QP));
+			const [numOfPatches] = calcNumOfPatches(p, user, user.QP);
 			if (numOfPatches === 0) return false;
 			const reqItems = new Bank(p.inputItems).multiply(numOfPatches);
 			if (!userBank.has(reqItems.bank)) return false;
@@ -36,7 +36,7 @@ export async function autoFarm(user: MUser, patchesDetailed: IPatchDataDetailed[
 	}
 
 	return farmingPlantCommand({
-		user,
+		userID: user.id,
 		plantName: toPlant.name,
 		autoFarmed: true,
 		channelID,

@@ -5,7 +5,6 @@ import { Canvas } from 'skia-canvas/lib';
 
 import BankImageTask from '../../../tasks/bankImage';
 import { MUser } from '../../MUser';
-import { UserSettings } from '../../settings/types/UserSettings';
 import { Gear } from '../../structures/Gear';
 import { toTitleCase } from '../../util';
 import { canvasImageFromBuffer, drawItemQuantityText, drawTitleText, fillTextXTimesInCtx } from '../../util/canvasUtil';
@@ -328,8 +327,7 @@ export async function generateAllGearImage(user: MUser) {
 	const petY = canvas.height / 2 + 20;
 	drawText(canvas, 'Pet', petX + 5, petY - 5);
 	ctx.drawImage(gearTemplateImage, 42, 1, 36, 36, petX, petY, 36, 36);
-	const userPet =
-		user instanceof KlasaUser ? user.settings.get(UserSettings.Minion.EquippedPet) : user.user.minion_equippedPet;
+	const userPet = user.user.minion_equippedPet;
 	if (userPet) {
 		const image = await globalClient.tasks.get('bankImage')!.getItemImage(userPet, 1);
 		ctx.drawImage(image, petX, petY, image.width, image.height);

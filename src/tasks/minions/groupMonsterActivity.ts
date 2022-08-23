@@ -9,7 +9,7 @@ import announceLoot from '../../lib/minions/functions/announceLoot';
 import isImportantItemForMonster from '../../lib/minions/functions/isImportantItemForMonster';
 import { GroupMonsterActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { mahojiUsersSettingsFetch, mUserFetch } from '../../mahoji/mahojiSettings';
+import { mUserFetch } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: GroupMonsterActivityTaskOptions) {
@@ -55,7 +55,7 @@ export default class extends Task {
 			resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${loot}||\n`;
 
 			announceLoot({
-				user: await mahojiUsersSettingsFetch(user.id),
+				user: await mUserFetch(user.id),
 				monsterID: monster.id,
 				loot,
 				notifyDrops: monster.notifyDrops,

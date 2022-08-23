@@ -23,6 +23,7 @@ import { AssignableSlayerTask } from '../../../lib/slayer/types';
 import { channelIsSendable, removeFromArr } from '../../../lib/util';
 import { stringMatches } from '../../../lib/util/cleanString';
 import { logError } from '../../../lib/util/logError';
+import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 import { handleMahojiConfirmation, mahojiUserSettingsUpdate, mUserFetch } from '../../mahojiSettings';
 
 const returnSuccessButtons = [
@@ -382,9 +383,8 @@ export async function slayerSkipTaskCommand({
 	const user = await mUserFetch(userID);
 	const { currentTask } = await getUsersCurrentSlayerInfo(user.id);
 	const myBlockList = user.user.slayer_blocked_ids;
-	const klasaUser = await globalClient.fetchUser(user.id);
 	const maxBlocks = calcMaxBlockedTasks(user.user);
-	if (klasaUser.minionIsBusy) {
+	if (minionIsBusy(user.id)) {
 		return 'You cannot change your task while your minion is busy.';
 	}
 	if (!currentTask) {

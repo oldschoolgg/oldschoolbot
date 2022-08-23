@@ -15,7 +15,6 @@ import {
 } from '../minions/data/templeTrekking';
 import { MUser } from '../MUser';
 import { getMinigameScore } from '../settings/minigames';
-import { UserSettings } from '../settings/types/UserSettings';
 import { NexNonUniqueTable, NexUniqueTable } from '../simulation/misc';
 import { allFarmingItems } from '../skilling/skills/farming';
 import { ItemBank } from '../types';
@@ -364,7 +363,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['beginner', 'clues beginner', 'clue beginner'],
 				allItems: Clues.Beginner.allItems,
 				kcActivity: {
-					Default: async user => user.settings.get(UserSettings.OpenableScores)[23_245] || 0
+					Default: async user => user.openableScores()[23_245] || 0
 				},
 				items: cluesBeginnerCL,
 
@@ -374,7 +373,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['easy', 'clues easy', 'clue easy'],
 				allItems: Clues.Easy.allItems,
 				kcActivity: {
-					Default: async user => user.settings.get(UserSettings.OpenableScores)[20_546] || 0
+					Default: async user => user.openableScores()[20_546] || 0
 				},
 				items: cluesEasyCL,
 
@@ -384,7 +383,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['medium', 'clues medium', 'clue medium'],
 				allItems: Clues.Medium.allItems,
 				kcActivity: {
-					Default: async user => user.settings.get(UserSettings.OpenableScores)[20_545] || 0
+					Default: async user => user.openableScores()[20_545] || 0
 				},
 				items: cluesMediumCL,
 				isActivity: true
@@ -393,7 +392,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['hard', 'clues hard', 'clue hard'],
 				allItems: Clues.Hard.allItems,
 				kcActivity: {
-					Default: async user => user.settings.get(UserSettings.OpenableScores)[20_544] || 0
+					Default: async user => user.openableScores()[20_544] || 0
 				},
 				items: cluesHardCL,
 				isActivity: true
@@ -402,7 +401,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['elite', 'clues elite', 'clue elite'],
 				allItems: Clues.Elite.allItems,
 				kcActivity: {
-					Default: async user => user.settings.get(UserSettings.OpenableScores)[20_543] || 0
+					Default: async user => user.openableScores()[20_543] || 0
 				},
 				items: cluesEliteCL,
 				isActivity: true
@@ -411,7 +410,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['master', 'clues master', 'clue master'],
 				allItems: Clues.Master.allItems,
 				kcActivity: {
-					Default: async user => user.settings.get(UserSettings.OpenableScores)[19_836] || 0
+					Default: async user => user.openableScores()[19_836] || 0
 				},
 				items: cluesMasterCL,
 				isActivity: true
@@ -427,7 +426,7 @@ export const allCollectionLogs: ICollection = {
 					'clues rare hard'
 				],
 				kcActivity: {
-					Default: async user => user.settings.get(UserSettings.OpenableScores)[20_544] || 0
+					Default: async user => user.openableScores()[20_544] || 0
 				},
 				items: cluesHardRareCL,
 				isActivity: true
@@ -443,7 +442,7 @@ export const allCollectionLogs: ICollection = {
 					'clues rare elite'
 				],
 				kcActivity: {
-					Default: async user => user.settings.get(UserSettings.OpenableScores)[20_543] || 0
+					Default: async user => user.openableScores()[20_543] || 0
 				},
 				items: cluesEliteRareCL,
 				isActivity: true
@@ -459,7 +458,7 @@ export const allCollectionLogs: ICollection = {
 					'clues rare master'
 				],
 				kcActivity: {
-					Default: async user => user.settings.get(UserSettings.OpenableScores)[19_836] || 0
+					Default: async user => user.openableScores()[19_836] || 0
 				},
 				items: cluesMasterRareCL,
 				isActivity: true
@@ -468,7 +467,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['shared', 'clues shared', 'clue shared'],
 				kcActivity: {
 					Default: async user => {
-						const scores = user.settings.get(UserSettings.OpenableScores);
+						const scores = user.openableScores();
 						return (
 							(scores[23_245] ?? 0) +
 							(scores[20_546] ?? 0) +
@@ -487,7 +486,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['clues rare', 'rares'],
 				kcActivity: {
 					Default: async user => {
-						const scores = user.settings.get(UserSettings.OpenableScores);
+						const scores = user.openableScores();
 						return (scores[20_544] ?? 0) + (scores[20_543] ?? 0) + (scores[19_836] ?? 0);
 					}
 				},
@@ -503,7 +502,7 @@ export const allCollectionLogs: ICollection = {
 				items: barbarianAssaultCL,
 				kcActivity: {
 					Default: async user => getMinigameScore(user.id, 'barb_assault'),
-					'High Gambles': async user => user.settings.get(UserSettings.HighGambles)
+					'High Gambles': async user => user.user.high_gambles
 				},
 				isActivity: true
 			},
@@ -605,7 +604,7 @@ export const allCollectionLogs: ICollection = {
 			'Tithe Farm': {
 				alias: ['tithe'],
 				kcActivity: {
-					Default: async user => user.settings.get(UserSettings.Stats.TitheFarmsCompleted)
+					Default: async user => user.user.stats_titheFarmsCompleted
 				},
 				items: titheFarmCL,
 				isActivity: true
@@ -670,7 +669,7 @@ export const allCollectionLogs: ICollection = {
 			'Monkey Backpacks': {
 				alias: ['monkey', 'monkey bps', 'backpacks'],
 				kcActivity: {
-					Default: async user => user.settings.get(UserSettings.LapsScores)[6] || 0
+					Default: async user => (user.user.lapsScores as ItemBank)[6] || 0
 				},
 				items: monkeyBackpacksCL,
 				isActivity: true

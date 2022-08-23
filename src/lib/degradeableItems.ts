@@ -1,9 +1,9 @@
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
+import { mahojiUserSettingsUpdate } from '../mahoji/mahojiSettings';
 import { GearSetupType } from './gear';
 import { MUser } from './MUser';
-import { ClientSettings } from './settings/types/ClientSettings';
 import { assert, updateBankSetting } from './util';
 import getOSItem from './util/getOSItem';
 
@@ -59,7 +59,7 @@ export function checkUserCanUseDegradeableItem({
 }): { hasEnough: true } | { hasEnough: false; userMessage: string } {
 	const degItem = degradeableItems.find(i => i.item === item);
 	if (!degItem) throw new Error('Invalid degradeable item');
-	const currentCharges = user.settings.get(degItem.settingsKey) as number;
+	const currentCharges = user.user[degItem.settingsKey];
 	assert(typeof currentCharges === 'number');
 	const newCharges = currentCharges - chargesToDegrade;
 	if (newCharges < 0) {
@@ -85,24 +85,28 @@ export async function degradeItem({
 	const degItem = degradeableItems.find(i => i.item === item);
 	if (!degItem) throw new Error('Invalid degradeable item');
 
-	const currentCharges = user.settings.get(degItem.settingsKey) as number;
+	const currentCharges = user.user[degItem.settingsKey];
 	assert(typeof currentCharges === 'number');
 	const newCharges = currentCharges - chargesToDegrade;
 
 	if (newCharges <= 0) {
 		// If no more charges left, break and refund the item.
-		const hasEquipped = user.getGear(degItem.setup).equippedWeapon() === item;
+		const hasEquipped = user.gear[degItem.setup].equippedWeapon() === item;
 		const hasInBank = user.bank.has(item.id);
-		await user.settings.update(degItem.settingsKey, 0);
+		await mahojiUserSettingsUpdate(user.id, {
+			[degItem.settingsKey]: 0
+		});
 		const itemsDeleted = new Bank().add(item.id);
 
-		updateBankSetting(globalClient, ClientSettings.EconomyStats.DegradedItemsCost, itemsDeleted);
+		updateBankSetting('degraded_items_cost', itemsDeleted);
 
 		if (hasEquipped) {
 			// If its equipped, unequip and delete it.
-			const gear = { ...user.getGear(degItem.setup).raw() };
+			const gear = { ...user.gear[degItem.setup].raw() };
 			gear.weapon = null;
-			await user.settings.update(`gear.${degItem.setup}`, gear);
+			await mahojiUserSettingsUpdate(user.id, {
+				[`gear_${degItem.setup}`]: gear
+			});
 			if (degItem.itemsToRefundOnBreak) {
 				await user.addItemsToBank({ items: degItem.itemsToRefundOnBreak, collectionLog: false });
 			}
@@ -124,8 +128,10 @@ export async function degradeItem({
 		};
 	}
 	// If it has charges left still, just remove those charges and nothing else.
-	await user.settings.update(degItem.settingsKey, newCharges);
-	const chargesAfter = user.settings.get(degItem.settingsKey);
+	await mahojiUserSettingsUpdate(user.id, {
+		[degItem.settingsKey]: newCharges
+	});
+	const chargesAfter = user.user[degItem.settingsKey];
 	assert(typeof chargesAfter === 'number' && chargesAfter > 0);
 	return {
 		userMessage: `Your ${item.name} degraded by ${chargesToDegrade} charges, and now has ${chargesAfter} remaining.`

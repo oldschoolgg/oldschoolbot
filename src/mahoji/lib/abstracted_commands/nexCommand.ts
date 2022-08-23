@@ -48,10 +48,10 @@ export async function nexCommand(interaction: SlashCommandInteraction, user: MUs
 		return `${user}, your mass didn't start because it needs atleast 2 users.`;
 	}
 
-	const mahojiUsers = await Promise.all(usersWhoConfirmed.map(i => mahojiUsersSettingsFetch(i.id)));
+	const mahojiUsers = await Promise.all(usersWhoConfirmed.map(i => mUserFetch(i.id)));
 
 	for (const user of mahojiUsers) {
-		const result = checkNexUser(user);
+		const result = checkNexUser(user.user);
 		if (result[1]) {
 			return result[1];
 		}
@@ -107,9 +107,9 @@ export async function nexCommand(interaction: SlashCommandInteraction, user: MUs
 ${details.team
 	.map(i => {
 		const mUser = mahojiUsers.find(t => t.id === i.id)!;
-		return `${userMention(i.id)}: Contrib[${i.contribution.toFixed(2)}%] Death[${i.deathChance.toFixed(2)}%] KC[${
-			(mUser.monsterScores as any)[NEX_ID] ?? 0
-		}] Offence[${Math.round(i.totalOffensivePecent)}%] Defence[${Math.round(
+		return `${userMention(i.id)}: Contrib[${i.contribution.toFixed(2)}%] Death[${i.deathChance.toFixed(
+			2
+		)}%] KC[${mUser.getKC(NEX_ID)}] Offence[${Math.round(i.totalOffensivePecent)}%] Defence[${Math.round(
 			i.totalDefensivePercent
 		)}%] *${i.messages.join(', ')}*`;
 	})

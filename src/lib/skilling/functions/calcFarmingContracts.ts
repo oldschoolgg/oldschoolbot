@@ -5,7 +5,6 @@ import { HighSeedPackTable, LowSeedPackTable, MediumSeedPackTable } from '../../
 import { PlantTier } from '../../minions/farming/types';
 import { MUser } from '../../MUser';
 import { stringMatches } from '../../util/cleanString';
-import { SkillsEnum } from '../types';
 
 export function openSeedPack(seedTier: number): Bank {
 	const loot = new Bank();
@@ -153,7 +152,7 @@ export function getPlantToGrow(
 	user: MUser,
 	{ contractLevel, ignorePlant }: { contractLevel: 'easy' | 'medium' | 'hard'; ignorePlant: string | null }
 ): [string, PlantTier] {
-	const farmingLevel = user instanceof KlasaUser ? user.skillLevel(SkillsEnum.Farming) : user.skillsAsLevels.farming;
+	const farmingLevel = user.skillsAsLevels.farming;
 	let contractType: PlantsList = [];
 	if (contractLevel === 'easy') contractType = [...easyPlants];
 	if (contractLevel === 'medium') contractType = [...mediumPlants];

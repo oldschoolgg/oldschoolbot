@@ -2,14 +2,14 @@ import { objectEntries } from 'e';
 import { Monsters } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { getMahojiBank, hasSkillReqs } from '../mahoji/mahojiSettings';
+import { hasSkillReqs } from '../mahoji/mahojiSettings';
 import { MAX_QP } from './constants';
 import { MUser } from './MUser';
 import { getAllMinigameScores, MinigameName } from './settings/settings';
 import Skillcapes from './skilling/skillcapes';
 import { courses } from './skilling/skills/agility';
 import { ItemBank, Skills } from './types';
-import { formatSkillRequirements, getSkillsOfMahojiUser, itemNameFromID } from './util';
+import { formatSkillRequirements, itemNameFromID } from './util';
 import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
 
@@ -485,8 +485,8 @@ export const FaladorDiary: Diary = {
 		collectionLogReqs: resolveItems(['Air rune', 'Saradomin brew(3)']),
 		customReq: async (user, summary) => {
 			if (summary) return [false, 'Quest point cape or Skill cape.'];
-			const userBank = getMahojiBank(user);
-			const skills = getSkillsOfMahojiUser(user, true);
+			const userBank = user.bank;
+			const skills = user.skillsAsLevels;
 			if (userBank.has('Quest point cape') && user.QP >= MAX_QP) return [true];
 			for (const cape of Skillcapes) {
 				if ((userBank.has(cape.trimmed) || userBank.has(cape.untrimmed)) && skills[cape.skill] >= 99) {
@@ -658,7 +658,7 @@ export const KandarinDiary: Diary = {
 		collectionLogReqs: resolveItems(['Grimy dwarf weed', 'Shark']),
 		customReq: async (user, summary) => {
 			if (summary) return [false, 'Barbarian Assault Honour Level of 5.'];
-			const honourLevel = user.honour_level;
+			const honourLevel = user.user.honour_level;
 			if (honourLevel < 5) {
 				return [false, 'your Barbarian Assault Honour Level is less than 5'];
 			}

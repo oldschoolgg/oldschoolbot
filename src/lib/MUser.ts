@@ -1,6 +1,6 @@
 import { userMention } from '@discordjs/builders';
 import { Prisma, User, xp_gains_skill_enum } from '@prisma/client';
-import { sumArr } from 'e';
+import { sumArr, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
@@ -12,6 +12,7 @@ import { allPetIDs } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
 import { CombatOptionsEnum } from './minions/data/combatConstants';
 import { UserKourendFavour } from './minions/data/kourendFavour';
+import { AttackStyles } from './minions/functions';
 import { blowpipeDarts, validateBlowpipeData } from './minions/functions/blowpipeCommand';
 import { AddXpParams, BlowpipeData } from './minions/types';
 import { SkillsEnum } from './skilling/types';
@@ -46,6 +47,16 @@ export class MUser {
 			.map(getOSItem)
 			.filter(i => i.highalch !== undefined && i.highalch > 0 && i.tradeable)
 			.sort((a, b) => alchPrice(bank, b, duration) - alchPrice(bank, a, duration));
+	}
+
+	openableScores() {
+		return this.user.openable_scores as ItemBank;
+	}
+
+	async setAttackStyle(newStyles: AttackStyles[]) {
+		await mahojiUserSettingsUpdate(this.id, {
+			attack_style: uniqueArr(newStyles)
+		});
 	}
 
 	get bankWithGP() {
@@ -149,12 +160,12 @@ export class MUser {
 		return (this.user.monsterScores as ItemBank)[monsterID] ?? 0;
 	}
 
-	getAttackStyles() {
+	getAttackStyles(): AttackStyles[] {
 		const styles = this.user.attack_style;
 		if (styles.length === 0) {
 			return [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence];
 		}
-		return styles;
+		return styles as AttackStyles[];
 	}
 
 	async incrementKC(monsterID: number, amountToAdd = 1) {

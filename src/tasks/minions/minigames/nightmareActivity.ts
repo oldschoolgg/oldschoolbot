@@ -68,7 +68,7 @@ export default class extends Task {
 		if (kc) await user.incrementKC(monsterID, kc);
 
 		announceLoot({
-			user: mahojiUser,
+			user: await mUserFetch(user.id),
 			monsterID,
 			loot: itemsAdded,
 			notifyDrops: NightmareMonster.notifyDrops
