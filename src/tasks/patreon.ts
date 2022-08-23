@@ -13,7 +13,7 @@ import { UserSettings } from '../lib/settings/types/UserSettings';
 import { Patron } from '../lib/types';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 import { logError } from '../lib/util/logError';
-import { mahojiUserSettingsUpdate } from '../mahoji/mahojiSettings';
+import { mahojiUserSettingsUpdate, mUserFetch } from '../mahoji/mahojiSettings';
 
 const patreonApiURL = new URL(`https://patreon.com/api/oauth2/v2/campaigns/${patreonConfig?.campaignID}/members`);
 
@@ -101,7 +101,7 @@ export default class PatreonTask extends Task {
 	}
 
 	async changeTier(userID: string, from: PerkTier, to: PerkTier) {
-		const user = await globalClient.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
 		const userBitfield = user.bitfield;
 
@@ -111,17 +111,18 @@ export default class PatreonTask extends Task {
 
 		// Remove any/all the patron bits from this user.
 		try {
-			await user.settings.update(UserSettings.BitField, newBitfield, {
-				arrayAction: ArrayActions.Overwrite
+			await mahojiUserSettingsUpdate(user.id, {
+				bitfield: newBitfield
 			});
 		} catch (_) {}
 
 		// Remove patron bank background
-		const bg = backgroundImages.find(bg => bg.id === user.settings.get(UserSettings.BankBackground));
+		const bg = backgroundImages.find(bg => bg.id === user.user.bankBackground);
 		if (bg && bg.perkTierNeeded && bg.perkTierNeeded > to) {
-			await user.settings.update(UserSettings.BankBackground, 1);
+			await mahojiUserSettingsUpdate(user.id, {
+				bankBackground: 1
+			});
 		}
-		await user.settings.sync(true);
 	}
 
 	async givePerks(userID: string, perkTier: PerkTier) {
