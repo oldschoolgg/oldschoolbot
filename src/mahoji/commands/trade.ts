@@ -4,8 +4,8 @@ import { Bank } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { Events } from '../../lib/constants';
-import { prisma } from '../../lib/settings/prisma';
-import { addToGPTaxBalance, discrimName, truncateString } from '../../lib/util';
+import { addToGPTaxBalance, prisma } from '../../lib/settings/prisma';
+import { discrimName, truncateString } from '../../lib/util';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption } from '../lib/mahojiCommandOptions';

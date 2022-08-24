@@ -1,8 +1,9 @@
 import { Bank } from 'oldschooljs';
 
+import { countSkillsAtleast99 } from '../../../mahoji/mahojiSettings';
 import { MUser } from '../../MUser';
 import Skillcapes from '../../skilling/skillcapes';
-import { countSkillsAtleast99, toTitleCase } from '../../util';
+import { toTitleCase } from '../../util';
 import { Buyable } from './buyables';
 
 export const skillCapeBuyables: Buyable[] = [];

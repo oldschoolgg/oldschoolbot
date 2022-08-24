@@ -6,10 +6,10 @@ import { MUser } from '../../../lib/MUser';
 import { getPOHObject } from '../../../lib/poh';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { GnomeRestaurantActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, randomVariation, updateBankSetting } from '../../../lib/util';
+import { formatDuration, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { userHasGracefulEquipped } from '../../mahojiSettings';
+import { updateBankSetting, userHasGracefulEquipped } from '../../mahojiSettings';
 import { getPOH } from './pohCommand';
 
 export async function gnomeRestaurantCommand(user: MUser, channelID: bigint) {

@@ -11,11 +11,11 @@ import { getFarmingInfo } from '../../../lib/skilling/functions/getFarmingInfo';
 import Farming, { CompostName } from '../../../lib/skilling/skills/farming';
 import { Plant, SkillsEnum } from '../../../lib/skilling/types';
 import { FarmingActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, stringMatches, updateBankSetting } from '../../../lib/util';
+import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { farmingPatchNames, findPlant, isPatchName } from '../../../lib/util/farmingHelpers';
-import { handleMahojiConfirmation, mUserFetch, userHasGracefulEquipped } from '../../mahojiSettings';
+import { handleMahojiConfirmation, mUserFetch, updateBankSetting, userHasGracefulEquipped } from '../../mahojiSettings';
 
 function treeCheck(plant: Plant, wcLevel: number, bal: number, quantity: number): string | null {
 	if (plant.needsChopForHarvest && plant.treeWoodcuttingLevel && wcLevel < plant.treeWoodcuttingLevel) {

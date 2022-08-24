@@ -4,7 +4,7 @@ import fetch from 'node-fetch';
 import { encode } from 'querystring';
 
 import { CLIENT_ID, CLIENT_SECRET } from '../../../config';
-import { UserSettings } from '../../settings/types/UserSettings';
+import { mUserFetch } from '../../../mahoji/mahojiSettings';
 import { encryptJWT, rateLimit } from '../util';
 
 export async function fetchUser(token: string) {
@@ -12,12 +12,12 @@ export async function fetchUser(token: string) {
 	const apiUser = await fetch('https://discordapp.com/api/users/@me', {
 		headers: { Authorization: apiToken }
 	}).then((result: any) => result.json());
-	const user = await globalClient.fetchUser(apiUser.id);
+	const user = await mUserFetch(apiUser.id);
 
 	return {
 		...apiUser,
-		bitfield: user.settings.get(UserSettings.BitField),
-		badges: user.settings.get(UserSettings.Badges)
+		bitfield: user.bitfield,
+		badges: user.user.badges
 	};
 }
 

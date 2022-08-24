@@ -7,18 +7,12 @@ import { leagueBuyables } from '../../lib/data/leaguesBuyables';
 import { kittens } from '../../lib/growablePets';
 import { gotFavour } from '../../lib/minions/data/kourendFavour';
 import { getMinigameScore, Minigames } from '../../lib/settings/minigames';
-import {
-	formatSkillRequirements,
-	itemNameFromID,
-	skillsMeetRequirements,
-	stringMatches,
-	updateBankSetting
-} from '../../lib/util';
+import { formatSkillRequirements, itemNameFromID, skillsMeetRequirements, stringMatches } from '../../lib/util';
 import { mahojiChatHead } from '../../lib/util/chatHeadImage';
 import getOSItem from '../../lib/util/getOSItem';
 import { leaguesBuyCommand } from '../lib/abstracted_commands/leaguesBuyCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiParseNumber, mUserFetch } from '../mahojiSettings';
+import { handleMahojiConfirmation, mahojiParseNumber, mUserFetch, updateBankSetting } from '../mahojiSettings';
 
 const allBuyablesAutocomplete = [...Buyables, ...leagueBuyables.map(i => ({ name: i.item.name })), { name: 'Kitten' }];
 

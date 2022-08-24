@@ -34,6 +34,7 @@ import { logError } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import PatreonTask from '../../tasks/patreon';
 import { Cooldowns } from '../lib/Cooldowns';
+import { syncCustomPrices } from '../lib/events';
 import { itemOption } from '../lib/mahojiCommandOptions';
 import { allAbstractCommands, OSBMahojiCommand } from '../lib/util';
 import {
@@ -707,6 +708,7 @@ export const adminCommand: OSBMahojiCommand = {
 			await mahojiClientSettingsUpdate({
 				custom_prices: newPrices
 			});
+			await syncCustomPrices();
 			return `Set the price of \`${item.name}\` to \`${price.toLocaleString()}\`.`;
 		}
 		if (options.most_active) {

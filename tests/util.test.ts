@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import { deduplicateClueScrolls } from '../src/lib/clues/clueUtils';
 import getUserFoodFromBank from '../src/lib/minions/functions/getUserFoodFromBank';
+import { MUser } from '../src/lib/MUser';
 import {
 	getSkillsOfMahojiUser,
 	sanitizeBank,
@@ -31,9 +32,9 @@ describe('util', () => {
 	test('getUserFoodFromBank', () => {
 		const fakeUser = (b: Bank) =>
 			({
-				bank: () => b,
+				bank: b,
 				skillLevel: () => 99
-			} as any as KlasaUser);
+			} as any as MUser);
 		expect(getUserFoodFromBank(fakeUser(new Bank().add('Shark')), 500, [])).toStrictEqual(false);
 		expect(getUserFoodFromBank(fakeUser(new Bank().add('Shark', 100)), 500, [])).toStrictEqual(
 			new Bank().add('Shark', 25)

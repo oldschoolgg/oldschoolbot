@@ -8,10 +8,10 @@ import { BOT_TYPE, Roles, SupportServer, usernameCache } from '../lib/constants'
 import { getCollectionItems } from '../lib/data/Collections';
 import { Minigames } from '../lib/settings/minigames';
 import { prisma } from '../lib/settings/prisma';
-import { UserSettings } from '../lib/settings/types/UserSettings';
 import Skills from '../lib/skilling/skills';
 import { convertXPtoLVL } from '../lib/util';
 import { logError } from '../lib/util/logError';
+import { mahojiUserSettingsUpdate, mUserFetch } from '../mahoji/mahojiSettings';
 
 function addToUserMap(userMap: Record<string, string[]>, id: string, reason: string) {
 	if (!userMap[id]) userMap[id] = [];
@@ -62,17 +62,16 @@ async function addRoles({
 	}
 	const roleName = _role.name!;
 	for (const mem of g.members.cache.values()) {
+		const mUser = await mUserFetch(mem.user.id);
 		if (mem.roles.cache.has(role) && !users.includes(mem.user.id)) {
 			if (production) {
 				await mem.roles.remove(role).catch(noOp);
 			}
-			if (badge && mem.user.settings.get(UserSettings.Badges).includes(badge)) {
-				await mem.user.settings.sync(true);
-				await mem.user.settings
-					.update(UserSettings.Badges, badge, {
-						arrayAction: 'remove'
-					})
-					.catch(noOp);
+
+			if (badge && mUser.user.badges.includes(badge)) {
+				await mahojiUserSettingsUpdate(mUser.id, {
+					badges: mUser.user.badges.filter(i => i !== badge)
+				});
 			}
 			removed.push(mem.user.username);
 		}
@@ -82,13 +81,12 @@ async function addRoles({
 				added.push(mem.user.username);
 				await mem.roles.add(role).catch(noOp);
 			}
-			if (badge && !mem.user.settings.get(UserSettings.Badges).includes(badge)) {
-				await mem.user.settings.sync(true);
-				await mem.user.settings
-					.update(UserSettings.Badges, badge, {
-						arrayAction: 'add'
-					})
-					.catch(noOp);
+			if (badge && !mUser.user.badges.includes(badge)) {
+				await mahojiUserSettingsUpdate(mUser.id, {
+					badges: {
+						push: badge
+					}
+				});
 			}
 		}
 	}

@@ -1,9 +1,9 @@
 import { KlasaMessage, Monitor, MonitorStore } from 'klasa';
 
 import pets from '../lib/data/pets';
-import { UserSettings } from '../lib/settings/types/UserSettings';
+import { ItemBank } from '../lib/types';
 import { channelIsSendable, roll } from '../lib/util';
-import { untrustedGuildSettingsCache } from '../mahoji/mahojiSettings';
+import { mahojiUserSettingsUpdate, mUserFetch, untrustedGuildSettingsCache } from '../mahoji/mahojiSettings';
 
 export default class extends Monitor {
 	public __memberCache: { [key: string]: number } = {};
@@ -25,12 +25,14 @@ export default class extends Monitor {
 
 		const pet = pets[Math.floor(Math.random() * pets.length)];
 		if (roll(Math.max(Math.min(pet.chance, 250_000), 1000))) {
-			await msg.author.settings.sync(true);
-			const userPets = msg.author.settings.get(UserSettings.Pets);
+			const user = await mUserFetch(msg.author.id);
+			const userPets = user.user.pets as ItemBank;
 			const newUserPets = { ...userPets };
 			if (!newUserPets[pet.id]) newUserPets[pet.id] = 1;
 			else newUserPets[pet.id]++;
-			await msg.author.settings.update(UserSettings.Pets, { ...newUserPets });
+			await mahojiUserSettingsUpdate(user.id, {
+				pets: { ...newUserPets }
+			});
 			if (!channelIsSendable(msg.channel)) return;
 			if (userPets[pet.id] > 1) {
 				msg.channel.send(`${msg.author} has a funny feeling like they would have been followed. ${pet.emoji}`);

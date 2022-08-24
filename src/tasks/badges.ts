@@ -1,7 +1,7 @@
 import { Task } from 'klasa';
 
-import { badges } from '../lib/constants';
-import { UserSettings } from '../lib/settings/types/UserSettings';
+import { badges, BadgesEnum } from '../lib/constants';
+import { prisma } from '../lib/settings/prisma';
 
 export default class extends Task {
 	async init() {
@@ -12,16 +12,28 @@ export default class extends Task {
 		this.cacheBadges();
 	}
 
-	cacheBadges() {
+	async cacheBadges() {
 		const newCache = new Map();
+		const usersWithBadges = await prisma.user.findMany({
+			where: {
+				badges: {
+					hasSome: Object.values(BadgesEnum)
+				},
+				RSN: {
+					not: null
+				}
+			},
+			select: {
+				badges: true,
+				id: true,
+				RSN: true
+			}
+		});
 
-		const usersWithBadges = this.client.users.cache.filter(u => u.settings.get(UserSettings.Badges).length > 0);
-		for (const user of usersWithBadges.values()) {
-			const RSN = user.settings.get(UserSettings.RSN);
-			if (!RSN) continue;
-			const userBadges = user.settings.get(UserSettings.Badges).map((badge: number) => badges[badge]);
-
-			newCache.set(RSN.toLowerCase(), userBadges.join(' '));
+		for (const user of usersWithBadges) {
+			if (!user.RSN) continue;
+			const userBadges = user.badges.map((badge: number) => badges[badge]);
+			newCache.set(user.RSN.toLowerCase(), userBadges.join(' '));
 		}
 
 		this.client._badgeCache = newCache;

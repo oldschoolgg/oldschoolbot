@@ -10,11 +10,11 @@ import { convertAttackStylesToSetup } from '../../../lib/minions/functions';
 import { MUser } from '../../../lib/MUser';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { RevenantOptions } from '../../../lib/types/minions';
-import { formatDuration, percentChance, stringMatches, updateBankSetting } from '../../../lib/util';
+import { formatDuration, percentChance, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
-import { handleMahojiConfirmation } from '../../mahojiSettings';
+import { handleMahojiConfirmation, updateBankSetting } from '../../mahojiSettings';
 
 const specialWeapons = {
 	melee: getOSItem("Viggora's chainmace"),

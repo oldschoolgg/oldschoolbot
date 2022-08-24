@@ -6,9 +6,9 @@ import { MUser } from '../../../lib/MUser';
 import birdhouses, { Birdhouse } from '../../../lib/skilling/skills/hunter/birdHouseTrapping';
 import defaultBirdhouseTrap, { BirdhouseData } from '../../../lib/skilling/skills/hunter/defaultBirdHouseTrap';
 import { BirdhouseActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, itemID, stringMatches, updateBankSetting } from '../../../lib/util';
+import { formatDuration, itemID, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { mahojiUsersSettingsFetch, userHasGracefulEquipped } from '../../mahojiSettings';
+import { mahojiUsersSettingsFetch, updateBankSetting, userHasGracefulEquipped } from '../../mahojiSettings';
 
 interface BirdhouseDetails {
 	raw: BirdhouseData;

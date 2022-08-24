@@ -6,12 +6,13 @@ import { MUser } from '../../../lib/MUser';
 import { prisma } from '../../../lib/settings/prisma';
 import { getNewUser } from '../../../lib/settings/settings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, stringMatches, updateBankSetting } from '../../../lib/util';
+import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../../lib/util/determineRunes';
 import getOSItem from '../../../lib/util/getOSItem';
 import { pizazzPointsPerHour } from '../../../tasks/minions/minigames/mageTrainingArenaActivity';
+import { updateBankSetting } from '../../mahojiSettings';
 
 const RuneTable = new LootTable()
 	.every('Law rune', [11, 14])

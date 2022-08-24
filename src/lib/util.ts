@@ -1,5 +1,5 @@
 import { bold } from '@discordjs/builders';
-import { User } from '@prisma/client';
+import type { User } from '@prisma/client';
 import { PaginatedMessage } from '@sapphire/discord.js-utilities';
 import {
 	Channel,
@@ -13,7 +13,7 @@ import {
 	User as DJSUser,
 	Util
 } from 'discord.js';
-import { calcWhatPercent, chunk, isObject, objectEntries, round, Time } from 'e';
+import { calcWhatPercent, chunk, isObject, objectEntries, Time } from 'e';
 import { KlasaMessage, KlasaUser } from 'klasa';
 import {
 	APIButtonComponentWithCustomId,
@@ -28,28 +28,13 @@ import { gzip } from 'node:zlib';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
-import Monster from 'oldschooljs/dist/structures/Monster';
 import { bool, integer, MersenneTwister19937, nodeCrypto, real, shuffle } from 'random-js';
 
-import { CLIENT_ID, production } from '../config';
-import {
-	hasSkillReqs,
-	mahojiClientSettingsFetch,
-	mahojiClientSettingsUpdate,
-	mahojiUserSettingsUpdate,
-	mahojiUsersSettingsFetch
-} from '../mahoji/mahojiSettings';
+import { production } from '../config';
 import { skillEmoji, SupportServer, usernameCache } from './constants';
-import { readableStatName } from './gear';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
-import { effectiveMonsters } from './minions/data/killableMonsters';
-import { Consumable, KillableMonster } from './minions/types';
-import { MUser } from './MUser';
+import { Consumable } from './minions/types';
 import { POHBoosts } from './poh';
-import { getMinigameScore, Minigames } from './settings/minigames';
-import { prisma } from './settings/prisma';
-import creatures from './skilling/skills/hunter/creatures';
-import { Rune } from './skilling/skills/runecraft';
 import { SkillsEnum } from './skilling/types';
 import { ArrayItemsResolved, Skills } from './types';
 import {
@@ -58,11 +43,9 @@ import {
 	RaidsOptions,
 	TheatreOfBloodTaskOptions
 } from './types/minions';
-import { stringMatches } from './util/cleanString';
 import { getItem } from './util/getOSItem';
 import itemID from './util/itemID';
 import { logError } from './util/logError';
-import resolveItems from './util/resolveItems';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const emojiRegex = require('emoji-regex');
@@ -213,35 +196,6 @@ export const anglerBoosts = [
 	[itemID('Angler boots'), 0.2]
 ];
 
-export function anglerBoostPercent(user: MUser) {
-	const skillingSetup = user.gear.skilling;
-	let amountEquipped = 0;
-	let boostPercent = 0;
-	for (const [id, percent] of anglerBoosts) {
-		if (skillingSetup.hasEquipped([id])) {
-			boostPercent += percent;
-			amountEquipped++;
-		}
-	}
-	if (amountEquipped === 4) {
-		boostPercent += 0.5;
-	}
-	return round(boostPercent, 1);
-}
-
-const rogueOutfit = resolveItems(['Rogue mask', 'Rogue top', 'Rogue trousers', 'Rogue gloves', 'Rogue boots']);
-
-export function rogueOutfitPercentBonus(user: MUser): number {
-	const skillingSetup = user.gear.skilling;
-	let amountEquipped = 0;
-	for (const id of rogueOutfit) {
-		if (skillingSetup.hasEquipped([id])) {
-			amountEquipped++;
-		}
-	}
-	return amountEquipped * 20;
-}
-
 export function isValidGearSetup(str: string): str is GearSetupType {
 	return GearSetupTypes.includes(str as any);
 }
@@ -306,9 +260,6 @@ export function getSkillsOfMahojiUser(user: User, levels = false): Required<Skil
 		}
 	}
 	return skills;
-}
-export function countSkillsAtleast99(user: MUser) {
-	return Object.values(user.skillsAsLevels).filter(lvl => lvl >= 99).length;
 }
 
 export function getSupportGuild(): Guild | null {
@@ -473,85 +424,6 @@ export function formatPohBoosts(boosts: POHBoosts) {
 	}
 
 	return slotStr.join(', ');
-}
-
-type ClientBankKey =
-	| 'sold_items_bank'
-	| 'herblore_cost_bank'
-	| 'construction_cost_bank'
-	| 'farming_cost_bank'
-	| 'farming_loot_bank'
-	| 'buy_cost_bank'
-	| 'buy_loot_bank'
-	| 'magic_cost_bank'
-	| 'crafting_cost'
-	| 'gnome_res_cost'
-	| 'gnome_res_loot'
-	| 'rogues_den_cost'
-	| 'gauntlet_loot'
-	| 'cox_cost'
-	| 'cox_loot'
-	| 'collecting_cost'
-	| 'collecting_loot'
-	| 'mta_cost'
-	| 'bf_cost'
-	| 'mage_arena_cost'
-	| 'hunter_cost'
-	| 'hunter_loot'
-	| 'revs_cost'
-	| 'revs_loot'
-	| 'inferno_cost'
-	| 'dropped_items'
-	| 'runecraft_cost'
-	| 'smithing_cost'
-	| 'economyStats_dicingBank'
-	| 'economyStats_duelTaxBank'
-	| 'economyStats_dailiesAmount'
-	| 'economyStats_itemSellTaxBank'
-	| 'economyStats_bankBgCostBank'
-	| 'economyStats_sacrificedBank'
-	| 'economyStats_wintertodtCost'
-	| 'economyStats_wintertodtLoot'
-	| 'economyStats_fightCavesCost'
-	| 'economyStats_PVMCost'
-	| 'economyStats_thievingCost'
-	| 'nightmare_cost'
-	| 'create_cost'
-	| 'create_loot'
-	| 'tob_cost'
-	| 'tob_loot'
-	| 'degraded_items_cost'
-	| 'tks_cost'
-	| 'tks_loot';
-
-export async function updateBankSetting(key: ClientBankKey, bankToAdd: Bank) {
-	if (bankToAdd === undefined || bankToAdd === null) throw new Error(`Gave null bank for ${key}`);
-	const currentClientSettings = await mahojiClientSettingsFetch({
-		[key]: true
-	});
-	const current = currentClientSettings[key] as ItemBank;
-	validateItemBankAndThrow(current);
-	const newBank = new Bank().add(current).add(bankToAdd);
-
-	const res = await mahojiClientSettingsUpdate({
-		[key]: newBank.bank
-	});
-	return res;
-}
-
-export async function updateLegacyUserBankSetting(userID: string, key: 'tob_cost' | 'tob_loot', bankToAdd: Bank) {
-	if (bankToAdd === undefined || bankToAdd === null) throw new Error(`Gave null bank for ${key}`);
-	const currentUserSettings = await mahojiUsersSettingsFetch(userID, {
-		[key]: true
-	});
-	const current = currentUserSettings[key] as ItemBank;
-	validateItemBankAndThrow(current);
-	const newBank = new Bank().add(current).add(bankToAdd);
-
-	const res = await mahojiUserSettingsUpdate(userID, {
-		[key]: newBank.bank
-	});
-	return res;
 }
 
 function gaussianRand(rolls: number = 3) {
@@ -737,16 +609,6 @@ export function calcPerHour(value: number, duration: number) {
 	return (value / (duration / Time.Minute)) * 60;
 }
 
-export function calcMaxRCQuantity(rune: Rune, user: MUser) {
-	const level = user.skillLevel('runecraft');
-	for (let i = rune.levels.length; i > 0; i--) {
-		const [levelReq, qty] = rune.levels[i - 1];
-		if (level >= levelReq) return qty;
-	}
-
-	return 0;
-}
-
 export function convertDJSUserToAPIUser(user: DJSUser | KlasaUser): APIUser {
 	const apiUser: APIUser = {
 		id: user.id,
@@ -803,31 +665,6 @@ export function isValidSkill(skill: string): skill is SkillsEnum {
 	return Object.values(SkillsEnum).includes(skill as SkillsEnum);
 }
 
-export async function addToGPTaxBalance(userID: bigint | string, amount: number) {
-	await Promise.all([
-		prisma.clientStorage.update({
-			where: {
-				id: CLIENT_ID
-			},
-			data: {
-				gp_tax_balance: {
-					increment: amount
-				}
-			}
-		}),
-		prisma.user.update({
-			where: {
-				id: userID.toString()
-			},
-			data: {
-				total_gp_traded: {
-					increment: amount
-				}
-			}
-		})
-	]);
-}
-
 export function convertMahojiResponseToDJSResponse(response: Awaited<CommandResponse>): string | MessageOptions {
 	if (typeof response === 'string') return response;
 	return {
@@ -881,17 +718,6 @@ export function makeComponents(
 	return chunk(components, 5).map(i => ({ components: i, type: ComponentType.ActionRow }));
 }
 
-export function combatLevel(user: User | MUser): number {
-	const skills = user instanceof MUser ? user.skillsAsLevels : getSkillsOfMahojiUser(user, true);
-	const { defence, ranged, hitpoints, magic, prayer, attack, strength } = skills;
-
-	const base = 0.25 * (defence + hitpoints + Math.floor(prayer / 2));
-	const melee = 0.325 * (attack + strength);
-	const range = 0.325 * (Math.floor(ranged / 2) + ranged);
-	const mage = 0.325 * (Math.floor(magic / 2) + magic);
-	return Math.floor(base + Math.max(melee, range, mage));
-}
-
 export function validateItemBankAndThrow(input: any): input is ItemBank {
 	if (!isObject(input)) {
 		throw new Error('Invalid bank');
@@ -906,116 +732,4 @@ export function validateItemBankAndThrow(input: any): input is ItemBank {
 		}
 	}
 	return true;
-}
-
-export function hasMonsterRequirements(user: MUser, monster: KillableMonster) {
-	if (monster.qpRequired && user.QP < monster.qpRequired) {
-		return [
-			false,
-			`You need ${monster.qpRequired} QP to kill ${monster.name}. You can get Quest Points through questing with \`/activities quest\``
-		];
-	}
-
-	if (monster.itemsRequired) {
-		const itemsRequiredStr = formatItemReqs(monster.itemsRequired);
-		for (const item of monster.itemsRequired) {
-			if (Array.isArray(item)) {
-				if (!item.some(itemReq => user.hasEquippedOrInBank(itemReq as number))) {
-					return [false, `You need these items to kill ${monster.name}: ${itemsRequiredStr}`];
-				}
-			} else if (!user.hasEquippedOrInBank(item)) {
-				return [
-					false,
-					`You need ${itemsRequiredStr} to kill ${monster.name}. You're missing ${itemNameFromID(item)}.`
-				];
-			}
-		}
-	}
-
-	if (monster.levelRequirements) {
-		const [hasReqs, str] = hasSkillReqs(user, monster.levelRequirements);
-		if (!hasReqs) {
-			return [false, `You don't meet the skill requirements to kill ${monster.name}, you need: ${str}.`];
-		}
-	}
-
-	if (monster.minimumGearRequirements) {
-		for (const [setup, requirements] of objectEntries(monster.minimumGearRequirements)) {
-			const gear = user.gear[setup];
-			if (setup && requirements) {
-				const [meetsRequirements, unmetKey, has] = gear.meetsStatRequirements(requirements);
-				if (!meetsRequirements) {
-					return [
-						false,
-						`You don't have the requirements to kill ${monster.name}! Your ${readableStatName(
-							unmetKey!
-						)} stat in your ${setup} setup is ${has}, but you need atleast ${
-							monster.minimumGearRequirements[setup]![unmetKey!]
-						}.`
-					];
-				}
-			}
-		}
-	}
-
-	return [true];
-}
-
-export function resolveAvailableItemBoosts(user: MUser, monster: KillableMonster) {
-	const boosts = new Bank();
-	if (monster.itemInBankBoosts) {
-		for (const boostSet of monster.itemInBankBoosts) {
-			let highestBoostAmount = 0;
-			let highestBoostItem = 0;
-
-			// find the highest boost that the player has
-			for (const [itemID, boostAmount] of Object.entries(boostSet)) {
-				const parsedId = parseInt(itemID);
-				if (monster.wildy ? !user.hasEquipped(parsedId) : !user.hasEquippedOrInBank(parsedId)) {
-					continue;
-				}
-				if (boostAmount > highestBoostAmount) {
-					highestBoostAmount = boostAmount;
-					highestBoostItem = parsedId;
-				}
-			}
-
-			if (highestBoostAmount && highestBoostItem) {
-				boosts.add(highestBoostItem, highestBoostAmount);
-			}
-		}
-	}
-	return boosts.bank;
-}
-
-export async function getKCByName(user: MUser, kcName: string): Promise<[string, number] | [null, 0]> {
-	const mon = effectiveMonsters.find(
-		mon => stringMatches(mon.name, kcName) || mon.aliases.some(alias => stringMatches(alias, kcName))
-	);
-	if (mon) {
-		return [mon.name, user.getKC((mon as unknown as Monster).id)];
-	}
-
-	const minigame = Minigames.find(
-		game => stringMatches(game.name, kcName) || game.aliases.some(alias => stringMatches(alias, kcName))
-	);
-	if (minigame) {
-		return [minigame.name, await getMinigameScore(user.id, minigame.column)];
-	}
-
-	const creature = creatures.find(c => c.aliases.some(alias => stringMatches(alias, kcName)));
-	if (creature) {
-		return [creature.name, user.getCreatureScore(creature.id)];
-	}
-
-	const special: [string[], number][] = [
-		[['superior', 'superiors', 'superior slayer monster'], user.user.slayer_superior_count],
-		[['tithefarm', 'tithe'], user.user.stats_titheFarmsCompleted]
-	];
-	const res = special.find(s => s[0].includes(kcName));
-	if (res) {
-		return [res[0][0], res[1]];
-	}
-
-	return [null, 0];
 }

@@ -5,19 +5,12 @@ import { Bank } from 'oldschooljs';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
-import {
-	formatDuration,
-	formatSkillRequirements,
-	itemID,
-	skillsMeetRequirements,
-	stringMatches,
-	updateBankSetting
-} from '../../lib/util';
+import { formatDuration, formatSkillRequirements, itemID, skillsMeetRequirements, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import resolveItems from '../../lib/util/resolveItems';
 import { OSBMahojiCommand } from '../lib/util';
-import { mUserFetch, userHasGracefulEquipped } from '../mahojiSettings';
+import { mUserFetch, updateBankSetting, userHasGracefulEquipped } from '../mahojiSettings';
 
 export const smeltingCommand: OSBMahojiCommand = {
 	name: 'smelt',

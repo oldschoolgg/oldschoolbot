@@ -15,10 +15,10 @@ import {
 import Hunter from '../../../lib/skilling/skills/hunter/hunter';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { HunterActivityTaskOptions } from '../../../lib/types/minions';
-import { rand, roll, stringMatches, updateBankSetting } from '../../../lib/util';
+import { rand, roll, stringMatches } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
-import { mahojiUserSettingsUpdate, mUserFetch } from '../../../mahoji/mahojiSettings';
+import { mahojiUserSettingsUpdate, mUserFetch, updateBankSetting } from '../../../mahoji/mahojiSettings';
 import { BLACK_CHIN_ID, HERBIBOAR_ID } from './../../../lib/constants';
 import { PeakTier } from './../../WildernessPeakInterval';
 

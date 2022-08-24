@@ -6,12 +6,12 @@ import { Item } from 'oldschooljs/dist/meta/types';
 
 import { MUser } from '../../../lib/MUser';
 import { AlchingActivityTaskOptions } from '../../../lib/types/minions';
-import { clamp, formatDuration, toKMB, updateBankSetting } from '../../../lib/util';
+import { clamp, formatDuration, toKMB } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { getItem } from '../../../lib/util/getOSItem';
 import resolveItems from '../../../lib/util/resolveItems';
-import { handleMahojiConfirmation } from '../../mahojiSettings';
+import { handleMahojiConfirmation, updateBankSetting } from '../../mahojiSettings';
 
 const unlimitedFireRuneProviders = resolveItems([
 	'Staff of fire',

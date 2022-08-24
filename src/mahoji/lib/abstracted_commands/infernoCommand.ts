@@ -15,11 +15,11 @@ import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { PercentCounter } from '../../../lib/structures/PercentCounter';
 import { Skills } from '../../../lib/types';
 import { InfernoOptions } from '../../../lib/types/minions';
-import { formatDuration, itemNameFromID, randomVariation, updateBankSetting } from '../../../lib/util';
+import { formatDuration, itemNameFromID, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import getOSItem from '../../../lib/util/getOSItem';
-import { hasSkillReqs } from '../../mahojiSettings';
+import { hasSkillReqs, updateBankSetting } from '../../mahojiSettings';
 
 const minimumRangeItems = [
 	'Amulet of fury',

@@ -7,9 +7,10 @@ import { itemID } from 'oldschooljs/dist/util';
 import { MUser } from '../../../lib/MUser';
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { FightCavesActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, rand, updateBankSetting } from '../../../lib/util';
+import { formatDuration, rand } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
+import { updateBankSetting } from '../../mahojiSettings';
 
 export const fightCavesCost = new Bank({
 	'Prayer potion(4)': 10,

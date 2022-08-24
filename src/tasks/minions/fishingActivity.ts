@@ -8,10 +8,10 @@ import { MUser } from '../../lib/MUser';
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FishingActivityTaskOptions } from '../../lib/types/minions';
-import { anglerBoostPercent, rand, roll } from '../../lib/util';
+import { rand, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
-import { mUserFetch } from '../../mahoji/mahojiSettings';
+import { anglerBoostPercent, mUserFetch } from '../../mahoji/mahojiSettings';
 
 function radasBlessing(user: MUser) {
 	const blessingBoosts = [

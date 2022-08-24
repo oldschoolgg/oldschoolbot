@@ -11,11 +11,10 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { filterLootReplace } from '../../lib/slayer/slayerUtil';
 import { Gear } from '../../lib/structures/Gear';
 import { RevenantOptions } from '../../lib/types/minions';
-import { updateBankSetting } from '../../lib/util';
 import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLostOnDeathWilderness';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
-import { hasSkillReqs, mahojiUserSettingsUpdate, mUserFetch } from '../../mahoji/mahojiSettings';
+import { hasSkillReqs, mahojiUserSettingsUpdate, mUserFetch, updateBankSetting } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: RevenantOptions) {

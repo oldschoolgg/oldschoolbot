@@ -3,17 +3,11 @@ import { Bank } from 'oldschooljs';
 
 import { BitField } from '../../../lib/constants';
 import { MUser } from '../../../lib/MUser';
-import {
-	formatSkillRequirements,
-	skillsMeetRequirements,
-	stringMatches,
-	toKMB,
-	updateBankSetting
-} from '../../../lib/util';
+import { formatSkillRequirements, skillsMeetRequirements, stringMatches, toKMB } from '../../../lib/util';
 import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
 import resolveItems from '../../../lib/util/resolveItems';
 import BankImageTask from '../../../tasks/bankImage';
-import { handleMahojiConfirmation, mahojiUserSettingsUpdate } from '../../mahojiSettings';
+import { handleMahojiConfirmation, mahojiUserSettingsUpdate, updateBankSetting } from '../../mahojiSettings';
 
 export async function bankBgCommand(interaction: SlashCommandInteraction, user: MUser, name: string) {
 	const bankImages = (globalClient.tasks.get('bankImage') as BankImageTask).backgroundImages;

@@ -11,7 +11,7 @@ import { MUser } from '../../../lib/MUser';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { TempleTrekkingActivityTaskOptions } from '../../../lib/types/minions';
-import { combatLevel, formatDuration, itemNameFromID, percentChance, rand, stringMatches } from '../../../lib/util';
+import { formatDuration, itemNameFromID, percentChance, rand, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { handleMahojiConfirmation, userHasGracefulEquipped } from '../../mahojiSettings';
@@ -84,7 +84,7 @@ export async function trekCommand(user: MUser, channelID: BigInt, difficulty: st
 		return 'You need atleast level 30 QP to do Temple Trekking.';
 	}
 
-	if (minLevel !== undefined && combatLevel(user) < minLevel) {
+	if (minLevel !== undefined && user.combatLevel < minLevel) {
 		return `You need to be at least combat level ${minLevel} for ${difficulty} Temple Trekking.`;
 	}
 

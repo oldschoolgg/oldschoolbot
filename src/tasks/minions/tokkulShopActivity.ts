@@ -2,9 +2,8 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { TokkulShopOptions } from '../../lib/types/minions';
-import { updateBankSetting } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { mUserFetch } from '../../mahoji/mahojiSettings';
+import { mUserFetch, updateBankSetting } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: TokkulShopOptions) {

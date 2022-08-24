@@ -5,12 +5,12 @@ import { Bank } from 'oldschooljs';
 import Herblore from '../../lib/skilling/skills/herblore/herblore';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { HerbloreActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, updateBankSetting } from '../../lib/util';
+import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
 import { OSBMahojiCommand } from '../lib/util';
-import { mUserFetch } from '../mahojiSettings';
+import { mUserFetch, updateBankSetting } from '../mahojiSettings';
 
 export const mineCommand: OSBMahojiCommand = {
 	name: 'mix',

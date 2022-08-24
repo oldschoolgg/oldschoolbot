@@ -3,8 +3,8 @@ import { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../lib/constants';
-import { prisma } from '../../lib/settings/prisma';
-import { addToGPTaxBalance, toKMB } from '../../lib/util';
+import { addToGPTaxBalance, prisma } from '../../lib/settings/prisma';
+import { toKMB } from '../../lib/util';
 import { OSBMahojiCommand } from '../lib/util';
 import { handleMahojiConfirmation, mahojiParseNumber, mahojiUsersSettingsFetch, mUserFetch } from '../mahojiSettings';
 

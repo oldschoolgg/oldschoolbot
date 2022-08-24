@@ -3,8 +3,8 @@ import { Task, TaskStore } from 'klasa';
 
 import { production } from '../config';
 import { prisma } from '../lib/settings/prisma';
-import { UserSettings } from '../lib/settings/types/UserSettings';
 import { logError } from '../lib/util/logError';
+import { mahojiUserSettingsUpdate, mUserFetch } from '../mahoji/mahojiSettings';
 
 declare module 'klasa' {
 	interface KlasaClient {
@@ -29,21 +29,14 @@ export default class extends Task {
 
 				for (const row of result.values()) {
 					if (!production) continue;
-					const user = await globalClient.fetchUser(row.id);
-					if (user.settings.get(UserSettings.LastDailyTimestamp) === -1) continue;
+					const user = await mUserFetch(row.id);
+					if (Number(user.user.lastDailyTimestamp) === -1) continue;
 
-					try {
-						await user.settings.update(UserSettings.LastDailyTimestamp, -1);
-					} catch (e) {
-						logError(e, {
-							msg: 'Unable to update settings, syncing user first.',
-							user_id: user.id,
-							context: 'dailyReminder.ts'
-						});
-						await user.settings.sync(true);
-						await user.settings.update(UserSettings.LastDailyTimestamp, -1);
-					}
-					await user.send('Your daily is ready!').catch(noOp);
+					await mahojiUserSettingsUpdate(user.id, {
+						lastDailyTimestamp: -1
+					});
+					const klasaUser = await globalClient.fetchUser(user.id);
+					await klasaUser.send('Your daily is ready!').catch(noOp);
 				}
 			} catch (err) {
 				logError(err);

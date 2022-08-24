@@ -1,12 +1,12 @@
 import { calcPercentOfNum, calcWhatPercent } from 'e';
 import { Task } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
+import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { Events } from '../../../lib/constants';
 import { diariesObject, userhasDiaryTier } from '../../../lib/diaries';
 import { countUsersWithItemInCl, prisma } from '../../../lib/settings/prisma';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { InfernoOptions } from '../../../lib/types/minions';
@@ -15,7 +15,12 @@ import chatHeadImage from '../../../lib/util/chatHeadImage';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
-import { mahojiUserSettingsUpdate, mUserFetch } from '../../../mahoji/mahojiSettings';
+import {
+	mahojiClientSettingsFetch,
+	mahojiClientSettingsUpdate,
+	mahojiUserSettingsUpdate,
+	mUserFetch
+} from '../../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: InfernoOptions) {
@@ -133,9 +138,12 @@ export default class extends Task {
 		if (unusedItems.length > 0) {
 			await user.addItemsToBank({ items: unusedItems, collectionLog: false });
 
-			const current = new Bank(this.client.settings.get(ClientSettings.EconomyStats.InfernoCost));
+			const currentData = await mahojiClientSettingsFetch({ inferno_cost: true });
+			const current = new Bank().add(currentData.inferno_cost as ItemBank);
 			const newBank = current.remove(unusedItems);
-			await this.client.settings.update(ClientSettings.EconomyStats.InfernoCost, newBank.bank);
+			await mahojiClientSettingsUpdate({
+				inferno_cost: newBank.bank
+			});
 		}
 
 		if (diedPreZuk) {

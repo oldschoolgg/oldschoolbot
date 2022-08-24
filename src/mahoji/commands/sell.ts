@@ -4,9 +4,8 @@ import { Bank } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { MAX_INT_JAVA } from '../../lib/constants';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { NestBoxesTable } from '../../lib/simulation/misc';
-import { clamp, itemID, toKMB, updateBankSetting } from '../../lib/util';
+import { clamp, itemID, toKMB } from '../../lib/util';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
@@ -14,6 +13,7 @@ import {
 	handleMahojiConfirmation,
 	mahojiUsersSettingsFetch,
 	mUserFetch,
+	updateBankSetting,
 	updateGPTrackSetting,
 	userStatsUpdate
 } from '../mahojiSettings';
@@ -31,10 +31,11 @@ const specialSoldItems = new Map([
 	[itemID('Ancient relic'), 16_000_000]
 ]);
 
+export const CUSTOM_PRICE_CACHE = new Map<number, number>();
+
 export function sellPriceOfItem(item: Item, taxRate = 20): { price: number; basePrice: number } {
 	if (!item.price || !item.tradeable) return { price: 0, basePrice: 0 };
-	const customPrices = globalClient.settings.get(ClientSettings.CustomPrices);
-	let basePrice = customPrices[item.id] ?? item.price;
+	let basePrice = CUSTOM_PRICE_CACHE.get(item.id) ?? item.price;
 	let price = basePrice;
 	price = reduceNumByPercent(price, taxRate);
 	price = clamp(price, 0, MAX_INT_JAVA);

@@ -55,19 +55,21 @@ import {
 	formatItemReqs,
 	formatMissingItems,
 	formatPohBoosts,
-	hasMonsterRequirements,
 	isWeekend,
 	itemNameFromID,
 	randomVariation,
-	resolveAvailableItemBoosts,
-	stringMatches,
-	updateBankSetting
+	stringMatches
 } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import findMonster from '../../../lib/util/findMonster';
 import getOSItem from '../../../lib/util/getOSItem';
-import { mUserFetch } from '../../mahojiSettings';
+import {
+	hasMonsterRequirements,
+	mUserFetch,
+	resolveAvailableItemBoosts,
+	updateBankSetting
+} from '../../mahojiSettings';
 import { nexCommand } from './nexCommand';
 import { nightmareCommand } from './nightmareCommand';
 import { getPOH } from './pohCommand';

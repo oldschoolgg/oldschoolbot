@@ -6,11 +6,11 @@ import { Bank, Monsters } from 'oldschooljs';
 import TokkulShopItems from '../../lib/data/buyables/tokkulBuyables';
 import { KaramjaDiary, userhasDiaryTier } from '../../lib/diaries';
 import { TokkulShopOptions } from '../../lib/types/minions';
-import { formatDuration, stringMatches, updateBankSetting } from '../../lib/util';
+import { formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mUserFetch } from '../mahojiSettings';
+import { handleMahojiConfirmation, mUserFetch, updateBankSetting } from '../mahojiSettings';
 
 const { TzTokJad } = Monsters;
 

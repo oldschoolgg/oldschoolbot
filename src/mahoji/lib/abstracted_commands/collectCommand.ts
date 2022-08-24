@@ -6,10 +6,11 @@ import { MUser } from '../../../lib/MUser';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { Skills } from '../../../lib/types';
 import { CollectingOptions } from '../../../lib/types/minions';
-import { formatDuration, stringMatches, updateBankSetting } from '../../../lib/util';
+import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
+import { updateBankSetting } from '../../mahojiSettings';
 import { getPOH } from './pohCommand';
 
 export interface Collectable {

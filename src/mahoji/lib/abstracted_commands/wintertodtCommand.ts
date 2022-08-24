@@ -6,9 +6,10 @@ import { Eatables } from '../../../lib/data/eatables';
 import { warmGear } from '../../../lib/data/filterables';
 import { MUser } from '../../../lib/MUser';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, updateBankSetting } from '../../../lib/util';
+import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import { updateBankSetting } from '../../mahojiSettings';
 
 export async function wintertodtCommand(user: MUser, channelID: bigint) {
 	const fmLevel = user.skillLevel(SkillsEnum.Firemaking);

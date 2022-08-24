@@ -5,6 +5,7 @@ import { Bank, Clues, Monsters } from 'oldschooljs';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 import { table } from 'table';
 
+import { getKCByName } from '../../mahoji/mahojiSettings';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../minions/data/killableMonsters';
 import { sepulchreFloors } from '../minions/data/sepulchre';
 import {
@@ -18,7 +19,7 @@ import { getMinigameScore } from '../settings/minigames';
 import { NexNonUniqueTable, NexUniqueTable } from '../simulation/misc';
 import { allFarmingItems } from '../skilling/skills/farming';
 import { ItemBank } from '../types';
-import { addArrayOfNumbers, getKCByName, removeFromArr, shuffleRandom, stringMatches } from '../util';
+import { addArrayOfNumbers, removeFromArr, shuffleRandom, stringMatches } from '../util';
 import resolveItems from '../util/resolveItems';
 import {
 	abyssalSireCL,

@@ -3,9 +3,9 @@ import { Task } from 'klasa';
 
 import { ActivityGroup } from '../lib/constants';
 import { prisma } from '../lib/settings/prisma';
-import { ClientSettings } from '../lib/settings/types/ClientSettings';
 import { GroupMonsterActivityTaskOptions } from '../lib/types/minions';
 import { taskGroupFromActivity } from '../lib/util/taskGroupFromActivity';
+import { mahojiClientSettingsFetch } from '../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async init() {
@@ -49,8 +49,6 @@ export default class extends Task {
 	}
 
 	async analyticsTick() {
-		await globalClient.settings.sync(true);
-
 		const [numberOfMinions, totalSacrificed, numberOfIronmen, totalGP] = (
 			await Promise.all(
 				[
@@ -63,6 +61,7 @@ export default class extends Task {
 		).map((result: any) => parseInt(result[0].count)) as number[];
 
 		const taskCounts = await this.calculateMinionTaskCounts();
+		const currentClientSettings = await mahojiClientSettingsFetch();
 		await prisma.analytic.create({
 			data: {
 				guildsCount: this.client.guilds.cache.size,
@@ -76,19 +75,19 @@ export default class extends Task {
 				minionsCount: numberOfMinions,
 				totalSacrificed,
 				totalGP,
-				dicingBank: this.client.settings.get(ClientSettings.EconomyStats.DicingBank),
-				duelTaxBank: this.client.settings.get(ClientSettings.EconomyStats.DuelTaxBank),
-				dailiesAmount: this.client.settings.get(ClientSettings.EconomyStats.DailiesAmount),
-				gpAlching: this.client.settings.get(ClientSettings.EconomyStats.GPSourceAlching),
-				gpPvm: this.client.settings.get(ClientSettings.EconomyStats.GPSourcePVMLoot),
-				gpSellingItems: this.client.settings.get(ClientSettings.EconomyStats.GPSourceSellingItems),
-				gpPickpocket: this.client.settings.get(ClientSettings.EconomyStats.GPSourcePickpocket),
-				gpOpen: this.client.settings.get(ClientSettings.EconomyStats.GPSourceOpen),
-				gpDice: this.client.settings.get(ClientSettings.EconomyStats.GPSourceDice),
-				gpDaily: this.client.settings.get(ClientSettings.EconomyStats.GPSourceDaily),
-				gpLuckypick: this.client.settings.get(ClientSettings.EconomyStats.GPSourceLuckyPick),
-				gpSlots: this.client.settings.get(ClientSettings.EconomyStats.GPSourceSlots),
-				gpHotCold: this.client.settings.get(ClientSettings.EconomyStats.GPHotCold)
+				dicingBank: currentClientSettings.economyStats_dicingBank,
+				duelTaxBank: currentClientSettings.economyStats_duelTaxBank,
+				dailiesAmount: currentClientSettings.economyStats_dailiesAmount,
+				gpAlching: currentClientSettings.gp_alch,
+				gpPvm: currentClientSettings.gp_pvm,
+				gpSellingItems: currentClientSettings.gp_sell,
+				gpPickpocket: currentClientSettings.gp_pickpocket,
+				gpOpen: currentClientSettings.gp_open,
+				gpDice: currentClientSettings.gp_dice,
+				gpDaily: currentClientSettings.gp_daily,
+				gpLuckypick: currentClientSettings.gp_luckypick,
+				gpSlots: currentClientSettings.gp_slots,
+				gpHotCold: currentClientSettings.gp_hotcold
 			}
 		});
 	}

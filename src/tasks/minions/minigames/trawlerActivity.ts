@@ -7,10 +7,9 @@ import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { fishingTrawlerLoot } from '../../../lib/simulation/fishingTrawler';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { anglerBoostPercent } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { mUserFetch } from '../../../mahoji/mahojiSettings';
+import { anglerBoostPercent, mUserFetch } from '../../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: ActivityTaskOptionsWithQuantity) {

@@ -116,7 +116,7 @@ export class MUser {
 	}
 
 	get perkTier() {
-		return getUsersPerkTier(this.user);
+		return getUsersPerkTier(this);
 	}
 
 	skillLevel(skill: xp_gains_skill_enum) {

@@ -18,7 +18,7 @@ import { Minigames } from '../../lib/settings/minigames';
 import { minionActivityCache } from '../../lib/settings/settings';
 import Skills from '../../lib/skilling/skills';
 import creatures from '../../lib/skilling/skills/hunter/creatures';
-import { convertLVLtoXP, getKCByName, getUsername, isValidNickname } from '../../lib/util';
+import { convertLVLtoXP, getUsername, isValidNickname } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
@@ -39,7 +39,13 @@ import { dataPoints, statsCommand } from '../lib/abstracted_commands/statCommand
 import { allUsableItems, useCommand } from '../lib/abstracted_commands/useCommand';
 import { ownedItemOption, skillOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiUserSettingsUpdate, mUserFetch, patronMsg } from '../mahojiSettings';
+import {
+	getKCByName,
+	handleMahojiConfirmation,
+	mahojiUserSettingsUpdate,
+	mUserFetch,
+	patronMsg
+} from '../mahojiSettings';
 
 const patMessages = [
 	'You pat {name} on the head.',

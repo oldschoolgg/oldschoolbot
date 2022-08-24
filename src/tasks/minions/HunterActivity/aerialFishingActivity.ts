@@ -7,9 +7,9 @@ import Fishing from '../../../lib/skilling/skills/fishing';
 import aerialFishingCreatures from '../../../lib/skilling/skills/hunter/aerialFishing';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { anglerBoostPercent, rand, roll } from '../../../lib/util';
+import { rand, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { mUserFetch } from '../../../mahoji/mahojiSettings';
+import { anglerBoostPercent, mUserFetch } from '../../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: ActivityTaskOptionsWithQuantity) {

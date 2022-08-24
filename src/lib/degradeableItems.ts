@@ -1,10 +1,10 @@
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { mahojiUserSettingsUpdate } from '../mahoji/mahojiSettings';
+import { mahojiUserSettingsUpdate, updateBankSetting } from '../mahoji/mahojiSettings';
 import { GearSetupType } from './gear';
 import { MUser } from './MUser';
-import { assert, updateBankSetting } from './util';
+import { assert } from './util';
 import getOSItem from './util/getOSItem';
 
 interface DegradeableItem {

@@ -1,11 +1,11 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { ClueTiers } from '../../lib/clues/clueTiers';
-import { itemNameFromID, updateBankSetting } from '../../lib/util';
+import { itemNameFromID } from '../../lib/util';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiUsersSettingsFetch, mUserFetch } from '../mahojiSettings';
+import { handleMahojiConfirmation, mahojiUsersSettingsFetch, mUserFetch, updateBankSetting } from '../mahojiSettings';
 
 export const dropCommand: OSBMahojiCommand = {
 	name: 'drop',

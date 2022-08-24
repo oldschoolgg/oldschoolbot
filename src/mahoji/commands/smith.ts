@@ -6,11 +6,11 @@ import Smithing from '../../lib/skilling/skills/smithing';
 import smithables from '../../lib/skilling/skills/smithing/smithables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SmithingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, stringMatches, updateBankSetting } from '../../lib/util';
+import { formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { OSBMahojiCommand } from '../lib/util';
-import { mUserFetch } from '../mahojiSettings';
+import { mUserFetch, updateBankSetting } from '../mahojiSettings';
 
 export const smithCommand: OSBMahojiCommand = {
 	name: 'smith',

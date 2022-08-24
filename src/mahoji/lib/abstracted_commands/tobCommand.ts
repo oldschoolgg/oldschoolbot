@@ -20,10 +20,10 @@ import { getMinigameScore } from '../../../lib/settings/minigames';
 import { trackLoot } from '../../../lib/settings/prisma';
 import { MakePartyOptions } from '../../../lib/types';
 import { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
-import { channelIsSendable, formatDuration, updateBankSetting, updateLegacyUserBankSetting } from '../../../lib/util';
+import { channelIsSendable, formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import getOSItem from '../../../lib/util/getOSItem';
-import { mahojiParseNumber } from '../../mahojiSettings';
+import { mahojiParseNumber, updateBankSetting, updateLegacyUserBankSetting } from '../../mahojiSettings';
 
 export async function tobStatsCommand(user: MUser) {
 	const hardKC = await getMinigameScore(user.id, 'tob_hard');

@@ -7,11 +7,11 @@ import { MUser } from '../../../lib/MUser';
 import { getPOHObject, itemsNotRefundable, PoHObjects } from '../../../lib/poh';
 import { prisma } from '../../../lib/settings/prisma';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { itemNameFromID, updateBankSetting } from '../../../lib/util';
+import { itemNameFromID } from '../../../lib/util';
 import { stringMatches } from '../../../lib/util/cleanString';
 import getOSItem from '../../../lib/util/getOSItem';
 import PoHImage from '../../../tasks/pohImage';
-import { handleMahojiConfirmation, mahojiUserSettingsUpdate } from '../../mahojiSettings';
+import { handleMahojiConfirmation, mahojiUserSettingsUpdate, updateBankSetting } from '../../mahojiSettings';
 
 export const pohWallkits = [
 	{

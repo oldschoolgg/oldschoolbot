@@ -20,6 +20,7 @@ import { allCLItemsFiltered, allDroppedItems } from '../../lib/data/Collections'
 import { anglerOutfit, gnomeRestaurantCL } from '../../lib/data/CollectionsExport';
 import pets from '../../lib/data/pets';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../../lib/minions/data/killableMonsters';
+import { MUser } from '../../lib/MUser';
 import { MinigameName, Minigames } from '../../lib/settings/minigames';
 import { convertStoredActivityToFlatActivity, prisma } from '../../lib/settings/prisma';
 import Skills from '../../lib/skilling/skills';
@@ -147,7 +148,7 @@ LIMIT 10;`);
 	return { embeds: [embed] };
 }
 
-async function kcGains(user: User, interval: string, monsterName: string): CommandResponse {
+async function kcGains(user: MUser, interval: string, monsterName: string): CommandResponse {
 	if (getUsersPerkTier(user) < PerkTier.Four) return patronMsg(PerkTier.Four);
 	if (!TimeIntervals.includes(interval as any)) return 'Invalid time interval.';
 	const monster = killableMonsters.find(
@@ -305,7 +306,7 @@ LIMIT 10;`);
 	});
 }
 
-async function dryStreakCommand(user: User, monsterName: string, itemName: string, ironmanOnly: boolean) {
+async function dryStreakCommand(user: MUser, monsterName: string, itemName: string, ironmanOnly: boolean) {
 	if (getUsersPerkTier(user) < PerkTier.Four) return patronMsg(PerkTier.Four);
 
 	const item = getOSItem(itemName);
@@ -350,7 +351,7 @@ async function dryStreakCommand(user: User, monsterName: string, itemName: strin
 		.join('\n')}`;
 }
 
-async function mostDrops(user: User, itemName: string, ironmanOnly: boolean) {
+async function mostDrops(user: MUser, itemName: string, ironmanOnly: boolean) {
 	if (getUsersPerkTier(user) < PerkTier.Four) return patronMsg(PerkTier.Four);
 	const item = getItem(itemName);
 	const ironmanPart = ironmanOnly ? 'AND "minion.ironman" = true' : '';
@@ -708,18 +709,18 @@ export const toolsCommand: OSBMahojiCommand = {
 		if (options.patron) {
 			const { patron } = options;
 			if (patron.kc_gains) {
-				return kcGains(mahojiUser.user, patron.kc_gains.time, patron.kc_gains.monster);
+				return kcGains(mahojiUser, patron.kc_gains.time, patron.kc_gains.monster);
 			}
 			if (patron.drystreak) {
 				return dryStreakCommand(
-					mahojiUser.user,
+					mahojiUser,
 					patron.drystreak.monster,
 					patron.drystreak.item,
 					Boolean(patron.drystreak.ironman)
 				);
 			}
 			if (patron.mostdrops) {
-				return mostDrops(mahojiUser.user, patron.mostdrops.item, Boolean(patron.mostdrops.ironman));
+				return mostDrops(mahojiUser, patron.mostdrops.item, Boolean(patron.mostdrops.ironman));
 			}
 			if (patron.sacrificed_bank) {
 				if (getUsersPerkTier(mahojiUser) < PerkTier.Two) return patronMsg(PerkTier.Two);

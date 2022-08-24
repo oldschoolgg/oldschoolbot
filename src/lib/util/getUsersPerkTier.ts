@@ -1,11 +1,9 @@
-import { User as MahojiUser } from '@prisma/client';
 import { User } from 'discord.js';
 import { notEmpty, Time } from 'e';
 
 import { mahojiUserSettingsUpdate } from '../../mahoji/mahojiSettings';
 import { BitField, PerkTier, Roles } from '../constants';
 import { MUser } from '../MUser';
-import { UserSettings } from '../settings/types/UserSettings';
 import { getSupportGuild } from '../util';
 import { logError } from './logError';
 
@@ -16,7 +14,7 @@ const tier3ElligibleBits = [
 	BitField.IsWikiContributor
 ];
 
-export function patronMaxTripCalc(user: MUser | MahojiUser | MUser) {
+export function patronMaxTripCalc(user: MUser) {
 	const perkTier = getUsersPerkTier(user);
 	if (perkTier === PerkTier.Two) return Time.Minute * 3;
 	else if (perkTier === PerkTier.Three) return Time.Minute * 6;
@@ -25,13 +23,12 @@ export function patronMaxTripCalc(user: MUser | MahojiUser | MUser) {
 }
 
 export default function getUsersPerkTier(
-	userOrBitfield: MUser | MahojiUser | readonly BitField[],
+	userOrBitfield: MUser | readonly BitField[],
 	noCheckOtherAccounts?: boolean
 ): PerkTier | 0 {
-	const isMahojiUser = typeof userOrBitfield === 'object' && 'main_account' in userOrBitfield;
-	if (noCheckOtherAccounts !== true && isMahojiUser) {
-		let main = userOrBitfield.main_account;
-		const allAccounts: string[] = [...userOrBitfield.ironman_alts, userOrBitfield.id];
+	if (noCheckOtherAccounts !== true && userOrBitfield instanceof MUser) {
+		let main = userOrBitfield.user.main_account;
+		const allAccounts: string[] = [...userOrBitfield.user.ironman_alts, userOrBitfield.id];
 		if (main) {
 			allAccounts.push(main);
 		}
@@ -39,7 +36,8 @@ export default function getUsersPerkTier(
 		const allAccountTiers = allAccounts
 			.map(id => globalClient.users.cache.get(id))
 			.filter(notEmpty)
-			.map(t => getUsersPerkTier(t, true));
+			// FIX
+			.map(t => getUsersPerkTier(t as any, true));
 
 		const highestAccountTier = Math.max(0, ...allAccountTiers);
 		return highestAccountTier;
@@ -51,9 +49,10 @@ export default function getUsersPerkTier(
 		}
 
 		const allAccountTiers = allAccounts
-			.map(id => userOrBitfield.client.users.cache.get(id))
+			.map(id => globalClient.users.cache.get(id))
 			.filter(notEmpty)
-			.map(t => getUsersPerkTier(t, true));
+			// FI XHTIS TODOTDOTODTODTDTODTO
+			.map(t => getUsersPerkTier(t as any, true));
 
 		const highestAccountTier = Math.max(0, ...allAccountTiers);
 		return highestAccountTier;
@@ -63,19 +62,12 @@ export default function getUsersPerkTier(
 		return 10;
 	}
 
-	const bitfield =
-		userOrBitfield instanceof MUser
-			? userOrBitfield.user.bitfield
-			: isMahojiUser
-			? userOrBitfield.bitfield
-			: userOrBitfield instanceof User
-			? userOrBitfield.settings.get(UserSettings.BitField)
-			: userOrBitfield;
+	const bitfield = userOrBitfield instanceof MUser ? userOrBitfield.bitfield : userOrBitfield;
 
-	if (isMahojiUser && userOrBitfield.premium_balance_tier !== null) {
-		const date = userOrBitfield.premium_balance_expiry_date;
+	if (userOrBitfield instanceof MUser && userOrBitfield.user.premium_balance_tier !== null) {
+		const date = userOrBitfield.user.premium_balance_expiry_date;
 		if (date && Date.now() < date) {
-			return userOrBitfield.premium_balance_tier + 1;
+			return userOrBitfield.user.premium_balance_tier + 1;
 		} else if (date && Date.now() > date) {
 			mahojiUserSettingsUpdate(userOrBitfield.id, {
 				premium_balance_tier: null,
@@ -83,19 +75,6 @@ export default function getUsersPerkTier(
 			}).catch(e => {
 				logError(e, { user_id: userOrBitfield.id, message: 'Could not remove premium time' });
 			});
-		}
-	} else if (
-		userOrBitfield instanceof User &&
-		userOrBitfield.settings.get(UserSettings.PremiumBalanceTier) !== null
-	) {
-		const date = userOrBitfield.settings.get(UserSettings.PremiumBalanceExpiryDate);
-		if (date && Date.now() < date) {
-			return userOrBitfield.settings.get(UserSettings.PremiumBalanceTier)! + 1;
-		} else if (date && Date.now() > date) {
-			userOrBitfield.settings.update([
-				[UserSettings.PremiumBalanceExpiryDate, null],
-				[UserSettings.PremiumBalanceTier, null]
-			]);
 		}
 	}
 
@@ -122,8 +101,8 @@ export default function getUsersPerkTier(
 	if (bitfield.includes(BitField.HasPermanentTierOne)) {
 		return PerkTier.Two;
 	}
-	// This can be combined into one block because both the Mahoji/DB User type and [Klasa]User class have `id` member
-	if (isMahojiUser || userOrBitfield instanceof User) {
+
+	if (userOrBitfield instanceof MUser) {
 		const supportGuild = getSupportGuild();
 		const member = supportGuild?.members.cache.get(userOrBitfield.id);
 		if (member && [Roles.Booster].some(roleID => member.roles.cache.has(roleID))) {

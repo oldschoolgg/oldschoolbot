@@ -9,11 +9,11 @@ import { createTeam } from '../../../lib/data/cox';
 import { trackLoot } from '../../../lib/settings/prisma';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import { RaidsOptions } from '../../../lib/types/minions';
-import { roll, updateBankSetting } from '../../../lib/util';
+import { roll } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import resolveItems from '../../../lib/util/resolveItems';
-import { mahojiUserSettingsUpdate, mUserFetch } from '../../../mahoji/mahojiSettings';
+import { mahojiUserSettingsUpdate, mUserFetch, updateBankSetting } from '../../../mahoji/mahojiSettings';
 
 const notPurple = resolveItems(['Torn prayer scroll', 'Dark relic', 'Onyx']);
 const greenItems = resolveItems(['Twisted ancestral colour kit']);

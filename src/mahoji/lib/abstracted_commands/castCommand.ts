@@ -5,10 +5,11 @@ import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { MUser } from '../../../lib/MUser';
 import { Castables } from '../../../lib/skilling/skills/magic/castables';
 import { CastingActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, stringMatches, updateBankSetting } from '../../../lib/util';
+import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../../lib/util/determineRunes';
+import { updateBankSetting } from '../../mahojiSettings';
 
 export async function castCommand(channelID: bigint, user: MUser, name: string, quantity: number | undefined) {
 	const spell = Castables.find(spell => stringMatches(spell.name, name));

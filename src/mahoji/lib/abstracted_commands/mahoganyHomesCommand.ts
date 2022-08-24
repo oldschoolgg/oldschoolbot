@@ -7,11 +7,11 @@ import { getMinigameScore } from '../../../lib/settings/minigames';
 import { Plank } from '../../../lib/skilling/skills/construction/constructables';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { MahoganyHomesActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, stringMatches, updateBankSetting } from '../../../lib/util';
+import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
-import { mahojiUserSettingsUpdate } from '../../mahojiSettings';
+import { mahojiUserSettingsUpdate, updateBankSetting } from '../../mahojiSettings';
 
 const contractTiers = [
 	{

@@ -1,7 +1,7 @@
 import { Activity, NewUser, Prisma } from '@prisma/client';
 import { GuildMember, MessageAttachment } from 'discord.js';
 import { roll } from 'e';
-import { Gateway, KlasaMessage, Settings } from 'klasa';
+import { KlasaMessage } from 'klasa';
 import { APIInteractionGuildMember } from 'mahoji';
 
 import { CommandArgs } from '../../mahoji/lib/inhibitors';
@@ -22,14 +22,6 @@ import { taskNameFromType } from '../util/taskNameFromType';
 import { convertStoredActivityToFlatActivity, prisma } from './prisma';
 
 export * from './minigames';
-
-export async function getUserSettings(userID: string): Promise<Settings> {
-	return (globalClient.gateways.get('users') as Gateway)!
-		.acquire({
-			id: userID
-		})
-		.sync(true);
-}
 
 export async function getNewUser(id: string): Promise<NewUser> {
 	const value = await prisma.newUser.findUnique({ where: { id } });

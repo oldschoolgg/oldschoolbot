@@ -8,13 +8,18 @@ import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
 import Farming from '../../lib/skilling/skills/farming';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FarmingActivityTaskOptions } from '../../lib/types/minions';
-import { assert, rand, roll, updateBankSetting } from '../../lib/util';
+import { assert, rand, roll } from '../../lib/util';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import { getFarmingKeyFromName } from '../../lib/util/farmingHelpers';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { logError } from '../../lib/util/logError';
 import { sendToChannelID } from '../../lib/util/webhook';
-import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch, mUserFetch } from '../../mahoji/mahojiSettings';
+import {
+	mahojiUserSettingsUpdate,
+	mahojiUsersSettingsFetch,
+	mUserFetch,
+	updateBankSetting
+} from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: FarmingActivityTaskOptions) {

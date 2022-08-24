@@ -6,11 +6,11 @@ import { MUser } from '../../lib/MUser';
 import { courses } from '../../lib/skilling/skills/agility';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { AgilityActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, stringMatches, updateBankSetting } from '../../lib/util';
+import { formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { OSBMahojiCommand } from '../lib/util';
-import { mUserFetch } from '../mahojiSettings';
+import { mUserFetch, updateBankSetting } from '../mahojiSettings';
 
 const unlimitedFireRuneProviders = [
 	'Staff of fire',

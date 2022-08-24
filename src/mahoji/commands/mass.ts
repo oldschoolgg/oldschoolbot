@@ -11,12 +11,12 @@ import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { KillableMonster } from '../../lib/minions/types';
 import { MUser } from '../../lib/MUser';
 import { GroupMonsterActivityTaskOptions } from '../../lib/types/minions';
-import { channelIsSendable, formatDuration, hasMonsterRequirements } from '../../lib/util';
+import { channelIsSendable, formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../lib/util/calcMassDurationQuantity';
 import findMonster from '../../lib/util/findMonster';
 import { OSBMahojiCommand } from '../lib/util';
-import { mUserFetch } from '../mahojiSettings';
+import { hasMonsterRequirements, mUserFetch } from '../mahojiSettings';
 
 function checkReqs(users: MUser[], monster: KillableMonster, quantity: number) {
 	// Check if every user has the requirements for this monster.

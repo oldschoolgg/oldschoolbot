@@ -2,6 +2,7 @@ import { Activity, activity_type_enum, loot_track_type, Prisma, PrismaClient } f
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { CLIENT_ID } from '../../config';
 import { ItemBank } from '../types';
 import { ActivityTaskData } from '../types/minions';
 import { cleanString } from '../util';
@@ -107,4 +108,29 @@ export async function trackLoot(opts: TrackLootOptions) {
 			type: opts.type
 		}
 	});
+}
+
+export async function addToGPTaxBalance(userID: bigint | string, amount: number) {
+	await Promise.all([
+		prisma.clientStorage.update({
+			where: {
+				id: CLIENT_ID
+			},
+			data: {
+				gp_tax_balance: {
+					increment: amount
+				}
+			}
+		}),
+		prisma.user.update({
+			where: {
+				id: userID.toString()
+			},
+			data: {
+				total_gp_traded: {
+					increment: amount
+				}
+			}
+		})
+	]);
 }

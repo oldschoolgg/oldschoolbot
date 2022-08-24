@@ -5,9 +5,9 @@ import LootTable from 'oldschooljs/dist/structures/LootTable';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { GnomeRestaurantActivityTaskOptions } from '../../../lib/types/minions';
-import { roll, updateBankSetting } from '../../../lib/util';
+import { roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { mUserFetch } from '../../../mahoji/mahojiSettings';
+import { mUserFetch, updateBankSetting } from '../../../mahoji/mahojiSettings';
 
 const tipTable = new LootTable()
 	.oneIn(210, 'Gnome scarf')

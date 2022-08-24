@@ -4,9 +4,10 @@ import { Bank } from 'oldschooljs';
 import { MUser } from '../../../lib/MUser';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, updateBankSetting } from '../../../lib/util';
+import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import { updateBankSetting } from '../../mahojiSettings';
 
 export async function roguesDenCommand(user: MUser, channelID: bigint) {
 	if (user.minionIsBusy) return `${user.minionName} is busy.`;

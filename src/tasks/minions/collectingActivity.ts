@@ -4,10 +4,9 @@ import { Bank } from 'oldschooljs';
 
 import { MorytaniaDiary, userhasDiaryTier } from '../../lib/diaries';
 import { CollectingOptions } from '../../lib/types/minions';
-import { updateBankSetting } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { collectables } from '../../mahoji/lib/abstracted_commands/collectCommand';
-import { mUserFetch } from '../../mahoji/mahojiSettings';
+import { mUserFetch, updateBankSetting } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: CollectingOptions) {

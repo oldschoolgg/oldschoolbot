@@ -4,8 +4,8 @@ import { MessageAttachment } from 'discord.js';
 import { Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
-import { prisma } from '../../lib/settings/prisma';
-import { addToGPTaxBalance, channelIsSendable, getSupportGuild } from '../../lib/util';
+import { addToGPTaxBalance, prisma } from '../../lib/settings/prisma';
+import { channelIsSendable, getSupportGuild } from '../../lib/util';
 import { logError } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';

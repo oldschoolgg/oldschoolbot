@@ -6,20 +6,14 @@ import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { Stealable, stealables } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
-import {
-	formatDuration,
-	getSkillsOfMahojiUser,
-	rand,
-	rogueOutfitPercentBonus,
-	updateBankSetting
-} from '../../lib/util';
+import { formatDuration, getSkillsOfMahojiUser, rand } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
 import { logError } from '../../lib/util/logError';
 import { calcLootXPPickpocketing } from '../../tasks/minions/pickpocketActivity';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch, mUserFetch } from '../mahojiSettings';
+import { mahojiUsersSettingsFetch, mUserFetch, rogueOutfitPercentBonus, updateBankSetting } from '../mahojiSettings';
 
 export const stealCommand: OSBMahojiCommand = {
 	name: 'steal',

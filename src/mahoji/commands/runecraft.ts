@@ -6,12 +6,12 @@ import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { darkAltarCommand } from '../../lib/minions/functions/darkAltarCommand';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import { RunecraftActivityTaskOptions } from '../../lib/types/minions';
-import { calcMaxRCQuantity, formatDuration, stringMatches, toTitleCase, updateBankSetting } from '../../lib/util';
+import { formatDuration, stringMatches, toTitleCase } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../lib/util/determineRunes';
 import { OSBMahojiCommand } from '../lib/util';
-import { mUserFetch, userHasGracefulEquipped } from '../mahojiSettings';
+import { calcMaxRCQuantity, mUserFetch, updateBankSetting, userHasGracefulEquipped } from '../mahojiSettings';
 
 export const runecraftCommand: OSBMahojiCommand = {
 	name: 'runecraft',

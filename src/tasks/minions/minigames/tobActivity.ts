@@ -9,11 +9,16 @@ import { trackLoot } from '../../../lib/settings/prisma';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import { TheatreOfBlood } from '../../../lib/simulation/tob';
 import { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
-import { convertPercentChance, updateBankSetting, updateLegacyUserBankSetting } from '../../../lib/util';
+import { convertPercentChance } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { sendToChannelID } from '../../../lib/util/webhook';
-import { mahojiUserSettingsUpdate, mUserFetch } from '../../../mahoji/mahojiSettings';
+import {
+	mahojiUserSettingsUpdate,
+	mUserFetch,
+	updateBankSetting,
+	updateLegacyUserBankSetting
+} from '../../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: TheatreOfBloodTaskOptions) {

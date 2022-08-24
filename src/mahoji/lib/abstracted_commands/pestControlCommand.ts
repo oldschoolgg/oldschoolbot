@@ -8,7 +8,7 @@ import { MUser } from '../../../lib/MUser';
 import { getMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
-import { combatLevel, formatDuration, stringMatches, toTitleCase } from '../../../lib/util';
+import { formatDuration, stringMatches, toTitleCase } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
@@ -150,7 +150,7 @@ export async function pestControlBuyCommand(user: MUser, input: string) {
 
 export async function pestControlStartCommand(user: MUser, channelID: bigint) {
 	if (minionIsBusy(user.id)) return `${user.minionName} is busy.`;
-	if (combatLevel(user) < 40) {
+	if (user.combatLevel < 40) {
 		return 'You need a combat level of at least 40 to do Pest Control.';
 	}
 
@@ -182,7 +182,7 @@ export async function pestControlStartCommand(user: MUser, channelID: bigint) {
 		minigameID: 'pest_control'
 	});
 
-	let [boat] = getBoatType(combatLevel(user));
+	let [boat] = getBoatType(user.combatLevel);
 
 	let str = `${
 		user.minionName

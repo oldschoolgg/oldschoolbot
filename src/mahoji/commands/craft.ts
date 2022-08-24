@@ -5,12 +5,12 @@ import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
 import { Craftables } from '../../lib/skilling/skills/crafting/craftables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { CraftingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, updateBankSetting } from '../../lib/util';
+import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
 import { OSBMahojiCommand } from '../lib/util';
-import { mUserFetch } from '../mahojiSettings';
+import { mUserFetch, updateBankSetting } from '../mahojiSettings';
 
 export const craftCommand: OSBMahojiCommand = {
 	name: 'craft',

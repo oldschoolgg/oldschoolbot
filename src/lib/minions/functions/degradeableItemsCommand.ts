@@ -2,10 +2,15 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
-import { handleMahojiConfirmation, mahojiParseNumber, mahojiUserSettingsUpdate } from '../../../mahoji/mahojiSettings';
+import {
+	handleMahojiConfirmation,
+	mahojiParseNumber,
+	mahojiUserSettingsUpdate,
+	updateBankSetting
+} from '../../../mahoji/mahojiSettings';
 import { degradeableItems } from '../../degradeableItems';
 import { MUser } from '../../MUser';
-import { stringMatches, updateBankSetting } from '../../util';
+import { stringMatches } from '../../util';
 
 export async function degradeableItemsCommand(
 	interaction: SlashCommandInteraction,

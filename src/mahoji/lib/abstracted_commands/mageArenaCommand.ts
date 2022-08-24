@@ -5,8 +5,9 @@ import { SkillsEnum } from 'oldschooljs/dist/constants';
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
 import { MUser } from '../../../lib/MUser';
 import { ActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, randomVariation, updateBankSetting } from '../../../lib/util';
+import { formatDuration, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { updateBankSetting } from '../../mahojiSettings';
 
 export async function mageArenaCommand(user: MUser, channelID: bigint) {
 	if (user.skillLevel(SkillsEnum.Magic) < 60) {

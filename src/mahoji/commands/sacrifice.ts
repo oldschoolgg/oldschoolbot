@@ -6,7 +6,7 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { Events } from '../../lib/constants';
 import { cats } from '../../lib/growablePets';
 import minionIcons from '../../lib/minions/data/minionIcons';
-import { toKMB, updateBankSetting } from '../../lib/util';
+import { toKMB } from '../../lib/util';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
@@ -14,7 +14,8 @@ import {
 	handleMahojiConfirmation,
 	mahojiUserSettingsUpdate,
 	mahojiUsersSettingsFetch,
-	mUserFetch
+	mUserFetch,
+	updateBankSetting
 } from '../mahojiSettings';
 import { sellPriceOfItem } from './sell';
 

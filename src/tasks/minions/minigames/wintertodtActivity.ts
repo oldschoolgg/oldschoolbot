@@ -10,10 +10,9 @@ import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
 import Firemaking from '../../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { updateBankSetting } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { mUserFetch } from '../../../mahoji/mahojiSettings';
+import { mUserFetch, updateBankSetting } from '../../../mahoji/mahojiSettings';
 
 const PointsTable = new SimpleTable<number>()
 	.add(420)

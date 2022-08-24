@@ -18,8 +18,9 @@ import { getMinigameScore } from '../../../lib/settings/minigames';
 import { trackLoot } from '../../../lib/settings/prisma';
 import { MakePartyOptions } from '../../../lib/types';
 import { RaidsOptions } from '../../../lib/types/minions';
-import { channelIsSendable, formatDuration, updateBankSetting } from '../../../lib/util';
+import { channelIsSendable, formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { updateBankSetting } from '../../mahojiSettings';
 
 const uniques = [
 	'Dexterous prayer scroll',

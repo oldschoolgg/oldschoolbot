@@ -7,9 +7,9 @@ import { gotFavour } from '../../lib/minions/data/kourendFavour';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
-import { stringMatches, updateBankSetting } from '../../lib/util';
+import { stringMatches } from '../../lib/util';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mUserFetch, userStatsBankUpdate } from '../mahojiSettings';
+import { handleMahojiConfirmation, mUserFetch, updateBankSetting, userStatsBankUpdate } from '../mahojiSettings';
 
 function showAllCreatables() {
 	let content = 'This are the items that you can create:';

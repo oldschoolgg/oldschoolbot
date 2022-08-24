@@ -1,7 +1,7 @@
+import { resolveAvailableItemBoosts } from '../../../mahoji/mahojiSettings';
 import { MUser } from '../../MUser';
 import { calcPOHBoosts } from '../../poh';
 import { prisma } from '../../settings/prisma';
-import { resolveAvailableItemBoosts } from '../../util';
 import { KillableMonster } from '../types';
 import reducedTimeFromKC from './reducedTimeFromKC';
 

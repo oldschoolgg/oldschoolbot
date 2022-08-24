@@ -5,9 +5,9 @@ import { Emoji, Events } from '../../lib/constants';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { RunecraftActivityTaskOptions } from '../../lib/types/minions';
-import { calcMaxRCQuantity, roll } from '../../lib/util';
+import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { mUserFetch } from '../../mahoji/mahojiSettings';
+import { calcMaxRCQuantity, mUserFetch } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: RunecraftActivityTaskOptions) {
