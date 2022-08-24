@@ -2038,9 +2038,9 @@ const Createables: Createable[] = [
 		}
 	},
 	{
-		name: 'Crystal shard',
+		name: 'Crystal dust',
 		inputItems: new Bank({
-			'Crystal dust': 1
+			'Crystal shard': 1
 		}),
 		outputItems: {
 			[itemID('Crystal dust')]: 10
