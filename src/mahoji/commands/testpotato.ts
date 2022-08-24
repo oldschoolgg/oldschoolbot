@@ -704,7 +704,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						.add('Crystal acorn', 100)
 						.add('Grand crystal acorn', 100);
 
-					const currentBitfields = mahojiUser?.bitfield ?? [];
+					const currentBitfields = mahojiUser.bitfield ?? [];
 					await mahojiUserSettingsUpdate(user.id, {
 						gear_melee: melee.raw() as Prisma.InputJsonObject,
 						gear_mage: mage.raw() as Prisma.InputJsonObject,
