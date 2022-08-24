@@ -814,10 +814,10 @@ const specialPlants: Plant[] = [
 		outputCrop: itemID('Crystal shard'),
 		variableYield: true,
 		variableOutputAmount: [
-			[null, 10, 20],
-			['compost', 10, 20],
-			['supercompost', 15, 20],
-			['ultracompost', 20, 25]
+			[null, 8, 10],
+			['compost', 10, 12],
+			['supercompost', 12, 14],
+			['ultracompost', 14, 16]
 		],
 		treeWoodcuttingLevel: 1,
 		name: 'Crystal tree',
