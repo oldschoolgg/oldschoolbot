@@ -10,7 +10,7 @@ export function brewRestoreSupplyCalc(
 	const itemBank = new Bank();
 
 	let totalBrews = 0;
-	const enhancedBrews = userItems.amount('Enhanced Saradomin brew');
+	const enhancedBrews = userItems.amount('Enhanced saradomin brew');
 	const brews = userItems.amount('Saradomin brew(4)');
 
 	totalBrews += enhancedBrews * 2;
@@ -19,12 +19,12 @@ export function brewRestoreSupplyCalc(
 		itemBank.add('Enhanced saradomin brew', enhancedBrews);
 		totalBrews += brews;
 		if (totalBrews >= brewsNeeded) {
-			itemBank.add('Saradomin Brew (4)', brewsNeeded - enhancedBrews * 2);
+			itemBank.add('Saradomin brew (4)', brewsNeeded - enhancedBrews * 2);
 		} else {
 			return {
 				hasEnough: false,
 				foodBank: itemBank,
-				foodReason: `${user.username} does not have enough saradomin brews. ${enhancedBrews} enhanced & ${brews} normal found, ${brewsNeeded} required (enhanced count for 2).`
+				foodReason: `${user.username} does not have enough Saradomin brews. ${enhancedBrews} enhanced & ${brews} normal found, ${brewsNeeded} required (enhanced count for 2).`
 			};
 		}
 	}
@@ -40,12 +40,12 @@ export function brewRestoreSupplyCalc(
 		itemBank.add('Enhanced super restore', enhancedRestores);
 		totalRestores += restores;
 		if (totalRestores >= restoresNeeded) {
-			itemBank.add('Super Restore (4)', restoresNeeded - enhancedRestores * 2);
+			itemBank.add('Super restore (4)', restoresNeeded - enhancedRestores * 2);
 		} else {
 			return {
 				hasEnough: false,
 				foodBank: itemBank,
-				foodReason: `${user.username} does not have enough super restores. ${enhancedRestores} enhanced & ${restores} normal found, ${restoresNeeded} required (enhanced count for 2).`
+				foodReason: `${user.username} does not have enough Super restores. ${enhancedRestores} enhanced & ${restores} normal found, ${restoresNeeded} required (enhanced count for 2).`
 			};
 		}
 	}
