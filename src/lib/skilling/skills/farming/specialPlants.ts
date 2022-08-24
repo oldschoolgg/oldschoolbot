@@ -868,7 +868,7 @@ const specialPlants: Plant[] = [
 			'Monkey bar': 1,
 			'Ground tooth': 1
 		}).freeze(),
-		needsChopForHarvest: false,
+		needsChopForHarvest: true,
 		fixedOutput: false,
 		givesLogs: false,
 		givesCrops: false,
@@ -1055,7 +1055,7 @@ const specialPlants: Plant[] = [
 		chance1: 0,
 		chance99: 0,
 		chanceOfDeath: 0,
-		needsChopForHarvest: true,
+		needsChopForHarvest: false,
 		fixedOutput: false,
 		givesLogs: false,
 		givesCrops: true,
