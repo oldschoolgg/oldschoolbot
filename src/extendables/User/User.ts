@@ -1,11 +1,10 @@
 import { User } from 'discord.js';
 import { objectEntries } from 'e';
-import { Extendable, ExtendableStore, KlasaClient, KlasaUser, SettingsFolder } from 'klasa';
+import { Extendable, ExtendableStore, KlasaClient, SettingsFolder } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
-import PromiseQueue from 'p-queue';
 
-import { Events, PerkTier, userQueues } from '../../lib/constants';
+import { Events, PerkTier } from '../../lib/constants';
 import { readableStatName } from '../../lib/gear';
 import { KillableMonster } from '../../lib/minions/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -105,22 +104,6 @@ export default class extends Extendable {
 	}
 
 	// @ts-ignore 2784
-	public getUpdateQueue(this: User) {
-		let currentQueue = userQueues.get(this.id);
-		if (!currentQueue) {
-			let queue = new PromiseQueue({ concurrency: 1 });
-			userQueues.set(this.id, queue);
-			return queue;
-		}
-		return currentQueue;
-	}
-
-	public async queueFn(this: User, fn: (user: KlasaUser) => Promise<void>) {
-		const queue = this.getUpdateQueue();
-		return queue.add(() => fn(this));
-	}
-
-	// @ts-ignore 2784
 	public get perkTier(this: User): PerkTier {
 		return getUsersPerkTier(this);
 	}
@@ -136,6 +119,6 @@ export default class extends Extendable {
 	}
 
 	public usingPet(this: User, name: string) {
-		return this.equippedPet() === itemID(name);
+		return this.settings.get(UserSettings.Minion.EquippedPet) === itemID(name);
 	}
 }

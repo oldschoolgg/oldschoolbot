@@ -942,8 +942,8 @@ const Buyables: Buyable[] = [
 	},
 	{
 		name: 'Rolling pin',
-		gpCost: 1000,
-		ironmanPrice: 100
+		gpCost: 50_000,
+		ironmanPrice: 18_720
 	},
 	{
 		name: 'Adamant halberd',

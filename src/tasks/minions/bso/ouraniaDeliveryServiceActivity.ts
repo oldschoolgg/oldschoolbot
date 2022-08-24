@@ -12,7 +12,6 @@ import { SkillsEnum } from '../../../lib/skilling/types';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { updateBankSetting } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import itemID from '../../../lib/util/itemID';
 
 const boxTable = new LootTable()
 	.add('Tradeable mystery box', [1, 2], 100)
@@ -36,7 +35,7 @@ export default class extends Task {
 		const user = await this.client.fetchUser(userID);
 		const level = user.skillLevel(SkillsEnum.Magic);
 		let tokens = Math.floor((quantity / 2) * 3.235 * (level / 25 + 1));
-		if (user.equippedPet() === itemID('Flappy')) {
+		if (user.usingPet('Flappy')) {
 			tokens *= 2;
 		}
 

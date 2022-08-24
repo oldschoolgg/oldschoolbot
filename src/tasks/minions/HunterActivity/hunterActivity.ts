@@ -87,7 +87,7 @@ export default class extends Task {
 				died = true;
 				const { hasEnough, foodBank } = brewRestoreSupplyCalc(user, 10, 5);
 				if (hasEnough) {
-					await user.removeItemsFromBank(foodBank);
+					await transactItems({ userID: user.id, itemsToRemove: foodBank });
 				}
 				const newGear = { ...user.settings.get(UserSettings.Gear.Wildy) };
 				newGear[EquipmentSlot.Body] = null;
@@ -104,7 +104,7 @@ export default class extends Task {
 					let lostRestore = rand(1, 5);
 					const { hasEnough, foodBank } = brewRestoreSupplyCalc(user, lostBrew, lostRestore);
 					if (hasEnough) {
-						await user.removeItemsFromBank(foodBank);
+						await transactItems({ userID: user.id, itemsToRemove: foodBank });
 					}
 					pkStr = `Your minion got attacked during the activity, escaped, lost some catch quantity and ${foodBank}.`;
 					pkedQuantity = 0.1 * successfulQuantity;
@@ -162,6 +162,7 @@ export default class extends Task {
 		}
 
 		await user.incrementCreatureScore(creature.id, Math.floor(successfulQuantity));
+
 		xpStr += await user.addXP({
 			skillName: SkillsEnum.Hunter,
 			amount: xpReceived,
@@ -186,7 +187,11 @@ export default class extends Task {
 			}
 		}
 
-		await user.addItemsToBank({ items: loot, collectionLog: true });
+		await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 
 		str += `\n\nYou received: ${loot}.${magicSecStr.length > 1 ? magicSecStr : ''}`;
 

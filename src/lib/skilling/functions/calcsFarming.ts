@@ -1,8 +1,9 @@
 import { KlasaUser } from 'klasa';
 
+import { userHasMasterFarmerOutfit } from '../../../mahoji/mahojiSettings';
 import { BitField } from '../../constants';
 import { Favours, gotFavour } from '../../minions/data/kourendFavour';
-import { rand, userHasMasterFarmerOutfit } from '../../util';
+import { rand } from '../../util';
 import { Plant, SkillsEnum } from '../types';
 
 export function calcNumOfPatches(plant: Plant, user: KlasaUser, qp: number): [number, string | undefined] {

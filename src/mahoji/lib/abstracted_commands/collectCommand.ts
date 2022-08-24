@@ -225,7 +225,7 @@ export async function collectCommand(
 		if (!user.owns(cost)) {
 			return `You don't have the items needed for this trip, you need: ${cost}.`;
 		}
-		await user.removeItemsFromBank(cost);
+		await transactItems({ userID: user.id, itemsToRemove: cost });
 
 		await updateBankSetting(user.client, ClientSettings.EconomyStats.CollectingCost, cost);
 	}

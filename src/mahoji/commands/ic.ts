@@ -17,7 +17,7 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { DragonTable } from '../../lib/simulation/grandmasterClue';
 import { allThirdAgeItems, runeAlchablesTable } from '../../lib/simulation/sharedTables';
-import { formatDuration, itemID, updateBankSetting, updateGPTrackSetting } from '../../lib/util';
+import { formatDuration, itemID, updateBankSetting } from '../../lib/util';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';
 import { itemContractResetTime } from '../../lib/util/getUsersPerkTier';
@@ -29,6 +29,7 @@ import {
 	handleMahojiConfirmation,
 	mahojiUserSettingsUpdate,
 	mahojiUsersSettingsFetch,
+	updateGPTrackSetting,
 	userStatsBankUpdate
 } from '../mahojiSettings';
 

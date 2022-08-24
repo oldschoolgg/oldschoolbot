@@ -23,7 +23,16 @@ export default class extends Task {
 		}
 		const totalQuantity = quantity * colQuantity;
 		const loot = new Bank().add(collectable.item.id, totalQuantity);
-		await user.addItemsToBank({ items: loot, collectionLog: true });
+		await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
+		await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 
 		let str = `${user}, ${user.minionName} finished collecting ${totalQuantity}x ${
 			collectable.item.name

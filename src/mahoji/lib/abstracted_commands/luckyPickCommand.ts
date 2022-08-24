@@ -7,9 +7,9 @@ import { toKMB } from 'oldschooljs/dist/util';
 
 import { SILENT_ERROR } from '../../../lib/constants';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
-import { channelIsSendable, updateGPTrackSetting } from '../../../lib/util';
+import { channelIsSendable } from '../../../lib/util';
 import { logError } from '../../../lib/util/logError';
-import { handleMahojiConfirmation, mahojiParseNumber } from '../../mahojiSettings';
+import { handleMahojiConfirmation, mahojiParseNumber, updateGPTrackSetting } from '../../mahojiSettings';
 
 export async function luckyPickCommand(
 	klasaUser: KlasaUser,

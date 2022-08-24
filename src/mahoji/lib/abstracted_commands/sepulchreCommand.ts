@@ -5,7 +5,7 @@ import { addArrayOfNumbers } from 'oldschooljs/dist/util';
 
 import { sepulchreBoosts, sepulchreFloors } from '../../../lib/minions/data/sepulchre';
 import { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, itemID, itemNameFromID } from '../../../lib/util';
+import { formatDuration, itemNameFromID } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
@@ -40,7 +40,7 @@ export async function sepulchreCommand(user: KlasaUser, channelID: bigint) {
 
 	lapLength = reduceNumByPercent(lapLength, percentReduced);
 
-	const hasCob = user.equippedPet() === itemID('Cob');
+	const hasCob = user.usingPet('Cob');
 
 	if (hasCob) {
 		lapLength /= 2;

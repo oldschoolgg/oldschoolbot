@@ -33,9 +33,10 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Skills from '../../lib/skilling/skills';
 import Farming from '../../lib/skilling/skills/farming';
+import { stressTest } from '../../lib/stressTest';
 import { Gear } from '../../lib/structures/Gear';
 import { tameSpecies } from '../../lib/tames';
-import { assert, stringMatches } from '../../lib/util';
+import { stringMatches } from '../../lib/util';
 import {
 	FarmingPatchName,
 	farmingPatchNames,
@@ -509,6 +510,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				}
 			],
 			run: async ({
+				interaction,
 				options,
 				userID
 			}: CommandRunOptions<{
@@ -537,9 +539,13 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				wipe?: { thing: typeof thingsToWipe[number] };
 				refreshic?: {};
 			}>) => {
+				await interaction.deferReply();
 				if (production) {
 					logError('Test command ran in production', { userID: userID.toString() });
 					return 'This will never happen...';
+				}
+				if (options.stresstest) {
+					return stressTest(userID.toString());
 				}
 				const user = await globalClient.fetchUser(userID.toString());
 				const mahojiUser = await mahojiUsersSettingsFetch(user.id);
@@ -793,31 +799,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					});
 					return userGrowingProgressStr((await getFarmingInfo(userID)).patchesDetailed);
 				}
-				if (options.stresstest) {
-					const currentBalance = user.settings.get(UserSettings.GP);
-					const currentTbow = user.bank().amount('Twisted bow');
 
-					const b = new Bank().add('Coins', 1).add('Twisted bow');
-					for (let i = 0; i < 30; i++) {
-						await user.addItemsToBank({ items: b });
-						assert(user.settings.get(UserSettings.GP) === currentBalance + 1);
-						assert(user.bank().amount('Twisted bow') === currentTbow + 1);
-						await user.removeItemsFromBank(b);
-						await user.addItemsToBank({ items: b });
-						await user.removeItemsFromBank(b);
-						await user.addItemsToBank({ items: b });
-						await user.removeItemsFromBank(b);
-
-						const a = user.bank().bank;
-						if (!a[itemID('Twisted bow')]) a[itemID('Twisted bow')] = 0;
-						a[itemID('Twisted bow')] += 1.5;
-						await user.settings.update(UserSettings.Bank, a);
-						await user.removeItemsFromBank(new Bank().add('Twisted bow'));
-					}
-					const newBal = user.settings.get(UserSettings.GP);
-					const newTbow = user.bank().amount('Twisted bow');
-					return `Bank/GP: ${currentBalance === newBal && currentTbow === newTbow ? 'OK' : 'FAIL'}`;
-				}
 				return 'Nothin!';
 			}
 	  };

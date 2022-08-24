@@ -102,7 +102,11 @@ export default class extends Task {
 			);
 		}
 
-		const { itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
+		const { itemsAdded } = await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 
 		handleTripFinish(
 			user,

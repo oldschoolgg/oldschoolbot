@@ -9,13 +9,13 @@ import Constructables from '../../lib/skilling/skills/construction/constructable
 import { SkillsEnum } from '../../lib/skilling/types';
 import { Skills } from '../../lib/types';
 import { ConstructionActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, updateBankSetting } from '../../lib/util';
+import { formatDuration, getSkillsOfMahojiUser, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
 import { hasItemsEquippedOrInBank } from '../../lib/util/minionUtils';
 import { OSBMahojiCommand } from '../lib/util';
-import { getSkillsOfMahojiUser, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 const ds2Requirements: Skills = {
 	magic: 75,
@@ -159,7 +159,7 @@ export const buildCommand: OSBMahojiCommand = {
 		cost.add('Coins', gpNeeded);
 		if (!user.owns(cost)) return `You don't own: ${cost}.`;
 
-		await user.removeItemsFromBank(cost);
+		await transactItems({ userID: user.id, itemsToRemove: cost });
 
 		updateBankSetting(globalClient, ClientSettings.EconomyStats.ConstructCostBank, cost);
 

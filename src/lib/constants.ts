@@ -4,8 +4,7 @@ import { Command, KlasaMessage } from 'klasa';
 import { APIButtonComponent, APIButtonComponentWithCustomId, ButtonStyle, ComponentType } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
-import { convertLVLtoXP } from 'oldschooljs/dist/util';
-import PQueue from 'p-queue';
+import { convertLVLtoXP } from 'oldschooljs/dist/util/util';
 import { join } from 'path';
 
 import { DISCORD_SETTINGS, production } from '../config';
@@ -474,11 +473,6 @@ export const ZALCANO_ID = 9049;
 export const NIGHTMARE_ID = 9415;
 export const MIN_LENGTH_FOR_PET = Time.Minute * 5;
 export const HESPORI_ID = 8583;
-
-/**
- * Map<user_id, PromiseQueue>
- */
-export const userQueues: Map<string, PQueue> = new Map();
 
 export const skillEmoji = {
 	runecraft: '<:runecraft:630911040435257364>',

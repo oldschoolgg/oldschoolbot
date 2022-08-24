@@ -15,6 +15,7 @@ import { convertPercentChance, updateBankSetting } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { sendToChannelID } from '../../../lib/util/webhook';
+import { allItemsOwned } from '../../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: TheatreOfBloodTaskOptions) {
@@ -100,7 +101,7 @@ Unique chance: ${result.percentChanceOfUnique.toFixed(2)}% (1 in ${convertPercen
 				userLoot.add('Clue scroll (grandmaster)');
 			}
 
-			const bank = user.allItemsOwned();
+			const bank = allItemsOwned(user);
 
 			const cl = user.cl();
 			if (hardMode && roll(30) && cl.has("Lil' zik") && cl.has('Sanguine dust')) {

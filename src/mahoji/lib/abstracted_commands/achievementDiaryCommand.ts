@@ -5,6 +5,7 @@ import { Bank, Monsters } from 'oldschooljs';
 import { diaries, DiaryTier, userhasDiaryTier } from '../../../lib/diaries';
 import { Minigames } from '../../../lib/settings/minigames';
 import { formatSkillRequirements, itemNameFromID, stringMatches, toTitleCase } from '../../../lib/util';
+import { allItemsOwned } from '../../mahojiSettings';
 
 const lampRewards = {
 	Easy: 'Antique lamp 1',
@@ -105,7 +106,7 @@ export async function claimAchievementDiaryCommand(user: KlasaUser, diaryName: s
 		return `These are the achievement diaries you can claim: ${diaries.map(d => d.name).join(', ')}.`;
 	}
 
-	const allItems = user.allItemsOwned();
+	const allItems = allItemsOwned(user);
 	const cl = user.cl();
 
 	for (const tier of ['easy', 'medium', 'hard', 'elite'] as const) {

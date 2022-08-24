@@ -2,12 +2,10 @@ import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
-import { bankHasItem } from 'oldschooljs/dist/util';
 
 import { Eatables } from '../../../lib/data/eatables';
 import { warmGear } from '../../../lib/data/filterables';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
@@ -61,11 +59,10 @@ export async function wintertodtCommand(user: KlasaUser, channelID: bigint) {
 
 	const quantity = Math.floor(calcMaxTripLength(user, 'Wintertodt') / durationPerTodt);
 
-	const bank = user.settings.get(UserSettings.Bank);
 	for (const food of Eatables) {
 		const healAmount = typeof food.healAmount === 'number' ? food.healAmount : food.healAmount(user);
 		const amountNeeded = Math.ceil(healAmountNeeded / healAmount) * quantity;
-		if (!bankHasItem(bank, food.id, amountNeeded)) {
+		if (user.bank().amount(food.id) < amountNeeded) {
 			if (Eatables.indexOf(food) === Eatables.length - 1) {
 				return `You don't have enough food to do Wintertodt! You can use these food items: ${Eatables.map(
 					i => i.name

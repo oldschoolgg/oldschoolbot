@@ -5,10 +5,9 @@ import { Bank } from 'oldschooljs';
 
 import { Eatables } from '../src/lib/data/eatables';
 import getUserFoodFromBank from '../src/lib/minions/functions/getUserFoodFromBank';
-import { clAdjustedDroprate, sanitizeBank, stripEmojis, truncateString } from '../src/lib/util';
+import { clAdjustedDroprate, getSkillsOfMahojiUser, sanitizeBank, stripEmojis, truncateString } from '../src/lib/util';
 import getOSItem from '../src/lib/util/getOSItem';
 import { sellPriceOfItem, sellStorePriceOfItem } from '../src/mahoji/commands/sell';
-import { getSkillsOfMahojiUser } from '../src/mahoji/mahojiSettings';
 import { mockUser } from './utils';
 
 describe('util', () => {

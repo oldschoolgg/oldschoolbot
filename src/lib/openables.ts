@@ -7,6 +7,7 @@ import { Mimic } from 'oldschooljs/dist/simulation/misc';
 import { HallowedSackTable } from 'oldschooljs/dist/simulation/openables/HallowedSack';
 import { Implings } from 'oldschooljs/dist/simulation/openables/Implings';
 
+import { allItemsOwned } from '../mahoji/mahojiSettings';
 import { bsoOpenables } from './bsoOpenables';
 import { ClueTiers } from './clues/clueTiers';
 import { Emoji, Events, MIMIC_MONSTER_ID } from './constants';
@@ -138,7 +139,7 @@ for (const clueTier of ClueTiers) {
 			if (
 				clueTier.milestoneReward &&
 				nthCasket >= clueTier.milestoneReward.scoreNeeded &&
-				user.allItemsOwned().amount(clueTier.milestoneReward.itemReward) === 0
+				allItemsOwned(user).amount(clueTier.milestoneReward.itemReward) === 0
 			) {
 				loot.add(clueTier.milestoneReward.itemReward);
 			}

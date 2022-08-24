@@ -8,7 +8,6 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { table } from 'table';
 
 import {
-	getSkillsOfMahojiUser,
 	mahojiClientSettingsFetch,
 	mahojiClientSettingsUpdate,
 	mahojiUsersSettingsFetch
@@ -18,7 +17,7 @@ import Skillcapes from '../skilling/skillcapes';
 import { SkillsEnum } from '../skilling/types';
 import { ItemBank } from '../types';
 import { ActivityTaskOptions } from '../types/minions';
-import { calcPerHour, clamp, formatDuration, itemID, toKMB } from '../util';
+import { calcPerHour, clamp, formatDuration, getSkillsOfMahojiUser, itemID, toKMB } from '../util';
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import getOSItem, { getItem } from '../util/getOSItem';

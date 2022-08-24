@@ -25,7 +25,11 @@ export default class extends Task {
 			boosts.push('2x tickets for playing with Flappy.');
 			loot.multiply(2);
 		}
-		await user.addItemsToBank({ items: loot, collectionLog: true });
+		await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 
 		const boostMsg = boosts.length ? `\n${boosts.join('\n')}` : '';
 

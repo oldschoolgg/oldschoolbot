@@ -17,7 +17,7 @@ import {
 	personalWoodcuttingStats
 } from '../../mahoji/lib/abstracted_commands/statCommand';
 import {
-	getSkillsOfMahojiUser,
+	allItemsOwned,
 	getUserGear,
 	mahojiUserSettingsUpdate,
 	mahojiUsersSettingsFetch
@@ -32,6 +32,7 @@ import smithables from '../skilling/skills/smithing/smithables';
 import { getSlayerTaskStats } from '../slayer/slayerUtil';
 import { getAllUserTames } from '../tames';
 import { ItemBank } from '../types';
+import { getSkillsOfMahojiUser } from '../util';
 import { getItem } from '../util/getOSItem';
 import { easyTasks } from './easyTasks';
 import { eliteTasks } from './eliteTasks';
@@ -195,7 +196,7 @@ export async function leaguesCheckUser(userID: string) {
 		skillsXP: getSkillsOfMahojiUser(mahojiUser, false),
 		poh,
 		gear: getUserGear(mahojiUser),
-		allItemsOwned: klasaUser.allItemsOwned(),
+		allItemsOwned: allItemsOwned(mahojiUser),
 		monsterScores: mahojiUser.monsterScores as ItemBank,
 		creatureScores: mahojiUser.creatureScores as ItemBank,
 		opens: new Bank(mahojiUser.openable_scores as ItemBank),

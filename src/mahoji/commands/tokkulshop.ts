@@ -140,7 +140,7 @@ export const tksCommand: OSBMahojiCommand = {
 			)}.`
 		);
 
-		await user.removeItemsFromBank(cost);
+		await transactItems({ userID: user.id, itemsToRemove: cost });
 		await updateBankSetting(globalClient, ClientSettings.EconomyStats.TKSCost, cost);
 
 		await addSubTaskToActivityTask<TokkulShopOptions>({

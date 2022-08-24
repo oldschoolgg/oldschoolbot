@@ -62,7 +62,7 @@ export async function enchantCommand(user: KlasaUser, channelID: bigint, name: s
 			enchantable.input
 		}, you're missing **${cost.clone().remove(userBank)}**.`;
 	}
-	await user.removeItemsFromBank(cost);
+	await transactItems({ userID: user.id, itemsToRemove: cost });
 
 	updateBankSetting(globalClient, ClientSettings.EconomyStats.MagicCostBank, cost);
 
