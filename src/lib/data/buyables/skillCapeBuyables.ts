@@ -2,9 +2,9 @@ import { User } from '@prisma/client';
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { getSkillsOfMahojiUser, mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings';
+import { mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings';
 import Skillcapes from '../../skilling/skillcapes';
-import { countSkillsAtleast99, toTitleCase } from '../../util';
+import { countSkillsAtleast99, getSkillsOfMahojiUser, toTitleCase } from '../../util';
 import { Buyable } from './buyables';
 
 export const skillCapeBuyables: Buyable[] = [];

@@ -29,7 +29,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { logError } from '../../lib/util/logError';
 import { hasItemsEquippedOrInBank } from '../../lib/util/minionUtils';
 import { sendToChannelID } from '../../lib/util/webhook';
-import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
+import { allItemsOwned, mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 
 const plantsNotUsedForArcaneHarvester = ['Mysterious tree'].map(i => Farming.Plants.find(p => p.name === i)!);
 assert(!(plantsNotUsedForArcaneHarvester as any[]).includes(undefined));
@@ -91,7 +91,7 @@ export default class extends Task {
 		let farmersPiecesCheck = 0;
 		let loot = new Bank();
 
-		const hasPlopper = user.allItemsOwned().has('Plopper');
+		const hasPlopper = allItemsOwned(user).has('Plopper');
 
 		const plant = Farming.Plants.find(plant => plant.name === plantsName);
 
@@ -199,7 +199,11 @@ export default class extends Task {
 			}
 
 			updateBankSetting(globalClient, ClientSettings.EconomyStats.FarmingLootBank, loot);
-			await user.addItemsToBank({ items: loot, collectionLog: true });
+			await transactItems({
+				userID: user.id,
+				collectionLog: true,
+				itemsToAdd: loot
+			});
 			const newPatch: PatchTypes.PatchData = {
 				lastPlanted: plant.name,
 				patchPlanted: true,
@@ -577,7 +581,11 @@ export default class extends Task {
 			}
 
 			updateBankSetting(globalClient, ClientSettings.EconomyStats.FarmingLootBank, loot);
-			await user.addItemsToBank({ items: loot, collectionLog: true });
+			await transactItems({
+				userID: user.id,
+				collectionLog: true,
+				itemsToAdd: loot
+			});
 
 			if (hasPlopper) infoStr.push('\nYou received 4x loot from Plopper');
 

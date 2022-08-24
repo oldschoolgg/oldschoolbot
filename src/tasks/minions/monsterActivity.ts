@@ -21,7 +21,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { calculateSlayerPoints, getSlayerMasterOSJSbyID, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { assert, clAdjustedDroprate, itemID, roll } from '../../lib/util';
+import { assert, clAdjustedDroprate, roll } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
@@ -172,7 +172,7 @@ export default class extends Task {
 		// Abyssal set bonuses -- grants the user a few extra kills
 		let boostedQuantity = quantity;
 		let oriBoost = false;
-		if (user.equippedPet() === itemID('Ori')) {
+		if (user.usingPet('Ori')) {
 			oriBoost = true;
 			if (duration > Time.Minute * 5) {
 				// Original boost for 5+ minute task:
@@ -405,7 +405,11 @@ export default class extends Task {
 				messages
 			});
 		}
-		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
+		const { previousCL, itemsAdded } = await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 
 		await trackLoot({
 			loot: itemsAdded,

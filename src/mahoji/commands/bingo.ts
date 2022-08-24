@@ -248,21 +248,27 @@ export const bingoCommand: OSBMahojiCommand = {
 		}
 
 		if (1 > 0) {
-			return `**#1 - OSB Bingo** 
+			return {
+				content: `**#1 - OSB Bingo** 
 **Date:** TBA
 **Prize Pool:** ${toKMB(
-				prizePool
-			)}, and other things TBA. You can buy more than 1 ticket to donate more GP to the prize pool.
+					prizePool
+				)}, and other things TBA. You can buy more than 1 ticket to donate more GP to the prize pool.
 **Teams:** ${teamCount}
 **Your Team:** ${
-				thisUsersTeam
-					? `${[thisUsersTeam.first_user, thisUsersTeam.second_user, thisUsersTeam.third_user]
-							.map(userMention)
-							.join(', ')}`
-					: "You aren't in a team yet. You can find a team in this channel: <#1008883517331099739>"
-			}
+					thisUsersTeam
+						? `${[thisUsersTeam.first_user, thisUsersTeam.second_user, thisUsersTeam.third_user]
+								.map(userMention)
+								.join(', ')}`
+						: "You aren't in a team yet. You can find a team in this channel: <#1008883517331099739>"
+				}
 
-You can discuss the bingo and ask questions in <#974755045583245322>`;
+You can discuss the bingo and ask questions in <#974755045583245322>`,
+				allowed_mentions: {
+					users: [],
+					parse: []
+				}
+			};
 		}
 
 		const str = `**#1 - OSB Bingo** ${toKMB(prizePool)} Prize Pool
@@ -279,7 +285,11 @@ You ${isParticipating ? '**ARE**' : 'are **NOT**'} participating in the Bingo. Y
 		}x tickets.`;
 		return {
 			content: str,
-			components
+			components,
+			allowed_mentions: {
+				parse: [],
+				users: []
+			}
 		};
 	}
 };

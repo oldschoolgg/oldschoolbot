@@ -3,19 +3,24 @@ import { randArrItem, randInt, roll } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { getSkillsOfMahojiUser } from '../../../mahoji/mahojiSettings';
 import { HighSeedPackTable, LowSeedPackTable, MediumSeedPackTable } from '../../data/seedPackTables';
 import { PlantTier } from '../../minions/farming/types';
+import { getSkillsOfMahojiUser } from '../../util';
 import { stringMatches } from '../../util/cleanString';
 import { SkillsEnum } from '../types';
 
 export function openSeedPack(seedTier: number): Bank {
 	const loot = new Bank();
 
-	const tempTable = new LootTable().tertiary(3, 'Athelas seed');
+	const tempTable = new LootTable()
+		.tertiary(3, 'Athelas seed')
+		.tertiary(4, 'Korulsi seed')
+		.tertiary(3, 'Crystal acorn', [1, 3]);
 
 	if (seedTier > 2) {
-		tempTable.tertiary(10, new LootTable().every('Mysterious seed', [1, 3]));
+		tempTable
+			.tertiary(10, new LootTable().every('Mysterious seed', [1, 3]))
+			.tertiary(15, new LootTable().every('Grand crystal acorn', [1, 3]));
 	}
 
 	// Roll amount variables
@@ -156,7 +161,9 @@ const hardPlants: PlantsList = [
 	[99, 'Athelas', 5],
 	[99, 'Avocado bush', 5],
 	[105, 'Mango bush', 5],
+	[110, 'Korulsi', 5],
 	[111, 'Lychee bush', 5],
+	[115, 'Grand crystal tree', 5],
 	[120, 'Mysterious tree', 5]
 ];
 

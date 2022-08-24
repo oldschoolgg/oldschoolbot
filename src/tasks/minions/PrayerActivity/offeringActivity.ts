@@ -3,7 +3,7 @@ import { Task } from 'klasa';
 import Prayer from '../../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { OfferingActivityTaskOptions } from '../../../lib/types/minions';
-import { itemID, rand, roll } from '../../../lib/util';
+import { rand, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -41,7 +41,7 @@ export default class extends Task {
 
 		let xpReceived = newQuantity * bone.xp * XPMod;
 		const bonusXP = xpReceived * rand(2, 4) - xpReceived;
-		if (user.equippedPet() === itemID('Lil Lamb')) {
+		if (user.usingPet('Lil Lamb')) {
 			xpReceived += bonusXP;
 		}
 
@@ -51,7 +51,7 @@ export default class extends Task {
 		let str = `${user}, ${user.minionName} finished offering ${newQuantity} ${
 			bone.name
 		}, you managed to offer ${bonesSaved} extra bones because of the effects the Chaos altar and you lost ${bonesLost} to pkers, you also received ${xpReceived.toLocaleString()} XP. ${
-			user.equippedPet() === itemID('Lil Lamb')
+			user.usingPet('Lil Lamb')
 				? `The RuneScape gods bless you with ${bonusXP.toLocaleString()} extra XP for you raising the young lamb.`
 				: ''
 		}`;

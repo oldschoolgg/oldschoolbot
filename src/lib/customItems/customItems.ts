@@ -2576,7 +2576,6 @@ setCustomItem(
 	},
 	10_000
 );
-
 setCustomItem(52_617, 'Lava flower crown', 'Rainbow flower crown', { tradeable: false }, 10_000);
 setCustomItem(52_618, 'Purple flower crown', 'Rainbow flower crown', { tradeable: false }, 10_000);
 setCustomItem(52_630, 'Beehive', 'Coal', {}, 10_000);
@@ -2590,3 +2589,191 @@ setCustomItem(
 	{ customItemData: { isSuperUntradeable: true, cantDropFromMysteryBoxes: true } },
 	1
 );
+setCustomItem(70_001, 'Grimy korulsi', 'Coal', { tradeable: true }, 100_000);
+setCustomItem(70_002, 'Korulsi', 'Coal', { tradeable: true }, 100_000);
+setCustomItem(70_003, 'Korulsi seed', 'Coal', { tradeable: true }, 50_000);
+setCustomItem(70_004, 'Enhanced saradomin brew', 'Coal', { tradeable: true }, 10_000);
+setCustomItem(70_005, 'Enhanced super restore', 'Coal', { tradeable: true }, 10_000);
+setCustomItem(70_006, 'Enhanced stamina potion', 'Coal', { tradeable: true }, 10_000);
+setCustomItem(70_007, 'Enhanced divine water', 'Coal', { tradeable: true }, 10_000);
+setCustomItem(
+	70_008,
+	'Dark crystal',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	15_000_000
+);
+setCustomItem(
+	70_010,
+	'Void staff',
+	'Battlestaff',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		},
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 250,
+			attack_ranged: 0,
+
+			defence_stab: 0,
+			defence_slash: 0,
+			defence_crush: 0,
+			defence_magic: 50,
+			defence_ranged: 0,
+
+			melee_strength: 0,
+			ranged_strength: 0,
+			magic_damage: 17.5,
+			prayer: 0,
+			slot: EquipmentSlot.Weapon,
+			requirements: { magic: 90 }
+		},
+		highalch: 50_000_000
+	},
+	50_000_000
+);
+setCustomItem(
+	70_011,
+	'Dark animica',
+	'Runite ore',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: false
+		}
+	},
+	25_000
+);
+setCustomItem(
+	70_012,
+	'Tattered tome',
+	'Magic seed',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	25_000_000
+);
+setCustomItem(
+	70_013,
+	'Abyssal tome',
+	'Book of law',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		},
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 45,
+			attack_ranged: 0,
+
+			defence_stab: 0,
+			defence_slash: 0,
+			defence_crush: 0,
+			defence_magic: 35,
+			defence_ranged: 0,
+
+			melee_strength: 0,
+			ranged_strength: 0,
+			magic_damage: 2.5,
+			prayer: 0,
+			slot: EquipmentSlot.Shield,
+			requirements: { magic: 90 }
+		},
+		highalch: 50_000_000
+	},
+	50_000_000
+);
+setCustomItem(
+	70_014,
+	'Abyssal gem',
+	'Zenyte',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	10_000_000
+);
+setCustomItem(
+	70_016,
+	'Spellbound ring',
+	'Seers ring',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		},
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 20,
+			attack_ranged: 0,
+
+			defence_stab: 0,
+			defence_slash: 0,
+			defence_crush: 0,
+			defence_magic: 20,
+			defence_ranged: 0,
+
+			melee_strength: 0,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 0,
+			slot: EquipmentSlot.Ring,
+			requirements: { magic: 90 }
+		},
+		highalch: 10_000_000
+	},
+	10_000_000
+);
+setCustomItem(
+	70_017,
+	'Spellbound ring(i)',
+	'Seers ring',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		},
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 25,
+			attack_ranged: 0,
+
+			defence_stab: 0,
+			defence_slash: 0,
+			defence_crush: 0,
+			defence_magic: 25,
+			defence_ranged: 0,
+
+			melee_strength: 0,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 0,
+			slot: EquipmentSlot.Ring,
+			requirements: { magic: 90 }
+		},
+		highalch: 10_000_000
+	},
+	10_000_000
+);
+setCustomItem(70_018, 'Grand crystal acorn', 'Coal', { tradeable: true }, 6000);

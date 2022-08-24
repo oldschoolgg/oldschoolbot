@@ -1,10 +1,11 @@
 import { Time } from 'e';
+import { Monsters } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { kalphiteKingCL } from '../../../../../data/CollectionsExport';
 import { GearStat } from '../../../../../gear';
 import { SeedTable } from '../../../../../simulation/seedTable';
-import { makeKillTable } from '../../../../../util/setCustomMonster';
+import setCustomMonster, { makeKillTable } from '../../../../../util/setCustomMonster';
 import { KillableMonster } from '../../../../types';
 import { GrimyHerbTable } from '../Treebeard';
 
@@ -55,3 +56,9 @@ export const KalphiteKingMonster: KillableMonster = {
 		}
 	}
 };
+
+setCustomMonster(KalphiteKingMonster.id, 'Kalphite King', kalphiteKingLootTable, Monsters.GeneralGraardor, {
+	id: KalphiteKingMonster.id,
+	name: 'Kalphite King',
+	aliases: ['kk', 'kalphite king']
+});

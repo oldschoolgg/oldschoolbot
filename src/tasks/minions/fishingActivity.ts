@@ -158,7 +158,7 @@ export default class extends Task {
 			[fish.id]: lootQuantity
 		});
 
-		if (user.equippedPet() === itemID('Klik')) {
+		if (user.usingPet('Klik')) {
 			const cookedFish = Cookables.find(c => Boolean(c.inputCookables[fish.id]));
 			if (cookedFish) {
 				loot.remove(fish.id, quantity);
@@ -224,7 +224,11 @@ export default class extends Task {
 			}
 		}
 
-		await user.addItemsToBank({ items: loot, collectionLog: true });
+		await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 
 		str += `\n\nYou received: ${loot}.`;
 

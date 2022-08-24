@@ -8,7 +8,7 @@ import { Bank, LootTable } from 'oldschooljs';
 import { Emoji, PerkTier } from '../../../lib/constants';
 import { allOpenables, UnifiedOpenable } from '../../../lib/openables';
 import { ItemBank } from '../../../lib/types';
-import { assert, updateGPTrackSetting } from '../../../lib/util';
+import { assert } from '../../../lib/util';
 import { stringMatches } from '../../../lib/util/cleanString';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
@@ -17,6 +17,7 @@ import {
 	handleMahojiConfirmation,
 	mahojiUserSettingsUpdate,
 	patronMsg,
+	updateGPTrackSetting,
 	userStatsBankUpdate
 } from '../../mahojiSettings';
 
@@ -156,7 +157,7 @@ async function finalizeOpening({
 	}
 	if (smokeyMsg) messages.push(smokeyMsg);
 
-	await user.removeItemsFromBank(cost);
+	await transactItems({ userID: user.id, itemsToRemove: cost });
 	const { previousCL } = await user.addItemsToBank({
 		items: loot,
 		collectionLog: true,

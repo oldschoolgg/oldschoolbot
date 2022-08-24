@@ -171,7 +171,7 @@ export const ClueTable = new LootTable()
 	.add('Clue scroll (hard)', 1, 4)
 	.add('Clue scroll (elite)', 1, 3)
 	.add('Clue scroll (master)', 1, 2)
-	.add('Clue scroll (Grandmaster)', 1, 1);
+	.add('Clue scroll (grandmaster)', 1, 1);
 
 export const StoneSpiritTable = new LootTable()
 	.add('Copper stone spirit', 4, 2)

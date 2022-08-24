@@ -7,7 +7,7 @@ import { ClueTiers } from '../../lib/clues/clueTiers';
 import { Events } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
-import { addItemToBank, itemID, rand, roll, updateBankSetting } from '../../lib/util';
+import { addItemToBank, rand, roll, updateBankSetting } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 
@@ -48,7 +48,7 @@ export default class extends Task {
 
 		let loot = new Bank().add(clueTier.id, quantity);
 
-		if (user.equippedPet() === itemID('Zippy') && duration > Time.Minute * 5) {
+		if (user.usingPet('Zippy') && duration > Time.Minute * 5) {
 			let bonusLoot = {};
 			const numberOfMinutes = Math.floor(duration / Time.Minute);
 
@@ -70,7 +70,11 @@ export default class extends Task {
 
 			str += `\n\nZippy has found these items for you: ${new Bank(bonusLoot)}`;
 		}
-		await user.addItemsToBank({ items: loot, collectionLog: true });
+		await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 
 		handleTripFinish(user, channelID, str, ['clue', { tier: clueTier.name, quantity }], undefined, data, loot);
 	}

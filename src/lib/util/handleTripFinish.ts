@@ -7,7 +7,7 @@ import { Bank } from 'oldschooljs';
 
 import { alching } from '../../mahoji/commands/laps';
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
-import { userStatsBankUpdate, userStatsUpdate } from '../../mahoji/mahojiSettings';
+import { allItemsOwned, updateGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from '../../mahoji/mahojiSettings';
 import { MysteryBoxes } from '../bsoOpenables';
 import { ClueTiers } from '../clues/clueTiers';
 import { COINS_ID, Emoji, lastTripCache, LastTripRunArgs, PerkTier } from '../constants';
@@ -17,11 +17,12 @@ import { inventionBoosts, InventionID, inventionItemBoost } from '../invention/i
 import { triggerRandomEvent } from '../randomEvents';
 import { runCommand } from '../settings/settings';
 import { ClientSettings } from '../settings/types/ClientSettings';
+import { UserSettings } from '../settings/types/UserSettings';
 import { RuneTable, WilvusTable, WoodTable } from '../simulation/seedTable';
 import { DougTable, PekyTable } from '../simulation/sharedTables';
 import { SkillsEnum } from '../skilling/types';
 import { ActivityTaskOptions } from '../types/minions';
-import { channelIsSendable, itemID, roll, toKMB, updateBankSetting, updateGPTrackSetting } from '../util';
+import { channelIsSendable, itemID, roll, toKMB, updateBankSetting } from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
 import {
 	makeBirdHouseTripButton,
@@ -66,7 +67,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 				const many = imp.bank.length > 1;
 				messages.push(`Caught ${many ? 'some' : 'an'} impling${many ? 's' : ''}, you received: ${imp.bank}`);
 				userStatsBankUpdate(user.id, 'passive_implings_bank', imp.bank);
-				await user.addItemsToBank({ items: imp.bank, collectionLog: true });
+				await transactItems({ userID: user.id, itemsToAdd: imp.bank, collectionLog: true });
 			}
 		}
 	},
@@ -106,7 +107,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Custom Pet Perk',
 		fn: async ({ data, messages, user }) => {
-			const pet = user.equippedPet();
+			const pet = user.settings.get(UserSettings.Minion.EquippedPet);
 			const minutes = Math.floor(data.duration / Time.Minute);
 			if (minutes < 5) return;
 			let bonusLoot = new Bank();
@@ -195,7 +196,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Voidling',
 		fn: async ({ data, messages, user }) => {
-			if (!user.allItemsOwned().has('Voidling')) return;
+			if (!allItemsOwned(user).has('Voidling')) return;
 			const voidlingEquipped = user.usingPet('Voidling');
 			const alchResult = alching({
 				user,

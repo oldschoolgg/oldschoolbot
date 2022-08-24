@@ -10,9 +10,10 @@ import { DynamicButtons } from '../../../lib/DynamicButtons';
 import { getRandomTriviaQuestions } from '../../../lib/roboChimp';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import dailyRoll from '../../../lib/simulation/dailyTable';
-import { channelIsSendable, formatDuration, isWeekend, updateGPTrackSetting } from '../../../lib/util';
+import { channelIsSendable, formatDuration, isWeekend } from '../../../lib/util';
 import { dailyResetTime } from '../../../lib/util/getUsersPerkTier';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
+import { updateGPTrackSetting } from '../../mahojiSettings';
 
 export function isUsersDailyReady(user: KlasaUser): { isReady: true } | { isReady: false; durationUntilReady: number } {
 	const currentDate = new Date().getTime();
@@ -98,7 +99,11 @@ async function reward(user: KlasaUser, triviaCorrect: boolean): CommandResponse 
 		delete loot[COINS_ID];
 	}
 
-	const { itemsAdded, previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
+	const { itemsAdded, previousCL } = await transactItems({
+		userID: user.id,
+		collectionLog: true,
+		itemsToAdd: new Bank(loot)
+	});
 	const image = await makeBankImage({
 		bank: itemsAdded,
 		title: `${user.username}'s Daily`,

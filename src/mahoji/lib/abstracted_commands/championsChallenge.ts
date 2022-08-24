@@ -15,7 +15,7 @@ export async function championsChallengeCommand(user: KlasaUser, channelID: bigi
 
 	const cost = new Bank();
 	for (const id of championScrolls) cost.add(id);
-	await user.removeItemsFromBank(cost);
+	await transactItems({ userID: user.id, itemsToRemove: cost });
 
 	await addSubTaskToActivityTask<MinigameActivityTaskOptions>({
 		userID: user.id,

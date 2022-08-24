@@ -7,10 +7,17 @@ import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import birdhouses, { Birdhouse } from '../../../lib/skilling/skills/hunter/birdHouseTrapping';
 import defaultBirdhouseTrap, { BirdhouseData } from '../../../lib/skilling/skills/hunter/defaultBirdHouseTrap';
 import { BirdhouseActivityTaskOptions } from '../../../lib/types/minions';
-import { birdhouseLimit, formatDuration, itemID, stringMatches, updateBankSetting } from '../../../lib/util';
+import {
+	birdhouseLimit,
+	formatDuration,
+	getSkillsOfMahojiUser,
+	itemID,
+	stringMatches,
+	updateBankSetting
+} from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { minionName } from '../../../lib/util/minionUtils';
-import { getSkillsOfMahojiUser, mahojiUsersSettingsFetch } from '../../mahojiSettings';
+import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
 
 interface BirdhouseDetails {
 	raw: BirdhouseData;

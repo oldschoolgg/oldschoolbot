@@ -6,9 +6,10 @@ import { resolveNameBank } from 'oldschooljs/dist/util';
 import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { AlchingActivityTaskOptions } from '../../lib/types/minions';
-import { roll, updateGPTrackSetting } from '../../lib/util';
+import { roll } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { updateGPTrackSetting } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: AlchingActivityTaskOptions) {

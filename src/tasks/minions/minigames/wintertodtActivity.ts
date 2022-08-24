@@ -13,6 +13,7 @@ import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { clAdjustedDroprate, rand, roll, updateBankSetting } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
+import { allItemsOwned } from '../../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: ActivityTaskOptionsWithQuantity) {
@@ -31,7 +32,7 @@ export default class extends Task {
 			loot.add(
 				WintertodtCrate.open({
 					points,
-					itemsOwned: user.allItemsOwned().clone().add(loot).bank,
+					itemsOwned: allItemsOwned(user).clone().add(loot).bank,
 					skills: user.rawSkills
 				})
 			);
@@ -111,7 +112,11 @@ export default class extends Task {
 			loot.multiply(2);
 		}
 
-		const { itemsAdded, previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
+		const { itemsAdded, previousCL } = await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 		incrementMinigameScore(user.id, 'wintertodt', quantity);
 
 		const image = await makeBankImage({

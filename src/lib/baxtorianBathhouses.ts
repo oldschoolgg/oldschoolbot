@@ -6,7 +6,7 @@ import { Bank, LootTable } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { table } from 'table';
 
-import { getSkillsOfMahojiUser, mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
+import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
 import { MysteryBoxes } from './bsoOpenables';
 import { Emoji, GLOBAL_BSO_XP_MULTIPLIER } from './constants';
 import { incrementMinigameScore } from './settings/minigames';
@@ -19,6 +19,7 @@ import { MinigameActivityTaskOptions } from './types/minions';
 import {
 	formatDuration,
 	formatSkillRequirements,
+	getSkillsOfMahojiUser,
 	skillsMeetRequirements,
 	stringMatches,
 	updateBankSetting
