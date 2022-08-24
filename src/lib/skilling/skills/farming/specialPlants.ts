@@ -814,7 +814,7 @@ const specialPlants: Plant[] = [
 		outputCrop: itemID('Crystal shard'),
 		variableYield: true,
 		variableOutputAmount: [
-			[null, 10, 30],
+			[null, 10, 20],
 			['compost', 10, 20],
 			['supercompost', 15, 20],
 			['ultracompost', 20, 25]
@@ -829,7 +829,7 @@ const specialPlants: Plant[] = [
 		chance1: 0,
 		chance99: 0,
 		chanceOfDeath: 0,
-		needsChopForHarvest: true,
+		needsChopForHarvest: false,
 		fixedOutput: false,
 		givesLogs: false,
 		givesCrops: true,
@@ -868,7 +868,7 @@ const specialPlants: Plant[] = [
 			'Monkey bar': 1,
 			'Ground tooth': 1
 		}).freeze(),
-		needsChopForHarvest: true,
+		needsChopForHarvest: false,
 		fixedOutput: false,
 		givesLogs: false,
 		givesCrops: false,

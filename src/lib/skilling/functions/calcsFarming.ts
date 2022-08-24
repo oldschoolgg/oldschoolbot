@@ -53,11 +53,11 @@ export function calcVariableYield(
 	let cropYield = 0;
 	if (plant.name === 'Crystal tree' || plant.name === 'Grand Crystal tree') {
 		if (!plant.variableOutputAmount) return 0;
-		for (let i = plant.variableOutputAmount.length; i > 0; i--) {
-			const [upgradeTypeNeeded, min, max] = plant.variableOutputAmount[i - 1];
+		for (const [upgradeTypeNeeded, min, max] of plant.variableOutputAmount) {
 			if (upgradeType === upgradeTypeNeeded) {
-				cropYield += rand(min, max);
-				cropYield *= quantityAlive;
+				for (let i = 0; i < quantityAlive; i++) {
+					cropYield += rand(min, max);
+				}
 				break;
 			}
 		}

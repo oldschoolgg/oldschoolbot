@@ -294,11 +294,9 @@ export default class extends Task {
 				}
 
 				if (quantity > patchType.lastQuantity) {
-					loot.add(plantToHarvest.outputCrop, cropYield);
 					loot.add('Weeds', quantity - patchType.lastQuantity);
-				} else {
-					loot.add(plantToHarvest.outputCrop, cropYield);
 				}
+				loot.add(plantToHarvest.outputCrop, cropYield);
 
 				if (plantToHarvest.name === 'Limpwurt') {
 					harvestXp = plantToHarvest.harvestXp * alivePlants;
