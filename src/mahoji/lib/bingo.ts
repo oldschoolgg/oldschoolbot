@@ -1,3 +1,4 @@
+import { userMention } from '@discordjs/builders';
 import { Prisma, User } from '@prisma/client';
 import { chunk, Time } from 'e';
 import { APIButtonComponentWithCustomId, ButtonStyle, ComponentType } from 'mahoji';
@@ -6,6 +7,7 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import { production } from '../../config';
+import { usernameCache } from '../../lib/constants';
 import { championScrolls, skillingPetsCL } from '../../lib/data/CollectionsExport';
 import { prisma } from '../../lib/settings/prisma';
 import { logError } from '../../lib/util/logError';
@@ -352,7 +354,9 @@ export async function onFinishTile(
 	if (!user.bingo_tickets_bought) return;
 	const tile = bingoTiles.find(i => i.id === finishedTile)!;
 	sendToChannelID(BINGO_NOTIFICATION_CHANNEL_ID, {
-		content: `${user} just finished the '${tile.name}' tile! This is their ${after.tilesCompletedCount}/${bingoTiles.length} finished tile.`
+		content: `${usernameCache.get(user.id) ?? userMention(user.id)} just finished the '${
+			tile.name
+		}' tile! This is their ${after.tilesCompletedCount}/${bingoTiles.length} finished tile.`
 	});
 }
 
