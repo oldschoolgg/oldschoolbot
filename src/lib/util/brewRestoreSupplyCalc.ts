@@ -1,6 +1,9 @@
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { BitField } from '../constants';
+import { UserSettings } from '../settings/types/UserSettings';
+
 export function brewRestoreSupplyCalc(
 	user: KlasaUser,
 	brewsNeeded: number,
@@ -9,8 +12,9 @@ export function brewRestoreSupplyCalc(
 	const userItems = user.bank();
 	const itemBank = new Bank();
 
+	const dontUseEnhanced = user.settings.get(UserSettings.BitField).includes(BitField.DontUseEnhancedBrewsRestores);
 	let totalBrews = 0;
-	const enhancedBrews = userItems.amount('Enhanced saradomin brew');
+	const enhancedBrews = dontUseEnhanced ? 0 : userItems.amount('Enhanced saradomin brew');
 	const brews = userItems.amount('Saradomin brew(4)');
 
 	totalBrews += enhancedBrews * 2;
@@ -32,7 +36,7 @@ export function brewRestoreSupplyCalc(
 
 	if (!restoresNeeded) restoresNeeded = Math.max(1, Math.floor(brewsNeeded / 3));
 	let totalRestores = 0;
-	const enhancedRestores = userItems.amount('Enhanced super restore');
+	const enhancedRestores = dontUseEnhanced ? 0 : userItems.amount('Enhanced super restore');
 	const restores = userItems.amount('Super restore(4)');
 
 	totalRestores += enhancedRestores * 2;
