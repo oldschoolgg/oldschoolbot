@@ -1,7 +1,6 @@
 import { objectEntries, reduceNumByPercent, Time } from 'e';
 
 import { plunderBoosts, plunderRooms } from '../../../lib/minions/data/plunder';
-import { MUser } from '../../../lib/MUser';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { PlunderActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, itemNameFromID } from '../../../lib/util';

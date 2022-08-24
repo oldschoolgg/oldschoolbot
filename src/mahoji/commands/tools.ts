@@ -20,7 +20,6 @@ import { allCLItemsFiltered, allDroppedItems } from '../../lib/data/Collections'
 import { anglerOutfit, gnomeRestaurantCL } from '../../lib/data/CollectionsExport';
 import pets from '../../lib/data/pets';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../../lib/minions/data/killableMonsters';
-import { MUser } from '../../lib/MUser';
 import { MinigameName, Minigames } from '../../lib/settings/minigames';
 import { convertStoredActivityToFlatActivity, prisma } from '../../lib/settings/prisma';
 import Skills from '../../lib/skilling/skills';

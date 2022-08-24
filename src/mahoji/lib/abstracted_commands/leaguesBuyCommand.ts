@@ -1,7 +1,6 @@
 import { Bank } from 'oldschooljs';
 
 import { leagueBuyables } from '../../../lib/data/leaguesBuyables';
-import { MUser } from '../../../lib/MUser';
 import { roboChimpUserFetch } from '../../../lib/roboChimp';
 import { stringMatches } from '../../../lib/util';
 

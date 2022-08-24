@@ -1,7 +1,6 @@
 import { notEmpty, objectEntries, Time } from 'e';
 
 import { Emoji } from '../../../lib/constants';
-import { MUser } from '../../../lib/MUser';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, formatSkillRequirements } from '../../../lib/util';

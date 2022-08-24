@@ -11,7 +11,6 @@ import { BitField, MAX_QP } from '../../lib/constants';
 import { leaguesCreatables } from '../../lib/data/creatables/leagueCreatables';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
-import { MUser } from '../../lib/MUser';
 import { allOpenables } from '../../lib/openables';
 import { Minigames } from '../../lib/settings/minigames';
 import { prisma } from '../../lib/settings/prisma';

@@ -2,7 +2,6 @@ import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { userhasDiaryTier, WildernessDiary } from '../../../lib/diaries';
-import { MUser } from '../../../lib/MUser';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';

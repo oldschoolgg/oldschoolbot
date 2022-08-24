@@ -5,7 +5,6 @@ import { Bank } from 'oldschooljs';
 
 import { Events } from '../../../lib/constants';
 import { maxOtherStats } from '../../../lib/gear';
-import { MUser } from '../../../lib/MUser';
 import { countUsersWithItemInCl } from '../../../lib/settings/prisma';
 import { getMinigameScore } from '../../../lib/settings/settings';
 import { HighGambleTable, LowGambleTable, MediumGambleTable } from '../../../lib/simulation/baGamble';

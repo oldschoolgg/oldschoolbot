@@ -2,7 +2,6 @@ import { User } from '@prisma/client';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { MUser } from '../../../lib/MUser';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, randomVariation, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';

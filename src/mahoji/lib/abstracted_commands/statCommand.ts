@@ -13,7 +13,6 @@ import { Emoji, PerkTier } from '../../../lib/constants';
 import { calcCLDetails } from '../../../lib/data/Collections';
 import backgroundImages from '../../../lib/minions/data/bankBackgrounds';
 import killableMonsters from '../../../lib/minions/data/killableMonsters';
-import { MUser } from '../../../lib/MUser';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { prisma } from '../../../lib/settings/prisma';
 import Agility from '../../../lib/skilling/skills/agility';

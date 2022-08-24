@@ -4,7 +4,6 @@ import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { gearPresetToGear, GearSetupType, globalPresets } from '../../lib/gear';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
-import { MUser } from '../../lib/MUser';
 import { prisma } from '../../lib/settings/prisma';
 import { cleanString, isValidGearSetup, isValidNickname, stringMatches } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';

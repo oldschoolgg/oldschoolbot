@@ -1,7 +1,6 @@
 import { Bank } from 'oldschooljs';
 
 import decantPotionFromBank from '../../../lib/minions/functions/decantPotionFromBank';
-import { MUser } from '../../../lib/MUser';
 
 export async function decantCommand(user: MUser, itemName: string, dose = 4) {
 	if (![1, 2, 3, 4].includes(dose)) return 'Invalid dose number.';

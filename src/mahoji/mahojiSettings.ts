@@ -14,7 +14,6 @@ import { evalMathExpression } from '../lib/expressionParser';
 import { defaultGear, hasGracefulEquipped, readableStatName } from '../lib/gear';
 import { effectiveMonsters } from '../lib/minions/data/killableMonsters';
 import { KillableMonster } from '../lib/minions/types';
-import { MUser } from '../lib/MUser';
 import { getMinigameScore, Minigames } from '../lib/settings/minigames';
 import { prisma } from '../lib/settings/prisma';
 import creatures from '../lib/skilling/skills/hunter/creatures';

@@ -12,7 +12,6 @@ import { AttackStyles } from '../../lib/minions/functions';
 import { blowpipeCommand, blowpipeDarts } from '../../lib/minions/functions/blowpipeCommand';
 import { degradeableItemsCommand } from '../../lib/minions/functions/degradeableItemsCommand';
 import { allPossibleStyles, trainCommand } from '../../lib/minions/functions/trainCommand';
-import { MUser } from '../../lib/MUser';
 import { roboChimpUserFetch } from '../../lib/roboChimp';
 import { Minigames } from '../../lib/settings/minigames';
 import { minionActivityCache } from '../../lib/settings/settings';

@@ -3,7 +3,6 @@ import { Bank } from 'oldschooljs';
 
 import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
 import { Planks } from '../../../lib/minions/data/planks';
-import { MUser } from '../../../lib/MUser';
 import { SawmillActivityTaskOptions } from '../../../lib/types/minions';
 import { clamp, formatDuration, itemNameFromID, stringMatches, toKMB } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';

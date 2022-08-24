@@ -2,7 +2,6 @@ import { Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { MUser } from '../../../lib/MUser';
 import { prisma } from '../../../lib/settings/prisma';
 import { getNewUser } from '../../../lib/settings/settings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';

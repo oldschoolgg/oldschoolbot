@@ -1,6 +1,5 @@
 import { Time } from 'e';
 
-import { MUser } from '../../../lib/MUser';
 import { getMinigameEntity } from '../../../lib/settings/settings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';

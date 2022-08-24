@@ -1,6 +1,5 @@
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 
-import { MUser } from '../../../lib/MUser';
 import { cancelTask, getActivityOfUser } from '../../../lib/settings/settings';
 import { NexTaskOptions, RaidsOptions } from '../../../lib/types/minions';
 import { handleMahojiConfirmation } from '../../mahojiSettings';

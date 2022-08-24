@@ -6,7 +6,6 @@ import {
 	KourendFavour,
 	KourendFavours
 } from '../../../lib/minions/data/kourendFavour';
-import { MUser } from '../../../lib/MUser';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { KourendFavourActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';

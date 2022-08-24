@@ -1,7 +1,6 @@
 import { Time } from 'e';
 
 import { MAX_QP } from '../../../lib/constants';
-import { MUser } from '../../../lib/MUser';
 import { ActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';

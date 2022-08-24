@@ -10,7 +10,6 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { BitField, PerkTier } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { CombatOptionsArray, CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
-import { MUser } from '../../lib/MUser';
 import { prisma } from '../../lib/settings/prisma';
 import { autoslayChoices, slayerMasterChoices } from '../../lib/slayer/constants';
 import { setDefaultAutoslay, setDefaultSlayerMaster } from '../../lib/slayer/slayerUtil';

@@ -1,7 +1,6 @@
 import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
 
 import { BitField } from '../../../lib/constants';
-import { MUser } from '../../../lib/MUser';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { GauntletOptions } from '../../../lib/types/minions';
 import { formatDuration, formatSkillRequirements, skillsMeetRequirements, toTitleCase } from '../../../lib/util';

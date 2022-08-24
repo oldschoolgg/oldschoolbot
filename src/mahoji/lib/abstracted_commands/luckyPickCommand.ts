@@ -5,7 +5,6 @@ import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import { SILENT_ERROR } from '../../../lib/constants';
-import { MUser } from '../../../lib/MUser';
 import { channelIsSendable } from '../../../lib/util';
 import { logError } from '../../../lib/util/logError';
 import { handleMahojiConfirmation, mahojiParseNumber, updateGPTrackSetting } from '../../mahojiSettings';

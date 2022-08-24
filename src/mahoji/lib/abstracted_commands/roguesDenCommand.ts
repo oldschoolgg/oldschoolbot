@@ -1,7 +1,6 @@
 import { reduceNumByPercent, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { MUser } from '../../../lib/MUser';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';

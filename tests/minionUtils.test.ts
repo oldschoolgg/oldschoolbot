@@ -1,78 +1,57 @@
 import { Bank } from 'oldschooljs';
 
-import { hasItemsEquippedOrInBank } from '../src/lib/util/minionUtils';
-import { mockUser } from './utils';
+import { mockMUser } from './utils';
 
 describe('hasItemsEquippedOrInBank', () => {
 	test("Doesn't have", () => {
-		expect(
-			hasItemsEquippedOrInBank(
-				mockUser({
-					bank: new Bank(),
-					meleeGear: {}
-				}),
-				['Black mask']
-			)
-		).toEqual(false);
+		const u = mockMUser({
+			bank: new Bank(),
+			meleeGear: {}
+		});
+		expect(u.hasEquippedOrInBank('Black mask')).toEqual(false);
 	});
 	test('Has just in gear', () => {
-		expect(
-			hasItemsEquippedOrInBank(
-				mockUser({
-					bank: new Bank(),
-					meleeGear: {
-						head: 'Slayer helmet'
-					}
-				}),
-				['Black mask']
-			)
-		).toEqual(true);
+		const u = mockMUser({
+			bank: new Bank(),
+			meleeGear: {
+				head: 'Slayer helmet'
+			}
+		});
+		expect(u.hasEquippedOrInBank('Black mask')).toEqual(true);
 	});
 	test('Has just in bank', () => {
+		const u = mockMUser({
+			bank: new Bank(),
+			meleeGear: {
+				head: 'Slayer helmet (i)'
+			}
+		});
+		expect(u.hasEquippedOrInBank('Black mask')).toEqual(true);
 		expect(
-			hasItemsEquippedOrInBank(
-				mockUser({
-					bank: new Bank().add('Slayer helmet (i)'),
-					meleeGear: {}
-				}),
-				['Black mask']
-			)
-		).toEqual(true);
-		expect(
-			hasItemsEquippedOrInBank(
-				mockUser({
-					bank: new Bank().add('Farming cape(t)'),
-					meleeGear: {}
-				}),
-				['Farming cape']
-			)
+			mockMUser({
+				bank: new Bank().add('Farming cape(t)'),
+				meleeGear: {}
+			}).hasEquippedOrInBank('Farming cape')
 		).toEqual(true);
 	});
 	test('More than one item passing', () => {
 		expect(
-			hasItemsEquippedOrInBank(
-				mockUser({
-					bank: new Bank().add('Coal').add('Egg'),
-					meleeGear: {
-						weapon: 'Bronze dagger'
-					}
-				}),
-				['Coal', 'Egg', 'Bronze dagger']
-			)
+			mockMUser({
+				bank: new Bank().add('Coal').add('Egg'),
+				meleeGear: {
+					weapon: 'Bronze dagger'
+				}
+			}).hasEquippedOrInBank(['Coal', 'Egg', 'Bronze dagger'])
 		).toEqual(true);
 	});
 	test('More than one item failing', () => {
 		expect(
-			hasItemsEquippedOrInBank(
-				mockUser({
-					bank: new Bank().add('Coal').add('Egg'),
-					meleeGear: {
-						weapon: 'Bronze dagger'
-					}
-				}),
-				['Coal', 'Egg', 'Bronze dagger', 'Trout'],
-				'every'
-			)
+			mockMUser({
+				bank: new Bank().add('Coal').add('Egg'),
+				meleeGear: {
+					weapon: 'Bronze dagger'
+				}
+			}).hasEquippedOrInBank(['Coal', 'Egg', 'Bronze dagger', 'Trout'], 'every')
 		).toEqual(false);
 	});
 });

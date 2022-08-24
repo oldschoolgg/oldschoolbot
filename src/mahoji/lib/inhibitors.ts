@@ -16,7 +16,6 @@ import {
 	PerkTier,
 	SupportServer
 } from '../../lib/constants';
-import { MUser } from '../../lib/MUser';
 import { CategoryFlag } from '../../lib/types';
 import { formatDuration } from '../../lib/util';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';

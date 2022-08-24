@@ -4,7 +4,6 @@ import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommand
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { BitField } from '../../../lib/constants';
-import { MUser } from '../../../lib/MUser';
 import { roboChimpUserFetch } from '../../../lib/roboChimp';
 import { prisma } from '../../../lib/settings/prisma';
 import { assert } from '../../../lib/util';

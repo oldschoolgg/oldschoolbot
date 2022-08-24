@@ -5,7 +5,6 @@ import { Bank } from 'oldschooljs';
 import { superCompostables } from '../../../lib/data/filterables';
 import { ArdougneDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
-import { MUser } from '../../../lib/MUser';
 import { calcNumOfPatches } from '../../../lib/skilling/functions/calcsFarming';
 import { getFarmingInfo } from '../../../lib/skilling/functions/getFarmingInfo';
 import Farming, { CompostName } from '../../../lib/skilling/skills/farming';

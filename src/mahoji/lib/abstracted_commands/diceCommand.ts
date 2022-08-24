@@ -1,6 +1,5 @@
 import { Bank, Util } from 'oldschooljs';
 
-import { MUser } from '../../../lib/MUser';
 import { rand } from '../../../lib/util';
 import { mahojiParseNumber, mahojiUserSettingsUpdate, updateGPTrackSetting } from '../../mahojiSettings';
 

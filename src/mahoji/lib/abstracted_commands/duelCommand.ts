@@ -4,7 +4,6 @@ import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommand
 import { Bank, Util } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
-import { MUser } from '../../../lib/MUser';
 import { channelIsSendable } from '../../../lib/util';
 import { mahojiParseNumber, mahojiUserSettingsUpdate, updateGPTrackSetting } from '../../mahojiSettings';
 

@@ -8,7 +8,6 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { COINS_ID, Emoji, SupportServer } from '../../../lib/constants';
 import pets from '../../../lib/data/pets';
 import { DynamicButtons } from '../../../lib/DynamicButtons';
-import { MUser } from '../../../lib/MUser';
 import { getRandomTriviaQuestions } from '../../../lib/roboChimp';
 import dailyRoll from '../../../lib/simulation/dailyTable';
 import { channelIsSendable, formatDuration, isWeekend } from '../../../lib/util';

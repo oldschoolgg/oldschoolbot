@@ -1,6 +1,5 @@
 import { Time } from 'e';
 
-import { MUser } from '../../../lib/MUser';
 import { Enchantables } from '../../../lib/skilling/skills/magic/enchantables';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { EnchantingActivityTaskOptions } from '../../../lib/types/minions';

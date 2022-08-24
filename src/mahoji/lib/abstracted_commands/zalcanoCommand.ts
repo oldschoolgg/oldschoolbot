@@ -2,7 +2,6 @@ import { calcWhatPercent, percentChance, reduceNumByPercent, Time } from 'e';
 
 import { ZALCANO_ID } from '../../../lib/constants';
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
-import { MUser } from '../../../lib/MUser';
 import { Skills } from '../../../lib/types';
 import { ZalcanoActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';

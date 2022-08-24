@@ -31,7 +31,7 @@ function alchPrice(bank: Bank, item: Item, tripLength: number) {
 	return maxCasts * (item.highalch ?? 0);
 }
 
-export class MUser {
+export class MUserClass {
 	user: Readonly<User>;
 	id: string;
 
@@ -406,3 +406,14 @@ export class MUser {
 		return (this.user.creatureScores as ItemBank)[creatureID] ?? 0;
 	}
 }
+declare global {
+	const MUser: typeof MUserClass;
+}
+declare global {
+	namespace NodeJS {
+		interface Global {
+			MUser: typeof MUserClass;
+		}
+	}
+}
+global.MUser = MUserClass;

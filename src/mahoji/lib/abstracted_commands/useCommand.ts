@@ -3,7 +3,6 @@ import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { BitField } from '../../../lib/constants';
-import { MUser } from '../../../lib/MUser';
 import { assert } from '../../../lib/util';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
 import { mahojiUserSettingsUpdate } from '../../mahojiSettings';

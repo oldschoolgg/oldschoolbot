@@ -6,7 +6,6 @@ import { Bank } from 'oldschooljs';
 
 import { setupParty } from '../../../extendables/Message/Party';
 import { Emoji, NEX_ID } from '../../../lib/constants';
-import { MUser } from '../../../lib/MUser';
 import { trackLoot } from '../../../lib/settings/prisma';
 import { calculateNexDetails, checkNexUser } from '../../../lib/simulation/nex';
 import { NexTaskOptions } from '../../../lib/types/minions';

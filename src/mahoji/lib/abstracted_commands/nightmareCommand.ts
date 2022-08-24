@@ -7,7 +7,6 @@ import { calculateMonsterFood } from '../../../lib/minions/functions';
 import hasEnoughFoodForMonster from '../../../lib/minions/functions/hasEnoughFoodForMonster';
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
 import { KillableMonster } from '../../../lib/minions/types';
-import { MUser } from '../../../lib/MUser';
 import { trackLoot } from '../../../lib/settings/prisma';
 import { Gear } from '../../../lib/structures/Gear';
 import { NightmareActivityTaskOptions } from '../../../lib/types/minions';

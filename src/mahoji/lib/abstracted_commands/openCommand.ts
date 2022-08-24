@@ -5,7 +5,6 @@ import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommand
 import { Bank, LootTable } from 'oldschooljs';
 
 import { PerkTier } from '../../../lib/constants';
-import { MUser } from '../../../lib/MUser';
 import { allOpenables, UnifiedOpenable } from '../../../lib/openables';
 import { ItemBank } from '../../../lib/types';
 import { stringMatches } from '../../../lib/util/cleanString';

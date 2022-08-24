@@ -2,7 +2,6 @@ import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommand
 import { Bank } from 'oldschooljs';
 
 import { BitField } from '../../../lib/constants';
-import { MUser } from '../../../lib/MUser';
 import { formatSkillRequirements, skillsMeetRequirements, stringMatches, toKMB } from '../../../lib/util';
 import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
 import resolveItems from '../../../lib/util/resolveItems';

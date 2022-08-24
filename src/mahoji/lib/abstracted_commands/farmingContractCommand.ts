@@ -3,7 +3,6 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
 import { defaultFarmingContract } from '../../../lib/minions/farming';
 import { ContractOption, FarmingContract, FarmingContractDifficultyLevel } from '../../../lib/minions/farming/types';
-import { MUser } from '../../../lib/MUser';
 import { getPlantToGrow } from '../../../lib/skilling/functions/calcFarmingContracts';
 import { getFarmingInfo } from '../../../lib/skilling/functions/getFarmingInfo';
 import { getSkillsOfMahojiUser, roughMergeMahojiResponse } from '../../../lib/util';

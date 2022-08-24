@@ -1,6 +1,5 @@
 import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
 
-import { MUser } from '../../../lib/MUser';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { TemporossActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';

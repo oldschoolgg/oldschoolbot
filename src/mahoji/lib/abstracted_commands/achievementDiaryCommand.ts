@@ -2,7 +2,6 @@ import { strikethrough } from '@discordjs/builders';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { diaries, DiaryTier, userhasDiaryTier } from '../../../lib/diaries';
-import { MUser } from '../../../lib/MUser';
 import { Minigames } from '../../../lib/settings/minigames';
 import { formatSkillRequirements, itemNameFromID, stringMatches, toTitleCase } from '../../../lib/util';
 

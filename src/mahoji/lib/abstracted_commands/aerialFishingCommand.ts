@@ -1,6 +1,5 @@
 import { Time } from 'e';
 
-import { MUser } from '../../../lib/MUser';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { formatDuration, randomVariation } from '../../../lib/util';

@@ -2,7 +2,6 @@ import { ComponentType } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
 import { mahojiInformationalButtons } from '../../../lib/constants';
-import { MUser } from '../../../lib/MUser';
 import { mahojiUserSettingsUpdate } from '../../mahojiSettings';
 
 export async function minionBuyCommand(user: MUser, ironman: boolean): CommandResponse {

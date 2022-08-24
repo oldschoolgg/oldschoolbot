@@ -9,7 +9,6 @@ import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFo
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { KillableMonster } from '../../lib/minions/types';
-import { MUser } from '../../lib/MUser';
 import { GroupMonsterActivityTaskOptions } from '../../lib/types/minions';
 import { channelIsSendable, formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';

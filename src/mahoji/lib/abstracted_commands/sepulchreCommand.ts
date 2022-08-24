@@ -2,7 +2,6 @@ import { objectEntries, reduceNumByPercent, Time } from 'e';
 import { addArrayOfNumbers } from 'oldschooljs/dist/util';
 
 import { sepulchreBoosts, sepulchreFloors } from '../../../lib/minions/data/sepulchre';
-import { MUser } from '../../../lib/MUser';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, itemNameFromID } from '../../../lib/util';

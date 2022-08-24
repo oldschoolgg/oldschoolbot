@@ -4,7 +4,6 @@ import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { MUser } from '../../../lib/MUser';
 import { AlchingActivityTaskOptions } from '../../../lib/types/minions';
 import { clamp, formatDuration, toKMB } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';

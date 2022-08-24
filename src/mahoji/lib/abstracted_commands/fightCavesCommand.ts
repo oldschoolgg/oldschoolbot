@@ -4,7 +4,6 @@ import { Bank, Monsters } from 'oldschooljs';
 import TzTokJad from 'oldschooljs/dist/simulation/monsters/special/TzTokJad';
 import { itemID } from 'oldschooljs/dist/util';
 
-import { MUser } from '../../../lib/MUser';
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { FightCavesActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, rand } from '../../../lib/util';

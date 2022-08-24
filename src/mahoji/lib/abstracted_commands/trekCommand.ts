@@ -7,7 +7,6 @@ import { MorytaniaDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { GearStat, readableStatName } from '../../../lib/gear';
 import { difficulties, rewardTokens, trekBankBoosts } from '../../../lib/minions/data/templeTrekking';
 import { AddXpParams, GearRequirement } from '../../../lib/minions/types';
-import { MUser } from '../../../lib/MUser';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { TempleTrekkingActivityTaskOptions } from '../../../lib/types/minions';

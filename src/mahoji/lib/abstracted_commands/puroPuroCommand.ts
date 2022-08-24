@@ -2,7 +2,6 @@ import { Time } from 'e';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { UserKourendFavour } from '../../../lib/minions/data/kourendFavour';
-import { MUser } from '../../../lib/MUser';
 import { Skills } from '../../../lib/types';
 import { PuroPuroActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, itemID, stringMatches } from '../../../lib/util';

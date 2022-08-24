@@ -2,7 +2,6 @@ import { calcWhatPercent, randInt, reduceNumByPercent, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
-import { MUser } from '../../../lib/MUser';
 import { getPOHObject } from '../../../lib/poh';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { GnomeRestaurantActivityTaskOptions } from '../../../lib/types/minions';

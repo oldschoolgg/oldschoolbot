@@ -4,7 +4,6 @@ import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommand
 import { LootTable } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 
-import { MUser } from '../../../lib/MUser';
 import resolveItems from '../../../lib/util/resolveItems';
 import {
 	handleMahojiConfirmation,

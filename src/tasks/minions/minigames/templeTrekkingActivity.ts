@@ -9,7 +9,6 @@ import {
 	MediumEncounterLoot,
 	rewardTokens
 } from '../../../lib/minions/data/templeTrekking';
-import { MUser } from '../../../lib/MUser';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { TempleTrekkingActivityTaskOptions } from '../../../lib/types/minions';
 import { percentChance, stringMatches } from '../../../lib/util';

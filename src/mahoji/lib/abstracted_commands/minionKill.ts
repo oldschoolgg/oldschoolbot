@@ -41,7 +41,6 @@ import { AttackStyles, calculateMonsterFood, resolveAttackStyles } from '../../.
 import reducedTimeFromKC from '../../../lib/minions/functions/reducedTimeFromKC';
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
 import { Consumable, KillableMonster } from '../../../lib/minions/types';
-import { MUser } from '../../../lib/MUser';
 import { calcPOHBoosts } from '../../../lib/poh';
 import { trackLoot } from '../../../lib/settings/prisma';
 import { SlayerTaskUnlocksEnum } from '../../../lib/slayer/slayerUnlocks';

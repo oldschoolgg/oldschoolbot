@@ -5,7 +5,6 @@ import { ApplicationCommandOptionType, CommandRunOptions, MessageFlags } from 'm
 import { badges, Emoji, usernameCache } from '../../lib/constants';
 import { allClNames, getCollectionItems } from '../../lib/data/Collections';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
-import { MUser } from '../../lib/MUser';
 import { allOpenables } from '../../lib/openables';
 import { Minigames } from '../../lib/settings/minigames';
 import { prisma } from '../../lib/settings/prisma';

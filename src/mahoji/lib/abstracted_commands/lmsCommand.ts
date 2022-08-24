@@ -4,7 +4,6 @@ import { Bank } from 'oldschooljs';
 
 import { LMSBuyables } from '../../../lib/data/CollectionsExport';
 import { lmsSimCommand } from '../../../lib/minions/functions/lmsSimCommand';
-import { MUser } from '../../../lib/MUser';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, randomVariation, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';

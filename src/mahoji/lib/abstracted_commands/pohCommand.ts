@@ -3,7 +3,6 @@ import { Bank } from 'oldschooljs';
 
 import { BitField } from '../../../lib/constants';
 import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
-import { MUser } from '../../../lib/MUser';
 import { getPOHObject, itemsNotRefundable, PoHObjects } from '../../../lib/poh';
 import { prisma } from '../../../lib/settings/prisma';
 import { SkillsEnum } from '../../../lib/skilling/types';

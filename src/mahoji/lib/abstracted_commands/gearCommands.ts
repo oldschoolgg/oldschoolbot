@@ -10,7 +10,6 @@ import { defaultGear, GearSetup, GearSetupType, GearStat, globalPresets } from '
 import { generateAllGearImage, generateGearImage } from '../../../lib/gear/functions/generateGearImage';
 import getUserBestGearFromBank from '../../../lib/minions/functions/getUserBestGearFromBank';
 import { unEquipAllCommand } from '../../../lib/minions/functions/unequipAllCommand';
-import { MUser } from '../../../lib/MUser';
 import { prisma } from '../../../lib/settings/prisma';
 import { Gear } from '../../../lib/structures/Gear';
 import {

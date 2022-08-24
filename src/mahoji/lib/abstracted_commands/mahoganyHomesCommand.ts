@@ -2,7 +2,6 @@ import { calcPercentOfNum, calcWhatPercent, randArrItem, randInt, roll, Time } f
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
-import { MUser } from '../../../lib/MUser';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { Plank } from '../../../lib/skilling/skills/construction/constructables';
 import { SkillsEnum } from '../../../lib/skilling/types';

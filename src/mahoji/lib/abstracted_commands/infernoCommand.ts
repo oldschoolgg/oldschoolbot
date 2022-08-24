@@ -8,7 +8,6 @@ import { BitField, Emoji, projectiles, ProjectileType } from '../../../lib/const
 import { getSimilarItems } from '../../../lib/data/similarItems';
 import { blowpipeDarts } from '../../../lib/minions/functions/blowpipeCommand';
 import { BlowpipeData } from '../../../lib/minions/types';
-import { MUser } from '../../../lib/MUser';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { prisma } from '../../../lib/settings/prisma';
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';

@@ -6,7 +6,6 @@ import { Bank } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 import { toKMB } from 'oldschooljs/dist/util';
 
-import { MUser } from '../../../lib/MUser';
 import { channelIsSendable } from '../../../lib/util';
 import { handleMahojiConfirmation, mahojiParseNumber, updateGPTrackSetting } from '../../mahojiSettings';
 

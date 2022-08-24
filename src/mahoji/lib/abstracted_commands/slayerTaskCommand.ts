@@ -7,7 +7,6 @@ import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommand
 import { Monsters } from 'oldschooljs';
 
 import killableMonsters from '../../../lib/minions/data/killableMonsters';
-import { MUser } from '../../../lib/MUser';
 import { prisma } from '../../../lib/settings/prisma';
 import { runCommand } from '../../../lib/settings/settings';
 import { slayerMasters } from '../../../lib/slayer/slayerMasters';

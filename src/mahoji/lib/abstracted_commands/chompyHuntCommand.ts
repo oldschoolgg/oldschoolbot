@@ -2,7 +2,6 @@ import { percentChance, reduceNumByPercent, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { userhasDiaryTier, WesternProv } from '../../../lib/diaries';
-import { MUser } from '../../../lib/MUser';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';

@@ -7,7 +7,6 @@ import { toKMB } from 'oldschooljs/dist/util';
 
 import { PerkTier } from '../../lib/constants';
 import pets from '../../lib/data/pets';
-import { MUser } from '../../lib/MUser';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { OSBMahojiCommand } from '../lib/util';

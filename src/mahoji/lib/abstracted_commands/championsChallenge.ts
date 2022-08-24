@@ -2,7 +2,6 @@ import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { championScrolls } from '../../../lib/data/CollectionsExport';
-import { MUser } from '../../../lib/MUser';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';

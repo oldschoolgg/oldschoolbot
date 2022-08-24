@@ -2,7 +2,6 @@ import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
-import { MUser } from '../../../lib/MUser';
 import { Castables } from '../../../lib/skilling/skills/magic/castables';
 import { CastingActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../../lib/util';

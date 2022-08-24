@@ -2,7 +2,6 @@ import { time } from '@discordjs/builders';
 import { User } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 
-import { MUser } from '../../../lib/MUser';
 import birdhouses, { Birdhouse } from '../../../lib/skilling/skills/hunter/birdHouseTrapping';
 import defaultBirdhouseTrap, { BirdhouseData } from '../../../lib/skilling/skills/hunter/defaultBirdHouseTrap';
 import { BirdhouseActivityTaskOptions } from '../../../lib/types/minions';
