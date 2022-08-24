@@ -14,8 +14,9 @@ export function brewRestoreSupplyCalc(
 	const brews = userItems.amount('Saradomin brew(4)');
 
 	totalBrews += enhancedBrews * 2;
-	if (totalBrews >= brewsNeeded) itemBank.add('Enhanced saradomin brew', Math.ceil(brewsNeeded / 2));
-	else {
+	if (totalBrews >= brewsNeeded) {
+		itemBank.add('Enhanced saradomin brew', Math.ceil(brewsNeeded / 2));
+	} else {
 		itemBank.add('Enhanced saradomin brew', enhancedBrews);
 		totalBrews += brews;
 		if (totalBrews >= brewsNeeded) {
