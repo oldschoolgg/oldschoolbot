@@ -45,8 +45,8 @@ const toggles = [
 		bit: BitField.DisabledGorajanBoneCrusher
 	},
 	{
-		name: "Don't use Enhanced brews/restores",
-		bit: BitField.DontUseEnhancedBrewsRestores
+		name: 'Use Enhanced brews/restores where possible',
+		bit: BitField.UseEnhancedBrewsRestores
 	}
 ];
 

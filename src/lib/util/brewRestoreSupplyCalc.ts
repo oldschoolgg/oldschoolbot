@@ -12,7 +12,7 @@ export function brewRestoreSupplyCalc(
 	const userItems = user.bank();
 	const itemBank = new Bank();
 
-	const dontUseEnhanced = user.settings.get(UserSettings.BitField).includes(BitField.DontUseEnhancedBrewsRestores);
+	const dontUseEnhanced = !user.settings.get(UserSettings.BitField).includes(BitField.UseEnhancedBrewsRestores);
 	let totalBrews = 0;
 	const enhancedBrews = dontUseEnhanced ? 0 : userItems.amount('Enhanced saradomin brew');
 	const brews = userItems.amount('Saradomin brew(4)');

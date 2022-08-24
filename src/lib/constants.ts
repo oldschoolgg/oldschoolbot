@@ -350,7 +350,7 @@ export enum BitField {
 	HasDaemonheimAgilityPass = 206,
 	DisabledGorajanBoneCrusher = 207,
 	HasLeaguesOneMinuteLengthBoost = 208,
-	DontUseEnhancedBrewsRestores = 209
+	UseEnhancedBrewsRestores = 209
 }
 
 interface BitFieldData {
@@ -415,8 +415,8 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 		protected: false,
 		userConfigurable: true
 	},
-	[BitField.DontUseEnhancedBrewsRestores]: {
-		name: "Don't use Enhanced brews/restores",
+	[BitField.UseEnhancedBrewsRestores]: {
+		name: 'Use Enhanced brews/restores',
 		protected: false,
 		userConfigurable: true
 	}
