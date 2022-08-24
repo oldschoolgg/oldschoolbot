@@ -1046,7 +1046,7 @@ const specialPlants: Plant[] = [
 			['ultracompost', 40, 50]
 		],
 		treeWoodcuttingLevel: 1,
-		name: 'Grand Crystal tree',
+		name: 'Grand crystal tree',
 		aliases: ['grand crystal tree', 'grand crystal', 'grand'],
 		petChance: 9000,
 		seedType: 'crystal',
