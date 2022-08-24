@@ -172,7 +172,9 @@ export const huntCommand: OSBMahojiCommand = {
 			}
 			const { hasEnough } = brewRestoreSupplyCalc(user, 10, 5);
 			if (!hasEnough) {
-				return `To hunt ${creature.name} in the wilderness you need to have 10x Saradomin brew(4) and 5x Super restore(4) for safety.`;
+				if (userBank.amount('Saradomin brew(4)') < 10 || userBank.amount('Super restore(4)') < 5) {
+					return `To hunt ${creature.name} in the wilderness you need to have 10x Saradomin brew(4) and 5x Super restore(4) for safety.`;
+				}
 			}
 		}
 
