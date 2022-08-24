@@ -2038,7 +2038,7 @@ const Createables: Createable[] = [
 		}
 	},
 	{
-		name: 'Crystal shard',
+		name: 'Crystal dust',
 		inputItems: new Bank({
 			'Crystal shard': 1
 		}),
