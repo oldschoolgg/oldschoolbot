@@ -368,6 +368,11 @@ export const MeleeArmour: DisassemblySourceGroup = {
 		{
 			item: ['Abyssal cape', 'Avernic defender hilt'].map(i),
 			lvl: 99
+		},
+		{
+			item: ["Justiciar faceguard","Justiciar chestguard","Justiciar legguards"].map(i),
+			lvl: 99,
+			flags: new Set(['justiciar'])
 		}
 	],
 	parts: { plated: 30, strong: 3, protective: 2 }

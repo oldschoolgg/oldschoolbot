@@ -33,7 +33,8 @@ export const materialTypes = [
 	'treasured',
 	'drygore',
 	'gilded',
-	'orikalkum'
+	'orikalkum',
+	'justiciar'
 ] as const;
 
 export type MaterialType = typeof materialTypes[number];
@@ -55,7 +56,8 @@ export type DisassembleFlag =
 	| 'corporeal'
 	| 'treasure_trails'
 	| 'mystery_box'
-	| 'orikalkum';
+	| 'orikalkum'
+	| 'justiciar';
 
 interface IDisassembleFlag {
 	name: string;
@@ -82,6 +84,10 @@ export const disassembleFlags: IDisassembleFlag[] = [
 	{
 		name: 'Orikalkum',
 		flag: 'orikalkum'
+	},
+	{
+		name: 'Justiciar',
+		flag: 'justiciar'
 	}
 ];
 

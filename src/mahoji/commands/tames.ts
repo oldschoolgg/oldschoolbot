@@ -1,5 +1,5 @@
 import { time } from '@discordjs/builders';
-import { Tame, tame_growth, TameActivity } from '@prisma/client';
+import { Tame, tame_growth, TameActivity, User } from '@prisma/client';
 import { calcPercentOfNum, calcWhatPercent, notEmpty, reduceNumByPercent, Time } from 'e';
 import { readFile } from 'fs/promises';
 import { KlasaClient, KlasaUser } from 'klasa';
@@ -8,6 +8,7 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank, Monsters } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
+import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc';
 import { Canvas, CanvasRenderingContext2D, Image, loadImage } from 'skia-canvas/lib';
 
 import { badges } from '../../lib/constants';
@@ -54,6 +55,39 @@ import BankImageTask from '../../tasks/bankImage';
 import { collectables } from '../lib/abstracted_commands/collectCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { handleMahojiConfirmation, mahojiUserSettingsUpdate } from '../mahojiSettings';
+
+
+// treebeard, etc require armor to kill?
+interface TameKillableMonster extends KillableMonster {
+	loot: (opts: { quantity: number; user: User; tame: Tame; }) => Bank
+}
+export const tameKillableMonsters: TameKillableMonster[] = [
+	...killableMonsters.map((i): TameKillableMonster => ({
+		...i,
+		loot({ quantity }) {
+			return i.table.kill(quantity, {})
+		}
+	})),
+		{
+		id: 334_912,
+		name: "Chambers of Xeric",
+		aliases: ['cox', 'chambers of xeric'],
+		timeToFinish: Time.Minute * 22.15,
+			table: {
+				kill(quantity, options) {
+				
+				return new Bank()
+			},
+		},
+		emoji: '<:Dharoks_helm:403038864199122947>',
+		wildy: false,
+		difficultyRating: 4,
+			itemsRequired: resolveItems([]),
+			loot({ quantity }) {
+			constigneArmors
+				const loot = ChambersOfXeric.complete({ team: [{ id: '1', personalPoints: 25_000 }] })['1']
+	},
+]
 
 async function tameAutocomplete(value: string, user: APIUser) {
 	const tames = await prisma.tame.findMany({
@@ -114,7 +148,38 @@ const igneClaws = [
 	}
 ].map(i => ({ ...i, tameSpecies: [TameSpeciesID.Igne], slot: 'equipped_primary' as const }));
 
-export const tameEquippables: TameEquippable[] = [...igneClaws];
+const igneArmors  = [
+	{
+		item: getOSItem('Dragon igne armor'),
+		boost: 3
+	},
+	{
+		item: getOSItem('Barrows igne armor'),
+		boost: 6
+	},
+	{
+		item: getOSItem('Volcanic igne armor'),
+		boost: 10
+	},
+	{
+		item: getOSItem('Justiciar igne armor'),
+		boost: 17
+	},
+	{
+		item: getOSItem('Drygore igne armor'),
+		boost: 22
+	},
+	{
+		item: getOSItem('Dwarven igne armor'),
+		boost: 30
+	},
+	{
+		item: getOSItem('Gorajan igne armor'),
+		boost: 40
+	}
+].map(i => ({ ...i, tameSpecies: [TameSpeciesID.Igne], slot: 'equipped_armor' as const }));
+
+export const tameEquippables: TameEquippable[] = [...igneClaws, ...igneArmors];
 
 interface FeedableItem {
 	item: Item;
@@ -766,6 +831,7 @@ async function killCommand(user: KlasaUser, channelID: bigint, str: string) {
 	if (activity) {
 		return `${tameName(tame)} is busy.`;
 	}
+	//
 	const monster = findMonster(str);
 	if (!monster) {
 		return "That's not a valid monster.";

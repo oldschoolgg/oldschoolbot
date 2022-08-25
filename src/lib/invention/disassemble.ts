@@ -157,7 +157,8 @@ const flagToMaterialMap: [DisassembleFlag, MaterialType][] = [
 	['treasure_trails', 'treasured'],
 	['mystery_box', 'mysterious'],
 	['abyssal', 'abyssal'],
-	['orikalkum', 'orikalkum']
+	['orikalkum', 'orikalkum'],
+	['justiciar', 'justiciar']
 ];
 
 function flagEffectsInDisassembly(item: DisassemblyItem, loot: MaterialBank) {
