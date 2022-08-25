@@ -2,9 +2,9 @@ import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { naxxusCL } from '../../../../../data/CollectionsExport';
 import { GearStat } from '../../../../../gear';
 import { KillableMonster } from '../../../../../minions/types';
+import resolveItems from '../../../../../util/resolveItems';
 import setCustomMonster, { makeKillTable } from '../../../../../util/setCustomMonster';
 
 const runes = new LootTable()
@@ -83,7 +83,7 @@ export const Naxxus: KillableMonster = {
 	name: 'Naxxus',
 	aliases: ['nax'],
 	timeToFinish: Time.Minute * 30,
-	notifyDrops: naxxusCL,
+	notifyDrops: resolveItems(['Dark crystal', 'Abyssal gem', 'Tattered tome', 'Spellbound ring']),
 	table: makeKillTable(NaxxusLootTable),
 	emoji: '',
 	wildy: false,
