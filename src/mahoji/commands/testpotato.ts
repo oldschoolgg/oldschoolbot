@@ -709,6 +709,8 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						gear_melee: melee.raw() as Prisma.InputJsonObject,
 						gear_mage: mage.raw() as Prisma.InputJsonObject,
 						gear_wildy: wildy.raw() as Prisma.InputJsonObject,
+						skills_strength: convertLVLtoXP(120),
+						skills_attack: convertLVLtoXP(120),
 						skills_ranged: convertLVLtoXP(120),
 						skills_prayer: convertLVLtoXP(120),
 						skills_hitpoints: convertLVLtoXP(120),
