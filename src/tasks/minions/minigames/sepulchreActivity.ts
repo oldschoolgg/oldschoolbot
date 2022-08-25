@@ -47,7 +47,11 @@ export default class extends Task {
 			}
 		}
 
-		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
+		const { previousCL, itemsAdded } = await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 
 		let xpRes = await user.addXP({
 			skillName: SkillsEnum.Agility,

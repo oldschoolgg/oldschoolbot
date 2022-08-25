@@ -202,7 +202,11 @@ export default class extends Task {
 			}
 		}
 
-		await user.addItemsToBank({ items: loot, collectionLog: true });
+		await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 
 		str += `\n\nYou received: ${loot}.`;
 

@@ -142,7 +142,11 @@ export default class extends Task {
 			if (loot.length > 0) str += `\n\nYou received: ${loot}.`;
 
 			updateBankSetting(globalClient, ClientSettings.EconomyStats.FarmingLootBank, loot);
-			await user.addItemsToBank({ items: loot, collectionLog: true });
+			await transactItems({
+				userID: user.id,
+				collectionLog: true,
+				itemsToAdd: loot
+			});
 			const newPatch: PatchTypes.PatchData = {
 				lastPlanted: plant.name,
 				patchPlanted: true,
@@ -431,7 +435,11 @@ export default class extends Task {
 			}
 
 			updateBankSetting(globalClient, ClientSettings.EconomyStats.FarmingLootBank, loot);
-			await user.addItemsToBank({ items: loot, collectionLog: true });
+			await transactItems({
+				userID: user.id,
+				collectionLog: true,
+				itemsToAdd: loot
+			});
 
 			handleTripFinish(
 				user,

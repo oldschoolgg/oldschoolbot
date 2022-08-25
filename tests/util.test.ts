@@ -4,10 +4,9 @@ import { Bank } from 'oldschooljs';
 
 import { deduplicateClueScrolls } from '../src/lib/clues/clueUtils';
 import getUserFoodFromBank from '../src/lib/minions/functions/getUserFoodFromBank';
-import { sanitizeBank, stripEmojis, truncateString } from '../src/lib/util';
+import { getSkillsOfMahojiUser, sanitizeBank, stripEmojis, truncateString } from '../src/lib/util';
 import getOSItem from '../src/lib/util/getOSItem';
 import { sellPriceOfItem, sellStorePriceOfItem } from '../src/mahoji/commands/sell';
-import { getSkillsOfMahojiUser } from '../src/mahoji/mahojiSettings';
 import { mockUser } from './utils';
 
 describe('util', () => {

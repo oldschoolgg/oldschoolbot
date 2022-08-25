@@ -206,9 +206,10 @@ export async function volcanicMineShopCommand(
 	if (shopItem.clOnly) {
 		await klasaUser.addItemsToCollectionLog({ items: new Bank().add(shopItem.output).multiply(quantity) });
 	} else {
-		await klasaUser.addItemsToBank({
-			items: new Bank().add(shopItem.output).multiply(quantity),
-			collectionLog: true
+		await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: new Bank().add(shopItem.output).multiply(quantity)
 		});
 	}
 	await mahojiUserSettingsUpdate(user.id, {

@@ -8,9 +8,10 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Agility from '../../lib/skilling/skills/agility';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { AgilityActivityTaskOptions } from '../../lib/types/minions';
-import { addItemToBank, skillingPetDropRate, updateGPTrackSetting } from '../../lib/util';
+import { addItemToBank, skillingPetDropRate } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { updateGPTrackSetting } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: AgilityActivityTaskOptions) {
@@ -111,7 +112,11 @@ export default class extends Task {
 			);
 		}
 
-		await user.addItemsToBank({ items: loot, collectionLog: true });
+		await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 
 		handleTripFinish(
 			user,

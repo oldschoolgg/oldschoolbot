@@ -6,7 +6,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { Skills } from '../../../lib/types';
 import { PuroPuroActivityTaskOptions } from '../../../lib/types/minions';
-import { bankHasItem, formatDuration, itemID, stringMatches } from '../../../lib/util';
+import { formatDuration, itemID, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
@@ -103,7 +103,6 @@ export async function puroPuroStartCommand(
 	const hunterLevel = user.skillLevel(SkillsEnum.Hunter);
 	const [hasSkillReqs, reason] = user.hasSkillReqs(puroPuroSkillRequirements);
 	const [hasDarkLureSkillReqs, lureReason] = user.hasSkillReqs(darkLureSkillRequirements);
-	const bank = user.settings.get(UserSettings.Bank);
 
 	if (!hasSkillReqs) {
 		return `To hunt in Puro-Puro, you need: ${reason}.`;
@@ -150,10 +149,10 @@ export async function puroPuroStartCommand(
 		const natureRuneID = itemID('Nature rune');
 		const deathRuneID = itemID('Death rune');
 		if (impToHunt.name === 'Dragon Implings') {
-			if (!bankHasItem(bank, natureRuneID, 100) || !bankHasItem(bank, deathRuneID, 100)) {
+			if (user.bank().amount(natureRuneID) < 100 || user.bank().amount(deathRuneID) < 100) {
 				return "You don't have enough Nature and Death runes to start this trip, you need at least 100 of each.";
 			}
-		} else if (!bankHasItem(bank, natureRuneID, 300) || !bankHasItem(bank, deathRuneID, 300)) {
+		} else if (user.bank().amount(natureRuneID) < 300 || user.bank().amount(deathRuneID) < 300) {
 			return "You don't have enough Nature and Death runes to start this trip, you need at least 300 of each.";
 		}
 	}

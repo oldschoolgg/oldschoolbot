@@ -31,8 +31,7 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, MersenneTwister19937, nodeCrypto, real, shuffle } from 'random-js';
 
-import { CLIENT_ID } from '../config';
-import { getSkillsOfMahojiUser, mahojiUserSettingsUpdate } from '../mahoji/mahojiSettings';
+import { CLIENT_ID, production } from '../config';
 import { skillEmoji, SupportServer, usernameCache } from './constants';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
 import { Consumable } from './minions/types';
@@ -262,6 +261,39 @@ export function isNexActivity(data: any): data is NexTaskOptions {
 	return 'wipedKill' in data && 'userDetails' in data && 'leader' in data;
 }
 
+export function getSkillsOfMahojiUser(user: User, levels = false): Required<Skills> {
+	const skills: Required<Skills> = {
+		agility: Number(user.skills_agility),
+		cooking: Number(user.skills_cooking),
+		fishing: Number(user.skills_fishing),
+		mining: Number(user.skills_mining),
+		smithing: Number(user.skills_smithing),
+		woodcutting: Number(user.skills_woodcutting),
+		firemaking: Number(user.skills_firemaking),
+		runecraft: Number(user.skills_runecraft),
+		crafting: Number(user.skills_crafting),
+		prayer: Number(user.skills_prayer),
+		fletching: Number(user.skills_fletching),
+		farming: Number(user.skills_farming),
+		herblore: Number(user.skills_herblore),
+		thieving: Number(user.skills_thieving),
+		hunter: Number(user.skills_hunter),
+		construction: Number(user.skills_construction),
+		magic: Number(user.skills_magic),
+		attack: Number(user.skills_attack),
+		strength: Number(user.skills_strength),
+		defence: Number(user.skills_defence),
+		ranged: Number(user.skills_ranged),
+		hitpoints: Number(user.skills_hitpoints),
+		slayer: Number(user.skills_slayer)
+	};
+	if (levels) {
+		for (const [key, val] of Object.entries(skills) as [keyof Skills, number][]) {
+			skills[key] = convertXPtoLVL(val);
+		}
+	}
+	return skills;
+}
 export function countSkillsAtleast99(user: KlasaUser | User) {
 	const skills =
 		user instanceof KlasaUser
@@ -446,41 +478,6 @@ export function updateBankSetting(
 	return client.settings.update(setting, newBank.bank);
 }
 
-export async function updateGPTrackSetting(
-	setting:
-		| 'gp_luckypick'
-		| 'gp_daily'
-		| 'gp_open'
-		| 'gp_dice'
-		| 'gp_slots'
-		| 'gp_sell'
-		| 'gp_pvm'
-		| 'gp_alch'
-		| 'gp_pickpocket'
-		| 'duelTaxBank',
-	amount: number,
-	user?: KlasaUser
-) {
-	if (!user) {
-		await prisma.clientStorage.update({
-			where: {
-				id: CLIENT_ID
-			},
-			data: {
-				[setting]: {
-					increment: amount
-				}
-			}
-		});
-		return;
-	}
-	await mahojiUserSettingsUpdate(user.id, {
-		[setting]: {
-			increment: amount
-		}
-	});
-}
-
 export async function wipeDBArrayByKey(user: KlasaUser, key: string): Promise<SettingsUpdateResults> {
 	const active: any[] = user.settings.get(key) as any[];
 	return user.settings.update(key, active);
@@ -570,7 +567,11 @@ export async function makePaginatedMessage(message: KlasaMessage, pages: Message
 
 export function assert(condition: boolean, desc?: string, context?: Record<string, string>) {
 	if (!condition) {
-		logError(new Error(desc ?? 'Failed assertion'), context);
+		if (production) {
+			logError(new Error(desc ?? 'Failed assertion'), context);
+		} else {
+			throw new Error(desc ?? 'Failed assertion');
+		}
 	}
 }
 

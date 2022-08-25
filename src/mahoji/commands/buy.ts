@@ -20,7 +20,12 @@ import { mahojiChatHead } from '../../lib/util/chatHeadImage';
 import getOSItem from '../../lib/util/getOSItem';
 import { leaguesBuyCommand } from '../lib/abstracted_commands/leaguesBuyCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiParseNumber, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import {
+	allItemsOwned,
+	handleMahojiConfirmation,
+	mahojiParseNumber,
+	mahojiUsersSettingsFetch
+} from '../mahojiSettings';
 
 const allBuyablesAutocomplete = [...Buyables, ...leagueBuyables.map(i => ({ name: i.item.name })), { name: 'Kitten' }];
 
@@ -65,8 +70,8 @@ export const buyCommand: OSBMahojiCommand = {
 				});
 			}
 
-			const allItemsOwned = user.allItemsOwned();
-			if (kittens.some(kitten => allItemsOwned.has(kitten))) {
+			const allItemsOwnedBank = allItemsOwned(user);
+			if (kittens.some(kitten => allItemsOwnedBank.has(kitten))) {
 				return mahojiChatHead({
 					head: 'gertrude',
 					content: "You are already raising a kitten! You can't handle a second."
@@ -77,8 +82,8 @@ export const buyCommand: OSBMahojiCommand = {
 
 			const loot = new Bank().add(kitten.id);
 
-			await user.removeItemsFromBank(cost);
-			await user.addItemsToBank({ items: loot, collectionLog: true });
+			await transactItems({ userID: user.id, itemsToRemove: cost });
+			await transactItems({ userID: userID.toString(), itemsToAdd: loot, collectionLog: true });
 
 			return {
 				...(await mahojiChatHead({
@@ -181,8 +186,11 @@ export const buyCommand: OSBMahojiCommand = {
 		updateBankSetting(globalClient, ClientSettings.EconomyStats.BuyCostBank, econBankChanges);
 		updateBankSetting(globalClient, ClientSettings.EconomyStats.BuyLootBank, outItems);
 
-		await user.addItemsToBank({ items: outItems, collectionLog: true });
-
+		await transactItems({
+			userID: user.id,
+			itemsToAdd: outItems,
+			collectionLog: true
+		});
 		return `You purchased ${outItems}.`;
 	}
 };
