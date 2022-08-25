@@ -13,7 +13,11 @@ export default class extends Task {
 
 		const loot = new Bank({ "Champion's cape": 1 });
 
-		await user.addItemsToBank({ items: loot, collectionLog: true });
+		await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 
 		handleTripFinish(
 			user,
