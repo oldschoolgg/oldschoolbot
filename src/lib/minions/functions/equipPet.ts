@@ -26,7 +26,7 @@ export async function equipPet(user: KlasaUser, itemName: string) {
 	}
 
 	await user.settings.update(UserSettings.Minion.EquippedPet, petItem.id);
-	await user.removeItemsFromBank(cost);
+	await transactItems({ userID: user.id, itemsToRemove: cost });
 
 	user.log(`equipping ${petItem.name}[${petItem.id}]`);
 

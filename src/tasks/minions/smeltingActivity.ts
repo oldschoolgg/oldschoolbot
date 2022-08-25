@@ -49,7 +49,11 @@ export default class extends Task {
 			[bar.id]: quantity
 		});
 
-		await user.addItemsToBank({ items: loot, collectionLog: true });
+		await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 
 		handleTripFinish(
 			user,

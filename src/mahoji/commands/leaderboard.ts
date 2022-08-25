@@ -664,10 +664,10 @@ export const leaderboardCommand: OSBMahojiCommand = {
 					name: 'cl',
 					description: 'The cl you want to select.',
 					required: true,
-					autocomplete: async (value: string) => {
-						return allClNames
-							.filter(i => (!value ? true : i.toLowerCase().includes(value.toLowerCase())))
-							.map(i => ({ name: i, value: i }));
+					autocomplete: async value => {
+						return ['overall', ...allClNames.map(i => i)]
+							.filter(name => (!value ? true : name.toLowerCase().includes(value.toLowerCase())))
+							.map(i => ({ name: toTitleCase(i), value: i }));
 					}
 				},
 				ironmanOnlyOption

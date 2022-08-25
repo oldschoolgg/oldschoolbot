@@ -5,7 +5,7 @@ import { KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
-import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
+import { updateGPTrackSetting, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { ClueTiers } from '../clues/clueTiers';
 import { COINS_ID, Emoji, lastTripCache, LastTripRunArgs, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
@@ -14,7 +14,7 @@ import { triggerRandomEvent } from '../randomEvents';
 import { runCommand } from '../settings/settings';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import { ActivityTaskOptions } from '../types/minions';
-import { channelIsSendable, updateGPTrackSetting } from '../util';
+import { channelIsSendable } from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
 import {
 	makeBirdHouseTripButton,
@@ -57,7 +57,7 @@ const tripFinishEffects: {
 				const many = imp.bank.length > 1;
 				messages.push(`Caught ${many ? 'some' : 'an'} impling${many ? 's' : ''}, you received: ${imp.bank}`);
 				userStatsBankUpdate(user.id, 'passive_implings_bank', imp.bank);
-				await user.addItemsToBank({ items: imp.bank, collectionLog: true });
+				await transactItems({ userID: user.id, itemsToAdd: imp.bank, collectionLog: true });
 			}
 		}
 	},

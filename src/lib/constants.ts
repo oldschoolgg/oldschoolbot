@@ -2,7 +2,6 @@ import { MessageButton } from 'discord.js';
 import { KlasaMessage } from 'klasa';
 import { APIButtonComponent, APIButtonComponentWithCustomId, ButtonStyle, ComponentType } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import PQueue from 'p-queue';
 import { join } from 'path';
 
 import { DISCORD_SETTINGS, production } from '../config';
@@ -402,11 +401,6 @@ export const ZALCANO_ID = 9049;
 export const NIGHTMARE_ID = 9415;
 export const HESPORI_ID = 8583;
 export const NEX_ID = 11_278;
-
-/**
- * Map<user_id, PromiseQueue>
- */
-export const userQueues: Map<string, PQueue> = new Map();
 
 export const skillEmoji = {
 	runecraft: '<:runecraft:630911040435257364>',
