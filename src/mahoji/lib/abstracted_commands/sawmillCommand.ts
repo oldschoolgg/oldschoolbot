@@ -21,7 +21,7 @@ export async function sawmillCommand(user: MUser, plankName: string, quantity: n
 	const boosts = [];
 	let timePerPlank = (Time.Second * 37) / 27;
 
-	if (userHasGracefulEquipped(user.user)) {
+	if (userHasGracefulEquipped(user)) {
 		timePerPlank *= 0.9;
 		boosts.push('10% for Graceful');
 	}

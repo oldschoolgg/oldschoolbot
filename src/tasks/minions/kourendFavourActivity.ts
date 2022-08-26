@@ -3,7 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import { KourendFavourActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { mahojiUserSettingsUpdate, mUserFetch } from '../../mahoji/mahojiSettings';
+import { mUserFetch } from '../../mahoji/mahojiSettings';
 import { KourendFavours, UserKourendFavour } from './../../lib/minions/data/kourendFavour';
 
 export default class extends Task {
@@ -18,7 +18,7 @@ export default class extends Task {
 			if (key.toLowerCase() === favour.name.toLowerCase()) {
 				totalPoints = Math.min(Number(value) + favourPoints, 100);
 				currentUserFavour[key] = totalPoints;
-				await mahojiUserSettingsUpdate(user.id, {
+				await user.update({
 					kourend_favour: currentUserFavour as any
 				});
 				if (key === 'Shayzien' && totalPoints === 100) shayzienDone = true;

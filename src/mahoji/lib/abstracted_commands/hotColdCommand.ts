@@ -5,12 +5,7 @@ import { LootTable } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import resolveItems from '../../../lib/util/resolveItems';
-import {
-	handleMahojiConfirmation,
-	mahojiClientSettingsUpdate,
-	mahojiParseNumber,
-	mahojiUserSettingsUpdate
-} from '../../mahojiSettings';
+import { handleMahojiConfirmation, mahojiClientSettingsUpdate, mahojiParseNumber } from '../../mahojiSettings';
 
 export const flowerTable = new LootTable()
 	.add('Red flowers', 1, 150)
@@ -72,7 +67,7 @@ ${explanation}`
 	// You get 5x if you roll a black/white flower
 	if (blackAndWhite.includes(flower.id)) {
 		const amountWon = amount * 5;
-		await mahojiUserSettingsUpdate(user.id, {
+		await user.update({
 			gp_hotcold: {
 				increment: amountWon
 			},
@@ -93,7 +88,7 @@ ${explanation}`
 		return response;
 	}
 
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		GP: {
 			decrement: amount
 		}
@@ -109,7 +104,7 @@ ${explanation}`
 
 	if (playerDidWin) {
 		const amountWon = amount * 2;
-		await mahojiUserSettingsUpdate(user.id, {
+		await user.update({
 			GP: {
 				increment: amount * 2
 			},
@@ -120,7 +115,7 @@ ${explanation}`
 		embed.setDescription(`You **won** ${toKMB(amountWon)}!`).setColor(6_875_960);
 		return response;
 	}
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		gp_hotcold: {
 			decrement: amount
 		}

@@ -9,7 +9,7 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { mahojiChatHead, newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import getOSItem from '../../../lib/util/getOSItem';
-import { mahojiUserSettingsUpdate, userHasGracefulEquipped } from '../../mahojiSettings';
+import { userHasGracefulEquipped } from '../../mahojiSettings';
 
 export const agilityArenaBuyables = [
 	{
@@ -67,7 +67,7 @@ export function determineXPFromTickets(qty: number, user: MUser, hasDiary: boole
 export async function agilityArenaCommand(user: MUser, channelID: bigint): CommandResponse {
 	const duration = calcMaxTripLength(user, 'AgilityArena');
 
-	if (!userHasGracefulEquipped(user.user)) {
+	if (!userHasGracefulEquipped(user)) {
 		return mahojiChatHead({
 			content: 'Ahoy there! You need full Graceful equipped to do the Brimhaven Agility Arena!',
 			head: 'izzy'
@@ -152,7 +152,7 @@ export async function agilityArenaRecolorCommand(user: MUser) {
 	bank.remove('Agility arena ticket', cost);
 	bank.remove(plainGraceful);
 	bank.add(brimhavenGraceful);
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		bank: bank.bank
 	});
 	await user.addItemsToCollectionLog(brimhavenGraceful);

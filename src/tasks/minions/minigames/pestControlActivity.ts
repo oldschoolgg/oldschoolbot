@@ -6,7 +6,7 @@ import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { getBoatType } from '../../../mahoji/lib/abstracted_commands/pestControlCommand';
-import { mahojiUserSettingsUpdate, mUserFetch } from '../../../mahoji/mahojiSettings';
+import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: MinigameActivityTaskOptions) {
@@ -18,7 +18,7 @@ export default class extends Task {
 		let points = pointsPerGame * quantity;
 
 		await incrementMinigameScore(userID, 'pest_control', quantity);
-		const { newUser } = await mahojiUserSettingsUpdate(user.id, {
+		const { newUser } = await user.update({
 			pest_control_points: {
 				increment: points
 			}

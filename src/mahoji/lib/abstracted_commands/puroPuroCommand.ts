@@ -170,7 +170,7 @@ export async function puroPuroStartCommand(
 		duration
 	)} to finish.`;
 
-	if (!userHasGracefulEquipped(user.user) && impToHunt.name !== 'Dragon Implings')
+	if (!userHasGracefulEquipped(user) && impToHunt.name !== 'Dragon Implings')
 		str += '\n20% less implings due to having no Graceful equipped.';
 
 	if (!impToHunt.spell) {

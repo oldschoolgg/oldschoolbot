@@ -9,7 +9,7 @@ import { getSkillsOfMahojiUser, roughMergeMahojiResponse } from '../../../lib/ut
 import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import { findPlant } from '../../../lib/util/farmingHelpers';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
-import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch, mUserFetch } from '../../mahojiSettings';
+import { mahojiUsersSettingsFetch, mUserFetch } from '../../mahojiSettings';
 import { farmingPlantCommand, harvestCommand } from './farmingCommand';
 import { abstractedOpenCommand } from './openCommand';
 
@@ -75,7 +75,7 @@ export async function farmingContractCommand(userID: bigint, input?: ContractOpt
 				plantTier,
 				contractsCompleted: currentContract.contractsCompleted
 			};
-			await mahojiUserSettingsUpdate(user.id, {
+			await user.update({
 				minion_farmingContract: farmingContractUpdate as any
 			});
 			return janeImage(
@@ -113,7 +113,7 @@ export async function farmingContractCommand(userID: bigint, input?: ContractOpt
 		contractsCompleted: currentContract.contractsCompleted
 	};
 
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		minion_farmingContract: farmingContractUpdate as any
 	});
 

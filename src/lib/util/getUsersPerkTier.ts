@@ -1,8 +1,8 @@
 import { User } from 'discord.js';
 import { notEmpty } from 'e';
 
-import { mahojiUserSettingsUpdate } from '../../mahoji/mahojiSettings';
 import { BitField, PerkTier, Roles } from '../constants';
+import { MUserClass } from '../MUser';
 import { getSupportGuild } from '../util';
 import { logError } from './logError';
 
@@ -23,7 +23,7 @@ export default function getUsersPerkTier(
 	userOrBitfield: MUser | readonly BitField[],
 	noCheckOtherAccounts?: boolean
 ): PerkTier | 0 {
-	if (noCheckOtherAccounts !== true && userOrBitfield instanceof MUser) {
+	if (noCheckOtherAccounts !== true && userOrBitfield instanceof MUserClass) {
 		let main = userOrBitfield.user.main_account;
 		const allAccounts: string[] = [...userOrBitfield.user.ironman_alts, userOrBitfield.id];
 		if (main) {
@@ -39,19 +39,21 @@ export default function getUsersPerkTier(
 		return 10;
 	}
 
-	const bitfield = userOrBitfield instanceof MUser ? userOrBitfield.bitfield : userOrBitfield;
+	const bitfield = userOrBitfield instanceof MUserClass ? userOrBitfield.bitfield : userOrBitfield;
 
-	if (userOrBitfield instanceof MUser && userOrBitfield.user.premium_balance_tier !== null) {
+	if (userOrBitfield instanceof MUserClass && userOrBitfield.user.premium_balance_tier !== null) {
 		const date = userOrBitfield.user.premium_balance_expiry_date;
 		if (date && Date.now() < date) {
 			return userOrBitfield.user.premium_balance_tier + 1;
 		} else if (date && Date.now() > date) {
-			mahojiUserSettingsUpdate(userOrBitfield.id, {
-				premium_balance_tier: null,
-				premium_balance_expiry_date: null
-			}).catch(e => {
-				logError(e, { user_id: userOrBitfield.id, message: 'Could not remove premium time' });
-			});
+			userOrBitfield
+				.update({
+					premium_balance_tier: null,
+					premium_balance_expiry_date: null
+				})
+				.catch(e => {
+					logError(e, { user_id: userOrBitfield.id, message: 'Could not remove premium time' });
+				});
 		}
 	}
 
@@ -79,7 +81,7 @@ export default function getUsersPerkTier(
 		return PerkTier.Two;
 	}
 
-	if (userOrBitfield instanceof MUser) {
+	if (userOrBitfield instanceof MUserClass) {
 		const supportGuild = getSupportGuild();
 		const member = supportGuild?.members.cache.get(userOrBitfield.id);
 		if (member && [Roles.Booster].some(roleID => member.roles.cache.has(roleID))) {

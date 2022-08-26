@@ -41,7 +41,7 @@ import resolveItems from '../../lib/util/resolveItems';
 import { dataPoints, statsCommand } from '../lib/abstracted_commands/statCommand';
 import { itemOption, monsterOption, skillOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiUserSettingsUpdate, mUserFetch, patronMsg } from '../mahojiSettings';
+import { handleMahojiConfirmation, mUserFetch, patronMsg } from '../mahojiSettings';
 
 const TimeIntervals = ['day', 'week'] as const;
 const skillsVals = Object.values(Skills);
@@ -805,7 +805,7 @@ export const toolsCommand: OSBMahojiCommand = {
 		if (options.user?.temp_cl) {
 			if (options.user.temp_cl === true) {
 				await handleMahojiConfirmation(interaction, 'Are you sure you want to reset your temporary CL?');
-				await mahojiUserSettingsUpdate(klasaUser.id, {
+				await mahojiUser.update({
 					temp_cl: {},
 					last_temp_cl_reset: new Date()
 				});

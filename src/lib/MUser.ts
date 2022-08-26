@@ -5,11 +5,12 @@ import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { timePerAlch } from '../mahoji/lib/abstracted_commands/alchCommand';
-import { calculateAddItemsToCLUpdates, getUserGear, mahojiUserSettingsUpdate } from '../mahoji/mahojiSettings';
+import { mahojiUserSettingsUpdate } from '../mahoji/settingsUpdate';
 import { addXP } from './addXP';
 import { BitField, projectiles, usernameCache } from './constants';
 import { allPetIDs } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
+import { defaultGear, GearSetup, UserFullGearSetup } from './gear';
 import { CombatOptionsEnum } from './minions/data/combatConstants';
 import { UserKourendFavour } from './minions/data/kourendFavour';
 import { AttackStyles } from './minions/functions';
@@ -17,8 +18,9 @@ import { blowpipeDarts, validateBlowpipeData } from './minions/functions/blowpip
 import { AddXpParams, BlowpipeData } from './minions/types';
 import { SkillsEnum } from './skilling/types';
 import { BankSortMethod } from './sorts';
+import { Gear } from './structures/Gear';
 import { ItemBank } from './types';
-import { addItemToBank, assert, calcCombatLevel, getSkillsOfMahojiUser, itemNameFromID, percentChance } from './util';
+import { addItemToBank, assert, getSkillsOfMahojiUser, itemNameFromID, percentChance } from './util';
 import { determineRunes } from './util/determineRunes';
 import getOSItem from './util/getOSItem';
 import getUsersPerkTier, { syncPerkTierOfUser } from './util/getUsersPerkTier';
@@ -48,6 +50,16 @@ export class MUserClass {
 		return result;
 	}
 
+	get combatLevel() {
+		const { defence, ranged, hitpoints, magic, prayer, attack, strength } = this.skillsAsLevels;
+
+		const base = 0.25 * (defence + hitpoints + Math.floor(prayer / 2));
+		const melee = 0.325 * (attack + strength);
+		const range = 0.325 * (Math.floor(ranged / 2) + ranged);
+		const mage = 0.325 * (Math.floor(magic / 2) + magic);
+		return Math.floor(base + Math.max(melee, range, mage));
+	}
+
 	favAlchs(duration: number) {
 		const { bank } = this;
 		return this.user.favorite_alchables
@@ -69,10 +81,6 @@ export class MUserClass {
 
 	get bankWithGP() {
 		return this.bank.add('Coins', this.GP);
-	}
-
-	get combatLevel() {
-		return calcCombatLevel(this.skillsAsXP);
 	}
 
 	get kourendFavour() {
@@ -120,7 +128,7 @@ export class MUserClass {
 	}
 
 	get bitfield() {
-		return this.user.bitfield as BitField[];
+		return this.user.bitfield as readonly BitField[];
 	}
 
 	get perkTier() {
@@ -132,8 +140,17 @@ export class MUserClass {
 		return skills[skill];
 	}
 
-	get gear() {
-		return getUserGear(this.user);
+	get gear(): UserFullGearSetup {
+		return {
+			melee: new Gear((this.user.gear_melee as GearSetup | null) ?? { ...defaultGear }),
+			mage: new Gear((this.user.gear_mage as GearSetup | null) ?? { ...defaultGear }),
+			range: new Gear((this.user.gear_range as GearSetup | null) ?? { ...defaultGear }),
+			misc: new Gear((this.user.gear_misc as GearSetup | null) ?? { ...defaultGear }),
+			skilling: new Gear((this.user.gear_skilling as GearSetup | null) ?? { ...defaultGear }),
+			wildy: new Gear((this.user.gear_wildy as GearSetup | null) ?? { ...defaultGear }),
+			fashion: new Gear((this.user.gear_fashion as GearSetup | null) ?? { ...defaultGear }),
+			other: new Gear((this.user.gear_other as GearSetup | null) ?? { ...defaultGear })
+		};
 	}
 
 	get bank() {
@@ -154,6 +171,10 @@ export class MUserClass {
 
 	get usernameOrMention() {
 		return usernameCache.get(this.id) ?? this.mention;
+	}
+
+	toString() {
+		return this.usernameOrMention;
 	}
 
 	get QP() {
@@ -297,8 +318,7 @@ export class MUserClass {
 	}
 
 	async addItemsToCollectionLog(itemsToAdd: Bank) {
-		const updates = await calculateAddItemsToCLUpdates({
-			userID: this.id,
+		const updates = this.calculateAddItemsToCLUpdates({
 			items: itemsToAdd
 		});
 		const { newUser } = await mahojiUserSettingsUpdate(this.id, updates);
@@ -413,16 +433,24 @@ export class MUserClass {
 	getCreatureScore(creatureID: number) {
 		return (this.user.creatureScores as ItemBank)[creatureID] ?? 0;
 	}
-}
-declare global {
-	const MUser: typeof MUserClass;
-	export type MUser = MUserClass;
-}
-declare global {
-	namespace NodeJS {
-		interface Global {
-			MUser: typeof MUserClass;
+
+	calculateAddItemsToCLUpdates({
+		items,
+		dontAddToTempCL = false
+	}: {
+		items: Bank;
+		dontAddToTempCL?: boolean;
+	}): Prisma.UserUpdateArgs['data'] {
+		const updates: Prisma.UserUpdateArgs['data'] = {
+			collectionLogBank: new Bank(this.user.collectionLogBank as ItemBank).add(items).bank
+		};
+
+		if (!dontAddToTempCL) {
+			updates.temp_cl = new Bank(this.user.temp_cl as ItemBank).add(items).bank;
 		}
+		return updates;
 	}
 }
-global.MUser = MUserClass;
+declare global {
+	export type MUser = MUserClass;
+}

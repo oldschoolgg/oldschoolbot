@@ -1,6 +1,5 @@
 import { Bank } from 'oldschooljs';
 
-import { mahojiUserSettingsUpdate } from '../../../mahoji/mahojiSettings';
 import { itemNameFromID } from '../../util';
 import { logError } from '../../util/logError';
 
@@ -19,7 +18,7 @@ export async function unequipPet(user: MUser) {
 		});
 		return 'Error removing pet, ask for help in the support server.';
 	}
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		minion_equippedPet: null
 	});
 

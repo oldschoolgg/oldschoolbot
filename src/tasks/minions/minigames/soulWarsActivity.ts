@@ -5,7 +5,7 @@ import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { mahojiUserSettingsUpdate, mUserFetch } from '../../../mahoji/mahojiSettings';
+import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
 function calcPoints() {
 	let base = 42.5;
@@ -33,7 +33,7 @@ export default class extends Task {
 			points += calcPoints();
 		}
 
-		const { newUser } = await mahojiUserSettingsUpdate(userID, {
+		await user.update({
 			zeal_tokens: {
 				increment: points
 			}
@@ -41,7 +41,7 @@ export default class extends Task {
 
 		await incrementMinigameScore(user.id, 'soul_wars', quantity);
 
-		const str = `${user}, ${user.minionName} finished doing ${quantity}x games of Soul Wars, you received ${points} Zeal Tokens, you now have ${newUser.zeal_tokens}.\n\n`;
+		const str = `${user}, ${user.minionName} finished doing ${quantity}x games of Soul Wars, you received ${points} Zeal Tokens, you now have ${user.user.zeal_tokens}.\n\n`;
 
 		handleTripFinish(
 			user,

@@ -8,7 +8,7 @@ import { roboChimpUserFetch } from '../../../lib/roboChimp';
 import { prisma } from '../../../lib/settings/prisma';
 import { assert } from '../../../lib/util';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
-import { handleMahojiConfirmation, mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../../mahojiSettings';
+import { handleMahojiConfirmation, mahojiUsersSettingsFetch } from '../../mahojiSettings';
 
 export async function ironmanCommand(user: MUser, interaction: SlashCommandInteraction, permanent?: boolean) {
 	if (minionIsBusy(user.id)) return 'Your minion is busy.';
@@ -20,7 +20,7 @@ export async function ironmanCommand(user: MUser, interaction: SlashCommandInter
 				interaction,
 				'Would you like to change your ironman to a *permanent* iron? The only thing in your account that will change, is that you will no longer be able to de-iron. This is *permanent* and cannot be reversed.'
 			);
-			await mahojiUserSettingsUpdate(user.id, {
+			await user.update({
 				bitfield: {
 					push: BitField.PermanentIronman
 				}
@@ -31,7 +31,7 @@ export async function ironmanCommand(user: MUser, interaction: SlashCommandInter
 			interaction,
 			'Would you like to stop being an ironman? You will keep all your items and stats but you will have to start over if you want to play as an ironman again.'
 		);
-		await mahojiUserSettingsUpdate(user.id, {
+		await user.update({
 			minion_ironman: false
 		});
 		return 'You are no longer an ironman.';
@@ -124,7 +124,7 @@ After becoming an ironman:
 		}
 	} catch (_) {}
 
-	const { newUser } = await mahojiUserSettingsUpdate(user.id, {
+	const { newUser } = await user.update({
 		minion_ironman: true,
 		minion_hasBought: true
 	});

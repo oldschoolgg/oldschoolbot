@@ -7,7 +7,6 @@ import { formatDuration, randomVariation, stringMatches } from '../../../lib/uti
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
-import { mahojiUserSettingsUpdate } from '../../mahojiSettings';
 
 export const soulWarsBuyables = [
 	{
@@ -168,7 +167,7 @@ export async function soulWarsBuyCommand(user: MUser, input = '', quantity?: num
 			item.tokens * quantity
 		}.`;
 	}
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		zeal_tokens: {
 			decrement: item.tokens * quantity
 		}
@@ -194,7 +193,7 @@ export async function soulWarsImbueCommand(user: MUser, input = '') {
 	if (!bank.has(item.input.id)) {
 		return `You don't have a ${item.input.name}.`;
 	}
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		zeal_tokens: {
 			decrement: item.tokens
 		}

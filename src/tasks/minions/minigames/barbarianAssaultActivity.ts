@@ -5,7 +5,7 @@ import { KandarinDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { mahojiUserSettingsUpdate, mUserFetch } from '../../../mahoji/mahojiSettings';
+import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: MinigameActivityTaskOptions) {
@@ -29,7 +29,7 @@ export default class extends Task {
 		let totalPoints = Math.floor(pts * quantity);
 
 		await incrementMinigameScore(user.id, 'barb_assault', quantity);
-		await mahojiUserSettingsUpdate(user.id, {
+		await user.update({
 			honour_points: {
 				increment: totalPoints
 			}

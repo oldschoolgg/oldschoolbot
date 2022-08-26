@@ -24,13 +24,7 @@ import {
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
 import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
-import {
-	getUserGear,
-	handleMahojiConfirmation,
-	mahojiParseNumber,
-	mahojiUserSettingsUpdate,
-	mUserFetch
-} from '../../mahojiSettings';
+import { handleMahojiConfirmation, mahojiParseNumber, mUserFetch } from '../../mahojiSettings';
 
 export async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName: string): CommandResponse {
 	if (user.minionIsBusy) {
@@ -92,10 +86,10 @@ export async function gearPresetEquipCommand(user: MUser, gearSetup: string, pre
 
 	await user.removeItemsFromBank(toRemove);
 
-	const { newUser } = await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		[`gear_${gearSetup}`]: newGear
 	});
-	const updatedGear = getUserGear(newUser)[gearSetup];
+	const updatedGear = user.gear[gearSetup];
 	const image = await generateGearImage(user, updatedGear, gearSetup, user.user.minion_equippedPet);
 
 	return {
@@ -192,7 +186,7 @@ export async function gearEquipCommand(args: {
 
 		const loot = new Bank().add(equippedInThisSlot.item, equippedInThisSlot.quantity);
 		await user.addItemsToBank({ items: loot, collectionLog: false });
-		await mahojiUserSettingsUpdate(user.id, {
+		await user.update({
 			[dbKey]: newGear
 		});
 		return gearEquipCommand({
@@ -215,7 +209,7 @@ export async function gearEquipCommand(args: {
 		quantity
 	};
 
-	const { newUser } = await mahojiUserSettingsUpdate(user.id, {
+	const { newUser } = await user.update({
 		[dbKey]: newGear
 	});
 	const image = await generateGearImage(user, newUser[dbKey] as GearSetup, setup, user.user.minion_equippedPet);
@@ -265,7 +259,7 @@ export async function gearUnequipCommand(
 		},
 		collectionLog: false
 	});
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		[`gear_${gearSetup}`]: newGear
 	});
 
@@ -305,7 +299,7 @@ export async function autoEquipCommand(user: MUser, gearSetup: GearSetupType, eq
 
 	await user.removeItemsFromBank(toRemoveFromBank);
 	await user.addItemsToBank({ items: toRemoveFromGear, collectionLog: false });
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		[`gear_${gearSetup}`]: gearToEquip
 	});
 
@@ -376,7 +370,7 @@ export async function gearSwapCommand(
 
 	const { gear } = user;
 
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		[`gear_${first}`]: gear[second],
 		[`gear_${second}`]: gear[first]
 	});

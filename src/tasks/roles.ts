@@ -11,7 +11,7 @@ import { prisma } from '../lib/settings/prisma';
 import Skills from '../lib/skilling/skills';
 import { convertXPtoLVL } from '../lib/util';
 import { logError } from '../lib/util/logError';
-import { mahojiUserSettingsUpdate, mUserFetch } from '../mahoji/mahojiSettings';
+import { mUserFetch } from '../mahoji/mahojiSettings';
 
 function addToUserMap(userMap: Record<string, string[]>, id: string, reason: string) {
 	if (!userMap[id]) userMap[id] = [];
@@ -69,7 +69,7 @@ async function addRoles({
 			}
 
 			if (badge && mUser.user.badges.includes(badge)) {
-				await mahojiUserSettingsUpdate(mUser.id, {
+				await mUser.update({
 					badges: mUser.user.badges.filter(i => i !== badge)
 				});
 			}
@@ -82,7 +82,7 @@ async function addRoles({
 				await mem.roles.add(role).catch(noOp);
 			}
 			if (badge && !mUser.user.badges.includes(badge)) {
-				await mahojiUserSettingsUpdate(mUser.id, {
+				await mUser.update({
 					badges: {
 						push: badge
 					}

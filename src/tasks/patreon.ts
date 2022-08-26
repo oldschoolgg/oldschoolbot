@@ -11,7 +11,8 @@ import { roboChimpUserFetch } from '../lib/roboChimp';
 import { Patron } from '../lib/types';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 import { logError } from '../lib/util/logError';
-import { mahojiUserSettingsUpdate, mUserFetch } from '../mahoji/mahojiSettings';
+import { mUserFetch } from '../mahoji/mahojiSettings';
+import { mahojiUserSettingsUpdate } from '../mahoji/settingsUpdate';
 
 const patreonApiURL = new URL(`https://patreon.com/api/oauth2/v2/campaigns/${patreonConfig?.campaignID}/members`);
 
@@ -109,7 +110,7 @@ export default class PatreonTask extends Task {
 
 		// Remove any/all the patron bits from this user.
 		try {
-			await mahojiUserSettingsUpdate(user.id, {
+			await user.update({
 				bitfield: newBitfield
 			});
 		} catch (_) {}
@@ -117,7 +118,7 @@ export default class PatreonTask extends Task {
 		// Remove patron bank background
 		const bg = backgroundImages.find(bg => bg.id === user.user.bankBackground);
 		if (bg && bg.perkTierNeeded && bg.perkTierNeeded > to) {
-			await mahojiUserSettingsUpdate(user.id, {
+			await user.update({
 				bankBackground: 1
 			});
 		}
@@ -131,7 +132,7 @@ export default class PatreonTask extends Task {
 		// If they have neither the limited time badge or normal badge, give them the normal one.
 		if (!userBadges.includes(BadgesEnum.Patron) && !userBadges.includes(BadgesEnum.LimitedPatron)) {
 			try {
-				await mahojiUserSettingsUpdate(user.id, {
+				await user.update({
 					badges: {
 						push: BadgesEnum.Patron
 					}
@@ -147,7 +148,7 @@ export default class PatreonTask extends Task {
 				bitFieldFromPerkTier(perkTier)
 			];
 
-			await mahojiUserSettingsUpdate(user.id, {
+			await user.update({
 				bitfield: newField
 			});
 		} catch (_) {}

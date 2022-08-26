@@ -1,10 +1,8 @@
-import { User } from '@prisma/client';
 import { notEmpty, randFloat, randInt } from 'e';
 import { Bank, Monsters, MonsterSlayerMaster } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
 import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
-import { mahojiUserSettingsUpdate } from '../../mahoji/mahojiSettings';
 import { PvMMethod } from '../constants';
 import { CombatOptionsEnum } from '../minions/data/combatConstants';
 import { KillableMonster } from '../minions/types';
@@ -202,14 +200,14 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 			skipped: false
 		}
 	});
-	await mahojiUserSettingsUpdate(_user.id, {
+	await _user.update({
 		slayer_last_task: assignedTask!.monster.id
 	});
 
 	return { currentTask, assignedTask };
 }
 
-export function calcMaxBlockedTasks(user: User) {
+export function calcMaxBlockedTasks(user: MUser) {
 	const qps = user.QP;
 	// 6 Blocks total 5 for 250 qps, + 1 for lumby.
 	// For now we're do 1 free + 1 for every 50 qps.
@@ -453,7 +451,7 @@ export async function setDefaultSlayerMaster(
 	newMaster: string
 ): Promise<{ success: boolean; message: string }> {
 	if (!newMaster || newMaster === 'clear') {
-		await mahojiUserSettingsUpdate(user.id, {
+		await user.update({
 			slayer_remember_master: null
 		});
 		return { success: true, message: 'Saved Slayer master has been erased.' };
@@ -467,7 +465,7 @@ export async function setDefaultSlayerMaster(
 	if (!userCanUseMaster(user, master)) {
 		return { success: false, message: `You cannot use ${master.name} to assign tasks yet.` };
 	}
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		slayer_remember_master: master.name
 	});
 	return { success: true, message: `Slayer master updated to: ${master.name}` };
@@ -478,7 +476,7 @@ export async function setDefaultAutoslay(
 	newAutoslayMode: string
 ): Promise<{ success: boolean; message: string }> {
 	if (!newAutoslayMode || newAutoslayMode === 'clear') {
-		await mahojiUserSettingsUpdate(user.id, {
+		await user.update({
 			slayer_autoslay_options: []
 		});
 		return { success: true, message: 'Saved autoslay method has been erased.' };
@@ -490,7 +488,7 @@ export async function setDefaultAutoslay(
 	if (!autoslayOption) {
 		return { success: false, message: `Couldn't find matching autoslay option for '${newAutoslayMode}` };
 	}
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		slayer_autoslay_options: [autoslayOption.key]
 	});
 	return { success: true, message: `Autoslay method updated to: ${autoslayOption.name} (${autoslayOption.focus})` };

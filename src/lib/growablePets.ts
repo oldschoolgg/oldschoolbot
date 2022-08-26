@@ -1,7 +1,6 @@
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { mahojiUserSettingsUpdate } from '../mahoji/mahojiSettings';
 import { ActivityTaskOptions } from './types/minions';
 import { itemNameFromID, randFloat } from './util';
 import resolveItems from './util/resolveItems';
@@ -50,7 +49,7 @@ export async function handleGrowablePetGrowth(user: MUser, data: ActivityTaskOpt
 		if (nextPet === -1) {
 			throw new Error(`${user.usernameOrMention}'s pet[${equippedPet}] has no index in growable pet stages.`);
 		}
-		await mahojiUserSettingsUpdate(user.id, {
+		await user.update({
 			minion_equippedPet: nextPet,
 			collectionLogBank: new Bank().add(user.cl).add(nextPet).bank
 		});

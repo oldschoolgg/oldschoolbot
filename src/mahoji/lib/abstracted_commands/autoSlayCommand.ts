@@ -1,4 +1,3 @@
-import { User } from '@prisma/client';
 import { isGuildBasedChannel } from '@sapphire/discord.js-utilities';
 import { MessageFlags } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
@@ -11,7 +10,7 @@ import { runCommand } from '../../../lib/settings/settings';
 import { autoslayModes, AutoslayOptionsEnum } from '../../../lib/slayer/constants';
 import { getCommonTaskName, getUsersCurrentSlayerInfo, SlayerMasterEnum } from '../../../lib/slayer/slayerUtil';
 import { hasSkillReqs, stringMatches } from '../../../lib/util';
-import { mahojiUserSettingsUpdate, mUserFetch } from '../../mahojiSettings';
+import { mUserFetch } from '../../mahojiSettings';
 import { slayerNewTaskCommand } from './slayerTaskCommand';
 
 interface AutoslayLink {
@@ -229,7 +228,7 @@ export async function autoSlayCommand({
 	saveMode,
 	interaction
 }: {
-	mahojiUser: User;
+	mahojiUser: MUser;
 	channelID: bigint;
 	modeOverride?: string;
 	saveMode?: boolean;
@@ -258,7 +257,7 @@ export async function autoSlayCommand({
 				stringMatches(modeOverride, asm.name) || asm.aliases.some(alias => stringMatches(modeOverride, alias))
 		);
 		if (autoslayIdToSave) {
-			await mahojiUserSettingsUpdate(user.id, { slayer_autoslay_options: [autoslayIdToSave.key] });
+			await user.update({ slayer_autoslay_options: [autoslayIdToSave.key] });
 		}
 	}
 	const channel = globalClient.channels.cache.get(channelID.toString());

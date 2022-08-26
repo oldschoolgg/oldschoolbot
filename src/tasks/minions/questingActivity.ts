@@ -5,7 +5,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
 import { rand, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { mahojiUserSettingsUpdate, mUserFetch } from '../../mahoji/mahojiSettings';
+import { mUserFetch } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: ActivityTaskOptionsWithQuantity) {
@@ -39,7 +39,7 @@ export default class extends Task {
 			str += `\n\nYou have achieved the maximum amount of ${MAX_QP} Quest Points!`;
 		}
 
-		await mahojiUserSettingsUpdate(user.id, {
+		await user.update({
 			QP: {
 				increment: qpRecieved
 			}

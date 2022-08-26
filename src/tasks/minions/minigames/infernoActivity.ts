@@ -15,12 +15,7 @@ import chatHeadImage from '../../../lib/util/chatHeadImage';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
-import {
-	mahojiClientSettingsFetch,
-	mahojiClientSettingsUpdate,
-	mahojiUserSettingsUpdate,
-	mUserFetch
-} from '../../../mahoji/mahojiSettings';
+import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate, mUserFetch } from '../../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: InfernoOptions) {
@@ -40,7 +35,7 @@ export default class extends Task {
 		const cost = new Bank(data.cost);
 
 		const attempts = user.user.inferno_attempts + 1;
-		await mahojiUserSettingsUpdate(user.id, {
+		await user.update({
 			inferno_attempts: {
 				increment: attempts
 			}
@@ -113,7 +108,7 @@ export default class extends Task {
 
 		if (isOnTask) {
 			const points = await calculateSlayerPoints(user.user.slayer_last_task, usersTask.slayerMaster!, user);
-			const { newUser } = await mahojiUserSettingsUpdate(user.id, {
+			const { newUser } = await user.update({
 				slayer_points: {
 					increment: points
 				},

@@ -1,4 +1,3 @@
-import { User } from '@prisma/client';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 import { table } from 'table';
@@ -6,7 +5,7 @@ import { table } from 'table';
 import { SlayerRewardsShop } from '../../../lib/slayer/slayerUnlocks';
 import { removeFromArr, stringMatches } from '../../../lib/util';
 import { logError } from '../../../lib/util/logError';
-import { handleMahojiConfirmation, mahojiUserSettingsUpdate, mUserFetch } from '../../mahojiSettings';
+import { handleMahojiConfirmation, mUserFetch } from '../../mahojiSettings';
 
 const slayerPurchaseError =
 	'An error occurred trying to make this purchase. Please try again or contact #help-and-support if the issue persists.';
@@ -40,7 +39,7 @@ export async function slayerShopBuyCommand({
 		const cost = qty * buyableObj.slayerPointCost;
 		if (user.user.slayer_points >= cost) {
 			try {
-				await mahojiUserSettingsUpdate(user.id, { slayer_points: { decrement: cost } });
+				await user.update({ slayer_points: { decrement: cost } });
 				await user.addItemsToBank({ items: new Bank().add(buyableObj.item, qty), collectionLog: true });
 				return `You bought ${qty}x ${buyableObj.name}.`;
 			} catch (e) {
@@ -64,7 +63,7 @@ export async function slayerShopBuyCommand({
 		if (user.user.slayer_points >= cost) {
 			const newUnlocks = [...user.user.slayer_unlocks, buyableObj.id];
 			try {
-				const { newUser } = await mahojiUserSettingsUpdate(user.id, {
+				const { newUser } = await user.update({
 					slayer_points: { decrement: cost },
 					slayer_unlocks: newUnlocks
 				});
@@ -88,19 +87,19 @@ export async function slayerShopBuyCommand({
 			);
 		}
 		const newUnlocks = removeFromArr(user.user.slayer_unlocks, buyableObj.id);
-		await mahojiUserSettingsUpdate(user.id, { slayer_unlocks: newUnlocks });
+		await user.update({ slayer_unlocks: newUnlocks });
 		return `You have disabled the reward: ${buyableObj.name}.`;
 	}
 }
-export function slayerShopListMyUnlocks(mahojiUser: User) {
-	if (mahojiUser.slayer_unlocks.length === 0) {
+export function slayerShopListMyUnlocks(mahojiUser: MUser) {
+	if (mahojiUser.user.slayer_unlocks.length === 0) {
 		return "You don't have any Slayer rewards unlocked.";
 	}
-	const myUnlocks = SlayerRewardsShop.filter(srs => mahojiUser.slayer_unlocks.includes(srs.id));
+	const myUnlocks = SlayerRewardsShop.filter(srs => mahojiUser.user.slayer_unlocks.includes(srs.id));
 	const unlocksStr = myUnlocks.map(unlock => unlock.name).join('\n');
 
 	const content =
-		`Current points: ${mahojiUser.slayer_points}\n**You currently have the following ` +
+		`Current points: ${mahojiUser.user.slayer_points}\n**You currently have the following ` +
 		`rewards unlocked:**\n${unlocksStr}\n\n` +
 		'Usage:\n`/slayer rewards [unlock|buy|disable] Reward`\nExample:' +
 		'\n`/slayer rewards unlock unlockable:Malevolent Masquerade`';

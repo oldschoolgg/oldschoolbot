@@ -6,7 +6,7 @@ import { roll } from '../../../lib/util';
 import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import getOSItem from '../../../lib/util/getOSItem';
-import { handleMahojiConfirmation, mahojiUserSettingsUpdate, mUserFetch } from '../../mahojiSettings';
+import { handleMahojiConfirmation, mUserFetch } from '../../mahojiSettings';
 
 export async function capeGambleStatsCommand(user: MUser) {
 	const firesGambled = user.user.stats_fireCapesSacrificed;
@@ -28,7 +28,7 @@ export async function capeGambleCommand(user: MUser, type: string, interaction: 
 
 	await handleMahojiConfirmation(interaction, `Are you sure you want to gamble a ${item.name}?`);
 
-	const newUser = await mahojiUserSettingsUpdate(user.id, {
+	const newUser = await user.update({
 		[key]: {
 			increment: 1
 		}

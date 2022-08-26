@@ -14,7 +14,7 @@ import {
 } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { handleMahojiConfirmation, mahojiUserSettingsUpdate } from '../../mahojiSettings';
+import { handleMahojiConfirmation } from '../../mahojiSettings';
 
 const skillReqs = {
 	[SkillsEnum.Prayer]: 70,
@@ -218,7 +218,7 @@ export async function volcanicMineShopCommand(
 			itemsToAdd: new Bank().add(shopItem.output).multiply(quantity)
 		});
 	}
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		volcanic_mine_points: {
 			decrement: cost
 		}

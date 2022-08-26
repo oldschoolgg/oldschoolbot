@@ -9,7 +9,7 @@ import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { addArrayOfNumbers, calcPerHour, clamp, gaussianRandom } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { mahojiUserSettingsUpdate, mUserFetch } from '../../../mahoji/mahojiSettings';
+import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
 interface LMSGameSimulated {
 	position: number;
@@ -112,7 +112,7 @@ export default class extends Task {
 		});
 		const points = addArrayOfNumbers(result.map(i => i.points));
 
-		const { newUser } = await mahojiUserSettingsUpdate(user.id, {
+		const { newUser } = await user.update({
 			lms_points: {
 				increment: points
 			}

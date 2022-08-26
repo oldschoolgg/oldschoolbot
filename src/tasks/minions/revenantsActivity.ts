@@ -15,7 +15,7 @@ import { hasSkillReqs } from '../../lib/util';
 import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLostOnDeathWilderness';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
-import { mahojiUserSettingsUpdate, mUserFetch, updateBankSetting } from '../../mahoji/mahojiSettings';
+import { mUserFetch, updateBankSetting } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: RevenantOptions) {
@@ -37,7 +37,7 @@ export default class extends Task {
 			});
 
 			const image = await generateGearImage(user, new Gear(calc.newGear), 'wildy', null);
-			await mahojiUserSettingsUpdate(user.id, {
+			await user.update({
 				gear_wildy: calc.newGear as Prisma.InputJsonObject
 			});
 
@@ -88,7 +88,7 @@ export default class extends Task {
 
 		const { clLoot } = filterLootReplace(user.allItemsOwned(), loot);
 
-		await mahojiUserSettingsUpdate(user.id, {
+		await user.update({
 			collectionLogBank: new Bank(user.cl).add(clLoot).bank
 		});
 		const { previousCL, itemsAdded } = await transactItems({

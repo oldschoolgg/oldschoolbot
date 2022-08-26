@@ -10,7 +10,7 @@ import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
-import { mahojiUserSettingsUpdate, updateBankSetting } from '../../mahojiSettings';
+import { updateBankSetting } from '../../mahojiSettings';
 
 const contractTiers = [
 	{
@@ -110,7 +110,7 @@ export async function mahoganyHomesBuyCommand(user: MUser, input = '', quantity?
 			cost * quantity
 		}, but you have only ${balance}.`;
 	}
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		carpenter_points: {
 			decrement: cost * quantity
 		}

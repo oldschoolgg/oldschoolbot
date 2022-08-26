@@ -30,7 +30,7 @@ export async function gnomeRestaurantCommand(user: MUser, channelID: bigint) {
 		boosts.push(`${scoreBoost}% boost for experience in the minigame`);
 	}
 
-	if (userHasGracefulEquipped(user.user)) {
+	if (userHasGracefulEquipped(user)) {
 		deliveryLength = reduceNumByPercent(deliveryLength, 25);
 		boosts.push('25% for Graceful');
 	}

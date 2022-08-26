@@ -12,7 +12,7 @@ import { compostBinCommand, farmingPlantCommand, harvestCommand } from '../lib/a
 import { farmingContractCommand } from '../lib/abstracted_commands/farmingContractCommand';
 import { titheFarmCommand, titheFarmShopCommand } from '../lib/abstracted_commands/titheFarmCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch, mUserFetch } from '../mahojiSettings';
+import { mahojiUsersSettingsFetch, mUserFetch } from '../mahojiSettings';
 
 export const farmingCommand: OSBMahojiCommand = {
 	name: 'farming',
@@ -184,7 +184,7 @@ export const farmingCommand: OSBMahojiCommand = {
 		}
 		if (options.always_pay) {
 			const isEnabled = klasaUser.user.minion_defaultPay;
-			await mahojiUserSettingsUpdate(userID, {
+			await klasaUser.update({
 				minion_defaultPay: !isEnabled
 			});
 			return `'Always pay farmers' is now ${!isEnabled ? 'enabled' : 'disabled'}.`;
@@ -192,7 +192,7 @@ export const farmingCommand: OSBMahojiCommand = {
 		if (options.default_compost) {
 			const tier = CompostTiers.find(i => stringMatches(i.name, options.default_compost!.compost));
 			if (!tier) return 'Invalid tier.';
-			await mahojiUserSettingsUpdate(userID, {
+			await klasaUser.update({
 				minion_defaultCompostToUse: tier.name
 			});
 			return `You will now use ${tier.item.name} by default.`;

@@ -13,12 +13,7 @@ import { convertPercentChance } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { sendToChannelID } from '../../../lib/util/webhook';
-import {
-	mahojiUserSettingsUpdate,
-	mUserFetch,
-	updateBankSetting,
-	updateLegacyUserBankSetting
-} from '../../../mahoji/mahojiSettings';
+import { mUserFetch, updateBankSetting, updateLegacyUserBankSetting } from '../../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: TheatreOfBloodTaskOptions) {
@@ -54,7 +49,7 @@ export default class extends Task {
 		if (!diedToMaiden) {
 			await Promise.all(
 				allUsers.map(u => {
-					return mahojiUserSettingsUpdate(u.id, {
+					return u.update({
 						[hardMode ? 'tob_hard_attempts' : 'tob_attempts']: {
 							increment: 1
 						}

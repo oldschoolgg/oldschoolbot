@@ -1,7 +1,6 @@
 import { Prisma } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 
-import { mahojiUserSettingsUpdate } from '../../../mahoji/mahojiSettings';
 import { defaultBlowpipe } from '../../settings/schemas/UserSchema';
 import getOSItem, { getItem } from '../../util/getOSItem';
 import { BlowpipeData } from '../types';
@@ -49,7 +48,7 @@ export async function blowpipeCommand(
 	try {
 		validateBlowpipeData(rawBlowpipeData);
 	} catch (err: any) {
-		await mahojiUserSettingsUpdate(user.id, {
+		await user.update({
 			blowpipe: { ...defaultBlowpipe }
 		});
 
@@ -124,7 +123,7 @@ async function addCommand(user: MUser, itemName: string, quantity = 1) {
 		return `You don't own ${itemsToRemove}.`;
 	}
 	await user.removeItemsFromBank(itemsToRemove);
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		blowpipe: currentData as any as Prisma.InputJsonObject
 	});
 	return `You added ${itemsToRemove} to your Toxic blowpipe.`;
@@ -149,7 +148,7 @@ async function removeDartsCommand(user: MUser) {
 	rawBlowpipeData.dartID = null;
 	rawBlowpipeData.dartQuantity = 0;
 	await user.addItemsToBank({ items: returnedBank, collectionLog: false });
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		blowpipe: rawBlowpipeData as any as Prisma.InputJsonObject
 	});
 	validateBlowpipeData(rawBlowpipeData);
@@ -179,7 +178,7 @@ async function unchargeCommand(user: MUser) {
 	}
 
 	await user.addItemsToBank({ items: returnedBank, collectionLog: false });
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		blowpipe: { scales: 0, dartID: null, dartQuantity: 0 }
 	});
 

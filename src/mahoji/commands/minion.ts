@@ -38,13 +38,7 @@ import { dataPoints, statsCommand } from '../lib/abstracted_commands/statCommand
 import { allUsableItems, useCommand } from '../lib/abstracted_commands/useCommand';
 import { ownedItemOption, skillOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import {
-	getKCByName,
-	handleMahojiConfirmation,
-	mahojiUserSettingsUpdate,
-	mUserFetch,
-	patronMsg
-} from '../mahojiSettings';
+import { getKCByName, handleMahojiConfirmation, mUserFetch, patronMsg } from '../mahojiSettings';
 
 const patMessages = [
 	'You pat {name} on the head.',
@@ -498,7 +492,7 @@ export const minionCommand: OSBMahojiCommand = {
 			if (!res || !res[0]) return "That's not a valid emoji.";
 
 			await handleMahojiConfirmation(interaction, 'Icons cannot be inappropriate or NSFW. Do you understand?');
-			await mahojiUserSettingsUpdate(user.id, {
+			await user.update({
 				minion_icon: res[0]
 			});
 
@@ -506,7 +500,7 @@ export const minionCommand: OSBMahojiCommand = {
 		}
 		if (options.set_name) {
 			if (!isValidNickname(options.set_name.name)) return "That's not a valid name for your minion.";
-			await mahojiUserSettingsUpdate(user.id, {
+			await user.update({
 				minion_name: options.set_name.name
 			});
 			return `Renamed your minion to ${user.minionName}.`;

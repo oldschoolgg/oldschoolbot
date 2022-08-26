@@ -17,7 +17,7 @@ import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUserSettingsUpdate, mUserFetch } from '../mahojiSettings';
+import { mUserFetch } from '../mahojiSettings';
 
 const specialBones = [
 	{
@@ -105,7 +105,7 @@ export const mineCommand: OSBMahojiCommand = {
 				itemsToAdd: loot
 			});
 			if (whichOfferable.economyCounter) {
-				const { newUser } = await mahojiUserSettingsUpdate(user.id, {
+				const { newUser } = await user.update({
 					[whichOfferable.economyCounter]: {
 						increment: quantity
 					}

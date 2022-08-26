@@ -15,7 +15,7 @@ import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import getOSItem from '../../../lib/util/getOSItem';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { handleMahojiConfirmation, mahojiUserSettingsUpdate } from '../../mahojiSettings';
+import { handleMahojiConfirmation } from '../../mahojiSettings';
 
 export const BarbBuyables = [
 	{
@@ -102,7 +102,7 @@ export async function barbAssaultLevelCommand(user: MUser) {
 		if (points < level.cost) {
 			return `You don't have enough points to upgrade to level ${level.level}. You need ${level.cost} points.`;
 		}
-		await mahojiUserSettingsUpdate(user.id, {
+		await user.update({
 			honour_level: { increment: 1 },
 			honour_points: { decrement: level.cost }
 		});
@@ -144,7 +144,7 @@ export async function barbAssaultBuyCommand(
 			cost * quantity
 		).toLocaleString()} honour points?`
 	);
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		honour_points: {
 			decrement: cost * quantity
 		}
@@ -180,7 +180,7 @@ export async function barbAssaultGambleCommand(
 			cost * quantity
 		).toLocaleString()} honour points?`
 	);
-	const { newUser } = await mahojiUserSettingsUpdate(user.id, {
+	const { newUser } = await user.update({
 		honour_points: {
 			decrement: cost * quantity
 		},

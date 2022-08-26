@@ -1,4 +1,3 @@
-import { User } from '@prisma/client';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
@@ -10,20 +9,14 @@ import { toKMB } from '../../lib/util';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import {
-	handleMahojiConfirmation,
-	mahojiUserSettingsUpdate,
-	mahojiUsersSettingsFetch,
-	mUserFetch,
-	updateBankSetting
-} from '../mahojiSettings';
+import { handleMahojiConfirmation, mUserFetch, updateBankSetting } from '../mahojiSettings';
 import { sellPriceOfItem } from './sell';
 
-async function trackSacBank(user: User, bank: Bank) {
-	const currentSacBank = new Bank(user.sacrificedBank as ItemBank);
+async function trackSacBank(user: MUser, bank: Bank) {
+	const currentSacBank = new Bank(user.user.sacrificedBank as ItemBank);
 	currentSacBank.add(bank);
 	updateBankSetting('economyStats_sacrificedBank', bank);
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		sacrificedBank: currentSacBank.bank
 	});
 	return currentSacBank.clone();
@@ -61,18 +54,17 @@ export const sacrificeCommand: OSBMahojiCommand = {
 		}
 
 		const user = await mUserFetch(userID.toString());
-		const mUser = await mahojiUsersSettingsFetch(user.id);
 		const bankToSac = parseBank({
 			inputStr: options.items,
 			inputBank: user.bankWithGP,
-			excludeItems: mUser.favoriteItems,
+			excludeItems: user.user.favoriteItems,
 			user,
 			search: options.search,
 			filters: [options.filter],
 			maxSize: 70
 		});
 
-		const sacVal = Number(mUser.sacrificedValue);
+		const sacVal = Number(user.user.sacrificedValue);
 
 		if (!user.bank.has(bankToSac)) {
 			return `You don't own ${bankToSac}.`;
@@ -100,7 +92,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 			const loot = new Bank().add('Death rune', deathRunes);
 			await user.removeItemsFromBank(bankToSac);
 			await user.addItemsToBank({ items: loot, collectionLog: false });
-			const sacBank = await trackSacBank(mUser, bankToSac);
+			const sacBank = await trackSacBank(user, bankToSac);
 			let totalCatsSacrificed = 0;
 			for (const cat of cats) {
 				totalCatsSacrificed += sacBank.amount(cat);
@@ -125,7 +117,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 			globalClient.emit(Events.ServerNotification, `${user.usernameOrMention} just sacrificed ${bankToSac}!`);
 		}
 
-		const { newUser } = await mahojiUserSettingsUpdate(user.id, {
+		const { newUser } = await user.update({
 			sacrificedValue: {
 				increment: totalPrice
 			}
@@ -133,17 +125,17 @@ export const sacrificeCommand: OSBMahojiCommand = {
 		const newValue = newUser.sacrificedValue;
 		await user.removeItemsFromBank(bankToSac);
 
-		await trackSacBank(mUser, bankToSac);
+		await trackSacBank(user, bankToSac);
 
 		let str = '';
-		const currentIcon = mUser.minion_icon;
+		const currentIcon = user.user.minion_icon;
 		// Ignores notifying the user/server if the user is using a custom icon
 		if (!currentIcon || minionIcons.find(m => m.emoji === currentIcon)) {
 			for (const icon of minionIcons) {
 				if (newValue < icon.valueRequired) continue;
 				if (newValue >= icon.valueRequired) {
 					if (currentIcon === icon.emoji) break;
-					await mahojiUserSettingsUpdate(user.id, { minion_icon: icon.emoji });
+					await user.update({ minion_icon: icon.emoji });
 					str += `\n\nYou have now unlocked the **${icon.name}** minion icon!`;
 					globalClient.emit(
 						Events.ServerNotification,

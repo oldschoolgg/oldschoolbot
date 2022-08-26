@@ -6,7 +6,7 @@ import { formatSkillRequirements, skillsMeetRequirements, stringMatches, toKMB }
 import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
 import resolveItems from '../../../lib/util/resolveItems';
 import BankImageTask from '../../../tasks/bankImage';
-import { handleMahojiConfirmation, mahojiUserSettingsUpdate, updateBankSetting } from '../../mahojiSettings';
+import { handleMahojiConfirmation, updateBankSetting } from '../../mahojiSettings';
 
 export async function bankBgCommand(interaction: SlashCommandInteraction, user: MUser, name: string) {
 	const bankImages = (globalClient.tasks.get('bankImage') as BankImageTask).backgroundImages;
@@ -21,7 +21,7 @@ export async function bankBgCommand(interaction: SlashCommandInteraction, user: 
 	}
 
 	if (user.bitfield.includes(BitField.isModerator)) {
-		await mahojiUserSettingsUpdate(user.id, {
+		await user.update({
 			bankBackground: selectedImage.id
 		});
 		return `Your bank background is now **${selectedImage.name}**!`;
@@ -123,7 +123,7 @@ export async function bankBgCommand(interaction: SlashCommandInteraction, user: 
 		}
 	}
 
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		bankBackground: selectedImage.id
 	});
 

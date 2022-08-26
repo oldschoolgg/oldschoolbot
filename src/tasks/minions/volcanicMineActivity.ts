@@ -9,7 +9,7 @@ import { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
 import { rand } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { VolcanicMineGameTime } from '../../mahoji/lib/abstracted_commands/volcanicMineCommand';
-import { mahojiUserSettingsUpdate, mUserFetch } from '../../mahoji/mahojiSettings';
+import { mUserFetch } from '../../mahoji/mahojiSettings';
 
 const fossilTable = new LootTable()
 	.add('Unidentified small fossil', 1, 10)
@@ -56,7 +56,7 @@ export default class extends Task {
 		let pointsReceived = Math.round(xpReceived / 5.5);
 		const maxPoints = 2_097_151;
 
-		await mahojiUserSettingsUpdate(user.id, {
+		await user.update({
 			volcanic_mine_points: Math.min(maxPoints, currentUserPoints + pointsReceived)
 		});
 

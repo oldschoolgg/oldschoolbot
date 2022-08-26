@@ -9,7 +9,7 @@ import { formatDuration, randomVariation, stringMatches } from '../../../lib/uti
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { getUsersLMSStats } from '../../../tasks/minions/minigames/lmsActivity';
-import { handleMahojiConfirmation, mahojiUserSettingsUpdate } from '../../mahojiSettings';
+import { handleMahojiConfirmation } from '../../mahojiSettings';
 
 export async function lmsCommand(
 	options: {
@@ -66,7 +66,7 @@ export async function lmsCommand(
 			return `You received ${loot}.`;
 		}
 
-		const { newUser } = await mahojiUserSettingsUpdate(user.id, {
+		const { newUser } = await user.update({
 			lms_points: {
 				decrement: cost
 			}

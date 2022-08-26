@@ -100,7 +100,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 
 		let { tripLength } = runeObj;
 		const boosts = [];
-		if (userHasGracefulEquipped(user.user)) {
+		if (userHasGracefulEquipped(user)) {
 			tripLength -= tripLength * 0.1;
 			boosts.push('10% for Graceful');
 		}

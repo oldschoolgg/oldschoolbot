@@ -3,7 +3,7 @@ import { KlasaMessage, Monitor, MonitorStore } from 'klasa';
 import pets from '../lib/data/pets';
 import { ItemBank } from '../lib/types';
 import { channelIsSendable, roll } from '../lib/util';
-import { mahojiUserSettingsUpdate, mUserFetch, untrustedGuildSettingsCache } from '../mahoji/mahojiSettings';
+import { mUserFetch, untrustedGuildSettingsCache } from '../mahoji/mahojiSettings';
 
 export default class extends Monitor {
 	public __memberCache: { [key: string]: number } = {};
@@ -30,7 +30,7 @@ export default class extends Monitor {
 			const newUserPets = { ...userPets };
 			if (!newUserPets[pet.id]) newUserPets[pet.id] = 1;
 			else newUserPets[pet.id]++;
-			await mahojiUserSettingsUpdate(user.id, {
+			await user.update({
 				pets: { ...newUserPets }
 			});
 			if (!channelIsSendable(msg.channel)) return;

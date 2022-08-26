@@ -1,4 +1,3 @@
-import { User } from '@prisma/client';
 import { notEmpty, uniqueArr } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
@@ -11,13 +10,7 @@ import { stringMatches } from '../../../lib/util/cleanString';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
 import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import {
-	handleMahojiConfirmation,
-	mahojiUserSettingsUpdate,
-	mUserFetch,
-	patronMsg,
-	updateGPTrackSetting
-} from '../../mahojiSettings';
+import { handleMahojiConfirmation, mUserFetch, patronMsg, updateGPTrackSetting } from '../../mahojiSettings';
 
 const regex = /^(.*?)( \([0-9]+x Owned\))?$/;
 
@@ -35,11 +28,11 @@ function getOpenableLoot({ openable, quantity, user }: { openable: UnifiedOpenab
 		: openable.output({ user, self: openable, quantity });
 }
 
-async function addToOpenablesScores(mahojiUser: User, kcBank: Bank) {
-	const { newUser } = await mahojiUserSettingsUpdate(mahojiUser.id, {
-		openable_scores: new Bank().add(mahojiUser.openable_scores as ItemBank).add(kcBank).bank
+async function addToOpenablesScores(mahojiUser: MUser, kcBank: Bank) {
+	await mahojiUser.update({
+		openable_scores: new Bank().add(mahojiUser.user.openable_scores as ItemBank).add(kcBank).bank
 	});
-	return new Bank().add(newUser.openable_scores as ItemBank);
+	return new Bank().add(mahojiUser.user.openable_scores as ItemBank);
 }
 
 export async function abstractedOpenUntilCommand(
@@ -118,7 +111,7 @@ async function finalizeOpening({
 }) {
 	const { bank } = user;
 	if (!bank.has(cost)) return `You don't have ${cost}.`;
-	const newOpenableScores = await addToOpenablesScores(user.user, kcBank);
+	const newOpenableScores = await addToOpenablesScores(user, kcBank);
 	await transactItems({ userID: user.id, itemsToRemove: cost });
 
 	const { previousCL } = await transactItems({

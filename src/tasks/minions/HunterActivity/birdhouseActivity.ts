@@ -10,7 +10,7 @@ import { BirdhouseActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 import { sendToChannelID } from '../../../lib/util/webhook';
-import { mahojiUserSettingsUpdate, mUserFetch } from '../../../mahoji/mahojiSettings';
+import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
 const clues = [
 	[itemID('Clue scroll(elite)'), 1 / 10],
@@ -50,7 +50,7 @@ export default class extends Task {
 				birdhousePlaced: true,
 				birdhouseTime: currentDate + duration
 			};
-			await mahojiUserSettingsUpdate(user.id, {
+			await user.update({
 				minion_birdhouseTraps: updateBirdhouseData as any as Prisma.InputJsonObject
 			});
 
@@ -131,7 +131,7 @@ export default class extends Task {
 				};
 			}
 
-			await mahojiUserSettingsUpdate(user.id, {
+			await user.update({
 				minion_birdhouseTraps: updateBirdhouseData as any as Prisma.InputJsonObject
 			});
 

@@ -22,7 +22,7 @@ export async function sepulchreCommand(user: MUser, channelID: bigint) {
 		return 'You need atleast level 66 Thieving to do the Hallowed Sepulchre.';
 	}
 
-	if (!userHasGracefulEquipped(user.user)) {
+	if (!userHasGracefulEquipped(user)) {
 		return 'You need Graceful equipped in your Skilling setup to do the Hallowed Sepulchre.';
 	}
 

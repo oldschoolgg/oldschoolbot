@@ -10,7 +10,7 @@ import { itemNameFromID } from '../../../lib/util';
 import { stringMatches } from '../../../lib/util/cleanString';
 import getOSItem from '../../../lib/util/getOSItem';
 import PoHImage from '../../../tasks/pohImage';
-import { handleMahojiConfirmation, mahojiUserSettingsUpdate, updateBankSetting } from '../../mahojiSettings';
+import { handleMahojiConfirmation, updateBankSetting } from '../../mahojiSettings';
 
 export const pohWallkits = [
 	{
@@ -56,7 +56,7 @@ export async function pohWallkitCommand(user: MUser, input: string) {
 	if (selectedKit.bitfield && !bitfield.includes(BitField.HasHosidiusWallkit)) {
 		if (selectedKit.imageID === 2 && userBank.has('Hosidius blueprints')) {
 			await user.removeItemsFromBank(new Bank().add('Hosidius blueprints'));
-			await mahojiUserSettingsUpdate(user.id, {
+			await user.update({
 				bitfield: {
 					push: selectedKit.bitfield
 				}

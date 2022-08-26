@@ -104,7 +104,7 @@ export async function trekCommand(user: MUser, channelID: BigInt, difficulty: st
 		}
 	}
 
-	if (!userHasGracefulEquipped(user.user)) {
+	if (!userHasGracefulEquipped(user)) {
 		boosts.push('-15% for not having graceful equipped anywhere');
 		tripTime *= 1.15;
 	}

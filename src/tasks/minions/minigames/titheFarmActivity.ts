@@ -6,7 +6,7 @@ import { SkillsEnum } from '../../../lib/skilling/types';
 import { TitheFarmActivityTaskOptions } from '../../../lib/types/minions';
 import { roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { mahojiUserSettingsUpdate, mUserFetch } from '../../../mahoji/mahojiSettings';
+import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: TitheFarmActivityTaskOptions) {
@@ -24,7 +24,7 @@ export default class extends Task {
 		const determineHarvest = baseHarvest + Math.min(15, titheFarmsCompleted);
 		const determinePoints = determineHarvest - 74;
 
-		await mahojiUserSettingsUpdate(user.id, {
+		await user.update({
 			stats_titheFarmsCompleted: {
 				increment: 1
 			},

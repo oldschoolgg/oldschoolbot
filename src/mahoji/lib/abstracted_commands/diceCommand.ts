@@ -1,7 +1,7 @@
 import { Bank, Util } from 'oldschooljs';
 
 import { rand } from '../../../lib/util';
-import { mahojiParseNumber, mahojiUserSettingsUpdate, updateGPTrackSetting } from '../../mahojiSettings';
+import { mahojiParseNumber, updateGPTrackSetting } from '../../mahojiSettings';
 
 export async function diceCommand(user: MUser, diceamount?: string) {
 	const roll = rand(1, 100);
@@ -33,12 +33,12 @@ export async function diceCommand(user: MUser, diceamount?: string) {
 	await updateGPTrackSetting('gp_dice', amountToAdd, user);
 
 	if (won) {
-		await mahojiUserSettingsUpdate(user.id, {
+		await user.update({
 			stats_diceWins: { increment: 1 }
 		});
 		await user.addItemsToBank({ items: new Bank().add('Coins', amount) });
 	} else {
-		await mahojiUserSettingsUpdate(user.id, {
+		await user.update({
 			stats_diceLosses: { increment: 1 }
 		});
 		await user.removeItemsFromBank(new Bank().add('Coins', amount));

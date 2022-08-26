@@ -18,7 +18,7 @@ import { HunterActivityTaskOptions } from '../../../lib/types/minions';
 import { rand, roll, stringMatches } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
-import { mahojiUserSettingsUpdate, mUserFetch, updateBankSetting } from '../../../mahoji/mahojiSettings';
+import { mUserFetch, updateBankSetting } from '../../../mahoji/mahojiSettings';
 import { BLACK_CHIN_ID, HERBIBOAR_ID } from './../../../lib/constants';
 import { PeakTier } from './../../WildernessPeakInterval';
 
@@ -91,7 +91,7 @@ export default class extends Task {
 				const newGear = { ...user.gear.wildy.raw() };
 				newGear[EquipmentSlot.Body] = null;
 				newGear[EquipmentSlot.Legs] = null;
-				await mahojiUserSettingsUpdate(user.id, {
+				await user.update({
 					gear_wildy: newGear as Prisma.InputJsonObject
 				});
 				pkedQuantity = 0.5 * successfulQuantity;

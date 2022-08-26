@@ -12,7 +12,8 @@ import { stringMatches } from '../lib/util';
 import { farmingPatchNames, getFarmingKeyFromName } from '../lib/util/farmingHelpers';
 import { logError } from '../lib/util/logError';
 import { minionIsBusy } from '../lib/util/minionIsBusy';
-import { mahojiUserSettingsUpdate, mUserFetch } from '../mahoji/mahojiSettings';
+import { mUserFetch } from '../mahoji/mahojiSettings';
+import { mahojiUserSettingsUpdate } from '../mahoji/settingsUpdate';
 
 declare module 'klasa' {
 	interface KlasaClient {

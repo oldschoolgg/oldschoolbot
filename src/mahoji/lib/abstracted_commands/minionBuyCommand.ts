@@ -2,12 +2,11 @@ import { ComponentType } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
 import { mahojiInformationalButtons } from '../../../lib/constants';
-import { mahojiUserSettingsUpdate } from '../../mahojiSettings';
 
 export async function minionBuyCommand(user: MUser, ironman: boolean): CommandResponse {
 	if (user.user.minion_hasBought) return 'You already have a minion!';
 
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		minion_hasBought: true,
 		minion_bought_date: new Date(),
 		minion_ironman: Boolean(ironman)

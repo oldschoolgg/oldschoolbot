@@ -11,7 +11,7 @@ import { AgilityActivityTaskOptions } from '../../lib/types/minions';
 import { addItemToBank } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { mahojiUserSettingsUpdate, mUserFetch, updateGPTrackSetting } from '../../mahoji/mahojiSettings';
+import { mUserFetch, updateGPTrackSetting } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: AgilityActivityTaskOptions) {
@@ -52,7 +52,7 @@ export default class extends Task {
 
 		const xpReceived = (quantity - lapsFailed / 2) * course.xp;
 
-		await mahojiUserSettingsUpdate(user.id, {
+		await user.update({
 			lapsScores: addItemToBank(user.user.lapsScores as ItemBank, course.id, quantity - lapsFailed)
 		});
 

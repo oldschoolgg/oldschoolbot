@@ -12,7 +12,7 @@ import { getRandomTriviaQuestions } from '../../../lib/roboChimp';
 import dailyRoll from '../../../lib/simulation/dailyTable';
 import { channelIsSendable, formatDuration, isWeekend } from '../../../lib/util';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { mahojiUserSettingsUpdate, updateGPTrackSetting } from '../../mahojiSettings';
+import { updateGPTrackSetting } from '../../mahojiSettings';
 
 export function isUsersDailyReady(user: MUser): { isReady: true } | { isReady: false; durationUntilReady: number } {
 	const currentDate = new Date().getTime();
@@ -90,7 +90,7 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 		if (!userPets[pet.id]) userPets[pet.id] = 1;
 		else userPets[pet.id]++;
 
-		await mahojiUserSettingsUpdate(user.id, {
+		await user.update({
 			pets: { ...userPets }
 		});
 
@@ -130,7 +130,7 @@ export async function dailyCommand(
 		)}.`;
 	}
 
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		lastDailyTimestamp: new Date().getTime()
 	});
 

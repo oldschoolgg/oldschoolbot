@@ -41,10 +41,10 @@ import {
 	handleMahojiConfirmation,
 	mahojiClientSettingsFetch,
 	mahojiClientSettingsUpdate,
-	mahojiUserSettingsUpdate,
 	mahojiUsersSettingsFetch,
 	mUserFetch
 } from '../mahojiSettings';
+import { mahojiUserSettingsUpdate } from '../settingsUpdate';
 import { getUserInfo } from './minion';
 
 export const gifs = [
@@ -728,7 +728,7 @@ LIMIT 10;
 
 		if (options.bitfield) {
 			const bitInput = options.bitfield.add ?? options.bitfield.remove;
-			const user = await mahojiUsersSettingsFetch(options.bitfield.user.user.id);
+			const user = await mUserFetch(options.bitfield.user.user.id);
 			const bitEntry = Object.entries(BitFieldData).find(i => i[0] === bitInput);
 			const action: 'add' | 'remove' = options.bitfield.add ? 'add' : 'remove';
 			if (!bitEntry) {
@@ -761,7 +761,7 @@ LIMIT 10;
 				newBits = newBits.filter(i => i !== bit);
 			}
 
-			await mahojiUserSettingsUpdate(user.id, {
+			await user.update({
 				bitfield: uniqueArr(newBits)
 			});
 

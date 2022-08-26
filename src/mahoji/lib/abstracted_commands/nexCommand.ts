@@ -11,14 +11,13 @@ import { calculateNexDetails, checkNexUser } from '../../../lib/simulation/nex';
 import { NexTaskOptions } from '../../../lib/types/minions';
 import { calcPerHour, formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { mahojiUsersSettingsFetch, mUserFetch, updateBankSetting } from '../../mahojiSettings';
+import { mUserFetch, updateBankSetting } from '../../mahojiSettings';
 
 export async function nexCommand(interaction: SlashCommandInteraction, user: MUser, channelID: bigint) {
 	const channel = globalClient.channels.cache.get(channelID.toString());
 	if (!channel || channel.type !== 'text') return 'You need to run this in a text channel.';
-	const mahojiUser = await mahojiUsersSettingsFetch(user.id);
 
-	const ownerCheck = checkNexUser(mahojiUser);
+	const ownerCheck = checkNexUser(user);
 	if (ownerCheck[1]) {
 		return `You can't start a Nex mass: ${ownerCheck[1]}`;
 	}
@@ -31,7 +30,7 @@ export async function nexCommand(interaction: SlashCommandInteraction, user: MUs
 		leader: user,
 		ironmanAllowed: true,
 		message: `${user} is hosting a Nex mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
-		customDenier: async user => checkNexUser(await mahojiUsersSettingsFetch(user.id))
+		customDenier: async user => checkNexUser(await mUserFetch(user.id))
 	});
 	try {
 		await reactionAwaiter();
@@ -50,7 +49,7 @@ export async function nexCommand(interaction: SlashCommandInteraction, user: MUs
 	const mahojiUsers = await Promise.all(usersWhoConfirmed.map(i => mUserFetch(i.id)));
 
 	for (const user of mahojiUsers) {
-		const result = checkNexUser(user.user);
+		const result = checkNexUser(user);
 		if (result[1]) {
 			return result[1];
 		}

@@ -9,7 +9,7 @@ import { TitheFarmActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
-import { handleMahojiConfirmation, mahojiUserSettingsUpdate, userHasGracefulEquipped } from '../../mahojiSettings';
+import { handleMahojiConfirmation, userHasGracefulEquipped } from '../../mahojiSettings';
 
 function determineDuration(user: MUser): [number, string[]] {
 	let baseTime = Time.Second * 1500;
@@ -26,7 +26,7 @@ function determineDuration(user: MUser): [number, string[]] {
 		: boostStr.push('');
 
 	// Reduce time if user has graceful equipped
-	if (userHasGracefulEquipped(user.user)) {
+	if (userHasGracefulEquipped(user)) {
 		nonGracefulTimeAddition = 0;
 		boostStr.push('10% from graceful outfit');
 	}
@@ -97,7 +97,7 @@ export async function titheFarmShopCommand(
 	let purchaseMsg = `${loot} for ${cost} Tithe Farm points`;
 
 	await handleMahojiConfirmation(interaction, `${user}, please confirm that you want to purchase ${purchaseMsg}.`);
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		stats_titheFarmPoints: {
 			decrement: cost
 		}

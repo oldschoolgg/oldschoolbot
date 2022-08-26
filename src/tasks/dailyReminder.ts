@@ -4,7 +4,7 @@ import { Task, TaskStore } from 'klasa';
 import { production } from '../config';
 import { prisma } from '../lib/settings/prisma';
 import { logError } from '../lib/util/logError';
-import { mahojiUserSettingsUpdate, mUserFetch } from '../mahoji/mahojiSettings';
+import { mUserFetch } from '../mahoji/mahojiSettings';
 
 declare module 'klasa' {
 	interface KlasaClient {
@@ -32,7 +32,7 @@ export default class extends Task {
 					const user = await mUserFetch(row.id);
 					if (Number(user.user.lastDailyTimestamp) === -1) continue;
 
-					await mahojiUserSettingsUpdate(user.id, {
+					await user.update({
 						lastDailyTimestamp: -1
 					});
 					const klasaUser = await globalClient.fetchUser(user.id);

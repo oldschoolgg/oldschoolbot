@@ -17,7 +17,7 @@ import {
 	slayerUnblockCommand
 } from '../lib/abstracted_commands/slayerTaskCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { mahojiUsersSettingsFetch, mUserFetch } from '../mahojiSettings';
 
 export const slayerCommand: OSBMahojiCommand = {
 	name: 'slayer',
@@ -264,7 +264,7 @@ export const slayerCommand: OSBMahojiCommand = {
 		};
 		status?: {};
 	}>) => {
-		const mahojiUser = await mahojiUsersSettingsFetch(userID);
+		const mahojiUser = await mUserFetch(userID);
 
 		if (options.autoslay) {
 			return autoSlayCommand({

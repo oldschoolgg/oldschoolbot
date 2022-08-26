@@ -1,6 +1,5 @@
 import { Bank } from 'oldschooljs';
 
-import { mahojiUserSettingsUpdate } from '../../../mahoji/mahojiSettings';
 import { allPetIDs } from '../../data/CollectionsExport';
 import getOSItem from '../../util/getOSItem';
 import { unequipPet } from './unequipPet';
@@ -23,7 +22,7 @@ export async function equipPet(user: MUser, itemName: string) {
 		return 'You still have a pet equipped, cancelling.';
 	}
 
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		minion_equippedPet: petItem.id
 	});
 	await transactItems({ userID: user.id, itemsToRemove: cost });

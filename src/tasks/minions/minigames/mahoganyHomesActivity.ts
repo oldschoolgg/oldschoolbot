@@ -6,7 +6,7 @@ import { SkillsEnum } from '../../../lib/skilling/types';
 import { MahoganyHomesActivityTaskOptions } from '../../../lib/types/minions';
 import { calcConBonusXP } from '../../../lib/util/calcConBonusXP';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { mahojiUserSettingsUpdate, mUserFetch } from '../../../mahoji/mahojiSettings';
+import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: MahoganyHomesActivityTaskOptions) {
@@ -25,7 +25,7 @@ export default class extends Task {
 			duration
 		});
 
-		await mahojiUserSettingsUpdate(user.id, {
+		await user.update({
 			carpenter_points: {
 				increment: points
 			}

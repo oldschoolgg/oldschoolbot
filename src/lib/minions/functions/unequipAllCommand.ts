@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import { mahojiUserSettingsUpdate, mUserFetch } from '../../../mahoji/mahojiSettings';
+import { mUserFetch } from '../../../mahoji/mahojiSettings';
 import { defaultGear, GearSetupType, GearSetupTypes } from '../../gear';
 import { toTitleCase } from '../../util';
 
@@ -23,7 +23,7 @@ export async function unEquipAllCommand(userID: string, gearType: GearSetupType 
 		return `You have no items in your ${toTitleCase(gearType)} setup.`;
 	}
 
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		[`gear_${gearType}`]: defaultGear
 	});
 

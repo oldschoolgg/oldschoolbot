@@ -33,14 +33,14 @@ import { tiers } from '../../tasks/patreon';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import { allUsableItems } from '../lib/abstracted_commands/useCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch, mUserFetch } from '../mahojiSettings';
+import { mahojiUsersSettingsFetch, mUserFetch } from '../mahojiSettings';
 
 async function giveMaxStats(user: MUser, level = 99, qp = MAX_QP) {
 	let updates: Prisma.UserUpdateArgs['data'] = {};
 	for (const skill of Object.values(xp_gains_skill_enum)) {
 		updates[`skills_${skill}`] = convertLVLtoXP(level);
 	}
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		QP: MAX_QP,
 		...updates
 	});
@@ -52,13 +52,13 @@ async function givePatronLevel(user: MUser, tier: number) {
 	const tierToGive = tiers[tier];
 	const currentBitfield = user.bitfield;
 	if (!tier || !tierToGive) {
-		await mahojiUserSettingsUpdate(user.id, {
+		await user.update({
 			bitfield: currentBitfield.filter(i => !tiers.map(t => t[1]).includes(i))
 		});
 		return 'Removed patron perks.';
 	}
 	const newBitField: BitField[] = [...currentBitfield, tierToGive[1]];
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		bitfield: uniqueArr(newBitField)
 	});
 	return `Gave you tier ${tierToGive[1] - 1} patron.`;
@@ -85,7 +85,7 @@ async function giveGear(user: MUser) {
 		.add('Toxic blowpipe');
 	await user.addItemsToBank({ items: loot, collectionLog: false });
 
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		GP: 1_000_000_000,
 		slayer_points: 100_000,
 		tentacle_charges: 10_000,
@@ -142,7 +142,7 @@ async function setMinigameKC(user: MUser, _minigame: string, kc: number) {
 async function setXP(user: MUser, skillName: string, xp: number) {
 	const skill = Object.values(Skills).find(c => c.id === skillName);
 	if (!skill) return 'No xp set because invalid skill.';
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		[`skills_${skill.id}`]: xp
 	});
 	return `Set ${skill.name} XP to ${xp}.`;
@@ -445,7 +445,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				const mahojiUser = await mahojiUsersSettingsFetch(user.id);
 				if (options.irontoggle) {
 					const current = mahojiUser.minion_ironman;
-					await mahojiUserSettingsUpdate(user.id, {
+					await user.update({
 						minion_ironman: !current
 					});
 					return `You now ${!current ? 'ARE' : 'ARE NOT'} an ironman.`;
@@ -528,7 +528,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						[EquipmentSlot.Ring]: 'Archers ring (i)'
 					});
 					gear.ammo!.quantity = 1_000_000;
-					await mahojiUserSettingsUpdate(user.id, {
+					await user.update({
 						gear_range: gear.raw() as Prisma.InputJsonObject,
 						skills_ranged: convertLVLtoXP(99),
 						skills_prayer: convertLVLtoXP(99),
@@ -554,7 +554,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						[EquipmentSlot.Ring]: 'Archers ring'
 					});
 					gear.ammo!.quantity = 1_000_000;
-					await mahojiUserSettingsUpdate(user.id, {
+					await user.update({
 						gear_range: gear.raw() as Prisma.InputJsonObject,
 						bank: user.bank.add(nexSupplies).bank
 					});
@@ -565,7 +565,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						stringMatches(m.name, options.setmonsterkc?.monster ?? '')
 					);
 					if (!monster) return 'Invalid monster';
-					await mahojiUserSettingsUpdate(user.id, {
+					await user.update({
 						monsterScores: {
 							...(mahojiUser.monsterScores as Record<string, unknown>),
 							[monster.id]: options.setmonsterkc.kc ?? 1
@@ -581,7 +581,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					if (!thisPlant || !thisPlant.plant) return 'You have nothing planted there.';
 					const rawPlant = farmingDetails.patches[thisPlant.plant.seedType];
 
-					await mahojiUserSettingsUpdate(user.id, {
+					await user.update({
 						[getFarmingKeyFromName(thisPlant.plant.seedType)]: {
 							...rawPlant,
 							plantTime: Date.now() - Time.Month

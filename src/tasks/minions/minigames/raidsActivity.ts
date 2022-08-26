@@ -13,7 +13,7 @@ import { roll } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import resolveItems from '../../../lib/util/resolveItems';
-import { mahojiUserSettingsUpdate, mUserFetch, updateBankSetting } from '../../../mahoji/mahojiSettings';
+import { mUserFetch, updateBankSetting } from '../../../mahoji/mahojiSettings';
 
 const notPurple = resolveItems(['Torn prayer scroll', 'Dark relic', 'Onyx']);
 const greenItems = resolveItems(['Twisted ancestral colour kit']);
@@ -53,7 +53,7 @@ export default class extends Task {
 			if (!user) continue;
 			const { personalPoints, deaths, deathChance } = team.find(u => u.id === user.id)!;
 
-			await mahojiUserSettingsUpdate(user.id, {
+			await user.update({
 				total_cox_points: {
 					increment: personalPoints
 				}

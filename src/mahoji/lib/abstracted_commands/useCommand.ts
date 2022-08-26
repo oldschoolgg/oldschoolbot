@@ -5,7 +5,6 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { BitField } from '../../../lib/constants';
 import { assert } from '../../../lib/util';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
-import { mahojiUserSettingsUpdate } from '../../mahojiSettings';
 import { flowerTable } from './hotColdCommand';
 
 interface Usable {
@@ -49,7 +48,7 @@ for (const usableUnlock of usableUnlocks) {
 				return "You already used this item, you can't use it again.";
 			}
 			await user.removeItemsFromBank(new Bank().add(usableUnlock.item.id));
-			await mahojiUserSettingsUpdate(user.id, {
+			await user.update({
 				bitfield: {
 					push: usableUnlock.bitfield
 				}

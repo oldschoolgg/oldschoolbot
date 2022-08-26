@@ -12,7 +12,7 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
-import { handleMahojiConfirmation, mahojiUserSettingsUpdate } from '../../mahojiSettings';
+import { handleMahojiConfirmation } from '../../mahojiSettings';
 
 let itemBoosts = [
 	[['Abyssal whip', 'Abyssal tentacle'].map(getOSItem), 12],
@@ -136,7 +136,7 @@ export async function pestControlBuyCommand(user: MUser, input: string) {
 		}
 		await transactItems({ userID: user.id, itemsToRemove: new Bank().add(buyable.inputItem.id) });
 	}
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		pest_control_points: {
 			decrement: cost
 		}
@@ -223,7 +223,7 @@ export async function pestControlXPCommand(
 		interaction,
 		`Are you sure you want to spend ${amount} points on ${xpPerPoint * amount} ${toTitleCase(skillName)} XP?`
 	);
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		pest_control_points: {
 			decrement: amount
 		}

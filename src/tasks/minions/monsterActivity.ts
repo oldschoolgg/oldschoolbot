@@ -15,7 +15,7 @@ import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
-import { mahojiUserSettingsUpdate, mUserFetch } from '../../mahoji/mahojiSettings';
+import { mUserFetch } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: MonsterActivityTaskOptions) {
@@ -86,7 +86,7 @@ export default class extends Task {
 		});
 
 		if (newSuperiorCount && newSuperiorCount > 0) {
-			await mahojiUserSettingsUpdate(user.id, {
+			await user.update({
 				slayer_superior_count: {
 					increment: newSuperiorCount
 				}
@@ -125,14 +125,14 @@ export default class extends Task {
 
 			thisTripFinishesTask = quantityLeft === 0;
 			if (thisTripFinishesTask) {
-				const { newUser } = await mahojiUserSettingsUpdate(user.id, {
+				const { newUser } = await user.update({
 					slayer_task_streak: {
 						increment: 1
 					}
 				});
 				const currentStreak = newUser.slayer_task_streak;
 				const points = await calculateSlayerPoints(currentStreak, usersTask.slayerMaster!, user);
-				const secondNewUser = await mahojiUserSettingsUpdate(user.id, {
+				const secondNewUser = await user.update({
 					slayer_points: {
 						increment: points
 					}

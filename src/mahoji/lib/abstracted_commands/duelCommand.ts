@@ -5,7 +5,7 @@ import { Bank, Util } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
 import { channelIsSendable } from '../../../lib/util';
-import { mahojiParseNumber, mahojiUserSettingsUpdate, updateGPTrackSetting } from '../../mahojiSettings';
+import { mahojiParseNumber, updateGPTrackSetting } from '../../mahojiSettings';
 
 async function checkBal(user: MUser, amount: number) {
 	return user.GP >= amount;
@@ -102,12 +102,12 @@ export async function duelCommand(
 		const dividedAmount = tax / 1_000_000;
 		updateGPTrackSetting('duelTaxBank', Math.floor(Math.round(dividedAmount * 100) / 100));
 
-		await mahojiUserSettingsUpdate(winner.id, {
+		await winner.update({
 			stats_duelWins: {
 				increment: 1
 			}
 		});
-		await mahojiUserSettingsUpdate(loser.id, {
+		await loser.update({
 			stats_duelLosses: {
 				increment: 1
 			}

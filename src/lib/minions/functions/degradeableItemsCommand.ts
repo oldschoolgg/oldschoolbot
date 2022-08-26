@@ -2,12 +2,7 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
-import {
-	handleMahojiConfirmation,
-	mahojiParseNumber,
-	mahojiUserSettingsUpdate,
-	updateBankSetting
-} from '../../../mahoji/mahojiSettings';
+import { handleMahojiConfirmation, mahojiParseNumber, updateBankSetting } from '../../../mahoji/mahojiSettings';
 import { degradeableItems } from '../../degradeableItems';
 import { stringMatches } from '../../util';
 
@@ -59,7 +54,7 @@ ${degradeableItems
 	await transactItems({ userID: user.id, itemsToRemove: cost });
 	const currentCharges = user.user[item.settingsKey];
 	const newCharges = currentCharges + amountOfCharges;
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		[item.settingsKey]: newCharges
 	});
 	await updateBankSetting('degraded_items_cost', cost);

@@ -14,7 +14,7 @@ import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 import { fightCavesCost } from '../../../mahoji/lib/abstracted_commands/fightCavesCommand';
-import { mahojiUserSettingsUpdate, mUserFetch } from '../../../mahoji/mahojiSettings';
+import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
 const TokkulID = itemID('Tokkul');
 
@@ -26,7 +26,7 @@ export default class extends Task {
 		const tokkulReward = rand(2000, 6000);
 		const diedToJad = percentChance(jadDeathChance);
 
-		const { newUser } = await mahojiUserSettingsUpdate(user.id, {
+		const { newUser } = await user.update({
 			stats_fightCavesAttempts: {
 				increment: 1
 			}
@@ -161,7 +161,7 @@ export default class extends Task {
 			const currentStreak = user.user.slayer_task_streak;
 			const points = await calculateSlayerPoints(currentStreak, usersTask.slayerMaster!, user);
 
-			const { newUser } = await mahojiUserSettingsUpdate(user.id, {
+			const { newUser } = await user.update({
 				slayer_points: {
 					increment: points
 				},

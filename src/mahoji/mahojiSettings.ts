@@ -11,30 +11,29 @@ import { CLIENT_ID } from '../config';
 import { deduplicateClueScrolls } from '../lib/clues/clueUtils';
 import { SILENT_ERROR } from '../lib/constants';
 import { evalMathExpression } from '../lib/expressionParser';
-import { defaultGear, hasGracefulEquipped, readableStatName } from '../lib/gear';
+import { hasGracefulEquipped, readableStatName } from '../lib/gear';
 import { effectiveMonsters } from '../lib/minions/data/killableMonsters';
 import { KillableMonster } from '../lib/minions/types';
+import { MUserClass } from '../lib/MUser';
 import { getMinigameScore, Minigames } from '../lib/settings/minigames';
 import { prisma } from '../lib/settings/prisma';
 import creatures from '../lib/skilling/skills/hunter/creatures';
 import { Rune } from '../lib/skilling/skills/runecraft';
 import { filterLootReplace } from '../lib/slayer/slayerUtil';
-import { Gear } from '../lib/structures/Gear';
 import type { ItemBank } from '../lib/types';
 import {
 	anglerBoosts,
 	channelIsSendable,
 	formatItemReqs,
-	getSkillsOfMahojiUser,
 	hasSkillReqs,
 	itemNameFromID,
 	sanitizeBank,
 	stringMatches,
 	validateItemBankAndThrow
 } from '../lib/util';
-import { logError } from '../lib/util/logError';
 import resolveItems from '../lib/util/resolveItems';
 import { respondToButton } from '../lib/util/respondToButton';
+import { mahojiUserSettingsUpdate } from './settingsUpdate';
 
 export function mahojiParseNumber({
 	input,
@@ -157,30 +156,7 @@ export async function mahojiUsersSettingsFetch(user: bigint | string, select?: P
 
 export async function mUserFetch(userID: bigint | string) {
 	const user = await mahojiUsersSettingsFetch(userID);
-	return new MUser(user);
-}
-
-export async function mahojiUserSettingsUpdate(user: string | bigint, data: Prisma.UserUpdateArgs['data']) {
-	try {
-		const klasaUser =
-			typeof user === 'string' || typeof user === 'bigint' ? await globalClient.fetchUser(user) : user;
-
-		const newUser = await prisma.user.update({
-			data,
-			where: {
-				id: klasaUser.id
-			}
-		});
-
-		await klasaUser.settings.sync(true);
-		return { newUser };
-	} catch (err) {
-		logError(err, {
-			user_id: user.toString(),
-			updated_data: JSON.stringify(data)
-		});
-		throw err;
-	}
+	return new MUserClass(user);
 }
 
 /**
@@ -218,19 +194,6 @@ export async function mahojiGuildSettingsUpdate(guild: string | DJSGuild, data: 
 	untrustedGuildSettingsCache.set(newGuild.id, newGuild);
 	await (globalClient.gateways.get('guilds') as any)?.get(guildID)?.sync(true);
 	return { newGuild };
-}
-
-export function getUserGear(user: User) {
-	return {
-		melee: new Gear((user.gear_melee as any) ?? { ...defaultGear }),
-		mage: new Gear((user.gear_mage as any) ?? { ...defaultGear }),
-		range: new Gear((user.gear_range as any) ?? { ...defaultGear }),
-		misc: new Gear((user.gear_misc as any) ?? { ...defaultGear }),
-		skilling: new Gear((user.gear_skilling as any) ?? { ...defaultGear }),
-		wildy: new Gear((user.gear_wildy as any) ?? { ...defaultGear }),
-		fashion: new Gear((user.gear_fashion as any) ?? { ...defaultGear }),
-		other: new Gear((user.gear_other as any) ?? { ...defaultGear })
-	};
 }
 
 export function patronMsg(tierNeeded: number) {
@@ -306,28 +269,6 @@ async function userQueueFn<T>(userID: string, fn: () => Promise<T>) {
 	return queue.add(() => fn());
 }
 
-export async function calculateAddItemsToCLUpdates({
-	userID,
-	items,
-	dontAddToTempCL = false,
-	user
-}: {
-	user?: User;
-	items: Bank;
-	dontAddToTempCL?: boolean;
-	userID: string;
-}): Promise<Prisma.UserUpdateArgs['data']> {
-	const settings: User = user ?? (await mahojiUsersSettingsFetch(userID));
-	const updates: Prisma.UserUpdateArgs['data'] = {
-		collectionLogBank: new Bank(settings.collectionLogBank as ItemBank).add(items).bank
-	};
-
-	if (!dontAddToTempCL) {
-		updates.temp_cl = new Bank(settings.temp_cl as ItemBank).add(items).bank;
-	}
-	return updates;
-}
-
 interface TransactItemsArgs {
 	userID: string;
 	itemsToAdd?: Bank;
@@ -372,9 +313,7 @@ export async function transactItemsFromBank({
 				: { bankLoot: itemsToAdd, clLoot: itemsToAdd };
 			itemsToAdd = bankLoot;
 
-			clUpdates = collectionLog
-				? await calculateAddItemsToCLUpdates({ items: clLoot, dontAddToTempCL, userID })
-				: {};
+			clUpdates = collectionLog ? settings.calculateAddItemsToCLUpdates({ items: clLoot, dontAddToTempCL }) : {};
 		}
 
 		let gpUpdate: { increment: number } | undefined = undefined;
@@ -454,7 +393,7 @@ export async function updateGPTrackSetting(
 		| 'gp_pickpocket'
 		| 'duelTaxBank',
 	amount: number,
-	user?: MUser | User
+	user?: MUser
 ) {
 	if (!user) {
 		await prisma.clientStorage.update({
@@ -469,15 +408,15 @@ export async function updateGPTrackSetting(
 		});
 		return;
 	}
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		[setting]: {
 			increment: amount
 		}
 	});
 }
 
-export function userHasGracefulEquipped(user: User | MUser) {
-	const rawGear = user instanceof MUser ? user.gear : getUserGear(user);
+export function userHasGracefulEquipped(user: MUser) {
+	const rawGear = user.gear;
 	for (const i of Object.values(rawGear)) {
 		if (hasGracefulEquipped(i)) return true;
 	}
@@ -627,17 +566,6 @@ export async function getKCByName(user: MUser, kcName: string): Promise<[string,
 	}
 
 	return [null, 0];
-}
-
-export function combatLevel(user: User | MUser): number {
-	const skills = user instanceof MUser ? user.skillsAsLevels : getSkillsOfMahojiUser(user, true);
-	const { defence, ranged, hitpoints, magic, prayer, attack, strength } = skills;
-
-	const base = 0.25 * (defence + hitpoints + Math.floor(prayer / 2));
-	const melee = 0.325 * (attack + strength);
-	const range = 0.325 * (Math.floor(ranged / 2) + ranged);
-	const mage = 0.325 * (Math.floor(magic / 2) + magic);
-	return Math.floor(base + Math.max(melee, range, mage));
 }
 
 export function calcMaxRCQuantity(rune: Rune, user: MUser) {

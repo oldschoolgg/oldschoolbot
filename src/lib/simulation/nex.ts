@@ -1,5 +1,4 @@
 import { userMention } from '@discordjs/builders';
-import { User } from '@prisma/client';
 import {
 	calcWhatPercent,
 	increaseNumByPercent,
@@ -12,9 +11,7 @@ import {
 	Time
 } from 'e';
 import { Bank } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { getUserGear } from '../../mahoji/mahojiSettings';
 import { BitField, NEX_ID } from '../constants';
 import { Skills } from '../types';
 import {
@@ -22,7 +19,6 @@ import {
 	exponentialPercentScale,
 	formatDuration,
 	formatSkillRequirements,
-	getSkillsOfMahojiUser,
 	itemNameFromID,
 	randomVariation,
 	skillsMeetRequirements
@@ -40,8 +36,8 @@ const minStats: Skills = {
 	prayer: 74
 };
 
-export function nexGearStats(user: User) {
-	let gear = getUserGear(user);
+export function nexGearStats(user: MUser) {
+	let { gear } = user;
 	const offence = calcWhatPercent(gear.range.stats.attack_ranged, 252);
 	const defence = calcWhatPercent(gear.range.stats.defence_magic, 150);
 	return {
@@ -63,9 +59,9 @@ const minimumCostOwned = new Bank()
 	.add('Sanfew serum(4)')
 	.multiply(5);
 
-export function checkNexUser(user: User): [false] | [true, string] {
+export function checkNexUser(user: MUser): [false] | [true, string] {
 	const tag = userMention(user.id);
-	if (!skillsMeetRequirements(getSkillsOfMahojiUser(user, true), minStats)) {
+	if (!skillsMeetRequirements(user.skillsAsLevels, minStats)) {
 		return [true, `${tag} doesn't have the skill requirements: ${formatSkillRequirements(minStats)}.`];
 	}
 	if (user.GP < 1_000_000) return [true, `${tag} needs atleast 1m GP to cover potential deaths.`];
@@ -104,11 +100,11 @@ export function checkNexUser(user: User): [false] | [true, string] {
 			`${tag} has less than 600 ${itemNameFromID(ammo.item)} equipped, they might run out in the fight!`
 		];
 	}
-	const bank = new Bank(user.bank as ItemBank);
+	const { bank } = user;
 	if (!bank.has(minimumCostOwned)) {
 		return [true, `${tag} needs to own a minimum of these supplies: ${minimumCostOwned}`];
 	}
-	const cl = new Bank(user.collectionLogBank as ItemBank);
+	const { cl } = user;
 	if (!cl.has('Frozen key') && !bank.has('Frozen key')) {
 		return [true, `${tag} needs to have created a Frozen key to fight Nex.`];
 	}
@@ -180,7 +176,7 @@ export function calculateNexDetails({ team }: { team: MUser[] }) {
 	let resultTeam: TeamMember[] = [];
 
 	for (const member of team) {
-		let { offence, defence, rangeGear } = nexGearStats(member.user);
+		let { offence, defence, rangeGear } = nexGearStats(member);
 		let deathChance = 100;
 		let nexKC = member.getKC(NEX_ID);
 		const kcLearningCap = 500;
@@ -282,7 +278,7 @@ export function calculateNexDetails({ team }: { team: MUser[] }) {
 	 * Ammo
 	 */
 	for (const user of team) {
-		const { rangeGear } = nexGearStats(user.user);
+		const { rangeGear } = nexGearStats(user);
 		const teamUser = resultTeam.findIndex(a => a.id === user.id);
 		const ammo = rangeGear.ammo?.item ?? itemID('Dragon arrow');
 		// Between 50-60 ammo per kill (before reductions)
