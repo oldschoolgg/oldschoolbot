@@ -39,7 +39,8 @@ const riskDeathNumbers = [
 
 export default class extends Task {
 	async run(data: HunterActivityTaskOptions) {
-		const { creatureName, quantity, userID, channelID, usingHuntPotion, wildyPeak, duration } = data;
+		const { creatureName, quantity, userID, channelID, usingHuntPotion, wildyPeak, duration, usingStaminaPotion } =
+			data;
 		const user = await this.client.fetchUser(userID);
 		const userBank = user.bank();
 		const currentLevel = user.skillLevel(SkillsEnum.Hunter);
@@ -85,7 +86,7 @@ export default class extends Task {
 				died = true;
 				const cost = new Bank().add('Saradomin brew(4)', 10).add('Super restore(4)', 5);
 				if (userBank.has(cost)) {
-					await user.removeItemsFromBank(cost);
+					await transactItems({ userID: user.id, itemsToRemove: cost });
 				}
 				const newGear = { ...user.settings.get(UserSettings.Gear.Wildy) };
 				newGear[EquipmentSlot.Body] = null;
@@ -101,7 +102,7 @@ export default class extends Task {
 					let lostBrew = rand(1, 10);
 					let lostRestore = rand(1, 5);
 					const cost = new Bank().add('Saradomin brew(4)', lostBrew).add('Super restore(4)', lostRestore);
-					await user.removeItemsFromBank(cost);
+					await transactItems({ userID: user.id, itemsToRemove: cost });
 
 					pkStr = `Your minion got attacked during the activity, escaped and lost some catch quantity, and ${cost}.`;
 					pkedQuantity = 0.1 * successfulQuantity;
@@ -146,7 +147,11 @@ export default class extends Task {
 		}
 
 		await user.incrementCreatureScore(creature.id, Math.floor(successfulQuantity));
-		await user.addItemsToBank({ items: loot, collectionLog: true });
+		await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 		xpStr += await user.addXP({
 			skillName: SkillsEnum.Hunter,
 			amount: xpReceived,
@@ -195,7 +200,16 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			['hunt', { name: creatureName, quantity, hunter_potion: data.usingHuntPotion }, true],
+			[
+				'hunt',
+				{
+					name: creatureName,
+					quantity,
+					hunter_potion: data.usingHuntPotion,
+					stamina_potions: usingStaminaPotion
+				},
+				true
+			],
 			undefined,
 			data,
 			loot

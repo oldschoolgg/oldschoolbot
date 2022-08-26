@@ -8,6 +8,7 @@ import { lmsSimCommand } from '../../../lib/minions/functions/lmsSimCommand';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, randomVariation, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { getUsersLMSStats } from '../../../tasks/minions/minigames/lmsActivity';
 import { handleMahojiConfirmation, mahojiUserSettingsUpdate } from '../../mahojiSettings';
 
@@ -58,7 +59,11 @@ export async function lmsCommand(
 		const loot = new Bank().add(itemToBuy.item.id, quantity * (itemToBuy.quantity ?? 1));
 		await handleMahojiConfirmation(interaction, `Are you sure you want to spend ${cost} points on buying ${loot}?`);
 		if (!cost) {
-			await user.addItemsToBank({ items: loot, collectionLog: true });
+			await transactItems({
+				userID: user.id,
+				collectionLog: true,
+				itemsToAdd: loot
+			});
 			return `You received ${loot}.`;
 		}
 
@@ -70,7 +75,11 @@ export async function lmsCommand(
 		if (itemToBuy.onlyCL) {
 			await user.addItemsToCollectionLog({ items: loot });
 		} else {
-			await user.addItemsToBank({ items: loot, collectionLog: true });
+			await transactItems({
+				userID: user.id,
+				collectionLog: true,
+				itemsToAdd: loot
+			});
 		}
 		return `You spent ${cost} points to buy ${loot}. You now have ${newUser.lms_points} LMS points.`;
 	}
@@ -79,7 +88,7 @@ export async function lmsCommand(
 		return 'Your minion must not be busy to do an LMS trip';
 	}
 	const durationPerGame = Time.Minute * 5.5;
-	const quantity = Math.floor(user.maxTripLength('LastManStanding') / durationPerGame);
+	const quantity = Math.floor(calcMaxTripLength(user, 'LastManStanding') / durationPerGame);
 	const duration = randomVariation(quantity * durationPerGame, 5);
 
 	await addSubTaskToActivityTask<MinigameActivityTaskOptions>({

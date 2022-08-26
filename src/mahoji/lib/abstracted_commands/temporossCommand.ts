@@ -5,6 +5,7 @@ import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { TemporossActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
 export async function temporossCommand(user: KlasaUser, channelID: bigint, quantity: number | undefined) {
 	const fLevel = user.skillLevel(SkillsEnum.Fishing);
@@ -45,7 +46,7 @@ export async function temporossCommand(user: KlasaUser, channelID: bigint, quant
 		durationPerRoss = reduceNumByPercent(durationPerRoss, 10);
 	}
 
-	const maxTripLength = user.maxTripLength('Tempoross');
+	const maxTripLength = calcMaxTripLength(user, 'Tempoross');
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / durationPerRoss);
 	}

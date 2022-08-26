@@ -84,7 +84,7 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		desc: 'Unlocks ability to create Slayer rings.',
 		slayerPointCost: 300,
 		canBeRemoved: false,
-		aliases: ['slayer ring', 'slayer rings']
+		aliases: ['unlock slayer ring', 'unlock slayer rings']
 	},
 	{
 		id: SlayerTaskUnlocksEnum.SeeingRed,

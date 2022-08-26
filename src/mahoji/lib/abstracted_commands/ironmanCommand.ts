@@ -116,7 +116,7 @@ After becoming an ironman:
 		if (roboChimpUser.leagues_points_total >= 0) {
 			await roboChimpClient.user.update({
 				where: {
-					id: Number(user.id)
+					id: BigInt(user.id)
 				},
 				data: {
 					leagues_points_balance_osb: roboChimpUser.leagues_points_balance_osb

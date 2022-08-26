@@ -1384,16 +1384,14 @@ export const troubleBrewingCL = resolveItems([
 	'Blue rum (trouble brewing)'
 ]);
 export const volcanicMineCL = resolveItems(['Ash covered tome', 'Large water container', 'Volcanic mine teleport']);
+export const anglerOutfit = resolveItems(['Angler hat', 'Angler top', 'Angler waders', 'Angler boots']);
 export const aerialFishingCL = resolveItems([
 	'Golden tench',
 	'Pearl fishing rod',
 	'Pearl fly fishing rod',
 	'Pearl barbarian rod',
 	'Fish sack',
-	'Angler hat',
-	'Angler top',
-	'Angler waders',
-	'Angler boots'
+	...anglerOutfit
 ]);
 export const allPetsCL = resolveItems([
 	'Abyssal orphan',

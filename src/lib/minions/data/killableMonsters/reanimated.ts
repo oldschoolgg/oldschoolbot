@@ -178,7 +178,7 @@ for (const { mon, magicLvl, cost, prayerXP, magicXP } of renanimatedMonstersRaw)
 		id: mon.id,
 		name: mon.name,
 		aliases: mon.aliases,
-		noneCombatCalcTimeToFinish: (Time.Second * magicLvl) / 10,
+		noneCombatCalcTimeToFinish: magicLvl > 28 ? 13.2 * Time.Second : 8.1 * Time.Second,
 		table: mon,
 		wildy: false,
 		difficultyRating: 1,

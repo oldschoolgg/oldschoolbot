@@ -7,17 +7,12 @@ import { ContractOption, FarmingContract, FarmingContractDifficultyLevel } from 
 import { getPlantToGrow } from '../../../lib/skilling/functions/calcFarmingContracts';
 import { getFarmingInfo } from '../../../lib/skilling/functions/getFarmingInfo';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { roughMergeMahojiResponse } from '../../../lib/util';
+import { getSkillsOfMahojiUser, roughMergeMahojiResponse } from '../../../lib/util';
 import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import { findPlant } from '../../../lib/util/farmingHelpers';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 import { minionName } from '../../../lib/util/minionUtils';
-import {
-	getMahojiBank,
-	getSkillsOfMahojiUser,
-	mahojiUserSettingsUpdate,
-	mahojiUsersSettingsFetch
-} from '../../mahojiSettings';
+import { getMahojiBank, mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../../mahojiSettings';
 import { farmingPlantCommand, harvestCommand } from './farmingCommand';
 import { abstractedOpenCommand } from './openCommand';
 
@@ -128,6 +123,19 @@ export async function farmingContractCommand(userID: bigint, input?: ContractOpt
 
 	return janeImage(
 		`Please could you grow a ${plantToGrow} for us? I'll reward you once you have checked its health.`
+	);
+}
+
+export async function canRunAutoContract(userID: string) {
+	const partialUser = await mahojiUsersSettingsFetch(userID, {
+		minion_farmingContract: true,
+		skills_farming: true
+	});
+	const farmingDetails = await getFarmingInfo(userID);
+	const contract = partialUser.minion_farmingContract as FarmingContract | null;
+	const contractedPlant = farmingDetails.patchesDetailed.find(p => p.plant?.name === contract?.plantToGrow);
+	return (
+		getSkillsOfMahojiUser(partialUser, true).farming > 45 && (!contractedPlant || contractedPlant.ready !== false)
 	);
 }
 

@@ -1,8 +1,7 @@
 import { MessageButton } from 'discord.js';
 import { KlasaMessage } from 'klasa';
-import { APIButtonComponent, ButtonStyle, ComponentType } from 'mahoji';
+import { APIButtonComponent, APIButtonComponentWithCustomId, ButtonStyle, ComponentType } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import PQueue from 'p-queue';
 import { join } from 'path';
 
 import { DISCORD_SETTINGS, production } from '../config';
@@ -12,7 +11,7 @@ import { SkillsEnum } from './skilling/types';
 import { ActivityTaskOptions } from './types/minions';
 import resolveItems from './util/resolveItems';
 
-export const SupportServer = DISCORD_SETTINGS.SupportServer ?? '342983479501389826';
+export const SupportServer = production ? '342983479501389826' : '940758552425955348';
 export const BotID = DISCORD_SETTINGS.BotID ?? '303730326692429825';
 
 export const Channel = {
@@ -231,6 +230,7 @@ export const enum Tasks {
 	TokkulShop = 'tokkulShopActivity',
 	Nex = 'nexActivity',
 	TroubleBrewing = 'troubleBrewingActivity',
+	PuroPuro = 'puroPuroActivity',
 	REMOVED = '__REMOVED__'
 }
 
@@ -284,7 +284,7 @@ export const enum PerkTier {
 	Six = 6
 }
 
-export const enum BitField {
+export enum BitField {
 	IsPatronTier1 = 2,
 	IsPatronTier2 = 3,
 	IsPatronTier3 = 4,
@@ -354,21 +354,21 @@ export const enum PatronTierID {
 	Six = '8091554'
 }
 
-export const enum BadgesEnum {
-	Developer = 0,
-	Booster = 1,
-	LimitedPatron = 2,
-	Patron = 3,
-	Moderator = 4,
-	GreenGem = 5,
-	Bug = 6,
-	GoldenTrophy = 7,
-	TopSacrifice = 8,
-	TopSkiller = 9,
-	TopCollector = 10,
-	TopMinigame = 11,
-	SotWTrophy = 12
-}
+export const BadgesEnum = {
+	Developer: 0,
+	Booster: 1,
+	LimitedPatron: 2,
+	Patron: 3,
+	Moderator: 4,
+	GreenGem: 5,
+	Bug: 6,
+	GoldenTrophy: 7,
+	TopSacrifice: 8,
+	TopSkiller: 9,
+	TopCollector: 10,
+	TopMinigame: 11,
+	SotWTrophy: 12
+} as const;
 
 export const badges: { [key: number]: string } = {
 	[BadgesEnum.Developer]: Emoji.Spanner,
@@ -401,11 +401,6 @@ export const ZALCANO_ID = 9049;
 export const NIGHTMARE_ID = 9415;
 export const HESPORI_ID = 8583;
 export const NEX_ID = 11_278;
-
-/**
- * Map<user_id, PromiseQueue>
- */
-export const userQueues: Map<string, PQueue> = new Map();
 
 export const skillEmoji = {
 	runecraft: '<:runecraft:630911040435257364>',
@@ -518,12 +513,20 @@ export const COMMAND_BECAME_SLASH_COMMAND_MESSAGE = (
 
 - Slash commands are integrated into the actual Discord client. We are *required* to change our commands to be slash commands.
 - Slash commands are generally easier to use, and also have new features like autocompletion. They take some time to get used to though.
-- You no longer use this command using \`${msg?.cmdPrefix ?? '+'}${
+- You no longer use this command using \`+${commandName ?? msg?.command?.name}\`, now you use: \`/${
 	commandName ?? msg?.command?.name
-}\`, now you use: \`/${commandName ?? msg?.command?.name}\`
+}\`
 `;
 
 export const DISABLED_COMMANDS = new Set<string>();
 export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'none'] as const;
 export type PvMMethod = typeof PVM_METHODS[number];
 export const usernameCache = new Map<string, string>();
+export const OWNER_IDS = ['157797566833098752'];
+export const minionBuyButton: APIButtonComponentWithCustomId = {
+	type: ComponentType.Button,
+	custom_id: 'BUY_MINION',
+	label: 'Buy Minion',
+	emoji: { id: '778418736180494347' },
+	style: ButtonStyle.Success
+};

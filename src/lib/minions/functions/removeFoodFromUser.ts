@@ -25,9 +25,10 @@ export default async function removeFoodFromUser({
 	activityName: string;
 	combatStylesUsed: GearSetupType[];
 	learningPercentage?: number;
-}): Promise<{ foodRemoved: Bank; reductions: string[] }> {
+}): Promise<{ foodRemoved: Bank; reductions: string[]; reductionRatio: number }> {
 	await user.settings.sync(true);
 
+	const originalTotalHealing = totalHealingNeeded;
 	const rawGear = user.rawGear();
 	const gearSetupsUsed = objectEntries(rawGear).filter(entry => attackStylesUsed.includes(entry[0]));
 	const reductions = [];
@@ -62,7 +63,8 @@ export default async function removeFoodFromUser({
 
 		return {
 			foodRemoved: foodToRemove,
-			reductions
+			reductions,
+			reductionRatio: totalHealingNeeded / originalTotalHealing
 		};
 	}
 }

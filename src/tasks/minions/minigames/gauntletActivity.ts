@@ -44,7 +44,11 @@ export default class extends Task {
 
 		await incrementMinigameScore(userID, key, quantity - deaths);
 
-		const { previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
+		const { previousCL } = await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 		const name = `${corrupted ? 'Corrupted' : 'Normal'} Gauntlet`;
 
 		const newKc = await user.getMinigameScore(key);

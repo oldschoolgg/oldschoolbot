@@ -58,7 +58,7 @@ export default class extends Task {
 					'SELECT SUM ("sacrificedValue") AS count FROM users;',
 					'SELECT COUNT(*) FROM users WHERE "minion.ironman" = true;',
 					'SELECT SUM ("GP") AS count FROM users;'
-				].map(query => this.client.query(query))
+				].map(query => prisma.$queryRawUnsafe(query))
 			)
 		).map((result: any) => parseInt(result[0].count)) as number[];
 

@@ -32,6 +32,8 @@ export const filterOption: CommandOption = {
 
 const itemArr = Items.array().map(i => ({ ...i, key: `${i.name.toLowerCase()}${i.id}` }));
 
+export const allEquippableItems = Items.array().filter(i => i.equipable && i.equipment?.slot);
+
 export const itemOption = (filter?: (item: Item) => boolean): CommandOption => ({
 	type: ApplicationCommandOptionType.String,
 	name: 'item',
@@ -126,9 +128,10 @@ export const gearPresetOption: CommandOption = {
 				name: true
 			}
 		});
-		return [...presets, ...globalPresets]
+		return presets
 			.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
-			.map(i => ({ name: i.name, value: i.name }));
+			.map(i => ({ name: i.name, value: i.name }))
+			.concat(globalPresets.map(i => ({ name: `${i.name} (Global)`, value: i.name })));
 	}
 };
 

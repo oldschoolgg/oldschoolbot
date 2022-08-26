@@ -5,7 +5,7 @@ import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
-import { getMahojiBank, getSkillsOfMahojiUser } from '../../mahoji/mahojiSettings';
+import { getMahojiBank } from '../../mahoji/mahojiSettings';
 import { allTeamCapes } from '../data/buyables/buyables';
 import {
 	barrowsItemArr,
@@ -20,7 +20,7 @@ import {
 	stoles
 } from '../data/CollectionsExport';
 import { prisma } from '../settings/prisma';
-import { itemNameFromID, stringMatches } from '../util';
+import { getSkillsOfMahojiUser, itemNameFromID, stringMatches } from '../util';
 import { makeBankImage } from '../util/makeBankImage';
 import resolveItems, { deepResolveItems } from '../util/resolveItems';
 import { ClueTier } from './clueTiers';
@@ -626,7 +626,7 @@ export const allStashUnitsFlat = allStashUnitTiers.map(i => i.units).flat();
 export async function getParsedStashUnits(userID: string): Promise<ParsedUnit[]> {
 	const currentStashUnits = await prisma.stashUnit.findMany({
 		where: {
-			user_id: Number(userID)
+			user_id: BigInt(userID)
 		}
 	});
 	const parsed = [];
@@ -724,7 +724,7 @@ export async function stashUnitBuildAllCommand(klasaUser: KlasaUser, user: User)
 	await klasaUser.removeItemsFromBank(costBank);
 	await prisma.stashUnit.createMany({
 		data: toBuild.map(parsedUnit => ({
-			user_id: Number(user.id),
+			user_id: BigInt(user.id),
 			stash_id: parsedUnit.unit.id,
 			items_contained: [],
 			has_built: true
@@ -772,7 +772,7 @@ export async function stashUnitFillAllCommand(user: KlasaUser, mahojiUser: User)
 			prisma.stashUnit.update({
 				where: {
 					stash_id_user_id: {
-						user_id: Number(user.id),
+						user_id: BigInt(user.id),
 						stash_id: i.unit.id
 					}
 				},
@@ -801,7 +801,7 @@ export async function stashUnitUnfillCommand(klasaUser: KlasaUser, user: User, u
 		where: {
 			stash_id_user_id: {
 				stash_id: unit.unit.id,
-				user_id: Number(user.id)
+				user_id: BigInt(user.id)
 			}
 		},
 		data: {

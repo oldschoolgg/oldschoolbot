@@ -1,4 +1,5 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../lib/constants';
@@ -6,12 +7,7 @@ import { prisma } from '../../lib/settings/prisma';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { addToGPTaxBalance, toKMB } from '../../lib/util';
 import { OSBMahojiCommand } from '../lib/util';
-import {
-	handleMahojiConfirmation,
-	mahojiParseNumber,
-	MahojiUserOption,
-	mahojiUsersSettingsFetch
-} from '../mahojiSettings';
+import { handleMahojiConfirmation, mahojiParseNumber, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const payCommand: OSBMahojiCommand = {
 	name: 'pay',
@@ -65,8 +61,16 @@ export const payCommand: OSBMahojiCommand = {
 
 		const bank = new Bank().add('Coins', amount);
 
-		await user.removeItemsFromBank(bank);
-		await recipient.addItemsToBank({ items: bank, collectionLog: false });
+		await transactItems({
+			userID: user.id,
+			itemsToRemove: bank
+		});
+
+		await transactItems({
+			userID: recipient.id,
+			itemsToAdd: bank,
+			collectionLog: false
+		});
 
 		await prisma.economyTransaction.create({
 			data: {

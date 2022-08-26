@@ -7,6 +7,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { FiremakingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -56,7 +57,7 @@ export const lightCommand: OSBMahojiCommand = {
 		// All logs take 2.4s to light, add on quarter of a second to account for banking/etc.
 		const timeToLightSingleLog = Time.Second * 2.4 + Time.Second / 4;
 
-		const maxTripLength = user.maxTripLength('Firemaking');
+		const maxTripLength = calcMaxTripLength(user, 'Firemaking');
 
 		const amountOfLogsOwned = user.bank().amount(log.inputLogs);
 
@@ -79,7 +80,7 @@ export const lightCommand: OSBMahojiCommand = {
 			)}.`;
 		}
 
-		await user.removeItemsFromBank(cost);
+		await transactItems({ userID: user.id, itemsToRemove: cost });
 
 		await addSubTaskToActivityTask<FiremakingActivityTaskOptions>({
 			burnableID: log.inputLogs,

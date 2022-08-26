@@ -1,11 +1,8 @@
-import { activity_type_enum } from '@prisma/client';
 import { FSWatcher } from 'chokidar';
 import { MessageOptions, MessagePayload } from 'discord.js';
 import { KlasaMessage, KlasaUser, Settings, SettingsUpdateResult } from 'klasa';
 import { Bank } from 'oldschooljs';
-import PQueue from 'p-queue';
 import { Image } from 'skia-canvas/lib';
-import { CommentStream, SubmissionStream } from 'snoostorm';
 
 import { GetUserBankOptions } from '../../extendables/User/Bank';
 import { BitField, PerkTier } from '../constants';
@@ -16,23 +13,17 @@ import { MinigameName } from '../settings/minigames';
 import { CustomGet } from '../settings/types/UserSettings';
 import { Creature, SkillsEnum } from '../skilling/types';
 import { Gear } from '../structures/Gear';
-import { chatHeads } from '../util/chatHeadImage';
-import { ItemBank, MakePartyOptions, Skills } from '.';
+import { ItemBank, Skills } from '.';
 
 declare module 'klasa' {
 	interface KlasaClient {
 		oneCommandAtATimeCache: Set<string>;
 		secondaryUserBusyCache: Set<string>;
-		public cacheItemPrice(itemID: number): Promise<number>;
-		public query<T>(query: string, values?: string[]): Promise<T>;
 		settings: Settings;
 		production: boolean;
 		_fileChangeWatcher?: FSWatcher;
 		_badgeCache: Map<string, string>;
 		_peakIntervalCache: Peak[];
-		public wtf(error: Error): void;
-		commentStream?: CommentStream;
-		submissionStream?: SubmissionStream;
 		fastifyServer: FastifyInstance;
 		minionTicker: NodeJS.Timeout;
 		dailyReminderTicker: NodeJS.Timeout;
@@ -54,15 +45,6 @@ declare module 'klasa' {
 
 	interface Task {
 		getItemImage(itemID: number, quantity: number): Promise<Image>;
-	}
-
-	interface KlasaMessage {
-		cmdPrefix: string;
-
-		makePartyAwaiter(options: MakePartyOptions): Promise<KlasaUser[]>;
-		removeAllReactions(): void;
-		confirm(this: KlasaMessage, str: string): Promise<void>;
-		chatHeadImage(head: keyof typeof chatHeads, content: string, messageContent?: string): Promise<KlasaMessage>;
 	}
 
 	interface SettingsFolder {
@@ -99,9 +81,6 @@ declare module 'discord.js' {
 		readonly readable: boolean;
 	}
 
-	interface Client {
-		public query<T>(query: string): Promise<T>;
-	}
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	interface User {
 		addItemsToBank(options: {
@@ -109,8 +88,8 @@ declare module 'discord.js' {
 			collectionLog?: boolean;
 			filterLoot?: boolean;
 			dontAddToTempCL?: boolean;
-		}): Promise<{ previousCL: Bank; itemsAdded: Bank }>;
-		removeItemsFromBank(items: ItemBank | Bank, collectionLog?: boolean): Promise<SettingsUpdateResult>;
+		}): ReturnType<typeof transactItems>;
+		removeItemsFromBank(items: ItemBank | Bank, collectionLog?: boolean): ReturnType<typeof transactItems>;
 		specialRemoveItems(items: Bank): Promise<{ realCost: Bank }>;
 		addItemsToCollectionLog(options: { items: Bank; dontAddToTempCL?: boolean }): Promise<SettingsUpdateResult>;
 		incrementMonsterScore(monsterID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
@@ -154,29 +133,13 @@ declare module 'discord.js' {
 		 */
 		getCreatureScore(creature: Creature): number;
 		rawGear(): UserFullGearSetup;
-		allItemsOwned(): Bank;
 		cl(): Bank;
-		/**
-		 * Returns this users update promise queue.
-		 */
-		getUpdateQueue(): PQueue;
-		/**
-		 * Queue a function to run on a per-user queue.
-		 */
-		queueFn(fn: (user: KlasaUser) => Promise<T>): Promise<T>;
 		bank(options?: GetUserBankOptions): Bank;
 		getUserFavAlchs(duration: number): Item[];
 		getGear(gearType: GearSetupType): Gear;
 		setCombatStyles(newStyles: CombatStyles[]): Promise<void>;
 		getCombatStyles(): CombatStyles[];
 		owns(bank: ItemBank | Bank | string | number): boolean;
-		completion(): {
-			percent: number;
-			notOwned: number[];
-			owned: number[];
-			debugBank: Bank;
-		};
-
 		/**
 		 * Get item boosts the user has available for the given `KillableMonster`.
 		 */
@@ -199,7 +162,6 @@ declare module 'discord.js' {
 		minionName: string;
 		hasMinion: boolean;
 		isIronman: boolean;
-		maxTripLength(activity?: activity_type_enum): number;
 		rawSkills: Skills;
 		bitfield: readonly BitField[];
 		combatLevel: number;

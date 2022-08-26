@@ -1,4 +1,4 @@
-import { activity_type_enum, User } from '@prisma/client';
+import { activity_type_enum, User, UserStats } from '@prisma/client';
 import { sumArr, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, Monsters } from 'oldschooljs';
@@ -33,7 +33,7 @@ import { collectables } from './collectCommand';
 interface DataPiece {
 	name: string;
 	perkTierNeeded: PerkTier | null;
-	run: (user: User) => CommandResponse;
+	run: (user: User, stats: UserStats) => CommandResponse;
 }
 
 function wrap(str: string) {
@@ -840,6 +840,20 @@ GROUP BY "bankBackground";`);
 				.join('\n')}\n**Hallowed Sepulchre:** ${sepulchreCount}`;
 			return data;
 		}
+	},
+	{
+		name: 'Total Items Sold',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(new Bank(stats.items_sold_bank as ItemBank), "You've sold...");
+		}
+	},
+	{
+		name: 'Total GP From Selling',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return `You've received **${Number(stats.sell_gp).toLocaleString()}** GP from selling items.`;
+		}
 	}
 ] as const;
 
@@ -852,7 +866,16 @@ export async function statsCommand(user: User, type: string): CommandResponse {
 	if (!dataPoint) return 'Invalid stat name.';
 	const { perkTierNeeded } = dataPoint;
 	if (perkTierNeeded !== null && getUsersPerkTier(user) < perkTierNeeded) {
-		return `Sorry, you need to be a Tier ${perkTierNeeded + 1} Patron to see this stat.`;
+		return `Sorry, you need to be a Tier ${perkTierNeeded - 1} Patron to see this stat.`;
 	}
-	return dataPoint.run(user);
+	const userStats = await prisma.userStats.upsert({
+		where: {
+			user_id: BigInt(user.id)
+		},
+		update: {},
+		create: {
+			user_id: BigInt(user.id)
+		}
+	});
+	return dataPoint.run(user, userStats);
 }

@@ -5,11 +5,12 @@ import { getMinigameEntity } from '../../../lib/settings/settings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
 export async function castleWarsStartCommand(klasaUser: KlasaUser, channelID: bigint) {
 	if (klasaUser.minionIsBusy) return `${klasaUser.minionName} is busy.`;
 	const gameLength = Time.Minute * 18;
-	const quantity = Math.floor(klasaUser.maxTripLength('CastleWars') / gameLength);
+	const quantity = Math.floor(calcMaxTripLength(klasaUser, 'CastleWars') / gameLength);
 	const duration = quantity * gameLength;
 
 	await addSubTaskToActivityTask<MinigameActivityTaskOptions>({

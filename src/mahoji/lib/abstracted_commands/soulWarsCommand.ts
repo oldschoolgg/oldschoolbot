@@ -6,6 +6,7 @@ import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, randomVariation, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
 
 export const soulWarsBuyables = [
@@ -126,7 +127,7 @@ export async function soulWarsTokensCommand(user: User) {
 export async function soulWarsStartCommand(user: KlasaUser, channelID: bigint) {
 	if (user.minionIsBusy) return `${user.minionName} is busy.`;
 	const perDuration = randomVariation(Time.Minute * 7, 5);
-	const quantity = Math.floor(user.maxTripLength('SoulWars') / perDuration);
+	const quantity = Math.floor(calcMaxTripLength(user, 'SoulWars') / perDuration);
 	const duration = quantity * perDuration;
 
 	await addSubTaskToActivityTask<MinigameActivityTaskOptions>({

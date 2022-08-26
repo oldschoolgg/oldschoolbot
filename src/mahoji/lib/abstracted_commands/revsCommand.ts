@@ -14,6 +14,7 @@ import { SkillsEnum } from '../../../lib/skilling/types';
 import { RevenantOptions } from '../../../lib/types/minions';
 import { formatDuration, percentChance, stringMatches, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
 import { getUserGear, handleMahojiConfirmation } from '../../mahojiSettings';
 
@@ -67,7 +68,7 @@ export async function revsCommand(
 		boosts.push(`${35}% for ${specialWeapon.name}`);
 	}
 
-	const quantity = Math.floor(user.maxTripLength('Revenants') / timePerMonster);
+	const quantity = Math.floor(calcMaxTripLength(user, 'Revenants') / timePerMonster);
 	let duration = quantity * timePerMonster;
 
 	const cost = new Bank();
@@ -86,7 +87,7 @@ export async function revsCommand(
 	}
 
 	updateBankSetting(user.client, ClientSettings.EconomyStats.PVMCost, cost);
-	await user.removeItemsFromBank(cost);
+	await transactItems({ userID: user.id, itemsToRemove: cost });
 
 	let deathChance = 5;
 	let defLvl = user.skillLevel(SkillsEnum.Defence);

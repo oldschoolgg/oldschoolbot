@@ -1092,6 +1092,17 @@ const Reverteables: Createable[] = [
 		noCl: true
 	},
 	{
+		name: 'Revert Fish sack barrel',
+		inputItems: new Bank({
+			[itemID('Fish sack barrel')]: 1
+		}),
+		outputItems: {
+			[itemID('Fish sack')]: 1,
+			[itemID('Fish barrel')]: 1
+		},
+		noCl: true
+	},
+	{
 		name: 'Revert midnight',
 		inputItems: {
 			[itemID('Midnight')]: 1

@@ -37,8 +37,6 @@ Client.defaultUserSchema
 	.add('honour_level', 'integer', { default: 1 })
 	.add('honour_points', 'integer', { default: 0 })
 	.add('high_gambles', 'integer', { default: 0 })
-	.add('patreon_id', 'string', { default: null })
-	.add('github_id', 'integer', { default: null })
 	.add('carpenter_points', 'integer', { default: 0 })
 	.add('zeal_tokens', 'integer', { default: 0 })
 	.add('openable_scores', 'any', { default: {} })
@@ -60,7 +58,6 @@ Client.defaultUserSchema
 	.add('premium_balance_expiry_date', 'integer', { default: null, maximum: Number.MAX_SAFE_INTEGER })
 	.add('tentacle_charges', 'integer', { default: 10_000 })
 	.add('sang_charges', 'integer', { default: 0 })
-	.add('temp_cl', 'any', { default: {} })
 	.add('volcanic_mine_points', 'integer', { default: 0 })
 	.add('slayer', folder =>
 		folder

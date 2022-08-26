@@ -29,6 +29,11 @@ export async function leaguesBuyCommand(user: KlasaUser, itemName: string, quant
 	});
 
 	const loot = new Bank().add(item.item.id, quantity);
-	await user.addItemsToBank({ items: loot, collectionLog: true });
+	await transactItems({
+		userID: user.id,
+		itemsToAdd: loot,
+		collectionLog: true
+	});
+
 	return `You spent ${cost} Leagues Points and received ${loot}. You have ${newUser.leagues_points_balance_osb} points remaining.`;
 }
