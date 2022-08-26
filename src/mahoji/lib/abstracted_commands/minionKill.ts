@@ -47,6 +47,7 @@ import {
 	formatItemCosts,
 	formatItemReqs,
 	formatMissingItems,
+	itemNameFromID,
 	stringMatches,
 	updateBankSetting
 } from '../../../lib/util';
@@ -136,11 +137,6 @@ export async function minionKillCommand(
 			}
 		}
 	}
-<<<<<<< HEAD
-	if (combatDuration === 0 && hits === 0 && DPS === 0 && monsterKillSpeed === 0 && calcQuantity === 0) {
-		boosts.push('NO combat, combatCalculator not Working');
-		noneCombat = true;
-=======
 
 	let noneCombat = false;
 	let combatCalcInfo = undefined;
@@ -153,6 +149,11 @@ export async function minionKillCommand(
 		0,
 		['']
 	];
+
+	if (combatDuration === 0 && hits === 0 && DPS === 0 && monsterKillSpeed === 0 && calcQuantity === 0) {
+		boosts.push('NO combat, combatCalculator not Working');
+		noneCombat = true;
+	}
 
 	if (monster.isConverted) {
 		combatCalcInfo = await combatCalculator(monster, user, quantity);
@@ -393,10 +394,8 @@ export async function minionKillCommand(
 					if (boost) {
 						if (boost < 0) {
 							boosts.push(`${boost}% for ${eatable.name}`);
-							duration = increaseNumByPercent(duration, Math.abs(boost));
 						} else {
 							boosts.push(`${boost}% for ${eatable.name}`);
-							duration = reduceNumByPercent(duration, boost);
 						}
 					}
 					break;
@@ -511,13 +510,8 @@ export async function monsterInfo(user: KlasaUser, name: string): CommandRespons
 	if (!monster) {
 		return "That's not a valid monster";
 	}
-	const osjsMon = Monsters.get(monster.id);
-	const [, , attackStyles] = resolveAttackStyles(user, {
-		monsterID: monster.id
-	});
 
-	const userKc = user.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0;
-	let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, userKc);
+	let timeToFinish = monster.noneCombatCalcTimeToFinish;
 
 	// item boosts
 	const ownedBoostItems = [];
@@ -528,51 +522,10 @@ export async function monsterInfo(user: KlasaUser, name: string): CommandRespons
 		ownedBoostItems.push(itemNameFromID(parseInt(itemID)));
 	}
 
-	let isDragon = false;
-	if (monster.name.toLowerCase() !== 'vorkath' && osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon)) {
-		isDragon = true;
-		if (
-			user.hasItemEquippedOrInBank('Dragon hunter lance') &&
-			!attackStyles.includes(SkillsEnum.Ranged) &&
-			!attackStyles.includes(SkillsEnum.Magic)
-		) {
-			timeToFinish = reduceNumByPercent(timeToFinish, 15);
-			ownedBoostItems.push('Dragon hunter lance');
-			totalItemBoost += 15;
-		} else if (user.hasItemEquippedOrInBank('Dragon hunter crossbow') && attackStyles.includes(SkillsEnum.Ranged)) {
-			timeToFinish = reduceNumByPercent(timeToFinish, 15);
-			ownedBoostItems.push('Dragon hunter crossbow');
-			totalItemBoost += 15;
-		}
-	}
-	// poh boosts
-	if (monster.pohBoosts) {
-		const [boostPercent, messages] = calcPOHBoosts(await getPOH(user.id), monster.pohBoosts);
-		if (boostPercent > 0) {
-			timeToFinish = reduceNumByPercent(timeToFinish, boostPercent);
-			let boostString = messages.join(' ').replace(RegExp('[0-9]{2}% for '), '');
-			ownedBoostItems.push(`${boostString}`);
-			totalItemBoost += boostPercent;
-		}
-	}
-	// combat stat boosts
-	const skillTotal = sumArr(attackStyles.map(s => user.skillLevel(s)));
-
-	let percent = round(calcWhatPercent(skillTotal, attackStyles.length * 99), 2);
-
 	const str = [`**${monster.name}**\n`];
 
 	let skillString = '';
 
-	if (percent < 50) {
-		percent = 50 - percent;
-		skillString = `Skills boost: -${percent.toFixed(2)}% for your skills.\n`;
-		timeToFinish = increaseNumByPercent(timeToFinish, percent);
-	} else {
-		percent = Math.min(15, percent / 6.5);
-		skillString = `Skills boost: ${percent.toFixed(2)}% for your skills.\n`;
-		timeToFinish = reduceNumByPercent(timeToFinish, percent);
-	}
 	let hpString = '';
 	if (monster.healAmountNeeded) {
 		const [hpNeededPerKill] = calculateMonsterFood(monster, user);
@@ -627,21 +580,11 @@ export async function monsterInfo(user: KlasaUser, name: string): CommandRespons
 	}
 	str.push(`${itemRequirements.join('')}`);
 	let totalBoost = [];
-	if (isDragon) {
-		totalBoost.push('15% for Dragon hunter lance OR 15% for Dragon hunter crossbow');
-	}
+
 	if (monster.itemInBankBoosts) {
 		totalBoost.push(`${formatItemBoosts(monster.itemInBankBoosts)}`);
 	}
-	if (monster.pohBoosts) {
-		totalBoost.push(
-			`${formatPohBoosts(monster.pohBoosts)
-				.replace(RegExp('(Pool:)'), '')
-				.replace(')', '')
-				.replace('(', '')
-				.replace('\n', '')}`
-		);
-	}
+
 	if (totalBoost.length > 0) {
 		str.push(
 			`**Boosts**\nAvailable Boosts: ${totalBoost.join(',')}\n${
@@ -657,18 +600,13 @@ export async function monsterInfo(user: KlasaUser, name: string): CommandRespons
 		`Maximum trip length: ${formatDuration(
 			calcMaxTripLength(user, 'MonsterKilling')
 		)}\nNormal kill time: ${formatDuration(
-			monster.timeToFinish
+			monster.noneCombatCalcTimeToFinish
 		)}. You can kill up to ${maxCanKill} per trip (${formatDuration(timeToFinish)} per kill).`
 	);
 	str.push(
 		`If you were on a slayer task: ${maxCanKillSlay} per trip (${formatDuration(
 			reduceNumByPercent(timeToFinish, 15)
 		)} per kill).`
-	);
-	const kcForOnePercent = Math.ceil((Time.Hour * 5) / monster.timeToFinish);
-
-	str.push(
-		`Every ${kcForOnePercent}kc you will gain a 1% (upto 10%).\nYou currently recieve a ${percentReduced}% boost with your ${userKc}kc.\n`
 	);
 
 	const min = timeToFinish * maxCanKill * 1.01;
