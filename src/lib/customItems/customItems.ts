@@ -2609,6 +2609,40 @@ setCustomItem(
 	15_000_000
 );
 setCustomItem(
+	70_009,
+	'Void staff (u)',
+	'Master wand',
+	{
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 200,
+			attack_ranged: 0,
+
+			defence_stab: 0,
+			defence_slash: 0,
+			defence_crush: 0,
+			defence_magic: 20,
+			defence_ranged: 0,
+
+			melee_strength: 0,
+			ranged_strength: 0,
+			magic_damage: 15,
+			prayer: 0,
+			slot: EquipmentSlot.Weapon,
+			requirements: null
+		},
+		highalch: 50_000_000,
+		tradeable: true,
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	50_000_000
+);
+setCustomItem(
 	70_010,
 	'Void staff',
 	'Battlestaff',

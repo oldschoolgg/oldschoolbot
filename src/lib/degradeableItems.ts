@@ -60,6 +60,7 @@ export const degradeableItems: DegradeableItem[] = [
 			cost: new Bank().add('Elder rune', 5),
 			charges: 1
 		},
+		convertOnCharge: true,
 		charges: (_totalHP: number, duration: number, user: KlasaUser) => {
 			const mageGear = user.getGear('mage');
 			const minutesDuration = Math.ceil(duration / Time.Minute);
