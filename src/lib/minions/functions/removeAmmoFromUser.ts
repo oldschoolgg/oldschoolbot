@@ -66,7 +66,7 @@ export default async function removeAmmoFromUser(user: KlasaUser, hits: number):
 	}
 	if (rangeWeapon.name.includes('ballista')) brokenAmmo = hits;
 
-	const userBank = user.settings.get(UserSettings.Bank);
+	const userBank = user.bank().values();
 	let ammoToRemove = new Bank();
 	if (!bankHasItem(userBank, ammo.id, brokenAmmo)) {
 		throw `You don't have enough ${itemNameFromID(ammo.id)} in the bank.`;

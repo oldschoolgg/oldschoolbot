@@ -4,7 +4,6 @@ import { Bank } from 'oldschooljs';
 import { bankHasItem } from 'oldschooljs/dist/util';
 
 import Potions from '../../lib/minions/data/potions';
-import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { generatePotionImage } from '../../lib/minions/functions/generatePotionImage';
 import { generatePrayerImage } from '../../lib/minions/functions/generatePrayerImage';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -28,7 +27,6 @@ export default class extends BotCommand {
 		});
 	}
 
-	@requiresMinion
 	async run(msg: KlasaMessage) {
 		const currentPrayers = msg.author.settings.get(UserSettings.SelectedPrayers);
 		const currentPotions = msg.author.settings.get(UserSettings.SelectedPotions);
@@ -67,8 +65,6 @@ export default class extends BotCommand {
 		});
 	}
 
-	@requiresMinion
-	@minionNotBusy
 	async prayer(msg: KlasaMessage, [prayer = undefined]: [string | undefined]) {
 		const currentPrayers = msg.author.settings.get(UserSettings.SelectedPrayers);
 		const unlockedPrayers = msg.author.settings.get(UserSettings.UnlockedPrayers);
@@ -87,6 +83,9 @@ export default class extends BotCommand {
 					_prayer => _prayer.name
 				).join(', ')}.`
 			);
+		}
+		if (msg.author.minionIsBusy) {
+			return "Minion is busy";
 		}
 
 		if (currentPrayers.includes(selectedPrayer.name.toLowerCase())) {
@@ -162,9 +161,10 @@ export default class extends BotCommand {
 		return msg.channel.send({ files: [new MessageAttachment(image, 'osbot.png')] });
 	}
 
-	@requiresMinion
-	@minionNotBusy
 	async potion(msg: KlasaMessage, [potion = undefined]: [string | undefined]) {
+		if (msg.author.minionIsBusy) {
+			return "Minion is busy";
+		}
 		const currentPotions = msg.author.settings.get(UserSettings.SelectedPotions);
 
 		if (!potion) {
@@ -214,7 +214,6 @@ export default class extends BotCommand {
 		});
 	}
 
-	@requiresMinion
 	async unlock(msg: KlasaMessage, [input]: [string | undefined]) {
 		if (!input) {
 			return msg.channel.send(
@@ -254,7 +253,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		const userBank = msg.author.settings.get(UserSettings.Bank);
+		const userBank = msg.author.bank().values();
 
 		if (unlockable.inputId) {
 			if (bankHasItem(userBank, unlockable.inputId, 1))

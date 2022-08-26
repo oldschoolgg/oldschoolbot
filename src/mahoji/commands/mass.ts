@@ -1,5 +1,5 @@
 import { TextChannel } from 'discord.js';
-import { objectKeys, Time } from 'e';
+import { /*objectKeys,*/ Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { ApplicationCommandOptionType, CommandRunOptions, MessageFlags } from 'mahoji';
 
@@ -8,11 +8,11 @@ import { Emoji } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
-import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
+//import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { KillableMonster } from '../../lib/minions/types';
-import { GroupMonsterActivityTaskOptions } from '../../lib/types/minions';
+//import { GroupMonsterActivityTaskOptions } from '../../lib/types/minions';
 import { channelIsSendable, formatDuration } from '../../lib/util';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+//import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../lib/util/calcMassDurationQuantity';
 import findMonster from '../../lib/util/findMonster';
 import { OSBMahojiCommand } from '../lib/util';
@@ -134,7 +134,7 @@ export const massCommand: OSBMahojiCommand = {
 		const [quantity, duration, perKillTime, boostMsgs] = await calcDurQty(users, monster, undefined);
 
 		checkReqs(users, monster, quantity);
-
+		/*
 		if (1 > 2 && monster.healAmountNeeded) {
 			for (const user of users) {
 				const [healAmountNeeded] = calculateMonsterFood(monster, user);
@@ -147,7 +147,6 @@ export const massCommand: OSBMahojiCommand = {
 				});
 			}
 		}
-
 		await addSubTaskToActivityTask<GroupMonsterActivityTaskOptions>({
 			monsterID: monster.id,
 			userID: user.id,
@@ -158,6 +157,7 @@ export const massCommand: OSBMahojiCommand = {
 			leader: user.id,
 			users: users.map(u => u.id)
 		});
+		*/
 
 		let killsPerHr = `${Math.round((quantity / (duration / Time.Minute)) * 60).toLocaleString()} Kills/hr`;
 
@@ -167,7 +167,7 @@ export const massCommand: OSBMahojiCommand = {
 		return `${user.username}'s party (${users.map(u => u.username).join(', ')}) is now off to kill ${quantity}x ${
 			monster.name
 		}. Each kill takes ${formatDuration(perKillTime)} instead of ${formatDuration(
-			monster.timeToFinish
+			monster.noneCombatCalcTimeToFinish
 		)}- the total trip will take ${formatDuration(duration)}. ${killsPerHr}`;
 	}
 };

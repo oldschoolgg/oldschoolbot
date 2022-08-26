@@ -2,12 +2,11 @@ import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { bankHasItem } from 'oldschooljs/dist/util';
 
-import { UserSettings } from '../../settings/types/UserSettings';
 import itemID from '../../util/itemID';
 
 export default async function removePrayerFromUser(user: KlasaUser, totalDosesUsed: number): Promise<string> {
 	await user.settings.sync(true);
-	const userBank = user.settings.get(UserSettings.Bank);
+	const userBank = user.bank().values();
 
 	let potsToRemove = new Bank();
 

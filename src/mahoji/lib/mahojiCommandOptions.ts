@@ -11,9 +11,9 @@ import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { prisma } from '../../lib/settings/prisma';
 import castables from '../../lib/skilling/skills/combat/magic/castables';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { toTitleCase } from '../../lib/util';
+import { getSkillsOfMahojiUser, toTitleCase } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
-import { getSkillsOfMahojiUser, getUserGear, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { getUserGear, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const filterOption: CommandOption = {
 	type: ApplicationCommandOptionType.String,

@@ -158,7 +158,7 @@ export const stealCommand: OSBMahojiCommand = {
 				totalHealingNeeded: damageTaken,
 				healPerAction: Math.ceil(damageTaken / quantity),
 				activityName: 'Pickpocketing',
-				attackStylesUsed: []
+				combatStylesUsed: []
 			});
 
 			updateBankSetting(globalClient, ClientSettings.EconomyStats.ThievingCost, foodRemoved);

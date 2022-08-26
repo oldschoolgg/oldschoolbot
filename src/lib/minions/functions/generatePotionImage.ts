@@ -26,7 +26,7 @@ export async function generatePotionImage(user: KlasaUser) {
 
 	const hexColor = user.settings.get(UserSettings.BankBackgroundHex);
 
-	const userBank = user.settings.get(UserSettings.Bank);
+	const userBank = user.bank().values();
 	const potionSetup = user.settings.get(UserSettings.SelectedPotions);
 	let viewPotions: ItemBank = {};
 

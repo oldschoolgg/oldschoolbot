@@ -3,7 +3,6 @@ import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { bankHasItem } from 'oldschooljs/dist/util';
 
-import { UserSettings } from '../../settings/types/UserSettings';
 import { itemNameFromID } from '../../util';
 import Potions from '../data/potions';
 
@@ -14,7 +13,7 @@ export default async function removePotionsFromUser(
 ): Promise<string> {
 	const uniqPots = [...new Set(pots)];
 	await user.settings.sync(true);
-	const userBank = user.settings.get(UserSettings.Bank);
+	const userBank = user.bank().values();
 
 	// In future make pots be calculated on a per dose basis.
 	const amountPotsToRemove = Math.max(Math.floor(duration / (Time.Minute * 30)), 1);
