@@ -349,8 +349,7 @@ export enum BitField {
 	HasBananaEnchantmentScroll = 205,
 	HasDaemonheimAgilityPass = 206,
 	DisabledGorajanBoneCrusher = 207,
-	HasLeaguesOneMinuteLengthBoost = 208,
-	UseEnhancedBrewsRestores = 209
+	HasLeaguesOneMinuteLengthBoost = 208
 }
 
 interface BitFieldData {
@@ -412,11 +411,6 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	[BitField.DisabledRandomEvents]: { name: 'Disabled Random Events', protected: false, userConfigurable: true },
 	[BitField.DisabledGorajanBoneCrusher]: {
 		name: 'Disabled Gorajan Bonecrusher',
-		protected: false,
-		userConfigurable: true
-	},
-	[BitField.UseEnhancedBrewsRestores]: {
-		name: 'Use Enhanced brews/restores',
 		protected: false,
 		userConfigurable: true
 	}
