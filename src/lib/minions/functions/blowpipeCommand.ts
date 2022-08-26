@@ -1,9 +1,14 @@
 import { Prisma } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 
-import { defaultBlowpipe } from '../../settings/schemas/UserSchema';
 import getOSItem, { getItem } from '../../util/getOSItem';
 import { BlowpipeData } from '../types';
+
+export const defaultBlowpipe: BlowpipeData = {
+	scales: 0,
+	dartID: null,
+	dartQuantity: 0
+};
 
 export const blowpipeDarts = [
 	'Bronze dart',

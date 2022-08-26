@@ -50,7 +50,8 @@ export const mahojiClient = new MahojiClient({
 				userID: interaction.userID.toString(),
 				guildID: interaction.guildID?.toString(),
 				channelID: interaction.channelID.toString(),
-				bypassInhibitors: false
+				bypassInhibitors: false,
+				apiUser: interaction.user
 			});
 			return result?.reason;
 		},

@@ -1,6 +1,5 @@
 import { Activity, NewUser, Prisma } from '@prisma/client';
 import { GuildMember, MessageAttachment } from 'discord.js';
-import { roll } from 'e';
 import { KlasaMessage } from 'klasa';
 import { APIInteractionGuildMember } from 'mahoji';
 
@@ -15,7 +14,7 @@ import {
 } from '../../mahoji/lib/util';
 import { BotCommand } from '../structures/BotCommand';
 import { ActivityTaskData } from '../types/minions';
-import { channelIsSendable, cleanUsername, isGroupActivity } from '../util';
+import { channelIsSendable, isGroupActivity } from '../util';
 import { logError } from '../util/logError';
 import { taskNameFromType } from '../util/taskNameFromType';
 import { convertStoredActivityToFlatActivity, prisma } from './prisma';
@@ -33,24 +32,6 @@ export async function getNewUser(id: string): Promise<NewUser> {
 		});
 	}
 	return value;
-}
-
-export async function syncNewUserUsername(message: KlasaMessage) {
-	if (!roll(20)) return;
-	const cleanedUsername = cleanUsername(message.author.username);
-	const username = cleanedUsername.length > 32 ? cleanedUsername.substring(0, 32) : cleanedUsername;
-	await prisma.newUser.upsert({
-		where: {
-			id: message.author.id
-		},
-		update: {
-			username
-		},
-		create: {
-			id: message.author.id,
-			username
-		}
-	});
 }
 
 declare global {
@@ -173,7 +154,8 @@ export async function runCommand({
 			userID,
 			channelID,
 			guildID,
-			bypassInhibitors: bypassInhibitors ?? false
+			bypassInhibitors: bypassInhibitors ?? false,
+			apiUser: null
 		});
 
 		if (inhibitedReason) {

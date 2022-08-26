@@ -1,27 +1,46 @@
 import { TextChannel } from 'discord.js';
+import { APIUser } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
-import { mahojiUsersSettingsFetch, mUserFetch } from '../mahojiSettings';
+import { BitField } from '../../lib/constants';
+import { prisma } from '../../lib/settings/prisma';
+import { removeMarkdownEmojis } from '../../lib/util';
+import { mUserFetch } from '../mahojiSettings';
 import { AbstractCommand, runInhibitors } from './inhibitors';
 
-async function cacheLinkedUsers(user_id: bigint | string) {
-	const user = await mahojiUsersSettingsFetch(user_id);
-	let main = user.main_account;
-	const allAccounts: string[] = [...user.ironman_alts];
-	if (main) {
-		allAccounts.push(main);
-	}
-	// Ensure linked users are cached
-	const allAccountsMap = await Promise.all(allAccounts.map(id => globalClient.fetchUser(id)));
-	return allAccountsMap.length;
+function cleanUsername(username: string) {
+	return removeMarkdownEmojis(username).substring(0, 32);
 }
+export async function syncNewUserUsername(userID: string, username: string) {
+	const newUsername = cleanUsername(username);
+	const newUser = await prisma.newUser.findUnique({
+		where: { id: userID }
+	});
+	if (!newUser || newUser.username !== newUsername) {
+		await prisma.newUser.upsert({
+			where: {
+				id: userID
+			},
+			update: {
+				username
+			},
+			create: {
+				id: userID,
+				username
+			}
+		});
+	}
+}
+
 export async function preCommand({
 	abstractCommand,
 	userID,
 	guildID,
 	channelID,
-	bypassInhibitors
+	bypassInhibitors,
+	apiUser
 }: {
+	apiUser: APIUser | null;
 	abstractCommand: AbstractCommand;
 	userID: string | bigint;
 	guildID?: string | bigint | null;
@@ -38,7 +57,27 @@ export async function preCommand({
 	const guild = guildID ? globalClient.guilds.cache.get(guildID.toString()) : null;
 	const member = guild?.members.cache.get(userID.toString());
 	const channel = globalClient.channels.cache.get(channelID.toString()) as TextChannel;
-	await cacheLinkedUsers(userID);
+	await prisma.user.findMany({
+		where: {
+			bitfield: {
+				hasSome: [
+					BitField.IsPatronTier3,
+					BitField.IsPatronTier4,
+					BitField.IsPatronTier5,
+					BitField.isContributor,
+					BitField.isModerator
+				]
+			},
+			farming_patch_reminders: true
+		},
+		select: {
+			id: true,
+			bitfield: true
+		}
+	});
+	if (apiUser) {
+		await syncNewUserUsername(user.id, apiUser.username);
+	}
 	const inhibitResult = await runInhibitors({
 		user,
 		klasaUser,

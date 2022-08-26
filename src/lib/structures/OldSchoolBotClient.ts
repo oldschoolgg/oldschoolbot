@@ -16,10 +16,6 @@ if (typeof production !== 'boolean') {
 	throw new Error('Must provide production boolean.');
 }
 
-import('../settings/schemas/UserSchema');
-import('../settings/schemas/GuildSchema');
-import('../settings/schemas/ClientSchema');
-
 export class OldSchoolBotClient extends Client {
 	public oneCommandAtATimeCache = new Set<string>();
 	public secondaryUserBusyCache = new Set<string>();

@@ -6,6 +6,7 @@ import { channelIsSendable } from './util';
 
 export async function onMessage(msg: Message) {
 	if (!msg.content || msg.author.bot || !channelIsSendable(msg.channel)) return;
+
 	if (msg.content.trim() !== `<@${CLIENT_ID}>`) return;
 
 	const result = await minionStatusCommand(msg.author.id);

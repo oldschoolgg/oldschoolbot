@@ -596,7 +596,7 @@ export function truncateString(str: string, maxLen: number) {
 	return `${str.slice(0, maxLen - 3)}...`;
 }
 
-export function cleanUsername(str: string) {
+export function removeMarkdownEmojis(str: string) {
 	return Util.escapeMarkdown(stripEmojis(str));
 }
 export { cleanString, stringMatches } from './util/cleanString';
