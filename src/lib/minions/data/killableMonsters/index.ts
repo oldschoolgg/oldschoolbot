@@ -40,7 +40,6 @@ const killableMonsters: KillableMonster[] = [
 		table: Monsters.Barrows,
 		emoji: '<:Dharoks_helm:403038864199122947>',
 		wildy: false,
-
 		difficultyRating: 4,
 		itemsRequired: resolveItems([]),
 		notifyDrops: resolveItems([]),
@@ -72,7 +71,6 @@ const killableMonsters: KillableMonster[] = [
 		table: Monsters.DagannothPrime,
 		emoji: '<:Pet_dagannoth_prime:324127376877289474>',
 		wildy: false,
-
 		difficultyRating: 5,
 		itemsRequired: deepResolveItems([
 			"Guthan's platebody",
@@ -276,7 +274,7 @@ const killableMonsters: KillableMonster[] = [
 		id: Monsters.DerangedArchaeologist.id,
 		name: Monsters.DerangedArchaeologist.name,
 		aliases: Monsters.DerangedArchaeologist.aliases,
-		timeToFinish: Time.Minute,
+		noneCombatCalcTimeToFinish: Time.Minute,
 		table: Monsters.DerangedArchaeologist,
 		emoji: '',
 		wildy: false,
@@ -284,7 +282,6 @@ const killableMonsters: KillableMonster[] = [
 		difficultyRating: 5,
 		qpRequired: 50,
 		itemInBankBoosts: [{ [itemID('Occult necklace')]: 10 }],
-		defaultAttackStyles: [SkillsEnum.Magic],
 		healAmountNeeded: 4 * 20,
 		attackStyleToUse: GearStat.AttackMagic,
 		attackStylesUsed: [GearStat.AttackRanged, GearStat.AttackMagic]
