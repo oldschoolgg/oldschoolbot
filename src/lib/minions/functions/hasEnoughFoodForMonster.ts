@@ -1,4 +1,3 @@
-import { MUser } from '../../MUser';
 import { KillableMonster } from '../types';
 import calculateMonsterFood from './calculateMonsterFood';
 import getUserFoodFromBank from './getUserFoodFromBank';

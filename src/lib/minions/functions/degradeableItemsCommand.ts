@@ -9,7 +9,6 @@ import {
 	updateBankSetting
 } from '../../../mahoji/mahojiSettings';
 import { degradeableItems } from '../../degradeableItems';
-import { MUser } from '../../MUser';
 import { stringMatches } from '../../util';
 
 export async function degradeableItemsCommand(

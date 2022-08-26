@@ -4,7 +4,6 @@ import { Bank } from 'oldschooljs';
 
 import BankImageTask, { BankFlag } from '../../tasks/bankImage';
 import { Flags } from '../minions/types';
-import { MUser } from '../MUser';
 
 interface MakeBankImageOptions {
 	bank: Bank;

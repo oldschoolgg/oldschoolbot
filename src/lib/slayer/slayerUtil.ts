@@ -8,7 +8,6 @@ import { mahojiUserSettingsUpdate } from '../../mahoji/mahojiSettings';
 import { PvMMethod } from '../constants';
 import { CombatOptionsEnum } from '../minions/data/combatConstants';
 import { KillableMonster } from '../minions/types';
-import { MUser } from '../MUser';
 import { prisma } from '../settings/prisma';
 import { getNewUser } from '../settings/settings';
 import { SkillsEnum } from '../skilling/types';

@@ -1,7 +1,6 @@
 import { Bank } from 'oldschooljs';
 
 import { countSkillsAtleast99 } from '../../../mahoji/mahojiSettings';
-import { MUser } from '../../MUser';
 import Skillcapes from '../../skilling/skillcapes';
 import { toTitleCase } from '../../util';
 import { Buyable } from './buyables';

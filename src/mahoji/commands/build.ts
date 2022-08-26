@@ -5,12 +5,12 @@ import { Bank } from 'oldschooljs';
 import Constructables from '../../lib/skilling/skills/construction/constructables';
 import { Skills } from '../../lib/types';
 import { ConstructionActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, getSkillsOfMahojiUser } from '../../lib/util';
+import { formatDuration, getSkillsOfMahojiUser, hasSkillReqs } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
 import { OSBMahojiCommand } from '../lib/util';
-import { hasSkillReqs, mahojiUsersSettingsFetch, mUserFetch, updateBankSetting } from '../mahojiSettings';
+import { mahojiUsersSettingsFetch, mUserFetch, updateBankSetting } from '../mahojiSettings';
 
 const ds2Requirements: Skills = {
 	magic: 75,

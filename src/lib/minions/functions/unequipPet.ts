@@ -1,7 +1,6 @@
 import { Bank } from 'oldschooljs';
 
 import { mahojiUserSettingsUpdate } from '../../../mahoji/mahojiSettings';
-import { MUser } from '../../MUser';
 import { itemNameFromID } from '../../util';
 import { logError } from '../../util/logError';
 

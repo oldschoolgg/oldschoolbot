@@ -2,7 +2,6 @@ import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { farmingPlantCommand } from '../../../mahoji/lib/abstracted_commands/farmingCommand';
-import { MUser } from '../../MUser';
 import { calcNumOfPatches } from '../../skilling/functions/calcsFarming';
 import { plants } from '../../skilling/skills/farming';
 import { IPatchDataDetailed } from '../farming/types';

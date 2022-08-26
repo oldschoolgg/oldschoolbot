@@ -4,7 +4,6 @@ import { Item } from 'oldschooljs/dist/meta/types';
 
 import { growablePets } from '../growablePets';
 import { implings } from '../implings';
-import { MUser } from '../MUser';
 import getOSItem from '../util/getOSItem';
 import resolveItems from '../util/resolveItems';
 import {

@@ -21,7 +21,7 @@ import { ItemBank } from './types';
 import { addItemToBank, assert, calcCombatLevel, getSkillsOfMahojiUser, itemNameFromID, percentChance } from './util';
 import { determineRunes } from './util/determineRunes';
 import getOSItem from './util/getOSItem';
-import getUsersPerkTier from './util/getUsersPerkTier';
+import getUsersPerkTier, { syncPerkTierOfUser } from './util/getUsersPerkTier';
 import { minionIsBusy } from './util/minionIsBusy';
 import { minionName } from './util/minionUtils';
 import resolveItems from './util/resolveItems';
@@ -38,6 +38,14 @@ export class MUserClass {
 	constructor(user: User) {
 		this.user = user;
 		this.id = user.id;
+
+		syncPerkTierOfUser(this);
+	}
+
+	async update(data: Prisma.UserUpdateArgs['data']) {
+		const result = await mahojiUserSettingsUpdate(this.id, data);
+		this.user = result.newUser;
+		return result;
 	}
 
 	favAlchs(duration: number) {
@@ -408,6 +416,7 @@ export class MUserClass {
 }
 declare global {
 	const MUser: typeof MUserClass;
+	export type MUser = MUserClass;
 }
 declare global {
 	namespace NodeJS {

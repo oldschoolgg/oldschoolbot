@@ -6,7 +6,6 @@ import { ClueTiers } from '../clues/clueTiers';
 import { Emoji } from '../constants';
 import killableMonsters from '../minions/data/killableMonsters';
 import { Planks } from '../minions/data/planks';
-import { MUser } from '../MUser';
 import { getActivityOfUser } from '../settings/settings';
 import Agility from '../skilling/skills/agility';
 import Cooking from '../skilling/skills/cooking';

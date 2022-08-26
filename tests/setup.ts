@@ -11,3 +11,4 @@ jest.mock('../src/lib/settings/prisma.ts', () => ({
 
 // @ts-ignore Mock
 global.globalClient = { settings: { get: () => ({}) } } as any as KlasaClient;
+import('../src/lib/MUser');

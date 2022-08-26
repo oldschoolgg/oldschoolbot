@@ -5,7 +5,6 @@ import { itemNameMap } from 'oldschooljs/dist/structures/Items';
 
 import { filterableTypes } from '../data/filterables';
 import { evalMathExpression } from '../expressionParser';
-import { MUser } from '../MUser';
 import { cleanString, stringMatches } from '../util';
 import itemIsTradeable from './itemIsTradeable';
 

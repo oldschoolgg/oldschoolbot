@@ -6,7 +6,6 @@ import { updateBankSetting } from '../../../mahoji/mahojiSettings';
 import { Emoji } from '../../constants';
 import { Eatables } from '../../data/eatables';
 import { GearSetupType } from '../../gear';
-import { MUser } from '../../MUser';
 import getUserFoodFromBank from './getUserFoodFromBank';
 
 export default async function removeFoodFromUser({

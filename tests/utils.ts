@@ -2,7 +2,6 @@ import { Prisma, User } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 
 import { PartialGearSetup } from '../src/lib/gear';
-import { MUser } from '../src/lib/MUser';
 import { Gear } from '../src/lib/structures/Gear';
 
 export function mockArgument(arg: any) {

@@ -3,7 +3,6 @@ import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { BitField } from './constants';
-import { MUser } from './MUser';
 import resolveItems from './util/resolveItems';
 
 export interface RandomEvent {

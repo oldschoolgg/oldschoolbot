@@ -18,7 +18,6 @@ import {
 	runeHeraldicShields,
 	stoles
 } from '../data/CollectionsExport';
-import { MUser } from '../MUser';
 import { prisma } from '../settings/prisma';
 import { itemNameFromID, stringMatches } from '../util';
 import { makeBankImage } from '../util/makeBankImage';

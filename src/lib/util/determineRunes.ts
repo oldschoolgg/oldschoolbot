@@ -1,7 +1,6 @@
 import { notEmpty } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { MUser } from '../MUser';
 import resolveItems from './resolveItems';
 
 const res = resolveItems;

@@ -3,7 +3,6 @@ import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 import { resolveNameBank } from 'oldschooljs/dist/util';
 
-import { MUser } from '../../MUser';
 import { ItemBank } from '../../types';
 import { roll } from '../../util';
 import resolveItems from '../../util/resolveItems';

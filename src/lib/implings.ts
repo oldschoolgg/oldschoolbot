@@ -2,7 +2,6 @@ import { activity_type_enum } from '@prisma/client';
 import { Time } from 'e';
 import { Bank, LootTable, Openables } from 'oldschooljs';
 
-import { MUser } from './MUser';
 import { ActivityTaskOptions } from './types/minions';
 import activityInArea, { WorldLocations } from './util/activityInArea';
 

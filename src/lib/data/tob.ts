@@ -6,7 +6,6 @@ import { checkUserCanUseDegradeableItem } from '../degradeableItems';
 import { constructGearSetup, GearStats } from '../gear';
 import { blowpipeDarts } from '../minions/functions/blowpipeCommand';
 import getUserFoodFromBank from '../minions/functions/getUserFoodFromBank';
-import { MUser } from '../MUser';
 import { getMinigameScore } from '../settings/minigames';
 import { Gear } from '../structures/Gear';
 import { Skills } from '../types';

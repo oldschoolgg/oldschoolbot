@@ -1,4 +1,3 @@
-import { MUser } from '../MUser';
 import itemID from '../util/itemID';
 
 export interface Eatable {

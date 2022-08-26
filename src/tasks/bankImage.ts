@@ -13,7 +13,6 @@ import { allCLItems } from '../lib/data/Collections';
 import { filterableTypes } from '../lib/data/filterables';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
 import { BankBackground, FlagMap, Flags } from '../lib/minions/types';
-import { MUser } from '../lib/MUser';
 import { BankSortMethod, BankSortMethods, sorts } from '../lib/sorts';
 import { ItemBank } from '../lib/types';
 import { addArrayOfNumbers, cleanString, formatItemStackQuantity, generateHexColorForCashStack } from '../lib/util';

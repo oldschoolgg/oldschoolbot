@@ -2,7 +2,6 @@ import { Bank } from 'oldschooljs';
 
 import { mahojiUserSettingsUpdate } from '../../../mahoji/mahojiSettings';
 import { allPetIDs } from '../../data/CollectionsExport';
-import { MUser } from '../../MUser';
 import getOSItem from '../../util/getOSItem';
 import { unequipPet } from './unequipPet';
 

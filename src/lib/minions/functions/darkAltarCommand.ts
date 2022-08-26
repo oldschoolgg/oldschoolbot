@@ -1,11 +1,10 @@
 import { increaseNumByPercent, reduceNumByPercent, Time } from 'e';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
-import { hasSkillReqs, userHasGracefulEquipped } from '../../../mahoji/mahojiSettings';
+import { userHasGracefulEquipped } from '../../../mahoji/mahojiSettings';
 import { KourendKebosDiary, userhasDiaryTier } from '../../diaries';
-import { MUser } from '../../MUser';
 import { DarkAltarOptions } from '../../types/minions';
-import { formatDuration } from '../../util';
+import { formatDuration, hasSkillReqs } from '../../util';
 import addSubTaskToActivityTask from '../../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../util/calcMaxTripLength';
 import getOSItem from '../../util/getOSItem';

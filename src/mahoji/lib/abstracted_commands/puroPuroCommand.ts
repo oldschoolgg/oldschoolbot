@@ -4,11 +4,11 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { UserKourendFavour } from '../../../lib/minions/data/kourendFavour';
 import { Skills } from '../../../lib/types';
 import { PuroPuroActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, itemID, stringMatches } from '../../../lib/util';
+import { formatDuration, hasSkillReqs, itemID, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
-import { hasSkillReqs, userHasGracefulEquipped } from '../../mahojiSettings';
+import { userHasGracefulEquipped } from '../../mahojiSettings';
 
 interface PuroImpling {
 	name: string;

@@ -1,7 +1,6 @@
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { Emoji } from '../constants';
-import { MUser } from '../MUser';
 import { SkillsEnum } from '../skilling/types';
 import { convertXPtoLVL, Util } from '../util';
 import resolveItems from './resolveItems';

@@ -4,7 +4,6 @@ import { Image } from 'skia-canvas/lib';
 
 import { BitField, PerkTier } from '../constants';
 import { GearSetupType, GearStat, OffenceGearStat } from '../gear/types';
-import { MUser } from '../MUser';
 import { POHBoosts } from '../poh';
 import { LevelRequirements, SkillsEnum } from '../skilling/types';
 import { ArrayItemsResolved, ItemBank, Skills } from '../types';

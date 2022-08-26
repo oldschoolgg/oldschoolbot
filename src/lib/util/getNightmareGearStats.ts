@@ -3,7 +3,6 @@ import { calcWhatPercent } from 'e';
 import { NIGHTMARES_HP, PHOSANI_NIGHTMARE_ID, ZAM_HASTA_CRUSH } from '../constants';
 import { maxOtherStats } from '../gear';
 import { NightmareMonster } from '../minions/data/killableMonsters';
-import { MUser } from '../MUser';
 
 export function getNightmareGearStats(
 	user: MUser,

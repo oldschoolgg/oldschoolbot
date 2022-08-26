@@ -1,7 +1,6 @@
 import { uniqueArr } from 'e';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
-import { MUser } from '../../MUser';
 import { toTitleCase } from '../../util';
 import { AttackStyles } from '.';
 

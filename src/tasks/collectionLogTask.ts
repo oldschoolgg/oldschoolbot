@@ -6,7 +6,6 @@ import { Canvas, CanvasRenderingContext2D } from 'skia-canvas/lib';
 
 import { allCollectionLogs, getCollection, getTotalCl } from '../lib/data/Collections';
 import { IToReturnCollection } from '../lib/data/CollectionsExport';
-import { MUser } from '../lib/MUser';
 import { formatItemStackQuantity, generateHexColorForCashStack, toKMB } from '../lib/util';
 import { fillTextXTimesInCtx, getClippedRegion } from '../lib/util/canvasUtil';
 import getOSItem from '../lib/util/getOSItem';

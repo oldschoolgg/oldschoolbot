@@ -9,7 +9,6 @@ import { getClueScoresFromOpenables } from '../clues/clueUtils';
 import { badges, skillEmoji } from '../constants';
 import { calcCLDetails } from '../data/Collections';
 import { effectiveMonsters } from '../minions/data/killableMonsters';
-import { MUser } from '../MUser';
 import { getAllMinigameScores } from '../settings/settings';
 import { courses } from '../skilling/skills/agility';
 import creatures from '../skilling/skills/hunter/creatures';

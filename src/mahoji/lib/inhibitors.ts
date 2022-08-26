@@ -18,7 +18,6 @@ import {
 } from '../../lib/constants';
 import { CategoryFlag } from '../../lib/types';
 import { formatDuration } from '../../lib/util';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { mahojiGuildSettingsFetch, untrustedGuildSettingsCache } from '../mahojiSettings';
 import { Cooldowns } from './Cooldowns';
 
@@ -130,7 +129,7 @@ const inhibitors: Inhibitor[] = [
 		name: 'altProtection',
 		run: async ({ user, command, klasaUser }) => {
 			if (!command.attributes?.altProtection) return false;
-			if (getUsersPerkTier(user) >= PerkTier.Four) return false;
+			if (user.perkTier >= PerkTier.Four) return false;
 
 			if (
 				Date.now() - klasaUser.createdTimestamp < Time.Month &&
@@ -191,7 +190,7 @@ const inhibitors: Inhibitor[] = [
 			if (!guild || guild.id !== SupportServer) return false;
 			if (channel.id !== Channel.General) return false;
 
-			const perkTier = getUsersPerkTier(user);
+			const { perkTier } = user;
 
 			if (member && perkTier >= PerkTier.Two) {
 				return false;
@@ -247,7 +246,7 @@ const inhibitors: Inhibitor[] = [
 		run: async ({ command, user }) => {
 			if (!command.attributes?.perkTier) return false;
 
-			if (getUsersPerkTier(user) < command.attributes.perkTier) {
+			if (user.perkTier < command.attributes.perkTier) {
 				return `You need to be a ${
 					command.attributes.perkTier - 1 > 0
 						? `tier ${command.attributes.perkTier - 1} patron`

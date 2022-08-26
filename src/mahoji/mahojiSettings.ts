@@ -20,16 +20,15 @@ import creatures from '../lib/skilling/skills/hunter/creatures';
 import { Rune } from '../lib/skilling/skills/runecraft';
 import { filterLootReplace } from '../lib/slayer/slayerUtil';
 import { Gear } from '../lib/structures/Gear';
-import type { ItemBank, Skills } from '../lib/types';
+import type { ItemBank } from '../lib/types';
 import {
 	anglerBoosts,
 	channelIsSendable,
 	formatItemReqs,
-	formatSkillRequirements,
 	getSkillsOfMahojiUser,
+	hasSkillReqs,
 	itemNameFromID,
 	sanitizeBank,
-	skillsMeetRequirements,
 	stringMatches,
 	validateItemBankAndThrow
 } from '../lib/util';
@@ -475,14 +474,6 @@ export async function updateGPTrackSetting(
 			increment: amount
 		}
 	});
-}
-
-export function hasSkillReqs(user: MUser, reqs: Skills): [boolean, string | null] {
-	const hasReqs = skillsMeetRequirements(user.skillsAsLevels, reqs);
-	if (!hasReqs) {
-		return [false, formatSkillRequirements(reqs)];
-	}
-	return [true, null];
 }
 
 export function userHasGracefulEquipped(user: User | MUser) {

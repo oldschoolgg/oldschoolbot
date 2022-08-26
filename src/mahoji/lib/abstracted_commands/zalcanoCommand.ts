@@ -4,10 +4,10 @@ import { ZALCANO_ID } from '../../../lib/constants';
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
 import { Skills } from '../../../lib/types';
 import { ZalcanoActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration } from '../../../lib/util';
+import { formatDuration, hasSkillReqs } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { hasSkillReqs, userHasGracefulEquipped } from '../../mahojiSettings';
+import { userHasGracefulEquipped } from '../../mahojiSettings';
 
 export const soteSkillRequirements: Skills = {
 	mining: 70,

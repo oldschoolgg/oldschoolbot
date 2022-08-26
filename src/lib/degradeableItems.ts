@@ -1,9 +1,8 @@
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { mahojiUserSettingsUpdate, updateBankSetting } from '../mahoji/mahojiSettings';
+import { updateBankSetting } from '../mahoji/mahojiSettings';
 import { GearSetupType } from './gear';
-import { MUser } from './MUser';
 import { assert } from './util';
 import getOSItem from './util/getOSItem';
 
@@ -93,7 +92,7 @@ export async function degradeItem({
 		// If no more charges left, break and refund the item.
 		const hasEquipped = user.gear[degItem.setup].equippedWeapon() === item;
 		const hasInBank = user.bank.has(item.id);
-		await mahojiUserSettingsUpdate(user.id, {
+		await user.update({
 			[degItem.settingsKey]: 0
 		});
 		const itemsDeleted = new Bank().add(item.id);
@@ -104,7 +103,7 @@ export async function degradeItem({
 			// If its equipped, unequip and delete it.
 			const gear = { ...user.gear[degItem.setup].raw() };
 			gear.weapon = null;
-			await mahojiUserSettingsUpdate(user.id, {
+			await user.update({
 				[`gear_${degItem.setup}`]: gear
 			});
 			if (degItem.itemsToRefundOnBreak) {
@@ -128,7 +127,7 @@ export async function degradeItem({
 		};
 	}
 	// If it has charges left still, just remove those charges and nothing else.
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		[degItem.settingsKey]: newCharges
 	});
 	const chargesAfter = user.user[degItem.settingsKey];

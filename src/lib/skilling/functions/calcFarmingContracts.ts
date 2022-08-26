@@ -3,7 +3,6 @@ import { Bank, LootTable } from 'oldschooljs';
 
 import { HighSeedPackTable, LowSeedPackTable, MediumSeedPackTable } from '../../data/seedPackTables';
 import { PlantTier } from '../../minions/farming/types';
-import { MUser } from '../../MUser';
 import { stringMatches } from '../../util/cleanString';
 
 export function openSeedPack(seedTier: number): Bank {

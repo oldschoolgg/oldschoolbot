@@ -1,6 +1,6 @@
 import { Time } from 'e';
 
-import { mahojiUserSettingsUpdate, mUserFetch } from '../mahoji/mahojiSettings';
+import { mUserFetch } from '../mahoji/mahojiSettings';
 import { Events, LEVEL_99_XP, MAX_TOTAL_LEVEL, MAX_XP, skillEmoji } from './constants';
 import { onMax } from './events';
 import { AddXpParams } from './minions/types';
@@ -95,7 +95,7 @@ export async function addXP(userID: string, params: AddXpParams): Promise<string
 		globalClient.emit(Events.ServerNotification, str);
 	}
 
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		[`skills_${params.skillName}`]: Math.floor(newXP)
 	});
 

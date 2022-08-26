@@ -4,7 +4,6 @@ import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import { Canvas } from 'skia-canvas/lib';
 
 import BankImageTask from '../../../tasks/bankImage';
-import { MUser } from '../../MUser';
 import { Gear } from '../../structures/Gear';
 import { toTitleCase } from '../../util';
 import { canvasImageFromBuffer, drawItemQuantityText, drawTitleText, fillTextXTimesInCtx } from '../../util/canvasUtil';

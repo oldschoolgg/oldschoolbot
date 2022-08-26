@@ -5,10 +5,16 @@ import { Bank } from 'oldschooljs';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ItemBank } from '../../../lib/types';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { formatDuration, formatSkillRequirements, resolveNameBank, stringMatches } from '../../../lib/util';
+import {
+	formatDuration,
+	formatSkillRequirements,
+	hasSkillReqs,
+	resolveNameBank,
+	stringMatches
+} from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { handleMahojiConfirmation, hasSkillReqs, mahojiUserSettingsUpdate } from '../../mahojiSettings';
+import { handleMahojiConfirmation, mahojiUserSettingsUpdate } from '../../mahojiSettings';
 
 const skillReqs = {
 	[SkillsEnum.Prayer]: 70,

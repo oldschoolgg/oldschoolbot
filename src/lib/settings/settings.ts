@@ -13,7 +13,6 @@ import {
 	convertKlasaCommandToAbstractCommand,
 	convertMahojiCommandToAbstractCommand
 } from '../../mahoji/lib/util';
-import { MUser } from '../MUser';
 import { BotCommand } from '../structures/BotCommand';
 import { ActivityTaskData } from '../types/minions';
 import { channelIsSendable, cleanUsername, isGroupActivity } from '../util';

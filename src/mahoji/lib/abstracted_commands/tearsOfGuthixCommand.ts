@@ -3,10 +3,9 @@ import { notEmpty, objectEntries, Time } from 'e';
 import { Emoji } from '../../../lib/constants';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, formatSkillRequirements } from '../../../lib/util';
+import { formatDuration, formatSkillRequirements, hasSkillReqs } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
-import { hasSkillReqs } from '../../mahojiSettings';
 
 const skillReqs = {
 	[SkillsEnum.Firemaking]: 49,

@@ -2,7 +2,6 @@ import { calcWhatPercent, reduceNumByPercent } from 'e';
 
 import { GearSetupType, GearStat, maxDefenceStats, maxOffenceStats, readableStatName } from '../../gear';
 import { inverseOfOffenceStat } from '../../gear/functions/inverseOfStat';
-import { MUser } from '../../MUser';
 import { KillableMonster } from '../types';
 
 const { floor, max } = Math;

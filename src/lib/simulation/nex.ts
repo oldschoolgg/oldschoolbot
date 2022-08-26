@@ -16,7 +16,6 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { getUserGear } from '../../mahoji/mahojiSettings';
 import { BitField, NEX_ID } from '../constants';
-import { MUser } from '../MUser';
 import { Skills } from '../types';
 import {
 	clamp,

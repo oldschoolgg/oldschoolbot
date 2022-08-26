@@ -1,4 +1,3 @@
-import { MUser } from '../MUser';
 import { SkillsEnum } from '../skilling/types';
 
 export interface ItemBank {

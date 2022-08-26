@@ -1,7 +1,6 @@
 import { objectEntries } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { MUser } from '../MUser';
 import { LevelRequirements } from '../skilling/types';
 import { DungeonDecorations } from './objects/dungeon_decorations';
 import { GardenDecorations } from './objects/garden_decorations';

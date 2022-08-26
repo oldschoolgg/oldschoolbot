@@ -10,12 +10,10 @@ import { ClueTiers } from '../clues/clueTiers';
 import { COINS_ID, Emoji, lastTripCache, LastTripRunArgs, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
-import { MUser } from '../MUser';
 import { triggerRandomEvent } from '../randomEvents';
 import { runCommand } from '../settings/settings';
 import { ActivityTaskOptions } from '../types/minions';
 import { channelIsSendable } from '../util';
-import getUsersPerkTier from './getUsersPerkTier';
 import {
 	makeBirdHouseTripButton,
 	makeDoClueButton,
@@ -87,7 +85,7 @@ export async function handleTripFinish(
 	loot: Bank | null,
 	_messages?: string[]
 ) {
-	const perkTier = getUsersPerkTier(user);
+	const { perkTier } = user;
 	const messages: string[] = [];
 	for (const effect of tripFinishEffects) await effect.fn({ data, user, loot, messages });
 

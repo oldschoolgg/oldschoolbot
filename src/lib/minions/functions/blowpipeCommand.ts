@@ -2,7 +2,6 @@ import { Prisma } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 
 import { mahojiUserSettingsUpdate } from '../../../mahoji/mahojiSettings';
-import { MUser } from '../../MUser';
 import { defaultBlowpipe } from '../../settings/schemas/UserSchema';
 import getOSItem, { getItem } from '../../util/getOSItem';
 import { BlowpipeData } from '../types';

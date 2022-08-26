@@ -1,7 +1,6 @@
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { MUser } from '../../MUser';
 import { stringMatches } from '../../util';
 import { Skills } from './../../types/index';
 

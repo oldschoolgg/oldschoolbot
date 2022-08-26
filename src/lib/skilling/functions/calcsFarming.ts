@@ -1,5 +1,4 @@
 import { Favours, gotFavour } from '../../minions/data/kourendFavour';
-import { MUser } from '../../MUser';
 import { rand } from '../../util';
 import { Plant, SkillsEnum } from '../types';
 

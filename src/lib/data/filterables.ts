@@ -1,6 +1,5 @@
 import { Bank } from 'oldschooljs';
 
-import { MUser } from '../MUser';
 import { gracefulItems } from '../skilling/skills/agility';
 import { Craftables } from '../skilling/skills/crafting/craftables';
 import { Fletchables } from '../skilling/skills/fletching/fletchables';

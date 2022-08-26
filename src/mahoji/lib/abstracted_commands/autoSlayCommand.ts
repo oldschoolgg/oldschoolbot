@@ -10,8 +10,8 @@ import killableMonsters from '../../../lib/minions/data/killableMonsters';
 import { runCommand } from '../../../lib/settings/settings';
 import { autoslayModes, AutoslayOptionsEnum } from '../../../lib/slayer/constants';
 import { getCommonTaskName, getUsersCurrentSlayerInfo, SlayerMasterEnum } from '../../../lib/slayer/slayerUtil';
-import { stringMatches } from '../../../lib/util';
-import { hasSkillReqs, mahojiUserSettingsUpdate, mUserFetch } from '../../mahojiSettings';
+import { hasSkillReqs, stringMatches } from '../../../lib/util';
+import { mahojiUserSettingsUpdate, mUserFetch } from '../../mahojiSettings';
 import { slayerNewTaskCommand } from './slayerTaskCommand';
 
 interface AutoslayLink {

@@ -1,9 +1,8 @@
 import { User } from 'discord.js';
-import { notEmpty, Time } from 'e';
+import { notEmpty } from 'e';
 
 import { mahojiUserSettingsUpdate } from '../../mahoji/mahojiSettings';
 import { BitField, PerkTier, Roles } from '../constants';
-import { MUser } from '../MUser';
 import { getSupportGuild } from '../util';
 import { logError } from './logError';
 
@@ -14,12 +13,10 @@ const tier3ElligibleBits = [
 	BitField.IsWikiContributor
 ];
 
-export function patronMaxTripCalc(user: MUser) {
-	const perkTier = getUsersPerkTier(user);
-	if (perkTier === PerkTier.Two) return Time.Minute * 3;
-	else if (perkTier === PerkTier.Three) return Time.Minute * 6;
-	else if (perkTier >= PerkTier.Four) return Time.Minute * 10;
-	return 0;
+const perkTierCache = new Map<string, number>();
+
+export function syncPerkTierOfUser(user: MUser) {
+	perkTierCache.set(user.id, getUsersPerkTier(user.bitfield, true));
 }
 
 export default function getUsersPerkTier(
@@ -33,31 +30,11 @@ export default function getUsersPerkTier(
 			allAccounts.push(main);
 		}
 
-		const allAccountTiers = allAccounts
-			.map(id => globalClient.users.cache.get(id))
-			.filter(notEmpty)
-			// FIX
-			.map(t => getUsersPerkTier(t as any, true));
-
-		const highestAccountTier = Math.max(0, ...allAccountTiers);
-		return highestAccountTier;
-	} else if (noCheckOtherAccounts !== true && userOrBitfield instanceof MUser) {
-		let main = userOrBitfield.user.main_account;
-		const allAccounts: string[] = [...userOrBitfield.user.ironman_alts, userOrBitfield.id];
-		if (main) {
-			allAccounts.push(main);
-		}
-
-		const allAccountTiers = allAccounts
-			.map(id => globalClient.users.cache.get(id))
-			.filter(notEmpty)
-			// FI XHTIS TODOTDOTODTODTDTODTO
-			.map(t => getUsersPerkTier(t as any, true));
+		const allAccountTiers = allAccounts.map(id => perkTierCache.get(id)).filter(notEmpty);
 
 		const highestAccountTier = Math.max(0, ...allAccountTiers);
 		return highestAccountTier;
 	}
-
 	if (userOrBitfield instanceof User && userOrBitfield.client.owners.has(userOrBitfield)) {
 		return 10;
 	}

@@ -1,6 +1,5 @@
 import { Bank } from 'oldschooljs';
 
-import { MUser } from '../../MUser';
 import { birdsNestID, nestTable } from '../../simulation/birdsNest';
 import { SkillsEnum } from '../../skilling/types';
 import { addArrayOfNumbers, randFloat, roll } from '../../util';

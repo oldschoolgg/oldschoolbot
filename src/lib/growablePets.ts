@@ -2,7 +2,6 @@ import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { mahojiUserSettingsUpdate } from '../mahoji/mahojiSettings';
-import { MUser } from './MUser';
 import { ActivityTaskOptions } from './types/minions';
 import { itemNameFromID, randFloat } from './util';
 import resolveItems from './util/resolveItems';

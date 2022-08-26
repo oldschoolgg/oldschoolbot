@@ -2,7 +2,6 @@ import { userMention } from '@discordjs/builders';
 import { Bank } from 'oldschooljs';
 
 import { Events, usernameCache } from '../../constants';
-import { MUser } from '../../MUser';
 import { ArrayItemsResolved } from '../../types';
 import { minionName } from '../../util/minionUtils';
 import { effectiveMonsters } from '../data/killableMonsters';

@@ -2,14 +2,12 @@ import { objectEntries } from 'e';
 import { Monsters } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { hasSkillReqs } from '../mahoji/mahojiSettings';
 import { MAX_QP } from './constants';
-import { MUser } from './MUser';
 import { getAllMinigameScores, MinigameName } from './settings/settings';
 import Skillcapes from './skilling/skillcapes';
 import { courses } from './skilling/skills/agility';
 import { ItemBank, Skills } from './types';
-import { formatSkillRequirements, itemNameFromID } from './util';
+import { formatSkillRequirements, hasSkillReqs, itemNameFromID } from './util';
 import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
 

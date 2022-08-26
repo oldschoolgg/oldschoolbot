@@ -10,12 +10,12 @@ import { KillableMonster } from '../../../lib/minions/types';
 import { trackLoot } from '../../../lib/settings/prisma';
 import { Gear } from '../../../lib/structures/Gear';
 import { NightmareActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration } from '../../../lib/util';
+import { formatDuration, hasSkillReqs } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../../lib/util/calcMassDurationQuantity';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
 import resolveItems from '../../../lib/util/resolveItems';
-import { hasMonsterRequirements, hasSkillReqs, updateBankSetting } from '../../mahojiSettings';
+import { hasMonsterRequirements, updateBankSetting } from '../../mahojiSettings';
 
 function soloMessage(user: MUser, duration: number, quantity: number, isPhosani: boolean) {
 	const name = isPhosani ? "Phosani's Nightmare" : 'The Nightmare';

@@ -9,7 +9,6 @@ import { Emoji, Events, MIMIC_MONSTER_ID } from './constants';
 import { cluesRaresCL } from './data/CollectionsExport';
 import { defaultFarmingContract } from './minions/farming';
 import { FarmingContract } from './minions/farming/types';
-import { MUser } from './MUser';
 import {
 	BagFullOfGemsTable,
 	BuildersSupplyCrateTable,

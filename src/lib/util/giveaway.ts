@@ -5,7 +5,6 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { mUserFetch } from '../../mahoji/mahojiSettings';
 import { Events } from '../constants';
-import { MUser } from '../MUser';
 import { prisma } from '../settings/prisma';
 import { logError } from './logError';
 import { Giveaway } from '.prisma/client';

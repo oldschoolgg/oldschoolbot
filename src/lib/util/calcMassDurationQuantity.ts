@@ -1,6 +1,5 @@
 import { reducedTimeForGroup } from '../minions/functions';
 import { KillableMonster } from '../minions/types';
-import { MUser } from '../MUser';
 import { calcMaxTripLength } from './calcMaxTripLength';
 
 export default async function calcDurQty(

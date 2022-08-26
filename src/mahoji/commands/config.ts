@@ -16,7 +16,6 @@ import { setDefaultAutoslay, setDefaultSlayerMaster } from '../../lib/slayer/sla
 import { BankSortMethods } from '../../lib/sorts';
 import { itemNameFromID, removeFromArr, stringMatches } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { itemOption } from '../lib/mahojiCommandOptions';
@@ -84,7 +83,7 @@ async function favFoodConfig(
 }
 
 async function favItemConfig(
-	user: User,
+	user: MUser,
 	itemToAdd: string | undefined,
 	itemToRemove: string | undefined,
 	reset: boolean
@@ -93,14 +92,14 @@ async function favItemConfig(
 		await mahojiUserSettingsUpdate(user.id, { favoriteItems: [] });
 		return 'Cleared all favorite items.';
 	}
-	const currentFavorites = user.favoriteItems;
+	const currentFavorites = user.user.favoriteItems;
 	const item = getItem(itemToAdd ?? itemToRemove);
 	const currentItems = `Your current favorite items are: ${
 		currentFavorites.length === 0 ? 'None' : currentFavorites.map(itemNameFromID).join(', ')
 	}.`;
 	if (!item) return currentItems;
 	if (itemToAdd) {
-		let limit = (getUsersPerkTier(user.bitfield) + 1) * 100;
+		let limit = (user.perkTier + 1) * 100;
 		if (currentFavorites.length >= limit) {
 			return `You can't favorite anymore items, you can favorite a maximum of ${limit}.`;
 		}
@@ -182,7 +181,7 @@ async function bankSortConfig(
 	const currentMethod = user.user.bank_sort_method;
 	const currentWeightingBank = new Bank(user.user.bank_sort_weightings as ItemBank);
 
-	const perkTier = getUsersPerkTier(user);
+	const { perkTier } = user;
 	if (perkTier < PerkTier.Two) {
 		return patronMsg(PerkTier.Two);
 	}
@@ -961,12 +960,7 @@ export const configCommand: OSBMahojiCommand = {
 				return favFoodConfig(user.user, favorite_food.add, favorite_food.remove, Boolean(favorite_food.reset));
 			}
 			if (favorite_items) {
-				return favItemConfig(
-					user.user,
-					favorite_items.add,
-					favorite_items.remove,
-					Boolean(favorite_items.reset)
-				);
+				return favItemConfig(user, favorite_items.add, favorite_items.remove, Boolean(favorite_items.reset));
 			}
 			if (slayer) {
 				if (slayer.autoslay) {

@@ -15,7 +15,6 @@ import { ChambersOfXericOptions } from 'oldschooljs/dist/simulation/misc/Chamber
 
 import { checkUserCanUseDegradeableItem } from '../degradeableItems';
 import { constructGearSetup, GearStats } from '../gear';
-import { MUser } from '../MUser';
 import { getMinigameScore } from '../settings/minigames';
 import { SkillsEnum } from '../skilling/types';
 import { Gear } from '../structures/Gear';

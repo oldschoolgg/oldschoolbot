@@ -3,7 +3,6 @@ import { Bank } from 'oldschooljs';
 
 import { deduplicateClueScrolls } from '../src/lib/clues/clueUtils';
 import getUserFoodFromBank from '../src/lib/minions/functions/getUserFoodFromBank';
-import { MUser } from '../src/lib/MUser';
 import {
 	getSkillsOfMahojiUser,
 	sanitizeBank,

@@ -4,7 +4,6 @@ import { noOp } from 'e';
 import { CLIENT_ID, MAXING_MESSAGE } from '../config';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
 import { Events, LEVEL_99_XP, SupportServer } from './constants';
-import { MUser } from './MUser';
 import { prisma } from './settings/prisma';
 import Skills from './skilling/skills';
 import { channelIsSendable } from './util';

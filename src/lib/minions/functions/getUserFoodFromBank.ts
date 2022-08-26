@@ -1,7 +1,6 @@
 import { Bank } from 'oldschooljs';
 
 import { Eatables } from '../../data/eatables';
-import { MUser } from '../../MUser';
 
 function getRealHealAmount(user: MUser, healAmount: ((user: MUser) => number) | number) {
 	if (typeof healAmount === 'number') {
