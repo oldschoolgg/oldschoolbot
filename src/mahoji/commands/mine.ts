@@ -326,7 +326,7 @@ export const mineCommand: OSBMahojiCommand = {
 		} else {
 			boosts.push('**Powermining**');
 		}
-		// Calculate the time it takes to mine specific quantity or as many as possible.
+		// Calculate the time it takes to mine specific quantity or as many as possible
 		let [timeToMine, newQuantity] = determineMiningTime(
 			quantity,
 			user,
