@@ -2,8 +2,8 @@ import { attackStyles_enum, combats_enum, User } from '@prisma/client';
 import { KlasaUser } from 'klasa';
 import { Monsters } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
-import { mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings';
 
+import { mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings';
 import { NIGHTMARES_HP } from '../../constants';
 import { GearStat } from '../../gear';
 import castables from '../../skilling/skills/combat/magic/castables';
@@ -111,7 +111,7 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 
 	let spell: Castable | undefined = undefined;
 	const mahojiUser = await mahojiUsersSettingsFetch(user.id);
-	
+
 	let combatSkill = mahojiUser.minion_combatSkill;
 	if (combatSkill === combats_enum.auto && monster) {
 		const defaultMonsterStyle = monster.defaultStyleToUse;
@@ -218,7 +218,7 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 		}
 	}
 	if (combatSkill === combats_enum.melee) {
-		attackStyle = mahojiUser.minion_meleeAttackStyle
+		attackStyle = mahojiUser.minion_meleeAttackStyle;
 		switch (attackStyle) {
 			case attackStyles_enum.accurate:
 				res.push(
@@ -281,7 +281,7 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 		}
 	}
 	if (combatSkill === combats_enum.ranged) {
-		attackStyle = mahojiUser.minion_rangedAttackStyle
+		attackStyle = mahojiUser.minion_rangedAttackStyle;
 		switch (attackStyle) {
 			case attackStyles_enum.accurate:
 				res.push(

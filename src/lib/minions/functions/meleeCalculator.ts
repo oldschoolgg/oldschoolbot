@@ -4,8 +4,8 @@ import { KlasaUser } from 'klasa';
 import { Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 import { itemID } from 'oldschooljs/dist/util';
-import { mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings';
 
+import { mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings';
 import { hasMeleeVoidEquipped } from '../../gear';
 import { UserSettings } from '../../settings/types/UserSettings';
 import { calcMaxTripLength } from '../../util/calcMaxTripLength';
@@ -307,7 +307,7 @@ export default async function meleeCalculator(
 	const monsterKillSpeed = (monsterHP / DPS) * Time.Second;
 	// If no quantity provided, set it to the max.
 	if (!quantity || quantity < 1) {
-		//Arbitrarily choosen 
+		// Arbitrarily choosen
 		quantity = 10_000;
 	}
 	let hits = 0;
@@ -328,8 +328,7 @@ export default async function meleeCalculator(
 		combatDuration += monster.mechanicsTime ? monster.mechanicsTime : 0;
 		combatDuration += monster.respawnTime ? monster.respawnTime : 0;
 		combatDuration +=
-			monster.bankTripTime && monster.killsPerBankTrip
-				? (monster.bankTripTime / monster.killsPerBankTrip) : 0;
+			monster.bankTripTime && monster.killsPerBankTrip ? monster.bankTripTime / monster.killsPerBankTrip : 0;
 		if (combatDuration > calcMaxTripLength(user, 'MonsterKilling')) break;
 	}
 

@@ -1,5 +1,4 @@
-import { User } from '@prisma/client';
-import { combats_enum } from '@prisma/client';
+import { combats_enum, User } from '@prisma/client';
 import { FormattedCustomEmoji } from '@sapphire/discord.js-utilities';
 import { notEmpty, randArrItem } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';

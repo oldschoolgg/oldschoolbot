@@ -85,7 +85,7 @@ export default class extends BotCommand {
 			);
 		}
 		if (msg.author.minionIsBusy) {
-			return "Minion is busy";
+			return 'Minion is busy';
 		}
 
 		if (currentPrayers.includes(selectedPrayer.name.toLowerCase())) {
@@ -163,7 +163,7 @@ export default class extends BotCommand {
 
 	async potion(msg: KlasaMessage, [potion = undefined]: [string | undefined]) {
 		if (msg.author.minionIsBusy) {
-			return "Minion is busy";
+			return 'Minion is busy';
 		}
 		const currentPotions = msg.author.settings.get(UserSettings.SelectedPotions);
 

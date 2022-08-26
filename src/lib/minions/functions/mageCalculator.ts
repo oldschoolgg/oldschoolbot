@@ -3,8 +3,8 @@ import { randInt, Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
-import { mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings';
 
+import { mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings';
 import { hasEliteMagicVoidEquipped, hasMagicVoidEquipped } from '../../gear';
 import { UserSettings } from '../../settings/types/UserSettings';
 import castables from '../../skilling/skills/combat/magic/castables';
@@ -217,7 +217,7 @@ export default async function mageCalculator(
 	// If no quantity provided, set it to the max.
 	// If no quantity provided, set it to the max.
 	if (!quantity || quantity < 1) {
-		//Arbitrarily choosen 
+		// Arbitrarily choosen
 		quantity = 10_000;
 	}
 	let hits = 0;
@@ -238,8 +238,7 @@ export default async function mageCalculator(
 		combatDuration += monster.mechanicsTime ? monster.mechanicsTime : 0;
 		combatDuration += monster.respawnTime ? monster.respawnTime : 0;
 		combatDuration +=
-			monster.bankTripTime && monster.killsPerBankTrip
-				? (monster.bankTripTime / monster.killsPerBankTrip) : 0;
+			monster.bankTripTime && monster.killsPerBankTrip ? monster.bankTripTime / monster.killsPerBankTrip : 0;
 		if (combatDuration > calcMaxTripLength(user, 'MonsterKilling')) break;
 	}
 

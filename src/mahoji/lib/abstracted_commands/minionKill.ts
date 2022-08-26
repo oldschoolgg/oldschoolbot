@@ -158,9 +158,9 @@ export async function minionKillCommand(
 	if (monster.isConverted) {
 		combatCalcInfo = await combatCalculator(monster, user, quantity);
 		[combatDuration, hits, DPS, monsterKillSpeed, calcQuantity, totalPrayerDosesUsed, potsUsed] = combatCalcInfo;
-		console.log(hits, 'hits')
-		console.log(monsterKillSpeed, 'monsterKillSpeed')
-		console.log(calcQuantity, 'calcQuant')
+		console.log(hits, 'hits');
+		console.log(monsterKillSpeed, 'monsterKillSpeed');
+		console.log(calcQuantity, 'calcQuant');
 	} else {
 		noneCombat = true;
 		boosts.push('Monster NOT converted. NO combat');
@@ -236,17 +236,12 @@ export async function minionKillCommand(
 	}
 
 	let noneCombatDuration = noneCombatTimeToFinish * quantity;
-	const mahojiUser = await mahojiUsersSettingsFetch(user.id,{minion_combatSkill: true});
+	const mahojiUser = await mahojiUsersSettingsFetch(user.id, { minion_combatSkill: true });
 	const combatSkill = mahojiUser.minion_combatSkill;
 
-	if (
-		noneCombatDuration * 2 < combatDuration ||
-		combatSkill === combats_enum.nocombat ||
-		noneCombat
-	) {
-
-		console.log(combatDuration)
-		console.log(noneCombatDuration)
+	if (noneCombatDuration * 2 < combatDuration || combatSkill === combats_enum.nocombat || noneCombat) {
+		console.log(combatDuration);
+		console.log(noneCombatDuration);
 		boosts.push('NO combat, way too long combat duration');
 		noneCombat = true;
 		combatDuration = noneCombatDuration;
