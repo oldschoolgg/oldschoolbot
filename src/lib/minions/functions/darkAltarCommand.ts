@@ -90,12 +90,12 @@ export async function darkAltarCommand({
 	// Calculate Abyssal amulet boost:
 	if (hasItemsEquippedOrInBank(user, ['Abyssal amulet'])) {
 		const abyssalAmuletBoost = inventionBoosts.abyssalAmulet.boosts.find(b =>
-			b.runes.some(r => stringMatches(r, rune))
+			b.runes.some(r => stringMatches(r, `${rune} rune`))
 		);
 		if (abyssalAmuletBoost) {
 			const res = await inventionItemBoost({
 				userID: BigInt(user.id),
-				inventionID: InventionID.MechaRod,
+				inventionID: InventionID.AbyssalAmulet,
 				duration: maxTripLength
 			});
 			if (res.success) {
