@@ -22,7 +22,7 @@ export default class extends Task {
 		loot.add(Naxxus.table.kill(quantity, {}));
 
 		// Handle uniques => Don't give duplicates until log full
-		const uniqueChance = 157;
+		const uniqueChance = 150;
 		if (roll(uniqueChance)) {
 			const uniques = [
 				{ name: 'Dark crystal', weight: 3 },
