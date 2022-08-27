@@ -25,10 +25,10 @@ export default class extends Task {
 		const uniqueChance = 150;
 		if (roll(uniqueChance)) {
 			const uniques = [
-				{ name: 'Dark crystal', weight: 3 },
-				{ name: 'Abyssal gem', weight: 2 },
-				{ name: 'Tattered tome', weight: 3 },
-				{ name: 'Spellbound ring', weight: 2 }
+				{ name: 'Dark crystal', weight: 2 },
+				{ name: 'Abyssal gem', weight: 3 },
+				{ name: 'Tattered tome', weight: 2 },
+				{ name: 'Spellbound ring', weight: 3 }
 			];
 			const cl = user.cl();
 			const filteredUniques = uniques.filter(u => !cl.has(u.name));
