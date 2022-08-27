@@ -494,6 +494,7 @@ model Metric {
   cpuUser            Float  @db.Real
   cpuSystem          Float  @db.Real
   cpuPercent         Float  @db.Real
+  qps                Float? @db.Real
 
   @@map("metrics")
 }
