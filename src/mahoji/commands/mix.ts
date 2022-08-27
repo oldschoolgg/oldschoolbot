@@ -119,22 +119,21 @@ export const mineCommand: OSBMahojiCommand = {
 		}
 
 		if (!options.wesley && !options.zahur) {
+			const boostedTimeToMixSingleItem = reduceNumByPercent(
+				timeToMixSingleItem,
+				inventionBoosts.mechaMortar.herbloreSpeedBoostPercent
+			);
 			const boostResult = await inventionItemBoost({
 				userID: BigInt(user.id),
 				inventionID: InventionID.MechaMortar,
 				duration: Math.min(
 					maxTripLength,
-					reduceNumByPercent(
-						quantity * timeToMixSingleItem,
-						inventionBoosts.mechaMortar.herbloreSpeedBoostPercent
-					)
+					Math.min(maxCanDo, options.quantity ?? Math.floor(maxTripLength / boostedTimeToMixSingleItem)) *
+						boostedTimeToMixSingleItem
 				)
 			});
 			if (boostResult.success) {
-				timeToMixSingleItem = reduceNumByPercent(
-					timeToMixSingleItem,
-					inventionBoosts.mechaMortar.herbloreSpeedBoostPercent
-				);
+				timeToMixSingleItem = boostedTimeToMixSingleItem;
 				boosts.push(
 					`${inventionBoosts.mechaMortar.herbloreSpeedBoostPercent}% boost for Mecha-Mortar (${boostResult.messages})`
 				);
