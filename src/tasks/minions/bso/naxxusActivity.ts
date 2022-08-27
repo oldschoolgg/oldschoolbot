@@ -1,5 +1,6 @@
+import { roll } from 'e';
 import { Task } from 'klasa';
-import { Bank } from 'oldschooljs';
+import { Bank, LootTable } from 'oldschooljs';
 
 import { Naxxus } from '../../../lib/minions/data/killableMonsters/custom/bosses/Naxxus';
 import { addMonsterXP } from '../../../lib/minions/functions';
@@ -19,6 +20,24 @@ export default class extends Task {
 
 		const loot = new Bank();
 		loot.add(Naxxus.table.kill(quantity, {}));
+
+		// Handle uniques => Don't give duplicates until log full
+		const uniqueChance = 157;
+		if (roll(uniqueChance)) {
+			const uniques = [
+				{ name: 'Dark crystal', weight: 3 },
+				{ name: 'Abyssal gem', weight: 2 },
+				{ name: 'Tattered tome', weight: 3 },
+				{ name: 'Spellbound ring', weight: 2 }
+			];
+			const cl = user.cl();
+			const filteredUniques = uniques.filter(u => !cl.has(u.name));
+			const uniqueTable = filteredUniques.length === 0 ? uniques : filteredUniques;
+			const lootTable = new LootTable();
+			uniqueTable.map(u => lootTable.add(u.name, 1, u.weight));
+
+			loot.add(lootTable.roll());
+		}
 
 		const xpStr = await addMonsterXP(user, {
 			monsterID: Naxxus.id,

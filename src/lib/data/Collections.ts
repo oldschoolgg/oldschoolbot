@@ -429,7 +429,10 @@ export const allCollectionLogs: ICollection = {
 			},
 			Naxxus: {
 				alias: Naxxus.aliases,
-				allItems: NaxxusLootTable.allItems,
+				allItems: [
+					...resolveItems(['Dark crystal', 'Abyssal gem', 'Tattered tome', 'Spellbound ring']),
+					...NaxxusLootTable.allItems
+				],
 				items: naxxusCL
 			},
 			Nex: {
