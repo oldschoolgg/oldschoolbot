@@ -150,11 +150,6 @@ export async function minionKillCommand(
 		['']
 	];
 
-	if (combatDuration === 0 && hits === 0 && DPS === 0 && monsterKillSpeed === 0 && calcQuantity === 0) {
-		boosts.push('NO combat, combatCalculator not Working');
-		noneCombat = true;
-	}
-
 	if (monster.isConverted) {
 		combatCalcInfo = await combatCalculator(monster, user, quantity);
 		[combatDuration, hits, DPS, monsterKillSpeed, calcQuantity, totalPrayerDosesUsed, potsUsed] = combatCalcInfo;

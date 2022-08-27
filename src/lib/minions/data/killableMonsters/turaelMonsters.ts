@@ -202,6 +202,7 @@ export const turaelMonsters: KillableMonster[] = [
 		emoji: '🐮',
 		wildy: false,
 		defaultCombatStyles: [SkillsEnum.Attack],
+		defaultStyleToUse: GearStat.AttackCrush,
 		bankTripTime: 10,
 		killsPerBankTrip: 28,
 		respawnTime: 1,

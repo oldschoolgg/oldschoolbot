@@ -1,9 +1,9 @@
-import { combats_enum } from '@prisma/client';
+import { attackStyles_enum, combats_enum } from '@prisma/client';
 import { randArrItem } from 'e';
 import { KlasaUser } from 'klasa';
+import { autoEquipCommand } from '../../../mahoji/lib/abstracted_commands/gearCommands';
 
-import { mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings';
-import { UserSettings } from '../../settings/types/UserSettings';
+import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings';
 import Ancient from '../../skilling/skills/combat/magic/castables/Ancient';
 import Standard from '../../skilling/skills/combat/magic/castables/Standard';
 import { KillableMonster } from '../types';
@@ -28,8 +28,7 @@ export default async function combatCalculator(
 	if (combatSkill === combats_enum.nocombat) throw "Nocombat shouldn't get here, Error in kill command.";
 
 	if (combatSkill === combats_enum.auto) {
-		const defaultMonsterStyle = monster.defaultStyleToUse;
-		const style = defaultMonsterStyle!;
+		const defaultMonsterStyle = monster.defaultStyleToUse!;
 
 		if (
 			defaultMonsterStyle === GearStat.AttackCrush ||
@@ -37,7 +36,7 @@ export default async function combatCalculator(
 			defaultMonsterStyle === GearStat.AttackStab
 		) {
 			combatSkill = combats_enum.melee;
-			//	await user.client.commands.get('autoequip')!.run(, [combatSkill, 'attack', style, null, true]);
+			await autoEquipCommand(user, 'melee', defaultMonsterStyle);
 			const weapon = user.getGear('melee').equippedWeapon();
 			if (weapon === null || weapon.weapon === null) {
 				throw 'No weapon is equipped.';
@@ -49,21 +48,24 @@ export default async function combatCalculator(
 					i++;
 					continue;
 				}
-				if (stance.attack_type!.toLowerCase() === style.toLowerCase()) {
+				if (defaultMonsterStyle.toLowerCase().includes(stance.attack_type!.toLowerCase())) {
 					styleArray.push(i);
 				}
 				i++;
 			}
 			// Random and store both attack_style and attack_type
-			await user.settings.update(
-				UserSettings.Minion.MeleeAttackStyle,
-				weapon.weapon!.stances[randArrItem(styleArray)].attack_style
-			);
+			const randomedStyle = randArrItem(styleArray);
+			await mahojiUserSettingsUpdate(user.id, {
+				minion_meleeAttackStyle: weapon.weapon!.stances[randomedStyle].attack_style as attackStyles_enum
+			});
+			await mahojiUserSettingsUpdate(user.id, {
+				minion_meleeAttackType: weapon.weapon!.stances[randomedStyle].attack_type
+			});
 		}
 
 		if (defaultMonsterStyle === GearStat.AttackRanged) {
 			combatSkill = combats_enum.ranged;
-			//		await user.client.commands.get('autoequip')!.run(msg, [combatSkill, 'attack', style, null, true]);
+			await autoEquipCommand(user, 'range', defaultMonsterStyle);
 			const weapon = user.getGear('range').equippedWeapon();
 			if (weapon === null || weapon.weapon === null) {
 				throw 'No weapon is equipped.';
@@ -74,16 +76,19 @@ export default async function combatCalculator(
 					continue;
 				}
 				if (stance.combat_style.toLowerCase() === 'rapid') {
-					await user.settings.update(UserSettings.Minion.RangedAttackStyle, stance.attack_style);
-					break;
+					await mahojiUserSettingsUpdate(user.id, {
+						minion_rangedAttackStyle: 'rapid' as attackStyles_enum
+					});
 				}
 			}
 		}
 
 		if (defaultMonsterStyle === GearStat.AttackMagic) {
 			combatSkill = combats_enum.magic;
-			//		await user.client.commands.get('autoequip')!.run(msg, [combatSkill, 'attack', style, null, true]);
-			await user.settings.update(UserSettings.Minion.MagicAttackStyle, 'standard');
+			await autoEquipCommand(user, 'mage', defaultMonsterStyle);
+			await mahojiUserSettingsUpdate(user.id, {
+				minion_magicAttackStyle: 'standard' as attackStyles_enum
+			});
 			// This needs to try check avilable runes somehow
 			let CombatSpells = castables.filter(
 				_spell =>
@@ -92,7 +97,9 @@ export default async function combatCalculator(
 					user.skillLevel(SkillsEnum.Magic) >= _spell.level
 			);
 			CombatSpells = CombatSpells.sort((a, b) => b.level - a.level);
-			await user.settings.update(UserSettings.Minion.CombatSpell, CombatSpells[0].name);
+			await mahojiUserSettingsUpdate(user.id, {
+				minion_combatSpell: CombatSpells[0].name
+			});
 		}
 
 		if (combatSkill === combats_enum.auto) throw 'No defaultMonsterStyle matched';

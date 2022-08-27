@@ -10,6 +10,7 @@ import { MAX_INT_JAVA, PATRON_ONLY_GEAR_SETUP, PerkTier } from '../../../lib/con
 import { defaultGear, GearSetup, GearSetupType, GearStat, globalPresets } from '../../../lib/gear';
 import { generateAllGearImage, generateGearImage } from '../../../lib/gear/functions/generateGearImage';
 import getUserBestGearFromBank from '../../../lib/minions/functions/getUserBestGearFromBank';
+import { pickStyleFromGearCommand } from '../../../lib/minions/functions/pickStyleFromGearCommand';
 import { unEquipAllCommand } from '../../../lib/minions/functions/unequipAllCommand';
 import { prisma } from '../../../lib/settings/prisma';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
@@ -98,6 +99,9 @@ export async function gearPresetEquipCommand(user: KlasaUser, gearSetup: string,
 		[`gear_${gearSetup}`]: newGear
 	});
 	const updatedGear = getUserGear(newUser)[gearSetup];
+	if ((newGear['2h'] !== null || newGear.weapon !== null) && gearSetup === ('melee' || 'range' || 'mage')) {
+		await pickStyleFromGearCommand(user, gearSetup, newGear['2h'] !== null ? getItem(newGear['2h'].item) : getItem(newGear.weapon?.item))
+	}
 	const image = await generateGearImage(
 		user,
 		updatedGear,
@@ -226,8 +230,10 @@ export async function gearEquipCommand(args: {
 	const { newUser } = await mahojiUserSettingsUpdate(user.id, {
 		[dbKey]: newGear
 	});
+	if ((newGear['2h'] !== null || newGear.weapon !== null) && setup === ('melee' || 'range' || 'mage')) {
+		await pickStyleFromGearCommand(klasaUser, setup, newGear['2h'] !== null ? getItem(newGear['2h'].item) : getItem(newGear.weapon?.item))
+	}
 	const image = await generateGearImage(user, newUser[dbKey] as GearSetup, setup, user.minion_equippedPet);
-
 	return {
 		content: `You equipped ${itemToEquip.name} in your ${toTitleCase(setup)} setup.`,
 		attachments: [{ buffer: image, fileName: 'osbot.png' }]
@@ -322,12 +328,17 @@ export async function autoEquipCommand(
 		[`gear_${gearSetup}`]: gearToEquip
 	});
 
+	if ((gearToEquip['2h'] !== null || gearToEquip.weapon !== null) && gearSetup === ('melee' || 'range' || 'mage')) {
+		await pickStyleFromGearCommand(user, gearSetup, gearToEquip['2h'] !== null ? getItem(gearToEquip['2h'].item) : getItem(gearToEquip.weapon?.item))
+	}
+	
 	const image = await generateGearImage(
 		user,
 		user.getGear(gearSetup),
 		gearSetup,
 		user.settings.get(UserSettings.Minion.EquippedPet)
 	);
+
 	return {
 		content: `You auto-equipped your best ${equipmentType} in your ${gearSetup} preset.`,
 		attachments: [{ fileName: 'gear.jpg', buffer: image }]
