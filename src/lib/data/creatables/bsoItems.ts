@@ -870,20 +870,38 @@ const bsoItems: Createable[] = [
 		}
 	},
 	{
-		name: 'Void staff',
+		name: 'Void staff (u)',
 		inputItems: resolveNameBank({
 			'Virtus wand': 1,
 			'Dark crystal': 1,
 			'Dark animica': 750
 		}),
 		outputItems: resolveNameBank({
-			'Void staff': 1
+			'Void staff (u)': 1
 		}),
 		requiredSkills: {
 			magic: 110,
 			runecraft: 110,
 			crafting: 110
 		}
+	},
+	{
+		name: 'Void staff',
+		inputItems: resolveNameBank({
+			'Void staff (u)': 1
+		}),
+		outputItems: resolveNameBank({
+			'Void staff': 1
+		})
+	},
+	{
+		name: 'Revert void staff',
+		inputItems: resolveNameBank({
+			'Void staff': 1
+		}),
+		outputItems: resolveNameBank({
+			'Void staff (u)': 1
+		})
 	},
 	{
 		name: 'Abyssal tome',

@@ -689,23 +689,42 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						[EquipmentSlot.Head]: 'Gorajan warrior helmet',
 						[EquipmentSlot.Ring]: 'Ignis ring(i)'
 					});
+					const wildy = new Gear({
+						[EquipmentSlot.Body]: "Karil's leathertop",
+						[EquipmentSlot.Legs]: "Karil's leatherskirt"
+					});
+
 					const supplies = new Bank()
 						.add('Enhanced saradomin brew', 30_000)
 						.add('Enhanced super restore', 10_000)
-						.add('Enhanced divine water', 20_000);
+						.add('Enhanced divine water', 20_000)
+						.add('Saradomin brew(4)', 10_000)
+						.add('Super restore(4)', 10_000)
+						.add('Stamina potion(4)', 10_000)
+						.add('Crystal acorn', 100)
+						.add('Grand crystal acorn', 100);
 
+					const currentBitfields = mahojiUser.bitfield ?? [];
 					await mahojiUserSettingsUpdate(user.id, {
 						gear_melee: melee.raw() as Prisma.InputJsonObject,
 						gear_mage: mage.raw() as Prisma.InputJsonObject,
+						gear_wildy: wildy.raw() as Prisma.InputJsonObject,
+						skills_strength: convertLVLtoXP(120),
+						skills_attack: convertLVLtoXP(120),
 						skills_ranged: convertLVLtoXP(120),
 						skills_prayer: convertLVLtoXP(120),
 						skills_hitpoints: convertLVLtoXP(120),
 						skills_defence: convertLVLtoXP(120),
 						skills_magic: convertLVLtoXP(120),
 						skills_slayer: convertLVLtoXP(120),
+						skills_herblore: convertLVLtoXP(120),
+						skills_hunter: convertLVLtoXP(120),
+						skills_farming: convertLVLtoXP(120),
+						QP: 5000,
 						bank: user.bank().add(supplies).bank,
-						GP: mahojiUser.GP + BigInt(100_000_000),
-						void_staff_charges: 10_000
+						GP: mahojiUser.GP + BigInt(1_000_000_000),
+						void_staff_charges: 10_000,
+						bitfield: [...new Set([...currentBitfields, BitField.HasScrollOfFarming])]
 					});
 					return 'Gave you gear & supplies for Naxxus';
 				}
