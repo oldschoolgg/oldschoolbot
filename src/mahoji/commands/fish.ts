@@ -98,13 +98,17 @@ export const fishCommand: OSBMahojiCommand = {
 		}
 		let maxTripLength = calcMaxTripLength(user, 'Fishing');
 
+		const boostedTimePerFish = reduceNumByPercent(scaledTimePerFish, inventionBoosts.mechaRod.speedBoostPercent);
 		const res = await inventionItemBoost({
 			userID: BigInt(user.id),
 			inventionID: InventionID.MechaRod,
-			duration: Math.min(maxTripLength, options.quantity ? options.quantity * scaledTimePerFish : maxTripLength)
+			duration: Math.min(
+				maxTripLength,
+				options.quantity ?? Math.floor(maxTripLength / boostedTimePerFish) * boostedTimePerFish
+			)
 		});
 		if (res.success) {
-			scaledTimePerFish = reduceNumByPercent(scaledTimePerFish, inventionBoosts.mechaRod.speedBoostPercent);
+			scaledTimePerFish = boostedTimePerFish;
 			boosts.push(`${inventionBoosts.mechaRod.speedBoostPercent}% faster for Mecha rod (${res.messages})`);
 		}
 
