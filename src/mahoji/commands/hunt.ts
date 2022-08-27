@@ -178,16 +178,20 @@ export const huntCommand: OSBMahojiCommand = {
 
 		const maxTripLength = calcMaxTripLength(user, 'Hunter');
 		if (creature.huntTechnique === HunterTechniqueEnum.BoxTrapping) {
+			const boostedActionTime = reduceNumByPercent(timePerCatch, inventionBoosts.quickTrap.boxTrapBoostPercent);
 			const boostRes = await inventionItemBoost({
 				userID: user.id,
 				inventionID: InventionID.QuickTrap,
-				duration: Math.min(maxTripLength, options.quantity ? options.quantity * timePerCatch : maxTripLength)
+				duration: Math.min(
+					maxTripLength,
+					(options.quantity ?? Math.floor(maxTripLength / boostedActionTime)) * boostedActionTime
+				)
 			});
 			if (boostRes.success) {
 				boosts.push(
 					`${inventionBoosts.quickTrap.boxTrapBoostPercent}% boost for Quick-Trap invention (${boostRes.messages})`
 				);
-				timePerCatch = reduceNumByPercent(timePerCatch, inventionBoosts.quickTrap.boxTrapBoostPercent);
+				timePerCatch = boostedActionTime;
 			}
 		}
 
