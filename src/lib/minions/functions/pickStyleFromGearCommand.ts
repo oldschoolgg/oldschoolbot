@@ -1,28 +1,32 @@
-import { Item } from 'oldschooljs/dist/meta/types';
+import { randArrItem } from 'e';
 import { KlasaUser } from 'klasa';
+import { Item } from 'oldschooljs/dist/meta/types';
 
 import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings';
 import { attackStyles_enum } from '.prisma/client';
-import { randArrItem } from 'e';
 
 export async function pickStyleFromGearCommand(
 	user: KlasaUser,
 	_setup: 'melee' | 'range' | 'mage',
-	_newWeapon: Item | null,
+	_newWeapon: Item | null
 ) {
 	if (user.minionIsBusy) {
 		return "You can't change your combat style in the middle of a trip.";
 	}
 	const mahojiUser = await mahojiUsersSettingsFetch(user.id);
 	let i = 0;
-	let styleArray:number[] = [];
+	let styleArray: number[] = [];
 
 	if (_setup === 'melee') {
 		const oldAttackStyle = mahojiUser.minion_meleeAttackStyle;
 		const oldAttackType = mahojiUser.minion_meleeAttackType;
 		if (_newWeapon === null || _newWeapon.weapon === null || !_newWeapon.weapon) {
-			//Unarmed is always crush
-			if (oldAttackStyle === null || oldAttackStyle !== (attackStyles_enum.accurate || attackStyles_enum.aggressive || attackStyles_enum.defensive)) {
+			// Unarmed is always crush
+			if (
+				oldAttackStyle === null ||
+				oldAttackStyle !==
+					(attackStyles_enum.accurate || attackStyles_enum.aggressive || attackStyles_enum.defensive)
+			) {
 				await mahojiUserSettingsUpdate(user.id, {
 					minion_meleeAttackStyle: 'accurate' as attackStyles_enum
 				});
@@ -30,11 +34,11 @@ export async function pickStyleFromGearCommand(
 			await mahojiUserSettingsUpdate(user.id, {
 				minion_meleeAttackType: 'crush'
 			});
-			return ``;
+			return '';
 		}
 		for (let stance of _newWeapon.weapon.stances) {
-			if (stance === null || (oldAttackStyle !== stance.attack_style)) {
-				i++
+			if (stance === null || oldAttackStyle !== stance.attack_style) {
+				i++;
 				continue;
 			}
 			if (oldAttackType !== stance.attack_type) {
@@ -42,8 +46,8 @@ export async function pickStyleFromGearCommand(
 				i++;
 				continue;
 			}
-			//Matched
-			return ``;
+			// Matched
+			return '';
 		}
 		if (styleArray.length !== 0) {
 			const randomedStyle = randArrItem(styleArray);
@@ -53,8 +57,7 @@ export async function pickStyleFromGearCommand(
 			await mahojiUserSettingsUpdate(user.id, {
 				minion_meleeAttackType: _newWeapon.weapon.stances[randomedStyle].attack_type
 			});
-		}
-		else {
+		} else {
 			await mahojiUserSettingsUpdate(user.id, {
 				minion_meleeAttackStyle: _newWeapon.weapon.stances[0].attack_style as attackStyles_enum
 			});
@@ -62,7 +65,7 @@ export async function pickStyleFromGearCommand(
 				minion_meleeAttackType: _newWeapon.weapon.stances[0].attack_type
 			});
 		}
-		return ``;
+		return '';
 	}
 
 	if (_setup === 'range') {
@@ -83,21 +86,20 @@ export async function pickStyleFromGearCommand(
 				i++;
 				continue;
 			}
-			//Matched
-			return ``;
+			// Matched
+			return '';
 		}
 		if (styleArray.length !== 0) {
 			const randomedStyle = randArrItem(styleArray);
 			await mahojiUserSettingsUpdate(user.id, {
 				minion_rangedAttackStyle: _newWeapon.weapon!.stances[randomedStyle].attack_style as attackStyles_enum
 			});
-		}
-		else {
+		} else {
 			await mahojiUserSettingsUpdate(user.id, {
 				minion_rangedAttackStyle: _newWeapon.weapon.stances[0].attack_style as attackStyles_enum
 			});
 		}
-		return ``;
+		return '';
 	}
 
 	if (_setup === 'mage') {
@@ -106,9 +108,9 @@ export async function pickStyleFromGearCommand(
 			if (oldAttackStyle === null) {
 				await mahojiUserSettingsUpdate(user.id, {
 					minion_magicAttackStyle: 'standard' as attackStyles_enum
-				});						
+				});
 			}
-			return ``;
+			return '';
 		}
 		if (
 			_newWeapon.name.toLowerCase() === 'trident of the seas' ||
@@ -126,28 +128,26 @@ export async function pickStyleFromGearCommand(
 					i++;
 					continue;
 				}
-				//Matched
-				return ``;
-
+				// Matched
+				return '';
 			}
 			if (styleArray.length !== 0) {
 				const randomedStyle = randArrItem(styleArray);
 				await mahojiUserSettingsUpdate(user.id, {
 					minion_magicAttackStyle: _newWeapon.weapon!.stances[randomedStyle].attack_style as attackStyles_enum
 				});
-			}
-			else {
+			} else {
 				await mahojiUserSettingsUpdate(user.id, {
 					minion_magicAttackStyle: _newWeapon.weapon.stances[0].attack_style as attackStyles_enum
 				});
 			}
-			return ``;
+			return '';
 		}
 		if (oldAttackStyle !== 'standard' && oldAttackStyle !== 'defensive') {
 			await mahojiUserSettingsUpdate(user.id, {
 				minion_magicAttackStyle: 'standard' as attackStyles_enum
-			});	
+			});
 		}
-		return ``;
+		return '';
 	}
 }

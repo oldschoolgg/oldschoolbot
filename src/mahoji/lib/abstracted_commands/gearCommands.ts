@@ -100,7 +100,11 @@ export async function gearPresetEquipCommand(user: KlasaUser, gearSetup: string,
 	});
 	const updatedGear = getUserGear(newUser)[gearSetup];
 	if ((newGear['2h'] !== null || newGear.weapon !== null) && gearSetup === ('melee' || 'range' || 'mage')) {
-		await pickStyleFromGearCommand(user, gearSetup, newGear['2h'] !== null ? getItem(newGear['2h'].item) : getItem(newGear.weapon?.item))
+		await pickStyleFromGearCommand(
+			user,
+			gearSetup,
+			newGear['2h'] !== null ? getItem(newGear['2h'].item) : getItem(newGear.weapon?.item)
+		);
 	}
 	const image = await generateGearImage(
 		user,
@@ -231,7 +235,11 @@ export async function gearEquipCommand(args: {
 		[dbKey]: newGear
 	});
 	if ((newGear['2h'] !== null || newGear.weapon !== null) && setup === ('melee' || 'range' || 'mage')) {
-		await pickStyleFromGearCommand(klasaUser, setup, newGear['2h'] !== null ? getItem(newGear['2h'].item) : getItem(newGear.weapon?.item))
+		await pickStyleFromGearCommand(
+			klasaUser,
+			setup,
+			newGear['2h'] !== null ? getItem(newGear['2h'].item) : getItem(newGear.weapon?.item)
+		);
 	}
 	const image = await generateGearImage(user, newUser[dbKey] as GearSetup, setup, user.minion_equippedPet);
 	return {
@@ -329,9 +337,13 @@ export async function autoEquipCommand(
 	});
 
 	if ((gearToEquip['2h'] !== null || gearToEquip.weapon !== null) && gearSetup === ('melee' || 'range' || 'mage')) {
-		await pickStyleFromGearCommand(user, gearSetup, gearToEquip['2h'] !== null ? getItem(gearToEquip['2h'].item) : getItem(gearToEquip.weapon?.item))
+		await pickStyleFromGearCommand(
+			user,
+			gearSetup,
+			gearToEquip['2h'] !== null ? getItem(gearToEquip['2h'].item) : getItem(gearToEquip.weapon?.item)
+		);
 	}
-	
+
 	const image = await generateGearImage(
 		user,
 		user.getGear(gearSetup),

@@ -1,8 +1,8 @@
 import { attackStyles_enum, combats_enum } from '@prisma/client';
 import { randArrItem } from 'e';
 import { KlasaUser } from 'klasa';
-import { autoEquipCommand } from '../../../mahoji/lib/abstracted_commands/gearCommands';
 
+import { autoEquipCommand } from '../../../mahoji/lib/abstracted_commands/gearCommands';
 import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings';
 import Ancient from '../../skilling/skills/combat/magic/castables/Ancient';
 import Standard from '../../skilling/skills/combat/magic/castables/Standard';
