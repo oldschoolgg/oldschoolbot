@@ -104,7 +104,7 @@ export const fishCommand: OSBMahojiCommand = {
 			inventionID: InventionID.MechaRod,
 			duration: Math.min(
 				maxTripLength,
-				options.quantity ?? Math.floor(maxTripLength / boostedTimePerFish) * boostedTimePerFish
+				(options.quantity ?? Math.floor(maxTripLength / boostedTimePerFish)) * boostedTimePerFish
 			)
 		});
 		if (res.success) {
