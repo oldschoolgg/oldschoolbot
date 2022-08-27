@@ -53,13 +53,15 @@ export const degradeableItems: DegradeableItem[] = [
 	{
 		item: getOSItem('Void staff'),
 		settingsKey: 'void_staff_charges',
-		itemsToRefundOnBreak: new Bank().add('Void staff'),
+		itemsToRefundOnBreak: new Bank().add('Void staff (u)'),
 		setup: 'mage',
 		aliases: ['void staff'],
 		chargeInput: {
 			cost: new Bank().add('Elder rune', 5),
 			charges: 1
 		},
+		convertOnCharge: true,
+		unchargedItem: getOSItem('Void staff (u)'),
 		charges: (_totalHP: number, duration: number, user: KlasaUser) => {
 			const mageGear = user.getGear('mage');
 			const minutesDuration = Math.ceil(duration / Time.Minute);

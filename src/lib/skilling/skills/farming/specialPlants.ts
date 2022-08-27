@@ -814,10 +814,10 @@ const specialPlants: Plant[] = [
 		outputCrop: itemID('Crystal shard'),
 		variableYield: true,
 		variableOutputAmount: [
-			[null, 10, 30],
-			['compost', 10, 20],
-			['supercompost', 15, 20],
-			['ultracompost', 20, 25]
+			[null, 8, 10],
+			['compost', 10, 12],
+			['supercompost', 12, 14],
+			['ultracompost', 14, 16]
 		],
 		treeWoodcuttingLevel: 1,
 		name: 'Crystal tree',
@@ -829,7 +829,7 @@ const specialPlants: Plant[] = [
 		chance1: 0,
 		chance99: 0,
 		chanceOfDeath: 0,
-		needsChopForHarvest: true,
+		needsChopForHarvest: false,
 		fixedOutput: false,
 		givesLogs: false,
 		givesCrops: true,
@@ -1046,7 +1046,7 @@ const specialPlants: Plant[] = [
 			['ultracompost', 40, 50]
 		],
 		treeWoodcuttingLevel: 1,
-		name: 'Grand Crystal tree',
+		name: 'Grand crystal tree',
 		aliases: ['grand crystal tree', 'grand crystal', 'grand'],
 		petChance: 9000,
 		seedType: 'crystal',
@@ -1055,7 +1055,7 @@ const specialPlants: Plant[] = [
 		chance1: 0,
 		chance99: 0,
 		chanceOfDeath: 0,
-		needsChopForHarvest: true,
+		needsChopForHarvest: false,
 		fixedOutput: false,
 		givesLogs: false,
 		givesCrops: true,

@@ -2589,13 +2589,13 @@ setCustomItem(
 	{ customItemData: { isSuperUntradeable: true, cantDropFromMysteryBoxes: true } },
 	1
 );
-setCustomItem(70_001, 'Grimy korulsi', 'Coal', { tradeable: true }, 100_000);
-setCustomItem(70_002, 'Korulsi', 'Coal', { tradeable: true }, 100_000);
-setCustomItem(70_003, 'Korulsi seed', 'Coal', { tradeable: true }, 50_000);
-setCustomItem(70_004, 'Enhanced saradomin brew', 'Coal', { tradeable: true }, 10_000);
-setCustomItem(70_005, 'Enhanced super restore', 'Coal', { tradeable: true }, 10_000);
-setCustomItem(70_006, 'Enhanced stamina potion', 'Coal', { tradeable: true }, 10_000);
-setCustomItem(70_007, 'Enhanced divine water', 'Coal', { tradeable: true }, 10_000);
+setCustomItem(70_001, 'Grimy korulsi', 'Coal', {}, 100_000);
+setCustomItem(70_002, 'Korulsi', 'Coal', {}, 100_000);
+setCustomItem(70_003, 'Korulsi seed', 'Coal', {}, 50_000);
+setCustomItem(70_004, 'Enhanced saradomin brew', 'Coal', {}, 10_000);
+setCustomItem(70_005, 'Enhanced super restore', 'Coal', {}, 10_000);
+setCustomItem(70_006, 'Enhanced stamina potion', 'Coal', {}, 10_000);
+setCustomItem(70_007, 'Enhanced divine water', 'Coal', {}, 10_000);
 setCustomItem(
 	70_008,
 	'Dark crystal',
@@ -2607,6 +2607,40 @@ setCustomItem(
 		}
 	},
 	15_000_000
+);
+setCustomItem(
+	70_009,
+	'Void staff (u)',
+	'Master wand',
+	{
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 200,
+			attack_ranged: 0,
+
+			defence_stab: 0,
+			defence_slash: 0,
+			defence_crush: 0,
+			defence_magic: 20,
+			defence_ranged: 0,
+
+			melee_strength: 0,
+			ranged_strength: 0,
+			magic_damage: 15,
+			prayer: 0,
+			slot: EquipmentSlot.Weapon,
+			requirements: null
+		},
+		highalch: 50_000_000,
+		tradeable: true,
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	50_000_000
 );
 setCustomItem(
 	70_010,
@@ -2647,8 +2681,7 @@ setCustomItem(
 	'Runite ore',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: false
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	25_000
@@ -2776,4 +2809,4 @@ setCustomItem(
 	},
 	10_000_000
 );
-setCustomItem(70_018, 'Grand crystal acorn', 'Coal', { tradeable: true }, 6000);
+setCustomItem(70_018, 'Grand crystal acorn', 'Coal', {}, 6000);
