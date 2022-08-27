@@ -359,7 +359,7 @@ export const Inventions: readonly Invention[] = [
 		extraDescription: () => {
 			let str = '';
 			for (const boost of inventionBoosts.abyssalAmulet.boosts) {
-				str += `**${boost.boost}%** faster Runecrafting for the following runes: ${boost.runes.join(',')}\n`;
+				str += `**${boost.boost}%** faster Runecrafting for the following runes: ${boost.runes.join(', ')}\n`;
 			}
 			return str;
 		}
