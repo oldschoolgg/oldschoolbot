@@ -124,7 +124,10 @@ export const mineCommand: OSBMahojiCommand = {
 				inventionID: InventionID.MechaMortar,
 				duration: Math.min(
 					maxTripLength,
-					options.quantity ? options.quantity * timeToMixSingleItem : maxTripLength
+					reduceNumByPercent(
+						quantity * timeToMixSingleItem,
+						inventionBoosts.mechaMortar.herbloreSpeedBoostPercent
+					)
 				)
 			});
 			if (boostResult.success) {
@@ -135,6 +138,7 @@ export const mineCommand: OSBMahojiCommand = {
 				boosts.push(
 					`${inventionBoosts.mechaMortar.herbloreSpeedBoostPercent}% boost for Mecha-Mortar (${boostResult.messages})`
 				);
+				if (!options.quantity) quantity = Math.min(maxCanDo, Math.floor(maxTripLength / timeToMixSingleItem));
 			}
 		}
 		const duration = quantity * timeToMixSingleItem;
