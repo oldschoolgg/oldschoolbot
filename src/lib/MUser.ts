@@ -1,6 +1,6 @@
 import { userMention } from '@discordjs/builders';
 import { Prisma, User, xp_gains_skill_enum } from '@prisma/client';
-import { sumArr, uniqueArr } from 'e';
+import { objectEntries, sumArr, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
@@ -19,7 +19,7 @@ import { AddXpParams, BlowpipeData } from './minions/types';
 import { SkillsEnum } from './skilling/types';
 import { BankSortMethod } from './sorts';
 import { Gear } from './structures/Gear';
-import { ItemBank } from './types';
+import { ItemBank, Skills } from './types';
 import { addItemToBank, assert, getSkillsOfMahojiUser, itemNameFromID, percentChance } from './util';
 import { determineRunes } from './util/determineRunes';
 import getOSItem from './util/getOSItem';
@@ -167,6 +167,10 @@ export class MUserClass {
 
 	get mention() {
 		return userMention(this.id);
+	}
+
+	get usernameOrUnknown() {
+		return usernameCache.get(this.id) ?? '(Unknown)';
 	}
 
 	get usernameOrMention() {
@@ -449,6 +453,17 @@ export class MUserClass {
 			updates.temp_cl = new Bank(this.user.temp_cl as ItemBank).add(items).bank;
 		}
 		return updates;
+	}
+
+	hasSkillReqs(requirements: Skills) {
+		for (const [skillName, level] of objectEntries(requirements)) {
+			if ((skillName as string) === 'combat') {
+				if (this.combatLevel < level!) return false;
+			} else if (this.skillLevel(skillName) < level!) {
+				return false;
+			}
+		}
+		return true;
 	}
 }
 declare global {

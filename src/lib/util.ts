@@ -735,7 +735,7 @@ export function validateItemBankAndThrow(input: any): input is ItemBank {
 }
 
 export function hasSkillReqs(user: MUser, reqs: Skills): [boolean, string | null] {
-	const hasReqs = skillsMeetRequirements(user.skillsAsLevels, reqs);
+	const hasReqs = user.hasSkillReqs(reqs);
 	if (!hasReqs) {
 		return [false, formatSkillRequirements(reqs)];
 	}

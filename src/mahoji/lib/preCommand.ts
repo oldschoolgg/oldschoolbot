@@ -2,7 +2,7 @@ import { TextChannel } from 'discord.js';
 import { APIUser } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
-import { BitField } from '../../lib/constants';
+import { BitField, usernameCache } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
 import { removeMarkdownEmojis } from '../../lib/util';
 import { mUserFetch } from '../mahojiSettings';
@@ -30,6 +30,7 @@ export async function syncNewUserUsername(userID: string, username: string) {
 			}
 		});
 	}
+	usernameCache.set(userID, newUsername);
 }
 
 export async function preCommand({

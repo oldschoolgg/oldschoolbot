@@ -19,7 +19,7 @@ import { getMinigameScore } from '../settings/minigames';
 import { SkillsEnum } from '../skilling/types';
 import { Gear } from '../structures/Gear';
 import { Skills } from '../types';
-import { randomVariation, skillsMeetRequirements } from '../util';
+import { randomVariation } from '../util';
 import getOSItem from '../util/getOSItem';
 
 export const bareMinStats: Skills = {
@@ -35,7 +35,7 @@ export const SANGUINESTI_CHARGES_PER_COX = 150;
 export const TENTACLE_CHARGES_PER_COX = 200;
 
 export function hasMinRaidsRequirements(user: MUser) {
-	return skillsMeetRequirements(user.skillsAsXP, bareMinStats);
+	return user.hasSkillReqs(bareMinStats);
 }
 
 function kcPointsEffect(kc: number) {

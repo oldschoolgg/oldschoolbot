@@ -5,7 +5,7 @@ import { Bank } from 'oldschooljs';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, formatSkillRequirements, itemID, skillsMeetRequirements, stringMatches } from '../../lib/util';
+import { formatDuration, formatSkillRequirements, itemID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import resolveItems from '../../lib/util/resolveItems';
@@ -88,7 +88,7 @@ export const smeltingCommand: OSBMahojiCommand = {
 				[SkillsEnum.Smithing]: 20,
 				[SkillsEnum.Thieving]: 13
 			};
-			if (!skillsMeetRequirements(user.skillsAsXP, requiredSkills)) {
+			if (!user.hasSkillReqs(requiredSkills)) {
 				return `You don't have the required stats to use the Blast Furnace, you need: ${formatSkillRequirements(
 					requiredSkills
 				)}`;

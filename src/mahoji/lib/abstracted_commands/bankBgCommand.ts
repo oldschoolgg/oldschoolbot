@@ -2,7 +2,7 @@ import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommand
 import { Bank } from 'oldschooljs';
 
 import { BitField } from '../../../lib/constants';
-import { formatSkillRequirements, skillsMeetRequirements, stringMatches, toKMB } from '../../../lib/util';
+import { formatSkillRequirements, stringMatches, toKMB } from '../../../lib/util';
 import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
 import resolveItems from '../../../lib/util/resolveItems';
 import BankImageTask from '../../../tasks/bankImage';
@@ -37,7 +37,7 @@ export async function bankBgCommand(interaction: SlashCommandInteraction, user: 
 	}
 
 	if (selectedImage.skillsNeeded) {
-		const meets = skillsMeetRequirements(user.skillsAsXP, selectedImage.skillsNeeded);
+		const meets = user.hasSkillReqs(selectedImage.skillsNeeded);
 		if (!meets) {
 			return `You don't meet the skill requirements to use this background, you need: ${formatSkillRequirements(
 				selectedImage.skillsNeeded

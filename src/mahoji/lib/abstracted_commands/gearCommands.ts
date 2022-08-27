@@ -12,15 +12,7 @@ import getUserBestGearFromBank from '../../../lib/minions/functions/getUserBestG
 import { unEquipAllCommand } from '../../../lib/minions/functions/unequipAllCommand';
 import { prisma } from '../../../lib/settings/prisma';
 import { Gear } from '../../../lib/structures/Gear';
-import {
-	assert,
-	formatSkillRequirements,
-	getSkillsOfMahojiUser,
-	isValidGearSetup,
-	skillsMeetRequirements,
-	stringMatches,
-	toTitleCase
-} from '../../../lib/util';
+import { assert, formatSkillRequirements, isValidGearSetup, stringMatches, toTitleCase } from '../../../lib/util';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
 import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
@@ -160,7 +152,7 @@ export async function gearEquipCommand(args: {
 	}
 
 	if (itemToEquip.equipment.requirements) {
-		if (!skillsMeetRequirements(getSkillsOfMahojiUser(user.user, true), itemToEquip.equipment.requirements)) {
+		if (!user.hasSkillReqs(itemToEquip.equipment.requirements)) {
 			return `You can't equip a ${
 				itemToEquip.name
 			} because you don't have the required stats: ${formatSkillRequirements(

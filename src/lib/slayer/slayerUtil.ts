@@ -9,7 +9,7 @@ import { KillableMonster } from '../minions/types';
 import { prisma } from '../settings/prisma';
 import { getNewUser } from '../settings/settings';
 import { SkillsEnum } from '../skilling/types';
-import { bankHasItem, roll, skillsMeetRequirements, stringMatches } from '../util';
+import { bankHasItem, roll, stringMatches } from '../util';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
 import { autoslayModes } from './constants';
@@ -131,7 +131,7 @@ export function userCanUseTask(
 	if (task.combatLevel && task.combatLevel > user.combatLevel) return false;
 	if (task.questPoints && task.questPoints > user.QP) return false;
 	if (task.slayerLevel && task.slayerLevel > user.skillLevel(SkillsEnum.Slayer)) return false;
-	if (task.levelRequirements && !skillsMeetRequirements(user.skillsAsXP, task.levelRequirements)) return false;
+	if (task.levelRequirements && !user.hasSkillReqs(task.levelRequirements)) return false;
 	const myBlockList = user.user.slayer_blocked_ids ?? [];
 	if (myBlockList.includes(task.monster.id)) return false;
 	const myUnlocks = user.user.slayer_unlocks;

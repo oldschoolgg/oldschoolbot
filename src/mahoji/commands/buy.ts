@@ -7,7 +7,7 @@ import { leagueBuyables } from '../../lib/data/leaguesBuyables';
 import { kittens } from '../../lib/growablePets';
 import { gotFavour } from '../../lib/minions/data/kourendFavour';
 import { getMinigameScore, Minigames } from '../../lib/settings/minigames';
-import { formatSkillRequirements, itemNameFromID, skillsMeetRequirements, stringMatches } from '../../lib/util';
+import { formatSkillRequirements, itemNameFromID, stringMatches } from '../../lib/util';
 import { mahojiChatHead } from '../../lib/util/chatHeadImage';
 import getOSItem from '../../lib/util/getOSItem';
 import { leaguesBuyCommand } from '../lib/abstracted_commands/leaguesBuyCommand';
@@ -114,7 +114,7 @@ export const buyCommand: OSBMahojiCommand = {
 			}
 		}
 
-		if (buyable.skillsNeeded && !skillsMeetRequirements(user.skillsAsXP, buyable.skillsNeeded)) {
+		if (buyable.skillsNeeded && !user.hasSkillReqs(buyable.skillsNeeded)) {
 			return `You don't have the required stats to buy this item. You need ${formatSkillRequirements(
 				buyable.skillsNeeded
 			)}.`;

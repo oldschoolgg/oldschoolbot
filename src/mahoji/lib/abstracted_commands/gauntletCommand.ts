@@ -3,7 +3,7 @@ import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
 import { BitField } from '../../../lib/constants';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { GauntletOptions } from '../../../lib/types/minions';
-import { formatDuration, formatSkillRequirements, skillsMeetRequirements, toTitleCase } from '../../../lib/util';
+import { formatDuration, formatSkillRequirements, toTitleCase } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
@@ -54,7 +54,7 @@ export async function gauntletCommand(user: MUser, channelID: bigint, type: 'cor
 	const readableName = `${toTitleCase(type)} Gauntlet`;
 	const requiredSkills = type === 'corrupted' ? corruptedRequirements : standardRequirements;
 
-	if (!skillsMeetRequirements(user.skillsAsLevels, requiredSkills)) {
+	if (!user.hasSkillReqs(requiredSkills)) {
 		return `You don't have the required stats to do the ${readableName}, you need: ${formatSkillRequirements(
 			requiredSkills
 		)}.`;

@@ -171,7 +171,7 @@ export const askCommand: OSBMahojiCommand = {
 				(
 					await makeBankImage({
 						bank,
-						title: `${klasaUser.usernameOrMention}'s Bank`,
+						title: `${klasaUser.usernameOrUnknown}'s Bank`,
 						flags,
 						user: klasaUser,
 						mahojiFlags
