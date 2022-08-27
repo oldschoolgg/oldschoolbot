@@ -72,6 +72,12 @@ export const NaxxusLootTable = new LootTable()
 	.tertiary(10, 'Korulsi seed')
 	.tertiary(25, 'Grand crystal acorn');
 
+export const NaxxusLootTableFinishable = NaxxusLootTable.clone()
+	.tertiary(500, 'Spellbound ring')
+	.tertiary(500, 'Abyssal gem')
+	.tertiary(750, 'Tattered tome')
+	.tertiary(750, 'Dark crystal');
+
 export const NAXXUS_HP = 3900;
 
 export const Naxxus: KillableMonster = {
@@ -80,7 +86,7 @@ export const Naxxus: KillableMonster = {
 	aliases: ['nax'],
 	timeToFinish: Time.Minute * 30,
 	notifyDrops: resolveItems(['Dark crystal', 'Abyssal gem', 'Tattered tome', 'Spellbound ring']),
-	table: makeKillTable(NaxxusLootTable),
+	table: makeKillTable(NaxxusLootTableFinishable),
 	emoji: '',
 	wildy: false,
 	difficultyRating: 10,
@@ -108,7 +114,7 @@ export const Naxxus: KillableMonster = {
 	}
 };
 
-setCustomMonster(Naxxus.id, 'Naxxus', NaxxusLootTable, Monsters.GeneralGraardor, {
+setCustomMonster(Naxxus.id, 'Naxxus', NaxxusLootTableFinishable, Monsters.GeneralGraardor, {
 	id: Naxxus.id,
 	name: 'Naxxus',
 	aliases: ['naxxus', 'naxx']

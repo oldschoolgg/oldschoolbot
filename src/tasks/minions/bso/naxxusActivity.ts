@@ -2,7 +2,7 @@ import { roll } from 'e';
 import { Task } from 'klasa';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { Naxxus } from '../../../lib/minions/data/killableMonsters/custom/bosses/Naxxus';
+import { Naxxus, NaxxusLootTable } from '../../../lib/minions/data/killableMonsters/custom/bosses/Naxxus';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import { trackLoot } from '../../../lib/settings/prisma';
@@ -19,7 +19,7 @@ export default class extends Task {
 		const user = await this.client.fetchUser(userID);
 
 		const loot = new Bank();
-		loot.add(Naxxus.table.kill(quantity, {}));
+		loot.add(NaxxusLootTable.roll(quantity));
 
 		// Handle uniques => Don't give duplicates until log full
 		const uniqueChance = 150;
