@@ -695,10 +695,10 @@ enum xp_gains_skill_enum {
 }
 
 enum combats_enum {
+  auto
 	melee
 	ranged
 	magic
-	auto
 	nocombat
 }
 

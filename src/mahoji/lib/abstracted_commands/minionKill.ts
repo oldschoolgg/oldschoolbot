@@ -231,7 +231,7 @@ export async function minionKillCommand(
 	}
 
 	let noneCombatDuration = noneCombatTimeToFinish * quantity;
-	const mahojiUser = await mahojiUsersSettingsFetch(user.id, { minion_combatSkill: true });
+	const mahojiUser = await mahojiUsersSettingsFetch(user.id);
 	const combatSkill = mahojiUser.minion_combatSkill;
 
 	if (noneCombatDuration * 2 < combatDuration || combatSkill === combats_enum.nocombat || noneCombat) {
@@ -421,18 +421,18 @@ export async function minionKillCommand(
 			changeType: 'cost'
 		});
 	}
-
+	
 	if (!noneCombat) {
 		if (
-			user.settings.get(UserSettings.Minion.CombatSkill) === combats_enum.ranged ||
-			(user.settings.get(UserSettings.Minion.CombatSkill) === combats_enum.auto &&
+			combatSkill === combats_enum.ranged ||
+			(combatSkill === combats_enum.auto &&
 				monster.defaultStyleToUse === GearStat.AttackRanged)
 		) {
 			messages.push(`Removed ${await removeAmmoFromUser(user, hits)}`);
 		}
 		if (
-			user.settings.get(UserSettings.Minion.CombatSkill) === combats_enum.magic ||
-			(user.settings.get(UserSettings.Minion.CombatSkill) === combats_enum.auto &&
+			combatSkill === combats_enum.magic ||
+			(combatSkill === combats_enum.auto &&
 				monster.defaultStyleToUse === GearStat.AttackMagic)
 		) {
 			messages.push(`Removed ${await removeRunesFromUser(user, hits)}`);

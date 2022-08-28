@@ -31,7 +31,7 @@ export async function trainCommand(
 		}
 	}
 
-	if (!_attackStyleAndType || _combatSpell) {
+	if (!_attackStyleAndType || !_combatSpell) {
 		return `${user.minionName} changed main combat skill from ${oldCombatSkill} to ${_combatSkill}.`;
 	}
 
@@ -83,7 +83,7 @@ export async function trainCommand(
 				_spell => _spell.category.toLowerCase() === 'combat' && _spell.baseMaxHit
 			);
 
-			const Spell = CombatSpells.find(_spell => stringMatches(_spell.name.toLowerCase(), _combatSpell));
+			const Spell = CombatSpells.find(_spell => stringMatches(_spell.name.toLowerCase(), _combatSpell.toLowerCase()));
 
 			if (!Spell) {
 				return `The combat spell \`${_combatSpell}\` dosen't match any of the available combat spells. The following combat spells is possible: ${CombatSpells.map(
@@ -95,7 +95,7 @@ export async function trainCommand(
 			});
 		}
 
-		return `${user.minionName} changed main combat skill from ${oldCombatSkill} to ${_combatSkill} ${
+		return `${user.minionName} changed main combat skill from ${oldCombatSkill} to ${_combatSkill}, attack style to ${attackStyle} ${
 			_combatSpell ? `and combat spell to ${_combatSpell}` : ''
 		}.`;
 	}

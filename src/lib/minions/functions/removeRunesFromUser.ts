@@ -1,6 +1,7 @@
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
+import { mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings';
 
 import { UserSettings } from '../../settings/types/UserSettings';
 import Magic from '../../skilling/skills/combat/magic/magic';
@@ -11,7 +12,8 @@ import { SkillsEnum } from './../../skilling/types';
 export default async function removeRunesFromUser(user: KlasaUser, casts: number): Promise<string> {
 	await user.settings.sync(true);
 	// Check if tridents are used and consume runes depending on trident if so in future
-	const castable = user.settings.get(UserSettings.Minion.CombatSpell);
+	const mUser = await mahojiUsersSettingsFetch(user.id);
+	const castable = mUser.minion_combatSpell;
 	if (!castable) throw 'No combat spell been set.';
 	const castableItem = Magic.Castables.find(item => stringMatches(item.name, castable));
 	if (!castableItem) {
