@@ -64,10 +64,11 @@ export const inventionBoosts = {
 	abyssalAmulet: {
 		boosts: [
 			{ runes: ['Fire rune', 'Water rune', 'Air rune', 'Earth rune', 'Body rune', 'Mind rune'], boost: 65 },
-			{ runes: ['Mist rune', 'Mud rune', 'Lava rune', 'Steam rune', 'Dust rune', 'Smoke rune'], boost: 20 },
-			{ runes: ['Cosmic rune', 'Astral rune', 'Soul rune', 'Law rune', 'Nature rune'], boost: 70 },
-			{ runes: ['Chaos rune', 'Death rune'], boost: 75 },
-			{ runes: ['Blood rune', 'Wrath rune'], boost: 85 },
+			{ runes: ['Mist rune', 'Mud rune', 'Dust rune'], boost: 35 },
+			{ runes: ['Lava rune', 'Steam rune', 'Smoke rune'], boost: 20 },
+			{ runes: ['Death rune', 'Astral rune', 'Wrath rune', 'Law rune', 'Nature rune'], boost: 50 },
+			{ runes: ['Chaos rune', 'Cosmic rune'], boost: 60 },
+			{ runes: ['Blood rune', 'Soul rune'], boost: 95 },
 			{ runes: ['Elder rune'], boost: 65 }
 		]
 	},
