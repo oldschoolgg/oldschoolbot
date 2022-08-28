@@ -108,7 +108,7 @@ const ores: Ore[] = [
 		xp: 10,
 		id: 21_622,
 		name: 'Volcanic ash',
-		respawnTime: 2.75,
+		respawnTime: 4.5,
 		bankingTime: 0,
 		slope: 1.06,
 		intercept: 49.33,
