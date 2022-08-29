@@ -153,9 +153,6 @@ export async function minionKillCommand(
 	if (monster.isConverted) {
 		combatCalcInfo = await combatCalculator(monster, user, quantity);
 		[combatDuration, hits, DPS, monsterKillSpeed, calcQuantity, totalPrayerDosesUsed, potsUsed] = combatCalcInfo;
-		console.log(hits, 'hits');
-		console.log(monsterKillSpeed, 'monsterKillSpeed');
-		console.log(calcQuantity, 'calcQuant');
 	} else {
 		noneCombat = true;
 		boosts.push('Monster NOT converted. NO combat');
@@ -235,8 +232,6 @@ export async function minionKillCommand(
 	const combatSkill = mahojiUser.minion_combatSkill;
 
 	if (noneCombatDuration * 2 < combatDuration || combatSkill === combats_enum.nocombat || noneCombat) {
-		console.log(combatDuration);
-		console.log(noneCombatDuration);
 		boosts.push('NO combat, way too long combat duration');
 		noneCombat = true;
 		combatDuration = noneCombatDuration;
@@ -421,21 +416,19 @@ export async function minionKillCommand(
 			changeType: 'cost'
 		});
 	}
-	
+
 	if (!noneCombat) {
 		if (
 			combatSkill === combats_enum.ranged ||
-			(combatSkill === combats_enum.auto &&
-				monster.defaultStyleToUse === GearStat.AttackRanged)
+			(combatSkill === combats_enum.auto && monster.defaultStyleToUse === GearStat.AttackRanged)
 		) {
-			messages.push(`Removed ${await removeAmmoFromUser(user, hits)}`);
+			messages.push(`${await removeAmmoFromUser(user, hits)}`);
 		}
 		if (
 			combatSkill === combats_enum.magic ||
-			(combatSkill === combats_enum.auto &&
-				monster.defaultStyleToUse === GearStat.AttackMagic)
+			(combatSkill === combats_enum.auto && monster.defaultStyleToUse === GearStat.AttackMagic)
 		) {
-			messages.push(`Removed ${await removeRunesFromUser(user, hits)}`);
+			messages.push(`${await removeRunesFromUser(user, hits)}`);
 		}
 		const potionStr = await removePotionsFromUser(user, potsUsed, combatDuration);
 		if (potionStr.includes('x')) {
@@ -462,9 +455,19 @@ export async function minionKillCommand(
 
 	let response = `${minionName} is now killing ${quantity}x ${monster.name}, it'll take around ${formatDuration(
 		combatDuration
-	)} to finish. Your DPS is ${round(DPS, 3)}. The average kill time is ${formatDuration(
-		monsterKillSpeed
-	)} (Without banking/mechanics/respawn).`;
+	)} to finish. 
+**Combat skill:** ${
+		combatSkill === combats_enum.auto
+			? monster.defaultStyleToUse?.includes('rang')
+				? 'ranged'
+				: monster.defaultStyleToUse?.includes('mag')
+				? 'magic'
+				: 'melee'
+			: combatSkill
+	}	
+**DPS:** ${round(DPS, 3)}
+**Average kill time:** ${formatDuration(monsterKillSpeed)}(Without banking/mechanics/respawn)
+**Hits:** ${hits}`;
 
 	if (noneCombat) {
 		response +=

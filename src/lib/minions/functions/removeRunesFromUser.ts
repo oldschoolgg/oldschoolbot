@@ -1,8 +1,8 @@
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
-import { mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings';
 
+import { mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings';
 import { UserSettings } from '../../settings/types/UserSettings';
 import Magic from '../../skilling/skills/combat/magic/magic';
 import { stringMatches } from '../../util';
