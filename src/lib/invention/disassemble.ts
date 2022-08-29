@@ -198,17 +198,22 @@ export async function handleDisassembly({
 
 	// The time it takes to disassemble 1 of this item.
 	let timePer = Time.Second * 0.33;
+	const maxTripLength = calcMaxTripLength(user);
 
 	let messages: string[] = [];
 	if (bank.has('Dwarven toolkit')) {
+		const boostedActionTime = reduceNumByPercent(timePer, inventionBoosts.dwarvenToolkit.disassembleBoostPercent);
 		const boostRes = await inventionItemBoost({
 			userID: user.id,
 			inventionID: InventionID.DwarvenToolkit,
-			duration:
-				Math.min(inputQuantity ?? bank.amount(item.id), floor(calcMaxTripLength(user) / timePer)) * timePer
+			duration: Math.min(
+				maxTripLength,
+				Math.min(bank.amount(item.id), inputQuantity ?? Math.floor(maxTripLength / boostedActionTime)) *
+					boostedActionTime
+			)
 		});
 		if (boostRes.success) {
-			timePer = reduceNumByPercent(timePer, inventionBoosts.dwarvenToolkit.disassembleBoostPercent);
+			timePer = boostedActionTime;
 			messages.push(
 				`${inventionBoosts.dwarvenToolkit.disassembleBoostPercent}% faster disassembly from Dwarven toolkit (${boostRes.messages})`
 			);
@@ -222,7 +227,7 @@ export async function handleDisassembly({
 	}
 
 	// The max amount of items they can disassemble this trip
-	const maxCanDo = floor(calcMaxTripLength(user) / timePer);
+	const maxCanDo = floor(maxTripLength / timePer);
 
 	// The actual quantity they'll disassemble.
 	const realQuantity = clamp(inputQuantity ?? bank.amount(item.id), 1, maxCanDo);

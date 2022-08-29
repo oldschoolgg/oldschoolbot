@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { Emoji } from '../../lib/constants';
-import { inventionBoosts, InventionID, inventionItemBoost, Inventions } from '../../lib/invention/inventions';
+import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
 import { darkAltarCommand } from '../../lib/minions/functions/darkAltarCommand';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -154,24 +154,25 @@ export const runecraftCommand: OSBMahojiCommand = {
 		}
 		const maxTripLength = calcMaxTripLength(user, 'Runecraft');
 
-		const amuletId = Inventions.find(inv => inv.id === InventionID.AbyssalAmulet)!.item.id;
-		if (hasItemsEquippedOrInBank(user, [amuletId])) {
+		if (hasItemsEquippedOrInBank(user, ['Abyssal amulet'])) {
 			const abyssalAmuletBoost = inventionBoosts.abyssalAmulet.boosts.find(b =>
 				b.runes.some(r => stringMatches(r, runeObj.name))
 			);
 			if (abyssalAmuletBoost) {
+				const boostedActionTime = reduceNumByPercent(tripLength, abyssalAmuletBoost.boost);
 				const boostResult = await inventionItemBoost({
 					userID: BigInt(user.id),
 					inventionID: InventionID.AbyssalAmulet,
 					duration: Math.min(
 						maxTripLength,
-						quantity
-							? (quantity / inventorySize) * reduceNumByPercent(tripLength, abyssalAmuletBoost.boost)
-							: maxTripLength
+						Math.min(
+							Math.floor(maxTripLength / tripLength) * inventorySize,
+							quantity ? quantity / inventorySize : Math.floor(maxTripLength / boostedActionTime)
+						) * boostedActionTime
 					)
 				});
 				if (boostResult.success) {
-					tripLength = reduceNumByPercent(tripLength, abyssalAmuletBoost.boost);
+					tripLength = boostedActionTime;
 					boosts.push(
 						`${abyssalAmuletBoost.boost}% boost for Abyssal amulet (Removed ${boostResult.materialCost})`
 					);
