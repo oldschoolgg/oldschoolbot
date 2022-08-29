@@ -428,7 +428,7 @@ export function calcWholeDisXP(user: KlasaUser, item: Item, quantity: number) {
 	const group = findDisassemblyGroup(item);
 	const inventionLevel = user.skillLevel(SkillsEnum.Invention);
 	if (group && inventionLevel >= group.data.lvl) {
-		return calculateDisXP(group.group, inventionLevel, quantity, group?.data.lvl).xp;
+		return calculateDisXP(group.group, inventionLevel, quantity, group.data.lvl).xp;
 	}
 	return null;
 }
