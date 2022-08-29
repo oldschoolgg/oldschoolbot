@@ -160,12 +160,12 @@ export const tameCreatables: Createable[] = [
 			crafting: 120
 		}
 	},
-	// Armor 
+	// Armor
 	{
 		name: 'Dragon igne armor',
 		inputItems: new Bank({
 			'Igne gear frame': 1,
-			Leather: 10,
+			Leather: 10
 		}),
 		materialCost: new MaterialBank({
 			metallic: 1500,
@@ -214,7 +214,7 @@ export const tameCreatables: Createable[] = [
 		materialCost: new MaterialBank({
 			metallic: 1500,
 			strong: 200,
-			protective: 200,
+			protective: 200
 		}),
 		outputItems: new Bank({
 			'Volcanic igne armor': 1
@@ -228,10 +228,7 @@ export const tameCreatables: Createable[] = [
 	{
 		name: 'Justiciar igne armor',
 		inputItems: new Bank({
-			'Volcanic igne armor': 1,
-			Leather: 10,
-			'Obsidian shards': 250,
-			'Volcanic shards': 2
+			Leather: 10
 		}),
 		materialCost: new MaterialBank({
 			metallic: 1500,
@@ -240,7 +237,7 @@ export const tameCreatables: Createable[] = [
 			justiciar: 3
 		}),
 		outputItems: new Bank({
-			'Volcanic igne armor': 1
+			'Justiciar igne armor': 1
 		}),
 		requiredSkills: {
 			smithing: 95,
@@ -300,7 +297,7 @@ export const tameCreatables: Createable[] = [
 		materialCost: new MaterialBank({
 			metallic: 2000,
 			strong: 200,
-			protective: 500,
+			protective: 500
 		}),
 		outputItems: new Bank({
 			'Gorajan igne armor': 1

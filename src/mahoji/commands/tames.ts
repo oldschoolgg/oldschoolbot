@@ -1,6 +1,15 @@
 import { time } from '@discordjs/builders';
-import { Tame, tame_growth, TameActivity, User } from '@prisma/client';
-import { calcPercentOfNum, calcWhatPercent, notEmpty, reduceNumByPercent, Time } from 'e';
+import { Tame, tame_growth, TameActivity } from '@prisma/client';
+import {
+	calcPercentOfNum,
+	calcWhatPercent,
+	increaseNumByPercent,
+	notEmpty,
+	percentChance,
+	randInt,
+	reduceNumByPercent,
+	Time
+} from 'e';
 import { readFile } from 'fs/promises';
 import { KlasaClient, KlasaUser } from 'klasa';
 import { APIUser, ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
@@ -8,26 +17,27 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank, Monsters } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
-import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc';
 import { Canvas, CanvasRenderingContext2D, Image, loadImage } from 'skia-canvas/lib';
 
 import { badges } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { getSimilarItems } from '../../lib/data/similarItems';
-import killableMonsters from '../../lib/minions/data/killableMonsters';
 import getUserFoodFromBank from '../../lib/minions/functions/getUserFoodFromBank';
-import { KillableMonster } from '../../lib/minions/types';
 import { prisma, trackLoot } from '../../lib/settings/prisma';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import {
 	createTameTask,
+	getIgneTameKC,
 	getMainTameLevel,
 	getTameSpecies,
 	getUsersTame,
+	igneArmors,
 	tameGrowthLevel,
 	tameHasBeenFed,
+	TameKillableMonster,
+	tameKillableMonsters,
 	tameName,
 	tameSpecies,
 	TameSpeciesID,
@@ -45,9 +55,8 @@ import {
 	updateBankSetting
 } from '../../lib/util';
 import { fillTextXTimesInCtx, getClippedRegion } from '../../lib/util/canvasUtil';
-import findMonster from '../../lib/util/findMonster';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
-import { patronMaxTripCalc } from '../../lib/util/getUsersPerkTier';
+import getUsersPerkTier, { patronMaxTripCalc } from '../../lib/util/getUsersPerkTier';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseStringBank } from '../../lib/util/parseStringBank';
 import resolveItems from '../../lib/util/resolveItems';
@@ -55,39 +64,6 @@ import BankImageTask from '../../tasks/bankImage';
 import { collectables } from '../lib/abstracted_commands/collectCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { handleMahojiConfirmation, mahojiUserSettingsUpdate } from '../mahojiSettings';
-
-
-// treebeard, etc require armor to kill?
-interface TameKillableMonster extends KillableMonster {
-	loot: (opts: { quantity: number; user: User; tame: Tame; }) => Bank
-}
-export const tameKillableMonsters: TameKillableMonster[] = [
-	...killableMonsters.map((i): TameKillableMonster => ({
-		...i,
-		loot({ quantity }) {
-			return i.table.kill(quantity, {})
-		}
-	})),
-		{
-		id: 334_912,
-		name: "Chambers of Xeric",
-		aliases: ['cox', 'chambers of xeric'],
-		timeToFinish: Time.Minute * 22.15,
-			table: {
-				kill(quantity, options) {
-				
-				return new Bank()
-			},
-		},
-		emoji: '<:Dharoks_helm:403038864199122947>',
-		wildy: false,
-		difficultyRating: 4,
-			itemsRequired: resolveItems([]),
-			loot({ quantity }) {
-			constigneArmors
-				const loot = ChambersOfXeric.complete({ team: [{ id: '1', personalPoints: 25_000 }] })['1']
-	},
-]
 
 async function tameAutocomplete(value: string, user: APIUser) {
 	const tames = await prisma.tame.findMany({
@@ -148,37 +124,6 @@ const igneClaws = [
 	}
 ].map(i => ({ ...i, tameSpecies: [TameSpeciesID.Igne], slot: 'equipped_primary' as const }));
 
-const igneArmors  = [
-	{
-		item: getOSItem('Dragon igne armor'),
-		boost: 3
-	},
-	{
-		item: getOSItem('Barrows igne armor'),
-		boost: 6
-	},
-	{
-		item: getOSItem('Volcanic igne armor'),
-		boost: 10
-	},
-	{
-		item: getOSItem('Justiciar igne armor'),
-		boost: 17
-	},
-	{
-		item: getOSItem('Drygore igne armor'),
-		boost: 22
-	},
-	{
-		item: getOSItem('Dwarven igne armor'),
-		boost: 30
-	},
-	{
-		item: getOSItem('Gorajan igne armor'),
-		boost: 40
-	}
-].map(i => ({ ...i, tameSpecies: [TameSpeciesID.Igne], slot: 'equipped_armor' as const }));
-
 export const tameEquippables: TameEquippable[] = [...igneClaws, ...igneArmors];
 
 interface FeedableItem {
@@ -203,9 +148,9 @@ export const feedableItems: FeedableItem[] = [
 	},
 	{
 		item: getOSItem('Abyssal cape'),
-		description: '25% food reduction',
+		description: '20% food reduction',
 		tameSpeciesCanBeFedThis: [TameType.Combat],
-		announcementString: 'Your tame now has 25% food reduction!'
+		announcementString: 'Your tame now has 20% food reduction!'
 	},
 	{
 		item: getOSItem('Voidling'),
@@ -316,7 +261,7 @@ function drawText(ctx: CanvasRenderingContext2D, text: string, x: number, y: num
 	fillTextXTimesInCtx(ctx, text, x, y);
 }
 
-async function tameImage(user: KlasaUser): CommandResponse {
+export async function tameImage(user: KlasaUser): CommandResponse {
 	const userTames = await prisma.tame.findMany({
 		where: {
 			user_id: user.id
@@ -523,14 +468,27 @@ export async function removeRawFood({
 	totalHealingNeeded: number;
 	healPerAction: number;
 	raw?: boolean;
-	monster: KillableMonster;
+	monster: TameKillableMonster;
 	quantity: number;
 	tame: Tame;
 }): Promise<{ success: false; str: string } | { success: true; str: string; removed: Bank }> {
+	totalHealingNeeded = increaseNumByPercent(totalHealingNeeded, 25);
+	healPerAction = increaseNumByPercent(healPerAction, 25);
 	await user.settings.sync(true);
+
+	const foodBoosts: string[] = [];
+
 	if (tameHasBeenFed(tame, itemID('Abyssal cape'))) {
-		totalHealingNeeded = Math.floor(totalHealingNeeded * 0.75);
-		healPerAction = Math.floor(healPerAction * 0.75);
+		totalHealingNeeded = Math.floor(totalHealingNeeded * 0.8);
+		healPerAction = Math.floor(healPerAction * 0.8);
+		foodBoosts.push('20% less for Ab. cape');
+	}
+	const equippedArmor = tame.equipped_armor;
+	if (equippedArmor) {
+		const obj = igneArmors.find(i => i.item.id === equippedArmor)!;
+		totalHealingNeeded = reduceNumByPercent(totalHealingNeeded, obj.foodReduction);
+		healPerAction = reduceNumByPercent(healPerAction, obj.foodReduction);
+		foodBoosts.push(`${obj.foodReduction}% less for ${obj.item.name}`);
 	}
 
 	const foodToRemove = getUserFoodFromBank(
@@ -568,7 +526,7 @@ export async function removeRawFood({
 
 	return {
 		success: true,
-		str: `${itemCost} from ${user.username}`,
+		str: `${itemCost} from ${user.username}${foodBoosts.length > 0 ? `(${foodBoosts.join(', ')})` : ''}`,
 		removed: itemCost
 	};
 }
@@ -832,9 +790,10 @@ async function killCommand(user: KlasaUser, channelID: bigint, str: string) {
 		return `${tameName(tame)} is busy.`;
 	}
 	//
-	const monster = findMonster(str);
-	if (!monster) {
-		return "That's not a valid monster.";
+	const monster = tameKillableMonsters.find(i => stringMatches(i.name, str));
+	if (!monster) return "That's not a valid monster.";
+	if (monster.mustBeAdult && tame.growth_stage !== tame_growth.adult) {
+		return 'Only fully grown tames can kill this monster.';
 	}
 
 	// Get the amount stronger than minimum, and set boost accordingly:
@@ -845,17 +804,30 @@ async function killCommand(user: KlasaUser, channelID: bigint, str: string) {
 	// Increase trip length based on minion growth:
 	let speed = monster.timeToFinish * tameGrowthLevel(tame);
 
-	// Apply calculated boost:
-	speed = reduceNumByPercent(speed, combatLevelBoost);
-
 	let boosts = [];
+
+	// Apply calculated boost:
+	const combatLevelChange = reduceNumByPercent(speed, combatLevelBoost);
+	boosts.push(
+		`${combatLevelBoost}% (${formatDuration(
+			calcPercentOfNum(combatLevelBoost, speed),
+			true
+		)}) speed boost for combat level`
+	);
+	speed = combatLevelChange;
+
 	let maxTripLength = Time.Minute * 20 * (4 - tameGrowthLevel(tame));
 	if (tameHasBeenFed(tame, itemID('Zak'))) {
 		maxTripLength += Time.Minute * 35;
 		boosts.push('+35mins trip length (ate a Zak)');
 	}
 
-	maxTripLength += patronMaxTripCalc(user) * 2;
+	const patronBoost = patronMaxTripCalc(user) * 2;
+	if (patronBoost > 0) {
+		maxTripLength += patronBoost;
+		boosts.push(`+${formatDuration(patronBoost, true)} trip length for T${getUsersPerkTier(user) - 1} patron`);
+	}
+
 	if (isWeekend()) {
 		speed = reduceNumByPercent(speed, 10);
 		boosts.push('10% weekend boost');
@@ -873,11 +845,22 @@ async function killCommand(user: KlasaUser, channelID: bigint, str: string) {
 		}
 	}
 
+	if (monster.minArmorTier) {
+		const theirArmor = tame.equipped_armor ? igneArmors.find(i => i.item.id === tame.equipped_armor)! : null;
+		if (
+			!theirArmor ||
+			igneArmors.indexOf(theirArmor) < igneArmors.indexOf(igneArmors.find(i => i.item === monster.minArmorTier)!)
+		) {
+			return `You need ${monster.minArmorTier.name} on your tame, or better, to kill ${monster.name}.`;
+		}
+	}
+
 	// Calculate monster quantity:
 	const quantity = Math.floor(maxTripLength / speed);
 	if (quantity < 1) {
 		return "Your tame can't kill this monster fast enough.";
 	}
+
 	const foodRes = await removeRawFood({
 		client: globalClient,
 		totalHealingNeeded: (monster.healAmountNeeded ?? 1) * quantity,
@@ -901,6 +884,17 @@ async function killCommand(user: KlasaUser, channelID: bigint, str: string) {
 		suffix: 'tame'
 	});
 
+	const deathChance = monster.deathChance ? monster.deathChance({ tame }) : 0;
+	const died = percentChance(deathChance);
+	let fakeDuration: number | undefined = undefined;
+	if (died) {
+		const deathKC = randInt(1, quantity);
+		const nonDeadKCs = deathKC - 1;
+		fakeDuration = 0;
+		if (nonDeadKCs > 0) fakeDuration = nonDeadKCs * speed;
+		fakeDuration += randInt(1, speed);
+	}
+
 	await createTameTask({
 		user,
 		channelID: channelID.toString(),
@@ -911,16 +905,25 @@ async function killCommand(user: KlasaUser, channelID: bigint, str: string) {
 			quantity
 		},
 		type: TameType.Combat,
-		duration
+		duration: fakeDuration ?? duration,
+		died,
+		fakeDuration: died ? duration : undefined
 	});
 
-	let reply = `${tameName(tame)} is now killing ${quantity}x ${monster.name}. The trip will take ${formatDuration(
-		duration
-	)}.\n\nRemoved ${foodRes.str}`;
+	let reply = `${tameName(tame)} is now killing ${quantity}x ${monster.name}${
+		deathChance > 0 ? `, and has a ${deathChance.toFixed(2)}% chance of dying` : ''
+	}. The trip will take ${formatDuration(duration)}.\n\nRemoved ${foodRes.str}`;
 
 	if (boosts.length > 0) {
 		reply += `\n\n**Boosts:** ${boosts.join(', ')}.`;
 	}
+
+	reply += `\n\n${monster.name} has a base kill time of **${formatDuration(
+		monster.timeToFinish,
+		true
+	)}**, your kill time is **${formatDuration(speed, true)}**, meaning you can kill **${(
+		maxTripLength / speed
+	).toFixed(2)}** in your max trip length of **${formatDuration(maxTripLength, true)}**`;
 
 	return reply;
 }
@@ -998,7 +1001,9 @@ async function collectCommand(user: KlasaUser, channelID: bigint, str: string) {
 			quantity
 		},
 		type: TameType.Gatherer,
-		duration
+		duration,
+		died: false,
+		fakeDuration: undefined
 	});
 
 	let reply = `${tameName(tame)} is now collecting ${quantity * collectable.quantity}x ${
@@ -1047,17 +1052,26 @@ async function viewCommand(user: KlasaUser, tameID: number): CommandResponse {
 		title: 'Items Fed To This Tame',
 		user
 	});
-	return {
-		content: `**Name:** ${tame.nickname ?? 'No name'}
+
+	let content = `**Name:** ${tame.nickname ?? 'No name'}
 **Species:** ${species.name}
 **Shiny:** ${tame.species_variant === species.shinyVariant ? 'Yes' : 'No'}
 **Growth:** ${tame.growth_percent}% ${tame.growth_stage}
 **Hatch Date:** ${time(tame.date)} / ${time(tame.date, 'R')}
 **${toTitleCase(species.relevantLevelCategory)} Level:** ${tame[`max_${species.relevantLevelCategory}_level`]}
 **Boosts:** ${feedableItems
-			.filter(i => tameHasBeenFed(tame, i.item.id))
-			.map(i => `${i.item.name} (${i.description})`)
-			.join(', ')}`,
+		.filter(i => tameHasBeenFed(tame, i.item.id))
+		.map(i => `${i.item.name} (${i.description})`)
+		.join(', ')}`;
+	if (species.id === TameSpeciesID.Igne) {
+		const kcs = await getIgneTameKC(tame);
+		content += `\n**KCs:** ${kcs.sortedTuple
+			.slice(0, 10)
+			.map(i => `${i[1]}x ${i[0]}`)
+			.join(', ')}`;
+	}
+	return {
+		content,
 		attachments: [image.file, fedImage.file]
 	};
 }
@@ -1231,7 +1245,7 @@ export const tamesCommand: OSBMahojiCommand = {
 					description: 'The thing you want to kill.',
 					required: true,
 					autocomplete: async (value: string) => {
-						return killableMonsters
+						return tameKillableMonsters
 							.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i.name, value: i.name }));
 					}

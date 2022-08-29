@@ -370,7 +370,7 @@ export const MeleeArmour: DisassemblySourceGroup = {
 			lvl: 99
 		},
 		{
-			item: ["Justiciar faceguard","Justiciar chestguard","Justiciar legguards"].map(i),
+			item: ['Justiciar faceguard', 'Justiciar chestguard', 'Justiciar legguards'].map(i),
 			lvl: 99,
 			flags: new Set(['justiciar'])
 		}

@@ -35,7 +35,7 @@ import Skills from '../../lib/skilling/skills';
 import Farming from '../../lib/skilling/skills/farming';
 import { stressTest } from '../../lib/stressTest';
 import { Gear } from '../../lib/structures/Gear';
-import { tameSpecies } from '../../lib/tames';
+import { getUsersTame, tameSpecies } from '../../lib/tames';
 import { stringMatches } from '../../lib/util';
 import {
 	FarmingPatchName,
@@ -53,6 +53,7 @@ import { allUsableItems } from '../lib/abstracted_commands/useCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../mahojiSettings';
 import { generateNewTame } from './nursery';
+import { tameImage } from './tames';
 
 async function giveMaxStats(user: KlasaUser, level = 99, qp = MAX_QP) {
 	const paths = Object.values(Skills).map(sk => `skills.${sk.id}`);
@@ -507,6 +508,21 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'stresstest',
 					description: 'Stress test.'
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'settamelvl',
+					description: 'Change all tame lvls to something.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'lvl',
+							description: 'The lvl to set.',
+							required: true,
+							min_value: 70,
+							max_value: 100
+						}
+					]
 				}
 			],
 			run: async ({
@@ -520,6 +536,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				reset?: {};
 				setminigamekc?: { minigame: string; kc: number };
 				setxp?: { skill: string; xp: number };
+				settamelvl?: { lvl: number };
 				spawn?: {
 					preset?: string;
 					collectionlog?: boolean;
@@ -549,6 +566,21 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				}
 				const user = await globalClient.fetchUser(userID.toString());
 				const mahojiUser = await mahojiUsersSettingsFetch(user.id);
+
+				if (options.settamelvl) {
+					const tame = await getUsersTame(user);
+					if (!tame.tame) return 'no tame selected';
+					await prisma.tame.update({
+						where: {
+							id: tame.tame.id
+						},
+						data: {
+							max_combat_level: options.settamelvl.lvl
+						}
+					});
+					return tameImage(user);
+				}
+
 				if (options.refreshic) {
 					await mahojiUserSettingsUpdate(user.id, {
 						last_item_contract_date: 0
