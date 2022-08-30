@@ -1,15 +1,10 @@
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
+import { determineMiningTime } from '../../lib/skilling/functions/determineMiningTime';
 import Mining from '../../lib/skilling/skills/mining';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
-import {
-	determineMiningTime,
-	formatDuration,
-	getSkillsOfMahojiUser,
-	itemNameFromID,
-	randomVariation
-} from '../../lib/util';
+import { formatDuration, getSkillsOfMahojiUser, itemNameFromID, randomVariation } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { stringMatches } from '../../lib/util/cleanString';
 import itemID from '../../lib/util/itemID';
@@ -327,6 +322,7 @@ export const mineCommand: OSBMahojiCommand = {
 			boosts.push('**Powermining**');
 		}
 		// Calculate the time it takes to mine specific quantity or as many as possible
+
 		let [timeToMine, newQuantity] = determineMiningTime(
 			quantity,
 			user,

@@ -38,7 +38,7 @@ import { Consumable } from './minions/types';
 import { POHBoosts } from './poh';
 import { prisma } from './settings/prisma';
 import { Rune } from './skilling/skills/runecraft';
-import { Ore, SkillsEnum } from './skilling/types';
+import { SkillsEnum } from './skilling/types';
 import { ArrayItemsResolved, Skills } from './types';
 import {
 	GroupMonsterActivityTaskOptions,
@@ -46,11 +46,9 @@ import {
 	RaidsOptions,
 	TheatreOfBloodTaskOptions
 } from './types/minions';
-import { calcMaxTripLength } from './util/calcMaxTripLength';
 import { getItem } from './util/getOSItem';
 import itemID from './util/itemID';
 import { logError } from './util/logError';
-import { userHasItemsEquippedAnywhere } from './util/minionUtils';
 import resolveItems from './util/resolveItems';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -159,56 +157,7 @@ export function convertXPtoLVL(xp: number, cap = 99) {
 
 	return cap;
 }
-export function determineMiningTime(
-	quantity: number | undefined,
-	user: User,
-	ore: Ore,
-	ticksBetweenRolls: number,
-	glovesRate: number,
-	armourEffect: number,
-	miningCapeEffect: number,
-	powermining: boolean,
-	goldSilverBoost: boolean,
-	lvl: number
-): [number, number] {
-	let { intercept } = ore;
-	if (ore.id === 1625 && userHasItemsEquippedAnywhere(user, 'Amulet of glory')) {
-		intercept *= 3;
-	}
-	let timeElapsed = 0;
 
-	const bankTime = goldSilverBoost ? ore.bankingTime / 3.3 : ore.bankingTime;
-	const chanceOfSuccess = ore.slope * lvl + intercept;
-	const respawnTimeOrPick = ticksBetweenRolls > ore.respawnTime ? ticksBetweenRolls : ore.respawnTime;
-
-	let newQuantity = 0;
-
-	const userMaxTripTicks = calcMaxTripLength(user, 'Mining') / (Time.Second * 0.6);
-
-	while (timeElapsed < userMaxTripTicks) {
-		while (!percentChance(chanceOfSuccess)) {
-			timeElapsed += ticksBetweenRolls;
-		}
-		if (!percentChance(glovesRate)) {
-			timeElapsed += respawnTimeOrPick;
-		}
-		newQuantity++;
-		if (percentChance(miningCapeEffect)) {
-			newQuantity++;
-		}
-		if (percentChance(armourEffect)) {
-			newQuantity++;
-		}
-		// Add 28th of banking time every quantity
-		if (!powermining) {
-			timeElapsed += bankTime / 28;
-		}
-		if (quantity && newQuantity >= quantity) {
-			break;
-		}
-	}
-	return [timeElapsed * 0.6 * Time.Second, newQuantity];
-}
 export function determineScaledLogTime(xp: number, respawnTime: number, lvl: number) {
 	const t = xp / (lvl / 4 + 0.5) + ((100 - lvl) / 100 + 0.75);
 	return Math.floor((t + respawnTime) * 1000) * 1.2;
