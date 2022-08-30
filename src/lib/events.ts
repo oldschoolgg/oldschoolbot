@@ -19,7 +19,7 @@ export async function onMessage(msg: Message) {
 					new MessageButton()
 						.setCustomID(a.custom_id)
 						.setLabel(a.label!)
-						.setEmoji(a.emoji!.id!)
+						.setEmoji(a.emoji!.id ?? a.emoji!.name!)
 						.setStyle('SECONDARY')
 				);
 			}
