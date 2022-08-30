@@ -20,6 +20,7 @@ import type { ItemBank } from '../lib/types';
 import { assert, channelIsSendable, sanitizeBank } from '../lib/util';
 import { logError } from '../lib/util/logError';
 import { respondToButton } from '../lib/util/respondToButton';
+import { bingoIsActive, determineBingoProgress, onFinishTile } from './lib/bingo';
 
 export function mahojiParseNumber({
 	input,
@@ -404,6 +405,8 @@ export async function transactItemsFromBank({
 		const settings = await mahojiUsersSettingsFetch(userID);
 		const currentBank = new Bank().add(settings.bank as ItemBank);
 		const previousCL = new Bank().add(settings.collectionLogBank as ItemBank);
+		const previousTempCL = new Bank().add(settings.temp_cl as ItemBank);
+
 		let clUpdates: Prisma.UserUpdateArgs['data'] = {};
 		if (itemsToAdd) {
 			itemsToAdd = deduplicateClueScrolls({
@@ -473,12 +476,24 @@ export async function transactItemsFromBank({
 			itemsRemoved.add('Coins', gpUpdate.increment);
 		}
 
+		const newCL = new Bank(newUser.collectionLogBank as ItemBank);
+		const newTempCL = new Bank(newUser.temp_cl as ItemBank);
+
+		if (newUser.bingo_tickets_bought > 0 && bingoIsActive()) {
+			const before = determineBingoProgress(previousTempCL);
+			const after = determineBingoProgress(newTempCL);
+			// If they finished a tile, process it.
+			if (before.tilesCompletedCount !== after.tilesCompletedCount) {
+				onFinishTile(newUser, before, after);
+			}
+		}
+
 		return {
 			previousCL,
 			itemsAdded,
 			itemsRemoved: itemsToRemove,
 			newBank: new Bank(newUser.bank as ItemBank),
-			newCL: new Bank(newUser.collectionLogBank as ItemBank),
+			newCL,
 			newUser
 		};
 	});
