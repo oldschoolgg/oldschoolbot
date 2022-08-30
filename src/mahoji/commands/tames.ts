@@ -887,12 +887,13 @@ async function killCommand(user: KlasaUser, channelID: bigint, str: string) {
 	const deathChance = monster.deathChance ? monster.deathChance({ tame }) : 0;
 	const died = percentChance(deathChance);
 	let fakeDuration: number | undefined = undefined;
-	if (died) {
-		const deathKC = randInt(1, quantity);
-		const nonDeadKCs = deathKC - 1;
-		fakeDuration = 0;
-		if (nonDeadKCs > 0) fakeDuration = nonDeadKCs * speed;
-		fakeDuration += randInt(1, speed);
+	let deaths = 0;
+	for (let i = 0; i < quantity; i++) {
+		if (percentChance(deathChance)) {
+			deaths++;
+			if (typeof fakeDuration !== 'number') fakeDuration = duration;
+			fakeDuration -= calcPercentOfNum(randInt(30, 60), speed);
+		}
 	}
 
 	await createTameTask({
@@ -907,7 +908,8 @@ async function killCommand(user: KlasaUser, channelID: bigint, str: string) {
 		type: TameType.Combat,
 		duration: fakeDuration ?? duration,
 		died,
-		fakeDuration: died ? duration : undefined
+		fakeDuration: died ? duration : undefined,
+		deaths
 	});
 
 	let reply = `${tameName(tame)} is now killing ${quantity}x ${monster.name}${

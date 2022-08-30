@@ -75,11 +75,11 @@ export type TameKillableMonster = {
 
 function calcPointsForTame(tame: Tame) {
 	const lvl = tame.max_combat_level;
-	if (lvl < 75) return 10_000;
-	if (lvl < 80) return 14_000;
-	if (lvl < 85) return 18_000;
-	if (lvl < 90) return 20_000;
-	return 24_000;
+	if (lvl < 75) return 18_000;
+	if (lvl < 80) return 20_000;
+	if (lvl < 85) return 22_000;
+	if (lvl < 90) return 24_000;
+	return 25_000;
 }
 
 export const tameKillableMonsters: TameKillableMonster[] = [
@@ -144,7 +144,7 @@ const overrides = [
 		minArmorTier: getOSItem('Justiciar igne armor')
 	},
 	{
-		id: customDemiBosses.SeaKraken.id,
+		id: customDemiBosses.Malygos.id,
 		minArmorTier: getOSItem('Justiciar igne armor')
 	}
 ] as const;
@@ -449,7 +449,15 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 			const { quantity, monsterID } = activityData;
 			const mon = tameKillableMonsters.find(i => i.id === monsterID)!;
 
-			let killQty = quantity;
+			let killQty = quantity - activity.deaths;
+			if (killQty < 1) {
+				handleFinish({
+					loot: null,
+					message: `Your tame died in all their attempts to kill ${mon.name}. Get them some better armor!`,
+					user
+				});
+				return;
+			}
 			const hasOri = tameHasBeenFed(tame, 'Ori');
 
 			const oriIsApplying = hasOri && mon.oriWorks !== false;
@@ -464,7 +472,9 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 				}
 			}
 			const loot = mon.loot({ quantity: killQty, tame });
-			let str = `${user}, ${tameName(tame)} finished killing ${quantity}x ${mon.name}.`;
+			let str = `${user}, ${tameName(tame)} finished killing ${quantity}x ${mon.name}.${
+				activity.deaths > 0 ? ` ${tameName(tame)} died ${activity.deaths}x times.` : ''
+			}`;
 			const boosts = [];
 			if (oriIsApplying) {
 				boosts.push('25% extra loot (ate an Ori)');
@@ -624,7 +634,8 @@ export async function createTameTask({
 	duration,
 	selectedTame,
 	died,
-	fakeDuration
+	fakeDuration,
+	deaths
 }: {
 	user: KlasaUser;
 	channelID: string;
@@ -634,6 +645,7 @@ export async function createTameTask({
 	selectedTame: Tame;
 	died?: boolean;
 	fakeDuration?: number;
+	deaths?: number;
 }) {
 	const activity = prisma.tameActivity.create({
 		data: {
@@ -647,7 +659,8 @@ export async function createTameTask({
 			duration: Math.floor(duration),
 			tame_id: selectedTame.id,
 			died,
-			fake_duration: fakeDuration
+			fake_duration: fakeDuration,
+			deaths
 		}
 	});
 

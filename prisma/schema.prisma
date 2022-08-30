@@ -572,6 +572,7 @@ model TameActivity {
 
   fake_duration Int?
   died          Boolean @default(false)
+  deaths        Int     @default(0)
 
   @@index([completed])
   @@index([tame_id])

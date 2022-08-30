@@ -228,7 +228,8 @@ export const tameCreatables: Createable[] = [
 	{
 		name: 'Justiciar igne armor',
 		inputItems: new Bank({
-			Leather: 10
+			Leather: 10,
+			'Volcanic igne armor': 1
 		}),
 		materialCost: new MaterialBank({
 			metallic: 1500,
