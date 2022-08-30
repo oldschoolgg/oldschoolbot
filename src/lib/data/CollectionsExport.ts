@@ -60,7 +60,7 @@ export interface ICollection {
 	};
 }
 
-export const moktangCL = resolveItems(['Mini moktang', 'Volcanic dye', 'Claws frame', 'Volcanic shards']);
+export const moktangCL = resolveItems(['Mini moktang', 'Volcanic dye', 'Igne gear frame', 'Volcanic shards']);
 
 export const dwarvenOutfit = resolveItems([
 	'Dwarven full helm',

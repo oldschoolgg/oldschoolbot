@@ -135,7 +135,7 @@ export async function moktangActivity(data: MoktangTaskOptions) {
 		previousCL: res.previousCL
 	});
 
-	for (const item of resolveItems(['Claws frame', 'Mini moktang'])) {
+	for (const item of resolveItems(['Igne gear frame', 'Mini moktang'])) {
 		if (loot.has(item)) {
 			globalClient.emit(
 				Events.ServerNotification,
