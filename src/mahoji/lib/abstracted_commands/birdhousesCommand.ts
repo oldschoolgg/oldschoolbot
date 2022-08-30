@@ -190,7 +190,7 @@ export async function birdhouseHarvestCommand(user: MUser, channelID: bigint, in
 	let gotCraft = false;
 	let removeBank = new Bank();
 	const premadeBankCost = birdhouseToPlant.houseItemReq.clone().multiply(4);
-	if (user.bank.has(premadeBankCost)) {
+	if (user.owns(premadeBankCost)) {
 		removeBank.add(premadeBankCost);
 	} else {
 		if (skills.crafting < birdhouseToPlant.craftLvl) {
@@ -214,7 +214,7 @@ export async function birdhouseHarvestCommand(user: MUser, channelID: bigint, in
 	if (!canPay) {
 		return "You don't have enough seeds to bait the birdhouses.";
 	}
-	if (!user.bank.has(removeBank)) return `You don't own: ${removeBank}.`;
+	if (!user.owns(removeBank)) return `You don't own: ${removeBank}.`;
 
 	await updateBankSetting('farming_cost_bank', removeBank);
 	await transactItems({ userID: user.id, itemsToRemove: removeBank });

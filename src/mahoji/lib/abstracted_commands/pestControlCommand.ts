@@ -125,7 +125,7 @@ export async function pestControlBuyCommand(user: MUser, input: string) {
 		return `You need ${str} to buy this item.`;
 	}
 
-	if (buyable.inputItem && !user.bank.has(buyable.inputItem.id)) {
+	if (buyable.inputItem && !user.owns(buyable.inputItem.id)) {
 		return `This item requires that you own a ${buyable.inputItem.name}.`;
 	}
 

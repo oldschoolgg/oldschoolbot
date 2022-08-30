@@ -135,7 +135,7 @@ export async function mahoganyHomesBuildCommand(user: MUser, channelID: bigint):
 		hasSack
 	);
 
-	if (!user.bank.has(itemsNeeded)) {
+	if (!user.owns(itemsNeeded)) {
 		return `You don't have enough items for this trip. You need: ${itemsNeeded}.`;
 	}
 	await user.removeItemsFromBank(itemsNeeded);

@@ -98,7 +98,7 @@ export async function chompyHuntCommand(user: MUser, channelID: bigint) {
 	}
 
 	const cost = new Bank().add('Ogre arrow', arrowsNeeded);
-	if (!user.bank.has(cost)) {
+	if (!user.owns(cost)) {
 		return `You don't have enough Ogre arrow's to kill ${quantity}x Chompy birds, you need ${arrowsNeeded}.`;
 	}
 

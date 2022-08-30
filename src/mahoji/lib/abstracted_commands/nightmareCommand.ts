@@ -80,7 +80,7 @@ function checkReqs(users: MUser[], monster: KillableMonster, quantity: number, i
 		}
 
 		const cost = perUserCost(isPhosani, quantity);
-		if (!user.bank.has(cost)) {
+		if (!user.owns(cost)) {
 			return `${user.usernameOrMention} doesn't own ${cost}`;
 		}
 
@@ -226,7 +226,7 @@ export async function nightmareCommand(user: MUser, channelID: bigint, name: str
 	for (const user of users) {
 		const [healAmountNeeded] = calculateMonsterFood(NightmareMonster, user);
 		const cost = perUserCost(isPhosani, quantity);
-		if (!user.bank.has(cost)) {
+		if (!user.owns(cost)) {
 			return `${user} doesn't own ${cost}.`;
 		}
 		let healingMod = isPhosani ? 1.5 : 1;

@@ -8,7 +8,7 @@ export async function equipPet(user: MUser, itemName: string) {
 	const petItem = getOSItem(itemName);
 	const cost = new Bank().add(petItem.id);
 
-	if (!allPetIDs.includes(petItem.id) || !user.bank.has(cost)) {
+	if (!allPetIDs.includes(petItem.id) || !user.owns(cost)) {
 		return "That's not a pet, or you do not own this pet.";
 	}
 

@@ -719,7 +719,7 @@ export async function stashUnitBuildAllCommand(user: MUser) {
 		return 'There are no STASH units that you are able to build currently, due to lack of supplies or Construction level.';
 	}
 
-	if (!user.bank.has(costBank)) return "You don't own the items to do this.";
+	if (!user.owns(costBank)) return "You don't own the items to do this.";
 	await user.removeItemsFromBank(costBank);
 	await prisma.stashUnit.createMany({
 		data: toBuild.map(parsedUnit => ({
@@ -763,7 +763,7 @@ export async function stashUnitFillAllCommand(user: MUser, mahojiUser: User): Co
 	}
 	assert(costBank.length !== 0);
 
-	if (!user.bank.has(costBank)) return "You don't own the items to do this.";
+	if (!user.owns(costBank)) return "You don't own the items to do this.";
 	await user.removeItemsFromBank(costBank);
 
 	const result = await prisma.$transaction(

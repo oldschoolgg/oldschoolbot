@@ -44,7 +44,7 @@ export const buyCommand: OSBMahojiCommand = {
 		const quantity = mahojiParseNumber({ input: options.quantity, min: 1 }) ?? 1;
 		if (stringMatches(name, 'kitten')) {
 			const cost = new Bank().add('Coins', 1000);
-			if (!user.bank.has(cost)) {
+			if (!user.owns(cost)) {
 				return mahojiChatHead({
 					head: 'gertrude',
 					content: "You don't have enough GP to buy a kitten! They cost 1000 coins."
@@ -147,7 +147,7 @@ export const buyCommand: OSBMahojiCommand = {
 		if (gpCost) singleCost.add('Coins', gpCost);
 
 		const totalCost = singleCost.clone().multiply(quantity);
-		if (!user.bank.has(totalCost)) {
+		if (!user.owns(totalCost)) {
 			return `You don't have the required items to purchase this. You need: ${totalCost}.`;
 		}
 

@@ -36,7 +36,7 @@ export async function farmingContractCommand(userID: bigint, input?: ContractOpt
 **Current Contract:** ${plant ? `${plant.name} - ${currentContract.difficultyLevel}` : 'None'}`;
 	}
 
-	if (user.bank.has('Seed pack')) {
+	if (user.owns('Seed pack')) {
 		return janeImage('You need to open your seed pack before receiving a new contract!');
 	}
 
@@ -144,7 +144,7 @@ export async function autoContract(user: MUser, channelID: bigint, userID: bigin
 		.sort((a, b) => b[1] - a[1])
 		.find(a => user.skillLevel('farming') >= a[1])?.[0] as ContractOption | undefined;
 
-	if (user.bank.has('Seed pack')) {
+	if (user.owns('Seed pack')) {
 		const openResponse = await abstractedOpenCommand(null, user.id, ['seed pack'], 'auto');
 		const contractResponse = await farmingContractCommand(userID, bestContractTierCanDo);
 		return roughMergeMahojiResponse(openResponse, contractResponse);

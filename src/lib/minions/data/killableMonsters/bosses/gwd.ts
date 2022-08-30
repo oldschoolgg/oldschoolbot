@@ -46,7 +46,7 @@ const killableBosses: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackRanged],
 		specialLoot: async (loot, user) => {
-			if (!user.bank.has('Frozen key') && !user.bank.has('Frozen key piece (bandos)')) {
+			if (!user.owns('Frozen key') && !user.owns('Frozen key piece (bandos)')) {
 				loot.add('Frozen key piece (bandos)');
 			}
 		}
@@ -92,7 +92,7 @@ const killableBosses: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackRanged, GearStat.AttackMagic],
 		specialLoot: async (loot, user) => {
-			if (!user.bank.has('Frozen key') && !user.bank.has('Frozen key piece (saradomin)')) {
+			if (!user.owns('Frozen key') && !user.owns('Frozen key piece (saradomin)')) {
 				loot.add('Frozen key piece (saradomin)');
 			}
 		}
@@ -135,7 +135,7 @@ const killableBosses: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackMagic],
 		specialLoot: async (loot, user) => {
-			if (!user.bank.has('Frozen key') && !user.bank.has('Frozen key piece (armadyl)')) {
+			if (!user.owns('Frozen key') && !user.owns('Frozen key piece (armadyl)')) {
 				loot.add('Frozen key piece (armadyl)');
 			}
 		}
@@ -181,7 +181,7 @@ const killableBosses: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackMagic],
 		specialLoot: async (loot, user) => {
-			if (!user.bank.has('Frozen key') && !user.bank.has('Frozen key piece (zamorak)')) {
+			if (!user.owns('Frozen key') && !user.owns('Frozen key piece (zamorak)')) {
 				loot.add('Frozen key piece (zamorak)');
 			}
 		}

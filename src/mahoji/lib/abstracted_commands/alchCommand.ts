@@ -78,7 +78,7 @@ export async function alchCommand(
 	});
 	consumedItems.add(osItem.id, quantity);
 
-	if (!user.bank.has(consumedItems)) {
+	if (!user.owns(consumedItems)) {
 		return `You don't have the required items, you need ${consumedItems}`;
 	}
 	if (interaction) {

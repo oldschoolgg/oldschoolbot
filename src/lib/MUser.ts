@@ -465,6 +465,10 @@ export class MUserClass {
 		}
 		return true;
 	}
+
+	owns(checkBank: Bank | number | string) {
+		return this.bank.clone().add('Coins', Number(this.user.GP)).has(checkBank);
+	}
 }
 declare global {
 	export type MUser = MUserClass;

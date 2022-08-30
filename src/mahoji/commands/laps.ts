@@ -149,7 +149,7 @@ export const lapsCommand: OSBMahojiCommand = {
 
 		const alchResult = course.name === 'Ape Atoll Agility Course' || !options.alch ? null : alching(user, duration);
 		if (alchResult !== null) {
-			if (!user.bank.has(alchResult.bankToRemove)) {
+			if (!user.owns(alchResult.bankToRemove)) {
 				return `You don't own ${alchResult.bankToRemove}.`;
 			}
 

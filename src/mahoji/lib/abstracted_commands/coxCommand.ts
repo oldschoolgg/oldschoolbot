@@ -119,7 +119,7 @@ export async function coxCommand(channelID: bigint, user: MUser, type: 'solo' | 
 				return [true, "You don't meet the stat requirements to do the Chambers of Xeric."];
 			}
 
-			if (!user.bank.has(minimumCoxSuppliesNeeded)) {
+			if (!user.owns(minimumCoxSuppliesNeeded)) {
 				return [
 					true,
 					`You don't have enough items, you need a minimum of this amount of items: ${minimumCoxSuppliesNeeded}.`

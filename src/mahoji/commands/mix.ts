@@ -125,7 +125,7 @@ export const mineCommand: OSBMahojiCommand = {
 		}
 
 		const finalCost = requiredItems.multiply(quantity);
-		if (!user.bank.has(finalCost)) {
+		if (!user.owns(finalCost)) {
 			return `You don't own: ${finalCost}.`;
 		}
 		await user.removeItemsFromBank(finalCost);

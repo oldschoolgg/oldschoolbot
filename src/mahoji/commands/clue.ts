@@ -69,7 +69,7 @@ export const clueCommand: OSBMahojiCommand = {
 		}
 
 		const cost = new Bank().add(clueTier.scrollID, quantity);
-		if (!user.bank.has(cost)) return `You don't own ${cost}.`;
+		if (!user.owns(cost)) return `You don't own ${cost}.`;
 		await user.removeItemsFromBank(new Bank().add(clueTier.scrollID, quantity));
 
 		const randomAddedDuration = randInt(1, 20);

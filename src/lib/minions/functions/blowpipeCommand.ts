@@ -47,7 +47,7 @@ export async function blowpipeCommand(
 	}
 
 	const rawBlowpipeData = { ...user.blowpipe };
-	const hasBlowpipe = user.bank.has('Toxic blowpipe') || user.bank.has('Toxic blowpipe (empty)');
+	const hasBlowpipe = user.owns('Toxic blowpipe') || user.owns('Toxic blowpipe (empty)');
 	if (!hasBlowpipe) return "You don't own a Toxic blowpipe.";
 
 	try {
@@ -76,12 +76,12 @@ async function addCommand(user: MUser, itemName: string, quantity = 1) {
 	if (user.minionIsBusy) {
 		return "You can't add to your blowpipe, because your minion is out on a trip.";
 	}
-	if (!user.bank.has('Toxic blowpipe') && user.bank.has('Toxic blowpipe (empty)')) {
+	if (!user.owns('Toxic blowpipe') && user.owns('Toxic blowpipe (empty)')) {
 		await user.removeItemsFromBank(new Bank().add('Toxic blowpipe (empty)'));
 		await user.addItemsToBank({ items: new Bank().add('Toxic blowpipe'), collectionLog: false });
 	}
 
-	const hasBlowpipe = user.bank.has('Toxic blowpipe');
+	const hasBlowpipe = user.owns('Toxic blowpipe');
 
 	if (!hasBlowpipe) {
 		return "You don't own a Toxic blowpipe.";
@@ -138,7 +138,7 @@ async function removeDartsCommand(user: MUser) {
 	if (user.minionIsBusy) {
 		return "You can't remove darts from your blowpipe, because your minion is out on a trip.";
 	}
-	const hasBlowpipe = user.bank.has('Toxic blowpipe');
+	const hasBlowpipe = user.owns('Toxic blowpipe');
 	if (!hasBlowpipe) {
 		return "You don't own a Toxic blowpipe.";
 	}
@@ -164,7 +164,7 @@ async function unchargeCommand(user: MUser) {
 	if (user.minionIsBusy) {
 		return "You can't uncharge your blowpipe, because your minion is out on a trip.";
 	}
-	const hasBlowpipe = user.bank.has('Toxic blowpipe');
+	const hasBlowpipe = user.owns('Toxic blowpipe');
 	if (!hasBlowpipe) {
 		return "You don't own a Toxic blowpipe.";
 	}

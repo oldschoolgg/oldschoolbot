@@ -285,7 +285,7 @@ export async function autoEquipCommand(user: MUser, gearSetup: GearSetupType, eq
 		return "Couldn't find anything to equip.";
 	}
 
-	if (!user.bank.has(toRemoveFromBank)) {
+	if (!user.owns(toRemoveFromBank)) {
 		return `You dont own ${toRemoveFromBank}!`;
 	}
 

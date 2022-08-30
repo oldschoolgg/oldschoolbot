@@ -28,12 +28,12 @@ ${degradeableItems
 	const cost = item.chargeInput.cost.clone().multiply(number);
 	const amountOfCharges = item.chargeInput.charges * number;
 
-	if (!user.bank.has(cost)) {
+	if (!user.owns(cost)) {
 		return `You don't own ${cost}.`;
 	}
 
 	const needConvert = item.convertOnCharge && item.unchargedItem;
-	if (needConvert && !user.hasEquippedOrInBank(item.item.id) && !user.bank.has(item.unchargedItem!.id)) {
+	if (needConvert && !user.hasEquippedOrInBank(item.item.id) && !user.owns(item.unchargedItem!.id)) {
 		return `You don't own a ${item.item.name} or ${item.unchargedItem!.name}.`;
 	}
 
@@ -45,7 +45,7 @@ ${degradeableItems
 	);
 
 	if (needConvert && !user.hasEquippedOrInBank(item.item.id)) {
-		if (!user.bank.has(item.unchargedItem!.id)) {
+		if (!user.owns(item.unchargedItem!.id)) {
 			return `Your ${item.unchargedItem!.name} disappeared and cannot be charged`;
 		}
 		await user.removeItemsFromBank(new Bank({ [item.unchargedItem!.id]: 1 }));

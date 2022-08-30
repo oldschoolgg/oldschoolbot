@@ -77,7 +77,7 @@ export async function mageTrainingArenaBuyCommand(user: MUser, input = '') {
 	const newUser = await getNewUser(user.id);
 	const balance = newUser.pizazz_points;
 
-	if (upgradesFrom && !user.bank.has(upgradesFrom.id)) {
+	if (upgradesFrom && !user.owns(upgradesFrom.id)) {
 		return `To buy a ${item.name}, you need to upgrade to it with a ${upgradesFrom.name}, which you do not own.`;
 	}
 
@@ -126,7 +126,7 @@ export async function mageTrainingArenaStartCommand(user: MUser, channelID: bigi
 
 	const cost = determineRunes(user, new Bank().add(RuneTable.roll())).multiply(quantity);
 
-	if (!user.bank.has(cost)) {
+	if (!user.owns(cost)) {
 		return `You don't have enough items for this trip, you need: ${cost}.`;
 	}
 

@@ -90,7 +90,7 @@ export async function gnomeRestaurantCommand(user: MUser, channelID: bigint) {
 		itemsToRemove.add('Law rune', Math.max(1, Math.floor(randInt(1, quantity * 1.5) / 2)));
 	}
 
-	if (!user.bank.has(itemsToRemove)) {
+	if (!user.owns(itemsToRemove)) {
 		return `You don't own the required items: ${itemsToRemove}.`;
 	}
 

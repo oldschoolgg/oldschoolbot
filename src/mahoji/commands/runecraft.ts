@@ -186,13 +186,13 @@ export const runecraftCommand: OSBMahojiCommand = {
 				}
 			}
 			removeTalismanAndOrRunes.add(runeObj.inputRune?.clone().multiply(quantity));
-			if (!user.bank.has(removeTalismanAndOrRunes.bank)) {
+			if (!user.owns(removeTalismanAndOrRunes)) {
 				return `You don't have enough runes for this trip. You need ${runeObj.inputRune
 					?.clone()
 					.multiply(quantity)}.`;
 			}
 			removeTalismanAndOrRunes.add('Binding necklace', Math.max(Math.floor(numberOfInventories / 8), 1));
-			if (!user.bank.has(removeTalismanAndOrRunes.bank)) {
+			if (!user.owns(removeTalismanAndOrRunes)) {
 				return `You don't have enough Binding necklaces for this trip. You need ${Math.max(
 					Math.floor(numberOfInventories / 8),
 					1
@@ -205,7 +205,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 				'Ring of dueling(8)',
 				Math.ceil(numberOfInventories / (8 * teleportReduction))
 			);
-			if (!user.bank.has(removeTalismanAndOrRunes.bank)) {
+			if (!user.owns(removeTalismanAndOrRunes)) {
 				return `You don't have enough Ring of dueling(8) for this trip. You need ${Math.ceil(
 					numberOfInventories / (8 * teleportReduction)
 				)}x Ring of dueling(8).`;
@@ -213,7 +213,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 
 			if (usestams) {
 				removeTalismanAndOrRunes.add('Stamina potion(4)', Math.max(Math.ceil(duration / (Time.Minute * 8)), 1));
-				if (!user.bank.has(removeTalismanAndOrRunes.bank)) {
+				if (!user.owns(removeTalismanAndOrRunes)) {
 					return `You don't have enough Stamina potion(4) for this trip. You need ${Math.max(
 						Math.ceil(duration / (Time.Minute * 8)),
 						1
@@ -224,7 +224,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 		}
 
 		totalCost.add('Pure essence', quantity);
-		if (!user.bank.has(totalCost)) return `You don't own: ${totalCost}.`;
+		if (!user.owns(totalCost)) return `You don't own: ${totalCost}.`;
 
 		await user.removeItemsFromBank(totalCost);
 		updateBankSetting('runecraft_cost', totalCost);

@@ -253,14 +253,14 @@ export async function farmingPlantCommand({
 	let upgradeType: CompostName | null = null;
 	if ((didPay && plant.canCompostandPay) || (!didPay && plant.canCompostPatch && compostTier)) {
 		const compostCost = new Bank().add(compostTier, quantity);
-		if (user.bank.has(compostCost)) {
+		if (user.owns(compostCost)) {
 			infoStr.push(`You are treating your patches with ${compostCost}.`);
 			cost.add(compostCost);
 			upgradeType = compostTier;
 		}
 	}
 
-	if (!user.bank.has(cost)) return `You don't own ${cost}.`;
+	if (!user.owns(cost)) return `You don't own ${cost}.`;
 	await transactItems({ userID: user.id, itemsToRemove: cost });
 
 	updateBankSetting('farming_cost_bank', cost);

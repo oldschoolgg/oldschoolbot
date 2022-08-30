@@ -296,7 +296,7 @@ export async function minionKillCommand(
 	let usingCannon = false;
 	let cannonMulti = false;
 	let burstOrBarrage = 0;
-	const hasCannon = cannonBanks.some(i => user.bank.has(i));
+	const hasCannon = cannonBanks.some(i => user.owns(i));
 	if ((method === 'burst' || method === 'barrage') && !monster!.canBarrage) {
 		return `${monster!.name} cannot be barraged or burst.`;
 	}
@@ -388,9 +388,9 @@ export async function minionKillCommand(
 	if (consumableCosts.length > 0) {
 		for (const cc of consumableCosts) {
 			let consumable = cc;
-			if (consumable.alternativeConsumables && !user.bank.has(consumable.itemCost)) {
+			if (consumable.alternativeConsumables && !user.owns(consumable.itemCost)) {
 				for (const c of consumable.alternativeConsumables) {
-					if (user.bank.has(c.itemCost)) {
+					if (user.owns(c.itemCost)) {
 						consumable = c;
 						break;
 					}
@@ -440,7 +440,7 @@ export async function minionKillCommand(
 		lootToRemove.add(bank);
 	}
 	if (pvmCost) {
-		if (quantity === 0 || !user.bank.has(lootToRemove)) {
+		if (quantity === 0 || !user.owns(lootToRemove)) {
 			return `You don't have the items needed to kill any amount of ${
 				monster.name
 			}, you need: ${formatMissingItems(consumableCosts, timeToFinish)} per kill.`;

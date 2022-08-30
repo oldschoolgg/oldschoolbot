@@ -21,7 +21,7 @@ export async function mageArenaCommand(user: MUser, channelID: bigint) {
 		'Prayer potion(4)': 2
 	});
 
-	if (!user.bank.has(itemsNeeded)) {
+	if (!user.owns(itemsNeeded)) {
 		return `You don't own the needed items to do the Mage Arena, you need: ${itemsNeeded}.`;
 	}
 

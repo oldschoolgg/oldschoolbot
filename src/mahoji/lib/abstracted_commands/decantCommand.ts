@@ -8,7 +8,7 @@ export async function decantCommand(user: MUser, itemName: string, dose = 4) {
 	if (res.error !== null) return res.error;
 	const { potionsToAdd, sumOfPots, potionName, potionsToRemove } = res;
 
-	if (!user.bank.has(potionsToRemove)) {
+	if (!user.owns(potionsToRemove)) {
 		return `You don't own ${potionsToRemove}.`;
 	}
 	await user.removeItemsFromBank(potionsToRemove);

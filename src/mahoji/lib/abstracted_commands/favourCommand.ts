@@ -69,7 +69,7 @@ export async function favourCommand(
 			duration *= 1.5;
 			cost.remove('Stamina potion(4)', cost.amount('Stamina potion (4)'));
 		}
-		if (!user.bank.has(cost)) {
+		if (!user.owns(cost)) {
 			return `You don't have the items needed for this trip, you need: ${cost}.`;
 		}
 		await user.removeItemsFromBank(cost);

@@ -77,7 +77,7 @@ function checkGear(user: MUser): string | undefined {
 		return 'JalYt, your ranged gear not strong enough! You die very quickly with your bad gear, come back with better range gear.';
 	}
 
-	if (!user.bank.has(fightCavesCost)) {
+	if (!user.owns(fightCavesCost)) {
 		return `JalYt, you need supplies to have a chance in the caves...come back with ${fightCavesCost}.`;
 	}
 

@@ -313,7 +313,7 @@ export async function checkTOBUser(
 		];
 	}
 
-	if (!user.bank.has(minimumTOBSuppliesNeeded)) {
+	if (!user.owns(minimumTOBSuppliesNeeded)) {
 		return [
 			true,
 			`${user.usernameOrMention} doesn't have enough items, you need a minimum of this amount of items: ${minimumTOBSuppliesNeeded}.`
@@ -329,7 +329,7 @@ export async function checkTOBUser(
 
 	const cost = await calcTOBInput(user);
 	cost.add('Coins', 100_000).add('Rune pouch');
-	if (!user.bank.has(cost)) {
+	if (!user.owns(cost)) {
 		return [true, `${user.usernameOrMention} doesn't own ${cost.remove(user.bank)}`];
 	}
 
@@ -371,12 +371,7 @@ export async function checkTOBUser(
 
 	// Range
 	const blowpipeData = user.blowpipe;
-	if (
-		!user.bank.has('Toxic blowpipe') ||
-		!blowpipeData.scales ||
-		!blowpipeData.dartID ||
-		!blowpipeData.dartQuantity
-	) {
+	if (!user.owns('Toxic blowpipe') || !blowpipeData.scales || !blowpipeData.dartID || !blowpipeData.dartQuantity) {
 		return [
 			true,
 			`${user.usernameOrMention} needs a Toxic blowpipe (with darts and scales equipped) in their bank to do the Theatre of Blood.`

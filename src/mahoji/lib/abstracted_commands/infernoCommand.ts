@@ -168,7 +168,7 @@ async function infernoRun({
 	 * Item Requirements
 	 *
 	 */
-	if (!user.bank.has(itemRequirements)) {
+	if (!user.owns(itemRequirements)) {
 		return `To do the Inferno, you need these items: ${itemRequirements}.`;
 	}
 

@@ -59,7 +59,7 @@ export async function abstractedOpenUntilCommand(
 
 	const amountOfThisOpenableOwned = user.bank.amount(openableItem.id);
 	if (amountOfThisOpenableOwned === 0) return "You don't own any of that item.";
-	if (openUntil.name.includes('Clue') && user.bank.has(openUntil.id)) {
+	if (openUntil.name.includes('Clue') && user.owns(openUntil.id)) {
 		await handleMahojiConfirmation(
 			interaction,
 			`You're trying to open until you receive a ${openUntil.name}, but you already have one, and couldn't receive a second, are you sure you want to do this?`
@@ -162,7 +162,7 @@ export async function abstractedOpenCommand(
 
 	const names = _names.map(i => i.replace(regex, '$1'));
 	const openables = names.includes('all')
-		? allOpenables.filter(({ openedItem }) => user.bank.has(openedItem.id) && !favorites.includes(openedItem.id))
+		? allOpenables.filter(({ openedItem }) => user.owns(openedItem.id) && !favorites.includes(openedItem.id))
 		: names
 				.map(name => allOpenables.find(o => o.aliases.some(alias => stringMatches(alias, name))))
 				.filter(notEmpty);
@@ -178,7 +178,7 @@ export async function abstractedOpenCommand(
 	if (typeof _quantity === 'number') {
 		for (const openable of openables) {
 			const tmpCost = new Bank().add(openable.id, _quantity);
-			if (!user.bank.has(tmpCost)) return `You don't own ${tmpCost}`;
+			if (!user.owns(tmpCost)) return `You don't own ${tmpCost}`;
 		}
 	}
 	const cost = new Bank();
