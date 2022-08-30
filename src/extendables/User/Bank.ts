@@ -166,6 +166,7 @@ export default class extends Extendable {
 
 	public owns(this: User, bank: ItemBank | Bank | string | number) {
 		const userBank = this.bank();
+		userBank.add('Coins', this.settings.get(UserSettings.GP));
 		return userBank.has(bank);
 	}
 }
