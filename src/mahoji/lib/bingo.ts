@@ -43,7 +43,6 @@ export const bingoTiles: BingoTile[] = [
 		id: 1,
 		name: 'Receive any boss pet',
 		oneOf: resolveItems([
-			'Abyssal orphan',
 			'Ikkle hydra',
 			'Callisto cub',
 			'Hellpuppy',
@@ -64,7 +63,6 @@ export const bingoTiles: BingoTile[] = [
 			"Pet kree'arra",
 			"Pet k'ril tsutsaroth",
 			"Scorpia's offspring",
-			'Skotos',
 			'Pet smoke devil',
 			'Venenatis spiderling',
 			"Vet'ion jr.",
