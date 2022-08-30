@@ -24,6 +24,7 @@ import { BitField, Channel, Emoji, PerkTier } from '../../lib/constants';
 import { allCLItemsFiltered, allDroppedItems } from '../../lib/data/Collections';
 import { anglerOutfit, gnomeRestaurantCL } from '../../lib/data/CollectionsExport';
 import pets from '../../lib/data/pets';
+import { addToDoubleLootTimer } from '../../lib/doubleLoot';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import { MinigameName, Minigames } from '../../lib/settings/minigames';
 import { convertStoredActivityToFlatActivity, prisma } from '../../lib/settings/prisma';
@@ -571,6 +572,29 @@ async function checkMassesCommand(guildID: bigint | undefined) {
 ${massStr}`;
 }
 
+async function patronTriggerDoubleLoot(user: User) {
+	if (![BitField.IsPatronTier4, BitField.IsPatronTier5].some(i => user.bitfield.includes(i))) {
+		return 'Only T4 or T5 patrons can use this command.';
+	}
+	const lastTime = user.last_patron_double_time_trigger;
+	const cooldown = Time.Day * 31;
+	const differenceSinceLastUsage = lastTime ? Date.now() - lastTime.getTime() : null;
+	if (differenceSinceLastUsage && differenceSinceLastUsage < cooldown) {
+		return `This command is still on cooldown, you can use it again in: ${formatDuration(
+			cooldown - differenceSinceLastUsage
+		)}.`;
+	}
+	const time = user.bitfield.includes(BitField.IsPatronTier5) ? Time.Minute * 30 : Time.Minute * 20;
+	await mahojiUserSettingsUpdate(user.id, {
+		last_patron_double_time_trigger: new Date()
+	});
+	await addToDoubleLootTimer(
+		time,
+		`${userMention(user.id)} used their monthly Tier ${getUsersPerkTier(user) - 1} double loot time`
+	);
+	return `Added ${formatDuration(time)} of double loot.`;
+}
+
 export const toolsCommand: OSBMahojiCommand = {
 	name: 'tools',
 	description: 'Various tools and miscellaneous commands.',
@@ -732,6 +756,11 @@ export const toolsCommand: OSBMahojiCommand = {
 							required: true
 						}
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'doubleloot',
+					description: 'Add double loot time.'
 				}
 			]
 		},
@@ -873,6 +902,7 @@ export const toolsCommand: OSBMahojiCommand = {
 			spawnlamp?: {};
 			spawnbox?: {};
 			stats?: { stat: string };
+			doubleloot?: {};
 		};
 		user?: { mypets?: {}; temp_cl: { reset?: boolean }; checkmasses?: {}; fixbank?: {} };
 		stash_units?: {
@@ -958,6 +988,9 @@ export const toolsCommand: OSBMahojiCommand = {
 			if (patron.spawnbox) return spawnBoxCommand(mahojiUser, channelID);
 			if (patron.stats) {
 				return statsCommand(mahojiUser, patron.stats.stat);
+			}
+			if (patron.doubleloot) {
+				return patronTriggerDoubleLoot(mahojiUser);
 			}
 		}
 		if (options.user) {
