@@ -449,6 +449,8 @@ model User {
   item_contract_bank       Json     @default("{}") @db.Json
   void_staff_charges       Int      @default(0)
 
+  last_patron_double_time_trigger DateTime? @db.Timestamp(6)
+
   // Invention
   skills_invention          BigInt @default(0) @map("skills.invention")
   materials_owned           Json   @default("{}") @db.Json
