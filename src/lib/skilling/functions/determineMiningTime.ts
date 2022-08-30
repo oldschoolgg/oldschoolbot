@@ -5,18 +5,31 @@ import { calcMaxTripLength } from '../../util/calcMaxTripLength';
 import { userHasItemsEquippedAnywhere } from '../../util/minionUtils';
 import { Ore } from './../types';
 
-export function determineMiningTime(
-	quantity: number | undefined,
-	user: User,
-	ore: Ore,
-	ticksBetweenRolls: number,
-	glovesRate: number,
-	armourEffect: number,
-	miningCapeEffect: number,
-	powermining: boolean,
-	goldSilverBoost: boolean,
-	lvl: number
-): [number, number] {
+interface MiningTimeOptions {
+	quantity: number | undefined;
+	user: User;
+	ore: Ore;
+	ticksBetweenRolls: number;
+	glovesRate: number;
+	armourEffect: number;
+	miningCapeEffect: number;
+	powermining: boolean;
+	goldSilverBoost: boolean;
+	miningLvl: number;
+}
+
+export function determineMiningTime({
+	quantity,
+	user,
+	ore,
+	ticksBetweenRolls,
+	glovesRate,
+	armourEffect,
+	miningCapeEffect,
+	powermining,
+	goldSilverBoost,
+	miningLvl
+}: MiningTimeOptions): [number, number] {
 	let { intercept } = ore;
 	if (ore.id === 1625 && userHasItemsEquippedAnywhere(user, 'Amulet of glory')) {
 		intercept *= 3;
@@ -24,7 +37,7 @@ export function determineMiningTime(
 	let timeElapsed = 0;
 
 	const bankTime = goldSilverBoost ? ore.bankingTime / 3.3 : ore.bankingTime;
-	const chanceOfSuccess = ore.slope * lvl + intercept;
+	const chanceOfSuccess = ore.slope * miningLvl + intercept;
 	const respawnTimeOrPick = ticksBetweenRolls > ore.respawnTime ? ticksBetweenRolls : ore.respawnTime;
 
 	let newQuantity = 0;

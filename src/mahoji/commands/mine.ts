@@ -323,18 +323,18 @@ export const mineCommand: OSBMahojiCommand = {
 		}
 		// Calculate the time it takes to mine specific quantity or as many as possible
 
-		let [timeToMine, newQuantity] = determineMiningTime(
+		let [timeToMine, newQuantity] = determineMiningTime({
 			quantity,
 			user,
 			ore,
-			currentPickaxe.ticksBetweenRolls,
+			ticksBetweenRolls: currentPickaxe.ticksBetweenRolls,
 			glovesRate,
 			armourEffect,
 			miningCapeEffect,
-			powermine,
+			powermining: powermine,
 			goldSilverBoost,
-			miningLevel
-		);
+			miningLvl: miningLevel
+		});
 
 		const duration = timeToMine;
 
