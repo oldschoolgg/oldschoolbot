@@ -571,8 +571,7 @@ model TameActivity {
   tame        Tame     @relation(fields: [tame_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_aa012dd3d9d58b8acb4e2cffd4d")
 
   fake_duration Int?
-  died          Boolean @default(false)
-  deaths        Int     @default(0)
+  deaths        Int  @default(0)
 
   @@index([completed])
   @@index([tame_id])

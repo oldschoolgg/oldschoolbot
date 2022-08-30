@@ -874,7 +874,7 @@ async function killCommand(user: KlasaUser, channelID: bigint, str: string) {
 		return foodRes.str;
 	}
 
-	const duration = Math.floor(quantity * speed);
+	const fakeDuration = Math.floor(quantity * speed);
 
 	await trackLoot({
 		id: monster.name,
@@ -885,14 +885,12 @@ async function killCommand(user: KlasaUser, channelID: bigint, str: string) {
 	});
 
 	const deathChance = monster.deathChance ? monster.deathChance({ tame }) : 0;
-	const died = percentChance(deathChance);
-	let fakeDuration: number | undefined = undefined;
+	let realDuration: number = fakeDuration;
 	let deaths = 0;
 	for (let i = 0; i < quantity; i++) {
 		if (percentChance(deathChance)) {
 			deaths++;
-			if (typeof fakeDuration !== 'number') fakeDuration = duration;
-			fakeDuration -= calcPercentOfNum(randInt(30, 60), speed);
+			realDuration -= calcPercentOfNum(randInt(30, 60), speed);
 		}
 	}
 
@@ -906,15 +904,14 @@ async function killCommand(user: KlasaUser, channelID: bigint, str: string) {
 			quantity
 		},
 		type: TameType.Combat,
-		duration: fakeDuration ?? duration,
-		died,
-		fakeDuration: died ? duration : undefined,
+		duration: realDuration,
+		fakeDuration: deaths > 0 ? fakeDuration : undefined,
 		deaths
 	});
 
 	let reply = `${tameName(tame)} is now killing ${quantity}x ${monster.name}${
 		deathChance > 0 ? `, and has a ${deathChance.toFixed(2)}% chance of dying` : ''
-	}. The trip will take ${formatDuration(duration)}.\n\nRemoved ${foodRes.str}`;
+	}. The trip will take ${formatDuration(fakeDuration)}.\n\nRemoved ${foodRes.str}`;
 
 	if (boosts.length > 0) {
 		reply += `\n\n**Boosts:** ${boosts.join(', ')}.`;
@@ -1004,7 +1001,6 @@ async function collectCommand(user: KlasaUser, channelID: bigint, str: string) {
 		},
 		type: TameType.Gatherer,
 		duration,
-		died: false,
 		fakeDuration: undefined
 	});
 

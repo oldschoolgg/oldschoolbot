@@ -439,13 +439,6 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 	const activityData = activity.data as any as TameTaskOptions;
 	switch (activityData.type) {
 		case 'pvm': {
-			if (activity.died) {
-				return handleFinish({
-					loot: null,
-					user,
-					message: `${userMention(user.id)}, ${tameName(tame)} died in their trip :(`
-				});
-			}
 			const { quantity, monsterID } = activityData;
 			const mon = tameKillableMonsters.find(i => i.id === monsterID)!;
 
@@ -453,7 +446,9 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 			if (killQty < 1) {
 				handleFinish({
 					loot: null,
-					message: `Your tame died in all their attempts to kill ${mon.name}. Get them some better armor!`,
+					message: `${userMention(user.id)}, Your tame died in all their attempts to kill ${
+						mon.name
+					}. Get them some better armor!`,
 					user
 				});
 				return;
@@ -633,7 +628,6 @@ export async function createTameTask({
 	data,
 	duration,
 	selectedTame,
-	died,
 	fakeDuration,
 	deaths
 }: {
@@ -643,7 +637,6 @@ export async function createTameTask({
 	data: TameTaskOptions;
 	duration: number;
 	selectedTame: Tame;
-	died?: boolean;
 	fakeDuration?: number;
 	deaths?: number;
 }) {
@@ -658,7 +651,6 @@ export async function createTameTask({
 			channel_id: channelID,
 			duration: Math.floor(duration),
 			tame_id: selectedTame.id,
-			died,
 			fake_duration: fakeDuration,
 			deaths
 		}
