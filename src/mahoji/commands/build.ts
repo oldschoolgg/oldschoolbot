@@ -109,20 +109,22 @@ export const buildCommand: OSBMahojiCommand = {
 
 		let boosts: string[] = [];
 
+		const boostedActionTime = reduceNumByPercent(
+			timeToBuildSingleObject,
+			inventionBoosts.drygoreSaw.buildBoostPercent
+		);
 		if (hasItemsEquippedOrInBank(user, ['Drygore saw'])) {
 			const boostRes = await inventionItemBoost({
 				userID: BigInt(user.id),
 				inventionID: InventionID.DrygoreSaw,
 				duration: Math.min(
 					maxTripLength,
-					options.quantity ? options.quantity * timeToBuildSingleObject : maxTripLength
+					Math.min(maxForMaterials, options.quantity ?? Math.floor(maxTripLength / boostedActionTime)) *
+						boostedActionTime
 				)
 			});
 			if (boostRes.success) {
-				timeToBuildSingleObject = reduceNumByPercent(
-					timeToBuildSingleObject,
-					inventionBoosts.drygoreSaw.buildBoostPercent
-				);
+				timeToBuildSingleObject = boostedActionTime;
 				boosts.push(
 					`${inventionBoosts.drygoreSaw.buildBoostPercent}% faster building from Drygore saw (${boostRes.messages})`
 				);

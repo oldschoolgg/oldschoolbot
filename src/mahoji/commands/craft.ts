@@ -91,6 +91,7 @@ export const craftCommand: OSBMahojiCommand = {
 			timeToCraftSingleItem /= 3.25;
 		}
 
+		const maxCanDo = userBank.fits(craftable.inputItems);
 		const isTannable = Tanning.includes(craftable);
 		if (user.usingPet('Klik') && isTannable) {
 			timeToCraftSingleItem /= 3;
@@ -101,16 +102,21 @@ export const craftCommand: OSBMahojiCommand = {
 				timeToCraftSingleItem /= 2;
 				boosts.push('2x faster for Dwarven greathammer');
 			}
+			const boostedTimeToCraftSingleItem = reduceNumByPercent(
+				timeToCraftSingleItem,
+				inventionBoosts.masterHammerAndChisel.speedBoostPercent
+			);
 			const res = await inventionItemBoost({
 				userID: BigInt(user.id),
 				inventionID: InventionID.MasterHammerAndChisel,
-				duration: Math.min(maxTripLength, quantity ? quantity * timeToCraftSingleItem : maxTripLength)
+				duration: Math.min(
+					maxTripLength,
+					Math.min(maxCanDo, options.quantity ?? Math.floor(maxTripLength / boostedTimeToCraftSingleItem)) *
+						boostedTimeToCraftSingleItem
+				)
 			});
 			if (res.success) {
-				timeToCraftSingleItem = reduceNumByPercent(
-					timeToCraftSingleItem,
-					inventionBoosts.masterHammerAndChisel.speedBoostPercent
-				);
+				timeToCraftSingleItem = boostedTimeToCraftSingleItem;
 				boosts.push(
 					`${inventionBoosts.masterHammerAndChisel.speedBoostPercent}% faster for Master hammer and chisel (${res.messages})`
 				);
@@ -119,8 +125,7 @@ export const craftCommand: OSBMahojiCommand = {
 
 		if (!quantity) {
 			quantity = Math.floor(maxTripLength / timeToCraftSingleItem);
-			const max = userBank.fits(craftable.inputItems);
-			if (max < quantity && max !== 0) quantity = max;
+			if (maxCanDo < quantity && maxCanDo !== 0) quantity = maxCanDo;
 		}
 
 		const duration = quantity * timeToCraftSingleItem;

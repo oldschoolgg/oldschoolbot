@@ -1,7 +1,8 @@
+import { roll } from 'e';
 import { Task } from 'klasa';
-import { Bank } from 'oldschooljs';
+import { Bank, LootTable } from 'oldschooljs';
 
-import { Naxxus } from '../../../lib/minions/data/killableMonsters/custom/bosses/Naxxus';
+import { Naxxus, NaxxusLootTable } from '../../../lib/minions/data/killableMonsters/custom/bosses/Naxxus';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import { trackLoot } from '../../../lib/settings/prisma';
@@ -18,7 +19,25 @@ export default class extends Task {
 		const user = await this.client.fetchUser(userID);
 
 		const loot = new Bank();
-		loot.add(Naxxus.table.kill(quantity, {}));
+		loot.add(NaxxusLootTable.roll(quantity));
+
+		// Handle uniques => Don't give duplicates until log full
+		const uniqueChance = 150;
+		if (roll(uniqueChance)) {
+			const uniques = [
+				{ name: 'Dark crystal', weight: 2 },
+				{ name: 'Abyssal gem', weight: 3 },
+				{ name: 'Tattered tome', weight: 2 },
+				{ name: 'Spellbound ring', weight: 3 }
+			];
+			const cl = user.cl();
+			const filteredUniques = uniques.filter(u => !cl.has(u.name));
+			const uniqueTable = filteredUniques.length === 0 ? uniques : filteredUniques;
+			const lootTable = new LootTable();
+			uniqueTable.map(u => lootTable.add(u.name, 1, u.weight));
+
+			loot.add(lootTable.roll());
+		}
 
 		const xpStr = await addMonsterXP(user, {
 			monsterID: Naxxus.id,
