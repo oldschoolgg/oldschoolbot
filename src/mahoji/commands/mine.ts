@@ -1,5 +1,6 @@
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { Bank } from 'oldschooljs';
 
 import { determineMiningTime } from '../../lib/skilling/functions/determineMiningTime';
 import Mining from '../../lib/skilling/skills/mining';
@@ -68,105 +69,118 @@ const pickaxes = [
 const gloves = [
 	{
 		id: itemID('Expert mining gloves'),
-		'Silver ore': 50,
-		Coal: 40,
-		'Gold ore': 33.33,
-		'Mithril ore': 25,
-		'Adamantite ore': 16.66,
-		'Runite ore': 12.5,
-		Amethyst: 25
+		Percentages: new Bank({
+			'Silver ore': 50,
+			Coal: 40,
+			'Gold ore': 33.33,
+			'Mithril ore': 25,
+			'Adamantite ore': 16.66,
+			'Runite ore': 12.5,
+			Amethyst: 25
+		})
 	},
 	{
 		id: itemID('Superior mining gloves'),
-		'Silver ore': 0,
-		Coal: 0,
-		'Gold ore': 0,
-		'Mithril ore': 25,
-		'Adamantite ore': 16.66,
-		'Runite ore': 12.5,
-		Amethyst: 0
+		Percentages: new Bank({
+			'Silver ore': 0,
+			Coal: 0,
+			'Gold ore': 0,
+			'Mithril ore': 25,
+			'Adamantite ore': 16.66,
+			'Runite ore': 12.5,
+			Amethyst: 0
+		})
 	},
 	{
 		id: itemID('Mining gloves'),
-		'Silver ore': 50,
-		Coal: 40,
-		'Gold ore': 33.33,
-		'Mithril ore': 0,
-		'Adamantite ore': 0,
-		'Runite ore': 0,
-		Amethyst: 0
+		Percentages: new Bank({
+			'Silver ore': 50,
+			Coal: 40,
+			'Gold ore': 33.33,
+			'Mithril ore': 0,
+			'Adamantite ore': 0,
+			'Runite ore': 0,
+			Amethyst: 0
+		})
 	}
 ];
 
 const varrockArmours = [
 	{
 		id: itemID('Varrock armour 4'),
-		Clay: 10,
-		'Copper ore': 10,
-		'Tin ore': 10,
-		'Iron ore': 10,
-		'Silver ore': 10,
-		Coal: 10,
-		Sandstone: 10,
-		'Gold ore': 10,
-		Granite: 10,
-		'Mithril ore': 10,
-		'Adamantite ore': 10,
-		'Runite ore': 10,
-		Amethyst: 10
+		Percentages: new Bank({
+			Clay: 10,
+			'Copper ore': 10,
+			'Tin ore': 10,
+			'Iron ore': 10,
+			'Silver ore': 10,
+			Coal: 10,
+			Sandstone: 10,
+			'Gold ore': 10,
+			Granite: 10,
+			'Mithril ore': 10,
+			'Adamantite ore': 10,
+			'Runite ore': 10,
+			Amethyst: 10
+		})
 	},
 	{
 		id: itemID('Varrock armour 3'),
-		Clay: 10,
-		'Copper ore': 10,
-		'Tin ore': 10,
-		'Iron ore': 10,
-		'Silver ore': 10,
-		Coal: 10,
-		Sandstone: 10,
-		'Gold ore': 10,
-		Granite: 10,
-		'Mithril ore': 10,
-		'Adamantite ore': 10,
-		'Runite ore': 0,
-		Amethyst: 0
+		Percentages: new Bank({
+			Clay: 10,
+			'Copper ore': 10,
+			'Tin ore': 10,
+			'Iron ore': 10,
+			'Silver ore': 10,
+			Coal: 10,
+			Sandstone: 10,
+			'Gold ore': 10,
+			Granite: 10,
+			'Mithril ore': 10,
+			'Adamantite ore': 10,
+			'Runite ore': 0,
+			Amethyst: 0
+		})
 	},
 	{
 		id: itemID('Varrock armour 2'),
-		Clay: 10,
-		'Copper ore': 10,
-		'Tin ore': 10,
-		'Iron ore': 10,
-		Silver: 10,
-		Coal: 10,
-		Sandstone: 10,
-		'Gold ore': 10,
-		Granite: 10,
-		'Mithril ore': 10,
-		'Adamantite ore': 0,
-		'Runite ore': 0,
-		Amethyst: 0
+		Percentages: new Bank({
+			Clay: 10,
+			'Copper ore': 10,
+			'Tin ore': 10,
+			'Iron ore': 10,
+			Silver: 10,
+			Coal: 10,
+			Sandstone: 10,
+			'Gold ore': 10,
+			Granite: 10,
+			'Mithril ore': 10,
+			'Adamantite ore': 0,
+			'Runite ore': 0,
+			Amethyst: 0
+		})
 	},
 	{
 		id: itemID('Varrock armour 1'),
-		Clay: 10,
-		'Copper ore': 10,
-		'Tin ore': 10,
-		'Iron ore': 10,
-		'Silver ore': 10,
-		Coal: 10,
-		Sandstone: 0,
-		'Gold ore': 0,
-		Granite: 0,
-		'Mithril ore': 0,
-		'Adamantite ore': 0,
-		'Runite ore': 0,
-		Amethyst: 0
+		Percentages: new Bank({
+			Clay: 10,
+			'Copper ore': 10,
+			'Tin ore': 10,
+			'Iron ore': 10,
+			'Silver ore': 10,
+			Coal: 10,
+			Sandstone: 0,
+			'Gold ore': 0,
+			Granite: 0,
+			'Mithril ore': 0,
+			'Adamantite ore': 0,
+			'Runite ore': 0,
+			Amethyst: 0
+		})
 	}
 ];
 
-const miningCapeOreEffect = {
-	id: itemID('Mining cape'),
+const miningCapeOreEffect: Bank = new Bank({
 	Clay: 5,
 	'Copper ore': 5,
 	'Tin ore': 5,
@@ -180,7 +194,7 @@ const miningCapeOreEffect = {
 	'Adamantite ore': 5,
 	'Runite ore': 0,
 	Amethyst: 0
-};
+});
 
 export const mineCommand: OSBMahojiCommand = {
 	name: 'mine',
@@ -266,7 +280,7 @@ export const mineCommand: OSBMahojiCommand = {
 		if (skills.mining >= 60) {
 			for (const glove of gloves) {
 				if (!userHasItemsEquippedAnywhere(user, glove.id)) continue;
-				for (const [name, value] of Object.entries(glove)) {
+				for (const [name, value] of Object.entries(glove.Percentages)) {
 					if (name !== ore.name) continue;
 					glovesRate = value;
 					if (value !== 0) {
@@ -283,7 +297,7 @@ export const mineCommand: OSBMahojiCommand = {
 		let armourEffect = 0;
 		for (const armour of varrockArmours) {
 			if (!hasItemsEquippedOrInBank(user, [armour.id])) continue;
-			for (const [name, value] of Object.entries(armour)) {
+			for (const [name, value] of Object.entries(armour.Percentages)) {
 				if (name !== ore.name) continue;
 				armourEffect = value;
 				if (value !== 0) {
@@ -303,14 +317,12 @@ export const mineCommand: OSBMahojiCommand = {
 		}
 
 		let miningCapeEffect = 0;
-		if (hasItemsEquippedOrInBank(user, [miningCapeOreEffect.id])) {
+		if (hasItemsEquippedOrInBank(user, [itemID('Mining cape')])) {
 			for (const [name, value] of Object.entries(miningCapeOreEffect)) {
 				if (name !== ore.name) continue;
 				miningCapeEffect = value;
 				if (value !== 0) {
-					boosts.push(
-						`**${value}%** chance to mine an extra ore using ${itemNameFromID(miningCapeOreEffect.id)}`
-					);
+					boosts.push(`**${value}%** chance to mine an extra ore using Mining cape`);
 				}
 				break;
 			}
