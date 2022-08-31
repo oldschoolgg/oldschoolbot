@@ -140,8 +140,8 @@ const ores: Ore[] = [
 	{
 		level: 35,
 		xp: 45,
-		id: 6973,
-		name: 'Sandstone (5kg)',
+		id: 6975,
+		name: 'Sandstone',
 		respawnTime: 3,
 		bankingTime: 10,
 		slope: 0.8,
@@ -176,8 +176,8 @@ const ores: Ore[] = [
 	{
 		level: 45,
 		xp: 60,
-		id: 6981,
-		name: 'Granite (5kg)',
+		id: 6983,
+		name: 'Granite',
 		respawnTime: 3,
 		bankingTime: 80,
 		slope: 0.85,
