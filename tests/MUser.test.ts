@@ -7,7 +7,8 @@ import { mockMUser } from './utils';
 const testUser = mockMUser({
 	skills_agility: convertLVLtoXP(50),
 	GP: 100_000,
-	bank: new Bank().add('Coal').add('Egg')
+	bank: new Bank().add('Coal').add('Egg'),
+	cl: new Bank().add('Coal')
 });
 
 const bankWithGP = new Bank().add('Coal').add('Egg').add('Coins', 100_000).freeze();
@@ -61,5 +62,9 @@ describe('MUser.test', () => {
 		for (const b of shouldntOwn) {
 			expect(testUser.owns(b)).toEqual(false);
 		}
+	});
+	test('cl', () => {
+		expect(testUser.cl.has('Coal')).toEqual(true);
+		expect(testUser.cl.length).toEqual(1);
 	});
 });

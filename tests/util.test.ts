@@ -3,16 +3,9 @@ import { Bank } from 'oldschooljs';
 
 import { deduplicateClueScrolls } from '../src/lib/clues/clueUtils';
 import getUserFoodFromBank from '../src/lib/minions/functions/getUserFoodFromBank';
-import {
-	getSkillsOfMahojiUser,
-	sanitizeBank,
-	stripEmojis,
-	truncateString,
-	validateItemBankAndThrow
-} from '../src/lib/util';
+import { sanitizeBank, stripEmojis, truncateString, validateItemBankAndThrow } from '../src/lib/util';
 import getOSItem from '../src/lib/util/getOSItem';
 import { sellPriceOfItem, sellStorePriceOfItem } from '../src/mahoji/commands/sell';
-import { mockUser } from './utils';
 
 describe('util', () => {
 	test('stripEmojis', () => {
@@ -89,11 +82,6 @@ describe('util', () => {
 		expect(sellStorePriceOfItem(item, 1)).toEqual({ price: expectedOneQty, basePrice: cost });
 		expect(sellStorePriceOfItem(item, 22)).toEqual({ price: expectedTwentytwoQty, basePrice: cost });
 		expect(sellStorePriceOfItem(getOSItem('A yellow square'), 1)).toEqual({ price: 0, basePrice: 0 });
-	});
-
-	test('getSkillsOfMahojiUser', () => {
-		expect(getSkillsOfMahojiUser(mockUser(), true).agility).toEqual(73);
-		expect(getSkillsOfMahojiUser(mockUser()).agility).toEqual(1_000_000);
 	});
 
 	test('validateItemBankAndThrow', () => {

@@ -26,6 +26,7 @@ export function mockArgument(arg: any) {
 
 interface MockUserArgs {
 	bank?: Bank;
+	cl?: Bank;
 	meleeGear?: PartialGearSetup;
 	skills_agility?: number;
 	GP?: number;
@@ -41,8 +42,9 @@ export const mockUser = (overrides?: MockUserArgs): User => {
 		gear_range: new Gear().raw() as Prisma.JsonValue,
 		gear_skilling: new Gear().raw() as Prisma.JsonValue,
 		gear_wildy: new Gear().raw() as Prisma.JsonValue,
-		bank: overrides?.bank?.bank ?? (new Bank().bank as Prisma.JsonValue),
-		skills_agility: 1_000_000,
+		bank: overrides?.bank?.bank ?? {},
+		collectionLogBank: overrides?.cl?.bank ?? {},
+		skills_agility: overrides?.skills_agility ?? 0,
 		skills_cooking: 0,
 		skills_fishing: 0,
 		skills_mining: 0,
@@ -66,7 +68,7 @@ export const mockUser = (overrides?: MockUserArgs): User => {
 		skills_slayer: 0,
 		skills_hitpoints: convertLVLtoXP(10),
 		bitfield: [],
-		...overrides
+		GP: overrides?.GP
 	} as unknown as User;
 };
 export const mockMUser = (overrides?: MockUserArgs) => {

@@ -5,7 +5,6 @@ import {
 	Channel,
 	DMChannel,
 	Guild,
-	GuildMember,
 	MessageAttachment,
 	MessageButton,
 	MessageOptions,
@@ -15,13 +14,7 @@ import {
 } from 'discord.js';
 import { calcWhatPercent, chunk, isObject, objectEntries, Time } from 'e';
 import { KlasaMessage, KlasaUser } from 'klasa';
-import {
-	APIButtonComponentWithCustomId,
-	APIInteractionGuildMember,
-	APIInteractionResponseCallbackData,
-	APIUser,
-	ComponentType
-} from 'mahoji';
+import { APIButtonComponentWithCustomId, APIInteractionResponseCallbackData, APIUser, ComponentType } from 'mahoji';
 import { CommandResponse, InteractionResponseDataWithBufferAttachments } from 'mahoji/dist/lib/structures/ICommand';
 import murmurHash from 'murmurhash';
 import { gzip } from 'node:zlib';
@@ -133,11 +126,6 @@ export function formatDuration(ms: number, short = false) {
 export function isWeekend() {
 	const currentDate = new Date(Date.now() - Time.Hour * 6);
 	return [6, 0].includes(currentDate.getDay());
-}
-
-export function saidYes(content: string) {
-	const newContent = content.toLowerCase();
-	return newContent === 'y' || newContent === 'yes';
 }
 
 export function convertXPtoLVL(xp: number, cap = 99) {
@@ -629,17 +617,6 @@ export function convertDJSUserToAPIUser(user: DJSUser | KlasaUser): APIUser {
 	};
 
 	return apiUser;
-}
-
-export function convertDJSMemberToAPIMember(member: GuildMember): APIInteractionGuildMember {
-	return {
-		permissions: member.permissions.bitfield.toString(),
-		user: convertDJSUserToAPIUser(member.user),
-		roles: Array.from(member.roles.cache.keys()),
-		joined_at: member.joinedTimestamp!.toString(),
-		deaf: false,
-		mute: false
-	};
 }
 
 export function removeFromArr<T>(arr: T[] | readonly T[], item: T) {

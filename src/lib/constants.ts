@@ -1,8 +1,6 @@
 import { MessageButton } from 'discord.js';
-import { KlasaMessage } from 'klasa';
 import { APIButtonComponent, APIButtonComponentWithCustomId, ButtonStyle, ComponentType } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { join } from 'path';
 
 import { DISCORD_SETTINGS, production } from '../config';
 import { AbstractCommand, CommandArgs } from '../mahoji/lib/inhibitors';
@@ -150,14 +148,6 @@ export const ReactionEmoji = {
 	Start: production ? '705973302719414329' : '951309579302604880'
 };
 
-export const enum Image {
-	DiceBag = 'https://i.imgur.com/sySQkSX.png'
-}
-
-export const enum Color {
-	Orange = 16_098_851
-}
-
 export const enum Tasks {
 	AgilityActivity = 'agilityActivity',
 	CookingActivity = 'cookingActivity',
@@ -252,8 +242,6 @@ export const enum Events {
 	SkillLevelUp = 'skillLevelUp',
 	EconomyLog = 'economyLog'
 }
-
-export const rootFolder = join(__dirname, '..', '..', '..');
 
 export const COINS_ID = 995;
 
@@ -399,7 +387,6 @@ export const RAZOR_KEBBIT_ID = 35;
 export const BLACK_CHIN_ID = 9;
 export const ZALCANO_ID = 9049;
 export const NIGHTMARE_ID = 9415;
-export const HESPORI_ID = 8583;
 export const NEX_ID = 11_278;
 
 export const skillEmoji = {
@@ -505,18 +492,6 @@ export function shouldTrackCommand(command: AbstractCommand, args: CommandArgs) 
 	}
 	return true;
 }
-
-export const COMMAND_BECAME_SLASH_COMMAND_MESSAGE = (
-	msg: KlasaMessage | null,
-	commandName?: string
-) => `This command you're trying to use, has been changed to a 'slash command'.
-
-- Slash commands are integrated into the actual Discord client. We are *required* to change our commands to be slash commands.
-- Slash commands are generally easier to use, and also have new features like autocompletion. They take some time to get used to though.
-- You no longer use this command using \`+${commandName ?? msg?.command?.name}\`, now you use: \`/${
-	commandName ?? msg?.command?.name
-}\`
-`;
 
 export const DISABLED_COMMANDS = new Set<string>();
 export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'none'] as const;

@@ -1,5 +1,3 @@
-import { ItemBank } from 'oldschooljs/dist/meta/types';
-
 import { Emoji } from '../constants';
 import { SkillsEnum } from '../skilling/types';
 import { convertXPtoLVL, Util } from '../util';
@@ -8,11 +6,6 @@ import resolveItems from './resolveItems';
 export function skillLevel(user: MUser, skill: SkillsEnum) {
 	const xp = Number(user.user[`skills_${skill}`]);
 	return convertXPtoLVL(xp);
-}
-
-export function getKC(user: MUser, id: number) {
-	const scores: Readonly<ItemBank> = user.user.monsterScores as ItemBank;
-	return scores[id] ?? 0;
 }
 
 export const bows = resolveItems([
