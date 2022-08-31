@@ -75,11 +75,11 @@ export type TameKillableMonster = {
 
 function calcPointsForTame(tame: Tame) {
 	const lvl = tame.max_combat_level;
-	if (lvl < 75) return 18_000;
-	if (lvl < 80) return 20_000;
-	if (lvl < 85) return 22_000;
-	if (lvl < 90) return 24_000;
-	return 25_000;
+	if (lvl < 75) return 25_000;
+	if (lvl < 80) return 26_500;
+	if (lvl < 85) return 28_000;
+	if (lvl < 90) return 30_000;
+	return 35_000;
 }
 
 export const tameKillableMonsters: TameKillableMonster[] = [

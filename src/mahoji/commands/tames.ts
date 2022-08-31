@@ -612,6 +612,10 @@ async function mergeCommand(user: KlasaUser, interaction: SlashCommandInteractio
 		return "Couldn't find a tame to participate in the ritual. Make sure you selected the correct Tame, by its number or nickname.";
 	}
 
+	if (toSelect.equipped_armor || toSelect.equipped_primary) {
+		return "The tame you're merging has gear equipped, unequip that gear first.";
+	}
+
 	const { tame, activity, species } = await getUsersTame(user);
 	if (activity) return 'Your tame is busy. Wait for it to be free to do this.';
 	if (!tame || !species) return "You don't have a selected tame. Select your tame first.";
