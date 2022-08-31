@@ -492,7 +492,7 @@ export const adminCommand: OSBMahojiCommand = {
 		await interaction.deferReply();
 
 		const adminUser = await mahojiUsersSettingsFetch(userID);
-		const isOwner = OWNER_IDS.includes(userID.toString()) || OWNER_IDS.includes(interaction.userID.toString());
+		const isOwner = OWNER_IDS.includes(userID.toString());
 		const isMod = isOwner || adminUser.bitfield.includes(BitField.isModerator);
 		if (!guildID || !isMod || (production && guildID.toString() !== SupportServer)) return randArrItem(gifs);
 
