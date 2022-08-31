@@ -227,7 +227,6 @@ export const bingoTiles: BingoTile[] = [
 			'Jar of dirt',
 			'Jar of dreams',
 			'Jar of eyes',
-			'Jar of miasma',
 			'Jar of sand',
 			'Jar of smoke',
 			'Jar of souls',
