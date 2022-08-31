@@ -430,6 +430,9 @@ export async function checkTOBUser(
 		if (!rangeGear.hasEquipped(minRangeSoloGear, true)) {
 			return [true, 'You must either have a Hellfire bow and Hellfire arrows equipped to solo ToB'];
 		}
+		if (total < 95) {
+			return [true, 'You must either have at least 95% overall gear score to solo ToB'];
+		}
 	}
 
 	return [false];
