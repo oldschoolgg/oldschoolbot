@@ -21,7 +21,7 @@ import { formatDuration } from '../../lib/util';
 import { mahojiGuildSettingsFetch, untrustedGuildSettingsCache } from '../mahojiSettings';
 import { Cooldowns } from './Cooldowns';
 
-export type CommandArgs = (string | number | boolean | unknown)[] | Record<string, unknown>;
+export type CommandArgs = Record<string, unknown>;
 
 export interface AbstractCommandAttributes {
 	altProtection?: boolean;
