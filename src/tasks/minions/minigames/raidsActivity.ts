@@ -7,6 +7,7 @@ import { MysteryBoxes } from '../../../lib/bsoOpenables';
 import { Emoji, Events } from '../../../lib/constants';
 import { chambersOfXericCL, chambersOfXericMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { createTeam } from '../../../lib/data/cox';
+import { userHasFlappy } from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/settings/prisma';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
@@ -61,12 +62,17 @@ export default class extends Task {
 				user.settings.get(UserSettings.TotalCoxPoints) + personalPoints
 			);
 
+			let flappyMsg: string | null = null;
 			const userLoot = new Bank(_userLoot);
 			if (roll(10)) {
 				userLoot.multiply(2);
 				userLoot.add(MysteryBoxes.roll());
-			} else if (user.usingPet('Flappy')) {
-				userLoot.multiply(2);
+			} else {
+				const flappyRes = await userHasFlappy({ user, duration });
+				if (flappyRes.shouldGiveBoost) {
+					userLoot.multiply(2);
+					flappyMsg = flappyRes.userMsg;
+				}
 			}
 			if (challengeMode && roll(50) && user.cl().has('Metamorphic dust')) {
 				const { bank } = allItemsOwned(user);
@@ -110,9 +116,7 @@ export default class extends Task {
 			resultMessage += `\n${deathStr} **${user}** received: ${str} (${personalPoints?.toLocaleString()} pts, ${
 				Emoji.Skull
 			}${deathChance.toFixed(0)}%)`;
-			if (user.usingPet('Flappy')) {
-				resultMessage += '<:flappy:813000865383972874>';
-			}
+			if (flappyMsg) resultMessage += flappyMsg;
 		}
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.CoxLoot, totalLoot);

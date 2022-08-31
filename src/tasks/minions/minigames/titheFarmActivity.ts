@@ -2,6 +2,7 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
+import { userHasFlappy } from '../../../lib/invention/inventions';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { TitheFarmActivityTaskOptions } from '../../../lib/types/minions';
@@ -11,7 +12,7 @@ import { hasItemsEquippedOrInBank } from '../../../lib/util/minionUtils';
 
 export default class extends Task {
 	async run(data: TitheFarmActivityTaskOptions) {
-		const { userID, channelID } = data;
+		const { userID, channelID, duration } = data;
 		const baseHarvest = 85;
 		const lootStr: string[] = [];
 		const levelStr: string[] = [];
@@ -25,8 +26,8 @@ export default class extends Task {
 		const determineHarvest = baseHarvest + Math.min(15, titheFarmsCompleted);
 		let determinePoints = determineHarvest - 74;
 
-		const flappy = user.usingPet('Flappy');
-		if (flappy) {
+		const flappyRes = await userHasFlappy({ user, duration });
+		if (flappyRes.shouldGiveBoost) {
 			determinePoints *= 2;
 		}
 
@@ -115,9 +116,7 @@ export default class extends Task {
 			});
 		}
 
-		const returnStr = `${harvestStr} ${bonusXpStr}\n\n${completedStr}${levelStr}${lootStr}\n${
-			flappy ? '<:flappy:813000865383972874> 2x points' : ''
-		}`;
+		const returnStr = `${harvestStr} ${bonusXpStr}\n\n${completedStr}${levelStr}${lootStr}\n${flappyRes.userMsg}`;
 
 		handleTripFinish(
 			user,
