@@ -293,7 +293,7 @@ export const TENTACLE_CHARGES_PER_RAID = 400;
 export async function checkTOBUser(
 	user: KlasaUser,
 	isHardMode: boolean,
-	_teamSize?: number
+	teamSize?: number
 ): Promise<[false] | [true, string]> {
 	if (!user.hasMinion) {
 		return [true, `${user.username} doesn't have a minion`];
@@ -417,6 +417,14 @@ export async function checkTOBUser(
 		}
 		if (!meleeGear.hasEquipped('Infernal cape')) {
 			return [true, `${user.username} needs at least an Infernal cape to do Hard mode.`];
+		}
+	}
+	if (teamSize === 1) {
+		if (
+			!meleeGear.hasEquipped(['Drygore longsword', 'Offhand drygore longsword'], true) &&
+			!meleeGear.hasEquipped('Scythe of vitur')
+		) {
+			return [true, 'You must either have a charged Scythe of vitur, or dual Drygore longswords to solo ToB'];
 		}
 	}
 
