@@ -2,9 +2,9 @@ import { Guild } from 'discord.js';
 import { noOp, notEmpty } from 'e';
 import { Task } from 'klasa';
 
-import { production } from '../config';
+import { production, SupportServer } from '../config';
 import { ClueTiers } from '../lib/clues/clueTiers';
-import { BOT_TYPE, Roles, SupportServer, usernameCache } from '../lib/constants';
+import { BOT_TYPE, Roles, usernameCache } from '../lib/constants';
 import { getCollectionItems } from '../lib/data/Collections';
 import { Minigames } from '../lib/settings/minigames';
 import { prisma } from '../lib/settings/prisma';

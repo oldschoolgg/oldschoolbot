@@ -1,14 +1,14 @@
 import { Intents } from 'discord.js';
 import { KlasaClient, KlasaClientOptions } from 'klasa';
 
-import { customClientOptions, production, providerConfig } from '../config';
+import { customClientOptions, OWNER_IDS, production, providerConfig } from '../config';
 
 export const clientOptions: KlasaClientOptions = {
 	/* Discord.js Options */
 	messageCacheMaxSize: 200,
 	messageCacheLifetime: 120,
 	messageSweepInterval: 5000,
-	owners: ['157797566833098752'],
+	owners: [...OWNER_IDS],
 	shards: 'auto',
 	http: {
 		api: 'https://discord.com/api'
