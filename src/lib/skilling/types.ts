@@ -155,6 +155,7 @@ export interface Craftable {
 	otherSkillRequirements?: Partial<Skills>;
 	qpRequired?: number;
 	wcLvl?: number;
+	cantBeDoubled?: boolean;
 }
 
 export interface Fletchable {
