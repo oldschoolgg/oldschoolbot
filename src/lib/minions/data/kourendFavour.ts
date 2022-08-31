@@ -12,13 +12,13 @@ export interface UserKourendFavour {
 	Shayzien: number;
 }
 
-export const baseUserKourendFavour: UserKourendFavour = {
+export const baseUserKourendFavour: UserKourendFavour = Object.freeze({
 	Arceuus: 0,
 	Hosidius: 0,
 	Lovakengj: 0,
 	Piscarilius: 0,
 	Shayzien: 0
-};
+});
 
 export interface KourendFavour {
 	name: string;

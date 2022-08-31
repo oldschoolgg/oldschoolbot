@@ -4,7 +4,7 @@ import { mahojiUsersSettingsFetch, mUserFetch } from '../mahoji/mahojiSettings';
 import { ItemBank } from './types';
 import { assert } from './util';
 
-function bankIsEqual(bank1: Bank, bank2: Bank) {
+export function bankIsEqual(bank1: Bank, bank2: Bank) {
 	for (const [item, quantity] of bank1.items()) {
 		if (bank2.amount(item.id) !== quantity) return false;
 	}

@@ -1,5 +1,6 @@
 import { Prisma, User } from '@prisma/client';
 import { Bank } from 'oldschooljs';
+import { convertLVLtoXP } from 'oldschooljs/dist/util';
 
 import { PartialGearSetup } from '../src/lib/gear';
 import { MUserClass } from '../src/lib/MUser';
@@ -27,6 +28,7 @@ interface MockUserArgs {
 	bank?: Bank;
 	meleeGear?: PartialGearSetup;
 	skills_agility?: number;
+	GP?: number;
 }
 
 export const mockUser = (overrides?: MockUserArgs): User => {
@@ -41,6 +43,28 @@ export const mockUser = (overrides?: MockUserArgs): User => {
 		gear_wildy: new Gear().raw() as Prisma.JsonValue,
 		bank: overrides?.bank?.bank ?? (new Bank().bank as Prisma.JsonValue),
 		skills_agility: 1_000_000,
+		skills_cooking: 0,
+		skills_fishing: 0,
+		skills_mining: 0,
+		skills_smithing: 0,
+		skills_woodcutting: 0,
+		skills_firemaking: 0,
+		skills_runecraft: 0,
+		skills_crafting: 0,
+		skills_prayer: 0,
+		skills_fletching: 0,
+		skills_thieving: 0,
+		skills_farming: 0,
+		skills_herblore: 0,
+		skills_hunter: 0,
+		skills_construction: 0,
+		skills_magic: 0,
+		skills_ranged: 0,
+		skills_attack: 0,
+		skills_strength: 0,
+		skills_defence: 0,
+		skills_slayer: 0,
+		skills_hitpoints: convertLVLtoXP(10),
 		bitfield: [],
 		...overrides
 	} as unknown as User;

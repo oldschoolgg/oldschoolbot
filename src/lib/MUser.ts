@@ -12,7 +12,7 @@ import { allPetIDs } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
 import { defaultGear, GearSetup, UserFullGearSetup } from './gear';
 import { CombatOptionsEnum } from './minions/data/combatConstants';
-import { UserKourendFavour } from './minions/data/kourendFavour';
+import { baseUserKourendFavour, UserKourendFavour } from './minions/data/kourendFavour';
 import { AttackStyles } from './minions/functions';
 import { blowpipeDarts, validateBlowpipeData } from './minions/functions/blowpipeCommand';
 import { AddXpParams, BlowpipeData } from './minions/types';
@@ -84,7 +84,8 @@ export class MUserClass {
 	}
 
 	get kourendFavour() {
-		const favour = this.user.kourend_favour as any as UserKourendFavour;
+		const favour = this.user.kourend_favour as any as UserKourendFavour | null;
+		if (favour === null) return { ...baseUserKourendFavour };
 		assert(typeof favour.Arceuus === 'number', `kourendFavour should return valid data for ${this.id}`);
 		return favour;
 	}

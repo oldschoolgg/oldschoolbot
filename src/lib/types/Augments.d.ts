@@ -3,7 +3,6 @@ import { MessageOptions, MessagePayload } from 'discord.js';
 import { KlasaMessage, KlasaUser, Settings } from 'klasa';
 import { Image } from 'skia-canvas/lib';
 
-import { BitField } from '../constants';
 import { CustomGet } from '../settings/types/UserSettings';
 
 declare module 'klasa' {
