@@ -426,6 +426,10 @@ export async function checkTOBUser(
 		) {
 			return [true, 'You must either have a charged Scythe of vitur, or dual Drygore longswords to solo ToB'];
 		}
+		const minRangeSoloWeapon = ['Zaryte bow', 'Twisted bow', 'Hellfire bow'];
+		if (!rangeGear.hasEquipped(minRangeSoloWeapon)) {
+			return [true, 'You must either have a Zaryte bow, Twisted bow, or Hellfire bow equipped to solo ToB'];
+		}
 	}
 
 	return [false];
