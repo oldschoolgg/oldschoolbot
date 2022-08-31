@@ -12,7 +12,7 @@ export default class extends Task {
 		if (this.client._presenceInterval) {
 			clearTimeout(this.client._presenceInterval);
 		}
-		const set = () => this.client.user?.setActivity(`${this.client.options.prefix}info`);
+		const set = () => this.client.user?.setActivity('/help');
 		this.client._presenceInterval = setInterval(set, Time.Hour);
 		set();
 	}
