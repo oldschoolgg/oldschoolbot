@@ -39,7 +39,8 @@ export enum InventionID {
 	DwarvenToolkit = 11,
 	MechaRod = 12,
 	MasterHammerAndChisel = 13,
-	AbyssalAmulet = 14
+	AbyssalAmulet = 14,
+	RoboFlappy = 15
 }
 
 export type Invention = Readonly<{
@@ -364,6 +365,21 @@ export const Inventions: readonly Invention[] = [
 			}
 			return str;
 		}
+	},
+	{
+		id: InventionID.RoboFlappy,
+		name: 'RoboFlappy',
+		description: 'A robotic terrorbird which provides extra loot from minigames.',
+		item: getOSItem('RoboFlappy'),
+		materialTypeBank: new MaterialBank({
+			magic: 4,
+			organic: 2,
+			metallic: 4
+		}),
+		itemCost: null,
+		flags: ['bank'],
+		inventionLevelNeeded: 120,
+		usageCostMultiplier: 0.5
 	}
 ] as const;
 
@@ -588,4 +604,33 @@ export async function inventionItemBoost({
 		logError(err, { user_id: mUser.id });
 		return { success: false };
 	}
+}
+
+export async function userHasFlappy({
+	user,
+	duration
+}: {
+	user: KlasaUser;
+	duration: number;
+}): Promise<{ userMsg: string; shouldGiveBoost: boolean }> {
+	if (user.usingPet('Flappy')) {
+		return { userMsg: 'You are getting 2x loot/rewards from Flappy', shouldGiveBoost: true };
+	}
+	if (hasItemsEquippedOrInBank(user, ['RoboFlappy'])) {
+		const boostResult = await inventionItemBoost({
+			userID: BigInt(user.id),
+			inventionID: InventionID.RoboFlappy,
+			duration
+		});
+		if (boostResult.success) {
+			return {
+				shouldGiveBoost: true,
+				userMsg: `You are getting 2x loot/rewards from RoboFlappy (${boostResult.messages})`
+			};
+		}
+	}
+	return {
+		shouldGiveBoost: false,
+		userMsg: ''
+	};
 }

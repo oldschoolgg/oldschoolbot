@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
 import { KaramjaDiary, userhasDiaryTier } from '../../../lib/diaries';
+import { userHasFlappy } from '../../../lib/invention/inventions';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
@@ -36,7 +37,9 @@ export default class extends Task {
 
 		ticketsReceived += bonusTickets;
 
-		if (user.usingPet('Flappy')) {
+		const flappyRes = await userHasFlappy({ user, duration });
+
+		if (flappyRes.shouldGiveBoost) {
 			ticketsReceived *= 2;
 		}
 
@@ -49,11 +52,7 @@ export default class extends Task {
 			duration
 		)}, you received ${Math.floor(
 			agilityXP
-		).toLocaleString()} Agility XP and ${ticketsReceived} Agility arena tickets.${
-			user.usingPet('Flappy')
-				? ' \n\n<:flappy:812280578195456002> Flappy helps you in your minigame, granting you 2x rewards.'
-				: ''
-		}`;
+		).toLocaleString()} Agility XP and ${ticketsReceived} Agility arena tickets.${flappyRes.userMsg}`;
 
 		// Roll for pet
 		for (let i = 0; i < ticketsReceived; i++) {

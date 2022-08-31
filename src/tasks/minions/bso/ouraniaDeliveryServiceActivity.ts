@@ -3,6 +3,7 @@ import { Task } from 'klasa';
 import { Bank, LootTable } from 'oldschooljs';
 import { PrayerPageTable } from 'oldschooljs/dist/simulation/clues/General';
 
+import { userHasFlappy } from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/settings/prisma';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
@@ -35,9 +36,10 @@ export default class extends Task {
 		const user = await this.client.fetchUser(userID);
 		const level = user.skillLevel(SkillsEnum.Magic);
 		let tokens = Math.floor((quantity / 2) * 3.235 * (level / 25 + 1));
-		if (user.usingPet('Flappy')) {
-			tokens *= 2;
-		}
+
+		const flappyRes = await userHasFlappy({ user, duration });
+
+		if (flappyRes.shouldGiveBoost) tokens *= 2;
 
 		await user.settings.update(UserSettings.OuraniaTokens, user.settings.get(UserSettings.OuraniaTokens) + tokens);
 
@@ -55,7 +57,7 @@ export default class extends Task {
 			loot.add(OuraniaTipTable.roll());
 		}
 		if (loot.length > 0) {
-			if (user.usingPet('Flappy')) {
+			if (flappyRes.shouldGiveBoost) {
 				loot.multiply(2);
 			}
 			await user.addItemsToBank({ items: loot, collectionLog: true });
@@ -71,6 +73,7 @@ export default class extends Task {
 			});
 			str += `\n\nYou received some tips from Wizards in your delivery route: ${loot}.`;
 		}
+		if (flappyRes.userMsg) str += `\n${flappyRes.userMsg}`;
 
 		handleTripFinish(
 			user,

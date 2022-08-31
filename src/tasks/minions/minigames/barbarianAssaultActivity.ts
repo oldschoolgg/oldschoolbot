@@ -2,6 +2,7 @@ import { calcPercentOfNum, calcWhatPercent, randInt } from 'e';
 import { Task } from 'klasa';
 
 import { KandarinDiary, userhasDiaryTier } from '../../../lib/diaries';
+import { userHasFlappy } from '../../../lib/invention/inventions';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -9,7 +10,7 @@ import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../../../mah
 
 export default class extends Task {
 	async run(data: MinigameActivityTaskOptions) {
-		const { channelID, quantity, userID } = data;
+		const { channelID, quantity, userID, duration } = data;
 		const [klasaUser, user] = await Promise.all([globalClient.fetchUser(userID), mahojiUsersSettingsFetch(userID)]);
 		let basePoints = 35;
 
@@ -27,9 +28,10 @@ export default class extends Task {
 		}
 		let totalPoints = Math.floor(pts * quantity);
 
-		if (klasaUser.usingPet('Flappy')) {
+		const flappyRes = await userHasFlappy({ user: klasaUser, duration });
+
+		if (flappyRes.shouldGiveBoost) {
 			totalPoints *= 2;
-			resultStr += `<:flappy:812280578195456002> Flappy helps ${klasaUser.username}, granting them 2x points.`;
 		}
 
 		await incrementMinigameScore(user.id, 'barb_assault', quantity);
@@ -41,6 +43,7 @@ export default class extends Task {
 
 		resultStr = `${klasaUser}, ${klasaUser.minionName} finished doing ${quantity} waves of Barbarian Assault, you received ${totalPoints} Honour Points.
 ${resultStr}`;
+		if (flappyRes.shouldGiveBoost) resultStr += `\n\n${flappyRes.userMsg}`;
 
 		handleTripFinish(
 			klasaUser,
