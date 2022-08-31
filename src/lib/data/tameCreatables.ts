@@ -235,7 +235,7 @@ export const tameCreatables: Createable[] = [
 			metallic: 1500,
 			strong: 200,
 			protective: 200,
-			justiciar: 3
+			justiciar: 6
 		}),
 		outputItems: new Bank({
 			'Justiciar igne armor': 1
