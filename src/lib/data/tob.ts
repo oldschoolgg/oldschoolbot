@@ -430,8 +430,13 @@ export async function checkTOBUser(
 		if (!rangeGear.hasEquipped(minRangeSoloGear, true)) {
 			return [true, 'You must either have a Hellfire bow and Hellfire arrows equipped to solo ToB'];
 		}
-		if (total < 95) {
-			return [true, 'You must either have at least 95% overall gear score to solo ToB'];
+		const mageGear = user.getGear('mage');
+		if (
+			!meleeGear.hasEquipped(gorajanWarriorOutfit, true) &&
+			!rangeGear.hasEquipped(gorajanArcherOutfit, true) &&
+			!mageGear.hasEquipped(gorajanOccultOutfit, true)
+		) {
+			return [true, 'You must either have at least one complete set of Gorajan armour to solo ToB'];
 		}
 	}
 
