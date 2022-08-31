@@ -292,7 +292,7 @@ const source: [string, (string | number)[]][] = [
 	['Magic shortbow', ['Magic shortbow (i)']],
 	['Boots of stone', ['Boots of brimstone', 'Granite boots', "Rada's Blessing 4"]],
 	['Celestial ring (uncharged)', ['Celestial ring', 'Celestial signet']],
-	['Prospector jacket', ['Golden prospector jacket']],
+	['Prospector jacket', ['Golden prospector jacket', 'Varrock armour 4']],
 	['Prospector legs', ['Golden prospector legs']],
 	['Prospector boots', ['Golden prospector boots']],
 	['Prospector helmet', ['Golden prospector helmet']]
