@@ -8,7 +8,6 @@ import {
 	MessageEmbed,
 	MessageEmbedOptions
 } from 'discord.js';
-import { Time } from 'e';
 import { KlasaUser } from 'klasa';
 import {
 	APIActionRowComponent,
@@ -23,31 +22,7 @@ import {
 } from 'mahoji';
 import { CommandOptions } from 'mahoji/dist/lib/types';
 
-import { BotCommand } from '../../lib/structures/BotCommand';
 import { AbstractCommand, AbstractCommandAttributes, CommandArgs } from './inhibitors';
-
-export function convertKlasaCommandToAbstractCommand(command: BotCommand): AbstractCommand {
-	return {
-		name: command.name,
-		attributes: {
-			altProtection: command.altProtection,
-			guildOnly: command.guildOnly,
-			perkTier: command.perkTier,
-			ironCantUse: command.ironCantUse,
-			examples: command.examples,
-			categoryFlags: command.categoryFlags,
-			bitfieldsRequired: command.bitfieldsRequired,
-			enabled: command.enabled,
-			testingCommand: command.testingCommand,
-			// cooldowns in klasa are defined in seconds, convert them to milliseconds
-			cooldown: command.cooldown ? command.cooldown * Time.Second : undefined,
-			requiredPermissionsForBot: command.requiredPermissionsForBot,
-			requiredPermissionsForUser: command.requiredPermissionsForUser,
-			runIn: command.runIn,
-			description: command.description
-		}
-	};
-}
 
 export interface OSBMahojiCommand extends ICommand {
 	attributes?: Omit<AbstractCommandAttributes, 'description'>;
@@ -136,12 +111,7 @@ export function convertComponentDJSComponent(
 	return new MessageActionRow(data);
 }
 export function allAbstractCommands(mahojiClient: MahojiClient): AbstractCommand[] {
-	return [
-		...Array.from(globalClient.commands.values() as any as BotCommand[])
-			.filter(i => !i.category.toLowerCase().includes('deprecated'))
-			.map(convertKlasaCommandToAbstractCommand),
-		...mahojiClient.commands.values.map(convertMahojiCommandToAbstractCommand)
-	];
+	return mahojiClient.commands.values.map(convertMahojiCommandToAbstractCommand);
 }
 
 export async function hasBanMemberPerms(user: KlasaUser, guild: Guild) {

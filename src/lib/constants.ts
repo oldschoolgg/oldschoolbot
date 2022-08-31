@@ -475,7 +475,7 @@ export const mahojiInformationalButtons: APIButtonComponent[] = buttonSource.map
 export type LastTripRunArgs = Omit<RunCommandArgs, 'commandName' | 'args'>;
 export const lastTripCache = new Map<
 	string,
-	{ continue: (args: LastTripRunArgs) => Promise<CommandResponse>; data: ActivityTaskOptions }
+	{ continue: (args: LastTripRunArgs) => Promise<null | CommandResponse>; data: ActivityTaskOptions }
 >();
 
 export const PATRON_ONLY_GEAR_SETUP =
