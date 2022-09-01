@@ -217,6 +217,9 @@ const ores: Ore[] = [
 		id: itemID('Obsidian shards'),
 		name: 'Obsidian',
 		respawnTime: 111,
+		bankingTime: 33,
+		slope: 0.05,
+		intercept: -1.35,
 		petChance: 50_000,
 		nuggets: false,
 		requiredPickaxes: resolveItems(['Crystal pickaxe', 'Dwarven pickaxe', 'Volcanic pickaxe'])
@@ -253,6 +256,9 @@ const ores: Ore[] = [
 		id: 70_011,
 		name: 'Dark animica',
 		respawnTime: 5,
+		bankingTime: 33,
+		slope: 0.05,
+		intercept: -1.35,
 		petChance: 30_000,
 		clueScrollChance: 46_350
 	}

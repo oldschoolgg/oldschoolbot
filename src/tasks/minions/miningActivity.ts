@@ -160,55 +160,54 @@ export default class extends Task {
 				loot.add(ore.id, quantity);
 			}
 
-		if (isDestroyed) str += '\nYour volcanic pickaxe destroyed the ores.';
+			if (isDestroyed) str += '\nYour volcanic pickaxe destroyed the ores.';
 
-		const hasKlik = user.usingPet('Klik');
+			const hasKlik = user.usingPet('Klik');
 
-		const hasAdze = userHasItemsEquippedAnywhere(user, ['Superior inferno adze']);
-		const adzeIsDisabled = (
-			await mahojiUsersSettingsFetch(user.id, { disabled_inventions: true })
-		).disabled_inventions.includes(InventionID.SuperiorInfernoAdze);
-		if (hasAdze && !adzeIsDisabled) {
-			const smeltedOre = Smithing.Bars.find(
-				o => o.inputOres.bank[ore.id] && o.inputOres.items().filter(i => i[0].name !== 'Coal').length === 1
-			);
-			if (smeltedOre) {
-				const adzeBank = new Bank().add(smeltedOre.id, quantity);
-				loot.remove(ore.id, loot.amount(ore.id));
-				loot.add(adzeBank);
-				userStatsBankUpdate(user.id, 'bars_from_adze_bank', adzeBank);
-
-				str += ` ${await user.addXP({
-					skillName: SkillsEnum.Smithing,
-					amount: smeltedOre.xp * quantity,
-					duration
-				})}`;
-				str += ' Your Superior inferno adze smelted all the ore you mined (No materials used).';
-			} else if (hasKlik) {
-				const smeltedOre = Smithing.Bars.find(o => o.inputOres.bank[ore.id] && o.inputOres.length === 1);
+			const hasAdze = userHasItemsEquippedAnywhere(user, ['Superior inferno adze']);
+			const adzeIsDisabled = (
+				await mahojiUsersSettingsFetch(user.id, { disabled_inventions: true })
+			).disabled_inventions.includes(InventionID.SuperiorInfernoAdze);
+			if (hasAdze && !adzeIsDisabled) {
+				const smeltedOre = Smithing.Bars.find(
+					o => o.inputOres.bank[ore.id] && o.inputOres.items().filter(i => i[0].name !== 'Coal').length === 1
+				);
 				if (smeltedOre) {
-					const klikBank = new Bank().add(smeltedOre.id, quantity);
+					const adzeBank = new Bank().add(smeltedOre.id, quantity);
 					loot.remove(ore.id, loot.amount(ore.id));
-					loot.add(klikBank);
-					userStatsBankUpdate(user.id, 'bars_from_klik_bank', klikBank);
-					str +=
-						'\n<:klik:749945070932721676> Klik breathes a incredibly hot fire breath, and smelts all your ores!';
+					loot.add(adzeBank);
+					userStatsBankUpdate(user.id, 'bars_from_adze_bank', adzeBank);
+
+					str += ` ${await user.addXP({
+						skillName: SkillsEnum.Smithing,
+						amount: smeltedOre.xp * quantity,
+						duration
+					})}`;
+					str += ' Your Superior inferno adze smelted all the ore you mined (No materials used).';
+				} else if (hasKlik) {
+					const smeltedOre = Smithing.Bars.find(o => o.inputOres.bank[ore.id] && o.inputOres.length === 1);
+					if (smeltedOre) {
+						const klikBank = new Bank().add(smeltedOre.id, quantity);
+						loot.remove(ore.id, loot.amount(ore.id));
+						loot.add(klikBank);
+						userStatsBankUpdate(user.id, 'bars_from_klik_bank', klikBank);
+						str +=
+							'\n<:klik:749945070932721676> Klik breathes a incredibly hot fire breath, and smelts all your ores!';
+					}
+				}
+
+				const userBank = user.bank();
+				const spiritOre = stoneSpirits.find(t => t.ore.id === oreID);
+				if (spiritOre) {
+					const amountOfSpirits = Math.min(quantity, userBank.amount(spiritOre.spirit.id));
+					if (amountOfSpirits > 0) {
+						await user.removeItemsFromBank(new Bank().add(spiritOre.spirit.id, amountOfSpirits));
+						const spiritBank = new Bank().add(oreID, amountOfSpirits);
+						loot.add(spiritBank);
+						userStatsBankUpdate(user.id, 'ores_from_spirits_bank', spiritBank);
+					}
 				}
 			}
-
-			const userBank = user.bank();
-			const spiritOre = stoneSpirits.find(t => t.ore.id === oreID);
-			if (spiritOre) {
-				const amountOfSpirits = Math.min(quantity, userBank.amount(spiritOre.spirit.id));
-				if (amountOfSpirits > 0) {
-					await user.removeItemsFromBank(new Bank().add(spiritOre.spirit.id, amountOfSpirits));
-					const spiritBank = new Bank().add(oreID, amountOfSpirits);
-					loot.add(spiritBank);
-					userStatsBankUpdate(user.id, 'ores_from_spirits_bank', spiritBank);
-				}
-			}
-		}
-
 		}
 		str += `\n\nYou received: ${loot}.`;
 		if (bonusXP > 0) {

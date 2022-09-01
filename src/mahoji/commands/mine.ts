@@ -16,19 +16,19 @@ import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 export const pickaxes = [
 	{
 		id: itemID('Volcanic pickaxe'),
-		//60%
+		// 60%
 		ticksBetweenRolls: 2.75,
 		miningLvl: 105
 	},
 	{
 		id: itemID('Dwarven pickaxe'),
-		//50%
+		// 50%
 		ticksBetweenRolls: 2.75,
 		miningLvl: 99
 	},
 	{
 		id: itemID('Crystal pickaxe'),
-		//11%
+		// 11%
 		ticksBetweenRolls: 2.75,
 		miningLvl: 71
 	},
@@ -306,13 +306,6 @@ export const mineCommand: OSBMahojiCommand = {
 					boosts.push(`Lowered rock depletion rate by **${glovesRate}%** for ${itemNameFromID(glove.id)}`);
 					break;
 				}
-		}
-
-		let miningCapeEffect = 0;
-		if (hasItemsEquippedOrInBank(user, [itemID('Mining cape')]) || !miningCapeOreEffect.has(ore.id)) {
-			miningCapeEffect = miningCapeOreEffect.amount(ore.id);
-			if (miningCapeEffect !== 0) {
-				boosts.push(`**${miningCapeEffect}%** chance to mine an extra ore using Mining cape`);
 			}
 		}
 
@@ -332,7 +325,6 @@ export const mineCommand: OSBMahojiCommand = {
 			goldSilverBoost = true;
 			boosts.push(`**70%** faster ${ore.name} banking for 99 Crafting`);
 		}
-		// Calculate the time it takes to mine specific quantity or as many as possible
 
 		let miningCapeEffect = 0;
 		if (hasItemsEquippedOrInBank(user, [itemID('Mining cape')]) || !miningCapeOreEffect.has(ore.id)) {
@@ -342,16 +334,12 @@ export const mineCommand: OSBMahojiCommand = {
 			}
 		}
 
-		if (
-			userHasItemsEquippedAnywhere(user, 'Offhand volcanic pickaxe') &&
-			skills.strength >= 100 &&
-			skills.mining >= 105
-		) {
-			timeToMine = reduceNumByPercent(timeToMine, 60);
-			boosts.push('60% for Offhand volcanic pickaxe');
+		if (!powermine) {
+			powermine = false;
+		} else {
+			boosts.push('**Powermining**');
 		}
 		// Calculate the time it takes to mine specific quantity or as many as possible
-
 		let [timeToMine, newQuantity] = determineMiningTime({
 			quantity,
 			user,
@@ -364,6 +352,15 @@ export const mineCommand: OSBMahojiCommand = {
 			goldSilverBoost,
 			miningLvl: miningLevel
 		});
+
+		if (
+			userHasItemsEquippedAnywhere(user, 'Offhand volcanic pickaxe') &&
+			skills.strength >= 100 &&
+			skills.mining >= 105
+		) {
+			timeToMine = reduceNumByPercent(timeToMine, 60);
+			boosts.push('60% for Offhand volcanic pickaxe');
+		}
 
 		const duration = timeToMine;
 
