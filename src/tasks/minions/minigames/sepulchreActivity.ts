@@ -2,6 +2,7 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { GrandHallowedCoffin } from 'oldschooljs/dist/simulation/misc/GrandHallowedCoffin';
 
+import { userHasFlappy } from '../../../lib/invention/inventions';
 import { openCoffin, sepulchreFloors } from '../../../lib/minions/data/sepulchre';
 import { trackLoot } from '../../../lib/settings/prisma';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
@@ -43,7 +44,8 @@ export default class extends Task {
 			}
 		}
 
-		if (user.usingPet('Flappy')) {
+		const flappyRes = await userHasFlappy({ user, duration });
+		if (flappyRes.shouldGiveBoost) {
 			loot.multiply(2);
 		}
 
@@ -77,6 +79,8 @@ export default class extends Task {
 		let str = `${user}, ${user.minionName} finished doing the Hallowed Sepulchre ${quantity}x times (floor ${
 			floors[0]
 		}-${floors[floors.length - 1]}), and opened ${numCoffinsOpened}x coffins.\n\n${xpRes}\n${thievingXpRes}`;
+
+		str += `\n${flappyRes.userMsg}`;
 
 		const image = await makeBankImage({
 			bank: itemsAdded,

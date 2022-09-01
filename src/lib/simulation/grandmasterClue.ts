@@ -74,7 +74,7 @@ const table = new LootTable()
 	.tertiary(10_000, BlessingTable)
 	.tertiary(10_000, DyeTable)
 	.tertiary(8000, 'Ring of luck')
-	.tertiary(3000, 'Deathtouched dart')
+	.tertiary(4000, 'Deathtouched dart')
 	.tertiary(50, LampTable)
 	.tertiary(50, new LootTable().add('Ignecarus mask').add('Malygos mask'))
 	.tertiary(

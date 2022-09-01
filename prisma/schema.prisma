@@ -449,6 +449,8 @@ model User {
   item_contract_bank       Json     @default("{}") @db.Json
   void_staff_charges       Int      @default(0)
 
+  last_patron_double_time_trigger DateTime? @db.Timestamp(6)
+
   // Invention
   skills_invention          BigInt @default(0) @map("skills.invention")
   materials_owned           Json   @default("{}") @db.Json
@@ -570,7 +572,11 @@ model TameActivity {
   tame_id     Int
   tame        Tame     @relation(fields: [tame_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_aa012dd3d9d58b8acb4e2cffd4d")
 
-  @@index([completed], map: "IDX_025e73c433521b92b7202ed1a3")
+  fake_duration Int?
+  deaths        Int  @default(0)
+
+  @@index([completed])
+  @@index([tame_id])
   @@map("tame_activity")
 }
 

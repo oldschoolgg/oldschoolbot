@@ -3,6 +3,7 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
+import { userHasFlappy } from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/settings/prisma';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
@@ -104,8 +105,8 @@ export default class extends Task {
 		await user.addXP({ skillName: SkillsEnum.Woodcutting, amount: wcXpToGive });
 		await user.addXP({ skillName: SkillsEnum.Firemaking, amount: fmXpToGive });
 		const newLevel = user.skillLevel(SkillsEnum.Firemaking);
-
-		if (user.usingPet('Flappy')) {
+		const flappyRes = await userHasFlappy({ user, duration });
+		if (flappyRes.shouldGiveBoost) {
 			loot.multiply(2);
 		}
 		if (user.hasItemEquippedAnywhere('Firemaking master cape')) {
@@ -140,6 +141,8 @@ export default class extends Task {
 		if (gotToad) {
 			output += '\n\n<:wintertoad:749945071230779493> A Wintertoad sneakily hops into your bank!';
 		}
+		if (flappyRes.shouldGiveBoost) output += `\n${flappyRes.userMsg}`;
+
 		await trackLoot({
 			loot: itemsAdded,
 			id: 'wintertodt',

@@ -4,6 +4,7 @@ import { Bank, Monsters } from 'oldschooljs';
 import TzTokJad from 'oldschooljs/dist/simulation/monsters/special/TzTokJad';
 
 import { Emoji, Events } from '../../../lib/constants';
+import { userHasFlappy } from '../../../lib/invention/inventions';
 import { prisma } from '../../../lib/settings/prisma';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -142,7 +143,8 @@ export default class extends Task {
 			);
 		}
 
-		if (user.usingPet('Flappy')) {
+		const flappyRes = await userHasFlappy({ user, duration });
+		if (flappyRes.shouldGiveBoost) {
 			loot.multiply(2);
 		}
 
@@ -179,6 +181,10 @@ export default class extends Task {
 
 			msg = `Jad task completed. ${xpMessage}. \n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${newPoints}; return to a Slayer master.**`;
 			// End slayer code
+		}
+
+		if (flappyRes.shouldGiveBoost) {
+			msg += `\n\n${flappyRes.userMsg}`;
 		}
 
 		handleTripFinish(

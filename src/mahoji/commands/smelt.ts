@@ -90,9 +90,6 @@ export const smeltingCommand: OSBMahojiCommand = {
 
 		// All bars take 2.4s to smith normally, add on quarter of a second to account for banking/etc.
 		let timeToSmithSingleBar = blast_furnace ? bar.timeToUse + Time.Second / 10 : bar.timeToUse + Time.Second / 4;
-		if (user.hasItemEquippedAnywhere('Dwarven gauntlets')) {
-			timeToSmithSingleBar /= 2;
-		}
 
 		if (blast_furnace) {
 			const requiredSkills = {
@@ -119,7 +116,22 @@ export const smeltingCommand: OSBMahojiCommand = {
 			}
 			if (!user.hasGracefulEquipped()) {
 				timeToSmithSingleBar *= 1.075;
-				boosts.push('-7.5% penalty for not having graceful equipped.');
+				boosts.push('-7.5% penalty for not having graceful equipped');
+			}
+			if (user.hasItemEquippedAnywhere('Smithing master cape')) {
+				timeToSmithSingleBar /= 2;
+				boosts.push('2x boost for Smithing master cape');
+			}
+			if (user.hasItemEquippedAnywhere('Dwarven gauntlets') && bar.id !== itemID('Gold bar')) {
+				boosts.push('2x boost for having Dwarven gauntlets equipped');
+				timeToSmithSingleBar /= 2;
+			}
+		}
+
+		if (!blast_furnace) {
+			if (user.hasItemEquippedAnywhere('Dwarven gauntlets')) {
+				boosts.push('2x boost for having a Dwarven gauntlets equipped');
+				timeToSmithSingleBar /= 2;
 			}
 		}
 
@@ -184,8 +196,8 @@ export const smeltingCommand: OSBMahojiCommand = {
 		const response = `${user.minionName} is now smelting ${quantity}x ${
 			bar.name
 		}, it'll take around ${formatDuration(duration)} to finish. ${
-			blast_furnace ? `You paid ${coinsToRemove} GP to use the Blast Furnace.` : ''
-		} ${boosts.length > 0 ? `\n\n**Boosts: ** ${boosts.join(', ')}` : ''}`;
+			blast_furnace ? `\nYou paid ${coinsToRemove} GP to use the Blast Furnace.` : ''
+		} ${boosts.length > 0 ? `\n\n**Boosts: ** ${boosts.join(', ')}.` : ''}`;
 
 		return response;
 	}

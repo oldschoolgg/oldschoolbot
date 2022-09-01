@@ -1,6 +1,7 @@
 import { calcPercentOfNum } from 'e';
 import { Task } from 'klasa';
 
+import { userHasFlappy } from '../../../lib/invention/inventions';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -24,7 +25,8 @@ export default class extends Task {
 			amount: xp + bonusXP,
 			duration
 		});
-		if (user.usingPet('Flappy')) {
+		const flappyRes = await userHasFlappy({ user, duration });
+		if (flappyRes.shouldGiveBoost) {
 			points *= 2;
 		}
 		await user.settings.update(
@@ -32,13 +34,7 @@ export default class extends Task {
 			user.settings.get(UserSettings.CarpenterPoints) + points
 		);
 
-		let str = `${user}, ${
-			user.minionName
-		} finished doing ${quantity}x Mahogany Homes contracts, you received ${points} Carpenter points. ${xpRes} ${
-			user.usingPet('Flappy')
-				? ' \n\n<:flappy:812280578195456002> Flappy helps you in your minigame, granting you 2x rewards.'
-				: ''
-		}`;
+		let str = `${user}, ${user.minionName} finished doing ${quantity}x Mahogany Homes contracts, you received ${points} Carpenter points. ${xpRes} ${flappyRes.userMsg}`;
 
 		if (bonusXP > 0) {
 			str += `\nYou received ${bonusXP.toLocaleString()} bonus XP from your Carpenter's outfit.`;

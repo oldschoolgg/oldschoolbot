@@ -86,12 +86,11 @@ const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Loot Doubling',
 		fn: async ({ data, messages, user, loot }) => {
+			const cantBeDoubled = ['GroupMonsterKilling', 'KingGoldemar', 'Ignecarus', 'Inferno', 'Alching', 'Agility'];
 			if (
 				loot &&
 				!data.cantBeDoubled &&
-				!['GroupMonsterKilling', 'KingGoldemar', 'Ignecarus', 'Inferno', 'Alching', 'Agility'].includes(
-					data.type
-				) &&
+				!cantBeDoubled.includes(data.type) &&
 				data.duration > Time.Minute * 20 &&
 				roll(user.usingPet('Mr. E') ? 12 : 15)
 			) {

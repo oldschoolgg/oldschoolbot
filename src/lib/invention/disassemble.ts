@@ -157,7 +157,8 @@ const flagToMaterialMap: [DisassembleFlag, MaterialType][] = [
 	['treasure_trails', 'treasured'],
 	['mystery_box', 'mysterious'],
 	['abyssal', 'abyssal'],
-	['orikalkum', 'orikalkum']
+	['orikalkum', 'orikalkum'],
+	['justiciar', 'justiciar']
 ];
 
 function flagEffectsInDisassembly(item: DisassemblyItem, loot: MaterialBank) {
@@ -432,7 +433,7 @@ export function calcWholeDisXP(user: KlasaUser, item: Item, quantity: number) {
 	const group = findDisassemblyGroup(item);
 	const inventionLevel = user.skillLevel(SkillsEnum.Invention);
 	if (group && inventionLevel >= group.data.lvl) {
-		return calculateDisXP(group.group, inventionLevel, quantity, group?.data.lvl).xp;
+		return calculateDisXP(group.group, inventionLevel, quantity, group.data.lvl).xp;
 	}
 	return null;
 }
