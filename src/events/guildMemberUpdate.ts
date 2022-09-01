@@ -1,7 +1,8 @@
 import { GuildMember } from 'discord.js';
 import { Event, EventStore } from 'klasa';
 
-import { Roles, SupportServer } from '../lib/constants';
+import { SupportServer } from '../config';
+import { Roles } from '../lib/constants';
 
 export default class extends Event {
 	public constructor(store: EventStore, file: string[], directory: string) {

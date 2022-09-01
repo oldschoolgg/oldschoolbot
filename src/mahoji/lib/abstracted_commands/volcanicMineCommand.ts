@@ -20,7 +20,7 @@ const skillReqs = {
 
 export const VolcanicMineGameTime = Time.Minute * 10;
 
-export const VolcanicMineShop: { name: string; output: ItemBank; cost: number; clOnly?: boolean }[] = [
+export const VolcanicMineShop: { name: string; output: ItemBank; cost: number; clOnly?: boolean; addToCl?: true }[] = [
 	{
 		name: 'Iron ore',
 		output: resolveNameBank({ 'Iron ore': 1 }),
@@ -74,7 +74,8 @@ export const VolcanicMineShop: { name: string; output: ItemBank; cost: number; c
 	{
 		name: 'Volcanic mine teleport',
 		output: resolveNameBank({ 'Volcanic mine teleport': 1 }),
-		cost: 200
+		cost: 200,
+		addToCl: true
 	},
 	{
 		name: 'Large water container',
@@ -214,7 +215,7 @@ export async function volcanicMineShopCommand(
 	} else {
 		await transactItems({
 			userID: user.id,
-			collectionLog: true,
+			collectionLog: shopItem.addToCl === true,
 			itemsToAdd: new Bank().add(shopItem.output).multiply(quantity)
 		});
 	}

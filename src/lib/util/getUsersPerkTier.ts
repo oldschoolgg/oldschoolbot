@@ -3,8 +3,9 @@ import { User } from 'discord.js';
 import { notEmpty, Time } from 'e';
 import { KlasaUser } from 'klasa';
 
+import { SupportServer } from '../../config';
 import { mahojiUserSettingsUpdate } from '../../mahoji/mahojiSettings';
-import { BitField, PerkTier, Roles, SupportServer } from '../constants';
+import { BitField, PerkTier, Roles } from '../constants';
 import { UserSettings } from '../settings/types/UserSettings';
 import { logError } from './logError';
 

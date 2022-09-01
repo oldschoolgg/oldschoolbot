@@ -5,6 +5,7 @@ import { syncBlacklists } from '../../lib/blacklists';
 import { DISABLED_COMMANDS } from '../../lib/constants';
 import { syncDoubleLoot } from '../../lib/doubleLoot';
 import { prisma } from '../../lib/settings/prisma';
+import { assert } from '../../lib/util';
 
 export async function onStartup() {
 	// Sync disabled commands
@@ -36,4 +37,5 @@ export async function onStartup() {
 	}
 
 	await syncDoubleLoot();
+	assert(!globalClient.monitors.get('commandHandler'));
 }

@@ -30,5 +30,8 @@ export const DISCORD_SETTINGS: Partial<IDiscordSettings> = {
 	// Your bot unique ID goes here
 	BotID: '729244028989603850'
 };
-export const OWNER_ID = '157797566833098752';
+// Add or replace these with your Discord ID:
+export const OWNER_IDS = ['157797566833098752'];
 export const MAXING_MESSAGE = 'Congratulations on maxing!';
+// Discord server where admin commands will be allowed:
+export const SupportServer = '940758552425955348';

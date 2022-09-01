@@ -60,6 +60,7 @@ const randomPatMessage = (minionName: string) => randArrItem(patMessages).replac
 
 export async function getUserInfo(user: User) {
 	const klasaUser = await globalClient.fetchUser(user.id);
+	await klasaUser.settings.sync(true);
 	const roboChimpUser = await roboChimpUserFetch(BigInt(user.id));
 
 	const bitfields = `${(user.bitfield as BitField[])

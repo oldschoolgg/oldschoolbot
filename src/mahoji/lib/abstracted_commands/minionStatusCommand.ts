@@ -105,7 +105,7 @@ export async function minionStatusCommand(
 			type: ComponentType.Button,
 			custom_id: 'REPEAT_TRIP',
 			label: 'Repeat Trip',
-			emoji: { id: '🔁' },
+			emoji: { name: '🔁' },
 			style: ButtonStyle.Secondary
 		});
 	}

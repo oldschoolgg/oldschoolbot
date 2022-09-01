@@ -44,8 +44,8 @@ import Monster from 'oldschooljs/dist/structures/Monster';
 import { convertLVLtoXP } from 'oldschooljs/dist/util/util';
 import { bool, integer, MersenneTwister19937, nodeCrypto, real, shuffle } from 'random-js';
 
-import { CLIENT_ID, production } from '../config';
-import { BitField, ProjectileType, skillEmoji, SupportServer, usernameCache } from './constants';
+import { CLIENT_ID, production, SupportServer } from '../config';
+import { BitField, ProjectileType, skillEmoji, usernameCache } from './constants';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
 import { Consumable } from './minions/types';
 import { POHBoosts } from './poh';
