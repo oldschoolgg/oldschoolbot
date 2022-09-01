@@ -189,10 +189,6 @@ export function convertXPtoLVL(xp: number, cap = 120) {
 	return cap;
 }
 
-export function determineScaledOreTime(xp: number, respawnTime: number, lvl: number) {
-	const t = xp / (lvl / 4 + 0.5) + ((100 - lvl) / 100 + 0.75);
-	return Math.floor((t + respawnTime) * 1000) * 1.2;
-}
 export function determineScaledLogTime(xp: number, respawnTime: number, lvl: number) {
 	const t = xp / (lvl / 4 + 0.5) + ((100 - lvl) / 100 + 0.75);
 	return Math.floor((t + respawnTime) * 1000) * 1.2;

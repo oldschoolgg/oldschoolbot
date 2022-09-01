@@ -12,6 +12,7 @@ import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import { multiplyBank, rand } from '../../lib/util';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { userHasItemsEquippedAnywhere } from '../../lib/util/minionUtils';
 import resolveItems from '../../lib/util/resolveItems';
@@ -19,7 +20,8 @@ import { mahojiUsersSettingsFetch, userStatsBankUpdate } from '../../mahoji/maho
 
 export default class extends Task {
 	async run(data: MiningActivityTaskOptions) {
-		const { oreID, quantity, userID, channelID, duration } = data;
+		const { oreID, userID, channelID, duration, powermine } = data;
+		let { quantity } = data;
 		const user = await this.client.fetchUser(userID);
 
 		const ore = Mining.Ores.find(ore => ore.id === oreID)!;
@@ -88,7 +90,7 @@ export default class extends Task {
 				numberOfNuggets *= 2;
 			}
 			loot.add('Golden nugget', numberOfNuggets);
-		} else if (numberOfMinutes > 10 && ore.minerals) {
+		} else if (numberOfMinutes > 10 && ore.minerals && user.skillLevel(SkillsEnum.Mining) >= 60) {
 			let numberOfMinerals = 0;
 			for (let i = 0; i < quantity; i++) {
 				if (roll(ore.minerals)) numberOfMinerals++;
@@ -121,31 +123,42 @@ export default class extends Task {
 		);
 		const isDestroyed = isUsingObsidianPickaxe && !resolveItems(['Obsidian shards']).includes(ore.id);
 
-		// Gem rocks roll off the GemRockTable
-		if (ore.id === 1625) {
-			for (let i = 0; i < quantity; i++) {
-				loot.add(Mining.GemRockTable.roll());
-			}
-		} else if (ore.id === 21_622) {
-			// Volcanic ash
-			const userLevel = user.skillLevel(SkillsEnum.Mining);
-			const tiers = [
-				[22, 1],
-				[37, 2],
-				[52, 3],
-				[67, 4],
-				[82, 5],
-				[97, 6]
-			];
-			for (const [lvl, multiplier] of tiers.reverse()) {
-				if (userLevel >= lvl) {
-					loot.add(ore.id, quantity * multiplier);
-					break;
+		if (!powermine) {
+			// Gem rocks roll off the GemRockTable
+			if (ore.id === 1625) {
+				for (let i = 0; i < quantity; i++) {
+					loot.add(Mining.GemRockTable.roll());
 				}
+			} else if (ore.id === 21_622) {
+				// Volcanic ash
+				const userLevel = user.skillLevel(SkillsEnum.Mining);
+				const tiers = [
+					[22, 1],
+					[37, 2],
+					[52, 3],
+					[67, 4],
+					[82, 5],
+					[97, 6]
+				];
+				for (const [lvl, multiplier] of tiers.reverse()) {
+					if (userLevel >= lvl) {
+						loot.add(ore.id, quantity * multiplier);
+						break;
+					}
+				}
+			} else if (ore.id === 6973) {
+				// Sandstone roll off the SandstoneRockTable
+				for (let i = 0; i < quantity; i++) {
+					loot.add(Mining.SandstoneRockTable.roll());
+				}
+			} else if (ore.id === 6981) {
+				// Granite roll off the GraniteRockTable
+				for (let i = 0; i < quantity; i++) {
+					loot.add(Mining.GraniteRockTable.roll());
+				}
+			} else if (!isDestroyed) {
+				loot.add(ore.id, quantity);
 			}
-		} else if (!isDestroyed) {
-			loot.add(ore.id, quantity);
-		}
 
 		if (isDestroyed) str += '\nYour volcanic pickaxe destroyed the ores.';
 
@@ -196,6 +209,7 @@ export default class extends Task {
 			}
 		}
 
+		}
 		str += `\n\nYou received: ${loot}.`;
 		if (bonusXP > 0) {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
@@ -211,6 +225,23 @@ export default class extends Task {
 			itemsToAdd: loot
 		});
 
-		handleTripFinish(user, channelID, str, ['mine', { name: ore.name, quantity }, true], undefined, data, loot);
+		const theQuantity = duration > 0.9 * calcMaxTripLength(user, 'Mining') ? undefined : quantity;
+		handleTripFinish(
+			user,
+			channelID,
+			str,
+			[
+				'mine',
+				{
+					name: ore.name,
+					quantity: theQuantity,
+					powermine
+				},
+				true
+			],
+			undefined,
+			data,
+			loot
+		);
 	}
 }
