@@ -647,7 +647,7 @@ export const toolsCommand: OSBMahojiCommand = {
 							autocomplete: async value => {
 								return [
 									...dryStreakEntities.map(i => ({ name: i.name, value: i })),
-									...killableMonsters
+									...effectiveMonsters
 								]
 									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 									.map(i => ({ name: i.name, value: i.name }));
