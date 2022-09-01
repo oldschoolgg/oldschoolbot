@@ -539,9 +539,9 @@ export function getTameStatus(tameActivity: TameActivity | null) {
 		switch (activityData.type) {
 			case TameType.Combat:
 				return [
-					`Killing ${activityData.quantity.toLocaleString()}x ${Monsters.find(
-						m => m.id === activityData.monsterID
-					)?.name.toLowerCase()}`,
+					`Killing ${activityData.quantity.toLocaleString()}x ${tameKillableMonsters
+						.find(m => m.id === activityData.monsterID)
+						?.name.toLowerCase()}`,
 					timeRemaining
 				];
 			case TameType.Gatherer:
