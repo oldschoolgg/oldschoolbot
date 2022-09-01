@@ -87,7 +87,7 @@ export const tameKillableMonsters: TameKillableMonster[] = [
 		id: 334_912,
 		name: 'Chambers of Xeric',
 		aliases: ['cox', 'chambers of xeric'],
-		timeToFinish: Time.Minute * 100,
+		timeToFinish: Time.Minute * 90,
 		emoji: '<:Dharoks_helm:403038864199122947>',
 		wildy: false,
 		difficultyRating: 4,
