@@ -10,6 +10,7 @@ import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc';
 
 import { collectables } from '../mahoji/lib/abstracted_commands/collectCommand';
 import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
+import { handleSpecialCoxLoot } from '../tasks/minions/minigames/raidsActivity';
 import { getSimilarItems } from './data/similarItems';
 import killableMonsters from './minions/data/killableMonsters';
 import { customDemiBosses } from './minions/data/killableMonsters/custom/demiBosses';
@@ -98,7 +99,9 @@ export const tameKillableMonsters: TameKillableMonster[] = [
 				loot.add(
 					ChambersOfXeric.complete({ team: [{ id: '1', personalPoints: calcPointsForTame(tame) }] })['1']
 				);
+				handleSpecialCoxLoot(loot);
 			}
+
 			return loot;
 		},
 		deathChance: ({ tame }) => {

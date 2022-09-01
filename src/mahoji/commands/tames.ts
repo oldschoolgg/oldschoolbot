@@ -15,7 +15,7 @@ import { KlasaClient, KlasaUser } from 'klasa';
 import { APIUser, ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
-import { Bank, Monsters } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import { Canvas, CanvasRenderingContext2D, Image, loadImage } from 'skia-canvas/lib';
 
