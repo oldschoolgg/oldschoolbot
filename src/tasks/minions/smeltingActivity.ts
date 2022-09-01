@@ -2,6 +2,7 @@ import { randInt, Time } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { BlacksmithOutfit } from '../../lib/bsoOpenables';
 import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Smithing from '../../lib/skilling/skills/smithing';
@@ -10,6 +11,7 @@ import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
+import { hasItemsEquippedOrInBank } from '../../lib/util/minionUtils';
 
 export default class extends Task {
 	async run(data: SmeltingActivityTaskOptions) {
@@ -20,6 +22,7 @@ export default class extends Task {
 
 		// If this bar has a chance of failing to smelt, calculate that here.
 		const masterCapeInEffect = bar.chanceOfFail > 0 && user.hasItemEquippedAnywhere('Smithing master cape');
+		const hasBS = hasItemsEquippedOrInBank(user, BlacksmithOutfit, 'every');
 		const oldQuantity = quantity;
 		if ((bar.chanceOfFail > 0 && bar.name !== 'Iron bar') || (!blastf && bar.name === 'Iron bar')) {
 			let chance = masterCapeInEffect ? bar.chanceOfFail / 2 : bar.chanceOfFail;
@@ -40,7 +43,7 @@ export default class extends Task {
 
 		const xpRes = await user.addXP({
 			skillName: SkillsEnum.Smithing,
-			amount: xpReceived,
+			amount: xpReceived * (hasBS ? 1.1 : 1),
 			duration
 		});
 
@@ -51,7 +54,13 @@ export default class extends Task {
 		}
 
 		if (masterCapeInEffect) {
-			str += '\n2x less likely to fail from Smithing master cape';
+			if (!(blastf && bar.id === itemID('Iron bar'))) {
+				str += '\n2x less likely to fail from Smithing master cape.';
+			}
+		}
+
+		if (hasBS) {
+			str += '\n10% more XP for owning the blacksmith outfit.';
 		}
 
 		const loot = new Bank({
