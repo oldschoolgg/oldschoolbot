@@ -17,7 +17,7 @@ import { sendToChannelID } from '../../lib/util/webhook';
 const BINGO_NOTIFICATION_CHANNEL_ID = production ? '1008531589485043764' : '1008794250974089266';
 
 export const bingoStart = 1_662_127_200 * 1000;
-export const bingoEnd = bingoStart + Time.Day * 7;
+export const bingoEnd = bingoStart + Time.Day * 14;
 export const BINGO_TICKET_PRICE = 150_000_000;
 
 export function bingoIsActive() {
