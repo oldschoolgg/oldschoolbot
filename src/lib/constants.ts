@@ -15,7 +15,6 @@ import { ActivityTaskOptions } from './types/minions';
 import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
 
-export const SupportServer = DISCORD_SETTINGS.SupportServer ?? production ? '342983479501389826' : '940758552425955348';
 export const BotID = DISCORD_SETTINGS.BotID ?? '729244028989603850';
 
 export const Channel = {
@@ -550,7 +549,7 @@ export const mahojiInformationalButtons: APIButtonComponent[] = buttonSource.map
 export type LastTripRunArgs = Omit<RunCommandArgs, 'commandName' | 'args'>;
 export const lastTripCache = new Map<
 	string,
-	{ continue: (args: LastTripRunArgs) => Promise<CommandResponse>; data: ActivityTaskOptions }
+	{ continue: (args: LastTripRunArgs) => Promise<null | CommandResponse>; data: ActivityTaskOptions }
 >();
 
 export const PATRON_ONLY_GEAR_SETUP =
@@ -679,7 +678,6 @@ export const DISABLED_COMMANDS = new Set<string>();
 export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'none'] as const;
 export type PvMMethod = typeof PVM_METHODS[number];
 export const usernameCache = new Map<string, string>();
-export const OWNER_IDS = ['157797566833098752'];
 export const minionBuyButton: APIButtonComponentWithCustomId = {
 	type: ComponentType.Button,
 	custom_id: 'BUY_MINION',

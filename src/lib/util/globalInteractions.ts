@@ -42,6 +42,7 @@ const globalInteractionActions = [
 	'AUTO_FARMING_CONTRACT',
 	'BUY_MINION',
 	'BUY_BINGO_TICKET',
+	'NEW_SLAYER_TASK',
 	'SPAWN_LAMP',
 	'REPEAT_TAME_TRIP',
 	'ITEM_CONTRACT_SEND'
@@ -93,6 +94,14 @@ const reactionTimeLimits = {
 } as const;
 
 const reactionTimeLimit = (perkTier: PerkTier | 0): number => reactionTimeLimits[perkTier] ?? Time.Hour * 12;
+
+export function makeNewSlayerTaskButton() {
+	return new MessageButton()
+		.setCustomID('NEW_SLAYER_TASK')
+		.setLabel('New Slayer Task')
+		.setStyle('SECONDARY')
+		.setEmoji('630911040560824330');
+}
 
 export async function interactionHook(data: APIInteraction) {
 	if (data.type !== InteractionType.MessageComponent) return;
@@ -320,6 +329,15 @@ export async function interactionHook(data: APIInteraction) {
 			const channel = globalClient.channels.cache.get(options.channelID);
 			if (channelIsSendable(channel)) channel.send(convertMahojiResponseToDJSResponse(response));
 			break;
+		}
+		case 'NEW_SLAYER_TASK': {
+			await buttonReply();
+			return runCommand({
+				commandName: 'slayer',
+				args: { new_task: {} },
+				bypassInhibitors: true,
+				...options
+			});
 		}
 		default: {
 		}

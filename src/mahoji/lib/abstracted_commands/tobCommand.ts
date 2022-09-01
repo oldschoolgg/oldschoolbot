@@ -129,7 +129,7 @@ export async function tobStartCommand(
 		),
 		hardMode: isHardMode
 	});
-	const wipedRoom = _wipedRoom ? TOBRooms.find(room => _wipedRoom!.name === room.name)! : null;
+	const wipedRoom = _wipedRoom ? TOBRooms.find(room => _wipedRoom.name === room.name)! : null;
 	let debugStr = '';
 
 	const totalCost = new Bank();

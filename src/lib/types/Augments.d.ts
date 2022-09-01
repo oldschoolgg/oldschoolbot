@@ -36,16 +36,6 @@ declare module 'klasa' {
 		fetchUser(id: string | bigint): Promise<KlasaUser>;
 	}
 
-	interface Command {
-		altProtection?: boolean;
-		guildOnly?: boolean;
-		perkTier?: number;
-		ironCantUse?: boolean;
-		testingCommand?: boolean;
-		bitfieldsRequired?: BitField[];
-		restrictedChannels?: string[];
-	}
-
 	interface Task {
 		getItemImage(itemID: number, quantity: number): Promise<Image>;
 	}
