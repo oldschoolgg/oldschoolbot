@@ -13,7 +13,7 @@ import { hasItemsEquippedOrInBank, minionName, userHasItemsEquippedAnywhere } fr
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
-const pickaxes = [
+export const pickaxes = [
 	{
 		id: itemID('Crystal pickaxe'),
 		ticksBetweenRolls: 2.75,
@@ -66,7 +66,7 @@ const pickaxes = [
 	}
 ];
 
-const gloves = [
+export const gloves = [
 	{
 		id: itemID('Expert mining gloves'),
 		Percentages: new Bank({
@@ -105,7 +105,7 @@ const gloves = [
 	}
 ];
 
-const varrockArmours = [
+export const varrockArmours = [
 	{
 		id: itemID('Varrock armour 4'),
 		Percentages: new Bank({
@@ -180,7 +180,7 @@ const varrockArmours = [
 	}
 ];
 
-const miningCapeOreEffect: Bank = new Bank({
+export const miningCapeOreEffect: Bank = new Bank({
 	Clay: 5,
 	'Copper ore': 5,
 	'Tin ore': 5,
