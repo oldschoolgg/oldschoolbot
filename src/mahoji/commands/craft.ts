@@ -156,7 +156,8 @@ export const craftCommand: OSBMahojiCommand = {
 			channelID: channelID.toString(),
 			quantity,
 			duration,
-			type: 'Crafting'
+			type: 'Crafting',
+			cantBeDoubled: craftable.cantBeDoubled
 		});
 		let str = `${user.minionName} is now crafting ${quantity}${sets} ${
 			craftable.name

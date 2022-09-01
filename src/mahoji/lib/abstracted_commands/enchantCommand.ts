@@ -72,7 +72,8 @@ export async function enchantCommand(user: KlasaUser, channelID: bigint, name: s
 		channelID: channelID.toString(),
 		quantity,
 		duration,
-		type: 'Enchanting'
+		type: 'Enchanting',
+		cantBeDoubled: enchantable.cantBeDoubled
 	});
 
 	const xpHr = `${Math.round(((enchantable.xp * quantity) / (duration / Time.Minute)) * 60).toLocaleString()} XP/Hr`;
