@@ -26,6 +26,18 @@ const purpleButNotAnnounced = resolveItems(['Dexterous prayer scroll', 'Arcane p
 
 const purpleItems = chambersOfXericCL.filter(i => !notPurple.includes(i));
 
+export function handleSpecialCoxLoot(loot: Bank) {
+	if (roll(4500)) {
+		loot.add('Takon');
+	}
+	if (roll(140)) {
+		loot.add('Clue scroll (grandmaster)');
+	}
+	if (roll(2000)) {
+		loot.add('Steve');
+	}
+}
+
 export default class extends Task {
 	async run(data: RaidsOptions) {
 		const { channelID, users, challengeMode, duration, leader } = data;
@@ -81,16 +93,7 @@ export default class extends Task {
 					userLoot.add(unownedPet);
 				}
 			}
-
-			if (roll(4500)) {
-				userLoot.add('Takon');
-			}
-			if (roll(140)) {
-				userLoot.add('Clue scroll (grandmaster)');
-			}
-			if (roll(2000)) {
-				userLoot.add('Steve');
-			}
+			handleSpecialCoxLoot(userLoot);
 
 			const { itemsAdded } = await user.addItemsToBank({ items: userLoot, collectionLog: true });
 			totalLoot.add(itemsAdded);
