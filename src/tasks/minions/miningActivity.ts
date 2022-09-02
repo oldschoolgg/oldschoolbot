@@ -121,7 +121,10 @@ export default class extends Task {
 			false
 		);
 		const isDestroyed = isUsingObsidianPickaxe && !resolveItems(['Obsidian shards']).includes(ore.id);
-
+		const hasAdze = userHasItemsEquippedAnywhere(user, ['Superior inferno adze']);
+		const adzeIsDisabled = (
+			await mahojiUsersSettingsFetch(user.id, { disabled_inventions: true })
+		).disabled_inventions.includes(InventionID.SuperiorInfernoAdze);
 		if (!powermine) {
 			// Gem rocks roll off the GemRockTable
 			if (ore.name === 'Gem rock') {
@@ -163,49 +166,47 @@ export default class extends Task {
 
 			const hasKlik = user.usingPet('Klik');
 
-			const hasAdze = userHasItemsEquippedAnywhere(user, ['Superior inferno adze']);
-			const adzeIsDisabled = (
-				await mahojiUsersSettingsFetch(user.id, { disabled_inventions: true })
-			).disabled_inventions.includes(InventionID.SuperiorInfernoAdze);
-			if (hasAdze && !adzeIsDisabled) {
-				const smeltedOre = Smithing.Bars.find(
-					o => o.inputOres.bank[ore.id] && o.inputOres.items().filter(i => i[0].name !== 'Coal').length === 1
-				);
+			if (hasKlik && !hasAdze) {
+				const smeltedOre = Smithing.Bars.find(o => o.inputOres.bank[ore.id] && o.inputOres.length === 1);
 				if (smeltedOre) {
+					const klikBank = new Bank().add(smeltedOre.id, quantity);
+					loot.remove(ore.id, loot.amount(ore.id));
+					loot.add(klikBank);
+					userStatsBankUpdate(user.id, 'bars_from_klik_bank', klikBank);
+					str +=
+						'\n<:klik:749945070932721676> Klik breathes a incredibly hot fire breath, and smelts all your ores!';
+				}
+			}
+
+			const userBank = user.bank();
+			const spiritOre = stoneSpirits.find(t => t.ore.id === oreID);
+			if (spiritOre) {
+				const amountOfSpirits = Math.min(quantity, userBank.amount(spiritOre.spirit.id));
+				if (amountOfSpirits > 0) {
+					await user.removeItemsFromBank(new Bank().add(spiritOre.spirit.id, amountOfSpirits));
+					const spiritBank = new Bank().add(oreID, amountOfSpirits);
+					loot.add(spiritBank);
+					userStatsBankUpdate(user.id, 'ores_from_spirits_bank', spiritBank);
+				}
+			}
+		}
+		if (hasAdze && !adzeIsDisabled && !isDestroyed) {
+			const smeltedOre = Smithing.Bars.find(
+				o => o.inputOres.bank[ore.id] && o.inputOres.items().filter(i => i[0].name !== 'Coal').length === 1
+			);
+			if (smeltedOre) {
+				if (!powermine) {
 					const adzeBank = new Bank().add(smeltedOre.id, quantity);
 					loot.remove(ore.id, loot.amount(ore.id));
 					loot.add(adzeBank);
 					userStatsBankUpdate(user.id, 'bars_from_adze_bank', adzeBank);
-
-					str += ` ${await user.addXP({
-						skillName: SkillsEnum.Smithing,
-						amount: smeltedOre.xp * quantity,
-						duration
-					})}`;
-					str += ' Your Superior inferno adze smelted all the ore you mined (No materials used).';
-				} else if (hasKlik) {
-					const smeltedOre = Smithing.Bars.find(o => o.inputOres.bank[ore.id] && o.inputOres.length === 1);
-					if (smeltedOre) {
-						const klikBank = new Bank().add(smeltedOre.id, quantity);
-						loot.remove(ore.id, loot.amount(ore.id));
-						loot.add(klikBank);
-						userStatsBankUpdate(user.id, 'bars_from_klik_bank', klikBank);
-						str +=
-							'\n<:klik:749945070932721676> Klik breathes a incredibly hot fire breath, and smelts all your ores!';
-					}
 				}
-
-				const userBank = user.bank();
-				const spiritOre = stoneSpirits.find(t => t.ore.id === oreID);
-				if (spiritOre) {
-					const amountOfSpirits = Math.min(quantity, userBank.amount(spiritOre.spirit.id));
-					if (amountOfSpirits > 0) {
-						await user.removeItemsFromBank(new Bank().add(spiritOre.spirit.id, amountOfSpirits));
-						const spiritBank = new Bank().add(oreID, amountOfSpirits);
-						loot.add(spiritBank);
-						userStatsBankUpdate(user.id, 'ores_from_spirits_bank', spiritBank);
-					}
-				}
+				str += ` ${await user.addXP({
+					skillName: SkillsEnum.Smithing,
+					amount: smeltedOre.xp * quantity,
+					duration
+				})}`;
+				str += ' Your Superior inferno adze smelted all the ore you mined (No materials used).';
 			}
 		}
 		str += `\n\nYou received: ${loot}.`;
