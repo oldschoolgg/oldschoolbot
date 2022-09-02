@@ -291,7 +291,6 @@ export const mineCommand: OSBMahojiCommand = {
 		let armourEffect = 0;
 		for (const armour of varrockArmours) {
 			if (!hasItemsEquippedOrInBank(user, [armour.id]) || !armour.Percentages.has(ore.id)) continue;
-			if (Boolean(armour.Percentages.has(ore.id))) continue;
 			armourEffect = armour.Percentages.amount(ore.id);
 			if (armourEffect !== 0) {
 				boosts.push(`**${armourEffect}%** chance to mine an extra ore using ${itemNameFromID(armour.id)}`);
@@ -338,7 +337,7 @@ export const mineCommand: OSBMahojiCommand = {
 		const fakeDurationMin = quantity ? randomVariation(reduceNumByPercent(duration, 25), 20) : duration;
 		const fakeDurationMax = quantity ? randomVariation(increaseNumByPercent(duration, 25), 20) : duration;
 
-		if (ore.id === 1625 && userHasItemsEquippedAnywhere(user, 'Amulet of glory')) {
+		if (ore.name === 'Gem rock' && userHasItemsEquippedAnywhere(user, 'Amulet of glory')) {
 			boosts.push('3x success rate for having an Amulet of glory equipped');
 		}
 

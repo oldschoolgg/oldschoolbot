@@ -107,12 +107,12 @@ export default class extends Task {
 						break;
 					}
 				}
-			} else if (ore.id === 6973) {
+			} else if (ore.id === 6975) {
 				// Sandstone roll off the SandstoneRockTable
 				for (let i = 0; i < quantity; i++) {
 					loot.add(Mining.SandstoneRockTable.roll());
 				}
-			} else if (ore.id === 6981) {
+			} else if (ore.id === 6983) {
 				// Granite roll off the GraniteRockTable
 				for (let i = 0; i < quantity; i++) {
 					loot.add(Mining.GraniteRockTable.roll());

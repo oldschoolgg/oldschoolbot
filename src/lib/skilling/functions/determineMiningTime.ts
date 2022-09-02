@@ -31,7 +31,7 @@ export function determineMiningTime({
 	miningLvl
 }: MiningTimeOptions): [number, number] {
 	let { intercept } = ore;
-	if (ore.id === 1625 && userHasItemsEquippedAnywhere(user, 'Amulet of glory')) {
+	if (ore.name === 'Gem rock' && userHasItemsEquippedAnywhere(user, 'Amulet of glory')) {
 		intercept *= 3;
 	}
 	let timeElapsed = 0;
