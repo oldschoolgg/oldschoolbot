@@ -106,6 +106,7 @@ export async function moktangActivity(data: MoktangTaskOptions) {
 	}
 	if (isDoubleLootActive(data.duration)) {
 		loot.multiply(2);
+		data.cantBeDoubled = true;
 	}
 
 	const res = await klasaUser.addItemsToBank({ items: loot, collectionLog: true });
