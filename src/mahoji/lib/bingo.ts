@@ -220,7 +220,7 @@ export const bingoTiles: BingoTile[] = [
 	{
 		id: 25,
 		name: 'Receive any Boss jar',
-		allOf: resolveItems([
+		oneOf: resolveItems([
 			'Jar of chemicals',
 			'Jar of darkness',
 			'Jar of decay',
@@ -257,7 +257,7 @@ export const bingoTiles: BingoTile[] = [
 	},
 	{
 		id: 30,
-		name: 'Receive any armor drop from Kree Arra',
+		name: "Receive any armor drop from Kree'arra",
 		oneOf: resolveItems(['Armadyl helmet', 'Armadyl chestplate', 'Armadyl chainskirt'])
 	},
 	// Row 6
