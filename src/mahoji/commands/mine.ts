@@ -21,7 +21,7 @@ export const pickaxes = [
 	},
 	{
 		id: itemID('Dwarven pickaxe'),
-		ticksBetweenRolls: 1.55,
+		ticksBetweenRolls: 1.50,
 		miningLvl: 99
 	},
 	{
