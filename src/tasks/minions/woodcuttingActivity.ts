@@ -7,11 +7,12 @@ import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: WoodcuttingActivityTaskOptions) {
-		const { logID, quantity, userID, channelID, duration } = data;
+		const { logID, quantity, userID, channelID, duration, powerchopping } = data;
 		const user = await this.client.fetchUser(userID);
 
 		const log = Woodcutting.Logs.find(Log => Log.id === logID)!;
@@ -46,10 +47,11 @@ export default class extends Task {
 			duration
 		});
 
-		let loot = new Bank({
-			[log.id]: quantity
-		});
+		let loot = new Bank();
 
+		if (!powerchopping) {
+			loot.add(log.id, quantity);
+		}
 		// Add clue scrolls
 		if (log.clueScrollChance) {
 			addSkillingClueToLoot(user, SkillsEnum.Woodcutting, quantity, log.clueScrollChance, loot);
@@ -83,6 +85,23 @@ export default class extends Task {
 			itemsToAdd: loot
 		});
 
-		handleTripFinish(user, channelID, str, ['chop', { name: log.name, quantity }, true], undefined, data, loot);
+		const theQuantity = duration > 0.9 * calcMaxTripLength(user, 'Woodcutting') ? undefined : quantity;
+		handleTripFinish(
+			user,
+			channelID,
+			str,
+			[
+				'chop',
+				{
+					name: log.name,
+					quantity: theQuantity,
+					powerchopping
+				},
+				true
+			],
+			undefined,
+			data,
+			loot
+		);
 	}
 }
