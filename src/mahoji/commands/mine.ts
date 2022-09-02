@@ -338,7 +338,7 @@ export const mineCommand: OSBMahojiCommand = {
 		const fakeDurationMin = quantity ? randomVariation(reduceNumByPercent(duration, 25), 20) : duration;
 		const fakeDurationMax = quantity ? randomVariation(increaseNumByPercent(duration, 25), 20) : duration;
 
-		if (ore.id === 1625 && userHasItemsEquippedAnywhere(user, 'Amulet of glory')) {
+		if (ore.name === 'Gem rock' && userHasItemsEquippedAnywhere(user, 'Amulet of glory')) {
 			boosts.push('3x success rate for having an Amulet of glory equipped');
 		}
 
