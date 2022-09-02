@@ -354,7 +354,7 @@ export const mineCommand: OSBMahojiCommand = {
 			skills.strength >= 100 &&
 			skills.mining >= 105
 		) {
-			newQuantity = increaseNumByPercent(newQuantity, 150);
+			newQuantity = Math.round(increaseNumByPercent(newQuantity, 150));
 			// Same as 60% speed reduction, just keeps full trips
 			boosts.push('150% increased quantity for Offhand volcanic pickaxe');
 		}

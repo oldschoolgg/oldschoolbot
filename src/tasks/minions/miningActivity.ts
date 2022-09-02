@@ -2,7 +2,6 @@ import { roll, Time } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { MysteryBoxes } from '../../lib/bsoOpenables';
 import { Emoji, Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { InventionID } from '../../lib/invention/inventions';
 import { stoneSpirits } from '../../lib/minions/data/stoneSpirits';
@@ -11,7 +10,7 @@ import Mining from '../../lib/skilling/skills/mining';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
-import { multiplyBank, rand } from '../../lib/util';
+import { rand } from '../../lib/util';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { userHasItemsEquippedAnywhere } from '../../lib/util/minionUtils';
@@ -60,13 +59,6 @@ export default class extends Task {
 		const loot = new Bank();
 
 		const numberOfMinutes = duration / Time.Minute;
-
-		if (roll(10)) {
-			if (duration > Time.Minute * 10) {
-				loot.bank = multiplyBank(loot.values(), 2);
-				loot.add(MysteryBoxes.roll());
-			}
-		}
 
 		// Add clue scrolls
 		if (ore.clueScrollChance) {
@@ -121,11 +113,12 @@ export default class extends Task {
 			false
 		);
 		const isDestroyed = isUsingObsidianPickaxe && !resolveItems(['Obsidian shards']).includes(ore.id);
+		if (isDestroyed) str += '\nYour volcanic pickaxe destroyed the ores.';
 		const hasAdze = userHasItemsEquippedAnywhere(user, ['Superior inferno adze']);
 		const adzeIsDisabled = (
 			await mahojiUsersSettingsFetch(user.id, { disabled_inventions: true })
 		).disabled_inventions.includes(InventionID.SuperiorInfernoAdze);
-		if (!powermine) {
+		if (!powermine && !isDestroyed) {
 			// Gem rocks roll off the GemRockTable
 			if (ore.name === 'Gem rock') {
 				for (let i = 0; i < quantity; i++) {
@@ -158,11 +151,9 @@ export default class extends Task {
 				for (let i = 0; i < quantity; i++) {
 					loot.add(Mining.GraniteRockTable.roll());
 				}
-			} else if (!isDestroyed) {
+			} else {
 				loot.add(ore.id, quantity);
 			}
-
-			if (isDestroyed) str += '\nYour volcanic pickaxe destroyed the ores.';
 
 			const hasKlik = user.usingPet('Klik');
 
