@@ -107,11 +107,7 @@ export default class extends Task {
 			}
 		}
 
-		const isUsingObsidianPickaxe = userHasItemsEquippedAnywhere(
-			user,
-			['Offhand volcanic pickaxe'],
-			false
-		);
+		const isUsingObsidianPickaxe = userHasItemsEquippedAnywhere(user, ['Offhand volcanic pickaxe'], false);
 		const isDestroyed = isUsingObsidianPickaxe && !resolveItems(['Obsidian shards']).includes(ore.id);
 		if (isDestroyed) str += '\nYour volcanic pickaxe destroyed the ores.';
 		const hasAdze = userHasItemsEquippedAnywhere(user, ['Superior inferno adze']);
