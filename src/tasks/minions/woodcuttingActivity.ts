@@ -66,7 +66,7 @@ export default class extends Task {
 		if (log.petChance && roll((log.petChance - user.skillLevel(SkillsEnum.Woodcutting) * 25) / quantity)) {
 			loot.add('Beaver');
 			str += "\n**You have a funny feeling you're being followed...**";
-			this.client.emit(
+			globalClient.emit(
 				Events.ServerNotification,
 				`${Emoji.Woodcutting} **${user.usernameOrMention}'s** minion, ${
 					user.minionName

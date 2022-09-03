@@ -7,11 +7,6 @@ import { production } from '../config';
 import { Channel } from '../lib/constants';
 import { getSupportGuild } from '../lib/util';
 
-declare module 'klasa' {
-	interface KlasaClient {
-		__geInterval: NodeJS.Timeout;
-	}
-}
 let lastMessageID: string | null = null;
 const embed = new Embed()
 	.setAuthor({ name: '⚠️ ⚠️ ⚠️ ⚠️ READ THIS ⚠️ ⚠️ ⚠️ ⚠️' })
@@ -46,15 +41,15 @@ export default class extends Event {
 	}
 
 	async run() {
-		if (this.client.__geInterval) {
-			clearInterval(this.client.__geInterval);
+		if (globalClient.__geInterval) {
+			clearInterval(globalClient.__geInterval);
 		}
-		this.client.__geInterval = setInterval(async () => {
+		globalClient.__geInterval = setInterval(async () => {
 			try {
 				const guild = getSupportGuild();
 				const channel = guild?.channels.cache.get(Channel.GrandExchange) as TextChannel;
 				const messages = await channel.messages.fetch({ limit: 5 });
-				if (messages.some(m => m.author.id === this.client.user!.id)) return;
+				if (messages.some(m => m.author.id === globalClient.user!.id)) return;
 				if (lastMessageID) {
 					const message = await channel.messages.fetch(lastMessageID).catch(noOp);
 					if (message) {

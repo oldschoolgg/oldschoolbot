@@ -8,10 +8,10 @@ import { prisma, prismaQueries, queryCountStore } from '../lib/settings/prisma';
 
 export default class extends Task {
 	async init() {
-		if (this.client.metricsInterval) {
-			clearInterval(this.client.metricsInterval);
+		if (globalClient.metricsInterval) {
+			clearInterval(globalClient.metricsInterval);
 		}
-		this.client.metricsInterval = setInterval(this.analyticsTick.bind(this), Number(Time.Minute));
+		globalClient.metricsInterval = setInterval(this.analyticsTick.bind(this), Number(Time.Minute));
 	}
 
 	async run() {

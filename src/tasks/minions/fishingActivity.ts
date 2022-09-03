@@ -187,7 +187,7 @@ export default class extends Task {
 				if (roll(chance)) {
 					loot.add('Heron');
 					str += "\nYou have a funny feeling you're being followed...";
-					this.client.emit(
+					globalClient.emit(
 						Events.ServerNotification,
 						`${Emoji.Fishing} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Heron while fishing ${fish.name} at level ${currentLevel} Fishing!`
 					);

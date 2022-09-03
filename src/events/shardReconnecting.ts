@@ -10,6 +10,6 @@ export default class extends Event {
 	}
 
 	async run(shardID: number) {
-		this.client.emit(Events.Log, `Shard Reconnecting: ${shardID}`);
+		globalClient.emit(Events.Log, `Shard Reconnecting: ${shardID}`);
 	}
 }

@@ -88,7 +88,7 @@ client.on('raw', async event => {
 	if (![GatewayDispatchEvents.InteractionCreate].includes(event.t)) return;
 	const data = event.d as APIInteraction;
 
-	if (!client.ready) {
+	if (!client.isReady()) {
 		if (data.type === InteractionType.ApplicationCommand) {
 			await mahojiClient.restManager.post(Routes.interactionCallback(data.id, data.token), {
 				body: {

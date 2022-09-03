@@ -84,7 +84,7 @@ export default class extends Task {
 
 		if (loot.has('Rock golem')) {
 			str += "\nYou have a funny feeling you're being followed...";
-			this.client.emit(
+			globalClient.emit(
 				Events.ServerNotification,
 				`${Emoji.Mining} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received ${
 					loot.amount('Rock golem') > 1 ? `${loot.amount('Rock golem')}x ` : 'a'

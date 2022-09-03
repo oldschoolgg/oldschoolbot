@@ -98,7 +98,7 @@ export default class PoHImage extends Task {
 					const mY = y - height / 2;
 					ctx.drawImage(mount, mX, mY, width, height);
 					if (hasCustomItem) {
-						const image = await this.client.tasks.get('bankImage')!.getItemImage(id, 1);
+						const image = await globalClient.tasks.get('bankImage')!.getItemImage(id, 1);
 						const h = image.height * 0.8;
 						const w = image.width * 0.8;
 						ctx.drawImage(image, mX + (mount.width - w) / 2, mY + (mount.height - h) / 2, w, h);

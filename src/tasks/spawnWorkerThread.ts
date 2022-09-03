@@ -1,7 +1,5 @@
 import { Task } from 'klasa';
 
-import { OldSchoolBotClient } from '../lib/structures/OldSchoolBotClient';
-
 export default class extends Task {
 	async init() {
 		this.run();
@@ -9,7 +7,7 @@ export default class extends Task {
 
 	run() {
 		const terminateCb = async () => {
-			await (this.client as OldSchoolBotClient).destroy();
+			await globalClient.destroy();
 			process.exit(0);
 		};
 

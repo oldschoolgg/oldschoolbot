@@ -99,7 +99,7 @@ export default class extends Task {
 			lootStr.push('\n\n```diff');
 			lootStr.push("\n- You have a funny feeling you're being followed...");
 			lootStr.push('```');
-			this.client.emit(
+			globalClient.emit(
 				Events.ServerNotification,
 				`${Emoji.Farming} **${user.usernameOrMention}'s** minion, ${
 					user.minionName

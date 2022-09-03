@@ -9,14 +9,14 @@ export default class extends Event {
 			once: false,
 			event: 'guildCreate'
 		});
-		this.enabled = this.client.production;
+		this.enabled = globalClient.production;
 	}
 
 	run(guild: Guild) {
 		if (!guild.available) return;
 		if (BLACKLISTED_GUILDS.has(guild.id) || BLACKLISTED_USERS.has(guild.ownerId)) {
 			guild.leave();
-			this.client.emit('warn', `Blacklisted guild detected: ${guild.name} [${guild.id}]`);
+			globalClient.emit('warn', `Blacklisted guild detected: ${guild.name} [${guild.id}]`);
 		}
 	}
 }

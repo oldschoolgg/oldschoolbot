@@ -47,12 +47,11 @@ async function doMenu(user: MUser, channelID: bigint, pages: string[], title: st
 	}
 	const channel = globalClient.channels.cache.get(channelID.toString());
 	if (!channelIsSendable(channel)) return;
-	const message = await channel.send({ embeds: [new Embed().setDescription('Loading')] });
 
 	makePaginatedMessage(
-		message,
+		channel,
 		pages.map(p => ({ embeds: [new Embed().setTitle(title).setDescription(p)] })),
-		await globalClient.fetchUser(user.id)
+		user.id
 	);
 }
 

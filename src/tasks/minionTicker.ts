@@ -8,8 +8,8 @@ import { logError } from '../lib/util/logError';
 
 export default class extends Task {
 	async init() {
-		if (this.client.minionTicker) {
-			clearTimeout(this.client.minionTicker);
+		if (globalClient.minionTicker) {
+			clearTimeout(globalClient.minionTicker);
 		}
 		const ticker = async () => {
 			try {
@@ -39,7 +39,7 @@ export default class extends Task {
 			} catch (err) {
 				logError(err);
 			} finally {
-				this.client.minionTicker = setTimeout(ticker, 5000);
+				globalClient.minionTicker = setTimeout(ticker, 5000);
 			}
 		};
 		ticker();

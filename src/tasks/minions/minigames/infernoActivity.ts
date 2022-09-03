@@ -157,7 +157,7 @@ export default class extends Task {
 			baseBank.add(zukLoot);
 
 			if (baseBank.has('Jal-nib-rek')) {
-				this.client.emit(
+				globalClient.emit(
 					Events.ServerNotification,
 					`**${user.usernameOrMention}** just received their ${formatOrdinal(
 						user.cl.amount('Jal-nib-rek') + 1
@@ -169,7 +169,7 @@ export default class extends Task {
 
 			if (baseBank.has('Infernal cape') && user.cl.amount('Infernal cape') === 0) {
 				const usersWithInfernalCape = await countUsersWithItemInCl(itemID('Infernal cape'), false);
-				this.client.emit(
+				globalClient.emit(
 					Events.ServerNotification,
 					`**${user.usernameOrMention}** just received their first Infernal cape on their ${formatOrdinal(
 						attempts

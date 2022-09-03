@@ -12,6 +12,7 @@ import { leaguesCreatables } from '../../lib/data/creatables/leagueCreatables';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { allOpenables } from '../../lib/openables';
+import { tiers } from '../../lib/patreon';
 import { Minigames } from '../../lib/settings/minigames';
 import { prisma } from '../../lib/settings/prisma';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
@@ -29,7 +30,6 @@ import {
 import getOSItem from '../../lib/util/getOSItem';
 import { logError } from '../../lib/util/logError';
 import { parseStringBank } from '../../lib/util/parseStringBank';
-import { tiers } from '../../tasks/patreon';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import { allUsableItems } from '../lib/abstracted_commands/useCommand';
 import { OSBMahojiCommand } from '../lib/util';

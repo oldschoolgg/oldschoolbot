@@ -1,9 +1,8 @@
-import { GatewayIntentBits, Partials } from 'discord.js';
-import { KlasaClient, KlasaClientOptions } from 'klasa';
+import { ClientOptions, GatewayIntentBits, Partials } from 'discord.js';
 
 import { customClientOptions, OWNER_IDS, production } from '../config';
 
-export const clientOptions: KlasaClientOptions = {
+export const clientOptions: ClientOptions = {
 	owners: [...OWNER_IDS],
 	shards: 'auto',
 	intents: [
@@ -15,11 +14,6 @@ export const clientOptions: KlasaClientOptions = {
 		GatewayIntentBits.DirectMessageReactions,
 		GatewayIntentBits.GuildWebhooks
 	],
-	/* Klasa Options */
-	prefix: '+',
-	readyMessage: (client: KlasaClient) => {
-		return `[Old School Bot] Ready to serve ${client.guilds.cache.size} guilds.`;
-	},
 	partials: [Partials.User, Partials.Channel],
 	production,
 	...customClientOptions,

@@ -6,20 +6,14 @@ import { prisma } from '../lib/settings/prisma';
 import { logError } from '../lib/util/logError';
 import { mUserFetch } from '../mahoji/mahojiSettings';
 
-declare module 'klasa' {
-	interface KlasaClient {
-		__dailyReminderInterval: NodeJS.Timeout;
-	}
-}
-
 export default class extends Task {
 	public constructor(store: TaskStore, file: string[], directory: string) {
 		super(store, file, directory);
 	}
 
 	async init() {
-		if (this.client.__dailyReminderInterval) {
-			clearTimeout(this.client.__dailyReminderInterval);
+		if (globalClient.__dailyReminderInterval) {
+			clearTimeout(globalClient.__dailyReminderInterval);
 		}
 		const ticker = async () => {
 			try {
@@ -41,7 +35,7 @@ export default class extends Task {
 			} catch (err) {
 				logError(err);
 			} finally {
-				this.client.__dailyReminderInterval = setTimeout(ticker, Number(Time.Minute));
+				globalClient.__dailyReminderInterval = setTimeout(ticker, Number(Time.Minute));
 			}
 		};
 		ticker();

@@ -62,6 +62,6 @@ export default class extends Task {
 			peak.finishTime = currentTime;
 		}
 
-		this.client._peakIntervalCache = peakInterval;
+		globalClient._peakIntervalCache = peakInterval;
 	}
 }

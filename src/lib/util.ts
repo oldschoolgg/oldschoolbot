@@ -1,12 +1,8 @@
 import { bold } from '@discordjs/builders';
 import type { User } from '@prisma/client';
-import { PaginatedMessage } from '@sapphire/discord.js-utilities';
 import {
-	ActionRowBuilder,
 	AttachmentBuilder,
-	ButtonBuilder,
 	ButtonInteraction,
-	ButtonStyle,
 	CacheType,
 	Channel,
 	Collection,
@@ -15,6 +11,7 @@ import {
 	escapeMarkdown,
 	Guild,
 	Message,
+	MessageEditOptions,
 	MessageOptions,
 	PermissionsBitField,
 	SelectMenuInteraction,
@@ -35,6 +32,7 @@ import { production, SupportServer } from '../config';
 import { skillEmoji, usernameCache } from './constants';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
 import { Consumable } from './minions/types';
+import { PaginatedMessage } from './PaginatedMessage';
 import { POHBoosts } from './poh';
 import { SkillsEnum } from './skilling/types';
 import { ArrayItemsResolved, Skills } from './types';
@@ -446,65 +444,9 @@ export function isValidNickname(str?: string) {
 	);
 }
 
-export async function makePaginatedMessage(message: Message, pages: MessageOptions[], target?: DJSUser) {
-	const display = new PaginatedMessage();
-	// @ts-ignore 2445
-	display.setUpReactions = () => null;
-	for (const page of pages) {
-		display.addPage({
-			...page,
-			components:
-				pages.length > 1
-					? [
-							new ActionRowBuilder<ButtonBuilder>().addComponents(
-								PaginatedMessage.defaultActions
-									.slice(1, -1)
-									.map(a =>
-										new ButtonBuilder()
-											.setLabel('')
-											.setStyle(ButtonStyle.Secondary)
-											.setCustomId(a.id)
-											.setEmoji(a.id)
-									)
-							)
-					  ]
-					: undefined
-		});
-	}
-
-	await display.run(message, target);
-
-	if (pages.length > 1) {
-		const collector = await message.createMessageComponentCollector({
-			time: Time.Minute,
-			filter: i => i.user.id === (target ? target.id : message.author.id)
-		});
-
-		collector.on('collect', async interaction => {
-			for (const action of PaginatedMessage.defaultActions) {
-				if (interaction.customId === action.id) {
-					const previousIndex = display.index;
-
-					await action.run({
-						handler: display,
-						author: message.author,
-						channel: message.channel,
-						response: display.response!,
-						collector: display.collector!
-					});
-
-					if (previousIndex !== display.index) {
-						await interaction.update(await display.resolvePage(message.channel, display.index));
-						return;
-					}
-				}
-			}
-		});
-
-		collector.on('end', () => {
-			(display.response! as Message).edit({ components: [] });
-		});
-	}
+export async function makePaginatedMessage(channel: TextChannel, pages: MessageEditOptions[], target?: string) {
+	const m = new PaginatedMessage({ pages, channel });
+	return m.run(target ? [target] : undefined);
 }
 
 export function assert(condition: boolean, desc?: string, context?: Record<string, string>) {

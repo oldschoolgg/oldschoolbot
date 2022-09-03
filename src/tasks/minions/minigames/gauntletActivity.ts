@@ -56,7 +56,7 @@ export default class extends Task {
 
 		if (loot.amount('Youngllef') > 0) {
 			str += "\n\n**You have a funny feeling you're being followed...**";
-			this.client.emit(
+			globalClient.emit(
 				Events.ServerNotification,
 				`**${user.usernameOrMention}'s** minion, ${
 					user.minionName

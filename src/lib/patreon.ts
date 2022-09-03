@@ -1,18 +1,18 @@
 import { AttachmentBuilder, TextChannel } from 'discord.js';
 import { Time } from 'e';
-import { Task } from 'klasa';
 import fetch from 'node-fetch';
 
 import { patreonConfig, production } from '../config';
-import { BadgesEnum, BitField, Channel, PatronTierID, PerkTier } from '../lib/constants';
-import { fetchSponsors, getUserFromGithubID } from '../lib/http/util';
-import backgroundImages from '../lib/minions/data/bankBackgrounds';
-import { roboChimpUserFetch } from '../lib/roboChimp';
-import { Patron } from '../lib/types';
-import getUsersPerkTier from '../lib/util/getUsersPerkTier';
-import { logError } from '../lib/util/logError';
 import { mUserFetch } from '../mahoji/mahojiSettings';
 import { mahojiUserSettingsUpdate } from '../mahoji/settingsUpdate';
+import { cacheBadges } from './badges';
+import { BadgesEnum, BitField, Channel, PatronTierID, PerkTier } from './constants';
+import { fetchSponsors, getUserFromGithubID } from './http/util';
+import backgroundImages from './minions/data/bankBackgrounds';
+import { roboChimpUserFetch } from './roboChimp';
+import { Patron } from './types';
+import getUsersPerkTier from './util/getUsersPerkTier';
+import { logError } from './util/logError';
 
 const patreonApiURL = new URL(`https://patreon.com/api/oauth2/v2/campaigns/${patreonConfig?.campaignID}/members`);
 
@@ -76,12 +76,8 @@ function perkTierFromBitfield(bit: BitField): PerkTier {
 	}
 }
 
-export default class PatreonTask extends Task {
-	async init() {
-		if (!patreonConfig) {
-			this.disable();
-		}
-	}
+class PatreonTask {
+	public enabled = production;
 
 	async validatePerks(userID: string, shouldHave: PerkTier): Promise<string | null> {
 		const user = await mUserFetch(userID);
@@ -233,7 +229,7 @@ export default class PatreonTask extends Task {
 			if (roboChimpUser.github_id) continue;
 
 			const username =
-				this.client.users.cache.get(patron.discordID)?.username ?? `${patron.discordID}|${patron.patreonID}`;
+				globalClient.users.cache.get(patron.discordID)?.username ?? `${patron.discordID}|${patron.patreonID}`;
 
 			if (roboChimpUser.patreon_id !== patron.patreonID) {
 				try {
@@ -291,7 +287,7 @@ export default class PatreonTask extends Task {
 		const githubResult = await this.syncGithub();
 		messages = messages.concat(githubResult);
 
-		const channel = this.client.channels.cache.get(Channel.ErrorLogs) as TextChannel;
+		const channel = globalClient.channels.cache.get(Channel.ErrorLogs) as TextChannel;
 		if (production) {
 			channel.send({ files: [new AttachmentBuilder(Buffer.from(result.join('\n')), { name: 'patreon.txt' })] });
 			channel.send(messages.join(', '));
@@ -299,7 +295,7 @@ export default class PatreonTask extends Task {
 			console.log(messages.join('\n'));
 		}
 
-		this.client.tasks.get('badges')?.run();
+		cacheBadges();
 	}
 
 	async fetchPatrons(url?: string): Promise<Patron[]> {
@@ -339,3 +335,5 @@ export default class PatreonTask extends Task {
 		return users;
 	}
 }
+
+export const patreonTask = new PatreonTask();

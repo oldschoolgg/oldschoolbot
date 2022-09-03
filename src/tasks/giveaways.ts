@@ -6,8 +6,8 @@ import { logError } from '../lib/util/logError';
 
 export default class extends Task {
 	async init() {
-		if (this.client.giveawayTicker) {
-			clearTimeout(this.client.giveawayTicker);
+		if (globalClient.giveawayTicker) {
+			clearTimeout(globalClient.giveawayTicker);
 		}
 		const ticker = async () => {
 			try {
@@ -24,7 +24,7 @@ export default class extends Task {
 			} catch (err) {
 				logError(err);
 			} finally {
-				this.client.giveawayTicker = setTimeout(ticker, 5000);
+				globalClient.giveawayTicker = setTimeout(ticker, 5000);
 			}
 		};
 		ticker();

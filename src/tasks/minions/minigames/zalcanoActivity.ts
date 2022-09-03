@@ -42,7 +42,7 @@ export default class extends Task {
 		xpRes += await user.addXP({ skillName: SkillsEnum.Runecraft, amount: runecraftXP });
 
 		if (loot.amount('Smolcano') > 0) {
-			this.client.emit(
+			globalClient.emit(
 				Events.ServerNotification,
 				`**${user.usernameOrMention}'s** minion, ${
 					user.minionName

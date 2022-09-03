@@ -8,11 +8,12 @@ export default class extends Task {
 	}
 
 	async run() {
-		if (this.client.fastifyServer) {
-			this.client.fastifyServer.close();
-			this.client.fastifyServer = undefined;
+		if (globalClient.fastifyServer) {
+			globalClient.fastifyServer.close();
+			// @ts-ignore trust me
+			globalClient.fastifyServer = undefined;
 		}
 
-		this.client.fastifyServer = makeServer();
+		globalClient.fastifyServer = makeServer();
 	}
 }

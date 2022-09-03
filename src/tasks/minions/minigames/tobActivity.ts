@@ -116,7 +116,7 @@ Unique chance: ${result.percentChanceOfUnique.toFixed(2)}% (1 in ${convertPercen
 			const shouldAnnounce = items.some(([item]) => TOBUniquesToAnnounce.includes(item.id));
 			if (shouldAnnounce) {
 				const itemsToAnnounce = itemsAdded.filter(item => TOBUniques.includes(item.id), false);
-				this.client.emit(
+				globalClient.emit(
 					Events.ServerNotification,
 					`${Emoji.Purple} ${
 						user.usernameOrMention

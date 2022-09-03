@@ -10,15 +10,15 @@ const nodeModules = `${sep}node_modules${sep}`;
 export default class extends Task {
 	public constructor(store: TaskStore, file: string[], directory: string) {
 		super(store, file, directory);
-		this.enabled = !this.client.production;
+		this.enabled = !globalClient.production;
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-empty-function
 	async run() {}
 
 	async init() {
-		if (this.client._fileChangeWatcher) return;
-		this.client._fileChangeWatcher = watch(join(process.cwd(), 'dist/**/*.js'), {
+		if (globalClient._fileChangeWatcher) return;
+		globalClient._fileChangeWatcher = watch(join(process.cwd(), 'dist/**/*.js'), {
 			persistent: true,
 			ignoreInitial: true
 		});
@@ -35,8 +35,8 @@ export default class extends Task {
 		};
 
 		for (const event of ['add', 'change', 'unlink']) {
-			if (this.client._fileChangeWatcher) {
-				this.client._fileChangeWatcher.on(event, debounce(reloadStore, 1000));
+			if (globalClient._fileChangeWatcher) {
+				globalClient._fileChangeWatcher.on(event, debounce(reloadStore, 1000));
 			}
 		}
 	}

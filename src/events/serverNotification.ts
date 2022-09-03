@@ -12,7 +12,7 @@ export default class extends Event {
 	}
 
 	async run(message: string) {
-		const channel = this.client.channels.cache.get(Channel.Notifications);
-		if (channel && this.client.production) (channel as TextChannel).send(message);
+		const channel = globalClient.channels.cache.get(Channel.Notifications);
+		if (channel && globalClient.production) (channel as TextChannel).send(message);
 	}
 }

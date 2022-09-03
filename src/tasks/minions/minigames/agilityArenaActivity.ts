@@ -55,7 +55,7 @@ export default class extends Task {
 					collectionLog: true
 				});
 				str += "**\nYou have a funny feeling you're being followed...**";
-				this.client.emit(
+				globalClient.emit(
 					Events.ServerNotification,
 					`${Emoji.Agility} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Giant squirrel while running at the Agility Arena at level ${currentLevel} Agility!`
 				);

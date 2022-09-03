@@ -12,6 +12,6 @@ export default class extends Event {
 
 	async run(error: Error) {
 		logError(error);
-		this.client.emit(Events.Log, `Shard Error: ${error.stack ?? error.name}`);
+		globalClient.emit(Events.Log, `Shard Error: ${error.stack ?? error.name}`);
 	}
 }

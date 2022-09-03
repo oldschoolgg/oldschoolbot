@@ -145,9 +145,8 @@ export const bankCommand: OSBMahojiCommand = {
 			}
 			const channel = globalClient.channels.cache.get(channelID.toString());
 			if (!channelIsSendable(channel)) return 'Failed to send paginated bank message, sorry.';
-			const bankMessage = await channel.send({ embeds: [new Embed().setDescription('Loading')] });
 
-			makePaginatedMessage(bankMessage, pages, await globalClient.fetchUser(user.id));
+			makePaginatedMessage(channel, pages, user.id);
 			return { content: 'Here is your selected bank:', flags: MessageFlags.Ephemeral };
 		}
 		if (options.format === 'json') {

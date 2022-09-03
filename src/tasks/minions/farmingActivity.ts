@@ -365,7 +365,7 @@ export default class extends Task {
 				infoStr.push('\n```diff');
 				infoStr.push("\n- You have a funny feeling you're being followed...");
 				infoStr.push('```');
-				this.client.emit(
+				globalClient.emit(
 					Events.ServerNotification,
 					`${Emoji.Farming} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Tangleroot while farming ${patchType.lastPlanted} at level ${currentFarmingLevel} Farming!`
 				);

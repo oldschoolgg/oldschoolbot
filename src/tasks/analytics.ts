@@ -9,10 +9,10 @@ import { mahojiClientSettingsFetch } from '../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async init() {
-		if (this.client.analyticsInterval) {
-			clearInterval(this.client.analyticsInterval);
+		if (globalClient.analyticsInterval) {
+			clearInterval(globalClient.analyticsInterval);
 		}
-		this.client.analyticsInterval = setInterval(this.analyticsTick.bind(this), Time.Minute * 5);
+		globalClient.analyticsInterval = setInterval(this.analyticsTick.bind(this), Time.Minute * 5);
 	}
 
 	async run() {
@@ -64,8 +64,8 @@ export default class extends Task {
 		const currentClientSettings = await mahojiClientSettingsFetch();
 		await prisma.analytic.create({
 			data: {
-				guildsCount: this.client.guilds.cache.size,
-				membersCount: this.client.guilds.cache.reduce((acc, curr) => (acc += curr.memberCount || 0), 0),
+				guildsCount: globalClient.guilds.cache.size,
+				membersCount: globalClient.guilds.cache.reduce((acc, curr) => (acc += curr.memberCount || 0), 0),
 				timestamp: Math.floor(Date.now() / 1000),
 				clueTasksCount: taskCounts.Clue,
 				minigameTasksCount: taskCounts.Minigame,

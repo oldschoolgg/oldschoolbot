@@ -128,7 +128,7 @@ export default class extends Task {
 		const loot = Monsters.TzTokJad.kill(1, { onSlayerTask: isOnTask });
 
 		if (loot.has('Tzrek-jad')) {
-			this.client.emit(
+			globalClient.emit(
 				Events.ServerNotification,
 				`**${user.usernameOrMention}** just received their ${formatOrdinal(user.cl.amount('Tzrek-jad') + 1)} ${
 					Emoji.TzRekJad
@@ -137,7 +137,7 @@ export default class extends Task {
 		}
 
 		if (user.cl.amount('Fire cape') === 0) {
-			this.client.emit(
+			globalClient.emit(
 				Events.ServerNotification,
 				`**${user.usernameOrMention}** just received their first Fire cape on their ${formatOrdinal(
 					newUser.stats_fightCavesAttempts

@@ -41,7 +41,7 @@ export default class extends Task {
 
 		if (loot.has('Amulet of eternal glory')) {
 			str += '\n**Your minion received an Amulet of eternal glory.**';
-			this.client.emit(
+			globalClient.emit(
 				Events.ServerNotification,
 				`**${user.usernameOrMention}'s** minion, ${user.minionName}, just received **${loot.amount(
 					'Amulet of eternal glory'

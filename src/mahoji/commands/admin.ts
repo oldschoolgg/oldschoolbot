@@ -18,6 +18,8 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { CLIENT_ID, OWNER_IDS, production, SupportServer } from '../../config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../../lib/blacklists';
 import { badges, BadgesEnum, BitField, BitFieldData, DISABLED_COMMANDS } from '../../lib/constants';
+import { patreonTask } from '../../lib/patreon';
+import { runRolesTask } from '../../lib/rolesTask';
 import { countUsersWithItemInCl, prisma } from '../../lib/settings/prisma';
 import { cancelTask, minionActivityCacheDelete } from '../../lib/settings/settings';
 import {
@@ -32,7 +34,6 @@ import { getItem } from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { logError } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
-import PatreonTask from '../../tasks/patreon';
 import { Cooldowns } from '../lib/Cooldowns';
 import { syncCustomPrices } from '../lib/events';
 import { itemOption } from '../lib/mahojiCommandOptions';
@@ -541,7 +542,7 @@ export const adminCommand: OSBMahojiCommand = {
 		}
 		if (options.sync_roles) {
 			try {
-				const result = (await globalClient.tasks.get('roles')?.run()) as string;
+				const result = await runRolesTask();
 				return result.slice(0, 2500);
 			} catch (err: any) {
 				logError(err);
@@ -549,7 +550,7 @@ export const adminCommand: OSBMahojiCommand = {
 			}
 		}
 		if (options.sync_patreon) {
-			await globalClient.tasks.get('patreon')?.run();
+			await patreonTask.run();
 			return 'Finished syncing patrons.';
 		}
 		if (options.add_ironman_alt) {
@@ -801,7 +802,7 @@ LIMIT 10;
 			process.exit();
 		}
 		if (options.debug_patreon) {
-			const result = await (globalClient.tasks.get('patreon') as PatreonTask).fetchPatrons();
+			const result = await patreonTask.fetchPatrons();
 			return {
 				attachments: [{ buffer: Buffer.from(JSON.stringify(result, null, 4)), fileName: 'patreon.txt' }]
 			};

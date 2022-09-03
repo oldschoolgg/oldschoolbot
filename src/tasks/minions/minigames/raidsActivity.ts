@@ -79,7 +79,7 @@ export default class extends Task {
 			const emote = isBlue ? Emoji.Blue : isGreen ? Emoji.Green : Emoji.Purple;
 			if (items.some(([item]) => purpleItems.includes(item.id) && !purpleButNotAnnounced.includes(item.id))) {
 				const itemsToAnnounce = itemsAdded.filter(item => purpleItems.includes(item.id), false);
-				this.client.emit(
+				globalClient.emit(
 					Events.ServerNotification,
 					`${emote} ${user.usernameOrMention} just received **${itemsToAnnounce}** on their ${formatOrdinal(
 						await getMinigameScore(user.id, minigameID)

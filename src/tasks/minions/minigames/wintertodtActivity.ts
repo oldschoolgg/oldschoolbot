@@ -64,7 +64,7 @@ export default class extends Task {
 		await updateBankSetting('economyStats_wintertodtLoot', loot);
 
 		if (loot.has('Phoenix')) {
-			this.client.emit(
+			globalClient.emit(
 				Events.ServerNotification,
 				`${Emoji.Phoenix} **${user.usernameOrMention}'s** minion, ${
 					user.minionName

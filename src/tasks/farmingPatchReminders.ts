@@ -15,12 +15,6 @@ import { minionIsBusy } from '../lib/util/minionIsBusy';
 import { mUserFetch } from '../mahoji/mahojiSettings';
 import { mahojiUserSettingsUpdate } from '../mahoji/settingsUpdate';
 
-declare module 'klasa' {
-	interface KlasaClient {
-		__farmingPatchReminders: NodeJS.Timeout;
-	}
-}
-
 let basePlantTime = 1_626_556_507_451;
 
 export default class extends Task {
@@ -29,8 +23,8 @@ export default class extends Task {
 	}
 
 	async init() {
-		if (this.client.__farmingPatchReminders) {
-			clearTimeout(this.client.__farmingPatchReminders);
+		if (globalClient.__farmingPatchReminders) {
+			clearTimeout(globalClient.__farmingPatchReminders);
 		}
 		const ticker = async () => {
 			if (!production) return;
@@ -141,7 +135,7 @@ export default class extends Task {
 			} catch (err) {
 				logError(err);
 			} finally {
-				this.client.__farmingPatchReminders = setTimeout(ticker, Number(Time.Minute));
+				globalClient.__farmingPatchReminders = setTimeout(ticker, Number(Time.Minute));
 			}
 		};
 		ticker();

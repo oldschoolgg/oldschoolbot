@@ -29,7 +29,7 @@ if (process.env.NODE_ENV !== 'production') global.prisma = prisma;
 export const prismaQueries: Prisma.QueryEvent[] = [];
 export let queryCountStore = { value: 0 };
 prisma.$on('query' as any, (_query: any) => {
-	if (!production && globalClient.ready) {
+	if (!production && globalClient.isReady()) {
 		const query = _query as Prisma.QueryEvent;
 		prismaQueries.push(query);
 	}

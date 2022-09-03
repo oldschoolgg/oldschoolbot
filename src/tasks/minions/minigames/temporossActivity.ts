@@ -28,7 +28,7 @@ export default class extends Task {
 		const loot = getTemporossLoot(rewardTokens, currentLevel, user.bank);
 
 		if (loot.has('Tiny tempor')) {
-			this.client.emit(
+			globalClient.emit(
 				Events.ServerNotification,
 				`${Emoji.TinyTempor} **${user.usernameOrMention}'s** minion, ${
 					user.minionName

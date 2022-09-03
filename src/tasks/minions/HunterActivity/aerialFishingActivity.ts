@@ -140,7 +140,7 @@ export default class extends Task {
 		if (roll((636_833 - user.skillLevel(SkillsEnum.Fishing) * 25) / totalFishCaught)) {
 			loot.add('Heron');
 			str += "\nYou have a funny feeling you're being followed...";
-			this.client.emit(
+			globalClient.emit(
 				Events.ServerNotification,
 				`${Emoji.Fishing} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a **Heron** while Aerial fishing at level ${currentFishLevel} Fishing!`
 			);
@@ -155,7 +155,7 @@ export default class extends Task {
 
 		if (loot.amount('Golden tench') > 0) {
 			str += '\n\n**The cormorant has brought you a very strange tench.**';
-			this.client.emit(
+			globalClient.emit(
 				Events.ServerNotification,
 				`**${user.usernameOrMention}'s** minion, ${user.minionName}, just received a **Golden tench** while aerial fishing, their Fishing/Hunter level is ${currentFishLevel}/${currentHuntLevel}!`
 			);

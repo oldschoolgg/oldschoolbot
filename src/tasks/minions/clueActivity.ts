@@ -16,7 +16,7 @@ export default class extends Task {
 		const logInfo = `ClueID[${clueID}] userID[${userID}] channelID[${channelID}] quantity[${quantity}]`;
 
 		if (!clueTier) {
-			this.client.emit(Events.Wtf, `Missing user or clue - ${logInfo}`);
+			globalClient.emit(Events.Wtf, `Missing user or clue - ${logInfo}`);
 			return;
 		}
 

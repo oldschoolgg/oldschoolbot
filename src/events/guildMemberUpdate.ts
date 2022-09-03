@@ -15,7 +15,7 @@ export default class extends Event {
 	async run(oldMember: GuildMember, newMember: GuildMember) {
 		if (oldMember.guild.id !== SupportServer) return;
 		if (!oldMember.roles.cache.has(Roles.Patron) && newMember.roles.cache.has(Roles.Patron)) {
-			this.client.tasks.get('patreon')?.run();
+			globalClient.tasks.get('patreon')?.run();
 		}
 	}
 }
