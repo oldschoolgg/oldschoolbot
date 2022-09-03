@@ -147,9 +147,7 @@ export const chopCommand: OSBMahojiCommand = {
 
 		// Enable 1.5 tick teaks half way to 99
 		if (skills.woodcutting >= 92 && log.name === 'Teak Logs') {
-			boosts.push(
-				'You are chopping the teaks using a faster method (1.5t) because of your experience in woodcutting (level 92+)'
-			);
+			boosts.push('1.5t teak chopping with 92+ wc');
 		}
 
 		// Default bronze axe, last in the array

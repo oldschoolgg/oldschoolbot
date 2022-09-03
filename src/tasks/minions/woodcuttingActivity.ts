@@ -95,7 +95,7 @@ export default class extends Task {
 				{
 					name: log.name,
 					quantity: theQuantity,
-					powerchopping
+					powerchop: powerchopping
 				},
 				true
 			],
