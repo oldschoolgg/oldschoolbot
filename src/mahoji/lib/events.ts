@@ -5,7 +5,6 @@ import { CLIENT_ID, DEV_SERVER_ID, production } from '../../config';
 import { syncBlacklists } from '../../lib/blacklists';
 import { DISABLED_COMMANDS } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
-import { assert } from '../../lib/util';
 import { CUSTOM_PRICE_CACHE } from '../commands/sell';
 import { mahojiClientSettingsFetch } from '../mahojiSettings';
 
@@ -46,5 +45,4 @@ export async function onStartup() {
 	}
 
 	await syncCustomPrices();
-	assert(!globalClient.monitors.get('commandHandler'));
 }

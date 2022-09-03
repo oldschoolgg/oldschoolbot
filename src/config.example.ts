@@ -1,17 +1,8 @@
 import { KlasaClientOptions } from 'klasa';
 
-import { IDiscordSettings, PatreonConfig, ProviderConfig } from './lib/types';
+import { IDiscordSettings, PatreonConfig } from './lib/types';
 
 export const botToken = '';
-export const providerConfig: ProviderConfig | null = {
-	default: 'postgres',
-	postgres: {
-		database: 'postgres',
-		user: 'postgres',
-		password: 'postgres',
-		port: 5432
-	}
-};
 export const production = false;
 
 export const patreonConfig: PatreonConfig = null;

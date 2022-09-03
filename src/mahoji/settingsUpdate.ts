@@ -15,7 +15,6 @@ export async function mahojiUserSettingsUpdate(user: string | bigint, data: Pris
 			}
 		});
 
-		await klasaUser.settings.sync(true);
 		return { newUser };
 	} catch (err) {
 		logError(err, {

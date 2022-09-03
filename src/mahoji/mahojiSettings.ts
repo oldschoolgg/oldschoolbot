@@ -198,7 +198,6 @@ export async function mahojiGuildSettingsUpdate(guild: string | DJSGuild, data: 
 		}
 	});
 	untrustedGuildSettingsCache.set(newGuild.id, newGuild);
-	await (globalClient.gateways.get('guilds') as any)?.get(guildID)?.sync(true);
 	return { newGuild };
 }
 
@@ -226,7 +225,6 @@ export async function mahojiClientSettingsUpdate(data: Prisma.ClientStorageUpdat
 		},
 		data
 	});
-	await globalClient.settings.sync(true);
 }
 
 export function getMahojiBank(user: User) {

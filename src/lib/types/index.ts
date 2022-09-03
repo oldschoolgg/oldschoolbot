@@ -15,18 +15,6 @@ export interface ItemPriceCache {
 
 export type AnyObject = Record<PropertyKey, unknown> | {};
 
-export type PostgresConfig = null | {
-	database: string;
-	user: string;
-	password: string;
-	port: number;
-};
-
-export type ProviderConfig = null | {
-	default: string;
-	postgres?: PostgresConfig;
-};
-
 export type PatreonConfig = null | {
 	campaignID: number;
 	token: string;
