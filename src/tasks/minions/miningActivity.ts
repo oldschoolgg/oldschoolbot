@@ -109,7 +109,7 @@ export default class extends Task {
 
 		const isUsingObsidianPickaxe = userHasItemsEquippedAnywhere(
 			user,
-			['Volcanic pickaxe', 'Offhand volcanic pickaxe'],
+			['Offhand volcanic pickaxe'],
 			false
 		);
 		const isDestroyed = isUsingObsidianPickaxe && !resolveItems(['Obsidian shards']).includes(ore.id);
@@ -181,7 +181,7 @@ export default class extends Task {
 				}
 			}
 		}
-		if (hasAdze && !adzeIsDisabled && !isDestroyed) {
+		if (hasAdze && !adzeIsDisabled) {
 			const smeltedOre = Smithing.Bars.find(
 				o => o.inputOres.bank[ore.id] && o.inputOres.items().filter(i => i[0].name !== 'Coal').length === 1
 			);
