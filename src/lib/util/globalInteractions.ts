@@ -1,4 +1,4 @@
-import { MessageButton } from 'discord.js';
+import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Time } from 'e';
 import { APIInteraction, InteractionType, Routes } from 'mahoji';
 
@@ -48,32 +48,36 @@ function isValidGlobalInteraction(str: string): str is GlobalInteractionAction {
 export function makeDoClueButton(tier: ClueTier) {
 	const name: Uppercase<ClueTier['name']> = tier.name.toUpperCase() as Uppercase<ClueTier['name']>;
 	const id: GlobalInteractionAction = `DO_${name}_CLUE`;
-	return new MessageButton()
-		.setCustomID(id)
+	return new ButtonBuilder()
+		.setCustomId(id)
 		.setLabel(`Do ${tier.name} Clue`)
-		.setStyle('SECONDARY')
+		.setStyle(ButtonStyle.Secondary)
 		.setEmoji('365003979840552960');
 }
 
 export function makeOpenCasketButton(tier: ClueTier) {
 	const name: Uppercase<ClueTier['name']> = tier.name.toUpperCase() as Uppercase<ClueTier['name']>;
 	const id: GlobalInteractionAction = `OPEN_${name}_CASKET`;
-	return new MessageButton()
-		.setCustomID(id)
+	return new ButtonBuilder()
+		.setCustomId(id)
 		.setLabel(`Open ${tier.name} Casket`)
-		.setStyle('SECONDARY')
+		.setStyle(ButtonStyle.Secondary)
 		.setEmoji('365003978678730772');
 }
 
 export function makeRepeatTripButton() {
-	return new MessageButton().setCustomID('REPEAT_TRIP').setLabel('Repeat Trip').setStyle('SECONDARY').setEmoji('🔁');
+	return new ButtonBuilder()
+		.setCustomId('REPEAT_TRIP')
+		.setLabel('Repeat Trip')
+		.setStyle(ButtonStyle.Secondary)
+		.setEmoji('🔁');
 }
 
 export function makeBirdHouseTripButton() {
-	return new MessageButton()
-		.setCustomID('DO_BIRDHOUSE_RUN')
+	return new ButtonBuilder()
+		.setCustomId('DO_BIRDHOUSE_RUN')
 		.setLabel('Birdhouse Run')
-		.setStyle('SECONDARY')
+		.setStyle(ButtonStyle.Secondary)
 		.setEmoji('692946556399124520');
 }
 const reactionTimeLimits = {
@@ -89,10 +93,10 @@ const reactionTimeLimits = {
 const reactionTimeLimit = (perkTier: PerkTier | 0): number => reactionTimeLimits[perkTier] ?? Time.Hour * 12;
 
 export function makeNewSlayerTaskButton() {
-	return new MessageButton()
-		.setCustomID('NEW_SLAYER_TASK')
+	return new ButtonBuilder()
+		.setCustomId('NEW_SLAYER_TASK')
 		.setLabel('New Slayer Task')
-		.setStyle('SECONDARY')
+		.setStyle(ButtonStyle.Secondary)
 		.setEmoji('630911040560824330');
 }
 

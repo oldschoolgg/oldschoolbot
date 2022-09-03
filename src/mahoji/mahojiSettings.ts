@@ -1,6 +1,6 @@
 import type { ClientStorage, Guild, Prisma, User, UserStats } from '@prisma/client';
-import { Guild as DJSGuild, MessageButton } from 'discord.js';
-import { objectEntries, round, Time } from 'e';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Guild as DJSGuild } from 'discord.js';
+import { noOp, objectEntries, round, Time } from 'e';
 import { InteractionResponseType, InteractionType, MessageFlags } from 'mahoji';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
@@ -67,23 +67,23 @@ export async function handleMahojiConfirmation(interaction: SlashCommandInteract
 	const confirmMessage = await channel.send({
 		content: str,
 		components: [
-			[
-				new MessageButton({
+			new ActionRowBuilder<ButtonBuilder>().addComponents([
+				new ButtonBuilder({
 					label: 'Confirm',
-					style: 'PRIMARY',
-					customID: 'CONFIRM'
+					style: ButtonStyle.Primary,
+					customId: 'CONFIRM'
 				}),
-				new MessageButton({
+				new ButtonBuilder({
 					label: 'Cancel',
-					style: 'SECONDARY',
-					customID: 'CANCEL'
+					style: ButtonStyle.Secondary,
+					customId: 'CANCEL'
 				})
-			]
+			])
 		]
 	});
 
 	return new Promise<void>(async (resolve, reject) => {
-		const collector = confirmMessage.createMessageComponentInteractionCollector({
+		const collector = confirmMessage.createMessageComponentCollector({
 			time: Time.Second * 15
 		});
 
@@ -92,12 +92,12 @@ export async function handleMahojiConfirmation(interaction: SlashCommandInteract
 			confirmed.push(id);
 			if (!isConfirmed()) return;
 			collector.stop();
-			if (!confirmMessage.deleted) await confirmMessage.delete();
+			await confirmMessage.delete().catch(noOp);
 			resolve();
 		}
 
 		const cancel = async (reason: 'time' | 'cancel') => {
-			if (!confirmMessage.deleted) await confirmMessage.delete();
+			await confirmMessage.delete().catch(noOp);
 			await interaction.respond({
 				type: InteractionType.ApplicationCommand,
 				response: {
@@ -114,22 +114,27 @@ export async function handleMahojiConfirmation(interaction: SlashCommandInteract
 			reject(new Error(SILENT_ERROR));
 		};
 
-		collector.on('collect', async i => {
+		collector.on('collect', i => {
 			const { id } = i.user;
 			if (!users.includes(id)) {
 				i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
-				return false;
+				return;
 			}
-			if (i.customID === 'CANCEL') {
-				return cancel('cancel');
+			if (i.customId === 'CANCEL') {
+				cancel('cancel');
+				return;
 			}
-			if (i.customID === 'CONFIRM') {
+			if (i.customId === 'CONFIRM') {
 				respondToButton(i.id, i.token);
-				return confirm(id);
+				confirm(id);
 			}
 		});
 
-		collector.on('end', () => !isConfirmed() && cancel('time'));
+		collector.on('end', () => {
+			if (!isConfirmed) {
+				cancel('time');
+			}
+		});
 	});
 }
 

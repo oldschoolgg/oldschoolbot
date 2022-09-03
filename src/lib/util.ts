@@ -2,18 +2,26 @@ import { bold } from '@discordjs/builders';
 import type { User } from '@prisma/client';
 import { PaginatedMessage } from '@sapphire/discord.js-utilities';
 import {
+	ActionRowBuilder,
+	AttachmentBuilder,
+	ButtonBuilder,
+	ButtonInteraction,
+	ButtonStyle,
+	CacheType,
 	Channel,
+	Collection,
+	CollectorFilter,
 	DMChannel,
+	escapeMarkdown,
 	Guild,
-	MessageAttachment,
-	MessageButton,
+	Message,
 	MessageOptions,
+	PermissionsBitField,
+	SelectMenuInteraction,
 	TextChannel,
-	User as DJSUser,
-	Util
+	User as DJSUser
 } from 'discord.js';
 import { calcWhatPercent, chunk, isObject, objectEntries, Time } from 'e';
-import { KlasaMessage, KlasaUser } from 'klasa';
 import { APIButtonComponentWithCustomId, APIInteractionResponseCallbackData, APIUser, ComponentType } from 'mahoji';
 import { CommandResponse, InteractionResponseDataWithBufferAttachments } from 'mahoji/dist/lib/structures/ICommand';
 import murmurHash from 'murmurhash';
@@ -23,8 +31,8 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, MersenneTwister19937, nodeCrypto, real, shuffle } from 'random-js';
 
-import { production } from '../config';
-import { skillEmoji, SupportServer, usernameCache } from './constants';
+import { production, SupportServer } from '../config';
+import { skillEmoji, usernameCache } from './constants';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
 import { Consumable } from './minions/types';
 import { POHBoosts } from './poh';
@@ -43,7 +51,6 @@ import { logError } from './util/logError';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const emojiRegex = require('emoji-regex');
 
-export { Util } from 'discord.js';
 export * from 'oldschooljs/dist/util/index';
 
 const zeroWidthSpace = '\u200b';
@@ -142,10 +149,6 @@ export function convertXPtoLVL(xp: number, cap = 99) {
 	return cap;
 }
 
-export function determineScaledOreTime(xp: number, respawnTime: number, lvl: number) {
-	const t = xp / (lvl / 4 + 0.5) + ((100 - lvl) / 100 + 0.75);
-	return Math.floor((t + respawnTime) * 1000) * 1.2;
-}
 export function determineScaledLogTime(xp: number, respawnTime: number, lvl: number) {
 	const t = xp / (lvl / 4 + 0.5) + ((100 - lvl) / 100 + 0.75);
 	return Math.floor((t + respawnTime) * 1000) * 1.2;
@@ -271,7 +274,13 @@ export function normal(mu = 0, sigma = 1, nsamples = 6) {
  * @param channel The channel to check if the bot can send a message to.
  */
 export function channelIsSendable(channel: Channel | undefined | null): channel is TextChannel {
-	if (!channel || (!(channel instanceof DMChannel) && !(channel instanceof TextChannel)) || !channel.postable) {
+	if (!channel) return false;
+	if (!channel.isTextBased()) return false;
+	if (!('guild' in channel)) return true;
+	const canSend = channel.guild
+		? channel.permissionsFor(globalClient.user!)!.has(PermissionsBitField.Flags.ViewChannel)
+		: true;
+	if (!channel || (!(channel instanceof DMChannel) && !(channel instanceof TextChannel) && canSend)) {
 		return false;
 	}
 
@@ -437,7 +446,7 @@ export function isValidNickname(str?: string) {
 	);
 }
 
-export async function makePaginatedMessage(message: KlasaMessage, pages: MessageOptions[], target?: KlasaUser) {
+export async function makePaginatedMessage(message: Message, pages: MessageOptions[], target?: DJSUser) {
 	const display = new PaginatedMessage();
 	// @ts-ignore 2445
 	display.setUpReactions = () => null;
@@ -447,31 +456,33 @@ export async function makePaginatedMessage(message: KlasaMessage, pages: Message
 			components:
 				pages.length > 1
 					? [
-							PaginatedMessage.defaultActions
-								.slice(1, -1)
-								.map(a =>
-									new MessageButton()
-										.setLabel('')
-										.setStyle('SECONDARY')
-										.setCustomID(a.id)
-										.setEmoji(a.id)
-								)
+							new ActionRowBuilder<ButtonBuilder>().addComponents(
+								PaginatedMessage.defaultActions
+									.slice(1, -1)
+									.map(a =>
+										new ButtonBuilder()
+											.setLabel('')
+											.setStyle(ButtonStyle.Secondary)
+											.setCustomId(a.id)
+											.setEmoji(a.id)
+									)
+							)
 					  ]
-					: []
+					: undefined
 		});
 	}
 
 	await display.run(message, target);
 
 	if (pages.length > 1) {
-		const collector = display.response!.createMessageComponentInteractionCollector({
+		const collector = await message.createMessageComponentCollector({
 			time: Time.Minute,
 			filter: i => i.user.id === (target ? target.id : message.author.id)
 		});
 
 		collector.on('collect', async interaction => {
 			for (const action of PaginatedMessage.defaultActions) {
-				if (interaction.customID === action.id) {
+				if (interaction.customId === action.id) {
 					const previousIndex = display.index;
 
 					await action.run({
@@ -491,7 +502,7 @@ export async function makePaginatedMessage(message: KlasaMessage, pages: Message
 		});
 
 		collector.on('end', () => {
-			display.response!.edit({ components: [] });
+			(display.response! as Message).edit({ components: [] });
 		});
 	}
 }
@@ -585,7 +596,7 @@ export function truncateString(str: string, maxLen: number) {
 }
 
 export function removeMarkdownEmojis(str: string) {
-	return Util.escapeMarkdown(stripEmojis(str));
+	return escapeMarkdown(stripEmojis(str));
 }
 export { cleanString, stringMatches } from './util/cleanString';
 
@@ -597,7 +608,7 @@ export function calcPerHour(value: number, duration: number) {
 	return (value / (duration / Time.Minute)) * 60;
 }
 
-export function convertDJSUserToAPIUser(user: DJSUser | KlasaUser): APIUser {
+export function convertDJSUserToAPIUser(user: DJSUser): APIUser {
 	const apiUser: APIUser = {
 		id: user.id,
 		username: user.username,
@@ -646,7 +657,7 @@ export function convertMahojiResponseToDJSResponse(response: Awaited<CommandResp
 	if (typeof response === 'string') return response;
 	return {
 		content: response.content,
-		files: response.attachments?.map(i => new MessageAttachment(i.buffer, i.fileName))
+		files: response.attachments?.map(i => new AttachmentBuilder(i.buffer, { name: i.fileName }))
 	};
 }
 
@@ -717,4 +728,28 @@ export function hasSkillReqs(user: MUser, reqs: Skills): [boolean, string | null
 		return [false, formatSkillRequirements(reqs)];
 	}
 	return [true, null];
+}
+type test = CollectorFilter<
+	[
+		ButtonInteraction<CacheType> | SelectMenuInteraction<CacheType>,
+		Collection<string, ButtonInteraction<CacheType> | SelectMenuInteraction>
+	]
+>;
+export function awaitMessageComponentInteraction({
+	message,
+	filter,
+	time
+}: {
+	time: number;
+	message: Message;
+	filter: test;
+}): Promise<SelectMenuInteraction<CacheType> | ButtonInteraction<CacheType>> {
+	return new Promise((resolve, reject) => {
+		const collector = message.createMessageComponentCollector({ max: 1, filter, time });
+		collector.once('end', (interactions, reason) => {
+			const interaction = interactions.first();
+			if (interaction) resolve(interaction);
+			else reject(new Error(reason));
+		});
+	});
 }

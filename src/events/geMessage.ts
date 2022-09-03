@@ -1,4 +1,5 @@
-import { MessageEmbed, TextChannel } from 'discord.js';
+import { Embed } from '@discordjs/builders';
+import { TextChannel } from 'discord.js';
 import { noOp, Time } from 'e';
 import { Event, EventStore } from 'klasa';
 
@@ -12,15 +13,24 @@ declare module 'klasa' {
 	}
 }
 let lastMessageID: string | null = null;
-const embed = new MessageEmbed()
-	.setAuthor('⚠️ ⚠️ ⚠️ ⚠️ READ THIS ⚠️ ⚠️ ⚠️ ⚠️')
-	.addField(
-		"⚠️ Don't get scammed",
-		'Beware of people "buying out banks" or buying lots of skilling supplies, which can be worth a lot more in the bot than they pay you. Skilling supplies are often worth a lot more than they are ingame. Don\'t just trust that they\'re giving you a fair price.'
-	)
-	.addField('🔎 Search', 'Search this channel first, someone might already be selling/buying what you want.')
-	.addField('💬 Read the rules/Pins', 'Read the pinned rules/instructions before using the channel.')
-	.addField('Keep Ads Short', 'Keep your ad less than 10 lines long, as short as possible.');
+const embed = new Embed()
+	.setAuthor({ name: '⚠️ ⚠️ ⚠️ ⚠️ READ THIS ⚠️ ⚠️ ⚠️ ⚠️' })
+	.addField({
+		name: "⚠️ Don't get scammed",
+		value: 'Beware of people "buying out banks" or buying lots of skilling supplies, which can be worth a lot more in the bot than they pay you. Skilling supplies are often worth a lot more than they are ingame. Don\'t just trust that they\'re giving you a fair price.'
+	})
+	.addField({
+		name: '🔎 Search',
+		value: 'Search this channel first, someone might already be selling/buying what you want.'
+	})
+	.addField({
+		name: '💬 Read the rules/Pins',
+		value: 'Read the pinned rules/instructions before using the channel.'
+	})
+	.addField({
+		name: 'Keep Ads Short',
+		value: 'Keep your ad less than 10 lines long, as short as possible.'
+	});
 
 export default class extends Event {
 	public constructor(store: EventStore, file: string[], directory: string) {

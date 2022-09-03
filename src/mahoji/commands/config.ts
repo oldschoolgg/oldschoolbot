@@ -1,5 +1,5 @@
 import { Embed, inlineCode } from '@discordjs/builders';
-import { Guild, HexColorString, Util } from 'discord.js';
+import { Guild, HexColorString, resolveColor } from 'discord.js';
 import { uniqueArr } from 'e';
 import { APIUser, ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
@@ -255,7 +255,7 @@ async function bgColorConfig(user: MUser, hex?: string) {
 		return {
 			embeds: [
 				embed
-					.setColor(Util.resolveColor(currentColor as HexColorString))
+					.setColor(resolveColor(currentColor as HexColorString))
 					.setDescription(`Your current background color is \`${currentColor}\`.`)
 			]
 		};
@@ -274,7 +274,7 @@ async function bgColorConfig(user: MUser, hex?: string) {
 	return {
 		embeds: [
 			embed
-				.setColor(Util.resolveColor(hex as HexColorString))
+				.setColor(resolveColor(hex as HexColorString))
 				.setDescription(`Your background color is now \`${hex}\``)
 		]
 	};

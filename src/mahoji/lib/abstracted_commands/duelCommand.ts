@@ -1,10 +1,10 @@
-import { MessageButton, User } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, User } from 'discord.js';
 import { noOp, sleep, Time } from 'e';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank, Util } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
-import { channelIsSendable } from '../../../lib/util';
+import { awaitMessageComponentInteraction, channelIsSendable } from '../../../lib/util';
 import { mahojiParseNumber, updateGPTrackSetting } from '../../mahojiSettings';
 
 async function checkBal(user: MUser, amount: number) {
@@ -49,18 +49,18 @@ export async function duelCommand(
 	const duelMessage = await channel.send({
 		content: `${duelTargetUser}, do you accept the duel for ${Util.toKMB(amount)} GP?`,
 		components: [
-			[
-				new MessageButton({
+			new ActionRowBuilder<ButtonBuilder>().addComponents([
+				new ButtonBuilder({
 					label: 'Accept',
-					style: 'PRIMARY',
-					customID: 'CONFIRM'
+					style: ButtonStyle.Primary,
+					customId: 'CONFIRM'
 				}),
-				new MessageButton({
+				new ButtonBuilder({
 					label: 'Decline',
-					style: 'SECONDARY',
-					customID: 'CANCEL'
+					style: ButtonStyle.Secondary,
+					customId: 'CANCEL'
 				})
-			]
+			])
 		]
 	});
 
@@ -139,7 +139,8 @@ export async function duelCommand(
 	}
 
 	try {
-		const selection = await duelMessage.awaitMessageComponentInteraction({
+		const selection = await awaitMessageComponentInteraction({
+			message: duelMessage,
 			filter: i => {
 				if (i.user.id !== (duelTargetUser.id ?? interaction.userID).toString()) {
 					i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
@@ -149,10 +150,10 @@ export async function duelCommand(
 			},
 			time: Time.Second * 10
 		});
-		if (selection.customID === 'CANCEL') {
+		if (selection.customId === 'CANCEL') {
 			return cancel();
 		}
-		if (selection.customID === 'CONFIRM') {
+		if (selection.customId === 'CONFIRM') {
 			return await confirm(amount);
 		}
 	} catch (err) {

@@ -41,7 +41,6 @@ export default function getUsersPerkTier(
 	}
 
 	const bitfield = userOrBitfield instanceof MUserClass ? userOrBitfield.bitfield : userOrBitfield;
-	console.log(`bitfield: ${bitfield} - ${typeof bitfield}`);
 	if (userOrBitfield instanceof MUserClass && userOrBitfield.user.premium_balance_tier !== null) {
 		const date = userOrBitfield.user.premium_balance_expiry_date;
 		if (date && Date.now() < date) {

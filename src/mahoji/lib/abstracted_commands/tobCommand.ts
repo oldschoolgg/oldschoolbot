@@ -95,7 +95,14 @@ export async function tobStartCommand(user: MUser, channelID: bigint, isHardMode
 		return `Your mass failed to start because of this reason: ${teamCheckFailure} ${users}`;
 	}
 
-	const { duration, totalReduction, reductions, wipedRoom, deathDuration, parsedTeam } = createTOBTeam({
+	const {
+		duration,
+		totalReduction,
+		reductions,
+		wipedRoom: _wipedRoom,
+		deathDuration,
+		parsedTeam
+	} = createTOBTeam({
 		team: await Promise.all(
 			users.map(async u => ({
 				user: u,
@@ -109,7 +116,7 @@ export async function tobStartCommand(user: MUser, channelID: bigint, isHardMode
 		),
 		hardMode: isHardMode
 	});
-
+	const wipedRoom = _wipedRoom ? TOBRooms.find(room => _wipedRoom.name === room.name)! : null;
 	let debugStr = '';
 
 	const totalCost = new Bank();

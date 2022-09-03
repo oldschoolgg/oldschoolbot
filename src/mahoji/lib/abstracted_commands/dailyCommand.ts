@@ -5,7 +5,8 @@ import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommand
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { COINS_ID, Emoji, SupportServer } from '../../../lib/constants';
+import { SupportServer } from '../../../config';
+import { COINS_ID, Emoji } from '../../../lib/constants';
 import pets from '../../../lib/data/pets';
 import { DynamicButtons } from '../../../lib/DynamicButtons';
 import { getRandomTriviaQuestions } from '../../../lib/roboChimp';

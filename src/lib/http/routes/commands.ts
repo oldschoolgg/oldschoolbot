@@ -12,7 +12,6 @@ const commandData = allAbstractCommands(globalClient.mahojiClient)
 	.filter(c => typeof c.attributes?.description === 'string' && c.attributes.description.length > 1)
 	.filter(i => !['admin'].includes(i.name))
 	.map((cmd: AbstractCommand) => {
-		const botCommand = globalClient.commands.get(cmd.name);
 		const mahojiCommand = mahojiCommands.find(i => stringMatches(i.name, cmd.name));
 		const subOptions: string[] = [];
 		if (mahojiCommand) {
@@ -29,7 +28,6 @@ const commandData = allAbstractCommands(globalClient.mahojiClient)
 			name: cmd.name,
 			desc: cmd.attributes?.description,
 			examples: cmd.attributes?.examples,
-			aliases: botCommand?.aliases ?? [],
 			perkTier: cmd.attributes?.perkTier,
 			flags: cmd.attributes?.categoryFlags,
 			subOptions

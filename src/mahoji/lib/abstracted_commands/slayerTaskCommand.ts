@@ -1,5 +1,5 @@
 import { isGuildBasedChannel } from '@sapphire/discord.js-utilities';
-import { MessageButton } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { notEmpty, randInt, Time } from 'e';
 import { MessageFlags } from 'mahoji';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
@@ -18,52 +18,52 @@ import {
 	userCanUseMaster
 } from '../../../lib/slayer/slayerUtil';
 import { AssignableSlayerTask } from '../../../lib/slayer/types';
-import { channelIsSendable, removeFromArr } from '../../../lib/util';
+import { awaitMessageComponentInteraction, channelIsSendable, removeFromArr } from '../../../lib/util';
 import { stringMatches } from '../../../lib/util/cleanString';
 import { logError } from '../../../lib/util/logError';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 import { handleMahojiConfirmation, mUserFetch } from '../../mahojiSettings';
 
 const returnSuccessButtons = [
-	[
-		new MessageButton({
+	new ActionRowBuilder<ButtonBuilder>().addComponents([
+		new ButtonBuilder({
 			label: 'Autoslay (Saved)',
-			style: 'SECONDARY',
-			customID: 'assaved'
+			style: ButtonStyle.Secondary,
+			customId: 'assaved'
 		}),
-		new MessageButton({
+		new ButtonBuilder({
 			label: 'Autoslay (Default)',
-			style: 'SECONDARY',
-			customID: 'asdef'
+			style: ButtonStyle.Secondary,
+			customId: 'asdef'
 		}),
-		new MessageButton({
+		new ButtonBuilder({
 			label: 'Autoslay (EHP)',
-			style: 'SECONDARY',
-			customID: 'asehp'
+			style: ButtonStyle.Secondary,
+			customId: 'asehp'
 		}),
-		new MessageButton({
+		new ButtonBuilder({
 			label: 'Autoslay (Boss)',
-			style: 'SECONDARY',
-			customID: 'asboss'
+			style: ButtonStyle.Secondary,
+			customId: 'asboss'
 		})
-	],
-	[
-		new MessageButton({
+	]),
+	new ActionRowBuilder<ButtonBuilder>().addComponents([
+		new ButtonBuilder({
 			label: 'Cancel Task + New (30 points)',
-			style: 'DANGER',
-			customID: 'skip'
+			style: ButtonStyle.Danger,
+			customId: 'skip'
 		}),
-		new MessageButton({
+		new ButtonBuilder({
 			label: 'Block Task + New (100 points)',
-			style: 'DANGER',
-			customID: 'block'
+			style: ButtonStyle.Danger,
+			customId: 'block'
 		}),
-		new MessageButton({
+		new ButtonBuilder({
 			label: 'Do Nothing',
-			style: 'SECONDARY',
-			customID: 'doNothing'
+			style: ButtonStyle.Secondary,
+			customId: 'doNothing'
 		})
-	]
+	])
 ];
 
 function getAlternateMonsterList(assignedTask: AssignableSlayerTask | null) {
@@ -130,7 +130,8 @@ async function returnSuccess(channelID: bigint | string, user: MUser, content: s
 	};
 
 	try {
-		const selection = await sentMessage.awaitMessageComponentInteraction({
+		const selection = await awaitMessageComponentInteraction({
+			message: sentMessage,
 			filter: i => {
 				if (i.user.id !== user.id) {
 					i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
@@ -140,7 +141,7 @@ async function returnSuccess(channelID: bigint | string, user: MUser, content: s
 			},
 			time: Time.Second * 15
 		});
-		switch (selection.customID) {
+		switch (selection.customId) {
 			case 'assaved': {
 				await runCommand({
 					commandName: 'slayer',

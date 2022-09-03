@@ -721,7 +721,6 @@ const Buyables: Buyable[] = [
 		aliases: ['jug of water', 'jugs of water'],
 		gpCost: 100
 	},
-
 	{
 		name: 'Feather',
 		aliases: ['feather'],
@@ -837,6 +836,36 @@ const Buyables: Buyable[] = [
 		outputItems: new Bank({
 			'Raw shark': 1
 		})
+	},
+	{
+		name: 'Bronze pickaxe',
+		gpCost: 500,
+		ironmanPrice: 1
+	},
+	{
+		name: 'Iron pickaxe',
+		gpCost: 1000,
+		ironmanPrice: 140
+	},
+	{
+		name: 'Steel pickaxe',
+		gpCost: 2000,
+		ironmanPrice: 500
+	},
+	{
+		name: 'Mithril pickaxe',
+		gpCost: 5000,
+		ironmanPrice: 1300
+	},
+	{
+		name: 'Adamant pickaxe',
+		gpCost: 10_000,
+		ironmanPrice: 3200
+	},
+	{
+		name: 'Rune pickaxe',
+		gpCost: 100_000,
+		ironmanPrice: 32_000
 	},
 	{
 		name: 'Rainbow flower crown',

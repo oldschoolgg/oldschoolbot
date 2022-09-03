@@ -1,4 +1,5 @@
-import { MessageEmbed, TextChannel } from 'discord.js';
+import { Embed } from '@discordjs/builders';
+import { ActionRowBuilder, ButtonBuilder, TextChannel } from 'discord.js';
 import { noOp, Time } from 'e';
 import { Event, EventStore } from 'klasa';
 
@@ -11,24 +12,24 @@ declare module 'klasa' {
 	}
 }
 let lastMessageID: string | null = null;
-const embed = new MessageEmbed()
-	.setAuthor('⚠️ ⚠️ ⚠️ ⚠️ READ THIS ⚠️ ⚠️ ⚠️ ⚠️')
-	.addField(
-		'📖 Read the FAQ',
-		'The FAQ answers commonly asked questions: https://wiki.oldschool.gg/faq - also make sure to read the other pages of the website, which might contain the information you need.'
-	)
-	.addField(
-		'🔎 Search',
-		'Search this channel first, you might find your question has already been asked and answered.'
-	)
-	.addField(
-		'💬 Ask',
-		"If your question isn't answered in the FAQ, and you can't find it from searching, simply ask your question and wait for someone to answer. If you don't get an answer, you can post your question again."
-	)
-	.addField(
-		'⚠️ Dont ping anyone',
-		'Do not ping mods, or any roles/people in here. You will be muted. Ask your question, and wait.'
-	);
+const embed = new Embed()
+	.setAuthor({ name: '⚠️ ⚠️ ⚠️ ⚠️ READ THIS ⚠️ ⚠️ ⚠️ ⚠️' })
+	.addField({
+		name: '📖 Read the FAQ',
+		value: 'The FAQ answers commonly asked questions: https://wiki.oldschool.gg/faq - also make sure to read the other pages of the website, which might contain the information you need.'
+	})
+	.addField({
+		name: '🔎 Search',
+		value: 'Search this channel first, you might find your question has already been asked and answered.'
+	})
+	.addField({
+		name: '💬 Ask',
+		value: "If your question isn't answered in the FAQ, and you can't find it from searching, simply ask your question and wait for someone to answer. If you don't get an answer, you can post your question again."
+	})
+	.addField({
+		name: '⚠️ Dont ping anyone',
+		value: 'Do not ping mods, or any roles/people in here. You will be muted. Ask your question, and wait.'
+	});
 
 export default class extends Event {
 	public constructor(store: EventStore, file: string[], directory: string) {
@@ -55,7 +56,10 @@ export default class extends Event {
 						await message.delete();
 					}
 				}
-				const res = await channel.send({ embeds: [embed], components: [informationalButtons] });
+				const res = await channel.send({
+					embeds: [embed],
+					components: [new ActionRowBuilder<ButtonBuilder>().addComponents(informationalButtons)]
+				});
 				lastMessageID = res.id;
 			} catch (_) {}
 		}, Number(Time.Minute * 15));

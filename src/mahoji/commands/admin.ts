@@ -5,7 +5,7 @@ import { Stopwatch } from '@sapphire/stopwatch';
 import { Duration } from '@sapphire/time-utilities';
 import Type from '@sapphire/type';
 import { isThenable } from '@sentry/utils';
-import { Util } from 'discord.js';
+import { escapeCodeBlock } from 'discord.js';
 import { randArrItem, Time, uniqueArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions, InteractionResponseType, InteractionType } from 'mahoji';
 import { CommandResponse, MahojiAttachment } from 'mahoji/dist/lib/structures/ICommand';
@@ -15,9 +15,9 @@ import { inspect } from 'node:util';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { CLIENT_ID, production } from '../../config';
+import { CLIENT_ID, OWNER_IDS, production, SupportServer } from '../../config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../../lib/blacklists';
-import { badges, BadgesEnum, BitField, BitFieldData, DISABLED_COMMANDS, OWNER_IDS } from '../../lib/constants';
+import { badges, BadgesEnum, BitField, BitFieldData, DISABLED_COMMANDS } from '../../lib/constants';
 import { countUsersWithItemInCl, prisma } from '../../lib/settings/prisma';
 import { cancelTask, minionActivityCacheDelete } from '../../lib/settings/settings';
 import {
@@ -103,7 +103,7 @@ async function unsafeEval({ userID, code }: { userID: string; code: string }) {
 	}
 
 	return {
-		content: `${codeBlock(Util.escapeCodeBlock(result))}
+		content: `${codeBlock(escapeCodeBlock(result))}
 **Type:** ${inlineCode(type.toString())}
 **Time:** ${asyncTime ? `⏱ ${asyncTime}<${syncTime}>` : `⏱ ${syncTime}`}
 `,
@@ -145,7 +145,7 @@ const viewableThings: {
 export const adminCommand: OSBMahojiCommand = {
 	name: 'admin',
 	description: 'Allows you to trade items with other players.',
-	guildID: production ? '342983479501389826' : '940758552425955348',
+	guildID: SupportServer,
 	options: [
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -493,7 +493,10 @@ export const adminCommand: OSBMahojiCommand = {
 		await interaction.deferReply();
 
 		const adminUser = await mahojiUsersSettingsFetch(userID);
-		const isMod = adminUser.bitfield.includes(BitField.isModerator);
+		const isOwner = OWNER_IDS.includes(userID.toString());
+		const isMod = isOwner || adminUser.bitfield.includes(BitField.isModerator);
+		if (!guildID || !isMod || (production && guildID.toString() !== SupportServer)) return randArrItem(gifs);
+
 		if (options.wipe_bingo_temp_cls) {
 			if (userID.toString() !== '319396464402890753' && !isMod) return randArrItem(gifs);
 			const usersToReset = await prisma.user.findMany({
@@ -775,7 +778,7 @@ LIMIT 10;
 		 * Owner Only Commands
 		 *
 		 */
-		if (userID.toString() !== '157797566833098752' || interaction.userID.toString() !== '157797566833098752') {
+		if (!isOwner) {
 			return randArrItem(gifs);
 		}
 		if (options.viewbank) {
@@ -795,7 +798,6 @@ LIMIT 10;
 				interaction,
 				type: InteractionType.ApplicationCommand
 			});
-			await Promise.all(globalClient.providers.map(provider => provider.shutdown()));
 			process.exit();
 		}
 		if (options.debug_patreon) {

@@ -1,6 +1,6 @@
 import { time } from '@discordjs/builders';
 import { Duration } from '@sapphire/time-utilities';
-import { MessageAttachment } from 'discord.js';
+import { AttachmentBuilder, PermissionsBitField } from 'discord.js';
 import { Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
@@ -62,7 +62,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 		if (!channelIsSendable(channel)) return 'Invalid channel.';
 
 		if (options.start) {
-			if (!channel.permissionsFor(globalClient.user!)?.has('ADD_REACTIONS')) {
+			if (!channel.permissionsFor(globalClient.user!)?.has(PermissionsBitField.Flags.AddReactions)) {
 				return "I'm missing permissions to add reactions.";
 			}
 			const existingGiveaways = await prisma.giveaway.findMany({
@@ -125,7 +125,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 			
 React to this messsage with ${reaction} to enter.`,
 				files: [
-					new MessageAttachment(
+					new AttachmentBuilder(
 						(
 							await makeBankImage({
 								bank,

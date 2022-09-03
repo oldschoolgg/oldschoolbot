@@ -1,4 +1,5 @@
-import { Client, KlasaClientOptions, KlasaUser } from 'klasa';
+import { User } from 'discord.js';
+import { Client, KlasaClientOptions } from 'klasa';
 import { MahojiClient } from 'mahoji';
 
 import { cacheUsernames } from '../../mahoji/commands/leaderboard';
@@ -55,7 +56,7 @@ export class OldSchoolBotClient extends Client {
 		return super.login(token);
 	}
 
-	async fetchUser(id: string | bigint): Promise<KlasaUser> {
+	async fetchUser(id: string | bigint): Promise<User> {
 		const user = await this.users.fetch(typeof id === 'string' ? id : id.toString());
 		await user.settings.sync();
 		return user;

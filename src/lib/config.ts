@@ -1,34 +1,26 @@
-import { Intents } from 'discord.js';
+import { GatewayIntentBits, Partials } from 'discord.js';
 import { KlasaClient, KlasaClientOptions } from 'klasa';
 
-import { customClientOptions, production, providerConfig } from '../config';
+import { customClientOptions, OWNER_IDS, production } from '../config';
 
 export const clientOptions: KlasaClientOptions = {
-	/* Discord.js Options */
-	messageCacheMaxSize: 200,
-	messageCacheLifetime: 120,
-	messageSweepInterval: 5000,
-	owners: ['157797566833098752'],
+	owners: [...OWNER_IDS],
 	shards: 'auto',
-	http: {
-		api: 'https://discord.com/api'
-	},
-	intents: new Intents([
-		'GUILDS',
-		'GUILD_MEMBERS',
-		'GUILD_MESSAGES',
-		'GUILD_MESSAGE_REACTIONS',
-		'DIRECT_MESSAGES',
-		'DIRECT_MESSAGE_REACTIONS',
-		'GUILD_WEBHOOKS'
-	]),
+	intents: [
+		GatewayIntentBits.Guilds,
+		GatewayIntentBits.GuildMembers,
+		GatewayIntentBits.GuildMessages,
+		GatewayIntentBits.GuildMessageReactions,
+		GatewayIntentBits.DirectMessages,
+		GatewayIntentBits.DirectMessageReactions,
+		GatewayIntentBits.GuildWebhooks
+	],
 	/* Klasa Options */
 	prefix: '+',
-	providers: providerConfig ?? undefined,
 	readyMessage: (client: KlasaClient) => {
 		return `[Old School Bot] Ready to serve ${client.guilds.cache.size} guilds.`;
 	},
-	partials: ['USER', 'CHANNEL'],
+	partials: [Partials.User, Partials.Channel],
 	production,
 	...customClientOptions,
 	allowedMentions: {

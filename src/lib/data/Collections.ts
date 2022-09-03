@@ -1,5 +1,5 @@
 import { User } from '@prisma/client';
-import { MessageAttachment } from 'discord.js';
+import { AttachmentBuilder } from 'discord.js';
 import { calcWhatPercent, uniqueArr } from 'e';
 import { Bank, Clues, Monsters } from 'oldschooljs';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
@@ -985,7 +985,7 @@ export function getPossibleOptions() {
 		categories.push(['Monsters', monster.name, monster.aliases ? monster.aliases.join(', ') : '']);
 	}
 	const normalTable = table([['Type', 'Name', 'Alias'], ...[...categories, ...activities, ...roles]]);
-	return new MessageAttachment(Buffer.from(normalTable), 'possible_logs.txt');
+	return new AttachmentBuilder(Buffer.from(normalTable), { name: 'possible_logs.txt' });
 }
 
 export function getCollectionItems(collection: string, allItems = false, removeCoins = false): number[] {

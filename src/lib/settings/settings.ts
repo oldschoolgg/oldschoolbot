@@ -1,16 +1,13 @@
+import { Embed } from '@discordjs/builders';
 import { Activity, NewUser, Prisma } from '@prisma/client';
-import { GuildMember, MessageAttachment } from 'discord.js';
+import { AttachmentBuilder, GuildMember } from 'discord.js';
 import { APIInteractionGuildMember } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
 import { CommandArgs } from '../../mahoji/lib/inhibitors';
 import { postCommand } from '../../mahoji/lib/postCommand';
 import { preCommand } from '../../mahoji/lib/preCommand';
-import {
-	convertAPIEmbedToDJSEmbed,
-	convertComponentDJSComponent,
-	convertMahojiCommandToAbstractCommand
-} from '../../mahoji/lib/util';
+import { convertComponentDJSComponent, convertMahojiCommandToAbstractCommand } from '../../mahoji/lib/util';
 import { ActivityTaskData } from '../types/minions';
 import { channelIsSendable, isGroupActivity } from '../util';
 import { logError } from '../util/logError';
@@ -172,9 +169,9 @@ export async function runCommand({
 			} else {
 				await channel.send({
 					content: result.content,
-					embeds: result.embeds?.map(convertAPIEmbedToDJSEmbed),
-					components: result.components?.map(convertComponentDJSComponent),
-					files: result.attachments?.map(i => new MessageAttachment(i.buffer, i.fileName))
+					embeds: result.embeds?.map(i => new Embed(i as any)),
+					components: result.components?.map(i => convertComponentDJSComponent(i as any)),
+					files: result.attachments?.map(i => new AttachmentBuilder(i.buffer, { name: i.fileName }))
 				});
 			}
 		}

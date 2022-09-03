@@ -1,5 +1,4 @@
-import { userMention } from '@discordjs/builders';
-import { MessageEmbed } from 'discord.js';
+import { Embed, userMention } from '@discordjs/builders';
 import { Task } from 'klasa';
 
 import { NEX_ID } from '../../lib/constants';
@@ -40,7 +39,7 @@ export default class extends Task {
 			kc: quantity
 		});
 
-		const embed = new MessageEmbed().setThumbnail(
+		const embed = new Embed().setThumbnail(
 			'https://cdn.discordapp.com/attachments/342983479501389826/951730848426786846/Nex.webp'
 		).setDescription(`
 ${loot.formatLoot()}`);

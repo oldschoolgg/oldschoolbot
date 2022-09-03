@@ -1,8 +1,7 @@
 /* eslint-disable prefer-promise-reject-errors */
 import { userMention } from '@discordjs/builders';
-import { Message, MessageReaction, TextChannel, User } from 'discord.js';
+import { MessageReaction, TextChannel, User } from 'discord.js';
 import { debounce, noOp, sleep, Time } from 'e';
-import { Extendable, ExtendableStore, KlasaMessage } from 'klasa';
 
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { ReactionEmoji, SILENT_ERROR, usernameCache } from '../../lib/constants';
@@ -29,7 +28,7 @@ export async function setupParty(
 			)}\n\nThis party will automatically depart in 2 minutes, or if the leader clicks the start (start early) or stop button.`;
 	}
 
-	const confirmMessage = (await channel.send(getMessageContent())) as KlasaMessage;
+	const confirmMessage = await channel.send(getMessageContent());
 	async function addEmojis() {
 		await confirmMessage.react(ReactionEmoji.Join);
 		await sleep(50);
@@ -42,7 +41,7 @@ export async function setupParty(
 
 	// Debounce message edits to prevent spam.
 	const updateUsersIn = debounce(() => {
-		if (deleted || confirmMessage.deleted) return;
+		if (deleted) return;
 		confirmMessage.edit(getMessageContent());
 	}, 500);
 
@@ -176,19 +175,4 @@ export async function setupParty(
 		});
 
 	return [await Promise.all(usersWhoConfirmed.map(mUserFetch)), reactionAwaiter];
-}
-
-export default class extends Extendable {
-	public constructor(store: ExtendableStore, file: string[], directory: string) {
-		super(store, file, directory, { appliesTo: [Message] });
-	}
-
-	async makePartyAwaiter(this: KlasaMessage, options: MakePartyOptions) {
-		if (this.channel.type !== 'text') throw new Error('Tried to make party in non-text channel.');
-		const [usersWhoConfirmed, reactionAwaiter] = await setupParty(this.channel, options.leader, options);
-
-		await reactionAwaiter();
-
-		return usersWhoConfirmed;
-	}
 }

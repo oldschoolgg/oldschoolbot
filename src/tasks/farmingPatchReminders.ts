@@ -1,4 +1,4 @@
-import { MessageActionRow, MessageButton } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Time } from 'e';
 import { Task, TaskStore } from 'klasa';
 
@@ -8,7 +8,7 @@ import { prisma } from '../lib/settings/prisma';
 import { runCommand } from '../lib/settings/settings';
 import { getFarmingInfo } from '../lib/skilling/functions/getFarmingInfo';
 import Farming from '../lib/skilling/skills/farming';
-import { stringMatches } from '../lib/util';
+import { awaitMessageComponentInteraction, stringMatches } from '../lib/util';
 import { farmingPatchNames, getFarmingKeyFromName } from '../lib/util/farmingHelpers';
 import { logError } from '../lib/util/logError';
 import { minionIsBusy } from '../lib/util/minionIsBusy';
@@ -78,21 +78,21 @@ export default class extends Task {
 						});
 
 						// Build buttons (only show Harvest/replant if not busy):
-						const farmingReminderButtons: MessageActionRow = new MessageActionRow();
+						const farmingReminderButtons = new ActionRowBuilder<ButtonBuilder>();
 						if (!minionIsBusy(id)) {
 							farmingReminderButtons.addComponents(
-								new MessageButton()
+								new ButtonBuilder()
 									.setLabel('Harvest & Replant')
-									.setStyle('PRIMARY')
-									.setCustomID('HARVEST')
+									.setStyle(ButtonStyle.Primary)
+									.setCustomId('HARVEST')
 							);
 						}
 						// Always show disable reminders:
 						farmingReminderButtons.addComponents(
-							new MessageButton()
+							new ButtonBuilder()
 								.setLabel('Disable Reminders')
-								.setStyle('SECONDARY')
-								.setCustomID('DISABLE')
+								.setStyle(ButtonStyle.Secondary)
+								.setCustomId('DISABLE')
 						);
 						const user = await globalClient.users.cache.get(id);
 						if (!user) continue;
@@ -101,13 +101,15 @@ export default class extends Task {
 							components: [farmingReminderButtons]
 						});
 						try {
-							const selection = await message.awaitMessageComponentInteraction({
-								time: Time.Minute * 5
+							const selection = await awaitMessageComponentInteraction({
+								message,
+								time: Time.Minute * 5,
+								filter: () => true
 							});
 							message.edit({ components: [] });
 
 							// Check disable first so minion doesn't have to be free to disable reminders.
-							if (selection.customID === 'DISABLE') {
+							if (selection.customId === 'DISABLE') {
 								await mahojiUserSettingsUpdate(user.id, {
 									farming_patch_reminders: false
 								});
@@ -118,7 +120,7 @@ export default class extends Task {
 								selection.reply({ content: 'Your minion is busy.' });
 								return;
 							}
-							if (selection.customID === 'HARVEST') {
+							if (selection.customId === 'HARVEST') {
 								message.author = user;
 								runCommand({
 									commandName: 'farming',
@@ -126,7 +128,7 @@ export default class extends Task {
 									bypassInhibitors: true,
 									channelID: message.channel.id,
 									userID: message.author.id,
-									guildID: message.guild?.id,
+									guildID: undefined,
 									user: await mUserFetch(user.id),
 									member: message.member
 								});

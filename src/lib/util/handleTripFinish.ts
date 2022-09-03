@@ -1,6 +1,6 @@
 import { activity_type_enum } from '@prisma/client';
 import { isGuildBasedChannel } from '@sapphire/discord.js-utilities';
-import { MessageAttachment, MessageCollector, MessageOptions } from 'discord.js';
+import { ActionRowBuilder, AttachmentBuilder, ButtonBuilder, MessageCollector } from 'discord.js';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
@@ -82,7 +82,7 @@ export async function handleTripFinish(
 		| undefined
 		| [string, Record<string, unknown>, boolean?, string?]
 		| ((args: LastTripRunArgs) => Promise<CommandResponse | null>),
-	attachment: MessageAttachment | Buffer | undefined,
+	attachment: AttachmentBuilder | Buffer | undefined,
 	data: ActivityTaskOptions,
 	loot: Bank | null,
 	_messages?: string[]
@@ -133,24 +133,24 @@ export async function handleTripFinish(
 		: onContinue;
 
 	if (onContinueFn) lastTripCache.set(user.id, { data, continue: onContinueFn });
-	const components: MessageOptions['components'] = [[]];
-	if (onContinueFn) components[0].push(makeRepeatTripButton());
-	if (clueReceived && perkTier > PerkTier.One) components[0].push(makeDoClueButton(clueReceived));
+	const components = new ActionRowBuilder<ButtonBuilder>();
+	if (onContinueFn) components.addComponents(makeRepeatTripButton());
+	if (clueReceived && perkTier > PerkTier.One) components.addComponents(makeDoClueButton(clueReceived));
 	const casketReceived = loot ? ClueTiers.find(i => loot?.has(i.id)) : undefined;
-	if (casketReceived) components[0].push(makeOpenCasketButton(casketReceived));
+	if (casketReceived) components.addComponents(makeOpenCasketButton(casketReceived));
 	const birdHousedetails = await calculateBirdhouseDetails(user.id);
-	if (birdHousedetails.isReady && perkTier > PerkTier.One) components[0].push(makeBirdHouseTripButton());
+	if (birdHousedetails.isReady && perkTier > PerkTier.One) components.addComponents(makeBirdHouseTripButton());
 	const { currentTask } = await getUsersCurrentSlayerInfo(user.id);
 	if (
 		(currentTask === null || currentTask.quantity_remaining <= 0) &&
 		perkTier > PerkTier.One &&
 		data.type === 'MonsterKilling'
 	) {
-		components[0].push(makeNewSlayerTaskButton());
+		components.addComponents(makeNewSlayerTaskButton());
 	}
 	sendToChannelID(channelID, {
 		content: message,
 		image: attachment,
-		components: components[0].length > 0 ? components : undefined
+		components: [components]
 	});
 }

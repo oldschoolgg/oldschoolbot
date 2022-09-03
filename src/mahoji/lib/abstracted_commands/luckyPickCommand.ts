@@ -1,11 +1,11 @@
-import { MessageButton, MessageComponentInteraction, MessageOptions } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageComponentInteraction, MessageOptions } from 'discord.js';
 import { chunk, noOp, roll, shuffleArr, Time } from 'e';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import { SILENT_ERROR } from '../../../lib/constants';
-import { channelIsSendable } from '../../../lib/util';
+import { awaitMessageComponentInteraction, channelIsSendable } from '../../../lib/util';
 import { logError } from '../../../lib/util/logError';
 import { handleMahojiConfirmation, mahojiParseNumber, updateGPTrackSetting } from '../../mahojiSettings';
 
@@ -90,19 +90,27 @@ export async function luckyPickCommand(
 	function getCurrentButtons({ showTrueNames }: { showTrueNames: boolean }): MessageOptions['components'] {
 		let chunkedButtons = chunk(buttonsToShow, 5);
 		return chunkedButtons.map(c =>
-			c.map(b => {
-				let button = new MessageButton()
-					.setLabel(showTrueNames ? b.name : '')
-					.setCustomID(b.id.toString())
-					.setStyle(b.picked ? (b.name !== '0' ? 'SUCCESS' : 'DANGER') : 'SECONDARY');
-				if (!showTrueNames) {
-					button.setEmoji('680783258488799277');
-				}
-				if (b.name === '10x' && !b.picked && showTrueNames) {
-					button.setStyle('PRIMARY');
-				}
-				return button;
-			})
+			new ActionRowBuilder<ButtonBuilder>().addComponents(
+				c.map(b => {
+					let button = new ButtonBuilder()
+						.setLabel(showTrueNames ? b.name : '')
+						.setCustomId(b.id.toString())
+						.setStyle(
+							b.picked
+								? b.name !== '0'
+									? ButtonStyle.Success
+									: ButtonStyle.Danger
+								: ButtonStyle.Secondary
+						);
+					if (!showTrueNames) {
+						button.setEmoji('680783258488799277');
+					}
+					if (b.name === '10x' && !b.picked && showTrueNames) {
+						button.setStyle(ButtonStyle.Primary);
+					}
+					return button;
+				})
+			)
 		);
 	}
 
@@ -141,7 +149,8 @@ export async function luckyPickCommand(
 	};
 
 	try {
-		const selection = await sentMessage.awaitMessageComponentInteraction({
+		const selection = await awaitMessageComponentInteraction({
+			message: sentMessage,
 			filter: i => {
 				if (i.user.id !== (user.id ?? interaction.userID).toString()) {
 					i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
@@ -152,7 +161,7 @@ export async function luckyPickCommand(
 			time: Time.Second * 10
 		});
 
-		const pickedButton = buttonsToShow.find(b => b.id.toString() === selection.customID)!;
+		const pickedButton = buttonsToShow.find(b => b.id.toString() === selection.customId)!;
 		buttonsToShow[pickedButton.id].picked = true;
 
 		try {

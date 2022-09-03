@@ -1,4 +1,4 @@
-import { MessageButton, MessageOptions } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageOptions } from 'discord.js';
 import { chunk, noOp, randInt, shuffleArr, sleep } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
@@ -123,14 +123,22 @@ ${buttonsData.map(b => `${b.name}: ${b.mod(1)}x`).join('\n')}`;
 
 	function getCurrentButtons({ columnsToHide }: { columnsToHide: number[] }): MessageOptions['components'] {
 		return chunkedButtons.map(c =>
-			c.map((b, index) => {
-				const shouldShowThisButton = !columnsToHide.includes(index);
-				const isWinning = columnsToHide.length === 0 && winningRow?.includes(b);
-				return new MessageButton()
-					.setCustomID(b.id)
-					.setStyle(!shouldShowThisButton ? 'SECONDARY' : isWinning ? 'SUCCESS' : 'SECONDARY')
-					.setEmoji(shouldShowThisButton ? b.emoji : '❓');
-			})
+			new ActionRowBuilder<ButtonBuilder>().addComponents(
+				c.map((b, index) => {
+					const shouldShowThisButton = !columnsToHide.includes(index);
+					const isWinning = columnsToHide.length === 0 && winningRow?.includes(b);
+					return new ButtonBuilder()
+						.setCustomId(b.id)
+						.setStyle(
+							!shouldShowThisButton
+								? ButtonStyle.Secondary
+								: isWinning
+								? ButtonStyle.Success
+								: ButtonStyle.Secondary
+						)
+						.setEmoji(shouldShowThisButton ? b.emoji : '❓');
+				})
+			)
 		);
 	}
 

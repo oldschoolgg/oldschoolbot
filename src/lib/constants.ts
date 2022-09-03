@@ -1,4 +1,4 @@
-import { MessageButton } from 'discord.js';
+import { ButtonBuilder } from 'discord.js';
 import { APIButtonComponent, APIButtonComponentWithCustomId, ButtonStyle, ComponentType } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
@@ -9,7 +9,6 @@ import { SkillsEnum } from './skilling/types';
 import { ActivityTaskOptions } from './types/minions';
 import resolveItems from './util/resolveItems';
 
-export const SupportServer = production ? '342983479501389826' : '940758552425955348';
 export const BotID = DISCORD_SETTINGS.BotID ?? '303730326692429825';
 
 export const Channel = {
@@ -449,7 +448,7 @@ const buttonSource = [
 ];
 
 export const informationalButtons = buttonSource.map(i =>
-	new MessageButton().setLabel(i.label).setEmoji(i.emoji).setURL(i.url).setStyle('LINK')
+	new ButtonBuilder().setLabel(i.label).setEmoji(i.emoji).setURL(i.url).setStyle(ButtonStyle.Link)
 );
 export const mahojiInformationalButtons: APIButtonComponent[] = buttonSource.map(i => ({
 	type: ComponentType.Button,
@@ -497,7 +496,6 @@ export const DISABLED_COMMANDS = new Set<string>();
 export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'none'] as const;
 export type PvMMethod = typeof PVM_METHODS[number];
 export const usernameCache = new Map<string, string>();
-export const OWNER_IDS = ['157797566833098752'];
 export const minionBuyButton: APIButtonComponentWithCustomId = {
 	type: ComponentType.Button,
 	custom_id: 'BUY_MINION',

@@ -1,8 +1,8 @@
 import { noOp, Time } from 'e';
 
-import { MAXING_MESSAGE } from '../config';
+import { MAXING_MESSAGE, SupportServer } from '../config';
 import { mUserFetch } from '../mahoji/mahojiSettings';
-import { Events, LEVEL_99_XP, MAX_TOTAL_LEVEL, MAX_XP, skillEmoji, SupportServer } from './constants';
+import { Events, LEVEL_99_XP, MAX_TOTAL_LEVEL, MAX_XP, skillEmoji } from './constants';
 import { AddXpParams } from './minions/types';
 import { prisma } from './settings/prisma';
 import Skills from './skilling/skills';

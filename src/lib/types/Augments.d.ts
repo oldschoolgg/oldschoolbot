@@ -1,6 +1,5 @@
 import { FSWatcher } from 'chokidar';
-import { MessageOptions, MessagePayload } from 'discord.js';
-import { KlasaMessage, KlasaUser, Settings } from 'klasa';
+import { KlasaUser, Settings } from 'klasa';
 import { Image } from 'skia-canvas/lib';
 
 import { CustomGet } from '../settings/types/UserSettings';
@@ -35,30 +34,4 @@ declare module 'klasa' {
 
 declare module 'discord.js/node_modules/discord-api-types/v8' {
 	type Snowflake = string;
-}
-export type KlasaSend = (input: string | MessagePayload | MessageOptions) => Promise<KlasaMessage>;
-
-declare module 'discord.js' {
-	interface TextBasedChannel {
-		send: KlasaSend;
-	}
-	interface TextChannel {
-		send: KlasaSend;
-	}
-	interface DMChannel {
-		send: KlasaSend;
-	}
-	interface ThreadChannel {
-		send: KlasaSend;
-	}
-	interface NewsChannel {
-		send: KlasaSend;
-	}
-	interface PartialTextBasedChannelFields {
-		send: KlasaSend;
-		readonly attachable: boolean;
-		readonly embedable: boolean;
-		readonly postable: boolean;
-		readonly readable: boolean;
-	}
 }

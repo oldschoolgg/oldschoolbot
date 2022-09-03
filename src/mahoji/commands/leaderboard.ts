@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js';
+import { Embed } from '@discordjs/builders';
 import { chunk } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions, MessageFlags } from 'mahoji';
 
@@ -47,11 +47,11 @@ async function doMenu(user: MUser, channelID: bigint, pages: string[], title: st
 	}
 	const channel = globalClient.channels.cache.get(channelID.toString());
 	if (!channelIsSendable(channel)) return;
-	const message = await channel.send({ embeds: [new MessageEmbed().setDescription('Loading')] });
+	const message = await channel.send({ embeds: [new Embed().setDescription('Loading')] });
 
 	makePaginatedMessage(
 		message,
-		pages.map(p => ({ embeds: [new MessageEmbed().setTitle(title).setDescription(p)] })),
+		pages.map(p => ({ embeds: [new Embed().setTitle(title).setDescription(p)] })),
 		await globalClient.fetchUser(user.id)
 	);
 }

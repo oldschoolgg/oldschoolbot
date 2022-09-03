@@ -1,5 +1,4 @@
-import { codeBlock } from '@discordjs/builders';
-import { MessageEmbed } from 'discord.js';
+import { codeBlock, Embed } from '@discordjs/builders';
 import { chunk } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions, MessageFlags } from 'mahoji';
 
@@ -18,7 +17,7 @@ const bankFormats = ['json', 'text_paged', 'text_full'] as const;
 const bankItemsPerPage = 10;
 type BankFormat = typeof bankFormats[number];
 
-export const askCommand: OSBMahojiCommand = {
+export const bankCommand: OSBMahojiCommand = {
 	name: 'bank',
 	description: 'See your minions bank.',
 	options: [
@@ -140,15 +139,13 @@ export const askCommand: OSBMahojiCommand = {
 			for (const page of chunk(textBank, bankItemsPerPage)) {
 				pages.push({
 					embeds: [
-						new MessageEmbed()
-							.setTitle(`${klasaUser.usernameOrMention}'s Bank`)
-							.setDescription(page.join('\n'))
+						new Embed().setTitle(`${klasaUser.usernameOrMention}'s Bank`).setDescription(page.join('\n'))
 					]
 				});
 			}
 			const channel = globalClient.channels.cache.get(channelID.toString());
 			if (!channelIsSendable(channel)) return 'Failed to send paginated bank message, sorry.';
-			const bankMessage = await channel.send({ embeds: [new MessageEmbed().setDescription('Loading')] });
+			const bankMessage = await channel.send({ embeds: [new Embed().setDescription('Loading')] });
 
 			makePaginatedMessage(bankMessage, pages, await globalClient.fetchUser(user.id));
 			return { content: 'Here is your selected bank:', flags: MessageFlags.Ephemeral };

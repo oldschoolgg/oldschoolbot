@@ -81,7 +81,7 @@ export async function preCommand({
 	}
 	const inhibitResult = await runInhibitors({
 		user,
-		klasaUser,
+		APIUser: await globalClient.fetchUser(user.id),
 		guild: guild ?? null,
 		member: member ?? null,
 		command: abstractCommand,

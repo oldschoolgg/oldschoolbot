@@ -1,5 +1,6 @@
 import { Embed } from '@discordjs/builders';
 import { Activity, User } from '@prisma/client';
+import { ChannelType } from 'discord.js';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
@@ -382,7 +383,7 @@ async function checkMassesCommand(guildID: bigint | undefined) {
 	if (!guildID) return 'This can only be used in a server.';
 	const guild = globalClient.guilds.cache.get(guildID.toString());
 	if (!guild) return 'Guild not found.';
-	const channelIDs = guild.channels.cache.filter(c => c.type === 'text').map(c => BigInt(c.id));
+	const channelIDs = guild.channels.cache.filter(c => c.type === ChannelType.GuildText).map(c => BigInt(c.id));
 
 	const masses = (
 		await prisma.activity.findMany({
