@@ -1,5 +1,5 @@
 import { Time } from 'e';
-import { Task } from 'klasa';
+import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
 import { MorytaniaDiary, userhasDiaryTier } from '../../lib/diaries';
@@ -8,7 +8,8 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { collectables } from '../../mahoji/lib/abstracted_commands/collectCommand';
 import { mUserFetch, updateBankSetting } from '../../mahoji/mahojiSettings';
 
-export default class extends Task {
+export const TODO.Task: MinionTask = {
+type: '',
 	async run(data: CollectingOptions) {
 		let { collectableID, quantity, userID, channelID, duration, noStaminas } = data;
 		const user = await mUserFetch(userID);

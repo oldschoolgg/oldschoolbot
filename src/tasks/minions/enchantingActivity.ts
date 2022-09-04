@@ -1,4 +1,4 @@
-import { Task } from 'klasa';
+import { MinionTask } from '../../../lib/Task';
 
 import { Enchantables } from '../../lib/skilling/skills/magic/enchantables';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -6,7 +6,8 @@ import { EnchantingActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { mUserFetch } from '../../mahoji/mahojiSettings';
 
-export default class extends Task {
+export const TODO.Task: MinionTask = {
+type: '',
 	async run(data: EnchantingActivityTaskOptions) {
 		let { itemID, quantity, userID, channelID, duration } = data;
 		const user = await mUserFetch(userID);

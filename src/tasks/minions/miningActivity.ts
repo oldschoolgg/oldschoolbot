@@ -1,5 +1,5 @@
 import { roll, Time } from 'e';
-import { Task } from 'klasa';
+import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
@@ -12,7 +12,8 @@ import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { mUserFetch } from '../../mahoji/mahojiSettings';
 
-export default class extends Task {
+export const TODO.Task: MinionTask = {
+type: '',
 	async run(data: MiningActivityTaskOptions) {
 		const { oreID, userID, channelID, duration, powermine } = data;
 		let { quantity } = data;

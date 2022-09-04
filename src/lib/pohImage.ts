@@ -1,13 +1,12 @@
 import { objectEntries, randInt } from 'e';
 import * as fs from 'fs';
-import { Task } from 'klasa';
 import path from 'path';
 import { Canvas, CanvasRenderingContext2D, Image } from 'skia-canvas/lib';
 
-import { DUNGEON_FLOOR_Y, GROUND_FLOOR_Y, HOUSE_WIDTH, Placeholders, TOP_FLOOR_Y } from '../lib/poh';
-import { getActivityOfUser } from '../lib/settings/settings';
-import { canvasImageFromBuffer } from '../lib/util/canvasUtil';
 import { bankImageGenerator } from './bankImage';
+import { DUNGEON_FLOOR_Y, GROUND_FLOOR_Y, HOUSE_WIDTH, Placeholders, TOP_FLOOR_Y } from './poh';
+import { getActivityOfUser } from './settings/settings';
+import { canvasImageFromBuffer } from './util/canvasUtil';
 import { PlayerOwnedHouse } from '.prisma/client';
 
 const CONSTRUCTION_IMG_DIR = './src/lib/poh/images';
@@ -33,7 +32,7 @@ const FOLDERS = [
 const bg = fs.readFileSync('./src/lib/poh/images/bg_1.jpg');
 const bg2 = fs.readFileSync('./src/lib/poh/images/bg_2.jpg');
 
-export default class PoHImage extends Task {
+class PoHImage {
 	public imageCache: Map<number, Image> = new Map();
 	public bgImages: Image[] = [];
 	async init() {
@@ -123,3 +122,5 @@ export default class PoHImage extends Task {
 		return canvas.toBuffer('png');
 	}
 }
+
+export const pohImageGenerator = new PoHImage();

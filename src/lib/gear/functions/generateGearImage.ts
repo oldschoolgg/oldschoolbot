@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import { Canvas } from 'skia-canvas/lib';
 
-import { bankImageGenerator } from '../../../tasks/bankImage';
+import { bankImageGenerator } from '../../bankImage';
 import { Gear } from '../../structures/Gear';
 import { toTitleCase } from '../../util';
 import { canvasImageFromBuffer, drawItemQuantityText, drawTitleText, fillTextXTimesInCtx } from '../../util/canvasUtil';

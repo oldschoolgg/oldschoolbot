@@ -1,4 +1,4 @@
-import { Task } from 'klasa';
+import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
 import { Craftables } from '../../lib/skilling/skills/crafting/craftables';
@@ -8,7 +8,8 @@ import { randFloat } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { mUserFetch } from '../../mahoji/mahojiSettings';
 
-export default class extends Task {
+export const TODO.Task: MinionTask = {
+type: '',
 	async run(data: CraftingActivityTaskOptions) {
 		const { craftableID, quantity, userID, channelID, duration } = data;
 		const user = await mUserFetch(userID);

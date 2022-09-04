@@ -1,4 +1,4 @@
-import { Task } from 'klasa';
+import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
 import { AnimatedArmourActivityTaskOptions } from '../../../../lib/types/minions';
@@ -6,7 +6,8 @@ import { handleTripFinish } from '../../../../lib/util/handleTripFinish';
 import { Armours } from '../../../../mahoji/lib/abstracted_commands/warriorsGuildCommand';
 import { mUserFetch } from '../../../../mahoji/mahojiSettings';
 
-export default class extends Task {
+export const TODO.Task: MinionTask = {
+type: '',
 	async run(data: AnimatedArmourActivityTaskOptions) {
 		const { armourID, userID, channelID, quantity } = data;
 		const user = await mUserFetch(userID);

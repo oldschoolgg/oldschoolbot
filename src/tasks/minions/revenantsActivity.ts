@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
 import { deepClone, roll } from 'e';
-import { Task } from 'klasa';
+import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
@@ -17,7 +17,8 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { mUserFetch, updateBankSetting } from '../../mahoji/mahojiSettings';
 
-export default class extends Task {
+export const TODO.Task: MinionTask = {
+type: '',
 	async run(data: RevenantOptions) {
 		const { monsterID, userID, channelID, quantity, died, skulled } = data;
 		const monster = revenantMonsters.find(mon => mon.id === monsterID)!;

@@ -1,11 +1,11 @@
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
+import { bankImageGenerator } from '../../../lib/bankImage';
 import { BitField } from '../../../lib/constants';
 import { formatSkillRequirements, stringMatches, toKMB } from '../../../lib/util';
 import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
 import resolveItems from '../../../lib/util/resolveItems';
-import { bankImageGenerator } from '../../../tasks/bankImage';
 import { handleMahojiConfirmation, updateBankSetting } from '../../mahojiSettings';
 
 export async function bankBgCommand(interaction: SlashCommandInteraction, user: MUser, name: string) {

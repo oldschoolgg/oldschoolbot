@@ -1,5 +1,5 @@
 import { calcPercentOfNum, percentChance } from 'e';
-import { Task } from 'klasa';
+import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
@@ -28,7 +28,8 @@ function radasBlessing(user: MUser) {
 	return { blessingEquipped: false, blessingChance: 0 };
 }
 
-export default class extends Task {
+export const TODO.Task: MinionTask = {
+type: '',
 	async run(data: FishingActivityTaskOptions) {
 		let { fishID, quantity, userID, channelID, duration } = data;
 		const user = await mUserFetch(userID);

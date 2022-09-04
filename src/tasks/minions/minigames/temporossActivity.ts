@@ -1,5 +1,5 @@
 import { increaseNumByPercent, randInt } from 'e';
-import { Task } from 'klasa';
+import { MinionTask } from '../../../lib/Task';
 
 import { Emoji, Events } from '../../../lib/constants';
 import { getMinigameEntity, incrementMinigameScore } from '../../../lib/settings/settings';
@@ -12,7 +12,8 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
-export default class extends Task {
+export const TODO.Task: MinionTask = {
+type: '',
 	async run(data: TemporossActivityTaskOptions) {
 		const { userID, channelID, quantity, rewardBoost, duration } = data;
 		const user = await mUserFetch(userID);

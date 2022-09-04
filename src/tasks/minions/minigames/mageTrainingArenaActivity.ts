@@ -1,5 +1,5 @@
 import { Time } from 'e';
-import { Task } from 'klasa';
+import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
 import { prisma } from '../../../lib/settings/prisma';
@@ -12,7 +12,8 @@ import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
 export const pizazzPointsPerHour = 100;
 
-export default class extends Task {
+export const TODO.Task: MinionTask = {
+type: '',
 	async run(data: MinigameActivityTaskOptions) {
 		const { channelID, quantity, duration, userID } = data;
 

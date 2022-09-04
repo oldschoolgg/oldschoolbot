@@ -1,4 +1,4 @@
-import { Task } from 'klasa';
+import { MinionTask } from '../../../lib/Task';
 
 import Firemaking from '../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -6,7 +6,8 @@ import { FiremakingActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { mUserFetch } from '../../mahoji/mahojiSettings';
 
-export default class extends Task {
+export const TODO.Task: MinionTask = {
+type: '',
 	async run(data: FiremakingActivityTaskOptions) {
 		const { burnableID, quantity, userID, channelID } = data;
 		const user = await mUserFetch(userID);

@@ -1,4 +1,4 @@
-import { Task } from 'klasa';
+import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../lib/constants';
@@ -8,7 +8,8 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { gloriesInventorySize } from '../../mahoji/lib/abstracted_commands/chargeGloriesCommand';
 import { mUserFetch } from '../../mahoji/mahojiSettings';
 
-export default class extends Task {
+export const TODO.Task: MinionTask = {
+type: '',
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { quantity, userID, channelID } = data;
 		const user = await mUserFetch(userID);

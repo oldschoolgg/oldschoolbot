@@ -1,6 +1,5 @@
 import { User } from '@prisma/client';
 import { calcWhatPercent, objectEntries } from 'e';
-import { Task } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Canvas, CanvasRenderingContext2D } from 'skia-canvas/lib';
 
@@ -23,7 +22,7 @@ export const CollectionLogFlags = [
 	{ name: 'missing', description: 'Show only missing items.' }
 ];
 
-export default class CollectionLogTask extends Task {
+class CollectionLogTask {
 	run() {}
 
 	drawBorder(ctx: CanvasRenderingContext2D, sprite: IBgSprite) {
@@ -449,3 +448,5 @@ export default class CollectionLogTask extends Task {
 		};
 	}
 }
+
+export const clImageGenerator = new CollectionLogTask();

@@ -1,5 +1,5 @@
 import { roll } from 'e';
-import { Task } from 'klasa';
+import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
 import { userhasDiaryTier, WesternProv } from '../../../lib/diaries';
@@ -9,7 +9,8 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { chompyHats } from '../../../mahoji/lib/abstracted_commands/chompyHuntCommand';
 import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
-export default class extends Task {
+export const TODO.Task: MinionTask = {
+type: '',
 	async run(data: MinigameActivityTaskOptions) {
 		const { channelID, quantity, userID } = data;
 		const user = await mUserFetch(userID);

@@ -1,10 +1,11 @@
-const tasks: Task[] = [];
+import { activity_type_enum } from '@prisma/client';
+
+const tasks: MinionTask[] = [];
 
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
-export class Task {
-	constructor() {
-		tasks.push(this);
-	}
+export interface MinionTask {
+	type: activity_type_enum;
+	run: Function;
 }
 
 console.log(tasks);

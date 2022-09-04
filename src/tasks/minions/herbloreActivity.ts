@@ -1,4 +1,4 @@
-import { Task } from 'klasa';
+import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
 import Herblore from '../../lib/skilling/skills/herblore/herblore';
@@ -7,7 +7,8 @@ import { HerbloreActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { mUserFetch } from '../../mahoji/mahojiSettings';
 
-export default class extends Task {
+export const TODO.Task: MinionTask = {
+type: '',
 	async run(data: HerbloreActivityTaskOptions) {
 		let { mixableID, quantity, zahur, userID, channelID, duration } = data;
 		const user = await mUserFetch(userID);

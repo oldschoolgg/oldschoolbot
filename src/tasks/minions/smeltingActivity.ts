@@ -1,5 +1,5 @@
 import { randInt } from 'e';
-import { Task } from 'klasa';
+import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
 import Smithing from '../../lib/skilling/skills/smithing';
@@ -9,7 +9,8 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 import { mUserFetch } from '../../mahoji/mahojiSettings';
 
-export default class extends Task {
+export const TODO.Task: MinionTask = {
+type: '',
 	async run(data: SmeltingActivityTaskOptions) {
 		let { barID, quantity, userID, channelID, duration, blastf } = data;
 		const user = await mUserFetch(userID);

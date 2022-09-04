@@ -1,5 +1,5 @@
 import { calcPercentOfNum, calcWhatPercent, randInt } from 'e';
-import { Task } from 'klasa';
+import { MinionTask } from '../../../lib/Task';
 
 import { KandarinDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
@@ -7,7 +7,8 @@ import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
-export default class extends Task {
+export const TODO.Task: MinionTask = {
+type: '',
 	async run(data: MinigameActivityTaskOptions) {
 		const { channelID, quantity, userID } = data;
 		const user = await mUserFetch(userID);

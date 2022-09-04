@@ -1,5 +1,5 @@
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
-import { Task } from 'klasa';
+import { MinionTask } from '../../../lib/Task';
 
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
@@ -23,7 +23,8 @@ function calcPoints() {
 	return Math.ceil(base);
 }
 
-export default class extends Task {
+export const TODO.Task: MinionTask = {
+type: '',
 	async run(data: MinigameActivityTaskOptions) {
 		const { channelID, quantity, userID } = data;
 		const user = await mUserFetch(userID);

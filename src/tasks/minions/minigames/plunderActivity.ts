@@ -1,4 +1,4 @@
-import { Task } from 'klasa';
+import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../../lib/constants';
@@ -10,7 +10,8 @@ import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { mUserFetch } from '../../../mahoji/mahojiSettings';
 import { PlunderActivityTaskOptions } from './../../../lib/types/minions';
 
-export default class extends Task {
+export const TODO.Task: MinionTask = {
+type: '',
 	async run(data: PlunderActivityTaskOptions) {
 		const { channelID, quantity, rooms, userID } = data;
 		const user = await mUserFetch(userID);

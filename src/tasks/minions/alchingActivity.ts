@@ -1,8 +1,8 @@
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { resolveNameBank } from 'oldschooljs/dist/util';
 
 import { SkillsEnum } from '../../lib/skilling/types';
+import { MinionTask } from '../../lib/Task';
 import { AlchingActivityTaskOptions } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
@@ -12,7 +12,8 @@ import { mUserFetch, updateGPTrackSetting } from '../../mahoji/mahojiSettings';
 
 const bryophytasStaffId = itemID("Bryophyta's staff");
 
-export default class extends Task {
+export const alchingTask: MinionTask = {
+	type: 'Alching',
 	async run(data: AlchingActivityTaskOptions) {
 		let { itemID, quantity, channelID, alchValue, userID, duration } = data;
 		const user = await mUserFetch(userID);
@@ -61,4 +62,4 @@ export default class extends Task {
 			loot
 		);
 	}
-}
+};

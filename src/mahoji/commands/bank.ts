@@ -2,13 +2,13 @@ import { codeBlock, Embed } from '@discordjs/builders';
 import { chunk } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions, MessageFlags } from 'mahoji';
 
+import { BankFlag, bankFlags } from '../../lib/bankImage';
 import { Emoji } from '../../lib/constants';
 import { Flags } from '../../lib/minions/types';
 import { BankSortMethod, BankSortMethods } from '../../lib/sorts';
 import { channelIsSendable, makePaginatedMessage } from '../../lib/util';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
-import { BankFlag, bankFlags } from '../../tasks/bankImage';
 import { filterOption, itemOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 import { mUserFetch } from '../mahojiSettings';

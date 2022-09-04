@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
 import { randFloat, roll } from 'e';
-import { Task } from 'klasa';
+import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
 import birdhouses from '../../../lib/skilling/skills/hunter/birdHouseTrapping';
@@ -19,7 +19,8 @@ const clues = [
 	[itemID('Clue scroll(easy)'), 4 / 10]
 ];
 
-export default class extends Task {
+export const TODO.Task: MinionTask = {
+type: '',
 	async run(data: BirdhouseActivityTaskOptions) {
 		const { birdhouseName, birdhouseData, userID, channelID, duration, placing, gotCraft, currentDate } = data;
 

@@ -3,6 +3,7 @@ import { notEmpty, randArrItem } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
 
+import { bankImageGenerator } from '../../lib/bankImage';
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { badges, BitField, BitFieldData, MAX_LEVEL, PerkTier } from '../../lib/constants';
 import { degradeableItems } from '../../lib/degradeableItems';
@@ -21,7 +22,6 @@ import { convertLVLtoXP, getUsername, isValidNickname } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
-import { bankImageGenerator } from '../../tasks/bankImage';
 import {
 	achievementDiaryCommand,
 	claimAchievementDiaryCommand

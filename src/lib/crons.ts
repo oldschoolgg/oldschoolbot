@@ -6,6 +6,7 @@ import { schedule } from 'node-cron';
 import fetch from 'node-fetch';
 
 import { untrustedGuildSettingsCache } from '../mahoji/mahojiSettings';
+import { analyticsTick } from './analytics';
 import { prisma } from './settings/prisma';
 import { OldSchoolBotClient } from './structures/OldSchoolBotClient';
 import { logError } from './util/logError';
@@ -92,4 +93,14 @@ GROUP BY item_id;`);
 			}
 		}
 	});
+
+	/**
+	 * Analytics
+	 */
+	schedule('*/5 * * * *', analyticsTick);
+
+	/**
+	 * prescence
+	 */
+	schedule('0 * * * *', () => globalClient.user?.setActivity('/help'));
 }

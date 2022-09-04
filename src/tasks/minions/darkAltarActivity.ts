@@ -1,5 +1,5 @@
 import { increaseNumByPercent, roll } from 'e';
-import { Task } from 'klasa';
+import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../lib/constants';
@@ -9,7 +9,8 @@ import { DarkAltarOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { mUserFetch } from '../../mahoji/mahojiSettings';
 
-export default class extends Task {
+export const TODO.Task: MinionTask = {
+type: '',
 	async run(data: DarkAltarOptions) {
 		const { quantity, userID, channelID, duration, hasElite, rune } = data;
 		const user = await mUserFetch(userID);

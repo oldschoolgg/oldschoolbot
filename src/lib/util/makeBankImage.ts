@@ -2,7 +2,7 @@ import { AttachmentBuilder } from 'discord.js';
 import { MahojiAttachment } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
-import { BankFlag, bankImageGenerator } from '../../tasks/bankImage';
+import { BankFlag, bankImageGenerator } from '../bankImage';
 import { Flags } from '../minions/types';
 
 interface MakeBankImageOptions {

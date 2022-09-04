@@ -1,5 +1,5 @@
 import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
-import { Task } from 'klasa';
+import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
@@ -12,7 +12,8 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { determineXPFromTickets } from '../../../mahoji/lib/abstracted_commands/agilityArenaCommand';
 import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
-export default class extends Task {
+export const TODO.Task: MinionTask = {
+type: '',
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { channelID, duration, userID } = data;
 		const user = await mUserFetch(userID);

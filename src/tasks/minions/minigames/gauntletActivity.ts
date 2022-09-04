@@ -1,5 +1,5 @@
 import { calcWhatPercent, percentChance } from 'e';
-import { Task } from 'klasa';
+import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../../lib/constants';
@@ -11,7 +11,8 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { mUserFetch, updateBankSetting } from '../../../mahoji/mahojiSettings';
 
-export default class extends Task {
+export const TODO.Task: MinionTask = {
+type: '',
 	async run(data: GauntletOptions) {
 		const { channelID, quantity, userID, corrupted } = data;
 		const user = await mUserFetch(userID);

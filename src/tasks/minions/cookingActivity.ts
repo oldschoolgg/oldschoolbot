@@ -1,4 +1,4 @@
-import { Task } from 'klasa';
+import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
 import calcBurntCookables from '../../lib/skilling/functions/calcBurntCookables';
@@ -8,7 +8,8 @@ import { CookingActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { mUserFetch } from '../../mahoji/mahojiSettings';
 
-export default class extends Task {
+export const TODO.Task: MinionTask = {
+type: '',
 	async run(data: CookingActivityTaskOptions) {
 		const { cookableID, quantity, userID, channelID, duration } = data;
 		const user = await mUserFetch(userID);

@@ -5,11 +5,11 @@ import { MahojiClient } from 'mahoji';
 
 import { production } from '../../config';
 import { cacheUsernames } from '../../mahoji/commands/leaderboard';
-import { Peak } from '../../tasks/WildernessPeakInterval';
 import { initCrons } from '../crons';
 import { prisma } from '../settings/prisma';
 import { syncActivityCache } from '../settings/settings';
 import { startupScripts } from '../startupScripts';
+import { Peak } from '../tickers';
 import { logError } from '../util/logError';
 import { piscinaPool } from '../workers';
 
@@ -34,10 +34,7 @@ export class OldSchoolBotClient extends Client {
 	giveawayTicker!: NodeJS.Timeout;
 	analyticsInterval!: NodeJS.Timeout;
 	metricsInterval!: NodeJS.Timeout;
-	_presenceInterval!: NodeJS.Timeout;
-	__farmingPatchReminders!: NodeJS.Timeout;
 	__supportInterval!: NodeJS.Timeout;
-	__dailyReminderInterval!: NodeJS.Timeout;
 	__geInterval!: NodeJS.Timeout;
 
 	public constructor(clientOptions: ClientOptions) {

@@ -1,5 +1,5 @@
 import { randInt, reduceNumByPercent, roll, Time } from 'e';
-import { Task } from 'klasa';
+import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
@@ -37,7 +37,8 @@ function allImpHunt(minutes: number, user: MUser) {
 
 const bryophytasStaffId = itemID("Bryophyta's staff");
 
-export default class extends Task {
+export const TODO.Task: MinionTask = {
+type: '',
 	async run(data: PuroPuroActivityTaskOptions) {
 		const { channelID, userID, quantity, implingID, darkLure } = data;
 		const user = await mUserFetch(userID);

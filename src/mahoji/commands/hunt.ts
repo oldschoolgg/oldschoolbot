@@ -8,12 +8,12 @@ import { trackLoot } from '../../lib/settings/prisma';
 import creatures from '../../lib/skilling/skills/hunter/creatures';
 import Hunter from '../../lib/skilling/skills/hunter/hunter';
 import { HunterTechniqueEnum, SkillsEnum } from '../../lib/skilling/types';
+import { Peak } from '../../lib/tickers';
 import { HunterActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemID } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
-import { Peak } from '../../tasks/WildernessPeakInterval';
 import { OSBMahojiCommand } from '../lib/util';
 import { mUserFetch, updateBankSetting, userHasGracefulEquipped } from '../mahojiSettings';
 

@@ -1,5 +1,5 @@
 import { randInt } from 'e';
-import { Task } from 'klasa';
+import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
@@ -37,7 +37,8 @@ const PointsTable = new SimpleTable<number>()
 	.add(780)
 	.add(850);
 
-export default class extends Task {
+export const TODO.Task: MinionTask = {
+type: '',
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { userID, channelID, quantity } = data;
 		const user = await mUserFetch(userID);

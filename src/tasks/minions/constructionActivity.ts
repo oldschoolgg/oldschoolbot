@@ -1,5 +1,5 @@
 import { calcPercentOfNum } from 'e';
-import { Task } from 'klasa';
+import { MinionTask } from '../../../lib/Task';
 
 import Constructables from '../../lib/skilling/skills/construction/constructables';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -8,7 +8,8 @@ import { calcConBonusXP } from '../../lib/util/calcConBonusXP';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { mUserFetch } from '../../mahoji/mahojiSettings';
 
-export default class extends Task {
+export const TODO.Task: MinionTask = {
+type: '',
 	async run(data: ConstructionActivityTaskOptions) {
 		const { objectID, quantity, userID, channelID, duration } = data;
 		const user = await mUserFetch(userID);

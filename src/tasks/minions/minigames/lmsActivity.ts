@@ -1,5 +1,5 @@
 import { percentChance } from 'e';
-import { Task } from 'klasa';
+import { MinionTask } from '../../../lib/Task';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { Emoji } from '../../../lib/constants';
@@ -98,7 +98,8 @@ function calculateResultOfLMSGames(qty: number, lmsStats: Awaited<ReturnType<typ
 	return gameResults;
 }
 
-export default class extends Task {
+export const TODO.Task: MinionTask = {
+type: '',
 	async run(data: MinigameActivityTaskOptions) {
 		const { channelID, quantity, userID, duration } = data;
 		const user = await mUserFetch(userID);

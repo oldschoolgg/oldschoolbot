@@ -1,5 +1,5 @@
 import { randFloat, roll, Time } from 'e';
-import { Task } from 'klasa';
+import { MinionTask } from '../../../lib/Task';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
@@ -19,7 +19,8 @@ const fossilTable = new LootTable()
 const numuliteTable = new LootTable().every('Numulite', 5).add('Calcite', 1).add('Pyrophosphite', 1);
 const fragmentTable = new LootTable({ limit: 175 }).add(numuliteTable, 1, 45).add(fossilTable, 1, 5);
 
-export default class extends Task {
+export const TODO.Task: MinionTask = {
+type: '',
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { quantity, userID, channelID, duration } = data;
 		const user = await mUserFetch(userID);

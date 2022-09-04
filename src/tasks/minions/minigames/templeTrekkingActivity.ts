@@ -1,5 +1,5 @@
 import { randInt } from 'e';
-import { Task } from 'klasa';
+import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
 import { templeTrekkingOutfit } from '../../../lib/data/CollectionsExport';
@@ -17,7 +17,8 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
-export default class extends Task {
+export const TODO.Task: MinionTask = {
+type: '',
 	getLowestCountOutfitPiece(bank: Bank, user: MUser): number {
 		let lowestCountPiece = 0;
 		let lowestCountAmount = -1;

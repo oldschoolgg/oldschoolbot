@@ -1,5 +1,5 @@
 import { noOp, randArrItem } from 'e';
-import { Task } from 'klasa';
+import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
 import { Emoji } from '../../lib/constants';
@@ -11,7 +11,8 @@ import { GroupMonsterActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { mUserFetch } from '../../mahoji/mahojiSettings';
 
-export default class extends Task {
+export const TODO.Task: MinionTask = {
+type: '',
 	async run(data: GroupMonsterActivityTaskOptions) {
 		const { monsterID, channelID, quantity, users, leader, duration } = data;
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;

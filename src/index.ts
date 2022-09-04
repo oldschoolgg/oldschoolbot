@@ -5,6 +5,8 @@ import './lib/MUser';
 import * as Sentry from '@sentry/node';
 import { Chart } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { watch } from 'chokidar';
+import { debounce } from 'e';
 import {
 	APIInteraction,
 	GatewayDispatchEvents,
@@ -15,12 +17,13 @@ import {
 	Routes
 } from 'mahoji';
 import { SlashCommandResponse } from 'mahoji/dist/lib/types';
-import { join } from 'path';
+import { extname, join, sep } from 'path';
 
-import { botToken, CLIENT_ID, DEV_SERVER_ID, SENTRY_DSN } from './config';
+import { botToken, CLIENT_ID, DEV_SERVER_ID, production, SENTRY_DSN } from './config';
 import { clientOptions } from './lib/config';
 import { SILENT_ERROR } from './lib/constants';
 import { onMessage } from './lib/events';
+import { makeServer } from './lib/http';
 import { modalInteractionHook } from './lib/modals';
 import { OldSchoolBotClient } from './lib/structures/OldSchoolBotClient';
 import { interactionHook } from './lib/util/globalInteractions';
@@ -81,9 +84,10 @@ declare global {
 }
 
 const client = new OldSchoolBotClient(clientOptions);
+client.fastifyServer = makeServer();
 client.mahojiClient = mahojiClient;
 global.globalClient = client;
-client.on('message', onMessage);
+client.on('messageCreate', onMessage);
 client.on('raw', async event => {
 	if (![GatewayDispatchEvents.InteractionCreate].includes(event.t)) return;
 	const data = event.d as APIInteraction;
@@ -153,8 +157,47 @@ client.on('raw', async event => {
 });
 async function main() {
 	await mahojiClient.start();
+	console.log('Starting mahoji client...');
 	await client.login(botToken);
+	console.log('Logging in...');
 	await client.init();
+	console.log('Init...');
 	await onStartup();
 }
+const terminateCb = async () => {
+	await globalClient.destroy();
+	process.exit(0);
+};
+
+process.removeAllListeners('SIGTERM');
+process.removeAllListeners('SIGINT');
+
+process.on('SIGTERM', terminateCb);
+process.on('SIGINT', terminateCb);
+
 main();
+
+if (!production) {
+	const nodeModules = `${sep}node_modules${sep}`;
+	globalClient._fileChangeWatcher = watch(join(process.cwd(), 'dist/**/*.js'), {
+		persistent: true,
+		ignoreInitial: true
+	});
+
+	const reloadStore = async () => {
+		for (const module of Object.keys(require.cache)) {
+			if (!module.includes(nodeModules) && extname(module) !== '.node') {
+				if (module.includes('OldSchoolBotClient')) continue;
+				if (module.includes(`dist${sep}index`)) continue;
+				delete require.cache[module];
+			}
+		}
+		await mahojiClient.commands.load();
+	};
+
+	for (const event of ['add', 'change', 'unlink']) {
+		if (globalClient._fileChangeWatcher) {
+			globalClient._fileChangeWatcher.on(event, debounce(reloadStore, 1000));
+		}
+	}
+}

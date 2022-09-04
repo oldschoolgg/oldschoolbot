@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
 import { Time } from 'e';
-import { Task } from 'klasa';
+import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
@@ -14,13 +14,13 @@ import {
 } from '../../../lib/skilling/functions/calcsHunter';
 import Hunter from '../../../lib/skilling/skills/hunter/hunter';
 import { SkillsEnum } from '../../../lib/skilling/types';
+import { PeakTier } from '../../../lib/tickers';
 import { HunterActivityTaskOptions } from '../../../lib/types/minions';
 import { rand, roll, stringMatches } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 import { mUserFetch, updateBankSetting } from '../../../mahoji/mahojiSettings';
 import { BLACK_CHIN_ID, HERBIBOAR_ID } from './../../../lib/constants';
-import { PeakTier } from './../../WildernessPeakInterval';
 
 const riskDeathNumbers = [
 	{
@@ -37,7 +37,8 @@ const riskDeathNumbers = [
 	}
 ];
 
-export default class extends Task {
+export const TODO.Task: MinionTask = {
+type: '',
 	async run(data: HunterActivityTaskOptions) {
 		const { creatureName, quantity, userID, channelID, usingHuntPotion, wildyPeak, duration, usingStaminaPotion } =
 			data;

@@ -1,4 +1,4 @@
-import { Task } from 'klasa';
+import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
@@ -58,7 +58,8 @@ const tipTable = new LootTable()
 	.add('Calquat tree seed')
 	.add('Magic seed', [1, 3]);
 
-export default class extends Task {
+export const TODO.Task: MinionTask = {
+type: '',
 	async run(data: GnomeRestaurantActivityTaskOptions) {
 		const { channelID, quantity, duration, userID, gloriesRemoved } = data;
 

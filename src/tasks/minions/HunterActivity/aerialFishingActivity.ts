@@ -1,17 +1,18 @@
 import { calcPercentOfNum } from 'e';
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
 import Fishing from '../../../lib/skilling/skills/fishing';
 import aerialFishingCreatures from '../../../lib/skilling/skills/hunter/aerialFishing';
 import { SkillsEnum } from '../../../lib/skilling/types';
+import { MinionTask } from '../../../lib/Task';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { rand, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { anglerBoostPercent, mUserFetch } from '../../../mahoji/mahojiSettings';
 
-export default class extends Task {
+export const aerialFishingTask: MinionTask = {
+	type: 'AerialFishing',
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		let { quantity, userID, channelID } = data;
 		const user = await mUserFetch(userID);
@@ -163,4 +164,4 @@ export default class extends Task {
 
 		handleTripFinish(user, channelID, str, ['activities', { aerial_fishing: {} }, true], undefined, data, loot);
 	}
-}
+};

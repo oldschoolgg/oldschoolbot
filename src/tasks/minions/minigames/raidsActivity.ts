@@ -1,5 +1,5 @@
 import { noOp, shuffleArr } from 'e';
-import { Task } from 'klasa';
+import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 
@@ -22,7 +22,8 @@ const purpleButNotAnnounced = resolveItems(['Dexterous prayer scroll', 'Arcane p
 
 const purpleItems = chambersOfXericCL.filter(i => !notPurple.includes(i));
 
-export default class extends Task {
+export const TODO.Task: MinionTask = {
+type: '',
 	async run(data: RaidsOptions) {
 		const { channelID, users, challengeMode, duration, leader } = data;
 		const allUsers = await Promise.all(users.map(async u => mUserFetch(u)));

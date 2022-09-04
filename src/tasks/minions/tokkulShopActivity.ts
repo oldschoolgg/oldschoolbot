@@ -1,11 +1,12 @@
-import { Task } from 'klasa';
+import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
 import { TokkulShopOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { mUserFetch, updateBankSetting } from '../../mahoji/mahojiSettings';
 
-export default class extends Task {
+export const TODO.Task: MinionTask = {
+type: '',
 	async run(data: TokkulShopOptions) {
 		const { userID, channelID, itemID, quantity } = data;
 		const user = await mUserFetch(userID);

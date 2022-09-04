@@ -1,4 +1,4 @@
-import { Task } from 'klasa';
+import { MinionTask } from '../../../lib/Task';
 
 import { Emoji, MAX_QP } from '../../lib/constants';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -7,7 +7,8 @@ import { rand, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { mUserFetch } from '../../mahoji/mahojiSettings';
 
-export default class extends Task {
+export const TODO.Task: MinionTask = {
+type: '',
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { userID, channelID } = data;
 		const user = await mUserFetch(userID);

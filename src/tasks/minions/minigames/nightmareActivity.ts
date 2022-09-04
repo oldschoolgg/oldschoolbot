@@ -1,5 +1,5 @@
 import { percentChance } from 'e';
-import { Task } from 'klasa';
+import { MinionTask } from '../../../lib/Task';
 import { Bank, Misc } from 'oldschooljs';
 
 import { BitField, NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID } from '../../../lib/constants';
@@ -16,7 +16,8 @@ import { NightmareMonster } from './../../../lib/minions/data/killableMonsters/i
 
 const RawNightmare = Misc.Nightmare;
 
-export default class extends Task {
+export const TODO.Task: MinionTask = {
+type: '',
 	async run(data: NightmareActivityTaskOptions) {
 		const { channelID, quantity, duration, isPhosani = false, userID, method } = data;
 

@@ -1,4 +1,4 @@
-import { Task } from 'klasa';
+import { MinionTask } from '../../../lib/Task';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
@@ -16,7 +16,8 @@ import { logError } from '../../lib/util/logError';
 import { sendToChannelID } from '../../lib/util/webhook';
 import { mahojiUsersSettingsFetch, mUserFetch, updateBankSetting } from '../../mahoji/mahojiSettings';
 
-export default class extends Task {
+export const TODO.Task: MinionTask = {
+type: '',
 	async run(data: FarmingActivityTaskOptions) {
 		const {
 			plantsName,

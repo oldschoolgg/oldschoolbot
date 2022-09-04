@@ -533,11 +533,6 @@
     ts-mixer "^6.0.1"
     tslib "^2.4.0"
 
-"@discordjs/collection@^0.1.3":
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/@discordjs/collection/-/collection-0.1.6.tgz#9e9a7637f4e4e0688fd8b2b5c63133c91607682c"
-  integrity sha512-utRNxnd9kSS2qhyivo9lMlt5qgAUasH2gb7BEOn6p0efFh24gjGomHzWKMAPn2hEReOPQZCJaRKoURwRotKucQ==
-
 "@discordjs/collection@^0.7.0-dev":
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/@discordjs/collection/-/collection-0.7.0.tgz#1a6c00198b744ba2b73a64442145da637ac073b8"
@@ -845,30 +840,10 @@
   dependencies:
     "@klasa/utils" "^0.0.1"
 
-"@klasa/request-handler@^0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@klasa/request-handler/-/request-handler-0.0.3.tgz#ed72de611ece3dd99725cb797fc13e07bb05e618"
-  integrity sha512-Z1O+Aa2kW/I4Uos4EZalByveIuQKRfuRx+JCsgsogDBd95N5Ub47AH+LEd5i+uzjnJ6iDHfodpVlaHojJ4Q+ZQ==
-
-"@klasa/settings-gateway@^0.0.10":
-  version "0.0.10"
-  resolved "https://registry.yarnpkg.com/@klasa/settings-gateway/-/settings-gateway-0.0.10.tgz#aff30bb639d6a64861efbe6602fb2ef0d382c182"
-  integrity sha512-bz+b0I2qmcfA75RY4Cjzgig9+5Bw/EhE4g7bAETjBQXkxea1ed7rWQHgQiIVAErm9sgy69/7NIK5JoFXZZs68A==
-  dependencies:
-    "@discordjs/collection" "^0.1.3"
-    "@klasa/querybuilder" "^0.0.1"
-    "@klasa/request-handler" "^0.0.3"
-    "@klasa/utils" "^0.0.4"
-
 "@klasa/utils@^0.0.1":
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/@klasa/utils/-/utils-0.0.1.tgz#af20aa4ea24fdd83c41e9afb07f829194dea6363"
   integrity sha512-UOGHPXnbitN/fHIGODZYv8IVlpojVmMMyRYLlanN41QP+IC9oZfqihT41cBbaFtMbqF0gcw6/5mr2P6NpCV8Mg==
-
-"@klasa/utils@^0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@klasa/utils/-/utils-0.0.4.tgz#4bf010b09d0f93b39245523ed22a09571d56508c"
-  integrity sha512-9gZSGN/As3sxZumZ9ZwyQ+KcNSenzY8tR1orRakv8HKK0WH0gG7QrsP/1O2TD4uHxUyr8dysCjt73RYPfzuDWQ==
 
 "@mapbox/node-pre-gyp@^1.0.9":
   version "1.0.9"
@@ -3981,12 +3956,11 @@ jwt-simple@^0.5.6:
   resolved "https://registry.yarnpkg.com/jwt-simple/-/jwt-simple-0.5.6.tgz#3357adec55b26547114157be66748995b75b333a"
   integrity sha512-40aUybvhH9t2h71ncA1/1SbtTNCVZHgsTsTgqPUxGWDmUDrXyDf2wMNQKEbdBjbf4AI+fQhbECNTV6lWxQKUzg==
 
-"klasa@https://github.com/gc/klasa.git#99ee76765f6b6172254cbeb363c73f4305d43f36":
+"klasa@https://github.com/gc/klasa.git#661ea15dcf97525cbfcf53a4b0fb85e1178a72ee":
   version "0.5.0-dev"
-  resolved "https://github.com/gc/klasa.git#99ee76765f6b6172254cbeb363c73f4305d43f36"
+  resolved "https://github.com/gc/klasa.git#661ea15dcf97525cbfcf53a4b0fb85e1178a72ee"
   dependencies:
     "@klasa/querybuilder" "^0.0.1"
-    "@klasa/settings-gateway" "^0.0.10"
     fs-nextra "^0.4.5"
 
 kleur@^3.0.3:

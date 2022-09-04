@@ -4,12 +4,12 @@ import { Bank } from 'oldschooljs';
 import { BitField } from '../../../lib/constants';
 import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
 import { getPOHObject, itemsNotRefundable, PoHObjects } from '../../../lib/poh';
+import { pohImageGenerator } from '../../../lib/pohImage';
 import { prisma } from '../../../lib/settings/prisma';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { itemNameFromID } from '../../../lib/util';
 import { stringMatches } from '../../../lib/util/cleanString';
 import getOSItem from '../../../lib/util/getOSItem';
-import PoHImage from '../../../tasks/pohImage';
 import { handleMahojiConfirmation, updateBankSetting } from '../../mahojiSettings';
 
 export const pohWallkits = [
@@ -32,7 +32,7 @@ export async function getPOH(userID: string) {
 }
 export async function makePOHImage(user: MUser, showSpaces = false) {
 	const poh = await getPOH(user.id);
-	const buffer = await (globalClient.tasks.get('pohImage') as PoHImage).run(poh, showSpaces);
+	const buffer = await pohImageGenerator.run(poh, showSpaces);
 	return { attachments: [{ buffer, fileName: 'image.jpg' }] };
 }
 

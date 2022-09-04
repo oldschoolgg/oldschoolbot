@@ -1,5 +1,5 @@
 import { calcPercentOfNum, calcWhatPercent, noOp, objectEntries, roll, shuffleArr } from 'e';
-import { Task } from 'klasa';
+import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
@@ -15,7 +15,8 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { sendToChannelID } from '../../../lib/util/webhook';
 import { mUserFetch, updateBankSetting, updateLegacyUserBankSetting } from '../../../mahoji/mahojiSettings';
 
-export default class extends Task {
+export const TODO.Task: MinionTask = {
+type: '',
 	async run(data: TheatreOfBloodTaskOptions) {
 		const { channelID, users, hardMode, leader, wipedRoom, duration, fakeDuration, deaths } = data;
 		const allUsers = await Promise.all(users.map(async u => mUserFetch(u)));

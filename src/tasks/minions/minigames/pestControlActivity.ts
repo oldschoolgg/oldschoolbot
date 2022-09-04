@@ -1,5 +1,5 @@
 import { Time } from 'e';
-import { Task } from 'klasa';
+import { MinionTask } from '../../../lib/Task';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import { incrementMinigameScore } from '../../../lib/settings/settings';
@@ -8,7 +8,8 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { getBoatType } from '../../../mahoji/lib/abstracted_commands/pestControlCommand';
 import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
-export default class extends Task {
+export const TODO.Task: MinionTask = {
+type: '',
 	async run(data: MinigameActivityTaskOptions) {
 		const { channelID, userID, quantity, duration } = data;
 		const user = await mUserFetch(userID);

@@ -1,5 +1,5 @@
 import { calcPercentOfNum, calcWhatPercent } from 'e';
-import { Task } from 'klasa';
+import { MinionTask } from '../../../lib/Task';
 import { Bank, Monsters } from 'oldschooljs';
 import TzTokJad from 'oldschooljs/dist/simulation/monsters/special/TzTokJad';
 
@@ -18,7 +18,8 @@ import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
 const TokkulID = itemID('Tokkul');
 
-export default class extends Task {
+export const TODO.Task: MinionTask = {
+type: '',
 	async run(data: FightCavesActivityTaskOptions) {
 		const { userID, channelID, jadDeathChance, preJadDeathTime, duration, fakeDuration } = data;
 		const user = await mUserFetch(userID);

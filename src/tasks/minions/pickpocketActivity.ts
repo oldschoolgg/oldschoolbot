@@ -1,5 +1,5 @@
 import { percentChance, randInt } from 'e';
-import { Task } from 'klasa';
+import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../lib/constants';
@@ -45,7 +45,8 @@ export function calcLootXPPickpocketing(
 	return [successful, damageTaken, xpReceived, chanceOfSuccess];
 }
 
-export default class extends Task {
+export const TODO.Task: MinionTask = {
+type: '',
 	async run(data: PickpocketActivityTaskOptions) {
 		const { monsterID, quantity, successfulQuantity, userID, channelID, xpReceived, duration } = data;
 		const user = await mUserFetch(userID);
