@@ -32,7 +32,7 @@ import { getItem } from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { logError } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
-import PatreonTask from '../../tasks/patreon';
+import { patreonTask } from '../../tasks/patreon';
 import { Cooldowns } from '../lib/Cooldowns';
 import { itemOption } from '../lib/mahojiCommandOptions';
 import { allAbstractCommands, OSBMahojiCommand } from '../lib/util';
@@ -800,7 +800,7 @@ LIMIT 10;
 			process.exit();
 		}
 		if (options.debug_patreon) {
-			const result = await (globalClient.tasks.get('patreon') as PatreonTask).fetchPatrons();
+			const result = await patreonTask.fetchPatrons();
 			return {
 				attachments: [{ buffer: Buffer.from(JSON.stringify(result, null, 4)), fileName: 'patreon.txt' }]
 			};

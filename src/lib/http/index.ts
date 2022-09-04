@@ -2,6 +2,7 @@ import fastify from 'fastify';
 import fastifyCors from 'fastify-cors';
 import fastifyHelmet from 'fastify-helmet';
 import fastifyRateLimit from 'fastify-rate-limit';
+import fastifyRawBody from 'fastify-raw-body';
 import fastifySensible from 'fastify-sensible';
 
 import { HTTP_PORT, production } from '../../config';
@@ -42,6 +43,14 @@ export function makeServer() {
 		errorResponseBuilder: () => {
 			return server.httpErrors.tooManyRequests();
 		}
+	});
+
+	server.register(fastifyRawBody, {
+		field: 'rawBody', // change the default request.rawBody property name
+		global: true, // add the rawBody to every request. **Default true**
+		encoding: 'utf8', // set it to false to set rawBody as a Buffer **Default utf8**
+		runFirst: false, // get the body before any preParsing hook change/uncompress it. **Default false**
+		routes: [] // array of routes, **`global`** will be ignored, wildcard routes not supported
 	});
 
 	initHooks(server);
