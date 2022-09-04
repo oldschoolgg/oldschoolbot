@@ -501,7 +501,7 @@ export const adminCommand: OSBMahojiCommand = {
 			const usersToReset = await prisma.user.findMany({
 				where: {
 					bingo_tickets_bought: {
-						gt: 1
+						gt: 0
 					}
 				},
 				select: {
