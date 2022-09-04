@@ -28,7 +28,8 @@ patreonApiURL.search = new URLSearchParams([
 			'patron_status'
 		].join(',')
 	],
-	['fields[user]', ['social_connections'].join(',')]
+	['fields[user]', ['social_connections'].join(',')],
+	['page[count]', '1000']
 ]).toString();
 
 export const tiers: [PatronTierID, BitField][] = [

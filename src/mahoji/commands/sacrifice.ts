@@ -53,7 +53,9 @@ export const sacrificeCommand: OSBMahojiCommand = {
 			return "You didn't provide any items, filter or search.";
 		}
 
+		interaction.deferReply();
 		const user = await mUserFetch(userID.toString());
+
 		const bankToSac = parseBank({
 			inputStr: options.items,
 			inputBank: user.bankWithGP,

@@ -1,11 +1,10 @@
 import { KlasaClientOptions } from 'klasa';
 
-import { IDiscordSettings, PatreonConfig } from './lib/types';
+import { IDiscordSettings } from './lib/types';
 
 export const botToken = '';
 export const production = false;
 
-export const patreonConfig: PatreonConfig = null;
 export const customClientOptions: Partial<KlasaClientOptions> = {
 	prefix: '-',
 	// Your account unique ID

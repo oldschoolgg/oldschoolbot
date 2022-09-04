@@ -15,11 +15,6 @@ export interface ItemPriceCache {
 
 export type AnyObject = Record<PropertyKey, unknown> | {};
 
-export type PatreonConfig = null | {
-	campaignID: number;
-	token: string;
-};
-
 export interface Patron {
 	patreonID: string;
 	discordID?: string;
