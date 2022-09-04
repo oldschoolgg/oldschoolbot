@@ -31,8 +31,8 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, MersenneTwister19937, nodeCrypto, real, shuffle } from 'random-js';
 
-import { CLIENT_ID, production } from '../config';
-import { skillEmoji, SupportServer, usernameCache } from './constants';
+import { CLIENT_ID, production, SupportServer } from '../config';
+import { skillEmoji, usernameCache } from './constants';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
 import { Consumable } from './minions/types';
 import { POHBoosts } from './poh';
@@ -158,10 +158,6 @@ export function convertXPtoLVL(xp: number, cap = 99) {
 	return cap;
 }
 
-export function determineScaledOreTime(xp: number, respawnTime: number, lvl: number) {
-	const t = xp / (lvl / 4 + 0.5) + ((100 - lvl) / 100 + 0.75);
-	return Math.floor((t + respawnTime) * 1000) * 1.2;
-}
 export function determineScaledLogTime(xp: number, respawnTime: number, lvl: number) {
 	const t = xp / (lvl / 4 + 0.5) + ((100 - lvl) / 100 + 0.75);
 	return Math.floor((t + respawnTime) * 1000) * 1.2;

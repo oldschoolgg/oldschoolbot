@@ -3,7 +3,7 @@ import { createHmac } from 'crypto';
 import { onRequestHookHandler } from 'fastify';
 import * as jwt from 'jwt-simple';
 
-import { CLIENT_SECRET, GITHUB_TOKEN } from '../../config';
+import { CLIENT_SECRET, GITHUB_TOKEN, patreonConfig } from '../../config';
 import { PerkTier } from '../constants';
 import { prisma } from '../settings/prisma';
 
@@ -23,6 +23,17 @@ export function verifyGithubSecret(body: string, signature?: string | string[]):
 	const hmac = createHmac('sha1', CLIENT_SECRET);
 	hmac.update(body);
 	const calculated = `sha1=${hmac.digest('hex')}`;
+	return signature === calculated;
+}
+
+export function verifyPatreonSecret(body: string, signature?: string | string[]): boolean {
+	if (!signature) {
+		return false;
+	}
+	const hmac = createHmac('md5', patreonConfig!.webhookSecret);
+	hmac.update(body);
+	const calculated = hmac.digest('hex');
+	console.log(signature, calculated, signature === calculated);
 	return signature === calculated;
 }
 

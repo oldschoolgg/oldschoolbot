@@ -1,3 +1,4 @@
+import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { KlasaUser } from 'klasa';
 import { Monsters } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
@@ -68,7 +69,7 @@ import {
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '../types/minions';
-import { formatDuration, itemNameFromID, toTitleCase } from '../util';
+import { formatDuration, itemNameFromID, randomVariation, toTitleCase } from '../util';
 import { stringMatches } from './cleanString';
 import { minionName } from './minionUtils';
 
@@ -151,9 +152,15 @@ export function minionStatus(user: KlasaUser) {
 
 			const ore = Mining.Ores.find(ore => ore.id === data.oreID);
 
-			return `${name} is currently mining ${data.quantity}x ${ore!.name}. ${formattedDuration} Your ${
-				Emoji.Mining
-			} Mining level is ${user.skillLevel(SkillsEnum.Mining)}`;
+			return `${name} is currently mining ${ore!.name}. ${
+				data.fakeDurationMax === data.fakeDurationMin
+					? formattedDuration
+					: `approximately ${formatDuration(
+							randomVariation(reduceNumByPercent(durationRemaining, 25), 20)
+					  )} **to** ${formatDuration(
+							randomVariation(increaseNumByPercent(durationRemaining, 25), 20)
+					  )} remaining.`
+			} Your ${Emoji.Mining} Mining level is ${user.skillLevel(SkillsEnum.Mining)}`;
 		}
 
 		case 'Smelting': {

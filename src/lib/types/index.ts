@@ -32,6 +32,7 @@ export type ProviderConfig = null | {
 export type PatreonConfig = null | {
 	campaignID: number;
 	token: string;
+	webhookSecret: string;
 };
 
 export interface Patron {
