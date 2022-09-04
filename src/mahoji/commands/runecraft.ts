@@ -156,7 +156,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 		if (daeyalt_essence) {
 			if (!quantity) quantity = Math.min(daeyaltEssenceOwned, maxCanDo);
 			if (daeyaltEssenceOwned === 0 || quantity === 0 || daeyaltEssenceOwned < quantity) {
-				return "You don't have enough Daeyalt Essence to craft these runes. You can acquire Daeyalt Shards through Mining, and then exchange for essence with the `/buy` command.";
+				return "You don't have enough Daeyalt Essence to craft these runes. You can acquire Daeyalt Shards through Mining, and then exchange for essence with the `/create` command.";
 			}
 		} else {
 			if (!quantity) quantity = Math.min(numEssenceOwned, maxCanDo);
