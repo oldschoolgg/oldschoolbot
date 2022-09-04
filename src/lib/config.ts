@@ -1,16 +1,14 @@
 import { Intents } from 'discord.js';
-import { Time } from 'e';
 import { KlasaClient, KlasaClientOptions } from 'klasa';
 
-import { customClientOptions, production, providerConfig } from '../config';
-import { formatDuration } from './util';
+import { customClientOptions, OWNER_IDS, production, providerConfig } from '../config';
 
 export const clientOptions: KlasaClientOptions = {
 	/* Discord.js Options */
 	messageCacheMaxSize: 200,
 	messageCacheLifetime: 120,
 	messageSweepInterval: 5000,
-	owners: ['157797566833098752'],
+	owners: [...OWNER_IDS],
 	shards: 'auto',
 	http: {
 		api: 'https://discord.com/api'
@@ -27,24 +25,8 @@ export const clientOptions: KlasaClientOptions = {
 	/* Klasa Options */
 	prefix: '+',
 	providers: providerConfig ?? undefined,
-	pieceDefaults: { commands: { deletable: true } },
 	readyMessage: (client: KlasaClient) => {
-		const deprecatedCommands = client.commands.filter(c => c.path.toLowerCase().includes('deprecated')).size;
-		const totalCmds = client.commands.size;
-		const commandsLeft = totalCmds - deprecatedCommands;
-		const endOfTheWorld = new Date('2022-08-14');
-		const diff = endOfTheWorld.getTime() - Date.now();
-		const daysUntil = diff / Time.Day;
-		const migrationStr = `There are ${
-			totalCmds - deprecatedCommands
-		} commands left (${deprecatedCommands} deprecated) to become Slash Commands within ${formatDuration(diff)
-			.split(' ')
-			.slice(0, 2)
-			.join(' ')
-			.replace(',', '')} (${(commandsLeft / daysUntil).toFixed(2)} per day). There are ${
-			globalClient.mahojiClient.commands.pieces.size
-		} mahoji commands.`;
-		return `[Old School Bot] Ready to serve ${client.guilds.cache.size} guilds. ${migrationStr}`;
+		return `[Old School Bot] Ready to serve ${client.guilds.cache.size} guilds.`;
 	},
 	partials: ['USER', 'CHANNEL'],
 	production,

@@ -55,6 +55,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 			return "You didn't provide any items, filter or search.";
 		}
 
+		interaction.deferReply();
 		const user = await globalClient.fetchUser(userID.toString());
 		const mUser = await mahojiUsersSettingsFetch(user.id);
 		const bankToSac = parseBank({

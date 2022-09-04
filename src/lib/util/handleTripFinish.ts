@@ -1,7 +1,8 @@
 import { activity_type_enum } from '@prisma/client';
 import { isGuildBasedChannel } from '@sapphire/discord.js-utilities';
 import { MessageAttachment, MessageCollector, MessageOptions } from 'discord.js';
-import { KlasaMessage, KlasaUser } from 'klasa';
+import { KlasaUser } from 'klasa';
+import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
@@ -81,8 +82,8 @@ export async function handleTripFinish(
 	message: string,
 	onContinue:
 		| undefined
-		| [string, unknown[] | Record<string, unknown>, boolean?, string?]
-		| ((args: LastTripRunArgs) => Promise<KlasaMessage | KlasaMessage[] | null>),
+		| [string, Record<string, unknown>, boolean?, string?]
+		| ((args: LastTripRunArgs) => Promise<CommandResponse | null>),
 	attachment: MessageAttachment | Buffer | undefined,
 	data: ActivityTaskOptions,
 	loot: Bank | null,
@@ -127,7 +128,6 @@ export async function handleTripFinish(
 					commandName: onContinue[0],
 					args: onContinue[1],
 					isContinue: onContinue[2],
-					method: onContinue[3],
 					bypassInhibitors: true,
 					...runCmdOptions,
 					...args
