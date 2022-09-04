@@ -119,7 +119,7 @@ export default class extends Task {
 				for (let i = 0; i < quantity; i++) {
 					loot.add(Mining.GraniteRockTable.roll());
 				}
-			} else if (ore.name === 'Daeyalt shard') {
+			} else if (ore.name === 'Daeyalt essence rock') {
 				for (let i = 0; i < quantity; i++) {
 					daeyaltQty += rand(2, 3);
 				}

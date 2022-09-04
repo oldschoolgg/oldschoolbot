@@ -201,8 +201,8 @@ const ores: Ore[] = [
 		level: 60,
 		xp: 5,
 		id: 24_706,
-		name: 'Daeyalt shard',
-		respawnTime: 0.5,
+		name: 'Daeyalt essence rock',
+		respawnTime: 3,
 		bankingTime: 0,
 		slope: 0,
 		intercept: 100
