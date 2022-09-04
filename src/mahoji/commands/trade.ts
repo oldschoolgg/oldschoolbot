@@ -61,6 +61,7 @@ export const askCommand: OSBMahojiCommand = {
 		filter?: string;
 		search?: string;
 	}>) => {
+		interaction.deferReply();
 		if (!guildID) return 'You can only run this in a server.';
 		const senderKlasaUser = await globalClient.fetchUser(userID);
 		const recipientKlasaUser = await globalClient.fetchUser(options.user.user.id);
