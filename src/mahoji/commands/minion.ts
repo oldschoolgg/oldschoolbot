@@ -21,7 +21,7 @@ import { convertLVLtoXP, getUsername, isValidNickname } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
-import BankImageTask from '../../tasks/bankImage';
+import { bankImageGenerator } from '../../tasks/bankImage';
 import {
 	achievementDiaryCommand,
 	claimAchievementDiaryCommand
@@ -193,7 +193,7 @@ export const minionCommand: OSBMahojiCommand = {
 					autocomplete: async (value, user) => {
 						const mUser = await mUserFetch(user.id);
 						const isMod = mUser.bitfield.includes(BitField.isModerator);
-						const bankImages = (globalClient.tasks.get('bankImage') as BankImageTask).backgroundImages;
+						const bankImages = bankImageGenerator.backgroundImages;
 						return bankImages
 							.filter(bg => isMod || bg.available)
 							.filter(bg => (!value ? true : bg.name.toLowerCase().includes(value.toLowerCase())))

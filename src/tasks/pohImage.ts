@@ -7,6 +7,7 @@ import { Canvas, CanvasRenderingContext2D, Image } from 'skia-canvas/lib';
 import { DUNGEON_FLOOR_Y, GROUND_FLOOR_Y, HOUSE_WIDTH, Placeholders, TOP_FLOOR_Y } from '../lib/poh';
 import { getActivityOfUser } from '../lib/settings/settings';
 import { canvasImageFromBuffer } from '../lib/util/canvasUtil';
+import { bankImageGenerator } from './bankImage';
 import { PlayerOwnedHouse } from '.prisma/client';
 
 const CONSTRUCTION_IMG_DIR = './src/lib/poh/images';
@@ -98,7 +99,7 @@ export default class PoHImage extends Task {
 					const mY = y - height / 2;
 					ctx.drawImage(mount, mX, mY, width, height);
 					if (hasCustomItem) {
-						const image = await globalClient.tasks.get('bankImage')!.getItemImage(id, 1);
+						const image = await bankImageGenerator.getItemImage(id);
 						const h = image.height * 0.8;
 						const w = image.width * 0.8;
 						ctx.drawImage(image, mX + (mount.width - w) / 2, mY + (mount.height - h) / 2, w, h);

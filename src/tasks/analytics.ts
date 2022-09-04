@@ -1,8 +1,8 @@
 import { Time } from 'e';
-import { Task } from 'klasa';
 
 import { ActivityGroup } from '../lib/constants';
 import { prisma } from '../lib/settings/prisma';
+import { Task } from '../lib/Task';
 import { GroupMonsterActivityTaskOptions } from '../lib/types/minions';
 import { taskGroupFromActivity } from '../lib/util/taskGroupFromActivity';
 import { mahojiClientSettingsFetch } from '../mahoji/mahojiSettings';

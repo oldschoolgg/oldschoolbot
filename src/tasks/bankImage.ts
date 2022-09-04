@@ -1,6 +1,6 @@
+import { chunk } from 'e';
 import { existsSync } from 'fs';
 import * as fs from 'fs/promises';
-import { Task, TaskStore, util } from 'klasa';
 import fetch from 'node-fetch';
 import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
@@ -194,7 +194,7 @@ export const bankFlags = [
 ] as const;
 export type BankFlag = typeof bankFlags[number];
 
-export default class BankImageTask extends Task {
+class BankImageTask {
 	public itemIconsList: Set<number>;
 	public itemIconImagesCache: Map<number, Image>;
 	public backgroundImages: BankBackground[] = [];
@@ -202,9 +202,7 @@ export default class BankImageTask extends Task {
 	public _bgSpriteData: Image = new Image();
 	public bgSpriteList: Record<string, IBgSprite> = {};
 
-	public constructor(store: TaskStore, file: string[], directory: string) {
-		super(store, file, directory, {});
-
+	public constructor() {
 		// This tells us simply whether the file exists or not on disk.
 		this.itemIconsList = new Set();
 
@@ -553,7 +551,7 @@ export default class BankImageTask extends Task {
 		const totalValue = addArrayOfNumbers(items.map(([i, q]) => i.price * q));
 
 		const chunkSize = compact ? 140 : 56;
-		const chunked = util.chunk(items, chunkSize);
+		const chunked = chunk(items, chunkSize);
 
 		// Get page flag to show the current page, full and showNewCL to avoid showing page n of y
 		const page = flags.get('page');
@@ -686,3 +684,6 @@ export default class BankImageTask extends Task {
 		};
 	}
 }
+
+export const bankImageGenerator = new BankImageTask();
+bankImageGenerator.init();

@@ -3,6 +3,7 @@ import { Event, EventStore } from 'klasa';
 
 import { SupportServer } from '../config';
 import { Roles } from '../lib/constants';
+import { patreonTask } from '../lib/patreon';
 
 export default class extends Event {
 	public constructor(store: EventStore, file: string[], directory: string) {
@@ -15,7 +16,7 @@ export default class extends Event {
 	async run(oldMember: GuildMember, newMember: GuildMember) {
 		if (oldMember.guild.id !== SupportServer) return;
 		if (!oldMember.roles.cache.has(Roles.Patron) && newMember.roles.cache.has(Roles.Patron)) {
-			globalClient.tasks.get('patreon')?.run();
+			patreonTask.run();
 		}
 	}
 }

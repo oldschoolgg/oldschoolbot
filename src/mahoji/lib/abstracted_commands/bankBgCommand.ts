@@ -5,11 +5,11 @@ import { BitField } from '../../../lib/constants';
 import { formatSkillRequirements, stringMatches, toKMB } from '../../../lib/util';
 import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
 import resolveItems from '../../../lib/util/resolveItems';
-import BankImageTask from '../../../tasks/bankImage';
+import { bankImageGenerator } from '../../../tasks/bankImage';
 import { handleMahojiConfirmation, updateBankSetting } from '../../mahojiSettings';
 
 export async function bankBgCommand(interaction: SlashCommandInteraction, user: MUser, name: string) {
-	const bankImages = (globalClient.tasks.get('bankImage') as BankImageTask).backgroundImages;
+	const bankImages = bankImageGenerator.backgroundImages;
 	const selectedImage = bankImages.find(img => stringMatches(img.name, name));
 
 	if (!selectedImage) {

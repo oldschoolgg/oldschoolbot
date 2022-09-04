@@ -2,7 +2,7 @@ import { AttachmentBuilder } from 'discord.js';
 import { MahojiAttachment } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
-import BankImageTask, { BankFlag } from '../../tasks/bankImage';
+import { BankFlag, bankImageGenerator } from '../../tasks/bankImage';
 import { Flags } from '../minions/types';
 
 interface MakeBankImageOptions {
@@ -31,7 +31,7 @@ export async function makeBankImage({
 }> {
 	let realFlags: Flags = { ...flags, background: background ?? 1, nocache: 1 };
 	if (showNewCL || previousCL !== undefined) realFlags.showNewCL = 1;
-	const { image, isTransparent } = await (globalClient.tasks.get('bankImage')! as BankImageTask).generateBankImage({
+	const { image, isTransparent } = await bankImageGenerator.generateBankImage({
 		bank,
 		title,
 		showValue: true,

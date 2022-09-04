@@ -9,7 +9,7 @@ import { IToReturnCollection } from '../lib/data/CollectionsExport';
 import { formatItemStackQuantity, generateHexColorForCashStack, toKMB } from '../lib/util';
 import { fillTextXTimesInCtx, getClippedRegion } from '../lib/util/canvasUtil';
 import getOSItem from '../lib/util/getOSItem';
-import BankImageTask, { IBgSprite } from './bankImage';
+import { bankImageGenerator, IBgSprite } from './bankImage';
 
 export const collectionLogTypes = [
 	{ name: 'collection', description: 'Normal Collection Log' },
@@ -26,14 +26,8 @@ export const CollectionLogFlags = [
 export default class CollectionLogTask extends Task {
 	run() {}
 
-	getTask() {
-		const task = globalClient.tasks.get('bankImage') as BankImageTask;
-		return task;
-	}
-
 	drawBorder(ctx: CanvasRenderingContext2D, sprite: IBgSprite) {
-		const task = this.getTask();
-		return task.drawBorder(ctx, sprite);
+		return bankImageGenerator.drawBorder(ctx, sprite);
 	}
 
 	drawSquare(
@@ -114,7 +108,7 @@ export default class CollectionLogTask extends Task {
 		type: CollectionLogType;
 		flags: { [key: string]: string | number };
 	}): Promise<CommandResponse> {
-		const { sprite } = this.getTask().getBgAndSprite(options.user.user.bankBackground);
+		const { sprite } = bankImageGenerator.getBgAndSprite(options.user.user.bankBackground);
 
 		if (options.flags.temp) {
 			options.type = 'temp';
@@ -272,7 +266,7 @@ export default class CollectionLogTask extends Task {
 				i = 0;
 				y += 1;
 			}
-			const itemImage = await this.getTask().getItemImage(item);
+			const itemImage = await bankImageGenerator.getItemImage(item);
 
 			let qtyText = 0;
 			if (!userCollectionBank.has(item)) {
