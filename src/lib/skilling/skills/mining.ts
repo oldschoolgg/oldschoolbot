@@ -198,6 +198,16 @@ const ores: Ore[] = [
 		clueScrollChance: 148_320
 	},
 	{
+		level: 60,
+		xp: 5,
+		id: 24_706,
+		name: 'Daeyalt shard',
+		respawnTime: 0.5,
+		bankingTime: 0,
+		slope: 0,
+		intercept: 100
+	},
+	{
 		level: 70,
 		xp: 95,
 		id: 449,
