@@ -24,6 +24,7 @@ export interface RunecraftActivityTaskOptions extends ActivityTaskOptions {
 	essenceQuantity: number;
 	imbueCasts: number;
 	useStaminas?: boolean;
+	daeyaltEssence?: boolean;
 }
 
 export interface DarkAltarOptions extends ActivityTaskOptions {
