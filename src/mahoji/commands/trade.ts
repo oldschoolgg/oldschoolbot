@@ -10,7 +10,7 @@ import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiParseNumber, mUserFetch } from '../mahojiSettings';
+import { handleMahojiConfirmation, mahojiParseNumber } from '../mahojiSettings';
 
 export const askCommand: OSBMahojiCommand = {
 	name: 'trade',

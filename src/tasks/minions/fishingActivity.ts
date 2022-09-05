@@ -9,7 +9,7 @@ import { FishingActivityTaskOptions } from '../../lib/types/minions';
 import { rand, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
-import { anglerBoostPercent, mUserFetch } from '../../mahoji/mahojiSettings';
+import { anglerBoostPercent } from '../../mahoji/mahojiSettings';
 
 function radasBlessing(user: MUser) {
 	const blessingBoosts = [

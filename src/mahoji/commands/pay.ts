@@ -6,7 +6,7 @@ import { Events } from '../../lib/constants';
 import { addToGPTaxBalance, prisma } from '../../lib/settings/prisma';
 import { toKMB } from '../../lib/util';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiParseNumber, mahojiUsersSettingsFetch, mUserFetch } from '../mahojiSettings';
+import { handleMahojiConfirmation, mahojiParseNumber, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const payCommand: OSBMahojiCommand = {
 	name: 'pay',

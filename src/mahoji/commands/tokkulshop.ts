@@ -10,7 +10,7 @@ import { formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mUserFetch, updateBankSetting } from '../mahojiSettings';
+import { handleMahojiConfirmation, updateBankSetting } from '../mahojiSettings';
 
 const { TzTokJad } = Monsters;
 

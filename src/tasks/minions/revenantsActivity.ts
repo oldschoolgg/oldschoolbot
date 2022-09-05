@@ -14,7 +14,7 @@ import { hasSkillReqs } from '../../lib/util';
 import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLostOnDeathWilderness';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
-import { mUserFetch, updateBankSetting } from '../../mahoji/mahojiSettings';
+import { updateBankSetting } from '../../mahoji/mahojiSettings';
 
 export const revenantsTask: MinionTask = {
 	type: 'Revenants',

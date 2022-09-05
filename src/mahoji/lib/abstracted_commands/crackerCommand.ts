@@ -4,7 +4,7 @@ import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommand
 import { Bank, LootTable } from 'oldschooljs';
 
 import { Emoji } from '../../../lib/constants';
-import { handleMahojiConfirmation, mUserFetch } from '../../mahojiSettings';
+import { handleMahojiConfirmation } from '../../mahojiSettings';
 
 const HatTable = new LootTable()
 	.add('Red partyhat', 1, 32)

@@ -8,7 +8,7 @@ import { PuroPuroActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 import puroOptions from '../../../mahoji/lib/abstracted_commands/puroPuroCommand';
-import { mUserFetch, userHasGracefulEquipped, userStatsBankUpdate } from '../../../mahoji/mahojiSettings';
+import { userHasGracefulEquipped, userStatsBankUpdate } from '../../../mahoji/mahojiSettings';
 
 function singleImpHunt(minutes: number, user: MUser) {
 	let totalQty = 0;

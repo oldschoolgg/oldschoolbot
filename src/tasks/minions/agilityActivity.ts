@@ -10,7 +10,7 @@ import { AgilityActivityTaskOptions } from '../../lib/types/minions';
 import { addItemToBank } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { mUserFetch, updateGPTrackSetting } from '../../mahoji/mahojiSettings';
+import { updateGPTrackSetting } from '../../mahoji/mahojiSettings';
 
 export const agilityTask: MinionTask = {
 	type: 'Agility',

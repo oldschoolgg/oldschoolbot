@@ -6,7 +6,7 @@ import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { Emoji, lastTripCache, minionBuyButton } from '../../../lib/constants';
 import { makeComponents } from '../../../lib/util';
 import { minionStatus } from '../../../lib/util/minionStatus';
-import { mahojiUsersSettingsFetch, mUserFetch } from '../../mahojiSettings';
+import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
 import { calculateBirdhouseDetails } from './birdhousesCommand';
 import { isUsersDailyReady } from './dailyCommand';
 import { canRunAutoContract } from './farmingContractCommand';

@@ -11,7 +11,7 @@ import { hotColdCommand } from '../lib/abstracted_commands/hotColdCommand';
 import { luckyPickCommand } from '../lib/abstracted_commands/luckyPickCommand';
 import { slotsCommand } from '../lib/abstracted_commands/slotsCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiUsersSettingsFetch, mUserFetch } from '../mahojiSettings';
+import { handleMahojiConfirmation, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const gambleCommand: OSBMahojiCommand = {
 	name: 'gamble',

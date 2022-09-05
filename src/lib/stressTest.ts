@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import { mahojiUsersSettingsFetch, mUserFetch } from '../mahoji/mahojiSettings';
+import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
 import { ItemBank } from './types';
 import { assert } from './util';
 

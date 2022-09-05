@@ -8,7 +8,7 @@ import { SkillsEnum } from '../../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { rand, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { anglerBoostPercent, mUserFetch } from '../../../mahoji/mahojiSettings';
+import { anglerBoostPercent } from '../../../mahoji/mahojiSettings';
 
 export const aerialFishingTask: MinionTask = {
 	type: 'AerialFishing',

@@ -9,7 +9,7 @@ import { toKMB } from '../../lib/util';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mUserFetch, updateBankSetting } from '../mahojiSettings';
+import { handleMahojiConfirmation, updateBankSetting } from '../mahojiSettings';
 import { sellPriceOfItem } from './sell';
 
 async function trackSacBank(user: MUser, bank: Bank) {

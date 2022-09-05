@@ -38,7 +38,7 @@ import { dataPoints, statsCommand } from '../lib/abstracted_commands/statCommand
 import { allUsableItems, useCommand } from '../lib/abstracted_commands/useCommand';
 import { ownedItemOption, skillOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { getKCByName, handleMahojiConfirmation, mUserFetch, patronMsg } from '../mahojiSettings';
+import { getKCByName, handleMahojiConfirmation, patronMsg } from '../mahojiSettings';
 
 const patMessages = [
 	'You pat {name} on the head.',

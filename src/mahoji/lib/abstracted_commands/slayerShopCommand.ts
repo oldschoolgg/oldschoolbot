@@ -5,7 +5,7 @@ import { table } from 'table';
 import { SlayerRewardsShop } from '../../../lib/slayer/slayerUnlocks';
 import { removeFromArr, stringMatches } from '../../../lib/util';
 import { logError } from '../../../lib/util/logError';
-import { handleMahojiConfirmation, mUserFetch } from '../../mahojiSettings';
+import { handleMahojiConfirmation } from '../../mahojiSettings';
 
 const slayerPurchaseError =
 	'An error occurred trying to make this purchase. Please try again or contact #help-and-support if the issue persists.';

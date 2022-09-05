@@ -15,7 +15,7 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
 import { OSBMahojiCommand } from '../lib/util';
-import { mUserFetch, updateBankSetting, userHasGracefulEquipped } from '../mahojiSettings';
+import { updateBankSetting, userHasGracefulEquipped } from '../mahojiSettings';
 
 export const huntCommand: OSBMahojiCommand = {
 	name: 'hunt',

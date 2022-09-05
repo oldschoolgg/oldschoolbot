@@ -7,7 +7,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
-import { mUserFetch, rogueOutfitPercentBonus, updateGPTrackSetting } from '../../mahoji/mahojiSettings';
+import { rogueOutfitPercentBonus, updateGPTrackSetting } from '../../mahoji/mahojiSettings';
 
 export function calcLootXPPickpocketing(
 	currentLevel: number,

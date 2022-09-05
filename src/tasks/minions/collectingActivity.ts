@@ -5,7 +5,7 @@ import { MorytaniaDiary, userhasDiaryTier } from '../../lib/diaries';
 import { CollectingOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { collectables } from '../../mahoji/lib/abstracted_commands/collectCommand';
-import { mUserFetch, updateBankSetting } from '../../mahoji/mahojiSettings';
+import { updateBankSetting } from '../../mahoji/mahojiSettings';
 
 export const collectingTask: MinionTask = {
 	type: 'Collecting',

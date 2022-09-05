@@ -14,7 +14,7 @@ import chatHeadImage from '../../../lib/util/chatHeadImage';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
-import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate, mUserFetch } from '../../../mahoji/mahojiSettings';
+import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../../mahoji/mahojiSettings';
 
 export const infernoTask: MinionTask = {
 	type: 'Inferno',

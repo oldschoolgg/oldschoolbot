@@ -9,7 +9,7 @@ import {
 import { allCollectionLogs } from '../../lib/data/Collections';
 import { toTitleCase } from '../../lib/util';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch, mUserFetch } from '../mahojiSettings';
+import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const collectionLogCommand: OSBMahojiCommand = {
 	name: 'cl',

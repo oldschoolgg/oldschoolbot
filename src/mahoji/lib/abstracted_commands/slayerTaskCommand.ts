@@ -22,7 +22,7 @@ import { awaitMessageComponentInteraction, channelIsSendable, removeFromArr } fr
 import { stringMatches } from '../../../lib/util/cleanString';
 import { logError } from '../../../lib/util/logError';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
-import { handleMahojiConfirmation, mUserFetch } from '../../mahojiSettings';
+import { handleMahojiConfirmation } from '../../mahojiSettings';
 
 const returnSuccessButtons = [
 	new ActionRowBuilder<ButtonBuilder>().addComponents([

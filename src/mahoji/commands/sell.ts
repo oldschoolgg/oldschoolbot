@@ -12,7 +12,6 @@ import { OSBMahojiCommand } from '../lib/util';
 import {
 	handleMahojiConfirmation,
 	mahojiUsersSettingsFetch,
-	mUserFetch,
 	updateBankSetting,
 	updateGPTrackSetting,
 	userStatsUpdate

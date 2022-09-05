@@ -10,7 +10,7 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
 import { OSBMahojiCommand } from '../lib/util';
-import { mUserFetch, updateBankSetting } from '../mahojiSettings';
+import { updateBankSetting } from '../mahojiSettings';
 
 export const craftCommand: OSBMahojiCommand = {
 	name: 'craft',

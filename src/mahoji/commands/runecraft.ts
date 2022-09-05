@@ -11,7 +11,7 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../lib/util/determineRunes';
 import { OSBMahojiCommand } from '../lib/util';
-import { calcMaxRCQuantity, mUserFetch, updateBankSetting, userHasGracefulEquipped } from '../mahojiSettings';
+import { calcMaxRCQuantity, updateBankSetting, userHasGracefulEquipped } from '../mahojiSettings';
 
 export const runecraftCommand: OSBMahojiCommand = {
 	name: 'runecraft',

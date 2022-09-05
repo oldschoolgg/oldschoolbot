@@ -10,7 +10,7 @@ import { stringMatches } from '../../../lib/util/cleanString';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
 import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { handleMahojiConfirmation, mUserFetch, patronMsg, updateGPTrackSetting } from '../../mahojiSettings';
+import { handleMahojiConfirmation, patronMsg, updateGPTrackSetting } from '../../mahojiSettings';
 
 const regex = /^(.*?)( \([0-9]+x Owned\))?$/;
 

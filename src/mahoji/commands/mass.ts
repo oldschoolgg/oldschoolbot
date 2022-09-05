@@ -15,7 +15,7 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../lib/util/calcMassDurationQuantity';
 import findMonster from '../../lib/util/findMonster';
 import { OSBMahojiCommand } from '../lib/util';
-import { hasMonsterRequirements, mUserFetch } from '../mahojiSettings';
+import { hasMonsterRequirements } from '../mahojiSettings';
 
 function checkReqs(users: MUser[], monster: KillableMonster, quantity: number) {
 	// Check if every user has the requirements for this monster.

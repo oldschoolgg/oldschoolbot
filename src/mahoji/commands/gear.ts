@@ -14,7 +14,7 @@ import {
 } from '../lib/abstracted_commands/gearCommands';
 import { equippedItemOption, gearPresetOption, gearSetupOption, ownedItemOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { getMahojiBank, mahojiUsersSettingsFetch, mUserFetch } from '../mahojiSettings';
+import { getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const gearCommand: OSBMahojiCommand = {
 	name: 'gear',

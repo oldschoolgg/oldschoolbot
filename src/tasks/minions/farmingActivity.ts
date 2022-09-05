@@ -13,7 +13,7 @@ import { getFarmingKeyFromName } from '../../lib/util/farmingHelpers';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { logError } from '../../lib/util/logError';
 import { sendToChannelID } from '../../lib/util/webhook';
-import { mahojiUsersSettingsFetch, mUserFetch, updateBankSetting } from '../../mahoji/mahojiSettings';
+import { mahojiUsersSettingsFetch, updateBankSetting } from '../../mahoji/mahojiSettings';
 
 export const farmingTask: MinionTask = {
 	type: 'Farming',

@@ -11,7 +11,7 @@ import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiUsersSettingsFetch, mUserFetch } from '../mahojiSettings';
+import { handleMahojiConfirmation, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const giveawayCommand: OSBMahojiCommand = {
 	name: 'giveaway',

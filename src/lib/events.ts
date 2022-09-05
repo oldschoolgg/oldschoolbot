@@ -3,7 +3,7 @@ import { roll, Time } from 'e';
 
 import { CLIENT_ID, production, SupportServer } from '../config';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
-import { mUserFetch, untrustedGuildSettingsCache } from '../mahoji/mahojiSettings';
+import { untrustedGuildSettingsCache } from '../mahoji/mahojiSettings';
 import { Channel, Emoji } from './constants';
 import pets from './data/pets';
 import { ItemBank } from './types';

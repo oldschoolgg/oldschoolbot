@@ -13,7 +13,7 @@ import { stringMatches } from '../../lib/util/cleanString';
 import { logError } from '../../lib/util/logError';
 import { calcLootXPPickpocketing } from '../../tasks/minions/pickpocketActivity';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch, mUserFetch, rogueOutfitPercentBonus, updateBankSetting } from '../mahojiSettings';
+import { mahojiUsersSettingsFetch, rogueOutfitPercentBonus, updateBankSetting } from '../mahojiSettings';
 
 export const stealCommand: OSBMahojiCommand = {
 	name: 'steal',

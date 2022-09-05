@@ -17,7 +17,7 @@ import {
 	slayerUnblockCommand
 } from '../lib/abstracted_commands/slayerTaskCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch, mUserFetch } from '../mahojiSettings';
+import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const slayerCommand: OSBMahojiCommand = {
 	name: 'slayer',

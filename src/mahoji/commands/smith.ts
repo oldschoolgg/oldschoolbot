@@ -10,7 +10,7 @@ import { formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { OSBMahojiCommand } from '../lib/util';
-import { mUserFetch, updateBankSetting } from '../mahojiSettings';
+import { updateBankSetting } from '../mahojiSettings';
 
 export const smithCommand: OSBMahojiCommand = {
 	name: 'smith',

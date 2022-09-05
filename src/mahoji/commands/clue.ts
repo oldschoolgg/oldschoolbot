@@ -9,7 +9,7 @@ import { formatDuration, isWeekend, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { OSBMahojiCommand } from '../lib/util';
-import { getMahojiBank, mahojiUsersSettingsFetch, mUserFetch, userHasGracefulEquipped } from '../mahojiSettings';
+import { getMahojiBank, mahojiUsersSettingsFetch, userHasGracefulEquipped } from '../mahojiSettings';
 
 function reducedClueTime(clueTier: ClueTier, score: number) {
 	// Every 3 hours become 1% better to a cap of 10%

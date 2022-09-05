@@ -24,7 +24,7 @@ import {
 	determineBingoProgress
 } from '../lib/bingo';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiUsersSettingsFetch, mUserFetch } from '../mahojiSettings';
+import { handleMahojiConfirmation, mahojiUsersSettingsFetch } from '../mahojiSettings';
 import { doMenu, getPos } from './leaderboard';
 
 type MakeTeamOptions = {

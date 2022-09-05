@@ -9,7 +9,7 @@ import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
 import { stringMatches } from '../../lib/util';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mUserFetch, updateBankSetting, userStatsBankUpdate } from '../mahojiSettings';
+import { handleMahojiConfirmation, updateBankSetting, userStatsBankUpdate } from '../mahojiSettings';
 
 function showAllCreatables() {
 	let content = 'This are the items that you can create:';

@@ -12,7 +12,7 @@ import { convertPercentChance } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { sendToChannelID } from '../../../lib/util/webhook';
-import { mUserFetch, updateBankSetting, updateLegacyUserBankSetting } from '../../../mahoji/mahojiSettings';
+import { updateBankSetting, updateLegacyUserBankSetting } from '../../../mahoji/mahojiSettings';
 
 export const tobTask: MinionTask = {
 	type: 'TheatreOfBlood',

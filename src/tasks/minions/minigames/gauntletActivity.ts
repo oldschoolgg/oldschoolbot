@@ -8,7 +8,7 @@ import { GauntletOptions } from '../../../lib/types/minions';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { mUserFetch, updateBankSetting } from '../../../mahoji/mahojiSettings';
+import { updateBankSetting } from '../../../mahoji/mahojiSettings';
 
 export const gauntletTask: MinionTask = {
 	type: 'Gauntlet',

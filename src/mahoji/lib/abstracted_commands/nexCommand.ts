@@ -11,7 +11,7 @@ import { calculateNexDetails, checkNexUser } from '../../../lib/simulation/nex';
 import { NexTaskOptions } from '../../../lib/types/minions';
 import { calcPerHour, formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { mUserFetch, updateBankSetting } from '../../mahojiSettings';
+import { updateBankSetting } from '../../mahojiSettings';
 
 export async function nexCommand(interaction: SlashCommandInteraction, user: MUser, channelID: bigint) {
 	const channel = globalClient.channels.cache.get(channelID.toString());

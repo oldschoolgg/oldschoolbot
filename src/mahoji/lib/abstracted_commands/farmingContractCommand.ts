@@ -9,7 +9,7 @@ import { getSkillsOfMahojiUser, roughMergeMahojiResponse } from '../../../lib/ut
 import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import { findPlant } from '../../../lib/util/farmingHelpers';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
-import { mahojiUsersSettingsFetch, mUserFetch } from '../../mahojiSettings';
+import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
 import { farmingPlantCommand, harvestCommand } from './farmingCommand';
 import { abstractedOpenCommand } from './openCommand';
 

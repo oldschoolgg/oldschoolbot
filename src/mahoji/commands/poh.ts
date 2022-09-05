@@ -13,7 +13,7 @@ import {
 } from '../lib/abstracted_commands/pohCommand';
 import { ownedItemOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch, mUserFetch } from '../mahojiSettings';
+import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const pohCommand: OSBMahojiCommand = {
 	name: 'poh',

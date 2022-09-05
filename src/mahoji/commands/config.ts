@@ -23,7 +23,6 @@ import {
 	mahojiGuildSettingsFetch,
 	mahojiGuildSettingsUpdate,
 	mahojiUsersSettingsFetch,
-	mUserFetch,
 	patronMsg
 } from '../mahojiSettings';
 

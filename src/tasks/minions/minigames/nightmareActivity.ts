@@ -10,7 +10,7 @@ import { randomVariation } from '../../../lib/util';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { getMahojiBank, mahojiUsersSettingsFetch, mUserFetch } from '../../../mahoji/mahojiSettings';
+import { getMahojiBank, mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings';
 import { NightmareMonster } from './../../../lib/minions/data/killableMonsters/index';
 
 const RawNightmare = Misc.Nightmare;

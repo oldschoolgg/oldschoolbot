@@ -42,8 +42,7 @@ import {
 	handleMahojiConfirmation,
 	mahojiClientSettingsFetch,
 	mahojiClientSettingsUpdate,
-	mahojiUsersSettingsFetch,
-	mUserFetch
+	mahojiUsersSettingsFetch
 } from '../mahojiSettings';
 import { mahojiUserSettingsUpdate } from '../settingsUpdate';
 import { getUserInfo } from './minion';

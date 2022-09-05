@@ -33,7 +33,7 @@ import { parseStringBank } from '../../lib/util/parseStringBank';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import { allUsableItems } from '../lib/abstracted_commands/useCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch, mUserFetch } from '../mahojiSettings';
+import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 async function giveMaxStats(user: MUser, level = 99, qp = MAX_QP) {
 	let updates: Prisma.UserUpdateArgs['data'] = {};

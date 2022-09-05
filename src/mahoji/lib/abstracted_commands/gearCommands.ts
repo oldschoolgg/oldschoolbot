@@ -16,7 +16,7 @@ import { assert, formatSkillRequirements, isValidGearSetup, stringMatches, toTit
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
 import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
-import { handleMahojiConfirmation, mahojiParseNumber, mUserFetch } from '../../mahojiSettings';
+import { handleMahojiConfirmation, mahojiParseNumber } from '../../mahojiSettings';
 
 export async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName: string): CommandResponse {
 	if (user.minionIsBusy) {

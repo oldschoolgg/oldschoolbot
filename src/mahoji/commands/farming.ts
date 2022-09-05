@@ -12,7 +12,7 @@ import { compostBinCommand, farmingPlantCommand, harvestCommand } from '../lib/a
 import { farmingContractCommand } from '../lib/abstracted_commands/farmingContractCommand';
 import { titheFarmCommand, titheFarmShopCommand } from '../lib/abstracted_commands/titheFarmCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch, mUserFetch } from '../mahojiSettings';
+import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const farmingCommand: OSBMahojiCommand = {
 	name: 'farming',
