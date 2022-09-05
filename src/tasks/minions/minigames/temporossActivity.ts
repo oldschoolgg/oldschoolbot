@@ -5,12 +5,10 @@ import { getMinigameEntity, incrementMinigameScore } from '../../../lib/settings
 import { getTemporossLoot } from '../../../lib/simulation/tempoross';
 import Fishing from '../../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { MinionTask } from '../../../lib/Task';
 import { TemporossActivityTaskOptions } from '../../../lib/types/minions';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
 export const temporossTask: MinionTask = {
 	type: 'Tempoross',

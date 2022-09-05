@@ -11,7 +11,6 @@ import { stringMatches } from '../../lib/util/cleanString';
 import itemID from '../../lib/util/itemID';
 import { minionName } from '../../lib/util/minionUtils';
 import { OSBMahojiCommand } from '../lib/util';
-import { mUserFetch } from '../mahojiSettings';
 
 export const pickaxes = [
 	{

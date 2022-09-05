@@ -6,10 +6,8 @@ import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import isImportantItemForMonster from '../../lib/minions/functions/isImportantItemForMonster';
-import { MinionTask } from '../../lib/Task';
 import { GroupMonsterActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { mUserFetch } from '../../mahoji/mahojiSettings';
 
 export const groupoMonsterTask: MinionTask = {
 	type: 'GroupMonsterKilling',

@@ -6,7 +6,6 @@ import { OWNER_IDS } from '../../config';
 import { BitField, usernameCache } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
 import { removeMarkdownEmojis } from '../../lib/util';
-import { mUserFetch } from '../mahojiSettings';
 import { AbstractCommand, runInhibitors } from './inhibitors';
 
 function cleanUsername(username: string) {

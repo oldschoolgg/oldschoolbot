@@ -7,7 +7,6 @@ import { TOBRooms, TOBUniques, TOBUniquesToAnnounce, totalXPFromRaid } from '../
 import { trackLoot } from '../../../lib/settings/prisma';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import { TheatreOfBlood } from '../../../lib/simulation/tob';
-import { MinionTask } from '../../../lib/Task';
 import { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
 import { convertPercentChance } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';

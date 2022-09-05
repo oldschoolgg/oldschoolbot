@@ -3,7 +3,6 @@ import { Time } from 'e';
 import fetch from 'node-fetch';
 
 import { patreonConfig, production } from '../config';
-import { mUserFetch } from '../mahoji/mahojiSettings';
 import { mahojiUserSettingsUpdate } from '../mahoji/settingsUpdate';
 import { cacheBadges } from './badges';
 import { BadgesEnum, BitField, Channel, PatronTierID, PerkTier } from './constants';

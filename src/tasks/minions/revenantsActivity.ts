@@ -9,7 +9,6 @@ import { runCommand } from '../../lib/settings/settings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { filterLootReplace } from '../../lib/slayer/slayerUtil';
 import { Gear } from '../../lib/structures/Gear';
-import { MinionTask } from '../../lib/Task';
 import { RevenantOptions } from '../../lib/types/minions';
 import { hasSkillReqs } from '../../lib/util';
 import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLostOnDeathWilderness';

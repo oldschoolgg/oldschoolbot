@@ -10,12 +10,10 @@ import { runCommand } from '../../lib/settings/settings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { calculateSlayerPoints, getSlayerMasterOSJSbyID, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
-import { MinionTask } from '../../lib/Task';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
-import { mUserFetch } from '../../mahoji/mahojiSettings';
 
 export const monsterTask: MinionTask = {
 	type: 'MonsterKilling',

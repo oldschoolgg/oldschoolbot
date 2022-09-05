@@ -1,11 +1,9 @@
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 
 import { incrementMinigameScore } from '../../../lib/settings/settings';
-import { MinionTask } from '../../../lib/Task';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
 function calcPoints() {
 	let base = 42.5;

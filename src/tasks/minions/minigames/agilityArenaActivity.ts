@@ -5,12 +5,10 @@ import { Emoji, Events } from '../../../lib/constants';
 import { KaramjaDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { MinionTask } from '../../../lib/Task';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { formatDuration, randomVariation, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { determineXPFromTickets } from '../../../mahoji/lib/abstracted_commands/agilityArenaCommand';
-import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
 export const agilityArenaTask: MinionTask = {
 	type: 'AgilityArena',

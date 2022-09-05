@@ -3,7 +3,6 @@ import { noOp, randArrItem } from 'e';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { mUserFetch } from '../../mahoji/mahojiSettings';
 import { Events } from '../constants';
 import { prisma } from '../settings/prisma';
 import { logError } from './logError';

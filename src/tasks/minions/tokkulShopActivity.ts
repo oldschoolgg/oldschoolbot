@@ -1,9 +1,8 @@
 import { Bank } from 'oldschooljs';
 
-import { MinionTask } from '../../lib/Task';
 import { TokkulShopOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { mUserFetch, updateBankSetting } from '../../mahoji/mahojiSettings';
+import { updateBankSetting } from '../../mahoji/mahojiSettings';
 
 export const tokkulShopTask: MinionTask = {
 	type: 'TokkulShop',

@@ -4,7 +4,6 @@ import { ActionRowBuilder, ButtonBuilder, ButtonStyle, TextChannel } from 'disco
 import { noOp, randInt, shuffleArr, Time } from 'e';
 
 import { production } from '../config';
-import { mUserFetch } from '../mahoji/mahojiSettings';
 import { mahojiUserSettingsUpdate } from '../mahoji/settingsUpdate';
 import { BitField, Channel, informationalButtons } from './constants';
 import { collectMetrics } from './metrics';

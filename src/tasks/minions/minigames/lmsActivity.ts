@@ -4,12 +4,10 @@ import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 import { Emoji } from '../../../lib/constants';
 import { prisma } from '../../../lib/settings/prisma';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
-import { MinionTask } from '../../../lib/Task';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { addArrayOfNumbers, calcPerHour, clamp, gaussianRandom } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
 interface LMSGameSimulated {
 	position: number;

@@ -9,13 +9,11 @@ import {
 	rewardTokens
 } from '../../../lib/minions/data/templeTrekking';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
-import { MinionTask } from '../../../lib/Task';
 import { TempleTrekkingActivityTaskOptions } from '../../../lib/types/minions';
 import { percentChance, stringMatches } from '../../../lib/util';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
 function getLowestCountOutfitPiece(bank: Bank, user: MUser): number {
 	let lowestCountPiece = 0;

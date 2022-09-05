@@ -8,11 +8,10 @@ import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/
 import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
 import Firemaking from '../../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { MinionTask } from '../../../lib/Task';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { mUserFetch, updateBankSetting } from '../../../mahoji/mahojiSettings';
+import { updateBankSetting } from '../../../mahoji/mahojiSettings';
 
 const PointsTable = new SimpleTable<number>()
 	.add(420)

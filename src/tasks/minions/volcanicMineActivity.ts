@@ -4,12 +4,10 @@ import { Bank, LootTable } from 'oldschooljs';
 import { Emoji, Events } from '../../lib/constants';
 import { incrementMinigameScore } from '../../lib/settings/settings';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { MinionTask } from '../../lib/Task';
 import { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
 import { rand } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { VolcanicMineGameTime } from '../../mahoji/lib/abstracted_commands/volcanicMineCommand';
-import { mUserFetch } from '../../mahoji/mahojiSettings';
 
 const fossilTable = new LootTable()
 	.add('Unidentified small fossil', 1, 10)

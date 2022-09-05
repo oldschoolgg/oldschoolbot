@@ -5,7 +5,6 @@ import { Emoji, Events } from '../../../lib/constants';
 import Fishing from '../../../lib/skilling/skills/fishing';
 import aerialFishingCreatures from '../../../lib/skilling/skills/hunter/aerialFishing';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { MinionTask } from '../../../lib/Task';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { rand, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';

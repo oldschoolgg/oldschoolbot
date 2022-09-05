@@ -10,7 +10,6 @@ import { runCommand } from '../../../lib/settings/settings';
 import { autoslayModes, AutoslayOptionsEnum } from '../../../lib/slayer/constants';
 import { getCommonTaskName, getUsersCurrentSlayerInfo, SlayerMasterEnum } from '../../../lib/slayer/slayerUtil';
 import { hasSkillReqs, stringMatches } from '../../../lib/util';
-import { mUserFetch } from '../../mahojiSettings';
 import { slayerNewTaskCommand } from './slayerTaskCommand';
 
 interface AutoslayLink {

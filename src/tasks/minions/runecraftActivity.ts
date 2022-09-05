@@ -3,7 +3,6 @@ import { Bank } from 'oldschooljs';
 import { Emoji, Events } from '../../lib/constants';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { MinionTask } from '../../lib/Task';
 import { RunecraftActivityTaskOptions } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';

@@ -147,9 +147,12 @@ export const tasks: MinionTask[] = [
 	smithingTask
 ];
 
-export interface MinionTask {
+interface IMinionTask {
 	type: activity_type_enum;
 	run: Function;
+}
+declare global {
+	export type MinionTask = IMinionTask;
 }
 
 for (const a of Object.values(activity_type_enum)) {

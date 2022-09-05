@@ -2,11 +2,9 @@ import { Bank } from 'oldschooljs';
 
 import { Craftables } from '../../lib/skilling/skills/crafting/craftables';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { MinionTask } from '../../lib/Task';
 import { CraftingActivityTaskOptions } from '../../lib/types/minions';
 import { randFloat } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { mUserFetch } from '../../mahoji/mahojiSettings';
 
 export const craftingTask: MinionTask = {
 	type: 'Crafting',

@@ -63,7 +63,6 @@ import {
 	volcanicMineShopCommand
 } from '../lib/abstracted_commands/volcanicMineCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { mUserFetch } from '../mahojiSettings';
 
 export const minigamesCommand: OSBMahojiCommand = {
 	name: 'minigames',

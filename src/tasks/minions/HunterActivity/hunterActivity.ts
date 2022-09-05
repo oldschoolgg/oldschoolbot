@@ -13,13 +13,12 @@ import {
 } from '../../../lib/skilling/functions/calcsHunter';
 import Hunter from '../../../lib/skilling/skills/hunter/hunter';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { MinionTask } from '../../../lib/Task';
 import { PeakTier } from '../../../lib/tickers';
 import { HunterActivityTaskOptions } from '../../../lib/types/minions';
 import { rand, roll, stringMatches } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
-import { mUserFetch, updateBankSetting } from '../../../mahoji/mahojiSettings';
+import { updateBankSetting } from '../../../mahoji/mahojiSettings';
 import { BLACK_CHIN_ID, HERBIBOAR_ID } from './../../../lib/constants';
 
 const riskDeathNumbers = [

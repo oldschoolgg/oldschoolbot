@@ -24,7 +24,6 @@ import {
 } from '../../lib/util';
 import { sendToChannelID } from '../../lib/util/webhook';
 import { OSBMahojiCommand } from '../lib/util';
-import { mUserFetch } from '../mahojiSettings';
 
 const LB_PAGE_SIZE = 10;
 

@@ -3,11 +3,9 @@ import { Bank } from 'oldschooljs';
 
 import { roguesDenOutfit } from '../../../lib/data/CollectionsExport';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
-import { MinionTask } from '../../../lib/Task';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
 function getLowestCountOutfitPiece(bank: Bank): number {
 	let lowestCountPiece = 0;

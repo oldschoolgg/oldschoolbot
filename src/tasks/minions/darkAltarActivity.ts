@@ -4,10 +4,8 @@ import { Bank } from 'oldschooljs';
 import { Events } from '../../lib/constants';
 import { darkAltarRunes } from '../../lib/minions/functions/darkAltarCommand';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { MinionTask } from '../../lib/Task';
 import { DarkAltarOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { mUserFetch } from '../../mahoji/mahojiSettings';
 
 export const darkAltarTask: MinionTask = {
 	type: 'DarkAltar',

@@ -7,7 +7,6 @@ import { chambersOfXericCL, chambersOfXericMetamorphPets } from '../../../lib/da
 import { createTeam } from '../../../lib/data/cox';
 import { trackLoot } from '../../../lib/settings/prisma';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
-import { MinionTask } from '../../../lib/Task';
 import { RaidsOptions } from '../../../lib/types/minions';
 import { roll } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';

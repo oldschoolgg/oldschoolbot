@@ -3,11 +3,9 @@ import { Bank } from 'oldschooljs';
 
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { MinionTask } from '../../lib/Task';
 import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
-import { mUserFetch } from '../../mahoji/mahojiSettings';
 
 export const smeltingTask: MinionTask = {
 	type: 'Smelting',

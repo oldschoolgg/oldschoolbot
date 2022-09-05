@@ -1,9 +1,7 @@
 import { Bank } from 'oldschooljs';
 
-import { MinionTask } from '../../lib/Task';
 import { KourendFavourActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { mUserFetch } from '../../mahoji/mahojiSettings';
 import { KourendFavours, UserKourendFavour } from './../../lib/minions/data/kourendFavour';
 
 export const kourendTask: MinionTask = {

@@ -6,7 +6,6 @@ import { revenantMonsters } from '../../lib/minions/data/killableMonsters/revs';
 import { prisma } from '../../lib/settings/prisma';
 import { minionKillCommand, monsterInfo } from '../lib/abstracted_commands/minionKill';
 import { OSBMahojiCommand } from '../lib/util';
-import { mUserFetch } from '../mahojiSettings';
 
 const autocompleteMonsters = [
 	...killableMonsters,

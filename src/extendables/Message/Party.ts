@@ -7,7 +7,6 @@ import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { ReactionEmoji, SILENT_ERROR, usernameCache } from '../../lib/constants';
 import { CustomReactionCollector } from '../../lib/structures/CustomReactionCollector';
 import { MakePartyOptions } from '../../lib/types';
-import { mUserFetch } from '../../mahoji/mahojiSettings';
 
 const partyLockCache = new Set<string>();
 setInterval(() => partyLockCache.clear(), Time.Minute * 20);

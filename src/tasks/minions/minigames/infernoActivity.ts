@@ -8,7 +8,6 @@ import { countUsersWithItemInCl, prisma } from '../../../lib/settings/prisma';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
-import { MinionTask } from '../../../lib/Task';
 import { InfernoOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import chatHeadImage from '../../../lib/util/chatHeadImage';

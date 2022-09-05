@@ -10,7 +10,6 @@ import { getItem } from '../../lib/util/getOSItem';
 import { gearEquipCommand } from '../lib/abstracted_commands/gearCommands';
 import { allEquippableItems, gearPresetOption, gearSetupOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { mUserFetch } from '../mahojiSettings';
 
 function maxPresets(user: MUser) {
 	return user.perkTier * 2 + 3;

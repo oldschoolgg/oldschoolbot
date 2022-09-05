@@ -2,7 +2,6 @@ import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { MorytaniaDiary, userhasDiaryTier } from '../../lib/diaries';
-import { MinionTask } from '../../lib/Task';
 import { CollectingOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { collectables } from '../../mahoji/lib/abstracted_commands/collectCommand';

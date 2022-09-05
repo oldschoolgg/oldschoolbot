@@ -2,11 +2,9 @@ import { Time } from 'e';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import { incrementMinigameScore } from '../../../lib/settings/settings';
-import { MinionTask } from '../../../lib/Task';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { getBoatType } from '../../../mahoji/lib/abstracted_commands/pestControlCommand';
-import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
 export const pestControlTask: MinionTask = {
 	type: 'PestControl',

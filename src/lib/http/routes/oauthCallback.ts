@@ -4,7 +4,6 @@ import fetch from 'node-fetch';
 import { encode } from 'querystring';
 
 import { CLIENT_ID, CLIENT_SECRET } from '../../../config';
-import { mUserFetch } from '../../../mahoji/mahojiSettings';
 import { encryptJWT, rateLimit } from '../util';
 
 export async function fetchUser(token: string) {

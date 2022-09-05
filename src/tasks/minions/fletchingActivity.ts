@@ -2,10 +2,8 @@ import { Bank } from 'oldschooljs';
 
 import Fletching from '../../lib/skilling/skills/fletching';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { MinionTask } from '../../lib/Task';
 import { FletchingActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { mUserFetch } from '../../mahoji/mahojiSettings';
 
 export const fletchingTask: MinionTask = {
 	type: 'Fletching',

@@ -5,7 +5,6 @@ import { APIInteraction, InteractionType, Routes } from 'mahoji';
 import { buyBingoTicketCommand } from '../../mahoji/commands/bingo';
 import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { Cooldowns } from '../../mahoji/lib/Cooldowns';
-import { mUserFetch } from '../../mahoji/mahojiSettings';
 import { ClueTier } from '../clues/clueTiers';
 import { lastTripCache, PerkTier } from '../constants';
 import { runCommand } from '../settings/settings';

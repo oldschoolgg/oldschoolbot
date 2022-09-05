@@ -14,7 +14,6 @@ import { evalMathExpression } from '../lib/expressionParser';
 import { hasGracefulEquipped, readableStatName } from '../lib/gear';
 import { effectiveMonsters } from '../lib/minions/data/killableMonsters';
 import { KillableMonster } from '../lib/minions/types';
-import { MUserClass } from '../lib/MUser';
 import { getMinigameScore, Minigames } from '../lib/settings/minigames';
 import { prisma } from '../lib/settings/prisma';
 import creatures from '../lib/skilling/skills/hunter/creatures';
@@ -158,11 +157,6 @@ export async function mahojiUsersSettingsFetch(user: bigint | string, select?: P
 	});
 	if (!result) throw new Error(`mahojiUsersSettingsFetch returned no result for ${user}`);
 	return result as User;
-}
-
-export async function mUserFetch(userID: bigint | string) {
-	const user = await mahojiUsersSettingsFetch(userID);
-	return new MUserClass(user);
 }
 
 /**

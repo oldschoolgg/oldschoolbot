@@ -1,6 +1,5 @@
 import { Bank } from 'oldschooljs';
 
-import { mUserFetch } from '../../../mahoji/mahojiSettings';
 import { defaultGear, GearSetupType, GearSetupTypes } from '../../gear';
 import { toTitleCase } from '../../util';
 

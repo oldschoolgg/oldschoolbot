@@ -6,7 +6,6 @@ import { Emoji, Events } from '../../../lib/constants';
 import { prisma } from '../../../lib/settings/prisma';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
-import { MinionTask } from '../../../lib/Task';
 import { FightCavesActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, percentChance, rand } from '../../../lib/util';
 import chatHeadImage from '../../../lib/util/chatHeadImage';
@@ -14,7 +13,6 @@ import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 import { fightCavesCost } from '../../../mahoji/lib/abstracted_commands/fightCavesCommand';
-import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
 const TokkulID = itemID('Tokkul');
 

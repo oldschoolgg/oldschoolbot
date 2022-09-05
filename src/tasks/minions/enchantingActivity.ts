@@ -1,9 +1,7 @@
 import { Enchantables } from '../../lib/skilling/skills/magic/enchantables';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { MinionTask } from '../../lib/Task';
 import { EnchantingActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { mUserFetch } from '../../mahoji/mahojiSettings';
 
 export const enchantingTask: MinionTask = {
 	type: 'Enchanting',

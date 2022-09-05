@@ -8,7 +8,6 @@ import {
 	OpenUntilItems
 } from '../lib/abstracted_commands/openCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { mUserFetch } from '../mahojiSettings';
 
 export const openCommand: OSBMahojiCommand = {
 	name: 'open',

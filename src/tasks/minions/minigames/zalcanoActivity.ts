@@ -3,11 +3,9 @@ import { Bank, Misc } from 'oldschooljs';
 
 import { Events, ZALCANO_ID } from '../../../lib/constants';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { MinionTask } from '../../../lib/Task';
 import { ZalcanoActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
 export const zalcanoTask: MinionTask = {
 	type: 'Zalcano',

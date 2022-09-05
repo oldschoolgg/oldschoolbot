@@ -2,7 +2,6 @@ import { Bank } from 'oldschooljs';
 import { resolveNameBank } from 'oldschooljs/dist/util';
 
 import { SkillsEnum } from '../../lib/skilling/types';
-import { MinionTask } from '../../lib/Task';
 import { AlchingActivityTaskOptions } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';

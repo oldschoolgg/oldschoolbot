@@ -10,7 +10,6 @@ import { prisma } from '../lib/settings/prisma';
 import Skills from '../lib/skilling/skills';
 import { convertXPtoLVL } from '../lib/util';
 import { logError } from '../lib/util/logError';
-import { mUserFetch } from '../mahoji/mahojiSettings';
 
 function addToUserMap(userMap: Record<string, string[]>, id: string, reason: string) {
 	if (!userMap[id]) userMap[id] = [];

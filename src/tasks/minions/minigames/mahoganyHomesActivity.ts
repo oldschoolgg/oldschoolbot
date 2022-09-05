@@ -2,11 +2,9 @@ import { calcPercentOfNum } from 'e';
 
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { MinionTask } from '../../../lib/Task';
 import { MahoganyHomesActivityTaskOptions } from '../../../lib/types/minions';
 import { calcConBonusXP } from '../../../lib/util/calcConBonusXP';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
 export const mahoganyHomesTask: MinionTask = {
 	type: 'MahoganyHomes',

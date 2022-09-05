@@ -1,10 +1,8 @@
 import { Bank } from 'oldschooljs';
 
-import { MinionTask } from '../../../../lib/Task';
 import { AnimatedArmourActivityTaskOptions } from '../../../../lib/types/minions';
 import { handleTripFinish } from '../../../../lib/util/handleTripFinish';
 import { Armours } from '../../../../mahoji/lib/abstracted_commands/warriorsGuildCommand';
-import { mUserFetch } from '../../../../mahoji/mahojiSettings';
 
 export const animatedArmorTask: MinionTask = {
 	type: 'AnimatedArmour',

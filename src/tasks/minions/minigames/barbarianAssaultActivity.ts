@@ -2,10 +2,8 @@ import { calcPercentOfNum, calcWhatPercent, randInt } from 'e';
 
 import { KandarinDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
-import { MinionTask } from '../../../lib/Task';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
 export const barbAssaultTask: MinionTask = {
 	type: 'BarbarianAssault',

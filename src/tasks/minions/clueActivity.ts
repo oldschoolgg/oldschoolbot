@@ -2,10 +2,8 @@ import { Bank } from 'oldschooljs';
 
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { Events } from '../../lib/constants';
-import { MinionTask } from '../../lib/Task';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { mUserFetch } from '../../mahoji/mahojiSettings';
 
 export const clueTask: MinionTask = {
 	type: 'ClueCompletion',

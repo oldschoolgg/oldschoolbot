@@ -2,11 +2,9 @@ import { calcPercentOfNum } from 'e';
 
 import Constructables from '../../lib/skilling/skills/construction/constructables';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { MinionTask } from '../../lib/Task';
 import { ConstructionActivityTaskOptions } from '../../lib/types/minions';
 import { calcConBonusXP } from '../../lib/util/calcConBonusXP';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { mUserFetch } from '../../mahoji/mahojiSettings';
 
 export const constructionTask: MinionTask = {
 	type: 'Construction',

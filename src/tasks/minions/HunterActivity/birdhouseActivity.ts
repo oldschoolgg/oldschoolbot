@@ -5,12 +5,10 @@ import { Bank } from 'oldschooljs';
 import birdhouses from '../../../lib/skilling/skills/hunter/birdHouseTrapping';
 import { BirdhouseData } from '../../../lib/skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { MinionTask } from '../../../lib/Task';
 import { BirdhouseActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 import { sendToChannelID } from '../../../lib/util/webhook';
-import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
 const clues = [
 	[itemID('Clue scroll(elite)'), 1 / 10],

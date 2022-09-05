@@ -10,7 +10,6 @@ import pets from '../../lib/data/pets';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { OSBMahojiCommand } from '../lib/util';
-import { mUserFetch } from '../mahojiSettings';
 
 export function determineCoxLimit(user: MUser) {
 	const perkTier = getUsersPerkTier(user);

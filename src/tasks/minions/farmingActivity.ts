@@ -6,7 +6,6 @@ import { FarmingContract } from '../../lib/minions/farming/types';
 import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
 import Farming from '../../lib/skilling/skills/farming';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { MinionTask } from '../../lib/Task';
 import { FarmingActivityTaskOptions } from '../../lib/types/minions';
 import { assert, rand, roll } from '../../lib/util';
 import chatHeadImage from '../../lib/util/chatHeadImage';

@@ -4,7 +4,6 @@ import { Bank } from 'oldschooljs';
 import { Events } from '../../../lib/constants';
 import { getMinigameScore, incrementMinigameScore, MinigameName } from '../../../lib/settings/settings';
 import { gauntlet } from '../../../lib/simulation/gauntlet';
-import { MinionTask } from '../../../lib/Task';
 import { GauntletOptions } from '../../../lib/types/minions';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';

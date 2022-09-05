@@ -2,10 +2,8 @@ import { Bank } from 'oldschooljs';
 
 import { Planks } from '../../lib/minions/data/planks';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { MinionTask } from '../../lib/Task';
 import { SawmillActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { mUserFetch } from '../../mahoji/mahojiSettings';
 
 export const sawmillTask: MinionTask = {
 	type: 'Sawmill',

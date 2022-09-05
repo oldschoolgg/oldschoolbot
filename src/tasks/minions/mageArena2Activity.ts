@@ -1,10 +1,8 @@
 import { percentChance, randArrItem } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { MinionTask } from '../../lib/Task';
 import { ActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { mUserFetch } from '../../mahoji/mahojiSettings';
 
 export const mageArenaTwoTask: MinionTask = {
 	type: 'MageArena2',

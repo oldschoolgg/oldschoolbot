@@ -1,10 +1,8 @@
 import { Bank } from 'oldschooljs';
 
 import { incrementMinigameScore } from '../../../lib/settings/minigames';
-import { MinionTask } from '../../../lib/Task';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
 export const brewingTask: MinionTask = {
 	type: 'TroubleBrewing',
