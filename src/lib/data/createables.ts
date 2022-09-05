@@ -128,6 +128,15 @@ for (const [uWep, cWep] of [
 			[itemID(uWep)]: 1
 		}
 	});
+	revWeapons.push({
+		name: `Revert ${uWep.toLowerCase()}`,
+		inputItems: {
+			[itemID(uWep)]: 1
+		},
+		outputItems: {
+			[itemID('Revenant ether')]: 7500
+		}
+	});
 }
 
 const metamorphPetCreatables: Createable[] = chambersOfXericMetamorphPets.map(pet => ({
