@@ -94,8 +94,11 @@ export interface FishingActivityTaskOptions extends ActivityTaskOptions {
 }
 
 export interface MiningActivityTaskOptions extends ActivityTaskOptions {
+	fakeDurationMax: number;
+	fakeDurationMin: number;
 	oreID: number;
 	quantity: number;
+	powermine: boolean;
 }
 
 export interface SmeltingActivityTaskOptions extends ActivityTaskOptions {
