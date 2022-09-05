@@ -2,6 +2,7 @@ import { Activity, activity_type_enum, loot_track_type, Prisma, PrismaClient } f
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { production } from '../../config';
 import { ItemBank } from '../types';
 import { ActivityTaskData } from '../types/minions';
 import { cleanString } from '../util';
@@ -13,8 +14,27 @@ declare global {
 		}
 	}
 }
-export const prisma = global.prisma || new PrismaClient();
+export const prisma =
+	global.prisma ||
+	new PrismaClient({
+		log: [
+			{
+				emit: 'event',
+				level: 'query'
+			}
+		]
+	});
 if (process.env.NODE_ENV !== 'production') global.prisma = prisma;
+
+export const prismaQueries: Prisma.QueryEvent[] = [];
+export let queryCountStore = { value: 0 };
+prisma.$on('query' as any, (_query: any) => {
+	if (!production && globalClient.ready) {
+		const query = _query as Prisma.QueryEvent;
+		prismaQueries.push(query);
+	}
+	queryCountStore.value++;
+});
 
 export function convertStoredActivityToFlatActivity(activity: Activity): ActivityTaskData {
 	return {

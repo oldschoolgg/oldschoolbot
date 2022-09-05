@@ -15,9 +15,9 @@ import { inspect } from 'node:util';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { CLIENT_ID, production } from '../../config';
+import { CLIENT_ID, OWNER_IDS, production, SupportServer } from '../../config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../../lib/blacklists';
-import { badges, BadgesEnum, BitField, BitFieldData, DISABLED_COMMANDS, OWNER_IDS } from '../../lib/constants';
+import { badges, BadgesEnum, BitField, BitFieldData, DISABLED_COMMANDS } from '../../lib/constants';
 import { countUsersWithItemInCl, prisma } from '../../lib/settings/prisma';
 import { cancelTask, minionActivityCacheDelete } from '../../lib/settings/settings';
 import {
@@ -32,7 +32,7 @@ import { getItem } from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { logError } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
-import PatreonTask from '../../tasks/patreon';
+import { patreonTask } from '../../tasks/patreon';
 import { Cooldowns } from '../lib/Cooldowns';
 import { itemOption } from '../lib/mahojiCommandOptions';
 import { allAbstractCommands, OSBMahojiCommand } from '../lib/util';
@@ -144,7 +144,7 @@ const viewableThings: {
 export const adminCommand: OSBMahojiCommand = {
 	name: 'admin',
 	description: 'Allows you to trade items with other players.',
-	guildID: production ? '342983479501389826' : '940758552425955348',
+	guildID: SupportServer,
 	options: [
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -492,13 +492,16 @@ export const adminCommand: OSBMahojiCommand = {
 		await interaction.deferReply();
 
 		const adminUser = await mahojiUsersSettingsFetch(userID);
-		const isMod = adminUser.bitfield.includes(BitField.isModerator);
+		const isOwner = OWNER_IDS.includes(userID.toString());
+		const isMod = isOwner || adminUser.bitfield.includes(BitField.isModerator);
+		if (!guildID || !isMod || (production && guildID.toString() !== SupportServer)) return randArrItem(gifs);
+
 		if (options.wipe_bingo_temp_cls) {
 			if (userID.toString() !== '319396464402890753' && !isMod) return randArrItem(gifs);
 			const usersToReset = await prisma.user.findMany({
 				where: {
 					bingo_tickets_bought: {
-						gt: 1
+						gt: 0
 					}
 				},
 				select: {
@@ -773,7 +776,7 @@ LIMIT 10;
 		 * Owner Only Commands
 		 *
 		 */
-		if (userID.toString() !== '157797566833098752' || interaction.userID.toString() !== '157797566833098752') {
+		if (!isOwner) {
 			return randArrItem(gifs);
 		}
 		if (options.viewbank) {
@@ -797,7 +800,7 @@ LIMIT 10;
 			process.exit();
 		}
 		if (options.debug_patreon) {
-			const result = await (globalClient.tasks.get('patreon') as PatreonTask).fetchPatrons();
+			const result = await patreonTask.fetchPatrons();
 			return {
 				attachments: [{ buffer: Buffer.from(JSON.stringify(result, null, 4)), fileName: 'patreon.txt' }]
 			};

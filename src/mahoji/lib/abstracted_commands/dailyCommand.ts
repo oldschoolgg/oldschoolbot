@@ -5,7 +5,8 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
-import { COINS_ID, Emoji, SupportServer } from '../../../lib/constants';
+import { SupportServer } from '../../../config';
+import { COINS_ID, Emoji } from '../../../lib/constants';
 import pets from '../../../lib/data/pets';
 import { DynamicButtons } from '../../../lib/DynamicButtons';
 import { getRandomTriviaQuestions } from '../../../lib/roboChimp';

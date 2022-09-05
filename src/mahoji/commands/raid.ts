@@ -103,16 +103,15 @@ export const raidCommand: OSBMahojiCommand = {
 		const { cox, tob } = options;
 		if (cox?.stats) return coxStatsCommand(user);
 		if (tob?.stats) return tobStatsCommand(user);
+		if (tob?.check) return tobCheckCommand(user, Boolean(tob.check.hard_mode));
+
 		if (minionIsBusy(user.id)) return "Your minion is busy, you can't do this.";
 
 		if (cox) {
 			if (cox.start) return coxCommand(channelID, user, cox.start.type, Boolean(cox.start.challenge_mode));
 		}
-		if (tob) {
-			if (tob.start) {
-				return tobStartCommand(user, channelID, Boolean(tob.start.hard_mode), tob.start.max_team_size);
-			}
-			if (tob.check) return tobCheckCommand(user, Boolean(tob.check.hard_mode));
+		if (tob?.start) {
+			return tobStartCommand(user, channelID, Boolean(tob.start.hard_mode), tob.start.max_team_size);
 		}
 
 		return 'Invalid command.';

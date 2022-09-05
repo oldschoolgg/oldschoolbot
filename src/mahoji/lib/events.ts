@@ -4,6 +4,7 @@ import { CLIENT_ID, DEV_SERVER_ID, production } from '../../config';
 import { syncBlacklists } from '../../lib/blacklists';
 import { DISABLED_COMMANDS } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
+import { assert } from '../../lib/util';
 
 export async function onStartup() {
 	// Sync disabled commands
@@ -33,4 +34,6 @@ export async function onStartup() {
 			guildID: DEV_SERVER_ID
 		});
 	}
+
+	assert(!globalClient.monitors.get('commandHandler'));
 }

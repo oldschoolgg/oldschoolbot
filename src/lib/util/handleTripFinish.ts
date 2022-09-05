@@ -1,7 +1,8 @@
 import { activity_type_enum } from '@prisma/client';
 import { isGuildBasedChannel } from '@sapphire/discord.js-utilities';
 import { MessageAttachment, MessageCollector, MessageOptions } from 'discord.js';
-import { KlasaMessage, KlasaUser } from 'klasa';
+import { KlasaUser } from 'klasa';
+import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
@@ -12,12 +13,14 @@ import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
 import { triggerRandomEvent } from '../randomEvents';
 import { runCommand } from '../settings/settings';
+import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import { ActivityTaskOptions } from '../types/minions';
 import { channelIsSendable } from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
 import {
 	makeBirdHouseTripButton,
 	makeDoClueButton,
+	makeNewSlayerTaskButton,
 	makeOpenCasketButton,
 	makeRepeatTripButton
 } from './globalInteractions';
@@ -79,8 +82,8 @@ export async function handleTripFinish(
 	message: string,
 	onContinue:
 		| undefined
-		| [string, unknown[] | Record<string, unknown>, boolean?, string?]
-		| ((args: LastTripRunArgs) => Promise<KlasaMessage | KlasaMessage[] | null>),
+		| [string, Record<string, unknown>, boolean?, string?]
+		| ((args: LastTripRunArgs) => Promise<CommandResponse | null>),
 	attachment: MessageAttachment | Buffer | undefined,
 	data: ActivityTaskOptions,
 	loot: Bank | null,
@@ -125,7 +128,6 @@ export async function handleTripFinish(
 					commandName: onContinue[0],
 					args: onContinue[1],
 					isContinue: onContinue[2],
-					method: onContinue[3],
 					bypassInhibitors: true,
 					...runCmdOptions,
 					...args
@@ -136,11 +138,18 @@ export async function handleTripFinish(
 	const components: MessageOptions['components'] = [[]];
 	if (onContinueFn) components[0].push(makeRepeatTripButton());
 	if (clueReceived && perkTier > PerkTier.One) components[0].push(makeDoClueButton(clueReceived));
-
 	const casketReceived = loot ? ClueTiers.find(i => loot?.has(i.id)) : undefined;
 	if (casketReceived) components[0].push(makeOpenCasketButton(casketReceived));
 	const birdHousedetails = await calculateBirdhouseDetails(user.id);
 	if (birdHousedetails.isReady && perkTier > PerkTier.One) components[0].push(makeBirdHouseTripButton());
+	const { currentTask } = await getUsersCurrentSlayerInfo(user.id);
+	if (
+		(currentTask === null || currentTask.quantity_remaining <= 0) &&
+		perkTier > PerkTier.One &&
+		data.type === 'MonsterKilling'
+	) {
+		components[0].push(makeNewSlayerTaskButton());
+	}
 	sendToChannelID(channelID, {
 		content: message,
 		image: attachment,
