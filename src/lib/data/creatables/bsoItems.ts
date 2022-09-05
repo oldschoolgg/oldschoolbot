@@ -24,6 +24,23 @@ for (const { baseItem, dyedVersions } of dyedItems) {
 	}
 }
 
+const nexArmourCreatables: Createable[] = [];
+for (const [component, brokenOutfit, repairedOutfit] of nexBrokenArmorDetails) {
+	for (let i = 0; i < brokenOutfit.length; i++) {
+		nexArmourCreatables.push({
+			name: getOSItem(repairedOutfit[i]).name,
+			inputItems: {
+				[component.id]: 1,
+				[brokenOutfit[i]]: 1
+			},
+			outputItems: {
+				[repairedOutfit[i]]: 1
+			},
+			requiredSkills: { smithing: 80, crafting: 80 }
+		});
+	}
+}
+
 const nexCreatables: Createable[] = [
 	{
 		name: 'Virtus wand',
@@ -47,6 +64,7 @@ const nexCreatables: Createable[] = [
 		},
 		requiredSkills: { smithing: 80, crafting: 80 }
 	},
+	...nexArmourCreatables,
 	...brokenPernixOutfit.map(piece => ({
 		name: `Revert ${getOSItem(piece).name}`,
 		inputItems: new Bank().add(piece),
@@ -69,22 +87,6 @@ const nexCreatables: Createable[] = [
 		}
 	}))
 ];
-
-for (const [component, brokenOutfit, repairedOutfit] of nexBrokenArmorDetails) {
-	for (let i = 0; i < brokenOutfit.length; i++) {
-		nexCreatables.push({
-			name: getOSItem(repairedOutfit[i]).name,
-			inputItems: {
-				[component.id]: 1,
-				[brokenOutfit[i]]: 1
-			},
-			outputItems: {
-				[repairedOutfit[i]]: 1
-			},
-			requiredSkills: { smithing: 80, crafting: 80 }
-		});
-	}
-}
 
 const componentRevertables: Createable[] = [
 	{
