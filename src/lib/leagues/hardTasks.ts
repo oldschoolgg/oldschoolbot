@@ -462,7 +462,7 @@ export const hardTasks: Task[] = [
 		id: 2054,
 		name: 'Finish the Baxtorian Bathhouse CL',
 		has: async ({ cl }) => {
-			return resolveItems(['Inferno adze', 'Flame gloves', 'Ring of fire', 'Phoenix eggling']).some(i =>
+			return resolveItems(['Inferno adze', 'Flame gloves', 'Ring of fire', 'Phoenix eggling']).every(i =>
 				cl.has(i)
 			);
 		}
