@@ -69,7 +69,8 @@ export const bingoTiles: BingoTile[] = [
 			'Olmlet',
 			"Lil' zik",
 			'Sraracha',
-			'Nexling'
+			'Nexling',
+			'Little nightmare'
 		])
 	},
 	{
