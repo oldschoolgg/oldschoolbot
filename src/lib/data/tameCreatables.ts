@@ -1,6 +1,8 @@
 import { Bank } from 'oldschooljs';
 
 import { MaterialBank } from '../invention/MaterialBank';
+import getOSItem from '../util/getOSItem';
+import resolveItems from '../util/resolveItems';
 import { Createable } from './createables';
 
 export const tameCreatables: Createable[] = [
@@ -310,3 +312,35 @@ export const tameCreatables: Createable[] = [
 		}
 	}
 ];
+
+for (const claw of resolveItems([
+	'Runite igne claws',
+	'Dragon igne claws',
+	'Barrows igne claws',
+	'Volcanic igne claws',
+	'Drygore igne claws',
+	'Dwarven igne claws',
+	'Gorajan igne claws'
+]).map(getOSItem)) {
+	tameCreatables.push({
+		name: `Revert ${claw.name}`,
+		inputItems: new Bank().add(claw.id),
+		outputItems: new Bank().add('Igne gear frame')
+	});
+}
+
+for (const armor of resolveItems([
+	'Dragon igne armor',
+	'Barrows igne armor',
+	'Volcanic igne armor',
+	'Justiciar igne armor',
+	'Drygore igne armor',
+	'Dwarven igne armor',
+	'Gorajan igne armor'
+]).map(getOSItem)) {
+	tameCreatables.push({
+		name: `Revert ${armor.name}`,
+		inputItems: new Bank().add(armor.id),
+		outputItems: new Bank().add('Igne gear frame')
+	});
+}
