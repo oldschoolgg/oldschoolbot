@@ -12,7 +12,7 @@ const pQI = parseQuantityAndItem;
 
 describe('Bank Parsers', () => {
 	test('parseStringBank', async () => {
-		const output = psb(` 1 twisted bow, coal,  5k egg,  1b trout, 5 ${itemID('Feather')} `);
+		const output = psb(` 1x twisted bow, coal,  5k egg,  1b trout, 5 ${itemID('Feather')} `);
 		const expected = [
 			[get('Twisted bow'), 1],
 			[get('Coal'), 0],
@@ -38,7 +38,7 @@ describe('Bank Parsers', () => {
 
 		expect(psb('-1 twisted bow')).toEqual([[get('Twisted bow'), 0]]);
 
-		expect(psb('1k twisted bow, twisted bow, 1000 twisted bow, 5k twisted bow')).toEqual([
+		expect(psb('1k twisted bow, twisted bow, 1000x twisted bow, 5k twisted bow')).toEqual([
 			[get('Twisted bow'), 1000]
 		]);
 		expect(psb('5 tarromin')).toEqual([[get('Tarromin'), 5]]);

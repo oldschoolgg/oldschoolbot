@@ -30,7 +30,7 @@ export function parseQuantityAndItem(str = '', inputBank?: Bank): [Item[], numbe
 		potentialQty = potentialQty.replace('#', inputBank.amount(lazyItemGet.id).toString());
 	}
 
-	let parsedQty: number | null = evalMathExpression(potentialQty);
+	let parsedQty: number | null = evalMathExpression(potentialQty.replace('x', ''));
 	if (parsedQty !== null && isNaN(parsedQty)) parsedQty = null;
 
 	const parsedName = parsedQty === null ? str : potentialName.join(' ');

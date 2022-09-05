@@ -37,11 +37,11 @@ function lbMsg(str: string, ironmanOnly?: boolean) {
 	};
 }
 
-function getPos(page: number, record: number) {
+export function getPos(page: number, record: number) {
 	return `${page * LB_PAGE_SIZE + 1 + record}. `;
 }
 
-async function doMenu(user: MUser, channelID: bigint, pages: string[], title: string) {
+export async function doMenu(user: MUser, channelID: bigint, pages: string[], title: string) {
 	if (pages.length === 0) {
 		sendToChannelID(channelID.toString(), { content: 'Nobody is on this leaderboard.' });
 	}

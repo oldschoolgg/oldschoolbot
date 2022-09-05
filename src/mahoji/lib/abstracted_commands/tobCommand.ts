@@ -56,6 +56,9 @@ export async function tobStatsCommand(user: MUser) {
 }
 
 export async function tobStartCommand(user: MUser, channelID: bigint, isHardMode: boolean, maxSizeInput?: number) {
+	if (user.minionIsBusy) {
+		return `${user.usernameOrMention} minion is busy`;
+	}
 	const initialCheck = await checkTOBUser(user, isHardMode);
 	if (initialCheck[0]) {
 		return initialCheck[1];
@@ -81,7 +84,13 @@ export async function tobStartCommand(user: MUser, channelID: bigint, isHardMode
 		message: `${user.usernameOrMention} is hosting a ${
 			isHardMode ? '**Hard mode** ' : ''
 		}Theatre of Blood mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
-		customDenier: user => checkTOBUser(user, isHardMode)
+		customDenier: async user => {
+			if (user.minionIsBusy) {
+				return [true, `${user.usernameOrMention} minion is busy`];
+			}
+
+			return checkTOBUser(user, isHardMode);
+		}
 	};
 
 	const channel = globalClient.channels.cache.get(channelID.toString());
