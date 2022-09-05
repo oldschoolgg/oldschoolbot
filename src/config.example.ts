@@ -1,15 +1,8 @@
-import { KlasaClientOptions } from 'klasa';
-
 import { IDiscordSettings } from './lib/types';
 
 export const botToken = '';
 export const production = false;
 
-export const customClientOptions: Partial<KlasaClientOptions> = {
-	prefix: '-',
-	// Your account unique ID
-	owners: ['157797566833098752']
-};
 export const SENTRY_DSN: string | null = null;
 export const HTTP_PORT = 1234;
 export const CLIENT_SECRET = '';

@@ -21,6 +21,7 @@ import { aerialFishingTask } from '../tasks/minions/HunterActivity/aerialFishing
 import { birdHouseTask } from '../tasks/minions/HunterActivity/birdhouseActivity';
 import { driftNetTask } from '../tasks/minions/HunterActivity/driftNetActivity';
 import { hunterTask } from '../tasks/minions/HunterActivity/hunterActivity';
+import { kourendTask } from '../tasks/minions/kourendFavourActivity';
 import { mageArenaTwoTask } from '../tasks/minions/mageArena2Activity';
 import { mageArenaTask } from '../tasks/minions/mageArenaActivity';
 import { agilityArenaTask } from '../tasks/minions/minigames/agilityArenaActivity';
@@ -33,6 +34,7 @@ import { gauntletTask } from '../tasks/minions/minigames/gauntletActivity';
 import { gnomeResTask } from '../tasks/minions/minigames/gnomeRestaurantActivity';
 import { infernoTask } from '../tasks/minions/minigames/infernoActivity';
 import { lmsTask } from '../tasks/minions/minigames/lmsActivity';
+import { mageTrainingTask } from '../tasks/minions/minigames/mageTrainingArenaActivity';
 import { mahoganyHomesTask } from '../tasks/minions/minigames/mahoganyHomesActivity';
 import { nightmareTask } from '../tasks/minions/minigames/nightmareActivity';
 import { pestControlTask } from '../tasks/minions/minigames/pestControlActivity';
@@ -40,8 +42,12 @@ import { plunderTask } from '../tasks/minions/minigames/plunderActivity';
 import { puroPuroTask } from '../tasks/minions/minigames/puroPuroActivity';
 import { raidsTask } from '../tasks/minions/minigames/raidsActivity';
 import { roguesDenTask } from '../tasks/minions/minigames/roguesDenMazeActivity';
+import { sepulchreTask } from '../tasks/minions/minigames/sepulchreActivity';
 import { soulWarsTask } from '../tasks/minions/minigames/soulWarsActivity';
 import { togTask } from '../tasks/minions/minigames/tearsOfGuthixActivity';
+import { templeTrekkingTask } from '../tasks/minions/minigames/templeTrekkingActivity';
+import { temporossTask } from '../tasks/minions/minigames/temporossActivity';
+import { titheFarmTask } from '../tasks/minions/minigames/titheFarmActivity';
 import { tobTask } from '../tasks/minions/minigames/tobActivity';
 import { trawlerTask } from '../tasks/minions/minigames/trawlerActivity';
 import { brewingTask } from '../tasks/minions/minigames/troubleBrewingActivity';
@@ -60,7 +66,9 @@ import { revenantsTask } from '../tasks/minions/revenantsActivity';
 import { runecraftTask } from '../tasks/minions/runecraftActivity';
 import { sawmillTask } from '../tasks/minions/sawmillActivity';
 import { smeltingTask } from '../tasks/minions/smeltingActivity';
+import { smithingTask } from '../tasks/minions/smithingActivity';
 import { tokkulShopTask } from '../tasks/minions/tokkulShopActivity';
+import { vmTask } from '../tasks/minions/volcanicMineActivity';
 import { wealthChargeTask } from '../tasks/minions/wealthChargingActivity';
 import { woodcuttingTask } from '../tasks/minions/woodcuttingActivity';
 
@@ -128,7 +136,15 @@ export const tasks: MinionTask[] = [
 	nexTask,
 	pickpocketTask,
 	questingTask,
-	monsterTask
+	monsterTask,
+	kourendTask,
+	vmTask,
+	templeTrekkingTask,
+	mageTrainingTask,
+	sepulchreTask,
+	titheFarmTask,
+	temporossTask,
+	smithingTask
 ];
 
 export interface MinionTask {

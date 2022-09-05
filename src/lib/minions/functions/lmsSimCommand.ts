@@ -1,5 +1,5 @@
-import { chunk, sleep } from '@klasa/utils';
 import { Channel, Message, TextChannel } from 'discord.js';
+import { chunk, sleep } from 'e';
 
 import LastManStandingUsage, { LMS_FINAL, LMS_PREP, LMS_ROUND } from '../../structures/LastManStandingUsage';
 import { channelIsSendable, cleanMentions } from '../../util';

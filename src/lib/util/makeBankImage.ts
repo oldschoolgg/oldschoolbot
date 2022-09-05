@@ -1,4 +1,3 @@
-import { AttachmentBuilder } from 'discord.js';
 import { MahojiAttachment } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
@@ -47,9 +46,4 @@ export async function makeBankImage({
 			buffer: image!
 		}
 	};
-}
-
-export async function makeBankImageKlasa(opts: MakeBankImageOptions) {
-	const result = await makeBankImage(opts);
-	return { files: [new AttachmentBuilder(result.file.buffer)] };
 }

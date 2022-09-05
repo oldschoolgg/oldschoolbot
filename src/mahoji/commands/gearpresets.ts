@@ -10,7 +10,7 @@ import { getItem } from '../../lib/util/getOSItem';
 import { gearEquipCommand } from '../lib/abstracted_commands/gearCommands';
 import { allEquippableItems, gearPresetOption, gearSetupOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch, mUserFetch } from '../mahojiSettings';
+import { mUserFetch } from '../mahojiSettings';
 
 function maxPresets(user: MUser) {
 	return user.perkTier * 2 + 3;
@@ -219,19 +219,12 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 		delete?: { preset: string };
 		view?: { preset: string };
 	}>) => {
-		const klasaUser = await mUserFetch(userID);
-		const mahojiUser = await mahojiUsersSettingsFetch(userID);
+		const user = await mUserFetch(userID);
 		if (options.create) {
-			return createOrEditGearSetup(
-				klasaUser,
-				options.create.copy_setup,
-				options.create.name,
-				false,
-				options.create
-			);
+			return createOrEditGearSetup(user, options.create.copy_setup, options.create.name, false, options.create);
 		}
 		if (options.edit) {
-			return createOrEditGearSetup(klasaUser, undefined, options.edit.preset, true, options.edit);
+			return createOrEditGearSetup(user, undefined, options.edit.preset, true, options.edit);
 		}
 		if (options.delete) {
 			const preset = await prisma.gearPreset.findFirst({
@@ -255,7 +248,7 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 		if (options.equip) {
 			return gearEquipCommand({
 				interaction,
-				userID: mahojiUser.id,
+				userID: user.id,
 				setup: options.equip.gear_setup,
 				item: undefined,
 				preset: options.equip.preset,
@@ -270,7 +263,7 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 					where: { user_id: userID.toString(), name: options.view.preset }
 				})) || globalPresets.find(i => stringMatches(i.name, options.view?.preset ?? ''));
 			if (!preset) return "You don't have a preset with that name.";
-			const image = await generateGearImage(klasaUser, gearPresetToGear(preset), null, null);
+			const image = await generateGearImage(user, gearPresetToGear(preset), null, null);
 			return { attachments: [{ buffer: image, fileName: 'preset.jpg' }] };
 		}
 

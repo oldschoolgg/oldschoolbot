@@ -412,87 +412,87 @@ export const activitiesCommand: OSBMahojiCommand = {
 		alch?: { item: string; quantity?: number };
 		cast?: { spell: string; quantity?: number };
 	}>) => {
-		const klasaUser = await mUserFetch(userID);
+		const user = await mUserFetch(userID);
 
 		// Minion can be busy
 		if (options.decant) {
-			return decantCommand(klasaUser, options.decant.potion_name, options.decant.dose);
+			return decantCommand(user, options.decant.potion_name, options.decant.dose);
 		}
-		if (options.inferno?.action === 'stats') return infernoStatsCommand(klasaUser);
-		if (options.birdhouses?.action === 'check') return birdhouseCheckCommand(klasaUser.user);
+		if (options.inferno?.action === 'stats') return infernoStatsCommand(user);
+		if (options.birdhouses?.action === 'check') return birdhouseCheckCommand(user.user);
 
 		// Minion must be free
-		const isBusy = klasaUser.minionIsBusy;
-		const busyStr = `${klasaUser.minionName} is currently busy.`;
+		const isBusy = user.minionIsBusy;
+		const busyStr = `${user.minionName} is currently busy.`;
 		if (isBusy) return busyStr;
 
 		if (options.birdhouses?.action === 'harvest') {
-			return birdhouseHarvestCommand(klasaUser, channelID, options.birdhouses.birdhouse);
+			return birdhouseHarvestCommand(user, channelID, options.birdhouses.birdhouse);
 		}
-		if (options.inferno?.action === 'start') return infernoStartCommand(klasaUser, channelID);
+		if (options.inferno?.action === 'start') return infernoStartCommand(user, channelID);
 		if (options.sawmill) {
-			return sawmillCommand(klasaUser, options.sawmill.type, options.sawmill.quantity, channelID);
+			return sawmillCommand(user, options.sawmill.type, options.sawmill.quantity, channelID);
 		}
 		if (options.chompy_hunt?.action === 'start') {
-			return chompyHuntCommand(klasaUser, channelID);
+			return chompyHuntCommand(user, channelID);
 		}
 		if (options.chompy_hunt?.action === 'claim') {
-			return chompyHuntClaimCommand(klasaUser);
+			return chompyHuntClaimCommand(user);
 		}
 		if (options.champions_challenge) {
-			return championsChallengeCommand(klasaUser, channelID);
+			return championsChallengeCommand(user, channelID);
 		}
 		if (options.warriors_guild) {
 			return warriorsGuildCommand(
-				klasaUser,
+				user,
 				channelID,
 				options.warriors_guild.action,
 				options.warriors_guild.quantity
 			);
 		}
 		if (options.collect) {
-			return collectCommand(klasaUser, channelID, options.collect.item, options.collect.no_stams);
+			return collectCommand(user, channelID, options.collect.item, options.collect.no_stams);
 		}
 		if (options.quest) {
-			return questCommand(klasaUser, channelID);
+			return questCommand(user, channelID);
 		}
 		if (options.favour) {
-			return favourCommand(klasaUser, options.favour.name, channelID, options.favour.no_stams);
+			return favourCommand(user, options.favour.name, channelID, options.favour.no_stams);
 		}
 		if (options.charge?.item === 'glory') {
-			return chargeGloriesCommand(klasaUser, channelID, options.charge.quantity);
+			return chargeGloriesCommand(user, channelID, options.charge.quantity);
 		}
 		if (options.charge?.item === 'wealth') {
-			return chargeWealthCommand(klasaUser, channelID, options.charge.quantity);
+			return chargeWealthCommand(user, channelID, options.charge.quantity);
 		}
 		if (options.fight_caves) {
-			return fightCavesCommand(klasaUser, channelID);
+			return fightCavesCommand(user, channelID);
 		}
 		if (options.driftnet_fishing) {
 			return driftNetCommand(
 				channelID,
-				klasaUser,
+				user,
 				options.driftnet_fishing.minutes,
 				options.driftnet_fishing.no_stams
 			);
 		}
 		if (options.aerial_fishing) {
-			return aerialFishingCommand(klasaUser, channelID);
+			return aerialFishingCommand(user, channelID);
 		}
 		if (options.enchant) {
-			return enchantCommand(klasaUser, channelID, options.enchant.name, options.enchant.quantity);
+			return enchantCommand(user, channelID, options.enchant.name, options.enchant.quantity);
 		}
 		if (options.bury) {
-			return buryCommand(klasaUser, channelID, options.bury.name, options.bury.quantity);
+			return buryCommand(user, channelID, options.bury.name, options.bury.quantity);
 		}
 		if (options.alch) {
-			return alchCommand(interaction, channelID, klasaUser, options.alch.item, options.alch.quantity);
+			return alchCommand(interaction, channelID, user, options.alch.item, options.alch.quantity);
 		}
 		if (options.puro_puro) {
-			return puroPuroStartCommand(klasaUser, channelID, options.puro_puro.impling, options.puro_puro.dark_lure);
+			return puroPuroStartCommand(user, channelID, options.puro_puro.impling, options.puro_puro.dark_lure);
 		}
 		if (options.cast) {
-			return castCommand(channelID, klasaUser, options.cast.spell, options.cast.quantity);
+			return castCommand(channelID, user, options.cast.spell, options.cast.quantity);
 		}
 
 		return 'Invalid command.';

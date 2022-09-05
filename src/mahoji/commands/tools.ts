@@ -787,7 +787,6 @@ export const toolsCommand: OSBMahojiCommand = {
 				};
 			}
 		}
-		const klasaUser = await mUserFetch(mahojiUser.id);
 
 		if (options.stash_units) {
 			if (options.stash_units.view) {
@@ -797,10 +796,10 @@ export const toolsCommand: OSBMahojiCommand = {
 					options.stash_units.view.not_filled
 				);
 			}
-			if (options.stash_units.build_all) return stashUnitBuildAllCommand(klasaUser);
-			if (options.stash_units.fill_all) return stashUnitFillAllCommand(klasaUser, mahojiUser.user);
+			if (options.stash_units.build_all) return stashUnitBuildAllCommand(mahojiUser);
+			if (options.stash_units.fill_all) return stashUnitFillAllCommand(mahojiUser, mahojiUser.user);
 			if (options.stash_units.unfill) {
-				return stashUnitUnfillCommand(klasaUser, options.stash_units.unfill.unit);
+				return stashUnitUnfillCommand(mahojiUser, options.stash_units.unfill.unit);
 			}
 		}
 		if (options.user?.temp_cl) {
@@ -814,7 +813,7 @@ export const toolsCommand: OSBMahojiCommand = {
 			}
 			const lastReset = await prisma.user.findUnique({
 				where: {
-					id: klasaUser.id
+					id: mahojiUser.id
 				},
 				select: {
 					last_temp_cl_reset: true

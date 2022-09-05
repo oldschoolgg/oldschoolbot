@@ -5,13 +5,13 @@ import { logError } from '../lib/util/logError';
 
 export async function mahojiUserSettingsUpdate(user: string | bigint, data: Prisma.UserUpdateArgs['data']) {
 	try {
-		const klasaUser =
+		const djsUser =
 			typeof user === 'string' || typeof user === 'bigint' ? await globalClient.fetchUser(user) : user;
 
 		const newUser = await prisma.user.update({
 			data,
 			where: {
-				id: klasaUser.id
+				id: djsUser.id
 			}
 		});
 

@@ -5,6 +5,7 @@ import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { timePerAlch } from '../mahoji/lib/abstracted_commands/alchCommand';
+import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
 import { mahojiUserSettingsUpdate } from '../mahoji/settingsUpdate';
 import { addXP } from './addXP';
 import { BitField, projectiles, usernameCache } from './constants';
@@ -474,3 +475,19 @@ export class MUserClass {
 declare global {
 	export type MUser = MUserClass;
 }
+export async function srcMUserFetch(userID: bigint | string) {
+	const user = await mahojiUsersSettingsFetch(userID);
+	return new MUserClass(user);
+}
+
+declare global {
+	const mUserFetch: typeof srcMUserFetch;
+}
+declare global {
+	namespace NodeJS {
+		interface Global {
+			mUserFetch: typeof srcMUserFetch;
+		}
+	}
+}
+global.mUserFetch = srcMUserFetch;

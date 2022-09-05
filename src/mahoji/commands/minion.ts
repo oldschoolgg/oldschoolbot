@@ -52,7 +52,6 @@ const patMessages = [
 const randomPatMessage = (minionName: string) => randArrItem(patMessages).replace('{name}', minionName);
 
 export async function getUserInfo(user: MUser) {
-	const klasaUser = await mUserFetch(user.id);
 	const roboChimpUser = await roboChimpUserFetch(BigInt(user.id));
 
 	const bitfields = `${(user.bitfield as BitField[])
@@ -89,7 +88,7 @@ export async function getUserInfo(user: MUser) {
 	};
 	return {
 		...result,
-		everythingString: `${klasaUser.usernameOrMention}[${klasaUser.id}]
+		everythingString: `${user.usernameOrMention}[${user.id}]
 **Perk Tier:** ${result.perkTier}
 **Blacklisted:** ${result.isBlacklisted}
 **Badges:** ${result.badges.join(' ')}

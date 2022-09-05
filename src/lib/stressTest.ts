@@ -32,7 +32,7 @@ export async function stressTest(userID: string) {
 		const newBank = user.bank;
 		const mUser = await mahojiUsersSettingsFetch(userID);
 		const mahojiBank = new Bank(mUser.bank as ItemBank);
-		assert(bankIsEqual(mahojiBank, newBank), 'Mahoji/Klasa bank should match');
+		assert(bankIsEqual(mahojiBank, newBank), 'Mahoji bank should match');
 		assert(
 			bankIsEqual(mahojiBank, currentBank),
 			`Updated bank should match: ${diffBanks(mahojiBank, currentBank)}`
