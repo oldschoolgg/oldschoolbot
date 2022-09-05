@@ -1,15 +1,15 @@
 import { calcPercentOfNum } from 'e';
-import { MinionTask } from '../../../lib/Task';
 
 import Constructables from '../../lib/skilling/skills/construction/constructables';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { MinionTask } from '../../lib/Task';
 import { ConstructionActivityTaskOptions } from '../../lib/types/minions';
 import { calcConBonusXP } from '../../lib/util/calcConBonusXP';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { mUserFetch } from '../../mahoji/mahojiSettings';
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const constructionTask: MinionTask = {
+	type: 'Construction',
 	async run(data: ConstructionActivityTaskOptions) {
 		const { objectID, quantity, userID, channelID, duration } = data;
 		const user = await mUserFetch(userID);
@@ -34,4 +34,4 @@ type: '',
 
 		handleTripFinish(user, channelID, str, ['build', { name: object.name, quantity }, true], undefined, data, null);
 	}
-}
+};

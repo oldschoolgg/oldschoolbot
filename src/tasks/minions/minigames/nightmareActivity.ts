@@ -1,11 +1,11 @@
 import { percentChance } from 'e';
-import { MinionTask } from '../../../lib/Task';
 import { Bank, Misc } from 'oldschooljs';
 
 import { BitField, NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID } from '../../../lib/constants';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import { trackLoot } from '../../../lib/settings/prisma';
+import { MinionTask } from '../../../lib/Task';
 import { NightmareActivityTaskOptions } from '../../../lib/types/minions';
 import { randomVariation } from '../../../lib/util';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
@@ -16,8 +16,8 @@ import { NightmareMonster } from './../../../lib/minions/data/killableMonsters/i
 
 const RawNightmare = Misc.Nightmare;
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const nightmareTask: MinionTask = {
+	type: 'Nightmare',
 	async run(data: NightmareActivityTaskOptions) {
 		const { channelID, quantity, duration, isPhosani = false, userID, method } = data;
 
@@ -122,4 +122,4 @@ type: '',
 			);
 		}
 	}
-}
+};

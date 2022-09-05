@@ -1,4 +1,3 @@
-import { MinionTask } from '../../../lib/Task';
 import { MonsterKillOptions, Monsters } from 'oldschooljs';
 
 import { PvMMethod } from '../../lib/constants';
@@ -11,14 +10,15 @@ import { runCommand } from '../../lib/settings/settings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { calculateSlayerPoints, getSlayerMasterOSJSbyID, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
+import { MinionTask } from '../../lib/Task';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { mUserFetch } from '../../mahoji/mahojiSettings';
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const monsterTask: MinionTask = {
+	type: 'MonsterKilling',
 	async run(data: MonsterActivityTaskOptions) {
 		const { monsterID, userID, channelID, quantity, duration, usingCannon, cannonMulti, burstOrBarrage } = data;
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
@@ -222,4 +222,4 @@ type: '',
 			messages
 		);
 	}
-}
+};

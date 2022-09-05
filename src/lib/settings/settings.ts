@@ -8,10 +8,10 @@ import { CommandArgs } from '../../mahoji/lib/inhibitors';
 import { postCommand } from '../../mahoji/lib/postCommand';
 import { preCommand } from '../../mahoji/lib/preCommand';
 import { convertComponentDJSComponent, convertMahojiCommandToAbstractCommand } from '../../mahoji/lib/util';
+import { tasks } from '../Task';
 import { ActivityTaskData } from '../types/minions';
 import { channelIsSendable, isGroupActivity } from '../util';
 import { logError } from '../util/logError';
-import { taskNameFromType } from '../util/taskNameFromType';
 import { convertStoredActivityToFlatActivity, prisma } from './prisma';
 
 export * from './minigames';
@@ -219,16 +219,14 @@ export async function completeActivity(_activity: Activity) {
 		throw new Error('Tried to complete an already completed task.');
 	}
 
-	const taskName = taskNameFromType(activity.type);
-	const task = { name: taskName, async run(_act: any) {} }; // globalClient.tasks.get(taskName);
-
+	const task = tasks.find(i => i.type === activity.type)!;
 	if (!task) {
 		throw new Error('Missing task');
 	}
 
 	globalClient.oneCommandAtATimeCache.add(activity.userID);
 	try {
-		globalClient.emit('debug', `Running ${task.name} for ${activity.userID}`);
+		globalClient.emit('debug', `Running ${task.type} for ${activity.userID}`);
 		await task.run(activity);
 	} catch (err) {
 		logError(err);

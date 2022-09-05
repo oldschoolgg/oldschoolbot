@@ -1,16 +1,16 @@
 import { Embed, userMention } from '@discordjs/builders';
-import { MinionTask } from '../../../lib/Task';
 
 import { NEX_ID } from '../../lib/constants';
 import { trackLoot } from '../../lib/settings/prisma';
 import { handleNexKills } from '../../lib/simulation/nex';
+import { MinionTask } from '../../lib/Task';
 import { NexTaskOptions } from '../../lib/types/minions';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import { sendToChannelID } from '../../lib/util/webhook';
 import { mUserFetch } from '../../mahoji/mahojiSettings';
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const nexTask: MinionTask = {
+	type: 'Nex',
 	async run(data: NexTaskOptions) {
 		const { quantity, channelID, users, wipedKill, duration, userDetails } = data;
 		const allMention = userDetails.map(t => userMention(t[0])).join(' ');
@@ -52,4 +52,4 @@ ${loot.formatLoot()}`);
 			}`
 		});
 	}
-}
+};

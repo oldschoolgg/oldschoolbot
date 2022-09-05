@@ -1,15 +1,15 @@
 import { Time } from 'e';
-import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
 import { MorytaniaDiary, userhasDiaryTier } from '../../lib/diaries';
+import { MinionTask } from '../../lib/Task';
 import { CollectingOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { collectables } from '../../mahoji/lib/abstracted_commands/collectCommand';
 import { mUserFetch, updateBankSetting } from '../../mahoji/mahojiSettings';
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const collectingTask: MinionTask = {
+	type: 'Collecting',
 	async run(data: CollectingOptions) {
 		let { collectableID, quantity, userID, channelID, duration, noStaminas } = data;
 		const user = await mUserFetch(userID);
@@ -54,4 +54,4 @@ type: '',
 			loot ?? null
 		);
 	}
-}
+};

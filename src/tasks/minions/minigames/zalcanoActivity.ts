@@ -1,16 +1,16 @@
 import { randInt } from 'e';
-import { MinionTask } from '../../../lib/Task';
 import { Bank, Misc } from 'oldschooljs';
 
 import { Events, ZALCANO_ID } from '../../../lib/constants';
 import { SkillsEnum } from '../../../lib/skilling/types';
+import { MinionTask } from '../../../lib/Task';
 import { ZalcanoActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const zalcanoTask: MinionTask = {
+	type: 'Zalcano',
 	async run(data: ZalcanoActivityTaskOptions) {
 		const { channelID, quantity, duration, userID, performance, isMVP } = data;
 		const user = await mUserFetch(userID);
@@ -76,4 +76,4 @@ type: '',
 			itemsAdded
 		);
 	}
-}
+};

@@ -1,13 +1,12 @@
-import { MinionTask } from '../../../lib/Task';
-
 import { Castables } from '../../lib/skilling/skills/magic/castables';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { MinionTask } from '../../lib/Task';
 import { CastingActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { mUserFetch } from '../../mahoji/mahojiSettings';
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const castingTask: MinionTask = {
+	type: 'Casting',
 	async run(data: CastingActivityTaskOptions) {
 		let { spellID, quantity, userID, channelID, duration } = data;
 		const user = await mUserFetch(userID);
@@ -68,4 +67,4 @@ type: '',
 			loot ?? null
 		);
 	}
-}
+};

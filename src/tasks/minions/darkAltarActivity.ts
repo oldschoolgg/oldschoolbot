@@ -1,16 +1,16 @@
 import { increaseNumByPercent, roll } from 'e';
-import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../lib/constants';
 import { darkAltarRunes } from '../../lib/minions/functions/darkAltarCommand';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { MinionTask } from '../../lib/Task';
 import { DarkAltarOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { mUserFetch } from '../../mahoji/mahojiSettings';
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const darkAltarTask: MinionTask = {
+	type: 'DarkAltar',
 	async run(data: DarkAltarOptions) {
 		const { quantity, userID, channelID, duration, hasElite, rune } = data;
 		const user = await mUserFetch(userID);
@@ -71,4 +71,4 @@ type: '',
 
 		handleTripFinish(user, channelID, str, ['runecraft', { rune }, true], undefined, data, loot);
 	}
-}
+};

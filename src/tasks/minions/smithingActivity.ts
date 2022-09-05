@@ -1,14 +1,14 @@
-import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { MinionTask } from '../../lib/Task';
 import { SmithingActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { mUserFetch } from '../../mahoji/mahojiSettings';
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const smithingTask: MinionTask = {
+	type: 'Smithing',
 	async run(data: SmithingActivityTaskOptions) {
 		const { smithedBarID, quantity, userID, channelID, duration } = data;
 		const user = await mUserFetch(userID);
@@ -44,4 +44,4 @@ type: '',
 			loot
 		);
 	}
-}
+};

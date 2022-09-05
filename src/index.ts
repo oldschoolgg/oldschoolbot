@@ -6,6 +6,7 @@ import * as Sentry from '@sentry/node';
 import { Chart } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { watch } from 'chokidar';
+import { TextChannel } from 'discord.js';
 import { debounce } from 'e';
 import {
 	APIInteraction,
@@ -20,14 +21,16 @@ import { SlashCommandResponse } from 'mahoji/dist/lib/types';
 import { extname, join, sep } from 'path';
 
 import { botToken, CLIENT_ID, DEV_SERVER_ID, production, SENTRY_DSN } from './config';
+import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from './lib/blacklists';
 import { clientOptions } from './lib/config';
-import { SILENT_ERROR } from './lib/constants';
+import { Channel, Events, SILENT_ERROR } from './lib/constants';
 import { onMessage } from './lib/events';
 import { makeServer } from './lib/http';
 import { modalInteractionHook } from './lib/modals';
 import { OldSchoolBotClient } from './lib/structures/OldSchoolBotClient';
 import { interactionHook } from './lib/util/globalInteractions';
 import { logError } from './lib/util/logError';
+import { sendToChannelID } from './lib/util/webhook';
 import { onStartup } from './mahoji/lib/events';
 import { postCommand } from './mahoji/lib/postCommand';
 import { preCommand } from './mahoji/lib/preCommand';
@@ -84,7 +87,6 @@ declare global {
 }
 
 const client = new OldSchoolBotClient(clientOptions);
-client.fastifyServer = makeServer();
 client.mahojiClient = mahojiClient;
 global.globalClient = client;
 client.on('messageCreate', onMessage);
@@ -155,7 +157,30 @@ client.on('raw', async event => {
 		return result.interaction.respond(result);
 	}
 });
+
+client.on(Events.ServerNotification, (message: string) => {
+	const channel = globalClient.channels.cache.get(Channel.Notifications);
+	if (channel && globalClient.production) (channel as TextChannel).send(message);
+});
+let economyLogBuffer: string[] = [];
+
+client.on(Events.EconomyLog, async (message: string) => {
+	economyLogBuffer.push(message);
+	if (economyLogBuffer.length === 10) {
+		await sendToChannelID(Channel.EconomyLogs, {
+			content: economyLogBuffer.join('\n---------------------------------\n')
+		});
+		economyLogBuffer = [];
+	}
+});
+client.on('guildCreate', guild => {
+	if (!guild.available) return;
+	if (BLACKLISTED_GUILDS.has(guild.id) || BLACKLISTED_USERS.has(guild.ownerId)) {
+		guild.leave();
+	}
+});
 async function main() {
+	client.fastifyServer = makeServer();
 	await mahojiClient.start();
 	console.log('Starting mahoji client...');
 	await client.login(botToken);

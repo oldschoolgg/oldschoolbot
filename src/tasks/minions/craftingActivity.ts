@@ -1,15 +1,15 @@
-import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
 import { Craftables } from '../../lib/skilling/skills/crafting/craftables';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { MinionTask } from '../../lib/Task';
 import { CraftingActivityTaskOptions } from '../../lib/types/minions';
 import { randFloat } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { mUserFetch } from '../../mahoji/mahojiSettings';
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const craftingTask: MinionTask = {
+	type: 'Crafting',
 	async run(data: CraftingActivityTaskOptions) {
 		const { craftableID, quantity, userID, channelID, duration } = data;
 		const user = await mUserFetch(userID);
@@ -49,4 +49,4 @@ type: '',
 
 		handleTripFinish(user, channelID, str, ['craft', { name: item.name, quantity }], undefined, data, loot);
 	}
-}
+};

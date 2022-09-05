@@ -1,15 +1,15 @@
 import { calcPercentOfNum } from 'e';
-import { MinionTask } from '../../../lib/Task';
 
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
+import { MinionTask } from '../../../lib/Task';
 import { MahoganyHomesActivityTaskOptions } from '../../../lib/types/minions';
 import { calcConBonusXP } from '../../../lib/util/calcConBonusXP';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const mahoganyHomesTask: MinionTask = {
+	type: 'MahoganyHomes',
 	async run(data: MahoganyHomesActivityTaskOptions) {
 		const { channelID, quantity, xp, duration, userID, points } = data;
 		const user = await mUserFetch(userID);
@@ -48,4 +48,4 @@ type: '',
 			null
 		);
 	}
-}
+};

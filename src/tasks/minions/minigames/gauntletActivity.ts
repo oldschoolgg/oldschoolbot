@@ -1,18 +1,18 @@
 import { calcWhatPercent, percentChance } from 'e';
-import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../../lib/constants';
 import { getMinigameScore, incrementMinigameScore, MinigameName } from '../../../lib/settings/settings';
 import { gauntlet } from '../../../lib/simulation/gauntlet';
+import { MinionTask } from '../../../lib/Task';
 import { GauntletOptions } from '../../../lib/types/minions';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { mUserFetch, updateBankSetting } from '../../../mahoji/mahojiSettings';
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const gauntletTask: MinionTask = {
+	type: 'Gauntlet',
 	async run(data: GauntletOptions) {
 		const { channelID, quantity, userID, corrupted } = data;
 		const user = await mUserFetch(userID);
@@ -86,4 +86,4 @@ type: '',
 			loot
 		);
 	}
-}
+};

@@ -1,10 +1,10 @@
 import { randFloat, roll, Time } from 'e';
-import { MinionTask } from '../../../lib/Task';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
 import { incrementMinigameScore } from '../../lib/settings/settings';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { MinionTask } from '../../lib/Task';
 import { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
 import { rand } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
@@ -19,8 +19,8 @@ const fossilTable = new LootTable()
 const numuliteTable = new LootTable().every('Numulite', 5).add('Calcite', 1).add('Pyrophosphite', 1);
 const fragmentTable = new LootTable({ limit: 175 }).add(numuliteTable, 1, 45).add(fossilTable, 1, 5);
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const vmTask: MinionTask = {
+	type: 'VolcanicMine',
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { quantity, userID, channelID, duration } = data;
 		const user = await mUserFetch(userID);
@@ -109,4 +109,4 @@ type: '',
 			itemsAdded
 		);
 	}
-}
+};

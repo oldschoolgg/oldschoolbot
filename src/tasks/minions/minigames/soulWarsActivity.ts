@@ -1,7 +1,7 @@
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
-import { MinionTask } from '../../../lib/Task';
 
 import { incrementMinigameScore } from '../../../lib/settings/settings';
+import { MinionTask } from '../../../lib/Task';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -23,8 +23,8 @@ function calcPoints() {
 	return Math.ceil(base);
 }
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const soulWarsTask: MinionTask = {
+	type: 'SoulWars',
 	async run(data: MinigameActivityTaskOptions) {
 		const { channelID, quantity, userID } = data;
 		const user = await mUserFetch(userID);
@@ -54,4 +54,4 @@ type: '',
 			null
 		);
 	}
-}
+};

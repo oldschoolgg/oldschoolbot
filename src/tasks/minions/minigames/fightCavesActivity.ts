@@ -1,5 +1,4 @@
 import { calcPercentOfNum, calcWhatPercent } from 'e';
-import { MinionTask } from '../../../lib/Task';
 import { Bank, Monsters } from 'oldschooljs';
 import TzTokJad from 'oldschooljs/dist/simulation/monsters/special/TzTokJad';
 
@@ -7,6 +6,7 @@ import { Emoji, Events } from '../../../lib/constants';
 import { prisma } from '../../../lib/settings/prisma';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
+import { MinionTask } from '../../../lib/Task';
 import { FightCavesActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, percentChance, rand } from '../../../lib/util';
 import chatHeadImage from '../../../lib/util/chatHeadImage';
@@ -18,8 +18,8 @@ import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
 const TokkulID = itemID('Tokkul');
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const fightCavesTask: MinionTask = {
+	type: 'FightCaves',
 	async run(data: FightCavesActivityTaskOptions) {
 		const { userID, channelID, jadDeathChance, preJadDeathTime, duration, fakeDuration } = data;
 		const user = await mUserFetch(userID);
@@ -202,4 +202,4 @@ type: '',
 			loot
 		);
 	}
-}
+};

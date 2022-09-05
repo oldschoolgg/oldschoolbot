@@ -1,14 +1,14 @@
-import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { Events } from '../../lib/constants';
+import { MinionTask } from '../../lib/Task';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { mUserFetch } from '../../mahoji/mahojiSettings';
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const clueTask: MinionTask = {
+	type: 'ClueCompletion',
 	async run(data: ClueActivityTaskOptions) {
 		const { clueID, userID, channelID, quantity } = data;
 		const clueTier = ClueTiers.find(mon => mon.id === clueID);
@@ -35,4 +35,4 @@ type: '',
 		});
 		handleTripFinish(user, channelID, str, undefined, undefined, data, loot);
 	}
-}
+};

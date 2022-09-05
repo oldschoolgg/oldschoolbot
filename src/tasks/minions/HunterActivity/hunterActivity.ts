@@ -1,6 +1,5 @@
 import { Prisma } from '@prisma/client';
 import { Time } from 'e';
-import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
@@ -14,6 +13,7 @@ import {
 } from '../../../lib/skilling/functions/calcsHunter';
 import Hunter from '../../../lib/skilling/skills/hunter/hunter';
 import { SkillsEnum } from '../../../lib/skilling/types';
+import { MinionTask } from '../../../lib/Task';
 import { PeakTier } from '../../../lib/tickers';
 import { HunterActivityTaskOptions } from '../../../lib/types/minions';
 import { rand, roll, stringMatches } from '../../../lib/util';
@@ -37,8 +37,8 @@ const riskDeathNumbers = [
 	}
 ];
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const hunterTask: MinionTask = {
+	type: 'Hunter',
 	async run(data: HunterActivityTaskOptions) {
 		const { creatureName, quantity, userID, channelID, usingHuntPotion, wildyPeak, duration, usingStaminaPotion } =
 			data;
@@ -218,4 +218,4 @@ type: '',
 			loot
 		);
 	}
-}
+};

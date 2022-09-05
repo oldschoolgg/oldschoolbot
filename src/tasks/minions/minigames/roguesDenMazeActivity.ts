@@ -1,30 +1,31 @@
 import { randInt } from 'e';
-import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
 import { roguesDenOutfit } from '../../../lib/data/CollectionsExport';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
+import { MinionTask } from '../../../lib/Task';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
-export const TODO.Task: MinionTask = {
-type: '',
-	getLowestCountOutfitPiece(bank: Bank): number {
-		let lowestCountPiece = 0;
-		let lowestCountAmount = -1;
+function getLowestCountOutfitPiece(bank: Bank): number {
+	let lowestCountPiece = 0;
+	let lowestCountAmount = -1;
 
-		for (const piece of roguesDenOutfit) {
-			const amount = bank.amount(piece);
-			if (lowestCountAmount === -1 || amount < lowestCountAmount) {
-				lowestCountPiece = piece;
-				lowestCountAmount = amount;
-			}
+	for (const piece of roguesDenOutfit) {
+		const amount = bank.amount(piece);
+		if (lowestCountAmount === -1 || amount < lowestCountAmount) {
+			lowestCountPiece = piece;
+			lowestCountAmount = amount;
 		}
-
-		return lowestCountPiece;
 	}
+
+	return lowestCountPiece;
+}
+
+export const roguesDenTask: MinionTask = {
+	type: 'RoguesDenMaze',
 
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { channelID, quantity, userID } = data;
@@ -39,7 +40,7 @@ type: '',
 
 		for (let i = 0; i < quantity; i++) {
 			if (randInt(1, 8) <= 5) {
-				const piece = this.getLowestCountOutfitPiece(userBankCopy);
+				const piece = getLowestCountOutfitPiece(userBankCopy);
 				userBankCopy.add(piece);
 				loot.add(piece);
 			}
@@ -73,4 +74,4 @@ type: '',
 			itemsAdded
 		);
 	}
-}
+};

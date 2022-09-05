@@ -1,15 +1,15 @@
 import { increaseNumByPercent, randInt } from 'e';
-import { MinionTask } from '../../../lib/Task';
 
 import { LumbridgeDraynorDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
+import { MinionTask } from '../../../lib/Task';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const togTask: MinionTask = {
+	type: 'TearsOfGuthix',
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { userID, channelID, duration } = data;
 		const user = await mUserFetch(userID);
@@ -63,4 +63,4 @@ type: '',
 
 		handleTripFinish(user, channelID, output, undefined, undefined, data, null);
 	}
-}
+};

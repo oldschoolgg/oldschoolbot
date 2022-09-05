@@ -1,13 +1,12 @@
-import { MinionTask } from '../../../lib/Task';
-
 import { Enchantables } from '../../lib/skilling/skills/magic/enchantables';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { MinionTask } from '../../lib/Task';
 import { EnchantingActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { mUserFetch } from '../../mahoji/mahojiSettings';
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const enchantingTask: MinionTask = {
+	type: 'Enchanting',
 	async run(data: EnchantingActivityTaskOptions) {
 		let { itemID, quantity, userID, channelID, duration } = data;
 		const user = await mUserFetch(userID);
@@ -40,4 +39,4 @@ type: '',
 			loot
 		);
 	}
-}
+};

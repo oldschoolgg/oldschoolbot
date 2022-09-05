@@ -1,13 +1,13 @@
-import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
 import { incrementMinigameScore } from '../../../lib/settings/settings';
+import { MinionTask } from '../../../lib/Task';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const championsChallengeTask: MinionTask = {
+	type: 'ChampionsChallenge',
 	async run(data: MinigameActivityTaskOptions) {
 		const { channelID, userID } = data;
 		const user = await mUserFetch(userID);
@@ -31,4 +31,4 @@ type: '',
 			loot
 		);
 	}
-}
+};

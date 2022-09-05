@@ -1,11 +1,11 @@
 import { calcPercentOfNum, percentChance } from 'e';
-import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { MinionTask } from '../../lib/Task';
 import { FishingActivityTaskOptions } from '../../lib/types/minions';
 import { rand, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
@@ -28,8 +28,8 @@ function radasBlessing(user: MUser) {
 	return { blessingEquipped: false, blessingChance: 0 };
 }
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const fishingTask: MinionTask = {
+	type: 'Fishing',
 	async run(data: FishingActivityTaskOptions) {
 		let { fishID, quantity, userID, channelID, duration } = data;
 		const user = await mUserFetch(userID);
@@ -218,4 +218,4 @@ type: '',
 
 		handleTripFinish(user, channelID, str, ['fish', { name: fish.name, quantity }, true], undefined, data, loot);
 	}
-}
+};

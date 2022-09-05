@@ -1,5 +1,4 @@
 import { randInt } from 'e';
-import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
 import { templeTrekkingOutfit } from '../../../lib/data/CollectionsExport';
@@ -10,6 +9,7 @@ import {
 	rewardTokens
 } from '../../../lib/minions/data/templeTrekking';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
+import { MinionTask } from '../../../lib/Task';
 import { TempleTrekkingActivityTaskOptions } from '../../../lib/types/minions';
 import { percentChance, stringMatches } from '../../../lib/util';
 import getOSItem from '../../../lib/util/getOSItem';
@@ -17,28 +17,29 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
-export const TODO.Task: MinionTask = {
-type: '',
-	getLowestCountOutfitPiece(bank: Bank, user: MUser): number {
-		let lowestCountPiece = 0;
-		let lowestCountAmount = -1;
+function getLowestCountOutfitPiece(bank: Bank, user: MUser): number {
+	let lowestCountPiece = 0;
+	let lowestCountAmount = -1;
 
-		for (const piece of templeTrekkingOutfit) {
-			let amount = bank.amount(piece);
+	for (const piece of templeTrekkingOutfit) {
+		let amount = bank.amount(piece);
 
-			for (const setup of Object.values(user.gear)) {
-				const thisItemEquipped = Object.values(setup).find(setup => setup?.item === piece);
-				if (thisItemEquipped) amount += thisItemEquipped.quantity;
-			}
-
-			if (lowestCountAmount === -1 || amount < lowestCountAmount) {
-				lowestCountPiece = piece;
-				lowestCountAmount = amount;
-			}
+		for (const setup of Object.values(user.gear)) {
+			const thisItemEquipped = Object.values(setup).find(setup => setup?.item === piece);
+			if (thisItemEquipped) amount += thisItemEquipped.quantity;
 		}
 
-		return lowestCountPiece;
+		if (lowestCountAmount === -1 || amount < lowestCountAmount) {
+			lowestCountPiece = piece;
+			lowestCountAmount = amount;
+		}
 	}
+
+	return lowestCountPiece;
+}
+
+export const templeTrekkingTask: MinionTask = {
+	type: 'Trekking',
 
 	async run(data: TempleTrekkingActivityTaskOptions) {
 		const { channelID, quantity, userID, difficulty } = data;
@@ -72,7 +73,7 @@ type: '',
 						loot.add(EasyEncounterLoot.roll());
 					}
 				} else if (percentChance(3)) {
-					const piece = this.getLowestCountOutfitPiece(userBank, user);
+					const piece = getLowestCountOutfitPiece(userBank, user);
 					userBank.add(piece);
 					loot.add(piece);
 				}
@@ -109,4 +110,4 @@ type: '',
 			itemsAdded
 		);
 	}
-}
+};

@@ -434,7 +434,7 @@ export async function checkTOBTeam(users: MUser[], isHardMode: boolean): Promise
 	}
 
 	for (const user of users) {
-		if (user.minionIsBusy) return `${user.username}'s minion is busy.`;
+		if (user.minionIsBusy) return `${user.usernameOrMention}'s minion is busy.`;
 		const checkResult = await checkTOBUser(user, isHardMode, users.length);
 		if (!checkResult[0]) {
 			continue;

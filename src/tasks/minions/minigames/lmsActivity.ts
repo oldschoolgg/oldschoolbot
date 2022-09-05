@@ -1,10 +1,10 @@
 import { percentChance } from 'e';
-import { MinionTask } from '../../../lib/Task';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { Emoji } from '../../../lib/constants';
 import { prisma } from '../../../lib/settings/prisma';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
+import { MinionTask } from '../../../lib/Task';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { addArrayOfNumbers, calcPerHour, clamp, gaussianRandom } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
@@ -98,8 +98,8 @@ function calculateResultOfLMSGames(qty: number, lmsStats: Awaited<ReturnType<typ
 	return gameResults;
 }
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const lmsTask: MinionTask = {
+	type: 'LastManStanding',
 	async run(data: MinigameActivityTaskOptions) {
 		const { channelID, quantity, userID, duration } = data;
 		const user = await mUserFetch(userID);
@@ -141,4 +141,4 @@ ${result
 			null
 		);
 	}
-}
+};

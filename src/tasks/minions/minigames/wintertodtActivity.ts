@@ -1,5 +1,4 @@
 import { randInt } from 'e';
-import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
@@ -9,6 +8,7 @@ import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/
 import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
 import Firemaking from '../../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../../lib/skilling/types';
+import { MinionTask } from '../../../lib/Task';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
@@ -37,8 +37,8 @@ const PointsTable = new SimpleTable<number>()
 	.add(780)
 	.add(850);
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const wintertodtTask: MinionTask = {
+	type: 'Wintertodt',
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { userID, channelID, quantity } = data;
 		const user = await mUserFetch(userID);
@@ -165,4 +165,4 @@ type: '',
 			itemsAdded
 		);
 	}
-}
+};

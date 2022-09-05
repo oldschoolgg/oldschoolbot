@@ -1,5 +1,4 @@
 import { noOp, randArrItem } from 'e';
-import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
 import { Emoji } from '../../lib/constants';
@@ -7,12 +6,13 @@ import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import isImportantItemForMonster from '../../lib/minions/functions/isImportantItemForMonster';
+import { MinionTask } from '../../lib/Task';
 import { GroupMonsterActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { mUserFetch } from '../../mahoji/mahojiSettings';
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const groupoMonsterTask: MinionTask = {
+	type: 'GroupMonsterKilling',
 	async run(data: GroupMonsterActivityTaskOptions) {
 		const { monsterID, channelID, quantity, users, leader, duration } = data;
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
@@ -75,4 +75,4 @@ type: '',
 
 		handleTripFinish(leaderUser, channelID, resultStr, undefined, undefined, data, totalLoot);
 	}
-}
+};

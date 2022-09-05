@@ -82,7 +82,7 @@ async function bingoLeaderboard(userID: string, channelID: bigint): CommandRespo
 
 	parsedTeams.sort((a, b) => b.tilesCompleted - a.tilesCompleted);
 	doMenu(
-		await globalClient.fetchUser(userID),
+		await mUserFetch(userID),
 		channelID,
 		chunk(parsedTeams, 10).map((subList, i) =>
 			subList

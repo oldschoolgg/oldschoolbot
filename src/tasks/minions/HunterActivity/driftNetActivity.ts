@@ -1,9 +1,9 @@
 import { Time } from 'e';
-import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
 import driftNetCreatures from '../../../lib/skilling/skills/hunter/driftNet';
 import { SkillsEnum } from '../../../lib/skilling/types';
+import { MinionTask } from '../../../lib/Task';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { mUserFetch } from '../../../mahoji/mahojiSettings';
@@ -32,8 +32,8 @@ const fishBonusLoot = [
 	}
 ];
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const driftNetTask: MinionTask = {
+	type: 'DriftNet',
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		let { quantity, userID, channelID, duration } = data;
 		const user = await mUserFetch(userID);
@@ -93,4 +93,4 @@ type: '',
 			loot
 		);
 	}
-}
+};

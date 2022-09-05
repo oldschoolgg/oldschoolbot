@@ -1,15 +1,15 @@
-import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../lib/constants';
+import { MinionTask } from '../../lib/Task';
 import { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { gloriesInventorySize } from '../../mahoji/lib/abstracted_commands/chargeGloriesCommand';
 import { mUserFetch } from '../../mahoji/mahojiSettings';
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const gloryChargingTask: MinionTask = {
+	type: 'GloryCharging',
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { quantity, userID, channelID } = data;
 		const user = await mUserFetch(userID);
@@ -65,4 +65,4 @@ type: '',
 			loot
 		);
 	}
-}
+};

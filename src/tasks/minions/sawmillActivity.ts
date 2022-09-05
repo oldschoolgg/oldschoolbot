@@ -1,14 +1,14 @@
-import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
 import { Planks } from '../../lib/minions/data/planks';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { MinionTask } from '../../lib/Task';
 import { SawmillActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { mUserFetch } from '../../mahoji/mahojiSettings';
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const sawmillTask: MinionTask = {
+	type: 'Sawmill',
 	async run(data: SawmillActivityTaskOptions) {
 		const { userID, channelID, plankID, plankQuantity } = data;
 		const user = await mUserFetch(userID);
@@ -46,4 +46,4 @@ type: '',
 			loot
 		);
 	}
-}
+};

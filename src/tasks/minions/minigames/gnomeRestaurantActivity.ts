@@ -1,9 +1,9 @@
-import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
+import { MinionTask } from '../../../lib/Task';
 import { GnomeRestaurantActivityTaskOptions } from '../../../lib/types/minions';
 import { roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -58,8 +58,8 @@ const tipTable = new LootTable()
 	.add('Calquat tree seed')
 	.add('Magic seed', [1, 3]);
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const gnomeResTask: MinionTask = {
+	type: 'GnomeRestaurant',
 	async run(data: GnomeRestaurantActivityTaskOptions) {
 		const { channelID, quantity, duration, userID, gloriesRemoved } = data;
 
@@ -104,4 +104,4 @@ type: '',
 			loot
 		);
 	}
-}
+};

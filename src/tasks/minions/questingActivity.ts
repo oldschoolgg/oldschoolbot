@@ -1,14 +1,13 @@
-import { MinionTask } from '../../../lib/Task';
-
 import { Emoji, MAX_QP } from '../../lib/constants';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { MinionTask } from '../../lib/Task';
 import { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
 import { rand, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { mUserFetch } from '../../mahoji/mahojiSettings';
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const questingTask: MinionTask = {
+	type: 'Questing',
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { userID, channelID } = data;
 		const user = await mUserFetch(userID);
@@ -73,4 +72,4 @@ type: '',
 			null
 		);
 	}
-}
+};

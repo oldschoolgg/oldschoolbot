@@ -1,15 +1,15 @@
-import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
 import { SkillsEnum } from '../../../lib/skilling/types';
+import { MinionTask } from '../../../lib/Task';
 import { TitheFarmActivityTaskOptions } from '../../../lib/types/minions';
 import { roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const titheFarmTask: MinionTask = {
+	type: 'TitheFarm',
 	async run(data: TitheFarmActivityTaskOptions) {
 		const { userID, channelID } = data;
 		const baseHarvest = 85;
@@ -128,4 +128,4 @@ type: '',
 			loot.length > 0 ? loot : null
 		);
 	}
-}
+};

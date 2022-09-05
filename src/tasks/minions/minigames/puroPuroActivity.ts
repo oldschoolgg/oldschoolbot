@@ -1,10 +1,10 @@
 import { randInt, reduceNumByPercent, roll, Time } from 'e';
-import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { implings, puroImplings, puroImpNormalTable, puroImpSpellTable } from '../../../lib/implings';
 import { incrementMinigameScore } from '../../../lib/settings/minigames';
+import { MinionTask } from '../../../lib/Task';
 import { PuroPuroActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
@@ -37,8 +37,8 @@ function allImpHunt(minutes: number, user: MUser) {
 
 const bryophytasStaffId = itemID("Bryophyta's staff");
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const puroPuroTask: MinionTask = {
+	type: 'PuroPuro',
 	async run(data: PuroPuroActivityTaskOptions) {
 		const { channelID, userID, quantity, implingID, darkLure } = data;
 		const user = await mUserFetch(userID);
@@ -213,4 +213,4 @@ type: '',
 			bank
 		);
 	}
-}
+};

@@ -1,14 +1,14 @@
-import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
 import Herblore from '../../lib/skilling/skills/herblore/herblore';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { MinionTask } from '../../lib/Task';
 import { HerbloreActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { mUserFetch } from '../../mahoji/mahojiSettings';
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const herbloreTask: MinionTask = {
+	type: 'Herblore',
 	async run(data: HerbloreActivityTaskOptions) {
 		let { mixableID, quantity, zahur, userID, channelID, duration } = data;
 		const user = await mUserFetch(userID);
@@ -49,4 +49,4 @@ type: '',
 			loot
 		);
 	}
-}
+};

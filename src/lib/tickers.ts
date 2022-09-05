@@ -1,21 +1,62 @@
+import { Embed } from '@discordjs/builders';
 import { Activity } from '@prisma/client';
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, TextChannel } from 'discord.js';
 import { noOp, randInt, shuffleArr, Time } from 'e';
 
 import { production } from '../config';
 import { mUserFetch } from '../mahoji/mahojiSettings';
 import { mahojiUserSettingsUpdate } from '../mahoji/settingsUpdate';
-import { BitField } from './constants';
+import { BitField, Channel, informationalButtons } from './constants';
 import { collectMetrics } from './metrics';
 import { prisma, queryCountStore } from './settings/prisma';
 import { completeActivity, runCommand } from './settings/settings';
 import { getFarmingInfo } from './skilling/functions/getFarmingInfo';
 import Farming from './skilling/skills/farming';
-import { awaitMessageComponentInteraction, stringMatches } from './util';
+import { awaitMessageComponentInteraction, getSupportGuild, stringMatches } from './util';
 import { farmingPatchNames, getFarmingKeyFromName } from './util/farmingHelpers';
 import { handleGiveawayCompletion } from './util/giveaway';
 import { logError } from './util/logError';
 import { minionIsBusy } from './util/minionIsBusy';
+
+let lastMessageID: string | null = null;
+let lastMessageGEID: string | null = null;
+const supportEmbed = new Embed()
+	.setAuthor({ name: '⚠️ ⚠️ ⚠️ ⚠️ READ THIS ⚠️ ⚠️ ⚠️ ⚠️' })
+	.addField({
+		name: '📖 Read the FAQ',
+		value: 'The FAQ answers commonly asked questions: https://wiki.oldschool.gg/faq - also make sure to read the other pages of the website, which might contain the information you need.'
+	})
+	.addField({
+		name: '🔎 Search',
+		value: 'Search this channel first, you might find your question has already been asked and answered.'
+	})
+	.addField({
+		name: '💬 Ask',
+		value: "If your question isn't answered in the FAQ, and you can't find it from searching, simply ask your question and wait for someone to answer. If you don't get an answer, you can post your question again."
+	})
+	.addField({
+		name: '⚠️ Dont ping anyone',
+		value: 'Do not ping mods, or any roles/people in here. You will be muted. Ask your question, and wait.'
+	});
+
+const geEmbed = new Embed()
+	.setAuthor({ name: '⚠️ ⚠️ ⚠️ ⚠️ READ THIS ⚠️ ⚠️ ⚠️ ⚠️' })
+	.addField({
+		name: "⚠️ Don't get scammed",
+		value: 'Beware of people "buying out banks" or buying lots of skilling supplies, which can be worth a lot more in the bot than they pay you. Skilling supplies are often worth a lot more than they are ingame. Don\'t just trust that they\'re giving you a fair price.'
+	})
+	.addField({
+		name: '🔎 Search',
+		value: 'Search this channel first, someone might already be selling/buying what you want.'
+	})
+	.addField({
+		name: '💬 Read the rules/Pins',
+		value: 'Read the pinned rules/instructions before using the channel.'
+	})
+	.addField({
+		name: 'Keep Ads Short',
+		value: 'Keep your ad less than 10 lines long, as short as possible.'
+	});
 
 export const enum PeakTier {
 	High = 'high',
@@ -270,6 +311,49 @@ const tickers: { name: string; interval: number; timer: NodeJS.Timeout | null; c
 					}
 				}
 			}
+		}
+	},
+	{
+		name: 'support_channel_messages',
+		timer: null,
+		interval: Time.Minute * 20,
+		cb: async () => {
+			if (!production) return;
+			const guild = getSupportGuild();
+			const channel = guild?.channels.cache.get(Channel.HelpAndSupport) as TextChannel;
+			const messages = await channel.messages.fetch({ limit: 5 });
+			if (messages.some(m => m.author.id === globalClient.user!.id)) return;
+			if (lastMessageID) {
+				const message = await channel.messages.fetch(lastMessageID).catch(noOp);
+				if (message) {
+					await message.delete();
+				}
+			}
+			const res = await channel.send({
+				embeds: [supportEmbed],
+				components: [new ActionRowBuilder<ButtonBuilder>().addComponents(informationalButtons)]
+			});
+			lastMessageID = res.id;
+		}
+	},
+	{
+		name: 'ge_channel_messages',
+		timer: null,
+		interval: Time.Minute * 20,
+		cb: async () => {
+			if (!production) return;
+			const guild = getSupportGuild();
+			const channel = guild?.channels.cache.get(Channel.GrandExchange) as TextChannel;
+			const messages = await channel.messages.fetch({ limit: 5 });
+			if (messages.some(m => m.author.id === globalClient.user!.id)) return;
+			if (lastMessageGEID) {
+				const message = await channel.messages.fetch(lastMessageGEID).catch(noOp);
+				if (message) {
+					await message.delete();
+				}
+			}
+			const res = await channel.send({ embeds: [geEmbed] });
+			lastMessageGEID = res.id;
 		}
 	}
 ];

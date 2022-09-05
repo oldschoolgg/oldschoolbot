@@ -1,5 +1,4 @@
 import { noOp, shuffleArr } from 'e';
-import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 
@@ -8,6 +7,7 @@ import { chambersOfXericCL, chambersOfXericMetamorphPets } from '../../../lib/da
 import { createTeam } from '../../../lib/data/cox';
 import { trackLoot } from '../../../lib/settings/prisma';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
+import { MinionTask } from '../../../lib/Task';
 import { RaidsOptions } from '../../../lib/types/minions';
 import { roll } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
@@ -22,8 +22,8 @@ const purpleButNotAnnounced = resolveItems(['Dexterous prayer scroll', 'Arcane p
 
 const purpleItems = chambersOfXericCL.filter(i => !notPurple.includes(i));
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const raidsTask: MinionTask = {
+	type: 'Raids',
 	async run(data: RaidsOptions) {
 		const { channelID, users, challengeMode, duration, leader } = data;
 		const allUsers = await Promise.all(users.map(async u => mUserFetch(u)));
@@ -127,4 +127,4 @@ type: '',
 			null
 		);
 	}
-}
+};

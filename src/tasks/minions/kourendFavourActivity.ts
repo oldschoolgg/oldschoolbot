@@ -1,13 +1,13 @@
-import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
+import { MinionTask } from '../../lib/Task';
 import { KourendFavourActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { mUserFetch } from '../../mahoji/mahojiSettings';
 import { KourendFavours, UserKourendFavour } from './../../lib/minions/data/kourendFavour';
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const kourendTask: MinionTask = {
+	type: 'KourendFavour',
 	async run(data: KourendFavourActivityTaskOptions) {
 		let { favour, quantity, userID, channelID } = data;
 		const user = await mUserFetch(userID);
@@ -81,4 +81,4 @@ type: '',
 			loot ?? null
 		);
 	}
-}
+};

@@ -1,5 +1,4 @@
 import { calcPercentOfNum, calcWhatPercent } from 'e';
-import { MinionTask } from '../../../lib/Task';
 import { Bank, Monsters } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
@@ -9,6 +8,7 @@ import { countUsersWithItemInCl, prisma } from '../../../lib/settings/prisma';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
+import { MinionTask } from '../../../lib/Task';
 import { InfernoOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import chatHeadImage from '../../../lib/util/chatHeadImage';
@@ -17,8 +17,8 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate, mUserFetch } from '../../../mahoji/mahojiSettings';
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const infernoTask: MinionTask = {
+	type: 'Inferno',
 	async run(data: InfernoOptions) {
 		const { userID, channelID, diedZuk, diedPreZuk, duration, deathTime, fakeDuration } = data;
 		const user = await mUserFetch(userID);
@@ -207,4 +207,4 @@ You made it through ${percentMadeItThrough.toFixed(2)}% of the Inferno${
 			baseBank
 		);
 	}
-}
+};

@@ -1,4 +1,3 @@
-import { MinionTask } from '../../../lib/Task';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
@@ -7,6 +6,7 @@ import { FarmingContract } from '../../lib/minions/farming/types';
 import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
 import Farming from '../../lib/skilling/skills/farming';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { MinionTask } from '../../lib/Task';
 import { FarmingActivityTaskOptions } from '../../lib/types/minions';
 import { assert, rand, roll } from '../../lib/util';
 import chatHeadImage from '../../lib/util/chatHeadImage';
@@ -16,8 +16,8 @@ import { logError } from '../../lib/util/logError';
 import { sendToChannelID } from '../../lib/util/webhook';
 import { mahojiUsersSettingsFetch, mUserFetch, updateBankSetting } from '../../mahoji/mahojiSettings';
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const farmingTask: MinionTask = {
+	type: 'Farming',
 	async run(data: FarmingActivityTaskOptions) {
 		const {
 			plantsName,
@@ -455,4 +455,4 @@ type: '',
 			);
 		}
 	}
-}
+};

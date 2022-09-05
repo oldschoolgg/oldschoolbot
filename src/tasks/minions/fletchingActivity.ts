@@ -1,14 +1,14 @@
-import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
 import Fletching from '../../lib/skilling/skills/fletching';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { MinionTask } from '../../lib/Task';
 import { FletchingActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { mUserFetch } from '../../mahoji/mahojiSettings';
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const fletchingTask: MinionTask = {
+	type: 'Fletching',
 	async run(data: FletchingActivityTaskOptions) {
 		let { fletchableName, quantity, userID, channelID, duration } = data;
 		const user = await mUserFetch(userID);
@@ -44,4 +44,4 @@ type: '',
 			loot
 		);
 	}
-}
+};

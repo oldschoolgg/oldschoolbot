@@ -1,14 +1,13 @@
-import { MinionTask } from '../../../lib/Task';
-
 import Prayer from '../../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../../lib/skilling/types';
+import { MinionTask } from '../../../lib/Task';
 import { OfferingActivityTaskOptions } from '../../../lib/types/minions';
 import { rand, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const offeringTask: MinionTask = {
+	type: 'Offering',
 	async run(data: OfferingActivityTaskOptions) {
 		const { boneID, quantity, userID, channelID } = data;
 		const user = await mUserFetch(userID);
@@ -56,4 +55,4 @@ type: '',
 
 		handleTripFinish(user, channelID, str, ['offer', { quantity, name: bone.name }, true], undefined, data, null);
 	}
-}
+};

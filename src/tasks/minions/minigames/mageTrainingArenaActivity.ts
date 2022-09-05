@@ -1,10 +1,10 @@
 import { Time } from 'e';
-import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
 import { prisma } from '../../../lib/settings/prisma';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
+import { MinionTask } from '../../../lib/Task';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { randomVariation } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -12,8 +12,8 @@ import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
 export const pizazzPointsPerHour = 100;
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const mageTrainingTask: MinionTask = {
+	type: 'MageTrainingArena',
 	async run(data: MinigameActivityTaskOptions) {
 		const { channelID, quantity, duration, userID } = data;
 
@@ -51,4 +51,4 @@ type: '',
 			loot
 		);
 	}
-}
+};

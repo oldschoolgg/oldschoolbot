@@ -1,12 +1,12 @@
-import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
+import { MinionTask } from '../../lib/Task';
 import { TokkulShopOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { mUserFetch, updateBankSetting } from '../../mahoji/mahojiSettings';
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const tokkulShopTask: MinionTask = {
+	type: 'TokkulShop',
 	async run(data: TokkulShopOptions) {
 		const { userID, channelID, itemID, quantity } = data;
 		const user = await mUserFetch(userID);
@@ -28,4 +28,4 @@ type: '',
 			null
 		);
 	}
-}
+};

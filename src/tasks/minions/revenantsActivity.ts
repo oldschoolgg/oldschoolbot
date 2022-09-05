@@ -1,6 +1,5 @@
 import { Prisma } from '@prisma/client';
 import { deepClone, roll } from 'e';
-import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
@@ -10,6 +9,7 @@ import { runCommand } from '../../lib/settings/settings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { filterLootReplace } from '../../lib/slayer/slayerUtil';
 import { Gear } from '../../lib/structures/Gear';
+import { MinionTask } from '../../lib/Task';
 import { RevenantOptions } from '../../lib/types/minions';
 import { hasSkillReqs } from '../../lib/util';
 import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLostOnDeathWilderness';
@@ -17,8 +17,8 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { mUserFetch, updateBankSetting } from '../../mahoji/mahojiSettings';
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const revenantsTask: MinionTask = {
+	type: 'Revenants',
 	async run(data: RevenantOptions) {
 		const { monsterID, userID, channelID, quantity, died, skulled } = data;
 		const monster = revenantMonsters.find(mon => mon.id === monsterID)!;
@@ -124,4 +124,4 @@ type: '',
 			itemsAdded
 		);
 	}
-}
+};

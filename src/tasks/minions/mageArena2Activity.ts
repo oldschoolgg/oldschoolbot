@@ -1,13 +1,13 @@
 import { percentChance, randArrItem } from 'e';
-import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
+import { MinionTask } from '../../lib/Task';
 import { ActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { mUserFetch } from '../../mahoji/mahojiSettings';
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const mageArenaTwoTask: MinionTask = {
+	type: 'MageArena2',
 	async run(data: ActivityTaskOptions) {
 		let { userID, channelID } = data;
 		const user = await mUserFetch(userID);
@@ -37,4 +37,4 @@ type: '',
 
 		handleTripFinish(user, channelID, str, undefined, undefined, data, loot ?? null);
 	}
-}
+};

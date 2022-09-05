@@ -1,7 +1,7 @@
-import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
 import { CyclopsTable } from '../../../../lib/simulation/cyclops';
+import { MinionTask } from '../../../../lib/Task';
 import { ActivityTaskOptionsWithQuantity } from '../../../../lib/types/minions';
 import { roll } from '../../../../lib/util';
 import { handleTripFinish } from '../../../../lib/util/handleTripFinish';
@@ -46,8 +46,8 @@ const defenders = [
 	}
 ];
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const cyclopsTask: MinionTask = {
+	type: 'Cyclops',
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { userID, channelID, quantity } = data;
 		const user = await mUserFetch(userID);
@@ -101,4 +101,4 @@ type: '',
 			itemsAdded
 		);
 	}
-}
+};

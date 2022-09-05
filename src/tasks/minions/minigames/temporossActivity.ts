@@ -1,19 +1,19 @@
 import { increaseNumByPercent, randInt } from 'e';
-import { MinionTask } from '../../../lib/Task';
 
 import { Emoji, Events } from '../../../lib/constants';
 import { getMinigameEntity, incrementMinigameScore } from '../../../lib/settings/settings';
 import { getTemporossLoot } from '../../../lib/simulation/tempoross';
 import Fishing from '../../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../../lib/skilling/types';
+import { MinionTask } from '../../../lib/Task';
 import { TemporossActivityTaskOptions } from '../../../lib/types/minions';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { mUserFetch } from '../../../mahoji/mahojiSettings';
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const temporossTask: MinionTask = {
+	type: 'Tempoross',
 	async run(data: TemporossActivityTaskOptions) {
 		const { userID, channelID, quantity, rewardBoost, duration } = data;
 		const user = await mUserFetch(userID);
@@ -96,4 +96,4 @@ type: '',
 			itemsAdded
 		);
 	}
-}
+};

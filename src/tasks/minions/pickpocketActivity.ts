@@ -1,10 +1,10 @@
 import { percentChance, randInt } from 'e';
-import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../lib/constants';
 import { Stealable, stealables } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { MinionTask } from '../../lib/Task';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
@@ -45,8 +45,8 @@ export function calcLootXPPickpocketing(
 	return [successful, damageTaken, xpReceived, chanceOfSuccess];
 }
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const pickpocketTask: MinionTask = {
+	type: 'Pickpocket',
 	async run(data: PickpocketActivityTaskOptions) {
 		const { monsterID, quantity, successfulQuantity, userID, channelID, xpReceived, duration } = data;
 		const user = await mUserFetch(userID);
@@ -136,4 +136,4 @@ type: '',
 			loot
 		);
 	}
-}
+};

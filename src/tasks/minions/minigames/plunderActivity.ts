@@ -1,17 +1,17 @@
-import { MinionTask } from '../../../lib/Task';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../../lib/constants';
 import { lootRoom, plunderRooms } from '../../../lib/minions/data/plunder';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
+import { MinionTask } from '../../../lib/Task';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { mUserFetch } from '../../../mahoji/mahojiSettings';
 import { PlunderActivityTaskOptions } from './../../../lib/types/minions';
 
-export const TODO.Task: MinionTask = {
-type: '',
+export const plunderTask: MinionTask = {
+	type: 'Plunder',
 	async run(data: PlunderActivityTaskOptions) {
 		const { channelID, quantity, rooms, userID } = data;
 		const user = await mUserFetch(userID);
@@ -74,4 +74,4 @@ type: '',
 			itemsAdded
 		);
 	}
-}
+};

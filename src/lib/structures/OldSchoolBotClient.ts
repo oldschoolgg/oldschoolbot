@@ -29,13 +29,6 @@ export class OldSchoolBotClient extends Client {
 	_badgeCache!: Map<string, string>;
 	_peakIntervalCache!: Peak[];
 	fastifyServer!: FastifyInstance;
-	minionTicker!: NodeJS.Timeout;
-	dailyReminderTicker!: NodeJS.Timeout;
-	giveawayTicker!: NodeJS.Timeout;
-	analyticsInterval!: NodeJS.Timeout;
-	metricsInterval!: NodeJS.Timeout;
-	__supportInterval!: NodeJS.Timeout;
-	__geInterval!: NodeJS.Timeout;
 
 	public constructor(clientOptions: ClientOptions) {
 		super(clientOptions);
