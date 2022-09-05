@@ -8,11 +8,15 @@ import { Bank, LootTable } from 'oldschooljs';
 import { PerkTier } from '../../../lib/constants';
 import { allOpenables, UnifiedOpenable } from '../../../lib/openables';
 import { ItemBank } from '../../../lib/types';
-import { updateGPTrackSetting } from '../../../lib/util';
 import { stringMatches } from '../../../lib/util/cleanString';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { handleMahojiConfirmation, mahojiUserSettingsUpdate, patronMsg } from '../../mahojiSettings';
+import {
+	handleMahojiConfirmation,
+	mahojiUserSettingsUpdate,
+	patronMsg,
+	updateGPTrackSetting
+} from '../../mahojiSettings';
 
 const regex = /^(.*?)( \([0-9]+x Owned\))?$/;
 
@@ -124,7 +128,7 @@ async function finalizeOpening({
 }) {
 	if (!user.bank().has(cost)) return `You don't have ${cost}.`;
 	const newOpenableScores = await addToOpenablesScores(mahojiUser, kcBank);
-	await user.removeItemsFromBank(cost);
+	await transactItems({ userID: user.id, itemsToRemove: cost });
 	const { previousCL } = await user.addItemsToBank({
 		items: loot.bank,
 		collectionLog: true,

@@ -2,9 +2,9 @@ import { Message, MessageActionRow, MessageButton } from 'discord.js';
 import { noOp } from 'e';
 import { KlasaUser } from 'klasa';
 
-import { CLIENT_ID, MAXING_MESSAGE } from '../config';
+import { CLIENT_ID, MAXING_MESSAGE, SupportServer } from '../config';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
-import { Events, LEVEL_99_XP, SupportServer } from './constants';
+import { Events, LEVEL_99_XP } from './constants';
 import { prisma } from './settings/prisma';
 import Skills from './skilling/skills';
 import { channelIsSendable } from './util';
@@ -52,12 +52,12 @@ export async function onMessage(msg: Message) {
 		content: result.content,
 		components: result.components?.map(i => {
 			const row = new MessageActionRow();
-			for (const a of i.components) {
+			for (const a of i.components as any[]) {
 				row.addComponents(
 					new MessageButton()
 						.setCustomID(a.custom_id)
 						.setLabel(a.label!)
-						.setEmoji(a.emoji!.id!)
+						.setEmoji(a.emoji!.id ?? a.emoji!.name!)
 						.setStyle('SECONDARY')
 				);
 			}

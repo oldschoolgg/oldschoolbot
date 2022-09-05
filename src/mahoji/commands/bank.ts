@@ -17,7 +17,7 @@ const bankFormats = ['json', 'text_paged', 'text_full'] as const;
 const bankItemsPerPage = 10;
 type BankFormat = typeof bankFormats[number];
 
-export const askCommand: OSBMahojiCommand = {
+export const bankCommand: OSBMahojiCommand = {
 	name: 'bank',
 	description: 'See your minions bank.',
 	options: [

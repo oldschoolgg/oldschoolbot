@@ -7,17 +7,12 @@ import { ContractOption, FarmingContract, FarmingContractDifficultyLevel } from 
 import { getPlantToGrow } from '../../../lib/skilling/functions/calcFarmingContracts';
 import { getFarmingInfo } from '../../../lib/skilling/functions/getFarmingInfo';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { roughMergeMahojiResponse } from '../../../lib/util';
+import { getSkillsOfMahojiUser, roughMergeMahojiResponse } from '../../../lib/util';
 import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import { findPlant } from '../../../lib/util/farmingHelpers';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 import { minionName } from '../../../lib/util/minionUtils';
-import {
-	getMahojiBank,
-	getSkillsOfMahojiUser,
-	mahojiUserSettingsUpdate,
-	mahojiUsersSettingsFetch
-} from '../../mahojiSettings';
+import { getMahojiBank, mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../../mahojiSettings';
 import { farmingPlantCommand, harvestCommand } from './farmingCommand';
 import { abstractedOpenCommand } from './openCommand';
 

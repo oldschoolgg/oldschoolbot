@@ -14,7 +14,7 @@ import {
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { getSkillsOfMahojiUser, getUserGear } from '../../mahoji/mahojiSettings';
+import { getUserGear } from '../../mahoji/mahojiSettings';
 import { BitField, NEX_ID } from '../constants';
 import { Skills } from '../types';
 import {
@@ -22,6 +22,7 @@ import {
 	exponentialPercentScale,
 	formatDuration,
 	formatSkillRequirements,
+	getSkillsOfMahojiUser,
 	itemNameFromID,
 	randomVariation,
 	skillsMeetRequirements

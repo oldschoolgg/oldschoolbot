@@ -15,9 +15,9 @@ import { inspect } from 'node:util';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { CLIENT_ID, production } from '../../config';
+import { CLIENT_ID, OWNER_IDS, production, SupportServer } from '../../config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../../lib/blacklists';
-import { badges, BadgesEnum, BitField, BitFieldData, DISABLED_COMMANDS, OWNER_IDS } from '../../lib/constants';
+import { badges, BadgesEnum, BitField, BitFieldData, DISABLED_COMMANDS } from '../../lib/constants';
 import { countUsersWithItemInCl, prisma } from '../../lib/settings/prisma';
 import { cancelTask, minionActivityCacheDelete } from '../../lib/settings/settings';
 import {
@@ -32,11 +32,12 @@ import { getItem } from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { logError } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
-import PatreonTask from '../../tasks/patreon';
+import { patreonTask } from '../../tasks/patreon';
 import { Cooldowns } from '../lib/Cooldowns';
 import { itemOption } from '../lib/mahojiCommandOptions';
 import { allAbstractCommands, OSBMahojiCommand } from '../lib/util';
 import {
+	allItemsOwned,
 	handleMahojiConfirmation,
 	mahojiClientSettingsFetch,
 	mahojiClientSettingsUpdate,
@@ -143,7 +144,7 @@ const viewableThings: {
 export const adminCommand: OSBMahojiCommand = {
 	name: 'admin',
 	description: 'Allows you to trade items with other players.',
-	guildID: production ? '342983479501389826' : '940758552425955348',
+	guildID: SupportServer,
 	options: [
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -451,6 +452,11 @@ export const adminCommand: OSBMahojiCommand = {
 					choices: viewableThings.map(i => ({ name: i.name, value: i.name }))
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'wipe_bingo_temp_cls',
+			description: 'Wipe all temp cls of bingo users'
 		}
 	],
 	run: async ({
@@ -481,11 +487,41 @@ export const adminCommand: OSBMahojiCommand = {
 		bitfield?: { user: MahojiUserOption; add?: string; remove?: string };
 		ltc?: {};
 		view?: { thing: string };
+		wipe_bingo_temp_cls?: {};
 	}>) => {
 		await interaction.deferReply();
 
 		const adminUser = await mahojiUsersSettingsFetch(userID);
-		const isMod = adminUser.bitfield.includes(BitField.isModerator);
+		const isOwner = OWNER_IDS.includes(userID.toString());
+		const isMod = isOwner || adminUser.bitfield.includes(BitField.isModerator);
+		if (!guildID || !isMod || (production && guildID.toString() !== SupportServer)) return randArrItem(gifs);
+
+		if (options.wipe_bingo_temp_cls) {
+			if (userID.toString() !== '319396464402890753' && !isMod) return randArrItem(gifs);
+			const usersToReset = await prisma.user.findMany({
+				where: {
+					bingo_tickets_bought: {
+						gt: 0
+					}
+				},
+				select: {
+					id: true
+				}
+			});
+			await handleMahojiConfirmation(interaction, `Reset the temp CL of ${usersToReset.length} users?`);
+			const res = await prisma.user.updateMany({
+				where: {
+					id: {
+						in: usersToReset.map(i => i.id)
+					}
+				},
+				data: {
+					temp_cl: {}
+				}
+			});
+			return `${res.count} temp CLs reset.`;
+		}
+
 		if (!guildID || !isMod || (production && guildID.toString() !== '342983479501389826')) return randArrItem(gifs);
 
 		/**
@@ -740,12 +776,12 @@ LIMIT 10;
 		 * Owner Only Commands
 		 *
 		 */
-		if (userID.toString() !== '157797566833098752' || interaction.userID.toString() !== '157797566833098752') {
+		if (!isOwner) {
 			return randArrItem(gifs);
 		}
 		if (options.viewbank) {
 			const userToCheck = await globalClient.fetchUser(options.viewbank.user.user.id);
-			const bank = userToCheck.allItemsOwned();
+			const bank = allItemsOwned(userToCheck);
 			return { attachments: [(await makeBankImage({ bank, title: userToCheck.username })).file] };
 		}
 		if (options.reboot) {
@@ -764,7 +800,7 @@ LIMIT 10;
 			process.exit();
 		}
 		if (options.debug_patreon) {
-			const result = await (globalClient.tasks.get('patreon') as PatreonTask).fetchPatrons();
+			const result = await patreonTask.fetchPatrons();
 			return {
 				attachments: [{ buffer: Buffer.from(JSON.stringify(result, null, 4)), fileName: 'patreon.txt' }]
 			};

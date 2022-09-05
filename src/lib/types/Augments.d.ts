@@ -2,7 +2,6 @@ import { FSWatcher } from 'chokidar';
 import { MessageOptions, MessagePayload } from 'discord.js';
 import { KlasaMessage, KlasaUser, Settings, SettingsUpdateResult } from 'klasa';
 import { Bank } from 'oldschooljs';
-import PQueue from 'p-queue';
 import { Image } from 'skia-canvas/lib';
 
 import { GetUserBankOptions } from '../../extendables/User/Bank';
@@ -33,15 +32,6 @@ declare module 'klasa' {
 		metricsInterval: NodeJS.Timeout;
 		options: KlasaClientOptions;
 		fetchUser(id: string | bigint): Promise<KlasaUser>;
-	}
-
-	interface Command {
-		altProtection?: boolean;
-		guildOnly?: boolean;
-		perkTier?: number;
-		ironCantUse?: boolean;
-		testingCommand?: boolean;
-		bitfieldsRequired?: BitField[];
 	}
 
 	interface Task {
@@ -89,8 +79,8 @@ declare module 'discord.js' {
 			collectionLog?: boolean;
 			filterLoot?: boolean;
 			dontAddToTempCL?: boolean;
-		}): Promise<{ previousCL: Bank; itemsAdded: Bank }>;
-		removeItemsFromBank(items: ItemBank | Bank, collectionLog?: boolean): Promise<SettingsUpdateResult>;
+		}): ReturnType<typeof transactItems>;
+		removeItemsFromBank(items: ItemBank | Bank, collectionLog?: boolean): ReturnType<typeof transactItems>;
 		specialRemoveItems(items: Bank): Promise<{ realCost: Bank }>;
 		addItemsToCollectionLog(options: { items: Bank; dontAddToTempCL?: boolean }): Promise<SettingsUpdateResult>;
 		incrementMonsterScore(monsterID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
@@ -134,16 +124,7 @@ declare module 'discord.js' {
 		 */
 		getCreatureScore(creature: Creature): number;
 		rawGear(): UserFullGearSetup;
-		allItemsOwned(): Bank;
 		cl(): Bank;
-		/**
-		 * Returns this users update promise queue.
-		 */
-		getUpdateQueue(): PQueue;
-		/**
-		 * Queue a function to run on a per-user queue.
-		 */
-		queueFn(fn: (user: KlasaUser) => Promise<T>): Promise<T>;
 		bank(options?: GetUserBankOptions): Bank;
 		getUserFavAlchs(duration: number): Item[];
 		getGear(gearType: GearSetupType): Gear;

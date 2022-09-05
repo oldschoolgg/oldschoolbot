@@ -1,6 +1,6 @@
 import { MessageAttachment, TextChannel } from 'discord.js';
 import { Time } from 'e';
-import { ArrayActions, Gateway, Task } from 'klasa';
+import { ArrayActions, Gateway } from 'klasa';
 import fetch from 'node-fetch';
 
 import { patreonConfig, production } from '../config';
@@ -29,7 +29,8 @@ patreonApiURL.search = new URLSearchParams([
 			'patron_status'
 		].join(',')
 	],
-	['fields[user]', ['social_connections'].join(',')]
+	['fields[user]', ['social_connections'].join(',')],
+	['page[count]', '1000']
 ]).toString();
 
 export const tiers: [PatronTierID, BitField][] = [
@@ -77,13 +78,7 @@ function perkTierFromBitfield(bit: BitField): PerkTier {
 	}
 }
 
-export default class PatreonTask extends Task {
-	async init() {
-		if (!patreonConfig) {
-			this.disable();
-		}
-	}
-
+class PatreonTask {
 	async validatePerks(userID: string, shouldHave: PerkTier): Promise<string | null> {
 		const settings = await getUserSettings(userID);
 		let perkTier: PerkTier | 0 | null = getUsersPerkTier(settings.get(UserSettings.BitField));
@@ -125,7 +120,7 @@ export default class PatreonTask extends Task {
 	}
 
 	async givePerks(userID: string, perkTier: PerkTier) {
-		const settings = await (this.client.gateways.get('users') as Gateway)!
+		const settings = await (globalClient.gateways.get('users') as Gateway)!
 			.acquire({
 				id: userID
 			})
@@ -157,7 +152,7 @@ export default class PatreonTask extends Task {
 	}
 
 	async removePerks(userID: string) {
-		const settings = await (this.client.gateways.get('users') as Gateway)!
+		const settings = await (globalClient.gateways.get('users') as Gateway)!
 			.acquire({
 				id: userID
 			})
@@ -231,7 +226,7 @@ export default class PatreonTask extends Task {
 				}
 			}
 
-			const settings = await (this.client.gateways.get('users') as Gateway)!
+			const settings = await (globalClient.gateways.get('users') as Gateway)!
 				.acquire({
 					id: patron.discordID
 				})
@@ -242,7 +237,7 @@ export default class PatreonTask extends Task {
 			if (roboChimpUser.github_id) continue;
 
 			const username =
-				this.client.users.cache.get(patron.discordID)?.username ?? `${patron.discordID}|${patron.patreonID}`;
+				globalClient.users.cache.get(patron.discordID)?.username ?? `${patron.discordID}|${patron.patreonID}`;
 
 			if (roboChimpUser.patreon_id !== patron.patreonID) {
 				try {
@@ -300,7 +295,7 @@ export default class PatreonTask extends Task {
 		const githubResult = await this.syncGithub();
 		messages = messages.concat(githubResult);
 
-		const channel = this.client.channels.cache.get(Channel.ErrorLogs) as TextChannel;
+		const channel = globalClient.channels.cache.get(Channel.ErrorLogs) as TextChannel;
 		if (production) {
 			channel.send({ files: [new MessageAttachment(Buffer.from(result.join('\n')), 'patreon.txt')] });
 			channel.send(messages.join(', '));
@@ -308,7 +303,7 @@ export default class PatreonTask extends Task {
 			console.log(messages.join('\n'));
 		}
 
-		this.client.tasks.get('badges')?.run();
+		globalClient.tasks.get('badges')?.run();
 	}
 
 	async fetchPatrons(url?: string): Promise<Patron[]> {
@@ -348,3 +343,5 @@ export default class PatreonTask extends Task {
 		return users;
 	}
 }
+
+export const patreonTask = new PatreonTask();

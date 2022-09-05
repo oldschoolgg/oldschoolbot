@@ -2,7 +2,6 @@ import { MessageButton } from 'discord.js';
 import { KlasaMessage } from 'klasa';
 import { APIButtonComponent, APIButtonComponentWithCustomId, ButtonStyle, ComponentType } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import PQueue from 'p-queue';
 import { join } from 'path';
 
 import { DISCORD_SETTINGS, production } from '../config';
@@ -12,7 +11,6 @@ import { SkillsEnum } from './skilling/types';
 import { ActivityTaskOptions } from './types/minions';
 import resolveItems from './util/resolveItems';
 
-export const SupportServer = production ? '342983479501389826' : '940758552425955348';
 export const BotID = DISCORD_SETTINGS.BotID ?? '303730326692429825';
 
 export const Channel = {
@@ -403,11 +401,6 @@ export const NIGHTMARE_ID = 9415;
 export const HESPORI_ID = 8583;
 export const NEX_ID = 11_278;
 
-/**
- * Map<user_id, PromiseQueue>
- */
-export const userQueues: Map<string, PQueue> = new Map();
-
 export const skillEmoji = {
 	runecraft: '<:runecraft:630911040435257364>',
 	firemaking: '<:firemaking:630911040175210518>',
@@ -481,7 +474,7 @@ export const mahojiInformationalButtons: APIButtonComponent[] = buttonSource.map
 export type LastTripRunArgs = Omit<RunCommandArgs, 'commandName' | 'args'>;
 export const lastTripCache = new Map<
 	string,
-	{ continue: (args: LastTripRunArgs) => Promise<CommandResponse>; data: ActivityTaskOptions }
+	{ continue: (args: LastTripRunArgs) => Promise<null | CommandResponse>; data: ActivityTaskOptions }
 >();
 
 export const PATRON_ONLY_GEAR_SETUP =
@@ -528,7 +521,6 @@ export const DISABLED_COMMANDS = new Set<string>();
 export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'none'] as const;
 export type PvMMethod = typeof PVM_METHODS[number];
 export const usernameCache = new Map<string, string>();
-export const OWNER_IDS = ['157797566833098752'];
 export const minionBuyButton: APIButtonComponentWithCustomId = {
 	type: ComponentType.Button,
 	custom_id: 'BUY_MINION',

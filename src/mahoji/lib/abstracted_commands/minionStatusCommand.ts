@@ -1,19 +1,19 @@
 import { ButtonStyle } from 'discord-api-types/v10';
-import { chunk } from 'e';
 import { APIButtonComponentWithCustomId, ComponentType } from 'mahoji';
+import { InteractionResponseDataWithBufferAttachments } from 'mahoji/dist/lib/structures/ICommand';
 
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { Emoji, lastTripCache, minionBuyButton } from '../../../lib/constants';
+import { makeComponents } from '../../../lib/util';
 import { minionStatus } from '../../../lib/util/minionStatus';
 import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
 import { calculateBirdhouseDetails } from './birdhousesCommand';
 import { isUsersDailyReady } from './dailyCommand';
 import { canRunAutoContract } from './farmingContractCommand';
 
-export async function minionStatusCommand(userID: bigint | string): Promise<{
-	content: string;
-	components: { components: APIButtonComponentWithCustomId[]; type: ComponentType.ActionRow }[];
-}> {
+export async function minionStatusCommand(
+	userID: bigint | string
+): Promise<InteractionResponseDataWithBufferAttachments> {
 	const user = await globalClient.fetchUser(userID);
 	const mahojiUser = await mahojiUsersSettingsFetch(userID, { minion_hasBought: true });
 
@@ -100,7 +100,7 @@ export async function minionStatusCommand(userID: bigint | string): Promise<{
 			type: ComponentType.Button,
 			custom_id: 'REPEAT_TRIP',
 			label: 'Repeat Trip',
-			emoji: { id: '🔁' },
+			emoji: { name: '🔁' },
 			style: ButtonStyle.Secondary
 		});
 	}
@@ -123,6 +123,6 @@ export async function minionStatusCommand(userID: bigint | string): Promise<{
 
 	return {
 		content: status,
-		components: chunk(buttons, 5).map(i => ({ components: i, type: ComponentType.ActionRow }))
+		components: makeComponents(buttons)
 	};
 }

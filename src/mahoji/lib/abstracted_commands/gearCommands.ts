@@ -17,6 +17,7 @@ import { Gear } from '../../../lib/structures/Gear';
 import {
 	assert,
 	formatSkillRequirements,
+	getSkillsOfMahojiUser,
 	isValidGearSetup,
 	skillsMeetRequirements,
 	stringMatches,
@@ -27,7 +28,6 @@ import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 import { minionName } from '../../../lib/util/minionUtils';
 import {
-	getSkillsOfMahojiUser,
 	getUserGear,
 	handleMahojiConfirmation,
 	mahojiParseNumber,

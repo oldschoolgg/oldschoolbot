@@ -4,16 +4,12 @@ import { Extendable, ExtendableStore } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { deduplicateClueScrolls } from '../../lib/clues/clueUtils';
 import { projectiles } from '../../lib/constants';
 import { blowpipeDarts, validateBlowpipeData } from '../../lib/minions/functions/blowpipeCommand';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { filterLootReplace } from '../../lib/slayer/slayerUtil';
 import { ItemBank } from '../../lib/types';
-import { bankHasAllItemsFromBank, itemNameFromID, sanitizeBank } from '../../lib/util';
+import { itemNameFromID } from '../../lib/util';
 import { determineRunes } from '../../lib/util/determineRunes';
-import itemID from '../../lib/util/itemID';
-import { mahojiUserSettingsUpdate } from '../../mahoji/mahojiSettings';
 
 export interface GetUserBankOptions {
 	withGP?: boolean;
@@ -25,28 +21,9 @@ export default class extends Extendable {
 	}
 
 	public bank(this: User, { withGP = false }: GetUserBankOptions = {}) {
-		const bank = new Bank(this.settings.get(UserSettings.Bank));
+		const bank = new Bank(this.settings.get('bank') as any as ItemBank);
 		if (withGP) bank.add('Coins', this.settings.get(UserSettings.GP));
 		return bank;
-	}
-
-	public allItemsOwned(this: User): Bank {
-		let totalBank = this.bank({ withGP: true });
-
-		for (const setup of Object.values(this.rawGear())) {
-			for (const equipped of Object.values(setup)) {
-				if (equipped?.item) {
-					totalBank.add(equipped.item, equipped.quantity);
-				}
-			}
-		}
-
-		const equippedPet = this.settings.get(UserSettings.Minion.EquippedPet);
-		if (equippedPet) {
-			totalBank.add(equippedPet);
-		}
-
-		return totalBank;
 	}
 
 	public async addItemsToBank(
@@ -57,75 +34,20 @@ export default class extends Extendable {
 			filterLoot = true,
 			dontAddToTempCL = false
 		}: { items: ItemBank | Bank; collectionLog?: boolean; filterLoot?: boolean; dontAddToTempCL?: boolean }
-	): Promise<{ previousCL: Bank; itemsAdded: Bank }> {
-		return this.queueFn(async user => {
-			await this.settings.sync(true);
-			let loot = deduplicateClueScrolls({
-				loot: items instanceof Bank ? items.clone() : new Bank(items),
-				currentBank: user.bank()
-			});
-
-			const previousCL = user.cl();
-
-			const { bankLoot, clLoot } = filterLoot
-				? filterLootReplace(user.allItemsOwned(), loot)
-				: { bankLoot: loot, clLoot: loot };
-			loot = bankLoot;
-			if (collectionLog) {
-				await user.addItemsToCollectionLog({ items: clLoot, dontAddToTempCL });
-			}
-
-			// Get the amount of coins in the loot and remove the coins from the items to be added to the user bank
-			const coinsInLoot = loot.amount('Coins');
-			if (coinsInLoot > 0) {
-				await mahojiUserSettingsUpdate(user.id, {
-					GP: {
-						increment: coinsInLoot
-					}
-				});
-				loot.remove('Coins', loot.amount('Coins'));
-			}
-
-			const newBank = user.bank().add(loot);
-			sanitizeBank(newBank);
-			await this.settings.update(UserSettings.Bank, newBank.bank);
-
-			// Re-add the coins to the loot
-			if (coinsInLoot > 0) loot.add('Coins', coinsInLoot);
-
-			return {
-				previousCL,
-				itemsAdded: loot
-			};
+	) {
+		return transactItems({
+			collectionLog,
+			itemsToAdd: new Bank(items),
+			filterLoot,
+			dontAddToTempCL,
+			userID: this.id
 		});
 	}
 
 	public async removeItemsFromBank(this: User, _itemBank: Readonly<ItemBank>) {
-		return this.queueFn(async user => {
-			const itemBank = new Bank(_itemBank instanceof Bank ? { ..._itemBank.bank } : { ..._itemBank });
-
-			await user.settings.sync(true);
-
-			const owned = this.bank({ withGP: true });
-			if (!owned.has(itemBank)) {
-				throw new Error(
-					`Tried to remove ${itemBank} from ${user.username} but failed because they don't own all these items.`
-				);
-			}
-
-			if (itemBank.has('Coins')) {
-				await mahojiUserSettingsUpdate(this.id, {
-					GP: {
-						decrement: itemBank.amount('Coins')
-					}
-				});
-				itemBank.remove('Coins', itemBank.amount('Coins'));
-			}
-
-			if (itemBank.length === 0) return;
-			const newBank = this.bank().remove(itemBank);
-			sanitizeBank(newBank);
-			return user.settings.update(UserSettings.Bank, newBank.bank);
+		return transactItems({
+			itemsToRemove: new Bank(_itemBank),
+			userID: this.id
 		});
 	}
 
@@ -243,13 +165,8 @@ export default class extends Extendable {
 	}
 
 	public owns(this: User, bank: ItemBank | Bank | string | number) {
-		if (typeof bank === 'string' || typeof bank === 'number') {
-			return Boolean(this.settings.get(UserSettings.Bank)[typeof bank === 'number' ? bank : itemID(bank)]);
-		}
-		const itemBank = bank instanceof Bank ? { ...bank.bank } : bank;
-		return bankHasAllItemsFromBank(
-			{ ...this.settings.get(UserSettings.Bank), 995: this.settings.get(UserSettings.GP) },
-			itemBank
-		);
+		const userBank = this.bank();
+		userBank.add('Coins', this.settings.get(UserSettings.GP));
+		return userBank.has(bank);
 	}
 }
