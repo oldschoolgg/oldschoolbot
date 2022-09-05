@@ -1,3 +1,4 @@
+import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Favours } from '../minions/data/kourendFavour';
@@ -33,6 +34,7 @@ export interface Createable {
 	requiredSlayerUnlocks?: SlayerTaskUnlocksEnum[];
 	requiredFavour?: Favours;
 	maxCanOwn?: number;
+	onCreate?: (qty: number, user: KlasaUser) => Promise<{ result: boolean; message: string }>;
 }
 
 const goldenProspectorCreatables: Createable[] = [
