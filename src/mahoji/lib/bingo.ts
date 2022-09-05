@@ -7,7 +7,6 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import { production } from '../../config';
-import { usernameCache } from '../../lib/constants';
 import { championScrolls, skillingPetsCL } from '../../lib/data/CollectionsExport';
 import { prisma } from '../../lib/settings/prisma';
 import { logError } from '../../lib/util/logError';
@@ -69,7 +68,8 @@ export const bingoTiles: BingoTile[] = [
 			'Olmlet',
 			"Lil' zik",
 			'Sraracha',
-			'Nexling'
+			'Nexling',
+			'Little nightmare'
 		])
 	},
 	{
@@ -206,7 +206,7 @@ export const bingoTiles: BingoTile[] = [
 	},
 	{
 		id: 24,
-		name: 'Receive any orb or armor piece from the Nightmare',
+		name: 'Receive any orb or armour piece from the Nightmare',
 		oneOf: resolveItems([
 			"Inquisitor's great helm",
 			"Inquisitor's hauberk",
@@ -220,7 +220,7 @@ export const bingoTiles: BingoTile[] = [
 	{
 		id: 25,
 		name: 'Receive any Boss jar',
-		allOf: resolveItems([
+		oneOf: resolveItems([
 			'Jar of chemicals',
 			'Jar of darkness',
 			'Jar of decay',
@@ -257,7 +257,7 @@ export const bingoTiles: BingoTile[] = [
 	},
 	{
 		id: 30,
-		name: 'Receive any armor drop from Kree Arra',
+		name: "Receive any armour drop from Kree'arra",
 		oneOf: resolveItems(['Armadyl helmet', 'Armadyl chestplate', 'Armadyl chainskirt'])
 	},
 	// Row 6
@@ -348,9 +348,9 @@ export async function onFinishTile(
 	if (!user.bingo_tickets_bought) return;
 	const tile = bingoTiles.find(i => i.id === finishedTile)!;
 	sendToChannelID(BINGO_NOTIFICATION_CHANNEL_ID, {
-		content: `${usernameCache.get(user.id) ?? userMention(user.id)} just finished the '${
-			tile.name
-		}' tile! This is their ${after.tilesCompletedCount}/${bingoTiles.length} finished tile.`
+		content: `${userMention(user.id)} just finished the '${tile.name}' tile! This is their ${
+			after.tilesCompletedCount
+		}/${bingoTiles.length} finished tile.`
 	});
 }
 
@@ -421,39 +421,6 @@ export async function calculateBingoTeamDetails(oneTeamMember: string | string[]
 		progress: determineBingoProgress(totalCL),
 		team
 	};
-}
-export async function bingoTeamLeaderboard() {
-	const bingoTeams = await fetchAndParseAllBingoTeams();
-	const allUsers = (
-		await prisma.user.findMany({
-			where: {
-				id: {
-					in: bingoTeams.map(i => i.users).flat(3)
-				}
-			},
-			select: {
-				id: true,
-				temp_cl: true
-			}
-		})
-	).map(i => ({ cl: i.temp_cl as ItemBank, id: i.id }));
-
-	const result: {
-		progress: ReturnType<typeof determineBingoProgress>;
-		team: ParsedBingoTeam;
-	}[] = [];
-	for (const team of bingoTeams) {
-		const data = allUsers.filter(i => team.users.includes(i.id))!;
-		let totalCL = new Bank();
-		for (const t of data) totalCL.add(t.cl);
-		const progress = determineBingoProgress(totalCL);
-		result.push({
-			progress,
-			team
-		});
-	}
-
-	return result.sort((a, b) => b.progress.tilesCompletedCount - a.progress.tilesCompletedCount);
 }
 
 export const buyBingoTicketButton: APIButtonComponentWithCustomId = {

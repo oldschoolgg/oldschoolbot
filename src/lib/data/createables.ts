@@ -2024,6 +2024,15 @@ const Createables: Createable[] = [
 			[itemID('Death tiara')]: 1
 		}
 	},
+	{
+		name: 'Daeyalt essence',
+		inputItems: new Bank({
+			'Daeyalt shard': 1
+		}),
+		outputItems: new Bank({
+			'Daeyalt essence': 1
+		})
+	},
 	...Reverteables,
 	...crystalTools,
 	...ornamentKits,

@@ -84,13 +84,15 @@ export default class extends Task {
 			}
 		}
 
+		let daeyaltQty = 0;
+
 		if (!powermine) {
 			// Gem rocks roll off the GemRockTable
-			if (ore.id === 1625) {
+			if (ore.name === 'Gem rock') {
 				for (let i = 0; i < quantity; i++) {
 					loot.add(Mining.GemRockTable.roll());
 				}
-			} else if (ore.id === 21_622) {
+			} else if (ore.name === 'Volcanic ash') {
 				// Volcanic ash
 				const userLevel = user.skillLevel(SkillsEnum.Mining);
 				const tiers = [
@@ -107,16 +109,21 @@ export default class extends Task {
 						break;
 					}
 				}
-			} else if (ore.id === 6973) {
+			} else if (ore.name === 'Sandstone') {
 				// Sandstone roll off the SandstoneRockTable
 				for (let i = 0; i < quantity; i++) {
 					loot.add(Mining.SandstoneRockTable.roll());
 				}
-			} else if (ore.id === 6981) {
+			} else if (ore.name === 'Granite') {
 				// Granite roll off the GraniteRockTable
 				for (let i = 0; i < quantity; i++) {
 					loot.add(Mining.GraniteRockTable.roll());
 				}
+			} else if (ore.name === 'Daeyalt essence rock') {
+				for (let i = 0; i < quantity; i++) {
+					daeyaltQty += rand(2, 3);
+				}
+				loot.add(ore.id, daeyaltQty);
 			} else {
 				loot.add(ore.id, quantity);
 			}
