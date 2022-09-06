@@ -204,6 +204,7 @@ process.removeAllListeners('SIGINT');
 
 process.on('SIGTERM', terminateCb);
 process.on('SIGINT', terminateCb);
+process.on('uncaughtException', logError);
 
 main();
 
