@@ -110,7 +110,7 @@ export async function handleMahojiConfirmation(interaction: SlashCommandInteract
 				return cancel('cancel');
 			}
 			if (i.customID === 'CONFIRM') {
-				respondToButton({ id: i.id, token: i.token });
+				respondToButton(i.id, i.token);
 				return confirm(id);
 			}
 		});
