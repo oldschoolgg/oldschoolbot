@@ -1,9 +1,9 @@
+import { User } from '@prisma/client';
 import { notEmpty } from 'e';
-import { inspect } from 'util';
 
 import { BitField, PerkTier, Roles } from '../constants';
 import { MUserClass } from '../MUser';
-import { assert, getSupportGuild } from '../util';
+import { getSupportGuild } from '../util';
 import { logError } from './logError';
 
 const tier3ElligibleBits = [
@@ -16,17 +16,13 @@ const tier3ElligibleBits = [
 const perkTierCache = new Map<string, number>();
 
 export function syncPerkTierOfUser(user: MUser) {
-	perkTierCache.set(user.id, getUsersPerkTier(user.bitfield, true));
+	perkTierCache.set(user.id, getUsersPerkTier([...user.bitfield], true));
 }
 
 export default function getUsersPerkTier(
-	userOrBitfield: MUser | readonly BitField[],
+	userOrBitfield: MUser | User | BitField[],
 	noCheckOtherAccounts?: boolean
 ): PerkTier | 0 {
-	assert(
-		userOrBitfield instanceof MUserClass || Array.isArray(userOrBitfield),
-		`userOrBitfield should be user/bitfield, instead received ${typeof userOrBitfield} ${inspect(userOrBitfield)}`
-	);
 	if (noCheckOtherAccounts !== true && userOrBitfield instanceof MUserClass) {
 		let main = userOrBitfield.user.main_account;
 		const allAccounts: string[] = [...userOrBitfield.user.ironman_alts, userOrBitfield.id];
@@ -40,7 +36,7 @@ export default function getUsersPerkTier(
 		return highestAccountTier;
 	}
 
-	const bitfield = userOrBitfield instanceof MUserClass ? userOrBitfield.bitfield : userOrBitfield;
+	const bitfield = Array.isArray(userOrBitfield) ? userOrBitfield : userOrBitfield.bitfield;
 	if (userOrBitfield instanceof MUserClass && userOrBitfield.user.premium_balance_tier !== null) {
 		const date = userOrBitfield.user.premium_balance_expiry_date;
 		if (date && Date.now() < date) {

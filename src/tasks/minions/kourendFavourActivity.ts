@@ -12,7 +12,7 @@ export const kourendTask: MinionTask = {
 		const favourPoints = favour.pointsGain * quantity;
 		let shayzienDone = false;
 		let totalPoints: number | undefined = undefined;
-		const currentUserFavour = user.user.kourend_favour as any as UserKourendFavour;
+		const currentUserFavour = user.kourendFavour;
 		for (const [key, value] of Object.entries(currentUserFavour) as [keyof UserKourendFavour, number][]) {
 			if (key.toLowerCase() === favour.name.toLowerCase()) {
 				totalPoints = Math.min(Number(value) + favourPoints, 100);

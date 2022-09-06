@@ -33,7 +33,6 @@ export function verifyPatreonSecret(body: string, signature?: string | string[])
 	const hmac = createHmac('md5', patreonConfig!.webhookSecret);
 	hmac.update(body);
 	const calculated = hmac.digest('hex');
-	console.log(signature, calculated, signature === calculated);
 	return signature === calculated;
 }
 

@@ -28,6 +28,7 @@ import { onMessage } from './lib/events';
 import { makeServer } from './lib/http';
 import { modalInteractionHook } from './lib/modals';
 import { OldSchoolBotClient } from './lib/structures/OldSchoolBotClient';
+import { initTickers } from './lib/tickers';
 import { interactionHook } from './lib/util/globalInteractions';
 import { logError } from './lib/util/logError';
 import { sendToChannelID } from './lib/util/webhook';
@@ -179,6 +180,9 @@ client.on('guildCreate', guild => {
 		guild.leave();
 	}
 });
+
+initTickers();
+
 async function main() {
 	client.fastifyServer = makeServer();
 	await mahojiClient.start();
@@ -189,6 +193,7 @@ async function main() {
 	console.log('Init...');
 	await onStartup();
 }
+
 const terminateCb = async () => {
 	await globalClient.destroy();
 	process.exit(0);

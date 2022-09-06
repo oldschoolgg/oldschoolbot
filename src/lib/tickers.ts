@@ -98,12 +98,16 @@ const tickers: { name: string; interval: number; timer: NodeJS.Timeout | null; c
 		cb: async () => {
 			let storedCount = queryCountStore.value;
 			queryCountStore.value = 0;
+			const data = {
+				timestamp: Math.floor(Date.now() / 1000),
+				...collectMetrics(),
+				qps: storedCount / 60
+			};
+			if (isNaN(data.eventLoopDelayMean)) {
+				data.eventLoopDelayMean = 0;
+			}
 			await prisma.metric.create({
-				data: {
-					timestamp: Math.floor(Date.now() / 1000),
-					...collectMetrics(),
-					qps: storedCount / 60
-				}
+				data
 			});
 		}
 	},
@@ -207,6 +211,7 @@ const tickers: { name: string; interval: number; timer: NodeJS.Timeout | null; c
 		interval: Time.Minute * 2,
 		timer: null,
 		cb: async () => {
+			if (!production) return;
 			let basePlantTime = 1_626_556_507_451;
 			const now = Date.now();
 			const users = await prisma.user.findMany({
@@ -358,16 +363,18 @@ const tickers: { name: string; interval: number; timer: NodeJS.Timeout | null; c
 	}
 ];
 
-for (const ticker of tickers) {
-	if (ticker.timer !== null) clearTimeout(ticker.timer);
-	const fn = async () => {
-		try {
-			await ticker.cb();
-		} catch (err) {
-			logError(err);
-		} finally {
-			ticker.timer = setTimeout(fn, ticker.interval);
-		}
-	};
-	fn();
+export function initTickers() {
+	for (const ticker of tickers) {
+		if (ticker.timer !== null) clearTimeout(ticker.timer);
+		const fn = async () => {
+			try {
+				await ticker.cb();
+			} catch (err) {
+				logError(err);
+			} finally {
+				ticker.timer = setTimeout(fn, ticker.interval);
+			}
+		};
+		fn();
+	}
 }

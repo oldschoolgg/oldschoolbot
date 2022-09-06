@@ -1,7 +1,6 @@
 import { Time } from 'e';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { UserKourendFavour } from '../../../lib/minions/data/kourendFavour';
 import { Skills } from '../../../lib/types';
 import { PuroPuroActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, hasSkillReqs, itemID, stringMatches } from '../../../lib/util';
@@ -136,8 +135,8 @@ export async function puroPuroStartCommand(
 			return `To use Dark Lure, you need: ${lureReason}.`;
 		}
 
-		const currentUserFavour = user.user.kourend_favour;
-		for (const [key, value] of Object.entries(currentUserFavour as any as UserKourendFavour)) {
+		const currentUserFavour = user.kourendFavour;
+		for (const [key, value] of Object.entries(currentUserFavour)) {
 			if (value < 100) {
 				return `You don't have the required amount of Favour to cast Dark Lure.\n\nRequired: 100% ${key} Favour.`;
 			}

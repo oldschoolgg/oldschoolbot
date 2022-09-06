@@ -60,6 +60,6 @@ export function makeServer() {
 		throw server.httpErrors.badRequest('Bad content type.');
 	});
 
-	server.listen(HTTP_PORT).then(() => console.log(server.printRoutes()));
+	server.listen(HTTP_PORT);
 	return server;
 }

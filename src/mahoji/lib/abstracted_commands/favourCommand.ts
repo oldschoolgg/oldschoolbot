@@ -1,11 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import {
-	baseUserKourendFavour,
-	findFavour,
-	KourendFavour,
-	KourendFavours
-} from '../../../lib/minions/data/kourendFavour';
+import { findFavour, KourendFavours } from '../../../lib/minions/data/kourendFavour';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { KourendFavourActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
@@ -19,7 +14,7 @@ export async function favourCommand(
 	channelID: bigint,
 	noStams: boolean | undefined
 ) {
-	const currentUserFavour = (user.user.kourend_favour ?? baseUserKourendFavour) as any as KourendFavour;
+	const currentUserFavour = user.kourendFavour;
 	if (!favourName || minionIsBusy(user.id)) {
 		let allFavourString: string = 'Your current Kourend Favour:';
 		for (const [key, value] of Object.entries(currentUserFavour)) {

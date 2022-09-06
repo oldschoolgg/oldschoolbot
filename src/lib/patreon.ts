@@ -81,7 +81,7 @@ class PatreonTask {
 
 	async validatePerks(userID: string, shouldHave: PerkTier): Promise<string | null> {
 		const user = await mUserFetch(userID);
-		let perkTier: PerkTier | 0 | null = getUsersPerkTier(user.bitfield);
+		let perkTier: PerkTier | 0 | null = getUsersPerkTier([...user.bitfield]);
 		if (perkTier === 0 || perkTier === PerkTier.One) perkTier = null;
 
 		if (!perkTier) {
@@ -263,7 +263,7 @@ class PatreonTask {
 				Date.now() - new Date(patron.lastChargeDate).getTime() > Time.Day * 33 &&
 				patron.patronStatus !== 'active_patron'
 			) {
-				const perkTier = getUsersPerkTier(userBitfield);
+				const perkTier = getUsersPerkTier([...userBitfield]);
 				if (perkTier < PerkTier.Two) continue;
 				result.push(`${username} hasn't paid in over 1 month, so removing perks.`);
 				messages.push(`Removing T${perkTier} patron perks from ${username} PatreonID[${patron.patreonID}]`);
