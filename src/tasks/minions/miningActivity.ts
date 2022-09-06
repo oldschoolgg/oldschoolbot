@@ -8,7 +8,7 @@ import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueTo
 import Mining from '../../lib/skilling/skills/mining';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
-import { percentChance } from '../../lib/util';
+import { percentChance, rand } from '../../lib/util';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
@@ -82,6 +82,8 @@ export default class extends Task {
 			}
 		}
 
+		let daeyaltQty = 0;
+
 		if (!powermine) {
 			// Gem rocks roll off the GemRockTable
 			if (ore.name === 'Gem rock') {
@@ -115,6 +117,11 @@ export default class extends Task {
 				for (let i = 0; i < quantity; i++) {
 					loot.add(Mining.GraniteRockTable.roll());
 				}
+			} else if (ore.name === 'Daeyalt essence rock') {
+				for (let i = 0; i < quantity; i++) {
+					daeyaltQty += rand(2, 3);
+				}
+				loot.add(ore.id, daeyaltQty);
 			} else if (ore.name === 'Motherlode mine') {
 				let nugget = 0;
 				let runite = 0;

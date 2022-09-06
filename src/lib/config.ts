@@ -1,7 +1,7 @@
 import { Intents } from 'discord.js';
 import { KlasaClient, KlasaClientOptions } from 'klasa';
 
-import { customClientOptions, OWNER_IDS, production, providerConfig } from '../config';
+import { OWNER_IDS, production, providerConfig } from '../config';
 
 export const clientOptions: KlasaClientOptions = {
 	/* Discord.js Options */
@@ -30,7 +30,6 @@ export const clientOptions: KlasaClientOptions = {
 	},
 	partials: ['USER', 'CHANNEL'],
 	production,
-	...customClientOptions,
 	allowedMentions: {
 		parse: ['roles', 'users']
 	}
