@@ -315,13 +315,19 @@ export async function interactionHook(data: APIInteraction) {
 			});
 		}
 
-		case 'DO_SHOOTING_STAR':
+		case 'DO_SHOOTING_STAR': {
 			const star = starCache.get(user.id);
 			starCache.delete(user.id);
 			if (star && star.expiry > Date.now()) {
-				return shootingStarsCommand(data, BigInt(data.channel_id), user, star);
+				const duration = await shootingStarsCommand(BigInt(data.channel_id), user, star);
+				return buttonReply(
+					`${minionName(user)} is now mining a size ${
+						star.size
+					} Shooting Star! The trip will take ${formatDuration(duration)}.`
+				);
 			}
-			return respondToButton({ id: data.id, token: data.token, text: 'That Shooting Star has expired!' });
+			return buttonReply('That Shooting Star has expired!');
+		}
 
 		default: {
 		}

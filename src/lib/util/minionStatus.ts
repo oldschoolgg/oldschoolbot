@@ -555,6 +555,11 @@ export function minionStatus(user: KlasaUser) {
 				durationRemaining
 			)}.`;
 		}
+		case 'ShootingStars': {
+			return `${name} is currently mining a Crashed Star. The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
 		case 'Easter':
 		case 'BlastFurnace': {
 			throw new Error('Removed');

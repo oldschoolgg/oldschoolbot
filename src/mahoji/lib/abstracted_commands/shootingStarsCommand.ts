@@ -2,17 +2,13 @@ import { activity_type_enum, User } from '@prisma/client';
 import { MessageActionRowComponentResolvable, MessageButton } from 'discord.js';
 import { randInt, reduceNumByPercent, roll, sumArr, Time } from 'e';
 import { KlasaUser } from 'klasa';
-import { APIInteraction } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { minionName } from '../../../lib/util/minionUtils';
-import { respondToButton } from '../../../lib/util/respondToButton';
 
 interface Star {
 	size: number;
@@ -111,7 +107,7 @@ export interface ShootingStarsData extends ActivityTaskOptions {
 	size: number;
 }
 
-export async function shootingStarsCommand(data: APIInteraction, channelID: bigint, user: User, star: Star) {
+export async function shootingStarsCommand(channelID: bigint, user: User, star: Star) {
 	const duration = sumArr(
 		starSizes.filter(i => i.size <= star.size).map(i => i.minTotalDuration + Time.Second * randInt(10, 60))
 	);
@@ -124,14 +120,7 @@ export async function shootingStarsCommand(data: APIInteraction, channelID: bigi
 		size: star.size
 	});
 
-	return respondToButton({
-		id: data.id,
-		token: data.token,
-		text: `${minionName(user)} is now mining a size ${star.size} Shooting Star! The trip will take ${formatDuration(
-			duration
-		)}.`,
-		ephemeral: false
-	});
+	return duration;
 }
 
 export async function shootingStarsActivity(data: ShootingStarsData) {
@@ -154,7 +143,7 @@ export async function shootingStarsActivity(data: ShootingStarsData) {
 		duration: data.duration
 	});
 
-	let str = `${user}, your minion finished mining a size ${star.size} Shooting Star, there was ${
+	let str = `${user}, ${user.minionName} finished mining a size ${star.size} Shooting Star, there was ${
 		usersWith - 1 || 'no'
 	} other players mining with you. You received ${loot}. ${xpStr}`;
 
