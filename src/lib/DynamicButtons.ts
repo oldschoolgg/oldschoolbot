@@ -13,30 +13,18 @@ import { KlasaMessage } from 'klasa';
 import murmurhash from 'murmurhash';
 
 import { BLACKLISTED_USERS } from './blacklists';
-import { GlobalInteractionAction } from './util/globalInteractions';
 
 type DynamicButtonFn = (opts: { message: KlasaMessage; interaction: MessageComponentInteraction }) => unknown;
 
-interface BaseButton {
-	name: string;
-	emoji?: string;
-	cantBeBusy?: boolean;
-	style?: MessageButtonStyle;
-}
-
-type DynamicButton = BaseButton &
-	(
-		| {
-				fn: DynamicButtonFn;
-				id: string;
-		  }
-		| {
-				id: GlobalInteractionAction;
-		  }
-	);
-
 export class DynamicButtons {
-	buttons: DynamicButton[] = [];
+	buttons: {
+		name: string;
+		id: string;
+		fn: DynamicButtonFn;
+		emoji: string | undefined;
+		cantBeBusy: boolean;
+		style?: MessageButtonStyle;
+	}[] = [];
 
 	channel: TextChannel;
 	timer: number | undefined;
@@ -123,24 +111,27 @@ export class DynamicButtons {
 		return collectedInteraction;
 	}
 
-	add(opts: BaseButton & ({ id: GlobalInteractionAction } | { fn: DynamicButtonFn })) {
-		if ('fn' in opts) {
-			this.buttons.push({
-				name: opts.name,
-				id: murmurhash(opts.name).toString(),
-				fn: opts.fn,
-				emoji: opts.emoji,
-				cantBeBusy: opts.cantBeBusy ?? false,
-				style: opts.style
-			});
-		} else {
-			this.buttons.push({
-				name: opts.name,
-				id: opts.id,
-				emoji: opts.emoji,
-				cantBeBusy: opts.cantBeBusy ?? false,
-				style: opts.style
-			});
-		}
+	add({
+		name,
+		fn,
+		emoji,
+		cantBeBusy,
+		style
+	}: {
+		name: string;
+		fn: DynamicButtonFn;
+		emoji?: string;
+		cantBeBusy?: boolean;
+		style?: MessageButtonStyle;
+	}) {
+		const id = murmurhash(name).toString();
+		this.buttons.push({
+			name,
+			id,
+			fn,
+			emoji,
+			cantBeBusy: cantBeBusy ?? false,
+			style
+		});
 	}
 }
