@@ -199,6 +199,16 @@ const ores: Ore[] = [
 		clueScrollChance: 148_320
 	},
 	{
+		level: 60,
+		xp: 5,
+		id: 24_706,
+		name: 'Daeyalt essence rock',
+		respawnTime: 3,
+		bankingTime: 0,
+		slope: 0,
+		intercept: 100
+	},
+	{
 		level: 70,
 		xp: 95,
 		id: 449,

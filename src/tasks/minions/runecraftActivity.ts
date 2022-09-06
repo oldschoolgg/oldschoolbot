@@ -11,7 +11,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: RunecraftActivityTaskOptions) {
-		const { runeID, essenceQuantity, userID, channelID, imbueCasts, duration, useStaminas } = data;
+		const { runeID, essenceQuantity, userID, channelID, imbueCasts, duration, useStaminas, daeyaltEssence } = data;
 		const user = await this.client.fetchUser(userID);
 
 		const rune = Runecraft.Runes.find(_rune => _rune.id === runeID)!;
@@ -22,7 +22,13 @@ export default class extends Task {
 			runeQuantity = Math.max(1, Math.floor(runeQuantity / 3));
 		}
 
-		let xpReceived = essenceQuantity * rune.xp;
+		let runeXP = rune.xp;
+
+		if (daeyaltEssence) {
+			runeXP = rune.xp * 1.5;
+		}
+
+		let xpReceived = essenceQuantity * runeXP;
 
 		const hasMaster = user.hasItemEquippedAnywhere(
 			[
@@ -77,6 +83,10 @@ export default class extends Task {
 			);
 		}
 
+		if (daeyaltEssence) {
+			str += '\nYou are gaining 50% more Runecrafting XP due to using Daeyalt Essence.';
+		}
+
 		str += `\n\nYou received: ${loot}.`;
 
 		await transactItems({
@@ -89,7 +99,11 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			['runecraft', { quantity: essenceQuantity, rune: rune.name, usestams: useStaminas }, true],
+			[
+				'runecraft',
+				{ quantity: essenceQuantity, rune: rune.name, usestams: useStaminas, daeyalt_essence: daeyaltEssence },
+				true
+			],
 			undefined,
 			data,
 			loot

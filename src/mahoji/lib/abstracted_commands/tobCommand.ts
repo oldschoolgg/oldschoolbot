@@ -64,6 +64,9 @@ export async function tobStartCommand(
 	maxSizeInput?: number,
 	solo?: boolean
 ) {
+	if (user.minionIsBusy) {
+		return `${user.username} minion is busy`;
+	}
 	const initialCheck = await checkTOBUser(user, isHardMode);
 	if (initialCheck[0]) {
 		return initialCheck[1];
@@ -89,7 +92,13 @@ export async function tobStartCommand(
 		message: `${user.username} is hosting a ${
 			isHardMode ? '**Hard mode** ' : ''
 		}Theatre of Blood mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
-		customDenier: user => checkTOBUser(user, isHardMode)
+		customDenier: async user => {
+			if (user.minionIsBusy) {
+				return [true, `${user.username} minion is busy`];
+			}
+
+			return checkTOBUser(user, isHardMode);
+		}
 	};
 
 	let users = [];

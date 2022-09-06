@@ -115,6 +115,8 @@ export default class extends Task {
 			await mahojiUsersSettingsFetch(user.id, { disabled_inventions: true })
 		).disabled_inventions.includes(InventionID.SuperiorInfernoAdze);
 		if (!powermine && !isDestroyed) {
+			let daeyaltQty = 0;
+
 			// Gem rocks roll off the GemRockTable
 			if (ore.name === 'Gem rock') {
 				for (let i = 0; i < quantity; i++) {
@@ -147,6 +149,11 @@ export default class extends Task {
 				for (let i = 0; i < quantity; i++) {
 					loot.add(Mining.GraniteRockTable.roll());
 				}
+			} else if (ore.name === 'Daeyalt essence rock') {
+				for (let i = 0; i < quantity; i++) {
+					daeyaltQty += rand(2, 3);
+				}
+				loot.add(ore.id, daeyaltQty);
 			} else {
 				loot.add(ore.id, quantity);
 			}

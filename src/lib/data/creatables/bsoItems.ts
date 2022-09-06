@@ -1193,5 +1193,14 @@ export const BsoCreateables: Createable[] = [
 	...dragonBoneCreatables,
 	...nexCreatables,
 	...componentRevertables,
-	...divineWaterCreatbles
+	...divineWaterCreatbles,
+	{
+		name: 'Crystal dust',
+		inputItems: new Bank({
+			'Crystal shard': 1
+		}),
+		outputItems: {
+			[itemID('Crystal dust')]: 10
+		}
+	}
 ];
