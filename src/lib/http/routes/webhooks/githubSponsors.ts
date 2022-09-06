@@ -1,5 +1,5 @@
-import { patreonTask } from '../../../../tasks/patreon';
 import { Channel } from '../../../constants';
+import { patreonTask } from '../../../patreon';
 import { sendToChannelID } from '../../../util/webhook';
 import { GithubSponsorsWebhookData } from '../../githubApiTypes';
 import { FastifyServer } from '../../types';
