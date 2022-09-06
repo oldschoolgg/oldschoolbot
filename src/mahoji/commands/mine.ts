@@ -2,7 +2,7 @@ import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
-import { checkUserCanUseDegradeableItem } from '../../lib/degradeableItems';
+import { checkUserCanUseDegradeableItem, degradeItem } from '../../lib/degradeableItems';
 import { determineMiningTime } from '../../lib/skilling/functions/determineMiningTime';
 import Mining from '../../lib/skilling/skills/mining';
 import { Skills } from '../../lib/types';
@@ -14,7 +14,7 @@ import getOSItem from '../../lib/util/getOSItem';
 import itemID from '../../lib/util/itemID';
 import { hasItemsEquippedOrInBank, minionName, userHasItemsEquippedAnywhere } from '../../lib/util/minionUtils';
 import { OSBMahojiCommand } from '../lib/util';
-import { getUserGear, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const pickaxes = [
 	{
@@ -364,22 +364,28 @@ export const mineCommand: OSBMahojiCommand = {
 		const duration = timeToMine;
 
 		const hasCelestRing = userHasItemsEquippedAnywhere(user, ['Celestial ring']);
-		const whichCelestRing = getUserGear(user).skilling.ring;
+
+		const chargesToDegrade = newQuantity;
 
 		const hasRingBoost =
 			hasCelestRing &&
 			checkUserCanUseDegradeableItem({
 				item: getOSItem('Celestial ring'),
-				chargesToDegrade:
-					whichCelestRing && getOSItem(whichCelestRing.item) === getOSItem('Celestial signet')
-						? Math.round(newQuantity * 0.9)
-						: newQuantity,
+				chargesToDegrade,
 				user: klasaUser
 			}).hasEnough;
 
 		if (hasRingBoost) {
-			newQuantity *= 1.1;
-			boosts.push('**10%** chance to mine an extra ore using Celestial ring');
+			const klasaUser = await globalClient.fetchUser(userID);
+			await degradeItem({
+				item: getOSItem('Celestial ring'),
+				chargesToDegrade,
+				user: klasaUser
+			});
+			newQuantity = Math.round(newQuantity * 1.1);
+			boosts.push(
+				`**10%** chance to mine an extra ore using Celestial ring, consuming ${chargesToDegrade} Celestial charges`
+			);
 		}
 
 		const fakeDurationMin = quantity ? randomVariation(reduceNumByPercent(duration, 25), 20) : duration;
