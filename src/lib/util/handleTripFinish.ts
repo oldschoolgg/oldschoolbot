@@ -6,9 +6,9 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
+import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
 import { updateGPTrackSetting, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { ClueTiers } from '../clues/clueTiers';
-import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
 import { COINS_ID, Emoji, lastTripCache, LastTripRunArgs, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
