@@ -116,6 +116,17 @@ const ores: Ore[] = [
 	},
 	{
 		level: 30,
+		xp: 60,
+		id: 12_011,
+		name: 'Motherlode mine',
+		respawnTime: 30,
+		bankingTime: 15,
+		slope: 0.181,
+		intercept: 23.48,
+		petChance: 247_200
+	},
+	{
+		level: 30,
 		xp: 5,
 		id: 7936,
 		name: 'Pure essence',
@@ -170,7 +181,6 @@ const ores: Ore[] = [
 		slope: 0.28,
 		intercept: 2.15,
 		petChance: 296_640,
-		nuggets: true,
 		clueScrollChance: 296_640
 	},
 	{
@@ -194,7 +204,6 @@ const ores: Ore[] = [
 		slope: 0.2,
 		intercept: 0.59,
 		petChance: 148_320,
-		nuggets: true,
 		clueScrollChance: 148_320
 	},
 	{
@@ -207,7 +216,6 @@ const ores: Ore[] = [
 		slope: 0.11,
 		intercept: -0.53,
 		petChance: 59_328,
-		nuggets: true,
 		clueScrollChance: 59_328
 	},
 	{
@@ -220,7 +228,6 @@ const ores: Ore[] = [
 		slope: 0.08,
 		intercept: -0.85,
 		petChance: 42_377,
-		nuggets: true,
 		clueScrollChance: 42_377
 	},
 	{

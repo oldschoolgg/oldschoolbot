@@ -42,7 +42,6 @@ export interface Ore {
 	slope: number;
 	intercept: number;
 	petChance?: number;
-	nuggets?: boolean;
 	minerals?: number;
 	clueScrollChance?: number;
 }

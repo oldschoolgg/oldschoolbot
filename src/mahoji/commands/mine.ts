@@ -252,7 +252,7 @@ export const mineCommand: OSBMahojiCommand = {
 		const boosts = [];
 
 		let miningLevel = skills.mining;
-		if ((ore.minerals || ore.nuggets) && skills.mining >= 60) {
+		if (ore.minerals && skills.mining >= 60) {
 			boosts.push('+7 invisible Mining lvls at the Mining guild');
 			miningLevel += 7;
 		}
