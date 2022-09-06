@@ -2,7 +2,6 @@ import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
-import { checkUserCanUseDegradeableItem, degradeItem } from '../../lib/degradeableItems';
 import { determineMiningTime } from '../../lib/skilling/functions/determineMiningTime';
 import Mining from '../../lib/skilling/skills/mining';
 import { Skills } from '../../lib/types';
@@ -10,7 +9,6 @@ import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, getSkillsOfMahojiUser, itemNameFromID, randomVariation } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { stringMatches } from '../../lib/util/cleanString';
-import getOSItem from '../../lib/util/getOSItem';
 import itemID from '../../lib/util/itemID';
 import { hasItemsEquippedOrInBank, minionName, userHasItemsEquippedAnywhere } from '../../lib/util/minionUtils';
 import { OSBMahojiCommand } from '../lib/util';
@@ -347,7 +345,6 @@ export const mineCommand: OSBMahojiCommand = {
 			boosts.push('**Powermining**');
 		}
 		// Calculate the time it takes to mine specific quantity or as many as possible
-
 		let [timeToMine, newQuantity] = determineMiningTime({
 			quantity,
 			user,
@@ -362,31 +359,6 @@ export const mineCommand: OSBMahojiCommand = {
 		});
 
 		const duration = timeToMine;
-
-		const hasCelestRing = userHasItemsEquippedAnywhere(user, ['Celestial ring']);
-
-		const chargesToDegrade = newQuantity;
-
-		const hasRingBoost =
-			hasCelestRing &&
-			checkUserCanUseDegradeableItem({
-				item: getOSItem('Celestial ring'),
-				chargesToDegrade,
-				user: klasaUser
-			}).hasEnough;
-
-		if (hasRingBoost) {
-			const klasaUser = await globalClient.fetchUser(userID);
-			await degradeItem({
-				item: getOSItem('Celestial ring'),
-				chargesToDegrade,
-				user: klasaUser
-			});
-			newQuantity = Math.round(newQuantity * 1.1);
-			boosts.push(
-				`**10%** chance to mine an extra ore using Celestial ring, consuming ${chargesToDegrade} Celestial charges`
-			);
-		}
 
 		const fakeDurationMin = quantity ? randomVariation(reduceNumByPercent(duration, 25), 20) : duration;
 		const fakeDurationMax = quantity ? randomVariation(increaseNumByPercent(duration, 25), 20) : duration;
