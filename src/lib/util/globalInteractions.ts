@@ -319,14 +319,18 @@ export async function interactionHook(data: APIInteraction) {
 			const star = starCache.get(user.id);
 			starCache.delete(user.id);
 			if (star && star.expiry > Date.now()) {
-				const duration = await shootingStarsCommand(BigInt(data.channel_id), user, star);
-				return buttonReply(
-					`${minionName(user)} is now mining a size ${
-						star.size
-					} Shooting Star! The trip will take ${formatDuration(duration)}.`
-				);
+				const str = await shootingStarsCommand(BigInt(data.channel_id), user, star);
+				const channel = globalClient.channels.cache.get(options.channelID);
+				if (channelIsSendable(channel)) channel.send(convertMahojiResponseToDJSResponse(str));
+				break;
 			}
-			return buttonReply('That Shooting Star has expired!');
+			return buttonReply(
+				`${
+					star && star.expiry < Date.now()
+						? 'The Crashed Star has expired!'
+						: `That Crashed Star was not discovered by ${minionName(user)}.`
+				}`
+			);
 		}
 
 		default: {

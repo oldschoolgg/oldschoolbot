@@ -2,6 +2,7 @@ import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
+import { checkUserCanUseDegradeableItem } from '../../lib/degradeableItems';
 import { determineMiningTime } from '../../lib/skilling/functions/determineMiningTime';
 import Mining from '../../lib/skilling/skills/mining';
 import { Skills } from '../../lib/types';
@@ -9,10 +10,11 @@ import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, getSkillsOfMahojiUser, itemNameFromID, randomVariation } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { stringMatches } from '../../lib/util/cleanString';
+import getOSItem from '../../lib/util/getOSItem';
 import itemID from '../../lib/util/itemID';
 import { hasItemsEquippedOrInBank, minionName, userHasItemsEquippedAnywhere } from '../../lib/util/minionUtils';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { getUserGear, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const pickaxes = [
 	{
@@ -360,6 +362,25 @@ export const mineCommand: OSBMahojiCommand = {
 		});
 
 		const duration = timeToMine;
+
+		const hasCelestRing = userHasItemsEquippedAnywhere(user, ['Celestial ring']);
+		const whichCelestRing = getUserGear(user).skilling.ring;
+
+		const hasRingBoost =
+			hasCelestRing &&
+			checkUserCanUseDegradeableItem({
+				item: getOSItem('Celestial ring'),
+				chargesToDegrade:
+					whichCelestRing && getOSItem(whichCelestRing.item) === getOSItem('Celestial signet')
+						? Math.round(newQuantity * 0.9)
+						: newQuantity,
+				user: klasaUser
+			}).hasEnough;
+
+		if (hasRingBoost) {
+			newQuantity *= 1.1;
+			boosts.push('**10%** chance to mine an extra ore using Celestial ring');
+		}
 
 		const fakeDurationMin = quantity ? randomVariation(reduceNumByPercent(duration, 25), 20) : duration;
 		const fakeDurationMax = quantity ? randomVariation(increaseNumByPercent(duration, 25), 20) : duration;
