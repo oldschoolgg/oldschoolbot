@@ -103,7 +103,6 @@ Type \`${cachedSettings.prefix ?? '+'}mypets\` to see your pets.`);
 }
 
 export async function onMessage(msg: Message) {
-	console.log(msg);
 	rareRoles(msg);
 	petMessages(msg);
 	if (!msg.content || msg.author.bot || !channelIsSendable(msg.channel)) return;

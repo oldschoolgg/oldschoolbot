@@ -193,6 +193,16 @@ export const createCommand: OSBMahojiCommand = {
 			return `You don't have the required items to ${action} this item. You need: ${inItems}.`;
 		}
 
+		let extraMessage = '';
+		// Handle onCreate() features, and last chance to abort:
+		if (createableItem.onCreate) {
+			const onCreateResult = await createableItem.onCreate(quantity, user);
+			if (!onCreateResult.result) {
+				return onCreateResult.message;
+			}
+			if (onCreateResult.message) extraMessage += `\n\n${onCreateResult.message}`;
+		}
+
 		await user.removeItemsFromBank(inItems);
 		await transactItems({ userID: userID.toString(), itemsToAdd: outItems });
 
@@ -205,8 +215,8 @@ export const createCommand: OSBMahojiCommand = {
 		if (!createableItem.noCl && action === 'create') await user.addItemsToCollectionLog(outItems);
 
 		if (action === 'revert') {
-			return `You reverted ${inItems} into ${outItems}.`;
+			return `You reverted ${inItems} into ${outItems}.${extraMessage}`;
 		}
-		return `You received ${outItems}.`;
+		return `You received ${outItems}.${extraMessage}`;
 	}
 };

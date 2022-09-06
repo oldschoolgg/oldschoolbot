@@ -83,6 +83,8 @@ export const miningTask: MinionTask = {
 			}
 		}
 
+		let daeyaltQty = 0;
+
 		if (!powermine) {
 			// Gem rocks roll off the GemRockTable
 			if (ore.name === 'Gem rock') {
@@ -116,6 +118,11 @@ export const miningTask: MinionTask = {
 				for (let i = 0; i < quantity; i++) {
 					loot.add(Mining.GraniteRockTable.roll());
 				}
+			} else if (ore.name === 'Daeyalt essence rock') {
+				for (let i = 0; i < quantity; i++) {
+					daeyaltQty += rand(2, 3);
+				}
+				loot.add(ore.id, daeyaltQty);
 			} else {
 				loot.add(ore.id, quantity);
 			}

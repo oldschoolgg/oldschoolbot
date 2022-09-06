@@ -1,4 +1,4 @@
-import { activity_type_enum } from '@prisma/client';
+import { Activity, activity_type_enum } from '@prisma/client';
 
 import { agilityTask } from '../tasks/minions/agilityActivity';
 import { alchingTask } from '../tasks/minions/alchingActivity';
@@ -71,6 +71,9 @@ import { tokkulShopTask } from '../tasks/minions/tokkulShopActivity';
 import { vmTask } from '../tasks/minions/volcanicMineActivity';
 import { wealthChargeTask } from '../tasks/minions/wealthChargingActivity';
 import { woodcuttingTask } from '../tasks/minions/woodcuttingActivity';
+import { convertStoredActivityToFlatActivity, prisma } from './settings/prisma';
+import { activitySync, minionActivityCache, minionActivityCacheDelete } from './settings/settings';
+import { logError } from './util/logError';
 
 export const tasks: MinionTask[] = [
 	aerialFishingTask,
@@ -147,6 +150,38 @@ export const tasks: MinionTask[] = [
 	smithingTask
 ];
 
+export async function syncActivityCache() {
+	const tasks = await prisma.activity.findMany({ where: { completed: false } });
+
+	minionActivityCache.clear();
+	for (const task of tasks) {
+		activitySync(task);
+	}
+}
+
+export async function completeActivity(_activity: Activity) {
+	const activity = convertStoredActivityToFlatActivity(_activity);
+	if (_activity.completed) {
+		throw new Error('Tried to complete an already completed task.');
+	}
+
+	const task = tasks.find(i => i.type === activity.type)!;
+	if (!task) {
+		throw new Error('Missing task');
+	}
+
+	globalClient.oneCommandAtATimeCache.add(activity.userID);
+	try {
+		globalClient.emit('debug', `Running ${task.type} for ${activity.userID}`);
+		await task.run(activity);
+	} catch (err) {
+		logError(err);
+	} finally {
+		globalClient.oneCommandAtATimeCache.delete(activity.userID);
+		minionActivityCacheDelete(activity.userID);
+	}
+}
+
 interface IMinionTask {
 	type: activity_type_enum;
 	run: Function;
@@ -155,9 +190,17 @@ declare global {
 	export type MinionTask = IMinionTask;
 }
 
+const ignored: activity_type_enum[] = [
+	activity_type_enum.BirthdayEvent,
+	activity_type_enum.BlastFurnace,
+	activity_type_enum.Easter
+];
 for (const a of Object.values(activity_type_enum)) {
+	if (ignored.includes(a)) {
+		continue;
+	}
 	const t = tasks.find(i => i.type === a);
 	if (!t) {
-		console.log(a);
+		throw new Error(`Missing ${a} task`);
 	}
 }

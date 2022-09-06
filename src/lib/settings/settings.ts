@@ -8,7 +8,6 @@ import { CommandArgs } from '../../mahoji/lib/inhibitors';
 import { postCommand } from '../../mahoji/lib/postCommand';
 import { preCommand } from '../../mahoji/lib/preCommand';
 import { convertComponentDJSComponent, convertMahojiCommandToAbstractCommand } from '../../mahoji/lib/util';
-import { tasks } from '../Task';
 import { ActivityTaskData } from '../types/minions';
 import { channelIsSendable, isGroupActivity } from '../util';
 import { logError } from '../util/logError';
@@ -58,15 +57,6 @@ export function minionActivityCacheDelete(userID: string) {
 export async function cancelTask(userID: string) {
 	await prisma.activity.deleteMany({ where: { user_id: BigInt(userID), completed: false } });
 	minionActivityCache.delete(userID);
-}
-
-export async function syncActivityCache() {
-	const tasks = await prisma.activity.findMany({ where: { completed: false } });
-
-	minionActivityCache.clear();
-	for (const task of tasks) {
-		activitySync(task);
-	}
 }
 
 export async function runMahojiCommand({
@@ -210,28 +200,5 @@ export function activitySync(activity: Activity) {
 		: [activity.user_id];
 	for (const user of users) {
 		minionActivityCache.set(user.toString(), convertStoredActivityToFlatActivity(activity));
-	}
-}
-
-export async function completeActivity(_activity: Activity) {
-	const activity = convertStoredActivityToFlatActivity(_activity);
-	if (_activity.completed) {
-		throw new Error('Tried to complete an already completed task.');
-	}
-
-	const task = tasks.find(i => i.type === activity.type)!;
-	if (!task) {
-		throw new Error('Missing task');
-	}
-
-	globalClient.oneCommandAtATimeCache.add(activity.userID);
-	try {
-		globalClient.emit('debug', `Running ${task.type} for ${activity.userID}`);
-		await task.run(activity);
-	} catch (err) {
-		logError(err);
-	} finally {
-		globalClient.oneCommandAtATimeCache.delete(activity.userID);
-		minionActivityCacheDelete(activity.userID);
 	}
 }
