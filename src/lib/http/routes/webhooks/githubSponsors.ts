@@ -1,10 +1,10 @@
 import { TextChannel } from 'discord.js';
 import { KlasaUser } from 'klasa';
 
-import { patreonTask } from '../../../../tasks/patreon';
 import { boxFrenzy } from '../../../boxFrenzy';
 import { Channel } from '../../../constants';
 import { addPatronLootTime } from '../../../doubleLoot';
+import { patreonTask } from '../../../patreon';
 import { sendToChannelID } from '../../../util/webhook';
 import { GithubSponsorsWebhookData } from '../../githubApiTypes';
 import { FastifyServer } from '../../types';
