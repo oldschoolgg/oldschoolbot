@@ -1,4 +1,4 @@
-import PatreonTask from '../../../../tasks/patreon';
+import { patreonTask } from '../../../../tasks/patreon';
 import { Channel } from '../../../constants';
 import { sendToChannelID } from '../../../util/webhook';
 import { GithubSponsorsWebhookData } from '../../githubApiTypes';
@@ -24,7 +24,7 @@ const githubSponsors = (server: FastifyServer) =>
 						content: `${data.sender.login}[${data.sender.id}] became a Tier ${tier - 1} sponsor.`
 					});
 					if (user) {
-						await (globalClient.tasks.get('patreon') as PatreonTask)!.givePerks(user.id, tier);
+						await patreonTask.givePerks(user.id, tier);
 					}
 					break;
 				}
@@ -38,13 +38,13 @@ const githubSponsors = (server: FastifyServer) =>
 						} to Tier ${to - 1}.`
 					});
 					if (user) {
-						await (globalClient.tasks.get('patreon') as PatreonTask)!.changeTier(user.id, from, to);
+						await patreonTask.changeTier(user.id, from, to);
 					}
 					break;
 				}
 				case 'cancelled': {
 					if (user) {
-						await (globalClient.tasks.get('patreon') as PatreonTask)!.removePerks(user.id);
+						await patreonTask.removePerks(user.id);
 					}
 
 					sendToChannelID(Channel.NewSponsors, {

@@ -6,9 +6,10 @@ import { Mimic } from 'oldschooljs/dist/simulation/misc';
 import { HallowedSackTable } from 'oldschooljs/dist/simulation/openables/HallowedSack';
 import { Implings } from 'oldschooljs/dist/simulation/openables/Implings';
 
+import { allItemsOwned } from '../mahoji/mahojiSettings';
+import { ClueTiers } from './clues/clueTiers';
 import { Emoji, Events, MIMIC_MONSTER_ID } from './constants';
 import { cluesRaresCL } from './data/CollectionsExport';
-import ClueTiers from './minions/data/clueTiers';
 import { defaultFarmingContract } from './minions/farming';
 import { FarmingContract } from './minions/farming/types';
 import { UserSettings } from './settings/types/UserSettings';
@@ -49,7 +50,7 @@ export interface UnifiedOpenable {
 
 const clueItemsToNotifyOf = cluesRaresCL
 	.concat(ClueTiers.filter(i => Boolean(i.milestoneReward)).map(i => i.milestoneReward!.itemReward))
-	.concat([itemID('Bloodhound')]);
+	.concat([itemID('Bloodhound'), itemID('Ranger boots')]);
 
 const clueOpenables: UnifiedOpenable[] = [];
 for (const clueTier of ClueTiers) {
@@ -83,7 +84,7 @@ for (const clueTier of ClueTiers) {
 			if (
 				clueTier.milestoneReward &&
 				nthCasket >= clueTier.milestoneReward.scoreNeeded &&
-				user.allItemsOwned().amount(clueTier.milestoneReward.itemReward) === 0
+				allItemsOwned(user).amount(clueTier.milestoneReward.itemReward) === 0
 			) {
 				loot.add(clueTier.milestoneReward.itemReward);
 			}

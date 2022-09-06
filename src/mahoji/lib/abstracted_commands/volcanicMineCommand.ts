@@ -9,6 +9,7 @@ import { ItemBank } from '../../../lib/types';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { formatDuration, formatSkillRequirements, resolveNameBank, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { handleMahojiConfirmation, mahojiUserSettingsUpdate } from '../../mahojiSettings';
 
 const skillReqs = {
@@ -19,7 +20,7 @@ const skillReqs = {
 
 export const VolcanicMineGameTime = Time.Minute * 10;
 
-export const VolcanicMineShop: { name: string; output: ItemBank; cost: number; clOnly?: boolean }[] = [
+export const VolcanicMineShop: { name: string; output: ItemBank; cost: number; clOnly?: boolean; addToCl?: true }[] = [
 	{
 		name: 'Iron ore',
 		output: resolveNameBank({ 'Iron ore': 1 }),
@@ -73,7 +74,8 @@ export const VolcanicMineShop: { name: string; output: ItemBank; cost: number; c
 	{
 		name: 'Volcanic mine teleport',
 		output: resolveNameBank({ 'Volcanic mine teleport': 1 }),
-		cost: 200
+		cost: 200,
+		addToCl: true
 	},
 	{
 		name: 'Large water container',
@@ -100,7 +102,7 @@ export async function volcanicMineCommand(user: KlasaUser, channelID: bigint, ga
 			.filter(f => f)
 			.join(', ')}`;
 	}
-	const maxGamesUserCanDo = Math.floor(user.maxTripLength() / VolcanicMineGameTime);
+	const maxGamesUserCanDo = Math.floor(calcMaxTripLength(user) / VolcanicMineGameTime);
 	if (!gameQuantity || gameQuantity > maxGamesUserCanDo) gameQuantity = maxGamesUserCanDo;
 	const userMiningLevel = user.skillLevel(SkillsEnum.Mining);
 	const userPrayerLevel = user.skillLevel(SkillsEnum.Prayer);
@@ -205,9 +207,10 @@ export async function volcanicMineShopCommand(
 	if (shopItem.clOnly) {
 		await klasaUser.addItemsToCollectionLog({ items: new Bank().add(shopItem.output).multiply(quantity) });
 	} else {
-		await klasaUser.addItemsToBank({
-			items: new Bank().add(shopItem.output).multiply(quantity),
-			collectionLog: true
+		await transactItems({
+			userID: user.id,
+			collectionLog: shopItem.addToCl === true,
+			itemsToAdd: new Bank().add(shopItem.output).multiply(quantity)
 		});
 	}
 	await mahojiUserSettingsUpdate(user.id, {

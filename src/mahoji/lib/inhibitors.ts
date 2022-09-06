@@ -1,10 +1,20 @@
 import { DMChannel, Guild, GuildMember, PermissionResolvable, Permissions, TextChannel } from 'discord.js';
 import { Time } from 'e';
 import { KlasaUser } from 'klasa';
+import { ComponentType } from 'mahoji';
+import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
-import { OWNER_ID, production } from '../../config';
-import { BadgesEnum, BitField, BotID, Channel, DISABLED_COMMANDS, PerkTier, SupportServer } from '../../lib/constants';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import { OWNER_IDS, production, SupportServer } from '../../config';
+import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '../../lib/blacklists';
+import {
+	BadgesEnum,
+	BitField,
+	BotID,
+	Channel,
+	DISABLED_COMMANDS,
+	minionBuyButton,
+	PerkTier
+} from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { CategoryFlag } from '../../lib/types';
 import { formatDuration } from '../../lib/util';
@@ -12,7 +22,7 @@ import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { mahojiGuildSettingsFetch, untrustedGuildSettingsCache } from '../mahojiSettings';
 import { Cooldowns } from './Cooldowns';
 
-export type CommandArgs = (string | number | boolean | unknown)[] | Record<string, unknown>;
+export type CommandArgs = Record<string, unknown>;
 
 export interface AbstractCommandAttributes {
 	altProtection?: boolean;
@@ -46,7 +56,7 @@ interface Inhibitor {
 		guild: Guild | null;
 		channel: TextChannel | DMChannel;
 		member: GuildMember | null;
-	}) => Promise<false | string>;
+	}) => Promise<false | Awaited<CommandResponse>>;
 	canBeDisabled: boolean;
 	silent?: true;
 }
@@ -88,7 +98,16 @@ const inhibitors: Inhibitor[] = [
 			if (!command.attributes?.requiresMinion) return false;
 
 			if (!user.hasMinion) {
-				return 'You need a minion to use this command.';
+				return {
+					content: 'You need a minion to use this command.',
+					components: [
+						{
+							components: [minionBuyButton],
+							type: ComponentType.ActionRow
+						}
+					],
+					flags: undefined
+				};
 			}
 
 			return false;
@@ -261,7 +280,7 @@ const inhibitors: Inhibitor[] = [
 		name: 'cooldown',
 		run: async ({ user, command }) => {
 			if (!command.attributes?.cooldown) return false;
-			if (OWNER_ID === user.id || user.bitfield.includes(BitField.isModerator)) return false;
+			if (OWNER_IDS.includes(user.id) || user.bitfield.includes(BitField.isModerator)) return false;
 			const cooldownForThis = Cooldowns.get(user.id, command.name, command.attributes.cooldown);
 			if (cooldownForThis) {
 				return `This command is on cooldown, you can use it again in ${formatDuration(cooldownForThis)}`;
@@ -302,9 +321,12 @@ const inhibitors: Inhibitor[] = [
 	},
 	{
 		name: 'blacklisted',
-		run: async ({ user }) => {
-			if (globalClient.settings.get(ClientSettings.UserBlacklist).includes(user.id)) {
+		run: async ({ user, guild }) => {
+			if (BLACKLISTED_USERS.has(user.id)) {
 				return 'This user is blacklisted.';
+			}
+			if (guild && BLACKLISTED_GUILDS.has(guild.id)) {
+				return 'This guild is blacklisted.';
 			}
 			return false;
 		},
@@ -338,11 +360,11 @@ export async function runInhibitors({
 	command: AbstractCommand;
 	guild: Guild | null;
 	bypassInhibitors: boolean;
-}): Promise<undefined | { reason: string; silent: boolean }> {
+}): Promise<undefined | { reason: Awaited<CommandResponse>; silent: boolean }> {
 	for (const { run, canBeDisabled, silent } of inhibitors) {
 		if (bypassInhibitors && canBeDisabled) continue;
 		const result = await run({ user, channel, member, command, guild });
-		if (typeof result === 'string') {
+		if (result !== false) {
 			return { reason: result, silent: Boolean(silent) };
 		}
 	}

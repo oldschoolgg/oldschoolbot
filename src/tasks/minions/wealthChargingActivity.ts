@@ -33,7 +33,11 @@ export default class extends Task {
 			str += ` They died ${deaths}x times, causing the loss of ${wealthInventorySize * deaths} rings of wealth.`;
 		}
 
-		await user.addItemsToBank({ items: loot, collectionLog: true });
+		await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 		handleTripFinish(
 			user,
 			channelID,

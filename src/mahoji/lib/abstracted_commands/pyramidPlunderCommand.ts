@@ -6,6 +6,7 @@ import { SkillsEnum } from '../../../lib/skilling/types';
 import { PlunderActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, itemNameFromID } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
 export async function pyramidPlunderCommand(user: KlasaUser, channelID: bigint) {
 	if (user.minionIsBusy) return `${user.minionName} is busy.`;
@@ -42,7 +43,7 @@ export async function pyramidPlunderCommand(user: KlasaUser, channelID: bigint) 
 			plunderTime = reduceNumByPercent(plunderTime, percent);
 		}
 	}
-	const maxQuantity = Math.floor(user.maxTripLength('Plunder') / plunderTime);
+	const maxQuantity = Math.floor(calcMaxTripLength(user, 'Plunder') / plunderTime);
 	const tripLength = maxQuantity * plunderTime;
 
 	await addSubTaskToActivityTask<PlunderActivityTaskOptions>({

@@ -140,6 +140,15 @@ export const Cookables: Cookable[] = [
 		burntCookable: itemID('Jug of bad wine')
 	},
 	{
+		level: 38,
+		xp: 115,
+		id: itemID('Cave eel'),
+		name: 'Cave eel',
+		inputCookables: { [itemID('Raw cave eel')]: 1 },
+		stopBurnAt: 74,
+		burntCookable: itemID('Burnt cave eel')
+	},
+	{
 		level: 40,
 		xp: 120,
 		id: itemID('Lobster'),
@@ -149,6 +158,16 @@ export const Cookables: Cookable[] = [
 		stopBurnAt: 74,
 		stopBurnAtCG: 64,
 		burntCookable: itemID('Burnt lobster')
+	},
+	{
+		level: 41,
+		xp: 160,
+		id: itemID('Cooked jubbly'),
+		name: 'Jubbly',
+		alias: ['Jubbly', 'cooked jubbly'],
+		inputCookables: { [itemID('Raw jubbly')]: 1 },
+		stopBurnAt: 125,
+		burntCookable: itemID('Burnt jubbly')
 	},
 	{
 		level: 43,
@@ -203,7 +222,7 @@ export const Cookables: Cookable[] = [
 	},
 	{
 		level: 82,
-		xp: 211,
+		xp: 211.3,
 		id: itemID('Sea turtle'),
 		name: 'Sea turtle',
 		alias: ['sea', 'turtle'],
@@ -234,7 +253,7 @@ export const Cookables: Cookable[] = [
 	},
 	{
 		level: 91,
-		xp: 216.2,
+		xp: 216.3,
 		id: itemID('Manta ray'),
 		name: 'Manta ray',
 		alias: ['manta'],

@@ -12,6 +12,8 @@ import { BitField, PerkTier } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { CombatOptionsArray, CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
 import { prisma } from '../../lib/settings/prisma';
+import { autoslayChoices, slayerMasterChoices } from '../../lib/slayer/constants';
+import { setDefaultAutoslay, setDefaultSlayerMaster } from '../../lib/slayer/slayerUtil';
 import { BankSortMethods } from '../../lib/sorts';
 import { itemNameFromID, removeFromArr, stringMatches } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
@@ -50,7 +52,16 @@ async function handleToggle(user: User, name: string) {
 	return `Toggled '${toggle.name}' ${includedNow ? 'Off' : 'On'}.`;
 }
 
-async function favFoodConfig(user: User, itemToAdd: string | undefined, itemToRemove: string | undefined) {
+async function favFoodConfig(
+	user: User,
+	itemToAdd: string | undefined,
+	itemToRemove: string | undefined,
+	reset: boolean
+) {
+	if (reset) {
+		await mahojiUserSettingsUpdate(user.id, { favorite_food: [] });
+		return 'Cleared all favorite food.';
+	}
 	const currentFavorites = user.favorite_food;
 	const item = getItem(itemToAdd ?? itemToRemove);
 	const currentItems = `Your current favorite food is: ${
@@ -72,7 +83,16 @@ async function favFoodConfig(user: User, itemToAdd: string | undefined, itemToRe
 	return currentItems;
 }
 
-async function favItemConfig(user: User, itemToAdd: string | undefined, itemToRemove: string | undefined) {
+async function favItemConfig(
+	user: User,
+	itemToAdd: string | undefined,
+	itemToRemove: string | undefined,
+	reset: boolean
+) {
+	if (reset) {
+		await mahojiUserSettingsUpdate(user.id, { favoriteItems: [] });
+		return 'Cleared all favorite items.';
+	}
 	const currentFavorites = user.favoriteItems;
 	const item = getItem(itemToAdd ?? itemToRemove);
 	const currentItems = `Your current favorite items are: ${
@@ -100,8 +120,13 @@ async function favAlchConfig(
 	user: User,
 	itemToAdd: string | undefined,
 	itemToRemove: string | undefined,
-	manyToAdd: string | undefined
+	manyToAdd: string | undefined,
+	reset: boolean
 ) {
+	if (reset) {
+		await mahojiUserSettingsUpdate(user.id, { favorite_alchables: [] });
+		return 'Cleared all favorite alchables.';
+	}
 	const currentFavorites = user.favorite_alchables;
 	if (manyToAdd) {
 		const items = parseBank({ inputStr: manyToAdd, noDuplicateItems: true })
@@ -404,7 +429,7 @@ async function handleCombatOptions(user: KlasaUser, command: 'add' | 'remove' | 
 	if (!command || (command && command === 'list')) {
 		// List enabled combat options:
 		const cbOpts = settings.combat_options.map(o => CombatOptionsArray.find(coa => coa!.id === o)!.name);
-		return `Your current combat options are:\n${cbOpts.join('\n')}\n\nTry: \`/config user command_options help\``;
+		return `Your current combat options are:\n${cbOpts.join('\n')}\n\nTry: \`/config user combat_options help\``;
 	}
 
 	if (command === 'help' || !option || !['add', 'remove'].includes(command)) {
@@ -747,6 +772,12 @@ export const configCommand: OSBMahojiCommand = {
 							name: 'add_many',
 							description: 'Add many to your favorite alchables at once.',
 							required: false
+						},
+						{
+							type: ApplicationCommandOptionType.Boolean,
+							name: 'reset',
+							description: 'Reset all of your favorite alchs',
+							required: false
 						}
 					]
 				},
@@ -784,6 +815,12 @@ export const configCommand: OSBMahojiCommand = {
 									value: i.id.toString()
 								}));
 							}
+						},
+						{
+							type: ApplicationCommandOptionType.Boolean,
+							name: 'reset',
+							description: 'Reset all of your favorite foods',
+							required: false
 						}
 					]
 				},
@@ -803,6 +840,33 @@ export const configCommand: OSBMahojiCommand = {
 							name: 'remove',
 							description: 'Remove an item from your favorite items.',
 							required: false
+						},
+						{
+							type: ApplicationCommandOptionType.Boolean,
+							name: 'reset',
+							description: 'Reset all of your favorite items',
+							required: false
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'slayer',
+					description: 'Manage your Slayer options',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'master',
+							description: 'Choose default slayer master',
+							required: false,
+							choices: slayerMasterChoices
+						},
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'autoslay',
+							description: 'Set default autoslay mode',
+							required: false,
+							choices: autoslayChoices
 						}
 					]
 				}
@@ -828,9 +892,10 @@ export const configCommand: OSBMahojiCommand = {
 			set_rsn?: { username: string };
 			bg_color?: { color?: string };
 			bank_sort?: { sort_method?: string; add_weightings?: string; remove_weightings?: string };
-			favorite_alchs?: { add?: string; remove?: string; add_many?: string };
-			favorite_food?: { add?: string; remove?: string };
-			favorite_items?: { add?: string; remove?: string };
+			favorite_alchs?: { add?: string; remove?: string; add_many?: string; reset?: boolean };
+			favorite_food?: { add?: string; remove?: string; reset?: boolean };
+			favorite_items?: { add?: string; remove?: string; reset?: boolean };
+			slayer?: { master?: string; autoslay?: string };
 		};
 	}>) => {
 		const [user, mahojiUser] = await Promise.all([
@@ -864,7 +929,8 @@ export const configCommand: OSBMahojiCommand = {
 				bank_sort,
 				favorite_alchs,
 				favorite_food,
-				favorite_items
+				favorite_items,
+				slayer
 			} = options.user;
 			if (toggle) {
 				return handleToggle(mahojiUser, toggle.name);
@@ -888,13 +954,34 @@ export const configCommand: OSBMahojiCommand = {
 				);
 			}
 			if (favorite_alchs) {
-				return favAlchConfig(mahojiUser, favorite_alchs.add, favorite_alchs.remove, favorite_alchs.add_many);
+				return favAlchConfig(
+					mahojiUser,
+					favorite_alchs.add,
+					favorite_alchs.remove,
+					favorite_alchs.add_many,
+					Boolean(favorite_alchs.reset)
+				);
 			}
 			if (favorite_food) {
-				return favFoodConfig(mahojiUser, favorite_food.add, favorite_food.remove);
+				return favFoodConfig(mahojiUser, favorite_food.add, favorite_food.remove, Boolean(favorite_food.reset));
 			}
 			if (favorite_items) {
-				return favItemConfig(mahojiUser, favorite_items.add, favorite_items.remove);
+				return favItemConfig(
+					mahojiUser,
+					favorite_items.add,
+					favorite_items.remove,
+					Boolean(favorite_items.reset)
+				);
+			}
+			if (slayer) {
+				if (slayer.autoslay) {
+					const { message } = await setDefaultAutoslay(user, slayer.autoslay);
+					return message;
+				}
+				if (slayer.master) {
+					const { message } = await setDefaultSlayerMaster(user, slayer.master);
+					return message;
+				}
 			}
 		}
 		return 'Invalid command.';

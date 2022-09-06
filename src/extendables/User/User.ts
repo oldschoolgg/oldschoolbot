@@ -1,14 +1,12 @@
 import { User } from 'discord.js';
 import { objectEntries } from 'e';
-import { Extendable, ExtendableStore, KlasaClient, KlasaUser, SettingsFolder } from 'klasa';
+import { Extendable, ExtendableStore, KlasaClient, SettingsFolder } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
-import PromiseQueue from 'p-queue';
 
-import { Events, PerkTier, userQueues } from '../../lib/constants';
+import { Events, PerkTier } from '../../lib/constants';
 import { readableStatName } from '../../lib/gear';
 import { KillableMonster } from '../../lib/minions/types';
-import { prisma } from '../../lib/settings/prisma';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { Skills } from '../../lib/types';
 import { formatItemReqs, itemNameFromID } from '../../lib/util';
@@ -106,31 +104,8 @@ export default class extends Extendable {
 	}
 
 	// @ts-ignore 2784
-	public getUpdateQueue(this: User) {
-		let currentQueue = userQueues.get(this.id);
-		if (!currentQueue) {
-			let queue = new PromiseQueue({ concurrency: 1 });
-			userQueues.set(this.id, queue);
-			return queue;
-		}
-		return currentQueue;
-	}
-
-	public async queueFn(this: User, fn: (user: KlasaUser) => Promise<void>) {
-		const queue = this.getUpdateQueue();
-		return queue.add(() => fn(this));
-	}
-
-	// @ts-ignore 2784
 	public get perkTier(this: User): PerkTier {
 		return getUsersPerkTier(this);
-	}
-
-	public async getPOH(this: User) {
-		const poh = await prisma.playerOwnedHouse.findFirst({ where: { user_id: this.id } });
-		if (poh !== null) return poh;
-		const createdPoh = await prisma.playerOwnedHouse.create({ data: { user_id: this.id } });
-		return createdPoh;
 	}
 
 	public getUserFavAlchs(this: User, duration: number): Item[] {

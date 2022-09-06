@@ -2,11 +2,12 @@ import { randInt, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
-import ClueTiers, { ClueTier } from '../../lib/minions/data/clueTiers';
+import { ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, isWeekend, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { OSBMahojiCommand } from '../lib/util';
 import { getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
@@ -24,6 +25,7 @@ export const clueCommand: OSBMahojiCommand = {
 	description: 'Send your minion to complete clue scrolls.',
 	attributes: {
 		requiresMinion: true,
+		requiresMinionNotBusy: true,
 		examples: ['/cl name:Boss']
 	},
 	options: [
@@ -56,7 +58,7 @@ export const clueCommand: OSBMahojiCommand = {
 
 		let duration = timeToFinish * quantity;
 
-		const maxTripLength = user.maxTripLength('ClueCompletion');
+		const maxTripLength = calcMaxTripLength(user, 'ClueCompletion');
 
 		if (duration > maxTripLength) {
 			return `${user.minionName} can't go on Clue trips longer than ${formatDuration(

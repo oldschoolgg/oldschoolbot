@@ -31,7 +31,7 @@ export function parseQuantityAndItem(str = '', inputBank?: Bank): [Item[], numbe
 		potentialQty = potentialQty.replace('#', inputBank.amount(lazyItemGet.id).toString());
 	}
 
-	let parsedQty: number | null = evalMathExpression(potentialQty);
+	let parsedQty: number | null = evalMathExpression(potentialQty.replace('x', ''));
 	if (parsedQty !== null && isNaN(parsedQty)) parsedQty = null;
 
 	const parsedName = parsedQty === null ? str : potentialName.join(' ');
@@ -115,7 +115,7 @@ export function parseBankFromFlags({
 
 		const qty = Math.min(maxQuantity, quantity === 0 ? Math.max(1, bank.amount(item.id)) : quantity);
 		if (filter && !filter.items(user).includes(item.id)) continue;
-		if ((filter || flagsKeys.length) && excludeItems.includes(item.id)) continue;
+		if (excludeItems.includes(item.id)) continue;
 
 		newBank.add(item.id, qty);
 	}

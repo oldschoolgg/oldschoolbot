@@ -10,6 +10,7 @@ import { SkillsEnum } from '../../../lib/skilling/types';
 import { SawmillActivityTaskOptions } from '../../../lib/types/minions';
 import { clamp, formatDuration, itemNameFromID, stringMatches, toKMB, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
 export async function sawmillCommand(
 	user: KlasaUser,
@@ -38,7 +39,7 @@ export async function sawmillCommand(
 		boosts.push('10% for Woodcutting Guild unlocked');
 	}
 
-	const maxTripLength = user.maxTripLength('Sawmill');
+	const maxTripLength = calcMaxTripLength(user, 'Sawmill');
 
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / timePerPlank);

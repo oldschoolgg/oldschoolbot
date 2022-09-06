@@ -1,22 +1,12 @@
 import { InteractionResponseType, MessageFlags, Routes } from 'mahoji';
 
-export async function respondToButton({
-	id,
-	token,
-	text,
-	ephemeral
-}: {
-	id: string;
-	token: string;
-	text?: string;
-	ephemeral?: boolean;
-}) {
+export async function respondToButton(id: string, token: string, text?: string, ephemeral = true) {
 	const route = Routes.interactionCallback(id, token);
 	if (text) {
 		return globalClient.mahojiClient.restManager.post(route, {
 			body: {
 				type: InteractionResponseType.ChannelMessageWithSource,
-				data: { content: text, flags: ephemeral ?? true ? MessageFlags.Ephemeral : undefined }
+				data: { content: text, flags: ephemeral ? MessageFlags.Ephemeral : undefined }
 			}
 		});
 	}

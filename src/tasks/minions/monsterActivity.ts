@@ -142,7 +142,22 @@ export default class extends Task {
 			});
 		}
 
-		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
+		const messages: string[] = [];
+		if (monster.effect) {
+			await monster.effect({
+				user,
+				quantity,
+				monster,
+				loot,
+				data,
+				messages
+			});
+		}
+		const { previousCL, itemsAdded } = await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 
 		await trackLoot({
 			loot: itemsAdded,
@@ -153,12 +168,15 @@ export default class extends Task {
 			duration
 		});
 
-		const image = await makeBankImage({
-			bank: itemsAdded,
-			title: `Loot From ${quantity} ${monster.name}:`,
-			user,
-			previousCL
-		});
+		const image =
+			itemsAdded.length === 0
+				? undefined
+				: await makeBankImage({
+						bank: itemsAdded,
+						title: `Loot From ${quantity} ${monster.name}:`,
+						user,
+						previousCL
+				  });
 
 		handleTripFinish(
 			user,
@@ -182,9 +200,10 @@ export default class extends Task {
 							isContinue: true
 						});
 				  },
-			image!.file.buffer,
+			image?.file.buffer,
 			data,
-			itemsAdded
+			itemsAdded,
+			messages
 		);
 	}
 }

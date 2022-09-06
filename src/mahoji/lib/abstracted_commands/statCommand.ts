@@ -1,4 +1,4 @@
-import { activity_type_enum, User } from '@prisma/client';
+import { activity_type_enum, User, UserStats } from '@prisma/client';
 import { sumArr, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, Monsters } from 'oldschooljs';
@@ -7,10 +7,11 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { TOBRooms } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
 import { toKMB } from 'oldschooljs/dist/util';
 
+import { ClueTiers } from '../../../lib/clues/clueTiers';
+import { getClueScoresFromOpenables } from '../../../lib/clues/clueUtils';
 import { Emoji, PerkTier } from '../../../lib/constants';
 import { calcCLDetails } from '../../../lib/data/Collections';
 import backgroundImages from '../../../lib/minions/data/bankBackgrounds';
-import ClueTiers from '../../../lib/minions/data/clueTiers';
 import killableMonsters from '../../../lib/minions/data/killableMonsters';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { prisma } from '../../../lib/settings/prisma';
@@ -19,7 +20,7 @@ import { Castables } from '../../../lib/skilling/skills/magic/castables';
 import { getSlayerTaskStats } from '../../../lib/slayer/slayerUtil';
 import { sorts } from '../../../lib/sorts';
 import { InfernoOptions } from '../../../lib/types/minions';
-import { formatDuration, getClueScoresFromOpenables, stringMatches } from '../../../lib/util';
+import { formatDuration, stringMatches } from '../../../lib/util';
 import { barChart, lineChart, pieChart } from '../../../lib/util/chart';
 import { getItem } from '../../../lib/util/getOSItem';
 import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
@@ -32,7 +33,7 @@ import { collectables } from './collectCommand';
 interface DataPiece {
 	name: string;
 	perkTierNeeded: PerkTier | null;
-	run: (user: User) => CommandResponse;
+	run: (user: User, stats: UserStats) => CommandResponse;
 }
 
 function wrap(str: string) {
@@ -839,6 +840,20 @@ GROUP BY "bankBackground";`);
 				.join('\n')}\n**Hallowed Sepulchre:** ${sepulchreCount}`;
 			return data;
 		}
+	},
+	{
+		name: 'Total Items Sold',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(new Bank(stats.items_sold_bank as ItemBank), "You've sold...");
+		}
+	},
+	{
+		name: 'Total GP From Selling',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return `You've received **${Number(stats.sell_gp).toLocaleString()}** GP from selling items.`;
+		}
 	}
 ] as const;
 
@@ -851,7 +866,16 @@ export async function statsCommand(user: User, type: string): CommandResponse {
 	if (!dataPoint) return 'Invalid stat name.';
 	const { perkTierNeeded } = dataPoint;
 	if (perkTierNeeded !== null && getUsersPerkTier(user) < perkTierNeeded) {
-		return `Sorry, you need to be a Tier ${perkTierNeeded + 1} Patron to see this stat.`;
+		return `Sorry, you need to be a Tier ${perkTierNeeded - 1} Patron to see this stat.`;
 	}
-	return dataPoint.run(user);
+	const userStats = await prisma.userStats.upsert({
+		where: {
+			user_id: BigInt(user.id)
+		},
+		update: {},
+		create: {
+			user_id: BigInt(user.id)
+		}
+	});
+	return dataPoint.run(user, userStats);
 }

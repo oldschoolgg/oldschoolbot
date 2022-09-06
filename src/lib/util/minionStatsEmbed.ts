@@ -5,15 +5,17 @@ import { Bank } from 'oldschooljs';
 import { SkillsScore } from 'oldschooljs/dist/meta/types';
 import { convertXPtoLVL, toKMB } from 'oldschooljs/dist/util';
 
+import { ClueTiers } from '../clues/clueTiers';
+import { getClueScoresFromOpenables } from '../clues/clueUtils';
 import { badges, skillEmoji } from '../constants';
-import ClueTiers from '../minions/data/clueTiers';
+import { calcCLDetails } from '../data/Collections';
 import { effectiveMonsters } from '../minions/data/killableMonsters';
 import { getAllMinigameScores } from '../settings/settings';
 import { UserSettings } from '../settings/types/UserSettings';
 import { courses } from '../skilling/skills/agility';
 import creatures from '../skilling/skills/hunter/creatures';
 import { ItemBank, Skills } from '../types';
-import { addArrayOfNumbers, getClueScoresFromOpenables, toTitleCase } from '../util';
+import { addArrayOfNumbers, toTitleCase } from '../util';
 import { logError } from './logError';
 
 export async function minionStatsEmbed(user: KlasaUser): Promise<Embed> {
@@ -74,7 +76,7 @@ export async function minionStatsEmbed(user: KlasaUser): Promise<Embed> {
 		embed.setColor(5_460_819);
 	}
 
-	const { percent } = user.completion();
+	const { percent } = calcCLDetails(user);
 	embed.addField({
 		name: `${skillEmoji.total} Overall`,
 		value: `**Level:** ${totalLevel}

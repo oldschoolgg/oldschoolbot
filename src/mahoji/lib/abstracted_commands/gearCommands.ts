@@ -17,6 +17,7 @@ import { Gear } from '../../../lib/structures/Gear';
 import {
 	assert,
 	formatSkillRequirements,
+	getSkillsOfMahojiUser,
 	isValidGearSetup,
 	skillsMeetRequirements,
 	stringMatches,
@@ -27,7 +28,6 @@ import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 import { minionName } from '../../../lib/util/minionUtils';
 import {
-	getSkillsOfMahojiUser,
 	getUserGear,
 	handleMahojiConfirmation,
 	mahojiParseNumber,
@@ -151,13 +151,6 @@ export async function gearEquipCommand(args: {
 	const allGear = getUserGear(user);
 	const currentEquippedGear = allGear[setup];
 
-	if (setup === 'wildy') {
-		await handleMahojiConfirmation(
-			interaction,
-			"You're trying to equip items into your *wildy* setup. ANY item in this setup can potentially be lost if doing Wilderness activities. Please confirm you understand this."
-		);
-	}
-
 	/**
 	 * Handle 2h items
 	 */
@@ -179,7 +172,7 @@ export async function gearEquipCommand(args: {
 		return "You can't equip more than 1 of this item at once, as it isn't stackable!";
 	}
 
-	if (itemToEquip.equipment?.requirements) {
+	if (itemToEquip.equipment.requirements) {
 		if (!skillsMeetRequirements(getSkillsOfMahojiUser(user), itemToEquip.equipment.requirements)) {
 			return `You can't equip a ${
 				itemToEquip.name

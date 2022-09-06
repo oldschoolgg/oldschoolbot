@@ -1,28 +1,26 @@
-import type { ClientStorage, Guild, Prisma, User } from '@prisma/client';
+import type { ClientStorage, Guild, Prisma, User, UserStats } from '@prisma/client';
 import { Guild as DJSGuild, MessageButton } from 'discord.js';
 import { Time } from 'e';
 import { KlasaUser } from 'klasa';
-import {
-	APIInteractionDataResolvedGuildMember,
-	APIUser,
-	InteractionResponseType,
-	InteractionType,
-	MessageFlags
-} from 'mahoji';
+import { InteractionResponseType, InteractionType, MessageFlags } from 'mahoji';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
+import PromiseQueue from 'p-queue';
 
 import { CLIENT_ID } from '../config';
+import { deduplicateClueScrolls } from '../lib/clues/clueUtils';
 import { SILENT_ERROR } from '../lib/constants';
 import { evalMathExpression } from '../lib/expressionParser';
 import { defaultGear } from '../lib/gear';
 import { prisma } from '../lib/settings/prisma';
 import { UserSettings } from '../lib/settings/types/UserSettings';
+import { filterLootReplace } from '../lib/slayer/slayerUtil';
 import { Gear } from '../lib/structures/Gear';
-import type { ItemBank, Skills as TSkills } from '../lib/types';
-import { assert, channelIsSendable, convertXPtoLVL } from '../lib/util';
+import type { ItemBank } from '../lib/types';
+import { assert, channelIsSendable, sanitizeBank } from '../lib/util';
 import { logError } from '../lib/util/logError';
 import { respondToButton } from '../lib/util/respondToButton';
+import { bingoIsActive, determineBingoProgress, onFinishTile } from './lib/bingo';
 
 export function mahojiParseNumber({
 	input,
@@ -42,15 +40,15 @@ export function mahojiParseNumber({
 	return parsed;
 }
 
-export async function handleMahojiConfirmation(interaction: SlashCommandInteraction, str: string, _users?: bigint[]) {
+export async function handleMahojiConfirmation(interaction: SlashCommandInteraction, str: string, _users?: string[]) {
 	const channel = globalClient.channels.cache.get(interaction.channelID.toString());
 	if (!channelIsSendable(channel)) throw new Error('Channel for confirmation not found.');
 	if (!interaction.deferred) {
 		await interaction.deferReply();
 	}
 
-	const users: BigInt[] = _users ?? [interaction.userID];
-	let confirmed: BigInt[] = [];
+	const users = _users ?? [interaction.userID.toString()];
+	let confirmed: string[] = [];
 	const isConfirmed = () => confirmed.length === users.length;
 	const confirmMessage = await channel.send({
 		content: str,
@@ -72,10 +70,10 @@ export async function handleMahojiConfirmation(interaction: SlashCommandInteract
 
 	return new Promise<void>(async (resolve, reject) => {
 		const collector = confirmMessage.createMessageComponentInteractionCollector({
-			time: Time.Second * 10
+			time: Time.Second * 15
 		});
 
-		async function confirm(id: bigint) {
+		async function confirm(id: string) {
 			if (confirmed.includes(id)) return;
 			confirmed.push(id);
 			if (!isConfirmed()) return;
@@ -103,7 +101,7 @@ export async function handleMahojiConfirmation(interaction: SlashCommandInteract
 		};
 
 		collector.on('collect', async i => {
-			const id = BigInt(i.user.id);
+			const { id } = i.user;
 			if (!users.includes(id)) {
 				i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
 				return false;
@@ -171,7 +169,7 @@ export async function mahojiUserSettingsUpdate(user: string | bigint | KlasaUser
 			'Patched user should match',
 			errorContext
 		);
-		const klasaBank = klasaUser.settings.get(UserSettings.Bank);
+		const klasaBank: Readonly<ItemBank> = klasaUser.settings.get('bank') as any;
 		const newBank = newUser.bank;
 		for (const [key, value] of Object.entries(klasaBank)) {
 			assert((newBank as any)[key] === value, `Item[${key}] in patched user should match`, errorContext);
@@ -233,45 +231,6 @@ export async function mahojiGuildSettingsUpdate(guild: string | DJSGuild, data: 
 	return { newGuild };
 }
 
-export interface MahojiUserOption {
-	user: APIUser;
-	member: APIInteractionDataResolvedGuildMember;
-}
-
-export function getSkillsOfMahojiUser(user: User, levels = false): Required<TSkills> {
-	const skills: Required<TSkills> = {
-		agility: Number(user.skills_agility),
-		cooking: Number(user.skills_cooking),
-		fishing: Number(user.skills_fishing),
-		mining: Number(user.skills_mining),
-		smithing: Number(user.skills_smithing),
-		woodcutting: Number(user.skills_woodcutting),
-		firemaking: Number(user.skills_firemaking),
-		runecraft: Number(user.skills_runecraft),
-		crafting: Number(user.skills_crafting),
-		prayer: Number(user.skills_prayer),
-		fletching: Number(user.skills_fletching),
-		farming: Number(user.skills_farming),
-		herblore: Number(user.skills_herblore),
-		thieving: Number(user.skills_thieving),
-		hunter: Number(user.skills_hunter),
-		construction: Number(user.skills_construction),
-		magic: Number(user.skills_magic),
-		attack: Number(user.skills_attack),
-		strength: Number(user.skills_strength),
-		defence: Number(user.skills_defence),
-		ranged: Number(user.skills_ranged),
-		hitpoints: Number(user.skills_hitpoints),
-		slayer: Number(user.skills_slayer)
-	};
-	if (levels) {
-		for (const [key, val] of Object.entries(skills) as [keyof TSkills, number][]) {
-			skills[key] = convertXPtoLVL(val);
-		}
-	}
-	return skills;
-}
-
 export function getUserGear(user: User) {
 	return {
 		melee: new Gear((user.gear_melee as any) ?? { ...defaultGear }),
@@ -292,7 +251,7 @@ export function patronMsg(tierNeeded: number) {
 }
 
 // Is not typesafe, returns only what is selected, but will say it contains everything.
-export async function mahojiClientSettingsFetch(select: Prisma.ClientStorageSelect) {
+export async function mahojiClientSettingsFetch(select?: Prisma.ClientStorageSelect) {
 	const clientSettings = await prisma.clientStorage.findFirst({
 		where: {
 			id: CLIENT_ID
@@ -314,4 +273,263 @@ export async function mahojiClientSettingsUpdate(data: Prisma.ClientStorageUpdat
 
 export function getMahojiBank(user: User) {
 	return new Bank(user.bank as ItemBank);
+}
+
+export async function userStatsUpdate(userID: string, data: (u: UserStats) => Prisma.UserStatsUpdateInput) {
+	const id = BigInt(userID);
+	const userStats = await prisma.userStats.upsert({
+		create: {
+			user_id: id
+		},
+		update: {},
+		where: {
+			user_id: id
+		}
+	});
+	await prisma.userStats.update({
+		data: data(userStats),
+		where: {
+			user_id: id
+		}
+	});
+}
+
+type UserStatsBankKey = 'puropuro_implings_bank' | 'passive_implings_bank' | 'create_cost_bank' | 'create_loot_bank';
+export async function userStatsBankUpdate(userID: string, key: UserStatsBankKey, bank: Bank) {
+	await userStatsUpdate(userID, u => ({
+		[key]: bank.clone().add(u[key] as ItemBank).bank
+	}));
+}
+
+export function allItemsOwned(user: KlasaUser | User): Bank {
+	const bank = new Bank();
+	if (user instanceof KlasaUser) {
+		bank.add(user.bank({ withGP: true }));
+		const equippedPet = user.settings.get(UserSettings.Minion.EquippedPet);
+		if (equippedPet) bank.add(equippedPet);
+	} else {
+		bank.add(user.bank as ItemBank);
+		bank.add('Coins', Number(user.GP));
+		if (user.minion_equippedPet) {
+			bank.add(user.minion_equippedPet);
+		}
+	}
+
+	const gear = user instanceof KlasaUser ? user.rawGear() : getUserGear(user);
+	for (const setup of Object.values(gear)) {
+		for (const equipped of Object.values(setup)) {
+			if (equipped?.item) {
+				bank.add(equipped.item, equipped.quantity);
+			}
+		}
+	}
+
+	return bank;
+}
+
+export const userQueues: Map<string, PromiseQueue> = new Map();
+export function getUserUpdateQueue(userID: string) {
+	let currentQueue = userQueues.get(userID);
+	if (!currentQueue) {
+		let queue = new PromiseQueue({ concurrency: 1 });
+		userQueues.set(userID, queue);
+		return queue;
+	}
+	return currentQueue;
+}
+
+async function userQueueFn<T>(userID: string, fn: () => Promise<T>) {
+	const queue = getUserUpdateQueue(userID);
+	return queue.add(() => fn());
+}
+
+async function calculateAddItemsToCLUpdates({
+	userID,
+	items,
+	dontAddToTempCL = false,
+	user
+}: {
+	user?: User;
+	items: Bank;
+	dontAddToTempCL?: boolean;
+	userID: string;
+}): Promise<Prisma.UserUpdateArgs['data']> {
+	const settings: User = user ?? (await mahojiUsersSettingsFetch(userID));
+	const updates: Prisma.UserUpdateArgs['data'] = {
+		collectionLogBank: new Bank(settings.collectionLogBank as ItemBank).add(items).bank
+	};
+
+	if (!dontAddToTempCL) {
+		updates.temp_cl = new Bank(settings.temp_cl as ItemBank).add(items).bank;
+	}
+	return updates;
+}
+
+export async function addItemsToCollectionLog(opts: { items: Bank; dontAddToTempCL?: boolean; userID: string }) {
+	return userQueueFn(opts.userID, async () => {
+		const updates = await calculateAddItemsToCLUpdates(opts);
+		return mahojiUserSettingsUpdate(opts.userID, updates);
+	});
+}
+
+interface TransactItemsArgs {
+	userID: string;
+	itemsToAdd?: Bank;
+	itemsToRemove?: Bank;
+	collectionLog?: boolean;
+	filterLoot?: boolean;
+	dontAddToTempCL?: boolean;
+}
+
+declare global {
+	const transactItems: typeof transactItemsFromBank;
+}
+declare global {
+	namespace NodeJS {
+		interface Global {
+			transactItems: typeof transactItemsFromBank;
+		}
+	}
+}
+global.transactItems = transactItemsFromBank;
+export async function transactItemsFromBank({
+	userID,
+	collectionLog = false,
+	filterLoot = true,
+	dontAddToTempCL = false,
+	...options
+}: TransactItemsArgs) {
+	let itemsToAdd = options.itemsToAdd ? options.itemsToAdd.clone() : undefined;
+	let itemsToRemove = options.itemsToRemove ? options.itemsToRemove.clone() : undefined;
+	return userQueueFn(userID, async () => {
+		const settings = await mahojiUsersSettingsFetch(userID);
+		const currentBank = new Bank().add(settings.bank as ItemBank);
+		const previousCL = new Bank().add(settings.collectionLogBank as ItemBank);
+		const previousTempCL = new Bank().add(settings.temp_cl as ItemBank);
+
+		let clUpdates: Prisma.UserUpdateArgs['data'] = {};
+		if (itemsToAdd) {
+			itemsToAdd = deduplicateClueScrolls({
+				loot: itemsToAdd.clone(),
+				currentBank: currentBank.clone().remove(itemsToRemove ?? {})
+			});
+			const { bankLoot, clLoot } = filterLoot
+				? filterLootReplace(allItemsOwned(settings), itemsToAdd)
+				: { bankLoot: itemsToAdd, clLoot: itemsToAdd };
+			itemsToAdd = bankLoot;
+
+			clUpdates = collectionLog
+				? await calculateAddItemsToCLUpdates({ items: clLoot, dontAddToTempCL, userID })
+				: {};
+		}
+
+		let gpUpdate: { increment: number } | undefined = undefined;
+		if (itemsToAdd) {
+			const coinsInLoot = itemsToAdd.amount('Coins');
+			if (coinsInLoot > 0) {
+				gpUpdate = {
+					increment: coinsInLoot
+				};
+				itemsToAdd.remove('Coins', itemsToAdd.amount('Coins'));
+			}
+		}
+
+		const newBank = new Bank().add(currentBank);
+		if (itemsToAdd) newBank.add(itemsToAdd);
+
+		sanitizeBank(newBank);
+
+		if (itemsToRemove) {
+			if (itemsToRemove.has('Coins')) {
+				if (!gpUpdate) {
+					gpUpdate = {
+						increment: 0 - itemsToRemove.amount('Coins')
+					};
+				} else {
+					gpUpdate.increment -= itemsToRemove.amount('Coins');
+				}
+				itemsToRemove.remove('Coins', itemsToRemove.amount('Coins'));
+			}
+			if (!newBank.has(itemsToRemove)) {
+				throw new Error(
+					`Tried to remove ${itemsToRemove} from ${userID}. but they don't own them. Missing: ${itemsToRemove
+						.clone()
+						.remove(currentBank)}`
+				);
+			}
+			newBank.remove(itemsToRemove);
+		}
+
+		const { newUser } = await mahojiUserSettingsUpdate(userID, {
+			bank: newBank.bank,
+			GP: gpUpdate,
+			...clUpdates
+		});
+
+		const itemsAdded = new Bank().add(itemsToAdd);
+		if (itemsAdded && gpUpdate && gpUpdate.increment > 0) {
+			itemsAdded.add('Coins', gpUpdate.increment);
+		}
+
+		const itemsRemoved = new Bank().add(itemsToRemove);
+		if (itemsRemoved && gpUpdate && gpUpdate.increment < 0) {
+			itemsRemoved.add('Coins', gpUpdate.increment);
+		}
+
+		const newCL = new Bank(newUser.collectionLogBank as ItemBank);
+		const newTempCL = new Bank(newUser.temp_cl as ItemBank);
+
+		if (newUser.bingo_tickets_bought > 0 && bingoIsActive()) {
+			const before = determineBingoProgress(previousTempCL);
+			const after = determineBingoProgress(newTempCL);
+			// If they finished a tile, process it.
+			if (before.tilesCompletedCount !== after.tilesCompletedCount) {
+				onFinishTile(newUser, before, after);
+			}
+		}
+
+		return {
+			previousCL,
+			itemsAdded,
+			itemsRemoved: itemsToRemove,
+			newBank: new Bank(newUser.bank as ItemBank),
+			newCL,
+			newUser
+		};
+	});
+}
+
+export async function updateGPTrackSetting(
+	setting:
+		| 'gp_luckypick'
+		| 'gp_daily'
+		| 'gp_open'
+		| 'gp_dice'
+		| 'gp_slots'
+		| 'gp_sell'
+		| 'gp_pvm'
+		| 'gp_alch'
+		| 'gp_pickpocket'
+		| 'duelTaxBank',
+	amount: number,
+	user?: KlasaUser
+) {
+	if (!user) {
+		await prisma.clientStorage.update({
+			where: {
+				id: CLIENT_ID
+			},
+			data: {
+				[setting]: {
+					increment: amount
+				}
+			}
+		});
+		return;
+	}
+	await mahojiUserSettingsUpdate(user.id, {
+		[setting]: {
+			increment: amount
+		}
+	});
 }

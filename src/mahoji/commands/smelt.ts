@@ -16,6 +16,7 @@ import {
 	updateBankSetting
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import resolveItems from '../../lib/util/resolveItems';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -115,7 +116,7 @@ export const smeltingCommand: OSBMahojiCommand = {
 			}
 		}
 
-		const maxTripLength = user.maxTripLength('Smithing');
+		const maxTripLength = calcMaxTripLength(user, 'Smithing');
 
 		// If no quantity provided, set it to the max.
 		if (!quantity) {
@@ -156,7 +157,7 @@ export const smeltingCommand: OSBMahojiCommand = {
 			cost.add('Coins', coinsToRemove);
 		}
 
-		await user.removeItemsFromBank(cost);
+		await transactItems({ userID: user.id, itemsToRemove: cost });
 		updateBankSetting(globalClient, ClientSettings.EconomyStats.SmithingCost, cost);
 
 		await addSubTaskToActivityTask<SmeltingActivityTaskOptions>({

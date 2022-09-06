@@ -1,17 +1,19 @@
 import { MessageAttachment, TextChannel } from 'discord.js';
 import { Time } from 'e';
-import { ArrayActions, Gateway, Task } from 'klasa';
+import { ArrayActions, Gateway } from 'klasa';
 import fetch from 'node-fetch';
 
 import { patreonConfig, production } from '../config';
 import { BadgesEnum, BitField, Channel, PatronTierID, PerkTier } from '../lib/constants';
 import { fetchSponsors, getUserFromGithubID } from '../lib/http/util';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
+import { roboChimpUserFetch } from '../lib/roboChimp';
 import { getUserSettings } from '../lib/settings/settings';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { Patron } from '../lib/types';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 import { logError } from '../lib/util/logError';
+import { mahojiUserSettingsUpdate } from '../mahoji/mahojiSettings';
 
 const patreonApiURL = new URL(`https://patreon.com/api/oauth2/v2/campaigns/${patreonConfig?.campaignID}/members`);
 
@@ -27,7 +29,8 @@ patreonApiURL.search = new URLSearchParams([
 			'patron_status'
 		].join(',')
 	],
-	['fields[user]', ['social_connections'].join(',')]
+	['fields[user]', ['social_connections'].join(',')],
+	['page[count]', '1000']
 ]).toString();
 
 export const tiers: [PatronTierID, BitField][] = [
@@ -75,13 +78,7 @@ function perkTierFromBitfield(bit: BitField): PerkTier {
 	}
 }
 
-export default class PatreonTask extends Task {
-	async init() {
-		if (!patreonConfig) {
-			this.disable();
-		}
-	}
-
+class PatreonTask {
 	async validatePerks(userID: string, shouldHave: PerkTier): Promise<string | null> {
 		const settings = await getUserSettings(userID);
 		let perkTier: PerkTier | 0 | null = getUsersPerkTier(settings.get(UserSettings.BitField));
@@ -123,7 +120,7 @@ export default class PatreonTask extends Task {
 	}
 
 	async givePerks(userID: string, perkTier: PerkTier) {
-		const settings = await (this.client.gateways.get('users') as Gateway)!
+		const settings = await (globalClient.gateways.get('users') as Gateway)!
 			.acquire({
 				id: userID
 			})
@@ -155,7 +152,7 @@ export default class PatreonTask extends Task {
 	}
 
 	async removePerks(userID: string) {
-		const settings = await (this.client.gateways.get('users') as Gateway)!
+		const settings = await (globalClient.gateways.get('users') as Gateway)!
 			.acquire({
 				id: userID
 			})
@@ -174,13 +171,10 @@ export default class PatreonTask extends Task {
 		);
 
 		// Remove patreon badge(s)
-		await settings.update(
-			UserSettings.Badges,
-			userBadges.filter(number => ![BadgesEnum.Patron, BadgesEnum.LimitedPatron].includes(number)),
-			{
-				arrayAction: ArrayActions.Overwrite
-			}
-		);
+		const patronBadges: number[] = [BadgesEnum.Patron, BadgesEnum.LimitedPatron];
+		await mahojiUserSettingsUpdate(userID, {
+			badges: userBadges.filter(number => !patronBadges.includes(number))
+		});
 
 		// Remove patron bank background
 		const bg = backgroundImages.find(bg => bg.id === settings.get(UserSettings.BankBackground));
@@ -232,19 +226,36 @@ export default class PatreonTask extends Task {
 				}
 			}
 
-			const settings = await (this.client.gateways.get('users') as Gateway)!
+			const settings = await (globalClient.gateways.get('users') as Gateway)!
 				.acquire({
 					id: patron.discordID
 				})
 				.sync(true);
 
-			if (settings.get(UserSettings.GithubID)) continue;
+			const roboChimpUser = await roboChimpUserFetch(BigInt(patron.discordID));
+
+			if (roboChimpUser.github_id) continue;
 
 			const username =
-				this.client.users.cache.get(patron.discordID)?.username ?? `${patron.discordID}|${patron.patreonID}`;
+				globalClient.users.cache.get(patron.discordID)?.username ?? `${patron.discordID}|${patron.patreonID}`;
 
-			if (settings.get(UserSettings.PatreonID) !== patron.patreonID) {
-				await settings.update(UserSettings.PatreonID, patron.patreonID);
+			if (roboChimpUser.patreon_id !== patron.patreonID) {
+				try {
+					await roboChimpClient.user.update({
+						where: {
+							id: BigInt(patron.discordID)
+						},
+						data: {
+							patreon_id: patron.patreonID
+						}
+					});
+				} catch {
+					logError(new Error('Failed to set patreonID'), {
+						id: patron.discordID,
+						patreon_id: patron.patreonID
+					});
+					continue;
+				}
 			}
 			const userBitfield = settings.get(UserSettings.BitField);
 			if (
@@ -284,7 +295,7 @@ export default class PatreonTask extends Task {
 		const githubResult = await this.syncGithub();
 		messages = messages.concat(githubResult);
 
-		const channel = this.client.channels.cache.get(Channel.ErrorLogs) as TextChannel;
+		const channel = globalClient.channels.cache.get(Channel.ErrorLogs) as TextChannel;
 		if (production) {
 			channel.send({ files: [new MessageAttachment(Buffer.from(result.join('\n')), 'patreon.txt')] });
 			channel.send(messages.join(', '));
@@ -292,7 +303,7 @@ export default class PatreonTask extends Task {
 			console.log(messages.join('\n'));
 		}
 
-		this.client.tasks.get('badges')?.run();
+		globalClient.tasks.get('badges')?.run();
 	}
 
 	async fetchPatrons(url?: string): Promise<Patron[]> {
@@ -332,3 +343,5 @@ export default class PatreonTask extends Task {
 		return users;
 	}
 }
+
+export const patreonTask = new PatreonTask();

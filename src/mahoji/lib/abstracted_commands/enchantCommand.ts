@@ -7,6 +7,7 @@ import { SkillsEnum } from '../../../lib/skilling/types';
 import { EnchantingActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, itemNameFromID, stringMatches, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../../lib/util/determineRunes';
 
 export async function enchantCommand(user: KlasaUser, channelID: bigint, name: string, quantity?: number) {
@@ -28,7 +29,7 @@ export async function enchantCommand(user: KlasaUser, channelID: bigint, name: s
 	await user.settings.sync(true);
 	const userBank = user.bank();
 
-	const maxTripLength = user.maxTripLength('Enchanting');
+	const maxTripLength = calcMaxTripLength(user, 'Enchanting');
 
 	let timeToEnchantTen = 3 * Time.Second * 0.6 + Time.Second / 4;
 
@@ -56,7 +57,7 @@ export async function enchantCommand(user: KlasaUser, channelID: bigint, name: s
 			enchantable.input
 		}, you're missing **${cost.clone().remove(userBank)}**.`;
 	}
-	await user.removeItemsFromBank(cost);
+	await transactItems({ userID: user.id, itemsToRemove: cost });
 
 	updateBankSetting(globalClient, ClientSettings.EconomyStats.MagicCostBank, cost);
 

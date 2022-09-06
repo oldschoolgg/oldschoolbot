@@ -145,6 +145,14 @@ const Constructables: Constructable[] = [
 		ticks: 5
 	},
 	{
+		id: 21_913,
+		name: 'Mythical cape (mounted)',
+		input: [Plank.TeakPlank, 3],
+		xp: 370,
+		level: 47,
+		ticks: 5
+	},
+	{
 		id: itemID('Mahogany armchair'),
 		name: 'Mahogany armchair',
 		input: [Plank.MahoganyPlank, 2],

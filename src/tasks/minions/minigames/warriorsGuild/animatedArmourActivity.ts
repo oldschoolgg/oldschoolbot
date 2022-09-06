@@ -19,7 +19,11 @@ export default class extends Task {
 			'Warrior guild token': quantity * armour.tokens
 		});
 
-		await user.addItemsToBank({ items: loot, collectionLog: true });
+		await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 
 		handleTripFinish(
 			user,

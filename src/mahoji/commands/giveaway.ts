@@ -175,7 +175,7 @@ React to this messsage with ${reaction} to enter.`,
 				logError(err, { user_id: user.id, emoji_id: reaction.id, guild_id: guildID.toString() });
 				return 'Unknown error. You will be refunded when the giveaway ends if the giveaway fails.';
 			}
-			return message;
+			return 'Giveaway started.';
 		}
 	}
 };

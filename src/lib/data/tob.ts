@@ -13,6 +13,7 @@ import { Gear } from '../structures/Gear';
 import { Skills } from '../types';
 import { assert, formatSkillRequirements, randFloat, randomVariation, skillsMeetRequirements } from '../util';
 import getOSItem from '../util/getOSItem';
+import { logError } from '../util/logError';
 import resolveItems from '../util/resolveItems';
 
 export const bareMinStats: Skills = {
@@ -299,9 +300,6 @@ export async function checkTOBUser(
 	if (!user.hasMinion) {
 		return [true, `${user.username} doesn't have a minion`];
 	}
-	if (user.minionIsBusy) {
-		return [true, `${user.username} minion is busy`];
-	}
 
 	if (!skillsMeetRequirements(user.rawSkills, bareMinStats)) {
 		return [
@@ -435,6 +433,7 @@ export async function checkTOBTeam(users: KlasaUser[], isHardMode: boolean): Pro
 	}
 
 	for (const user of users) {
+		if (user.minionIsBusy) return `${user.username}'s minion is busy.`;
 		const checkResult = await checkTOBUser(user, isHardMode, users.length);
 		if (!checkResult[0]) {
 			continue;
@@ -653,6 +652,14 @@ export function createTOBTeam({
 	}
 
 	if (!wipedRoom) deathDuration = null;
+
+	if (wipedRoom !== null && (!TOBRooms.includes(wipedRoom) || [-1].includes(TOBRooms.indexOf(wipedRoom)))) {
+		logError(new Error('Had non-existant wiped room for tob'), {
+			room: JSON.stringify(wipedRoom),
+			team: JSON.stringify(parsedTeam)
+		});
+		wipedRoom = null;
+	}
 
 	return {
 		duration,

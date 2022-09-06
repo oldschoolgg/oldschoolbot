@@ -58,6 +58,9 @@ export async function tobStatsCommand(user: KlasaUser) {
 }
 
 export async function tobStartCommand(user: KlasaUser, channelID: bigint, isHardMode: boolean, maxSizeInput?: number) {
+	if (user.minionIsBusy) {
+		return `${user.username} minion is busy`;
+	}
 	const initialCheck = await checkTOBUser(user, isHardMode);
 	if (initialCheck[0]) {
 		return initialCheck[1];
@@ -83,7 +86,13 @@ export async function tobStartCommand(user: KlasaUser, channelID: bigint, isHard
 		message: `${user.username} is hosting a ${
 			isHardMode ? '**Hard mode** ' : ''
 		}Theatre of Blood mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
-		customDenier: user => checkTOBUser(user, isHardMode)
+		customDenier: async user => {
+			if (user.minionIsBusy) {
+				return [true, `${user.username} minion is busy`];
+			}
+
+			return checkTOBUser(user, isHardMode);
+		}
 	};
 
 	const channel = globalClient.channels.cache.get(channelID.toString());
@@ -97,7 +106,14 @@ export async function tobStartCommand(user: KlasaUser, channelID: bigint, isHard
 		return `Your mass failed to start because of this reason: ${teamCheckFailure} ${users}`;
 	}
 
-	const { duration, totalReduction, reductions, wipedRoom, deathDuration, parsedTeam } = createTOBTeam({
+	const {
+		duration,
+		totalReduction,
+		reductions,
+		wipedRoom: _wipedRoom,
+		deathDuration,
+		parsedTeam
+	} = createTOBTeam({
 		team: await Promise.all(
 			users.map(async u => ({
 				user: u,
@@ -111,7 +127,7 @@ export async function tobStartCommand(user: KlasaUser, channelID: bigint, isHard
 		),
 		hardMode: isHardMode
 	});
-
+	const wipedRoom = _wipedRoom ? TOBRooms.find(room => _wipedRoom.name === room.name)! : null;
 	let debugStr = '';
 
 	const totalCost = new Bank();

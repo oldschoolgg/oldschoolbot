@@ -8,9 +8,10 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Agility from '../../lib/skilling/skills/agility';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { AgilityActivityTaskOptions } from '../../lib/types/minions';
-import { addItemToBank, updateGPTrackSetting } from '../../lib/util';
+import { addItemToBank } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { updateGPTrackSetting } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: AgilityActivityTaskOptions) {
@@ -62,9 +63,14 @@ export default class extends Task {
 			duration
 		});
 
-		const loot = new Bank({
-			'Mark of grace': totalMarks
-		});
+		const loot = new Bank();
+		if (course.marksPer60) loot.add('Mark of grace', totalMarks);
+
+		// Calculate Crystal Shards for Priff
+		if (course.name === 'Prifddinas Rooftop Course') {
+			// 15 Shards per hour
+			loot.add('Crystal shard', Math.floor((duration / Time.Hour) * 15));
+		}
 
 		if (alch) {
 			const alchedItem = getOSItem(alch.itemID);
@@ -80,8 +86,8 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished ${quantity} ${
 			course.name
-		} laps and fell on ${lapsFailed} of them.\nYou received: ${loot} ${
-			diaryBonus ? '(25% bonus Marks for Ardougne Elite diary)' : ''
+		} laps and fell on ${lapsFailed} of them.\nYou received: ${loot}${
+			diaryBonus ? ' (25% bonus Marks for Ardougne Elite diary)' : ''
 		}.\n${xpRes}`;
 
 		if (course.id === 6) {
@@ -105,7 +111,11 @@ export default class extends Task {
 			);
 		}
 
-		await user.addItemsToBank({ items: loot, collectionLog: true });
+		await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 
 		handleTripFinish(
 			user,

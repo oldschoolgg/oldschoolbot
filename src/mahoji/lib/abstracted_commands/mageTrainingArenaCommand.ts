@@ -9,6 +9,7 @@ import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../../lib/util/determineRunes';
 import getOSItem from '../../../lib/util/getOSItem';
 import { pizazzPointsPerHour } from '../../../tasks/minions/minigames/mageTrainingArenaActivity';
@@ -122,7 +123,7 @@ export async function mageTrainingArenaStartCommand(user: KlasaUser, channelID: 
 	await user.settings.sync(true);
 
 	const roomDuration = Time.Minute * 14;
-	const quantity = Math.floor(user.maxTripLength('MageTrainingArena') / roomDuration);
+	const quantity = Math.floor(calcMaxTripLength(user, 'MageTrainingArena') / roomDuration);
 	const duration = quantity * roomDuration;
 
 	const cost = determineRunes(user, new Bank().add(RuneTable.roll())).multiply(quantity);
@@ -131,7 +132,7 @@ export async function mageTrainingArenaStartCommand(user: KlasaUser, channelID: 
 		return `You don't have enough items for this trip, you need: ${cost}.`;
 	}
 
-	await user.removeItemsFromBank(cost);
+	await transactItems({ userID: user.id, itemsToRemove: cost });
 
 	await updateBankSetting(globalClient, ClientSettings.EconomyStats.MTACostBank, cost);
 

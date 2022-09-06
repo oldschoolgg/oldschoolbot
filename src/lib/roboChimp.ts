@@ -13,12 +13,12 @@ declare global {
 
 global.roboChimpClient = global.roboChimpClient || new PrismaClient();
 
-export async function getRandomTriviaQuestion(): Promise<TriviaQuestion> {
+export async function getRandomTriviaQuestions(): Promise<TriviaQuestion[]> {
 	const random: TriviaQuestion[] = await roboChimpClient.$queryRaw`SELECT id, question, answers
 FROM trivia_question
 ORDER BY random()
-LIMIT 1;`;
-	return random[0];
+LIMIT 10;`;
+	return random;
 }
 
 export async function roboChimpUserFetch(userID: bigint) {

@@ -15,7 +15,7 @@ interface MakeBankImageOptions {
 	user?: KlasaUser;
 	previousCL?: Bank;
 	showNewCL?: boolean;
-	flag?: BankFlag;
+	mahojiFlags?: BankFlag[];
 }
 
 export async function makeBankImage({
@@ -26,7 +26,7 @@ export async function makeBankImage({
 	previousCL,
 	showNewCL = false,
 	flags = {},
-	flag
+	mahojiFlags = []
 }: MakeBankImageOptions): Promise<{
 	file: MahojiAttachment;
 }> {
@@ -39,7 +39,7 @@ export async function makeBankImage({
 		flags: realFlags,
 		user,
 		collectionLog: previousCL,
-		flag
+		mahojiFlags
 	});
 
 	return {

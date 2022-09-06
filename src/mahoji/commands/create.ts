@@ -11,7 +11,7 @@ import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
 import { stringMatches, updateBankSetting } from '../../lib/util';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation } from '../mahojiSettings';
+import { allItemsOwned, handleMahojiConfirmation, userStatsBankUpdate } from '../mahojiSettings';
 
 function showAllCreatables() {
 	let content = 'This are the items that you can create:';
@@ -150,7 +150,7 @@ export const createCommand: OSBMahojiCommand = {
 			}
 		}
 		if (createableItem.maxCanOwn) {
-			const allItems = user.allItemsOwned();
+			const allItems = allItemsOwned(user);
 			const amountOwned = allItems.amount(createableItem.name);
 			if (amountOwned >= createableItem.maxCanOwn) {
 				return `You already have ${amountOwned}x ${createableItem.name}, you can't create another.`;
@@ -169,9 +169,9 @@ export const createCommand: OSBMahojiCommand = {
 
 		// Check for any items they cant have 2 of.
 		if (createableItem.cantHaveItems) {
-			const allItemsOwned = user.allItemsOwned();
+			const allItemsOwnedBank = allItemsOwned(user);
 			for (const [itemID, qty] of Object.entries(createableItem.cantHaveItems)) {
-				const numOwned = allItemsOwned.amount(Number(itemID));
+				const numOwned = allItemsOwnedBank.amount(Number(itemID));
 				if (numOwned >= qty) {
 					return `You can't ${action} this item, because you have ${new Bank(
 						createableItem.cantHaveItems
@@ -197,18 +197,30 @@ export const createCommand: OSBMahojiCommand = {
 			return `You don't have the required items to ${action} this item. You need: ${inItems}.`;
 		}
 
-		await user.removeItemsFromBank(inItems);
-		await user.addItemsToBank({ items: outItems });
+		let extraMessage = '';
+		// Handle onCreate() features, and last chance to abort:
+		if (createableItem.onCreate) {
+			const onCreateResult = await createableItem.onCreate(quantity, user);
+			if (!onCreateResult.result) {
+				return onCreateResult.message;
+			}
+			if (onCreateResult.message) extraMessage += `\n\n${onCreateResult.message}`;
+		}
 
-		updateBankSetting(globalClient, ClientSettings.EconomyStats.CreateCost, inItems);
-		updateBankSetting(globalClient, ClientSettings.EconomyStats.CreateLoot, outItems);
+		await user.removeItemsFromBank(inItems);
+		await transactItems({ userID: userID.toString(), itemsToAdd: outItems });
+
+		await updateBankSetting(globalClient, ClientSettings.EconomyStats.CreateCost, inItems);
+		await updateBankSetting(globalClient, ClientSettings.EconomyStats.CreateLoot, outItems);
+		await userStatsBankUpdate(user.id, 'create_cost_bank', inItems);
+		await userStatsBankUpdate(user.id, 'create_loot_bank', outItems);
 
 		// Only allow +create to add items to CL
 		if (!createableItem.noCl && action === 'create') await user.addItemsToCollectionLog({ items: outItems });
 
 		if (action === 'revert') {
-			return `You reverted ${inItems} into ${outItems}.`;
+			return `You reverted ${inItems} into ${outItems}.${extraMessage}`;
 		}
-		return `You received ${outItems}.`;
+		return `You received ${outItems}.${extraMessage}`;
 	}
 };

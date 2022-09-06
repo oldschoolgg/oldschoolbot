@@ -1,23 +1,20 @@
-import { MessageAttachment, TextChannel } from 'discord.js';
-import { roll, Time } from 'e';
+import { TextChannel } from 'discord.js';
+import { roll, shuffleArr, Time, uniqueArr } from 'e';
 import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
-import { COINS_ID, Emoji, SupportServer } from '../../../lib/constants';
+import { SupportServer } from '../../../config';
+import { COINS_ID, Emoji } from '../../../lib/constants';
 import pets from '../../../lib/data/pets';
-import { getRandomTriviaQuestion } from '../../../lib/roboChimp';
+import { DynamicButtons } from '../../../lib/DynamicButtons';
+import { getRandomTriviaQuestions } from '../../../lib/roboChimp';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import dailyRoll from '../../../lib/simulation/dailyTable';
-import { channelIsSendable, formatDuration, isWeekend, stringMatches, updateGPTrackSetting } from '../../../lib/util';
+import { channelIsSendable, formatDuration, isWeekend } from '../../../lib/util';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-
-const options = {
-	max: 1,
-	time: 13_000,
-	errors: ['time']
-};
+import { updateGPTrackSetting } from '../../mahojiSettings';
 
 export function isUsersDailyReady(user: KlasaUser): { isReady: true } | { isReady: false; durationUntilReady: number } {
 	const currentDate = new Date().getTime();
@@ -32,7 +29,7 @@ export function isUsersDailyReady(user: KlasaUser): { isReady: true } | { isRead
 	return { isReady: true };
 }
 
-async function reward(user: KlasaUser, channel: TextChannel, triviaCorrect: boolean): CommandResponse {
+async function reward(user: KlasaUser, triviaCorrect: boolean): CommandResponse {
 	const guild = globalClient.guilds.cache.get(SupportServer);
 	const member = await guild?.members.fetch(user).catch(() => null);
 
@@ -83,7 +80,7 @@ async function reward(user: KlasaUser, channel: TextChannel, triviaCorrect: bool
 	const correct = triviaCorrect ? 'correct' : 'incorrect';
 	const reward = triviaCorrect
 		? "I've picked you some random items as a reward..."
-		: 'Even though you got it wrong, heres a little reward...';
+		: "Even though you got it wrong, here's a little reward...";
 
 	let dmStr = `${bonuses.join('')} **${Emoji.Diango} Diango says..** That's ${correct}! ${reward}\n`;
 
@@ -105,15 +102,18 @@ async function reward(user: KlasaUser, channel: TextChannel, triviaCorrect: bool
 		updateGPTrackSetting('gp_daily', loot[COINS_ID]);
 	}
 
-	const { itemsAdded, previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
+	const { itemsAdded, previousCL } = await transactItems({
+		userID: user.id,
+		collectionLog: true,
+		itemsToAdd: new Bank(loot)
+	});
 	const image = await makeBankImage({
 		bank: itemsAdded,
 		title: `${user.username}'s Daily`,
 		previousCL,
 		showNewCL: true
 	});
-	await channel.send({ content: dmStr, files: [new MessageAttachment(image.file.buffer)] });
-	return { content: `${dmStr}\nYou received ${new Bank(loot)}` };
+	return { content: `${dmStr}\nYou received ${new Bank(loot)}`, attachments: [image.file] };
 }
 
 export async function dailyCommand(
@@ -133,21 +133,30 @@ export async function dailyCommand(
 
 	await user.settings.update(UserSettings.LastDailyTimestamp, new Date().getTime());
 
-	const { question, answers } = await getRandomTriviaQuestion();
+	const [question, ...fakeQuestions] = await getRandomTriviaQuestions();
 
-	await channel.send(`**${Emoji.Diango} Diango asks ${user.username}...** ${question}`);
-	try {
-		const collected = await channel.awaitMessages({
-			...options,
-			filter: answer =>
-				answer.author.id === user.id &&
-				Boolean(answer.content) &&
-				answers.some(_ans => stringMatches(_ans, answer.content))
+	let correctUser: string | null = null;
+	const buttons = new DynamicButtons({
+		channel: channel as TextChannel,
+		usersWhoCanInteract: [user.id],
+		deleteAfterConfirm: true
+	});
+	const allAnswers = uniqueArr(shuffleArr([question, ...fakeQuestions].map(q => q.answers[0])));
+	for (const answer of allAnswers) {
+		buttons.add({
+			name: answer,
+			fn: ({ interaction }) => {
+				if (question.answers.includes(answer) ? true : false) {
+					correctUser = interaction.user.id;
+				}
+			},
+			cantBeBusy: false
 		});
-		const winner = collected.first();
-		if (winner) return reward(user, channel, true);
-	} catch (err) {
-		return reward(user, channel, false);
 	}
-	return 'Something went wrong!';
+
+	await buttons.render({
+		messageOptions: { content: `**${Emoji.Diango} Diango asks ${user.username}...** ${question.question}` },
+		isBusy: false
+	});
+	return reward(user, correctUser !== null);
 }

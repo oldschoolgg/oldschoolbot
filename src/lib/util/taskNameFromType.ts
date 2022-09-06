@@ -145,6 +145,8 @@ export function taskNameFromType(activityType: activity_type_enum): Tasks {
 			return Tasks.Nex;
 		case 'TroubleBrewing':
 			return Tasks.TroubleBrewing;
+		case 'PuroPuro':
+			return Tasks.PuroPuro;
 		case 'ShootingStars':
 			return Tasks.ShootingStars;
 		case 'Easter':

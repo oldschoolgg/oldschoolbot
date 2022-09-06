@@ -55,6 +55,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 			return "You didn't provide any items, filter or search.";
 		}
 
+		interaction.deferReply();
 		const user = await globalClient.fetchUser(userID.toString());
 		const mUser = await mahojiUsersSettingsFetch(user.id);
 		const bankToSac = parseBank({
@@ -106,7 +107,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 
 		let totalPrice = 0;
 		for (const [item, qty] of bankToSac.items()) {
-			totalPrice += sellPriceOfItem(item, 0).basePrice * qty;
+			totalPrice += Math.floor(sellPriceOfItem(item, 0).basePrice * qty);
 		}
 
 		await handleMahojiConfirmation(

@@ -1,6 +1,6 @@
 import { KlasaClientOptions } from 'klasa';
 
-import { IDiscordSettings, PatreonConfig, ProviderConfig, RedditAppConfig } from './lib/types';
+import { IDiscordSettings, PatreonConfig, ProviderConfig } from './lib/types';
 
 export const botToken = '';
 export const providerConfig: ProviderConfig | null = {
@@ -14,7 +14,6 @@ export const providerConfig: ProviderConfig | null = {
 };
 export const production = false;
 
-export const redditAppConfig: RedditAppConfig = null;
 export const patreonConfig: PatreonConfig = null;
 export const customClientOptions: Partial<KlasaClientOptions> = {
 	prefix: '-',
@@ -31,5 +30,8 @@ export const DISCORD_SETTINGS: Partial<IDiscordSettings> = {
 	// Your bot unique ID goes here
 	BotID: '303730326692429825'
 };
-export const OWNER_ID = '157797566833098752';
+// Add or replace these with your Discord ID:
+export const OWNER_IDS = ['157797566833098752'];
 export const MAXING_MESSAGE = 'Congratulations on maxing!';
+// Discord server where admin commands will be allowed:
+export const SupportServer = '940758552425955348';

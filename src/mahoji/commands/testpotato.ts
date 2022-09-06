@@ -7,6 +7,7 @@ import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import { convertLVLtoXP, itemID } from 'oldschooljs/dist/util';
 
 import { production } from '../../config';
+import { allStashUnitsFlat, allStashUnitTiers } from '../../lib/clues/stashUnits';
 import { BitField, MAX_QP } from '../../lib/constants';
 import { leaguesCreatables } from '../../lib/data/creatables/leagueCreatables';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
@@ -18,8 +19,9 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Skills from '../../lib/skilling/skills';
 import Farming from '../../lib/skilling/skills/farming';
+import { stressTest } from '../../lib/stressTest';
 import { Gear } from '../../lib/structures/Gear';
-import { assert, stringMatches } from '../../lib/util';
+import { stringMatches } from '../../lib/util';
 import {
 	FarmingPatchName,
 	farmingPatchNames,
@@ -164,13 +166,24 @@ for (const usable of allUsableItems) usables.add(usable, 100);
 const leaguesPreset = new Bank();
 for (const a of leaguesCreatables) leaguesPreset.add(a.outputItems);
 
+const allStashUnitItems = new Bank();
+for (const unit of allStashUnitsFlat) {
+	for (const i of [unit.items].flat(2)) {
+		allStashUnitItems.add(i);
+	}
+}
+for (const tier of allStashUnitTiers) {
+	allStashUnitItems.add(tier.cost.clone().multiply(tier.units.length));
+}
+
 const spawnPresets = [
 	['openables', openablesBank],
 	['random', new Bank()],
 	['equippables', equippablesBank],
 	['farming', farmingPreset],
 	['usables', usables],
-	['leagues', leaguesPreset]
+	['leagues', leaguesPreset],
+	['stashunits', allStashUnitItems]
 ] as const;
 
 const nexSupplies = new Bank()
@@ -420,6 +433,9 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					logError('Test command ran in production', { userID: userID.toString() });
 					return 'This will never happen...';
 				}
+				if (options.stresstest) {
+					return stressTest(userID.toString());
+				}
 				const user = await globalClient.fetchUser(userID.toString());
 				const mahojiUser = await mahojiUsersSettingsFetch(user.id);
 				if (options.irontoggle) {
@@ -430,11 +446,15 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					return `You now ${!current ? 'ARE' : 'ARE NOT'} an ironman.`;
 				}
 				if (options.max) {
-					await roboChimpClient.user.update({
+					await roboChimpClient.user.upsert({
 						where: {
 							id: BigInt(user.id)
 						},
-						data: {
+						create: {
+							id: BigInt(user.id),
+							leagues_points_balance_osb: 25_000
+						},
+						update: {
 							leagues_points_balance_osb: {
 								increment: 25_000
 							}
@@ -564,31 +584,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					});
 					return userGrowingProgressStr((await getFarmingInfo(userID)).patchesDetailed);
 				}
-				if (options.stresstest) {
-					const currentBalance = user.settings.get(UserSettings.GP);
-					const currentTbow = user.bank().amount('Twisted bow');
 
-					const b = new Bank().add('Coins', 1).add('Twisted bow');
-					for (let i = 0; i < 30; i++) {
-						await user.addItemsToBank({ items: b });
-						assert(user.settings.get(UserSettings.GP) === currentBalance + 1);
-						assert(user.bank().amount('Twisted bow') === currentTbow + 1);
-						await user.removeItemsFromBank(b);
-						await user.addItemsToBank({ items: b });
-						await user.removeItemsFromBank(b);
-						await user.addItemsToBank({ items: b });
-						await user.removeItemsFromBank(b);
-
-						const a = user.bank().bank;
-						if (!a[itemID('Twisted bow')]) a[itemID('Twisted bow')] = 0;
-						a[itemID('Twisted bow')] += 1.5;
-						await user.settings.update(UserSettings.Bank, a);
-						await user.removeItemsFromBank(new Bank().add('Twisted bow'));
-					}
-					const newBal = user.settings.get(UserSettings.GP);
-					const newTbow = user.bank().amount('Twisted bow');
-					return `Bank/GP: ${currentBalance === newBal && currentTbow === newTbow ? 'OK' : 'FAIL'}`;
-				}
 				return 'Nothin!';
 			}
 	  };

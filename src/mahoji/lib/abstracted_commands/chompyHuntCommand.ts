@@ -7,6 +7,7 @@ import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
 
 const diaryBoosts = [
@@ -68,7 +69,7 @@ export async function chompyHuntCommand(user: KlasaUser, channelID: bigint) {
 		return 'You need an Ogre bow equipped in your range outfit, and Ogre arrows to hunt Chompy birds!';
 	}
 
-	const tripLength = user.maxTripLength('BigChompyBirdHunting');
+	const tripLength = calcMaxTripLength(user, 'BigChompyBirdHunting');
 
 	let boosts = [];
 	let quantity = Math.floor((baseChompyPerHour / Time.Hour) * tripLength);
@@ -102,7 +103,7 @@ export async function chompyHuntCommand(user: KlasaUser, channelID: bigint) {
 		return `You don't have enough Ogre arrow's to kill ${quantity}x Chompy birds, you need ${arrowsNeeded}.`;
 	}
 
-	await user.removeItemsFromBank(cost);
+	await transactItems({ userID: user.id, itemsToRemove: cost });
 
 	await addSubTaskToActivityTask<MinigameActivityTaskOptions>({
 		userID: user.id,

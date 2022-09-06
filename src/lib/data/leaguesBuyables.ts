@@ -69,10 +69,6 @@ const trailblazerBuyables: RawLeagueBuyable[] = [
 		price: 10
 	},
 	{
-		item: getOSItem('Trailblazer globe'),
-		price: 8
-	},
-	{
 		item: getOSItem('Trailblazer graceful ornament kit'),
 		price: 2
 	},

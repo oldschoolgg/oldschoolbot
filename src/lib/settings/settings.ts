@@ -3,6 +3,7 @@ import { GuildMember, MessageAttachment } from 'discord.js';
 import { roll } from 'e';
 import { Gateway, KlasaMessage, KlasaUser, Settings } from 'klasa';
 import { APIInteractionGuildMember } from 'mahoji';
+import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
 import { CommandArgs } from '../../mahoji/lib/inhibitors';
 import { postCommand } from '../../mahoji/lib/postCommand';
@@ -10,10 +11,8 @@ import { preCommand } from '../../mahoji/lib/preCommand';
 import {
 	convertAPIEmbedToDJSEmbed,
 	convertComponentDJSComponent,
-	convertKlasaCommandToAbstractCommand,
 	convertMahojiCommandToAbstractCommand
 } from '../../mahoji/lib/util';
-import { BotCommand } from '../structures/BotCommand';
 import { ActivityTaskData } from '../types/minions';
 import { channelIsSendable, cleanUsername, isGroupActivity } from '../util';
 import { logError } from '../util/logError';
@@ -144,34 +143,25 @@ export interface RunCommandArgs {
 	userID: string | bigint;
 	member: APIInteractionGuildMember | GuildMember | null;
 	isContinue?: boolean;
-	method?: string;
 	bypassInhibitors?: true;
 	guildID: string | bigint | undefined;
-	msg?: KlasaMessage;
 }
 export async function runCommand({
 	commandName,
 	args,
 	isContinue,
-	method = 'run',
 	bypassInhibitors,
 	userID,
 	channelID,
 	guildID,
 	user,
-	member,
-	msg
-}: RunCommandArgs) {
+	member
+}: RunCommandArgs): Promise<null | CommandResponse> {
 	const channel = globalClient.channels.cache.get(channelID.toString());
-	if (!channel || !channelIsSendable(channel)) return;
+	if (!channel || !channelIsSendable(channel)) return null;
 	const mahojiCommand = globalClient.mahojiClient.commands.values.find(c => c.name === commandName);
-	const command = globalClient.commands.get(commandName) as BotCommand | undefined;
-	const actualCommand = mahojiCommand ?? command;
-	if (!actualCommand) throw new Error('No command found');
-	const abstractCommand =
-		actualCommand instanceof BotCommand
-			? convertKlasaCommandToAbstractCommand(actualCommand)
-			: convertMahojiCommandToAbstractCommand(actualCommand);
+	if (!mahojiCommand) throw new Error('No command found');
+	const abstractCommand = convertMahojiCommandToAbstractCommand(mahojiCommand);
 
 	let error: Error | null = null;
 	let inhibited = false;
@@ -186,58 +176,41 @@ export async function runCommand({
 
 		if (inhibitedReason) {
 			inhibited = true;
-			if (inhibitedReason.silent) return;
-			return channel.send(inhibitedReason.reason);
+			if (inhibitedReason.silent) return null;
+			channel.send(
+				typeof inhibitedReason.reason === 'string' ? inhibitedReason.reason : inhibitedReason.reason.content!
+			);
+			return null;
 		}
 
-		if (mahojiCommand) {
-			if (Array.isArray(args)) throw new Error(`Had array of args for mahoji command called ${commandName}`);
-			const result = await runMahojiCommand({
-				options: args,
-				commandName,
-				guildID,
-				channelID,
-				userID,
-				member,
-				user
-			});
-			if (channelIsSendable(channel)) {
-				if (typeof result === 'string') {
-					await channel.send(result);
-				} else {
-					await channel.send({
-						content: result.content,
-						embeds: result.embeds?.map(convertAPIEmbedToDJSEmbed),
-						components: result.components?.map(convertComponentDJSComponent),
-						files: result.attachments?.map(i => new MessageAttachment(i.buffer, i.fileName))
-					});
-				}
-			}
-		} else {
-			if (!Array.isArray(args)) throw new Error('Had object args for non-mahoji command');
-			if (!command) throw new Error(`Tried to run \`${commandName}\` command, but couldn't find the piece.`);
-			if (!command.enabled) throw new Error(`The ${command.name} command is disabled.`);
-			const fakeMessage = msg ?? {
-				author: user,
-				member,
-				channel
-			};
-			try {
-				// @ts-ignore Cant be typechecked
-				const result = await command[method](fakeMessage, args);
-				return result;
-			} catch (err) {
-				logError(err, {
-					user_id: userID.toString(),
-					command_name: commandName,
-					args: JSON.stringify(args)
+		if (Array.isArray(args)) throw new Error(`Had array of args for mahoji command called ${commandName}`);
+		const result = await runMahojiCommand({
+			options: args,
+			commandName,
+			guildID,
+			channelID,
+			userID,
+			member,
+			user
+		});
+		if (channelIsSendable(channel)) {
+			if (typeof result === 'string') {
+				await channel.send(result);
+			} else {
+				await channel.send({
+					content: result.content,
+					embeds: result.embeds?.map(convertAPIEmbedToDJSEmbed),
+					components: result.components?.map(convertComponentDJSComponent),
+					files: result.attachments?.map(i => new MessageAttachment(i.buffer, i.fileName))
 				});
 			}
 		}
+		return result;
 	} catch (err: any) {
 		if (typeof err === 'string') {
 			if (channelIsSendable(channel)) {
-				return channel.send(err);
+				channel.send(err);
+				return null;
 			}
 		}
 		error = err as Error;

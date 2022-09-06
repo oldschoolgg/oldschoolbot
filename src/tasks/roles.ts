@@ -2,11 +2,12 @@ import { Guild } from 'discord.js';
 import { noOp, notEmpty } from 'e';
 import { Task } from 'klasa';
 
-import { production } from '../config';
-import { BOT_TYPE, Roles, SupportServer, usernameCache } from '../lib/constants';
+import { production, SupportServer } from '../config';
+import { ClueTiers } from '../lib/clues/clueTiers';
+import { BOT_TYPE, Roles, usernameCache } from '../lib/constants';
 import { getCollectionItems } from '../lib/data/Collections';
-import ClueTiers from '../lib/minions/data/clueTiers';
 import { Minigames } from '../lib/settings/minigames';
+import { prisma } from '../lib/settings/prisma';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import Skills from '../lib/skilling/skills';
 import { convertXPtoLVL } from '../lib/util';
@@ -126,7 +127,7 @@ export default class extends Task {
 		let result = '';
 		// eslint-disable-next-line @typescript-eslint/unbound-method
 		const q = async <T>(str: string) => {
-			const result = await this.client.query<T>(str).catch(err => {
+			const result = await prisma.$queryRawUnsafe<T>(str).catch(err => {
 				logError(`This query failed: ${str}`, err);
 				return [];
 			});

@@ -10,6 +10,7 @@ import { SkillsEnum } from '../../../lib/skilling/types';
 import { MahoganyHomesActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
 
 const contractTiers = [
@@ -128,7 +129,7 @@ export async function mahoganyHomesBuildCommand(user: KlasaUser, channelID: bigi
 	const [quantity, itemsNeeded, xp, duration, points] = calcTrip(
 		conLevel,
 		kc,
-		user.maxTripLength('MahoganyHomes'),
+		calcMaxTripLength(user, 'MahoganyHomes'),
 		hasSack
 	);
 

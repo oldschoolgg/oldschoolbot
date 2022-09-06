@@ -34,7 +34,11 @@ export default class extends Task {
 			}
 		}
 
-		const { itemsAdded, previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
+		const { itemsAdded, previousCL } = await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 		const xpRes = await user.addXP({ skillName: SkillsEnum.Thieving, amount: thievingXP });
 
 		let str = `${user}, ${user.minionName} finished doing the Pyramid Plunder ${quantity}x times. ${totalAmountUrns}x urns opened. ${xpRes}`;

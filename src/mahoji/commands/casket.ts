@@ -2,8 +2,8 @@ import { KlasaUser } from 'klasa';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
+import { ClueTiers } from '../../lib/clues/clueTiers';
 import { PerkTier } from '../../lib/constants';
-import ClueTiers from '../../lib/minions/data/clueTiers';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { Workers } from '../../lib/workers';

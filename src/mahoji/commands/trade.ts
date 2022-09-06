@@ -1,6 +1,8 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { Bank } from 'oldschooljs';
 
+import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { Events } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
 import { addToGPTaxBalance, discrimName, truncateString } from '../../lib/util';
@@ -8,12 +10,7 @@ import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import {
-	handleMahojiConfirmation,
-	mahojiClientSettingsFetch,
-	mahojiParseNumber,
-	MahojiUserOption
-} from '../mahojiSettings';
+import { handleMahojiConfirmation, mahojiParseNumber } from '../mahojiSettings';
 
 export const askCommand: OSBMahojiCommand = {
 	name: 'trade',
@@ -64,26 +61,29 @@ export const askCommand: OSBMahojiCommand = {
 		filter?: string;
 		search?: string;
 	}>) => {
+		interaction.deferReply();
 		if (!guildID) return 'You can only run this in a server.';
 		const senderKlasaUser = await globalClient.fetchUser(userID);
 		const recipientKlasaUser = await globalClient.fetchUser(options.user.user.id);
-		const settings = await mahojiClientSettingsFetch({ userBlacklist: true });
 
-		const isBlacklisted = settings.userBlacklist.includes(recipientKlasaUser.id);
+		const isBlacklisted = BLACKLISTED_USERS.has(recipientKlasaUser.id);
 		if (isBlacklisted) return "Blacklisted players can't buy items.";
 		if (senderKlasaUser.isIronman || recipientKlasaUser.isIronman) return "Iron players can't trade items.";
 		if (recipientKlasaUser.id === senderKlasaUser.id) return "You can't trade yourself.";
 		if (recipientKlasaUser.bot) return "You can't trade a bot.";
 		if (recipientKlasaUser.isBusy) return 'That user is busy right now.';
 
-		const itemsSent = parseBank({
-			inputBank: senderKlasaUser.bank({ withGP: true }),
-			inputStr: options.send,
-			maxSize: 70,
-			flags: { tradeables: 'tradeables' },
-			filters: [options.filter],
-			search: options.search
-		}).filter(i => itemIsTradeable(i.id, true));
+		const itemsSent =
+			!options.search && !options.filter && !options.send
+				? new Bank()
+				: parseBank({
+						inputBank: senderKlasaUser.bank({ withGP: true }),
+						inputStr: options.send,
+						maxSize: 70,
+						flags: { tradeables: 'tradeables' },
+						filters: [options.filter],
+						search: options.search
+				  }).filter(i => itemIsTradeable(i.id, true));
 		const itemsReceived = parseBank({
 			inputStr: options.receive,
 			maxSize: 70,
@@ -111,7 +111,7 @@ export const askCommand: OSBMahojiCommand = {
 **${recipientKlasaUser}** is giving: ${truncateString(itemsReceived.toString(), 950)}
 
 Both parties must click confirm to make the trade.`,
-			[BigInt(recipientKlasaUser.id), BigInt(senderKlasaUser.id)]
+			[recipientKlasaUser.id, senderKlasaUser.id]
 		);
 
 		if (!recipientKlasaUser.owns(itemsReceived)) return "They don't own those items.";

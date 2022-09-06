@@ -13,6 +13,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { OfferingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';
@@ -107,7 +108,11 @@ export const mineCommand: OSBMahojiCommand = {
 			let loot = new Bank().add(whichOfferable.table.roll(quantity));
 
 			let score = 0;
-			const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
+			const { previousCL, itemsAdded } = await transactItems({
+				userID: user.id,
+				collectionLog: true,
+				itemsToAdd: loot
+			});
 			if (whichOfferable.economyCounter) {
 				score = user.settings.get(whichOfferable.economyCounter) as number;
 				user.settings.update(whichOfferable.economyCounter, score + quantity);
@@ -159,7 +164,11 @@ export const mineCommand: OSBMahojiCommand = {
 				amount: quantity * 100
 			});
 
-			const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
+			const { previousCL, itemsAdded } = await transactItems({
+				userID: user.id,
+				collectionLog: true,
+				itemsToAdd: loot
+			});
 
 			notifyUniques(user, egg.name, evilChickenOutfit, loot, quantity);
 
@@ -203,7 +212,7 @@ export const mineCommand: OSBMahojiCommand = {
 			} to Barlak and received ${xp} Construction XP.`;
 		}
 
-		const speedMod = 4.8;
+		const speedMod = 1.5;
 
 		const bone = Prayer.Bones.find(
 			bone => stringMatches(bone.name, options.name) || stringMatches(bone.name.split(' ')[0], options.name)
@@ -222,7 +231,7 @@ export const mineCommand: OSBMahojiCommand = {
 		const amountOfThisBone = userBank.amount(bone.inputId);
 		if (!amountOfThisBone) return `You have no ${bone.name}.`;
 
-		const maxTripLength = user.maxTripLength('Offering');
+		const maxTripLength = calcMaxTripLength(user, 'Offering');
 
 		// If no quantity provided, set it to the max.
 		if (!quantity) {

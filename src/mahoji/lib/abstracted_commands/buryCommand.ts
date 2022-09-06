@@ -7,6 +7,7 @@ import { SkillsEnum } from '../../../lib/skilling/types';
 import { BuryingActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
 export async function buryCommand(user: KlasaUser, channelID: bigint, boneName: string, quantity?: number) {
 	const speedMod = 1;
@@ -25,7 +26,7 @@ export async function buryCommand(user: KlasaUser, channelID: bigint, boneName: 
 
 	const timeToBuryABone = speedMod * (Time.Second * 1.2 + Time.Second / 4);
 
-	const maxTripLength = user.maxTripLength('Burying');
+	const maxTripLength = calcMaxTripLength(user, 'Burying');
 
 	if (!quantity) {
 		const amountOfBonesOwned = user.bank().amount(bone.inputId);
@@ -49,7 +50,7 @@ export async function buryCommand(user: KlasaUser, channelID: bigint, boneName: 
 		)}.`;
 	}
 
-	await user.removeItemsFromBank(cost);
+	await transactItems({ userID: user.id, itemsToRemove: cost });
 
 	await addSubTaskToActivityTask<BuryingActivityTaskOptions>({
 		boneID: bone.inputId,

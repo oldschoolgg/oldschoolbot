@@ -1,6 +1,7 @@
 import { userMention } from '@discordjs/builders';
 import { TextChannel } from 'discord.js';
 import { KlasaUser } from 'klasa';
+import { MessageFlags } from 'mahoji';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
@@ -12,7 +13,7 @@ import { calculateNexDetails, checkNexUser } from '../../../lib/simulation/nex';
 import { NexTaskOptions } from '../../../lib/types/minions';
 import { calcPerHour, formatDuration, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
+import { allItemsOwned, mahojiUsersSettingsFetch } from '../../mahojiSettings';
 
 export async function nexCommand(interaction: SlashCommandInteraction, user: KlasaUser, channelID: bigint) {
 	const channel = globalClient.channels.cache.get(channelID.toString());
@@ -36,8 +37,11 @@ export async function nexCommand(interaction: SlashCommandInteraction, user: Kla
 	});
 	try {
 		await reactionAwaiter();
-	} catch (err) {
-		return typeof err === 'string' ? err : 'An error occurred.';
+	} catch (err: any) {
+		return {
+			content: typeof err === 'string' ? err : 'Your mass failed to start.',
+			flags: MessageFlags.Ephemeral
+		};
 	}
 	usersWhoConfirmed = usersWhoConfirmed.filter(i => !i.minionIsBusy);
 
@@ -61,7 +65,7 @@ export async function nexCommand(interaction: SlashCommandInteraction, user: Kla
 	const totalCost = new Bank();
 	for (const user of details.team) {
 		const klasaUser = await globalClient.fetchUser(user.id);
-		if (!klasaUser.allItemsOwned().has(user.cost)) {
+		if (!allItemsOwned(klasaUser).has(user.cost)) {
 			return `${klasaUser} doesn't have the required items: ${user.cost}.`;
 		}
 		totalCost.add(user.cost);
