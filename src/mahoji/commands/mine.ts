@@ -1,6 +1,7 @@
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
+import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { determineMiningTime } from '../../lib/skilling/functions/determineMiningTime';
 import Mining from '../../lib/skilling/skills/mining';
@@ -273,6 +274,15 @@ export const mineCommand: OSBMahojiCommand = {
 			}
 			if (user.QP < 125) {
 				return `To mine ${ore.name}, you need atleast 125 Quest Points.`;
+			}
+		}
+
+		// Check for 100 golden nuggets for upper motherlode mine access.
+		const cl = new Bank(user.collectionLogBank as ItemBank);
+		const gotNuggets = cl.amount('Golden nugget') >= 100;
+		if (ore.name === 'Motherlode mine (upper)') {
+			if (!gotNuggets) {
+			return `To mine at the ${ore.name}, you need to have obtained 100 golden nuggets from Motherlode Mine (Lower).`;
 			}
 		}
 

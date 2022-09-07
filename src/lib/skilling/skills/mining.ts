@@ -118,9 +118,9 @@ const ores: Ore[] = [
 		level: 30,
 		xp: 60,
 		id: 12_011,
-		name: 'Motherlode mine',
-		respawnTime: 30,
-		bankingTime: 15,
+		name: 'Motherlode mine (lower)',
+		respawnTime: 5.5,
+		bankingTime: 60,
 		slope: 0.181,
 		intercept: 23.48,
 		petChance: 247_200
@@ -227,6 +227,17 @@ const ores: Ore[] = [
 		intercept: -0.53,
 		petChance: 59_328,
 		clueScrollChance: 59_328
+	},
+	{
+		level: 72,
+		xp: 60,
+		id: 12_011,
+		name: 'Motherlode mine (upper)',
+		respawnTime: 4,
+		bankingTime: 40,
+		slope: 0.181,
+		intercept: 23.48,
+		petChance: 247_200
 	},
 	{
 		level: 85,
