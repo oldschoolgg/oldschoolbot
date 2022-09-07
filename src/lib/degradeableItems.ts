@@ -3,17 +3,16 @@ import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { mahojiUserSettingsUpdate } from '../mahoji/mahojiSettings';
-import { GearSetupType, GearSetupTypes } from './gear';
+import { GearSetupType } from './gear';
 import { ClientSettings } from './settings/types/ClientSettings';
 import { assert, updateBankSetting } from './util';
 import getOSItem from './util/getOSItem';
-import { userHasItemsEquippedAnywhere } from './util/minionUtils';
 
 interface DegradeableItem {
 	item: Item;
 	settingsKey: 'tentacle_charges' | 'sang_charges' | 'celestial_ring_charges';
 	itemsToRefundOnBreak: Bank;
-	setup: GearSetupType | null;
+	setup: GearSetupType;
 	aliases: string[];
 	chargeInput: {
 		cost: Bank;
@@ -52,7 +51,7 @@ export const degradeableItems: DegradeableItem[] = [
 		item: getOSItem('Celestial ring'),
 		settingsKey: 'celestial_ring_charges',
 		itemsToRefundOnBreak: new Bank().add('Celestial ring (uncharged)'),
-		setup: null,
+		setup: 'skilling',
 		aliases: ['celestial ring'],
 		chargeInput: {
 			cost: new Bank().add('Stardust', 10),
@@ -106,24 +105,16 @@ export async function degradeItem({
 
 	if (newCharges <= 0) {
 		// If no more charges left, break and refund the item.
-		const hasEquipped =
-			degItem.setup === null
-				? userHasItemsEquippedAnywhere(user, degItem.item.id)
-				: user.getGear(degItem.setup).equippedWeapon() === item;
+		const hasEquipped = user.getGear(degItem.setup).equippedWeapon() === item;
 		const hasInBank = user.owns(item.id);
 		await mahojiUserSettingsUpdate(user.id, { [degItem.settingsKey]: 0 });
 		const itemsDeleted = new Bank().add(item.id);
 
 		updateBankSetting(globalClient, ClientSettings.EconomyStats.DegradedItemsCost, itemsDeleted);
 
-		const gearSetup =
-			degItem.setup === null
-				? GearSetupTypes.find(i => user.getGear(i).hasEquipped(degItem.item.id))
-				: degItem.setup;
-
-		if (hasEquipped && gearSetup) {
+		if (hasEquipped) {
 			// If its equipped, unequip and delete it.
-			const gear = { ...user.getGear(gearSetup).raw() };
+			const gear = { ...user.getGear(degItem.setup).raw() };
 			gear.weapon = null;
 			await mahojiUserSettingsUpdate(user.id, {
 				[`gear_${degItem.setup}`]: gear
@@ -140,7 +131,7 @@ export async function degradeItem({
 		} else {
 			// If its not in bank OR equipped, something weird has gone on.
 			throw new Error(
-				`${user.sanitizedName} had missing ${item.name} when trying to degrade by ${chargesToDegrade}. ${hasEquipped} ${gearSetup} ${hasInBank}`
+				`${user.sanitizedName} had missing ${item.name} when trying to degrade by ${chargesToDegrade}`
 			);
 		}
 
