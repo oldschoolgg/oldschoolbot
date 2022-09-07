@@ -191,7 +191,7 @@ async function bankSortConfig(
 		const response: Awaited<CommandResponse> = {
 			content: sortStr
 		};
-		if (weightingBankStr.length > 500) {
+		if (weightingBankStr.length < 500) {
 			response.content += `\n**Weightings:**${weightingBankStr}`;
 		} else {
 			response.attachments = [
