@@ -408,7 +408,7 @@ export const mineCommand: OSBMahojiCommand = {
 		});
 
 		let response = `${minionName(user)} is now mining ${ore.name} until your minion ${
-			quantity ? `mined ${quantity}x or gets tired` : 'is satisfied'
+			quantity ? `mined ${newQuantity}x or gets tired` : 'is satisfied'
 		}, it'll take ${
 			quantity
 				? `between ${formatDuration(fakeDurationMin)} **and** ${formatDuration(fakeDurationMax)}`
