@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 
 import { determineMiningTime } from '../../lib/skilling/functions/determineMiningTime';
 import Mining from '../../lib/skilling/skills/mining';
+import { Skills } from '../../lib/types';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, getSkillsOfMahojiUser, itemNameFromID, randomVariation } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
@@ -196,6 +197,20 @@ export const miningCapeOreEffect: Bank = new Bank({
 	Amethyst: 0
 });
 
+const daeyaltEssenceSkillRequirements: Skills = {
+	woodcutting: 62,
+	fletching: 60,
+	crafting: 56,
+	agility: 52,
+	attack: 50,
+	slayer: 50,
+	magic: 49,
+	herblore: 40,
+	construction: 5,
+	thieving: 22,
+	strength: 40
+};
+
 export const mineCommand: OSBMahojiCommand = {
 	name: 'mine',
 	description: 'Send your minion to mine things.',
@@ -243,10 +258,22 @@ export const mineCommand: OSBMahojiCommand = {
 		}
 
 		let { quantity, powermine } = options;
+		const klasaUser = await globalClient.fetchUser(userID);
 		const user = await mahojiUsersSettingsFetch(userID);
 		const skills = getSkillsOfMahojiUser(user, true);
 		if (skills.mining < ore.level) {
 			return `${minionName(user)} needs ${ore.level} Mining to mine ${ore.name}.`;
+		}
+
+		// Check for daeyalt shard requirements.
+		const [hasDaeyaltReqs, daeyaltReason] = klasaUser.hasSkillReqs(daeyaltEssenceSkillRequirements);
+		if (ore.name === 'Daeyalt essence rock') {
+			if (!hasDaeyaltReqs) {
+				return `To mine ${ore.name}, you need ${daeyaltReason}.`;
+			}
+			if (user.QP < 125) {
+				return `To mine ${ore.name}, you need atleast 125 Quest Points.`;
+			}
 		}
 
 		const boosts = [];
