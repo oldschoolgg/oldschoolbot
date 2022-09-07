@@ -231,7 +231,7 @@ const ores: Ore[] = [
 	{
 		level: 72,
 		xp: 60,
-		id: 12_011,
+		id: 4487,
 		name: 'Motherlode mine (upper)',
 		respawnTime: 4,
 		bankingTime: 40,
