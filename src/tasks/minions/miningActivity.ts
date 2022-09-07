@@ -22,6 +22,7 @@ export default class extends Task {
 
 		let xpReceived = quantity * ore.xp;
 		let bonusXP = 0;
+		let cleaningXP = 0;
 
 		// If they have the entire prospector outfit, give an extra 0.5% xp bonus
 		if (
@@ -44,30 +45,8 @@ export default class extends Task {
 			}
 		}
 		const currentLevel = user.skillLevel(SkillsEnum.Mining);
-		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Mining,
-			amount: xpReceived,
-			duration
-		});
-
-		let str = `${user}, ${user.minionName} finished mining ${quantity} ${ore.name}. ${xpRes}`;
 
 		const loot = new Bank();
-
-		// Add clue scrolls
-		if (ore.clueScrollChance) {
-			addSkillingClueToLoot(user, SkillsEnum.Mining, quantity, ore.clueScrollChance, loot);
-		}
-
-		// Roll for pet
-		if (ore.petChance && roll((ore.petChance - currentLevel * 25) / quantity)) {
-			loot.add('Rock golem');
-			str += "\nYou have a funny feeling you're being followed...";
-			this.client.emit(
-				Events.ServerNotification,
-				`${Emoji.Mining} **${user.username}'s** minion, ${user.minionName}, just received a Rock golem while mining ${ore.name} at level ${currentLevel} Mining!`
-			);
-		}
 
 		const numberOfMinutes = duration / Time.Minute;
 
@@ -123,40 +102,80 @@ export default class extends Task {
 				}
 				loot.add(ore.id, daeyaltQty);
 			} else if (ore.name === 'Motherlode mine') {
-				const nuggetChance = 273;
-				let runiteChance = currentLevel >= 85 ? Math.round(100 * (0.080_71 * currentLevel - 5.721)) : 0;
-				let adamantiteChance = currentLevel >= 70 ? Math.round(100 * (0.5187 * currentLevel - 32.39)) : 0;
-				let mithrilChance = currentLevel >= 55 ? Math.round(100 * (0.2521 * currentLevel + 2.705)) : 0;
-				let goldChance = currentLevel >= 40 ? Math.round(100 * (0.2211 * currentLevel + 2.807)) : 0;
+				const nuggetWeight = 273;
+				let runiteWeight = currentLevel >= 85 ? Math.round(100 * (0.080_71 * currentLevel - 5.721)) : 0;
+				let adamantiteWeight = currentLevel >= 70 ? Math.round(100 * (0.5187 * currentLevel - 32.39)) : 0;
+				let mithrilWeight = currentLevel >= 55 ? Math.round(100 * (0.2521 * currentLevel + 2.705)) : 0;
+				let goldWeight = currentLevel >= 40 ? Math.round(100 * (0.2211 * currentLevel + 2.807)) : 0;
 
 				// Check for falador elite diary for increased ore rates
 				const [hasEliteDiary] = await userhasDiaryTier(user, FaladorDiary.elite);
 				if (hasEliteDiary) {
-					if (currentLevel >= 85) runiteChance += 100;
-					if (currentLevel >= 70) adamantiteChance += 100;
-					mithrilChance += 100;
-					goldChance += 100;
+					if (currentLevel >= 85) runiteWeight += 100;
+					if (currentLevel >= 70) adamantiteWeight += 100;
+					mithrilWeight += 100;
+					goldWeight += 100;
 				}
 
-				const coalChance =
-					10_000 - (nuggetChance + runiteChance + adamantiteChance + mithrilChance + goldChance);
+				const coalWeight =
+					10_000 - (nuggetWeight + runiteWeight + adamantiteWeight + mithrilWeight + goldWeight);
 
 				const table = new LootTable()
-					.add('Golden nugget', 1, nuggetChance)
-					.add('Runite ore', 1, runiteChance)
-					.add('Adamantite ore', 1, adamantiteChance)
-					.add('Mithril ore', 1, mithrilChance)
-					.add('Gold ore', 1, goldChance)
-					.add('Coal', 1, coalChance);
+					.add('Golden nugget', 1, nuggetWeight)
+					.add('Runite ore', 1, runiteWeight)
+					.add('Adamantite ore', 1, adamantiteWeight)
+					.add('Mithril ore', 1, mithrilWeight)
+					.add('Gold ore', 1, goldWeight)
+					.add('Coal', 1, coalWeight);
 
 				loot.add(table.roll(quantity));
+				if (loot.has('Runite ore')) {
+					cleaningXP += 75 * loot.amount('Runite ore');
+				}
+				if (loot.has('Adamantite ore')) {
+					cleaningXP += 45 * loot.amount('Adamantite ore');
+				}
+				if (loot.has('Mithril ore')) {
+					cleaningXP += 30 * loot.amount('Mithril ore');
+				}
+				if (loot.has('Gold ore')) {
+					cleaningXP += 15 * loot.amount('Gold ore');
+				}
+				xpReceived += cleaningXP;
 			} else {
 				loot.add(ore.id, quantity);
 			}
 		}
+
+		const xpRes = await user.addXP({
+			skillName: SkillsEnum.Mining,
+			amount: xpReceived,
+			duration
+		});
+
+		let str = `${user}, ${user.minionName} finished mining ${quantity} ${ore.name}. ${xpRes}`;
+
+		// Add clue scrolls
+		if (ore.clueScrollChance) {
+			addSkillingClueToLoot(user, SkillsEnum.Mining, quantity, ore.clueScrollChance, loot);
+		}
+
+		// Roll for pet
+		if (ore.petChance && roll((ore.petChance - currentLevel * 25) / quantity)) {
+			loot.add('Rock golem');
+			str += "\nYou have a funny feeling you're being followed...";
+			this.client.emit(
+				Events.ServerNotification,
+				`${Emoji.Mining} **${user.username}'s** minion, ${user.minionName}, just received a Rock golem while mining ${ore.name} at level ${currentLevel} Mining!`
+			);
+		}
+
 		str += `\n\nYou received: ${loot}.`;
 		if (bonusXP > 0) {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
+		}
+		if (cleaningXP > 0) {
+			str += `\nAdditional XP from cleaning the pay-dirt: ${cleaningXP.toLocaleString()}`;
 		}
 
 		await transactItems({
