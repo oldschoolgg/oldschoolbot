@@ -300,9 +300,6 @@ export async function checkTOBUser(
 	if (!user.hasMinion) {
 		return [true, `${user.username} doesn't have a minion`];
 	}
-	if (user.minionIsBusy) {
-		return [true, `${user.username} minion is busy`];
-	}
 
 	if (!skillsMeetRequirements(user.rawSkills, bareMinStats)) {
 		return [
@@ -436,6 +433,7 @@ export async function checkTOBTeam(users: KlasaUser[], isHardMode: boolean): Pro
 	}
 
 	for (const user of users) {
+		if (user.minionIsBusy) return `${user.username}'s minion is busy.`;
 		const checkResult = await checkTOBUser(user, isHardMode, users.length);
 		if (!checkResult[0]) {
 			continue;
