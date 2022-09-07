@@ -93,7 +93,7 @@ export async function luckyPickCommand(
 			new ActionRowBuilder<ButtonBuilder>().addComponents(
 				c.map(b => {
 					let button = new ButtonBuilder()
-						.setLabel(showTrueNames ? b.name : '')
+
 						.setCustomId(b.id.toString())
 						.setStyle(
 							b.picked
@@ -102,6 +102,10 @@ export async function luckyPickCommand(
 									: ButtonStyle.Danger
 								: ButtonStyle.Secondary
 						);
+
+					if (showTrueNames) {
+						button.setLabel(b.name);
+					}
 					if (!showTrueNames) {
 						button.setEmoji('680783258488799277');
 					}

@@ -188,7 +188,13 @@ export const gambleCommand: OSBMahojiCommand = {
 		}
 
 		if (options.duel) {
-			return duelCommand(user, interaction, await mUserFetch(options.duel.user.user.id), options.duel.amount);
+			return duelCommand(
+				user,
+				interaction,
+				await mUserFetch(options.duel.user.user.id),
+				options.duel.user,
+				options.duel.amount
+			);
 		}
 
 		if (options.lucky_pick) {

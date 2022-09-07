@@ -1,9 +1,11 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, User } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { noOp, sleep, Time } from 'e';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
+import { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { Bank, Util } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
+import { MUserClass } from '../../../lib/MUser';
 import { awaitMessageComponentInteraction, channelIsSendable } from '../../../lib/util';
 import { mahojiParseNumber, updateGPTrackSetting } from '../../mahojiSettings';
 
@@ -15,14 +17,15 @@ export async function duelCommand(
 	user: MUser,
 	interaction: SlashCommandInteraction,
 	duelUser: MUser,
-	duelamount?: string
+	targetAPIUser: MahojiUserOption,
+	duelAmount?: string
 ) {
 	await interaction.deferReply();
 
 	const duelSourceUser = user;
 	const duelTargetUser = duelUser;
 
-	const amount = mahojiParseNumber({ input: duelamount, min: 1, max: 500_000_000_000 });
+	const amount = mahojiParseNumber({ input: duelAmount, min: 1, max: 500_000_000_000 });
 	if (!amount) {
 		const winner = Math.random() >= 0.5 ? duelSourceUser : duelTargetUser;
 		return `${winner} won the duel against ${
@@ -33,8 +36,8 @@ export async function duelCommand(
 	if (duelSourceUser.isIronman) return "You can't duel someone as an ironman.";
 	if (duelTargetUser.isIronman) return "You can't duel someone who is an ironman.";
 	if (duelSourceUser.id === duelTargetUser.id) return 'You cant duel yourself.';
-	if (!(duelTargetUser instanceof User)) return "You didn't mention a user to duel.";
-	if (duelTargetUser.bot) return 'You cant duel a bot.';
+	if (!(duelTargetUser instanceof MUserClass)) return "You didn't mention a user to duel.";
+	if (targetAPIUser.user.bot) return 'You cant duel a bot.';
 
 	if (!(await checkBal(duelSourceUser, amount))) {
 		return 'You dont have have enough GP to duel that much.';

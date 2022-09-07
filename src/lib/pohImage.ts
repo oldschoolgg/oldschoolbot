@@ -124,3 +124,4 @@ class PoHImage {
 }
 
 export const pohImageGenerator = new PoHImage();
+pohImageGenerator.init();
