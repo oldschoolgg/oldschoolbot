@@ -62,7 +62,7 @@ Client.defaultUserSchema
 	.add('main_account', 'string', { default: null })
 	.add('premium_balance_tier', 'integer', { default: null })
 	.add('premium_balance_expiry_date', 'integer', { default: null, maximum: Number.MAX_SAFE_INTEGER })
-	.add('tentacle_charges', 'integer', { default: 10_000 })
+	.add('tentacle_charges', 'integer', { default: 0 })
 	.add('sang_charges', 'integer', { default: 0 })
 	.add('void_staff_charges', 'integer', { default: 0 })
 	.add('volcanic_mine_points', 'integer', { default: 0 })

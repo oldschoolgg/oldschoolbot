@@ -19,6 +19,7 @@ import { CLIENT_ID, OWNER_IDS, production, SupportServer } from '../../config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../../lib/blacklists';
 import { badges, BadgesEnum, BitField, BitFieldData, DISABLED_COMMANDS } from '../../lib/constants';
 import { addToDoubleLootTimer } from '../../lib/doubleLoot';
+import { patreonTask } from '../../lib/patreon';
 import { countUsersWithItemInCl, prisma } from '../../lib/settings/prisma';
 import { cancelTask, minionActivityCacheDelete } from '../../lib/settings/settings';
 import {
@@ -33,7 +34,6 @@ import { getItem } from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { logError } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
-import PatreonTask from '../../tasks/patreon';
 import { Cooldowns } from '../lib/Cooldowns';
 import { itemOption } from '../lib/mahojiCommandOptions';
 import { allAbstractCommands, OSBMahojiCommand } from '../lib/util';
@@ -544,7 +544,7 @@ export const adminCommand: OSBMahojiCommand = {
 			const usersToReset = await prisma.user.findMany({
 				where: {
 					bingo_tickets_bought: {
-						gt: 1
+						gt: 0
 					}
 				},
 				select: {
@@ -851,7 +851,7 @@ LIMIT 10;
 			process.exit();
 		}
 		if (options.debug_patreon) {
-			const result = await (globalClient.tasks.get('patreon') as PatreonTask).fetchPatrons();
+			const result = await patreonTask.fetchPatrons();
 			return {
 				attachments: [{ buffer: Buffer.from(JSON.stringify(result, null, 4)), fileName: 'patreon.txt' }]
 			};

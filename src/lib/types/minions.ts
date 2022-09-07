@@ -39,6 +39,7 @@ export interface RunecraftActivityTaskOptions extends ActivityTaskOptions {
 	imbueCasts: number;
 	obisEssenceQuantity?: number;
 	useStaminas?: boolean;
+	daeyaltEssence?: boolean;
 }
 
 export interface DarkAltarOptions extends ActivityTaskOptions {
@@ -94,8 +95,11 @@ export interface FishingActivityTaskOptions extends ActivityTaskOptions {
 }
 
 export interface MiningActivityTaskOptions extends ActivityTaskOptions {
+	fakeDurationMax: number;
+	fakeDurationMin: number;
 	oreID: number;
 	quantity: number;
+	powermine: boolean;
 }
 
 export interface SmeltingActivityTaskOptions extends ActivityTaskOptions {

@@ -113,6 +113,8 @@ export const raidCommand: OSBMahojiCommand = {
 		const { cox, tob } = options;
 		if (cox?.stats) return coxStatsCommand(user);
 		if (tob?.stats) return tobStatsCommand(user);
+		if (tob?.check) return tobCheckCommand(user, Boolean(tob.check.hard_mode));
+
 		if (minionIsBusy(user.id)) return "Your minion is busy, you can't do this.";
 
 		if (cox) {
@@ -128,7 +130,6 @@ export const raidCommand: OSBMahojiCommand = {
 					tob.start.solo
 				);
 			}
-			if (tob.check) return tobCheckCommand(user, Boolean(tob.check.hard_mode));
 		}
 
 		return 'Invalid command.';

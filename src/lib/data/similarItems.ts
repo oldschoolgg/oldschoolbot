@@ -96,6 +96,7 @@ const source: [string, (string | number)[]][] = [
 	['Malediction ward', [12_806]],
 	['Dark bow', [12_765, 12_766, 12_767, 12_768]],
 	['Abyssal whip', ['Volcanic abyssal whip', 'Frozen abyssal whip', 'Abyssal tentacle']],
+	['Abyssal tentacle', ['Abyssal tentacle (or)']],
 	['Granite maul', [12_848]],
 	['Rune scimitar', [23_330, 23_332, 23_334]],
 	[
@@ -360,7 +361,8 @@ const source: [string, (string | number)[]][] = [
 	['Kodai wand', ['Virtus wand', 'Void staff', 'Void staff (u)']],
 	['Virtus wand', ['Void staff', 'Void staff (u)']],
 	['Virtus book', ['Abyssal tome']],
-	['Prospector jacket', ['Golden prospector jacket']],
+	['Celestial ring (uncharged)', ['Celestial ring', 'Celestial signet']],
+	['Prospector jacket', ['Golden prospector jacket', 'Varrock armour 4']],
 	['Prospector legs', ['Golden prospector legs']],
 	['Prospector boots', ['Golden prospector boots']],
 	['Prospector helmet', ['Golden prospector helmet']],
