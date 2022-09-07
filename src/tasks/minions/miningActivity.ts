@@ -15,7 +15,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 export default class extends Task {
 	async run(data: MiningActivityTaskOptions) {
 		const { oreID, userID, channelID, duration, powermine } = data;
-		let quantity = 100_000;
+		let { quantity } = data;
 		const user = await this.client.fetchUser(userID);
 
 		const ore = Mining.Ores.find(ore => ore.id === oreID)!;
@@ -133,17 +133,13 @@ export default class extends Task {
 				const [hasEliteDiary] = await userhasDiaryTier(user, FaladorDiary.elite);
 				if (hasEliteDiary) {
 					if (currentLevel >= 85) runiteChance += 100;
-					else if (currentLevel >= 70) adamantiteChance += 100;
-					else if (currentLevel >= 55) mithrilChance += 100;
-					else if (currentLevel >= 40) goldChance += 100;
+					if (currentLevel >= 70) adamantiteChance += 100;
+					mithrilChance += 100;
+					goldChance += 100;
 				}
 
 				const coalChance =
 					10_000 - (nuggetChance + runiteChance + adamantiteChance + mithrilChance + goldChance);
-
-				console.log(
-					`nuggets: ${nuggetChance}\nrunite:${runiteChance}\naddy: ${adamantiteChance}\nmith: ${mithrilChance}\ngold: ${goldChance}\ncoal: ${coalChance}`
-				);
 
 				const table = new LootTable()
 					.add('Golden nugget', 1, nuggetChance)
