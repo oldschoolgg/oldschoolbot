@@ -368,7 +368,7 @@ model User {
   temp_cl            Json      @default("{}") @db.Json
   last_temp_cl_reset DateTime? @db.Timestamp(6)
 
-  tentacle_charges Int @default(10000)
+  tentacle_charges Int @default(0)
   sang_charges     Int @default(0)
 
   gp_luckypick BigInt @default(0)

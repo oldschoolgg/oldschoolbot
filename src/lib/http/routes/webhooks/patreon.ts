@@ -1,4 +1,4 @@
-import { patreonTask } from '../../../../tasks/patreon';
+import { patreonTask } from '../../../patreon';
 import { FastifyServer } from '../../types';
 import { verifyPatreonSecret } from '../../util';
 

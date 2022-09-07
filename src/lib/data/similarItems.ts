@@ -93,6 +93,7 @@ const source: [string, (string | number)[]][] = [
 	['Malediction ward', [12_806]],
 	['Dark bow', [12_765, 12_766, 12_767, 12_768]],
 	['Abyssal whip', ['Volcanic abyssal whip', 'Frozen abyssal whip', 'Abyssal tentacle']],
+	['Abyssal tentacle', ['Abyssal tentacle (or)']],
 	['Granite maul', [12_848]],
 	['Rune scimitar', [23_330, 23_332, 23_334]],
 	[

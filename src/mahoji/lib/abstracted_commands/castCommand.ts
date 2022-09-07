@@ -1,4 +1,4 @@
-import { Time } from 'e';
+import { reduceNumByPercent, Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
@@ -14,6 +14,8 @@ import { determineRunes } from '../../../lib/util/determineRunes';
 
 export async function castCommand(channelID: bigint, user: KlasaUser, name: string, quantity: number | undefined) {
 	const spell = Castables.find(spell => stringMatches(spell.name, name));
+	const boosts = [];
+	const missedBoosts = [];
 
 	if (!spell) {
 		return `That is not a valid spell to cast, the spells you can cast are: ${Castables.map(i => i.name).join(
@@ -36,24 +38,58 @@ export async function castCommand(channelID: bigint, user: KlasaUser, name: stri
 	await user.settings.sync(true);
 	const userBank = user.bank();
 
-	let timeToEnchantTen = spell.ticks * Time.Second * 0.6 + Time.Second / 4;
+	let castTimeMilliSeconds = spell.ticks * Time.Second * 0.6 + Time.Second / 4;
+
+	if (spell.travelTime) {
+		let { travelTime } = spell;
+		if (user.hasGracefulEquipped()) {
+			travelTime = reduceNumByPercent(travelTime, 20); // 20% boost for having graceful
+			boosts.push('20% for Graceful outfit');
+		} else {
+			missedBoosts.push('20% for Graceful outfit');
+		}
+
+		if (spell.agilityBoost) {
+			const boostLevels = spell.agilityBoost.map(boost => boost[0]);
+			const boostPercentages = spell.agilityBoost.map(boost => boost[1]);
+
+			const availableBoost = boostLevels.find(boost => user.skillLevel(SkillsEnum.Agility) >= boost);
+			if (availableBoost) {
+				const boostIndex = boostLevels.indexOf(availableBoost);
+
+				travelTime = reduceNumByPercent(travelTime, boostPercentages[boostIndex]); // Apply an agility boost based on tier
+				boosts.push(`${boostPercentages[boostIndex]}% for ${availableBoost}+ Agility`);
+
+				if (boostIndex > 0) {
+					missedBoosts.push(
+						`${boostPercentages[boostIndex - 1]}% for ${boostLevels[boostIndex - 1]}+ Agility`
+					);
+				}
+			} else {
+				const worstBoost = spell.agilityBoost[spell.agilityBoost.length - 1];
+				missedBoosts.push(`${worstBoost[1]}% for ${worstBoost[0]}+ Agility`);
+			}
+		}
+
+		castTimeMilliSeconds += travelTime / 27; // One trip holds 27 casts, scale it down
+	}
 
 	const maxTripLength = calcMaxTripLength(user, 'Casting');
 
 	if (!quantity) {
-		quantity = Math.floor(maxTripLength / timeToEnchantTen);
+		quantity = Math.floor(maxTripLength / castTimeMilliSeconds);
 		const spellRunes = determineRunes(user, spell.input.clone());
 		const max = userBank.fits(spellRunes);
 		if (max < quantity && max !== 0) quantity = max;
 	}
 
-	const duration = quantity * timeToEnchantTen;
+	const duration = quantity * castTimeMilliSeconds;
 
 	if (duration > maxTripLength) {
 		return `${user.minionName} can't go on trips longer than ${formatDuration(
 			maxTripLength
 		)}, try a lower quantity. The highest amount of ${spell.name}s you can cast is ${Math.floor(
-			maxTripLength / timeToEnchantTen
+			maxTripLength / castTimeMilliSeconds
 		)}.`;
 	}
 	const cost = determineRunes(user, spell.input.clone().multiply(quantity));
@@ -90,23 +126,29 @@ export async function castCommand(channelID: bigint, user: KlasaUser, name: stri
 		((spell.xp * quantity) / (duration / Time.Minute)) * 60
 	).toLocaleString()} Magic XP/Hr`;
 
-	let craftXpHr = '';
+	let response = `${user.minionName} is now casting ${quantity}x ${spell.name}, it'll take around ${formatDuration(
+		duration
+	)} to finish. Removed ${cost}${spell.gpCost ? ` and ${gpCost} Coins` : ''} from your bank. **${magicXpHr}**`;
+
 	if (spell.craftXp) {
-		craftXpHr = `and** ${Math.round(
+		response += ` and** ${Math.round(
 			((spell.craftXp * quantity) / (duration / Time.Minute)) * 60
 		).toLocaleString()} Crafting XP/Hr**`;
 	}
 
-	let prayerXpHr = '';
 	if (spell.prayerXp) {
-		prayerXpHr = `and** ${Math.round(
+		response += ` and** ${Math.round(
 			((spell.prayerXp * quantity) / (duration / Time.Minute)) * 60
 		).toLocaleString()} Prayer XP/Hr**`;
 	}
 
-	return `${user.minionName} is now casting ${quantity}x ${spell.name}, it'll take around ${formatDuration(
-		duration
-	)} to finish. Removed ${cost}${
-		spell.gpCost ? ` and ${gpCost} Coins` : ''
-	} from your bank. **${magicXpHr}** ${craftXpHr}${prayerXpHr}`;
+	if (boosts.length > 0) {
+		response += `\n**Boosts:** ${boosts.join(', ')}.`;
+	}
+
+	if (missedBoosts.length > 0) {
+		response += `\n**Missed boosts:** ${missedBoosts.join(', ')}.`;
+	}
+
+	return response;
 }
