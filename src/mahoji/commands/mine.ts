@@ -282,7 +282,7 @@ export const mineCommand: OSBMahojiCommand = {
 		const gotNuggets = cl.amount('Golden nugget') >= 100;
 		if (ore.name === 'Motherlode mine (upper)') {
 			if (!gotNuggets) {
-			return `To mine at the ${ore.name}, you need to have obtained 100 golden nuggets from Motherlode Mine (Lower).`;
+				return `To mine at the ${ore.name}, you need to have obtained 100 golden nuggets from Motherlode Mine (Lower).`;
 			}
 		}
 
