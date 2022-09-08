@@ -276,9 +276,10 @@ export const mineCommand: OSBMahojiCommand = {
 				return `To mine ${ore.name}, you need atleast 125 Quest Points.`;
 			}
 		}
-		let miningLevel = skills.mining;
+
 		const boosts = [];
 
+		let miningLevel = skills.mining;
 		if (ore.minerals && skills.mining >= 60) {
 			boosts.push('+7 invisible Mining lvls at the Mining guild');
 			miningLevel += 7;
@@ -339,6 +340,19 @@ export const mineCommand: OSBMahojiCommand = {
 			}
 		}
 
+		// Check for 100 golden nuggets and 72 mining for upper motherlode mine access.
+		const cl = new Bank(user.collectionLogBank as ItemBank);
+		const gotNuggets = cl.amount('Golden nugget') >= 100;
+		if (ore.name === 'Motherlode mine') {
+			if (gotNuggets && skills.mining >= 72) {
+				ore.respawnTime = 4;
+				ore.bankingTime = 40;
+				boosts.push(
+					'\nYou are mining on the upper level of the motherlode mine, due to having 100 golden nuggets in your cl and 72 mining or higher'
+				);
+			}
+		}
+
 		if (!powermine) {
 			powermine = false;
 		} else {
@@ -387,16 +401,6 @@ export const mineCommand: OSBMahojiCommand = {
 				? `between ${formatDuration(fakeDurationMin)} **and** ${formatDuration(fakeDurationMax)}`
 				: formatDuration(duration)
 		} to finish.`;
-
-		// Motherlode mine upper level message.
-		const cl = new Bank(user.collectionLogBank as ItemBank);
-		const gotNuggets = cl.amount('Golden nugget') >= 100;
-		if (ore.name === 'Motherlode mine') {
-			if (gotNuggets && skills.mining >= 72) {
-				response +=
-					'\nYou are mining on the upper level of the motherlode mine, due to having 100 golden nuggets in your cl and 72 mining or higher.';
-			}
-		}
 
 		if (boosts.length > 0) {
 			response += `\n\n**Boosts:** ${boosts.join(', ')}.`;
