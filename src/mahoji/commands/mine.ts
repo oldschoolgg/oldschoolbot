@@ -394,7 +394,7 @@ export const mineCommand: OSBMahojiCommand = {
 		if (ore.name === 'Motherlode mine') {
 			if (gotNuggets && skills.mining >= 72) {
 				response +=
-					'\nYou are mining on the upper level due to having 100 golden nuggets in your cl and 72 mining or higher.';
+					'\nYou are mining on the upper level of the motherlode mine, due to having 100 golden nuggets in your cl and 72 mining or higher.';
 			}
 		}
 
