@@ -278,7 +278,7 @@ export function channelIsSendable(channel: Channel | undefined | null): channel 
 	const canSend = channel.guild
 		? channel.permissionsFor(globalClient.user!)!.has(PermissionsBitField.Flags.ViewChannel)
 		: true;
-	if (!channel || (!(channel instanceof DMChannel) && !(channel instanceof TextChannel) && canSend)) {
+	if (!(channel instanceof DMChannel) && !(channel instanceof TextChannel) && canSend) {
 		return false;
 	}
 

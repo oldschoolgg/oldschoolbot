@@ -274,7 +274,7 @@ const tickers: { name: string; interval: number; timer: NodeJS.Timeout | null; c
 					);
 					const user = await globalClient.users.cache.get(id);
 					if (!user) continue;
-					const message = await user?.send({
+					const message = await user.send({
 						content: `The ${planted.name} planted in your ${patchType} patches is ready to be harvested!`,
 						components: [farmingReminderButtons]
 					});
@@ -325,7 +325,8 @@ const tickers: { name: string; interval: number; timer: NodeJS.Timeout | null; c
 		cb: async () => {
 			if (!production) return;
 			const guild = getSupportGuild();
-			const channel = guild?.channels.cache.get(Channel.HelpAndSupport) as TextChannel;
+			const channel = guild?.channels.cache.get(Channel.HelpAndSupport) as TextChannel | undefined;
+			if (!channel) return;
 			const messages = await channel.messages.fetch({ limit: 5 });
 			if (messages.some(m => m.author.id === globalClient.user!.id)) return;
 			if (lastMessageID) {
@@ -348,7 +349,8 @@ const tickers: { name: string; interval: number; timer: NodeJS.Timeout | null; c
 		cb: async () => {
 			if (!production) return;
 			const guild = getSupportGuild();
-			const channel = guild?.channels.cache.get(Channel.GrandExchange) as TextChannel;
+			const channel = guild?.channels.cache.get(Channel.GrandExchange) as TextChannel | undefined;
+			if (!channel) return;
 			const messages = await channel.messages.fetch({ limit: 5 });
 			if (messages.some(m => m.author.id === globalClient.user!.id)) return;
 			if (lastMessageGEID) {

@@ -130,7 +130,7 @@ export async function handleMahojiConfirmation(interaction: SlashCommandInteract
 		});
 
 		collector.on('end', () => {
-			if (!isConfirmed) {
+			if (!isConfirmed()) {
 				cancel('time');
 			}
 		});
