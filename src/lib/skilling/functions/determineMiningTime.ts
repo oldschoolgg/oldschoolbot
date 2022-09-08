@@ -34,7 +34,6 @@ export function determineMiningTime({
 	if (ore.name === 'Gem rock' && userHasItemsEquippedAnywhere(user, 'Amulet of glory')) {
 		intercept *= 3;
 	}
-
 	let timeElapsed = 0;
 
 	const bankTime = goldSilverBoost ? ore.bankingTime / 3.3 : ore.bankingTime;
