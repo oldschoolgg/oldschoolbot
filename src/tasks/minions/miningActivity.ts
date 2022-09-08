@@ -102,7 +102,10 @@ export default class extends Task {
 				}
 				loot.add(ore.id, daeyaltQty);
 			} else if (ore.name === 'Motherlode mine') {
-				const nuggetWeight = 273;
+				let nuggetWeight = 273;
+				if ([43, 57, 71, 85, 99].includes(currentLevel)) {
+					nuggetWeight = 313;
+				}
 				let runiteWeight = currentLevel >= 85 ? Math.round(100 * (0.080_71 * currentLevel - 5.721)) : 0;
 				let adamantiteWeight = currentLevel >= 70 ? Math.round(100 * (0.5187 * currentLevel - 32.39)) : 0;
 				let mithrilWeight = currentLevel >= 55 ? Math.round(100 * (0.2521 * currentLevel + 2.705)) : 0;
