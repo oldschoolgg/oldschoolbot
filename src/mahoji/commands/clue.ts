@@ -26,7 +26,7 @@ export const clueCommand: OSBMahojiCommand = {
 	attributes: {
 		requiresMinion: true,
 		requiresMinionNotBusy: true,
-		examples: ['/cl name:Boss']
+		examples: ['/clue tier:easy']
 	},
 	options: [
 		{

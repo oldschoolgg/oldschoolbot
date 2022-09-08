@@ -33,7 +33,7 @@ GROUP BY item_id;`);
 	const alreadySentCache = new Set();
 	schedule(`*/${redditGranularity} * * * *`, async () => {
 		async function sendReddit({ post }: { post: any; type: 'comment' | 'submission' }) {
-			const embed = new Embed().setAuthor(post.author).setColor(resolveColor('#ff9500'));
+			const embed = new Embed().setAuthor(post.author ?? 'Unknown Author').setColor(resolveColor('#ff9500'));
 
 			const url = post.full_link ?? `https://old.reddit.com${post.permalink}`;
 
