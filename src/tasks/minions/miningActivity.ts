@@ -101,7 +101,7 @@ export default class extends Task {
 					daeyaltQty += rand(2, 3);
 				}
 				loot.add(ore.id, daeyaltQty);
-			} else if (ore.name.includes('Motherlode')) {
+			} else if (ore.name === 'Motherlode mine') {
 				const nuggetWeight = 273;
 				let runiteWeight = currentLevel >= 85 ? Math.round(100 * (0.080_71 * currentLevel - 5.721)) : 0;
 				let adamantiteWeight = currentLevel >= 70 ? Math.round(100 * (0.5187 * currentLevel - 32.39)) : 0;

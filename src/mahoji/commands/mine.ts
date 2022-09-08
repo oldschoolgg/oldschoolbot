@@ -276,19 +276,20 @@ export const mineCommand: OSBMahojiCommand = {
 				return `To mine ${ore.name}, you need atleast 125 Quest Points.`;
 			}
 		}
+		let miningLevel = skills.mining;
+		const boosts = [];
 
 		// Check for 100 golden nuggets for upper motherlode mine access.
 		const cl = new Bank(user.collectionLogBank as ItemBank);
 		const gotNuggets = cl.amount('Golden nugget') >= 100;
-		if (ore.name === 'Motherlode mine (upper)') {
-			if (!gotNuggets) {
-				return `To mine at the ${ore.name}, you need to have obtained 100 golden nuggets from Motherlode Mine (Lower).`;
+		if (ore.name === 'Motherlode mine') {
+			if (gotNuggets && skills.mining >= 72) {
+				boosts.push(
+					'You are mining on the upper level due to having 100 golden nuggets in your cl and 72 mining or higher.'
+				);
 			}
 		}
 
-		const boosts = [];
-
-		let miningLevel = skills.mining;
 		if (ore.minerals && skills.mining >= 60) {
 			boosts.push('+7 invisible Mining lvls at the Mining guild');
 			miningLevel += 7;
