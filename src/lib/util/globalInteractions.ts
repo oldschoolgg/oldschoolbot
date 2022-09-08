@@ -37,7 +37,8 @@ const globalInteractionActions = [
 	'AUTO_FARMING_CONTRACT',
 	'BUY_MINION',
 	'BUY_BINGO_TICKET',
-	'NEW_SLAYER_TASK'
+	'NEW_SLAYER_TASK',
+	'VIEW_BANK'
 ] as const;
 type GlobalInteractionAction = typeof globalInteractionActions[number];
 function isValidGlobalInteraction(str: string): str is GlobalInteractionAction {
@@ -222,6 +223,16 @@ export async function interactionHook(data: APIInteraction) {
 
 	if (id === 'BUY_BINGO_TICKET') {
 		return buttonReply(await buyBingoTicketCommand(null, userID, 1));
+	}
+
+	if (id === 'VIEW_BANK') {
+		await buttonReply();
+		return runCommand({
+			commandName: 'bank',
+			bypassInhibitors: true,
+			args: {},
+			...options
+		});
 	}
 
 	if (minionIsBusy(user.id)) {

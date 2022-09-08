@@ -142,7 +142,10 @@ async function webhookSend(channel: WebhookClient, input: MessageOptions) {
 		content: input.content,
 		embeds: input.embeds,
 		files: input.files,
-		components: input.components
+		components: input.components,
+		allowedMentions: {
+			parse: ['users']
+		}
 	});
 	webhookMessageCache.set(res.id, channel);
 	return res;

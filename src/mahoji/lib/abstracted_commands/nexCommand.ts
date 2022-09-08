@@ -24,7 +24,7 @@ export async function nexCommand(interaction: SlashCommandInteraction, user: MUs
 
 	await interaction.deferReply();
 
-	let [usersWhoConfirmed, reactionAwaiter] = await setupParty(channel as TextChannel, user, {
+	let reactionAwaiter = await setupParty(channel as TextChannel, user, {
 		minSize: 2,
 		maxSize: 10,
 		leader: user,
@@ -32,8 +32,9 @@ export async function nexCommand(interaction: SlashCommandInteraction, user: MUs
 		message: `${user} is hosting a Nex mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
 		customDenier: async user => checkNexUser(await mUserFetch(user.id))
 	});
+	let usersWhoConfirmed: MUser[] = [];
 	try {
-		await reactionAwaiter();
+		usersWhoConfirmed = await reactionAwaiter;
 	} catch (err: any) {
 		return {
 			content: typeof err === 'string' ? err : 'Your mass failed to start.',

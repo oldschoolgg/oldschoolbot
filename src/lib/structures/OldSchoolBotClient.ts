@@ -26,7 +26,7 @@ export class OldSchoolBotClient extends Client {
 	_emojis: any;
 
 	_fileChangeWatcher?: FSWatcher;
-	_badgeCache!: Map<string, string>;
+	_badgeCache: Map<string, string> = new Map();
 	_peakIntervalCache!: Peak[];
 	fastifyServer!: FastifyInstance;
 

@@ -2,6 +2,7 @@ import { bulkUpdateCommands } from 'mahoji/dist/lib/util';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { CLIENT_ID, DEV_SERVER_ID, production } from '../../config';
+import { cacheBadges } from '../../lib/badges';
 import { syncBlacklists } from '../../lib/blacklists';
 import { DISABLED_COMMANDS } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
@@ -45,4 +46,6 @@ export async function onStartup() {
 	}
 
 	await syncCustomPrices();
+
+	await cacheBadges();
 }

@@ -95,8 +95,8 @@ export async function tobStartCommand(user: MUser, channelID: bigint, isHardMode
 
 	const channel = globalClient.channels.cache.get(channelID.toString());
 	if (!channelIsSendable(channel)) return 'No channel found.';
-	const [usersWhoConfirmed, reactionAwaiter] = await setupParty(channel, user, partyOptions);
-	await reactionAwaiter();
+	const reactionAwaiter = await setupParty(channel, user, partyOptions);
+	const usersWhoConfirmed = await reactionAwaiter;
 	const users = usersWhoConfirmed.filter(u => !u.minionIsBusy).slice(0, maxSize);
 
 	const teamCheckFailure = await checkTOBTeam(users, isHardMode);

@@ -11,11 +11,7 @@ import { MakePartyOptions } from '../../lib/types';
 const partyLockCache = new Set<string>();
 setInterval(() => partyLockCache.clear(), Time.Minute * 20);
 
-export async function setupParty(
-	channel: TextChannel,
-	user: MUser,
-	options: MakePartyOptions
-): Promise<[MUser[], () => Promise<MUser[]>]> {
+export async function setupParty(channel: TextChannel, user: MUser, options: MakePartyOptions): Promise<MUser[]> {
 	const usersWhoConfirmed: string[] = [options.leader.id];
 	let deleted = false;
 
@@ -173,5 +169,5 @@ export async function setupParty(
 			});
 		});
 
-	return [await Promise.all(usersWhoConfirmed.map(mUserFetch)), reactionAwaiter];
+	return reactionAwaiter();
 }

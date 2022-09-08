@@ -151,9 +151,8 @@ export async function coxCommand(channelID: bigint, user: MUser, type: 'solo' | 
 
 	let users: MUser[] = [];
 	if (type === 'mass') {
-		const [usersWhoConfirmed, reactionAwaiter] = await setupParty(channel, user, partyOptions);
-		await reactionAwaiter();
-		users = usersWhoConfirmed.filter(u => !u.minionIsBusy);
+		const reactionAwaiter = await setupParty(channel, user, partyOptions);
+		users = (await reactionAwaiter).filter(u => !u.minionIsBusy);
 	} else {
 		users = [user];
 	}

@@ -84,7 +84,7 @@ export const bankCommand: OSBMahojiCommand = {
 		flag?: BankFlag;
 		flag_extra?: BankFlag;
 	}>) => {
-		await interaction.deferReply();
+		if (interaction) await interaction.deferReply();
 		const klasaUser = await mUserFetch(user.id);
 		const baseBank = klasaUser.bankWithGP;
 		const mahojiFlags: BankFlag[] = [];
@@ -166,7 +166,7 @@ export const bankCommand: OSBMahojiCommand = {
 				(
 					await makeBankImage({
 						bank,
-						title: `${klasaUser.usernameOrUnknown}'s Bank`,
+						title: `${klasaUser.rawUsername ? `${klasaUser.rawUsername}'s` : 'Your'} Bank`,
 						flags,
 						user: klasaUser,
 						mahojiFlags

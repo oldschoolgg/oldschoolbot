@@ -13,6 +13,6 @@ export const clientOptions: ClientOptions = {
 	],
 	partials: [Partials.User, Partials.Channel],
 	allowedMentions: {
-		parse: ['roles', 'users']
+		parse: ['users']
 	}
 };

@@ -121,6 +121,14 @@ export async function minionStatusCommand(
 		}
 	}
 
+	buttons.push({
+		type: ComponentType.Button,
+		custom_id: 'VIEW_BANK',
+		label: 'View Bank',
+		emoji: { id: '739459924693614653' },
+		style: ButtonStyle.Secondary
+	});
+
 	return {
 		content: status,
 		components: makeComponents(buttons)

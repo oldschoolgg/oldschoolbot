@@ -81,7 +81,7 @@ export const massCommand: OSBMahojiCommand = {
 
 		checkReqs([user], monster, 2);
 
-		let [users, reactionAwaiter] = await setupParty(channel as TextChannel, user, {
+		let reactionAwaiter = await setupParty(channel as TextChannel, user, {
 			leader: user,
 			minSize: 2,
 			maxSize: 10,
@@ -121,15 +121,19 @@ export const massCommand: OSBMahojiCommand = {
 				return [false];
 			}
 		});
+
+		let users: MUser[] = [];
 		try {
-			await reactionAwaiter();
+			users = await reactionAwaiter;
 		} catch (err: any) {
 			return {
 				content: typeof err === 'string' ? err : 'Your mass failed to start.',
 				flags: MessageFlags.Ephemeral
 			};
 		}
+		let unchangedUsers = [...users];
 		users = users.filter(i => !i.minionIsBusy);
+		const usersKickedForBusy = unchangedUsers.filter(i => !users.includes(i));
 
 		const [quantity, duration, perKillTime, boostMsgs] = await calcDurQty(users, monster, undefined);
 
@@ -164,12 +168,20 @@ export const massCommand: OSBMahojiCommand = {
 		if (boostMsgs.length > 0) {
 			killsPerHr += `\n\n${boostMsgs.join(', ')}.`;
 		}
-		return `${user.usernameOrMention}'s party (${users
+		let str = `${user.usernameOrMention}'s party (${users
 			.map(u => u.usernameOrMention)
 			.join(', ')}) is now off to kill ${quantity}x ${monster.name}. Each kill takes ${formatDuration(
 			perKillTime
 		)} instead of ${formatDuration(monster.timeToFinish)}- the total trip will take ${formatDuration(
 			duration
 		)}. ${killsPerHr}`;
+
+		if (usersKickedForBusy.length > 0) {
+			str += `\nThe following users were removed, because their minion became busy before the mass started: ${usersKickedForBusy
+				.map(i => i.usernameOrMention)
+				.join(', ')}.`;
+		}
+
+		return str;
 	}
 };

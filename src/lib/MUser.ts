@@ -171,8 +171,8 @@ export class MUserClass {
 		return userMention(this.id);
 	}
 
-	get usernameOrUnknown() {
-		return usernameCache.get(this.id) ?? '(Unknown)';
+	get rawUsername() {
+		return globalClient.users.cache.get(this.id)?.username;
 	}
 
 	get usernameOrMention() {
