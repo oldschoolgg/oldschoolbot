@@ -1,4 +1,11 @@
-import { MessageEditOptions, MessageOptions, TextChannel } from 'discord.js';
+import {
+	ActionRowBuilder,
+	ButtonBuilder,
+	ButtonStyle,
+	MessageEditOptions,
+	MessageOptions,
+	TextChannel
+} from 'discord.js';
 import { Time } from 'e';
 
 const paginatedMessageCache = new Set<PaginatedMessage>();
@@ -54,8 +61,21 @@ export class PaginatedMessage {
 		paginatedMessageCache.add(this);
 	}
 
+	render(): MessageEditOptions {
+		return {
+			...(this.pages[this.index] as MessageEditOptions),
+			components: [
+				new ActionRowBuilder<ButtonBuilder>().addComponents(
+					controlButtons.map(i =>
+						new ButtonBuilder().setStyle(ButtonStyle.Secondary).setCustomId(i.customId).setEmoji(i.emoji)
+					)
+				)
+			]
+		};
+	}
+
 	async run(targetUsers?: string[]) {
-		const message = await this.channel.send(this.pages[0] as MessageOptions);
+		const message = await this.channel.send(this.render() as MessageOptions);
 		if (this.pages.length === 1) return;
 		const collector = await message.createMessageComponentCollector({
 			time: Time.Minute * 10,
@@ -72,7 +92,7 @@ export class PaginatedMessage {
 					});
 
 					if (previousIndex !== this.index) {
-						await interaction.update(this.pages[this.index]);
+						await interaction.update(this.render());
 						return;
 					}
 				}

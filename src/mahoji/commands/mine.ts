@@ -315,7 +315,6 @@ export const mineCommand: OSBMahojiCommand = {
 		let armourEffect = 0;
 		for (const armour of varrockArmours) {
 			if (!user.hasEquippedOrInBank(armour.id) || !armour.Percentages.has(ore.id)) continue;
-			if (Boolean(armour.Percentages.has(ore.id))) continue;
 			armourEffect = armour.Percentages.amount(ore.id);
 			if (armourEffect !== 0) {
 				boosts.push(`**${armourEffect}%** chance to mine an extra ore using ${itemNameFromID(armour.id)}`);
