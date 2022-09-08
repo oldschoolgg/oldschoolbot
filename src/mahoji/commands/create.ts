@@ -207,16 +207,19 @@ export const createCommand: OSBMahojiCommand = {
 			if (onCreateResult.message) extraMessage += `\n\n${onCreateResult.message}`;
 		}
 
-		await user.removeItemsFromBank(inItems);
-		await transactItems({ userID: userID.toString(), itemsToAdd: outItems });
+		// Only allow +create to add items to CL
+		const addToCl = !createableItem.noCl && action === 'create';
+		await transactItems({
+			userID: userID.toString(),
+			collectionLog: addToCl,
+			itemsToAdd: outItems,
+			itemsToRemove: inItems
+		});
 
 		await updateBankSetting(globalClient, ClientSettings.EconomyStats.CreateCost, inItems);
 		await updateBankSetting(globalClient, ClientSettings.EconomyStats.CreateLoot, outItems);
 		await userStatsBankUpdate(user.id, 'create_cost_bank', inItems);
 		await userStatsBankUpdate(user.id, 'create_loot_bank', outItems);
-
-		// Only allow +create to add items to CL
-		if (!createableItem.noCl && action === 'create') await user.addItemsToCollectionLog({ items: outItems });
 
 		if (action === 'revert') {
 			return `You reverted ${inItems} into ${outItems}.${extraMessage}`;
