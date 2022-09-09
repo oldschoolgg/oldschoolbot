@@ -1,4 +1,4 @@
-import { Emoji, shouldTrackCommand, SILENT_ERROR } from '../../lib/constants';
+import { shouldTrackCommand, SILENT_ERROR } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
 import { channelIsSendable, cleanMentions } from '../../lib/util';
 import { makeCommandUsage } from '../../lib/util/commandUsage';
@@ -30,7 +30,6 @@ export async function handleCommandError({
 	}
 
 	if (error.name === 'AbortError') {
-		await channel.send('Oops! I had a network issue trying to respond to your command. Please try again.');
 		return;
 	}
 
@@ -43,8 +42,6 @@ export async function handleCommandError({
 					.map(arg => `${arg[0]}[${arg[1]}]`)
 					.join(', ')
 	});
-
-	channel.send(`An unexpected error occurred ${Emoji.Sad}`);
 }
 
 export async function postCommand({

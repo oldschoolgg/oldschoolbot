@@ -1,24 +1,25 @@
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { KourendFavourActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { KourendFavours, UserKourendFavour } from './../../lib/minions/data/kourendFavour';
 
-export default class extends Task {
+export const kourendTask: MinionTask = {
+	type: 'KourendFavour',
 	async run(data: KourendFavourActivityTaskOptions) {
 		let { favour, quantity, userID, channelID } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const favourPoints = favour.pointsGain * quantity;
 		let shayzienDone = false;
 		let totalPoints: number | undefined = undefined;
-		const currentUserFavour = user.settings.get(UserSettings.KourendFavour);
+		const currentUserFavour = user.kourendFavour;
 		for (const [key, value] of Object.entries(currentUserFavour) as [keyof UserKourendFavour, number][]) {
 			if (key.toLowerCase() === favour.name.toLowerCase()) {
 				totalPoints = Math.min(Number(value) + favourPoints, 100);
 				currentUserFavour[key] = totalPoints;
-				await user.settings.update(UserSettings.KourendFavour, currentUserFavour);
+				await user.update({
+					kourend_favour: currentUserFavour as any
+				});
 				if (key === 'Shayzien' && totalPoints === 100) shayzienDone = true;
 				break;
 			}
@@ -78,4 +79,4 @@ export default class extends Task {
 			loot ?? null
 		);
 	}
-}
+};

@@ -1,10 +1,12 @@
-import { MessageEmbed, Permissions, TextChannel } from 'discord.js';
+import { Embed } from '@discordjs/builders';
+import { PermissionsBitField, resolveColor, TextChannel } from 'discord.js';
 import { Time } from 'e';
 import he from 'he';
 import { schedule } from 'node-cron';
 import fetch from 'node-fetch';
 
 import { untrustedGuildSettingsCache } from '../mahoji/mahojiSettings';
+import { analyticsTick } from './analytics';
 import { prisma } from './settings/prisma';
 import { OldSchoolBotClient } from './structures/OldSchoolBotClient';
 import { logError } from './util/logError';
@@ -31,7 +33,7 @@ GROUP BY item_id;`);
 	const alreadySentCache = new Set();
 	schedule(`*/${redditGranularity} * * * *`, async () => {
 		async function sendReddit({ post }: { post: any; type: 'comment' | 'submission' }) {
-			const embed = new MessageEmbed().setAuthor(post.author).setColor('#ff9500');
+			const embed = new Embed().setAuthor(post.author ?? 'Unknown Author').setColor(resolveColor('#ff9500'));
 
 			const url = post.full_link ?? `https://old.reddit.com${post.permalink}`;
 
@@ -66,9 +68,8 @@ GROUP BY item_id;`);
 				if (
 					channel &&
 					channel instanceof TextChannel &&
-					channel.postable &&
-					channel.permissionsFor(client.user!)?.has(Permissions.FLAGS.EMBED_LINKS) &&
-					channel.permissionsFor(client.user!)?.has(Permissions.FLAGS.SEND_MESSAGES)
+					channel.permissionsFor(client.user!)?.has(PermissionsBitField.Flags.EmbedLinks) &&
+					channel.permissionsFor(client.user!)?.has(PermissionsBitField.Flags.SendMessages)
 				) {
 					sendToChannelID(channel.id, { content: `<${url}>`, embed });
 				}
@@ -92,4 +93,14 @@ GROUP BY item_id;`);
 			}
 		}
 	});
+
+	/**
+	 * Analytics
+	 */
+	schedule('*/5 * * * *', analyticsTick);
+
+	/**
+	 * prescence
+	 */
+	schedule('0 * * * *', () => globalClient.user?.setActivity('/help'));
 }

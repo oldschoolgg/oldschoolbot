@@ -1,6 +1,6 @@
+import { chunk } from 'e';
 import { existsSync } from 'fs';
 import * as fs from 'fs/promises';
-import { KlasaUser, Task, TaskStore, util } from 'klasa';
 import fetch from 'node-fetch';
 import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
@@ -13,8 +13,6 @@ import { allCLItems } from '../lib/data/Collections';
 import { filterableTypes } from '../lib/data/filterables';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
 import { BankBackground, FlagMap, Flags } from '../lib/minions/types';
-import { getUserSettings } from '../lib/settings/settings';
-import { UserSettings } from '../lib/settings/types/UserSettings';
 import { BankSortMethod, BankSortMethods, sorts } from '../lib/sorts';
 import { ItemBank } from '../lib/types';
 import { addArrayOfNumbers, cleanString, formatItemStackQuantity, generateHexColorForCashStack } from '../lib/util';
@@ -196,7 +194,7 @@ export const bankFlags = [
 ] as const;
 export type BankFlag = typeof bankFlags[number];
 
-export default class BankImageTask extends Task {
+class BankImageTask {
 	public itemIconsList: Set<number>;
 	public itemIconImagesCache: Map<number, Image>;
 	public backgroundImages: BankBackground[] = [];
@@ -204,9 +202,7 @@ export default class BankImageTask extends Task {
 	public _bgSpriteData: Image = new Image();
 	public bgSpriteList: Record<string, IBgSprite> = {};
 
-	public constructor(store: TaskStore, file: string[], directory: string) {
-		super(store, file, directory, {});
-
+	public constructor() {
 		// This tells us simply whether the file exists or not on disk.
 		this.itemIconsList = new Set();
 
@@ -490,7 +486,7 @@ export default class BankImageTask extends Task {
 		title?: string;
 		showValue?: boolean;
 		flags?: Flags;
-		user?: KlasaUser;
+		user?: MUser;
 		collectionLog?: Bank;
 		mahojiFlags?: BankFlag[];
 	}): Promise<BankImageResult> {
@@ -500,11 +496,8 @@ export default class BankImageTask extends Task {
 		let compact = flags.has('compact');
 		const spacer = compact ? 2 : 12;
 
-		const settings =
-			typeof user === 'undefined' ? null : typeof user === 'string' ? await getUserSettings(user) : user.settings;
-
-		const bankBackgroundID = Number(settings?.get(UserSettings.BankBackground) ?? flags.get('background') ?? 1);
-		const rawCL = settings?.get(UserSettings.CollectionLogBank);
+		const bankBackgroundID = Number(user?.user.bankBackground ?? flags.get('background') ?? 1);
+		const rawCL = user?.cl;
 		const currentCL: Bank | undefined = collectionLog ?? (rawCL === undefined ? undefined : new Bank(rawCL));
 
 		// Filtering
@@ -523,12 +516,10 @@ export default class BankImageTask extends Task {
 		let items = bank.items();
 
 		// Sorting
-		const favorites = settings?.get(UserSettings.FavoriteItems);
-		const weightings = settings?.get(UserSettings.BankSortWeightings);
-
+		const favorites = user?.user.favoriteItems;
+		const weightings = user?.user.bank_sort_weightings as ItemBank;
 		const perkTier = user ? getUsersPerkTier(user) : 0;
-		const defaultSort: BankSortMethod =
-			perkTier < PerkTier.Two ? 'value' : settings?.get(UserSettings.BankSortMethod) ?? 'value';
+		const defaultSort: BankSortMethod = perkTier < PerkTier.Two ? 'value' : user?.bankSortMethod ?? 'value';
 		const sortInput = flags.get('sort');
 		const sort = sortInput ? BankSortMethods.find(s => s === sortInput) ?? defaultSort : defaultSort;
 
@@ -560,7 +551,7 @@ export default class BankImageTask extends Task {
 		const totalValue = addArrayOfNumbers(items.map(([i, q]) => i.price * q));
 
 		const chunkSize = compact ? 140 : 56;
-		const chunked = util.chunk(items, chunkSize);
+		const chunked = chunk(items, chunkSize);
 
 		// Get page flag to show the current page, full and showNewCL to avoid showing page n of y
 		const page = flags.get('page');
@@ -616,13 +607,9 @@ export default class BankImageTask extends Task {
 
 		let actualBackground = isPurple && bgImage.hasPurple ? bgImage.purpleImage! : bgImage.image!;
 
-		const hexColor = user?.settings.get(UserSettings.BankBackgroundHex);
+		const hexColor = user?.user.bank_bg_hex;
 
-		const useSmallBank = user
-			? hasBgSprite
-				? true
-				: user.settings.get(UserSettings.BitField).includes(BitField.AlwaysSmallBank)
-			: true;
+		const useSmallBank = user ? (hasBgSprite ? true : user.bitfield.includes(BitField.AlwaysSmallBank)) : true;
 
 		const canvas = new Canvas(width, useSmallBank ? canvasHeight : Math.max(331, canvasHeight));
 
@@ -697,3 +684,6 @@ export default class BankImageTask extends Task {
 		};
 	}
 }
+
+export const bankImageGenerator = new BankImageTask();
+bankImageGenerator.init();

@@ -1,5 +1,3 @@
-import { User } from '@prisma/client';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
@@ -28,7 +26,7 @@ import { troubleBrewingBuyables } from './troubleBrewingShop';
 
 export interface Buyable {
 	name: string;
-	outputItems?: Bank | ((user: User) => Bank);
+	outputItems?: Bank | ((user: MUser) => Bank);
 	qpRequired?: number;
 	gpCost?: number;
 	itemCost?: Bank;
@@ -39,7 +37,7 @@ export interface Buyable {
 	minigameScoreReq?: [MinigameName, number];
 	ironmanPrice?: number;
 	collectionLogReqs?: number[];
-	customReq?: (user: KlasaUser) => Promise<[true] | [false, string]>;
+	customReq?: (user: MUser) => Promise<[true] | [false, string]>;
 }
 
 const randomEventBuyables: Buyable[] = [
@@ -76,7 +74,7 @@ const randomEventBuyables: Buyable[] = [
 
 const ironmenBuyables: Buyable[] = ['Ironman helm', 'Ironman platebody', 'Ironman platelegs'].map(str => ({
 	name: str,
-	customReq: async (user: KlasaUser) => {
+	customReq: async (user: MUser) => {
 		return user.isIronman ? [true] : [false, 'Only ironmen can buy this.'];
 	},
 	gpCost: 1000

@@ -1,18 +1,15 @@
-import { User } from '@prisma/client';
 import { notEmpty } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { BitField } from '../../../lib/constants';
 import { assert } from '../../../lib/util';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
-import { mahojiUserSettingsUpdate } from '../../mahojiSettings';
 import { flowerTable } from './hotColdCommand';
 
 interface Usable {
 	items: Item[];
-	run: (user: KlasaUser, mahojiUser: User) => Promise<string>;
+	run: (user: MUser) => Promise<string>;
 }
 export const usables: Usable[] = [];
 
@@ -46,12 +43,12 @@ const usableUnlocks: UsableUnlock[] = [
 for (const usableUnlock of usableUnlocks) {
 	usables.push({
 		items: [usableUnlock.item],
-		run: async (klasaUser, mahojiUser) => {
-			if (mahojiUser.bitfield.includes(usableUnlock.bitfield)) {
+		run: async user => {
+			if (user.bitfield.includes(usableUnlock.bitfield)) {
 				return "You already used this item, you can't use it again.";
 			}
-			await klasaUser.removeItemsFromBank(new Bank().add(usableUnlock.item.id));
-			await mahojiUserSettingsUpdate(mahojiUser.id, {
+			await user.removeItemsFromBank(new Bank().add(usableUnlock.item.id));
+			await user.update({
 				bitfield: {
 					push: usableUnlock.bitfield
 				}
@@ -94,19 +91,19 @@ for (const genericU of genericUsables) {
 }
 export const allUsableItems = new Set(usables.map(i => i.items.map(i => i.id)).flat(2));
 
-export async function useCommand(mUser: User, user: KlasaUser, _firstItem: string, _secondItem?: string) {
+export async function useCommand(user: MUser, _firstItem: string, _secondItem?: string) {
 	const firstItem = getItem(_firstItem);
 	const secondItem = _secondItem === undefined ? null : getItem(_secondItem);
 	if (!firstItem || (_secondItem !== undefined && !secondItem)) return "That's not a valid item.";
 	const items = [firstItem, secondItem].filter(notEmpty);
 	assert(items.length === 1 || items.length === 2);
 
-	const bank = user.bank();
+	const { bank } = user;
 	const checkBank = new Bank();
 	for (const i of items) checkBank.add(i.id);
 	if (!bank.has(checkBank)) return `You don't own ${checkBank}.`;
 
 	const usable = usables.find(i => i.items.length === items.length && items.every(t => i.items.includes(t)));
 	if (!usable) return "That's not a usable item.";
-	return usable.run(user, mUser);
+	return usable.run(user);
 }
