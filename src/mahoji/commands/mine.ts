@@ -274,9 +274,9 @@ export const mineCommand: OSBMahojiCommand = {
 		}
 
 		const boosts = [];
-		
+
 		let miningLevel = user.skillsAsLevels.mining;
-		if ((ore.minerals && miningLevel >= 60)) {
+		if (ore.minerals && miningLevel >= 60) {
 			boosts.push('+7 invisible Mining lvls at the Mining guild');
 			miningLevel += 7;
 		}
@@ -337,7 +337,7 @@ export const mineCommand: OSBMahojiCommand = {
 		}
 
 		// Check for 100 golden nuggets and 72 mining for upper motherlode mine access.
-		
+
 		const gotNuggets = user.cl.amount('Golden nugget') >= 100;
 		if (ore.name === 'Motherlode mine') {
 			if (gotNuggets && miningLevel >= 72) {
