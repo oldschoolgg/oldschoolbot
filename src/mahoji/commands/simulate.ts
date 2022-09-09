@@ -1,5 +1,4 @@
 import { randInt, roll } from 'e';
-import { KlasaUser } from 'klasa';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
@@ -12,11 +11,7 @@ import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { OSBMahojiCommand } from '../lib/util';
 
-export function determineCoxLimit(user: KlasaUser) {
-	if (globalClient.owners.has(user)) {
-		return Infinity;
-	}
-
+export function determineCoxLimit(user: MUser) {
 	const perkTier = getUsersPerkTier(user);
 
 	if (perkTier >= PerkTier.Three) {
@@ -34,13 +29,7 @@ export function determineCoxLimit(user: KlasaUser) {
 	return 10;
 }
 
-async function coxCommand(
-	user: KlasaUser,
-	quantity: number,
-	cm = false,
-	points = 25_000,
-	teamSize = 4
-): CommandResponse {
+async function coxCommand(user: MUser, quantity: number, cm = false, points = 25_000, teamSize = 4): CommandResponse {
 	const limit = determineCoxLimit(user);
 	if (quantity > limit) {
 		return `The quantity provided is over your limit of ${limit}. You can increase your limit up to 2000 by becoming a patron: <https://patreon.com/oldschoolbot>`;
@@ -153,7 +142,7 @@ export const simulateCommand: OSBMahojiCommand = {
 			quantity: number;
 		};
 	}>) => {
-		const user = await globalClient.fetchUser(userID.toString());
+		const user = await mUserFetch(userID.toString());
 		if (options.cox) {
 			return coxCommand(
 				user,

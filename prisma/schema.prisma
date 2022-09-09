@@ -236,6 +236,13 @@ model SlayerTask {
   @@map("slayer_tasks")
 }
 
+enum bank_sort_method_enum {
+  value
+  alch
+  name
+  quantity
+}
+
 model User {
   id                         String   @id @db.VarChar(19)
   GP                         BigInt   @default(0)

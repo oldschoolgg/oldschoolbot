@@ -1,4 +1,3 @@
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../lib/constants';
@@ -7,10 +6,11 @@ import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { gloriesInventorySize } from '../../mahoji/lib/abstracted_commands/chargeGloriesCommand';
 
-export default class extends Task {
+export const gloryChargingTask: MinionTask = {
+	type: 'GloryCharging',
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { quantity, userID, channelID } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		let deaths = 0;
 		let loot = new Bank();
 		for (let i = 0; i < quantity; i++) {
@@ -40,9 +40,9 @@ export default class extends Task {
 
 		if (loot.has('Amulet of eternal glory')) {
 			str += '\n**Your minion received an Amulet of eternal glory.**';
-			this.client.emit(
+			globalClient.emit(
 				Events.ServerNotification,
-				`**${user.username}'s** minion, ${user.minionName}, just received **${loot.amount(
+				`**${user.usernameOrMention}'s** minion, ${user.minionName}, just received **${loot.amount(
 					'Amulet of eternal glory'
 				)}x Amulet of eternal glory**!`
 			);
@@ -63,4 +63,4 @@ export default class extends Task {
 			loot
 		);
 	}
-}
+};

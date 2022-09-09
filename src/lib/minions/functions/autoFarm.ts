@@ -1,4 +1,4 @@
-import { KlasaUser } from 'klasa';
+import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { farmingPlantCommand } from '../../../mahoji/lib/abstracted_commands/farmingCommand';
@@ -8,11 +8,11 @@ import { IPatchDataDetailed } from '../farming/types';
 import { Plant } from './../../skilling/types';
 import { allFarm, replant } from './autoFarmFilters';
 
-export async function autoFarm(user: KlasaUser, patchesDetailed: IPatchDataDetailed[], channelID: bigint) {
+export async function autoFarm(user: MUser, patchesDetailed: IPatchDataDetailed[], channelID: bigint) {
 	if (user.minionIsBusy) {
 		return 'Your minion must not be busy to use this command.';
 	}
-	const userBank = user.bank();
+	const userBank = user.bank;
 	const farmingLevel = user.skillLevel(SkillsEnum.Farming);
 	let toPlant: Plant | undefined = undefined;
 	let canPlant: Plant | undefined = undefined;
@@ -66,7 +66,7 @@ export async function autoFarm(user: KlasaUser, patchesDetailed: IPatchDataDetai
 	}
 
 	return farmingPlantCommand({
-		user,
+		userID: user.id,
 		plantName: toPlant.name,
 		autoFarmed: true,
 		channelID,

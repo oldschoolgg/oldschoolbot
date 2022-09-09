@@ -1,4 +1,3 @@
-import { KlasaUser } from 'klasa';
 import { Bank, MonsterKillOptions } from 'oldschooljs';
 import SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
 import { Image } from 'skia-canvas/lib';
@@ -91,10 +90,10 @@ export interface KillableMonster {
 	canBarrage?: boolean;
 	canCannon?: boolean;
 	cannonMulti?: boolean;
-	specialLoot?: (loot: Bank, user: KlasaUser, data: MonsterActivityTaskOptions) => Promise<void>;
+	specialLoot?: (loot: Bank, user: MUser, data: MonsterActivityTaskOptions) => Promise<void>;
 	effect?: (opts: {
 		messages: string[];
-		user: KlasaUser;
+		user: MUser;
 		quantity: number;
 		monster: KillableMonster;
 		loot: Bank;

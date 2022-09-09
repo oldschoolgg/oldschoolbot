@@ -1,24 +1,20 @@
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
 import { superCompostables } from '../../../lib/data/filterables';
 import { ArdougneDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { calcNumOfPatches } from '../../../lib/skilling/functions/calcsFarming';
 import { getFarmingInfo } from '../../../lib/skilling/functions/getFarmingInfo';
 import Farming, { CompostName } from '../../../lib/skilling/skills/farming';
 import { Plant, SkillsEnum } from '../../../lib/skilling/types';
 import { FarmingActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, stringMatches, updateBankSetting } from '../../../lib/util';
+import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { farmingPatchNames, findPlant, isPatchName } from '../../../lib/util/farmingHelpers';
-import { hasItemsEquippedOrInBank } from '../../../lib/util/minionUtils';
-import { handleMahojiConfirmation } from '../../mahojiSettings';
+import { handleMahojiConfirmation, updateBankSetting, userHasGracefulEquipped } from '../../mahojiSettings';
 
 function treeCheck(plant: Plant, wcLevel: number, bal: number, quantity: number): string | null {
 	if (plant.needsChopForHarvest && plant.treeWoodcuttingLevel && wcLevel < plant.treeWoodcuttingLevel) {
@@ -35,14 +31,14 @@ export async function harvestCommand({
 	channelID,
 	seedType
 }: {
-	user: KlasaUser;
+	user: MUser;
 	channelID: bigint;
 	seedType: string;
 }) {
 	if (user.minionIsBusy) {
 		return 'Your minion must not be busy to use this command.';
 	}
-	const GP = user.settings.get(UserSettings.GP);
+	const { GP } = user;
 	const currentWoodcuttingLevel = user.skillLevel(SkillsEnum.Woodcutting);
 	const currentDate = new Date().getTime();
 	if (!isPatchName(seedType)) {
@@ -74,12 +70,12 @@ export async function harvestCommand({
 	// 1.5 mins per patch --> ex: 10 patches = 15 mins
 	let duration = patch.lastQuantity * (timePerPatchTravel + timePerPatchHarvest);
 
-	if (user.hasGracefulEquipped()) {
+	if (userHasGracefulEquipped(user)) {
 		boostStr.push('10% time for Graceful');
 		duration *= 0.9;
 	}
 
-	if (hasItemsEquippedOrInBank(user, ['Ring of endurance'])) {
+	if (user.hasEquippedOrInBank(['Ring of endurance'])) {
 		boostStr.push('10% time for Ring of Endurance');
 		duration *= 0.9;
 	}
@@ -92,11 +88,11 @@ export async function harvestCommand({
 		)}, try a lower quantity.`;
 	}
 
-	if (hasItemsEquippedOrInBank(user, ['Magic secateurs'])) {
+	if (user.hasEquippedOrInBank(['Magic secateurs'])) {
 		boostStr.push('10% crop yield for Magic Secateurs');
 	}
 
-	if (hasItemsEquippedOrInBank(user, ['Farming cape'])) {
+	if (user.hasEquippedOrInBank(['Farming cape'])) {
 		boostStr.push('5% crop yield for Farming Skillcape');
 	}
 
@@ -123,28 +119,28 @@ ${boostStr.length > 0 ? '**Boosts**: ' : ''}${boostStr.join(', ')}`;
 }
 
 export async function farmingPlantCommand({
-	user,
 	plantName,
 	quantity,
 	autoFarmed,
 	channelID,
-	pay
+	pay,
+	userID
 }: {
-	user: KlasaUser;
+	userID: string;
 	plantName: string;
 	quantity: number | null;
 	autoFarmed: boolean;
 	channelID: bigint;
 	pay: boolean;
 }): Promise<string> {
-	await user.settings.sync(true);
+	const user = await mUserFetch(userID);
 	if (user.minionIsBusy) {
 		return 'Your minion must not be busy to use this command.';
 	}
-	const userBank = user.bank();
-	const alwaysPay = user.settings.get(UserSettings.Minion.DefaultPay);
-	const questPoints = user.settings.get(UserSettings.QP);
-	const GP = user.settings.get(UserSettings.GP);
+	const userBank = user.bank;
+	const alwaysPay = user.user.minion_defaultPay;
+	const questPoints = user.QP;
+	const { GP } = user;
 	const currentWoodcuttingLevel = user.skillLevel(SkillsEnum.Woodcutting);
 	const currentDate = new Date().getTime();
 
@@ -215,12 +211,12 @@ export async function farmingPlantCommand({
 	}
 
 	// Reduce time if user has graceful equipped
-	if (user.hasGracefulEquipped()) {
+	if (userHasGracefulEquipped(user)) {
 		boostStr.push('10% time for Graceful');
 		duration *= 0.9;
 	}
 
-	if (user.hasItemEquippedAnywhere('Ring of endurance')) {
+	if (user.hasEquipped('Ring of endurance')) {
 		boostStr.push('10% time for Ring of Endurance');
 		duration *= 0.9;
 	}
@@ -253,7 +249,7 @@ export async function farmingPlantCommand({
 		}
 	}
 
-	const compostTier = user.settings.get(UserSettings.Minion.DefaultCompostToUse) ?? 'compost';
+	const compostTier = (user.user.minion_defaultCompostToUse as CompostName) ?? 'compost';
 	let upgradeType: CompostName | null = null;
 	if ((didPay && plant.canCompostandPay) || (!didPay && plant.canCompostPatch && compostTier)) {
 		const compostCost = new Bank().add(compostTier, quantity);
@@ -267,15 +263,15 @@ export async function farmingPlantCommand({
 	if (!user.owns(cost)) return `You don't own ${cost}.`;
 	await transactItems({ userID: user.id, itemsToRemove: cost });
 
-	updateBankSetting(globalClient, ClientSettings.EconomyStats.FarmingCostBank, cost);
+	updateBankSetting('farming_cost_bank', cost);
 	// If user does not have something already planted, just plant the new seeds.
 	if (!patchType.patchPlanted) {
 		infoStr.unshift(`${user.minionName} is now planting ${quantity}x ${plant.name}.`);
 	} else if (patchType.patchPlanted) {
-		if (hasItemsEquippedOrInBank(user, ['Magic secateurs'])) {
+		if (user.hasEquippedOrInBank(['Magic secateurs'])) {
 			boostStr.push('10% crop yield for Magic Secateurs');
 		}
-		if (hasItemsEquippedOrInBank(user, ['Farming cape'])) {
+		if (user.hasEquippedOrInBank(['Farming cape'])) {
 			boostStr.push('5% crop yield for Farming Skillcape');
 		}
 
@@ -317,7 +313,7 @@ ${boostStr.length > 0 ? '**Boosts**: ' : ''}${boostStr.join(', ')}`;
 
 export async function compostBinCommand(
 	interaction: SlashCommandInteraction,
-	user: KlasaUser,
+	user: MUser,
 	cropToCompost: string,
 	quantity: number | undefined
 ) {
@@ -326,7 +322,7 @@ export async function compostBinCommand(
 		return `That's not a valid crop to compost. The crops you can compost are: ${superCompostables.join(', ')}.`;
 	}
 
-	const userBank = user.bank();
+	const userBank = user.bank;
 	if (!quantity) quantity = userBank.amount(superCompostableCrop);
 	const cost = new Bank().add(superCompostableCrop, quantity);
 	const loot = new Bank().add('Supercompost', quantity);

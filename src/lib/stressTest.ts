@@ -1,11 +1,10 @@
 import { Bank } from 'oldschooljs';
 
 import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
-import { UserSettings } from './settings/types/UserSettings';
 import { ItemBank } from './types';
 import { assert } from './util';
 
-function bankIsEqual(bank1: Bank, bank2: Bank) {
+export function bankIsEqual(bank1: Bank, bank2: Bank) {
 	for (const [item, quantity] of bank1.items()) {
 		if (bank2.amount(item.id) !== quantity) return false;
 	}
@@ -21,19 +20,19 @@ function diffBanks(bank1: Bank, bank2: Bank) {
 }
 
 export async function stressTest(userID: string) {
-	const user = await globalClient.fetchUser(userID);
-	const currentBank = user.bank();
-	const currentGP = user.settings.get(UserSettings.GP);
+	const user = await mUserFetch(userID);
+	const currentBank = user.bank;
+	const currentGP = user.GP;
 	const gpBank = new Bank().add('Coins', currentGP);
 	async function assertGP(amnt: number) {
 		const mUser = await mahojiUsersSettingsFetch(userID);
 		assert(Number(mUser.GP) === amnt, `1 GP should match ${amnt} === ${Number(mUser.GP)}`);
 	}
 	async function assertBankMatches() {
-		const newBank = user.bank();
+		const newBank = user.bank;
 		const mUser = await mahojiUsersSettingsFetch(userID);
 		const mahojiBank = new Bank(mUser.bank as ItemBank);
-		assert(bankIsEqual(mahojiBank, newBank), 'Mahoji/Klasa bank should match');
+		assert(bankIsEqual(mahojiBank, newBank), 'Mahoji bank should match');
 		assert(
 			bankIsEqual(mahojiBank, currentBank),
 			`Updated bank should match: ${diffBanks(mahojiBank, currentBank)}`
@@ -90,6 +89,10 @@ export async function stressTest(userID: string) {
 
 	await assertBankMatches();
 	await assertGP(currentGP);
+
+	const specialRemoveBank = new Bank().add('Egg').add('Twisted bow', 100);
+	await user.addItemsToBank({ items: specialRemoveBank });
+	await user.specialRemoveItems(specialRemoveBank);
 
 	return 'Success';
 }
