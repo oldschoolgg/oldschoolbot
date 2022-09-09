@@ -1,5 +1,3 @@
-import { User } from 'discord.js';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 import { resolveNameBank } from 'oldschooljs/dist/util';
@@ -7,6 +5,7 @@ import { resolveNameBank } from 'oldschooljs/dist/util';
 import { SkillsEnum } from '../../skilling/types';
 import { ItemBank } from '../../types';
 import { rand, roll, skillingPetDropRate } from '../../util';
+import { MUserClass } from './../../MUser';
 
 const Room1Table = new LootTable().add('Ivory Comb', 1, 3).add('Pottery scarab').add('Pottery statuette');
 
@@ -128,7 +127,7 @@ export const plunderBoosts = resolveNameBank({
 	"Pharaoh's sceptre": 5
 });
 
-export function lootRoom(user: KlasaUser | User, room: number): [ItemBank, number] {
+export function lootRoom(user: MUserClass, room: number): [ItemBank, number] {
 	const loot = new Bank();
 	const roomObj = plunderRooms[room - 1];
 	const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Thieving, roomObj.rockyChance);
