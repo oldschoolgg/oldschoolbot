@@ -90,5 +90,9 @@ export async function stressTest(userID: string) {
 	await assertBankMatches();
 	await assertGP(currentGP);
 
+	const specialRemoveBank = new Bank().add('Egg').add('Twisted bow', 100);
+	await user.addItemsToBank({ items: specialRemoveBank });
+	await user.specialRemoveItems(specialRemoveBank);
+
 	return 'Success';
 }

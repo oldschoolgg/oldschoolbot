@@ -34,10 +34,9 @@ export const infernoTask: MinionTask = {
 		const unusedItems = new Bank();
 		const cost = new Bank(data.cost);
 
-		const attempts = user.user.inferno_attempts + 1;
 		await user.update({
 			inferno_attempts: {
-				increment: attempts
+				increment: 1
 			}
 		});
 
@@ -172,7 +171,7 @@ export const infernoTask: MinionTask = {
 				globalClient.emit(
 					Events.ServerNotification,
 					`**${user.usernameOrMention}** just received their first Infernal cape on their ${formatOrdinal(
-						attempts
+						user.user.inferno_attempts
 					)} attempt! They are the ${formatOrdinal(
 						usersWithInfernalCape + 1
 					)} person to get an Infernal cape.`
