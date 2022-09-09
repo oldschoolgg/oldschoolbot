@@ -5,12 +5,11 @@ import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
 import { determineWoodcuttingTime } from '../../lib/skilling/functions/determineWoodcuttingTime';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, getSkillsOfMahojiUser, itemNameFromID, randomVariation, stringMatches } from '../../lib/util';
+import { formatDuration, itemNameFromID, randomVariation, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
-import { hasItemsEquippedOrInBank, minionName } from '../../lib/util/minionUtils';
+import { minionName } from '../../lib/util/minionUtils';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const axes = [
 	{
@@ -106,7 +105,7 @@ export const chopCommand: OSBMahojiCommand = {
 		options,
 		userID,
 		channelID
-	}: CommandRunOptions<{ name: string; quantity?: number; alch?: boolean }>) => {
+	}: CommandRunOptions<{ name: string; quantity?: number; powerchop?: boolean }>) => {
 		const user = await mUserFetch(userID);
 		const log = Woodcutting.Logs.find(
 			log =>
@@ -118,8 +117,8 @@ export const chopCommand: OSBMahojiCommand = {
 		if (!log) return "That's not a valid log to chop.";
 
 		let { quantity, powerchop } = options;
-		const user = await mahojiUsersSettingsFetch(userID);
-		const skills = getSkillsOfMahojiUser(user, true);
+
+		const skills = user.skillsAsLevels;
 
 		if (skills.woodcutting < log.level) {
 			return `${minionName(user)} needs ${log.level} Woodcutting to chop ${log.name}.`;
@@ -162,6 +161,10 @@ export const chopCommand: OSBMahojiCommand = {
 			boosts.pop();
 			boosts.push(`**${axeMultiplier}x** success multiplier for ${itemNameFromID(axe.id)}`);
 			break;
+		}
+
+		if (!powerchop) {
+			powerchop = false;
 		}
 
 		// Calculate the time it takes to chop specific quantity or as many as possible

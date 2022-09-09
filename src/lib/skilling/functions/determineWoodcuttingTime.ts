@@ -1,13 +1,12 @@
-import { User } from '@prisma/client';
 import { percentChance, Time } from 'e';
 
-import { getSkillsOfMahojiUser } from '../../util';
 import { calcMaxTripLength } from '../../util/calcMaxTripLength';
+import { MUserClass } from './../../MUser';
 import { Log } from './../types';
 
 interface WoodcuttingTimeOptions {
 	quantity: number | undefined;
-	user: User;
+	user: MUserClass;
 	log: Log;
 	axeMultiplier: number;
 	powerchopping: boolean;
@@ -32,7 +31,7 @@ export function determineWoodcuttingTime({
 	const { findNewTreeTime } = log;
 
 	let teakTick = false;
-	if (getSkillsOfMahojiUser(user, true).woodcutting >= 92 && log.name === 'Teak Logs') {
+	if (user.skillsAsLevels.woodcutting >= 92 && log.name === 'Teak Logs') {
 		teakTick = true;
 	}
 
