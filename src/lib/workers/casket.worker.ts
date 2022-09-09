@@ -1,3 +1,5 @@
+import '../data/itemAliases';
+
 import { roll } from 'e';
 import { Bank, Misc } from 'oldschooljs';
 

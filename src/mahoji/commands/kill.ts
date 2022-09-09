@@ -1,4 +1,3 @@
-import { KlasaUser } from 'klasa';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank, Monsters } from 'oldschooljs';
 
@@ -9,11 +8,7 @@ import { makeBankImage } from '../../lib/util/makeBankImage';
 import { Workers } from '../../lib/workers';
 import { OSBMahojiCommand } from '../lib/util';
 
-export function determineKillLimit(user: KlasaUser) {
-	if (globalClient.owners.has(user)) {
-		return Infinity;
-	}
-
+export function determineKillLimit(user: MUser) {
 	const perkTier = getUsersPerkTier(user);
 
 	if (perkTier >= PerkTier.Six) {
@@ -74,7 +69,7 @@ export const killCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ options, userID, interaction }: CommandRunOptions<{ name: string; quantity: number }>) => {
-		const user = await globalClient.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		interaction.deferReply();
 
 		const result = await Workers.kill({

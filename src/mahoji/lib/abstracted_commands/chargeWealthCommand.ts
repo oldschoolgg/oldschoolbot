@@ -1,5 +1,4 @@
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { userhasDiaryTier, WildernessDiary } from '../../../lib/diaries';
@@ -11,9 +10,8 @@ import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 export const wealthInventorySize = 26;
 export const wealthInventoryTime = Time.Minute * 2.2;
 
-export async function chargeWealthCommand(user: KlasaUser, channelID: bigint, quantity: number | undefined) {
-	await user.settings.sync(true);
-	const userBank = user.bank();
+export async function chargeWealthCommand(user: MUser, channelID: bigint, quantity: number | undefined) {
+	const userBank = user.bank;
 
 	const amountHas = userBank.amount('Ring of wealth');
 	if (amountHas < wealthInventorySize) {

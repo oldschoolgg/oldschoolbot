@@ -30,7 +30,7 @@ export const capeBuyables: Buyable[] = [
 		}),
 		gpCost: 2_277_000,
 		customReq: async user => {
-			if (user.totalLevel() < 2277) {
+			if (user.totalLevel < 2277) {
 				return [false, "You can't buy this because you aren't maxed!"];
 			}
 			return [true];

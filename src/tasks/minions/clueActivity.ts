@@ -1,4 +1,3 @@
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { ClueTiers } from '../../lib/clues/clueTiers';
@@ -6,16 +5,17 @@ import { Events } from '../../lib/constants';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
-export default class extends Task {
+export const clueTask: MinionTask = {
+	type: 'ClueCompletion',
 	async run(data: ClueActivityTaskOptions) {
 		const { clueID, userID, channelID, quantity } = data;
 		const clueTier = ClueTiers.find(mon => mon.id === clueID);
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
 		const logInfo = `ClueID[${clueID}] userID[${userID}] channelID[${channelID}] quantity[${quantity}]`;
 
 		if (!clueTier) {
-			this.client.emit(Events.Wtf, `Missing user or clue - ${logInfo}`);
+			globalClient.emit(Events.Wtf, `Missing user or clue - ${logInfo}`);
 			return;
 		}
 
@@ -33,4 +33,4 @@ export default class extends Task {
 		});
 		handleTripFinish(user, channelID, str, undefined, undefined, data, loot);
 	}
-}
+};

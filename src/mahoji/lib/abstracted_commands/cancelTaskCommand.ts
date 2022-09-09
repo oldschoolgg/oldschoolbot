@@ -1,15 +1,13 @@
-import { User } from '@prisma/client';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 
 import { cancelTask, getActivityOfUser } from '../../../lib/settings/settings';
 import { NexTaskOptions, RaidsOptions } from '../../../lib/types/minions';
-import { minionName } from '../../../lib/util/minionUtils';
 import { handleMahojiConfirmation } from '../../mahojiSettings';
 
-export async function cancelTaskCommand(user: User, interaction?: SlashCommandInteraction): Promise<string> {
+export async function cancelTaskCommand(user: MUser, interaction?: SlashCommandInteraction): Promise<string> {
 	const currentTask = getActivityOfUser(user.id);
 
-	const mName = minionName(user);
+	const mName = user.minionName;
 
 	if (!currentTask) {
 		return `${mName} isn't doing anything at the moment, so there's nothing to cancel.`;

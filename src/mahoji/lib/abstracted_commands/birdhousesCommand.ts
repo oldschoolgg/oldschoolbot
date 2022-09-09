@@ -1,16 +1,13 @@
 import { time } from '@discordjs/builders';
 import { User } from '@prisma/client';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import birdhouses, { Birdhouse } from '../../../lib/skilling/skills/hunter/birdHouseTrapping';
 import defaultBirdhouseTrap, { BirdhouseData } from '../../../lib/skilling/skills/hunter/defaultBirdHouseTrap';
 import { BirdhouseActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, getSkillsOfMahojiUser, itemID, stringMatches, updateBankSetting } from '../../../lib/util';
+import { formatDuration, itemID, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { minionName } from '../../../lib/util/minionUtils';
-import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
+import { mahojiUsersSettingsFetch, updateBankSetting, userHasGracefulEquipped } from '../../mahojiSettings';
 
 interface BirdhouseDetails {
 	raw: BirdhouseData;
@@ -148,19 +145,14 @@ export async function birdhouseCheckCommand(user: User) {
 	return `Your ${details.birdHouse.name}'s are ready ${time(details.readyAt!, 'R')} (${time(details.readyAt!)})`;
 }
 
-export async function birdhouseHarvestCommand(
-	user: KlasaUser,
-	mahojiUser: User,
-	channelID: bigint,
-	inputBirdhouseName: string | undefined
-) {
-	const userBank = user.bank();
+export async function birdhouseHarvestCommand(user: MUser, channelID: bigint, inputBirdhouseName: string | undefined) {
+	const userBank = user.bank;
 	const currentDate = new Date().getTime();
 	const infoStr: string[] = [];
 	const boostStr: string[] = [];
 
-	const existingBirdhouse = await calculateBirdhouseDetails(mahojiUser.id);
-	if (!existingBirdhouse.isReady && existingBirdhouse.raw.lastPlaced) return birdhouseCheckCommand(mahojiUser);
+	const existingBirdhouse = await calculateBirdhouseDetails(user.id);
+	if (!existingBirdhouse.isReady && existingBirdhouse.raw.lastPlaced) return birdhouseCheckCommand(user.user);
 
 	let birdhouseToPlant = inputBirdhouseName
 		? birdhouses.find(_birdhouse =>
@@ -179,19 +171,19 @@ export async function birdhouseHarvestCommand(
 			.join(', ')}.`;
 	}
 
-	const skills = getSkillsOfMahojiUser(mahojiUser, true);
+	const skills = user.skillsAsLevels;
 	if (skills.hunter < birdhouseToPlant.huntLvl) {
-		return `${minionName(mahojiUser)} needs ${birdhouseToPlant.huntLvl} Hunter to place ${birdhouseToPlant.name}.`;
+		return `${user.minionName} needs ${birdhouseToPlant.huntLvl} Hunter to place ${birdhouseToPlant.name}.`;
 	}
 
-	if (mahojiUser.QP < birdhouseToPlant.qpRequired) {
-		return `${minionName(mahojiUser)} needs ${birdhouseToPlant.qpRequired} QP to do Birdhouse runs.`;
+	if (user.QP < birdhouseToPlant.qpRequired) {
+		return `${user.minionName} needs ${birdhouseToPlant.qpRequired} QP to do Birdhouse runs.`;
 	}
 
 	let duration: number = birdhouseToPlant.runTime;
 
 	// Reduce time if user has graceful equipped
-	if (user.hasGracefulEquipped()) {
+	if (userHasGracefulEquipped(user)) {
 		boostStr.push('10% time for Graceful');
 		duration *= 0.9;
 	}
@@ -224,8 +216,8 @@ export async function birdhouseHarvestCommand(
 	}
 	if (!user.owns(removeBank)) return `You don't own: ${removeBank}.`;
 
-	await updateBankSetting(globalClient, ClientSettings.EconomyStats.FarmingCostBank, removeBank);
-	await user.removeItemsFromBank(removeBank);
+	await updateBankSetting('farming_cost_bank', removeBank);
+	await transactItems({ userID: user.id, itemsToRemove: removeBank });
 
 	// If user does not have something already placed, just place the new birdhouses.
 	if (!existingBirdhouse.raw.birdhousePlaced) {

@@ -1,4 +1,3 @@
-import { KlasaUser } from 'klasa';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandOption } from 'mahoji/dist/lib/types';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
@@ -11,9 +10,8 @@ import { getItem } from '../../lib/util/getOSItem';
 import { gearEquipCommand } from '../lib/abstracted_commands/gearCommands';
 import { allEquippableItems, gearPresetOption, gearSetupOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
-function maxPresets(user: KlasaUser) {
+function maxPresets(user: MUser) {
 	return user.perkTier * 2 + 3;
 }
 
@@ -31,7 +29,7 @@ function parseInputGear(inputGear: InputGear) {
 }
 
 async function createOrEditGearSetup(
-	user: KlasaUser,
+	user: MUser,
 	setupToCopy: GearSetupType | undefined,
 	name: string,
 	isUpdating: boolean,
@@ -62,7 +60,7 @@ async function createOrEditGearSetup(
 	}
 
 	const parsedInputGear = parseInputGear(gearInput);
-	let gearSetup = setupToCopy ? user.rawGear()[setupToCopy] : null;
+	let gearSetup = setupToCopy ? user.gear[setupToCopy] : null;
 
 	const gearData = {
 		head: gearSetup?.head?.item ?? parsedInputGear.head ?? null,
@@ -220,19 +218,12 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 		delete?: { preset: string };
 		view?: { preset: string };
 	}>) => {
-		const klasaUser = await globalClient.fetchUser(userID);
-		const mahojiUser = await mahojiUsersSettingsFetch(userID);
+		const user = await mUserFetch(userID);
 		if (options.create) {
-			return createOrEditGearSetup(
-				klasaUser,
-				options.create.copy_setup,
-				options.create.name,
-				false,
-				options.create
-			);
+			return createOrEditGearSetup(user, options.create.copy_setup, options.create.name, false, options.create);
 		}
 		if (options.edit) {
-			return createOrEditGearSetup(klasaUser, undefined, options.edit.preset, true, options.edit);
+			return createOrEditGearSetup(user, undefined, options.edit.preset, true, options.edit);
 		}
 		if (options.delete) {
 			const preset = await prisma.gearPreset.findFirst({
@@ -256,8 +247,7 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 		if (options.equip) {
 			return gearEquipCommand({
 				interaction,
-				user: mahojiUser,
-				klasaUser,
+				userID: user.id,
 				setup: options.equip.gear_setup,
 				item: undefined,
 				preset: options.equip.preset,
@@ -272,7 +262,7 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 					where: { user_id: userID.toString(), name: options.view.preset }
 				})) || globalPresets.find(i => stringMatches(i.name, options.view?.preset ?? ''));
 			if (!preset) return "You don't have a preset with that name.";
-			const image = await generateGearImage(klasaUser, gearPresetToGear(preset), null, null);
+			const image = await generateGearImage(user, gearPresetToGear(preset), null, null);
 			return { attachments: [{ buffer: image, fileName: 'preset.jpg' }] };
 		}
 

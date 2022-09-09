@@ -1,15 +1,14 @@
-import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
+import { Bank } from 'oldschooljs';
 
-import { handleMahojiConfirmation, mahojiParseNumber } from '../../../mahoji/mahojiSettings';
+import { handleMahojiConfirmation, mahojiParseNumber, updateBankSetting } from '../../../mahoji/mahojiSettings';
 import { degradeableItems } from '../../degradeableItems';
-import { ClientSettings } from '../../settings/types/ClientSettings';
-import { stringMatches, updateBankSetting } from '../../util';
+import { stringMatches } from '../../util';
 
 export async function degradeableItemsCommand(
 	interaction: SlashCommandInteraction,
-	user: KlasaUser,
+	user: MUser,
 	input: string | undefined,
 	quantity: number | undefined
 ): CommandResponse {
@@ -20,7 +19,7 @@ export async function degradeableItemsCommand(
 		return `Use \`/minion charge [${degradeableItems.map(i => i.item.name).join('|')}], [1-10,000]\`
 ${degradeableItems
 	.map(i => {
-		const charges = user.settings.get(i.settingsKey) as number;
+		const charges = user.user[i.settingsKey];
 		return `${i.item.name}: ${charges.toLocaleString()} charges`;
 	})
 	.join('\n')}`;
@@ -34,7 +33,7 @@ ${degradeableItems
 	}
 
 	const needConvert = item.convertOnCharge && item.unchargedItem;
-	if (needConvert && !user.hasItemEquippedOrInBank(item.item.id) && !user.owns(item.unchargedItem!.id)) {
+	if (needConvert && !user.hasEquippedOrInBank(item.item.id) && !user.owns(item.unchargedItem!.id)) {
 		return `You don't own a ${item.item.name} or ${item.unchargedItem!.name}.`;
 	}
 
@@ -45,18 +44,20 @@ ${degradeableItems
 		}?`
 	);
 
-	if (needConvert && !user.hasItemEquippedOrInBank(item.item.id)) {
+	if (needConvert && !user.hasEquippedOrInBank(item.item.id)) {
 		if (!user.owns(item.unchargedItem!.id)) {
 			return `Your ${item.unchargedItem!.name} disappeared and cannot be charged`;
 		}
-		await user.removeItemsFromBank({ [item.unchargedItem!.id]: 1 });
+		await user.removeItemsFromBank(new Bank({ [item.unchargedItem!.id]: 1 }));
 		await user.addItemsToBank({ items: { [item.item.id]: 1 }, collectionLog: true, filterLoot: false });
 	}
 	await transactItems({ userID: user.id, itemsToRemove: cost });
-	const currentCharges = user.settings.get(item.settingsKey) as number;
+	const currentCharges = user.user[item.settingsKey];
 	const newCharges = currentCharges + amountOfCharges;
-	await user.settings.update(item.settingsKey, newCharges);
-	await updateBankSetting(globalClient, ClientSettings.EconomyStats.DegradedItemsCost, cost);
+	await user.update({
+		[item.settingsKey]: newCharges
+	});
+	await updateBankSetting('degraded_items_cost', cost);
 
 	return `You added **${cost}** to your ${item.item.name}, it now has ${newCharges} charges.`;
 }

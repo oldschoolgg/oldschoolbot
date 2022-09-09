@@ -99,7 +99,7 @@ export const raidCommand: OSBMahojiCommand = {
 		tob?: { start?: { hard_mode?: boolean; max_team_size?: number }; stats?: {}; check?: { hard_mode?: boolean } };
 	}>) => {
 		if (interaction) await interaction.deferReply();
-		const user = await globalClient.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const { cox, tob } = options;
 		if (cox?.stats) return coxStatsCommand(user);
 		if (tob?.stats) return tobStatsCommand(user);
