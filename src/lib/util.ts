@@ -32,6 +32,7 @@ import { production, SupportServer } from '../config';
 import { skillEmoji, usernameCache } from './constants';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
 import { Consumable } from './minions/types';
+import { MUserClass } from './MUser';
 import { PaginatedMessage } from './PaginatedMessage';
 import { POHBoosts } from './poh';
 import { SkillsEnum } from './skilling/types';
@@ -634,16 +635,13 @@ export async function asyncGzip(buffer: Buffer) {
 }
 
 export function skillingPetDropRate(
-	user: User | KlasaUser,
+	user: MUserClass,
 	skill: SkillsEnum,
 	tableOrBaseDropRate: LootTable | number,
 	itemName?: string
 ): { petDropRate: number } {
-	const twoHundredMillXP =
-		user instanceof KlasaUser
-			? (user.settings.get(`skills.${skill}`) as number) >= 200_000_000
-			: (getSkillsOfMahojiUser(user)[skill] as number) >= 200_000_000;
-	const skillLevel = user instanceof KlasaUser ? user.skillLevel(skill) : getSkillsOfMahojiUser(user, true)[skill];
+	const twoHundredMillXP = user.skillsAsXP[skill] >= 200_000_000;
+	const skillLevel = user.skillsAsLevels[skill];
 	const petRateDivisor = twoHundredMillXP ? 15 : 1;
 	let dropRate = 0;
 	if (tableOrBaseDropRate instanceof LootTable) {
