@@ -1,7 +1,9 @@
-import { activity_type_enum, User } from '@prisma/client';
-import { MessageActionRowComponentResolvable, MessageButton } from 'discord.js';
+import { ButtonStyle } from 'discord-api-types/v10';
+import { MUserClass } from './../../../lib/MUser';
+import { activity_type_enum } from '@prisma/client';
+import { MessageActionRowComponentResolvable, ButtonBuilder } from 'discord.js';
 import { percentChance, randInt, roll, Time } from 'e';
-import { KlasaUser } from 'klasa';
+
 import { Bank } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
@@ -9,12 +11,13 @@ import { determineMiningTime } from '../../../lib/skilling/functions/determineMi
 import { Ore, SkillsEnum } from '../../../lib/skilling/types';
 import { ItemBank } from '../../../lib/types';
 import { ActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, getSkillsOfMahojiUser, itemNameFromID } from '../../../lib/util';
+import { formatDuration, itemNameFromID } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { hasItemsEquippedOrInBank, minionName } from '../../../lib/util/minionUtils';
+import { minionName } from '../../../lib/util/minionUtils';
 import { pickaxes } from '../../commands/mine';
+import addSkillingClueToLoot from '../../../lib/minions/functions/addSkillingClueToLoot';
 
 interface Star extends Ore {
 	size: number;
@@ -177,8 +180,9 @@ export interface ShootingStarsData extends ActivityTaskOptions {
 	lootItems: ItemBank;
 }
 
-export async function shootingStarsCommand(channelID: bigint, user: User, star: Star): Promise<string> {
-	const skills = getSkillsOfMahojiUser(user, true);
+export async function shootingStarsCommand(channelID: bigint, user: MUserClass, star: Star): Promise<string> {
+
+	const skills = user.skillsAsLevels;
 	const boosts = [];
 
 	let miningLevel = skills.mining;
@@ -188,7 +192,7 @@ export async function shootingStarsCommand(channelID: bigint, user: User, star: 
 	}
 
 	// Checks if user own Celestial ring or Celestial signet
-	if (hasItemsEquippedOrInBank(user, ['Celestial ring (uncharged)'])) {
+	if (user.hasEquippedOrInBank('Celestial ring (uncharged)')) {
 		boosts.push('+4 invisible Mining lvls for Celestial ring');
 		miningLevel += 4;
 	}
@@ -198,7 +202,7 @@ export async function shootingStarsCommand(channelID: bigint, user: User, star: 
 
 	// For each pickaxe, if they have it, give them its' bonus and break.
 	for (const pickaxe of pickaxes) {
-		if (!hasItemsEquippedOrInBank(user, [pickaxe.id]) || skills.mining < pickaxe.miningLvl) continue;
+		if (!user.hasEquippedOrInBank(pickaxe.id) || skills.mining < pickaxe.miningLvl) continue;
 		currentPickaxe = pickaxe;
 		boosts.pop();
 		boosts.push(`**${pickaxe.ticksBetweenRolls}** ticks between rolls for ${itemNameFromID(pickaxe.id)}`);
@@ -233,11 +237,10 @@ export async function shootingStarsCommand(channelID: bigint, user: User, star: 
 			}
 		}
 		// Add clue scrolls , TODO: convert klasaUsers to user
-		/*
 		if (star.clueScrollChance) {
 			loot.add(addSkillingClueToLoot(user, SkillsEnum.Mining, newQuantity, star.clueScrollChance, loot));
 		}
-		*/
+
 		// Roll for pet
 		if (star.petChance && roll((star.petChance - skills.mining * 25) / newQuantity)) {
 			loot.add('Rock golem');
@@ -274,7 +277,7 @@ export async function shootingStarsCommand(channelID: bigint, user: User, star: 
 }
 
 export async function shootingStarsActivity(data: ShootingStarsData) {
-	const user = await globalClient.fetchUser(data.userID);
+	const user = await mUserFetch(data.userID);
 	const star = starSizes.find(i => i.size === data.size)!;
 	const { usersWith } = data;
 	const loot = new Bank(data.lootItems);
@@ -314,7 +317,7 @@ const activitiesCantGetStars: activity_type_enum[] = [
 export const starCache = new Map<string, Star & { expiry: number }>();
 
 export function handleTriggerShootingStar(
-	user: KlasaUser,
+	user: MUserClass,
 	data: ActivityTaskOptions,
 	components: MessageActionRowComponentResolvable[][]
 ) {
@@ -329,11 +332,11 @@ export function handleTriggerShootingStar(
 	const starRoll = shootingStarTable.roll();
 	if (!starRoll) return;
 	const star = starRoll.item;
-	const button = new MessageButton()
+	const button = new ButtonBuilder()
 		.setCustomID('DO_SHOOTING_STAR')
 		.setLabel(`Mine Size ${star.size} Crashed Star`)
 		.setEmoji('⭐')
-		.setStyle('SECONDARY');
+		.setStyle(ButtonStyle.Secondary);
 	components![0]!.push(button);
 	starCache.set(user.id, { ...star, expiry: Date.now() + Time.Minute * 2 });
 }

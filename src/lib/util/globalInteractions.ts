@@ -336,7 +336,7 @@ export async function interactionHook(data: APIInteraction) {
 				`${
 					star && star.expiry < Date.now()
 						? 'The Crashed Star has expired!'
-						: `That Crashed Star was not discovered by ${minionName(user)}.`
+						: `That Crashed Star was not discovered by ${user.minionName}.`
 				}`
 			);
 		}
