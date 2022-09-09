@@ -1,5 +1,5 @@
 import { activity_type_enum } from '@prisma/client';
-import { ButtonBuilder, MessageActionRowComponentResolvable } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder } from 'discord.js';
 import { ButtonStyle } from 'discord-api-types/v10';
 import { percentChance, randInt, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
@@ -317,7 +317,7 @@ export const starCache = new Map<string, Star & { expiry: number }>();
 export function handleTriggerShootingStar(
 	user: MUserClass,
 	data: ActivityTaskOptions,
-	components: MessageActionRowComponentResolvable[][]
+	components: ActionRowBuilder<ButtonBuilder>
 ) {
 	if (activitiesCantGetStars.includes(data.type)) return;
 	const miningLevel = user.skillLevel(SkillsEnum.Mining);
@@ -331,10 +331,10 @@ export function handleTriggerShootingStar(
 	if (!starRoll) return;
 	const star = starRoll.item;
 	const button = new ButtonBuilder()
-		.setCustomID('DO_SHOOTING_STAR')
+		.setCustomId('DO_SHOOTING_STAR')
 		.setLabel(`Mine Size ${star.size} Crashed Star`)
 		.setEmoji('⭐')
 		.setStyle(ButtonStyle.Secondary);
-	components![0]!.push(button);
+	components.addComponents(button);
 	starCache.set(user.id, { ...star, expiry: Date.now() + Time.Minute * 2 });
 }
