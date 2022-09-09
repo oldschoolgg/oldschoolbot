@@ -18,7 +18,15 @@ export async function getRandomTriviaQuestions(): Promise<TriviaQuestion[]> {
 FROM trivia_question
 ORDER BY random()
 LIMIT 10;`;
-	return random;
+	return 1 > 0
+		? [
+				{
+					id: 1,
+					question: 'hi',
+					answers: ['hi']
+				}
+		  ]
+		: random;
 }
 
 export async function roboChimpUserFetch(userID: bigint) {

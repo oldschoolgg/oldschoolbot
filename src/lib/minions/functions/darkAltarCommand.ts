@@ -1,10 +1,10 @@
 import { increaseNumByPercent, reduceNumByPercent, Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
+import { userHasGracefulEquipped } from '../../../mahoji/mahojiSettings';
 import { KourendKebosDiary, userhasDiaryTier } from '../../diaries';
 import { DarkAltarOptions } from '../../types/minions';
-import { formatDuration } from '../../util';
+import { formatDuration, hasSkillReqs } from '../../util';
 import addSubTaskToActivityTask from '../../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../util/calcMaxTripLength';
 import getOSItem from '../../util/getOSItem';
@@ -31,21 +31,14 @@ const gracefulPenalty = 20;
 const agilityPenalty = 35;
 const mediumDiaryBoost = 20;
 
-export async function darkAltarCommand({
-	user,
-	channelID,
-	name
-}: {
-	user: KlasaUser;
-	channelID: bigint;
-	name: string;
-}) {
+export async function darkAltarCommand({ user, channelID, name }: { user: MUser; channelID: bigint; name: string }) {
 	if (!['blood', 'soul'].includes(name)) return 'Invalid rune.';
-	const [hasSkillReqs, neededReqs] = user.hasSkillReqs({
+	const stats = user.skillsAsLevels;
+	const [hasReqs, neededReqs] = hasSkillReqs(user, {
 		mining: 38,
 		crafting: 38
 	});
-	if (!hasSkillReqs) {
+	if (!hasReqs) {
 		return `You can't craft Blood runes at the Dark Altar, because you don't have these required stats: ${neededReqs}.`;
 	}
 	const [hasFavour, requiredPoints] = gotFavour(user, Favours.Arceuus, 100);
@@ -55,7 +48,7 @@ export async function darkAltarCommand({
 	const rune = name.toLowerCase().includes('soul') ? 'soul' : 'blood';
 	const runeData = darkAltarRunes[rune];
 
-	if (user.skillLevel(SkillsEnum.Runecraft) < runeData.level) {
+	if (stats.runecraft < runeData.level) {
 		return `You need level ${runeData.level} Runecraft to craft ${runeData.item.name}'s.`;
 	}
 
@@ -73,7 +66,7 @@ export async function darkAltarCommand({
 		timePerRune = reduceNumByPercent(timePerRune, mediumDiaryBoost);
 	}
 
-	if (!user.hasGracefulEquipped()) {
+	if (!userHasGracefulEquipped(user)) {
 		boosts.push(`${gracefulPenalty}% slower for no Graceful`);
 		timePerRune = increaseNumByPercent(timePerRune, gracefulPenalty);
 	}

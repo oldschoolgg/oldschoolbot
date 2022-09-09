@@ -1,41 +1,34 @@
-import { KlasaUser } from 'klasa';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
+import { bankImageGenerator } from '../../../lib/bankImage';
 import { BitField } from '../../../lib/constants';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
-import {
-	formatSkillRequirements,
-	skillsMeetRequirements,
-	stringMatches,
-	toKMB,
-	updateBankSetting
-} from '../../../lib/util';
+import { formatSkillRequirements, stringMatches, toKMB } from '../../../lib/util';
 import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
 import resolveItems from '../../../lib/util/resolveItems';
-import BankImageTask from '../../../tasks/bankImage';
-import { handleMahojiConfirmation } from '../../mahojiSettings';
+import { handleMahojiConfirmation, updateBankSetting } from '../../mahojiSettings';
 
-export async function bankBgCommand(interaction: SlashCommandInteraction, user: KlasaUser, name: string) {
-	const bankImages = (globalClient.tasks.get('bankImage') as BankImageTask).backgroundImages;
+export async function bankBgCommand(interaction: SlashCommandInteraction, user: MUser, name: string) {
+	const bankImages = bankImageGenerator.backgroundImages;
 	const selectedImage = bankImages.find(img => stringMatches(img.name, name));
 
 	if (!selectedImage) {
 		return `The following bank images exist: ${bankImages.map(img => img.name).join(', ')}`;
 	}
 
-	if (user.settings.get(UserSettings.BankBackground) === selectedImage.id) {
+	if (user.user.bankBackground === selectedImage.id) {
 		return 'This is already your bank background.';
 	}
 
-	if (user.settings.get(UserSettings.BitField).includes(BitField.isModerator)) {
-		await user.settings.update(UserSettings.BankBackground, selectedImage.id);
+	if (user.bitfield.includes(BitField.isModerator)) {
+		await user.update({
+			bankBackground: selectedImage.id
+		});
 		return `Your bank background is now **${selectedImage.name}**!`;
 	}
 
 	if (selectedImage.sacValueRequired) {
-		const sac = user.settings.get(UserSettings.SacrificedValue);
+		const sac = Number(user.user.sacrificedValue);
 		if (sac < selectedImage.sacValueRequired) {
 			return `You have to have sacrificed atleast ${toKMB(
 				selectedImage.sacValueRequired
@@ -44,7 +37,7 @@ export async function bankBgCommand(interaction: SlashCommandInteraction, user: 
 	}
 
 	if (selectedImage.skillsNeeded) {
-		const meets = skillsMeetRequirements(user.rawSkills, selectedImage.skillsNeeded);
+		const meets = user.hasSkillReqs(selectedImage.skillsNeeded);
 		if (!meets) {
 			return `You don't meet the skill requirements to use this background, you need: ${formatSkillRequirements(
 				selectedImage.skillsNeeded
@@ -56,12 +49,12 @@ export async function bankBgCommand(interaction: SlashCommandInteraction, user: 
 		return 'This image is not currently available.';
 	}
 
-	if (selectedImage.bitfield && !user.settings.get(UserSettings.BitField).includes(selectedImage.bitfield)) {
+	if (selectedImage.bitfield && !user.bitfield.includes(selectedImage.bitfield)) {
 		return "You're not elligible to use this bank background.";
 	}
 
 	// Check they have required collection log items.
-	if (selectedImage.collectionLogItemsNeeded && !user.cl().has(selectedImage.collectionLogItemsNeeded)) {
+	if (selectedImage.collectionLogItemsNeeded && !user.cl.has(selectedImage.collectionLogItemsNeeded)) {
 		return `You're not worthy to use this background. You need these items in your Collection Log: ${new Bank(
 			selectedImage.collectionLogItemsNeeded
 		)}`;
@@ -73,7 +66,7 @@ export async function bankBgCommand(interaction: SlashCommandInteraction, user: 
 	}
 
 	if (selectedImage.name === 'Pets') {
-		const cl = user.cl();
+		const { cl } = user;
 		const hasPet = resolveItems(['Rocky', 'Bloodhound', 'Giant squirrel', 'Baby chinchompa']).some(id =>
 			cl.has(id)
 		);
@@ -87,8 +80,7 @@ export async function bankBgCommand(interaction: SlashCommandInteraction, user: 
 	 */
 	let economyCost = new Bank();
 	if (selectedImage.gpCost || selectedImage.itemCost) {
-		await user.settings.sync(true);
-		const userBank = user.bank();
+		const userBank = user.bank;
 
 		// Ensure they have the required items.
 		if (selectedImage.itemCost && !userBank.has(selectedImage.itemCost)) {
@@ -98,7 +90,7 @@ export async function bankBgCommand(interaction: SlashCommandInteraction, user: 
 		}
 
 		// Ensure they have the required GP.
-		if (selectedImage.gpCost && user.settings.get(UserSettings.GP) < selectedImage.gpCost) {
+		if (selectedImage.gpCost && user.GP < selectedImage.gpCost) {
 			return `You need ${selectedImage.gpCost.toLocaleString()} GP to purchase this background.`;
 		}
 
@@ -122,7 +114,7 @@ export async function bankBgCommand(interaction: SlashCommandInteraction, user: 
 
 		if (selectedImage.itemCost) {
 			economyCost.add(selectedImage.itemCost);
-			await user.removeItemsFromBank(selectedImage.itemCost);
+			await user.removeItemsFromBank(new Bank(selectedImage.itemCost));
 		}
 
 		if (selectedImage.gpCost) {
@@ -131,9 +123,11 @@ export async function bankBgCommand(interaction: SlashCommandInteraction, user: 
 		}
 	}
 
-	await user.settings.update(UserSettings.BankBackground, selectedImage.id);
+	await user.update({
+		bankBackground: selectedImage.id
+	});
 
-	updateBankSetting(globalClient, ClientSettings.EconomyStats.BankBgCostBank, economyCost);
+	updateBankSetting('economyStats_bankBgCostBank', economyCost);
 
 	return `Your bank background is now **${selectedImage.name}**!`;
 }

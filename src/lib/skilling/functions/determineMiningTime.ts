@@ -1,13 +1,11 @@
-import { User } from '@prisma/client';
 import { percentChance, Time } from 'e';
 
 import { calcMaxTripLength } from '../../util/calcMaxTripLength';
-import { userHasItemsEquippedAnywhere } from '../../util/minionUtils';
 import { Ore } from './../types';
 
 interface MiningTimeOptions {
 	quantity: number | undefined;
-	user: User;
+	user: MUser;
 	ore: Ore;
 	ticksBetweenRolls: number;
 	glovesRate: number;
@@ -33,7 +31,7 @@ export function determineMiningTime({
 	passedDuration
 }: MiningTimeOptions): [number, number] {
 	let { intercept } = ore;
-	if (ore.name === 'Gem rock' && userHasItemsEquippedAnywhere(user, 'Amulet of glory')) {
+	if (ore.name === 'Gem rock' && user.hasEquipped('Amulet of glory')) {
 		intercept *= 3;
 	}
 	let timeElapsed = 0;

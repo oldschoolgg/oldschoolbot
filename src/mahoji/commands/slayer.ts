@@ -264,9 +264,7 @@ export const slayerCommand: OSBMahojiCommand = {
 		};
 		status?: {};
 	}>) => {
-		const klasaUser = await globalClient.fetchUser(userID);
-		const mahojiUser = await mahojiUsersSettingsFetch(userID);
-		await klasaUser.settings.sync(true);
+		const mahojiUser = await mUserFetch(userID);
 
 		if (options.autoslay) {
 			return autoSlayCommand({
@@ -279,7 +277,7 @@ export const slayerCommand: OSBMahojiCommand = {
 		}
 		if (options.new_task) {
 			return slayerNewTaskCommand({
-				mahojiUser,
+				userID: mahojiUser.id,
 				interaction,
 				channelID,
 				slayerMasterOverride: options.new_task.master,
@@ -293,7 +291,7 @@ export const slayerCommand: OSBMahojiCommand = {
 			}
 			if (options.manage.command === 'skip' || options.manage.command === 'block') {
 				return slayerSkipTaskCommand({
-					mahojiUser,
+					userID: mahojiUser.id,
 					block: options.manage.command === 'block',
 					newTask: Boolean(options.manage.new),
 					interaction,
@@ -313,7 +311,7 @@ export const slayerCommand: OSBMahojiCommand = {
 			}
 			if (options.rewards.disable) {
 				return slayerShopBuyCommand({
-					mahojiUser,
+					userID: mahojiUser.id,
 					disable: true,
 					buyable: options.rewards.disable.unlockable,
 					interaction
@@ -321,7 +319,7 @@ export const slayerCommand: OSBMahojiCommand = {
 			}
 			if (options.rewards.buy) {
 				return slayerShopBuyCommand({
-					mahojiUser,
+					userID: mahojiUser.id,
 					buyable: options.rewards.buy.item,
 					quantity: options.rewards.buy.quantity,
 					interaction
@@ -329,7 +327,7 @@ export const slayerCommand: OSBMahojiCommand = {
 			}
 			if (options.rewards.unlock) {
 				return slayerShopBuyCommand({
-					mahojiUser,
+					userID: mahojiUser.id,
 					buyable: options.rewards.unlock.unlockable,
 					interaction
 				});

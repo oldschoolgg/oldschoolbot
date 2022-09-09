@@ -1,5 +1,4 @@
 import { calcPercentOfNum } from 'e';
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { ArdougneDiary, userhasDiaryTier } from '../../../lib/diaries';
@@ -7,21 +6,20 @@ import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { fishingTrawlerLoot } from '../../../lib/simulation/fishingTrawler';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { anglerBoostPercent } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { allItemsOwned } from '../../../mahoji/mahojiSettings';
+import { anglerBoostPercent } from '../../../mahoji/mahojiSettings';
 
-export default class extends Task {
+export const trawlerTask: MinionTask = {
+	type: 'FishingTrawler',
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { channelID, quantity, userID } = data;
-		const user = await this.client.fetchUser(userID);
-
+		const user = await mUserFetch(userID);
 		await incrementMinigameScore(userID, 'fishing_trawler', quantity);
 
 		const fishingLevel = user.skillLevel(SkillsEnum.Fishing);
 
-		const allItemsOwnedBank = allItemsOwned(user).bank;
+		const allItemsOwnedBank = user.allItemsOwned().bank;
 		const loot = new Bank();
 
 		let totalXP = 0;
@@ -86,4 +84,4 @@ export default class extends Task {
 			itemsAdded
 		);
 	}
-}
+};

@@ -1,5 +1,4 @@
-/* eslint-disable no-case-declarations */
-import { MessageButton } from 'discord.js';
+import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Time } from 'e';
 import { APIInteraction, InteractionType, Routes } from 'mahoji';
 
@@ -7,14 +6,12 @@ import { buyBingoTicketCommand } from '../../mahoji/commands/bingo';
 import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { shootingStarsCommand, starCache } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
 import { Cooldowns } from '../../mahoji/lib/Cooldowns';
-import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 import { ClueTier } from '../clues/clueTiers';
 import { lastTripCache, PerkTier } from '../constants';
 import { runCommand } from '../settings/settings';
 import { channelIsSendable, convertMahojiResponseToDJSResponse, formatDuration } from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
 import { minionIsBusy } from './minionIsBusy';
-import { minionName } from './minionUtils';
 import { respondToButton } from './respondToButton';
 import { webhookMessageCache } from './webhook';
 
@@ -42,6 +39,7 @@ const globalInteractionActions = [
 	'BUY_MINION',
 	'BUY_BINGO_TICKET',
 	'NEW_SLAYER_TASK',
+	'VIEW_BANK',
 	'DO_SHOOTING_STAR'
 ] as const;
 
@@ -53,32 +51,36 @@ function isValidGlobalInteraction(str: string): str is GlobalInteractionAction {
 export function makeDoClueButton(tier: ClueTier) {
 	const name: Uppercase<ClueTier['name']> = tier.name.toUpperCase() as Uppercase<ClueTier['name']>;
 	const id: GlobalInteractionAction = `DO_${name}_CLUE`;
-	return new MessageButton()
-		.setCustomID(id)
+	return new ButtonBuilder()
+		.setCustomId(id)
 		.setLabel(`Do ${tier.name} Clue`)
-		.setStyle('SECONDARY')
+		.setStyle(ButtonStyle.Secondary)
 		.setEmoji('365003979840552960');
 }
 
 export function makeOpenCasketButton(tier: ClueTier) {
 	const name: Uppercase<ClueTier['name']> = tier.name.toUpperCase() as Uppercase<ClueTier['name']>;
 	const id: GlobalInteractionAction = `OPEN_${name}_CASKET`;
-	return new MessageButton()
-		.setCustomID(id)
+	return new ButtonBuilder()
+		.setCustomId(id)
 		.setLabel(`Open ${tier.name} Casket`)
-		.setStyle('SECONDARY')
+		.setStyle(ButtonStyle.Secondary)
 		.setEmoji('365003978678730772');
 }
 
 export function makeRepeatTripButton() {
-	return new MessageButton().setCustomID('REPEAT_TRIP').setLabel('Repeat Trip').setStyle('SECONDARY').setEmoji('🔁');
+	return new ButtonBuilder()
+		.setCustomId('REPEAT_TRIP')
+		.setLabel('Repeat Trip')
+		.setStyle(ButtonStyle.Secondary)
+		.setEmoji('🔁');
 }
 
 export function makeBirdHouseTripButton() {
-	return new MessageButton()
-		.setCustomID('DO_BIRDHOUSE_RUN')
+	return new ButtonBuilder()
+		.setCustomId('DO_BIRDHOUSE_RUN')
 		.setLabel('Birdhouse Run')
-		.setStyle('SECONDARY')
+		.setStyle(ButtonStyle.Secondary)
 		.setEmoji('692946556399124520');
 }
 const reactionTimeLimits = {
@@ -94,10 +96,10 @@ const reactionTimeLimits = {
 const reactionTimeLimit = (perkTier: PerkTier | 0): number => reactionTimeLimits[perkTier] ?? Time.Hour * 12;
 
 export function makeNewSlayerTaskButton() {
-	return new MessageButton()
-		.setCustomID('NEW_SLAYER_TASK')
+	return new ButtonBuilder()
+		.setCustomId('NEW_SLAYER_TASK')
 		.setLabel('New Slayer Task')
-		.setStyle('SECONDARY')
+		.setStyle(ButtonStyle.Secondary)
 		.setEmoji('630911040560824330');
 }
 
@@ -108,7 +110,7 @@ export async function interactionHook(data: APIInteraction) {
 	const userID = data.member ? data.member.user?.id : data.user?.id;
 	if (!userID) return;
 
-	const user = await mahojiUsersSettingsFetch(userID);
+	const user = await mUserFetch(userID);
 	const options = {
 		user,
 		member: data.member ?? null,
@@ -226,8 +228,18 @@ export async function interactionHook(data: APIInteraction) {
 		return buttonReply(await buyBingoTicketCommand(null, userID, 1));
 	}
 
+	if (id === 'VIEW_BANK') {
+		await buttonReply();
+		return runCommand({
+			commandName: 'bank',
+			bypassInhibitors: true,
+			args: {},
+			...options
+		});
+	}
+
 	if (minionIsBusy(user.id)) {
-		return buttonReply(`${minionName(user)} is busy.`);
+		return buttonReply(`${user.minionName} is busy.`);
 	}
 
 	switch (id) {
@@ -296,11 +308,7 @@ export async function interactionHook(data: APIInteraction) {
 		}
 		case 'AUTO_FARMING_CONTRACT': {
 			await buttonReply();
-			const response = await autoContract(
-				await globalClient.fetchUser(user.id),
-				BigInt(options.channelID),
-				BigInt(user.id)
-			);
+			const response = await autoContract(await mUserFetch(user.id), BigInt(options.channelID), BigInt(user.id));
 			const channel = globalClient.channels.cache.get(options.channelID);
 			if (channelIsSendable(channel)) channel.send(convertMahojiResponseToDJSResponse(response));
 			break;

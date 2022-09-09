@@ -1,12 +1,12 @@
 import { objectEntries, randInt } from 'e';
 import * as fs from 'fs';
-import { Task } from 'klasa';
 import path from 'path';
 import { Canvas, CanvasRenderingContext2D, Image } from 'skia-canvas/lib';
 
-import { DUNGEON_FLOOR_Y, GROUND_FLOOR_Y, HOUSE_WIDTH, Placeholders, TOP_FLOOR_Y } from '../lib/poh';
-import { getActivityOfUser } from '../lib/settings/settings';
-import { canvasImageFromBuffer } from '../lib/util/canvasUtil';
+import { bankImageGenerator } from './bankImage';
+import { DUNGEON_FLOOR_Y, GROUND_FLOOR_Y, HOUSE_WIDTH, Placeholders, TOP_FLOOR_Y } from './poh';
+import { getActivityOfUser } from './settings/settings';
+import { canvasImageFromBuffer } from './util/canvasUtil';
 import { PlayerOwnedHouse } from '.prisma/client';
 
 const CONSTRUCTION_IMG_DIR = './src/lib/poh/images';
@@ -32,7 +32,7 @@ const FOLDERS = [
 const bg = fs.readFileSync('./src/lib/poh/images/bg_1.jpg');
 const bg2 = fs.readFileSync('./src/lib/poh/images/bg_2.jpg');
 
-export default class PoHImage extends Task {
+class PoHImage {
 	public imageCache: Map<number, Image> = new Map();
 	public bgImages: Image[] = [];
 	async init() {
@@ -98,7 +98,7 @@ export default class PoHImage extends Task {
 					const mY = y - height / 2;
 					ctx.drawImage(mount, mX, mY, width, height);
 					if (hasCustomItem) {
-						const image = await this.client.tasks.get('bankImage')!.getItemImage(id, 1);
+						const image = await bankImageGenerator.getItemImage(id);
 						const h = image.height * 0.8;
 						const w = image.width * 0.8;
 						ctx.drawImage(image, mX + (mount.width - w) / 2, mY + (mount.height - h) / 2, w, h);
@@ -122,3 +122,6 @@ export default class PoHImage extends Task {
 		return canvas.toBuffer('png');
 	}
 }
+
+export const pohImageGenerator = new PoHImage();
+pohImageGenerator.init();

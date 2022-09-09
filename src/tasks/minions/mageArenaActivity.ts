@@ -1,13 +1,13 @@
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { ActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
-export default class extends Task {
+export const mageArenaTask: MinionTask = {
+	type: 'MageArena',
 	async run(data: ActivityTaskOptions) {
 		let { userID, channelID } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const loot = new Bank().add('Saradomin cape').add('Zamorak cape').add('Guthix cape');
 		await transactItems({
 			userID: user.id,
@@ -24,4 +24,4 @@ export default class extends Task {
 			loot
 		);
 	}
-}
+};

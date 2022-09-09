@@ -1,17 +1,15 @@
-import { Task } from 'klasa';
-
 import { Emoji, MAX_QP } from '../../lib/constants';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
 import { rand, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
-export default class extends Task {
+export const questingTask: MinionTask = {
+	type: 'Questing',
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { userID, channelID } = data;
-		const user = await this.client.fetchUser(userID);
-		const currentQP = user.settings.get(UserSettings.QP);
+		const user = await mUserFetch(userID);
+		const currentQP = user.QP;
 
 		// This assumes you do quests in order of scaling difficulty, ~115 hours for max qp
 		let qpRecieved = rand(1, 3);
@@ -39,14 +37,18 @@ export default class extends Task {
 			str += `\n\nYou have achieved the maximum amount of ${MAX_QP} Quest Points!`;
 		}
 
-		await user.addQP(qpRecieved);
+		await user.update({
+			QP: {
+				increment: qpRecieved
+			}
+		});
 		const herbLevel = user.skillLevel(SkillsEnum.Herblore);
 		if (herbLevel === 1 && newQP > 5 && roll(2)) {
 			await user.addXP({ skillName: SkillsEnum.Herblore, amount: 250 });
 			str += `${Emoji.Herblore} You received 250 Herblore XP for completing Druidic Ritual.`;
 		}
 
-		const magicXP = user.settings.get(UserSettings.Skills.Magic);
+		const magicXP = Number(user.user.skills_magic);
 		if (magicXP === 0 && roll(2)) {
 			await user.addXP({ skillName: SkillsEnum.Magic, amount: 325 });
 			str += `${Emoji.Magic} You received 325 Magic XP for completing Witch's Potion.`;
@@ -68,4 +70,4 @@ export default class extends Task {
 			null
 		);
 	}
-}
+};
