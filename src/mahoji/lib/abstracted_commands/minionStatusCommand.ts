@@ -4,6 +4,7 @@ import { InteractionResponseDataWithBufferAttachments } from 'mahoji/dist/lib/st
 
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { Emoji, lastTripCache, minionBuyButton, PerkTier } from '../../../lib/constants';
+import { getUsersFishingContestDetails } from '../../../lib/fishingContest';
 import { getUsersTame, shortTameTripDesc, tameLastFinishedActivity } from '../../../lib/tames';
 import { makeComponents } from '../../../lib/util';
 import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
@@ -37,6 +38,22 @@ export async function minionStatusCommand(
 
 	const status = minionStatus(user);
 	const buttons: APIButtonComponentWithCustomId[] = [];
+
+	const result = await getUsersFishingContestDetails(user);
+	if (
+		user.perkTier >= PerkTier.Four &&
+		result.catchesFromToday.length === 0 &&
+		!user.minionIsBusy &&
+		['Contest rod', "Beginner's tackle box"].every(i => user.hasItemEquippedOrInBank(i))
+	) {
+		buttons.push({
+			type: ComponentType.Button,
+			custom_id: 'DO_FISHING_CONTEST',
+			label: 'Fishing Contest',
+			emoji: { id: '630911040091193356' },
+			style: ButtonStyle.Secondary
+		});
+	}
 
 	const birdhouseDetails = await calculateBirdhouseDetails(user.id);
 

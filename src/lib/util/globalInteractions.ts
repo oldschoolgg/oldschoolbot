@@ -45,7 +45,8 @@ const globalInteractionActions = [
 	'NEW_SLAYER_TASK',
 	'SPAWN_LAMP',
 	'REPEAT_TAME_TRIP',
-	'ITEM_CONTRACT_SEND'
+	'ITEM_CONTRACT_SEND',
+	'DO_FISHING_CONTEST'
 ] as const;
 type GlobalInteractionAction = typeof globalInteractionActions[number];
 function isValidGlobalInteraction(str: string): str is GlobalInteractionAction {
@@ -249,6 +250,19 @@ export async function interactionHook(data: APIInteraction) {
 
 	if (id === 'BUY_BINGO_TICKET') {
 		return buttonReply(await buyBingoTicketCommand(null, userID, 1));
+	}
+
+	if (id === 'DO_FISHING_CONTEST') {
+		if (getUsersPerkTier(user) < PerkTier.Four) {
+			return buttonReply('You need to be a Tier 3 patron to use this button.');
+		}
+		await buttonReply();
+		return runCommand({
+			commandName: 'bsominigames',
+			args: { fishing_contest: { fish: {} } },
+			bypassInhibitors: true,
+			...options
+		});
 	}
 
 	if (minionIsBusy(user.id)) {
