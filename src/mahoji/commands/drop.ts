@@ -1,13 +1,11 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { ClueTiers } from '../../lib/clues/clueTiers';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { itemNameFromID, updateBankSetting } from '../../lib/util';
+import { itemNameFromID } from '../../lib/util';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { handleMahojiConfirmation, mahojiUsersSettingsFetch, updateBankSetting } from '../mahojiSettings';
 
 export const dropCommand: OSBMahojiCommand = {
 	name: 'drop',
@@ -38,11 +36,11 @@ export const dropCommand: OSBMahojiCommand = {
 		if (!options.filter && !options.items && !options.search) {
 			return "You didn't provide any items, filter or search.";
 		}
-		const user = await globalClient.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const mUser = await mahojiUsersSettingsFetch(userID, { favoriteItems: true });
 		const bank = parseBank({
 			inputStr: options.items,
-			inputBank: user.bank(),
+			inputBank: user.bank,
 			excludeItems: mUser.favoriteItems,
 			user,
 			search: options.search,
@@ -57,12 +55,11 @@ export const dropCommand: OSBMahojiCommand = {
 			return 'No valid items that you own were given.';
 		}
 
-		const favs = user.settings.get(UserSettings.FavoriteItems);
+		const favs = user.user.favoriteItems;
 		let itemsToDoubleCheck = [
 			...favs,
 			...ClueTiers.map(c => [c.id, c.scrollID]),
-			...user
-				.bank()
+			...user.bank
 				.items()
 				.filter(([item, quantity]) => item.price * quantity >= 100_000_000)
 				.map(i => i[0].id)
@@ -84,7 +81,7 @@ export const dropCommand: OSBMahojiCommand = {
 		}
 
 		await user.removeItemsFromBank(bank);
-		updateBankSetting(globalClient, ClientSettings.EconomyStats.DroppedItems, bank);
+		updateBankSetting('dropped_items', bank);
 
 		return `Dropped ${bank}.`;
 	}

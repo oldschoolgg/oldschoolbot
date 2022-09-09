@@ -1,27 +1,47 @@
 import { TextChannel } from 'discord.js';
+import { APIUser } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { OWNER_IDS } from '../../config';
+import { BitField, usernameCache } from '../../lib/constants';
+import { prisma } from '../../lib/settings/prisma';
+import { removeMarkdownEmojis } from '../../lib/util';
 import { AbstractCommand, runInhibitors } from './inhibitors';
 
-async function cacheLinkedUsers(user_id: bigint | string) {
-	const user = await mahojiUsersSettingsFetch(user_id);
-	let main = user.main_account;
-	const allAccounts: string[] = [...user.ironman_alts];
-	if (main) {
-		allAccounts.push(main);
-	}
-	// Ensure linked users are cached
-	const allAccountsMap = await Promise.all(allAccounts.map(id => globalClient.fetchUser(id)));
-	return allAccountsMap.length;
+function cleanUsername(username: string) {
+	return removeMarkdownEmojis(username).substring(0, 32);
 }
+export async function syncNewUserUsername(userID: string, username: string) {
+	const newUsername = cleanUsername(username);
+	const newUser = await prisma.newUser.findUnique({
+		where: { id: userID }
+	});
+	if (!newUser || newUser.username !== newUsername) {
+		await prisma.newUser.upsert({
+			where: {
+				id: userID
+			},
+			update: {
+				username
+			},
+			create: {
+				id: userID,
+				username
+			}
+		});
+	}
+	usernameCache.set(userID, newUsername);
+}
+
 export async function preCommand({
 	abstractCommand,
 	userID,
 	guildID,
 	channelID,
-	bypassInhibitors
+	bypassInhibitors,
+	apiUser
 }: {
+	apiUser: APIUser | null;
 	abstractCommand: AbstractCommand;
 	userID: string | bigint;
 	guildID?: string | bigint | null;
@@ -29,17 +49,39 @@ export async function preCommand({
 	bypassInhibitors: boolean;
 }): Promise<{ silent: boolean; reason: Awaited<CommandResponse> } | undefined> {
 	globalClient.emit('debug', `${userID} trying to run ${abstractCommand.name} command`);
-	const user = await globalClient.fetchUser(userID);
-	if (user.isBusy && !bypassInhibitors && !globalClient.owners.has(user)) {
+	const user = await mUserFetch(userID);
+	const klasaUser = await globalClient.fetchUser(userID);
+	if (user.isBusy && !bypassInhibitors && !OWNER_IDS.includes(klasaUser.id)) {
 		return { silent: true, reason: 'You cannot use a command right now.' };
 	}
 	globalClient.oneCommandAtATimeCache.add(userID.toString());
 	const guild = guildID ? globalClient.guilds.cache.get(guildID.toString()) : null;
 	const member = guild?.members.cache.get(userID.toString());
 	const channel = globalClient.channels.cache.get(channelID.toString()) as TextChannel;
-	await cacheLinkedUsers(userID);
+	await prisma.user.findMany({
+		where: {
+			bitfield: {
+				hasSome: [
+					BitField.IsPatronTier3,
+					BitField.IsPatronTier4,
+					BitField.IsPatronTier5,
+					BitField.isContributor,
+					BitField.isModerator
+				]
+			},
+			farming_patch_reminders: true
+		},
+		select: {
+			id: true,
+			bitfield: true
+		}
+	});
+	if (apiUser) {
+		await syncNewUserUsername(user.id, apiUser.username);
+	}
 	const inhibitResult = await runInhibitors({
 		user,
+		APIUser: await globalClient.fetchUser(user.id),
 		guild: guild ?? null,
 		member: member ?? null,
 		command: abstractCommand,

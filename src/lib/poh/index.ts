@@ -1,5 +1,4 @@
 import { objectEntries } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { LevelRequirements } from '../skilling/types';
@@ -59,7 +58,7 @@ export interface PoHObject {
 	slot: PoHSlot;
 	level: number | LevelRequirements;
 	refundItems?: boolean;
-	canBuild?: (user: KlasaUser) => Promise<boolean>;
+	canBuild?: (user: MUser) => Promise<boolean>;
 }
 
 export const Placeholders: Partial<Record<PoHSlot, [number, [number, number][]]>> = {

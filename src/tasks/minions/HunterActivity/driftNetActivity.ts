@@ -1,5 +1,4 @@
 import { Time } from 'e';
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import driftNetCreatures from '../../../lib/skilling/skills/hunter/driftNet';
@@ -31,10 +30,11 @@ const fishBonusLoot = [
 	}
 ];
 
-export default class extends Task {
+export const driftNetTask: MinionTask = {
+	type: 'DriftNet',
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		let { quantity, userID, channelID, duration } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const currentHuntLevel = user.skillLevel(SkillsEnum.Hunter);
 		const currentFishLevel = user.skillLevel(SkillsEnum.Fishing);
 
@@ -91,4 +91,4 @@ export default class extends Task {
 			loot
 		);
 	}
-}
+};

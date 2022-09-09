@@ -1,9 +1,6 @@
-import type { User } from '@prisma/client';
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { UserSettings } from '../../settings/types/UserSettings';
 import { stringMatches } from '../../util';
 import { Skills } from './../../types/index';
 
@@ -15,13 +12,13 @@ export interface UserKourendFavour {
 	Shayzien: number;
 }
 
-export const baseUserKourendFavour: UserKourendFavour = {
+export const baseUserKourendFavour: UserKourendFavour = Object.freeze({
 	Arceuus: 0,
 	Hosidius: 0,
 	Lovakengj: 0,
 	Piscarilius: 0,
 	Shayzien: 0
-};
+});
 
 export interface KourendFavour {
 	name: string;
@@ -125,15 +122,8 @@ export function findFavour(favourName: string): KourendFavour | undefined {
 	);
 }
 
-export function gotFavour(
-	user: KlasaUser | User,
-	favour: Favours | undefined,
-	neededPoints: number
-): [boolean, number] {
-	const currentUserFavour =
-		user instanceof KlasaUser
-			? user.settings.get(UserSettings.KourendFavour)
-			: (user.kourend_favour as UserKourendFavour | null);
+export function gotFavour(user: MUser, favour: Favours | undefined, neededPoints: number): [boolean, number] {
+	const currentUserFavour = user.kourendFavour;
 	let gotEnoughPoints = false;
 	if (!favour || !currentUserFavour) return [gotEnoughPoints, neededPoints];
 	for (const [key, value] of Object.entries(currentUserFavour) as [keyof UserKourendFavour, number][]) {

@@ -174,59 +174,59 @@ export const gambleCommand: OSBMahojiCommand = {
 		hot_cold?: { choice?: 'hot' | 'cold'; amount?: string };
 		give_random_item?: { user: MahojiUserOption };
 	}>) => {
-		const klasaUser = await globalClient.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
 		if (options.cape) {
 			if (options.cape.type) {
-				return capeGambleCommand(klasaUser, options.cape.type, interaction);
+				return capeGambleCommand(user, options.cape.type, interaction);
 			}
-			return capeGambleStatsCommand(klasaUser);
+			return capeGambleStatsCommand(user);
 		}
 
 		if (options.dice) {
-			return diceCommand(klasaUser, options.dice.amount);
+			return diceCommand(user, options.dice.amount);
 		}
 
 		if (options.duel) {
 			return duelCommand(
-				klasaUser,
+				user,
 				interaction,
-				await globalClient.fetchUser(options.duel.user.user.id),
+				await mUserFetch(options.duel.user.user.id),
+				options.duel.user,
 				options.duel.amount
 			);
 		}
 
 		if (options.lucky_pick) {
-			return luckyPickCommand(klasaUser, options.lucky_pick.amount, interaction);
+			return luckyPickCommand(user, options.lucky_pick.amount, interaction);
 		}
 
 		if (options.slots) {
-			return slotsCommand(interaction, klasaUser, options.slots.amount);
+			return slotsCommand(interaction, user, options.slots.amount);
 		}
 
-		const mahojiUser = await mahojiUsersSettingsFetch(klasaUser.id);
+		const mahojiUser = await mahojiUsersSettingsFetch(user.id);
 
 		if (options.hot_cold) {
-			return hotColdCommand(interaction, klasaUser, mahojiUser, options.hot_cold.choice, options.hot_cold.amount);
+			return hotColdCommand(interaction, user, options.hot_cold.choice, options.hot_cold.amount);
 		}
 
 		if (options.give_random_item) {
-			const senderUser = klasaUser;
-			const recipientKlasaUser = await globalClient.fetchUser(options.give_random_item.user.user.id);
-			if (recipientKlasaUser.bot || recipientKlasaUser.id === senderUser.id) {
+			const senderUser = user;
+			const recipientuser = await mUserFetch(options.give_random_item.user.user.id);
+			if (recipientuser.id === senderUser.id) {
 				return "You can't do it with yourself.";
 			}
 
-			if (senderUser.isIronman || recipientKlasaUser.isIronman) {
+			if (senderUser.isIronman || recipientuser.isIronman) {
 				return 'One of you is an ironman.';
 			}
 			await handleMahojiConfirmation(
 				interaction,
-				`Are you sure you want to give a random stack of items from your bank to ${recipientKlasaUser.username}? Untradeable and favorited items are not included.`
+				`Are you sure you want to give a random stack of items from your bank to ${recipientuser.usernameOrMention}? Untradeable and favorited items are not included.`
 			);
 
-			const bank = senderUser
-				.bank()
+			const bank = senderUser.bank
 				.items()
 				.filter(i => itemIsTradeable(i[0].id))
 				.filter(i => !mahojiUser.favoriteItems.includes(i[0].id));
@@ -237,7 +237,7 @@ export const gambleCommand: OSBMahojiCommand = {
 
 			await transactItems({ userID: senderUser.id, itemsToAdd: loot });
 			await transactItems({
-				userID: recipientKlasaUser.id,
+				userID: recipientuser.id,
 				itemsToAdd: loot,
 				collectionLog: false,
 				filterLoot: false
@@ -245,7 +245,7 @@ export const gambleCommand: OSBMahojiCommand = {
 			let debug = new Bank();
 			for (const t of bank) debug.add(t[0].id);
 
-			return `You gave ${qty.toLocaleString()}x ${item.name} to ${recipientKlasaUser.username}.`;
+			return `You gave ${qty.toLocaleString()}x ${item.name} to ${recipientuser.usernameOrMention}.`;
 		}
 
 		return 'Invalid command.';

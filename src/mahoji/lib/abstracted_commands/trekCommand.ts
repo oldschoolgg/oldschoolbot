@@ -1,5 +1,4 @@
 import { objectEntries, reduceNumByPercent } from 'e';
-import { KlasaUser } from 'klasa';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
@@ -8,27 +7,24 @@ import { MorytaniaDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { GearStat, readableStatName } from '../../../lib/gear';
 import { difficulties, rewardTokens, trekBankBoosts } from '../../../lib/minions/data/templeTrekking';
 import { AddXpParams, GearRequirement } from '../../../lib/minions/types';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
+import { getMinigameScore } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { TempleTrekkingActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, itemNameFromID, percentChance, rand, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { handleMahojiConfirmation } from '../../mahojiSettings';
+import { handleMahojiConfirmation, userHasGracefulEquipped } from '../../mahojiSettings';
 
-export async function trekCommand(
-	user: KlasaUser,
-	channelID: BigInt,
-	difficulty: string,
-	quantity: number | undefined
-) {
+export async function trekCommand(user: MUser, channelID: BigInt, difficulty: string, quantity: number | undefined) {
 	const tier = difficulties.find(item => stringMatches(item.difficulty, difficulty));
 	if (!tier) return 'that is not a valid difficulty';
 	const minLevel = tier.minCombat;
-	const qp = user.settings.get(UserSettings.QP);
+	const qp = user.QP;
+	const allGear = user.gear;
+
 	if (tier.minimumGearRequirements) {
 		for (const [setup, requirements] of objectEntries(tier.minimumGearRequirements)) {
-			const gear = user.getGear(setup);
+			const gear = allGear[setup];
 			if (setup && requirements) {
 				let newRequirements: GearRequirement = requirements;
 				let maxMeleeStat:
@@ -95,20 +91,20 @@ export async function trekCommand(
 	const boosts = [];
 
 	// Every 25 trips becomes 1% faster to a cap of 10%
-	const percentFaster = Math.min(Math.floor((await user.getMinigameScore('temple_trekking')) / 25), 10);
+	const percentFaster = Math.min(Math.floor((await getMinigameScore(user.id, 'temple_trekking')) / 25), 10);
 
 	boosts.push(`${percentFaster.toFixed(1)}% from completed treks`);
 
 	tripTime = reduceNumByPercent(tripTime, percentFaster);
 
 	for (const [id, percent] of objectEntries(trekBankBoosts)) {
-		if (user.hasItemEquippedOrInBank(Number(id))) {
+		if (user.hasEquippedOrInBank([Number(id)])) {
 			boosts.push(`${percent}% for ${itemNameFromID(Number(id))}`);
 			tripTime = reduceNumByPercent(tripTime, percent);
 		}
 	}
 
-	if (!user.hasGracefulEquipped()) {
+	if (!userHasGracefulEquipped(user)) {
 		boosts.push('-15% for not having graceful equipped anywhere');
 		tripTime *= 1.15;
 	}
@@ -120,10 +116,10 @@ export async function trekCommand(
 		tripTime *= 0.85;
 	}
 
-	if (user.hasItemEquippedOrInBank('Ivandis flail')) {
+	if (user.hasEquippedOrInBank(['Ivandis flail'])) {
 		let flailBoost = tier.boosts.ivandis;
 		let itemName = 'Ivandis';
-		if (user.hasItemEquippedOrInBank('Blisterwood flail')) {
+		if (user.hasEquippedOrInBank(['Blisterwood flail'])) {
 			flailBoost -= 1 - tier.boosts.blisterwood;
 			itemName = 'Blisterwood';
 		}
@@ -165,14 +161,13 @@ export async function trekCommand(
 }
 
 export async function trekShop(
-	user: KlasaUser,
+	user: MUser,
 	reward: string,
 	difficulty: string,
 	quantity: number | undefined,
 	interaction: SlashCommandInteraction
 ) {
-	await user.settings.sync(true);
-	const userBank = user.bank();
+	const userBank = user.bank;
 	const specifiedItem = TrekShopItems.find(
 		item =>
 			stringMatches(reward, item.name) ||
