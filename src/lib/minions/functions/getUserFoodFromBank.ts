@@ -1,9 +1,8 @@
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Eatables } from '../../data/eatables';
 
-function getRealHealAmount(user: KlasaUser, healAmount: ((user: KlasaUser) => number) | number) {
+function getRealHealAmount(user: MUser, healAmount: ((user: MUser) => number) | number) {
 	if (typeof healAmount === 'number') {
 		return healAmount;
 	}
@@ -11,12 +10,12 @@ function getRealHealAmount(user: KlasaUser, healAmount: ((user: KlasaUser) => nu
 }
 
 export default function getUserFoodFromBank(
-	user: KlasaUser,
+	user: MUser,
 	totalHealingNeeded: number,
 	favoriteFood: readonly number[],
 	minimumHealAmount?: number
 ): false | Bank {
-	const userBank = user.bank();
+	const userBank = user.bank;
 	let totalHealingCalc = totalHealingNeeded;
 	let foodToRemove = new Bank();
 

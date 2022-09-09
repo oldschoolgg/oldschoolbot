@@ -1,14 +1,14 @@
 import { percentChance, randArrItem } from 'e';
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { ActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
-export default class extends Task {
+export const mageArenaTwoTask: MinionTask = {
+	type: 'MageArena2',
 	async run(data: ActivityTaskOptions) {
 		let { userID, channelID } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
 		let str = '';
 		let loot: Bank | undefined = undefined;
@@ -35,4 +35,4 @@ export default class extends Task {
 
 		handleTripFinish(user, channelID, str, undefined, undefined, data, loot ?? null);
 	}
-}
+};

@@ -1,19 +1,16 @@
-import { KlasaUser } from 'klasa';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
 import { BitField } from '../../../lib/constants';
 import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
 import { getPOHObject, itemsNotRefundable, PoHObjects } from '../../../lib/poh';
+import { pohImageGenerator } from '../../../lib/pohImage';
 import { prisma } from '../../../lib/settings/prisma';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { itemNameFromID, updateBankSetting } from '../../../lib/util';
+import { itemNameFromID } from '../../../lib/util';
 import { stringMatches } from '../../../lib/util/cleanString';
 import getOSItem from '../../../lib/util/getOSItem';
-import PoHImage from '../../../tasks/pohImage';
-import { handleMahojiConfirmation } from '../../mahojiSettings';
+import { handleMahojiConfirmation, updateBankSetting } from '../../mahojiSettings';
 
 export const pohWallkits = [
 	{
@@ -33,13 +30,13 @@ export async function getPOH(userID: string) {
 	if (poh === null) poh = await prisma.playerOwnedHouse.create({ data: { user_id: userID } });
 	return poh;
 }
-export async function makePOHImage(user: KlasaUser, showSpaces = false) {
+export async function makePOHImage(user: MUser, showSpaces = false) {
 	const poh = await getPOH(user.id);
-	const buffer = await (globalClient.tasks.get('pohImage') as PoHImage).run(poh, showSpaces);
+	const buffer = await pohImageGenerator.run(poh, showSpaces);
 	return { attachments: [{ buffer, fileName: 'image.jpg' }] };
 }
 
-export async function pohWallkitCommand(user: KlasaUser, input: string) {
+export async function pohWallkitCommand(user: MUser, input: string) {
 	const poh = await getPOH(user.id);
 	const currentWallkit = pohWallkits.find(i => i.imageID === poh.background_id)!;
 	const selectedKit = pohWallkits.find(i => stringMatches(i.name, input));
@@ -54,12 +51,16 @@ export async function pohWallkitCommand(user: KlasaUser, input: string) {
 		return 'This is already your wallkit.';
 	}
 
-	const bitfield = user.settings.get(UserSettings.BitField);
-	const userBank = user.bank();
+	const { bitfield } = user;
+	const userBank = user.bank;
 	if (selectedKit.bitfield && !bitfield.includes(BitField.HasHosidiusWallkit)) {
 		if (selectedKit.imageID === 2 && userBank.has('Hosidius blueprints')) {
 			await user.removeItemsFromBank(new Bank().add('Hosidius blueprints'));
-			await user.settings.update(UserSettings.BitField, selectedKit.bitfield);
+			await user.update({
+				bitfield: {
+					push: selectedKit.bitfield
+				}
+			});
 		} else {
 			return `You haven't unlocked the ${selectedKit.name} wallkit!`;
 		}
@@ -75,7 +76,7 @@ export async function pohWallkitCommand(user: KlasaUser, input: string) {
 	return makePOHImage(user);
 }
 
-export async function pohBuildCommand(interaction: SlashCommandInteraction, user: KlasaUser, name: string) {
+export async function pohBuildCommand(interaction: SlashCommandInteraction, user: MUser, name: string) {
 	const poh = await getPOH(user.id);
 
 	if (!name) {
@@ -109,7 +110,7 @@ export async function pohBuildCommand(interaction: SlashCommandInteraction, user
 	}
 
 	if (obj.itemCost) {
-		const userBank = user.bank().add('Coins', user.settings.get(UserSettings.GP));
+		const userBank = user.bank.add('Coins', user.GP);
 		if (!userBank.has(obj.itemCost.bank)) {
 			return `You don't have enough items to build a ${obj.name}, you need ${obj.itemCost}.`;
 		}
@@ -118,8 +119,8 @@ export async function pohBuildCommand(interaction: SlashCommandInteraction, user
 			str += ` You will lose the ${getPOHObject(inPlace).name} that you currently have there.`;
 		}
 		await handleMahojiConfirmation(interaction, str);
-		await user.removeItemsFromBank(obj.itemCost.bank);
-		updateBankSetting(globalClient, ClientSettings.EconomyStats.ConstructCostBank, obj.itemCost);
+		await user.removeItemsFromBank(obj.itemCost);
+		updateBankSetting('construction_cost_bank', obj.itemCost);
 	}
 
 	let refunded: Bank | null = null;
@@ -154,7 +155,7 @@ export async function pohBuildCommand(interaction: SlashCommandInteraction, user
 	};
 }
 
-export async function pohMountItemCommand(user: KlasaUser, name: string) {
+export async function pohMountItemCommand(user: MUser, name: string) {
 	const poh = await getPOH(user.id);
 	if (!name) {
 		return makePOHImage(user);
@@ -171,7 +172,7 @@ export async function pohMountItemCommand(user: KlasaUser, name: string) {
 
 	const currItem = poh.mounted_item === 1112 ? null : poh.mounted_item;
 
-	const userBank = user.bank();
+	const userBank = user.bank;
 	const costBank = new Bank().add(item.id);
 	if (poh.mounted_item !== 1112) costBank.add('Magic stone', 2);
 	if (!userBank.has(costBank)) {
@@ -201,7 +202,7 @@ export async function pohMountItemCommand(user: KlasaUser, name: string) {
 	};
 }
 
-export async function pohDestroyCommand(user: KlasaUser, name: string) {
+export async function pohDestroyCommand(user: MUser, name: string) {
 	const obj = PoHObjects.find(i => stringMatches(i.name, name));
 	if (!obj) {
 		return "That's not a valid thing to build in your PoH.";

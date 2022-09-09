@@ -1,16 +1,13 @@
 import { percentChance } from 'e';
-import { KlasaUser, Task } from 'klasa';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { Emoji } from '../../../lib/constants';
 import { prisma } from '../../../lib/settings/prisma';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { addArrayOfNumbers, calcPerHour, clamp, gaussianRandom } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { mahojiUserSettingsUpdate } from '../../../mahoji/mahojiSettings';
 
 interface LMSGameSimulated {
 	position: number;
@@ -18,7 +15,7 @@ interface LMSGameSimulated {
 	points: number;
 }
 
-export async function getUsersLMSStats(user: KlasaUser) {
+export async function getUsersLMSStats(user: MUser) {
 	const aggregations = await prisma.lastManStandingGame.aggregate({
 		_avg: {
 			kills: true,
@@ -48,7 +45,7 @@ export async function getUsersLMSStats(user: KlasaUser) {
 		highestKillInGame: aggregations._max.kills ?? 0,
 		totalGames: aggregations._count.user_id,
 		gamesWon,
-		points: user.settings.get(UserSettings.LMSPoints)
+		points: user.user.lms_points
 	};
 }
 
@@ -99,10 +96,11 @@ function calculateResultOfLMSGames(qty: number, lmsStats: Awaited<ReturnType<typ
 	return gameResults;
 }
 
-export default class extends Task {
+export const lmsTask: MinionTask = {
+	type: 'LastManStanding',
 	async run(data: MinigameActivityTaskOptions) {
 		const { channelID, quantity, userID, duration } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		await incrementMinigameScore(userID, 'lms', quantity);
 		const lmsStats = await getUsersLMSStats(user);
 
@@ -113,7 +111,7 @@ export default class extends Task {
 		});
 		const points = addArrayOfNumbers(result.map(i => i.points));
 
-		const { newUser } = await mahojiUserSettingsUpdate(user, {
+		const { newUser } = await user.update({
 			lms_points: {
 				increment: points
 			}
@@ -141,4 +139,4 @@ ${result
 			null
 		);
 	}
-}
+};

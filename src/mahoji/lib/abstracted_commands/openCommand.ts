@@ -1,6 +1,4 @@
-import { User } from '@prisma/client';
 import { notEmpty, uniqueArr } from 'e';
-import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank, LootTable } from 'oldschooljs';
@@ -10,13 +8,9 @@ import { allOpenables, UnifiedOpenable } from '../../../lib/openables';
 import { ItemBank } from '../../../lib/types';
 import { stringMatches } from '../../../lib/util/cleanString';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
+import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import {
-	handleMahojiConfirmation,
-	mahojiUserSettingsUpdate,
-	patronMsg,
-	updateGPTrackSetting
-} from '../../mahojiSettings';
+import { handleMahojiConfirmation, patronMsg, updateGPTrackSetting } from '../../mahojiSettings';
 
 const regex = /^(.*?)( \([0-9]+x Owned\))?$/;
 
@@ -28,37 +22,28 @@ export const OpenUntilItems = uniqueArr(allOpenables.map(i => i.allItems).flat(2
 		return 0;
 	});
 
-function getOpenableLoot({
-	openable,
-	quantity,
-	mahojiUser,
-	user
-}: {
-	openable: UnifiedOpenable;
-	quantity: number;
-	mahojiUser: User;
-	user: KlasaUser;
-}) {
+function getOpenableLoot({ openable, quantity, user }: { openable: UnifiedOpenable; quantity: number; user: MUser }) {
 	return openable.output instanceof LootTable
 		? { bank: openable.output.roll(quantity), message: null }
-		: openable.output({ user, self: openable, quantity, mahojiUser });
+		: openable.output({ user, self: openable, quantity });
 }
 
-async function addToOpenablesScores(mahojiUser: User, kcBank: Bank) {
-	const { newUser } = await mahojiUserSettingsUpdate(mahojiUser.id, {
-		openable_scores: new Bank().add(mahojiUser.openable_scores as ItemBank).add(kcBank).bank
+async function addToOpenablesScores(mahojiUser: MUser, kcBank: Bank) {
+	await mahojiUser.update({
+		openable_scores: new Bank().add(mahojiUser.user.openable_scores as ItemBank).add(kcBank).bank
 	});
-	return new Bank().add(newUser.openable_scores as ItemBank);
+	return new Bank().add(mahojiUser.user.openable_scores as ItemBank);
 }
 
 export async function abstractedOpenUntilCommand(
 	interaction: SlashCommandInteraction,
-	user: KlasaUser,
-	mahojiUser: User,
+	userID: string,
 	name: string,
 	openUntilItem: string
 ) {
-	if (user.perkTier < PerkTier.Three) return patronMsg(PerkTier.Three);
+	const user = await mUserFetch(userID);
+	const perkTier = getUsersPerkTier(user);
+	if (perkTier < PerkTier.Three) return patronMsg(PerkTier.Three);
 	name = name.replace(regex, '$1');
 	const openableItem = allOpenables.find(o => o.aliases.some(alias => stringMatches(alias, name)));
 	if (!openableItem) return "That's not a valid item.";
@@ -71,7 +56,8 @@ export async function abstractedOpenUntilCommand(
 	if (!openable.allItems.includes(openUntil.id)) {
 		return `${openable.openedItem.name} doesn't drop ${openUntil.name}.`;
 	}
-	const amountOfThisOpenableOwned = user.bank().amount(openableItem.id);
+
+	const amountOfThisOpenableOwned = user.bank.amount(openableItem.id);
 	if (amountOfThisOpenableOwned === 0) return "You don't own any of that item.";
 	if (openUntil.name.includes('Clue') && user.owns(openUntil.id)) {
 		await handleMahojiConfirmation(
@@ -86,7 +72,7 @@ export async function abstractedOpenUntilCommand(
 	let max = Math.min(100, amountOfThisOpenableOwned);
 	for (let i = 0; i < max; i++) {
 		cost.add(openable.openedItem.id);
-		const thisLoot = await getOpenableLoot({ openable, quantity: 1, mahojiUser, user });
+		const thisLoot = await getOpenableLoot({ openable, quantity: 1, user });
 		loot.add(thisLoot.bank);
 		amountOpened++;
 		if (loot.has(openUntil.id)) break;
@@ -94,7 +80,6 @@ export async function abstractedOpenUntilCommand(
 
 	return finalizeOpening({
 		user,
-		mahojiUser,
 		cost,
 		loot,
 		messages: [
@@ -111,7 +96,6 @@ export async function abstractedOpenUntilCommand(
 
 async function finalizeOpening({
 	user,
-	mahojiUser,
 	cost,
 	loot,
 	messages,
@@ -119,22 +103,23 @@ async function finalizeOpening({
 	kcBank
 }: {
 	kcBank: Bank;
-	user: KlasaUser;
-	mahojiUser: User;
+	user: MUser;
 	cost: Bank;
 	loot: Bank;
 	messages: string[];
 	openables: UnifiedOpenable[];
 }) {
-	if (!user.bank().has(cost)) return `You don't have ${cost}.`;
-	const newOpenableScores = await addToOpenablesScores(mahojiUser, kcBank);
+	const { bank } = user;
+	if (!bank.has(cost)) return `You don't have ${cost}.`;
+	const newOpenableScores = await addToOpenablesScores(user, kcBank);
 	await transactItems({ userID: user.id, itemsToRemove: cost });
-	const { previousCL } = await user.addItemsToBank({
-		items: loot.bank,
+
+	const { previousCL } = await transactItems({
+		userID: user.id,
+		itemsToAdd: loot,
 		collectionLog: true,
 		filterLoot: false
 	});
-
 	const image = await makeBankImage({
 		bank: loot,
 		title:
@@ -168,17 +153,16 @@ ${messages.join(', ')}`
 
 export async function abstractedOpenCommand(
 	interaction: SlashCommandInteraction | null,
-	user: KlasaUser,
-	mahojiUser: User,
+	userID: string,
 	_names: string[],
 	_quantity: number | 'auto' = 1
 ) {
-	const bank = user.bank();
-	const favorites = mahojiUser.favoriteItems;
+	const user = await mUserFetch(userID);
+	const favorites = user.user.favoriteItems;
 
 	const names = _names.map(i => i.replace(regex, '$1'));
 	const openables = names.includes('all')
-		? allOpenables.filter(({ openedItem }) => bank.has(openedItem.id) && !favorites.includes(openedItem.id))
+		? allOpenables.filter(({ openedItem }) => user.owns(openedItem.id) && !favorites.includes(openedItem.id))
 		: names
 				.map(name => allOpenables.find(o => o.aliases.some(alias => stringMatches(alias, name))))
 				.filter(notEmpty);
@@ -194,7 +178,7 @@ export async function abstractedOpenCommand(
 	if (typeof _quantity === 'number') {
 		for (const openable of openables) {
 			const tmpCost = new Bank().add(openable.id, _quantity);
-			if (!bank.has(tmpCost)) return `You don't own ${tmpCost}`;
+			if (!user.owns(tmpCost)) return `You don't own ${tmpCost}`;
 		}
 	}
 	const cost = new Bank();
@@ -204,13 +188,13 @@ export async function abstractedOpenCommand(
 
 	for (const openable of openables) {
 		const { openedItem } = openable;
-		const quantity = typeof _quantity === 'string' ? bank.amount(openedItem.id) : _quantity;
+		const quantity = typeof _quantity === 'string' ? user.bank.amount(openedItem.id) : _quantity;
 		cost.add(openedItem.id, quantity);
 		kcBank.add(openedItem.id, quantity);
-		const thisLoot = await getOpenableLoot({ openable, mahojiUser, quantity, user });
+		const thisLoot = await getOpenableLoot({ openable, quantity, user });
 		loot.add(thisLoot.bank);
 		if (thisLoot.message) messages.push(thisLoot.message);
 	}
 
-	return finalizeOpening({ user, mahojiUser, cost, loot, messages, openables, kcBank });
+	return finalizeOpening({ user, cost, loot, messages, openables, kcBank });
 }

@@ -1,5 +1,4 @@
 import { randInt, reduceNumByPercent, roll, Time } from 'e';
-import { KlasaUser, Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
@@ -8,29 +7,28 @@ import { incrementMinigameScore } from '../../../lib/settings/minigames';
 import { PuroPuroActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
-import { minionName } from '../../../lib/util/minionUtils';
 import puroOptions from '../../../mahoji/lib/abstracted_commands/puroPuroCommand';
-import { userStatsBankUpdate } from '../../../mahoji/mahojiSettings';
+import { userHasGracefulEquipped, userStatsBankUpdate } from '../../../mahoji/mahojiSettings';
 
-function singleImpHunt(minutes: number, user: KlasaUser) {
+function singleImpHunt(minutes: number, user: MUser) {
 	let totalQty = 0;
 	for (let i = 0; i < minutes; i++) {
 		let qty = randInt(5, 6);
 		totalQty += qty;
 	}
-	if (!user.hasGracefulEquipped()) {
+	if (!userHasGracefulEquipped(user)) {
 		totalQty = Math.floor(reduceNumByPercent(totalQty, 20));
 	}
 	return totalQty;
 }
 
-function allImpHunt(minutes: number, user: KlasaUser) {
+function allImpHunt(minutes: number, user: MUser) {
 	let totalQty = 0;
 	for (let i = 0; i < minutes; i++) {
 		let qty = randInt(1, 3);
 		totalQty += qty;
 	}
-	if (!user.hasGracefulEquipped()) {
+	if (!userHasGracefulEquipped(user)) {
 		totalQty = Math.floor(reduceNumByPercent(totalQty, 20));
 	}
 	return totalQty;
@@ -38,10 +36,11 @@ function allImpHunt(minutes: number, user: KlasaUser) {
 
 const bryophytasStaffId = itemID("Bryophyta's staff");
 
-export default class extends Task {
+export const puroPuroTask: MinionTask = {
+	type: 'PuroPuro',
 	async run(data: PuroPuroActivityTaskOptions) {
 		const { channelID, userID, quantity, implingID, darkLure } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
 		await incrementMinigameScore(userID, 'puro_puro', quantity);
 
@@ -116,7 +115,7 @@ export default class extends Task {
 				break;
 		}
 
-		let str = `<@${userID}>, ${minionName(user)} finished hunting in Puro-Puro. `;
+		let str = `<@${userID}>, ${user.minionName} finished hunting in Puro-Puro. `;
 
 		const xpStr = await user.addXP({ skillName: SkillsEnum.Hunter, amount: hunterXP });
 
@@ -129,7 +128,7 @@ export default class extends Task {
 		if (hunterXP > 0) {
 			str += `\n${xpStr}. You are getting ${hunterXpHr}.`;
 		} else {
-			str += `\n${minionName(user)} failed to spot any ${huntedImplingName} this trip.`;
+			str += `\n${user.minionName} failed to spot any ${huntedImplingName} this trip.`;
 			handleTripFinish(
 				user,
 				channelID,
@@ -151,7 +150,7 @@ export default class extends Task {
 			}, 0);
 
 			let savedRunes = 0;
-			if (user.hasItemEquippedAnywhere(bryophytasStaffId)) {
+			if (user.hasEquipped(bryophytasStaffId)) {
 				for (let i = 0; i < spellsUsed; i++) {
 					if (roll(15)) savedRunes++;
 				}
@@ -194,8 +193,13 @@ export default class extends Task {
 
 		if (missed.length > 0) str += `\nYou missed out on ${missed} due to your hunter level being too low.`;
 
-		await user.addItemsToBank({ items: bank, collectionLog: true });
-		await user.removeItemsFromBank(itemCost);
+		await transactItems({
+			userID: user.id,
+			itemsToAdd: bank,
+			collectionLog: true,
+			itemsToRemove: itemCost
+		});
+
 		userStatsBankUpdate(user.id, 'puropuro_implings_bank', bank);
 
 		handleTripFinish(
@@ -208,4 +212,4 @@ export default class extends Task {
 			bank
 		);
 	}
-}
+};
