@@ -21,13 +21,13 @@ export const runecraftTask: MinionTask = {
 			const quantityPerEssence = calcMaxRCQuantity(rune, user);
 			const runeQuantity = essenceQuantity * quantityPerEssence;
 
-		const xpReceived = essenceQuantity * rune.xp;
-		let runeXP = rune.xp;
+			let runeXP = rune.xp;
 
-		if (daeyaltEssence) {
-			runeXP = rune.xp * 1.5;
-		}
+			if (daeyaltEssence) {
+				runeXP = rune.xp * 1.5;
+			}
 
+			const xpReceived = essenceQuantity * runeXP;
 
 			const magicXpReceived = imbueCasts * 86;
 
@@ -46,6 +46,18 @@ export const runecraftTask: MinionTask = {
 				[rune.id]: runeQuantity
 			});
 
+			if (roll((1_795_758 - user.skillLevel(SkillsEnum.Runecraft) * 25) / essenceQuantity)) {
+				loot.add('Rift guardian');
+				str += "\nYou have a funny feeling you're being followed...";
+				globalClient.emit(
+					Events.ServerNotification,
+					`${Emoji.Runecraft} **${user.usernameOrMention}'s** minion, ${
+						user.minionName
+					}, just received a Rift guardian while crafting ${rune.name}s at level ${user.skillLevel(
+						SkillsEnum.Runecraft
+					)} Runecrafting!`
+				);
+			}
 			str += `\n\nYou received: ${loot}.`;
 
 			await transactItems({
@@ -54,16 +66,23 @@ export const runecraftTask: MinionTask = {
 				itemsToAdd: loot
 			});
 
-		if (roll((1_795_758 - user.skillLevel(SkillsEnum.Runecraft) * 25) / essenceQuantity)) {
-			loot.add('Rift guardian');
-			str += "\nYou have a funny feeling you're being followed...";
-			globalClient.emit(
-				Events.ServerNotification,
-				`${Emoji.Runecraft} **${user.usernameOrMention}'s** minion, ${
-					user.minionName
-				}, just received a Rift guardian while crafting ${rune.name}s at level ${user.skillLevel(
-					SkillsEnum.Runecraft
-				)} Runecrafting!`
+			handleTripFinish(
+				user,
+				channelID,
+				str,
+				[
+					'runecraft',
+					{
+						quantity: essenceQuantity,
+						rune: rune.name,
+						usestams: useStaminas,
+						daeyalt_essence: daeyaltEssence
+					},
+					true
+				],
+				undefined,
+				data,
+				loot
 			);
 		} else {
 			const xpReceived = essenceQuantity * tiara.xp;
@@ -80,31 +99,21 @@ export const runecraftTask: MinionTask = {
 
 			str += `\n\nYou received: ${loot}.`;
 
-		if (daeyaltEssence) {
-			str += '\nYou are gaining 50% more Runecrafting XP due to using Daeyalt Essence.';
+			await transactItems({
+				userID: user.id,
+				collectionLog: true,
+				itemsToAdd: loot
+			});
+
+			handleTripFinish(
+				user,
+				channelID,
+				str,
+				['runecraft', { essenceQuantity, rune: tiara.name }, true],
+				undefined,
+				data,
+				loot
+			);
 		}
-
-		str += `\n\nYou received: ${loot}.`;
-
-		await transactItems({
-			userID: user.id,
-			collectionLog: true,
-			itemsToAdd: loot
-		});
-
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			[
-				'runecraft',
-				{ quantity: essenceQuantity, rune: rune.name, usestams: useStaminas, daeyalt_essence: daeyaltEssence },
-				true
-			],
-			undefined,
-			data,
-			loot
-		);
 	}
-
 };
