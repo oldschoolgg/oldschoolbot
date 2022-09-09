@@ -106,7 +106,8 @@ export const chopCommand: OSBMahojiCommand = {
 		options,
 		userID,
 		channelID
-	}: CommandRunOptions<{ name: string; quantity?: number; powerchop?: boolean }>) => {
+	}: CommandRunOptions<{ name: string; quantity?: number; alch?: boolean }>) => {
+		const user = await mUserFetch(userID);
 		const log = Woodcutting.Logs.find(
 			log =>
 				stringMatches(log.name, options.name) ||
@@ -124,8 +125,9 @@ export const chopCommand: OSBMahojiCommand = {
 			return `${minionName(user)} needs ${log.level} Woodcutting to chop ${log.name}.`;
 		}
 
-		if (user.QP < log.qpRequired) {
-			return `${minionName(user)} needs ${log.qpRequired} QP to cut ${log.name}.`;
+		const { QP } = user;
+		if (QP < log.qpRequired) {
+			return `${user.minionName} needs ${log.qpRequired} QP to cut ${log.name}.`;
 		}
 
 		const [hasFavour, requiredPoints] = gotFavour(user, Favours.Hosidius, 75);
@@ -155,17 +157,11 @@ export const chopCommand: OSBMahojiCommand = {
 		boosts.push(`**${axeMultiplier}x** success multiplier for Bronze axe`);
 
 		for (const axe of axes) {
-			if (!hasItemsEquippedOrInBank(user, [axe.id]) || skills.woodcutting < axe.wcLvl) continue;
+			if (user.hasEquippedOrInBank(axe.id) || skills.woodcutting < axe.wcLvl) continue;
 			axeMultiplier = axe.multiplier;
 			boosts.pop();
 			boosts.push(`**${axeMultiplier}x** success multiplier for ${itemNameFromID(axe.id)}`);
 			break;
-		}
-
-		if (!powerchop) {
-			powerchop = false;
-		} else {
-			boosts.push('**Powerchopping**');
 		}
 
 		// Calculate the time it takes to chop specific quantity or as many as possible

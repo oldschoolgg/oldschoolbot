@@ -1,5 +1,4 @@
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
-import { KlasaUser } from 'klasa';
 import { Monsters } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
@@ -9,7 +8,6 @@ import { Emoji } from '../constants';
 import killableMonsters from '../minions/data/killableMonsters';
 import { Planks } from '../minions/data/planks';
 import { getActivityOfUser } from '../settings/settings';
-import { UserSettings } from '../settings/types/UserSettings';
 import Agility from '../skilling/skills/agility';
 import Cooking from '../skilling/skills/cooking';
 import Crafting from '../skilling/skills/crafting';
@@ -71,11 +69,10 @@ import {
 } from '../types/minions';
 import { formatDuration, itemNameFromID, randomVariation, toTitleCase } from '../util';
 import { stringMatches } from './cleanString';
-import { minionName } from './minionUtils';
 
-export function minionStatus(user: KlasaUser) {
+export function minionStatus(user: MUser) {
 	const currentTask = getActivityOfUser(user.id);
-	const name = minionName(user);
+	const name = user.minionName;
 	if (!currentTask) {
 		return `${name} is currently doing nothing.`;
 	}
@@ -214,9 +211,7 @@ export function minionStatus(user: KlasaUser) {
 		}
 
 		case 'Questing': {
-			return `${name} is currently Questing. ${formattedDuration} Your current Quest Point count is: ${user.settings.get(
-				UserSettings.QP
-			)}.`;
+			return `${name} is currently Questing. ${formattedDuration} Your current Quest Point count is: ${user.QP}.`;
 		}
 
 		case 'Woodcutting': {

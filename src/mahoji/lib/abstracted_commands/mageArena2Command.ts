@@ -1,19 +1,18 @@
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { ActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, randomVariation, updateBankSetting } from '../../../lib/util';
+import { formatDuration, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { updateBankSetting } from '../../mahojiSettings';
 
-export async function mageArena2Command(user: KlasaUser, channelID: bigint) {
+export async function mageArena2Command(user: MUser, channelID: bigint) {
 	if (user.skillLevel(SkillsEnum.Magic) < 75) {
 		return 'You need level 75 Magic to do the Mage Arena II.';
 	}
-	if (user.cl().amount('Saradomin cape') === 0) {
+	if (user.cl.amount('Saradomin cape') === 0) {
 		return 'You need to have completed Mage Arena I before doing part II.';
 	}
 	const duration = randomVariation(Time.Minute * 25, 3);
@@ -43,7 +42,7 @@ export async function mageArena2Command(user: KlasaUser, channelID: bigint) {
 
 	const totalCost = itemsNeeded.clone().add(foodRemoved);
 
-	await updateBankSetting(globalClient, ClientSettings.EconomyStats.MageArenaCost, totalCost);
+	await updateBankSetting('mage_arena_cost', totalCost);
 
 	await addSubTaskToActivityTask<ActivityTaskOptions>({
 		userID: user.id,
