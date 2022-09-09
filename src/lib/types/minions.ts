@@ -1,6 +1,6 @@
-import { Peak } from '../../tasks/WildernessPeakInterval';
 import { IPatchData } from '../minions/farming/types';
 import { MinigameName } from '../settings/minigames';
+import { Peak } from '../tickers';
 import { KourendFavour } from './../minions/data/kourendFavour';
 import { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
 import { ItemBank } from '.';
@@ -334,4 +334,5 @@ export type ActivityTaskData =
 	| TempleTrekkingActivityTaskOptions
 	| TemporossActivityTaskOptions
 	| PuroPuroActivityTaskOptions
-	| KourendFavourActivityTaskOptions;
+	| KourendFavourActivityTaskOptions
+	| AgilityActivityTaskOptions;

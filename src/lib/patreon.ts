@@ -1,19 +1,17 @@
-import { MessageAttachment, TextChannel } from 'discord.js';
+import { AttachmentBuilder, TextChannel } from 'discord.js';
 import { Time } from 'e';
-import { ArrayActions, Gateway } from 'klasa';
 import fetch from 'node-fetch';
 
 import { patreonConfig, production } from '../config';
-import { BadgesEnum, BitField, Channel, PatronTierID, PerkTier } from '../lib/constants';
-import { fetchSponsors, getUserFromGithubID } from '../lib/http/util';
-import backgroundImages from '../lib/minions/data/bankBackgrounds';
-import { roboChimpUserFetch } from '../lib/roboChimp';
-import { getUserSettings } from '../lib/settings/settings';
-import { UserSettings } from '../lib/settings/types/UserSettings';
-import { Patron } from '../lib/types';
-import getUsersPerkTier from '../lib/util/getUsersPerkTier';
-import { logError } from '../lib/util/logError';
-import { mahojiUserSettingsUpdate } from '../mahoji/mahojiSettings';
+import { mahojiUserSettingsUpdate } from '../mahoji/settingsUpdate';
+import { cacheBadges } from './badges';
+import { BadgesEnum, BitField, Channel, PatronTierID, PerkTier } from './constants';
+import { fetchSponsors, getUserFromGithubID } from './http/util';
+import backgroundImages from './minions/data/bankBackgrounds';
+import { roboChimpUserFetch } from './roboChimp';
+import { Patron } from './types';
+import getUsersPerkTier from './util/getUsersPerkTier';
+import { logError } from './util/logError';
 
 const patreonApiURL = new URL(`https://patreon.com/api/oauth2/v2/campaigns/${patreonConfig?.campaignID}/members`);
 
@@ -79,9 +77,11 @@ function perkTierFromBitfield(bit: BitField): PerkTier {
 }
 
 class PatreonTask {
+	public enabled = production;
+
 	async validatePerks(userID: string, shouldHave: PerkTier): Promise<string | null> {
-		const settings = await getUserSettings(userID);
-		let perkTier: PerkTier | 0 | null = getUsersPerkTier(settings.get(UserSettings.BitField));
+		const user = await mUserFetch(userID);
+		let perkTier: PerkTier | 0 | null = getUsersPerkTier([...user.bitfield]);
 		if (perkTier === 0 || perkTier === PerkTier.One) perkTier = null;
 
 		if (!perkTier) {
@@ -96,9 +96,9 @@ class PatreonTask {
 	}
 
 	async changeTier(userID: string, from: PerkTier, to: PerkTier) {
-		const user = await globalClient.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
-		const userBitfield = user.settings.get(UserSettings.BitField);
+		const userBitfield = user.bitfield;
 
 		const bitFieldToRemove = bitFieldFromPerkTier(from);
 		const bitFieldToAdd = bitFieldFromPerkTier(to);
@@ -106,38 +106,37 @@ class PatreonTask {
 
 		// Remove any/all the patron bits from this user.
 		try {
-			await user.settings.update(UserSettings.BitField, newBitfield, {
-				arrayAction: ArrayActions.Overwrite
+			await user.update({
+				bitfield: newBitfield
 			});
 		} catch (_) {}
 
 		// Remove patron bank background
-		const bg = backgroundImages.find(bg => bg.id === user.settings.get(UserSettings.BankBackground));
+		const bg = backgroundImages.find(bg => bg.id === user.user.bankBackground);
 		if (bg && bg.perkTierNeeded && bg.perkTierNeeded > to) {
-			await user.settings.update(UserSettings.BankBackground, 1);
+			await user.update({
+				bankBackground: 1
+			});
 		}
-		await user.settings.sync(true);
 	}
 
 	async givePerks(userID: string, perkTier: PerkTier) {
-		const settings = await (globalClient.gateways.get('users') as Gateway)!
-			.acquire({
-				id: userID
-			})
-			.sync(true);
+		const user = await mUserFetch(userID);
 
-		const userBadges = settings.get(UserSettings.Badges);
+		const userBadges = user.user.badges;
 
 		// If they have neither the limited time badge or normal badge, give them the normal one.
 		if (!userBadges.includes(BadgesEnum.Patron) && !userBadges.includes(BadgesEnum.LimitedPatron)) {
 			try {
-				await settings.update(UserSettings.Badges, BadgesEnum.Patron, {
-					arrayAction: ArrayActions.Add
+				await user.update({
+					badges: {
+						push: BadgesEnum.Patron
+					}
 				});
 			} catch (_) {}
 		}
 
-		const userBitfield = settings.get(UserSettings.BitField);
+		const userBitfield = user.bitfield;
 
 		try {
 			let newField = [
@@ -145,30 +144,23 @@ class PatreonTask {
 				bitFieldFromPerkTier(perkTier)
 			];
 
-			await settings.update(UserSettings.BitField, newField, {
-				arrayAction: ArrayActions.Overwrite
+			await user.update({
+				bitfield: newField
 			});
 		} catch (_) {}
 	}
 
 	async removePerks(userID: string) {
-		const settings = await (globalClient.gateways.get('users') as Gateway)!
-			.acquire({
-				id: userID
-			})
-			.sync(true);
+		const user = await mUserFetch(userID);
 
-		const userBitfield = settings.get(UserSettings.BitField);
-		const userBadges = settings.get(UserSettings.Badges);
+		const userBitfield = user.bitfield;
+		const userBadges = user.user.badges;
 
 		// Remove any/all the patron bits from this user.
-		await settings.update(
-			UserSettings.BitField,
-			userBitfield.filter(number => !tiers.map(t => t[1]).includes(number)),
-			{
-				arrayAction: ArrayActions.Overwrite
-			}
-		);
+
+		await mahojiUserSettingsUpdate(userID, {
+			bitfield: userBitfield.filter(number => !tiers.map(t => t[1]).includes(number))
+		});
 
 		// Remove patreon badge(s)
 		const patronBadges: number[] = [BadgesEnum.Patron, BadgesEnum.LimitedPatron];
@@ -177,12 +169,16 @@ class PatreonTask {
 		});
 
 		// Remove patron bank background
-		const bg = backgroundImages.find(bg => bg.id === settings.get(UserSettings.BankBackground));
+		const bg = backgroundImages.find(bg => bg.id === user.user.bankBackground);
 		if (bg?.perkTierNeeded) {
-			await settings.update(UserSettings.BankBackground, 1);
+			await mahojiUserSettingsUpdate(userID, {
+				bankBackground: 1
+			});
 		}
-		if (settings.get(UserSettings.BankBackgroundHex) !== null) {
-			await settings.reset(UserSettings.BankBackgroundHex);
+		if (user.user.bank_bg_hex !== null) {
+			await mahojiUserSettingsUpdate(userID, {
+				bank_bg_hex: null
+			});
 		}
 	}
 
@@ -226,11 +222,7 @@ class PatreonTask {
 				}
 			}
 
-			const settings = await (globalClient.gateways.get('users') as Gateway)!
-				.acquire({
-					id: patron.discordID
-				})
-				.sync(true);
+			const user = await mUserFetch(patron.discordID);
 
 			const roboChimpUser = await roboChimpUserFetch(BigInt(patron.discordID));
 
@@ -257,7 +249,7 @@ class PatreonTask {
 					continue;
 				}
 			}
-			const userBitfield = settings.get(UserSettings.BitField);
+			const userBitfield = user.bitfield;
 			if (
 				[BitField.isModerator, BitField.isContributor, BitField.IsWikiContributor].some(bit =>
 					userBitfield.includes(bit)
@@ -271,7 +263,7 @@ class PatreonTask {
 				Date.now() - new Date(patron.lastChargeDate).getTime() > Time.Day * 33 &&
 				patron.patronStatus !== 'active_patron'
 			) {
-				const perkTier = getUsersPerkTier(userBitfield);
+				const perkTier = getUsersPerkTier([...userBitfield]);
 				if (perkTier < PerkTier.Two) continue;
 				result.push(`${username} hasn't paid in over 1 month, so removing perks.`);
 				messages.push(`Removing T${perkTier} patron perks from ${username} PatreonID[${patron.patreonID}]`);
@@ -297,13 +289,13 @@ class PatreonTask {
 
 		const channel = globalClient.channels.cache.get(Channel.ErrorLogs) as TextChannel;
 		if (production) {
-			channel.send({ files: [new MessageAttachment(Buffer.from(result.join('\n')), 'patreon.txt')] });
+			channel.send({ files: [new AttachmentBuilder(Buffer.from(result.join('\n')), { name: 'patreon.txt' })] });
 			channel.send(messages.join(', '));
 		} else {
 			console.log(messages.join('\n'));
 		}
 
-		globalClient.tasks.get('badges')?.run();
+		cacheBadges();
 	}
 
 	async fetchPatrons(url?: string): Promise<Patron[]> {

@@ -1,5 +1,4 @@
 import { roll, Time } from 'e';
-import { Task } from 'klasa';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
@@ -12,12 +11,12 @@ import { rand } from '../../lib/util';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
-export default class extends Task {
+export const miningTask: MinionTask = {
+	type: 'Mining',
 	async run(data: MiningActivityTaskOptions) {
 		const { oreID, userID, channelID, duration, powermine } = data;
 		let { quantity } = data;
-		const user = await this.client.fetchUser(userID);
-
+		const user = await mUserFetch(userID);
 		const ore = Mining.Ores.find(ore => ore.id === oreID)!;
 
 		let xpReceived = quantity * ore.xp;
@@ -26,7 +25,7 @@ export default class extends Task {
 
 		// If they have the entire prospector outfit, give an extra 0.5% xp bonus
 		if (
-			user.getGear('skilling').hasEquipped(
+			user.gear.skilling.hasEquipped(
 				Object.keys(Mining.prospectorItems).map(i => parseInt(i)),
 				true
 			)
@@ -37,7 +36,7 @@ export default class extends Task {
 		} else {
 			// For each prospector item, check if they have it, give its' XP boost if so.
 			for (const [itemID, bonus] of Object.entries(Mining.prospectorItems)) {
-				if (user.hasItemEquippedAnywhere(parseInt(itemID))) {
+				if (user.hasEquipped(parseInt(itemID))) {
 					const amountToAdd = Math.floor(xpReceived * (bonus / 100));
 					xpReceived += amountToAdd;
 					bonusXP += amountToAdd;
@@ -167,9 +166,9 @@ export default class extends Task {
 		if (ore.petChance && roll((ore.petChance - currentLevel * 25) / quantity)) {
 			loot.add('Rock golem');
 			str += "\nYou have a funny feeling you're being followed...";
-			this.client.emit(
+			globalClient.emit(
 				Events.ServerNotification,
-				`${Emoji.Mining} **${user.username}'s** minion, ${user.minionName}, just received a Rock golem while mining ${ore.name} at level ${currentLevel} Mining!`
+				`${Emoji.Mining} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Rock golem while mining ${ore.name} at level ${currentLevel} Mining!`
 			);
 		}
 
@@ -203,4 +202,4 @@ export default class extends Task {
 			loot
 		);
 	}
-}
+};

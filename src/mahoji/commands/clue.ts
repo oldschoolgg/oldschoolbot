@@ -1,15 +1,15 @@
 import { randInt, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
+import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, isWeekend, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { OSBMahojiCommand } from '../lib/util';
-import { getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { getMahojiBank, mahojiUsersSettingsFetch, userHasGracefulEquipped } from '../mahojiSettings';
 
 function reducedClueTime(clueTier: ClueTier, score: number) {
 	// Every 3 hours become 1% better to a cap of 10%
@@ -26,7 +26,7 @@ export const clueCommand: OSBMahojiCommand = {
 	attributes: {
 		requiresMinion: true,
 		requiresMinionNotBusy: true,
-		examples: ['/cl name:Boss']
+		examples: ['/clue tier:easy']
 	},
 	options: [
 		{
@@ -41,7 +41,7 @@ export const clueCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ options, userID, channelID }: CommandRunOptions<{ tier: string }>) => {
-		const user = await globalClient.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		let quantity = 1;
 
 		const clueTier = ClueTiers.find(tier => stringMatches(tier.name, options.tier));
@@ -51,7 +51,7 @@ export const clueCommand: OSBMahojiCommand = {
 
 		const [timeToFinish, percentReduced] = reducedClueTime(
 			clueTier,
-			user.settings.get(UserSettings.OpenableScores)[clueTier.id] ?? 1
+			(user.user.openable_scores as ItemBank)[clueTier.id] ?? 1
 		);
 
 		if (percentReduced >= 1) boosts.push(`${percentReduced}% for clue score`);
@@ -75,7 +75,7 @@ export const clueCommand: OSBMahojiCommand = {
 		const randomAddedDuration = randInt(1, 20);
 		duration += (randomAddedDuration * duration) / 100;
 
-		if (user.hasGracefulEquipped()) {
+		if (userHasGracefulEquipped(user)) {
 			boosts.push('10% for Graceful');
 			duration *= 0.9;
 		}
@@ -85,7 +85,7 @@ export const clueCommand: OSBMahojiCommand = {
 			duration *= 0.9;
 		}
 
-		if (user.hasItemEquippedOrInBank('Achievement diary cape')) {
+		if (user.hasEquippedOrInBank('Achievement diary cape')) {
 			boosts.push('10% for Achievement diary cape');
 			duration *= 0.9;
 		}

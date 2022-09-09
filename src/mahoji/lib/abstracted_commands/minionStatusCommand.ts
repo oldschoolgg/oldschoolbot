@@ -14,7 +14,7 @@ import { canRunAutoContract } from './farmingContractCommand';
 export async function minionStatusCommand(
 	userID: bigint | string
 ): Promise<InteractionResponseDataWithBufferAttachments> {
-	const user = await globalClient.fetchUser(userID);
+	const user = await mUserFetch(userID);
 	const mahojiUser = await mahojiUsersSettingsFetch(userID, { minion_hasBought: true });
 
 	if (!mahojiUser.minion_hasBought) {
@@ -105,7 +105,7 @@ export async function minionStatusCommand(
 		});
 	}
 
-	const bank = user.bank();
+	const { bank } = user;
 
 	if (!user.minionIsBusy) {
 		for (const tier of ClueTiers.filter(t => bank.has(t.scrollID))
@@ -120,6 +120,14 @@ export async function minionStatusCommand(
 			});
 		}
 	}
+
+	buttons.push({
+		type: ComponentType.Button,
+		custom_id: 'VIEW_BANK',
+		label: 'View Bank',
+		emoji: { id: '739459924693614653' },
+		style: ButtonStyle.Secondary
+	});
 
 	return {
 		content: status,

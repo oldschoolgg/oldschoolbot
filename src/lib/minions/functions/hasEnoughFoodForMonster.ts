@@ -1,13 +1,10 @@
-import { KlasaUser } from 'klasa';
-
-import { UserSettings } from '../../settings/types/UserSettings';
 import { KillableMonster } from '../types';
 import calculateMonsterFood from './calculateMonsterFood';
 import getUserFoodFromBank from './getUserFoodFromBank';
 
 export default function hasEnoughFoodForMonster(
 	monster: Readonly<KillableMonster>,
-	user: Readonly<KlasaUser>,
+	user: MUser,
 	quantity: number,
 	totalPartySize = 1
 ) {
@@ -16,7 +13,7 @@ export default function hasEnoughFoodForMonster(
 			getUserFoodFromBank(
 				user,
 				Math.ceil(calculateMonsterFood(monster, user)[0] / totalPartySize) * quantity,
-				user.settings.get(UserSettings.FavoriteFood)
+				user.user.favorite_food
 			) !== false
 		);
 	}
