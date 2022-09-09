@@ -1,18 +1,11 @@
 import { Embed } from '@discordjs/builders';
-import { User } from '@prisma/client';
-import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { LootTable } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import resolveItems from '../../../lib/util/resolveItems';
-import {
-	handleMahojiConfirmation,
-	mahojiClientSettingsUpdate,
-	mahojiParseNumber,
-	mahojiUserSettingsUpdate
-} from '../../mahojiSettings';
+import { handleMahojiConfirmation, mahojiClientSettingsUpdate, mahojiParseNumber } from '../../mahojiSettings';
 
 export const flowerTable = new LootTable()
 	.add('Red flowers', 1, 150)
@@ -37,12 +30,11 @@ const explanation =
 
 export async function hotColdCommand(
 	interaction: SlashCommandInteraction,
-	klasaUser: KlasaUser,
-	user: User,
+	user: MUser,
 	choice: 'hot' | 'cold' | undefined,
 	_amount: string | undefined
 ) {
-	if (user.minion_ironman) return 'Ironmen cannot gamble.';
+	if (user.isIronman) return 'Ironmen cannot gamble.';
 	const amount = mahojiParseNumber({ input: _amount, min: 1 });
 	if (!amount || !choice || !['hot', 'cold'].includes(choice) || !Number.isInteger(amount)) return explanation;
 	if (amount < 10_000_000 || amount > 500_000_000) return 'You must gamble between 10m and 500m.';
@@ -57,7 +49,7 @@ ${explanation}`
 	);
 
 	await transactItems({
-		userID: klasaUser.id,
+		userID: user.id,
 		itemsToAdd: flowerLoot,
 		collectionLog: true
 	});
@@ -75,7 +67,7 @@ ${explanation}`
 	// You get 5x if you roll a black/white flower
 	if (blackAndWhite.includes(flower.id)) {
 		const amountWon = amount * 5;
-		await mahojiUserSettingsUpdate(user.id, {
+		await user.update({
 			gp_hotcold: {
 				increment: amountWon
 			},
@@ -96,7 +88,7 @@ ${explanation}`
 		return response;
 	}
 
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		GP: {
 			decrement: amount
 		}
@@ -112,7 +104,7 @@ ${explanation}`
 
 	if (playerDidWin) {
 		const amountWon = amount * 2;
-		await mahojiUserSettingsUpdate(user.id, {
+		await user.update({
 			GP: {
 				increment: amount * 2
 			},
@@ -123,7 +115,7 @@ ${explanation}`
 		embed.setDescription(`You **won** ${toKMB(amountWon)}!`).setColor(6_875_960);
 		return response;
 	}
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		gp_hotcold: {
 			decrement: amount
 		}

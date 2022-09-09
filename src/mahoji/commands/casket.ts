@@ -1,4 +1,3 @@
-import { KlasaUser } from 'klasa';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
@@ -9,7 +8,7 @@ import { makeBankImage } from '../../lib/util/makeBankImage';
 import { Workers } from '../../lib/workers';
 import { OSBMahojiCommand } from '../lib/util';
 
-function determineLimit(user: KlasaUser) {
+function determineLimit(user: MUser) {
 	const perkTier = getUsersPerkTier(user);
 	if (perkTier >= PerkTier.Six) return 300_000;
 	if (perkTier >= PerkTier.Five) return 200_000;
@@ -42,7 +41,7 @@ export const casketCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ options, userID, interaction }: CommandRunOptions<{ name: string; quantity: number }>) => {
-		const user = await globalClient.fetchUser(userID.toString());
+		const user = await mUserFetch(userID.toString());
 		const limit = determineLimit(user);
 		if (options.quantity > limit) {
 			return `The quantity you gave exceeds your limit of ${limit.toLocaleString()}! *You can increase your limit by up to 100,000 by becoming a patron at <https://www.patreon.com/oldschoolbot>.*`;

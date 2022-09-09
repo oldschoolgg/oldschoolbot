@@ -1,4 +1,3 @@
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import Fletching from '../../lib/skilling/skills/fletching';
@@ -6,10 +5,11 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { FletchingActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
-export default class extends Task {
+export const fletchingTask: MinionTask = {
+	type: 'Fletching',
 	async run(data: FletchingActivityTaskOptions) {
 		let { fletchableName, quantity, userID, channelID, duration } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
 		const fletchableItem = Fletching.Fletchables.find(fletchable => fletchable.name === fletchableName)!;
 
@@ -42,4 +42,4 @@ export default class extends Task {
 			loot
 		);
 	}
-}
+};

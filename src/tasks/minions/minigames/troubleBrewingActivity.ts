@@ -1,14 +1,14 @@
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { incrementMinigameScore } from '../../../lib/settings/minigames';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
-export default class extends Task {
+export const brewingTask: MinionTask = {
+	type: 'TroubleBrewing',
 	async run(data: MinigameActivityTaskOptions) {
 		const { channelID, quantity, userID } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		await incrementMinigameScore(user.id, 'trouble_brewing', quantity);
 		let loot = new Bank().add('Pieces of eight', quantity * 100);
 
@@ -30,4 +30,4 @@ export default class extends Task {
 			null
 		);
 	}
-}
+};

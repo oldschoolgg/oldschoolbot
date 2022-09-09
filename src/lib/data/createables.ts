@@ -33,6 +33,7 @@ export interface Createable {
 	requiredSlayerUnlocks?: SlayerTaskUnlocksEnum[];
 	requiredFavour?: Favours;
 	maxCanOwn?: number;
+	onCreate?: (qty: number, user: MUser) => Promise<{ result: boolean; message: string }>;
 }
 
 const goldenProspectorCreatables: Createable[] = [
@@ -124,6 +125,15 @@ for (const [uWep, cWep] of [
 		outputItems: {
 			[itemID('Revenant ether')]: 7000,
 			[itemID(uWep)]: 1
+		}
+	});
+	revWeapons.push({
+		name: `Revert ${uWep.toLowerCase()}`,
+		inputItems: {
+			[itemID(uWep)]: 1
+		},
+		outputItems: {
+			[itemID('Revenant ether')]: 7500
 		}
 	});
 }
@@ -2011,6 +2021,15 @@ const Createables: Createable[] = [
 		outputItems: {
 			[itemID('Ecumenical key')]: 1
 		}
+	},
+	{
+		name: 'Daeyalt essence',
+		inputItems: new Bank({
+			'Daeyalt shard': 1
+		}),
+		outputItems: new Bank({
+			'Daeyalt essence': 1
+		})
 	},
 	...Reverteables,
 	...crystalTools,

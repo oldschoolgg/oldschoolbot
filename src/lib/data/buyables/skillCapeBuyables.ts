@@ -1,9 +1,8 @@
-import { User } from '@prisma/client';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { countSkillsAtleast99 } from '../../../mahoji/mahojiSettings';
 import Skillcapes from '../../skilling/skillcapes';
-import { countSkillsAtleast99, toTitleCase } from '../../util';
+import { toTitleCase } from '../../util';
 import { Buyable } from './buyables';
 
 export const skillCapeBuyables: Buyable[] = [];
@@ -11,7 +10,7 @@ export const skillCapeBuyables: Buyable[] = [];
 for (const skillcape of Skillcapes) {
 	skillCapeBuyables.push({
 		name: `${toTitleCase(skillcape.skill)} cape`,
-		outputItems: (user: User) => {
+		outputItems: (user: MUser) => {
 			const output = new Bank().add(skillcape.hood);
 
 			if (countSkillsAtleast99(user) > 1) {
@@ -23,7 +22,7 @@ for (const skillcape of Skillcapes) {
 			return output;
 		},
 		gpCost: 99_000,
-		customReq: async (user: KlasaUser) => {
+		customReq: async (user: MUser) => {
 			if (user.skillLevel(skillcape.skill) < 99) {
 				return [false, `You need level ${99} ${toTitleCase(skillcape.skill)} to buy a cape of accomplishment.`];
 			}

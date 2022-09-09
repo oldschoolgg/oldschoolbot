@@ -1,17 +1,18 @@
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { RunecraftActivityTaskOptions } from '../../lib/types/minions';
-import { calcMaxRCQuantity, roll } from '../../lib/util';
+import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { calcMaxRCQuantity } from '../../mahoji/mahojiSettings';
 
-export default class extends Task {
+export const runecraftTask: MinionTask = {
+	type: 'Runecraft',
 	async run(data: RunecraftActivityTaskOptions) {
-		const { runeID, essenceQuantity, userID, channelID, imbueCasts, duration, useStaminas } = data;
-		const user = await this.client.fetchUser(userID);
+		const { runeID, essenceQuantity, userID, channelID, imbueCasts, duration, useStaminas, daeyaltEssence } = data;
+		const user = await mUserFetch(userID);
 
 		const rune = Runecraft.Runes.find(_rune => _rune.id === runeID)!;
 		const tiara = Runecraft.Tiara.find(_tiara => _tiara.id === runeID)!;
@@ -20,7 +21,13 @@ export default class extends Task {
 			const quantityPerEssence = calcMaxRCQuantity(rune, user);
 			const runeQuantity = essenceQuantity * quantityPerEssence;
 
-			const xpReceived = essenceQuantity * rune.xp;
+		const xpReceived = essenceQuantity * rune.xp;
+		let runeXP = rune.xp;
+
+		if (daeyaltEssence) {
+			runeXP = rune.xp * 1.5;
+		}
+
 
 			const magicXpReceived = imbueCasts * 86;
 
@@ -39,19 +46,6 @@ export default class extends Task {
 				[rune.id]: runeQuantity
 			});
 
-			if (roll((1_795_758 - user.skillLevel(SkillsEnum.Runecraft) * 25) / essenceQuantity)) {
-				loot.add('Rift guardian');
-				str += "\nYou have a funny feeling you're being followed...";
-				this.client.emit(
-					Events.ServerNotification,
-					`${Emoji.Runecraft} **${user.username}'s** minion, ${
-						user.minionName
-					}, just received a Rift guardian while crafting ${rune.name}s at level ${user.skillLevel(
-						SkillsEnum.Runecraft
-					)} Runecrafting!`
-				);
-			}
-
 			str += `\n\nYou received: ${loot}.`;
 
 			await transactItems({
@@ -60,14 +54,16 @@ export default class extends Task {
 				itemsToAdd: loot
 			});
 
-			handleTripFinish(
-				user,
-				channelID,
-				str,
-				['runecraft', { quantity: essenceQuantity, rune: rune.name, usestams: useStaminas }, true],
-				undefined,
-				data,
-				loot
+		if (roll((1_795_758 - user.skillLevel(SkillsEnum.Runecraft) * 25) / essenceQuantity)) {
+			loot.add('Rift guardian');
+			str += "\nYou have a funny feeling you're being followed...";
+			globalClient.emit(
+				Events.ServerNotification,
+				`${Emoji.Runecraft} **${user.usernameOrMention}'s** minion, ${
+					user.minionName
+				}, just received a Rift guardian while crafting ${rune.name}s at level ${user.skillLevel(
+					SkillsEnum.Runecraft
+				)} Runecrafting!`
 			);
 		} else {
 			const xpReceived = essenceQuantity * tiara.xp;
@@ -84,21 +80,31 @@ export default class extends Task {
 
 			str += `\n\nYou received: ${loot}.`;
 
-			await transactItems({
-				userID: user.id,
-				collectionLog: true,
-				itemsToAdd: loot
-			});
-
-			handleTripFinish(
-				user,
-				channelID,
-				str,
-				['runecraft', { essenceQuantity, rune: tiara.name }, true],
-				undefined,
-				data,
-				loot
-			);
+		if (daeyaltEssence) {
+			str += '\nYou are gaining 50% more Runecrafting XP due to using Daeyalt Essence.';
 		}
+
+		str += `\n\nYou received: ${loot}.`;
+
+		await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
+
+		handleTripFinish(
+			user,
+			channelID,
+			str,
+			[
+				'runecraft',
+				{ quantity: essenceQuantity, rune: rune.name, usestams: useStaminas, daeyalt_essence: daeyaltEssence },
+				true
+			],
+			undefined,
+			data,
+			loot
+		);
 	}
-}
+
+};
