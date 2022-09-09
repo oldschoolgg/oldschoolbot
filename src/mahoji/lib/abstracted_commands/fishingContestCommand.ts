@@ -16,16 +16,17 @@ import { FishingContestOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 
-export async function fishingContestStartCommand(user: KlasaUser, channelID: bigint, loc: string) {
-	if (!loc) return fishingContestStatsCommand(user);
-	const fishingLocation = fishingLocations.find(i => stringMatches(i.name, loc));
+export async function fishingContestStartCommand(user: KlasaUser, channelID: bigint, loc: string | undefined) {
+	const currentFishType = getCurrentFishType();
+	const validLocs = getValidLocationsForFishType(currentFishType);
+	if (!loc) loc = validLocs[0].name;
+	const fishingLocation = fishingLocations.find(i => stringMatches(i.name, loc!));
 	if (!fishingLocation) {
 		return `That's not a valid location to fish at, you can fish at these locations: ${fishingLocations
 			.map(i => `${i.name}(${i.temperature} ${i.water})`)
 			.join(', ')}.`;
 	}
-	const currentFishType = getCurrentFishType();
-	const validLocs = getValidLocationsForFishType(currentFishType);
+
 	if (!validLocs.includes(fishingLocation)) {
 		return `This Fishing Location isn't valid for todays catch! These ones are: ${validLocs
 			.map(i => i.name)
@@ -101,12 +102,12 @@ You're fishing ${quantity - 1} extra fish: ${quantityBoosts.join(', ')}`
 }
 
 export async function fishingContestStatsCommand(user: KlasaUser) {
-	const currentFishType = getCurrentFishType();
 	const [userDetails, topCatches, minigameScore] = await Promise.all([
 		getUsersFishingContestDetails(user),
 		getTopDailyFishingCatch(),
 		getMinigameScore(user.id, 'fishing_contest')
 	]);
+	const currentFishType = getCurrentFishType();
 	const validLocs = getValidLocationsForFishType(currentFishType);
 	return `**Fishing Contest**
 
