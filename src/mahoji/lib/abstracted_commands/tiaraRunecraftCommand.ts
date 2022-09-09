@@ -1,15 +1,13 @@
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import Runecraft from '../../../lib/skilling/skills/runecraft';
 import { RunecraftActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, stringMatches, updateBankSetting } from '../../../lib/util';
+import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import { updateBankSetting, userHasGracefulEquipped } from '../../mahojiSettings';
 
 export async function tiaraRunecraftCommand({
 	user,
@@ -17,7 +15,7 @@ export async function tiaraRunecraftCommand({
 	name,
 	quantity
 }: {
-	user: KlasaUser;
+	user: MUser;
 	channelID: bigint;
 	quantity?: number;
 	name: string;
@@ -31,18 +29,18 @@ export async function tiaraRunecraftCommand({
 		return `That's not a valid tiara. Valid tiaras are ${Runecraft.Tiara.map(_tiara => _tiara.name).join(', ')}.`;
 	}
 
-	if (tiaraObj.qpRequired && user.settings.get(UserSettings.QP) < tiaraObj.qpRequired) {
+	if (tiaraObj.qpRequired && user.QP < tiaraObj.qpRequired) {
 		return `You need ${tiaraObj.qpRequired} QP to craft this tiara.`;
 	}
 
-	const bank = user.bank();
+	const bank = new Bank(user.bank);
 	const numTiaraOwned = bank.amount('Tiara');
 	const numTalismansOwned = bank.fits(tiaraObj.inputTalisman);
 
 	let { tripLength } = tiaraObj;
 
 	const boosts = [];
-	if (user.hasGracefulEquipped()) {
+	if (userHasGracefulEquipped(user)) {
 		tripLength -= tripLength * 0.1;
 		boosts.push('10% for Graceful');
 	}
@@ -93,7 +91,7 @@ export async function tiaraRunecraftCommand({
 	totalCost.add('Tiara', quantity);
 
 	await user.removeItemsFromBank(totalCost);
-	updateBankSetting(globalClient, ClientSettings.EconomyStats.RunecraftCost, totalCost);
+	updateBankSetting('runecraft_cost', totalCost);
 
 	await addSubTaskToActivityTask<RunecraftActivityTaskOptions>({
 		runeID: tiaraObj.id,
