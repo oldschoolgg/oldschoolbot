@@ -5,4 +5,4 @@ export const shootingStarTask: MinionTask = {
 	async run(data: ShootingStarsData) {
 		return shootingStarsActivity(data);
 	}
-}
+};

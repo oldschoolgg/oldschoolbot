@@ -1,12 +1,11 @@
-import { ButtonStyle } from 'discord-api-types/v10';
-import { MUserClass } from './../../../lib/MUser';
 import { activity_type_enum } from '@prisma/client';
-import { MessageActionRowComponentResolvable, ButtonBuilder } from 'discord.js';
+import { ButtonBuilder, MessageActionRowComponentResolvable } from 'discord.js';
+import { ButtonStyle } from 'discord-api-types/v10';
 import { percentChance, randInt, roll, Time } from 'e';
-
 import { Bank } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
+import addSkillingClueToLoot from '../../../lib/minions/functions/addSkillingClueToLoot';
 import { determineMiningTime } from '../../../lib/skilling/functions/determineMiningTime';
 import { Ore, SkillsEnum } from '../../../lib/skilling/types';
 import { ItemBank } from '../../../lib/types';
@@ -17,7 +16,7 @@ import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { minionName } from '../../../lib/util/minionUtils';
 import { pickaxes } from '../../commands/mine';
-import addSkillingClueToLoot from '../../../lib/minions/functions/addSkillingClueToLoot';
+import { MUserClass } from './../../../lib/MUser';
 
 interface Star extends Ore {
 	size: number;
@@ -181,7 +180,6 @@ export interface ShootingStarsData extends ActivityTaskOptions {
 }
 
 export async function shootingStarsCommand(channelID: bigint, user: MUserClass, star: Star): Promise<string> {
-
 	const skills = user.skillsAsLevels;
 	const boosts = [];
 
