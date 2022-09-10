@@ -156,7 +156,7 @@ export const chopCommand: OSBMahojiCommand = {
 		boosts.push(`**${axeMultiplier}x** success multiplier for Bronze axe`);
 
 		for (const axe of axes) {
-			if (user.hasEquippedOrInBank(axe.id) || skills.woodcutting < axe.wcLvl) continue;
+			if (!user.hasEquippedOrInBank([axe.id]) || skills.woodcutting < axe.wcLvl) continue;
 			axeMultiplier = axe.multiplier;
 			boosts.pop();
 			boosts.push(`**${axeMultiplier}x** success multiplier for ${itemNameFromID(axe.id)}`);
@@ -165,6 +165,8 @@ export const chopCommand: OSBMahojiCommand = {
 
 		if (!powerchop) {
 			powerchop = false;
+		} else {
+			boosts.push('**Powerchopping**');
 		}
 
 		// Calculate the time it takes to chop specific quantity or as many as possible
