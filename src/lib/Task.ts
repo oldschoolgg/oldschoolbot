@@ -147,7 +147,8 @@ export const tasks: MinionTask[] = [
 	sepulchreTask,
 	titheFarmTask,
 	temporossTask,
-	smithingTask
+	smithingTask,
+	butlerTask
 ];
 
 export async function syncActivityCache() {

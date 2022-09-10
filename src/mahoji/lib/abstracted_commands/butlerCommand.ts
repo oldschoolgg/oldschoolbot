@@ -1,16 +1,14 @@
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Planks } from '../../../lib/minions/data/planks';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ButlerActivityTaskOptions } from '../../../lib/types/minions';
-import { clamp, formatDuration, itemNameFromID, stringMatches, toKMB, updateBankSetting } from '../../../lib/util';
+import { clamp, formatDuration, itemNameFromID, stringMatches, toKMB } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import resolveItems from '../../../lib/util/resolveItems';
+import { updateBankSetting } from '../../mahojiSettings';
 
 const unlimitedEarthRuneProviders = resolveItems([
 	'Staff of earth',
@@ -36,12 +34,7 @@ const unlimitedAirRuneProviders = resolveItems([
 	'Dust battlestaff'
 ]);
 
-export async function butlerCommand(
-	user: KlasaUser,
-	plankName: string,
-	quantity: number | undefined,
-	channelID: bigint
-) {
+export async function butlerCommand(user: MUser, plankName: string, quantity: number | undefined, channelID: bigint) {
 	const plank = Planks.find(
 		plank => stringMatches(plank.name, plankName) || stringMatches(plank.name.split(' ')[0], plankName)
 	);
@@ -64,7 +57,7 @@ export async function butlerCommand(
 	}
 	quantity = clamp(quantity, 1, 100_000);
 
-	const inputItemOwned = user.bank().amount(plank.inputItem);
+	const inputItemOwned = user.bank.amount(plank.inputItem);
 	if (inputItemOwned < quantity) {
 		quantity = inputItemOwned;
 	}
@@ -73,7 +66,7 @@ export async function butlerCommand(
 		return `You don't have any ${itemNameFromID(plank.inputItem)}.`;
 	}
 
-	const GP = user.settings.get(UserSettings.GP);
+	const { GP } = user;
 	let cost = plank!.gpCost * quantity;
 
 	let inventories = Math.ceil(quantity / 26);
@@ -88,26 +81,26 @@ export async function butlerCommand(
 	let airRuneCost = 0;
 	let lawRuneCost = 0;
 
-	if (!user.hasItemEquippedAnywhere('Construct. cape')) {
+	if (!user.hasEquipped('Construct. cape')) {
 		lawRuneCost += inventories;
 		airRuneCost += inventories;
 		earthRuneCost += inventories;
 	}
 
-	if (!user.hasItemEquippedAnywhere('Crafting cape')) {
+	if (!user.hasEquipped('Crafting cape')) {
 		lawRuneCost += inventories;
 		airRuneCost += inventories * 5;
 	}
 
 	for (const runeProvider of unlimitedAirRuneProviders) {
-		if (user.hasItemEquippedAnywhere(runeProvider)) {
+		if (user.hasEquipped(runeProvider)) {
 			airRuneCost = 0;
 			break;
 		}
 	}
 
 	for (const runeProvider of unlimitedEarthRuneProviders) {
-		if (user.hasItemEquippedAnywhere(runeProvider)) {
+		if (user.hasEquipped(runeProvider)) {
 			earthRuneCost = 0;
 			break;
 		}
@@ -119,7 +112,7 @@ export async function butlerCommand(
 		...(lawRuneCost > 0 ? { 'Law rune': lawRuneCost } : {})
 	});
 
-	const userBank = user.bank();
+	const userBank = user.bank;
 
 	if (!userBank.has(consumedItems)) {
 		return `You don't have the required runes to do ${quantity} planks. You need: ${new Bank(
@@ -141,7 +134,7 @@ export async function butlerCommand(
 	await user.removeItemsFromBank(costBank);
 	await user.removeItemsFromBank(consumedItems);
 
-	await updateBankSetting(globalClient, ClientSettings.EconomyStats.ConstructCostBank, new Bank().add('Coins', cost));
+	await updateBankSetting('construction_cost_bank', new Bank().add('Coins', cost));
 
 	await addSubTaskToActivityTask<ButlerActivityTaskOptions>({
 		type: 'Butler',
