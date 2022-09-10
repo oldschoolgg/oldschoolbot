@@ -1,11 +1,9 @@
-import { KlasaUser } from 'klasa';
-
 import { reducedTimeForGroup } from '../minions/functions';
 import { KillableMonster } from '../minions/types';
 import { calcMaxTripLength } from './calcMaxTripLength';
 
 export default async function calcDurQty(
-	users: KlasaUser[],
+	users: MUser[],
 	monster: KillableMonster,
 	quantity: number | undefined,
 	min?: number,

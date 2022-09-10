@@ -1,8 +1,6 @@
-import { MessageButton } from 'discord.js';
-import { KlasaMessage } from 'klasa';
+import { ButtonBuilder } from 'discord.js';
 import { APIButtonComponent, APIButtonComponentWithCustomId, ButtonStyle, ComponentType } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { join } from 'path';
 
 import { DISCORD_SETTINGS, production } from '../config';
 import { AbstractCommand, CommandArgs } from '../mahoji/lib/inhibitors';
@@ -11,7 +9,6 @@ import { SkillsEnum } from './skilling/types';
 import { ActivityTaskOptions } from './types/minions';
 import resolveItems from './util/resolveItems';
 
-export const SupportServer = production ? '342983479501389826' : '940758552425955348';
 export const BotID = DISCORD_SETTINGS.BotID ?? '303730326692429825';
 
 export const Channel = {
@@ -254,8 +251,6 @@ export const enum Events {
 	EconomyLog = 'economyLog'
 }
 
-export const rootFolder = join(__dirname, '..', '..', '..');
-
 export const COINS_ID = 995;
 
 export const enum PerkTier {
@@ -400,7 +395,6 @@ export const RAZOR_KEBBIT_ID = 35;
 export const BLACK_CHIN_ID = 9;
 export const ZALCANO_ID = 9049;
 export const NIGHTMARE_ID = 9415;
-export const HESPORI_ID = 8583;
 export const NEX_ID = 11_278;
 
 export const skillEmoji = {
@@ -463,7 +457,7 @@ const buttonSource = [
 ];
 
 export const informationalButtons = buttonSource.map(i =>
-	new MessageButton().setLabel(i.label).setEmoji(i.emoji).setURL(i.url).setStyle('LINK')
+	new ButtonBuilder().setLabel(i.label).setEmoji(i.emoji).setURL(i.url).setStyle(ButtonStyle.Link)
 );
 export const mahojiInformationalButtons: APIButtonComponent[] = buttonSource.map(i => ({
 	type: ComponentType.Button,
@@ -476,7 +470,7 @@ export const mahojiInformationalButtons: APIButtonComponent[] = buttonSource.map
 export type LastTripRunArgs = Omit<RunCommandArgs, 'commandName' | 'args'>;
 export const lastTripCache = new Map<
 	string,
-	{ continue: (args: LastTripRunArgs) => Promise<CommandResponse>; data: ActivityTaskOptions }
+	{ continue: (args: LastTripRunArgs) => Promise<null | CommandResponse>; data: ActivityTaskOptions }
 >();
 
 export const PATRON_ONLY_GEAR_SETUP =
@@ -507,23 +501,10 @@ export function shouldTrackCommand(command: AbstractCommand, args: CommandArgs) 
 	return true;
 }
 
-export const COMMAND_BECAME_SLASH_COMMAND_MESSAGE = (
-	msg: KlasaMessage | null,
-	commandName?: string
-) => `This command you're trying to use, has been changed to a 'slash command'.
-
-- Slash commands are integrated into the actual Discord client. We are *required* to change our commands to be slash commands.
-- Slash commands are generally easier to use, and also have new features like autocompletion. They take some time to get used to though.
-- You no longer use this command using \`+${commandName ?? msg?.command?.name}\`, now you use: \`/${
-	commandName ?? msg?.command?.name
-}\`
-`;
-
 export const DISABLED_COMMANDS = new Set<string>();
 export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'none'] as const;
 export type PvMMethod = typeof PVM_METHODS[number];
 export const usernameCache = new Map<string, string>();
-export const OWNER_IDS = ['157797566833098752'];
 export const minionBuyButton: APIButtonComponentWithCustomId = {
 	type: ComponentType.Button,
 	custom_id: 'BUY_MINION',

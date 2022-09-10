@@ -1,6 +1,4 @@
-import { userMention } from '@discordjs/builders';
-import { MessageEmbed } from 'discord.js';
-import { Task } from 'klasa';
+import { Embed, userMention } from '@discordjs/builders';
 
 import { NEX_ID } from '../../lib/constants';
 import { trackLoot } from '../../lib/settings/prisma';
@@ -9,7 +7,8 @@ import { NexTaskOptions } from '../../lib/types/minions';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import { sendToChannelID } from '../../lib/util/webhook';
 
-export default class extends Task {
+export const nexTask: MinionTask = {
+	type: 'Nex',
 	async run(data: NexTaskOptions) {
 		const { quantity, channelID, users, wipedKill, duration, userDetails } = data;
 		const allMention = userDetails.map(t => userMention(t[0])).join(' ');
@@ -25,9 +24,9 @@ export default class extends Task {
 		});
 
 		for (const [uID, uLoot] of loot.entries()) {
-			const user = await this.client.users.fetch(uID);
-			await user.addItemsToBank({ items: uLoot, collectionLog: true });
-			await user.incrementMonsterScore(NEX_ID, quantity - userDetails.find(i => i[0] === uID)![2].length);
+			await transactItems({ userID: uID, collectionLog: true, itemsToAdd: uLoot });
+			const user = await mUserFetch(uID);
+			await user.incrementKC(NEX_ID, quantity - userDetails.find(i => i[0] === uID)![2].length);
 		}
 
 		await trackLoot({
@@ -39,7 +38,7 @@ export default class extends Task {
 			kc: quantity
 		});
 
-		const embed = new MessageEmbed().setThumbnail(
+		const embed = new Embed().setThumbnail(
 			'https://cdn.discordapp.com/attachments/342983479501389826/951730848426786846/Nex.webp'
 		).setDescription(`
 ${loot.formatLoot()}`);
@@ -51,4 +50,4 @@ ${loot.formatLoot()}`);
 			}`
 		});
 	}
-}
+};

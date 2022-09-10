@@ -1,6 +1,6 @@
-import { Peak } from '../../tasks/WildernessPeakInterval';
 import { IPatchData } from '../minions/farming/types';
 import { MinigameName } from '../settings/minigames';
+import { Peak } from '../tickers';
 import { KourendFavour } from './../minions/data/kourendFavour';
 import { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
 import { ItemBank } from '.';
@@ -24,6 +24,7 @@ export interface RunecraftActivityTaskOptions extends ActivityTaskOptions {
 	essenceQuantity: number;
 	imbueCasts: number;
 	useStaminas?: boolean;
+	daeyaltEssence?: boolean;
 }
 
 export interface DarkAltarOptions extends ActivityTaskOptions {
@@ -79,8 +80,11 @@ export interface FishingActivityTaskOptions extends ActivityTaskOptions {
 }
 
 export interface MiningActivityTaskOptions extends ActivityTaskOptions {
+	fakeDurationMax: number;
+	fakeDurationMin: number;
 	oreID: number;
 	quantity: number;
+	powermine: boolean;
 }
 
 export interface SmeltingActivityTaskOptions extends ActivityTaskOptions {
@@ -336,4 +340,5 @@ export type ActivityTaskData =
 	| TempleTrekkingActivityTaskOptions
 	| TemporossActivityTaskOptions
 	| PuroPuroActivityTaskOptions
-	| KourendFavourActivityTaskOptions;
+	| KourendFavourActivityTaskOptions
+	| AgilityActivityTaskOptions;

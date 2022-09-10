@@ -1,18 +1,15 @@
 import { calcWhatPercent, percentChance, reduceNumByPercent, Time } from 'e';
-import { KlasaClient, KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, Monsters } from 'oldschooljs';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
 import TzTokJad from 'oldschooljs/dist/simulation/monsters/special/TzTokJad';
 import { itemID } from 'oldschooljs/dist/util';
 
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { FightCavesActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, rand, updateBankSetting } from '../../../lib/util';
+import { formatDuration, rand } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
+import { updateBankSetting } from '../../mahojiSettings';
 
 export const fightCavesCost = new Bank({
 	'Prayer potion(4)': 10,
@@ -20,9 +17,9 @@ export const fightCavesCost = new Bank({
 	'Super restore(4)': 4
 });
 
-function determineDuration(user: KlasaUser): [number, string] {
+function determineDuration(user: MUser): [number, string] {
 	let baseTime = Time.Hour * 2;
-	const gear = user.getGear('range');
+	const gear = user.gear.range;
 	let debugStr = '';
 
 	// Reduce time based on KC
@@ -36,7 +33,7 @@ function determineDuration(user: KlasaUser): [number, string] {
 	const percentIncreaseFromRangeStats = Math.floor(calcWhatPercent(usersRangeStats.attack_ranged, 236)) / 2;
 	baseTime = reduceNumByPercent(baseTime, percentIncreaseFromRangeStats);
 
-	if (user.hasItemEquippedOrInBank('Twisted bow')) {
+	if (user.hasEquippedOrInBank('Twisted bow')) {
 		debugStr += ', 15% from Twisted bow';
 		baseTime = reduceNumByPercent(baseTime, 15);
 	}
@@ -46,28 +43,28 @@ function determineDuration(user: KlasaUser): [number, string] {
 	return [baseTime, debugStr];
 }
 
-function determineChanceOfDeathPreJad(user: KlasaUser) {
-	const attempts = user.settings.get(UserSettings.Stats.FightCavesAttempts);
+function determineChanceOfDeathPreJad(user: MUser) {
+	const attempts = user.user.stats_fightCavesAttempts;
 	let deathChance = Math.max(14 - attempts * 2, 5);
 
 	// -4% Chance of dying before Jad if you have SGS.
-	if (user.hasItemEquippedAnywhere(itemID('Saradomin godsword'))) {
+	if (user.hasEquipped(itemID('Saradomin godsword'))) {
 		deathChance -= 4;
 	}
 
 	return deathChance;
 }
 
-function determineChanceOfDeathInJad(user: KlasaUser) {
-	const attempts = user.settings.get(UserSettings.Stats.FightCavesAttempts);
+function determineChanceOfDeathInJad(user: MUser) {
+	const attempts = user.user.stats_fightCavesAttempts;
 	const chance = Math.floor(100 - (Math.log(attempts) / Math.log(Math.sqrt(15))) * 50);
 
 	// Chance of death cannot be 100% or <5%.
 	return Math.max(Math.min(chance, 99), 5);
 }
 
-function checkGear(user: KlasaUser): string | undefined {
-	const gear = user.getGear('range');
+function checkGear(user: MUser): string | undefined {
+	const gear = user.gear.range;
 	const equippedWeapon = gear.equippedWeapon();
 
 	const usersRangeStats = gear.stats;
@@ -84,12 +81,12 @@ function checkGear(user: KlasaUser): string | undefined {
 		return `JalYt, you need supplies to have a chance in the caves...come back with ${fightCavesCost}.`;
 	}
 
-	if (user.skillLevel(SkillsEnum.Prayer) < 43) {
+	if (user.skillLevel('prayer') < 43) {
 		return 'JalYt, come back when you have atleast 43 Prayer, TzTok-Jad annihilate you without protection from gods.';
 	}
 }
 
-export async function fightCavesCommand(user: KlasaUser, channelID: bigint): CommandResponse {
+export async function fightCavesCommand(user: MUser, channelID: bigint): CommandResponse {
 	const gearFailure = checkGear(user);
 	if (gearFailure) {
 		return {
@@ -103,8 +100,8 @@ export async function fightCavesCommand(user: KlasaUser, channelID: bigint): Com
 	const jadDeathChance = determineChanceOfDeathInJad(user);
 	const preJadDeathChance = determineChanceOfDeathPreJad(user);
 
-	const attempts = user.settings.get(UserSettings.Stats.FightCavesAttempts);
-	const usersRangeStats = user.getGear('range').stats;
+	const attempts = user.user.stats_fightCavesAttempts;
+	const usersRangeStats = user.gear.range.stats;
 	const jadKC = user.getKC(TzTokJad.id);
 
 	duration += (rand(1, 5) * duration) / 100;
@@ -120,7 +117,7 @@ export async function fightCavesCommand(user: KlasaUser, channelID: bigint): Com
 		usersTask.currentTask!.quantity_remaining === usersTask.currentTask!.quantity;
 
 	// 15% boost for on task
-	if (isOnTask && user.hasItemEquippedOrInBank('Black mask (i)')) {
+	if (isOnTask && user.hasEquippedOrInBank('Black mask (i)')) {
 		duration *= 0.85;
 		debugStr += ', 15% on Task with Black mask (i)';
 	}
@@ -142,7 +139,7 @@ export async function fightCavesCommand(user: KlasaUser, channelID: bigint): Com
 		fakeDuration
 	});
 
-	updateBankSetting(user.client as KlasaClient, ClientSettings.EconomyStats.FightCavesCost, fightCavesCost);
+	updateBankSetting('economyStats_fightCavesCost', fightCavesCost);
 
 	const totalDeathChance = (((100 - preJadDeathChance) * (100 - jadDeathChance)) / 100).toFixed(1);
 

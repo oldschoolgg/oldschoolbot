@@ -1,12 +1,10 @@
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { UserSettings } from '../../settings/types/UserSettings';
 import { itemNameFromID } from '../../util';
 import { logError } from '../../util/logError';
 
-export async function unequipPet(user: KlasaUser) {
-	const equippedPet = user.settings.get(UserSettings.Minion.EquippedPet);
+export async function unequipPet(user: MUser) {
+	const equippedPet = user.user.minion_equippedPet;
 	if (!equippedPet) return "You don't have a pet equipped.";
 
 	const loot = new Bank().add(equippedPet);
@@ -20,7 +18,9 @@ export async function unequipPet(user: KlasaUser) {
 		});
 		return 'Error removing pet, ask for help in the support server.';
 	}
-	await user.settings.update(UserSettings.Minion.EquippedPet, null);
+	await user.update({
+		minion_equippedPet: null
+	});
 
 	return `${user.minionName} picks up their ${itemNameFromID(equippedPet)} pet and places it back in their bank.`;
 }

@@ -1,10 +1,12 @@
 import { time, userMention } from '@discordjs/builders';
-import { User } from '@prisma/client';
-import { uniqueArr } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { BingoTeam, User } from '@prisma/client';
+import { chunk, uniqueArr } from 'e';
+import { ApplicationCommandOptionType, CommandRunOptions, MessageFlags } from 'mahoji';
+import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { Bank } from 'oldschooljs';
+import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { production } from '../../config';
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
@@ -22,7 +24,8 @@ import {
 	determineBingoProgress
 } from '../lib/bingo';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { handleMahojiConfirmation, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { doMenu, getPos } from './leaderboard';
 
 type MakeTeamOptions = {
 	first_user: MahojiUserOption;
@@ -46,6 +49,57 @@ async function findBingoTeamWithUser(userID: string) {
 		}
 	});
 	return teamWithUser;
+}
+
+async function bingoLeaderboard(userID: string, channelID: bigint): CommandResponse {
+	const allBingoTeams = await prisma.bingoTeam.findMany({});
+	const allBingoUsers = await prisma.user.findMany({
+		where: {
+			id: {
+				in: allBingoTeams.map(i => [i.first_user, i.second_user, i.third_user]).flat()
+			}
+		},
+		select: {
+			temp_cl: true,
+			id: true
+		}
+	});
+	const parsedTeams: { team: BingoTeam; tilesCompleted: number; users: string[] }[] = [];
+
+	for (const team of allBingoTeams) {
+		let totalCL = new Bank();
+		for (const id of [team.first_user, team.second_user, team.third_user]) {
+			const user = allBingoUsers.find(i => i.id === id)!;
+			totalCL.add(user.temp_cl as ItemBank);
+		}
+		const progress = determineBingoProgress(totalCL);
+		parsedTeams.push({
+			tilesCompleted: progress.tilesCompletedCount,
+			team,
+			users: [team.first_user, team.second_user, team.third_user]
+		});
+	}
+
+	parsedTeams.sort((a, b) => b.tilesCompleted - a.tilesCompleted);
+	doMenu(
+		await mUserFetch(userID),
+		channelID,
+		chunk(parsedTeams, 10).map((subList, i) =>
+			subList
+				.map(
+					(user, j) =>
+						`${getPos(i, j)}**${user.users
+							.map(userMention)
+							.join(', ')}:** ${user.tilesCompleted.toLocaleString()}`
+				)
+				.join('\n')
+		),
+		'Bingo Leaderboard'
+	);
+	return {
+		flags: MessageFlags.Ephemeral,
+		content: 'Loading Bingo Leaderboard...'
+	};
 }
 
 /**
@@ -117,11 +171,10 @@ export async function buyBingoTicketCommand(
 	userID: string,
 	quantity = 1
 ): Promise<string> {
-	const klasaUser = await globalClient.fetchUser(userID);
-	const mahojiUser = await mahojiUsersSettingsFetch(userID);
+	const user = await mUserFetch(userID);
 
-	if (mahojiUser.minion_ironman && mahojiUser.bingo_tickets_bought === 0) {
-		await mahojiUserSettingsUpdate(userID, {
+	if (user.isIronman && user.user.bingo_tickets_bought === 0) {
+		await user.update({
 			bingo_tickets_bought: 1
 		});
 		return 'You got a free Bingo ticket.';
@@ -131,19 +184,19 @@ export async function buyBingoTicketCommand(
 	const gpCost = quantity * BINGO_TICKET_PRICE;
 	const cost = new Bank().add('Coins', gpCost);
 
-	if ((mahojiUser.bingo_tickets_bought > 0 || quantity > 1) && interaction) {
+	if ((user.user.bingo_tickets_bought > 0 || quantity > 1) && interaction) {
 		await handleMahojiConfirmation(
 			interaction,
 			`Are you sure you want to buy ${quantity}x Bingo Tickets for ${cost}? Tickets cannot be refunded or transferred.${
-				mahojiUser.bingo_tickets_bought > 0
-					? ` **You have already bought ${mahojiUser.bingo_tickets_bought} tickets.**`
+				user.user.bingo_tickets_bought > 0
+					? ` **You have already bought ${user.user.bingo_tickets_bought} tickets.**`
 					: ''
 			}`
 		);
 	}
 
-	if (Number(mahojiUser.GP) < gpCost) return "You don't have enough GP.";
-	await mahojiUserSettingsUpdate(userID, {
+	if (Number(user.GP) < gpCost) return "You don't have enough GP.";
+	await user.update({
 		bingo_tickets_bought: {
 			increment: quantity
 		},
@@ -151,7 +204,7 @@ export async function buyBingoTicketCommand(
 			increment: quantity * BINGO_TICKET_PRICE
 		}
 	});
-	await klasaUser.removeItemsFromBank(cost);
+	await user.removeItemsFromBank(cost);
 	return `You bought ${quantity}x Bingo Tickets for ${toKMB(gpCost)} GP!`;
 }
 
@@ -218,13 +271,24 @@ export const bingoCommand: OSBMahojiCommand = {
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'info',
 			description: 'View bingo info.'
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'leaderboard',
+			description: 'View the bingo leaderboard.'
 		}
 	],
 	run: async ({
 		userID,
 		options,
-		interaction
-	}: CommandRunOptions<{ make_team?: MakeTeamOptions; leave_team?: {}; buy_ticket?: { quantity?: number } }>) => {
+		interaction,
+		channelID
+	}: CommandRunOptions<{
+		leaderboard?: {};
+		make_team?: MakeTeamOptions;
+		leave_team?: {};
+		buy_ticket?: { quantity?: number };
+	}>) => {
 		const user = await mahojiUsersSettingsFetch(userID);
 		const components = user.bingo_tickets_bought > 0 ? undefined : makeComponents([buyBingoTicketButton]);
 		if (options.make_team) return makeTeamCommand(interaction, user, options.make_team);
@@ -232,36 +296,19 @@ export const bingoCommand: OSBMahojiCommand = {
 			return buyBingoTicketCommand(interaction, userID.toString(), options.buy_ticket.quantity);
 		}
 		if (options.leave_team) return leaveTeamCommand(interaction);
+		if (options.leaderboard) {
+			return bingoLeaderboard(userID.toString(), channelID);
+		}
 
 		const { bingoTableStr, tilesCompletedCount } = determineBingoProgress(user.temp_cl);
 		const teamResult = await calculateBingoTeamDetails(user.id);
-		const isParticipating = user.bingo_tickets_bought > 0 && teamResult !== null;
 		const prizePool = await countTotalGPInPrizePool();
 
 		const startUnix = Math.floor(bingoStart / 1000);
 		const endUnix = Math.floor(bingoEnd / 1000);
 		const teamCount = await prisma.bingoTeam.count();
-		const thisUsersTeam = await findBingoTeamWithUser(userID.toString());
 
-		if (1 > 0) {
-			return `**#1 - OSB Bingo** 
-**Date:** TBA
-**Prize Pool:** ${toKMB(
-				prizePool
-			)}, and other things TBA. You can buy more than 1 ticket to donate more GP to the prize pool.
-**Teams:** ${teamCount}
-**Your Team:** ${
-				thisUsersTeam
-					? `${[thisUsersTeam.first_user, thisUsersTeam.second_user, thisUsersTeam.third_user]
-							.map(userMention)
-							.join(', ')}`
-					: "You aren't in a team yet. You can find a team in this channel: <#1008883517331099739>"
-			}
-
-You can discuss the bingo and ask questions in <#974755045583245322>`;
-		}
-
-		const str = `**#1 - OSB Bingo** ${toKMB(prizePool)} Prize Pool
+		const str = `**#1 - OSB Bingo** ${teamCount} teams, ${toKMB(prizePool)} Prize Pool
 **Start:** ${time(startUnix)}  (${time(startUnix, 'R')})
 **Finish:** ${time(endUnix)} (${time(endUnix, 'R')})
 You have ${tilesCompletedCount} tiles completed.
@@ -269,13 +316,14 @@ ${bingoTableStr}
 **Your team:** ${teamResult ? teamResult.team.map(userMention).join(', ') : '*No team :(*'}
 Your team has ${teamResult?.progress.tilesCompletedCount ?? 0} tiles completed.
 ${teamResult?.progress.bingoTableStr ?? ''}
-
-You ${isParticipating ? '**ARE**' : 'are **NOT**'} participating in the Bingo. You have bought ${
-			user.bingo_tickets_bought
-		}x tickets.`;
+`;
 		return {
 			content: str,
-			components
+			components,
+			allowed_mentions: {
+				parse: [],
+				users: []
+			}
 		};
 	}
 };

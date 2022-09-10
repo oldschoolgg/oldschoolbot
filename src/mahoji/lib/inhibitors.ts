@@ -1,10 +1,18 @@
-import { DMChannel, Guild, GuildMember, PermissionResolvable, Permissions, TextChannel } from 'discord.js';
+import {
+	ChannelType,
+	DMChannel,
+	Guild,
+	GuildMember,
+	PermissionResolvable,
+	PermissionsBitField,
+	TextChannel,
+	User
+} from 'discord.js';
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { ComponentType } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
-import { OWNER_ID, production } from '../../config';
+import { OWNER_IDS, production, SupportServer } from '../../config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '../../lib/blacklists';
 import {
 	BadgesEnum,
@@ -13,17 +21,14 @@ import {
 	Channel,
 	DISABLED_COMMANDS,
 	minionBuyButton,
-	PerkTier,
-	SupportServer
+	PerkTier
 } from '../../lib/constants';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { CategoryFlag } from '../../lib/types';
 import { formatDuration } from '../../lib/util';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { mahojiGuildSettingsFetch, untrustedGuildSettingsCache } from '../mahojiSettings';
 import { Cooldowns } from './Cooldowns';
 
-export type CommandArgs = (string | number | boolean | unknown)[] | Record<string, unknown>;
+export type CommandArgs = Record<string, unknown>;
 
 export interface AbstractCommandAttributes {
 	altProtection?: boolean;
@@ -38,7 +43,7 @@ export interface AbstractCommandAttributes {
 	cooldown?: number;
 	requiredPermissionsForBot?: PermissionResolvable[];
 	requiredPermissionsForUser?: PermissionResolvable[];
-	runIn?: string[];
+	runIn?: ChannelType[];
 	requiresMinionNotBusy?: boolean;
 	requiresMinion?: boolean;
 	description: string;
@@ -52,7 +57,8 @@ export interface AbstractCommand {
 interface Inhibitor {
 	name: string;
 	run: (options: {
-		user: KlasaUser;
+		APIUser: User;
+		user: MUser;
 		command: AbstractCommand;
 		guild: Guild | null;
 		channel: TextChannel | DMChannel;
@@ -65,9 +71,7 @@ interface Inhibitor {
 const inhibitors: Inhibitor[] = [
 	{
 		name: 'settingSyncer',
-		run: async ({ user, guild }) => {
-			await user.settings.sync();
-
+		run: async ({ guild }) => {
 			if (guild && !untrustedGuildSettingsCache.has(guild.id)) {
 				await mahojiGuildSettingsFetch(guild);
 			}
@@ -78,8 +82,8 @@ const inhibitors: Inhibitor[] = [
 	},
 	{
 		name: 'bots',
-		run: async ({ user }) => {
-			if (!user.bot) return false;
+		run: async ({ APIUser, user }) => {
+			if (!APIUser.bot) return false;
 			if (
 				![
 					'798308589373489172', // BIRDIE#1963
@@ -98,7 +102,7 @@ const inhibitors: Inhibitor[] = [
 		run: async ({ user, command }) => {
 			if (!command.attributes?.requiresMinion) return false;
 
-			if (!user.hasMinion) {
+			if (!user.user.minion_hasBought) {
 				return {
 					content: 'You need a minion to use this command.',
 					components: [
@@ -130,13 +134,13 @@ const inhibitors: Inhibitor[] = [
 	},
 	{
 		name: 'altProtection',
-		run: async ({ user, command }) => {
+		run: async ({ user, command, APIUser }) => {
 			if (!command.attributes?.altProtection) return false;
-			if (getUsersPerkTier(user) >= PerkTier.Four) return false;
+			if (user.perkTier >= PerkTier.Four) return false;
 
 			if (
-				Date.now() - user.createdTimestamp < Time.Month &&
-				!user.settings.get(UserSettings.BitField).includes(BitField.BypassAgeRestriction)
+				Date.now() - APIUser.createdTimestamp < Time.Month &&
+				!user.bitfield.includes(BitField.BypassAgeRestriction)
 			) {
 				return 'You cannot use this command as your account is too new. You can ask to be manually verified if you have social media accounts as proof of identity.';
 			}
@@ -150,7 +154,7 @@ const inhibitors: Inhibitor[] = [
 		run: async ({ user, command }) => {
 			if (!command.attributes?.bitfieldsRequired) return false;
 
-			const usersBitfields = user.settings.get(UserSettings.BitField);
+			const usersBitfields = user.bitfield;
 			if (command.attributes.bitfieldsRequired.some(bit => !usersBitfields.includes(bit))) {
 				return "You don't have the required permissions to use this command.";
 			}
@@ -162,7 +166,7 @@ const inhibitors: Inhibitor[] = [
 	{
 		name: 'ironCantUse',
 		run: async ({ user, command }) => {
-			if (command.attributes?.ironCantUse && user.settings.get(UserSettings.Minion.Ironman)) {
+			if (command.attributes?.ironCantUse && user.isIronman) {
 				return "Ironman players can't use this command.";
 			}
 			return false;
@@ -171,9 +175,9 @@ const inhibitors: Inhibitor[] = [
 	},
 	{
 		name: 'disabled',
-		run: async ({ command, guild, user }) => {
+		run: async ({ command, guild, APIUser }) => {
 			if (
-				!globalClient.owners.has(user) &&
+				!OWNER_IDS.includes(APIUser.id) &&
 				(command.attributes?.enabled === false || DISABLED_COMMANDS.has(command.name))
 			) {
 				return 'This command is globally disabled.';
@@ -193,7 +197,7 @@ const inhibitors: Inhibitor[] = [
 			if (!guild || guild.id !== SupportServer) return false;
 			if (channel.id !== Channel.General) return false;
 
-			const perkTier = getUsersPerkTier(user);
+			const { perkTier } = user;
 
 			if (member && perkTier >= PerkTier.Two) {
 				return false;
@@ -220,15 +224,12 @@ const inhibitors: Inhibitor[] = [
 		run: async ({ channel, guild, user, member }) => {
 			if (!guild || !member) return false;
 			// Allow green gem badge holders to run commands in support channel:
-			if (
-				channel.id === Channel.HelpAndSupport &&
-				user.settings.get(UserSettings.Badges).includes(BadgesEnum.GreenGem)
-			) {
+			if (channel.id === Channel.HelpAndSupport && user.user.badges.includes(BadgesEnum.GreenGem)) {
 				return false;
 			}
 
 			// Allow contributors + moderators to use disabled channels in SupportServer
-			const userBitfield = user.settings.get(UserSettings.BitField);
+			const userBitfield = user.bitfield;
 			const isStaff =
 				userBitfield.includes(BitField.isModerator) || userBitfield.includes(BitField.isContributor);
 			if (guild.id === SupportServer && isStaff) {
@@ -238,7 +239,7 @@ const inhibitors: Inhibitor[] = [
 			// Allow guild-moderators to use commands in disabled channels
 			const settings = untrustedGuildSettingsCache.get(guild.id);
 			if (settings?.staffOnlyChannels.includes(channel.id)) {
-				const hasPerm = await member.permissions.has(Permissions.FLAGS.BAN_MEMBERS);
+				const hasPerm = await member.permissions.has(PermissionsBitField.Flags.BanMembers);
 				if (!hasPerm) return "You need the 'Ban Members' permission to use commands in disabled channels.";
 			}
 
@@ -252,7 +253,7 @@ const inhibitors: Inhibitor[] = [
 		run: async ({ command, user }) => {
 			if (!command.attributes?.perkTier) return false;
 
-			if (getUsersPerkTier(user) < command.attributes.perkTier) {
+			if (user.perkTier < command.attributes.perkTier) {
 				return `You need to be a ${
 					command.attributes.perkTier - 1 > 0
 						? `tier ${command.attributes.perkTier - 1} patron`
@@ -281,7 +282,7 @@ const inhibitors: Inhibitor[] = [
 		name: 'cooldown',
 		run: async ({ user, command }) => {
 			if (!command.attributes?.cooldown) return false;
-			if (OWNER_ID === user.id || user.bitfield.includes(BitField.isModerator)) return false;
+			if (OWNER_IDS.includes(user.id) || user.bitfield.includes(BitField.isModerator)) return false;
 			const cooldownForThis = Cooldowns.get(user.id, command.name, command.attributes.cooldown);
 			if (cooldownForThis) {
 				return `This command is on cooldown, you can use it again in ${formatDuration(cooldownForThis)}`;
@@ -295,7 +296,7 @@ const inhibitors: Inhibitor[] = [
 		run: async ({ command, channel }) => {
 			if (!command.attributes?.requiredPermissionsForBot) return false;
 			const missing =
-				channel.type === 'text'
+				channel.type === ChannelType.GuildText
 					? channel.permissionsFor(globalClient.user!)!.missing(command.attributes.requiredPermissionsForBot)
 					: [];
 			if (missing.length > 0) {
@@ -307,10 +308,10 @@ const inhibitors: Inhibitor[] = [
 	},
 	{
 		name: 'missingUserPermissions',
-		run: async ({ command, channel, user }) => {
+		run: async ({ command, channel, APIUser }) => {
 			if (!command.attributes?.requiredPermissionsForUser) return false;
-			if (channel.type === 'dm') return false;
-			const missing = channel.permissionsFor(user)!.missing(command.attributes.requiredPermissionsForUser);
+			if (channel.type === ChannelType.DM) return false;
+			const missing = channel.permissionsFor(APIUser)!.missing(command.attributes.requiredPermissionsForUser);
 			if (missing.length > 0) {
 				return `You can't run this command, unless you have these permissions in the server: ${missing.join(
 					', '
@@ -353,9 +354,11 @@ export async function runInhibitors({
 	member,
 	command,
 	guild,
-	bypassInhibitors
+	bypassInhibitors,
+	APIUser
 }: {
-	user: KlasaUser;
+	user: MUser;
+	APIUser: User;
 	channel: TextChannel | DMChannel;
 	member: GuildMember | null;
 	command: AbstractCommand;
@@ -364,7 +367,7 @@ export async function runInhibitors({
 }): Promise<undefined | { reason: Awaited<CommandResponse>; silent: boolean }> {
 	for (const { run, canBeDisabled, silent } of inhibitors) {
 		if (bypassInhibitors && canBeDisabled) continue;
-		const result = await run({ user, channel, member, command, guild });
+		const result = await run({ user, channel, member, command, guild, APIUser });
 		if (result !== false) {
 			return { reason: result, silent: Boolean(silent) };
 		}

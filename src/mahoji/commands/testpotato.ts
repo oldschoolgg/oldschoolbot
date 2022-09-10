@@ -1,6 +1,5 @@
-import { Prisma } from '@prisma/client';
+import { Prisma, xp_gains_skill_enum } from '@prisma/client';
 import { Time, uniqueArr } from 'e';
-import { KlasaUser } from 'klasa';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank, Items } from 'oldschooljs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
@@ -13,9 +12,9 @@ import { leaguesCreatables } from '../../lib/data/creatables/leagueCreatables';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { allOpenables } from '../../lib/openables';
+import { tiers } from '../../lib/patreon';
 import { Minigames } from '../../lib/settings/minigames';
 import { prisma } from '../../lib/settings/prisma';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Skills from '../../lib/skilling/skills';
 import Farming from '../../lib/skilling/skills/farming';
@@ -31,37 +30,41 @@ import {
 import getOSItem from '../../lib/util/getOSItem';
 import { logError } from '../../lib/util/logError';
 import { parseStringBank } from '../../lib/util/parseStringBank';
-import { tiers } from '../../tasks/patreon';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import { allUsableItems } from '../lib/abstracted_commands/useCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
-async function giveMaxStats(user: KlasaUser, level = 99, qp = MAX_QP) {
-	const paths = Object.values(Skills).map(sk => `skills.${sk.id}`);
-	await user.settings.update(paths.map(path => [path, convertLVLtoXP(level)]));
-	await user.settings.update(UserSettings.QP, MAX_QP);
+async function giveMaxStats(user: MUser, level = 99, qp = MAX_QP) {
+	let updates: Prisma.UserUpdateArgs['data'] = {};
+	for (const skill of Object.values(xp_gains_skill_enum)) {
+		updates[`skills_${skill}`] = convertLVLtoXP(level);
+	}
+	await user.update({
+		QP: MAX_QP,
+		...updates
+	});
 
 	return `Gave you level ${level} in all stats, and ${qp} QP.`;
 }
 
-async function givePatronLevel(user: KlasaUser, tier: number) {
+async function givePatronLevel(user: MUser, tier: number) {
 	const tierToGive = tiers[tier];
-	const currentBitfield = user.settings.get(UserSettings.BitField);
+	const currentBitfield = user.bitfield;
 	if (!tier || !tierToGive) {
-		await mahojiUserSettingsUpdate(user, {
+		await user.update({
 			bitfield: currentBitfield.filter(i => !tiers.map(t => t[1]).includes(i))
 		});
 		return 'Removed patron perks.';
 	}
 	const newBitField: BitField[] = [...currentBitfield, tierToGive[1]];
-	await mahojiUserSettingsUpdate(user, {
+	await user.update({
 		bitfield: uniqueArr(newBitField)
 	});
 	return `Gave you tier ${tierToGive[1] - 1} patron.`;
 }
 
-async function giveGear(user: KlasaUser) {
+async function giveGear(user: MUser) {
 	const loot = new Bank()
 		.add('Saradomin brew(4)', 10_000)
 		.add('Super restore(4)', 5000)
@@ -81,17 +84,20 @@ async function giveGear(user: KlasaUser) {
 		.add('Bandos godsword')
 		.add('Toxic blowpipe');
 	await user.addItemsToBank({ items: loot, collectionLog: false });
-	await user.settings.update(UserSettings.Blowpipe, {
-		scales: 100_000,
-		dartQuantity: 100_000,
-		dartID: itemID('Rune dart')
+
+	await user.update({
+		GP: 1_000_000_000,
+		slayer_points: 100_000,
+		tentacle_charges: 10_000,
+		gear_mage: TOBMaxMageGear.raw() as any,
+		gear_melee: TOBMaxMeleeGear.raw() as any,
+		gear_range: TOBMaxRangeGear.raw() as any,
+		blowpipe: {
+			scales: 100_000,
+			dartQuantity: 100_000,
+			dartID: itemID('Rune dart')
+		}
 	});
-	await user.settings.update(UserSettings.Gear.Melee, TOBMaxMeleeGear);
-	await user.settings.update(UserSettings.Gear.Range, TOBMaxRangeGear);
-	await user.settings.update(UserSettings.Gear.Mage, TOBMaxMageGear);
-	await user.settings.update(UserSettings.TentacleCharges, 10_000);
-	await user.settings.update(UserSettings.GP, 1_000_000_000);
-	await user.settings.update(UserSettings.Slayer.SlayerPoints, 100_000);
 
 	await getPOH(user.id);
 	await prisma.playerOwnedHouse.update({
@@ -105,7 +111,7 @@ async function giveGear(user: KlasaUser) {
 	return `Gave you ${loot}, all BIS setups, 10k tentacle charges, slayer points, 1b GP, blowpipe, gear, supplies.`;
 }
 
-async function resetAccount(user: KlasaUser) {
+async function resetAccount(user: MUser) {
 	await prisma.activity.deleteMany({ where: { user_id: BigInt(user.id) } });
 	await prisma.commandUsage.deleteMany({ where: { user_id: BigInt(user.id) } });
 	await prisma.gearPreset.deleteMany({ where: { user_id: user.id } });
@@ -116,11 +122,10 @@ async function resetAccount(user: KlasaUser) {
 	await prisma.playerOwnedHouse.deleteMany({ where: { user_id: user.id } });
 	await prisma.user.deleteMany({ where: { id: user.id } });
 	await prisma.slayerTask.deleteMany({ where: { user_id: user.id } });
-	await user.settings.sync(true);
 	return 'Reset all your data.';
 }
 
-async function setMinigameKC(user: KlasaUser, _minigame: string, kc: number) {
+async function setMinigameKC(user: MUser, _minigame: string, kc: number) {
 	const minigame = Minigames.find(m => m.column === _minigame.toLowerCase());
 	if (!minigame) return 'No kc set because invalid minigame.';
 	await prisma.minigame.update({
@@ -134,10 +139,10 @@ async function setMinigameKC(user: KlasaUser, _minigame: string, kc: number) {
 	return `Set your ${minigame.name} KC to ${kc}.`;
 }
 
-async function setXP(user: KlasaUser, skillName: string, xp: number) {
+async function setXP(user: MUser, skillName: string, xp: number) {
 	const skill = Object.values(Skills).find(c => c.id === skillName);
 	if (!skill) return 'No xp set because invalid skill.';
-	await mahojiUserSettingsUpdate(user, {
+	await user.update({
 		[`skills_${skill.id}`]: xp
 	});
 	return `Set ${skill.name} XP to ${xp}.`;
@@ -436,11 +441,11 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				if (options.stresstest) {
 					return stressTest(userID.toString());
 				}
-				const user = await globalClient.fetchUser(userID.toString());
+				const user = await mUserFetch(userID.toString());
 				const mahojiUser = await mahojiUsersSettingsFetch(user.id);
 				if (options.irontoggle) {
 					const current = mahojiUser.minion_ironman;
-					await mahojiUserSettingsUpdate(user.id, {
+					await user.update({
 						minion_ironman: !current
 					});
 					return `You now ${!current ? 'ARE' : 'ARE NOT'} an ironman.`;
@@ -523,13 +528,13 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						[EquipmentSlot.Ring]: 'Archers ring (i)'
 					});
 					gear.ammo!.quantity = 1_000_000;
-					await mahojiUserSettingsUpdate(user.id, {
+					await user.update({
 						gear_range: gear.raw() as Prisma.InputJsonObject,
 						skills_ranged: convertLVLtoXP(99),
 						skills_prayer: convertLVLtoXP(99),
 						skills_hitpoints: convertLVLtoXP(99),
 						skills_defence: convertLVLtoXP(99),
-						bank: user.bank().add(nexSupplies).bank,
+						bank: user.bank.add(nexSupplies).bank,
 						GP: mahojiUser.GP + BigInt(10_000_000)
 					});
 					return 'Gave you range gear, gp, gear and stats for nex.';
@@ -549,9 +554,9 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						[EquipmentSlot.Ring]: 'Archers ring'
 					});
 					gear.ammo!.quantity = 1_000_000;
-					await mahojiUserSettingsUpdate(user.id, {
+					await user.update({
 						gear_range: gear.raw() as Prisma.InputJsonObject,
-						bank: user.bank().add(nexSupplies).bank
+						bank: user.bank.add(nexSupplies).bank
 					});
 					return 'Gave you bad nex gear';
 				}
@@ -560,7 +565,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						stringMatches(m.name, options.setmonsterkc?.monster ?? '')
 					);
 					if (!monster) return 'Invalid monster';
-					await mahojiUserSettingsUpdate(user.id, {
+					await user.update({
 						monsterScores: {
 							...(mahojiUser.monsterScores as Record<string, unknown>),
 							[monster.id]: options.setmonsterkc.kc ?? 1
@@ -576,7 +581,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					if (!thisPlant || !thisPlant.plant) return 'You have nothing planted there.';
 					const rawPlant = farmingDetails.patches[thisPlant.plant.seedType];
 
-					await mahojiUserSettingsUpdate(user.id, {
+					await user.update({
 						[getFarmingKeyFromName(thisPlant.plant.seedType)]: {
 							...rawPlant,
 							plantTime: Date.now() - Time.Month

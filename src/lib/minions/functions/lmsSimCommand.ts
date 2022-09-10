@@ -1,9 +1,8 @@
-import { chunk, sleep } from '@klasa/utils';
-import { Channel, TextChannel } from 'discord.js';
-import { KlasaMessage } from 'klasa';
+import { Channel, Message, TextChannel } from 'discord.js';
+import { chunk, sleep } from 'e';
 
 import LastManStandingUsage, { LMS_FINAL, LMS_PREP, LMS_ROUND } from '../../structures/LastManStandingUsage';
-import { cleanMentions } from '../../util';
+import { channelIsSendable, cleanMentions } from '../../util';
 
 const playing = new Set<string>();
 
@@ -137,7 +136,7 @@ export async function lmsSimCommand(channel: Channel | undefined, names?: string
 
 	playing.add(channel.id);
 
-	let gameMessage: KlasaMessage | null = null;
+	let gameMessage: Message | null = null;
 	const game: LastManStandingGame = Object.seal({
 		prep: true,
 		final: false,
@@ -157,13 +156,13 @@ export async function lmsSimCommand(channel: Channel | undefined, names?: string
 		// Ask for the user to proceed:
 		for (const text of texts) {
 			// If the channel is not postable, break:
-			if (!channel.postable) return;
+			if (!channelIsSendable(channel)) return;
 
-			gameMessage = (await channel.send(text)) as KlasaMessage;
+			gameMessage = await channel.send(text);
 			await sleep(Math.max(gameMessage!.content.length / 20, 7) * 1000);
 
 			// Delete the previous message, and if stopped, send stop.
-			gameMessage.delete();
+			gameMessage?.delete();
 		}
 
 		if (game.prep) game.prep = false;
