@@ -1,6 +1,5 @@
 import { Bank } from 'oldschooljs';
 
-import { LEVEL_99_XP } from '../../constants';
 import { diaries, userhasDiaryTier } from '../../diaries';
 import { SkillsEnum } from '../../skilling/types';
 import { Buyable } from './buyables';
@@ -32,7 +31,7 @@ export const capeBuyables: Buyable[] = [
 		}),
 		gpCost: 2_277_000,
 		customReq: async user => {
-			if (Object.values(user.rawSkills).filter(s => s < LEVEL_99_XP).length > 0) {
+			if (user.totalLevel < 2277) {
 				return [false, "You can't buy this because you aren't maxed!"];
 			}
 			return [true];

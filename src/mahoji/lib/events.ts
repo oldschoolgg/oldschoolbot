@@ -1,11 +1,21 @@
 import { bulkUpdateCommands } from 'mahoji/dist/lib/util';
+import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { CLIENT_ID, DEV_SERVER_ID, production } from '../../config';
+import { cacheBadges } from '../../lib/badges';
 import { syncBlacklists } from '../../lib/blacklists';
 import { DISABLED_COMMANDS } from '../../lib/constants';
 import { syncDoubleLoot } from '../../lib/doubleLoot';
 import { prisma } from '../../lib/settings/prisma';
-import { assert } from '../../lib/util';
+import { CUSTOM_PRICE_CACHE } from '../commands/sell';
+import { mahojiClientSettingsFetch } from '../mahojiSettings';
+
+export async function syncCustomPrices() {
+	const clientData = await mahojiClientSettingsFetch();
+	for (const [key, value] of Object.entries(clientData.custom_prices as ItemBank)) {
+		CUSTOM_PRICE_CACHE.set(Number(key), Number(value));
+	}
+}
 
 export async function onStartup() {
 	// Sync disabled commands
@@ -37,5 +47,6 @@ export async function onStartup() {
 	}
 
 	await syncDoubleLoot();
-	assert(!globalClient.monitors.get('commandHandler'));
+	await syncCustomPrices();
+	await cacheBadges();
 }

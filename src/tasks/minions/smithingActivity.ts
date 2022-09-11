@@ -1,4 +1,3 @@
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { BlacksmithOutfit } from '../../lib/bsoOpenables';
@@ -8,10 +7,11 @@ import { SmithingActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { hasItemsEquippedOrInBank } from '../../lib/util/minionUtils';
 
-export default class extends Task {
+export const smithingTask: MinionTask = {
+	type: 'Smithing',
 	async run(data: SmithingActivityTaskOptions) {
 		const { smithedBarID, quantity, userID, channelID, duration } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
 		const smithedItem = Smithing.SmithableItems.find(item => item.id === smithedBarID)!;
 
@@ -51,4 +51,4 @@ export default class extends Task {
 			loot
 		);
 	}
-}
+};

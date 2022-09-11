@@ -1,12 +1,9 @@
-import { User as MahojiUser } from '@prisma/client';
-import { User } from 'discord.js';
+import { User } from '@prisma/client';
 import { notEmpty, Time } from 'e';
-import { KlasaUser } from 'klasa';
 
-import { SupportServer } from '../../config';
-import { mahojiUserSettingsUpdate } from '../../mahoji/mahojiSettings';
 import { BitField, PerkTier, Roles } from '../constants';
-import { UserSettings } from '../settings/types/UserSettings';
+import { MUserClass } from '../MUser';
+import { getSupportGuild } from '../util';
 import { logError } from './logError';
 
 const tier3ElligibleBits = [
@@ -16,83 +13,43 @@ const tier3ElligibleBits = [
 	BitField.IsWikiContributor
 ];
 
-export function patronMaxTripCalc(user: KlasaUser | MahojiUser) {
-	const perkTier = getUsersPerkTier(user);
-	if (perkTier === PerkTier.Two) return Time.Minute * 3;
-	else if (perkTier === PerkTier.Three) return Time.Minute * 6;
-	else if (perkTier >= PerkTier.Four) return Time.Minute * 10;
-	return 0;
+const perkTierCache = new Map<string, number>();
+
+export function syncPerkTierOfUser(user: MUser) {
+	perkTierCache.set(user.id, getUsersPerkTier([...user.bitfield], true));
 }
 
 export default function getUsersPerkTier(
-	userOrBitfield: KlasaUser | MahojiUser | readonly BitField[] | User,
+	userOrBitfield: MUser | User | BitField[],
 	noCheckOtherAccounts?: boolean
 ): PerkTier | 0 {
-	const isMahojiUser = typeof userOrBitfield === 'object' && 'main_account' in userOrBitfield;
-	if (noCheckOtherAccounts !== true && isMahojiUser) {
-		let main = userOrBitfield.main_account;
-		const allAccounts: string[] = [...userOrBitfield.ironman_alts, userOrBitfield.id];
+	if (noCheckOtherAccounts !== true && userOrBitfield instanceof MUserClass) {
+		let main = userOrBitfield.user.main_account;
+		const allAccounts: string[] = [...userOrBitfield.user.ironman_alts, userOrBitfield.id];
 		if (main) {
 			allAccounts.push(main);
 		}
 
-		const allAccountTiers = allAccounts
-			.map(id => globalClient.users.cache.get(id))
-			.filter(notEmpty)
-			.map(t => getUsersPerkTier(t, true));
-
-		const highestAccountTier = Math.max(0, ...allAccountTiers);
-		return highestAccountTier;
-	} else if (noCheckOtherAccounts !== true && userOrBitfield instanceof KlasaUser) {
-		let main = userOrBitfield.settings.get(UserSettings.MainAccount);
-		const allAccounts: string[] = [...userOrBitfield.settings.get(UserSettings.IronmanAlts), userOrBitfield.id];
-		if (main) {
-			allAccounts.push(main);
-		}
-
-		const allAccountTiers = allAccounts
-			.map(id => userOrBitfield.client.users.cache.get(id))
-			.filter(notEmpty)
-			.map(t => getUsersPerkTier(t, true));
+		const allAccountTiers = allAccounts.map(id => perkTierCache.get(id)).filter(notEmpty);
 
 		const highestAccountTier = Math.max(0, ...allAccountTiers);
 		return highestAccountTier;
 	}
 
-	if (userOrBitfield instanceof User && userOrBitfield.client.owners.has(userOrBitfield)) {
-		return 10;
-	}
-
-	const bitfield = isMahojiUser
-		? userOrBitfield.bitfield
-		: userOrBitfield instanceof User
-		? userOrBitfield.settings.get(UserSettings.BitField)
-		: userOrBitfield;
-
-	if (isMahojiUser && userOrBitfield.premium_balance_tier !== null) {
-		const date = userOrBitfield.premium_balance_expiry_date;
+	const bitfield = Array.isArray(userOrBitfield) ? userOrBitfield : userOrBitfield.bitfield;
+	if (userOrBitfield instanceof MUserClass && userOrBitfield.user.premium_balance_tier !== null) {
+		const date = userOrBitfield.user.premium_balance_expiry_date;
 		if (date && Date.now() < date) {
-			return userOrBitfield.premium_balance_tier + 1;
+			return userOrBitfield.user.premium_balance_tier + 1;
 		} else if (date && Date.now() > date) {
-			mahojiUserSettingsUpdate(userOrBitfield.id, {
-				premium_balance_tier: null,
-				premium_balance_expiry_date: null
-			}).catch(e => {
-				logError(e, { user_id: userOrBitfield.id, message: 'Could not remove premium time' });
-			});
-		}
-	} else if (
-		userOrBitfield instanceof User &&
-		userOrBitfield.settings.get(UserSettings.PremiumBalanceTier) !== null
-	) {
-		const date = userOrBitfield.settings.get(UserSettings.PremiumBalanceExpiryDate);
-		if (date && Date.now() < date) {
-			return userOrBitfield.settings.get(UserSettings.PremiumBalanceTier)! + 1;
-		} else if (date && Date.now() > date) {
-			userOrBitfield.settings.update([
-				[UserSettings.PremiumBalanceExpiryDate, null],
-				[UserSettings.PremiumBalanceTier, null]
-			]);
+			userOrBitfield
+				.update({
+					premium_balance_tier: null,
+					premium_balance_expiry_date: null
+				})
+				.catch(e => {
+					logError(e, { user_id: userOrBitfield.id, message: 'Could not remove premium time' });
+				});
 		}
 	}
 
@@ -119,10 +76,10 @@ export default function getUsersPerkTier(
 	if (bitfield.includes(BitField.HasPermanentTierOne)) {
 		return PerkTier.Two;
 	}
-	// This can be combined into one block because both the Mahoji/DB User type and [Klasa]User class have `id` member
-	if (isMahojiUser || userOrBitfield instanceof User) {
-		const guild = globalClient.guilds.cache.get(SupportServer);
-		const member = guild?.members.cache.get(userOrBitfield.id);
+
+	if (userOrBitfield instanceof MUserClass) {
+		const supportGuild = getSupportGuild();
+		const member = supportGuild?.members.cache.get(userOrBitfield.id);
 		if (member && [Roles.Booster].some(roleID => member.roles.cache.has(roleID))) {
 			return PerkTier.One;
 		}
@@ -134,13 +91,13 @@ export default function getUsersPerkTier(
 /**
  * Determines if the user is only a patron because they have shared perks from another account.
  */
-export function isPrimaryPatron(user: KlasaUser) {
+export function isPrimaryPatron(user: MUser) {
 	const perkTier = getUsersPerkTier(user, true);
 	return perkTier > 0;
 }
 
 export const dailyResetTime = Time.Hour * 4;
-export const spawnLampResetTime = (user: MahojiUser) => {
+export const spawnLampResetTime = (user: MUser) => {
 	const bf = user.bitfield;
 	const perkTier = getUsersPerkTier(user, true);
 
@@ -158,12 +115,3 @@ export const spawnLampResetTime = (user: MahojiUser) => {
 };
 export const itemContractResetTime = Time.Hour * 8;
 export const giveBoxResetTime = Time.Hour * 24;
-
-const lastBox: keyof MahojiUser = 'lastGivenBoxx';
-
-export const userTimers = [
-	[dailyResetTime, UserSettings.LastDailyTimestamp, 'Daily'],
-	[itemContractResetTime, UserSettings.LastItemContractDate, 'ItemContract'],
-	[giveBoxResetTime, lastBox, 'GiveBox'],
-	[spawnLampResetTime, UserSettings.LastSpawnLamp, 'SpawnLamp']
-] as const;

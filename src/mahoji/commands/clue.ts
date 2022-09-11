@@ -1,18 +1,16 @@
 import { Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
-import { randomVariation } from 'oldschooljs/dist/util';
+import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
 import { clueHunterOutfit } from '../../lib/data/CollectionsExport';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { ItemBank } from '../../lib/types';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
-import { clamp, formatDuration, isWeekend, stringMatches } from '../../lib/util';
+import { clamp, formatDuration, isWeekend, randomVariation, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { OSBMahojiCommand } from '../lib/util';
-import { getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { getMahojiBank, mahojiUsersSettingsFetch, userHasGracefulEquipped } from '../mahojiSettings';
 
 function reducedClueTime(clueTier: ClueTier, score: number) {
 	// Every 3 hours become 1% better to a cap of 10%
@@ -29,7 +27,7 @@ export const clueCommand: OSBMahojiCommand = {
 	attributes: {
 		requiresMinion: true,
 		requiresMinionNotBusy: true,
-		examples: ['/cl name:Boss']
+		examples: ['/clue tier:easy']
 	},
 	options: [
 		{
@@ -51,9 +49,8 @@ export const clueCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ options, userID, channelID }: CommandRunOptions<{ tier: string; quantity?: number }>) => {
-		const user = await globalClient.fetchUser(userID);
-		const mUser = await mahojiUsersSettingsFetch(user.id, { openable_scores: true });
-		const clueScores = mUser.openable_scores as ItemBank;
+		const user = await mUserFetch(userID);
+		const clueScores = user.openableScores();
 
 		const clueTier = ClueTiers.find(tier => stringMatches(tier.name, options.tier));
 		if (!clueTier) return 'Invalid clue tier.';
@@ -68,18 +65,18 @@ export const clueCommand: OSBMahojiCommand = {
 
 		let [timeToFinish, percentReduced] = reducedClueTime(
 			clueTier,
-			user.settings.get(UserSettings.OpenableScores)[clueTier.id] ?? 1
+			(user.user.openable_scores as ItemBank)[clueTier.id] ?? 1
 		);
 
 		timeToFinish /= 2;
 		boosts.push('👻 2x Boost');
 
-		if (user.hasItemEquippedAnywhere(clueHunterOutfit, true)) {
+		if (user.hasEquipped(clueHunterOutfit, true)) {
 			timeToFinish /= 2;
 			boosts.push('2x Boost for Clue hunter outfit');
 		}
 
-		if (user.hasGracefulEquipped()) {
+		if (userHasGracefulEquipped(user)) {
 			boosts.push('10% for Graceful');
 			timeToFinish *= 0.9;
 		}
@@ -89,7 +86,7 @@ export const clueCommand: OSBMahojiCommand = {
 			timeToFinish *= 0.9;
 		}
 
-		if (user.hasItemEquippedOrInBank('Achievement diary cape')) {
+		if (user.hasEquippedOrInBank('Achievement diary cape')) {
 			boosts.push('10% for Achievement diary cape');
 			timeToFinish *= 0.9;
 		}
@@ -102,7 +99,7 @@ export const clueCommand: OSBMahojiCommand = {
 		if (!quantity) {
 			quantity = maxPerTrip;
 		}
-		quantity = clamp(quantity, 1, user.bank().amount(clueTier.scrollID));
+		quantity = clamp(quantity, 1, user.bank.amount(clueTier.scrollID));
 
 		let duration = timeToFinish * quantity;
 
@@ -114,7 +111,7 @@ export const clueCommand: OSBMahojiCommand = {
 			)}.`;
 		}
 
-		const bank = user.bank();
+		const { bank } = user;
 		const numOfScrolls = bank.amount(clueTier.scrollID);
 
 		if (!numOfScrolls || numOfScrolls < quantity) {

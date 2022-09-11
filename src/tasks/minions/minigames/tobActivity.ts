@@ -1,25 +1,22 @@
 import { calcPercentOfNum, calcWhatPercent, noOp, objectEntries, roll, shuffleArr } from 'e';
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
 import { tobMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { TOBRooms, TOBUniques, TOBUniquesToAnnounce, totalXPFromRaid } from '../../../lib/data/tob';
 import { trackLoot } from '../../../lib/settings/prisma';
-import { incrementMinigameScore } from '../../../lib/settings/settings';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
+import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import { TheatreOfBlood } from '../../../lib/simulation/tob';
 import { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
-import { convertPercentChance, updateBankSetting } from '../../../lib/util';
+import { convertPercentChance } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { allItemsOwned } from '../../../mahoji/mahojiSettings';
 
-export default class extends Task {
+export const tobTask: MinionTask = {
+	type: 'TheatreOfBlood',
 	async run(data: TheatreOfBloodTaskOptions) {
 		const { channelID, users, hardMode, leader, wipedRoom, duration, fakeDuration, deaths } = data;
-		const allUsers = await Promise.all(users.map(async u => this.client.fetchUser(u)));
+		const allUsers = await Promise.all(users.map(async u => mUserFetch(u)));
 		const result = TheatreOfBlood.complete({
 			hardMode,
 			team: users.map((i, index) => ({ id: i, deaths: deaths[index] }))
@@ -50,9 +47,11 @@ export default class extends Task {
 		if (!diedToMaiden) {
 			await Promise.all(
 				allUsers.map(u => {
-					const key = hardMode ? UserSettings.Stats.TobHardModeAttempts : UserSettings.Stats.TobAttempts;
-					const currentAttempts = u.settings.get(key);
-					return u.settings.update(key, currentAttempts + 1);
+					return u.update({
+						[hardMode ? 'tob_hard_attempts' : 'tob_attempts']: {
+							increment: 1
+						}
+					});
 				})
 			);
 		}
@@ -85,18 +84,14 @@ export default class extends Task {
 				null
 			);
 			// They each paid 100k tax, it doesn't get refunded, so track it in economy stats.
-			await updateBankSetting(
-				this.client,
-				ClientSettings.EconomyStats.TOBCost,
-				new Bank().add('Coins', users.length * 100_000)
-			);
+			await updateBankSetting('tob_cost', new Bank().add('Coins', users.length * 100_000));
 			return;
 		}
 
 		// Track loot for T3+ patrons
 		await Promise.all(
 			allUsers.map(user => {
-				return updateBankSetting(user, UserSettings.TOBLoot, result.loot[user.id]);
+				return updateLegacyUserBankSetting(user.id, 'tob_loot', new Bank(result.loot[user.id]));
 			})
 		);
 
@@ -109,7 +104,7 @@ Unique chance: ${result.percentChanceOfUnique.toFixed(2)}% (1 in ${convertPercen
 		await Promise.all(allUsers.map(u => incrementMinigameScore(u.id, minigameID, 1)));
 
 		for (let [userID, _userLoot] of Object.entries(result.loot)) {
-			const user = await this.client.fetchUser(userID).catch(noOp);
+			const user = await mUserFetch(userID).catch(noOp);
 			if (!user) continue;
 			const userDeaths = deaths[users.indexOf(user.id)];
 
@@ -119,9 +114,9 @@ Unique chance: ${result.percentChanceOfUnique.toFixed(2)}% (1 in ${convertPercen
 				userLoot.add('Clue scroll (grandmaster)');
 			}
 
-			const bank = allItemsOwned(user);
+			const bank = user.allItemsOwned();
 
-			const cl = user.cl();
+			const { cl } = user;
 			if (hardMode && roll(30) && cl.has("Lil' zik") && cl.has('Sanguine dust')) {
 				const unownedPet = shuffleArr(tobMetamorphPets).find(pet => !bank.has(pet));
 				if (unownedPet) {
@@ -129,10 +124,12 @@ Unique chance: ${result.percentChanceOfUnique.toFixed(2)}% (1 in ${convertPercen
 				}
 			}
 
-			const { itemsAdded } = await user.addItemsToBank({
-				items: userLoot.clone().add('Coins', 100_000),
+			const { itemsAdded } = await transactItems({
+				userID: user.id,
+				itemsToAdd: userLoot.clone().add('Coins', 100_000),
 				collectionLog: true
 			});
+
 			totalLoot.add(itemsAdded);
 
 			const items = itemsAdded.items();
@@ -141,10 +138,12 @@ Unique chance: ${result.percentChanceOfUnique.toFixed(2)}% (1 in ${convertPercen
 			const shouldAnnounce = items.some(([item]) => TOBUniquesToAnnounce.includes(item.id));
 			if (shouldAnnounce) {
 				const itemsToAnnounce = itemsAdded.filter(item => TOBUniques.includes(item.id), false);
-				this.client.emit(
+				globalClient.emit(
 					Events.ServerNotification,
-					`${Emoji.Purple} ${user.username} just received **${itemsToAnnounce}** on their ${formatOrdinal(
-						await user.getMinigameScore(minigameID)
+					`${Emoji.Purple} ${
+						user.usernameOrMention
+					} just received **${itemsToAnnounce}** on their ${formatOrdinal(
+						await getMinigameScore(user.id, minigameID)
 					)} raid.`
 				);
 			}
@@ -156,7 +155,7 @@ Unique chance: ${result.percentChanceOfUnique.toFixed(2)}% (1 in ${convertPercen
 			resultMessage += `\n${deathStr}**${user}** received: ${str}`;
 		}
 
-		updateBankSetting(this.client, ClientSettings.EconomyStats.TOBLoot, totalLoot);
+		updateBankSetting('tob_loot', totalLoot);
 		await trackLoot({
 			loot: totalLoot,
 			id: minigameID,
@@ -189,4 +188,4 @@ Unique chance: ${result.percentChanceOfUnique.toFixed(2)}% (1 in ${convertPercen
 			null
 		);
 	}
-}
+};

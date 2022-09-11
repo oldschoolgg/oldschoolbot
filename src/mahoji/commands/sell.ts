@@ -4,9 +4,9 @@ import { Bank } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { MAX_INT_JAVA } from '../../lib/constants';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import { customPrices } from '../../lib/customItems/util';
 import { NestBoxesTable } from '../../lib/simulation/misc';
-import { clamp, itemID, toKMB, updateBankSetting } from '../../lib/util';
+import { clamp, itemID, toKMB } from '../../lib/util';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
@@ -30,10 +30,11 @@ const specialSoldItems = new Map([
 	[itemID('Ancient relic'), 16_000_000]
 ]);
 
-export function sellPriceOfItem(item: Item, taxRate = 25): { price: number; basePrice: number } {
-	if (!item.price) return { price: 0, basePrice: 0 };
-	const customPrices = globalClient.settings.get(ClientSettings.CustomPrices);
-	let basePrice = customPrices[item.id] ?? item.price;
+export const CUSTOM_PRICE_CACHE = new Map<number, number>();
+
+export function sellPriceOfItem(item: Item, taxRate = 20): { price: number; basePrice: number } {
+	if (!item.price || !item.tradeable) return { price: 0, basePrice: 0 };
+	let basePrice = CUSTOM_PRICE_CACHE.get(item.id) ?? item.price;
 	let price = basePrice;
 	price = reduceNumByPercent(price, taxRate);
 	if (!(item.id in customPrices) && price < (item.highalch ?? 0) * 3) {
@@ -79,10 +80,10 @@ export const sellCommand: OSBMahojiCommand = {
 		options,
 		interaction
 	}: CommandRunOptions<{ items: string; filter?: string; search?: string }>) => {
-		const user = await globalClient.fetchUser(userID.toString());
+		const user = await mUserFetch(userID.toString());
 		const mUser = await mahojiUsersSettingsFetch(user.id, { favoriteItems: true });
 		const bankToSell = parseBank({
-			inputBank: user.bank(),
+			inputBank: user.bank,
 			inputStr: options.items,
 			maxSize: 70,
 			filters: [options.filter],
@@ -129,7 +130,7 @@ export const sellCommand: OSBMahojiCommand = {
 		}
 
 		let totalPrice = 0;
-		const hasSkipper = user.usingPet('Skipper') || user.bank().has('Skipper');
+		const hasSkipper = user.usingPet('Skipper') || user.bank.has('Skipper');
 		const taxRatePercent = hasSkipper ? 15 : 25;
 
 		for (const [item, qty] of bankToSell.items()) {
@@ -151,12 +152,15 @@ export const sellCommand: OSBMahojiCommand = {
 			)}).`
 		);
 
-		await user.removeItemsFromBank(bankToSell.bank);
-		await user.addItemsToBank({ items: new Bank().add('Coins', totalPrice) });
+		await transactItems({
+			userID: user.id,
+			itemsToAdd: new Bank().add('Coins', totalPrice),
+			itemsToRemove: bankToSell
+		});
 
 		await Promise.all([
 			updateGPTrackSetting('gp_sell', totalPrice),
-			updateBankSetting(globalClient, ClientSettings.EconomyStats.SoldItemsBank, bankToSell.bank),
+			updateBankSetting('sold_items_bank', bankToSell),
 			userStatsUpdate(user.id, userStats => ({
 				items_sold_bank: new Bank(userStats.items_sold_bank as ItemBank).add(bankToSell).bank,
 				sell_gp: {

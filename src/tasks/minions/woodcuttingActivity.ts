@@ -1,5 +1,4 @@
 import { Time } from 'e';
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events, MAX_LEVEL, MIN_LENGTH_FOR_PET } from '../../lib/constants';
@@ -11,10 +10,11 @@ import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
 import { itemID, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
-export default class extends Task {
+export const woodcuttingTask: MinionTask = {
+	type: 'Woodcutting',
 	async run(data: WoodcuttingActivityTaskOptions) {
 		const { logID, quantity, userID, channelID, duration } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
 		const log = Woodcutting.Logs.find(Log => Log.id === logID)!;
 		let clueChance = log.clueScrollChance;
@@ -29,7 +29,7 @@ export default class extends Task {
 
 		// If they have the entire lumberjack outfit, give an extra 0.5% xp bonus
 		if (
-			user.getGear('skilling').hasEquipped(
+			user.gear.skilling.hasEquipped(
 				Object.keys(Woodcutting.lumberjackItems).map(i => parseInt(i)),
 				true
 			)
@@ -40,7 +40,7 @@ export default class extends Task {
 		} else {
 			// For each lumberjack item, check if they have it, give its' XP boost if so.
 			for (const [itemID, bonus] of Object.entries(Woodcutting.lumberjackItems)) {
-				if (user.getGear('skilling').hasEquipped([parseInt(itemID)], false)) {
+				if (user.gear.skilling.hasEquipped([parseInt(itemID)], false)) {
 					const amountToAdd = Math.floor(xpReceived * (bonus / 100));
 					xpReceived += amountToAdd;
 					bonusXP += amountToAdd;
@@ -56,7 +56,7 @@ export default class extends Task {
 
 		let loot = new Bank().add(log.id, quantity);
 		const logItem = Firemaking.Burnables.find(i => i.inputLogs === log.id);
-		if (user.hasItemEquippedAnywhere('Inferno adze') && logItem) {
+		if (user.hasEquipped('Inferno adze') && logItem) {
 			loot.remove(log.id, quantity);
 			loot.add('Ashes', quantity);
 			xpRes += '\n';
@@ -67,7 +67,7 @@ export default class extends Task {
 			});
 		}
 
-		if (user.hasItemEquippedAnywhere('Woodcutting master cape')) {
+		if (user.hasEquipped('Woodcutting master cape')) {
 			loot.multiply(2);
 		}
 
@@ -89,12 +89,12 @@ export default class extends Task {
 		if (log.petChance && roll((log.petChance - user.skillLevel(SkillsEnum.Woodcutting) * 25) / quantity)) {
 			loot.add('Beaver');
 			str += "\n**You have a funny feeling you're being followed...**";
-			this.client.emit(
+			globalClient.emit(
 				Events.ServerNotification,
-				`${Emoji.Woodcutting} **${user.username}'s** minion, ${
+				`${Emoji.Woodcutting} **${user.usernameOrMention}'s** minion, ${
 					user.minionName
 				}, just received a Beaver while cutting ${log.name} at level ${user.skillLevel(
-					SkillsEnum.Woodcutting
+					'woodcutting'
 				)} Woodcutting!`
 			);
 		}
@@ -112,4 +112,4 @@ export default class extends Task {
 
 		handleTripFinish(user, channelID, str, ['chop', { name: log.name, quantity }, true], undefined, data, loot);
 	}
-}
+};

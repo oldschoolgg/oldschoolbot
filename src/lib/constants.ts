@@ -1,17 +1,14 @@
-import { MessageButton } from 'discord.js';
+import { ButtonBuilder } from 'discord.js';
 import { Time } from 'e';
-import { Command, KlasaMessage } from 'klasa';
 import { APIButtonComponent, APIButtonComponentWithCustomId, ButtonStyle, ComponentType } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { Bank } from 'oldschooljs';
-import { convertLVLtoXP } from 'oldschooljs/dist/util/util';
-import { join } from 'path';
 
 import { DISCORD_SETTINGS, production } from '../config';
 import { AbstractCommand, CommandArgs } from '../mahoji/lib/inhibitors';
 import { RunCommandArgs } from './settings/settings';
 import { SkillsEnum } from './skilling/types';
 import { ActivityTaskOptions } from './types/minions';
+import { convertLVLtoXP } from './util';
 import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
 
@@ -169,107 +166,6 @@ export const ReactionEmoji = {
 	Start: production ? '705973302719414329' : '951309579302604880'
 };
 
-export const enum Image {
-	DiceBag = 'https://i.imgur.com/sySQkSX.png'
-}
-
-export const enum Color {
-	Orange = 16_098_851
-}
-
-export const enum Tasks {
-	AgilityActivity = 'agilityActivity',
-	CookingActivity = 'cookingActivity',
-	MonsterActivity = 'monsterActivity',
-	GroupMonsterActivity = 'groupMonsterActivity',
-	ClueActivity = 'clueActivity',
-	FishingActivity = 'fishingActivity',
-	MiningActivity = 'miningActivity',
-	SmeltingActivity = 'smeltingActivity',
-	SmithingActivity = 'smithingActivity',
-	WoodcuttingActivity = 'woodcuttingActivity',
-	RunecraftActivity = 'runecraftActivity',
-	FiremakingActivity = 'firemakingActivity',
-	CraftingActivity = 'craftingActivity',
-	BuryingActivity = 'buryingActivity',
-	OfferingActivity = 'offeringActivity',
-	FletchingActivity = 'fletchingActivity',
-	FarmingActivity = 'farmingActivity',
-	HerbloreActivity = 'herbloreActivity',
-	HunterActivity = 'hunterActivity',
-	ConstructionActivity = 'constructionActivity',
-	QuestingActivity = 'questingActivity',
-	FightCavesActivity = 'fightCavesActivity',
-	WintertodtActivity = 'wintertodtActivity',
-	TemporossActivity = 'temporossActivity',
-	AlchingActivity = 'alchingActivity',
-	RaidsActivity = 'raidsActivity',
-	NightmareActivity = 'nightmareActivity',
-	AnimatedArmourActivity = 'animatedArmourActivity',
-	CyclopsActivity = 'cyclopsActivity',
-	SepulchreActivity = 'sepulchreActivity',
-	PlunderActivity = 'plunderActivity',
-	FishingTrawler = 'trawlerActivity',
-	ZalcanoActivity = 'zalcanoActivity',
-	SawmillActivity = 'sawmillActivity',
-	PickpocketActivity = 'pickpocketActivity',
-	Enchanting = 'enchantingActivity',
-	Casting = 'castingActivity',
-	GloryCharging = 'gloryChargingActivity',
-	WealthCharging = 'wealthChargingActivity',
-	TitheFarmActivity = 'titheFarmActivity',
-	BarbarianAssault = 'barbarianAssaultActivity',
-	AgilityArena = 'agilityArenaActivity',
-	ChampionsChallenge = 'championsChallengeActivity',
-	BirdhouseActivity = 'birdhouseActivity',
-	AerialFishingActivity = 'aerialFishingActivity',
-	DriftNetActivity = 'driftNetActivity',
-	MahoganyHomes = 'mahoganyHomesActivity',
-	NexActivity = 'nexActivity',
-	GnomeRestaurant = 'gnomeRestaurantActivity',
-	SoulWars = 'soulWarsActivity',
-	RoguesDenMaze = 'roguesDenMazeActivity',
-	KalphiteKing = 'kalphiteKingActivity',
-	Gauntlet = 'gauntletActivity',
-	Dungeoneering = 'dungeoneeringActivity',
-	CastleWars = 'castleWarsActivity',
-	MageArena = 'mageArenaActivity',
-	Collecting = 'collectingActivity',
-	MageTrainingArena = 'mageTrainingArenaActivity',
-	MageArena2 = 'mageArena2Activity',
-	BigChompyBirdHunting = 'chompyHuntActivity',
-	KingGoldemar = 'kingGoldemarActivity',
-	VasaMagus = 'vasaMagusActivity',
-	OuraniaDeliveryService = 'ouraniaDeliveryServiceActivity',
-	DarkAltar = 'darkAltarActivity',
-	Ignecarus = 'ignecarusActivity',
-	TrekkingActivity = 'templeTrekkingActivity',
-	KibbleActivity = 'kibbleActivity',
-	RevenantsActivity = 'revenantsActivity',
-	PestControl = 'pestControlActivity',
-	VolcanicMine = 'volcanicMineActivity',
-	MonkeyRumble = 'monkeyRumbleActivity',
-	TrickOrTreat = 'trickOrTreatActivity',
-	BossEvent = 'bossEventActivity',
-	KourendFavour = 'kourendFavourActivity',
-	Inferno = 'infernoActivity',
-	ToB = 'tobActivity',
-	FishingContest = 'fishingContestActivity',
-	TearsOfGuthix = 'tearsOfGuthixActivity',
-	LastManStanding = 'lmsActivity',
-	BirthdayEvent = 'birthdayEventActivity',
-	TokkulShop = 'tokkulShopActivity',
-	Nex = 'nexActivity',
-	BaxtorianBathhouses = 'bathhousesActivity',
-	TroubleBrewing = 'troubleBrewingActivity',
-	PuroPuro = 'puroPuroActivity',
-	Naxxus = 'naxxusActivity',
-	Disassembling = 'disassemblingActivity',
-	Research = 'researchActivity',
-	Moktang = 'moktangActivity',
-	REMOVED = '__REMOVED__'
-}
-
 export enum ActivityGroup {
 	Skilling = 'Skilling',
 	Clue = 'Clue',
@@ -288,8 +184,6 @@ export const enum Events {
 	SkillLevelUp = 'skillLevelUp',
 	EconomyLog = 'economyLog'
 }
-
-export const rootFolder = join(__dirname, '..', '..', '..');
 
 export const COINS_ID = 995;
 
@@ -472,6 +366,7 @@ export const ZALCANO_ID = 9049;
 export const NIGHTMARE_ID = 9415;
 export const MIN_LENGTH_FOR_PET = Time.Minute * 5;
 export const HESPORI_ID = 8583;
+export const NEX_ID = 11_278;
 
 export const skillEmoji = {
 	runecraft: '<:runecraft:630911040435257364>',
@@ -536,7 +431,7 @@ const buttonSource = [
 ];
 
 export const informationalButtons = buttonSource.map(i =>
-	new MessageButton().setLabel(i.label).setEmoji(i.emoji).setURL(i.url).setStyle('LINK')
+	new ButtonBuilder().setLabel(i.label).setEmoji(i.emoji).setURL(i.url).setStyle(ButtonStyle.Link)
 );
 export const mahojiInformationalButtons: APIButtonComponent[] = buttonSource.map(i => ({
 	type: ComponentType.Button,
@@ -596,38 +491,6 @@ export const scaryEatables = [
 	}
 ];
 
-export function getScaryFoodFromBank(userBank: Bank, totalHealingNeeded: number): false | Bank {
-	let totalHealingCalc = totalHealingNeeded;
-	let foodToRemove = new Bank();
-
-	const sorted = [...scaryEatables]
-		.sort((i, j) => (i.healAmount > j.healAmount ? 1 : -1))
-		.sort((a, b) => {
-			if (!userBank.has(a.item.id!)) return 1;
-			if (!userBank.has(b.item.id!)) return -1;
-			return 0;
-		});
-
-	// Gets all the eatables in the user bank
-	for (const eatable of sorted) {
-		const { id } = eatable.item;
-		const { healAmount } = eatable;
-		const amountOwned = userBank.amount(id!);
-		const toRemove = Math.ceil(totalHealingCalc / healAmount);
-		if (!amountOwned) continue;
-		if (amountOwned >= toRemove) {
-			totalHealingCalc -= Math.ceil(healAmount * toRemove);
-			foodToRemove.add(id!, toRemove);
-			break;
-		} else {
-			totalHealingCalc -= Math.ceil(healAmount * amountOwned);
-			foodToRemove.add(id!, amountOwned);
-		}
-	}
-	// Check if qty is still above 0. If it is, it means the user doesn't have enough food.
-	if (totalHealingCalc > 0) return false;
-	return foodToRemove;
-}
 export type ProjectileType = 'arrow' | 'bolt';
 export const projectiles: Record<ProjectileType, number[]> = {
 	arrow: resolveItems(['Adamant arrow', 'Rune arrow', 'Amethyst arrow', 'Dragon arrow', 'Hellfire arrow']),
@@ -661,18 +524,6 @@ export function getCommandArgs(command: Command, args: any[]) {
 }
 
 export const GLOBAL_BSO_XP_MULTIPLIER = 5;
-
-export const COMMAND_BECAME_SLASH_COMMAND_MESSAGE = (
-	msg: KlasaMessage | null,
-	commandName?: string
-) => `This command you're trying to use, has been changed to a 'slash command'.
-
-- Slash commands are integrated into the actual Discord client. We are *required* to change our commands to be slash commands.
-- Slash commands are generally easier to use, and also have new features like autocompletion. They take some time to get used to though.
-- You no longer use this command using \`+${commandName ?? msg?.command?.name}\`, now you use: \`/${
-	commandName ?? msg?.command?.name
-}\`
-`;
 
 export const DISABLED_COMMANDS = new Set<string>();
 export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'none'] as const;

@@ -525,8 +525,8 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 	}
 }
 
-export async function tameLastFinishedActivity(user: User) {
-	const tameID = user.selected_tame;
+export async function tameLastFinishedActivity(user: MUser) {
+	const tameID = user.user.selected_tame;
 	if (!tameID) return null;
 	return prisma.tameActivity.findFirst({
 		where: {
@@ -549,7 +549,7 @@ export async function repeatTameTrip({
 	channelID: string | bigint;
 	userID: string | bigint;
 	guildID: string | bigint | undefined;
-	user: User;
+	user: MUser;
 	member: APIInteractionGuildMember | GuildMember | null;
 }) {
 	const activity = await tameLastFinishedActivity(user);

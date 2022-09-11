@@ -1,11 +1,11 @@
 import { time } from '@discordjs/builders';
 import { Duration } from '@sapphire/time-utilities';
-import { MessageAttachment } from 'discord.js';
+import { AttachmentBuilder, PermissionsBitField } from 'discord.js';
 import { Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
-import { prisma } from '../../lib/settings/prisma';
-import { addToGPTaxBalance, channelIsSendable, getSupportGuild, isSuperUntradeable } from '../../lib/util';
+import { addToGPTaxBalance, prisma } from '../../lib/settings/prisma';
+import { channelIsSendable, getSupportGuild, isSuperUntradeable } from '../../lib/util';
 import { logError } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
@@ -55,14 +55,14 @@ export const giveawayCommand: OSBMahojiCommand = {
 		interaction,
 		channelID
 	}: CommandRunOptions<{ start?: { duration: string; items?: string; filter?: string; search?: string } }>) => {
-		const user = await globalClient.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		if (user.isIronman) return 'You cannot do giveaways!';
 		const mUser = await mahojiUsersSettingsFetch(user.id);
 		const channel = globalClient.channels.cache.get(channelID.toString());
 		if (!channelIsSendable(channel)) return 'Invalid channel.';
 
 		if (options.start) {
-			if (!channel.permissionsFor(globalClient.user!)?.has('ADD_REACTIONS')) {
+			if (!channel.permissionsFor(globalClient.user!)?.has(PermissionsBitField.Flags.AddReactions)) {
 				return "I'm missing permissions to add reactions.";
 			}
 			const existingGiveaways = await prisma.giveaway.findMany({
@@ -82,7 +82,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 
 			const bank = parseBank({
 				inputStr: options.start.items,
-				inputBank: user.bank(),
+				inputBank: user.bank,
 				excludeItems: mUser.favoriteItems,
 				user,
 				search: options.start.search,
@@ -94,7 +94,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 				return 'You are trying to sell unsellable items.';
 			}
 
-			if (!user.bank().fits(bank)) {
+			if (!user.bank.fits(bank)) {
 				return "You don't own those items.";
 			}
 
@@ -129,11 +129,11 @@ export const giveawayCommand: OSBMahojiCommand = {
 			
 React to this messsage with ${reaction} to enter.`,
 				files: [
-					new MessageAttachment(
+					new AttachmentBuilder(
 						(
 							await makeBankImage({
 								bank,
-								title: `${user.username}'s Giveaway`
+								title: `${user.usernameOrMention}'s Giveaway`
 							})
 						).file.buffer
 					)

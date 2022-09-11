@@ -1,13 +1,11 @@
-import { User } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 
 import { ClueTiers } from '../clues/clueTiers';
 import { prisma } from '../settings/prisma';
-import { ItemBank } from '../types';
 import { getItem } from '../util/getOSItem';
 
 // Functions in this file should not depend on any other commands
-export async function calcActualClues(user: User) {
+export async function calcActualClues(user: MUser) {
 	const result: { id: number; qty: number }[] =
 		await prisma.$queryRawUnsafe(`SELECT (data->>'clueID')::int AS id, SUM((data->>'quantity')::int) AS qty
 FROM activity
@@ -22,8 +20,8 @@ GROUP BY data->>'clueID';`);
 		if (!item) continue;
 		casketsCompleted.add(item.id, res.qty);
 	}
-	const cl = new Bank(user.collectionLogBank as ItemBank);
-	const opens = new Bank(user.openable_scores as ItemBank);
+	const { cl } = user;
+	const opens = new Bank(user.openableScores());
 
 	// Actual clues are only ones that you have: received in your cl, completed in trips, and opened.
 	const actualClues = new Bank();

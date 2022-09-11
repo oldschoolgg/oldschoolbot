@@ -9,7 +9,6 @@ import {
 	Time,
 	uniqueArr
 } from 'e';
-import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank, Monsters } from 'oldschooljs';
@@ -48,9 +47,12 @@ import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUse
 import { Consumable, KillableMonster } from '../../../lib/minions/types';
 import { calcPOHBoosts } from '../../../lib/poh';
 import { trackLoot } from '../../../lib/settings/prisma';
+<<<<<<< HEAD
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
+=======
+>>>>>>> master
 import { SlayerTaskUnlocksEnum } from '../../../lib/slayer/slayerUnlocks';
 import { determineBoostChoice, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../../lib/types/minions';
@@ -65,20 +67,12 @@ import {
 	isWeekend,
 	itemNameFromID,
 	randomVariation,
-	stringMatches,
-	updateBankSetting
+	stringMatches
 } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import findMonster from '../../../lib/util/findMonster';
 import getOSItem from '../../../lib/util/getOSItem';
-import { sendToChannelID } from '../../../lib/util/webhook';
-import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
-import { igneCommand } from './igneCommand';
-import { kgCommand } from './kgCommand';
-import { kkCommand } from './kkCommand';
-import { moktangCommand } from './moktangCommand';
-import { naxxusCommand } from './naxxusCommand';
 import { nexCommand } from './nexCommand';
 import { nightmareCommand } from './nightmareCommand';
 import { getPOH } from './pohCommand';
@@ -142,7 +136,7 @@ const degradeableItemsCanUse = [
 	}
 ];
 
-function applySkillBoost(user: KlasaUser, duration: number, styles: AttackStyles[]): [number, string] {
+function applySkillBoost(user: MUser, duration: number, styles: AttackStyles[]): [number, string] {
 	const skillTotal = addArrayOfNumbers(styles.map(s => user.skillLevel(s)));
 
 	let newDuration = duration;
@@ -177,13 +171,14 @@ function attackStyleSkillToGearSetup(attackSkill: SkillsEnum | AttackStyles): Ge
 }
 
 export async function minionKillCommand(
+	userID: string,
 	interaction: SlashCommandInteraction,
-	user: KlasaUser,
 	channelID: bigint,
 	name: string,
 	quantity: number | undefined,
 	method: PvMMethod | undefined
 ) {
+	const user = await mUserFetch(userID);
 	if (user.minionIsBusy) {
 		return 'Your minion is busy.';
 	}
@@ -213,8 +208,7 @@ export async function minionKillCommand(
 	if (name.toLowerCase().includes('naxxus')) return naxxusCommand(user, channelID, quantity);
 
 	if (revenantMonsters.some(i => i.aliases.some(a => stringMatches(a, name)))) {
-		const mUser = await mahojiUsersSettingsFetch(user.id);
-		return revsCommand(user, mUser, channelID, interaction, name);
+		return revsCommand(user, channelID, interaction, name);
 	}
 
 	const monster = findMonster(name);
@@ -232,7 +226,7 @@ export async function minionKillCommand(
 	}
 
 	// Set chosen boost based on priority:
-	const myCBOpts = user.settings.get(UserSettings.CombatOptions);
+	const myCBOpts = user.combatOptions;
 	const boostChoice = determineBoostChoice({
 		cbOpts: myCBOpts as CombatOptionsEnum[],
 		user,
@@ -242,7 +236,7 @@ export async function minionKillCommand(
 	});
 
 	// Check requirements
-	const [hasReqs, reason] = user.hasMonsterRequirements(monster);
+	const [hasReqs, reason] = hasMonsterRequirements(user, monster);
 	if (!hasReqs) return reason ?? "You don't have the requirements to fight this monster";
 
 	const [hasFavour, requiredPoints] = gotFavour(user, Favours.Shayzien, 100);
@@ -274,7 +268,7 @@ export async function minionKillCommand(
 		}
 	}
 
-	for (const [itemID, boostAmount] of Object.entries(user.resolveAvailableItemBoosts(monster))) {
+	for (const [itemID, boostAmount] of Object.entries(resolveAvailableItemBoosts(user, monster))) {
 		timeToFinish *= (100 - boostAmount) / 100;
 		boosts.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
 	}
@@ -283,11 +277,11 @@ export async function minionKillCommand(
 		timeToFinish = reduceNumByPercent(timeToFinish, 20);
 		boosts.push('20% boost for Gregoyle');
 	}
-	if (user.hasItemEquippedAnywhere('Dwarven warhammer') && !monster.wildy) {
+	if (user.hasEquipped('Dwarven warhammer') && !monster.wildy) {
 		timeToFinish = reduceNumByPercent(timeToFinish, 40);
 		boosts.push('40% boost for Dwarven warhammer');
 	}
-	if (user.getGear('wildy').hasEquipped(['Hellfire bow']) && monster.wildy) {
+	if (user.gear.wildy.hasEquipped(['Hellfire bow']) && monster.wildy) {
 		timeToFinish /= 3;
 		boosts.push('3x boost for Hellfire bow');
 	}
@@ -304,8 +298,9 @@ export async function minionKillCommand(
 	const degItemBeingUsed = [];
 	for (const degItemCanUse of degradeableItemsCanUse) {
 		const isUsing =
-			attackStyles.map(attackStyleSkillToGearSetup).includes(degItemCanUse.attackStyle as GearSetupType) &&
-			user.getGear(degItemCanUse.attackStyle as GearSetupType).hasEquipped(degItemCanUse.item.id);
+			monster.attackStyleToUse &&
+			convertAttackStyleToGearSetup(monster.attackStyleToUse) === degItemCanUse.attackStyle &&
+			user.gear[degItemCanUse.attackStyle].hasEquipped(degItemCanUse.item.id);
 		if (isUsing) {
 			const estimatedChargesNeeded = degItemCanUse.charges(
 				monster,
@@ -331,15 +326,23 @@ export async function minionKillCommand(
 	// Removed vorkath because he has a special boost.
 	if (monster.name.toLowerCase() !== 'vorkath' && osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon)) {
 		if (
-			user.hasItemEquippedOrInBank('Dragon hunter lance') &&
+			user.hasEquippedOrInBank('Dragon hunter lance') &&
 			!attackStyles.includes(SkillsEnum.Ranged) &&
 			!attackStyles.includes(SkillsEnum.Magic)
 		) {
+<<<<<<< HEAD
 			timeToFinish = reduceNumByPercent(timeToFinish, 20);
 			boosts.push('20% for Dragon hunter lance');
 		} else if (user.hasItemEquippedOrInBank('Dragon hunter crossbow') && attackStyles.includes(SkillsEnum.Ranged)) {
 			timeToFinish = reduceNumByPercent(timeToFinish, 20);
 			boosts.push('20% for Dragon hunter crossbow');
+=======
+			timeToFinish = reduceNumByPercent(timeToFinish, 15);
+			boosts.push('15% for Dragon hunter lance');
+		} else if (user.hasEquippedOrInBank('Dragon hunter crossbow') && attackStyles.includes(SkillsEnum.Ranged)) {
+			timeToFinish = reduceNumByPercent(timeToFinish, 15);
+			boosts.push('15% for Dragon hunter crossbow');
+>>>>>>> master
 		}
 	}
 
@@ -351,6 +354,7 @@ export async function minionKillCommand(
 	let salveAmuletBoostMsg = '';
 
 	// Calculate Slayer helmet boost on task if they have black mask or similar
+<<<<<<< HEAD
 	if (isOnTask && user.hasItemEquippedOrInBank('Infernal slayer helmet(i)')) {
 		blackMaskBoost = 22;
 		blackMaskBoostMsg = `${blackMaskBoost}% for Infernal slayer helmet(i) on task`;
@@ -364,10 +368,14 @@ export async function minionKillCommand(
 		blackMaskBoostMsg = `${blackMaskBoost}% for Infernal slayer helmet on melee task`;
 	} else if (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic)) {
 		if (isOnTask && user.hasItemEquippedOrInBank('Black mask (i)')) {
+=======
+	if (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic)) {
+		if (isOnTask && user.hasEquippedOrInBank('Black mask (i)')) {
+>>>>>>> master
 			blackMaskBoost = oneSixthBoost;
 			blackMaskBoostMsg = `${blackMaskBoost}% for Black mask (i) on non-melee task`;
 		}
-	} else if (isOnTask && user.hasItemEquippedOrInBank('Black mask')) {
+	} else if (isOnTask && user.hasEquippedOrInBank('Black mask')) {
 		blackMaskBoost = oneSixthBoost;
 		blackMaskBoostMsg = `${blackMaskBoost}% for Black mask on melee task`;
 	}
@@ -375,15 +383,15 @@ export async function minionKillCommand(
 	// Calculate Salve amulet boost on task if the monster is undead or similar
 	const undeadMonster = osjsMon?.data?.attributes?.includes(MonsterAttribute.Undead);
 	if (undeadMonster && (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic))) {
-		if (user.hasItemEquippedOrInBank('Salve amulet(i)')) {
-			const enhancedBoost = user.hasItemEquippedOrInBank('Salve amulet(ei)');
+		if (user.hasEquippedOrInBank('Salve amulet(i)')) {
+			const enhancedBoost = user.hasEquippedOrInBank('Salve amulet(ei)');
 			salveAmuletBoost = enhancedBoost ? 20 : oneSixthBoost;
 			salveAmuletBoostMsg = `${salveAmuletBoost}% for Salve amulet${
 				enhancedBoost ? '(ei)' : '(i)'
 			} on non-melee task`;
 		}
-	} else if (undeadMonster && user.hasItemEquippedOrInBank('Salve amulet')) {
-		const enhancedBoost = user.hasItemEquippedOrInBank('Salve amulet(e)');
+	} else if (undeadMonster && user.hasEquippedOrInBank('Salve amulet')) {
+		const enhancedBoost = user.hasEquippedOrInBank('Salve amulet(e)');
 		salveAmuletBoost = enhancedBoost ? 20 : oneSixthBoost;
 		salveAmuletBoostMsg = `${salveAmuletBoost}% for Salve amulet${enhancedBoost ? ' (e)' : ''} on melee task`;
 	}
@@ -476,8 +484,8 @@ export async function minionKillCommand(
 		boosts.push(`${boostCannon}% for Cannon in singles`);
 	}
 
-	const hasBlessing = user.hasItemEquippedAnywhere('Dwarven blessing');
-	const hasZealotsAmulet = user.hasItemEquippedAnywhere('Amulet of zealots');
+	const hasBlessing = user.hasEquipped('Dwarven blessing');
+	const hasZealotsAmulet = user.hasEquipped('Amulet of zealots');
 	if (hasZealotsAmulet && hasBlessing) {
 		timeToFinish *= 0.75;
 		boosts.push('25% for Dwarven blessing & Amulet of zealots');
@@ -520,7 +528,7 @@ export async function minionKillCommand(
 			effectiveQtyRemaining = Math.ceil(effectiveQtyRemaining / 4);
 		} else if (
 			monster.id === Monsters.GrotesqueGuardians.id &&
-			user.settings.get(UserSettings.Slayer.SlayerUnlocks).includes(SlayerTaskUnlocksEnum.DoubleTrouble)
+			user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.DoubleTrouble)
 		) {
 			effectiveQtyRemaining = Math.ceil(effectiveQtyRemaining / 2);
 		}
@@ -529,10 +537,10 @@ export async function minionKillCommand(
 	let duration = timeToFinish * quantity;
 
 	// If you have dwarven blessing, you need 1 prayer pot per 5 mins
-	const prayerPots = user.bank().amount('Prayer potion(4)');
+	const prayerPots = user.bank.amount('Prayer potion(4)');
 	const fiveMinIncrements = Math.ceil(duration / (Time.Minute * 5));
 	let prayerPotsNeeded = Math.max(1, fiveMinIncrements);
-	const hasPrayerMasterCape = user.hasItemEquippedAnywhere('Prayer master cape');
+	const hasPrayerMasterCape = user.hasEquipped('Prayer master cape');
 	if (hasPrayerMasterCape && hasBlessing) {
 		boosts.push('40% less prayer pots');
 		prayerPotsNeeded = Math.floor(0.6 * prayerPotsNeeded);
@@ -561,7 +569,7 @@ export async function minionKillCommand(
 		consumableCosts.push(monster.itemCost);
 	}
 
-	const infiniteWaterRunes = user.hasItemEquippedAnywhere(getSimilarItems(itemID('Staff of water')));
+	const infiniteWaterRunes = user.hasEquipped(getSimilarItems(itemID('Staff of water')), false);
 	const perKillCost = new Bank();
 	// Calculate per kill cost:
 	if (consumableCosts.length > 0) {
@@ -580,9 +588,9 @@ export async function minionKillCommand(
 			if (itemMultiple) {
 				if (consumable.isRuneCost) {
 					// Free casts for kodai + sotd
-					if (user.hasItemEquippedAnywhere('Kodai wand')) {
+					if (user.hasEquipped('Kodai wand')) {
 						itemMultiple = Math.ceil(0.85 * itemMultiple);
-					} else if (user.hasItemEquippedAnywhere('Staff of the dead')) {
+					} else if (user.hasEquipped('Staff of the dead')) {
 						itemMultiple = Math.ceil((6 / 7) * itemMultiple);
 					}
 				}
@@ -604,7 +612,7 @@ export async function minionKillCommand(
 		// This will be replaced with a generic function in another PR
 		if (infiniteWaterRunes) perKillCost.remove('Water rune', perKillCost.amount('Water rune'));
 		// Calculate how many monsters can be killed with that cost:
-		const fits = user.bank({ withGP: true }).fits(perKillCost);
+		const fits = user.bankWithGP.fits(perKillCost);
 		if (fits < Number(quantity)) {
 			duration = Math.floor(duration * (fits / Number(quantity)));
 			quantity = fits;
@@ -747,7 +755,7 @@ export async function minionKillCommand(
 	}
 
 	if (lootToRemove.length > 0) {
-		updateBankSetting(globalClient, ClientSettings.EconomyStats.PVMCost, lootToRemove);
+		updateBankSetting('economyStats_PVMCost', lootToRemove);
 		await user.removeItemsFromBank(lootToRemove);
 		totalCost.add(lootToRemove);
 	}
@@ -800,7 +808,7 @@ export async function minionKillCommand(
 	return response;
 }
 
-export async function monsterInfo(user: KlasaUser, name: string): CommandResponse {
+export async function monsterInfo(user: MUser, name: string): CommandResponse {
 	const monster = findMonster(name);
 
 	if (stringMatches(name, 'nightmare')) {
@@ -815,13 +823,13 @@ export async function monsterInfo(user: KlasaUser, name: string): CommandRespons
 		monsterID: monster.id
 	});
 
-	const userKc = user.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0;
+	const userKc = user.getKC(monster.id);
 	let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, userKc);
 
 	// item boosts
 	const ownedBoostItems = [];
 	let totalItemBoost = 0;
-	for (const [itemID, boostAmount] of Object.entries(user.resolveAvailableItemBoosts(monster))) {
+	for (const [itemID, boostAmount] of Object.entries(resolveAvailableItemBoosts(user, monster))) {
 		timeToFinish *= (100 - boostAmount) / 100;
 		totalItemBoost += boostAmount;
 		ownedBoostItems.push(itemNameFromID(parseInt(itemID)));
@@ -831,14 +839,14 @@ export async function monsterInfo(user: KlasaUser, name: string): CommandRespons
 	if (monster.name.toLowerCase() !== 'vorkath' && osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon)) {
 		isDragon = true;
 		if (
-			user.hasItemEquippedOrInBank('Dragon hunter lance') &&
+			user.hasEquippedOrInBank('Dragon hunter lance') &&
 			!attackStyles.includes(SkillsEnum.Ranged) &&
 			!attackStyles.includes(SkillsEnum.Magic)
 		) {
 			timeToFinish = reduceNumByPercent(timeToFinish, 15);
 			ownedBoostItems.push('Dragon hunter lance');
 			totalItemBoost += 15;
-		} else if (user.hasItemEquippedOrInBank('Dragon hunter crossbow') && attackStyles.includes(SkillsEnum.Ranged)) {
+		} else if (user.hasEquippedOrInBank('Dragon hunter crossbow') && attackStyles.includes(SkillsEnum.Ranged)) {
 			timeToFinish = reduceNumByPercent(timeToFinish, 15);
 			ownedBoostItems.push('Dragon hunter crossbow');
 			totalItemBoost += 15;
@@ -883,7 +891,7 @@ export async function monsterInfo(user: KlasaUser, name: string): CommandRespons
 	const maxCanKillSlay = Math.floor(calcMaxTripLength(user, 'MonsterKilling') / reduceNumByPercent(timeToFinish, 15));
 	const maxCanKill = Math.floor(calcMaxTripLength(user, 'MonsterKilling') / timeToFinish);
 
-	const QP = user.settings.get(UserSettings.QP);
+	const { QP } = user;
 
 	str.push(`**Barrage/Burst**: ${monster.canBarrage ? 'Yes' : 'No'}`);
 	str.push(

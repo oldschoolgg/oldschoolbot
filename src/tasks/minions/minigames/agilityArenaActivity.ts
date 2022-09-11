@@ -1,5 +1,4 @@
 import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
@@ -12,10 +11,11 @@ import { formatDuration, randomVariation, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { determineXPFromTickets } from '../../../mahoji/lib/abstracted_commands/agilityArenaCommand';
 
-export default class extends Task {
+export const agilityArenaTask: MinionTask = {
+	type: 'AgilityArena',
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { channelID, duration, userID } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Agility);
 
 		// You get 1 ticket per minute at best without diary
@@ -62,9 +62,9 @@ export default class extends Task {
 					collectionLog: true
 				});
 				str += "**\nYou have a funny feeling you're being followed...**";
-				this.client.emit(
+				globalClient.emit(
 					Events.ServerNotification,
-					`${Emoji.Agility} **${user.username}'s** minion, ${user.minionName}, just received a Giant squirrel while running at the Agility Arena at level ${currentLevel} Agility!`
+					`${Emoji.Agility} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Giant squirrel while running at the Agility Arena at level ${currentLevel} Agility!`
 				);
 			}
 		}
@@ -98,4 +98,4 @@ export default class extends Task {
 			null
 		);
 	}
-}
+};

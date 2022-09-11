@@ -11,7 +11,6 @@ import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
 import { minionStatus } from '../../../lib/util/minionStatus';
 import { getItemContractDetails } from '../../commands/ic';
 import { spawnLampIsReady } from '../../commands/tools';
-import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
 import { calculateBirdhouseDetails } from './birdhousesCommand';
 import { isUsersDailyReady } from './dailyCommand';
 import { canRunAutoContract } from './farmingContractCommand';
@@ -20,10 +19,9 @@ export async function minionStatusCommand(
 	userID: bigint | string,
 	channelID: string
 ): Promise<InteractionResponseDataWithBufferAttachments> {
-	const user = await globalClient.fetchUser(userID);
-	const mahojiUser = await mahojiUsersSettingsFetch(userID);
+	const user = await mUserFetch(userID);
 
-	if (!mahojiUser.minion_hasBought) {
+	if (!user.user.minion_hasBought) {
 		return {
 			content:
 				"You haven't bought a minion yet! Click the button below to buy a minion and start playing the bot.",
@@ -44,7 +42,7 @@ export async function minionStatusCommand(
 		user.perkTier >= PerkTier.Four &&
 		result.catchesFromToday.length === 0 &&
 		!user.minionIsBusy &&
-		['Contest rod', "Beginner's tackle box"].every(i => user.hasItemEquippedOrInBank(i))
+		['Contest rod', "Beginner's tackle box"].every(i => user.hasEquippedOrInBank(i))
 	) {
 		buttons.push({
 			type: ComponentType.Button,
@@ -127,7 +125,7 @@ export async function minionStatusCommand(
 		});
 	}
 
-	const bank = user.bank();
+	const { bank } = user;
 
 	if (!user.minionIsBusy) {
 		for (const tier of ClueTiers.filter(t => bank.has(t.scrollID))
@@ -181,6 +179,14 @@ export async function minionStatusCommand(
 			type: ComponentType.Button
 		});
 	}
+
+	buttons.push({
+		type: ComponentType.Button,
+		custom_id: 'VIEW_BANK',
+		label: 'View Bank',
+		emoji: { id: '739459924693614653' },
+		style: ButtonStyle.Secondary
+	});
 
 	return {
 		content: status,

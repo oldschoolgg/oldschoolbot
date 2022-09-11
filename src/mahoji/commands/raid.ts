@@ -109,7 +109,7 @@ export const raidCommand: OSBMahojiCommand = {
 		};
 	}>) => {
 		if (interaction) await interaction.deferReply();
-		const user = await globalClient.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const { cox, tob } = options;
 		if (cox?.stats) return coxStatsCommand(user);
 		if (tob?.stats) return tobStatsCommand(user);

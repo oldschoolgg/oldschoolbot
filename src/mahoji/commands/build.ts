@@ -3,17 +3,13 @@ import { APIUser, ApplicationCommandOptionType, CommandRunOptions } from 'mahoji
 import { Bank } from 'oldschooljs';
 
 import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Constructables from '../../lib/skilling/skills/construction/constructables';
-import { SkillsEnum } from '../../lib/skilling/types';
 import { Skills } from '../../lib/types';
 import { ConstructionActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, getSkillsOfMahojiUser, updateBankSetting } from '../../lib/util';
+import { formatDuration, getSkillsOfMahojiUser, hasSkillReqs } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
-import { hasItemsEquippedOrInBank } from '../../lib/util/minionUtils';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
@@ -73,26 +69,26 @@ export const buildCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
-		const user = await globalClient.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const object = Constructables.find(
 			object => stringMatches(object.name, options.name) || stringMatches(object.name.split(' ')[0], options.name)
 		);
-		const [hasDs2Requirements, ds2Reason] = user.hasSkillReqs(ds2Requirements);
+		const [hasDs2Requirements, ds2Reason] = hasSkillReqs(user, ds2Requirements);
 
 		if (!object) return 'Thats not a valid object to build.';
 
-		if (user.skillLevel(SkillsEnum.Construction) < object.level) {
+		if (user.skillLevel('construction') < object.level) {
 			return `${user.minionName} needs ${object.level} Construction to create a ${object.name}.`;
 		}
 
 		if (object.name === 'Mythical cape (mounted)') {
-			if (user.settings.get(UserSettings.QP) < 205) {
+			if (user.QP < 205) {
 				return `${user.minionName} needs 205 Quest Points to build a ${object.name}.`;
 			}
 			if (!hasDs2Requirements) {
 				return `In order to build a ${object.name}, you need: ${ds2Reason}.`;
 			}
-			if (!user.hasItemEquippedOrInBank('Mythical cape')) {
+			if (!user.hasEquippedOrInBank('Mythical cape')) {
 				return `${user.minionName} needs to own a Mythical cape to build a ${object.name}.`;
 			}
 		}
@@ -101,7 +97,7 @@ export const buildCommand: OSBMahojiCommand = {
 
 		const [plank, planksQtyCost] = object.input;
 
-		const userBank = user.bank();
+		const userBank = user.bank;
 		const planksHas = userBank.amount(plank);
 
 		const maxTripLength = calcMaxTripLength(user, 'Construction');
@@ -163,7 +159,7 @@ export const buildCommand: OSBMahojiCommand = {
 
 		await transactItems({ userID: user.id, itemsToRemove: cost });
 
-		updateBankSetting(globalClient, ClientSettings.EconomyStats.ConstructCostBank, cost);
+		updateBankSetting('construction_cost_bank', cost);
 
 		await addSubTaskToActivityTask<ConstructionActivityTaskOptions>({
 			objectID: object.id,

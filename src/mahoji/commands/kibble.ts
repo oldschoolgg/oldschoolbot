@@ -97,10 +97,10 @@ export const kibbleCommand: OSBMahojiCommand = {
 			timePer = Math.floor(timePer / 2);
 		}
 		let duration = timePer * options.quantity;
-		let maxTripLength = calcMaxTripLength(user, 'KibbleMaking');
-		if (duration > calcMaxTripLength(user, 'KibbleMaking')) {
+		let maxTripLength = calcMaxTripLength('KibbleMaking');
+		if (duration > calcMaxTripLength('KibbleMaking')) {
 			return `The maximum amount of ${kibble.item.name} you can create in ${formatDuration(
-				calcMaxTripLength(user, 'KibbleMaking')
+				calcMaxTripLength('KibbleMaking')
 			)} is ${Math.floor(maxTripLength / timePer)}.`;
 		}
 

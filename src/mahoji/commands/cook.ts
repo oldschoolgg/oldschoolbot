@@ -3,7 +3,6 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import Cooking, { Cookables } from '../../lib/skilling/skills/cooking';
-import { SkillsEnum } from '../../lib/skilling/types';
 import { CookingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
@@ -43,9 +42,7 @@ export const cookCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
-		const user = await globalClient.fetchUser(userID);
-
-		await user.settings.sync(true);
+		const user = await mUserFetch(userID);
 		const cookable = Cooking.Cookables.find(
 			cookable =>
 				stringMatches(cookable.name, options.name) ||
@@ -58,7 +55,7 @@ export const cookCommand: OSBMahojiCommand = {
 			).join(', ')}.`;
 		}
 
-		if (user.skillLevel(SkillsEnum.Cooking) < cookable.level) {
+		if (user.skillLevel('cooking') < cookable.level) {
 			return `${user.minionName} needs ${cookable.level} Cooking to cook ${cookable.name}s.`;
 		}
 
@@ -75,7 +72,7 @@ export const cookCommand: OSBMahojiCommand = {
 			timeToCookSingleCookable /= 3;
 		}
 
-		const userBank = user.bank();
+		const userBank = user.bank;
 		const inputCost = new Bank(cookable.inputCookables);
 
 		const maxTripLength = calcMaxTripLength(user, 'Cooking');

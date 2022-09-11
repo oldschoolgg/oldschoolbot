@@ -6,16 +6,15 @@ import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { Emoji } from '../../lib/constants';
 import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
 import { darkAltarCommand } from '../../lib/minions/functions/darkAltarCommand';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import { RunecraftActivityTaskOptions } from '../../lib/types/minions';
-import { calcMaxRCQuantity, formatDuration, stringMatches, toTitleCase, updateBankSetting } from '../../lib/util';
+import { formatDuration, stringMatches, toTitleCase } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../lib/util/determineRunes';
 import { hasItemsEquippedOrInBank } from '../../lib/util/minionUtils';
 import { OSBMahojiCommand } from '../lib/util';
+import { calcMaxRCQuantity, updateBankSetting, userHasGracefulEquipped } from '../mahojiSettings';
 
 export const runecraftCommand: OSBMahojiCommand = {
 	name: 'runecraft',
@@ -67,7 +66,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 		options,
 		channelID
 	}: CommandRunOptions<{ rune: string; quantity?: number; usestams?: boolean; daeyalt_essence?: boolean }>) => {
-		const user = await globalClient.fetchUser(userID.toString());
+		const user = await mUserFetch(userID.toString());
 		let { rune, quantity, usestams, daeyalt_essence } = options;
 
 		rune = rune.toLowerCase().replace('rune', '').trim();
@@ -101,17 +100,17 @@ export const runecraftCommand: OSBMahojiCommand = {
 			return `${user.minionName} needs ${runeObj.levels[0][0]} Runecraft to create ${runeObj.name}s.`;
 		}
 
-		if (runeObj.qpRequired && user.settings.get(UserSettings.QP) < runeObj.qpRequired) {
+		if (runeObj.qpRequired && user.user.QP < runeObj.qpRequired) {
 			return `You need ${runeObj.qpRequired} QP to craft this rune.`;
 		}
 
-		const bank = user.bank();
+		const { bank } = user;
 		const numEssenceOwned = bank.amount('Pure essence');
 		const daeyaltEssenceOwned = bank.amount('Daeyalt essence');
 
 		let { tripLength } = runeObj;
 		const boosts = [];
-		if (user.hasGracefulEquipped()) {
+		if (userHasGracefulEquipped(user)) {
 			tripLength -= tripLength * 0.1;
 			boosts.push('10% for Graceful');
 		}
@@ -135,7 +134,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 		if (!usestams) {
 			tripLength *= 3;
 			boosts.push('**3x slower** for no Stamina potion(4)s');
-		} else if (user.hasItemEquippedOrInBank('Ring of endurance')) {
+		} else if (user.hasEquippedOrInBank(['Ring of endurance'])) {
 			tripLength *= 0.99;
 			const ringStr = '1% boost for Ring of endurance';
 			boosts.push(ringStr);
@@ -153,7 +152,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 
 		if (
 			user.skillLevel(SkillsEnum.Runecraft) >= 99 &&
-			user.hasItemEquippedOrInBank('Runecraft cape') &&
+			user.hasEquippedOrInBank('Runecraft cape') &&
 			inventorySize > 28
 		) {
 			tripLength *= 0.97;
@@ -227,8 +226,8 @@ export const runecraftCommand: OSBMahojiCommand = {
 		let teleportReduction = 1;
 		let removeTalismanAndOrRunes = new Bank();
 		if (runeObj.inputTalisman) {
-			const tomeOfFire = user.hasItemEquippedAnywhere(['Tome of fire', 'Tome of fire (empty)']) ? 0 : 7;
-			const tomeOfWater = user.hasItemEquippedAnywhere(['Tome of water', 'Tome of water (empty)']) ? 0 : 7;
+			const tomeOfFire = user.hasEquipped(['Tome of fire', 'Tome of fire (empty)']) ? 0 : 7;
+			const tomeOfWater = user.hasEquipped(['Tome of water', 'Tome of water (empty)']) ? 0 : 7;
 			const magicImbueRuneCost = determineRunes(
 				user,
 				new Bank({ 'Astral rune': 2, 'Fire rune': tomeOfFire, 'Water rune': tomeOfWater })
@@ -247,26 +246,26 @@ export const runecraftCommand: OSBMahojiCommand = {
 				}
 			}
 			removeTalismanAndOrRunes.add(runeObj.inputRune?.clone().multiply(quantity));
-			if (!user.bank().has(removeTalismanAndOrRunes.bank)) {
+			if (!user.owns(removeTalismanAndOrRunes)) {
 				return `You don't have enough runes for this trip. You need ${runeObj.inputRune
 					?.clone()
 					.multiply(quantity)}.`;
 			}
 			removeTalismanAndOrRunes.add('Binding necklace', Math.max(Math.floor(numberOfInventories / 8), 1));
-			if (!user.bank().has(removeTalismanAndOrRunes.bank)) {
+			if (!user.owns(removeTalismanAndOrRunes)) {
 				return `You don't have enough Binding necklaces for this trip. You need ${Math.max(
 					Math.floor(numberOfInventories / 8),
 					1
 				)}x Binding necklace.`;
 			}
-			if (user.skillLevel(SkillsEnum.Crafting) >= 99 && user.hasItemEquippedOrInBank('Crafting cape')) {
+			if (user.skillLevel(SkillsEnum.Crafting) >= 99 && user.hasEquippedOrInBank('Crafting cape')) {
 				teleportReduction = 2;
 			}
 			removeTalismanAndOrRunes.add(
 				'Ring of dueling(8)',
 				Math.ceil(numberOfInventories / (8 * teleportReduction))
 			);
-			if (!user.bank().has(removeTalismanAndOrRunes.bank)) {
+			if (!user.owns(removeTalismanAndOrRunes)) {
 				return `You don't have enough Ring of dueling(8) for this trip. You need ${Math.ceil(
 					numberOfInventories / (8 * teleportReduction)
 				)}x Ring of dueling(8).`;
@@ -274,7 +273,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 
 			if (usestams) {
 				removeTalismanAndOrRunes.add('Stamina potion(4)', Math.max(Math.ceil(duration / (Time.Minute * 8)), 1));
-				if (!user.bank().has(removeTalismanAndOrRunes.bank)) {
+				if (!user.owns(removeTalismanAndOrRunes)) {
 					return `You don't have enough Stamina potion(4) for this trip. You need ${Math.max(
 						Math.ceil(duration / (Time.Minute * 8)),
 						1
@@ -293,7 +292,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 		if (!user.owns(totalCost)) return `You don't own: ${totalCost}.`;
 
 		await user.removeItemsFromBank(totalCost);
-		updateBankSetting(globalClient, ClientSettings.EconomyStats.RunecraftCost, totalCost);
+		updateBankSetting('runecraft_cost', totalCost);
 
 		await addSubTaskToActivityTask<RunecraftActivityTaskOptions>({
 			runeID: runeObj.id,

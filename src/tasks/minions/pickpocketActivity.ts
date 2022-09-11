@@ -1,5 +1,4 @@
-import { percentChance, randInt, Time } from 'e';
-import { Task } from 'klasa';
+import { percentChance, randInt, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { ClueTiers } from '../../lib/clues/clueTiers';
@@ -7,7 +6,6 @@ import { Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { Stealable, stealables } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
-import { rogueOutfitPercentBonus, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 import { makeBankImage } from '../../lib/util/makeBankImage';
@@ -62,13 +60,13 @@ export function calcLootXPPickpocketing(
 	return [successful, damageTaken, xpReceived, chanceOfSuccess];
 }
 
-export default class extends Task {
+export const pickpocketTask: MinionTask = {
+	type: 'Pickpocket',
 	async run(data: PickpocketActivityTaskOptions) {
 		const { monsterID, quantity, successfulQuantity, userID, channelID, xpReceived, duration } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const obj = stealables.find(_obj => _obj.id === monsterID)!;
-
-		const currentLevel = user.skillLevel(SkillsEnum.Thieving);
+		const currentLevel = user.skillLevel('thieving');
 		let rogueOutfitBoostActivated = false;
 
 		const loot = new Bank();
@@ -94,7 +92,7 @@ export default class extends Task {
 
 		let boosts: string[] = [];
 		await clueUpgraderEffect(user, loot, boosts, 'pickpocketing');
-		if (user.hasItemEquippedOrInBank(itemID("Thieves' armband"))) {
+		if (user.hasEquippedOrInBank(itemID("Thieves' armband"))) {
 			boosts.push('3x loot for Thieves armband');
 			loot.multiply(3, notMultiplied);
 		}
@@ -144,9 +142,9 @@ export default class extends Task {
 
 		if (loot.amount('Rocky') > 0) {
 			str += "\n**You have a funny feeling you're being followed...**";
-			this.client.emit(
+			globalClient.emit(
 				Events.ServerNotification,
-				`**${user.username}'s** minion, ${
+				`**${user.usernameOrMention}'s** minion, ${
 					user.minionName
 				}, just received a **Rocky** <:Rocky:324127378647285771> while ${
 					obj.type === 'pickpockable' ? 'pickpocketing' : 'stealing'
@@ -177,4 +175,4 @@ export default class extends Task {
 			loot
 		);
 	}
-}
+};
