@@ -310,7 +310,7 @@ export async function interactionHook(data: APIInteraction) {
 			await buttonReply();
 			const response = await autoContract(await mUserFetch(user.id), BigInt(options.channelID), BigInt(user.id));
 			const channel = globalClient.channels.cache.get(options.channelID);
-			if (channelIsSendable(channel)) channel.send(convertMahojiResponseToDJSResponse(response));
+			if (channelIsSendable(channel)) return channel.send(convertMahojiResponseToDJSResponse(response));
 			break;
 		}
 		case 'NEW_SLAYER_TASK': {
@@ -322,15 +322,12 @@ export async function interactionHook(data: APIInteraction) {
 				...options
 			});
 		}
-
 		case 'DO_SHOOTING_STAR': {
 			const star = starCache.get(user.id);
 			starCache.delete(user.id);
 			if (star && star.expiry > Date.now()) {
 				const str = await shootingStarsCommand(BigInt(data.channel_id), user, star);
-				const channel = globalClient.channels.cache.get(options.channelID);
-				if (channelIsSendable(channel)) channel.send(convertMahojiResponseToDJSResponse(str));
-				break;
+				return buttonReply(str, false);
 			}
 			return buttonReply(
 				`${
@@ -340,7 +337,6 @@ export async function interactionHook(data: APIInteraction) {
 				}`
 			);
 		}
-
 		default: {
 		}
 	}
