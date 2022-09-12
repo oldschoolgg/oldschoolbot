@@ -803,7 +803,9 @@ const potions = resolveItems([
 	'Enhanced saradomin brew',
 	'Enhanced super restore',
 	'Enhanced stamina potion',
-	'Enhanced divine water'
+	'Enhanced divine water',
+	'Heat res. brew',
+	'Heat res. restore'
 ]);
 
 const herblore = resolveItems([
