@@ -198,10 +198,14 @@ export const runecraftCommand: OSBMahojiCommand = {
 		} else if (!quantity) quantity = Math.min(numEssenceOwned, maxCanDo);
 
 		let essenceRequired = quantity;
+		let runeQuantity = quantity * quantityPerEssence;
 		if (user.usingPet('Obis')) {
 			essenceRequired *= 3;
+			runeQuantity = Math.max(1, Math.floor(runeQuantity / 3));
 		}
-
+		if (runeObj.name === 'Elder rune') {
+			runeQuantity = Math.max(1, Math.floor(runeQuantity / 3));
+		}
 		if (
 			numEssenceOwned === 0 ||
 			quantity === 0 ||
