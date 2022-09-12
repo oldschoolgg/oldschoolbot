@@ -107,6 +107,7 @@ export default class extends Task {
 			}
 		}
 
+		const hasDoug = user.usingPet('Doug');
 		const isUsingObsidianPickaxe = userHasItemsEquippedAnywhere(user, ['Offhand volcanic pickaxe'], false);
 		const isDestroyed = isUsingObsidianPickaxe && !resolveItems(['Obsidian shards']).includes(ore.id);
 		if (isDestroyed) str += '\nYour volcanic pickaxe destroyed the ores.';
@@ -152,6 +153,10 @@ export default class extends Task {
 			} else if (ore.name === 'Daeyalt essence rock') {
 				for (let i = 0; i < quantity; i++) {
 					daeyaltQty += rand(2, 3);
+				}
+				if (hasDoug) {
+					daeyaltQty *= 3;
+					str += '\n <:doug:748892864813203591> Doug decides to help you out on your trip, 3x shards!';
 				}
 				loot.add(ore.id, daeyaltQty);
 			} else {
