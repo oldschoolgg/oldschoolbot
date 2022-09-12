@@ -2,12 +2,13 @@ import { activity_type_enum } from '@prisma/client';
 import { isGuildBasedChannel } from '@sapphire/discord.js-utilities';
 import { MessageAttachment, MessageCollector, MessageOptions } from 'discord.js';
 import { randInt, Time } from 'e';
-import { KlasaMessage, KlasaUser } from 'klasa';
+import { KlasaUser } from 'klasa';
+import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
 import { alching } from '../../mahoji/commands/laps';
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
-import { userStatsBankUpdate, userStatsUpdate } from '../../mahoji/mahojiSettings';
+import { allItemsOwned, updateGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from '../../mahoji/mahojiSettings';
 import { MysteryBoxes } from '../bsoOpenables';
 import { ClueTiers } from '../clues/clueTiers';
 import { COINS_ID, Emoji, lastTripCache, LastTripRunArgs, PerkTier } from '../constants';
@@ -17,15 +18,18 @@ import { inventionBoosts, InventionID, inventionItemBoost } from '../invention/i
 import { triggerRandomEvent } from '../randomEvents';
 import { runCommand } from '../settings/settings';
 import { ClientSettings } from '../settings/types/ClientSettings';
+import { UserSettings } from '../settings/types/UserSettings';
 import { RuneTable, WilvusTable, WoodTable } from '../simulation/seedTable';
 import { DougTable, PekyTable } from '../simulation/sharedTables';
 import { SkillsEnum } from '../skilling/types';
+import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import { ActivityTaskOptions } from '../types/minions';
-import { channelIsSendable, itemID, roll, toKMB, updateBankSetting, updateGPTrackSetting } from '../util';
+import { channelIsSendable, itemID, roll, toKMB, updateBankSetting } from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
 import {
 	makeBirdHouseTripButton,
 	makeDoClueButton,
+	makeNewSlayerTaskButton,
 	makeOpenCasketButton,
 	makeRepeatTripButton
 } from './globalInteractions';
@@ -66,7 +70,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 				const many = imp.bank.length > 1;
 				messages.push(`Caught ${many ? 'some' : 'an'} impling${many ? 's' : ''}, you received: ${imp.bank}`);
 				userStatsBankUpdate(user.id, 'passive_implings_bank', imp.bank);
-				await user.addItemsToBank({ items: imp.bank, collectionLog: true });
+				await transactItems({ userID: user.id, itemsToAdd: imp.bank, collectionLog: true });
 			}
 		}
 	},
@@ -85,12 +89,11 @@ const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Loot Doubling',
 		fn: async ({ data, messages, user, loot }) => {
+			const cantBeDoubled = ['GroupMonsterKilling', 'KingGoldemar', 'Ignecarus', 'Inferno', 'Alching', 'Agility'];
 			if (
 				loot &&
 				!data.cantBeDoubled &&
-				!['GroupMonsterKilling', 'KingGoldemar', 'Ignecarus', 'Inferno', 'Alching', 'Agility'].includes(
-					data.type
-				) &&
+				!cantBeDoubled.includes(data.type) &&
 				data.duration > Time.Minute * 20 &&
 				roll(user.usingPet('Mr. E') ? 12 : 15)
 			) {
@@ -106,7 +109,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Custom Pet Perk',
 		fn: async ({ data, messages, user }) => {
-			const pet = user.equippedPet();
+			const pet = user.settings.get(UserSettings.Minion.EquippedPet);
 			const minutes = Math.floor(data.duration / Time.Minute);
 			if (minutes < 5) return;
 			let bonusLoot = new Bank();
@@ -195,7 +198,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Voidling',
 		fn: async ({ data, messages, user }) => {
-			if (!user.allItemsOwned().has('Voidling')) return;
+			if (!allItemsOwned(user).has('Voidling')) return;
 			const voidlingEquipped = user.usingPet('Voidling');
 			const alchResult = alching({
 				user,
@@ -274,8 +277,8 @@ export async function handleTripFinish(
 	message: string,
 	onContinue:
 		| undefined
-		| [string, unknown[] | Record<string, unknown>, boolean?, string?]
-		| ((args: LastTripRunArgs) => Promise<KlasaMessage | KlasaMessage[] | null>),
+		| [string, Record<string, unknown>, boolean?, string?]
+		| ((args: LastTripRunArgs) => Promise<CommandResponse | null>),
 	attachment: MessageAttachment | Buffer | undefined,
 	data: ActivityTaskOptions,
 	loot: Bank | null,
@@ -320,7 +323,6 @@ export async function handleTripFinish(
 					commandName: onContinue[0],
 					args: onContinue[1],
 					isContinue: onContinue[2],
-					method: onContinue[3],
 					bypassInhibitors: true,
 					...runCmdOptions,
 					...args
@@ -331,11 +333,18 @@ export async function handleTripFinish(
 	const components: MessageOptions['components'] = [[]];
 	if (onContinueFn) components[0].push(makeRepeatTripButton());
 	if (clueReceived && perkTier > PerkTier.One) components[0].push(makeDoClueButton(clueReceived));
-
 	const casketReceived = loot ? ClueTiers.find(i => loot?.has(i.id)) : undefined;
 	if (casketReceived) components[0].push(makeOpenCasketButton(casketReceived));
 	const birdHousedetails = await calculateBirdhouseDetails(user.id);
 	if (birdHousedetails.isReady && perkTier > PerkTier.One) components[0].push(makeBirdHouseTripButton());
+	const { currentTask } = await getUsersCurrentSlayerInfo(user.id);
+	if (
+		(currentTask === null || currentTask.quantity_remaining <= 0) &&
+		perkTier > PerkTier.One &&
+		data.type === 'MonsterKilling'
+	) {
+		components[0].push(makeNewSlayerTaskButton());
+	}
 	sendToChannelID(channelID, {
 		content: message,
 		image: attachment,

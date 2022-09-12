@@ -106,6 +106,7 @@ export async function moktangActivity(data: MoktangTaskOptions) {
 	}
 	if (isDoubleLootActive(data.duration)) {
 		loot.multiply(2);
+		data.cantBeDoubled = true;
 	}
 
 	const res = await klasaUser.addItemsToBank({ items: loot, collectionLog: true });
@@ -135,7 +136,7 @@ export async function moktangActivity(data: MoktangTaskOptions) {
 		previousCL: res.previousCL
 	});
 
-	for (const item of resolveItems(['Claws frame', 'Mini moktang'])) {
+	for (const item of resolveItems(['Igne gear frame', 'Mini moktang'])) {
 		if (loot.has(item)) {
 			globalClient.emit(
 				Events.ServerNotification,

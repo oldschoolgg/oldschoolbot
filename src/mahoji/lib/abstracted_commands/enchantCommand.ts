@@ -62,7 +62,7 @@ export async function enchantCommand(user: KlasaUser, channelID: bigint, name: s
 			enchantable.input
 		}, you're missing **${cost.clone().remove(userBank)}**.`;
 	}
-	await user.removeItemsFromBank(cost);
+	await transactItems({ userID: user.id, itemsToRemove: cost });
 
 	updateBankSetting(globalClient, ClientSettings.EconomyStats.MagicCostBank, cost);
 
@@ -72,7 +72,8 @@ export async function enchantCommand(user: KlasaUser, channelID: bigint, name: s
 		channelID: channelID.toString(),
 		quantity,
 		duration,
-		type: 'Enchanting'
+		type: 'Enchanting',
+		cantBeDoubled: enchantable.cantBeDoubled
 	});
 
 	const xpHr = `${Math.round(((enchantable.xp * quantity) / (duration / Time.Minute)) * 60).toLocaleString()} XP/Hr`;

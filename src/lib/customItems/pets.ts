@@ -500,3 +500,16 @@ setCustomItem(
 	},
 	1_000_000
 );
+
+setCustomItem(
+	52_687,
+	'Balloon cat',
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	1_000_000
+);

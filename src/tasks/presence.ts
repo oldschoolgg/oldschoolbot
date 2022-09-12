@@ -15,7 +15,7 @@ export async function syncPrescence() {
 
 	let str = isDoubleLootActive()
 		? `${formatDuration(DOUBLE_LOOT_FINISH_TIME_CACHE - Date.now(), true)} Double Loot!`
-		: `${globalClient.options.prefix}info`;
+		: '/help';
 	if (globalClient.user!.presence.activities[0]?.name !== str) {
 		globalClient.user?.setActivity(str);
 	}

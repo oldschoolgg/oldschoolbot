@@ -1,10 +1,10 @@
 import { TextChannel } from 'discord.js';
 import { KlasaUser } from 'klasa';
 
-import PatreonTask from '../../../../tasks/patreon';
 import { boxFrenzy } from '../../../boxFrenzy';
 import { Channel } from '../../../constants';
 import { addPatronLootTime } from '../../../doubleLoot';
+import { patreonTask } from '../../../patreon';
 import { sendToChannelID } from '../../../util/webhook';
 import { GithubSponsorsWebhookData } from '../../githubApiTypes';
 import { FastifyServer } from '../../types';
@@ -30,7 +30,7 @@ const githubSponsors = (server: FastifyServer) =>
 						content: `${data.sender.login}[${data.sender.id}] became a Tier ${effectiveTier} sponsor.`
 					});
 					if (user) {
-						await (globalClient.tasks.get('patreon') as PatreonTask)!.givePerks(user.id, tier);
+						await patreonTask.givePerks(user.id, tier);
 					}
 
 					addPatronLootTime(tier, user as KlasaUser);
@@ -58,13 +58,13 @@ ${data.sender.login} became a Github sponsor, as a reward for everyone, here is 
 						} to Tier ${to - 1}.`
 					});
 					if (user) {
-						await (globalClient.tasks.get('patreon') as PatreonTask)!.changeTier(user.id, from, to);
+						await patreonTask.changeTier(user.id, from, to);
 					}
 					break;
 				}
 				case 'cancelled': {
 					if (user) {
-						await (globalClient.tasks.get('patreon') as PatreonTask)!.removePerks(user.id);
+						await patreonTask.removePerks(user.id);
 					}
 
 					sendToChannelID(Channel.NewSponsors, {

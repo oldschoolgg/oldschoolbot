@@ -320,6 +320,7 @@ const cantBeDropped = resolveItems([
 	'Nihil horn',
 	'Zaryte crossbow',
 	'Zaryte vambraces',
+	'Justiciar armour set',
 	...allPetIDs,
 	...PMBTable.allItems,
 	...baseHolidayItems.allItems,

@@ -27,15 +27,17 @@ import { Inventions, transactMaterialsFromUser } from '../../lib/invention/inven
 import { MaterialBank } from '../../lib/invention/MaterialBank';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { allOpenables } from '../../lib/openables';
+import { tiers } from '../../lib/patreon';
 import { Minigames } from '../../lib/settings/minigames';
 import { prisma } from '../../lib/settings/prisma';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Skills from '../../lib/skilling/skills';
 import Farming from '../../lib/skilling/skills/farming';
+import { stressTest } from '../../lib/stressTest';
 import { Gear } from '../../lib/structures/Gear';
-import { tameSpecies } from '../../lib/tames';
-import { assert, stringMatches } from '../../lib/util';
+import { getUsersTame, tameSpecies } from '../../lib/tames';
+import { stringMatches } from '../../lib/util';
 import {
 	FarmingPatchName,
 	farmingPatchNames,
@@ -46,12 +48,12 @@ import getOSItem from '../../lib/util/getOSItem';
 import { logError } from '../../lib/util/logError';
 import { parseStringBank } from '../../lib/util/parseStringBank';
 import resolveItems from '../../lib/util/resolveItems';
-import { tiers } from '../../tasks/patreon';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import { allUsableItems } from '../lib/abstracted_commands/useCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../mahojiSettings';
 import { generateNewTame } from './nursery';
+import { tameImage } from './tames';
 
 async function giveMaxStats(user: KlasaUser, level = 99, qp = MAX_QP) {
 	const paths = Object.values(Skills).map(sk => `skills.${sk.id}`);
@@ -441,6 +443,11 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
+					name: 'naxxus',
+					description: 'Gives you Naxxus gear'
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
 					name: 'setmonsterkc',
 					description: 'Set monster kc.',
 					options: [
@@ -501,9 +508,25 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'stresstest',
 					description: 'Stress test.'
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'settamelvl',
+					description: 'Change all tame lvls to something.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'lvl',
+							description: 'The lvl to set.',
+							required: true,
+							min_value: 70,
+							max_value: 100
+						}
+					]
 				}
 			],
 			run: async ({
+				interaction,
 				options,
 				userID
 			}: CommandRunOptions<{
@@ -513,6 +536,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				reset?: {};
 				setminigamekc?: { minigame: string; kc: number };
 				setxp?: { skill: string; xp: number };
+				settamelvl?: { lvl: number };
 				spawn?: {
 					preset?: string;
 					collectionlog?: boolean;
@@ -523,6 +547,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				};
 				nexhax?: {};
 				badnexgear?: {};
+				naxxus?: {};
 				setmonsterkc?: { monster: string; kc: string };
 				irontoggle?: {};
 				spawntames?: {};
@@ -531,12 +556,31 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				wipe?: { thing: typeof thingsToWipe[number] };
 				refreshic?: {};
 			}>) => {
+				await interaction.deferReply();
 				if (production) {
 					logError('Test command ran in production', { userID: userID.toString() });
 					return 'This will never happen...';
 				}
+				if (options.stresstest) {
+					return stressTest(userID.toString());
+				}
 				const user = await globalClient.fetchUser(userID.toString());
 				const mahojiUser = await mahojiUsersSettingsFetch(user.id);
+
+				if (options.settamelvl) {
+					const tame = await getUsersTame(user);
+					if (!tame.tame) return 'no tame selected';
+					await prisma.tame.update({
+						where: {
+							id: tame.tame.id
+						},
+						data: {
+							max_combat_level: options.settamelvl.lvl
+						}
+					});
+					return tameImage(user);
+				}
+
 				if (options.refreshic) {
 					await mahojiUserSettingsUpdate(user.id, {
 						last_item_contract_date: 0
@@ -650,6 +694,72 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					await user.addItemsToBank({ items: bankToGive, collectionLog: Boolean(collectionlog) });
 					return `Spawned: ${bankToGive.toString().slice(0, 500)}.`;
 				}
+				if (options.naxxus) {
+					const mage = new Gear({
+						[EquipmentSlot.Weapon]: 'Void staff',
+						[EquipmentSlot.Shield]: 'Abyssal tome',
+						[EquipmentSlot.Ammo]: 'Dwarven blessing',
+						[EquipmentSlot.Body]: 'Gorajan occult top',
+						[EquipmentSlot.Legs]: 'Gorajan occult legs',
+						[EquipmentSlot.Feet]: 'Gorajan occult boots',
+						[EquipmentSlot.Cape]: 'Vasa cloak',
+						[EquipmentSlot.Neck]: 'Arcane blast necklace',
+						[EquipmentSlot.Hands]: 'Gorajan occult gloves',
+						[EquipmentSlot.Head]: 'Gorajan occult helmet',
+						[EquipmentSlot.Ring]: 'Spellbound ring(i)'
+					});
+					const melee = new Gear({
+						[EquipmentSlot.Weapon]: 'Drygore rapier',
+						[EquipmentSlot.Shield]: 'Offhand drygore rapier',
+						[EquipmentSlot.Ammo]: 'Dwarven blessing',
+						[EquipmentSlot.Body]: 'Gorajan warrior top',
+						[EquipmentSlot.Legs]: 'Gorajan warrior legs',
+						[EquipmentSlot.Feet]: 'Gorajan warrior boots',
+						[EquipmentSlot.Cape]: 'Tzkal cape',
+						[EquipmentSlot.Neck]: "Brawler's hook necklace",
+						[EquipmentSlot.Hands]: 'Gorajan warrior gloves',
+						[EquipmentSlot.Head]: 'Gorajan warrior helmet',
+						[EquipmentSlot.Ring]: 'Ignis ring(i)'
+					});
+					const wildy = new Gear({
+						[EquipmentSlot.Body]: "Karil's leathertop",
+						[EquipmentSlot.Legs]: "Karil's leatherskirt"
+					});
+
+					const supplies = new Bank()
+						.add('Enhanced saradomin brew', 30_000)
+						.add('Enhanced super restore', 10_000)
+						.add('Enhanced divine water', 20_000)
+						.add('Saradomin brew(4)', 10_000)
+						.add('Super restore(4)', 10_000)
+						.add('Stamina potion(4)', 10_000)
+						.add('Crystal acorn', 100)
+						.add('Grand crystal acorn', 100);
+
+					const currentBitfields = mahojiUser.bitfield ?? [];
+					await mahojiUserSettingsUpdate(user.id, {
+						gear_melee: melee.raw() as Prisma.InputJsonObject,
+						gear_mage: mage.raw() as Prisma.InputJsonObject,
+						gear_wildy: wildy.raw() as Prisma.InputJsonObject,
+						skills_strength: convertLVLtoXP(120),
+						skills_attack: convertLVLtoXP(120),
+						skills_ranged: convertLVLtoXP(120),
+						skills_prayer: convertLVLtoXP(120),
+						skills_hitpoints: convertLVLtoXP(120),
+						skills_defence: convertLVLtoXP(120),
+						skills_magic: convertLVLtoXP(120),
+						skills_slayer: convertLVLtoXP(120),
+						skills_herblore: convertLVLtoXP(120),
+						skills_hunter: convertLVLtoXP(120),
+						skills_farming: convertLVLtoXP(120),
+						QP: 5000,
+						bank: user.bank().add(supplies).bank,
+						GP: mahojiUser.GP + BigInt(1_000_000_000),
+						void_staff_charges: 10_000,
+						bitfield: [...new Set([...currentBitfields, BitField.HasScrollOfFarming])]
+					});
+					return 'Gave you gear & supplies for Naxxus';
+				}
 				if (options.nexhax) {
 					const gear = new Gear({
 						[EquipmentSlot.Weapon]: 'Zaryte crossbow',
@@ -740,31 +850,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					});
 					return userGrowingProgressStr((await getFarmingInfo(userID)).patchesDetailed);
 				}
-				if (options.stresstest) {
-					const currentBalance = user.settings.get(UserSettings.GP);
-					const currentTbow = user.bank().amount('Twisted bow');
 
-					const b = new Bank().add('Coins', 1).add('Twisted bow');
-					for (let i = 0; i < 30; i++) {
-						await user.addItemsToBank({ items: b });
-						assert(user.settings.get(UserSettings.GP) === currentBalance + 1);
-						assert(user.bank().amount('Twisted bow') === currentTbow + 1);
-						await user.removeItemsFromBank(b);
-						await user.addItemsToBank({ items: b });
-						await user.removeItemsFromBank(b);
-						await user.addItemsToBank({ items: b });
-						await user.removeItemsFromBank(b);
-
-						const a = user.bank().bank;
-						if (!a[itemID('Twisted bow')]) a[itemID('Twisted bow')] = 0;
-						a[itemID('Twisted bow')] += 1.5;
-						await user.settings.update(UserSettings.Bank, a);
-						await user.removeItemsFromBank(new Bank().add('Twisted bow'));
-					}
-					const newBal = user.settings.get(UserSettings.GP);
-					const newTbow = user.bank().amount('Twisted bow');
-					return `Bank/GP: ${currentBalance === newBal && currentTbow === newTbow ? 'OK' : 'FAIL'}`;
-				}
 				return 'Nothin!';
 			}
 	  };

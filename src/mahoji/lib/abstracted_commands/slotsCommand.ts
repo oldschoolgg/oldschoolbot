@@ -8,8 +8,8 @@ import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
-import { channelIsSendable, updateGPTrackSetting } from '../../../lib/util';
-import { handleMahojiConfirmation, mahojiParseNumber } from '../../mahojiSettings';
+import { channelIsSendable } from '../../../lib/util';
+import { handleMahojiConfirmation, mahojiParseNumber, updateGPTrackSetting } from '../../mahojiSettings';
 
 interface Button {
 	name: string;

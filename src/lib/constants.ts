@@ -4,8 +4,7 @@ import { Command, KlasaMessage } from 'klasa';
 import { APIButtonComponent, APIButtonComponentWithCustomId, ButtonStyle, ComponentType } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
-import { convertLVLtoXP } from 'oldschooljs/dist/util';
-import PQueue from 'p-queue';
+import { convertLVLtoXP } from 'oldschooljs/dist/util/util';
 import { join } from 'path';
 
 import { DISCORD_SETTINGS, production } from '../config';
@@ -16,7 +15,6 @@ import { ActivityTaskOptions } from './types/minions';
 import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
 
-export const SupportServer = DISCORD_SETTINGS.SupportServer ?? production ? '342983479501389826' : '940758552425955348';
 export const BotID = DISCORD_SETTINGS.BotID ?? '729244028989603850';
 
 export const Channel = {
@@ -265,6 +263,7 @@ export const enum Tasks {
 	BaxtorianBathhouses = 'bathhousesActivity',
 	TroubleBrewing = 'troubleBrewingActivity',
 	PuroPuro = 'puroPuroActivity',
+	Naxxus = 'naxxusActivity',
 	Disassembling = 'disassemblingActivity',
 	Research = 'researchActivity',
 	Moktang = 'moktangActivity',
@@ -348,7 +347,8 @@ export enum BitField {
 	HasScrollOfTheHunt = 204,
 	HasBananaEnchantmentScroll = 205,
 	HasDaemonheimAgilityPass = 206,
-	DisabledGorajanBoneCrusher = 207
+	DisabledGorajanBoneCrusher = 207,
+	HasLeaguesOneMinuteLengthBoost = 208
 }
 
 interface BitFieldData {
@@ -400,6 +400,11 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 		userConfigurable: false
 	},
 	[BitField.PermanentIronman]: { name: 'Permanent Ironman', protected: false, userConfigurable: false },
+	[BitField.HasLeaguesOneMinuteLengthBoost]: {
+		name: 'Leagues One Minute Trip Length Boost',
+		protected: false,
+		userConfigurable: false
+	},
 
 	[BitField.AlwaysSmallBank]: { name: 'Always Use Small Banks', protected: false, userConfigurable: true },
 	[BitField.DisabledRandomEvents]: { name: 'Disabled Random Events', protected: false, userConfigurable: true },
@@ -467,11 +472,6 @@ export const ZALCANO_ID = 9049;
 export const NIGHTMARE_ID = 9415;
 export const MIN_LENGTH_FOR_PET = Time.Minute * 5;
 export const HESPORI_ID = 8583;
-
-/**
- * Map<user_id, PromiseQueue>
- */
-export const userQueues: Map<string, PQueue> = new Map();
 
 export const skillEmoji = {
 	runecraft: '<:runecraft:630911040435257364>',
@@ -549,7 +549,7 @@ export const mahojiInformationalButtons: APIButtonComponent[] = buttonSource.map
 export type LastTripRunArgs = Omit<RunCommandArgs, 'commandName' | 'args'>;
 export const lastTripCache = new Map<
 	string,
-	{ continue: (args: LastTripRunArgs) => Promise<CommandResponse>; data: ActivityTaskOptions }
+	{ continue: (args: LastTripRunArgs) => Promise<null | CommandResponse>; data: ActivityTaskOptions }
 >();
 
 export const PATRON_ONLY_GEAR_SETUP =
@@ -678,7 +678,6 @@ export const DISABLED_COMMANDS = new Set<string>();
 export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'none'] as const;
 export type PvMMethod = typeof PVM_METHODS[number];
 export const usernameCache = new Map<string, string>();
-export const OWNER_IDS = ['157797566833098752'];
 export const minionBuyButton: APIButtonComponentWithCustomId = {
 	type: ComponentType.Button,
 	custom_id: 'BUY_MINION',

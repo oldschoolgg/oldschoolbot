@@ -2,6 +2,7 @@ import { Time } from 'e';
 import { Task } from 'klasa';
 import { toKMB } from 'oldschooljs/dist/util';
 
+import { userHasFlappy } from '../../../lib/invention/inventions';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
@@ -17,10 +18,8 @@ export default class extends Task {
 
 		let points = pointsPerGame * quantity;
 
-		// 2x points for Flappy.
-		let hasFlappy = false;
-		if (user.usingPet('Flappy')) {
-			hasFlappy = true;
+		const flappyRes = await userHasFlappy({ user, duration });
+		if (flappyRes.shouldGiveBoost) {
 			points *= 2;
 		}
 
@@ -36,7 +35,7 @@ export default class extends Task {
 		} finished ${quantity}x games of Pest Control on the ${boatType} boat. You received ${points}x Void Knight commendation points, you now have ${user.settings.get(
 			UserSettings.PestControlPoints
 		)} points.${perHour}`;
-		if (hasFlappy) str += '\n2x Points for using Flappy.';
+		if (flappyRes.shouldGiveBoost) str += `\n${flappyRes.userMsg}`;
 
 		handleTripFinish(
 			user,

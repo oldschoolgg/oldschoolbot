@@ -114,23 +114,30 @@ export const mineCommand: OSBMahojiCommand = {
 			return `You don't have enough supplies to mix even one of this item!\nTo mix/clean a ${mixableItem.name}, you need to have ${baseCost}.`;
 		}
 
+		if (maxCanDo < quantity) {
+			quantity = maxCanDo;
+		}
+
 		if (!options.wesley && !options.zahur) {
+			const boostedTimeToMixSingleItem = reduceNumByPercent(
+				timeToMixSingleItem,
+				inventionBoosts.mechaMortar.herbloreSpeedBoostPercent
+			);
 			const boostResult = await inventionItemBoost({
 				userID: BigInt(user.id),
 				inventionID: InventionID.MechaMortar,
 				duration: Math.min(
 					maxTripLength,
-					options.quantity ? options.quantity * timeToMixSingleItem : maxTripLength
+					Math.min(maxCanDo, options.quantity ?? Math.floor(maxTripLength / boostedTimeToMixSingleItem)) *
+						boostedTimeToMixSingleItem
 				)
 			});
 			if (boostResult.success) {
-				timeToMixSingleItem = reduceNumByPercent(
-					timeToMixSingleItem,
-					inventionBoosts.mechaMortar.herbloreSpeedBoostPercent
-				);
+				timeToMixSingleItem = boostedTimeToMixSingleItem;
 				boosts.push(
 					`${inventionBoosts.mechaMortar.herbloreSpeedBoostPercent}% boost for Mecha-Mortar (${boostResult.messages})`
 				);
+				if (!options.quantity) quantity = Math.min(maxCanDo, Math.floor(maxTripLength / timeToMixSingleItem));
 			}
 		}
 		const duration = quantity * timeToMixSingleItem;

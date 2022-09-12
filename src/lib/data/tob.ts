@@ -15,6 +15,7 @@ import { assert, formatSkillRequirements, randFloat, randomVariation, skillsMeet
 import getOSItem from '../util/getOSItem';
 import { logError } from '../util/logError';
 import resolveItems from '../util/resolveItems';
+import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from './CollectionsExport';
 
 export const bareMinStats: Skills = {
 	attack: 90,
@@ -100,8 +101,6 @@ export function calculateTOBDeaths(
 	let realDeathChances: { name: string; deathChance: number }[] = [];
 	let wipeDeathChances: { name: string; deathChance: number }[] = [];
 
-	// These numbers are for proficiency. After this point, the odds of a wipe are the same, but deaths are reduced.
-	const minionProfiencyKC = isHardMode ? 75 : 50;
 	const actualDeathReductionFactor = isHardMode ? 3 : 4;
 
 	// This shifts the graph left or right, to start getting kc sooner or later. Higher = sooner:
@@ -130,8 +129,7 @@ export function calculateTOBDeaths(
 	for (let i = 0; i < TOBRooms.length; i++) {
 		const room = TOBRooms[i];
 		const wipeDeathChance = Math.min(98, (1 + room.difficultyRating / 10) * baseDeathChance);
-		const realDeathChance =
-			baseKC >= minionProfiencyKC ? wipeDeathChance / actualDeathReductionFactor : wipeDeathChance;
+		const realDeathChance = wipeDeathChance / actualDeathReductionFactor;
 		const roll = randFloat(0, 100);
 		if (roll < realDeathChance) {
 			deaths.push(i);
@@ -300,9 +298,6 @@ export async function checkTOBUser(
 	if (!user.hasMinion) {
 		return [true, `${user.username} doesn't have a minion`];
 	}
-	if (user.minionIsBusy) {
-		return [true, `${user.username} minion is busy`];
-	}
 
 	if (!skillsMeetRequirements(user.rawSkills, bareMinStats)) {
 		return [
@@ -342,18 +337,20 @@ export async function checkTOBUser(
 
 	// Melee
 	const meleeGear = user.getGear('melee');
-	if (
-		!meleeGear.hasEquipped([
-			'Abyssal tentacle',
-			'Blade of saeldor (c)',
-			'Scythe of vitur (uncharged)',
-			'Scythe of vitur'
-		]) ||
-		!meleeGear.hasEquipped(['Fire cape', 'Infernal cape'])
-	) {
+	const requiredMeleeWeapons = [
+		'Abyssal tentacle',
+		'Blade of saeldor (c)',
+		'Scythe of vitur (uncharged)',
+		'Scythe of vitur',
+		'Drygore longsword'
+	];
+	const requiredMeleeCapes = ['Fire cape', 'Infernal cape', 'TzKal cape'];
+	if (!meleeGear.hasEquipped(requiredMeleeWeapons) || !meleeGear.hasEquipped(requiredMeleeCapes)) {
 		return [
 			true,
-			`${user.username} needs an Abyssal tentacle/Blade of saeldor(c)/Scythe of vitur and Fire/Infernal cape in their melee setup!`
+			`${user.username} needs one of the following weapons: ${requiredMeleeWeapons.join(
+				'/'
+			)} and one of the following capes: ${requiredMeleeCapes.join('/')} equipped in their melee setup!`
 		];
 	}
 
@@ -387,15 +384,19 @@ export async function checkTOBUser(
 		return [true, `${user.username}'s darts are too weak`];
 	}
 
+	const requiredRangeWeapons = ['Magic shortbow', 'Twisted bow', 'Zaryte bow', 'Hellfire bow'];
+	const requiredRangeAmmo = ['Amethyst arrow', 'Rune arrow', 'Dragon arrow', 'Hellfire arrow'];
 	const rangeGear = user.getGear('range');
-	if (
-		!rangeGear.hasEquipped(['Magic shortbow', 'Twisted bow']) ||
-		!rangeGear.hasEquipped(['Amethyst arrow', 'Rune arrow', 'Dragon arrow'])
-	) {
+	if (!rangeGear.hasEquipped(requiredRangeWeapons) || !rangeGear.hasEquipped(requiredRangeAmmo)) {
 		return [
 			true,
-			`${user.username} needs a Magic shortbow or Twisted bow, and rune/dragon arrows, in their range setup!`
+			`${user.username} needs one of the following weapons: ${requiredRangeWeapons.join(
+				'/'
+			)} and one of the following ammo types: ${requiredRangeAmmo.join('/')} equipped in their range setup!`
 		];
+	}
+	if (rangeGear.hasEquipped(['Hellfire arrow']) && !rangeGear.hasEquipped('Hellfire bow')) {
+		return [true, `${user.username}, you can't use Hellfire arrows without a Hellfire bow 🤨`];
 	}
 	if (rangeGear.hasEquipped(['Dragon arrow', 'Magic shortbow'], true)) {
 		return [true, `${user.username}, you can't use Dragon arrows with a Magic shortbow 🤨`];
@@ -412,14 +413,27 @@ export async function checkTOBUser(
 			return [true, `${user.username} needs atleast 250 Theatre of Blood KC before doing Hard mode.`];
 		}
 		if (!meleeGear.hasEquipped('Infernal cape')) {
-			return [true, `${user.username} needs an Infernal cape to do Hard mode.`];
+			return [true, `${user.username} needs at least an Infernal cape to do Hard mode.`];
 		}
 	}
-
-	if (teamSize === 2) {
-		const kc = await getMinigameScore(user.id, isHardMode ? 'tob_hard' : 'tob');
-		if (kc < 150) {
-			return [true, `${user.username} needs atleast 150 KC before doing duo's.`];
+	if (teamSize === 1) {
+		if (
+			!meleeGear.hasEquipped(['Drygore longsword', 'Offhand drygore longsword'], true) &&
+			!meleeGear.hasEquipped('Scythe of vitur')
+		) {
+			return [true, 'You must either have a charged Scythe of vitur, or dual Drygore longswords to solo ToB'];
+		}
+		const minRangeSoloGear = ['Hellfire bow', 'Hellfire arrow'];
+		if (!rangeGear.hasEquipped(minRangeSoloGear, true)) {
+			return [true, 'You must either have a Hellfire bow and Hellfire arrows equipped to solo ToB'];
+		}
+		const mageGear = user.getGear('mage');
+		if (
+			!meleeGear.hasEquipped(gorajanWarriorOutfit, true) &&
+			!rangeGear.hasEquipped(gorajanArcherOutfit, true) &&
+			!mageGear.hasEquipped(gorajanOccultOutfit, true)
+		) {
+			return [true, 'You must either have at least one complete set of Gorajan armour to solo ToB'];
 		}
 	}
 
@@ -431,11 +445,12 @@ export async function checkTOBTeam(users: KlasaUser[], isHardMode: boolean): Pro
 	if (userWithoutSupplies) {
 		return `${userWithoutSupplies.username} doesn't have enough supplies`;
 	}
-	if (users.length < 2 || users.length > 5) {
-		return 'TOB team must be 2-5 users';
+	if (users.length < 1 || users.length > 5) {
+		return 'TOB team must be 1-5 users';
 	}
 
 	for (const user of users) {
+		if (user.minionIsBusy) return `${user.username}'s minion is busy.`;
 		const checkResult = await checkTOBUser(user, isHardMode, users.length);
 		if (!checkResult[0]) {
 			continue;
@@ -503,7 +518,7 @@ export function createTOBTeam({
 } {
 	const teamSize = team.length;
 	const maxScaling = 350;
-	assert(teamSize > 1 && teamSize < 6, 'TOB team must be 2-5 users');
+	assert(teamSize > 0 && teamSize < 6, 'TOB team must be 1-5 users');
 
 	let individualReductions = [];
 
@@ -541,6 +556,8 @@ export function createTOBTeam({
 		 *
 		 */
 		const meleeWeaponBoosts = [
+			['Drygore longsword', 10],
+			['Offhand drygore longsword', 8],
 			['Scythe of vitur', 15],
 			['Scythe of vitur (uncharged)', 6],
 			['Blade of saeldor (c)', 6],
@@ -549,10 +566,13 @@ export function createTOBTeam({
 		for (const [name, percent] of meleeWeaponBoosts) {
 			if (u.gear.melee.hasEquipped(name)) {
 				userPercentChange += percent;
-				break;
 			}
 		}
-		const rangeWeaponBoosts = [['Twisted bow', 4]] as const;
+		const rangeWeaponBoosts = [
+			['Hellfire bow', 10],
+			['Zaryte bow', 7.5],
+			['Twisted bow', 4]
+		] as const;
 		for (const [name, percent] of rangeWeaponBoosts) {
 			if (u.gear.range.hasEquipped(name)) {
 				userPercentChange += percent;
@@ -570,6 +590,7 @@ export function createTOBTeam({
 			}
 		}
 		const secondarySpecWeaponBoosts = [
+			['Dwarven warhammer', 12],
 			['Dragon warhammer', 6],
 			['Bandos godsword', 3]
 		] as const;
@@ -587,18 +608,25 @@ export function createTOBTeam({
 			'Void ranger helm'
 		]);
 		const eliteVoid = resolveItems(['Elite void top', 'Elite void robe', 'Void knight gloves', 'Void ranger helm']);
-		if (!u.gear.range.hasEquipped(regularVoid, true, true)) {
+		if (u.gear.range.hasEquipped(gorajanArcherOutfit, true)) {
+			userPercentChange += 2;
+		} else if (!u.gear.range.hasEquipped(regularVoid, true, true)) {
 			userPercentChange = reduceNumByPercent(userPercentChange, 20);
 		} else if (!u.gear.range.hasEquipped(eliteVoid, true, true)) {
 			userPercentChange = reduceNumByPercent(userPercentChange, 10);
 		}
-
+		if (u.gear.melee.hasEquipped(gorajanWarriorOutfit, true)) {
+			userPercentChange += 2;
+		}
+		if (u.gear.mage.hasEquipped(gorajanOccultOutfit, true)) {
+			userPercentChange += 2;
+		}
 		const deathChances = calculateTOBDeaths(u.kc, u.hardKC, u.attempts, u.hardAttempts, hardMode, gearPerecents);
 		parsedTeam.push({
 			kc: u.kc,
 			hardKC: u.hardKC,
 			deathChances,
-			wipeDeaths: deathChances.wipeDeaths,
+			wipeDeaths: team.length === 1 ? deathChances.deaths : deathChances.wipeDeaths,
 			deaths: deathChances.deaths,
 			id: u.user.id
 		});
@@ -627,12 +655,11 @@ export function createTOBTeam({
 		duration = reduceNumByPercent(duration, totalReduction);
 	}
 
-	if (duration < Time.Minute * 20) {
-		duration = Math.max(Time.Minute * 20, duration);
-	}
-
 	if (team.length < 5) {
 		duration += (5 - team.length) * (Time.Minute * 1.3);
+	}
+	if (duration < Time.Minute * 15) {
+		duration = Math.max(Time.Minute * 15, duration);
 	}
 
 	duration = Math.floor(randomVariation(duration, 5));

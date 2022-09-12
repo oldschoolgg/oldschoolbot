@@ -2,16 +2,17 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
+import { userHasFlappy } from '../../../lib/invention/inventions';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { TitheFarmActivityTaskOptions } from '../../../lib/types/minions';
-import { bankHasItem, roll } from '../../../lib/util';
+import { roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import itemID from '../../../lib/util/itemID';
+import { hasItemsEquippedOrInBank } from '../../../lib/util/minionUtils';
 
 export default class extends Task {
 	async run(data: TitheFarmActivityTaskOptions) {
-		const { userID, channelID } = data;
+		const { userID, channelID, duration } = data;
 		const baseHarvest = 85;
 		const lootStr: string[] = [];
 		const levelStr: string[] = [];
@@ -25,8 +26,8 @@ export default class extends Task {
 		const determineHarvest = baseHarvest + Math.min(15, titheFarmsCompleted);
 		let determinePoints = determineHarvest - 74;
 
-		const flappy = user.usingPet('Flappy');
-		if (flappy) {
+		const flappyRes = await userHasFlappy({ user, duration });
+		if (flappyRes.shouldGiveBoost) {
 			determinePoints *= 2;
 		}
 
@@ -56,35 +57,21 @@ export default class extends Task {
 			titheFarmsCompleted + 1
 		}x times. You now have ${titheFarmPoints + determinePoints} points to spend.`;
 
-		const userBank = user.settings.get(UserSettings.Bank);
 		let bonusXpMultiplier = 0;
 		let farmersPiecesCheck = 0;
-		if (
-			bankHasItem(userBank, itemID("Farmer's strawhat"), 1) ||
-			user.hasItemEquippedAnywhere("Farmer's strawhat")
-		) {
+		if (hasItemsEquippedOrInBank(user, ["Farmer's strawhat"])) {
 			bonusXpMultiplier += 0.004;
 			farmersPiecesCheck += 1;
 		}
-		if (
-			bankHasItem(userBank, itemID("Farmer's jacket"), 1) ||
-			bankHasItem(userBank, itemID("Farmer's shirt"), 1) ||
-			user.hasItemEquippedAnywhere(["Farmer's jacket", "Farmer's shirt"])
-		) {
+		if (hasItemsEquippedOrInBank(user, ["Farmer's jacket", "Farmer's shirt"], 'every')) {
 			bonusXpMultiplier += 0.008;
 			farmersPiecesCheck += 1;
 		}
-		if (
-			bankHasItem(userBank, itemID("Farmer's boro trousers"), 1) ||
-			user.hasItemEquippedAnywhere(itemID("Farmer's boro trousers"))
-		) {
+		if (hasItemsEquippedOrInBank(user, ["Farmer's boro trousers"])) {
 			bonusXpMultiplier += 0.006;
 			farmersPiecesCheck += 1;
 		}
-		if (
-			bankHasItem(userBank, itemID("Farmer's boots"), 1) ||
-			user.hasItemEquippedAnywhere(itemID("Farmer's boots"))
-		) {
+		if (hasItemsEquippedOrInBank(user, ["Farmer's boots"])) {
 			bonusXpMultiplier += 0.002;
 			farmersPiecesCheck += 1;
 		}
@@ -122,12 +109,14 @@ export default class extends Task {
 				} run!`
 			);
 
-			await user.addItemsToBank({ items: loot, collectionLog: true });
+			await transactItems({
+				userID: user.id,
+				collectionLog: true,
+				itemsToAdd: loot
+			});
 		}
 
-		const returnStr = `${harvestStr} ${bonusXpStr}\n\n${completedStr}${levelStr}${lootStr}\n${
-			flappy ? '<:flappy:813000865383972874> 2x points' : ''
-		}`;
+		const returnStr = `${harvestStr} ${bonusXpStr}\n\n${completedStr}${levelStr}${lootStr}\n${flappyRes.userMsg}`;
 
 		handleTripFinish(
 			user,

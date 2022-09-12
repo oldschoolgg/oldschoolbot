@@ -114,8 +114,8 @@ export const clueCommand: OSBMahojiCommand = {
 			)}.`;
 		}
 
-		const bank = user.settings.get(UserSettings.Bank);
-		const numOfScrolls = bank[clueTier.scrollID];
+		const bank = user.bank();
+		const numOfScrolls = bank.amount(clueTier.scrollID);
 
 		if (!numOfScrolls || numOfScrolls < quantity) {
 			return `You don't have ${quantity} ${clueTier.name} clue scrolls.`;

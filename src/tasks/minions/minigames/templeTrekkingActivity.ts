@@ -4,6 +4,7 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { templeTrekkingOutfit } from '../../../lib/data/CollectionsExport';
+import { userHasFlappy } from '../../../lib/invention/inventions';
 import {
 	EasyEncounterLoot,
 	HardEncounterLoot,
@@ -40,7 +41,7 @@ export default class extends Task {
 	}
 
 	async run(data: TempleTrekkingActivityTaskOptions) {
-		const { channelID, quantity, userID, difficulty } = data;
+		const { channelID, quantity, userID, difficulty, duration } = data;
 		const user = await this.client.fetchUser(userID);
 		await incrementMinigameScore(user.id, 'temple_trekking', quantity);
 		const userBank = user.bank();
@@ -83,17 +84,18 @@ export default class extends Task {
 			loot.add(rewardToken.id);
 		}
 
-		if (user.usingPet('Flappy')) {
+		const flappyRes = await userHasFlappy({ user, duration });
+		if (flappyRes.shouldGiveBoost) {
 			loot.multiply(2);
 		}
 
-		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
+		const { previousCL, itemsAdded } = await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 
-		let str = `${user}, ${
-			user.minionName
-		} finished Temple Trekking ${quantity}x times. ${totalEncounters}x encounters were defeated. ${
-			user.usingPet('Flappy') ? ' <:flappy:812280578195456002>' : ''
-		}`;
+		let str = `${user}, ${user.minionName} finished Temple Trekking ${quantity}x times. ${totalEncounters}x encounters were defeated. ${flappyRes.userMsg}`;
 
 		const image = await makeBankImage({
 			bank: itemsAdded,

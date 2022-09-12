@@ -23,7 +23,6 @@ export function T<TCustom>(k: string): CustomGet<string, TCustom> {
 export namespace UserSettings {
 	export const GP = T<number>('GP');
 	export const QP = T<number>('QP');
-	export const Bank = T<Readonly<ItemBank>>('bank');
 	export const BankBackground = T<number>('bankBackground');
 	export const Pets = T<Readonly<ItemBank>>('pets');
 	export const CollectionLogBank = T<Readonly<ItemBank>>('collectionLogBank');
@@ -65,7 +64,6 @@ export namespace UserSettings {
 	export const KourendFavour = T<UserKourendFavour>('kourend_favour');
 	export const IronmanAlts = T<readonly string[]>('ironman_alts');
 	export const MainAccount = T<string | null>('main_account');
-	export const TempCL = T<Readonly<ItemBank>>('temp_cl');
 
 	export const InfernoAttempts = T<number>('inferno_attempts');
 	export const EmergedInfernoAttempts = T<number>('emerged_inferno_attempts');

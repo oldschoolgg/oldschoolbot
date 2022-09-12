@@ -137,7 +137,7 @@ export const smithCommand: OSBMahojiCommand = {
 			} you can smith is ${Math.floor(maxTripLength / timeToSmithSingleBar)}.`;
 		}
 
-		await user.removeItemsFromBank(cost);
+		await transactItems({ userID: user.id, itemsToRemove: cost });
 		updateBankSetting(globalClient, ClientSettings.EconomyStats.SmithingCost, cost);
 
 		await addSubTaskToActivityTask<SmithingActivityTaskOptions>({
@@ -146,7 +146,8 @@ export const smithCommand: OSBMahojiCommand = {
 			channelID: channelID.toString(),
 			quantity,
 			duration,
-			type: 'Smithing'
+			type: 'Smithing',
+			cantBeDoubled: smithedItem.cantBeDoubled
 		});
 		let str = `${user.minionName} is now smithing ${quantity * smithedItem.outputMultiple}x ${
 			smithedItem.name

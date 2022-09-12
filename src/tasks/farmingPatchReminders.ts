@@ -103,8 +103,8 @@ export default class extends Task {
 							if (selection.customID === 'HARVEST') {
 								message.author = user;
 								runCommand({
-									commandName: 'farm',
-									args: [planted.name],
+									commandName: 'farming',
+									args: { harvest: { patch_name: patchType } },
 									bypassInhibitors: true,
 									channelID: message.channel.id,
 									userID: message.author.id,

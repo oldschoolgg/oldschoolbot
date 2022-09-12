@@ -145,6 +145,8 @@ model ClientStorage {
   vasa_loot               Json   @default("{}") @db.Json
   ods_cost                Json   @default("{}") @db.Json
   ods_loot                Json   @default("{}") @db.Json
+  naxxus_loot             Json   @default("{}") @db.Json
+  naxxus_cost             Json   @default("{}") @db.Json
   tame_merging_cost       Json   @default("{}") @db.Json
   trip_doubling_loot      Json   @default("{}") @db.Json
   fc_cost                 Json   @default("{}") @db.Json
@@ -410,7 +412,7 @@ model User {
   temp_cl            Json      @default("{}") @db.Json
   last_temp_cl_reset DateTime? @db.Timestamp(6)
 
-  tentacle_charges Int @default(10000)
+  tentacle_charges Int @default(0)
   sang_charges     Int @default(0)
 
   gp_luckypick BigInt @default(0)
@@ -427,6 +429,9 @@ model User {
 
   minion_bought_date DateTime? @db.Timestamp(6)
 
+  bingo_tickets_bought Int    @default(0)
+  bingo_gp_contributed BigInt @default(0)
+
   // BSO
   nursery                  Json?    @db.Json
   selected_tame            Int?
@@ -442,6 +447,9 @@ model User {
   dungeoneering_tokens     Int      @default(0)
   item_contract_streak     Int      @default(0)
   item_contract_bank       Json     @default("{}") @db.Json
+  void_staff_charges       Int      @default(0)
+
+  last_patron_double_time_trigger DateTime? @db.Timestamp(6)
 
   // Invention
   skills_invention          BigInt @default(0) @map("skills.invention")
@@ -451,6 +459,7 @@ model User {
   unlocked_blueprints       Int[]
   disabled_inventions       Int[]
 
+  @@index([bingo_tickets_bought])
   @@map("users")
 }
 
@@ -487,6 +496,7 @@ model Metric {
   cpuUser            Float  @db.Real
   cpuSystem          Float  @db.Real
   cpuPercent         Float  @db.Real
+  qps                Float? @db.Real
 
   @@map("metrics")
 }
@@ -562,7 +572,11 @@ model TameActivity {
   tame_id     Int
   tame        Tame     @relation(fields: [tame_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_aa012dd3d9d58b8acb4e2cffd4d")
 
-  @@index([completed], map: "IDX_025e73c433521b92b7202ed1a3")
+  fake_duration Int?
+  deaths        Int  @default(0)
+
+  @@index([completed])
+  @@index([tame_id])
   @@map("tame_activity")
 }
 
@@ -722,6 +736,16 @@ model UserStats {
   @@map("user_stats")
 }
 
+model BingoTeam {
+  id Int @id @unique @default(autoincrement())
+
+  first_user  String @unique @db.VarChar(19)
+  second_user String @unique @db.VarChar(19)
+  third_user  String @unique @db.VarChar(19)
+
+  @@map("bingo_team")
+}
+
 enum command_usage_status {
   Unknown
   Success
@@ -816,6 +840,7 @@ enum activity_type_enum {
   PuroPuro
   Easter
   BaxtorianBathhouses
+  Naxxus
   Disassembling
   Research
   Moktang

@@ -1,10 +1,12 @@
 import { ButtonStyle } from 'discord-api-types/v10';
-import { chunk } from 'e';
 import { APIButtonComponentWithCustomId, ComponentType } from 'mahoji';
+import { InteractionResponseDataWithBufferAttachments } from 'mahoji/dist/lib/structures/ICommand';
 
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { Emoji, lastTripCache, minionBuyButton, PerkTier } from '../../../lib/constants';
+import { getUsersFishingContestDetails } from '../../../lib/fishingContest';
 import { getUsersTame, shortTameTripDesc, tameLastFinishedActivity } from '../../../lib/tames';
+import { makeComponents } from '../../../lib/util';
 import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
 import { minionStatus } from '../../../lib/util/minionStatus';
 import { getItemContractDetails } from '../../commands/ic';
@@ -17,10 +19,7 @@ import { canRunAutoContract } from './farmingContractCommand';
 export async function minionStatusCommand(
 	userID: bigint | string,
 	channelID: string
-): Promise<{
-	content: string;
-	components: { components: APIButtonComponentWithCustomId[]; type: ComponentType.ActionRow }[];
-}> {
+): Promise<InteractionResponseDataWithBufferAttachments> {
 	const user = await globalClient.fetchUser(userID);
 	const mahojiUser = await mahojiUsersSettingsFetch(userID);
 
@@ -39,6 +38,22 @@ export async function minionStatusCommand(
 
 	const status = minionStatus(user);
 	const buttons: APIButtonComponentWithCustomId[] = [];
+
+	const result = await getUsersFishingContestDetails(user);
+	if (
+		user.perkTier >= PerkTier.Four &&
+		result.catchesFromToday.length === 0 &&
+		!user.minionIsBusy &&
+		['Contest rod', "Beginner's tackle box"].every(i => user.hasItemEquippedOrInBank(i))
+	) {
+		buttons.push({
+			type: ComponentType.Button,
+			custom_id: 'DO_FISHING_CONTEST',
+			label: 'Fishing Contest',
+			emoji: { id: '630911040091193356' },
+			style: ButtonStyle.Secondary
+		});
+	}
 
 	const birdhouseDetails = await calculateBirdhouseDetails(user.id);
 
@@ -107,7 +122,7 @@ export async function minionStatusCommand(
 			type: ComponentType.Button,
 			custom_id: 'REPEAT_TRIP',
 			label: 'Repeat Trip',
-			emoji: { id: '🔁' },
+			emoji: { name: '🔁' },
 			style: ButtonStyle.Secondary
 		});
 	}
@@ -169,6 +184,6 @@ export async function minionStatusCommand(
 
 	return {
 		content: status,
-		components: chunk(buttons, 5).map(i => ({ components: i, type: ComponentType.ActionRow }))
+		components: makeComponents(buttons)
 	};
 }

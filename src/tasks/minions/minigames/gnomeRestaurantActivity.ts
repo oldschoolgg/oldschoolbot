@@ -2,6 +2,7 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
+import { userHasFlappy } from '../../../lib/invention/inventions';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -80,11 +81,16 @@ export default class extends Task {
 
 		const user = await this.client.fetchUser(userID);
 
-		if (user.usingPet('Flappy')) {
+		const flappyRes = await userHasFlappy({ user, duration });
+		if (flappyRes.shouldGiveBoost) {
 			loot.multiply(2);
 		}
 
-		await user.addItemsToBank({ items: loot, collectionLog: true });
+		await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 		const xpRes = await user.addXP({
 			skillName: SkillsEnum.Cooking,
 			amount: totalXP,
@@ -94,9 +100,7 @@ export default class extends Task {
 		let str = `<@${userID}>, ${minionName(
 			user
 		)} finished completing ${quantity}x Gnome Restaurant deliveries.  You received **${loot}**. ${xpRes} ${
-			user.usingPet('Flappy')
-				? ' \n\n<:flappy:812280578195456002> Flappy helps you in your minigame, granting you 2x rewards.'
-				: ''
+			flappyRes.userMsg
 		}`;
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.GnomeRestaurantLootBank, loot);

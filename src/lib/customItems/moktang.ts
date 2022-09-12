@@ -115,7 +115,7 @@ setCustomItem(
 
 setCustomItem(
 	52_661,
-	'Claws frame',
+	'Igne gear frame',
 	'Coal',
 	{
 		customItemData: {
@@ -263,4 +263,89 @@ setCustomItem(
 		}
 	},
 	1_000_000_000
+);
+
+setCustomItem(
+	52_680,
+	'Dragon igne armor',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);
+setCustomItem(
+	52_681,
+	'Barrows igne armor',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);
+setCustomItem(
+	52_682,
+	'Volcanic igne armor',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);
+setCustomItem(
+	52_683,
+	'Justiciar igne armor',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);
+setCustomItem(
+	52_684,
+	'Drygore igne armor',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);
+setCustomItem(
+	52_685,
+	'Dwarven igne armor',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);
+setCustomItem(
+	52_686,
+	'Gorajan igne armor',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
 );

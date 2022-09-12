@@ -155,13 +155,17 @@ export const lapsCommand: OSBMahojiCommand = {
 
 		let boosts: string[] = [];
 		if (userHasItemsEquippedAnywhere(user, 'Silverhawk boots')) {
+			const boostedTimePerLap = Math.floor(timePerLap / inventionBoosts.silverHawks.agilityBoostMultiplier);
 			const costRes = await inventionItemBoost({
 				userID: user.id,
 				inventionID: InventionID.SilverHawkBoots,
-				duration: Math.min(maxTripLength, options.quantity ? options.quantity * timePerLap : maxTripLength)
+				duration: Math.min(
+					maxTripLength,
+					(options.quantity ?? Math.floor(maxTripLength / boostedTimePerLap)) * boostedTimePerLap
+				)
 			});
 			if (costRes.success) {
-				timePerLap = Math.floor(timePerLap / inventionBoosts.silverHawks.agilityBoostMultiplier);
+				timePerLap = boostedTimePerLap;
 				boosts.push(
 					`${inventionBoosts.silverHawks.agilityBoostMultiplier}x faster for Silverhawk boots (${costRes.messages})`
 				);

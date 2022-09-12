@@ -7,6 +7,7 @@ import { MysteryBoxes } from '../../../lib/bsoOpenables';
 import { Emoji, Events } from '../../../lib/constants';
 import { chambersOfXericCL, chambersOfXericMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { createTeam } from '../../../lib/data/cox';
+import { userHasFlappy } from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/settings/prisma';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
@@ -16,6 +17,7 @@ import { roll, updateBankSetting } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import resolveItems from '../../../lib/util/resolveItems';
+import { allItemsOwned } from '../../../mahoji/mahojiSettings';
 
 const notPurple = resolveItems(['Torn prayer scroll', 'Dark relic', 'Onyx']);
 const greenItems = resolveItems(['Twisted ancestral colour kit']);
@@ -23,6 +25,18 @@ const blueItems = resolveItems(['Metamorphic dust']);
 const purpleButNotAnnounced = resolveItems(['Dexterous prayer scroll', 'Arcane prayer scroll']);
 
 const purpleItems = chambersOfXericCL.filter(i => !notPurple.includes(i));
+
+export function handleSpecialCoxLoot(loot: Bank) {
+	if (roll(4500)) {
+		loot.add('Takon');
+	}
+	if (roll(140)) {
+		loot.add('Clue scroll (grandmaster)');
+	}
+	if (roll(2000)) {
+		loot.add('Steve');
+	}
+}
 
 export default class extends Task {
 	async run(data: RaidsOptions) {
@@ -60,30 +74,26 @@ export default class extends Task {
 				user.settings.get(UserSettings.TotalCoxPoints) + personalPoints
 			);
 
+			let flappyMsg: string | null = null;
 			const userLoot = new Bank(_userLoot);
 			if (roll(10)) {
 				userLoot.multiply(2);
 				userLoot.add(MysteryBoxes.roll());
-			} else if (user.usingPet('Flappy')) {
-				userLoot.multiply(2);
+			} else {
+				const flappyRes = await userHasFlappy({ user, duration });
+				if (flappyRes.shouldGiveBoost) {
+					userLoot.multiply(2);
+					flappyMsg = flappyRes.userMsg;
+				}
 			}
 			if (challengeMode && roll(50) && user.cl().has('Metamorphic dust')) {
-				const { bank } = user.allItemsOwned();
+				const { bank } = allItemsOwned(user);
 				const unownedPet = shuffleArr(chambersOfXericMetamorphPets).find(pet => !bank[pet]);
 				if (unownedPet) {
 					userLoot.add(unownedPet);
 				}
 			}
-
-			if (roll(4500)) {
-				userLoot.add('Takon');
-			}
-			if (roll(140)) {
-				userLoot.add('Clue scroll (grandmaster)');
-			}
-			if (roll(2000)) {
-				userLoot.add('Steve');
-			}
+			handleSpecialCoxLoot(userLoot);
 
 			const { itemsAdded } = await user.addItemsToBank({ items: userLoot, collectionLog: true });
 			totalLoot.add(itemsAdded);
@@ -109,9 +119,7 @@ export default class extends Task {
 			resultMessage += `\n${deathStr} **${user}** received: ${str} (${personalPoints?.toLocaleString()} pts, ${
 				Emoji.Skull
 			}${deathChance.toFixed(0)}%)`;
-			if (user.usingPet('Flappy')) {
-				resultMessage += '<:flappy:813000865383972874>';
-			}
+			if (flappyMsg) resultMessage += flappyMsg;
 		}
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.CoxLoot, totalLoot);

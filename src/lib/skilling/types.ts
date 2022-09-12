@@ -41,6 +41,9 @@ export interface Ore {
 	id: number;
 	name: string;
 	respawnTime: number;
+	bankingTime: number;
+	slope: number;
+	intercept: number;
 	petChance?: number;
 	nuggets?: boolean;
 	minerals?: number;
@@ -155,6 +158,7 @@ export interface Craftable {
 	otherSkillRequirements?: Partial<Skills>;
 	qpRequired?: number;
 	wcLvl?: number;
+	cantBeDoubled?: boolean;
 }
 
 export interface Fletchable {

@@ -3,6 +3,7 @@ import { Task } from 'klasa';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
+import { userHasFlappy } from '../../lib/invention/inventions';
 import { incrementMinigameScore } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -60,7 +61,13 @@ export default class extends Task {
 
 		const currentUserPoints = user.settings.get(UserSettings.VolcanicMinePoints);
 		let pointsReceived = Math.round(xpReceived / 5.5);
-		if (user.usingPet('Flappy')) pointsReceived *= 2;
+
+		const flappyRes = await userHasFlappy({ user, duration });
+
+		if (flappyRes.shouldGiveBoost) {
+			pointsReceived *= 2;
+		}
+
 		const maxPoints = 2_097_151;
 		await user.settings.update(
 			UserSettings.VolcanicMinePoints,
@@ -86,7 +93,7 @@ export default class extends Task {
 		}
 
 		// 4x Loot for having doug helping, as it helps mining more fragments
-		if (user.usingPet('Flappy')) loot.multiply(2);
+		if (flappyRes.shouldGiveBoost) loot.multiply(2);
 
 		let str = `${user}, ${user.minionName} finished playing ${quantity} games of Volcanic Mine.\n${xpRes}${
 			loot.length > 0 ? `\nYou received ${loot}` : ''
@@ -101,8 +108,15 @@ export default class extends Task {
 				} Rock golem while mining on the Volcanic Mine at level ${userMiningLevel} Mining!`
 			);
 		}
+		if (flappyRes.userMsg) {
+			str += `\n${flappyRes.userMsg}`;
+		}
 
-		const { itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
+		const { itemsAdded } = await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 
 		handleTripFinish(
 			user,

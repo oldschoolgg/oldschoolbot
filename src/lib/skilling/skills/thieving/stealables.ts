@@ -22,9 +22,6 @@ import Vyre from 'oldschooljs/dist/simulation/monsters/low/t-z/Vyre';
 import WarriorWoman from 'oldschooljs/dist/simulation/monsters/low/t-z/WarriorWoman';
 import YanilleWatchman from 'oldschooljs/dist/simulation/monsters/low/t-z/YanilleWatchman';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
-import { resolveNameBank } from 'oldschooljs/dist/util';
-
-import { ItemBank } from '../../../types';
 
 export interface Stealable {
 	name: string;
@@ -33,7 +30,7 @@ export interface Stealable {
 	level: number;
 	xp: number;
 	qpRequired?: number;
-	itemsRequired?: ItemBank;
+	fireCapeRequired?: boolean;
 	table: LootTable;
 	id: number;
 	// Stall properties
@@ -208,9 +205,7 @@ const stalls: Stealable[] = [
 		// World hopping rate
 		respawnTime: Time.Second * 15,
 		lootPercent: 100,
-		itemsRequired: resolveNameBank({
-			'Fire cape': 1
-		})
+		fireCapeRequired: true
 	}
 ];
 
@@ -511,9 +506,7 @@ const pickpocketables: Stealable[] = [
 		stunDamage: 4,
 		slope: 1.611_25,
 		intercept: -80.993_75,
-		itemsRequired: resolveNameBank({
-			'Fire cape': 1
-		})
+		fireCapeRequired: true
 	}
 ];
 

@@ -52,12 +52,12 @@ export async function onMessage(msg: Message) {
 		content: result.content,
 		components: result.components?.map(i => {
 			const row = new MessageActionRow();
-			for (const a of i.components) {
+			for (const a of i.components as any[]) {
 				row.addComponents(
 					new MessageButton()
 						.setCustomID(a.custom_id)
 						.setLabel(a.label!)
-						.setEmoji(a.emoji!.id!)
+						.setEmoji(a.emoji!.id ?? a.emoji!.name!)
 						.setStyle('SECONDARY')
 				);
 			}

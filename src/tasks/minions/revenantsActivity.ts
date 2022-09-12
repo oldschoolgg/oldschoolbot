@@ -17,6 +17,7 @@ import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLost
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
+import { allItemsOwned } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: RevenantOptions) {
@@ -88,7 +89,7 @@ export default class extends Task {
 
 		announceLoot({ user, monsterID: monster.id, loot, notifyDrops: monster.notifyDrops });
 
-		const { clLoot } = filterLootReplace(user.allItemsOwned(), loot);
+		const { clLoot } = filterLootReplace(allItemsOwned(user), loot);
 
 		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: false });
 		await user.addItemsToCollectionLog({ items: clLoot });

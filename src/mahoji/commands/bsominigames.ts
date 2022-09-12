@@ -183,7 +183,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 		};
 		fishing_contest?: {
 			stats_info?: {};
-			fish?: { location: string };
+			fish?: { location?: string };
 		};
 	}>) => {
 		const klasaUser = await globalClient.fetchUser(userID);

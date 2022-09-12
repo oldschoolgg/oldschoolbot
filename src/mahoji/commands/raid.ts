@@ -56,6 +56,12 @@ export const raidCommand: OSBMahojiCommand = {
 					options: [
 						{
 							type: ApplicationCommandOptionType.Boolean,
+							name: 'solo',
+							description: 'Attempt the Theatre by yourself.',
+							required: false
+						},
+						{
+							type: ApplicationCommandOptionType.Boolean,
 							name: 'hard_mode',
 							description: 'Choose whether you want to do Hard Mode.',
 							required: false
@@ -96,13 +102,19 @@ export const raidCommand: OSBMahojiCommand = {
 		channelID
 	}: CommandRunOptions<{
 		cox?: { start?: { type: 'solo' | 'mass'; challenge_mode?: boolean }; stats?: {} };
-		tob?: { start?: { hard_mode?: boolean; max_team_size?: number }; stats?: {}; check?: { hard_mode?: boolean } };
+		tob?: {
+			start?: { solo?: boolean; hard_mode?: boolean; max_team_size?: number };
+			stats?: {};
+			check?: { hard_mode?: boolean };
+		};
 	}>) => {
 		if (interaction) await interaction.deferReply();
 		const user = await globalClient.fetchUser(userID);
 		const { cox, tob } = options;
 		if (cox?.stats) return coxStatsCommand(user);
 		if (tob?.stats) return tobStatsCommand(user);
+		if (tob?.check) return tobCheckCommand(user, Boolean(tob.check.hard_mode));
+
 		if (minionIsBusy(user.id)) return "Your minion is busy, you can't do this.";
 
 		if (cox) {
@@ -110,9 +122,14 @@ export const raidCommand: OSBMahojiCommand = {
 		}
 		if (tob) {
 			if (tob.start) {
-				return tobStartCommand(user, channelID, Boolean(tob.start.hard_mode), tob.start.max_team_size);
+				return tobStartCommand(
+					user,
+					channelID,
+					Boolean(tob.start.hard_mode),
+					tob.start.max_team_size,
+					tob.start.solo
+				);
 			}
-			if (tob.check) return tobCheckCommand(user, Boolean(tob.check.hard_mode));
 		}
 
 		return 'Invalid command.';

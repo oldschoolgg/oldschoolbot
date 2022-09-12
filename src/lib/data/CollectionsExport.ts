@@ -60,7 +60,7 @@ export interface ICollection {
 	};
 }
 
-export const moktangCL = resolveItems(['Mini moktang', 'Volcanic dye', 'Claws frame', 'Volcanic shards']);
+export const moktangCL = resolveItems(['Mini moktang', 'Volcanic dye', 'Igne gear frame', 'Volcanic shards']);
 
 export const dwarvenOutfit = resolveItems([
 	'Dwarven full helm',
@@ -2192,7 +2192,9 @@ export const customPetsCL = resolveItems([
 	'Nexterminator',
 	'Phoenix eggling',
 	'Cogsworth',
-	'Mini moktang'
+	'Mini moktang',
+	'Brain lee',
+	'Balloon cat'
 ]);
 
 export const discontinuedCustomPetsCL = resolveItems([
@@ -2285,6 +2287,14 @@ export const nexCL = [
 	...resolveItems(['Frozen key', 'Bloodsoaked feather', 'Ancient emblem', 'Ancient hilt'])
 ];
 
+export const naxxusCL = resolveItems([
+	'Dark crystal',
+	'Abyssal gem',
+	'Tattered tome',
+	'Spellbound ring',
+	'Korulsi seed'
+]);
+
 export const kalphiteKingCL = resolveItems([
 	'Drygore mace',
 	'Offhand drygore mace',
@@ -2307,6 +2317,8 @@ export const treeBeardCL = resolveItems([
 	24_561,
 	24_563,
 	'Mysterious seed',
+	'Korulsi seed',
+	'Grand crystal acorn',
 	'Ent hide'
 ]);
 

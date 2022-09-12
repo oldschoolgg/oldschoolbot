@@ -5,14 +5,13 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 
 import {
-	getSkillsOfMahojiUser,
 	handleMahojiConfirmation,
 	mahojiUserSettingsUpdate,
 	mahojiUsersSettingsFetch
 } from '../../mahoji/mahojiSettings';
 import { SkillsEnum } from '../skilling/types';
 import { ActivityTaskOptions } from '../types/minions';
-import { clamp, formatDuration, roll } from '../util';
+import { clamp, formatDuration, getSkillsOfMahojiUser, roll } from '../util';
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import { handleTripFinish } from '../util/handleTripFinish';

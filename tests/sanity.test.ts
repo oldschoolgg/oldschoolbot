@@ -82,7 +82,11 @@ describe('Sanity', () => {
 			'Liber tea',
 			'Invention master cape',
 			'Portable tanner',
-			'Clue upgrader'
+			'Clue upgrader',
+			'Justiciar armour set',
+			'Justiciar legguards',
+			'Justiciar chestguard',
+			'Justiciar faceguard'
 		]);
 		for (const i of shouldntBeIn) {
 			if (allMbTables.includes(i)) {

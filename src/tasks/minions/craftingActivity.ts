@@ -56,7 +56,11 @@ export default class extends Task {
 			str += '\n\nYour Scroll of dexterity allows you to receive 15% extra items.';
 		}
 
-		await user.addItemsToBank({ items: loot, collectionLog: true });
+		await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 
 		handleTripFinish(user, channelID, str, ['craft', { name: item.name, quantity }], undefined, data, loot);
 	}

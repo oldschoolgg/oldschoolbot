@@ -6,6 +6,7 @@ import { Ignecarus } from '../../lib/minions/data/killableMonsters/custom/bosses
 import { KalphiteKingMonster } from '../../lib/minions/data/killableMonsters/custom/bosses/KalphiteKing';
 import KingGoldemar from '../../lib/minions/data/killableMonsters/custom/bosses/KingGoldemar';
 import { MOKTANG_ID } from '../../lib/minions/data/killableMonsters/custom/bosses/Moktang';
+import { Naxxus } from '../../lib/minions/data/killableMonsters/custom/bosses/Naxxus';
 import { VasaMagus } from '../../lib/minions/data/killableMonsters/custom/bosses/VasaMagus';
 import { revenantMonsters } from '../../lib/minions/data/killableMonsters/revs';
 import { NexMonster } from '../../lib/nex';
@@ -64,6 +65,10 @@ const autocompleteMonsters = [
 	{
 		...KalphiteKingMonster,
 		name: 'Kalphite King (Mass)'
+	},
+	{
+		...Naxxus,
+		name: 'Naxxus'
 	},
 	{
 		name: 'Wintertodt',

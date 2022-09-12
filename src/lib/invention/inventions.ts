@@ -38,7 +38,9 @@ export enum InventionID {
 	DrygoreSaw = 10,
 	DwarvenToolkit = 11,
 	MechaRod = 12,
-	MasterHammerAndChisel = 13
+	MasterHammerAndChisel = 13,
+	AbyssalAmulet = 14,
+	RoboFlappy = 15
 }
 
 export type Invention = Readonly<{
@@ -60,6 +62,17 @@ export type Invention = Readonly<{
 }>;
 
 export const inventionBoosts = {
+	abyssalAmulet: {
+		boosts: [
+			{ runes: ['Fire rune', 'Water rune', 'Air rune', 'Earth rune', 'Body rune', 'Mind rune'], boost: 65 },
+			{ runes: ['Mist rune', 'Mud rune', 'Dust rune'], boost: 35 },
+			{ runes: ['Lava rune', 'Steam rune', 'Smoke rune'], boost: 20 },
+			{ runes: ['Death rune', 'Astral rune', 'Wrath rune', 'Law rune', 'Nature rune'], boost: 50 },
+			{ runes: ['Chaos rune', 'Cosmic rune'], boost: 60 },
+			{ runes: ['Blood rune', 'Soul rune'], boost: 95 },
+			{ runes: ['Elder rune'], boost: 65 }
+		]
+	},
 	silverHawks: {
 		passiveXPCalc: (duration: number, agilityLevel: number) => {
 			const minuteSegments = Math.floor(duration / Time.Minute);
@@ -330,6 +343,43 @@ export const Inventions: readonly Invention[] = [
 		itemCost: null,
 		inventionLevelNeeded: 90,
 		usageCostMultiplier: 0.9
+	},
+	{
+		id: InventionID.AbyssalAmulet,
+		name: 'Abyssal amulet',
+		description: 'Provides a significant boost to Runecrafting runes.',
+		item: getOSItem('Abyssal amulet'),
+		materialTypeBank: new MaterialBank({
+			magic: 4,
+			treasured: 3,
+			metallic: 3
+		}),
+		flags: ['bank'],
+		itemCost: new Bank().add('Abyssal gem').freeze(),
+		inventionLevelNeeded: 120,
+		usageCostMultiplier: 0.5,
+		extraDescription: () => {
+			let str = '';
+			for (const boost of inventionBoosts.abyssalAmulet.boosts) {
+				str += `**${boost.boost}%** faster Runecrafting for the following runes: ${boost.runes.join(', ')}\n`;
+			}
+			return str;
+		}
+	},
+	{
+		id: InventionID.RoboFlappy,
+		name: 'RoboFlappy',
+		description: 'A robotic terrorbird which provides extra loot from minigames.',
+		item: getOSItem('RoboFlappy'),
+		materialTypeBank: new MaterialBank({
+			magic: 4,
+			organic: 2,
+			metallic: 4
+		}),
+		itemCost: null,
+		flags: ['bank'],
+		inventionLevelNeeded: 120,
+		usageCostMultiplier: 0.5
 	}
 ] as const;
 
@@ -554,4 +604,33 @@ export async function inventionItemBoost({
 		logError(err, { user_id: mUser.id });
 		return { success: false };
 	}
+}
+
+export async function userHasFlappy({
+	user,
+	duration
+}: {
+	user: KlasaUser;
+	duration: number;
+}): Promise<{ userMsg: string; shouldGiveBoost: boolean }> {
+	if (user.usingPet('Flappy')) {
+		return { userMsg: 'You are getting 2x loot/rewards from Flappy', shouldGiveBoost: true };
+	}
+	if (hasItemsEquippedOrInBank(user, ['RoboFlappy'])) {
+		const boostResult = await inventionItemBoost({
+			userID: BigInt(user.id),
+			inventionID: InventionID.RoboFlappy,
+			duration
+		});
+		if (boostResult.success) {
+			return {
+				shouldGiveBoost: true,
+				userMsg: `You are getting 2x loot/rewards from RoboFlappy (${boostResult.messages})`
+			};
+		}
+	}
+	return {
+		shouldGiveBoost: false,
+		userMsg: ''
+	};
 }

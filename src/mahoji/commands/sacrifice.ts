@@ -55,6 +55,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 			return "You didn't provide any items, filter or search.";
 		}
 
+		interaction.deferReply();
 		const user = await globalClient.fetchUser(userID.toString());
 		const mUser = await mahojiUsersSettingsFetch(user.id);
 		const bankToSac = parseBank({
@@ -127,7 +128,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 		let str = '';
 		const hasSkipper = user.usingPet('Skipper') || user.owns('Skipper');
 		if (hasSkipper) {
-			totalPrice = Math.floor(totalPrice * 1.4);
+			totalPrice = Math.floor(totalPrice * 1.3);
 		}
 
 		let gotHammy = false;
@@ -175,7 +176,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 		}
 		if (hasSkipper) {
 			str +=
-				'\n<:skipper:755853421801766912> Skipper has negotiated with the bank and gotten you +40% extra value from your sacrifice.';
+				'\n<:skipper:755853421801766912> Skipper has negotiated with the bank and gotten you +30% extra value from your sacrifice.';
 		}
 
 		return `You sacrificed ${bankToSac}, with a value of ${totalPrice.toLocaleString()}gp (${toKMB(

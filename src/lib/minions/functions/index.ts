@@ -12,6 +12,7 @@ import killableMonsters from '../data/killableMonsters';
 import { Ignecarus } from '../data/killableMonsters/custom/bosses/Ignecarus';
 import { KalphiteKingMonster } from '../data/killableMonsters/custom/bosses/KalphiteKing';
 import KingGoldemar from '../data/killableMonsters/custom/bosses/KingGoldemar';
+import { Naxxus, NAXXUS_HP } from '../data/killableMonsters/custom/bosses/Naxxus';
 import { VasaMagus } from '../data/killableMonsters/custom/bosses/VasaMagus';
 import { BSOMonsters } from '../data/killableMonsters/custom/customMonsters';
 import { AddMonsterXpParams, KillableMonster, ResolveAttackStylesParams } from '../types';
@@ -36,7 +37,8 @@ const miscHpMap: Record<number, number> = {
 	[VasaMagus.id]: 3900,
 	[KalphiteKingMonster.id]: 5300,
 	[BSOMonsters.SeaKraken.id]: 5200,
-	[Ignecarus.id]: 10_000
+	[Ignecarus.id]: 10_000,
+	[Naxxus.id]: NAXXUS_HP
 };
 
 function meleeOnly(user: KlasaUser): AttackStyles[] {
@@ -54,6 +56,9 @@ export function resolveAttackStyles(
 	if (params.monsterID === VasaMagus.id) return [undefined, undefined, [SkillsEnum.Magic]];
 	if (params.monsterID === NexMonster.id) return [undefined, undefined, [SkillsEnum.Ranged]];
 	if (params.monsterID === KalphiteKingMonster.id) return [undefined, undefined, meleeOnly(user)];
+	if (params.monsterID === Naxxus.id) {
+		return [undefined, undefined, [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence, SkillsEnum.Magic]];
+	}
 
 	const killableMon = killableMonsters.find(m => m.id === params.monsterID);
 

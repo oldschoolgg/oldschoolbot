@@ -6,9 +6,9 @@ import { KlasaMessage, KlasaUser, Monitor, MonitorStore } from 'klasa';
 import fetch from 'node-fetch';
 import { Bank, Items } from 'oldschooljs';
 
-import { production } from '../config';
+import { production, SupportServer } from '../config';
 import { MysteryBoxes } from '../lib/bsoOpenables';
-import { Channel, Color, SupportServer } from '../lib/constants';
+import { Channel, Color } from '../lib/constants';
 import Createables from '../lib/data/createables';
 import { roll, stringMatches } from '../lib/util';
 

@@ -14,7 +14,7 @@ import { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
 import { convertPercentChance, updateBankSetting } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { sendToChannelID } from '../../../lib/util/webhook';
+import { allItemsOwned } from '../../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: TheatreOfBloodTaskOptions) {
@@ -60,11 +60,30 @@ export default class extends Task {
 		// GIVE XP HERE
 		// 100k tax if they wipe
 		if (wipedRoom !== null) {
-			sendToChannelID(channelID, {
-				content: `${allTag} Your team wiped in the Theatre of Blood, in the ${TOBRooms[wipedRoom].name} room!${
-					diedToMaiden ? ' The team died very early, and nobody learnt much from this raid.' : ''
-				}`
-			});
+			const resultMessage = `${allTag} Your team wiped in the Theatre of Blood, in the ${
+				TOBRooms[wipedRoom].name
+			} room!${diedToMaiden ? ' The team died very early, and nobody learnt much from this raid.' : ''}`;
+			handleTripFinish(
+				allUsers[0],
+				channelID,
+				resultMessage,
+				[
+					'raid',
+					{
+						tob: {
+							start: {
+								hard_mode: hardMode,
+								max_team_size: allUsers.length,
+								solo: allUsers.length === 1
+							}
+						}
+					},
+					true
+				],
+				undefined,
+				data,
+				null
+			);
 			// They each paid 100k tax, it doesn't get refunded, so track it in economy stats.
 			await updateBankSetting(
 				this.client,
@@ -100,7 +119,7 @@ Unique chance: ${result.percentChanceOfUnique.toFixed(2)}% (1 in ${convertPercen
 				userLoot.add('Clue scroll (grandmaster)');
 			}
 
-			const bank = user.allItemsOwned();
+			const bank = allItemsOwned(user);
 
 			const cl = user.cl();
 			if (hardMode && roll(30) && cl.has("Lil' zik") && cl.has('Sanguine dust')) {
@@ -158,7 +177,8 @@ Unique chance: ${result.percentChanceOfUnique.toFixed(2)}% (1 in ${convertPercen
 					tob: {
 						start: {
 							hard_mode: hardMode,
-							max_team_size: allUsers.length
+							max_team_size: allUsers.length,
+							solo: allUsers.length === 1
 						}
 					}
 				},

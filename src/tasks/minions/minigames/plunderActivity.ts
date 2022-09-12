@@ -2,6 +2,7 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../../lib/constants';
+import { userHasFlappy } from '../../../lib/invention/inventions';
 import { lootRoom, plunderRooms } from '../../../lib/minions/data/plunder';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -11,7 +12,7 @@ import { PlunderActivityTaskOptions } from './../../../lib/types/minions';
 
 export default class extends Task {
 	async run(data: PlunderActivityTaskOptions) {
-		const { channelID, quantity, rooms, userID } = data;
+		const { channelID, quantity, rooms, userID, duration } = data;
 		const user = await this.client.fetchUser(userID);
 		await incrementMinigameScore(userID, 'pyramid_plunder', quantity);
 		const allRooms = plunderRooms.filter(room => rooms.includes(room.number));
@@ -34,20 +35,19 @@ export default class extends Task {
 			}
 		}
 
-		if (user.usingPet('Flappy')) {
+		const flappyRes = await userHasFlappy({ user, duration });
+		if (flappyRes.shouldGiveBoost) {
 			loot.multiply(2);
 		}
 
-		const { itemsAdded, previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
+		const { itemsAdded, previousCL } = await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 		const xpRes = await user.addXP({ skillName: SkillsEnum.Thieving, amount: thievingXP });
 
-		let str = `${user}, ${
-			user.minionName
-		} finished doing the Pyramid Plunder ${quantity}x times. ${totalAmountUrns}x urns opened. ${xpRes}  ${
-			user.usingPet('Flappy')
-				? ' \n\n<:flappy:812280578195456002> Flappy helps you in your minigame, granting you 2x rewards.'
-				: ''
-		}`;
+		let str = `${user}, ${user.minionName} finished doing the Pyramid Plunder ${quantity}x times. ${totalAmountUrns}x urns opened. ${xpRes}  ${flappyRes.userMsg}`;
 
 		if (loot.amount('Rocky') > 0) {
 			str += "\n\n**You have a funny feeling you're being followed...**";

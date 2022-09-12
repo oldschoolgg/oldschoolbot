@@ -3,6 +3,7 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
+import { userHasFlappy } from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/settings/prisma';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
@@ -13,6 +14,7 @@ import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { clAdjustedDroprate, rand, roll, updateBankSetting } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
+import { allItemsOwned } from '../../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: ActivityTaskOptionsWithQuantity) {
@@ -31,7 +33,7 @@ export default class extends Task {
 			loot.add(
 				WintertodtCrate.open({
 					points,
-					itemsOwned: user.allItemsOwned().clone().add(loot).bank,
+					itemsOwned: allItemsOwned(user).clone().add(loot).bank,
 					skills: user.rawSkills
 				})
 			);
@@ -103,15 +105,19 @@ export default class extends Task {
 		await user.addXP({ skillName: SkillsEnum.Woodcutting, amount: wcXpToGive });
 		await user.addXP({ skillName: SkillsEnum.Firemaking, amount: fmXpToGive });
 		const newLevel = user.skillLevel(SkillsEnum.Firemaking);
-
-		if (user.usingPet('Flappy')) {
+		const flappyRes = await userHasFlappy({ user, duration });
+		if (flappyRes.shouldGiveBoost) {
 			loot.multiply(2);
 		}
 		if (user.hasItemEquippedAnywhere('Firemaking master cape')) {
 			loot.multiply(2);
 		}
 
-		const { itemsAdded, previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
+		const { itemsAdded, previousCL } = await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 		incrementMinigameScore(user.id, 'wintertodt', quantity);
 
 		const image = await makeBankImage({
@@ -135,6 +141,8 @@ export default class extends Task {
 		if (gotToad) {
 			output += '\n\n<:wintertoad:749945071230779493> A Wintertoad sneakily hops into your bank!';
 		}
+		if (flappyRes.shouldGiveBoost) output += `\n${flappyRes.userMsg}`;
+
 		await trackLoot({
 			loot: itemsAdded,
 			id: 'wintertodt',
