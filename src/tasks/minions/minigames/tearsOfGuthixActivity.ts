@@ -1,24 +1,25 @@
 import { increaseNumByPercent, randInt } from 'e';
-import { Task } from 'klasa';
 
 import { LumbridgeDraynorDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { TearsOfGuthixActivityTaskOptions } from '../../../lib/types/minions';
+import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
-export default class extends Task {
-	async run(data: TearsOfGuthixActivityTaskOptions) {
+export const togTask: MinionTask = {
+	type: 'TearsOfGuthix',
+	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { userID, channelID, duration } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		await incrementMinigameScore(userID, 'tears_of_guthix', 1);
-		await user.settings.update(UserSettings.LastTearsOfGuthixTimestamp, new Date().getTime());
+		await user.update({
+			lastTearsOfGuthixTimestamp: new Date().getTime()
+		});
 
 		// Find lowest level skill
-		let lowestXp = Object.values(user.rawSkills)[0];
-		let lowestSkill = Object.keys(user.rawSkills)[0] as SkillsEnum;
-		Object.entries(user.rawSkills).forEach(([skill, xp]) => {
+		let lowestXp = Object.values(user.skillsAsXP)[0];
+		let lowestSkill = Object.keys(user.skillsAsXP)[0] as SkillsEnum;
+		Object.entries(user.skillsAsXP).forEach(([skill, xp]) => {
 			if (xp < lowestXp) {
 				lowestXp = xp;
 				lowestSkill = skill as SkillsEnum;
@@ -27,7 +28,7 @@ export default class extends Task {
 
 		// Calculate number of tears collected
 		// QP = Game length in ticks
-		const qp = user.settings.get(UserSettings.QP);
+		const qp = user.QP;
 		// Streams last for 9 seconds, 15 game ticks
 		const streams = Math.floor(qp / 15);
 		let tears = 0;
@@ -58,6 +59,6 @@ export default class extends Task {
 			hasDiary ? '\n10% XP bonus for Lumbridge & Draynor Hard diary.' : ''
 		}`;
 
-		handleTripFinish(this.client, user, channelID, output, undefined, undefined, data, null);
+		handleTripFinish(user, channelID, output, undefined, undefined, data, null);
 	}
-}
+};

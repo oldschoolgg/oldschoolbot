@@ -1,28 +1,29 @@
 /* eslint-disable prefer-promise-reject-errors */
-import { Message, MessageReaction } from 'discord.js';
-import { debounce, sleep } from 'e';
-import { Extendable, ExtendableStore, KlasaMessage, KlasaUser } from 'klasa';
+import { userMention } from '@discordjs/builders';
+import { MessageReaction, TextChannel, User } from 'discord.js';
+import { debounce, noOp, sleep, Time } from 'e';
 
-import { ReactionEmoji, SILENT_ERROR } from '../../lib/constants';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import { BLACKLISTED_USERS } from '../../lib/blacklists';
+import { ReactionEmoji, SILENT_ERROR, usernameCache } from '../../lib/constants';
 import { CustomReactionCollector } from '../../lib/structures/CustomReactionCollector';
 import { MakePartyOptions } from '../../lib/types';
 
-async function _setup(
-	msg: KlasaMessage,
-	options: MakePartyOptions
-): Promise<[KlasaUser[], () => Promise<KlasaUser[]>]> {
-	const usersWhoConfirmed: KlasaUser[] = [options.leader];
+const partyLockCache = new Set<string>();
+setInterval(() => partyLockCache.clear(), Time.Minute * 20);
+
+export async function setupParty(channel: TextChannel, user: MUser, options: MakePartyOptions): Promise<MUser[]> {
+	const usersWhoConfirmed: string[] = [options.leader.id];
+	let deleted = false;
 
 	function getMessageContent() {
 		return `${options.message}\n\n**Users Joined:** ${usersWhoConfirmed
-			.map(u => u.username)
+			.map(u => usernameCache.get(u) ?? userMention(u))
 			.join(
 				', '
 			)}\n\nThis party will automatically depart in 2 minutes, or if the leader clicks the start (start early) or stop button.`;
 	}
 
-	const confirmMessage = (await msg.channel.send(getMessageContent())) as KlasaMessage;
+	const confirmMessage = await channel.send(getMessageContent());
 	async function addEmojis() {
 		await confirmMessage.react(ReactionEmoji.Join);
 		await sleep(50);
@@ -35,12 +36,13 @@ async function _setup(
 
 	// Debounce message edits to prevent spam.
 	const updateUsersIn = debounce(() => {
+		if (deleted) return;
 		confirmMessage.edit(getMessageContent());
 	}, 500);
 
-	const removeUser = (user: KlasaUser) => {
-		if (user === options.leader) return;
-		const index = usersWhoConfirmed.indexOf(user);
+	const removeUser = (userID: string) => {
+		if (userID === options.leader.id) return;
+		const index = usersWhoConfirmed.indexOf(userID);
 		if (index !== -1) {
 			usersWhoConfirmed.splice(index, 1);
 			updateUsersIn();
@@ -48,19 +50,20 @@ async function _setup(
 	};
 
 	const reactionAwaiter = () =>
-		new Promise<KlasaUser[]>(async (resolve, reject) => {
+		new Promise<MUser[]>(async (resolve, reject) => {
+			let partyCancelled = false;
 			const collector = new CustomReactionCollector(confirmMessage, {
 				time: 120_000,
 				max: options.usersAllowed?.length ?? options.maxSize,
 				dispose: true,
-				filter: async (reaction: MessageReaction, user: KlasaUser) => {
-					await user.settings.sync();
+				filter: async (reaction: MessageReaction, _user: User) => {
+					const user = await mUserFetch(_user.id);
 					if (
-						(!options.ironmanAllowed && user.isIronman) ||
-						user.bot ||
+						(!options.ironmanAllowed && user.user.minion_ironman) ||
+						_user.bot ||
 						user.minionIsBusy ||
 						!reaction.emoji.id ||
-						!user.hasMinion
+						!user.user.minion_hasBought
 					) {
 						return false;
 					}
@@ -72,17 +75,12 @@ async function _setup(
 					if (options.customDenier && reaction.emoji.id === ReactionEmoji.Join) {
 						const [customDenied, reason] = await options.customDenier(user);
 						if (customDenied) {
-							user.send(`You couldn't join this mass, for this reason: ${reason}`);
-							reaction.users.remove(user);
+							const fullUser = globalClient.users.cache.get(user.id);
+							if (fullUser) {
+								fullUser.send(`You couldn't join this mass, for this reason: ${reason}`).catch(noOp);
+							}
 							return false;
 						}
-					}
-
-					if (
-						(reaction.emoji.id === ReactionEmoji.Join && user === options.leader) ||
-						(user !== options.leader && reaction.emoji.id !== ReactionEmoji.Join)
-					) {
-						reaction.users.remove(user);
 					}
 
 					return ([ReactionEmoji.Join, ReactionEmoji.Stop, ReactionEmoji.Start] as string[]).includes(
@@ -91,37 +89,40 @@ async function _setup(
 				}
 			});
 
-			collector.on('remove', (reaction: MessageReaction, user: KlasaUser) => {
-				if (!usersWhoConfirmed.includes(user)) return false;
+			collector.on('remove', (reaction: MessageReaction, user: User) => {
+				if (!usersWhoConfirmed.includes(user.id)) return false;
 				if (reaction.emoji.id !== ReactionEmoji.Join) return false;
-				removeUser(user);
+				partyLockCache.delete(user.id);
+				removeUser(user.id);
 			});
 
-			function startTrip() {
-				if (usersWhoConfirmed.length < options.minSize) {
-					msg.channel.send(
-						`${msg.author} Not enough people joined your ${options.party ? 'party' : 'mass'}!`
-					);
+			async function startTrip() {
+				await confirmMessage.delete().catch(noOp);
+				if (!partyCancelled && usersWhoConfirmed.length < options.minSize) {
+					channel.send(`${user} Not enough people joined your ${options.party ? 'party' : 'mass'}!`);
 					reject(new Error(SILENT_ERROR));
 					return;
 				}
 
-				resolve(usersWhoConfirmed);
+				resolve(await Promise.all(usersWhoConfirmed.map(mUserFetch)));
 			}
 
 			collector.on('collect', async (reaction, user) => {
 				if (user.partial) await user.fetch();
-				if (user.client.settings?.get(ClientSettings.UserBlacklist).includes(user.id)) return;
+				if (BLACKLISTED_USERS.has(user.id)) return;
+
+				const mUser = await mUserFetch(user.id);
 				switch (reaction.emoji.id) {
 					case ReactionEmoji.Join: {
-						if (usersWhoConfirmed.includes(user)) return;
+						if (usersWhoConfirmed.includes(mUser.id) || partyLockCache.has(user.id)) return;
 
 						if (options.usersAllowed && !options.usersAllowed.includes(user.id)) {
 							return;
 						}
 
 						// Add the user
-						usersWhoConfirmed.push(user);
+						usersWhoConfirmed.push(user.id);
+						partyLockCache.add(user.id);
 						updateUsersIn();
 
 						if (usersWhoConfirmed.length >= options.maxSize) {
@@ -133,9 +134,10 @@ async function _setup(
 					}
 
 					case ReactionEmoji.Stop: {
-						if (user === options.leader) {
+						if (user.id === options.leader.id) {
+							partyCancelled = true;
 							reject(
-								`The leader (${options.leader.username}) cancelled this ${
+								`The leader (${options.leader.usernameOrMention}) cancelled this ${
 									options.party ? 'party' : 'mass'
 								}!`
 							);
@@ -145,7 +147,7 @@ async function _setup(
 					}
 
 					case ReactionEmoji.Start: {
-						if (user === options.leader) {
+						if (user.id === options.leader.id) {
 							startTrip();
 							collector.stop('partyCreatorEnd');
 						}
@@ -158,24 +160,14 @@ async function _setup(
 			});
 
 			collector.once('end', () => {
-				confirmMessage.removeAllReactions();
+				deleted = true;
+				confirmMessage.delete().catch(noOp);
+				for (const user of usersWhoConfirmed) {
+					partyLockCache.delete(user);
+				}
 				setTimeout(() => startTrip(), 750);
 			});
 		});
 
-	return [usersWhoConfirmed, reactionAwaiter];
-}
-
-export default class extends Extendable {
-	public constructor(store: ExtendableStore, file: string[], directory: string) {
-		super(store, file, directory, { appliesTo: [Message] });
-	}
-
-	async makePartyAwaiter(this: KlasaMessage, options: MakePartyOptions) {
-		const [usersWhoConfirmed, reactionAwaiter] = await _setup(this, options);
-
-		await reactionAwaiter();
-
-		return usersWhoConfirmed;
-	}
+	return reactionAwaiter();
 }

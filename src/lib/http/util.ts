@@ -3,9 +3,9 @@ import { createHmac } from 'crypto';
 import { onRequestHookHandler } from 'fastify';
 import * as jwt from 'jwt-simple';
 
-import { client } from '../..';
-import { CLIENT_SECRET, GITHUB_TOKEN } from '../../config';
+import { CLIENT_SECRET, GITHUB_TOKEN, patreonConfig } from '../../config';
 import { PerkTier } from '../constants';
+import { prisma } from '../settings/prisma';
 
 export function rateLimit(max: number, timeWindow: string) {
 	return {
@@ -23,6 +23,16 @@ export function verifyGithubSecret(body: string, signature?: string | string[]):
 	const hmac = createHmac('sha1', CLIENT_SECRET);
 	hmac.update(body);
 	const calculated = `sha1=${hmac.digest('hex')}`;
+	return signature === calculated;
+}
+
+export function verifyPatreonSecret(body: string, signature?: string | string[]): boolean {
+	if (!signature) {
+		return false;
+	}
+	const hmac = createHmac('md5', patreonConfig!.webhookSecret);
+	hmac.update(body);
+	const calculated = hmac.digest('hex');
 	return signature === calculated;
 }
 
@@ -109,9 +119,11 @@ export async function fetchSponsors() {
 }
 
 export async function getUserFromGithubID(githubID: string) {
-	const result = await client.query<{ id: string }[]>(`SELECT id FROM users WHERE github_id = '${githubID}';`);
+	const result = await prisma.$queryRawUnsafe<{ id: string }[]>(
+		`SELECT id FROM users WHERE github_id = '${githubID}';`
+	);
 	if (result.length === 0) return null;
-	return client.fetchUser(result[0].id);
+	return globalClient.fetchUser(result[0].id);
 }
 
 export function encryptJWT(payload: unknown, secret = CLIENT_SECRET) {

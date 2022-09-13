@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
 
-interface Castable {
+export interface Castable {
 	id: number;
 	input: Bank;
 	output: Bank | null;
@@ -13,6 +13,9 @@ interface Castable {
 	gpCost?: number;
 	craftLevel?: number;
 	craftXp?: number;
+	agilityBoost?: number[][];
+	travelTime?: number;
+	prayerXp?: number;
 }
 
 export const Castables: Castable[] = [
@@ -329,5 +332,103 @@ export const Castables: Castable[] = [
 		qpRequired: 50,
 		craftXp: 130,
 		craftLevel: 61
+	},
+	{
+		id: itemID('Air orb'),
+		name: 'Charge air orb',
+		input: new Bank().add('Cosmic rune', 3).add('Air rune', 30).add('Unpowered orb', 1),
+		output: new Bank().add('Air orb', 1),
+		xp: 76,
+		level: 66,
+		ticks: 3,
+		travelTime: 187_000
+	},
+	{
+		id: itemID('Fire orb'),
+		name: 'Charge fire orb',
+		input: new Bank().add('Cosmic rune', 3).add('Fire rune', 30).add('Unpowered orb', 1),
+		output: new Bank().add('Fire orb', 1),
+		xp: 73,
+		level: 63,
+		ticks: 3,
+		agilityBoost: [
+			[80, 52],
+			[70, 44]
+		],
+		travelTime: 362_000
+	},
+	{
+		id: itemID('Earth orb'),
+		name: 'Charge earth orb',
+		input: new Bank().add('Cosmic rune', 3).add('Earth rune', 30).add('Unpowered orb', 1),
+		output: new Bank().add('Earth orb', 1),
+		xp: 70,
+		level: 60,
+		ticks: 3,
+		travelTime: 187_000
+	},
+	{
+		id: itemID('Water orb'),
+		name: 'Charge water orb',
+		input: new Bank().add('Cosmic rune', 3).add('Water rune', 30).add('Unpowered orb', 1),
+		output: new Bank().add('Water orb', 1),
+		xp: 66,
+		level: 56,
+		ticks: 3,
+		agilityBoost: [
+			[80, 52],
+			[70, 44]
+		],
+		travelTime: 362_000
+	},
+	{
+		id: itemID('Fiendish ashes'),
+		name: 'Demonic offering fiendish',
+		level: 84,
+		xp: 175,
+		input: new Bank().add('Fiendish ashes', 3).add('Soul rune', 1).add('Wrath rune', 1),
+		output: null,
+		ticks: 8,
+		prayerXp: 90
+	},
+	{
+		id: itemID('Vile ashes'),
+		name: 'Demonic offering vile',
+		level: 84,
+		xp: 175,
+		input: new Bank().add('Vile ashes', 3).add('Soul rune', 1).add('Wrath rune', 1),
+		output: null,
+		ticks: 8,
+		prayerXp: 225
+	},
+	{
+		id: itemID('Malicious ashes'),
+		name: 'Demonic offering malicious',
+		level: 84,
+		xp: 175,
+		input: new Bank().add('Malicious ashes', 3).add('Soul rune', 1).add('Wrath rune', 1),
+		output: null,
+		ticks: 8,
+		prayerXp: 585
+	},
+	{
+		id: itemID('Abyssal ashes'),
+		name: 'Demonic offering abyssal',
+		level: 84,
+		xp: 175,
+		input: new Bank().add('Abyssal ashes', 3).add('Soul rune', 1).add('Wrath rune', 1),
+		output: null,
+		ticks: 8,
+		prayerXp: 765
+	},
+	{
+		id: itemID('Infernal ashes'),
+		name: 'Demonic offering infernal',
+		level: 84,
+		xp: 175,
+		input: new Bank().add('Infernal ashes', 3).add('Soul rune', 1).add('Wrath rune', 1),
+		output: null,
+		ticks: 8,
+		prayerXp: 990
 	}
 ];

@@ -1,12 +1,9 @@
-import { increaseNumByPercent, noOp, reduceNumByPercent } from 'e';
-import { Task } from 'klasa';
+import { increaseNumByPercent, reduceNumByPercent } from 'e';
 
 import { incrementMinigameScore } from '../../../lib/settings/settings';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
-import { SoulWarsOptions } from '../../../lib/types/minions';
+import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { sendToChannelID } from '../../../lib/util/webhook';
 
 function calcPoints() {
 	let base = 42.5;
@@ -24,31 +21,35 @@ function calcPoints() {
 	return Math.ceil(base);
 }
 
-export default class extends Task {
-	async run(data: SoulWarsOptions) {
-		const { channelID, leader, users, quantity } = data;
-		const leaderUser = await this.client.fetchUser(leader);
-		let str = `${leaderUser}, your party finished doing ${quantity}x games of Soul Wars.\n\n`;
+export const soulWarsTask: MinionTask = {
+	type: 'SoulWars',
+	async run(data: MinigameActivityTaskOptions) {
+		const { channelID, quantity, userID } = data;
+		const user = await mUserFetch(userID);
 
-		for (const id of users) {
-			const user = await this.client.fetchUser(id).catch(noOp);
-			if (!user) continue;
+		let points = 0;
+		for (let i = 0; i < quantity; i++) {
+			points += calcPoints();
+		}
 
-			let points = 0;
-			for (let i = 0; i < quantity; i++) {
-				points += calcPoints();
+		await user.update({
+			zeal_tokens: {
+				increment: points
 			}
+		});
 
-			await user.settings.update(UserSettings.ZealTokens, user.settings.get(UserSettings.ZealTokens) + points);
+		await incrementMinigameScore(user.id, 'soul_wars', quantity);
 
-			await incrementMinigameScore(user.id, 'soul_wars', quantity);
-			str += `${user} received ${points}x Zeal Tokens.`;
-		}
+		const str = `${user}, ${user.minionName} finished doing ${quantity}x games of Soul Wars, you received ${points} Zeal Tokens, you now have ${user.user.zeal_tokens}.\n\n`;
 
-		if (users.length === 1) {
-			handleTripFinish(this.client, leaderUser, channelID, str, ['sw', ['solo'], true], undefined!, data, null);
-		} else {
-			sendToChannelID(this.client, channelID, { content: str });
-		}
+		handleTripFinish(
+			user,
+			channelID,
+			str,
+			['minigames', { soul_wars: { start: {} } }, true],
+			undefined!,
+			data,
+			null
+		);
 	}
-}
+};

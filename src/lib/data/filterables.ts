@@ -1,7 +1,9 @@
-import { superCompostables } from '../../commands/Minion/compostbin';
+import { Bank } from 'oldschooljs';
+
 import { gracefulItems } from '../skilling/skills/agility';
 import { Craftables } from '../skilling/skills/crafting/craftables';
 import { Fletchables } from '../skilling/skills/fletching/fletchables';
+import { ItemBank } from '../types';
 import resolveItems from '../util/resolveItems';
 import { allCollectionLogs } from './Collections';
 import {
@@ -20,6 +22,36 @@ import {
 	wintertodtCL
 } from './CollectionsExport';
 import { Eatables } from './eatables';
+
+export const superCompostables = [
+	'Pineapple',
+	'Watermelon',
+	'Coconut',
+	'Coconut shell',
+	'Papaya fruit',
+	'Mushroom',
+	'Poison ivy berries',
+	'Jangerberries',
+	'White berries',
+	'Snape grass',
+	'Toadflax',
+	'Avantoe',
+	'Kwuarm',
+	'Snapdragon',
+	'Cadantine',
+	'Lantadyme',
+	'Dwarf weed',
+	'Torstol',
+	'Oak roots',
+	'Willow roots',
+	'Maple roots',
+	'Yew roots',
+	'Magic roots',
+	'Celastrus bark',
+	'Calquat fruit',
+	'White tree fruit',
+	'White lily'
+];
 
 export const warmGear = resolveItems([
 	'Staff of fire',
@@ -225,6 +257,7 @@ const barrows = resolveItems([
 
 const seeds = resolveItems([
 	'Pineapple seed',
+	'Crystal acorn',
 	'Magic seed',
 	'Yew seed',
 	'Maple seed',
@@ -353,6 +386,7 @@ const secondaries = resolveItems([
 	'Poison ivy berries',
 	"Zulrah's scales",
 	'Torstol',
+	'Cave nightshade',
 	'Crushed superior dragon bones',
 	'Amylase crystal'
 ]);
@@ -882,194 +916,209 @@ const food = resolveItems(Eatables.map(food => food.name));
 interface Filterable {
 	name: string;
 	aliases: string[];
-	items: number[];
+	items: (user?: MUser) => number[];
 }
 
 export const baseFilters: Filterable[] = [
 	{
 		name: 'Smithing',
 		aliases: ['smithing', 'smith', 'sm'],
-		items: smithing
+		items: () => smithing
 	},
 	{
 		name: 'Diango',
 		aliases: ['diango', 'daily', 'dailies'],
-		items: diango
+		items: () => diango
 	},
 	{
 		name: 'Diaries',
 		aliases: ['diaries', 'diary', 'ad'],
-		items: diaries
+		items: () => diaries
 	},
 	{
 		name: 'Crafting',
 		aliases: ['crafting', 'craft', 'cr'],
-		items: craftingItemsSet
+		items: () => craftingItemsSet
 	},
 	{
 		name: 'Barrows',
 		aliases: ['barrows', 'br'],
-		items: barrows
+		items: () => barrows
 	},
 	{
 		name: 'Skilling',
 		aliases: ['skilling', 'skill'],
-		items: skilling
+		items: () => skilling
 	},
 	{
 		name: 'Gear',
 		aliases: ['gear', 'gr'],
-		items: gear
+		items: () => gear
 	},
 	{
 		name: 'Clues and Caskets',
 		aliases: ['clues and caskets', 'clues', 'caskets', 'cl', 'clue', 'casket', 'tt'],
-		items: cluesAndCaskets
+		items: () => cluesAndCaskets
 	},
 	{
 		name: 'God wars',
 		aliases: ['god wars', 'gwd', 'godwars', 'gw'],
-		items: godwars
+		items: () => godwars
 	},
 	{
 		name: 'Dagannoth kings',
 		aliases: ['dagannoth kings', 'dks', 'dk', 'dagannoth', 'kings'],
-		items: dagannothkings
+		items: () => dagannothkings
 	},
 	{
 		name: 'Cerberus',
 		aliases: ['cerb', 'ce', 'cerberus'],
-		items: cerberus
+		items: () => cerberus
 	},
 	{
 		name: 'Zulrah',
 		aliases: ['zul', 'zulr', 'zulrah'],
-		items: zulrah
+		items: () => zulrah
 	},
 	{
 		name: 'Corporeal beast',
 		aliases: ['corporeal beast', 'corp', 'co', 'corporeal'],
-		items: corporealBeast
+		items: () => corporealBeast
 	},
 	{
 		name: 'Kalphite queen',
 		aliases: ['kalphite queen', 'kq', 'ka', 'kalphite', 'queen'],
-		items: kalphitequeen
+		items: () => kalphitequeen
 	},
 	{
 		name: 'Vorkath',
 		aliases: ['vorkath', 'vork'],
-		items: vorkath
+		items: () => vorkath
 	},
 	{
 		name: 'Farming',
 		aliases: ['farming', 'farm', 'seeds'],
-		items: [...resolveItems(['Compost', 'Supercompost', 'Ultracompost', 'Bottomless compost bucket ']), ...seeds]
+		items: () => [
+			...resolveItems(['Compost', 'Supercompost', 'Ultracompost', 'Bottomless compost bucket ']),
+			...seeds
+		]
 	},
 	{
 		name: 'Compost',
 		aliases: ['compost', 'compostables'],
-		items: [...resolveItems(['Compost', 'Supercompost', 'Ultracompost']), ...resolveItems(superCompostables)]
+		items: () => [...resolveItems(['Compost', 'Supercompost', 'Ultracompost']), ...resolveItems(superCompostables)]
 	},
 	{
 		name: 'Herblore',
 		aliases: ['herblore'],
-		items: herblore
+		items: () => herblore
 	},
 	{
 		name: 'Fletching',
 		aliases: ['fletching', 'fletch'],
-		items: fletchingItemsSet
+		items: () => fletchingItemsSet
 	},
 	{
 		name: 'Agility',
 		aliases: ['agility', 'agi'],
-		items: agility
+		items: () => agility
 	},
 	{
 		name: 'Prayer',
 		aliases: ['prayer', 'pray'],
-		items: prayer
+		items: () => prayer
 	},
 	{
 		name: 'Potions',
 		aliases: ['potions', 'pots'],
-		items: potions
+		items: () => potions
 	},
 	{
 		name: 'Herbs',
 		aliases: ['herbs'],
-		items: herbs
+		items: () => herbs
 	},
 	{
 		name: 'Secondaries',
 		aliases: ['seconds', 'secondary', 'secondaries'],
-		items: secondaries
+		items: () => secondaries
 	},
 	{
 		name: 'Food',
 		aliases: ['food'],
-		items: food
+		items: () => food
 	},
 	{
 		name: 'Wintertodt',
 		aliases: ['wintertodt', 'todt', 'wt'],
-		items: wintertodtCL
+		items: () => wintertodtCL
 	},
 	{
 		name: 'Warm gear',
 		aliases: ['warm gear', 'warm'],
-		items: warmGear
+		items: () => warmGear
 	},
 	{
 		name: 'Tempoross',
 		aliases: ['temp', 'ross', 'tempo', 'tempoross'],
-		items: temporossCL
+		items: () => temporossCL
 	},
 	{
 		name: 'Beginner Clues',
 		aliases: ['clues beginner', 'beginner clues', 'clue beginner', 'beginner clue'],
-		items: cluesBeginnerCL
+		items: () => cluesBeginnerCL
 	},
 	{
 		name: 'Easy Clues',
 		aliases: ['clues easy', 'easy clues', 'clue easy', 'easy clue'],
-		items: cluesEasyCL
+		items: () => cluesEasyCL
 	},
 	{
 		name: 'Medium Clues',
 		aliases: ['clues medium', 'medium clues', 'clue medium', 'medium clue'],
-		items: cluesMediumCL
+		items: () => cluesMediumCL
 	},
 	{
 		name: 'Hard Clues',
 		aliases: ['clues hard', 'hard clues', 'clue hard', 'hard clue'],
-		items: cluesHardCL
+		items: () => cluesHardCL
 	},
 	{
 		name: 'Elite Clues',
 		aliases: ['clues elite', 'elite clues', 'clue elite', 'elite clue'],
-		items: cluesEliteCL
+		items: () => cluesEliteCL
 	},
 	{
 		name: 'Master Clues',
 		aliases: ['clues master', 'master clues', 'clue master', 'master clue'],
-		items: cluesMasterCL
+		items: () => cluesMasterCL
 	},
 	{
 		name: 'All Clues',
 		aliases: ['clues all', 'all clues', 'clue all', 'all clue'],
-		items: allClueItems
+		items: () => allClueItems
 	},
 	{
 		name: 'Clues Shared',
 		aliases: ['clues shared', 'shared clues', 'clue shared', 'shared clue'],
-		items: cluesSharedCL
+		items: () => cluesSharedCL
 	},
 	{
 		name: 'Clues Rares',
 		aliases: ['clues rares', 'clues rare', 'rare clues', 'clue rare', 'rare clue'],
-		items: [...new Set([...cluesHardRareCL, ...cluesEliteRareCL, ...cluesMasterRareCL])]
+		items: () => [...new Set([...cluesHardRareCL, ...cluesEliteRareCL, ...cluesMasterRareCL])]
+	},
+	{
+		name: 'Not Sacrificed',
+		aliases: ['not sacrificed', 'not sac'],
+		items: user => {
+			if (!user) return [];
+			const sacBank = new Bank(user.user.sacrificedBank as ItemBank);
+			return user.bank
+				.items()
+				.filter(i => !sacBank.has(i[0].id))
+				.map(i => i[0].id);
+		}
 	}
 ];
 
@@ -1083,7 +1132,7 @@ for (const clGroup of Object.values(allCollectionLogs).map(c => c.activities)) {
 			filterableTypes.push({
 				name,
 				aliases: aliasesForThisCL,
-				items: cl.items
+				items: () => cl.items
 			});
 		}
 	}

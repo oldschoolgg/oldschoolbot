@@ -1,5 +1,4 @@
 import { Time } from 'e';
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { prisma } from '../../../lib/settings/prisma';
@@ -11,15 +10,16 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export const pizazzPointsPerHour = 100;
 
-export default class extends Task {
+export const mageTrainingTask: MinionTask = {
+	type: 'MageTrainingArena',
 	async run(data: MinigameActivityTaskOptions) {
 		const { channelID, quantity, duration, userID } = data;
 
-		incrementMinigameScore(userID, 'magic_training_arena', quantity);
+		await incrementMinigameScore(userID, 'magic_training_arena', quantity);
 
 		const loot = new Bank();
 
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		let baseXP = (25_000 / (Time.Minute * 60)) * duration;
 		let xp = randomVariation(baseXP, 5);
 		const xpRes = await user.addXP({
@@ -39,6 +39,14 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished completing ${quantity}x Magic Training Arena rooms. You received **${pizazzPoints} Pizazz points**. ${xpRes}`;
 
-		handleTripFinish(this.client, user, channelID, str, ['mta', [], true, 'train'], undefined, data, loot);
+		handleTripFinish(
+			user,
+			channelID,
+			str,
+			['minigames', { mage_training_arena: { start: {} } }, true],
+			undefined,
+			data,
+			loot
+		);
 	}
-}
+};

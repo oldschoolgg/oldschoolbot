@@ -5,9 +5,9 @@ import { production } from '../../config';
 export function logError(err: Error | unknown, context?: Record<string, string>) {
 	if (production) {
 		captureException(err, {
-			extra: context
+			tags: context
 		});
 	} else {
-		console.error(err);
+		console.error(context, err);
 	}
 }

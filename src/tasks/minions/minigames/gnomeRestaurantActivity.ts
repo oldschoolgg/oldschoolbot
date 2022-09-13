@@ -1,13 +1,12 @@
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { getMinionName, incrementMinigameScore } from '../../../lib/settings/settings';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
+import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { GnomeRestaurantActivityTaskOptions } from '../../../lib/types/minions';
-import { roll, updateBankSetting } from '../../../lib/util';
+import { roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { updateBankSetting } from '../../../mahoji/mahojiSettings';
 
 const tipTable = new LootTable()
 	.oneIn(210, 'Gnome scarf')
@@ -58,7 +57,8 @@ const tipTable = new LootTable()
 	.add('Calquat tree seed')
 	.add('Magic seed', [1, 3]);
 
-export default class extends Task {
+export const gnomeResTask: MinionTask = {
+	type: 'GnomeRestaurant',
 	async run(data: GnomeRestaurantActivityTaskOptions) {
 		const { channelID, quantity, duration, userID, gloriesRemoved } = data;
 
@@ -77,20 +77,30 @@ export default class extends Task {
 			loot.add(tipTable.roll());
 		}
 
-		const minionName = await getMinionName(userID);
-
-		const user = await this.client.fetchUser(userID);
-		await user.addItemsToBank({ items: loot, collectionLog: true });
+		const user = await mUserFetch(userID);
+		await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 		const xpRes = await user.addXP({
 			skillName: SkillsEnum.Cooking,
 			amount: totalXP,
 			duration
 		});
 
-		let str = `<@${userID}>, ${minionName} finished completing ${quantity}x Gnome Restaurant deliveries. You received **${loot}**. ${xpRes}`;
+		let str = `<@${userID}>, ${user.minionName} finished completing ${quantity}x Gnome Restaurant deliveries. You received **${loot}**. ${xpRes}`;
 
-		updateBankSetting(this.client, ClientSettings.EconomyStats.GnomeRestaurantLootBank, loot);
+		updateBankSetting('gnome_res_loot', loot);
 
-		handleTripFinish(this.client, user, channelID, str, ['gnomerestaurant', [], true], undefined, data, loot);
+		handleTripFinish(
+			user,
+			channelID,
+			str,
+			['minigames', { gnome_restaurant: { start: {} } }, true],
+			undefined,
+			data,
+			loot
+		);
 	}
-}
+};

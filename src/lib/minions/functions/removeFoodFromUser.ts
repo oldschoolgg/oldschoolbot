@@ -1,18 +1,14 @@
 import { objectEntries, reduceNumByPercent } from 'e';
-import { KlasaClient, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
 
+import { updateBankSetting } from '../../../mahoji/mahojiSettings';
 import { Emoji } from '../../constants';
 import { Eatables } from '../../data/eatables';
 import { GearSetupType } from '../../gear';
-import { ClientSettings } from '../../settings/types/ClientSettings';
-import { UserSettings } from '../../settings/types/UserSettings';
-import { updateBankSetting } from '../../util';
 import getUserFoodFromBank from './getUserFoodFromBank';
 
 export default async function removeFoodFromUser({
-	client,
 	user,
 	totalHealingNeeded,
 	healPerAction,
@@ -20,17 +16,15 @@ export default async function removeFoodFromUser({
 	attackStylesUsed,
 	learningPercentage
 }: {
-	client: KlasaClient;
-	user: KlasaUser;
+	user: MUser;
 	totalHealingNeeded: number;
 	healPerAction: number;
 	activityName: string;
 	attackStylesUsed: GearSetupType[];
 	learningPercentage?: number;
-}): Promise<{ foodRemoved: Bank; reductions: string[] }> {
-	await user.settings.sync(true);
-
-	const rawGear = user.rawGear();
+}): Promise<{ foodRemoved: Bank; reductions: string[]; reductionRatio: number }> {
+	const originalTotalHealing = totalHealingNeeded;
+	const rawGear = user.gear;
 	const gearSetupsUsed = objectEntries(rawGear).filter(entry => attackStylesUsed.includes(entry[0]));
 	const reductions = [];
 	const elyUsed = gearSetupsUsed.some(entry => entry[1].shield?.item === itemID('Elysian spirit shield'));
@@ -50,7 +44,7 @@ export default async function removeFoodFromUser({
 		totalHealingNeeded = reduceNumByPercent(totalHealingNeeded, learningPercentage);
 		reductions.push(`-${learningPercentage}% for experience`);
 	}
-	const favoriteFood = user.settings.get(UserSettings.FavoriteFood);
+	const favoriteFood = user.user.favorite_food;
 
 	const foodToRemove = getUserFoodFromBank(user, totalHealingNeeded, favoriteFood);
 	if (!foodToRemove) {
@@ -58,13 +52,14 @@ export default async function removeFoodFromUser({
 			i => i.name
 		).join(', ')}.`;
 	} else {
-		await user.removeItemsFromBank(foodToRemove);
+		await transactItems({ userID: user.id, itemsToRemove: foodToRemove });
 
-		updateBankSetting(client, ClientSettings.EconomyStats.PVMCost, foodToRemove);
+		updateBankSetting('economyStats_PVMCost', foodToRemove);
 
 		return {
 			foodRemoved: foodToRemove,
-			reductions
+			reductions,
+			reductionRatio: totalHealingNeeded / originalTotalHealing
 		};
 	}
 }

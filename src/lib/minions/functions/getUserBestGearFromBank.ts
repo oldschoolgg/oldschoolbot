@@ -1,11 +1,10 @@
 import { Bank } from 'oldschooljs';
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
-import { addBanks, removeItemFromBank } from 'oldschooljs/dist/util';
 
 import { GearSetupType, GearStat } from '../../gear/types';
 import { Gear } from '../../structures/Gear';
-import { ItemBank, Skills } from '../../types';
-import { skillsMeetRequirements } from '../../util';
+import { Skills } from '../../types';
+import { assert, skillsMeetRequirements } from '../../util';
 import getOSItem from '../../util/getOSItem';
 
 function getItemScore(item: Item) {
@@ -16,16 +15,16 @@ function getItemScore(item: Item) {
 }
 
 export default function getUserBestGearFromBank(
-	userBank: ItemBank,
+	userBank: Bank,
 	userGear: Gear,
 	gearType: GearSetupType,
 	skills: Skills,
-	type: string,
-	style: string,
+	gearStat: GearStat,
 	extra: string | null = null
 ) {
-	let toRemoveFromGear: ItemBank = {};
-	let toRemoveFromBank: ItemBank = {};
+	assert(Object.values(GearStat).includes(gearStat as any));
+	let toRemoveFromGear: Bank = new Bank();
+	let toRemoveFromBank: Bank = new Bank();
 	const gearToEquip = { ...userGear.raw() };
 
 	let score2h = 0;
@@ -34,7 +33,6 @@ export default function getUserBestGearFromBank(
 	let scoreWsExtra = 0;
 
 	// Get primary stat to sort by
-	const gearStat: GearStat = `${type}_${style}` as GearStat;
 	let gearStatExtra: GearStat | null = null;
 
 	// Get extra settings (prayer or strength)
@@ -85,14 +83,13 @@ export default function getUserBestGearFromBank(
 	// Read current equipped user gear, removes it and add to bank
 	for (const [slot, item] of Object.entries(userGear.raw())) {
 		if (item) {
-			toRemoveFromGear = addBanks([toRemoveFromGear, { [item.item]: item.quantity }]);
+			toRemoveFromGear.add(item.item, item.quantity);
 		}
 		gearToEquip[slot as EquipmentSlot] = null;
 	}
 
 	// Get all items by slot from user bank
-	for (const [_item, quantity] of Object.entries(addBanks([userBank, toRemoveFromGear]))) {
-		const item = getOSItem(_item);
+	for (const [item, quantity] of new Bank().add(userBank).add(toRemoveFromGear).items()) {
 		const hasStats = item.equipment?.requirements
 			? skillsMeetRequirements(skills, item.equipment.requirements)
 			: true;
@@ -129,49 +126,37 @@ export default function getUserBestGearFromBank(
 				score2hExtra += slot !== 'weapon' && slot !== 'shield' ? item.equipment![gearStatExtra] : 0;
 				scoreWsExtra += slot !== '2h' ? item.equipment![gearStatExtra] : 0;
 			}
-			toRemoveFromBank = addBanks([toRemoveFromBank, { [item.id]: 1 }]);
+			toRemoveFromBank.add(item.id, 1);
 		}
 	}
 
 	// Removes weapon/shield or 2h, depending on what has the highest stats
 	if ((!gearStatExtra && scoreWs > score2h) || (gearStatExtra && scoreWsExtra > score2hExtra)) {
 		if (gearToEquip['2h']) {
-			toRemoveFromBank = removeItemFromBank(
-				toRemoveFromBank,
-				gearToEquip['2h']!.item,
-				gearToEquip['2h']!.quantity
-			);
+			toRemoveFromBank.remove(gearToEquip['2h']!.item, gearToEquip['2h']!.quantity);
 			gearToEquip['2h'] = null;
 		}
 	} else {
 		if (gearToEquip.weapon) {
-			toRemoveFromBank = removeItemFromBank(
-				toRemoveFromBank,
-				gearToEquip.weapon!.item,
-				gearToEquip.weapon!.quantity
-			);
+			toRemoveFromBank.remove(gearToEquip.weapon!.item, gearToEquip.weapon!.quantity);
 			gearToEquip.weapon = null;
 		}
 		if (gearToEquip.shield) {
-			toRemoveFromBank = removeItemFromBank(
-				toRemoveFromBank,
-				gearToEquip.shield!.item,
-				gearToEquip.shield!.quantity
-			);
+			toRemoveFromBank.remove(gearToEquip.shield!.item, gearToEquip.shield!.quantity);
 			gearToEquip.shield = null;
 		}
 	}
 
 	// Remove items that are already equipped from being added to bank and re-equipped
-	for (const item of Object.keys(toRemoveFromGear)) {
-		if (toRemoveFromBank[Number(item)]) {
-			if (toRemoveFromGear[Number(item)] > 1) {
+	for (const [item] of toRemoveFromGear.items()) {
+		if (toRemoveFromBank.has(item.id)) {
+			if (toRemoveFromGear.has(item.id)) {
 				// Don't delete all if there's more than 1 (stackables)
-				toRemoveFromGear[Number(item)]--;
+				toRemoveFromGear.remove(item.id, 1);
 			} else {
-				delete toRemoveFromGear[Number(item)];
+				toRemoveFromGear.remove(item.id, toRemoveFromGear.amount(item.id));
 			}
-			delete toRemoveFromBank[Number(item)];
+			toRemoveFromBank.remove(item.id, toRemoveFromBank.amount(item.id));
 		}
 	}
 
@@ -179,6 +164,6 @@ export default function getUserBestGearFromBank(
 		toRemoveFromGear,
 		toRemoveFromBank,
 		gearToEquip,
-		userFinalBank: new Bank().add(userBank).add(toRemoveFromGear).remove(toRemoveFromBank).bank
+		userFinalBank: new Bank().add(userBank).add(toRemoveFromGear).remove(toRemoveFromBank)
 	};
 }

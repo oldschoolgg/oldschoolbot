@@ -4,7 +4,7 @@ import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { nestTable } from '../../../simulation/birdsNest';
 
-interface Birdhouse {
+export interface Birdhouse {
 	name: string;
 	aliases: string[];
 	huntLvl: number;

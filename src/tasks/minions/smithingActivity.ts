@@ -1,4 +1,3 @@
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import Smithing from '../../lib/skilling/skills/smithing';
@@ -6,10 +5,11 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { SmithingActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
-export default class extends Task {
+export const smithingTask: MinionTask = {
+	type: 'Smithing',
 	async run(data: SmithingActivityTaskOptions) {
 		const { smithedBarID, quantity, userID, channelID, duration } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
 		const smithedItem = Smithing.SmithableItems.find(item => item.id === smithedBarID)!;
 
@@ -26,17 +26,20 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished smithing, you received ${loot}. ${xpRes}`;
 
-		await user.addItemsToBank({ items: loot, collectionLog: true });
+		await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,
-			['smith', [quantity, smithedItem.name], true],
+			['smith', { name: smithedItem.name, quantity }, true],
 			undefined,
 			data,
 			loot
 		);
 	}
-}
+};

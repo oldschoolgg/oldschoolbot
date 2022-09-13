@@ -1,5 +1,4 @@
 import { noOp, randArrItem } from 'e';
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Emoji } from '../../lib/constants';
@@ -10,7 +9,8 @@ import isImportantItemForMonster from '../../lib/minions/functions/isImportantIt
 import { GroupMonsterActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
-export default class extends Task {
+export const groupoMonsterTask: MinionTask = {
+	type: 'GroupMonsterKilling',
 	async run(data: GroupMonsterActivityTaskOptions) {
 		const { monsterID, channelID, quantity, users, leader, duration } = data;
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
@@ -26,13 +26,13 @@ export default class extends Task {
 			kcAmounts[userWhoGetsLoot] = Boolean(kcAmounts[userWhoGetsLoot]) ? ++kcAmounts[userWhoGetsLoot] : 1;
 		}
 
-		const leaderUser = await this.client.fetchUser(leader);
+		const leaderUser = await mUserFetch(leader);
 
 		let resultStr = `${leaderUser}, your party finished killing ${quantity}x ${monster.name}!\n\n`;
 		const totalLoot = new Bank();
 
 		for (const [userID, loot] of Object.entries(teamsLoot)) {
-			const user = await this.client.fetchUser(userID).catch(noOp);
+			const user = await mUserFetch(userID).catch(noOp);
 			if (!user) continue;
 			await addMonsterXP(user, {
 				monsterID,
@@ -42,15 +42,19 @@ export default class extends Task {
 				taskQuantity: null
 			});
 			totalLoot.add(loot);
-			await user.addItemsToBank({ items: loot, collectionLog: true });
+			await transactItems({
+				userID: user.id,
+				collectionLog: true,
+				itemsToAdd: loot
+			});
 			const kcToAdd = kcAmounts[user.id];
-			if (kcToAdd) await user.incrementMonsterScore(monsterID, kcToAdd);
+			if (kcToAdd) await user.incrementKC(monsterID, kcToAdd);
 			const purple = Object.keys(loot).some(itemID => isImportantItemForMonster(parseInt(itemID), monster));
 
 			resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${loot}||\n`;
 
 			announceLoot({
-				user,
+				user: await mUserFetch(user.id),
 				monsterID: monster.id,
 				loot,
 				notifyDrops: monster.notifyDrops,
@@ -67,6 +71,6 @@ export default class extends Task {
 			resultStr += `${usersWithoutLoot.map(id => `<@${id}>`).join(', ')} - Got no loot, sad!`;
 		}
 
-		handleTripFinish(this.client, leaderUser, channelID, resultStr, undefined, undefined, data, totalLoot);
+		handleTripFinish(leaderUser, channelID, resultStr, undefined, undefined, data, totalLoot);
 	}
-}
+};

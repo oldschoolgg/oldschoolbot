@@ -1,17 +1,17 @@
 import { roll } from 'e';
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { chompyHats } from '../../../commands/Minion/chompyhunt';
 import { userhasDiaryTier, WesternProv } from '../../../lib/diaries';
 import { getMinigameEntity, incrementMinigameScore } from '../../../lib/settings/settings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { chompyHats } from '../../../mahoji/lib/abstracted_commands/chompyHuntCommand';
 
-export default class extends Task {
+export const chompHuntTask: MinionTask = {
+	type: 'BigChompyBirdHunting',
 	async run(data: MinigameActivityTaskOptions) {
 		const { channelID, quantity, userID } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
 		const previousScore = (await getMinigameEntity(user.id)).big_chompy_bird_hunting;
 		const { newScore } = await incrementMinigameScore(userID, 'big_chompy_bird_hunting', quantity);
@@ -28,7 +28,11 @@ export default class extends Task {
 			}
 		}
 
-		await user.addItemsToBank({ items: loot, collectionLog: true });
+		await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 		let str = `${user}, ${user.minionName} finished hunting Chompy Birds, they killed ${quantity}x Chompies. You have now have ${newScore} Chompies total. You received **${loot}**.`;
 
 		for (const [item, qty] of chompyHats) {
@@ -37,6 +41,14 @@ export default class extends Task {
 			}
 		}
 
-		handleTripFinish(this.client, user, channelID, str, ['chompyhunt', []], undefined, data, loot);
+		handleTripFinish(
+			user,
+			channelID,
+			str,
+			['activities', { chompy_hunt: { action: 'start' } }],
+			undefined,
+			data,
+			loot
+		);
 	}
-}
+};

@@ -1,44 +1,45 @@
-import { Time } from 'e';
-import { KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
-import { runCommand } from '../../settings/settings';
-import { UserSettings } from '../../settings/types/UserSettings';
+import { farmingPlantCommand } from '../../../mahoji/lib/abstracted_commands/farmingCommand';
 import { calcNumOfPatches } from '../../skilling/functions/calcsFarming';
-import Farming, { plants } from '../../skilling/skills/farming';
-import { stringMatches } from '../../util';
-import { defaultPatches, resolvePatchTypeSetting } from '../farming';
+import { plants } from '../../skilling/skills/farming';
+import { IPatchDataDetailed } from '../farming/types';
 
-export async function autoFarm(msg: KlasaMessage) {
-	const currentDate = new Date().getTime();
-	const userBank = msg.author.bank();
-	let possiblePlants = plants.sort((a, b) => b.level - a.level);
-	const toPlant = possiblePlants.find(p => {
-		if (msg.author.skillLevel(SkillsEnum.Farming) < p.level) return false;
-		const getPatchType = resolvePatchTypeSetting(p.seedType)!;
-		const patchData = msg.author.settings.get(getPatchType) ?? defaultPatches;
-		const lastPlantTime: number = patchData.plantTime;
-		const difference = currentDate - lastPlantTime;
-		const planted =
-			patchData.lastPlanted !== null
-				? Farming.Plants.find(
-						plants =>
-							stringMatches(plants.name, patchData.lastPlanted ?? '') ||
-							stringMatches(plants.name.split(' ')[0], patchData.lastPlanted ?? '')
-				  ) ?? null
-				: null;
+export async function autoFarm(user: MUser, patchesDetailed: IPatchDataDetailed[], channelID: bigint) {
+	if (user.minionIsBusy) {
+		return 'Your minion must not be busy to use this command.';
+	}
+	const userBank = user.bank;
+	const farmingLevel = user.skillLevel(SkillsEnum.Farming);
+	const elligible = [...plants]
+		.filter(p => {
+			if (p.level > farmingLevel) return false;
+			const [numOfPatches] = calcNumOfPatches(p, user, user.QP);
+			if (numOfPatches === 0) return false;
+			const reqItems = new Bank(p.inputItems).multiply(numOfPatches);
+			if (!userBank.has(reqItems.bank)) return false;
+			return true;
+		})
+		.sort((a, b) => b.level - a.level);
 
-		if (planted && difference < planted.growthTime * Time.Minute) return false;
-		const [numOfPatches] = calcNumOfPatches(p, msg.author, msg.author.settings.get(UserSettings.QP));
-		const reqItems = new Bank(p.inputItems).multiply(numOfPatches);
-		if (!userBank.has(reqItems.bank)) {
-			return false;
-		}
+	const canPlant = elligible.find(p => {
+		const patchData = patchesDetailed.find(_p => _p.patchName === p.seedType)!;
+		if (patchData.ready === false) return false;
 		return true;
 	});
+	const canHarvest = elligible.find(p => patchesDetailed.find(_p => _p.patchName === p.seedType)!.ready);
+	const toPlant = canPlant ?? canHarvest;
 	if (!toPlant) {
-		return msg.channel.send("There's no Farming crops that you have the requirements to plant.");
+		return "There's no Farming crops that you have the requirements to plant, and nothing to harvest.";
 	}
-	return runCommand({ message: msg, commandName: 'farm', args: [toPlant.name, true], bypassInhibitors: true });
+
+	return farmingPlantCommand({
+		userID: user.id,
+		plantName: toPlant.name,
+		autoFarmed: true,
+		channelID,
+		quantity: null,
+		pay: false
+	});
 }

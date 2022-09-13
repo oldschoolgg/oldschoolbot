@@ -1,10 +1,9 @@
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 
-import { UserSettings } from '../settings/types/UserSettings';
 import { Gear } from '../structures/Gear';
-import { itemID, itemNameFromID, toTitleCase } from '../util';
+import { itemID, toTitleCase } from '../util';
 import getOSItem from '../util/getOSItem';
-import { GearSetup, GearSetupType } from '.';
+import { GearSetup } from '.';
 import { GearPreset } from '.prisma/client';
 
 export function itemInSlot(setup: GearSetup, slot: EquipmentSlot): [null, null] | [Item, number] {
@@ -15,27 +14,6 @@ export function itemInSlot(setup: GearSetup, slot: EquipmentSlot): [null, null] 
 
 export function readableStatName(slot: string) {
 	return toTitleCase(slot.replace('_', ' '));
-}
-
-export function resolveGearTypeSetting(type: GearSetupType) {
-	switch (type) {
-		case 'melee':
-			return UserSettings.Gear.Melee;
-		case 'mage':
-			return UserSettings.Gear.Mage;
-		case 'range':
-			return UserSettings.Gear.Range;
-		case 'skilling':
-			return UserSettings.Gear.Skilling;
-		case 'misc':
-			return UserSettings.Gear.Misc;
-		case 'wildy':
-			return UserSettings.Gear.Wildy;
-		case 'fashion':
-			return UserSettings.Gear.Fashion;
-		case 'other':
-			return UserSettings.Gear.Other;
-	}
 }
 
 export type PartialGearSetup = Partial<{
@@ -65,16 +43,14 @@ export function hasGracefulEquipped(setup: Gear) {
 	);
 }
 
-export function gearPresetToString(gearPreset: GearPreset) {
-	let parsed = [];
-	const keys = Object.keys(gearPreset) as (keyof GearPreset)[];
-	for (const key of keys) {
-		if (key === 'user_id' || key === 'ammo_qty' || key === 'name') continue;
-		let val = gearPreset[key];
-		if (val) parsed.push(itemNameFromID(val));
+export function gearPresetToGear(gearPreset: GearPreset) {
+	const gear: GearSetup = {} as GearSetup;
+	for (const key of ['cape', 'feet', 'hands', 'head', 'legs', 'neck', 'ring', 'shield', 'weapon', 'body'] as const) {
+		const val = gearPreset[key];
+		gear[key] = val !== null ? { item: val, quantity: 1 } : null;
 	}
-	if (gearPreset.ammo) {
-		parsed.push(`${gearPreset.ammo_qty}x ${itemNameFromID(gearPreset.ammo)}`);
-	}
-	return parsed.join(', ');
+
+	gear.ammo = gearPreset.ammo ? { item: gearPreset.ammo, quantity: gearPreset.ammo_qty ?? 1 } : null;
+	gear['2h'] = gearPreset.two_handed ? { item: gearPreset.two_handed, quantity: 1 } : null;
+	return new Gear(gear);
 }

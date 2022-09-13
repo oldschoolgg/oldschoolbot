@@ -3,7 +3,6 @@ import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { itemNameMap } from 'oldschooljs/dist/structures/Items';
 
-import { MAX_INT_JAVA } from '../constants';
 import { filterableTypes } from '../data/filterables';
 import { evalMathExpression } from '../expressionParser';
 import { cleanString, stringMatches } from '../util';
@@ -31,7 +30,7 @@ export function parseQuantityAndItem(str = '', inputBank?: Bank): [Item[], numbe
 		potentialQty = potentialQty.replace('#', inputBank.amount(lazyItemGet.id).toString());
 	}
 
-	let parsedQty: number | null = evalMathExpression(potentialQty);
+	let parsedQty: number | null = evalMathExpression(potentialQty.replace('x', ''));
 	if (parsedQty !== null && isNaN(parsedQty)) parsedQty = null;
 
 	const parsedName = parsedQty === null ? str : potentialName.join(' ');
@@ -51,7 +50,7 @@ export function parseQuantityAndItem(str = '', inputBank?: Bank): [Item[], numbe
 	}
 	if (osItems.length === 0) return [];
 
-	let quantity = floor(min(MAX_INT_JAVA, max(0, parsedQty ?? 0)));
+	let quantity = floor(min(100_000_000_000, max(0, parsedQty ?? 0)));
 
 	return [osItems, quantity];
 }
@@ -82,12 +81,14 @@ export function parseBankFromFlags({
 	bank,
 	flags,
 	excludeItems,
-	maxSize
+	maxSize,
+	user
 }: {
 	bank: Bank;
-	flags: Record<string, string>;
+	flags: Record<string, string | undefined>;
 	excludeItems: readonly number[];
 	maxSize?: number;
+	user?: MUser;
 }): Bank {
 	const newBank = new Bank();
 	const maxQuantity = Number(flags.qty) || Infinity;
@@ -103,13 +104,17 @@ export function parseBankFromFlags({
 		if (flagsKeys.includes('tradeables') && !itemIsTradeable(item.id)) continue;
 		if (flagsKeys.includes('untradeables') && itemIsTradeable(item.id)) continue;
 		if (flagsKeys.includes('equippables') && !item.equipment?.slot) continue;
-		if (flagsKeys.includes('search') && !item.name.toLowerCase().includes(flags.search.toLowerCase())) {
+		if (
+			flagsKeys.includes('search') &&
+			flags.search &&
+			!item.name.toLowerCase().includes(flags.search.toLowerCase())
+		) {
 			continue;
 		}
 
 		const qty = Math.min(maxQuantity, quantity === 0 ? Math.max(1, bank.amount(item.id)) : quantity);
-		if (filter && !filter.items.includes(item.id)) continue;
-		if ((filter || flagsKeys.length) && excludeItems.includes(item.id)) continue;
+		if (filter && !filter.items(user).includes(item.id)) continue;
+		if (excludeItems.includes(item.id)) continue;
 
 		newBank.add(item.id, qty);
 	}
@@ -118,13 +123,15 @@ export function parseBankFromFlags({
 }
 
 interface ParseBankOptions {
-	inputBank: Bank;
-	flags?: Record<string, string>;
+	inputBank?: Bank;
+	flags?: Record<string, string | undefined>;
 	inputStr?: string;
 	excludeItems?: number[];
-	filters?: string[];
+	filters?: (string | undefined)[];
 	search?: string;
 	maxSize?: number;
+	user?: MUser;
+	noDuplicateItems?: true;
 }
 
 export function parseBank({
@@ -134,23 +141,29 @@ export function parseBank({
 	excludeItems = [],
 	filters,
 	search,
-	maxSize
+	maxSize,
+	user,
+	noDuplicateItems = undefined
 }: ParseBankOptions): Bank {
 	if (inputStr) {
 		let _bank = new Bank();
-		const strItems = parseStringBank(inputStr, inputBank);
+		const strItems = parseStringBank(inputStr, inputBank, noDuplicateItems);
 		for (const [item, quantity] of strItems) {
 			if (maxSize && _bank.length >= maxSize) break;
 			_bank.add(
 				item.id,
-				!quantity ? inputBank.amount(item.id) : Math.max(0, Math.min(quantity, inputBank.amount(item.id)))
+				!quantity
+					? inputBank?.amount(item.id)
+					: inputBank === undefined
+					? quantity
+					: Math.max(0, Math.min(quantity, inputBank.amount(item.id) ?? 1))
 			);
 		}
 		return _bank;
 	}
 
 	if (filters) {
-		for (const filter of filters) {
+		for (const filter of filters.filter(notEmpty)) {
 			flags[filter] = filter;
 		}
 	}
@@ -159,7 +172,7 @@ export function parseBank({
 		flags.search = search;
 	}
 
-	return parseBankFromFlags({ bank: inputBank, flags, excludeItems, maxSize });
+	return parseBankFromFlags({ bank: inputBank ?? new Bank(), flags, excludeItems, maxSize, user });
 }
 
 function truncateBankToSize(bank: Bank, size: number) {
@@ -178,13 +191,20 @@ interface ParseInputCostBankOptions {
 	flags?: Record<string, string>;
 	inputStr?: string;
 	excludeItems: readonly number[];
+	user?: MUser;
 }
-export function parseInputCostBank({ usersBank, inputStr, flags = {}, excludeItems }: ParseInputCostBankOptions): Bank {
+export function parseInputCostBank({
+	usersBank,
+	inputStr,
+	flags = {},
+	excludeItems,
+	user
+}: ParseInputCostBankOptions): Bank {
 	if (!inputStr && Object.keys(flags).length > 0) {
-		return truncateBankToSize(parseBankFromFlags({ bank: usersBank, flags, excludeItems }), 60);
+		return truncateBankToSize(parseBankFromFlags({ bank: usersBank, flags, excludeItems, user }), 60);
 	}
 
-	const baseBank = parseBankFromFlags({ bank: usersBank, flags, excludeItems });
+	const baseBank = parseBankFromFlags({ bank: usersBank, flags, excludeItems, user });
 	const stringInputBank = Boolean(inputStr) ? parseStringBank(inputStr, baseBank, true) : [];
 
 	const bank = new Bank();
@@ -195,48 +215,4 @@ export function parseInputCostBank({ usersBank, inputStr, flags = {}, excludeIte
 	}
 
 	return truncateBankToSize(bank, 60);
-}
-
-export function parseInputBankWithPrice({
-	usersBank,
-	str,
-	flags,
-	excludeItems
-}: {
-	usersBank: Bank;
-	str: string;
-	flags: Record<string, string>;
-	excludeItems: readonly number[];
-}) {
-	const split = str.split(' ');
-	const firstAsNumber = evalMathExpression(split[0]);
-
-	if (!firstAsNumber) {
-		return {
-			price: 0,
-			bank: parseInputCostBank({ usersBank, inputStr: str, flags, excludeItems })
-		};
-	}
-
-	const bankParsedFromFlags = parseBankFromFlags({ bank: usersBank, flags, excludeItems });
-	const flagsHaveAnEffectOnBank = bankParsedFromFlags.length !== usersBank.length;
-
-	if (split.length === 1) {
-		const potentialItem = Items.get(firstAsNumber);
-		if (!potentialItem) {
-			return {
-				price: firstAsNumber,
-				bank: flagsHaveAnEffectOnBank ? bankParsedFromFlags : new Bank()
-			};
-		}
-		return {
-			price: 0,
-			bank: parseInputCostBank({ usersBank, flags, inputStr: potentialItem.name, excludeItems })
-		};
-	}
-
-	return {
-		price: firstAsNumber,
-		bank: parseInputCostBank({ usersBank, inputStr: str.split(' ').slice(1).join(' '), flags, excludeItems })
-	};
 }

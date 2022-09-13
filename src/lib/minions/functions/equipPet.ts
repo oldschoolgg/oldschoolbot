@@ -1,36 +1,31 @@
-import { KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { allPetIDs } from '../../data/CollectionsExport';
-import { UserSettings } from '../../settings/types/UserSettings';
 import getOSItem from '../../util/getOSItem';
 import { unequipPet } from './unequipPet';
 
-export async function equipPet(msg: KlasaMessage, itemName: string) {
+export async function equipPet(user: MUser, itemName: string) {
 	const petItem = getOSItem(itemName);
 	const cost = new Bank().add(petItem.id);
 
-	if (!allPetIDs.includes(petItem.id) || !msg.author.owns(cost)) {
-		return msg.channel.send("That's not a pet, or you do not own this pet.");
+	if (!allPetIDs.includes(petItem.id) || !user.owns(cost)) {
+		return "That's not a pet, or you do not own this pet.";
 	}
 
-	const currentlyEquippedPet = msg.author.settings.get(UserSettings.Minion.EquippedPet);
+	const currentlyEquippedPet = user.user.minion_equippedPet;
 	if (currentlyEquippedPet) {
-		await unequipPet(msg);
+		await unequipPet(user);
 	}
 
-	const doubleCheckEquippedPet = msg.author.settings.get(UserSettings.Minion.EquippedPet);
+	const doubleCheckEquippedPet = user.user.minion_equippedPet;
 	if (doubleCheckEquippedPet) {
-		msg.author.log(`Aborting pet equip so we don't clobber ${doubleCheckEquippedPet}`);
-		return msg.channel.send('You still have a pet equipped, cancelling.');
+		return 'You still have a pet equipped, cancelling.';
 	}
 
-	await msg.author.settings.update(UserSettings.Minion.EquippedPet, petItem.id);
-	await msg.author.removeItemsFromBank(cost);
+	await user.update({
+		minion_equippedPet: petItem.id
+	});
+	await transactItems({ userID: user.id, itemsToRemove: cost });
 
-	msg.author.log(`equipping ${petItem.name}[${petItem.id}]`);
-
-	return msg.channel.send(
-		`${msg.author.minionName} takes their ${petItem.name} from their bank, and puts it down to follow them.`
-	);
+	return `${user.minionName} takes their ${petItem.name} from their bank, and puts it down to follow them.`;
 }

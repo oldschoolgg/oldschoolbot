@@ -1,4 +1,3 @@
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import calcBurntCookables from '../../lib/skilling/functions/calcBurntCookables';
@@ -7,17 +6,18 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { CookingActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
-export default class extends Task {
+export const cookingTask: MinionTask = {
+	type: 'Cooking',
 	async run(data: CookingActivityTaskOptions) {
 		const { cookableID, quantity, userID, channelID, duration } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
 		const cookable = Cooking.Cookables.find(cookable => cookable.id === cookableID)!;
 
 		let burnedAmount = 0;
 		let stopBurningLvl = 0;
 
-		if (cookable.stopBurnAtCG && user.hasItemEquippedAnywhere('Cooking gauntlets')) {
+		if (cookable.stopBurnAtCG && user.hasEquipped('Cooking gauntlets')) {
 			stopBurningLvl = cookable.stopBurnAtCG;
 		} else {
 			stopBurningLvl = cookable.stopBurnAt;
@@ -45,17 +45,20 @@ export default class extends Task {
 
 		str += `\nYou received: ${loot}.`;
 
-		await user.addItemsToBank({ items: loot, collectionLog: true });
+		await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,
-			['cook', [quantity, cookable.name], true],
+			['cook', { name: cookable.name, quantity }, true],
 			undefined,
 			data,
 			loot
 		);
 	}
-}
+};

@@ -56,5 +56,6 @@ export function collectMetrics() {
 		...getMemoryMetrics(),
 		...getCPUMetrics()
 	};
+	h.reset();
 	return metrics;
 }

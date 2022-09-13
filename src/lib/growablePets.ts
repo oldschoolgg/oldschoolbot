@@ -1,8 +1,6 @@
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { UserSettings } from './settings/types/UserSettings';
 import { ActivityTaskOptions } from './types/minions';
 import { itemNameFromID, randFloat } from './util';
 import resolveItems from './util/resolveItems';
@@ -39,25 +37,22 @@ for (let i = 0; i < kittens.length; i++) {
 	});
 }
 
-export async function handleGrowablePetGrowth(
-	user: KlasaUser,
-	data: ActivityTaskOptions,
-	message: string
-): Promise<string> {
-	const equippedPet = user.settings.get(UserSettings.Minion.EquippedPet);
-	if (!equippedPet) return message;
+export async function handleGrowablePetGrowth(user: MUser, data: ActivityTaskOptions, messages: string[]) {
+	const equippedPet = user.user.minion_equippedPet;
+	if (!equippedPet) return;
 	const equippedGrowablePet = growablePets.find(pet => pet.stages.includes(equippedPet));
-	if (!equippedGrowablePet) return message;
-	if (equippedGrowablePet.stages[equippedGrowablePet.stages.length - 1] === equippedPet) return message;
+	if (!equippedGrowablePet) return;
+	if (equippedGrowablePet.stages[equippedGrowablePet.stages.length - 1] === equippedPet) return;
 	const minutesInThisTrip = data.duration / Time.Minute;
 	if (randFloat(0, equippedGrowablePet.growthRate) <= minutesInThisTrip) {
 		const nextPet = equippedGrowablePet.stages[equippedGrowablePet.stages.indexOf(equippedPet) + 1];
 		if (nextPet === -1) {
-			throw new Error(`${user.username}'s pet[${equippedPet}] has no index in growable pet stages.`);
+			throw new Error(`${user.usernameOrMention}'s pet[${equippedPet}] has no index in growable pet stages.`);
 		}
-		await user.settings.update(UserSettings.Minion.EquippedPet, nextPet);
-		await user.addItemsToCollectionLog({ items: new Bank().add(nextPet) });
-		return `${message}\n\nYour ${itemNameFromID(equippedPet)} grew into a ${itemNameFromID(nextPet)}!`;
+		await user.update({
+			minion_equippedPet: nextPet,
+			collectionLogBank: new Bank().add(user.cl).add(nextPet).bank
+		});
+		messages.push(`Your ${itemNameFromID(equippedPet)} grew into a ${itemNameFromID(nextPet)}!`);
 	}
-	return message;
 }

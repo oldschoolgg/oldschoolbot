@@ -3,7 +3,19 @@ import { Bank } from 'oldschooljs';
 
 import { Emoji } from '../../constants';
 import itemID from '../../util/itemID';
-import { Rune, SkillsEnum } from '../types';
+import { SkillsEnum } from '../types';
+
+export interface Rune {
+	levels: number[][];
+	xp: number;
+	id: number;
+	name: string;
+	qpRequired?: number;
+	tripLength: number;
+	inputRune?: Bank;
+	inputTalisman?: Bank;
+	stams?: boolean;
+}
 
 const Runes: Rune[] = [
 	{
@@ -61,7 +73,8 @@ const Runes: Rune[] = [
 		levels: [[6, 1]],
 		tripLength: Time.Minute * 0.95,
 		inputRune: new Bank({ 'Air rune': 1 }),
-		inputTalisman: new Bank({ 'Air talisman': 1 })
+		inputTalisman: new Bank({ 'Air talisman': 1 }),
+		stams: true
 	},
 	{
 		xp: 6.5,
@@ -82,7 +95,8 @@ const Runes: Rune[] = [
 		levels: [[10, 1]],
 		tripLength: Time.Minute * 0.95,
 		inputRune: new Bank({ 'Air rune': 1 }),
-		inputTalisman: new Bank({ 'Air talisman': 1 })
+		inputTalisman: new Bank({ 'Air talisman': 1 }),
+		stams: true
 	},
 	{
 		xp: 9.5,
@@ -91,7 +105,8 @@ const Runes: Rune[] = [
 		levels: [[13, 1]],
 		tripLength: Time.Minute * 0.95,
 		inputRune: new Bank({ 'Water rune': 1 }),
-		inputTalisman: new Bank({ 'Water talisman': 1 })
+		inputTalisman: new Bank({ 'Water talisman': 1 }),
+		stams: true
 	},
 	{
 		xp: 7,
@@ -111,7 +126,8 @@ const Runes: Rune[] = [
 		levels: [[15, 1]],
 		tripLength: Time.Minute * 0.56,
 		inputRune: new Bank({ 'Air rune': 1 }),
-		inputTalisman: new Bank({ 'Air talisman': 1 })
+		inputTalisman: new Bank({ 'Air talisman': 1 }),
+		stams: true
 	},
 	{
 		xp: 10,
@@ -120,7 +136,8 @@ const Runes: Rune[] = [
 		levels: [[19, 1]],
 		tripLength: Time.Minute * 0.56,
 		inputRune: new Bank({ 'Water rune': 1 }),
-		inputTalisman: new Bank({ 'Water talisman': 1 })
+		inputTalisman: new Bank({ 'Water talisman': 1 }),
+		stams: true
 	},
 	{
 		xp: 7.5,
@@ -140,7 +157,8 @@ const Runes: Rune[] = [
 		levels: [[23, 1]],
 		tripLength: Time.Minute * 0.56,
 		inputRune: new Bank({ 'Earth rune': 1 }),
-		inputTalisman: new Bank({ 'Earth talisman': 1 })
+		inputTalisman: new Bank({ 'Earth talisman': 1 }),
+		stams: true
 	},
 	{
 		xp: 8,

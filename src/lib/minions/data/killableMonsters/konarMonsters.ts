@@ -90,6 +90,7 @@ export const konarMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 3,
+		itemsRequired: resolveItems(['Boots of stone']),
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 84
@@ -112,6 +113,7 @@ export const konarMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 6,
+		itemsRequired: resolveItems(['Boots of stone']),
 		itemCost: {
 			itemCost: new Bank().add('Anti-venom+(4)', 1),
 			qtyPerMinute: 0.017,
@@ -149,6 +151,7 @@ export const konarMonsters: KillableMonster[] = [
 			]
 		},
 		notifyDrops: resolveItems(['Hydra leather', "Hydra's claw", 'Ikkle hydra', 'Jar of chemicals']),
+		itemsRequired: resolveItems(['Boots of stone']),
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{

@@ -1,19 +1,20 @@
 import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { determineXPFromTickets } from '../../../commands/Minion/agilityarena';
+import { Emoji, Events } from '../../../lib/constants';
 import { KaramjaDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { AgilityArenaActivityTaskOptions } from '../../../lib/types/minions';
+import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { formatDuration, randomVariation, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { determineXPFromTickets } from '../../../mahoji/lib/abstracted_commands/agilityArenaCommand';
 
-export default class extends Task {
-	async run(data: AgilityArenaActivityTaskOptions) {
+export const agilityArenaTask: MinionTask = {
+	type: 'AgilityArena',
+	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { channelID, duration, userID } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Agility);
 
 		// You get 1 ticket per minute at best without diary
@@ -45,6 +46,21 @@ export default class extends Task {
 			agilityXP
 		).toLocaleString()} Agility XP and ${ticketsReceived} Agility arena tickets.`;
 
+		// Roll for pet
+		for (let i = 0; i < ticketsReceived; i++) {
+			if (roll(26_404 - user.skillLevel(SkillsEnum.Agility) * 25)) {
+				user.addItemsToBank({
+					items: new Bank().add('Giant Squirrel'),
+					collectionLog: true
+				});
+				str += "**\nYou have a funny feeling you're being followed...**";
+				globalClient.emit(
+					Events.ServerNotification,
+					`${Emoji.Agility} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Giant squirrel while running at the Agility Arena at level ${currentLevel} Agility!`
+				);
+			}
+		}
+
 		if (nextLevel > currentLevel) {
 			str += `\n\n${user.minionName}'s Agility level is now ${nextLevel}!`;
 		}
@@ -64,6 +80,14 @@ export default class extends Task {
 			collectionLog: true
 		});
 
-		handleTripFinish(this.client, user, channelID, str, ['agilityarena', [], true], undefined, data, null);
+		handleTripFinish(
+			user,
+			channelID,
+			str,
+			['minigames', { agility_arena: { start: {} } }, true],
+			undefined,
+			data,
+			null
+		);
 	}
-}
+};

@@ -1,19 +1,20 @@
-import { calcPercentOfNum, Time } from 'e';
-import { Task } from 'klasa';
+import { calcPercentOfNum } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
 import Fishing from '../../../lib/skilling/skills/fishing';
 import aerialFishingCreatures from '../../../lib/skilling/skills/hunter/aerialFishing';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { AerialFishingActivityTaskOptions } from '../../../lib/types/minions';
-import { anglerBoostPercent, rand, roll } from '../../../lib/util';
+import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
+import { rand, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { anglerBoostPercent } from '../../../mahoji/mahojiSettings';
 
-export default class extends Task {
-	async run(data: AerialFishingActivityTaskOptions) {
-		let { quantity, userID, channelID, duration } = data;
-		const user = await this.client.fetchUser(userID);
+export const aerialFishingTask: MinionTask = {
+	type: 'AerialFishing',
+	async run(data: ActivityTaskOptionsWithQuantity) {
+		let { quantity, userID, channelID } = data;
+		const user = await mUserFetch(userID);
 		const currentHuntLevel = user.skillLevel(SkillsEnum.Hunter);
 		const currentFishLevel = user.skillLevel(SkillsEnum.Fishing);
 
@@ -80,7 +81,7 @@ export default class extends Task {
 
 		// If they have the entire angler outfit, give an extra 2.5% xp bonus
 		if (
-			user.getGear('skilling').hasEquipped(
+			user.gear.skilling.hasEquipped(
 				Object.keys(Fishing.anglerItems).map(i => parseInt(i)),
 				true
 			)
@@ -91,7 +92,7 @@ export default class extends Task {
 		} else {
 			// For each angler item, check if they have it, give its' XP boost if so.
 			for (const [itemID, bonus] of Object.entries(Fishing.anglerItems)) {
-				if (user.hasItemEquippedAnywhere(parseInt(itemID))) {
+				if (user.hasEquipped(parseInt(itemID))) {
 					const amountToAdd = Math.floor(fishXpReceived * (bonus / 100));
 					fishXpReceived += amountToAdd;
 					bonusXP += amountToAdd;
@@ -139,39 +140,27 @@ export default class extends Task {
 		if (roll((636_833 - user.skillLevel(SkillsEnum.Fishing) * 25) / totalFishCaught)) {
 			loot.add('Heron');
 			str += "\nYou have a funny feeling you're being followed...";
-			this.client.emit(
+			globalClient.emit(
 				Events.ServerNotification,
-				`${Emoji.Fishing} **${user.username}'s** minion, ${user.minionName}, just received a **Heron** while Aerial fishing at level ${currentFishLevel} Fishing!`
+				`${Emoji.Fishing} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a **Heron** while Aerial fishing at level ${currentFishLevel} Fishing!`
 			);
 		}
 
-		await user.addItemsToBank({ items: loot, collectionLog: true });
+		await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 		str += `\n\nYou received: ${loot}.`;
 
 		if (loot.amount('Golden tench') > 0) {
 			str += '\n\n**The cormorant has brought you a very strange tench.**';
-			this.client.emit(
+			globalClient.emit(
 				Events.ServerNotification,
-				`**${user.username}'s** minion, ${user.minionName}, just received a **Golden tench** while aerial fishing, their Fishing/Hunter level is ${currentFishLevel}/${currentHuntLevel}!`
+				`**${user.usernameOrMention}'s** minion, ${user.minionName}, just received a **Golden tench** while aerial fishing, their Fishing/Hunter level is ${currentFishLevel}/${currentHuntLevel}!`
 			);
 		}
 
-		handleTripFinish(
-			this.client,
-			user,
-			channelID,
-			str,
-			res => {
-				user.log('continued trip of Aerial fishing.');
-				return this.client.commands
-					.get('aerialfish')!
-					.run(res, [
-						Math.floor(Math.min(user.maxTripLength('AerialFishing') / Time.Minute, duration / Time.Minute))
-					]);
-			},
-			undefined,
-			data,
-			loot
-		);
+		handleTripFinish(user, channelID, str, ['activities', { aerial_fishing: {} }, true], undefined, data, loot);
 	}
-}
+};

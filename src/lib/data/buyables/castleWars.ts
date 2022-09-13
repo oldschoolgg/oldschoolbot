@@ -1,4 +1,5 @@
-import { resolveNameBank } from '../../util';
+import { Bank } from 'oldschooljs';
+
 import { Buyable } from './buyables';
 
 const items = [
@@ -45,10 +46,10 @@ const items = [
 
 export const castleWarsBuyables: Buyable[] = items.map(i => ({
 	name: i[0],
-	outputItems: resolveNameBank({
+	outputItems: new Bank({
 		[i[0]]: 1
 	}),
-	itemCost: resolveNameBank({
+	itemCost: new Bank({
 		'Castle wars ticket': i[1]
 	})
 }));

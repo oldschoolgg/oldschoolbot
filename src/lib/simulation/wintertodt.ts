@@ -3,7 +3,6 @@ import { calcPercentOfNum, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
-import { addBanks } from 'oldschooljs/dist/util';
 
 import { LevelRequirements, SkillsEnum } from '../skilling/types';
 import { ItemBank } from '../types';
@@ -197,13 +196,13 @@ export class WintertodtCrateClass {
 		return rolls + 1;
 	}
 
-	public rollUnique(itemsOwned: ItemBank): number | undefined {
+	public rollUnique(itemsOwned: Bank): number | undefined {
 		// https://oldschool.runescape.wiki/w/Supply_crate#Reward_rolls
 		if (roll(10_000)) return itemID('Dragon axe');
 		if (roll(5000)) return itemID('Phoenix');
 		if (roll(1000)) return itemID('Tome of fire');
 		if (roll(150)) {
-			const glovesOwned = itemsOwned[itemID('Warm gloves')];
+			const glovesOwned = itemsOwned.amount('Warm gloves');
 
 			// If they already own 3 gloves, give only magic seeds.
 			if (glovesOwned && glovesOwned >= 3) {
@@ -214,7 +213,7 @@ export class WintertodtCrateClass {
 
 		if (roll(150)) {
 			const torchID = itemID('Bruma torch');
-			const torchesOwned = itemsOwned[torchID];
+			const torchesOwned = itemsOwned.amount(torchID);
 
 			// If they already own 3 gloves, give only magic seeds.
 			if (torchesOwned && torchesOwned >= 3) {
@@ -229,7 +228,7 @@ export class WintertodtCrateClass {
 			// Otherwise, rewards the first one
 			const bank: number[] = [];
 			for (const piece of pyroPieces) {
-				bank.push(itemsOwned[piece] ?? 0);
+				bank.push(itemsOwned.amount(piece));
 			}
 			const minBank = Math.min(...bank);
 			for (let i = 0; i < bank.length; i++) {
@@ -247,7 +246,7 @@ export class WintertodtCrateClass {
 		const loot = new Bank();
 
 		for (let i = 0; i < rolls; i++) {
-			const rolledUnique = this.rollUnique(addBanks([itemsOwned, loot.values()]));
+			const rolledUnique = this.rollUnique(new Bank().add(itemsOwned).add(loot.values()));
 			if (rolledUnique) {
 				loot.add(rolledUnique);
 				continue;

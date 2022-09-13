@@ -1,23 +1,22 @@
 import { increaseNumByPercent, randInt, roll, Time } from 'e';
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
+import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { Emoji, Events } from '../../lib/constants';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
-import { runCommand } from '../../lib/settings/settings';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Agility from '../../lib/skilling/skills/agility';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { AgilityActivityTaskOptions } from '../../lib/types/minions';
-import { addItemToBank, updateGPTrackSetting } from '../../lib/util';
+import { addItemToBank } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { updateGPTrackSetting } from '../../mahoji/mahojiSettings';
 
-export default class extends Task {
+export const agilityTask: MinionTask = {
+	type: 'Agility',
 	async run(data: AgilityActivityTaskOptions) {
 		let { courseID, quantity, userID, channelID, duration, alch } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Agility);
 
 		const course = Agility.Courses.find(course => course.name === courseID)!;
@@ -53,10 +52,9 @@ export default class extends Task {
 
 		const xpReceived = (quantity - lapsFailed / 2) * course.xp;
 
-		await user.settings.update(
-			UserSettings.LapsScores,
-			addItemToBank(user.settings.get(UserSettings.LapsScores), course.id, quantity - lapsFailed)
-		);
+		await user.update({
+			lapsScores: addItemToBank(user.user.lapsScores as ItemBank, course.id, quantity - lapsFailed)
+		});
 
 		let xpRes = await user.addXP({
 			skillName: SkillsEnum.Agility,
@@ -64,33 +62,38 @@ export default class extends Task {
 			duration
 		});
 
-		const loot = new Bank({
-			'Mark of grace': totalMarks
-		});
+		const loot = new Bank();
+		if (course.marksPer60) loot.add('Mark of grace', totalMarks);
+
+		// Calculate Crystal Shards for Priff
+		if (course.name === 'Prifddinas Rooftop Course') {
+			// 15 Shards per hour
+			loot.add('Crystal shard', Math.floor((duration / Time.Hour) * 15));
+		}
 
 		if (alch) {
 			const alchedItem = getOSItem(alch.itemID);
-			const alchGP = alchedItem.highalch * alch.quantity;
+			const alchGP = alchedItem.highalch! * alch.quantity;
 			loot.add('Coins', alchGP);
 			xpRes += ` ${await user.addXP({
 				skillName: SkillsEnum.Magic,
 				amount: alch.quantity * 65,
 				duration
 			})}`;
-			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceAlching, alchGP);
+			updateGPTrackSetting('gp_alch', alchGP);
 		}
 
 		let str = `${user}, ${user.minionName} finished ${quantity} ${
 			course.name
-		} laps and fell on ${lapsFailed} of them.\nYou received: ${loot} ${
-			diaryBonus ? '(25% bonus Marks for Ardougne Elite diary)' : ''
+		} laps and fell on ${lapsFailed} of them.\nYou received: ${loot}${
+			diaryBonus ? ' (25% bonus Marks for Ardougne Elite diary)' : ''
 		}.\n${xpRes}`;
 
 		if (course.id === 6) {
-			const currentLapCount = user.settings.get(UserSettings.LapsScores)[course.id];
+			const currentLapCount = (user.user.lapsScores as ItemBank)[course.id];
 			for (const monkey of Agility.MonkeyBackpacks) {
 				if (currentLapCount < monkey.lapsRequired) break;
-				if (!user.hasItemEquippedOrInBank(monkey.id)) {
+				if (!user.hasEquippedOrInBank(monkey.id)) {
 					loot.add(monkey.id);
 					str += `\nYou received the ${monkey.name} monkey backpack!`;
 				}
@@ -101,39 +104,26 @@ export default class extends Task {
 		if (course.petChance && roll((course.petChance - user.skillLevel(SkillsEnum.Agility) * 25) / quantity)) {
 			loot.add('Giant squirrel');
 			str += "\nYou have a funny feeling you're being followed...";
-			this.client.emit(
+			globalClient.emit(
 				Events.ServerNotification,
-				`${Emoji.Agility} **${user.username}'s** minion, ${user.minionName}, just received a Giant squirrel while running ${course.name} laps at level ${currentLevel} Agility!`
+				`${Emoji.Agility} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Giant squirrel while running ${course.name} laps at level ${currentLevel} Agility!`
 			);
 		}
 
-		await user.addItemsToBank({ items: loot, collectionLog: true });
+		await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,
-			res => {
-				const flags: Record<string, string> = alch === null ? {} : { alch: 'alch' };
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
-				if (!res.prompter) res.prompter = {};
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
-				res.prompter.flags = flags;
-
-				user.log(`continued trip of ${quantity}x ${course.name} laps`);
-				return runCommand({
-					message: res,
-					commandName: 'laps',
-					args: [quantity, course.aliases[0]],
-					isContinue: true
-				});
-			},
+			['laps', { name: course.name, quantity, alch: Boolean(alch) }, true],
 			undefined,
 			data,
 			loot
 		);
 	}
-}
+};

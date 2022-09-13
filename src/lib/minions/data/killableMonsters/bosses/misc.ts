@@ -56,17 +56,14 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 205,
 		itemInBankBoosts: [
 			{
+				[itemID('Zaryte crossbow')]: 18,
 				[itemID('Bandos godsword')]: 13,
 				[itemID('Dragon warhammer')]: 13,
 				[itemID('Dragon claws')]: 8
 			},
 			{
 				[itemID('Dragon hunter lance')]: 15,
-				[itemID('Dragon hunter crossbow')]: 25
-			},
-			{
-				[itemID('Salve amulet(ei)')]: 20,
-				[itemID('Salve amulet(i)')]: 16
+				[itemID('Dragon hunter crossbow')]: 15
 			}
 		],
 		levelRequirements: {
@@ -95,7 +92,10 @@ const killableBosses: KillableMonster[] = [
 				[itemID('Pegasian boots')]: 4
 			},
 			{
-				[itemID("Iban's staff")]: 2,
+				[itemID("Iban's staff")]: 1,
+				[itemID('Trident of the seas')]: 2,
+				[itemID('Trident of the swamp')]: 3,
+				[itemID('Sanguinesti staff')]: 4,
 				[itemID('Harmonised nightmare staff')]: 5
 			},
 			{
@@ -103,7 +103,9 @@ const killableBosses: KillableMonster[] = [
 			},
 			{
 				[itemID('Twisted bow')]: 5,
-				[itemID('Bow of faerdhinen (c)')]: 3
+				[itemID('Toxic blowpipe')]: 4,
+				[itemID('Bow of faerdhinen (c)')]: 3,
+				[itemID('Magic shortbow')]: 2
 			},
 			{
 				[itemID('Ancestral hat')]: 2
@@ -232,8 +234,8 @@ const killableBosses: KillableMonster[] = [
 
 		difficultyRating: 7,
 		itemsRequired: deepResolveItems([
-			["Torag's platebody", "Dharok's platebody", 'Bandos chestplate'],
-			["Torag's platelegs", "Dharok's platelegs", 'Bandos tassets'],
+			["Torag's platebody", "Dharok's platebody", 'Bandos chestplate', 'Torva platebody'],
+			["Torag's platelegs", "Dharok's platelegs", 'Bandos tassets', 'Torva platelegs'],
 			['Zamorakian spear', 'Zamorakian hasta']
 		]),
 		notifyDrops: resolveItems(['Hellpuppy', 'Jar of souls']),
@@ -242,10 +244,12 @@ const killableBosses: KillableMonster[] = [
 			{ [itemID('Spectral spirit shield')]: 10 },
 			{
 				[itemID('Bandos chestplate')]: 5,
+				[itemID('Torva platebody')]: 6,
 				[itemID("Inquisitor's hauberk")]: 8
 			},
 			{
 				[itemID('Bandos tassets')]: 5,
+				[itemID('Torva platelegs')]: 6,
 				[itemID("Inquisitor's plateskirt")]: 8
 			},
 			{

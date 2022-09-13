@@ -15,11 +15,18 @@ export interface KillWorkerArgs {
 	catacombs: boolean;
 }
 
+export interface KillWorkerReturn {
+	bank?: Bank;
+	error?: string;
+	title?: string;
+	content?: string;
+}
+
 export const piscinaPool = new Piscina();
 
 export const Workers = {
 	casketOpen: (args: CasketWorkerArgs): Promise<[Bank, string]> =>
 		piscinaPool.runTask(args, resolve(__dirname, 'casket.worker.js')),
-	kill: (args: KillWorkerArgs): Promise<Bank | string> =>
+	kill: (args: KillWorkerArgs): Promise<KillWorkerReturn> =>
 		piscinaPool.runTask(args, resolve(__dirname, 'kill.worker.js'))
 };

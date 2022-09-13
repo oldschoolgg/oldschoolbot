@@ -7,7 +7,7 @@ import {
 	gracefulHoods,
 	gracefulLegs,
 	gracefulTops
-} from './CollectionsExport';
+} from './gracefulVariants';
 
 const scytheChargedSimilar = ['Holy scythe of vitur', 'Sanguine scythe of vitur'];
 const scytheUnchargedSimilar = ['Holy scythe of vitur (uncharged)', 'Sanguine scythe of vitur (uncharged)'];
@@ -84,6 +84,7 @@ const source: [string, (string | number)[]][] = [
 	['Necklace of anguish', ['Necklace of anguish (or)']],
 	['Occult necklace', ['Occult necklace (or)']],
 	['Dragon hunter crossbow', ['Dragon hunter crossbow (t)', 'Dragon hunter crossbow (b)']],
+	['Armadyl crossbow', ['Zaryte crossbow']],
 	['Dragon pickaxe', ['Dragon pickaxe(or)', 12_797, '3rd age pickaxe', 'Infernal pickaxe']],
 	['Dragon axe', ['3rd age axe']],
 	['Steam battlestaff', [12_795]],
@@ -92,6 +93,7 @@ const source: [string, (string | number)[]][] = [
 	['Malediction ward', [12_806]],
 	['Dark bow', [12_765, 12_766, 12_767, 12_768]],
 	['Abyssal whip', ['Volcanic abyssal whip', 'Frozen abyssal whip', 'Abyssal tentacle']],
+	['Abyssal tentacle', ['Abyssal tentacle (or)']],
 	['Granite maul', [12_848]],
 	['Rune scimitar', [23_330, 23_332, 23_334]],
 	[
@@ -155,13 +157,13 @@ const source: [string, (string | number)[]][] = [
 	['Graceful gloves', gracefulHands],
 	['Graceful boots', gracefulFeet],
 	['Graceful cape', gracefulCapes],
-	['Agility cape', ['Agility cape(t)']],
 	['Fire cape', ['Fire max cape', 'Fire max cape (l)']],
 	['Infernal cape', ['Infernal max cape', 'Infernal max cape (l)']],
 	['Ardougne cloak 4', ['Ardougne max cape']],
 	["Ava's accumulator", ['Accumulator max cape']],
 	["Ava's assembler", ['Assembler max cape', 'Assembler max cape (l)']],
 	['Mythical cape', ['Mythical max cape']],
+	['Achievement diary cape', ['Achievement diary cape(t)']],
 	[
 		'Imbued guthix cape',
 		[
@@ -238,7 +240,6 @@ const source: [string, (string | number)[]][] = [
 			'Mystic mud staff'
 		]
 	],
-	['Attack cape', ['Max cape', 'Attack cape(t)']],
 	['Ivandis flail', ['Blisterwood flail']],
 	['Angler hat', ['Spirit angler headband']],
 	['Angler top', ['Spirit angler top']],
@@ -259,15 +260,43 @@ const source: [string, (string | number)[]][] = [
 			'Uncharged toxic trident (e)'
 		]
 	],
-	['Runecraft cape', ['Max cape', 'Runecraft cape(t)']],
+	['Agility cape', ['Max cape', 'Agility cape(t)']],
+	['Attack cape', ['Max cape', 'Attack cape(t)']],
+	['Construct. cape', ['Max cape', 'Construct. cape(t)']],
+	['Cooking cape', ['Max cape', 'Cooking cape(t)']],
 	['Crafting cape', ['Max cape', 'Crafting cape(t)']],
+	['Defence cape', ['Max cape', 'Defence cape(t)']],
+	['Farming cape', ['Max cape', 'Farming cape(t)']],
+	['Firemaking cape', ['Max cape', 'Firemaking cape(t)']],
+	['Fishing cape', ['Max cape', 'Fishing cape(t)']],
+	['Fletching cape', ['Max cape', 'Fletching cape(t)']],
+	['Herblore cape', ['Max cape', 'Herblore cape(t)']],
+	['Hitpoints cape', ['Max cape', 'Hitpoints cape(t)']],
+	['Hunter cape', ['Max cape', 'Hunter cape(t)']],
+	['Magic cape', ['Max cape', 'Magic cape(t)']],
+	['Mining cape', ['Max cape', 'Mining cape(t)']],
+	['Prayer cape', ['Max cape', 'Prayer cape(t)']],
+	['Ranging cape', ['Max cape', 'Ranging cape(t)']],
+	['Runecraft cape', ['Max cape', 'Runecraft cape(t)']],
+	['Slayer cape', ['Max cape', 'Slayer cape(t)']],
+	['Smithing cape', ['Max cape', 'Smithing cape(t)']],
+	['Strength cape', ['Max cape', 'Strength cape(t)']],
+	['Thieving cape', ['Max cape', 'Thieving cape(t)']],
+	['Woodcutting cape', ['Max cape', 'Woodcut. cape(t)']],
 	['Salve amulet', ['Salve amulet(ei)', 'Salve amulet(i)', 'Salve amulet (e)']],
 	['Salve amulet (e)', ['Salve amulet(ei)']],
-	['Salve amulet (i)', ['Salve amulet(ei)']],
+	['Salve amulet(i)', ['Salve amulet(ei)']],
 	['Scythe of vitur', [...scytheChargedSimilar]],
 	['Scythe of vitur (uncharged)', [...scytheUnchargedSimilar]],
 	['Sanguinesti staff', ['Holy sanguinesti staff']],
-	['Sanguinesti staff (uncharged)', ['Holy sanguinesti staff (uncharged)']]
+	['Sanguinesti staff (uncharged)', ['Holy sanguinesti staff (uncharged)']],
+	['Magic shortbow', ['Magic shortbow (i)']],
+	['Boots of stone', ['Boots of brimstone', 'Granite boots', "Rada's Blessing 4"]],
+	['Celestial ring (uncharged)', ['Celestial ring', 'Celestial signet']],
+	['Prospector jacket', ['Golden prospector jacket', 'Varrock armour 4']],
+	['Prospector legs', ['Golden prospector legs']],
+	['Prospector boots', ['Golden prospector boots']],
+	['Prospector helmet', ['Golden prospector helmet']]
 ];
 
 export const similarItems: Map<number, number[]> = new Map(

@@ -1,14 +1,8 @@
-import { MessageEmbed, TextChannel } from 'discord.js';
-import { randArrItem, randInt, Time } from 'e';
-import fs from 'fs';
-import { KlasaUser } from 'klasa';
+import { randArrItem, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { BitField } from './constants';
-import { getGuildSettings } from './settings/settings';
-import { GuildSettings } from './settings/types/GuildSettings';
-import { UserSettings } from './settings/types/UserSettings';
 import resolveItems from './util/resolveItems';
 
 export interface RandomEvent {
@@ -135,42 +129,11 @@ export const RandomEvents: RandomEvent[] = [
 
 const cache = new Map<string, number>();
 
-let triviaQuestions: { q: string; a: string[] }[] = [
-	{
-		q: 'Out of Iron Ore and Coal, which is more likely to give Unidentified minerals in the mining guild?',
-		a: ['coal']
-	}
-];
-try {
-	// eslint-disable-next-line prefer-destructuring
-	triviaQuestions = JSON.parse(
-		fs.readFileSync('./src/lib/resources/trivia-questions.json').toString()
-	).triviaQuestions;
-} catch (_) {}
-
-async function finalizeEvent(event: RandomEvent, user: KlasaUser, ch: TextChannel) {
-	const loot = new Bank();
-	if (event.outfit) {
-		for (const piece of event.outfit) {
-			if (!user.hasItemEquippedOrInBank(piece)) {
-				loot.add(piece);
-				break;
-			}
-		}
-	}
-	loot.add(event.loot.roll());
-	await user.addItemsToBank({ items: loot, collectionLog: true });
-	ch.send(`You finished the ${event.name} event, and received... ${loot}.`);
-}
-
-const options = {
-	max: 1,
-	time: 30_000,
-	errors: ['time']
-};
-
-export async function triggerRandomEvent(ch: TextChannel, user: KlasaUser) {
-	if (user.settings.get(UserSettings.BitField).includes(BitField.DisabledRandomEvents)) {
+export async function triggerRandomEvent(user: MUser, duration: number, messages: string[]) {
+	const minutes = Math.min(30, duration / Time.Minute);
+	const randomEventChance = 60 - minutes;
+	if (!roll(randomEventChance)) return;
+	if (user.bitfield.includes(BitField.DisabledRandomEvents)) {
 		return;
 	}
 
@@ -183,92 +146,16 @@ export async function triggerRandomEvent(ch: TextChannel, user: KlasaUser) {
 	cache.set(user.id, Date.now());
 
 	const event = randArrItem(RandomEvents);
-	const roll = randInt(1, 4);
-	user.log(`getting ${event.name} random event.`);
-
-	const settings = await getGuildSettings(ch.guild!);
-	const embed = new MessageEmbed().setFooter(
-		`Use \`${settings.get(GuildSettings.Prefix)}randomevents disable\` to disable random events.`
-	);
-
-	switch (roll) {
-		case 1: {
-			const randTrivia = randArrItem(triviaQuestions);
-			await ch.send({
-				embeds: [
-					embed.setDescription(
-						`${user}, you've encountered the ${event.name} random event! To complete this event, answer this trivia question... ${randTrivia.q}`
-					)
-				]
-			});
-			try {
-				await ch.awaitMessages({
-					...options,
-					filter: answer =>
-						answer.author.id === user.id && randTrivia.a.includes(answer.content.toLowerCase())
-				});
-				finalizeEvent(event, user, ch);
-				return;
-			} catch (err) {
-				return ch.send("You didn't give the correct answer, and failed the random event!");
+	const loot = new Bank();
+	if (event.outfit) {
+		for (const piece of event.outfit) {
+			if (!user.hasEquippedOrInBank(piece)) {
+				loot.add(piece);
+				break;
 			}
-		}
-		case 2: {
-			embed
-				.setDescription(
-					`${user}, you've encountered the ${event.name} random event! To complete this event, specify the letter corresponding to the answer in this image:`
-				)
-				.setImage(
-					'https://cdn.discordapp.com/attachments/357422607982919680/801688145120067624/Certer_random_event.png'
-				);
-			await ch.send({ embeds: [embed] });
-			try {
-				await ch.awaitMessages({
-					...options,
-					filter: answer => answer.author.id === user.id && answer.content.toLowerCase() === 'a'
-				});
-				finalizeEvent(event, user, ch);
-				return;
-			} catch (err) {
-				return ch.send("You didn't give the right answer - random event failed!");
-			}
-		}
-		case 3: {
-			embed
-				.setImage('https://cdn.discordapp.com/attachments/342983479501389826/807737932072747018/nmgilesre.gif')
-				.setDescription(
-					`${user}, you've encountered the ${event.name} random event! To complete this event, specify the letter corresponding to the answer in this image:`
-				);
-			await ch.send({ embeds: [embed] });
-			try {
-				await ch.awaitMessages({
-					...options,
-					filter: answer => answer.author.id === user.id && answer.content.toLowerCase() === 'a'
-				});
-				finalizeEvent(event, user, ch);
-				return;
-			} catch (err) {
-				return ch.send("You didn't give the right answer - random event failed!");
-			}
-		}
-		case 4: {
-			const message = await ch.send({
-				embeds: [
-					embed.setDescription(
-						`${user}, you've encountered the ${event.name} random event! To complete this event, reaction to this message with any emoji.`
-					)
-				]
-			});
-			try {
-				await message.awaitReactions({ ...options, filter: (_, _user) => user.id === _user.id });
-				finalizeEvent(event, user, ch);
-				return;
-			} catch (err) {
-				return ch.send("You didn't react - you failed the random event!");
-			}
-		}
-		default: {
-			throw new Error('Unmatched switch case');
 		}
 	}
+	loot.add(event.loot.roll());
+	await transactItems({ userID: user.id, itemsToAdd: loot, collectionLog: true });
+	messages.push(`Did ${event.name} random event and got ${loot}`);
 }

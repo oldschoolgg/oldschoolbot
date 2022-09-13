@@ -1,21 +1,26 @@
-import { KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { UserSettings } from '../../settings/types/UserSettings';
 import { itemNameFromID } from '../../util';
+import { logError } from '../../util/logError';
 
-export async function unequipPet(msg: KlasaMessage) {
-	const equippedPet = msg.author.settings.get(UserSettings.Minion.EquippedPet);
-	if (!equippedPet) return msg.channel.send("You don't have a pet equipped.");
-
-	msg.author.log(`unequipping ${itemNameFromID(equippedPet)}[${equippedPet}]`);
+export async function unequipPet(user: MUser) {
+	const equippedPet = user.user.minion_equippedPet;
+	if (!equippedPet) return "You don't have a pet equipped.";
 
 	const loot = new Bank().add(equippedPet);
 
-	await msg.author.settings.update(UserSettings.Minion.EquippedPet, null);
-	await msg.author.addItemsToBank({ items: loot, collectionLog: false });
+	try {
+		await user.addItemsToBank({ items: loot, collectionLog: false });
+	} catch (e) {
+		logError(new Error('Failed to add pet to bank'), {
+			user_id: user.id,
+			pet_to_unequip: equippedPet.toString()
+		});
+		return 'Error removing pet, ask for help in the support server.';
+	}
+	await user.update({
+		minion_equippedPet: null
+	});
 
-	return msg.channel.send(
-		`${msg.author.minionName} picks up their ${itemNameFromID(equippedPet)} pet and places it back in their bank.`
-	);
+	return `${user.minionName} picks up their ${itemNameFromID(equippedPet)} pet and places it back in their bank.`;
 }

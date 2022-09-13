@@ -1,6 +1,5 @@
-import { client } from '../../../..';
-import PatreonTask from '../../../../tasks/patreon';
 import { Channel } from '../../../constants';
+import { patreonTask } from '../../../patreon';
 import { sendToChannelID } from '../../../util/webhook';
 import { GithubSponsorsWebhookData } from '../../githubApiTypes';
 import { FastifyServer } from '../../types';
@@ -21,11 +20,11 @@ const githubSponsors = (server: FastifyServer) =>
 			switch (data.action) {
 				case 'created': {
 					const tier = parseStrToTier(data.sponsorship.tier.name);
-					sendToChannelID(client, Channel.NewSponsors, {
+					sendToChannelID(Channel.NewSponsors, {
 						content: `${data.sender.login}[${data.sender.id}] became a Tier ${tier - 1} sponsor.`
 					});
 					if (user) {
-						await (client.tasks.get('patreon') as PatreonTask)!.givePerks(user.id, tier);
+						await patreonTask.givePerks(user.id, tier);
 					}
 					break;
 				}
@@ -33,22 +32,22 @@ const githubSponsors = (server: FastifyServer) =>
 				case 'pending_tier_change': {
 					const from = parseStrToTier(data.changes!.tier.from.name);
 					const to = parseStrToTier(data.sponsorship.tier.name);
-					sendToChannelID(client, Channel.NewSponsors, {
+					sendToChannelID(Channel.NewSponsors, {
 						content: `${data.sender.login}[${data.sender.id}] changed their sponsorship from Tier ${
 							from - 1
 						} to Tier ${to - 1}.`
 					});
 					if (user) {
-						await (client.tasks.get('patreon') as PatreonTask)!.changeTier(user.id, from, to);
+						await patreonTask.changeTier(user.id, from, to);
 					}
 					break;
 				}
 				case 'cancelled': {
 					if (user) {
-						await (client.tasks.get('patreon') as PatreonTask)!.removePerks(user.id);
+						await patreonTask.removePerks(user.id);
 					}
 
-					sendToChannelID(client, Channel.NewSponsors, {
+					sendToChannelID(Channel.NewSponsors, {
 						content: `${data.sender.login}[${data.sender.id}] cancelled being a Tier ${
 							parseStrToTier(data.sponsorship.tier.name) - 1
 						} sponsor. ${

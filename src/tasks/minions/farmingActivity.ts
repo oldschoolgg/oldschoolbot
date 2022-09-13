@@ -1,37 +1,37 @@
-import { Task } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
 import { defaultFarmingContract, PatchTypes } from '../../lib/minions/farming';
 import { FarmingContract } from '../../lib/minions/farming/types';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
 import Farming from '../../lib/skilling/skills/farming';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FarmingActivityTaskOptions } from '../../lib/types/minions';
-import { bankHasItem, channelIsSendable, rand, roll } from '../../lib/util';
+import { assert, rand, roll } from '../../lib/util';
 import chatHeadImage from '../../lib/util/chatHeadImage';
+import { getFarmingKeyFromName } from '../../lib/util/farmingHelpers';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import itemID from '../../lib/util/itemID';
+import { logError } from '../../lib/util/logError';
+import { sendToChannelID } from '../../lib/util/webhook';
+import { mahojiUsersSettingsFetch, updateBankSetting } from '../../mahoji/mahojiSettings';
 
-export default class extends Task {
+export const farmingTask: MinionTask = {
+	type: 'Farming',
 	async run(data: FarmingActivityTaskOptions) {
 		const {
 			plantsName,
 			patchType,
-			getPatchType,
 			quantity,
 			upgradeType,
 			payment,
 			userID,
 			channelID,
 			planting,
-			duration,
 			currentDate,
 			autoFarmed
 		} = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
+		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 		const currentFarmingLevel = user.skillLevel(SkillsEnum.Farming);
 		const currentWoodcuttingLevel = user.skillLevel(SkillsEnum.Woodcutting);
 		let baseBonus = 1;
@@ -58,21 +58,12 @@ export default class extends Task {
 		let loot = new Bank();
 
 		const plant = Farming.Plants.find(plant => plant.name === plantsName);
-		const userBank = user.settings.get(UserSettings.Bank);
 
-		if (
-			bankHasItem(userBank, itemID('Magic secateurs')) ||
-			user.hasItemEquippedAnywhere(itemID('Magic secateurs'))
-		) {
+		if (user.hasEquippedOrInBank('Magic secateurs')) {
 			baseBonus += 0.1;
 		}
 
-		if (
-			bankHasItem(userBank, itemID('Farming cape')) ||
-			bankHasItem(userBank, itemID('Farming cape(t)')) ||
-			user.hasItemEquippedAnywhere(itemID('Farming cape')) ||
-			user.hasItemEquippedAnywhere(itemID('Farming cape(t)'))
-		) {
+		if (user.hasEquippedOrInBank('Farming cape')) {
 			baseBonus += 0.05;
 		}
 
@@ -96,19 +87,19 @@ export default class extends Task {
 		if (patchType.lastPayment) chanceOfDeathReduction = 0;
 
 		// check bank for farmer's items
-		if (user.hasItemEquippedOrInBank("Farmer's strawhat")) {
+		if (user.hasEquippedOrInBank("Farmer's strawhat")) {
 			bonusXpMultiplier += 0.004;
 			farmersPiecesCheck++;
 		}
-		if (user.hasItemEquippedOrInBank("Farmer's jacket") || user.hasItemEquippedOrInBank("Farmer's shirt")) {
+		if (user.hasEquippedOrInBank("Farmer's jacket") || user.hasEquippedOrInBank("Farmer's shirt")) {
 			bonusXpMultiplier += 0.008;
 			farmersPiecesCheck++;
 		}
-		if (user.hasItemEquippedOrInBank("Farmer's boro trousers")) {
+		if (user.hasEquippedOrInBank("Farmer's boro trousers")) {
 			bonusXpMultiplier += 0.006;
 			farmersPiecesCheck++;
 		}
-		if (user.hasItemEquippedOrInBank("Farmer's boots")) {
+		if (user.hasEquippedOrInBank("Farmer's boots")) {
 			bonusXpMultiplier += 0.002;
 			farmersPiecesCheck++;
 		}
@@ -116,7 +107,7 @@ export default class extends Task {
 
 		if (!patchType.patchPlanted) {
 			if (!plant) {
-				this.client.wtf(new Error(`${user.sanitizedName}'s new patch had no plant found.`));
+				logError(new Error(`${user.usernameOrMention}'s new patch had no plant found.`), { user_id: user.id });
 				return;
 			}
 
@@ -145,37 +136,34 @@ export default class extends Task {
 				str += `\n${user.minionName}'s Farming level is now ${newLevel}!`;
 			}
 
-			if (Object.keys(loot).length > 0) {
-				str += `\n\nYou received: ${loot}.`;
-			}
+			if (loot.length > 0) str += `\n\nYou received: ${loot}.`;
 
-			await this.client.settings.update(
-				ClientSettings.EconomyStats.FarmingLootBank,
-				new Bank(this.client.settings.get(ClientSettings.EconomyStats.FarmingLootBank)).add(loot).bank
-			);
-			await user.addItemsToBank({ items: loot, collectionLog: true });
-			const updatePatches: PatchTypes.PatchData = {
+			updateBankSetting('farming_loot_bank', loot);
+			await transactItems({
+				userID: user.id,
+				collectionLog: true,
+				itemsToAdd: loot
+			});
+			const newPatch: PatchTypes.PatchData = {
 				lastPlanted: plant.name,
 				patchPlanted: true,
-				plantTime: currentDate + duration,
+				plantTime: currentDate,
 				lastQuantity: quantity,
 				lastUpgradeType: upgradeType,
 				lastPayment: payment ?? false
 			};
 
-			await user.settings.update(getPatchType, updatePatches);
+			await user.update({
+				[getFarmingKeyFromName(plant.seedType)]: newPatch
+			});
 
 			str += `\n\n${user.minionName} tells you to come back after your plants have finished growing!`;
 
-			const channel = this.client.channels.cache.get(channelID);
-			if (!channelIsSendable(channel)) return;
-
 			handleTripFinish(
-				this.client,
 				user,
 				channelID,
 				str,
-				autoFarmed ? ['m', [], true, 'autofarm'] : undefined,
+				autoFarmed ? ['farming', { auto_farm: {} }, true] : undefined,
 				undefined,
 				data,
 				null
@@ -214,7 +202,7 @@ export default class extends Task {
 					);
 				} else if (plantToHarvest.fixedOutput) {
 					if (!plantToHarvest.fixedOutputAmount) return;
-					cropYield = plantToHarvest.fixedOutputAmount;
+					cropYield = plantToHarvest.fixedOutputAmount * alivePlants;
 				} else {
 					const plantChanceFactor =
 						Math.floor(
@@ -260,21 +248,23 @@ export default class extends Task {
 				if (currentWoodcuttingLevel >= plantToHarvest.treeWoodcuttingLevel) {
 					chopped = true;
 				} else {
-					await user.settings.sync(true);
-					const GP = user.settings.get(UserSettings.GP);
+					const GP = Number(user.user.GP);
 					const gpToCutTree = plantToHarvest.seedType === 'redwood' ? 2000 * alivePlants : 200 * alivePlants;
 					if (GP < gpToCutTree) {
-						throw `You do not have the required woodcutting level or enough GP to clear your patches, in order to be able to plant more. You need ${gpToCutTree} GP.`;
-					} else {
-						payStr = `*You did not have the woodcutting level required, so you paid a nearby farmer ${gpToCutTree} GP to remove the previous trees.*`;
-						await user.removeGP(gpToCutTree);
+						return sendToChannelID(channelID, {
+							content: `You do not have the required woodcutting level or enough GP to clear your patches, in order to be able to plant more. You need ${gpToCutTree} GP.`
+						});
 					}
+					payStr = `*You did not have the woodcutting level required, so you paid a nearby farmer ${gpToCutTree} GP to remove the previous trees.*`;
+					await user.removeItemsFromBank(new Bank().add('Coins', gpToCutTree));
 
 					harvestXp = 0;
 				}
 				if (plantToHarvest.givesLogs && chopped) {
-					if (!plantToHarvest.outputLogs) return;
-					if (!plantToHarvest.woodcuttingXp) return;
+					assert(
+						typeof plantToHarvest.outputLogs === 'number' &&
+							typeof plantToHarvest.woodcuttingXp === 'number'
+					);
 
 					const amountOfLogs = rand(5, 10) * alivePlants;
 					loot.add(plantToHarvest.outputLogs, amountOfLogs);
@@ -283,15 +273,13 @@ export default class extends Task {
 						loot.add(plantToHarvest.outputRoots, rand(1, 4) * alivePlants);
 					}
 
-					woodcuttingXp += amountOfLogs * plantToHarvest.woodcuttingXp;
+					woodcuttingXp += amountOfLogs * plantToHarvest.woodcuttingXp!;
 					wcStr = ` You also received ${woodcuttingXp.toLocaleString()} Woodcutting XP.`;
 
 					harvestXp = 0;
 				} else if (plantToHarvest.givesCrops && chopped) {
 					if (!plantToHarvest.outputCrop) return;
-					loot.add(plantToHarvest.outputCrop, cropYield * alivePlants);
-
-					harvestXp = cropYield * alivePlants * plantToHarvest.harvestXp;
+					harvestXp = cropYield * plantToHarvest.harvestXp;
 				}
 			}
 
@@ -349,7 +337,7 @@ export default class extends Task {
 
 			let tangleroot = false;
 			if (plantToHarvest.seedType === 'hespori') {
-				await user.incrementMonsterScore(Monsters.Hespori.id);
+				await user.incrementKC(Monsters.Hespori.id);
 				const hesporiLoot = Monsters.Hespori.kill(1, { farmingLevel: currentFarmingLevel });
 				loot = hesporiLoot;
 				if (hesporiLoot.amount('Tangleroot')) tangleroot = true;
@@ -377,13 +365,13 @@ export default class extends Task {
 				infoStr.push('\n```diff');
 				infoStr.push("\n- You have a funny feeling you're being followed...");
 				infoStr.push('```');
-				this.client.emit(
+				globalClient.emit(
 					Events.ServerNotification,
-					`${Emoji.Farming} **${user.username}'s** minion, ${user.minionName}, just received a Tangleroot while farming ${patchType.lastPlanted} at level ${currentFarmingLevel} Farming!`
+					`${Emoji.Farming} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Tangleroot while farming ${patchType.lastPlanted} at level ${currentFarmingLevel} Farming!`
 				);
 			}
 
-			let updatePatches: PatchTypes.PatchData = {
+			let newPatch: PatchTypes.PatchData = {
 				lastPlanted: null,
 				patchPlanted: false,
 				plantTime: 0,
@@ -393,21 +381,24 @@ export default class extends Task {
 			};
 
 			if (planting) {
-				updatePatches = {
+				newPatch = {
 					lastPlanted: plant.name,
 					patchPlanted: true,
-					plantTime: currentDate + duration,
+					plantTime: currentDate,
 					lastQuantity: quantity,
 					lastUpgradeType: upgradeType,
 					lastPayment: payment ? payment : false
 				};
 			}
 
-			await user.settings.update(getPatchType, updatePatches);
+			await user.update({
+				[getFarmingKeyFromName(plant.seedType)]: newPatch
+			});
 
-			const currentContract = user.settings.get(UserSettings.Minion.FarmingContract) ?? {
-				...defaultFarmingContract
-			};
+			const currentContract: FarmingContract | null =
+				(mahojiUser.minion_farmingContract as FarmingContract | null) ?? {
+					...defaultFarmingContract
+				};
 
 			const { contractsCompleted } = currentContract;
 
@@ -421,15 +412,16 @@ export default class extends Task {
 					contractsCompleted: contractsCompleted + 1
 				};
 
-				user.settings.update(UserSettings.Minion.FarmingContract, farmingContractUpdate);
+				await user.update({
+					minion_farmingContract: farmingContractUpdate as any
+				});
+
 				loot.add('Seed pack');
 
 				janeMessage = true;
 			}
 
-			if (Object.keys(loot).length > 0) {
-				infoStr.push(`\nYou received: ${loot}.`);
-			}
+			if (loot.length > 0) infoStr.push(`\nYou received: ${loot}.`);
 
 			if (!planting) {
 				infoStr.push('\nThe patches have been cleared. They are ready to have new seeds planted.');
@@ -437,18 +429,18 @@ export default class extends Task {
 				infoStr.push(`\n${user.minionName} tells you to come back after your plants have finished growing!`);
 			}
 
-			await this.client.settings.update(
-				ClientSettings.EconomyStats.FarmingLootBank,
-				new Bank(this.client.settings.get(ClientSettings.EconomyStats.FarmingLootBank)).add(loot).bank
-			);
-			await user.addItemsToBank({ items: loot, collectionLog: true });
+			updateBankSetting('farming_loot_bank', loot);
+			await transactItems({
+				userID: user.id,
+				collectionLog: true,
+				itemsToAdd: loot
+			});
 
 			handleTripFinish(
-				this.client,
 				user,
 				channelID,
 				infoStr.join('\n'),
-				autoFarmed ? ['m', [], true, 'autofarm'] : undefined,
+				autoFarmed ? ['farming', { auto_farm: {} }, true] : undefined,
 				janeMessage
 					? await chatHeadImage({
 							content: `You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${
@@ -462,4 +454,4 @@ export default class extends Task {
 			);
 		}
 	}
-}
+};

@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import { itemID, resolveNameBank } from '../../util';
+import itemID from '../../util/itemID';
 import { Createable } from '../createables';
 
 export const dragonFireShieldCreatables: Createable[] = [
@@ -36,7 +36,7 @@ export const dragonFireShieldCreatables: Createable[] = [
 		outputItems: {
 			'Uncharged ancient wyvern shield': 1
 		},
-		requiredSkills: { smithing: 90 }
+		requiredSkills: { smithing: 66, magic: 66 }
 	},
 	// Charged
 	{
@@ -45,7 +45,7 @@ export const dragonFireShieldCreatables: Createable[] = [
 			'Bottled dragonbreath': 1,
 			'Uncharged dragonfire shield': 1
 		}).bank,
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Dragonfire shield': 1
 		})
 	},
@@ -55,7 +55,7 @@ export const dragonFireShieldCreatables: Createable[] = [
 			'Bottled dragonbreath': 1,
 			'Uncharged dragonfire ward': 1
 		}).bank,
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Dragonfire ward': 1
 		})
 	},
@@ -66,7 +66,7 @@ export const dragonFireShieldCreatables: Createable[] = [
 			Numulite: 5000,
 			'Uncharged ancient wyvern shield': 1
 		}).bank,
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Ancient wyvern shield': 1
 		})
 	}

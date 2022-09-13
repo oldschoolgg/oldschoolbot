@@ -70,13 +70,22 @@ const backgroundImages: BankBackground[] = [
 			'Pet general graardor': 1,
 			"Pet k'ril tsutsaroth": 1,
 			"Pet kree'arra": 1,
-			'Pet zilyana': 1
+			'Pet zilyana': 1,
+			Nexling: 1,
+			'Ancient hilt': 1,
+			'Nihil horn': 1,
+			'Zaryte vambraces': 1,
+			'Torva full helm (damaged)': 1,
+			'Torva platebody (damaged)': 1,
+			'Torva platelegs (damaged)': 1,
+			'Nihil shard': 1
 		}),
 		itemCost: resolveNameBank({
 			'Armadyl godsword': 1,
 			'Zamorak godsword': 1,
 			'Bandos godsword': 1,
-			'Saradomin godsword': 1
+			'Saradomin godsword': 1,
+			'Ancient godsword': 1
 		}),
 		gpCost: 100_000_000
 	},
@@ -169,7 +178,9 @@ const backgroundImages: BankBackground[] = [
 		name: 'CoX',
 		image: null,
 		available: true,
-		bitfield: BitField.HasPermanentEventBackgrounds
+		bitfield: BitField.HasPermanentEventBackgrounds,
+		hasPurple: true,
+		purpleImage: null
 	},
 	{
 		id: 15,
@@ -269,6 +280,59 @@ const backgroundImages: BankBackground[] = [
 		perkTierNeeded: PerkTier.Four,
 		gpCost: 20_000_000,
 		transparent: true
+	},
+	{
+		id: 22,
+		name: 'Nieve',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 20_000_000
+	},
+	{
+		id: 23,
+		name: 'ToB',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 20_000_000,
+		transparent: true,
+		hasPurple: true,
+		purpleImage: null
+	},
+	{
+		id: 24,
+		name: 'Zilyana',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Three,
+		gpCost: 20_000_000
+	},
+	{
+		id: 25,
+		name: 'Zilyana Transparent',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Three,
+		gpCost: 20_000_000,
+		transparent: true
+	},
+	{
+		id: 26,
+		name: 'Konar Transparent',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 20_000_000,
+		transparent: true
+	},
+	{
+		id: 27,
+		name: 'Konar',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 20_000_000
 	}
 ];
 

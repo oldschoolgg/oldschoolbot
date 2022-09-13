@@ -63,12 +63,7 @@ If you have errors or issues, you can ask us for help in the developer channel i
 -   [[Lilylicious](https://github.com/Lilylicious)]
 -   [[Gidedin](https://github.com/imgidedin)]
 -   [[Andre](https://github.com/ard35)]
-
-## Notes
-
-1.  Old School Bot uses Klasa, a discord bot framework, if you have questions as to how Klasa works, or are interested in making your own Klasa bot, you can check it out [here](https://klasa.js.org/#/).
-
-2.  The trivia questions/answers are not public in this repository, to prevent people from cheating. However, you can still submit some to be added. If you wish to submit some to be added, just ask me in the developer channel in our server. There are currently 260+ trivia questions.
+-   [[TastyPumPum](https://github.com/TastyPumPum)]
 
 ## Self Hosting
 

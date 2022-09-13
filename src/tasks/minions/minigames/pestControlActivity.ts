@@ -1,44 +1,39 @@
 import { Time } from 'e';
-import { Task } from 'klasa';
 import { toKMB } from 'oldschooljs/dist/util';
 
-import { getBoatType } from '../../../commands/Minion/pestcontrol';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { getBoatType } from '../../../mahoji/lib/abstracted_commands/pestControlCommand';
 
-export default class extends Task {
+export const pestControlTask: MinionTask = {
+	type: 'PestControl',
 	async run(data: MinigameActivityTaskOptions) {
 		const { channelID, userID, quantity, duration } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
 		const [boatType, pointsPerGame] = getBoatType(user.combatLevel);
 
 		let points = pointsPerGame * quantity;
 
 		await incrementMinigameScore(userID, 'pest_control', quantity);
-		await user.settings.update(
-			UserSettings.PestControlPoints,
-			user.settings.get(UserSettings.PestControlPoints) + points
-		);
+		const { newUser } = await user.update({
+			pest_control_points: {
+				increment: points
+			}
+		});
 
 		let perHour = `(${toKMB((points / (duration / Time.Minute)) * 60)}/Hr)`;
-		let str = `${user}, ${
-			user.minionName
-		} finished ${quantity}x games of Pest Control on the ${boatType} boat. You received ${points}x Void Knight commendation points, you now have ${user.settings.get(
-			UserSettings.PestControlPoints
-		)} points. ${perHour}`;
+		let str = `${user}, ${user.minionName} finished ${quantity}x games of Pest Control on the ${boatType} boat. You received ${points}x Void Knight commendation points, you now have ${newUser.pest_control_points} points. ${perHour}`;
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,
-			['pestcontrol', [quantity], true, 'start'],
+			['minigames', { pest_control: { start: {} } }, true, 'start'],
 			undefined,
 			data,
 			null
 		);
 	}
-}
+};

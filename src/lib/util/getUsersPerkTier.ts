@@ -1,10 +1,10 @@
-import { User } from 'discord.js';
+import { User } from '@prisma/client';
 import { notEmpty } from 'e';
-import { KlasaUser } from 'klasa';
 
 import { BitField, PerkTier, Roles } from '../constants';
-import { UserSettings } from '../settings/types/UserSettings';
+import { MUserClass } from '../MUser';
 import { getSupportGuild } from '../util';
+import { logError } from './logError';
 
 const tier3ElligibleBits = [
 	BitField.IsPatronTier3,
@@ -13,42 +13,43 @@ const tier3ElligibleBits = [
 	BitField.IsWikiContributor
 ];
 
+const perkTierCache = new Map<string, number>();
+
+export function syncPerkTierOfUser(user: MUser) {
+	perkTierCache.set(user.id, getUsersPerkTier([...user.bitfield], true));
+}
+
 export default function getUsersPerkTier(
-	userOrBitfield: KlasaUser | readonly BitField[],
+	userOrBitfield: MUser | User | BitField[],
 	noCheckOtherAccounts?: boolean
 ): PerkTier | 0 {
-	if (noCheckOtherAccounts !== true && userOrBitfield instanceof KlasaUser) {
-		let main = userOrBitfield.settings.get(UserSettings.MainAccount);
-		const allAccounts: string[] = [...userOrBitfield.settings.get(UserSettings.IronmanAlts), userOrBitfield.id];
+	if (noCheckOtherAccounts !== true && userOrBitfield instanceof MUserClass) {
+		let main = userOrBitfield.user.main_account;
+		const allAccounts: string[] = [...userOrBitfield.user.ironman_alts, userOrBitfield.id];
 		if (main) {
 			allAccounts.push(main);
 		}
 
-		const allAccountTiers = allAccounts
-			.map(id => userOrBitfield.client.users.cache.get(id))
-			.filter(notEmpty)
-			.map(t => getUsersPerkTier(t, true));
+		const allAccountTiers = allAccounts.map(id => perkTierCache.get(id)).filter(notEmpty);
 
 		const highestAccountTier = Math.max(0, ...allAccountTiers);
 		return highestAccountTier;
 	}
 
-	if (userOrBitfield instanceof User && userOrBitfield.client.owners.has(userOrBitfield)) {
-		return 10;
-	}
-
-	const bitfield =
-		userOrBitfield instanceof User ? userOrBitfield.settings.get(UserSettings.BitField) : userOrBitfield;
-
-	if (userOrBitfield instanceof User && userOrBitfield.settings.get(UserSettings.PremiumBalanceTier) !== null) {
-		const date = userOrBitfield.settings.get(UserSettings.PremiumBalanceExpiryDate);
+	const bitfield = Array.isArray(userOrBitfield) ? userOrBitfield : userOrBitfield.bitfield;
+	if (userOrBitfield instanceof MUserClass && userOrBitfield.user.premium_balance_tier !== null) {
+		const date = userOrBitfield.user.premium_balance_expiry_date;
 		if (date && Date.now() < date) {
-			return userOrBitfield.settings.get(UserSettings.PremiumBalanceTier)! + 1;
+			return userOrBitfield.user.premium_balance_tier + 1;
 		} else if (date && Date.now() > date) {
-			userOrBitfield.settings.update([
-				[UserSettings.PremiumBalanceExpiryDate, null],
-				[UserSettings.PremiumBalanceTier, null]
-			]);
+			userOrBitfield
+				.update({
+					premium_balance_tier: null,
+					premium_balance_expiry_date: null
+				})
+				.catch(e => {
+					logError(e, { user_id: userOrBitfield.id, message: 'Could not remove premium time' });
+				});
 		}
 	}
 
@@ -76,9 +77,9 @@ export default function getUsersPerkTier(
 		return PerkTier.Two;
 	}
 
-	if (userOrBitfield instanceof User) {
-		const supportGuild = getSupportGuild(userOrBitfield.client);
-		const member = supportGuild.members.cache.get(userOrBitfield.id);
+	if (userOrBitfield instanceof MUserClass) {
+		const supportGuild = getSupportGuild();
+		const member = supportGuild?.members.cache.get(userOrBitfield.id);
 		if (member && [Roles.Booster].some(roleID => member.roles.cache.has(roleID))) {
 			return PerkTier.One;
 		}

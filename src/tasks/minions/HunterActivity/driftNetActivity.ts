@@ -1,10 +1,9 @@
 import { Time } from 'e';
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import driftNetCreatures from '../../../lib/skilling/skills/hunter/driftNet';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { DriftNetActivityTaskOptions } from '../../../lib/types/minions';
+import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 // Bonus loot from higher fishing level
@@ -31,10 +30,11 @@ const fishBonusLoot = [
 	}
 ];
 
-export default class extends Task {
-	async run(data: DriftNetActivityTaskOptions) {
+export const driftNetTask: MinionTask = {
+	type: 'DriftNet',
+	async run(data: ActivityTaskOptionsWithQuantity) {
 		let { quantity, userID, channelID, duration } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const currentHuntLevel = user.skillLevel(SkillsEnum.Hunter);
 		const currentFishLevel = user.skillLevel(SkillsEnum.Fishing);
 
@@ -74,25 +74,21 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished drift net fishing and caught ${quantity}x ${fishShoal.name}. ${xpRes}\n${user.minionName} asks if you'd like them to do another of the same trip.`;
 
-		await user.addItemsToBank({ items: loot, collectionLog: true });
+		await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 		str += `\n\nYou received: ${loot}.`;
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,
-			res => {
-				user.log('continued trip of Drift net fishing.');
-				return this.client.commands
-					.get('driftnet')!
-					.run(res, [
-						Math.floor(Math.min(user.maxTripLength('DriftNet') / Time.Minute, duration / Time.Minute))
-					]);
-			},
+			['activities', { driftnet_fishing: { minutes: Math.floor(duration / Time.Minute) } }, true],
 			undefined,
 			data,
 			loot
 		);
 	}
-}
+};

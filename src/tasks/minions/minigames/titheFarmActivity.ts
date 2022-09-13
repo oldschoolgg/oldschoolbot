@@ -1,32 +1,36 @@
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { TitheFarmActivityTaskOptions } from '../../../lib/types/minions';
-import { bankHasItem, roll } from '../../../lib/util';
+import { roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import itemID from '../../../lib/util/itemID';
 
-export default class extends Task {
+export const titheFarmTask: MinionTask = {
+	type: 'TitheFarm',
 	async run(data: TitheFarmActivityTaskOptions) {
 		const { userID, channelID } = data;
 		const baseHarvest = 85;
 		const lootStr: string[] = [];
 		const levelStr: string[] = [];
 
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
 		const farmingLvl = user.skillLevel(SkillsEnum.Farming);
-		const titheFarmsCompleted = user.settings.get(UserSettings.Stats.TitheFarmsCompleted);
-		const titheFarmPoints = user.settings.get(UserSettings.Stats.TitheFarmPoints);
+		const titheFarmsCompleted = user.user.stats_titheFarmsCompleted;
+		const titheFarmPoints = user.user.stats_titheFarmPoints;
 
 		const determineHarvest = baseHarvest + Math.min(15, titheFarmsCompleted);
 		const determinePoints = determineHarvest - 74;
 
-		await user.settings.update(UserSettings.Stats.TitheFarmsCompleted, titheFarmsCompleted + 1);
-		await user.settings.update(UserSettings.Stats.TitheFarmPoints, titheFarmPoints + determinePoints);
+		await user.update({
+			stats_titheFarmsCompleted: {
+				increment: 1
+			},
+			stats_titheFarmPoints: {
+				increment: determinePoints
+			}
+		});
 
 		let fruit = '';
 		let fruitXp = 0;
@@ -51,35 +55,21 @@ export default class extends Task {
 			titheFarmsCompleted + 1
 		}x times. You now have ${titheFarmPoints + determinePoints} points to spend.`;
 
-		const userBank = user.settings.get(UserSettings.Bank);
 		let bonusXpMultiplier = 0;
 		let farmersPiecesCheck = 0;
-		if (
-			bankHasItem(userBank, itemID("Farmer's strawhat"), 1) ||
-			user.hasItemEquippedAnywhere("Farmer's strawhat")
-		) {
+		if (user.hasEquippedOrInBank(["Farmer's strawhat"])) {
 			bonusXpMultiplier += 0.004;
 			farmersPiecesCheck += 1;
 		}
-		if (
-			bankHasItem(userBank, itemID("Farmer's jacket"), 1) ||
-			bankHasItem(userBank, itemID("Farmer's shirt"), 1) ||
-			user.hasItemEquippedAnywhere(["Farmer's jacket", "Farmer's shirt"])
-		) {
+		if (user.hasEquippedOrInBank(["Farmer's jacket", "Farmer's shirt"], 'every')) {
 			bonusXpMultiplier += 0.008;
 			farmersPiecesCheck += 1;
 		}
-		if (
-			bankHasItem(userBank, itemID("Farmer's boro trousers"), 1) ||
-			user.hasItemEquippedAnywhere(itemID("Farmer's boro trousers"))
-		) {
+		if (user.hasEquippedOrInBank(["Farmer's boro trousers"])) {
 			bonusXpMultiplier += 0.006;
 			farmersPiecesCheck += 1;
 		}
-		if (
-			bankHasItem(userBank, itemID("Farmer's boots"), 1) ||
-			user.hasItemEquippedAnywhere(itemID("Farmer's boots"))
-		) {
+		if (user.hasEquippedOrInBank(["Farmer's boots"])) {
 			bonusXpMultiplier += 0.002;
 			farmersPiecesCheck += 1;
 		}
@@ -108,29 +98,32 @@ export default class extends Task {
 			lootStr.push('\n\n```diff');
 			lootStr.push("\n- You have a funny feeling you're being followed...");
 			lootStr.push('```');
-			this.client.emit(
+			globalClient.emit(
 				Events.ServerNotification,
-				`${Emoji.Farming} **${user.username}'s** minion, ${
+				`${Emoji.Farming} **${user.usernameOrMention}'s** minion, ${
 					user.minionName
 				}, just received a Tangleroot by completing the ${Emoji.MinigameIcon} Tithe Farm on their ${
 					titheFarmsCompleted + 1
 				} run!`
 			);
 
-			await user.addItemsToBank({ items: loot, collectionLog: true });
+			await transactItems({
+				userID: user.id,
+				collectionLog: true,
+				itemsToAdd: loot
+			});
 		}
 
 		const returnStr = `${harvestStr} ${bonusXpStr}\n\n${completedStr}${levelStr}${lootStr}\n`;
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			returnStr,
-			['tithefarm', [], true],
+			['farming', { tithe_farm: {} }, true],
 			undefined,
 			data,
 			loot.length > 0 ? loot : null
 		);
 	}
-}
+};

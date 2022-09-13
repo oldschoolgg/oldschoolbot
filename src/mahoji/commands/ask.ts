@@ -14,7 +14,7 @@ export const askCommand: OSBMahojiCommand = {
 			required: true
 		}
 	],
-	run: async ({ member, options }: CommandRunOptions<{ question: string }>) => {
+	run: async ({ user, options }: CommandRunOptions<{ question: string }>) => {
 		const answer = randArrItem([
 			'Yes.',
 			'Definitely.',
@@ -32,6 +32,6 @@ export const askCommand: OSBMahojiCommand = {
 			'0 chance.',
 			'No way.'
 		]);
-		return `${member.user.username} asked: *${options.question}*, and my answer is **${answer}**.`;
+		return `${user.username} asked: *${options.question}*, and my answer is **${answer}**.`;
 	}
 };

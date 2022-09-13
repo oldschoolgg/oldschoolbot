@@ -1,23 +1,23 @@
 import { calcWhatPercent, percentChance } from 'e';
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../../lib/constants';
-import { incrementMinigameScore, MinigameName } from '../../../lib/settings/settings';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
+import { getMinigameScore, incrementMinigameScore, MinigameName } from '../../../lib/settings/settings';
 import { gauntlet } from '../../../lib/simulation/gauntlet';
 import { GauntletOptions } from '../../../lib/types/minions';
-import { updateBankSetting } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { makeBankImage } from '../../../lib/util/makeBankImage';
+import { updateBankSetting } from '../../../mahoji/mahojiSettings';
 
-export default class extends Task {
+export const gauntletTask: MinionTask = {
+	type: 'Gauntlet',
 	async run(data: GauntletOptions) {
 		const { channelID, quantity, userID, corrupted } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const key: MinigameName = corrupted ? 'corrupted_gauntlet' : 'gauntlet';
 
-		const kc = await user.getMinigameScore(key);
+		const kc = await getMinigameScore(user.id, key);
 
 		let chanceOfDeath = corrupted ? 6 : 3;
 		chanceOfDeath += Math.max(0, calcWhatPercent(50 - kc, 50) / 2);
@@ -37,24 +37,28 @@ export default class extends Task {
 				})
 			);
 		}
-		if (corrupted && !user.hasItemEquippedOrInBank('Gauntlet cape') && deaths < quantity) {
+		if (corrupted && !user.hasEquippedOrInBank('Gauntlet cape') && deaths < quantity) {
 			loot.add('Gauntlet cape');
 		}
 
 		await incrementMinigameScore(userID, key, quantity - deaths);
 
-		const { previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
+		const { previousCL } = await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 		const name = `${corrupted ? 'Corrupted' : 'Normal'} Gauntlet`;
 
-		const newKc = await user.getMinigameScore(key);
+		const newKc = await getMinigameScore(user.id, key);
 
 		let str = `${user}, ${user.minionName} finished completing ${quantity}x ${name}. **${chanceOfDeath}% chance of death**, you died in ${deaths}/${quantity} of the attempts.\nYour ${name} KC is now ${newKc}.`;
 
 		if (loot.amount('Youngllef') > 0) {
 			str += "\n\n**You have a funny feeling you're being followed...**";
-			this.client.emit(
+			globalClient.emit(
 				Events.ServerNotification,
-				`**${user.username}'s** minion, ${
+				`**${user.usernameOrMention}'s** minion, ${
 					user.minionName
 				}, just received a **Youngllef** <:Youngllef:604670894798798858> while doing the ${name} for the ${formatOrdinal(
 					newKc
@@ -62,28 +66,23 @@ export default class extends Task {
 			);
 		}
 
-		updateBankSetting(this.client, ClientSettings.EconomyStats.GauntletLoot, loot);
+		updateBankSetting('gauntlet_loot', loot);
 
-		const { image } = await this.client.tasks
-			.get('bankImage')!
-			.generateBankImage(
-				loot,
-				`Loot From ${quantity - deaths}x ${name}`,
-				true,
-				{ showNewCL: 1 },
-				user,
-				previousCL
-			);
+		const image = await makeBankImage({
+			bank: loot,
+			title: `Loot From ${quantity - deaths}x ${name}`,
+			user,
+			previousCL
+		});
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,
-			['gauntlet', [corrupted ? 'corrupted' : 'normal', quantity], true],
-			image!,
+			['minigames', { gauntlet: { start: { corrupted } } }, true],
+			image.file.buffer,
 			data,
 			loot
 		);
 	}
-}
+};

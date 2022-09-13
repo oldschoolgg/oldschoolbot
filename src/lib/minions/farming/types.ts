@@ -1,24 +1,5 @@
-export enum FarmingPatchTypes {
-	Herb = 'herb',
-	FruitTree = 'fruit tree',
-	Tree = 'tree',
-	Allotment = 'allotment',
-	Hops = 'hops',
-	Cactus = 'cactus',
-	Bush = 'bush',
-	Flower = 'flower',
-	Spirit = 'spirit',
-	Hardwood = 'hardwood',
-	Seaweed = 'seaweed',
-	Vine = 'vine',
-	Calquat = 'calquat',
-	Redwood = 'redwood',
-	Crystal = 'crystal',
-	Celastrus = 'celastrus',
-	Hespori = 'hespori',
-	Mushroom = 'mushroom',
-	Belladonna = 'belladonna'
-}
+import { Plant } from '../../skilling/types';
+import { FarmingPatchName } from '../../util/farmingHelpers';
 
 export interface IPatchData {
 	lastPlanted: string | null;
@@ -29,17 +10,27 @@ export interface IPatchData {
 	lastPayment: boolean;
 	wasReminded?: true;
 }
+export interface IPatchDataDetailed extends IPatchData {
+	ready: boolean | null;
+	readyIn: number | null;
+	readyAt: Date | null;
+	patchName: FarmingPatchName;
+	friendlyName: string;
+	plant: Plant | null;
+}
 
 export type PatchData = IPatchData | null;
 
 export type PlantTier = 0 | 1 | 2 | 3 | 4 | 5;
+export type FarmingContractDifficultyLevel = 'easy' | 'medium' | 'hard';
 
 export interface FarmingContract {
 	hasContract: boolean;
-	difficultyLevel: 'easy' | 'medium' | 'hard' | null;
+	difficultyLevel: FarmingContractDifficultyLevel | null;
 	plantToGrow: string | null;
 	plantTier: PlantTier;
 	contractsCompleted: number;
 }
 
-export type CompostTier = 'compost' | 'supercompost' | 'ultracompost';
+export const ContractOptions = ['easy', 'medium', 'hard', 'easier'] as const;
+export type ContractOption = typeof ContractOptions[number];

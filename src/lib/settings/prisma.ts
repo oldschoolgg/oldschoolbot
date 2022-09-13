@@ -2,13 +2,10 @@ import { Activity, activity_type_enum, loot_track_type, Prisma, PrismaClient } f
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { client } from '../..';
+import { CLIENT_ID, production } from '../../config';
 import { ItemBank } from '../types';
 import { ActivityTaskData } from '../types/minions';
-import { cleanString, isGroupActivity } from '../util';
-import { logError } from '../util/logError';
-import { taskNameFromType } from '../util/taskNameFromType';
-import { minionActivityCache, minionActivityCacheDelete } from './settings';
+import { cleanString } from '../util';
 
 declare global {
 	namespace NodeJS {
@@ -17,9 +14,27 @@ declare global {
 		}
 	}
 }
-export const prisma = global.prisma || new PrismaClient();
-
+export const prisma =
+	global.prisma ||
+	new PrismaClient({
+		log: [
+			{
+				emit: 'event',
+				level: 'query'
+			}
+		]
+	});
 if (process.env.NODE_ENV !== 'production') global.prisma = prisma;
+
+export const prismaQueries: Prisma.QueryEvent[] = [];
+export let queryCountStore = { value: 0 };
+prisma.$on('query' as any, (_query: any) => {
+	if (!production && globalClient.isReady()) {
+		const query = _query as Prisma.QueryEvent;
+		prismaQueries.push(query);
+	}
+	queryCountStore.value++;
+});
 
 export function convertStoredActivityToFlatActivity(activity: Activity): ActivityTaskData {
 	return {
@@ -33,39 +48,6 @@ export function convertStoredActivityToFlatActivity(activity: Activity): Activit
 	};
 }
 
-export function activitySync(activity: Activity) {
-	const users: bigint[] | string[] = isGroupActivity(activity.data)
-		? ((activity.data as Prisma.JsonObject).users! as string[])
-		: [activity.user_id];
-	for (const user of users) {
-		minionActivityCache.set(user.toString(), convertStoredActivityToFlatActivity(activity));
-	}
-}
-
-export async function completeActivity(_activity: Activity) {
-	const activity = convertStoredActivityToFlatActivity(_activity);
-	if (_activity.completed) {
-		throw new Error('Tried to complete an already completed task.');
-	}
-
-	const taskName = taskNameFromType(activity.type);
-	const task = client.tasks.get(taskName);
-
-	if (!task) {
-		throw new Error('Missing task');
-	}
-
-	client.oneCommandAtATimeCache.add(activity.userID);
-	try {
-		await task.run(activity);
-	} catch (err) {
-		logError(err);
-	} finally {
-		client.oneCommandAtATimeCache.delete(activity.userID);
-		minionActivityCacheDelete(activity.userID);
-	}
-}
-
 /**
  * ⚠️ Uses queryRawUnsafe
  */
@@ -76,7 +58,7 @@ export async function countUsersWithItemInCl(itemID: number, ironmenOnly: boolea
 				   AND ("collectionLogBank"->>'${itemID}')::int >= 1
 				   ${ironmenOnly ? 'AND "minion.ironman" = true' : ''};`;
 	const result = parseInt(((await prisma.$queryRawUnsafe(query)) as any)[0].count);
-	if (isNaN(result) || typeof result !== 'number') {
+	if (isNaN(result)) {
 		throw new Error(`countUsersWithItemInCl produced invalid number '${result}' for ${itemID}`);
 	}
 	return result;
@@ -145,4 +127,29 @@ export async function trackLoot(opts: TrackLootOptions) {
 			type: opts.type
 		}
 	});
+}
+
+export async function addToGPTaxBalance(userID: bigint | string, amount: number) {
+	await Promise.all([
+		prisma.clientStorage.update({
+			where: {
+				id: CLIENT_ID
+			},
+			data: {
+				gp_tax_balance: {
+					increment: amount
+				}
+			}
+		}),
+		prisma.user.update({
+			where: {
+				id: userID.toString()
+			},
+			data: {
+				total_gp_traded: {
+					increment: amount
+				}
+			}
+		})
+	]);
 }

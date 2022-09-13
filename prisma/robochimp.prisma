@@ -1,0 +1,46 @@
+generator client {
+    provider        = "prisma-client-js"
+    previewFeatures = ["fullTextSearch"]
+    output          = "../node_modules/@prisma/robochimp"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("ROBOCHIMP_DATABASE_URL")
+}
+
+model TriviaQuestion {
+    id       Int      @id @unique @default(autoincrement())
+    question String   @db.VarChar()
+    answers  String[] @db.VarChar()
+
+    @@map("trivia_question")
+}
+
+enum BlacklistedEntityType {
+    guild
+    user
+}
+
+model BlacklistedEntity {
+    id     BigInt                @id @unique
+    type   BlacklistedEntityType
+    reason String?
+    date   DateTime              @default(now()) @db.Timestamp(6)
+
+    @@map("blacklisted_entity")
+}
+
+model User {
+    id         BigInt  @id @unique
+    bits       Int[]
+    github_id  Int?
+    patreon_id String?
+
+    leagues_completed_tasks_ids Int[]
+    leagues_points_balance_osb  Int   @default(0)
+    leagues_points_balance_bso  Int   @default(0)
+    leagues_points_total        Int   @default(0)
+
+    @@map("user")
+}

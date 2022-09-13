@@ -1,8 +1,9 @@
+import '../data/itemAliases';
+
 import { roll } from 'e';
 import { Bank, Misc } from 'oldschooljs';
-import { addBanks } from 'oldschooljs/dist/util';
 
-import ClueTiers from '../minions/data/clueTiers';
+import { ClueTiers } from '../clues/clueTiers';
 import { CasketWorkerArgs } from '.';
 
 export default ({ clueTierID, quantity }: CasketWorkerArgs): [Bank, string] => {
@@ -12,7 +13,7 @@ export default ({ clueTierID, quantity }: CasketWorkerArgs): [Bank, string] => {
 	if (clueTier.mimicChance) {
 		for (let i = 0; i < quantity; i++) {
 			if (roll(clueTier.mimicChance)) {
-				loot = addBanks([Misc.Mimic.open(clueTier.name as 'master' | 'elite'), loot]);
+				loot.add(Misc.Mimic.open(clueTier.name as 'master' | 'elite'));
 				mimicNumber++;
 			}
 		}

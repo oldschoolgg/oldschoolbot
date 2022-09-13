@@ -2,18 +2,24 @@ import { Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
-import { client } from '../..';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, itemID, stringMatches, updateBankSetting } from '../../lib/util';
+import { formatDuration, formatSkillRequirements, itemID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
+import resolveItems from '../../lib/util/resolveItems';
 import { OSBMahojiCommand } from '../lib/util';
+import { updateBankSetting, userHasGracefulEquipped } from '../mahojiSettings';
 
 export const smeltingCommand: OSBMahojiCommand = {
 	name: 'smelt',
 	description: 'Smelt ores/items.',
+	attributes: {
+		requiresMinion: true,
+		requiresMinionNotBusy: true,
+		examples: ['/smelt runite bar', '/smelt runite bar [quantity: 1]']
+	},
 	options: [
 		{
 			type: ApplicationCommandOptionType.String,
@@ -33,38 +39,85 @@ export const smeltingCommand: OSBMahojiCommand = {
 			required: false,
 			min_value: 1,
 			max_value: 100_000
+		},
+		{
+			type: ApplicationCommandOptionType.Boolean,
+			name: 'blast_furnace',
+			description: 'If you want to blast furnace the bars.',
+			required: false
 		}
 	],
-	run: async ({ member, options, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
-		let { name, quantity } = options;
+	run: async ({
+		userID,
+		options,
+		channelID
+	}: CommandRunOptions<{ name: string; quantity?: number; blast_furnace?: boolean }>) => {
+		let { name, quantity, blast_furnace } = options;
+		const user = await mUserFetch(userID);
+		if (blast_furnace === undefined) blast_furnace = false;
+		const boosts = [];
 
-		const user = await client.fetchUser(member.user.id);
-
-		const bar = Smithing.Bars.find(
-			bar => stringMatches(bar.name, name) || stringMatches(bar.name.split(' ')[0], name)
-		);
+		const bar = blast_furnace
+			? Smithing.BlastableBars.find(
+					bar => stringMatches(bar.name, name) || stringMatches(bar.name.split(' ')[0], name)
+			  )
+			: Smithing.Bars.find(bar => stringMatches(bar.name, name) || stringMatches(bar.name.split(' ')[0], name));
 
 		if (!bar) {
+			if (blast_furnace) {
+				return `Thats not a valid bar to blast furnace. Valid bars are ${Smithing.BlastableBars.map(
+					bar => bar.name
+				).join(', ')}.`;
+			}
 			return `Thats not a valid bar to smelt. Valid bars are ${Smithing.Bars.map(bar => bar.name).join(', ')}.`;
 		}
 
-		if (user.skillLevel(SkillsEnum.Smithing) < bar.level) {
+		if (user.skillLevel('smithing') < bar.level) {
 			return `${user.minionName} needs ${bar.level} Smithing to smelt ${bar.name}s.`;
 		}
 
-		// All bars take 2.4s to smith, add on quarter of a second to account for banking/etc.
-		const timeToSmithSingleBar = Time.Second * 2.4 + Time.Second / 4;
+		// All bars take 2.4s to smith normally, add on quarter of a second to account for banking/etc.
+		let timeToSmithSingleBar = blast_furnace ? bar.timeToUse + Time.Second / 10 : bar.timeToUse + Time.Second / 4;
 
-		const maxTripLength = user.maxTripLength('Smithing');
+		if (blast_furnace) {
+			const requiredSkills = {
+				[SkillsEnum.Crafting]: 12,
+				[SkillsEnum.Firemaking]: 16,
+				[SkillsEnum.Magic]: 33,
+				[SkillsEnum.Mining]: 50,
+				[SkillsEnum.Smithing]: 20,
+				[SkillsEnum.Thieving]: 13
+			};
+			if (!user.hasSkillReqs(requiredSkills)) {
+				return `You don't have the required stats to use the Blast Furnace, you need: ${formatSkillRequirements(
+					requiredSkills
+				)}`;
+			}
+
+			// Boosts
+			if (
+				user.hasEquippedOrInBank('Coal bag') &&
+				resolveItems(['Steel bar', 'Mithril bar', 'Adamantite bar', 'Runite bar']).includes(bar.id)
+			) {
+				boosts.push('60% for coal bag');
+				timeToSmithSingleBar *= 0.625;
+			}
+			if (!userHasGracefulEquipped(user)) {
+				timeToSmithSingleBar *= 1.075;
+				boosts.push('-7.5% penalty for not having graceful equipped.');
+			}
+		}
+
+		const maxTripLength = calcMaxTripLength(user, 'Smithing');
 
 		// If no quantity provided, set it to the max.
 		if (!quantity) {
 			quantity = Math.floor(maxTripLength / timeToSmithSingleBar);
 		}
 
-		const baseCost = new Bank(bar.inputOres);
+		const itemsNeeded = bar.inputOres.clone();
 
-		const maxCanDo = user.bank().fits(baseCost);
+		const maxCanDo = user.bank.fits(itemsNeeded);
 		if (maxCanDo === 0) {
 			return "You don't have enough supplies to smelt even one of this item!";
 		}
@@ -73,7 +126,7 @@ export const smeltingCommand: OSBMahojiCommand = {
 		}
 
 		const cost = new Bank();
-		cost.add(baseCost.multiply(quantity));
+		cost.add(itemsNeeded.multiply(quantity));
 
 		const duration = quantity * timeToSmithSingleBar;
 		if (duration > maxTripLength) {
@@ -84,25 +137,41 @@ export const smeltingCommand: OSBMahojiCommand = {
 			)}.`;
 		}
 
-		await user.removeItemsFromBank(cost);
-		updateBankSetting(client, ClientSettings.EconomyStats.SmithingCost, cost);
+		let coinsToRemove = 0;
+		if (blast_furnace) {
+			const gpPerHour = (user.isIronman ? 1 : 3.5) * 72_000;
+			coinsToRemove = Math.floor(gpPerHour * (duration / Time.Hour));
+			const gp = user.GP;
+			if (gp < coinsToRemove) {
+				return `You need atleast ${coinsToRemove} GP to work at the Blast Furnace.`;
+			}
+
+			cost.add('Coins', coinsToRemove);
+		}
+
+		await transactItems({ userID: user.id, itemsToRemove: cost });
+		updateBankSetting('smithing_cost', cost);
 
 		await addSubTaskToActivityTask<SmeltingActivityTaskOptions>({
 			barID: bar.id,
 			userID: user.id,
 			channelID: channelID.toString(),
 			quantity,
+			blastf: blast_furnace,
 			duration,
 			type: 'Smelting'
 		});
 
-		let goldGauntletMessage = '';
-		if (bar.id === itemID('Gold bar') && user.hasItemEquippedAnywhere('Goldsmith gauntlets')) {
-			goldGauntletMessage = '\n\n**Boosts:** 56.2 xp per gold bar for Goldsmith gauntlets.';
+		if (bar.id === itemID('Gold bar') && user.hasEquipped('Goldsmith gauntlets')) {
+			boosts.push('56.2 xp per gold bar for Goldsmith gauntlets');
 		}
 
-		return `${user.minionName} is now smelting ${quantity}x ${bar.name}, it'll take around ${formatDuration(
-			duration
-		)} to finish.${goldGauntletMessage}`;
+		const response = `${user.minionName} is now smelting ${quantity}x ${
+			bar.name
+		}, it'll take around ${formatDuration(duration)} to finish. ${
+			blast_furnace ? `You paid ${coinsToRemove} GP to use the Blast Furnace.` : ''
+		} ${boosts.length > 0 ? `\n\n**Boosts: ** ${boosts.join(', ')}` : ''}`;
+
+		return response;
 	}
 };

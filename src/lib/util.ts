@@ -1,31 +1,54 @@
-import { PaginatedMessage } from '@sapphire/discord.js-utilities';
-import { exec } from 'child_process';
-import crypto from 'crypto';
-import { Channel, Client, DMChannel, Guild, MessageButton, MessageOptions, TextChannel, Util } from 'discord.js';
-import { calcWhatPercent, objectEntries, randArrItem, randInt, round, shuffleArr, Time } from 'e';
-import { KlasaClient, KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults } from 'klasa';
+import { bold } from '@discordjs/builders';
+import type { User } from '@prisma/client';
+import {
+	AttachmentBuilder,
+	ButtonInteraction,
+	CacheType,
+	Channel,
+	Collection,
+	CollectorFilter,
+	DMChannel,
+	escapeMarkdown,
+	Guild,
+	Message,
+	MessageEditOptions,
+	MessageOptions,
+	PermissionsBitField,
+	SelectMenuInteraction,
+	TextChannel,
+	User as DJSUser
+} from 'discord.js';
+import { calcWhatPercent, chunk, isObject, objectEntries, Time } from 'e';
+import { APIButtonComponentWithCustomId, APIInteractionResponseCallbackData, APIUser, ComponentType } from 'mahoji';
+import { CommandResponse, InteractionResponseDataWithBufferAttachments } from 'mahoji/dist/lib/structures/ICommand';
 import murmurHash from 'murmurhash';
+import { gzip } from 'node:zlib';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
-import { bool, integer, nodeCrypto, real } from 'random-js';
-import { promisify } from 'util';
+import { bool, integer, MersenneTwister19937, nodeCrypto, real, shuffle } from 'random-js';
 
-import { CENA_CHARS, continuationChars, PerkTier, skillEmoji, SupportServer } from './constants';
+import { production, SupportServer } from '../config';
+import { skillEmoji, usernameCache } from './constants';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
-import clueTiers from './minions/data/clueTiers';
 import { Consumable } from './minions/types';
+import { PaginatedMessage } from './PaginatedMessage';
 import { POHBoosts } from './poh';
+import { SkillsEnum } from './skilling/types';
 import { ArrayItemsResolved, Skills } from './types';
-import { GroupMonsterActivityTaskOptions, RaidsOptions, TheatreOfBloodTaskOptions } from './types/minions';
-import getUsersPerkTier from './util/getUsersPerkTier';
+import {
+	GroupMonsterActivityTaskOptions,
+	NexTaskOptions,
+	RaidsOptions,
+	TheatreOfBloodTaskOptions
+} from './types/minions';
+import { getItem } from './util/getOSItem';
 import itemID from './util/itemID';
-import resolveItems from './util/resolveItems';
+import { logError } from './util/logError';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const emojiRegex = require('emoji-regex');
 
-export { Util } from 'discord.js';
 export * from 'oldschooljs/dist/util/index';
 
 const zeroWidthSpace = '\u200b';
@@ -110,11 +133,6 @@ export function isWeekend() {
 	return [6, 0].includes(currentDate.getDay());
 }
 
-export function saidYes(content: string) {
-	const newContent = content.toLowerCase();
-	return newContent === 'y' || newContent === 'yes';
-}
-
 export function convertXPtoLVL(xp: number, cap = 99) {
 	let points = 0;
 
@@ -129,10 +147,6 @@ export function convertXPtoLVL(xp: number, cap = 99) {
 	return cap;
 }
 
-export function determineScaledOreTime(xp: number, respawnTime: number, lvl: number) {
-	const t = xp / (lvl / 4 + 0.5) + ((100 - lvl) / 100 + 0.75);
-	return Math.floor((t + respawnTime) * 1000) * 1.2;
-}
 export function determineScaledLogTime(xp: number, respawnTime: number, lvl: number) {
 	const t = xp / (lvl / 4 + 0.5) + ((100 - lvl) / 100 + 0.75);
 	return Math.floor((t + respawnTime) * 1000) * 1.2;
@@ -158,10 +172,6 @@ export function itemNameFromID(itemID: number | string) {
 	return Items.get(itemID)?.name;
 }
 
-export async function arrIDToUsers(client: KlasaClient, ids: string[]) {
-	return Promise.all(ids.map(id => client.fetchUser(id)));
-}
-
 const rawEmojiRegex = emojiRegex();
 
 export function stripEmojis(str: string) {
@@ -174,52 +184,6 @@ export const anglerBoosts = [
 	[itemID('Angler waders'), 0.6],
 	[itemID('Angler boots'), 0.2]
 ];
-
-export function anglerBoostPercent(user: KlasaUser) {
-	const skillingSetup = user.getGear('skilling');
-	let amountEquipped = 0;
-	let boostPercent = 0;
-	for (const [id, percent] of anglerBoosts) {
-		if (skillingSetup.hasEquipped([id])) {
-			boostPercent += percent;
-			amountEquipped++;
-		}
-	}
-	if (amountEquipped === 4) {
-		boostPercent += 0.5;
-	}
-	return round(boostPercent, 1);
-}
-
-const rogueOutfit = resolveItems(['Rogue mask', 'Rogue top', 'Rogue trousers', 'Rogue gloves', 'Rogue boots']);
-
-export function rogueOutfitPercentBonus(user: KlasaUser): number {
-	const skillingSetup = user.getGear('skilling');
-	let amountEquipped = 0;
-	for (const id of rogueOutfit) {
-		if (skillingSetup.hasEquipped([id])) {
-			amountEquipped++;
-		}
-	}
-	return amountEquipped * 20;
-}
-
-export function rollRogueOutfitDoubleLoot(user: KlasaUser): boolean {
-	return randInt(1, 100) <= rogueOutfitPercentBonus(user);
-}
-
-export function generateContinuationChar(user: KlasaUser) {
-	const baseChar =
-		user.perkTier > PerkTier.One
-			? 'y'
-			: Date.now() - user.createdTimestamp < Time.Month * 6
-			? shuffleArr(continuationChars).slice(0, randInt(1, 2)).join('')
-			: randArrItem(continuationChars);
-
-	return `${shuffleArr(CENA_CHARS).slice(0, randInt(1, 2)).join('')}${baseChar}${shuffleArr(CENA_CHARS)
-		.slice(0, randInt(1, 2))
-		.join('')}`;
-}
 
 export function isValidGearSetup(str: string): str is GearSetupType {
 	return GearSetupTypes.includes(str as any);
@@ -249,18 +213,47 @@ export function isTobActivity(data: any): data is TheatreOfBloodTaskOptions {
 	return 'wipedRoom' in data;
 }
 
-export function sha256Hash(x: string) {
-	return crypto.createHash('sha256').update(x, 'utf8').digest('hex');
+export function isNexActivity(data: any): data is NexTaskOptions {
+	return 'wipedKill' in data && 'userDetails' in data && 'leader' in data;
 }
 
-export function countSkillsAtleast99(user: KlasaUser) {
-	const skills = (user.settings.get('skills') as SettingsFolder).toJSON() as Record<string, number>;
-	return Object.values(skills).filter(xp => convertXPtoLVL(xp) >= 99).length;
+export function getSkillsOfMahojiUser(user: User, levels = false): Required<Skills> {
+	const skills: Required<Skills> = {
+		agility: Number(user.skills_agility),
+		cooking: Number(user.skills_cooking),
+		fishing: Number(user.skills_fishing),
+		mining: Number(user.skills_mining),
+		smithing: Number(user.skills_smithing),
+		woodcutting: Number(user.skills_woodcutting),
+		firemaking: Number(user.skills_firemaking),
+		runecraft: Number(user.skills_runecraft),
+		crafting: Number(user.skills_crafting),
+		prayer: Number(user.skills_prayer),
+		fletching: Number(user.skills_fletching),
+		farming: Number(user.skills_farming),
+		herblore: Number(user.skills_herblore),
+		thieving: Number(user.skills_thieving),
+		hunter: Number(user.skills_hunter),
+		construction: Number(user.skills_construction),
+		magic: Number(user.skills_magic),
+		attack: Number(user.skills_attack),
+		strength: Number(user.skills_strength),
+		defence: Number(user.skills_defence),
+		ranged: Number(user.skills_ranged),
+		hitpoints: Number(user.skills_hitpoints),
+		slayer: Number(user.skills_slayer)
+	};
+	if (levels) {
+		for (const [key, val] of Object.entries(skills) as [keyof Skills, number][]) {
+			skills[key] = convertXPtoLVL(val);
+		}
+	}
+	return skills;
 }
 
-export function getSupportGuild(client: Client) {
-	const guild = client.guilds.cache.get(SupportServer);
-	if (!guild) throw "Can't find support guild.";
+export function getSupportGuild(): Guild | null {
+	const guild = globalClient.guilds.cache.get(SupportServer);
+	if (!guild) return null;
 	return guild;
 }
 
@@ -279,7 +272,13 @@ export function normal(mu = 0, sigma = 1, nsamples = 6) {
  * @param channel The channel to check if the bot can send a message to.
  */
 export function channelIsSendable(channel: Channel | undefined | null): channel is TextChannel {
-	if (!channel || (!(channel instanceof DMChannel) && !(channel instanceof TextChannel)) || !channel.postable) {
+	if (!channel) return false;
+	if (!channel.isTextBased()) return false;
+	if (!('guild' in channel)) return true;
+	const canSend = channel.guild
+		? channel.permissionsFor(globalClient.user!)!.has(PermissionsBitField.Flags.ViewChannel)
+		: true;
+	if (!(channel instanceof DMChannel) && !(channel instanceof TextChannel) && canSend) {
 		return false;
 	}
 
@@ -422,31 +421,16 @@ export function formatPohBoosts(boosts: POHBoosts) {
 	return slotStr.join(', ');
 }
 
-export function updateBankSetting(client: KlasaClient | KlasaUser, setting: string, bankToAdd: Bank | ItemBank) {
-	if (bankToAdd === undefined || bankToAdd === null) throw new Error(`Gave null bank for ${client} ${setting}`);
-	const current = new Bank(client.settings.get(setting) as ItemBank);
-	const newBank = current.add(bankToAdd);
-	return client.settings.update(setting, newBank.bank);
-}
-
-export function updateGPTrackSetting(client: KlasaClient | KlasaUser, setting: string, amount: number) {
-	const current = client.settings.get(setting) as number;
-	const newValue = current + amount;
-	return client.settings.update(setting, newValue);
-}
-
-export function textEffect(str: string, effect: 'none' | 'strikethrough') {
-	let wrap = '';
-
-	if (effect === 'strikethrough') {
-		wrap = '~~';
+function gaussianRand(rolls: number = 3) {
+	let rand = 0;
+	for (let i = 0; i < rolls; i += 1) {
+		rand += Math.random();
 	}
-	return `${wrap}${str.replace(/~/g, '')}${wrap}`;
+	return rand / rolls;
 }
 
-export async function wipeDBArrayByKey(user: KlasaUser, key: string): Promise<SettingsUpdateResults> {
-	const active: any[] = user.settings.get(key) as any[];
-	return user.settings.update(key, active);
+export function gaussianRandom(min: number, max: number, rolls?: number) {
+	return Math.floor(min + gaussianRand(rolls) * (max - min + 1));
 }
 
 export function isValidNickname(str?: string) {
@@ -460,81 +444,19 @@ export function isValidNickname(str?: string) {
 	);
 }
 
-export function patronMaxTripCalc(user: KlasaUser) {
-	const perkTier = getUsersPerkTier(user);
-	if (perkTier === PerkTier.Two) return Time.Minute * 3;
-	else if (perkTier === PerkTier.Three) return Time.Minute * 6;
-	else if (perkTier >= PerkTier.Four) return Time.Minute * 10;
-	return 0;
+export async function makePaginatedMessage(channel: TextChannel, pages: MessageEditOptions[], target?: string) {
+	const m = new PaginatedMessage({ pages, channel });
+	return m.run(target ? [target] : undefined);
 }
 
-export async function makePaginatedMessage(message: KlasaMessage, pages: MessageOptions[]) {
-	const display = new PaginatedMessage();
-	// @ts-ignore 2445
-	display.setUpReactions = () => null;
-	for (const page of pages) {
-		display.addPage({
-			...page,
-			components:
-				pages.length > 1
-					? [
-							PaginatedMessage.defaultActions
-								.slice(1, -1)
-								.map(a =>
-									new MessageButton()
-										.setLabel('')
-										.setStyle('SECONDARY')
-										.setCustomID(a.id)
-										.setEmoji(a.id)
-								)
-					  ]
-					: []
-		});
+export function assert(condition: boolean, desc?: string, context?: Record<string, string>) {
+	if (!condition) {
+		if (production) {
+			logError(new Error(desc ?? 'Failed assertion'), context);
+		} else {
+			throw new Error(desc ?? 'Failed assertion');
+		}
 	}
-
-	await display.run(message);
-
-	if (pages.length > 1) {
-		const collector = display.response!.createMessageComponentInteractionCollector({
-			time: Time.Minute,
-			filter: i => i.user.id === message.author.id
-		});
-
-		collector.on('collect', async interaction => {
-			for (const action of PaginatedMessage.defaultActions) {
-				if (interaction.customID === action.id) {
-					const previousIndex = display.index;
-
-					await action.run({
-						handler: display,
-						author: message.author,
-						channel: message.channel,
-						response: display.response!,
-						collector: display.collector!
-					});
-
-					if (previousIndex !== display.index) {
-						await interaction.update(await display.resolvePage(message.channel, display.index));
-						return;
-					}
-				}
-			}
-		});
-
-		collector.on('end', () => {
-			display.response!.edit({ components: [] });
-		});
-	}
-}
-
-export const asyncExec = promisify(exec);
-
-export function getUsername(client: KlasaClient, id: string): string {
-	return (client.commands.get('leaderboard') as any)!.getUsername(id);
-}
-
-export function assert(condition: boolean, desc?: string) {
-	if (!condition) throw new Error(desc);
 }
 
 export function calcDropRatesFromBank(bank: Bank, iterations: number, uniques: number[]) {
@@ -544,13 +466,17 @@ export function calcDropRatesFromBank(bank: Bank, iterations: number, uniques: n
 		if (uniques.includes(item.id)) {
 			uniquesReceived += qty;
 		}
-		result.push(`${qty}x ${item.name} (1 in ${(iterations / qty).toFixed(2)})`);
+		const rate = Math.round(iterations / qty);
+		if (rate < 2) continue;
+		let { name } = item;
+		if (uniques.includes(item.id)) name = bold(name);
+		result.push(`${qty}x ${name} (1 in ${rate})`);
 	}
 	result.push(
-		`${uniquesReceived}x Uniques (1 in ${iterations / uniquesReceived} which is ${calcWhatPercent(
+		`\n**${uniquesReceived}x Uniques (1 in ${Math.round(iterations / uniquesReceived)} which is ${calcWhatPercent(
 			uniquesReceived,
 			iterations
-		)}%)`
+		)}%)**`
 	);
 	return result.join(', ');
 }
@@ -581,6 +507,23 @@ export function convertAttackStyleToGearSetup(style: OffenceGearStat | DefenceGe
 	return setup;
 }
 
+export function sanitizeBank(bank: Bank) {
+	for (const [key, value] of Object.entries(bank.bank)) {
+		if (value < 1) {
+			delete bank.bank[key];
+		}
+		// If this bank contains a fractional/float,
+		// round it down.
+		if (!Number.isInteger(value)) {
+			bank.bank[key] = Math.floor(value);
+		}
+
+		const item = getItem(key);
+		if (!item) {
+			delete bank.bank[key];
+		}
+	}
+}
 export function convertBankToPerHourStats(bank: Bank, time: number) {
 	let result = [];
 	for (const [item, qty] of bank.items()) {
@@ -589,39 +532,166 @@ export function convertBankToPerHourStats(bank: Bank, time: number) {
 	return result;
 }
 
-/**
- * Removes extra clue scrolls from loot, if they got more than 1 or if they already own 1.
- */
-export function deduplicateClueScrolls({ loot, currentBank }: { loot: Bank; currentBank: Bank }) {
-	const newLoot = loot.clone();
-	for (const { scrollID } of clueTiers) {
-		if (!newLoot.has(scrollID)) continue;
-		if (currentBank.has(scrollID)) {
-			newLoot.remove(scrollID, newLoot.amount(scrollID));
-		} else {
-			newLoot.bank[scrollID] = 1;
-		}
-	}
-	return newLoot;
-}
-
-/**
- * Removes items with 0 or less quantity
- */
-export function sanitizeBank(bank: Bank) {
-	for (const [key, value] of Object.entries(bank.bank)) {
-		if (value === 0 || value < 1) {
-			delete bank.bank[key];
-		}
-	}
-}
-
 export function truncateString(str: string, maxLen: number) {
 	if (str.length < maxLen) return str;
 	return `${str.slice(0, maxLen - 3)}...`;
 }
 
-export function cleanUsername(str: string) {
-	return Util.escapeMarkdown(stripEmojis(str));
+export function removeMarkdownEmojis(str: string) {
+	return escapeMarkdown(stripEmojis(str));
 }
 export { cleanString, stringMatches } from './util/cleanString';
+
+export function clamp(val: number, min: number, max: number) {
+	return Math.min(max, Math.max(min, val));
+}
+
+export function calcPerHour(value: number, duration: number) {
+	return (value / (duration / Time.Minute)) * 60;
+}
+
+export function convertDJSUserToAPIUser(user: DJSUser): APIUser {
+	const apiUser: APIUser = {
+		id: user.id,
+		username: user.username,
+		discriminator: user.discriminator,
+		avatar: user.avatar,
+		bot: user.bot,
+		system: user.system,
+		flags: undefined,
+		mfa_enabled: undefined,
+		banner: undefined,
+		accent_color: undefined,
+		locale: undefined,
+		verified: undefined,
+		email: undefined,
+		premium_type: undefined,
+		public_flags: undefined
+	};
+
+	return apiUser;
+}
+
+export function removeFromArr<T>(arr: T[] | readonly T[], item: T) {
+	return arr.filter(i => i !== item);
+}
+
+/**
+ * Scale percentage exponentially
+ *
+ * @param decay Between 0.01 and 0.05; bigger means more penalty.
+ * @param percent The percent to scale
+ * @returns percent
+ */
+export function exponentialPercentScale(percent: number, decay = 0.021) {
+	return 100 * Math.pow(Math.E, -decay * (100 - percent));
+}
+
+export function discrimName(user: APIUser) {
+	return `${user.username}#${user.discriminator}`;
+}
+
+export function isValidSkill(skill: string): skill is SkillsEnum {
+	return Object.values(SkillsEnum).includes(skill as SkillsEnum);
+}
+
+export function convertMahojiResponseToDJSResponse(response: Awaited<CommandResponse>): string | MessageOptions {
+	if (typeof response === 'string') return response;
+	return {
+		content: response.content,
+		files: response.attachments?.map(i => new AttachmentBuilder(i.buffer, { name: i.fileName }))
+	};
+}
+
+function normalizeMahojiResponse(one: Awaited<CommandResponse>): InteractionResponseDataWithBufferAttachments {
+	if (typeof one === 'string') return { content: one };
+	const response: InteractionResponseDataWithBufferAttachments = {};
+	if (one.content) response.content = one.content;
+	if (one.attachments) response.attachments = one.attachments;
+	return response;
+}
+
+export function roughMergeMahojiResponse(one: Awaited<CommandResponse>, two: Awaited<CommandResponse>) {
+	const first = normalizeMahojiResponse(one);
+	const second = normalizeMahojiResponse(two);
+	const newResponse: InteractionResponseDataWithBufferAttachments = { content: '', attachments: [] };
+	for (const res of [first, second]) {
+		if (res.content) newResponse.content += `${res.content} `;
+		if (res.attachments) newResponse.attachments = [...newResponse.attachments!, ...res.attachments];
+	}
+	return newResponse;
+}
+
+export async function asyncGzip(buffer: Buffer) {
+	return new Promise<Buffer>((resolve, reject) => {
+		gzip(buffer, {}, (error, gzipped) => {
+			if (error) {
+				reject(error);
+			}
+			resolve(gzipped);
+		});
+	});
+}
+
+export function getUsername(id: string | bigint) {
+	return usernameCache.get(id.toString()) ?? 'Unknown';
+}
+
+export function shuffleRandom<T>(input: number, arr: readonly T[]): T[] {
+	const engine = MersenneTwister19937.seed(input);
+	return shuffle(engine, [...arr]);
+}
+
+export function makeComponents(
+	components: APIButtonComponentWithCustomId[]
+): APIInteractionResponseCallbackData['components'] {
+	return chunk(components, 5).map(i => ({ components: i, type: ComponentType.ActionRow }));
+}
+
+export function validateItemBankAndThrow(input: any): input is ItemBank {
+	if (!isObject(input)) {
+		throw new Error('Invalid bank');
+	}
+	const numbers = [];
+	for (const [key, val] of Object.entries(input)) {
+		numbers.push(parseInt(key), val);
+	}
+	for (const num of numbers) {
+		if (isNaN(num) || typeof num !== 'number' || !Number.isInteger(num) || num < 0) {
+			throw new Error('Invalid bank');
+		}
+	}
+	return true;
+}
+
+export function hasSkillReqs(user: MUser, reqs: Skills): [boolean, string | null] {
+	const hasReqs = user.hasSkillReqs(reqs);
+	if (!hasReqs) {
+		return [false, formatSkillRequirements(reqs)];
+	}
+	return [true, null];
+}
+type test = CollectorFilter<
+	[
+		ButtonInteraction<CacheType> | SelectMenuInteraction<CacheType>,
+		Collection<string, ButtonInteraction<CacheType> | SelectMenuInteraction>
+	]
+>;
+export function awaitMessageComponentInteraction({
+	message,
+	filter,
+	time
+}: {
+	time: number;
+	message: Message;
+	filter: test;
+}): Promise<SelectMenuInteraction<CacheType> | ButtonInteraction<CacheType>> {
+	return new Promise((resolve, reject) => {
+		const collector = message.createMessageComponentCollector({ max: 1, filter, time });
+		collector.once('end', (interactions, reason) => {
+			const interaction = interactions.first();
+			if (interaction) resolve(interaction);
+			else reject(new Error(reason));
+		});
+	});
+}

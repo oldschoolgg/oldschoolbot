@@ -1,5 +1,4 @@
 import { randInt } from 'e';
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import Smithing from '../../lib/skilling/skills/smithing';
@@ -8,16 +7,17 @@ import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 
-export default class extends Task {
+export const smeltingTask: MinionTask = {
+	type: 'Smelting',
 	async run(data: SmeltingActivityTaskOptions) {
-		let { barID, quantity, userID, channelID, duration } = data;
-		const user = await this.client.fetchUser(userID);
+		let { barID, quantity, userID, channelID, duration, blastf } = data;
+		const user = await mUserFetch(userID);
 
 		const bar = Smithing.Bars.find(bar => bar.id === barID)!;
 
 		// If this bar has a chance of failing to smelt, calculate that here.
 		const oldQuantity = quantity;
-		if (bar.chanceOfFail > 0) {
+		if ((bar.chanceOfFail > 0 && bar.name !== 'Iron bar') || (!blastf && bar.name === 'Iron bar')) {
 			let newQuantity = 0;
 			for (let i = 0; i < quantity; i++) {
 				if (randInt(0, 100) > bar.chanceOfFail) {
@@ -29,7 +29,7 @@ export default class extends Task {
 
 		let xpReceived = quantity * bar.xp;
 
-		if (bar.id === itemID('Gold bar') && user.hasItemEquippedAnywhere('Goldsmith gauntlets')) {
+		if (bar.id === itemID('Gold bar') && user.hasEquipped('Goldsmith gauntlets')) {
 			xpReceived = quantity * 56.2;
 		}
 
@@ -49,10 +49,13 @@ export default class extends Task {
 			[bar.id]: quantity
 		});
 
-		await user.addItemsToBank({ items: loot, collectionLog: true });
+		await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,
@@ -60,7 +63,8 @@ export default class extends Task {
 				'smelt',
 				{
 					name: bar.name,
-					quantity: oldQuantity
+					quantity: oldQuantity,
+					blast_furnace: blastf
 				},
 				true
 			],
@@ -69,4 +73,4 @@ export default class extends Task {
 			loot
 		);
 	}
-}
+};

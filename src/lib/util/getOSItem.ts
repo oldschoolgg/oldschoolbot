@@ -27,3 +27,12 @@ export default function getOSItem(itemName: string | number): Item {
 	cache.set(itemName, osItem);
 	return osItem;
 }
+
+export function getItem(itemName: string | number | undefined): Item | null {
+	if (!itemName) return null;
+	try {
+		return getOSItem(itemName);
+	} catch {
+		return null;
+	}
+}

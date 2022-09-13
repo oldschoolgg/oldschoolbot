@@ -12,7 +12,7 @@ describe('decantPotionFromBank', () => {
 			'Attack potion (2)': 1000,
 			'Strength potion (1)': 1000
 		});
-		expect(decantPotionFromBank(userBank.bank, 'magic potion', 4)).toMatchObject({
+		expect(decantPotionFromBank(userBank, 'magic potion', 4)).toMatchObject({
 			potionsToAdd: new Bank({ 'Magic potion (4)': 750 }),
 			potionsToRemove: new Bank({ 'Magic potion (3)': 1000 }),
 			sumOfPots: 1000,
@@ -26,7 +26,7 @@ describe('decantPotionFromBank', () => {
 				'Strength potion (1)': 1000
 			})
 		});
-		expect(decantPotionFromBank(userBank.bank, 'defence potion', 2)).toMatchObject({
+		expect(decantPotionFromBank(userBank, 'defence potion', 2)).toMatchObject({
 			potionsToAdd: new Bank({
 				'Defence potion (2)': 1819,
 				'Defence potion (1)': 1
@@ -46,10 +46,10 @@ describe('decantPotionFromBank', () => {
 				'Strength potion (1)': 1000
 			})
 		});
-		expect(() => decantPotionFromBank(userBank.bank, 'attack potion', 2)).toThrowError(
-			"You don't have any **Attack potion** to decant!"
-		);
-		expect(decantPotionFromBank(userBank.bank, 'attack potion', 4)).toMatchObject({
+		expect(decantPotionFromBank(userBank, 'attack potion', 2)).toEqual({
+			error: "You don't have any **Attack potion** to decant!"
+		});
+		expect(decantPotionFromBank(userBank, 'attack potion', 4)).toMatchObject({
 			potionsToAdd: new Bank({
 				'Attack potion (4)': 500
 			}),
@@ -67,7 +67,7 @@ describe('decantPotionFromBank', () => {
 				'Strength potion (1)': 1000
 			})
 		});
-		expect(decantPotionFromBank(userBank.bank, 'strength potion', 3)).toMatchObject({
+		expect(decantPotionFromBank(userBank, 'strength potion', 3)).toMatchObject({
 			potionsToAdd: new Bank({
 				'Strength potion (3)': 333,
 				'Strength potion (1)': 1

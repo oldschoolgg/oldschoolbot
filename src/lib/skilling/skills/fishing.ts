@@ -109,6 +109,13 @@ const fishes: Fish[] = [
 		clueScrollChance: 257_770
 	},
 	{
+		level: 38,
+		xp: 80,
+		id: itemID('Raw cave eel'),
+		name: 'Cave eel',
+		timePerFish: 12.6
+	},
+	{
 		level: 40,
 		xp: 90,
 		id: itemID('Raw lobster'),
