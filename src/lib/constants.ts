@@ -139,7 +139,7 @@ export const enum Emoji {
 	CombatSword = '<:combat:802136963956080650>',
 	OSRSSkull = '<:skull:863392427040440320>',
 	SOTWTrophy = '<:SOTWtrophy:842938096097820693>',
-  Clue = '<:clue_scroll:365003979840552960>'
+	Clue = '<:clue_scroll:365003979840552960>'
 }
 
 export const ReactionEmoji = {
