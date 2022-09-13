@@ -1,7 +1,7 @@
 import { Embed } from '@discordjs/builders';
-import { TextBasedChannelTypes } from '@sapphire/discord.js-utilities';
 import {
 	AttachmentBuilder,
+	Message,
 	MessageOptions,
 	PartialGroupDMChannel,
 	PermissionsBitField,
@@ -18,7 +18,7 @@ const webhookCache: Map<string, WebhookClient> = new Map();
 
 export const webhookMessageCache = new Map<string, WebhookClient>();
 
-export async function resolveChannel(channelID: string): Promise<WebhookClient | TextBasedChannelTypes | undefined> {
+export async function resolveChannel(channelID: string): Promise<WebhookClient | Message['channel'] | undefined> {
 	const channel = globalClient.channels.cache.get(channelID);
 	if (!channel || channel instanceof PartialGroupDMChannel) return undefined;
 	if (channel.isDMBased()) {
