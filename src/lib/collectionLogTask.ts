@@ -8,7 +8,7 @@ import { IToReturnCollection } from '../lib/data/CollectionsExport';
 import { formatItemStackQuantity, generateHexColorForCashStack, toKMB } from '../lib/util';
 import { fillTextXTimesInCtx, getClippedRegion } from '../lib/util/canvasUtil';
 import getOSItem from '../lib/util/getOSItem';
-import { bankImageGenerator, IBgSprite } from './bankImage';
+import { IBgSprite } from './bankImage';
 
 export const collectionLogTypes = [
 	{ name: 'collection', description: 'Normal Collection Log' },
