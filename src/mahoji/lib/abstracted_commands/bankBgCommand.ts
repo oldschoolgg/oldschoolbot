@@ -1,7 +1,6 @@
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
-import { bankImageGenerator } from '../../../lib/bankImage';
 import { BitField } from '../../../lib/constants';
 import { formatSkillRequirements, stringMatches, toKMB } from '../../../lib/util';
 import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
