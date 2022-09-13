@@ -12,7 +12,6 @@ import { formatDuration, itemID, itemNameFromID, rand } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
-import { hasItemsEquippedOrInBank } from '../../lib/util/minionUtils';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const fishCommand: OSBMahojiCommand = {
@@ -98,7 +97,7 @@ export const fishCommand: OSBMahojiCommand = {
 
 		const boostedTimePerFish = reduceNumByPercent(scaledTimePerFish, inventionBoosts.mechaRod.speedBoostPercent);
 		const res = await inventionItemBoost({
-			userID: BigInt(user.id),
+			user,
 			inventionID: InventionID.MechaRod,
 			duration: Math.min(
 				maxTripLength,
@@ -152,7 +151,7 @@ export const fishCommand: OSBMahojiCommand = {
 			'Basic tackle box'
 		];
 		for (let i = 0; i < tackleBoxes.length; i++) {
-			if (hasItemsEquippedOrInBank(user, [tackleBoxes[i]])) {
+			if (user.hasEquippedOrInBank([tackleBoxes[i]])) {
 				let num = Time.Minute * (tackleBoxes.length - i);
 				maxTripLength += num;
 				boosts.push(`${formatDuration(num)} for ${tackleBoxes[i]}`);

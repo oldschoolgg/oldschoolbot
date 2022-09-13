@@ -44,7 +44,7 @@ async function bonecrusherEffect(user: MUser, loot: Bank, duration: number, mess
 	let boostMsg: string | null = null;
 	if (hasSuperior && durationForCost > Time.Minute) {
 		const t = await inventionItemBoost({
-			userID: user.id,
+			user,
 			inventionID: InventionID.SuperiorBonecrusher,
 			duration: durationForCost
 		});
@@ -91,7 +91,7 @@ const hideLeatherMap = [
 async function portableTannerEffect(user: MUser, loot: Bank, duration: number, messages: string[]) {
 	if (!user.owns('Portable tanner')) return;
 	const boostRes = await inventionItemBoost({
-		userID: BigInt(user.id),
+		user,
 		inventionID: InventionID.PortableTanner,
 		duration
 	});
@@ -133,7 +133,7 @@ export async function clueUpgraderEffect(user: MUser, loot: Bank, messages: stri
 	}
 	if (upgradedClues.length === 0) return false;
 	const boostRes = await inventionItemBoost({
-		userID: BigInt(user.id),
+		user,
 		inventionID: InventionID.ClueUpgrader,
 		duration: durationForCost
 	});

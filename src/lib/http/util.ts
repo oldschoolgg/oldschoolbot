@@ -123,7 +123,7 @@ export async function getUserFromGithubID(githubID: string) {
 		`SELECT id FROM users WHERE github_id = '${githubID}';`
 	);
 	if (result.length === 0) return null;
-	return globalClient.fetchUser(result[0].id);
+	return mUserFetch(result[0].id);
 }
 
 export function encryptJWT(payload: unknown, secret = CLIENT_SECRET) {

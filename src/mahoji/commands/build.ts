@@ -11,7 +11,7 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { mahojiUsersSettingsFetch, updateBankSetting } from '../mahojiSettings';
 
 const ds2Requirements: Skills = {
 	magic: 75,
@@ -109,9 +109,9 @@ export const buildCommand: OSBMahojiCommand = {
 			timeToBuildSingleObject,
 			inventionBoosts.drygoreSaw.buildBoostPercent
 		);
-		if (hasItemsEquippedOrInBank(user, ['Drygore saw'])) {
+		if (user.hasEquippedOrInBank(['Drygore saw'])) {
 			const boostRes = await inventionItemBoost({
-				userID: BigInt(user.id),
+				user,
 				inventionID: InventionID.DrygoreSaw,
 				duration: Math.min(
 					maxTripLength,

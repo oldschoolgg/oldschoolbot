@@ -218,8 +218,8 @@ async function handInContract(interaction: SlashCommandInteraction | null, user:
 	await user.addItemsToBank({ items: loot, collectionLog: false });
 
 	await Promise.all([
-		updateBankSetting('ic_cost', cost),
-		updateBankSetting('ic_loot', loot),
+		updateBankSetting('item_contract_cost', cost),
+		updateBankSetting('item_contract_loot', loot),
 		updateGPTrackSetting('gp_ic', loot.amount('Coins')),
 		userStatsBankUpdate(user.id, 'ic_cost_bank', cost),
 		userStatsBankUpdate(user.id, 'ic_loot_bank', loot)

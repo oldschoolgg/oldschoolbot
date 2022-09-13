@@ -1,9 +1,8 @@
-import { Task } from 'klasa';
-
 import { researchTask, ResearchTaskOptions } from '../../../lib/invention/research';
 
-export default class extends Task {
+export const researchActivityTask: MinionTask = {
+	type: 'Research',
 	async run(data: ResearchTaskOptions) {
 		researchTask(data);
 	}
-}
+};

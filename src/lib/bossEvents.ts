@@ -1,10 +1,9 @@
-import { MessageEmbed, TextChannel } from 'discord.js';
+import { EmbedBuilder, TextChannel } from 'discord.js';
 import { chunk, percentChance, randArrItem, shuffleArr, Time } from 'e';
-import { KlasaClient } from 'klasa';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { production } from '../config';
-import { getScaryFoodFromBank, scaryEatables } from './constants';
+import { OWNER_ID, production } from '../config';
+import { scaryEatables } from './constants';
 import { prisma } from './settings/prisma';
 import {
 	getPHeadDescriptor,
@@ -31,6 +30,39 @@ interface BossEvent {
 
 export const bossEventChannelID = production ? '897170239333220432' : '895410639835639808';
 
+function getScaryFoodFromBank(userBank: Bank, totalHealingNeeded: number): false | Bank {
+	let totalHealingCalc = totalHealingNeeded;
+	let foodToRemove = new Bank();
+
+	const sorted = [...scaryEatables]
+		.sort((i, j) => (i.healAmount > j.healAmount ? 1 : -1))
+		.sort((a, b) => {
+			if (!userBank.has(a.item.id!)) return 1;
+			if (!userBank.has(b.item.id!)) return -1;
+			return 0;
+		});
+
+	// Gets all the eatables in the user bank
+	for (const eatable of sorted) {
+		const { id } = eatable.item;
+		const { healAmount } = eatable;
+		const amountOwned = userBank.amount(id!);
+		const toRemove = Math.ceil(totalHealingCalc / healAmount);
+		if (!amountOwned) continue;
+		if (amountOwned >= toRemove) {
+			totalHealingCalc -= Math.ceil(healAmount * toRemove);
+			foodToRemove.add(id!, toRemove);
+			break;
+		} else {
+			totalHealingCalc -= Math.ceil(healAmount * amountOwned);
+			foodToRemove.add(id!, amountOwned);
+		}
+	}
+	// Check if qty is still above 0. If it is, it means the user doesn't have enough food.
+	if (totalHealingCalc > 0) return false;
+	return foodToRemove;
+}
+
 export const bossEvents: BossEvent[] = [
 	{
 		id: PUMPKINHEAD_ID,
@@ -44,7 +76,7 @@ export const bossEvents: BossEvent[] = [
 				if (roll(25)) {
 					userLoot[i.user.id].add("Choc'rock");
 				}
-				await i.user.incrementMonsterScore(PUMPKINHEAD_ID, 1);
+				await i.user.incrementKC(PUMPKINHEAD_ID, 1);
 			}
 
 			const lootGroups = chunk(lootElligible, 4).filter(i => i.length === 4);
@@ -56,7 +88,7 @@ export const bossEvents: BossEvent[] = [
 				if (
 					!uniqueItemRecipients.includes(lootElliPerson) &&
 					numberOfPHeadItemsInCL(lootElliPerson.user) < 2 &&
-					lootElliPerson.user.hasItemEquippedAnywhere('Haunted amulet') &&
+					lootElliPerson.user.hasEquipped('Haunted amulet') &&
 					roll(2)
 				) {
 					uniqueItemRecipients.push(lootElliPerson);
@@ -65,7 +97,7 @@ export const bossEvents: BossEvent[] = [
 			}
 
 			for (const recip of uniqueItemRecipients) {
-				const cl = recip.user.cl();
+				const { cl } = recip.user;
 				const items = pumpkinHeadUniqueTable.roll();
 				const numPetsInCL = cl.amount('Mini Pumpkinhead');
 				const pheadDropRate = 40 * (numPetsInCL + 1);
@@ -126,7 +158,7 @@ export const bossEvents: BossEvent[] = [
 				content: `<@&896845245873025067> **Your Group Finished Fighting Pumpkinhead the Pumpkinheaded Horror!**
 
 *Everyone* received some Halloween candy!
-${specialLootRecipient.user.username} received ${specialLoot}.
+${specialLootRecipient.user.usernameOrMention} received ${specialLoot}.
 **Unique Loot:** ${
 					uniqueLootStr.length > 0
 						? chunk(uniqueLootStr, 10)
@@ -142,7 +174,7 @@ ${specialLootRecipient.user.username} received ${specialLoot}.
 			skillRequirements: {},
 			itemBoosts: [],
 			customDenier: async user => {
-				const foodRequired = getScaryFoodFromBank(user.bank(), PUMPKINHEAD_HEALING_NEEDED);
+				const foodRequired = getScaryFoodFromBank(user.bank, PUMPKINHEAD_HEALING_NEEDED);
 				if (!foodRequired) {
 					return [
 						true,
@@ -156,7 +188,7 @@ ${specialLootRecipient.user.username} received ${specialLoot}.
 			bisGear: new Gear(),
 			gearSetup: 'melee',
 			itemCost: async data => {
-				const foodRequired = getScaryFoodFromBank(data.user.bank(), PUMPKINHEAD_HEALING_NEEDED);
+				const foodRequired = getScaryFoodFromBank(data.user.bank, PUMPKINHEAD_HEALING_NEEDED);
 				if (!foodRequired) {
 					let fakeBank = new Bank();
 					for (const { item } of scaryEatables) fakeBank.add(item.id, 100);
@@ -209,28 +241,21 @@ export async function bossActiveIsActiveOrSoonActive(id?: BossEvent['id']) {
 	return results.length > 0 || otherResults.length > 0;
 }
 
-export async function startBossEvent({
-	boss,
-	client,
-	id
-}: {
-	boss: BossEvent;
-	client: KlasaClient;
-	id?: BossEvent['id'];
-}) {
+export async function startBossEvent({ boss, id }: { boss: BossEvent; id?: BossEvent['id'] }) {
 	if (await bossActiveIsActiveOrSoonActive(id)) {
 		throw new Error('There is already a boss event activity going on.');
 	}
-	const channel = client.channels.cache.get(bossEventChannelID) as TextChannel;
+	const channel = globalClient.channels.cache.get(bossEventChannelID) as TextChannel;
 	const instance = new BossInstance({
 		...boss.bossOptions,
 		channel,
 		massText: `<@&896845245873025067> Pumpkinhead the Pumpkinheaded ${getPHeadDescriptor()} ${getPHeadDescriptor()} Horror has spawned! Who will fight him?!`,
-		quantity: 1
+		quantity: 1,
+		leader: await mUserFetch(OWNER_ID)
 	});
 	try {
 		const { bossUsers } = await instance.start();
-		const embed = new MessageEmbed()
+		const embed = new EmbedBuilder()
 			.setDescription(
 				`A group of ${bossUsers.length} users is off to fight ${
 					boss.name

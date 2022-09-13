@@ -10,7 +10,6 @@ import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
-import { userHasItemsEquippedAnywhere } from '../../lib/util/minionUtils';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const fletchCommand: OSBMahojiCommand = {
@@ -86,7 +85,7 @@ export const fletchCommand: OSBMahojiCommand = {
 				'<:scruffy:749945071146762301> To help out, Scruffy is fetching items from the bank for you - making your training much faster! Good boy! (+100% for Scruffy)'
 			);
 		}
-		if (userHasItemsEquippedAnywhere(user, 'Dwarven knife')) {
+		if (user.hasEquipped('Dwarven knife')) {
 			boostMsg.push('+100% for Dwarven knife');
 			boost += 1;
 		}

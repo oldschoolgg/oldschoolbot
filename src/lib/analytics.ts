@@ -70,9 +70,10 @@ export async function analyticsTick() {
 			gpOpen: currentClientSettings.gp_open,
 			gpDice: currentClientSettings.gp_dice,
 			gpDaily: currentClientSettings.gp_daily,
-			gpLuckypick: currentClientSettings.gp_luckypick,
+			gpLuckyPick: currentClientSettings.gp_luckypick,
 			gpSlots: currentClientSettings.gp_slots,
-			gpHotCold: currentClientSettings.gp_hotcold
+			gpHotCold: currentClientSettings.gp_hotcold,
+			gpItemContracts: currentClientSettings.gp_ic
 		}
 	});
 }

@@ -11,6 +11,7 @@ import { prisma, queryCountStore } from './settings/prisma';
 import { runCommand } from './settings/settings';
 import { getFarmingInfo } from './skilling/functions/getFarmingInfo';
 import Farming from './skilling/skills/farming';
+import { runTameTask } from './tames';
 import { completeActivity } from './Task';
 import { awaitMessageComponentInteraction, getSupportGuild, stringMatches } from './util';
 import { farmingPatchNames, getFarmingKeyFromName } from './util/farmingHelpers';
@@ -147,7 +148,7 @@ const tickers: { name: string; interval: number; timer: NodeJS.Timeout | null; c
 		timer: null,
 		cb: async () => {
 			const result = await prisma.$queryRawUnsafe<{ id: string }[]>(
-				'SELECT id FROM users WHERE bitfield && \'{2,3,4,5,6,7,8}\'::int[] AND "lastDailyTimestamp" != -1 AND to_timestamp("lastDailyTimestamp" / 1000) < now() - interval \'12 hours\';'
+				'SELECT id FROM users WHERE bitfield && \'{2,3,4,5,6,7,8}\'::int[] AND "lastDailyTimestamp" != -1 AND to_timestamp("lastDailyTimestamp" / 1000) < now() - interval \'4 hours\';'
 			);
 
 			for (const row of result.values()) {
@@ -361,6 +362,41 @@ const tickers: { name: string; interval: number; timer: NodeJS.Timeout | null; c
 			}
 			const res = await channel.send({ embeds: [geEmbed] });
 			lastMessageGEID = res.id;
+		}
+	},
+	{
+		name: 'tame_activities',
+		timer: null,
+		interval: Time.Second * 5,
+		cb: async () => {
+			const tameTasks = await prisma.tameActivity.findMany({
+				where: {
+					finish_date: production
+						? {
+								lt: new Date()
+						  }
+						: undefined,
+					completed: false
+				},
+				include: {
+					tame: true
+				}
+			});
+
+			await prisma.tameActivity.updateMany({
+				where: {
+					id: {
+						in: tameTasks.map(i => i.id)
+					}
+				},
+				data: {
+					completed: true
+				}
+			});
+
+			for (const task of tameTasks) {
+				runTameTask(task, task.tame);
+			}
 		}
 	}
 ];

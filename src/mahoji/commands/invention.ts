@@ -41,11 +41,10 @@ export const inventionCommand: OSBMahojiCommand = {
 					description: 'The item you want to disassemble.',
 					required: true,
 					autocomplete: async (value, { id }) => {
-						const user = await globalClient.fetchUser(id);
+						const user = await mUserFetch(id);
 						const inventionLevel = user.skillLevel(SkillsEnum.Invention);
 
-						return user
-							.bank()
+						return user.bank
 							.items()
 							.filter(
 								i =>
@@ -221,8 +220,7 @@ export const inventionCommand: OSBMahojiCommand = {
 		};
 		details?: { invention: string };
 	}>) => {
-		const user = await globalClient.fetchUser(userID);
-		const mahojiUser = await mahojiUsersSettingsFetch(userID);
+		const user = await mUserFetch(userID);
 		if (options.details) {
 			const invention = Inventions.find(i => stringMatches(i.name, options.details!.invention!));
 			if (!invention) return 'No invention found.';
@@ -238,7 +236,7 @@ export const inventionCommand: OSBMahojiCommand = {
 			return str;
 		}
 		if (options.materials) {
-			return `You own: ${new MaterialBank(mahojiUser.materials_owned as IMaterialBank)}`;
+			return `You own: ${user.materialsOwned()}`;
 		}
 
 		if (options.group) {
@@ -299,8 +297,8 @@ export const inventionCommand: OSBMahojiCommand = {
 					};
 				}
 				case 'unlocked_blueprints': {
-					const unlocked = Inventions.filter(i => mahojiUser.unlocked_blueprints.includes(i.id));
-					const locked = Inventions.filter(i => !mahojiUser.unlocked_blueprints.includes(i.id));
+					const unlocked = Inventions.filter(i => user.user.unlocked_blueprints.includes(i.id));
+					const locked = Inventions.filter(i => !user.user.unlocked_blueprints.includes(i.id));
 					return `You have the following blueprints unlocked: ${
 						unlocked.length === 0
 							? 'None! Do some research to unlock some.'
@@ -394,8 +392,7 @@ In the meantime...
 
 		if (options.disassemble) {
 			return disassembleCommand({
-				klasaUser: user,
-				mahojiUser,
+				user,
 				itemToDisassembleName: options.disassemble.name,
 				quantityToDisassemble: mahojiParseNumber({ input: options.disassemble.quantity, min: 1 }) ?? undefined,
 				channelID
@@ -403,7 +400,7 @@ In the meantime...
 		}
 		if (options.research) {
 			return researchCommand({
-				user: mahojiUser,
+				user,
 				inputQuantity: options.research.quantity,
 				material: options.research.material,
 				channelID,
@@ -411,7 +408,7 @@ In the meantime...
 			});
 		}
 		if (options.invent) {
-			return inventCommand(mahojiUser, user, options.invent.name);
+			return inventCommand(user, options.invent.name);
 		}
 
 		return 'Invalid command.';

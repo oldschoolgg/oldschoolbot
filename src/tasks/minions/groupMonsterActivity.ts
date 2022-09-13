@@ -1,4 +1,4 @@
-import { noOp, randArrItem } from 'e';
+import { noOp, randArrItem, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { MysteryBoxes } from '../../lib/bsoOpenables';
@@ -57,14 +57,9 @@ export const groupoMonsterTask: MinionTask = {
 				collectionLog: true,
 				itemsToAdd: loot
 			});
-<<<<<<< HEAD
 			totalLoot.add(loot);
 
-			if (kcToAdd) await user.incrementMonsterScore(monsterID, kcToAdd);
-=======
-			const kcToAdd = kcAmounts[user.id];
 			if (kcToAdd) await user.incrementKC(monsterID, kcToAdd);
->>>>>>> master
 			const purple = Object.keys(loot).some(itemID => isImportantItemForMonster(parseInt(itemID), monster));
 
 			resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${loot}||\n`;

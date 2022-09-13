@@ -15,6 +15,7 @@ import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLost
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
+import { updateBankSetting } from '../../mahoji/mahojiSettings';
 
 export const revenantsTask: MinionTask = {
 	type: 'Revenants',

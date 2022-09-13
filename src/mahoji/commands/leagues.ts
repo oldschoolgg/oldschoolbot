@@ -69,7 +69,7 @@ export const leaguesCommand: OSBMahojiCommand = {
 		claim?: {};
 		view_all_tasks?: { exclude_finished?: boolean };
 	}>) => {
-		const user = await globalClient.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const cooldown = Cooldowns.get(
 			userID.toString(),
 			'leagues',

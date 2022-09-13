@@ -69,7 +69,7 @@ function dateDiff(first: number, second: number) {
 }
 
 async function giveBox(mahojiUser: MUser, _recipient: MahojiUserOption) {
-	const recipient = await globalClient.fetchUser(_recipient.user.id);
+	const recipient = await mUserFetch(_recipient.user.id);
 	if (!isPrimaryPatron(mahojiUser)) {
 		return 'Shared-perk accounts cannot use this.';
 	}
@@ -271,7 +271,7 @@ async function spawnLampCommand(user: MUser, channelID: bigint): CommandResponse
 		creatorGetsTwoGuesses: true
 	});
 	if (!winnerID) return `Nobody got it. ${explainAnswer}`;
-	const winner = await globalClient.fetchUser(winnerID);
+	const winner = await mUserFetch(winnerID);
 	const loot = LampTable.roll();
 	await winner.addItemsToBank({ items: loot, collectionLog: false });
 	return `${winner} got it, and won **${loot}**! ${explainAnswer}`;
@@ -298,7 +298,7 @@ async function spawnBoxCommand(user: MUser, channelID: bigint): CommandResponse 
 		creator: BigInt(user.id)
 	});
 	if (!winnerID) return `Nobody got it. ${explainAnswer}`;
-	const winner = await globalClient.fetchUser(winnerID);
+	const winner = await mUserFetch(winnerID);
 
 	const loot = new Bank().add(MysteryBoxes.roll());
 	await winner.addItemsToBank({ items: loot, collectionLog: false });

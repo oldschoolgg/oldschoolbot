@@ -412,7 +412,7 @@ export const mineCommand: OSBMahojiCommand = {
 				: formatDuration(duration)
 		} to finish.`;
 
-		const kUser = await globalClient.fetchUser(userID);
+		const kUser = await mUserFetch(userID);
 		if (kUser.usingPet('Doug')) {
 			response += '\n<:doug:748892864813203591> Doug joins you on your mining trip!';
 		}

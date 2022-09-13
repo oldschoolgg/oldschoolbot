@@ -1,6 +1,4 @@
-import { User } from '@prisma/client';
 import { randArrItem, roll } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank, Items, LootTable } from 'oldschooljs';
 import TreeHerbSeedTable from 'oldschooljs/dist/simulation/subtables/TreeHerbSeedTable';
 
@@ -581,7 +579,7 @@ function randomEquippable(): number {
 	return res;
 }
 
-export function getMysteryBoxItem(user: User | KlasaUser, tradeables: boolean): number {
+export function getMysteryBoxItem(user: MUser, tradeables: boolean): number {
 	const table = tradeables ? tmbTable : umbTable;
 	let result = randArrItem(table);
 	if (cantBeDropped.includes(result)) return getMysteryBoxItem(user, tradeables);

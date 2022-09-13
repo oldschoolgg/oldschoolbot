@@ -5,7 +5,7 @@ import { BitField, PerkTier } from '../constants';
 import { SkillsEnum } from '../skilling/types';
 import { skillLevel } from './minionUtils';
 
-function patronMaxTripBonus(user: MUser) {
+export function patronMaxTripBonus(user: MUser) {
 	const { perkTier } = user;
 	if (perkTier === PerkTier.Two) return Time.Minute * 3;
 	else if (perkTier === PerkTier.Three) return Time.Minute * 6;

@@ -11,6 +11,7 @@ import { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
 import { convertPercentChance } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { updateBankSetting, updateLegacyUserBankSetting } from '../../../mahoji/mahojiSettings';
 
 export const tobTask: MinionTask = {
 	type: 'TheatreOfBlood',

@@ -62,7 +62,7 @@ export const capeBuyables: Buyable[] = [
 				SkillsEnum.Runecraft,
 				SkillsEnum.Smithing
 			]) {
-				if ((user.settings.get(`skills.${skill}`) as number) < 500_000_000) {
+				if (user.skillsAsXP[skill] < 500_000_000) {
 					return [false, `You don't have 500m ${skill}.`];
 				}
 			}
@@ -92,7 +92,7 @@ export const capeBuyables: Buyable[] = [
 				SkillsEnum.Ranged,
 				SkillsEnum.Strength
 			]) {
-				if ((user.settings.get(`skills.${skill}`) as number) < 500_000_000) {
+				if (user.skillsAsXP[skill] < 500_000_000) {
 					return [false, `You don't have 500m ${skill}.`];
 				}
 			}
@@ -118,7 +118,7 @@ export const capeBuyables: Buyable[] = [
 				SkillsEnum.Mining,
 				SkillsEnum.Woodcutting
 			]) {
-				if ((user.settings.get(`skills.${skill}`) as number) < 500_000_000) {
+				if (user.skillsAsXP[skill] < 500_000_000) {
 					return [false, `You don't have 500m ${skill}.`];
 				}
 			}
@@ -142,7 +142,7 @@ export const capeBuyables: Buyable[] = [
 				SkillsEnum.Dungeoneering,
 				SkillsEnum.Thieving
 			]) {
-				if ((user.settings.get(`skills.${skill}`) as number) < 500_000_000) {
+				if (user.skillsAsXP[skill] < 500_000_000) {
 					return [false, `You don't have 500m ${skill}.`];
 				}
 			}

@@ -29,6 +29,8 @@ export async function crackerCommand({
 	otherPersonID: string;
 	interaction: SlashCommandInteraction;
 }) {
+	const otherPerson = await mUserFetch(otherPersonID);
+	const owner = await mUserFetch(ownerID);
 	if (owner.isIronman && owner === otherPerson) {
 		await owner.removeItemsFromBank(new Bank().add('Christmas cracker', 1));
 		const loot = PartyhatTable.roll();
@@ -37,10 +39,6 @@ export async function crackerCommand({
 	}
 
 	if (otherPerson.isIronman) return 'That person is an ironman, they stand alone.';
-	if (otherPerson.bot) return "Bot's don't have hands.";
-	const otherPerson = await mUserFetch(otherPersonID);
-	const owner = await mUserFetch(ownerID);
-	if (otherPerson.user.minion_ironman) return 'That person is an ironman, they stand alone.';
 	if (otherPersonAPIUser.bot) return "Bot's don't have hands.";
 	if (otherPerson.id === owner.id) return 'Nice try.';
 

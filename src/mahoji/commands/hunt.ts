@@ -17,6 +17,7 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
 import { OSBMahojiCommand } from '../lib/util';
+import { updateBankSetting, userHasGracefulEquipped } from '../mahojiSettings';
 
 export const huntCommand: OSBMahojiCommand = {
 	name: 'hunt',
@@ -178,7 +179,7 @@ export const huntCommand: OSBMahojiCommand = {
 		if (creature.huntTechnique === HunterTechniqueEnum.BoxTrapping) {
 			const boostedActionTime = reduceNumByPercent(timePerCatch, inventionBoosts.quickTrap.boxTrapBoostPercent);
 			const boostRes = await inventionItemBoost({
-				userID: user.id,
+				user,
 				inventionID: InventionID.QuickTrap,
 				duration: Math.min(
 					maxTripLength,

@@ -110,18 +110,18 @@ export const smeltingCommand: OSBMahojiCommand = {
 				timeToSmithSingleBar *= 1.075;
 				boosts.push('-7.5% penalty for not having graceful equipped');
 			}
-			if (user.hasItemEquippedAnywhere('Smithing master cape')) {
+			if (user.hasEquipped('Smithing master cape')) {
 				timeToSmithSingleBar /= 2;
 				boosts.push('2x boost for Smithing master cape');
 			}
-			if (user.hasItemEquippedAnywhere('Dwarven gauntlets') && bar.id !== itemID('Gold bar')) {
+			if (user.hasEquipped('Dwarven gauntlets') && bar.id !== itemID('Gold bar')) {
 				boosts.push('2x boost for having Dwarven gauntlets equipped');
 				timeToSmithSingleBar /= 2;
 			}
 		}
 
 		if (!blast_furnace) {
-			if (user.hasItemEquippedAnywhere('Dwarven gauntlets')) {
+			if (user.hasEquipped('Dwarven gauntlets')) {
 				boosts.push('2x boost for having a Dwarven gauntlets equipped');
 				timeToSmithSingleBar /= 2;
 			}

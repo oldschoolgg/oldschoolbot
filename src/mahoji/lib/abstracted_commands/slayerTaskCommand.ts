@@ -1,12 +1,7 @@
 import { isGuildBasedChannel } from '@sapphire/discord.js-utilities';
-<<<<<<< HEAD
-import { MessageButton } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder } from 'discord.js';
 import { notEmpty, Time } from 'e';
-=======
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
-import { notEmpty, randInt, Time } from 'e';
->>>>>>> master
-import { MessageFlags } from 'mahoji';
+import { ButtonStyle, MessageFlags } from 'mahoji';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Monsters } from 'oldschooljs';
 
@@ -331,30 +326,7 @@ export async function slayerNewTaskCommand({
 		return resultMessage;
 	}
 
-<<<<<<< HEAD
-	const newSlayerTask = await assignNewSlayerTask(klasaUser, slayerMaster);
-=======
 	const newSlayerTask = await assignNewSlayerTask(user, slayerMaster);
-	const myUnlocks = user.user.slayer_unlocks ?? [];
-	const extendReward = SlayerRewardsShop.find(
-		srs => srs.extendID && srs.extendID.includes(newSlayerTask.currentTask.monster_id)
-	);
-	if (extendReward && myUnlocks.includes(extendReward.id)) {
-		const quantity = newSlayerTask.assignedTask.extendedAmount
-			? randInt(newSlayerTask.assignedTask.extendedAmount[0], newSlayerTask.assignedTask.extendedAmount[1])
-			: Math.ceil(newSlayerTask.currentTask.quantity * extendReward.extendMult!);
-		newSlayerTask.currentTask.quantity = quantity;
-		await prisma.slayerTask.update({
-			where: {
-				id: newSlayerTask.currentTask.id
-			},
-			data: {
-				quantity: newSlayerTask.currentTask.quantity,
-				quantity_remaining: newSlayerTask.currentTask.quantity
-			}
-		});
-	}
->>>>>>> master
 
 	let commonName = getCommonTaskName(newSlayerTask.assignedTask!.monster);
 	if (commonName === 'TzHaar') {

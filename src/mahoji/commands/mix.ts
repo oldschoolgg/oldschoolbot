@@ -123,7 +123,7 @@ export const mineCommand: OSBMahojiCommand = {
 				inventionBoosts.mechaMortar.herbloreSpeedBoostPercent
 			);
 			const boostResult = await inventionItemBoost({
-				userID: BigInt(user.id),
+				user,
 				inventionID: InventionID.MechaMortar,
 				duration: Math.min(
 					maxTripLength,

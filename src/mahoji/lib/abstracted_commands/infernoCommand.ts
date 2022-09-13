@@ -1,9 +1,4 @@
-<<<<<<< HEAD
 import { calcPercentOfNum, increaseNumByPercent, percentChance, randInt, roll, sumArr, Time } from 'e';
-import { KlasaUser } from 'klasa';
-=======
-import { calcPercentOfNum, percentChance, randInt, roll, sumArr, Time } from 'e';
->>>>>>> master
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, Monsters } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
@@ -16,36 +11,18 @@ import { blowpipeDarts } from '../../../lib/minions/functions/blowpipeCommand';
 import { BlowpipeData } from '../../../lib/minions/types';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { prisma } from '../../../lib/settings/prisma';
-<<<<<<< HEAD
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
-=======
->>>>>>> master
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { Gear } from '../../../lib/structures/Gear';
 import { PercentCounter } from '../../../lib/structures/PercentCounter';
 import { Skills } from '../../../lib/types';
 import { InfernoOptions } from '../../../lib/types/minions';
-<<<<<<< HEAD
-import {
-	determineProjectileTypeFromGear,
-	formatDuration,
-	itemNameFromID,
-	randomVariation,
-	updateBankSetting
-} from '../../../lib/util';
+import { determineProjectileTypeFromGear, formatDuration, itemNameFromID, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import getOSItem from '../../../lib/util/getOSItem';
 import resolveItems from '../../../lib/util/resolveItems';
-=======
-import { formatDuration, hasSkillReqs, itemNameFromID, randomVariation } from '../../../lib/util';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
-import getOSItem from '../../../lib/util/getOSItem';
 import { updateBankSetting } from '../../mahojiSettings';
->>>>>>> master
 
 const minimumRangeItems = [
 	'Amulet of fury',
@@ -193,15 +170,9 @@ async function infernoRun({
 	emergedAttempts: number;
 	isEmergedZuk: boolean;
 }) {
-<<<<<<< HEAD
-	const userBank = user.bank();
-	const zukKC = await user.getMinigameScore('inferno');
-	const duration = new PercentCounter(baseDuration(attempts, isEmergedZuk), 'time');
-=======
 	const userBank = user.bank;
-
-	const duration = new PercentCounter(baseDuration(attempts), 'time');
->>>>>>> master
+	const zukKC = await getMinigameScore(user.id, 'inferno');
+	const duration = new PercentCounter(baseDuration(attempts, isEmergedZuk), 'time');
 	const zukDeathChance = new PercentCounter(baseZukDeathChance(attempts), 'percent');
 	const preZukDeathChance = new PercentCounter(basePreZukDeathChance(attempts), 'percent');
 	const emergedZukDeathChance = new PercentCounter(baseEmergedZukDeathChance(emergedAttempts), 'percent');
@@ -210,8 +181,7 @@ async function infernoRun({
 		return 'To do the Inferno, you must have sacrificed a fire cape.';
 	}
 
-<<<<<<< HEAD
-	if (isEmergedZuk && !user.settings.get(UserSettings.SacrificedBank)[itemID('Infernal cape')]) {
+	if (isEmergedZuk && !(user.user.sacrificedBank as ItemBank)[itemID('Infernal cape')]) {
 		return 'To do the Emerged Zuk Inferno, you must have sacrificed an infernal cape.';
 	}
 
@@ -230,19 +200,8 @@ async function infernoRun({
 				ranged: 92,
 				prayer: 77
 		  };
-	const [hasSkillReqs] = user.hasSkillReqs(skillReqs);
+	const hasSkillReqs = user.hasSkillReqs(skillReqs);
 	if (!hasSkillReqs) {
-=======
-	const skillReqs: Skills = {
-		defence: 92,
-		magic: 94,
-		hitpoints: 92,
-		ranged: 92,
-		prayer: 77
-	};
-	const [hasReqs] = hasSkillReqs(user, skillReqs);
-	if (!hasReqs) {
->>>>>>> master
 		return `You not meet skill requirements, you need ${Object.entries(skillReqs)
 			.map(([name, lvl]) => `${lvl} ${name}`)
 			.join(', ')}.`;
@@ -263,19 +222,14 @@ async function infernoRun({
 	 *
 	 *
 	 */
-<<<<<<< HEAD
-	const rangeGear = user.getGear('range');
-	const mageGear = user.getGear('mage');
+	const rangeGear = user.gear.range;
+	const mageGear = user.gear.mage;
 	const gearToCheck: [Gear, string][] = [
 		[rangeGear, 'range'],
 		[mageGear, 'mage']
 	];
-	const meleeGear = user.getGear('melee');
+	const meleeGear = user.gear.melee;
 	if (isEmergedZuk) gearToCheck.push([meleeGear, 'melee']);
-=======
-	const rangeGear = user.gear.range;
-	const mageGear = user.gear.mage;
->>>>>>> master
 
 	for (const key of ['feet', 'body', 'hands', 'cape', 'ring', 'neck', 'legs', 'head'] as const) {
 		for (const [gear, name] of gearToCheck) {
@@ -322,7 +276,7 @@ async function infernoRun({
 	);
 	duration.add(mageGear.hasEquipped('Virtus book', true, true), -7, 'Virtus book');
 	if (isEmergedZuk) {
-		duration.add(user.hasItemEquippedOrInBank('Dwarven warhammer'), -7, 'DWWH');
+		duration.add(user.hasEquippedOrInBank('Dwarven warhammer'), -7, 'DWWH');
 	}
 	const meleeGora = meleeGear.hasEquipped(gorajanWarriorOutfit, true, true);
 	const rangeGora = rangeGear.hasEquipped(gorajanArcherOutfit, true, true);
@@ -427,7 +381,7 @@ async function infernoRun({
 		emergedZukDeathChance.add(hasTzkalCape, -10, 'TzKal cape');
 		duration.add(allItems.includes(itemID('Ignis ring(i)')), -5, 'Ignis ring(i)');
 		emergedZukDeathChance.add(user.skillLevel(SkillsEnum.Defence) === 120, -10, '120 Defence');
-		const emergedKC = await user.getMinigameScore('emerged_inferno');
+		const emergedKC = await getMinigameScore(user.id, 'emerged_inferno');
 		if (emergedKC > 0) {
 			const effectiveKC = Math.min(emergedKC, 3);
 			emergedZukDeathChance.add(true, 0 - effectiveKC * 7.5, `${effectiveKC} Emerged KC`);
@@ -596,17 +550,11 @@ async function infernoRun({
 	};
 }
 
-<<<<<<< HEAD
-export async function infernoStatsCommand(user: KlasaUser): CommandResponse {
-	const attempts = user.settings.get(UserSettings.Stats.InfernoAttempts);
-	const emergedAttempts = user.settings.get(UserSettings.EmergedInfernoAttempts);
-	const zukKC = await user.getMinigameScore('inferno');
-	const emergedKC = await user.getMinigameScore('emerged_inferno');
-=======
 export async function infernoStatsCommand(user: MUser): CommandResponse {
 	const attempts = user.user.inferno_attempts;
+	const emergedAttempts = user.user.emerged_inferno_attempts;
 	const zukKC = await getMinigameScore(user.id, 'inferno');
->>>>>>> master
+	const emergedKC = await getMinigameScore(user.id, 'emerged_inferno');
 
 	let str = 'You have never attempted the Inferno, I recommend you stay that way.';
 	if (attempts && !zukKC) {
@@ -645,23 +593,16 @@ export async function infernoStatsCommand(user: MUser): CommandResponse {
 	};
 }
 
-<<<<<<< HEAD
-export async function infernoStartCommand(user: KlasaUser, channelID: bigint, emerged: boolean): CommandResponse {
-	const attempts = user.settings.get(UserSettings.Stats.InfernoAttempts);
-	const usersRangeStats = user.getGear('range').stats;
-	const zukKC = await user.getMinigameScore('inferno');
-=======
-export async function infernoStartCommand(user: MUser, channelID: bigint): CommandResponse {
+export async function infernoStartCommand(user: MUser, channelID: bigint, emerged: boolean): CommandResponse {
 	const attempts = user.user.inferno_attempts;
 	const usersRangeStats = user.gear.range.stats;
 	const zukKC = await getMinigameScore(user.id, 'inferno');
->>>>>>> master
 
 	const res = await infernoRun({
 		user,
 		attempts,
 		timesMadeToZuk: await timesMadeToZuk(user.id),
-		emergedAttempts: user.settings.get(UserSettings.EmergedInfernoAttempts),
+		emergedAttempts: user.user.emerged_inferno_attempts,
 		isEmergedZuk: emerged
 	});
 
@@ -726,8 +667,7 @@ export async function infernoStartCommand(user: MUser, channelID: bigint): Comma
 		diedEmergedZuk
 	});
 
-<<<<<<< HEAD
-	updateBankSetting(globalClient, ClientSettings.EconomyStats.InfernoCost, realCost);
+	updateBankSetting('inferno_cost', realCost);
 	let emergedZukDeathMsg = emerged
 		? `**Emerged Zuk Death Chance:** ${emergedZukDeathChance.value.toFixed(
 				1
@@ -737,10 +677,6 @@ export async function infernoStartCommand(user: MUser, channelID: bigint): Comma
 					: `*(You didn't get these: ||${emergedZukDeathChance.missed.join(', ')}||)*`
 		  }`
 		: '';
-=======
-	updateBankSetting('inferno_cost', realCost);
-
->>>>>>> master
 	return {
 		content: `
 **KC:** ${zukKC}

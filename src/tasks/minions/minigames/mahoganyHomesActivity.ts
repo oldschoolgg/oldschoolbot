@@ -10,7 +10,7 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 export const mahoganyHomesTask: MinionTask = {
 	type: 'MahoganyHomes',
 	async run(data: MahoganyHomesActivityTaskOptions) {
-		const { channelID, quantity, xp, duration, userID, points } = data;
+		let { channelID, quantity, xp, duration, userID, points } = data;
 		const user = await mUserFetch(userID);
 		await incrementMinigameScore(userID, 'mahogany_homes', quantity);
 

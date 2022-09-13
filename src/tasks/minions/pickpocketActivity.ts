@@ -10,7 +10,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import resolveItems from '../../lib/util/resolveItems';
-import { updateGPTrackSetting } from '../../mahoji/mahojiSettings';
+import { rogueOutfitPercentBonus, updateGPTrackSetting } from '../../mahoji/mahojiSettings';
 import { clueUpgraderEffect } from './monsterActivity';
 
 const notMultiplied = resolveItems([

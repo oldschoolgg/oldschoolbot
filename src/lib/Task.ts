@@ -2,6 +2,7 @@ import { Activity, activity_type_enum } from '@prisma/client';
 
 import { agilityTask } from '../tasks/minions/agilityActivity';
 import { alchingTask } from '../tasks/minions/alchingActivity';
+import { nexTask } from '../tasks/minions/bso/nexActivity';
 import { castingTask } from '../tasks/minions/castingActivity';
 import { clueTask } from '../tasks/minions/clueActivity';
 import { collectingTask } from '../tasks/minions/collectingActivity';
@@ -57,7 +58,6 @@ import { wintertodtTask } from '../tasks/minions/minigames/wintertodtActivity';
 import { zalcanoTask } from '../tasks/minions/minigames/zalcanoActivity';
 import { miningTask } from '../tasks/minions/miningActivity';
 import { monsterTask } from '../tasks/minions/monsterActivity';
-import { nexTask } from '../tasks/minions/nexActivity';
 import { pickpocketTask } from '../tasks/minions/pickpocketActivity';
 import { buryingTask } from '../tasks/minions/PrayerActivity/buryingActivity';
 import { offeringTask } from '../tasks/minions/PrayerActivity/offeringActivity';
@@ -136,7 +136,6 @@ export const tasks: MinionTask[] = [
 	wealthChargeTask,
 	tokkulShopTask,
 	smeltingTask,
-	nexTask,
 	pickpocketTask,
 	questingTask,
 	monsterTask,
@@ -147,7 +146,9 @@ export const tasks: MinionTask[] = [
 	sepulchreTask,
 	titheFarmTask,
 	temporossTask,
-	smithingTask
+	smithingTask,
+
+	nexTask
 ];
 
 export async function syncActivityCache() {

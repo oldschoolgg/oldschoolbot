@@ -1,7 +1,7 @@
 <<<<<<< HEAD
 import { User } from 'discord.js';
 import { calcPercentOfNum, reduceNumByPercent } from 'e';
-import { KlasaUser } from 'klasa';
+
 =======
 import { reduceNumByPercent } from 'e';
 >>>>>>> master

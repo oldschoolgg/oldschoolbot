@@ -1,6 +1,5 @@
 import { tame_growth, User } from '@prisma/client';
 import { randArrItem, reduceNumByPercent } from 'e';
-import { KlasaUser } from 'klasa';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
@@ -8,17 +7,15 @@ import { Bank } from 'oldschooljs';
 import { production } from '../../config';
 import { Events } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { Nursery, Species, tameSpecies } from '../../lib/tames';
-import { formatDuration, gaussianRandom, roll, updateBankSetting } from '../../lib/util';
+import { formatDuration, gaussianRandom, roll } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
-import { hasItemsEquippedOrInBank } from '../../lib/util/minionUtils';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { handleMahojiConfirmation, mahojiUsersSettingsFetch, updateBankSetting } from '../mahojiSettings';
 
-export async function generateNewTame(user: KlasaUser | User, species: Species) {
-	let shinyChance = hasItemsEquippedOrInBank(user, ['Ring of luck'])
+export async function generateNewTame(user: MUser, species: Species) {
+	let shinyChance = user.hasEquippedOrInBank(['Ring of luck'])
 		? Math.floor(reduceNumByPercent(species.shinyChance, 3))
 		: species.shinyChance;
 
@@ -50,7 +47,7 @@ export async function generateNewTame(user: KlasaUser | User, species: Species) 
 	return tame;
 }
 
-async function view(user: KlasaUser, mahojiUser: User) {
+async function view(user: MUser, mahojiUser: User) {
 	const nursery = mahojiUser.nursery as Nursery;
 	if (!nursery) {
 		return "You don't have a nursery built yet! You can build one using `/nursery build`";
@@ -64,7 +61,7 @@ async function view(user: KlasaUser, mahojiUser: User) {
 	const specie = tameSpecies.find(i => i.id === egg.species)!;
 
 	let diff = Date.now() - egg.insertedAt;
-	let constructionMaster = user.hasItemEquippedOrInBank('Construction master cape');
+	let constructionMaster = user.hasEquippedOrInBank('Construction master cape');
 	let masterString = constructionMaster
 		? '\n\nYour minion has constructed a very high quality nursery that hatches eggs twice as fast.'
 		: '';
@@ -78,7 +75,7 @@ async function view(user: KlasaUser, mahojiUser: User) {
 			eggsHatched: nursery.eggsHatched + 1,
 			hasFuel: false
 		};
-		await mahojiUserSettingsUpdate(user.id, {
+		await user.update({
 			nursery: newNursery
 		});
 		const newUserTame = await generateNewTame(user, specie);
@@ -95,7 +92,7 @@ async function view(user: KlasaUser, mahojiUser: User) {
 	)} until it hatches. You put it in ${formatDuration(diff)} ago.${masterString}`;
 }
 
-async function fuelCommand(interaction: SlashCommandInteraction, user: KlasaUser, mahojiUser: User) {
+async function fuelCommand(interaction: SlashCommandInteraction, user: MUser, mahojiUser: User) {
 	const nursery = mahojiUser.nursery as Nursery;
 	if (!nursery) {
 		return "You don't have a nursery.";
@@ -113,18 +110,18 @@ async function fuelCommand(interaction: SlashCommandInteraction, user: KlasaUser
 		`Are you sure you want to use ${cost} to fuel your nursery? You need to provide fuel once per egg.`
 	);
 	await user.removeItemsFromBank(cost);
-	updateBankSetting(globalClient, ClientSettings.EconomyStats.ConstructCostBank, cost);
+	updateBankSetting('construction_cost_bank', cost);
 	const newNursery: NonNullable<Nursery> = {
 		...nursery,
 		hasFuel: true
 	};
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		nursery: newNursery
 	});
 	return `You fueled your nursery, it's now ready to keep an egg warm! Removed ${cost} from your bank.`;
 }
 
-async function buildCommand(user: KlasaUser, mahojiUser: User) {
+async function buildCommand(user: MUser, mahojiUser: User) {
 	const nursery = mahojiUser.nursery as Nursery;
 	if (nursery) {
 		return 'You already have a nursery built.';
@@ -137,16 +134,16 @@ async function buildCommand(user: KlasaUser, mahojiUser: User) {
 		return `You need ${cost} to build a nursery.`;
 	}
 	await user.removeItemsFromBank(cost);
-	updateBankSetting(globalClient, ClientSettings.EconomyStats.ConstructCostBank, cost);
+	updateBankSetting('construction_cost_bank', cost);
 	const newNursery: Nursery = {
 		egg: null,
 		eggsHatched: 0,
 		hasFuel: false
 	};
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		nursery: newNursery
 	});
-	let constructionMaster = user.hasItemEquippedOrInBank('Construction master cape');
+	let constructionMaster = user.hasEquippedOrInBank('Construction master cape');
 	return `You built a nursery! Removed ${cost} from your bank.${
 		constructionMaster
 			? '\n\nYour minion has constructed a very high quality nursery that hatches eggs twice as fast.'
@@ -154,7 +151,7 @@ async function buildCommand(user: KlasaUser, mahojiUser: User) {
 	}`;
 }
 
-async function addCommand(interaction: SlashCommandInteraction, user: KlasaUser, mahojiUser: User, itemName: string) {
+async function addCommand(interaction: SlashCommandInteraction, user: MUser, mahojiUser: User, itemName: string) {
 	const nursery = mahojiUser.nursery as Nursery | null;
 	if (!nursery) {
 		return "You don't have a nursery built yet, so you can't add an egg to it.";
@@ -170,7 +167,7 @@ async function addCommand(interaction: SlashCommandInteraction, user: KlasaUser,
 	const item = getItem(itemName);
 	if (!item) return "That's not a valid item.";
 
-	const bank = user.bank();
+	const { bank } = user;
 	const specie = tameSpecies.find(s => s.egg === item && bank.has(s.egg.id));
 	if (!specie) {
 		return "That's not an valid egg, or you don't own it.";
@@ -188,7 +185,7 @@ async function addCommand(interaction: SlashCommandInteraction, user: KlasaUser,
 		eggsHatched: nursery.eggsHatched,
 		hasFuel: false
 	};
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		nursery: newNursery
 	});
 
@@ -233,7 +230,7 @@ export const nurseryCommand: OSBMahojiCommand = {
 		options,
 		interaction
 	}: CommandRunOptions<{ build?: {}; fuel?: {}; add_egg?: { item: string }; check?: {} }>) => {
-		const user = await globalClient.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 		if (options.build) return buildCommand(user, mahojiUser);
 		if (options.fuel) return fuelCommand(interaction, user, mahojiUser);

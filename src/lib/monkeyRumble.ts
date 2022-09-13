@@ -1,6 +1,5 @@
 import { randArrItem, randInt, roll } from 'e';
 import fs from 'fs/promises';
-import { KlasaUser } from 'klasa';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { Canvas, Image } from 'skia-canvas/lib';
 
@@ -228,9 +227,9 @@ export function getRandomMonkey(exclude: Monkey[], chanceOfSpecial: number): Mon
 	return monkey;
 }
 
-export function monkeyTierOfUser(user: KlasaUser) {
+export function monkeyTierOfUser(user: MUser) {
 	for (const tier of [...monkeyTiers].reverse()) {
-		if (tier.greegrees.some(gg => user.hasItemEquippedOrInBank(gg.id))) {
+		if (tier.greegrees.some(gg => user.hasEquippedOrInBank(gg.id))) {
 			return tier.id;
 		}
 	}

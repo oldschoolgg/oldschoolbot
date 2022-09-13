@@ -1,5 +1,6 @@
 import { Guild } from 'discord.js';
 import { noOp, notEmpty } from 'e';
+import { Bank } from 'oldschooljs';
 
 import { production, SupportServer } from '../config';
 import { ClueTiers } from '../lib/clues/clueTiers';
@@ -8,8 +9,9 @@ import { getCollectionItems } from '../lib/data/Collections';
 import { Minigames } from '../lib/settings/minigames';
 import { prisma } from '../lib/settings/prisma';
 import Skills from '../lib/skilling/skills';
-import { convertXPtoLVL } from '../lib/util';
+import { assert, convertXPtoLVL } from '../lib/util';
 import { logError } from '../lib/util/logError';
+import { ItemBank } from './types';
 
 function addToUserMap(userMap: Record<string, string[]>, id: string, reason: string) {
 	if (!userMap[id]) userMap[id] = [];
@@ -18,7 +20,18 @@ function addToUserMap(userMap: Record<string, string[]>, id: string, reason: str
 
 const minigames = Minigames.map(game => game.column).filter(i => i !== 'tithe_farm');
 
-const collections = ['pets', 'skilling', 'clues', 'bosses', 'minigames', 'raids', 'slayer', 'other', 'custom'];
+const collections = [
+	'rolepets',
+	'skilling',
+	'clues',
+	'bosses',
+	'minigames',
+	'raids',
+	'Dyed Items',
+	'slayer',
+	'other',
+	'custom'
+];
 
 const mostSlayerPointsQuery = `SELECT id, 'Most Points' as desc
 FROM users
@@ -407,6 +420,57 @@ LIMIT 2;`
 		});
 	}
 
+	async function monkeyKing() {
+		const res = await q<any>(
+			'SELECT id FROM users WHERE monkeys_fought IS NOT NULL ORDER BY cardinality(monkeys_fought) DESC LIMIT 1;'
+		);
+		result += await addRoles({ g: g!, users: [res[0].id], role: '886180040465870918', badge: null });
+	}
+	async function topInventor() {
+		const userMap = {};
+		let topInventors: string[] = [];
+		const mostUniques = await q<
+			{ id: string; uniques: number; disassembled_items_bank: ItemBank }[]
+		>(`SELECT u.id, u.uniques, u.disassembled_items_bank FROM (
+  SELECT (SELECT COUNT(*) FROM JSON_OBJECT_KEYS("disassembled_items_bank")) uniques, id, disassembled_items_bank FROM users WHERE "skills.invention" > 0
+) u
+ORDER BY u.uniques DESC LIMIT 300;`);
+		topInventors.push(mostUniques[0].id);
+		addToUserMap(userMap, mostUniques[0].id, 'Most Uniques Disassembled');
+		const parsed = mostUniques
+			.map(i => ({ ...i, value: new Bank(i.disassembled_items_bank).value() }))
+			.sort((a, b) => b.value - a.value);
+		topInventors.push(parsed[0].id);
+		addToUserMap(userMap, parsed[0].id, 'Most Value Disassembled');
+		result += await addRoles({ g: g!, users: topInventors, role: Roles.TopInventor, badge: null, userMap });
+	}
+	async function topLeagues() {
+		const topPoints = await roboChimpClient.user.findMany({
+			where: {
+				leagues_points_total: {
+					gt: 0
+				}
+			},
+			orderBy: {
+				leagues_points_total: 'desc'
+			},
+			take: 2
+		});
+		const topTasks: { id: string; tasks_completed: number }[] =
+			await roboChimpClient.$queryRaw`SELECT id::text, COALESCE(cardinality(leagues_completed_tasks_ids), 0) AS tasks_completed
+										  FROM public.user
+										  ORDER BY tasks_completed DESC
+										  LIMIT 2;`;
+		const userMap = {};
+		addToUserMap(userMap, topPoints[0].id.toString(), 'Rank 1 Leagues Points');
+		addToUserMap(userMap, topPoints[1].id.toString(), 'Rank 2 Leagues Points');
+		addToUserMap(userMap, topTasks[0].id, 'Rank 1 Leagues Tasks');
+		addToUserMap(userMap, topTasks[1].id, 'Rank 2 Leagues Tasks');
+		const allLeagues = topPoints.map(i => i.id.toString()).concat(topTasks.map(i => i.id));
+		assert(allLeagues.length > 0 && allLeagues.length <= 4);
+		result += await addRoles({ g: g!, users: allLeagues, role: Roles.TopLeagues, badge: null, userMap });
+	}
+
 	const tup = [
 		['Top Slayer', slayer],
 		['Top Clue Hunters', topClueHunters],
@@ -414,7 +478,12 @@ LIMIT 2;`
 		['Top Sacrificers', topSacrificers],
 		['Top Collectors', topCollector],
 		['Top Skillers', topSkillers],
-		['Top Farmers', farmers]
+		['Top Farmers', farmers],
+
+		['Monkey King', monkeyKing],
+		['Top Farmers', farmers],
+		['Top Inventor', topInventor],
+		['Top Leagues', topLeagues]
 	] as const;
 
 	let failed: string[] = [];

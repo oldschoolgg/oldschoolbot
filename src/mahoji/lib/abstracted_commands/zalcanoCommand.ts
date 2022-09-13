@@ -7,6 +7,7 @@ import { ZalcanoActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, hasSkillReqs } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import { userHasGracefulEquipped } from '../../mahojiSettings';
 
 export const soteSkillRequirements: Skills = {
 	mining: 70,

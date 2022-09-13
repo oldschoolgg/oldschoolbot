@@ -1,6 +1,7 @@
 import { schedule } from 'node-cron';
 
 import { analyticsTick } from './analytics';
+import { syncPrescence } from './doubleLoot';
 import { prisma } from './settings/prisma';
 
 export function initCrons() {
@@ -25,5 +26,7 @@ GROUP BY item_id;`);
 	/**
 	 * prescence
 	 */
-	schedule('0 * * * *', () => globalClient.user?.setActivity('/help'));
+	schedule('0 * * * *', () => {
+		syncPrescence();
+	});
 }

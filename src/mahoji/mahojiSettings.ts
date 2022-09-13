@@ -612,7 +612,7 @@ export function calcMaxRCQuantity(rune: Rune, user: MUser) {
 	return 0;
 }
 
-type ClientBankKey =
+export type ClientBankKey =
 	| 'sold_items_bank'
 	| 'herblore_cost_bank'
 	| 'construction_cost_bank'
@@ -661,9 +661,44 @@ type ClientBankKey =
 	| 'tks_cost'
 	| 'tks_loot'
 	| 'zippy_loot'
-	| 'ic_cost'
-	| 'ic_loot'
-	| 'trip_doubling_loot';
+	| 'trip_doubling_loot'
+	| 'nex_cost'
+	| 'vasa_loot'
+	| 'ods_loot'
+	| 'nex_loot'
+	| 'tame_merging_cost'
+	| 'naxxus_loot'
+	| 'naxxus_cost'
+	| 'ignecarus_cost'
+	| 'ignecarus_loot'
+	| 'kibble_cost'
+	| 'mr_cost'
+	| 'mr_loot'
+	| 'item_contract_cost'
+	| 'item_contract_loot'
+	| 'kg_cost'
+	| 'kg_loot'
+	| 'nex_cost'
+	| 'nex_loot'
+	| 'kk_cost'
+	| 'kk_loot'
+	| 'vasa_cost'
+	| 'vasa_loot'
+	| 'ods_cost'
+	| 'ods_loot'
+	| 'naxxus_loot'
+	| 'naxxus_cost'
+	| 'tame_merging_cost'
+	| 'trip_doubling_loot'
+	| 'fc_cost'
+	| 'fc_loot'
+	| 'zippy_loot'
+	| 'market_prices'
+	| 'bb_cost'
+	| 'bb_loot'
+	| 'moktang_cost'
+	| 'moktang_loot'
+	| 'kk_cost';
 
 export async function updateBankSetting(key: ClientBankKey, bankToAdd: Bank) {
 	if (bankToAdd === undefined || bankToAdd === null) throw new Error(`Gave null bank for ${key}`);

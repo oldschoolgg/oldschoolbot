@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import { Prisma, tame_growth } from '@prisma/client';
-=======
-import { Prisma, xp_gains_skill_enum } from '@prisma/client';
->>>>>>> master
+import { Prisma, tame_growth, xp_gains_skill_enum } from '@prisma/client';
 import { Time, uniqueArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank, Items } from 'oldschooljs';
@@ -53,13 +49,10 @@ import resolveItems from '../../lib/util/resolveItems';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import { allUsableItems } from '../lib/abstracted_commands/useCommand';
 import { OSBMahojiCommand } from '../lib/util';
-<<<<<<< HEAD
-import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { mahojiUserSettingsUpdate } from '../settingsUpdate';
 import { generateNewTame } from './nursery';
 import { tameImage } from './tames';
-=======
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
->>>>>>> master
 
 async function giveMaxStats(user: MUser, level = 99, qp = MAX_QP) {
 	let updates: Prisma.UserUpdateArgs['data'] = {};
@@ -766,7 +759,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						skills_hunter: convertLVLtoXP(120),
 						skills_farming: convertLVLtoXP(120),
 						QP: 5000,
-						bank: user.bank().add(supplies).bank,
+						bank: user.bank.add(supplies).bank,
 						GP: mahojiUser.GP + BigInt(1_000_000_000),
 						void_staff_charges: 10_000,
 						bitfield: [...new Set([...currentBitfields, BitField.HasScrollOfFarming])]

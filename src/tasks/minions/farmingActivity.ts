@@ -16,7 +16,7 @@ import { getFarmingKeyFromName } from '../../lib/util/farmingHelpers';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { logError } from '../../lib/util/logError';
 import { sendToChannelID } from '../../lib/util/webhook';
-import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
+import { mahojiUsersSettingsFetch, updateBankSetting } from '../../mahoji/mahojiSettings';
 
 const plantsNotUsedForArcaneHarvester = ['Mysterious tree'].map(i => Farming.Plants.find(p => p.name === i)!);
 assert(!(plantsNotUsedForArcaneHarvester as any[]).includes(undefined));
@@ -25,7 +25,7 @@ async function arcaneHarvesterEffect(user: MUser, plant: Plant, loot: Bank): Pro
 	if (plantsNotUsedForArcaneHarvester.includes(plant)) return;
 	if (user.hasEquippedOrInBank(['Arcane harvester'])) {
 		const boostRes = await inventionItemBoost({
-			userID: BigInt(user.id),
+			user,
 			inventionID: InventionID.ArcaneHarvester,
 			duration: plant.level * Time.Second * 30
 		});

@@ -31,7 +31,6 @@ const fishBonusLoot = [
 	}
 ];
 
-<<<<<<< HEAD
 const shelldonFish = resolveItems([
 	'Raw lobster',
 	'Raw swordfish',
@@ -43,11 +42,8 @@ const shelldonFish = resolveItems([
 	'Raw tuna'
 ]);
 
-export default class extends Task {
-=======
 export const driftNetTask: MinionTask = {
 	type: 'DriftNet',
->>>>>>> master
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		let { quantity, userID, channelID, duration } = data;
 		const user = await mUserFetch(userID);

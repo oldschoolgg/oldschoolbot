@@ -40,7 +40,7 @@ const miscHpMap: Record<number, number> = {
 	[Naxxus.id]: NAXXUS_HP
 };
 
-function meleeOnly(user: KlasaUser): AttackStyles[] {
+function meleeOnly(user: MUser): AttackStyles[] {
 	const skills = user.getAttackStyles();
 	if (skills.some(skill => skill === SkillsEnum.Ranged || skill === SkillsEnum.Magic)) {
 		return [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence];

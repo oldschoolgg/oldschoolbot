@@ -9,7 +9,6 @@ import { determineScaledLogTime, formatDuration, itemNameFromID, stringMatches }
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import itemID from '../../lib/util/itemID';
-import { userHasItemsEquippedAnywhere } from '../../lib/util/minionUtils';
 import { OSBMahojiCommand } from '../lib/util';
 
 const axes = [
@@ -96,7 +95,7 @@ export const chopCommand: OSBMahojiCommand = {
 		// If the user has an axe apply boost
 		const boosts = [];
 
-		if (userHasItemsEquippedAnywhere(user, 'Dwarven greataxe')) {
+		if (user.hasEquipped('Dwarven greataxe')) {
 			timetoChop /= 2;
 			boosts.push('2x faster for Dwarven greataxe');
 		}

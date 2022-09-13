@@ -86,7 +86,7 @@ export async function darkAltarCommand({ user, channelID, name }: { user: MUser;
 		);
 		if (abyssalAmuletBoost) {
 			const res = await inventionItemBoost({
-				userID: BigInt(user.id),
+				user,
 				inventionID: InventionID.AbyssalAmulet,
 				duration: maxTripLength
 			});

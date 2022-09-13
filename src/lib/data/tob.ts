@@ -337,8 +337,7 @@ export async function checkTOBUser(
 	 */
 
 	// Melee
-<<<<<<< HEAD
-	const meleeGear = user.getGear('melee');
+	const meleeGear = user.gear.melee;
 	const requiredMeleeWeapons = [
 		'Abyssal tentacle',
 		'Blade of saeldor (c)',
@@ -350,24 +349,9 @@ export async function checkTOBUser(
 	if (!meleeGear.hasEquipped(requiredMeleeWeapons) || !meleeGear.hasEquipped(requiredMeleeCapes)) {
 		return [
 			true,
-			`${user.username} needs one of the following weapons: ${requiredMeleeWeapons.join(
+			`${user.usernameOrMention} needs one of the following weapons: ${requiredMeleeWeapons.join(
 				'/'
 			)} and one of the following capes: ${requiredMeleeCapes.join('/')} equipped in their melee setup!`
-=======
-	const meleeGear = user.gear.melee;
-	if (
-		!meleeGear.hasEquipped([
-			'Abyssal tentacle',
-			'Blade of saeldor (c)',
-			'Scythe of vitur (uncharged)',
-			'Scythe of vitur'
-		]) ||
-		!meleeGear.hasEquipped(['Fire cape', 'Infernal cape'])
-	) {
-		return [
-			true,
-			`${user.usernameOrMention} needs an Abyssal tentacle/Blade of saeldor(c)/Scythe of vitur and Fire/Infernal cape in their melee setup!`
->>>>>>> master
 		];
 	}
 
@@ -401,30 +385,19 @@ export async function checkTOBUser(
 		return [true, `${user.usernameOrMention}'s darts are too weak`];
 	}
 
-<<<<<<< HEAD
 	const requiredRangeWeapons = ['Magic shortbow', 'Twisted bow', 'Zaryte bow', 'Hellfire bow'];
 	const requiredRangeAmmo = ['Amethyst arrow', 'Rune arrow', 'Dragon arrow', 'Hellfire arrow'];
-	const rangeGear = user.getGear('range');
+	const rangeGear = user.gear.range;
 	if (!rangeGear.hasEquipped(requiredRangeWeapons) || !rangeGear.hasEquipped(requiredRangeAmmo)) {
 		return [
 			true,
-			`${user.username} needs one of the following weapons: ${requiredRangeWeapons.join(
+			`${user.usernameOrMention} needs one of the following weapons: ${requiredRangeWeapons.join(
 				'/'
 			)} and one of the following ammo types: ${requiredRangeAmmo.join('/')} equipped in their range setup!`
-=======
-	const rangeGear = user.gear.range;
-	if (
-		!rangeGear.hasEquipped(['Magic shortbow', 'Twisted bow']) ||
-		!rangeGear.hasEquipped(['Amethyst arrow', 'Rune arrow', 'Dragon arrow'])
-	) {
-		return [
-			true,
-			`${user.usernameOrMention} needs a Magic shortbow or Twisted bow, and rune/dragon arrows, in their range setup!`
->>>>>>> master
 		];
 	}
 	if (rangeGear.hasEquipped(['Hellfire arrow']) && !rangeGear.hasEquipped('Hellfire bow')) {
-		return [true, `${user.username}, you can't use Hellfire arrows without a Hellfire bow 🤨`];
+		return [true, `${user.usernameOrMention}, you can't use Hellfire arrows without a Hellfire bow 🤨`];
 	}
 	if (rangeGear.hasEquipped(['Dragon arrow', 'Magic shortbow'], true)) {
 		return [true, `${user.usernameOrMention}, you can't use Dragon arrows with a Magic shortbow 🤨`];
@@ -441,8 +414,7 @@ export async function checkTOBUser(
 			return [true, `${user.usernameOrMention} needs atleast 250 Theatre of Blood KC before doing Hard mode.`];
 		}
 		if (!meleeGear.hasEquipped('Infernal cape')) {
-<<<<<<< HEAD
-			return [true, `${user.username} needs at least an Infernal cape to do Hard mode.`];
+			return [true, `${user.usernameOrMention} needs at least an Infernal cape to do Hard mode.`];
 		}
 	}
 	if (teamSize === 1) {
@@ -456,23 +428,13 @@ export async function checkTOBUser(
 		if (!rangeGear.hasEquipped(minRangeSoloGear, true)) {
 			return [true, 'You must either have a Hellfire bow and Hellfire arrows equipped to solo ToB'];
 		}
-		const mageGear = user.getGear('mage');
+		const mageGear = user.gear.mage;
 		if (
 			!meleeGear.hasEquipped(gorajanWarriorOutfit, true) &&
 			!rangeGear.hasEquipped(gorajanArcherOutfit, true) &&
 			!mageGear.hasEquipped(gorajanOccultOutfit, true)
 		) {
 			return [true, 'You must either have at least one complete set of Gorajan armour to solo ToB'];
-=======
-			return [true, `${user.usernameOrMention} needs an Infernal cape to do Hard mode.`];
-		}
-	}
-
-	if (teamSize === 2) {
-		const kc = await getMinigameScore(user.id, isHardMode ? 'tob_hard' : 'tob');
-		if (kc < 150) {
-			return [true, `${user.usernameOrMention} needs atleast 150 KC before doing duo's.`];
->>>>>>> master
 		}
 	}
 
@@ -754,14 +716,7 @@ export async function calcTOBInput(u: MUser) {
 		healingNeeded += 40;
 	}
 
-<<<<<<< HEAD
-	items.add(
-		getUserFoodFromBank(u, healingNeeded, u.settings.get(UserSettings.FavoriteFood), false, 20) ||
-			new Bank().add('Shark', 5)
-	);
-=======
-	items.add(getUserFoodFromBank(u, healingNeeded, u.user.favorite_food, 20) || new Bank().add('Shark', 5));
->>>>>>> master
+	items.add(getUserFoodFromBank(u, healingNeeded, u.user.favorite_food, false, 20) || new Bank().add('Shark', 5));
 
 	items.add('Saradomin brew(4)', brewsNeeded);
 	items.add('Super restore(4)', restoresNeeded);

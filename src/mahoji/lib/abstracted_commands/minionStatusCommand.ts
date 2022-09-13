@@ -145,7 +145,7 @@ export async function minionStatusCommand(
 	if (perkTier >= PerkTier.Two) {
 		const { tame, species, activity } = await getUsersTame(user);
 		if (tame && !activity) {
-			const lastTameAct = await tameLastFinishedActivity(mahojiUser);
+			const lastTameAct = await tameLastFinishedActivity(user);
 			if (lastTameAct) {
 				buttons.push({
 					custom_id: 'REPEAT_TAME_TRIP',
@@ -158,7 +158,7 @@ export async function minionStatusCommand(
 		}
 	}
 
-	const [spawnLampReady] = spawnLampIsReady(mahojiUser, channelID);
+	const [spawnLampReady] = spawnLampIsReady(user, channelID);
 	if (spawnLampReady) {
 		buttons.push({
 			custom_id: 'SPAWN_LAMP',
@@ -169,7 +169,7 @@ export async function minionStatusCommand(
 		});
 	}
 
-	const icDetails = getItemContractDetails(mahojiUser);
+	const icDetails = getItemContractDetails(user);
 	if (perkTier >= PerkTier.Two && icDetails.currentItem && icDetails.owns) {
 		buttons.push({
 			custom_id: 'ITEM_CONTRACT_SEND',

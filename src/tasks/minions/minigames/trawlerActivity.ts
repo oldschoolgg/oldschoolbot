@@ -9,6 +9,7 @@ import { SkillsEnum } from '../../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
+import { anglerBoostPercent } from '../../../mahoji/mahojiSettings';
 
 export const trawlerTask: MinionTask = {
 	type: 'FishingTrawler',

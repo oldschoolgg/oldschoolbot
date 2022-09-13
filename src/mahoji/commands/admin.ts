@@ -568,7 +568,7 @@ export const adminCommand: OSBMahojiCommand = {
 
 		if (!isMod && !isContributor) return randArrItem(gifs);
 		if (options.givetgb) {
-			const user = await globalClient.fetchUser(options.givetgb.user.user.id);
+			const user = await mUserFetch(options.givetgb.user.user.id);
 			if (user.id === adminUser.id) {
 				return randArrItem(gifs);
 			}

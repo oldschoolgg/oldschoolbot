@@ -1,8 +1,6 @@
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
 
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../mahoji/mahojiSettings';
-import { syncPrescence } from '../tasks/presence';
 import { Channel } from './constants';
 import { formatDuration } from './util';
 import { sendToChannelID } from './util/webhook';
@@ -34,7 +32,7 @@ export async function addToDoubleLootTimer(amount: number, reason: string) {
 	syncPrescence();
 }
 
-export async function addPatronLootTime(_tier: number, user?: KlasaUser) {
+export async function addPatronLootTime(_tier: number, user: MUser | null) {
 	let map: Record<number, number> = {
 		1: 3,
 		2: 6,
@@ -54,4 +52,15 @@ export async function syncDoubleLoot() {
 		double_loot_finish_time: true
 	});
 	DOUBLE_LOOT_FINISH_TIME_CACHE = Number(clientSettings.double_loot_finish_time);
+}
+
+export async function syncPrescence() {
+	await syncDoubleLoot();
+
+	let str = isDoubleLootActive()
+		? `${formatDuration(DOUBLE_LOOT_FINISH_TIME_CACHE - Date.now(), true)} Double Loot!`
+		: '/help';
+	if (globalClient.user!.presence.activities[0]?.name !== str) {
+		globalClient.user?.setActivity(str);
+	}
 }

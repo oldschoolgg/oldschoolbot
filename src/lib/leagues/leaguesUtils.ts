@@ -1,5 +1,4 @@
 import { activity_type_enum, Minigame, PlayerOwnedHouse, Tame, User } from '@prisma/client';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
@@ -18,7 +17,7 @@ import { stringMatches } from '../util';
 export interface HasFunctionArgs {
 	cl: Bank;
 	bank: Bank;
-	user: KlasaUser;
+	user: MUser;
 	lapScores: ItemBank;
 	skillsLevels: Required<Skills>;
 	skillsXP: Required<Skills>;

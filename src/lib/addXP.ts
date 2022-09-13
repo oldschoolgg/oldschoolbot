@@ -1,11 +1,11 @@
 import { increaseNumByPercent, noOp, notEmpty, objectValues, Time } from 'e';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { MAXING_MESSAGE, SupportServer } from '../config';
+import { MAXING_MESSAGE } from '../config';
 import {
+	Channel,
 	Events,
 	GLOBAL_BSO_XP_MULTIPLIER,
-	LEVEL_99_XP,
 	LEVEL_120_XP,
 	MAX_TOTAL_LEVEL,
 	MAX_XP,
@@ -47,17 +47,16 @@ async function howManyMaxed() {
 export async function onMax(user: MUser) {
 	const { normies, irons } = await howManyMaxed();
 
-	if (!msg.guild) return;
-	const cachedSettings = untrustedGuildSettingsCache.get(msg.guild.id);
-	if (!cachedSettings?.petchannel) return;
+	const str = `🎉 ${
+		user.usernameOrMention
+	}'s minion just achieved level 120 in every skill, they are the **${formatOrdinal(normies)}** minion to be maxed${
+		user.isIronman ? `, and the **${formatOrdinal(irons)}** ironman to max.` : '.'
+	} 🎉`;
 
-	const str = `🎉 ${user.username}'s minion just achieved level 120 in every skill, they are the **${formatOrdinal(
-		normies
-	)}** minion to be maxed${user.isIronman ? `, and the **${formatOrdinal(irons)}** ironman to max.` : '.'} 🎉`;
-
-	user.client.emit(Events.ServerNotification, str);
+	globalClient.emit(Events.ServerNotification, str);
 	sendToChannelID(Channel.BSOGeneral, { content: str }).catch(noOp);
-	user.send(MAXING_MESSAGE).catch(noOp);
+	const djsUser = await globalClient.users.fetch(user.id);
+	djsUser.send(MAXING_MESSAGE).catch(noOp);
 }
 
 interface StaticXPBoost {

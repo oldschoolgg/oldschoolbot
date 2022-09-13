@@ -148,7 +148,7 @@ export const hunterTask: MinionTask = {
 			}
 		}
 		if (creature.name === 'Eastern ferret') {
-			const cl = user.cl();
+			const { cl } = user;
 			const amountOfZippysGotten = cl.amount('Zippy');
 			let baseDropRatePer = 3500;
 			if (amountOfZippysGotten > 0) {
@@ -177,7 +177,7 @@ export const hunterTask: MinionTask = {
 
 		if (user.usingPet('Sandy') && creature.name !== 'Eastern ferret') {
 			if (creature.id === 3251) {
-				if (user.hasItemEquippedAnywhere(itemID('Hunter master cape'))) {
+				if (user.hasEquipped('Hunter master cape')) {
 					str += '\nYou received **double** loot because of Sandy, and being a master hunter.';
 					loot.multiply(2);
 				}

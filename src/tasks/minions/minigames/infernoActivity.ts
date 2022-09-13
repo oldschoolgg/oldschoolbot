@@ -1,6 +1,5 @@
-import { calcPercentOfNum, calcWhatPercent } from 'e';
+import { calcPercentOfNum, calcWhatPercent, roll } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { Events } from '../../../lib/constants';
 import { diariesObject, userhasDiaryTier } from '../../../lib/diaries';
@@ -8,6 +7,7 @@ import { countUsersWithItemInCl, prisma } from '../../../lib/settings/prisma';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
+import { ItemBank } from '../../../lib/types';
 import { InfernoOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import chatHeadImage from '../../../lib/util/chatHeadImage';
@@ -28,11 +28,20 @@ export function calculateInfernoItemRefund(percentMadeItThrough: number, cost: B
 	return { unusedItems, percSuppliesRefunded };
 }
 
-
 export const infernoTask: MinionTask = {
 	type: 'Inferno',
 	async run(data: InfernoOptions) {
-		const { userID, channelID, diedZuk, diedPreZuk, duration, deathTime, fakeDuration } = data;
+		const {
+			userID,
+			channelID,
+			diedZuk,
+			diedPreZuk,
+			duration,
+			deathTime,
+			fakeDuration,
+			diedEmergedZuk,
+			isEmergedZuk
+		} = data;
 		const user = await mUserFetch(userID);
 		const score = await getMinigameScore(user.id, 'inferno');
 
@@ -44,15 +53,17 @@ export const infernoTask: MinionTask = {
 			score > 0 &&
 			usersTask.currentTask!.quantity_remaining === usersTask.currentTask!.quantity;
 
-<<<<<<< HEAD
-		const oldAttempts = user.settings.get(UserSettings.InfernoAttempts);
-		const attempts = oldAttempts + 1;
-		await user.settings.update(UserSettings.InfernoAttempts, attempts);
+		await user.update({
+			inferno_attempts: {
+				increment: 1
+			}
+		});
 		if (isEmergedZuk) {
-			await user.settings.update(
-				UserSettings.EmergedInfernoAttempts,
-				user.settings.get(UserSettings.EmergedInfernoAttempts) + 1
-			);
+			await user.update({
+				emerged_inferno_attempts: {
+					increment: 1
+				}
+			});
 		}
 
 		const percentMadeItThrough = deathTime === null ? 100 : calcWhatPercent(deathTime, fakeDuration);
@@ -62,22 +73,8 @@ export const infernoTask: MinionTask = {
 			new Bank(data.cost)
 		);
 
-=======
-		const unusedItems = new Bank();
-		const cost = new Bank(data.cost);
-
-		await user.update({
-			inferno_attempts: {
-				increment: 1
-			}
-		});
-
-		const percentMadeItThrough = deathTime === null ? 100 : calcWhatPercent(deathTime, fakeDuration);
-
-		const mahojiUser = await mUserFetch(userID);
->>>>>>> master
 		let tokkul = Math.ceil(calcPercentOfNum(calcWhatPercent(duration, fakeDuration), 16_440));
-		const [hasDiary] = await userhasDiaryTier(mahojiUser, diariesObject.KaramjaDiary.elite);
+		const [hasDiary] = await userhasDiaryTier(user, diariesObject.KaramjaDiary.elite);
 		if (hasDiary) tokkul *= 2;
 		const baseBank = new Bank().add('Tokkul', tokkul);
 
@@ -213,15 +210,17 @@ export const infernoTask: MinionTask = {
 			if (baseBank.has('Jal-MejJak')) {
 				globalClient.emit(
 					Events.ServerNotification,
-					`**${user.username}** just received their ${formatOrdinal(
-						user.cl().amount('Jal-MejJak') + 1
+					`**${user.usernameOrMention}** just received their ${formatOrdinal(
+						user.cl.amount('Jal-MejJak') + 1
 					)} Jal-MejJak pet by killing TzKal-Zuk's final form, on their ${formatOrdinal(
-						await user.getMinigameScore('emerged_inferno')
+						await getMinigameScore(user.id, 'emerged_inferno')
 					)} kill!`
 				);
 			}
 
-			if (baseBank.has('Infernal cape') && user.cl.amount('Infernal cape') === 0) {
+			const { cl } = user;
+
+			if (baseBank.has('Infernal cape') && cl.amount('Infernal cape') === 0) {
 				const usersWithInfernalCape = await countUsersWithItemInCl(itemID('Infernal cape'), false);
 				globalClient.emit(
 					Events.ServerNotification,
@@ -233,7 +232,7 @@ export const infernoTask: MinionTask = {
 				);
 			}
 
-			const emergedKC = await user.getMinigameScore('emerged_inferno');
+			const emergedKC = await getMinigameScore(user.id, 'emerged_inferno');
 			// If first successfull emerged zuk kill
 			if (baseBank.has('Infernal cape') && isEmergedZuk && !diedEmergedZuk && emergedKC === 1) {
 				const usersDefeatedEmergedZuk = parseInt(
@@ -245,10 +244,10 @@ export const infernoTask: MinionTask = {
 						)
 					)[0].count
 				);
-				this.client.emit(
+				globalClient.emit(
 					Events.ServerNotification,
-					`**${user.username}** just defeated the Emerged Zuk Inferno on their ${formatOrdinal(
-						user.settings.get(UserSettings.EmergedInfernoAttempts)
+					`**${user.usernameOrMention}** just defeated the Emerged Zuk Inferno on their ${formatOrdinal(
+						user.user.emerged_inferno_attempts
 					)} attempt! They are the ${formatOrdinal(
 						usersDefeatedEmergedZuk
 					)} person to defeat the Emerged Inferno.`

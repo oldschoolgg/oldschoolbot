@@ -12,7 +12,6 @@ import { formatDuration, stringMatches, toTitleCase } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../lib/util/determineRunes';
-import { hasItemsEquippedOrInBank } from '../../lib/util/minionUtils';
 import { OSBMahojiCommand } from '../lib/util';
 import { calcMaxRCQuantity, updateBankSetting, userHasGracefulEquipped } from '../mahojiSettings';
 
@@ -126,7 +125,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 			tripLength /= 2;
 			boosts.push('2x from Obis (3x more essence)');
 		}
-		if (user.hasItemEquippedAnywhere('Runecraft master cape')) {
+		if (user.hasEquipped('Runecraft master cape')) {
 			tripLength /= 2;
 			boosts.push(`${Emoji.RunecraftMasterCape} 2x faster`);
 		}
@@ -160,14 +159,14 @@ export const runecraftCommand: OSBMahojiCommand = {
 		}
 		const maxTripLength = calcMaxTripLength(user, 'Runecraft');
 
-		if (hasItemsEquippedOrInBank(user, ['Abyssal amulet'])) {
+		if (user.hasEquippedOrInBank(['Abyssal amulet'])) {
 			const abyssalAmuletBoost = inventionBoosts.abyssalAmulet.boosts.find(b =>
 				b.runes.some(r => stringMatches(r, runeObj.name))
 			);
 			if (abyssalAmuletBoost) {
 				const boostedActionTime = reduceNumByPercent(tripLength, abyssalAmuletBoost.boost);
 				const boostResult = await inventionItemBoost({
-					userID: BigInt(user.id),
+					user,
 					inventionID: InventionID.AbyssalAmulet,
 					duration: Math.min(
 						maxTripLength,

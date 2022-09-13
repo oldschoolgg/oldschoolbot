@@ -5,7 +5,7 @@ import { Bank, Clues, Monsters } from 'oldschooljs';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 import { table } from 'table';
 
-import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
+import { getKCByName, mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 import { CollectionLogType } from '../collectionLogTask';
 import { dyedItems } from '../dyedItems';
 import { growablePets } from '../growablePets';
@@ -1505,7 +1505,7 @@ export async function getCollection(options: {
 				// Defaults to the activity name
 				if (attributes.kcActivity) {
 					if (typeof attributes.kcActivity === 'string') {
-						userKC.Default += (await user.getKC(attributes.kcActivity))[1];
+						userKC.Default += (await getKCByName(user, attributes.kcActivity))[1];
 					} else {
 						for (const [type, value] of Object.entries(attributes.kcActivity)) {
 							if (!userKC[type]) userKC[type] = 0;

@@ -85,14 +85,6 @@ export async function coxCommand(channelID: bigint, user: MUser, type: 'solo' | 
 
 	const minigameID = isChallengeMode ? 'raids_challenge_mode' : 'raids';
 
-<<<<<<< HEAD
-=======
-	const userKC = await getMinigameScore(user.id, minigameID);
-	if (!isChallengeMode && userKC < 50 && type === 'solo') {
-		return 'You need at least 50 Chambers of Xeric KC before you can attempt a solo raid.';
-	}
-
->>>>>>> master
 	if (isChallengeMode) {
 		const normalKC = await getMinigameScore(user.id, 'raids');
 		if (normalKC < 200) {
@@ -136,20 +128,10 @@ export async function coxCommand(channelID: bigint, user: MUser, type: 'solo' | 
 
 			if (
 				isChallengeMode &&
-<<<<<<< HEAD
-				!user.hasItemEquippedOrInBank('Dragon hunter crossbow') &&
-				!user.hasItemEquippedOrInBank('Twisted bow') &&
-				!user.hasItemEquippedOrInBank('Zaryte bow') &&
-				!userHasItemsEquippedAnywhere(
-					user,
-					['Bow of faerdhinen (c)', 'Crystal helm', 'Crystal legs', 'Crystal body'],
-					true
-				)
-=======
 				!user.hasEquippedOrInBank('Dragon hunter crossbow') &&
 				!user.hasEquippedOrInBank('Twisted bow') &&
+				!user.hasEquippedOrInBank('Zaryte bow') &&
 				!user.hasEquipped(['Bow of faerdhinen (c)', 'Crystal helm', 'Crystal legs', 'Crystal body'], true)
->>>>>>> master
 			) {
 				return [
 					true,

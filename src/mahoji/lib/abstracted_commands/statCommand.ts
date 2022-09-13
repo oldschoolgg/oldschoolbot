@@ -1,3 +1,4 @@
+import { bold } from '@discordjs/builders';
 import { activity_type_enum, UserStats } from '@prisma/client';
 import { sumArr, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
@@ -663,10 +664,10 @@ GROUP BY data->>'plantsName'`;
 	},
 	{
 		name: 'Gambling PNL',
-		run: async (user: User) => {
-			const gpDice = toKMB(Number(user.gp_dice));
-			const gpLuckyPick = toKMB(Number(user.gp_luckypick));
-			const gpSlots = toKMB(Number(user.gp_slots));
+		run: async (user: MUser) => {
+			const gpDice = toKMB(Number(user.user.gp_dice));
+			const gpLuckyPick = toKMB(Number(user.user.gp_luckypick));
+			const gpSlots = toKMB(Number(user.user.gp_slots));
 
 			return {
 				content: `**Dicing:** ${gpDice}

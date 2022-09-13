@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/restrict-plus-operands */
+import { randInt } from 'e';
 import * as fs from 'fs';
-import fsPromises from 'fs/promises'
+import fsPromises from 'fs/promises';
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 import { Canvas, Image } from 'skia-canvas/lib';
 
 import { bankImageGenerator } from '../../bankImage';
+import { monkeyTiers } from '../../monkeyRumble';
 import { Gear } from '../../structures/Gear';
 import { toTitleCase } from '../../util';
 import {
@@ -16,7 +18,6 @@ import {
 } from '../../util/canvasUtil';
 import getOSItem from '../../util/getOSItem';
 import { GearSetup, GearSetupType, GearSetupTypes, GearStats, maxDefenceStats, maxOffenceStats } from '..';
-import { monkeyTiers } from '../../monkeyRumble';
 
 const gearTemplateFile = fs.readFileSync('./src/lib/resources/images/gear_template.png');
 const gearTemplateCompactFile = fs.readFileSync('./src/lib/resources/images/gear_template_compact.png');
@@ -83,28 +84,9 @@ function drawText(canvas: Canvas, text: string, x: number, y: number, maxStat = 
 	}
 }
 
-<<<<<<< HEAD
 async function drawStats(canvas: Canvas, gearStats: GearStats, alternateImage: Image | null) {
-=======
-export async function generateGearImage(
-	user: MUser,
-	gearSetup: Gear | GearSetup,
-	gearType: GearSetupType | null,
-	petID: number | null
-) {
-	const bankBg = user.user.bankBackground ?? 1;
-
-	let { sprite, uniqueSprite, background: userBgImage } = bankImageGenerator.getBgAndSprite(bankBg);
-
-	const hexColor = user.user.bank_bg_hex;
-
-	const gearStats = gearSetup instanceof Gear ? gearSetup.stats : new Gear(gearSetup).stats;
-	const gearTemplateImage = await canvasImageFromBuffer(gearTemplateFile);
-	const canvas = new Canvas(gearTemplateImage.width, gearTemplateImage.height);
->>>>>>> master
 	const ctx = canvas.getContext('2d');
 
-<<<<<<< HEAD
 	if (alternateImage) {
 		const numBananas = randInt(1, 30);
 		for (let i = 0; i < numBananas; i++) {
@@ -117,33 +99,9 @@ export async function generateGearImage(
 				b.height
 			);
 		}
-		let { sprite } = bankTask!.getBgAndSprite(1);
-		if (1 > 2) bankTask?.drawBorder(ctx, sprite, false);
+		let { sprite } = bankImageGenerator.getBgAndSprite(1);
+		if (1 > 2) bankImageGenerator.drawBorder(ctx, sprite, false);
 		return;
-=======
-	ctx.fillStyle = userBgImage.transparent
-		? hexColor
-			? hexColor
-			: 'transparent'
-		: ctx.createPattern(sprite.repeatableBg, 'repeat')!;
-	ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-	if (!uniqueSprite) {
-		ctx.drawImage(
-			userBgImage.image!,
-			(canvas.width - userBgImage.image!.width) * 0.5,
-			(canvas.height - userBgImage.image!.height) * 0.5
-		);
-	}
-	ctx.drawImage(gearTemplateImage, 0, 0, gearTemplateImage.width, gearTemplateImage.height);
-
-	if (!userBgImage.transparent) bankImageGenerator.drawBorder(ctx, sprite, false);
-
-	ctx.font = '16px OSRSFontCompact';
-	// Draw preset title
-	if (gearType) {
-		drawTitleText(ctx, toTitleCase(gearType), Math.floor(176 / 2), 25);
->>>>>>> master
 	}
 
 	ctx.save();
@@ -258,17 +216,14 @@ export async function generateGearImage(
 	gearType: GearSetupType | null,
 	petID: number | null
 ) {
-	const transmogItem =
-		(gearType && transmogItems.find(t => user.gear[gearType].hasEquipped(t.item.name))) ?? null;
+	const transmogItem = (gearType && transmogItems.find(t => user.gear[gearType].hasEquipped(t.item.name))) ?? null;
 	const transMogImage = transmogItem === null ? null : await transmogItem.image;
 
-
-	const bankBg =
-		user.user.bankBackground ?? 1;
+	const bankBg = user.user.bankBackground ?? 1;
 
 	let { sprite, uniqueSprite, background: userBgImage } = bankImageGenerator.getBgAndSprite(bankBg);
 
-	const hexColor =  user.user.bank_bg_hex;
+	const hexColor = user.user.bank_bg_hex;
 
 	const gearStats = gearSetup instanceof Gear ? gearSetup.stats : new Gear(gearSetup).stats;
 	const gearTemplateImage = await canvasImageFromBuffer(gearTemplateFile);

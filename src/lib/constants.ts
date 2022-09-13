@@ -1,7 +1,17 @@
+import { Prisma } from '@prisma/client';
 import { ButtonBuilder } from 'discord.js';
 import { Time } from 'e';
-import { APIButtonComponent, APIButtonComponentWithCustomId, ButtonStyle, ComponentType } from 'mahoji';
+import {
+	APIButtonComponent,
+	APIButtonComponentWithCustomId,
+	APIInteractionDataResolvedChannel,
+	APIRole,
+	APIUser,
+	ButtonStyle,
+	ComponentType
+} from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import { CommandOptions } from 'mahoji/dist/lib/types';
 
 import { DISCORD_SETTINGS, production } from '../config';
 import { AbstractCommand, CommandArgs } from '../mahoji/lib/inhibitors';
@@ -515,14 +525,48 @@ export function shouldTrackCommand(command: AbstractCommand, args: CommandArgs) 
 	}
 	return true;
 }
-export function getCommandArgs(command: Command, args: any[]) {
-	if (args.length === 0) return undefined;
-	if (command.name === 'bank') return undefined;
-	if (command.name === 'rp' && ['c'].includes(args[0])) return undefined;
-	if (command.name === 'eval') return undefined;
-	return args;
+
+function compressMahojiArgs(options: CommandArgs) {
+	let newOptions: Record<string, string | number | boolean | null | undefined> = {};
+	for (const [key, val] of Object.entries(options) as [
+		keyof CommandOptions,
+		CommandOptions[keyof CommandOptions]
+	][]) {
+		if (
+			typeof val === 'string' ||
+			typeof val === 'number' ||
+			typeof val === 'boolean' ||
+			typeof val === 'undefined'
+		) {
+			newOptions[key] = val;
+			continue;
+		}
+
+		if ('user' in val && 'member' in val) {
+			newOptions[key] = (val.user as APIUser).id;
+			continue;
+		}
+
+		if ('id' in val) {
+			newOptions[key] = (val as APIRole | APIInteractionDataResolvedChannel).id;
+			continue;
+		}
+
+		newOptions[key] = null;
+	}
+	return newOptions;
 }
 
+export function getCommandArgs(
+	commandName: string,
+	args: CommandArgs
+): Prisma.InputJsonObject | Prisma.InputJsonArray | undefined {
+	if (Array.isArray(args) && args.length === 0) return undefined;
+	if (!Array.isArray(args) && Object.keys(args).length === 0) return undefined;
+	if (commandName === 'bank') return undefined;
+	if (commandName === 'rp' && Array.isArray(args) && ['c', 'eval'].includes(args[0] as string)) return undefined;
+	return (Array.isArray(args) ? args : compressMahojiArgs(args)) as Prisma.InputJsonObject | Prisma.InputJsonArray;
+}
 export const GLOBAL_BSO_XP_MULTIPLIER = 5;
 
 export const DISABLED_COMMANDS = new Set<string>();
