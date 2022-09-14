@@ -90,7 +90,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 				maxSize: 70
 			});
 
-			if (!user.bank.fits(bank)) {
+			if (!user.bank.has(bank)) {
 				return "You don't own those items.";
 			}
 
@@ -115,6 +115,10 @@ export const giveawayCommand: OSBMahojiCommand = {
 			const reaction = supportServer.emojis.cache.random();
 			if (!reaction || !reaction.id) {
 				return "Couldn't retrieve emojis for this guild, ensure you have some emojis and try again.";
+			}
+
+			if (!user.bank.has(bank)) {
+				return "You don't own those items.";
 			}
 
 			const message = await channel.send({

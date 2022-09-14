@@ -67,7 +67,7 @@ export async function gearPresetEquipCommand(user: MUser, gearSetup: string, pre
 
 	const userBankWithEquippedItems = user.bank.clone();
 	for (const e of objectValues(user.gear[gearSetup].raw())) {
-		if (e) userBankWithEquippedItems.add(e.item, e.quantity);
+		if (e) userBankWithEquippedItems.add(e.item, Math.max(e.quantity, 1));
 	}
 
 	if (!userBankWithEquippedItems.has(toRemove.bank)) {
