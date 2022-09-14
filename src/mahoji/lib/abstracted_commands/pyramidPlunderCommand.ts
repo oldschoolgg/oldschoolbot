@@ -1,16 +1,18 @@
 import { objectEntries, reduceNumByPercent, Time } from 'e';
-import { KlasaUser } from 'klasa';
 
 import { plunderBoosts, plunderRooms } from '../../../lib/minions/data/plunder';
-import { SkillsEnum } from '../../../lib/skilling/types';
+import { getMinigameScore } from '../../../lib/settings/minigames';
 import { PlunderActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, itemNameFromID } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import { minionIsBusy } from '../../../lib/util/minionIsBusy';
+import { userHasGracefulEquipped } from '../../mahojiSettings';
 
-export async function pyramidPlunderCommand(user: KlasaUser, channelID: bigint) {
-	if (user.minionIsBusy) return `${user.minionName} is busy.`;
-	const thievingLevel = user.skillLevel(SkillsEnum.Thieving);
+export async function pyramidPlunderCommand(user: MUser, channelID: bigint) {
+	if (minionIsBusy(user.id)) return `${user.minionName} is busy.`;
+	const skills = user.skillsAsLevels;
+	const thievingLevel = skills.thieving;
 	const minLevel = plunderRooms[0].thievingLevel;
 	if (thievingLevel < minLevel) {
 		return `You need atleast level ${minLevel} Thieving to do the Pyramid Plunder.`;
@@ -22,14 +24,14 @@ export async function pyramidPlunderCommand(user: KlasaUser, channelID: bigint) 
 
 	const boosts = [];
 
-	if (!user.hasGracefulEquipped()) {
+	if (!userHasGracefulEquipped(user)) {
 		plunderTime *= 1.075;
 		boosts.push('-7.5% time penalty for not having graceful equipped');
 	}
 
 	// Every 1h becomes 1% faster to a cap of 10%
 	const percentFaster = Math.min(
-		Math.floor((await user.getMinigameScore('pyramid_plunder')) / (Time.Hour / plunderTime)),
+		Math.floor((await getMinigameScore(user.id, 'pyramid_plunder')) / (Time.Hour / plunderTime)),
 		10
 	);
 
@@ -38,7 +40,7 @@ export async function pyramidPlunderCommand(user: KlasaUser, channelID: bigint) 
 	plunderTime = reduceNumByPercent(plunderTime, percentFaster);
 
 	for (const [id, percent] of objectEntries(plunderBoosts)) {
-		if (user.hasItemEquippedOrInBank(Number(id))) {
+		if (user.hasEquippedOrInBank([Number(id)])) {
 			boosts.push(`${percent}% for ${itemNameFromID(Number(id))}`);
 			plunderTime = reduceNumByPercent(plunderTime, percent);
 		}

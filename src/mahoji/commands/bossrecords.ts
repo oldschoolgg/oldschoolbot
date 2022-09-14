@@ -1,4 +1,5 @@
-import { MessageEmbed, MessageOptions } from 'discord.js';
+import { Embed } from '@discordjs/builders';
+import { MessageEditOptions } from 'discord.js';
 import { chunk } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions, MessageFlags } from 'mahoji';
 import { Hiscores } from 'oldschooljs';
@@ -55,16 +56,18 @@ export const bossrecordCommand: OSBMahojiCommand = {
 			return 'You have no boss records!. Try logging into the game, and logging out.';
 		}
 
-		const pages: MessageOptions[] = [];
+		const pages: MessageEditOptions[] = [];
 		for (const page of chunk(sortedEntries, 12)) {
-			const embed = new MessageEmbed().setAuthor(`${toTitleCase(options.rsn)} - Boss Records`).setColor(52_224);
+			const embed = new Embed()
+				.setAuthor({ name: `${toTitleCase(options.rsn)} - Boss Records` })
+				.setColor(52_224);
 
 			for (const [name, { rank, score }] of page) {
-				embed.addField(
-					`${getEmojiForBoss(name) || ''} ${bossNameMap.get(name)}`,
-					`**KC:** ${score.toLocaleString()}\n**Rank:** ${rank.toLocaleString()}`,
-					true
-				);
+				embed.addField({
+					name: `${getEmojiForBoss(name) || ''} ${bossNameMap.get(name)}`,
+					value: `**KC:** ${score.toLocaleString()}\n**Rank:** ${rank.toLocaleString()}`,
+					inline: true
+				});
 			}
 
 			pages.push({ embeds: [embed] });
@@ -72,9 +75,8 @@ export const bossrecordCommand: OSBMahojiCommand = {
 
 		const channel = globalClient.channels.cache.get(channelID.toString());
 		if (!channelIsSendable(channel)) return 'Invalid channel.';
-		const msg = await channel.send({ embeds: [new MessageEmbed().setDescription('Loading...')] });
 
-		await makePaginatedMessage(msg, pages, await globalClient.fetchUser(userID));
+		await makePaginatedMessage(channel, pages, userID.toString());
 		return {
 			content: `Showing OSRS Boss Records for \`${options.rsn}\`.`,
 			flags: MessageFlags.Ephemeral

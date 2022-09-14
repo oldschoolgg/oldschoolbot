@@ -4,13 +4,18 @@ import { Bank } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { MAX_INT_JAVA } from '../../lib/constants';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { NestBoxesTable } from '../../lib/simulation/misc';
-import { clamp, itemID, toKMB, updateBankSetting, updateGPTrackSetting } from '../../lib/util';
+import { clamp, itemID, toKMB } from '../../lib/util';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiUsersSettingsFetch, userStatsUpdate } from '../mahojiSettings';
+import {
+	handleMahojiConfirmation,
+	mahojiUsersSettingsFetch,
+	updateBankSetting,
+	updateGPTrackSetting,
+	userStatsUpdate
+} from '../mahojiSettings';
 
 /**
  * - Hardcoded prices
@@ -25,10 +30,11 @@ const specialSoldItems = new Map([
 	[itemID('Ancient relic'), 16_000_000]
 ]);
 
+export const CUSTOM_PRICE_CACHE = new Map<number, number>();
+
 export function sellPriceOfItem(item: Item, taxRate = 20): { price: number; basePrice: number } {
 	if (!item.price || !item.tradeable) return { price: 0, basePrice: 0 };
-	const customPrices = globalClient.settings.get(ClientSettings.CustomPrices);
-	let basePrice = customPrices[item.id] ?? item.price;
+	let basePrice = CUSTOM_PRICE_CACHE.get(item.id) ?? item.price;
 	let price = basePrice;
 	price = reduceNumByPercent(price, taxRate);
 	price = clamp(price, 0, MAX_INT_JAVA);
@@ -72,10 +78,10 @@ export const sellCommand: OSBMahojiCommand = {
 		options,
 		interaction
 	}: CommandRunOptions<{ items: string; filter?: string; search?: string }>) => {
-		const user = await globalClient.fetchUser(userID.toString());
+		const user = await mUserFetch(userID.toString());
 		const mUser = await mahojiUsersSettingsFetch(user.id, { favoriteItems: true });
 		const bankToSell = parseBank({
-			inputBank: user.bank(),
+			inputBank: user.bank,
 			inputStr: options.items,
 			maxSize: 70,
 			filters: [options.filter],
@@ -97,7 +103,11 @@ export const sellCommand: OSBMahojiCommand = {
 				loot.add(NestBoxesTable.roll());
 			}
 			await user.removeItemsFromBank(moleBank);
-			await user.addItemsToBank({ items: loot, collectionLog: true });
+			await transactItems({
+				userID: user.id,
+				collectionLog: true,
+				itemsToAdd: loot
+			});
 			return `You exchanged ${moleBank} and received: ${loot}.`;
 		}
 
@@ -139,12 +149,15 @@ export const sellCommand: OSBMahojiCommand = {
 			)}).`
 		);
 
-		await user.removeItemsFromBank(bankToSell.bank);
-		await user.addItemsToBank({ items: new Bank().add('Coins', totalPrice) });
+		await transactItems({
+			userID: user.id,
+			itemsToAdd: new Bank().add('Coins', totalPrice),
+			itemsToRemove: bankToSell
+		});
 
 		await Promise.all([
 			updateGPTrackSetting('gp_sell', totalPrice),
-			updateBankSetting(globalClient, ClientSettings.EconomyStats.SoldItemsBank, bankToSell.bank),
+			updateBankSetting('sold_items_bank', bankToSell),
 			userStatsUpdate(user.id, userStats => ({
 				items_sold_bank: new Bank(userStats.items_sold_bank as ItemBank).add(bankToSell).bank,
 				sell_gp: {

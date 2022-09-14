@@ -1,5 +1,3 @@
-import { User } from '@prisma/client';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
@@ -28,7 +26,7 @@ import { troubleBrewingBuyables } from './troubleBrewingShop';
 
 export interface Buyable {
 	name: string;
-	outputItems?: Bank | ((user: User) => Bank);
+	outputItems?: Bank | ((user: MUser) => Bank);
 	qpRequired?: number;
 	gpCost?: number;
 	itemCost?: Bank;
@@ -39,7 +37,7 @@ export interface Buyable {
 	minigameScoreReq?: [MinigameName, number];
 	ironmanPrice?: number;
 	collectionLogReqs?: number[];
-	customReq?: (user: KlasaUser) => Promise<[true] | [false, string]>;
+	customReq?: (user: MUser) => Promise<[true] | [false, string]>;
 }
 
 const randomEventBuyables: Buyable[] = [
@@ -76,7 +74,7 @@ const randomEventBuyables: Buyable[] = [
 
 const ironmenBuyables: Buyable[] = ['Ironman helm', 'Ironman platebody', 'Ironman platelegs'].map(str => ({
 	name: str,
-	customReq: async (user: KlasaUser) => {
+	customReq: async (user: MUser) => {
 		return user.isIronman ? [true] : [false, 'Only ironmen can buy this.'];
 	},
 	gpCost: 1000
@@ -723,7 +721,6 @@ const Buyables: Buyable[] = [
 		aliases: ['jug of water', 'jugs of water'],
 		gpCost: 100
 	},
-
 	{
 		name: 'Feather',
 		aliases: ['feather'],
@@ -841,6 +838,36 @@ const Buyables: Buyable[] = [
 		})
 	},
 	{
+		name: 'Bronze pickaxe',
+		gpCost: 500,
+		ironmanPrice: 1
+	},
+	{
+		name: 'Iron pickaxe',
+		gpCost: 1000,
+		ironmanPrice: 140
+	},
+	{
+		name: 'Steel pickaxe',
+		gpCost: 2000,
+		ironmanPrice: 500
+	},
+	{
+		name: 'Mithril pickaxe',
+		gpCost: 5000,
+		ironmanPrice: 1300
+	},
+	{
+		name: 'Adamant pickaxe',
+		gpCost: 10_000,
+		ironmanPrice: 3200
+	},
+	{
+		name: 'Rune pickaxe',
+		gpCost: 100_000,
+		ironmanPrice: 32_000
+	},
+	{
 		name: 'Rainbow flower crown',
 		itemCost: new Bank({
 			Coins: 5000
@@ -874,8 +901,8 @@ const Buyables: Buyable[] = [
 	},
 	{
 		name: 'Rolling pin',
-		gpCost: 1000,
-		ironmanPrice: 100
+		gpCost: 50_000,
+		ironmanPrice: 18_720
 	},
 	{
 		name: 'Adamant halberd',

@@ -1,13 +1,9 @@
-import { User } from '@prisma/client';
 import { randArrItem, randInt, roll } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { getSkillsOfMahojiUser } from '../../../mahoji/mahojiSettings';
 import { HighSeedPackTable, LowSeedPackTable, MediumSeedPackTable } from '../../data/seedPackTables';
 import { PlantTier } from '../../minions/farming/types';
 import { stringMatches } from '../../util/cleanString';
-import { SkillsEnum } from '../types';
 
 export function openSeedPack(seedTier: number): Bank {
 	const loot = new Bank();
@@ -152,11 +148,10 @@ const hardPlants: PlantsList = [
 ];
 
 export function getPlantToGrow(
-	user: KlasaUser | User,
+	user: MUser,
 	{ contractLevel, ignorePlant }: { contractLevel: 'easy' | 'medium' | 'hard'; ignorePlant: string | null }
 ): [string, PlantTier] {
-	const farmingLevel =
-		user instanceof KlasaUser ? user.skillLevel(SkillsEnum.Farming) : getSkillsOfMahojiUser(user, true).farming;
+	const farmingLevel = user.skillsAsLevels.farming;
 	let contractType: PlantsList = [];
 	if (contractLevel === 'easy') contractType = [...easyPlants];
 	if (contractLevel === 'medium') contractType = [...mediumPlants];

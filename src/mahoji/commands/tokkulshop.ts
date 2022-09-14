@@ -5,13 +5,12 @@ import { Bank, Monsters } from 'oldschooljs';
 
 import TokkulShopItems from '../../lib/data/buyables/tokkulBuyables';
 import { KaramjaDiary, userhasDiaryTier } from '../../lib/diaries';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { TokkulShopOptions } from '../../lib/types/minions';
-import { formatDuration, stringMatches, updateBankSetting } from '../../lib/util';
+import { formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation } from '../mahojiSettings';
+import { handleMahojiConfirmation, updateBankSetting } from '../mahojiSettings';
 
 const { TzTokJad } = Monsters;
 
@@ -91,7 +90,7 @@ export const tksCommand: OSBMahojiCommand = {
 		buy?: { name?: string; quantity?: number };
 		sell?: { name?: string; quantity?: number };
 	}>) => {
-		const user = await globalClient.fetchUser(userID.toString());
+		const user = await mUserFetch(userID.toString());
 		if (user.minionIsBusy) return `${user.minionName} is currently busy and cannot go to the Tzhaar shops.`;
 		const [hasKaramjaDiary] = await userhasDiaryTier(user, KaramjaDiary.easy);
 		const item = TokkulShopItems.find(i => stringMatches(i.name, options.buy?.name ?? options.sell?.name ?? ''));
@@ -99,7 +98,7 @@ export const tksCommand: OSBMahojiCommand = {
 		if (item.requireFireCape && user.getKC(TzTokJad.id) < 1) {
 			return `You are not worthy JalYt. Before you can buy/sell ${item.name}, you need to have defeated the might TzTok-Jad!`;
 		}
-		const bank = user.bank();
+		const { bank } = user;
 		const maxTripLength = calcMaxTripLength(user, activity_type_enum.TokkulShop);
 		let quantity = options.buy?.quantity ?? options.sell?.quantity ?? 1;
 		const cost = new Bank();
@@ -140,8 +139,8 @@ export const tksCommand: OSBMahojiCommand = {
 			)}.`
 		);
 
-		await user.removeItemsFromBank(cost);
-		await updateBankSetting(globalClient, ClientSettings.EconomyStats.TKSCost, cost);
+		await transactItems({ userID: user.id, itemsToRemove: cost });
+		await updateBankSetting('tks_cost', cost);
 
 		await addSubTaskToActivityTask<TokkulShopOptions>({
 			userID: user.id,

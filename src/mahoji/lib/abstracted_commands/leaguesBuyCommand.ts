@@ -1,4 +1,3 @@
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { leagueBuyables } from '../../../lib/data/leaguesBuyables';
@@ -7,7 +6,7 @@ import { stringMatches } from '../../../lib/util';
 
 const pointsCostMultiplier = 150;
 
-export async function leaguesBuyCommand(user: KlasaUser, itemName: string, quantity = 1) {
+export async function leaguesBuyCommand(user: MUser, itemName: string, quantity = 1) {
 	const item = leagueBuyables.find(i => stringMatches(i.item.name, itemName));
 	if (!item) return "That's not a valid item.";
 
@@ -29,6 +28,11 @@ export async function leaguesBuyCommand(user: KlasaUser, itemName: string, quant
 	});
 
 	const loot = new Bank().add(item.item.id, quantity);
-	await user.addItemsToBank({ items: loot, collectionLog: true });
+	await transactItems({
+		userID: user.id,
+		itemsToAdd: loot,
+		collectionLog: true
+	});
+
 	return `You spent ${cost} Leagues Points and received ${loot}. You have ${newUser.leagues_points_balance_osb} points remaining.`;
 }

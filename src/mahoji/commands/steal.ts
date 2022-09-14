@@ -3,19 +3,17 @@ import { APIUser, ApplicationCommandOptionType, CommandRunOptions } from 'mahoji
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { Stealable, stealables } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, rand, rogueOutfitPercentBonus, updateBankSetting } from '../../lib/util';
+import { formatDuration, getSkillsOfMahojiUser, rand } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
 import { logError } from '../../lib/util/logError';
 import { calcLootXPPickpocketing } from '../../tasks/minions/pickpocketActivity';
 import { OSBMahojiCommand } from '../lib/util';
-import { getSkillsOfMahojiUser, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { mahojiUsersSettingsFetch, rogueOutfitPercentBonus, updateBankSetting } from '../mahojiSettings';
 
 export const stealCommand: OSBMahojiCommand = {
 	name: 'steal',
@@ -52,7 +50,7 @@ export const stealCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
-		const user = await globalClient.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		stealables;
 		const stealable: Stealable | undefined = stealables.find(
 			obj =>
@@ -65,14 +63,14 @@ export const stealCommand: OSBMahojiCommand = {
 				.join(', ')}.`;
 		}
 
-		if (stealable.qpRequired && user.settings.get(UserSettings.QP) < stealable.qpRequired) {
+		if (stealable.qpRequired && user.QP < stealable.qpRequired) {
 			return `You need atleast **${stealable.qpRequired}** QP to ${
 				stealable.type === 'pickpockable' ? 'pickpocket' : 'steal from'
 			} a ${stealable.name}.`;
 		}
 
 		if (stealable.fireCapeRequired) {
-			if (user.cl().amount('Fire cape') === 0) {
+			if (user.cl.amount('Fire cape') === 0) {
 				return `In order to ${
 					stealable.type === 'pickpockable' ? 'pickpocket this NPC' : 'steal from this stall'
 				}, you need a fire cape in your collection log.`;
@@ -135,11 +133,11 @@ export const stealCommand: OSBMahojiCommand = {
 				user.skillLevel(SkillsEnum.Thieving),
 				stealable,
 				quantity,
-				user.hasItemEquippedAnywhere(['Thieving cape', 'Thieving cape(t)']),
+				user.hasEquipped(['Thieving cape', 'Thieving cape(t)']),
 				hasArdyHard
 			);
 
-			if (user.hasItemEquippedAnywhere(['Thieving cape', 'Thieving cape(t)'])) {
+			if (user.hasEquipped(['Thieving cape', 'Thieving cape(t)'])) {
 				boosts.push('+10% chance of success from Thieving cape');
 			}
 
@@ -155,7 +153,7 @@ export const stealCommand: OSBMahojiCommand = {
 				attackStylesUsed: []
 			});
 
-			updateBankSetting(globalClient, ClientSettings.EconomyStats.ThievingCost, foodRemoved);
+			updateBankSetting('economyStats_thievingCost', foodRemoved);
 			str += ` Removed ${foodRemoved}.`;
 		} else {
 			// Up to 5% fail chance, random

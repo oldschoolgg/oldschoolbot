@@ -1,6 +1,5 @@
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { UserSettings } from '../settings/types/UserSettings';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
 
@@ -9,7 +8,7 @@ export interface Offerable {
 	itemID: number;
 	offerWhere: string;
 	table: LootTable;
-	economyCounter?: string;
+	economyCounter?: 'slayer_chewed_offered' | 'slayer_unsired_offered';
 	aliases?: string[];
 	uniques?: number[];
 }
@@ -53,7 +52,7 @@ export const Offerables: Offerable[] = [
 		itemID: itemID('Unsired'),
 		offerWhere: 'Font of consumption',
 		table: UnsiredLootTable,
-		economyCounter: UserSettings.Slayer.UnsiredOffered,
+		economyCounter: 'slayer_unsired_offered',
 		aliases: ['unsired', 'sired', 'sire'],
 		uniques: resolveItems(['Abyssal orphan', 'Jar of miasma'])
 	},
@@ -61,7 +60,7 @@ export const Offerables: Offerable[] = [
 		name: 'Chewed bones',
 		itemID: itemID('Chewed bones'),
 		offerWhere: 'barbarian spirit',
-		economyCounter: UserSettings.Slayer.ChewedBonesOffered,
+		economyCounter: 'slayer_chewed_offered',
 		table: ChewedBonesLootTable,
 		aliases: ['chewed bones', 'chewed'],
 		uniques: resolveItems(['Dragon full helm'])

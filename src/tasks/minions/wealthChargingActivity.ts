@@ -1,4 +1,3 @@
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
@@ -6,10 +5,11 @@ import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { wealthInventorySize } from '../../mahoji/lib/abstracted_commands/chargeWealthCommand';
 
-export default class extends Task {
+export const wealthChargeTask: MinionTask = {
+	type: 'WealthCharging',
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { quantity, userID, channelID } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		let deaths = 0;
 		let loot = new Bank();
 		for (let i = 0; i < quantity; i++) {
@@ -33,7 +33,11 @@ export default class extends Task {
 			str += ` They died ${deaths}x times, causing the loss of ${wealthInventorySize * deaths} rings of wealth.`;
 		}
 
-		await user.addItemsToBank({ items: loot, collectionLog: true });
+		await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 		handleTripFinish(
 			user,
 			channelID,
@@ -44,4 +48,4 @@ export default class extends Task {
 			loot
 		);
 	}
-}
+};

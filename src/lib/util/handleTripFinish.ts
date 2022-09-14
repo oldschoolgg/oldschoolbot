@@ -1,23 +1,23 @@
 import { activity_type_enum } from '@prisma/client';
-import { isGuildBasedChannel } from '@sapphire/discord.js-utilities';
-import { MessageAttachment, MessageCollector, MessageOptions } from 'discord.js';
-import { KlasaMessage, KlasaUser } from 'klasa';
+import { ActionRowBuilder, AttachmentBuilder, ButtonBuilder, MessageCollector } from 'discord.js';
+import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
-import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
+import { updateGPTrackSetting, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { ClueTiers } from '../clues/clueTiers';
 import { COINS_ID, Emoji, lastTripCache, LastTripRunArgs, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
 import { triggerRandomEvent } from '../randomEvents';
 import { runCommand } from '../settings/settings';
+import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import { ActivityTaskOptions } from '../types/minions';
-import { channelIsSendable, updateGPTrackSetting } from '../util';
-import getUsersPerkTier from './getUsersPerkTier';
+import { channelIsSendable } from '../util';
 import {
 	makeBirdHouseTripButton,
 	makeDoClueButton,
+	makeNewSlayerTaskButton,
 	makeOpenCasketButton,
 	makeRepeatTripButton
 } from './globalInteractions';
@@ -34,7 +34,7 @@ const activitiesToTrackAsPVMGPSource: activity_type_enum[] = [
 
 const tripFinishEffects: {
 	name: string;
-	fn: (options: { data: ActivityTaskOptions; user: KlasaUser; loot: Bank | null; messages: string[] }) => unknown;
+	fn: (options: { data: ActivityTaskOptions; user: MUser; loot: Bank | null; messages: string[] }) => unknown;
 }[] = [
 	{
 		name: 'Track GP Analytics',
@@ -55,7 +55,7 @@ const tripFinishEffects: {
 				const many = imp.bank.length > 1;
 				messages.push(`Caught ${many ? 'some' : 'an'} impling${many ? 's' : ''}, you received: ${imp.bank}`);
 				userStatsBankUpdate(user.id, 'passive_implings_bank', imp.bank);
-				await user.addItemsToBank({ items: imp.bank, collectionLog: true });
+				await transactItems({ userID: user.id, itemsToAdd: imp.bank, collectionLog: true });
 			}
 		}
 	},
@@ -74,19 +74,19 @@ const tripFinishEffects: {
 ];
 
 export async function handleTripFinish(
-	user: KlasaUser,
+	user: MUser,
 	channelID: string,
 	message: string,
 	onContinue:
 		| undefined
-		| [string, unknown[] | Record<string, unknown>, boolean?, string?]
-		| ((args: LastTripRunArgs) => Promise<KlasaMessage | KlasaMessage[] | null>),
-	attachment: MessageAttachment | Buffer | undefined,
+		| [string, Record<string, unknown>, boolean?, string?]
+		| ((args: LastTripRunArgs) => Promise<CommandResponse | null>),
+	attachment: AttachmentBuilder | Buffer | undefined,
 	data: ActivityTaskOptions,
 	loot: Bank | null,
 	_messages?: string[]
 ) {
-	const perkTier = getUsersPerkTier(user);
+	const { perkTier } = user;
 	const messages: string[] = [];
 	for (const effect of tripFinishEffects) await effect.fn({ data, user, loot, messages });
 
@@ -114,7 +114,7 @@ export async function handleTripFinish(
 	const runCmdOptions = {
 		channelID,
 		userID: user.id,
-		guildID: isGuildBasedChannel(channel) && channel.guild ? channel.guild.id : undefined,
+		guildID: channel.guild ? channel.guild.id : undefined,
 		user,
 		member: null
 	};
@@ -125,7 +125,6 @@ export async function handleTripFinish(
 					commandName: onContinue[0],
 					args: onContinue[1],
 					isContinue: onContinue[2],
-					method: onContinue[3],
 					bypassInhibitors: true,
 					...runCmdOptions,
 					...args
@@ -133,17 +132,24 @@ export async function handleTripFinish(
 		: onContinue;
 
 	if (onContinueFn) lastTripCache.set(user.id, { data, continue: onContinueFn });
-	const components: MessageOptions['components'] = [[]];
-	if (onContinueFn) components[0].push(makeRepeatTripButton());
-	if (clueReceived && perkTier > PerkTier.One) components[0].push(makeDoClueButton(clueReceived));
-
+	const components = new ActionRowBuilder<ButtonBuilder>();
+	if (onContinueFn) components.addComponents(makeRepeatTripButton());
+	if (clueReceived && perkTier > PerkTier.One) components.addComponents(makeDoClueButton(clueReceived));
 	const casketReceived = loot ? ClueTiers.find(i => loot?.has(i.id)) : undefined;
-	if (casketReceived) components[0].push(makeOpenCasketButton(casketReceived));
+	if (casketReceived) components.addComponents(makeOpenCasketButton(casketReceived));
 	const birdHousedetails = await calculateBirdhouseDetails(user.id);
-	if (birdHousedetails.isReady && perkTier > PerkTier.One) components[0].push(makeBirdHouseTripButton());
+	if (birdHousedetails.isReady && perkTier > PerkTier.One) components.addComponents(makeBirdHouseTripButton());
+	const { currentTask } = await getUsersCurrentSlayerInfo(user.id);
+	if (
+		(currentTask === null || currentTask.quantity_remaining <= 0) &&
+		perkTier > PerkTier.One &&
+		data.type === 'MonsterKilling'
+	) {
+		components.addComponents(makeNewSlayerTaskButton());
+	}
 	sendToChannelID(channelID, {
 		content: message,
 		image: attachment,
-		components: components[0].length > 0 ? components : undefined
+		components: components.components.length > 0 ? [components] : undefined
 	});
 }

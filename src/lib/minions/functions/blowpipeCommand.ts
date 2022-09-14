@@ -1,9 +1,14 @@
-import { KlasaUser } from 'klasa';
+import { Prisma } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 
-import { UserSettings } from '../../settings/types/UserSettings';
 import getOSItem, { getItem } from '../../util/getOSItem';
 import { BlowpipeData } from '../types';
+
+export const defaultBlowpipe: BlowpipeData = {
+	scales: 0,
+	dartID: null,
+	dartQuantity: 0
+};
 
 export const blowpipeDarts = [
 	'Bronze dart',
@@ -27,7 +32,7 @@ export function validateBlowpipeData(data: BlowpipeData) {
 }
 
 export async function blowpipeCommand(
-	user: KlasaUser,
+	user: MUser,
 	removeDarts: boolean | undefined,
 	uncharge: boolean | undefined,
 	add: string | undefined,
@@ -41,14 +46,16 @@ export async function blowpipeCommand(
 		return addCommand(user, add, quantity);
 	}
 
-	const rawBlowpipeData = { ...user.settings.get(UserSettings.Blowpipe) };
+	const rawBlowpipeData = { ...user.blowpipe };
 	const hasBlowpipe = user.owns('Toxic blowpipe') || user.owns('Toxic blowpipe (empty)');
 	if (!hasBlowpipe) return "You don't own a Toxic blowpipe.";
 
 	try {
 		validateBlowpipeData(rawBlowpipeData);
 	} catch (err: any) {
-		await user.settings.reset(UserSettings.Blowpipe);
+		await user.update({
+			blowpipe: { ...defaultBlowpipe }
+		});
 
 		return `Your blowpipe got corrupted somehow (${err.message}), this shouldn't happen! It's a bug. Your blowpipe was reset.`;
 	}
@@ -65,7 +72,7 @@ Zulrah's scales: ${rawBlowpipeData.scales.toLocaleString()}x
 	return str;
 }
 
-async function addCommand(user: KlasaUser, itemName: string, quantity = 1) {
+async function addCommand(user: MUser, itemName: string, quantity = 1) {
 	if (user.minionIsBusy) {
 		return "You can't add to your blowpipe, because your minion is out on a trip.";
 	}
@@ -83,7 +90,7 @@ async function addCommand(user: KlasaUser, itemName: string, quantity = 1) {
 	const item = getItem(itemName);
 	if (!item) return 'Invalid item.';
 
-	const userBank = user.bank();
+	const userBank = user.bank;
 
 	let itemsToRemove = new Bank();
 	if (!blowpipeDarts.includes(item) && item !== getOSItem("Zulrah's scales")) {
@@ -93,7 +100,7 @@ async function addCommand(user: KlasaUser, itemName: string, quantity = 1) {
 
 	const dart = itemsToRemove.items().find(i => blowpipeDarts.includes(i[0]));
 
-	const rawBlowpipeData = { ...user.settings.get(UserSettings.Blowpipe) };
+	const rawBlowpipeData = { ...user.blowpipe };
 	validateBlowpipeData(rawBlowpipeData);
 	if (dart && !itemsToRemove.amount(dart[0].id)) {
 		throw new Error('wtf! not meant to happen');
@@ -121,11 +128,13 @@ async function addCommand(user: KlasaUser, itemName: string, quantity = 1) {
 		return `You don't own ${itemsToRemove}.`;
 	}
 	await user.removeItemsFromBank(itemsToRemove);
-	await user.settings.update(UserSettings.Blowpipe, currentData);
+	await user.update({
+		blowpipe: currentData as any as Prisma.InputJsonObject
+	});
 	return `You added ${itemsToRemove} to your Toxic blowpipe.`;
 }
 
-async function removeDartsCommand(user: KlasaUser) {
+async function removeDartsCommand(user: MUser) {
 	if (user.minionIsBusy) {
 		return "You can't remove darts from your blowpipe, because your minion is out on a trip.";
 	}
@@ -134,7 +143,7 @@ async function removeDartsCommand(user: KlasaUser) {
 		return "You don't own a Toxic blowpipe.";
 	}
 
-	const rawBlowpipeData = { ...user.settings.get(UserSettings.Blowpipe) };
+	const rawBlowpipeData = { ...user.blowpipe };
 	validateBlowpipeData(rawBlowpipeData);
 	if (!rawBlowpipeData.dartID || rawBlowpipeData.dartQuantity === 0) {
 		return 'Your Toxic blowpipe has no darts in it.';
@@ -144,12 +153,14 @@ async function removeDartsCommand(user: KlasaUser) {
 	rawBlowpipeData.dartID = null;
 	rawBlowpipeData.dartQuantity = 0;
 	await user.addItemsToBank({ items: returnedBank, collectionLog: false });
-	await user.settings.update(UserSettings.Blowpipe, rawBlowpipeData);
+	await user.update({
+		blowpipe: rawBlowpipeData as any as Prisma.InputJsonObject
+	});
 	validateBlowpipeData(rawBlowpipeData);
 	return `You removed ${returnedBank} from your Toxic blowpipe.`;
 }
 
-async function unchargeCommand(user: KlasaUser) {
+async function unchargeCommand(user: MUser) {
 	if (user.minionIsBusy) {
 		return "You can't uncharge your blowpipe, because your minion is out on a trip.";
 	}
@@ -158,7 +169,7 @@ async function unchargeCommand(user: KlasaUser) {
 		return "You don't own a Toxic blowpipe.";
 	}
 
-	const rawBlowpipeData = { ...user.settings.get(UserSettings.Blowpipe) };
+	const rawBlowpipeData = { ...user.blowpipe };
 	let returnedBank = new Bank();
 	if (rawBlowpipeData.scales) {
 		returnedBank.add("Zulrah's scales", rawBlowpipeData.scales);
@@ -172,7 +183,9 @@ async function unchargeCommand(user: KlasaUser) {
 	}
 
 	await user.addItemsToBank({ items: returnedBank, collectionLog: false });
-	await user.settings.update(UserSettings.Blowpipe, { scales: 0, dartID: null, dartQuantity: 0 });
+	await user.update({
+		blowpipe: { scales: 0, dartID: null, dartQuantity: 0 }
+	});
 
 	return `You removed ${returnedBank} from your Toxic blowpipe.`;
 }

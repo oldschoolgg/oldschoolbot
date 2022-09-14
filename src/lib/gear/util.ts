@@ -1,10 +1,9 @@
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 
-import { UserSettings } from '../settings/types/UserSettings';
 import { Gear } from '../structures/Gear';
 import { itemID, toTitleCase } from '../util';
 import getOSItem from '../util/getOSItem';
-import { GearSetup, GearSetupType } from '.';
+import { GearSetup } from '.';
 import { GearPreset } from '.prisma/client';
 
 export function itemInSlot(setup: GearSetup, slot: EquipmentSlot): [null, null] | [Item, number] {
@@ -15,27 +14,6 @@ export function itemInSlot(setup: GearSetup, slot: EquipmentSlot): [null, null] 
 
 export function readableStatName(slot: string) {
 	return toTitleCase(slot.replace('_', ' '));
-}
-
-export function resolveGearTypeSetting(type: GearSetupType) {
-	switch (type) {
-		case 'melee':
-			return UserSettings.Gear.Melee;
-		case 'mage':
-			return UserSettings.Gear.Mage;
-		case 'range':
-			return UserSettings.Gear.Range;
-		case 'skilling':
-			return UserSettings.Gear.Skilling;
-		case 'misc':
-			return UserSettings.Gear.Misc;
-		case 'wildy':
-			return UserSettings.Gear.Wildy;
-		case 'fashion':
-			return UserSettings.Gear.Fashion;
-		case 'other':
-			return UserSettings.Gear.Other;
-	}
 }
 
 export type PartialGearSetup = Partial<{

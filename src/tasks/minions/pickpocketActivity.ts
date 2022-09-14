@@ -1,14 +1,13 @@
 import { percentChance, randInt } from 'e';
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../lib/constants';
 import { Stealable, stealables } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
-import { rogueOutfitPercentBonus, updateGPTrackSetting } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
+import { rogueOutfitPercentBonus, updateGPTrackSetting } from '../../mahoji/mahojiSettings';
 
 export function calcLootXPPickpocketing(
 	currentLevel: number,
@@ -45,13 +44,13 @@ export function calcLootXPPickpocketing(
 	return [successful, damageTaken, xpReceived, chanceOfSuccess];
 }
 
-export default class extends Task {
+export const pickpocketTask: MinionTask = {
+	type: 'Pickpocket',
 	async run(data: PickpocketActivityTaskOptions) {
 		const { monsterID, quantity, successfulQuantity, userID, channelID, xpReceived, duration } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const obj = stealables.find(_obj => _obj.id === monsterID)!;
-
-		const currentLevel = user.skillLevel(SkillsEnum.Thieving);
+		const currentLevel = user.skillLevel('thieving');
 		let rogueOutfitBoostActivated = false;
 
 		const loot = new Bank();
@@ -79,7 +78,11 @@ export default class extends Task {
 			updateGPTrackSetting('gp_pickpocket', loot.amount('Coins'));
 		}
 
-		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
+		const { previousCL, itemsAdded } = await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 		const xpRes = await user.addXP({ skillName: SkillsEnum.Thieving, amount: xpReceived, duration });
 
 		let str = `${user}, ${user.minionName} finished ${
@@ -102,9 +105,9 @@ export default class extends Task {
 
 		if (loot.amount('Rocky') > 0) {
 			str += "\n**You have a funny feeling you're being followed...**";
-			this.client.emit(
+			globalClient.emit(
 				Events.ServerNotification,
-				`**${user.username}'s** minion, ${
+				`**${user.usernameOrMention}'s** minion, ${
 					user.minionName
 				}, just received a **Rocky** <:Rocky:324127378647285771> while ${
 					obj.type === 'pickpockable' ? 'pickpocketing' : 'stealing'
@@ -132,4 +135,4 @@ export default class extends Task {
 			loot
 		);
 	}
-}
+};

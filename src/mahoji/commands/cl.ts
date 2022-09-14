@@ -1,12 +1,13 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
-import { allCollectionLogs } from '../../lib/data/Collections';
-import { toTitleCase } from '../../lib/util';
-import CollectionLogTask, {
+import {
+	clImageGenerator,
 	CollectionLogFlags,
 	CollectionLogType,
 	collectionLogTypes
-} from '../../tasks/collectionLogTask';
+} from '../../lib/collectionLogTask';
+import { allCollectionLogs } from '../../lib/data/Collections';
+import { toTitleCase } from '../../lib/util';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
@@ -63,11 +64,11 @@ export const collectionLogCommand: OSBMahojiCommand = {
 		options,
 		userID
 	}: CommandRunOptions<{ name: string; type?: CollectionLogType; flag?: string; all?: boolean }>) => {
-		const user = await globalClient.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		let flags: Record<string, string> = {};
 		if (options.flag) flags[options.flag] = options.flag;
 		if (options.all) flags.all = 'all';
-		const result = await (globalClient.tasks.get('collectionLogTask') as CollectionLogTask)!.generateLogImage({
+		const result = await clImageGenerator.generateLogImage({
 			user,
 			mahojiUser: await mahojiUsersSettingsFetch(userID),
 			type: options.type ?? 'collection',

@@ -1,11 +1,9 @@
-import { User } from '@prisma/client';
-import { FormattedCustomEmoji } from '@sapphire/discord.js-utilities';
 import { notEmpty, randArrItem } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
 
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
-import { badges, BitField, BitFieldData, MAX_LEVEL, PerkTier } from '../../lib/constants';
+import { badges, BitField, BitFieldData, FormattedCustomEmoji, MAX_LEVEL, PerkTier } from '../../lib/constants';
 import { degradeableItems } from '../../lib/degradeableItems';
 import { diaries } from '../../lib/diaries';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
@@ -22,7 +20,6 @@ import { convertLVLtoXP, getUsername, isValidNickname } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
-import BankImageTask from '../../tasks/bankImage';
 import {
 	achievementDiaryCommand,
 	claimAchievementDiaryCommand
@@ -39,12 +36,7 @@ import { dataPoints, statsCommand } from '../lib/abstracted_commands/statCommand
 import { allUsableItems, useCommand } from '../lib/abstracted_commands/useCommand';
 import { ownedItemOption, skillOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import {
-	handleMahojiConfirmation,
-	mahojiUserSettingsUpdate,
-	mahojiUsersSettingsFetch,
-	patronMsg
-} from '../mahojiSettings';
+import { getKCByName, handleMahojiConfirmation, patronMsg } from '../mahojiSettings';
 
 const patMessages = [
 	'You pat {name} on the head.',
@@ -57,8 +49,7 @@ const patMessages = [
 
 const randomPatMessage = (minionName: string) => randArrItem(patMessages).replace('{name}', minionName);
 
-export async function getUserInfo(user: User) {
-	const klasaUser = await globalClient.fetchUser(user.id);
+export async function getUserInfo(user: MUser) {
 	const roboChimpUser = await roboChimpUserFetch(BigInt(user.id));
 
 	const bitfields = `${(user.bitfield as BitField[])
@@ -70,21 +61,24 @@ export async function getUserInfo(user: User) {
 	const task = minionActivityCache.get(user.id);
 	const taskText = task ? `${task.type}` : 'None';
 
-	const userBadges = user.badges.map(i => badges[i]);
+	const userBadges = user.user.badges.map(i => badges[i]);
 
-	const premiumDate = Number(user.premium_balance_expiry_date);
-	const premiumTier = user.premium_balance_tier;
+	const premiumDate = Number(user.user.premium_balance_expiry_date);
+	const premiumTier = user.user.premium_balance_tier;
 
 	const result = {
 		perkTier: getUsersPerkTier(user),
 		isBlacklisted: BLACKLISTED_USERS.has(user.id),
 		badges: userBadges,
-		mainAccount: user.main_account !== null ? `${getUsername(user.main_account)}[${user.main_account}]` : 'None',
-		ironmanAlts: user.ironman_alts.map(id => `${getUsername(id)}[${id}]`),
+		mainAccount:
+			user.user.main_account !== null
+				? `${getUsername(user.user.main_account)}[${user.user.main_account}]`
+				: 'None',
+		ironmanAlts: user.user.ironman_alts.map(id => `${getUsername(id)}[${id}]`),
 		premiumBalance: `${premiumDate ? new Date(premiumDate).toLocaleString() : ''} ${
 			premiumTier ? `Tier ${premiumTier}` : ''
 		}`,
-		isIronman: user.minion_ironman,
+		isIronman: user.isIronman,
 		bitfields,
 		currentTask: taskText,
 		patreon: roboChimpUser.patreon_id ? 'Yes' : 'None',
@@ -92,7 +86,7 @@ export async function getUserInfo(user: User) {
 	};
 	return {
 		...result,
-		everythingString: `${klasaUser.username}[${klasaUser.id}]
+		everythingString: `${user.usernameOrMention}[${user.id}]
 **Perk Tier:** ${result.perkTier}
 **Blacklisted:** ${result.isBlacklisted}
 **Badges:** ${result.badges.join(' ')}
@@ -194,9 +188,9 @@ export const minionCommand: OSBMahojiCommand = {
 					name: 'name',
 					description: 'The name of the bank background you want.',
 					autocomplete: async (value, user) => {
-						const mahojiUser = await mahojiUsersSettingsFetch(user.id, { bitfield: true });
-						const isMod = mahojiUser.bitfield.includes(BitField.isModerator);
-						const bankImages = (globalClient.tasks.get('bankImage') as BankImageTask).backgroundImages;
+						const mUser = await mUserFetch(user.id);
+						const isMod = mUser.bitfield.includes(BitField.isModerator);
+						const bankImages = bankImageGenerator.backgroundImages;
 						return bankImages
 							.filter(bg => isMod || bg.available)
 							.filter(bg => (!value ? true : bg.name.toLowerCase().includes(value.toLowerCase())))
@@ -448,17 +442,16 @@ export const minionCommand: OSBMahojiCommand = {
 		status?: {};
 		info?: {};
 	}>) => {
-		const user = await globalClient.fetchUser(userID.toString());
-		const mahojiUser = await mahojiUsersSettingsFetch(user.id);
+		const user = await mUserFetch(userID);
 		const perkTier = getUsersPerkTier(user);
 
-		if (options.info) return (await getUserInfo(mahojiUser)).everythingString;
+		if (options.info) return (await getUserInfo(user)).everythingString;
 		if (options.status) return minionStatusCommand(user.id);
 
 		if (options.stats) {
 			if (options.stats.stat) {
 				await interaction.deferReply();
-				return statsCommand(mahojiUser, options.stats.stat);
+				return statsCommand(user, options.stats.stat);
 			}
 			return { embeds: [await minionStatsEmbed(user)] };
 		}
@@ -474,17 +467,21 @@ export const minionCommand: OSBMahojiCommand = {
 			return bankBgCommand(interaction, user, options.bankbg.name ?? '');
 		}
 		if (options.cracker) {
-			const otherUser = await globalClient.fetchUser(options.cracker.user.user.id);
-			return crackerCommand({ owner: user, otherPerson: otherUser, interaction });
+			return crackerCommand({
+				ownerID: userID.toString(),
+				otherPersonID: options.cracker.user.user.id,
+				interaction,
+				otherPersonAPIUser: options.cracker.user.user
+			});
 		}
 
 		if (options.lamp) {
 			return lampCommand(user, options.lamp.item, options.lamp.skill, options.lamp.quantity);
 		}
 
-		if (options.cancel) return cancelTaskCommand(mahojiUser, interaction);
+		if (options.cancel) return cancelTaskCommand(user, interaction);
 
-		if (options.use) return useCommand(mahojiUser, user, options.use.item, options.use.secondary_item);
+		if (options.use) return useCommand(user, options.use.item, options.use.secondary_item);
 		if (options.set_icon) {
 			if (perkTier < PerkTier.Four) return patronMsg(PerkTier.Four);
 
@@ -492,7 +489,7 @@ export const minionCommand: OSBMahojiCommand = {
 			if (!res || !res[0]) return "That's not a valid emoji.";
 
 			await handleMahojiConfirmation(interaction, 'Icons cannot be inappropriate or NSFW. Do you understand?');
-			await mahojiUserSettingsUpdate(user.id, {
+			await user.update({
 				minion_icon: res[0]
 			});
 
@@ -500,7 +497,7 @@ export const minionCommand: OSBMahojiCommand = {
 		}
 		if (options.set_name) {
 			if (!isValidNickname(options.set_name.name)) return "That's not a valid name for your minion.";
-			await mahojiUserSettingsUpdate(user.id, {
+			await user.update({
 				minion_name: options.set_name.name
 			});
 			return `Renamed your minion to ${user.minionName}.`;
@@ -510,7 +507,7 @@ export const minionCommand: OSBMahojiCommand = {
 			const skill = Object.values(Skills).find(i => i.id === options.level?.skill);
 			if (!skill) return 'Invalid skill.';
 			const level = user.skillLevel(skill.id);
-			const xp = user.settings.get(`skills.${skill.id}`) as number;
+			const xp = Number(user.user[`skills_${skill.id}`]);
 
 			let str = `${skill.emoji} Your ${skill.name} level is **${level}** (${xp.toLocaleString()} XP).`;
 			if (level < MAX_LEVEL) {
@@ -521,14 +518,14 @@ export const minionCommand: OSBMahojiCommand = {
 		}
 
 		if (options.kc) {
-			const [kcName, kcAmount] = await user.getKCByName(options.kc.name);
+			const [kcName, kcAmount] = await getKCByName(user, options.kc.name);
 			if (!kcName) {
 				return "That's not a valid monster, minigame or hunting creature.";
 			}
 			return `Your ${kcName} KC is: ${kcAmount}.`;
 		}
 
-		if (options.buy) return minionBuyCommand(mahojiUser, Boolean(options.buy.ironman));
+		if (options.buy) return minionBuyCommand(user, Boolean(options.buy.ironman));
 		if (options.ironman) return ironmanCommand(user, interaction, Boolean(options.ironman.permanent));
 		if (options.charge) {
 			return degradeableItemsCommand(interaction, user, options.charge.item, options.charge.amount);
