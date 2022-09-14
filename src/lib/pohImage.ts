@@ -3,7 +3,6 @@ import * as fs from 'fs';
 import path from 'path';
 import { Canvas, CanvasRenderingContext2D, Image } from 'skia-canvas/lib';
 
-import { bankImageGenerator } from './bankImage';
 import { DUNGEON_FLOOR_Y, GROUND_FLOOR_Y, HOUSE_WIDTH, Placeholders, TOP_FLOOR_Y } from './poh';
 import { getActivityOfUser } from './settings/settings';
 import { canvasImageFromBuffer } from './util/canvasUtil';

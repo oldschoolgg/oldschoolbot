@@ -10,6 +10,7 @@ import {
 	DMChannel,
 	escapeMarkdown,
 	Guild,
+	GuildTextBasedChannel,
 	Message,
 	MessageEditOptions,
 	MessageOptions,
@@ -694,4 +695,8 @@ export function awaitMessageComponentInteraction({
 			else reject(new Error(reason));
 		});
 	});
+}
+
+export function isGuildChannel(channel?: Channel): channel is GuildTextBasedChannel {
+	return channel !== undefined && !channel.isDMBased() && Boolean(channel.guild);
 }
