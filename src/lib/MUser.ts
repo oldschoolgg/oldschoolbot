@@ -481,6 +481,10 @@ export class MUserClass {
 	materialsOwned() {
 		return new MaterialBank(this.user.materials_owned as IMaterialBank);
 	}
+
+	async sync() {
+		this.user = await mahojiUsersSettingsFetch(this.id);
+	}
 }
 declare global {
 	export type MUser = MUserClass;

@@ -276,7 +276,7 @@ export async function nightmareCommand(user: MUser, channelID: bigint, name: str
 			? `${soloMessage(user, duration, quantity, isPhosani)}
 ${soloBoosts.length > 0 ? `**Boosts:** ${soloBoosts.join(', ')}` : ''}
 Removed ${soloFoodUsage} from your bank.`
-			: `${user}'s party of ${
+			: `${user.usernameOrMention}'s party of ${
 					users.length
 			  } is now off to kill ${quantity}x Nightmare. Each kill takes ${formatDuration(
 					perKillTime
