@@ -19,7 +19,7 @@ export const clueTask: MinionTask = {
 			return;
 		}
 
-		const str = `${user}, ${user.minionName} finished completing ${quantity} ${clueTier.name} clues. ${
+		const str = `${user.mention}, ${user.minionName} finished completing ${quantity} ${clueTier.name} clues. ${
 			user.minionName
 		} carefully places the reward casket${
 			quantity > 1 ? 's' : ''
