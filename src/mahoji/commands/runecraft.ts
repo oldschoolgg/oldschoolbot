@@ -198,10 +198,13 @@ export const runecraftCommand: OSBMahojiCommand = {
 		} else if (!quantity) quantity = Math.min(numEssenceOwned, maxCanDo);
 
 		let essenceRequired = quantity;
+		let outputQuantity = quantity * quantityPerEssence;
 		if (user.usingPet('Obis')) {
 			essenceRequired *= 3;
 		}
-
+		if (runeObj.name === 'Elder rune') {
+			outputQuantity = Math.max(1, Math.floor((quantityPerEssence * quantity) / 3));
+		}
 		if (
 			numEssenceOwned === 0 ||
 			quantity === 0 ||
@@ -319,7 +322,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 		response += `Essence into ${runeObj.name}, it'll take around ${formatDuration(
 			duration
 		)} to finish, this will take ${numberOfInventories}x trips to the altar. You'll get ${
-			quantityPerEssence * essenceRequired
+			outputQuantity
 		}x runes due to the multiplier.\n\n**Boosts:** ${boosts.join(', ')}`;
 
 		if (!runeObj.stams) {
