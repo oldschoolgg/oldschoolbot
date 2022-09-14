@@ -471,6 +471,10 @@ export class MUserClass {
 	owns(checkBank: Bank | number | string) {
 		return this.bank.clone().add('Coins', Number(this.user.GP)).has(checkBank);
 	}
+
+	async sync() {
+		this.user = await mahojiUsersSettingsFetch(this.id);
+	}
 }
 declare global {
 	export type MUser = MUserClass;
