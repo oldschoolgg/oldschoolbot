@@ -33,7 +33,7 @@ const specialSoldItems = new Map([
 
 export const CUSTOM_PRICE_CACHE = new Map<number, number>();
 
-export function sellPriceOfItem(item: Item, taxRate = 20): { price: number; basePrice: number } {
+export function sellPriceOfItem(item: Item, taxRate = 25): { price: number; basePrice: number } {
 	if (!item.price || !item.tradeable) return { price: 0, basePrice: 0 };
 	let basePrice = CUSTOM_PRICE_CACHE.get(item.id) ?? item.price;
 	let price = basePrice;

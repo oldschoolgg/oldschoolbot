@@ -1,19 +1,15 @@
-<<<<<<< HEAD
-import { User } from 'discord.js';
 import { calcPercentOfNum, reduceNumByPercent } from 'e';
-
-=======
-import { reduceNumByPercent } from 'e';
->>>>>>> master
 import { Bank } from 'oldschooljs';
 
 import { Eatables } from '../src/lib/data/eatables';
 import getUserFoodFromBank from '../src/lib/minions/functions/getUserFoodFromBank';
-<<<<<<< HEAD
-import { clAdjustedDroprate, getSkillsOfMahojiUser, sanitizeBank, stripEmojis, truncateString } from '../src/lib/util';
-=======
-import { sanitizeBank, stripEmojis, truncateString, validateItemBankAndThrow } from '../src/lib/util';
->>>>>>> master
+import {
+	clAdjustedDroprate,
+	sanitizeBank,
+	stripEmojis,
+	truncateString,
+	validateItemBankAndThrow
+} from '../src/lib/util';
 import getOSItem from '../src/lib/util/getOSItem';
 import { sellPriceOfItem, sellStorePriceOfItem } from '../src/mahoji/commands/sell';
 
@@ -132,14 +128,8 @@ describe('util', () => {
 	});
 
 	test('clAdjustedDroprate', () => {
-		expect(
-			clAdjustedDroprate({ collectionLogBank: new Bank().add('Coal', 0).bank } as any as User, 'Coal', 100, 2)
-		).toEqual(100);
-		expect(
-			clAdjustedDroprate({ collectionLogBank: new Bank().add('Coal', 1).bank } as any as User, 'Coal', 100, 2)
-		).toEqual(200);
-		expect(
-			clAdjustedDroprate({ collectionLogBank: new Bank().add('Coal', 2).bank } as any as User, 'Coal', 100, 2)
-		).toEqual(400);
+		expect(clAdjustedDroprate({ cl: new Bank().add('Coal', 0) } as any as MUser, 'Coal', 100, 2)).toEqual(100);
+		expect(clAdjustedDroprate({ cl: new Bank().add('Coal', 1) } as any as MUser, 'Coal', 100, 2)).toEqual(200);
+		expect(clAdjustedDroprate({ cl: new Bank().add('Coal', 2) } as any as MUser, 'Coal', 100, 2)).toEqual(400);
 	});
 });

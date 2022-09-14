@@ -66,6 +66,8 @@ export const mockUser = (overrides?: MockUserArgs): User => {
 		skills_strength: 0,
 		skills_defence: 0,
 		skills_slayer: 0,
+		skills_dungeoneering: 0,
+		skills_invention: 0,
 		skills_hitpoints: convertLVLtoXP(10),
 		bitfield: [],
 		GP: overrides?.GP
