@@ -121,6 +121,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 				return "Couldn't retrieve emojis for this guild, ensure you have some emojis and try again.";
 			}
 
+			await user.sync();
 			if (!user.bank.has(bank)) {
 				return "You don't own those items.";
 			}
