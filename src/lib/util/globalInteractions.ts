@@ -305,6 +305,8 @@ export async function interactionHook(data: APIInteraction) {
 			return doClue('Elite');
 		case 'DO_MASTER_CLUE':
 			return doClue('Master');
+		case 'DO_GRANDMASTER_CLUE':
+			return doClue('Grandmaster');
 
 		case 'OPEN_BEGINNER_CASKET':
 			return openCasket('Beginner');

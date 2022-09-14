@@ -1,6 +1,5 @@
-import { Embed } from '@discordjs/builders';
 import { Activity, NewUser, Prisma } from '@prisma/client';
-import { AttachmentBuilder, GuildMember } from 'discord.js';
+import { AttachmentBuilder, EmbedBuilder, GuildMember } from 'discord.js';
 import { Time } from 'e';
 import { APIInteractionGuildMember } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
@@ -161,7 +160,7 @@ export async function runCommand({
 			} else {
 				await channel.send({
 					content: result.content,
-					embeds: result.embeds?.map(i => new Embed(i as any)),
+					embeds: result.embeds?.map(i => new EmbedBuilder(i as any)),
 					components: result.components?.map(i => convertComponentDJSComponent(i as any)),
 					files: result.attachments?.map(i => new AttachmentBuilder(i.buffer, { name: i.fileName }))
 				});
