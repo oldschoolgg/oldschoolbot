@@ -760,7 +760,7 @@ const Buyables: Buyable[] = [
 	{
 		name: 'Bucket',
 		gpCost: 30,
-		ironmanPrice: 2
+		ironmanPrice: 5
 	},
 	{
 		name: 'Cup of hot water',
