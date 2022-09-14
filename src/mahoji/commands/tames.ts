@@ -755,6 +755,7 @@ Note: Some items must be equipped to your tame, not fed. Check that you are feed
 		}
 	}
 
+	if (!user.owns(bankToAdd)) return "You don't own those items.";
 	await user.removeItemsFromBank(bankToAdd);
 
 	await prisma.tame.update({

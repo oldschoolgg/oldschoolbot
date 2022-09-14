@@ -235,7 +235,7 @@ export const gambleCommand: OSBMahojiCommand = {
 			const [item, qty] = entry;
 			const loot = new Bank().add(item.id, qty);
 
-			await transactItems({ userID: senderUser.id, itemsToAdd: loot });
+			await transactItems({ userID: senderUser.id, itemsToRemove: loot });
 			await transactItems({
 				userID: recipientuser.id,
 				itemsToAdd: loot,
