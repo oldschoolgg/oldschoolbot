@@ -846,6 +846,7 @@ const herblore = resolveItems([
 	'Poison ivy berries',
 	"Zulrah's scales",
 	'Crushed superior dragon bones',
+	'Crystal dust',
 	...potions,
 	...herbs
 ]);
