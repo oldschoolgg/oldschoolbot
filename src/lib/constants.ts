@@ -580,3 +580,4 @@ export const minionBuyButton: APIButtonComponentWithCustomId = {
 	emoji: { id: '778418736180494347' },
 	style: ButtonStyle.Success
 };
+export const FormattedCustomEmoji = /<a?:\w{2,32}:\d{17,20}>/;

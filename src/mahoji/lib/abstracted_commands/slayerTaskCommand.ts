@@ -1,4 +1,3 @@
-import { isGuildBasedChannel } from '@sapphire/discord.js-utilities';
 import { ActionRowBuilder, ButtonBuilder } from 'discord.js';
 import { notEmpty, Time } from 'e';
 import { ButtonStyle, MessageFlags } from 'mahoji';
@@ -123,7 +122,7 @@ async function returnSuccess(channelID: bigint | string, user: MUser, content: s
 	const options = {
 		channelID: channel.id,
 		userID: user.id,
-		guildID: isGuildBasedChannel(channel) && channel.guild ? channel.guild.id : undefined,
+		guildID: channel.guild ? channel.guild.id : undefined,
 		user,
 		member: null
 	};

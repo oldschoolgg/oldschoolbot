@@ -5,7 +5,6 @@ import fsPromises from 'fs/promises';
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 import { Canvas, Image } from 'skia-canvas/lib';
 
-import { bankImageGenerator } from '../../bankImage';
 import { monkeyTiers } from '../../monkeyRumble';
 import { Gear } from '../../structures/Gear';
 import { toTitleCase } from '../../util';

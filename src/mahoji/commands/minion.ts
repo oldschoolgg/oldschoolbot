@@ -1,11 +1,9 @@
-import { FormattedCustomEmoji } from '@sapphire/discord.js-utilities';
 import { notEmpty, randArrItem } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
 
-import { bankImageGenerator } from '../../lib/bankImage';
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
-import { badges, BitField, BitFieldData, MAX_LEVEL, PerkTier } from '../../lib/constants';
+import { badges, BitField, BitFieldData, FormattedCustomEmoji, MAX_LEVEL, PerkTier } from '../../lib/constants';
 import { degradeableItems } from '../../lib/degradeableItems';
 import { diaries } from '../../lib/diaries';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';

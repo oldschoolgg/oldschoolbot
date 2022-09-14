@@ -705,8 +705,9 @@ export async function updateBankSetting(key: ClientBankKey, bankToAdd: Bank) {
 	const currentClientSettings = await mahojiClientSettingsFetch({
 		[key]: true
 	});
-	const current = currentClientSettings[key] as ItemBank;
-	validateItemBankAndThrow(current);
+	const current = new Bank(currentClientSettings[key] as ItemBank);
+	sanitizeBank(current);
+	validateItemBankAndThrow(current.bank);
 	const newBank = new Bank().add(current).add(bankToAdd);
 
 	const res = await mahojiClientSettingsUpdate({
@@ -720,8 +721,9 @@ export async function updateLegacyUserBankSetting(userID: string, key: 'tob_cost
 	const currentUserSettings = await mahojiUsersSettingsFetch(userID, {
 		[key]: true
 	});
-	const current = currentUserSettings[key] as ItemBank;
-	validateItemBankAndThrow(current);
+	const current = new Bank(currentUserSettings[key] as ItemBank);
+	sanitizeBank(current);
+	validateItemBankAndThrow(current.bank);
 	const newBank = new Bank().add(current).add(bankToAdd);
 
 	const res = await mahojiUserSettingsUpdate(userID, {

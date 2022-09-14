@@ -318,6 +318,8 @@ export async function interactionHook(data: APIInteraction) {
 			return openCasket('Elite');
 		case 'OPEN_MASTER_CASKET':
 			return openCasket('Master');
+		case 'OPEN_GRANDMASTER_CASKET':
+			return openCasket('Grandmaster');
 		case 'DO_BIRDHOUSE_RUN':
 			await buttonReply();
 			return runCommand({

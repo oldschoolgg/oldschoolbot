@@ -18,7 +18,6 @@ import { Bank } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import { Canvas, CanvasRenderingContext2D, Image, loadImage } from 'skia-canvas/lib';
 
-import { bankImageGenerator } from '../../lib/bankImage';
 import { badges } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { getSimilarItems } from '../../lib/data/similarItems';

@@ -2,7 +2,21 @@ import { Activity, activity_type_enum } from '@prisma/client';
 
 import { agilityTask } from '../tasks/minions/agilityActivity';
 import { alchingTask } from '../tasks/minions/alchingActivity';
+import { bathhouseTask } from '../tasks/minions/bso/bathhousesActivity';
+import { disassemblingTask } from '../tasks/minions/bso/disassemblingActivity';
+import { dungeoneeringTask } from '../tasks/minions/bso/dungeoneeringActivity';
+import { fishingContestTask } from '../tasks/minions/bso/fishingContestActivity';
+import { ignecarusTask } from '../tasks/minions/bso/ignecarusActivity';
+import { kalphiteKingTask } from '../tasks/minions/bso/kalphiteKingActivity';
+import { kibbleTask } from '../tasks/minions/bso/kibbleActivity';
+import { kingGoldemarTask } from '../tasks/minions/bso/kingGoldemarActivity';
+import { moktangTask } from '../tasks/minions/bso/moktangActivity';
+import { mrTask } from '../tasks/minions/bso/monkeyRumbleActivity';
+import { naxxusTask } from '../tasks/minions/bso/naxxusActivity';
 import { nexTask } from '../tasks/minions/bso/nexActivity';
+import { odsTask } from '../tasks/minions/bso/ouraniaDeliveryServiceActivity';
+import { researchActivityTask } from '../tasks/minions/bso/researchActivity';
+import { vasaTask } from '../tasks/minions/bso/vasaMagusActivity';
 import { castingTask } from '../tasks/minions/castingActivity';
 import { clueTask } from '../tasks/minions/clueActivity';
 import { collectingTask } from '../tasks/minions/collectingActivity';
@@ -148,7 +162,21 @@ export const tasks: MinionTask[] = [
 	temporossTask,
 	smithingTask,
 
-	nexTask
+	nexTask,
+	bathhouseTask,
+	disassemblingTask,
+	fishingContestTask,
+	ignecarusTask,
+	kalphiteKingTask,
+	kibbleTask,
+	kingGoldemarTask,
+	moktangTask,
+	mrTask,
+	naxxusTask,
+	odsTask,
+	researchActivityTask,
+	vasaTask,
+	dungeoneeringTask
 ];
 
 export async function syncActivityCache() {
@@ -194,7 +222,9 @@ declare global {
 const ignored: activity_type_enum[] = [
 	activity_type_enum.BirthdayEvent,
 	activity_type_enum.BlastFurnace,
-	activity_type_enum.Easter
+	activity_type_enum.Easter,
+	activity_type_enum.TrickOrTreat,
+	activity_type_enum.BossEvent
 ];
 for (const a of Object.values(activity_type_enum)) {
 	if (ignored.includes(a)) {
@@ -202,6 +232,6 @@ for (const a of Object.values(activity_type_enum)) {
 	}
 	const t = tasks.find(i => i.type === a);
 	if (!t) {
-		throw new Error(`Missing ${a} task`);
+		console.log(`Missing ${a} task`);
 	}
 }

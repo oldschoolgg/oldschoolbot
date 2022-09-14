@@ -961,27 +961,12 @@
   resolved "https://registry.yarnpkg.com/@sapphire/async-queue/-/async-queue-1.5.0.tgz#2f255a3f186635c4fb5a2381e375d3dfbc5312d8"
   integrity sha512-JkLdIsP8fPAdh9ZZjrbHWR/+mZj0wvKS5ICibcLrRI1j84UmLMshx5n9QmL8b95d4onJ2xxiyugTgSAX7AalmA==
 
-"@sapphire/discord-utilities@^2.11.7-pr-434.549335e.0":
-  version "2.11.7-pr-434.549335e.0"
-  resolved "https://registry.yarnpkg.com/@sapphire/discord-utilities/-/discord-utilities-2.11.7-pr-434.549335e.0.tgz#91c5a4c0d6394d836af6bca1fa68c25325cdc5d4"
-  integrity sha512-PDeJyr9tq1Qjn5s+/8KT4Idib9Oy3FmIC/fbvAG4AeIXshO1w50n7krSd1/y1TOfzUCGnrHNBT3oYIO5YOhNAA==
-
 "@sapphire/discord-utilities@^2.8.0":
   version "2.8.0"
   resolved "https://registry.yarnpkg.com/@sapphire/discord-utilities/-/discord-utilities-2.8.0.tgz#413cbfa53924a812401cfb840f70a16aa70217aa"
   integrity sha512-ft/YqG534nLsF58ws6KqgikhSEQgtzPErGT8IlHuGL4/dsUvYJc7wp+gwwy7tftXG54ie+Sa/IabK7wBxRsdlQ==
   dependencies:
     twemoji-parser "^13.1.0"
-
-"@sapphire/discord.js-utilities@^5.1.0-pr-434.549335e.0":
-  version "5.1.0-pr-434.549335e.0"
-  resolved "https://registry.yarnpkg.com/@sapphire/discord.js-utilities/-/discord.js-utilities-5.1.0-pr-434.549335e.0.tgz#af327264149243b9457dc875008a5e20cd523e10"
-  integrity sha512-Hbc+K3Msxpoa5EoHrAF+SNxpFvV0e66RCw8SNLs7kT4Dlw/h7haoXXez80GR3m7v8VllYLPQFCKgOAzQt+Cwvw==
-  dependencies:
-    "@sapphire/discord-utilities" "^2.11.7-pr-434.549335e.0"
-    "@sapphire/time-utilities" "^1.7.6"
-    "@sapphire/utilities" "^3.9.2"
-    tslib "^2.4.0"
 
 "@sapphire/shapeshift@^3.5.1":
   version "3.6.0"
@@ -1010,13 +995,6 @@
   dependencies:
     "@sapphire/utilities" "^3.3.0"
 
-"@sapphire/time-utilities@^1.7.6":
-  version "1.7.6"
-  resolved "https://registry.yarnpkg.com/@sapphire/time-utilities/-/time-utilities-1.7.6.tgz#846f1116fb36cc12a07b07d13daf0a7e4405ab10"
-  integrity sha512-VsMVYFmS9Iu0buPs7gwn1D6vqIC04ezVMBRIo8vRTB2s7UNN/vQReX2cLABFoDVqs7RHQsvr2DPoTWHEDYw9YA==
-  dependencies:
-    "@sapphire/utilities" "^3.9.2"
-
 "@sapphire/type@^2.1.2":
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/@sapphire/type/-/type-2.1.2.tgz#bec6df98b7e70fd3d0dd23e92aa36824afdc72d3"
@@ -1035,11 +1013,6 @@
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/@sapphire/utilities/-/utilities-3.3.0.tgz#62ff0a52cd86bd6169a94b2f217d72da6772a3cd"
   integrity sha512-wWESfB03elALhci3GjcacRh8pnK89Qe5AEKCQplKyTCKabWl64SAFw52hQBth2fMmJStgK1fr87aGhRZAB8DNA==
-
-"@sapphire/utilities@^3.9.2":
-  version "3.9.2"
-  resolved "https://registry.yarnpkg.com/@sapphire/utilities/-/utilities-3.9.2.tgz#fba479e5d7ee7e3a604caa6c98d48bce0706d45d"
-  integrity sha512-CG8mFPse+VDUVenj3PqZyh9PATFd/pzrQaX2gZqv0f7AzGnlyfm/ygh0tnQRVKpMDFr39uCQqVse8i0f51DAkg==
 
 "@sentry/core@6.17.9":
   version "6.17.9"

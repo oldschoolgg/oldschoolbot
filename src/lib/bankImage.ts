@@ -737,5 +737,15 @@ class BankImageTask {
 	}
 }
 
-export const bankImageGenerator = new BankImageTask();
+declare global {
+	const bankImageGenerator: BankImageTask;
+}
+declare global {
+	namespace NodeJS {
+		interface Global {
+			bankImageGenerator: BankImageTask;
+		}
+	}
+}
+global.bankImageGenerator = new BankImageTask();
 bankImageGenerator.init();

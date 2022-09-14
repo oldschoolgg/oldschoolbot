@@ -16,7 +16,6 @@
 		"@octokit/graphql": "^4.8.0",
 		"@prisma/client": "^3.15.1",
 		"@sapphire/discord-utilities": "^2.8.0",
-		"@sapphire/discord.js-utilities": "^5.1.0-pr-434.549335e.0",
 		"@sapphire/stopwatch": "^1.4.0",
 		"@sapphire/time-utilities": "^1.6.0",
 		"@sapphire/type": "^2.1.2",

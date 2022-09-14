@@ -1,18 +1,18 @@
 import { reduceNumByPercent, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { MysteryBoxes } from '../../lib/bsoOpenables';
-import { Emoji } from '../../lib/constants';
-import { isDoubleLootActive } from '../../lib/doubleLoot';
-import { DungeoneeringOptions } from '../../lib/skilling/skills/dung/dungData';
+import { MysteryBoxes } from '../../../lib/bsoOpenables';
+import { Emoji } from '../../../lib/constants';
+import { isDoubleLootActive } from '../../../lib/doubleLoot';
+import { DungeoneeringOptions } from '../../../lib/skilling/skills/dung/dungData';
 import {
 	gorajanShardChance,
 	maxFloorUserCanDo,
 	numberOfGorajanOutfitsEquipped
-} from '../../lib/skilling/skills/dung/dungDbFunctions';
-import { SkillsEnum } from '../../lib/skilling/types';
-import { randomVariation, roll, toKMB } from '../../lib/util';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+} from '../../../lib/skilling/skills/dung/dungDbFunctions';
+import { SkillsEnum } from '../../../lib/skilling/types';
+import { randomVariation, roll, toKMB } from '../../../lib/util';
+import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export const dungeoneeringTask: MinionTask = {
 	type: 'Dungeoneering',
