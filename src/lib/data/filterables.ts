@@ -176,7 +176,8 @@ const ores = resolveItems([
 	'Lovakite ore',
 	'Adamantite ore',
 	'Runite ore',
-	'Dark animica'
+	'Dark animica',
+	'Dwarven ore'
 ]);
 
 const bars = resolveItems([
@@ -190,7 +191,8 @@ const bars = resolveItems([
 	'Lovakite bar',
 	'Mithril bar',
 	'Adamantite bar',
-	'Runite bar'
+	'Runite bar',
+	'Dwarven bar'
 ]);
 
 const smithingMisc = resolveItems([
@@ -351,7 +353,9 @@ const seeds = resolveItems([
 	'Athelas seed',
 	'Avocado seed',
 	'Lychee seed',
-	'Mango seed'
+	'Mango seed',
+	'Korulsi seed',
+	'Grand crystal acorn'
 ]);
 
 const herbs = resolveItems([
@@ -383,7 +387,9 @@ const herbs = resolveItems([
 	'Lantadyme',
 	'Dwarf weed',
 	'Torstol',
-	'Athelas'
+	'Athelas',
+	'Grimy korulsi',
+	'Korulsi'
 ]);
 
 const secondaries = resolveItems([
@@ -414,7 +420,8 @@ const secondaries = resolveItems([
 	'Torstol',
 	'Cave nightshade',
 	'Crushed superior dragon bones',
-	'Amylase crystal'
+	'Amylase crystal',
+	'Crystal dust'
 ]);
 
 const bones = resolveItems([
@@ -444,7 +451,8 @@ const bones = resolveItems([
 	'Wyvern bones',
 	'Zogre bones',
 	'Abyssal dragon bones',
-	'Royal dragon bones'
+	'Royal dragon bones',
+	'Frost dragon bones'
 ]);
 
 const fletchingItems = Fletchables.flatMap(item => Object.keys(item.inputItems.bank).map(key => parseInt(key)));
@@ -791,7 +799,13 @@ const potions = resolveItems([
 	'Extended super antifire(1)',
 	'Extended super antifire(2)',
 	'Extended super antifire(3)',
-	'Extended super antifire(4)'
+	'Extended super antifire(4)',
+	'Enhanced saradomin brew',
+	'Enhanced super restore',
+	'Enhanced stamina potion',
+	'Enhanced divine water',
+	'Heat res. brew',
+	'Heat res. restore'
 ]);
 
 const herblore = resolveItems([
