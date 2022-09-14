@@ -2,7 +2,7 @@ import { EmbedBuilder, TextChannel } from 'discord.js';
 import { chunk, percentChance, randArrItem, shuffleArr, Time } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { OWNER_ID, production } from '../config';
+import { OWNER_IDS, production } from '../config';
 import { scaryEatables } from './constants';
 import { prisma } from './settings/prisma';
 import {
@@ -251,7 +251,7 @@ export async function startBossEvent({ boss, id }: { boss: BossEvent; id?: BossE
 		channel,
 		massText: `<@&896845245873025067> Pumpkinhead the Pumpkinheaded ${getPHeadDescriptor()} ${getPHeadDescriptor()} Horror has spawned! Who will fight him?!`,
 		quantity: 1,
-		leader: await mUserFetch(OWNER_ID)
+		leader: await mUserFetch(OWNER_IDS[0])
 	});
 	try {
 		const { bossUsers } = await instance.start();
