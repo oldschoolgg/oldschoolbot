@@ -12,7 +12,7 @@ import { handleMahojiConfirmation, mahojiUsersSettingsFetch } from '../../mahoji
 export async function ironmanCommand(user: MUser, interaction: SlashCommandInteraction) {
 	if (minionIsBusy(user.id)) return 'Your minion is busy.';
 	if (user.isIronman) {
-		return 'You are alrady an ironman.';
+		return 'You are already an ironman.';
 	}
 
 	const existingGiveaways = await prisma.giveaway.findMany({
