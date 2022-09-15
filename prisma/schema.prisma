@@ -189,7 +189,7 @@ model GearPreset {
 }
 
 model Giveaway {
-  id          Int      @default(autoincrement())
+  id          Int      @id
   user_id     String   @db.VarChar(19)
   start_date  DateTime @db.Timestamp(6)
   finish_date DateTime @db.Timestamp(6)
@@ -198,10 +198,11 @@ model Giveaway {
   channel_id  String   @db.VarChar(19)
   loot        Json     @db.Json
   message_id  String   @db.VarChar(19)
-  reaction_id String   @db.VarChar(19)
+  reaction_id String?  @db.VarChar(19)
 
-  @@id([id, user_id, channel_id, message_id, reaction_id], map: "PK_8dea3077ffeea92ada02ce88acc")
-  @@index([completed], map: "IDX_8d425a61b6093dd2351153b143")
+  users_entered String[]
+
+  @@index([completed, finish_date])
   @@map("giveaway")
 }
 

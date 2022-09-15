@@ -4333,10 +4333,10 @@ object.values@^1.1.5:
     define-properties "^1.1.3"
     es-abstract "^1.19.1"
 
-oldschooljs@^2.1.59:
-  version "2.1.59"
-  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-2.1.59.tgz#db387890ad61bd05c34819b6fbf4f3627f4f89a6"
-  integrity sha512-sVeqXUQLjfKwSP2H1j34FpcqYn7Mdr3QhLRTRLD9xqC+6FO6QvrQCXRGLblA+U//+m6Y118lR3In44tMQ978rA==
+oldschooljs@^2.1.60:
+  version "2.1.60"
+  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-2.1.60.tgz#06a5e3e038d0eaf6473946618ba4efc5d1c7fac8"
+  integrity sha512-5KyXX7pL9fOHWMNAtPZG+bY80lv58v1mkD1LNPtP0EWCT9p1DJARCC5NCnXb1jwPu0PxDAVGM+z6Z0FtuVLbOw==
   dependencies:
     "@oldschoolgg/eslint-config" "^1.2.5"
     e "^0.2.1"
