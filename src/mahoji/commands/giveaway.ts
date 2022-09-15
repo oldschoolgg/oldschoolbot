@@ -109,12 +109,16 @@ export const giveawayCommand: OSBMahojiCommand = {
 				excludeItems: mUser.favoriteItems,
 				user,
 				search: options.start.search,
-				filters: [options.start.filter],
+				filters: [options.start.filter, 'tradeables'],
 				maxSize: 70
 			});
 
 			if (!user.bank.has(bank)) {
 				return "You don't own those items.";
+			}
+
+			if (bank.items().some(i => !i[0].tradeable)) {
+				return "You can't giveaway untradeable items.";
 			}
 
 			if (interaction) {
