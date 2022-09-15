@@ -117,10 +117,14 @@ export const giveawayCommand: OSBMahojiCommand = {
 				return "Couldn't retrieve emojis for this guild, ensure you have some emojis and try again.";
 			}
 
+			await user.sync();
 			if (!user.bank.has(bank)) {
 				return "You don't own those items.";
 			}
 
+			if (bank.length === 0) {
+				return 'You cannot have a giveaway with no items in it.';
+			}
 			const message = await channel.send({
 				content: `You created a giveaway that will finish at ${time(duration.fromNow, 'F')} (${time(
 					duration.fromNow,

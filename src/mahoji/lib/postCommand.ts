@@ -63,7 +63,8 @@ export async function postCommand({
 	isContinue: boolean;
 	inhibited: boolean;
 }): Promise<string | undefined> {
-	if (!inhibited && shouldTrackCommand(abstractCommand, args)) {
+	if (inhibited) return;
+	if (shouldTrackCommand(abstractCommand, args)) {
 		const commandUsage = makeCommandUsage({
 			userID,
 			channelID,

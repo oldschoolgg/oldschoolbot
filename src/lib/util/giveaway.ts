@@ -54,7 +54,7 @@ export async function handleGiveawayCompletion(giveaway: Giveaway) {
 			  ).filter(u => !u.isIronman && u.id !== giveaway.user_id);
 
 		if (users.length === 0 || !channel || !message) {
-			logError('Giveaway failed');
+			logError(`Giveaway[${giveaway.id}] failed.`);
 			await refundGiveaway(creator, loot);
 
 			if (message && channel) {
@@ -81,7 +81,7 @@ export async function handleGiveawayCompletion(giveaway: Giveaway) {
 			`${winner.usernameOrMention}[${winner.id}] won ${loot} in a giveaway of ${users.length} made by ${creator.usernameOrMention}[${creator.id}].`
 		);
 
-		const str = `<@${giveaway.user_id}> **Giveaway finished:** ${users.length} users joined, the winner is... ||**${winner}**||
+		const str = `<@${giveaway.user_id}> **Giveaway finished:** ${users.length} users joined, the winner is... ||**${winner.mention}**||
 			
 They received these items: ${loot}`;
 
