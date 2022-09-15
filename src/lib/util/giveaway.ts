@@ -54,7 +54,7 @@ export async function handleGiveawayCompletion(giveaway: Giveaway) {
 			  ).filter(u => !u.isIronman && u.id !== giveaway.user_id);
 
 		if (users.length === 0 || !channel || !message) {
-			logError('Giveaway failed');
+			logError(`Giveaway[${giveaway.id}] failed.`);
 			await refundGiveaway(creator, loot);
 
 			if (message && channel) {
