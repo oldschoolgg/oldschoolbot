@@ -1,5 +1,5 @@
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
-import { Time } from 'e';
+import { Time, uniqueArr } from 'e';
 import { APIInteraction, InteractionType, Routes } from 'mahoji';
 
 import { buyBingoTicketCommand } from '../../mahoji/commands/bingo';
@@ -7,9 +7,11 @@ import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContra
 import { Cooldowns } from '../../mahoji/lib/Cooldowns';
 import { ClueTier } from '../clues/clueTiers';
 import { lastTripCache, PerkTier } from '../constants';
+import { prisma } from '../settings/prisma';
 import { runCommand } from '../settings/settings';
-import { channelIsSendable, convertMahojiResponseToDJSResponse, formatDuration } from '../util';
+import { channelIsSendable, convertMahojiResponseToDJSResponse, formatDuration, removeFromArr } from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
+import { updateGiveawayMessage } from './giveaway';
 import { minionIsBusy } from './minionIsBusy';
 import { respondToButton } from './respondToButton';
 import { webhookMessageCache } from './webhook';
@@ -100,14 +102,69 @@ export function makeNewSlayerTaskButton() {
 		.setEmoji('630911040560824330');
 }
 
+async function giveawayButtonHandler(user: MUser, customID: string, data: APIInteraction) {
+	const split = customID.split('_');
+	if (split[0] !== 'GIVEAWAY') return;
+	const action = split[1] === 'ENTER' ? 'ENTER' : 'LEAVE';
+	const giveawayID = Number(split[2]);
+	const giveaway = await prisma.giveaway.findFirst({
+		where: {
+			id: giveawayID
+		}
+	});
+	if (!giveaway || giveaway.finish_date.getTime() < Date.now() || giveaway.completed) {
+		return respondToButton(data, "Invalid giveaway. This giveaway has either finished, or doesn't exist.");
+	}
+
+	if (user.isIronman) {
+		return respondToButton(data, 'You are an ironman, you cannot enter giveaways.');
+	}
+
+	if (user.id === giveaway.user_id) {
+		return respondToButton(data, 'You cannot join your own giveaway.');
+	}
+
+	if (action === 'ENTER') {
+		if (giveaway.users_entered.includes(user.id)) {
+			return respondToButton(data, 'You are already entered in this giveaway.');
+		}
+		await prisma.giveaway.update({
+			where: {
+				id: giveaway.id
+			},
+			data: {
+				users_entered: {
+					push: user.id
+				}
+			}
+		});
+		updateGiveawayMessage(giveaway);
+		return respondToButton(data, 'You are now entered in this giveaway.');
+	}
+	if (!giveaway.users_entered.includes(user.id)) {
+		return respondToButton(data, "You aren't entered in this giveaway, so you can't leave it.");
+	}
+	await prisma.giveaway.update({
+		where: {
+			id: giveaway.id
+		},
+		data: {
+			users_entered: uniqueArr(removeFromArr(giveaway.users_entered, user.id))
+		}
+	});
+	updateGiveawayMessage(giveaway);
+	return respondToButton(data, 'You left the giveaway.');
+}
+
 export async function interactionHook(data: APIInteraction) {
 	if (data.type !== InteractionType.MessageComponent) return;
 	const id = data.data.custom_id;
-	if (!isValidGlobalInteraction(id)) return;
 	const userID = data.member ? data.member.user?.id : data.user?.id;
 	if (!userID) return;
-
 	const user = await mUserFetch(userID);
+	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, data);
+
+	if (!isValidGlobalInteraction(id)) return;
 	const options = {
 		user,
 		member: data.member ?? null,
@@ -117,7 +174,7 @@ export async function interactionHook(data: APIInteraction) {
 	};
 
 	async function buttonReply(str?: string, ephemeral = true) {
-		await respondToButton(data.id, data.token, str, ephemeral);
+		await respondToButton(data, str, ephemeral);
 
 		// Remove buttons, disabled for now
 		if (1 > 2 && data.message && data.channel_id) {
