@@ -126,6 +126,9 @@ export const giveawayCommand: OSBMahojiCommand = {
 				return "You don't own those items.";
 			}
 
+			if (bank.length === 0) {
+				return 'You cannot have a giveaway with no items in it.';
+			}
 			const message = await channel.send({
 				content: `You created a giveaway that will finish at ${time(duration.fromNow, 'F')} (${time(
 					duration.fromNow,
