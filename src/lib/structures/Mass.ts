@@ -191,7 +191,7 @@ This party will automatically depart in ${formatDuration(this.automaticStartTime
 
 	async addUser(user: User) {
 		const mUser = await mUserFetch(user.id);
-		if (this.users.find(u => u.id === mUser.id)) return;
+		if (this.users.some(u => u.id === mUser.id)) return;
 
 		if (this.customDenier) {
 			const [denied, reason] = await this.customDenier(mUser);
