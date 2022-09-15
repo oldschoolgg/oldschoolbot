@@ -120,6 +120,10 @@ async function giveawayButtonHandler(user: MUser, customID: string, data: APIInt
 		return respondToButton(data, 'You are an ironman, you cannot enter giveaways.');
 	}
 
+	if (user.id === giveaway.user_id) {
+		return respondToButton(data, 'You cannot join your own giveaway.');
+	}
+
 	if (action === 'ENTER') {
 		if (giveaway.users_entered.includes(user.id)) {
 			return respondToButton(data, 'You are already entered in this giveaway.');
