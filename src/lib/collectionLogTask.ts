@@ -1,16 +1,14 @@
 import { User } from '@prisma/client';
 import { calcWhatPercent, objectEntries } from 'e';
-import { KlasaUser, Task } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Canvas, CanvasRenderingContext2D } from 'skia-canvas/lib';
 
 import { allCollectionLogs, getCollection, getTotalCl } from '../lib/data/Collections';
 import { IToReturnCollection } from '../lib/data/CollectionsExport';
-import { UserSettings } from '../lib/settings/types/UserSettings';
 import { formatItemStackQuantity, generateHexColorForCashStack, toKMB } from '../lib/util';
 import { fillTextXTimesInCtx, getClippedRegion } from '../lib/util/canvasUtil';
 import getOSItem from '../lib/util/getOSItem';
-import BankImageTask, { IBgSprite } from './bankImage';
+import { IBgSprite } from './bankImage';
 
 export const collectionLogTypes = [
 	{ name: 'collection', description: 'Normal Collection Log' },
@@ -26,17 +24,11 @@ export const CollectionLogFlags = [
 	{ name: 'missing', description: 'Show only missing items.' }
 ];
 
-export default class CollectionLogTask extends Task {
+class CollectionLogTask {
 	run() {}
 
-	getTask() {
-		const task = globalClient.tasks.get('bankImage') as BankImageTask;
-		return task;
-	}
-
 	drawBorder(ctx: CanvasRenderingContext2D, sprite: IBgSprite) {
-		const task = this.getTask();
-		return task.drawBorder(ctx, sprite);
+		return bankImageGenerator.drawBorder(ctx, sprite);
 	}
 
 	drawSquare(
@@ -111,13 +103,13 @@ export default class CollectionLogTask extends Task {
 	}
 
 	async generateLogImage(options: {
-		user: KlasaUser;
+		user: MUser;
 		mahojiUser: User;
 		collection: string;
 		type: CollectionLogType;
 		flags: { [key: string]: string | number };
 	}): Promise<CommandResponse> {
-		const { sprite } = this.getTask().getBgAndSprite(options.user.settings.get(UserSettings.BankBackground));
+		const { sprite } = bankImageGenerator.getBgAndSprite(options.user.user.bankBackground);
 
 		if (options.flags.temp) {
 			options.type = 'temp';
@@ -239,7 +231,7 @@ export default class CollectionLogTask extends Task {
 		ctx.save();
 		ctx.font = '16px RuneScape Bold 12';
 		ctx.fillStyle = '#FF981F';
-		const title = `${user.username}'s ${
+		const title = `${user.usernameOrMention}'s ${
 			type === 'sacrifice'
 				? 'Sacrifice'
 				: type === 'collection'
@@ -285,7 +277,7 @@ export default class CollectionLogTask extends Task {
 				i = 0;
 				y += 1;
 			}
-			const itemImage = await this.getTask().getItemImage(item);
+			const itemImage = await bankImageGenerator.getItemImage(item);
 
 			let qtyText = 0;
 			if (!userCollectionBank.has(item)) {
@@ -468,3 +460,5 @@ export default class CollectionLogTask extends Task {
 		};
 	}
 }
+
+export const clImageGenerator = new CollectionLogTask();

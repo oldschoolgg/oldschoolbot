@@ -1,28 +1,26 @@
 import { randInt, Time } from 'e';
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { BlacksmithOutfit } from '../../lib/bsoOpenables';
 import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
-import { hasItemsEquippedOrInBank } from '../../lib/util/minionUtils';
 
-export default class extends Task {
+export const smeltingTask: MinionTask = {
+	type: 'Smelting',
 	async run(data: SmeltingActivityTaskOptions) {
 		let { barID, quantity, userID, channelID, duration, blastf } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
 		const bar = Smithing.Bars.find(bar => bar.id === barID)!;
 
 		// If this bar has a chance of failing to smelt, calculate that here.
-		const masterCapeInEffect = bar.chanceOfFail > 0 && user.hasItemEquippedAnywhere('Smithing master cape');
-		const hasBS = hasItemsEquippedOrInBank(user, BlacksmithOutfit, 'every');
+		const masterCapeInEffect = bar.chanceOfFail > 0 && user.hasEquipped('Smithing master cape');
+		const hasBS = user.hasEquippedOrInBank(BlacksmithOutfit, 'every');
 		const oldQuantity = quantity;
 		if ((bar.chanceOfFail > 0 && bar.name !== 'Iron bar') || (!blastf && bar.name === 'Iron bar')) {
 			let chance = masterCapeInEffect ? bar.chanceOfFail / 2 : bar.chanceOfFail;
@@ -37,7 +35,7 @@ export default class extends Task {
 
 		let xpReceived = quantity * bar.xp;
 
-		if (bar.id === itemID('Gold bar') && user.hasItemEquippedAnywhere('Goldsmith gauntlets')) {
+		if (bar.id === itemID('Gold bar') && user.hasEquipped('Goldsmith gauntlets')) {
 			xpReceived = quantity * 56.2;
 		}
 
@@ -67,7 +65,7 @@ export default class extends Task {
 			[bar.id]: quantity
 		});
 
-		if (duration >= MIN_LENGTH_FOR_PET && !blastf && user.settings.get(UserSettings.QP) > 10) {
+		if (duration >= MIN_LENGTH_FOR_PET && !blastf && user.QP > 10) {
 			const numMinutes = duration / Time.Minute;
 			for (let i = 0; i < numMinutes; i++) {
 				if (roll(6500)) {
@@ -103,4 +101,4 @@ export default class extends Task {
 			loot
 		);
 	}
-}
+};

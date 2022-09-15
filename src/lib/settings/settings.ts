@@ -1,34 +1,20 @@
-import { Activity, NewUser, Prisma, User } from '@prisma/client';
-import { GuildMember, MessageAttachment } from 'discord.js';
-import { roll, Time } from 'e';
-import { Gateway, KlasaMessage, KlasaUser, Settings } from 'klasa';
+import { Activity, NewUser, Prisma } from '@prisma/client';
+import { AttachmentBuilder, EmbedBuilder, GuildMember } from 'discord.js';
+import { Time } from 'e';
 import { APIInteractionGuildMember } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
 import { CommandArgs } from '../../mahoji/lib/inhibitors';
 import { postCommand } from '../../mahoji/lib/postCommand';
 import { preCommand } from '../../mahoji/lib/preCommand';
-import {
-	convertAPIEmbedToDJSEmbed,
-	convertComponentDJSComponent,
-	convertMahojiCommandToAbstractCommand
-} from '../../mahoji/lib/util';
+import { convertComponentDJSComponent, convertMahojiCommandToAbstractCommand } from '../../mahoji/lib/util';
 import { PerkTier } from '../constants';
 import { ActivityTaskData } from '../types/minions';
-import { channelIsSendable, cleanUsername, isGroupActivity } from '../util';
+import { channelIsSendable, isGroupActivity } from '../util';
 import { logError } from '../util/logError';
-import { taskNameFromType } from '../util/taskNameFromType';
 import { convertStoredActivityToFlatActivity, prisma } from './prisma';
 
 export * from './minigames';
-
-export async function getUserSettings(userID: string): Promise<Settings> {
-	return (globalClient.gateways.get('users') as Gateway)!
-		.acquire({
-			id: userID
-		})
-		.sync(true);
-}
 
 export async function getNewUser(id: string): Promise<NewUser> {
 	const value = await prisma.newUser.findUnique({ where: { id } });
@@ -41,24 +27,6 @@ export async function getNewUser(id: string): Promise<NewUser> {
 		});
 	}
 	return value;
-}
-
-export async function syncNewUserUsername(message: KlasaMessage) {
-	if (!roll(20)) return;
-	const cleanedUsername = cleanUsername(message.author.username);
-	const username = cleanedUsername.length > 32 ? cleanedUsername.substring(0, 32) : cleanedUsername;
-	await prisma.newUser.upsert({
-		where: {
-			id: message.author.id
-		},
-		update: {
-			username
-		},
-		create: {
-			id: message.author.id,
-			username
-		}
-	});
 }
 
 declare global {
@@ -92,15 +60,6 @@ export async function cancelTask(userID: string) {
 	minionActivityCache.delete(userID);
 }
 
-export async function syncActivityCache() {
-	const tasks = await prisma.activity.findMany({ where: { completed: false } });
-
-	minionActivityCache.clear();
-	for (const task of tasks) {
-		activitySync(task);
-	}
-}
-
 export async function runMahojiCommand({
 	channelID,
 	userID,
@@ -115,7 +74,7 @@ export async function runMahojiCommand({
 	channelID: bigint | string;
 	userID: bigint | string;
 	guildID: bigint | string | undefined;
-	user: User | KlasaUser;
+	user: MUser;
 	member: APIInteractionGuildMember | GuildMember | null;
 }) {
 	const mahojiCommand = globalClient.mahojiClient.commands.values.find(c => c.name === commandName);
@@ -139,7 +98,7 @@ export async function runMahojiCommand({
 export interface RunCommandArgs {
 	commandName: string;
 	args: CommandArgs;
-	user: User | KlasaUser;
+	user: MUser;
 	channelID: string | bigint;
 	userID: string | bigint;
 	member: APIInteractionGuildMember | GuildMember | null;
@@ -172,7 +131,8 @@ export async function runCommand({
 			userID,
 			channelID,
 			guildID,
-			bypassInhibitors: bypassInhibitors ?? false
+			bypassInhibitors: bypassInhibitors ?? false,
+			apiUser: null
 		});
 
 		if (inhibitedReason) {
@@ -200,9 +160,9 @@ export async function runCommand({
 			} else {
 				await channel.send({
 					content: result.content,
-					embeds: result.embeds?.map(convertAPIEmbedToDJSEmbed),
-					components: result.components?.map(convertComponentDJSComponent),
-					files: result.attachments?.map(i => new MessageAttachment(i.buffer, i.fileName))
+					embeds: result.embeds?.map(i => new EmbedBuilder(i as any)),
+					components: result.components?.map(i => convertComponentDJSComponent(i as any)),
+					files: result.attachments?.map(i => new AttachmentBuilder(i.buffer, { name: i.fileName }))
 				});
 			}
 		}
@@ -244,35 +204,10 @@ export function activitySync(activity: Activity) {
 	}
 }
 
-export async function completeActivity(_activity: Activity) {
-	const activity = convertStoredActivityToFlatActivity(_activity);
-	if (_activity.completed) {
-		throw new Error('Tried to complete an already completed task.');
-	}
-
-	const taskName = taskNameFromType(activity.type);
-	const task = globalClient.tasks.get(taskName);
-
-	if (!task) {
-		throw new Error('Missing task');
-	}
-
-	globalClient.oneCommandAtATimeCache.add(activity.userID);
-	try {
-		globalClient.emit('debug', `Running ${task.name} for ${activity.userID}`);
-		await task.run(activity);
-	} catch (err) {
-		logError(err);
-	} finally {
-		globalClient.oneCommandAtATimeCache.delete(activity.userID);
-		minionActivityCacheDelete(activity.userID);
-	}
-}
-
-export async function isElligibleForPresent(user: KlasaUser) {
+export async function isElligibleForPresent(user: MUser) {
 	if (user.isIronman) return true;
 	if (user.perkTier >= PerkTier.Four) return true;
-	if (user.totalLevel() >= 2000) return true;
+	if (user.totalLevel >= 2000) return true;
 	const totalActivityDuration: [{ sum: number }] = await prisma.$queryRawUnsafe(`SELECT SUM(duration)
 FROM activity
 WHERE user_id = ${BigInt(user.id)};`);

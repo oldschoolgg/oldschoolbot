@@ -318,8 +318,8 @@ export const easyTasks: Task[] = [
 	{
 		id: 43,
 		name: 'Complete a Farming contract',
-		has: async ({ mahojiUser }) => {
-			const contract = getFarmingContractOfUser(mahojiUser);
+		has: async ({ user }) => {
+			const contract = getFarmingContractOfUser(user);
 			return contract.contractsCompleted >= 1;
 		}
 	},

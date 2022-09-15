@@ -1,14 +1,17 @@
 import { activity_type_enum } from '@prisma/client';
-import { isGuildBasedChannel } from '@sapphire/discord.js-utilities';
-import { MessageAttachment, MessageCollector, MessageOptions } from 'discord.js';
-import { randInt, Time } from 'e';
-import { KlasaUser } from 'klasa';
+import { ActionRowBuilder, AttachmentBuilder, ButtonBuilder, MessageCollector } from 'discord.js';
+import { randInt, roll, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
 import { alching } from '../../mahoji/commands/laps';
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
-import { allItemsOwned, updateGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from '../../mahoji/mahojiSettings';
+import {
+	updateBankSetting,
+	updateGPTrackSetting,
+	userStatsBankUpdate,
+	userStatsUpdate
+} from '../../mahoji/mahojiSettings';
 import { MysteryBoxes } from '../bsoOpenables';
 import { ClueTiers } from '../clues/clueTiers';
 import { COINS_ID, Emoji, lastTripCache, LastTripRunArgs, PerkTier } from '../constants';
@@ -17,15 +20,12 @@ import { handlePassiveImplings } from '../implings';
 import { inventionBoosts, InventionID, inventionItemBoost } from '../invention/inventions';
 import { triggerRandomEvent } from '../randomEvents';
 import { runCommand } from '../settings/settings';
-import { ClientSettings } from '../settings/types/ClientSettings';
-import { UserSettings } from '../settings/types/UserSettings';
 import { RuneTable, WilvusTable, WoodTable } from '../simulation/seedTable';
 import { DougTable, PekyTable } from '../simulation/sharedTables';
 import { SkillsEnum } from '../skilling/types';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import { ActivityTaskOptions } from '../types/minions';
-import { channelIsSendable, itemID, roll, toKMB, updateBankSetting } from '../util';
-import getUsersPerkTier from './getUsersPerkTier';
+import { channelIsSendable, itemID, toKMB } from '../util';
 import {
 	makeBirdHouseTripButton,
 	makeDoClueButton,
@@ -33,7 +33,6 @@ import {
 	makeOpenCasketButton,
 	makeRepeatTripButton
 } from './globalInteractions';
-import { userHasItemsEquippedAnywhere } from './minionUtils';
 import { sendToChannelID } from './webhook';
 
 export const collectors = new Map<string, MessageCollector>();
@@ -47,7 +46,7 @@ const activitiesToTrackAsPVMGPSource: activity_type_enum[] = [
 
 export interface TripFinishEffect {
 	name: string;
-	fn: (options: { data: ActivityTaskOptions; user: KlasaUser; loot: Bank | null; messages: string[] }) => unknown;
+	fn: (options: { data: ActivityTaskOptions; user: MUser; loot: Bank | null; messages: string[] }) => unknown;
 }
 
 const tripFinishEffects: TripFinishEffect[] = [
@@ -102,14 +101,14 @@ const tripFinishEffects: TripFinishEffect[] = [
 				messages.push(`<:mysterybox:680783258488799277> **You received 2x loot and ${otherLoot}.**`);
 				userStatsBankUpdate(user.id, 'doubled_loot_bank', bonusLoot);
 				await user.addItemsToBank({ items: bonusLoot, collectionLog: true });
-				updateBankSetting(globalClient, ClientSettings.EconomyStats.TripDoublingLoot, bonusLoot);
+				updateBankSetting('trip_doubling_loot', bonusLoot);
 			}
 		}
 	},
 	{
 		name: 'Custom Pet Perk',
 		fn: async ({ data, messages, user }) => {
-			const pet = user.settings.get(UserSettings.Minion.EquippedPet);
+			const pet = user.user.minion_equippedPet;
 			const minutes = Math.floor(data.duration / Time.Minute);
 			if (minutes < 5) return;
 			let bonusLoot = new Bank();
@@ -198,13 +197,13 @@ const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Voidling',
 		fn: async ({ data, messages, user }) => {
-			if (!allItemsOwned(user).has('Voidling')) return;
+			if (!user.allItemsOwned().has('Voidling')) return;
 			const voidlingEquipped = user.usingPet('Voidling');
 			const alchResult = alching({
 				user,
 				tripLength: voidlingEquipped
-					? data.duration * (user.hasItemEquippedAnywhere('Magic master cape') ? 3 : 1)
-					: data.duration / (user.hasItemEquippedAnywhere('Magic master cape') ? 1 : randInt(6, 7)),
+					? data.duration * (user.hasEquipped('Magic master cape') ? 3 : 1)
+					: data.duration / (user.hasEquipped('Magic master cape') ? 1 : randInt(6, 7)),
 				isUsingVoidling: true
 			});
 			if (alchResult !== null) {
@@ -216,23 +215,23 @@ const tripFinishEffects: TripFinishEffect[] = [
 				await user.addItemsToBank({ items: alchResult.bankToAdd });
 				await user.removeItemsFromBank(alchResult.bankToRemove);
 
-				updateBankSetting(globalClient, ClientSettings.EconomyStats.MagicCostBank, alchResult.bankToRemove);
+				updateBankSetting('magic_cost_bank', alchResult.bankToRemove);
 
 				updateGPTrackSetting('gp_alch', alchResult.bankToAdd.amount('Coins'));
 				messages.push(
 					`Your Voidling alched ${alchResult.maxCasts}x ${alchResult.itemToAlch.name}. Removed ${
 						alchResult.bankToRemove
 					} from your bank and added ${alchResult.bankToAdd}. ${
-						!voidlingEquipped && !user.hasItemEquippedAnywhere('Magic master cape')
+						!voidlingEquipped && !user.hasEquipped('Magic master cape')
 							? "As you left your Voidling in the bank, it didn't manage to alch at its full potential."
 							: ''
 					}${
-						user.hasItemEquippedAnywhere('Magic master cape')
+						user.hasEquipped('Magic master cape')
 							? 'Voidling was buffed by your Magic Master cape, and is alching much faster!'
 							: ''
 					}`
 				);
-			} else if (user.getUserFavAlchs(Time.Minute * 30).length !== 0) {
+			} else if (user.favAlchs(Time.Minute * 30).length !== 0) {
 				messages.push(
 					"Your Voidling didn't alch anything because you either don't have any nature runes or fire runes."
 				);
@@ -242,9 +241,9 @@ const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Invention Effects',
 		fn: async ({ data, messages, user }) => {
-			if (userHasItemsEquippedAnywhere(user, 'Silverhawk boots') && data.duration > Time.Minute) {
+			if (user.hasEquipped('Silverhawk boots') && data.duration > Time.Minute) {
 				const costRes = await inventionItemBoost({
-					userID: user.id,
+					user,
 					inventionID: InventionID.SilverHawkBoots,
 					duration: data.duration
 				});
@@ -272,19 +271,19 @@ const tripFinishEffects: TripFinishEffect[] = [
 ];
 
 export async function handleTripFinish(
-	user: KlasaUser,
+	user: MUser,
 	channelID: string,
 	message: string,
 	onContinue:
 		| undefined
 		| [string, Record<string, unknown>, boolean?, string?]
 		| ((args: LastTripRunArgs) => Promise<CommandResponse | null>),
-	attachment: MessageAttachment | Buffer | undefined,
+	attachment: AttachmentBuilder | Buffer | undefined,
 	data: ActivityTaskOptions,
 	loot: Bank | null,
 	_messages?: string[]
 ) {
-	const perkTier = getUsersPerkTier(user);
+	const { perkTier } = user;
 	const messages: string[] = [];
 	for (const effect of tripFinishEffects) await effect.fn({ data, user, loot, messages });
 
@@ -312,7 +311,7 @@ export async function handleTripFinish(
 	const runCmdOptions = {
 		channelID,
 		userID: user.id,
-		guildID: isGuildBasedChannel(channel) && channel.guild ? channel.guild.id : undefined,
+		guildID: channel.guild ? channel.guild.id : undefined,
 		user,
 		member: null
 	};
@@ -330,24 +329,24 @@ export async function handleTripFinish(
 		: onContinue;
 
 	if (onContinueFn) lastTripCache.set(user.id, { data, continue: onContinueFn });
-	const components: MessageOptions['components'] = [[]];
-	if (onContinueFn) components[0].push(makeRepeatTripButton());
-	if (clueReceived && perkTier > PerkTier.One) components[0].push(makeDoClueButton(clueReceived));
+	const components = new ActionRowBuilder<ButtonBuilder>();
+	if (onContinueFn) components.addComponents(makeRepeatTripButton());
+	if (clueReceived && perkTier > PerkTier.One) components.addComponents(makeDoClueButton(clueReceived));
 	const casketReceived = loot ? ClueTiers.find(i => loot?.has(i.id)) : undefined;
-	if (casketReceived) components[0].push(makeOpenCasketButton(casketReceived));
+	if (casketReceived) components.addComponents(makeOpenCasketButton(casketReceived));
 	const birdHousedetails = await calculateBirdhouseDetails(user.id);
-	if (birdHousedetails.isReady && perkTier > PerkTier.One) components[0].push(makeBirdHouseTripButton());
+	if (birdHousedetails.isReady && perkTier > PerkTier.One) components.addComponents(makeBirdHouseTripButton());
 	const { currentTask } = await getUsersCurrentSlayerInfo(user.id);
 	if (
 		(currentTask === null || currentTask.quantity_remaining <= 0) &&
 		perkTier > PerkTier.One &&
 		data.type === 'MonsterKilling'
 	) {
-		components[0].push(makeNewSlayerTaskButton());
+		components.addComponents(makeNewSlayerTaskButton());
 	}
 	sendToChannelID(channelID, {
 		content: message,
 		image: attachment,
-		components: components[0].length > 0 ? components : undefined
+		components: components.components.length > 0 ? [components] : undefined
 	});
 }

@@ -1,4 +1,3 @@
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { resolveBank } from 'oldschooljs/dist/util';
 
@@ -691,10 +690,8 @@ const bsoItems: Createable[] = [
 			const cost = new Bank({ 'Tattered robes of Vasa': 1, 'Abyssal cape': 1 });
 			const capes = resolveItems(['Imbued saradomin cape', 'Imbued zamorak cape', 'Imbued guthix cape']);
 			const capeToUse =
-				user
-					.bank()
-					.items()
-					.filter(i => capes.includes(i?.[0]?.id))?.[0]?.[0]?.id ?? itemID('Imbued saradomin cape');
+				user.bank.items().filter(i => capes.includes(i?.[0]?.id))?.[0]?.[0]?.id ??
+				itemID('Imbued saradomin cape');
 			cost.add(capeToUse);
 			return cost;
 		},
@@ -1143,8 +1140,8 @@ const divineWaterBones = [
 	'Royal dragon bones'
 ];
 
-function divineWaterInputItems(user: KlasaUser, preferredBone?: Bone) {
-	const userBank = user.bank();
+function divineWaterInputItems(user: MUser, preferredBone?: Bone) {
+	const userBank = user.bank;
 	const bonesToUse =
 		preferredBone ??
 		bones
@@ -1163,7 +1160,7 @@ function divineWaterInputItems(user: KlasaUser, preferredBone?: Bone) {
 const divineWaterCreatbles: Createable[] = [
 	{
 		name: 'Divine water',
-		inputItems: (user: KlasaUser) => divineWaterInputItems(user),
+		inputItems: (user: MUser) => divineWaterInputItems(user),
 		outputItems: resolveNameBank({
 			'Divine water': 1
 		})
@@ -1174,7 +1171,7 @@ for (const bone of divineWaterBones) {
 	const preferredBone = bones.find(b => stringMatches(b.name, bone))!;
 	divineWaterCreatbles.push({
 		name: `Divine water (${preferredBone.name})`,
-		inputItems: (user: KlasaUser) => divineWaterInputItems(user, preferredBone),
+		inputItems: (user: MUser) => divineWaterInputItems(user, preferredBone),
 		outputItems: resolveNameBank({
 			'Divine water': 1
 		})

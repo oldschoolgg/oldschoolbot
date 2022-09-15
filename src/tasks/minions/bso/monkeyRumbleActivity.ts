@@ -1,15 +1,12 @@
 import { randArrItem, roll, Time, uniqueArr } from 'e';
-import { Task } from 'klasa';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { monkeyHeadImage, monkeyTierOfUser } from '../../../lib/monkeyRumble';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { MonkeyRumbleOptions } from '../../../lib/types/minions';
-import { updateBankSetting } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { updateBankSetting } from '../../../mahoji/mahojiSettings';
 
 const rewardTable = new LootTable().add('Monkey egg').add('Monkey dye').add('Big banana').add('Monkey crate', [5, 10]);
 const baseTable = new LootTable().tertiary(25, 'Monkey crate');
@@ -20,18 +17,18 @@ const gotUniqueMessages = [
 	'You did well in the arena, we should fight again. Take these items.'
 ];
 
-export default class extends Task {
+export const mrTask: MinionTask = {
+	type: 'MonkeyRumble',
 	async run(data: MonkeyRumbleOptions) {
 		const { channelID, quantity, userID, monkeys, duration } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
 		await incrementMinigameScore(userID, 'monkey_rumble', quantity);
 
-		const newMonkeysFought: string[] = uniqueArr([
-			...user.settings.get(UserSettings.MonkeysFought),
-			...monkeys.map(m => m.nameKey)
-		]);
-		await user.settings.update(UserSettings.MonkeysFought, newMonkeysFought, { arrayAction: 'overwrite' });
+		const newMonkeysFought: string[] = uniqueArr([...user.user.monkeys_fought, ...monkeys.map(m => m.nameKey)]);
+		await user.update({
+			monkeys_fought: newMonkeysFought
+		});
 
 		const monkeyTier = monkeyTierOfUser(user);
 		let tierBonusXP = quantity * monkeyTier * 1233;
@@ -82,7 +79,7 @@ export default class extends Task {
 		}
 
 		await user.addItemsToBank({ items: loot, collectionLog: true });
-		updateBankSetting(this.client, ClientSettings.EconomyStats.MonkeyRumbleLoot, loot);
+		updateBankSetting('mr_loot', loot);
 
 		const rumbleTokensPerHour = `${Math.round((tokens / (duration / Time.Minute)) * 60).toLocaleString()}`;
 		const fightsPerHour = `${Math.round((quantity / (duration / Time.Minute)) * 60).toLocaleString()}`;
@@ -107,4 +104,4 @@ You received **${loot}.**`,
 			loot
 		);
 	}
-}
+};

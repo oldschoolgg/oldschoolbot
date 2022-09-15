@@ -4,13 +4,13 @@ import { Bank } from 'oldschooljs';
 
 import { Eatable, Eatables } from '../../lib/data/eatables';
 import { kibbles } from '../../lib/data/kibble';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { KibbleOptions } from '../../lib/types/minions';
-import { formatDuration, itemNameFromID, stringMatches, updateBankSetting } from '../../lib/util';
+import { formatDuration, itemNameFromID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { OSBMahojiCommand } from '../lib/util';
+import { updateBankSetting } from '../mahojiSettings';
 
 export const kibbleCommand: OSBMahojiCommand = {
 	name: 'kibble',
@@ -37,7 +37,7 @@ export const kibbleCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ options, userID, channelID }: CommandRunOptions<{ kibble: string; quantity: number }>) => {
-		const user = await globalClient.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const kibble = kibbles.find(e => [e.item.name, e.type].some(s => stringMatches(s, options.kibble)));
 		if (!kibble) {
 			return `No matching kibble found, they are: ${kibbles.map(k => k.item.name).join(', ')}.`;
@@ -48,7 +48,7 @@ export const kibbleCommand: OSBMahojiCommand = {
 		if (user.skillLevel(SkillsEnum.Herblore) < kibble.level - 20) {
 			return `You need level ${kibble.level} Herblore to make this kibble.`;
 		}
-		const userBank = user.bank();
+		const userBank = user.bank;
 
 		const cost = new Bank();
 		const qtyPerComponent = 5 * (kibbles.indexOf(kibble) + 1);
@@ -109,7 +109,7 @@ export const kibbleCommand: OSBMahojiCommand = {
 		}
 
 		await user.removeItemsFromBank(cost);
-		updateBankSetting(globalClient, ClientSettings.EconomyStats.KibbleCost, cost);
+		updateBankSetting('kibble_cost', cost);
 
 		await addSubTaskToActivityTask<KibbleOptions>({
 			userID: user.id,

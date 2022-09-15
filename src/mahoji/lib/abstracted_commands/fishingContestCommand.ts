@@ -1,5 +1,4 @@
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import {
@@ -11,12 +10,12 @@ import {
 } from '../../../lib/fishingContest';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { trackLoot } from '../../../lib/settings/prisma';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { FishingContestOptions } from '../../../lib/types/minions';
-import { formatDuration, stringMatches, updateBankSetting } from '../../../lib/util';
+import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { updateBankSetting } from '../../mahojiSettings';
 
-export async function fishingContestStartCommand(user: KlasaUser, channelID: bigint, loc: string | undefined) {
+export async function fishingContestStartCommand(user: MUser, channelID: bigint, loc: string | undefined) {
 	const currentFishType = getCurrentFishType();
 	const validLocs = getValidLocationsForFishType(currentFishType);
 	if (!loc) loc = validLocs[0].name;
@@ -33,7 +32,7 @@ export async function fishingContestStartCommand(user: KlasaUser, channelID: big
 			.join(', ')}`;
 	}
 
-	if (!['Contest rod', "Beginner's tackle box"].every(i => user.hasItemEquippedOrInBank(i))) {
+	if (!['Contest rod', "Beginner's tackle box"].every(i => user.hasEquippedOrInBank(i))) {
 		return 'You need to buy a Contest rod and a tackle box to compete in the Fishing contest.';
 	}
 	if (user.minionIsBusy) {
@@ -45,7 +44,7 @@ export async function fishingContestStartCommand(user: KlasaUser, channelID: big
 
 	const tackleBoxes = ["Champion's tackle box", 'Professional tackle box', 'Standard tackle box', 'Basic tackle box'];
 	for (let i = 0; i < tackleBoxes.length; i++) {
-		if (user.hasItemEquippedOrInBank(tackleBoxes[i])) {
+		if (user.hasEquippedOrInBank(tackleBoxes[i])) {
 			let num = tackleBoxes.length - i;
 			quantityBoosts.push(`${num} for ${tackleBoxes[i]}`);
 			quantity += num;
@@ -53,7 +52,7 @@ export async function fishingContestStartCommand(user: KlasaUser, channelID: big
 		}
 	}
 
-	if (user.hasItemEquippedOrInBank('Crystal fishing rod')) {
+	if (user.hasEquippedOrInBank('Crystal fishing rod')) {
 		quantity++;
 		quantityBoosts.push('1 for Crystal fishing rod');
 	}
@@ -70,7 +69,7 @@ export async function fishingContestStartCommand(user: KlasaUser, channelID: big
 		return `You need ${cost} to bait fish at ${fishingLocation.name}.`;
 	}
 	await user.removeItemsFromBank(cost);
-	await updateBankSetting(globalClient, ClientSettings.EconomyStats.FishingContestCost, cost);
+	await updateBankSetting('fc_cost', cost);
 
 	await addSubTaskToActivityTask<FishingContestOptions>({
 		userID: user.id,
@@ -101,7 +100,7 @@ You're fishing ${quantity - 1} extra fish: ${quantityBoosts.join(', ')}`
 	};
 }
 
-export async function fishingContestStatsCommand(user: KlasaUser) {
+export async function fishingContestStatsCommand(user: MUser) {
 	const [userDetails, topCatches, minigameScore] = await Promise.all([
 		getUsersFishingContestDetails(user),
 		getTopDailyFishingCatch(),

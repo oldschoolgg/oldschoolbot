@@ -1,12 +1,10 @@
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
-import { Task } from 'klasa';
 
 import { userHasFlappy } from '../../../lib/invention/inventions';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { mahojiUserSettingsUpdate } from '../../../mahoji/mahojiSettings';
 
 function calcPoints() {
 	let base = 42.5;
@@ -24,10 +22,11 @@ function calcPoints() {
 	return Math.ceil(base);
 }
 
-export default class extends Task {
+export const soulWarsTask: MinionTask = {
+	type: 'SoulWars',
 	async run(data: MinigameActivityTaskOptions) {
 		const { channelID, quantity, userID, duration } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
 		let points = 0;
 		for (let i = 0; i < quantity; i++) {
@@ -39,7 +38,7 @@ export default class extends Task {
 			points *= 2;
 		}
 
-		const { newUser } = await mahojiUserSettingsUpdate(userID, {
+		await user.update({
 			zeal_tokens: {
 				increment: points
 			}
@@ -47,7 +46,7 @@ export default class extends Task {
 
 		await incrementMinigameScore(user.id, 'soul_wars', quantity);
 
-		let str = `${user}, ${user.minionName} finished doing ${quantity}x games of Soul Wars, you received ${points} Zeal Tokens, you now have ${newUser.zeal_tokens}.\n\n`;
+		let str = `${user}, ${user.minionName} finished doing ${quantity}x games of Soul Wars, you received ${points} Zeal Tokens, you now have ${user.user.zeal_tokens}.\n\n`;
 		if (flappyRes.shouldGiveBoost) str += `\n${flappyRes.userMsg}`;
 
 		handleTripFinish(
@@ -60,4 +59,4 @@ export default class extends Task {
 			null
 		);
 	}
-}
+};

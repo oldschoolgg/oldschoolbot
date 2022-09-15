@@ -22,7 +22,6 @@ import {
 	OuraniaBuyables
 } from '../lib/abstracted_commands/odsCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const minigamesCommand: OSBMahojiCommand = {
 	name: 'bsominigames',
@@ -186,8 +185,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 			fish?: { location?: string };
 		};
 	}>) => {
-		const klasaUser = await globalClient.fetchUser(userID);
-		const user = await mahojiUsersSettingsFetch(userID);
+		const klasaUser = await mUserFetch(userID);
 		const { baxtorian_bathhouses, monkey_rumble, ourania_delivery_service, fishing_contest } = options;
 
 		if (baxtorian_bathhouses?.help) {
@@ -201,8 +199,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 		if (baxtorian_bathhouses?.start) {
 			return baxtorianBathhousesStartCommand({
 				channelID,
-				user,
-				klasaUser,
+				user: klasaUser,
 				tier: baxtorian_bathhouses.start.tier,
 				ore: baxtorian_bathhouses.start.heating,
 				mixture: baxtorian_bathhouses.start.water_mixture
@@ -214,13 +211,12 @@ export const minigamesCommand: OSBMahojiCommand = {
 
 		if (ourania_delivery_service?.buy) {
 			return odsBuyCommand(
-				user,
 				klasaUser,
 				ourania_delivery_service.buy.name,
 				ourania_delivery_service.buy.quantity ?? 1
 			);
 		}
-		if (ourania_delivery_service?.stats) return odsStatsCommand(user);
+		if (ourania_delivery_service?.stats) return odsStatsCommand(klasaUser);
 		if (ourania_delivery_service?.start) return odsStartCommand(klasaUser, channelID);
 
 		if (fishing_contest?.stats_info) return fishingContestStatsCommand(klasaUser);

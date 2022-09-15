@@ -1,4 +1,4 @@
-import { MessageAttachment } from 'discord.js';
+import { AttachmentBuilder } from 'discord.js';
 import * as fs from 'fs';
 import { Canvas } from 'skia-canvas/lib';
 
@@ -67,7 +67,7 @@ export async function newChatHeadImage({ content, head }: { content: string; hea
 
 export default async function chatHeadImage({ content, head }: { content: string; head: keyof typeof chatHeads }) {
 	const image = await newChatHeadImage({ content, head });
-	return new MessageAttachment(image);
+	return new AttachmentBuilder(image);
 }
 
 export async function mahojiChatHead({ content, head }: { content: string; head: keyof typeof chatHeads }) {

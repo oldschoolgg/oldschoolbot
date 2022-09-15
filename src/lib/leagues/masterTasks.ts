@@ -735,8 +735,8 @@ export const masterTasks: Task[] = [
 	{
 		id: 4102,
 		name: 'Complete 500 Farming contracts',
-		has: async ({ mahojiUser }) => {
-			const contract = getFarmingContractOfUser(mahojiUser);
+		has: async ({ user }) => {
+			const contract = getFarmingContractOfUser(user);
 			return contract.contractsCompleted >= 500;
 		}
 	},

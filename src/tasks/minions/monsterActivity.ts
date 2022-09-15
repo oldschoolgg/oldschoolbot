@@ -1,5 +1,4 @@
 import { calcWhatPercent, increaseNumByPercent, percentChance, reduceNumByPercent, sumArr, Time } from 'e';
-import { KlasaUser, Task } from 'klasa';
 import { Bank, MonsterKillOptions, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
@@ -9,13 +8,12 @@ import { BitField, Emoji, PvMMethod } from '../../lib/constants';
 import { isDoubleLootActive } from '../../lib/doubleLoot';
 import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
 import { SlayerActivityConstants } from '../../lib/minions/data/combatConstants';
-import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
+import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import { KillableMonster } from '../../lib/minions/types';
 import { prisma, trackLoot } from '../../lib/settings/prisma';
 import { runCommand } from '../../lib/settings/settings';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { bones } from '../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
@@ -25,12 +23,11 @@ import { assert, clAdjustedDroprate, roll } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
-import { hasItemsEquippedOrInBank } from '../../lib/util/minionUtils';
 import { sendToChannelID } from '../../lib/util/webhook';
 import { trackClientBankStats, userStatsBankUpdate, userStatsUpdate } from '../../mahoji/mahojiSettings';
 
-async function bonecrusherEffect(user: KlasaUser, loot: Bank, duration: number, messages: string[]) {
-	if (!hasItemsEquippedOrInBank(user, ['Gorajan bonecrusher', 'Superior bonecrusher'], 'one')) return;
+async function bonecrusherEffect(user: MUser, loot: Bank, duration: number, messages: string[]) {
+	if (!user.hasEquippedOrInBank(['Gorajan bonecrusher', 'Superior bonecrusher'], 'one')) return;
 	if (user.bitfield.includes(BitField.DisabledGorajanBoneCrusher)) return;
 	let hasSuperior = user.owns('Superior bonecrusher');
 
@@ -45,9 +42,9 @@ async function bonecrusherEffect(user: KlasaUser, loot: Bank, duration: number, 
 
 	let durationForCost = totalXP * 16.8;
 	let boostMsg: string | null = null;
-	if (hasSuperior && durationForCost > Number(Time.Minute)) {
+	if (hasSuperior && durationForCost > Time.Minute) {
 		const t = await inventionItemBoost({
-			userID: user.id,
+			user,
 			inventionID: InventionID.SuperiorBonecrusher,
 			duration: durationForCost
 		});
@@ -91,10 +88,10 @@ const hideLeatherMap = [
 	[getOSItem('Royal dragonhide'), getOSItem('Royal dragon leather')]
 ] as const;
 
-async function portableTannerEffect(user: KlasaUser, loot: Bank, duration: number, messages: string[]) {
+async function portableTannerEffect(user: MUser, loot: Bank, duration: number, messages: string[]) {
 	if (!user.owns('Portable tanner')) return;
 	const boostRes = await inventionItemBoost({
-		userID: BigInt(user.id),
+		user,
 		inventionID: InventionID.PortableTanner,
 		duration
 	});
@@ -116,12 +113,7 @@ async function portableTannerEffect(user: KlasaUser, loot: Bank, duration: numbe
 	messages.push(`Portable Tanner turned the hides into leathers (${boostRes.messages})`);
 }
 
-export async function clueUpgraderEffect(
-	user: KlasaUser,
-	loot: Bank,
-	messages: string[],
-	type: 'pvm' | 'pickpocketing'
-) {
+export async function clueUpgraderEffect(user: MUser, loot: Bank, messages: string[], type: 'pvm' | 'pickpocketing') {
 	if (!user.owns('Clue upgrader')) return false;
 	const upgradedClues = new Bank();
 	const removeBank = new Bank();
@@ -141,7 +133,7 @@ export async function clueUpgraderEffect(
 	}
 	if (upgradedClues.length === 0) return false;
 	const boostRes = await inventionItemBoost({
-		userID: BigInt(user.id),
+		user,
 		inventionID: InventionID.ClueUpgrader,
 		duration: durationForCost
 	});
@@ -155,19 +147,20 @@ export async function clueUpgraderEffect(
 	messages.push(`<:Clue_upgrader:986830303001722880> Upgraded ${totalCluesUpgraded} clues (${boostRes.messages})`);
 }
 
-export default class extends Task {
+export const monsterTask: MinionTask = {
+	type: 'MonsterKilling',
 	async run(data: MonsterActivityTaskOptions) {
 		const { monsterID, userID, channelID, quantity, duration, usingCannon, cannonMulti, burstOrBarrage } = data;
-		const monster = effectiveMonsters.find(mon => mon.id === monsterID)! as KillableMonster;
+		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 		const fullMonster = Monsters.get(monsterID);
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		if (monster.name === 'Koschei the deathless' && !roll(5000)) {
 			sendToChannelID(channelID, {
 				content: `${user}, ${user.minionName} failed to defeat Koschei the deathless.`
 			});
 		}
 
-		await user.incrementMonsterScore(monsterID, quantity);
+		await user.incrementKC(monsterID, quantity);
 
 		// Abyssal set bonuses -- grants the user a few extra kills
 		let boostedQuantity = quantity;
@@ -192,7 +185,7 @@ export default class extends Task {
 			usersTask.assignedTask.monsters.includes(monsterID);
 		const quantitySlayed = isOnTask ? Math.min(usersTask.currentTask!.quantity_remaining, quantity) : null;
 
-		const mySlayerUnlocks = user.settings.get(UserSettings.Slayer.SlayerUnlocks);
+		const mySlayerUnlocks = user.user.slayer_unlocks;
 
 		const slayerMaster = isOnTask ? getSlayerMasterOSJSbyID(usersTask.slayerMaster!.id) : undefined;
 		// Check if superiors unlock is purchased
@@ -221,7 +214,7 @@ export default class extends Task {
 			for (let i = 0; i < quantity; i++) if (roll(200)) newSuperiorCount++;
 		}
 
-		let masterCapeRolls = user.hasItemEquippedAnywhere('Slayer master cape') ? newSuperiorCount : 0;
+		let masterCapeRolls = user.hasEquipped('Slayer master cape') ? newSuperiorCount : 0;
 		newSuperiorCount += masterCapeRolls;
 
 		if (monster.specialLoot) {
@@ -315,14 +308,17 @@ export default class extends Task {
 		announceLoot({ user, monsterID: monster.id, loot, notifyDrops: monster.notifyDrops });
 
 		if (newSuperiorCount && newSuperiorCount > 0) {
-			const oldSuperiorCount = await user.settings.get(UserSettings.Slayer.SuperiorCount);
-			user.settings.update(UserSettings.Slayer.SuperiorCount, oldSuperiorCount + newSuperiorCount);
+			await user.update({
+				slayer_superior_count: {
+					increment: newSuperiorCount
+				}
+			});
 		}
 
 		if (
 			monster.id === Monsters.Unicorn.id &&
-			user.hasItemEquippedAnywhere('Iron dagger') &&
-			!user.hasItemEquippedOrInBank('Clue hunter cloak')
+			user.hasEquipped('Iron dagger') &&
+			!user.hasEquippedOrInBank(['Clue hunter cloak'])
 		) {
 			loot.add('Clue hunter cloak');
 			loot.add('Clue hunter boots');
@@ -342,7 +338,7 @@ export default class extends Task {
 					: monsterID === Monsters.Kreearra.id && usersTask.currentTask!.monster_id !== Monsters.Kreearra.id
 					? quantitySlayed! * 4
 					: monsterID === Monsters.GrotesqueGuardians.id &&
-					  user.settings.get(UserSettings.Slayer.SlayerUnlocks).includes(SlayerTaskUnlocksEnum.DoubleTrouble)
+					  user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.DoubleTrouble)
 					? quantitySlayed! * 2
 					: quantitySlayed!;
 
@@ -350,12 +346,19 @@ export default class extends Task {
 
 			thisTripFinishesTask = quantityLeft === 0;
 			if (thisTripFinishesTask) {
-				const currentStreak = user.settings.get(UserSettings.Slayer.TaskStreak) + 1;
-				await user.settings.update(UserSettings.Slayer.TaskStreak, currentStreak);
+				const { newUser } = await user.update({
+					slayer_task_streak: {
+						increment: 1
+					}
+				});
+				const currentStreak = newUser.slayer_task_streak;
 				const points = await calculateSlayerPoints(currentStreak, usersTask.slayerMaster!, user);
-				const newPoints = user.settings.get(UserSettings.Slayer.SlayerPoints) + points;
-				await user.settings.update(UserSettings.Slayer.SlayerPoints, newPoints);
-				str += `\n\n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${newPoints}; return to a Slayer master.**`;
+				const secondNewUser = await user.update({
+					slayer_points: {
+						increment: points
+					}
+				});
+				str += `\n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${secondNewUser.newUser.slayer_points}; return to a Slayer master.**`;
 				if (usersTask.assignedTask?.isBoss) {
 					str += ` ${await user.addXP({ skillName: SkillsEnum.Slayer, amount: 5000, minimal: true })}`;
 					str += ' for completing your boss task.';
@@ -458,4 +461,4 @@ export default class extends Task {
 			messages
 		);
 	}
-}
+};

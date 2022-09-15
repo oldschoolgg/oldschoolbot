@@ -1,20 +1,18 @@
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import { Emoji } from '../../../lib/constants';
 import KingGoldemar from '../../../lib/minions/data/killableMonsters/custom/bosses/KingGoldemar';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { BossInstance, gpCostPerKill } from '../../../lib/structures/Boss';
 import { Gear } from '../../../lib/structures/Gear';
 import { channelIsSendable, formatDuration } from '../../../lib/util';
 
 export async function kgCommand(
 	interaction: SlashCommandInteraction | null,
-	user: KlasaUser,
+	user: MUser,
 	channelID: bigint,
 	inputName: string,
 	quantity: number | undefined
@@ -62,10 +60,10 @@ export async function kgCommand(
 		itemCost: async data => data.baseFood.multiply(data.kills).add('Coins', gpCostPerKill(data.user) * data.kills),
 		mostImportantStat: 'attack_slash',
 		food: () => new Bank(),
-		settingsKeys: [ClientSettings.EconomyStats.KingGoldemarCost, ClientSettings.EconomyStats.KingGoldemarLoot],
+		settingsKeys: ['kg_cost', 'kg_loot'],
 		channel,
 		activity: 'KingGoldemar',
-		massText: `${user.username} is assembling a team to fight King Goldemar! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
+		massText: `${user.usernameOrMention} is assembling a team to fight King Goldemar! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
 		minSize: 1,
 		solo: type === 'solo',
 		canDie: true,
@@ -74,7 +72,7 @@ export async function kgCommand(
 	});
 	try {
 		const { bossUsers } = await instance.start();
-		const embed = new MessageEmbed()
+		const embed = new EmbedBuilder()
 			.setDescription(
 				`${type === 'solo' ? 'You approach' : 'Your group approaches'} the Kings' chambers, and ${
 					type === 'solo' ? 'you bribe' : 'each of you bribes'
@@ -84,7 +82,7 @@ export async function kgCommand(
 					instance.duration
 				)}.
 
-${bossUsers.map(u => `**${u.user.username}**: ${u.debugStr}`).join('\n\n')}
+${bossUsers.map(u => `**${u.user.usernameOrMention}**: ${u.debugStr}`).join('\n\n')}
 `
 			)
 			.setImage('https://cdn.discordapp.com/attachments/357422607982919680/841789326648016896/Untitled-2.png');

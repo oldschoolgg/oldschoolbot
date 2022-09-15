@@ -1,15 +1,13 @@
 import { calcWhatPercent, percentChance, reduceNumByPercent, Time } from 'e';
-import { KlasaUser } from 'klasa';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { ZALCANO_ID } from '../../../lib/constants';
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { Skills } from '../../../lib/types';
 import { ZalcanoActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration } from '../../../lib/util';
+import { formatDuration, hasSkillReqs } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import { userHasGracefulEquipped } from '../../mahojiSettings';
 
 export const soteSkillRequirements: Skills = {
 	mining: 70,
@@ -33,12 +31,12 @@ function calcPerformance(kcLearned: number, skillPercentage: number) {
 	return Math.min(100, basePerformance);
 }
 
-export async function zalcanoCommand(user: KlasaUser, channelID: bigint) {
-	const [hasSkillReqs, reason] = user.hasSkillReqs(soteSkillRequirements);
-	if (!hasSkillReqs) {
+export async function zalcanoCommand(user: MUser, channelID: bigint) {
+	const [hasReqs, reason] = hasSkillReqs(user, soteSkillRequirements);
+	if (!hasReqs) {
 		return `To fight Zalcano, you need: ${reason}.`;
 	}
-	if (user.settings.get(UserSettings.QP) < 150) {
+	if (user.QP < 150) {
 		return 'To fight Zalcano, you need 150 QP.';
 	}
 
@@ -50,7 +48,8 @@ export async function zalcanoCommand(user: KlasaUser, channelID: bigint) {
 	baseTime = reduceNumByPercent(baseTime, kcLearned / 6);
 	boosts.push(`${(kcLearned / 6).toFixed(2)}% boost for experience`);
 
-	const skillPercentage = user.skillLevel(SkillsEnum.Mining) + user.skillLevel(SkillsEnum.Smithing);
+	const skills = user.skillsAsLevels;
+	const skillPercentage = skills.mining + skills.smithing;
 
 	baseTime = reduceNumByPercent(baseTime, skillPercentage / 40);
 	boosts.push(`${skillPercentage / 40}% boost for levels`);
@@ -60,7 +59,7 @@ export async function zalcanoCommand(user: KlasaUser, channelID: bigint) {
 		boosts.push('2x boost for Obis');
 	}
 
-	if (!user.hasGracefulEquipped()) {
+	if (!userHasGracefulEquipped(user)) {
 		baseTime *= 1.15;
 		boosts.push('-15% time penalty for not having graceful equipped');
 	}

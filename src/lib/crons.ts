@@ -1,5 +1,7 @@
 import { schedule } from 'node-cron';
 
+import { analyticsTick } from './analytics';
+import { syncPrescence } from './doubleLoot';
 import { prisma } from './settings/prisma';
 
 export function initCrons() {
@@ -14,5 +16,17 @@ SELECT item_id::integer, SUM(qty)::bigint FROM
 )
 AS DATA
 GROUP BY item_id;`);
+	});
+
+	/**
+	 * Analytics
+	 */
+	schedule('*/5 * * * *', analyticsTick);
+
+	/**
+	 * prescence
+	 */
+	schedule('0 * * * *', () => {
+		syncPrescence();
 	});
 }

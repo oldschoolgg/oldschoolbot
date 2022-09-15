@@ -1,6 +1,5 @@
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import { calcPercentOfNum, calcWhatPercent, increaseNumByPercent, reduceNumByPercent } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
@@ -8,14 +7,13 @@ import { checkUserCanUseDegradeableItem, degradeableItems, degradeItem } from '.
 import { GearStats } from '../../../lib/gear';
 import { Naxxus, NAXXUS_HP } from '../../../lib/minions/data/killableMonsters/custom/bosses/Naxxus';
 import { trackLoot } from '../../../lib/settings/prisma';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { Gear } from '../../../lib/structures/Gear';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { formatDuration, isWeekend, updateBankSetting } from '../../../lib/util';
+import { formatDuration, isWeekend } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
+import { hasMonsterRequirements, updateBankSetting } from '../../mahojiSettings';
 
 const bisMageGear = new Gear({
 	head: 'Gorajan occult helmet', // 20
@@ -116,10 +114,10 @@ function calcSetupPercent(
 	return totalPercent;
 }
 
-export async function naxxusCommand(user: KlasaUser, channelID: bigint, quantity: number | undefined) {
-	const [hasReqs, rejectReason] = user.hasMonsterRequirements(Naxxus);
+export async function naxxusCommand(user: MUser, channelID: bigint, quantity: number | undefined) {
+	const [hasReqs, rejectReason] = hasMonsterRequirements(user, Naxxus);
 	if (!hasReqs) {
-		return `${user.username} doesn't have the requirements for this monster: ${rejectReason}`;
+		return `${user.usernameOrMention} doesn't have the requirements for this monster: ${rejectReason}`;
 	}
 
 	const boosts = [];
@@ -129,7 +127,7 @@ export async function naxxusCommand(user: KlasaUser, channelID: bigint, quantity
 		boosts.push('5% Weekend boost');
 	}
 
-	const naxxusKc = user.settings.get(UserSettings.MonsterScores)[Naxxus.id] ?? 0;
+	const naxxusKc = user.getKC(Naxxus.id);
 	for (const [threshold, boost, subThreshold] of naxxusKcBoosts) {
 		if (naxxusKc >= threshold) {
 			if (boost < 0) {
@@ -142,7 +140,7 @@ export async function naxxusCommand(user: KlasaUser, channelID: bigint, quantity
 		}
 	}
 
-	const mage = calcSetupPercent(bisMageGear.stats, user.getGear('mage').stats, 'attack_magic', [
+	const mage = calcSetupPercent(bisMageGear.stats, user.gear.mage.stats, 'attack_magic', [
 		'attack_stab',
 		'attack_slash',
 		'attack_crush',
@@ -153,7 +151,7 @@ export async function naxxusCommand(user: KlasaUser, channelID: bigint, quantity
 		'defence_stab'
 	]);
 
-	const melee = calcSetupPercent(bisMeleeGear.stats, user.getGear('melee').stats, 'attack_stab', [
+	const melee = calcSetupPercent(bisMeleeGear.stats, user.gear.melee.stats, 'attack_stab', [
 		'attack_slash',
 		'attack_crush',
 		'attack_ranged',
@@ -174,7 +172,7 @@ export async function naxxusCommand(user: KlasaUser, channelID: bigint, quantity
 	);
 
 	for (let itemBoost of itemBoosts) {
-		if (user.getGear(itemBoost.setup).hasEquipped(itemBoost.item.id)) {
+		if (user.gear[itemBoost.setup].hasEquipped(itemBoost.item.id)) {
 			effectiveTime = reduceNumByPercent(effectiveTime, itemBoost.boost);
 			boosts.push(`${itemBoost.boost}% ${itemBoost.item.name}`);
 		}
@@ -189,7 +187,7 @@ export async function naxxusCommand(user: KlasaUser, channelID: bigint, quantity
 		return `The max number of Naxxus you can do is ${Math.floor(maxTripLength / effectiveTime)}!`;
 	}
 
-	const kc = user.settings.get(UserSettings.MonsterScores)[Naxxus.id] ?? 0;
+	const kc = user.getKC(Naxxus.id);
 	let brewsNeeded = 10;
 	if (kc > 500) brewsNeeded *= 0.2;
 	else if (kc > 400) brewsNeeded *= 0.4;
@@ -204,14 +202,14 @@ export async function naxxusCommand(user: KlasaUser, channelID: bigint, quantity
 		.add('Enhanced divine water', 2);
 
 	if (!user.owns(foodBank)) {
-		return `${user.username} doesn't have the food requirements for this monster: ${foodBank}`;
+		return `${user.usernameOrMention} doesn't have the food requirements for this monster: ${foodBank}`;
 	}
 
 	const duration = effectiveTime * quantity;
 	// Some degrading items use charges based on DURATION
 	// It is important this is after duration modifiers so that the item isn't over-charged
 	for (const degItem of degradeableItems) {
-		if (user.getGear(degItem.setup).hasEquipped(degItem.item.name) && ['melee', 'mage'].includes(degItem.setup)) {
+		if (user.gear[degItem.setup].hasEquipped(degItem.item.name) && ['melee', 'mage'].includes(degItem.setup)) {
 			const chargesNeeded = degItem.charges(NAXXUS_HP * quantity, duration, user);
 			const res = checkUserCanUseDegradeableItem({
 				item: degItem.item,
@@ -246,9 +244,9 @@ export async function naxxusCommand(user: KlasaUser, channelID: bigint, quantity
 		type: 'Naxxus'
 	});
 
-	updateBankSetting(globalClient, ClientSettings.EconomyStats.NaxxusCost, foodBank);
+	updateBankSetting('naxxus_cost', foodBank);
 
-	const embed = new MessageEmbed()
+	const embed = new EmbedBuilder()
 		.setDescription(
 			`Your minion is now attempting to kill ${quantity}x Naxxus. The trip will take ${formatDuration(duration)}.
 			**Supplies**: ${foodBank.toString()}.

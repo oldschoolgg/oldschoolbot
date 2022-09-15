@@ -1,7 +1,6 @@
 import { StashUnit, User } from '@prisma/client';
 import { assert } from 'console';
 import { partition } from 'e';
-import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
@@ -20,7 +19,7 @@ import {
 	stoles
 } from '../data/CollectionsExport';
 import { prisma } from '../settings/prisma';
-import { getSkillsOfMahojiUser, itemNameFromID, stringMatches } from '../util';
+import { itemNameFromID, stringMatches } from '../util';
 import { makeBankImage } from '../util/makeBankImage';
 import resolveItems, { deepResolveItems } from '../util/resolveItems';
 import { ClueTier } from './clueTiers';
@@ -698,12 +697,12 @@ Contains: ${unit.builtUnit.items_contained.map(itemNameFromID).join(', ')}`;
 	return str;
 }
 
-export async function stashUnitBuildAllCommand(klasaUser: KlasaUser, user: User) {
+export async function stashUnitBuildAllCommand(user: MUser) {
 	const parsedUnits = await getParsedStashUnits(user.id);
 	const notBuilt = parsedUnits.filter(i => i.builtUnit === undefined);
 	if (notBuilt.length === 0) return 'You have already built all STASH units.';
-	const stats = getSkillsOfMahojiUser(user, true);
-	const checkBank = getMahojiBank(user);
+	const stats = user.skillsAsLevels;
+	const checkBank = user.bank;
 	const costBank = new Bank();
 
 	const toBuild: ParsedUnit[] = [];
@@ -720,8 +719,8 @@ export async function stashUnitBuildAllCommand(klasaUser: KlasaUser, user: User)
 		return 'There are no STASH units that you are able to build currently, due to lack of supplies or Construction level.';
 	}
 
-	if (!klasaUser.owns(costBank)) return "You don't own the items to do this.";
-	await klasaUser.removeItemsFromBank(costBank);
+	if (!user.owns(costBank)) return "You don't own the items to do this.";
+	await user.removeItemsFromBank(costBank);
 	await prisma.stashUnit.createMany({
 		data: toBuild.map(parsedUnit => ({
 			user_id: BigInt(user.id),
@@ -734,7 +733,7 @@ export async function stashUnitBuildAllCommand(klasaUser: KlasaUser, user: User)
 	return `You created ${toBuild.length} STASH units, using ${costBank}.`;
 }
 
-export async function stashUnitFillAllCommand(user: KlasaUser, mahojiUser: User): CommandResponse {
+export async function stashUnitFillAllCommand(user: MUser, mahojiUser: User): CommandResponse {
 	const parsedUnits = await getParsedStashUnits(user.id);
 	const notBuiltAndNotFilled = parsedUnits.filter(i => i.builtUnit !== undefined && !i.isFull);
 	if (notBuiltAndNotFilled.length === 0) return 'There are no STASH units left that you can fill.';
@@ -789,7 +788,7 @@ export async function stashUnitFillAllCommand(user: KlasaUser, mahojiUser: User)
 	return { attachments: [file], content: `You filled ${result.length} STASH units, with these items.` };
 }
 
-export async function stashUnitUnfillCommand(klasaUser: KlasaUser, user: User, unitID: string) {
+export async function stashUnitUnfillCommand(user: MUser, unitID: string) {
 	const parsedUnits = await getParsedStashUnits(user.id);
 	const unit = parsedUnits.find(i => stringMatches(i.unit.id.toString(), unitID));
 	if (!unit || !unit.builtUnit) return 'Invald unit.';
@@ -808,6 +807,6 @@ export async function stashUnitUnfillCommand(klasaUser: KlasaUser, user: User, u
 			items_contained: []
 		}
 	});
-	await klasaUser.addItemsToBank({ items: loot, collectionLog: false, dontAddToTempCL: true });
+	await user.addItemsToBank({ items: loot, collectionLog: false, dontAddToTempCL: true });
 	return `You took **${loot}** out of your '${unit.unit.desc}' ${unit.tier.tier} STASH unit.`;
 }

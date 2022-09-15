@@ -1,10 +1,8 @@
 import { randArrItem, roll, Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { BitField } from './constants';
-import { UserSettings } from './settings/types/UserSettings';
 import resolveItems from './util/resolveItems';
 
 export interface RandomEvent {
@@ -131,11 +129,11 @@ export const RandomEvents: RandomEvent[] = [
 
 const cache = new Map<string, number>();
 
-export async function triggerRandomEvent(user: KlasaUser, duration: number, messages: string[]) {
+export async function triggerRandomEvent(user: MUser, duration: number, messages: string[]) {
 	const minutes = Math.min(30, duration / Time.Minute);
 	const randomEventChance = 60 - minutes;
 	if (!roll(randomEventChance)) return;
-	if (user.settings.get(UserSettings.BitField).includes(BitField.DisabledRandomEvents)) {
+	if (user.bitfield.includes(BitField.DisabledRandomEvents)) {
 		return;
 	}
 
@@ -151,7 +149,7 @@ export async function triggerRandomEvent(user: KlasaUser, duration: number, mess
 	const loot = new Bank();
 	if (event.outfit) {
 		for (const piece of event.outfit) {
-			if (!user.hasItemEquippedOrInBank(piece)) {
+			if (!user.hasEquippedOrInBank(piece)) {
 				loot.add(piece);
 				break;
 			}

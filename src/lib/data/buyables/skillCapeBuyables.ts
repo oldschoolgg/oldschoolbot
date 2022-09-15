@@ -1,10 +1,8 @@
-import { User } from '@prisma/client';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings';
+import { countSkillsAtleast99 } from '../../../mahoji/mahojiSettings';
 import Skillcapes from '../../skilling/skillcapes';
-import { countSkillsAtleast99, getSkillsOfMahojiUser, toTitleCase } from '../../util';
+import { toTitleCase } from '../../util';
 import { Buyable } from './buyables';
 
 export const skillCapeBuyables: Buyable[] = [];
@@ -12,7 +10,7 @@ export const skillCapeBuyables: Buyable[] = [];
 for (const skillcape of Skillcapes) {
 	skillCapeBuyables.push({
 		name: `${toTitleCase(skillcape.skill)} cape`,
-		outputItems: (user: User) => {
+		outputItems: (user: MUser) => {
 			const output = new Bank().add(skillcape.hood);
 
 			if (countSkillsAtleast99(user) > 1) {
@@ -24,7 +22,7 @@ for (const skillcape of Skillcapes) {
 			return output;
 		},
 		gpCost: 99_000,
-		customReq: async (user: KlasaUser) => {
+		customReq: async (user: MUser) => {
 			if (user.skillLevel(skillcape.skill) < 99) {
 				return [false, `You need level ${99} ${toTitleCase(skillcape.skill)} to buy a cape of accomplishment.`];
 			}
@@ -37,10 +35,8 @@ for (const skillcape of Skillcapes) {
 		name: skillcape.masterCape.name,
 		outputItems: () => new Bank().add(skillcape.masterCape.id),
 		gpCost: 1_000_000_000,
-		customReq: async (user: KlasaUser) => {
-			const mUser = await mahojiUsersSettingsFetch(user.id);
-			const xp = getSkillsOfMahojiUser(mUser);
-			if (xp[skillcape.skill] < 500_000_000) {
+		customReq: async (user: MUser) => {
+			if (user.skillsAsXP[skillcape.skill] < 500_000_000) {
 				return [false, 'You need 500m XP to buy a master cape.'];
 			}
 			return [true];

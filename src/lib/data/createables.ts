@@ -1,4 +1,3 @@
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { MaterialBank } from '../invention/MaterialBank';
@@ -28,7 +27,7 @@ import { tameCreatables } from './tameCreatables';
 export interface Createable {
 	name: string;
 	outputItems: ItemBank | Bank;
-	inputItems: ItemBank | Bank | ((user: KlasaUser) => Bank);
+	inputItems: ItemBank | Bank | ((user: MUser) => Bank);
 	cantHaveItems?: ItemBank;
 	requiredSkills?: Skills;
 	QPRequired?: number;
@@ -39,7 +38,7 @@ export interface Createable {
 	requiredFavour?: Favours;
 	maxCanOwn?: number;
 	materialCost?: MaterialBank;
-	onCreate?: (qty: number, user: KlasaUser) => Promise<{ result: boolean; message: string }>;
+	onCreate?: (qty: number, user: MUser) => Promise<{ result: boolean; message: string }>;
 }
 
 const goldenProspectorCreatables: Createable[] = [

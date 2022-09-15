@@ -1,9 +1,8 @@
-import { Task } from 'klasa';
-
 import { BathhouseTaskOptions, baxtorianBathhousesActivity } from '../../../lib/baxtorianBathhouses';
 
-export default class extends Task {
+export const bathhouseTask: MinionTask = {
+	type: 'BaxtorianBathhouses',
 	async run(data: BathhouseTaskOptions) {
 		baxtorianBathhousesActivity(data);
 	}
-}
+};

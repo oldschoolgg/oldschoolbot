@@ -1,13 +1,11 @@
 import { calcWhatPercent, randInt } from 'e';
-import { KlasaUser } from 'klasa';
 
 import { maxOffenceStats } from '../gear';
 import { GearStats } from '../gear/types';
 import { KalphiteKingMonster } from '../minions/data/killableMonsters/custom/bosses/KalphiteKing';
-import { UserSettings } from '../settings/types/UserSettings';
 
 export function getKalphiteKingGearStats(
-	user: KlasaUser,
+	user: MUser,
 	team: string[]
 ): [
 	{
@@ -22,8 +20,8 @@ export function getKalphiteKingGearStats(
 	},
 	string
 ] {
-	const kc = user.settings.get(UserSettings.MonsterScores)[KalphiteKingMonster.id] ?? 1;
-	const gear = user.getGear('melee');
+	const kc = user.getKC(KalphiteKingMonster.id);
+	const gear = user.gear.melee;
 	const weapon = gear.equippedWeapon();
 	const gearStats = gear.stats;
 	const percentAttackStrength = calcWhatPercent(
@@ -67,11 +65,11 @@ export function getKalphiteKingGearStats(
 		percentChanceOfDeath = randInt(1, 4);
 	}
 
-	const debugString = `\n**${user.username}:** DamageDone[${Math.floor(damageDone)}HP] DeathChance[${Math.floor(
-		percentChanceOfDeath
-	)}%] WeaponStrength[${Math.floor(percentWeaponAttackCrush)}%] GearStrength[${Math.floor(
-		percentAttackStrength
-	)}%] TotalGear[${totalGearPercent}%]\n`;
+	const debugString = `\n**${user.usernameOrMention}:** DamageDone[${Math.floor(
+		damageDone
+	)}HP] DeathChance[${Math.floor(percentChanceOfDeath)}%] WeaponStrength[${Math.floor(
+		percentWeaponAttackCrush
+	)}%] GearStrength[${Math.floor(percentAttackStrength)}%] TotalGear[${totalGearPercent}%]\n`;
 
 	return [
 		{

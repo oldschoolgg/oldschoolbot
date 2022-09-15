@@ -1,11 +1,9 @@
 import { randFloat, roll, Time } from 'e';
-import { Task } from 'klasa';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
 import { userHasFlappy } from '../../lib/invention/inventions';
 import { incrementMinigameScore } from '../../lib/settings/settings';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
 import { rand } from '../../lib/util';
@@ -20,11 +18,12 @@ const fossilTable = new LootTable()
 const numuliteTable = new LootTable().every('Numulite', 5).add('Calcite', 1).add('Pyrophosphite', 1);
 const fragmentTable = new LootTable({ limit: 175 }).add(numuliteTable, 1, 45).add(fossilTable, 1, 5);
 
-export default class extends Task {
+export const vmTask: MinionTask = {
+	type: 'VolcanicMine',
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { quantity, userID, channelID, duration } = data;
-		const user = await this.client.fetchUser(userID);
-		const userSkillingGear = user.getGear('skilling');
+		const user = await mUserFetch(userID);
+		const userSkillingGear = user.gear.skilling;
 		const userMiningLevel = user.skillLevel(SkillsEnum.Mining);
 		let boost = 1;
 		// Activity boosts
@@ -59,7 +58,7 @@ export default class extends Task {
 
 		let warningMessage = '';
 
-		const currentUserPoints = user.settings.get(UserSettings.VolcanicMinePoints);
+		const currentUserPoints = user.user.volcanic_mine_points;
 		let pointsReceived = Math.round(xpReceived / 5.5);
 
 		const flappyRes = await userHasFlappy({ user, duration });
@@ -69,10 +68,10 @@ export default class extends Task {
 		}
 
 		const maxPoints = 2_097_151;
-		await user.settings.update(
-			UserSettings.VolcanicMinePoints,
-			Math.min(maxPoints, currentUserPoints + pointsReceived)
-		);
+
+		await user.update({
+			volcanic_mine_points: Math.min(maxPoints, currentUserPoints + pointsReceived)
+		});
 
 		if (currentUserPoints + pointsReceived > maxPoints) {
 			const lostPoints = currentUserPoints + pointsReceived - maxPoints;
@@ -101,9 +100,9 @@ export default class extends Task {
 
 		if (loot.has('Rock golem')) {
 			str += "\nYou have a funny feeling you're being followed...";
-			this.client.emit(
+			globalClient.emit(
 				Events.ServerNotification,
-				`${Emoji.Mining} **${user.username}'s** minion, ${user.minionName}, just received ${
+				`${Emoji.Mining} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received ${
 					loot.amount('Rock golem') > 1 ? `${loot.amount('Rock golem')}x ` : 'a'
 				} Rock golem while mining on the Volcanic Mine at level ${userMiningLevel} Mining!`
 			);
@@ -128,4 +127,4 @@ export default class extends Task {
 			itemsAdded
 		);
 	}
-}
+};

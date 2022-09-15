@@ -1,18 +1,22 @@
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { TokkulShopOptions } from '../../lib/types/minions';
-import { updateBankSetting } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { updateBankSetting } from '../../mahoji/mahojiSettings';
 
-export default class extends Task {
+export const tokkulShopTask: MinionTask = {
+	type: 'TokkulShop',
 	async run(data: TokkulShopOptions) {
 		const { userID, channelID, itemID, quantity } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const loot = new Bank().add(itemID, quantity);
-		await user.addItemsToBank({ items: loot, collectionLog: false });
-		await updateBankSetting(this.client, ClientSettings.EconomyStats.TKSLoot, loot);
+		await transactItems({
+			userID: user.id,
+			itemsToAdd: loot,
+			collectionLog: false
+		});
+
+		await updateBankSetting('tks_loot', loot);
 		handleTripFinish(
 			user,
 			channelID,
@@ -23,4 +27,4 @@ export default class extends Task {
 			null
 		);
 	}
-}
+};

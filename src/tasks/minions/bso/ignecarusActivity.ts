@@ -1,5 +1,4 @@
 import { objectValues, percentChance, shuffleArr } from 'e';
-import { KlasaUser, Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Emoji } from '../../../lib/constants';
@@ -12,26 +11,27 @@ import {
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import { prisma, trackLoot } from '../../../lib/settings/prisma';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { BossUser } from '../../../lib/structures/Boss';
 import { NewBossOptions } from '../../../lib/types/minions';
-import { addArrayOfNumbers, updateBankSetting } from '../../../lib/util';
+import { addArrayOfNumbers } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { sendToChannelID } from '../../../lib/util/webhook';
+import { updateBankSetting } from '../../../mahoji/mahojiSettings';
 
 const methodsOfDeath = ['Burnt to death', 'Eaten', 'Crushed', 'Incinerated'];
 
-export default class extends Task {
+export const ignecarusTask: MinionTask = {
+	type: 'Ignecarus',
 	async run(data: NewBossOptions) {
 		const { channelID, users: idArr, duration, bossUsers: _bossUsers, quantity, userID } = data;
-		const wrongFoodDeaths: KlasaUser[] = [];
-		const deaths: Record<string, { user: KlasaUser; qty: number }> = {};
+		const wrongFoodDeaths: MUser[] = [];
+		const deaths: Record<string, { user: MUser; qty: number }> = {};
 		const bossUsers: BossUser[] = await Promise.all(
 			_bossUsers.map(async u => ({
 				...u,
 				itemsToRemove: new Bank(u.itemsToRemove),
-				user: await this.client.fetchUser(u.user)
+				user: await mUserFetch(u.user)
 			}))
 		);
 
@@ -70,7 +70,7 @@ export default class extends Task {
 			return;
 		}
 
-		await Promise.all(bossUsers.map(u => u.user.incrementMonsterScore(Ignecarus.id, quantity)));
+		await Promise.all(bossUsers.map(u => u.user.incrementKC(Ignecarus.id, quantity)));
 
 		const killStr = `Your team managed to slay ${quantity}x Ignecarus, everyone grabs some loot and escapes from the dragons lair.`;
 
@@ -121,13 +121,13 @@ export default class extends Task {
 				loot,
 				notifyDrops: IgnecarusNotifyDrops,
 				team: {
-					leader: await this.client.fetchUser(userID),
+					leader: await mUserFetch(userID),
 					lootRecipient: user,
 					size: idArr.length
 				}
 			});
 		}
-		updateBankSetting(this.client, ClientSettings.EconomyStats.IgnecarusLoot, totalLoot);
+		updateBankSetting('ignecarus_loot', totalLoot);
 
 		// Show deaths in the result
 		if (objectValues(deaths).length > 0) {
@@ -163,4 +163,4 @@ export default class extends Task {
 			null
 		);
 	}
-}
+};

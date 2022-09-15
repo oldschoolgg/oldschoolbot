@@ -1,21 +1,20 @@
 import { calcPercentOfNum, calcWhatPercent, roll } from 'e';
-import { Task } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { Events } from '../../../lib/constants';
 import { diariesObject, userhasDiaryTier } from '../../../lib/diaries';
 import { countUsersWithItemInCl, prisma } from '../../../lib/settings/prisma';
-import { incrementMinigameScore } from '../../../lib/settings/settings';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
+import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
+import { ItemBank } from '../../../lib/types';
 import { InfernoOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import chatHeadImage from '../../../lib/util/chatHeadImage';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
+import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../../mahoji/mahojiSettings';
 
 export function calculateInfernoItemRefund(percentMadeItThrough: number, cost: Bank) {
 	const percSuppliesRefunded = Math.max(0, Math.min(100, 100 - percentMadeItThrough));
@@ -29,7 +28,8 @@ export function calculateInfernoItemRefund(percentMadeItThrough: number, cost: B
 	return { unusedItems, percSuppliesRefunded };
 }
 
-export default class extends Task {
+export const infernoTask: MinionTask = {
+	type: 'Inferno',
 	async run(data: InfernoOptions) {
 		const {
 			userID,
@@ -42,8 +42,8 @@ export default class extends Task {
 			diedEmergedZuk,
 			isEmergedZuk
 		} = data;
-		const user = await this.client.users.fetch(userID);
-		const score = await user.getMinigameScore('inferno');
+		const user = await mUserFetch(userID);
+		const score = await getMinigameScore(user.id, 'inferno');
 
 		const usersTask = await getUsersCurrentSlayerInfo(user.id);
 		const isOnTask =
@@ -53,14 +53,17 @@ export default class extends Task {
 			score > 0 &&
 			usersTask.currentTask!.quantity_remaining === usersTask.currentTask!.quantity;
 
-		const oldAttempts = user.settings.get(UserSettings.InfernoAttempts);
-		const attempts = oldAttempts + 1;
-		await user.settings.update(UserSettings.InfernoAttempts, attempts);
+		await user.update({
+			inferno_attempts: {
+				increment: 1
+			}
+		});
 		if (isEmergedZuk) {
-			await user.settings.update(
-				UserSettings.EmergedInfernoAttempts,
-				user.settings.get(UserSettings.EmergedInfernoAttempts) + 1
-			);
+			await user.update({
+				emerged_inferno_attempts: {
+					increment: 1
+				}
+			});
 		}
 
 		const percentMadeItThrough = deathTime === null ? 100 : calcWhatPercent(deathTime, fakeDuration);
@@ -108,7 +111,7 @@ export default class extends Task {
 
 		let text = '';
 		let chatText = `You are very impressive for a JalYt. You managed to defeat TzKal-Zuk for the ${formatOrdinal(
-			await user.getMinigameScore('inferno')
+			await getMinigameScore(user.id, 'inferno')
 		)} time! Please accept this cape as a token of appreciation.`;
 
 		if (deathTime) {
@@ -126,11 +129,15 @@ export default class extends Task {
 		}
 
 		if (isOnTask) {
-			const currentStreak = user.settings.get(UserSettings.Slayer.TaskStreak) + 1;
-			user.settings.update(UserSettings.Slayer.TaskStreak, currentStreak);
-			const points = await calculateSlayerPoints(currentStreak, usersTask.slayerMaster!, user);
-			const newPoints = user.settings.get(UserSettings.Slayer.SlayerPoints) + points;
-			await user.settings.update(UserSettings.Slayer.SlayerPoints, newPoints);
+			const points = await calculateSlayerPoints(user.user.slayer_last_task, usersTask.slayerMaster!, user);
+			const { newUser } = await user.update({
+				slayer_points: {
+					increment: points
+				},
+				slayer_task_streak: {
+					increment: 1
+				}
+			});
 
 			await prisma.slayerTask.update({
 				where: {
@@ -142,15 +149,18 @@ export default class extends Task {
 				}
 			});
 
-			text += `\n\n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${newPoints}; return to a Slayer master.**`;
+			text += `\n\n**You've completed ${newUser.slayer_task_streak} tasks and received ${points} points; giving you a total of ${newUser.slayer_points}; return to a Slayer master.**`;
 		}
 
 		if (unusedItems.length > 0) {
 			await user.addItemsToBank({ items: unusedItems, collectionLog: false });
 
-			const current = new Bank(this.client.settings.get(ClientSettings.EconomyStats.InfernoCost));
+			const currentData = await mahojiClientSettingsFetch({ inferno_cost: true });
+			const current = new Bank().add(currentData.inferno_cost as ItemBank);
 			const newBank = current.remove(unusedItems);
-			await this.client.settings.update(ClientSettings.EconomyStats.InfernoCost, newBank.bank);
+			await mahojiClientSettingsUpdate({
+				inferno_cost: newBank.bank
+			});
 		}
 
 		if (diedPreZuk) {
@@ -188,41 +198,41 @@ export default class extends Task {
 			baseBank.add(zukLoot);
 
 			if (baseBank.has('Jal-nib-rek')) {
-				this.client.emit(
+				globalClient.emit(
 					Events.ServerNotification,
-					`**${user.username}** just received their ${formatOrdinal(
-						user.cl().amount('Jal-nib-rek') + 1
+					`**${user.usernameOrMention}** just received their ${formatOrdinal(
+						user.cl.amount('Jal-nib-rek') + 1
 					)} Jal-nib-rek pet by killing TzKal-Zuk, on their ${formatOrdinal(
-						await user.getMinigameScore('inferno')
+						await getMinigameScore(user.id, 'inferno')
 					)} kill!`
 				);
 			}
 			if (baseBank.has('Jal-MejJak')) {
-				this.client.emit(
+				globalClient.emit(
 					Events.ServerNotification,
-					`**${user.username}** just received their ${formatOrdinal(
-						user.cl().amount('Jal-MejJak') + 1
+					`**${user.usernameOrMention}** just received their ${formatOrdinal(
+						user.cl.amount('Jal-MejJak') + 1
 					)} Jal-MejJak pet by killing TzKal-Zuk's final form, on their ${formatOrdinal(
-						await user.getMinigameScore('emerged_inferno')
+						await getMinigameScore(user.id, 'emerged_inferno')
 					)} kill!`
 				);
 			}
 
-			const cl = user.cl();
+			const { cl } = user;
 
 			if (baseBank.has('Infernal cape') && cl.amount('Infernal cape') === 0) {
 				const usersWithInfernalCape = await countUsersWithItemInCl(itemID('Infernal cape'), false);
-				this.client.emit(
+				globalClient.emit(
 					Events.ServerNotification,
-					`**${user.username}** just received their first Infernal cape on their ${formatOrdinal(
-						attempts
+					`**${user.usernameOrMention}** just received their first Infernal cape on their ${formatOrdinal(
+						user.user.inferno_attempts
 					)} attempt! They are the ${formatOrdinal(
 						usersWithInfernalCape + 1
 					)} person to get an Infernal cape.`
 				);
 			}
 
-			const emergedKC = await user.getMinigameScore('emerged_inferno');
+			const emergedKC = await getMinigameScore(user.id, 'emerged_inferno');
 			// If first successfull emerged zuk kill
 			if (baseBank.has('Infernal cape') && isEmergedZuk && !diedEmergedZuk && emergedKC === 1) {
 				const usersDefeatedEmergedZuk = parseInt(
@@ -234,10 +244,10 @@ export default class extends Task {
 						)
 					)[0].count
 				);
-				this.client.emit(
+				globalClient.emit(
 					Events.ServerNotification,
-					`**${user.username}** just defeated the Emerged Zuk Inferno on their ${formatOrdinal(
-						user.settings.get(UserSettings.EmergedInfernoAttempts)
+					`**${user.usernameOrMention}** just defeated the Emerged Zuk Inferno on their ${formatOrdinal(
+						user.user.emerged_inferno_attempts
 					)} attempt! They are the ${formatOrdinal(
 						usersDefeatedEmergedZuk
 					)} person to defeat the Emerged Inferno.`
@@ -271,4 +281,4 @@ You made it through ${percentMadeItThrough.toFixed(2)}% of the Inferno${
 			baseBank
 		);
 	}
-}
+};

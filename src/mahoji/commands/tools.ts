@@ -1,7 +1,7 @@
 import { Embed, userMention } from '@discordjs/builders';
 import { Activity, User } from '@prisma/client';
+import { ChannelType } from 'discord.js';
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
@@ -10,7 +10,7 @@ import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import { CoXUniqueTable } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 import { ToBUniqueTable } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
 
-import { production } from '../../config';
+import { OWNER_IDS, production } from '../../config';
 import { MysteryBoxes } from '../../lib/bsoOpenables';
 import {
 	allStashUnitsFlat,
@@ -58,12 +58,8 @@ import { buttonUserPicker } from '../lib/buttonUserPicker';
 import { Cooldowns } from '../lib/Cooldowns';
 import { itemOption, monsterOption, skillOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import {
-	handleMahojiConfirmation,
-	mahojiUserSettingsUpdate,
-	mahojiUsersSettingsFetch,
-	patronMsg
-} from '../mahojiSettings';
+import { handleMahojiConfirmation, patronMsg } from '../mahojiSettings';
+import { mahojiUserSettingsUpdate } from '../settingsUpdate';
 
 const TimeIntervals = ['day', 'week'] as const;
 const skillsVals = Object.values(Skills);
@@ -72,28 +68,28 @@ function dateDiff(first: number, second: number) {
 	return Math.round((second - first) / (1000 * 60 * 60 * 24));
 }
 
-async function giveBox(mahojiUser: User, user: KlasaUser, _recipient: MahojiUserOption) {
-	const recipient = await globalClient.fetchUser(_recipient.user.id);
-	if (!isPrimaryPatron(user)) {
+async function giveBox(mahojiUser: MUser, _recipient: MahojiUserOption) {
+	const recipient = await mUserFetch(_recipient.user.id);
+	if (!isPrimaryPatron(mahojiUser)) {
 		return 'Shared-perk accounts cannot use this.';
 	}
 
 	const currentDate = Date.now();
-	const lastDate = Number(mahojiUser.lastGivenBoxx);
+	const lastDate = Number(mahojiUser.user.lastGivenBoxx);
 	const difference = currentDate - lastDate;
-	const isOwner = globalClient.owners.has(user);
+	const isOwner = OWNER_IDS.includes(mahojiUser.id);
 
 	// If no user or not an owner and can not send one yet, show time till next box.
-	if (!user || (difference < giveBoxResetTime && !isOwner)) {
+	if (!mahojiUser || (difference < giveBoxResetTime && !isOwner)) {
 		if (difference >= giveBoxResetTime || isOwner) {
 			return 'You can give another box!';
 		}
 		return `You can give another box in ${formatDuration(giveBoxResetTime - difference)}`;
 	}
 
-	if (recipient.id === user.id) return "You can't give boxes to yourself!";
+	if (recipient.id === mahojiUser.id) return "You can't give boxes to yourself!";
 	if (recipient.isIronman) return "You can't give boxes to ironmen!";
-	await mahojiUserSettingsUpdate(user.id, {
+	await mahojiUserSettingsUpdate(mahojiUser.id, {
 		lastGivenBoxx: currentDate
 	});
 
@@ -201,7 +197,7 @@ LIMIT 10;`);
 	return { embeds: [embed] };
 }
 
-async function kcGains(user: User, interval: string, monsterName: string): CommandResponse {
+async function kcGains(user: MUser, interval: string, monsterName: string): CommandResponse {
 	if (getUsersPerkTier(user) < PerkTier.Four) return patronMsg(PerkTier.Four);
 	if (!TimeIntervals.includes(interval as any)) return 'Invalid time interval.';
 	const monster = killableMonsters.find(
@@ -234,7 +230,7 @@ LIMIT 10`;
 	return { embeds: [embed] };
 }
 
-export function spawnLampIsReady(user: User, channelID: string): [true] | [false, string] {
+export function spawnLampIsReady(user: MUser, channelID: string): [true] | [false, string] {
 	if (production && ![Channel.BSOChannel, Channel.General, Channel.BSOGeneral].includes(channelID)) {
 		return [false, "You can't use spawnlamp in this channel."];
 	}
@@ -245,7 +241,7 @@ export function spawnLampIsReady(user: User, channelID: string): [true] | [false
 		return [false, 'You need to be a T3 patron or higher to use this command.'];
 	}
 	const currentDate = Date.now();
-	const lastDate = Number(user.lastSpawnLamp);
+	const lastDate = Number(user.user.lastSpawnLamp);
 	const difference = currentDate - lastDate;
 
 	const cooldown = spawnLampResetTime(user);
@@ -256,7 +252,7 @@ export function spawnLampIsReady(user: User, channelID: string): [true] | [false
 	}
 	return [true];
 }
-async function spawnLampCommand(user: User, channelID: bigint): CommandResponse {
+async function spawnLampCommand(user: MUser, channelID: bigint): CommandResponse {
 	const [lampIsReady, reason] = spawnLampIsReady(user, channelID.toString());
 	if (!lampIsReady && reason) return reason;
 
@@ -275,12 +271,12 @@ async function spawnLampCommand(user: User, channelID: bigint): CommandResponse 
 		creatorGetsTwoGuesses: true
 	});
 	if (!winnerID) return `Nobody got it. ${explainAnswer}`;
-	const winner = await globalClient.fetchUser(winnerID);
+	const winner = await mUserFetch(winnerID);
 	const loot = LampTable.roll();
 	await winner.addItemsToBank({ items: loot, collectionLog: false });
 	return `${winner} got it, and won **${loot}**! ${explainAnswer}`;
 }
-async function spawnBoxCommand(user: User, channelID: bigint): CommandResponse {
+async function spawnBoxCommand(user: MUser, channelID: bigint): CommandResponse {
 	const perkTier = getUsersPerkTier(user, true);
 	if (perkTier < PerkTier.Four && !user.bitfield.includes(BitField.HasPermanentEventBackgrounds)) {
 		return 'You need to be a T3 patron or higher to use this command.';
@@ -302,7 +298,7 @@ async function spawnBoxCommand(user: User, channelID: bigint): CommandResponse {
 		creator: BigInt(user.id)
 	});
 	if (!winnerID) return `Nobody got it. ${explainAnswer}`;
-	const winner = await globalClient.fetchUser(winnerID);
+	const winner = await mUserFetch(winnerID);
 
 	const loot = new Bank().add(MysteryBoxes.roll());
 	await winner.addItemsToBank({ items: loot, collectionLog: false });
@@ -452,7 +448,7 @@ LIMIT 10;`);
 	});
 }
 
-async function dryStreakCommand(user: User, monsterName: string, itemName: string, ironmanOnly: boolean) {
+async function dryStreakCommand(user: MUser, monsterName: string, itemName: string, ironmanOnly: boolean) {
 	if (getUsersPerkTier(user) < PerkTier.Four) return patronMsg(PerkTier.Four);
 
 	const item = getOSItem(itemName);
@@ -497,7 +493,7 @@ async function dryStreakCommand(user: User, monsterName: string, itemName: strin
 		.join('\n')}`;
 }
 
-async function mostDrops(user: User, itemName: string, ironmanOnly: boolean) {
+async function mostDrops(user: MUser, itemName: string, ironmanOnly: boolean) {
 	if (getUsersPerkTier(user) < PerkTier.Four) return patronMsg(PerkTier.Four);
 	const item = getItem(itemName);
 	const ironmanPart = ironmanOnly ? 'AND "minion.ironman" = true' : '';
@@ -529,7 +525,7 @@ async function checkMassesCommand(guildID: bigint | undefined) {
 	if (!guildID) return 'This can only be used in a server.';
 	const guild = globalClient.guilds.cache.get(guildID.toString());
 	if (!guild) return 'Guild not found.';
-	const channelIDs = guild.channels.cache.filter(c => c.type === 'text').map(c => BigInt(c.id));
+	const channelIDs = guild.channels.cache.filter(c => c.type === ChannelType.GuildText).map(c => BigInt(c.id));
 
 	const masses = (
 		await prisma.activity.findMany({
@@ -572,11 +568,11 @@ async function checkMassesCommand(guildID: bigint | undefined) {
 ${massStr}`;
 }
 
-async function patronTriggerDoubleLoot(user: User) {
+async function patronTriggerDoubleLoot(user: MUser) {
 	if (![BitField.IsPatronTier4, BitField.IsPatronTier5].some(i => user.bitfield.includes(i))) {
 		return 'Only T4 or T5 patrons can use this command.';
 	}
-	const lastTime = user.last_patron_double_time_trigger;
+	const lastTime = user.user.last_patron_double_time_trigger;
 	const cooldown = Time.Day * 31;
 	const differenceSinceLastUsage = lastTime ? Date.now() - lastTime.getTime() : null;
 	if (differenceSinceLastUsage && differenceSinceLastUsage < cooldown) {
@@ -913,8 +909,7 @@ export const toolsCommand: OSBMahojiCommand = {
 		};
 	}>) => {
 		if (interaction) interaction.deferReply();
-		const mahojiUser = await mahojiUsersSettingsFetch(userID);
-		const klasaUser = await globalClient.fetchUser(userID);
+		const mahojiUser = await mUserFetch(userID);
 
 		if (options.patron) {
 			const { patron } = options;
@@ -935,7 +930,7 @@ export const toolsCommand: OSBMahojiCommand = {
 			if (patron.sacrificed_bank) {
 				if (getUsersPerkTier(mahojiUser) < PerkTier.Two) return patronMsg(PerkTier.Two);
 				const image = await makeBankImage({
-					bank: new Bank(mahojiUser.sacrificedBank as ItemBank),
+					bank: new Bank(mahojiUser.user.sacrificedBank as ItemBank),
 					title: 'Your Sacrificed Items'
 				});
 				return {
@@ -944,7 +939,7 @@ export const toolsCommand: OSBMahojiCommand = {
 			}
 			if (patron.cl_bank) {
 				if (getUsersPerkTier(mahojiUser) < PerkTier.Two) return patronMsg(PerkTier.Two);
-				const clBank = new Bank(mahojiUser.collectionLogBank as ItemBank);
+				const clBank = mahojiUser.cl;
 				if (patron.cl_bank.format === 'json') {
 					const json = JSON.stringify(clBank);
 					return {
@@ -966,15 +961,15 @@ export const toolsCommand: OSBMahojiCommand = {
 			if (patron.minion_stats) {
 				interaction.deferReply();
 				if (getUsersPerkTier(mahojiUser) < PerkTier.Four) return patronMsg(PerkTier.Four);
-				return minionStats(mahojiUser);
+				return minionStats(mahojiUser.user);
 			}
 			if (patron.give_box) {
 				if (getUsersPerkTier(mahojiUser) < PerkTier.One) return patronMsg(PerkTier.One);
-				return giveBox(mahojiUser, klasaUser, patron.give_box.user);
+				return giveBox(mahojiUser, patron.give_box.user);
 			}
 			if (patron.activity_export) {
 				if (getUsersPerkTier(mahojiUser) < PerkTier.Four) return patronMsg(PerkTier.Four);
-				const promise = activityExport(mahojiUser);
+				const promise = activityExport(mahojiUser.user);
 				await handleMahojiConfirmation(
 					interaction,
 					'I will send a file containing ALL of your activities, intended for advanced users who want to use the data. Anyone in this channel will be able to see and download the file, are you sure you want to do this?'
@@ -996,7 +991,7 @@ export const toolsCommand: OSBMahojiCommand = {
 		if (options.user) {
 			if (options.user.mypets) {
 				let b = new Bank();
-				for (const [pet, qty] of Object.entries(mahojiUser.pets as ItemBank)) {
+				for (const [pet, qty] of Object.entries(mahojiUser.user.pets as ItemBank)) {
 					const petObj = pets.find(i => i.id === Number(pet));
 					if (!petObj) continue;
 					b.add(petObj.name, qty);
@@ -1012,21 +1007,21 @@ export const toolsCommand: OSBMahojiCommand = {
 		if (options.stash_units) {
 			if (options.stash_units.view) {
 				return stashUnitViewCommand(
-					mahojiUser,
+					mahojiUser.user,
 					options.stash_units.view.unit,
 					options.stash_units.view.not_filled
 				);
 			}
-			if (options.stash_units.build_all) return stashUnitBuildAllCommand(klasaUser, mahojiUser);
-			if (options.stash_units.fill_all) return stashUnitFillAllCommand(klasaUser, mahojiUser);
+			if (options.stash_units.build_all) return stashUnitBuildAllCommand(mahojiUser);
+			if (options.stash_units.fill_all) return stashUnitFillAllCommand(mahojiUser, mahojiUser.user);
 			if (options.stash_units.unfill) {
-				return stashUnitUnfillCommand(klasaUser, mahojiUser, options.stash_units.unfill.unit);
+				return stashUnitUnfillCommand(mahojiUser, options.stash_units.unfill.unit);
 			}
 		}
 		if (options.user?.temp_cl) {
 			if (options.user.temp_cl === true) {
 				await handleMahojiConfirmation(interaction, 'Are you sure you want to reset your temporary CL?');
-				await mahojiUserSettingsUpdate(klasaUser.id, {
+				await mahojiUser.update({
 					temp_cl: {},
 					last_temp_cl_reset: new Date()
 				});
@@ -1034,7 +1029,7 @@ export const toolsCommand: OSBMahojiCommand = {
 			}
 			const lastReset = await prisma.user.findUnique({
 				where: {
-					id: klasaUser.id
+					id: mahojiUser.id
 				},
 				select: {
 					last_temp_cl_reset: true

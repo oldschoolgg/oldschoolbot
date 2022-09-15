@@ -1,14 +1,12 @@
 import { calcWhatPercent, randInt } from 'e';
-import { KlasaUser } from 'klasa';
 import { itemID } from 'oldschooljs/dist/util';
 
 import { maxOffenceStats } from '../gear';
 import { GearStats } from '../gear/types';
 import { NexMonster } from '../nex';
-import { UserSettings } from '../settings/types/UserSettings';
 
 export function getNexGearStats(
-	user: KlasaUser,
+	user: MUser,
 	team: string[]
 ): [
 	{
@@ -23,8 +21,8 @@ export function getNexGearStats(
 	},
 	string
 ] {
-	const kc = user.settings.get(UserSettings.MonsterScores)[NexMonster.id] ?? 1;
-	const gear = user.getGear('range');
+	const kc = user.getKC(NexMonster.id);
+	const gear = user.gear.range;
 	const weapon = gear.equippedWeapon();
 	const gearStats = gear.stats;
 	const percentRangeStrength = calcWhatPercent(
@@ -74,11 +72,11 @@ export function getNexGearStats(
 		percentChanceOfDeath = randInt(1, 4);
 	}
 
-	const debugString = `\n**${user.username}:** DamageDone[${Math.floor(damageDone)}HP] DeathChance[${Math.floor(
-		percentChanceOfDeath
-	)}%] WeaponStrength[${Math.floor(percentWeaponAttackRanged)}%] GearStrength[${Math.floor(
-		percentRangeStrength
-	)}%] TotalGear[${totalGearPercent}%]\n`;
+	const debugString = `\n**${user.usernameOrMention}:** DamageDone[${Math.floor(
+		damageDone
+	)}HP] DeathChance[${Math.floor(percentChanceOfDeath)}%] WeaponStrength[${Math.floor(
+		percentWeaponAttackRanged
+	)}%] GearStrength[${Math.floor(percentRangeStrength)}%] TotalGear[${totalGearPercent}%]\n`;
 
 	return [
 		{
