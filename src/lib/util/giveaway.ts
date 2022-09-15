@@ -81,7 +81,7 @@ export async function handleGiveawayCompletion(giveaway: Giveaway) {
 			`${winner.usernameOrMention}[${winner.id}] won ${loot} in a giveaway of ${users.length} made by ${creator.usernameOrMention}[${creator.id}].`
 		);
 
-		const str = `<@${giveaway.user_id}> **Giveaway finished:** ${users.length} users joined, the winner is... ||**${winner}**||
+		const str = `<@${giveaway.user_id}> **Giveaway finished:** ${users.length} users joined, the winner is... ||**${winner.mention}**||
 			
 They received these items: ${loot}`;
 
