@@ -80,10 +80,7 @@ async function giveBox(mahojiUser: MUser, _recipient: MahojiUserOption) {
 	const isOwner = OWNER_IDS.includes(mahojiUser.id);
 
 	// If no user or not an owner and can not send one yet, show time till next box.
-	if (!mahojiUser || (difference < giveBoxResetTime && !isOwner)) {
-		if (difference >= giveBoxResetTime || isOwner) {
-			return 'You can give another box!';
-		}
+	if (difference < giveBoxResetTime && !isOwner) {
 		return `You can give another box in ${formatDuration(giveBoxResetTime - difference)}`;
 	}
 

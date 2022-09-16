@@ -52,8 +52,7 @@ export const dungeoneeringTask: MinionTask = {
 					increment: tokens
 				}
 			});
-			let rawXPHr = (xp / (duration / Time.Minute)) * 60;
-			rawXPHr = Math.floor(xp / 1000) * 1000;
+			let rawXPHr = Math.floor(xp / 1000) * 1000;
 
 			// Allow MBs to roll per floor and not trip
 			// This allows people that wants to farm mbs and not xp to do a lot of small floors
