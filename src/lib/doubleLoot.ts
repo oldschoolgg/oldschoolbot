@@ -27,7 +27,10 @@ export async function addToDoubleLootTimer(amount: number, reason: string) {
 	sendToChannelID(Channel.BSOGeneral, {
 		content: `<@&923768318442229792> 🎉 ${formatDuration(
 			amount
-		)} added to the Double Loot timer because: ${reason}. 🎉`
+		)} added to the Double Loot timer because: ${reason}. 🎉`,
+		allowedMentions: {
+			roles: ['923768318442229792']
+		}
 	});
 	syncPrescence();
 }
