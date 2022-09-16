@@ -20,7 +20,7 @@ export const Channel = {
 	BlacklistLogs: DISCORD_SETTINGS.Channels?.BlacklistLogs ?? '782459317218967602',
 	EconomyLogs: DISCORD_SETTINGS.Channels?.EconomyLogs ?? '802029843712573510',
 	NewSponsors: DISCORD_SETTINGS.Channels?.NewSponsors ?? '806744016309714966',
-	HelpAndSupport: DISCORD_SETTINGS.Channels?.HelpAndSupport ?? '668073484731154462',
+	HelpAndSupport: '668073484731154462',
 	TestingMain: DISCORD_SETTINGS.Channels?.TestingMain ?? '680770361893322761',
 	BarbarianAssault: DISCORD_SETTINGS.Channels?.BarbarianAssault ?? '789717054902763520',
 	ChambersOfXeric: DISCORD_SETTINGS.Channels?.ChambersOfXeric ?? '835876917252587581'
