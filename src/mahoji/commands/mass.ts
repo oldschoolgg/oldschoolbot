@@ -124,7 +124,7 @@ export const massCommand: OSBMahojiCommand = {
 
 		let users: MUser[] = [];
 		try {
-			users = await reactionAwaiter;
+			users = reactionAwaiter;
 		} catch (err: any) {
 			return {
 				content: typeof err === 'string' ? err : 'Your mass failed to start.',
