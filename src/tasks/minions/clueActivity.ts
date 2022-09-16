@@ -55,14 +55,16 @@ export const clueTask: MinionTask = {
 				const item = possibleFound.roll().items()[0][0].id;
 				bonusLoot.add(item);
 			}
-
-			await updateBankSetting('zippy_loot', bonusLoot);
+			if (bonusLoot.length > 0) {
+				await updateBankSetting('zippy_loot', bonusLoot);
+				await userStatsBankUpdate(user.id, 'loot_from_zippy_bank', bonusLoot);
+			}
 
 			loot.add(bonusLoot);
 
 			if (roll(15)) {
 				await updateBankSetting('zippy_loot', loot);
-				userStatsBankUpdate(user.id, 'loot_from_zippy_bank', loot);
+				await userStatsBankUpdate(user.id, 'loot_from_zippy_bank', loot);
 				loot.multiply(2);
 				str += '\nZippy has **doubled** your loot.';
 			}
