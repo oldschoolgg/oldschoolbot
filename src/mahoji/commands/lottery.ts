@@ -110,16 +110,16 @@ function getPriceOfItem(item: Item) {
 	return item.price;
 }
 
-const BINGO_TICKET_ITEM = getOSItem('Bank lottery ticket');
-assert(BINGO_TICKET_ITEM.id === 5021);
+const LOTTERY_TICKET_ITEM = getOSItem('Bank lottery ticket');
+assert(LOTTERY_TICKET_ITEM.id === 5021);
 
 export async function calcTotalTickets() {
 	const totalTickets = parseInt(
 		(
 			await prisma.$queryRawUnsafe<any>(
-				`SELECT COALESCE(SUM((bank->>'${BINGO_TICKET_ITEM.id}')::int), 0) AS sum
+				`SELECT COALESCE(SUM((bank->>'${LOTTERY_TICKET_ITEM.id}')::int), 0) AS sum
 FROM users
-WHERE bank->>'${BINGO_TICKET_ITEM.id}' IS NOT NULL;`
+WHERE bank->>'${LOTTERY_TICKET_ITEM.id}' IS NOT NULL;`
 			)
 		)[0].sum
 	);
@@ -189,11 +189,18 @@ export const lotteryCommand: OSBMahojiCommand = {
 			const bankToSell = parseBank({
 				inputStr: options.deposit_items.items,
 				inputBank: user.bank,
-				excludeItems: [...user.user.favoriteItems]
+				excludeItems: [...user.user.favoriteItems],
+				maxSize: 50,
+				search: options.deposit_items.search,
+				filters: [options.deposit_items.filter],
+				user
 			});
 			bankToSell.filter(i => !isSuperUntradeable(i), true);
 			if (bankToSell.has('Coins')) {
 				return 'To buy bank lottery tickets with Coins, use the buy command.';
+			}
+			if (bankToSell.items().some(i => isSuperUntradeable(i[0].id))) {
+				return 'You cannot put in super untradeable items.';
 			}
 
 			let totalPrice = 0;
@@ -211,7 +218,7 @@ export const lotteryCommand: OSBMahojiCommand = {
 			const amountOfTickets = Math.floor(totalPrice / VALUE_PER_TICKET);
 
 			if (amountOfTickets < 5) {
-				return "Those items aren't worth enough.";
+				return `Those items aren't worth enough, your deposit needs to be enough to get you atleast 5 tickets, this is only enough for ${amountOfTickets} tickets.`;
 			}
 
 			let perItemTickets = [];
