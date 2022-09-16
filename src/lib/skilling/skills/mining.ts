@@ -180,8 +180,8 @@ const ores: Ore[] = [
 		name: 'Granite',
 		respawnTime: 3,
 		bankingTime: 80,
-		slope: 0.85,
-		intercept: 10.91,
+		slope: 0.84,
+		intercept: 10.93,
 		petChance: 741_600
 	},
 	{
