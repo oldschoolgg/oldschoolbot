@@ -23,7 +23,7 @@ import { hasMonsterRequirements, updateBankSetting } from '../../mahojiSettings'
 function checkReqs(users: MUser[], monster: KillableMonster, quantity: number): string | undefined {
 	// Check if every user has the requirements for this monster.
 	for (const user of users) {
-		if (!user.user.minion_bought_date) {
+		if (!user.user.minion_hasBought) {
 			return `${user.usernameOrMention} doesn't have a minion, so they can't join!`;
 		}
 
