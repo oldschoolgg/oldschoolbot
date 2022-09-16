@@ -1,7 +1,7 @@
 import { Activity, NewUser, Prisma } from '@prisma/client';
 import { AttachmentBuilder, EmbedBuilder, GuildMember } from 'discord.js';
 import { Time } from 'e';
-import { APIInteractionGuildMember } from 'mahoji';
+import { APIInteractionGuildMember, MessageFlags } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
 import { CommandArgs } from '../../mahoji/lib/inhibitors';
@@ -157,7 +157,7 @@ export async function runCommand({
 		if (channelIsSendable(channel)) {
 			if (typeof result === 'string') {
 				await channel.send(result);
-			} else {
+			} else if (result.flags !== MessageFlags.Ephemeral) {
 				await channel.send({
 					content: result.content,
 					embeds: result.embeds?.map(i => new EmbedBuilder(i as any)),
