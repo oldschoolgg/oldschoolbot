@@ -11,7 +11,7 @@ import {
 	numberOfGorajanOutfitsEquipped
 } from '../../../lib/skilling/skills/dung/dungDbFunctions';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { randomVariation, roll, toKMB } from '../../../lib/util';
+import { randomVariation, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export const dungeoneeringTask: MinionTask = {
@@ -42,17 +42,17 @@ export const dungeoneeringTask: MinionTask = {
 				bonusXP += Math.floor(xp * (gorajanEquipped / 2));
 				xp += bonusXP;
 			}
-			await u.addXP({
+			const xpStr = await u.addXP({
 				skillName: SkillsEnum.Dungeoneering,
 				amount: xp / 5,
-				duration
+				duration,
+				minimal: false
 			});
 			await u.update({
 				dungeoneering_tokens: {
 					increment: tokens
 				}
 			});
-			let rawXPHr = Math.floor(xp / 1000) * 1000;
 
 			// Allow MBs to roll per floor and not trip
 			// This allows people that wants to farm mbs and not xp to do a lot of small floors
@@ -67,11 +67,9 @@ export const dungeoneeringTask: MinionTask = {
 				}
 			}
 
-			str += `${gotMysteryBox ? Emoji.MysteryBox : ''} ${u} received: ${xp.toLocaleString()} XP (${toKMB(
-				rawXPHr
-			)}/hr) and <:dungeoneeringToken:829004684685606912> ${tokens.toLocaleString()} Dungeoneering tokens (${toKMB(
-				(rawXPHr * 0.1) / 4
-			)}/hr)`;
+			str += `${
+				gotMysteryBox ? Emoji.MysteryBox : ''
+			} ${u} received: ${xpStr} and <:dungeoneeringToken:829004684685606912> ${tokens.toLocaleString()} Dungeoneering tokens`;
 			if (gorajanEquipped > 0) {
 				str += ` ${bonusXP.toLocaleString()} Bonus XP`;
 			}
