@@ -182,7 +182,7 @@ export class MUserClass {
 	}
 
 	toString() {
-		return this.usernameOrMention;
+		return this.mention;
 	}
 
 	get QP() {
