@@ -1,17 +1,16 @@
 import { Duration } from '@sapphire/time-utilities';
-import {
-	ActionRowBuilder,
-	AttachmentBuilder,
-	ButtonBuilder,
-	ButtonStyle,
-	MessageOptions,
-	PermissionsBitField
-} from 'discord.js';
+import { ActionRowBuilder, AttachmentBuilder, ButtonBuilder, ButtonStyle, MessageOptions } from 'discord.js';
 import { randInt, Time } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import {
+	APIButtonComponentWithCustomId,
+	ApplicationCommandOptionType,
+	CommandRunOptions,
+	ComponentType,
+	MessageFlags
+} from 'mahoji';
 
 import { addToGPTaxBalance, prisma } from '../../lib/settings/prisma';
-import { channelIsSendable, isSuperUntradeable } from '../../lib/util';
+import { channelIsSendable, isSuperUntradeable, makeComponents } from '../../lib/util';
 import { generateGiveawayContent } from '../../lib/util/giveaway';
 import { logError } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
@@ -33,6 +32,15 @@ function makeGiveawayButtons(giveawayID: number): MessageOptions['components'] {
 				.setStyle(ButtonStyle.Secondary)
 		])
 	];
+}
+
+function makeGiveawayRepeatButton(giveawayID: number): APIButtonComponentWithCustomId {
+	return {
+		custom_id: `GIVEAWAY_REPEAT_${giveawayID}`,
+		label: 'Repeat This Giveaway',
+		style: ButtonStyle.Danger,
+		type: ComponentType.Button
+	};
 }
 
 export const giveawayCommand: OSBMahojiCommand = {
@@ -85,17 +93,13 @@ export const giveawayCommand: OSBMahojiCommand = {
 		if (!channelIsSendable(channel)) return 'Invalid channel.';
 
 		if (options.start) {
-			if (!channel.permissionsFor(globalClient.user!)?.has(PermissionsBitField.Flags.AddReactions)) {
-				return "I'm missing permissions to add reactions.";
-			}
 			const existingGiveaways = await prisma.giveaway.findMany({
 				where: {
 					user_id: user.id,
 					completed: false
 				}
 			});
-
-			if (existingGiveaways.length > 5) {
+			if (existingGiveaways.length >= 5) {
 				return 'You cannot have more than 5 giveaways active at a time.';
 			}
 
@@ -152,7 +156,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 						(
 							await makeBankImage({
 								bank,
-								title: `${apiUser.username}'s Giveaway`
+								title: `${apiUser?.username ?? user.rawUsername}'s Giveaway`
 							})
 						).file.buffer
 					)
@@ -192,7 +196,11 @@ export const giveawayCommand: OSBMahojiCommand = {
 				return 'Error starting giveaway.';
 			}
 
-			return 'Giveaway started.';
+			return {
+				content: 'Giveaway started.',
+				flags: MessageFlags.Ephemeral,
+				components: makeComponents([makeGiveawayRepeatButton(giveawayID)])
+			};
 		}
 	}
 };

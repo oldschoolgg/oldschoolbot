@@ -1,6 +1,7 @@
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Time, uniqueArr } from 'e';
 import { APIInteraction, InteractionType, Routes } from 'mahoji';
+import { Bank } from 'oldschooljs';
 
 import { buyBingoTicketCommand } from '../../mahoji/commands/bingo';
 import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
@@ -10,6 +11,7 @@ import { lastTripCache, PerkTier } from '../constants';
 import { prisma } from '../settings/prisma';
 import { runCommand } from '../settings/settings';
 import { repeatTameTrip } from '../tames';
+import { ItemBank } from '../types';
 import { channelIsSendable, convertMahojiResponseToDJSResponse, formatDuration, removeFromArr } from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
 import { updateGiveawayMessage } from './giveaway';
@@ -112,16 +114,44 @@ export function makeNewSlayerTaskButton() {
 async function giveawayButtonHandler(user: MUser, customID: string, data: APIInteraction) {
 	const split = customID.split('_');
 	if (split[0] !== 'GIVEAWAY') return;
-	const action = split[1] === 'ENTER' ? 'ENTER' : 'LEAVE';
 	const giveawayID = Number(split[2]);
 	const giveaway = await prisma.giveaway.findFirst({
 		where: {
 			id: giveawayID
 		}
 	});
-	if (!giveaway || giveaway.finish_date.getTime() < Date.now() || giveaway.completed) {
-		return respondToButton(data, "Invalid giveaway. This giveaway has either finished, or doesn't exist.");
+	if (!giveaway) {
+		return respondToButton(data, 'Invalid giveaway.');
 	}
+	if (split[1] === 'REPEAT') {
+		if (user.id !== giveaway.user_id) {
+			return respondToButton(data, "You cannot repeat other peoples' giveaways.");
+		}
+		await respondToButton(data);
+		return runCommand({
+			commandName: 'giveaway',
+			args: {
+				start: {
+					duration: `${giveaway.duration}ms`,
+					items: new Bank(giveaway.loot as ItemBank)
+						.items()
+						.map(t => `${t[1]} ${t[0].name}`)
+						.join(', ')
+				}
+			},
+			user,
+			member: data.member ?? null,
+			userID: user.id,
+			channelID: data.channel_id!,
+			guildID: data.guild_id
+		});
+	}
+
+	if (giveaway.finish_date.getTime() < Date.now() || giveaway.completed) {
+		return respondToButton(data, 'This giveaway has finished.');
+	}
+
+	const action = split[1] === 'ENTER' ? 'ENTER' : 'LEAVE';
 
 	if (user.isIronman) {
 		return respondToButton(data, 'You are an ironman, you cannot enter giveaways.');
