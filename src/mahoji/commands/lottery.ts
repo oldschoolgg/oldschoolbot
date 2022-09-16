@@ -4,8 +4,7 @@ import { Bank } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { prisma } from '../../lib/settings/prisma';
-import { sorts } from '../../lib/sorts';
-import { assert, isSuperUntradeable, toKMB } from '../../lib/util';
+import { assert, isSuperUntradeable } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
@@ -97,15 +96,21 @@ const specialPricesBeforeMultiplying = new Bank()
 	.add('Hellfire arrow', 30_000)
 	.add('Mysterious seed', 5_000_000);
 
+const MULTIPLIER = 3;
+
+const parsedPriceBank = new Bank();
+for (const [item, qty] of specialPricesBeforeMultiplying.items()) {
+	parsedPriceBank.add(item.id, qty * MULTIPLIER);
+}
+
 export async function isLotteryActive(): Promise<boolean> {
 	const result = await mahojiClientSettingsFetch({ lottery_is_active: true });
 	return result.lottery_is_active;
 }
 
-const MULTIPLIER = 3;
 function getPriceOfItem(item: Item) {
-	if (specialPricesBeforeMultiplying.has(item.id)) {
-		return Math.floor(specialPricesBeforeMultiplying.amount(item.id) * MULTIPLIER);
+	if (parsedPriceBank.has(item.id)) {
+		return Math.floor(parsedPriceBank.amount(item.id));
 	}
 	return item.price;
 }
@@ -181,8 +186,7 @@ export const lotteryCommand: OSBMahojiCommand = {
 		if (user.isIronman) return 'Ironmen cannot parttake in the Lottery.';
 
 		if (options.prices) {
-			const items = specialPricesBeforeMultiplying.items().sort(sorts.value);
-			return items.map(i => `${i[0].name}: ${toKMB(i[1])}`).join('  ,   ');
+			return { attachments: [(await makeBankImage({ bank: parsedPriceBank, title: 'Prices' })).file] };
 		}
 
 		if (options.deposit_items) {
