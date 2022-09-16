@@ -1,34 +1,24 @@
 import { userMention } from '@discordjs/builders';
 import { User } from '@prisma/client';
 import { randArrItem, reduceNumByPercent, roll, Time, uniqueArr } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank, LootTable } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { table } from 'table';
 
-import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
+import { updateBankSetting } from '../mahoji/mahojiSettings';
 import { MysteryBoxes } from './bsoOpenables';
 import { Emoji, GLOBAL_BSO_XP_MULTIPLIER } from './constants';
 import { incrementMinigameScore } from './settings/minigames';
-import { ClientSettings } from './settings/types/ClientSettings';
 import Grimy from './skilling/skills/herblore/mixables/grimy';
 import { SkillsEnum } from './skilling/types';
 import { getAllUserTames, TameSpeciesID } from './tames';
-import { ItemBank, Skills } from './types';
+import { Skills } from './types';
 import { MinigameActivityTaskOptions } from './types/minions';
-import {
-	formatDuration,
-	formatSkillRequirements,
-	getSkillsOfMahojiUser,
-	skillsMeetRequirements,
-	stringMatches,
-	updateBankSetting
-} from './util';
+import { formatDuration, formatSkillRequirements, skillsMeetRequirements, stringMatches } from './util';
 import addSubTaskToActivityTask from './util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from './util/calcMaxTripLength';
 import getOSItem from './util/getOSItem';
 import { handleTripFinish } from './util/handleTripFinish';
-import { hasItemsEquippedOrInBank, minionName } from './util/minionUtils';
 import resolveItems, { resolveOSItems } from './util/resolveItems';
 
 export const bathhouseTierNames = ['Warm', 'Hot', 'Fiery'] as const;
@@ -284,23 +274,21 @@ function calcHerbsNeeded(qty: number) {
 
 export async function baxtorianBathhousesStartCommand({
 	user,
-	klasaUser,
 	tier,
 	ore,
 	mixture,
 	channelID
 }: {
-	user: User;
-	klasaUser: KlasaUser;
+	user: MUser;
 	tier: string;
 	channelID: bigint;
 	ore?: string;
 	mixture?: string;
 }) {
-	if (klasaUser.minionIsBusy) {
+	if (user.minionIsBusy) {
 		return 'Your minion is busy.';
 	}
-	const userBank = new Bank(user.bank as ItemBank);
+	const userBank = user.bank;
 	const maxTripLength = calcMaxTripLength(user);
 	const durationPerPath = Time.Minute * 10;
 	const quantity = Math.floor(maxTripLength / durationPerPath);
@@ -331,7 +319,7 @@ export async function baxtorianBathhousesStartCommand({
 			.map(i => i.item.name)
 			.join(', ')}`;
 	}
-	const hasReq = skillsMeetRequirements(getSkillsOfMahojiUser(user), bathHouseTier.skillRequirements);
+	const hasReq = skillsMeetRequirements(user.skillsAsXP, bathHouseTier.skillRequirements);
 	if (!hasReq) {
 		return `You don't have the required skills to run ${
 			bathHouseTier.name
@@ -352,7 +340,7 @@ export async function baxtorianBathhousesStartCommand({
 		coalNeeded = Math.floor(reduceNumByPercent(coalNeeded, 20));
 		logsNeeded = Math.floor(reduceNumByPercent(logsNeeded, 20));
 	}
-	if (hasItemsEquippedOrInBank(user, ['Firemaking master cape'])) {
+	if (user.hasEquippedOrInBank(['Firemaking master cape'])) {
 		boosts.push('5% Less heating for Firemaking mastery');
 		oreNeeded = Math.floor(reduceNumByPercent(oreNeeded, 5));
 		coalNeeded = Math.floor(reduceNumByPercent(coalNeeded, 5));
@@ -368,11 +356,11 @@ export async function baxtorianBathhousesStartCommand({
 
 	const cost = new Bank().add(heatingCost).add(herbCost);
 
-	if (!klasaUser.owns(cost)) {
+	if (!user.owns(cost)) {
 		return `You don't have enough supplies to do a trip, for ${quantity}x ${bathHouseTier.name} baths, you need: ${cost}.`;
 	}
-	updateBankSetting(globalClient, ClientSettings.EconomyStats.BaxtorianBathhousesCost, cost);
-	await klasaUser.removeItemsFromBank(cost);
+	updateBankSetting('bb_cost', cost);
+	await user.removeItemsFromBank(cost);
 
 	await addSubTaskToActivityTask<BathhouseTaskOptions>({
 		userID: user.id,
@@ -469,9 +457,8 @@ export function baxBathSim() {
 
 export async function baxtorianBathhousesActivity(data: BathhouseTaskOptions) {
 	const { userID, channelID, quantity, duration } = data;
-	const mahojiUser = await mahojiUsersSettingsFetch(userID);
-	const klasaUser = await globalClient.fetchUser(userID);
-	const cl = klasaUser.cl();
+	const user = await mUserFetch(userID);
+	const { cl } = user;
 	const { loot, herbXP, firemakingXP, tier, speciesServed, ore, mixture, gaveExtraTips } = calculateResult(data);
 	await incrementMinigameScore(userID, 'bax_baths', quantity);
 
@@ -493,22 +480,22 @@ export async function baxtorianBathhousesActivity(data: BathhouseTaskOptions) {
 		}
 	}
 
-	await klasaUser.addItemsToBank({ items: loot, collectionLog: true });
-	let xpStr = await klasaUser.addXP({ skillName: SkillsEnum.Herblore, amount: herbXP, duration });
+	await user.addItemsToBank({ items: loot, collectionLog: true });
+	let xpStr = await user.addXP({ skillName: SkillsEnum.Herblore, amount: herbXP, duration });
 	xpStr += '\n';
-	xpStr += await klasaUser.addXP({
+	xpStr += await user.addXP({
 		skillName: SkillsEnum.Firemaking,
 		amount: firemakingXP,
 		duration
 	});
 
 	let uniqSpecies = uniqueArr(speciesServed);
-	updateBankSetting(globalClient, ClientSettings.EconomyStats.BaxtorianBathhousesLoot, loot);
+	updateBankSetting('bb_loot', loot);
 
 	handleTripFinish(
-		klasaUser,
+		user,
 		channelID,
-		`${userMention(userID)}, ${minionName(mahojiUser)} finished running ${quantity}x ${tier.name} baths for ${
+		`${userMention(userID)}, ${user.minionName} finished running ${quantity}x ${tier.name} baths for ${
 			uniqSpecies.length
 		} species (${uniqSpecies.map(i => i.name).join(', ')}) at the Baxtorian Bathhouses.
 ${gotPurple ? `${Emoji.Purple} ` : ''}**Tips received:** ${loot}.${

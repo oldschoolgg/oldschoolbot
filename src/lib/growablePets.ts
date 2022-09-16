@@ -1,8 +1,6 @@
 import { roll, Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { UserSettings } from './settings/types/UserSettings';
 import { ActivityTaskOptions } from './types/minions';
 import { itemNameFromID, randFloat } from './util';
 import getOSItem from './util/getOSItem';
@@ -53,8 +51,8 @@ for (let i = 0; i < kittens.length; i++) {
 	});
 }
 
-export async function handleGrowablePetGrowth(user: KlasaUser, data: ActivityTaskOptions, messages: string[]) {
-	const equippedPet = user.settings.get(UserSettings.Minion.EquippedPet);
+export async function handleGrowablePetGrowth(user: MUser, data: ActivityTaskOptions, messages: string[]) {
+	const equippedPet = user.user.minion_equippedPet;
 	if (!equippedPet) return;
 	const equippedGrowablePet = growablePets.find(pet => pet.stages.includes(equippedPet));
 	if (!equippedGrowablePet) return;
@@ -64,7 +62,7 @@ export async function handleGrowablePetGrowth(user: KlasaUser, data: ActivityTas
 		let nextPet = equippedGrowablePet.stages[equippedGrowablePet.stages.indexOf(equippedPet) + 1];
 		const isLastPet = nextPet === equippedGrowablePet.stages[equippedGrowablePet.stages.length - 1];
 		if (nextPet === -1) {
-			throw new Error(`${user.username}'s pet[${equippedPet}] has no index in growable pet stages.`);
+			throw new Error(`${user.usernameOrMention}'s pet[${equippedPet}] has no index in growable pet stages.`);
 		}
 		if (
 			isLastPet &&
@@ -74,8 +72,11 @@ export async function handleGrowablePetGrowth(user: KlasaUser, data: ActivityTas
 		) {
 			nextPet = equippedGrowablePet.shinyVersion;
 		}
-		await user.settings.update(UserSettings.Minion.EquippedPet, nextPet);
-		await user.addItemsToCollectionLog({ items: new Bank().add(nextPet) });
+
+		await user.update({
+			minion_equippedPet: nextPet,
+			collectionLogBank: new Bank().add(user.cl).add(nextPet).bank
+		});
 		messages.push(`Your ${itemNameFromID(equippedPet)} grew into a ${itemNameFromID(nextPet)}!`);
 	}
 }

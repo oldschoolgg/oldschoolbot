@@ -3,18 +3,16 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import { BlacksmithOutfit } from '../../lib/bsoOpenables';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Smithing from '../../lib/skilling/skills/smithing';
 import smithables from '../../lib/skilling/skills/smithing/smithables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SmithingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, stringMatches, updateBankSetting } from '../../lib/util';
+import { formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { hasItemsEquippedOrInBank } from '../../lib/util/minionUtils';
 import resolveItems from '../../lib/util/resolveItems';
 import { OSBMahojiCommand } from '../lib/util';
+import { updateBankSetting } from '../mahojiSettings';
 
 export const smithCommand: OSBMahojiCommand = {
 	name: 'smith',
@@ -48,7 +46,7 @@ export const smithCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
-		const user = await globalClient.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
 		const smithedItem = Smithing.SmithableItems.find(_smithedItem =>
 			stringMatches(_smithedItem.name, options.name)
@@ -56,7 +54,7 @@ export const smithCommand: OSBMahojiCommand = {
 
 		if (!smithedItem) return 'That is not a valid item to smith.';
 		if (smithedItem.requiresBlacksmith) {
-			if (!hasItemsEquippedOrInBank(user, BlacksmithOutfit, 'every')) {
+			if (!user.hasEquippedOrInBank(BlacksmithOutfit, 'every')) {
 				return 'You need the Blacksmith outfit equipped or in your bank to smith this item.';
 			}
 		}
@@ -65,7 +63,7 @@ export const smithCommand: OSBMahojiCommand = {
 			return `${user.minionName} needs ${smithedItem.level} Smithing to smith ${smithedItem.name}s.`;
 		}
 
-		const userQP = user.settings.get(UserSettings.QP);
+		const userQP = user.QP;
 
 		if (smithedItem.qpRequired && userQP < smithedItem.qpRequired) {
 			return `${user.minionName} needs ${smithedItem.qpRequired} QP to smith ${smithedItem.name}`;
@@ -75,7 +73,7 @@ export const smithCommand: OSBMahojiCommand = {
 		let timeToSmithSingleBar = smithedItem.timeToUse + Time.Second / 4;
 		if (user.usingPet('Takon')) {
 			timeToSmithSingleBar /= 4;
-		} else if (user.hasItemEquippedAnywhere('Dwarven greathammer')) {
+		} else if (user.hasEquipped('Dwarven greathammer')) {
 			timeToSmithSingleBar /= 2;
 		}
 
@@ -93,10 +91,9 @@ export const smithCommand: OSBMahojiCommand = {
 			}
 		}
 
-		await user.settings.sync(true);
 		const baseCost = new Bank(smithedItem.inputBars);
 
-		const maxCanDo = user.bank().fits(baseCost);
+		const maxCanDo = user.bank.fits(baseCost);
 		if (maxCanDo === 0) {
 			return "You don't have enough supplies to smith even one of this item!";
 		}
@@ -138,7 +135,7 @@ export const smithCommand: OSBMahojiCommand = {
 		}
 
 		await transactItems({ userID: user.id, itemsToRemove: cost });
-		updateBankSetting(globalClient, ClientSettings.EconomyStats.SmithingCost, cost);
+		updateBankSetting('smithing_cost', cost);
 
 		await addSubTaskToActivityTask<SmithingActivityTaskOptions>({
 			smithedBarID: smithedItem.id,
@@ -155,7 +152,7 @@ export const smithCommand: OSBMahojiCommand = {
 
 		if (user.usingPet('Takon')) {
 			str += ' Takon is Smithing for you, at incredible speeds and skill.';
-		} else if (user.hasItemEquippedAnywhere('Dwarven greathammer')) {
+		} else if (user.hasEquipped('Dwarven greathammer')) {
 			str += ' 2x faster for Dwarven greathammer.';
 		}
 		if (hasScroll) {

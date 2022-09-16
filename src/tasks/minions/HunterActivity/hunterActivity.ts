@@ -1,13 +1,11 @@
+import { Prisma } from '@prisma/client';
 import { Time } from 'e';
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { Events } from '../../../lib/constants';
 import { hasWildyHuntGearEquipped } from '../../../lib/gear/functions/hasWildyHuntGearEquipped';
 import { trackLoot } from '../../../lib/settings/prisma';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import {
 	calcBabyChinchompaChance,
 	calcLootXPHunting,
@@ -15,12 +13,13 @@ import {
 } from '../../../lib/skilling/functions/calcsHunter';
 import Hunter from '../../../lib/skilling/skills/hunter/hunter';
 import { SkillsEnum } from '../../../lib/skilling/types';
+import { PeakTier } from '../../../lib/tickers';
 import { HunterActivityTaskOptions } from '../../../lib/types/minions';
-import { rand, roll, stringMatches, updateBankSetting } from '../../../lib/util';
+import { rand, roll, stringMatches } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
+import { updateBankSetting } from '../../../mahoji/mahojiSettings';
 import { BLACK_CHIN_ID, HERBIBOAR_ID } from './../../../lib/constants';
-import { PeakTier } from './../../WildernessPeakInterval';
 
 const riskDeathNumbers = [
 	{
@@ -37,12 +36,13 @@ const riskDeathNumbers = [
 	}
 ];
 
-export default class extends Task {
+export const hunterTask: MinionTask = {
+	type: 'Hunter',
 	async run(data: HunterActivityTaskOptions) {
 		const { creatureName, quantity, userID, channelID, usingHuntPotion, wildyPeak, duration, usingStaminaPotion } =
 			data;
-		const user = await this.client.fetchUser(userID);
-		const userBank = user.bank();
+		const user = await mUserFetch(userID);
+		const userBank = user.bank;
 		const currentLevel = user.skillLevel(SkillsEnum.Hunter);
 		const currentHerbLevel = user.skillLevel(SkillsEnum.Herblore);
 		let gotPked = false;
@@ -71,10 +71,10 @@ export default class extends Task {
 				riskDeathNumbers.find(_peaktier => _peaktier.peakTier === wildyPeak?.peakTier)?.extraChance ?? 0;
 			let riskDeathChance = 20;
 			// The more experienced the less chance of death.
-			riskDeathChance += Math.min(Math.floor((user.getCreatureScore(creature) ?? 1) / 100), 200);
+			riskDeathChance += Math.min(Math.floor((user.getCreatureScore(creature.id) ?? 1) / 100), 200);
 
 			// Gives lower death chance depending on what the user got equipped in wildy.
-			const [, , score] = hasWildyHuntGearEquipped(user.getGear('wildy'));
+			const [, , score] = hasWildyHuntGearEquipped(user.gear.wildy);
 			riskDeathChance += score;
 			for (let i = 0; i < duration / Time.Minute; i++) {
 				if (roll(riskPkChance)) {
@@ -88,10 +88,12 @@ export default class extends Task {
 				if (userBank.has(cost)) {
 					await transactItems({ userID: user.id, itemsToRemove: cost });
 				}
-				const newGear = { ...user.settings.get(UserSettings.Gear.Wildy) };
+				const newGear = { ...user.gear.wildy.raw() };
 				newGear[EquipmentSlot.Body] = null;
 				newGear[EquipmentSlot.Legs] = null;
-				await user.settings.update(UserSettings.Gear.Wildy, newGear);
+				await user.update({
+					gear_wildy: newGear as Prisma.InputJsonObject
+				});
 				pkedQuantity = 0.5 * successfulQuantity;
 				xpReceived *= 0.8;
 				diedStr =
@@ -122,10 +124,10 @@ export default class extends Task {
 		let xpStr = '';
 		if (creature.id === HERBIBOAR_ID) {
 			creatureTable = generateHerbiTable(
-				user.skillLevel(SkillsEnum.Herblore),
-				user.hasItemEquippedOrInBank(Number(itemID('Magic secateurs')))
+				user.skillLevel('herblore'),
+				user.hasEquippedOrInBank('Magic secateurs')
 			);
-			if (user.hasItemEquippedOrInBank(Number(itemID('Magic secateurs')))) {
+			if (user.hasEquippedOrInBank('Magic secateurs')) {
 				magicSecStr = ' Extra herbs for Magic secateurs';
 			}
 			// TODO: Check wiki in future for herblore xp from herbiboar
@@ -146,7 +148,7 @@ export default class extends Task {
 			}
 		}
 		if (creature.name === 'Eastern ferret') {
-			const cl = user.cl();
+			const { cl } = user;
 			const amountOfZippysGotten = cl.amount('Zippy');
 			let baseDropRatePer = 3500;
 			if (amountOfZippysGotten > 0) {
@@ -175,7 +177,7 @@ export default class extends Task {
 
 		if (user.usingPet('Sandy') && creature.name !== 'Eastern ferret') {
 			if (creature.id === 3251) {
-				if (user.hasItemEquippedAnywhere(itemID('Hunter master cape'))) {
+				if (user.hasEquipped('Hunter master cape')) {
 					str += '\nYou received **double** loot because of Sandy, and being a master hunter.';
 					loot.multiply(2);
 				}
@@ -203,9 +205,9 @@ export default class extends Task {
 
 		if (loot.amount('Baby chinchompa') > 0 || loot.amount('Herbi') > 0) {
 			str += "\n\n**You have a funny feeling like you're being followed....**";
-			this.client.emit(
+			globalClient.emit(
 				Events.ServerNotification,
-				`**${user.username}'s** minion, ${user.minionName}, just received a ${
+				`**${user.usernameOrMention}'s** minion, ${user.minionName}, just received a ${
 					loot.amount('Baby chinchompa') > 0
 						? '**Baby chinchompa** <:Baby_chinchompa_red:324127375539306497>'
 						: '**Herbi** <:Herbi:357773175318249472>'
@@ -213,7 +215,7 @@ export default class extends Task {
 			);
 		}
 
-		updateBankSetting(this.client, ClientSettings.EconomyStats.HunterLoot, loot);
+		updateBankSetting('hunter_loot', loot);
 		await trackLoot({
 			id: creature.name,
 			changeType: 'loot',
@@ -242,4 +244,4 @@ export default class extends Task {
 			loot
 		);
 	}
-}
+};

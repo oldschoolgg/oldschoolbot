@@ -6,13 +6,12 @@ import { determineMiningTime } from '../../lib/skilling/functions/determineMinin
 import Mining from '../../lib/skilling/skills/mining';
 import { Skills } from '../../lib/types';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, getSkillsOfMahojiUser, itemNameFromID, randomVariation } from '../../lib/util';
+import { formatDuration, formatSkillRequirements, itemNameFromID, randomVariation } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { stringMatches } from '../../lib/util/cleanString';
 import itemID from '../../lib/util/itemID';
-import { hasItemsEquippedOrInBank, minionName, userHasItemsEquippedAnywhere } from '../../lib/util/minionUtils';
+import { minionName } from '../../lib/util/minionUtils';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const pickaxes = [
 	{
@@ -268,15 +267,13 @@ export const mineCommand: OSBMahojiCommand = {
 		}
 
 		let { quantity, powermine } = options;
-		const klasaUser = await globalClient.fetchUser(userID);
-		const user = await mahojiUsersSettingsFetch(userID);
-		const skills = getSkillsOfMahojiUser(user, true);
-		if (skills.mining < ore.level) {
+		const user = await mUserFetch(userID);
+		if (user.skillsAsLevels.mining < ore.level) {
 			return `${minionName(user)} needs ${ore.level} Mining to mine ${ore.name}.`;
 		}
 
 		if (ore.requiredPickaxes) {
-			if (!hasItemsEquippedOrInBank(user, ore.requiredPickaxes, 'one')) {
+			if (!user.hasEquippedOrInBank(ore.requiredPickaxes, 'one')) {
 				return `You need to be using one of these pickaxes to be able to mine ${
 					ore.name
 				}: ${ore.requiredPickaxes.map(itemNameFromID).join(', ')}.`;
@@ -284,10 +281,10 @@ export const mineCommand: OSBMahojiCommand = {
 		}
 
 		// Check for daeyalt shard requirements.
-		const [hasDaeyaltReqs, daeyaltReason] = klasaUser.hasSkillReqs(daeyaltEssenceSkillRequirements);
+		const hasDaeyaltReqs = user.hasSkillReqs(daeyaltEssenceSkillRequirements);
 		if (ore.name === 'Daeyalt essence rock') {
 			if (!hasDaeyaltReqs) {
-				return `To mine ${ore.name}, you need ${daeyaltReason}.`;
+				return `To mine ${ore.name}, you need ${formatSkillRequirements(daeyaltEssenceSkillRequirements)}.`;
 			}
 			if (user.QP < 125) {
 				return `To mine ${ore.name}, you need atleast 125 Quest Points.`;
@@ -296,13 +293,13 @@ export const mineCommand: OSBMahojiCommand = {
 
 		const boosts = [];
 
-		let miningLevel = skills.mining;
-		if ((ore.minerals || ore.nuggets) && skills.mining >= 60) {
+		let miningLevel = user.skillsAsLevels.mining;
+		if ((ore.minerals || ore.nuggets) && miningLevel >= 60) {
 			boosts.push('+7 invisible Mining lvls at the Mining guild');
 			miningLevel += 7;
 		}
 		// Checks if user own Celestial ring or Celestial signet
-		if (hasItemsEquippedOrInBank(user, ['Celestial ring (uncharged)'])) {
+		if (user.hasEquippedOrInBank(['Celestial ring (uncharged)'])) {
 			boosts.push('+4 invisible Mining lvls for Celestial ring');
 			miningLevel += 4;
 		}
@@ -314,7 +311,7 @@ export const mineCommand: OSBMahojiCommand = {
 
 		// For each pickaxe, if they have it, give them its' bonus and break.
 		for (const pickaxe of pickaxes) {
-			if (!hasItemsEquippedOrInBank(user, [pickaxe.id]) || skills.mining < pickaxe.miningLvl) continue;
+			if (!user.hasEquippedOrInBank([pickaxe.id]) || miningLevel < pickaxe.miningLvl) continue;
 			currentPickaxe = pickaxe;
 			boosts.pop();
 			boosts.push(`**${pickaxe.ticksBetweenRolls}** ticks between rolls for ${itemNameFromID(pickaxe.id)}`);
@@ -322,9 +319,9 @@ export const mineCommand: OSBMahojiCommand = {
 		}
 
 		let glovesRate = 0;
-		if (skills.mining >= 60) {
+		if (miningLevel >= 60) {
 			for (const glove of gloves) {
-				if (!userHasItemsEquippedAnywhere(user, glove.id) || !glove.Percentages.has(ore.id)) continue;
+				if (!user.hasEquipped(glove.id) || !glove.Percentages.has(ore.id)) continue;
 				glovesRate = glove.Percentages.amount(ore.id);
 				if (glovesRate !== 0) {
 					boosts.push(`Lowered rock depletion rate by **${glovesRate}%** for ${itemNameFromID(glove.id)}`);
@@ -335,7 +332,7 @@ export const mineCommand: OSBMahojiCommand = {
 
 		let armourEffect = 0;
 		for (const armour of varrockArmours) {
-			if (!hasItemsEquippedOrInBank(user, [armour.id]) || !armour.Percentages.has(ore.id)) continue;
+			if (!user.hasEquippedOrInBank(armour.id) || !armour.Percentages.has(ore.id)) continue;
 			armourEffect = armour.Percentages.amount(ore.id);
 			if (armourEffect !== 0) {
 				boosts.push(`**${armourEffect}%** chance to mine an extra ore using ${itemNameFromID(armour.id)}`);
@@ -344,13 +341,13 @@ export const mineCommand: OSBMahojiCommand = {
 		}
 
 		let goldSilverBoost = false;
-		if (skills.crafting >= 99 && (ore.name === 'Gold ore' || ore.name === 'Silver ore')) {
+		if (user.skillsAsLevels.crafting >= 99 && (ore.name === 'Gold ore' || ore.name === 'Silver ore')) {
 			goldSilverBoost = true;
 			boosts.push(`**70%** faster ${ore.name} banking for 99 Crafting`);
 		}
 
 		let miningCapeEffect = 0;
-		if (hasItemsEquippedOrInBank(user, [itemID('Mining cape')]) || !miningCapeOreEffect.has(ore.id)) {
+		if (user.hasEquippedOrInBank([itemID('Mining cape')]) || !miningCapeOreEffect.has(ore.id)) {
 			miningCapeEffect = miningCapeOreEffect.amount(ore.id);
 			if (miningCapeEffect !== 0) {
 				boosts.push(`**${miningCapeEffect}%** chance to mine an extra ore using Mining cape`);
@@ -377,9 +374,9 @@ export const mineCommand: OSBMahojiCommand = {
 		});
 
 		if (
-			userHasItemsEquippedAnywhere(user, 'Offhand volcanic pickaxe') &&
-			skills.strength >= 100 &&
-			skills.mining >= 105
+			user.hasEquipped('Offhand volcanic pickaxe') &&
+			user.skillsAsLevels.strength >= 100 &&
+			user.skillsAsLevels.mining >= 105
 		) {
 			newQuantity = Math.round(increaseNumByPercent(newQuantity, 150));
 			// Same as 60% speed reduction, just keeps full trips
@@ -391,7 +388,7 @@ export const mineCommand: OSBMahojiCommand = {
 		const fakeDurationMin = quantity ? randomVariation(reduceNumByPercent(duration, 25), 20) : duration;
 		const fakeDurationMax = quantity ? randomVariation(increaseNumByPercent(duration, 25), 20) : duration;
 
-		if (ore.name === 'Gem rock' && userHasItemsEquippedAnywhere(user, 'Amulet of glory')) {
+		if (ore.name === 'Gem rock' && user.hasEquipped('Amulet of glory')) {
 			boosts.push('3x success rate for having an Amulet of glory equipped');
 		}
 
@@ -415,7 +412,7 @@ export const mineCommand: OSBMahojiCommand = {
 				: formatDuration(duration)
 		} to finish.`;
 
-		const kUser = await globalClient.fetchUser(userID);
+		const kUser = await mUserFetch(userID);
 		if (kUser.usingPet('Doug')) {
 			response += '\n<:doug:748892864813203591> Doug joins you on your mining trip!';
 		}

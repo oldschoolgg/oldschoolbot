@@ -1,5 +1,4 @@
 import { reduceNumByPercent, Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
@@ -31,7 +30,7 @@ export const combatItemsConsumption: CombatItemConsumption[] = [
 	}
 ];
 
-export default function combatAmmoUsage(options: { duration: number; gearType: GearSetupType; user: KlasaUser }): {
+export default function combatAmmoUsage(options: { duration: number; gearType: GearSetupType; user: MUser }): {
 	boosts: string[];
 	errors: string[];
 	bank: Bank;
@@ -39,7 +38,7 @@ export default function combatAmmoUsage(options: { duration: number; gearType: G
 	const { user, duration, gearType } = options;
 	const boosts = [];
 	const errors = [];
-	const gear = user.getGear(gearType);
+	const gear = user.gear[gearType];
 	const toConsume = new Bank();
 
 	for (const { item, requiredGearType, every, reductions, required, consume } of combatItemsConsumption) {
@@ -61,7 +60,7 @@ export default function combatAmmoUsage(options: { duration: number; gearType: G
 					}
 				}
 			}
-			if (!user.bank().has(requiredBank.multiply(toRemove).bank)) {
+			if (!user.bank.has(requiredBank.multiply(toRemove).bank)) {
 				errors.push(`You need at least ${requiredBank} to go on a trip using ${item.name}`);
 			}
 			toConsume.add(requiredBank);

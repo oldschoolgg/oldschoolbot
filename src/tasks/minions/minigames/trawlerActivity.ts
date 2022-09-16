@@ -1,5 +1,4 @@
 import { calcPercentOfNum, roll } from 'e';
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { MysteryBoxes } from '../../../lib/bsoOpenables';
@@ -8,21 +7,20 @@ import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { fishingTrawlerLoot } from '../../../lib/simulation/fishingTrawler';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { anglerBoostPercent, itemID } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { allItemsOwned } from '../../../mahoji/mahojiSettings';
+import { anglerBoostPercent } from '../../../mahoji/mahojiSettings';
 
-export default class extends Task {
+export const trawlerTask: MinionTask = {
+	type: 'FishingTrawler',
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { channelID, quantity, userID } = data;
-		const user = await this.client.fetchUser(userID);
-
+		const user = await mUserFetch(userID);
 		await incrementMinigameScore(userID, 'fishing_trawler', quantity);
 
 		const fishingLevel = user.skillLevel(SkillsEnum.Fishing);
 
-		const allItemsOwnedBank = allItemsOwned(user).bank;
+		const allItemsOwnedBank = user.allItemsOwned().bank;
 		const loot = new Bank();
 
 		let totalXP = 0;
@@ -56,7 +54,7 @@ export default class extends Task {
 
 		if (hasEliteArdy) str += '\n\n50% Extra fish for Ardougne Elite diary';
 
-		if (user.hasItemEquippedAnywhere(itemID('Fishing master cape'))) {
+		if (user.hasEquipped('Fishing master cape')) {
 			loot.multiply(4);
 			for (let i = 0; i < quantity; i++) {
 				if (roll(2)) loot.add(MysteryBoxes.roll());
@@ -101,4 +99,4 @@ export default class extends Task {
 			itemsAdded
 		);
 	}
-}
+};

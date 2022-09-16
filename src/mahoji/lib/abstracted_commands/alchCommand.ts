@@ -1,18 +1,16 @@
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { AlchingActivityTaskOptions } from '../../../lib/types/minions';
-import { clamp, formatDuration, toKMB, updateBankSetting } from '../../../lib/util';
+import { clamp, formatDuration, toKMB } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { getItem } from '../../../lib/util/getOSItem';
 import resolveItems from '../../../lib/util/resolveItems';
-import { handleMahojiConfirmation } from '../../mahojiSettings';
+import { handleMahojiConfirmation, updateBankSetting } from '../../mahojiSettings';
 
 const unlimitedFireRuneProviders = resolveItems([
 	'Staff of fire',
@@ -33,15 +31,15 @@ export const timePerAlch = Time.Second * 3;
 export async function alchCommand(
 	interaction: SlashCommandInteraction | null,
 	channelID: bigint,
-	user: KlasaUser,
+	user: MUser,
 	item: string,
 	quantity: number | undefined,
 	speedInput: number | undefined
 ) {
-	const userBank = user.bank();
+	const userBank = user.bank;
 	let osItem = getItem(item);
 
-	const [favAlchs] = user.getUserFavAlchs(calcMaxTripLength(user, 'Alching')) as Item[];
+	const [favAlchs] = user.favAlchs(calcMaxTripLength(user, 'Alching')) as Item[];
 	if (!osItem) osItem = favAlchs;
 
 	if (!osItem) return 'Invalid item.';
@@ -68,7 +66,7 @@ export async function alchCommand(
 	let fireRuneCost = quantity * 5;
 
 	for (const runeProvider of unlimitedFireRuneProviders) {
-		if (user.hasItemEquippedAnywhere(runeProvider)) {
+		if (user.hasEquipped(runeProvider)) {
 			fireRuneCost = 0;
 			break;
 		}
@@ -99,7 +97,7 @@ export async function alchCommand(
 		);
 	}
 	await user.removeItemsFromBank(consumedItems);
-	await updateBankSetting(globalClient, ClientSettings.EconomyStats.MagicCostBank, consumedItems);
+	await updateBankSetting('magic_cost_bank', consumedItems);
 
 	await addSubTaskToActivityTask<AlchingActivityTaskOptions>({
 		itemID: osItem.id,

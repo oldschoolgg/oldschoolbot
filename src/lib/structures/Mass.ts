@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 /* eslint-disable prefer-promise-reject-errors */
-import { MessageReaction, TextChannel } from 'discord.js';
+import { Message, MessageReaction, TextChannel, User } from 'discord.js';
 import { debounce, sleep, Time } from 'e';
-import { KlasaMessage, KlasaUser } from 'klasa';
 
 import { ReactionEmoji } from '../../lib/constants';
 import { CustomReactionCollector } from '../../lib/structures/CustomReactionCollector';
@@ -13,10 +12,10 @@ export interface MassOptions {
 	channel: TextChannel;
 	maxSize: number;
 	minSize: number;
-	leader?: KlasaUser;
+	leader: MUser;
 	text: string;
 	ironmenAllowed: boolean;
-	customDenier?: (user: KlasaUser) => Promise<UserDenyResult>;
+	customDenier?: (user: MUser) => Promise<UserDenyResult>;
 	automaticStartTime?: number;
 }
 
@@ -28,14 +27,14 @@ function isActionEmoji(str: string | null) {
 export class Mass {
 	maxSize: number;
 	minSize: number;
-	leader?: KlasaUser;
+	leader: MUser;
 	text: string;
 	ironmenAllowed: boolean;
-	customDenier: ((user: KlasaUser) => Promise<UserDenyResult>) | undefined;
+	customDenier: ((user: MUser) => Promise<UserDenyResult>) | undefined;
 
 	channel: TextChannel;
-	users: KlasaUser[] = [];
-	message: KlasaMessage | null = null;
+	users: MUser[] = [];
+	message: Message | null = null;
 	automaticStartTime: number;
 	started: boolean = false;
 
@@ -66,12 +65,12 @@ export class Mass {
 		if (this.leader) {
 			this.users.push(this.leader);
 		}
-		this.message = (await this.channel.send({
+		this.message = await this.channel.send({
 			content: this.getText(),
 			allowedMentions: { roles: ['896845245873025067'] }
-		})) as KlasaMessage;
+		});
 
-		const promise = new Promise<KlasaUser[]>(async (resolve, reject) => {
+		const promise = new Promise<MUser[]>(async (resolve, reject) => {
 			const start = async () => {
 				if (this.started) return false;
 				this.started = true;
@@ -87,22 +86,22 @@ export class Mass {
 					time: this.automaticStartTime,
 					max: this.maxSize,
 					dispose: true,
-					filter: async (reaction: MessageReaction, user: KlasaUser) => {
-						await user.settings.sync();
+					filter: async (reaction: MessageReaction, user: User) => {
+						const mUser = await mUserFetch(user.id);
 						if (
 							!isActionEmoji(reaction.emoji.id) ||
-							(!this.ironmenAllowed && user.isIronman) ||
+							(!this.ironmenAllowed && mUser.isIronman) ||
 							user.bot ||
-							user.minionIsBusy ||
-							!user.hasMinion
+							mUser.minionIsBusy ||
+							!mUser.user.minion_hasBought
 						) {
 							return false;
 						}
 						const action = reaction.emoji.id;
 
 						if (
-							(action === ReactionEmoji.Join && user === this.leader) ||
-							(user !== this.leader && reaction.emoji.id !== ReactionEmoji.Join)
+							(action === ReactionEmoji.Join && user.id === this.leader.id) ||
+							(mUser.id !== this.leader.id && reaction.emoji.id !== ReactionEmoji.Join)
 						) {
 							reaction.users.remove(user);
 						}
@@ -112,7 +111,7 @@ export class Mass {
 				}
 			);
 
-			collector.on('remove', (reaction: MessageReaction, user: KlasaUser) => {
+			collector.on('remove', (reaction: MessageReaction, user: MUser) => {
 				if (reaction.emoji.id === ReactionEmoji.Join) {
 					this.removeUser(user);
 				}
@@ -135,15 +134,15 @@ export class Mass {
 					}
 
 					case ReactionEmoji.Stop: {
-						if (user === this.leader) {
-							reject(new Error(`The leader (${this.leader.username}) cancelled this mass`));
+						if (user.id === this.leader.id) {
+							reject(new Error(`The leader (${this.leader.usernameOrMention}) cancelled this mass`));
 							collector.stop();
 						}
 						break;
 					}
 
 					case ReactionEmoji.Start: {
-						if (user === this.leader) {
+						if (user.id === this.leader.id) {
 							await start();
 							collector.stop();
 						}
@@ -173,7 +172,9 @@ export class Mass {
 		return `${this.text}
         
 **Users Joined:** ${
-			this.users.length > 15 ? `${this.users.length} people!` : this.users.map(u => u.username).join(', ')
+			this.users.length > 15
+				? `${this.users.length} people!`
+				: this.users.map(u => u.usernameOrMention).join(', ')
 		}
             
 This party will automatically depart in ${formatDuration(this.automaticStartTime)}${
@@ -181,25 +182,26 @@ This party will automatically depart in ${formatDuration(this.automaticStartTime
 		}.`;
 	}
 
-	async removeUser(user: KlasaUser) {
+	async removeUser(user: MUser) {
 		if (user === this.leader) return;
 		if (!this.users.includes(user)) return false;
 		this.users = removeFromArr(this.users, user);
 		this.update();
 	}
 
-	async addUser(user: KlasaUser) {
-		if (this.users.includes(user)) return;
+	async addUser(user: User) {
+		const mUser = await mUserFetch(user.id);
+		if (this.users.some(u => u.id === mUser.id)) return;
 
 		if (this.customDenier) {
-			const [denied, reason] = await this.customDenier(user);
+			const [denied, reason] = await this.customDenier(mUser);
 			if (denied) {
 				user.send(`You couldn't join this mass, for this reason: ${reason}`);
 				return;
 			}
 		}
 
-		this.users.push(user);
+		this.users.push(mUser);
 		this.update();
 	}
 }

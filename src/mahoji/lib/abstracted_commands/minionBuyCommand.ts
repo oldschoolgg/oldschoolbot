@@ -1,24 +1,22 @@
-import { User } from '@prisma/client';
+import { User } from 'discord.js';
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { ComponentType } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
 import { mahojiInformationalButtons } from '../../../lib/constants';
 import { isAtleastThisOld } from '../../../lib/util';
-import { mahojiUserSettingsUpdate } from '../../mahojiSettings';
 
-export async function minionBuyCommand(klasaUser: KlasaUser, user: User, ironman: boolean): CommandResponse {
-	if (user.minion_hasBought) return 'You already have a minion!';
+export async function minionBuyCommand(apiUser: User, user: MUser, ironman: boolean): CommandResponse {
+	if (user.user.minion_hasBought) return 'You already have a minion!';
 
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		minion_hasBought: true,
 		minion_bought_date: new Date(),
 		minion_ironman: Boolean(ironman)
 	});
 
-	const starter = isAtleastThisOld(klasaUser.createdTimestamp, Time.Year * 2)
+	const starter = isAtleastThisOld(apiUser.createdAt, Time.Year * 2)
 		? new Bank({
 				Shark: 300,
 				'Saradomin brew(4)': 50,
@@ -37,7 +35,7 @@ export async function minionBuyCommand(klasaUser: KlasaUser, user: User, ironman
 		: null;
 
 	if (starter) {
-		await klasaUser.addItemsToBank({ items: starter, collectionLog: false });
+		await user.addItemsToBank({ items: starter, collectionLog: false });
 	}
 
 	return {

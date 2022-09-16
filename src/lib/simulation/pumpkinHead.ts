@@ -1,5 +1,4 @@
 import { randArrItem } from 'e';
-import { KlasaUser } from 'klasa';
 import { LootTable } from 'oldschooljs';
 
 export const PUMPKINHEAD_ID = 93_898_458;
@@ -25,9 +24,9 @@ export function getPHeadDescriptor() {
 	return `${first}-${second}`;
 }
 
-export function numberOfPHeadItemsInCL(user: KlasaUser) {
+export function numberOfPHeadItemsInCL(user: MUser) {
 	let amount = 0;
-	const cl = user.cl();
+	const { cl } = user;
 	for (const item of pumpkinHeadUniqueTable.allItems) {
 		if (cl.has(item)) {
 			amount++;

@@ -3,7 +3,6 @@ import '../src/lib/data/itemAliases';
 
 import { PrismaClient } from '@prisma/client';
 import { mockDeep } from 'jest-mock-extended';
-import { KlasaClient } from 'klasa';
 
 jest.mock('../src/lib/settings/prisma.ts', () => ({
 	__esModule: true,
@@ -11,4 +10,5 @@ jest.mock('../src/lib/settings/prisma.ts', () => ({
 }));
 
 // @ts-ignore Mock
-global.globalClient = { settings: { get: () => ({}) } } as any as KlasaClient;
+global.globalClient = {} as any;
+import('../src/lib/MUser');

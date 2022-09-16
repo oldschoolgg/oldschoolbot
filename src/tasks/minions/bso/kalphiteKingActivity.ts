@@ -1,5 +1,4 @@
 import { calcWhatPercent, noOp, percentChance } from 'e';
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
@@ -10,16 +9,14 @@ import { KalphiteKingMonster } from '../../../lib/minions/data/killableMonsters/
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import { prisma, trackLoot } from '../../../lib/settings/prisma';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { ItemBank } from '../../../lib/types';
 import { BossActivityTaskOptions } from '../../../lib/types/minions';
-import { updateBankSetting } from '../../../lib/util';
 import { getKalphiteKingGearStats } from '../../../lib/util/getKalphiteKingGearStats';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { sendToChannelID } from '../../../lib/util/webhook';
+import { updateBankSetting } from '../../../mahoji/mahojiSettings';
 
 interface NexUser {
 	id: string;
@@ -27,7 +24,8 @@ interface NexUser {
 	damageDone: number;
 }
 
-export default class extends Task {
+export const kalphiteKingTask: MinionTask = {
+	type: 'KalphiteKing',
 	async run(data: BossActivityTaskOptions) {
 		const { channelID, userID, users, quantity, duration } = data;
 		const teamsLoot: { [key: string]: ItemBank } = {};
@@ -37,7 +35,7 @@ export default class extends Task {
 
 		// For each user in the party, calculate their damage and death chance.
 		for (const id of users) {
-			const user = await this.client.fetchUser(id).catch(noOp);
+			const user = await mUserFetch(id);
 			if (!user) continue;
 			const [data] = getKalphiteKingGearStats(user, users);
 			parsedUsers.push({ ...data, id: user.id });
@@ -84,7 +82,7 @@ export default class extends Task {
 			kcAmounts[winner] = Boolean(kcAmounts[winner]) ? ++kcAmounts[winner] : 1;
 		}
 
-		const leaderUser = await this.client.fetchUser(userID);
+		const leaderUser = await mUserFetch(userID);
 		let resultStr = `${leaderUser}, your party finished killing ${quantity}x ${KalphiteKingMonster.name}!\n\n`;
 
 		let soloXP = '';
@@ -93,12 +91,12 @@ export default class extends Task {
 
 		const totalLoot = new Bank();
 		for (let [userID, loot] of Object.entries(teamsLoot)) {
-			const user = await this.client.fetchUser(userID).catch(noOp);
+			const user = await mUserFetch(userID).catch(noOp);
 			if (!user) continue;
 			totalLoot.add(loot);
 			const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
 			const kcToAdd = kcAmounts[user.id];
-			if (kcToAdd) await user.incrementMonsterScore(KalphiteKingMonster.id, kcToAdd);
+			if (kcToAdd) await user.incrementKC(KalphiteKingMonster.id, kcToAdd);
 			const purple = Object.keys(loot).some(id => kalphiteKingCL.includes(parseInt(id)));
 
 			const usersTask = await getUsersCurrentSlayerInfo(user.id);
@@ -148,7 +146,7 @@ export default class extends Task {
 			});
 		}
 
-		updateBankSetting(this.client, ClientSettings.EconomyStats.KalphiteKingLoot, totalLoot);
+		updateBankSetting('kk_loot', totalLoot);
 
 		await trackLoot({
 			duration,
@@ -165,9 +163,8 @@ export default class extends Task {
 		if (deathEntries.length > 0) {
 			const deaths = [];
 			for (const [id, qty] of deathEntries) {
-				const user = await this.client.fetchUser(id).catch(noOp);
-				if (!user) continue;
-				deaths.push(`**${user}**: ${qty}x`);
+				const user = await mUserFetch(id);
+				deaths.push(`**${user.usernameOrMention}**: ${qty}x`);
 			}
 			resultStr += `\n**Deaths**: ${deaths.join(', ')}.`;
 		}
@@ -200,9 +197,9 @@ export default class extends Task {
 					? `${leaderUser}, ${leaderUser.minionName} died in all their attempts to kill the Kalphite King, they apologize and promise to try harder next time.`
 					: `${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${
 							KalphiteKingMonster.name
-					  }, you died ${deaths[userID] ?? 0} times. Your Kalphite King KC is now ${
-							leaderUser.settings.get(UserSettings.MonsterScores)[KalphiteKingMonster.id] ?? 0
-					  }.\n\n${soloXP}`,
+					  }, you died ${deaths[userID] ?? 0} times. Your Kalphite King KC is now ${leaderUser.getKC(
+							KalphiteKingMonster.id
+					  )}.\n\n${soloXP}`,
 				['k', { name: 'Kalphite King' }, true],
 				image!,
 				data,
@@ -210,4 +207,4 @@ export default class extends Task {
 			);
 		}
 	}
-}
+};

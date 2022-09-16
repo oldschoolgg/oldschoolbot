@@ -358,8 +358,8 @@ export const mediumTasks: Task[] = [
 	{
 		id: 1052,
 		name: 'Complete 20 Farming contracts',
-		has: async ({ mahojiUser }) => {
-			const contract = getFarmingContractOfUser(mahojiUser);
+		has: async ({ user }) => {
+			const contract = getFarmingContractOfUser(user);
 			return contract.contractsCompleted >= 20;
 		}
 	},

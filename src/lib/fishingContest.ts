@@ -1,6 +1,5 @@
 import { FishingContestCatch } from '@prisma/client';
 import { calcPercentOfNum, randArrItem } from 'e';
-import { KlasaUser } from 'klasa';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import {
@@ -40,7 +39,7 @@ const waterMap = {
 
 interface LuckModifier {
 	name: string;
-	has: (user: KlasaUser) => Promise<boolean>;
+	has: (user: MUser) => Promise<boolean>;
 	percentAddedToMin: number;
 }
 
@@ -141,14 +140,14 @@ export const fishingLocations: FishingLocation[] = [
 			{
 				name: 'Infernal cape',
 				has: async user => {
-					return user.hasItemEquippedOrInBank('Infernal cape');
+					return user.hasEquippedOrInBank('Infernal cape');
 				},
 				percentAddedToMin: 5
 			},
 			{
 				name: 'TzKal cape',
 				has: async user => {
-					return user.hasItemEquippedOrInBank('TzKal cape');
+					return user.hasEquippedOrInBank('TzKal cape');
 				},
 				percentAddedToMin: 2
 			}
@@ -185,7 +184,7 @@ export const fishingLocations: FishingLocation[] = [
 			{
 				name: 'Golden Tench',
 				has: async user => {
-					return user.cl().has('Golden tench');
+					return user.cl.has('Golden tench');
 				},
 				percentAddedToMin: 5
 			}
@@ -265,7 +264,7 @@ LIMIT 3;`);
 	return topThreeCatches;
 }
 
-export async function getUsersFishingContestDetails(user: KlasaUser) {
+export async function getUsersFishingContestDetails(user: MUser) {
 	const catchesFromToday: FishingContestCatch[] = await prisma.$queryRawUnsafe(`SELECT *
 FROM fishing_contest_catch
 WHERE user_id = ${user.id}::bigint
@@ -290,18 +289,18 @@ WHERE user_id = ${user.id}::bigint;`);
 	};
 }
 
-export async function catchFishAtLocation({ user, location }: { user: KlasaUser; location: FishingLocation }) {
+export async function catchFishAtLocation({ user, location }: { user: MUser; location: FishingLocation }) {
 	let minLength = 3.5;
 	let maxLength = 180;
 
 	const boosts: string[] = [];
 
-	if (user.hasItemEquippedAnywhere('Ring of luck')) {
+	if (user.hasEquipped('Ring of luck')) {
 		maxLength += 1;
 		boosts.push('+1cm max len for RoL');
 	}
 
-	if (user.hasItemEquippedAnywhere('Crystal fishing rod')) {
+	if (user.hasEquipped('Crystal fishing rod')) {
 		maxLength += 5;
 		boosts.push('+5cm max len for Crystal fishing rod');
 	}

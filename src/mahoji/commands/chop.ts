@@ -2,7 +2,6 @@ import { reduceNumByPercent } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
@@ -10,7 +9,6 @@ import { determineScaledLogTime, formatDuration, itemNameFromID, stringMatches }
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import itemID from '../../lib/util/itemID';
-import { userHasItemsEquippedAnywhere } from '../../lib/util/minionUtils';
 import { OSBMahojiCommand } from '../lib/util';
 
 const axes = [
@@ -67,7 +65,7 @@ export const chopCommand: OSBMahojiCommand = {
 		userID,
 		channelID
 	}: CommandRunOptions<{ name: string; quantity?: number; alch?: boolean }>) => {
-		const user = await globalClient.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const log = Woodcutting.Logs.find(
 			log =>
 				stringMatches(log.name, options.name) ||
@@ -81,7 +79,7 @@ export const chopCommand: OSBMahojiCommand = {
 			return `${user.minionName} needs ${log.level} Woodcutting to chop ${log.name}.`;
 		}
 
-		const QP = user.settings.get(UserSettings.QP);
+		const { QP } = user;
 		if (QP < log.qpRequired) {
 			return `${user.minionName} needs ${log.qpRequired} QP to cut ${log.name}.`;
 		}
@@ -97,13 +95,13 @@ export const chopCommand: OSBMahojiCommand = {
 		// If the user has an axe apply boost
 		const boosts = [];
 
-		if (userHasItemsEquippedAnywhere(user, 'Dwarven greataxe')) {
+		if (user.hasEquipped('Dwarven greataxe')) {
 			timetoChop /= 2;
 			boosts.push('2x faster for Dwarven greataxe');
 		}
 
 		for (const axe of axes) {
-			if (user.hasItemEquippedOrInBank(axe.id) && user.skillLevel(SkillsEnum.Woodcutting) >= axe.wcLvl) {
+			if (user.hasEquippedOrInBank(axe.id) && user.skillLevel(SkillsEnum.Woodcutting) >= axe.wcLvl) {
 				timetoChop = reduceNumByPercent(timetoChop, axe.reductionPercent);
 				boosts.push(`${axe.reductionPercent}% for ${itemNameFromID(axe.id)}`);
 				break;

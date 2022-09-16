@@ -115,7 +115,7 @@ export const pohCommand: OSBMahojiCommand = {
 		destroy?: { name: string };
 		mount_item?: { name: string };
 	}>) => {
-		const user = await globalClient.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 		if (!mahojiUser.minion_hasBought) return "You don't own a minion yet, so you have no PoH!";
 		if (options.view) {

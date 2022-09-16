@@ -1,21 +1,17 @@
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
 
 import { BitField } from '../../lib/constants';
 import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { courses } from '../../lib/skilling/skills/agility';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { AgilityActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, stringMatches, updateBankSetting } from '../../lib/util';
+import { formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { userHasItemsEquippedAnywhere } from '../../lib/util/minionUtils';
 import { OSBMahojiCommand } from '../lib/util';
+import { updateBankSetting } from '../mahojiSettings';
 
 const unlimitedFireRuneProviders = [
 	'Staff of fire',
@@ -35,13 +31,13 @@ export function alching({
 	tripLength,
 	isUsingVoidling
 }: {
-	user: KlasaUser;
+	user: MUser;
 	tripLength: number;
 	isUsingVoidling: boolean;
 }) {
 	if (user.skillLevel(SkillsEnum.Magic) < 55) return null;
-	const bank = user.bank();
-	const favAlchables = user.getUserFavAlchs(tripLength) as Item[];
+	const { bank } = user;
+	const favAlchables = user.favAlchs(tripLength);
 
 	if (favAlchables.length === 0) {
 		return null;
@@ -53,7 +49,7 @@ export function alching({
 	const nats = bank.amount('Nature rune');
 	const fireRunes = bank.amount('Fire rune');
 
-	const hasInfiniteFireRunes = user.hasItemEquippedAnywhere(unlimitedFireRuneProviders);
+	const hasInfiniteFireRunes = user.hasEquipped(unlimitedFireRuneProviders);
 
 	let maxCasts = Math.floor(tripLength / (Time.Second * (3 + 10)));
 	if (isUsingVoidling) {
@@ -126,7 +122,7 @@ export const lapsCommand: OSBMahojiCommand = {
 		userID,
 		channelID
 	}: CommandRunOptions<{ name: string; quantity?: number; alch?: boolean }>) => {
-		const user = await globalClient.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
 		const course = courses.find(course => course.aliases.some(alias => stringMatches(alias, options.name)));
 
@@ -138,14 +134,11 @@ export const lapsCommand: OSBMahojiCommand = {
 			return `${user.minionName} needs ${course.level} agility to train at ${course.name}.`;
 		}
 
-		if (course.qpRequired && user.settings.get(UserSettings.QP) < course.qpRequired) {
+		if (course.qpRequired && user.QP < course.qpRequired) {
 			return `You need atleast ${course.qpRequired} Quest Points to do this course.`;
 		}
 
-		if (
-			course.name === 'Daemonheim Rooftop Course' &&
-			!user.settings.get(UserSettings.BitField).includes(BitField.HasDaemonheimAgilityPass)
-		) {
+		if (course.name === 'Daemonheim Rooftop Course' && !user.bitfield.includes(BitField.HasDaemonheimAgilityPass)) {
 			return 'The Daemonheim guards deny you access to the course.';
 		}
 
@@ -154,10 +147,10 @@ export const lapsCommand: OSBMahojiCommand = {
 		let timePerLap = course.lapTime * Time.Second;
 
 		let boosts: string[] = [];
-		if (userHasItemsEquippedAnywhere(user, 'Silverhawk boots')) {
+		if (user.hasEquipped('Silverhawk boots')) {
 			const boostedTimePerLap = Math.floor(timePerLap / inventionBoosts.silverHawks.agilityBoostMultiplier);
 			const costRes = await inventionItemBoost({
-				userID: user.id,
+				user,
 				inventionID: InventionID.SilverHawkBoots,
 				duration: Math.min(
 					maxTripLength,
@@ -207,7 +200,7 @@ export const lapsCommand: OSBMahojiCommand = {
 
 			await user.removeItemsFromBank(alchResult.bankToRemove);
 			response += `\n\nYour minion is alching ${alchResult.maxCasts}x ${alchResult.itemToAlch.name} while training. Removed ${alchResult.bankToRemove} from your bank.`;
-			updateBankSetting(globalClient, ClientSettings.EconomyStats.MagicCostBank, alchResult.bankToRemove);
+			updateBankSetting('magic_cost_bank', alchResult.bankToRemove);
 		}
 		if (boosts.length > 0) {
 			response += `\n**Boosts:** ${boosts.join(', ')}`;

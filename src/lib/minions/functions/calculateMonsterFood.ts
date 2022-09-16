@@ -1,5 +1,4 @@
 import { calcWhatPercent, reduceNumByPercent } from 'e';
-import { KlasaUser } from 'klasa';
 
 import { GearSetupType, GearStat, maxDefenceStats, maxOffenceStats, readableStatName } from '../../gear';
 import { inverseOfOffenceStat } from '../../gear/functions/inverseOfStat';
@@ -8,10 +7,7 @@ import { KillableMonster } from '../types';
 
 const { floor, max } = Math;
 
-export default function calculateMonsterFood(
-	monster: Readonly<KillableMonster>,
-	user: Readonly<KlasaUser>
-): [number, string] {
+export default function calculateMonsterFood(monster: Readonly<KillableMonster>, user: MUser): [number, string] {
 	let { healAmountNeeded, attackStyleToUse, attackStylesUsed } = monster;
 
 	if (!healAmountNeeded || !attackStyleToUse || !attackStylesUsed) {
@@ -36,8 +32,7 @@ export default function calculateMonsterFood(
 	}
 
 	if (monster.wildy) gearToCheck = 'wildy';
-
-	const gearStats = user.getGear(gearToCheck).stats;
+	const gearStats = user.gear[gearToCheck].stats;
 
 	let totalPercentOfGearLevel = 0;
 	let totalOffensivePercent = 0;
@@ -61,7 +56,7 @@ export default function calculateMonsterFood(
 	healAmountNeeded = floor(reduceNumByPercent(healAmountNeeded, totalPercentOfGearLevel));
 	healAmountNeeded = floor(reduceNumByPercent(healAmountNeeded, totalOffensivePercent));
 
-	const hasAbyssalCape = user.hasItemEquippedAnywhere('Abyssal cape');
+	const hasAbyssalCape = user.hasEquipped('Abyssal cape');
 	if (hasAbyssalCape) {
 		healAmountNeeded = Math.floor(healAmountNeeded * 0.5);
 	}

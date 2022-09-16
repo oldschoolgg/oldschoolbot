@@ -1,7 +1,6 @@
 import { userMention } from '@discordjs/builders';
-import { Prisma, User } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { reduceNumByPercent, Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
@@ -9,16 +8,15 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import {
 	mahojiClientSettingsFetch,
 	mahojiClientSettingsUpdate,
-	mahojiUserSettingsUpdate,
 	mahojiUsersSettingsFetch
 } from '../../mahoji/mahojiSettings';
+import { mahojiUserSettingsUpdate } from '../../mahoji/settingsUpdate';
 import { ClueTier, ClueTiers } from '../clues/clueTiers';
 import { ItemBank } from '../types';
 import { clamp, formatDuration, stringMatches, toKMB } from '../util';
 import getOSItem from '../util/getOSItem';
 import { logError } from '../util/logError';
 import { minionIsBusy } from '../util/minionIsBusy';
-import { hasItemsEquippedOrInBank, userHasItemsEquippedAnywhere } from '../util/minionUtils';
 import { IMaterialBank, MaterialType } from '.';
 import { MaterialBank } from './MaterialBank';
 
@@ -477,21 +475,21 @@ export async function transactMaterialsFromUser({
 	await mahojiUserSettingsUpdate(userID, updateObject);
 }
 
-export async function inventCommand(user: User, klasaUser: KlasaUser, inventionName: string): CommandResponse {
+export async function inventCommand(user: MUser, inventionName: string): CommandResponse {
 	if (minionIsBusy(user.id)) return 'Your minion is busy.';
 	const invention = Inventions.find(i => stringMatches(i.name, inventionName));
 	if (!invention) return "That's not a valid invention.";
-	if (!user.unlocked_blueprints.includes(invention.id)) {
+	if (!user.user.unlocked_blueprints.includes(invention.id)) {
 		return `You don't have the blueprint for this Invention unlocked, your minion doesn't know how to make it! To unlock the blueprint, you can do research with one of these materials: ${invention.materialTypeBank
 			.values()
 			.map(i => i.type)
 			.join(', ')}.`;
 	}
 
-	const ownedBank = new MaterialBank(user.materials_owned as IMaterialBank);
+	const ownedBank = new MaterialBank(user.user.materials_owned as IMaterialBank);
 	const cost = inventingCost(invention);
 
-	if (invention.itemCost && !klasaUser.owns(invention.itemCost)) {
+	if (invention.itemCost && !user.owns(invention.itemCost)) {
 		return `You don't own the items needed to create this invention, you need: ${invention.itemCost}.`;
 	}
 	if (!ownedBank.has(cost)) {
@@ -505,10 +503,10 @@ export async function inventCommand(user: User, klasaUser: KlasaUser, inventionN
 	});
 
 	if (invention.itemCost) {
-		await klasaUser.removeItemsFromBank(invention.itemCost);
+		await user.removeItemsFromBank(invention.itemCost);
 	}
 	const loot = new Bank().add(invention.item.id);
-	await klasaUser.addItemsToBank({ items: loot, collectionLog: true });
+	await user.addItemsToBank({ items: loot, collectionLog: true });
 	return `${userMention(user.id)}, your minion created a ${invention.name}! (${
 		invention.description
 	}) Items removed: ${invention.itemCost ?? 'None'}. Materials used: ${cost}.`;
@@ -524,18 +522,12 @@ type InventionItemBoostResult =
 			success: false;
 	  };
 
-export async function canAffordInventionBoost(
-	userID: bigint | string | User,
-	inventionID: InventionID,
-	duration: number
-) {
-	const mUser =
-		typeof userID == 'bigint' || typeof userID === 'string' ? await mahojiUsersSettingsFetch(userID) : userID;
+export async function canAffordInventionBoost(user: MUser, inventionID: InventionID, duration: number) {
 	const invention = Inventions.find(i => i.id === inventionID)!;
 	if (invention.usageCostMultiplier === null) {
 		throw new Error('Tried to calculate cost of invention that has no cost.');
 	}
-	const materialsOwned = new MaterialBank(mUser.materials_owned as IMaterialBank);
+	const materialsOwned = user.materialsOwned();
 	const materialCost = new MaterialBank();
 	let multiplier = Math.ceil(duration / (Time.Minute * 3));
 	multiplier = clamp(Math.floor(multiplier * invention.usageCostMultiplier), 1, 1000);
@@ -551,7 +543,6 @@ export async function canAffordInventionBoost(
 	materialCost.validate();
 
 	return {
-		mUser,
 		invention,
 		materialsOwned,
 		materialCost,
@@ -560,21 +551,21 @@ export async function canAffordInventionBoost(
 }
 
 export async function inventionItemBoost({
-	userID,
+	user,
 	inventionID,
 	duration
 }: {
-	userID: string | bigint | User;
+	user: MUser;
 	inventionID: InventionID;
 	duration: number;
 }): Promise<InventionItemBoostResult> {
-	const { materialCost, canAfford, mUser, invention } = await canAffordInventionBoost(userID, inventionID, duration);
+	const { materialCost, canAfford, invention } = await canAffordInventionBoost(user, inventionID, duration);
 
 	// If it has to be equipped, and isn't, or has to be in bank, and isn't, fail.
 	if (
-		mUser.disabled_inventions.includes(invention.id) ||
-		(invention.flags.includes('equipped') && !userHasItemsEquippedAnywhere(mUser, invention.item.id)) ||
-		(invention.flags.includes('bank') && !hasItemsEquippedOrInBank(mUser, [invention.item.id]))
+		user.user.disabled_inventions.includes(invention.id) ||
+		(invention.flags.includes('equipped') && !user.hasEquipped(invention.item.id)) ||
+		(invention.flags.includes('bank') && !user.hasEquippedOrInBank([invention.item.id]))
 	) {
 		return { success: false };
 	}
@@ -586,7 +577,7 @@ export async function inventionItemBoost({
 	}
 
 	let messages: string[] = [`Removed ${materialCost}`];
-	if (userHasItemsEquippedAnywhere(mUser, 'Invention master cape')) {
+	if (user.hasEquipped('Invention master cape')) {
 		materialCost.mutReduceAllValuesByPercent(inventionBoosts.inventionMasterCape.materialCostReductionPercent);
 		messages.push(
 			`${inventionBoosts.inventionMasterCape.materialCostReductionPercent}% less materials for mastery`
@@ -595,13 +586,13 @@ export async function inventionItemBoost({
 
 	try {
 		await transactMaterialsFromUser({
-			userID: BigInt(mUser.id),
+			userID: BigInt(user.id),
 			remove: materialCost,
 			addToGlobalInventionCostBank: true
 		});
 		return { success: true, materialCost, messages: messages.join(', ') };
 	} catch (err) {
-		logError(err, { user_id: mUser.id });
+		logError(err, { user_id: user.id });
 		return { success: false };
 	}
 }
@@ -610,15 +601,15 @@ export async function userHasFlappy({
 	user,
 	duration
 }: {
-	user: KlasaUser;
+	user: MUser;
 	duration: number;
 }): Promise<{ userMsg: string; shouldGiveBoost: boolean }> {
 	if (user.usingPet('Flappy')) {
 		return { userMsg: 'You are getting 2x loot/rewards from Flappy', shouldGiveBoost: true };
 	}
-	if (hasItemsEquippedOrInBank(user, ['RoboFlappy'])) {
+	if (user.hasEquippedOrInBank(['RoboFlappy'])) {
 		const boostResult = await inventionItemBoost({
-			userID: BigInt(user.id),
+			user,
 			inventionID: InventionID.RoboFlappy,
 			duration
 		});

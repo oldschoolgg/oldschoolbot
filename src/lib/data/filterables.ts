@@ -1,4 +1,4 @@
-import { KlasaUser } from 'klasa';
+import { Bank } from 'oldschooljs';
 import { BeginnerClueTable } from 'oldschooljs/dist/simulation/clues/Beginner';
 import { EasyClueTable } from 'oldschooljs/dist/simulation/clues/Easy';
 import { EliteClueTable } from 'oldschooljs/dist/simulation/clues/Elite';
@@ -16,6 +16,7 @@ import { GrandmasterClueTable } from '../simulation/grandmasterClue';
 import { gracefulItems } from '../skilling/skills/agility';
 import { Craftables } from '../skilling/skills/crafting/craftables';
 import { Fletchables } from '../skilling/skills/fletching/fletchables';
+import { ItemBank } from '../types';
 import resolveItems from '../util/resolveItems';
 import { XPLamps } from '../xpLamps';
 import { allCollectionLogs } from './Collections';
@@ -861,6 +862,11 @@ const prayer = resolveItems([
 	'Ensouled aviansie head',
 	'Ensouled abyssal head',
 	'Ensouled dragon head',
+	'Fiendish ashes',
+	'Vile ashes',
+	'Malicious ashes',
+	'Abyssal ashes',
+	'Infernal ashes',
 	...bones
 ]);
 
@@ -950,7 +956,7 @@ const food = resolveItems(Eatables.map(food => food.name));
 interface Filterable {
 	name: string;
 	aliases: string[];
-	items: (user?: KlasaUser) => number[];
+	items: (user?: MUser) => number[];
 }
 
 export const baseFilters: Filterable[] = [
@@ -1216,6 +1222,18 @@ export const baseFilters: Filterable[] = [
 		name: 'Lamps',
 		aliases: ['lamps'],
 		items: () => XPLamps.map(i => i.itemID)
+	},
+	{
+		name: 'Not Sacrificed',
+		aliases: ['not sacrificed', 'not sac'],
+		items: user => {
+			if (!user) return [];
+			const sacBank = new Bank(user.user.sacrificedBank as ItemBank);
+			return user.bank
+				.items()
+				.filter(i => !sacBank.has(i[0].id))
+				.map(i => i[0].id);
+		}
 	}
 ];
 

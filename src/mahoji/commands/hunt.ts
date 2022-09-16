@@ -7,19 +7,17 @@ import { hasWildyHuntGearEquipped } from '../../lib/gear/functions/hasWildyHuntG
 import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
 import { monkeyTiers } from '../../lib/monkeyRumble';
 import { trackLoot } from '../../lib/settings/prisma';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import creatures from '../../lib/skilling/skills/hunter/creatures';
 import Hunter from '../../lib/skilling/skills/hunter/hunter';
 import { HunterTechniqueEnum, SkillsEnum } from '../../lib/skilling/types';
+import { Peak } from '../../lib/tickers';
 import { HunterActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, itemID, updateBankSetting } from '../../lib/util';
+import { formatDuration, itemID } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
-import { userHasItemsEquippedAnywhere } from '../../lib/util/minionUtils';
-import { Peak } from '../../tasks/WildernessPeakInterval';
 import { OSBMahojiCommand } from '../lib/util';
+import { updateBankSetting, userHasGracefulEquipped } from '../mahojiSettings';
 
 export const huntCommand: OSBMahojiCommand = {
 	name: 'hunt',
@@ -69,9 +67,9 @@ export const huntCommand: OSBMahojiCommand = {
 		userID,
 		channelID
 	}: CommandRunOptions<{ name: string; quantity?: number; hunter_potion?: boolean; stamina_potions?: boolean }>) => {
-		const user = await globalClient.fetchUser(userID);
-		const userBank = user.bank();
-		const userQP = user.settings.get(UserSettings.QP);
+		const user = await mUserFetch(userID);
+		const userBank = user.bank;
+		const userQP = user.QP;
 		const boosts = [];
 		let traps = 1;
 		let usingHuntPotion = Boolean(options.hunter_potion);
@@ -102,7 +100,7 @@ export const huntCommand: OSBMahojiCommand = {
 
 		if (
 			creature.name === 'Chimpchompa' &&
-			!userHasItemsEquippedAnywhere(user, monkeyTiers.map(i => i.greegrees.map(i => i.id)).flat(2), false)
+			!user.hasEquipped(monkeyTiers.map(i => i.greegrees.map(i => i.id)).flat(2), false)
 		) {
 			return "You can't hunt Chimpchompa's! You need to be wearing a greegree.";
 		}
@@ -141,7 +139,8 @@ export const huntCommand: OSBMahojiCommand = {
 		let [percentReduced, catchTime] = [
 			Math.min(
 				Math.floor(
-					(user.getCreatureScore(creature) ?? 1) / (Time.Hour / ((creature.catchTime * Time.Second) / traps))
+					(user.getCreatureScore(creature.id) ?? 1) /
+						(Time.Hour / ((creature.catchTime * Time.Second) / traps))
 				),
 				creature.huntTechnique === HunterTechniqueEnum.Tracking ? 20 : 10
 			),
@@ -153,18 +152,18 @@ export const huntCommand: OSBMahojiCommand = {
 		if (percentReduced >= 1) boosts.push(`${percentReduced}% for being experienced hunting this creature`);
 
 		// Reduce time by 5% if user has graceful equipped
-		if (!creature.wildy && user.hasGracefulEquipped()) {
+		if (!creature.wildy && userHasGracefulEquipped(user)) {
 			boosts.push('5% boost for using Graceful');
 			catchTime *= 0.95;
 		}
 
-		if (user.hasItemEquippedAnywhere('Hunter master cape')) {
+		if (user.hasEquipped('Hunter master cape')) {
 			boosts.push('2x boost for being a master hunter');
 			catchTime *= 0.5;
 		}
 
 		if (creature.wildy) {
-			const [bol, reason, score] = hasWildyHuntGearEquipped(user.getGear('wildy'));
+			const [bol, reason, score] = hasWildyHuntGearEquipped(user.gear.wildy);
 			wildyScore = score;
 			if (!bol) {
 				return `To hunt ${creature.name} in the wilderness you need to meet the following requirement: ${reason}, check your wildy gear.`;
@@ -180,7 +179,7 @@ export const huntCommand: OSBMahojiCommand = {
 		if (creature.huntTechnique === HunterTechniqueEnum.BoxTrapping) {
 			const boostedActionTime = reduceNumByPercent(timePerCatch, inventionBoosts.quickTrap.boxTrapBoostPercent);
 			const boostRes = await inventionItemBoost({
-				userID: user.id,
+				user,
 				inventionID: InventionID.QuickTrap,
 				duration: Math.min(
 					maxTripLength,
@@ -255,7 +254,7 @@ export const huntCommand: OSBMahojiCommand = {
 			removeBank.add(reqBank);
 		}
 
-		updateBankSetting(globalClient, ClientSettings.EconomyStats.HunterCost, removeBank);
+		updateBankSetting('hunter_cost', removeBank);
 		await user.removeItemsFromBank(removeBank);
 
 		let wildyPeak = null;

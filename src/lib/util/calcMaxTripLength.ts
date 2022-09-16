@@ -1,25 +1,30 @@
-import { activity_type_enum, User } from '@prisma/client';
+import { activity_type_enum } from '@prisma/client';
 import { calcPercentOfNum, calcWhatPercent, Time } from 'e';
-import { KlasaUser } from 'klasa';
 
 import { BitField, PerkTier } from '../constants';
-import { UserSettings } from '../settings/types/UserSettings';
 import { SkillsEnum } from '../skilling/types';
-import getUsersPerkTier, { patronMaxTripCalc } from './getUsersPerkTier';
-import { skillLevel, userHasItemsEquippedAnywhere } from './minionUtils';
+import { skillLevel } from './minionUtils';
 
-export function calcMaxTripLength(user: User | KlasaUser, activity?: activity_type_enum) {
+export function patronMaxTripBonus(user: MUser) {
+	const { perkTier } = user;
+	if (perkTier === PerkTier.Two) return Time.Minute * 3;
+	else if (perkTier === PerkTier.Three) return Time.Minute * 6;
+	else if (perkTier >= PerkTier.Four) return Time.Minute * 10;
+	return 0;
+}
+
+export function calcMaxTripLength(user: MUser, activity?: activity_type_enum) {
 	let max = Time.Minute * 30;
 
-	max += patronMaxTripCalc(user);
+	max += patronMaxTripBonus(user);
 
-	const hasMasterHPCape = userHasItemsEquippedAnywhere(user, 'Hitpoints master cape');
+	const hasMasterHPCape = user.hasEquipped('Hitpoints master cape');
 	let masterHPCapeBoost = 0;
 	let regularHPBoost = false;
 
 	switch (activity) {
 		case 'Fishing':
-			if (userHasItemsEquippedAnywhere(user, 'Fish sack')) {
+			if (user.hasEquipped('Fish sack')) {
 				max += Time.Minute * 9;
 			}
 			break;
@@ -69,19 +74,17 @@ export function calcMaxTripLength(user: User | KlasaUser, activity?: activity_ty
 		}
 	}
 
-	if (userHasItemsEquippedAnywhere(user, 'Zak')) {
+	if (user.hasEquipped('Zak')) {
 		max *= 1.4;
 	}
 
-	const sac =
-		user instanceof KlasaUser ? user.settings.get(UserSettings.SacrificedValue) : Number(user.sacrificedValue);
-	const isIronman = user instanceof KlasaUser ? user.isIronman : user.minion_ironman;
+	const sac = Number(user.user.sacrificedValue);
+	const { isIronman } = user;
 	const sacPercent = Math.min(100, calcWhatPercent(sac, isIronman ? 5_000_000_000 : 10_000_000_000));
-	const perkTier = getUsersPerkTier(user);
+	const { perkTier } = user;
 	max += calcPercentOfNum(sacPercent, perkTier >= PerkTier.Four ? Time.Minute * 3 : Time.Minute);
 
-	const bitfield = user instanceof KlasaUser ? user.settings.get(UserSettings.BitField) : user.bitfield;
-	if (bitfield.includes(BitField.HasLeaguesOneMinuteLengthBoost)) {
+	if (user.bitfield.includes(BitField.HasLeaguesOneMinuteLengthBoost)) {
 		max += Time.Minute;
 	}
 

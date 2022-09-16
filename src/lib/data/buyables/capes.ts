@@ -1,6 +1,5 @@
 import { Bank } from 'oldschooljs';
 
-import { LEVEL_99_XP } from '../../constants';
 import { diaries, userhasDiaryTier } from '../../diaries';
 import { SkillsEnum } from '../../skilling/types';
 import { Buyable } from './buyables';
@@ -32,7 +31,7 @@ export const capeBuyables: Buyable[] = [
 		}),
 		gpCost: 2_277_000,
 		customReq: async user => {
-			if (Object.values(user.rawSkills).filter(s => s < LEVEL_99_XP).length > 0) {
+			if (user.totalLevel < 2277) {
 				return [false, "You can't buy this because you aren't maxed!"];
 			}
 			return [true];
@@ -63,7 +62,7 @@ export const capeBuyables: Buyable[] = [
 				SkillsEnum.Runecraft,
 				SkillsEnum.Smithing
 			]) {
-				if ((user.settings.get(`skills.${skill}`) as number) < 500_000_000) {
+				if (user.skillsAsXP[skill] < 500_000_000) {
 					return [false, `You don't have 500m ${skill}.`];
 				}
 			}
@@ -93,7 +92,7 @@ export const capeBuyables: Buyable[] = [
 				SkillsEnum.Ranged,
 				SkillsEnum.Strength
 			]) {
-				if ((user.settings.get(`skills.${skill}`) as number) < 500_000_000) {
+				if (user.skillsAsXP[skill] < 500_000_000) {
 					return [false, `You don't have 500m ${skill}.`];
 				}
 			}
@@ -119,7 +118,7 @@ export const capeBuyables: Buyable[] = [
 				SkillsEnum.Mining,
 				SkillsEnum.Woodcutting
 			]) {
-				if ((user.settings.get(`skills.${skill}`) as number) < 500_000_000) {
+				if (user.skillsAsXP[skill] < 500_000_000) {
 					return [false, `You don't have 500m ${skill}.`];
 				}
 			}
@@ -143,7 +142,7 @@ export const capeBuyables: Buyable[] = [
 				SkillsEnum.Dungeoneering,
 				SkillsEnum.Thieving
 			]) {
-				if ((user.settings.get(`skills.${skill}`) as number) < 500_000_000) {
+				if (user.skillsAsXP[skill] < 500_000_000) {
 					return [false, `You don't have 500m ${skill}.`];
 				}
 			}

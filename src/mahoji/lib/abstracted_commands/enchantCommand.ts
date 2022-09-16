@@ -1,17 +1,16 @@
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
 
 import { BitField } from '../../../lib/constants';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { Enchantables } from '../../../lib/skilling/skills/magic/enchantables';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { EnchantingActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, itemID, itemNameFromID, stringMatches, updateBankSetting } from '../../../lib/util';
+import { formatDuration, itemID, itemNameFromID, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../../lib/util/determineRunes';
+import { updateBankSetting } from '../../mahojiSettings';
 
-export async function enchantCommand(user: KlasaUser, channelID: bigint, name: string, quantity?: number) {
+export async function enchantCommand(user: MUser, channelID: bigint, name: string, quantity?: number) {
 	const enchantable = Enchantables.find(
 		item =>
 			stringMatches(item.name, name) ||
@@ -31,8 +30,7 @@ export async function enchantCommand(user: KlasaUser, channelID: bigint, name: s
 		return `${user.minionName} needs ${enchantable.level} Magic to enchant ${enchantable.name}.`;
 	}
 
-	await user.settings.sync(true);
-	const userBank = user.bank();
+	const userBank = user.bank;
 
 	const maxTripLength = calcMaxTripLength(user, 'Enchanting');
 
@@ -64,7 +62,7 @@ export async function enchantCommand(user: KlasaUser, channelID: bigint, name: s
 	}
 	await transactItems({ userID: user.id, itemsToRemove: cost });
 
-	updateBankSetting(globalClient, ClientSettings.EconomyStats.MagicCostBank, cost);
+	updateBankSetting('magic_cost_bank', cost);
 
 	await addSubTaskToActivityTask<EnchantingActivityTaskOptions>({
 		itemID: enchantable.id,
