@@ -158,6 +158,8 @@ model ClientStorage {
   moktang_cost            Json   @default("{}") @db.Json
   moktang_loot            Json   @default("{}") @db.Json
 
+  lottery_is_active Boolean @default(false)
+
   items_disassembled_cost    Json @default("{}") @db.Json
   invention_materials_cost   Json @default("{}") @db.Json
   invention_prizes_remaining Json @default("{}") @db.Json

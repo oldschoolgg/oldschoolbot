@@ -698,7 +698,8 @@ export type ClientBankKey =
 	| 'bb_loot'
 	| 'moktang_cost'
 	| 'moktang_loot'
-	| 'kk_cost';
+	| 'kk_cost'
+	| 'bank_lottery';
 
 export async function updateBankSetting(key: ClientBankKey, bankToAdd: Bank) {
 	if (bankToAdd === undefined || bankToAdd === null) throw new Error(`Gave null bank for ${key}`);

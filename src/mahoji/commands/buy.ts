@@ -17,6 +17,7 @@ import {
 	trackClientBankStats,
 	updateBankSetting
 } from '../mahojiSettings';
+import { isLotteryActive } from './lottery';
 
 const allBuyablesAutocomplete = [...Buyables, { name: 'Kitten' }];
 
@@ -93,8 +94,10 @@ export const buyCommand: OSBMahojiCommand = {
 
 		if (!buyable) return "That's not a valid item you can buy.";
 
-		if (buyable.name === 'Bank lottery ticket' && user.isIronman) {
-			return 'Ironmen cant buy this.';
+		if (buyable.name === 'Bank lottery ticket') {
+			if (user.isIronman) return 'Ironmen cant buy this.';
+			const lotteryIsActive = await isLotteryActive();
+			if (!lotteryIsActive) return 'The lottery is not active at the moment.';
 		}
 
 		if (buyable.collectionLogReqs) {
