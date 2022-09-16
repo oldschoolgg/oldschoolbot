@@ -2,6 +2,7 @@ import { Prisma, User } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
 
+import { BitField } from '../src/lib/constants';
 import { PartialGearSetup } from '../src/lib/gear';
 import { MUserClass } from '../src/lib/MUser';
 import { Gear } from '../src/lib/structures/Gear';
@@ -30,6 +31,9 @@ interface MockUserArgs {
 	meleeGear?: PartialGearSetup;
 	skills_agility?: number;
 	GP?: number;
+	premium_balance_tier?: number;
+	premium_balance_expiry_date?: number;
+	bitfield?: BitField[];
 }
 
 export const mockUser = (overrides?: MockUserArgs): User => {
@@ -69,8 +73,11 @@ export const mockUser = (overrides?: MockUserArgs): User => {
 		skills_dungeoneering: 0,
 		skills_invention: 0,
 		skills_hitpoints: convertLVLtoXP(10),
-		bitfield: [],
-		GP: overrides?.GP
+		GP: overrides?.GP,
+		premium_balance_tier: overrides?.premium_balance_tier,
+		premium_balance_expiry_date: overrides?.premium_balance_expiry_date,
+		ironman_alts: [],
+		bitfield: overrides?.bitfield ?? []
 	} as unknown as User;
 };
 export const mockMUser = (overrides?: MockUserArgs) => {
