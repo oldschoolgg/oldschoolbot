@@ -55,5 +55,12 @@ export const bsoBuyables: Buyable[] = [
 		skillsNeeded: {
 			fishing: 50
 		}
+	},
+	{
+		name: 'Rainbow cape',
+		outputItems: new Bank({
+			'Rainbow cape': 1
+		}),
+		gpCost: 1_000_000
 	}
 ];
