@@ -164,7 +164,7 @@ export const warmGear = resolveItems([
 	'Bomber cap'
 ]) as number[];
 
-const ores = resolveItems([
+export const ores = resolveItems([
 	'Copper ore',
 	'Tin ore',
 	'Iron ore',
@@ -278,7 +278,7 @@ const barrows = resolveItems([
 	'Bolt rack'
 ]);
 
-const seeds = resolveItems([
+export const seedsFilter = resolveItems([
 	'Pineapple seed',
 	'Crystal acorn',
 	'Magic seed',
@@ -393,7 +393,7 @@ const herbs = resolveItems([
 	'Korulsi'
 ]);
 
-const secondaries = resolveItems([
+export const secondaries = resolveItems([
 	'Eye of newt',
 	'Unicorn horn dust',
 	'Snake weed',
@@ -482,7 +482,7 @@ const skilling = resolveItems([
 	'Grapes',
 	'Feather',
 	...fletchingItemsSet,
-	...seeds,
+	...seedsFilter,
 	...bones,
 	...gems,
 	...bars,
@@ -1060,7 +1060,7 @@ export const baseFilters: Filterable[] = [
 		aliases: ['farming', 'farm', 'seeds'],
 		items: () => [
 			...resolveItems(['Compost', 'Supercompost', 'Ultracompost', 'Bottomless compost bucket ']),
-			...seeds
+			...seedsFilter
 		]
 	},
 	{

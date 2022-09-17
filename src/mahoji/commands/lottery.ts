@@ -3,7 +3,11 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
+import { ores, secondaries, seedsFilter } from '../../lib/data/filterables';
+import { Herb } from '../../lib/invention/groups/Herb';
 import { prisma } from '../../lib/settings/prisma';
+import Firemaking from '../../lib/skilling/skills/firemaking';
+import Runecraft from '../../lib/skilling/skills/runecraft';
 import { assert, isSuperUntradeable } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { makeBankImage } from '../../lib/util/makeBankImage';
@@ -20,13 +24,46 @@ const specialPricesBeforeMultiplying = new Bank()
 	.add('Ring of luck', 150_000_000)
 	.add('Dwarven ore', 75_000_000)
 	.add('Dwarven bar', 200_000_000)
+	.add('Volcanic shards', 300_000_000)
 
 	.add('Death rune', 200)
 	.add('Elder rune', 70_000)
 	.add('Manta ray', 15_000)
 	.add('Coal', 2000)
 	.add('Raw shark', 6000)
+	.add('Magic logs', 1000)
+	.add('Yew logs', 300)
 	.add('Rocktail', 40_000)
+	.add('Runite ore', 15_000)
+	.add('Adamantite ore', 12_000)
+	.add('Mithril ore', 10_000)
+	.add('Gold ore', 5000)
+	.add('Pure essence', 1700)
+	.add('Daeyalt essence', 22_000)
+	.add('Amethyst', 15_000)
+	.add('Uncut diamond', 15_000)
+	.add('Uncut dragonstone', 25_000)
+	.add('Uncut sapphire', 5000)
+	.add('Uncut emerald', 7000)
+	.add('Uncut ruby', 10_000)
+	.add('Elder logs', 40_000)
+	.add('Elder plank', 60_000)
+	.add('Raw tuna', 1000)
+	.add('Raw lobster', 1500)
+	.add('Raw swordfish', 2000)
+	.add('Raw rocktail', 35_000)
+
+	.add('Torstol', 25_000)
+	.add('Grimy torstol', 25_000)
+	.add('Torstol potion (unf)', 25_000)
+
+	.add('Toadflax', 50_000)
+	.add('Grimy toadflax', 50_000)
+	.add('Toadflax potion (unf)', 50_000)
+
+	.add('Lantadyme', 50_000)
+	.add('Grimy lantadyme', 50_000)
+	.add('Lantadyme potion (unf)', 50_000)
 
 	.add('Clue scroll(beginner)', 50_000)
 	.add('Clue scroll(easy)', 250_000)
@@ -40,15 +77,15 @@ const specialPricesBeforeMultiplying = new Bank()
 	.add('Reward casket(hard)', 500_000)
 	.add('Reward casket(elite)', 4_000_000)
 	.add('Reward casket(master)', 9_000_000)
-	.add('Clue scroll(grandmaster)', 150_000_000)
+	.add('Clue scroll(grandmaster)', 250_000_000)
 	.add('Reward casket(grandmaster)', 140_000_000)
 	// Drygores
-	.add('Drygore longsword', 1_000_000_000)
-	.add('Offhand drygore longsword', 1_000_000_000)
-	.add('Drygore mace', 1_000_000_000)
-	.add('Offhand drygore mace', 1_000_000_000)
-	.add('Drygore rapier', 1_000_000_000)
-	.add('Offhand drygore rapier', 1_000_000_000)
+	.add('Drygore longsword', 1_230_000_000)
+	.add('Offhand drygore longsword', 1_230_000_000)
+	.add('Drygore mace', 1_230_000_000)
+	.add('Offhand drygore mace', 1_230_000_000)
+	.add('Drygore rapier', 1_230_000_000)
+	.add('Offhand drygore rapier', 1_230_000_000)
 	// Nex
 	.add('Torva full helm', 800_000_000)
 	.add('Torva platebody', 400_000_000)
@@ -98,6 +135,44 @@ const specialPricesBeforeMultiplying = new Bank()
 	.add('Hellfire arrow', 30_000)
 	.add('Mysterious seed', 5_000_000);
 
+for (const herb of Herb.items.map(i => i.item).flat()) {
+	if (!specialPricesBeforeMultiplying.has(herb.id)) {
+		specialPricesBeforeMultiplying.add(herb.id, 10_000);
+	}
+}
+
+for (const seed of seedsFilter.map(getOSItem)) {
+	if (!specialPricesBeforeMultiplying.has(seed.id)) {
+		specialPricesBeforeMultiplying.add(seed.id, seed.price * 3.5);
+	}
+}
+
+for (const seed of secondaries.map(getOSItem)) {
+	if (!specialPricesBeforeMultiplying.has(seed.id)) {
+		specialPricesBeforeMultiplying.add(seed.id, seed.price * 3.5);
+	}
+}
+
+for (const seed of ores.map(getOSItem)) {
+	if (!specialPricesBeforeMultiplying.has(seed.id)) {
+		specialPricesBeforeMultiplying.add(seed.id, seed.price * 3.5);
+	}
+}
+for (const seed of Runecraft.Runes.map(i => getOSItem(i.id))) {
+	if (!specialPricesBeforeMultiplying.has(seed.id)) {
+		specialPricesBeforeMultiplying.add(seed.id, seed.price * 3.5);
+	}
+}
+for (const seed of Firemaking.Burnables.map(i => getOSItem(i.inputLogs))) {
+	if (!specialPricesBeforeMultiplying.has(seed.id)) {
+		specialPricesBeforeMultiplying.add(seed.id, seed.price * 3.5);
+	}
+}
+
+const toDelete = ['Fire rune', 'Air rune', 'Water rune', 'Earth rune', 'Body rune', 'Mind rune', 'Eye of newt'];
+for (const item of toDelete) {
+	specialPricesBeforeMultiplying.remove(item, specialPricesBeforeMultiplying.amount(item));
+}
 const MULTIPLIER = 3;
 
 const parsedPriceBank = new Bank();
