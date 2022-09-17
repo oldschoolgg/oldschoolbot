@@ -91,7 +91,8 @@ const reactionTimeLimits = {
 	[PerkTier.Three]: Time.Hour * 50,
 	[PerkTier.Four]: Time.Hour * 100,
 	[PerkTier.Five]: Time.Hour * 200,
-	[PerkTier.Six]: Time.Hour * 300
+	[PerkTier.Six]: Time.Hour * 300,
+	[PerkTier.Seven]: Time.Hour * 300
 } as const;
 
 const reactionTimeLimit = (perkTier: PerkTier | 0): number => reactionTimeLimits[perkTier] ?? Time.Hour * 12;

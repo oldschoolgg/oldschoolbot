@@ -159,7 +159,7 @@ export async function runCommand({
 			} else if (result.flags !== MessageFlags.Ephemeral) {
 				await channel.send({
 					content: result.content,
-					embeds: result.embeds?.map(i => new Embed(i as any)),
+					embeds: result.embeds?.map(i => new Embed({ ...i, type: undefined })),
 					components: result.components?.map(i => convertComponentDJSComponent(i as any)),
 					files: result.attachments?.map(i => new AttachmentBuilder(i.buffer, { name: i.fileName }))
 				});
