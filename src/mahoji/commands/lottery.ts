@@ -240,10 +240,6 @@ export const lotteryCommand: OSBMahojiCommand = {
 				);
 			}
 
-			// Pay 500k GP per ticket
-			const gpTaxCost = amountOfTickets * 500_000;
-			bankToSell.add('Coins', gpTaxCost);
-
 			await handleMahojiConfirmation(
 				interaction,
 				`${
@@ -252,9 +248,7 @@ export const lotteryCommand: OSBMahojiCommand = {
 					', '
 				)}
 
-**WARNING:**
-- You have to pay 500k GP per ticket you get from items, alternatively you can \`/buy bank lottery ticket\` to directly buy them with GP.
-- This lottery, has only ONE item that will be given out, a Smokey. Everything else (GP/Items) will be deleted as an item/GP sink, and not given to anyone.`
+**WARNING:** This lottery, has only ONE item that will be given out, a Smokey. Everything else (GP/Items) will be deleted as an item/GP sink, and not given to anyone.`
 			);
 
 			await user.sync();
