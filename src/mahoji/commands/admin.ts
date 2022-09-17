@@ -231,12 +231,12 @@ export const adminCommand: OSBMahojiCommand = {
 				}
 			]
 		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'item_stats',
-			description: 'item stats',
-			options: [{ ...itemOption(), required: true }]
-		},
+		// {
+		// 	type: ApplicationCommandOptionType.Subcommand,
+		// 	name: 'item_stats',
+		// 	description: 'item stats',
+		// 	options: [{ ...itemOption(), required: true }]
+		// },
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'sync_blacklist',
@@ -490,11 +490,11 @@ export const adminCommand: OSBMahojiCommand = {
 				}
 			]
 		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'wipe_bingo_temp_cls',
-			description: 'Wipe all temp cls of bingo users'
-		},
+		// {
+		// 	type: ApplicationCommandOptionType.Subcommand,
+		// 	name: 'wipe_bingo_temp_cls',
+		// 	description: 'Wipe all temp cls of bingo users'
+		// },
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'lottery_dump',
@@ -555,7 +555,7 @@ export const adminCommand: OSBMahojiCommand = {
 		double_loot?: { reset?: boolean; add?: string };
 		ltc?: {};
 		view?: { thing: string };
-		wipe_bingo_temp_cls?: {};
+		// wipe_bingo_temp_cls?: {};
 		lottery_dump?: {};
 		give_items?: { user: MahojiUserOption; items: string };
 	}>) => {
@@ -573,31 +573,31 @@ export const adminCommand: OSBMahojiCommand = {
 		 */
 		if (!guildID || (production && guildID.toString() !== SupportServer)) return randArrItem(gifs);
 
-		if (options.wipe_bingo_temp_cls) {
-			if (userID.toString() !== '319396464402890753' && !isMod) return randArrItem(gifs);
-			const usersToReset = await prisma.user.findMany({
-				where: {
-					bingo_tickets_bought: {
-						gt: 0
-					}
-				},
-				select: {
-					id: true
-				}
-			});
-			await handleMahojiConfirmation(interaction, `Reset the temp CL of ${usersToReset.length} users?`);
-			const res = await prisma.user.updateMany({
-				where: {
-					id: {
-						in: usersToReset.map(i => i.id)
-					}
-				},
-				data: {
-					temp_cl: {}
-				}
-			});
-			return `${res.count} temp CLs reset.`;
-		}
+		// if (options.wipe_bingo_temp_cls) {
+		// 	if (userID.toString() !== '319396464402890753' && !isMod) return randArrItem(gifs);
+		// 	const usersToReset = await prisma.user.findMany({
+		// 		where: {
+		// 			bingo_tickets_bought: {
+		// 				gt: 0
+		// 			}
+		// 		},
+		// 		select: {
+		// 			id: true
+		// 		}
+		// 	});
+		// 	await handleMahojiConfirmation(interaction, `Reset the temp CL of ${usersToReset.length} users?`);
+		// 	const res = await prisma.user.updateMany({
+		// 		where: {
+		// 			id: {
+		// 				in: usersToReset.map(i => i.id)
+		// 			}
+		// 		},
+		// 		data: {
+		// 			temp_cl: {}
+		// 		}
+		// 	});
+		// 	return `${res.count} temp CLs reset.`;
+		// }
 
 		if (!isMod && !isContributor) return randArrItem(gifs);
 		if (options.givetgb) {
