@@ -109,7 +109,7 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 	});
 	const image = await makeBankImage({
 		bank: itemsAdded,
-		title: `${user.usernameOrMention}'s Daily`,
+		title: `${user.rawUsername}'s Daily`,
 		previousCL,
 		showNewCL: true
 	});
