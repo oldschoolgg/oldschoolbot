@@ -565,9 +565,22 @@ async function checkMassesCommand(guildID: bigint | undefined) {
 ${massStr}`;
 }
 
+function calcTime(user: MUser) {
+	for (const [bit, dur] of [
+		[BitField.IsPatronTier6, Time.Minute * 90],
+		[BitField.IsPatronTier5, Time.Minute * 40],
+		[BitField.IsPatronTier4, Time.Minute * 15]
+	] as const) {
+		if (user.bitfield.includes(bit)) return dur;
+	}
+	throw new Error('User had no 4/5/6 bit');
+}
+
 async function patronTriggerDoubleLoot(user: MUser) {
-	if (![BitField.IsPatronTier4, BitField.IsPatronTier5].some(i => user.bitfield.includes(i))) {
-		return 'Only T4 or T5 patrons can use this command.';
+	if (
+		![BitField.IsPatronTier4, BitField.IsPatronTier5, BitField.IsPatronTier6].some(i => user.bitfield.includes(i))
+	) {
+		return 'Only T4, T5 or T6 patrons can use this command.';
 	}
 	const lastTime = user.user.last_patron_double_time_trigger;
 	const cooldown = Time.Day * 31;
@@ -577,7 +590,8 @@ async function patronTriggerDoubleLoot(user: MUser) {
 			cooldown - differenceSinceLastUsage
 		)}.`;
 	}
-	const time = user.bitfield.includes(BitField.IsPatronTier5) ? Time.Minute * 30 : Time.Minute * 20;
+
+	const time = calcTime(user);
 	await mahojiUserSettingsUpdate(user.id, {
 		last_patron_double_time_trigger: new Date()
 	});
