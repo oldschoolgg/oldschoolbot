@@ -357,7 +357,7 @@ export const lotteryCommand: OSBMahojiCommand = {
 			return `You put ${bankToSell} to the bank lottery, and received ${amountOfTickets}x bank lottery tickets.`;
 		}
 
-		const { amountOfTickets, input } = await calcTicketsOfUser(user);
+		const { amountOfTickets, input } = calcTicketsOfUser(user);
 		const { totalLoot, totalTickets, users } = await getLotteryBank();
 
 		return {
