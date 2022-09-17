@@ -1,6 +1,6 @@
-import { Embed, userMention } from '@discordjs/builders';
+import { userMention } from '@discordjs/builders';
 import { Activity, User } from '@prisma/client';
-import { ChannelType } from 'discord.js';
+import { ChannelType, EmbedBuilder } from 'discord.js';
 import { Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
@@ -183,7 +183,7 @@ LIMIT 10;`);
 	}
 
 	let place = 0;
-	const embed = new Embed()
+	const embed = new EmbedBuilder()
 		.setTitle(`Highest ${skillObj ? skillObj.name : 'Overall'} XP Gains in the past ${interval}`)
 		.setDescription(
 			res
@@ -191,7 +191,7 @@ LIMIT 10;`);
 				.join('\n')
 		);
 
-	return { embeds: [embed] };
+	return { embeds: [embed.data] };
 }
 
 async function kcGains(user: MUser, interval: string, monsterName: string): CommandResponse {
@@ -218,13 +218,13 @@ LIMIT 10`;
 	}
 
 	let place = 0;
-	const embed = new Embed()
+	const embed = new EmbedBuilder()
 		.setTitle(`Highest ${monster.name} KC gains in the past ${interval}`)
 		.setDescription(
 			res.map((i: any) => `${++place}. **${getUsername(i.user)}**: ${Number(i.qty).toLocaleString()}`).join('\n')
 		);
 
-	return { embeds: [embed] };
+	return { embeds: [embed.data] };
 }
 
 export function spawnLampIsReady(user: MUser, channelID: string): [true] | [false, string] {

@@ -1,5 +1,4 @@
-import { Embed } from '@discordjs/builders';
-import { TextChannel } from 'discord.js';
+import { EmbedBuilder, TextChannel } from 'discord.js';
 import { randInt, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
@@ -61,7 +60,7 @@ export async function vasaCommand(user: MUser, channelID: bigint, quantity?: num
 	});
 	try {
 		const { bossUsers } = await instance.start();
-		const embed = new Embed().setDescription(
+		const embed = new EmbedBuilder().setDescription(
 			`Your team is off to fight ${instance.quantity}x Vasa Magus. The total trip will take ${formatDuration(
 				instance.duration
 			)}.
@@ -71,7 +70,7 @@ ${bossUsers.map(u => `**${u.user.usernameOrMention}**: ${u.debugStr}`).join('\n\
 		);
 
 		return {
-			embeds: [embed],
+			embeds: [embed.data],
 			content: instance.boosts.length > 0 ? `**Boosts:** ${instance.boosts.join(', ')}.` : undefined
 		};
 	} catch (err: any) {
