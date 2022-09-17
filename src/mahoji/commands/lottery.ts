@@ -15,7 +15,7 @@ import { handleMahojiConfirmation, mahojiClientSettingsFetch, updateBankSetting 
 const specialPricesBeforeMultiplying = new Bank()
 	.add('Monkey egg', 4_000_000_000)
 	.add('Dragon egg', 9_500_000_000)
-	.add('Dwarven warhammer', 37_500_000)
+	.add('Dwarven warhammer', 37_000_500_000)
 	.add('Twisted bow', 7_500_000_000)
 	.add('Ring of luck', 150_000_000)
 	.add('Dwarven ore', 75_000_000)
