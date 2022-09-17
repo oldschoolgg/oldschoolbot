@@ -357,7 +357,7 @@ export const lotteryCommand: OSBMahojiCommand = {
 			return `You put ${bankToSell} to the bank lottery, and received ${amountOfTickets}x bank lottery tickets.`;
 		}
 
-		const { amountOfTickets } = await calcTicketsOfUser(user);
+		const { amountOfTickets, input } = await calcTicketsOfUser(user);
 		const { totalLoot, totalTickets, users } = await getLotteryBank();
 
 		return {
@@ -371,7 +371,10 @@ Top ticket holders: ${users
 				.slice(0, 10)
 				.map(i => `${userMention(i.id)} has ${i.tickets} tickets`)
 				.join(',')}`,
-			attachments: [(await makeBankImage({ bank: totalLoot, title: 'Smokey Lottery' })).file],
+			attachments: [
+				(await makeBankImage({ bank: totalLoot, title: 'Smokey Lottery' })).file,
+				(await makeBankImage({ bank: input, title: 'Your Lottery Input' })).file
+			],
 			allowed_mentions: {
 				users: []
 			}
