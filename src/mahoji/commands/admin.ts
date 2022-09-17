@@ -231,12 +231,12 @@ export const adminCommand: OSBMahojiCommand = {
 				}
 			]
 		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'item_stats',
-			description: 'item stats',
-			options: [{ ...itemOption(), required: true }]
-		},
+		// {
+		// 	type: ApplicationCommandOptionType.Subcommand,
+		// 	name: 'item_stats',
+		// 	description: 'item stats',
+		// 	options: [{ ...itemOption(), required: true }]
+		// },
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'sync_blacklist',
