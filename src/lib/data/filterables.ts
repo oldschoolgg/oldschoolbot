@@ -164,7 +164,7 @@ export const warmGear = resolveItems([
 	'Bomber cap'
 ]) as number[];
 
-const ores = resolveItems([
+export const ores = resolveItems([
 	'Copper ore',
 	'Tin ore',
 	'Iron ore',
@@ -177,7 +177,8 @@ const ores = resolveItems([
 	'Lovakite ore',
 	'Adamantite ore',
 	'Runite ore',
-	'Dark animica'
+	'Dark animica',
+	'Dwarven ore'
 ]);
 
 const bars = resolveItems([
@@ -191,7 +192,8 @@ const bars = resolveItems([
 	'Lovakite bar',
 	'Mithril bar',
 	'Adamantite bar',
-	'Runite bar'
+	'Runite bar',
+	'Dwarven bar'
 ]);
 
 const smithingMisc = resolveItems([
@@ -276,7 +278,7 @@ const barrows = resolveItems([
 	'Bolt rack'
 ]);
 
-const seeds = resolveItems([
+export const seedsFilter = resolveItems([
 	'Pineapple seed',
 	'Crystal acorn',
 	'Magic seed',
@@ -352,7 +354,9 @@ const seeds = resolveItems([
 	'Athelas seed',
 	'Avocado seed',
 	'Lychee seed',
-	'Mango seed'
+	'Mango seed',
+	'Korulsi seed',
+	'Grand crystal acorn'
 ]);
 
 const herbs = resolveItems([
@@ -384,10 +388,12 @@ const herbs = resolveItems([
 	'Lantadyme',
 	'Dwarf weed',
 	'Torstol',
-	'Athelas'
+	'Athelas',
+	'Grimy korulsi',
+	'Korulsi'
 ]);
 
-const secondaries = resolveItems([
+export const secondaries = resolveItems([
 	'Eye of newt',
 	'Unicorn horn dust',
 	'Snake weed',
@@ -415,7 +421,8 @@ const secondaries = resolveItems([
 	'Torstol',
 	'Cave nightshade',
 	'Crushed superior dragon bones',
-	'Amylase crystal'
+	'Amylase crystal',
+	'Crystal dust'
 ]);
 
 const bones = resolveItems([
@@ -445,7 +452,8 @@ const bones = resolveItems([
 	'Wyvern bones',
 	'Zogre bones',
 	'Abyssal dragon bones',
-	'Royal dragon bones'
+	'Royal dragon bones',
+	'Frost dragon bones'
 ]);
 
 const fletchingItems = Fletchables.flatMap(item => Object.keys(item.inputItems.bank).map(key => parseInt(key)));
@@ -474,7 +482,7 @@ const skilling = resolveItems([
 	'Grapes',
 	'Feather',
 	...fletchingItemsSet,
-	...seeds,
+	...seedsFilter,
 	...bones,
 	...gems,
 	...bars,
@@ -792,7 +800,13 @@ const potions = resolveItems([
 	'Extended super antifire(1)',
 	'Extended super antifire(2)',
 	'Extended super antifire(3)',
-	'Extended super antifire(4)'
+	'Extended super antifire(4)',
+	'Enhanced saradomin brew',
+	'Enhanced super restore',
+	'Enhanced stamina potion',
+	'Enhanced divine water',
+	'Heat res. brew',
+	'Heat res. restore'
 ]);
 
 const herblore = resolveItems([
@@ -833,6 +847,7 @@ const herblore = resolveItems([
 	'Poison ivy berries',
 	"Zulrah's scales",
 	'Crushed superior dragon bones',
+	'Crystal dust',
 	...potions,
 	...herbs
 ]);
@@ -1045,7 +1060,7 @@ export const baseFilters: Filterable[] = [
 		aliases: ['farming', 'farm', 'seeds'],
 		items: () => [
 			...resolveItems(['Compost', 'Supercompost', 'Ultracompost', 'Bottomless compost bucket ']),
-			...seeds
+			...seedsFilter
 		]
 	},
 	{

@@ -805,13 +805,6 @@ const Buyables: Buyable[] = [
 		gpCost: 500
 	},
 	{
-		name: 'Bank lottery ticket',
-		outputItems: new Bank({
-			'Bank lottery ticket': 1
-		}),
-		gpCost: 10_000_000
-	},
-	{
 		name: 'Amylase pack',
 		outputItems: new Bank({
 			'Amylase crystal': 100

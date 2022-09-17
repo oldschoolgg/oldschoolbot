@@ -73,6 +73,7 @@ export async function sendToChannelID(
 		image?: Buffer | AttachmentBuilder;
 		embed?: Embed;
 		components?: MessageOptions['components'];
+		allowedMentions?: MessageOptions['allowedMentions'];
 	}
 ) {
 	async function queuedFn() {
@@ -88,7 +89,8 @@ export async function sendToChannelID(
 					content: data.content,
 					files,
 					embeds,
-					components: data.components
+					components: data.components,
+					allowedMentions: data.allowedMentions
 				});
 			} catch (err: any) {
 				const error = err as Error;
@@ -107,7 +109,8 @@ export async function sendToChannelID(
 				content: data.content,
 				files,
 				embeds,
-				components: data.components
+				components: data.components,
+				allowedMentions: data.allowedMentions
 			});
 		}
 	}

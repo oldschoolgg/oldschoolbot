@@ -46,6 +46,7 @@ import {
 	mahojiUsersSettingsFetch
 } from '../mahojiSettings';
 import { mahojiUserSettingsUpdate } from '../settingsUpdate';
+import { getLotteryBank } from './lottery';
 import { getUserInfo } from './minion';
 
 export const gifs = [
@@ -492,6 +493,11 @@ export const adminCommand: OSBMahojiCommand = {
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'wipe_bingo_temp_cls',
 			description: 'Wipe all temp cls of bingo users'
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'lottery_dump',
+			description: 'lottery dump'
 		}
 	],
 	run: async ({
@@ -525,6 +531,7 @@ export const adminCommand: OSBMahojiCommand = {
 		ltc?: {};
 		view?: { thing: string };
 		wipe_bingo_temp_cls?: {};
+		lottery_dump?: {};
 	}>) => {
 		await interaction.deferReply();
 
@@ -1032,6 +1039,27 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 			const clientSettings = await mahojiClientSettingsFetch();
 			const image = await makeBankImage({ bank: thing.run(clientSettings), title: thing.name });
 			return { attachments: [image.file] };
+		}
+
+		if (options.lottery_dump) {
+			const res = await getLotteryBank();
+			for (const user of res.users) {
+				if (!globalClient.users.cache.has(user.id)) {
+					await globalClient.users.fetch(user.id);
+				}
+			}
+			return {
+				attachments: [
+					{
+						fileName: 'lottery.txt',
+						buffer: Buffer.from(
+							JSON.stringify(
+								res.users.map(i => [globalClient.users.cache.get(i.id)?.username ?? i.id, i.tickets])
+							)
+						)
+					}
+				]
+			};
 		}
 
 		return 'Invalid command.';
