@@ -224,10 +224,7 @@ export function getMahojiBank(user: User) {
 	return new Bank(user.bank as ItemBank);
 }
 
-export async function trackClientBankStats(
-	key: 'clue_upgrader_loot' | 'portable_tanner_loot' | 'bank_lottery',
-	newItems: Bank
-) {
+export async function trackClientBankStats(key: 'clue_upgrader_loot' | 'portable_tanner_loot', newItems: Bank) {
 	const currentTrackedLoot = await mahojiClientSettingsFetch({ [key]: true });
 	await mahojiClientSettingsUpdate({
 		[key]: new Bank(currentTrackedLoot[key] as ItemBank).add(newItems).bank
@@ -716,7 +713,11 @@ export async function updateBankSetting(key: ClientBankKey, bankToAdd: Bank) {
 	return res;
 }
 
-export async function updateLegacyUserBankSetting(userID: string, key: 'tob_cost' | 'tob_loot', bankToAdd: Bank) {
+export async function updateLegacyUserBankSetting(
+	userID: string,
+	key: 'tob_cost' | 'tob_loot' | 'lottery_input',
+	bankToAdd: Bank
+) {
 	if (bankToAdd === undefined || bankToAdd === null) throw new Error(`Gave null bank for ${key}`);
 	const currentUserSettings = await mahojiUsersSettingsFetch(userID, {
 		[key]: true

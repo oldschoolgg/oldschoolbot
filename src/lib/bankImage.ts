@@ -694,6 +694,18 @@ class BankImageTask {
 				wide ? canvas.height : actualBackground.height! * (resizeBg === -1 ? 1 : resizeBg)
 			);
 		}
+		if (title === 'Smokey Lottery') {
+			const smokeyImage = await this.getItemImage(itemID('Smokey'));
+			ctx.globalAlpha = 0.3;
+			ctx.drawImage(
+				smokeyImage,
+				resizeBg === -1 ? 0 : (canvas.width - smokeyImage.width! * resizeBg) / 2,
+				0,
+				canvas.width,
+				canvas.height
+			);
+			ctx.globalAlpha = 1;
+		}
 
 		if (showValue) {
 			title += ` (Value: ${toKMB(totalValue)})`;
