@@ -241,11 +241,16 @@ class PatreonTask {
 							patreon_id: patron.patreonID
 						}
 					});
-				} catch {
-					logError(new Error('Failed to set patreonID'), {
-						id: patron.discordID,
-						patreon_id: patron.patreonID
-					});
+				} catch (err: any) {
+					logError(
+						new Error(
+							`${err.message} Failed to set patreonID for Discord[${patron.discordID}] Patron[${patron.patreonID}]`
+						),
+						{
+							id: patron.discordID,
+							patreon_id: patron.patreonID
+						}
+					);
 					continue;
 				}
 			}
