@@ -14,8 +14,8 @@ import { OSBMahojiCommand } from '../lib/util';
 import {
 	handleMahojiConfirmation,
 	mahojiParseNumber,
-	trackClientBankStats,
-	updateBankSetting
+	updateBankSetting,
+	updateLegacyUserBankSetting
 } from '../mahojiSettings';
 import { isLotteryActive } from './lottery';
 
@@ -191,11 +191,17 @@ export const buyCommand: OSBMahojiCommand = {
 		await user.removeItemsFromBank(totalCost);
 		econBankChanges.add(totalCost);
 
-		if (buyable.name === 'Bank lottery ticket') {
-			trackClientBankStats('bank_lottery', new Bank().add('Coins', buyable.gpCost! * quantity));
-		}
 		updateBankSetting('buy_cost_bank', econBankChanges);
 		updateBankSetting('buy_loot_bank', outItems);
+
+		if (buyable.name === 'Bank lottery ticket') {
+			await updateLegacyUserBankSetting(
+				user.id,
+				'lottery_input',
+				new Bank().add('Coins', buyable.gpCost! * quantity)
+			);
+			return `You purchased ${outItems} for ${totalCost}.`;
+		}
 
 		await transactItems({
 			userID: user.id,

@@ -127,7 +127,6 @@ model ClientStorage {
   gp_ic                   BigInt @default(0)
   double_loot_finish_time BigInt @default(0)
   gp_pet                  BigInt @default(0)
-  bank_lottery            Json   @default("{}") @db.Json
   ignecarus_cost          Json   @default("{}") @db.Json
   ignecarus_loot          Json   @default("{}") @db.Json
   kibble_cost             Json   @default("{}") @db.Json
@@ -460,6 +459,7 @@ model User {
   void_staff_charges       Int      @default(0)
 
   last_patron_double_time_trigger DateTime? @db.Timestamp(6)
+  lottery_input                   Json      @default("{}") @db.Json
 
   // Invention
   skills_invention          BigInt @default(0) @map("skills.invention")

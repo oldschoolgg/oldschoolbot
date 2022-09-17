@@ -1,4 +1,5 @@
-import { calcWhatPercent } from 'e';
+import { userMention } from '@discordjs/builders';
+import { calcWhatPercent, sumArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
@@ -14,7 +15,7 @@ import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiClientSettingsFetch, updateBankSetting } from '../mahojiSettings';
+import { handleMahojiConfirmation, mahojiClientSettingsFetch, updateLegacyUserBankSetting } from '../mahojiSettings';
 
 const specialPricesBeforeMultiplying = new Bank()
 	.add('Monkey egg', 4_000_000_000)
@@ -194,23 +195,45 @@ function getPriceOfItem(item: Item) {
 
 const LOTTERY_TICKET_ITEM = getOSItem('Bank lottery ticket');
 assert(LOTTERY_TICKET_ITEM.id === 5021);
+const VALUE_PER_TICKET = 10_000_000;
 
-export async function calcTotalTickets() {
-	const totalTickets = parseInt(
-		(
-			await prisma.$queryRawUnsafe<any>(
-				`SELECT COALESCE(SUM((bank->>'${LOTTERY_TICKET_ITEM.id}')::int), 0) AS sum
-FROM users
-WHERE bank->>'${LOTTERY_TICKET_ITEM.id}' IS NOT NULL;`
-			)
-		)[0].sum
-	);
-	return totalTickets;
+function calcTicketsOfUser(user: MUser | Bank) {
+	const input = user instanceof Bank ? user : new Bank(user.user.lottery_input as ItemBank);
+
+	let totalPrice = 0;
+	for (const [item, quantity] of input.items()) {
+		totalPrice += getPriceOfItem(item) * quantity;
+	}
+
+	const amountOfTickets = Math.floor(totalPrice / VALUE_PER_TICKET);
+	return { amountOfTickets, input };
 }
 
 export async function getLotteryBank() {
-	const loot = new Bank((await mahojiClientSettingsFetch({ bank_lottery: true })).bank_lottery as ItemBank);
-	return loot;
+	const res = (
+		await prisma.$queryRawUnsafe<{ lottery_input: ItemBank; id: string }[]>(
+			"SELECT id, lottery_input FROM users WHERE lottery_input::text != '{}'::text;"
+		)
+	)
+		.map(u => ({
+			id: u.id,
+			lotteryInput: new Bank(u.lottery_input)
+		}))
+		.map(u => ({
+			...u,
+			tickets: calcTicketsOfUser(u.lotteryInput).amountOfTickets
+		}))
+		.sort((a, b) => b.tickets - a.tickets);
+	const totalLoot = new Bank();
+	for (const i of res) {
+		totalLoot.add(i.lotteryInput);
+	}
+	const totalTickets = sumArr(res.map(i => i.tickets));
+	return {
+		totalLoot,
+		users: res,
+		totalTickets
+	};
 }
 
 export const lotteryCommand: OSBMahojiCommand = {
@@ -296,7 +319,6 @@ export const lotteryCommand: OSBMahojiCommand = {
 			if (bankToSell.length === 0) return 'No items were given.';
 			if (!user.owns(bankToSell)) return 'You do not own these items.';
 
-			const VALUE_PER_TICKET = 10_000_000;
 			const amountOfTickets = Math.floor(totalPrice / VALUE_PER_TICKET);
 
 			if (amountOfTickets < 5) {
@@ -329,27 +351,30 @@ export const lotteryCommand: OSBMahojiCommand = {
 			await user.sync();
 			if (!user.owns(bankToSell)) return 'You do not own these items.';
 			await user.removeItemsFromBank(bankToSell);
-			await user.addItemsToBank({
-				items: new Bank().add('Bank lottery ticket', amountOfTickets),
-				collectionLog: true,
-				filterLoot: false
-			});
 
-			await updateBankSetting('bank_lottery', bankToSell);
+			await updateLegacyUserBankSetting(user.id, 'lottery_input', bankToSell);
 
 			return `You put ${bankToSell} to the bank lottery, and received ${amountOfTickets}x bank lottery tickets.`;
 		}
 
-		const totalTickets = await calcTotalTickets();
-		const amountOfTicketsOwned = user.bank.amount('Bank lottery ticket');
+		const { amountOfTickets } = await calcTicketsOfUser(user);
+		const { totalLoot, totalTickets, users } = await getLotteryBank();
 
 		return {
-			content: `There have been ${totalTickets} purchased, you have ${amountOfTicketsOwned}x tickets, and a ${
-				amountOfTicketsOwned === 0 ? 0 : calcWhatPercent(amountOfTicketsOwned, totalTickets).toFixed(4)
+			content: `There have been ${totalTickets} purchased, you have ${amountOfTickets}x tickets, and a ${
+				amountOfTickets === 0 ? 0 : calcWhatPercent(amountOfTickets, totalTickets).toFixed(4)
 			}% chance of winning (will fluctuate based on you/others buying tickets.)
 
-This is a special lottery: the reward is ONE smokey. All other items/GP will be deleted from the game as an item sink.`,
-			attachments: [(await makeBankImage({ bank: await getLotteryBank(), title: 'Smokey Lottery' })).file]
+This is a special lottery: the reward is ONE smokey. All other items/GP will be deleted from the game as an item sink.
+
+Top ticket holders: ${users
+				.slice(0, 10)
+				.map(i => `${userMention(i.id)} has ${i.tickets} tickets`)
+				.join(',')}`,
+			attachments: [(await makeBankImage({ bank: totalLoot, title: 'Smokey Lottery' })).file],
+			allowed_mentions: {
+				users: []
+			}
 		};
 	}
 };
