@@ -32,7 +32,7 @@ patreonApiURL.search = new URLSearchParams([
 ]).toString();
 
 export const tiers: [PatronTierID, BitField][] = [
-	[PatronTierID.Six, BitField.IsPatronTier5],
+	[PatronTierID.Six, BitField.IsPatronTier6],
 	[PatronTierID.Five, BitField.IsPatronTier5],
 	[PatronTierID.Four, BitField.IsPatronTier4],
 	[PatronTierID.Three, BitField.IsPatronTier3],
@@ -52,6 +52,8 @@ function bitFieldFromPerkTier(tier: PerkTier): BitField {
 			return BitField.IsPatronTier4;
 		case PerkTier.Six:
 			return BitField.IsPatronTier5;
+		case PerkTier.Seven:
+			return BitField.IsPatronTier6;
 		default: {
 			throw new Error(`Unmatched bitFieldFromPerkTier ${tier}`);
 		}
