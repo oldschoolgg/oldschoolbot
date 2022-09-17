@@ -18,5 +18,12 @@ export const MountedHeads: PoHObject[] = [
 		slot: 'mounted_head',
 		level: 82,
 		itemCost: baseBank().add('Mahogany plank', 2).add('Gold leaf', 2).add("Vorkath's head")
+	},
+	{
+		id: 491_532,
+		name: 'Mounted fuzzy dice',
+		slot: 'mounted_head',
+		level: 99,
+		itemCost: baseBank().add('Mahogany plank', 2).add('Gold leaf', 2).add('Fuzzy dice')
 	}
 ];
