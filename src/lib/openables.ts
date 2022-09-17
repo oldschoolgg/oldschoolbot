@@ -29,6 +29,7 @@ export interface OpenArgs {
 	quantity: number;
 	user: MUser;
 	self: UnifiedOpenable;
+	totalLeaguesPoints: number;
 }
 
 export interface UnifiedOpenable {

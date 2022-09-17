@@ -2810,3 +2810,37 @@ setCustomItem(
 	10_000_000
 );
 setCustomItem(70_018, 'Grand crystal acorn', 'Coal', {}, 6000);
+setCustomItem(
+	70_019,
+	'Rainbow cape',
+	'Black cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	6000
+);
+setCustomItem(
+	70_020,
+	'Fuzzy dice',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	70_021,
+	'Karambinana',
+	'Dragon dagger',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
