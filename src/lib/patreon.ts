@@ -72,6 +72,8 @@ function perkTierFromBitfield(bit: BitField): PerkTier {
 			return PerkTier.Five;
 		case BitField.IsPatronTier5:
 			return PerkTier.Six;
+		case BitField.IsPatronTier6:
+			return PerkTier.Seven;
 		default: {
 			throw new Error(`Unmatched perkTierFromBitfield ${bit}`);
 		}
