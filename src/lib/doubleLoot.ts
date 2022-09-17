@@ -1,9 +1,9 @@
+import { TextChannel } from 'discord.js';
 import { Time } from 'e';
 
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../mahoji/mahojiSettings';
 import { Channel } from './constants';
 import { formatDuration } from './util';
-import { sendToChannelID } from './util/webhook';
 
 export let DOUBLE_LOOT_FINISH_TIME_CACHE = 0;
 
@@ -24,14 +24,10 @@ export async function addToDoubleLootTimer(amount: number, reason: string) {
 		double_loot_finish_time: newDoubleLootTimer
 	});
 	DOUBLE_LOOT_FINISH_TIME_CACHE = newDoubleLootTimer;
-	sendToChannelID(Channel.BSOGeneral, {
-		content: `<@&923768318442229792> 🎉 ${formatDuration(
-			amount
-		)} added to the Double Loot timer because: ${reason}. 🎉`,
-		allowedMentions: {
-			roles: ['923768318442229792']
-		}
-	});
+	(globalClient.channels.cache.get(Channel.BSOGeneral)! as TextChannel).send(
+		`<@&923768318442229792> 🎉 ${formatDuration(amount)} added to the Double Loot timer because: ${reason}. 🎉`
+	);
+
 	syncPrescence();
 }
 
