@@ -498,6 +498,11 @@ export const adminCommand: OSBMahojiCommand = {
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'lottery_dump',
 			description: 'lottery dump'
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'ltc',
+			description: 'Ltc?'
 		}
 	],
 	run: async ({
