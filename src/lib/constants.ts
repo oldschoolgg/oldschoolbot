@@ -192,7 +192,11 @@ export const enum PerkTier {
 	/**
 	 * Tier 5 Patron
 	 */
-	Six = 6
+	Six = 6,
+	/**
+	 * Tier 6 Patron
+	 */
+	Seven = 7
 }
 
 export enum BitField {
@@ -214,7 +218,8 @@ export enum BitField {
 	HasArcaneScroll = 17,
 	HasTornPrayerScroll = 18,
 	IsWikiContributor = 19,
-	HasSlepeyTablet = 20
+	HasSlepeyTablet = 20,
+	IsPatronTier6 = 21
 }
 
 interface BitFieldData {
@@ -237,6 +242,7 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	[BitField.IsPatronTier3]: { name: 'Tier 3 Patron', protected: false, userConfigurable: false },
 	[BitField.IsPatronTier4]: { name: 'Tier 4 Patron', protected: false, userConfigurable: false },
 	[BitField.IsPatronTier5]: { name: 'Tier 5 Patron', protected: false, userConfigurable: false },
+	[BitField.IsPatronTier6]: { name: 'Tier 6 Patron', protected: false, userConfigurable: false },
 
 	[BitField.HasHosidiusWallkit]: { name: 'Hosidius Wall Kit Unlocked', protected: false, userConfigurable: false },
 	[BitField.HasDexScroll]: { name: 'Dexterous Scroll Used', protected: false, userConfigurable: false },
