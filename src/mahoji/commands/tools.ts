@@ -569,7 +569,7 @@ function calcTime(user: MUser) {
 	for (const [bit, dur] of [
 		[BitField.IsPatronTier6, Time.Minute * 90],
 		[BitField.IsPatronTier5, Time.Minute * 40],
-		[BitField.IsPatronTier4, Time.Minute * 15]
+		[BitField.IsPatronTier4, Time.Minute * 20]
 	] as const) {
 		if (user.bitfield.includes(bit)) return dur;
 	}
