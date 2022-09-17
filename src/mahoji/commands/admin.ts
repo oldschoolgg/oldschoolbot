@@ -34,6 +34,7 @@ import { getItem } from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { logError } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
+import { parseBank } from '../../lib/util/parseStringBank';
 import { Cooldowns } from '../lib/Cooldowns';
 import { syncCustomPrices } from '../lib/events';
 import { itemOption } from '../lib/mahojiCommandOptions';
@@ -458,6 +459,25 @@ export const adminCommand: OSBMahojiCommand = {
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'wipe_bingo_temp_cls',
 			description: 'Wipe all temp cls of bingo users'
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'give_items',
+			description: 'Spawn items for a user',
+			options: [
+				{
+					type: ApplicationCommandOptionType.User,
+					name: 'user',
+					description: 'The user',
+					required: true
+				},
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'items',
+					description: 'The items to give',
+					required: true
+				}
+			]
 		}
 	],
 	run: async ({
@@ -489,6 +509,7 @@ export const adminCommand: OSBMahojiCommand = {
 		ltc?: {};
 		view?: { thing: string };
 		wipe_bingo_temp_cls?: {};
+		give_items?: { user: MahojiUserOption; items: string };
 	}>) => {
 		await interaction.deferReply();
 
@@ -969,6 +990,17 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 			const clientSettings = await mahojiClientSettingsFetch();
 			const image = await makeBankImage({ bank: thing.run(clientSettings), title: thing.name });
 			return { attachments: [image.file] };
+		}
+
+		if (options.give_items) {
+			const items = parseBank({ inputStr: options.give_items.items });
+			const user = await mUserFetch(options.give_items.user.user.id);
+			await handleMahojiConfirmation(
+				interaction,
+				`Are you sure you want to give ${items} to ${user.usernameOrMention}?`
+			);
+			await user.addItemsToBank({ items, collectionLog: false });
+			return `Gave ${items} to ${user.mention}`;
 		}
 
 		return 'Invalid command.';

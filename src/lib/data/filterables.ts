@@ -827,6 +827,11 @@ const prayer = resolveItems([
 	'Ensouled aviansie head',
 	'Ensouled abyssal head',
 	'Ensouled dragon head',
+	'Fiendish ashes',
+	'Vile ashes',
+	'Malicious ashes',
+	'Abyssal ashes',
+	'Infernal ashes',
 	...bones
 ]);
 

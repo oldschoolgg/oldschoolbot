@@ -146,7 +146,8 @@ const ores: Ore[] = [
 		bankingTime: 10,
 		slope: 0.8,
 		intercept: 10.01,
-		petChance: 741_600
+		petChance: 741_600,
+		clueScrollChance: 741_600
 	},
 	{
 		level: 40,
@@ -182,7 +183,8 @@ const ores: Ore[] = [
 		bankingTime: 80,
 		slope: 0.85,
 		intercept: 10.91,
-		petChance: 741_600
+		petChance: 741_600,
+		clueScrollChance: 741_600
 	},
 	{
 		level: 55,
