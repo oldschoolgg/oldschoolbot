@@ -54,6 +54,10 @@ export default function getUsersPerkTier(
 
 	const bitfield = Array.isArray(userOrBitfield) ? userOrBitfield : userOrBitfield.bitfield;
 
+	if (bitfield.includes(BitField.IsPatronTier6)) {
+		return PerkTier.Seven;
+	}
+
 	if (bitfield.includes(BitField.IsPatronTier5)) {
 		return PerkTier.Six;
 	}
