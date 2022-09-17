@@ -87,6 +87,8 @@ const specialPricesBeforeMultiplying = new Bank()
 	.add('Ignecarus dragonclaw', 50_000_000)
 	.add('Blood dye', 1_500_000_000)
 	.add('Ice dye', 1_500_000_000)
+	.add('Shadow dye', 1_500_000_000)
+	.add('Third age dye', 3_000_000_000)
 	.add('Holiday mystery box', 75_000_000)
 	.add('Saradomin brew(4)', 70_000)
 	.add('Super restore(4)', 30_000)
@@ -183,7 +185,7 @@ export const lotteryCommand: OSBMahojiCommand = {
 		const active = await isLotteryActive();
 		if (!active) return 'There is no lottery currently going on.';
 		const user = await mUserFetch(userID);
-		if (user.isIronman) return 'Ironmen cannot parttake in the Lottery.';
+		if (user.isIronman) return 'Ironmen cannot partake in the Lottery.';
 
 		if (options.prices) {
 			return { attachments: [(await makeBankImage({ bank: parsedPriceBank, title: 'Prices' })).file] };
@@ -207,14 +209,15 @@ export const lotteryCommand: OSBMahojiCommand = {
 				return 'You cannot put in super untradeable items.';
 			}
 
+			if (bankToSell.amount('Bank lottery ticket')) {
+				bankToSell.remove('Bank lottery ticket', bankToSell.amount('Bank lottery ticket'));
+			}
+
 			let totalPrice = 0;
 			for (const [item, quantity] of bankToSell.items()) {
 				totalPrice += getPriceOfItem(item) * quantity;
 			}
 
-			if (bankToSell.amount('Bank lottery ticket')) {
-				bankToSell.remove('Bank lottery ticket', bankToSell.amount('Bank lottery ticket'));
-			}
 			if (bankToSell.length === 0) return 'No items were given.';
 			if (!user.owns(bankToSell)) return 'You do not own these items.';
 
@@ -258,8 +261,9 @@ export const lotteryCommand: OSBMahojiCommand = {
 			if (!user.owns(bankToSell)) return 'You do not own these items.';
 			await user.removeItemsFromBank(bankToSell);
 			await user.addItemsToBank({
-				items: new Bank().add('Bank lottery ticket').add(amountOfTickets),
-				collectionLog: true
+				items: new Bank().add('Bank lottery ticket', amountOfTickets),
+				collectionLog: true,
+				filterLoot: false
 			});
 
 			await updateBankSetting('bank_lottery', bankToSell);
