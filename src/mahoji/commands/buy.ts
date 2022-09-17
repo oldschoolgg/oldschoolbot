@@ -11,13 +11,7 @@ import { formatSkillRequirements, itemNameFromID, stringMatches } from '../../li
 import { mahojiChatHead } from '../../lib/util/chatHeadImage';
 import getOSItem from '../../lib/util/getOSItem';
 import { OSBMahojiCommand } from '../lib/util';
-import {
-	handleMahojiConfirmation,
-	mahojiParseNumber,
-	updateBankSetting,
-	updateLegacyUserBankSetting
-} from '../mahojiSettings';
-import { isLotteryActive } from './lottery';
+import { handleMahojiConfirmation, mahojiParseNumber, updateBankSetting } from '../mahojiSettings';
 
 const allBuyablesAutocomplete = [...Buyables, { name: 'Kitten' }];
 
@@ -93,12 +87,6 @@ export const buyCommand: OSBMahojiCommand = {
 		);
 
 		if (!buyable) return "That's not a valid item you can buy.";
-
-		if (buyable.name === 'Bank lottery ticket') {
-			if (user.isIronman) return 'Ironmen cant buy this.';
-			const lotteryIsActive = await isLotteryActive();
-			if (!lotteryIsActive) return 'The lottery is not active at the moment.';
-		}
 
 		if (buyable.collectionLogReqs) {
 			const { cl } = user;
@@ -193,15 +181,6 @@ export const buyCommand: OSBMahojiCommand = {
 
 		updateBankSetting('buy_cost_bank', econBankChanges);
 		updateBankSetting('buy_loot_bank', outItems);
-
-		if (buyable.name === 'Bank lottery ticket') {
-			await updateLegacyUserBankSetting(
-				user.id,
-				'lottery_input',
-				new Bank().add('Coins', buyable.gpCost! * quantity)
-			);
-			return `You purchased ${outItems} for ${totalCost}.`;
-		}
 
 		await transactItems({
 			userID: user.id,
