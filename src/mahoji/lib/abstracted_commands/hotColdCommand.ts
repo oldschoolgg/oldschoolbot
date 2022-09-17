@@ -1,4 +1,4 @@
-import { Embed } from '@discordjs/builders';
+import { EmbedBuilder } from 'discord.js';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { LootTable } from 'oldschooljs';
@@ -54,14 +54,14 @@ ${explanation}`
 		collectionLog: true
 	});
 
-	const embed = new Embed()
+	const embed = new EmbedBuilder()
 		.setTitle(`You picked ${choice} and got '${flower.name}'!`)
 		.setThumbnail(`https://chisel.weirdgloop.org/static/img/osrs-sprite/${flower.id}.png`)
 		.setFooter({
 			text: `You received ${flowerLoot}`
 		});
 	const response: Awaited<CommandResponse> = {
-		embeds: [embed]
+		embeds: [embed.data]
 	};
 
 	// You get 5x if you roll a black/white flower

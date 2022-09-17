@@ -88,7 +88,7 @@ ${bossUsers.map(u => `**${u.user.usernameOrMention}**: ${u.debugStr}`).join('\n\
 			.setImage('https://cdn.discordapp.com/attachments/357422607982919680/841789326648016896/Untitled-2.png');
 
 		return {
-			embeds: [embed],
+			embeds: [embed.data],
 			content: instance.boosts.length > 0 ? `**Boosts:** ${instance.boosts.join(', ')}.` : undefined
 		};
 	} catch (err: any) {

@@ -126,7 +126,7 @@ ${bossUsers.map(u => `**${u.user.usernameOrMention}**: ${u.debugStr}`).join('\n\
 			);
 
 		return {
-			embeds: [embed],
+			embeds: [embed.data],
 			content: instance.boosts.length > 0 ? `**Boosts:** ${instance.boosts.join(', ')}.` : undefined
 		};
 	} catch (err: any) {

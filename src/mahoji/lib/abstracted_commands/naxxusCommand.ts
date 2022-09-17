@@ -257,6 +257,6 @@ export async function naxxusCommand(user: MUser, channelID: bigint, quantity: nu
 		);
 
 	return {
-		embeds: [embed]
+		embeds: [embed.data]
 	};
 }
