@@ -180,7 +180,7 @@ export class MUserClass {
 	}
 
 	toString() {
-		return this.usernameOrMention;
+		return this.mention;
 	}
 
 	get QP() {
@@ -349,7 +349,10 @@ export class MUserClass {
 				continue;
 			}
 			if (Object.values(projectiles).flat(2).includes(item.id)) {
-				if (ammoRemove !== null) throw new Error('Tried to remove more than 1 ranged ammunition.');
+				if (ammoRemove !== null) {
+					bankRemove.add(item.id, quantity);
+					continue;
+				}
 				ammoRemove = [item, quantity];
 				continue;
 			}
@@ -424,8 +427,8 @@ export class MUserClass {
 		}
 
 		if (bankRemove.length > 0) {
-			if (!this.bank.has(bankRemove)) {
-				throw new Error(`You don't own: ${bankRemove.clone().remove(this.bank)}.`);
+			if (!this.bankWithGP.has(bankRemove)) {
+				throw new Error(`You don't own: ${bankRemove.clone().remove(this.bankWithGP)}.`);
 			}
 			await transactItems({ userID: this.id, itemsToRemove: bankRemove });
 		}

@@ -23,6 +23,7 @@ export class OldSchoolBotClient extends Client {
 	public piscinaPool = piscinaPool;
 	public production = production ?? false;
 	public mahojiClient!: MahojiClient;
+	public isShuttingDown = false;
 	_emojis: any;
 
 	_fileChangeWatcher?: FSWatcher;

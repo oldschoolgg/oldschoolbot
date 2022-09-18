@@ -56,9 +56,8 @@ export function parseStrToTier(str: string) {
 			return PerkTier.Six;
 		case '$99 a month':
 			return PerkTier.Six;
-		default: {
-			throw new Error(`Unmatched patron tier: ${str}`);
-		}
+		default:
+			return null;
 	}
 }
 
