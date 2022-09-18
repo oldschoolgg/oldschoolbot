@@ -119,7 +119,10 @@ Both parties must click confirm to make the trade.`,
 			[recipientUser.id, senderUser.id]
 		);
 
+		await senderUser.sync();
+		await recipientUser.sync();
 		if (!recipientUser.owns(itemsReceived)) return "They don't own those items.";
+		if (!senderUser.owns(itemsSent)) return "You don't own those items.";
 
 		await senderUser.removeItemsFromBank(itemsSent);
 		await recipientUser.removeItemsFromBank(itemsReceived);

@@ -1,15 +1,19 @@
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
-import { Time } from 'e';
+import { Time, uniqueArr } from 'e';
 import { APIInteraction, InteractionType, Routes } from 'mahoji';
+import { Bank } from 'oldschooljs';
 
 import { buyBingoTicketCommand } from '../../mahoji/commands/bingo';
 import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { Cooldowns } from '../../mahoji/lib/Cooldowns';
 import { ClueTier } from '../clues/clueTiers';
 import { lastTripCache, PerkTier } from '../constants';
+import { prisma } from '../settings/prisma';
 import { runCommand } from '../settings/settings';
-import { channelIsSendable, convertMahojiResponseToDJSResponse, formatDuration } from '../util';
+import { ItemBank } from '../types';
+import { channelIsSendable, convertMahojiResponseToDJSResponse, formatDuration, removeFromArr } from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
+import { updateGiveawayMessage } from './giveaway';
 import { minionIsBusy } from './minionIsBusy';
 import { respondToButton } from './respondToButton';
 import { webhookMessageCache } from './webhook';
@@ -87,7 +91,8 @@ const reactionTimeLimits = {
 	[PerkTier.Three]: Time.Hour * 50,
 	[PerkTier.Four]: Time.Hour * 100,
 	[PerkTier.Five]: Time.Hour * 200,
-	[PerkTier.Six]: Time.Hour * 300
+	[PerkTier.Six]: Time.Hour * 300,
+	[PerkTier.Seven]: Time.Hour * 300
 } as const;
 
 const reactionTimeLimit = (perkTier: PerkTier | 0): number => reactionTimeLimits[perkTier] ?? Time.Hour * 12;
@@ -100,24 +105,109 @@ export function makeNewSlayerTaskButton() {
 		.setEmoji('630911040560824330');
 }
 
+async function giveawayButtonHandler(user: MUser, customID: string, data: APIInteraction) {
+	const split = customID.split('_');
+	if (split[0] !== 'GIVEAWAY') return;
+	const giveawayID = Number(split[2]);
+	const giveaway = await prisma.giveaway.findFirst({
+		where: {
+			id: giveawayID
+		}
+	});
+	if (!giveaway) {
+		return respondToButton(data, 'Invalid giveaway.');
+	}
+	if (split[1] === 'REPEAT') {
+		if (user.id !== giveaway.user_id) {
+			return respondToButton(data, "You cannot repeat other peoples' giveaways.");
+		}
+		await respondToButton(data);
+		return runCommand({
+			commandName: 'giveaway',
+			args: {
+				start: {
+					duration: `${giveaway.duration}ms`,
+					items: new Bank(giveaway.loot as ItemBank)
+						.items()
+						.map(t => `${t[1]} ${t[0].name}`)
+						.join(', ')
+				}
+			},
+			user,
+			member: data.member ?? null,
+			channelID: data.channel_id!,
+			guildID: data.guild_id
+		});
+	}
+
+	if (giveaway.finish_date.getTime() < Date.now() || giveaway.completed) {
+		return respondToButton(data, 'This giveaway has finished.');
+	}
+
+	const action = split[1] === 'ENTER' ? 'ENTER' : 'LEAVE';
+
+	if (user.isIronman) {
+		return respondToButton(data, 'You are an ironman, you cannot enter giveaways.');
+	}
+
+	if (user.id === giveaway.user_id) {
+		return respondToButton(data, 'You cannot join your own giveaway.');
+	}
+
+	if (action === 'ENTER') {
+		if (giveaway.users_entered.includes(user.id)) {
+			return respondToButton(data, 'You are already entered in this giveaway.');
+		}
+		await prisma.giveaway.update({
+			where: {
+				id: giveaway.id
+			},
+			data: {
+				users_entered: {
+					push: user.id
+				}
+			}
+		});
+		updateGiveawayMessage(giveaway);
+		return respondToButton(data, 'You are now entered in this giveaway.');
+	}
+	if (!giveaway.users_entered.includes(user.id)) {
+		return respondToButton(data, "You aren't entered in this giveaway, so you can't leave it.");
+	}
+	await prisma.giveaway.update({
+		where: {
+			id: giveaway.id
+		},
+		data: {
+			users_entered: uniqueArr(removeFromArr(giveaway.users_entered, user.id))
+		}
+	});
+	updateGiveawayMessage(giveaway);
+	return respondToButton(data, 'You left the giveaway.');
+}
+
 export async function interactionHook(data: APIInteraction) {
 	if (data.type !== InteractionType.MessageComponent) return;
 	const id = data.data.custom_id;
-	if (!isValidGlobalInteraction(id)) return;
 	const userID = data.member ? data.member.user?.id : data.user?.id;
 	if (!userID) return;
+	if (globalClient.oneCommandAtATimeCache.has(userID)) {
+		return buttonReply('You cannot use a command right now.');
+	}
 
 	const user = await mUserFetch(userID);
+	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, data);
+
+	if (!isValidGlobalInteraction(id)) return;
 	const options = {
 		user,
 		member: data.member ?? null,
-		userID,
 		channelID: data.channel_id,
 		guildID: data.guild_id
 	};
 
 	async function buttonReply(str?: string, ephemeral = true) {
-		await respondToButton(data.id, data.token, str, ephemeral);
+		await respondToButton(data, str, ephemeral);
 
 		// Remove buttons, disabled for now
 		if (1 > 2 && data.message && data.channel_id) {

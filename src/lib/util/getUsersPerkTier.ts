@@ -23,20 +23,6 @@ export default function getUsersPerkTier(
 	userOrBitfield: MUser | User | BitField[],
 	noCheckOtherAccounts?: boolean
 ): PerkTier | 0 {
-	if (noCheckOtherAccounts !== true && userOrBitfield instanceof MUserClass) {
-		let main = userOrBitfield.user.main_account;
-		const allAccounts: string[] = [...userOrBitfield.user.ironman_alts, userOrBitfield.id];
-		if (main) {
-			allAccounts.push(main);
-		}
-
-		const allAccountTiers = allAccounts.map(id => perkTierCache.get(id)).filter(notEmpty);
-
-		const highestAccountTier = Math.max(0, ...allAccountTiers);
-		return highestAccountTier;
-	}
-
-	const bitfield = Array.isArray(userOrBitfield) ? userOrBitfield : userOrBitfield.bitfield;
 	if (userOrBitfield instanceof MUserClass && userOrBitfield.user.premium_balance_tier !== null) {
 		const date = userOrBitfield.user.premium_balance_expiry_date;
 		if (date && Date.now() < date) {
@@ -51,6 +37,25 @@ export default function getUsersPerkTier(
 					logError(e, { user_id: userOrBitfield.id, message: 'Could not remove premium time' });
 				});
 		}
+	}
+
+	if (noCheckOtherAccounts !== true && userOrBitfield instanceof MUserClass) {
+		let main = userOrBitfield.user.main_account;
+		const allAccounts: string[] = [...userOrBitfield.user.ironman_alts, userOrBitfield.id];
+		if (main) {
+			allAccounts.push(main);
+		}
+
+		const allAccountTiers = allAccounts.map(id => perkTierCache.get(id)).filter(notEmpty);
+
+		const highestAccountTier = Math.max(0, ...allAccountTiers);
+		return highestAccountTier;
+	}
+
+	const bitfield = Array.isArray(userOrBitfield) ? userOrBitfield : userOrBitfield.bitfield;
+
+	if (bitfield.includes(BitField.IsPatronTier6)) {
+		return PerkTier.Seven;
 	}
 
 	if (bitfield.includes(BitField.IsPatronTier5)) {
