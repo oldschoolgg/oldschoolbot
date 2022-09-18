@@ -8,6 +8,7 @@ import { DISABLED_COMMANDS } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
 import { CUSTOM_PRICE_CACHE } from '../commands/sell';
 import { mahojiClientSettingsFetch } from '../mahojiSettings';
+import {syncLinkedAccounts} from "../../lib/util/getUsersPerkTier";
 
 export async function syncCustomPrices() {
 	const clientData = await mahojiClientSettingsFetch();
@@ -48,4 +49,6 @@ export async function onStartup() {
 	await syncCustomPrices();
 
 	await cacheBadges();
+
+	await syncLinkedAccounts();
 }
