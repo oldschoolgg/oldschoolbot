@@ -5,7 +5,7 @@ import { superCompostables } from '../../lib/data/filterables';
 import { ContractOption, ContractOptions } from '../../lib/minions/farming/types';
 import { autoFarm } from '../../lib/minions/functions/autoFarm';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
-import Farming, { AutoFarmFilterEnum, CompostName, CompostTiers } from '../../lib/skilling/skills/farming';
+import Farming, { CompostName, CompostTiers } from '../../lib/skilling/skills/farming';
 import { getSkillsOfMahojiUser, stringMatches } from '../../lib/util';
 import { farmingPatchNames, userGrowingProgressStr } from '../../lib/util/farmingHelpers';
 import { compostBinCommand, farmingPlantCommand, harvestCommand } from '../lib/abstracted_commands/farmingCommand';
@@ -13,6 +13,8 @@ import { farmingContractCommand } from '../lib/abstracted_commands/farmingContra
 import { titheFarmCommand, titheFarmShopCommand } from '../lib/abstracted_commands/titheFarmCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { mahojiUserSettingsUpdate } from '../settingsUpdate';
+import { autoFarm_filter_enum } from '.prisma/client';
 
 export const farmingCommand: OSBMahojiCommand = {
 	name: 'farming',
@@ -72,9 +74,9 @@ export const farmingCommand: OSBMahojiCommand = {
 				{
 					type: ApplicationCommandOptionType.String,
 					name: 'auto_farm_filter_data',
-					description: 'The auto farm filter you want to use by default.',
+					description: 'The auto farm filter you want to use by default. (default: allfarm)',
 					required: true,
-					choices: Object.keys(AutoFarmFilterEnum).map(i => ({ name: i, value: i }))
+					choices: Object.keys(autoFarm_filter_enum).map(i => ({ name: i, value: i }))
 				}
 			]
 		},
@@ -214,11 +216,12 @@ export const farmingCommand: OSBMahojiCommand = {
 			return `You will now use ${tier.item.name} by default.`;
 		}
 		if (options.auto_farm_filter) {
-			const autoFarmFilterString = Object.keys(AutoFarmFilterEnum).find(i =>
+			const autoFarmFilterString = Object.keys(autoFarm_filter_enum).find(i =>
 				stringMatches(i, options.auto_farm_filter!.auto_farm_filter_data)
 			);
 			if (!autoFarmFilterString) return 'Invalid auto farm filter.';
-			const autoFarmFilter = autoFarmFilterString as AutoFarmFilterEnum;
+			const autoFarmFilter = autoFarmFilterString as autoFarm_filter_enum;
+
 			await mahojiUserSettingsUpdate(userID, {
 				minion_autoFarmFilterToUse: autoFarmFilter
 			});

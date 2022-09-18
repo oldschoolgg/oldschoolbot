@@ -1,7 +1,6 @@
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { UserSettings } from '../../settings/types/UserSettings';
+import { MUserClass } from '../../MUser';
 import { calcNumOfPatches } from '../../skilling/functions/calcsFarming';
 import { Plant } from '../../skilling/types';
 import { IPatchDataDetailed } from '../farming/types';
@@ -9,12 +8,12 @@ import { IPatchDataDetailed } from '../farming/types';
 export function replant(
 	p: Plant,
 	farmingLevel: number,
-	user: KlasaUser,
+	user: MUserClass,
 	userBank: Bank,
 	patchesDetailed: IPatchDataDetailed[]
 ) {
 	if (p.level > farmingLevel) return false;
-	const [numOfPatches] = calcNumOfPatches(p, user, user.settings.get(UserSettings.QP));
+	const [numOfPatches] = calcNumOfPatches(p, user, user.QP);
 	if (numOfPatches === 0) return false;
 	const reqItems = new Bank(p.inputItems);
 	if (!userBank.has(reqItems.bank)) return false;
@@ -23,9 +22,9 @@ export function replant(
 	return false;
 }
 
-export function allFarm(p: Plant, farmingLevel: number, user: KlasaUser, userBank: Bank) {
+export function allFarm(p: Plant, farmingLevel: number, user: MUserClass, userBank: Bank) {
 	if (p.level > farmingLevel) return false;
-	const [numOfPatches] = calcNumOfPatches(p, user, user.settings.get(UserSettings.QP));
+	const [numOfPatches] = calcNumOfPatches(p, user, user.QP);
 	if (numOfPatches === 0) return false;
 	const reqItems = new Bank(p.inputItems).multiply(numOfPatches);
 	if (!userBank.has(reqItems.bank)) return false;

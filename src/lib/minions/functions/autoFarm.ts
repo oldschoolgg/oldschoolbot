@@ -1,12 +1,14 @@
-import { Bank } from 'oldschooljs';
+import { autoFarm_filter_enum } from '@prisma/client';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { farmingPlantCommand } from '../../../mahoji/lib/abstracted_commands/farmingCommand';
 import { mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings';
-import { AutoFarmFilterEnum, plants } from '../../skilling/skills/farming';
+import { plants } from '../../skilling/skills/farming';
 import { IPatchDataDetailed } from '../farming/types';
 import { Plant } from './../../skilling/types';
 import { allFarm, replant } from './autoFarmFilters';
+
+autoFarm_filter_enum;
 
 export async function autoFarm(user: MUser, patchesDetailed: IPatchDataDetailed[], channelID: bigint) {
 	if (user.minionIsBusy) {
@@ -22,10 +24,10 @@ export async function autoFarm(user: MUser, patchesDetailed: IPatchDataDetailed[
 	let fetchAutoFarmFilter = await mahojiUsersSettingsFetch(user.id, {
 		minion_autoFarmFilterToUse: true
 	});
-	let autoFarmFilter = fetchAutoFarmFilter.minion_autoFarmFilterToUse as unknown as AutoFarmFilterEnum | undefined;
+	let autoFarmFilter = fetchAutoFarmFilter.minion_autoFarmFilterToUse as autoFarm_filter_enum;
 
 	if (!autoFarmFilter) {
-		autoFarmFilter = AutoFarmFilterEnum.Allfarm;
+		autoFarmFilter = autoFarm_filter_enum.allfarm;
 	}
 
 	const autoFarmFilterString = autoFarmFilter.toString().toLowerCase();
@@ -33,10 +35,10 @@ export async function autoFarm(user: MUser, patchesDetailed: IPatchDataDetailed[
 	elligible = [...plants]
 		.filter(p => {
 			switch (autoFarmFilterString) {
-				case AutoFarmFilterEnum.Allfarm: {
+				case autoFarm_filter_enum.allfarm: {
 					return allFarm(p, farmingLevel, user, userBank);
 				}
-				case AutoFarmFilterEnum.Replant: {
+				case autoFarm_filter_enum.replant: {
 					return replant(p, farmingLevel, user, userBank, patchesDetailed);
 				}
 				default: {
@@ -46,11 +48,11 @@ export async function autoFarm(user: MUser, patchesDetailed: IPatchDataDetailed[
 		})
 		.sort((a, b) => b.level - a.level);
 
-	if (autoFarmFilterString === AutoFarmFilterEnum.Allfarm) {
+	if (autoFarmFilterString === autoFarm_filter_enum.allfarm) {
 		canHarvest = elligible.find(p => patchesDetailed.find(_p => _p.patchName === p.seedType)!.ready);
 		errorString = "There's no Farming crops that you have the requirements to plant, and nothing to harvest.";
 	}
-	if (autoFarmFilterString === AutoFarmFilterEnum.Replant) {
+	if (autoFarmFilterString === autoFarm_filter_enum.replant) {
 		errorString =
 			"There's no Farming crops that you have planted that are ready to be replanted or no seeds remaining.";
 	}
