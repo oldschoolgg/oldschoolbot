@@ -1,17 +1,15 @@
-import { User } from '@prisma/client';
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { Skills } from '../../../lib/types';
 import { CollectingOptions } from '../../../lib/types/minions';
-import { formatDuration, stringMatches, updateBankSetting } from '../../../lib/util';
+import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
+import { updateBankSetting } from '../../mahojiSettings';
 import { getPOH } from './pohCommand';
 
 export interface Collectable {
@@ -138,13 +136,7 @@ export const collectables: Collectable[] = [
 	}
 ];
 
-export async function collectCommand(
-	mahojiUser: User,
-	user: KlasaUser,
-	channelID: bigint,
-	objectName: string,
-	no_stams?: boolean
-) {
+export async function collectCommand(user: MUser, channelID: bigint, objectName: string, no_stams?: boolean) {
 	const collectable = collectables.find(c => stringMatches(c.item.name, objectName));
 	if (!collectable) {
 		return `That's not something your minion can collect, you can collect these things: ${collectables
@@ -153,7 +145,7 @@ export async function collectCommand(
 	}
 
 	const maxTripLength = calcMaxTripLength(user, 'Collecting');
-	if (collectable.qpRequired && mahojiUser.QP < collectable.qpRequired) {
+	if (collectable.qpRequired && user.QP < collectable.qpRequired) {
 		return `You need ${collectable.qpRequired} QP to collect ${collectable.item.name}.`;
 	}
 
@@ -199,9 +191,9 @@ export async function collectCommand(
 		if (!user.owns(cost)) {
 			return `You don't have the items needed for this trip, you need: ${cost}.`;
 		}
-		await user.removeItemsFromBank(cost);
+		await transactItems({ userID: user.id, itemsToRemove: cost });
 
-		await updateBankSetting(user.client, ClientSettings.EconomyStats.CollectingCost, cost);
+		await updateBankSetting('collecting_cost', cost);
 	}
 
 	await addSubTaskToActivityTask<CollectingOptions>({

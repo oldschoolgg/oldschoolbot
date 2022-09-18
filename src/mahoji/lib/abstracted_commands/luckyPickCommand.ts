@@ -1,18 +1,16 @@
-import { MessageButton, MessageComponentInteraction, MessageOptions } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageComponentInteraction, MessageOptions } from 'discord.js';
 import { chunk, noOp, roll, shuffleArr, Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import { SILENT_ERROR } from '../../../lib/constants';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
-import { channelIsSendable, updateGPTrackSetting } from '../../../lib/util';
+import { awaitMessageComponentInteraction, channelIsSendable } from '../../../lib/util';
 import { logError } from '../../../lib/util/logError';
-import { handleMahojiConfirmation, mahojiParseNumber } from '../../mahojiSettings';
+import { handleMahojiConfirmation, mahojiParseNumber, updateGPTrackSetting } from '../../mahojiSettings';
 
 export async function luckyPickCommand(
-	klasaUser: KlasaUser,
+	user: MUser,
 	luckypickamount: string,
 	interaction: SlashCommandInteraction
 ): Promise<string> {
@@ -75,7 +73,7 @@ export async function luckyPickCommand(
 		id: number;
 		picked: boolean;
 	}
-	if (klasaUser.isIronman) {
+	if (user.isIronman) {
 		return "Ironmen can't gamble! Go pickpocket some men for GP.";
 	}
 
@@ -83,28 +81,40 @@ export async function luckyPickCommand(
 		interaction,
 		`Are you sure you want to gamble ${toKMB(amount)}? You might lose it all, you might win a lot.`
 	);
-	const currentBalance = klasaUser.settings.get(UserSettings.GP);
+	const currentBalance = user.GP;
 	if (currentBalance < amount) {
 		return "You don't have enough GP to make this bet.";
 	}
-	await klasaUser.removeItemsFromBank(new Bank().add('Coins', amount));
+	await user.removeItemsFromBank(new Bank().add('Coins', amount));
 	const buttonsToShow = getButtons();
 	function getCurrentButtons({ showTrueNames }: { showTrueNames: boolean }): MessageOptions['components'] {
 		let chunkedButtons = chunk(buttonsToShow, 5);
 		return chunkedButtons.map(c =>
-			c.map(b => {
-				let button = new MessageButton()
-					.setLabel(showTrueNames ? b.name : '')
-					.setCustomID(b.id.toString())
-					.setStyle(b.picked ? (b.name !== '0' ? 'SUCCESS' : 'DANGER') : 'SECONDARY');
-				if (!showTrueNames) {
-					button.setEmoji('680783258488799277');
-				}
-				if (b.name === '10x' && !b.picked && showTrueNames) {
-					button.setStyle('PRIMARY');
-				}
-				return button;
-			})
+			new ActionRowBuilder<ButtonBuilder>().addComponents(
+				c.map(b => {
+					let button = new ButtonBuilder()
+
+						.setCustomId(b.id.toString())
+						.setStyle(
+							b.picked
+								? b.name !== '0'
+									? ButtonStyle.Success
+									: ButtonStyle.Danger
+								: ButtonStyle.Secondary
+						);
+
+					if (showTrueNames) {
+						button.setLabel(b.name);
+					}
+					if (!showTrueNames) {
+						button.setEmoji('680783258488799277');
+					}
+					if (b.name === '10x' && !b.picked && showTrueNames) {
+						button.setStyle(ButtonStyle.Primary);
+					}
+					return button;
+				})
+			)
 		);
 	}
 
@@ -123,9 +133,9 @@ export async function luckyPickCommand(
 		interaction: MessageComponentInteraction;
 	}) => {
 		let amountReceived = Math.floor(button.mod(amount));
-		await klasaUser.addItemsToBank({ items: new Bank().add('Coins', amountReceived) });
+		await user.addItemsToBank({ items: new Bank().add('Coins', amountReceived) });
 		await updateGPTrackSetting('gp_luckypick', amountReceived - amount);
-		await updateGPTrackSetting('gp_luckypick', amountReceived - amount, klasaUser);
+		await updateGPTrackSetting('gp_luckypick', amountReceived - amount, user);
 
 		await interaction.update({ components: getCurrentButtons({ showTrueNames: true }) }).catch(noOp);
 		return amountReceived === 0
@@ -136,16 +146,17 @@ export async function luckyPickCommand(
 	const cancel = async () => {
 		await sentMessage.delete();
 		if (!buttonsToShow.some(b => b.picked)) {
-			await klasaUser.addItemsToBank({ items: new Bank().add('Coins', amount) });
+			await user.addItemsToBank({ items: new Bank().add('Coins', amount) });
 			return `You didn't pick any buttons in time, so you were refunded ${toKMB(amount)} GP.`;
 		}
 		throw new Error(SILENT_ERROR);
 	};
 
 	try {
-		const selection = await sentMessage.awaitMessageComponentInteraction({
+		const selection = await awaitMessageComponentInteraction({
+			message: sentMessage,
 			filter: i => {
-				if (i.user.id !== (klasaUser.id ?? interaction.userID).toString()) {
+				if (i.user.id !== (user.id ?? interaction.userID).toString()) {
 					i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
 					return false;
 				}
@@ -154,7 +165,7 @@ export async function luckyPickCommand(
 			time: Time.Second * 10
 		});
 
-		const pickedButton = buttonsToShow.find(b => b.id.toString() === selection.customID)!;
+		const pickedButton = buttonsToShow.find(b => b.id.toString() === selection.customId)!;
 		buttonsToShow[pickedButton.id].picked = true;
 
 		try {

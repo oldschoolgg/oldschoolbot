@@ -172,13 +172,11 @@ export const gearCommand: OSBMahojiCommand = {
 		view?: { setup: string; text_format?: boolean };
 		swap?: { setup_one: GearSetupType; setup_two: GearSetupType };
 	}>) => {
-		const klasaUser = await globalClient.fetchUser(userID);
-		const mahojiUser = await mahojiUsersSettingsFetch(userID);
+		const user = await mUserFetch(userID);
 		if (options.equip) {
 			return gearEquipCommand({
 				interaction,
-				user: mahojiUser,
-				klasaUser,
+				userID: user.id,
 				setup: options.equip.gear_setup,
 				item: options.equip.item,
 				preset: options.equip.preset,
@@ -188,20 +186,14 @@ export const gearCommand: OSBMahojiCommand = {
 			});
 		}
 		if (options.unequip) {
-			return gearUnequipCommand(
-				klasaUser,
-				mahojiUser,
-				options.unequip.gear_setup,
-				options.unequip.item,
-				options.unequip.all
-			);
+			return gearUnequipCommand(user, options.unequip.gear_setup, options.unequip.item, options.unequip.all);
 		}
-		if (options.stats) return gearStatsCommand(mahojiUser, options.stats.gear_setup);
-		if (options.pet?.equip) return equipPet(klasaUser, options.pet.equip);
-		if (options.pet?.unequip) return unequipPet(klasaUser);
-		if (options.view) return gearViewCommand(mahojiUser, options.view.setup, Boolean(options.view.text_format));
+		if (options.stats) return gearStatsCommand(user, options.stats.gear_setup);
+		if (options.pet?.equip) return equipPet(user, options.pet.equip);
+		if (options.pet?.unequip) return unequipPet(user);
+		if (options.view) return gearViewCommand(user, options.view.setup, Boolean(options.view.text_format));
 		if (options.swap) {
-			return gearSwapCommand(interaction, mahojiUser, options.swap.setup_one, options.swap.setup_two);
+			return gearSwapCommand(interaction, user, options.swap.setup_one, options.swap.setup_two);
 		}
 
 		return 'Invalid command.';

@@ -1,5 +1,4 @@
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { userhasDiaryTier, WildernessDiary } from '../../../lib/diaries';
@@ -11,8 +10,8 @@ import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 export const gloriesInventorySize = 26;
 export const gloriesInventoryTime = Time.Minute * 2.2;
 
-export async function chargeGloriesCommand(user: KlasaUser, channelID: bigint, quantity: number | undefined) {
-	const userBank = user.bank();
+export async function chargeGloriesCommand(user: MUser, channelID: bigint, quantity: number | undefined) {
+	const userBank = user.bank;
 
 	const amountHas = userBank.amount('Amulet of glory');
 	if (amountHas < gloriesInventorySize) {

@@ -38,6 +38,9 @@ export interface Ore {
 	id: number;
 	name: string;
 	respawnTime: number;
+	bankingTime: number;
+	slope: number;
+	intercept: number;
 	petChance?: number;
 	nuggets?: boolean;
 	minerals?: number;

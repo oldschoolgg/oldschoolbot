@@ -1,5 +1,4 @@
 import { Time } from 'e';
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { prisma } from '../../../lib/settings/prisma';
@@ -11,7 +10,8 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export const pizazzPointsPerHour = 100;
 
-export default class extends Task {
+export const mageTrainingTask: MinionTask = {
+	type: 'MageTrainingArena',
 	async run(data: MinigameActivityTaskOptions) {
 		const { channelID, quantity, duration, userID } = data;
 
@@ -19,7 +19,7 @@ export default class extends Task {
 
 		const loot = new Bank();
 
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		let baseXP = (25_000 / (Time.Minute * 60)) * duration;
 		let xp = randomVariation(baseXP, 5);
 		const xpRes = await user.addXP({
@@ -49,4 +49,4 @@ export default class extends Task {
 			loot
 		);
 	}
-}
+};

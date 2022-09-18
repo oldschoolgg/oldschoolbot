@@ -1,4 +1,3 @@
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import Herblore from '../../lib/skilling/skills/herblore/herblore';
@@ -6,10 +5,11 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { HerbloreActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
-export default class extends Task {
+export const herbloreTask: MinionTask = {
+	type: 'Herblore',
 	async run(data: HerbloreActivityTaskOptions) {
 		let { mixableID, quantity, zahur, userID, channelID, duration } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
 		const mixableItem = Herblore.Mixables.find(mixable => mixable.id === mixableID)!;
 
@@ -31,7 +31,11 @@ export default class extends Task {
 
 		const loot = new Bank().add(mixableItem.id, outputQuantity);
 
-		await user.addItemsToBank({ items: loot, collectionLog: true });
+		await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 
 		handleTripFinish(
 			user,
@@ -43,4 +47,4 @@ export default class extends Task {
 			loot
 		);
 	}
-}
+};

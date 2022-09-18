@@ -1,18 +1,18 @@
 import { Time } from 'e';
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { MorytaniaDiary, userhasDiaryTier } from '../../lib/diaries';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { CollectingOptions } from '../../lib/types/minions';
-import { updateBankSetting } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { collectables } from '../../mahoji/lib/abstracted_commands/collectCommand';
+import { updateBankSetting } from '../../mahoji/mahojiSettings';
 
-export default class extends Task {
+export const collectingTask: MinionTask = {
+	type: 'Collecting',
 	async run(data: CollectingOptions) {
 		let { collectableID, quantity, userID, channelID, duration, noStaminas } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
+
 		const collectable = collectables.find(c => c.item.id === collectableID)!;
 		let colQuantity = collectable.quantity;
 
@@ -23,7 +23,11 @@ export default class extends Task {
 		}
 		const totalQuantity = quantity * colQuantity;
 		const loot = new Bank().add(collectable.item.id, totalQuantity);
-		await user.addItemsToBank({ items: loot, collectionLog: true });
+		await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 
 		let str = `${user}, ${user.minionName} finished collecting ${totalQuantity}x ${
 			collectable.item.name
@@ -32,7 +36,7 @@ export default class extends Task {
 			str += '\n\n**Boosts:** 2x for Morytania Hard diary';
 		}
 
-		updateBankSetting(this.client, ClientSettings.EconomyStats.CollectingLoot, loot);
+		updateBankSetting('collecting_loot', loot);
 
 		handleTripFinish(
 			user,
@@ -44,4 +48,4 @@ export default class extends Task {
 			loot ?? null
 		);
 	}
-}
+};

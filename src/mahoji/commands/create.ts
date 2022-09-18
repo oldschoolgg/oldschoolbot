@@ -4,14 +4,12 @@ import { table } from 'table';
 
 import Createables from '../../lib/data/createables';
 import { gotFavour } from '../../lib/minions/data/kourendFavour';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
-import { stringMatches, updateBankSetting } from '../../lib/util';
+import { stringMatches } from '../../lib/util';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, userStatsBankUpdate } from '../mahojiSettings';
+import { handleMahojiConfirmation, updateBankSetting, userStatsBankUpdate } from '../mahojiSettings';
 
 function showAllCreatables() {
 	let content = 'This are the items that you can create:';
@@ -78,7 +76,7 @@ export const createCommand: OSBMahojiCommand = {
 		interaction,
 		userID
 	}: CommandRunOptions<{ item: string; quantity?: number; showall?: boolean }>) => {
-		const user = await globalClient.fetchUser(userID.toString());
+		const user = await mUserFetch(userID.toString());
 
 		const itemName = options.item.toLowerCase();
 		let { quantity } = options;
@@ -101,7 +99,7 @@ export const createCommand: OSBMahojiCommand = {
 			}
 		}
 
-		if (createableItem.QPRequired && user.settings.get(UserSettings.QP) < createableItem.QPRequired) {
+		if (createableItem.QPRequired && user.QP < createableItem.QPRequired) {
 			return `You need ${createableItem.QPRequired} QP to ${action} this item.`;
 		}
 
@@ -113,7 +111,7 @@ export const createCommand: OSBMahojiCommand = {
 			}
 		}
 		if (createableItem.requiredSlayerUnlocks) {
-			let mySlayerUnlocks = user.settings.get(UserSettings.Slayer.SlayerUnlocks);
+			let mySlayerUnlocks = user.user.slayer_unlocks;
 
 			const { success, errors } = hasSlayerUnlock(
 				mySlayerUnlocks as SlayerTaskUnlocksEnum[],
@@ -131,7 +129,7 @@ export const createCommand: OSBMahojiCommand = {
 		}
 
 		if (createableItem.name.toLowerCase().includes('kourend')) {
-			const currentUserFavour = user.settings.get(UserSettings.KourendFavour);
+			const currentUserFavour = user.kourendFavour;
 			for (const [key, value] of Object.entries(currentUserFavour)) {
 				if (value < 100) {
 					return `You don't have the required amount of Favour to ${action} this item.\n\nRequired: 100% ${key} Favour.`;
@@ -139,12 +137,12 @@ export const createCommand: OSBMahojiCommand = {
 			}
 		}
 
-		if (createableItem.GPCost && user.settings.get(UserSettings.GP) < createableItem.GPCost * quantity) {
+		if (createableItem.GPCost && user.GP < createableItem.GPCost * quantity) {
 			return `You need ${createableItem.GPCost.toLocaleString()} coins to ${action} this item.`;
 		}
 
 		if (createableItem.cantBeInCL) {
-			const cl = user.cl();
+			const { cl } = user;
 			if (Object.keys(createableItem.outputItems).some(itemID => cl.amount(Number(itemID)) > 0)) {
 				return `You can only ${action} this item once!`;
 			}
@@ -165,13 +163,11 @@ export const createCommand: OSBMahojiCommand = {
 			inItems.add('Coins', createableItem.GPCost * quantity);
 		}
 
-		await user.settings.sync(true);
-
 		// Check for any items they cant have 2 of.
 		if (createableItem.cantHaveItems) {
-			const allItemsOwned = user.allItemsOwned();
+			const allItemsOwnedBank = user.allItemsOwned();
 			for (const [itemID, qty] of Object.entries(createableItem.cantHaveItems)) {
-				const numOwned = allItemsOwned.amount(Number(itemID));
+				const numOwned = allItemsOwnedBank.amount(Number(itemID));
 				if (numOwned >= qty) {
 					return `You can't ${action} this item, because you have ${new Bank(
 						createableItem.cantHaveItems
@@ -197,20 +193,33 @@ export const createCommand: OSBMahojiCommand = {
 			return `You don't have the required items to ${action} this item. You need: ${inItems}.`;
 		}
 
-		await user.removeItemsFromBank(inItems);
-		await user.addItemsToBank({ items: outItems });
+		let extraMessage = '';
+		// Handle onCreate() features, and last chance to abort:
+		if (createableItem.onCreate) {
+			const onCreateResult = await createableItem.onCreate(quantity, user);
+			if (!onCreateResult.result) {
+				return onCreateResult.message;
+			}
+			if (onCreateResult.message) extraMessage += `\n\n${onCreateResult.message}`;
+		}
 
-		await updateBankSetting(globalClient, ClientSettings.EconomyStats.CreateCost, inItems);
-		await updateBankSetting(globalClient, ClientSettings.EconomyStats.CreateLoot, outItems);
+		// Only allow +create to add items to CL
+		const addToCl = !createableItem.noCl && action === 'create';
+		await transactItems({
+			userID: userID.toString(),
+			collectionLog: addToCl,
+			itemsToAdd: outItems,
+			itemsToRemove: inItems
+		});
+
+		await updateBankSetting('create_cost', inItems);
+		await updateBankSetting('create_loot', outItems);
 		await userStatsBankUpdate(user.id, 'create_cost_bank', inItems);
 		await userStatsBankUpdate(user.id, 'create_loot_bank', outItems);
 
-		// Only allow +create to add items to CL
-		if (!createableItem.noCl && action === 'create') await user.addItemsToCollectionLog({ items: outItems });
-
 		if (action === 'revert') {
-			return `You reverted ${inItems} into ${outItems}.`;
+			return `You reverted ${inItems} into ${outItems}.${extraMessage}`;
 		}
-		return `You received ${outItems}.`;
+		return `You received ${outItems}.${extraMessage}`;
 	}
 };

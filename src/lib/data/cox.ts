@@ -9,19 +9,18 @@ import {
 	shuffleArr,
 	Time
 } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { ChambersOfXericOptions } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 
 import { checkUserCanUseDegradeableItem } from '../degradeableItems';
 import { constructGearSetup, GearStats } from '../gear';
+import { getMinigameScore } from '../settings/minigames';
 import { SkillsEnum } from '../skilling/types';
 import { Gear } from '../structures/Gear';
 import { Skills } from '../types';
-import { randomVariation, skillsMeetRequirements } from '../util';
+import { randomVariation } from '../util';
 import getOSItem from '../util/getOSItem';
-import { userHasItemsEquippedAnywhere } from '../util/minionUtils';
 
 export const bareMinStats: Skills = {
 	attack: 80,
@@ -35,8 +34,8 @@ export const bareMinStats: Skills = {
 export const SANGUINESTI_CHARGES_PER_COX = 150;
 export const TENTACLE_CHARGES_PER_COX = 200;
 
-export function hasMinRaidsRequirements(user: KlasaUser) {
-	return skillsMeetRequirements(user.rawSkills, bareMinStats);
+export function hasMinRaidsRequirements(user: MUser) {
+	return user.hasSkillReqs(bareMinStats);
 }
 
 function kcPointsEffect(kc: number) {
@@ -52,7 +51,7 @@ function kcPointsEffect(kc: number) {
 }
 
 export async function createTeam(
-	users: KlasaUser[],
+	users: MUser[],
 	cm: boolean
 ): Promise<Array<{ deaths: number; deathChance: number } & ChambersOfXericOptions['team'][0]>> {
 	let res = [];
@@ -71,7 +70,7 @@ export async function createTeam(
 			deathChance -= calcPercentOfNum(total, 10);
 		}
 
-		const kc = await u.getMinigameScore(cm ? 'raids_challenge_mode' : 'raids');
+		const kc = await getMinigameScore(u.id, cm ? 'raids_challenge_mode' : 'raids');
 		const kcChange = kcPointsEffect(kc);
 		if (kcChange < 0) points = reduceNumByPercent(points, Math.abs(kcChange));
 		else points = increaseNumByPercent(points, kcChange);
@@ -106,11 +105,11 @@ export async function createTeam(
 
 		points = Math.floor(randomVariation(points, 5));
 		if (points < 1 || points > 60_000) {
-			captureMessage(`${u.username} had ${points} points in a team of ${users.length}.`);
+			captureMessage(`${u.usernameOrMention} had ${points} points in a team of ${users.length}.`);
 			points = 10_000;
 		}
 
-		const bank = u.bank();
+		const { bank } = u;
 		res.push({
 			id: u.id,
 			personalPoints: points,
@@ -201,24 +200,24 @@ export const maxMeleeGear = constructGearSetup({
 });
 const maxMelee = new Gear(maxMeleeGear);
 
-export function calculateUserGearPercents(user: KlasaUser) {
+export function calculateUserGearPercents(user: MUser) {
 	const melee = calcSetupPercent(
 		maxMelee.stats,
-		user.getGear('melee').stats,
+		user.gear.melee.stats,
 		'melee_strength',
 		['attack_stab', 'attack_slash', 'attack_crush', 'attack_ranged', 'attack_magic'],
 		true
 	);
 	const range = calcSetupPercent(
 		maxRange.stats,
-		user.getGear('range').stats,
+		user.gear.range.stats,
 		'ranged_strength',
 		['attack_stab', 'attack_slash', 'attack_crush', 'attack_magic'],
 		false
 	);
 	const mage = calcSetupPercent(
 		maxMage.stats,
-		user.getGear('mage').stats,
+		user.gear.mage.stats,
 		'magic_damage',
 		['attack_stab', 'attack_slash', 'attack_crush', 'attack_ranged'],
 		false
@@ -237,7 +236,7 @@ export const minimumCoxSuppliesNeeded = new Bank({
 	'Super restore(4)': 5
 });
 
-export async function checkCoxTeam(users: KlasaUser[], cm: boolean): Promise<string | null> {
+export async function checkCoxTeam(users: MUser[], cm: boolean): Promise<string | null> {
 	const hasHerbalist = users.some(u => u.skillLevel(SkillsEnum.Herblore) >= 78);
 	if (!hasHerbalist) {
 		return 'nobody with atleast level 78 Herblore';
@@ -246,9 +245,9 @@ export async function checkCoxTeam(users: KlasaUser[], cm: boolean): Promise<str
 	if (!hasFarmer) {
 		return 'nobody with atleast level 55 Farming';
 	}
-	const userWithoutSupplies = users.find(u => !u.owns(minimumCoxSuppliesNeeded));
+	const userWithoutSupplies = users.find(u => !u.bank.has(minimumCoxSuppliesNeeded));
 	if (userWithoutSupplies) {
-		return `${userWithoutSupplies.username} doesn't have enough supplies`;
+		return `${userWithoutSupplies.usernameOrMention} doesn't have enough supplies`;
 	}
 
 	for (const user of users) {
@@ -257,33 +256,29 @@ export async function checkCoxTeam(users: KlasaUser[], cm: boolean): Promise<str
 			return "Your gear is terrible! You do not stand a chance in the Chamber's of Xeric.";
 		}
 		if (!hasMinRaidsRequirements(user)) {
-			return `${user.username} doesn't meet the stat requirements to do the Chamber's of Xeric.`;
+			return `${user.usernameOrMention} doesn't meet the stat requirements to do the Chamber's of Xeric.`;
 		}
 		if (cm) {
-			if (users.length === 1 && !user.hasItemEquippedOrInBank('Twisted bow')) {
-				return `${user.username} doesn't own a Twisted bow, which is required for solo Challenge Mode.`;
+			if (users.length === 1 && !user.hasEquippedOrInBank('Twisted bow')) {
+				return `${user.usernameOrMention} doesn't own a Twisted bow, which is required for solo Challenge Mode.`;
 			}
 			if (
 				users.length > 1 &&
-				!user.hasItemEquippedOrInBank('Dragon hunter crossbow') &&
-				!user.hasItemEquippedOrInBank('Twisted bow') &&
-				!userHasItemsEquippedAnywhere(
-					user,
-					['Bow of faerdhinen (c)', 'Crystal helm', 'Crystal legs', 'Crystal body'],
-					true
-				)
+				!user.hasEquippedOrInBank('Dragon hunter crossbow') &&
+				!user.hasEquippedOrInBank('Twisted bow') &&
+				!user.hasEquipped(['Bow of faerdhinen (c)', 'Crystal helm', 'Crystal legs', 'Crystal body'], true)
 			) {
-				return `${user.username} doesn't own a Twisted bow, Bow of faerdhinen (c) or Dragon hunter crossbow, which is required for Challenge Mode.`;
+				return `${user.usernameOrMention} doesn't own a Twisted bow, Bow of faerdhinen (c) or Dragon hunter crossbow, which is required for Challenge Mode.`;
 			}
-			const kc = await user.getMinigameScore('raids');
+			const kc = await getMinigameScore(user.id, 'raids');
 			if (kc < 200) {
-				return `${user.username} doesn't have the 200 KC required for Challenge Mode.`;
+				return `${user.usernameOrMention} doesn't have the 200 KC required for Challenge Mode.`;
 			}
 		}
 		if (user.minionIsBusy) {
-			return `${user.username}'s minion is already doing an activity and cannot join.`;
+			return `${user.usernameOrMention}'s minion is already doing an activity and cannot join.`;
 		}
-		if (user.getGear('melee').hasEquipped('Abyssal tentacle')) {
+		if (user.gear.melee.hasEquipped('Abyssal tentacle')) {
 			const tentacleResult = checkUserCanUseDegradeableItem({
 				item: getOSItem('Abyssal tentacle'),
 				chargesToDegrade: TENTACLE_CHARGES_PER_COX,
@@ -293,7 +288,7 @@ export async function checkCoxTeam(users: KlasaUser[], cm: boolean): Promise<str
 				return tentacleResult.userMessage;
 			}
 		}
-		if (user.getGear('mage').hasEquipped('Sanguinesti staff')) {
+		if (user.gear.mage.hasEquipped('Sanguinesti staff')) {
 			const sangResult = checkUserCanUseDegradeableItem({
 				item: getOSItem('Sanguinesti staff'),
 				chargesToDegrade: SANGUINESTI_CHARGES_PER_COX,
@@ -308,8 +303,8 @@ export async function checkCoxTeam(users: KlasaUser[], cm: boolean): Promise<str
 	return null;
 }
 
-async function kcEffectiveness(u: KlasaUser, challengeMode: boolean, isSolo: boolean) {
-	const kc = await u.getMinigameScore(challengeMode ? 'raids_challenge_mode' : 'raids');
+async function kcEffectiveness(u: MUser, challengeMode: boolean, isSolo: boolean) {
+	const kc = await getMinigameScore(u.id, challengeMode ? 'raids_challenge_mode' : 'raids');
 	let cap = isSolo ? 250 : 400;
 	if (challengeMode) {
 		cap = isSolo ? 75 : 100;
@@ -431,13 +426,13 @@ const itemBoosts: ItemBoost[][] = [
 ];
 
 export async function calcCoxDuration(
-	_team: KlasaUser[],
+	_team: MUser[],
 	challengeMode: boolean
 ): Promise<{
 	reductions: Record<string, number>;
 	duration: number;
 	totalReduction: number;
-	degradeables: { item: Item; user: KlasaUser; chargesToDegrade: number }[];
+	degradeables: { item: Item; user: MUser; chargesToDegrade: number }[];
 }> {
 	const team = shuffleArr(_team).slice(0, 9);
 	const size = team.length;
@@ -447,7 +442,7 @@ export async function calcCoxDuration(
 	let reductions: Record<string, number> = {};
 
 	// Track degradeable items:
-	const degradeableItems: { item: Item; user: KlasaUser; chargesToDegrade: number }[] = [];
+	const degradeableItems: { item: Item; user: MUser; chargesToDegrade: number }[] = [];
 
 	for (const u of team) {
 		let userPercentChange = 0;
@@ -464,7 +459,7 @@ export async function calcCoxDuration(
 		itemBoosts.forEach(set => {
 			for (const item of set) {
 				if (item.mustBeCharged && item.requiredCharges) {
-					if (u.hasItemEquippedOrInBank(item.item.id)) {
+					if (u.hasEquippedOrInBank(item.item.id)) {
 						const testItem = {
 							item: item.item,
 							user: u,
@@ -478,14 +473,14 @@ export async function calcCoxDuration(
 						}
 					}
 				} else if (item.mustBeEquipped) {
-					if (item.setup && u.getGear(item.setup).hasEquipped(item.item.id)) {
+					if (item.setup && u.gear[item.setup].hasEquipped(item.item.id)) {
 						userPercentChange += item.boost;
 						break;
-					} else if (!item.setup && u.hasItemEquippedAnywhere(item.item.id)) {
+					} else if (!item.setup && u.hasEquipped(item.item.id)) {
 						userPercentChange += item.boost;
 						break;
 					}
-				} else if (u.hasItemEquippedOrInBank(item.item.id)) {
+				} else if (u.hasEquippedOrInBank(item.item.id)) {
 					userPercentChange += item.boost;
 					break;
 				}
@@ -510,9 +505,9 @@ export async function calcCoxDuration(
 	return { duration, reductions, totalReduction: totalSpeedReductions / size, degradeables: degradeableItems };
 }
 
-export async function calcCoxInput(u: KlasaUser, solo: boolean) {
+export async function calcCoxInput(u: MUser, solo: boolean) {
 	const items = new Bank();
-	const kc = await u.getMinigameScore('raids');
+	const kc = await getMinigameScore(u.id, 'raids');
 	items.add('Stamina potion(4)', solo ? 2 : 1);
 
 	let brewsNeeded = Math.max(1, 8 - Math.max(1, Math.ceil((kc + 1) / 30)));

@@ -1,8 +1,7 @@
+import { Prisma } from '@prisma/client';
 import { randFloat, roll } from 'e';
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import birdhouses from '../../../lib/skilling/skills/hunter/birdHouseTrapping';
 import { BirdhouseData } from '../../../lib/skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -18,11 +17,12 @@ const clues = [
 	[itemID('Clue scroll(easy)'), 4 / 10]
 ];
 
-export default class extends Task {
+export const birdHouseTask: MinionTask = {
+	type: 'Birdhouse',
 	async run(data: BirdhouseActivityTaskOptions) {
 		const { birdhouseName, birdhouseData, userID, channelID, duration, placing, gotCraft, currentDate } = data;
 
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const currentHunterLevel = user.skillLevel(SkillsEnum.Hunter);
 		const currentCraftingLevel = user.skillLevel(SkillsEnum.Crafting);
 		let hunterXP = 0;
@@ -49,8 +49,9 @@ export default class extends Task {
 				birdhousePlaced: true,
 				birdhouseTime: currentDate + duration
 			};
-
-			await user.settings.update(UserSettings.Minion.BirdhouseTraps, updateBirdhouseData);
+			await user.update({
+				minion_birdhouseTraps: updateBirdhouseData as any as Prisma.InputJsonObject
+			});
 
 			str += `\n\n${user.minionName} tells you to come back after your birdhouses are full!`;
 
@@ -71,7 +72,7 @@ export default class extends Task {
 				let gotClue = false;
 				for (const clue of clues) {
 					if (nextTier || randFloat(0, 1) <= clue[1]) {
-						if (user.bank().amount(clue[0]) >= 1 || loot.amount(clue[0]) >= 1) {
+						if (user.bank.amount(clue[0]) >= 1 || loot.amount(clue[0]) >= 1) {
 							nextTier = true;
 							continue;
 						}
@@ -89,7 +90,11 @@ export default class extends Task {
 			for (let i = 0; i < 4; i++) {
 				loot.add(birdhouseToCollect.table.roll());
 			}
-			await user.addItemsToBank({ items: loot, collectionLog: true });
+			await transactItems({
+				userID: user.id,
+				collectionLog: true,
+				itemsToAdd: loot
+			});
 			await user.addXP({ skillName: SkillsEnum.Hunter, amount: hunterXP });
 			const newHuntLevel = user.skillLevel(SkillsEnum.Hunter);
 
@@ -125,7 +130,9 @@ export default class extends Task {
 				};
 			}
 
-			await user.settings.update(UserSettings.Minion.BirdhouseTraps, updateBirdhouseData);
+			await user.update({
+				minion_birdhouseTraps: updateBirdhouseData as any as Prisma.InputJsonObject
+			});
 
 			if (!placing) {
 				str += '\nThe birdhouses have been cleared. The birdhouse spots are ready to have new birdhouses.';
@@ -136,4 +143,4 @@ export default class extends Task {
 			handleTripFinish(user, channelID, str, undefined, undefined, data, loot);
 		}
 	}
-}
+};

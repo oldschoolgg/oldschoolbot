@@ -1,14 +1,11 @@
 import { reduceNumByPercent } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { deduplicateClueScrolls } from '../src/lib/clues/clueUtils';
 import getUserFoodFromBank from '../src/lib/minions/functions/getUserFoodFromBank';
-import { sanitizeBank, stripEmojis, truncateString } from '../src/lib/util';
+import { sanitizeBank, stripEmojis, truncateString, validateItemBankAndThrow } from '../src/lib/util';
 import getOSItem from '../src/lib/util/getOSItem';
 import { sellPriceOfItem, sellStorePriceOfItem } from '../src/mahoji/commands/sell';
-import { getSkillsOfMahojiUser } from '../src/mahoji/mahojiSettings';
-import { mockUser } from './utils';
 
 describe('util', () => {
 	test('stripEmojis', () => {
@@ -27,9 +24,9 @@ describe('util', () => {
 	test('getUserFoodFromBank', () => {
 		const fakeUser = (b: Bank) =>
 			({
-				bank: () => b,
+				bank: b,
 				skillLevel: () => 99
-			} as any as KlasaUser);
+			} as any as MUser);
 		expect(getUserFoodFromBank(fakeUser(new Bank().add('Shark')), 500, [])).toStrictEqual(false);
 		expect(getUserFoodFromBank(fakeUser(new Bank().add('Shark', 100)), 500, [])).toStrictEqual(
 			new Bank().add('Shark', 25)
@@ -87,8 +84,16 @@ describe('util', () => {
 		expect(sellStorePriceOfItem(getOSItem('A yellow square'), 1)).toEqual({ price: 0, basePrice: 0 });
 	});
 
-	test('getSkillsOfMahojiUser', () => {
-		expect(getSkillsOfMahojiUser(mockUser(), true).agility).toEqual(73);
-		expect(getSkillsOfMahojiUser(mockUser()).agility).toEqual(1_000_000);
+	test('validateItemBankAndThrow', () => {
+		expect(() => validateItemBankAndThrow({ a: 'b' })).toThrow();
+		expect(() => validateItemBankAndThrow({ a: 1 })).toThrow();
+		expect(() => validateItemBankAndThrow(1)).toThrow();
+		expect(() => validateItemBankAndThrow('b')).toThrow();
+		expect(() => validateItemBankAndThrow(() => {})).toThrow();
+		// eslint-disable-next-line func-names
+		expect(() => validateItemBankAndThrow(function () {})).toThrow();
+		// eslint-disable-next-line @typescript-eslint/no-extraneous-class
+		expect(() => validateItemBankAndThrow(class {})).toThrow();
+		expect(validateItemBankAndThrow({ 1: 1 })).toEqual(true);
 	});
 });

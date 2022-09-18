@@ -1,4 +1,3 @@
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Craftables } from '../../lib/skilling/skills/crafting/craftables';
@@ -7,10 +6,11 @@ import { CraftingActivityTaskOptions } from '../../lib/types/minions';
 import { randFloat } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
-export default class extends Task {
+export const craftingTask: MinionTask = {
+	type: 'Crafting',
 	async run(data: CraftingActivityTaskOptions) {
 		const { craftableID, quantity, userID, channelID, duration } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Crafting);
 		const item = Craftables.find(craft => craft.id === craftableID)!;
 
@@ -39,8 +39,12 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished crafting ${quantity}${sets} ${item.name}, and received ${loot}.${xpRes}`;
 
-		await user.addItemsToBank({ items: loot, collectionLog: true });
+		await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 
 		handleTripFinish(user, channelID, str, ['craft', { name: item.name, quantity }], undefined, data, loot);
 	}
-}
+};

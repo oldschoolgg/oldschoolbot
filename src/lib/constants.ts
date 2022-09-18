@@ -1,9 +1,6 @@
-import { MessageButton } from 'discord.js';
-import { KlasaMessage } from 'klasa';
+import { ButtonBuilder } from 'discord.js';
 import { APIButtonComponent, APIButtonComponentWithCustomId, ButtonStyle, ComponentType } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import PQueue from 'p-queue';
-import { join } from 'path';
 
 import { DISCORD_SETTINGS, production } from '../config';
 import { AbstractCommand, CommandArgs } from '../mahoji/lib/inhibitors';
@@ -12,7 +9,6 @@ import { SkillsEnum } from './skilling/types';
 import { ActivityTaskOptions } from './types/minions';
 import resolveItems from './util/resolveItems';
 
-export const SupportServer = production ? '342983479501389826' : '940758552425955348';
 export const BotID = DISCORD_SETTINGS.BotID ?? '303730326692429825';
 
 export const Channel = {
@@ -24,7 +20,7 @@ export const Channel = {
 	BlacklistLogs: DISCORD_SETTINGS.Channels?.BlacklistLogs ?? '782459317218967602',
 	EconomyLogs: DISCORD_SETTINGS.Channels?.EconomyLogs ?? '802029843712573510',
 	NewSponsors: DISCORD_SETTINGS.Channels?.NewSponsors ?? '806744016309714966',
-	HelpAndSupport: DISCORD_SETTINGS.Channels?.HelpAndSupport ?? '668073484731154462',
+	HelpAndSupport: '668073484731154462',
 	TestingMain: DISCORD_SETTINGS.Channels?.TestingMain ?? '680770361893322761',
 	BarbarianAssault: DISCORD_SETTINGS.Channels?.BarbarianAssault ?? '789717054902763520',
 	ChambersOfXeric: DISCORD_SETTINGS.Channels?.ChambersOfXeric ?? '835876917252587581'
@@ -151,90 +147,6 @@ export const ReactionEmoji = {
 	Start: production ? '705973302719414329' : '951309579302604880'
 };
 
-export const enum Image {
-	DiceBag = 'https://i.imgur.com/sySQkSX.png'
-}
-
-export const enum Color {
-	Orange = 16_098_851
-}
-
-export const enum Tasks {
-	AgilityActivity = 'agilityActivity',
-	CookingActivity = 'cookingActivity',
-	MonsterActivity = 'monsterActivity',
-	GroupMonsterActivity = 'groupMonsterActivity',
-	ClueActivity = 'clueActivity',
-	FishingActivity = 'fishingActivity',
-	MiningActivity = 'miningActivity',
-	SmeltingActivity = 'smeltingActivity',
-	SmithingActivity = 'smithingActivity',
-	WoodcuttingActivity = 'woodcuttingActivity',
-	RunecraftActivity = 'runecraftActivity',
-	FiremakingActivity = 'firemakingActivity',
-	CraftingActivity = 'craftingActivity',
-	BuryingActivity = 'buryingActivity',
-	OfferingActivity = 'offeringActivity',
-	FletchingActivity = 'fletchingActivity',
-	FarmingActivity = 'farmingActivity',
-	HerbloreActivity = 'herbloreActivity',
-	HunterActivity = 'hunterActivity',
-	ConstructionActivity = 'constructionActivity',
-	QuestingActivity = 'questingActivity',
-	FightCavesActivity = 'fightCavesActivity',
-	WintertodtActivity = 'wintertodtActivity',
-	TemporossActivity = 'temporossActivity',
-	AlchingActivity = 'alchingActivity',
-	NightmareActivity = 'nightmareActivity',
-	AnimatedArmourActivity = 'animatedArmourActivity',
-	CyclopsActivity = 'cyclopsActivity',
-	SepulchreActivity = 'sepulchreActivity',
-	PlunderActivity = 'plunderActivity',
-	FishingTrawler = 'trawlerActivity',
-	ZalcanoActivity = 'zalcanoActivity',
-	SawmillActivity = 'sawmillActivity',
-	PickpocketActivity = 'pickpocketActivity',
-	Enchanting = 'enchantingActivity',
-	Casting = 'castingActivity',
-	GloryCharging = 'gloryChargingActivity',
-	WealthCharging = 'wealthChargingActivity',
-	TitheFarmActivity = 'titheFarmActivity',
-	BarbarianAssault = 'barbarianAssaultActivity',
-	AgilityArena = 'agilityArenaActivity',
-	ChampionsChallenge = 'championsChallengeActivity',
-	BirdhouseActivity = 'birdhouseActivity',
-	AerialFishingActivity = 'aerialFishingActivity',
-	DriftNetActivity = 'driftNetActivity',
-	MahoganyHomes = 'mahoganyHomesActivity',
-	GnomeRestaurant = 'gnomeRestaurantActivity',
-	SoulWars = 'soulWarsActivity',
-	RoguesDenMaze = 'roguesDenMazeActivity',
-	Gauntlet = 'gauntletActivity',
-	CastleWars = 'castleWarsActivity',
-	MageArena = 'mageArenaActivity',
-	Raids = 'raidsActivity',
-	Collecting = 'collectingActivity',
-	MageTrainingArena = 'mageTrainingArenaActivity',
-	MageArena2 = 'mageArena2Activity',
-	BigChompyBirdHunting = 'chompyHuntActivity',
-	DarkAltar = 'darkAltarActivity',
-	TrekkingActivity = 'templeTrekkingActivity',
-	RevenantsActivity = 'revenantsActivity',
-	PestControl = 'pestControlActivity',
-	VolcanicMine = 'volcanicMineActivity',
-	KourendFavour = 'kourendFavourActivity',
-	Inferno = 'infernoActivity',
-	TearsOfGuthix = 'tearsOfGuthixActivity',
-	ToB = 'tobActivity',
-	LastManStanding = 'lmsActivity',
-	BirthdayEvent = 'birthdayEventActivity',
-	TokkulShop = 'tokkulShopActivity',
-	Nex = 'nexActivity',
-	TroubleBrewing = 'troubleBrewingActivity',
-	PuroPuro = 'puroPuroActivity',
-	REMOVED = '__REMOVED__'
-}
-
 export enum ActivityGroup {
 	Skilling = 'Skilling',
 	Clue = 'Clue',
@@ -253,8 +165,6 @@ export const enum Events {
 	SkillLevelUp = 'skillLevelUp',
 	EconomyLog = 'economyLog'
 }
-
-export const rootFolder = join(__dirname, '..', '..', '..');
 
 export const COINS_ID = 995;
 
@@ -282,7 +192,11 @@ export const enum PerkTier {
 	/**
 	 * Tier 5 Patron
 	 */
-	Six = 6
+	Six = 6,
+	/**
+	 * Tier 6 Patron
+	 */
+	Seven = 7
 }
 
 export enum BitField {
@@ -304,7 +218,8 @@ export enum BitField {
 	HasArcaneScroll = 17,
 	HasTornPrayerScroll = 18,
 	IsWikiContributor = 19,
-	HasSlepeyTablet = 20
+	HasSlepeyTablet = 20,
+	IsPatronTier6 = 21
 }
 
 interface BitFieldData {
@@ -327,6 +242,7 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	[BitField.IsPatronTier3]: { name: 'Tier 3 Patron', protected: false, userConfigurable: false },
 	[BitField.IsPatronTier4]: { name: 'Tier 4 Patron', protected: false, userConfigurable: false },
 	[BitField.IsPatronTier5]: { name: 'Tier 5 Patron', protected: false, userConfigurable: false },
+	[BitField.IsPatronTier6]: { name: 'Tier 6 Patron', protected: false, userConfigurable: false },
 
 	[BitField.HasHosidiusWallkit]: { name: 'Hosidius Wall Kit Unlocked', protected: false, userConfigurable: false },
 	[BitField.HasDexScroll]: { name: 'Dexterous Scroll Used', protected: false, userConfigurable: false },
@@ -400,13 +316,7 @@ export const RAZOR_KEBBIT_ID = 35;
 export const BLACK_CHIN_ID = 9;
 export const ZALCANO_ID = 9049;
 export const NIGHTMARE_ID = 9415;
-export const HESPORI_ID = 8583;
 export const NEX_ID = 11_278;
-
-/**
- * Map<user_id, PromiseQueue>
- */
-export const userQueues: Map<string, PQueue> = new Map();
 
 export const skillEmoji = {
 	runecraft: '<:runecraft:630911040435257364>',
@@ -468,7 +378,7 @@ const buttonSource = [
 ];
 
 export const informationalButtons = buttonSource.map(i =>
-	new MessageButton().setLabel(i.label).setEmoji(i.emoji).setURL(i.url).setStyle('LINK')
+	new ButtonBuilder().setLabel(i.label).setEmoji(i.emoji).setURL(i.url).setStyle(ButtonStyle.Link)
 );
 export const mahojiInformationalButtons: APIButtonComponent[] = buttonSource.map(i => ({
 	type: ComponentType.Button,
@@ -481,7 +391,7 @@ export const mahojiInformationalButtons: APIButtonComponent[] = buttonSource.map
 export type LastTripRunArgs = Omit<RunCommandArgs, 'commandName' | 'args'>;
 export const lastTripCache = new Map<
 	string,
-	{ continue: (args: LastTripRunArgs) => Promise<CommandResponse>; data: ActivityTaskOptions }
+	{ continue: (args: LastTripRunArgs) => Promise<null | CommandResponse>; data: ActivityTaskOptions }
 >();
 
 export const PATRON_ONLY_GEAR_SETUP =
@@ -512,23 +422,10 @@ export function shouldTrackCommand(command: AbstractCommand, args: CommandArgs) 
 	return true;
 }
 
-export const COMMAND_BECAME_SLASH_COMMAND_MESSAGE = (
-	msg: KlasaMessage | null,
-	commandName?: string
-) => `This command you're trying to use, has been changed to a 'slash command'.
-
-- Slash commands are integrated into the actual Discord client. We are *required* to change our commands to be slash commands.
-- Slash commands are generally easier to use, and also have new features like autocompletion. They take some time to get used to though.
-- You no longer use this command using \`+${commandName ?? msg?.command?.name}\`, now you use: \`/${
-	commandName ?? msg?.command?.name
-}\`
-`;
-
 export const DISABLED_COMMANDS = new Set<string>();
 export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'none'] as const;
 export type PvMMethod = typeof PVM_METHODS[number];
 export const usernameCache = new Map<string, string>();
-export const OWNER_IDS = ['157797566833098752'];
 export const minionBuyButton: APIButtonComponentWithCustomId = {
 	type: ComponentType.Button,
 	custom_id: 'BUY_MINION',
@@ -536,3 +433,4 @@ export const minionBuyButton: APIButtonComponentWithCustomId = {
 	emoji: { id: '778418736180494347' },
 	style: ButtonStyle.Success
 };
+export const FormattedCustomEmoji = /<a?:\w{2,32}:\d{17,20}>/;

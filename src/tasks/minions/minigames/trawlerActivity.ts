@@ -1,5 +1,4 @@
 import { calcPercentOfNum } from 'e';
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { ArdougneDiary, userhasDiaryTier } from '../../../lib/diaries';
@@ -7,26 +6,30 @@ import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { fishingTrawlerLoot } from '../../../lib/simulation/fishingTrawler';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { anglerBoostPercent } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
+import { anglerBoostPercent } from '../../../mahoji/mahojiSettings';
 
-export default class extends Task {
+export const trawlerTask: MinionTask = {
+	type: 'FishingTrawler',
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { channelID, quantity, userID } = data;
-		const user = await this.client.fetchUser(userID);
-
+		const user = await mUserFetch(userID);
 		await incrementMinigameScore(userID, 'fishing_trawler', quantity);
 
 		const fishingLevel = user.skillLevel(SkillsEnum.Fishing);
 
-		const allItemsOwned = user.allItemsOwned().bank;
+		const allItemsOwnedBank = user.allItemsOwned().bank;
 		const loot = new Bank();
 
 		let totalXP = 0;
 		const [hasEliteArdy] = await userhasDiaryTier(user, ArdougneDiary.elite);
 		for (let i = 0; i < quantity; i++) {
-			const { loot: _loot, xp } = fishingTrawlerLoot(fishingLevel, hasEliteArdy, loot.clone().add(allItemsOwned));
+			const { loot: _loot, xp } = fishingTrawlerLoot(
+				fishingLevel,
+				hasEliteArdy,
+				loot.clone().add(allItemsOwnedBank)
+			);
 			totalXP += xp;
 			loot.add(_loot);
 		}
@@ -50,7 +53,11 @@ export default class extends Task {
 
 		if (hasEliteArdy) str += '\n\n50% Extra fish for Ardougne Elite diary';
 
-		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
+		const { previousCL, itemsAdded } = await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 
 		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
 		await user.addXP({ skillName: SkillsEnum.Fishing, amount: totalXP });
@@ -77,4 +84,4 @@ export default class extends Task {
 			itemsAdded
 		);
 	}
-}
+};

@@ -1,5 +1,4 @@
 import { strikethrough } from '@discordjs/builders';
-import { KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { diaries, DiaryTier, userhasDiaryTier } from '../../../lib/diaries';
@@ -13,7 +12,7 @@ const lampRewards = {
 	Elite: 'Antique lamp 4'
 } as const;
 
-async function howManyOfTierCompleted(user: KlasaUser, tiers: DiaryTier[]) {
+async function howManyOfTierCompleted(user: MUser, tiers: DiaryTier[]) {
 	let completed = 0;
 	for (const tier of tiers) {
 		const [has] = await userhasDiaryTier(user, tier);
@@ -22,7 +21,7 @@ async function howManyOfTierCompleted(user: KlasaUser, tiers: DiaryTier[]) {
 	return completed;
 }
 
-export async function achievementDiaryCommand(user: KlasaUser, diaryName: string) {
+export async function achievementDiaryCommand(user: MUser, diaryName: string) {
 	const diary = diaries.find(
 		d => stringMatches(d.name, diaryName) || d.alias?.some(a => stringMatches(a, diaryName))
 	);
@@ -96,7 +95,7 @@ export async function achievementDiaryCommand(user: KlasaUser, diaryName: string
 	return str;
 }
 
-export async function claimAchievementDiaryCommand(user: KlasaUser, diaryName: string) {
+export async function claimAchievementDiaryCommand(user: MUser, diaryName: string) {
 	const diary = diaries.find(
 		d => stringMatches(d.name, diaryName) || d.alias?.some(a => stringMatches(a, diaryName))
 	);
@@ -106,7 +105,7 @@ export async function claimAchievementDiaryCommand(user: KlasaUser, diaryName: s
 	}
 
 	const allItems = user.allItemsOwned();
-	const cl = user.cl();
+	const { cl } = user;
 
 	for (const tier of ['easy', 'medium', 'hard', 'elite'] as const) {
 		const diaryTier = diary[tier];

@@ -1,5 +1,4 @@
 import { randInt } from 'e';
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import Smithing from '../../lib/skilling/skills/smithing';
@@ -8,10 +7,11 @@ import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 
-export default class extends Task {
+export const smeltingTask: MinionTask = {
+	type: 'Smelting',
 	async run(data: SmeltingActivityTaskOptions) {
 		let { barID, quantity, userID, channelID, duration, blastf } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
 		const bar = Smithing.Bars.find(bar => bar.id === barID)!;
 
@@ -29,7 +29,7 @@ export default class extends Task {
 
 		let xpReceived = quantity * bar.xp;
 
-		if (bar.id === itemID('Gold bar') && user.hasItemEquippedAnywhere('Goldsmith gauntlets')) {
+		if (bar.id === itemID('Gold bar') && user.hasEquipped('Goldsmith gauntlets')) {
 			xpReceived = quantity * 56.2;
 		}
 
@@ -49,7 +49,11 @@ export default class extends Task {
 			[bar.id]: quantity
 		});
 
-		await user.addItemsToBank({ items: loot, collectionLog: true });
+		await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 
 		handleTripFinish(
 			user,
@@ -69,4 +73,4 @@ export default class extends Task {
 			loot
 		);
 	}
-}
+};

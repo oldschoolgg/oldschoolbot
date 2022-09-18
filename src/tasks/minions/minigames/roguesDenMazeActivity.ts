@@ -1,5 +1,4 @@
 import { randInt } from 'e';
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { roguesDenOutfit } from '../../../lib/data/CollectionsExport';
@@ -8,21 +7,23 @@ import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 
-export default class extends Task {
-	getLowestCountOutfitPiece(bank: Bank): number {
-		let lowestCountPiece = 0;
-		let lowestCountAmount = -1;
+function getLowestCountOutfitPiece(bank: Bank): number {
+	let lowestCountPiece = 0;
+	let lowestCountAmount = -1;
 
-		for (const piece of roguesDenOutfit) {
-			const amount = bank.amount(piece);
-			if (lowestCountAmount === -1 || amount < lowestCountAmount) {
-				lowestCountPiece = piece;
-				lowestCountAmount = amount;
-			}
+	for (const piece of roguesDenOutfit) {
+		const amount = bank.amount(piece);
+		if (lowestCountAmount === -1 || amount < lowestCountAmount) {
+			lowestCountPiece = piece;
+			lowestCountAmount = amount;
 		}
-
-		return lowestCountPiece;
 	}
+
+	return lowestCountPiece;
+}
+
+export const roguesDenTask: MinionTask = {
+	type: 'RoguesDenMaze',
 
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { channelID, quantity, userID } = data;
@@ -30,14 +31,14 @@ export default class extends Task {
 		incrementMinigameScore(userID, 'rogues_den', quantity);
 
 		const loot = new Bank();
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const userBankCopy = user.allItemsOwned();
 
 		let str = `<@${userID}>, ${user.minionName} finished completing ${quantity}x laps of the Rogues' Den Maze.`;
 
 		for (let i = 0; i < quantity; i++) {
 			if (randInt(1, 8) <= 5) {
-				const piece = this.getLowestCountOutfitPiece(userBankCopy);
+				const piece = getLowestCountOutfitPiece(userBankCopy);
 				userBankCopy.add(piece);
 				loot.add(piece);
 			}
@@ -48,7 +49,11 @@ export default class extends Task {
 			str += `\n**${user.minionName} failed to find any Rogue outfit pieces!**`;
 		}
 
-		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
+		const { previousCL, itemsAdded } = await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 
 		const image = await makeBankImage({
 			bank: itemsAdded,
@@ -67,4 +72,4 @@ export default class extends Task {
 			itemsAdded
 		);
 	}
-}
+};

@@ -1,5 +1,4 @@
 import { percentChance } from 'e';
-import { Task } from 'klasa';
 import { Bank, Misc } from 'oldschooljs';
 
 import { BitField, NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID } from '../../../lib/constants';
@@ -11,17 +10,20 @@ import { randomVariation } from '../../../lib/util';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
+import { getMahojiBank, mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings';
 import { NightmareMonster } from './../../../lib/minions/data/killableMonsters/index';
 
 const RawNightmare = Misc.Nightmare;
 
-export default class extends Task {
+export const nightmareTask: MinionTask = {
+	type: 'Nightmare',
 	async run(data: NightmareActivityTaskOptions) {
 		const { channelID, quantity, duration, isPhosani = false, userID, method } = data;
 
 		const monsterID = isPhosani ? PHOSANI_NIGHTMARE_ID : NightmareMonster.id;
 		const monsterName = isPhosani ? "Phosani's Nightmare" : 'Nightmare';
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
+		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 		const team = method === 'solo' ? [user.id] : [user.id, '1', '2', '3'];
 
 		const [userStats] = getNightmareGearStats(user, team, isPhosani);
@@ -56,16 +58,17 @@ export default class extends Task {
 			taskQuantity: null
 		});
 
-		if (user.owns('Slepey tablet') || user.bitfield.includes(BitField.HasSlepeyTablet)) {
+		const bank = getMahojiBank(mahojiUser);
+		if (bank.has('Slepey tablet') || mahojiUser.bitfield.includes(BitField.HasSlepeyTablet)) {
 			userLoot.remove('Slepey tablet', userLoot.amount('Slepey tablet'));
 		}
 		// Fix purple items on solo kills
 		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: userLoot, collectionLog: true });
 
-		if (kc) await user.incrementMonsterScore(monsterID, kc);
+		if (kc) await user.incrementKC(monsterID, kc);
 
 		announceLoot({
-			user,
+			user: await mUserFetch(user.id),
 			monsterID,
 			loot: itemsAdded,
 			notifyDrops: NightmareMonster.notifyDrops
@@ -118,4 +121,4 @@ export default class extends Task {
 			);
 		}
 	}
-}
+};
