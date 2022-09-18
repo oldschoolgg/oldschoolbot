@@ -30,14 +30,14 @@ export const gearCommand: OSBMahojiCommand = {
 					required: true
 				},
 				{
-					...ownedItemOption(item => Boolean(item.equipable_by_player) && Boolean(item.equipment)),
-					name: 'item',
-					description: 'The item you want to equip.'
-				},
-				{
 					type: ApplicationCommandOptionType.String,
 					name: 'items',
 					description: 'A list of equippable items to equip.'
+				},
+				{
+					...ownedItemOption(item => Boolean(item.equipable_by_player) && Boolean(item.equipment)),
+					name: 'item',
+					description: 'The item you want to equip.'
 				},
 				{
 					...gearPresetOption,

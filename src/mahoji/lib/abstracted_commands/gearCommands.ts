@@ -12,10 +12,18 @@ import getUserBestGearFromBank from '../../../lib/minions/functions/getUserBestG
 import { unEquipAllCommand } from '../../../lib/minions/functions/unequipAllCommand';
 import { prisma } from '../../../lib/settings/prisma';
 import { Gear } from '../../../lib/structures/Gear';
-import { assert, formatSkillRequirements, isValidGearSetup, stringMatches, toTitleCase } from '../../../lib/util';
+import {
+	assert,
+	formatSkillRequirements,
+	isValidGearSetup,
+	skillsMeetRequirements,
+	stringMatches,
+	toTitleCase
+} from '../../../lib/util';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
 import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
+import { parseStringBank } from '../../../lib/util/parseStringBank';
 import { handleMahojiConfirmation, mahojiParseNumber } from '../../mahojiSettings';
 
 export async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName: string): CommandResponse {
@@ -103,10 +111,10 @@ export async function gearEquipMultiCommand(
 		);
 	}
 	const oneItemPerSlot: { [key in EquipmentSlot]?: boolean } = {};
-	const userSkills = getSkillsOfMahojiUser(user);
+	const userSkills = user.skillsAsXP;
 	const failedToEquipBank = new Bank();
 	const equipBank = new Bank();
-	for (const [i, _qty] of parseStringBank(items, undefined, true)) {
+	for (const [i, _qty] of parseStringBank(items, user.bank, true)) {
 		const qty = i.stackable ? _qty || 1 : 1;
 		if (user.bank.amount(i.id) < qty) continue;
 		// Check skill requirements
@@ -133,8 +141,7 @@ export async function gearEquipMultiCommand(
 		}
 	}
 
-	const allGear = getUserGear(user);
-	const equippedGear = { ...allGear[setup].raw() };
+	const equippedGear = { ...user.gear[setup].raw() };
 
 	const unequipBank = new Bank();
 
@@ -162,13 +169,17 @@ export async function gearEquipMultiCommand(
 	}
 
 	const dbKey = `gear_${setup}` as const;
-	const { newUser } = await mahojiUserSettingsUpdate(user.id, {
+	const { newUser } = await user.update({
 		[dbKey]: equippedGear
 	});
-	await klasaUser.removeItemsFromBank(equipBank);
-	await klasaUser.addItemsToBank({ items: unequipBank });
+	await transactItems({
+		userID: user.id,
+		filterLoot: false,
+		itemsToRemove: equipBank,
+		itemsToAdd: unequipBank
+	});
 
-	const image = await generateGearImage(user, newUser[dbKey] as GearSetup, setup, user.minion_equippedPet);
+	const image = await generateGearImage(user, newUser[dbKey] as GearSetup, setup, user.user.minion_equippedPet);
 	let content = `You equipped ${equipBank} on your ${setup} setup, and unequipped ${unequipBank}.`;
 	if (failedToEquipBank.length > 0) {
 		content += `\nThese items failed to be equipped as you don't have the requirements: ${failedToEquipBank}.`;
