@@ -22,6 +22,7 @@ import { patreonTask } from '../../lib/patreon';
 import { runRolesTask } from '../../lib/rolesTask';
 import { countUsersWithItemInCl, prisma } from '../../lib/settings/prisma';
 import { cancelTask, minionActivityCacheDelete } from '../../lib/settings/settings';
+import { tickers } from '../../lib/tickers';
 import {
 	calcPerHour,
 	convertBankToPerHourStats,
@@ -793,22 +794,11 @@ LIMIT 10;
 				options.bitfield.user.user.username
 			}.`;
 		}
-
-		/**
-		 *
-		 * Owner Only Commands
-		 *
-		 */
-		if (!isOwner) {
-			return randArrItem(gifs);
-		}
-		if (options.viewbank) {
-			const userToCheck = await mUserFetch(options.viewbank.user.user.id);
-			const bank = userToCheck.allItemsOwned();
-			return { attachments: [(await makeBankImage({ bank, title: userToCheck.usernameOrMention })).file] };
-		}
 		if (options.reboot) {
 			globalClient.isShuttingDown = true;
+			for (const ticker of tickers) {
+				if (ticker.timer) clearTimeout(ticker.timer);
+			}
 			await sleep(Time.Second * 20);
 			await interaction.respond({
 				response: {
@@ -823,6 +813,21 @@ LIMIT 10;
 			});
 			process.exit();
 		}
+
+		/**
+		 *
+		 * Owner Only Commands
+		 *
+		 */
+		if (!isOwner) {
+			return randArrItem(gifs);
+		}
+		if (options.viewbank) {
+			const userToCheck = await mUserFetch(options.viewbank.user.user.id);
+			const bank = userToCheck.allItemsOwned();
+			return { attachments: [(await makeBankImage({ bank, title: userToCheck.usernameOrMention })).file] };
+		}
+
 		if (options.debug_patreon) {
 			const result = await patreonTask.fetchPatrons();
 			return {
