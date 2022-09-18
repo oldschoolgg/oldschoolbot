@@ -813,6 +813,66 @@ LIMIT 10;
 			});
 			process.exit();
 		}
+		if (options.viewbank) {
+			const userToCheck = await mUserFetch(options.viewbank.user.user.id);
+			const bank = userToCheck.allItemsOwned();
+			return { attachments: [(await makeBankImage({ bank, title: userToCheck.usernameOrMention })).file] };
+		}
+
+		if (options.add_patron_time) {
+			const { tier, time, user: userToGive } = options.add_patron_time;
+			if (![1, 2, 3, 4, 5].includes(tier)) return 'Invalid input.';
+			const duration = new Duration(time);
+			const ms = duration.offset;
+			if (ms < Time.Second || ms > Time.Year * 3) return 'Invalid input.';
+			const input = await mahojiUsersSettingsFetch(userToGive.user.id);
+
+			const currentBalanceTier = input.premium_balance_tier;
+
+			const oldPerkTier = getUsersPerkTier(input.bitfield);
+			if (oldPerkTier > 1 && !currentBalanceTier && oldPerkTier <= tier + 1) {
+				return `${userToGive.user.username} is already a patron of at least that tier.`;
+			}
+
+			if (currentBalanceTier !== null && currentBalanceTier !== tier) {
+				await handleMahojiConfirmation(
+					interaction,
+					`${input} already has Tier ${currentBalanceTier}; this will replace the existing balance entirely, are you sure?`
+				);
+			}
+			await handleMahojiConfirmation(
+				interaction,
+				`Are you sure you want to add ${formatDuration(ms)} of Tier ${tier} patron to ${
+					userToGive.user.username
+				}?`
+			);
+			await mahojiUserSettingsUpdate(input.id, {
+				premium_balance_tier: tier
+			});
+
+			const currentBalanceTime =
+				input.premium_balance_expiry_date === null ? null : Number(input.premium_balance_expiry_date);
+
+			let newBalanceExpiryTime = 0;
+			if (currentBalanceTime !== null && tier === currentBalanceTier) {
+				newBalanceExpiryTime = currentBalanceTime + ms;
+			} else {
+				newBalanceExpiryTime = Date.now() + ms;
+			}
+			await mahojiUserSettingsUpdate(input.id, {
+				premium_balance_expiry_date: newBalanceExpiryTime
+			});
+
+			return `Gave ${formatDuration(ms)} of Tier ${tier} patron to ${
+				userToGive.user.username
+			}. They have ${formatDuration(newBalanceExpiryTime - Date.now())} remaining.`;
+		}
+
+		if (options.sync_blacklist) {
+			await syncBlacklists();
+			return `Users Blacklisted: ${BLACKLISTED_USERS.size}
+Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
+		}
 
 		/**
 		 *
@@ -821,11 +881,6 @@ LIMIT 10;
 		 */
 		if (!isOwner) {
 			return randArrItem(gifs);
-		}
-		if (options.viewbank) {
-			const userToCheck = await mUserFetch(options.viewbank.user.user.id);
-			const bank = userToCheck.allItemsOwned();
-			return { attachments: [(await makeBankImage({ bank, title: userToCheck.usernameOrMention })).file] };
 		}
 
 		if (options.debug_patreon) {
@@ -878,11 +933,6 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 				item.name
 			} in their collection log.`;
 		}
-		if (options.sync_blacklist) {
-			await syncBlacklists();
-			return `Users Blacklisted: ${BLACKLISTED_USERS.size}
-Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
-		}
 
 		if (options.loot_track) {
 			const loot = await prisma.lootTrack.findFirst({
@@ -907,55 +957,6 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 			}
 			return { content, attachments };
 		}
-		if (options.add_patron_time) {
-			const { tier, time, user: userToGive } = options.add_patron_time;
-			if (![1, 2, 3, 4, 5].includes(tier)) return 'Invalid input.';
-			const duration = new Duration(time);
-			const ms = duration.offset;
-			if (ms < Time.Second || ms > Time.Year * 3) return 'Invalid input.';
-			const input = await mahojiUsersSettingsFetch(userToGive.user.id);
-
-			const currentBalanceTier = input.premium_balance_tier;
-
-			const oldPerkTier = getUsersPerkTier(input.bitfield);
-			if (oldPerkTier > 1 && !currentBalanceTier && oldPerkTier <= tier + 1) {
-				return `${userToGive.user.username} is already a patron of at least that tier.`;
-			}
-
-			if (currentBalanceTier !== null && currentBalanceTier !== tier) {
-				await handleMahojiConfirmation(
-					interaction,
-					`${input} already has Tier ${currentBalanceTier}; this will replace the existing balance entirely, are you sure?`
-				);
-			}
-			await handleMahojiConfirmation(
-				interaction,
-				`Are you sure you want to add ${formatDuration(ms)} of Tier ${tier} patron to ${
-					userToGive.user.username
-				}?`
-			);
-			await mahojiUserSettingsUpdate(input.id, {
-				premium_balance_tier: tier
-			});
-
-			const currentBalanceTime =
-				input.premium_balance_expiry_date === null ? null : Number(input.premium_balance_expiry_date);
-
-			let newBalanceExpiryTime = 0;
-			if (currentBalanceTime !== null && tier === currentBalanceTier) {
-				newBalanceExpiryTime = currentBalanceTime + ms;
-			} else {
-				newBalanceExpiryTime = Date.now() + ms;
-			}
-			await mahojiUserSettingsUpdate(input.id, {
-				premium_balance_expiry_date: newBalanceExpiryTime
-			});
-
-			return `Gave ${formatDuration(ms)} of Tier ${tier} patron to ${
-				userToGive.user.username
-			}. They have ${formatDuration(newBalanceExpiryTime - Date.now())} remaining.`;
-		}
-
 		if (options.ltc) {
 			let str = '';
 			const results = await prisma.lootTrack.findMany();
