@@ -1,8 +1,8 @@
 import { noOp } from 'e';
 
+import { syncLinkedAccounts } from '../../../../mahoji/mahojiSettings';
 import { Channel } from '../../../constants';
 import { patreonTask } from '../../../patreon';
-import { syncLinkedAccounts } from '../../../util/getUsersPerkTier';
 import { sendToChannelID } from '../../../util/webhook';
 import { GithubSponsorsWebhookData } from '../../githubApiTypes';
 import { FastifyServer } from '../../types';
