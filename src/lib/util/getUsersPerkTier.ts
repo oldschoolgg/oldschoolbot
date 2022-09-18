@@ -35,7 +35,7 @@ export async function syncLinkedAccountPerks(user: MUser) {
 			})
 		)
 	);
-	allUsers.map(u => syncPerkTierOfUser(u));
+	allUsers.map(u => new MUserClass(u));
 }
 export default function getUsersPerkTier(
 	userOrBitfield: MUser | User | BitField[],
