@@ -24,7 +24,7 @@ import { APIButtonComponentWithCustomId, APIInteractionResponseCallbackData, API
 import { CommandResponse, InteractionResponseDataWithBufferAttachments } from 'mahoji/dist/lib/structures/ICommand';
 import murmurHash from 'murmurhash';
 import { gzip } from 'node:zlib';
-import { Bank, LootTable } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, MersenneTwister19937, nodeCrypto, real, shuffle } from 'random-js';
@@ -638,29 +638,12 @@ export async function asyncGzip(buffer: Buffer) {
 export function skillingPetDropRate(
 	user: MUserClass,
 	skill: SkillsEnum,
-	tableOrBaseDropRate: LootTable | number,
-	itemName?: string
+	baseDropRate: number
 ): { petDropRate: number } {
 	const twoHundredMillXP = user.skillsAsXP[skill] >= 200_000_000;
 	const skillLevel = user.skillsAsLevels[skill];
 	const petRateDivisor = twoHundredMillXP ? 15 : 1;
-	let dropRate = 0;
-	if (tableOrBaseDropRate instanceof LootTable) {
-		if (!itemName || !Items.find(e => e.id === itemID(itemName))) {
-			return { petDropRate: dropRate };
-		}
-		const theLootTable = tableOrBaseDropRate.clone();
-		const skillingPetEntryRaw = theLootTable.tertiaryItems.find(e => e.item === itemID(itemName));
-		if (!skillingPetEntryRaw) {
-			return { petDropRate: dropRate };
-		}
-		// Clone because the entries on each LootTable->subTable aren't deepcloned by LootTable.clone()
-		const skillingPetEntry = { ...skillingPetEntryRaw };
-		skillingPetEntry.chance = Math.floor((skillingPetEntry.chance - skillLevel * 25) / petRateDivisor);
-		dropRate = skillingPetEntry.chance;
-		return { petDropRate: dropRate };
-	}
-	dropRate = Math.floor((tableOrBaseDropRate - skillLevel * 25) / petRateDivisor);
+	const dropRate = Math.floor((baseDropRate - skillLevel * 25) / petRateDivisor);
 	return { petDropRate: dropRate };
 }
 

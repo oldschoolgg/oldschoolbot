@@ -22,28 +22,25 @@ export const sepulchreTask: MinionTask = {
 		let agilityXP = 0;
 		let thievingXP = 0;
 		let numCoffinsOpened = 0;
-		let { petDropRate } = skillingPetDropRate(
-			user,
-			SkillsEnum.Agility,
-			completedFloors[completedFloors.length - 1].petChance
-		);
+
 		for (let i = 0; i < quantity; i++) {
 			for (const floor of completedFloors) {
 				if (floor.number === 5) {
 					loot.add(GrandHallowedCoffin.roll());
 				}
 
+				const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Agility, floor.petChance);
+
 				const numCoffinsToOpen = 1;
 				numCoffinsOpened += numCoffinsToOpen;
 				for (let i = 0; i < numCoffinsToOpen; i++) {
 					loot.add(openCoffin(floor.number, user));
 				}
-
+				if (roll(petDropRate)) {
+					loot.add('Giant squirrel');
+				}
 				agilityXP += floor.xp;
 				thievingXP = 200 * numCoffinsOpened;
-			}
-			if (roll(petDropRate)) {
-				loot.add('Giant squirrel');
 			}
 		}
 
