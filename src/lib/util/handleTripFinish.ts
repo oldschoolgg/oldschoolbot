@@ -1,5 +1,4 @@
 import { activity_type_enum } from '@prisma/client';
-import { isGuildBasedChannel } from '@sapphire/discord.js-utilities';
 import { ActionRowBuilder, AttachmentBuilder, ButtonBuilder, MessageCollector } from 'discord.js';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
@@ -115,7 +114,7 @@ export async function handleTripFinish(
 	const runCmdOptions = {
 		channelID,
 		userID: user.id,
-		guildID: isGuildBasedChannel(channel) && channel.guild ? channel.guild.id : undefined,
+		guildID: channel.guild ? channel.guild.id : undefined,
 		user,
 		member: null
 	};

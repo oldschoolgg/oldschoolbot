@@ -1,7 +1,7 @@
 import { Embed } from '@discordjs/builders';
 import { Activity, NewUser, Prisma } from '@prisma/client';
 import { AttachmentBuilder, GuildMember } from 'discord.js';
-import { APIInteractionGuildMember } from 'mahoji';
+import { APIInteractionGuildMember, MessageFlags } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
 import { CommandArgs } from '../../mahoji/lib/inhibitors';
@@ -156,10 +156,10 @@ export async function runCommand({
 		if (channelIsSendable(channel)) {
 			if (typeof result === 'string') {
 				await channel.send(result);
-			} else {
+			} else if (result.flags !== MessageFlags.Ephemeral) {
 				await channel.send({
 					content: result.content,
-					embeds: result.embeds?.map(i => new Embed(i as any)),
+					embeds: result.embeds?.map(i => new Embed({ ...i, type: undefined })),
 					components: result.components?.map(i => convertComponentDJSComponent(i as any)),
 					files: result.attachments?.map(i => new AttachmentBuilder(i.buffer, { name: i.fileName }))
 				});
