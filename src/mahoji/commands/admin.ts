@@ -32,7 +32,7 @@ import {
 	toKMB
 } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
-import getUsersPerkTier, {syncLinkedAccounts} from '../../lib/util/getUsersPerkTier';
+import getUsersPerkTier, { syncLinkedAccounts } from '../../lib/util/getUsersPerkTier';
 import { logError } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
