@@ -327,7 +327,7 @@ export async function checkTOBUser(
 	const cost = await calcTOBInput(user);
 	cost.add('Coins', 100_000).add('Rune pouch');
 	if (!user.owns(cost)) {
-		return [true, `${user.usernameOrMention} doesn't own ${cost.remove(user.bank)}`];
+		return [true, `${user.usernameOrMention} doesn't own ${cost.remove(user.bankWithGP)}`];
 	}
 
 	/**
