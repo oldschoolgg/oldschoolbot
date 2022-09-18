@@ -221,7 +221,7 @@ const killableMonsters: KillableMonster[] = [
 		id: Monsters.Sarachnis.id,
 		name: Monsters.Sarachnis.name,
 		aliases: Monsters.Sarachnis.aliases,
-		timeToFinish: Time.Minute * 1.85,
+		timeToFinish: Time.Minute * 2.35,
 		table: Monsters.Sarachnis,
 		emoji: '<:Sraracha:608231007803670529>',
 		wildy: false,
