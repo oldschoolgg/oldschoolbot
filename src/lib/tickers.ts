@@ -221,6 +221,7 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 							BitField.IsPatronTier3,
 							BitField.IsPatronTier4,
 							BitField.IsPatronTier5,
+							BitField.IsPatronTier6,
 							BitField.isContributor,
 							BitField.isModerator
 						]
