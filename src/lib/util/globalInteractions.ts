@@ -135,7 +135,6 @@ async function giveawayButtonHandler(user: MUser, customID: string, data: APIInt
 			},
 			user,
 			member: data.member ?? null,
-			userID: user.id,
 			channelID: data.channel_id!,
 			guildID: data.guild_id
 		});
@@ -192,6 +191,10 @@ export async function interactionHook(data: APIInteraction) {
 	const id = data.data.custom_id;
 	const userID = data.member ? data.member.user?.id : data.user?.id;
 	if (!userID) return;
+	if (globalClient.oneCommandAtATimeCache.has(userID) || globalClient.isShuttingDown) {
+		return buttonReply('You cannot use a command right now.');
+	}
+
 	const user = await mUserFetch(userID);
 	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, data);
 
@@ -199,7 +202,6 @@ export async function interactionHook(data: APIInteraction) {
 	const options = {
 		user,
 		member: data.member ?? null,
-		userID,
 		channelID: data.channel_id,
 		guildID: data.guild_id
 	};

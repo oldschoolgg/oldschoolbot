@@ -446,7 +446,7 @@ export const minionCommand: OSBMahojiCommand = {
 		const perkTier = getUsersPerkTier(user);
 
 		if (options.info) return (await getUserInfo(user)).everythingString;
-		if (options.status) return minionStatusCommand(user.id);
+		if (options.status) return minionStatusCommand(user);
 
 		if (options.stats) {
 			if (options.stats.stat) {
