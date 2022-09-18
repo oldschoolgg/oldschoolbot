@@ -1,4 +1,3 @@
-import { isGuildBasedChannel } from '@sapphire/discord.js-utilities';
 import { MessageFlags } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
@@ -9,7 +8,7 @@ import killableMonsters from '../../../lib/minions/data/killableMonsters';
 import { runCommand } from '../../../lib/settings/settings';
 import { autoslayModes, AutoslayOptionsEnum } from '../../../lib/slayer/constants';
 import { getCommonTaskName, getUsersCurrentSlayerInfo, SlayerMasterEnum } from '../../../lib/slayer/slayerUtil';
-import { hasSkillReqs, stringMatches } from '../../../lib/util';
+import { hasSkillReqs, isGuildChannel, stringMatches } from '../../../lib/util';
 import { slayerNewTaskCommand } from './slayerTaskCommand';
 
 interface AutoslayLink {
@@ -262,8 +261,7 @@ export async function autoSlayCommand({
 	const channel = globalClient.channels.cache.get(channelID.toString());
 	const cmdRunOptions = {
 		channelID,
-		userID: user.id,
-		guildID: isGuildBasedChannel(channel) && channel.guild ? channel.guild.id : undefined,
+		guildID: isGuildChannel(channel) ? channel.guild.id : undefined,
 		user,
 		member: null
 	};

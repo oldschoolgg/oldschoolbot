@@ -158,7 +158,7 @@ async function kcGains(user: MUser, interval: string, monsterName: string): Comm
 		return 'Invalid monster.';
 	}
 
-	const query = `SELECT user_id AS user, SUM(("data"->>'quantity')::int) AS qty, MAX(finish_date) AS lastDate FROM activity
+	const query = `SELECT user_id::text, SUM(("data"->>'quantity')::int) AS qty, MAX(finish_date) AS lastDate FROM activity
 WHERE type = 'MonsterKilling' AND ("data"->>'monsterID')::int = ${monster.id}
 AND finish_date >= now() - interval '${interval === 'day' ? 1 : 7}' day AND completed = true
 GROUP BY 1

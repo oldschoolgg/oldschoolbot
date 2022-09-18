@@ -1,7 +1,7 @@
 import { Embed } from '@discordjs/builders';
 import { Activity, NewUser, Prisma } from '@prisma/client';
 import { AttachmentBuilder, GuildMember } from 'discord.js';
-import { APIInteractionGuildMember } from 'mahoji';
+import { APIInteractionGuildMember, MessageFlags } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
 import { CommandArgs } from '../../mahoji/lib/inhibitors';
@@ -99,7 +99,6 @@ export interface RunCommandArgs {
 	args: CommandArgs;
 	user: MUser;
 	channelID: string | bigint;
-	userID: string | bigint;
 	member: APIInteractionGuildMember | GuildMember | null;
 	isContinue?: boolean;
 	bypassInhibitors?: true;
@@ -110,7 +109,6 @@ export async function runCommand({
 	args,
 	isContinue,
 	bypassInhibitors,
-	userID,
 	channelID,
 	guildID,
 	user,
@@ -127,7 +125,7 @@ export async function runCommand({
 	try {
 		const inhibitedReason = await preCommand({
 			abstractCommand,
-			userID,
+			userID: user.id,
 			channelID,
 			guildID,
 			bypassInhibitors: bypassInhibitors ?? false,
@@ -149,17 +147,17 @@ export async function runCommand({
 			commandName,
 			guildID,
 			channelID,
-			userID,
+			userID: user.id,
 			member,
 			user
 		});
 		if (channelIsSendable(channel)) {
 			if (typeof result === 'string') {
 				await channel.send(result);
-			} else {
+			} else if (result.flags !== MessageFlags.Ephemeral) {
 				await channel.send({
 					content: result.content,
-					embeds: result.embeds?.map(i => new Embed(i as any)),
+					embeds: result.embeds?.map(i => new Embed({ ...i, type: undefined })),
 					components: result.components?.map(i => convertComponentDJSComponent(i as any)),
 					files: result.attachments?.map(i => new AttachmentBuilder(i.buffer, { name: i.fileName }))
 				});
@@ -178,7 +176,7 @@ export async function runCommand({
 		try {
 			await postCommand({
 				abstractCommand,
-				userID,
+				userID: user.id,
 				guildID,
 				channelID,
 				args,
