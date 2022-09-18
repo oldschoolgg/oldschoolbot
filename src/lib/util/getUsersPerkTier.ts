@@ -1,6 +1,7 @@
 import { User } from '@prisma/client';
 import { notEmpty } from 'e';
 
+import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 import { BitField, PerkTier, Roles } from '../constants';
 import { MUserClass } from '../MUser';
 import { getSupportGuild } from '../util';
@@ -15,10 +16,27 @@ const tier3ElligibleBits = [
 
 const perkTierCache = new Map<string, number>();
 
-export function syncPerkTierOfUser(user: MUser) {
-	perkTierCache.set(user.id, getUsersPerkTier([...user.bitfield], true));
+export function syncPerkTierOfUser(user: MUser | User) {
+	perkTierCache.set(user.id, getUsersPerkTier(user, true));
 }
-
+export async function syncLinkedAccountPerks(user: MUser) {
+	let main = user.user.main_account;
+	const allAccounts: string[] = [...user.user.ironman_alts, user.id];
+	if (main) {
+		allAccounts.push(main);
+	}
+	const allUsers = await Promise.all(
+		allAccounts.map(a =>
+			mahojiUsersSettingsFetch(a, {
+				id: true,
+				premium_balance_tier: true,
+				premium_balance_expiry_date: true,
+				bitfield: true
+			})
+		)
+	);
+	allUsers.map(u => syncPerkTierOfUser(u));
+}
 export default function getUsersPerkTier(
 	userOrBitfield: MUser | User | BitField[],
 	noCheckOtherAccounts?: boolean

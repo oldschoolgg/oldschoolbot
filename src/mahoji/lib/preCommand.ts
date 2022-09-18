@@ -5,6 +5,7 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { BitField, usernameCache } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
 import { removeMarkdownEmojis } from '../../lib/util';
+import { syncLinkedAccountPerks } from '../../lib/util/getUsersPerkTier';
 import { AbstractCommand, runInhibitors } from './inhibitors';
 
 function cleanUsername(username: string) {
@@ -52,6 +53,7 @@ export async function preCommand({
 	}
 	globalClient.emit('debug', `${userID} trying to run ${abstractCommand.name} command`);
 	const user = await mUserFetch(userID);
+	await syncLinkedAccountPerks(user);
 	if (user.isBusy && !bypassInhibitors) {
 		return { silent: true, reason: 'You cannot use a command right now.' };
 	}
