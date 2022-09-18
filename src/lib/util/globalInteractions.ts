@@ -191,7 +191,7 @@ export async function interactionHook(data: APIInteraction) {
 	const id = data.data.custom_id;
 	const userID = data.member ? data.member.user?.id : data.user?.id;
 	if (!userID) return;
-	if (globalClient.oneCommandAtATimeCache.has(userID)) {
+	if (globalClient.oneCommandAtATimeCache.has(userID) || globalClient.isShuttingDown) {
 		return buttonReply('You cannot use a command right now.');
 	}
 

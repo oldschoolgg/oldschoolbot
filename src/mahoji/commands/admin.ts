@@ -6,7 +6,7 @@ import { Duration } from '@sapphire/time-utilities';
 import Type from '@sapphire/type';
 import { isThenable } from '@sentry/utils';
 import { escapeCodeBlock } from 'discord.js';
-import { randArrItem, Time, uniqueArr } from 'e';
+import { randArrItem, sleep, Time, uniqueArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions, InteractionResponseType, InteractionType } from 'mahoji';
 import { CommandResponse, MahojiAttachment } from 'mahoji/dist/lib/structures/ICommand';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
@@ -808,6 +808,8 @@ LIMIT 10;
 			return { attachments: [(await makeBankImage({ bank, title: userToCheck.usernameOrMention })).file] };
 		}
 		if (options.reboot) {
+			globalClient.isShuttingDown = true;
+			await sleep(Time.Second * 20);
 			await interaction.respond({
 				response: {
 					data: {
