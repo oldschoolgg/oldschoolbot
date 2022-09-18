@@ -135,7 +135,6 @@ async function giveawayButtonHandler(user: MUser, customID: string, data: APIInt
 			},
 			user,
 			member: data.member ?? null,
-			userID: user.id,
 			channelID: data.channel_id!,
 			guildID: data.guild_id
 		});
@@ -199,7 +198,6 @@ export async function interactionHook(data: APIInteraction) {
 	const options = {
 		user,
 		member: data.member ?? null,
-		userID,
 		channelID: data.channel_id,
 		guildID: data.guild_id
 	};

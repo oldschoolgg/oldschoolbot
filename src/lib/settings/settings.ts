@@ -99,7 +99,6 @@ export interface RunCommandArgs {
 	args: CommandArgs;
 	user: MUser;
 	channelID: string | bigint;
-	userID: string | bigint;
 	member: APIInteractionGuildMember | GuildMember | null;
 	isContinue?: boolean;
 	bypassInhibitors?: true;
@@ -110,7 +109,6 @@ export async function runCommand({
 	args,
 	isContinue,
 	bypassInhibitors,
-	userID,
 	channelID,
 	guildID,
 	user,
@@ -127,7 +125,7 @@ export async function runCommand({
 	try {
 		const inhibitedReason = await preCommand({
 			abstractCommand,
-			userID,
+			userID: user.id,
 			channelID,
 			guildID,
 			bypassInhibitors: bypassInhibitors ?? false,
@@ -149,7 +147,7 @@ export async function runCommand({
 			commandName,
 			guildID,
 			channelID,
-			userID,
+			userID: user.id,
 			member,
 			user
 		});
@@ -178,7 +176,7 @@ export async function runCommand({
 		try {
 			await postCommand({
 				abstractCommand,
-				userID,
+				userID: user.id,
 				guildID,
 				channelID,
 				args,

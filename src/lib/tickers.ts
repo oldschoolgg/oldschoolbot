@@ -305,7 +305,6 @@ const tickers: { name: string; interval: number; timer: NodeJS.Timeout | null; c
 								args: { harvest: { patch_name: patchType } },
 								bypassInhibitors: true,
 								channelID: message.channel.id,
-								userID: message.author.id,
 								guildID: undefined,
 								user: await mUserFetch(user.id),
 								member: message.member
