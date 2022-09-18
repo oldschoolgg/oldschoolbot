@@ -191,6 +191,10 @@ export async function interactionHook(data: APIInteraction) {
 	const id = data.data.custom_id;
 	const userID = data.member ? data.member.user?.id : data.user?.id;
 	if (!userID) return;
+	if (globalClient.oneCommandAtATimeCache.has(userID)) {
+		return buttonReply('You cannot use a command right now.');
+	}
+
 	const user = await mUserFetch(userID);
 	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, data);
 
