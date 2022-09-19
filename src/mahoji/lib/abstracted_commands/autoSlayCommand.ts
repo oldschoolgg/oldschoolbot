@@ -261,7 +261,6 @@ export async function autoSlayCommand({
 	const channel = globalClient.channels.cache.get(channelID.toString());
 	const cmdRunOptions = {
 		channelID,
-		userID: user.id,
 		guildID: isGuildChannel(channel) ? channel.guild.id : undefined,
 		user,
 		member: null
