@@ -4,7 +4,7 @@ import { Emoji, Events } from '../../lib/constants';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { RunecraftActivityTaskOptions } from '../../lib/types/minions';
-import { roll } from '../../lib/util';
+import { roll, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { calcMaxRCQuantity } from '../../mahoji/mahojiSettings';
 
@@ -43,8 +43,8 @@ export const runecraftTask: MinionTask = {
 		const loot = new Bank({
 			[rune.id]: runeQuantity
 		});
-
-		if (roll((1_795_758 - user.skillLevel(SkillsEnum.Runecraft) * 25) / essenceQuantity)) {
+		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Runecraft, 1_795_758);
+		if (roll(petDropRate / essenceQuantity)) {
 			loot.add('Rift guardian');
 			str += "\nYou have a funny feeling you're being followed...";
 			globalClient.emit(
