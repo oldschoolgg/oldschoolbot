@@ -65,6 +65,7 @@ import { questingTask } from '../tasks/minions/questingActivity';
 import { revenantsTask } from '../tasks/minions/revenantsActivity';
 import { runecraftTask } from '../tasks/minions/runecraftActivity';
 import { sawmillTask } from '../tasks/minions/sawmillActivity';
+import { shootingStarTask } from '../tasks/minions/shootingStarsActivity';
 import { smeltingTask } from '../tasks/minions/smeltingActivity';
 import { smithingTask } from '../tasks/minions/smithingActivity';
 import { tokkulShopTask } from '../tasks/minions/tokkulShopActivity';
@@ -147,7 +148,8 @@ export const tasks: MinionTask[] = [
 	sepulchreTask,
 	titheFarmTask,
 	temporossTask,
-	smithingTask
+	smithingTask,
+	shootingStarTask
 ];
 
 export async function syncActivityCache() {
