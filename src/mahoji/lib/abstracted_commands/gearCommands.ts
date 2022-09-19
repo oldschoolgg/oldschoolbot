@@ -97,19 +97,19 @@ export async function gearPresetEquipCommand(user: MUser, gearSetup: string, pre
 		files: [{ name: 'gear.jpg', attachment: image }]
 	};
 }
-export async function gearEquipMultiCommand(
+export function gearEquipMultiImpl(
 	user: MUser,
-	interaction: SlashCommandInteraction,
 	setup: string,
 	items: string
-) {
-	if (!isValidGearSetup(setup)) return 'Invalid gear setup.';
-	if (setup === 'wildy') {
-		await handleMahojiConfirmation(
-			interaction,
-			"You're trying to equip items into your *wildy* setup. ANY item in this setup can potentially be lost if doing Wilderness activities. Please confirm you understand this."
-		);
-	}
+): {
+	success: boolean;
+	failMsg?: string;
+	equipBank?: Bank;
+	unequipBank?: Bank;
+	skillFailBank?: Bank;
+	equippedGear?: GearSetup;
+} {
+	if (!isValidGearSetup(setup)) return { success: false, failMsg: 'Invalid gear setup' };
 	const oneItemPerSlot: { [key in EquipmentSlot]?: boolean } = {};
 	const userSkills = user.skillsAsXP;
 	const failedToEquipBank = new Bank();
@@ -167,6 +167,37 @@ export async function gearEquipMultiCommand(
 		}
 		equippedGear[slot] = { item: item.id, quantity: qty };
 	}
+	return {
+		success: true,
+		equipBank,
+		unequipBank,
+		equippedGear,
+		skillFailBank: failedToEquipBank
+	};
+}
+export async function gearEquipMultiCommand(
+	user: MUser,
+	interaction: SlashCommandInteraction,
+	setup: string,
+	items: string
+) {
+	if (!isValidGearSetup(setup)) return 'Invalid gear setup.';
+	if (setup === 'wildy') {
+		await handleMahojiConfirmation(
+			interaction,
+			"You're trying to equip items into your *wildy* setup. ANY item in this setup can potentially be lost if doing Wilderness activities. Please confirm you understand this."
+		);
+	}
+
+	const {
+		success: resultSuccess,
+		failMsg,
+		skillFailBank,
+		equippedGear,
+		equipBank,
+		unequipBank
+	} = gearEquipMultiImpl(user, setup, items);
+	if (!resultSuccess) return failMsg!;
 
 	const dbKey = `gear_${setup}` as const;
 	const { newUser } = await user.update({
@@ -181,8 +212,8 @@ export async function gearEquipMultiCommand(
 
 	const image = await generateGearImage(user, newUser[dbKey] as GearSetup, setup, user.user.minion_equippedPet);
 	let content = `You equipped ${equipBank} on your ${setup} setup, and unequipped ${unequipBank}.`;
-	if (failedToEquipBank.length > 0) {
-		content += `\nThese items failed to be equipped as you don't have the requirements: ${failedToEquipBank}.`;
+	if (skillFailBank!.length > 0) {
+		content += `\nThese items failed to be equipped as you don't have the requirements: ${skillFailBank}.`;
 	}
 	return {
 		content,
