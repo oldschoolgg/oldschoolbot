@@ -14,6 +14,7 @@ interface MiningTimeOptions {
 	powermining: boolean;
 	goldSilverBoost: boolean;
 	miningLvl: number;
+	passedDuration?: number;
 }
 
 export function determineMiningTime({
@@ -26,7 +27,8 @@ export function determineMiningTime({
 	miningCapeEffect,
 	powermining,
 	goldSilverBoost,
-	miningLvl
+	miningLvl,
+	passedDuration
 }: MiningTimeOptions): [number, number] {
 	let { intercept } = ore;
 	if (ore.name === 'Gem rock' && user.hasEquipped('Amulet of glory')) {
@@ -40,7 +42,11 @@ export function determineMiningTime({
 
 	let newQuantity = 0;
 
-	const userMaxTripTicks = calcMaxTripLength(user, 'Mining') / (Time.Second * 0.6);
+	if (!passedDuration) {
+		passedDuration = 0;
+	}
+
+	const userMaxTripTicks = (calcMaxTripLength(user, 'Mining') - passedDuration) / (Time.Second * 0.6);
 
 	while (timeElapsed < userMaxTripTicks) {
 		while (!percentChance(chanceOfSuccess)) {
