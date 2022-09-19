@@ -219,9 +219,15 @@ export function minionStatus(user: MUser) {
 
 			const log = Woodcutting.Logs.find(log => log.id === data.logID);
 
-			return `${name} is currently chopping ${data.quantity}x ${log!.name}. ${formattedDuration} Your ${
-				Emoji.Woodcutting
-			} Woodcutting level is ${user.skillLevel(SkillsEnum.Woodcutting)}`;
+			return `${name} is currently chopping ${log!.name}. ${
+				data.fakeDurationMax === data.fakeDurationMin
+					? formattedDuration
+					: `approximately ${formatDuration(
+							randomVariation(reduceNumByPercent(durationRemaining, 25), 20)
+					  )} **to** ${formatDuration(
+							randomVariation(increaseNumByPercent(durationRemaining, 25), 20)
+					  )} remaining.`
+			} Your ${Emoji.Woodcutting} Woodcutting level is ${user.skillLevel(SkillsEnum.Woodcutting)}`;
 		}
 		case 'Runecraft': {
 			const data = currentTask as RunecraftActivityTaskOptions;
