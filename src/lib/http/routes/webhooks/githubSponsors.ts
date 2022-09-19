@@ -1,5 +1,3 @@
-import { noOp } from 'e';
-
 import { syncLinkedAccounts } from '../../../../mahoji/mahojiSettings';
 import { Channel } from '../../../constants';
 import { patreonTask } from '../../../patreon';

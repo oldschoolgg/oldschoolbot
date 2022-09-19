@@ -6,7 +6,7 @@ import { Duration } from '@sapphire/time-utilities';
 import Type from '@sapphire/type';
 import { isThenable } from '@sentry/utils';
 import { escapeCodeBlock } from 'discord.js';
-import { noOp, randArrItem, sleep, Time, uniqueArr } from 'e';
+import { randArrItem, sleep, Time, uniqueArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions, InteractionResponseType, InteractionType } from 'mahoji';
 import { CommandResponse, MahojiAttachment } from 'mahoji/dist/lib/structures/ICommand';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
