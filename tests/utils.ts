@@ -2,9 +2,8 @@ import { Prisma, User } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
 
-import { GearSetup, PartialGearSetup } from '../dist/lib/gear';
 import { BitField } from '../src/lib/constants';
-import { filterGearSetup } from '../src/lib/gear';
+import { filterGearSetup, GearSetup, PartialGearSetup } from '../src/lib/gear';
 import { MUserClass } from '../src/lib/MUser';
 import { Gear } from '../src/lib/structures/Gear';
 
