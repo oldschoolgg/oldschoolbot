@@ -1,8 +1,8 @@
 import { Bank } from 'oldschooljs';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
 
-import { Gear } from '../dist/lib/structures/Gear';
-import { gearEquipMultiImpl } from '../dist/mahoji/lib/abstracted_commands/gearCommands';
+import { Gear } from '../src/lib/structures/Gear';
+import { gearEquipMultiImpl } from '../src/mahoji/lib/abstracted_commands/gearCommands';
 import { mockMUser } from './utils';
 
 describe('Multi-equip Gear Test', () => {
