@@ -5,7 +5,7 @@ import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueTo
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
-import { roll } from '../../lib/util';
+import { roll, skillingPetDropRate } from '../../lib/util';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
@@ -64,17 +64,20 @@ export const woodcuttingTask: MinionTask = {
 		}
 
 		// Roll for pet
-		if (log.petChance && roll((log.petChance - user.skillLevel(SkillsEnum.Woodcutting) * 25) / quantity)) {
-			loot.add('Beaver');
-			str += "\n**You have a funny feeling you're being followed...**";
-			globalClient.emit(
-				Events.ServerNotification,
-				`${Emoji.Woodcutting} **${user.usernameOrMention}'s** minion, ${
-					user.minionName
-				}, just received a Beaver while cutting ${log.name} at level ${user.skillLevel(
-					'woodcutting'
-				)} Woodcutting!`
-			);
+		if (log.petChance) {
+			const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Woodcutting, log.petChance);
+			if (roll(petDropRate / quantity)) {
+				loot.add('Beaver');
+				str += "\n**You have a funny feeling you're being followed...**";
+				globalClient.emit(
+					Events.ServerNotification,
+					`${Emoji.Woodcutting} **${user.usernameOrMention}'s** minion, ${
+						user.minionName
+					}, just received a Beaver while cutting ${log.name} at level ${user.skillLevel(
+						'woodcutting'
+					)} Woodcutting!`
+				);
+			}
 		}
 
 		str += `\nYou received ${loot}.`;

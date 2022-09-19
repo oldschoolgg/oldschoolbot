@@ -1,10 +1,11 @@
-import { percentChance, randInt } from 'e';
+import { percentChance, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../lib/constants';
 import { Stealable, stealables } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
+import { skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { rogueOutfitPercentBonus, updateGPTrackSetting } from '../../mahoji/mahojiSettings';
@@ -54,15 +55,17 @@ export const pickpocketTask: MinionTask = {
 		let rogueOutfitBoostActivated = false;
 
 		const loot = new Bank();
+		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Thieving, obj.petChance);
 
 		if (obj.type === 'pickpockable') {
 			for (let i = 0; i < successfulQuantity; i++) {
 				const lootItems = obj.table.roll();
+				// TODO: Remove Rocky from loot tables in oldschoolJS
+				if (lootItems.has('Rocky')) lootItems.remove('Rocky');
 
 				if (randInt(1, 100) <= rogueOutfitPercentBonus(user)) {
 					rogueOutfitBoostActivated = true;
 					const doubledLoot = lootItems.multiply(2);
-					if (doubledLoot.has('Rocky')) doubledLoot.remove('Rocky');
 					loot.add(doubledLoot);
 				} else {
 					loot.add(lootItems);
@@ -72,6 +75,11 @@ export const pickpocketTask: MinionTask = {
 			for (let i = 0; i < (successfulQuantity * obj.lootPercent!) / 100; i++) {
 				loot.add(obj.table.roll());
 			}
+		}
+
+		// Roll for pet
+		if (roll(petDropRate / successfulQuantity)) {
+			loot.add('Rocky');
 		}
 
 		if (loot.has('Coins')) {
