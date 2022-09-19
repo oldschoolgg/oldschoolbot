@@ -1,5 +1,4 @@
 import { randArrItem, reduceNumByPercent, Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
@@ -16,27 +15,26 @@ import {
 	TOTAL_MONKEYS
 } from '../../../lib/monkeyRumble';
 import { getMinigameEntity } from '../../../lib/settings/minigames';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { MonkeyRumbleOptions } from '../../../lib/types/minions';
-import { formatDuration, updateBankSetting } from '../../../lib/util';
+import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { mahojiChatHead } from '../../../lib/util/chatHeadImage';
+import { updateBankSetting } from '../../mahojiSettings';
 
-export async function monkeyRumbleStatsCommand(user: KlasaUser) {
+export async function monkeyRumbleStatsCommand(user: MUser) {
 	const tier = monkeyTiers.find(t => t.id === monkeyTierOfUser(user))!;
 	const scores = await getMinigameEntity(user.id);
 	return `**Mad Marimbo's Monkey Rumble**
 
 **Fights Done:** ${scores.monkey_rumble}
-**Unique Monkeys Fought:** ${user.settings.get(UserSettings.MonkeysFought).length}/${TOTAL_MONKEYS.toLocaleString()}
+**Unique Monkeys Fought:** ${user.user.monkeys_fought.length}/${TOTAL_MONKEYS.toLocaleString()}
 **Greegree Level:** ${tier.greegrees[0].name} - ${tier.id}/${monkeyTiers.length.toLocaleString()}
-**Rumble tokens:** ${user.bank().amount('Rumble token')}`;
+**Rumble tokens:** ${user.bank.amount('Rumble token')}`;
 }
 
-export async function monkeyRumbleCommand(user: KlasaUser, channelID: bigint): CommandResponse {
-	if (!user.hasItemEquippedAnywhere("M'speak amulet")) {
+export async function monkeyRumbleCommand(user: MUser, channelID: bigint): CommandResponse {
+	if (!user.hasEquipped("M'speak amulet")) {
 		return {
 			...(await mahojiChatHead({
 				head: 'wurMuTheMonkey',
@@ -49,7 +47,7 @@ export async function monkeyRumbleCommand(user: KlasaUser, channelID: bigint): C
 		!monkeyTiers
 			.map(t => t.greegrees)
 			.flat(2)
-			.some(t => user.hasItemEquippedAnywhere(t.id))
+			.some(t => user.hasEquipped(t.id))
 	) {
 		return {
 			content:
@@ -68,11 +66,11 @@ export async function monkeyRumbleCommand(user: KlasaUser, channelID: bigint): C
 	const boosts = [];
 
 	let fightDuration = Time.Minute * 9;
-	if (user.hasItemEquippedOrInBank('Strength master cape')) {
+	if (user.hasEquippedOrInBank('Strength master cape')) {
 		fightDuration = reduceNumByPercent(fightDuration, 17);
 		boosts.push('17% faster fights for strength master cape');
 	}
-	if (user.hasItemEquippedAnywhere('Gorilla rumble greegree')) {
+	if (user.hasEquipped('Gorilla rumble greegree')) {
 		fightDuration = reduceNumByPercent(fightDuration, 17);
 		boosts.push('17% faster fights for gorilla rumble greegree');
 	}
@@ -80,11 +78,11 @@ export async function monkeyRumbleCommand(user: KlasaUser, channelID: bigint): C
 	let duration = quantity * fightDuration;
 
 	let chanceOfSpecial = Math.floor(125 * (6 - monkeyTierOfUser(user) / 2));
-	if (user.hasItemEquippedAnywhere('Big banana')) {
+	if (user.hasEquipped('Big banana')) {
 		chanceOfSpecial = reduceNumByPercent(chanceOfSpecial, 12);
 		boosts.push('12% higher chance of purple monkeys from Big banana');
 	}
-	if (user.hasItemEquippedAnywhere('Ring of luck')) {
+	if (user.hasEquipped('Ring of luck')) {
 		chanceOfSpecial = reduceNumByPercent(chanceOfSpecial, 4);
 		boosts.push('4% higher chance of purple monkeys from ring of luck');
 	}
@@ -94,13 +92,13 @@ export async function monkeyRumbleCommand(user: KlasaUser, channelID: bigint): C
 	}
 	monkeysToFight.sort((a, b) => (a.special === b.special ? 0 : a.special ? -1 : 1));
 	let foodRequired = Math.floor(duration / (Time.Minute * 1.34));
-	if (user.hasItemEquippedAnywhere('Big banana')) {
+	if (user.hasEquipped('Big banana')) {
 		foodRequired = reduceNumByPercent(foodRequired, 25);
 		foodRequired = Math.floor(foodRequired);
 		boosts.push('25% less food from Big banana');
 	}
 
-	const bank = user.bank();
+	const { bank } = user;
 	const eatable = monkeyEatables.find(e => bank.amount(e.item.id) >= foodRequired);
 
 	if (!eatable) {
@@ -114,7 +112,7 @@ export async function monkeyRumbleCommand(user: KlasaUser, channelID: bigint): C
 	}
 	const cost = new Bank().add(eatable.item.id, foodRequired);
 	await user.removeItemsFromBank(cost);
-	updateBankSetting(globalClient, ClientSettings.EconomyStats.MonkeyRumbleCost, cost);
+	updateBankSetting('mr_cost', cost);
 
 	await addSubTaskToActivityTask<MonkeyRumbleOptions>({
 		userID: user.id,

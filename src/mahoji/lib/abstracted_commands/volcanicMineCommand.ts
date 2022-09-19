@@ -1,16 +1,20 @@
-import { User } from '@prisma/client';
 import { objectEntries, Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ItemBank } from '../../../lib/types';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { formatDuration, formatSkillRequirements, resolveNameBank, stringMatches } from '../../../lib/util';
+import {
+	formatDuration,
+	formatSkillRequirements,
+	hasSkillReqs,
+	resolveNameBank,
+	stringMatches
+} from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { handleMahojiConfirmation, mahojiUserSettingsUpdate } from '../../mahojiSettings';
+import { handleMahojiConfirmation } from '../../mahojiSettings';
 
 const skillReqs = {
 	[SkillsEnum.Prayer]: 70,
@@ -91,23 +95,25 @@ export const VolcanicMineShop: { name: string; output: ItemBank; cost: number; c
 	}
 ];
 
-export async function volcanicMineCommand(user: KlasaUser, channelID: bigint, gameQuantity: number | undefined) {
-	if (!user.hasSkillReqs(skillReqs)[0]) {
+export async function volcanicMineCommand(user: MUser, channelID: bigint, gameQuantity: number | undefined) {
+	const skills = user.skillsAsLevels;
+	if (!hasSkillReqs(user, skillReqs)[0]) {
 		return `You are not skilled enough to participate in the Volcanic Mine. You need the following requirements: ${objectEntries(
 			skillReqs
 		)
 			.map(s => {
-				return user.skillLevel(s[0]) < s[1] ? formatSkillRequirements({ [s[0]]: s[1] }, true) : undefined;
+				return skills[s[0]] < s[1] ? formatSkillRequirements({ [s[0]]: s[1] }, true) : undefined;
 			})
 			.filter(f => f)
 			.join(', ')}`;
 	}
 	const maxGamesUserCanDo = Math.floor(calcMaxTripLength(user) / VolcanicMineGameTime);
 	if (!gameQuantity || gameQuantity > maxGamesUserCanDo) gameQuantity = maxGamesUserCanDo;
-	const userMiningLevel = user.skillLevel(SkillsEnum.Mining);
-	const userPrayerLevel = user.skillLevel(SkillsEnum.Prayer);
-	const userHitpointsLevel = user.skillLevel(SkillsEnum.Hitpoints);
-	const userSkillingGear = user.getGear('skilling');
+	const userMiningLevel = skills.mining;
+	const userPrayerLevel = skills.prayer;
+	const userHitpointsLevel = skills.hitpoints;
+	const { gear } = user;
+	const userSkillingGear = gear.skilling;
 	const boosts: string[] = [];
 
 	const suppliesUsage = new Bank()
@@ -148,11 +154,12 @@ export async function volcanicMineCommand(user: KlasaUser, channelID: bigint, ga
 	}
 
 	suppliesUsage.multiply(gameQuantity);
-	if (!user.owns(suppliesUsage)) {
+	const { bank } = user;
+	if (!bank.has(suppliesUsage)) {
 		return `You don't have all the required supplies for this number of games. You need ${suppliesUsage} for ${gameQuantity} games of Volcanic Mine.`;
 	}
 
-	await user.removeItemsFromBank(suppliesUsage);
+	await transactItems({ userID: user.id, itemsToRemove: suppliesUsage });
 
 	if (user.usingPet('Doug')) {
 		boosts.push('20% more Mining XP for having Doug helping you!');
@@ -179,12 +186,11 @@ export async function volcanicMineCommand(user: KlasaUser, channelID: bigint, ga
 
 export async function volcanicMineShopCommand(
 	interaction: SlashCommandInteraction,
-	user: User,
-	klasaUser: KlasaUser,
+	user: MUser,
 	item: string | undefined,
 	quantity = 1
 ) {
-	const currentUserPoints = user.volcanic_mine_points;
+	const currentUserPoints = user.user.volcanic_mine_points;
 	if (!item) {
 		return `You currently have ${currentUserPoints.toLocaleString()} Volcanic Mine points.`;
 	}
@@ -211,7 +217,7 @@ export async function volcanicMineShopCommand(
 	);
 
 	if (shopItem.clOnly) {
-		await klasaUser.addItemsToCollectionLog({ items: new Bank().add(shopItem.output).multiply(quantity) });
+		await user.addItemsToCollectionLog(new Bank().add(shopItem.output).multiply(quantity));
 	} else {
 		await transactItems({
 			userID: user.id,
@@ -219,7 +225,7 @@ export async function volcanicMineShopCommand(
 			itemsToAdd: new Bank().add(shopItem.output).multiply(quantity)
 		});
 	}
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		volcanic_mine_points: {
 			decrement: cost
 		}

@@ -1,6 +1,5 @@
 import { TextChannel } from 'discord.js';
 import { objectKeys, Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { ApplicationCommandOptionType, CommandRunOptions, MessageFlags } from 'mahoji';
 
 import { setupParty } from '../../extendables/Message/Party';
@@ -16,30 +15,31 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../lib/util/calcMassDurationQuantity';
 import findMonster from '../../lib/util/findMonster';
 import { OSBMahojiCommand } from '../lib/util';
+import { hasMonsterRequirements } from '../mahojiSettings';
 
-function checkReqs(users: KlasaUser[], monster: KillableMonster, quantity: number) {
+function checkReqs(users: MUser[], monster: KillableMonster, quantity: number) {
 	// Check if every user has the requirements for this monster.
 	for (const user of users) {
-		if (!user.hasMinion) {
-			throw `${user.username} doesn't have a minion, so they can't join!`;
+		if (!user.user.minion_hasBought) {
+			throw `${user.usernameOrMention} doesn't have a minion, so they can't join!`;
 		}
 
 		if (user.minionIsBusy) {
-			throw `${user.username} is busy right now and can't join!`;
+			throw `${user.usernameOrMention} is busy right now and can't join!`;
 		}
 
-		if (user.isIronman) {
-			throw `${user.username} is an ironman, so they can't join!`;
+		if (user.user.minion_ironman) {
+			throw `${user.usernameOrMention} is an ironman, so they can't join!`;
 		}
 
-		const [hasReqs, reason] = user.hasMonsterRequirements(monster);
+		const [hasReqs, reason] = hasMonsterRequirements(user, monster);
 		if (!hasReqs) {
-			throw `${user.username} doesn't have the requirements for this monster: ${reason}`;
+			throw `${user.usernameOrMention} doesn't have the requirements for this monster: ${reason}`;
 		}
 
 		if (1 > 2 && !hasEnoughFoodForMonster(monster, user, quantity, users.length)) {
 			throw `${
-				users.length === 1 ? "You don't" : `${user.username} doesn't`
+				users.length === 1 ? "You don't" : `${user.usernameOrMention} doesn't`
 			} have enough food. You need at least ${monster!.healAmountNeeded! * quantity} HP in food to ${
 				users.length === 1 ? 'start the mass' : 'enter the mass'
 			}.`;
@@ -71,8 +71,8 @@ export const massCommand: OSBMahojiCommand = {
 	],
 	run: async ({ interaction, options, userID, channelID }: CommandRunOptions<{ monster: string }>) => {
 		interaction.deferReply();
-		const user = await globalClient.fetchUser(userID);
-		if (user.isIronman) return 'Ironmen cannot do masses.';
+		const user = await mUserFetch(userID);
+		if (user.user.minion_ironman) return 'Ironmen cannot do masses.';
 		const channel = globalClient.channels.cache.get(channelID.toString());
 		if (!channel || !channelIsSendable(channel)) return 'Invalid channel.';
 		const monster = findMonster(options.monster);
@@ -81,20 +81,20 @@ export const massCommand: OSBMahojiCommand = {
 
 		checkReqs([user], monster, 2);
 
-		let [users, reactionAwaiter] = await setupParty(channel as TextChannel, user, {
+		let reactionAwaiter = await setupParty(channel as TextChannel, user, {
 			leader: user,
 			minSize: 2,
 			maxSize: 10,
 			ironmanAllowed: false,
-			message: `${user.username} is doing a ${monster.name} mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
+			message: `${user.usernameOrMention} is doing a ${monster.name} mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
 			customDenier: async user => {
-				if (!user.hasMinion) {
+				if (!user.user.minion_hasBought) {
 					return [true, "you don't have a minion."];
 				}
 				if (user.minionIsBusy) {
 					return [true, 'your minion is busy.'];
 				}
-				const [hasReqs, reason] = user.hasMonsterRequirements(monster);
+				const [hasReqs, reason] = hasMonsterRequirements(user, monster);
 				if (!hasReqs) {
 					return [true, `you don't have the requirements for this monster; ${reason}`];
 				}
@@ -121,15 +121,19 @@ export const massCommand: OSBMahojiCommand = {
 				return [false];
 			}
 		});
+
+		let users: MUser[] = [];
 		try {
-			await reactionAwaiter();
+			users = reactionAwaiter;
 		} catch (err: any) {
 			return {
 				content: typeof err === 'string' ? err : 'Your mass failed to start.',
 				flags: MessageFlags.Ephemeral
 			};
 		}
+		let unchangedUsers = [...users];
 		users = users.filter(i => !i.minionIsBusy);
+		const usersKickedForBusy = unchangedUsers.filter(i => !users.includes(i));
 
 		const [quantity, duration, perKillTime, boostMsgs] = await calcDurQty(users, monster, undefined);
 
@@ -164,10 +168,20 @@ export const massCommand: OSBMahojiCommand = {
 		if (boostMsgs.length > 0) {
 			killsPerHr += `\n\n${boostMsgs.join(', ')}.`;
 		}
-		return `${user.username}'s party (${users.map(u => u.username).join(', ')}) is now off to kill ${quantity}x ${
-			monster.name
-		}. Each kill takes ${formatDuration(perKillTime)} instead of ${formatDuration(
-			monster.timeToFinish
-		)}- the total trip will take ${formatDuration(duration)}. ${killsPerHr}`;
+		let str = `${user.usernameOrMention}'s party (${users
+			.map(u => u.usernameOrMention)
+			.join(', ')}) is now off to kill ${quantity}x ${monster.name}. Each kill takes ${formatDuration(
+			perKillTime
+		)} instead of ${formatDuration(monster.timeToFinish)}- the total trip will take ${formatDuration(
+			duration
+		)}. ${killsPerHr}`;
+
+		if (usersKickedForBusy.length > 0) {
+			str += `\nThe following users were removed, because their minion became busy before the mass started: ${usersKickedForBusy
+				.map(i => i.usernameOrMention)
+				.join(', ')}.`;
+		}
+
+		return str;
 	}
 };

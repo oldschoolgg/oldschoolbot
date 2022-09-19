@@ -1,15 +1,13 @@
 import { Time } from 'e';
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { Events } from '../../lib/constants';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
-import { addItemToBank, rand, roll, updateBankSetting } from '../../lib/util';
+import { rand, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
+import { updateBankSetting, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 
 const possibleFound = new LootTable()
 	.add('Reward casket (beginner)')
@@ -27,20 +25,21 @@ const possibleFound = new LootTable()
 	.add('Tradeable Mystery Box')
 	.add('Untradeable Mystery Box');
 
-export default class extends Task {
+export const clueTask: MinionTask = {
+	type: 'ClueCompletion',
 	async run(data: ClueActivityTaskOptions) {
 		const { clueID, userID, channelID, quantity, duration } = data;
 		const clueTier = ClueTiers.find(mon => mon.id === clueID);
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
 		const logInfo = `ClueID[${clueID}] userID[${userID}] channelID[${channelID}] quantity[${quantity}]`;
 
 		if (!clueTier) {
-			this.client.emit(Events.Wtf, `Missing user or clue - ${logInfo}`);
+			globalClient.emit(Events.Wtf, `Missing user or clue - ${logInfo}`);
 			return;
 		}
 
-		let str = `${user}, ${user.minionName} finished completing ${quantity} ${clueTier.name} clues. ${
+		let str = `${user.mention}, ${user.minionName} finished completing ${quantity} ${clueTier.name} clues. ${
 			user.minionName
 		} carefully places the reward casket${
 			quantity > 1 ? 's' : ''
@@ -49,21 +48,23 @@ export default class extends Task {
 		let loot = new Bank().add(clueTier.id, quantity);
 
 		if (user.usingPet('Zippy') && duration > Time.Minute * 5) {
-			let bonusLoot = {};
+			let bonusLoot = new Bank();
 			const numberOfMinutes = Math.floor(duration / Time.Minute);
 
 			for (let i = 0; i < numberOfMinutes / rand(5, 10); i++) {
 				const item = possibleFound.roll().items()[0][0].id;
-				bonusLoot = addItemToBank(bonusLoot, item);
+				bonusLoot.add(item);
 			}
-
-			await updateBankSetting(this.client, ClientSettings.EconomyStats.ZippyLoot, bonusLoot);
+			if (bonusLoot.length > 0) {
+				await updateBankSetting('zippy_loot', bonusLoot);
+				await userStatsBankUpdate(user.id, 'loot_from_zippy_bank', bonusLoot);
+			}
 
 			loot.add(bonusLoot);
 
 			if (roll(15)) {
-				await updateBankSetting(this.client, ClientSettings.EconomyStats.ZippyLoot, loot);
-				userStatsBankUpdate(user.id, 'loot_from_zippy_bank', loot);
+				await updateBankSetting('zippy_loot', loot);
+				await userStatsBankUpdate(user.id, 'loot_from_zippy_bank', loot);
 				loot.multiply(2);
 				str += '\nZippy has **doubled** your loot.';
 			}
@@ -78,4 +79,4 @@ export default class extends Task {
 
 		handleTripFinish(user, channelID, str, ['clue', { tier: clueTier.name, quantity }], undefined, data, loot);
 	}
-}
+};

@@ -1,14 +1,13 @@
-import { Task } from 'klasa';
-
 import Firemaking from '../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FiremakingActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
-export default class extends Task {
+export const firemakingTask: MinionTask = {
+	type: 'Firemaking',
 	async run(data: FiremakingActivityTaskOptions) {
 		const { burnableID, quantity, userID, channelID } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
 		const burnable = Firemaking.Burnables.find(Burn => Burn.inputLogs === burnableID)!;
 
@@ -17,7 +16,7 @@ export default class extends Task {
 
 		// If they have the entire pyromancer outfit, give an extra 0.5% xp bonus
 		if (
-			user.getGear('skilling').hasEquipped(
+			user.gear.skilling.hasEquipped(
 				Object.keys(Firemaking.pyromancerItems).map(i => parseInt(i)),
 				true
 			)
@@ -28,7 +27,7 @@ export default class extends Task {
 		} else {
 			// For each pyromancer item, check if they have it, give its' XP boost if so.
 			for (const [itemID, bonus] of Object.entries(Firemaking.pyromancerItems)) {
-				if (user.hasItemEquippedAnywhere(parseInt(itemID))) {
+				if (user.hasEquipped(parseInt(itemID))) {
 					const amountToAdd = Math.floor(xpReceived * (bonus / 100));
 					xpReceived += amountToAdd;
 					bonusXP += amountToAdd;
@@ -58,4 +57,4 @@ export default class extends Task {
 			null
 		);
 	}
-}
+};

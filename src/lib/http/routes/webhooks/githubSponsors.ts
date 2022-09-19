@@ -1,5 +1,4 @@
 import { TextChannel } from 'discord.js';
-import { KlasaUser } from 'klasa';
 
 import { boxFrenzy } from '../../../boxFrenzy';
 import { Channel } from '../../../constants';
@@ -33,7 +32,7 @@ const githubSponsors = (server: FastifyServer) =>
 						await patreonTask.givePerks(user.id, tier);
 					}
 
-					addPatronLootTime(tier, user as KlasaUser);
+					addPatronLootTime(tier, user);
 
 					for (const id of [Channel.BSOChannel, Channel.BSOGeneral]) {
 						boxFrenzy(

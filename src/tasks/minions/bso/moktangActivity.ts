@@ -1,9 +1,8 @@
-import { Task } from 'klasa';
-
 import { moktangActivity, MoktangTaskOptions } from '../../../mahoji/lib/abstracted_commands/moktangCommand';
 
-export default class extends Task {
+export const moktangTask: MinionTask = {
+	type: 'Moktang',
 	async run(data: MoktangTaskOptions) {
 		moktangActivity(data);
 	}
-}
+};

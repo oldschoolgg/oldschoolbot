@@ -1,12 +1,12 @@
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { TeamMember } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 
-import { Peak } from '../../tasks/WildernessPeakInterval';
 import { Kibble } from '../data/kibble';
 import { IPatchData } from '../minions/farming/types';
 import { Monkey } from '../monkeyRumble';
 import { MinigameName } from '../settings/settings';
 import { BossUser } from '../structures/Boss';
+import { Peak } from '../tickers';
 import { KourendFavour } from './../minions/data/kourendFavour';
 import { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
 import { activity_type_enum } from '.prisma/client';
@@ -399,4 +399,5 @@ export type ActivityTaskData =
 	| TempleTrekkingActivityTaskOptions
 	| TemporossActivityTaskOptions
 	| PuroPuroActivityTaskOptions
-	| KourendFavourActivityTaskOptions;
+	| KourendFavourActivityTaskOptions
+	| AgilityActivityTaskOptions;

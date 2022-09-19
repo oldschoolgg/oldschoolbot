@@ -1,4 +1,4 @@
-import { KlasaUser } from 'klasa';
+import { Bank } from 'oldschooljs';
 import { BeginnerClueTable } from 'oldschooljs/dist/simulation/clues/Beginner';
 import { EasyClueTable } from 'oldschooljs/dist/simulation/clues/Easy';
 import { EliteClueTable } from 'oldschooljs/dist/simulation/clues/Elite';
@@ -16,6 +16,7 @@ import { GrandmasterClueTable } from '../simulation/grandmasterClue';
 import { gracefulItems } from '../skilling/skills/agility';
 import { Craftables } from '../skilling/skills/crafting/craftables';
 import { Fletchables } from '../skilling/skills/fletching/fletchables';
+import { ItemBank } from '../types';
 import resolveItems from '../util/resolveItems';
 import { XPLamps } from '../xpLamps';
 import { allCollectionLogs } from './Collections';
@@ -163,7 +164,7 @@ export const warmGear = resolveItems([
 	'Bomber cap'
 ]) as number[];
 
-const ores = resolveItems([
+export const ores = resolveItems([
 	'Copper ore',
 	'Tin ore',
 	'Iron ore',
@@ -176,7 +177,8 @@ const ores = resolveItems([
 	'Lovakite ore',
 	'Adamantite ore',
 	'Runite ore',
-	'Dark animica'
+	'Dark animica',
+	'Dwarven ore'
 ]);
 
 const bars = resolveItems([
@@ -190,7 +192,8 @@ const bars = resolveItems([
 	'Lovakite bar',
 	'Mithril bar',
 	'Adamantite bar',
-	'Runite bar'
+	'Runite bar',
+	'Dwarven bar'
 ]);
 
 const smithingMisc = resolveItems([
@@ -275,7 +278,7 @@ const barrows = resolveItems([
 	'Bolt rack'
 ]);
 
-const seeds = resolveItems([
+export const seedsFilter = resolveItems([
 	'Pineapple seed',
 	'Crystal acorn',
 	'Magic seed',
@@ -351,7 +354,9 @@ const seeds = resolveItems([
 	'Athelas seed',
 	'Avocado seed',
 	'Lychee seed',
-	'Mango seed'
+	'Mango seed',
+	'Korulsi seed',
+	'Grand crystal acorn'
 ]);
 
 const herbs = resolveItems([
@@ -383,10 +388,12 @@ const herbs = resolveItems([
 	'Lantadyme',
 	'Dwarf weed',
 	'Torstol',
-	'Athelas'
+	'Athelas',
+	'Grimy korulsi',
+	'Korulsi'
 ]);
 
-const secondaries = resolveItems([
+export const secondaries = resolveItems([
 	'Eye of newt',
 	'Unicorn horn dust',
 	'Snake weed',
@@ -414,7 +421,8 @@ const secondaries = resolveItems([
 	'Torstol',
 	'Cave nightshade',
 	'Crushed superior dragon bones',
-	'Amylase crystal'
+	'Amylase crystal',
+	'Crystal dust'
 ]);
 
 const bones = resolveItems([
@@ -444,7 +452,8 @@ const bones = resolveItems([
 	'Wyvern bones',
 	'Zogre bones',
 	'Abyssal dragon bones',
-	'Royal dragon bones'
+	'Royal dragon bones',
+	'Frost dragon bones'
 ]);
 
 const fletchingItems = Fletchables.flatMap(item => Object.keys(item.inputItems.bank).map(key => parseInt(key)));
@@ -473,7 +482,7 @@ const skilling = resolveItems([
 	'Grapes',
 	'Feather',
 	...fletchingItemsSet,
-	...seeds,
+	...seedsFilter,
 	...bones,
 	...gems,
 	...bars,
@@ -791,7 +800,13 @@ const potions = resolveItems([
 	'Extended super antifire(1)',
 	'Extended super antifire(2)',
 	'Extended super antifire(3)',
-	'Extended super antifire(4)'
+	'Extended super antifire(4)',
+	'Enhanced saradomin brew',
+	'Enhanced super restore',
+	'Enhanced stamina potion',
+	'Enhanced divine water',
+	'Heat res. brew',
+	'Heat res. restore'
 ]);
 
 const herblore = resolveItems([
@@ -832,6 +847,7 @@ const herblore = resolveItems([
 	'Poison ivy berries',
 	"Zulrah's scales",
 	'Crushed superior dragon bones',
+	'Crystal dust',
 	...potions,
 	...herbs
 ]);
@@ -861,6 +877,11 @@ const prayer = resolveItems([
 	'Ensouled aviansie head',
 	'Ensouled abyssal head',
 	'Ensouled dragon head',
+	'Fiendish ashes',
+	'Vile ashes',
+	'Malicious ashes',
+	'Abyssal ashes',
+	'Infernal ashes',
 	...bones
 ]);
 
@@ -950,7 +971,7 @@ const food = resolveItems(Eatables.map(food => food.name));
 interface Filterable {
 	name: string;
 	aliases: string[];
-	items: (user?: KlasaUser) => number[];
+	items: (user?: MUser) => number[];
 }
 
 export const baseFilters: Filterable[] = [
@@ -1039,7 +1060,7 @@ export const baseFilters: Filterable[] = [
 		aliases: ['farming', 'farm', 'seeds'],
 		items: () => [
 			...resolveItems(['Compost', 'Supercompost', 'Ultracompost', 'Bottomless compost bucket ']),
-			...seeds
+			...seedsFilter
 		]
 	},
 	{
@@ -1216,6 +1237,18 @@ export const baseFilters: Filterable[] = [
 		name: 'Lamps',
 		aliases: ['lamps'],
 		items: () => XPLamps.map(i => i.itemID)
+	},
+	{
+		name: 'Not Sacrificed',
+		aliases: ['not sacrificed', 'not sac'],
+		items: user => {
+			if (!user) return [];
+			const sacBank = new Bank(user.user.sacrificedBank as ItemBank);
+			return user.bank
+				.items()
+				.filter(i => !sacBank.has(i[0].id))
+				.map(i => i[0].id);
+		}
 	}
 ];
 

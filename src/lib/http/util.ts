@@ -33,7 +33,6 @@ export function verifyPatreonSecret(body: string, signature?: string | string[])
 	const hmac = createHmac('md5', patreonConfig!.webhookSecret);
 	hmac.update(body);
 	const calculated = hmac.digest('hex');
-	console.log(signature, calculated, signature === calculated);
 	return signature === calculated;
 }
 
@@ -124,7 +123,7 @@ export async function getUserFromGithubID(githubID: string) {
 		`SELECT id FROM users WHERE github_id = '${githubID}';`
 	);
 	if (result.length === 0) return null;
-	return globalClient.fetchUser(result[0].id);
+	return mUserFetch(result[0].id);
 }
 
 export function encryptJWT(payload: unknown, secret = CLIENT_SECRET) {

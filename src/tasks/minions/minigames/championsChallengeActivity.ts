@@ -1,14 +1,14 @@
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
-export default class extends Task {
+export const championsChallengeTask: MinionTask = {
+	type: 'ChampionsChallenge',
 	async run(data: MinigameActivityTaskOptions) {
 		const { channelID, userID } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		await incrementMinigameScore(userID, 'champions_challenge', 1);
 
 		const loot = new Bank({ "Champion's cape": 1 });
@@ -29,4 +29,4 @@ export default class extends Task {
 			loot
 		);
 	}
-}
+};

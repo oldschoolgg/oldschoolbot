@@ -1,6 +1,5 @@
 import { TextChannel } from 'discord.js';
 import { roll, shuffleArr, uniqueArr } from 'e';
-import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
@@ -9,16 +8,15 @@ import { SupportServer } from '../../../config';
 import { COINS_ID, Emoji } from '../../../lib/constants';
 import { DynamicButtons } from '../../../lib/DynamicButtons';
 import { getRandomTriviaQuestions } from '../../../lib/roboChimp';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import dailyRoll from '../../../lib/simulation/dailyTable';
 import { channelIsSendable, formatDuration, isWeekend } from '../../../lib/util';
 import { dailyResetTime } from '../../../lib/util/getUsersPerkTier';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { updateGPTrackSetting } from '../../mahojiSettings';
 
-export function isUsersDailyReady(user: KlasaUser): { isReady: true } | { isReady: false; durationUntilReady: number } {
+export function isUsersDailyReady(user: MUser): { isReady: true } | { isReady: false; durationUntilReady: number } {
 	const currentDate = new Date().getTime();
-	const lastVoteDate = user.settings.get(UserSettings.LastDailyTimestamp);
+	const lastVoteDate = Number(user.user.lastDailyTimestamp);
 	const difference = currentDate - lastVoteDate;
 
 	if (difference < dailyResetTime) {
@@ -29,9 +27,9 @@ export function isUsersDailyReady(user: KlasaUser): { isReady: true } | { isRead
 	return { isReady: true };
 }
 
-async function reward(user: KlasaUser, triviaCorrect: boolean): CommandResponse {
+async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 	const guild = globalClient.guilds.cache.get(SupportServer);
-	const member = await guild?.members.fetch(user).catch(() => null);
+	const member = await guild?.members.fetch(user.id).catch(() => null);
 
 	const loot = dailyRoll(3, triviaCorrect);
 
@@ -47,7 +45,7 @@ async function reward(user: KlasaUser, triviaCorrect: boolean): CommandResponse 
 		bonuses.push(Emoji.OSBot);
 	}
 
-	if (user.hasMinion) {
+	if (user.user.minion_hasBought) {
 		loot[COINS_ID] /= 1.5;
 	}
 
@@ -87,7 +85,7 @@ async function reward(user: KlasaUser, triviaCorrect: boolean): CommandResponse 
 
 	let dmStr = `${bonuses.join('')} **${Emoji.Diango} Diango says..** That's ${correct}! ${reward}\n`;
 
-	const hasSkipper = user.usingPet('Skipper') || user.bank().amount('Skipper') > 0;
+	const hasSkipper = user.usingPet('Skipper') || user.bank.amount('Skipper') > 0;
 	if (!user.isIronman && triviaCorrect && hasSkipper) {
 		loot[COINS_ID] = Math.floor(loot[COINS_ID] * 1.5);
 		dmStr +=
@@ -107,7 +105,7 @@ async function reward(user: KlasaUser, triviaCorrect: boolean): CommandResponse 
 	});
 	const image = await makeBankImage({
 		bank: itemsAdded,
-		title: `${user.username}'s Daily`,
+		title: `${user.rawUsername}'s Daily`,
 		previousCL,
 		showNewCL: true
 	});
@@ -117,7 +115,7 @@ async function reward(user: KlasaUser, triviaCorrect: boolean): CommandResponse 
 export async function dailyCommand(
 	interaction: SlashCommandInteraction | null,
 	channelID: bigint,
-	user: KlasaUser
+	user: MUser
 ): CommandResponse {
 	if (interaction) await interaction.deferReply();
 	const channel = globalClient.channels.cache.get(channelID.toString());
@@ -129,7 +127,9 @@ export async function dailyCommand(
 		)}.`;
 	}
 
-	await user.settings.update(UserSettings.LastDailyTimestamp, new Date().getTime());
+	await user.update({
+		lastDailyTimestamp: new Date().getTime()
+	});
 
 	const [question, ...fakeQuestions] = await getRandomTriviaQuestions();
 
@@ -153,7 +153,9 @@ export async function dailyCommand(
 	}
 
 	await buttons.render({
-		messageOptions: { content: `**${Emoji.Diango} Diango asks ${user.username}...** ${question.question}` },
+		messageOptions: {
+			content: `**${Emoji.Diango} Diango asks ${user.usernameOrMention}...** ${question.question}`
+		},
 		isBusy: false
 	});
 	return reward(user, correctUser !== null);

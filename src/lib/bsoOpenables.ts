@@ -1,6 +1,4 @@
-import { User } from '@prisma/client';
 import { randArrItem, roll } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank, Items, LootTable } from 'oldschooljs';
 import TreeHerbSeedTable from 'oldschooljs/dist/simulation/subtables/TreeHerbSeedTable';
 
@@ -380,8 +378,9 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		openedItem: getOSItem(6199),
 		aliases: ['mystery', 'mystery box', 'tradeables mystery box', 'tmb'],
 
-		output: async ({ user, quantity }) =>
-			makeOutputFromArrayOfItemIDs(() => getMysteryBoxItem(user, true), quantity),
+		output: async ({ user, quantity }) => ({
+			bank: getMysteryBoxItem(user, true, quantity)
+		}),
 		emoji: Emoji.MysteryBox,
 		allItems: [],
 		isMysteryBox: true,
@@ -392,8 +391,9 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		id: 19_939,
 		openedItem: getOSItem(19_939),
 		aliases: ['untradeables mystery box', 'umb'],
-		output: async ({ user, quantity }) =>
-			makeOutputFromArrayOfItemIDs(() => getMysteryBoxItem(user, false), quantity),
+		output: async ({ user, quantity }) => ({
+			bank: getMysteryBoxItem(user, false, quantity)
+		}),
 		allItems: [],
 		isMysteryBox: true,
 		smokeyApplies: true
@@ -581,14 +581,24 @@ function randomEquippable(): number {
 	return res;
 }
 
-export function getMysteryBoxItem(user: User | KlasaUser, tradeables: boolean): number {
-	const table = tradeables ? tmbTable : umbTable;
+function findMysteryBoxItem(table: number[]): number {
 	let result = randArrItem(table);
-	if (cantBeDropped.includes(result)) return getMysteryBoxItem(user, tradeables);
-	if (result >= 40_000 && result <= 50_000) return getMysteryBoxItem(user, tradeables);
-	const mrEDroprate = clAdjustedDroprate(user, 'Mr. E', MR_E_DROPRATE_FROM_UMB_AND_TMB, 1.2);
-	if (roll(mrEDroprate)) {
-		return itemID('Mr. E');
-	}
+	if (cantBeDropped.includes(result)) return findMysteryBoxItem(table);
+	if (result >= 40_000 && result <= 50_000) return findMysteryBoxItem(table);
 	return result;
+}
+
+export function getMysteryBoxItem(user: MUser, tradeables: boolean, quantity: number): Bank {
+	const mrEDroprate = clAdjustedDroprate(user, 'Mr. E', MR_E_DROPRATE_FROM_UMB_AND_TMB, 1.2);
+	const table = tradeables ? tmbTable : umbTable;
+	let loot = new Bank();
+	for (let i = 0; i < quantity; i++) {
+		if (roll(mrEDroprate)) {
+			loot.add('Mr. E');
+			continue;
+		}
+		loot.add(findMysteryBoxItem(table));
+	}
+
+	return loot;
 }

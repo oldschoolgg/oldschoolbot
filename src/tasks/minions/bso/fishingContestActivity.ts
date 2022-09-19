@@ -1,18 +1,16 @@
 import { calcPercentOfNum, roll } from 'e';
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { MysteryBoxes } from '../../../lib/bsoOpenables';
 import { catchFishAtLocation, fishingLocations } from '../../../lib/fishingContest';
 import { prisma, trackLoot } from '../../../lib/settings/prisma';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { ClueTable } from '../../../lib/simulation/sharedTables';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { FishingContestOptions } from '../../../lib/types/minions';
-import { updateBankSetting } from '../../../lib/util';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { updateBankSetting } from '../../../mahoji/mahojiSettings';
 
 export function calculateFishingContestXP({ fishingLevel, fishSizeCM }: { fishSizeCM: number; fishingLevel: number }) {
 	let fishingXP = (fishSizeCM + 100) * (170 + Math.min(100, fishingLevel) / 5);
@@ -21,10 +19,11 @@ export function calculateFishingContestXP({ fishingLevel, fishSizeCM }: { fishSi
 	return Math.max(1333, Math.ceil(fishingXP));
 }
 
-export default class extends Task {
+export const fishingContestTask: MinionTask = {
+	type: 'FishingContest',
 	async run(data: FishingContestOptions) {
 		const { channelID, quantity, userID, location, duration } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
 		const { newScore } = await incrementMinigameScore(userID, 'fishing_contest', 1);
 		const fishLocation = fishingLocations.find(i => i.id === location)!;
@@ -44,7 +43,7 @@ export default class extends Task {
 		});
 
 		const loot = new Bank();
-		let tackleBoxChance = user.hasItemEquippedAnywhere('Fishing master cape') ? 2 : 3;
+		let tackleBoxChance = user.hasEquipped('Fishing master cape') ? 2 : 3;
 		if (roll(tackleBoxChance)) {
 			for (const [tackleBox, fishLevel] of [
 				['Basic tackle box', 75],
@@ -54,7 +53,7 @@ export default class extends Task {
 			] as const) {
 				const item = getOSItem(tackleBox);
 				if (user.skillLevel(SkillsEnum.Fishing) < fishLevel) break;
-				if (user.hasItemEquippedOrInBank(item.id)) continue;
+				if (user.hasEquippedOrInBank(item.id)) continue;
 
 				loot.add(tackleBox);
 				break;
@@ -62,7 +61,7 @@ export default class extends Task {
 		}
 		if (roll(tackleBoxChance)) {
 			for (const piece of ['Fishing hat', 'Fishing jacket', 'Fishing waders', 'Fishing boots']) {
-				if (!user.hasItemEquippedOrInBank(piece)) {
+				if (!user.hasEquippedOrInBank(piece)) {
 					loot.add(piece);
 					break;
 				}
@@ -97,7 +96,7 @@ export default class extends Task {
 			duration
 		});
 
-		await updateBankSetting(this.client, ClientSettings.EconomyStats.FishingContestLoot, loot);
+		await updateBankSetting('fc_loot', loot);
 
 		await trackLoot({
 			loot,
@@ -122,4 +121,4 @@ ${xpStr}`,
 			loot
 		);
 	}
-}
+};

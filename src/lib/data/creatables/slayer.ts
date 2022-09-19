@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
 
-import { mahojiUserSettingsUpdate } from '../../../mahoji/mahojiSettings';
+import { mahojiUserSettingsUpdate } from '../../../mahoji/settingsUpdate';
 import { SlayerTaskUnlocksEnum } from '../../slayer/slayerUnlocks';
 import { Createable } from '../createables';
 

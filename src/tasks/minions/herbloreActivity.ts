@@ -1,22 +1,21 @@
-import { percentChance } from 'e';
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import Herblore from '../../lib/skilling/skills/herblore/herblore';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { HerbloreActivityTaskOptions } from '../../lib/types/minions';
-import { itemID } from '../../lib/util';
+import { percentChance } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
-export default class extends Task {
+export const herbloreTask: MinionTask = {
+	type: 'Herblore',
 	async run(data: HerbloreActivityTaskOptions) {
 		let { mixableID, quantity, zahur, userID, channelID, duration } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
 		const mixableItem = Herblore.Mixables.find(mixable => mixable.id === mixableID)!;
 
 		const isMixingPotion = mixableItem.xp !== 0 && !mixableItem.wesley && !mixableItem.zahur;
-		const hasHerbMasterCape = user.hasItemEquippedAnywhere(itemID('Herblore master cape'));
+		const hasHerbMasterCape = user.hasEquipped('Herblore master cape');
 		const herbCapePerk = isMixingPotion && hasHerbMasterCape;
 		let bonus = 0;
 		if (herbCapePerk) {
@@ -64,4 +63,4 @@ export default class extends Task {
 			loot
 		);
 	}
-}
+};

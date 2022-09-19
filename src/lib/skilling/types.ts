@@ -1,4 +1,3 @@
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
@@ -286,5 +285,5 @@ export interface Creature {
 	qpRequired?: number;
 	slope: number;
 	intercept: number;
-	bait?: (quantity: number, user: KlasaUser) => Bank;
+	bait?: (quantity: number, user: MUser) => Bank;
 }

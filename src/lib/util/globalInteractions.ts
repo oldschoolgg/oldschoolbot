@@ -1,19 +1,21 @@
-import { MessageButton } from 'discord.js';
-import { Time } from 'e';
+import { ButtonBuilder, ButtonStyle } from 'discord.js';
+import { Time, uniqueArr } from 'e';
 import { APIInteraction, InteractionType, Routes } from 'mahoji';
+import { Bank } from 'oldschooljs';
 
 import { buyBingoTicketCommand } from '../../mahoji/commands/bingo';
 import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { Cooldowns } from '../../mahoji/lib/Cooldowns';
-import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 import { ClueTier } from '../clues/clueTiers';
 import { lastTripCache, PerkTier } from '../constants';
+import { prisma } from '../settings/prisma';
 import { runCommand } from '../settings/settings';
 import { repeatTameTrip } from '../tames';
-import { channelIsSendable, convertMahojiResponseToDJSResponse, formatDuration } from '../util';
+import { ItemBank } from '../types';
+import { channelIsSendable, convertMahojiResponseToDJSResponse, formatDuration, removeFromArr } from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
+import { updateGiveawayMessage } from './giveaway';
 import { minionIsBusy } from './minionIsBusy';
-import { minionName } from './minionUtils';
 import { respondToButton } from './respondToButton';
 import { webhookMessageCache } from './webhook';
 
@@ -43,6 +45,7 @@ const globalInteractionActions = [
 	'BUY_MINION',
 	'BUY_BINGO_TICKET',
 	'NEW_SLAYER_TASK',
+	'VIEW_BANK',
 	'SPAWN_LAMP',
 	'REPEAT_TAME_TRIP',
 	'ITEM_CONTRACT_SEND',
@@ -56,32 +59,36 @@ function isValidGlobalInteraction(str: string): str is GlobalInteractionAction {
 export function makeDoClueButton(tier: ClueTier) {
 	const name: Uppercase<ClueTier['name']> = tier.name.toUpperCase() as Uppercase<ClueTier['name']>;
 	const id: GlobalInteractionAction = `DO_${name}_CLUE`;
-	return new MessageButton()
-		.setCustomID(id)
+	return new ButtonBuilder()
+		.setCustomId(id)
 		.setLabel(`Do ${tier.name} Clue`)
-		.setStyle('SECONDARY')
+		.setStyle(ButtonStyle.Secondary)
 		.setEmoji('365003979840552960');
 }
 
 export function makeOpenCasketButton(tier: ClueTier) {
 	const name: Uppercase<ClueTier['name']> = tier.name.toUpperCase() as Uppercase<ClueTier['name']>;
 	const id: GlobalInteractionAction = `OPEN_${name}_CASKET`;
-	return new MessageButton()
-		.setCustomID(id)
+	return new ButtonBuilder()
+		.setCustomId(id)
 		.setLabel(`Open ${tier.name} Casket`)
-		.setStyle('SECONDARY')
+		.setStyle(ButtonStyle.Secondary)
 		.setEmoji('365003978678730772');
 }
 
 export function makeRepeatTripButton() {
-	return new MessageButton().setCustomID('REPEAT_TRIP').setLabel('Repeat Trip').setStyle('SECONDARY').setEmoji('🔁');
+	return new ButtonBuilder()
+		.setCustomId('REPEAT_TRIP')
+		.setLabel('Repeat Trip')
+		.setStyle(ButtonStyle.Secondary)
+		.setEmoji('🔁');
 }
 
 export function makeBirdHouseTripButton() {
-	return new MessageButton()
-		.setCustomID('DO_BIRDHOUSE_RUN')
+	return new ButtonBuilder()
+		.setCustomId('DO_BIRDHOUSE_RUN')
 		.setLabel('Birdhouse Run')
-		.setStyle('SECONDARY')
+		.setStyle(ButtonStyle.Secondary)
 		.setEmoji('692946556399124520');
 }
 const reactionTimeLimits = {
@@ -91,27 +98,111 @@ const reactionTimeLimits = {
 	[PerkTier.Three]: Time.Hour * 50,
 	[PerkTier.Four]: Time.Hour * 100,
 	[PerkTier.Five]: Time.Hour * 200,
-	[PerkTier.Six]: Time.Hour * 300
+	[PerkTier.Six]: Time.Hour * 300,
+	[PerkTier.Seven]: Time.Hour * 300
 } as const;
 
 const reactionTimeLimit = (perkTier: PerkTier | 0): number => reactionTimeLimits[perkTier] ?? Time.Hour * 12;
 
 export function makeNewSlayerTaskButton() {
-	return new MessageButton()
-		.setCustomID('NEW_SLAYER_TASK')
+	return new ButtonBuilder()
+		.setCustomId('NEW_SLAYER_TASK')
 		.setLabel('New Slayer Task')
-		.setStyle('SECONDARY')
+		.setStyle(ButtonStyle.Secondary)
 		.setEmoji('630911040560824330');
+}
+
+async function giveawayButtonHandler(user: MUser, customID: string, data: APIInteraction) {
+	const split = customID.split('_');
+	if (split[0] !== 'GIVEAWAY') return;
+	const giveawayID = Number(split[2]);
+	const giveaway = await prisma.giveaway.findFirst({
+		where: {
+			id: giveawayID
+		}
+	});
+	if (!giveaway) {
+		return respondToButton(data, 'Invalid giveaway.');
+	}
+	if (split[1] === 'REPEAT') {
+		if (user.id !== giveaway.user_id) {
+			return respondToButton(data, "You cannot repeat other peoples' giveaways.");
+		}
+		await respondToButton(data);
+		return runCommand({
+			commandName: 'giveaway',
+			args: {
+				start: {
+					duration: `${giveaway.duration}ms`,
+					items: new Bank(giveaway.loot as ItemBank)
+						.items()
+						.map(t => `${t[1]} ${t[0].name}`)
+						.join(', ')
+				}
+			},
+			user,
+			member: data.member ?? null,
+			userID: user.id,
+			channelID: data.channel_id!,
+			guildID: data.guild_id
+		});
+	}
+
+	if (giveaway.finish_date.getTime() < Date.now() || giveaway.completed) {
+		return respondToButton(data, 'This giveaway has finished.');
+	}
+
+	const action = split[1] === 'ENTER' ? 'ENTER' : 'LEAVE';
+
+	if (user.isIronman) {
+		return respondToButton(data, 'You are an ironman, you cannot enter giveaways.');
+	}
+
+	if (user.id === giveaway.user_id) {
+		return respondToButton(data, 'You cannot join your own giveaway.');
+	}
+
+	if (action === 'ENTER') {
+		if (giveaway.users_entered.includes(user.id)) {
+			return respondToButton(data, 'You are already entered in this giveaway.');
+		}
+		await prisma.giveaway.update({
+			where: {
+				id: giveaway.id
+			},
+			data: {
+				users_entered: {
+					push: user.id
+				}
+			}
+		});
+		updateGiveawayMessage(giveaway);
+		return respondToButton(data, 'You are now entered in this giveaway.');
+	}
+	if (!giveaway.users_entered.includes(user.id)) {
+		return respondToButton(data, "You aren't entered in this giveaway, so you can't leave it.");
+	}
+	await prisma.giveaway.update({
+		where: {
+			id: giveaway.id
+		},
+		data: {
+			users_entered: uniqueArr(removeFromArr(giveaway.users_entered, user.id))
+		}
+	});
+	updateGiveawayMessage(giveaway);
+	return respondToButton(data, 'You left the giveaway.');
 }
 
 export async function interactionHook(data: APIInteraction) {
 	if (data.type !== InteractionType.MessageComponent) return;
 	const id = data.data.custom_id;
-	if (!isValidGlobalInteraction(id)) return;
 	const userID = data.member ? data.member.user?.id : data.user?.id;
 	if (!userID) return;
+	const user = await mUserFetch(userID);
+	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, data);
 
-	const user = await mahojiUsersSettingsFetch(userID);
+	if (!isValidGlobalInteraction(id)) return;
 	const options = {
 		user,
 		member: data.member ?? null,
@@ -121,7 +212,7 @@ export async function interactionHook(data: APIInteraction) {
 	};
 
 	async function buttonReply(str?: string, ephemeral = true) {
-		await respondToButton(data.id, data.token, str, ephemeral);
+		await respondToButton(data, str, ephemeral);
 
 		// Remove buttons, disabled for now
 		if (1 > 2 && data.message && data.channel_id) {
@@ -265,8 +356,18 @@ export async function interactionHook(data: APIInteraction) {
 		});
 	}
 
+	if (id === 'VIEW_BANK') {
+		await buttonReply();
+		return runCommand({
+			commandName: 'bank',
+			bypassInhibitors: true,
+			args: {},
+			...options
+		});
+	}
+
 	if (minionIsBusy(user.id)) {
-		return buttonReply(`${minionName(user)} is busy.`);
+		return buttonReply(`${user.minionName} is busy.`);
 	}
 
 	switch (id) {
@@ -292,6 +393,8 @@ export async function interactionHook(data: APIInteraction) {
 			return doClue('Elite');
 		case 'DO_MASTER_CLUE':
 			return doClue('Master');
+		case 'DO_GRANDMASTER_CLUE':
+			return doClue('Grandmaster');
 
 		case 'OPEN_BEGINNER_CASKET':
 			return openCasket('Beginner');
@@ -305,6 +408,8 @@ export async function interactionHook(data: APIInteraction) {
 			return openCasket('Elite');
 		case 'OPEN_MASTER_CASKET':
 			return openCasket('Master');
+		case 'OPEN_GRANDMASTER_CASKET':
+			return openCasket('Grandmaster');
 		case 'DO_BIRDHOUSE_RUN':
 			await buttonReply();
 			return runCommand({
@@ -335,11 +440,7 @@ export async function interactionHook(data: APIInteraction) {
 		}
 		case 'AUTO_FARMING_CONTRACT': {
 			await buttonReply();
-			const response = await autoContract(
-				await globalClient.fetchUser(user.id),
-				BigInt(options.channelID),
-				BigInt(user.id)
-			);
+			const response = await autoContract(await mUserFetch(user.id), BigInt(options.channelID), BigInt(user.id));
 			const channel = globalClient.channels.cache.get(options.channelID);
 			if (channelIsSendable(channel)) channel.send(convertMahojiResponseToDJSResponse(response));
 			break;
