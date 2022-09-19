@@ -106,7 +106,6 @@ export const miningTask: MinionTask = {
 			}
 		}
 
-
 		const hasDoug = user.usingPet('Doug');
 		const isUsingObsidianPickaxe = user.hasEquipped(['Offhand volcanic pickaxe'], false);
 		const isDestroyed = isUsingObsidianPickaxe && !resolveItems(['Obsidian shards']).includes(ore.id);
