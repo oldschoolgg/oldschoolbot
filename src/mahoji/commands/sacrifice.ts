@@ -114,6 +114,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 				totalPrice
 			)}) to your sacrificed amount.`
 		);
+		await user.removeItemsFromBank(bankToSac);
 
 		if (totalPrice > 200_000_000) {
 			globalClient.emit(Events.ServerNotification, `${user.usernameOrMention} just sacrificed ${bankToSac}!`);
@@ -125,7 +126,6 @@ export const sacrificeCommand: OSBMahojiCommand = {
 			}
 		});
 		const newValue = newUser.sacrificedValue;
-		await user.removeItemsFromBank(bankToSac);
 
 		await trackSacBank(user, bankToSac);
 

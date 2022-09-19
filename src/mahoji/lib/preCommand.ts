@@ -2,7 +2,6 @@ import { TextChannel } from 'discord.js';
 import { APIUser } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
-import { OWNER_IDS } from '../../config';
 import { BitField, usernameCache } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
 import { removeMarkdownEmojis } from '../../lib/util';
@@ -48,10 +47,12 @@ export async function preCommand({
 	channelID: string | bigint;
 	bypassInhibitors: boolean;
 }): Promise<{ silent: boolean; reason: Awaited<CommandResponse> } | undefined> {
+	if (globalClient.isShuttingDown) {
+		return { silent: true, reason: 'The bot is currently restarting, please try again later.' };
+	}
 	globalClient.emit('debug', `${userID} trying to run ${abstractCommand.name} command`);
 	const user = await mUserFetch(userID);
-	const klasaUser = await globalClient.fetchUser(userID);
-	if (user.isBusy && !bypassInhibitors && !OWNER_IDS.includes(klasaUser.id)) {
+	if (user.isBusy && !bypassInhibitors) {
 		return { silent: true, reason: 'You cannot use a command right now.' };
 	}
 	globalClient.oneCommandAtATimeCache.add(userID.toString());

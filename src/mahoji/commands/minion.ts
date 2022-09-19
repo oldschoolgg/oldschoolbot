@@ -1,11 +1,9 @@
-import { FormattedCustomEmoji } from '@sapphire/discord.js-utilities';
 import { notEmpty, randArrItem } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
 
-import { bankImageGenerator } from '../../lib/bankImage';
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
-import { badges, BitField, BitFieldData, MAX_LEVEL, PerkTier } from '../../lib/constants';
+import { badges, BitField, BitFieldData, FormattedCustomEmoji, MAX_LEVEL, PerkTier } from '../../lib/constants';
 import { degradeableItems } from '../../lib/degradeableItems';
 import { diaries } from '../../lib/diaries';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
@@ -448,7 +446,7 @@ export const minionCommand: OSBMahojiCommand = {
 		const perkTier = getUsersPerkTier(user);
 
 		if (options.info) return (await getUserInfo(user)).everythingString;
-		if (options.status) return minionStatusCommand(user.id);
+		if (options.status) return minionStatusCommand(user);
 
 		if (options.stats) {
 			if (options.stats.stat) {
