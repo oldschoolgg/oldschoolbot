@@ -33,6 +33,7 @@ interface MockUserArgs {
 	skills_attack?: number;
 	skills_strength?: number;
 	skills_ranged?: number;
+	skills_magic?: number;
 	skills_defence?: number;
 	skills_hitpoints?: number;
 	skills_prayer?: number;
@@ -71,7 +72,7 @@ export const mockUser = (overrides?: MockUserArgs): User => {
 		skills_herblore: 0,
 		skills_hunter: 0,
 		skills_construction: 0,
-		skills_magic: 0,
+		skills_magic: overrides?.skills_magic ?? 0,
 		skills_ranged: overrides?.skills_ranged ?? 0,
 		skills_attack: overrides?.skills_attack ?? 0,
 		skills_strength: overrides?.skills_strength ?? 0,
