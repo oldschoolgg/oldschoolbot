@@ -249,6 +249,7 @@ export function getSkillsOfMahojiUser(user: User, levels = false): Required<Skil
 }
 
 export function getSupportGuild(): Guild | null {
+	if (!globalClient || Object.keys(globalClient).length === 0) return null;
 	const guild = globalClient.guilds.cache.get(SupportServer);
 	if (!guild) return null;
 	return guild;

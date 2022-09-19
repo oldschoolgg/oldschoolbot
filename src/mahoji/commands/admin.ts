@@ -44,7 +44,8 @@ import {
 	handleMahojiConfirmation,
 	mahojiClientSettingsFetch,
 	mahojiClientSettingsUpdate,
-	mahojiUsersSettingsFetch
+	mahojiUsersSettingsFetch,
+	syncLinkedAccounts
 } from '../mahojiSettings';
 import { mahojiUserSettingsUpdate } from '../settingsUpdate';
 import { getUserInfo } from './minion';
@@ -572,6 +573,7 @@ export const adminCommand: OSBMahojiCommand = {
 		}
 		if (options.sync_patreon) {
 			await patreonTask.run();
+			syncLinkedAccounts();
 			return 'Finished syncing patrons.';
 		}
 		if (options.add_ironman_alt) {

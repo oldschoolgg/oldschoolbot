@@ -1,3 +1,4 @@
+import { syncLinkedAccounts } from '../../../../mahoji/mahojiSettings';
 import { Channel } from '../../../constants';
 import { patreonTask } from '../../../patreon';
 import { sendToChannelID } from '../../../util/webhook';
@@ -60,7 +61,7 @@ const githubSponsors = (server: FastifyServer) =>
 					break;
 				}
 			}
-
+			syncLinkedAccounts();
 			return reply.send({});
 		},
 		config: {}
