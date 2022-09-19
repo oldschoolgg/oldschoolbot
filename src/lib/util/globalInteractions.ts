@@ -5,6 +5,7 @@ import { Bank } from 'oldschooljs';
 
 import { buyBingoTicketCommand } from '../../mahoji/commands/bingo';
 import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
+import { shootingStarsCommand, starCache } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
 import { Cooldowns } from '../../mahoji/lib/Cooldowns';
 import { ClueTier } from '../clues/clueTiers';
 import { lastTripCache, PerkTier } from '../constants';
@@ -42,9 +43,11 @@ const globalInteractionActions = [
 	'BUY_MINION',
 	'BUY_BINGO_TICKET',
 	'NEW_SLAYER_TASK',
-	'VIEW_BANK'
+	'VIEW_BANK',
+	'DO_SHOOTING_STAR'
 ] as const;
-type GlobalInteractionAction = typeof globalInteractionActions[number];
+
+export type GlobalInteractionAction = typeof globalInteractionActions[number];
 function isValidGlobalInteraction(str: string): str is GlobalInteractionAction {
 	return globalInteractionActions.includes(str as GlobalInteractionAction);
 }
@@ -397,7 +400,7 @@ export async function interactionHook(data: APIInteraction) {
 			await buttonReply();
 			const response = await autoContract(await mUserFetch(user.id), BigInt(options.channelID), BigInt(user.id));
 			const channel = globalClient.channels.cache.get(options.channelID);
-			if (channelIsSendable(channel)) channel.send(convertMahojiResponseToDJSResponse(response));
+			if (channelIsSendable(channel)) return channel.send(convertMahojiResponseToDJSResponse(response));
 			break;
 		}
 		case 'NEW_SLAYER_TASK': {
@@ -408,6 +411,21 @@ export async function interactionHook(data: APIInteraction) {
 				bypassInhibitors: true,
 				...options
 			});
+		}
+		case 'DO_SHOOTING_STAR': {
+			const star = starCache.get(user.id);
+			starCache.delete(user.id);
+			if (star && star.expiry > Date.now()) {
+				const str = await shootingStarsCommand(BigInt(data.channel_id), user, star);
+				return buttonReply(str, false);
+			}
+			return buttonReply(
+				`${
+					star && star.expiry < Date.now()
+						? 'The Crashed Star has expired!'
+						: `That Crashed Star was not discovered by ${user.minionName}.`
+				}`
+			);
 		}
 		default: {
 		}
