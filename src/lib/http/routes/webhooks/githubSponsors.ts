@@ -63,7 +63,7 @@ const githubSponsors = (server: FastifyServer) =>
 					break;
 				}
 			}
-			syncLinkedAccounts().then(noOp);
+			syncLinkedAccounts();
 			return reply.send({});
 		},
 		config: {}
