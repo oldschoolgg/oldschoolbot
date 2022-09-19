@@ -180,7 +180,7 @@ async function minigamesLb(user: MUser, channelID: bigint, name: string) {
 	const res = await prisma.minigame.findMany({
 		where: {
 			[minigame.column]: {
-				gt: 10
+				gt: minigame.column === 'champions_challenge' ? 1 : 10
 			}
 		},
 		orderBy: {

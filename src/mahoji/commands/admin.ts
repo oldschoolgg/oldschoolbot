@@ -6,7 +6,7 @@ import { Duration } from '@sapphire/time-utilities';
 import Type from '@sapphire/type';
 import { isThenable } from '@sentry/utils';
 import { escapeCodeBlock } from 'discord.js';
-import { randArrItem, Time, uniqueArr } from 'e';
+import { randArrItem, sleep, Time, uniqueArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions, InteractionResponseType, InteractionType } from 'mahoji';
 import { CommandResponse, MahojiAttachment } from 'mahoji/dist/lib/structures/ICommand';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
@@ -22,6 +22,7 @@ import { patreonTask } from '../../lib/patreon';
 import { runRolesTask } from '../../lib/rolesTask';
 import { countUsersWithItemInCl, prisma } from '../../lib/settings/prisma';
 import { cancelTask, minionActivityCacheDelete } from '../../lib/settings/settings';
+import { tickers } from '../../lib/tickers';
 import {
 	calcPerHour,
 	convertBankToPerHourStats,
@@ -34,6 +35,7 @@ import { getItem } from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { logError } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
+import { parseBank } from '../../lib/util/parseStringBank';
 import { Cooldowns } from '../lib/Cooldowns';
 import { syncCustomPrices } from '../lib/events';
 import { itemOption } from '../lib/mahojiCommandOptions';
@@ -458,6 +460,25 @@ export const adminCommand: OSBMahojiCommand = {
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'wipe_bingo_temp_cls',
 			description: 'Wipe all temp cls of bingo users'
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'give_items',
+			description: 'Spawn items for a user',
+			options: [
+				{
+					type: ApplicationCommandOptionType.User,
+					name: 'user',
+					description: 'The user',
+					required: true
+				},
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'items',
+					description: 'The items to give',
+					required: true
+				}
+			]
 		}
 	],
 	run: async ({
@@ -489,6 +510,7 @@ export const adminCommand: OSBMahojiCommand = {
 		ltc?: {};
 		view?: { thing: string };
 		wipe_bingo_temp_cls?: {};
+		give_items?: { user: MahojiUserOption; items: string };
 	}>) => {
 		await interaction.deferReply();
 
@@ -772,21 +794,12 @@ LIMIT 10;
 				options.bitfield.user.user.username
 			}.`;
 		}
-
-		/**
-		 *
-		 * Owner Only Commands
-		 *
-		 */
-		if (!isOwner) {
-			return randArrItem(gifs);
-		}
-		if (options.viewbank) {
-			const userToCheck = await mUserFetch(options.viewbank.user.user.id);
-			const bank = userToCheck.allItemsOwned();
-			return { attachments: [(await makeBankImage({ bank, title: userToCheck.usernameOrMention })).file] };
-		}
 		if (options.reboot) {
+			globalClient.isShuttingDown = true;
+			for (const ticker of tickers) {
+				if (ticker.timer) clearTimeout(ticker.timer);
+			}
+			await sleep(Time.Second * 20);
 			await interaction.respond({
 				response: {
 					data: {
@@ -800,6 +813,76 @@ LIMIT 10;
 			});
 			process.exit();
 		}
+		if (options.viewbank) {
+			const userToCheck = await mUserFetch(options.viewbank.user.user.id);
+			const bank = userToCheck.allItemsOwned();
+			return { attachments: [(await makeBankImage({ bank, title: userToCheck.usernameOrMention })).file] };
+		}
+
+		if (options.add_patron_time) {
+			const { tier, time, user: userToGive } = options.add_patron_time;
+			if (![1, 2, 3, 4, 5].includes(tier)) return 'Invalid input.';
+			const duration = new Duration(time);
+			const ms = duration.offset;
+			if (ms < Time.Second || ms > Time.Year * 3) return 'Invalid input.';
+			const input = await mahojiUsersSettingsFetch(userToGive.user.id);
+
+			const currentBalanceTier = input.premium_balance_tier;
+
+			const oldPerkTier = getUsersPerkTier(input.bitfield);
+			if (oldPerkTier > 1 && !currentBalanceTier && oldPerkTier <= tier + 1) {
+				return `${userToGive.user.username} is already a patron of at least that tier.`;
+			}
+
+			if (currentBalanceTier !== null && currentBalanceTier !== tier) {
+				await handleMahojiConfirmation(
+					interaction,
+					`${input} already has Tier ${currentBalanceTier}; this will replace the existing balance entirely, are you sure?`
+				);
+			}
+			await handleMahojiConfirmation(
+				interaction,
+				`Are you sure you want to add ${formatDuration(ms)} of Tier ${tier} patron to ${
+					userToGive.user.username
+				}?`
+			);
+			await mahojiUserSettingsUpdate(input.id, {
+				premium_balance_tier: tier
+			});
+
+			const currentBalanceTime =
+				input.premium_balance_expiry_date === null ? null : Number(input.premium_balance_expiry_date);
+
+			let newBalanceExpiryTime = 0;
+			if (currentBalanceTime !== null && tier === currentBalanceTier) {
+				newBalanceExpiryTime = currentBalanceTime + ms;
+			} else {
+				newBalanceExpiryTime = Date.now() + ms;
+			}
+			await mahojiUserSettingsUpdate(input.id, {
+				premium_balance_expiry_date: newBalanceExpiryTime
+			});
+
+			return `Gave ${formatDuration(ms)} of Tier ${tier} patron to ${
+				userToGive.user.username
+			}. They have ${formatDuration(newBalanceExpiryTime - Date.now())} remaining.`;
+		}
+
+		if (options.sync_blacklist) {
+			await syncBlacklists();
+			return `Users Blacklisted: ${BLACKLISTED_USERS.size}
+Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
+		}
+
+		/**
+		 *
+		 * Owner Only Commands
+		 *
+		 */
+		if (!isOwner) {
+			return randArrItem(gifs);
+		}
+
 		if (options.debug_patreon) {
 			const result = await patreonTask.fetchPatrons();
 			return {
@@ -850,11 +933,6 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 				item.name
 			} in their collection log.`;
 		}
-		if (options.sync_blacklist) {
-			await syncBlacklists();
-			return `Users Blacklisted: ${BLACKLISTED_USERS.size}
-Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
-		}
 
 		if (options.loot_track) {
 			const loot = await prisma.lootTrack.findFirst({
@@ -879,55 +957,6 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 			}
 			return { content, attachments };
 		}
-		if (options.add_patron_time) {
-			const { tier, time, user: userToGive } = options.add_patron_time;
-			if (![1, 2, 3, 4, 5].includes(tier)) return 'Invalid input.';
-			const duration = new Duration(time);
-			const ms = duration.offset;
-			if (ms < Time.Second || ms > Time.Year * 3) return 'Invalid input.';
-			const input = await mahojiUsersSettingsFetch(userToGive.user.id);
-
-			const currentBalanceTier = input.premium_balance_tier;
-
-			const oldPerkTier = getUsersPerkTier(input.bitfield);
-			if (oldPerkTier > 1 && !currentBalanceTier && oldPerkTier <= tier + 1) {
-				return `${userToGive.user.username} is already a patron of at least that tier.`;
-			}
-
-			if (currentBalanceTier !== null && currentBalanceTier !== tier) {
-				await handleMahojiConfirmation(
-					interaction,
-					`${input} already has Tier ${currentBalanceTier}; this will replace the existing balance entirely, are you sure?`
-				);
-			}
-			await handleMahojiConfirmation(
-				interaction,
-				`Are you sure you want to add ${formatDuration(ms)} of Tier ${tier} patron to ${
-					userToGive.user.username
-				}?`
-			);
-			await mahojiUserSettingsUpdate(input.id, {
-				premium_balance_tier: tier
-			});
-
-			const currentBalanceTime =
-				input.premium_balance_expiry_date === null ? null : Number(input.premium_balance_expiry_date);
-
-			let newBalanceExpiryTime = 0;
-			if (currentBalanceTime !== null && tier === currentBalanceTier) {
-				newBalanceExpiryTime = currentBalanceTime + ms;
-			} else {
-				newBalanceExpiryTime = Date.now() + ms;
-			}
-			await mahojiUserSettingsUpdate(input.id, {
-				premium_balance_expiry_date: newBalanceExpiryTime
-			});
-
-			return `Gave ${formatDuration(ms)} of Tier ${tier} patron to ${
-				userToGive.user.username
-			}. They have ${formatDuration(newBalanceExpiryTime - Date.now())} remaining.`;
-		}
-
 		if (options.ltc) {
 			let str = '';
 			const results = await prisma.lootTrack.findMany();
@@ -969,6 +998,17 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 			const clientSettings = await mahojiClientSettingsFetch();
 			const image = await makeBankImage({ bank: thing.run(clientSettings), title: thing.name });
 			return { attachments: [image.file] };
+		}
+
+		if (options.give_items) {
+			const items = parseBank({ inputStr: options.give_items.items });
+			const user = await mUserFetch(options.give_items.user.user.id);
+			await handleMahojiConfirmation(
+				interaction,
+				`Are you sure you want to give ${items} to ${user.usernameOrMention}?`
+			);
+			await user.addItemsToBank({ items, collectionLog: false });
+			return `Gave ${items} to ${user.mention}`;
 		}
 
 		return 'Invalid command.';

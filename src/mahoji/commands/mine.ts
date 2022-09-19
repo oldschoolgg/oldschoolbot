@@ -274,9 +274,9 @@ export const mineCommand: OSBMahojiCommand = {
 		}
 
 		const boosts = [];
-
+		// Invisible mining level, dosen't help equip pickaxe etc
 		let miningLevel = user.skillsAsLevels.mining;
-		if ((ore.minerals || ore.nuggets) && miningLevel >= 60) {
+		if ((ore.minerals || ore.nuggets) && user.skillsAsLevels.mining >= 60) {
 			boosts.push('+7 invisible Mining lvls at the Mining guild');
 			miningLevel += 7;
 		}
@@ -293,7 +293,7 @@ export const mineCommand: OSBMahojiCommand = {
 
 		// For each pickaxe, if they have it, give them its' bonus and break.
 		for (const pickaxe of pickaxes) {
-			if (!user.hasEquippedOrInBank([pickaxe.id]) || miningLevel < pickaxe.miningLvl) continue;
+			if (!user.hasEquippedOrInBank([pickaxe.id]) || user.skillsAsLevels.mining < pickaxe.miningLvl) continue;
 			currentPickaxe = pickaxe;
 			boosts.pop();
 			boosts.push(`**${pickaxe.ticksBetweenRolls}** ticks between rolls for ${itemNameFromID(pickaxe.id)}`);
@@ -301,7 +301,7 @@ export const mineCommand: OSBMahojiCommand = {
 		}
 
 		let glovesRate = 0;
-		if (miningLevel >= 60) {
+		if (user.skillsAsLevels.mining >= 60) {
 			for (const glove of gloves) {
 				if (!user.hasEquipped(glove.id) || !glove.Percentages.has(ore.id)) continue;
 				glovesRate = glove.Percentages.amount(ore.id);
@@ -329,7 +329,7 @@ export const mineCommand: OSBMahojiCommand = {
 		}
 
 		let miningCapeEffect = 0;
-		if (user.hasEquippedOrInBank([itemID('Mining cape')]) || !miningCapeOreEffect.has(ore.id)) {
+		if (user.hasEquippedOrInBank([itemID('Mining cape')]) && miningCapeOreEffect.has(ore.id)) {
 			miningCapeEffect = miningCapeOreEffect.amount(ore.id);
 			if (miningCapeEffect !== 0) {
 				boosts.push(`**${miningCapeEffect}%** chance to mine an extra ore using Mining cape`);
