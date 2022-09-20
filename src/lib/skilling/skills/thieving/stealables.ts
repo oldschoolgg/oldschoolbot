@@ -33,6 +33,7 @@ export interface Stealable {
 	fireCapeRequired?: boolean;
 	table: LootTable;
 	id: number;
+	petChance: number;
 	// Stall properties
 	respawnTime?: number;
 	lootPercent?: number;
@@ -52,16 +53,11 @@ const stalls: Stealable[] = [
 		level: 2,
 		xp: 10,
 		id: 4706,
-		table: new LootTable()
-			.add('Cabbage')
-			.add('Potato')
-			.add('Onion')
-			.add('Tomato')
-			.add('Garlic')
-			.tertiary(206_777, 'Rocky'),
+		table: new LootTable().add('Cabbage').add('Potato').add('Onion').add('Tomato').add('Garlic'),
 		qpRequired: 3,
 		respawnTime: Time.Second * 2,
-		lootPercent: 20
+		lootPercent: 20,
+		petChance: 206_777
 	},
 	{
 		name: "Baker's stall",
@@ -70,9 +66,10 @@ const stalls: Stealable[] = [
 		level: 5,
 		xp: 16,
 		id: 4707,
-		table: new LootTable().add('Cake').add('Bread').add('Chocolate slice').tertiary(124_066, 'Rocky'),
+		table: new LootTable().add('Cake').add('Bread').add('Chocolate slice'),
 		respawnTime: Time.Second * 2,
-		lootPercent: 20
+		lootPercent: 20,
+		petChance: 124_066
 	},
 	{
 		name: 'Tea stall',
@@ -81,9 +78,10 @@ const stalls: Stealable[] = [
 		level: 5,
 		xp: 16,
 		id: 4708,
-		table: new LootTable().add('Cup of tea').tertiary(68_926, 'Rocky'),
+		table: new LootTable().add('Cup of tea'),
 		respawnTime: Time.Second * 7,
-		lootPercent: 35
+		lootPercent: 35,
+		petChance: 68_926
 	},
 	{
 		name: 'Silk stall',
@@ -92,9 +90,10 @@ const stalls: Stealable[] = [
 		level: 20,
 		xp: 24,
 		id: 4709,
-		table: new LootTable().add('Silk').tertiary(68_926, 'Rocky'),
+		table: new LootTable().add('Silk'),
 		respawnTime: Time.Second * 5,
-		lootPercent: 30
+		lootPercent: 30,
+		petChance: 68_926
 	},
 	{
 		name: 'Wine stall',
@@ -108,10 +107,10 @@ const stalls: Stealable[] = [
 			.add('Grapes')
 			.add('Jug', 1, 3)
 			.add('Jug of water')
-			.add('Jug of wine')
-			.tertiary(36_490, 'Rocky'),
+			.add('Jug of wine'),
 		respawnTime: Time.Second * 10,
-		lootPercent: 38
+		lootPercent: 38,
+		petChance: 36_490
 	},
 	{
 		name: 'Fruit stall',
@@ -131,10 +130,10 @@ const stalls: Stealable[] = [
 			.add('Strawberry', 1, 5)
 			.add('Strange fruit', 1, 5)
 			.add('Golovanova fruit top', 1, 2)
-			.add('Papaya fruit', 1, 1)
-			.tertiary(124_066, 'Rocky'),
+			.add('Papaya fruit', 1, 1),
 		respawnTime: Time.Second * 2.6,
-		lootPercent: 25
+		lootPercent: 25,
+		petChance: 124_066
 	},
 	{
 		name: 'Fur stall',
@@ -143,9 +142,10 @@ const stalls: Stealable[] = [
 		level: 35,
 		xp: 36,
 		id: 4712,
-		table: new LootTable().every('Grey wolf fur').tertiary(36_490, 'Rocky'),
+		table: new LootTable().every('Grey wolf fur'),
 		respawnTime: Time.Second * 10,
-		lootPercent: 80
+		lootPercent: 80,
+		petChance: 36_490
 	},
 	{
 		name: 'Fish stall',
@@ -154,9 +154,10 @@ const stalls: Stealable[] = [
 		level: 42,
 		xp: 42,
 		id: 4713,
-		table: new LootTable().add('Raw salmon').add('Raw tuna').add('Raw lobster').tertiary(36_490, 'Rocky'),
+		table: new LootTable().add('Raw salmon').add('Raw tuna').add('Raw lobster'),
 		respawnTime: Time.Second * 10,
-		lootPercent: 75
+		lootPercent: 75,
+		petChance: 36_490
 	},
 	{
 		name: 'Silver stall',
@@ -165,9 +166,10 @@ const stalls: Stealable[] = [
 		level: 50,
 		xp: 54,
 		id: 4714,
-		table: new LootTable().every('Silver ore').tertiary(36_490, 'Rocky'),
+		table: new LootTable().every('Silver ore'),
 		respawnTime: Time.Second * 16,
-		lootPercent: 80
+		lootPercent: 80,
+		petChance: 36_490
 	},
 	{
 		name: 'Gem stall',
@@ -180,11 +182,11 @@ const stalls: Stealable[] = [
 			.add('Uncut sapphire', 1, 105)
 			.add('Uncut emerald', 1, 17)
 			.add('Uncut ruby', 1, 5)
-			.add('Uncut diamond')
-			.tertiary(36_490, 'Rocky'),
+			.add('Uncut diamond'),
 		// World hopping rate
 		respawnTime: Time.Second * 10,
-		lootPercent: 100
+		lootPercent: 100,
+		petChance: 36_490
 	},
 	{
 		name: 'Ore stall',
@@ -200,12 +202,12 @@ const stalls: Stealable[] = [
 			.add('Gold ore', 1, 18)
 			.add('Mithril ore', 1, 18)
 			.add('Adamantite ore', 1, 15)
-			.add('Runite ore', 1, 2)
-			.tertiary(36_490, 'Rocky'),
+			.add('Runite ore', 1, 2),
 		// World hopping rate
 		respawnTime: Time.Second * 15,
 		lootPercent: 100,
-		fireCapeRequired: true
+		fireCapeRequired: true,
+		petChance: 36_490
 	}
 ];
 
@@ -220,7 +222,8 @@ const pickpocketables: Stealable[] = [
 		stunTime: 5,
 		stunDamage: 1,
 		slope: 0.239_18,
-		intercept: 70.461_18
+		intercept: 70.461_18,
+		petChance: 257_211
 	},
 	{
 		name: 'Woman',
@@ -232,7 +235,8 @@ const pickpocketables: Stealable[] = [
 		stunTime: 5,
 		stunDamage: 1,
 		slope: 0.239_18,
-		intercept: 70.461_18
+		intercept: 70.461_18,
+		petChance: 257_211
 	},
 	{
 		name: 'Farmer',
@@ -245,7 +249,8 @@ const pickpocketables: Stealable[] = [
 		stunDamage: 1,
 		// No current data on slope/intercept
 		slope: 0.239_18,
-		intercept: 70.461_18
+		intercept: 70.461_18,
+		petChance: 257_211
 	},
 	{
 		name: 'Female H.A.M. member',
@@ -258,7 +263,8 @@ const pickpocketables: Stealable[] = [
 		stunTime: 4,
 		stunDamage: 2,
 		slope: 0.418_47,
-		intercept: 52.711_47
+		intercept: 52.711_47,
+		petChance: 257_211
 	},
 	{
 		name: 'Male H.A.M. member',
@@ -271,7 +277,8 @@ const pickpocketables: Stealable[] = [
 		stunTime: 4,
 		stunDamage: 2,
 		slope: 0.490_31,
-		intercept: 45.599_31
+		intercept: 45.599_31,
+		petChance: 257_211
 	},
 	{
 		name: 'Warrior woman',
@@ -284,7 +291,8 @@ const pickpocketables: Stealable[] = [
 		stunDamage: 2,
 		// No current data on slope/intercept
 		slope: 0.530_31,
-		intercept: 43.599_31
+		intercept: 43.599_31,
+		petChance: 257_211
 	},
 	{
 		name: 'Rogue',
@@ -296,7 +304,8 @@ const pickpocketables: Stealable[] = [
 		stunTime: 5,
 		stunDamage: 2,
 		slope: 0.668_79,
-		intercept: 27.929_79
+		intercept: 27.929_79,
+		petChance: 257_211
 	},
 	{
 		name: 'Cave goblin',
@@ -310,7 +319,8 @@ const pickpocketables: Stealable[] = [
 		stunDamage: 1,
 		// No current data on slope/intercept
 		slope: 0.668_79,
-		intercept: 27.929_79
+		intercept: 27.929_79,
+		petChance: 257_211
 	},
 	{
 		name: 'Master Farmer',
@@ -323,7 +333,8 @@ const pickpocketables: Stealable[] = [
 		stunTime: 5,
 		stunDamage: 3,
 		slope: 0.597_86,
-		intercept: 34.951_86
+		intercept: 34.951_86,
+		petChance: 257_211
 	},
 	{
 		name: 'Guard',
@@ -335,7 +346,8 @@ const pickpocketables: Stealable[] = [
 		stunTime: 5,
 		stunDamage: 2,
 		slope: 0.767_76,
-		intercept: 18.131_76
+		intercept: 18.131_76,
+		petChance: 257_211
 	},
 	{
 		name: 'Fremennik Citizen',
@@ -349,7 +361,8 @@ const pickpocketables: Stealable[] = [
 		stunDamage: 2,
 		// No current data on slope/intercept
 		slope: 0.767_76,
-		intercept: 18.131_76
+		intercept: 18.131_76,
+		petChance: 257_211
 	},
 	{
 		name: 'Bearded Pollnivnian Bandit',
@@ -364,7 +377,8 @@ const pickpocketables: Stealable[] = [
 		// No current data on slope/intercept
 		slope: 0.767_76,
 		intercept: 18.131_76,
-		customTickRate: 2.5
+		customTickRate: 2.5,
+		petChance: 257_211
 	},
 	{
 		name: 'Desert Bandit',
@@ -377,7 +391,8 @@ const pickpocketables: Stealable[] = [
 		stunTime: 5,
 		stunDamage: 3,
 		slope: 0.757_35,
-		intercept: 19.162_35
+		intercept: 19.162_35,
+		petChance: 257_211
 	},
 	{
 		name: 'Knight of Ardougne',
@@ -390,7 +405,8 @@ const pickpocketables: Stealable[] = [
 		stunTime: 5,
 		stunDamage: 3,
 		slope: 0.772_09,
-		intercept: 17.703_09
+		intercept: 17.703_09,
+		petChance: 257_211
 	},
 	{
 		name: 'Pollnivnian Bandit',
@@ -404,7 +420,8 @@ const pickpocketables: Stealable[] = [
 		// No current data on slope/intercept
 		slope: 0.772_09,
 		intercept: 17.703_09,
-		customTickRate: 2.5
+		customTickRate: 2.5,
+		petChance: 257_211
 	},
 	{
 		name: 'Yanille Watchman',
@@ -417,7 +434,8 @@ const pickpocketables: Stealable[] = [
 		stunTime: 5,
 		stunDamage: 3,
 		slope: 0.58,
-		intercept: 5.47
+		intercept: 5.47,
+		petChance: 134_625
 	},
 	{
 		name: 'Menaphite Thug',
@@ -431,7 +449,8 @@ const pickpocketables: Stealable[] = [
 		stunDamage: 5,
 		slope: 0.654_85,
 		intercept: 29.309_85,
-		customTickRate: 2.5
+		customTickRate: 2.5,
+		petChance: 257_211
 	},
 	{
 		name: 'Paladin',
@@ -443,7 +462,8 @@ const pickpocketables: Stealable[] = [
 		stunTime: 5,
 		stunDamage: 3,
 		slope: 0.404_29,
-		intercept: 18.955_29
+		intercept: 18.955_29,
+		petChance: 127_056
 	},
 	{
 		name: 'Gnome',
@@ -455,7 +475,8 @@ const pickpocketables: Stealable[] = [
 		stunTime: 5,
 		stunDamage: 1,
 		slope: 0.475_65,
-		intercept: 0.180_65
+		intercept: 0.180_65,
+		petChance: 108_718
 	},
 	{
 		name: 'Hero',
@@ -467,7 +488,8 @@ const pickpocketables: Stealable[] = [
 		stunTime: 6,
 		stunDamage: 4,
 		slope: 0.390_56,
-		intercept: 0.784_56
+		intercept: 0.784_56,
+		petChance: 99_175
 	},
 	{
 		name: 'Vyre',
@@ -479,7 +501,8 @@ const pickpocketables: Stealable[] = [
 		stunTime: 5,
 		stunDamage: 5,
 		slope: 0.488_13,
-		intercept: 2.065_13
+		intercept: 2.065_13,
+		petChance: 99_175
 	},
 	{
 		name: 'Elf',
@@ -492,7 +515,8 @@ const pickpocketables: Stealable[] = [
 		stunDamage: 5,
 		slope: 0.420_77,
 		intercept: -2.206_23,
-		qpRequired: 200
+		qpRequired: 200,
+		petChance: 99_175
 	},
 	{
 		name: 'TzHaar-Hur',
@@ -506,7 +530,8 @@ const pickpocketables: Stealable[] = [
 		stunDamage: 4,
 		slope: 1.611_25,
 		intercept: -80.993_75,
-		fireCapeRequired: true
+		fireCapeRequired: true,
+		petChance: 176_743
 	}
 ];
 

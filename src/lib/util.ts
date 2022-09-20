@@ -33,6 +33,7 @@ import { production, SupportServer } from '../config';
 import { skillEmoji, usernameCache } from './constants';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
 import { Consumable } from './minions/types';
+import { MUserClass } from './MUser';
 import { PaginatedMessage } from './PaginatedMessage';
 import { POHBoosts } from './poh';
 import { SkillsEnum } from './skilling/types';
@@ -148,11 +149,6 @@ export function convertXPtoLVL(xp: number, cap = 99) {
 	return cap;
 }
 
-export function determineScaledLogTime(xp: number, respawnTime: number, lvl: number) {
-	const t = xp / (lvl / 4 + 0.5) + ((100 - lvl) / 100 + 0.75);
-	return Math.floor((t + respawnTime) * 1000) * 1.2;
-}
-
 export function rand(min: number, max: number) {
 	return integer(min, max)(nodeCrypto);
 }
@@ -253,6 +249,7 @@ export function getSkillsOfMahojiUser(user: User, levels = false): Required<Skil
 }
 
 export function getSupportGuild(): Guild | null {
+	if (!globalClient || Object.keys(globalClient).length === 0) return null;
 	const guild = globalClient.guilds.cache.get(SupportServer);
 	if (!guild) return null;
 	return guild;
@@ -632,6 +629,18 @@ export async function asyncGzip(buffer: Buffer) {
 			resolve(gzipped);
 		});
 	});
+}
+
+export function skillingPetDropRate(
+	user: MUserClass,
+	skill: SkillsEnum,
+	baseDropRate: number
+): { petDropRate: number } {
+	const twoHundredMillXP = user.skillsAsXP[skill] >= 200_000_000;
+	const skillLevel = user.skillsAsLevels[skill];
+	const petRateDivisor = twoHundredMillXP ? 15 : 1;
+	const dropRate = Math.floor((baseDropRate - skillLevel * 25) / petRateDivisor);
+	return { petDropRate: dropRate };
 }
 
 export function getUsername(id: string | bigint) {
