@@ -24,7 +24,6 @@ export const woodcuttingTask: MinionTask = {
 			const userWcLevel = user.skillLevel(SkillsEnum.Woodcutting);
 			// Bring it as close as possible to Rocktails
 			if (userWcLevel >= MAX_LEVEL) clueChance = 13_011;
-			xpReceived *= 2;
 		}
 		let bonusXP = 0;
 

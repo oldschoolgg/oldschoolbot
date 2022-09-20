@@ -13,6 +13,11 @@ import { OSBMahojiCommand } from '../lib/util';
 
 export const axes = [
 	{
+		id: itemID('Dwarven greataxe'),
+		multiplier: 8,
+		wcLvl: 99
+	},
+	{
 		id: itemID('Crystal axe'),
 		multiplier: 4,
 		wcLvl: 71
@@ -137,13 +142,6 @@ export const chopCommand: OSBMahojiCommand = {
 		}
 
 		const boosts = [];
-
-		/*
-		if (user.hasEquipped('Dwarven greataxe')) {
-			timetoChop /= 2;
-			boosts.push('2x faster for Dwarven greataxe');
-		}
-		*/
 
 		let wcLvl = skills.woodcutting;
 
