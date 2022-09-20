@@ -28,7 +28,7 @@ export function determineWoodcuttingTime({
 	const { findNewTreeTime } = log;
 
 	let teakTick = false;
-	if (user.skillsAsLevels.woodcutting >= 92 && log.name === 'Teak Logs') {
+	if (user.skillsAsLevels.woodcutting >= 92 && (log.name === 'Teak Logs' || log.name === 'Mahogany Logs')) {
 		teakTick = true;
 	}
 
