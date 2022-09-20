@@ -152,10 +152,10 @@ test('skillingPetRateFunction', () => {
 	});
 	const dropRateLvl99 = Math.floor((baseDropRate - 99 * 25) / 1);
 	expect(skillingPetDropRate(testUser, SkillsEnum.Agility, baseDropRate).petDropRate).toEqual(dropRateLvl99);
-	// Lvl 99 and 200M xp
+	// Lvl 120 (BSO) and 200M xp
 	testUser = mockMUser({
 		skills_agility: 200_000_000
 	});
-	const dropRate200M = Math.floor((baseDropRate - 99 * 25) / 15);
+	const dropRate200M = Math.floor((baseDropRate - 120 * 25) / 15);
 	expect(skillingPetDropRate(testUser, SkillsEnum.Agility, baseDropRate).petDropRate).toEqual(dropRate200M);
 });
