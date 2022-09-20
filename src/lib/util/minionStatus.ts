@@ -634,7 +634,9 @@ export function minionStatus(user: MUser) {
 		}
 		case 'Moktang': {
 			const data = currentTask as MoktangTaskOptions;
-			return `${name} is currently killing ${data.qty}x Moktang. The trip should take ${formatDuration(durationRemaining)}.`;
+			return `${name} is currently killing ${data.qty}x Moktang. The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
 		}
 		case 'ShootingStars': {
 			return `${name} is currently mining a Crashed Star. The trip should take ${formatDuration(

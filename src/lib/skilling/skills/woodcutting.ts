@@ -200,8 +200,12 @@ const logs: Log[] = [
 		xp: 300,
 		id: 50_017,
 		name: 'Elder Logs',
-		respawnTime: -0.25,
-		petChance: 72_321,
+		findNewTreeTime: 4.5,
+		bankingTime: 20,
+		slope: 0.057,
+		intercept: -0.71,
+		depletionChance: 100 * (1 / 11),
+		petChance: 42_321,
 		qpRequired: 0,
 		clueScrollChance: 42_321
 	}

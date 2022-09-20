@@ -1,7 +1,7 @@
 import { TextChannel } from 'discord.js';
 
-import { boxFrenzy } from '../../../boxFrenzy';
 import { syncLinkedAccounts } from '../../../../mahoji/mahojiSettings';
+import { boxFrenzy } from '../../../boxFrenzy';
 import { Channel } from '../../../constants';
 import { addPatronLootTime } from '../../../doubleLoot';
 import { patreonTask } from '../../../patreon';

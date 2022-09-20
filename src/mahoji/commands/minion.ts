@@ -460,7 +460,7 @@ export const minionCommand: OSBMahojiCommand = {
 		const perkTier = getUsersPerkTier(user);
 
 		if (options.info) return (await getUserInfo(user)).everythingString;
-		if (options.status) return minionStatusCommand(user);
+		if (options.status) return minionStatusCommand(user, channelID.toString());
 
 		if (options.stats) {
 			if (options.stats.stat) {

@@ -1,8 +1,11 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Message } from 'discord.js';
 
+import { CLIENT_ID } from '../config';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
 import { channelIsSendable } from './util';
 import { makeBankImage } from './util/makeBankImage';
+
+const mentionText = `<@${CLIENT_ID}>`;
 
 export async function onMessage(msg: Message) {
 	if (!msg.content || msg.author.bot || !channelIsSendable(msg.channel)) return;
@@ -10,7 +13,7 @@ export async function onMessage(msg: Message) {
 	const content = msg.content.trim();
 	if (!content.includes(mentionText)) return;
 	const user = await mUserFetch(msg.author.id);
-	const result = await minionStatusCommand(user);
+	const result = await minionStatusCommand(user, msg.channelId);
 	const components = result.components?.map(i => {
 		const row = new ActionRowBuilder<ButtonBuilder>();
 		for (const a of i.components as any[]) {

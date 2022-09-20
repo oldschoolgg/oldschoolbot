@@ -6,6 +6,7 @@ import { Bank } from 'oldschooljs';
 
 import { alching } from '../../mahoji/commands/laps';
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
+import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
 import {
 	updateBankSetting,
 	updateGPTrackSetting,
@@ -13,7 +14,6 @@ import {
 	userStatsUpdate
 } from '../../mahoji/mahojiSettings';
 import { MysteryBoxes } from '../bsoOpenables';
-import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
 import { ClueTiers } from '../clues/clueTiers';
 import { COINS_ID, Emoji, lastTripCache, LastTripRunArgs, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
