@@ -9,7 +9,7 @@ import Agility from '../../lib/skilling/skills/agility';
 import { gorajanShardChance } from '../../lib/skilling/skills/dung/dungDbFunctions';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { AgilityActivityTaskOptions } from '../../lib/types/minions';
-import { addItemToBank, clAdjustedDroprate, randomVariation } from '../../lib/util';
+import { addItemToBank, clAdjustedDroprate, randomVariation, skillingPetDropRate } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { updateGPTrackSetting } from '../../mahoji/mahojiSettings';
@@ -161,7 +161,8 @@ export const agilityTask: MinionTask = {
 			}
 		}
 		// Roll for pet
-		if (course.petChance && roll((course.petChance - user.skillLevel(SkillsEnum.Agility) * 25) / quantity)) {
+		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Agility, course.petChance);
+		if (roll(petDropRate / quantity)) {
 			loot.add('Giant squirrel');
 			str += "\nYou have a funny feeling you're being followed...";
 			globalClient.emit(

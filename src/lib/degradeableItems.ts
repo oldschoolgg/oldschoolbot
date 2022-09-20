@@ -9,7 +9,7 @@ import getOSItem from './util/getOSItem';
 
 interface DegradeableItem {
 	item: Item;
-	settingsKey: 'tentacle_charges' | 'sang_charges' | 'void_staff_charges';
+	settingsKey: 'tentacle_charges' | 'sang_charges' | 'void_staff_charges' | 'celestial_ring_charges';
 	itemsToRefundOnBreak: Bank;
 	setup: GearSetupType;
 	aliases: string[];
@@ -71,6 +71,20 @@ export const degradeableItems: DegradeableItem[] = [
 			}
 			return minutesDuration;
 		}
+	},
+	{
+		item: getOSItem('Celestial ring'),
+		settingsKey: 'celestial_ring_charges',
+		itemsToRefundOnBreak: new Bank().add('Celestial ring (uncharged)'),
+		setup: 'skilling',
+		aliases: ['celestial ring'],
+		chargeInput: {
+			cost: new Bank().add('Stardust', 10),
+			charges: 10
+		},
+		unchargedItem: getOSItem('Celestial ring (uncharged)'),
+		convertOnCharge: true,
+		charges: (duration: number) => duration
 	}
 ];
 

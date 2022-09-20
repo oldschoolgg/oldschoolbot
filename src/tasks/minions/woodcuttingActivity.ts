@@ -7,13 +7,14 @@ import Firemaking from '../../lib/skilling/skills/firemaking';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
-import { itemID, roll } from '../../lib/util';
+import { itemID, roll, skillingPetDropRate } from '../../lib/util';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export const woodcuttingTask: MinionTask = {
 	type: 'Woodcutting',
 	async run(data: WoodcuttingActivityTaskOptions) {
-		const { logID, quantity, userID, channelID, duration } = data;
+		const { logID, quantity, userID, channelID, duration, powerchopping } = data;
 		const user = await mUserFetch(userID);
 
 		const log = Woodcutting.Logs.find(Log => Log.id === logID)!;
@@ -54,17 +55,20 @@ export const woodcuttingTask: MinionTask = {
 			duration
 		});
 
-		let loot = new Bank().add(log.id, quantity);
-		const logItem = Firemaking.Burnables.find(i => i.inputLogs === log.id);
-		if (user.hasEquipped('Inferno adze') && logItem) {
-			loot.remove(log.id, quantity);
-			loot.add('Ashes', quantity);
-			xpRes += '\n';
-			xpRes += await user.addXP({
-				skillName: SkillsEnum.Firemaking,
-				amount: logItem.xp * quantity,
-				duration
-			});
+		let loot = new Bank();
+		if (!powerchopping) {
+			loot.add(log.id, quantity);
+			const logItem = Firemaking.Burnables.find(i => i.inputLogs === log.id);
+			if (user.hasEquipped('Inferno adze') && logItem) {
+				loot.remove(log.id, quantity);
+				loot.add('Ashes', quantity);
+				xpRes += '\n';
+				xpRes += await user.addXP({
+					skillName: SkillsEnum.Firemaking,
+					amount: logItem.xp * quantity,
+					duration
+				});
+			}
 		}
 
 		if (user.hasEquipped('Woodcutting master cape')) {
@@ -86,17 +90,20 @@ export const woodcuttingTask: MinionTask = {
 		}
 
 		// Roll for pet
-		if (log.petChance && roll((log.petChance - user.skillLevel(SkillsEnum.Woodcutting) * 25) / quantity)) {
-			loot.add('Beaver');
-			str += "\n**You have a funny feeling you're being followed...**";
-			globalClient.emit(
-				Events.ServerNotification,
-				`${Emoji.Woodcutting} **${user.usernameOrMention}'s** minion, ${
-					user.minionName
-				}, just received a Beaver while cutting ${log.name} at level ${user.skillLevel(
-					'woodcutting'
-				)} Woodcutting!`
-			);
+		if (log.petChance) {
+			const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Woodcutting, log.petChance);
+			if (roll(petDropRate / quantity)) {
+				loot.add('Beaver');
+				str += "\n**You have a funny feeling you're being followed...**";
+				globalClient.emit(
+					Events.ServerNotification,
+					`${Emoji.Woodcutting} **${user.usernameOrMention}'s** minion, ${
+						user.minionName
+					}, just received a Beaver while cutting ${log.name} at level ${user.skillLevel(
+						'woodcutting'
+					)} Woodcutting!`
+				);
+			}
 		}
 		if (bonusXP > 0) {
 			str += `. **Bonus XP:** ${bonusXP.toLocaleString()}`;
@@ -110,6 +117,23 @@ export const woodcuttingTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		handleTripFinish(user, channelID, str, ['chop', { name: log.name, quantity }, true], undefined, data, loot);
+		const theQuantity = duration > 0.9 * calcMaxTripLength(user, 'Woodcutting') ? undefined : quantity;
+		handleTripFinish(
+			user,
+			channelID,
+			str,
+			[
+				'chop',
+				{
+					name: log.name,
+					quantity: theQuantity,
+					powerchop: powerchopping
+				},
+				true
+			],
+			undefined,
+			data,
+			loot
+		);
 	}
 };

@@ -6,16 +6,12 @@ import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import { Events } from '../../../lib/constants';
 import { hasWildyHuntGearEquipped } from '../../../lib/gear/functions/hasWildyHuntGearEquipped';
 import { trackLoot } from '../../../lib/settings/prisma';
-import {
-	calcBabyChinchompaChance,
-	calcLootXPHunting,
-	generateHerbiTable
-} from '../../../lib/skilling/functions/calcsHunter';
+import { calcLootXPHunting, generateHerbiTable } from '../../../lib/skilling/functions/calcsHunter';
 import Hunter from '../../../lib/skilling/skills/hunter/hunter';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { PeakTier } from '../../../lib/tickers';
 import { HunterActivityTaskOptions } from '../../../lib/types/minions';
-import { rand, roll, stringMatches } from '../../../lib/util';
+import { rand, roll, skillingPetDropRate, stringMatches } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 import { updateBankSetting } from '../../../mahoji/mahojiSettings';
@@ -115,8 +111,10 @@ export const hunterTask: MinionTask = {
 
 		let babyChinChance = 0;
 		if (creature.name.toLowerCase().includes('chinchompa')) {
-			babyChinChance = calcBabyChinchompaChance(currentLevel, creature);
+			babyChinChance =
+				creature.name === 'Chinchompa' ? 131_395 : creature.name === 'Carnivorous chinchompa' ? 98_373 : 82_758;
 		}
+		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Hunter, babyChinChance);
 
 		let creatureTable = creature.table;
 		let magicSecStr = '';
@@ -143,7 +141,7 @@ export const hunterTask: MinionTask = {
 		const loot = new Bank();
 		for (let i = 0; i < successfulQuantity - pkedQuantity; i++) {
 			loot.add(creatureTable.roll());
-			if (roll(babyChinChance) && creature.name.toLowerCase().includes('chinchompa')) {
+			if (roll(petDropRate) && creature.name.toLowerCase().includes('chinchompa')) {
 				loot.add(itemID('Baby chinchompa'));
 			}
 		}

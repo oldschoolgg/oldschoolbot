@@ -5,6 +5,7 @@ import { Events } from '../../lib/constants';
 import { darkAltarRunes } from '../../lib/minions/functions/darkAltarCommand';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { DarkAltarOptions } from '../../lib/types/minions';
+import { skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export const darkAltarTask: MinionTask = {
@@ -39,10 +40,9 @@ export const darkAltarTask: MinionTask = {
 		}
 
 		let loot = new Bank().add(runeData.item.id, runeQuantity);
-
-		const lvl = user.skillLevel(SkillsEnum.Runecraft);
+		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Runecraft, runeData.petChance);
 		for (let i = 0; i < quantity; i++) {
-			if (roll(runeData.petChance - lvl * 25)) {
+			if (roll(petDropRate)) {
 				loot.add('Rift guardian');
 			}
 		}

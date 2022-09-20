@@ -93,33 +93,6 @@ const Tips: Fletchable[] = [
 		inputItems: new Bank({ Onyx: 1 }),
 		tickRate: 5,
 		outputMultiple: 12
-	},
-	{
-		name: 'Amethyst arrowtips',
-		id: itemID('Amethyst arrowtips'),
-		level: 82,
-		xp: 60,
-		inputItems: new Bank({ Amethyst: 1 }),
-		tickRate: 5,
-		outputMultiple: 15
-	},
-	{
-		name: 'Amethyst bolt tips',
-		id: itemID('Amethyst bolt tips'),
-		level: 83,
-		xp: 60,
-		inputItems: new Bank({ Amethyst: 1 }),
-		tickRate: 5,
-		outputMultiple: 15
-	},
-	{
-		name: 'Amethyst javelin heads',
-		id: itemID('Amethyst javelin heads'),
-		level: 87,
-		xp: 60,
-		inputItems: new Bank({ Amethyst: 1 }),
-		tickRate: 2,
-		outputMultiple: 5
 	}
 ];
 

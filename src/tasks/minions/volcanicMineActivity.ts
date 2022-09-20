@@ -6,7 +6,7 @@ import { userHasFlappy } from '../../lib/invention/inventions';
 import { incrementMinigameScore } from '../../lib/settings/settings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
-import { rand } from '../../lib/util';
+import { rand, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { VolcanicMineGameTime } from '../../mahoji/lib/abstracted_commands/volcanicMineCommand';
 
@@ -85,10 +85,11 @@ export const vmTask: MinionTask = {
 
 		const fragmentRolls = rand(38, 40) * quantity;
 		const loot = new Bank().add(fragmentTable.roll(fragmentRolls));
+		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Mining, 60_000);
 		// Iterate over the fragments received
 		for (let i = 0; i < fragmentRolls; i++) {
 			// Roll for pet --- Average 40 fragments per game at 60K chance per fragment
-			if (roll(60_000)) loot.add('Rock golem');
+			if (roll(petDropRate)) loot.add('Rock golem');
 		}
 
 		// 4x Loot for having doug helping, as it helps mining more fragments

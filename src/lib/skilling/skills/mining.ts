@@ -28,7 +28,7 @@ const ores: Ore[] = [
 		xp: 5,
 		id: 434,
 		name: 'Clay',
-		respawnTime: 2.75,
+		respawnTime: 3,
 		bankingTime: 80,
 		slope: 1.06,
 		intercept: 49.33,
@@ -50,7 +50,7 @@ const ores: Ore[] = [
 		xp: 17.5,
 		id: 436,
 		name: 'Copper ore',
-		respawnTime: 2.75,
+		respawnTime: 3,
 		bankingTime: 80,
 		slope: 1.06,
 		intercept: 49.33,
@@ -62,7 +62,7 @@ const ores: Ore[] = [
 		xp: 17.5,
 		id: 438,
 		name: 'Tin ore',
-		respawnTime: 2.75,
+		respawnTime: 3,
 		bankingTime: 80,
 		slope: 1.06,
 		intercept: 49.33,
@@ -74,7 +74,7 @@ const ores: Ore[] = [
 		xp: 0,
 		id: 13_421,
 		name: 'Saltpetre',
-		respawnTime: 2.75,
+		respawnTime: 3,
 		bankingTime: 16,
 		slope: 1.06,
 		intercept: 49.33
@@ -147,14 +147,15 @@ const ores: Ore[] = [
 		bankingTime: 10,
 		slope: 0.8,
 		intercept: 10.01,
-		petChance: 741_600
+		petChance: 741_600,
+		clueScrollChance: 741_600
 	},
 	{
 		level: 40,
 		xp: 65,
 		id: 1625,
 		name: 'Gem rock',
-		respawnTime: 2.75,
+		respawnTime: 3,
 		bankingTime: 16,
 		slope: 0.18,
 		intercept: 10.04,
@@ -181,9 +182,10 @@ const ores: Ore[] = [
 		name: 'Granite',
 		respawnTime: 3,
 		bankingTime: 80,
-		slope: 0.85,
-		intercept: 10.91,
-		petChance: 741_600
+		slope: 0.84,
+		intercept: 10.93,
+		petChance: 741_600,
+		clueScrollChance: 741_600
 	},
 	{
 		level: 55,

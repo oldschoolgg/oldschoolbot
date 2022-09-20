@@ -13,6 +13,7 @@ import {
 	userStatsUpdate
 } from '../../mahoji/mahojiSettings';
 import { MysteryBoxes } from '../bsoOpenables';
+import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
 import { ClueTiers } from '../clues/clueTiers';
 import { COINS_ID, Emoji, lastTripCache, LastTripRunArgs, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
@@ -344,6 +345,8 @@ export async function handleTripFinish(
 	) {
 		components.addComponents(makeNewSlayerTaskButton());
 	}
+	handleTriggerShootingStar(user, data, components);
+
 	sendToChannelID(channelID, {
 		content: message,
 		image: attachment,

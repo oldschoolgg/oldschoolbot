@@ -5,6 +5,7 @@ import { Bank } from 'oldschooljs';
 
 import { buyBingoTicketCommand } from '../../mahoji/commands/bingo';
 import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
+import { shootingStarsCommand, starCache } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
 import { Cooldowns } from '../../mahoji/lib/Cooldowns';
 import { ClueTier } from '../clues/clueTiers';
 import { lastTripCache, PerkTier } from '../constants';
@@ -49,9 +50,11 @@ const globalInteractionActions = [
 	'SPAWN_LAMP',
 	'REPEAT_TAME_TRIP',
 	'ITEM_CONTRACT_SEND',
-	'DO_FISHING_CONTEST'
+	'DO_FISHING_CONTEST',
+	'DO_SHOOTING_STAR'
 ] as const;
-type GlobalInteractionAction = typeof globalInteractionActions[number];
+
+export type GlobalInteractionAction = typeof globalInteractionActions[number];
 function isValidGlobalInteraction(str: string): str is GlobalInteractionAction {
 	return globalInteractionActions.includes(str as GlobalInteractionAction);
 }
@@ -142,7 +145,6 @@ async function giveawayButtonHandler(user: MUser, customID: string, data: APIInt
 			},
 			user,
 			member: data.member ?? null,
-			userID: user.id,
 			channelID: data.channel_id!,
 			guildID: data.guild_id
 		});
@@ -199,6 +201,10 @@ export async function interactionHook(data: APIInteraction) {
 	const id = data.data.custom_id;
 	const userID = data.member ? data.member.user?.id : data.user?.id;
 	if (!userID) return;
+	if (globalClient.oneCommandAtATimeCache.has(userID) || globalClient.isShuttingDown) {
+		return buttonReply('You cannot use a command right now.');
+	}
+
 	const user = await mUserFetch(userID);
 	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, data);
 
@@ -206,7 +212,6 @@ export async function interactionHook(data: APIInteraction) {
 	const options = {
 		user,
 		member: data.member ?? null,
-		userID,
 		channelID: data.channel_id,
 		guildID: data.guild_id
 	};
@@ -442,7 +447,7 @@ export async function interactionHook(data: APIInteraction) {
 			await buttonReply();
 			const response = await autoContract(await mUserFetch(user.id), BigInt(options.channelID), BigInt(user.id));
 			const channel = globalClient.channels.cache.get(options.channelID);
-			if (channelIsSendable(channel)) channel.send(convertMahojiResponseToDJSResponse(response));
+			if (channelIsSendable(channel)) return channel.send(convertMahojiResponseToDJSResponse(response));
 			break;
 		}
 		case 'NEW_SLAYER_TASK': {
@@ -453,6 +458,21 @@ export async function interactionHook(data: APIInteraction) {
 				bypassInhibitors: true,
 				...options
 			});
+		}
+		case 'DO_SHOOTING_STAR': {
+			const star = starCache.get(user.id);
+			starCache.delete(user.id);
+			if (star && star.expiry > Date.now()) {
+				const str = await shootingStarsCommand(BigInt(data.channel_id), user, star);
+				return buttonReply(str, false);
+			}
+			return buttonReply(
+				`${
+					star && star.expiry < Date.now()
+						? 'The Crashed Star has expired!'
+						: `That Crashed Star was not discovered by ${user.minionName}.`
+				}`
+			);
 		}
 		default: {
 		}

@@ -15,12 +15,7 @@ import { calculateBirdhouseDetails } from './birdhousesCommand';
 import { isUsersDailyReady } from './dailyCommand';
 import { canRunAutoContract } from './farmingContractCommand';
 
-export async function minionStatusCommand(
-	userID: bigint | string,
-	channelID: string
-): Promise<InteractionResponseDataWithBufferAttachments> {
-	const user = await mUserFetch(userID);
-
+export async function minionStatusCommand(user: MUser): Promise<InteractionResponseDataWithBufferAttachments> {
 	if (!user.user.minion_hasBought) {
 		return {
 			content:

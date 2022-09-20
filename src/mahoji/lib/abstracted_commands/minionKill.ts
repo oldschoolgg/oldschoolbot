@@ -607,6 +607,8 @@ export async function minionKillCommand(
 	}
 	// Check food
 	let foodStr: string = '';
+	// Find best eatable boost and add 1% extra
+	const noFoodBoost = Math.floor(Math.max(...Eatables.map(eatable => eatable.pvmBoost ?? 0)) + 1);
 	if (monster.healAmountNeeded && monster.attackStyleToUse && monster.attackStylesUsed) {
 		const [healAmountNeeded, foodMessages] = calculateMonsterFood(monster, user);
 		foodStr += foodMessages;
@@ -627,8 +629,8 @@ export async function minionKillCommand(
 			});
 
 			if (foodRemoved.length === 0) {
-				boosts.push('4% for no food');
-				duration = reduceNumByPercent(duration, 4);
+				boosts.push(`${noFoodBoost}% for no food`);
+				duration = reduceNumByPercent(duration, noFoodBoost);
 			} else {
 				for (const [item, qty] of foodRemoved.items()) {
 					const eatable = Eatables.find(e => e.id === item.id);
@@ -666,8 +668,8 @@ export async function minionKillCommand(
 			}
 		}
 	} else {
-		boosts.push('4% for no food');
-		duration = reduceNumByPercent(duration, 4);
+		boosts.push(`${noFoodBoost}% for no food`);
+		duration = reduceNumByPercent(duration, noFoodBoost);
 	}
 
 	// Boosts that don't affect quantity:

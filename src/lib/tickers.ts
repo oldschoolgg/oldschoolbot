@@ -74,7 +74,7 @@ export interface Peak {
 /**
  * Tickers should idempotent, and be able to run at any time.
  */
-const tickers: { name: string; interval: number; timer: NodeJS.Timeout | null; cb: () => unknown }[] = [
+export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | null; cb: () => unknown }[] = [
 	{
 		name: 'giveaways',
 		interval: Time.Second * 5,
@@ -222,6 +222,7 @@ const tickers: { name: string; interval: number; timer: NodeJS.Timeout | null; c
 							BitField.IsPatronTier3,
 							BitField.IsPatronTier4,
 							BitField.IsPatronTier5,
+							BitField.IsPatronTier6,
 							BitField.isContributor,
 							BitField.isModerator
 						]
@@ -306,7 +307,6 @@ const tickers: { name: string; interval: number; timer: NodeJS.Timeout | null; c
 								args: { harvest: { patch_name: patchType } },
 								bypassInhibitors: true,
 								channelID: message.channel.id,
-								userID: message.author.id,
 								guildID: undefined,
 								user: await mUserFetch(user.id),
 								member: message.member
