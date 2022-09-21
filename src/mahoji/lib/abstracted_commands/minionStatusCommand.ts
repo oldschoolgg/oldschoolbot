@@ -16,11 +16,9 @@ import { isUsersDailyReady } from './dailyCommand';
 import { canRunAutoContract } from './farmingContractCommand';
 
 export async function minionStatusCommand(
-	userID: bigint | string,
+	user: MUser,
 	channelID: string
 ): Promise<InteractionResponseDataWithBufferAttachments> {
-	const user = await mUserFetch(userID);
-
 	if (!user.user.minion_hasBought) {
 		return {
 			content:

@@ -1,5 +1,6 @@
 import { TextChannel } from 'discord.js';
 
+import { syncLinkedAccounts } from '../../../../mahoji/mahojiSettings';
 import { boxFrenzy } from '../../../boxFrenzy';
 import { Channel } from '../../../constants';
 import { addPatronLootTime } from '../../../doubleLoot';
@@ -24,6 +25,7 @@ const githubSponsors = (server: FastifyServer) =>
 			switch (data.action) {
 				case 'created': {
 					const tier = parseStrToTier(data.sponsorship.tier.name);
+					if (!tier) return;
 					let effectiveTier = tier - 1;
 					sendToChannelID(Channel.NewSponsors, {
 						content: `${data.sender.login}[${data.sender.id}] became a Tier ${effectiveTier} sponsor.`
@@ -51,6 +53,7 @@ ${data.sender.login} became a Github sponsor, as a reward for everyone, here is 
 				case 'pending_tier_change': {
 					const from = parseStrToTier(data.changes!.tier.from.name);
 					const to = parseStrToTier(data.sponsorship.tier.name);
+					if (!from || !to) return;
 					sendToChannelID(Channel.NewSponsors, {
 						content: `${data.sender.login}[${data.sender.id}] changed their sponsorship from Tier ${
 							from - 1
@@ -62,14 +65,14 @@ ${data.sender.login} became a Github sponsor, as a reward for everyone, here is 
 					break;
 				}
 				case 'cancelled': {
+					const tier = parseStrToTier(data.sponsorship.tier.name);
+					if (!tier) return;
 					if (user) {
 						await patreonTask.removePerks(user.id);
 					}
 
 					sendToChannelID(Channel.NewSponsors, {
-						content: `${data.sender.login}[${data.sender.id}] cancelled being a Tier ${
-							parseStrToTier(data.sponsorship.tier.name) - 1
-						} sponsor. ${
+						content: `${data.sender.login}[${data.sender.id}] cancelled being a Tier ${tier - 1} sponsor. ${
 							user ? 'Removing perks.' : "Cant remove perks because couldn't find discord user."
 						}`
 					});
@@ -77,7 +80,7 @@ ${data.sender.login} became a Github sponsor, as a reward for everyone, here is 
 					break;
 				}
 			}
-
+			syncLinkedAccounts();
 			return reply.send({});
 		},
 		config: {}

@@ -9,7 +9,7 @@ import Mining from '../../lib/skilling/skills/mining';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
-import { rand } from '../../lib/util';
+import { rand, skillingPetDropRate } from '../../lib/util';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import resolveItems from '../../lib/util/resolveItems';
@@ -65,13 +65,16 @@ export const miningTask: MinionTask = {
 		}
 
 		// Roll for pet
-		if (ore.petChance && roll((ore.petChance - currentLevel * 25) / quantity)) {
-			loot.add('Rock golem');
-			str += "\nYou have a funny feeling you're being followed...";
-			globalClient.emit(
-				Events.ServerNotification,
-				`${Emoji.Mining} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Rock golem while mining ${ore.name} at level ${currentLevel} Mining!`
-			);
+		if (ore.petChance) {
+			const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Mining, ore.petChance);
+			if (roll(petDropRate / quantity)) {
+				loot.add('Rock golem');
+				str += "\nYou have a funny feeling you're being followed...";
+				globalClient.emit(
+					Events.ServerNotification,
+					`${Emoji.Mining} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Rock golem while mining ${ore.name} at level ${currentLevel} Mining!`
+				);
+			}
 		}
 
 		if (numberOfMinutes > 10 && ore.nuggets) {

@@ -6,7 +6,7 @@ import { Duration } from '@sapphire/time-utilities';
 import Type from '@sapphire/type';
 import { isThenable } from '@sentry/utils';
 import { escapeCodeBlock } from 'discord.js';
-import { randArrItem, Time, uniqueArr } from 'e';
+import { randArrItem, sleep, Time, uniqueArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions, InteractionResponseType, InteractionType } from 'mahoji';
 import { CommandResponse, MahojiAttachment } from 'mahoji/dist/lib/structures/ICommand';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
@@ -23,6 +23,7 @@ import { patreonTask } from '../../lib/patreon';
 import { runRolesTask } from '../../lib/rolesTask';
 import { countUsersWithItemInCl, prisma } from '../../lib/settings/prisma';
 import { cancelTask, minionActivityCacheDelete } from '../../lib/settings/settings';
+import { tickers } from '../../lib/tickers';
 import {
 	calcPerHour,
 	convertBankToPerHourStats,
@@ -44,7 +45,8 @@ import {
 	handleMahojiConfirmation,
 	mahojiClientSettingsFetch,
 	mahojiClientSettingsUpdate,
-	mahojiUsersSettingsFetch
+	mahojiUsersSettingsFetch,
+	syncLinkedAccounts
 } from '../mahojiSettings';
 import { mahojiUserSettingsUpdate } from '../settingsUpdate';
 import { getLotteryBank } from './lottery';
@@ -634,6 +636,7 @@ export const adminCommand: OSBMahojiCommand = {
 		}
 		if (options.sync_patreon) {
 			await patreonTask.run();
+			syncLinkedAccounts();
 			return 'Finished syncing patrons.';
 		}
 		if (options.add_ironman_alt) {
@@ -853,21 +856,12 @@ LIMIT 10;
 				options.bitfield.user.user.username
 			}.`;
 		}
-
-		/**
-		 *
-		 * Owner Only Commands
-		 *
-		 */
-		if (!isOwner) {
-			return randArrItem(gifs);
-		}
-		if (options.viewbank) {
-			const userToCheck = await mUserFetch(options.viewbank.user.user.id);
-			const bank = userToCheck.allItemsOwned();
-			return { attachments: [(await makeBankImage({ bank, title: userToCheck.usernameOrMention })).file] };
-		}
 		if (options.reboot) {
+			globalClient.isShuttingDown = true;
+			for (const ticker of tickers) {
+				if (ticker.timer) clearTimeout(ticker.timer);
+			}
+			await sleep(Time.Second * 20);
 			await interaction.respond({
 				response: {
 					data: {
@@ -881,6 +875,27 @@ LIMIT 10;
 			});
 			process.exit();
 		}
+		if (options.viewbank) {
+			const userToCheck = await mUserFetch(options.viewbank.user.user.id);
+			const bank = userToCheck.allItemsOwned();
+			return { attachments: [(await makeBankImage({ bank, title: userToCheck.usernameOrMention })).file] };
+		}
+
+		if (options.sync_blacklist) {
+			await syncBlacklists();
+			return `Users Blacklisted: ${BLACKLISTED_USERS.size}
+Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
+		}
+
+		/**
+		 *
+		 * Owner Only Commands
+		 *
+		 */
+		if (!isOwner) {
+			return randArrItem(gifs);
+		}
+
 		if (options.debug_patreon) {
 			const result = await patreonTask.fetchPatrons();
 			return {
@@ -930,11 +945,6 @@ WHERE bank->>'${item.id}' IS NOT NULL;`);
 There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' : 'people'} with atleast 1 ${
 				item.name
 			} in their collection log.`;
-		}
-		if (options.sync_blacklist) {
-			await syncBlacklists();
-			return `Users Blacklisted: ${BLACKLISTED_USERS.size}
-Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 		}
 
 		if (options.loot_track) {
@@ -1008,7 +1018,6 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 				userToGive.user.username
 			}. They have ${formatDuration(newBalanceExpiryTime - Date.now())} remaining.`;
 		}
-
 		if (options.double_loot) {
 			if (options.double_loot.reset) {
 				await mahojiClientSettingsUpdate({

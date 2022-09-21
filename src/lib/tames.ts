@@ -549,13 +549,11 @@ export async function tameLastFinishedActivity(user: MUser) {
 
 export async function repeatTameTrip({
 	channelID,
-	userID,
 	guildID,
 	user,
 	member
 }: {
 	channelID: string | bigint;
-	userID: string | bigint;
 	guildID: string | bigint | undefined;
 	user: MUser;
 	member: APIInteractionGuildMember | GuildMember | null;
@@ -577,7 +575,6 @@ export async function repeatTameTrip({
 				},
 				bypassInhibitors: true,
 				channelID,
-				userID,
 				guildID,
 				user,
 				member
@@ -593,7 +590,6 @@ export async function repeatTameTrip({
 				},
 				bypassInhibitors: true,
 				channelID,
-				userID,
 				guildID,
 				user,
 				member

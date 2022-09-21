@@ -47,6 +47,9 @@ export async function preCommand({
 	channelID: string | bigint;
 	bypassInhibitors: boolean;
 }): Promise<{ silent: boolean; reason: Awaited<CommandResponse> } | undefined> {
+	if (globalClient.isShuttingDown) {
+		return { silent: true, reason: 'The bot is currently restarting, please try again later.' };
+	}
 	globalClient.emit('debug', `${userID} trying to run ${abstractCommand.name} command`);
 	const user = await mUserFetch(userID);
 	if (user.isBusy && !bypassInhibitors) {
@@ -63,6 +66,7 @@ export async function preCommand({
 					BitField.IsPatronTier3,
 					BitField.IsPatronTier4,
 					BitField.IsPatronTier5,
+					BitField.IsPatronTier6,
 					BitField.isContributor,
 					BitField.isModerator
 				]
