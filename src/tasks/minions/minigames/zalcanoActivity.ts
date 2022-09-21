@@ -69,7 +69,7 @@ export const zalcanoTask: MinionTask = {
 				kc + quantity
 			}. ${xpRes}`,
 			['k', { name: 'zalcano' }, true],
-			image?.file.attachment,
+			image.file.attachment,
 			data,
 			itemsAdded
 		);
