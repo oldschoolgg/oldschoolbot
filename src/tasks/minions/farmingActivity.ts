@@ -338,8 +338,8 @@ export const farmingTask: MinionTask = {
 			let tangleroot = false;
 			const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Farming, plantToHarvest.petChance);
 			if (plantToHarvest.seedType === 'hespori') {
-				await user.incrementKC(Monsters.Hespori.id);
-				const hesporiLoot = Monsters.Hespori.kill(1, { farmingLevel: currentFarmingLevel });
+				await user.incrementKC(Monsters.Hespori.id, patchType.lastQuantity);
+				const hesporiLoot = Monsters.Hespori.kill(patchType.lastQuantity, { farmingLevel: currentFarmingLevel });
 				loot = hesporiLoot;
 				if (hesporiLoot.amount('Tangleroot')) tangleroot = true;
 			} else if (
