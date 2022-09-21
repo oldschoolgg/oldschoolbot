@@ -21,6 +21,7 @@ import { modalInteractionHook } from './lib/modals';
 import { OldSchoolBotClient } from './lib/structures/OldSchoolBotClient';
 import { initTickers } from './lib/tickers';
 import { interactionHook } from './lib/util/globalInteractions';
+import { interactionReply } from './lib/util/interactionReply';
 import { logError } from './lib/util/logError';
 import { sendToChannelID } from './lib/util/webhook';
 import { onStartup } from './mahoji/lib/events';
@@ -100,6 +101,7 @@ client.on('interactionCreate', async interaction => {
 		modalInteractionHook(interaction);
 		return;
 	}
+
 	const result = await mahojiClient.parseInteraction(interaction);
 	if (result === null) return;
 
@@ -110,7 +112,7 @@ client.on('interactionCreate', async interaction => {
 		});
 		if (interaction.isChatInputCommand()) {
 			try {
-				await interaction.reply('Sorry, an error occured while trying to run this command.');
+				await interactionReply(interaction, 'Sorry, an error occured while trying to run this command.');
 			} catch (err: unknown) {
 				logError(err, {
 					user_id: interaction.user.id,

@@ -12,6 +12,8 @@ export function interactionReply(
 
 export function deferInteraction(interaction: ButtonInteraction | ChatInputCommandInteraction) {
 	if (!interaction.deferred) {
-		return interaction.deferReply();
+		const promise = interaction.deferReply();
+		interaction.deferred = true;
+		return promise;
 	}
 }

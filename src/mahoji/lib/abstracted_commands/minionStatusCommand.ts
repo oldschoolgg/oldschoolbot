@@ -104,11 +104,13 @@ export async function minionStatusCommand(user: MUser) {
 		for (const tier of ClueTiers.filter(t => bank.has(t.scrollID))
 			.reverse()
 			.slice(0, 3)) {
-			new ButtonBuilder()
-				.setCustomId(`DO_${tier.name.toUpperCase()}_CLUE`)
-				.setLabel(`Do ${tier.name} Clue`)
-				.setEmoji('365003979840552960')
-				.setStyle(ButtonStyle.Secondary);
+			buttons.push(
+				new ButtonBuilder()
+					.setCustomId(`DO_${tier.name.toUpperCase()}_CLUE`)
+					.setLabel(`Do ${tier.name} Clue`)
+					.setEmoji('365003979840552960')
+					.setStyle(ButtonStyle.Secondary)
+			);
 		}
 	}
 
