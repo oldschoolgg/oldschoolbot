@@ -158,9 +158,6 @@ export async function runCommand({
 			user,
 			interaction
 		});
-		if (result && interaction.replied) {
-			console.log(`Tried to reply twice to interaction, unsent reply was: ${result}`);
-		}
 		if (result && !interaction.replied) await interactionReply(interaction, result);
 		return result;
 	} catch (err: any) {

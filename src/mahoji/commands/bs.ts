@@ -20,7 +20,6 @@ export const bsCommand: OSBMahojiCommand = {
 		}>
 	) => {
 		const res = await bankCommand.run(opts);
-		console.log(opts.interaction.replied);
 		return res;
 	}
 };
