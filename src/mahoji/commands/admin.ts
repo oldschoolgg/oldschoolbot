@@ -33,6 +33,7 @@ import {
 } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { logError } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
@@ -512,7 +513,7 @@ export const adminCommand: OSBMahojiCommand = {
 		wipe_bingo_temp_cls?: {};
 		give_items?: { user: MahojiUserOption; items: string };
 	}>) => {
-		await deferInteraction(interaction)();
+		await deferInteraction(interaction);
 
 		const adminUser = await mahojiUsersSettingsFetch(userID);
 		const isOwner = OWNER_IDS.includes(userID.toString());

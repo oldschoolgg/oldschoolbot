@@ -14,6 +14,7 @@ import { ItemBank } from '../types';
 import { formatDuration, removeFromArr } from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
 import { updateGiveawayMessage } from './giveaway';
+import { deferInteraction } from './interactionReply';
 import { minionIsBusy } from './minionIsBusy';
 
 const globalInteractionActions = [
@@ -212,7 +213,7 @@ export async function interactionHook(interaction: Interaction) {
 
 	const cd = Cooldowns.get(userID, 'button', Time.Second * 3);
 	if (cd !== null) {
-		return deferInteraction(interaction)();
+		return deferInteraction(interaction);
 	}
 
 	const timeSinceMessage = Date.now() - new Date(interaction.message.createdTimestamp).getTime();

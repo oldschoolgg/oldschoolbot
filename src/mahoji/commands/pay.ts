@@ -5,6 +5,7 @@ import { Bank } from 'oldschooljs';
 import { Events } from '../../lib/constants';
 import { addToGPTaxBalance, prisma } from '../../lib/settings/prisma';
 import { toKMB } from '../../lib/util';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { OSBMahojiCommand } from '../lib/util';
 import { handleMahojiConfirmation, mahojiParseNumber, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
@@ -34,7 +35,7 @@ export const payCommand: OSBMahojiCommand = {
 		user: MahojiUserOption;
 		amount: string;
 	}>) => {
-		deferInteraction(interaction)();
+		deferInteraction(interaction);
 		const user = await mUserFetch(userID.toString());
 		const recipient = await mUserFetch(options.user.user.id);
 		const amount = mahojiParseNumber({ input: options.amount, min: 1, max: 500_000_000_000 });

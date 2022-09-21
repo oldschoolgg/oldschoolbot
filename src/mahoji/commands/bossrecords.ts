@@ -7,6 +7,7 @@ import { bossNameMap } from 'oldschooljs/dist/constants';
 
 import pets from '../../lib/data/pets';
 import { channelIsSendable, makePaginatedMessage, toTitleCase } from '../../lib/util';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { OSBMahojiCommand } from '../lib/util';
 
 // Emojis for bosses with no pets
@@ -43,7 +44,7 @@ export const bossrecordCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ options, channelID, userID, interaction }: CommandRunOptions<{ rsn: string }>) => {
-		await deferInteraction(interaction)({ ephemeral: true });
+		await deferInteraction(interaction);
 		const { bossRecords } = await Hiscores.fetch(options.rsn).catch(err => {
 			throw err.message;
 		});

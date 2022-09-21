@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 import { finishables } from '../../lib/finishables';
 import { sorts } from '../../lib/sorts';
 import { itemNameFromID, stringMatches } from '../../lib/util';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -24,7 +25,7 @@ export const finishCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ interaction, options }: CommandRunOptions<{ input: string }>) => {
-		await deferInteraction(interaction)();
+		await deferInteraction(interaction);
 		const val = finishables.find(i => stringMatches(i.name, options.input));
 		if (!val) return "That's not a valid thing you can simulate finishing.";
 		let loot = new Bank();

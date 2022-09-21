@@ -1,5 +1,6 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
 import { coxCommand, coxStatsCommand } from '../lib/abstracted_commands/coxCommand';
 import { tobCheckCommand, tobStartCommand, tobStatsCommand } from '../lib/abstracted_commands/tobCommand';
@@ -98,7 +99,7 @@ export const raidCommand: OSBMahojiCommand = {
 		cox?: { start?: { type: 'solo' | 'mass'; challenge_mode?: boolean }; stats?: {} };
 		tob?: { start?: { hard_mode?: boolean; max_team_size?: number }; stats?: {}; check?: { hard_mode?: boolean } };
 	}>) => {
-		if (interaction) await deferInteraction(interaction)();
+		if (interaction) await deferInteraction(interaction);
 		const user = await mUserFetch(userID);
 		const { cox, tob } = options;
 		if (cox?.stats) return coxStatsCommand(user);

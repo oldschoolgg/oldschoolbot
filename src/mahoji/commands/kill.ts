@@ -4,6 +4,7 @@ import { Bank, Monsters } from 'oldschooljs';
 import { PerkTier } from '../../lib/constants';
 import { toTitleCase } from '../../lib/util';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { Workers } from '../../lib/workers';
 import { OSBMahojiCommand } from '../lib/util';
@@ -70,7 +71,7 @@ export const killCommand: OSBMahojiCommand = {
 	],
 	run: async ({ options, userID, interaction }: CommandRunOptions<{ name: string; quantity: number }>) => {
 		const user = await mUserFetch(userID);
-		deferInteraction(interaction)();
+		deferInteraction(interaction);
 
 		const result = await Workers.kill({
 			quantity: options.quantity,

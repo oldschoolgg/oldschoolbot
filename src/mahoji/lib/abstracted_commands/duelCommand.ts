@@ -6,6 +6,7 @@ import { Bank, Util } from 'oldschooljs';
 import { Emoji, Events } from '../../../lib/constants';
 import { MUserClass } from '../../../lib/MUser';
 import { awaitMessageComponentInteraction, channelIsSendable } from '../../../lib/util';
+import { deferInteraction } from '../../../lib/util/interactionReply';
 import { mahojiParseNumber, updateGPTrackSetting } from '../../mahojiSettings';
 
 async function checkBal(user: MUser, amount: number) {
@@ -19,7 +20,7 @@ export async function duelCommand(
 	targetAPIUser: MahojiUserOption,
 	duelAmount?: string
 ) {
-	await deferInteraction(interaction)();
+	await deferInteraction(interaction);
 
 	const duelSourceUser = user;
 	const duelTargetUser = duelUser;

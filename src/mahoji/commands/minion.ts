@@ -19,6 +19,7 @@ import creatures from '../../lib/skilling/skills/hunter/creatures';
 import { convertLVLtoXP, getUsername, isValidNickname } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
 import {
 	achievementDiaryCommand,
@@ -450,7 +451,7 @@ export const minionCommand: OSBMahojiCommand = {
 
 		if (options.stats) {
 			if (options.stats.stat) {
-				await deferInteraction(interaction)();
+				await deferInteraction(interaction);
 				return statsCommand(user, options.stats.stat);
 			}
 			return { embeds: [await minionStatsEmbed(user)] };

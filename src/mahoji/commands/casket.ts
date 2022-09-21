@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { PerkTier } from '../../lib/constants';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { Workers } from '../../lib/workers';
 import { OSBMahojiCommand } from '../lib/util';
@@ -53,7 +54,7 @@ export const casketCommand: OSBMahojiCommand = {
 			return `Not a valid clue tier. The valid tiers are: ${ClueTiers.map(_tier => _tier.name).join(', ')}`;
 		}
 
-		await deferInteraction(interaction)();
+		await deferInteraction(interaction);
 
 		const [loot, title] = await Workers.casketOpen({ quantity: options.quantity, clueTierID: clueTier.id });
 

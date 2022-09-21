@@ -14,6 +14,7 @@ import { channelIsSendable, formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../lib/util/calcMassDurationQuantity';
 import findMonster from '../../lib/util/findMonster';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { OSBMahojiCommand } from '../lib/util';
 import { hasMonsterRequirements } from '../mahojiSettings';
 
@@ -70,7 +71,7 @@ export const massCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ interaction, options, userID, channelID }: CommandRunOptions<{ monster: string }>) => {
-		deferInteraction(interaction)();
+		deferInteraction(interaction);
 		const user = await mUserFetch(userID);
 		if (user.user.minion_ironman) return 'Ironmen cannot do masses.';
 		const channel = globalClient.channels.cache.get(channelID.toString());

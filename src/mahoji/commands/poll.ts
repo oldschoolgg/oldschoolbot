@@ -1,6 +1,7 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { channelIsSendable } from '../../lib/util';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const pollCommand: OSBMahojiCommand = {
@@ -17,7 +18,7 @@ export const pollCommand: OSBMahojiCommand = {
 	run: async ({ interaction, options, user, channelID }: CommandRunOptions<{ question: string }>) => {
 		const channel = globalClient.channels.cache.get(channelID.toString());
 		if (!channelIsSendable(channel)) return { ephemeral: true, content: 'Invalid channel.' };
-		await deferInteraction(interaction)({ ephemeral: true });
+		await deferInteraction(interaction);
 		try {
 			const message = await channel.send({
 				content: `**Poll from ${user.username}:** ${options.question}`,

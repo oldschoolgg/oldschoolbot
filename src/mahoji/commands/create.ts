@@ -8,6 +8,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
 import { stringMatches } from '../../lib/util';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { OSBMahojiCommand } from '../lib/util';
 import { handleMahojiConfirmation, updateBankSetting, userStatsBankUpdate } from '../mahojiSettings';
 
@@ -81,7 +82,7 @@ export const createCommand: OSBMahojiCommand = {
 		const itemName = options.item.toLowerCase();
 		let { quantity } = options;
 		if (options.showall) {
-			await deferInteraction(interaction)();
+			await deferInteraction(interaction);
 			return showAllCreatables();
 		}
 

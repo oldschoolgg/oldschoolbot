@@ -7,6 +7,7 @@ import { Emoji } from '../../lib/constants';
 import { Flags } from '../../lib/minions/types';
 import { BankSortMethod, BankSortMethods } from '../../lib/sorts';
 import { channelIsSendable, makePaginatedMessage } from '../../lib/util';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption, itemOption } from '../lib/mahojiCommandOptions';
@@ -84,7 +85,7 @@ export const bankCommand: OSBMahojiCommand = {
 		flag?: BankFlag;
 		flag_extra?: BankFlag;
 	}>) => {
-		if (interaction) await deferInteraction(interaction)();
+		if (interaction) await deferInteraction(interaction);
 		const klasaUser = await mUserFetch(user.id);
 		const baseBank = klasaUser.bankWithGP;
 		const mahojiFlags: BankFlag[] = [];

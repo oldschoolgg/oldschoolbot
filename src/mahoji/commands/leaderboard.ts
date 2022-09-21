@@ -22,6 +22,7 @@ import {
 	stripEmojis,
 	toTitleCase
 } from '../../lib/util';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { sendToChannelID } from '../../lib/util/webhook';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -690,7 +691,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		opens?: { openable: string; ironmen_only?: boolean };
 		cl?: { cl: string; ironmen_only?: boolean };
 	}>) => {
-		await deferInteraction(interaction)();
+		await deferInteraction(interaction);
 		const user = await mUserFetch(userID);
 		const {
 			opens,

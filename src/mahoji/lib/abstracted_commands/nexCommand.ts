@@ -9,6 +9,7 @@ import { calculateNexDetails, checkNexUser } from '../../../lib/simulation/nex';
 import { NexTaskOptions } from '../../../lib/types/minions';
 import { calcPerHour, formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { deferInteraction } from '../../../lib/util/interactionReply';
 import { updateBankSetting } from '../../mahojiSettings';
 
 export async function nexCommand(interaction: ChatInputCommandInteraction, user: MUser, channelID: string) {
@@ -20,7 +21,7 @@ export async function nexCommand(interaction: ChatInputCommandInteraction, user:
 		return `You can't start a Nex mass: ${ownerCheck[1]}`;
 	}
 
-	await deferInteraction(interaction)();
+	await deferInteraction(interaction);
 
 	let reactionAwaiter = await setupParty(channel as TextChannel, user, {
 		minSize: 2,

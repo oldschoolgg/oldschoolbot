@@ -37,6 +37,7 @@ import {
 } from '../../lib/util';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import resolveItems from '../../lib/util/resolveItems';
 import { dataPoints, statsCommand } from '../lib/abstracted_commands/statCommand';
@@ -703,7 +704,7 @@ export const toolsCommand: OSBMahojiCommand = {
 			unfill?: { unit: string };
 		};
 	}>) => {
-		deferInteraction(interaction)();
+		deferInteraction(interaction);
 		const mahojiUser = await mUserFetch(userID);
 
 		if (options.patron) {
@@ -754,7 +755,7 @@ export const toolsCommand: OSBMahojiCommand = {
 				return xpGains(patron.xp_gains.time, patron.xp_gains.skill);
 			}
 			if (patron.minion_stats) {
-				deferInteraction(interaction)();
+				deferInteraction(interaction);
 				if (getUsersPerkTier(mahojiUser) < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return minionStats(mahojiUser.user);
 			}

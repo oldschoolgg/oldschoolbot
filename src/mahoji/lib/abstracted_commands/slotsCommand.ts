@@ -6,6 +6,7 @@ import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import { channelIsSendable } from '../../../lib/util';
+import { deferInteraction } from '../../../lib/util/interactionReply';
 import { handleMahojiConfirmation, mahojiParseNumber, updateGPTrackSetting } from '../../mahojiSettings';
 
 interface Button {
@@ -85,7 +86,7 @@ export async function slotsCommand(
 	user: MUser,
 	_amount: string | undefined
 ): CommandResponse {
-	await deferInteraction(interaction)();
+	await deferInteraction(interaction);
 	const amount = mahojiParseNumber({ input: _amount, min: 1 });
 	if (user.isIronman) {
 		return "Ironmen can't gamble! Go pickpocket some men for GP.";

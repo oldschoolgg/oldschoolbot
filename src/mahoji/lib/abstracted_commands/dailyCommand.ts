@@ -11,6 +11,7 @@ import { DynamicButtons } from '../../../lib/DynamicButtons';
 import { getRandomTriviaQuestions } from '../../../lib/roboChimp';
 import dailyRoll from '../../../lib/simulation/dailyTable';
 import { channelIsSendable, formatDuration, isWeekend } from '../../../lib/util';
+import { deferInteraction } from '../../../lib/util/interactionReply';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { updateGPTrackSetting } from '../../mahojiSettings';
 
@@ -120,7 +121,7 @@ export async function dailyCommand(
 	channelID: string,
 	user: MUser
 ): CommandResponse {
-	if (interaction) await deferInteraction(interaction)();
+	if (interaction) await deferInteraction(interaction);
 	const channel = globalClient.channels.cache.get(channelID.toString());
 	if (!channelIsSendable(channel)) return 'Invalid channel.';
 	const check = isUsersDailyReady(user);
