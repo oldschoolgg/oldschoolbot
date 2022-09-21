@@ -57,7 +57,7 @@ ${kcBank
 	.reverse()
 	.map(i => `**${i[0].name}:** ${i[1]} KC`)
 	.join('\n')}`,
-			attachments: [image.file]
+			files: [image.file]
 		};
 	}
 };

@@ -131,7 +131,7 @@ Both parties must click confirm to make the trade.`,
 
 		await prisma.economyTransaction.create({
 			data: {
-				guild_id: guildID,
+				guild_id: BigInt(guildID),
 				sender: BigInt(senderUser.id),
 				recipient: BigInt(recipientUser.id),
 				items_sent: itemsSent.bank,

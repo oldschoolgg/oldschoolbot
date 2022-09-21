@@ -1,7 +1,6 @@
 import { userMention } from '@discordjs/builders';
-import { ChannelType, TextChannel } from 'discord.js';
+import { ChannelType, ChatInputCommandInteraction, TextChannel } from 'discord.js';
 import { MessageFlags } from 'mahoji';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
 import { setupParty } from '../../../extendables/Message/Party';
@@ -13,7 +12,7 @@ import { calcPerHour, formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { updateBankSetting } from '../../mahojiSettings';
 
-export async function nexCommand(interaction: SlashCommandInteraction, user: MUser, channelID: bigint) {
+export async function nexCommand(interaction: ChatInputCommandInteraction, user: MUser, channelID: string) {
 	const channel = globalClient.channels.cache.get(channelID.toString());
 	if (!channel || channel.type !== ChannelType.GuildText) return 'You need to run this in a text channel.';
 

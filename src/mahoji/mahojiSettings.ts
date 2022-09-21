@@ -1,8 +1,12 @@
 import type { ClientStorage, Guild, Prisma, User, UserStats } from '@prisma/client';
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Guild as DJSGuild } from 'discord.js';
+import {
+	ActionRowBuilder,
+	ButtonBuilder,
+	ButtonStyle,
+	ChatInputCommandInteraction,
+	Guild as DJSGuild
+} from 'discord.js';
 import { noOp, objectEntries, round, Time } from 'e';
-import { InteractionResponseType, InteractionType, MessageFlags } from 'mahoji';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import PromiseQueue from 'p-queue';
@@ -32,7 +36,6 @@ import {
 	validateItemBankAndThrow
 } from '../lib/util';
 import resolveItems from '../lib/util/resolveItems';
-import { respondToButton } from '../lib/util/respondToButton';
 import { bingoIsActive, determineBingoProgress, onFinishTile } from './lib/bingo';
 import { mahojiUserSettingsUpdate } from './settingsUpdate';
 
@@ -54,14 +57,18 @@ export function mahojiParseNumber({
 	return parsed;
 }
 
-export async function handleMahojiConfirmation(interaction: SlashCommandInteraction, str: string, _users?: string[]) {
-	const channel = globalClient.channels.cache.get(interaction.channelID.toString());
+export async function handleMahojiConfirmation(
+	interaction: ChatInputCommandInteraction,
+	str: string,
+	_users?: string[]
+) {
+	const channel = globalClient.channels.cache.get(interaction.channelId.toString());
 	if (!channelIsSendable(channel)) throw new Error('Channel for confirmation not found.');
 	if (!interaction.deferred) {
 		await interaction.deferReply();
 	}
 
-	const users = _users ?? [interaction.userID.toString()];
+	const users = _users ?? [interaction.user.id];
 	let confirmed: string[] = [];
 	const isConfirmed = () => confirmed.length === users.length;
 	const confirmMessage = await channel.send({
@@ -98,17 +105,9 @@ export async function handleMahojiConfirmation(interaction: SlashCommandInteract
 
 		const cancel = async (reason: 'time' | 'cancel') => {
 			await confirmMessage.delete().catch(noOp);
-			await interaction.respond({
-				type: InteractionType.ApplicationCommand,
-				response: {
-					type: InteractionResponseType.ChannelMessageWithSource,
-					data: {
-						content:
-							reason === 'cancel' ? 'The confirmation was cancelled.' : 'You did not confirm in time.',
-						flags: MessageFlags.Ephemeral
-					}
-				},
-				interaction
+			await interaction.reply({
+				content: reason === 'cancel' ? 'The confirmation was cancelled.' : 'You did not confirm in time.',
+				ephemeral: true
 			});
 			collector.stop();
 			reject(new Error(SILENT_ERROR));
@@ -125,7 +124,7 @@ export async function handleMahojiConfirmation(interaction: SlashCommandInteract
 				return;
 			}
 			if (i.customId === 'CONFIRM') {
-				respondToButton(i);
+				i.deferReply();
 				confirm(id);
 			}
 		});

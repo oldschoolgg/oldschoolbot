@@ -13,11 +13,10 @@ import {
 	APIInteractionDataResolvedChannel,
 	APIMessageActionRowComponent,
 	APIRole,
-	APIUser,
 	ICommand,
 	MahojiClient
 } from 'mahoji';
-import { CommandOptions } from 'mahoji/dist/lib/types';
+import { CommandOptions, MahojiUserOption } from 'mahoji/dist/lib/types';
 
 import { AbstractCommand, AbstractCommandAttributes, CommandArgs } from './inhibitors';
 
@@ -41,6 +40,7 @@ function compressMahojiArgs(options: CommandArgs) {
 		keyof CommandOptions,
 		CommandOptions[keyof CommandOptions]
 	][]) {
+		if (val === null) continue;
 		if (
 			typeof val === 'string' ||
 			typeof val === 'number' ||
@@ -52,7 +52,7 @@ function compressMahojiArgs(options: CommandArgs) {
 		}
 
 		if ('user' in val && 'member' in val) {
-			newOptions[key] = (val.user as APIUser).id;
+			newOptions[key] = (val as MahojiUserOption).user.id;
 			continue;
 		}
 

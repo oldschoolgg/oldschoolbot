@@ -7,17 +7,8 @@ import { Chart } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { watch } from 'chokidar';
 import { TextChannel } from 'discord.js';
-import { debounce } from 'e';
-import {
-	APIInteraction,
-	GatewayDispatchEvents,
-	InteractionResponseType,
-	InteractionType,
-	MahojiClient,
-	MessageFlags,
-	Routes
-} from 'mahoji';
-import { SlashCommandResponse } from 'mahoji/dist/lib/types';
+import { debounce, isObject } from 'e';
+import { MahojiClient } from 'mahoji';
 import { extname, join, sep } from 'path';
 
 import { botToken, CLIENT_ID, DEV_SERVER_ID, production, SENTRY_DSN } from './config';
@@ -45,8 +36,9 @@ if (SENTRY_DSN) {
 	});
 }
 
+const client = new OldSchoolBotClient(clientOptions);
+
 export const mahojiClient = new MahojiClient({
-	discordToken: botToken,
 	developmentServerID: DEV_SERVER_ID,
 	applicationID: CLIENT_ID,
 	storeDirs: [join('dist', 'mahoji')],
@@ -54,9 +46,9 @@ export const mahojiClient = new MahojiClient({
 		preCommand: async ({ command, interaction }) => {
 			const result = await preCommand({
 				abstractCommand: convertMahojiCommandToAbstractCommand(command),
-				userID: interaction.userID.toString(),
-				guildID: interaction.guildID?.toString(),
-				channelID: interaction.channelID.toString(),
+				userID: interaction.user.id,
+				guildID: interaction.guildId,
+				channelID: interaction.channelId,
 				bypassInhibitors: false,
 				apiUser: interaction.user
 			});
@@ -65,15 +57,16 @@ export const mahojiClient = new MahojiClient({
 		postCommand: ({ command, interaction, error, inhibited }) =>
 			postCommand({
 				abstractCommand: convertMahojiCommandToAbstractCommand(command),
-				userID: interaction.userID.toString(),
-				guildID: interaction.guildID?.toString(),
-				channelID: interaction.channelID.toString(),
+				userID: interaction.user.id,
+				guildID: interaction.guildId,
+				channelID: interaction.channelId,
 				args: interaction.options,
 				error,
 				isContinue: false,
 				inhibited
 			})
-	}
+	},
+	djsClient: client
 });
 
 declare global {
@@ -87,75 +80,44 @@ declare global {
 	}
 }
 
-const client = new OldSchoolBotClient(clientOptions);
 client.mahojiClient = mahojiClient;
 global.globalClient = client;
 client.on('messageCreate', onMessage);
-client.on('raw', async event => {
-	if (![GatewayDispatchEvents.InteractionCreate].includes(event.t)) return;
-	const data = event.d as APIInteraction;
-
+client.on('interactionCreate', async interaction => {
 	if (!client.isReady()) {
-		if (data.type === InteractionType.ApplicationCommand) {
-			await mahojiClient.restManager.post(Routes.interactionCallback(data.id, data.token), {
-				body: {
-					data: {
-						content:
-							'Old School Bot is currently down for maintenance/updates, please try again in a couple minutes! Thank you <3',
-						flags: MessageFlags.Ephemeral
-					},
-					type: InteractionResponseType.ChannelMessageWithSource
-				}
+		if (interaction.isChatInputCommand()) {
+			interaction.reply({
+				content:
+					'Old School Bot is currently down for maintenance/updates, please try again in a couple minutes! Thank you <3',
+				ephemeral: true
 			});
 		}
 		return;
 	}
 
-	interactionHook(data);
-	if (data.type === InteractionType.ModalSubmit) return modalInteractionHook(data);
-	const result = await mahojiClient.parseInteraction(data);
+	interactionHook(interaction);
+	if (interaction.isModalSubmit()) {
+		modalInteractionHook(interaction);
+		return;
+	}
+	const result = await mahojiClient.parseInteraction(interaction);
 	if (result === null) return;
 
-	if ('error' in result) {
+	if (isObject(result) && 'error' in result) {
 		if (result.error.message === SILENT_ERROR) return;
 		logError(result.error, {
-			user_id: result.interaction.userID.toString(),
-			name: result.interaction.data.interaction.data?.name ?? 'None'
+			interaction: JSON.stringify(interaction)
 		});
-		if (result.type === InteractionType.ApplicationCommand) {
-			const ERROR_RESPONSE: SlashCommandResponse = {
-				response: {
-					data: { content: 'Sorry, an error occured while trying to run this command.' },
-					type: InteractionResponseType.ChannelMessageWithSource
-				},
-				interaction: result.interaction,
-				type: InteractionType.ApplicationCommand
-			};
+		if (interaction.isChatInputCommand()) {
 			try {
-				await result.interaction.respond(ERROR_RESPONSE);
+				await interaction.reply('Sorry, an error occured while trying to run this command.');
 			} catch (err: unknown) {
 				logError(err, {
-					user_id: result.interaction.userID.toString(),
-					name: result.interaction.data.interaction.data?.name ?? 'None',
-					command: result.interaction.command.name
+					user_id: interaction.user.id,
+					interaction: JSON.stringify(interaction)
 				});
 			}
 		}
-		return;
-	}
-	if (result.type === InteractionType.ApplicationCommand) {
-		try {
-			await result.interaction.respond(result);
-		} catch (err: unknown) {
-			logError(err, {
-				user_id: result.interaction.userID.toString(),
-				name: result.interaction.data.interaction.data?.name ?? 'None',
-				command: result.interaction.command.name
-			});
-		}
-	}
-	if (result.type === InteractionType.ApplicationCommandAutocomplete) {
-		return result.interaction.respond(result);
 	}
 });
 

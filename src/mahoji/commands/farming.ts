@@ -1,4 +1,5 @@
-import { APIUser, ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { User } from 'discord.js';
+import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import TitheFarmBuyables from '../../lib/data/buyables/titheFarmBuyables';
 import { superCompostables } from '../../lib/data/filterables';
@@ -35,7 +36,7 @@ export const farmingCommand: OSBMahojiCommand = {
 					name: 'plant_name',
 					description: 'The plant you want to plant.',
 					required: true,
-					autocomplete: async (value: string, user: APIUser) => {
+					autocomplete: async (value: string, user: User) => {
 						const mUser = await mahojiUsersSettingsFetch(user.id);
 						const farmingLevel = getSkillsOfMahojiUser(mUser, true).farming;
 						return Farming.Plants.filter(i => farmingLevel >= i.level)

@@ -1,7 +1,6 @@
-import { TextChannel } from 'discord.js';
+import { ChatInputCommandInteraction, TextChannel } from 'discord.js';
 import { roll, shuffleArr, Time, uniqueArr } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
@@ -113,12 +112,12 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 		previousCL,
 		showNewCL: true
 	});
-	return { content: `${dmStr}\nYou received ${new Bank(loot)}`, attachments: [image.file] };
+	return { content: `${dmStr}\nYou received ${new Bank(loot)}`, files: [image.file] };
 }
 
 export async function dailyCommand(
-	interaction: SlashCommandInteraction | null,
-	channelID: bigint,
+	interaction: ChatInputCommandInteraction | null,
+	channelID: string,
 	user: MUser
 ): CommandResponse {
 	if (interaction) await interaction.deferReply();

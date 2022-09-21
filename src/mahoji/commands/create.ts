@@ -14,7 +14,7 @@ import { handleMahojiConfirmation, updateBankSetting, userStatsBankUpdate } from
 function showAllCreatables() {
 	let content = 'This are the items that you can create:';
 	const creatableTable = table([
-		['Item Name', 'Input Items', 'Output Items', 'GP Cost', 'Skills Required', 'QP Required'],
+		['Item name', 'Input Items', 'Output Items', 'GP Cost', 'Skills Required', 'QP Required'],
 		...Createables.map(i => {
 			return [
 				i.name,
@@ -34,7 +34,7 @@ function showAllCreatables() {
 	]);
 	return {
 		content,
-		attachments: [{ buffer: Buffer.from(creatableTable), fileName: 'Creatables.txt' }]
+		files: [{ attachment: Buffer.from(creatableTable), name: 'Creatables.txt' }]
 	};
 }
 

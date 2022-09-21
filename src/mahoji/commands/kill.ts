@@ -90,7 +90,7 @@ export const killCommand: OSBMahojiCommand = {
 			user
 		});
 		return {
-			attachments: [image.file],
+			files: [image.file],
 			content: result.content
 		};
 	}

@@ -21,13 +21,13 @@ LIMIT 10;`;
 	return random;
 }
 
-export async function roboChimpUserFetch(userID: bigint) {
+export async function roboChimpUserFetch(userID: string) {
 	const result = await roboChimpClient.user.upsert({
 		where: {
-			id: userID
+			id: BigInt(userID)
 		},
 		create: {
-			id: userID
+			id: BigInt(userID)
 		},
 		update: {}
 	});

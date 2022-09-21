@@ -263,7 +263,7 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 				})) || globalPresets.find(i => stringMatches(i.name, options.view?.preset ?? ''));
 			if (!preset) return "You don't have a preset with that name.";
 			const image = await generateGearImage(user, gearPresetToGear(preset), null, null);
-			return { attachments: [{ buffer: image, fileName: 'preset.jpg' }] };
+			return { files: [{ attachment: image, name: 'preset.jpg' }] };
 		}
 
 		return 'Invalid command.';

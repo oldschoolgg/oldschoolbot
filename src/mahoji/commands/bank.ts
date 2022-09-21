@@ -130,7 +130,7 @@ export const bankCommand: OSBMahojiCommand = {
 
 				return {
 					content: 'Here is your selected bank in text file format.',
-					attachments: [{ buffer: attachment, fileName: 'Bank.txt' }]
+					files: [{ attachment, name: 'Bank.txt' }]
 				};
 			}
 
@@ -151,7 +151,7 @@ export const bankCommand: OSBMahojiCommand = {
 		if (options.format === 'json') {
 			const json = JSON.stringify(baseBank.bank);
 			if (json.length > 1900) {
-				return { attachments: [{ buffer: Buffer.from(json), fileName: 'bank.json' }] };
+				return { files: [{ attachment: Buffer.from(json), name: 'bank.json' }] };
 			}
 			return `${codeBlock('json', json)}`;
 		}
@@ -162,7 +162,7 @@ export const bankCommand: OSBMahojiCommand = {
 		if (options.sort) flags.sort = options.sort;
 
 		return {
-			attachments: [
+			files: [
 				(
 					await makeBankImage({
 						bank,

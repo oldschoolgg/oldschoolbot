@@ -66,7 +66,7 @@ export const casketCommand: OSBMahojiCommand = {
 		});
 
 		return {
-			attachments: [image.file]
+			files: [image.file]
 		};
 	}
 };

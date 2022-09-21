@@ -1,5 +1,5 @@
+import { ChatInputCommandInteraction } from 'discord.js';
 import { objectEntries, reduceNumByPercent } from 'e';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
 import TrekShopItems, { TrekExperience } from '../../../lib/data/buyables/trekBuyables';
@@ -15,7 +15,7 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { handleMahojiConfirmation, userHasGracefulEquipped } from '../../mahojiSettings';
 
-export async function trekCommand(user: MUser, channelID: BigInt, difficulty: string, quantity: number | undefined) {
+export async function trekCommand(user: MUser, channelID: string, difficulty: string, quantity: number | undefined) {
 	const tier = difficulties.find(item => stringMatches(item.difficulty, difficulty));
 	if (!tier) return 'that is not a valid difficulty';
 	const minLevel = tier.minCombat;
@@ -165,7 +165,7 @@ export async function trekShop(
 	reward: string,
 	difficulty: string,
 	quantity: number | undefined,
-	interaction: SlashCommandInteraction
+	interaction: ChatInputCommandInteraction
 ) {
 	const userBank = user.bank;
 	const specifiedItem = TrekShopItems.find(

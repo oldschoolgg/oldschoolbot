@@ -1,7 +1,7 @@
 import { bold } from '@discordjs/builders';
 import type { User } from '@prisma/client';
 import {
-	AttachmentBuilder,
+	ButtonBuilder,
 	ButtonInteraction,
 	CacheType,
 	Channel,
@@ -11,6 +11,7 @@ import {
 	escapeMarkdown,
 	Guild,
 	GuildTextBasedChannel,
+	InteractionReplyOptions,
 	Message,
 	MessageEditOptions,
 	MessageOptions,
@@ -20,8 +21,8 @@ import {
 	User as DJSUser
 } from 'discord.js';
 import { calcWhatPercent, chunk, isObject, objectEntries, Time } from 'e';
-import { APIButtonComponentWithCustomId, APIInteractionResponseCallbackData, APIUser, ComponentType } from 'mahoji';
-import { CommandResponse, InteractionResponseDataWithBufferAttachments } from 'mahoji/dist/lib/structures/ICommand';
+import { APIUser, ComponentType } from 'mahoji';
+import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import murmurHash from 'murmurhash';
 import { gzip } from 'node:zlib';
 import { Bank } from 'oldschooljs';
@@ -585,7 +586,7 @@ export function exponentialPercentScale(percent: number, decay = 0.021) {
 	return 100 * Math.pow(Math.E, -decay * (100 - percent));
 }
 
-export function discrimName(user: APIUser) {
+export function discrimName(user: APIUser | DJSUser) {
 	return `${user.username}#${user.discriminator}`;
 }
 
@@ -593,29 +594,25 @@ export function isValidSkill(skill: string): skill is SkillsEnum {
 	return Object.values(SkillsEnum).includes(skill as SkillsEnum);
 }
 
-export function convertMahojiResponseToDJSResponse(response: Awaited<CommandResponse>): string | MessageOptions {
-	if (typeof response === 'string') return response;
-	return {
-		content: response.content,
-		files: response.attachments?.map(i => new AttachmentBuilder(i.buffer, { name: i.fileName }))
-	};
-}
-
-function normalizeMahojiResponse(one: Awaited<CommandResponse>): InteractionResponseDataWithBufferAttachments {
+function normalizeMahojiResponse(one: Awaited<CommandResponse>): MessageOptions {
+	if (!one) return {};
 	if (typeof one === 'string') return { content: one };
-	const response: InteractionResponseDataWithBufferAttachments = {};
+	const response: MessageOptions = {};
 	if (one.content) response.content = one.content;
-	if (one.attachments) response.attachments = one.attachments;
+	if (one.files) response.files = one.files;
 	return response;
 }
 
-export function roughMergeMahojiResponse(one: Awaited<CommandResponse>, two: Awaited<CommandResponse>) {
+export function roughMergeMahojiResponse(
+	one: Awaited<CommandResponse>,
+	two: Awaited<CommandResponse>
+): InteractionReplyOptions {
 	const first = normalizeMahojiResponse(one);
 	const second = normalizeMahojiResponse(two);
-	const newResponse: InteractionResponseDataWithBufferAttachments = { content: '', attachments: [] };
+	const newResponse: InteractionReplyOptions = { content: '', files: [] };
 	for (const res of [first, second]) {
 		if (res.content) newResponse.content += `${res.content} `;
-		if (res.attachments) newResponse.attachments = [...newResponse.attachments!, ...res.attachments];
+		if (res.files) newResponse.files = [...newResponse.files!, ...res.files];
 	}
 	return newResponse;
 }
@@ -652,9 +649,7 @@ export function shuffleRandom<T>(input: number, arr: readonly T[]): T[] {
 	return shuffle(engine, [...arr]);
 }
 
-export function makeComponents(
-	components: APIButtonComponentWithCustomId[]
-): APIInteractionResponseCallbackData['components'] {
+export function makeComponents(components: ButtonBuilder[]): InteractionReplyOptions['components'] {
 	return chunk(components, 5).map(i => ({ components: i, type: ComponentType.ActionRow }));
 }
 

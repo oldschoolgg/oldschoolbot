@@ -1,6 +1,6 @@
 import { User } from '@prisma/client';
+import { ChatInputCommandInteraction } from 'discord.js';
 import { reduceNumByPercent, Time } from 'e';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
 import { userhasDiaryTier, WesternProv } from '../../../lib/diaries';
@@ -147,7 +147,7 @@ export async function pestControlBuyCommand(user: MUser, input: string) {
 	return `Successfully purchased ${loot} for ${cost} Void knight commendation points.`;
 }
 
-export async function pestControlStartCommand(user: MUser, channelID: bigint) {
+export async function pestControlStartCommand(user: MUser, channelID: string) {
 	if (minionIsBusy(user.id)) return `${user.minionName} is busy.`;
 	if (user.combatLevel < 40) {
 		return 'You need a combat level of at least 40 to do Pest Control.';
@@ -197,7 +197,7 @@ export async function pestControlStartCommand(user: MUser, channelID: bigint) {
 }
 
 export async function pestControlXPCommand(
-	interaction: SlashCommandInteraction,
+	interaction: ChatInputCommandInteraction,
 	user: MUser,
 	skillName: string,
 	amount: number

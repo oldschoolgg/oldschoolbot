@@ -73,7 +73,7 @@ export const payCommand: OSBMahojiCommand = {
 
 		await prisma.economyTransaction.create({
 			data: {
-				guild_id: guildID,
+				guild_id: guildID ? BigInt(guildID) : undefined,
 				sender: BigInt(user.id),
 				recipient: BigInt(recipient.id),
 				items_sent: bank.bank,

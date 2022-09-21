@@ -1,6 +1,6 @@
 import { User } from '@prisma/client';
+import { ChatInputCommandInteraction } from 'discord.js';
 import { calcWhatPercent, reduceNumByPercent, roll, round, Time } from 'e';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../../lib/constants';
@@ -114,7 +114,7 @@ export async function barbAssaultLevelCommand(user: MUser) {
 }
 
 export async function barbAssaultBuyCommand(
-	interaction: SlashCommandInteraction,
+	interaction: ChatInputCommandInteraction,
 	user: MUser,
 	input: string,
 	quantity?: number
@@ -158,7 +158,7 @@ export async function barbAssaultBuyCommand(
 }
 
 export async function barbAssaultGambleCommand(
-	interaction: SlashCommandInteraction,
+	interaction: ChatInputCommandInteraction,
 	user: MUser,
 	tier: string,
 	quantity: number
@@ -207,7 +207,7 @@ export async function barbAssaultGambleCommand(
 		content: `You spent ${(
 			cost * quantity
 		).toLocaleString()} Honour Points for ${quantity.toLocaleString()}x ${name} Gamble, and received...`,
-		attachments: [
+		files: [
 			(
 				await makeBankImage({
 					bank: itemsAdded,
@@ -220,7 +220,7 @@ export async function barbAssaultGambleCommand(
 	};
 }
 
-export async function barbAssaultStartCommand(channelID: bigint, user: MUser) {
+export async function barbAssaultStartCommand(channelID: string, user: MUser) {
 	const boosts = [];
 
 	let waveTime = randomVariation(Time.Minute * 4, 10);

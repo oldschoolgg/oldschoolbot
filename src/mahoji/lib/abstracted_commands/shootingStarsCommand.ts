@@ -179,7 +179,7 @@ export interface ShootingStarsData extends ActivityTaskOptions {
 	lootItems: ItemBank;
 }
 
-export async function shootingStarsCommand(channelID: bigint, user: MUserClass, star: Star): Promise<string> {
+export async function shootingStarsCommand(channelID: string, user: MUserClass, star: Star): Promise<string> {
 	const skills = user.skillsAsLevels;
 	const boosts = [];
 
