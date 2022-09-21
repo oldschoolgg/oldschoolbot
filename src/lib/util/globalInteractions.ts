@@ -195,14 +195,15 @@ export async function interactionHook(interaction: Interaction) {
 	if (!interaction.isButton()) return;
 	const id = interaction.customId;
 	const userID = interaction.user.id;
-	if (globalClient.oneCommandAtATimeCache.has(userID) || globalClient.isShuttingDown) {
-		return interaction.reply('You cannot use a command right now.');
-	}
 
 	const user = await mUserFetch(userID);
 	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, interaction);
 
 	if (!isValidGlobalInteraction(id)) return;
+	if (globalClient.oneCommandAtATimeCache.has(userID) || globalClient.isShuttingDown) {
+		return interaction.reply('You cannot use a command right now.');
+	}
+
 	const options = {
 		user,
 		member: interaction.member ?? null,

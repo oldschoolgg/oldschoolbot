@@ -2,10 +2,13 @@ import type { ClientStorage, Guild, Prisma, User, UserStats } from '@prisma/clie
 import {
 	ActionRowBuilder,
 	ButtonBuilder,
+	ButtonInteraction,
 	ButtonStyle,
 	ChatInputCommandInteraction,
 	ComponentType,
-	Guild as DJSGuild
+	Guild as DJSGuild,
+	InteractionResponseType,
+	Routes
 } from 'discord.js';
 import { noOp, objectEntries, round, Time } from 'e';
 import { Bank } from 'oldschooljs';
@@ -59,6 +62,14 @@ export function mahojiParseNumber({
 	return parsed;
 }
 
+async function silentButtonAck(interaction: ButtonInteraction) {
+	return globalClient.rest.post(Routes.interactionCallback(interaction.id, interaction.token), {
+		body: {
+			type: InteractionResponseType.DeferredMessageUpdate
+		}
+	});
+}
+
 export async function handleMahojiConfirmation(
 	interaction: ChatInputCommandInteraction,
 	str: string,
@@ -105,12 +116,17 @@ export async function handleMahojiConfirmation(
 			resolve();
 		}
 
+		let cancelled = false;
 		const cancel = async (reason: 'time' | 'cancel') => {
+			if (cancelled) return;
+			cancelled = true;
 			await confirmMessage.delete().catch(noOp);
-			await interactionReply(interaction, {
-				content: reason === 'cancel' ? 'The confirmation was cancelled.' : 'You did not confirm in time.',
-				ephemeral: true
-			});
+			if (!interaction.replied) {
+				await interactionReply(interaction, {
+					content: reason === 'cancel' ? 'The confirmation was cancelled.' : 'You did not confirm in time.',
+					ephemeral: true
+				});
+			}
 			collector.stop();
 			reject(new Error(SILENT_ERROR));
 		};
@@ -126,7 +142,7 @@ export async function handleMahojiConfirmation(
 				return;
 			}
 			if (i.customId === 'CONFIRM') {
-				deferInteraction(i);
+				silentButtonAck(i);
 				confirm(id);
 			}
 		});
