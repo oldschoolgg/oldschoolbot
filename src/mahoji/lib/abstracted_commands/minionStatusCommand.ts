@@ -1,6 +1,4 @@
-import { ButtonBuilder } from 'discord.js';
-import { ButtonStyle } from 'discord-api-types/v10';
-import { ComponentType } from 'mahoji';
+import { ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { Emoji, lastTripCache, minionBuyButton } from '../../../lib/constants';

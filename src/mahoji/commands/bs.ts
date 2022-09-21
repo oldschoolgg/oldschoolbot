@@ -19,6 +19,8 @@ export const bsCommand: OSBMahojiCommand = {
 			search?: string;
 		}>
 	) => {
-		return bankCommand.run(opts);
+		const res = await bankCommand.run(opts);
+		console.log(opts.interaction.replied);
+		return res;
 	}
 };

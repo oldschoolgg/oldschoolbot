@@ -120,7 +120,7 @@ export async function dailyCommand(
 	channelID: string,
 	user: MUser
 ): CommandResponse {
-	if (interaction) await interaction.deferReply();
+	if (interaction) await deferInteraction(interaction)();
 	const channel = globalClient.channels.cache.get(channelID.toString());
 	if (!channelIsSendable(channel)) return 'Invalid channel.';
 	const check = isUsersDailyReady(user);

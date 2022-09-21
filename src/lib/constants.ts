@@ -1,5 +1,4 @@
-import { ButtonBuilder } from 'discord.js';
-import { APIButtonComponent, ButtonStyle, ComponentType } from 'mahoji';
+import { APIButtonComponent, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
 import { DISCORD_SETTINGS, production } from '../config';

@@ -85,7 +85,7 @@ export async function slotsCommand(
 	user: MUser,
 	_amount: string | undefined
 ): CommandResponse {
-	await interaction.deferReply();
+	await deferInteraction(interaction)();
 	const amount = mahojiParseNumber({ input: _amount, min: 1 });
 	if (user.isIronman) {
 		return "Ironmen can't gamble! Go pickpocket some men for GP.";

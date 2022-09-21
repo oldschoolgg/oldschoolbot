@@ -212,7 +212,7 @@ export async function interactionHook(interaction: Interaction) {
 
 	const cd = Cooldowns.get(userID, 'button', Time.Second * 3);
 	if (cd !== null) {
-		return interaction.deferReply();
+		return deferInteraction(interaction)();
 	}
 
 	const timeSinceMessage = Date.now() - new Date(interaction.message.createdTimestamp).getTime();

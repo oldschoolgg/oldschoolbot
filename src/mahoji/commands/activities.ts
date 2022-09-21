@@ -412,7 +412,6 @@ export const activitiesCommand: OSBMahojiCommand = {
 		cast?: { spell: string; quantity?: number };
 	}>) => {
 		const user = await mUserFetch(userID);
-		console.log(options);
 		// Minion can be busy
 		if (options.decant) {
 			return decantCommand(user, options.decant.potion_name, options.decant.dose);

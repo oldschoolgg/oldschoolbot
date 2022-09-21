@@ -2,7 +2,7 @@ import { time, userMention } from '@discordjs/builders';
 import { BingoTeam, User } from '@prisma/client';
 import { ChatInputCommandInteraction } from 'discord.js';
 import { chunk, uniqueArr } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions, MessageFlags } from 'mahoji';
+import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { Bank } from 'oldschooljs';
@@ -97,7 +97,7 @@ async function bingoLeaderboard(userID: string, channelID: string): CommandRespo
 		'Bingo Leaderboard'
 	);
 	return {
-		flags: MessageFlags.Ephemeral,
+		ephemeral: true,
 		content: 'Loading Bingo Leaderboard...'
 	};
 }

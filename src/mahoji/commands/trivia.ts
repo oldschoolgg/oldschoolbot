@@ -30,7 +30,7 @@ export const triviaCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{
 		duel?: MahojiUserOption;
 	}>) => {
-		await interaction.deferReply();
+		await deferInteraction(interaction)();
 		const [question, ...fakeQuestions] = await getRandomTriviaQuestions();
 		const channel = globalClient.channels.cache.get(channelID.toString());
 		const users = [userID.toString()];

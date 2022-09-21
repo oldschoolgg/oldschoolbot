@@ -7,6 +7,7 @@ import {
 	Channel,
 	Collection,
 	CollectorFilter,
+	ComponentType,
 	DMChannel,
 	escapeMarkdown,
 	Guild,
@@ -21,7 +22,6 @@ import {
 	User as DJSUser
 } from 'discord.js';
 import { calcWhatPercent, chunk, isObject, objectEntries, Time } from 'e';
-import { APIUser, ComponentType } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import murmurHash from 'murmurhash';
 import { gzip } from 'node:zlib';
@@ -55,7 +55,11 @@ const emojiRegex = require('emoji-regex');
 export * from 'oldschooljs/dist/util/index';
 
 const zeroWidthSpace = '\u200b';
-
+// @ts-ignore ignore
+// eslint-disable-next-line no-extend-native, func-names
+BigInt.prototype.toJSON = function () {
+	return this.toString();
+};
 export function cleanMentions(guild: Guild | null, input: string, showAt = true) {
 	const at = showAt ? '@' : '';
 	return input
@@ -549,28 +553,6 @@ export function calcPerHour(value: number, duration: number) {
 	return (value / (duration / Time.Minute)) * 60;
 }
 
-export function convertDJSUserToAPIUser(user: DJSUser): APIUser {
-	const apiUser: APIUser = {
-		id: user.id,
-		username: user.username,
-		discriminator: user.discriminator,
-		avatar: user.avatar,
-		bot: user.bot,
-		system: user.system,
-		flags: undefined,
-		mfa_enabled: undefined,
-		banner: undefined,
-		accent_color: undefined,
-		locale: undefined,
-		verified: undefined,
-		email: undefined,
-		premium_type: undefined,
-		public_flags: undefined
-	};
-
-	return apiUser;
-}
-
 export function removeFromArr<T>(arr: T[] | readonly T[], item: T) {
 	return arr.filter(i => i !== item);
 }
@@ -586,7 +568,7 @@ export function exponentialPercentScale(percent: number, decay = 0.021) {
 	return 100 * Math.pow(Math.E, -decay * (100 - percent));
 }
 
-export function discrimName(user: APIUser | DJSUser) {
+export function discrimName(user: DJSUser) {
 	return `${user.username}#${user.discriminator}`;
 }
 

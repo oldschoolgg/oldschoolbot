@@ -81,7 +81,7 @@ export const createCommand: OSBMahojiCommand = {
 		const itemName = options.item.toLowerCase();
 		let { quantity } = options;
 		if (options.showall) {
-			await interaction.deferReply();
+			await deferInteraction(interaction)();
 			return showAllCreatables();
 		}
 

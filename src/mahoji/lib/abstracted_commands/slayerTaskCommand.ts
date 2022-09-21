@@ -17,6 +17,7 @@ import {
 import { AssignableSlayerTask } from '../../../lib/slayer/types';
 import { awaitMessageComponentInteraction, channelIsSendable, removeFromArr } from '../../../lib/util';
 import { stringMatches } from '../../../lib/util/cleanString';
+import { interactionReply } from '../../../lib/util/interactionReply';
 import { logError } from '../../../lib/util/logError';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 import { handleMahojiConfirmation } from '../../mahojiSettings';
@@ -471,7 +472,8 @@ export async function slayerSkipTaskCommand({
 			current_task_id: currentTask.id.toString(),
 			current_task: currentTask.monster_id.toString()
 		});
-		interaction.reply(
+		interactionReply(
+			interaction,
 			'An error occurred while performing this action. Please try again, or contact #help-and-support if the issue persists.'
 		);
 	}

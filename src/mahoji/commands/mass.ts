@@ -1,6 +1,6 @@
 import { TextChannel } from 'discord.js';
 import { objectKeys, Time } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions, MessageFlags } from 'mahoji';
+import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { setupParty } from '../../extendables/Message/Party';
 import { Emoji } from '../../lib/constants';
@@ -70,7 +70,7 @@ export const massCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ interaction, options, userID, channelID }: CommandRunOptions<{ monster: string }>) => {
-		interaction.deferReply();
+		deferInteraction(interaction)();
 		const user = await mUserFetch(userID);
 		if (user.user.minion_ironman) return 'Ironmen cannot do masses.';
 		const channel = globalClient.channels.cache.get(channelID.toString());
@@ -128,7 +128,7 @@ export const massCommand: OSBMahojiCommand = {
 		} catch (err: any) {
 			return {
 				content: typeof err === 'string' ? err : 'Your mass failed to start.',
-				flags: MessageFlags.Ephemeral
+				ephemeral: true
 			};
 		}
 		let unchangedUsers = [...users];

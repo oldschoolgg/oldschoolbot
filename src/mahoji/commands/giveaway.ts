@@ -1,7 +1,7 @@
 import { Duration } from '@sapphire/time-utilities';
 import { ActionRowBuilder, AttachmentBuilder, ButtonBuilder, ButtonStyle, MessageOptions } from 'discord.js';
 import { randInt, Time } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions, MessageFlags } from 'mahoji';
+import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { addToGPTaxBalance, prisma } from '../../lib/settings/prisma';
 import { channelIsSendable, makeComponents } from '../../lib/util';
@@ -191,7 +191,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 
 			return {
 				content: 'Giveaway started.',
-				flags: MessageFlags.Ephemeral,
+				ephemeral: true,
 				components: makeComponents([makeGiveawayRepeatButton(giveawayID)])
 			};
 		}

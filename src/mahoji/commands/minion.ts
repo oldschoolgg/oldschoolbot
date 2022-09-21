@@ -450,7 +450,7 @@ export const minionCommand: OSBMahojiCommand = {
 
 		if (options.stats) {
 			if (options.stats.stat) {
-				await interaction.deferReply();
+				await deferInteraction(interaction)();
 				return statsCommand(user, options.stats.stat);
 			}
 			return { embeds: [await minionStatsEmbed(user)] };

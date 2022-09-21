@@ -24,7 +24,7 @@ export const finishCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ interaction, options }: CommandRunOptions<{ input: string }>) => {
-		await interaction.deferReply();
+		await deferInteraction(interaction)();
 		const val = finishables.find(i => stringMatches(i.name, options.input));
 		if (!val) return "That's not a valid thing you can simulate finishing.";
 		let loot = new Bank();

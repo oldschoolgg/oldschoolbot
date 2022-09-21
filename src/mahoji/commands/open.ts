@@ -62,7 +62,7 @@ export const openCommand: OSBMahojiCommand = {
 		options,
 		interaction
 	}: CommandRunOptions<{ name?: string; quantity?: number; open_until?: string }>) => {
-		if (interaction) await interaction.deferReply();
+		if (interaction) await deferInteraction(interaction)();
 		const user = await mUserFetch(userID);
 		if (!options.name) {
 			return `You have... ${truncateString(

@@ -703,7 +703,7 @@ export const toolsCommand: OSBMahojiCommand = {
 			unfill?: { unit: string };
 		};
 	}>) => {
-		interaction.deferReply();
+		deferInteraction(interaction)();
 		const mahojiUser = await mUserFetch(userID);
 
 		if (options.patron) {
@@ -754,7 +754,7 @@ export const toolsCommand: OSBMahojiCommand = {
 				return xpGains(patron.xp_gains.time, patron.xp_gains.skill);
 			}
 			if (patron.minion_stats) {
-				interaction.deferReply();
+				deferInteraction(interaction)();
 				if (getUsersPerkTier(mahojiUser) < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return minionStats(mahojiUser.user);
 			}

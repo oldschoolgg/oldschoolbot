@@ -8,6 +8,7 @@ import { preCommand } from '../../mahoji/lib/preCommand';
 import { convertMahojiCommandToAbstractCommand } from '../../mahoji/lib/util';
 import { ActivityTaskData } from '../types/minions';
 import { channelIsSendable, isGroupActivity } from '../util';
+import { interactionReply } from '../util/interactionReply';
 import { logError } from '../util/logError';
 import { convertStoredActivityToFlatActivity, prisma } from './prisma';
 
@@ -160,7 +161,7 @@ export async function runCommand({
 		if (result && interaction.replied) {
 			console.log(`Tried to reply twice to interaction, unsent reply was: ${result}`);
 		}
-		if (result && !interaction.replied) await interaction.reply(result);
+		if (result && !interaction.replied) await interactionReply(interaction, result);
 		return result;
 	} catch (err: any) {
 		if (typeof err === 'string') {

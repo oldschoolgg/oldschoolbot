@@ -70,7 +70,7 @@ export const killCommand: OSBMahojiCommand = {
 	],
 	run: async ({ options, userID, interaction }: CommandRunOptions<{ name: string; quantity: number }>) => {
 		const user = await mUserFetch(userID);
-		interaction.deferReply();
+		deferInteraction(interaction)();
 
 		const result = await Workers.kill({
 			quantity: options.quantity,

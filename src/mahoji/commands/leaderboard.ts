@@ -1,6 +1,6 @@
 import { Embed } from '@discordjs/builders';
 import { chunk } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions, MessageFlags } from 'mahoji';
+import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { badges, Emoji, usernameCache } from '../../lib/constants';
 import { allClNames, getCollectionItems } from '../../lib/data/Collections';
@@ -32,7 +32,7 @@ function lbMsg(str: string, ironmanOnly?: boolean) {
 		content: `Showing you the ${str} leaderboard, click the buttons to change pages.${
 			ironmanOnly ? ' Showing only ironmen.' : ''
 		}`,
-		flags: MessageFlags.Ephemeral
+		ephemeral: true
 	};
 }
 
@@ -690,7 +690,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		opens?: { openable: string; ironmen_only?: boolean };
 		cl?: { cl: string; ironmen_only?: boolean };
 	}>) => {
-		await interaction.deferReply();
+		await deferInteraction(interaction)();
 		const user = await mUserFetch(userID);
 		const {
 			opens,

@@ -4,6 +4,7 @@ import {
 	ButtonBuilder,
 	ButtonStyle,
 	ChatInputCommandInteraction,
+	ComponentType,
 	Guild as DJSGuild
 } from 'discord.js';
 import { noOp, objectEntries, round, Time } from 'e';
@@ -35,6 +36,7 @@ import {
 	stringMatches,
 	validateItemBankAndThrow
 } from '../lib/util';
+import { deferInteraction, interactionReply } from '../lib/util/interactionReply';
 import resolveItems from '../lib/util/resolveItems';
 import { bingoIsActive, determineBingoProgress, onFinishTile } from './lib/bingo';
 import { mahojiUserSettingsUpdate } from './settingsUpdate';
@@ -65,7 +67,7 @@ export async function handleMahojiConfirmation(
 	const channel = globalClient.channels.cache.get(interaction.channelId.toString());
 	if (!channelIsSendable(channel)) throw new Error('Channel for confirmation not found.');
 	if (!interaction.deferred) {
-		await interaction.deferReply();
+		await deferInteraction(interaction);
 	}
 
 	const users = _users ?? [interaction.user.id];
@@ -90,7 +92,7 @@ export async function handleMahojiConfirmation(
 	});
 
 	return new Promise<void>(async (resolve, reject) => {
-		const collector = confirmMessage.createMessageComponentCollector({
+		const collector = confirmMessage.createMessageComponentCollector<ComponentType.Button>({
 			time: Time.Second * 15
 		});
 
@@ -105,7 +107,7 @@ export async function handleMahojiConfirmation(
 
 		const cancel = async (reason: 'time' | 'cancel') => {
 			await confirmMessage.delete().catch(noOp);
-			await interaction.reply({
+			await interactionReply(interaction, {
 				content: reason === 'cancel' ? 'The confirmation was cancelled.' : 'You did not confirm in time.',
 				ephemeral: true
 			});
@@ -124,7 +126,7 @@ export async function handleMahojiConfirmation(
 				return;
 			}
 			if (i.customId === 'CONFIRM') {
-				i.deferReply();
+				deferInteraction(i);
 				confirm(id);
 			}
 		});

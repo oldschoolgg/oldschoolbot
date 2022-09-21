@@ -53,7 +53,7 @@ export const casketCommand: OSBMahojiCommand = {
 			return `Not a valid clue tier. The valid tiers are: ${ClueTiers.map(_tier => _tier.name).join(', ')}`;
 		}
 
-		await interaction.deferReply();
+		await deferInteraction(interaction)();
 
 		const [loot, title] = await Workers.casketOpen({ quantity: options.quantity, clueTierID: clueTier.id });
 

@@ -1,6 +1,5 @@
 import { activity_type_enum } from '@prisma/client';
-import { ActionRowBuilder, ButtonBuilder } from 'discord.js';
-import { ButtonStyle } from 'discord-api-types/v10';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { percentChance, randInt, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';

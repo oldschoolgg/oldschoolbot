@@ -1,6 +1,5 @@
 import { userMention } from '@discordjs/builders';
 import { ChannelType, ChatInputCommandInteraction, TextChannel } from 'discord.js';
-import { MessageFlags } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import { setupParty } from '../../../extendables/Message/Party';
@@ -21,7 +20,7 @@ export async function nexCommand(interaction: ChatInputCommandInteraction, user:
 		return `You can't start a Nex mass: ${ownerCheck[1]}`;
 	}
 
-	await interaction.deferReply();
+	await deferInteraction(interaction)();
 
 	let reactionAwaiter = await setupParty(channel as TextChannel, user, {
 		minSize: 2,
@@ -37,7 +36,7 @@ export async function nexCommand(interaction: ChatInputCommandInteraction, user:
 	} catch (err: any) {
 		return {
 			content: typeof err === 'string' ? err : 'Your mass failed to start.',
-			flags: MessageFlags.Ephemeral
+			ephemeral: true
 		};
 	}
 	usersWhoConfirmed = usersWhoConfirmed.filter(i => !i.minionIsBusy);

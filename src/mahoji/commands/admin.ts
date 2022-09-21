@@ -512,7 +512,7 @@ export const adminCommand: OSBMahojiCommand = {
 		wipe_bingo_temp_cls?: {};
 		give_items?: { user: MahojiUserOption; items: string };
 	}>) => {
-		await interaction.deferReply();
+		await deferInteraction(interaction)();
 
 		const adminUser = await mahojiUsersSettingsFetch(userID);
 		const isOwner = OWNER_IDS.includes(userID.toString());

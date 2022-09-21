@@ -1,8 +1,7 @@
 import { userMention } from '@discordjs/builders';
 import { Prisma, User } from '@prisma/client';
-import { ButtonBuilder } from 'discord.js';
+import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { chunk, Time } from 'e';
-import { ButtonStyle } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { toKMB } from 'oldschooljs/dist/util';
