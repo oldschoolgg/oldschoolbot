@@ -1,6 +1,7 @@
 import { Embed } from '@discordjs/builders';
 import {
 	AttachmentBuilder,
+	EmbedBuilder,
 	Message,
 	MessageOptions,
 	PartialGroupDMChannel,
@@ -71,7 +72,7 @@ export async function sendToChannelID(
 	data: {
 		content?: string;
 		image?: Buffer | AttachmentBuilder;
-		embed?: Embed;
+		embed?: Embed | EmbedBuilder;
 		components?: MessageOptions['components'];
 	}
 ) {
