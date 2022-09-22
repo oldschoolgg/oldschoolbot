@@ -77,6 +77,9 @@ export async function sendToChannelID(
 		allowedMentions?: MessageOptions['allowedMentions'];
 	}
 ) {
+	const allowedMentions = data.allowedMentions ?? {
+		parse: ['users']
+	};
 	async function queuedFn() {
 		const channel = await resolveChannel(channelID);
 		if (!channel) return;
@@ -91,7 +94,7 @@ export async function sendToChannelID(
 					files,
 					embeds,
 					components: data.components,
-					allowedMentions: data.allowedMentions
+					allowedMentions
 				});
 			} catch (err: any) {
 				const error = err as Error;
@@ -111,7 +114,7 @@ export async function sendToChannelID(
 				files,
 				embeds,
 				components: data.components,
-				allowedMentions: data.allowedMentions
+				allowedMentions
 			});
 		}
 	}
@@ -147,9 +150,7 @@ async function webhookSend(channel: WebhookClient, input: MessageOptions) {
 		embeds: input.embeds,
 		files: input.files,
 		components: input.components,
-		allowedMentions: {
-			parse: ['users']
-		}
+		allowedMentions: input.allowedMentions
 	});
 	webhookMessageCache.set(res.id, channel);
 	return res;

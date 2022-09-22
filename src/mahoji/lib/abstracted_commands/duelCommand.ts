@@ -125,7 +125,7 @@ export async function duelCommand(
 
 		globalClient.emit(
 			Events.EconomyLog,
-			`${winner.usernameOrMention} won ${winningAmount} GP in a duel with ${loser.usernameOrMention}.`
+			`${winner.mention} won ${winningAmount} GP in a duel with ${loser.mention}.`
 		);
 
 		duelMessage.edit(
