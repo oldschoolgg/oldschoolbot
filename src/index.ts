@@ -133,7 +133,8 @@ client.on(Events.EconomyLog, async (message: string) => {
 	economyLogBuffer.push(message);
 	if (economyLogBuffer.length === 10) {
 		await sendToChannelID(Channel.EconomyLogs, {
-			content: economyLogBuffer.join('\n---------------------------------\n')
+			content: economyLogBuffer.join('\n---------------------------------\n'),
+			allowedMentions: { parse: [], users: [], roles: [] }
 		});
 		economyLogBuffer = [];
 	}
