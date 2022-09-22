@@ -34,7 +34,7 @@ const Runes: Rune[] = [
 			[88, 9],
 			[99, 10]
 		],
-		tripLength: Time.Minute
+		tripLength: Time.Minute * 0.917
 	},
 	{
 		xp: 5.5,
@@ -50,7 +50,7 @@ const Runes: Rune[] = [
 			[84, 7],
 			[98, 8]
 		],
-		tripLength: Time.Minute
+		tripLength: Time.Minute * 0.917
 	},
 	{
 		xp: 6,
@@ -64,14 +64,14 @@ const Runes: Rune[] = [
 			[76, 5],
 			[95, 6]
 		],
-		tripLength: Time.Minute
+		tripLength: Time.Minute * 0.917
 	},
 	{
 		xp: 8.5,
 		id: itemID('Mist rune'),
 		name: 'Mist rune',
 		levels: [[6, 1]],
-		tripLength: Time.Minute * 0.95,
+		tripLength: Time.Minute * 0.87,
 		inputRune: new Bank({ 'Air rune': 1 }),
 		inputTalisman: new Bank({ 'Air talisman': 1 }),
 		stams: true
@@ -86,14 +86,14 @@ const Runes: Rune[] = [
 			[52, 3],
 			[78, 4]
 		],
-		tripLength: Time.Minute
+		tripLength: Time.Minute * 0.917
 	},
 	{
 		xp: 9,
 		id: itemID('Dust rune'),
 		name: 'Dust rune',
 		levels: [[10, 1]],
-		tripLength: Time.Minute * 0.95,
+		tripLength: Time.Minute * 0.87,
 		inputRune: new Bank({ 'Air rune': 1 }),
 		inputTalisman: new Bank({ 'Air talisman': 1 }),
 		stams: true
@@ -103,7 +103,7 @@ const Runes: Rune[] = [
 		id: itemID('Mud rune'),
 		name: 'Mud rune',
 		levels: [[13, 1]],
-		tripLength: Time.Minute * 0.95,
+		tripLength: Time.Minute * 0.87,
 		inputRune: new Bank({ 'Water rune': 1 }),
 		inputTalisman: new Bank({ 'Water talisman': 1 }),
 		stams: true
@@ -117,14 +117,14 @@ const Runes: Rune[] = [
 			[35, 2],
 			[70, 3]
 		],
-		tripLength: Time.Minute
+		tripLength: Time.Minute * 0.917
 	},
 	{
 		xp: 9.5,
 		id: itemID('Smoke rune'),
 		name: 'Smoke rune',
 		levels: [[15, 1]],
-		tripLength: Time.Minute * 0.56,
+		tripLength: Time.Minute * 0.515,
 		inputRune: new Bank({ 'Air rune': 1 }),
 		inputTalisman: new Bank({ 'Air talisman': 1 }),
 		stams: true
@@ -134,7 +134,7 @@ const Runes: Rune[] = [
 		id: itemID('Steam rune'),
 		name: 'Steam rune',
 		levels: [[19, 1]],
-		tripLength: Time.Minute * 0.56,
+		tripLength: Time.Minute * 0.515,
 		inputRune: new Bank({ 'Water rune': 1 }),
 		inputTalisman: new Bank({ 'Water talisman': 1 }),
 		stams: true
@@ -148,14 +148,14 @@ const Runes: Rune[] = [
 			[46, 2],
 			[92, 3]
 		],
-		tripLength: Time.Minute
+		tripLength: Time.Minute * 0.917
 	},
 	{
 		xp: 10.5,
 		id: itemID('Lava rune'),
 		name: 'Lava rune',
 		levels: [[23, 1]],
-		tripLength: Time.Minute * 0.56,
+		tripLength: Time.Minute * 0.515,
 		inputRune: new Bank({ 'Earth rune': 1 }),
 		inputTalisman: new Bank({ 'Earth talisman': 1 }),
 		stams: true
@@ -168,7 +168,7 @@ const Runes: Rune[] = [
 			[27, 1],
 			[59, 2]
 		],
-		tripLength: Time.Minute * 1.3,
+		tripLength: Time.Minute * 1.192,
 		qpRequired: 5
 	},
 	{
@@ -179,7 +179,7 @@ const Runes: Rune[] = [
 			[35, 1],
 			[74, 2]
 		],
-		tripLength: Time.Minute * 2
+		tripLength: Time.Minute * 1.834
 	},
 	{
 		xp: 8.7,
@@ -190,7 +190,7 @@ const Runes: Rune[] = [
 			[82, 2]
 		],
 		qpRequired: 15,
-		tripLength: Time.Minute
+		tripLength: Time.Minute * 0.917
 	},
 	{
 		xp: 9,
@@ -200,7 +200,7 @@ const Runes: Rune[] = [
 			[44, 1],
 			[91, 2]
 		],
-		tripLength: Time.Minute * 1.5
+		tripLength: Time.Minute * 1.38
 	},
 	{
 		xp: 9.5,
@@ -211,7 +211,7 @@ const Runes: Rune[] = [
 			[95, 2]
 		],
 		qpRequired: 10,
-		tripLength: Time.Minute * 1.7
+		tripLength: Time.Minute * 1.56
 	},
 	{
 		xp: 10,
@@ -222,7 +222,7 @@ const Runes: Rune[] = [
 			[99, 2]
 		],
 		qpRequired: 10,
-		tripLength: Time.Minute * 1.3
+		tripLength: Time.Minute * 1.192
 	},
 	{
 		xp: 8,
@@ -230,7 +230,7 @@ const Runes: Rune[] = [
 		name: 'Wrath rune',
 		levels: [[95, 1]],
 		qpRequired: 200,
-		tripLength: Time.Minute
+		tripLength: Time.Minute * 0.917
 	}
 ];
 
