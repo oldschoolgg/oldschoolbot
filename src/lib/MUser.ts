@@ -492,7 +492,7 @@ export class MUserClass {
 declare global {
 	export type MUser = MUserClass;
 }
-export async function srcMUserFetch(userID: bigint | string) {
+export async function srcMUserFetch(userID: string | string) {
 	const user = await mahojiUsersSettingsFetch(userID);
 	return new MUserClass(user);
 }

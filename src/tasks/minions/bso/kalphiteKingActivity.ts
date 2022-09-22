@@ -189,7 +189,7 @@ export const kalphiteKingTask: MinionTask = {
 							user: leaderUser,
 							previousCL: soloPrevCl ?? undefined
 						})
-				  ).file.buffer;
+				  ).file.attachment;
 			handleTripFinish(
 				leaderUser,
 				channelID,

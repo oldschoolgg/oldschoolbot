@@ -179,7 +179,7 @@ export const megaDuckCommand: OSBMahojiCommand = {
 				content: `${user} Mega duck is at ${location.x}x ${location.y}y. You've moved it ${
 					location.usersParticipated[user.id] ?? 0
 				} times. ${topFeeders(Object.entries(location.usersParticipated))}`,
-				attachments: [{ buffer: image, fileName: 'megaduck.png' }]
+				files: [{ attachment: image, name: 'megaduck.png' }]
 			};
 		}
 
@@ -254,7 +254,7 @@ export const megaDuckCommand: OSBMahojiCommand = {
 			content: `${user} You moved Mega Duck ${direction}! You've moved him ${
 				newLocation.usersParticipated[user.id]
 			} times. Removed ${cost} from your bank.${str}`,
-			attachments: location.steps?.length % 2 === 0 ? [{ buffer: image, fileName: 'megaduck.png' }] : []
+			files: location.steps?.length % 2 === 0 ? [{ attachment: image, name: 'megaduck.png' }] : []
 		};
 	}
 };

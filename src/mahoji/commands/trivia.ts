@@ -6,6 +6,7 @@ import { CommandRunOptions, MahojiUserOption } from 'mahoji/dist/lib/types';
 
 import { DynamicButtons } from '../../lib/DynamicButtons';
 import { getRandomTriviaQuestions } from '../../lib/roboChimp';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const triviaCommand: OSBMahojiCommand = {
@@ -30,7 +31,7 @@ export const triviaCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{
 		duel?: MahojiUserOption;
 	}>) => {
-		await interaction.deferReply();
+		await deferInteraction(interaction);
 		const [question, ...fakeQuestions] = await getRandomTriviaQuestions();
 		const channel = globalClient.channels.cache.get(channelID.toString());
 		const users = [userID.toString()];

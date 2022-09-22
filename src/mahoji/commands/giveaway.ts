@@ -1,13 +1,7 @@
 import { Duration } from '@sapphire/time-utilities';
 import { ActionRowBuilder, AttachmentBuilder, ButtonBuilder, ButtonStyle, MessageOptions } from 'discord.js';
 import { randInt, Time } from 'e';
-import {
-	APIButtonComponentWithCustomId,
-	ApplicationCommandOptionType,
-	CommandRunOptions,
-	ComponentType,
-	MessageFlags
-} from 'mahoji';
+import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { addToGPTaxBalance, prisma } from '../../lib/settings/prisma';
 import { channelIsSendable, isSuperUntradeable, makeComponents } from '../../lib/util';
@@ -34,13 +28,12 @@ function makeGiveawayButtons(giveawayID: number): MessageOptions['components'] {
 	];
 }
 
-function makeGiveawayRepeatButton(giveawayID: number): APIButtonComponentWithCustomId {
-	return {
-		custom_id: `GIVEAWAY_REPEAT_${giveawayID}`,
-		label: 'Repeat This Giveaway',
-		style: ButtonStyle.Danger,
-		type: ComponentType.Button
-	};
+function makeGiveawayRepeatButton(giveawayID: number) {
+	return new ButtonBuilder()
+		.setCustomId(`GIVEAWAY_REPEAT_${giveawayID}`)
+		.setLabel('Repeat This Giveaway')
+		.setEmoji('493286312854683654')
+		.setStyle(ButtonStyle.Danger);
 }
 
 export const giveawayCommand: OSBMahojiCommand = {
@@ -158,7 +151,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 								bank,
 								title: `${apiUser?.username ?? user.rawUsername}'s Giveaway`
 							})
-						).file.buffer
+						).file.attachment
 					)
 				],
 				components: makeGiveawayButtons(giveawayID)
@@ -198,7 +191,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 
 			return {
 				content: 'Giveaway started.',
-				flags: MessageFlags.Ephemeral,
+				ephemeral: true,
 				components: makeComponents([makeGiveawayRepeatButton(giveawayID)])
 			};
 		}

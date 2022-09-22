@@ -1,5 +1,5 @@
+import { ChatInputCommandInteraction } from 'discord.js';
 import { increaseNumByPercent, reduceNumByPercent, round, Time } from 'e';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 import { resolveNameBank } from 'oldschooljs/dist/util';
 
@@ -17,6 +17,7 @@ import { channelIsSendable, formatDuration, isWeekend } from '../../../lib/util'
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../../lib/util/calcMassDurationQuantity';
 import { getNexGearStats } from '../../../lib/util/getNexGearStats';
+import { deferInteraction } from '../../../lib/util/interactionReply';
 import { hasMonsterRequirements, updateBankSetting } from '../../mahojiSettings';
 
 function checkReqs(users: MUser[], monster: KillableMonster, quantity: number): string | undefined {
@@ -50,13 +51,13 @@ function checkReqs(users: MUser[], monster: KillableMonster, quantity: number): 
 }
 
 export async function nexCommand(
-	interaction: SlashCommandInteraction | null,
+	interaction: ChatInputCommandInteraction | null,
 	user: MUser,
-	channelID: bigint,
+	channelID: string,
 	inputName: string,
 	inputQuantity: number | undefined
 ) {
-	if (interaction) interaction.deferReply();
+	if (interaction) await deferInteraction(interaction);
 	const userBank = user.bank;
 	if (!userBank.has('Frozen key')) {
 		return `${user.minionName} attempts to enter the Ancient Prison to fight Nex, but finds a giant frozen, metal door blocking their way.`;

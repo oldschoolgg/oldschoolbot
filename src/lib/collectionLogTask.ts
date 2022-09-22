@@ -141,9 +141,9 @@ class CollectionLogTask {
 		if (flags.text) {
 			return {
 				content: 'This is the items on your log:',
-				attachments: [
+				files: [
 					{
-						buffer: Buffer.from(
+						attachment: Buffer.from(
 							collectionLog.collection
 								.map(i => {
 									let _i = getOSItem(i);
@@ -154,7 +154,7 @@ class CollectionLogTask {
 								.filter(f => f)
 								.join(flags.comma ? ', ' : '\n')
 						),
-						fileName: 'yourLogItems.txt'
+						name: 'yourLogItems.txt'
 					}
 				]
 			};
@@ -456,7 +456,7 @@ class CollectionLogTask {
 		}
 
 		return {
-			attachments: [{ buffer: await canvas.toBuffer('png'), fileName: `${type}_log_${new Date().valueOf()}.png` }]
+			files: [{ attachment: await canvas.toBuffer('png'), name: `${type}_log_${new Date().valueOf()}.png` }]
 		};
 	}
 }

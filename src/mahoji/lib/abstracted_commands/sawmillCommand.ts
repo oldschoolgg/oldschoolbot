@@ -13,7 +13,7 @@ export async function sawmillCommand(
 	user: MUser,
 	plankName: string,
 	quantity: number | undefined,
-	channelID: bigint,
+	channelID: string,
 	speed: number | undefined
 ) {
 	const plank = Planks.find(

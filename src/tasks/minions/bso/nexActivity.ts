@@ -174,7 +174,7 @@ export const nexTask: MinionTask = {
 							user: leaderUser,
 							previousCL: soloPrevCl
 						})
-				  ).file.buffer;
+				  ).file.attachment;
 			handleTripFinish(
 				leaderUser,
 				channelID,

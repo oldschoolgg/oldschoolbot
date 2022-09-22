@@ -1,6 +1,6 @@
+import { ChatInputCommandInteraction } from 'discord.js';
 import { notEmpty, roll, uniqueArr } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { Emoji, PerkTier } from '../../../lib/constants';
@@ -160,12 +160,12 @@ async function finalizeOpening({
 		.join(', ');
 
 	let response: Awaited<CommandResponse> = {
-		attachments: [image.file],
+		files: [image.file],
 		content: `You have now opened a total of ${openedStr}
 ${messages.join(', ')}`
 	};
 	if (response.content!.length > 1900) {
-		response.attachments!.push({ fileName: 'response.txt', buffer: Buffer.from(response.content!) });
+		response.files!.push({ name: 'response.txt', attachment: Buffer.from(response.content!) });
 		response.content =
 			'Due to opening so many things at once, you will have to download the attached text file to read the response.';
 	}
@@ -173,7 +173,7 @@ ${messages.join(', ')}`
 }
 
 export async function abstractedOpenCommand(
-	interaction: SlashCommandInteraction | null,
+	interaction: ChatInputCommandInteraction | null,
 	userID: string,
 	_names: string[],
 	_quantity: number | 'auto' = 1

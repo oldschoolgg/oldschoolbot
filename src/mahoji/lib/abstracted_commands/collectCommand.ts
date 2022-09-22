@@ -158,7 +158,7 @@ export const collectables: Collectable[] = [
 	}
 ];
 
-export async function collectCommand(user: MUser, channelID: bigint, objectName: string, no_stams?: boolean) {
+export async function collectCommand(user: MUser, channelID: string, objectName: string, no_stams?: boolean) {
 	const collectable = collectables.find(c => stringMatches(c.item.name, objectName));
 	if (!collectable) {
 		return `That's not something your minion can collect, you can collect these things: ${collectables

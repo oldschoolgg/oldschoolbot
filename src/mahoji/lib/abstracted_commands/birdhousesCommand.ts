@@ -145,7 +145,7 @@ export async function birdhouseCheckCommand(user: User) {
 	return `Your ${details.birdHouse.name}'s are ready ${time(details.readyAt!, 'R')} (${time(details.readyAt!)})`;
 }
 
-export async function birdhouseHarvestCommand(user: MUser, channelID: bigint, inputBirdhouseName: string | undefined) {
+export async function birdhouseHarvestCommand(user: MUser, channelID: string, inputBirdhouseName: string | undefined) {
 	const userBank = user.bank;
 	const currentDate = new Date().getTime();
 	const infoStr: string[] = [];

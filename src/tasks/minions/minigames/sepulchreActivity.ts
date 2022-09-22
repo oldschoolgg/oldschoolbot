@@ -95,7 +95,7 @@ export const sepulchreTask: MinionTask = {
 			channelID,
 			str,
 			['minigames', { sepulchre: { start: {} } }, true],
-			image.file.buffer,
+			image.file.attachment,
 			data,
 			itemsAdded
 		);

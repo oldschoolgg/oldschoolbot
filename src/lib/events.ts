@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Message } from 'discord.js';
+import { Message } from 'discord.js';
 
 import { CLIENT_ID } from '../config';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
@@ -14,19 +14,7 @@ export async function onMessage(msg: Message) {
 	if (!content.includes(mentionText)) return;
 	const user = await mUserFetch(msg.author.id);
 	const result = await minionStatusCommand(user, msg.channelId);
-	const components = result.components?.map(i => {
-		const row = new ActionRowBuilder<ButtonBuilder>();
-		for (const a of i.components as any[]) {
-			row.addComponents(
-				new ButtonBuilder()
-					.setCustomId(a.custom_id)
-					.setLabel(a.label!)
-					.setEmoji(a.emoji!.id ?? a.emoji!.name!)
-					.setStyle(ButtonStyle.Secondary)
-			);
-		}
-		return row;
-	});
+	const { components } = result;
 
 	if (content === `${mentionText} b`) {
 		msg.reply({
@@ -40,7 +28,7 @@ export async function onMessage(msg: Message) {
 							page: 1
 						}
 					})
-				).file.buffer
+				).file.attachment
 			],
 			components
 		});
@@ -56,7 +44,7 @@ export async function onMessage(msg: Message) {
 						title: 'Your Bank',
 						user
 					})
-				).file.buffer
+				).file.attachment
 			],
 			components
 		});

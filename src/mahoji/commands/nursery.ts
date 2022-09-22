@@ -1,7 +1,7 @@
 import { tame_growth, User } from '@prisma/client';
+import { ChatInputCommandInteraction } from 'discord.js';
 import { randArrItem, reduceNumByPercent } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
 import { production } from '../../config';
@@ -92,7 +92,7 @@ async function view(user: MUser, mahojiUser: User) {
 	)} until it hatches. You put it in ${formatDuration(diff)} ago.${masterString}`;
 }
 
-async function fuelCommand(interaction: SlashCommandInteraction, user: MUser, mahojiUser: User) {
+async function fuelCommand(interaction: ChatInputCommandInteraction, user: MUser, mahojiUser: User) {
 	const nursery = mahojiUser.nursery as Nursery;
 	if (!nursery) {
 		return "You don't have a nursery.";
@@ -151,7 +151,7 @@ async function buildCommand(user: MUser, mahojiUser: User) {
 	}`;
 }
 
-async function addCommand(interaction: SlashCommandInteraction, user: MUser, mahojiUser: User, itemName: string) {
+async function addCommand(interaction: ChatInputCommandInteraction, user: MUser, mahojiUser: User, itemName: string) {
 	const nursery = mahojiUser.nursery as Nursery | null;
 	if (!nursery) {
 		return "You don't have a nursery built yet, so you can't add an egg to it.";

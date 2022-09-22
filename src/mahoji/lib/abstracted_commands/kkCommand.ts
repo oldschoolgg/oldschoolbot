@@ -1,6 +1,6 @@
+import { ChatInputCommandInteraction } from 'discord.js';
 import { increaseNumByPercent, reduceNumByPercent, round, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
 import { setupParty } from '../../../extendables/Message/Party';
@@ -73,9 +73,9 @@ function calcFood(user: MUser, teamSize: number, quantity: number) {
 }
 
 export async function kkCommand(
-	interaction: SlashCommandInteraction | null,
+	interaction: ChatInputCommandInteraction | null,
 	user: MUser,
-	channelID: bigint,
+	channelID: string,
 	inputName: string,
 	inputQuantity: number | undefined
 ): CommandResponse {

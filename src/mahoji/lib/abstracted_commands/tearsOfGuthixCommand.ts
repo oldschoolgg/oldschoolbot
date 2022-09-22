@@ -18,7 +18,7 @@ const ironmanExtraReqs = {
 	[SkillsEnum.Slayer]: 35
 };
 
-export async function tearsOfGuthixCommand(user: MUser, channelID: bigint) {
+export async function tearsOfGuthixCommand(user: MUser, channelID: string) {
 	if (minionIsBusy(user.id)) return `${user.minionName} is busy.`;
 	const currentDate = new Date().getTime();
 	const lastPlayedDate = Number(user.user.lastTearsOfGuthixTimestamp);

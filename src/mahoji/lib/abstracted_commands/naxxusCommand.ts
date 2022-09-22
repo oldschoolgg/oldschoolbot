@@ -114,7 +114,7 @@ function calcSetupPercent(
 	return totalPercent;
 }
 
-export async function naxxusCommand(user: MUser, channelID: bigint, quantity: number | undefined) {
+export async function naxxusCommand(user: MUser, channelID: string, quantity: number | undefined) {
 	const [hasReqs, rejectReason] = hasMonsterRequirements(user, Naxxus);
 	if (!hasReqs) {
 		return `${user.usernameOrMention} doesn't have the requirements for this monster: ${rejectReason}`;

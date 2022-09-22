@@ -192,7 +192,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 			const sim = baxBathSim();
 			return {
 				content: baxBathHelpStr,
-				attachments: [{ fileName: 'sim.txt', buffer: Buffer.from(sim) }]
+				files: [{ name: 'sim.txt', attachment: Buffer.from(sim) }]
 			};
 		}
 

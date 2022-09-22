@@ -1,23 +1,7 @@
 import { Prisma } from '@prisma/client';
-import {
-	ActionRowBuilder,
-	ButtonBuilder,
-	ButtonStyle,
-	Guild,
-	MessageComponentType,
-	PermissionsBitField
-} from 'discord.js';
-import {
-	APIActionRowComponent,
-	APIButtonComponent,
-	APIInteractionDataResolvedChannel,
-	APIMessageActionRowComponent,
-	APIRole,
-	APIUser,
-	ICommand,
-	MahojiClient
-} from 'mahoji';
-import { CommandOptions } from 'mahoji/dist/lib/types';
+import { Guild, PermissionsBitField } from 'discord.js';
+import { ICommand, MahojiClient } from 'mahoji';
+import { CommandOptions, MahojiUserOption } from 'mahoji/dist/lib/types';
 
 import { AbstractCommand, AbstractCommandAttributes, CommandArgs } from './inhibitors';
 
@@ -41,6 +25,7 @@ function compressMahojiArgs(options: CommandArgs) {
 		keyof CommandOptions,
 		CommandOptions[keyof CommandOptions]
 	][]) {
+		if (val === null) continue;
 		if (
 			typeof val === 'string' ||
 			typeof val === 'number' ||
@@ -52,12 +37,12 @@ function compressMahojiArgs(options: CommandArgs) {
 		}
 
 		if ('user' in val && 'member' in val) {
-			newOptions[key] = (val.user as APIUser).id;
+			newOptions[key] = (val as MahojiUserOption).user.id;
 			continue;
 		}
 
 		if ('id' in val) {
-			newOptions[key] = (val as APIRole | APIInteractionDataResolvedChannel).id;
+			newOptions[key] = (val as { id: string }).id;
 			continue;
 		}
 
@@ -77,20 +62,6 @@ export function getCommandArgs(
 	return (Array.isArray(args) ? args : compressMahojiArgs(args)) as Prisma.InputJsonObject | Prisma.InputJsonArray;
 }
 
-export function convertComponentDJSComponent(
-	component: APIActionRowComponent<APIMessageActionRowComponent>
-): ActionRowBuilder<ButtonBuilder> {
-	const data = component.components.map(cp => {
-		const btn = cp as APIButtonComponent;
-		return new ButtonBuilder({
-			...btn,
-			emoji: btn.emoji?.id,
-			style: btn.style as unknown as ButtonStyle,
-			type: btn.type as unknown as MessageComponentType
-		} as any);
-	});
-	return new ActionRowBuilder<ButtonBuilder>().addComponents(data);
-}
 export function allAbstractCommands(mahojiClient: MahojiClient): AbstractCommand[] {
 	return mahojiClient.commands.values.map(convertMahojiCommandToAbstractCommand);
 }

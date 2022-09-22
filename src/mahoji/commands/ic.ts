@@ -1,6 +1,6 @@
+import { ChatInputCommandInteraction } from 'discord.js';
 import { randArrItem, roll } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank, LootTable } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
@@ -124,7 +124,7 @@ ${!currentItem ? `**Next Contract:** ${nextContractIsReady ? 'Ready now.' : form
 	};
 }
 
-async function skip(interaction: SlashCommandInteraction, user: MUser) {
+async function skip(interaction: ChatInputCommandInteraction, user: MUser) {
 	const { currentItem, differenceFromLastContract, streak, canSkip } = getItemContractDetails(user);
 	if (!currentItem) return "You don't have a contract to skip.";
 	if (canSkip) {
@@ -155,7 +155,7 @@ async function skip(interaction: SlashCommandInteraction, user: MUser) {
 	)}.`;
 }
 
-async function handInContract(interaction: SlashCommandInteraction | null, user: MUser): Promise<string> {
+async function handInContract(interaction: ChatInputCommandInteraction | null, user: MUser): Promise<string> {
 	const { nextContractIsReady, durationRemaining, currentItem, owns, streak, totalContracts } =
 		getItemContractDetails(user);
 

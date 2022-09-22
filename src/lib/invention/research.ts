@@ -1,7 +1,7 @@
 import { bold, userMention } from '@discordjs/builders';
+import { ChatInputCommandInteraction } from 'discord.js';
 import { shuffleArr, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 
 import { handleMahojiConfirmation } from '../../mahoji/mahojiSettings';
 import { SkillsEnum } from '../skilling/types';
@@ -41,8 +41,8 @@ export async function researchCommand({
 	user: MUser;
 	material: MaterialType;
 	inputQuantity: number | undefined;
-	channelID: bigint;
-	interaction?: SlashCommandInteraction;
+	channelID: string;
+	interaction?: ChatInputCommandInteraction;
 }): CommandResponse {
 	if (minionIsBusy(user.id)) return 'Your minion is busy.';
 	material = material.toLowerCase() as MaterialType;

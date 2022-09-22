@@ -73,7 +73,7 @@ export const plunderTask: MinionTask = {
 			channelID,
 			str,
 			['minigames', { pyramid_plunder: {} }, true],
-			image.file.buffer,
+			image.file.attachment,
 			data,
 			itemsAdded
 		);

@@ -1,7 +1,7 @@
 import { Embed, inlineCode } from '@discordjs/builders';
-import { Guild, HexColorString, resolveColor } from 'discord.js';
+import { Guild, HexColorString, resolveColor, User } from 'discord.js';
 import { uniqueArr } from 'e';
-import { APIUser, ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
@@ -200,7 +200,7 @@ async function bankSortConfig(
 		if (weightingBankStr.length < 500) {
 			response.content += `\n**Weightings:**${weightingBankStr}`;
 		} else {
-			response.attachments = [
+			response.files = [
 				(
 					await makeBankImage({
 						bank: currentWeightingBank,
@@ -285,7 +285,7 @@ async function bgColorConfig(user: MUser, hex?: string) {
 	};
 }
 
-async function handleChannelEnable(user: MUser, guild: Guild | null, channelID: bigint, choice: 'enable' | 'disable') {
+async function handleChannelEnable(user: MUser, guild: Guild | null, channelID: string, choice: 'enable' | 'disable') {
 	if (!guild) return 'This command can only be run in servers.';
 	if (!(await hasBanMemberPerms(user.id, guild)))
 		return "You need to be 'Ban Member' permissions to use this command.";
@@ -314,7 +314,7 @@ async function handleChannelEnable(user: MUser, guild: Guild | null, channelID: 
 async function handlePetMessagesEnable(
 	user: MUser,
 	guild: Guild | null,
-	channelID: bigint,
+	channelID: string,
 	choice: 'enable' | 'disable'
 ) {
 	if (!guild) return 'This command can only be run in servers.';
@@ -711,7 +711,7 @@ export const configCommand: OSBMahojiCommand = {
 							name: 'remove',
 							description: 'Remove an item from your favorite food.',
 							required: false,
-							autocomplete: async (value: string, user: APIUser) => {
+							autocomplete: async (value: string, user: User) => {
 								const mUser = await mahojiUsersSettingsFetch(user.id, { favorite_food: true });
 								return Eatables.filter(i => {
 									if (!mUser.favorite_food.includes(i.id)) return false;

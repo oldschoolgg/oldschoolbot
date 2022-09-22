@@ -57,7 +57,7 @@ export async function tobStatsCommand(user: MUser) {
 
 export async function tobStartCommand(
 	user: MUser,
-	channelID: bigint,
+	channelID: string,
 	isHardMode: boolean,
 	maxSizeInput?: number,
 	solo?: boolean

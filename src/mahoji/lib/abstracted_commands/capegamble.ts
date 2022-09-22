@@ -1,4 +1,4 @@
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
+import { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../../lib/constants';
@@ -18,7 +18,7 @@ export async function capeGambleStatsCommand(user: MUser) {
 **Infernal Cape's Gambled:** ${infernalsGambled}`;
 }
 
-export async function capeGambleCommand(user: MUser, type: string, interaction: SlashCommandInteraction) {
+export async function capeGambleCommand(user: MUser, type: string, interaction: ChatInputCommandInteraction) {
 	const item = getOSItem(type === 'fire' ? 'Fire cape' : 'Infernal cape');
 	const key: 'infernal_cape_sacrifices' | 'stats_fireCapesSacrificed' =
 		type === 'fire' ? 'stats_fireCapesSacrificed' : 'infernal_cape_sacrifices';
@@ -48,10 +48,10 @@ export async function capeGambleCommand(user: MUser, type: string, interaction: 
 			)} ${pet.name} pet by sacrificing a ${item.name} for the ${formatOrdinal(newSacrificedCount)} time!`
 		);
 		return {
-			attachments: [
+			files: [
 				{
-					fileName: 'image.jpg',
-					buffer: await newChatHeadImage({
+					name: 'image.jpg',
+					attachment: await newChatHeadImage({
 						content:
 							type === 'fire'
 								? 'You lucky. Better train him good else TzTok-Jad find you, JalYt.'
@@ -64,10 +64,10 @@ export async function capeGambleCommand(user: MUser, type: string, interaction: 
 	}
 
 	return {
-		attachments: [
+		files: [
 			{
-				fileName: 'image.jpg',
-				buffer: await newChatHeadImage({
+				name: 'image.jpg',
+				attachment: await newChatHeadImage({
 					content:
 						type === 'fire'
 							? `You not lucky. Maybe next time, JalYt. This is the ${formatOrdinal(

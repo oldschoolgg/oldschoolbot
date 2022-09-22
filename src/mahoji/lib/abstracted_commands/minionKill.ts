@@ -1,4 +1,5 @@
 import { Prisma } from '@prisma/client';
+import { ChatInputCommandInteraction } from 'discord.js';
 import {
 	calcPercentOfNum,
 	calcWhatPercent,
@@ -11,7 +12,6 @@ import {
 	uniqueArr
 } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank, Monsters } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
@@ -161,8 +161,8 @@ function applySkillBoost(user: MUser, duration: number, styles: AttackStyles[]):
 
 export async function minionKillCommand(
 	userID: string,
-	interaction: SlashCommandInteraction,
-	channelID: bigint,
+	interaction: ChatInputCommandInteraction,
+	channelID: string,
 	name: string,
 	quantity: number | undefined,
 	method: PvMMethod | undefined

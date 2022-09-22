@@ -9,7 +9,7 @@ import { BossInstance } from '../../../lib/structures/Boss';
 import { Gear } from '../../../lib/structures/Gear';
 import { formatDuration } from '../../../lib/util';
 
-export async function vasaCommand(user: MUser, channelID: bigint, quantity?: number): CommandResponse {
+export async function vasaCommand(user: MUser, channelID: string, quantity?: number): CommandResponse {
 	const instance = new BossInstance({
 		leader: user,
 		id: VasaMagus.id,

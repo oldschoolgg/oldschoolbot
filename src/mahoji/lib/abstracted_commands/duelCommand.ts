@@ -1,12 +1,12 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction } from 'discord.js';
 import { noOp, sleep, Time } from 'e';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { Bank, Util } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
 import { MUserClass } from '../../../lib/MUser';
 import { awaitMessageComponentInteraction, channelIsSendable } from '../../../lib/util';
+import { deferInteraction } from '../../../lib/util/interactionReply';
 import { mahojiParseNumber } from '../../mahojiSettings';
 
 async function checkBal(user: MUser, amount: number) {
@@ -15,12 +15,12 @@ async function checkBal(user: MUser, amount: number) {
 
 export async function duelCommand(
 	user: MUser,
-	interaction: SlashCommandInteraction,
+	interaction: ChatInputCommandInteraction,
 	duelUser: MUser,
 	targetAPIUser: MahojiUserOption,
 	duelAmount?: string
 ) {
-	await interaction.deferReply();
+	await deferInteraction(interaction);
 
 	const duelSourceUser = user;
 	const duelTargetUser = duelUser;
@@ -47,7 +47,7 @@ export async function duelCommand(
 		return "That person doesn't have enough GP to duel that much.";
 	}
 
-	const channel = globalClient.channels.cache.get(interaction.channelID.toString());
+	const channel = globalClient.channels.cache.get(interaction.channelId);
 	if (!channelIsSendable(channel)) throw new Error('Channel for confirmation not found.');
 	const duelMessage = await channel.send({
 		content: `${duelTargetUser}, do you accept the duel for ${Util.toKMB(amount)} GP?`,
@@ -139,7 +139,7 @@ export async function duelCommand(
 		const selection = await awaitMessageComponentInteraction({
 			message: duelMessage,
 			filter: i => {
-				if (i.user.id !== (duelTargetUser.id ?? interaction.userID).toString()) {
+				if (i.user.id !== (duelTargetUser.id ?? interaction.user.id).toString()) {
 					i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
 					return false;
 				}

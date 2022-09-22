@@ -25,7 +25,7 @@ export interface MoktangTaskOptions extends ActivityTaskOptions {
 
 const requiredPickaxes = resolveItems(['Crystal pickaxe', 'Volcanic pickaxe', 'Dwarven pickaxe', 'Dragon pickaxe']);
 
-export async function moktangCommand(user: MUser, channelID: bigint, inputQuantity: number | undefined) {
+export async function moktangCommand(user: MUser, channelID: string, inputQuantity: number | undefined) {
 	const timeToKill = new PercentCounter(Time.Minute * 15, 'time');
 	const miningLevel = user.skillLevel(SkillsEnum.Mining);
 	if (miningLevel < 105) return 'You need 105 Mining to fight Moktang.';
@@ -159,7 +159,7 @@ ${xpStr}`;
 			},
 			true
 		],
-		image.file.buffer,
+		image.file.attachment,
 		data,
 		loot
 	);

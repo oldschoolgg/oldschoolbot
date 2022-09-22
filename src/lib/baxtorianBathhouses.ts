@@ -281,7 +281,7 @@ export async function baxtorianBathhousesStartCommand({
 }: {
 	user: MUser;
 	tier: string;
-	channelID: bigint;
+	channelID: string;
 	ore?: string;
 	mixture?: string;
 }) {

@@ -64,7 +64,7 @@ export function generateLeaguesTasksTextFile(finishedTasksIDs: number[], exclude
 		str += '\n\n';
 	}
 	str = `There are a total of ${totalTasks} tasks (${totalPoints.toLocaleString()} Points).\n\n${str}`;
-	return { attachments: [{ buffer: Buffer.from(str), fileName: 'all-tasks.txt' }] };
+	return { files: [{ attachment: Buffer.from(str), name: 'all-tasks.txt' }] };
 }
 
 async function getActivityCounts(user: User) {
@@ -133,7 +133,7 @@ WHERE COALESCE(cardinality(leagues_completed_tasks_ids), 0) > ${user.leagues_com
 }
 
 export async function leaguesCheckUser(userID: string) {
-	const [mahojiUser, roboChimpUser] = await Promise.all([mUserFetch(userID), roboChimpUserFetch(BigInt(userID))]);
+	const [mahojiUser, roboChimpUser] = await Promise.all([mUserFetch(userID), roboChimpUserFetch(userID)]);
 	const [
 		conStats,
 		poh,
@@ -281,7 +281,7 @@ const unlockables: {
 	}
 ];
 
-export async function leaguesClaimCommand(userID: bigint, finishedTaskIDs: number[]) {
+export async function leaguesClaimCommand(userID: string, finishedTaskIDs: number[]) {
 	const roboChimpUser = await roboChimpUserFetch(userID);
 	const mahojiUser = await mUserFetch(userID);
 	const newlyFinishedTasks = finishedTaskIDs.filter(i => !roboChimpUser.leagues_completed_tasks_ids.includes(i));
@@ -310,7 +310,7 @@ export async function leaguesClaimCommand(userID: bigint, finishedTaskIDs: numbe
 
 	const newUser = await roboChimpClient.user.update({
 		where: {
-			id: userID
+			id: BigInt(userID)
 		},
 		data: {
 			leagues_completed_tasks_ids: {
@@ -336,8 +336,8 @@ export async function leaguesClaimCommand(userID: bigint, finishedTaskIDs: numbe
 
 	if (newlyFinishedTasks.length > 10) {
 		response.content += '\nAttached is a text file showing all the tasks you just claimed.';
-		response.attachments = [
-			{ buffer: Buffer.from(fullNewlyFinishedTasks.map(i => i.name).join('\n')), fileName: 'new-tasks.txt' }
+		response.files = [
+			{ attachment: Buffer.from(fullNewlyFinishedTasks.map(i => i.name).join('\n')), name: 'new-tasks.txt' }
 		];
 	} else {
 		response.content += `\n**Finished Tasks:** ${fullNewlyFinishedTasks.map(i => i.name).join(', ')}.`;

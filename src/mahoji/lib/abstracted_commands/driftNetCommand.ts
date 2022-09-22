@@ -8,7 +8,7 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
 export async function driftNetCommand(
-	channelID: bigint,
+	channelID: string,
 	user: MUser,
 	minutes: number | undefined,
 	noStams: boolean | undefined

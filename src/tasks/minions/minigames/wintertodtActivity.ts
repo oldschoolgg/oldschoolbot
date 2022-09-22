@@ -156,7 +156,7 @@ export const wintertodtTask: MinionTask = {
 			channelID,
 			output,
 			['k', { name: 'wintertodt' }, true],
-			image.file.buffer,
+			image.file.attachment,
 			data,
 			itemsAdded
 		);

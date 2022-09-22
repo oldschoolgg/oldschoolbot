@@ -1,8 +1,16 @@
 /* eslint-disable no-case-declarations */
 import { userMention } from '@discordjs/builders';
-import { ActionRowBuilder, AttachmentBuilder, ButtonBuilder, ButtonStyle, GuildMember } from 'discord.js';
+import {
+	ActionRowBuilder,
+	APIInteractionGuildMember,
+	AttachmentBuilder,
+	ButtonBuilder,
+	ButtonInteraction,
+	ButtonStyle,
+	ChatInputCommandInteraction,
+	GuildMember
+} from 'discord.js';
 import { increaseNumByPercent, objectEntries, round, Time } from 'e';
-import { APIInteractionGuildMember } from 'mahoji';
 import { Bank, Items } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc';
@@ -439,7 +447,7 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 									user: res.user,
 									previousCL: previousTameCl
 								})
-							).file.buffer
+							).file.attachment
 						)
 				  ]
 				: undefined
@@ -551,12 +559,14 @@ export async function repeatTameTrip({
 	channelID,
 	guildID,
 	user,
-	member
+	member,
+	interaction
 }: {
-	channelID: string | bigint;
-	guildID: string | bigint | undefined;
+	channelID: string;
+	guildID: string | null;
 	user: MUser;
 	member: APIInteractionGuildMember | GuildMember | null;
+	interaction: ButtonInteraction | ChatInputCommandInteraction;
 }) {
 	const activity = await tameLastFinishedActivity(user);
 	if (!activity) {
@@ -577,7 +587,8 @@ export async function repeatTameTrip({
 				channelID,
 				guildID,
 				user,
-				member
+				member,
+				interaction
 			});
 		}
 		case TameType.Gatherer: {
@@ -592,7 +603,8 @@ export async function repeatTameTrip({
 				channelID,
 				guildID,
 				user,
-				member
+				member,
+				interaction
 			});
 		}
 		default: {

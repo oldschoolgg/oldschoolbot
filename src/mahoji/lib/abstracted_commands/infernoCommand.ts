@@ -581,10 +581,10 @@ export async function infernoStatsCommand(user: MUser): CommandResponse {
 **Inferno KC:** ${zukKC}
 **Emerged Inferno Attempts:** ${emergedAttempts}
 **Emerged Inferno KC:** ${emergedKC}`,
-		attachments: [
+		files: [
 			{
-				fileName: 'image.jpg',
-				buffer: await newChatHeadImage({
+				name: 'image.jpg',
+				attachment: await newChatHeadImage({
 					content: str,
 					head: 'ketKeh'
 				})
@@ -593,7 +593,7 @@ export async function infernoStatsCommand(user: MUser): CommandResponse {
 	};
 }
 
-export async function infernoStartCommand(user: MUser, channelID: bigint, emerged: boolean): CommandResponse {
+export async function infernoStartCommand(user: MUser, channelID: string, emerged: boolean): CommandResponse {
 	const attempts = user.user.inferno_attempts;
 	const usersRangeStats = user.gear.range.stats;
 	const zukKC = await getMinigameScore(user.id, 'inferno');
@@ -608,10 +608,10 @@ export async function infernoStartCommand(user: MUser, channelID: bigint, emerge
 
 	if (typeof res === 'string') {
 		return {
-			attachments: [
+			files: [
 				{
-					fileName: 'image.jpg',
-					buffer: await newChatHeadImage({
+					name: 'image.jpg',
+					attachment: await newChatHeadImage({
 						content: res,
 						head: 'ketKeh'
 					})
@@ -638,10 +638,10 @@ export async function infernoStartCommand(user: MUser, channelID: bigint, emerge
 		realCost.add((await user.specialRemoveItems(cost)).realCost);
 	} catch (err: any) {
 		return {
-			attachments: [
+			files: [
 				{
-					fileName: 'image.jpg',
-					buffer: await newChatHeadImage({
+					name: 'image.jpg',
+					attachment: await newChatHeadImage({
 						content: `${err.message}`,
 						head: 'ketKeh'
 					})
@@ -699,10 +699,10 @@ export async function infernoStartCommand(user: MUser, channelID: bigint, emerge
 		}
 ${emergedZukDeathMsg}
 **Items To Be Used:** ${realCost}`,
-		attachments: [
+		files: [
 			{
-				fileName: 'image.jpg',
-				buffer: await newChatHeadImage({
+				name: 'image.jpg',
+				attachment: await newChatHeadImage({
 					content: "You're on your own now JalYt, you face certain death... prepare to fight for your life.",
 					head: 'ketKeh'
 				})

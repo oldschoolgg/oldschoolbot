@@ -109,7 +109,7 @@ export const templeTrekkingTask: MinionTask = {
 			channelID,
 			str,
 			['minigames', { temple_trek: { start: { difficulty, quantity } } }, true],
-			image.file.buffer,
+			image.file.attachment,
 			data,
 			itemsAdded
 		);

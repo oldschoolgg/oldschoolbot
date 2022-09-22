@@ -14,13 +14,13 @@ export async function buttonUserPicker({
 	creator,
 	creatorGetsTwoGuesses
 }: {
-	channelID: bigint | string;
+	channelID: string;
 	str: string;
 	timer?: number;
 	ironmenAllowed: boolean;
 	initialUsers?: bigint[];
 	answers: string[];
-	creator: bigint;
+	creator: string;
 	creatorGetsTwoGuesses?: boolean;
 }) {
 	const channel = globalClient.channels.cache.get(channelID.toString());
@@ -36,15 +36,15 @@ export async function buttonUserPicker({
 		content: str,
 		components: [new ActionRowBuilder<ButtonBuilder>().addComponents(shuffleArr(buttons))]
 	});
-	const guessed: bigint[] = [];
+	const guessed: string[] = [];
 
-	return new Promise<bigint | null>(async resolve => {
+	return new Promise<string | null>(async resolve => {
 		const collector = confirmMessage.createMessageComponentCollector({
 			time: timer
 		});
 
 		collector.on('collect', async i => {
-			const id = BigInt(i.user.id);
+			const { id } = i.user;
 			const mUser = await mahojiUsersSettingsFetch(id);
 			const isCreator = id === creator;
 			let notAllowed = !ironmenAllowed && mUser.minion_ironman;

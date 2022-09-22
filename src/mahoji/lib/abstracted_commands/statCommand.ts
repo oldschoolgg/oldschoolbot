@@ -225,16 +225,16 @@ async function makeResponseForBank(bank: Bank, title: string, content?: string) 
 		bank
 	});
 	return {
-		attachments: [image.file],
+		files: [image.file],
 		content
 	};
 }
-function makeResponseForBuffer(buffer: Buffer) {
+function makeResponseForBuffer(attachment: Buffer): Awaited<CommandResponse> {
 	return {
-		attachments: [
+		files: [
 			{
-				buffer,
-				fileName: 'image.jpg'
+				attachment,
+				name: 'image.jpg'
 			}
 		]
 	};
@@ -461,11 +461,15 @@ GROUP BY data->>'monsterID';`);
 		perkTierNeeded: PerkTier.Four,
 		run: async (user: MUser): CommandResponse => {
 			const { percent } = calcCLDetails(user);
-			const buffer: Buffer = await pieChart('Your Personal Collection Log Progress', val => `${toKMB(val)}%`, [
-				['Complete Collection Log Items', percent, '#9fdfb2'],
-				['Incomplete Collection Log Items', 100 - percent, '#df9f9f']
-			]);
-			return makeResponseForBuffer(buffer);
+			const attachment: Buffer = await pieChart(
+				'Your Personal Collection Log Progress',
+				val => `${toKMB(val)}%`,
+				[
+					['Complete Collection Log Items', percent, '#9fdfb2'],
+					['Incomplete Collection Log Items', 100 - percent, '#df9f9f']
+				]
+			);
+			return makeResponseForBuffer(attachment);
 		}
 	},
 	{
@@ -614,12 +618,12 @@ WHERE "skills.${skillName}" = 200000000;`) as Promise<{ qty: number; skill_name:
 		perkTierNeeded: PerkTier.Four,
 		run: async (user: MUser) => {
 			const result: { plant: string; qty: number }[] =
-				await prisma.$queryRawUnsafe(`SELECT data->>'plantsName' as plant, COUNT(data->>'plantsName') AS qty
+				await prisma.$queryRawUnsafe(`SELECT data->>'plantsname: ' as plant, COUNT(data->>'plantsname: ') AS qty
 FROM activity
 WHERE type = 'Farming'
-AND data->>'plantsName' IS NOT NULL
+AND data->>'plantsname: ' IS NOT NULL
 AND user_id = ${BigInt(user.id)}
-GROUP BY data->>'plantsName'`);
+GROUP BY data->>'plantsname: '`);
 			result.sort((a, b) => b.qty - a.qty);
 			const buffer = await barChart(
 				'Global Farmed Crops',
@@ -634,11 +638,11 @@ GROUP BY data->>'plantsName'`);
 		perkTierNeeded: PerkTier.Four,
 		run: async () => {
 			const result: { plant: string; qty: number }[] =
-				await prisma.$queryRaw`SELECT data->>'plantsName' as plant, COUNT(data->>'plantsName') AS qty
+				await prisma.$queryRaw`SELECT data->>'plantsname: ' as plant, COUNT(data->>'plantsname: ') AS qty
 FROM activity
 WHERE type = 'Farming'
-AND data->>'plantsName' IS NOT NULL
-GROUP BY data->>'plantsName'`;
+AND data->>'plantsname: ' IS NOT NULL
+GROUP BY data->>'plantsname: '`;
 			result.sort((a, b) => b.qty - a.qty);
 			const buffer = await barChart(
 				'Global Farmed Crops',
@@ -930,7 +934,7 @@ GROUP BY "bankBackground";`);
 				})
 				.join('\n');
 
-			return { attachments: [{ buffer: Buffer.from(str), fileName: 'Bot Stats Monsters.txt' }] };
+			return { files: [{ attachment: Buffer.from(str), name: 'Bot Stats Monsters.txt' }] };
 		}
 	},
 	{

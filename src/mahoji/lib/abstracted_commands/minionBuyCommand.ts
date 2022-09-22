@@ -1,6 +1,5 @@
-import { User } from 'discord.js';
+import { ComponentType, User } from 'discord.js';
 import { Time } from 'e';
-import { ComponentType } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 

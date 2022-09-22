@@ -335,9 +335,9 @@ export async function bankDisassembleAnalysis({ bank, user }: { bank: Bank; user
 			.map(i => i.name)
 			.join(', ')
 			.slice(0, 1500)}`,
-		attachments: [
-			{ fileName: 'disassemble-analysis.txt', buffer: Buffer.from(normalTable) },
-			{ fileName: 'material-analysis.txt', buffer: Buffer.from(await materialAnalysis(user, bank)) }
+		files: [
+			{ name: 'disassemble-analysis.txt', attachment: Buffer.from(normalTable) },
+			{ name: 'material-analysis.txt', attachment: Buffer.from(await materialAnalysis(user, bank)) }
 		]
 	};
 }
@@ -358,7 +358,7 @@ export async function disassembleCommand({
 	user: MUser;
 	itemToDisassembleName: string;
 	quantityToDisassemble: number | undefined;
-	channelID: bigint;
+	channelID: string;
 }): CommandResponse {
 	if (minionIsBusy(user.id)) return 'Your minion is busy.';
 	const item = getItem(itemToDisassembleName);

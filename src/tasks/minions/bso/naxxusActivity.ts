@@ -80,7 +80,7 @@ export const naxxusTask: MinionTask = {
 				Naxxus.name
 			}. Your Naxxus KC is now ${user.getKC(Naxxus.id)}.\n\n${xpStr}`,
 			['k', { name: 'Naxxus' }, true],
-			image.file.buffer,
+			image.file.attachment,
 			data,
 			itemsAdded
 		);

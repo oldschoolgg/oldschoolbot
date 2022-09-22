@@ -34,7 +34,7 @@ export const Armours = [
 	}
 ];
 
-async function tokensCommand(user: MUser, channelID: bigint, quantity: number | undefined) {
+async function tokensCommand(user: MUser, channelID: string, quantity: number | undefined) {
 	const maxTripLength = calcMaxTripLength(user, 'AnimatedArmour');
 	const userBank = user.bank;
 
@@ -75,7 +75,7 @@ async function tokensCommand(user: MUser, channelID: bigint, quantity: number | 
 	return response;
 }
 
-async function cyclopsCommand(user: MUser, channelID: bigint, quantity: number | undefined) {
+async function cyclopsCommand(user: MUser, channelID: string, quantity: number | undefined) {
 	const userBank = user.bank;
 	const hasAttackCape = user.gear.melee.hasEquipped('Attack cape');
 	const maxTripLength = calcMaxTripLength(user, 'Cyclops');
@@ -137,7 +137,7 @@ async function cyclopsCommand(user: MUser, channelID: bigint, quantity: number |
 
 export async function warriorsGuildCommand(
 	user: MUser,
-	channelID: bigint,
+	channelID: string,
 	choice: string,
 	quantity: number | undefined
 ) {

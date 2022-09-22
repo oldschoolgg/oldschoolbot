@@ -134,7 +134,7 @@ export async function trackLoot(opts: TrackLootOptions) {
 	});
 }
 
-export async function addToGPTaxBalance(userID: bigint | string, amount: number) {
+export async function addToGPTaxBalance(userID: string | string, amount: number) {
 	await Promise.all([
 		prisma.clientStorage.update({
 			where: {
