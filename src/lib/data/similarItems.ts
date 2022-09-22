@@ -302,8 +302,7 @@ const source: [string, (string | number)[]][] = [
 	[
 		'Robe bottoms of the eye',
 		['Robe bottoms of the eye (red)', 'Robe bottoms of the eye (green)', 'Robe bottoms of the eye (blue)']
-	],
-	['Boots of the eye', ['Boots of the eye (red)', 'Boots of the eye (green)', 'Boots of the eye (blue)']]
+	]
 ];
 
 export const similarItems: Map<number, number[]> = new Map(
