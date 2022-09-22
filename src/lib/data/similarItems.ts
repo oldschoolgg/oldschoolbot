@@ -299,7 +299,10 @@ const source: [string, (string | number)[]][] = [
 	['Prospector helmet', ['Golden prospector helmet']],
 	['Hat of the eye', ['Hat of the eye (red)', 'Hat of the eye (green)', 'Hat of the eye (blue)']],
 	['Robe top of the eye', ['Robe top of the eye (red)', 'Robe top of the eye (green)', 'Robe top of the eye (blue)']],
-	['Robe bottoms of the eye', ['Robe bottoms of the eye (red)', 'Robe bottoms of the eye (green)', 'Robe bottoms of the eye (blue)']],
+	[
+		'Robe bottoms of the eye',
+		['Robe bottoms of the eye (red)', 'Robe bottoms of the eye (green)', 'Robe bottoms of the eye (blue)']
+	],
 	['Boots of the eye', ['Boots of the eye (red)', 'Boots of the eye (green)', 'Boots of the eye (blue)']]
 ];
 

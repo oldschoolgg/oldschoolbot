@@ -1383,7 +1383,7 @@ const Createables: Createable[] = [
 			[itemID('Small pouch')]: 1,
 			[itemID('Medium pouch')]: 1,
 			[itemID('Large pouch')]: 1,
-			[itemID('Giant pouch')]: 1,
+			[itemID('Giant pouch')]: 1
 		},
 		outputItems: {
 			[itemID('Colossal pouch')]: 1

@@ -12,7 +12,7 @@ export const guardiansOfTheRiftCreatables: Createable[] = [
 	{
 		name: 'Revert Amulet of the eye (red)',
 		inputItems: new Bank({ 'Amulet of the eye (red)': 1 }),
-		outputItems: new Bank({ 'Amulet of the eye': 1}),
+		outputItems: new Bank({ 'Amulet of the eye': 1 }),
 		noCl: true
 	},
 	{
@@ -23,7 +23,7 @@ export const guardiansOfTheRiftCreatables: Createable[] = [
 	{
 		name: 'Revert Lost bag (red)',
 		inputItems: new Bank({ 'Lost bag (red)': 1 }),
-		outputItems: new Bank({ 'Lost bag': 1}),
+		outputItems: new Bank({ 'Lost bag': 1 }),
 		noCl: true
 	},
 	{
@@ -34,7 +34,7 @@ export const guardiansOfTheRiftCreatables: Createable[] = [
 	{
 		name: 'Revert Hat of the eye (red)',
 		inputItems: new Bank({ 'Hat of the eye (red)': 1 }),
-		outputItems: new Bank({ 'Hat of the eye': 1}),
+		outputItems: new Bank({ 'Hat of the eye': 1 }),
 		noCl: true
 	},
 	{
@@ -68,7 +68,7 @@ export const guardiansOfTheRiftCreatables: Createable[] = [
 	{
 		name: 'Revert Amulet of the eye (green)',
 		inputItems: new Bank({ 'Amulet of the eye (green)': 1 }),
-		outputItems: new Bank({ 'Amulet of the eye': 1}),
+		outputItems: new Bank({ 'Amulet of the eye': 1 }),
 		noCl: true
 	},
 	{
@@ -79,7 +79,7 @@ export const guardiansOfTheRiftCreatables: Createable[] = [
 	{
 		name: 'Revert Lost bag (green)',
 		inputItems: new Bank({ 'Lost bag (green)': 1 }),
-		outputItems: new Bank({ 'Lost bag': 1}),
+		outputItems: new Bank({ 'Lost bag': 1 }),
 		noCl: true
 	},
 	{
@@ -124,7 +124,7 @@ export const guardiansOfTheRiftCreatables: Createable[] = [
 	{
 		name: 'Revert Amulet of the eye (blue)',
 		inputItems: new Bank({ 'Amulet of the eye (blue)': 1 }),
-		outputItems: new Bank({ 'Amulet of the eye': 1}),
+		outputItems: new Bank({ 'Amulet of the eye': 1 }),
 		noCl: true
 	},
 	{
@@ -135,7 +135,7 @@ export const guardiansOfTheRiftCreatables: Createable[] = [
 	{
 		name: 'Revert Lost bag (blue)',
 		inputItems: new Bank({ 'Lost bag (blue)': 1 }),
-		outputItems: new Bank({ 'Lost bag': 1}),
+		outputItems: new Bank({ 'Lost bag': 1 }),
 		noCl: true
 	},
 	{
