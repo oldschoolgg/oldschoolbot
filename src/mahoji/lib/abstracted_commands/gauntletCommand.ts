@@ -46,7 +46,7 @@ const corruptedRequirements = {
 	woodcutting: 70
 };
 
-export async function gauntletCommand(user: MUser, channelID: bigint, type: 'corrupted' | 'normal' = 'normal') {
+export async function gauntletCommand(user: MUser, channelID: string, type: 'corrupted' | 'normal' = 'normal') {
 	if (user.minionIsBusy) return `${user.minionName} is busy.`;
 	if (user.QP < 200) {
 		return 'You need atleast 200 QP to do the Gauntlet.';

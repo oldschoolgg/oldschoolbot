@@ -285,6 +285,7 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 							time: Time.Minute * 5,
 							filter: () => true
 						});
+						if (!selection.isButton()) return;
 						message.edit({ components: [] });
 
 						// Check disable first so minion doesn't have to be free to disable reminders.
@@ -308,7 +309,8 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 								channelID: message.channel.id,
 								guildID: undefined,
 								user: await mUserFetch(user.id),
-								member: message.member
+								member: message.member,
+								interaction: selection
 							});
 						}
 					} catch {

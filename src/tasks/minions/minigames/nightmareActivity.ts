@@ -115,7 +115,7 @@ export const nightmareTask: MinionTask = {
 					{ name: isPhosani ? 'phosani nightmare' : method === 'solo' ? 'solo nightmare' : 'mass nightmare' },
 					true
 				],
-				image.file.buffer,
+				image.file.attachment,
 				data,
 				itemsAdded
 			);

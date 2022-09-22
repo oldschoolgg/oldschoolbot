@@ -55,7 +55,7 @@ export async function tobStatsCommand(user: MUser) {
 		.join(', ')}`;
 }
 
-export async function tobStartCommand(user: MUser, channelID: bigint, isHardMode: boolean, maxSizeInput?: number) {
+export async function tobStartCommand(user: MUser, channelID: string, isHardMode: boolean, maxSizeInput?: number) {
 	if (user.minionIsBusy) {
 		return `${user.usernameOrMention} minion is busy`;
 	}

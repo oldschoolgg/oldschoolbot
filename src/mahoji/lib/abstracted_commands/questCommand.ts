@@ -7,7 +7,7 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 import { userHasGracefulEquipped } from '../../mahojiSettings';
 
-export async function questCommand(user: MUser, channelID: bigint) {
+export async function questCommand(user: MUser, channelID: string) {
 	if (!user.user.minion_hasBought) {
 		return 'You need a minion to do a questing trip';
 	}

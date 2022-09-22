@@ -11,7 +11,7 @@ import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { updateBankSetting, userHasGracefulEquipped } from '../../mahojiSettings';
 import { getPOH } from './pohCommand';
 
-export async function gnomeRestaurantCommand(user: MUser, channelID: bigint) {
+export async function gnomeRestaurantCommand(user: MUser, channelID: string) {
 	let deliveryLength = Time.Minute * 7;
 
 	const itemsToRemove = new Bank();

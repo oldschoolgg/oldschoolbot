@@ -7,7 +7,7 @@ import { IPatchData, IPatchDataDetailed } from '../../minions/farming/types';
 import { assert, formatDuration, toTitleCase } from '../../util';
 import { farmingKeys, FarmingPatchName, farmingPatchNames, findPlant } from '../../util/farmingHelpers';
 
-export async function getFarmingInfo(userID: bigint | string) {
+export async function getFarmingInfo(userID: string | string) {
 	let keys: Partial<Record<keyof User, true>> = {};
 	for (const key of farmingKeys) keys[key] = true;
 	const userData = await mahojiUsersSettingsFetch(userID, keys);

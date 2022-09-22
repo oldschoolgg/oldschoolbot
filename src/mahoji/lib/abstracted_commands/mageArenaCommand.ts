@@ -8,7 +8,7 @@ import { formatDuration, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { updateBankSetting } from '../../mahojiSettings';
 
-export async function mageArenaCommand(user: MUser, channelID: bigint) {
+export async function mageArenaCommand(user: MUser, channelID: string) {
 	if (user.skillLevel(SkillsEnum.Magic) < 60) {
 		return 'You need level 60 Magic to do the Mage Arena.';
 	}

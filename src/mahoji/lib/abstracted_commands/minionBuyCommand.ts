@@ -1,4 +1,4 @@
-import { ComponentType } from 'mahoji';
+import { ComponentType } from 'discord.js';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
 import { mahojiInformationalButtons } from '../../../lib/constants';

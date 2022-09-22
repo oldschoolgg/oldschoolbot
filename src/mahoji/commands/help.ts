@@ -1,4 +1,4 @@
-import { ButtonStyle, ComponentType } from 'mahoji';
+import { ButtonStyle, ComponentType } from 'discord.js';
 
 import { mahojiInformationalButtons } from '../../lib/constants';
 import { OSBMahojiCommand } from '../lib/util';

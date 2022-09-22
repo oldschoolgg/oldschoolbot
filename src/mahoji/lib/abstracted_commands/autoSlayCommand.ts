@@ -1,6 +1,4 @@
-import { MessageFlags } from 'mahoji';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
+import { ChatInputCommandInteraction } from 'discord.js';
 import { Monsters } from 'oldschooljs';
 
 import { PvMMethod } from '../../../lib/constants';
@@ -203,9 +201,6 @@ const AutoSlayMaxEfficiencyTable: AutoslayLink[] = [
 		efficientMethod: 'cannon'
 	}
 ];
-const startingSlayerTaskResponse = (slayerMaster: string) => {
-	return { content: `Starting slayer task from ${slayerMaster}.`, flags: MessageFlags.Ephemeral };
-};
 
 function determineAutoslayMethod(autoslayOptions: AutoslayOptionsEnum[]) {
 	let method = 'default';
@@ -227,24 +222,18 @@ export async function autoSlayCommand({
 	interaction
 }: {
 	mahojiUser: MUser;
-	channelID: bigint;
+	channelID: string;
 	modeOverride?: string;
 	saveMode?: boolean;
-	interaction: SlashCommandInteraction;
-}): Promise<CommandResponse> {
+	interaction: ChatInputCommandInteraction;
+}) {
 	const user = await mUserFetch(mahojiUser.id);
 	const autoslayOptions = user.user.slayer_autoslay_options;
 	const usersTask = await getUsersCurrentSlayerInfo(user.id);
 	const isOnTask = usersTask.assignedTask !== null && usersTask.currentTask !== null;
 
 	if (!isOnTask) {
-		await slayerNewTaskCommand({ userID: user.id, channelID, interaction });
-		const newTaskCheck = await getUsersCurrentSlayerInfo(user.id);
-		const isOnTaskCheck = newTaskCheck.assignedTask !== null && newTaskCheck.currentTask !== null;
-		if (isOnTaskCheck) {
-			return autoSlayCommand({ mahojiUser, interaction, channelID, modeOverride, saveMode });
-		}
-		return { content: 'Cannot autoslay because we failed to get a new task', flags: MessageFlags.Ephemeral };
+		return slayerNewTaskCommand({ userID: user.id, channelID, interaction });
 	}
 	const savedMethod = determineAutoslayMethod(autoslayOptions as AutoslayOptionsEnum[]);
 	const method = modeOverride ?? savedMethod;
@@ -263,7 +252,8 @@ export async function autoSlayCommand({
 		channelID,
 		guildID: isGuildChannel(channel) ? channel.guild.id : undefined,
 		user,
-		member: null
+		member: null,
+		interaction
 	};
 
 	if (method === 'low') {
@@ -288,7 +278,7 @@ export async function autoSlayCommand({
 			bypassInhibitors: true,
 			...cmdRunOptions
 		});
-		return startingSlayerTaskResponse(usersTask.slayerMaster!.name);
+		return;
 	}
 	if (method === 'ehp') {
 		const ehpMonster = AutoSlayMaxEfficiencyTable.find(e => {
@@ -308,7 +298,7 @@ export async function autoSlayCommand({
 				bypassInhibitors: true,
 				...cmdRunOptions
 			});
-			return startingSlayerTaskResponse(usersTask.slayerMaster!.name);
+			return;
 		}
 
 		if (ehpMonster && ehpMonster.efficientName) {
@@ -321,7 +311,7 @@ export async function autoSlayCommand({
 				bypassInhibitors: true,
 				...cmdRunOptions
 			});
-			return startingSlayerTaskResponse(usersTask.slayerMaster!.name);
+			return;
 		}
 		runCommand({
 			commandName: 'k',
@@ -331,7 +321,7 @@ export async function autoSlayCommand({
 			bypassInhibitors: true,
 			...cmdRunOptions
 		});
-		return startingSlayerTaskResponse(usersTask.slayerMaster!.name);
+		return;
 	}
 	if (method === 'boss') {
 		// This code handles the 'highest/boss' setting of autoslay.
@@ -344,7 +334,7 @@ export async function autoSlayCommand({
 				bypassInhibitors: true,
 				...cmdRunOptions
 			});
-			return startingSlayerTaskResponse(usersTask.slayerMaster!.name);
+			return;
 		}
 
 		const allMonsters = killableMonsters.filter(m => {
@@ -373,15 +363,15 @@ export async function autoSlayCommand({
 				bypassInhibitors: true,
 				...cmdRunOptions
 			});
-			return startingSlayerTaskResponse(usersTask.slayerMaster!.name);
+			return;
 		}
-		return { content: "Can't find any monsters you have the requirements to kill!", flags: MessageFlags.Ephemeral };
+		interaction.reply({ content: "Can't find any monsters you have the requirements to kill!", ephemeral: true });
+		return;
 	}
-	runCommand({
+	await runCommand({
 		commandName: 'k',
 		args: { name: usersTask.assignedTask!.monster.name },
 		bypassInhibitors: true,
 		...cmdRunOptions
 	});
-	return startingSlayerTaskResponse(usersTask.slayerMaster!.name);
 }

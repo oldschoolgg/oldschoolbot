@@ -229,7 +229,7 @@ class PatreonTask {
 
 			const user = await mUserFetch(patron.discordID);
 
-			const roboChimpUser = await roboChimpUserFetch(BigInt(patron.discordID));
+			const roboChimpUser = await roboChimpUserFetch(patron.discordID);
 
 			if (roboChimpUser.github_id) continue;
 

@@ -9,7 +9,7 @@ import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 import { userHasGracefulEquipped } from '../../mahojiSettings';
 
-export async function pyramidPlunderCommand(user: MUser, channelID: bigint) {
+export async function pyramidPlunderCommand(user: MUser, channelID: string) {
 	if (minionIsBusy(user.id)) return `${user.minionName} is busy.`;
 	const skills = user.skillsAsLevels;
 	const thievingLevel = skills.thieving;
