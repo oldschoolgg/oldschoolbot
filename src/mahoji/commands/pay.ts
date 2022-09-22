@@ -83,10 +83,7 @@ export const payCommand: OSBMahojiCommand = {
 			}
 		});
 
-		globalClient.emit(
-			Events.EconomyLog,
-			`${user.usernameOrMention} paid ${amount} GP to ${recipient.usernameOrMention}.`
-		);
+		globalClient.emit(Events.EconomyLog, `${user.mention} paid ${amount} GP to ${recipient.mention}.`);
 		addToGPTaxBalance(user.id, amount);
 
 		return `You sent ${amount.toLocaleString()} GP to ${recipient}.`;
