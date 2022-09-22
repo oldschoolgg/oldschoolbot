@@ -1,6 +1,4 @@
-import { ButtonStyle } from 'discord-api-types/v10';
-import { APIButtonComponentWithCustomId, ComponentType } from 'mahoji';
-import { InteractionResponseDataWithBufferAttachments } from 'mahoji/dist/lib/structures/ICommand';
+import { ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { Emoji, lastTripCache, minionBuyButton } from '../../../lib/constants';
@@ -10,7 +8,7 @@ import { calculateBirdhouseDetails } from './birdhousesCommand';
 import { isUsersDailyReady } from './dailyCommand';
 import { canRunAutoContract } from './farmingContractCommand';
 
-export async function minionStatusCommand(user: MUser): Promise<InteractionResponseDataWithBufferAttachments> {
+export async function minionStatusCommand(user: MUser) {
 	if (!user.user.minion_hasBought) {
 		return {
 			content:
@@ -25,78 +23,79 @@ export async function minionStatusCommand(user: MUser): Promise<InteractionRespo
 	}
 
 	const status = minionStatus(user);
-	const buttons: APIButtonComponentWithCustomId[] = [];
+	const buttons: ButtonBuilder[] = [];
 
 	const birdhouseDetails = await calculateBirdhouseDetails(user.id);
 
 	const dailyIsReady = isUsersDailyReady(user);
 
 	if (dailyIsReady.isReady) {
-		buttons.push({
-			type: ComponentType.Button,
-			custom_id: 'CLAIM_DAILY',
-			label: 'Claim Daily',
-			emoji: { id: '493286312854683654' },
-			style: ButtonStyle.Secondary
-		});
+		buttons.push(
+			new ButtonBuilder()
+				.setCustomId('CLAIM_DAILY')
+				.setLabel('Claim Daily')
+				.setEmoji('493286312854683654')
+				.setStyle(ButtonStyle.Secondary)
+		);
 	}
 
 	if (user.minionIsBusy) {
-		buttons.push({
-			type: ComponentType.Button,
-			custom_id: 'CANCEL_TRIP',
-			label: 'Cancel Trip',
-			emoji: { id: '778418736180494347' },
-			style: ButtonStyle.Secondary
-		});
+		buttons.push(
+			new ButtonBuilder()
+				.setCustomId('CANCEL_TRIP')
+				.setLabel('Cancel Trip')
+				.setEmoji('778418736180494347')
+				.setStyle(ButtonStyle.Secondary)
+		);
 	}
 
 	if (!user.minionIsBusy) {
-		buttons.push({
-			type: ComponentType.Button,
-			custom_id: 'AUTO_SLAY',
-			label: 'Auto Slay',
-			emoji: { id: '630911040560824330' },
-			style: ButtonStyle.Secondary
-		});
+		buttons.push(
+			new ButtonBuilder()
+				.setCustomId('AUTO_SLAY')
+				.setLabel('Auto Slay')
+				.setEmoji('630911040560824330')
+				.setStyle(ButtonStyle.Secondary)
+		);
 	}
-	buttons.push({
-		type: ComponentType.Button,
-		custom_id: 'CHECK_PATCHES',
-		label: 'Check Patches',
-		emoji: { name: Emoji.Stopwatch },
-		style: ButtonStyle.Secondary
-	});
+
+	buttons.push(
+		new ButtonBuilder()
+			.setCustomId('CHECK_PATCHES')
+			.setLabel('Check Patches')
+			.setEmoji(Emoji.Stopwatch)
+			.setStyle(ButtonStyle.Secondary)
+	);
 
 	if (!user.minionIsBusy && birdhouseDetails.isReady) {
-		buttons.push({
-			type: ComponentType.Button,
-			custom_id: 'DO_BIRDHOUSE_RUN',
-			label: 'Birdhouse Run',
-			emoji: { id: '692946556399124520' },
-			style: ButtonStyle.Secondary
-		});
+		buttons.push(
+			new ButtonBuilder()
+				.setCustomId('DO_BIRDHOUSE_RUN')
+				.setLabel('Birdhouse Run')
+				.setEmoji('692946556399124520')
+				.setStyle(ButtonStyle.Secondary)
+		);
 	}
 
 	if (!user.minionIsBusy && (await canRunAutoContract(user.id))) {
-		buttons.push({
-			type: ComponentType.Button,
-			custom_id: 'AUTO_FARMING_CONTRACT',
-			label: 'Auto Farming Contract',
-			emoji: { id: '977410792754413668' },
-			style: ButtonStyle.Secondary
-		});
+		buttons.push(
+			new ButtonBuilder()
+				.setCustomId('AUTO_FARMING_CONTRACT')
+				.setLabel('Auto Farming Contract')
+				.setEmoji('977410792754413668')
+				.setStyle(ButtonStyle.Secondary)
+		);
 	}
 
 	const lastTrip = lastTripCache.get(user.id);
 	if (lastTrip && !user.minionIsBusy) {
-		buttons.push({
-			type: ComponentType.Button,
-			custom_id: 'REPEAT_TRIP',
-			label: 'Repeat Trip',
-			emoji: { name: '🔁' },
-			style: ButtonStyle.Secondary
-		});
+		buttons.push(
+			new ButtonBuilder()
+				.setCustomId('REPEAT_TRIP')
+				.setLabel('Repeat Trip')
+				.setEmoji('🔁')
+				.setStyle(ButtonStyle.Secondary)
+		);
 	}
 
 	const { bank } = user;
@@ -105,23 +104,21 @@ export async function minionStatusCommand(user: MUser): Promise<InteractionRespo
 		for (const tier of ClueTiers.filter(t => bank.has(t.scrollID))
 			.reverse()
 			.slice(0, 3)) {
-			buttons.push({
-				type: ComponentType.Button,
-				custom_id: `DO_${tier.name.toUpperCase()}_CLUE`,
-				label: `Do ${tier.name} Clue`,
-				emoji: { id: '365003979840552960' },
-				style: ButtonStyle.Secondary
-			});
+			buttons.push(
+				new ButtonBuilder()
+					.setCustomId(`DO_${tier.name.toUpperCase()}_CLUE`)
+					.setLabel(`Do ${tier.name} Clue`)
+					.setEmoji('365003979840552960')
+					.setStyle(ButtonStyle.Secondary)
+			);
 		}
 	}
 
-	buttons.push({
-		type: ComponentType.Button,
-		custom_id: 'VIEW_BANK',
-		label: 'View Bank',
-		emoji: { id: '739459924693614653' },
-		style: ButtonStyle.Secondary
-	});
+	new ButtonBuilder()
+		.setCustomId('VIEW_BANK')
+		.setLabel('View Bank')
+		.setEmoji('739459924693614653')
+		.setStyle(ButtonStyle.Secondary);
 
 	return {
 		content: status,

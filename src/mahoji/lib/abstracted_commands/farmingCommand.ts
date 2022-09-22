@@ -1,5 +1,5 @@
+import { ChatInputCommandInteraction } from 'discord.js';
 import { Time } from 'e';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
 import { superCompostables } from '../../../lib/data/filterables';
@@ -32,7 +32,7 @@ export async function harvestCommand({
 	seedType
 }: {
 	user: MUser;
-	channelID: bigint;
+	channelID: string;
 	seedType: string;
 }) {
 	if (user.minionIsBusy) {
@@ -130,7 +130,7 @@ export async function farmingPlantCommand({
 	plantName: string;
 	quantity: number | null;
 	autoFarmed: boolean;
-	channelID: bigint;
+	channelID: string;
 	pay: boolean;
 }): Promise<string> {
 	const user = await mUserFetch(userID);
@@ -166,7 +166,7 @@ export async function farmingPlantCommand({
 		return `${user.minionName} needs ${requiredPoints}% Hosidius Favour to plant Grapes.`;
 	}
 
-	const { patchesDetailed } = await getFarmingInfo(BigInt(user.id));
+	const { patchesDetailed } = await getFarmingInfo(user.id);
 	const patchType = patchesDetailed.find(i => i.patchName === plant.seedType)!;
 
 	const timePerPatchTravel = Time.Second * plant.timePerPatchTravel;
@@ -312,7 +312,7 @@ ${boostStr.length > 0 ? '**Boosts**: ' : ''}${boostStr.join(', ')}`;
 }
 
 export async function compostBinCommand(
-	interaction: SlashCommandInteraction,
+	interaction: ChatInputCommandInteraction,
 	user: MUser,
 	cropToCompost: string,
 	quantity: number | undefined

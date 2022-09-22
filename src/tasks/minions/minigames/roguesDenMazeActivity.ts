@@ -67,7 +67,7 @@ export const roguesDenTask: MinionTask = {
 			channelID,
 			str,
 			['minigames', { rogues_den: {} }, true],
-			gotLoot ? image.file.buffer : undefined,
+			gotLoot ? image.file.attachment : undefined,
 			data,
 			itemsAdded
 		);

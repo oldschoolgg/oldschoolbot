@@ -10,7 +10,7 @@ import { allFarm, replant } from './autoFarmFilters';
 
 autoFarm_filter_enum;
 
-export async function autoFarm(user: MUser, patchesDetailed: IPatchDataDetailed[], channelID: bigint) {
+export async function autoFarm(user: MUser, patchesDetailed: IPatchDataDetailed[], channelID: string) {
 	if (user.minionIsBusy) {
 		return 'Your minion must not be busy to use this command.';
 	}

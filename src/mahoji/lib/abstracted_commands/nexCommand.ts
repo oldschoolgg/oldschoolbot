@@ -1,7 +1,5 @@
 import { userMention } from '@discordjs/builders';
-import { ChannelType, TextChannel } from 'discord.js';
-import { MessageFlags } from 'mahoji';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
+import { ChannelType, ChatInputCommandInteraction, TextChannel } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { setupParty } from '../../../extendables/Message/Party';
@@ -11,9 +9,10 @@ import { calculateNexDetails, checkNexUser } from '../../../lib/simulation/nex';
 import { NexTaskOptions } from '../../../lib/types/minions';
 import { calcPerHour, formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { deferInteraction } from '../../../lib/util/interactionReply';
 import { updateBankSetting } from '../../mahojiSettings';
 
-export async function nexCommand(interaction: SlashCommandInteraction, user: MUser, channelID: bigint) {
+export async function nexCommand(interaction: ChatInputCommandInteraction, user: MUser, channelID: string) {
 	const channel = globalClient.channels.cache.get(channelID.toString());
 	if (!channel || channel.type !== ChannelType.GuildText) return 'You need to run this in a text channel.';
 
@@ -22,7 +21,7 @@ export async function nexCommand(interaction: SlashCommandInteraction, user: MUs
 		return `You can't start a Nex mass: ${ownerCheck[1]}`;
 	}
 
-	await interaction.deferReply();
+	await deferInteraction(interaction);
 
 	let reactionAwaiter = await setupParty(channel as TextChannel, user, {
 		minSize: 2,
@@ -38,7 +37,7 @@ export async function nexCommand(interaction: SlashCommandInteraction, user: MUs
 	} catch (err: any) {
 		return {
 			content: typeof err === 'string' ? err : 'Your mass failed to start.',
-			flags: MessageFlags.Ephemeral
+			ephemeral: true
 		};
 	}
 	usersWhoConfirmed = usersWhoConfirmed.filter(i => !i.minionIsBusy);

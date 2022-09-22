@@ -9,7 +9,7 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { updateBankSetting, userHasGracefulEquipped } from '../../mahojiSettings';
 
-export async function sawmillCommand(user: MUser, plankName: string, quantity: number | undefined, channelID: bigint) {
+export async function sawmillCommand(user: MUser, plankName: string, quantity: number | undefined, channelID: string) {
 	const plank = Planks.find(
 		plank => stringMatches(plank.name, plankName) || stringMatches(plank.name.split(' ')[0], plankName)
 	);
