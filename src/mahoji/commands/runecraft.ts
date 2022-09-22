@@ -6,7 +6,7 @@ import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { darkAltarCommand } from '../../lib/minions/functions/darkAltarCommand';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import { RunecraftActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, stringMatches, toTitleCase } from '../../lib/util';
+import { formatDuration, itemID, stringMatches, toTitleCase } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../lib/util/determineRunes';
@@ -133,8 +133,9 @@ export const runecraftCommand: OSBMahojiCommand = {
 
 		// For each pouch the user has, increase their inventory size.
 		for (const pouch of Runecraft.pouches) {
-			if (user.skillLevel(SkillsEnum.Runecraft) < pouch.level) break;
+			if (user.skillLevel(SkillsEnum.Runecraft) < pouch.level) continue;
 			if (bank.has(pouch.id)) inventorySize += pouch.capacity - 1;
+			if (bank.has(pouch.id) && pouch.id === itemID('Colossal pouch')) break;
 		}
 
 		if (inventorySize > 28) boosts.push(`+${inventorySize - 28} inv spaces from pouches`);

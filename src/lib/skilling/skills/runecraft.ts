@@ -236,14 +236,14 @@ const Runes: Rune[] = [
 
 const RCPouches = [
 	{
-		id: itemID('Small pouch'),
-		level: 1,
-		capacity: 3
+		id: itemID('Colossal pouch'),
+		level: 85,
+		capacity: 40
 	},
 	{
-		id: itemID('Medium pouch'),
-		level: 25,
-		capacity: 6
+		id: itemID('Giant pouch'),
+		level: 75,
+		capacity: 12
 	},
 	{
 		id: itemID('Large pouch'),
@@ -251,9 +251,14 @@ const RCPouches = [
 		capacity: 9
 	},
 	{
-		id: itemID('Giant pouch'),
-		level: 75,
-		capacity: 12
+		id: itemID('Medium pouch'),
+		level: 25,
+		capacity: 6
+	},
+	{
+		id: itemID('Small pouch'),
+		level: 1,
+		capacity: 3
 	}
 ];
 

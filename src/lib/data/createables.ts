@@ -1337,9 +1337,7 @@ const Createables: Createable[] = [
 	// Runecrafting Pouches
 	{
 		name: 'Small pouch',
-		inputItems: {
-			[itemID('Leather')]: 10
-		},
+		inputItems: {},
 		outputItems: {
 			[itemID('Small pouch')]: 1
 		},
@@ -1349,45 +1347,50 @@ const Createables: Createable[] = [
 	},
 	{
 		name: 'Medium pouch',
-		inputItems: {
-			[itemID('Leather')]: 20
-		},
+		inputItems: {},
 		outputItems: {
 			[itemID('Medium pouch')]: 1
 		},
 		cantHaveItems: {
 			[itemID('Medium pouch')]: 1
-		},
-
-		requiredSkills: { crafting: 10 }
+		}
 	},
 	{
 		name: 'Large pouch',
-		inputItems: {
-			[itemID('Leather')]: 30
-		},
+		inputItems: {},
 		outputItems: {
 			[itemID('Large pouch')]: 1
 		},
 		cantHaveItems: {
 			[itemID('Large pouch')]: 1
-		},
-
-		requiredSkills: { crafting: 20 }
+		}
 	},
 	{
 		name: 'Giant pouch',
-		inputItems: {
-			[itemID('Leather')]: 40
-		},
+		inputItems: {},
 		outputItems: {
 			[itemID('Giant pouch')]: 1
 		},
 		cantHaveItems: {
 			[itemID('Giant pouch')]: 1
+		}
+	},
+	{
+		name: 'Colossal pouch',
+		inputItems: {
+			[itemID('Abyssal needle')]: 1,
+			[itemID('Small pouch')]: 1,
+			[itemID('Medium pouch')]: 1,
+			[itemID('Large pouch')]: 1,
+			[itemID('Giant pouch')]: 1,
 		},
-
-		requiredSkills: { crafting: 30 }
+		outputItems: {
+			[itemID('Colossal pouch')]: 1
+		},
+		cantHaveItems: {
+			[itemID('Colossal pouch')]: 1
+		},
+		requiredSkills: { runecraft: 85, crafting: 56 }
 	},
 	// Spirit Shields
 	{

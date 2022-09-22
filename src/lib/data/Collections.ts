@@ -788,6 +788,7 @@ export const allCollectionLogs: ICollection = {
 					'Medium pouch',
 					'Large pouch',
 					'Giant pouch',
+					'Colossal pouch',
 					'Crystal pickaxe',
 					'Crystal axe',
 					'Crystal harpoon',
