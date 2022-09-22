@@ -214,7 +214,7 @@ export const monsterTask: MinionTask = {
 							isContinue: true
 						});
 				  },
-			image?.file.buffer,
+			image?.file.attachment,
 			data,
 			itemsAdded,
 			messages

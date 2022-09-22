@@ -1,5 +1,6 @@
 import {
 	ChannelType,
+	ComponentType,
 	DMChannel,
 	Guild,
 	GuildMember,
@@ -9,7 +10,6 @@ import {
 	User
 } from 'discord.js';
 import { Time } from 'e';
-import { ComponentType } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
 import { OWNER_IDS, production, SupportServer } from '../../config';

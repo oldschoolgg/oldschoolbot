@@ -984,7 +984,7 @@ export function getPossibleOptions() {
 	for (const monster of effectiveMonsters) {
 		categories.push(['Monsters', monster.name, monster.aliases ? monster.aliases.join(', ') : '']);
 	}
-	const normalTable = table([['Type', 'Name', 'Alias'], ...[...categories, ...activities, ...roles]]);
+	const normalTable = table([['Type', 'name: ', 'Alias'], ...[...categories, ...activities, ...roles]]);
 	return new AttachmentBuilder(Buffer.from(normalTable), { name: 'possible_logs.txt' });
 }
 

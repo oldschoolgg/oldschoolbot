@@ -10,7 +10,7 @@ import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 export const wealthInventorySize = 26;
 export const wealthInventoryTime = Time.Minute * 2.2;
 
-export async function chargeWealthCommand(user: MUser, channelID: bigint, quantity: number | undefined) {
+export async function chargeWealthCommand(user: MUser, channelID: string, quantity: number | undefined) {
 	const userBank = user.bank;
 
 	const amountHas = userBank.amount('Ring of wealth');

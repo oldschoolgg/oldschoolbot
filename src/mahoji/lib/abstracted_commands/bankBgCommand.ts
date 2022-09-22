@@ -1,4 +1,4 @@
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
+import { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { BitField } from '../../../lib/constants';
@@ -7,7 +7,7 @@ import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
 import resolveItems from '../../../lib/util/resolveItems';
 import { handleMahojiConfirmation, updateBankSetting } from '../../mahojiSettings';
 
-export async function bankBgCommand(interaction: SlashCommandInteraction, user: MUser, name: string) {
+export async function bankBgCommand(interaction: ChatInputCommandInteraction, user: MUser, name: string) {
 	const bankImages = bankImageGenerator.backgroundImages;
 	const selectedImage = bankImages.find(img => stringMatches(img.name, name));
 

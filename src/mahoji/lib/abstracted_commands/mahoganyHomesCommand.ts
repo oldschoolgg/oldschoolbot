@@ -121,7 +121,7 @@ export async function mahoganyHomesBuyCommand(user: MUser, input = '', quantity?
 	return `Successfully purchased ${loot} for ${cost * quantity} Carpenter Points.`;
 }
 
-export async function mahoganyHomesBuildCommand(user: MUser, channelID: bigint): CommandResponse {
+export async function mahoganyHomesBuildCommand(user: MUser, channelID: string): CommandResponse {
 	if (user.minionIsBusy) return `${user.minionName} is currently busy.`;
 
 	const conLevel = user.skillLevel(SkillsEnum.Construction);

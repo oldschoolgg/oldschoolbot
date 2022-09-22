@@ -138,7 +138,7 @@ export const pickpocketTask: MinionTask = {
 			channelID,
 			str,
 			['steal', { name: obj.name, quantity }, true],
-			image?.file.buffer,
+			image?.file.attachment,
 			data,
 			loot
 		);
