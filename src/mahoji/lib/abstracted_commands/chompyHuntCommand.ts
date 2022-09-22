@@ -58,7 +58,7 @@ export async function chompyHuntClaimCommand(user: MUser) {
 	return `Added the following hats to your bank: ${missingHatsBank}`;
 }
 
-export async function chompyHuntCommand(user: MUser, channelID: bigint) {
+export async function chompyHuntCommand(user: MUser, channelID: string) {
 	if (user.QP < 10) {
 		return 'You need atleast 10 QP to hunt Chompy birds.';
 	}

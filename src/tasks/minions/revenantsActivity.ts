@@ -118,7 +118,7 @@ export const revenantsTask: MinionTask = {
 					isContinue: true
 				});
 			},
-			image.file.buffer,
+			image.file.attachment,
 			data,
 			itemsAdded
 		);
