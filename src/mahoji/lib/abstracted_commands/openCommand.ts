@@ -5,6 +5,7 @@ import { Bank, LootTable } from 'oldschooljs';
 
 import { Emoji, PerkTier } from '../../../lib/constants';
 import { allOpenables, UnifiedOpenable } from '../../../lib/openables';
+import { roboChimpUserFetch } from '../../../lib/roboChimp';
 import { ItemBank } from '../../../lib/types';
 import { assert } from '../../../lib/util';
 import { stringMatches } from '../../../lib/util/cleanString';
@@ -24,10 +25,20 @@ export const OpenUntilItems = uniqueArr(allOpenables.map(i => i.allItems).flat(2
 		return 0;
 	});
 
-function getOpenableLoot({ openable, quantity, user }: { openable: UnifiedOpenable; quantity: number; user: MUser }) {
+function getOpenableLoot({
+	openable,
+	quantity,
+	user,
+	totalLeaguesPoints
+}: {
+	openable: UnifiedOpenable;
+	quantity: number;
+	user: MUser;
+	totalLeaguesPoints: number;
+}) {
 	return openable.output instanceof LootTable
 		? { bank: openable.output.roll(quantity), message: null }
-		: openable.output({ user, self: openable, quantity });
+		: openable.output({ user, self: openable, quantity, totalLeaguesPoints });
 }
 
 async function addToOpenablesScores(mahojiUser: MUser, kcBank: Bank) {
@@ -63,7 +74,12 @@ export async function abstractedOpenUntilCommand(userID: string, name: string, o
 	let max = Math.min(100, amountOfThisOpenableOwned);
 	for (let i = 0; i < max; i++) {
 		cost.add(openable.openedItem.id);
-		const thisLoot = await getOpenableLoot({ openable, quantity: 1, user });
+		const thisLoot = await getOpenableLoot({
+			openable,
+			quantity: 1,
+			user,
+			totalLeaguesPoints: (await roboChimpUserFetch(user.id)).leagues_points_total
+		});
 		loot.add(thisLoot.bank);
 		amountOpened++;
 		if (loot.has(openUntil.id)) break;
@@ -127,7 +143,16 @@ async function finalizeOpening({
 				if (roll(10)) smokeyBonus++;
 			}
 			userStatsBankUpdate(user.id, 'smokey_loot_bank', new Bank().add(openable.openedItem.id, smokeyBonus));
-			loot.add((await getOpenableLoot({ user, openable, quantity: smokeyBonus })).bank);
+			loot.add(
+				(
+					await getOpenableLoot({
+						user,
+						openable,
+						quantity: smokeyBonus,
+						totalLeaguesPoints: (await roboChimpUserFetch(user.id)).leagues_points_total
+					})
+				).bank
+			);
 			bonuses.push(`${smokeyBonus}x ${openable.name}`);
 		}
 		smokeyMsg = bonuses.length ? `${Emoji.Smokey} Bonus Rolls: ${bonuses.join(', ')}` : null;
@@ -215,7 +240,12 @@ export async function abstractedOpenCommand(
 		const quantity = typeof _quantity === 'string' ? user.bank.amount(openedItem.id) : _quantity;
 		cost.add(openedItem.id, quantity);
 		kcBank.add(openedItem.id, quantity);
-		const thisLoot = await getOpenableLoot({ openable, quantity, user });
+		const thisLoot = await getOpenableLoot({
+			openable,
+			quantity,
+			user,
+			totalLeaguesPoints: (await roboChimpUserFetch(user.id)).leagues_points_total
+		});
 		loot.add(thisLoot.bank);
 		if (thisLoot.message) messages.push(thisLoot.message);
 	}

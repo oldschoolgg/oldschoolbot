@@ -7,7 +7,7 @@ import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/inve
 import { defaultFarmingContract, PatchTypes } from '../../lib/minions/farming';
 import { FarmingContract } from '../../lib/minions/farming/types';
 import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
-import Farming from '../../lib/skilling/skills/farming';
+import Farming, { plants } from '../../lib/skilling/skills/farming';
 import { Plant, SkillsEnum } from '../../lib/skilling/types';
 import { FarmingActivityTaskOptions } from '../../lib/types/minions';
 import {
@@ -15,6 +15,7 @@ import {
 	clAdjustedDroprate,
 	increaseBankQuantitesByPercent,
 	itemID,
+	itemNameFromID,
 	rand,
 	roll,
 	skillingPetDropRate
@@ -42,6 +43,38 @@ async function arcaneHarvesterEffect(user: MUser, plant: Plant, loot: Bank): Pro
 			return `\n${inventionBoosts.arcaneHarvester.harvestBoostPercent}% bonus yield from Arcane Harvester (${boostRes.messages})`;
 		}
 	}
+}
+
+const mutations = [
+	{
+		chance: 30,
+		plantName: 'Mango bush',
+		output: itemID('Shiny mango')
+	},
+	{
+		chance: 7,
+		plantName: 'Cabbage',
+		output: itemID('Cannonball cabbage')
+	},
+	{
+		chance: 7,
+		plantName: 'Potato',
+		output: itemID('Sweet potato')
+	},
+	{
+		chance: 7,
+		plantName: 'Sweetcorn',
+		output: itemID('Rainbow sweetcorn')
+	},
+	{
+		chance: 7,
+		plantName: 'Strawberry',
+		output: itemID('White strawberry')
+	}
+];
+for (const mut of mutations) {
+	const plant = plants.find(i => i.name === mut.plantName);
+	if (!plant) throw new Error(`Missing ${mut.plantName}`);
 }
 
 export const farmingTask: MinionTask = {
@@ -555,8 +588,12 @@ export const farmingTask: MinionTask = {
 					}
 				}
 			}
-			if (alivePlants && plantToHarvest.name === 'Mango bush' && roll(30)) {
-				loot.add('Shiny mango');
+
+			for (const mut of mutations) {
+				if (alivePlants && plantToHarvest.name === mut.plantName && roll(mut.chance)) {
+					loot.add(mut.output);
+					infoStr.push(`One of your crops mutated into a ${itemNameFromID(mut.output)}.`);
+				}
 			}
 
 			if (Object.keys(loot).length > 0) {
