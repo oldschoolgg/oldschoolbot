@@ -78,7 +78,7 @@ export async function abstractedOpenUntilCommand(userID: string, name: string, o
 			openable,
 			quantity: 1,
 			user,
-			totalLeaguesPoints: (await roboChimpUserFetch(BigInt(user.id))).leagues_points_total
+			totalLeaguesPoints: (await roboChimpUserFetch(user.id)).leagues_points_total
 		});
 		loot.add(thisLoot.bank);
 		amountOpened++;
@@ -149,7 +149,7 @@ async function finalizeOpening({
 						user,
 						openable,
 						quantity: smokeyBonus,
-						totalLeaguesPoints: (await roboChimpUserFetch(BigInt(user.id))).leagues_points_total
+						totalLeaguesPoints: (await roboChimpUserFetch(user.id)).leagues_points_total
 					})
 				).bank
 			);
@@ -244,7 +244,7 @@ export async function abstractedOpenCommand(
 			openable,
 			quantity,
 			user,
-			totalLeaguesPoints: (await roboChimpUserFetch(BigInt(user.id))).leagues_points_total
+			totalLeaguesPoints: (await roboChimpUserFetch(user.id)).leagues_points_total
 		});
 		loot.add(thisLoot.bank);
 		if (thisLoot.message) messages.push(thisLoot.message);
