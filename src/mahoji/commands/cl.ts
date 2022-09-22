@@ -1,20 +1,21 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
-import { allCollectionLogs } from '../../lib/data/Collections';
-import { toTitleCase } from '../../lib/util';
-import CollectionLogTask, {
+import {
+	clImageGenerator,
 	CollectionLogFlags,
 	CollectionLogType,
 	collectionLogTypes
-} from '../../tasks/collectionLogTask';
+} from '../../lib/collectionLogTask';
+import { allCollectionLogs } from '../../lib/data/Collections';
+import { toTitleCase } from '../../lib/util';
 import { OSBMahojiCommand } from '../lib/util';
+import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const collectionLogCommand: OSBMahojiCommand = {
 	name: 'cl',
 	description: 'See your Collection Log.',
 	attributes: {
 		requiresMinion: true,
-		description: 'See your Collection Log.',
 		examples: ['/cl name:Boss']
 	},
 	options: [
@@ -51,14 +52,25 @@ export const collectionLogCommand: OSBMahojiCommand = {
 			description: 'The flag you want to pass.',
 			required: false,
 			choices: CollectionLogFlags.map(i => ({ name: `${toTitleCase(i.name)} (${i.description})`, value: i.name }))
+		},
+		{
+			type: ApplicationCommandOptionType.Boolean,
+			name: 'all',
+			description: 'Show all items?',
+			required: false
 		}
 	],
-	run: async ({ options, userID }: CommandRunOptions<{ name: string; type?: CollectionLogType; flag?: string }>) => {
-		const user = await globalClient.fetchUser(userID);
+	run: async ({
+		options,
+		userID
+	}: CommandRunOptions<{ name: string; type?: CollectionLogType; flag?: string; all?: boolean }>) => {
+		const user = await mUserFetch(userID);
 		let flags: Record<string, string> = {};
 		if (options.flag) flags[options.flag] = options.flag;
-		const result = await (globalClient.tasks.get('collectionLogTask') as CollectionLogTask)!.generateLogImage({
+		if (options.all) flags.all = 'all';
+		const result = await clImageGenerator.generateLogImage({
 			user,
+			mahojiUser: await mahojiUsersSettingsFetch(userID),
 			type: options.type ?? 'collection',
 			flags,
 			collection: options.name

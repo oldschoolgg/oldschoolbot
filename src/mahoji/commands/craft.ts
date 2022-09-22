@@ -2,14 +2,15 @@ import { Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { Craftables } from '../../lib/skilling/skills/crafting/craftables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { CraftingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, updateBankSetting } from '../../lib/util';
+import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
 import { OSBMahojiCommand } from '../lib/util';
+import { updateBankSetting } from '../mahojiSettings';
 
 export const craftCommand: OSBMahojiCommand = {
 	name: 'craft',
@@ -17,7 +18,6 @@ export const craftCommand: OSBMahojiCommand = {
 	attributes: {
 		requiresMinion: true,
 		requiresMinionNotBusy: true,
-		description: 'Send your minion to mine things.',
 		examples: ['/craft name:Onyx necklace']
 	},
 	options: [
@@ -44,7 +44,7 @@ export const craftCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
-		const user = await globalClient.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
 		let { quantity } = options;
 
@@ -60,12 +60,22 @@ export const craftCommand: OSBMahojiCommand = {
 			sets = ' sets of';
 		}
 
+		const userQP = user.QP;
+		const currentWoodcutLevel = user.skillLevel(SkillsEnum.Woodcutting);
+
+		if (craftable.qpRequired && userQP < craftable.qpRequired) {
+			return `${user.minionName} needs ${craftable.qpRequired} QP to craft ${craftable.name}.`;
+		}
+
+		if (craftable.wcLvl && currentWoodcutLevel < craftable.wcLvl) {
+			return `${user.minionName} needs ${craftable.wcLvl} Woodcutting Level to craft ${craftable.name}.`;
+		}
+
 		if (user.skillLevel(SkillsEnum.Crafting) < craftable.level) {
 			return `${user.minionName} needs ${craftable.level} Crafting to craft ${craftable.name}.`;
 		}
 
-		await user.settings.sync(true);
-		const userBank = user.bank({ withGP: true });
+		const userBank = user.bankWithGP;
 
 		// Get the base time to craft the item then add on quarter of a second per item to account for banking/etc.
 		let timeToCraftSingleItem = craftable.tickRate * Time.Second * 0.6 + Time.Second / 4;
@@ -74,7 +84,7 @@ export const craftCommand: OSBMahojiCommand = {
 			timeToCraftSingleItem /= 3.25;
 		}
 
-		const maxTripLength = user.maxTripLength('Crafting');
+		const maxTripLength = calcMaxTripLength(user, 'Crafting');
 
 		if (!quantity) {
 			quantity = Math.floor(maxTripLength / timeToCraftSingleItem);
@@ -102,7 +112,7 @@ export const craftCommand: OSBMahojiCommand = {
 
 		await user.removeItemsFromBank(itemsNeeded);
 
-		updateBankSetting(globalClient, ClientSettings.EconomyStats.CraftingCost, itemsNeeded.bank);
+		updateBankSetting('crafting_cost', itemsNeeded);
 
 		await addSubTaskToActivityTask<CraftingActivityTaskOptions>({
 			craftableID: craftable.id,

@@ -3,8 +3,9 @@ import { createHmac } from 'crypto';
 import { onRequestHookHandler } from 'fastify';
 import * as jwt from 'jwt-simple';
 
-import { CLIENT_SECRET, GITHUB_TOKEN } from '../../config';
+import { CLIENT_SECRET, GITHUB_TOKEN, patreonConfig } from '../../config';
 import { PerkTier } from '../constants';
+import { prisma } from '../settings/prisma';
 
 export function rateLimit(max: number, timeWindow: string) {
 	return {
@@ -22,6 +23,16 @@ export function verifyGithubSecret(body: string, signature?: string | string[]):
 	const hmac = createHmac('sha1', CLIENT_SECRET);
 	hmac.update(body);
 	const calculated = `sha1=${hmac.digest('hex')}`;
+	return signature === calculated;
+}
+
+export function verifyPatreonSecret(body: string, signature?: string | string[]): boolean {
+	if (!signature) {
+		return false;
+	}
+	const hmac = createHmac('md5', patreonConfig!.webhookSecret);
+	hmac.update(body);
+	const calculated = hmac.digest('hex');
 	return signature === calculated;
 }
 
@@ -45,9 +56,8 @@ export function parseStrToTier(str: string) {
 			return PerkTier.Six;
 		case '$99 a month':
 			return PerkTier.Six;
-		default: {
-			throw new Error(`Unmatched patron tier: ${str}`);
-		}
+		default:
+			return null;
 	}
 }
 
@@ -108,7 +118,9 @@ export async function fetchSponsors() {
 }
 
 export async function getUserFromGithubID(githubID: string) {
-	const result = await globalClient.query<{ id: string }[]>(`SELECT id FROM users WHERE github_id = '${githubID}';`);
+	const result = await prisma.$queryRawUnsafe<{ id: string }[]>(
+		`SELECT id FROM users WHERE github_id = '${githubID}';`
+	);
 	if (result.length === 0) return null;
 	return globalClient.fetchUser(result[0].id);
 }

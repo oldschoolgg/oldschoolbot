@@ -1,18 +1,17 @@
 import { randInt } from 'e';
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { Emoji, Events } from '../../../lib/constants';
 import { trackLoot } from '../../../lib/settings/prisma';
-import { incrementMinigameScore } from '../../../lib/settings/settings';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
+import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
 import Firemaking from '../../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { updateBankSetting } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { makeBankImage } from '../../../lib/util/makeBankImage';
+import { updateBankSetting } from '../../../mahoji/mahojiSettings';
 
 const PointsTable = new SimpleTable<number>()
 	.add(420)
@@ -37,10 +36,11 @@ const PointsTable = new SimpleTable<number>()
 	.add(780)
 	.add(850);
 
-export default class extends Task {
+export const wintertodtTask: MinionTask = {
+	type: 'Wintertodt',
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { userID, channelID, quantity } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Firemaking);
 
 		let loot = new Bank();
@@ -55,21 +55,21 @@ export default class extends Task {
 				WintertodtCrate.open({
 					points,
 					itemsOwned: user.allItemsOwned().clone().add(loot).bank,
-					skills: user.rawSkills
+					skills: user.skillsAsXP
 				})
 			);
 		}
 
 		// Track loot in Economy Stats
-		await updateBankSetting(this.client, ClientSettings.EconomyStats.WintertodtLoot, loot);
+		await updateBankSetting('economyStats_wintertodtLoot', loot);
 
 		if (loot.has('Phoenix')) {
-			this.client.emit(
+			globalClient.emit(
 				Events.ServerNotification,
-				`${Emoji.Phoenix} **${user.username}'s** minion, ${
+				`${Emoji.Phoenix} **${user.usernameOrMention}'s** minion, ${
 					user.minionName
 				}, just received a Phoenix! Their Wintertodt KC is ${
-					(await user.getMinigameScore('wintertodt')) + quantity
+					(await getMinigameScore(user.id, 'wintertodt')) + quantity
 				}, and their Firemaking level is ${user.skillLevel(SkillsEnum.Firemaking)}.`
 			);
 		}
@@ -97,7 +97,7 @@ export default class extends Task {
 
 		// If they have the entire pyromancer outfit, give an extra 0.5% xp bonus
 		if (
-			user.getGear('skilling').hasEquipped(
+			user.gear.skilling.hasEquipped(
 				Object.keys(Firemaking.pyromancerItems).map(i => parseInt(i)),
 				true
 			)
@@ -108,7 +108,7 @@ export default class extends Task {
 		} else {
 			// For each pyromancer item, check if they have it, give its' XP boost if so.
 			for (const [itemID, bonus] of Object.entries(Firemaking.pyromancerItems)) {
-				if (user.hasItemEquippedAnywhere(parseInt(itemID))) {
+				if (user.hasEquipped(parseInt(itemID))) {
 					const amountToAdd = Math.floor(fmXpToGive * (bonus / 100));
 					fmXpToGive += amountToAdd;
 					fmBonusXP += amountToAdd;
@@ -120,19 +120,18 @@ export default class extends Task {
 		await user.addXP({ skillName: SkillsEnum.Firemaking, amount: fmXpToGive });
 		const newLevel = user.skillLevel(SkillsEnum.Firemaking);
 
-		const { itemsAdded, previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
+		const { itemsAdded, previousCL } = await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 		incrementMinigameScore(user.id, 'wintertodt', quantity);
 
-		const { image } = await this.client.tasks.get('bankImage')!.generateBankImage(
-			itemsAdded,
-			'',
-			true,
-			{
-				showNewCL: 1
-			},
+		const image = await makeBankImage({
+			bank: itemsAdded,
 			user,
 			previousCL
-		);
+		});
 
 		let output = `${user}, ${
 			user.minionName
@@ -155,6 +154,14 @@ export default class extends Task {
 			kc: quantity
 		});
 
-		handleTripFinish(user, channelID, output, ['wintertodt', {}, true], image!, data, itemsAdded);
+		handleTripFinish(
+			user,
+			channelID,
+			output,
+			['k', { name: 'wintertodt' }, true],
+			image.file.attachment,
+			data,
+			itemsAdded
+		);
 	}
-}
+};

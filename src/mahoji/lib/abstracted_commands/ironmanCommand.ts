@@ -1,16 +1,16 @@
 import { Prisma } from '@prisma/client';
+import { ChatInputCommandInteraction } from 'discord.js';
 import { noOp } from 'e';
-import { KlasaUser } from 'klasa';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { BitField } from '../../../lib/constants';
+import { roboChimpUserFetch } from '../../../lib/roboChimp';
 import { prisma } from '../../../lib/settings/prisma';
 import { assert } from '../../../lib/util';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
-import { handleMahojiConfirmation, mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../../mahojiSettings';
+import { handleMahojiConfirmation, mahojiUsersSettingsFetch } from '../../mahojiSettings';
 
-export async function ironmanCommand(user: KlasaUser, interaction: SlashCommandInteraction, permanent?: boolean) {
+export async function ironmanCommand(user: MUser, interaction: ChatInputCommandInteraction, permanent?: boolean) {
 	if (minionIsBusy(user.id)) return 'Your minion is busy.';
 	if (user.isIronman) {
 		const isPerm = user.bitfield.includes(BitField.PermanentIronman);
@@ -20,7 +20,7 @@ export async function ironmanCommand(user: KlasaUser, interaction: SlashCommandI
 				interaction,
 				'Would you like to change your ironman to a *permanent* iron? The only thing in your account that will change, is that you will no longer be able to de-iron. This is *permanent* and cannot be reversed.'
 			);
-			await mahojiUserSettingsUpdate(user.id, {
+			await user.update({
 				bitfield: {
 					push: BitField.PermanentIronman
 				}
@@ -31,7 +31,7 @@ export async function ironmanCommand(user: KlasaUser, interaction: SlashCommandI
 			interaction,
 			'Would you like to stop being an ironman? You will keep all your items and stats but you will have to start over if you want to play as an ironman again.'
 		);
-		await mahojiUserSettingsUpdate(user.id, {
+		await user.update({
 			minion_ironman: false
 		});
 		return 'You are no longer an ironman.';
@@ -107,9 +107,24 @@ After becoming an ironman:
 		await prisma.xPGain.deleteMany({ where: { user_id: BigInt(user.id) } }).catch(noOp);
 		await prisma.newUser.delete({ where: { id: user.id } }).catch(noOp);
 		await prisma.activity.deleteMany({ where: { user_id: BigInt(user.id) } }).catch(noOp);
+		await prisma.stashUnit.deleteMany({ where: { user_id: BigInt(user.id) } }).catch(noOp);
+		await prisma.userStats.deleteMany({ where: { user_id: BigInt(user.id) } }).catch(noOp);
+
+		// Refund the leagues points they spent
+		const roboChimpUser = await roboChimpUserFetch(user.id);
+		if (roboChimpUser.leagues_points_total >= 0) {
+			await roboChimpClient.user.update({
+				where: {
+					id: BigInt(user.id)
+				},
+				data: {
+					leagues_points_balance_osb: roboChimpUser.leagues_points_balance_osb
+				}
+			});
+		}
 	} catch (_) {}
 
-	const { newUser } = await mahojiUserSettingsUpdate(user.id, {
+	const { newUser } = await user.update({
 		minion_ironman: true,
 		minion_hasBought: true
 	});

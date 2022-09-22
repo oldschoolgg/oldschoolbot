@@ -7,11 +7,6 @@ import itemID from '../src/lib/util/itemID';
 import itemIsTradeable from '../src/lib/util/itemIsTradeable';
 
 describe('Sanity', () => {
-	test('santa hats should be tradeable', () => {
-		expect(itemIsTradeable(itemID('Black santa hat'))).toEqual(true);
-		expect(itemIsTradeable(itemID('Inverted santa hat'))).toEqual(true);
-		expect(itemIsTradeable(itemID('Santa hat'))).toEqual(true);
-	});
 	test('misc', () => {
 		expect(itemID('Phoenix')).toEqual(20_693);
 		expect(itemID('Kalphite princess')).toEqual(12_647);
@@ -20,6 +15,11 @@ describe('Sanity', () => {
 		expect(itemID('Broad arrows')).toEqual(4160);
 		expect(itemID('Frozen key')).toEqual(26_356);
 		expect(itemID('Clue box')).toEqual(12_789);
+		expect(itemIsTradeable(itemID('Black santa hat'))).toEqual(true);
+		expect(itemIsTradeable(itemID('Inverted santa hat'))).toEqual(true);
+		expect(itemIsTradeable(itemID('Santa hat'))).toEqual(true);
+		expect(itemIsTradeable(itemID('Trailblazer tool ornament kit'))).toEqual(false);
+		expect(itemIsTradeable(itemID('Twisted horns'))).toEqual(false);
 	});
 	test('casket names', () => {
 		expect(itemID('Reward casket (beginner)')).toEqual(23_245);

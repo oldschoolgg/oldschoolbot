@@ -1,23 +1,18 @@
-import { Embed } from '@discordjs/builders';
-import { User } from '@prisma/client';
-import { ComponentType } from 'mahoji';
+import { ComponentType } from 'discord.js';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
 import { mahojiInformationalButtons } from '../../../lib/constants';
-import { mahojiUserSettingsUpdate } from '../../mahojiSettings';
 
-export async function minionBuyCommand(user: User, ironman: boolean): CommandResponse {
-	if (user.minion_hasBought) return 'You already have a minion!';
+export async function minionBuyCommand(user: MUser, ironman: boolean): CommandResponse {
+	if (user.user.minion_hasBought) return 'You already have a minion!';
 
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		minion_hasBought: true,
 		minion_bought_date: new Date(),
 		minion_ironman: Boolean(ironman)
 	});
 	return {
-		embeds: [
-			new Embed().setTitle('Your minion is now ready to use!').setDescription(
-				`You have successfully got yourself a minion, and you're ready to use the bot now! Please check out the links below for information you should read.
+		content: `You have successfully got yourself a minion, and you're ready to use the bot now! Please check out the links below for information you should read.
 
 <:ironman:626647335900020746> You can make your new minion an Ironman by using the command: \`/minion ironman\`.
 
@@ -27,9 +22,7 @@ export async function minionBuyCommand(user: User, ironman: boolean): CommandRes
 
 <:BSO:863823820435619890> **BSO:** I run a 2nd bot called BSO (Bot School Old), which you can also play, it has lots of fun and unique changes, like 5x XP and infinitely stacking clues. Type \`+bso\` for more information.
 
-Please click the buttons below for important links.`
-			)
-		],
+Please click the buttons below for important links.`,
 		components: [
 			{
 				type: ComponentType.ActionRow,

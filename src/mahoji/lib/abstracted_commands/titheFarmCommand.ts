@@ -1,26 +1,24 @@
+import { ChatInputCommandInteraction } from 'discord.js';
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
 import { Emoji } from '../../../lib/constants';
 import TitheFarmBuyables from '../../../lib/data/buyables/titheFarmBuyables';
 import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
-import { SkillsEnum } from '../../../lib/skilling/types';
 import { TitheFarmActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { handleMahojiConfirmation, mahojiUserSettingsUpdate } from '../../mahojiSettings';
+import { minionIsBusy } from '../../../lib/util/minionIsBusy';
+import { handleMahojiConfirmation, userHasGracefulEquipped } from '../../mahojiSettings';
 
-function determineDuration(user: KlasaUser): [number, string[]] {
+function determineDuration(user: MUser): [number, string[]] {
 	let baseTime = Time.Second * 1500;
 	let nonGracefulTimeAddition = Time.Second * 123;
 
 	const boostStr = [];
 
 	// Reduce time based on tithe farm completions
-	const titheFarmsCompleted = user.settings.get(UserSettings.Stats.TitheFarmsCompleted);
+	const titheFarmsCompleted = user.user.stats_titheFarmsCompleted;
 	const percentIncreaseFromCompletions = Math.floor(Math.min(50, titheFarmsCompleted) / 2) / 100;
 	baseTime = Math.floor(baseTime * (1 - percentIncreaseFromCompletions));
 	Math.floor(percentIncreaseFromCompletions * 100) > 0
@@ -28,7 +26,7 @@ function determineDuration(user: KlasaUser): [number, string[]] {
 		: boostStr.push('');
 
 	// Reduce time if user has graceful equipped
-	if (user.hasGracefulEquipped()) {
+	if (userHasGracefulEquipped(user)) {
 		nonGracefulTimeAddition = 0;
 		boostStr.push('10% from graceful outfit');
 	}
@@ -38,12 +36,13 @@ function determineDuration(user: KlasaUser): [number, string[]] {
 	return [totalTime, boostStr];
 }
 
-export async function titheFarmCommand(user: KlasaUser, channelID: bigint) {
-	if (user.minionIsBusy) {
+export async function titheFarmCommand(user: MUser, channelID: string) {
+	if (minionIsBusy(user.id)) {
 		return 'Your minion must not be busy to use this command.';
 	}
-	if (user.skillLevel(SkillsEnum.Farming) < 34) {
-		return `${user.minionName} needs 34 Farming to use the Tithe Farm!`;
+	const skills = user.skillsAsLevels;
+	if (skills.farming < 34) {
+		return `${user} needs 34 Farming to use the Tithe Farm!`;
 	}
 	const [hasFavour, requiredPoints] = gotFavour(user, Favours.Hosidius, 100);
 	if (!hasFavour) {
@@ -67,8 +66,8 @@ export async function titheFarmCommand(user: KlasaUser, channelID: bigint) {
 }
 
 export async function titheFarmShopCommand(
-	interaction: SlashCommandInteraction,
-	user: KlasaUser,
+	interaction: ChatInputCommandInteraction,
+	user: MUser,
 	buyableName: string,
 	_quantity?: number
 ) {
@@ -89,7 +88,7 @@ export async function titheFarmShopCommand(
 	const loot = new Bank(buyable.outputItems).multiply(quantity);
 	const cost = buyable.titheFarmPoints * quantity;
 
-	const titheFarmPoints = user.settings.get(UserSettings.Stats.TitheFarmPoints);
+	const titheFarmPoints = user.user.stats_titheFarmPoints;
 
 	if (titheFarmPoints < cost) {
 		return `You need ${cost} Tithe Farm points to make this purchase.`;
@@ -98,13 +97,17 @@ export async function titheFarmShopCommand(
 	let purchaseMsg = `${loot} for ${cost} Tithe Farm points`;
 
 	await handleMahojiConfirmation(interaction, `${user}, please confirm that you want to purchase ${purchaseMsg}.`);
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		stats_titheFarmPoints: {
 			decrement: cost
 		}
 	});
 
-	await user.addItemsToBank({ items: loot, collectionLog: true });
+	await transactItems({
+		userID: user.id,
+		collectionLog: true,
+		itemsToAdd: loot
+	});
 
 	return `You purchased ${loot} for ${cost} Tithe Farm points.`;
 }

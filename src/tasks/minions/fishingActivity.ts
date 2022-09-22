@@ -1,5 +1,4 @@
 import { calcPercentOfNum, percentChance } from 'e';
-import { KlasaUser, Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
@@ -7,11 +6,12 @@ import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueTo
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FishingActivityTaskOptions } from '../../lib/types/minions';
-import { anglerBoostPercent, rand, roll } from '../../lib/util';
+import { rand, roll, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
+import { anglerBoostPercent } from '../../mahoji/mahojiSettings';
 
-function radasBlessing(user: KlasaUser) {
+function radasBlessing(user: MUser) {
 	const blessingBoosts = [
 		["Rada's blessing 4", 8],
 		["Rada's blessing 3", 6],
@@ -20,17 +20,18 @@ function radasBlessing(user: KlasaUser) {
 	];
 
 	for (const [itemName, boostPercent] of blessingBoosts) {
-		if (user.hasItemEquippedAnywhere(itemName)) {
+		if (user.hasEquipped(itemName)) {
 			return { blessingEquipped: true, blessingChance: boostPercent as number };
 		}
 	}
 	return { blessingEquipped: false, blessingChance: 0 };
 }
 
-export default class extends Task {
+export const fishingTask: MinionTask = {
+	type: 'Fishing',
 	async run(data: FishingActivityTaskOptions) {
 		let { fishID, quantity, userID, channelID, duration } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
 		const { blessingEquipped, blessingChance } = radasBlessing(user);
 
@@ -86,7 +87,7 @@ export default class extends Task {
 
 		// If they have the entire angler outfit, give an extra 0.5% xp bonus
 		if (
-			user.getGear('skilling').hasEquipped(
+			user.gear.skilling.hasEquipped(
 				Object.keys(Fishing.anglerItems).map(i => parseInt(i)),
 				true
 			)
@@ -97,7 +98,7 @@ export default class extends Task {
 		} else {
 			// For each angler item, check if they have it, give its' XP boost if so.
 			for (const [itemID, bonus] of Object.entries(Fishing.anglerItems)) {
-				if (user.hasItemEquippedAnywhere(parseInt(itemID))) {
+				if (user.hasEquipped(parseInt(itemID))) {
 					const amountToAdd = Math.floor(xpReceived * (bonus / 100));
 					xpReceived += amountToAdd;
 					bonusXP += amountToAdd;
@@ -181,14 +182,14 @@ export default class extends Task {
 
 		// Roll for pet
 		if (fish.petChance) {
-			const chance = fish.petChance - user.skillLevel(SkillsEnum.Fishing) * 25;
+			const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Fishing, fish.petChance);
 			for (let i = 0; i < quantity; i++) {
-				if (roll(chance)) {
+				if (roll(petDropRate)) {
 					loot.add('Heron');
 					str += "\nYou have a funny feeling you're being followed...";
-					this.client.emit(
+					globalClient.emit(
 						Events.ServerNotification,
-						`${Emoji.Fishing} **${user.username}'s** minion, ${user.minionName}, just received a Heron while fishing ${fish.name} at level ${currentLevel} Fishing!`
+						`${Emoji.Fishing} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Heron while fishing ${fish.name} at level ${currentLevel} Fishing!`
 					);
 				}
 			}
@@ -202,7 +203,11 @@ export default class extends Task {
 			}
 		}
 
-		await user.addItemsToBank({ items: loot, collectionLog: true });
+		await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 
 		str += `\n\nYou received: ${loot}.`;
 
@@ -212,4 +217,4 @@ export default class extends Task {
 
 		handleTripFinish(user, channelID, str, ['fish', { name: fish.name, quantity }, true], undefined, data, loot);
 	}
-}
+};

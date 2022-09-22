@@ -1,21 +1,19 @@
-import { User } from '@prisma/client';
+import { ChatInputCommandInteraction } from 'discord.js';
 import { calcWhatPercent, randInt, reduceNumByPercent, Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
 import { Emoji } from '../../../lib/constants';
 import { maxDefenceStats, maxOffenceStats } from '../../../lib/gear';
 import { revenantMonsters } from '../../../lib/minions/data/killableMonsters/revs';
 import { convertAttackStylesToSetup } from '../../../lib/minions/functions';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { RevenantOptions } from '../../../lib/types/minions';
-import { formatDuration, percentChance, stringMatches, updateBankSetting } from '../../../lib/util';
+import { formatDuration, percentChance, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
-import { getUserGear, handleMahojiConfirmation } from '../../mahojiSettings';
+import { handleMahojiConfirmation, updateBankSetting } from '../../mahojiSettings';
 
 const specialWeapons = {
 	melee: getOSItem("Viggora's chainmace"),
@@ -24,14 +22,13 @@ const specialWeapons = {
 } as const;
 
 export async function revsCommand(
-	user: KlasaUser,
-	mUser: User,
-	channelID: bigint,
-	interaction: SlashCommandInteraction | null,
+	user: MUser,
+	channelID: string,
+	interaction: ChatInputCommandInteraction | null,
 	name: string
 ): CommandResponse {
-	const style = convertAttackStylesToSetup(mUser.attack_style);
-	const userGear = getUserGear(mUser).wildy;
+	const style = convertAttackStylesToSetup(user.user.attack_style);
+	const userGear = user.gear.wildy;
 
 	const boosts = [];
 	const monster = revenantMonsters.find(
@@ -67,13 +64,13 @@ export async function revsCommand(
 		boosts.push(`${35}% for ${specialWeapon.name}`);
 	}
 
-	const quantity = Math.floor(user.maxTripLength('Revenants') / timePerMonster);
+	const quantity = Math.floor(calcMaxTripLength(user, 'Revenants') / timePerMonster);
 	let duration = quantity * timePerMonster;
 
 	const cost = new Bank();
 
 	let hasPrayerPots = true;
-	if (user.bank().amount('Prayer potion(4)') < 5) {
+	if (user.bank.amount('Prayer potion(4)') < 5) {
 		hasPrayerPots = false;
 		if (interaction) {
 			await handleMahojiConfirmation(
@@ -85,8 +82,8 @@ export async function revsCommand(
 		cost.add('Prayer potion(4)', 5);
 	}
 
-	updateBankSetting(user.client, ClientSettings.EconomyStats.PVMCost, cost);
-	await user.removeItemsFromBank(cost);
+	updateBankSetting('economyStats_PVMCost', cost);
+	await transactItems({ userID: user.id, itemsToRemove: cost });
 
 	let deathChance = 5;
 	let defLvl = user.skillLevel(SkillsEnum.Defence);

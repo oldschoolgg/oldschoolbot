@@ -1,18 +1,17 @@
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { userhasDiaryTier, WildernessDiary } from '../../../lib/diaries';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
 export const wealthInventorySize = 26;
 export const wealthInventoryTime = Time.Minute * 2.2;
 
-export async function chargeWealthCommand(user: KlasaUser, channelID: bigint, quantity: number | undefined) {
-	await user.settings.sync(true);
-	const userBank = user.bank();
+export async function chargeWealthCommand(user: MUser, channelID: string, quantity: number | undefined) {
+	const userBank = user.bank;
 
 	const amountHas = userBank.amount('Ring of wealth');
 	if (amountHas < wealthInventorySize) {
@@ -26,7 +25,7 @@ export async function chargeWealthCommand(user: KlasaUser, channelID: bigint, qu
 		invDuration /= 3;
 	}
 
-	const maxTripLength = user.maxTripLength('WealthCharging');
+	const maxTripLength = calcMaxTripLength(user, 'WealthCharging');
 
 	const max = Math.min(amountHas / wealthInventorySize, Math.floor(maxTripLength / invDuration));
 	if (quantity === undefined) {

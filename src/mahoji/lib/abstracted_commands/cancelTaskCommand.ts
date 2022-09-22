@@ -1,15 +1,13 @@
-import { User } from '@prisma/client';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
+import { ChatInputCommandInteraction } from 'discord.js';
 
 import { cancelTask, getActivityOfUser } from '../../../lib/settings/settings';
 import { NexTaskOptions, RaidsOptions } from '../../../lib/types/minions';
-import { minionName } from '../../../lib/util/minionUtils';
 import { handleMahojiConfirmation } from '../../mahojiSettings';
 
-export async function cancelTaskCommand(user: User, interaction?: SlashCommandInteraction): Promise<string> {
+export async function cancelTaskCommand(user: MUser, interaction?: ChatInputCommandInteraction): Promise<string> {
 	const currentTask = getActivityOfUser(user.id);
 
-	const mName = minionName(user);
+	const mName = user.minionName;
 
 	if (!currentTask) {
 		return `${mName} isn't doing anything at the moment, so there's nothing to cancel.`;
@@ -28,14 +26,6 @@ export async function cancelTaskCommand(user: User, interaction?: SlashCommandIn
 		if (data.users.length > 1) {
 			return `${mName} is fighting Nex with a team, they can't abandon the trip!`;
 		}
-	}
-
-	if (currentTask.type === 'BarbarianAssault') {
-		return `${mName} is currently doing Barbarian Assault, and cant leave their team!`;
-	}
-
-	if (currentTask.type === 'SoulWars') {
-		return `${mName} is currently doing Soul Wars, and cant leave their team!`;
 	}
 
 	if (currentTask.type === 'Raids' || currentTask.type === 'TheatreOfBlood') {

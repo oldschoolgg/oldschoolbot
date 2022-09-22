@@ -1,17 +1,18 @@
 import { User } from '@prisma/client';
+import { ChatInputCommandInteraction } from 'discord.js';
 import { reduceNumByPercent, Time } from 'e';
-import { KlasaUser } from 'klasa';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
 import { userhasDiaryTier, WesternProv } from '../../../lib/diaries';
 import { getMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, stringMatches, toTitleCase } from '../../../lib/util';
+import { formatDuration, hasSkillReqs, stringMatches, toTitleCase } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
-import { handleMahojiConfirmation, mahojiUserSettingsUpdate } from '../../mahojiSettings';
+import { minionIsBusy } from '../../../lib/util/minionIsBusy';
+import { handleMahojiConfirmation } from '../../mahojiSettings';
 
 let itemBoosts = [
 	[['Abyssal whip', 'Abyssal tentacle'].map(getOSItem), 12],
@@ -104,7 +105,7 @@ let xpMultiplier = {
 	hitpoints: 35
 };
 
-export async function pestControlBuyCommand(klasaUser: KlasaUser, user: User, input: string) {
+export async function pestControlBuyCommand(user: MUser, input: string) {
 	if (typeof input !== 'string') input = '';
 	const buyable = pestControlBuyables.find(i => stringMatches(input, i.item.name));
 	if (!buyable) {
@@ -114,50 +115,49 @@ export async function pestControlBuyCommand(klasaUser: KlasaUser, user: User, in
 	}
 
 	const { item, cost } = buyable;
-	const balance = user.pest_control_points;
+	const balance = user.user.pest_control_points;
 	if (balance < cost) {
 		return `You don't have enough Void knight commendation points to buy the ${item.name}. You need ${cost}, but you have only ${balance}.`;
 	}
 
-	let [hasReqs, str] = klasaUser.hasSkillReqs(buyable.requiredStats);
+	let [hasReqs, str] = hasSkillReqs(user, buyable.requiredStats);
 	if (!hasReqs) {
 		return `You need ${str} to buy this item.`;
 	}
 
-	if (buyable.inputItem && !klasaUser.owns(buyable.inputItem.id)) {
+	if (buyable.inputItem && !user.owns(buyable.inputItem.id)) {
 		return `This item requires that you own a ${buyable.inputItem.name}.`;
 	}
 
 	if (buyable.inputItem) {
-		const [hasDiary] = await userhasDiaryTier(klasaUser, WesternProv.hard);
+		const [hasDiary] = await userhasDiaryTier(user, WesternProv.hard);
 		if (!hasDiary) {
 			return "You can't buy this because you haven't completed the Western Provinces hard diary.";
 		}
-		await klasaUser.removeItemsFromBank(new Bank().add(buyable.inputItem.id));
+		await transactItems({ userID: user.id, itemsToRemove: new Bank().add(buyable.inputItem.id) });
 	}
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		pest_control_points: {
 			decrement: cost
 		}
 	});
+	const loot = new Bank().add(item.id);
+	await transactItems({ userID: user.id, itemsToAdd: loot, collectionLog: true });
 
-	await klasaUser.addItemsToBank({ items: { [item.id]: 1 }, collectionLog: true });
-
-	return `Successfully purchased 1x ${item.name} for ${cost} Void knight commendation points.`;
+	return `Successfully purchased ${loot} for ${cost} Void knight commendation points.`;
 }
 
-export async function pestControlStartCommand(klasaUser: KlasaUser, channelID: bigint) {
-	if (klasaUser.minionIsBusy) return `${klasaUser.minionName} is busy.`;
-	const { combatLevel } = klasaUser;
-	if (combatLevel < 40) {
+export async function pestControlStartCommand(user: MUser, channelID: string) {
+	if (minionIsBusy(user.id)) return `${user.minionName} is busy.`;
+	if (user.combatLevel < 40) {
 		return 'You need a combat level of at least 40 to do Pest Control.';
 	}
 
 	let gameLength = Time.Minute * 2.8;
-	const maxLength = klasaUser.maxTripLength('PestControl');
+	const maxLength = calcMaxTripLength(user, 'PestControl');
+	const gear = user.gear.melee;
 
 	let boosts = [];
-	const gear = klasaUser.getGear('melee');
 	for (const [items, percent] of itemBoosts) {
 		for (const item of items) {
 			if (gear.hasEquipped(item.name)) {
@@ -173,7 +173,7 @@ export async function pestControlStartCommand(klasaUser: KlasaUser, channelID: b
 	let duration = quantity * gameLength;
 
 	await addSubTaskToActivityTask<MinigameActivityTaskOptions>({
-		userID: klasaUser.id,
+		userID: user.id,
 		channelID: channelID.toString(),
 		duration,
 		type: 'PestControl',
@@ -181,10 +181,10 @@ export async function pestControlStartCommand(klasaUser: KlasaUser, channelID: b
 		minigameID: 'pest_control'
 	});
 
-	let [boat] = getBoatType(combatLevel);
+	let [boat] = getBoatType(user.combatLevel);
 
 	let str = `${
-		klasaUser.minionName
+		user.minionName
 	} is now doing ${quantity}x Pest Control games on the ${boat} boat. The trip will take ${formatDuration(
 		duration
 	)}.`;
@@ -197,9 +197,8 @@ export async function pestControlStartCommand(klasaUser: KlasaUser, channelID: b
 }
 
 export async function pestControlXPCommand(
-	interaction: SlashCommandInteraction,
-	klasaUser: KlasaUser,
-	user: User,
+	interaction: ChatInputCommandInteraction,
+	user: MUser,
 	skillName: string,
 	amount: number
 ) {
@@ -210,13 +209,13 @@ export async function pestControlXPCommand(
 		return "That's not a valid amount of points to spend.}";
 	}
 
-	const level = klasaUser.skillLevel(skillName as SkillsEnum);
+	const level = user.skillLevel(skillName as SkillsEnum);
 	if (level < 25) {
 		return 'You need at least level 25 to buy XP from Pest Control.';
 	}
 	const xpPerPoint = Math.floor(Math.pow(level, 2) / 600) * xpMultiplier[skillName as keyof typeof xpMultiplier];
 
-	const balance = user.pest_control_points;
+	const balance = user.user.pest_control_points;
 	if (balance < amount) {
 		return `You cannot afford this, because you have only ${balance} points.`;
 	}
@@ -224,12 +223,12 @@ export async function pestControlXPCommand(
 		interaction,
 		`Are you sure you want to spend ${amount} points on ${xpPerPoint * amount} ${toTitleCase(skillName)} XP?`
 	);
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		pest_control_points: {
 			decrement: amount
 		}
 	});
-	const xpRes = await klasaUser.addXP({
+	const xpRes = await user.addXP({
 		skillName: skillName as SkillsEnum,
 		amount: xpPerPoint * amount,
 		duration: undefined,

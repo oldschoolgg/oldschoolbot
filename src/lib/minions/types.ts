@@ -1,4 +1,3 @@
-import { KlasaUser } from 'klasa';
 import { Bank, MonsterKillOptions } from 'oldschooljs';
 import SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
 import { Image } from 'skia-canvas/lib';
@@ -34,11 +33,6 @@ export type BankBackground = {
 			hasPurple?: null;
 	  }
 );
-
-export interface ClueMilestoneReward {
-	itemReward: number;
-	scoreNeeded: number;
-}
 
 export type GearRequirement = Partial<{ [key in GearStat]: number }>;
 export type GearRequirements = Partial<{ [key in GearSetupType]: GearRequirement }>;
@@ -96,7 +90,15 @@ export interface KillableMonster {
 	canBarrage?: boolean;
 	canCannon?: boolean;
 	cannonMulti?: boolean;
-	specialLoot?: (loot: Bank, user: KlasaUser, data: MonsterActivityTaskOptions) => Promise<void>;
+	specialLoot?: (loot: Bank, user: MUser, data: MonsterActivityTaskOptions) => Promise<void>;
+	effect?: (opts: {
+		messages: string[];
+		user: MUser;
+		quantity: number;
+		monster: KillableMonster;
+		loot: Bank;
+		data: MonsterActivityTaskOptions;
+	}) => Promise<unknown>;
 }
 /*
  * Monsters will have an array of Consumables

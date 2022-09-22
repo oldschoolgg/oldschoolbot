@@ -1,13 +1,21 @@
-import { MessageButton } from 'discord.js';
-import { APIInteraction, APIMessageComponentInteraction, InteractionType } from 'mahoji';
+import { ButtonBuilder, ButtonInteraction, ButtonStyle, Interaction } from 'discord.js';
+import { Time, uniqueArr } from 'e';
+import { Bank } from 'oldschooljs';
 
-import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
-import { lastTripCache } from '../constants';
-import { ClueTier } from '../minions/data/clueTiers';
+import { buyBingoTicketCommand } from '../../mahoji/commands/bingo';
+import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
+import { shootingStarsCommand, starCache } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
+import { Cooldowns } from '../../mahoji/lib/Cooldowns';
+import { ClueTier } from '../clues/clueTiers';
+import { lastTripCache, PerkTier } from '../constants';
+import { prisma } from '../settings/prisma';
 import { runCommand } from '../settings/settings';
+import { ItemBank } from '../types';
+import { formatDuration, removeFromArr } from '../util';
+import getUsersPerkTier from './getUsersPerkTier';
+import { updateGiveawayMessage } from './giveaway';
+import { interactionReply } from './interactionReply';
 import { minionIsBusy } from './minionIsBusy';
-import { minionName } from './minionUtils';
-import { respondToButton } from './respondToButton';
 
 const globalInteractionActions = [
 	'DO_BEGINNER_CLUE',
@@ -22,9 +30,22 @@ const globalInteractionActions = [
 	'OPEN_HARD_CASKET',
 	'OPEN_ELITE_CASKET',
 	'OPEN_MASTER_CASKET',
-	'REPEAT_TRIP'
+	'REPEAT_TRIP',
+	'DO_BIRDHOUSE_RUN',
+	'CLAIM_DAILY',
+	'CHECK_PATCHES',
+	'AUTO_SLAY',
+	'CANCEL_TRIP',
+	'AUTO_FARM',
+	'AUTO_FARMING_CONTRACT',
+	'BUY_MINION',
+	'BUY_BINGO_TICKET',
+	'NEW_SLAYER_TASK',
+	'VIEW_BANK',
+	'DO_SHOOTING_STAR'
 ] as const;
-type GlobalInteractionAction = typeof globalInteractionActions[number];
+
+export type GlobalInteractionAction = typeof globalInteractionActions[number];
 function isValidGlobalInteraction(str: string): str is GlobalInteractionAction {
 	return globalInteractionActions.includes(str as GlobalInteractionAction);
 }
@@ -32,45 +53,191 @@ function isValidGlobalInteraction(str: string): str is GlobalInteractionAction {
 export function makeDoClueButton(tier: ClueTier) {
 	const name: Uppercase<ClueTier['name']> = tier.name.toUpperCase() as Uppercase<ClueTier['name']>;
 	const id: GlobalInteractionAction = `DO_${name}_CLUE`;
-	return new MessageButton()
-		.setCustomID(id)
+	return new ButtonBuilder()
+		.setCustomId(id)
 		.setLabel(`Do ${tier.name} Clue`)
-		.setStyle('SECONDARY')
+		.setStyle(ButtonStyle.Secondary)
 		.setEmoji('365003979840552960');
 }
 
 export function makeOpenCasketButton(tier: ClueTier) {
 	const name: Uppercase<ClueTier['name']> = tier.name.toUpperCase() as Uppercase<ClueTier['name']>;
 	const id: GlobalInteractionAction = `OPEN_${name}_CASKET`;
-	return new MessageButton()
-		.setCustomID(id)
+	return new ButtonBuilder()
+		.setCustomId(id)
 		.setLabel(`Open ${tier.name} Casket`)
-		.setStyle('SECONDARY')
+		.setStyle(ButtonStyle.Secondary)
 		.setEmoji('365003978678730772');
 }
 
 export function makeRepeatTripButton() {
-	return new MessageButton().setCustomID('REPEAT_TRIP').setLabel('Repeat Trip').setStyle('SECONDARY').setEmoji('🔁');
+	return new ButtonBuilder()
+		.setCustomId('REPEAT_TRIP')
+		.setLabel('Repeat Trip')
+		.setStyle(ButtonStyle.Secondary)
+		.setEmoji('🔁');
 }
 
-export async function interactionHook(data: APIInteraction) {
-	if (data.type !== InteractionType.MessageComponent) return;
-	const id = data.data.custom_id;
+export function makeBirdHouseTripButton() {
+	return new ButtonBuilder()
+		.setCustomId('DO_BIRDHOUSE_RUN')
+		.setLabel('Birdhouse Run')
+		.setStyle(ButtonStyle.Secondary)
+		.setEmoji('692946556399124520');
+}
+const reactionTimeLimits = {
+	0: Time.Hour * 12,
+	[PerkTier.One]: Time.Hour * 12,
+	[PerkTier.Two]: Time.Hour * 24,
+	[PerkTier.Three]: Time.Hour * 50,
+	[PerkTier.Four]: Time.Hour * 100,
+	[PerkTier.Five]: Time.Hour * 200,
+	[PerkTier.Six]: Time.Hour * 300,
+	[PerkTier.Seven]: Time.Hour * 300
+} as const;
+
+const reactionTimeLimit = (perkTier: PerkTier | 0): number => reactionTimeLimits[perkTier] ?? Time.Hour * 12;
+
+export function makeNewSlayerTaskButton() {
+	return new ButtonBuilder()
+		.setCustomId('NEW_SLAYER_TASK')
+		.setLabel('New Slayer Task')
+		.setStyle(ButtonStyle.Secondary)
+		.setEmoji('630911040560824330');
+}
+
+async function giveawayButtonHandler(user: MUser, customID: string, interaction: ButtonInteraction) {
+	const split = customID.split('_');
+	if (split[0] !== 'GIVEAWAY') return;
+	const giveawayID = Number(split[2]);
+	const giveaway = await prisma.giveaway.findFirst({
+		where: {
+			id: giveawayID
+		}
+	});
+	if (!giveaway) {
+		return interaction.reply('Invalid giveaway.');
+	}
+	if (split[1] === 'REPEAT') {
+		if (user.id !== giveaway.user_id) {
+			return interaction.reply("You cannot repeat other peoples' giveaways.");
+		}
+
+		return runCommand({
+			commandName: 'giveaway',
+			args: {
+				start: {
+					duration: `${giveaway.duration}ms`,
+					items: new Bank(giveaway.loot as ItemBank)
+						.items()
+						.map(t => `${t[1]} ${t[0].name}`)
+						.join(', ')
+				}
+			},
+			user,
+			member: interaction.member,
+			channelID: interaction.channelId,
+			guildID: interaction.guildId,
+			interaction
+		});
+	}
+
+	if (giveaway.finish_date.getTime() < Date.now() || giveaway.completed) {
+		return interaction.reply('This giveaway has finished.');
+	}
+
+	const action = split[1] === 'ENTER' ? 'ENTER' : 'LEAVE';
+
+	if (user.isIronman) {
+		return interaction.reply({ content: 'You are an ironman, you cannot enter giveaways.', ephemeral: true });
+	}
+
+	if (user.id === giveaway.user_id) {
+		return interaction.reply({ content: 'You cannot join your own giveaway.', ephemeral: true });
+	}
+
+	if (action === 'ENTER') {
+		if (giveaway.users_entered.includes(user.id)) {
+			return interaction.reply({ content: 'You are already entered in this giveaway.', ephemeral: true });
+		}
+		await prisma.giveaway.update({
+			where: {
+				id: giveaway.id
+			},
+			data: {
+				users_entered: {
+					push: user.id
+				}
+			}
+		});
+		updateGiveawayMessage(giveaway);
+		return interaction.reply({ content: 'You are now entered in this giveaway.', ephemeral: true });
+	}
+	if (!giveaway.users_entered.includes(user.id)) {
+		return interaction.reply({
+			content: "You aren't entered in this giveaway, so you can't leave it.",
+			ephemeral: true
+		});
+	}
+	await prisma.giveaway.update({
+		where: {
+			id: giveaway.id
+		},
+		data: {
+			users_entered: uniqueArr(removeFromArr(giveaway.users_entered, user.id))
+		}
+	});
+	updateGiveawayMessage(giveaway);
+	return interaction.reply({ content: 'You left the giveaway.', ephemeral: true });
+}
+
+export async function interactionHook(interaction: Interaction) {
+	if (!interaction.isButton()) return;
+	const id = interaction.customId;
+	const userID = interaction.user.id;
+
+	const user = await mUserFetch(userID);
+	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, interaction);
+
 	if (!isValidGlobalInteraction(id)) return;
-	const userID = data.member?.user?.id;
-	if (!userID) return;
-	const user = await mahojiUsersSettingsFetch(userID);
+	if (globalClient.oneCommandAtATimeCache.has(userID) || globalClient.isShuttingDown) {
+		return interaction.reply('You cannot use a command right now.');
+	}
 
 	const options = {
 		user,
-		member: data.member ?? null,
-		userID,
-		channelID: data.channel_id,
-		guildID: data.guild_id
+		member: interaction.member ?? null,
+		channelID: interaction.channelId,
+		guildID: interaction.guildId,
+		interaction
 	};
 
-	async function doClue(data: APIMessageComponentInteraction, tier: ClueTier['name']) {
-		await respondToButton(data.id, data.token);
+	const cd = Cooldowns.get(userID, 'button', Time.Second * 3);
+	if (cd !== null) {
+		return interactionReply(
+			interaction,
+			`You're on cooldown from clicking buttons, please wait: ${formatDuration(cd, true)}.`
+		);
+	}
+
+	const timeSinceMessage = Date.now() - new Date(interaction.message.createdTimestamp).getTime();
+	const timeLimit = reactionTimeLimit(getUsersPerkTier(user));
+	if (timeSinceMessage > Time.Day) {
+		console.log(
+			`${user.id} clicked Diff[${formatDuration(timeSinceMessage)}] Button[${id}] Message[${
+				interaction.message.id
+			}]`
+		);
+	}
+	if (1 > 2 && timeSinceMessage > timeLimit) {
+		return interaction.reply(
+			`<@${userID}>, this button is too old, you can no longer use it. You can only only use buttons that are up to ${formatDuration(
+				timeLimit
+			)} old, up to 300 hours for patrons.`
+		);
+	}
+
+	async function doClue(tier: ClueTier['name']) {
 		runCommand({
 			commandName: 'clue',
 			args: { tier },
@@ -80,7 +247,6 @@ export async function interactionHook(data: APIInteraction) {
 	}
 
 	async function openCasket(tier: ClueTier['name']) {
-		await respondToButton(data.id, data.token);
 		runCommand({
 			commandName: 'open',
 			args: {
@@ -91,33 +257,81 @@ export async function interactionHook(data: APIInteraction) {
 		});
 	}
 
+	if (id === 'CLAIM_DAILY') {
+		return runCommand({
+			commandName: 'minion',
+			args: { daily: {} },
+			bypassInhibitors: true,
+			...options
+		});
+	}
+
+	if (id === 'CHECK_PATCHES') {
+		return runCommand({
+			commandName: 'farming',
+			args: { check_patches: {} },
+			bypassInhibitors: true,
+			...options
+		});
+	}
+
+	if (id === 'CANCEL_TRIP') {
+		return runCommand({
+			commandName: 'minion',
+			args: { cancel: {} },
+			bypassInhibitors: true,
+			...options
+		});
+	}
+
+	if (id === 'BUY_MINION') {
+		return runCommand({
+			commandName: 'minion',
+			args: { buy: {} },
+			bypassInhibitors: true,
+			...options
+		});
+	}
+
+	if (id === 'BUY_BINGO_TICKET') {
+		return interaction.reply(await buyBingoTicketCommand(null, userID, 1));
+	}
+
+	if (id === 'VIEW_BANK') {
+		return runCommand({
+			commandName: 'bank',
+			bypassInhibitors: true,
+			args: {},
+			...options
+		});
+	}
+
 	if (minionIsBusy(user.id)) {
-		return respondToButton(data.id, data.token, `${minionName(user)} is busy.`);
+		return interaction.reply(`${user.minionName} is busy.`);
 	}
 
 	switch (id) {
 		case 'REPEAT_TRIP': {
 			const entry = lastTripCache.get(userID);
 			if (entry) {
-				await respondToButton(data.id, data.token);
 				return entry.continue({
 					...options
 				});
 			}
-			return respondToButton(data.id, data.token, "Couldn't find a last trip to repeat.");
+			return interaction.reply("Couldn't find a last trip to repeat.");
 		}
 		case 'DO_BEGINNER_CLUE':
-			return doClue(data, 'Beginner');
+			return doClue('Beginner');
 		case 'DO_EASY_CLUE':
-			return doClue(data, 'Easy');
+			return doClue('Easy');
 		case 'DO_MEDIUM_CLUE':
-			return doClue(data, 'Medium');
+			return doClue('Medium');
 		case 'DO_HARD_CLUE':
-			return doClue(data, 'Hard');
+			return doClue('Hard');
 		case 'DO_ELITE_CLUE':
-			return doClue(data, 'Elite');
+			return doClue('Elite');
 		case 'DO_MASTER_CLUE':
-			return doClue(data, 'Master');
+			return doClue('Master');
 
 		case 'OPEN_BEGINNER_CASKET':
 			return openCasket('Beginner');
@@ -131,6 +345,59 @@ export async function interactionHook(data: APIInteraction) {
 			return openCasket('Elite');
 		case 'OPEN_MASTER_CASKET':
 			return openCasket('Master');
+		case 'DO_BIRDHOUSE_RUN':
+			return runCommand({
+				commandName: 'activities',
+				args: { birdhouses: { action: 'harvest' } },
+				bypassInhibitors: true,
+				...options
+			});
+		case 'AUTO_SLAY': {
+			return runCommand({
+				commandName: 'slayer',
+				args: { autoslay: {} },
+				bypassInhibitors: true,
+				...options
+			});
+		}
+		case 'AUTO_FARM': {
+			return runCommand({
+				commandName: 'farming',
+				args: {
+					auto_farm: {}
+				},
+				bypassInhibitors: true,
+				...options
+			});
+		}
+		case 'AUTO_FARMING_CONTRACT': {
+			const response = await autoContract(await mUserFetch(user.id), options.channelID, user.id);
+			if (response) interaction.reply(response);
+			return;
+		}
+		case 'NEW_SLAYER_TASK': {
+			return runCommand({
+				commandName: 'slayer',
+				args: { new_task: {} },
+				bypassInhibitors: true,
+				...options
+			});
+		}
+		case 'DO_SHOOTING_STAR': {
+			const star = starCache.get(user.id);
+			starCache.delete(user.id);
+			if (star && star.expiry > Date.now()) {
+				const str = await shootingStarsCommand(interaction.channelId, user, star);
+				return interaction.reply(str);
+			}
+			return interaction.reply(
+				`${
+					star && star.expiry < Date.now()
+						? 'The Crashed Star has expired!'
+						: `That Crashed Star was not discovered by ${user.minionName}.`
+				}`
+			);
+		}
 		default: {
 		}
 	}

@@ -38,6 +38,9 @@ export interface Ore {
 	id: number;
 	name: string;
 	respawnTime: number;
+	bankingTime: number;
+	slope: number;
+	intercept: number;
 	petChance?: number;
 	nuggets?: boolean;
 	minerals?: number;
@@ -50,7 +53,12 @@ export interface Log {
 	id: number;
 	name: string;
 	aliases?: string[];
-	respawnTime: number;
+	findNewTreeTime: number;
+	bankingTime: number;
+	slope: number;
+	intercept: number;
+	depletionChance: number;
+	wcGuild?: boolean;
 	petChance?: number;
 	qpRequired: number;
 	clueScrollChance?: number;
@@ -146,6 +154,8 @@ export interface Craftable {
 	crushChance?: number[];
 	bankChest?: boolean;
 	outputMultiple?: number;
+	qpRequired?: number;
+	wcLvl?: number;
 }
 
 export interface Fletchable {

@@ -1,5 +1,3 @@
-import { KlasaUser } from 'klasa';
-
 import { SkillsEnum } from '../skilling/types';
 
 export interface ItemBank {
@@ -16,31 +14,6 @@ export interface ItemPriceCache {
 }
 
 export type AnyObject = Record<PropertyKey, unknown> | {};
-
-export type PostgresConfig = null | {
-	database: string;
-	user: string;
-	password: string;
-	port: number;
-};
-
-export type ProviderConfig = null | {
-	default: string;
-	postgres?: PostgresConfig;
-};
-
-export type RedditAppConfig = null | {
-	userAgent: string;
-	clientId: string;
-	clientSecret: string;
-	username: string;
-	password: string;
-};
-
-export type PatreonConfig = null | {
-	campaignID: number;
-	token: string;
-};
 
 export interface Patron {
 	patreonID: string;
@@ -60,12 +33,12 @@ export type ArrayItemsResolved = (number | number[])[];
 export interface MakePartyOptions {
 	maxSize: number;
 	minSize: number;
-	leader: KlasaUser;
+	leader: MUser;
 	message: string;
 	ironmanAllowed: boolean;
 	usersAllowed?: string[];
 	party?: boolean;
-	customDenier?(user: KlasaUser): Promise<[false] | [true, string]>;
+	customDenier?(user: MUser): Promise<[false] | [true, string]>;
 }
 
 export type Skills = Partial<{

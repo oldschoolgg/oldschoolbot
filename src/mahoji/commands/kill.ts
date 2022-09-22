@@ -1,10 +1,43 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank, Monsters } from 'oldschooljs';
 
-import { determineKillLimit } from '../../commands/OSRS_Fun/kill';
+import { PerkTier } from '../../lib/constants';
 import { toTitleCase } from '../../lib/util';
+import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import { deferInteraction } from '../../lib/util/interactionReply';
+import { makeBankImage } from '../../lib/util/makeBankImage';
 import { Workers } from '../../lib/workers';
 import { OSBMahojiCommand } from '../lib/util';
+
+export function determineKillLimit(user: MUser) {
+	const perkTier = getUsersPerkTier(user);
+
+	if (perkTier >= PerkTier.Six) {
+		return 1_000_000;
+	}
+
+	if (perkTier >= PerkTier.Five) {
+		return 600_000;
+	}
+
+	if (perkTier >= PerkTier.Four) {
+		return 400_000;
+	}
+
+	if (perkTier === PerkTier.Three) {
+		return 250_000;
+	}
+
+	if (perkTier === PerkTier.Two) {
+		return 100_000;
+	}
+
+	if (perkTier === PerkTier.One) {
+		return 50_000;
+	}
+
+	return 10_000;
+}
 
 export const killCommand: OSBMahojiCommand = {
 	name: 'kill',
@@ -37,8 +70,8 @@ export const killCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ options, userID, interaction }: CommandRunOptions<{ name: string; quantity: number }>) => {
-		const user = await globalClient.fetchUser(userID);
-		interaction.deferReply();
+		const user = await mUserFetch(userID);
+		deferInteraction(interaction);
 
 		const result = await Workers.kill({
 			quantity: options.quantity,
@@ -52,18 +85,13 @@ export const killCommand: OSBMahojiCommand = {
 			return result.error;
 		}
 
-		const { image } = await globalClient.tasks
-			.get('bankImage')!
-			.generateBankImage(
-				new Bank(result.bank?.bank),
-				result.title ?? `Loot from ${options.quantity.toLocaleString()} ${toTitleCase(options.name)}`,
-				true,
-				{},
-				user
-			);
-
+		const image = await makeBankImage({
+			bank: new Bank(result.bank?.bank),
+			title: result.title ?? `Loot from ${options.quantity.toLocaleString()} ${toTitleCase(options.name)}`,
+			user
+		});
 		return {
-			attachments: [{ buffer: image!, fileName: 'osbot.png' }],
+			files: [image.file],
 			content: result.content
 		};
 	}

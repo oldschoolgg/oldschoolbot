@@ -5,17 +5,17 @@ import { Bank } from 'oldschooljs';
 import { HERBIBOAR_ID, RAZOR_KEBBIT_ID } from '../../lib/constants';
 import { hasWildyHuntGearEquipped } from '../../lib/gear/functions/hasWildyHuntGearEquipped';
 import { trackLoot } from '../../lib/settings/prisma';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import creatures from '../../lib/skilling/skills/hunter/creatures';
 import Hunter from '../../lib/skilling/skills/hunter/hunter';
 import { HunterTechniqueEnum, SkillsEnum } from '../../lib/skilling/types';
+import { Peak } from '../../lib/tickers';
 import { HunterActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, itemID, updateBankSetting } from '../../lib/util';
+import { formatDuration, itemID } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
-import { Peak } from '../../tasks/WildernessPeakInterval';
 import { OSBMahojiCommand } from '../lib/util';
+import { updateBankSetting, userHasGracefulEquipped } from '../mahojiSettings';
 
 export const huntCommand: OSBMahojiCommand = {
 	name: 'hunt',
@@ -23,7 +23,6 @@ export const huntCommand: OSBMahojiCommand = {
 	attributes: {
 		requiresMinion: true,
 		requiresMinionNotBusy: true,
-		description: 'Send your minion to hunt things.',
 		examples: ['/hunt name:Ferret']
 	},
 	options: [
@@ -66,13 +65,19 @@ export const huntCommand: OSBMahojiCommand = {
 		userID,
 		channelID
 	}: CommandRunOptions<{ name: string; quantity?: number; hunter_potion?: boolean; stamina_potions?: boolean }>) => {
-		const user = await globalClient.fetchUser(userID);
-		const userBank = user.bank();
-		const userQP = user.settings.get(UserSettings.QP);
+		const user = await mUserFetch(userID);
+		const userBank = user.bank;
+		const userQP = user.QP;
 		const boosts = [];
 		let traps = 1;
 		let usingHuntPotion = Boolean(options.hunter_potion);
 		let wildyScore = 0;
+
+		if (options.stamina_potions === undefined) {
+			options.stamina_potions = true;
+		}
+
+		let usingStaminaPotion = Boolean(options.stamina_potions);
 
 		const creature = Hunter.Creatures.find(creature =>
 			creature.aliases.some(
@@ -116,7 +121,8 @@ export const huntCommand: OSBMahojiCommand = {
 		let [percentReduced, catchTime] = [
 			Math.min(
 				Math.floor(
-					(user.getCreatureScore(creature) ?? 1) / (Time.Hour / ((creature.catchTime * Time.Second) / traps))
+					(user.getCreatureScore(creature.id) ?? 1) /
+						(Time.Hour / ((creature.catchTime * Time.Second) / traps))
 				),
 				creature.huntTechnique === HunterTechniqueEnum.Tracking ? 20 : 10
 			),
@@ -128,13 +134,13 @@ export const huntCommand: OSBMahojiCommand = {
 		if (percentReduced >= 1) boosts.push(`${percentReduced}% for being experienced hunting this creature`);
 
 		// Reduce time by 5% if user has graceful equipped
-		if (!creature.wildy && user.hasGracefulEquipped()) {
+		if (!creature.wildy && userHasGracefulEquipped(user)) {
 			boosts.push('5% boost for using Graceful');
 			catchTime *= 0.95;
 		}
 
 		if (creature.wildy) {
-			const [bol, reason, score] = hasWildyHuntGearEquipped(user.getGear('wildy'));
+			const [bol, reason, score] = hasWildyHuntGearEquipped(user.gear.wildy);
 			wildyScore = score;
 			if (!bol) {
 				return `To hunt ${creature.name} in the wilderness you need to meet the following requirement: ${reason}, check your wildy gear.`;
@@ -144,7 +150,7 @@ export const huntCommand: OSBMahojiCommand = {
 			}
 		}
 
-		const maxTripLength = user.maxTripLength('Hunter');
+		const maxTripLength = calcMaxTripLength(user, 'Hunter');
 
 		let { quantity } = options;
 		if (!quantity) quantity = Math.floor(maxTripLength / ((catchTime * Time.Second) / traps));
@@ -182,7 +188,7 @@ export const huntCommand: OSBMahojiCommand = {
 					? Math.round(duration / (9 * Time.Minute))
 					: Math.round(duration / (18 * Time.Minute));
 
-			if (options.stamina_potions !== false && userBank.amount('Stamina potion(4)') >= staminaPotionQuantity) {
+			if (usingStaminaPotion && userBank.amount('Stamina potion(4)') >= staminaPotionQuantity) {
 				removeBank.add('Stamina potion(4)', staminaPotionQuantity);
 				boosts.push(`20% boost for using ${staminaPotionQuantity}x Stamina potion(4)`);
 				duration *= 0.8;
@@ -198,7 +204,7 @@ export const huntCommand: OSBMahojiCommand = {
 			boosts.push(`+2 hunter level for using ${hunterPotionQuantity}x Hunter potion(4) every 2nd minute.`);
 		}
 
-		updateBankSetting(globalClient, ClientSettings.EconomyStats.HunterCost, removeBank);
+		updateBankSetting('hunter_cost', removeBank);
 		await user.removeItemsFromBank(removeBank);
 
 		let wildyPeak = null;
@@ -232,6 +238,7 @@ export const huntCommand: OSBMahojiCommand = {
 			quantity,
 			duration,
 			usingHuntPotion,
+			usingStaminaPotion,
 			wildyPeak,
 			type: 'Hunter'
 		});

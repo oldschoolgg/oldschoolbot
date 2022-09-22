@@ -1,17 +1,14 @@
-import type { User } from '@prisma/client';
-import { KlasaUser } from 'klasa';
 import { Bank, LootTable, Openables } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { Mimic } from 'oldschooljs/dist/simulation/misc';
 import { HallowedSackTable } from 'oldschooljs/dist/simulation/openables/HallowedSack';
 import { Implings } from 'oldschooljs/dist/simulation/openables/Implings';
 
+import { ClueTiers } from './clues/clueTiers';
 import { Emoji, Events, MIMIC_MONSTER_ID } from './constants';
 import { cluesRaresCL } from './data/CollectionsExport';
-import ClueTiers from './minions/data/clueTiers';
 import { defaultFarmingContract } from './minions/farming';
 import { FarmingContract } from './minions/farming/types';
-import { UserSettings } from './settings/types/UserSettings';
 import {
 	BagFullOfGemsTable,
 	BuildersSupplyCrateTable,
@@ -20,6 +17,7 @@ import {
 	SpoilsOfWarTable
 } from './simulation/misc';
 import { openSeedPack } from './skilling/functions/calcFarmingContracts';
+import { ItemBank } from './types';
 import { itemID, roll } from './util';
 import { formatOrdinal } from './util/formatOrdinal';
 import getOSItem from './util/getOSItem';
@@ -27,9 +25,8 @@ import resolveItems from './util/resolveItems';
 
 interface OpenArgs {
 	quantity: number;
-	user: KlasaUser;
+	user: MUser;
 	self: UnifiedOpenable;
-	mahojiUser: User;
 }
 
 export interface UnifiedOpenable {
@@ -49,7 +46,7 @@ export interface UnifiedOpenable {
 
 const clueItemsToNotifyOf = cluesRaresCL
 	.concat(ClueTiers.filter(i => Boolean(i.milestoneReward)).map(i => i.milestoneReward!.itemReward))
-	.concat([itemID('Bloodhound')]);
+	.concat([itemID('Bloodhound'), itemID('Ranger boots')]);
 
 const clueOpenables: UnifiedOpenable[] = [];
 for (const clueTier of ClueTiers) {
@@ -76,7 +73,7 @@ for (const clueTier of ClueTiers) {
 				mimicNumber > 0 ? `with ${mimicNumber} mimic${mimicNumber > 1 ? 's' : ''}` : ''
 			}`;
 
-			const nthCasket = (user.settings.get(UserSettings.ClueScores)[clueTier.id] ?? 0) + quantity;
+			const nthCasket = ((user.user.openable_scores as ItemBank)[clueTier.id] ?? 0) + quantity;
 
 			// If this tier has a milestone reward, and their new score meets the req, and
 			// they don't own it already, add it to the loot.
@@ -92,11 +89,11 @@ for (const clueTier of ClueTiers) {
 			// and send a notification if they got one.
 			const announcedLoot = loot.filter(i => clueItemsToNotifyOf.includes(i.id), false);
 			if (announcedLoot.length > 0) {
-				user.client.emit(
+				globalClient.emit(
 					Events.ServerNotification,
-					`**${user.username}'s** minion, ${user.minionName}, just opened their ${formatOrdinal(nthCasket)} ${
-						clueTier.name
-					} casket and received **${announcedLoot}**!`
+					`**${user.usernameOrMention}'s** minion, ${user.minionName}, just opened their ${formatOrdinal(
+						nthCasket
+					)} ${clueTier.name} casket and received **${announcedLoot}**!`
 				);
 			}
 
@@ -104,10 +101,8 @@ for (const clueTier of ClueTiers) {
 				return { bank: loot };
 			}
 
-			await user.incrementClueScore(clueTier.id, quantity);
-
 			if (mimicNumber > 0) {
-				await user.incrementMonsterScore(MIMIC_MONSTER_ID, mimicNumber);
+				await user.incrementKC(MIMIC_MONSTER_ID, mimicNumber);
 			}
 
 			return { bank: loot, message };
@@ -258,7 +253,7 @@ const osjsOpenables: UnifiedOpenable[] = [
 			message?: string;
 		}> => {
 			const { plantTier } =
-				(args.mahojiUser.minion_farmingContract as FarmingContract | null) ?? defaultFarmingContract;
+				(args.user.user.minion_farmingContract as FarmingContract | null) ?? defaultFarmingContract;
 			const openLoot = new Bank();
 			for (let i = 0; i < args.quantity; i++) {
 				openLoot.add(openSeedPack(plantTier));

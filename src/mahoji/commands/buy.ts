@@ -3,21 +3,18 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import Buyables from '../../lib/data/buyables/buyables';
+import { leagueBuyables } from '../../lib/data/leaguesBuyables';
 import { kittens } from '../../lib/growablePets';
-import { Minigames } from '../../lib/settings/minigames';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
-import {
-	formatSkillRequirements,
-	itemNameFromID,
-	skillsMeetRequirements,
-	stringMatches,
-	updateBankSetting
-} from '../../lib/util';
+import { gotFavour } from '../../lib/minions/data/kourendFavour';
+import { getMinigameScore, Minigames } from '../../lib/settings/minigames';
+import { formatSkillRequirements, itemNameFromID, stringMatches } from '../../lib/util';
 import { mahojiChatHead } from '../../lib/util/chatHeadImage';
 import getOSItem from '../../lib/util/getOSItem';
+import { leaguesBuyCommand } from '../lib/abstracted_commands/leaguesBuyCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiParseNumber, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { handleMahojiConfirmation, mahojiParseNumber, updateBankSetting } from '../mahojiSettings';
+
+const allBuyablesAutocomplete = [...Buyables, ...leagueBuyables.map(i => ({ name: i.item.name })), { name: 'Kitten' }];
 
 export const buyCommand: OSBMahojiCommand = {
 	name: 'buy',
@@ -29,7 +26,7 @@ export const buyCommand: OSBMahojiCommand = {
 			description: 'The item you want to buy.',
 			required: true,
 			autocomplete: async (value: string) => {
-				return [...Buyables, { name: 'Kitten' }]
+				return allBuyablesAutocomplete
 					.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 					.map(i => ({ name: i.name, value: i.name }));
 			}
@@ -42,7 +39,7 @@ export const buyCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ options, userID, interaction }: CommandRunOptions<{ name: string; quantity?: string }>) => {
-		const user = await globalClient.fetchUser(userID.toString());
+		const user = await mUserFetch(userID.toString());
 		const { name } = options;
 		const quantity = mahojiParseNumber({ input: options.quantity, min: 1 }) ?? 1;
 		if (stringMatches(name, 'kitten')) {
@@ -53,15 +50,15 @@ export const buyCommand: OSBMahojiCommand = {
 					content: "You don't have enough GP to buy a kitten! They cost 1000 coins."
 				});
 			}
-			if (user.settings.get(UserSettings.QP) < 10) {
+			if (user.QP < 10) {
 				return mahojiChatHead({
 					head: 'gertrude',
 					content: "You haven't done enough quests to raise a kitten yet!"
 				});
 			}
 
-			const allItemsOwned = user.allItemsOwned();
-			if (kittens.some(kitten => allItemsOwned.has(kitten))) {
+			const allItemsOwnedBank = user.allItemsOwned();
+			if (kittens.some(kitten => allItemsOwnedBank.has(kitten))) {
 				return mahojiChatHead({
 					head: 'gertrude',
 					content: "You are already raising a kitten! You can't handle a second."
@@ -72,8 +69,8 @@ export const buyCommand: OSBMahojiCommand = {
 
 			const loot = new Bank().add(kitten.id);
 
-			await user.removeItemsFromBank(cost);
-			await user.addItemsToBank({ items: loot, collectionLog: true });
+			await transactItems({ userID: user.id, itemsToRemove: cost });
+			await transactItems({ userID: userID.toString(), itemsToAdd: loot, collectionLog: true });
 
 			return {
 				...(await mahojiChatHead({
@@ -82,6 +79,9 @@ export const buyCommand: OSBMahojiCommand = {
 				})),
 				content: `Removed ${cost} from your bank.`
 			};
+		}
+		if (leagueBuyables.some(i => stringMatches(i.item.name, name))) {
+			return leaguesBuyCommand(user, name, quantity);
 		}
 
 		const buyable = Buyables.find(
@@ -93,7 +93,7 @@ export const buyCommand: OSBMahojiCommand = {
 		if (!buyable) return "That's not a valid item you can buy.";
 
 		if (buyable.collectionLogReqs) {
-			const cl = new Bank(user.settings.get(UserSettings.CollectionLogBank));
+			const { cl } = user;
 			const unownedItems = buyable.collectionLogReqs.filter(i => !cl.has(i));
 			if (unownedItems.length > 0) {
 				return `You don't have **${unownedItems.map(itemNameFromID).join(', ')}** in your collection log`;
@@ -108,23 +108,30 @@ export const buyCommand: OSBMahojiCommand = {
 		}
 
 		if (buyable.qpRequired) {
-			const QP = user.settings.get(UserSettings.QP);
+			const { QP } = user;
 			if (QP < buyable.qpRequired) {
 				return `You need ${buyable.qpRequired} QP to purchase this item.`;
 			}
 		}
 
-		if (buyable.skillsNeeded && !skillsMeetRequirements(user.rawSkills, buyable.skillsNeeded)) {
+		if (buyable.skillsNeeded && !user.hasSkillReqs(buyable.skillsNeeded)) {
 			return `You don't have the required stats to buy this item. You need ${formatSkillRequirements(
 				buyable.skillsNeeded
 			)}.`;
 		}
 
+		if (buyable.requiredFavour) {
+			const [success, points] = gotFavour(user, buyable.requiredFavour, 100);
+			if (!success) {
+				return `You don't have the required amount of Favour to buy this item.\n\nRequired: ${points}% ${buyable.requiredFavour.toString()} Favour.`;
+			}
+		}
+
 		if (buyable.minigameScoreReq) {
 			const [key, req] = buyable.minigameScoreReq;
-			let kc = await user.getMinigameScore(key);
+			let kc = await getMinigameScore(user.id, key);
 			if (key === 'tob') {
-				kc += await user.getMinigameScore('tob_hard');
+				kc += await getMinigameScore(user.id, 'tob_hard');
 			}
 			if (kc < req) {
 				return `You need ${req} KC in ${
@@ -149,7 +156,7 @@ export const buyCommand: OSBMahojiCommand = {
 				? new Bank().add(buyable.name)
 				: buyable.outputItems instanceof Bank
 				? buyable.outputItems
-				: buyable.outputItems(await mahojiUsersSettingsFetch(user.id));
+				: buyable.outputItems(await mUserFetch(user.id));
 
 		const outItems = singleOutput.clone().multiply(quantity);
 
@@ -163,11 +170,14 @@ export const buyCommand: OSBMahojiCommand = {
 		await user.removeItemsFromBank(totalCost);
 		econBankChanges.add(totalCost);
 
-		updateBankSetting(globalClient, ClientSettings.EconomyStats.BuyCostBank, econBankChanges);
-		updateBankSetting(globalClient, ClientSettings.EconomyStats.BuyLootBank, outItems);
+		updateBankSetting('buy_cost_bank', econBankChanges);
+		updateBankSetting('buy_loot_bank', outItems);
 
-		await user.addItemsToBank({ items: outItems, collectionLog: true });
-
+		await transactItems({
+			userID: user.id,
+			itemsToAdd: outItems,
+			collectionLog: true
+		});
 		return `You purchased ${outItems}.`;
 	}
 };

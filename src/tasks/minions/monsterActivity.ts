@@ -1,4 +1,3 @@
-import { Task } from 'klasa';
 import { MonsterKillOptions, Monsters } from 'oldschooljs';
 
 import { PvMMethod } from '../../lib/constants';
@@ -8,20 +7,21 @@ import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import { prisma, trackLoot } from '../../lib/settings/prisma';
 import { runCommand } from '../../lib/settings/settings';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { calculateSlayerPoints, getSlayerMasterOSJSbyID, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { makeBankImage } from '../../lib/util/makeBankImage';
 
-export default class extends Task {
+export const monsterTask: MinionTask = {
+	type: 'MonsterKilling',
 	async run(data: MonsterActivityTaskOptions) {
 		const { monsterID, userID, channelID, quantity, duration, usingCannon, cannonMulti, burstOrBarrage } = data;
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
-		const user = await this.client.fetchUser(userID);
-		await user.incrementMonsterScore(monsterID, quantity);
+		const user = await mUserFetch(userID);
+		await user.incrementKC(monsterID, quantity);
 
 		const usersTask = await getUsersCurrentSlayerInfo(user.id);
 		const isOnTask =
@@ -30,7 +30,7 @@ export default class extends Task {
 			usersTask.assignedTask.monsters.includes(monsterID);
 		const quantitySlayed = isOnTask ? Math.min(usersTask.currentTask!.quantity_remaining, quantity) : null;
 
-		const mySlayerUnlocks = user.settings.get(UserSettings.Slayer.SlayerUnlocks);
+		const mySlayerUnlocks = user.user.slayer_unlocks;
 
 		const slayerMaster = isOnTask ? getSlayerMasterOSJSbyID(usersTask.slayerMaster!.id) : undefined;
 		// Check if superiors unlock is purchased
@@ -77,11 +77,19 @@ export default class extends Task {
 			superiorCount: newSuperiorCount
 		});
 
-		announceLoot({ user, monsterID: monster.id, loot, notifyDrops: monster.notifyDrops });
+		announceLoot({
+			user: await mUserFetch(user.id),
+			monsterID: monster.id,
+			loot,
+			notifyDrops: monster.notifyDrops
+		});
 
 		if (newSuperiorCount && newSuperiorCount > 0) {
-			const oldSuperiorCount = await user.settings.get(UserSettings.Slayer.SuperiorCount);
-			user.settings.update(UserSettings.Slayer.SuperiorCount, oldSuperiorCount + newSuperiorCount);
+			await user.update({
+				slayer_superior_count: {
+					increment: newSuperiorCount
+				}
+			});
 		}
 		const superiorMessage = newSuperiorCount ? `, including **${newSuperiorCount} superiors**` : '';
 		let str =
@@ -89,8 +97,8 @@ export default class extends Task {
 			` Your ${monster.name} KC is now ${user.getKC(monsterID)}.\n${xpRes}\n`;
 		if (
 			monster.id === Monsters.Unicorn.id &&
-			user.hasItemEquippedAnywhere('Iron dagger') &&
-			!user.hasItemEquippedOrInBank('Clue hunter cloak')
+			user.hasEquipped('Iron dagger') &&
+			!user.hasEquippedOrInBank(['Clue hunter cloak'])
 		) {
 			loot.add('Clue hunter cloak');
 			loot.add('Clue hunter boots');
@@ -108,7 +116,7 @@ export default class extends Task {
 					: monsterID === Monsters.Kreearra.id && usersTask.currentTask!.monster_id !== Monsters.Kreearra.id
 					? quantitySlayed! * 4
 					: monsterID === Monsters.GrotesqueGuardians.id &&
-					  user.settings.get(UserSettings.Slayer.SlayerUnlocks).includes(SlayerTaskUnlocksEnum.DoubleTrouble)
+					  user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.DoubleTrouble)
 					? quantitySlayed! * 2
 					: quantitySlayed!;
 
@@ -116,12 +124,19 @@ export default class extends Task {
 
 			thisTripFinishesTask = quantityLeft === 0;
 			if (thisTripFinishesTask) {
-				const currentStreak = user.settings.get(UserSettings.Slayer.TaskStreak) + 1;
-				await user.settings.update(UserSettings.Slayer.TaskStreak, currentStreak);
+				const { newUser } = await user.update({
+					slayer_task_streak: {
+						increment: 1
+					}
+				});
+				const currentStreak = newUser.slayer_task_streak;
 				const points = await calculateSlayerPoints(currentStreak, usersTask.slayerMaster!, user);
-				const newPoints = user.settings.get(UserSettings.Slayer.SlayerPoints) + points;
-				await user.settings.update(UserSettings.Slayer.SlayerPoints, newPoints);
-				str += `\n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${newPoints}; return to a Slayer master.**`;
+				const secondNewUser = await user.update({
+					slayer_points: {
+						increment: points
+					}
+				});
+				str += `\n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${secondNewUser.newUser.slayer_points}; return to a Slayer master.**`;
 				if (usersTask.assignedTask?.isBoss) {
 					str += ` ${await user.addXP({ skillName: SkillsEnum.Slayer, amount: 5000, minimal: true })}`;
 					str += ' for completing your boss task.';
@@ -141,7 +156,22 @@ export default class extends Task {
 			});
 		}
 
-		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
+		const messages: string[] = [];
+		if (monster.effect) {
+			await monster.effect({
+				user,
+				quantity,
+				monster,
+				loot,
+				data,
+				messages
+			});
+		}
+		const { previousCL, itemsAdded } = await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 
 		await trackLoot({
 			loot: itemsAdded,
@@ -152,16 +182,15 @@ export default class extends Task {
 			duration
 		});
 
-		const { image } = await this.client.tasks
-			.get('bankImage')!
-			.generateBankImage(
-				itemsAdded,
-				`Loot From ${quantity} ${monster.name}:`,
-				true,
-				{ showNewCL: 1 },
-				user,
-				previousCL
-			);
+		const image =
+			itemsAdded.length === 0
+				? undefined
+				: await makeBankImage({
+						bank: itemsAdded,
+						title: `Loot From ${quantity} ${monster.name}:`,
+						user,
+						previousCL
+				  });
 
 		handleTripFinish(
 			user,
@@ -185,9 +214,10 @@ export default class extends Task {
 							isContinue: true
 						});
 				  },
-			image!,
+			image?.file.attachment,
 			data,
-			itemsAdded
+			itemsAdded,
+			messages
 		);
 	}
-}
+};

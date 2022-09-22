@@ -1,12 +1,8 @@
 /* eslint-disable @typescript-eslint/restrict-plus-operands */
-import { User } from '@prisma/client';
 import * as fs from 'fs';
-import { KlasaUser } from 'klasa';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import { Canvas } from 'skia-canvas/lib';
 
-import BankImageTask from '../../../tasks/bankImage';
-import { UserSettings } from '../../settings/types/UserSettings';
 import { Gear } from '../../structures/Gear';
 import { toTitleCase } from '../../util';
 import { canvasImageFromBuffer, drawItemQuantityText, drawTitleText, fillTextXTimesInCtx } from '../../util/canvasUtil';
@@ -51,8 +47,6 @@ const slotCoordinatesCompact: { [key in EquipmentSlot]: [number, number] } = {
 
 const slotSize = 36;
 
-let bankTask: BankImageTask | null = null;
-
 function drawText(canvas: Canvas, text: string, x: number, y: number, maxStat = true) {
 	const ctx = canvas.getContext('2d');
 	ctx.fillStyle = '#000000';
@@ -80,22 +74,16 @@ function drawText(canvas: Canvas, text: string, x: number, y: number, maxStat = 
 }
 
 export async function generateGearImage(
-	user: KlasaUser | User,
+	user: MUser,
 	gearSetup: Gear | GearSetup,
 	gearType: GearSetupType | null,
 	petID: number | null
 ) {
-	// Init the background images if they are not already
-	if (!bankTask) {
-		bankTask = globalClient.tasks.get('bankImage') as BankImageTask;
-	}
+	const bankBg = user.user.bankBackground ?? 1;
 
-	const bankBg =
-		(user instanceof KlasaUser ? user.settings.get(UserSettings.BankBackground) : user.bankBackground) ?? 1;
+	let { sprite, uniqueSprite, background: userBgImage } = bankImageGenerator.getBgAndSprite(bankBg);
 
-	let { sprite, uniqueSprite, background: userBgImage } = bankTask.getBgAndSprite(bankBg);
-
-	const hexColor = user instanceof KlasaUser ? user.settings.get(UserSettings.BankBackgroundHex) : user.bank_bg_hex;
+	const hexColor = user.user.bank_bg_hex;
 
 	const gearStats = gearSetup instanceof Gear ? gearSetup.stats : new Gear(gearSetup).stats;
 	const gearTemplateImage = await canvasImageFromBuffer(gearTemplateFile);
@@ -119,7 +107,7 @@ export async function generateGearImage(
 	}
 	ctx.drawImage(gearTemplateImage, 0, 0, gearTemplateImage.width, gearTemplateImage.height);
 
-	if (!userBgImage.transparent) bankTask?.drawBorder(ctx, sprite, false);
+	if (!userBgImage.transparent) bankImageGenerator.drawBorder(ctx, sprite, false);
 
 	ctx.font = '16px OSRSFontCompact';
 	// Draw preset title
@@ -221,7 +209,7 @@ export async function generateGearImage(
 
 	// Draw items
 	if (petID) {
-		const image = await globalClient.tasks.get('bankImage')!.getItemImage(petID, 1);
+		const image = await bankImageGenerator.getItemImage(petID);
 		ctx.drawImage(
 			image,
 			178 + slotSize / 2 - image.width / 2,
@@ -234,7 +222,7 @@ export async function generateGearImage(
 	for (const enumName of Object.values(EquipmentSlot)) {
 		const item = gearSetup[enumName];
 		if (!item) continue;
-		const image = await globalClient.tasks.get('bankImage')!.getItemImage(item.item, item.quantity);
+		const image = await bankImageGenerator.getItemImage(item.item);
 
 		let [x, y] = slotCoordinates[enumName];
 		x = x + slotSize / 2 - image.width / 2;
@@ -249,18 +237,14 @@ export async function generateGearImage(
 	return canvas.toBuffer('png');
 }
 
-export async function generateAllGearImage(user: KlasaUser) {
-	if (!bankTask) {
-		bankTask = globalClient.tasks.get('bankImage') as BankImageTask;
-	}
-
+export async function generateAllGearImage(user: MUser) {
 	let {
 		sprite: bgSprite,
 		uniqueSprite: hasBgSprite,
 		background: userBg
-	} = bankTask.getBgAndSprite(user.settings.get(UserSettings.BankBackground) ?? 1);
+	} = bankImageGenerator.getBgAndSprite(user.user.bankBackground ?? 1);
 
-	const hexColor = user.settings.get(UserSettings.BankBackgroundHex);
+	const hexColor = user.user.bank_bg_hex;
 
 	const gearTemplateImage = await canvasImageFromBuffer(gearTemplateCompactFile);
 	const canvas = new Canvas((gearTemplateImage.width + 10) * 4 + 20, Number(gearTemplateImage.height) * 2 + 70);
@@ -301,7 +285,7 @@ export async function generateAllGearImage(user: KlasaUser) {
 			y += gearTemplateImage.height + 30;
 			i = 0;
 		}
-		const gear = user.getGear(type as GearSetupType);
+		const gear = user.gear[type];
 		ctx.save();
 		ctx.translate(15 + i * (gearTemplateImage.width + 10), y);
 		ctx.font = '16px RuneScape Bold 12';
@@ -311,7 +295,7 @@ export async function generateAllGearImage(user: KlasaUser) {
 		for (const enumName of Object.values(EquipmentSlot)) {
 			const item = gear[enumName];
 			if (!item) continue;
-			const image = await globalClient.tasks.get('bankImage')!.getItemImage(item.item, item.quantity);
+			const image = await bankImageGenerator.getItemImage(item.item);
 			let [x, y] = slotCoordinatesCompact[enumName];
 			x = x + slotSize / 2 - image.width / 2;
 			y = y + slotSize / 2 - image.height / 2;
@@ -330,13 +314,13 @@ export async function generateAllGearImage(user: KlasaUser) {
 	const petY = canvas.height / 2 + 20;
 	drawText(canvas, 'Pet', petX + 5, petY - 5);
 	ctx.drawImage(gearTemplateImage, 42, 1, 36, 36, petX, petY, 36, 36);
-	const userPet = user.settings.get(UserSettings.Minion.EquippedPet);
+	const userPet = user.user.minion_equippedPet;
 	if (userPet) {
-		const image = await globalClient.tasks.get('bankImage')!.getItemImage(userPet, 1);
+		const image = await bankImageGenerator.getItemImage(userPet);
 		ctx.drawImage(image, petX, petY, image.width, image.height);
 	}
 
-	if (!userBg.transparent) bankTask?.drawBorder(ctx, bgSprite, false);
+	if (!userBg.transparent) bankImageGenerator.drawBorder(ctx, bgSprite, false);
 
 	return canvas.toBuffer('png');
 }

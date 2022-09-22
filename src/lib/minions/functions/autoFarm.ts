@@ -1,23 +1,21 @@
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { farmingPlantCommand } from '../../../mahoji/lib/abstracted_commands/farmingCommand';
-import { UserSettings } from '../../settings/types/UserSettings';
 import { calcNumOfPatches } from '../../skilling/functions/calcsFarming';
 import { plants } from '../../skilling/skills/farming';
 import { IPatchDataDetailed } from '../farming/types';
 
-export async function autoFarm(user: KlasaUser, patchesDetailed: IPatchDataDetailed[], channelID: bigint) {
+export async function autoFarm(user: MUser, patchesDetailed: IPatchDataDetailed[], channelID: string) {
 	if (user.minionIsBusy) {
 		return 'Your minion must not be busy to use this command.';
 	}
-	const userBank = user.bank();
+	const userBank = user.bank;
 	const farmingLevel = user.skillLevel(SkillsEnum.Farming);
 	const elligible = [...plants]
 		.filter(p => {
 			if (p.level > farmingLevel) return false;
-			const [numOfPatches] = calcNumOfPatches(p, user, user.settings.get(UserSettings.QP));
+			const [numOfPatches] = calcNumOfPatches(p, user, user.QP);
 			if (numOfPatches === 0) return false;
 			const reqItems = new Bank(p.inputItems).multiply(numOfPatches);
 			if (!userBank.has(reqItems.bank)) return false;
@@ -37,7 +35,7 @@ export async function autoFarm(user: KlasaUser, patchesDetailed: IPatchDataDetai
 	}
 
 	return farmingPlantCommand({
-		user,
+		userID: user.id,
 		plantName: toPlant.name,
 		autoFarmed: true,
 		channelID,

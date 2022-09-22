@@ -1,18 +1,18 @@
-import { User } from '@prisma/client';
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { Skills } from '../../../lib/types';
 import { CollectingOptions } from '../../../lib/types/minions';
-import { formatDuration, stringMatches, updateBankSetting } from '../../../lib/util';
+import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
+import { updateBankSetting } from '../../mahojiSettings';
+import { getPOH } from './pohCommand';
 
-interface Collectable {
+export interface Collectable {
 	item: Item;
 	skillReqs?: Skills;
 	itemCost?: Bank;
@@ -136,7 +136,7 @@ export const collectables: Collectable[] = [
 	}
 ];
 
-export async function collectCommand(mahojiUser: User, user: KlasaUser, channelID: bigint, objectName: string) {
+export async function collectCommand(user: MUser, channelID: string, objectName: string, no_stams?: boolean) {
 	const collectable = collectables.find(c => stringMatches(c.item.name, objectName));
 	if (!collectable) {
 		return `That's not something your minion can collect, you can collect these things: ${collectables
@@ -144,8 +144,8 @@ export async function collectCommand(mahojiUser: User, user: KlasaUser, channelI
 			.join(', ')}.`;
 	}
 
-	const maxTripLength = user.maxTripLength('Collecting');
-	if (collectable.qpRequired && mahojiUser.QP < collectable.qpRequired) {
+	const maxTripLength = calcMaxTripLength(user, 'Collecting');
+	if (collectable.qpRequired && user.QP < collectable.qpRequired) {
 		return `You need ${collectable.qpRequired} QP to collect ${collectable.item.name}.`;
 	}
 
@@ -155,6 +155,10 @@ export async function collectCommand(mahojiUser: User, user: KlasaUser, channelI
 				return `You need ${lvl} ${skillName} to collect ${collectable.item.name}.`;
 			}
 		}
+	}
+
+	if (no_stams === undefined) {
+		no_stams = false;
 	}
 
 	const quantity = Math.floor(maxTripLength / collectable.duration);
@@ -168,14 +172,28 @@ export async function collectCommand(mahojiUser: User, user: KlasaUser, channelI
 		)}.`;
 	}
 
-	const cost = collectable.itemCost?.clone().multiply(quantity) ?? null;
-	if (cost) {
+	const poh = await getPOH(user.id);
+	const hasJewelleryBox = poh.jewellery_box !== null;
+
+	let cost: Bank = new Bank();
+
+	if (collectable.itemCost) {
+		{
+			cost = collectable.itemCost.clone().multiply(quantity);
+			if (cost.has('Ring of dueling(8)') && hasJewelleryBox)
+				cost.remove('Ring of dueling(8)', cost.amount('Ring of dueling(8)'));
+		}
+		if (cost.has('Stamina potion(4)') && no_stams) {
+			// 50% longer trip time for not using stamina potion (4)
+			duration *= 1.5;
+			cost.remove('Stamina potion(4)', cost.amount('Stamina potion (4)'));
+		}
 		if (!user.owns(cost)) {
 			return `You don't have the items needed for this trip, you need: ${cost}.`;
 		}
-		await user.removeItemsFromBank(cost);
+		await transactItems({ userID: user.id, itemsToRemove: cost });
 
-		await updateBankSetting(user.client, ClientSettings.EconomyStats.CollectingCost, cost);
+		await updateBankSetting('collecting_cost', cost);
 	}
 
 	await addSubTaskToActivityTask<CollectingOptions>({
@@ -184,11 +202,16 @@ export async function collectCommand(mahojiUser: User, user: KlasaUser, channelI
 		channelID: channelID.toString(),
 		quantity,
 		duration,
+		noStaminas: no_stams,
 		type: 'Collecting'
 	});
 
 	return `${user.minionName} is now collecting ${quantity * collectable.quantity}x ${
 		collectable.item.name
-	}, it'll take around ${formatDuration(duration)} to finish.
-${cost ? `\nRemoved ${cost} from your bank.` : ''}`;
+	}, it'll take around ${formatDuration(duration)} to finish.${
+		cost.toString().length > 0
+			? `
+Removed ${cost} from your bank.`
+			: ''
+	}${no_stams ? '\n50% longer trip due to not using Stamina potions.' : ''}`;
 }

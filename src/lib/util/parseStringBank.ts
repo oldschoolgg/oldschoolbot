@@ -1,5 +1,4 @@
 import { notEmpty } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { itemNameMap } from 'oldschooljs/dist/structures/Items';
@@ -31,7 +30,7 @@ export function parseQuantityAndItem(str = '', inputBank?: Bank): [Item[], numbe
 		potentialQty = potentialQty.replace('#', inputBank.amount(lazyItemGet.id).toString());
 	}
 
-	let parsedQty: number | null = evalMathExpression(potentialQty);
+	let parsedQty: number | null = evalMathExpression(potentialQty.replace('x', ''));
 	if (parsedQty !== null && isNaN(parsedQty)) parsedQty = null;
 
 	const parsedName = parsedQty === null ? str : potentialName.join(' ');
@@ -89,7 +88,7 @@ export function parseBankFromFlags({
 	flags: Record<string, string | undefined>;
 	excludeItems: readonly number[];
 	maxSize?: number;
-	user?: KlasaUser;
+	user?: MUser;
 }): Bank {
 	const newBank = new Bank();
 	const maxQuantity = Number(flags.qty) || Infinity;
@@ -115,7 +114,7 @@ export function parseBankFromFlags({
 
 		const qty = Math.min(maxQuantity, quantity === 0 ? Math.max(1, bank.amount(item.id)) : quantity);
 		if (filter && !filter.items(user).includes(item.id)) continue;
-		if ((filter || flagsKeys.length) && excludeItems.includes(item.id)) continue;
+		if (excludeItems.includes(item.id)) continue;
 
 		newBank.add(item.id, qty);
 	}
@@ -131,7 +130,7 @@ interface ParseBankOptions {
 	filters?: (string | undefined)[];
 	search?: string;
 	maxSize?: number;
-	user?: KlasaUser;
+	user?: MUser;
 	noDuplicateItems?: true;
 }
 
@@ -192,7 +191,7 @@ interface ParseInputCostBankOptions {
 	flags?: Record<string, string>;
 	inputStr?: string;
 	excludeItems: readonly number[];
-	user?: KlasaUser;
+	user?: MUser;
 }
 export function parseInputCostBank({
 	usersBank,
@@ -216,50 +215,4 @@ export function parseInputCostBank({
 	}
 
 	return truncateBankToSize(bank, 60);
-}
-
-export function parseInputBankWithPrice({
-	usersBank,
-	str,
-	flags,
-	excludeItems,
-	user
-}: {
-	usersBank: Bank;
-	str: string;
-	flags: Record<string, string>;
-	excludeItems: readonly number[];
-	user?: KlasaUser;
-}) {
-	const split = str.split(' ');
-	const firstAsNumber = evalMathExpression(split[0]);
-
-	if (!firstAsNumber) {
-		return {
-			price: 0,
-			bank: parseInputCostBank({ usersBank, inputStr: str, flags, excludeItems, user })
-		};
-	}
-
-	const bankParsedFromFlags = parseBankFromFlags({ bank: usersBank, flags, excludeItems, user });
-	const flagsHaveAnEffectOnBank = bankParsedFromFlags.length !== usersBank.length;
-
-	if (split.length === 1) {
-		const potentialItem = Items.get(firstAsNumber);
-		if (!potentialItem) {
-			return {
-				price: firstAsNumber,
-				bank: flagsHaveAnEffectOnBank ? bankParsedFromFlags : new Bank()
-			};
-		}
-		return {
-			price: 0,
-			bank: parseInputCostBank({ usersBank, flags, inputStr: potentialItem.name, excludeItems, user })
-		};
-	}
-
-	return {
-		price: firstAsNumber,
-		bank: parseInputCostBank({ usersBank, inputStr: str.split(' ').slice(1).join(' '), flags, excludeItems, user })
-	};
 }

@@ -1,5 +1,4 @@
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { championScrolls } from '../../../lib/data/CollectionsExport';
@@ -7,15 +6,15 @@ import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 
-export async function championsChallengeCommand(user: KlasaUser, channelID: bigint) {
-	const bank = user.bank();
+export async function championsChallengeCommand(user: MUser, channelID: string) {
+	const { bank } = user;
 	if (!bank.has(championScrolls)) {
 		return "You don't have a set of Champion Scrolls to do the Champion's Challenge! You need 1 of each.";
 	}
 
 	const cost = new Bank();
 	for (const id of championScrolls) cost.add(id);
-	await user.removeItemsFromBank(cost);
+	await transactItems({ userID: user.id, itemsToRemove: cost });
 
 	await addSubTaskToActivityTask<MinigameActivityTaskOptions>({
 		userID: user.id,

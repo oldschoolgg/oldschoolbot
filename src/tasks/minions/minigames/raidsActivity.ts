@@ -1,5 +1,4 @@
 import { noOp, shuffleArr } from 'e';
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 
@@ -7,14 +6,13 @@ import { Emoji, Events } from '../../../lib/constants';
 import { chambersOfXericCL, chambersOfXericMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { createTeam } from '../../../lib/data/cox';
 import { trackLoot } from '../../../lib/settings/prisma';
-import { incrementMinigameScore } from '../../../lib/settings/settings';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
+import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import { RaidsOptions } from '../../../lib/types/minions';
-import { roll, updateBankSetting } from '../../../lib/util';
+import { roll } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import resolveItems from '../../../lib/util/resolveItems';
+import { updateBankSetting } from '../../../mahoji/mahojiSettings';
 
 const notPurple = resolveItems(['Torn prayer scroll', 'Dark relic', 'Onyx']);
 const greenItems = resolveItems(['Twisted ancestral colour kit']);
@@ -23,10 +21,11 @@ const purpleButNotAnnounced = resolveItems(['Dexterous prayer scroll', 'Arcane p
 
 const purpleItems = chambersOfXericCL.filter(i => !notPurple.includes(i));
 
-export default class extends Task {
+export const raidsTask: MinionTask = {
+	type: 'Raids',
 	async run(data: RaidsOptions) {
 		const { channelID, users, challengeMode, duration, leader } = data;
-		const allUsers = await Promise.all(users.map(async u => this.client.fetchUser(u)));
+		const allUsers = await Promise.all(users.map(async u => mUserFetch(u)));
 		const team = await createTeam(allUsers, challengeMode);
 
 		const loot = ChambersOfXeric.complete({
@@ -49,20 +48,19 @@ export default class extends Task {
 		} has finished. The total amount of points your team got is ${totalPoints.toLocaleString()}.\n`;
 		await Promise.all(allUsers.map(u => incrementMinigameScore(u.id, minigameID, 1)));
 
-		const onyxChance = users.length * 70;
-
 		for (let [userID, _userLoot] of Object.entries(loot)) {
-			const user = await this.client.fetchUser(userID).catch(noOp);
+			const user = await mUserFetch(userID).catch(noOp);
 			if (!user) continue;
 			const { personalPoints, deaths, deathChance } = team.find(u => u.id === user.id)!;
 
-			user.settings.update(
-				UserSettings.TotalCoxPoints,
-				user.settings.get(UserSettings.TotalCoxPoints) + personalPoints
-			);
+			await user.update({
+				total_cox_points: {
+					increment: personalPoints
+				}
+			});
 
 			const userLoot = new Bank(_userLoot);
-			if (challengeMode && roll(50) && user.cl().has('Metamorphic dust')) {
+			if (challengeMode && roll(50) && user.cl.has('Metamorphic dust')) {
 				const { bank } = user.allItemsOwned();
 				const unownedPet = shuffleArr(chambersOfXericMetamorphPets).find(pet => !bank[pet]);
 				if (unownedPet) {
@@ -70,11 +68,7 @@ export default class extends Task {
 				}
 			}
 
-			if (!totalLoot.has('Onyx') && roll(onyxChance)) {
-				userLoot.add('Onyx');
-			}
-
-			const { itemsAdded } = await user.addItemsToBank({ items: userLoot, collectionLog: true });
+			const { itemsAdded } = await transactItems({ userID: user.id, itemsToAdd: userLoot, collectionLog: true });
 			totalLoot.add(itemsAdded);
 
 			const items = itemsAdded.items();
@@ -85,10 +79,10 @@ export default class extends Task {
 			const emote = isBlue ? Emoji.Blue : isGreen ? Emoji.Green : Emoji.Purple;
 			if (items.some(([item]) => purpleItems.includes(item.id) && !purpleButNotAnnounced.includes(item.id))) {
 				const itemsToAnnounce = itemsAdded.filter(item => purpleItems.includes(item.id), false);
-				this.client.emit(
+				globalClient.emit(
 					Events.ServerNotification,
-					`${emote} ${user.username} just received **${itemsToAnnounce}** on their ${formatOrdinal(
-						await user.getMinigameScore(minigameID)
+					`${emote} ${user.usernameOrMention} just received **${itemsToAnnounce}** on their ${formatOrdinal(
+						await getMinigameScore(user.id, minigameID)
 					)} raid.`
 				);
 			}
@@ -100,7 +94,7 @@ export default class extends Task {
 			}${deathChance.toFixed(0)}%)`;
 		}
 
-		updateBankSetting(this.client, ClientSettings.EconomyStats.CoxLoot, totalLoot);
+		updateBankSetting('cox_loot', totalLoot);
 		await trackLoot({
 			loot: totalLoot,
 			id: minigameID,
@@ -132,4 +126,4 @@ export default class extends Task {
 			null
 		);
 	}
-}
+};

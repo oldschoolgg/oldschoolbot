@@ -1,26 +1,26 @@
 import { Embed } from '@discordjs/builders';
 import { shuffleArr } from 'e';
-import { KlasaUser } from 'klasa';
+import { Bank } from 'oldschooljs';
 import { SkillsScore } from 'oldschooljs/dist/meta/types';
 import { convertXPtoLVL, toKMB } from 'oldschooljs/dist/util';
 
+import { ClueTiers } from '../clues/clueTiers';
+import { getClueScoresFromOpenables } from '../clues/clueUtils';
 import { badges, skillEmoji } from '../constants';
-import ClueTiers from '../minions/data/clueTiers';
+import { calcCLDetails } from '../data/Collections';
 import { effectiveMonsters } from '../minions/data/killableMonsters';
 import { getAllMinigameScores } from '../settings/settings';
-import { UserSettings } from '../settings/types/UserSettings';
 import { courses } from '../skilling/skills/agility';
 import creatures from '../skilling/skills/hunter/creatures';
-import { Skills } from '../types';
+import { ItemBank, Skills } from '../types';
 import { addArrayOfNumbers, toTitleCase } from '../util';
 import { logError } from './logError';
 
-export async function minionStatsEmbed(user: KlasaUser): Promise<Embed> {
-	const { rawSkills } = user;
-	const QP = user.settings.get(UserSettings.QP);
+export async function minionStatsEmbed(user: MUser): Promise<Embed> {
+	const { QP } = user;
 
-	const xp = addArrayOfNumbers(Object.values(rawSkills) as number[]);
-	const totalLevel = user.totalLevel();
+	const xp = addArrayOfNumbers(Object.values(user.skillsAsXP) as number[]);
+	const { totalLevel } = user;
 	const skillCell = (skill: string) => {
 		if (skill === 'overall') {
 			return `${skillEmoji[skill as keyof typeof skillEmoji] as keyof SkillsScore} ${totalLevel}\n${
@@ -28,18 +28,21 @@ export async function minionStatsEmbed(user: KlasaUser): Promise<Embed> {
 			} ${user.combatLevel}`;
 		}
 
-		const skillXP = rawSkills[skill as keyof Skills] ?? 1;
+		const skillXP = user.skillsAsXP[skill as keyof Skills] ?? 1;
 		return `${skillEmoji[skill as keyof typeof skillEmoji] as keyof SkillsScore} ${convertXPtoLVL(
 			skillXP
 		).toLocaleString()} (${toKMB(skillXP)})`;
 	};
 
-	const clueEntries = Object.entries(user.settings.get(UserSettings.ClueScores));
+	const openableScores = new Bank(user.user.openable_scores as ItemBank);
+	getClueScoresFromOpenables(openableScores, true);
+
+	const clueEntries = Object.entries(openableScores.bank);
 	const minigameScores = (await getAllMinigameScores(user.id))
 		.filter(i => i.score > 0)
 		.sort((a, b) => b.score - a.score);
 
-	const rawBadges = user.settings.get(UserSettings.Badges);
+	const rawBadges = user.user.badges;
 	const badgesStr = rawBadges.map(num => badges[num]).join(' ');
 
 	const embed = new Embed()
@@ -70,7 +73,7 @@ export async function minionStatsEmbed(user: KlasaUser): Promise<Embed> {
 		embed.setColor(5_460_819);
 	}
 
-	const { percent } = user.completion();
+	const { percent } = calcCLDetails(user);
 	embed.addField({
 		name: `${skillEmoji.total} Overall`,
 		value: `**Level:** ${totalLevel}
@@ -111,27 +114,27 @@ export async function minionStatsEmbed(user: KlasaUser): Promise<Embed> {
 	}
 
 	const otherStats: [string, number | string][] = [
-		['Fight Caves Attempts', user.settings.get(UserSettings.Stats.FightCavesAttempts)],
-		['Fire Capes Sacrificed', user.settings.get(UserSettings.Stats.FireCapesSacrificed)],
-		['Tithe Farm Score', user.settings.get(UserSettings.Stats.TitheFarmsCompleted)],
-		['Dice Wins', user.settings.get(UserSettings.Stats.DiceWins)],
-		['Dice Losses', user.settings.get(UserSettings.Stats.DiceLosses)],
-		['Duel Wins', user.settings.get(UserSettings.Stats.DuelWins)],
-		['Duel Losses', user.settings.get(UserSettings.Stats.DuelLosses)],
-		['High Gambles', user.settings.get(UserSettings.HighGambles)],
-		['Carpenter Points', user.settings.get(UserSettings.CarpenterPoints)],
-		['Honour Level', user.settings.get(UserSettings.HonourLevel)],
-		['Sacrificed', toKMB(user.settings.get(UserSettings.SacrificedValue))]
+		['Fight Caves Attempts', user.user.stats_fightCavesAttempts],
+		['Fire Capes Sacrificed', user.user.stats_fireCapesSacrificed],
+		['Tithe Farm Score', user.user.stats_titheFarmsCompleted],
+		['Dice Wins', user.user.stats_diceWins],
+		['Dice Losses', user.user.stats_diceLosses],
+		['Duel Wins', user.user.stats_duelWins],
+		['Duel Losses', user.user.stats_duelLosses],
+		['High Gambles', user.user.high_gambles],
+		['Carpenter Points', user.user.carpenter_points],
+		['Honour Level', user.user.honour_level],
+		['Sacrificed', toKMB(Number(user.user.sacrificedValue))]
 	];
 
-	const lapCounts = Object.entries(user.settings.get(UserSettings.LapsScores)).sort((a, b) => a[1] - b[1]);
+	const lapCounts = Object.entries(user.user.lapsScores as ItemBank).sort((a, b) => a[1] - b[1]);
 	if (lapCounts.length > 0) {
 		const [id, score] = lapCounts[0];
 		const res = courses.find(c => c.id === parseInt(id))!;
 		otherStats.push([`${res.name} Laps`, score]);
 	}
 
-	const monsterScores = Object.entries(user.settings.get(UserSettings.MonsterScores)).sort((a, b) => a[1] - b[1]);
+	const monsterScores = Object.entries(user.user.monsterScores as ItemBank).sort((a, b) => a[1] - b[1]);
 	if (monsterScores.length > 0) {
 		const [id, score] = monsterScores[0];
 		const res = effectiveMonsters.find(c => c.id === parseInt(id))!;
@@ -142,7 +145,7 @@ export async function minionStatsEmbed(user: KlasaUser): Promise<Embed> {
 		}
 	}
 
-	const hunterScores = Object.entries(user.settings.get(UserSettings.CreatureScores)).sort((a, b) => a[1] - b[1]);
+	const hunterScores = Object.entries(user.user.creatureScores as ItemBank).sort((a, b) => a[1] - b[1]);
 	if (hunterScores.length > 0) {
 		const [id, score] = hunterScores[0];
 		const res = creatures.find(c => c.id === parseInt(id))!;

@@ -2,8 +2,10 @@ import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 import { resolveNameBank } from 'oldschooljs/dist/util';
 
+import { SkillsEnum } from '../../skilling/types';
 import { ItemBank } from '../../types';
-import { rand, roll } from '../../util';
+import { rand, roll, skillingPetDropRate } from '../../util';
+import { MUserClass } from './../../MUser';
 
 const Room1Table = new LootTable().add('Ivory Comb', 1, 3).add('Pottery scarab').add('Pottery statuette');
 
@@ -60,58 +62,64 @@ export const plunderRooms = [
 		thievingLevel: 21,
 		xp: 720,
 		rockyChance: 41_355,
-		roomTable: Room1Table
+		roomTable: Room1Table,
+		sceptreChance: 3500
 	},
 	{
 		number: 2,
 		thievingLevel: 31,
 		xp: 1165,
 		rockyChance: 29_540,
-		roomTable: Room2Table
+		roomTable: Room2Table,
+		sceptreChance: 2250
 	},
 	{
 		number: 3,
 		thievingLevel: 41,
 		xp: 2005,
 		rockyChance: 25_847,
-		roomTable: Room3Table
+		roomTable: Room3Table,
+		sceptreChance: 1250
 	},
 	{
 		number: 4,
 		thievingLevel: 51,
 		xp: 2958,
 		rockyChance: 20_678,
-		roomTable: Room4Table
+		roomTable: Room4Table,
+		sceptreChance: 750
 	},
 	{
 		number: 5,
 		thievingLevel: 61,
 		xp: 4280,
 		rockyChance: 20_678,
-		roomTable: Room5Table
+		roomTable: Room5Table,
+		sceptreChance: 650
 	},
 	{
 		number: 6,
 		thievingLevel: 71,
 		xp: 6465,
 		rockyChance: 20_678,
-		roomTable: Room6Table
+		roomTable: Room6Table,
+		sceptreChance: 650
 	},
 	{
 		number: 7,
-		petChance: 2000,
 		thievingLevel: 81,
 		xp: 9738,
 		rockyChance: 10_339,
-		roomTable: Room7Table
+		roomTable: Room7Table,
+		sceptreChance: 650
 	},
 	{
 		number: 8,
-		petChance: 2000,
 		thievingLevel: 91,
 		xp: 12_665,
 		rockyChance: 6893,
-		roomTable: Room8Table
+		roomTable: Room8Table,
+		sceptreChance: 650
 	}
 ];
 
@@ -119,17 +127,16 @@ export const plunderBoosts = resolveNameBank({
 	"Pharaoh's sceptre": 5
 });
 
-export function lootRoom(room: number): [ItemBank, number] {
+export function lootRoom(user: MUserClass, room: number): [ItemBank, number] {
 	const loot = new Bank();
-	const sceptreChance = 1000;
 	const roomObj = plunderRooms[room - 1];
-
-	if (roll(roomObj.rockyChance)) {
+	const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Thieving, roomObj.rockyChance);
+	if (roll(petDropRate)) {
 		loot.add('Rocky');
 	}
 
 	for (let i = 0; i < 2; i++) {
-		if (roll(sceptreChance)) {
+		if (roll(roomObj.sceptreChance)) {
 			loot.add("Pharaoh's sceptre");
 			break;
 		}

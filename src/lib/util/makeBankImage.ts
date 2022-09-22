@@ -1,7 +1,6 @@
-import { KlasaUser } from 'klasa';
-import { MahojiAttachment } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
+import { BankFlag } from '../bankImage';
 import { Flags } from '../minions/types';
 
 interface MakeBankImageOptions {
@@ -10,9 +9,10 @@ interface MakeBankImageOptions {
 	title?: string;
 	background?: number;
 	flags?: Record<string, string | number>;
-	user?: KlasaUser;
+	user?: MUser;
 	previousCL?: Bank;
 	showNewCL?: boolean;
+	mahojiFlags?: BankFlag[];
 }
 
 export async function makeBankImage({
@@ -21,21 +21,26 @@ export async function makeBankImage({
 	background,
 	user,
 	previousCL,
-	showNewCL,
-	flags = {}
-}: MakeBankImageOptions): Promise<{
-	file: MahojiAttachment;
-}> {
+	showNewCL = false,
+	flags = {},
+	mahojiFlags = []
+}: MakeBankImageOptions) {
 	let realFlags: Flags = { ...flags, background: background ?? 1, nocache: 1 };
-	if (showNewCL) realFlags.showNewCL = 1;
-	const { image, isTransparent } = await globalClient.tasks
-		.get('bankImage')!
-		.generateBankImage(bank, title, true, realFlags, user, previousCL);
+	if (showNewCL || previousCL !== undefined) realFlags.showNewCL = 1;
+	const { image, isTransparent } = await bankImageGenerator.generateBankImage({
+		bank,
+		title,
+		showValue: true,
+		flags: realFlags,
+		user,
+		collectionLog: previousCL,
+		mahojiFlags
+	});
 
 	return {
 		file: {
-			fileName: isTransparent ? 'bank.png' : 'bank.jpg',
-			buffer: image!
+			name: isTransparent ? 'bank.png' : 'bank.jpg',
+			attachment: image!
 		}
 	};
 }

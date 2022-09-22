@@ -1,17 +1,17 @@
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { prisma } from '../../../lib/settings/prisma';
 import { getNewUser } from '../../../lib/settings/settings';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, stringMatches, updateBankSetting } from '../../../lib/util';
+import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../../lib/util/determineRunes';
 import getOSItem from '../../../lib/util/getOSItem';
 import { pizazzPointsPerHour } from '../../../tasks/minions/minigames/mageTrainingArenaActivity';
+import { updateBankSetting } from '../../mahojiSettings';
 
 const RuneTable = new LootTable()
 	.every('Law rune', [11, 14])
@@ -65,7 +65,7 @@ export const mageTrainingArenaBuyables = [
 	}
 ];
 
-export async function mageTrainingArenaBuyCommand(user: KlasaUser, input = '') {
+export async function mageTrainingArenaBuyCommand(user: MUser, input = '') {
 	const buyable = mageTrainingArenaBuyables.find(i => stringMatches(input, i.item.name));
 	if (!buyable) {
 		return `Here are the items you can buy: \n\n${mageTrainingArenaBuyables
@@ -105,7 +105,7 @@ export async function mageTrainingArenaBuyCommand(user: KlasaUser, input = '') {
 	return `Successfully purchased 1x ${item.name} for ${cost} Pizazz Points.`;
 }
 
-export async function mageTrainingArenaPointsCommand(user: KlasaUser) {
+export async function mageTrainingArenaPointsCommand(user: MUser) {
 	const parsedUser = await getNewUser(user.id);
 
 	return `You have **${parsedUser.pizazz_points.toLocaleString()}** Pizazz points.
@@ -117,12 +117,11 @@ ${mageTrainingArenaBuyables
 Hint: Magic Training Arena is combined into 1 room, and 1 set of points - rewards take approximately the same amount of time to get. To get started use **/minigames mage_training_arena train**. You can buy rewards using **/minigames mage_training_arena buy**.`;
 }
 
-export async function mageTrainingArenaStartCommand(user: KlasaUser, channelID: bigint): CommandResponse {
+export async function mageTrainingArenaStartCommand(user: MUser, channelID: string): CommandResponse {
 	if (user.minionIsBusy) return `${user.minionName} is currently busy.`;
-	await user.settings.sync(true);
 
 	const roomDuration = Time.Minute * 14;
-	const quantity = Math.floor(user.maxTripLength('MageTrainingArena') / roomDuration);
+	const quantity = Math.floor(calcMaxTripLength(user, 'MageTrainingArena') / roomDuration);
 	const duration = quantity * roomDuration;
 
 	const cost = determineRunes(user, new Bank().add(RuneTable.roll())).multiply(quantity);
@@ -131,9 +130,9 @@ export async function mageTrainingArenaStartCommand(user: KlasaUser, channelID: 
 		return `You don't have enough items for this trip, you need: ${cost}.`;
 	}
 
-	await user.removeItemsFromBank(cost);
+	await transactItems({ userID: user.id, itemsToRemove: cost });
 
-	await updateBankSetting(globalClient, ClientSettings.EconomyStats.MTACostBank, cost);
+	await updateBankSetting('mta_cost', cost);
 
 	await addSubTaskToActivityTask<MinigameActivityTaskOptions>({
 		userID: user.id,

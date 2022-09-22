@@ -57,7 +57,6 @@ export const courses: Course[] = [
 		aliases: ['ape atoll', 'ape atoll agility course', 'ape atoll course', 'monky', 'ape', 'monkey'],
 		level: 48,
 		xp: 580,
-		marksPer60: 0,
 		lapTime: 45,
 		petChance: 37_720,
 		qpRequired: 82
@@ -160,7 +159,6 @@ export const courses: Course[] = [
 		],
 		level: 75,
 		xp: 1340.6,
-		marksPer60: 0,
 		lapTime: 74.2,
 		petChance: 25_146,
 		qpRequired: 205

@@ -45,7 +45,7 @@ export function findPlant(lastPlanted: IPatchData['lastPlanted']) {
 	const plant = Farming.Plants.find(
 		plants => stringMatches(plants.name, lastPlanted) || plants.aliases.some(a => stringMatches(a, lastPlanted))
 	);
-	if (!plant) null;
+	if (!plant) return null;
 	return plant;
 }
 export function userGrowingProgressStr(patchesDetailed: IPatchDataDetailed[]) {

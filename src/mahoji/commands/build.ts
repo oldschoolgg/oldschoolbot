@@ -1,16 +1,39 @@
+import { User } from 'discord.js';
 import { round, Time } from 'e';
-import { APIUser, ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import Constructables from '../../lib/skilling/skills/construction/constructables';
-import { SkillsEnum } from '../../lib/skilling/types';
+import { Skills } from '../../lib/types';
 import { ConstructionActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, updateBankSetting } from '../../lib/util';
+import { formatDuration, getSkillsOfMahojiUser, hasSkillReqs } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
 import { OSBMahojiCommand } from '../lib/util';
-import { getSkillsOfMahojiUser, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { mahojiUsersSettingsFetch, updateBankSetting } from '../mahojiSettings';
+
+const ds2Requirements: Skills = {
+	magic: 75,
+	smithing: 70,
+	mining: 68,
+	crafting: 62,
+	agility: 60,
+	thieving: 60,
+	construction: 50,
+	hitpoints: 50,
+	herblore: 45,
+	prayer: 42,
+	strength: 50,
+	woodcutting: 55,
+	fishing: 53,
+	cooking: 53,
+	ranged: 30,
+	defence: 40,
+	firemaking: 49,
+	fletching: 25,
+	slayer: 18
+};
 
 export const buildCommand: OSBMahojiCommand = {
 	name: 'build',
@@ -18,7 +41,6 @@ export const buildCommand: OSBMahojiCommand = {
 	attributes: {
 		requiresMinion: true,
 		requiresMinionNotBusy: true,
-		description: 'Sends your minion to train Construction by building things.',
 		examples: ['/build name:Crude chair']
 	},
 	options: [
@@ -27,7 +49,7 @@ export const buildCommand: OSBMahojiCommand = {
 			name: 'name',
 			description: 'The object you want to build.',
 			required: true,
-			autocomplete: async (value: string, user: APIUser) => {
+			autocomplete: async (value: string, user: User) => {
 				const mUser = await mahojiUsersSettingsFetch(user.id);
 				const conLevel = getSkillsOfMahojiUser(mUser, true).construction;
 				return Constructables.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
@@ -47,25 +69,38 @@ export const buildCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
-		const user = await globalClient.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const object = Constructables.find(
 			object => stringMatches(object.name, options.name) || stringMatches(object.name.split(' ')[0], options.name)
 		);
+		const [hasDs2Requirements, ds2Reason] = hasSkillReqs(user, ds2Requirements);
 
 		if (!object) return 'Thats not a valid object to build.';
 
-		if (user.skillLevel(SkillsEnum.Construction) < object.level) {
+		if (user.skillLevel('construction') < object.level) {
 			return `${user.minionName} needs ${object.level} Construction to create a ${object.name}.`;
+		}
+
+		if (object.name === 'Mythical cape (mounted)') {
+			if (user.QP < 205) {
+				return `${user.minionName} needs 205 Quest Points to build a ${object.name}.`;
+			}
+			if (!hasDs2Requirements) {
+				return `In order to build a ${object.name}, you need: ${ds2Reason}.`;
+			}
+			if (!user.hasEquippedOrInBank('Mythical cape')) {
+				return `${user.minionName} needs to own a Mythical cape to build a ${object.name}.`;
+			}
 		}
 
 		let timeToBuildSingleObject = object.ticks * 300;
 
 		const [plank, planksQtyCost] = object.input;
 
-		const userBank = user.bank();
+		const userBank = user.bank;
 		const planksHas = userBank.amount(plank);
 
-		const maxTripLength = user.maxTripLength('Construction');
+		const maxTripLength = calcMaxTripLength(user, 'Construction');
 
 		let { quantity } = options;
 		if (!quantity) {
@@ -93,9 +128,9 @@ export const buildCommand: OSBMahojiCommand = {
 		cost.add('Coins', gpNeeded);
 		if (!user.owns(cost)) return `You don't own: ${cost}.`;
 
-		await user.removeItemsFromBank(cost);
+		await transactItems({ userID: user.id, itemsToRemove: cost });
 
-		updateBankSetting(globalClient, ClientSettings.EconomyStats.ConstructCostBank, cost);
+		updateBankSetting('construction_cost_bank', cost);
 
 		await addSubTaskToActivityTask<ConstructionActivityTaskOptions>({
 			objectID: object.id,

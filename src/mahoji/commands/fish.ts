@@ -4,22 +4,21 @@ import { Bank } from 'oldschooljs';
 import TzTokJad from 'oldschooljs/dist/simulation/monsters/special/TzTokJad';
 
 import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FishingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemID, itemNameFromID, rand } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const fishCommand: OSBMahojiCommand = {
 	name: 'fish',
-	description: 'Fish fish.',
+	description: 'Send your minion to fish fish.',
 	attributes: {
 		requiresMinion: true,
 		requiresMinionNotBusy: true,
-		description: 'Send your minion to fish things.',
 		examples: ['/fish name:Shrimp']
 	},
 	options: [
@@ -46,9 +45,8 @@ export const fishCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
-		const user = await globalClient.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
-		await user.settings.sync(true);
 		const fish = Fishing.Fishes.find(
 			fish =>
 				stringMatches(fish.name, options.name) || fish.alias?.some(alias => stringMatches(alias, options.name))
@@ -60,7 +58,7 @@ export const fishCommand: OSBMahojiCommand = {
 		}
 
 		if (fish.qpRequired) {
-			if (user.settings.get(UserSettings.QP) < fish.qpRequired) {
+			if (user.QP < fish.qpRequired) {
 				return `You need ${fish.qpRequired} qp to catch those!`;
 			}
 		}
@@ -80,7 +78,7 @@ export const fishCommand: OSBMahojiCommand = {
 			return 'You are not worthy JalYt. Before you can fish Infernal Eels, you need to have defeated the mighty TzTok-Jad!';
 		}
 		const anglerOutfit = Object.keys(Fishing.anglerItems).map(i => itemNameFromID(parseInt(i)));
-		if (fish.name === 'Minnow' && anglerOutfit.some(test => !user.hasItemEquippedOrInBank(test!))) {
+		if (fish.name === 'Minnow' && anglerOutfit.some(test => !user.hasEquippedOrInBank(test!))) {
 			return 'You need to own the Angler Outfit to fish for Minnows.';
 		}
 
@@ -93,25 +91,22 @@ export const fishCommand: OSBMahojiCommand = {
 			case itemID('Fishing bait'):
 				if (fish.name === 'Infernal eel') {
 					scaledTimePerFish *= 1;
-				} else if (user.hasItemEquippedAnywhere(itemID('Pearl fishing rod')) && fish.name !== 'Infernal eel') {
+				} else if (user.hasEquipped(itemID('Pearl fishing rod')) && fish.name !== 'Infernal eel') {
 					scaledTimePerFish *= 0.95;
 					boosts.push('5% for Pearl fishing rod');
 				}
 				break;
 			case itemID('Feather'):
-				if (fish.name === 'Barbarian fishing' && user.hasItemEquippedAnywhere(itemID('Pearl barbarian rod'))) {
+				if (fish.name === 'Barbarian fishing' && user.hasEquipped(itemID('Pearl barbarian rod'))) {
 					scaledTimePerFish *= 0.95;
 					boosts.push('5% for Pearl barbarian rod');
-				} else if (
-					user.hasItemEquippedAnywhere(itemID('Pearl fly fishing rod')) &&
-					fish.name !== 'Barbarian fishing'
-				) {
+				} else if (user.hasEquipped(itemID('Pearl fly fishing rod')) && fish.name !== 'Barbarian fishing') {
 					scaledTimePerFish *= 0.95;
 					boosts.push('5% for Pearl fly fishing rod');
 				}
 				break;
 			default:
-				if (user.hasItemEquippedAnywhere(itemID('Crystal harpoon'))) {
+				if (user.hasEquipped(itemID('Crystal harpoon'))) {
 					scaledTimePerFish *= 0.95;
 					boosts.push('5% for Crystal harpoon');
 				}
@@ -127,10 +122,29 @@ export const fishCommand: OSBMahojiCommand = {
 			);
 		}
 
-		const maxTripLength = user.maxTripLength('Fishing');
+		const maxTripLength = calcMaxTripLength(user, 'Fishing');
 
 		let { quantity } = options;
 		if (!quantity) quantity = Math.floor(maxTripLength / scaledTimePerFish);
+
+		if (fish.bait) {
+			const baseCost = new Bank().add(fish.bait);
+
+			const maxCanDo = user.bank.fits(baseCost);
+			if (maxCanDo === 0) {
+				return `You need ${itemNameFromID(fish.bait)} to fish ${fish.name}!`;
+			}
+			if (maxCanDo < quantity) {
+				quantity = maxCanDo;
+			}
+
+			const cost = new Bank();
+			cost.add(baseCost.multiply(quantity));
+
+			// Remove the bait from their bank.
+			await user.removeItemsFromBank(new Bank().add(fish.bait, quantity));
+		}
+
 		let duration = quantity * scaledTimePerFish;
 
 		if (duration > maxTripLength) {
@@ -141,20 +155,8 @@ export const fishCommand: OSBMahojiCommand = {
 			)}.`;
 		}
 
-		if (fish.bait) {
-			const hasBait = user.bank().amount(fish.bait) >= quantity;
-			if (!hasBait) {
-				return `You need ${itemNameFromID(fish.bait)} to fish ${fish.name}!`;
-			}
-		}
-
 		const tenPercent = Math.floor(calcPercentOfNum(10, duration));
 		duration += rand(-tenPercent, tenPercent);
-
-		// Remove the bait from their bank.
-		if (fish.bait) {
-			await user.removeItemsFromBank(new Bank().add(fish.bait, quantity));
-		}
 
 		await addSubTaskToActivityTask<FishingActivityTaskOptions>({
 			fishID: fish.id,

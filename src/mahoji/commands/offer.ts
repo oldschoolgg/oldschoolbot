@@ -1,18 +1,17 @@
 import { randArrItem, randInt, roll, Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../lib/constants';
 import { evilChickenOutfit } from '../../lib/data/CollectionsExport';
 import { Offerables } from '../../lib/data/offerData';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { birdsNestID, treeSeedsNest } from '../../lib/simulation/birdsNest';
 import Prayer from '../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { OfferingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';
@@ -32,19 +31,12 @@ const specialBones = [
 
 const eggs = ['Red bird egg', 'Green bird egg', 'Blue bird egg'].map(getOSItem);
 
-function notifyUniques(
-	user: KlasaUser,
-	activity: string,
-	uniques: number[],
-	loot: Bank,
-	qty: number,
-	randQty?: number
-) {
+function notifyUniques(user: MUser, activity: string, uniques: number[], loot: Bank, qty: number, randQty?: number) {
 	const itemsToAnnounce = loot.filter(item => uniques.includes(item.id), false);
 	if (itemsToAnnounce.length > 0) {
 		globalClient.emit(
 			Events.ServerNotification,
-			`**${user.username}'s** minion, ${
+			`**${user.usernameOrMention}'s** minion, ${
 				user.minionName
 			}, while offering ${qty}x ${activity}, found **${itemsToAnnounce}**${
 				randQty ? ` on their ${formatOrdinal(randQty)} offering!` : '!'
@@ -59,7 +51,6 @@ export const mineCommand: OSBMahojiCommand = {
 	attributes: {
 		requiresMinion: true,
 		requiresMinionNotBusy: true,
-		description: 'Offer bones or bird eggs.',
 		examples: ['/offer name:Dragon bones']
 	},
 	options: [
@@ -86,8 +77,8 @@ export const mineCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
-		const user = await globalClient.fetchUser(userID);
-		const userBank = user.bank();
+		const user = await mUserFetch(userID);
+		const userBank = user.bank;
 
 		let { quantity } = options;
 		const whichOfferable = Offerables.find(
@@ -104,25 +95,30 @@ export const mineCommand: OSBMahojiCommand = {
 			if (quantity > offerableOwned) {
 				return `You don't have ${quantity} ${whichOfferable.name} to offer the ${whichOfferable.offerWhere}. You have ${offerableOwned}.`;
 			}
-			await user.removeItemsFromBank({ [whichOfferable.itemID]: quantity });
+			await user.removeItemsFromBank(new Bank({ [whichOfferable.itemID]: quantity }));
 			let loot = new Bank().add(whichOfferable.table.roll(quantity));
 
-			let score = 0;
-			const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
+			const { previousCL, itemsAdded } = await transactItems({
+				userID: user.id,
+				collectionLog: true,
+				itemsToAdd: loot
+			});
 			if (whichOfferable.economyCounter) {
-				score = user.settings.get(whichOfferable.economyCounter) as number;
-				user.settings.update(whichOfferable.economyCounter, score + quantity);
-			}
-			// Notify uniques
-			if (whichOfferable.uniques) {
-				notifyUniques(
-					user,
-					whichOfferable.name,
-					whichOfferable.uniques,
-					itemsAdded,
-					quantity,
-					score + randInt(1, quantity)
-				);
+				const { newUser } = await user.update({
+					[whichOfferable.economyCounter]: {
+						increment: quantity
+					}
+				}); // Notify uniques
+				if (whichOfferable.uniques) {
+					notifyUniques(
+						user,
+						whichOfferable.name,
+						whichOfferable.uniques,
+						itemsAdded,
+						quantity,
+						newUser[whichOfferable.economyCounter] + randInt(1, quantity)
+					);
+				}
 			}
 
 			const { file } = await makeBankImage({
@@ -133,7 +129,7 @@ export const mineCommand: OSBMahojiCommand = {
 				previousCL
 			});
 			return {
-				attachments: [file]
+				files: [file]
 			};
 		}
 
@@ -144,7 +140,7 @@ export const mineCommand: OSBMahojiCommand = {
 				return "You don't own any of these eggs.";
 			}
 			if (!quantity) quantity = quantityOwned;
-			await user.removeItemsFromBank({ [egg.id]: quantity });
+			await user.removeItemsFromBank(new Bank({ [egg.id]: quantity }));
 			let loot = new Bank();
 			for (let i = 0; i < quantity; i++) {
 				if (roll(300)) {
@@ -160,7 +156,11 @@ export const mineCommand: OSBMahojiCommand = {
 				amount: quantity * 100
 			});
 
-			const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
+			const { previousCL, itemsAdded } = await transactItems({
+				userID: user.id,
+				collectionLog: true,
+				itemsToAdd: loot
+			});
 
 			notifyUniques(user, egg.name, evilChickenOutfit, loot, quantity);
 
@@ -174,13 +174,13 @@ export const mineCommand: OSBMahojiCommand = {
 
 			return {
 				content: `You offered ${quantity}x ${egg.name} to the Shrine and received the attached loot and ${xpStr}.`,
-				attachments: [file]
+				files: [file]
 			};
 		}
 
 		const specialBone = specialBones.find(bone => stringMatches(bone.item.name, options.name));
 		if (specialBone) {
-			if (user.settings.get(UserSettings.QP) < 8) {
+			if (user.QP < 8) {
 				return 'You need atleast 8 QP to offer long/curved bones for XP.';
 			}
 			if (user.skillLevel(SkillsEnum.Construction) < 30) {
@@ -204,7 +204,7 @@ export const mineCommand: OSBMahojiCommand = {
 			} to Barlak and received ${xp} Construction XP.`;
 		}
 
-		const speedMod = 4.8;
+		const speedMod = 1.5;
 
 		const bone = Prayer.Bones.find(
 			bone => stringMatches(bone.name, options.name) || stringMatches(bone.name.split(' ')[0], options.name)
@@ -223,7 +223,7 @@ export const mineCommand: OSBMahojiCommand = {
 		const amountOfThisBone = userBank.amount(bone.inputId);
 		if (!amountOfThisBone) return `You have no ${bone.name}.`;
 
-		const maxTripLength = user.maxTripLength('Offering');
+		const maxTripLength = calcMaxTripLength(user, 'Offering');
 
 		// If no quantity provided, set it to the max.
 		if (!quantity) {

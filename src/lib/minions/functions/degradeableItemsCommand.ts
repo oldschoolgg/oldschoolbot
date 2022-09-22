@@ -1,57 +1,63 @@
-import { KlasaMessage } from 'klasa';
+import { ChatInputCommandInteraction } from 'discord.js';
+import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import { Bank } from 'oldschooljs';
 
+import { handleMahojiConfirmation, mahojiParseNumber, updateBankSetting } from '../../../mahoji/mahojiSettings';
 import { degradeableItems } from '../../degradeableItems';
-import { ClientSettings } from '../../settings/types/ClientSettings';
-import { stringMatches, updateBankSetting } from '../../util';
+import { stringMatches } from '../../util';
 
-export async function degradeableItemsCommand(msg: KlasaMessage, input: string | undefined = '') {
-	if (typeof input !== 'string') input = '';
-	const [name, amount] = input.split(',');
-	const item = degradeableItems.find(i => [i.item.name, ...i.aliases].some(n => stringMatches(n, name)));
-	const number = parseInt(amount);
+export async function degradeableItemsCommand(
+	interaction: ChatInputCommandInteraction,
+	user: MUser,
+	input: string | undefined,
+	quantity: number | undefined
+): CommandResponse {
+	const item = degradeableItems.find(i => [i.item.name, ...i.aliases].some(n => stringMatches(n, input ?? '')));
+	const number = mahojiParseNumber({ input: quantity, min: 1, max: 1_000_000 });
 
-	if (!name || !amount || !item || isNaN(number) || number < 1 || number > 10_000) {
-		return msg.channel.send(
-			`Use \`${msg.cmdPrefix}m charge [${degradeableItems.map(i => i.item.name).join('|')}], [1-10,000]\`
+	if (!input || !number || !item || number < 1 || number > 10_000) {
+		return `Use \`/minion charge [${degradeableItems.map(i => i.item.name).join('|')}], [1-10,000]\`
 ${degradeableItems
 	.map(i => {
-		const charges = msg.author.settings.get(i.settingsKey) as number;
+		const charges = user.user[i.settingsKey];
 		return `${i.item.name}: ${charges.toLocaleString()} charges`;
 	})
-	.join('\n')}`
-		);
+	.join('\n')}`;
 	}
 
 	const cost = item.chargeInput.cost.clone().multiply(number);
 	const amountOfCharges = item.chargeInput.charges * number;
 
-	if (!msg.author.owns(cost)) {
-		return msg.channel.send(`You don't own ${cost}.`);
+	if (!user.owns(cost)) {
+		return `You don't own ${cost}.`;
 	}
 
 	const needConvert = item.convertOnCharge && item.unchargedItem;
-	if (needConvert && !msg.author.hasItemEquippedOrInBank(item.item.id) && !msg.author.owns(item.unchargedItem!.id)) {
-		return msg.channel.send(`You don't own a ${item.item.name} or ${item.unchargedItem!.name}.`);
+	if (needConvert && !user.hasEquippedOrInBank(item.item.id) && !user.owns(item.unchargedItem!.id)) {
+		return `You don't own a ${item.item.name} or ${item.unchargedItem!.name}.`;
 	}
 
-	await msg.confirm(
+	await handleMahojiConfirmation(
+		interaction,
 		`Are you sure you want to use **${cost}** to add ${amountOfCharges.toLocaleString()} charges to your ${
 			item.item.name
 		}?`
 	);
 
-	if (needConvert && !msg.author.hasItemEquippedOrInBank(item.item.id)) {
-		if (!msg.author.owns(item.unchargedItem!.id)) {
-			return msg.channel.send(`Your ${item.unchargedItem!.name} disappeared and cannot be charged`);
+	if (needConvert && !user.hasEquippedOrInBank(item.item.id)) {
+		if (!user.owns(item.unchargedItem!.id)) {
+			return `Your ${item.unchargedItem!.name} disappeared and cannot be charged`;
 		}
-		await msg.author.removeItemsFromBank({ [item.unchargedItem!.id]: 1 });
-		await msg.author.addItemsToBank({ items: { [item.item.id]: 1 }, collectionLog: true, filterLoot: false });
+		await user.removeItemsFromBank(new Bank({ [item.unchargedItem!.id]: 1 }));
+		await user.addItemsToBank({ items: { [item.item.id]: 1 }, collectionLog: true, filterLoot: false });
 	}
-	await msg.author.removeItemsFromBank(cost);
-	const currentCharges = msg.author.settings.get(item.settingsKey) as number;
+	await transactItems({ userID: user.id, itemsToRemove: cost });
+	const currentCharges = user.user[item.settingsKey];
 	const newCharges = currentCharges + amountOfCharges;
-	await msg.author.settings.update(item.settingsKey, newCharges);
-	await updateBankSetting(msg.client, ClientSettings.EconomyStats.DegradedItemsCost, cost);
+	await user.update({
+		[item.settingsKey]: newCharges
+	});
+	await updateBankSetting('degraded_items_cost', cost);
 
-	return msg.channel.send(`You added **${cost}** to your ${item.item.name}, it now has ${newCharges} charges.`);
+	return `You added **${cost}** to your ${item.item.name}, it now has ${newCharges} charges.`;
 }

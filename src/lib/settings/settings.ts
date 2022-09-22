@@ -1,35 +1,18 @@
-import { Activity, NewUser, Prisma, User } from '@prisma/client';
-import { GuildMember, MessageAttachment } from 'discord.js';
-import { roll } from 'e';
-import { Gateway, KlasaMessage, KlasaUser, Settings } from 'klasa';
-import { APIInteractionGuildMember } from 'mahoji';
-import { Bank } from 'oldschooljs';
+import { Activity, NewUser, Prisma } from '@prisma/client';
+import { APIInteractionGuildMember, ButtonInteraction, ChatInputCommandInteraction, GuildMember } from 'discord.js';
+import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
 import { CommandArgs } from '../../mahoji/lib/inhibitors';
 import { postCommand } from '../../mahoji/lib/postCommand';
 import { preCommand } from '../../mahoji/lib/preCommand';
-import {
-	convertAPIEmbedToDJSEmbed,
-	convertComponentDJSComponent,
-	convertKlasaCommandToAbstractCommand,
-	convertMahojiCommandToAbstractCommand
-} from '../../mahoji/lib/util';
-import { BotCommand } from '../structures/BotCommand';
+import { convertMahojiCommandToAbstractCommand } from '../../mahoji/lib/util';
 import { ActivityTaskData } from '../types/minions';
-import { channelIsSendable, cleanUsername, isGroupActivity } from '../util';
+import { channelIsSendable, isGroupActivity } from '../util';
+import { interactionReply } from '../util/interactionReply';
 import { logError } from '../util/logError';
-import { taskNameFromType } from '../util/taskNameFromType';
 import { convertStoredActivityToFlatActivity, prisma } from './prisma';
 
 export * from './minigames';
-
-export async function getUserSettings(userID: string): Promise<Settings> {
-	return (globalClient.gateways.get('users') as Gateway)!
-		.acquire({
-			id: userID
-		})
-		.sync(true);
-}
 
 export async function getNewUser(id: string): Promise<NewUser> {
 	const value = await prisma.newUser.findUnique({ where: { id } });
@@ -42,24 +25,6 @@ export async function getNewUser(id: string): Promise<NewUser> {
 		});
 	}
 	return value;
-}
-
-export async function syncNewUserUsername(message: KlasaMessage) {
-	if (!roll(20)) return;
-	const cleanedUsername = cleanUsername(message.author.username);
-	const username = cleanedUsername.length > 32 ? cleanedUsername.substring(0, 32) : cleanedUsername;
-	await prisma.newUser.upsert({
-		where: {
-			id: message.author.id
-		},
-		update: {
-			username
-		},
-		create: {
-			id: message.author.id,
-			username
-		}
-	});
 }
 
 declare global {
@@ -93,15 +58,6 @@ export async function cancelTask(userID: string) {
 	minionActivityCache.delete(userID);
 }
 
-export async function syncActivityCache() {
-	const tasks = await prisma.activity.findMany({ where: { completed: false } });
-
-	minionActivityCache.clear();
-	for (const task of tasks) {
-		activitySync(task);
-	}
-}
-
 export async function runMahojiCommand({
 	channelID,
 	userID,
@@ -109,14 +65,15 @@ export async function runMahojiCommand({
 	commandName,
 	options,
 	user,
-	member
+	interaction
 }: {
+	interaction: ChatInputCommandInteraction | ButtonInteraction;
 	commandName: string;
 	options: Record<string, unknown>;
-	channelID: bigint | string;
-	userID: bigint | string;
-	guildID: bigint | string | undefined;
-	user: User | KlasaUser;
+	channelID: string;
+	userID: string;
+	guildID: string | undefined | null;
+	user: MUser;
 	member: APIInteractionGuildMember | GuildMember | null;
 }) {
 	const mahojiCommand = globalClient.mahojiClient.commands.values.find(c => c.name === commandName);
@@ -125,120 +82,89 @@ export async function runMahojiCommand({
 	}
 
 	return mahojiCommand.run({
-		userID: BigInt(userID),
-		guildID: guildID ? BigInt(guildID) : undefined,
-		channelID: BigInt(channelID),
+		userID,
+		guildID: guildID ? guildID : undefined,
+		channelID,
 		options,
-		// TODO: Make this typesafe
-		user: user as any,
-		member: member as any,
+		user: globalClient.users.cache.get(user.id)!,
+		member: guildID ? globalClient.guilds.cache.get(guildID)?.members.cache.get(user.id) : undefined,
 		client: globalClient.mahojiClient,
-		interaction: null as any
+		interaction: interaction as ChatInputCommandInteraction
 	});
 }
 
 export interface RunCommandArgs {
 	commandName: string;
 	args: CommandArgs;
-	user: User | KlasaUser;
-	channelID: string | bigint;
-	userID: string | bigint;
+	user: MUser;
+	channelID: string;
 	member: APIInteractionGuildMember | GuildMember | null;
 	isContinue?: boolean;
-	method?: string;
 	bypassInhibitors?: true;
-	guildID: string | bigint | undefined;
-	msg?: KlasaMessage;
+	guildID: string | undefined | null;
+	interaction: ButtonInteraction | ChatInputCommandInteraction;
 }
 export async function runCommand({
 	commandName,
 	args,
 	isContinue,
-	method = 'run',
 	bypassInhibitors,
-	userID,
 	channelID,
 	guildID,
 	user,
 	member,
-	msg
-}: RunCommandArgs) {
+	interaction
+}: RunCommandArgs): Promise<null | CommandResponse> {
 	const channel = globalClient.channels.cache.get(channelID.toString());
-	if (!channel || !channelIsSendable(channel)) return;
+	if (!channel || !channelIsSendable(channel)) return null;
 	const mahojiCommand = globalClient.mahojiClient.commands.values.find(c => c.name === commandName);
-	const command = globalClient.commands.get(commandName) as BotCommand | undefined;
-	const actualCommand = mahojiCommand ?? command;
-	if (!actualCommand) throw new Error('No command found');
-	const abstractCommand =
-		actualCommand instanceof BotCommand
-			? convertKlasaCommandToAbstractCommand(actualCommand)
-			: convertMahojiCommandToAbstractCommand(actualCommand);
+	if (!mahojiCommand) throw new Error('No command found');
+	const abstractCommand = convertMahojiCommandToAbstractCommand(mahojiCommand);
 
 	let error: Error | null = null;
 	let inhibited = false;
 	try {
 		const inhibitedReason = await preCommand({
 			abstractCommand,
-			userID,
+			userID: user.id,
 			channelID,
 			guildID,
-			bypassInhibitors: bypassInhibitors ?? false
+			bypassInhibitors: bypassInhibitors ?? false,
+			apiUser: null
 		});
 
 		if (inhibitedReason) {
 			inhibited = true;
-			if (inhibitedReason.silent) return;
-			return channel.send(inhibitedReason.reason);
+			if (inhibitedReason.silent) return null;
+
+			await interaction.reply({
+				content:
+					typeof inhibitedReason.reason! === 'string'
+						? inhibitedReason.reason
+						: inhibitedReason.reason!.content!,
+				ephemeral: true
+			});
+			return null;
 		}
 
-		if (mahojiCommand) {
-			if (Array.isArray(args)) throw new Error(`Had array of args for mahoji command called ${commandName}`);
-			const result = await runMahojiCommand({
-				options: args,
-				commandName,
-				guildID,
-				channelID,
-				userID,
-				member,
-				user
-			});
-			if (channelIsSendable(channel)) {
-				if (typeof result === 'string') {
-					await channel.send(result);
-				} else {
-					await channel.send({
-						content: result.content,
-						embeds: result.embeds?.map(convertAPIEmbedToDJSEmbed),
-						components: result.components?.map(convertComponentDJSComponent),
-						files: result.attachments?.map(i => new MessageAttachment(i.buffer, i.fileName))
-					});
-				}
-			}
-		} else {
-			if (!Array.isArray(args)) throw new Error('Had object args for non-mahoji command');
-			if (!command) throw new Error(`Tried to run \`${commandName}\` command, but couldn't find the piece.`);
-			if (!command.enabled) throw new Error(`The ${command.name} command is disabled.`);
-			const fakeMessage = msg ?? {
-				author: user,
-				member,
-				channel
-			};
-			try {
-				// @ts-ignore Cant be typechecked
-				const result = await command[method](fakeMessage, args);
-				return result;
-			} catch (err) {
-				logError(err, {
-					user_id: userID.toString(),
-					command_name: commandName,
-					args: JSON.stringify(args)
-				});
-			}
-		}
+		if (Array.isArray(args)) throw new Error(`Had array of args for mahoji command called ${commandName}`);
+		const result = await runMahojiCommand({
+			options: args,
+			commandName,
+			guildID,
+			channelID,
+			userID: user.id,
+			member,
+			user,
+			interaction
+		});
+		if (result && !interaction.replied) await interactionReply(interaction, result);
+		return result;
 	} catch (err: any) {
 		if (typeof err === 'string') {
 			if (channelIsSendable(channel)) {
-				return channel.send(err);
+				channel.send(err);
+				return null;
 			}
 		}
 		error = err as Error;
@@ -246,7 +172,7 @@ export async function runCommand({
 		try {
 			await postCommand({
 				abstractCommand,
-				userID,
+				userID: user.id,
 				guildID,
 				channelID,
 				args,
@@ -262,67 +188,11 @@ export async function runCommand({
 	return null;
 }
 
-export async function getBuyLimitBank(user: KlasaUser) {
-	const boughtBank = await prisma.user.findFirst({
-		where: {
-			id: user.id
-		},
-		select: {
-			weekly_buy_bank: true
-		}
-	});
-	if (!boughtBank) {
-		throw new Error(`Found no weekly_buy_bank for ${user.sanitizedName}`);
-	}
-	return new Bank(boughtBank.weekly_buy_bank as any);
-}
-
-export async function addToBuyLimitBank(user: KlasaUser, newBank: Bank) {
-	const current = await getBuyLimitBank(user);
-	const result = await prisma.user.update({
-		where: {
-			id: user.id
-		},
-		data: {
-			weekly_buy_bank: current.add(newBank).bank
-		}
-	});
-	if (!result) {
-		throw new Error('Error storing updated weekly_buy_bank');
-	}
-	return true;
-}
-
 export function activitySync(activity: Activity) {
 	const users: bigint[] | string[] = isGroupActivity(activity.data)
 		? ((activity.data as Prisma.JsonObject).users! as string[])
 		: [activity.user_id];
 	for (const user of users) {
 		minionActivityCache.set(user.toString(), convertStoredActivityToFlatActivity(activity));
-	}
-}
-
-export async function completeActivity(_activity: Activity) {
-	const activity = convertStoredActivityToFlatActivity(_activity);
-	if (_activity.completed) {
-		throw new Error('Tried to complete an already completed task.');
-	}
-
-	const taskName = taskNameFromType(activity.type);
-	const task = globalClient.tasks.get(taskName);
-
-	if (!task) {
-		throw new Error('Missing task');
-	}
-
-	globalClient.oneCommandAtATimeCache.add(activity.userID);
-	try {
-		globalClient.emit('debug', `Running ${task.name} for ${activity.userID}`);
-		await task.run(activity);
-	} catch (err) {
-		logError(err);
-	} finally {
-		globalClient.oneCommandAtATimeCache.delete(activity.userID);
-		minionActivityCacheDelete(activity.userID);
 	}
 }

@@ -1,4 +1,5 @@
 import { Emoji } from '../constants';
+import getOSItem from '../util/getOSItem';
 
 const xpEmoji = Emoji.XP;
 const gpEmoji = Emoji.GP;
@@ -140,7 +141,7 @@ const pets: Pet[] = [
 		id: 11,
 		emoji: '<:Pet_chaos_elemental:324127377070227456>',
 		chance: 300,
-		name: 'Chaos Elemental Jr.',
+		name: 'Pet chaos elemental',
 		type: 'BOSS',
 		altNames: ['CHAOSELE', 'CHAOSELEMENTAL'],
 		formatFinish: (num: number) =>
@@ -153,7 +154,7 @@ const pets: Pet[] = [
 		id: 12,
 		emoji: '<:Pet_dagannoth_prime:324127376877289474>',
 		chance: 5000,
-		name: 'Dagannoth Prime Jr.',
+		name: 'Pet dagannoth prime',
 		type: 'BOSS',
 		altNames: ['PRIME', 'DAGANNOTHPRIME'],
 		formatFinish: (num: number) =>
@@ -166,7 +167,7 @@ const pets: Pet[] = [
 		id: 13,
 		emoji: '<:Pet_dagannoth_rex:324127377091330049>',
 		chance: 5000,
-		name: 'Dagannoth Rex Jr.',
+		name: 'Pet dagannoth rex',
 		type: 'BOSS',
 		altNames: ['REX', 'DAGANNOTHREX'],
 		formatFinish: (num: number) =>
@@ -179,7 +180,7 @@ const pets: Pet[] = [
 		id: 14,
 		emoji: '<:Pet_dagannoth_supreme:324127377066164245>',
 		chance: 5000,
-		name: 'Dagannoth Supreme Jr.',
+		name: 'Pet dagannoth supreme',
 		type: 'BOSS',
 		altNames: ['SUPREME', 'DAGANNOTHSUPREME'],
 		formatFinish: (num: number) =>
@@ -192,7 +193,7 @@ const pets: Pet[] = [
 		id: 15,
 		emoji: '<:Pet_dark_core:324127377347313674>',
 		chance: 5000,
-		name: 'Dark Core',
+		name: 'Pet dark core',
 		type: 'BOSS',
 		altNames: ['CORP', 'CORE', 'DARKCORE', 'CORPBEAST'],
 		formatFinish: (num: number) =>
@@ -205,7 +206,7 @@ const pets: Pet[] = [
 		id: 16,
 		emoji: '<:Pet_general_graardor:324127377376673792>',
 		chance: 5000,
-		name: 'General Graardor Jr.',
+		name: 'Pet general graardor',
 		type: 'BOSS',
 		altNames: ['BANDOS', 'GRAARDOR'],
 		formatFinish: (num: number) =>
@@ -218,7 +219,7 @@ const pets: Pet[] = [
 		id: 17,
 		emoji: '<:Pet_kraken:324127377477206016>',
 		chance: 3000,
-		name: 'Kraken',
+		name: 'Pet kraken',
 		type: 'BOSS',
 		altNames: ['KRAKEN'],
 		formatFinish: (num: number) =>
@@ -229,7 +230,7 @@ const pets: Pet[] = [
 		id: 18,
 		emoji: '<:Pet_kreearra:324127377305239555>',
 		chance: 5000,
-		name: "Kree'arra Jr.",
+		name: "Pet kree'arra",
 		type: 'BOSS',
 		altNames: ['KREE', 'ARMA', 'ARMADYL', 'KREEARRA'],
 		formatFinish: (num: number) =>
@@ -240,7 +241,7 @@ const pets: Pet[] = [
 		id: 19,
 		emoji: '<:Pet_kril_tsutsaroth:324127377527406594>',
 		chance: 5000,
-		name: "K'ril Tsutsaroth Jr.",
+		name: "Pet k'ril tsutsaroth",
 		type: 'BOSS',
 		altNames: ['KRILL', 'ZAMMY', 'ZAMORAK', 'KRIL', 'ZAM'],
 		formatFinish: (num: number) =>
@@ -278,7 +279,7 @@ const pets: Pet[] = [
 		id: 22,
 		emoji: '<:Pet_snakeling:324127377816944642>',
 		chance: 4000,
-		name: 'Snakeling',
+		name: 'Pet snakeling',
 		type: 'BOSS',
 		altNames: ['ZULRAH', 'SNAKELING'],
 		formatFinish: (num: number) =>
@@ -289,7 +290,7 @@ const pets: Pet[] = [
 		id: 23,
 		emoji: '<:Pet_zilyana:324127378248957952>',
 		chance: 5000,
-		name: 'Zilyana Jr.',
+		name: 'Pet zilyana',
 		type: 'BOSS',
 		altNames: ['SARA', 'SARADOMIN', 'ZILLY', 'ZILYANA'],
 		formatFinish: (num: number) =>
@@ -366,7 +367,7 @@ const pets: Pet[] = [
 		id: 29,
 		emoji: '<:Scorpias_offspring:324127378773377024>',
 		chance: 2000,
-		name: 'Scorpias Offspring',
+		name: "Scorpia's Offspring",
 		type: 'BOSS',
 		altNames: ['SCORPIA', 'SCORPION'],
 		formatFinish: (num: number) =>
@@ -428,7 +429,7 @@ const pets: Pet[] = [
 		id: 34,
 		emoji: '<:Vetion_jr:324127378999738369>',
 		chance: 2000,
-		name: 'Vetion Jr',
+		name: "Vet'ion jr.",
 		type: 'BOSS',
 		altNames: ['VETION'],
 		formatFinish: (num: number) =>
@@ -610,5 +611,9 @@ const pets: Pet[] = [
 			`You had to kill Nex ${fm(num)} times to get Nexling! <:Nexling:931565564151869460>`
 	}
 ];
+
+for (const pet of pets) {
+	getOSItem(pet.name);
+}
 
 export default pets;

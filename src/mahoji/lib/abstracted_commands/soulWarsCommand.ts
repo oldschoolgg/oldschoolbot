@@ -1,11 +1,11 @@
 import { User } from '@prisma/client';
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
+import { Bank } from 'oldschooljs';
 
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, randomVariation, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
 
 export const soulWarsBuyables = [
@@ -123,10 +123,10 @@ export async function soulWarsTokensCommand(user: User) {
 	return `You have ${user.zeal_tokens} Zeal Tokens.`;
 }
 
-export async function soulWarsStartCommand(user: KlasaUser, channelID: bigint) {
+export async function soulWarsStartCommand(user: MUser, channelID: string) {
 	if (user.minionIsBusy) return `${user.minionName} is busy.`;
 	const perDuration = randomVariation(Time.Minute * 7, 5);
-	const quantity = Math.floor(user.maxTripLength('SoulWars') / perDuration);
+	const quantity = Math.floor(calcMaxTripLength(user, 'SoulWars') / perDuration);
 	const duration = quantity * perDuration;
 
 	await addSubTaskToActivityTask<MinigameActivityTaskOptions>({
@@ -143,7 +143,7 @@ export async function soulWarsStartCommand(user: KlasaUser, channelID: bigint) {
 	} is now off to do ${quantity}x games of Soul Wars - the total trip will take ${formatDuration(duration)}.`;
 }
 
-export async function soulWarsBuyCommand(user: KlasaUser, input = '', quantity?: number) {
+export async function soulWarsBuyCommand(user: MUser, input = '', quantity?: number) {
 	const possibleItemName = input.split(' ');
 
 	if (!quantity) {
@@ -161,18 +161,22 @@ export async function soulWarsBuyCommand(user: KlasaUser, input = '', quantity?:
 			.map(i => i.item.name)
 			.join(', ')}.`;
 	}
-	const bal = user.settings.get(UserSettings.ZealTokens);
+	const bal = user.user.zeal_tokens;
 	if (bal < item.tokens * quantity) {
 		return `You don't have enough Zeal Tokens to buy ${quantity} ${item.item.name}. You have ${bal} but need ${
 			item.tokens * quantity
 		}.`;
 	}
-	await user.settings.update(UserSettings.ZealTokens, bal - item.tokens * quantity);
+	await user.update({
+		zeal_tokens: {
+			decrement: item.tokens * quantity
+		}
+	});
 	await user.addItemsToBank({ items: { [item.item.id]: quantity }, collectionLog: true });
 	return `Added ${quantity}x ${item.item.name} to your bank, removed ${item.tokens * quantity}x Zeal Tokens.`;
 }
 
-export async function soulWarsImbueCommand(user: KlasaUser, input = '') {
+export async function soulWarsImbueCommand(user: MUser, input = '') {
 	const item = soulWarsImbueables.find(
 		i => stringMatches(input, i.input.name) || stringMatches(input, i.output.name)
 	);
@@ -181,16 +185,26 @@ export async function soulWarsImbueCommand(user: KlasaUser, input = '') {
 			.map(i => i.input.name)
 			.join(', ')}.`;
 	}
-	const bal = user.settings.get(UserSettings.ZealTokens);
+	const bal = user.user.zeal_tokens;
 	if (bal < item.tokens) {
 		return `You don't have enough Zeal Tokens to imbue a ${item.input.name}. You have ${bal} but need ${item.tokens}.`;
 	}
-	const bank = user.bank();
+	const { bank } = user;
 	if (!bank.has(item.input.id)) {
 		return `You don't have a ${item.input.name}.`;
 	}
-	await user.settings.update(UserSettings.ZealTokens, bal - item.tokens);
-	await user.removeItemsFromBank({ [item.input.id]: 1 });
-	await user.addItemsToBank({ items: { [item.output.id]: 1 }, collectionLog: true });
-	return `Added 1x ${item.output.name} to your bank, removed ${item.tokens}x Zeal Tokens and 1x ${item.input.name}.`;
+	await user.update({
+		zeal_tokens: {
+			decrement: item.tokens
+		}
+	});
+	const cost = new Bank().add(item.input.id);
+	const loot = new Bank().add(item.output.id);
+	await transactItems({
+		userID: user.id,
+		itemsToAdd: loot,
+		itemsToRemove: cost,
+		collectionLog: true
+	});
+	return `Added ${loot} to your bank, removed ${item.tokens}x Zeal Tokens and ${cost}.`;
 }

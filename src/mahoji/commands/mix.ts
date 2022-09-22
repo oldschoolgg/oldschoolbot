@@ -2,15 +2,15 @@ import { Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Herblore from '../../lib/skilling/skills/herblore/herblore';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { HerbloreActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, updateBankSetting } from '../../lib/util';
+import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
 import { OSBMahojiCommand } from '../lib/util';
+import { updateBankSetting } from '../mahojiSettings';
 
 export const mineCommand: OSBMahojiCommand = {
 	name: 'mix',
@@ -18,7 +18,6 @@ export const mineCommand: OSBMahojiCommand = {
 	attributes: {
 		requiresMinion: true,
 		requiresMinionNotBusy: true,
-		description: 'Mix potions to train Herblore.',
 		examples: ['/mix name:Prayer potion']
 	},
 	options: [
@@ -61,7 +60,7 @@ export const mineCommand: OSBMahojiCommand = {
 		userID,
 		channelID
 	}: CommandRunOptions<{ name: string; quantity?: number; wesley?: boolean; zahur?: boolean }>) => {
-		const user = await globalClient.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const mixableItem = Herblore.Mixables.find(item =>
 			item.aliases.some(alias => stringMatches(alias, options.name))
 		);
@@ -72,7 +71,7 @@ export const mineCommand: OSBMahojiCommand = {
 			return `${user.minionName} needs ${mixableItem.level} Herblore to make ${mixableItem.name}.`;
 		}
 
-		if (mixableItem.qpRequired && user.settings.get(UserSettings.QP) < mixableItem.qpRequired) {
+		if (mixableItem.qpRequired && user.QP < mixableItem.qpRequired) {
 			return `You need atleast **${mixableItem.qpRequired}** QP to make ${mixableItem.name}.`;
 		}
 
@@ -100,16 +99,16 @@ export const mineCommand: OSBMahojiCommand = {
 			cost = "decided to pay Wesley 50 gp for each item so they don't have to go";
 		}
 
-		const maxTripLength = user.maxTripLength('Herblore');
+		const maxTripLength = calcMaxTripLength(user, 'Herblore');
 
 		let { quantity } = options;
 		if (!quantity) quantity = Math.floor(maxTripLength / timeToMixSingleItem);
 
 		const baseCost = new Bank(mixableItem.inputItems);
 
-		const maxCanDo = user.bank({ withGP: true }).fits(baseCost);
+		const maxCanDo = user.bankWithGP.fits(baseCost);
 		if (maxCanDo === 0) {
-			return "You don't have enough supplies to mix even one of this item!";
+			return `You don't have enough supplies to mix even one of this item!\nTo mix/clean a ${mixableItem.name}, you need to have ${baseCost}.`;
 		}
 		if (maxCanDo < quantity) {
 			quantity = maxCanDo;
@@ -131,7 +130,7 @@ export const mineCommand: OSBMahojiCommand = {
 		}
 		await user.removeItemsFromBank(finalCost);
 
-		updateBankSetting(globalClient, ClientSettings.EconomyStats.HerbloreCostBank, finalCost);
+		updateBankSetting('herblore_cost_bank', finalCost);
 
 		await addSubTaskToActivityTask<HerbloreActivityTaskOptions>({
 			mixableID: mixableItem.id,

@@ -1,17 +1,15 @@
-import { User } from '@prisma/client';
 import { notEmpty } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { BitField } from '../../../lib/constants';
 import { assert } from '../../../lib/util';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
-import { mahojiUserSettingsUpdate } from '../../mahojiSettings';
+import { flowerTable } from './hotColdCommand';
 
 interface Usable {
 	items: Item[];
-	run: (user: KlasaUser, mahojiUser: User) => Promise<string>;
+	run: (user: MUser) => Promise<string>;
 }
 export const usables: Usable[] = [];
 
@@ -45,12 +43,12 @@ const usableUnlocks: UsableUnlock[] = [
 for (const usableUnlock of usableUnlocks) {
 	usables.push({
 		items: [usableUnlock.item],
-		run: async (klasaUser, mahojiUser) => {
-			if (mahojiUser.bitfield.includes(usableUnlock.bitfield)) {
+		run: async user => {
+			if (user.bitfield.includes(usableUnlock.bitfield)) {
 				return "You already used this item, you can't use it again.";
 			}
-			await klasaUser.removeItemsFromBank(new Bank().add(usableUnlock.item.id));
-			await mahojiUserSettingsUpdate(mahojiUser.id, {
+			await user.removeItemsFromBank(new Bank().add(usableUnlock.item.id));
+			await user.update({
 				bitfield: {
 					push: usableUnlock.bitfield
 				}
@@ -60,12 +58,23 @@ for (const usableUnlock of usableUnlocks) {
 	});
 }
 
-const genericUsables: { items: [Item, Item]; cost: Bank; loot: Bank | null; response: string }[] = [
+const genericUsables: {
+	items: [Item, Item] | [Item];
+	cost: Bank;
+	loot: Bank | (() => Bank) | null;
+	response: (loot: Bank) => string;
+}[] = [
 	{
 		items: [getOSItem('Banana'), getOSItem('Monkey')],
 		cost: new Bank().add('Banana').freeze(),
 		loot: null,
-		response: 'You fed a Banana to your Monkey!'
+		response: () => 'You fed a Banana to your Monkey!'
+	},
+	{
+		items: [getOSItem('Mithril seeds')],
+		cost: new Bank().add('Mithril seeds').freeze(),
+		loot: () => flowerTable.roll(),
+		response: loot => `You planted a Mithril seed and got ${loot}!`
 	}
 ];
 for (const genericU of genericUsables) {
@@ -73,26 +82,28 @@ for (const genericU of genericUsables) {
 		items: genericU.items,
 		run: async klasaUser => {
 			if (genericU.cost) await klasaUser.removeItemsFromBank(genericU.cost);
-			if (genericU.loot) await klasaUser.addItemsToBank({ items: genericU.loot });
-			return genericU.response;
+			const loot =
+				genericU.loot === null ? null : genericU.loot instanceof Bank ? genericU.loot : genericU.loot();
+			if (loot) await klasaUser.addItemsToBank({ items: loot });
+			return genericU.response(loot ?? new Bank());
 		}
 	});
 }
 export const allUsableItems = new Set(usables.map(i => i.items.map(i => i.id)).flat(2));
 
-export async function useCommand(mUser: User, user: KlasaUser, _firstItem: string, _secondItem?: string) {
+export async function useCommand(user: MUser, _firstItem: string, _secondItem?: string) {
 	const firstItem = getItem(_firstItem);
 	const secondItem = _secondItem === undefined ? null : getItem(_secondItem);
 	if (!firstItem || (_secondItem !== undefined && !secondItem)) return "That's not a valid item.";
 	const items = [firstItem, secondItem].filter(notEmpty);
 	assert(items.length === 1 || items.length === 2);
 
-	const bank = user.bank();
+	const { bank } = user;
 	const checkBank = new Bank();
 	for (const i of items) checkBank.add(i.id);
 	if (!bank.has(checkBank)) return `You don't own ${checkBank}.`;
 
 	const usable = usables.find(i => i.items.length === items.length && items.every(t => i.items.includes(t)));
 	if (!usable) return "That's not a usable item.";
-	return usable.run(user, mUser);
+	return usable.run(user);
 }

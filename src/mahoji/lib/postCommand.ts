@@ -1,4 +1,4 @@
-import { Emoji, shouldTrackCommand, SILENT_ERROR } from '../../lib/constants';
+import { shouldTrackCommand, SILENT_ERROR } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
 import { channelIsSendable, cleanMentions } from '../../lib/util';
 import { makeCommandUsage } from '../../lib/util/commandUsage';
@@ -16,7 +16,7 @@ export async function handleCommandError({
 	commandName: string;
 	error: string | Error;
 	userID: string | bigint;
-	channelID: bigint | string;
+	channelID: string | string;
 }): Promise<void> {
 	const channel = globalClient.channels.cache.get(channelID.toString());
 	if (!channelIsSendable(channel)) return;
@@ -30,7 +30,6 @@ export async function handleCommandError({
 	}
 
 	if (error.name === 'AbortError') {
-		await channel.send('Oops! I had a network issue trying to respond to your command. Please try again.');
 		return;
 	}
 
@@ -43,8 +42,6 @@ export async function handleCommandError({
 					.map(arg => `${arg[0]}[${arg[1]}]`)
 					.join(', ')
 	});
-
-	channel.send(`An unexpected error occurred ${Emoji.Sad}`);
 }
 
 export async function postCommand({
@@ -66,7 +63,8 @@ export async function postCommand({
 	isContinue: boolean;
 	inhibited: boolean;
 }): Promise<string | undefined> {
-	if (!inhibited && shouldTrackCommand(abstractCommand, args)) {
+	if (inhibited) return;
+	if (shouldTrackCommand(abstractCommand, args)) {
 		const commandUsage = makeCommandUsage({
 			userID,
 			channelID,
@@ -83,7 +81,7 @@ export async function postCommand({
 	}
 
 	if (error) {
-		handleCommandError({ error, userID, args, commandName: abstractCommand.name, channelID });
+		handleCommandError({ error, userID, args, commandName: abstractCommand.name, channelID: channelID.toString() });
 	}
 
 	setTimeout(() => globalClient.oneCommandAtATimeCache.delete(userID.toString()), 1000);

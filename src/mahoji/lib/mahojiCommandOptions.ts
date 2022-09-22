@@ -1,5 +1,5 @@
+import { APIApplicationCommandOptionChoice, ApplicationCommandOptionType } from 'discord.js';
 import { uniqueArr } from 'e';
-import { APIApplicationCommandOptionChoice, ApplicationCommandOptionType } from 'mahoji';
 import { CommandOption } from 'mahoji/dist/lib/types';
 import { Bank, Items } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
@@ -11,7 +11,7 @@ import { prisma } from '../../lib/settings/prisma';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { toTitleCase } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
-import { getUserGear, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const filterOption: CommandOption = {
 	type: ApplicationCommandOptionType.String,
@@ -21,7 +21,7 @@ export const filterOption: CommandOption = {
 	autocomplete: async (value: string) => {
 		let res = !value
 			? filterableTypes
-			: filterableTypes.filter(filter => filter.name.toLowerCase().includes(value.toLowerCase()));
+			: [...filterableTypes].filter(filter => filter.name.toLowerCase().includes(value.toLowerCase()));
 		return [...res]
 			.sort((a, b) => baseFilters.indexOf(b) - baseFilters.indexOf(a))
 			.map(val => ({ name: val.name, value: val.aliases[0] ?? val.name }));
@@ -29,6 +29,8 @@ export const filterOption: CommandOption = {
 };
 
 const itemArr = Items.array().map(i => ({ ...i, key: `${i.name.toLowerCase()}${i.id}` }));
+
+export const allEquippableItems = Items.array().filter(i => i.equipable && i.equipment?.slot);
 
 export const itemOption = (filter?: (item: Item) => boolean): CommandOption => ({
 	type: ApplicationCommandOptionType.String,
@@ -76,10 +78,10 @@ export const equippedItemOption = (): CommandOption => ({
 	description: 'The item you want to pick.',
 	required: false,
 	autocomplete: async (value, user) => {
-		const mUser = await mahojiUsersSettingsFetch(user.id);
+		const mUser = await mUserFetch(user.id);
 
 		let results: APIApplicationCommandOptionChoice[] = [];
-		const entries: [string, Item[]][] = Object.entries(getUserGear(mUser)).map(entry => [
+		const entries: [string, Item[]][] = Object.entries(mUser.gear).map(entry => [
 			entry[0],
 			entry[1].allItems(false).map(getOSItem)
 		]);
@@ -124,8 +126,9 @@ export const gearPresetOption: CommandOption = {
 				name: true
 			}
 		});
-		return [...presets, ...globalPresets]
+		return presets
 			.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
-			.map(i => ({ name: i.name, value: i.name }));
+			.map(i => ({ name: i.name, value: i.name }))
+			.concat(globalPresets.map(i => ({ name: `${i.name} (Global)`, value: i.name })));
 	}
 };

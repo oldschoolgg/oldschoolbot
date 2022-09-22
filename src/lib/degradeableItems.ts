@@ -1,15 +1,14 @@
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
+import { updateBankSetting } from '../mahoji/mahojiSettings';
 import { GearSetupType } from './gear';
-import { ClientSettings } from './settings/types/ClientSettings';
-import { assert, updateBankSetting } from './util';
+import { assert } from './util';
 import getOSItem from './util/getOSItem';
 
 interface DegradeableItem {
 	item: Item;
-	settingsKey: 'tentacle_charges' | 'sang_charges';
+	settingsKey: 'tentacle_charges' | 'sang_charges' | 'celestial_ring_charges';
 	itemsToRefundOnBreak: Bank;
 	setup: GearSetupType;
 	aliases: string[];
@@ -45,6 +44,19 @@ export const degradeableItems: DegradeableItem[] = [
 		},
 		unchargedItem: getOSItem('Sanguinesti staff (uncharged)'),
 		convertOnCharge: true
+	},
+	{
+		item: getOSItem('Celestial ring'),
+		settingsKey: 'celestial_ring_charges',
+		itemsToRefundOnBreak: new Bank().add('Celestial ring (uncharged)'),
+		setup: 'skilling',
+		aliases: ['celestial ring'],
+		chargeInput: {
+			cost: new Bank().add('Stardust', 10),
+			charges: 10
+		},
+		unchargedItem: getOSItem('Celestial ring (uncharged)'),
+		convertOnCharge: true
 	}
 ];
 
@@ -55,17 +67,17 @@ export function checkUserCanUseDegradeableItem({
 }: {
 	item: Item;
 	chargesToDegrade: number;
-	user: KlasaUser;
+	user: MUser;
 }): { hasEnough: true } | { hasEnough: false; userMessage: string } {
 	const degItem = degradeableItems.find(i => i.item === item);
 	if (!degItem) throw new Error('Invalid degradeable item');
-	const currentCharges = user.settings.get(degItem.settingsKey) as number;
+	const currentCharges = user.user[degItem.settingsKey];
 	assert(typeof currentCharges === 'number');
 	const newCharges = currentCharges - chargesToDegrade;
 	if (newCharges < 0) {
 		return {
 			hasEnough: false,
-			userMessage: `${user.username}, your ${item.name} has only ${currentCharges} charges remaining, but you need ${chargesToDegrade}.`
+			userMessage: `${user.usernameOrMention}, your ${item.name} has only ${currentCharges} charges remaining, but you need ${chargesToDegrade}.`
 		};
 	}
 	return {
@@ -80,29 +92,33 @@ export async function degradeItem({
 }: {
 	item: Item;
 	chargesToDegrade: number;
-	user: KlasaUser;
+	user: MUser;
 }) {
 	const degItem = degradeableItems.find(i => i.item === item);
 	if (!degItem) throw new Error('Invalid degradeable item');
 
-	const currentCharges = user.settings.get(degItem.settingsKey) as number;
+	const currentCharges = user.user[degItem.settingsKey];
 	assert(typeof currentCharges === 'number');
 	const newCharges = currentCharges - chargesToDegrade;
 
 	if (newCharges <= 0) {
 		// If no more charges left, break and refund the item.
-		const hasEquipped = user.getGear(degItem.setup).equippedWeapon() === item;
+		const hasEquipped = user.gear[degItem.setup].equippedWeapon() === item;
 		const hasInBank = user.owns(item.id);
-		await user.settings.update(degItem.settingsKey, 0);
+		await user.update({
+			[degItem.settingsKey]: 0
+		});
 		const itemsDeleted = new Bank().add(item.id);
 
-		updateBankSetting(globalClient, ClientSettings.EconomyStats.DegradedItemsCost, itemsDeleted);
+		updateBankSetting('degraded_items_cost', itemsDeleted);
 
 		if (hasEquipped) {
 			// If its equipped, unequip and delete it.
-			const gear = { ...user.getGear(degItem.setup).raw() };
+			const gear = { ...user.gear[degItem.setup].raw() };
 			gear.weapon = null;
-			await user.settings.update(`gear.${degItem.setup}`, gear);
+			await user.update({
+				[`gear_${degItem.setup}`]: gear
+			});
 			if (degItem.itemsToRefundOnBreak) {
 				await user.addItemsToBank({ items: degItem.itemsToRefundOnBreak, collectionLog: false });
 			}
@@ -115,7 +131,7 @@ export async function degradeItem({
 		} else {
 			// If its not in bank OR equipped, something weird has gone on.
 			throw new Error(
-				`${user.sanitizedName} had missing ${item.name} when trying to degrade by ${chargesToDegrade}`
+				`${user.usernameOrMention} had missing ${item.name} when trying to degrade by ${chargesToDegrade}`
 			);
 		}
 
@@ -124,8 +140,10 @@ export async function degradeItem({
 		};
 	}
 	// If it has charges left still, just remove those charges and nothing else.
-	await user.settings.update(degItem.settingsKey, newCharges);
-	const chargesAfter = user.settings.get(degItem.settingsKey);
+	await user.update({
+		[degItem.settingsKey]: newCharges
+	});
+	const chargesAfter = user.user[degItem.settingsKey];
 	assert(typeof chargesAfter === 'number' && chargesAfter > 0);
 	return {
 		userMessage: `Your ${item.name} degraded by ${chargesToDegrade} charges, and now has ${chargesAfter} remaining.`

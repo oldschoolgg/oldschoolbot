@@ -7,6 +7,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { FiremakingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -16,7 +17,6 @@ export const lightCommand: OSBMahojiCommand = {
 	attributes: {
 		requiresMinion: true,
 		requiresMinionNotBusy: true,
-		description: 'Light logs to train Firemaking.',
 		examples: ['/light name:Logs']
 	},
 	options: [
@@ -43,7 +43,7 @@ export const lightCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
-		const user = await globalClient.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const log = Firemaking.Burnables.find(
 			log => stringMatches(log.name, options.name) || stringMatches(log.name.split(' ')[0], options.name)
 		);
@@ -57,9 +57,9 @@ export const lightCommand: OSBMahojiCommand = {
 		// All logs take 2.4s to light, add on quarter of a second to account for banking/etc.
 		const timeToLightSingleLog = Time.Second * 2.4 + Time.Second / 4;
 
-		const maxTripLength = user.maxTripLength('Firemaking');
+		const maxTripLength = calcMaxTripLength(user, 'Firemaking');
 
-		const amountOfLogsOwned = user.bank().amount(log.inputLogs);
+		const amountOfLogsOwned = user.bank.amount(log.inputLogs);
 
 		let { quantity } = options;
 		// If no quantity provided, set it to the max.
@@ -80,7 +80,7 @@ export const lightCommand: OSBMahojiCommand = {
 			)}.`;
 		}
 
-		await user.removeItemsFromBank(cost);
+		await transactItems({ userID: user.id, itemsToRemove: cost });
 
 		await addSubTaskToActivityTask<FiremakingActivityTaskOptions>({
 			burnableID: log.inputLogs,
