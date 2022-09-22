@@ -471,6 +471,7 @@ model Minigame {
   lms                     Int    @default(0)
   trouble_brewing         Int    @default(0)
   puro_puro               Int    @default(0)
+  guardians_of_the_rift   Int    @default(0)
 
   new_user NewUser?
 
@@ -668,6 +669,7 @@ enum activity_type_enum {
   PuroPuro
   Easter
   ShootingStars
+  GuardiansOfTheRift
 }
 
 enum xp_gains_skill_enum {

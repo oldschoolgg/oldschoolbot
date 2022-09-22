@@ -16,6 +16,7 @@ import { capeBuyables } from './capes';
 import { castleWarsBuyables } from './castleWars';
 import { fremennikClothes } from './frem';
 import { gnomeClothes } from './gnomeClothes';
+import { guardiansOfTheRiftBuyables } from './guardiansOfTheRifBuyables';
 import { miningBuyables } from './mining';
 import { perduBuyables } from './perdu';
 import { runeBuyables } from './runes';
@@ -1021,7 +1022,8 @@ const Buyables: Buyable[] = [
 	...aerialFishBuyables,
 	...troubleBrewingBuyables,
 	...ironmenBuyables,
-	...shootingStarsBuyables
+	...shootingStarsBuyables,
+	...guardiansOfTheRiftBuyables
 ];
 
 for (const [chompyHat, qty] of chompyHats) {

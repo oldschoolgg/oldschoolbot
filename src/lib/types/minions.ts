@@ -316,6 +316,8 @@ export interface PuroPuroActivityTaskOptions extends MinigameActivityTaskOptions
 	darkLure: boolean;
 }
 
+export interface GuardiansOfTheRiftActivityTaskOptions extends MinigameActivityTaskOptions {}
+
 export type ActivityTaskData =
 	| ActivityTaskOptions
 	| MonsterActivityTaskOptions

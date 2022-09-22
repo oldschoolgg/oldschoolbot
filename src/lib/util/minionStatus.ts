@@ -561,6 +561,11 @@ export function minionStatus(user: MUser) {
 				durationRemaining
 			)}.`;
 		}
+		case 'GuardiansOfTheRift': {
+			return `${name} is currently helping the Great Guardian to close the rift. The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
 		case 'Easter':
 		case 'BlastFurnace': {
 			throw new Error('Removed');

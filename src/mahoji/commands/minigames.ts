@@ -22,6 +22,7 @@ import { castleWarsStartCommand, castleWarsStatsCommand } from '../lib/abstracte
 import { fishingTrawlerCommand } from '../lib/abstracted_commands/fishingTrawler';
 import { gauntletCommand } from '../lib/abstracted_commands/gauntletCommand';
 import { gnomeRestaurantCommand } from '../lib/abstracted_commands/gnomeRestaurantCommand';
+import { guardiansOfTheRiftStartCommand } from '../lib/abstracted_commands/guardiansOfTheRiftCommand';
 import { lmsCommand } from '../lib/abstracted_commands/lmsCommand';
 import { mageArena2Command } from '../lib/abstracted_commands/mageArena2Command';
 import { mageArenaCommand } from '../lib/abstracted_commands/mageArenaCommand';
@@ -1135,8 +1136,22 @@ export const minigamesCommand: OSBMahojiCommand = {
 			return agilityArenaXPCommand(user, options.agility_arena.xp.quantity);
 		}
 
+		/**
+		 *
+		 * Trouble Brewing
+		 *
+		 */
 		if (options.trouble_brewing) {
 			return troubleBrewingStartCommand(user, channelID);
+		}
+
+		/**
+		 *
+		 * Guardians Of The Rift
+		 *
+		 */
+		if (options.gotr) {
+			return guardiansOfTheRiftStartCommand(user, channelID);
 		}
 
 		return 'Invalid command.';
