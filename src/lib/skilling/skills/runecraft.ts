@@ -262,6 +262,13 @@ const RCPouches = [
 	}
 ];
 
+const raimentsOfTheEyeItems: { [key: number]: number } = {
+	[itemID('Hat of the eye')]: 10,
+	[itemID('Robe top of the eye')]: 10,
+	[itemID('Robe bottoms of the eye')]: 10,
+	[itemID('Boots of the eye')]: 10
+};
+
 const Runecraft = {
 	aliases: ['runecraft', 'runecrafting'],
 	Runes,
@@ -269,7 +276,8 @@ const Runecraft = {
 	emoji: Emoji.Runecraft,
 	timePerInventory: Time.Minute,
 	pouches: RCPouches,
-	name: 'Runecraft'
+	name: 'Runecraft',
+	raimentsOfTheEyeItems
 };
 
 export default Runecraft;

@@ -12,6 +12,7 @@ import { armorAndItemPacks } from './creatables/armorPacks';
 import { capeCreatables } from './creatables/capes';
 import { dragonFireShieldCreatables } from './creatables/dragonfireShields';
 import { gracefulOutfitCreatables } from './creatables/gracefulOutfits';
+import { guardiansOfTheRiftCreatables } from './creatables/guardiansOfTheRiftCreatables';
 import { leaguesCreatables } from './creatables/leagueCreatables';
 import { lmsCreatables } from './creatables/lms';
 import { mysticStavesCreatables } from './creatables/mysticStaves';
@@ -2073,7 +2074,8 @@ const Createables: Createable[] = [
 	...nexCreatables,
 	...amrodCreatables,
 	...goldenProspectorCreatables,
-	...leaguesCreatables
+	...leaguesCreatables,
+	...guardiansOfTheRiftCreatables
 ];
 
 export default Createables;
