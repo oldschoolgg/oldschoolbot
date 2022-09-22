@@ -21,17 +21,14 @@ export function determineWoodcuttingTime({
 	powerchopping,
 	woodcuttingLvl
 }: WoodcuttingTimeOptions): [number, number] {
-	const intercept = log.intercept * axeMultiplier;
-	const slope = log.slope * axeMultiplier;
-
 	let timeElapsed = 0;
 
 	const bankTime = log.bankingTime;
-	const chanceOfSuccess = slope * woodcuttingLvl + intercept;
+	const chanceOfSuccess = (log.slope * woodcuttingLvl + log.intercept) * axeMultiplier;
 	const { findNewTreeTime } = log;
 
 	let teakTick = false;
-	if (user.skillsAsLevels.woodcutting >= 92 && log.name === 'Teak Logs') {
+	if (user.skillsAsLevels.woodcutting >= 92 && (log.name === 'Teak Logs' || log.name === 'Mahogany Logs')) {
 		teakTick = true;
 	}
 
