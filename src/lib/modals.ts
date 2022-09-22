@@ -1,10 +1,10 @@
-import { APIInteraction, APIModalSubmitInteraction, InteractionResponseType, InteractionType, Routes } from 'mahoji';
+import { ModalSubmitInteraction } from 'discord.js';
 
 import { assert } from './util';
 
 interface ModalListener {
 	customID: string;
-	run(interaction: APIModalSubmitInteraction): string;
+	run(interaction: ModalSubmitInteraction): string;
 	expiration: number;
 }
 
@@ -16,16 +16,9 @@ export function addModalListener(listener: ModalListener) {
 	assert(modalListeners[0].expiration <= modalListeners[modalListeners.length - 1].expiration);
 }
 
-export async function modalInteractionHook(data: APIInteraction) {
-	if (data.type !== InteractionType.ModalSubmit) return;
-	async function respond(str: string) {
-		const route = Routes.interactionCallback(data.id, data.token);
-		await globalClient.mahojiClient.restManager.post(route, {
-			body: { data: { content: str }, type: InteractionResponseType.ChannelMessageWithSource }
-		});
-	}
-	const listener = modalListeners.find(i => i.customID === data.data.custom_id);
-	if (!listener) return respond('Invalid modal.');
-	const response = listener.run(data);
-	respond(response);
+export async function modalInteractionHook(interaction: ModalSubmitInteraction) {
+	const listener = modalListeners.find(i => i.customID === interaction.customId);
+	if (!listener) return interaction.reply('Invalid modal.');
+	const response = listener.run(interaction);
+	interaction.reply(response);
 }

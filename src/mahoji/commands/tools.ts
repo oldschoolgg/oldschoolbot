@@ -49,6 +49,7 @@ import getUsersPerkTier, {
 	isPrimaryPatron,
 	spawnLampResetTime
 } from '../../lib/util/getUsersPerkTier';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { repairBrokenItemsFromUser } from '../../lib/util/repairBrokenItems';
 import resolveItems from '../../lib/util/resolveItems';
@@ -115,7 +116,7 @@ OR (group_activity = true AND data::jsonb ? 'users' AND data->>'users'::text LIK
 	const zipped = await asyncGzip(buffer);
 
 	return {
-		attachments: [{ fileName: 'activity-export.txt.gz', buffer: zipped }]
+		files: [{ name: 'activity-export.txt.gz', attachment: zipped }]
 	};
 }
 
@@ -204,7 +205,7 @@ async function kcGains(user: MUser, interval: string, monsterName: string): Comm
 		return 'Invalid monster.';
 	}
 
-	const query = `SELECT user_id AS user, SUM(("data"->>'quantity')::int) AS qty, MAX(finish_date) AS lastDate FROM activity
+	const query = `SELECT user_id::text, SUM(("data"->>'quantity')::int) AS qty, MAX(finish_date) AS lastDate FROM activity
 WHERE type = 'MonsterKilling' AND ("data"->>'monsterID')::int = ${monster.id}
 AND finish_date >= now() - interval '${interval === 'day' ? 1 : 7}' day AND completed = true
 GROUP BY 1
@@ -249,7 +250,7 @@ export function spawnLampIsReady(user: MUser, channelID: string): [true] | [fals
 	}
 	return [true];
 }
-async function spawnLampCommand(user: MUser, channelID: bigint): CommandResponse {
+async function spawnLampCommand(user: MUser, channelID: string): CommandResponse {
 	const [lampIsReady, reason] = spawnLampIsReady(user, channelID.toString());
 	if (!lampIsReady && reason) return reason;
 
@@ -264,7 +265,7 @@ async function spawnLampCommand(user: MUser, channelID: bigint): CommandResponse
 		str: `<:Huge_lamp:988325171498721290> ${userMention(user.id)} spawned a Lamp: ${question}`,
 		ironmenAllowed: false,
 		answers,
-		creator: BigInt(user.id),
+		creator: user.id,
 		creatorGetsTwoGuesses: true
 	});
 	if (!winnerID) return `Nobody got it. ${explainAnswer}`;
@@ -273,7 +274,7 @@ async function spawnLampCommand(user: MUser, channelID: bigint): CommandResponse
 	await winner.addItemsToBank({ items: loot, collectionLog: false });
 	return `${winner} got it, and won **${loot}**! ${explainAnswer}`;
 }
-async function spawnBoxCommand(user: MUser, channelID: bigint): CommandResponse {
+async function spawnBoxCommand(user: MUser, channelID: string): CommandResponse {
 	const perkTier = getUsersPerkTier(user, true);
 	if (perkTier < PerkTier.Four && !user.bitfield.includes(BitField.HasPermanentEventBackgrounds)) {
 		return 'You need to be a T3 patron or higher to use this command.';
@@ -292,7 +293,7 @@ async function spawnBoxCommand(user: MUser, channelID: bigint): CommandResponse 
 		str: `${Emoji.MysteryBox} ${userMention(user.id)} spawned a Mystery Box: ${question}`,
 		ironmenAllowed: false,
 		answers,
-		creator: BigInt(user.id)
+		creator: user.id
 	});
 	if (!winnerID) return `Nobody got it. ${explainAnswer}`;
 	const winner = await mUserFetch(winnerID);
@@ -518,7 +519,7 @@ async function mostDrops(user: MUser, itemName: string, ironmanOnly: boolean) {
 		.join('\n')}`;
 }
 
-async function checkMassesCommand(guildID: bigint | undefined) {
+async function checkMassesCommand(guildID: string | undefined) {
 	if (!guildID) return 'This can only be used in a server.';
 	const guild = globalClient.guilds.cache.get(guildID.toString());
 	if (!guild) return 'Guild not found.';
@@ -919,7 +920,7 @@ export const toolsCommand: OSBMahojiCommand = {
 			unfill?: { unit: string };
 		};
 	}>) => {
-		if (interaction) interaction.deferReply();
+		if (interaction) await deferInteraction(interaction);
 		const mahojiUser = await mUserFetch(userID);
 
 		if (options.patron) {
@@ -945,7 +946,7 @@ export const toolsCommand: OSBMahojiCommand = {
 					title: 'Your Sacrificed Items'
 				});
 				return {
-					attachments: [image.file]
+					files: [image.file]
 				};
 			}
 			if (patron.cl_bank) {
@@ -954,7 +955,7 @@ export const toolsCommand: OSBMahojiCommand = {
 				if (patron.cl_bank.format === 'json') {
 					const json = JSON.stringify(clBank);
 					return {
-						attachments: [{ buffer: Buffer.from(json), fileName: 'clbank.json' }]
+						files: [{ attachment: Buffer.from(json), name: 'clbank.json' }]
 					};
 				}
 				const image = await makeBankImage({
@@ -962,7 +963,7 @@ export const toolsCommand: OSBMahojiCommand = {
 					title: 'Your Entire Collection Log'
 				});
 				return {
-					attachments: [image.file]
+					files: [image.file]
 				};
 			}
 			if (patron.xp_gains) {
@@ -970,7 +971,7 @@ export const toolsCommand: OSBMahojiCommand = {
 				return xpGains(patron.xp_gains.time, patron.xp_gains.skill);
 			}
 			if (patron.minion_stats) {
-				interaction.deferReply();
+				deferInteraction(interaction);
 				if (getUsersPerkTier(mahojiUser) < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return minionStats(mahojiUser.user);
 			}
@@ -1008,7 +1009,7 @@ export const toolsCommand: OSBMahojiCommand = {
 					b.add(petObj.name, qty);
 				}
 				return {
-					attachments: [
+					files: [
 						(await makeBankImage({ bank: b, title: `Your Chat Pets (${b.length}/${pets.length})` })).file
 					]
 				};

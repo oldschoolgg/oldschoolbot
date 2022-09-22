@@ -86,12 +86,12 @@ function checkGear(user: MUser): string | undefined {
 	}
 }
 
-export async function fightCavesCommand(user: MUser, channelID: bigint): CommandResponse {
+export async function fightCavesCommand(user: MUser, channelID: string): CommandResponse {
 	const gearFailure = checkGear(user);
 	if (gearFailure) {
 		return {
-			attachments: [
-				{ buffer: await newChatHeadImage({ content: gearFailure, head: 'mejJal' }), fileName: 'fightcaves.jpg' }
+			files: [
+				{ attachment: await newChatHeadImage({ content: gearFailure, head: 'mejJal' }), name: 'fightcaves.jpg' }
 			]
 		};
 	}
@@ -162,13 +162,13 @@ ${
 		? '<:wintertoad:749945071230779493> The extreme cold of your Wintertoad counters the Fight Caves, allowing you to kill the creatures much faster!'
 		: ''
 }`,
-		attachments: [
+		files: [
 			{
-				buffer: await newChatHeadImage({
+				attachment: await newChatHeadImage({
 					content: `You're on your own now JalYt, prepare to fight for your life! I think you have ${totalDeathChance}% chance of survival.`,
 					head: 'mejJal'
 				}),
-				fileName: 'fightcaves.jpg'
+				name: 'fightcaves.jpg'
 			}
 		]
 	};

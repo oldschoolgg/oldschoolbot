@@ -15,7 +15,7 @@ import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { updateBankSetting } from '../../mahojiSettings';
 
-export async function fishingContestStartCommand(user: MUser, channelID: bigint, loc: string | undefined) {
+export async function fishingContestStartCommand(user: MUser, channelID: string, loc: string | undefined) {
 	const currentFishType = getCurrentFishType();
 	const validLocs = getValidLocationsForFishType(currentFishType);
 	if (!loc) loc = validLocs[0].name;

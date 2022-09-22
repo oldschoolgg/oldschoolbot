@@ -1,6 +1,5 @@
-import { EmbedBuilder } from 'discord.js';
+import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 import { Time } from 'e';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
 import { Emoji } from '../../../lib/constants';
@@ -11,9 +10,9 @@ import { Gear } from '../../../lib/structures/Gear';
 import { channelIsSendable, formatDuration } from '../../../lib/util';
 
 export async function igneCommand(
-	interaction: SlashCommandInteraction | null,
+	interaction: ChatInputCommandInteraction | null,
 	user: MUser,
-	channelID: bigint,
+	channelID: string,
 	inputName: string,
 	quantity: number | undefined
 ) {

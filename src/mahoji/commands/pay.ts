@@ -5,6 +5,7 @@ import { Bank } from 'oldschooljs';
 import { Events } from '../../lib/constants';
 import { addToGPTaxBalance, prisma } from '../../lib/settings/prisma';
 import { toKMB } from '../../lib/util';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { OSBMahojiCommand } from '../lib/util';
 import { handleMahojiConfirmation, mahojiParseNumber, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
@@ -34,6 +35,7 @@ export const payCommand: OSBMahojiCommand = {
 		user: MahojiUserOption;
 		amount: string;
 	}>) => {
+		deferInteraction(interaction);
 		const user = await mUserFetch(userID.toString());
 		const recipient = await mUserFetch(options.user.user.id);
 		const amount = mahojiParseNumber({ input: options.amount, min: 1, max: 500_000_000_000 });
@@ -72,7 +74,7 @@ export const payCommand: OSBMahojiCommand = {
 
 		await prisma.economyTransaction.create({
 			data: {
-				guild_id: guildID,
+				guild_id: guildID ? BigInt(guildID) : undefined,
 				sender: BigInt(user.id),
 				recipient: BigInt(recipient.id),
 				items_sent: bank.bank,
@@ -81,10 +83,7 @@ export const payCommand: OSBMahojiCommand = {
 			}
 		});
 
-		globalClient.emit(
-			Events.EconomyLog,
-			`${user.usernameOrMention} paid ${amount} GP to ${recipient.usernameOrMention}.`
-		);
+		globalClient.emit(Events.EconomyLog, `${user.mention} paid ${amount} GP to ${recipient.mention}.`);
 		addToGPTaxBalance(user.id, amount);
 
 		return `You sent ${amount.toLocaleString()} GP to ${recipient}.`;

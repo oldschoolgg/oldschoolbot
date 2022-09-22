@@ -114,7 +114,7 @@ export const vasaTask: MinionTask = {
 			channelID,
 			resultStr,
 			['k', { name: 'vasa' }, true],
-			image.file.buffer,
+			image.file.attachment,
 			data,
 			itemsAdded
 		);

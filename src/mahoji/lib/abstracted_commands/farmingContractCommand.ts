@@ -15,7 +15,7 @@ import { abstractedOpenCommand } from './openCommand';
 
 async function janeImage(content: string) {
 	const image = await newChatHeadImage({ content, head: 'jane' });
-	return { attachments: [{ buffer: image, fileName: 'jane.jpg' }] };
+	return { files: [{ attachment: image, name: 'jane.jpg' }] };
 }
 
 const contractToFarmingLevel = {
@@ -30,7 +30,7 @@ export function getFarmingContractOfUser(user: MUser) {
 	return currentContract;
 }
 
-export async function farmingContractCommand(userID: bigint, input?: ContractOption): CommandResponse {
+export async function farmingContractCommand(userID: string, input?: ContractOption): CommandResponse {
 	const user = await mUserFetch(userID);
 	const farmingLevel = user.skillsAsLevels.farming;
 	const currentContract: FarmingContract =
@@ -141,7 +141,7 @@ export async function canRunAutoContract(userID: string) {
 	);
 }
 
-export async function autoContract(user: MUser, channelID: bigint, userID: bigint): CommandResponse {
+export async function autoContract(user: MUser, channelID: string, userID: string): CommandResponse {
 	const [farmingDetails, mahojiUser] = await Promise.all([getFarmingInfo(userID), mahojiUsersSettingsFetch(userID)]);
 	const contract = mahojiUser.minion_farmingContract as FarmingContract | null;
 	const plant = contract?.hasContract ? findPlant(contract?.plantToGrow) : null;

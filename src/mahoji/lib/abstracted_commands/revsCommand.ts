@@ -1,6 +1,6 @@
+import { ChatInputCommandInteraction } from 'discord.js';
 import { calcWhatPercent, randInt, reduceNumByPercent, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
 import { Emoji } from '../../../lib/constants';
@@ -24,8 +24,8 @@ const specialWeapons = {
 
 export async function revsCommand(
 	user: MUser,
-	channelID: bigint,
-	interaction: SlashCommandInteraction | null,
+	channelID: string,
+	interaction: ChatInputCommandInteraction | null,
 	name: string
 ): CommandResponse {
 	const style = convertAttackStylesToSetup(user.user.attack_style);

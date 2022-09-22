@@ -69,7 +69,7 @@ export async function odsBuyCommand(user: MUser, name: string, qty: number): Com
 	return `Successfully purchased ${qty.toLocaleString()}x ${item.name} for ${cost.toLocaleString()} Ourania Tokens.`;
 }
 
-export async function odsStartCommand(klasaUser: MUser, channelID: bigint) {
+export async function odsStartCommand(klasaUser: MUser, channelID: string) {
 	if (klasaUser.minionIsBusy) {
 		return 'Your minion is busy.';
 	}

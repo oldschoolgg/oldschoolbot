@@ -33,7 +33,7 @@ export async function monkeyRumbleStatsCommand(user: MUser) {
 **Rumble tokens:** ${user.bank.amount('Rumble token')}`;
 }
 
-export async function monkeyRumbleCommand(user: MUser, channelID: bigint): CommandResponse {
+export async function monkeyRumbleCommand(user: MUser, channelID: string): CommandResponse {
 	if (!user.hasEquipped("M'speak amulet")) {
 		return {
 			...(await mahojiChatHead({
@@ -137,10 +137,10 @@ export async function monkeyRumbleCommand(user: MUser, channelID: bigint): Comma
 
 	return {
 		content: str,
-		attachments: [
+		files: [
 			{
-				fileName: 'monkey.png',
-				buffer: await monkeyHeadImage({ monkey: monkeysToFight[0], content: randArrItem(fightingMessages) })
+				name: 'monkey.png',
+				attachment: await monkeyHeadImage({ monkey: monkeysToFight[0], content: randArrItem(fightingMessages) })
 			}
 		]
 	};

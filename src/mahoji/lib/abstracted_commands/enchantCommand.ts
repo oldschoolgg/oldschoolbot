@@ -10,7 +10,7 @@ import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../../lib/util/determineRunes';
 import { updateBankSetting } from '../../mahojiSettings';
 
-export async function enchantCommand(user: MUser, channelID: bigint, name: string, quantity?: number) {
+export async function enchantCommand(user: MUser, channelID: string, name: string, quantity?: number) {
 	const enchantable = Enchantables.find(
 		item =>
 			stringMatches(item.name, name) ||

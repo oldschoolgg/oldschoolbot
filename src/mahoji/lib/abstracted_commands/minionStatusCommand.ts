@@ -1,6 +1,4 @@
-import { ButtonStyle } from 'discord-api-types/v10';
-import { APIButtonComponentWithCustomId, ComponentType } from 'mahoji';
-import { InteractionResponseDataWithBufferAttachments } from 'mahoji/dist/lib/structures/ICommand';
+import { ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { Emoji, lastTripCache, minionBuyButton, PerkTier } from '../../../lib/constants';
@@ -15,12 +13,7 @@ import { calculateBirdhouseDetails } from './birdhousesCommand';
 import { isUsersDailyReady } from './dailyCommand';
 import { canRunAutoContract } from './farmingContractCommand';
 
-export async function minionStatusCommand(
-	userID: bigint | string,
-	channelID: string
-): Promise<InteractionResponseDataWithBufferAttachments> {
-	const user = await mUserFetch(userID);
-
+export async function minionStatusCommand(user: MUser, channelID: string) {
 	if (!user.user.minion_hasBought) {
 		return {
 			content:
@@ -35,7 +28,7 @@ export async function minionStatusCommand(
 	}
 
 	const status = minionStatus(user);
-	const buttons: APIButtonComponentWithCustomId[] = [];
+	const buttons: ButtonBuilder[] = [];
 
 	const result = await getUsersFishingContestDetails(user);
 	if (
@@ -44,13 +37,13 @@ export async function minionStatusCommand(
 		!user.minionIsBusy &&
 		['Contest rod', "Beginner's tackle box"].every(i => user.hasEquippedOrInBank(i))
 	) {
-		buttons.push({
-			type: ComponentType.Button,
-			custom_id: 'DO_FISHING_CONTEST',
-			label: 'Fishing Contest',
-			emoji: { id: '630911040091193356' },
-			style: ButtonStyle.Secondary
-		});
+		buttons.push(
+			new ButtonBuilder()
+				.setCustomId('DO_FISHING_CONTEST')
+				.setLabel('Fishing Contest')
+				.setEmoji('630911040091193356')
+				.setStyle(ButtonStyle.Secondary)
+		);
 	}
 
 	const birdhouseDetails = await calculateBirdhouseDetails(user.id);
@@ -58,71 +51,72 @@ export async function minionStatusCommand(
 	const dailyIsReady = isUsersDailyReady(user);
 
 	if (dailyIsReady.isReady) {
-		buttons.push({
-			type: ComponentType.Button,
-			custom_id: 'CLAIM_DAILY',
-			label: 'Claim Daily',
-			emoji: { id: '493286312854683654' },
-			style: ButtonStyle.Secondary
-		});
+		buttons.push(
+			new ButtonBuilder()
+				.setCustomId('CLAIM_DAILY')
+				.setLabel('Claim Daily')
+				.setEmoji('493286312854683654')
+				.setStyle(ButtonStyle.Secondary)
+		);
 	}
 
 	if (user.minionIsBusy) {
-		buttons.push({
-			type: ComponentType.Button,
-			custom_id: 'CANCEL_TRIP',
-			label: 'Cancel Trip',
-			emoji: { id: '778418736180494347' },
-			style: ButtonStyle.Secondary
-		});
+		buttons.push(
+			new ButtonBuilder()
+				.setCustomId('CANCEL_TRIP')
+				.setLabel('Cancel Trip')
+				.setEmoji('778418736180494347')
+				.setStyle(ButtonStyle.Secondary)
+		);
 	}
 
 	if (!user.minionIsBusy) {
-		buttons.push({
-			type: ComponentType.Button,
-			custom_id: 'AUTO_SLAY',
-			label: 'Auto Slay',
-			emoji: { id: '630911040560824330' },
-			style: ButtonStyle.Secondary
-		});
+		buttons.push(
+			new ButtonBuilder()
+				.setCustomId('AUTO_SLAY')
+				.setLabel('Auto Slay')
+				.setEmoji('630911040560824330')
+				.setStyle(ButtonStyle.Secondary)
+		);
 	}
-	buttons.push({
-		type: ComponentType.Button,
-		custom_id: 'CHECK_PATCHES',
-		label: 'Check Patches',
-		emoji: { name: Emoji.Stopwatch },
-		style: ButtonStyle.Secondary
-	});
+
+	buttons.push(
+		new ButtonBuilder()
+			.setCustomId('CHECK_PATCHES')
+			.setLabel('Check Patches')
+			.setEmoji(Emoji.Stopwatch)
+			.setStyle(ButtonStyle.Secondary)
+	);
 
 	if (!user.minionIsBusy && birdhouseDetails.isReady) {
-		buttons.push({
-			type: ComponentType.Button,
-			custom_id: 'DO_BIRDHOUSE_RUN',
-			label: 'Birdhouse Run',
-			emoji: { id: '692946556399124520' },
-			style: ButtonStyle.Secondary
-		});
+		buttons.push(
+			new ButtonBuilder()
+				.setCustomId('DO_BIRDHOUSE_RUN')
+				.setLabel('Birdhouse Run')
+				.setEmoji('692946556399124520')
+				.setStyle(ButtonStyle.Secondary)
+		);
 	}
 
 	if (!user.minionIsBusy && (await canRunAutoContract(user.id))) {
-		buttons.push({
-			type: ComponentType.Button,
-			custom_id: 'AUTO_FARMING_CONTRACT',
-			label: 'Auto Farming Contract',
-			emoji: { id: '977410792754413668' },
-			style: ButtonStyle.Secondary
-		});
+		buttons.push(
+			new ButtonBuilder()
+				.setCustomId('AUTO_FARMING_CONTRACT')
+				.setLabel('Auto Farming Contract')
+				.setEmoji('977410792754413668')
+				.setStyle(ButtonStyle.Secondary)
+		);
 	}
 
 	const lastTrip = lastTripCache.get(user.id);
 	if (lastTrip && !user.minionIsBusy) {
-		buttons.push({
-			type: ComponentType.Button,
-			custom_id: 'REPEAT_TRIP',
-			label: 'Repeat Trip',
-			emoji: { name: '🔁' },
-			style: ButtonStyle.Secondary
-		});
+		buttons.push(
+			new ButtonBuilder()
+				.setCustomId('REPEAT_TRIP')
+				.setLabel('Repeat Trip')
+				.setEmoji('🔁')
+				.setStyle(ButtonStyle.Secondary)
+		);
 	}
 
 	const { bank } = user;
@@ -131,13 +125,13 @@ export async function minionStatusCommand(
 		for (const tier of ClueTiers.filter(t => bank.has(t.scrollID))
 			.reverse()
 			.slice(0, 3)) {
-			buttons.push({
-				type: ComponentType.Button,
-				custom_id: `DO_${tier.name.toUpperCase()}_CLUE`,
-				label: `Do ${tier.name} Clue`,
-				emoji: { id: '365003979840552960' },
-				style: ButtonStyle.Secondary
-			});
+			buttons.push(
+				new ButtonBuilder()
+					.setCustomId(`DO_${tier.name.toUpperCase()}_CLUE`)
+					.setLabel(`Do ${tier.name} Clue`)
+					.setEmoji('365003979840552960')
+					.setStyle(ButtonStyle.Secondary)
+			);
 		}
 	}
 
@@ -147,46 +141,46 @@ export async function minionStatusCommand(
 		if (tame && !activity) {
 			const lastTameAct = await tameLastFinishedActivity(user);
 			if (lastTameAct) {
-				buttons.push({
-					custom_id: 'REPEAT_TAME_TRIP',
-					emoji: { id: species!.emojiID },
-					style: ButtonStyle.Secondary,
-					label: `Repeat ${shortTameTripDesc(lastTameAct)}`,
-					type: ComponentType.Button
-				});
+				buttons.push(
+					new ButtonBuilder()
+						.setCustomId('REPEAT_TAME_TRIP')
+						.setLabel(`Repeat ${shortTameTripDesc(lastTameAct)}`)
+						.setEmoji(species!.emojiID)
+						.setStyle(ButtonStyle.Secondary)
+				);
 			}
 		}
 	}
 
 	const [spawnLampReady] = spawnLampIsReady(user, channelID);
 	if (spawnLampReady) {
-		buttons.push({
-			custom_id: 'SPAWN_LAMP',
-			emoji: { id: '988325171498721290' },
-			style: ButtonStyle.Secondary,
-			label: 'Spawn Lamp',
-			type: ComponentType.Button
-		});
+		buttons.push(
+			new ButtonBuilder()
+				.setCustomId('SPAWN_LAMP')
+				.setLabel('Spawn Lamp')
+				.setEmoji('988325171498721290')
+				.setStyle(ButtonStyle.Secondary)
+		);
 	}
 
 	const icDetails = getItemContractDetails(user);
 	if (perkTier >= PerkTier.Two && icDetails.currentItem && icDetails.owns) {
-		buttons.push({
-			custom_id: 'ITEM_CONTRACT_SEND',
-			emoji: { id: '988422348434718812' },
-			style: ButtonStyle.Secondary,
-			label: `IC: ${icDetails.currentItem.name.slice(0, 20)}`,
-			type: ComponentType.Button
-		});
+		buttons.push(
+			new ButtonBuilder()
+				.setCustomId('ITEM_CONTRACT_SEND')
+				.setLabel(`IC: ${icDetails.currentItem.name.slice(0, 20)}`)
+				.setEmoji('988422348434718812')
+				.setStyle(ButtonStyle.Secondary)
+		);
 	}
 
-	buttons.push({
-		type: ComponentType.Button,
-		custom_id: 'VIEW_BANK',
-		label: 'View Bank',
-		emoji: { id: '739459924693614653' },
-		style: ButtonStyle.Secondary
-	});
+	buttons.push(
+		new ButtonBuilder()
+			.setCustomId('VIEW_BANK')
+			.setLabel('View Bank')
+			.setEmoji('739459924693614653')
+			.setStyle(ButtonStyle.Secondary)
+	);
 
 	return {
 		content: status,

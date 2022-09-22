@@ -286,7 +286,7 @@ export const lotteryCommand: OSBMahojiCommand = {
 		if (user.isIronman) return 'Ironmen cannot partake in the Lottery.';
 
 		if (options.prices) {
-			return { attachments: [(await makeBankImage({ bank: parsedPriceBank, title: 'Prices' })).file] };
+			return { files: [(await makeBankImage({ bank: parsedPriceBank, title: 'Prices' })).file] };
 		}
 
 		if (options.deposit_items) {
@@ -369,7 +369,7 @@ Top ticket holders: ${users
 				.slice(0, 10)
 				.map(i => `${userMention(i.id)} has ${i.tickets} tickets`)
 				.join(',')}`,
-			attachments: [
+			files: [
 				(await makeBankImage({ bank: totalLoot, title: 'Smokey Lottery' })).file,
 				(await makeBankImage({ bank: input, title: 'Your Lottery Input' })).file
 			],

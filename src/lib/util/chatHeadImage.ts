@@ -73,6 +73,6 @@ export default async function chatHeadImage({ content, head }: { content: string
 export async function mahojiChatHead({ content, head }: { content: string; head: keyof typeof chatHeads }) {
 	const image = await newChatHeadImage({ content, head });
 	return {
-		attachments: [{ buffer: image, fileName: 'image.jpg' }]
+		files: [{ attachment: image, name: 'image.jpg' }]
 	};
 }

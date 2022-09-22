@@ -1,17 +1,21 @@
 import { calcPercentOfNum, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
+import { convertLVLtoXP } from 'oldschooljs/dist/util';
 
 import { Eatables } from '../src/lib/data/eatables';
 import getUserFoodFromBank from '../src/lib/minions/functions/getUserFoodFromBank';
+import { SkillsEnum } from '../src/lib/skilling/types';
 import {
 	clAdjustedDroprate,
 	sanitizeBank,
+	skillingPetDropRate,
 	stripEmojis,
 	truncateString,
 	validateItemBankAndThrow
 } from '../src/lib/util';
 import getOSItem from '../src/lib/util/getOSItem';
 import { sellPriceOfItem, sellStorePriceOfItem } from '../src/mahoji/commands/sell';
+import { mockMUser } from './utils';
 
 describe('util', () => {
 	test('stripEmojis', () => {
@@ -132,4 +136,26 @@ describe('util', () => {
 		expect(clAdjustedDroprate({ cl: new Bank().add('Coal', 1) } as any as MUser, 'Coal', 100, 2)).toEqual(200);
 		expect(clAdjustedDroprate({ cl: new Bank().add('Coal', 2) } as any as MUser, 'Coal', 100, 2)).toEqual(400);
 	});
+});
+
+test('skillingPetRateFunction', () => {
+	let testUser = mockMUser({
+		skills_agility: convertLVLtoXP(30)
+	});
+	const baseDropRate = 300_000;
+	// Lvl 30
+	const dropRateLvl30 = Math.floor((baseDropRate - 30 * 25) / 1);
+	expect(skillingPetDropRate(testUser, SkillsEnum.Agility, baseDropRate).petDropRate).toEqual(dropRateLvl30);
+	// Lvl 99
+	testUser = mockMUser({
+		skills_agility: convertLVLtoXP(99)
+	});
+	const dropRateLvl99 = Math.floor((baseDropRate - 99 * 25) / 1);
+	expect(skillingPetDropRate(testUser, SkillsEnum.Agility, baseDropRate).petDropRate).toEqual(dropRateLvl99);
+	// Lvl 120 (BSO) and 200M xp
+	testUser = mockMUser({
+		skills_agility: 200_000_000
+	});
+	const dropRate200M = Math.floor((baseDropRate - 120 * 25) / 15);
+	expect(skillingPetDropRate(testUser, SkillsEnum.Agility, baseDropRate).petDropRate).toEqual(dropRate200M);
 });

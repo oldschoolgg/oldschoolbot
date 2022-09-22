@@ -6,6 +6,7 @@ import { Bank } from 'oldschooljs';
 
 import { alching } from '../../mahoji/commands/laps';
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
+import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
 import {
 	updateBankSetting,
 	updateGPTrackSetting,
@@ -344,6 +345,8 @@ export async function handleTripFinish(
 	) {
 		components.addComponents(makeNewSlayerTaskButton());
 	}
+	handleTriggerShootingStar(user, data, components);
+
 	sendToChannelID(channelID, {
 		content: message,
 		image: attachment,

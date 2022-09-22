@@ -1,5 +1,5 @@
+import { ChatInputCommandInteraction } from 'discord.js';
 import { randArrItem } from 'e';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
 import { Emoji } from '../../../lib/constants';
@@ -44,7 +44,7 @@ const hammyDoubleMessages = [
 	"Hammy takes your {item} while you aren't looking and runs to the casino. He comes back rich and hands you an extra {item} for your trouble."
 ];
 
-export async function feedHammyCommand(interaction: SlashCommandInteraction, user: MUser, itemName: string) {
+export async function feedHammyCommand(interaction: ChatInputCommandInteraction, user: MUser, itemName: string) {
 	const firstItem = getItem(itemName);
 	if (!firstItem) return "That's not a valid item.";
 

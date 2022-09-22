@@ -129,7 +129,7 @@ export const mineCommand: OSBMahojiCommand = {
 				previousCL
 			});
 			return {
-				attachments: [file]
+				files: [file]
 			};
 		}
 
@@ -174,7 +174,7 @@ export const mineCommand: OSBMahojiCommand = {
 
 			return {
 				content: `You offered ${quantity}x ${egg.name} to the Shrine and received the attached loot and ${xpStr}.`,
-				attachments: [file]
+				files: [file]
 			};
 		}
 

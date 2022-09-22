@@ -1,5 +1,6 @@
+import { User } from 'discord.js';
 import { reduceNumByPercent, round, Time } from 'e';
-import { APIUser, ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
@@ -49,7 +50,7 @@ export const buildCommand: OSBMahojiCommand = {
 			name: 'name',
 			description: 'The object you want to build.',
 			required: true,
-			autocomplete: async (value: string, user: APIUser) => {
+			autocomplete: async (value: string, user: User) => {
 				const mUser = await mahojiUsersSettingsFetch(user.id);
 				const conLevel = getSkillsOfMahojiUser(mUser, true).construction;
 				return Constructables.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))

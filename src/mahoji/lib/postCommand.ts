@@ -16,7 +16,7 @@ export async function handleCommandError({
 	commandName: string;
 	error: string | Error;
 	userID: string | bigint;
-	channelID: bigint | string;
+	channelID: string | string;
 }): Promise<void> {
 	const channel = globalClient.channels.cache.get(channelID.toString());
 	if (!channelIsSendable(channel)) return;
@@ -81,7 +81,7 @@ export async function postCommand({
 	}
 
 	if (error) {
-		handleCommandError({ error, userID, args, commandName: abstractCommand.name, channelID });
+		handleCommandError({ error, userID, args, commandName: abstractCommand.name, channelID: channelID.toString() });
 	}
 
 	setTimeout(() => globalClient.oneCommandAtATimeCache.delete(userID.toString()), 1000);

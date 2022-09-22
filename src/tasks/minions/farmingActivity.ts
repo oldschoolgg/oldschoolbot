@@ -17,7 +17,8 @@ import {
 	itemID,
 	itemNameFromID,
 	rand,
-	roll
+	roll,
+	skillingPetDropRate
 } from '../../lib/util';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import { getFarmingKeyFromName } from '../../lib/util/farmingHelpers';
@@ -441,6 +442,7 @@ export const farmingTask: MinionTask = {
 			}
 
 			let tangleroot = false;
+			const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Farming, plantToHarvest.petChance);
 			if (plantToHarvest.seedType === 'hespori') {
 				await user.incrementKC(Monsters.Hespori.id);
 				const hesporiLoot = Monsters.Hespori.kill(1, { farmingLevel: currentFarmingLevel });
@@ -457,7 +459,7 @@ export const farmingTask: MinionTask = {
 				patchType.patchPlanted &&
 				plantToHarvest.petChance &&
 				alivePlants > 0 &&
-				roll((plantToHarvest.petChance - currentFarmingLevel * 25) / alivePlants)
+				roll(petDropRate / alivePlants)
 			) {
 				loot.add('Tangleroot');
 				tangleroot = true;

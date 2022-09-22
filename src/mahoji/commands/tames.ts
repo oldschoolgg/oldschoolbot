@@ -1,5 +1,6 @@
 import { time } from '@discordjs/builders';
 import { Tame, tame_growth, TameActivity } from '@prisma/client';
+import { ChatInputCommandInteraction, User } from 'discord.js';
 import {
 	calcPercentOfNum,
 	calcWhatPercent,
@@ -11,9 +12,8 @@ import {
 	Time
 } from 'e';
 import { readFile } from 'fs/promises';
-import { APIUser, ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import { Canvas, CanvasRenderingContext2D, Image, loadImage } from 'skia-canvas/lib';
@@ -61,7 +61,7 @@ import { collectables } from '../lib/abstracted_commands/collectCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { handleMahojiConfirmation, updateBankSetting } from '../mahojiSettings';
 
-async function tameAutocomplete(value: string, user: APIUser) {
+async function tameAutocomplete(value: string, user: User) {
 	const tames = await prisma.tame.findMany({
 		where: {
 			user_id: user.id
@@ -447,7 +447,7 @@ export async function tameImage(user: MUser): CommandResponse {
 		content: `${badgesStr}${user.usernameOrMention}, ${
 			userTames.length > 1 ? 'here are your tames' : 'this is your tame'
 		}!`,
-		attachments: [{ buffer, fileName: `${user.usernameOrMention}_tames.png` }]
+		files: [{ attachment: buffer, name: `${user.usernameOrMention}_tames.png` }]
 	};
 }
 
@@ -582,7 +582,7 @@ async function cancelCommand(user: MUser) {
 	return "You cancelled your tames' task.";
 }
 
-async function mergeCommand(user: MUser, interaction: SlashCommandInteraction, tameID: number) {
+async function mergeCommand(user: MUser, interaction: ChatInputCommandInteraction, tameID: number) {
 	const requirements = {
 		[SkillsEnum.Magic]: 110,
 		[SkillsEnum.Runecraft]: 110,
@@ -682,7 +682,7 @@ async function mergeCommand(user: MUser, interaction: SlashCommandInteraction, t
 	return `${tameName(tame)} consumed ${tameName(toSelect)} and all its attributes.`;
 }
 
-async function feedCommand(interaction: SlashCommandInteraction, user: MUser, str: string) {
+async function feedCommand(interaction: ChatInputCommandInteraction, user: MUser, str: string) {
 	const { tame, species } = await getUsersTame(user);
 	if (!tame) {
 		return 'You have no selected tame.';
@@ -772,7 +772,7 @@ Note: Some items must be equipped to your tame, not fed. Check that you are feed
 	}${specialStr}${egg}`;
 }
 
-async function killCommand(user: MUser, channelID: bigint, str: string) {
+async function killCommand(user: MUser, channelID: string, str: string) {
 	const { tame, activity, species } = await getUsersTame(user);
 	if (!tame || !species) {
 		return 'You have no selected tame.';
@@ -920,7 +920,7 @@ async function killCommand(user: MUser, channelID: bigint, str: string) {
 	return reply;
 }
 
-async function collectCommand(user: MUser, channelID: bigint, str: string) {
+async function collectCommand(user: MUser, channelID: string, str: string) {
 	const { tame, activity } = await getUsersTame(user);
 	if (!tame) {
 		return 'You have no selected tame.';
@@ -1063,7 +1063,7 @@ async function viewCommand(user: MUser, tameID: number): CommandResponse {
 	}
 	return {
 		content,
-		attachments: [image.file, fedImage.file]
+		files: [image.file.attachment, fedImage.file.attachment]
 	};
 }
 

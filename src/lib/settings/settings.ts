@@ -1,16 +1,16 @@
 import { Activity, NewUser, Prisma } from '@prisma/client';
-import { AttachmentBuilder, GuildMember } from 'discord.js';
+import { APIInteractionGuildMember, ButtonInteraction, ChatInputCommandInteraction, GuildMember } from 'discord.js';
 import { Time } from 'e';
-import { APIInteractionGuildMember, MessageFlags } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
 import { CommandArgs } from '../../mahoji/lib/inhibitors';
 import { postCommand } from '../../mahoji/lib/postCommand';
 import { preCommand } from '../../mahoji/lib/preCommand';
-import { convertComponentDJSComponent, convertMahojiCommandToAbstractCommand } from '../../mahoji/lib/util';
+import { convertMahojiCommandToAbstractCommand } from '../../mahoji/lib/util';
 import { PerkTier } from '../constants';
 import { ActivityTaskData } from '../types/minions';
 import { channelIsSendable, isGroupActivity } from '../util';
+import { interactionReply } from '../util/interactionReply';
 import { logError } from '../util/logError';
 import { convertStoredActivityToFlatActivity, prisma } from './prisma';
 
@@ -67,13 +67,14 @@ export async function runMahojiCommand({
 	commandName,
 	options,
 	user,
-	member
+	interaction
 }: {
+	interaction: ChatInputCommandInteraction | ButtonInteraction;
 	commandName: string;
 	options: Record<string, unknown>;
-	channelID: bigint | string;
-	userID: bigint | string;
-	guildID: bigint | string | undefined;
+	channelID: string;
+	userID: string;
+	guildID: string | undefined | null;
 	user: MUser;
 	member: APIInteractionGuildMember | GuildMember | null;
 }) {
@@ -83,15 +84,14 @@ export async function runMahojiCommand({
 	}
 
 	return mahojiCommand.run({
-		userID: BigInt(userID),
-		guildID: guildID ? BigInt(guildID) : undefined,
-		channelID: BigInt(channelID),
+		userID,
+		guildID: guildID ? guildID : undefined,
+		channelID,
 		options,
-		// TODO: Make this typesafe
-		user: user as any,
-		member: member as any,
+		user: globalClient.users.cache.get(user.id)!,
+		member: guildID ? globalClient.guilds.cache.get(guildID)?.members.cache.get(user.id) : undefined,
 		client: globalClient.mahojiClient,
-		interaction: null as any
+		interaction: interaction as ChatInputCommandInteraction
 	});
 }
 
@@ -99,23 +99,23 @@ export interface RunCommandArgs {
 	commandName: string;
 	args: CommandArgs;
 	user: MUser;
-	channelID: string | bigint;
-	userID: string | bigint;
+	channelID: string;
 	member: APIInteractionGuildMember | GuildMember | null;
 	isContinue?: boolean;
 	bypassInhibitors?: true;
-	guildID: string | bigint | undefined;
+	guildID: string | undefined | null;
+	interaction: ButtonInteraction | ChatInputCommandInteraction;
 }
 export async function runCommand({
 	commandName,
 	args,
 	isContinue,
 	bypassInhibitors,
-	userID,
 	channelID,
 	guildID,
 	user,
-	member
+	member,
+	interaction
 }: RunCommandArgs): Promise<null | CommandResponse> {
 	const channel = globalClient.channels.cache.get(channelID.toString());
 	if (!channel || !channelIsSendable(channel)) return null;
@@ -128,7 +128,7 @@ export async function runCommand({
 	try {
 		const inhibitedReason = await preCommand({
 			abstractCommand,
-			userID,
+			userID: user.id,
 			channelID,
 			guildID,
 			bypassInhibitors: bypassInhibitors ?? false,
@@ -138,9 +138,14 @@ export async function runCommand({
 		if (inhibitedReason) {
 			inhibited = true;
 			if (inhibitedReason.silent) return null;
-			channel.send(
-				typeof inhibitedReason.reason === 'string' ? inhibitedReason.reason : inhibitedReason.reason.content!
-			);
+
+			await interaction.reply({
+				content:
+					typeof inhibitedReason.reason! === 'string'
+						? inhibitedReason.reason
+						: inhibitedReason.reason!.content!,
+				ephemeral: true
+			});
 			return null;
 		}
 
@@ -150,22 +155,12 @@ export async function runCommand({
 			commandName,
 			guildID,
 			channelID,
-			userID,
+			userID: user.id,
 			member,
-			user
+			user,
+			interaction
 		});
-		if (channelIsSendable(channel)) {
-			if (typeof result === 'string') {
-				await channel.send(result);
-			} else if (result.flags !== MessageFlags.Ephemeral) {
-				await channel.send({
-					content: result.content,
-					embeds: result.embeds?.map(i => ({ ...i, type: undefined })),
-					components: result.components?.map(i => convertComponentDJSComponent(i as any)),
-					files: result.attachments?.map(i => new AttachmentBuilder(i.buffer, { name: i.fileName }))
-				});
-			}
-		}
+		if (result && !interaction.replied) await interactionReply(interaction, result);
 		return result;
 	} catch (err: any) {
 		if (typeof err === 'string') {
@@ -179,7 +174,7 @@ export async function runCommand({
 		try {
 			await postCommand({
 				abstractCommand,
-				userID,
+				userID: user.id,
 				guildID,
 				channelID,
 				args,

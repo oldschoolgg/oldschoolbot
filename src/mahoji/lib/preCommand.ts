@@ -1,5 +1,4 @@
-import { TextChannel } from 'discord.js';
-import { APIUser } from 'mahoji';
+import { TextChannel, User } from 'discord.js';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
 import { BitField, usernameCache } from '../../lib/constants';
@@ -40,16 +39,19 @@ export async function preCommand({
 	bypassInhibitors,
 	apiUser
 }: {
-	apiUser: APIUser | null;
+	apiUser: User | null;
 	abstractCommand: AbstractCommand;
 	userID: string | bigint;
 	guildID?: string | bigint | null;
 	channelID: string | bigint;
 	bypassInhibitors: boolean;
 }): Promise<{ silent: boolean; reason: Awaited<CommandResponse> } | undefined> {
+	if (globalClient.isShuttingDown) {
+		return { silent: true, reason: 'The bot is currently restarting, please try again later.' };
+	}
 	globalClient.emit('debug', `${userID} trying to run ${abstractCommand.name} command`);
-	const user = await mUserFetch(userID);
-	if (user.isBusy && !bypassInhibitors) {
+	const user = await mUserFetch(userID.toString());
+	if (user.isBusy && !bypassInhibitors && abstractCommand.name !== 'admin') {
 		return { silent: true, reason: 'You cannot use a command right now.' };
 	}
 	globalClient.oneCommandAtATimeCache.add(userID.toString());
@@ -63,6 +65,7 @@ export async function preCommand({
 					BitField.IsPatronTier3,
 					BitField.IsPatronTier4,
 					BitField.IsPatronTier5,
+					BitField.IsPatronTier6,
 					BitField.isContributor,
 					BitField.isModerator
 				]

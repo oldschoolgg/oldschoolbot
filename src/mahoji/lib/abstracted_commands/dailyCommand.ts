@@ -1,7 +1,6 @@
-import { TextChannel } from 'discord.js';
+import { ChatInputCommandInteraction, TextChannel } from 'discord.js';
 import { roll, shuffleArr, uniqueArr } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
 import { SupportServer } from '../../../config';
@@ -11,6 +10,7 @@ import { getRandomTriviaQuestions } from '../../../lib/roboChimp';
 import dailyRoll from '../../../lib/simulation/dailyTable';
 import { channelIsSendable, formatDuration, isWeekend } from '../../../lib/util';
 import { dailyResetTime } from '../../../lib/util/getUsersPerkTier';
+import { deferInteraction } from '../../../lib/util/interactionReply';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { updateGPTrackSetting } from '../../mahojiSettings';
 
@@ -109,15 +109,15 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 		previousCL,
 		showNewCL: true
 	});
-	return { content: `${dmStr}\nYou received ${new Bank(loot)}`, attachments: [image.file] };
+	return { content: `${dmStr}\nYou received ${new Bank(loot)}`, files: [image.file] };
 }
 
 export async function dailyCommand(
-	interaction: SlashCommandInteraction | null,
-	channelID: bigint,
+	interaction: ChatInputCommandInteraction | null,
+	channelID: string,
 	user: MUser
 ): CommandResponse {
-	if (interaction) await interaction.deferReply();
+	if (interaction) await deferInteraction(interaction);
 	const channel = globalClient.channels.cache.get(channelID.toString());
 	if (!channelIsSendable(channel)) return 'Invalid channel.';
 	const check = isUsersDailyReady(user);

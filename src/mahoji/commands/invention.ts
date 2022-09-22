@@ -1,6 +1,7 @@
 import { time } from '@discordjs/builders';
+import { User } from 'discord.js';
 import { reduceNumByPercent, Time } from 'e';
-import { APIUser, ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { table } from 'table';
@@ -77,7 +78,7 @@ export const inventionCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.String,
 					description: 'The type of materials you want to research with.',
 					required: true,
-					autocomplete: async (value: string, user: APIUser) => {
+					autocomplete: async (value: string, user: User) => {
 						const mahojiUser = await mahojiUsersSettingsFetch(user.id, { materials_owned: true });
 						const bank = new MaterialBank(mahojiUser.materials_owned as IMaterialBank);
 						return materialTypes
@@ -260,7 +261,7 @@ export const inventionCommand: OSBMahojiCommand = {
 					.values()
 					.map(i => `${i.type}[${i.quantity}]`)
 					.join(' ')}`,
-				attachments: [{ buffer: Buffer.from(str), fileName: `${group.name}.txt` }]
+				files: [{ attachment: Buffer.from(str), name: `${group.name}.txt` }]
 			};
 		}
 
@@ -274,7 +275,7 @@ export const inventionCommand: OSBMahojiCommand = {
 
 					return {
 						content: "These are all the items you've ever disassembled.",
-						attachments: [
+						files: [
 							(
 								await makeBankImage({
 									bank: new Bank(a.disassembled_items_bank as ItemBank),
@@ -349,7 +350,7 @@ These Inventions are still not unlocked: ${locked
 					}
 
 					return {
-						attachments: [{ buffer: Buffer.from(table(xpTable)), fileName: 'invention-xp.txt' }]
+						files: [{ attachment: Buffer.from(table(xpTable)), name: 'invention-xp.txt' }]
 					};
 				}
 				case 'groups': {
@@ -368,7 +369,7 @@ These Inventions are still not unlocked: ${locked
 			.join('\n       ')}`;
 						str += '\n';
 					}
-					return { attachments: [{ buffer: Buffer.from(str), fileName: 'groups.txt' }] };
+					return { files: [{ attachment: Buffer.from(str), name: 'groups.txt' }] };
 				}
 			}
 		}

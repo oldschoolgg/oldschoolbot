@@ -6,6 +6,7 @@ import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { Events } from '../../lib/constants';
 import { addToGPTaxBalance, prisma } from '../../lib/settings/prisma';
 import { discrimName, truncateString } from '../../lib/util';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption } from '../lib/mahojiCommandOptions';
@@ -62,7 +63,7 @@ export const askCommand: OSBMahojiCommand = {
 		filter?: string;
 		search?: string;
 	}>) => {
-		interaction.deferReply();
+		await deferInteraction(interaction);
 		if (!guildID) return 'You can only run this in a server.';
 		const senderUser = await mUserFetch(userID);
 		const senderAPIUser = user;
@@ -131,7 +132,7 @@ Both parties must click confirm to make the trade.`,
 
 		await prisma.economyTransaction.create({
 			data: {
-				guild_id: guildID,
+				guild_id: BigInt(guildID),
 				sender: BigInt(senderUser.id),
 				recipient: BigInt(recipientUser.id),
 				items_sent: itemsSent.bank,
@@ -141,7 +142,7 @@ Both parties must click confirm to make the trade.`,
 		});
 		globalClient.emit(
 			Events.EconomyLog,
-			`${senderUser.usernameOrMention} sold ${itemsSent} to ${recipientUser.usernameOrMention} for ${itemsReceived}.`
+			`${senderUser.mention} sold ${itemsSent} to ${recipientUser.mention} for ${itemsReceived}.`
 		);
 		if (itemsReceived.has('Coins')) {
 			addToGPTaxBalance(recipientUser.id, itemsReceived.amount('Coins'));

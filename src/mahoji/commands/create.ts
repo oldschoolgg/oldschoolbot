@@ -12,6 +12,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
 import { stringMatches } from '../../lib/util';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { OSBMahojiCommand } from '../lib/util';
 import {
 	handleMahojiConfirmation,
@@ -23,7 +24,7 @@ import {
 function showAllCreatables(user: MUser) {
 	let content = 'This are the items that you can create:';
 	const creatableTable = table([
-		['Item Name', 'Input Items', 'Output Items', 'GP Cost', 'Skills Required', 'QP Required'],
+		['Item name', 'Input Items', 'Output Items', 'GP Cost', 'Skills Required', 'QP Required'],
 		...Createables.map(i => {
 			return [
 				i.name,
@@ -43,7 +44,7 @@ function showAllCreatables(user: MUser) {
 	]);
 	return {
 		content,
-		attachments: [{ buffer: Buffer.from(creatableTable), fileName: 'Creatables.txt' }]
+		files: [{ attachment: Buffer.from(creatableTable), name: 'Creatables.txt' }]
 	};
 }
 
@@ -90,7 +91,7 @@ export const createCommand: OSBMahojiCommand = {
 		const itemName = options.item.toLowerCase();
 		let { quantity } = options;
 		if (options.showall) {
-			await interaction.deferReply();
+			await deferInteraction(interaction);
 			return showAllCreatables(user);
 		}
 

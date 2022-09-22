@@ -30,7 +30,7 @@ const maxTeamSize = 20;
 const maxBoostSize = 5;
 const boostPerPlayer = 5;
 
-async function startCommand(channelID: bigint, user: MUser, floor: string | undefined, solo: boolean | undefined) {
+async function startCommand(channelID: string, user: MUser, floor: string | undefined, solo: boolean | undefined) {
 	const isSolo = Boolean(solo);
 
 	let floorToDo = Boolean(floor) ? Number(floor) : maxFloorUserCanDo(user);

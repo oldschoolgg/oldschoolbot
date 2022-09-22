@@ -1,15 +1,13 @@
 import { Prisma } from '@prisma/client';
-import { ButtonBuilder } from 'discord.js';
-import { Time } from 'e';
 import {
 	APIButtonComponent,
-	APIButtonComponentWithCustomId,
 	APIInteractionDataResolvedChannel,
 	APIRole,
-	APIUser,
+	ButtonBuilder,
 	ButtonStyle,
 	ComponentType
-} from 'mahoji';
+} from 'discord.js';
+import { Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { CommandOptions } from 'mahoji/dist/lib/types';
 import { convertLVLtoXP } from 'oldschooljs/dist/util/util';
@@ -549,7 +547,7 @@ function compressMahojiArgs(options: CommandArgs) {
 		}
 
 		if ('user' in val && 'member' in val) {
-			newOptions[key] = (val.user as APIUser).id;
+			newOptions[key] = (val.user as { id: string }).id;
 			continue;
 		}
 
@@ -579,11 +577,8 @@ export const DISABLED_COMMANDS = new Set<string>();
 export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'none'] as const;
 export type PvMMethod = typeof PVM_METHODS[number];
 export const usernameCache = new Map<string, string>();
-export const minionBuyButton: APIButtonComponentWithCustomId = {
-	type: ComponentType.Button,
-	custom_id: 'BUY_MINION',
-	label: 'Buy Minion',
-	emoji: { id: '778418736180494347' },
-	style: ButtonStyle.Success
-};
+export const minionBuyButton = new ButtonBuilder()
+	.setCustomId('BUY_MINION')
+	.setLabel('Buy Minion')
+	.setStyle(ButtonStyle.Success);
 export const FormattedCustomEmoji = /<a?:\w{2,32}:\d{17,20}>/;

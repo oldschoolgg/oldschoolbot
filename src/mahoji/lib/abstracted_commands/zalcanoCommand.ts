@@ -31,7 +31,7 @@ function calcPerformance(kcLearned: number, skillPercentage: number) {
 	return Math.min(100, basePerformance);
 }
 
-export async function zalcanoCommand(user: MUser, channelID: bigint) {
+export async function zalcanoCommand(user: MUser, channelID: string) {
 	const [hasReqs, reason] = hasSkillReqs(user, soteSkillRequirements);
 	if (!hasReqs) {
 		return `To fight Zalcano, you need: ${reason}.`;

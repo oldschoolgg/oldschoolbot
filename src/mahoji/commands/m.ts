@@ -8,6 +8,6 @@ export const mCommand: OSBMahojiCommand = {
 	description: 'See your current minion status and helpful buttons.',
 	options: [],
 	run: async ({ userID, channelID }: CommandRunOptions) => {
-		return minionStatusCommand(userID, channelID.toString());
+		return minionStatusCommand(await mUserFetch(userID), channelID.toString());
 	}
 };

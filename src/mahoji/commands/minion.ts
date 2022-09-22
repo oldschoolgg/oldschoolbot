@@ -19,6 +19,7 @@ import creatures from '../../lib/skilling/skills/hunter/creatures';
 import { convertLVLtoXP, getUsername, isValidNickname } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
 import {
 	achievementDiaryCommand,
@@ -51,7 +52,7 @@ const patMessages = [
 const randomPatMessage = (minionName: string) => randArrItem(patMessages).replace('{name}', minionName);
 
 export async function getUserInfo(user: MUser) {
-	const roboChimpUser = await roboChimpUserFetch(BigInt(user.id));
+	const roboChimpUser = await roboChimpUserFetch(user.id);
 
 	const bitfields = `${(user.bitfield as BitField[])
 		.map(i => BitFieldData[i])
@@ -460,11 +461,11 @@ export const minionCommand: OSBMahojiCommand = {
 		const perkTier = getUsersPerkTier(user);
 
 		if (options.info) return (await getUserInfo(user)).everythingString;
-		if (options.status) return minionStatusCommand(user.id, channelID.toString());
+		if (options.status) return minionStatusCommand(user, channelID.toString());
 
 		if (options.stats) {
 			if (options.stats.stat) {
-				await interaction.deferReply();
+				await deferInteraction(interaction);
 				return statsCommand(user, options.stats.stat);
 			}
 			return { embeds: [await minionStatsEmbed(user)] };

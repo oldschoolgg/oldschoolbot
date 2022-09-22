@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
+import { ChatInputCommandInteraction } from 'discord.js';
 import { noOp } from 'e';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { roboChimpUserFetch } from '../../../lib/roboChimp';
@@ -9,7 +9,7 @@ import { assert } from '../../../lib/util';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 import { handleMahojiConfirmation, mahojiUsersSettingsFetch } from '../../mahojiSettings';
 
-export async function ironmanCommand(user: MUser, interaction: SlashCommandInteraction) {
+export async function ironmanCommand(user: MUser, interaction: ChatInputCommandInteraction) {
 	if (minionIsBusy(user.id)) return 'Your minion is busy.';
 	if (user.isIronman) {
 		return 'You are already an ironman.';
@@ -91,7 +91,7 @@ Type \`confirm permanent ironman\` if you understand the above information, and 
 		await prisma.fishingContestCatch.deleteMany({ where: { user_id: BigInt(user.id) } });
 
 		// Refund the leagues points they spent
-		const roboChimpUser = await roboChimpUserFetch(BigInt(user.id));
+		const roboChimpUser = await roboChimpUserFetch(user.id);
 		if (roboChimpUser.leagues_points_total >= 0) {
 			await roboChimpClient.user.update({
 				where: {

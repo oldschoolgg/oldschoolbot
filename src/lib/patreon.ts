@@ -190,6 +190,7 @@ class PatreonTask {
 		let messages = [];
 		const sponsors = await fetchSponsors();
 		for (const sponsor of sponsors) {
+			if (!sponsor.tier) continue;
 			const user = await getUserFromGithubID(sponsor.githubID);
 			if (!user) continue;
 			let res = await this.validatePerks(user.id, sponsor.tier);
@@ -228,7 +229,7 @@ class PatreonTask {
 
 			const user = await mUserFetch(patron.discordID);
 
-			const roboChimpUser = await roboChimpUserFetch(BigInt(patron.discordID));
+			const roboChimpUser = await roboChimpUserFetch(patron.discordID);
 
 			if (roboChimpUser.github_id) continue;
 

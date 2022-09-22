@@ -8,7 +8,7 @@ import { DISABLED_COMMANDS } from '../../lib/constants';
 import { syncDoubleLoot } from '../../lib/doubleLoot';
 import { prisma } from '../../lib/settings/prisma';
 import { CUSTOM_PRICE_CACHE } from '../commands/sell';
-import { mahojiClientSettingsFetch } from '../mahojiSettings';
+import { mahojiClientSettingsFetch, syncLinkedAccounts } from '../mahojiSettings';
 
 export async function syncCustomPrices() {
 	const clientData = await mahojiClientSettingsFetch();
@@ -49,4 +49,6 @@ export async function onStartup() {
 	await syncDoubleLoot();
 	await syncCustomPrices();
 	await cacheBadges();
+
+	await syncLinkedAccounts();
 }

@@ -80,7 +80,7 @@ export const gauntletTask: MinionTask = {
 			channelID,
 			str,
 			['minigames', { gauntlet: { start: { corrupted } } }, true],
-			image.file.buffer,
+			image.file.attachment,
 			data,
 			loot
 		);

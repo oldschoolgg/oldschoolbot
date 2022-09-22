@@ -7,7 +7,7 @@ import { trackLoot } from '../../../lib/settings/prisma';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
-import { roll } from '../../../lib/util';
+import { roll, skillingPetDropRate } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 
@@ -30,17 +30,18 @@ export const sepulchreTask: MinionTask = {
 					loot.add(GrandHallowedCoffin.roll(), { 5: 1, 6: 2, 7: 3 }[floor.number] ?? 1);
 				}
 
+				const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Agility, floor.petChance);
+
 				const numCoffinsToOpen = 1;
 				numCoffinsOpened += numCoffinsToOpen;
 				for (let i = 0; i < numCoffinsToOpen; i++) {
 					loot.add(openCoffin(floor.number, user));
 				}
-
+				if (roll(petDropRate)) {
+					loot.add('Giant squirrel');
+				}
 				agilityXP += floor.xp;
 				thievingXP = 200 * numCoffinsOpened;
-			}
-			if (roll(completedFloors[completedFloors.length - 1].petChance)) {
-				loot.add('Giant squirrel');
 			}
 		}
 
@@ -94,7 +95,7 @@ export const sepulchreTask: MinionTask = {
 			channelID,
 			str,
 			['minigames', { sepulchre: { start: {} } }, true],
-			image.file.buffer,
+			image.file.attachment,
 			data,
 			itemsAdded
 		);

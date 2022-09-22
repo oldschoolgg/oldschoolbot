@@ -1,7 +1,7 @@
 import { userMention } from '@discordjs/builders';
 import { Prisma, User } from '@prisma/client';
+import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { chunk, Time } from 'e';
-import { APIButtonComponentWithCustomId, ButtonStyle, ComponentType } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { toKMB } from 'oldschooljs/dist/util';
@@ -423,12 +423,11 @@ export async function calculateBingoTeamDetails(oneTeamMember: string | string[]
 	};
 }
 
-export const buyBingoTicketButton: APIButtonComponentWithCustomId = {
-	type: ComponentType.Button,
-	custom_id: 'BUY_BINGO_TICKET',
-	label: `Buy Bingo Ticket (${toKMB(BINGO_TICKET_PRICE)})`,
-	style: ButtonStyle.Secondary
-};
+export const buyBingoTicketButton = new ButtonBuilder()
+	.setCustomId('BUY_BINGO_TICKET')
+	.setLabel(`Buy Bingo Ticket (${toKMB(BINGO_TICKET_PRICE)})`)
+	.setEmoji('739459924693614653')
+	.setStyle(ButtonStyle.Secondary);
 
 export async function countTotalGPInPrizePool() {
 	const sum = await prisma.user.aggregate({

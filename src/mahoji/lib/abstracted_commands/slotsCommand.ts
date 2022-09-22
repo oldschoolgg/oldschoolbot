@@ -1,12 +1,12 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageOptions } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, MessageOptions } from 'discord.js';
 import { chunk, noOp, randInt, shuffleArr, sleep } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import { channelIsSendable } from '../../../lib/util';
+import { deferInteraction } from '../../../lib/util/interactionReply';
 import { handleMahojiConfirmation, mahojiParseNumber, updateGPTrackSetting } from '../../mahojiSettings';
 
 interface Button {
@@ -82,11 +82,11 @@ function determineWinnings(bet: number, buttons: ButtonInstance[]) {
 }
 
 export async function slotsCommand(
-	interaction: SlashCommandInteraction,
+	interaction: ChatInputCommandInteraction,
 	user: MUser,
 	_amount: string | undefined
 ): CommandResponse {
-	await interaction.deferReply();
+	await deferInteraction(interaction);
 	const amount = mahojiParseNumber({ input: _amount, min: 1 });
 	if (user.isIronman) {
 		return "Ironmen can't gamble! Go pickpocket some men for GP.";
@@ -103,7 +103,7 @@ ${buttonsData.map(b => `${b.name}: ${b.mod(1)}x`).join('\n')}`;
 		return 'You can only gamble between 20m and 1b.';
 	}
 
-	const channel = globalClient.channels.cache.get(interaction.channelID.toString());
+	const channel = globalClient.channels.cache.get(interaction.channelId);
 	if (!channelIsSendable(channel)) return 'Invalid channel.';
 
 	await handleMahojiConfirmation(
