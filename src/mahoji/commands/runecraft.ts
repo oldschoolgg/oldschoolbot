@@ -208,7 +208,6 @@ export const runecraftCommand: OSBMahojiCommand = {
 					?.clone()
 					.multiply(quantity)}.`;
 			}
-			16 / Math.ceil(inventorySize / 28);
 			removeTalismanAndOrRunes.add(
 				'Binding necklace',
 				Math.max(Math.floor(numberOfInventories / (16 / Math.ceil(inventorySize / 28))), 1)
