@@ -317,7 +317,7 @@ export interface PuroPuroActivityTaskOptions extends MinigameActivityTaskOptions
 }
 
 export interface GuardiansOfTheRiftActivityTaskOptions extends MinigameActivityTaskOptions {
-	minedEseences: number;
+	minedFragments: number;
 	barrierAndGuardian: number;
 	rolls: number;
 	combinationRunes: boolean;

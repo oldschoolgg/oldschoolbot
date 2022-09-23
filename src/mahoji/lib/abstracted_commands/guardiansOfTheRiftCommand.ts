@@ -76,7 +76,7 @@ export async function guardiansOfTheRiftStartCommand(
 	}
 
 	if (userHasGracefulEquipped(user)) {
-		boosts.push('More active with Graceful equipped');
+		boosts.push('Full Graceful equipped');
 		barrierAndGuardian += 2;
 	}
 
@@ -92,7 +92,7 @@ export async function guardiansOfTheRiftStartCommand(
 		inventorySize > 28
 	) {
 		barrierAndGuardian += 2;
-		boosts.push('Runecraft cape, increase points');
+		boosts.push('Runecraft cape');
 	} else if (user.skillLevel(SkillsEnum.Magic) >= 67) {
 		const NPCContactRuneCost = determineRunes(
 			user,
@@ -139,7 +139,7 @@ export async function guardiansOfTheRiftStartCommand(
 		await user.removeItemsFromBank(removeRunesAndNecks);
 	}
 
-	// 5.5 rolls, 120 is average mined essences, 14 is averge created guardians/barriers at max efficiency
+	// 5.5 rolls, 120 is average mined essences, 14 is averge created guardians/barriers per game at max efficiency
 	minedFragments = Math.round(randomVariation(minedFragments, 10));
 	barrierAndGuardian = Math.round(randomVariation(barrierAndGuardian, 10));
 	rolls = Math.min(Math.round(Math.max(rolls, 1)), 6);
@@ -152,7 +152,7 @@ export async function guardiansOfTheRiftStartCommand(
 		type: 'GuardiansOfTheRift',
 		channelID: channelID.toString(),
 		minigameID: 'guardians_of_the_rift',
-		minedEseences: minedFragments,
+		minedFragments,
 		barrierAndGuardian,
 		rolls,
 		combinationRunes
@@ -160,7 +160,7 @@ export async function guardiansOfTheRiftStartCommand(
 
 	return `${user.minionName} is now doing ${quantity}x games of Guardians Of The Rift! It will take ${formatDuration(
 		duration
-	)} to finish. ${boosts.length > 0 ? `\n**Boosts:** ${boosts.join(', ')}` : ''}${
+	)} to finish. ${boosts.length > 0 ? `\n**Boosts:** ${boosts.join(', ')}.` : ''}${
 		combinationRunes ? `\nYour minion also consumed ${removeRunesAndNecks}.` : ''
 	}`;
 }
