@@ -7,7 +7,7 @@ import { trackLoot } from '../../../lib/settings/prisma';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
-import { roll, skillingPetDropRate } from '../../../lib/util';
+import { roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 
@@ -24,24 +24,23 @@ export const sepulchreTask: MinionTask = {
 		let thievingXP = 0;
 		let numCoffinsOpened = 0;
 
+		const highestCompletedFloor = completedFloors.reduce((prev, next) => (prev.number > next.number ? prev : next));
 		for (let i = 0; i < quantity; i++) {
 			for (const floor of completedFloors) {
 				if (floor.number >= 5) {
 					loot.add(GrandHallowedCoffin.roll(), { 5: 1, 6: 2, 7: 3 }[floor.number] ?? 1);
 				}
 
-				const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Agility, floor.petChance);
-
 				const numCoffinsToOpen = 1;
 				numCoffinsOpened += numCoffinsToOpen;
 				for (let i = 0; i < numCoffinsToOpen; i++) {
 					loot.add(openCoffin(floor.number, user));
 				}
-				if (roll(petDropRate)) {
-					loot.add('Giant squirrel');
-				}
 				agilityXP += floor.xp;
 				thievingXP = 200 * numCoffinsOpened;
+			}
+			if (roll(highestCompletedFloor.petChance)) {
+				loot.add('Giant squirrel');
 			}
 		}
 

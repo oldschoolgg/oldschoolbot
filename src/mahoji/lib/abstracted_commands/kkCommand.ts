@@ -18,6 +18,7 @@ import { channelIsSendable, formatDuration, isWeekend } from '../../../lib/util'
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../../lib/util/calcMassDurationQuantity';
 import { getKalphiteKingGearStats } from '../../../lib/util/getKalphiteKingGearStats';
+import { deferInteraction } from '../../../lib/util/interactionReply';
 import { hasMonsterRequirements, updateBankSetting } from '../../mahojiSettings';
 
 function checkReqs(users: MUser[], monster: KillableMonster, quantity: number): string | undefined {
@@ -79,7 +80,7 @@ export async function kkCommand(
 	inputName: string,
 	inputQuantity: number | undefined
 ): CommandResponse {
-	if (interaction) interaction.deferReply();
+	if (interaction) await deferInteraction(interaction);
 	const failureRes = checkReqs([user], KalphiteKingMonster, 2);
 	if (failureRes) return failureRes;
 

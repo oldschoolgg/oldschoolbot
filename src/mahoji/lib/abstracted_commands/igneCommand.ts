@@ -8,6 +8,7 @@ import { Ignecarus } from '../../../lib/minions/data/killableMonsters/custom/bos
 import { BossInstance } from '../../../lib/structures/Boss';
 import { Gear } from '../../../lib/structures/Gear';
 import { channelIsSendable, formatDuration } from '../../../lib/util';
+import { deferInteraction } from '../../../lib/util/interactionReply';
 
 export async function igneCommand(
 	interaction: ChatInputCommandInteraction | null,
@@ -16,7 +17,7 @@ export async function igneCommand(
 	inputName: string,
 	quantity: number | undefined
 ) {
-	if (interaction) interaction.deferReply();
+	if (interaction) await deferInteraction(interaction);
 	const channel = globalClient.channels.cache.get(channelID.toString());
 	if (!channelIsSendable(channel)) return 'Invalid channel.';
 	const type = inputName.toLowerCase().includes('mass') ? 'mass' : 'solo';
