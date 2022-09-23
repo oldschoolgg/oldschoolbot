@@ -818,7 +818,15 @@ export const minigamesCommand: OSBMahojiCommand = {
 				{
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'start',
-					description: 'Start a trip.'
+					description: 'Start a trip.',
+					options: [
+						{
+							name: 'combination_runes',
+							description: 'Craft combination runes giving additional points.',
+							type: ApplicationCommandOptionType.Boolean,
+							required: false
+						}
+					]
 				}
 			]
 		}
@@ -883,7 +891,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 			start?: {};
 		};
 		gotr?: {
-			start?: {};
+			start?: { combination_runes?: boolean };
 		};
 	}>) => {
 		const user = await mUserFetch(userID);
@@ -1151,7 +1159,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 *
 		 */
 		if (options.gotr) {
-			return guardiansOfTheRiftStartCommand(user, channelID);
+			return guardiansOfTheRiftStartCommand(user, channelID, options.gotr.start?.combination_runes);
 		}
 
 		return 'Invalid command.';

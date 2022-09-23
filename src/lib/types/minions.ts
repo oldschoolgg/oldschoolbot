@@ -316,7 +316,12 @@ export interface PuroPuroActivityTaskOptions extends MinigameActivityTaskOptions
 	darkLure: boolean;
 }
 
-export interface GuardiansOfTheRiftActivityTaskOptions extends MinigameActivityTaskOptions {}
+export interface GuardiansOfTheRiftActivityTaskOptions extends MinigameActivityTaskOptions {
+	minedEseences: number;
+	barrierAndGuardian: number;
+	rolls: number;
+	combinationRunes: boolean;
+}
 
 export type ActivityTaskData =
 	| ActivityTaskOptions
