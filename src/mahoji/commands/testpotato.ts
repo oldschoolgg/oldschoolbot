@@ -43,6 +43,7 @@ import {
 	userGrowingProgressStr
 } from '../../lib/util/farmingHelpers';
 import getOSItem from '../../lib/util/getOSItem';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { logError } from '../../lib/util/logError';
 import { parseStringBank } from '../../lib/util/parseStringBank';
 import resolveItems from '../../lib/util/resolveItems';
@@ -562,7 +563,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				wipe?: { thing: typeof thingsToWipe[number] };
 				refreshic?: {};
 			}>) => {
-				await interaction.deferReply();
+				await deferInteraction(interaction);
 				if (production) {
 					logError('Test command ran in production', { userID: userID.toString() });
 					return 'This will never happen...';

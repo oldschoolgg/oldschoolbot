@@ -22,6 +22,7 @@ import { channelIsSendable, formatDuration, formatSkillRequirements, stringMatch
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { OSBMahojiCommand } from '../lib/util';
 
 // Max people in a party:
@@ -282,7 +283,7 @@ export const dgCommand: OSBMahojiCommand = {
 		buy?: { item: string; quantity?: number };
 		stats?: {};
 	}>) => {
-		if (interaction) await interaction.deferReply();
+		if (interaction) await deferInteraction(interaction);
 		const user = await mUserFetch(userID);
 		if (options.start) return startCommand(channelID, user, options.start.floor, options.start.solo);
 		if (options.buy) return buyCommand(user, options.buy.item, options.buy.quantity);

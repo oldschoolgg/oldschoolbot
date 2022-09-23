@@ -20,6 +20,7 @@ import { MaterialBank } from '../../lib/invention/MaterialBank';
 import { researchCommand } from '../../lib/invention/research';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { calcPerHour, stringMatches, toKMB, toTitleCase } from '../../lib/util';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiParseNumber, mahojiUsersSettingsFetch } from '../mahojiSettings';
@@ -266,7 +267,7 @@ export const inventionCommand: OSBMahojiCommand = {
 		}
 
 		if (options.tools) {
-			await interaction.deferReply();
+			await deferInteraction(interaction);
 			switch (options.tools.command) {
 				case 'items_disassembled': {
 					const a = await mahojiUsersSettingsFetch(user.id, {
