@@ -75,9 +75,13 @@ export async function postCommand({
 			flags: null,
 			inhibited
 		});
-		await prisma.commandUsage.create({
-			data: commandUsage
-		});
+		try {
+			await prisma.commandUsage.create({
+				data: commandUsage
+			});
+		} catch (err) {
+			logError(err);
+		}
 	}
 
 	if (error) {
