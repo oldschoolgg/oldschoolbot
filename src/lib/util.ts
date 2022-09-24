@@ -771,7 +771,7 @@ export function skillingPetDropRate(
 	skill: SkillsEnum,
 	baseDropRate: number
 ): { petDropRate: number } {
-	const twoHundredMillXP = user.skillsAsXP[skill] >= 200_000_000;
+	const twoHundredMillXP = user.skillsAsXP[skill] >= 5_000_000_000;
 	const skillLevel = user.skillsAsLevels[skill];
 	const petRateDivisor = twoHundredMillXP ? 15 : 1;
 	const dropRate = Math.floor((baseDropRate - skillLevel * 25) / petRateDivisor);
