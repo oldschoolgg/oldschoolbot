@@ -95,7 +95,7 @@ export async function setupParty(channel: TextChannel, user: MUser, options: Mak
 			async function startTrip() {
 				await confirmMessage.delete().catch(noOp);
 				if (!partyCancelled && usersWhoConfirmed.length < options.minSize) {
-					channel.send(`${user} Not enough people joined your ${options.party ? 'party' : 'mass'}!`);
+					channel.send(`${user} Not enough people joined your mass!`);
 					reject(new Error(SILENT_ERROR));
 					return;
 				}
@@ -128,11 +128,7 @@ export async function setupParty(channel: TextChannel, user: MUser, options: Mak
 					case ReactionEmoji.Stop: {
 						if (user.id === options.leader.id) {
 							partyCancelled = true;
-							reject(
-								`The leader (${options.leader.usernameOrMention}) cancelled this ${
-									options.party ? 'party' : 'mass'
-								}!`
-							);
+							reject(`The leader (${options.leader.usernameOrMention}) cancelled this mass!`);
 							collector.stop('partyCreatorEnd');
 						}
 						break;

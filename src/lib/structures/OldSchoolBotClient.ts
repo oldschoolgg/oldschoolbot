@@ -18,8 +18,7 @@ if (typeof production !== 'boolean') {
 }
 
 export class OldSchoolBotClient extends Client {
-	public oneCommandAtATimeCache = new Set<string>();
-	public secondaryUserBusyCache = new Set<string>();
+	public busyCounterCache = new Map<string, number>();
 	public piscinaPool = piscinaPool;
 	public production = production ?? false;
 	public mahojiClient!: MahojiClient;

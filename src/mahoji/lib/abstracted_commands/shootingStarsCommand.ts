@@ -235,7 +235,7 @@ export async function shootingStarsCommand(channelID: string, user: MUserClass, 
 		}
 		// Add clue scrolls , TODO: convert klasaUsers to user
 		if (star.clueScrollChance) {
-			loot.add(addSkillingClueToLoot(user, SkillsEnum.Mining, newQuantity, star.clueScrollChance, loot));
+			addSkillingClueToLoot(user, SkillsEnum.Mining, newQuantity, star.clueScrollChance, loot);
 		}
 
 		// Roll for pet

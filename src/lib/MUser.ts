@@ -8,6 +8,7 @@ import { timePerAlch } from '../mahoji/lib/abstracted_commands/alchCommand';
 import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
 import { mahojiUserSettingsUpdate } from '../mahoji/settingsUpdate';
 import { addXP } from './addXP';
+import { userIsBusy } from './busyCounterCache';
 import { BitField, projectiles, usernameCache } from './constants';
 import { allPetIDs } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
@@ -94,21 +95,7 @@ export class MUserClass {
 	}
 
 	get isBusy() {
-		return globalClient.oneCommandAtATimeCache.has(this.id) || globalClient.secondaryUserBusyCache.has(this.id);
-	}
-
-	/**
-	 * Toggle whether this user is busy or not, this adds another layer of locking the user
-	 * from economy actions.
-	 *
-	 * @param busy boolean Whether the new toggled state will be busy or not busy.
-	 */
-	toggleBusy(busy: boolean) {
-		if (busy) {
-			globalClient.secondaryUserBusyCache.add(this.id);
-		} else {
-			globalClient.secondaryUserBusyCache.delete(this.id);
-		}
+		return userIsBusy(this.id);
 	}
 
 	get totalLevel() {
