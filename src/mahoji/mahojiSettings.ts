@@ -549,7 +549,7 @@ export function resolveAvailableItemBoosts(user: MUser, monster: KillableMonster
 			// find the highest boost that the player has
 			for (const [itemID, boostAmount] of Object.entries(boostSet)) {
 				const parsedId = parseInt(itemID);
-				if (monster.wildy ? !user.hasEquipped(parsedId) : !user.hasEquippedOrInBank(parsedId)) {
+				if (!user.hasEquippedOrInBank(parsedId)) {
 					continue;
 				}
 				if (boostAmount > highestBoostAmount) {
