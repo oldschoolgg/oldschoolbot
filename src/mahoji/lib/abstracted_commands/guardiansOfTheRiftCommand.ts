@@ -45,14 +45,22 @@ export async function guardiansOfTheRiftStartCommand(
 	const boosts = [];
 	// Default bronze pickaxe, last in the array
 	let currentPickaxe = pickaxes[pickaxes.length - 1];
-	boosts.push(`**${currentPickaxe.ticksBetweenRolls}** ticks between rolls for ${itemNameFromID(currentPickaxe.id)}`);
+	boosts.push(
+		`**${currentPickaxe.ticksBetweenRolls}** ticks between rolls for ${itemNameFromID(
+			currentPickaxe.id
+		)} while mining fragments`
+	);
 
 	// For each pickaxe, if they have it, give them its' bonus and break.
 	for (const pickaxe of pickaxes) {
 		if (!user.hasEquippedOrInBank([pickaxe.id]) || user.skillsAsLevels.mining < pickaxe.miningLvl) continue;
 		currentPickaxe = pickaxe;
 		boosts.pop();
-		boosts.push(`**${pickaxe.ticksBetweenRolls}** ticks between rolls for ${itemNameFromID(pickaxe.id)}`);
+		boosts.push(
+			`**${pickaxe.ticksBetweenRolls}** ticks between rolls for ${itemNameFromID(
+				pickaxe.id
+			)} while mining fragments`
+		);
 		break;
 	}
 	minedFragments /= currentPickaxe.ticksBetweenRolls;
@@ -68,16 +76,20 @@ export async function guardiansOfTheRiftStartCommand(
 
 	if (inventorySize > 28) {
 		rolls += Math.max(Math.ceil(inventorySize / 28), 1);
-		boosts.push(`+${inventorySize - 28} inv spaces from pouches`);
+		boosts.push(
+			`Extra ${Math.max(Math.ceil(inventorySize / 28), 1)} rolls for +${
+				inventorySize - 28
+			} inv spaces from pouches`
+		);
 	}
 
 	if (userHasGracefulEquipped(user)) {
-		boosts.push('Full Graceful equipped');
+		boosts.push('Extra 2 Barriers/Guardians fixed for Full Graceful equipped');
 		barrierAndGuardian += 2;
 	}
 
 	if (user.skillLevel('agility') < 56) {
-		boosts.push('Heavily Reduced mined Fragments for not having Lvl 56 Agility short-cut');
+		boosts.push('Heavily Reduced mined fragments and -1 rolls for not having Lvl 56 Agility short-cut');
 		minedFragments *= 0.67;
 		rolls -= 1;
 	}
@@ -88,23 +100,28 @@ export async function guardiansOfTheRiftStartCommand(
 		inventorySize > 28
 	) {
 		barrierAndGuardian += 2;
-		boosts.push('Runecraft cape');
+		boosts.push('Extra 2 Barriers/Guardians fixed for Runecraft cape');
 	} else if (user.skillLevel(SkillsEnum.Magic) >= 67) {
 		const NPCContactRuneCost = determineRunes(
 			user,
 			new Bank({ 'Astral rune': 1, 'Cosmic rune': 1, 'Air rune': 2 }).clone().multiply(quantity)
 		);
 		if (bank.has(NPCContactRuneCost)) {
-			boosts.push('NPC Contact');
+			boosts.push('Extra 2 Barriers/Guardians fixed for NPC Contact');
 			barrierAndGuardian += 2;
 		}
 	} else {
+		boosts.push('-1 rolls for not having NPC Contact/Runecraft cape');
 		rolls -= 1;
 	}
 
 	if (user.hasEquippedOrInBank('Abyssal lantern')) {
 		const firemakingLevel = user.skillLevel('firemaking');
-		boosts.push(`Abyssal lantern (${firemakingLevel} FM lvl)`);
+		boosts.push(
+			`Extra 1 rolls and ${
+				2 * Math.floor(firemakingLevel / 30)
+			} Barriers/Guardians fixed for Abyssal lantern (${firemakingLevel} FM lvl)`
+		);
 		barrierAndGuardian += 2 * Math.floor(firemakingLevel / 30);
 		rolls += 1;
 	}
@@ -131,11 +148,12 @@ export async function guardiansOfTheRiftStartCommand(
 			)}x Binding necklace.`;
 		}
 		rolls += 2;
-		boosts.push('Extra points for Combination runecrafting');
+		boosts.push('Extra 2 rolls for Combination runecrafting');
 		await user.removeItemsFromBank(removeRunesAndNecks);
 	}
 
 	// 5.5 rolls, 120 is average mined essences, 14 is averge created guardians/barriers per game at max efficiency
+	boosts.push('**Performance varies slightly each game**');
 	minedFragments = Math.round(randomVariation(minedFragments, 10));
 	barrierAndGuardian = Math.round(randomVariation(barrierAndGuardian, 10));
 	rolls = Math.min(Math.round(Math.max(rolls, 1)), 6);
