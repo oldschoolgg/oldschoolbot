@@ -1,7 +1,8 @@
 import { TextChannel, User } from 'discord.js';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
-import { BitField, usernameCache } from '../../lib/constants';
+import { modifyBusyCounter } from '../../lib/busyCounterCache';
+import { usernameCache } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
 import { removeMarkdownEmojis } from '../../lib/util';
 import { AbstractCommand, runInhibitors } from './inhibitors';
@@ -41,7 +42,7 @@ export async function preCommand({
 }: {
 	apiUser: User | null;
 	abstractCommand: AbstractCommand;
-	userID: string | bigint;
+	userID: string;
 	guildID?: string | bigint | null;
 	channelID: string | bigint;
 	bypassInhibitors: boolean;
@@ -54,29 +55,10 @@ export async function preCommand({
 	if (user.isBusy && !bypassInhibitors && abstractCommand.name !== 'admin') {
 		return { silent: true, reason: 'You cannot use a command right now.' };
 	}
-	globalClient.oneCommandAtATimeCache.add(userID.toString());
+	modifyBusyCounter(userID, 1);
 	const guild = guildID ? globalClient.guilds.cache.get(guildID.toString()) : null;
 	const member = guild?.members.cache.get(userID.toString());
 	const channel = globalClient.channels.cache.get(channelID.toString()) as TextChannel;
-	await prisma.user.findMany({
-		where: {
-			bitfield: {
-				hasSome: [
-					BitField.IsPatronTier3,
-					BitField.IsPatronTier4,
-					BitField.IsPatronTier5,
-					BitField.IsPatronTier6,
-					BitField.isContributor,
-					BitField.isModerator
-				]
-			},
-			farming_patch_reminders: true
-		},
-		select: {
-			id: true,
-			bitfield: true
-		}
-	});
 	if (apiUser) {
 		await syncNewUserUsername(user.id, apiUser.username);
 	}

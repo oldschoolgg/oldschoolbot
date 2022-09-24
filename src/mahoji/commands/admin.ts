@@ -556,8 +556,7 @@ export const adminCommand: OSBMahojiCommand = {
 		if (options.cancel_task) {
 			const { user } = options.cancel_task.user;
 			await cancelTask(user.id);
-			globalClient.oneCommandAtATimeCache.delete(user.id);
-			globalClient.secondaryUserBusyCache.delete(user.id);
+			globalClient.busyCounterCache.delete(user.id);
 			Cooldowns.delete(user.id);
 			minionActivityCacheDelete(user.id);
 			return 'Done.';

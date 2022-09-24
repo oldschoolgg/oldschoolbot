@@ -34,7 +34,6 @@ export interface AbstractCommandAttributes {
 	altProtection?: boolean;
 	guildOnly?: boolean;
 	perkTier?: PerkTier;
-	ironCantUse?: boolean;
 	examples?: string[];
 	categoryFlags?: CategoryFlag[];
 	bitfieldsRequired?: BitField[];
@@ -159,16 +158,6 @@ const inhibitors: Inhibitor[] = [
 				return "You don't have the required permissions to use this command.";
 			}
 
-			return false;
-		},
-		canBeDisabled: false
-	},
-	{
-		name: 'ironCantUse',
-		run: async ({ user, command }) => {
-			if (command.attributes?.ironCantUse && user.isIronman) {
-				return "Ironman players can't use this command.";
-			}
 			return false;
 		},
 		canBeDisabled: false
