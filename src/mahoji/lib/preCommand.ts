@@ -1,5 +1,4 @@
-import { TextChannel, User } from 'discord.js';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import { InteractionReplyOptions, TextChannel, User } from 'discord.js';
 
 import { modifyBusyCounter } from '../../lib/busyCounterCache';
 import { usernameCache } from '../../lib/constants';
@@ -46,14 +45,24 @@ export async function preCommand({
 	guildID?: string | bigint | null;
 	channelID: string | bigint;
 	bypassInhibitors: boolean;
-}): Promise<{ silent: boolean; reason: Awaited<CommandResponse> } | undefined> {
+}): Promise<
+	| undefined
+	| {
+			reason: InteractionReplyOptions;
+			silent: boolean;
+			dontRunPostCommand?: boolean;
+	  }
+> {
 	if (globalClient.isShuttingDown) {
-		return { silent: true, reason: 'The bot is currently restarting, please try again later.' };
+		return {
+			silent: true,
+			reason: { content: 'The bot is currently restarting, please try again later.' },
+			dontRunPostCommand: true
+		};
 	}
-	globalClient.emit('debug', `${userID} trying to run ${abstractCommand.name} command`);
 	const user = await mUserFetch(userID.toString());
 	if (user.isBusy && !bypassInhibitors && abstractCommand.name !== 'admin') {
-		return { silent: true, reason: 'You cannot use a command right now.' };
+		return { silent: true, reason: { content: 'You cannot use a command right now.' }, dontRunPostCommand: true };
 	}
 	modifyBusyCounter(userID, 1);
 	const guild = guildID ? globalClient.guilds.cache.get(guildID.toString()) : null;
