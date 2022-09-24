@@ -125,7 +125,6 @@ export const megaDuckCommand: OSBMahojiCommand = {
 	description: 'Mega duck!.',
 	attributes: {
 		requiresMinion: true,
-		guildOnly: true,
 		cooldown: 2 * Time.Minute
 	},
 	options: [
