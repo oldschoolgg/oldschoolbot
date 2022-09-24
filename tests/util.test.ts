@@ -2,6 +2,7 @@ import { reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
 
+import { baseModifyBusyCounter } from '../src/lib/busyCounterCache';
 import { deduplicateClueScrolls } from '../src/lib/clues/clueUtils';
 import getUserFoodFromBank from '../src/lib/minions/functions/getUserFoodFromBank';
 import { SkillsEnum } from '../src/lib/skilling/types';
@@ -126,5 +127,20 @@ describe('util', () => {
 		});
 		const dropRate200M = Math.floor((baseDropRate - 99 * 25) / 15);
 		expect(skillingPetDropRate(testUser, SkillsEnum.Agility, baseDropRate).petDropRate).toEqual(dropRate200M);
+	});
+
+	test('userBusyCache', () => {
+		const id = '1';
+		const cache = new Map();
+		expect(() => baseModifyBusyCounter(cache, id, -1)).toThrow();
+		expect(baseModifyBusyCounter(cache, id, 1)).toEqual(1);
+		expect(cache.get(id)).toEqual(1);
+		expect(baseModifyBusyCounter(cache, id, 1)).toEqual(2);
+		expect(cache.get(id)).toEqual(2);
+		expect(baseModifyBusyCounter(cache, id, -1)).toEqual(1);
+		expect(cache.get(id)).toEqual(1);
+		expect(baseModifyBusyCounter(cache, id, -1)).toEqual(0);
+		expect(cache.get(id)).toEqual(0);
+		expect(() => baseModifyBusyCounter(cache, id, -1)).toThrow();
 	});
 });
