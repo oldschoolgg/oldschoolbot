@@ -207,7 +207,7 @@ export async function interactionHook(interaction: Interaction) {
 	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, interaction);
 
 	if (!isValidGlobalInteraction(id)) return;
-	if (globalClient.oneCommandAtATimeCache.has(userID) || globalClient.isShuttingDown) {
+	if (user.isBusy || globalClient.isShuttingDown) {
 		return interaction.reply('You cannot use a command right now.');
 	}
 

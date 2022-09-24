@@ -86,6 +86,7 @@ import { tokkulShopTask } from '../tasks/minions/tokkulShopActivity';
 import { vmTask } from '../tasks/minions/volcanicMineActivity';
 import { wealthChargeTask } from '../tasks/minions/wealthChargingActivity';
 import { woodcuttingTask } from '../tasks/minions/woodcuttingActivity';
+import { modifyBusyCounter } from './busyCounterCache';
 import { convertStoredActivityToFlatActivity, prisma } from './settings/prisma';
 import { activitySync, minionActivityCache, minionActivityCacheDelete } from './settings/settings';
 import { logError } from './util/logError';
@@ -200,14 +201,14 @@ export async function completeActivity(_activity: Activity) {
 		throw new Error('Missing task');
 	}
 
-	globalClient.oneCommandAtATimeCache.add(activity.userID);
+	modifyBusyCounter(activity.userID, 1);
 	try {
 		globalClient.emit('debug', `Running ${task.type} for ${activity.userID}`);
 		await task.run(activity);
 	} catch (err) {
 		logError(err);
 	} finally {
-		globalClient.oneCommandAtATimeCache.delete(activity.userID);
+		modifyBusyCounter(activity.userID, -1);
 		minionActivityCacheDelete(activity.userID);
 	}
 }

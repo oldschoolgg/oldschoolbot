@@ -37,7 +37,6 @@ export interface MakePartyOptions {
 	message: string;
 	ironmanAllowed: boolean;
 	usersAllowed?: string[];
-	party?: boolean;
 	customDenier?(user: MUser): Promise<[false] | [true, string]>;
 }
 

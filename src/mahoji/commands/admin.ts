@@ -34,7 +34,7 @@ import {
 } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
-import { deferInteraction } from '../../lib/util/interactionReply';
+import { deferInteraction, interactionReply } from '../../lib/util/interactionReply';
 import { logError } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
@@ -619,8 +619,7 @@ export const adminCommand: OSBMahojiCommand = {
 		if (options.cancel_task) {
 			const { user } = options.cancel_task.user;
 			await cancelTask(user.id);
-			globalClient.oneCommandAtATimeCache.delete(user.id);
-			globalClient.secondaryUserBusyCache.delete(user.id);
+			globalClient.busyCounterCache.delete(user.id);
 			Cooldowns.delete(user.id);
 			minionActivityCacheDelete(user.id);
 			return 'Done.';
@@ -862,7 +861,7 @@ LIMIT 10;
 				if (ticker.timer) clearTimeout(ticker.timer);
 			}
 			await sleep(Time.Second * 20);
-			await interaction.reply({
+			await interactionReply(interaction, {
 				content: 'https://media.discordapp.net/attachments/357422607982919680/1004657720722464880/freeze.gif'
 			});
 			process.exit();

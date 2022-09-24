@@ -3947,10 +3947,10 @@ lru_map@^0.3.3:
   resolved "https://registry.yarnpkg.com/lru_map/-/lru_map-0.3.3.tgz#b5c8351b9464cbd750335a79650a0ec0e56118dd"
   integrity sha1-tcg1G5Rky9dQM1p5ZQoOwOVhGN0=
 
-mahoji@^0.0.58:
-  version "0.0.58"
-  resolved "https://registry.yarnpkg.com/mahoji/-/mahoji-0.0.58.tgz#3c44138f328fc707695f6755b93f29853a06c0fc"
-  integrity sha512-darSh5qZLSwjIfZLUa0hO8ldPMpoO2Cmix+ACiVrA2XkKN/dpIvW9lQ/cq0AdJRPfkvx80E/EfnI7dtfa4Os+g==
+mahoji@^0.0.59:
+  version "0.0.59"
+  resolved "https://registry.yarnpkg.com/mahoji/-/mahoji-0.0.59.tgz#9483a99cc33355500f3ed91f1a55eb8a7fc85943"
+  integrity sha512-NSMMm1aN8upy3JqpSGaNR9cmxoFj7FqvX89cmaxHPSFwu0SRHqHeiRD0Z5pwzCd2VZtVD6KIS5wUd726RRxrcg==
 
 make-dir@^3.0.0, make-dir@^3.1.0:
   version "3.1.0"

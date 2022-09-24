@@ -615,6 +615,13 @@ const backgroundImages: BankBackground[] = [
 		gpCost: 10_000_000,
 		perkTierNeeded: PerkTier.Four,
 		transparent: true
+	},
+	{
+		id: 98,
+		name: 'Arne CustomBG',
+		image: null,
+		available: false,
+		owners: ['673716808574042143']
 	}
 ];
 

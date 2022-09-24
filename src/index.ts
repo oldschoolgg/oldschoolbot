@@ -54,7 +54,7 @@ export const mahojiClient = new MahojiClient({
 				bypassInhibitors: false,
 				apiUser: interaction.user
 			});
-			return result?.reason;
+			return result;
 		},
 		postCommand: ({ command, interaction, error, inhibited }) =>
 			postCommand({
