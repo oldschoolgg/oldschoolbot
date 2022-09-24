@@ -193,7 +193,7 @@ class PatreonTask {
 			if (!sponsor.tier) continue;
 			const user = await getUserFromGithubID(sponsor.githubID);
 			if (!user) continue;
-			let res = await this.validatePerks(user.id, sponsor.tier);
+			let res = await this.validatePerks(user, sponsor.tier);
 			if (res) {
 				messages.push(res);
 			}

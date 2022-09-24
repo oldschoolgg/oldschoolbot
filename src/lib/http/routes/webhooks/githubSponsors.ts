@@ -26,7 +26,7 @@ const githubSponsors = (server: FastifyServer) =>
 						content: `${data.sender.login}[${data.sender.id}] became a Tier ${tier - 1} sponsor.`
 					});
 					if (user) {
-						await patreonTask.givePerks(user.id, tier);
+						await patreonTask.givePerks(user, tier);
 					}
 					break;
 				}
@@ -41,7 +41,7 @@ const githubSponsors = (server: FastifyServer) =>
 						} to Tier ${to - 1}.`
 					});
 					if (user) {
-						await patreonTask.changeTier(user.id, from, to);
+						await patreonTask.changeTier(user, from, to);
 					}
 					break;
 				}
@@ -49,7 +49,7 @@ const githubSponsors = (server: FastifyServer) =>
 					const tier = parseStrToTier(data.sponsorship.tier.name);
 					if (!tier) return;
 					if (user) {
-						await patreonTask.removePerks(user.id);
+						await patreonTask.removePerks(user);
 					}
 
 					sendToChannelID(Channel.NewSponsors, {
