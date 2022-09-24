@@ -74,8 +74,12 @@ export async function sendToChannelID(
 		image?: Buffer | AttachmentBuilder;
 		embed?: Embed | EmbedBuilder;
 		components?: MessageOptions['components'];
+		allowedMentions?: MessageOptions['allowedMentions'];
 	}
 ) {
+	const allowedMentions = data.allowedMentions ?? {
+		parse: ['users']
+	};
 	async function queuedFn() {
 		const channel = await resolveChannel(channelID);
 		if (!channel) return;
@@ -89,7 +93,8 @@ export async function sendToChannelID(
 					content: data.content,
 					files,
 					embeds,
-					components: data.components
+					components: data.components,
+					allowedMentions
 				});
 			} catch (err: any) {
 				const error = err as Error;
@@ -108,7 +113,8 @@ export async function sendToChannelID(
 				content: data.content,
 				files,
 				embeds,
-				components: data.components
+				components: data.components,
+				allowedMentions
 			});
 		}
 	}
@@ -144,9 +150,7 @@ async function webhookSend(channel: WebhookClient, input: MessageOptions) {
 		embeds: input.embeds,
 		files: input.files,
 		components: input.components,
-		allowedMentions: {
-			parse: ['users']
-		}
+		allowedMentions: input.allowedMentions
 	});
 	webhookMessageCache.set(res.id, channel);
 	return res;

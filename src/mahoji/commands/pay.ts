@@ -35,7 +35,7 @@ export const payCommand: OSBMahojiCommand = {
 		user: MahojiUserOption;
 		amount: string;
 	}>) => {
-		deferInteraction(interaction);
+		await deferInteraction(interaction);
 		const user = await mUserFetch(userID.toString());
 		const recipient = await mUserFetch(options.user.user.id);
 		const amount = mahojiParseNumber({ input: options.amount, min: 1, max: 500_000_000_000 });
@@ -48,7 +48,7 @@ export const payCommand: OSBMahojiCommand = {
 		if (recipient.isIronman) return "Iron players can't receive money.";
 		if (GP < amount) return "You don't have enough GP.";
 		if (options.user.user.bot) return "You can't send money to a bot.";
-		if (globalClient.oneCommandAtATimeCache.has(recipient.id)) return 'That user is busy right now.';
+		if (recipient.isBusy) return 'That user is busy right now.';
 
 		if (amount > 500_000_000) {
 			await handleMahojiConfirmation(
@@ -83,10 +83,7 @@ export const payCommand: OSBMahojiCommand = {
 			}
 		});
 
-		globalClient.emit(
-			Events.EconomyLog,
-			`${user.usernameOrMention} paid ${amount} GP to ${recipient.usernameOrMention}.`
-		);
+		globalClient.emit(Events.EconomyLog, `${user.mention} paid ${amount} GP to ${recipient.mention}.`);
 		addToGPTaxBalance(user.id, amount);
 
 		return `You sent ${amount.toLocaleString()} GP to ${recipient}.`;

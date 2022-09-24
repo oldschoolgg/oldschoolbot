@@ -142,7 +142,7 @@ Both parties must click confirm to make the trade.`,
 		});
 		globalClient.emit(
 			Events.EconomyLog,
-			`${senderUser.usernameOrMention} sold ${itemsSent} to ${recipientUser.usernameOrMention} for ${itemsReceived}.`
+			`${senderUser.mention} sold ${itemsSent} to ${recipientUser.mention} for ${itemsReceived}.`
 		);
 		if (itemsReceived.has('Coins')) {
 			addToGPTaxBalance(recipientUser.id, itemsReceived.amount('Coins'));

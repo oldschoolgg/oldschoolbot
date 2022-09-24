@@ -53,7 +53,7 @@ export const mahojiClient = new MahojiClient({
 				bypassInhibitors: false,
 				apiUser: interaction.user
 			});
-			return result?.reason;
+			return result;
 		},
 		postCommand: ({ command, interaction, error, inhibited }) =>
 			postCommand({
@@ -85,6 +85,9 @@ client.mahojiClient = mahojiClient;
 global.globalClient = client;
 client.on('messageCreate', onMessage);
 client.on('interactionCreate', async interaction => {
+	if (BLACKLISTED_USERS.has(interaction.user.id)) return;
+	if (interaction.guildId && BLACKLISTED_GUILDS.has(interaction.guildId)) return;
+
 	if (!client.isReady()) {
 		if (interaction.isChatInputCommand()) {
 			interaction.reply({
@@ -133,7 +136,8 @@ client.on(Events.EconomyLog, async (message: string) => {
 	economyLogBuffer.push(message);
 	if (economyLogBuffer.length === 10) {
 		await sendToChannelID(Channel.EconomyLogs, {
-			content: economyLogBuffer.join('\n---------------------------------\n')
+			content: economyLogBuffer.join('\n---------------------------------\n'),
+			allowedMentions: { parse: [], users: [], roles: [] }
 		});
 		economyLogBuffer = [];
 	}
