@@ -561,6 +561,16 @@ const metamorphPets: Createable[] = [
 		outputItems: {
 			[itemID('Great blue heron')]: 1
 		}
+	},
+	{
+		name: 'Greatish guardian',
+		inputItems: {
+			[itemID('Rift guardian')]: 1,
+			[itemID("Guardian's eye")]: 1
+		},
+		outputItems: {
+			[itemID('Greatish guardian')]: 1
+		}
 	}
 ];
 
@@ -1184,6 +1194,17 @@ const Reverteables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Heron')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert greatish guardian',
+		inputItems: {
+			[itemID('Greatish guardian')]: 1
+		},
+		outputItems: {
+			[itemID('Rift guardian')]: 1,
+			[itemID("Guardian's eye")]: 1
 		},
 		noCl: true
 	}

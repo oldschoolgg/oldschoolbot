@@ -46,22 +46,24 @@ export const guardiansOfTheRiftTask: MinionTask = {
 		const miningXP = quantity * 5 * minedFragments;
 		const craftingXP = quantity * 80 * barrierAndGuardian;
 		const rcXP =
-			quantity * (45 * user.skillLevel(SkillsEnum.Runecraft) + 350 * barrierAndGuardian + 10 * minedFragments);
+			quantity *
+			(45 * user.skillLevel(SkillsEnum.Runecraft) + 320 * barrierAndGuardian + 20 * minedFragments) *
+			Math.min(user.skillLevel(SkillsEnum.Runecraft) / 99, 1);
 
 		const [xpResRunecraft, xpResCrafting, xpResMining] = await Promise.all([
 			user.addXP({
 				skillName: SkillsEnum.Runecraft,
-				amount: rcXP,
+				amount: Math.floor(rcXP),
 				duration
 			}),
 			user.addXP({
 				skillName: SkillsEnum.Crafting,
-				amount: craftingXP,
+				amount: Math.floor(craftingXP),
 				duration
 			}),
 			user.addXP({
 				skillName: SkillsEnum.Mining,
-				amount: miningXP,
+				amount: Math.floor(miningXP),
 				duration
 			})
 		]);
@@ -74,6 +76,24 @@ export const guardiansOfTheRiftTask: MinionTask = {
 			if (user.skillLevel(SkillsEnum.Runecraft) < pouch.level) continue;
 			if (bank.has(pouch.id)) inventorySize += pouch.capacity - 1;
 			if (bank.has(pouch.id) && pouch.id === itemID('Colossal pouch')) break;
+		}
+
+		// If they have the entire Raiments of the Eye outfit, give an extra 20% quantity bonus (NO bonus XP)
+		let setBonus = 1;
+		if (
+			user.gear.skilling.hasEquipped(
+				Object.keys(Runecraft.raimentsOfTheEyeItems).map(i => parseInt(i)),
+				true
+			)
+		) {
+			setBonus += 60 / 100;
+		} else {
+			// For each Raiments of the Eye item, check if they have it, give its' quantity boost if so (NO bonus XP).
+			for (const [itemID, bonus] of Object.entries(Runecraft.raimentsOfTheEyeItems)) {
+				if (user.gear.skilling.hasEquipped([parseInt(itemID)], false)) {
+					setBonus += bonus / 100;
+				}
+			}
 		}
 
 		for (let i = 0; i < quantity * 10; i++) {
@@ -95,7 +115,7 @@ export const guardiansOfTheRiftTask: MinionTask = {
 				continue;
 			}
 			const quantityPerEssence = calcMaxRCQuantity(runeObj, user);
-			runesLoot.add(quantityPerEssence * inventorySize);
+			runesLoot.add(rune, Math.floor(quantityPerEssence * inventorySize * setBonus));
 		}
 
 		let rewardsGuardianLoot = new Bank();
@@ -103,7 +123,8 @@ export const guardiansOfTheRiftTask: MinionTask = {
 			rewardsGuardianLoot.add(rewardsGuardianTable.roll());
 		}
 
-		const totalLoot = new Bank(rewardsGuardianLoot);
+		const totalLoot = new Bank();
+		totalLoot.add(rewardsGuardianLoot);
 		totalLoot.add(runesLoot);
 
 		const { previousCL } = await transactItems({
@@ -123,7 +144,11 @@ export const guardiansOfTheRiftTask: MinionTask = {
 			user.minionName
 		} finished ${quantity}x Guardians Of The Rift runs and looted the Rewards Guardian ${
 			quantity * rolls
-		}x times, also recieved: ${runesLoot}. ${xpResRunecraft} ${xpResCrafting} ${xpResMining}`;
+		}x times, also recieved: ${runesLoot} ${
+			setBonus - 1 > 0
+				? `${Math.floor((setBonus - 1) * 100)}% Quantity bonus for Raiments Of The Eye Set Items`
+				: ''
+		}. ${xpResRunecraft} ${xpResCrafting} ${xpResMining}`;
 
 		if (rewardsGuardianLoot.amount('Abyssal Protector') > 0) {
 			str += "\n\n**You have a funny feeling you're being followed...**";
@@ -141,7 +166,7 @@ export const guardiansOfTheRiftTask: MinionTask = {
 			user,
 			channelID,
 			str,
-			['minigames', { gotr: { start: {}, combinationRunes } }, true],
+			['minigames', { gotr: { start: { combination_runes: combinationRunes } } }, true],
 			image.file.attachment,
 			data,
 			null

@@ -27,7 +27,7 @@ export async function guardiansOfTheRiftStartCommand(
 	const duration = quantity * timePerGame;
 	// Being reduced with ticks
 	let minedFragments = 309;
-	let barrierAndGuardian = 7;
+	let barrierAndGuardian = 4;
 	// Rolls based on points in gotr
 	let rolls = 0;
 	const { bank } = user;
@@ -61,13 +61,9 @@ export async function guardiansOfTheRiftStartCommand(
 	for (const armour of varrockArmours) {
 		if (!user.hasEquippedOrInBank(armour.id)) continue;
 		armourEffect = 10;
-		if (armourEffect !== 0) {
-			boosts.push(
-				`**${armourEffect}%** chance to mine an extra essence/fragment using ${itemNameFromID(armour.id)}`
-			);
-			minedFragments *= 1.1;
-			break;
-		}
+		boosts.push(`**${armourEffect}%** chance to mine an extra essence/fragment using ${itemNameFromID(armour.id)}`);
+		minedFragments *= 1.1;
+		break;
 	}
 
 	if (inventorySize > 28) {
@@ -109,7 +105,7 @@ export async function guardiansOfTheRiftStartCommand(
 	if (user.hasEquippedOrInBank('Abyssal lantern')) {
 		const firemakingLevel = user.skillLevel('firemaking');
 		boosts.push(`Abyssal lantern (${firemakingLevel} FM lvl)`);
-		barrierAndGuardian += Math.floor(firemakingLevel / 30);
+		barrierAndGuardian += 2 * Math.floor(firemakingLevel / 30);
 		rolls += 1;
 	}
 
@@ -124,7 +120,7 @@ export async function guardiansOfTheRiftStartCommand(
 				.multiply(quantity * 5)
 		);
 		if (user.skillLevel(SkillsEnum.Magic) < 82 || !bank.has(magicImbueRuneCost)) {
-			return `You need enough Magic Imbue runes and 82 Magic You don't have enough talismans for this trip. You need ${magicImbueRuneCost}`;
+			return `You need enough Magic Imbue runes and 82 Magic. You don't have enough runes and or Magic lvl. You need ${magicImbueRuneCost}`;
 		}
 		removeRunesAndNecks.add(magicImbueRuneCost);
 		removeRunesAndNecks.add('Binding necklace', Math.max(quantity, 1));
@@ -143,7 +139,7 @@ export async function guardiansOfTheRiftStartCommand(
 	minedFragments = Math.round(randomVariation(minedFragments, 10));
 	barrierAndGuardian = Math.round(randomVariation(barrierAndGuardian, 10));
 	rolls = Math.min(Math.round(Math.max(rolls, 1)), 6);
-	rolls = randInt(rolls - 1, rolls);
+	rolls = randInt(Math.max(rolls - 1, 1), rolls);
 
 	await addSubTaskToActivityTask<GuardiansOfTheRiftActivityTaskOptions>({
 		quantity,
