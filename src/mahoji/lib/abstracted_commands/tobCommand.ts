@@ -95,8 +95,15 @@ export async function tobStartCommand(user: MUser, channelID: string, isHardMode
 
 	const channel = globalClient.channels.cache.get(channelID.toString());
 	if (!channelIsSendable(channel)) return 'No channel found.';
-	const reactionAwaiter = await setupParty(channel, user, partyOptions);
-	const usersWhoConfirmed = await reactionAwaiter;
+	let usersWhoConfirmed = [];
+	try {
+		usersWhoConfirmed = await setupParty(channel, user, partyOptions);
+	} catch (err: any) {
+		return {
+			content: typeof err === 'string' ? err : 'Your mass failed to start.',
+			ephemeral: true
+		};
+	}
 	const users = usersWhoConfirmed.filter(u => !u.minionIsBusy).slice(0, maxSize);
 
 	const teamCheckFailure = await checkTOBTeam(users, isHardMode);

@@ -82,50 +82,48 @@ export const massCommand: OSBMahojiCommand = {
 
 		checkReqs([user], monster, 2);
 
-		let reactionAwaiter = await setupParty(channel as TextChannel, user, {
-			leader: user,
-			minSize: 2,
-			maxSize: 10,
-			ironmanAllowed: false,
-			message: `${user.usernameOrMention} is doing a ${monster.name} mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
-			customDenier: async user => {
-				if (!user.user.minion_hasBought) {
-					return [true, "you don't have a minion."];
-				}
-				if (user.minionIsBusy) {
-					return [true, 'your minion is busy.'];
-				}
-				const [hasReqs, reason] = hasMonsterRequirements(user, monster);
-				if (!hasReqs) {
-					return [true, `you don't have the requirements for this monster; ${reason}`];
-				}
-
-				if (1 > 2 && monster.healAmountNeeded) {
-					try {
-						calculateMonsterFood(monster, user);
-					} catch (err: any) {
-						return [true, err];
-					}
-
-					// Ensure people have enough food for at least 2 full KC
-					// This makes it so the users will always have enough food for any amount of KC
-					if (1 > 2 && !hasEnoughFoodForMonster(monster, user, 2)) {
-						return [
-							true,
-							`You don't have enough food. You need at least ${
-								monster.healAmountNeeded * 2
-							} HP in food to enter the mass.`
-						];
-					}
-				}
-
-				return [false];
-			}
-		});
-
 		let users: MUser[] = [];
 		try {
-			users = reactionAwaiter;
+			users = await setupParty(channel as TextChannel, user, {
+				leader: user,
+				minSize: 2,
+				maxSize: 10,
+				ironmanAllowed: false,
+				message: `${user.usernameOrMention} is doing a ${monster.name} mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
+				customDenier: async user => {
+					if (!user.user.minion_hasBought) {
+						return [true, "you don't have a minion."];
+					}
+					if (user.minionIsBusy) {
+						return [true, 'your minion is busy.'];
+					}
+					const [hasReqs, reason] = hasMonsterRequirements(user, monster);
+					if (!hasReqs) {
+						return [true, `you don't have the requirements for this monster; ${reason}`];
+					}
+
+					if (1 > 2 && monster.healAmountNeeded) {
+						try {
+							calculateMonsterFood(monster, user);
+						} catch (err: any) {
+							return [true, err];
+						}
+
+						// Ensure people have enough food for at least 2 full KC
+						// This makes it so the users will always have enough food for any amount of KC
+						if (1 > 2 && !hasEnoughFoodForMonster(monster, user, 2)) {
+							return [
+								true,
+								`You don't have enough food. You need at least ${
+									monster.healAmountNeeded * 2
+								} HP in food to enter the mass.`
+							];
+						}
+					}
+
+					return [false];
+				}
+			});
 		} catch (err: any) {
 			return {
 				content: typeof err === 'string' ? err : 'Your mass failed to start.',

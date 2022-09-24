@@ -23,17 +23,16 @@ export async function nexCommand(interaction: ChatInputCommandInteraction, user:
 
 	await deferInteraction(interaction);
 
-	let reactionAwaiter = await setupParty(channel as TextChannel, user, {
-		minSize: 2,
-		maxSize: 10,
-		leader: user,
-		ironmanAllowed: true,
-		message: `${user} is hosting a Nex mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
-		customDenier: async user => checkNexUser(await mUserFetch(user.id))
-	});
 	let usersWhoConfirmed: MUser[] = [];
 	try {
-		usersWhoConfirmed = await reactionAwaiter;
+		usersWhoConfirmed = await setupParty(channel as TextChannel, user, {
+			minSize: 2,
+			maxSize: 10,
+			leader: user,
+			ironmanAllowed: true,
+			message: `${user} is hosting a Nex mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
+			customDenier: async user => checkNexUser(await mUserFetch(user.id))
+		});
 	} catch (err: any) {
 		return {
 			content: typeof err === 'string' ? err : 'Your mass failed to start.',
