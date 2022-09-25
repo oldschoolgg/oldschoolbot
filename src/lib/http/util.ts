@@ -5,7 +5,6 @@ import * as jwt from 'jwt-simple';
 
 import { CLIENT_SECRET, GITHUB_TOKEN, patreonConfig } from '../../config';
 import { PerkTier } from '../constants';
-import { prisma } from '../settings/prisma';
 
 export function rateLimit(max: number, timeWindow: string) {
 	return {
@@ -117,12 +116,13 @@ export async function fetchSponsors() {
 	return data;
 }
 
-export async function getUserFromGithubID(githubID: string) {
-	const result = await prisma.$queryRawUnsafe<{ id: string }[]>(
-		`SELECT id FROM users WHERE github_id = '${githubID}';`
-	);
-	if (result.length === 0) return null;
-	return globalClient.fetchUser(result[0].id);
+export async function getUserIdFromGithubID(githubID: string) {
+	const result = await roboChimpClient.user.findFirst({
+		select: { id: true },
+		where: { github_id: Number(githubID) }
+	});
+	if (!result) return null;
+	return result.id.toString();
 }
 
 export function encryptJWT(payload: unknown, secret = CLIENT_SECRET) {
