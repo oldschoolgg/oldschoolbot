@@ -8,7 +8,7 @@ import { patreonTask } from '../../../patreon';
 import { sendToChannelID } from '../../../util/webhook';
 import { GithubSponsorsWebhookData } from '../../githubApiTypes';
 import { FastifyServer } from '../../types';
-import { getUserFromGithubID, parseStrToTier, verifyGithubSecret } from '../../util';
+import { getUserIdFromGithubID, parseStrToTier, verifyGithubSecret } from '../../util';
 
 const githubSponsors = (server: FastifyServer) =>
 	server.route({
@@ -20,7 +20,7 @@ const githubSponsors = (server: FastifyServer) =>
 				throw reply.badRequest();
 			}
 			const data = request.body as GithubSponsorsWebhookData;
-			const user = await getUserFromGithubID(data.sender.id.toString());
+			const userID = await getUserIdFromGithubID(data.sender.id.toString());
 			// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
 			switch (data.action) {
 				case 'created': {
@@ -30,11 +30,13 @@ const githubSponsors = (server: FastifyServer) =>
 					sendToChannelID(Channel.NewSponsors, {
 						content: `${data.sender.login}[${data.sender.id}] became a Tier ${effectiveTier} sponsor.`
 					});
-					if (user) {
-						await patreonTask.givePerks(user.id, tier);
+					if (userID) {
+						await patreonTask.givePerks(userID, tier);
 					}
 
-					addPatronLootTime(tier, user);
+					if (userID) {
+						addPatronLootTime(tier, await mUserFetch(userID));
+					}
 
 					for (const id of [Channel.BSOChannel, Channel.BSOGeneral]) {
 						boxFrenzy(
@@ -59,21 +61,21 @@ ${data.sender.login} became a Github sponsor, as a reward for everyone, here is 
 							from - 1
 						} to Tier ${to - 1}.`
 					});
-					if (user) {
-						await patreonTask.changeTier(user.id, from, to);
+					if (userID) {
+						await patreonTask.changeTier(userID, from, to);
 					}
 					break;
 				}
 				case 'cancelled': {
 					const tier = parseStrToTier(data.sponsorship.tier.name);
 					if (!tier) return;
-					if (user) {
-						await patreonTask.removePerks(user.id);
+					if (userID) {
+						await patreonTask.removePerks(userID);
 					}
 
 					sendToChannelID(Channel.NewSponsors, {
 						content: `${data.sender.login}[${data.sender.id}] cancelled being a Tier ${tier - 1} sponsor. ${
-							user ? 'Removing perks.' : "Cant remove perks because couldn't find discord user."
+							userID ? 'Removing perks.' : "Cant remove perks because couldn't find discord user."
 						}`
 					});
 
