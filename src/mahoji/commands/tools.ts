@@ -35,7 +35,7 @@ import {
 	itemNameFromID,
 	stringMatches
 } from '../../lib/util';
-import getOSItem, { getItem } from '../../lib/util/getOSItem';
+import { getItem } from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
@@ -310,8 +310,8 @@ LIMIT 10;`);
 async function dryStreakCommand(user: MUser, monsterName: string, itemName: string, ironmanOnly: boolean) {
 	if (getUsersPerkTier(user) < PerkTier.Four) return patronMsg(PerkTier.Four);
 
-	const item = getOSItem(itemName);
-
+	const item = getItem(itemName);
+	if (!item) return 'Invalid item.';
 	const entity = dryStreakEntities.find(i => stringMatches(i.name, monsterName));
 	if (entity) {
 		if (!entity.items.includes(item.id)) {
