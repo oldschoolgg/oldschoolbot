@@ -77,8 +77,15 @@ export const pickpocketTask: MinionTask = {
 				}
 			}
 		} else if (obj.type === 'stall') {
-			for (let i = 0; i < (successfulQuantity * obj.lootPercent!) / 100; i++) {
-				loot.add(obj.table.roll());
+			for (let i = 0; i < successfulQuantity; i++) {
+				if (percentChance(obj.lootPercent!)) {
+					loot.add(obj.table.roll());
+				}
+
+				// Roll for pet
+				if (roll(petDropRate)) {
+					loot.add('Rocky');
+				}
 			}
 		}
 
