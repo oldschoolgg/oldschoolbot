@@ -143,7 +143,7 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 	},
 	{
 		name: 'daily_reminders',
-		interval: Time.Minute,
+		interval: Time.Minute * 3,
 		timer: null,
 		cb: async () => {
 			const result = await prisma.$queryRawUnsafe<{ id: string }[]>(
@@ -208,7 +208,7 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 	},
 	{
 		name: 'farming_reminder_ticker',
-		interval: Time.Minute * 2,
+		interval: Time.Minute * 3.5,
 		timer: null,
 		cb: async () => {
 			if (!production) return;
