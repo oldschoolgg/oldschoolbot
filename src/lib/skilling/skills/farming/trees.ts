@@ -200,7 +200,7 @@ const trees: Plant[] = [
 		checkXp: 23_768.3,
 		harvestXp: 0,
 		name: 'Mysterious tree',
-		aliases: ['mysterious tree', 'mystery','mysterious'],
+		aliases: ['mysterious tree', 'mystery', 'mysterious'],
 		inputItems: new Bank({ 'Mysterious seed': 1 }),
 		outputLogs: itemID('Magic logs'),
 		outputRoots: itemID('Magic roots'),
