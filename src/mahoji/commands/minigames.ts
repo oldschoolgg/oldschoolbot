@@ -21,6 +21,7 @@ import {
 import { castleWarsStartCommand, castleWarsStatsCommand } from '../lib/abstracted_commands/castleWarsCommand';
 import { fishingTrawlerCommand } from '../lib/abstracted_commands/fishingTrawler';
 import { gauntletCommand } from '../lib/abstracted_commands/gauntletCommand';
+import { giantsFoundryBuyCommand, giantsFoundryStartCommand } from '../lib/abstracted_commands/giantsFoundryCommand';
 import { gnomeRestaurantCommand } from '../lib/abstracted_commands/gnomeRestaurantCommand';
 import { lmsCommand } from '../lib/abstracted_commands/lmsCommand';
 import { mageArena2Command } from '../lib/abstracted_commands/mageArena2Command';
@@ -63,6 +64,7 @@ import {
 	volcanicMineShopCommand
 } from '../lib/abstracted_commands/volcanicMineCommand';
 import { OSBMahojiCommand } from '../lib/util';
+import { giantsFoundryBuyables } from './../lib/abstracted_commands/giantsFoundryCommand';
 
 export const minigamesCommand: OSBMahojiCommand = {
 	name: 'minigames',
@@ -808,6 +810,53 @@ export const minigamesCommand: OSBMahojiCommand = {
 					description: 'Start a trip.'
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			name: 'giants_foundry',
+			description: "The Giants' Foundry minigame.",
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'start',
+					description: 'Start a trip.',
+					options: [
+						{
+							name: 'combination_runes',
+							description: 'Craft combination runes giving additional points.',
+							type: ApplicationCommandOptionType.Boolean,
+							required: false
+						}
+					]
+				},
+				{
+					name: 'buy',
+					type: ApplicationCommandOptionType.Subcommand,
+					description: 'Buy items with Foundry Reputation.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'name',
+							required: true,
+							description: 'The item to buy.',
+							autocomplete: async value => {
+								return giantsFoundryBuyables
+									.filter(i =>
+										!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())
+									)
+									.map(i => ({ name: i.item.name, value: i.item.name }));
+							}
+						},
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'quantity',
+							description: 'The amount of items to buy.',
+							required: false,
+							min_value: 1
+						}
+					]
+				}
+			]
 		}
 	],
 	run: async ({
@@ -868,6 +917,10 @@ export const minigamesCommand: OSBMahojiCommand = {
 		};
 		trouble_brewing?: {
 			start?: {};
+		};
+		giants_foundry?: {
+			start?: { combination_runes?: boolean };
+			buy?: { item: string; quantity?: number };
 		};
 	}>) => {
 		const user = await mUserFetch(userID);
@@ -1122,6 +1175,18 @@ export const minigamesCommand: OSBMahojiCommand = {
 
 		if (options.trouble_brewing) {
 			return troubleBrewingStartCommand(user, channelID);
+		}
+
+		/**
+		 *
+		 * Giants' Foundry
+		 *
+		 */
+		if (options.giants_foundry?.start) {
+			return giantsFoundryStartCommand(user, channelID);
+		}
+		if (options.giants_foundry?.buy) {
+			return giantsFoundryBuyCommand(user, options.giants_foundry.buy.item, options.giants_foundry.buy.quantity);
 		}
 
 		return 'Invalid command.';

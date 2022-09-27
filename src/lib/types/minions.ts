@@ -316,6 +316,10 @@ export interface PuroPuroActivityTaskOptions extends MinigameActivityTaskOptions
 	darkLure: boolean;
 }
 
+export interface GiantsFoundryActivityTaskOptions extends MinigameActivityTaskOptions {
+	quantity: number;
+}
+
 export type ActivityTaskData =
 	| ActivityTaskOptions
 	| MonsterActivityTaskOptions

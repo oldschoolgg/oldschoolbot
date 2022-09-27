@@ -64,6 +64,7 @@ import {
 	fossilIslandNotesCL,
 	generalGraardorCL,
 	giantMoleCL,
+	giantsFoundryCL,
 	gnomeRestaurantCL,
 	godWarsDungeonCL,
 	gracefulCL,
@@ -539,6 +540,11 @@ export const allCollectionLogs: ICollection = {
 					'Raw manta ray'
 				]),
 				items: fishingTrawlerCL,
+				isActivity: true
+			},
+			"Giants' Foundry": {
+				alias: ['giants', 'giants foundry', 'giants foundry'],
+				items: giantsFoundryCL,
 				isActivity: true
 			},
 			'Gnome Restaurant': {

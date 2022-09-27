@@ -165,6 +165,11 @@ export const Minigames: readonly BotMinigame[] = [
 		name: 'Trouble Brewing',
 		aliases: ['trouble brewing', 'tb'],
 		column: 'trouble_brewing'
+	},
+	{
+		name: "Giants' Foundry",
+		aliases: ['giants', 'foundry', 'giants foundry', "giants' foundry"],
+		column: 'giants_foundry'
 	}
 ];
 

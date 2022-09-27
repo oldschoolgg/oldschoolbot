@@ -283,6 +283,7 @@ model User {
   tob_attempts               Int      @default(0)
   tob_hard_attempts          Int      @default(0)
   volcanic_mine_points       Int      @default(0)
+  foundry_reputation         Int      @default(0)
   blowpipe                   Json     @default("{\"scales\":0,\"dartID\":null,\"dartQuantity\":0}") @db.Json
   ironman_alts               String[]
   main_account               String?
@@ -471,6 +472,7 @@ model Minigame {
   lms                     Int    @default(0)
   trouble_brewing         Int    @default(0)
   puro_puro               Int    @default(0)
+  giants_foundry          Int    @default(0)
 
   new_user NewUser?
 
@@ -668,6 +670,7 @@ enum activity_type_enum {
   PuroPuro
   Easter
   ShootingStars
+  GiantsFoundry
 }
 
 enum xp_gains_skill_enum {
