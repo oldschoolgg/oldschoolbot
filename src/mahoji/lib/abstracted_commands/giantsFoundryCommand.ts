@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
-import { itemID } from 'oldschooljs/dist/util';
+import { itemID, resolveNameBank } from 'oldschooljs/dist/util';
 
 import Smithing from '../../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -9,10 +9,10 @@ import { GiantsFoundryActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../mahojiSettings';
+import { ItemBank } from './../../../lib/types/index';
 
-export const giantFoundryAlloys = [
+export const giantsFoundryAlloys = [
 	{
 		name: 'Bronze',
 		level: 15,
@@ -92,49 +92,58 @@ export const giantFoundryAlloys = [
 	}
 ];
 
-export const giantsFoundryBuyables = [
+export const giantsFoundryBuyables: { name: string; output: ItemBank; cost: number; aliases: string[] }[] = [
 	{
-		item: getOSItem('Double ammo mould'),
+		name: 'Double ammo mould',
+		output: resolveNameBank({ 'Double ammo mould': 1 }),
 		cost: 2000,
 		aliases: ['double ammo', 'double cannonballs']
 	},
 	{
-		item: getOSItem("Kovac's grog"),
+		name: "Kovac's grog",
+		output: resolveNameBank({ "Kovac's grog": 1 }),
 		cost: 300,
 		aliases: ['grog', 'kovacs grog']
 	},
 	{
-		item: getOSItem('Smithing catalyst'),
+		name: 'Smithing catalyst',
+		output: resolveNameBank({ 'Smithing catalyst': 1 }),
 		cost: 15,
 		aliases: []
 	},
 	{
-		item: getOSItem('Ore pack'),
+		name: 'Ore pack',
+		output: resolveNameBank({ 'Ore pack': 1 }),
 		cost: 200,
 		aliases: []
 	},
 	{
-		item: getOSItem('Smiths tunic'),
+		name: 'Smiths tunic',
+		output: resolveNameBank({ 'Smiths tunic': 1 }),
 		cost: 4000,
 		aliases: []
 	},
 	{
-		item: getOSItem('Smiths trousers'),
+		name: 'Smiths trousers',
+		output: resolveNameBank({ 'Smiths trousers': 1 }),
 		cost: 4000,
 		aliases: []
 	},
 	{
-		item: getOSItem('Smiths boots'),
+		name: 'Smiths boots',
+		output: resolveNameBank({ 'Smiths boots': 1 }),
 		cost: 3500,
 		aliases: []
 	},
 	{
-		item: getOSItem('Smiths gloves'),
+		name: 'Smiths gloves',
+		output: resolveNameBank({ 'Smiths gloves': 1 }),
 		cost: 3500,
 		aliases: []
 	},
 	{
-		item: getOSItem('Colossal blade'),
+		name: 'Colossal blade',
+		output: resolveNameBank({ 'Colossal blade': 1 }),
 		cost: 5000,
 		aliases: []
 	}
@@ -146,10 +155,10 @@ export async function giantsFoundryStartCommand(
 	quantity: number | undefined,
 	channelID: string
 ) {
-	let timePerSection = Time.Minute * 1.65;
+	let timePerSection = Time.Minute * 0.84;
 	const userSmithingLevel = user.skillLevel(SkillsEnum.Smithing);
 
-	const alloy = giantFoundryAlloys.find(i => stringMatches(i.name, name));
+	const alloy = giantsFoundryAlloys.find(i => stringMatches(i.name, name));
 
 	if (!alloy) {
 		return 'Error selecting alloy, please try again.';
@@ -178,7 +187,7 @@ export async function giantsFoundryStartCommand(
 	}
 	const boosts = [];
 	timePerSection *= (100 - setBonus) / 100;
-	boosts.push(`${setBonus}% faster for Smiths' Uniform item/items}`);
+	boosts.push(`${setBonus}% faster for Smiths' Uniform item/items`);
 	const maxTripLength = calcMaxTripLength(user, 'GiantsFoundry');
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / (alloy.sections * timePerSection));
@@ -221,11 +230,11 @@ export async function giantsFoundryShopCommand(
 	}
 
 	const shopItem = giantsFoundryBuyables.find(
-		i => stringMatches(item, i.item.name) || i.aliases.some(alias => stringMatches(alias, item))
+		i => stringMatches(item, i.name) || i.aliases.some(alias => stringMatches(alias, item))
 	);
 	if (!shopItem) {
 		return `This is not a valid item to buy. These are the items that can be bought using Foundry Reputation: ${giantsFoundryBuyables
-			.map(v => v.item.name)
+			.map(v => v.name)
 			.join(', ')}`;
 	}
 	if (!quantity) {
@@ -233,7 +242,7 @@ export async function giantsFoundryShopCommand(
 	}
 	const cost = quantity * shopItem.cost;
 	if (cost > currentUserReputation) {
-		return `You don't have enough Foundry Reputation to buy ${quantity.toLocaleString()}x ${shopItem.item.name}. ${
+		return `You don't have enough Foundry Reputation to buy ${quantity.toLocaleString()}x ${shopItem.name}. ${
 			currentUserReputation < shopItem.cost
 				? "You don't have enough Foundry Reputation for any of this item."
 				: `You only have enough for ${Math.floor(currentUserReputation / shopItem.cost).toLocaleString()}`
@@ -243,14 +252,14 @@ export async function giantsFoundryShopCommand(
 	await handleMahojiConfirmation(
 		interaction,
 		`Are you sure you want to spent **${cost.toLocaleString()}** Foundry Reputation to buy **${quantity.toLocaleString()}x ${
-			shopItem.item.name
+			shopItem.name
 		}**?`
 	);
 
 	await transactItems({
 		userID: user.id,
 		collectionLog: true,
-		itemsToAdd: new Bank().add(shopItem.item.name).multiply(quantity)
+		itemsToAdd: new Bank(shopItem.output).multiply(quantity)
 	});
 
 	await user.update({
@@ -259,7 +268,7 @@ export async function giantsFoundryShopCommand(
 		}
 	});
 
-	return `You sucessfully bought **${quantity.toLocaleString()}x ${shopItem.item.name}** for ${(
+	return `You sucessfully bought **${quantity.toLocaleString()}x ${shopItem.name}** for ${(
 		shopItem.cost * quantity
 	).toLocaleString()} Foundry Reputation.`;
 }

@@ -64,7 +64,7 @@ import {
 	volcanicMineShopCommand
 } from '../lib/abstracted_commands/volcanicMineCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { giantsFoundryBuyables } from './../lib/abstracted_commands/giantsFoundryCommand';
+import { giantsFoundryAlloys, giantsFoundryBuyables } from './../lib/abstracted_commands/giantsFoundryCommand';
 
 export const minigamesCommand: OSBMahojiCommand = {
 	name: 'minigames',
@@ -822,10 +822,15 @@ export const minigamesCommand: OSBMahojiCommand = {
 					description: 'Start a trip.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.Number,
+							type: ApplicationCommandOptionType.String,
 							name: 'name',
 							description: 'The alloy/metal you wanna use.',
-							required: true
+							required: true,
+							autocomplete: async value => {
+								return giantsFoundryAlloys
+									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
+									.map(i => ({ name: i.name, value: i.name }));
+							}
 						},
 						{
 							type: ApplicationCommandOptionType.Number,
@@ -848,10 +853,8 @@ export const minigamesCommand: OSBMahojiCommand = {
 							description: 'The item to buy.',
 							autocomplete: async value => {
 								return giantsFoundryBuyables
-									.filter(i =>
-										!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())
-									)
-									.map(i => ({ name: i.item.name, value: i.item.name }));
+									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
+									.map(i => ({ name: i.name, value: i.name }));
 							}
 						},
 						{
