@@ -21,7 +21,7 @@ import {
 import { castleWarsStartCommand, castleWarsStatsCommand } from '../lib/abstracted_commands/castleWarsCommand';
 import { fishingTrawlerCommand } from '../lib/abstracted_commands/fishingTrawler';
 import { gauntletCommand } from '../lib/abstracted_commands/gauntletCommand';
-import { giantsFoundryBuyCommand, giantsFoundryStartCommand } from '../lib/abstracted_commands/giantsFoundryCommand';
+import { giantsFoundryShopCommand, giantsFoundryStartCommand } from '../lib/abstracted_commands/giantsFoundryCommand';
 import { gnomeRestaurantCommand } from '../lib/abstracted_commands/gnomeRestaurantCommand';
 import { lmsCommand } from '../lib/abstracted_commands/lmsCommand';
 import { mageArena2Command } from '../lib/abstracted_commands/mageArena2Command';
@@ -1186,7 +1186,12 @@ export const minigamesCommand: OSBMahojiCommand = {
 			return giantsFoundryStartCommand(user, channelID);
 		}
 		if (options.giants_foundry?.buy) {
-			return giantsFoundryBuyCommand(user, options.giants_foundry.buy.item, options.giants_foundry.buy.quantity);
+			return giantsFoundryShopCommand(
+				interaction,
+				user,
+				options.giants_foundry.buy.item,
+				options.giants_foundry.buy.quantity
+			);
 		}
 
 		return 'Invalid command.';
