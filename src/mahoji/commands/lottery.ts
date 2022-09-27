@@ -373,7 +373,7 @@ Top ticket holders: ${users
 				(await makeBankImage({ bank: totalLoot, title: 'Smokey Lottery' })).file,
 				(await makeBankImage({ bank: input, title: 'Your Lottery Input' })).file
 			],
-			allowed_mentions: {
+			allowedMentions: {
 				users: []
 			}
 		};
