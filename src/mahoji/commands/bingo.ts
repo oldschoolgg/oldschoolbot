@@ -324,8 +324,9 @@ ${teamResult?.progress.bingoTableStr ?? ''}
 		return {
 			content: str,
 			components,
-			allowedMentions: {
-				parse: []
+			allowed_mentions: {
+				parse: [],
+				users: []
 			}
 		};
 	}
