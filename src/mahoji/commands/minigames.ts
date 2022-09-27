@@ -822,10 +822,17 @@ export const minigamesCommand: OSBMahojiCommand = {
 					description: 'Start a trip.',
 					options: [
 						{
-							name: 'combination_runes',
-							description: 'Craft combination runes giving additional points.',
-							type: ApplicationCommandOptionType.Boolean,
-							required: false
+							type: ApplicationCommandOptionType.Number,
+							name: 'name',
+							description: 'The alloy/metal you wanna use.',
+							required: true
+						},
+						{
+							type: ApplicationCommandOptionType.Number,
+							name: 'quantity',
+							description: 'The amount of giant weapons you wanna do.',
+							required: false,
+							min_value: 1
 						}
 					]
 				},
@@ -919,7 +926,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 			start?: {};
 		};
 		giants_foundry?: {
-			start?: { combination_runes?: boolean };
+			start?: { name: string; quantity?: number };
 			buy?: { item: string; quantity?: number };
 		};
 	}>) => {
@@ -1183,7 +1190,12 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 *
 		 */
 		if (options.giants_foundry?.start) {
-			return giantsFoundryStartCommand(user, channelID);
+			return giantsFoundryStartCommand(
+				user,
+				options.giants_foundry.start.name,
+				options.giants_foundry.start.quantity,
+				channelID
+			);
 		}
 		if (options.giants_foundry?.buy) {
 			return giantsFoundryShopCommand(

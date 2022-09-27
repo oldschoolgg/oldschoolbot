@@ -1,22 +1,28 @@
-import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
+import { GiantsFoundryActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export const giantsFoundryTask: MinionTask = {
 	type: 'GiantsFoundry',
-	async run(data: ActivityTaskOptionsWithQuantity) {
-		const { quantity, userID, channelID, duration } = data;
+	async run(data: GiantsFoundryActivityTaskOptions) {
+		const { quantity, userID, channelID, duration, metalScore, alloyName } = data;
 		const user = await mUserFetch(userID);
-		//	const userSkillingGear = user.gear.skilling;
-		const userSmithingLevel = user.skillLevel(SkillsEnum.Smithing);
-		let boost = 1;
-		// Activity boosts
+		//		const userSmithingLevel = user.skillLevel(SkillsEnum.Smithing);
+		//		const boosts = [];
 
-		const xpReceived = Math.round(userSmithingLevel * (quantity / Time.Minute) * 10 * boost);
+		let reputationReceived = 0;
+		let xpReceived = 0;
+		for (let i = 0; i < quantity; i++) {
+			let quality = Math.min(metalScore, 199);
+			xpReceived += (Math.pow(quality, 2) / 73 + 1.5 * quality + 1) * 30;
+			reputationReceived += quality;
+		}
+		xpReceived = Math.floor(xpReceived);
+		reputationReceived = Math.floor(reputationReceived);
+
 		const xpRes = await user.addXP({
 			skillName: SkillsEnum.Smithing,
 			amount: xpReceived,
@@ -24,7 +30,6 @@ export const giantsFoundryTask: MinionTask = {
 		});
 
 		const currentUserReputation = user.user.foundry_reputation;
-		let reputationReceived = Math.round(xpReceived / 5.5);
 
 		await user.update({
 			foundry_reputation: currentUserReputation + reputationReceived
@@ -32,7 +37,7 @@ export const giantsFoundryTask: MinionTask = {
 
 		await incrementMinigameScore(userID, 'giants_foundry', quantity);
 
-		const loot = new Bank().add('');
+		const loot = new Bank().add('Coins', 2 * xpReceived);
 
 		let str = `${user}, ${
 			user.minionName
@@ -50,7 +55,7 @@ export const giantsFoundryTask: MinionTask = {
 			user,
 			channelID,
 			str,
-			['minigames', { giants_foundry: { start: { quantity } } }, true],
+			['minigames', { giants_foundry: { start: { name: alloyName, quantity } } }, true],
 			undefined,
 			data,
 			itemsAdded
