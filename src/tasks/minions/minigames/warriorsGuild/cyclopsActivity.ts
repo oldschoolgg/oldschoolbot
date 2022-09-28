@@ -94,7 +94,7 @@ export const cyclopsTask: MinionTask = {
 			channelID,
 			str,
 			['activities', { warriors_guild: { action: 'cyclops', quantity } }, true],
-			image.file.buffer,
+			image.file.attachment,
 			data,
 			itemsAdded
 		);

@@ -6,7 +6,7 @@ import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueTo
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FishingActivityTaskOptions } from '../../lib/types/minions';
-import { rand, roll } from '../../lib/util';
+import { rand, roll, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 import { anglerBoostPercent } from '../../mahoji/mahojiSettings';
@@ -182,9 +182,9 @@ export const fishingTask: MinionTask = {
 
 		// Roll for pet
 		if (fish.petChance) {
-			const chance = fish.petChance - user.skillLevel(SkillsEnum.Fishing) * 25;
+			const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Fishing, fish.petChance);
 			for (let i = 0; i < quantity; i++) {
-				if (roll(chance)) {
+				if (roll(petDropRate)) {
 					loot.add('Heron');
 					str += "\nYou have a funny feeling you're being followed...";
 					globalClient.emit(

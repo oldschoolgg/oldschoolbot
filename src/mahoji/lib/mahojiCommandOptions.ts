@@ -1,5 +1,5 @@
+import { APIApplicationCommandOptionChoice, ApplicationCommandOptionType } from 'discord.js';
 import { uniqueArr } from 'e';
-import { APIApplicationCommandOptionChoice, ApplicationCommandOptionType } from 'mahoji';
 import { CommandOption } from 'mahoji/dist/lib/types';
 import { Bank, Items } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';

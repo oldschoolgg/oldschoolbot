@@ -36,9 +36,7 @@ export const fakepmCommand: OSBMahojiCommand = {
 		ctx.fillText(`From ${options.username}: ${options.message}`, 5, 97);
 
 		return {
-			attachments: [
-				{ buffer: await canvas.toBuffer('png'), fileName: `${Math.round(Math.random() * 10_000)}.jpg` }
-			]
+			files: [{ attachment: await canvas.toBuffer('png'), name: `${Math.round(Math.random() * 10_000)}.jpg` }]
 		};
 	}
 };

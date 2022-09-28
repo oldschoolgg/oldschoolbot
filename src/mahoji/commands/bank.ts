@@ -1,12 +1,13 @@
 import { codeBlock, Embed } from '@discordjs/builders';
 import { chunk } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions, MessageFlags } from 'mahoji';
+import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { BankFlag, bankFlags } from '../../lib/bankImage';
 import { Emoji } from '../../lib/constants';
 import { Flags } from '../../lib/minions/types';
 import { BankSortMethod, BankSortMethods } from '../../lib/sorts';
 import { channelIsSendable, makePaginatedMessage } from '../../lib/util';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption, itemOption } from '../lib/mahojiCommandOptions';
@@ -84,7 +85,7 @@ export const bankCommand: OSBMahojiCommand = {
 		flag?: BankFlag;
 		flag_extra?: BankFlag;
 	}>) => {
-		if (interaction) await interaction.deferReply();
+		if (interaction) await deferInteraction(interaction);
 		const klasaUser = await mUserFetch(user.id);
 		const baseBank = klasaUser.bankWithGP;
 		const mahojiFlags: BankFlag[] = [];
@@ -130,7 +131,7 @@ export const bankCommand: OSBMahojiCommand = {
 
 				return {
 					content: 'Here is your selected bank in text file format.',
-					attachments: [{ buffer: attachment, fileName: 'Bank.txt' }]
+					files: [{ attachment, name: 'Bank.txt' }]
 				};
 			}
 
@@ -146,12 +147,12 @@ export const bankCommand: OSBMahojiCommand = {
 			if (!channelIsSendable(channel)) return 'Failed to send paginated bank message, sorry.';
 
 			makePaginatedMessage(channel, pages, user.id);
-			return { content: 'Here is your selected bank:', flags: MessageFlags.Ephemeral };
+			return { content: 'Here is your selected bank:', ephemeral: true };
 		}
 		if (options.format === 'json') {
 			const json = JSON.stringify(baseBank.bank);
 			if (json.length > 1900) {
-				return { attachments: [{ buffer: Buffer.from(json), fileName: 'bank.json' }] };
+				return { files: [{ attachment: Buffer.from(json), name: 'bank.json' }] };
 			}
 			return `${codeBlock('json', json)}`;
 		}
@@ -162,7 +163,7 @@ export const bankCommand: OSBMahojiCommand = {
 		if (options.sort) flags.sort = options.sort;
 
 		return {
-			attachments: [
+			files: [
 				(
 					await makeBankImage({
 						bank,

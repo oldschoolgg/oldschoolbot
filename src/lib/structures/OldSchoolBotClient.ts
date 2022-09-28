@@ -6,11 +6,7 @@ import { MahojiClient } from 'mahoji';
 import { production } from '../../config';
 import { cacheUsernames } from '../../mahoji/commands/leaderboard';
 import { initCrons } from '../crons';
-import { prisma } from '../settings/prisma';
-import { startupScripts } from '../startupScripts';
-import { syncActivityCache } from '../Task';
 import { Peak } from '../tickers';
-import { logError } from '../util/logError';
 import { piscinaPool } from '../workers';
 
 if (typeof production !== 'boolean') {
@@ -18,8 +14,7 @@ if (typeof production !== 'boolean') {
 }
 
 export class OldSchoolBotClient extends Client {
-	public oneCommandAtATimeCache = new Set<string>();
-	public secondaryUserBusyCache = new Set<string>();
+	public busyCounterCache = new Map<string, number>();
 	public piscinaPool = piscinaPool;
 	public production = production ?? false;
 	public mahojiClient!: MahojiClient;
@@ -44,22 +39,6 @@ export class OldSchoolBotClient extends Client {
 	// @ts-ignore
 	get emojis() {
 		return this._emojis;
-	}
-
-	public async login(token?: string) {
-		let promises = [];
-		promises.push(syncActivityCache());
-		promises.push(
-			...startupScripts.map(query =>
-				prisma
-					.$queryRawUnsafe(query.sql)
-					.catch(err =>
-						query.ignoreErrors ? null : logError(`Startup script failed: ${err.message} ${query.sql}`)
-					)
-			)
-		);
-		await Promise.all(promises);
-		return super.login(token);
 	}
 
 	async fetchUser(id: string | bigint): Promise<User> {
