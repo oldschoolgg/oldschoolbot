@@ -222,7 +222,7 @@ export async function giantsFoundryShopCommand(
 	interaction: ChatInputCommandInteraction,
 	user: MUser,
 	item: string | undefined,
-	quantity: number | undefined
+	quantity = 1
 ) {
 	const currentUserReputation = user.user.foundry_reputation;
 	if (!item) {
@@ -237,9 +237,7 @@ export async function giantsFoundryShopCommand(
 			.map(v => v.name)
 			.join(', ')}`;
 	}
-	if (!quantity) {
-		quantity = 1;
-	}
+
 	const cost = quantity * shopItem.cost;
 	if (cost > currentUserReputation) {
 		return `You don't have enough Foundry Reputation to buy ${quantity.toLocaleString()}x ${shopItem.name}. ${

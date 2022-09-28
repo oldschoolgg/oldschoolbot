@@ -92,7 +92,7 @@ export const giantsFoundryTask: MinionTask = {
 		} finished creating ${quantity}x giant weapons in the Giants' Foundry minigame. **Boosts:** ${boosts.join(
 			', '
 		)}.\n${xpRes}\nKovac gave you **${reputationReceived.toLocaleString()}** Foundry Reputation ${
-			loot.length > 0 ? `and ${loot}` : ''
+			loot.length > 0 ? `and ${loot}.` : ''
 		}\nThe most presigues weapon created by your minion was a **${randArrItem(tipMoulds)} ${randArrItem(
 			bladeMoulds
 		)} ${randArrItem(forteMoulds)}**.`;

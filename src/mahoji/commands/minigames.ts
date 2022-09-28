@@ -848,19 +848,19 @@ export const minigamesCommand: OSBMahojiCommand = {
 					options: [
 						{
 							type: ApplicationCommandOptionType.String,
-							name: 'name',
-							required: true,
+							name: 'item',
 							description: 'The item to buy.',
-							autocomplete: async value => {
+							required: true,
+							autocomplete: async (value: string) => {
 								return giantsFoundryBuyables
 									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
-									.map(i => ({ name: i.name, value: i.name }));
+									.map(i => ({ name: `${i.name}`, value: i.name }));
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.Integer,
+							type: ApplicationCommandOptionType.Number,
 							name: 'quantity',
-							description: 'The amount of items to buy.',
+							description: 'The amount to buy.',
 							required: false,
 							min_value: 1
 						}
