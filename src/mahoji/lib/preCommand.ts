@@ -4,6 +4,7 @@ import { modifyBusyCounter } from '../../lib/busyCounterCache';
 import { usernameCache } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
 import { removeMarkdownEmojis } from '../../lib/util';
+import { CACHED_ACTIVE_USER_IDS } from '../../lib/util/cachedUserIDs';
 import { AbstractCommand, runInhibitors } from './inhibitors';
 
 function cleanUsername(username: string) {
@@ -53,6 +54,7 @@ export async function preCommand({
 			dontRunPostCommand?: boolean;
 	  }
 > {
+	CACHED_ACTIVE_USER_IDS.add(userID);
 	if (globalClient.isShuttingDown) {
 		return {
 			silent: true,

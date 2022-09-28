@@ -109,7 +109,6 @@ export async function onMessage(msg: Message) {
 	rareRoles(msg);
 	petMessages(msg);
 	if (!msg.content || msg.author.bot || !channelIsSendable(msg.channel)) return;
-
 	const content = msg.content.trim();
 	if (!content.includes(mentionText)) return;
 	const user = await mUserFetch(msg.author.id);
