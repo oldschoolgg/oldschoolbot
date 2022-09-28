@@ -21,7 +21,7 @@ export const clientOptions: ClientOptions = {
 	makeCache: Options.cacheWithLimits({
 		MessageManager: {
 			maxSize: 100,
-			keepOverLimit: msg => msg.author.id !== globalClient.user!.id && !msg.content
+			keepOverLimit: msg => msg.author.id === globalClient.user!.id || Boolean(msg.content)
 		},
 		UserManager: {
 			maxSize: 1000,
