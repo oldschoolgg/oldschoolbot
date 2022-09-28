@@ -1,4 +1,4 @@
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
+import { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { BitField } from '../../../lib/constants';
@@ -33,7 +33,7 @@ export async function getPOH(userID: string) {
 export async function makePOHImage(user: MUser, showSpaces = false) {
 	const poh = await getPOH(user.id);
 	const buffer = await pohImageGenerator.run(poh, showSpaces);
-	return { attachments: [{ buffer, fileName: 'image.jpg' }] };
+	return { files: [{ attachment: buffer, name: 'image.jpg' }] };
 }
 
 export async function pohWallkitCommand(user: MUser, input: string) {
@@ -76,7 +76,7 @@ export async function pohWallkitCommand(user: MUser, input: string) {
 	return makePOHImage(user);
 }
 
-export async function pohBuildCommand(interaction: SlashCommandInteraction, user: MUser, name: string) {
+export async function pohBuildCommand(interaction: ChatInputCommandInteraction, user: MUser, name: string) {
 	const poh = await getPOH(user.id);
 
 	if (!name) {

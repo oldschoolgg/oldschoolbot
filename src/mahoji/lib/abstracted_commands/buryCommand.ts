@@ -8,7 +8,7 @@ import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
-export async function buryCommand(user: MUser, channelID: bigint, boneName: string, quantity?: number) {
+export async function buryCommand(user: MUser, channelID: string, boneName: string, quantity?: number) {
 	const speedMod = 1;
 
 	const bone = Prayer.Bones.find(

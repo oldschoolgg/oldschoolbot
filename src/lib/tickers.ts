@@ -143,7 +143,7 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 	},
 	{
 		name: 'daily_reminders',
-		interval: Time.Minute,
+		interval: Time.Minute * 3,
 		timer: null,
 		cb: async () => {
 			const result = await prisma.$queryRawUnsafe<{ id: string }[]>(
@@ -208,7 +208,7 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 	},
 	{
 		name: 'farming_reminder_ticker',
-		interval: Time.Minute * 2,
+		interval: Time.Minute * 3.5,
 		timer: null,
 		cb: async () => {
 			if (!production) return;
@@ -221,6 +221,7 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 							BitField.IsPatronTier3,
 							BitField.IsPatronTier4,
 							BitField.IsPatronTier5,
+							BitField.IsPatronTier6,
 							BitField.isContributor,
 							BitField.isModerator
 						]
@@ -284,6 +285,7 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 							time: Time.Minute * 5,
 							filter: () => true
 						});
+						if (!selection.isButton()) return;
 						message.edit({ components: [] });
 
 						// Check disable first so minion doesn't have to be free to disable reminders.
@@ -307,7 +309,8 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 								channelID: message.channel.id,
 								guildID: undefined,
 								user: await mUserFetch(user.id),
-								member: message.member
+								member: message.member,
+								interaction: selection
 							});
 						}
 					} catch {

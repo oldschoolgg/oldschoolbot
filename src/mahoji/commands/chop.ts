@@ -1,31 +1,66 @@
-import { reduceNumByPercent } from 'e';
+import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
+import { determineWoodcuttingTime } from '../../lib/skilling/functions/determineWoodcuttingTime';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
-import { SkillsEnum } from '../../lib/skilling/types';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
-import { determineScaledLogTime, formatDuration, itemNameFromID, stringMatches } from '../../lib/util';
+import { formatDuration, itemNameFromID, randomVariation, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import itemID from '../../lib/util/itemID';
+import { minionName } from '../../lib/util/minionUtils';
 import { OSBMahojiCommand } from '../lib/util';
 
-const axes = [
+export const axes = [
 	{
 		id: itemID('Crystal axe'),
-		reductionPercent: 12,
-		wcLvl: 61
+		multiplier: 4,
+		wcLvl: 71
 	},
 	{
 		id: itemID('Infernal axe'),
-		reductionPercent: 9,
+		multiplier: 3.75,
 		wcLvl: 61
 	},
 	{
 		id: itemID('Dragon axe'),
-		reductionPercent: 9,
+		multiplier: 3.75,
 		wcLvl: 61
+	},
+	{
+		id: itemID('Rune axe'),
+		multiplier: 3.5,
+		wcLvl: 41
+	},
+	{
+		id: itemID('Adamant axe'),
+		multiplier: 3,
+		wcLvl: 31
+	},
+	{
+		id: itemID('Mithril axe'),
+		multiplier: 2.5,
+		wcLvl: 21
+	},
+	{
+		id: itemID('Black axe'),
+		multiplier: 2.25,
+		wcLvl: 11
+	},
+	{
+		id: itemID('Steel axe'),
+		multiplier: 2,
+		wcLvl: 6
+	},
+	{
+		id: itemID('Iron axe'),
+		multiplier: 1.5,
+		wcLvl: 1
+	},
+	{
+		id: itemID('Bronze axe'),
+		multiplier: 1,
+		wcLvl: 1
 	}
 ];
 
@@ -58,13 +93,19 @@ export const chopCommand: OSBMahojiCommand = {
 			description: 'The quantity of logs you want to chop (optional).',
 			required: false,
 			min_value: 1
+		},
+		{
+			type: ApplicationCommandOptionType.Boolean,
+			name: 'powerchop',
+			description: 'Set this to true to powerchop. Higher xp/hour, No loot (default false, optional).',
+			required: false
 		}
 	],
 	run: async ({
 		options,
 		userID,
 		channelID
-	}: CommandRunOptions<{ name: string; quantity?: number; alch?: boolean }>) => {
+	}: CommandRunOptions<{ name: string; quantity?: number; powerchop?: boolean }>) => {
 		const user = await mUserFetch(userID);
 		const log = Woodcutting.Logs.find(
 			log =>
@@ -75,8 +116,12 @@ export const chopCommand: OSBMahojiCommand = {
 
 		if (!log) return "That's not a valid log to chop.";
 
-		if (user.skillLevel(SkillsEnum.Woodcutting) < log.level) {
-			return `${user.minionName} needs ${log.level} Woodcutting to chop ${log.name}.`;
+		let { quantity, powerchop } = options;
+
+		const skills = user.skillsAsLevels;
+
+		if (skills.woodcutting < log.level) {
+			return `${minionName(user)} needs ${log.level} Woodcutting to chop ${log.name}.`;
 		}
 
 		const { QP } = user;
@@ -86,49 +131,78 @@ export const chopCommand: OSBMahojiCommand = {
 
 		const [hasFavour, requiredPoints] = gotFavour(user, Favours.Hosidius, 75);
 		if (!hasFavour && log.name === 'Redwood Logs') {
-			return `${user.minionName} needs ${requiredPoints}% Hosidius Favour to chop Redwood at the Woodcutting Guild!`;
+			return `${minionName(
+				user
+			)} needs ${requiredPoints}% Hosidius Favour to chop Redwood at the Woodcutting Guild!`;
 		}
 
-		// Calculate the time it takes to chop a single log of this type, at this persons level.
-		let timetoChop = determineScaledLogTime(log!.xp, log.respawnTime, user.skillLevel(SkillsEnum.Woodcutting));
-
-		// If the user has an axe apply boost
 		const boosts = [];
+
+		let wcLvl = skills.woodcutting;
+
+		// Invisible wc boost for woodcutting guild
+		if (skills.woodcutting >= 60 && log.wcGuild && hasFavour) {
+			boosts.push('+7 invisible WC lvls at the Woodcutting guild');
+			wcLvl += 7;
+		}
+
+		// Enable 1.5 tick teaks half way to 99
+		if (skills.woodcutting >= 92 && (log.name === 'Teak Logs' || log.name === 'Mahogany Logs')) {
+			boosts.push('1.5t teak/mahogany chopping with 92+ wc');
+		}
+
+		// Default bronze axe, last in the array
+		let axeMultiplier = 1;
+		boosts.push(`**${axeMultiplier}x** success multiplier for Bronze axe`);
+
 		for (const axe of axes) {
-			if (user.hasEquippedOrInBank(axe.id) && user.skillLevel(SkillsEnum.Woodcutting) >= axe.wcLvl) {
-				timetoChop = reduceNumByPercent(timetoChop, axe.reductionPercent);
-				boosts.push(`${axe.reductionPercent}% for ${itemNameFromID(axe.id)}`);
-				break;
-			}
+			if (!user.hasEquippedOrInBank([axe.id]) || skills.woodcutting < axe.wcLvl) continue;
+			axeMultiplier = axe.multiplier;
+			boosts.pop();
+			boosts.push(`**${axeMultiplier}x** success multiplier for ${itemNameFromID(axe.id)}`);
+			break;
 		}
 
-		const maxTripLength = calcMaxTripLength(user, 'Woodcutting');
-
-		let { quantity } = options;
-		if (!quantity) quantity = Math.floor(maxTripLength / timetoChop);
-
-		const duration = quantity * timetoChop;
-
-		if (duration > maxTripLength) {
-			return `${user.minionName} can't go on trips longer than ${formatDuration(
-				maxTripLength
-			)}, try a lower quantity. The highest amount of ${log.name} you can chop is ${Math.floor(
-				maxTripLength / timetoChop
-			)}.`;
+		if (!powerchop) {
+			powerchop = false;
+		} else {
+			boosts.push('**Powerchopping**');
 		}
+
+		// Calculate the time it takes to chop specific quantity or as many as possible
+		let [timeToChop, newQuantity] = determineWoodcuttingTime({
+			quantity,
+			user,
+			log,
+			axeMultiplier,
+			powerchopping: powerchop,
+			woodcuttingLvl: wcLvl
+		});
+
+		const duration = timeToChop;
+
+		const fakeDurationMin = quantity ? randomVariation(reduceNumByPercent(duration, 25), 20) : duration;
+		const fakeDurationMax = quantity ? randomVariation(increaseNumByPercent(duration, 25), 20) : duration;
 
 		await addSubTaskToActivityTask<WoodcuttingActivityTaskOptions>({
 			logID: log.id,
 			userID: user.id,
 			channelID: channelID.toString(),
-			quantity,
+			quantity: newQuantity,
+			powerchopping: powerchop,
 			duration,
+			fakeDurationMin,
+			fakeDurationMax,
 			type: 'Woodcutting'
 		});
 
-		let response = `${user.minionName} is now chopping ${quantity}x ${log.name}, it'll take around ${formatDuration(
-			duration
-		)} to finish.`;
+		let response = `${minionName(user)} is now chopping ${log.name} until your minion ${
+			quantity ? `chopped ${quantity}x or gets tired` : 'is satisfied'
+		}, it'll take ${
+			quantity
+				? `between ${formatDuration(fakeDurationMin)} **and** ${formatDuration(fakeDurationMax)}`
+				: formatDuration(duration)
+		} to finish.`;
 
 		if (boosts.length > 0) {
 			response += `\n\n**Boosts:** ${boosts.join(', ')}.`;

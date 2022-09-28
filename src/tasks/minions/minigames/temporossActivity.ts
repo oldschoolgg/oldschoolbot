@@ -89,7 +89,7 @@ export const temporossTask: MinionTask = {
 			channelID,
 			output,
 			['k', { name: 'Tempoross', quantity }, true],
-			image.file.buffer,
+			image.file.attachment,
 			data,
 			itemsAdded
 		);

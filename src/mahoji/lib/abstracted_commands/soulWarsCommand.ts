@@ -123,7 +123,7 @@ export async function soulWarsTokensCommand(user: User) {
 	return `You have ${user.zeal_tokens} Zeal Tokens.`;
 }
 
-export async function soulWarsStartCommand(user: MUser, channelID: bigint) {
+export async function soulWarsStartCommand(user: MUser, channelID: string) {
 	if (user.minionIsBusy) return `${user.minionName} is busy.`;
 	const perDuration = randomVariation(Time.Minute * 7, 5);
 	const quantity = Math.floor(calcMaxTripLength(user, 'SoulWars') / perDuration);

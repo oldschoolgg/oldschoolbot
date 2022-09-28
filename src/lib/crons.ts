@@ -1,14 +1,15 @@
-import { Embed } from '@discordjs/builders';
-import { PermissionsBitField, resolveColor, TextChannel } from 'discord.js';
+import { ChannelType, EmbedBuilder, PermissionsBitField, resolveColor, TextChannel } from 'discord.js';
 import { Time } from 'e';
 import he from 'he';
 import { schedule } from 'node-cron';
 import fetch from 'node-fetch';
 
+import { production } from '../config';
 import { untrustedGuildSettingsCache } from '../mahoji/mahojiSettings';
 import { analyticsTick } from './analytics';
 import { prisma } from './settings/prisma';
 import { OldSchoolBotClient } from './structures/OldSchoolBotClient';
+import { runTimedLoggedFn } from './util';
 import { logError } from './util/logError';
 import { sendToChannelID } from './util/webhook';
 
@@ -32,8 +33,10 @@ GROUP BY item_id;`);
 	const redditGranularity = 20;
 	const alreadySentCache = new Set();
 	schedule(`*/${redditGranularity} * * * *`, async () => {
+		if (!production) return;
 		async function sendReddit({ post }: { post: any; type: 'comment' | 'submission' }) {
-			const embed = new Embed().setAuthor(post.author ?? 'Unknown Author').setColor(resolveColor('#ff9500'));
+			const author = (post.author as string) ?? 'Unknown Author';
+			const embed = new EmbedBuilder().setAuthor({ name: author }).setColor(resolveColor('#ff9500'));
 
 			const url = post.full_link ?? `https://old.reddit.com${post.permalink}`;
 
@@ -103,4 +106,17 @@ GROUP BY item_id;`);
 	 * prescence
 	 */
 	schedule('0 * * * *', () => globalClient.user?.setActivity('/help'));
+
+	/**
+	 * Delete all voice channels
+	 */
+	schedule('*/5 * * * *', async () => {
+		await runTimedLoggedFn('Delete Voice Channels', async () => {
+			for (const channel of globalClient.channels.cache.values()) {
+				if (channel.type === ChannelType.GuildVoice || channel.type === ChannelType.GuildCategory) {
+					globalClient.channels.cache.delete(channel.id);
+				}
+			}
+		});
+	});
 }

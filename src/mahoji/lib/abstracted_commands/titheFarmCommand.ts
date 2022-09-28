@@ -1,5 +1,5 @@
+import { ChatInputCommandInteraction } from 'discord.js';
 import { Time } from 'e';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
 import { Emoji } from '../../../lib/constants';
@@ -36,7 +36,7 @@ function determineDuration(user: MUser): [number, string[]] {
 	return [totalTime, boostStr];
 }
 
-export async function titheFarmCommand(user: MUser, channelID: bigint) {
+export async function titheFarmCommand(user: MUser, channelID: string) {
 	if (minionIsBusy(user.id)) {
 		return 'Your minion must not be busy to use this command.';
 	}
@@ -66,7 +66,7 @@ export async function titheFarmCommand(user: MUser, channelID: bigint) {
 }
 
 export async function titheFarmShopCommand(
-	interaction: SlashCommandInteraction,
+	interaction: ChatInputCommandInteraction,
 	user: MUser,
 	buyableName: string,
 	_quantity?: number

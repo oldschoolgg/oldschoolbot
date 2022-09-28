@@ -116,7 +116,7 @@ function perUserCost(isPhosani: boolean, quantity: number) {
 	return cost;
 }
 
-export async function nightmareCommand(user: MUser, channelID: bigint, name: string) {
+export async function nightmareCommand(user: MUser, channelID: string, name: string) {
 	name = name.toLowerCase();
 	let isPhosani = false;
 	let type: 'solo' | 'mass' = 'solo';

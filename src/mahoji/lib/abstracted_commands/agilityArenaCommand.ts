@@ -64,7 +64,7 @@ export function determineXPFromTickets(qty: number, user: MUser, hasDiary: boole
 	return xpToGive;
 }
 
-export async function agilityArenaCommand(user: MUser, channelID: bigint): CommandResponse {
+export async function agilityArenaCommand(user: MUser, channelID: string): CommandResponse {
 	const duration = calcMaxTripLength(user, 'AgilityArena');
 
 	if (!userHasGracefulEquipped(user)) {
@@ -107,13 +107,13 @@ export async function agilityArenaBuyCommand(user: MUser, input: string, qty = 1
 	const amountTicketsHas = bank.amount('Agility arena ticket');
 	if (amountTicketsHas === 0) {
 		return {
-			attachments: [
+			files: [
 				{
-					buffer: await newChatHeadImage({
+					attachment: await newChatHeadImage({
 						content: "Are ye serious! You have no tickets, you can't buy anythin!",
 						head: 'izzy'
 					}),
-					fileName: 'image.jpg'
+					name: 'image.jpg'
 				}
 			]
 		};

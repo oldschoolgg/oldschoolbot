@@ -9,7 +9,7 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { userHasGracefulEquipped } from '../../mahojiSettings';
 
-export async function sepulchreCommand(user: MUser, channelID: bigint) {
+export async function sepulchreCommand(user: MUser, channelID: string) {
 	const skills = user.skillsAsLevels;
 	const agilityLevel = skills.agility;
 	const thievingLevel = skills.thieving;

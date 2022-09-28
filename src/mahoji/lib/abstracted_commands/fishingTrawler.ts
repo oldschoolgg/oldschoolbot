@@ -6,7 +6,7 @@ import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
-export async function fishingTrawlerCommand(user: MUser, channelID: bigint) {
+export async function fishingTrawlerCommand(user: MUser, channelID: string) {
 	if (user.skillLevel('fishing') < 15) {
 		return 'You need atleast level 15 Fishing to do the Fishing Trawler.';
 	}
