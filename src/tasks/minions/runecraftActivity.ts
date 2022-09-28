@@ -47,18 +47,18 @@ export const runecraftTask: MinionTask = {
 			});
 
 			const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Runecraft, 1_795_758);
-		if (roll(petDropRate / essenceQuantity)) {
-			loot.add('Rift guardian');
-			str += "\nYou have a funny feeling you're being followed...";
-			globalClient.emit(
-				Events.ServerNotification,
-				`${Emoji.Runecraft} **${user.usernameOrMention}'s** minion, ${
-					user.minionName
-				}, just received a Rift guardian while crafting ${rune.name}s at level ${user.skillLevel(
-					SkillsEnum.Runecraft
-				)} Runecrafting!`
-			);
-		}
+			if (roll(petDropRate / essenceQuantity)) {
+				loot.add('Rift guardian');
+				str += "\nYou have a funny feeling you're being followed...";
+				globalClient.emit(
+					Events.ServerNotification,
+					`${Emoji.Runecraft} **${user.usernameOrMention}'s** minion, ${
+						user.minionName
+					}, just received a Rift guardian while crafting ${rune.name}s at level ${user.skillLevel(
+						SkillsEnum.Runecraft
+					)} Runecrafting!`
+				);
+			}
 			str += `\n\nYou received: ${loot}.`;
 
 			await transactItems({
