@@ -35,8 +35,9 @@ import {
 	itemNameFromID,
 	stringMatches
 } from '../../lib/util';
-import getOSItem, { getItem } from '../../lib/util/getOSItem';
+import { getItem } from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import resolveItems from '../../lib/util/resolveItems';
 import { dataPoints, statsCommand } from '../lib/abstracted_commands/statCommand';
@@ -69,7 +70,7 @@ OR (group_activity = true AND data::jsonb ? 'users' AND data->>'users'::text LIK
 	const zipped = await asyncGzip(buffer);
 
 	return {
-		attachments: [{ fileName: 'activity-export.txt.gz', buffer: zipped }]
+		files: [{ name: 'activity-export.txt.gz', attachment: zipped }]
 	};
 }
 
@@ -309,8 +310,8 @@ LIMIT 10;`);
 async function dryStreakCommand(user: MUser, monsterName: string, itemName: string, ironmanOnly: boolean) {
 	if (getUsersPerkTier(user) < PerkTier.Four) return patronMsg(PerkTier.Four);
 
-	const item = getOSItem(itemName);
-
+	const item = getItem(itemName);
+	if (!item) return 'Invalid item.';
 	const entity = dryStreakEntities.find(i => stringMatches(i.name, monsterName));
 	if (entity) {
 		if (!entity.items.includes(item.id)) {
@@ -379,7 +380,7 @@ async function mostDrops(user: MUser, itemName: string, ironmanOnly: boolean) {
 		.join('\n')}`;
 }
 
-async function checkMassesCommand(guildID: bigint | undefined) {
+async function checkMassesCommand(guildID: string | undefined) {
 	if (!guildID) return 'This can only be used in a server.';
 	const guild = globalClient.guilds.cache.get(guildID.toString());
 	if (!guild) return 'Guild not found.';
@@ -703,7 +704,7 @@ export const toolsCommand: OSBMahojiCommand = {
 			unfill?: { unit: string };
 		};
 	}>) => {
-		interaction.deferReply();
+		deferInteraction(interaction);
 		const mahojiUser = await mUserFetch(userID);
 
 		if (options.patron) {
@@ -729,7 +730,7 @@ export const toolsCommand: OSBMahojiCommand = {
 					title: 'Your Sacrificed Items'
 				});
 				return {
-					attachments: [image.file]
+					files: [image.file]
 				};
 			}
 			if (patron.cl_bank) {
@@ -738,7 +739,7 @@ export const toolsCommand: OSBMahojiCommand = {
 				if (patron.cl_bank.format === 'json') {
 					const json = JSON.stringify(clBank);
 					return {
-						attachments: [{ buffer: Buffer.from(json), fileName: 'clbank.json' }]
+						files: [{ attachment: Buffer.from(json), name: 'clbank.json' }]
 					};
 				}
 				const image = await makeBankImage({
@@ -746,7 +747,7 @@ export const toolsCommand: OSBMahojiCommand = {
 					title: 'Your Entire Collection Log'
 				});
 				return {
-					attachments: [image.file]
+					files: [image.file]
 				};
 			}
 			if (patron.xp_gains) {
@@ -754,7 +755,7 @@ export const toolsCommand: OSBMahojiCommand = {
 				return xpGains(patron.xp_gains.time, patron.xp_gains.skill);
 			}
 			if (patron.minion_stats) {
-				interaction.deferReply();
+				deferInteraction(interaction);
 				if (getUsersPerkTier(mahojiUser) < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return minionStats(mahojiUser.user);
 			}
@@ -781,7 +782,7 @@ export const toolsCommand: OSBMahojiCommand = {
 					b.add(petObj.name, qty);
 				}
 				return {
-					attachments: [
+					files: [
 						(await makeBankImage({ bank: b, title: `Your Chat Pets (${b.length}/${pets.length})` })).file
 					]
 				};

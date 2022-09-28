@@ -7,8 +7,8 @@ import Type from '@sapphire/type';
 import { isThenable } from '@sentry/utils';
 import { escapeCodeBlock } from 'discord.js';
 import { randArrItem, sleep, Time, uniqueArr } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions, InteractionResponseType, InteractionType } from 'mahoji';
-import { CommandResponse, MahojiAttachment } from 'mahoji/dist/lib/structures/ICommand';
+import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { bulkUpdateCommands } from 'mahoji/dist/lib/util';
 import { inspect } from 'node:util';
@@ -33,6 +33,7 @@ import {
 } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import { deferInteraction, interactionReply } from '../../lib/util/interactionReply';
 import { logError } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
@@ -44,7 +45,8 @@ import {
 	handleMahojiConfirmation,
 	mahojiClientSettingsFetch,
 	mahojiClientSettingsUpdate,
-	mahojiUsersSettingsFetch
+	mahojiUsersSettingsFetch,
+	syncLinkedAccounts
 } from '../mahojiSettings';
 import { mahojiUserSettingsUpdate } from '../settingsUpdate';
 import { getUserInfo } from './minion';
@@ -87,13 +89,13 @@ async function unsafeEval({ userID, code }: { userID: string; code: string }) {
 
 	stopwatch.stop();
 	if (result instanceof Bank) {
-		return { files: [await makeBankImage({ bank: result })], rawOutput: result };
+		return { files: [(await makeBankImage({ bank: result })).file] };
 	}
 
 	if (Buffer.isBuffer(result)) {
 		return {
 			content: 'The result was a buffer.',
-			rawOutput: 'Buffer'
+			files: [result]
 		};
 	}
 
@@ -108,8 +110,7 @@ async function unsafeEval({ userID, code }: { userID: string; code: string }) {
 		content: `${codeBlock(escapeCodeBlock(result))}
 **Type:** ${inlineCode(type.toString())}
 **Time:** ${asyncTime ? `⏱ ${asyncTime}<${syncTime}>` : `⏱ ${syncTime}`}
-`,
-		rawOutput: result
+`
 	};
 }
 
@@ -122,7 +123,7 @@ async function evalCommand(userID: string, code: string): CommandResponse {
 
 		if (res.content && res.content.length > 2000) {
 			return {
-				attachments: [{ buffer: Buffer.from(res.content), fileName: 'output.txt' }]
+				files: [{ attachment: Buffer.from(res.content), name: 'output.txt' }]
 			};
 		}
 
@@ -512,7 +513,7 @@ export const adminCommand: OSBMahojiCommand = {
 		wipe_bingo_temp_cls?: {};
 		give_items?: { user: MahojiUserOption; items: string };
 	}>) => {
-		await interaction.deferReply();
+		await deferInteraction(interaction);
 
 		const adminUser = await mahojiUsersSettingsFetch(userID);
 		const isOwner = OWNER_IDS.includes(userID.toString());
@@ -555,8 +556,7 @@ export const adminCommand: OSBMahojiCommand = {
 		if (options.cancel_task) {
 			const { user } = options.cancel_task.user;
 			await cancelTask(user.id);
-			globalClient.oneCommandAtATimeCache.delete(user.id);
-			globalClient.secondaryUserBusyCache.delete(user.id);
+			globalClient.busyCounterCache.delete(user.id);
 			Cooldowns.delete(user.id);
 			minionActivityCacheDelete(user.id);
 			return 'Done.';
@@ -572,6 +572,7 @@ export const adminCommand: OSBMahojiCommand = {
 		}
 		if (options.sync_patreon) {
 			await patreonTask.run();
+			syncLinkedAccounts();
 			return 'Finished syncing patrons.';
 		}
 		if (options.add_ironman_alt) {
@@ -800,23 +801,15 @@ LIMIT 10;
 				if (ticker.timer) clearTimeout(ticker.timer);
 			}
 			await sleep(Time.Second * 20);
-			await interaction.respond({
-				response: {
-					data: {
-						content:
-							'https://media.discordapp.net/attachments/357422607982919680/1004657720722464880/freeze.gif'
-					},
-					type: InteractionResponseType.ChannelMessageWithSource
-				},
-				interaction,
-				type: InteractionType.ApplicationCommand
+			await interactionReply(interaction, {
+				content: 'https://media.discordapp.net/attachments/357422607982919680/1004657720722464880/freeze.gif'
 			});
 			process.exit();
 		}
 		if (options.viewbank) {
 			const userToCheck = await mUserFetch(options.viewbank.user.user.id);
 			const bank = userToCheck.allItemsOwned();
-			return { attachments: [(await makeBankImage({ bank, title: userToCheck.usernameOrMention })).file] };
+			return { files: [(await makeBankImage({ bank, title: userToCheck.usernameOrMention })).file] };
 		}
 
 		if (options.add_patron_time) {
@@ -886,7 +879,7 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 		if (options.debug_patreon) {
 			const result = await patreonTask.fetchPatrons();
 			return {
-				attachments: [{ buffer: Buffer.from(JSON.stringify(result, null, 4)), fileName: 'patreon.txt' }]
+				files: [{ attachment: Buffer.from(JSON.stringify(result, null, 4)), name: 'patreon.txt' }]
 			};
 		}
 		if (options.eval) {
@@ -950,12 +943,12 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 			] as const;
 
 			let content = `${loot.id} ${formatDuration(loot.total_duration * Time.Minute)} KC${loot.total_kc}`;
-			const attachments: MahojiAttachment[] = [];
+			const files = [];
 			for (const [name, bank] of arr) {
 				content += `\n${convertBankToPerHourStats(bank, durationMillis).join(', ')}`;
-				attachments.push((await makeBankImage({ bank, title: name })).file);
+				files.push((await makeBankImage({ bank, title: name })).file);
 			}
-			return { content, attachments };
+			return { content, files };
 		}
 		if (options.ltc) {
 			let str = '';
@@ -988,7 +981,7 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 			}
 
 			return {
-				attachments: [{ buffer: Buffer.from(str), fileName: 'output.txt' }]
+				files: [{ attachment: Buffer.from(str), name: 'output.txt' }]
 			};
 		}
 
@@ -997,7 +990,7 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 			if (!thing) return 'Invalid';
 			const clientSettings = await mahojiClientSettingsFetch();
 			const image = await makeBankImage({ bank: thing.run(clientSettings), title: thing.name });
-			return { attachments: [image.file] };
+			return { files: [image.file] };
 		}
 
 		if (options.give_items) {

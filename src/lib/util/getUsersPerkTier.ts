@@ -16,9 +16,8 @@ const tier3ElligibleBits = [
 const perkTierCache = new Map<string, number>();
 
 export function syncPerkTierOfUser(user: MUser) {
-	perkTierCache.set(user.id, getUsersPerkTier([...user.bitfield], true));
+	perkTierCache.set(user.id, getUsersPerkTier(user, true));
 }
-
 export default function getUsersPerkTier(
 	userOrBitfield: MUser | User | BitField[],
 	noCheckOtherAccounts?: boolean

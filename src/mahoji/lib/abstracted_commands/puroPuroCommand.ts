@@ -89,7 +89,7 @@ export default puroOptions;
 
 export async function puroPuroStartCommand(
 	user: MUser,
-	channelID: bigint,
+	channelID: string,
 	impling: string,
 	darkLure: boolean | undefined
 ) {

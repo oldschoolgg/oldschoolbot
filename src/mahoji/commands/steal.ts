@@ -1,4 +1,5 @@
-import { APIUser, ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { User } from 'discord.js';
+import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
@@ -29,7 +30,7 @@ export const stealCommand: OSBMahojiCommand = {
 			name: 'name',
 			description: 'The object you try to steal from.',
 			required: true,
-			autocomplete: async (value: string, user: APIUser) => {
+			autocomplete: async (value: string, user: User) => {
 				const mUser = await mahojiUsersSettingsFetch(user.id);
 				const conLevel = getSkillsOfMahojiUser(mUser, true).thieving;
 				return stealables

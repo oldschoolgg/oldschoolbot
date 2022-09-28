@@ -79,7 +79,7 @@ export const trawlerTask: MinionTask = {
 			channelID,
 			str,
 			['minigames', { fishing_trawler: { start: {} } }, true],
-			image.file.buffer,
+			image.file.attachment,
 			data,
 			itemsAdded
 		);

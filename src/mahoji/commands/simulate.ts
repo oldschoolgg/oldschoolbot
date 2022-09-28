@@ -66,7 +66,7 @@ async function coxCommand(user: MUser, quantity: number, cm = false, points = 25
 		content: `Personal Loot from ${quantity}x raids, with ${team.length} people, each with ${toKMB(
 			points
 		)} points.`,
-		attachments: [image.file]
+		files: [image.file]
 	};
 }
 

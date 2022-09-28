@@ -192,10 +192,10 @@ export const fakeCommand: OSBMahojiCommand = {
 			if (names.has(options.type.toLowerCase())) {
 				fn(ctx, options.username);
 				return {
-					attachments: [
+					files: [
 						{
-							buffer: await canvas.toBuffer('png'),
-							fileName: `${Math.round(Math.random() * 10_000)}.jpg`
+							attachment: await canvas.toBuffer('png'),
+							name: `${Math.round(Math.random() * 10_000)}.jpg`
 						}
 					]
 				};
