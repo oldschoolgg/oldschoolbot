@@ -86,10 +86,17 @@ export const pickpocketTask: MinionTask = {
 				} else {
 					loot.add(lootItems);
 				}
+
+				// Roll for pet
+				if (roll(petDropRate)) {
+					loot.add('Rocky');
+				}
 			}
 		} else if (obj.type === 'stall') {
-			for (let i = 0; i < (successfulQuantity * obj.lootPercent!) / 100; i++) {
-				loot.add(obj.table.roll());
+			for (let i = 0; i < successfulQuantity; i++) {
+				if (percentChance(obj.lootPercent!)) {
+					loot.add(obj.table.roll());
+				}
 			}
 		}
 
@@ -107,10 +114,6 @@ export const pickpocketTask: MinionTask = {
 				loot.add('Wilvus');
 				gotWil = true;
 			}
-		}
-		// Roll for pet
-		if (roll(petDropRate / successfulQuantity)) {
-			loot.add('Rocky');
 		}
 
 		if (loot.has('Coins')) {

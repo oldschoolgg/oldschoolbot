@@ -1,3 +1,6 @@
+import { prisma } from './settings/prisma';
+import { logError } from './util/logError';
+
 export const startupScripts: { sql: string; ignoreErrors?: true }[] = [];
 
 const arrayColumns = [
@@ -56,3 +59,15 @@ startupScripts.push({
 startupScripts.push({
 	sql: 'CREATE UNIQUE INDEX IF NOT EXISTS tame_only_one_task ON tame_activity (user_id, completed) WHERE NOT completed;'
 });
+
+startupScripts.push({
+	sql: 'CREATE INDEX CONCURRENTLY IF NOT EXISTS bitfield_gin_index ON users USING GIN (bitfield gin__int_ops) WHERE farming_patch_reminders = true;'
+});
+
+export async function runStartupScripts() {
+	for (const query of startupScripts) {
+		await prisma
+			.$queryRawUnsafe(query.sql)
+			.catch(err => (query.ignoreErrors ? null : logError(`Startup script failed: ${err.message} ${query.sql}`)));
+	}
+}

@@ -32,9 +32,6 @@ const githubSponsors = (server: FastifyServer) =>
 					});
 					if (userID) {
 						await patreonTask.givePerks(userID, tier);
-					}
-
-					if (userID) {
 						addPatronLootTime(tier, await mUserFetch(userID));
 					}
 

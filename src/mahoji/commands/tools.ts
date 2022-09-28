@@ -43,7 +43,7 @@ import {
 	roll,
 	stringMatches
 } from '../../lib/util';
-import getOSItem, { getItem } from '../../lib/util/getOSItem';
+import { getItem } from '../../lib/util/getOSItem';
 import getUsersPerkTier, {
 	giveBoxResetTime,
 	isPrimaryPatron,
@@ -449,8 +449,8 @@ LIMIT 10;`);
 async function dryStreakCommand(user: MUser, monsterName: string, itemName: string, ironmanOnly: boolean) {
 	if (getUsersPerkTier(user) < PerkTier.Four) return patronMsg(PerkTier.Four);
 
-	const item = getOSItem(itemName);
-
+	const item = getItem(itemName);
+	if (!item) return 'Invalid item.';
 	const entity = dryStreakEntities.find(i => stringMatches(i.name, monsterName));
 	if (entity) {
 		if (!entity.items.includes(item.id)) {

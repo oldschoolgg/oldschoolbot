@@ -19,8 +19,12 @@ import { Channel, Events, SILENT_ERROR } from './lib/constants';
 import { onMessage } from './lib/events';
 import { makeServer } from './lib/http';
 import { modalInteractionHook } from './lib/modals';
+import { runStartupScripts } from './lib/startupScripts';
 import { OldSchoolBotClient } from './lib/structures/OldSchoolBotClient';
+import { syncActivityCache } from './lib/Task';
 import { initTickers } from './lib/tickers';
+import { runTimedLoggedFn } from './lib/util';
+import { syncActiveUserIDs } from './lib/util/cachedUserIDs';
 import { interactionHook } from './lib/util/globalInteractions';
 import { interactionReply } from './lib/util/interactionReply';
 import { logError } from './lib/util/logError';
@@ -149,30 +153,22 @@ client.on('guildCreate', guild => {
 		guild.leave();
 	}
 });
-
 initTickers();
 
 async function main() {
 	client.fastifyServer = makeServer();
-	await mahojiClient.start();
-	console.log('Starting mahoji client...');
+	let promises = [];
+	promises.push(runTimedLoggedFn('Start Mahoji Client', async () => mahojiClient.start()));
+	promises.push(runTimedLoggedFn('Sync Activity Cache', syncActivityCache));
+	promises.push(runTimedLoggedFn('Startup Scripts', runStartupScripts));
+	promises.push(runTimedLoggedFn('Sync Active User IDs', syncActiveUserIDs));
+	await Promise.all(promises);
+
 	await client.login(botToken);
-	console.log('Logging in...');
-	await client.init();
-	console.log('Init...');
-	await onStartup();
+	await runTimedLoggedFn('Client.Init', async () => client.init());
+	await runTimedLoggedFn('OnStartup', async () => onStartup());
 }
 
-const terminateCb = async () => {
-	await globalClient.destroy();
-	process.exit(0);
-};
-
-process.removeAllListeners('SIGTERM');
-process.removeAllListeners('SIGINT');
-
-process.on('SIGTERM', terminateCb);
-process.on('SIGINT', terminateCb);
 process.on('uncaughtException', logError);
 
 main();
