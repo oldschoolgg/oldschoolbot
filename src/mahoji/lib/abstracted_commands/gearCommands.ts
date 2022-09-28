@@ -177,7 +177,7 @@ export function gearEquipMultiImpl(
 }
 export async function gearEquipMultiCommand(
 	user: MUser,
-	interaction: SlashCommandInteraction,
+	interaction: ChatInputCommandInteraction,
 	setup: string,
 	items: string
 ) {
@@ -217,7 +217,7 @@ export async function gearEquipMultiCommand(
 	}
 	return {
 		content,
-		attachments: [{ fileName: 'gear.jpg', buffer: image }]
+		files: [{ name: 'gear.jpg', attachment: image }]
 	};
 }
 
