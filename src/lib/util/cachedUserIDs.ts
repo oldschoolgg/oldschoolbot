@@ -1,4 +1,4 @@
-import { OWNER_IDS } from '../../config';
+import { CLIENT_ID, OWNER_IDS } from '../../config';
 import { prisma } from '../settings/prisma';
 
 export const CACHED_ACTIVE_USER_IDS = new Set();
@@ -18,5 +18,5 @@ WHERE main_account IS NOT NULL
 	for (const id of [...users.map(i => i.user_id), ...otherUsers.map(i => i.id), ...OWNER_IDS]) {
 		CACHED_ACTIVE_USER_IDS.add(id);
 	}
-	CACHED_ACTIVE_USER_IDS.add(globalClient.user!.id);
+	CACHED_ACTIVE_USER_IDS.add(CLIENT_ID);
 }

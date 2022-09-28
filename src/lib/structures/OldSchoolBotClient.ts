@@ -6,11 +6,7 @@ import { MahojiClient } from 'mahoji';
 import { production } from '../../config';
 import { cacheUsernames } from '../../mahoji/commands/leaderboard';
 import { initCrons } from '../crons';
-import { runStartupScripts } from '../startupScripts';
-import { syncActivityCache } from '../Task';
 import { Peak } from '../tickers';
-import { runTimedLoggedFn } from '../util';
-import { syncActiveUserIDs } from '../util/cachedUserIDs';
 import { piscinaPool } from '../workers';
 
 if (typeof production !== 'boolean') {
@@ -43,16 +39,6 @@ export class OldSchoolBotClient extends Client {
 	// @ts-ignore
 	get emojis() {
 		return this._emojis;
-	}
-
-	public async login(token?: string) {
-		let promises = [];
-		promises.push(runTimedLoggedFn('Sync Activity Cache', syncActivityCache));
-		promises.push(runTimedLoggedFn('Startup Scripts', runStartupScripts));
-		promises.push(runTimedLoggedFn('Sync Active User IDs', syncActiveUserIDs));
-
-		await Promise.all(promises);
-		return super.login(token);
 	}
 
 	async fetchUser(id: string | bigint): Promise<User> {
