@@ -34,7 +34,7 @@ const unlimitedAirRuneProviders = resolveItems([
 	'Dust battlestaff'
 ]);
 
-export async function butlerCommand(user: MUser, plankName: string, quantity: number | undefined, channelID: bigint) {
+export async function butlerCommand(user: MUser, plankName: string, quantity: number | undefined, channelID: string) {
 	const plank = Planks.find(
 		plank => stringMatches(plank.name, plankName) || stringMatches(plank.name.split(' ')[0], plankName)
 	);
