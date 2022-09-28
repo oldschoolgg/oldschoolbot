@@ -19,4 +19,5 @@ WHERE main_account IS NOT NULL
 		CACHED_ACTIVE_USER_IDS.add(id);
 	}
 	CACHED_ACTIVE_USER_IDS.add(CLIENT_ID);
+	console.log(`${CACHED_ACTIVE_USER_IDS.size} cached active user IDs`);
 }
