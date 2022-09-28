@@ -16,7 +16,7 @@ export async function tiaraRunecraftCommand({
 	quantity
 }: {
 	user: MUser;
-	channelID: bigint;
+	channelID: string;
 	quantity?: number;
 	name: string;
 }) {
