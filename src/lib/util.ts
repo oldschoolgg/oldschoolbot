@@ -1,5 +1,6 @@
 import { bold } from '@discordjs/builders';
 import type { User } from '@prisma/client';
+import { Stopwatch } from '@sapphire/stopwatch';
 import {
 	ButtonBuilder,
 	ButtonInteraction,
@@ -685,4 +686,12 @@ export function awaitMessageComponentInteraction({
 
 export function isGuildChannel(channel?: Channel): channel is GuildTextBasedChannel {
 	return channel !== undefined && !channel.isDMBased() && Boolean(channel.guild);
+}
+
+export async function runTimedLoggedFn(name: string, fn: () => Promise<unknown>) {
+	const stopwatch = new Stopwatch();
+	stopwatch.start();
+	await fn();
+	stopwatch.stop();
+	console.log(`Finished ${name} in ${stopwatch.toString()}`);
 }

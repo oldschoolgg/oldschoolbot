@@ -6,11 +6,11 @@ import { MahojiClient } from 'mahoji';
 import { production } from '../../config';
 import { cacheUsernames } from '../../mahoji/commands/leaderboard';
 import { initCrons } from '../crons';
-import { prisma } from '../settings/prisma';
-import { startupScripts } from '../startupScripts';
+import { runStartupScripts } from '../startupScripts';
 import { syncActivityCache } from '../Task';
 import { Peak } from '../tickers';
-import { logError } from '../util/logError';
+import { runTimedLoggedFn } from '../util';
+import { syncActiveUserIDs } from '../util/cachedUserIDs';
 import { piscinaPool } from '../workers';
 
 if (typeof production !== 'boolean') {
@@ -47,16 +47,10 @@ export class OldSchoolBotClient extends Client {
 
 	public async login(token?: string) {
 		let promises = [];
-		promises.push(syncActivityCache());
-		promises.push(
-			...startupScripts.map(query =>
-				prisma
-					.$queryRawUnsafe(query.sql)
-					.catch(err =>
-						query.ignoreErrors ? null : logError(`Startup script failed: ${err.message} ${query.sql}`)
-					)
-			)
-		);
+		promises.push(runTimedLoggedFn('Sync Activity Cache', syncActivityCache));
+		promises.push(runTimedLoggedFn('Startup Scripts', runStartupScripts));
+		promises.push(runTimedLoggedFn('Sync Active User IDs', syncActiveUserIDs));
+
 		await Promise.all(promises);
 		return super.login(token);
 	}
