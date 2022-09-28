@@ -1,5 +1,4 @@
-import { ButtonBuilder } from 'discord.js';
-import { APIButtonComponent, APIButtonComponentWithCustomId, ButtonStyle, ComponentType } from 'mahoji';
+import { APIButtonComponent, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
 import { DISCORD_SETTINGS, production } from '../config';
@@ -426,11 +425,8 @@ export const DISABLED_COMMANDS = new Set<string>();
 export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'none'] as const;
 export type PvMMethod = typeof PVM_METHODS[number];
 export const usernameCache = new Map<string, string>();
-export const minionBuyButton: APIButtonComponentWithCustomId = {
-	type: ComponentType.Button,
-	custom_id: 'BUY_MINION',
-	label: 'Buy Minion',
-	emoji: { id: '778418736180494347' },
-	style: ButtonStyle.Success
-};
+export const minionBuyButton = new ButtonBuilder()
+	.setCustomId('BUY_MINION')
+	.setLabel('Buy Minion')
+	.setStyle(ButtonStyle.Success);
 export const FormattedCustomEmoji = /<a?:\w{2,32}:\d{17,20}>/;

@@ -1,6 +1,12 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageComponentInteraction, MessageOptions } from 'discord.js';
+import {
+	ActionRowBuilder,
+	ButtonBuilder,
+	ButtonStyle,
+	ChatInputCommandInteraction,
+	MessageComponentInteraction,
+	MessageOptions
+} from 'discord.js';
 import { chunk, noOp, roll, shuffleArr, Time } from 'e';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 
@@ -12,7 +18,7 @@ import { handleMahojiConfirmation, mahojiParseNumber, updateGPTrackSetting } fro
 export async function luckyPickCommand(
 	user: MUser,
 	luckypickamount: string,
-	interaction: SlashCommandInteraction
+	interaction: ChatInputCommandInteraction
 ): Promise<string> {
 	const amount = mahojiParseNumber({ input: luckypickamount, min: 1_000_000, max: 3_000_000_000 });
 
@@ -118,7 +124,7 @@ export async function luckyPickCommand(
 		);
 	}
 
-	const channel = globalClient.channels.cache.get(interaction.channelID.toString());
+	const channel = globalClient.channels.cache.get(interaction.channelId);
 	if (!channelIsSendable(channel)) throw new Error('Channel for confirmation not found.');
 	const sentMessage = await channel.send({
 		content: 'Pick *one* button!',
@@ -156,7 +162,7 @@ export async function luckyPickCommand(
 		const selection = await awaitMessageComponentInteraction({
 			message: sentMessage,
 			filter: i => {
-				if (i.user.id !== (user.id ?? interaction.userID).toString()) {
+				if (i.user.id !== (user.id ?? interaction.user.id).toString()) {
 					i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
 					return false;
 				}

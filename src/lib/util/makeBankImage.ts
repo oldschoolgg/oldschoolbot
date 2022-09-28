@@ -1,4 +1,3 @@
-import { MahojiAttachment } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
 import { BankFlag } from '../bankImage';
@@ -25,9 +24,7 @@ export async function makeBankImage({
 	showNewCL = false,
 	flags = {},
 	mahojiFlags = []
-}: MakeBankImageOptions): Promise<{
-	file: MahojiAttachment;
-}> {
+}: MakeBankImageOptions) {
 	let realFlags: Flags = { ...flags, background: background ?? 1, nocache: 1 };
 	if (showNewCL || previousCL !== undefined) realFlags.showNewCL = 1;
 	const { image, isTransparent } = await bankImageGenerator.generateBankImage({
@@ -42,8 +39,8 @@ export async function makeBankImage({
 
 	return {
 		file: {
-			fileName: isTransparent ? 'bank.png' : 'bank.jpg',
-			buffer: image!
+			name: isTransparent ? 'bank.png' : 'bank.jpg',
+			attachment: image!
 		}
 	};
 }

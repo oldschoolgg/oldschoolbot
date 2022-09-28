@@ -78,7 +78,7 @@ export async function coxStatsCommand(user: MUser) {
 **Total Gear Score:** ${Emoji.Gear} ${total.toFixed(1)}%`;
 }
 
-export async function coxCommand(channelID: bigint, user: MUser, type: 'solo' | 'mass', isChallengeMode: boolean) {
+export async function coxCommand(channelID: string, user: MUser, type: 'solo' | 'mass', isChallengeMode: boolean) {
 	if (type !== 'mass' && type !== 'solo') {
 		return 'Specify your team setup for Chambers of Xeric, either solo or mass.';
 	}
@@ -151,8 +151,7 @@ export async function coxCommand(channelID: bigint, user: MUser, type: 'solo' | 
 
 	let users: MUser[] = [];
 	if (type === 'mass') {
-		const reactionAwaiter = await setupParty(channel, user, partyOptions);
-		users = reactionAwaiter.filter(u => !u.minionIsBusy);
+		users = (await setupParty(channel, user, partyOptions)).filter(u => !u.minionIsBusy);
 	} else {
 		users = [user];
 	}

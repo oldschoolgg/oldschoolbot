@@ -1,8 +1,16 @@
 import type { ClientStorage, Guild, Prisma, User, UserStats } from '@prisma/client';
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Guild as DJSGuild } from 'discord.js';
+import {
+	ActionRowBuilder,
+	ButtonBuilder,
+	ButtonInteraction,
+	ButtonStyle,
+	ChatInputCommandInteraction,
+	ComponentType,
+	Guild as DJSGuild,
+	InteractionResponseType,
+	Routes
+} from 'discord.js';
 import { noOp, objectEntries, round, Time } from 'e';
-import { InteractionResponseType, InteractionType, MessageFlags } from 'mahoji';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import PromiseQueue from 'p-queue';
@@ -14,6 +22,7 @@ import { evalMathExpression } from '../lib/expressionParser';
 import { hasGracefulEquipped, readableStatName } from '../lib/gear';
 import { effectiveMonsters } from '../lib/minions/data/killableMonsters';
 import { KillableMonster } from '../lib/minions/types';
+import { MUserClass } from '../lib/MUser';
 import { getMinigameScore, Minigames } from '../lib/settings/minigames';
 import { prisma } from '../lib/settings/prisma';
 import creatures from '../lib/skilling/skills/hunter/creatures';
@@ -30,8 +39,8 @@ import {
 	stringMatches,
 	validateItemBankAndThrow
 } from '../lib/util';
+import { deferInteraction, interactionReply } from '../lib/util/interactionReply';
 import resolveItems from '../lib/util/resolveItems';
-import { respondToButton } from '../lib/util/respondToButton';
 import { bingoIsActive, determineBingoProgress, onFinishTile } from './lib/bingo';
 import { mahojiUserSettingsUpdate } from './settingsUpdate';
 
@@ -53,14 +62,26 @@ export function mahojiParseNumber({
 	return parsed;
 }
 
-export async function handleMahojiConfirmation(interaction: SlashCommandInteraction, str: string, _users?: string[]) {
-	const channel = globalClient.channels.cache.get(interaction.channelID.toString());
+async function silentButtonAck(interaction: ButtonInteraction) {
+	return globalClient.rest.post(Routes.interactionCallback(interaction.id, interaction.token), {
+		body: {
+			type: InteractionResponseType.DeferredMessageUpdate
+		}
+	});
+}
+
+export async function handleMahojiConfirmation(
+	interaction: ChatInputCommandInteraction,
+	str: string,
+	_users?: string[]
+) {
+	const channel = globalClient.channels.cache.get(interaction.channelId.toString());
 	if (!channelIsSendable(channel)) throw new Error('Channel for confirmation not found.');
 	if (!interaction.deferred) {
-		await interaction.deferReply();
+		await deferInteraction(interaction);
 	}
 
-	const users = _users ?? [interaction.userID.toString()];
+	const users = _users ?? [interaction.user.id];
 	let confirmed: string[] = [];
 	const isConfirmed = () => confirmed.length === users.length;
 	const confirmMessage = await channel.send({
@@ -82,7 +103,7 @@ export async function handleMahojiConfirmation(interaction: SlashCommandInteract
 	});
 
 	return new Promise<void>(async (resolve, reject) => {
-		const collector = confirmMessage.createMessageComponentCollector({
+		const collector = confirmMessage.createMessageComponentCollector<ComponentType.Button>({
 			time: Time.Second * 15
 		});
 
@@ -95,20 +116,17 @@ export async function handleMahojiConfirmation(interaction: SlashCommandInteract
 			resolve();
 		}
 
+		let cancelled = false;
 		const cancel = async (reason: 'time' | 'cancel') => {
+			if (cancelled) return;
+			cancelled = true;
 			await confirmMessage.delete().catch(noOp);
-			await interaction.respond({
-				type: InteractionType.ApplicationCommand,
-				response: {
-					type: InteractionResponseType.ChannelMessageWithSource,
-					data: {
-						content:
-							reason === 'cancel' ? 'The confirmation was cancelled.' : 'You did not confirm in time.',
-						flags: MessageFlags.Ephemeral
-					}
-				},
-				interaction
-			});
+			if (!interaction.replied) {
+				await interactionReply(interaction, {
+					content: reason === 'cancel' ? 'The confirmation was cancelled.' : 'You did not confirm in time.',
+					ephemeral: true
+				});
+			}
 			collector.stop();
 			reject(new Error(SILENT_ERROR));
 		};
@@ -124,7 +142,7 @@ export async function handleMahojiConfirmation(interaction: SlashCommandInteract
 				return;
 			}
 			if (i.customId === 'CONFIRM') {
-				respondToButton(i);
+				silentButtonAck(i);
 				confirm(id);
 			}
 		});
@@ -667,4 +685,44 @@ export async function updateLegacyUserBankSetting(userID: string, key: 'tob_cost
 		[key]: newBank.bank
 	});
 	return res;
+}
+
+export async function syncLinkedAccountPerks(user: MUser) {
+	let main = user.user.main_account;
+	const allAccounts: string[] = [...user.user.ironman_alts];
+	if (main) {
+		allAccounts.push(main);
+	}
+	const allUsers = await Promise.all(
+		allAccounts.map(a =>
+			mahojiUsersSettingsFetch(a, {
+				id: true,
+				premium_balance_tier: true,
+				premium_balance_expiry_date: true,
+				bitfield: true
+			})
+		)
+	);
+	allUsers.map(u => new MUserClass(u));
+}
+
+export async function syncLinkedAccounts() {
+	const users = await prisma.user.findMany({
+		where: {
+			ironman_alts: {
+				isEmpty: false
+			}
+		},
+		select: {
+			id: true,
+			ironman_alts: true,
+			premium_balance_tier: true,
+			premium_balance_expiry_date: true,
+			bitfield: true
+		}
+	});
+	for (const u of users) {
+		const mUser = new MUserClass(u as User);
+		await syncLinkedAccountPerks(mUser);
+	}
 }

@@ -1,5 +1,5 @@
+import { ChatInputCommandInteraction } from 'discord.js';
 import { objectEntries, Time } from 'e';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -95,7 +95,7 @@ export const VolcanicMineShop: { name: string; output: ItemBank; cost: number; c
 	}
 ];
 
-export async function volcanicMineCommand(user: MUser, channelID: bigint, gameQuantity: number | undefined) {
+export async function volcanicMineCommand(user: MUser, channelID: string, gameQuantity: number | undefined) {
 	const skills = user.skillsAsLevels;
 	if (!hasSkillReqs(user, skillReqs)[0]) {
 		return `You are not skilled enough to participate in the Volcanic Mine. You need the following requirements: ${objectEntries(
@@ -179,7 +179,7 @@ export async function volcanicMineCommand(user: MUser, channelID: bigint, gameQu
 }
 
 export async function volcanicMineShopCommand(
-	interaction: SlashCommandInteraction,
+	interaction: ChatInputCommandInteraction,
 	user: MUser,
 	item: string | undefined,
 	quantity = 1

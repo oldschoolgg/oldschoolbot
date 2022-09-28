@@ -31,7 +31,7 @@ const gracefulPenalty = 20;
 const agilityPenalty = 35;
 const mediumDiaryBoost = 20;
 
-export async function darkAltarCommand({ user, channelID, name }: { user: MUser; channelID: bigint; name: string }) {
+export async function darkAltarCommand({ user, channelID, name }: { user: MUser; channelID: string; name: string }) {
 	if (!['blood', 'soul'].includes(name)) return 'Invalid rune.';
 	const stats = user.skillsAsLevels;
 	const [hasReqs, neededReqs] = hasSkillReqs(user, {

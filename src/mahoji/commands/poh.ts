@@ -1,4 +1,5 @@
-import { APIUser, ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { User } from 'discord.js';
+import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { PoHObjects } from '../../lib/poh';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
@@ -81,7 +82,7 @@ export const pohCommand: OSBMahojiCommand = {
 					name: 'name',
 					description: 'The object you want to destroy.',
 					required: true,
-					autocomplete: async (value: string, user: APIUser) => {
+					autocomplete: async (value: string, user: User) => {
 						const poh = await getPOH(user.id);
 						return PoHObjects.filter(obj => poh[obj.slot] !== obj.id)
 							.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
