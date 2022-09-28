@@ -80,11 +80,16 @@ export const smithCommand: OSBMahojiCommand = {
 		}
 
 		// Time to smith an item, add on quarter of a second to account for banking/etc.
-		const timeToSmithSingleBar = smithedItem.timeToUse + Time.Second / 4 - (Time.Second * 0.6 * setBonus) / 100;
+		let timeToSmithSingleBar = smithedItem.timeToUse + Time.Second / 4 - (Time.Second * 0.6 * setBonus) / 100;
 
 		let maxTripLength = calcMaxTripLength(user, 'Smithing');
+		let doubleCBall = false;
 		if (smithedItem.name === 'Cannonball') {
 			maxTripLength *= 2;
+			if (user.bank.has('Double ammo mould')) {
+				doubleCBall = true;
+				timeToSmithSingleBar /= 2;
+			}
 		}
 
 		let { quantity } = options;
@@ -129,8 +134,8 @@ export const smithCommand: OSBMahojiCommand = {
 			smithedItem.name
 		}, removed ${cost} from your bank, it'll take around ${formatDuration(duration)} to finish. ${
 			setBonus > 0
-				? `${setBonus}% chance to save 1 tick while smithing each item for using Smiths' Uniform item/items.`
+				? `${setBonus}% chance to save 1 tick while smithing each item for using Smiths' Uniform item/items. `
 				: ''
-		}`;
+		}${doubleCBall ? 'Twice as fast Cannonball production using Double ammo mould.' : ''}`;
 	}
 };
