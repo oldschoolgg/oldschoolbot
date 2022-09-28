@@ -9,7 +9,6 @@ const mentionText = `<@${CLIENT_ID}>`;
 
 export async function onMessage(msg: Message) {
 	if (!msg.content || msg.author.bot || !channelIsSendable(msg.channel)) return;
-
 	const content = msg.content.trim();
 	if (!content.includes(mentionText)) return;
 	const user = await mUserFetch(msg.author.id);
