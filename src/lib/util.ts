@@ -6,6 +6,7 @@ import {
 	ButtonInteraction,
 	CacheType,
 	Channel,
+	ChannelType,
 	Collection,
 	CollectorFilter,
 	ComponentType,
@@ -75,10 +76,6 @@ export function cleanMentions(guild: Guild | null, input: string, showAt = true)
 				case '@&': {
 					const role = guild?.roles.cache.get(id);
 					return role ? `${at}${role.name}` : match;
-				}
-				case '#': {
-					const channel = guild?.channels.cache.get(id);
-					return channel ? `#${channel.name}` : `<${type}${zeroWidthSpace}${id}>`;
 				}
 				default:
 					return `<${type}${zeroWidthSpace}${id}>`;
@@ -694,4 +691,28 @@ export async function runTimedLoggedFn(name: string, fn: () => Promise<unknown>)
 	await fn();
 	stopwatch.stop();
 	console.log(`Finished ${name} in ${stopwatch.toString()}`);
+}
+
+export function cacheCleanup() {
+	return runTimedLoggedFn('Cache Cleanup', async () => {
+		for (const channel of globalClient.channels.cache.values()) {
+			if (channel.type === ChannelType.GuildVoice || channel.type === ChannelType.GuildCategory) {
+				globalClient.channels.cache.delete(channel.id);
+			}
+			if (channel.type === ChannelType.GuildText) {
+				// @ts-ignore ignore
+				delete channel.topic;
+				// @ts-ignore ignore
+				delete channel.threads;
+				// @ts-ignore ignore
+				delete channel.rateLimitPerUser;
+				// @ts-ignore ignore
+				delete channel.nsfw;
+				// @ts-ignore ignore
+				delete channel.parentId;
+				// @ts-ignore ignore
+				delete channel.name;
+			}
+		}
+	});
 }
