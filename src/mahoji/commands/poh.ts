@@ -103,6 +103,19 @@ export const pohCommand: OSBMahojiCommand = {
 					required: true
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'items',
+			description: 'List the buildable items in your POH.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Boolean,
+					name: 'list',
+					description: 'List the buildable items in your POH.',
+					required: false
+				}
+			]
 		}
 	],
 	run: async ({
@@ -115,6 +128,7 @@ export const pohCommand: OSBMahojiCommand = {
 		build?: { name: string };
 		destroy?: { name: string };
 		mount_item?: { name: string };
+		items?: { name: string };
 	}>) => {
 		const user = await mUserFetch(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
@@ -134,6 +148,9 @@ export const pohCommand: OSBMahojiCommand = {
 		}
 		if (options.mount_item) {
 			return pohMountItemCommand(user, options.mount_item.name);
+		}
+		if (options.items) {
+			return pohListItemsCommand(user);
 		}
 		return 'Invalid command.';
 	}

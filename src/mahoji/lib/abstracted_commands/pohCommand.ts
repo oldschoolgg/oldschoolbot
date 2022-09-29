@@ -250,3 +250,8 @@ export async function pohDestroyCommand(user: MUser, name: string) {
 
 	return { ...(await makePOHImage(user)), content: str };
 }
+
+export async function pohListItemsCommand(user: MUser) {
+
+
+}
