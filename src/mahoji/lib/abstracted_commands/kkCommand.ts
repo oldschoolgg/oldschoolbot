@@ -4,7 +4,6 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
 import { setupParty } from '../../../extendables/Message/Party';
-import { Emoji } from '../../../lib/constants';
 import { gorajanWarriorOutfit, torvaOutfit } from '../../../lib/data/CollectionsExport';
 import { KalphiteKingMonster } from '../../../lib/minions/data/killableMonsters/custom/bosses/KalphiteKing';
 import { calculateMonsterFood } from '../../../lib/minions/functions';
@@ -91,7 +90,7 @@ export async function kkCommand(
 		minSize: 2,
 		maxSize: 8,
 		ironmanAllowed: true,
-		message: `${user.usernameOrMention} is doing a ${KalphiteKingMonster.name} mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
+		message: `${user.usernameOrMention} is doing a ${KalphiteKingMonster.name} mass! Use the buttons below to join/leave.`,
 		customDenier: async user => {
 			if (!user.user.minion_hasBought) {
 				return [true, "you don't have a minion."];
@@ -278,13 +277,15 @@ export async function kkCommand(
 	if (users.length === 5) minDuration = 1.2;
 	if (users.length >= 6) minDuration = 1;
 
-	let [quantity, duration, perKillTime] = await calcDurQty(
+	let durQtyRes = await calcDurQty(
 		users,
 		{ ...KalphiteKingMonster, timeToFinish: effectiveTime },
 		inputQuantity,
 		Time.Minute * minDuration,
 		Time.Minute * 30
 	);
+	if (typeof durQtyRes === 'string') return durQtyRes;
+	let [quantity, duration, perKillTime] = durQtyRes;
 	const secondCheck = checkReqs(users, KalphiteKingMonster, quantity);
 	if (secondCheck) return secondCheck;
 

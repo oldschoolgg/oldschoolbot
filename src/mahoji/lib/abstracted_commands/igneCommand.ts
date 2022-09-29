@@ -2,7 +2,6 @@ import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Emoji } from '../../../lib/constants';
 import { dwarvenOutfit } from '../../../lib/data/CollectionsExport';
 import { Ignecarus } from '../../../lib/minions/data/killableMonsters/custom/bosses/Ignecarus';
 import { BossInstance } from '../../../lib/structures/Boss';
@@ -77,7 +76,7 @@ export async function igneCommand(
 		settingsKeys: ['ignecarus_cost', 'ignecarus_loot'],
 		channel,
 		activity: 'Ignecarus',
-		massText: `${user.usernameOrMention} is assembling a team to fight Ignecarus! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
+		massText: `${user.usernameOrMention} is assembling a team to fight Ignecarus! Use the buttons below to join/leave.`,
 		minSize: 1,
 		solo: type === 'solo',
 		canDie: true,
@@ -130,6 +129,6 @@ ${bossUsers.map(u => `**${u.user.usernameOrMention}**: ${u.debugStr}`).join('\n\
 			content: instance.boosts.length > 0 ? `**Boosts:** ${instance.boosts.join(', ')}.` : undefined
 		};
 	} catch (err: any) {
-		return `The mass failed to start for this reason: ${err.message}.`;
+		return `The mass failed to start for this reason: ${err}.`;
 	}
 }

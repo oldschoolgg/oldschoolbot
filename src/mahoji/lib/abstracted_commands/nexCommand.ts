@@ -4,7 +4,6 @@ import { Bank } from 'oldschooljs';
 import { resolveNameBank } from 'oldschooljs/dist/util';
 
 import { setupParty } from '../../../extendables/Message/Party';
-import { Emoji } from '../../../lib/constants';
 import { gorajanArcherOutfit, pernixOutfit } from '../../../lib/data/CollectionsExport';
 import { calculateMonsterFood } from '../../../lib/minions/functions';
 import hasEnoughFoodForMonster from '../../../lib/minions/functions/hasEnoughFoodForMonster';
@@ -72,9 +71,7 @@ export async function nexCommand(
 		minSize: 2,
 		maxSize: 8,
 		ironmanAllowed: true,
-		message: `${user.usernameOrMention} is doing a ${NexMonster.name} mass! Anyone can click the ${
-			Emoji.Join
-		} reaction to join, click it again to leave. The maximum size for this mass is ${8}.`,
+		message: `${user.usernameOrMention} is doing a ${NexMonster.name} mass! Use the buttons below to join/leave.`,
 		customDenier: async user => {
 			if (!user.user.minion_hasBought) {
 				return [true, "you don't have a minion."];
@@ -242,13 +239,15 @@ export async function nexCommand(
 		debugStr += `${msgs.join(', ')}. `;
 	}
 
-	let [quantity, duration, perKillTime] = await calcDurQty(
+	let durQtyRes = await calcDurQty(
 		users,
 		{ ...NexMonster, timeToFinish: effectiveTime },
 		inputQuantity,
 		Time.Minute * 2,
 		Time.Minute * 30
 	);
+	if (typeof durQtyRes === 'string') return durQtyRes;
+	let [quantity, duration, perKillTime] = durQtyRes;
 	const secondCheck = checkReqs(users, NexMonster, quantity);
 	if (secondCheck) return secondCheck;
 

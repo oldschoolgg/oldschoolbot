@@ -7,6 +7,7 @@ import { syncBlacklists } from '../../lib/blacklists';
 import { DISABLED_COMMANDS } from '../../lib/constants';
 import { syncDoubleLoot } from '../../lib/doubleLoot';
 import { prisma } from '../../lib/settings/prisma';
+import { cacheCleanup } from '../../lib/util';
 import { CUSTOM_PRICE_CACHE } from '../commands/sell';
 import { mahojiClientSettingsFetch, syncLinkedAccounts } from '../mahojiSettings';
 
@@ -51,4 +52,5 @@ export async function onStartup() {
 	await cacheBadges();
 
 	await syncLinkedAccounts();
+	await cacheCleanup();
 }
