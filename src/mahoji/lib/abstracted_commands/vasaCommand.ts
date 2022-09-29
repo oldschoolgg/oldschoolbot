@@ -1,5 +1,5 @@
 import { EmbedBuilder, TextChannel } from 'discord.js';
-import { randInt, Time } from 'e';
+import { randInt, sumArr, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
@@ -44,8 +44,16 @@ export async function vasaCommand(user: MUser, channelID: string, quantity?: num
 		}),
 		gearSetup: 'mage',
 		itemCost: async data =>
-			data.baseFood.multiply(data.kills).add('Elder rune', randInt(55 * data.kills, 100 * data.kills)),
+			data.baseFood.multiply(data.kills).add(
+				'Elder rune',
+				sumArr(
+					Array(data.kills)
+						.fill(0)
+						.map(() => randInt(55, 100))
+				)
+			),
 		mostImportantStat: 'attack_magic',
+		ignoreStats: ['attack_ranged', 'attack_crush', 'attack_slash', 'attack_stab'],
 		food: () => new Bank(),
 		settingsKeys: ['vasa_cost', 'vasa_loot'],
 		channel: globalClient.channels.cache.get(channelID.toString())! as TextChannel,

@@ -118,6 +118,7 @@ export interface BossOptions {
 	gearSetup: GearSetupType;
 	itemCost?: (options: { user: MUser; kills: number; baseFood: Bank; solo: boolean }) => Promise<Bank>;
 	mostImportantStat: keyof GearStats;
+	ignoreStats?: (keyof GearStats)[];
 	food: Bank | ((user: MUser) => Bank);
 	settingsKeys?: [ClientBankKey, ClientBankKey];
 	channel: TextChannel;
@@ -159,11 +160,12 @@ export class BossInstance {
 	gearSetup: GearSetupType;
 	itemCost?: (options: { user: MUser; kills: number; baseFood: Bank; solo: boolean }) => Promise<Bank>;
 	mostImportantStat: keyof GearStats;
+	ignoreStats: (keyof GearStats)[] = [];
 	food: Bank | ((user: MUser) => Bank);
 	bossUsers: BossUser[] = [];
 	duration: number = -1;
-	quantity: number = 1;
-	tempQty: number = NaN;
+	quantity: number | null = null;
+	tempQty: number | null = null;
 	allowMoreThan1Solo: boolean = false;
 	allowMoreThan1Group: boolean = false;
 	totalPercent: number = -1;
@@ -194,6 +196,7 @@ export class BossInstance {
 		this.gearSetup = options.gearSetup;
 		this.itemCost = options.itemCost;
 		this.mostImportantStat = options.mostImportantStat;
+		this.ignoreStats = options.ignoreStats ?? [];
 		this.id = options.id;
 		this.food = options.food;
 		this.settingsKeys = options.settingsKeys;
@@ -210,7 +213,7 @@ export class BossInstance {
 		this.customDeathChance = options.customDeathChance ?? null;
 		this.allowMoreThan1Solo = options.allowMoreThan1Solo ?? false;
 		this.allowMoreThan1Group = options.allowMoreThan1Group ?? false;
-		this.quantity = options.quantity ?? 1;
+		this.quantity = options.quantity ?? null;
 		this.maxSize = options.maxSize ?? 10;
 		let massText = [options.massText, '\n'];
 		if (Object.keys(this.skillRequirements).length > 0) {
@@ -241,15 +244,15 @@ export class BossInstance {
 		let tempQty = 1;
 		const maxTripLength = this.leader ? calcMaxTripLength(this.leader, this.activity) : Time.Hour;
 		tempQty = Math.max(tempQty, Math.floor(maxTripLength / duration));
-		// This boss doesnt allow more than 1KC at time, limits to 1
+		// If this boss doesn't allow more than 1KC at time, limit to 1
 		if (
 			(this.users && this.users.length === 1 && !this.allowMoreThan1Solo) ||
 			(this.users && this.users.length > 1 && !this.allowMoreThan1Group)
 		) {
 			tempQty = 1;
 		}
-		// If the user informed a higher qty than it can kill or is NaN, defaults to max
-		if (isNaN(baseQty) || baseQty > tempQty) return tempQty;
+		// If the user informed a higher qty than it can kill or is null, defaults to max
+		if (!baseQty || baseQty > tempQty) return tempQty;
 		return baseQty;
 	}
 
@@ -300,12 +303,19 @@ export class BossInstance {
 		if (!hasSkillReqs(user, this.skillRequirements)[0]) {
 			return [true, "doesn't meet skill requirements"];
 		}
-		const itemCost = await this.calcFoodForUser(user, false);
-		if (!user.owns(itemCost)) {
-			return [true, `doesn't have ${itemCost}`];
+		if (this.quantity) {
+			const itemCost = await this.calcFoodForUser(user, false);
+			if (!user.owns(itemCost)) {
+				return [true, `doesn't have ${itemCost}`];
+			}
 		}
 
-		const gearPercent = calcSetupPercent(this.bisGear, user.gear[this.gearSetup], this.mostImportantStat, []);
+		const gearPercent = calcSetupPercent(
+			this.bisGear,
+			user.gear[this.gearSetup],
+			this.mostImportantStat,
+			this.ignoreStats
+		);
 		if (gearPercent < 20) {
 			return [true, 'has terrible gear'];
 		}
@@ -317,9 +327,9 @@ export class BossInstance {
 		const kc = user.getKC(this.id);
 		let itemsToRemove = calcFood(solo, kc);
 		if (this.itemCost) {
-			return this.itemCost({ user, kills: this.quantity, baseFood: itemsToRemove, solo });
+			return this.itemCost({ user, kills: this.quantity ?? 0, baseFood: itemsToRemove, solo });
 		}
-		return itemsToRemove.multiply(this.quantity);
+		return itemsToRemove.multiply(this.quantity ?? 0);
 	}
 
 	async calculateBossUsers() {
@@ -344,7 +354,7 @@ export class BossInstance {
 			let userPercentChange = 0;
 
 			// Gear
-			const gearPercent = calcSetupPercent(this.bisGear, gear, this.mostImportantStat, []);
+			const gearPercent = calcSetupPercent(this.bisGear, gear, this.mostImportantStat, this.ignoreStats);
 			const gearBoostPercent = calcPercentOfNum(gearPercent, speedReductionForGear);
 			userPercentChange += gearBoostPercent;
 			debugStr.push(`**Gear**[${gearPercent.toFixed(1)}%]`);
@@ -439,7 +449,7 @@ export class BossInstance {
 		await addSubTaskToActivityTask<NewBossOptions>({
 			userID: this.users![0].id,
 			channelID: this.channel.id,
-			quantity: this.quantity,
+			quantity: this.quantity!,
 			duration: this.duration,
 			type: this.activity,
 			users: this.users!.map(u => u.id),
