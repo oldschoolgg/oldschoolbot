@@ -1186,6 +1186,9 @@ export const allCollectionLogs: ICollection = {
 				items: Createables.filter(i => i.noCl !== true)
 					.map(i => new Bank(i.outputItems).items().map(i => i[0].id))
 					.flat()
+			},
+			Leagues: {
+				items: resolveItems(['Fuzzy dice', 'Karambinana'])
 			}
 		}
 	},
