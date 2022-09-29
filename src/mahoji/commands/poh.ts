@@ -8,6 +8,7 @@ import {
 	makePOHImage,
 	pohBuildCommand,
 	pohDestroyCommand,
+	pohListItemsCommand,
 	pohMountItemCommand,
 	pohWallkitCommand,
 	pohWallkits
@@ -107,15 +108,7 @@ export const pohCommand: OSBMahojiCommand = {
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'items',
-			description: 'List the buildable items in your POH.',
-			options: [
-				{
-					type: ApplicationCommandOptionType.Boolean,
-					name: 'list',
-					description: 'List the buildable items in your POH.',
-					required: false
-				}
-			]
+			description: 'List the buildable items in your POH.'
 		}
 	],
 	run: async ({
@@ -150,7 +143,7 @@ export const pohCommand: OSBMahojiCommand = {
 			return pohMountItemCommand(user, options.mount_item.name);
 		}
 		if (options.items) {
-			return pohListItemsCommand(user);
+			return pohListItemsCommand();
 		}
 		return 'Invalid command.';
 	}
