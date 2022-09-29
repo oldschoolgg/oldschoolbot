@@ -53,6 +53,7 @@ export async function vasaCommand(user: MUser, channelID: string, quantity?: num
 				)
 			),
 		mostImportantStat: 'attack_magic',
+		ignoreStats: ['attack_ranged', 'attack_crush', 'attack_slash', 'attack_stab'],
 		food: () => new Bank(),
 		settingsKeys: ['vasa_cost', 'vasa_loot'],
 		channel: globalClient.channels.cache.get(channelID.toString())! as TextChannel,
