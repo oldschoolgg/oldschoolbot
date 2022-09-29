@@ -133,7 +133,9 @@ export const massCommand: OSBMahojiCommand = {
 		users = users.filter(i => !i.minionIsBusy);
 		const usersKickedForBusy = unchangedUsers.filter(i => !users.includes(i));
 
-		const [quantity, duration, perKillTime, boostMsgs] = await calcDurQty(users, monster, undefined);
+		const durQtyRes = await calcDurQty(users, monster, undefined);
+		if (typeof durQtyRes === 'string') return durQtyRes;
+		const [quantity, duration, perKillTime, boostMsgs] = durQtyRes;
 
 		checkReqs(users, monster, quantity);
 
