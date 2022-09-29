@@ -113,7 +113,7 @@ export const vasaTask: MinionTask = {
 			user,
 			channelID,
 			resultStr,
-			['k', { name: 'vasa' }, true],
+			['k', { name: 'vasa', quantity }, true],
 			image.file.attachment,
 			data,
 			itemsAdded
