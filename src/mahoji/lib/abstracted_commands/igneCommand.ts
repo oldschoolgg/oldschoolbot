@@ -72,6 +72,7 @@ export async function igneCommand(
 			return userBank.has(heatResBank.bank) ? heatResBank : normalBank;
 		},
 		mostImportantStat: 'attack_crush',
+		ignoreStats: ['attack_ranged', 'attack_magic'],
 		food: () => new Bank(),
 		settingsKeys: ['ignecarus_cost', 'ignecarus_loot'],
 		channel,

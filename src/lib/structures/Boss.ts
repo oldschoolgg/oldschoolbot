@@ -118,6 +118,7 @@ export interface BossOptions {
 	gearSetup: GearSetupType;
 	itemCost?: (options: { user: MUser; kills: number; baseFood: Bank; solo: boolean }) => Promise<Bank>;
 	mostImportantStat: keyof GearStats;
+	ignoreStats?: (keyof GearStats)[];
 	food: Bank | ((user: MUser) => Bank);
 	settingsKeys?: [ClientBankKey, ClientBankKey];
 	channel: TextChannel;
@@ -159,6 +160,7 @@ export class BossInstance {
 	gearSetup: GearSetupType;
 	itemCost?: (options: { user: MUser; kills: number; baseFood: Bank; solo: boolean }) => Promise<Bank>;
 	mostImportantStat: keyof GearStats;
+	ignoreStats: (keyof GearStats)[] = [];
 	food: Bank | ((user: MUser) => Bank);
 	bossUsers: BossUser[] = [];
 	duration: number = -1;
@@ -194,6 +196,7 @@ export class BossInstance {
 		this.gearSetup = options.gearSetup;
 		this.itemCost = options.itemCost;
 		this.mostImportantStat = options.mostImportantStat;
+		this.ignoreStats = options.ignoreStats ?? [];
 		this.id = options.id;
 		this.food = options.food;
 		this.settingsKeys = options.settingsKeys;
@@ -307,7 +310,12 @@ export class BossInstance {
 			}
 		}
 
-		const gearPercent = calcSetupPercent(this.bisGear, user.gear[this.gearSetup], this.mostImportantStat, []);
+		const gearPercent = calcSetupPercent(
+			this.bisGear,
+			user.gear[this.gearSetup],
+			this.mostImportantStat,
+			this.ignoreStats
+		);
 		if (gearPercent < 20) {
 			return [true, 'has terrible gear'];
 		}
@@ -346,7 +354,7 @@ export class BossInstance {
 			let userPercentChange = 0;
 
 			// Gear
-			const gearPercent = calcSetupPercent(this.bisGear, gear, this.mostImportantStat, []);
+			const gearPercent = calcSetupPercent(this.bisGear, gear, this.mostImportantStat, this.ignoreStats);
 			const gearBoostPercent = calcPercentOfNum(gearPercent, speedReductionForGear);
 			userPercentChange += gearBoostPercent;
 			debugStr.push(`**Gear**[${gearPercent.toFixed(1)}%]`);
