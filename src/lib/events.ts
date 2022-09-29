@@ -7,7 +7,7 @@ import { untrustedGuildSettingsCache } from '../mahoji/mahojiSettings';
 import { Channel, Emoji } from './constants';
 import pets from './data/pets';
 import { ItemBank } from './types';
-import { cacheCleanup, channelIsSendable } from './util';
+import { channelIsSendable } from './util';
 import { makeBankImage } from './util/makeBankImage';
 
 const rareRolesSrc: [string, number, string][] = [
@@ -114,7 +114,6 @@ export async function onMessage(msg: Message) {
 	const user = await mUserFetch(msg.author.id);
 	const result = await minionStatusCommand(user);
 	const { components } = result;
-	await cacheCleanup();
 
 	if (content === `${mentionText} b`) {
 		msg.reply({
