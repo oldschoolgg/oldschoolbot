@@ -784,7 +784,9 @@ async function killCommand(user: MUser, channelID: string, str: string) {
 		return `${tameName(tame)} is busy.`;
 	}
 	//
-	const monster = tameKillableMonsters.find(i => stringMatches(i.name, str));
+	const monster = tameKillableMonsters.find(
+		i => stringMatches(i.name, str) || i.aliases.some(alias => stringMatches(alias, str))
+	);
 	if (!monster) return "That's not a valid monster.";
 	if (monster.mustBeAdult && tame.growth_stage !== tame_growth.adult) {
 		return 'Only fully grown tames can kill this monster.';
