@@ -3,7 +3,6 @@ import { randInt, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
-import { Emoji } from '../../../lib/constants';
 import { VasaMagus } from '../../../lib/minions/data/killableMonsters/custom/bosses/VasaMagus';
 import { BossInstance } from '../../../lib/structures/Boss';
 import { Gear } from '../../../lib/structures/Gear';
@@ -51,7 +50,7 @@ export async function vasaCommand(user: MUser, channelID: string, quantity?: num
 		settingsKeys: ['vasa_cost', 'vasa_loot'],
 		channel: globalClient.channels.cache.get(channelID.toString())! as TextChannel,
 		activity: 'VasaMagus',
-		massText: `${user.usernameOrMention} is assembling a team to fight Vasa Magus! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
+		massText: `${user.usernameOrMention} is assembling a team to fight Vasa Magus! Use the buttons below to join/leave.`,
 		minSize: 1,
 		solo: true,
 		canDie: false,

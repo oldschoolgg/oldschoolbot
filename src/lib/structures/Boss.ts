@@ -210,7 +210,7 @@ export class BossInstance {
 		this.customDeathChance = options.customDeathChance ?? null;
 		this.allowMoreThan1Solo = options.allowMoreThan1Solo ?? false;
 		this.allowMoreThan1Group = options.allowMoreThan1Group ?? false;
-		this.quantity = options.quantity ?? NaN;
+		this.quantity = options.quantity ?? 1;
 		this.maxSize = options.maxSize ?? 10;
 		let massText = [options.massText, '\n'];
 		if (Object.keys(this.skillRequirements).length > 0) {

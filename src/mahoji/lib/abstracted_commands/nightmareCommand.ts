@@ -213,14 +213,16 @@ export async function nightmareCommand(user: MUser, channelID: string, name: str
 	if (hasCob && type === 'solo') {
 		effectiveTime /= 2;
 	}
-
-	let [quantity, duration, perKillTime] = await calcDurQty(
+	let durQtyRes = await calcDurQty(
 		users,
 		{ ...NightmareMonster, timeToFinish: effectiveTime },
 		undefined,
 		Time.Minute * 5,
 		Time.Minute * 30
 	);
+	if (typeof durQtyRes === 'string') return durQtyRes;
+	let [quantity, duration, perKillTime] = durQtyRes;
+
 	const secondErr = checkReqs(users, NightmareMonster, quantity, isPhosani);
 	if (secondErr) return secondErr;
 

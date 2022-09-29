@@ -3,7 +3,6 @@ import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 
-import { Emoji } from '../../../lib/constants';
 import KingGoldemar from '../../../lib/minions/data/killableMonsters/custom/bosses/KingGoldemar';
 import { BossInstance, gpCostPerKill } from '../../../lib/structures/Boss';
 import { Gear } from '../../../lib/structures/Gear';
@@ -63,7 +62,7 @@ export async function kgCommand(
 		settingsKeys: ['kg_cost', 'kg_loot'],
 		channel,
 		activity: 'KingGoldemar',
-		massText: `${user.usernameOrMention} is assembling a team to fight King Goldemar! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
+		massText: `${user.usernameOrMention} is assembling a team to fight King Goldemar! Use the buttons below to join/leave.`,
 		minSize: 1,
 		solo: type === 'solo',
 		canDie: true,

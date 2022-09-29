@@ -3,7 +3,6 @@ import { objectKeys, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { setupParty } from '../../extendables/Message/Party';
-import { Emoji } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
@@ -89,7 +88,7 @@ export const massCommand: OSBMahojiCommand = {
 				minSize: 2,
 				maxSize: 10,
 				ironmanAllowed: false,
-				message: `${user.usernameOrMention} is doing a ${monster.name} mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
+				message: `${user.usernameOrMention} is doing a ${monster.name} mass! Use the buttons below to join/leave.`,
 				customDenier: async user => {
 					if (!user.user.minion_hasBought) {
 						return [true, "you don't have a minion."];
@@ -134,7 +133,9 @@ export const massCommand: OSBMahojiCommand = {
 		users = users.filter(i => !i.minionIsBusy);
 		const usersKickedForBusy = unchangedUsers.filter(i => !users.includes(i));
 
-		const [quantity, duration, perKillTime, boostMsgs] = await calcDurQty(users, monster, undefined);
+		const durQtyRes = await calcDurQty(users, monster, undefined);
+		if (typeof durQtyRes === 'string') return durQtyRes;
+		const [quantity, duration, perKillTime, boostMsgs] = durQtyRes;
 
 		checkReqs(users, monster, quantity);
 

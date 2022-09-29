@@ -2,7 +2,6 @@ import { reduceNumByPercent, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { setupParty } from '../../extendables/Message/Party';
-import { Emoji } from '../../lib/constants';
 import {
 	determineDgLevelForFloor,
 	dungBuyables,
@@ -48,9 +47,7 @@ async function startCommand(channelID: string, user: MUser, floor: string | unde
 	let quantity = Math.floor(calcMaxTripLength(user, 'Dungeoneering') / dungeonLength);
 	let duration = quantity * dungeonLength;
 
-	let message = `${user.usernameOrMention} has created a Dungeoneering party! Anyone can click the ${
-		Emoji.Join
-	} reaction to join, click it again to leave.
+	let message = `${user.usernameOrMention} has created a Dungeoneering party! Use the buttons below to join/leave.
 **Floor:** ${floorToDo}
 **Duration:** ${formatDuration(duration)}
 **Min. Quantity:** ${quantity}

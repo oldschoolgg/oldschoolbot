@@ -89,7 +89,7 @@ export async function tobStartCommand(
 		ironmanAllowed: true,
 		message: `${user.usernameOrMention} is hosting a ${
 			isHardMode ? '**Hard mode** ' : ''
-		}Theatre of Blood mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
+		}Theatre of Blood mass! Use the buttons below to join/leave.`,
 		customDenier: async user => {
 			if (user.minionIsBusy) {
 				return [true, `${user.usernameOrMention} minion is busy`];
