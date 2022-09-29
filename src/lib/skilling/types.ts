@@ -1,4 +1,3 @@
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
@@ -57,7 +56,12 @@ export interface Log {
 	id: number;
 	name: string;
 	aliases?: string[];
-	respawnTime: number;
+	findNewTreeTime: number;
+	bankingTime: number;
+	slope: number;
+	intercept: number;
+	depletionChance: number;
+	wcGuild?: boolean;
 	petChance?: number;
 	qpRequired: number;
 	clueScrollChance?: number;
@@ -286,5 +290,5 @@ export interface Creature {
 	qpRequired?: number;
 	slope: number;
 	intercept: number;
-	bait?: (quantity: number, user: KlasaUser) => Bank;
+	bait?: (quantity: number, user: MUser) => Bank;
 }

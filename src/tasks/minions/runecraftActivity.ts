@@ -1,18 +1,19 @@
 import { increaseNumByPercent, Time } from 'e';
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { RunecraftActivityTaskOptions } from '../../lib/types/minions';
-import { calcMaxRCQuantity, roll } from '../../lib/util';
+import { roll, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { calcMaxRCQuantity } from '../../mahoji/mahojiSettings';
 
-export default class extends Task {
+export const runecraftTask: MinionTask = {
+	type: 'Runecraft',
 	async run(data: RunecraftActivityTaskOptions) {
 		const { runeID, essenceQuantity, userID, channelID, imbueCasts, duration, useStaminas, daeyaltEssence } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
 		const rune = Runecraft.Runes.find(_rune => _rune.id === runeID)!;
 
@@ -30,7 +31,7 @@ export default class extends Task {
 
 		let xpReceived = essenceQuantity * runeXP;
 
-		const hasMaster = user.hasItemEquippedAnywhere(
+		const hasMaster = user.hasEquipped(
 			[
 				'Master runecrafter hat',
 				'Master runecrafter robe',
@@ -70,12 +71,13 @@ export default class extends Task {
 			}
 		}
 
-		if (roll((1_795_758 - user.skillLevel(SkillsEnum.Runecraft) * 25) / essenceQuantity)) {
+		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Runecraft, 1_795_758);
+		if (roll(petDropRate / essenceQuantity)) {
 			loot.add('Rift guardian');
 			str += "\nYou have a funny feeling you're being followed...";
-			this.client.emit(
+			globalClient.emit(
 				Events.ServerNotification,
-				`${Emoji.Runecraft} **${user.username}'s** minion, ${
+				`${Emoji.Runecraft} **${user.usernameOrMention}'s** minion, ${
 					user.minionName
 				}, just received a Rift guardian while crafting ${rune.name}s at level ${user.skillLevel(
 					SkillsEnum.Runecraft
@@ -109,4 +111,4 @@ export default class extends Task {
 			loot
 		);
 	}
-}
+};

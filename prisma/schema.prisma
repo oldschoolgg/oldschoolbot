@@ -127,7 +127,6 @@ model ClientStorage {
   gp_ic                   BigInt @default(0)
   double_loot_finish_time BigInt @default(0)
   gp_pet                  BigInt @default(0)
-  bank_lottery            Json   @default("{}") @db.Json
   ignecarus_cost          Json   @default("{}") @db.Json
   ignecarus_loot          Json   @default("{}") @db.Json
   kibble_cost             Json   @default("{}") @db.Json
@@ -157,6 +156,8 @@ model ClientStorage {
   bb_loot                 Json   @default("{}") @db.Json
   moktang_cost            Json   @default("{}") @db.Json
   moktang_loot            Json   @default("{}") @db.Json
+
+  lottery_is_active Boolean @default(false)
 
   items_disassembled_cost    Json @default("{}") @db.Json
   invention_materials_cost   Json @default("{}") @db.Json
@@ -189,7 +190,7 @@ model GearPreset {
 }
 
 model Giveaway {
-  id          Int      @default(autoincrement())
+  id          Int      @id
   user_id     String   @db.VarChar(19)
   start_date  DateTime @db.Timestamp(6)
   finish_date DateTime @db.Timestamp(6)
@@ -198,10 +199,11 @@ model Giveaway {
   channel_id  String   @db.VarChar(19)
   loot        Json     @db.Json
   message_id  String   @db.VarChar(19)
-  reaction_id String   @db.VarChar(19)
+  reaction_id String?  @db.VarChar(19)
 
-  @@id([id, user_id, channel_id, message_id, reaction_id], map: "PK_8dea3077ffeea92ada02ce88acc")
-  @@index([completed], map: "IDX_8d425a61b6093dd2351153b143")
+  users_entered String[]
+
+  @@index([completed, finish_date])
   @@map("giveaway")
 }
 
@@ -279,6 +281,13 @@ model SlayerTask {
 
   @@index([user_id, quantity_remaining], map: "slayer_task_quantity_remaining")
   @@map("slayer_tasks")
+}
+
+enum bank_sort_method_enum {
+  value
+  alch
+  name
+  quantity
 }
 
 model User {
@@ -412,8 +421,9 @@ model User {
   temp_cl            Json      @default("{}") @db.Json
   last_temp_cl_reset DateTime? @db.Timestamp(6)
 
-  tentacle_charges Int @default(0)
-  sang_charges     Int @default(0)
+  tentacle_charges       Int @default(0)
+  sang_charges           Int @default(0)
+  celestial_ring_charges Int @default(0)
 
   gp_luckypick BigInt @default(0)
   gp_dice      BigInt @default(0)
@@ -450,6 +460,7 @@ model User {
   void_staff_charges       Int      @default(0)
 
   last_patron_double_time_trigger DateTime? @db.Timestamp(6)
+  lottery_input                   Json      @default("{}") @db.Json
 
   // Invention
   skills_invention          BigInt @default(0) @map("skills.invention")
@@ -844,6 +855,7 @@ enum activity_type_enum {
   Disassembling
   Research
   Moktang
+  ShootingStars
 }
 
 enum xp_gains_skill_enum {

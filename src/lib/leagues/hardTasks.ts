@@ -498,8 +498,8 @@ export const hardTasks: Task[] = [
 	{
 		id: 2059,
 		name: 'Complete 50 Farming contracts',
-		has: async ({ mahojiUser }) => {
-			const contract = getFarmingContractOfUser(mahojiUser);
+		has: async ({ user }) => {
+			const contract = getFarmingContractOfUser(user);
 			return contract.contractsCompleted >= 50;
 		}
 	},

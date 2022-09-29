@@ -1,15 +1,14 @@
 import { increaseNumByPercent, reduceNumByPercent, Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
+import { userHasGracefulEquipped } from '../../../mahoji/mahojiSettings';
 import { KourendKebosDiary, userhasDiaryTier } from '../../diaries';
 import { inventionBoosts, InventionID, inventionItemBoost } from '../../invention/inventions';
 import { DarkAltarOptions } from '../../types/minions';
-import { formatDuration, stringMatches } from '../../util';
+import { formatDuration, hasSkillReqs, stringMatches } from '../../util';
 import addSubTaskToActivityTask from '../../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../util/calcMaxTripLength';
 import getOSItem from '../../util/getOSItem';
-import { hasItemsEquippedOrInBank } from '../../util/minionUtils';
 import { Favours, gotFavour } from '../data/kourendFavour';
 
 export const darkAltarRunes = {
@@ -33,21 +32,14 @@ const gracefulPenalty = 20;
 const agilityPenalty = 35;
 const mediumDiaryBoost = 20;
 
-export async function darkAltarCommand({
-	user,
-	channelID,
-	name
-}: {
-	user: KlasaUser;
-	channelID: bigint;
-	name: string;
-}) {
+export async function darkAltarCommand({ user, channelID, name }: { user: MUser; channelID: string; name: string }) {
 	if (!['blood', 'soul'].includes(name)) return 'Invalid rune.';
-	const [hasSkillReqs, neededReqs] = user.hasSkillReqs({
+	const stats = user.skillsAsLevels;
+	const [hasReqs, neededReqs] = hasSkillReqs(user, {
 		mining: 38,
 		crafting: 38
 	});
-	if (!hasSkillReqs) {
+	if (!hasReqs) {
 		return `You can't craft Blood runes at the Dark Altar, because you don't have these required stats: ${neededReqs}.`;
 	}
 	const [hasFavour, requiredPoints] = gotFavour(user, Favours.Arceuus, 100);
@@ -57,7 +49,7 @@ export async function darkAltarCommand({
 	const rune = name.toLowerCase().includes('soul') ? 'soul' : 'blood';
 	const runeData = darkAltarRunes[rune];
 
-	if (user.skillLevel(SkillsEnum.Runecraft) < runeData.level) {
+	if (stats.runecraft < runeData.level) {
 		return `You need level ${runeData.level} Runecraft to craft ${runeData.item.name}'s.`;
 	}
 
@@ -75,7 +67,7 @@ export async function darkAltarCommand({
 		timePerRune = reduceNumByPercent(timePerRune, mediumDiaryBoost);
 	}
 
-	if (!user.hasGracefulEquipped()) {
+	if (!userHasGracefulEquipped(user)) {
 		boosts.push(`${gracefulPenalty}% slower for no Graceful`);
 		timePerRune = increaseNumByPercent(timePerRune, gracefulPenalty);
 	}
@@ -88,13 +80,13 @@ export async function darkAltarCommand({
 	const maxTripLength = calcMaxTripLength(user, 'DarkAltar');
 
 	// Calculate Abyssal amulet boost:
-	if (hasItemsEquippedOrInBank(user, ['Abyssal amulet'])) {
+	if (user.hasEquippedOrInBank(['Abyssal amulet'])) {
 		const abyssalAmuletBoost = inventionBoosts.abyssalAmulet.boosts.find(b =>
 			b.runes.some(r => stringMatches(r, `${rune} rune`))
 		);
 		if (abyssalAmuletBoost) {
 			const res = await inventionItemBoost({
-				userID: BigInt(user.id),
+				user,
 				inventionID: InventionID.AbyssalAmulet,
 				duration: maxTripLength
 			});

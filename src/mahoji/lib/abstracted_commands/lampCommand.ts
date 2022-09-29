@@ -1,5 +1,4 @@
 import { objectValues } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
@@ -76,7 +75,7 @@ export const XPLamps: IXPLamp[] = [
 ];
 
 interface IFunctionData {
-	user: KlasaUser;
+	user: MUser;
 	item: Item;
 	quantity: number;
 }
@@ -180,7 +179,7 @@ export const Lampables: IXPObject[] = [
 	}
 ];
 
-export async function lampCommand(user: KlasaUser, itemToUse: string, skill: string, _quantity: number | undefined) {
+export async function lampCommand(user: MUser, itemToUse: string, skill: string, _quantity: number | undefined) {
 	const item = getItem(itemToUse);
 	if (!item) return "That's not a valid item.";
 

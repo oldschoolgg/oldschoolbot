@@ -125,7 +125,6 @@ export const megaDuckCommand: OSBMahojiCommand = {
 	description: 'Mega duck!.',
 	attributes: {
 		requiresMinion: true,
-		guildOnly: true,
 		cooldown: 2 * Time.Minute
 	},
 	options: [
@@ -149,7 +148,7 @@ export const megaDuckCommand: OSBMahojiCommand = {
 		guildID,
 		interaction
 	}: CommandRunOptions<{ move?: MegaduckDirection; reset?: boolean }>) => {
-		const user = await globalClient.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const guild = guildID ? globalClient.guilds.cache.get(guildID.toString()) : null;
 		if (!guild) return 'You can only run this in a guild.';
 		const settings = await mahojiGuildSettingsFetch(guild);
@@ -160,7 +159,7 @@ export const megaDuckCommand: OSBMahojiCommand = {
 		const direction = options.move;
 
 		const member = guild.members.cache.get(userID.toString());
-		if (options.reset && member && member.permissions.has('ADMINISTRATOR')) {
+		if (options.reset && member && member.permissions.has('Administrator')) {
 			await handleMahojiConfirmation(
 				interaction,
 				'Are you sure you want to reset your megaduck back to Falador Park? This will reset all data, and where its been, and who has contributed steps.'
@@ -179,7 +178,7 @@ export const megaDuckCommand: OSBMahojiCommand = {
 				content: `${user} Mega duck is at ${location.x}x ${location.y}y. You've moved it ${
 					location.usersParticipated[user.id] ?? 0
 				} times. ${topFeeders(Object.entries(location.usersParticipated))}`,
-				attachments: [{ buffer: image, fileName: 'megaduck.png' }]
+				files: [{ attachment: image, name: 'megaduck.png' }]
 			};
 		}
 
@@ -228,7 +227,7 @@ export const megaDuckCommand: OSBMahojiCommand = {
 			const entries = Object.entries(newLocation.usersParticipated).sort((a, b) => b[1] - a[1]);
 			for (const [id] of entries) {
 				try {
-					const user = await globalClient.fetchUser(id);
+					const user = await mUserFetch(id);
 					await user.addItemsToBank({ items: loot, collectionLog: true });
 				} catch {}
 			}
@@ -254,7 +253,7 @@ export const megaDuckCommand: OSBMahojiCommand = {
 			content: `${user} You moved Mega Duck ${direction}! You've moved him ${
 				newLocation.usersParticipated[user.id]
 			} times. Removed ${cost} from your bank.${str}`,
-			attachments: location.steps?.length % 2 === 0 ? [{ buffer: image, fileName: 'megaduck.png' }] : []
+			files: location.steps?.length % 2 === 0 ? [{ attachment: image, name: 'megaduck.png' }] : []
 		};
 	}
 };

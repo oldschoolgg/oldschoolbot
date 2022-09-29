@@ -1,14 +1,22 @@
-import { User } from 'discord.js';
 import { calcPercentOfNum, reduceNumByPercent } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
+import { convertLVLtoXP } from 'oldschooljs/dist/util';
 
+import { baseModifyBusyCounter } from '../src/lib/busyCounterCache';
 import { Eatables } from '../src/lib/data/eatables';
 import getUserFoodFromBank from '../src/lib/minions/functions/getUserFoodFromBank';
-import { clAdjustedDroprate, getSkillsOfMahojiUser, sanitizeBank, stripEmojis, truncateString } from '../src/lib/util';
+import { SkillsEnum } from '../src/lib/skilling/types';
+import {
+	clAdjustedDroprate,
+	sanitizeBank,
+	skillingPetDropRate,
+	stripEmojis,
+	truncateString,
+	validateItemBankAndThrow
+} from '../src/lib/util';
 import getOSItem from '../src/lib/util/getOSItem';
 import { sellPriceOfItem, sellStorePriceOfItem } from '../src/mahoji/commands/sell';
-import { mockUser } from './utils';
+import { mockMUser } from './utils';
 
 describe('util', () => {
 	test('stripEmojis', () => {
@@ -27,9 +35,9 @@ describe('util', () => {
 	test('getUserFoodFromBank', () => {
 		const fakeUser = (b: Bank) =>
 			({
-				bank: () => b,
+				bank: b,
 				skillLevel: () => 99
-			} as any as KlasaUser);
+			} as any as MUser);
 		expect(getUserFoodFromBank(fakeUser(new Bank().add('Shark')), 500, [])).toStrictEqual(false);
 		expect(getUserFoodFromBank(fakeUser(new Bank().add('Shark', 100)), 500, [])).toStrictEqual(
 			new Bank().add('Shark', 25)
@@ -111,20 +119,59 @@ describe('util', () => {
 		expect(sellStorePriceOfItem(getOSItem('A yellow square'), 1)).toEqual({ price: 0, basePrice: 0 });
 	});
 
-	test('getSkillsOfMahojiUser', () => {
-		expect(getSkillsOfMahojiUser(mockUser(), true).agility).toEqual(73);
-		expect(getSkillsOfMahojiUser(mockUser()).agility).toEqual(1_000_000);
+	test('validateItemBankAndThrow', () => {
+		expect(() => validateItemBankAndThrow({ a: 'b' })).toThrow();
+		expect(() => validateItemBankAndThrow({ a: 1 })).toThrow();
+		expect(() => validateItemBankAndThrow(1)).toThrow();
+		expect(() => validateItemBankAndThrow('b')).toThrow();
+		expect(() => validateItemBankAndThrow(() => {})).toThrow();
+		// eslint-disable-next-line func-names
+		expect(() => validateItemBankAndThrow(function () {})).toThrow();
+		// eslint-disable-next-line @typescript-eslint/no-extraneous-class
+		expect(() => validateItemBankAndThrow(class {})).toThrow();
+		expect(validateItemBankAndThrow({ 1: 1 })).toEqual(true);
 	});
 
 	test('clAdjustedDroprate', () => {
-		expect(
-			clAdjustedDroprate({ collectionLogBank: new Bank().add('Coal', 0).bank } as any as User, 'Coal', 100, 2)
-		).toEqual(100);
-		expect(
-			clAdjustedDroprate({ collectionLogBank: new Bank().add('Coal', 1).bank } as any as User, 'Coal', 100, 2)
-		).toEqual(200);
-		expect(
-			clAdjustedDroprate({ collectionLogBank: new Bank().add('Coal', 2).bank } as any as User, 'Coal', 100, 2)
-		).toEqual(400);
+		expect(clAdjustedDroprate({ cl: new Bank().add('Coal', 0) } as any as MUser, 'Coal', 100, 2)).toEqual(100);
+		expect(clAdjustedDroprate({ cl: new Bank().add('Coal', 1) } as any as MUser, 'Coal', 100, 2)).toEqual(200);
+		expect(clAdjustedDroprate({ cl: new Bank().add('Coal', 2) } as any as MUser, 'Coal', 100, 2)).toEqual(400);
+	});
+
+	test('skillingPetRateFunction', () => {
+		let testUser = mockMUser({
+			skills_agility: convertLVLtoXP(30)
+		});
+		const baseDropRate = 300_000;
+		// Lvl 30
+		const dropRateLvl30 = Math.floor((baseDropRate - 30 * 25) / 1);
+		expect(skillingPetDropRate(testUser, SkillsEnum.Agility, baseDropRate).petDropRate).toEqual(dropRateLvl30);
+		// Lvl 99
+		testUser = mockMUser({
+			skills_agility: convertLVLtoXP(99)
+		});
+		const dropRateLvl99 = Math.floor((baseDropRate - 99 * 25) / 1);
+		expect(skillingPetDropRate(testUser, SkillsEnum.Agility, baseDropRate).petDropRate).toEqual(dropRateLvl99);
+		// Lvl 120 (BSO) and 5B xp
+		testUser = mockMUser({
+			skills_agility: 5_000_000_000
+		});
+		const dropRate5b = Math.floor((baseDropRate - 120 * 25) / 15);
+		expect(skillingPetDropRate(testUser, SkillsEnum.Agility, baseDropRate).petDropRate).toEqual(dropRate5b);
+	});
+
+	test('userBusyCache', () => {
+		const id = '1';
+		const cache = new Map();
+		// expect(() => baseModifyBusyCounter(cache, id, -1)).toThrow();
+		expect(baseModifyBusyCounter(cache, id, 1)).toEqual(1);
+		expect(cache.get(id)).toEqual(1);
+		expect(baseModifyBusyCounter(cache, id, 1)).toEqual(2);
+		expect(cache.get(id)).toEqual(2);
+		expect(baseModifyBusyCounter(cache, id, -1)).toEqual(1);
+		expect(cache.get(id)).toEqual(1);
+		expect(baseModifyBusyCounter(cache, id, -1)).toEqual(0);
+		expect(cache.get(id)).toEqual(0);
+		// expect(() => baseModifyBusyCounter(cache, id, -1)).toThrow();
 	});
 });

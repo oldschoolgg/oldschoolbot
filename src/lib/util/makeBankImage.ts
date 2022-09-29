@@ -1,9 +1,6 @@
-import { MessageAttachment } from 'discord.js';
-import { KlasaUser } from 'klasa';
-import { MahojiAttachment } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
-import BankImageTask, { BankFlag } from '../../tasks/bankImage';
+import { BankFlag } from '../bankImage';
 import { Flags } from '../minions/types';
 
 interface MakeBankImageOptions {
@@ -12,7 +9,7 @@ interface MakeBankImageOptions {
 	title?: string;
 	background?: number;
 	flags?: Record<string, string | number>;
-	user?: KlasaUser;
+	user?: MUser;
 	previousCL?: Bank;
 	showNewCL?: boolean;
 	mahojiFlags?: BankFlag[];
@@ -27,12 +24,10 @@ export async function makeBankImage({
 	showNewCL = false,
 	flags = {},
 	mahojiFlags = []
-}: MakeBankImageOptions): Promise<{
-	file: MahojiAttachment;
-}> {
+}: MakeBankImageOptions) {
 	let realFlags: Flags = { ...flags, background: background ?? 1, nocache: 1 };
 	if (showNewCL || previousCL !== undefined) realFlags.showNewCL = 1;
-	const { image, isTransparent } = await (globalClient.tasks.get('bankImage')! as BankImageTask).generateBankImage({
+	const { image, isTransparent } = await bankImageGenerator.generateBankImage({
 		bank,
 		title,
 		showValue: true,
@@ -44,13 +39,8 @@ export async function makeBankImage({
 
 	return {
 		file: {
-			fileName: isTransparent ? 'bank.png' : 'bank.jpg',
-			buffer: image!
+			name: isTransparent ? 'bank.png' : 'bank.jpg',
+			attachment: image!
 		}
 	};
-}
-
-export async function makeBankImageKlasa(opts: MakeBankImageOptions) {
-	const result = await makeBankImage(opts);
-	return { files: [new MessageAttachment(result.file.buffer)] };
 }

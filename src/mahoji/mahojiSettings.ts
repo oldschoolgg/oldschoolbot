@@ -1,26 +1,47 @@
 import type { ClientStorage, Guild, Prisma, User, UserStats } from '@prisma/client';
-import { Guild as DJSGuild, MessageButton } from 'discord.js';
-import { Time } from 'e';
-import { KlasaUser } from 'klasa';
-import { InteractionResponseType, InteractionType, MessageFlags } from 'mahoji';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
+import {
+	ActionRowBuilder,
+	ButtonBuilder,
+	ButtonInteraction,
+	ButtonStyle,
+	ChatInputCommandInteraction,
+	ComponentType,
+	Guild as DJSGuild,
+	InteractionResponseType,
+	Routes
+} from 'discord.js';
+import { noOp, objectEntries, round, Time } from 'e';
 import { Bank } from 'oldschooljs';
+import Monster from 'oldschooljs/dist/structures/Monster';
 import PromiseQueue from 'p-queue';
 
 import { CLIENT_ID } from '../config';
 import { SILENT_ERROR } from '../lib/constants';
 import { evalMathExpression } from '../lib/expressionParser';
-import { defaultGear } from '../lib/gear';
+import { hasGracefulEquipped, readableStatName } from '../lib/gear';
+import { effectiveMonsters } from '../lib/minions/data/killableMonsters';
+import { KillableMonster } from '../lib/minions/types';
+import { MUserClass } from '../lib/MUser';
+import { getMinigameScore, Minigames } from '../lib/settings/minigames';
 import { prisma } from '../lib/settings/prisma';
-import { UserSettings } from '../lib/settings/types/UserSettings';
+import creatures from '../lib/skilling/skills/hunter/creatures';
+import { Rune } from '../lib/skilling/skills/runecraft';
 import { filterLootReplace } from '../lib/slayer/slayerUtil';
-import { Gear } from '../lib/structures/Gear';
 import type { ItemBank } from '../lib/types';
-import { assert, channelIsSendable, sanitizeBank } from '../lib/util';
-import { logError } from '../lib/util/logError';
+import {
+	anglerBoosts,
+	channelIsSendable,
+	formatItemReqs,
+	hasSkillReqs,
+	itemNameFromID,
+	sanitizeBank,
+	stringMatches,
+	validateItemBankAndThrow
+} from '../lib/util';
+import { deferInteraction, interactionReply } from '../lib/util/interactionReply';
 import resolveItems from '../lib/util/resolveItems';
-import { respondToButton } from '../lib/util/respondToButton';
 import { bingoIsActive, determineBingoProgress, onFinishTile } from './lib/bingo';
+import { mahojiUserSettingsUpdate } from './settingsUpdate';
 
 export function mahojiParseNumber({
 	input,
@@ -40,36 +61,48 @@ export function mahojiParseNumber({
 	return parsed;
 }
 
-export async function handleMahojiConfirmation(interaction: SlashCommandInteraction, str: string, _users?: string[]) {
-	const channel = globalClient.channels.cache.get(interaction.channelID.toString());
+async function silentButtonAck(interaction: ButtonInteraction) {
+	return globalClient.rest.post(Routes.interactionCallback(interaction.id, interaction.token), {
+		body: {
+			type: InteractionResponseType.DeferredMessageUpdate
+		}
+	});
+}
+
+export async function handleMahojiConfirmation(
+	interaction: ChatInputCommandInteraction,
+	str: string,
+	_users?: string[]
+) {
+	const channel = globalClient.channels.cache.get(interaction.channelId.toString());
 	if (!channelIsSendable(channel)) throw new Error('Channel for confirmation not found.');
 	if (!interaction.deferred) {
-		await interaction.deferReply();
+		await deferInteraction(interaction);
 	}
 
-	const users = _users ?? [interaction.userID.toString()];
+	const users = _users ?? [interaction.user.id];
 	let confirmed: string[] = [];
 	const isConfirmed = () => confirmed.length === users.length;
 	const confirmMessage = await channel.send({
 		content: str,
 		components: [
-			[
-				new MessageButton({
+			new ActionRowBuilder<ButtonBuilder>().addComponents([
+				new ButtonBuilder({
 					label: 'Confirm',
-					style: 'PRIMARY',
-					customID: 'CONFIRM'
+					style: ButtonStyle.Primary,
+					customId: 'CONFIRM'
 				}),
-				new MessageButton({
+				new ButtonBuilder({
 					label: 'Cancel',
-					style: 'SECONDARY',
-					customID: 'CANCEL'
+					style: ButtonStyle.Secondary,
+					customId: 'CANCEL'
 				})
-			]
+			])
 		]
 	});
 
 	return new Promise<void>(async (resolve, reject) => {
-		const collector = confirmMessage.createMessageComponentInteractionCollector({
+		const collector = confirmMessage.createMessageComponentCollector<ComponentType.Button>({
 			time: Time.Second * 15
 		});
 
@@ -78,44 +111,46 @@ export async function handleMahojiConfirmation(interaction: SlashCommandInteract
 			confirmed.push(id);
 			if (!isConfirmed()) return;
 			collector.stop();
-			if (!confirmMessage.deleted) await confirmMessage.delete();
+			await confirmMessage.delete().catch(noOp);
 			resolve();
 		}
 
+		let cancelled = false;
 		const cancel = async (reason: 'time' | 'cancel') => {
-			if (!confirmMessage.deleted) await confirmMessage.delete();
-			await interaction.respond({
-				type: InteractionType.ApplicationCommand,
-				response: {
-					type: InteractionResponseType.ChannelMessageWithSource,
-					data: {
-						content:
-							reason === 'cancel' ? 'The confirmation was cancelled.' : 'You did not confirm in time.',
-						flags: MessageFlags.Ephemeral
-					}
-				},
-				interaction
-			});
+			if (cancelled) return;
+			cancelled = true;
+			await confirmMessage.delete().catch(noOp);
+			if (!interaction.replied) {
+				await interactionReply(interaction, {
+					content: reason === 'cancel' ? 'The confirmation was cancelled.' : 'You did not confirm in time.',
+					ephemeral: true
+				});
+			}
 			collector.stop();
 			reject(new Error(SILENT_ERROR));
 		};
 
-		collector.on('collect', async i => {
+		collector.on('collect', i => {
 			const { id } = i.user;
 			if (!users.includes(id)) {
 				i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
-				return false;
+				return;
 			}
-			if (i.customID === 'CANCEL') {
-				return cancel('cancel');
+			if (i.customId === 'CANCEL') {
+				cancel('cancel');
+				return;
 			}
-			if (i.customID === 'CONFIRM') {
-				respondToButton(i.id, i.token);
-				return confirm(id);
+			if (i.customId === 'CONFIRM') {
+				silentButtonAck(i);
+				confirm(id);
 			}
 		});
 
-		collector.on('end', () => !isConfirmed() && cancel('time'));
+		collector.on('end', () => {
+			if (!isConfirmed()) {
+				cancel('time');
+			}
+		});
 	});
 }
 
@@ -139,59 +174,6 @@ export async function mahojiUsersSettingsFetch(user: bigint | string, select?: P
 	});
 	if (!result) throw new Error(`mahojiUsersSettingsFetch returned no result for ${user}`);
 	return result as User;
-}
-
-export async function mahojiUserSettingsUpdate(user: string | bigint | KlasaUser, data: Prisma.UserUpdateArgs['data']) {
-	try {
-		const klasaUser =
-			typeof user === 'string' || typeof user === 'bigint' ? await globalClient.fetchUser(user) : user;
-
-		const newUser = await prisma.user.update({
-			data,
-			where: {
-				id: klasaUser.id
-			}
-		});
-
-		await klasaUser.settings.sync(true);
-
-		const errorContext = {
-			user_id: klasaUser.id
-		};
-
-		assert(
-			BigInt(klasaUser.settings.get(UserSettings.GP)) === newUser.GP,
-			'Patched user should match',
-			errorContext
-		);
-		assert(
-			klasaUser.settings.get(UserSettings.LMSPoints) === newUser.lms_points,
-			'Patched user should match',
-			errorContext
-		);
-		const klasaBank: Readonly<ItemBank> = klasaUser.settings.get('bank') as any;
-		const newBank = newUser.bank;
-		for (const [key, value] of Object.entries(klasaBank)) {
-			assert((newBank as any)[key] === value, `Item[${key}] in patched user should match`, errorContext);
-		}
-		assert(
-			klasaUser.settings.get(UserSettings.HonourLevel) === newUser.honour_level,
-			'Patched user should match',
-			errorContext
-		);
-		assert(
-			JSON.stringify(klasaUser.settings.get('gear.melee')) === JSON.stringify(newUser.gear_melee),
-			'Melee gear should match'
-		);
-
-		return { newUser };
-	} catch (err) {
-		logError(err, {
-			user_id: user.toString(),
-			updated_data: JSON.stringify(data)
-		});
-		throw err;
-	}
 }
 
 /**
@@ -227,21 +209,7 @@ export async function mahojiGuildSettingsUpdate(guild: string | DJSGuild, data: 
 		}
 	});
 	untrustedGuildSettingsCache.set(newGuild.id, newGuild);
-	await (globalClient.gateways.get('guilds') as any)?.get(guildID)?.sync(true);
 	return { newGuild };
-}
-
-export function getUserGear(user: User) {
-	return {
-		melee: new Gear((user.gear_melee as any) ?? { ...defaultGear }),
-		mage: new Gear((user.gear_mage as any) ?? { ...defaultGear }),
-		range: new Gear((user.gear_range as any) ?? { ...defaultGear }),
-		misc: new Gear((user.gear_misc as any) ?? { ...defaultGear }),
-		skilling: new Gear((user.gear_skilling as any) ?? { ...defaultGear }),
-		wildy: new Gear((user.gear_wildy as any) ?? { ...defaultGear }),
-		fashion: new Gear((user.gear_fashion as any) ?? { ...defaultGear }),
-		other: new Gear((user.gear_other as any) ?? { ...defaultGear })
-	};
 }
 
 export function patronMsg(tierNeeded: number) {
@@ -268,7 +236,6 @@ export async function mahojiClientSettingsUpdate(data: Prisma.ClientStorageUpdat
 		},
 		data
 	});
-	await globalClient.settings.sync(true);
 }
 
 export function getMahojiBank(user: User) {
@@ -308,32 +275,6 @@ export async function userStatsBankUpdate(userID: string, key: UserStatsBankKey,
 	}));
 }
 
-export function allItemsOwned(user: KlasaUser | User): Bank {
-	const bank = new Bank();
-	if (user instanceof KlasaUser) {
-		bank.add(user.bank({ withGP: true }));
-		const equippedPet = user.settings.get(UserSettings.Minion.EquippedPet);
-		if (equippedPet) bank.add(equippedPet);
-	} else {
-		bank.add(user.bank as ItemBank);
-		bank.add('Coins', Number(user.GP));
-		if (user.minion_equippedPet) {
-			bank.add(user.minion_equippedPet);
-		}
-	}
-
-	const gear = user instanceof KlasaUser ? user.rawGear() : getUserGear(user);
-	for (const setup of Object.values(gear)) {
-		for (const equipped of Object.values(setup)) {
-			if (equipped?.item) {
-				bank.add(equipped.item, equipped.quantity);
-			}
-		}
-	}
-
-	return bank;
-}
-
 export const userQueues: Map<string, PromiseQueue> = new Map();
 export function getUserUpdateQueue(userID: string) {
 	let currentQueue = userQueues.get(userID);
@@ -348,35 +289,6 @@ export function getUserUpdateQueue(userID: string) {
 async function userQueueFn<T>(userID: string, fn: () => Promise<T>) {
 	const queue = getUserUpdateQueue(userID);
 	return queue.add(() => fn());
-}
-
-async function calculateAddItemsToCLUpdates({
-	userID,
-	items,
-	dontAddToTempCL = false,
-	user
-}: {
-	user?: User;
-	items: Bank;
-	dontAddToTempCL?: boolean;
-	userID: string;
-}): Promise<Prisma.UserUpdateArgs['data']> {
-	const settings: User = user ?? (await mahojiUsersSettingsFetch(userID));
-	const updates: Prisma.UserUpdateArgs['data'] = {
-		collectionLogBank: new Bank(settings.collectionLogBank as ItemBank).add(items).bank
-	};
-
-	if (!dontAddToTempCL) {
-		updates.temp_cl = new Bank(settings.temp_cl as ItemBank).add(items).bank;
-	}
-	return updates;
-}
-
-export async function addItemsToCollectionLog(opts: { items: Bank; dontAddToTempCL?: boolean; userID: string }) {
-	return userQueueFn(opts.userID, async () => {
-		const updates = await calculateAddItemsToCLUpdates(opts);
-		return mahojiUserSettingsUpdate(opts.userID, updates);
-	});
 }
 
 interface TransactItemsArgs {
@@ -409,21 +321,19 @@ export async function transactItemsFromBank({
 	let itemsToAdd = options.itemsToAdd ? options.itemsToAdd.clone() : undefined;
 	let itemsToRemove = options.itemsToRemove ? options.itemsToRemove.clone() : undefined;
 	return userQueueFn(userID, async () => {
-		const settings = await mahojiUsersSettingsFetch(userID);
-		const currentBank = new Bank().add(settings.bank as ItemBank);
-		const previousCL = new Bank().add(settings.collectionLogBank as ItemBank);
-		const previousTempCL = new Bank().add(settings.temp_cl as ItemBank);
+		const settings = await mUserFetch(userID);
+		const currentBank = new Bank().add(settings.user.bank as ItemBank);
+		const previousCL = new Bank().add(settings.user.collectionLogBank as ItemBank);
+		const previousTempCL = new Bank().add(settings.user.temp_cl as ItemBank);
 
 		let clUpdates: Prisma.UserUpdateArgs['data'] = {};
 		if (itemsToAdd) {
 			const { bankLoot, clLoot } = filterLoot
-				? filterLootReplace(allItemsOwned(settings), itemsToAdd)
+				? filterLootReplace(settings.allItemsOwned(), itemsToAdd)
 				: { bankLoot: itemsToAdd, clLoot: itemsToAdd };
 			itemsToAdd = bankLoot;
 
-			clUpdates = collectionLog
-				? await calculateAddItemsToCLUpdates({ items: clLoot, dontAddToTempCL, userID })
-				: {};
+			clUpdates = collectionLog ? settings.calculateAddItemsToCLUpdates({ items: clLoot, dontAddToTempCL }) : {};
 		}
 
 		let gpUpdate: { increment: number } | undefined = undefined;
@@ -516,7 +426,7 @@ export async function updateGPTrackSetting(
 		| 'duelTaxBank'
 		| 'gp_ic',
 	amount: number,
-	user?: KlasaUser
+	user?: MUser
 ) {
 	if (!user) {
 		await prisma.clientStorage.update({
@@ -531,7 +441,7 @@ export async function updateGPTrackSetting(
 		});
 		return;
 	}
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		[setting]: {
 			increment: amount
 		}
@@ -546,10 +456,337 @@ const masterFarmerOutfit = resolveItems([
 	'Master farmer boots'
 ]);
 
-export function userHasMasterFarmerOutfit(user: KlasaUser) {
-	const allItems = allItemsOwned(user);
+export function userHasMasterFarmerOutfit(user: MUser) {
+	const allItems = user.allItemsOwned();
 	for (const item of masterFarmerOutfit) {
 		if (!allItems.has(item)) return false;
 	}
 	return true;
+}
+
+export function userHasGracefulEquipped(user: MUser) {
+	const rawGear = user.gear;
+	for (const i of Object.values(rawGear)) {
+		if (hasGracefulEquipped(i)) return true;
+	}
+	return false;
+}
+
+export function anglerBoostPercent(user: MUser) {
+	const skillingSetup = user.gear.skilling;
+	let amountEquipped = 0;
+	let boostPercent = 0;
+	for (const [id, percent] of anglerBoosts) {
+		if (skillingSetup.hasEquipped([id])) {
+			boostPercent += percent;
+			amountEquipped++;
+		}
+	}
+	if (amountEquipped === 4) {
+		boostPercent += 0.5;
+	}
+	return round(boostPercent, 1);
+}
+
+const rogueOutfit = resolveItems(['Rogue mask', 'Rogue top', 'Rogue trousers', 'Rogue gloves', 'Rogue boots']);
+
+export function rogueOutfitPercentBonus(user: MUser): number {
+	const skillingSetup = user.gear.skilling;
+	let amountEquipped = 0;
+	for (const id of rogueOutfit) {
+		if (skillingSetup.hasEquipped([id])) {
+			amountEquipped++;
+		}
+	}
+	return amountEquipped * 20;
+}
+
+export function countSkillsAtleast99(user: MUser) {
+	return Object.values(user.skillsAsLevels).filter(lvl => lvl >= 99).length;
+}
+
+export function hasMonsterRequirements(user: MUser, monster: KillableMonster) {
+	if (monster.qpRequired && user.QP < monster.qpRequired) {
+		return [
+			false,
+			`You need ${monster.qpRequired} QP to kill ${monster.name}. You can get Quest Points through questing with \`/activities quest\``
+		];
+	}
+
+	if (monster.itemsRequired) {
+		const itemsRequiredStr = formatItemReqs(monster.itemsRequired);
+		for (const item of monster.itemsRequired) {
+			if (Array.isArray(item)) {
+				if (!item.some(itemReq => user.hasEquippedOrInBank(itemReq as number))) {
+					return [false, `You need these items to kill ${monster.name}: ${itemsRequiredStr}`];
+				}
+			} else if (!user.hasEquippedOrInBank(item)) {
+				return [
+					false,
+					`You need ${itemsRequiredStr} to kill ${monster.name}. You're missing ${itemNameFromID(item)}.`
+				];
+			}
+		}
+	}
+
+	if (monster.levelRequirements) {
+		const [hasReqs, str] = hasSkillReqs(user, monster.levelRequirements);
+		if (!hasReqs) {
+			return [false, `You don't meet the skill requirements to kill ${monster.name}, you need: ${str}.`];
+		}
+	}
+
+	if (monster.minimumGearRequirements) {
+		for (const [setup, requirements] of objectEntries(monster.minimumGearRequirements)) {
+			const gear = user.gear[setup];
+			if (setup && requirements) {
+				const [meetsRequirements, unmetKey, has] = gear.meetsStatRequirements(requirements);
+				if (!meetsRequirements) {
+					return [
+						false,
+						`You don't have the requirements to kill ${monster.name}! Your ${readableStatName(
+							unmetKey!
+						)} stat in your ${setup} setup is ${has}, but you need atleast ${
+							monster.minimumGearRequirements[setup]![unmetKey!]
+						}.`
+					];
+				}
+			}
+		}
+	}
+
+	return [true];
+}
+
+export function resolveAvailableItemBoosts(user: MUser, monster: KillableMonster) {
+	const boosts = new Bank();
+	if (monster.itemInBankBoosts) {
+		for (const boostSet of monster.itemInBankBoosts) {
+			let highestBoostAmount = 0;
+			let highestBoostItem = 0;
+
+			// find the highest boost that the player has
+			for (const [itemID, boostAmount] of Object.entries(boostSet)) {
+				const parsedId = parseInt(itemID);
+				if (!user.hasEquippedOrInBank(parsedId)) {
+					continue;
+				}
+				if (boostAmount > highestBoostAmount) {
+					highestBoostAmount = boostAmount;
+					highestBoostItem = parsedId;
+				}
+			}
+
+			if (highestBoostAmount && highestBoostItem) {
+				boosts.add(highestBoostItem, highestBoostAmount);
+			}
+		}
+	}
+	return boosts.bank;
+}
+
+export async function getKCByName(user: MUser, kcName: string): Promise<[string, number] | [null, 0]> {
+	const mon = effectiveMonsters.find(
+		mon => stringMatches(mon.name, kcName) || mon.aliases.some(alias => stringMatches(alias, kcName))
+	);
+	if (mon) {
+		return [mon.name, user.getKC((mon as unknown as Monster).id)];
+	}
+
+	const minigame = Minigames.find(
+		game => stringMatches(game.name, kcName) || game.aliases.some(alias => stringMatches(alias, kcName))
+	);
+	if (minigame) {
+		return [minigame.name, await getMinigameScore(user.id, minigame.column)];
+	}
+
+	const creature = creatures.find(c => c.aliases.some(alias => stringMatches(alias, kcName)));
+	if (creature) {
+		return [creature.name, user.getCreatureScore(creature.id)];
+	}
+
+	const special: [string[], number][] = [
+		[['superior', 'superiors', 'superior slayer monster'], user.user.slayer_superior_count],
+		[['tithefarm', 'tithe'], user.user.stats_titheFarmsCompleted]
+	];
+	const res = special.find(s => s[0].includes(kcName));
+	if (res) {
+		return [res[0][0], res[1]];
+	}
+
+	return [null, 0];
+}
+
+export function calcMaxRCQuantity(rune: Rune, user: MUser) {
+	const level = user.skillLevel('runecraft');
+	for (let i = rune.levels.length; i > 0; i--) {
+		const [levelReq, qty] = rune.levels[i - 1];
+		if (level >= levelReq) return qty;
+	}
+
+	return 0;
+}
+
+export type ClientBankKey =
+	| 'sold_items_bank'
+	| 'herblore_cost_bank'
+	| 'construction_cost_bank'
+	| 'farming_cost_bank'
+	| 'farming_loot_bank'
+	| 'buy_cost_bank'
+	| 'buy_loot_bank'
+	| 'magic_cost_bank'
+	| 'crafting_cost'
+	| 'gnome_res_cost'
+	| 'gnome_res_loot'
+	| 'rogues_den_cost'
+	| 'gauntlet_loot'
+	| 'cox_cost'
+	| 'cox_loot'
+	| 'collecting_cost'
+	| 'collecting_loot'
+	| 'mta_cost'
+	| 'bf_cost'
+	| 'mage_arena_cost'
+	| 'hunter_cost'
+	| 'hunter_loot'
+	| 'revs_cost'
+	| 'revs_loot'
+	| 'inferno_cost'
+	| 'dropped_items'
+	| 'runecraft_cost'
+	| 'smithing_cost'
+	| 'economyStats_dicingBank'
+	| 'economyStats_duelTaxBank'
+	| 'economyStats_dailiesAmount'
+	| 'economyStats_itemSellTaxBank'
+	| 'economyStats_bankBgCostBank'
+	| 'economyStats_sacrificedBank'
+	| 'economyStats_wintertodtCost'
+	| 'economyStats_wintertodtLoot'
+	| 'economyStats_fightCavesCost'
+	| 'economyStats_PVMCost'
+	| 'economyStats_thievingCost'
+	| 'nightmare_cost'
+	| 'create_cost'
+	| 'create_loot'
+	| 'tob_cost'
+	| 'tob_loot'
+	| 'degraded_items_cost'
+	| 'tks_cost'
+	| 'tks_loot'
+	| 'zippy_loot'
+	| 'trip_doubling_loot'
+	| 'nex_cost'
+	| 'vasa_loot'
+	| 'ods_loot'
+	| 'nex_loot'
+	| 'tame_merging_cost'
+	| 'naxxus_loot'
+	| 'naxxus_cost'
+	| 'ignecarus_cost'
+	| 'ignecarus_loot'
+	| 'kibble_cost'
+	| 'mr_cost'
+	| 'mr_loot'
+	| 'item_contract_cost'
+	| 'item_contract_loot'
+	| 'kg_cost'
+	| 'kg_loot'
+	| 'nex_cost'
+	| 'nex_loot'
+	| 'kk_cost'
+	| 'kk_loot'
+	| 'vasa_cost'
+	| 'vasa_loot'
+	| 'ods_cost'
+	| 'ods_loot'
+	| 'naxxus_loot'
+	| 'naxxus_cost'
+	| 'tame_merging_cost'
+	| 'trip_doubling_loot'
+	| 'fc_cost'
+	| 'fc_loot'
+	| 'zippy_loot'
+	| 'market_prices'
+	| 'bb_cost'
+	| 'bb_loot'
+	| 'moktang_cost'
+	| 'moktang_loot'
+	| 'kk_cost';
+
+export async function updateBankSetting(key: ClientBankKey, bankToAdd: Bank) {
+	if (bankToAdd === undefined || bankToAdd === null) throw new Error(`Gave null bank for ${key}`);
+	const currentClientSettings = await mahojiClientSettingsFetch({
+		[key]: true
+	});
+	const current = new Bank(currentClientSettings[key] as ItemBank);
+	sanitizeBank(current);
+	validateItemBankAndThrow(current.bank);
+	const newBank = new Bank().add(current).add(bankToAdd);
+
+	const res = await mahojiClientSettingsUpdate({
+		[key]: newBank.bank
+	});
+	return res;
+}
+
+export async function updateLegacyUserBankSetting(
+	userID: string,
+	key: 'tob_cost' | 'tob_loot' | 'lottery_input',
+	bankToAdd: Bank
+) {
+	if (bankToAdd === undefined || bankToAdd === null) throw new Error(`Gave null bank for ${key}`);
+	const currentUserSettings = await mahojiUsersSettingsFetch(userID, {
+		[key]: true
+	});
+	const current = new Bank(currentUserSettings[key] as ItemBank);
+	sanitizeBank(current);
+	validateItemBankAndThrow(current.bank);
+	const newBank = new Bank().add(current).add(bankToAdd);
+
+	const res = await mahojiUserSettingsUpdate(userID, {
+		[key]: newBank.bank
+	});
+	return res;
+}
+
+export async function syncLinkedAccountPerks(user: MUser) {
+	let main = user.user.main_account;
+	const allAccounts: string[] = [...user.user.ironman_alts];
+	if (main) {
+		allAccounts.push(main);
+	}
+	const allUsers = await Promise.all(
+		allAccounts.map(a =>
+			mahojiUsersSettingsFetch(a, {
+				id: true,
+				premium_balance_tier: true,
+				premium_balance_expiry_date: true,
+				bitfield: true
+			})
+		)
+	);
+	allUsers.map(u => new MUserClass(u));
+}
+
+export async function syncLinkedAccounts() {
+	const users = await prisma.user.findMany({
+		where: {
+			ironman_alts: {
+				isEmpty: false
+			}
+		},
+		select: {
+			id: true,
+			ironman_alts: true,
+			premium_balance_tier: true,
+			premium_balance_expiry_date: true,
+			bitfield: true
+		}
+	});
+	for (const u of users) {
+		const mUser = new MUserClass(u as User);
+		await syncLinkedAccountPerks(mUser);
+	}
 }

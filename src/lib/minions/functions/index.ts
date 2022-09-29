@@ -1,5 +1,4 @@
 import { User } from '@prisma/client';
-import { KlasaUser } from 'klasa';
 import { Monsters } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
@@ -41,7 +40,7 @@ const miscHpMap: Record<number, number> = {
 	[Naxxus.id]: NAXXUS_HP
 };
 
-function meleeOnly(user: KlasaUser): AttackStyles[] {
+function meleeOnly(user: MUser): AttackStyles[] {
 	const skills = user.getAttackStyles();
 	if (skills.some(skill => skill === SkillsEnum.Ranged || skill === SkillsEnum.Magic)) {
 		return [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence];
@@ -49,7 +48,7 @@ function meleeOnly(user: KlasaUser): AttackStyles[] {
 	return skills;
 }
 export function resolveAttackStyles(
-	user: KlasaUser,
+	user: MUser,
 	params: ResolveAttackStylesParams
 ): [KillableMonster | undefined, Monster | undefined, AttackStyles[]] {
 	if (params.monsterID === KingGoldemar.id) return [undefined, undefined, meleeOnly(user)];
@@ -97,7 +96,7 @@ export function resolveAttackStyles(
 	return [killableMon, osjsMon, attackStyles];
 }
 
-export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) {
+export async function addMonsterXP(user: MUser, params: AddMonsterXpParams) {
 	const boostMethod = params.burstOrBarrage ? 'barrage' : 'none';
 
 	const [, osjsMon, attackStyles] = resolveAttackStyles(user, {

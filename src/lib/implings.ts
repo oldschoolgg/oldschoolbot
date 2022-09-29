@@ -1,11 +1,9 @@
 import { activity_type_enum } from '@prisma/client';
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank, LootTable, Openables } from 'oldschooljs';
 
 import { BitField } from './constants';
 import { ChimplingImpling, EternalImpling, InfernalImpling, MysteryImpling } from './simulation/customImplings';
-import { SkillsEnum } from './skilling/types';
 import { ActivityTaskOptions } from './types/minions';
 import activityInArea, { WorldLocations } from './util/activityInArea';
 
@@ -24,7 +22,7 @@ const {
 	LuckyImpling
 } = Openables;
 
-export const implings: Record<number, { level: number; customRequirements?: (user: KlasaUser) => Promise<boolean> }> = {
+export const implings: Record<number, { level: number; customRequirements?: (user: MUser) => Promise<boolean> }> = {
 	// [Impling ID, Level to Catch]
 	[BabyImpling.id]: { level: 17 },
 	[YoungImpling.id]: { level: 22 },
@@ -49,7 +47,7 @@ export const implings: Record<number, { level: number; customRequirements?: (use
 			return false;
 		}
 	},
-	[EternalImpling.id]: { level: 99, customRequirements: async user => user.hasItemEquippedAnywhere('Vasa cloak') },
+	[EternalImpling.id]: { level: 99, customRequirements: async user => user.hasEquipped('Vasa cloak') },
 	[MysteryImpling.id]: { level: 105 }
 };
 
@@ -138,7 +136,7 @@ const implingTableByWorldLocation: TWorldLocationImplingTable = {
 		new LootTable().oneIn(caughtChance, hasMrE ? mrETable : defaultImpTable)
 };
 
-export async function handlePassiveImplings(user: KlasaUser, data: ActivityTaskOptions) {
+export async function handlePassiveImplings(user: MUser, data: ActivityTaskOptions) {
 	if (
 		[
 			'FightCaves',
@@ -156,7 +154,8 @@ export async function handlePassiveImplings(user: KlasaUser, data: ActivityTaskO
 	const minutes = Math.floor(data.duration / Time.Minute);
 
 	if (minutes < 4) return null;
-	const level = user.skillLevel(SkillsEnum.Hunter);
+	const skills = user.skillsAsLevels;
+	const level = skills.hunter;
 
 	let bank = new Bank();
 	const missed = new Bank();
@@ -164,7 +163,7 @@ export async function handlePassiveImplings(user: KlasaUser, data: ActivityTaskO
 	let baseChance = IMPLING_CHANCE_PER_MINUTE;
 	const hasScrollOfTheHunt = user.bitfield.includes(BitField.HasScrollOfTheHunt);
 	if (hasScrollOfTheHunt) baseChance = Math.floor(baseChance / 2);
-	if (user.hasItemEquippedAnywhere('Hunter master cape')) baseChance = Math.floor(baseChance / 2);
+	if (user.hasEquipped('Hunter master cape')) baseChance = Math.floor(baseChance / 2);
 
 	const impTable = implingTableByWorldLocation[activityInArea(data)](baseChance, user.usingPet('Mr. E'));
 

@@ -2,7 +2,7 @@ import { Activity, activity_type_enum, loot_track_type, Prisma, PrismaClient } f
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { production } from '../../config';
+import { CLIENT_ID, production } from '../../config';
 import { ItemBank } from '../types';
 import { ActivityTaskData } from '../types/minions';
 import { cleanString } from '../util';
@@ -29,7 +29,7 @@ if (process.env.NODE_ENV !== 'production') global.prisma = prisma;
 export const prismaQueries: Prisma.QueryEvent[] = [];
 export let queryCountStore = { value: 0 };
 prisma.$on('query' as any, (_query: any) => {
-	if (!production && globalClient.ready) {
+	if (!production && globalClient.isReady()) {
 		const query = _query as Prisma.QueryEvent;
 		prismaQueries.push(query);
 	}
@@ -132,4 +132,29 @@ export async function trackLoot(opts: TrackLootOptions) {
 			type: opts.type
 		}
 	});
+}
+
+export async function addToGPTaxBalance(userID: string | string, amount: number) {
+	await Promise.all([
+		prisma.clientStorage.update({
+			where: {
+				id: CLIENT_ID
+			},
+			data: {
+				gp_tax_balance: {
+					increment: amount
+				}
+			}
+		}),
+		prisma.user.update({
+			where: {
+				id: userID.toString()
+			},
+			data: {
+				total_gp_traded: {
+					increment: amount
+				}
+			}
+		})
+	]);
 }

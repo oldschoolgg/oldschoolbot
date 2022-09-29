@@ -1,10 +1,7 @@
 import { reduceNumByPercent, Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { setupParty } from '../../extendables/Message/Party';
-import { Emoji } from '../../lib/constants';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import {
 	determineDgLevelForFloor,
 	dungBuyables,
@@ -24,8 +21,8 @@ import { channelIsSendable, formatDuration, formatSkillRequirements, stringMatch
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUserSettingsUpdate } from '../mahojiSettings';
 
 // Max people in a party:
 const maxTeamSize = 20;
@@ -33,7 +30,7 @@ const maxTeamSize = 20;
 const maxBoostSize = 5;
 const boostPerPlayer = 5;
 
-async function startCommand(channelID: bigint, user: KlasaUser, floor: string | undefined, solo: boolean | undefined) {
+async function startCommand(channelID: string, user: MUser, floor: string | undefined, solo: boolean | undefined) {
 	const isSolo = Boolean(solo);
 
 	let floorToDo = Boolean(floor) ? Number(floor) : maxFloorUserCanDo(user);
@@ -50,9 +47,7 @@ async function startCommand(channelID: bigint, user: KlasaUser, floor: string | 
 	let quantity = Math.floor(calcMaxTripLength(user, 'Dungeoneering') / dungeonLength);
 	let duration = quantity * dungeonLength;
 
-	let message = `${user.username} has created a Dungeoneering party! Anyone can click the ${
-		Emoji.Join
-	} reaction to join, click it again to leave.
+	let message = `${user.usernameOrMention} has created a Dungeoneering party! Use the buttons below to join/leave.
 **Floor:** ${floorToDo}
 **Duration:** ${formatDuration(duration)}
 **Min. Quantity:** ${quantity}
@@ -65,7 +60,7 @@ async function startCommand(channelID: bigint, user: KlasaUser, floor: string | 
 		ironmanAllowed: true,
 		message,
 		customDenier: async user => {
-			if (!user.hasMinion) {
+			if (!user.user.minion_hasBought) {
 				return [true, "you don't have a minion."];
 			}
 			if (user.minionIsBusy) {
@@ -102,10 +97,9 @@ async function startCommand(channelID: bigint, user: KlasaUser, floor: string | 
 
 	const channel = globalClient.channels.cache.get(channelID.toString());
 	if (!channelIsSendable(channel)) return 'No channel found.';
-	let users: KlasaUser[] = [];
+	let users: MUser[] = [];
 	if (!isSolo) {
-		const [usersWhoConfirmed, reactionAwaiter] = await setupParty(channel, user, partyOptions);
-		await reactionAwaiter();
+		const usersWhoConfirmed = await setupParty(channel, user, partyOptions);
 		users = usersWhoConfirmed.filter(u => !u.minionIsBusy);
 	} else {
 		users = [user];
@@ -115,15 +109,15 @@ async function startCommand(channelID: bigint, user: KlasaUser, floor: string | 
 	for (const user of users) {
 		const check = await partyOptions.customDenier!(user);
 		if (check[0]) {
-			return `You can't start a Dungeoneering party because of ${user.username}: ${check[1]}`;
+			return `You can't start a Dungeoneering party because of ${user.usernameOrMention}: ${check[1]}`;
 		}
 		if (user.owns('Scroll of teleportation')) {
 			let y = 15;
-			if (user.hasItemEquippedOrInBank('Dungeoneering master cape')) {
+			if (user.hasEquippedOrInBank('Dungeoneering master cape')) {
 				y += 10;
 			} else if (
-				user.hasItemEquippedOrInBank('Dungeoneering cape') ||
-				user.hasItemEquippedOrInBank('Dungeoneering cape(t)')
+				user.hasEquippedOrInBank('Dungeoneering cape') ||
+				user.hasEquippedOrInBank('Dungeoneering cape(t)')
 			) {
 				y += 5;
 			}
@@ -131,13 +125,13 @@ async function startCommand(channelID: bigint, user: KlasaUser, floor: string | 
 			let x = y / users.length;
 
 			duration = reduceNumByPercent(duration, x);
-			boosts.push(`${x.toFixed(2)}% from ${user.username}`);
+			boosts.push(`${x.toFixed(2)}% from ${user.usernameOrMention}`);
 		}
 		const numGora = numberOfGorajanOutfitsEquipped(user);
 		if (numGora > 0) {
 			let x = (numGora * 6) / users.length;
 			duration = reduceNumByPercent(duration, x);
-			boosts.push(`${x.toFixed(2)}% from ${user.username}'s Gorajan`);
+			boosts.push(`${x.toFixed(2)}% from ${user.usernameOrMention}'s Gorajan`);
 		}
 	}
 
@@ -158,8 +152,8 @@ async function startCommand(channelID: bigint, user: KlasaUser, floor: string | 
 	quantity = Math.floor(calcMaxTripLength(user, 'Dungeoneering') / perFloor);
 	duration = quantity * perFloor;
 
-	let str = `${partyOptions.leader.username}'s dungeoneering party (${users
-		.map(u => u.username)
+	let str = `${partyOptions.leader.usernameOrMention}'s dungeoneering party (${users
+		.map(u => u.usernameOrMention)
 		.join(', ')}) is now off to do ${quantity}x dungeons of the ${formatOrdinal(
 		floorToDo
 	)} floor. Each dungeon takes ${formatDuration(perFloor)} - the total trip will take ${formatDuration(duration)}.`;
@@ -182,7 +176,7 @@ async function startCommand(channelID: bigint, user: KlasaUser, floor: string | 
 	return str;
 }
 
-async function buyCommand(user: KlasaUser, name: string, quantity?: number) {
+async function buyCommand(user: MUser, name: string, quantity?: number) {
 	const buyable = dungBuyables.find(i => stringMatches(name, i.item.name));
 	if (!buyable) {
 		return `That isn't a buyable item. Here are the items you can buy: \n\n${dungBuyables
@@ -196,7 +190,7 @@ async function buyCommand(user: KlasaUser, name: string, quantity?: number) {
 
 	const { item, cost } = buyable;
 	const overallCost = cost * quantity;
-	const balance = user.settings.get(UserSettings.DungeoneeringTokens);
+	const balance = user.user.dungeoneering_tokens;
 	if (balance < overallCost) {
 		return `You don't have enough Dungeoneering tokens to buy the ${quantity}x ${
 			item.name
@@ -204,7 +198,7 @@ async function buyCommand(user: KlasaUser, name: string, quantity?: number) {
 	}
 
 	await user.addItemsToBank({ items: { [item.id]: quantity }, collectionLog: true });
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		dungeoneering_tokens: {
 			decrement: overallCost
 		}
@@ -230,7 +224,7 @@ export const dgCommand: OSBMahojiCommand = {
 					name: 'floor',
 					description: 'The floor you want to do. (Optional, defaults to max)',
 					autocomplete: async (_, user) => {
-						const kUser = await globalClient.fetchUser(user.id);
+						const kUser = await mUserFetch(user.id);
 						return [7, 6, 5, 4, 3, 2, 1]
 							.filter(floor => hasRequiredLevels(kUser, floor))
 							.map(i => ({ name: `Floor ${i}`, value: i.toString() }));
@@ -286,13 +280,11 @@ export const dgCommand: OSBMahojiCommand = {
 		buy?: { item: string; quantity?: number };
 		stats?: {};
 	}>) => {
-		if (interaction) await interaction.deferReply();
-		const user = await globalClient.fetchUser(userID);
+		if (interaction) await deferInteraction(interaction);
+		const user = await mUserFetch(userID);
 		if (options.start) return startCommand(channelID, user, options.start.floor, options.start.solo);
 		if (options.buy) return buyCommand(user, options.buy.item, options.buy.quantity);
-		let str = `<:dungeoneeringToken:829004684685606912> **Dungeoneering Tokens:** ${user.settings
-			.get(UserSettings.DungeoneeringTokens)
-			.toLocaleString()}
+		let str = `<:dungeoneeringToken:829004684685606912> **Dungeoneering Tokens:** ${user.user.dungeoneering_tokens.toLocaleString()}
 **Max floor:** ${maxFloorUserCanDo(user)}`;
 		const { boosts } = gorajanShardChance(user);
 		if (boosts.length > 0) {

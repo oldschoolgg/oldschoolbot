@@ -1,5 +1,3 @@
-import { User } from '@prisma/client';
-import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
@@ -11,8 +9,7 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { mahojiChatHead, newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import getOSItem from '../../../lib/util/getOSItem';
-import { minionName } from '../../../lib/util/minionUtils';
-import { mahojiUserSettingsUpdate } from '../../mahojiSettings';
+import { userHasGracefulEquipped } from '../../mahojiSettings';
 
 export const agilityArenaBuyables = [
 	{
@@ -58,7 +55,7 @@ const brimhavenGraceful = new Bank({
 	'Brimhaven graceful cape': 1
 });
 
-export function determineXPFromTickets(qty: number, user: KlasaUser, hasDiary: boolean) {
+export function determineXPFromTickets(qty: number, user: MUser, hasDiary: boolean) {
 	let baseXP = ticketQuantities[qty as keyof typeof ticketQuantities] ?? ticketQuantities[1000];
 	// The experience reward from the tickets is increased by 5 per ticket for each Agility level above 40.
 	baseXP += 5 * (user.skillLevel(SkillsEnum.Agility) - 40);
@@ -67,10 +64,10 @@ export function determineXPFromTickets(qty: number, user: KlasaUser, hasDiary: b
 	return xpToGive;
 }
 
-export async function agilityArenaCommand(user: User, klasaUser: KlasaUser, channelID: bigint): CommandResponse {
+export async function agilityArenaCommand(user: MUser, channelID: string): CommandResponse {
 	const duration = calcMaxTripLength(user, 'AgilityArena');
 
-	if (!klasaUser.hasGracefulEquipped()) {
+	if (!userHasGracefulEquipped(user)) {
 		return mahojiChatHead({
 			content: 'Ahoy there! You need full Graceful equipped to do the Brimhaven Agility Arena!',
 			head: 'izzy'
@@ -79,7 +76,7 @@ export async function agilityArenaCommand(user: User, klasaUser: KlasaUser, chan
 
 	const boosts = [];
 
-	const [hasKaramjaElite] = await userhasDiaryTier(klasaUser, KaramjaDiary.elite);
+	const [hasKaramjaElite] = await userhasDiaryTier(user, KaramjaDiary.elite);
 	if (hasKaramjaElite) {
 		boosts.push('10% extra tickets for Karamja Elite diary');
 	}
@@ -93,7 +90,7 @@ export async function agilityArenaCommand(user: User, klasaUser: KlasaUser, chan
 		minigameID: 'agility_arena'
 	});
 
-	let str = `${minionName(user)} is now doing the Brimhaven Agility Arena for ${formatDuration(duration)}.`;
+	let str = `${user.minionName} is now doing the Brimhaven Agility Arena for ${formatDuration(duration)}.`;
 
 	if (boosts.length > 0) {
 		str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
@@ -101,22 +98,22 @@ export async function agilityArenaCommand(user: User, klasaUser: KlasaUser, chan
 	return str;
 }
 
-export async function agilityArenaBuyCommand(user: KlasaUser, input: string, qty = 1): CommandResponse {
+export async function agilityArenaBuyCommand(user: MUser, input: string, qty = 1): CommandResponse {
 	const buyable = agilityArenaBuyables.find(
 		i => stringMatches(input, i.item.name) || i.aliases.some(alias => stringMatches(alias, input))
 	);
 
-	const bank = user.bank();
+	const { bank } = user;
 	const amountTicketsHas = bank.amount('Agility arena ticket');
 	if (amountTicketsHas === 0) {
 		return {
-			attachments: [
+			files: [
 				{
-					buffer: await newChatHeadImage({
+					attachment: await newChatHeadImage({
 						content: "Are ye serious! You have no tickets, you can't buy anythin!",
 						head: 'izzy'
 					}),
-					fileName: 'image.jpg'
+					name: 'image.jpg'
 				}
 			]
 		};
@@ -135,8 +132,8 @@ export async function agilityArenaBuyCommand(user: KlasaUser, input: string, qty
 	return 'Invalid options.';
 }
 
-export async function agilityArenaRecolorCommand(user: KlasaUser) {
-	const bank = user.bank();
+export async function agilityArenaRecolorCommand(user: MUser) {
+	const { bank } = user;
 	let cost = 250;
 	if (!bank.has(plainGraceful)) {
 		return mahojiChatHead({
@@ -155,18 +152,18 @@ export async function agilityArenaRecolorCommand(user: KlasaUser) {
 	bank.remove('Agility arena ticket', cost);
 	bank.remove(plainGraceful);
 	bank.add(brimhavenGraceful);
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		bank: bank.bank
 	});
-	await user.addItemsToCollectionLog({ items: brimhavenGraceful });
+	await user.addItemsToCollectionLog(brimhavenGraceful);
 	return mahojiChatHead({
 		content: "I've recolored ye Graceful set, and taken your tickets!",
 		head: 'izzy'
 	});
 }
 
-export async function agilityArenaXPCommand(user: KlasaUser, qty: number): CommandResponse {
-	const amountTicketsHas = user.bank().amount('Agility arena ticket');
+export async function agilityArenaXPCommand(user: MUser, qty: number): CommandResponse {
+	const amountTicketsHas = user.bank.amount('Agility arena ticket');
 
 	if (!(qty in ticketQuantities)) {
 		return `You can only redeem tickets for XP at the following quantities: ${Object.keys(ticketQuantities).join(
@@ -181,7 +178,7 @@ export async function agilityArenaXPCommand(user: KlasaUser, qty: number): Comma
 	let str = `Redeemed ${qty}x Agility arena tickets for ${xpToGive.toLocaleString()} Agility XP. (${(
 		xpToGive / qty
 	).toFixed(2)} ea)`;
-	await user.removeItemsFromBank(new Bank().add('Agility arena ticket', qty));
+	await transactItems({ userID: user.id, itemsToRemove: new Bank().add('Agility arena ticket', qty) });
 	await user.addXP({
 		skillName: SkillsEnum.Agility,
 		amount: xpToGive,

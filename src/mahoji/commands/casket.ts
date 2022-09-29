@@ -1,15 +1,15 @@
-import { KlasaUser } from 'klasa';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { PerkTier } from '../../lib/constants';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { Workers } from '../../lib/workers';
 import { OSBMahojiCommand } from '../lib/util';
 
-function determineLimit(user: KlasaUser) {
+function determineLimit(user: MUser) {
 	const perkTier = getUsersPerkTier(user);
 	if (perkTier >= PerkTier.Six) return 300_000;
 	if (perkTier >= PerkTier.Five) return 200_000;
@@ -42,7 +42,7 @@ export const casketCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ options, userID, interaction }: CommandRunOptions<{ name: string; quantity: number }>) => {
-		const user = await globalClient.fetchUser(userID.toString());
+		const user = await mUserFetch(userID.toString());
 		const limit = determineLimit(user);
 		if (options.quantity > limit) {
 			return `The quantity you gave exceeds your limit of ${limit.toLocaleString()}! *You can increase your limit by up to 100,000 by becoming a patron at <https://www.patreon.com/oldschoolbot>.*`;
@@ -54,7 +54,7 @@ export const casketCommand: OSBMahojiCommand = {
 			return `Not a valid clue tier. The valid tiers are: ${ClueTiers.map(_tier => _tier.name).join(', ')}`;
 		}
 
-		await interaction.deferReply();
+		await deferInteraction(interaction);
 
 		const [loot, title] = await Workers.casketOpen({ quantity: options.quantity, clueTierID: clueTier.id });
 
@@ -67,7 +67,7 @@ export const casketCommand: OSBMahojiCommand = {
 		});
 
 		return {
-			attachments: [image.file]
+			files: [image.file]
 		};
 	}
 };

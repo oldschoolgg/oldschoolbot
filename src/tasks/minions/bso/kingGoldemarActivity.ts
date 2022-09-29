@@ -1,5 +1,4 @@
 import { percentChance, randArrItem } from 'e';
-import { KlasaUser, Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
@@ -9,12 +8,12 @@ import KingGoldemar, {
 } from '../../../lib/minions/data/killableMonsters/custom/bosses/KingGoldemar';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import { trackLoot } from '../../../lib/settings/prisma';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { calcDwwhChance, gpCostPerKill } from '../../../lib/structures/Boss';
 import { NewBossOptions } from '../../../lib/types/minions';
-import { formatDuration, roll, toKMB, updateBankSetting } from '../../../lib/util';
+import { formatDuration, roll, toKMB } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { sendToChannelID } from '../../../lib/util/webhook';
+import { updateBankSetting } from '../../../mahoji/mahojiSettings';
 
 const methodsOfDeath = [
 	'Beheaded',
@@ -27,15 +26,16 @@ const methodsOfDeath = [
 	'Fell into a lava fountain'
 ];
 
-export default class extends Task {
+export const kingGoldemarTask: MinionTask = {
+	type: 'KingGoldemar',
 	async run(data: NewBossOptions) {
 		const { channelID, users: idArr, duration, bossUsers } = data;
-		const deaths: KlasaUser[] = [];
-		const users: KlasaUser[] = await Promise.all(idArr.map(i => this.client.fetchUser(i)));
+		const deaths: MUser[] = [];
+		const users: MUser[] = await Promise.all(idArr.map(i => mUserFetch(i)));
 		const solo = users.length < 2 ? true : false;
 
 		const getUser = (id: string) => users.find(u => u.id === id)!;
-		const dwwhTable: KlasaUser[] = [];
+		const dwwhTable: MUser[] = [];
 
 		for (const { user, deathChance } of bossUsers) {
 			if (percentChance(deathChance)) {
@@ -63,7 +63,7 @@ export default class extends Task {
 			});
 		}
 
-		await Promise.all(users.map(u => u.incrementMonsterScore(KingGoldemar.id, 1)));
+		await Promise.all(users.map(u => u.incrementKC(KingGoldemar.id, 1)));
 
 		let dwwhChance = calcDwwhChance(users);
 
@@ -71,7 +71,7 @@ export default class extends Task {
 		const dwwhRecipient = gotDWWH ? randArrItem(dwwhTable) : null;
 		const killStr =
 			gotDWWH && dwwhRecipient
-				? `${dwwhRecipient?.username} delivers a crushing blow to King Goldemars warhammer, breaking it. The king has no choice but to flee the chambers, **leaving behind his broken hammer.**`
+				? `${dwwhRecipient?.usernameOrMention} delivers a crushing blow to King Goldemars warhammer, breaking it. The king has no choice but to flee the chambers, **leaving behind his broken hammer.**`
 				: `${
 						solo ? 'You' : 'Your team'
 				  } brought King Goldemar to a very weak state, he fled the chambers before he could be killed and escaped through a secret exit, promising to get revenge on you.`;
@@ -79,9 +79,9 @@ export default class extends Task {
 		let resultStr = `${tagAll}\n\n${killStr}\n\n${Emoji.Casket} **Loot:**`;
 
 		if (gotDWWH && dwwhRecipient) {
-			this.client.emit(
+			globalClient.emit(
 				Events.ServerNotification,
-				`**${dwwhRecipient?.username}** just received a **Broken dwarven warhammer** in a team of ${users.length}!`
+				`**${dwwhRecipient?.usernameOrMention}** just received a **Broken dwarven warhammer** in a team of ${users.length}!`
 			);
 		}
 
@@ -105,7 +105,7 @@ export default class extends Task {
 			await user.addItemsToBank({ items: loot, collectionLog: true });
 			resultStr += `\n${user} received ${loot}.`;
 		}
-		updateBankSetting(this.client, ClientSettings.EconomyStats.KingGoldemarLoot, totalLoot);
+		updateBankSetting('kg_loot', totalLoot);
 
 		await trackLoot({
 			duration,
@@ -144,4 +144,4 @@ export default class extends Task {
 			);
 		}
 	}
-}
+};

@@ -1,9 +1,16 @@
 /* eslint-disable no-case-declarations */
 import { userMention } from '@discordjs/builders';
-import { GuildMember, MessageActionRow, MessageButton } from 'discord.js';
+import {
+	ActionRowBuilder,
+	APIInteractionGuildMember,
+	AttachmentBuilder,
+	ButtonBuilder,
+	ButtonInteraction,
+	ButtonStyle,
+	ChatInputCommandInteraction,
+	GuildMember
+} from 'discord.js';
 import { increaseNumByPercent, objectEntries, round, Time } from 'e';
-import { KlasaUser } from 'klasa';
-import { APIInteractionGuildMember } from 'mahoji';
 import { Bank, Items } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc';
@@ -19,7 +26,7 @@ import { prisma, trackLoot } from './settings/prisma';
 import { runCommand } from './settings/settings';
 import { assert, channelIsSendable, itemNameFromID, roll } from './util';
 import getOSItem from './util/getOSItem';
-import { makeBankImageKlasa } from './util/makeBankImage';
+import { makeBankImage } from './util/makeBankImage';
 import resolveItems from './util/resolveItems';
 import { Tame, tame_growth, TameActivity, User } from '.prisma/client';
 
@@ -402,7 +409,7 @@ export function shortTameTripDesc(activity: TameActivity) {
 }
 
 export async function runTameTask(activity: TameActivity, tame: Tame) {
-	async function handleFinish(res: { loot: Bank | null; message: string; user: KlasaUser }) {
+	async function handleFinish(res: { loot: Bank | null; message: string; user: MUser }) {
 		const previousTameCl = new Bank({ ...(tame.max_total_loot as ItemBank) });
 
 		if (res.loot) {
@@ -423,21 +430,30 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 		channel.send({
 			content: res.message,
 			components: [
-				new MessageActionRow().addComponents(
-					new MessageButton().setCustomID('REPEAT_TAME_TRIP').setLabel('Repeat Trip').setStyle('SECONDARY')
+				new ActionRowBuilder<ButtonBuilder>().addComponents(
+					new ButtonBuilder()
+						.setCustomId('REPEAT_TAME_TRIP')
+						.setLabel('Repeat Trip')
+						.setStyle(ButtonStyle.Secondary)
 				)
 			],
-			...(res.loot
-				? await makeBankImageKlasa({
-						bank: res.loot,
-						title: `${tameName(tame)}'s Loot`,
-						user: res.user,
-						previousCL: previousTameCl
-				  })
-				: {})
+			files: res.loot
+				? [
+						new AttachmentBuilder(
+							(
+								await makeBankImage({
+									bank: res.loot,
+									title: `${tameName(tame)}'s Loot`,
+									user: res.user,
+									previousCL: previousTameCl
+								})
+							).file.attachment
+						)
+				  ]
+				: undefined
 		});
 	}
-	const user = await globalClient.fetchUser(activity.user_id);
+	const user = await mUserFetch(activity.user_id);
 
 	const activityData = activity.data as any as TameTaskOptions;
 	switch (activityData.type) {
@@ -504,7 +520,7 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 			const collectable = collectables.find(c => c.item.id === itemID)!;
 			const totalQuantity = quantity * collectable.quantity;
 			const loot = new Bank().add(collectable.item.id, totalQuantity);
-			const user = await globalClient.fetchUser(activity.user_id);
+			const user = await mUserFetch(activity.user_id);
 			let str = `${user}, ${tameName(tame)} finished collecting ${totalQuantity}x ${
 				collectable.item.name
 			}. (${Math.round((totalQuantity / (activity.duration / Time.Minute)) * 60).toLocaleString()}/hr)`;
@@ -525,8 +541,8 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 	}
 }
 
-export async function tameLastFinishedActivity(user: User) {
-	const tameID = user.selected_tame;
+export async function tameLastFinishedActivity(user: MUser) {
+	const tameID = user.user.selected_tame;
 	if (!tameID) return null;
 	return prisma.tameActivity.findFirst({
 		where: {
@@ -541,16 +557,16 @@ export async function tameLastFinishedActivity(user: User) {
 
 export async function repeatTameTrip({
 	channelID,
-	userID,
 	guildID,
 	user,
-	member
+	member,
+	interaction
 }: {
-	channelID: string | bigint;
-	userID: string | bigint;
-	guildID: string | bigint | undefined;
-	user: User;
+	channelID: string;
+	guildID: string | null;
+	user: MUser;
 	member: APIInteractionGuildMember | GuildMember | null;
+	interaction: ButtonInteraction | ChatInputCommandInteraction;
 }) {
 	const activity = await tameLastFinishedActivity(user);
 	if (!activity) {
@@ -569,10 +585,10 @@ export async function repeatTameTrip({
 				},
 				bypassInhibitors: true,
 				channelID,
-				userID,
 				guildID,
 				user,
-				member
+				member,
+				interaction
 			});
 		}
 		case TameType.Gatherer: {
@@ -585,10 +601,10 @@ export async function repeatTameTrip({
 				},
 				bypassInhibitors: true,
 				channelID,
-				userID,
 				guildID,
 				user,
-				member
+				member,
+				interaction
 			});
 		}
 		default: {
@@ -597,7 +613,7 @@ export async function repeatTameTrip({
 }
 
 export async function getUsersTame(
-	user: KlasaUser | User
+	user: MUser | User
 ): Promise<
 	{ tame: null; activity: null; species: null } | { tame: Tame; species: Species; activity: TameActivity | null }
 > {
@@ -634,7 +650,7 @@ export async function createTameTask({
 	fakeDuration,
 	deaths
 }: {
-	user: KlasaUser;
+	user: MUser;
 	channelID: string;
 	type: TameType;
 	data: TameTaskOptions;

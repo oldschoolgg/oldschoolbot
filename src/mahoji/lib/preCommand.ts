@@ -1,45 +1,81 @@
-import { TextChannel } from 'discord.js';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import { InteractionReplyOptions, TextChannel, User } from 'discord.js';
 
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { modifyBusyCounter } from '../../lib/busyCounterCache';
+import { usernameCache } from '../../lib/constants';
+import { prisma } from '../../lib/settings/prisma';
+import { removeMarkdownEmojis } from '../../lib/util';
+import { CACHED_ACTIVE_USER_IDS } from '../../lib/util/cachedUserIDs';
 import { AbstractCommand, runInhibitors } from './inhibitors';
 
-async function cacheLinkedUsers(user_id: bigint | string) {
-	const user = await mahojiUsersSettingsFetch(user_id);
-	let main = user.main_account;
-	const allAccounts: string[] = [...user.ironman_alts];
-	if (main) {
-		allAccounts.push(main);
-	}
-	// Ensure linked users are cached
-	const allAccountsMap = await Promise.all(allAccounts.map(id => globalClient.fetchUser(id)));
-	return allAccountsMap.length;
+function cleanUsername(username: string) {
+	return removeMarkdownEmojis(username).substring(0, 32);
 }
+export async function syncNewUserUsername(userID: string, username: string) {
+	const newUsername = cleanUsername(username);
+	const newUser = await prisma.newUser.findUnique({
+		where: { id: userID }
+	});
+	if (!newUser || newUser.username !== newUsername) {
+		await prisma.newUser.upsert({
+			where: {
+				id: userID
+			},
+			update: {
+				username
+			},
+			create: {
+				id: userID,
+				username
+			}
+		});
+	}
+	usernameCache.set(userID, newUsername);
+}
+
 export async function preCommand({
 	abstractCommand,
 	userID,
 	guildID,
 	channelID,
-	bypassInhibitors
+	bypassInhibitors,
+	apiUser
 }: {
+	apiUser: User | null;
 	abstractCommand: AbstractCommand;
-	userID: string | bigint;
+	userID: string;
 	guildID?: string | bigint | null;
 	channelID: string | bigint;
 	bypassInhibitors: boolean;
-}): Promise<{ silent: boolean; reason: Awaited<CommandResponse> } | undefined> {
-	globalClient.emit('debug', `${userID} trying to run ${abstractCommand.name} command`);
-	const user = await globalClient.fetchUser(userID);
-	if (user.isBusy && !bypassInhibitors && !globalClient.owners.has(user)) {
-		return { silent: true, reason: 'You cannot use a command right now.' };
+}): Promise<
+	| undefined
+	| {
+			reason: InteractionReplyOptions;
+			silent: boolean;
+			dontRunPostCommand?: boolean;
+	  }
+> {
+	CACHED_ACTIVE_USER_IDS.add(userID);
+	if (globalClient.isShuttingDown) {
+		return {
+			silent: true,
+			reason: { content: 'The bot is currently restarting, please try again later.' },
+			dontRunPostCommand: true
+		};
 	}
-	globalClient.oneCommandAtATimeCache.add(userID.toString());
+	const user = await mUserFetch(userID.toString());
+	if (user.isBusy && !bypassInhibitors && abstractCommand.name !== 'admin') {
+		return { silent: true, reason: { content: 'You cannot use a command right now.' }, dontRunPostCommand: true };
+	}
+	modifyBusyCounter(userID, 1);
 	const guild = guildID ? globalClient.guilds.cache.get(guildID.toString()) : null;
 	const member = guild?.members.cache.get(userID.toString());
 	const channel = globalClient.channels.cache.get(channelID.toString()) as TextChannel;
-	await cacheLinkedUsers(userID);
+	if (apiUser) {
+		await syncNewUserUsername(user.id, apiUser.username);
+	}
 	const inhibitResult = await runInhibitors({
 		user,
+		APIUser: await globalClient.fetchUser(user.id),
 		guild: guild ?? null,
 		member: member ?? null,
 		command: abstractCommand,

@@ -1,17 +1,18 @@
 import { increaseNumByPercent, roll } from 'e';
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../lib/constants';
 import { darkAltarRunes } from '../../lib/minions/functions/darkAltarCommand';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { DarkAltarOptions } from '../../lib/types/minions';
+import { skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
-export default class extends Task {
+export const darkAltarTask: MinionTask = {
+	type: 'DarkAltar',
 	async run(data: DarkAltarOptions) {
 		const { quantity, userID, channelID, duration, hasElite, rune } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
 		const runeData = darkAltarRunes[rune];
 
@@ -39,10 +40,9 @@ export default class extends Task {
 		}
 
 		let loot = new Bank().add(runeData.item.id, runeQuantity);
-
-		const lvl = user.skillLevel(SkillsEnum.Runecraft);
+		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Runecraft, runeData.petChance);
 		for (let i = 0; i < quantity; i++) {
-			if (roll(runeData.petChance - lvl * 25)) {
+			if (roll(petDropRate)) {
 				loot.add('Rift guardian');
 			}
 		}
@@ -51,11 +51,13 @@ export default class extends Task {
 
 		if (loot.amount('Rift guardian') > 0) {
 			str += "\n\n**You have a funny feeling you're being followed...**";
-			this.client.emit(
+			globalClient.emit(
 				Events.ServerNotification,
-				`**${user.username}'s** minion, ${user.minionName}, just received a Rift guardian while crafting ${
-					runeData.item.name
-				}s at level ${user.skillLevel(SkillsEnum.Runecraft)} Runecrafting!`
+				`**${user.usernameOrMention}'s** minion, ${
+					user.minionName
+				}, just received a Rift guardian while crafting ${runeData.item.name}s at level ${user.skillLevel(
+					SkillsEnum.Runecraft
+				)} Runecrafting!`
 			);
 		}
 
@@ -67,4 +69,4 @@ export default class extends Task {
 
 		handleTripFinish(user, channelID, str, ['runecraft', { rune }, true], undefined, data, loot);
 	}
-}
+};

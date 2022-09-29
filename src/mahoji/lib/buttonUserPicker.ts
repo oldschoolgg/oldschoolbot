@@ -1,4 +1,4 @@
-import { MessageButton, MessageOptions } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { noOp, shuffleArr, Time } from 'e';
 import murmurhash from 'murmurhash';
 
@@ -14,13 +14,13 @@ export async function buttonUserPicker({
 	creator,
 	creatorGetsTwoGuesses
 }: {
-	channelID: bigint | string;
+	channelID: string;
 	str: string;
 	timer?: number;
 	ironmenAllowed: boolean;
 	initialUsers?: bigint[];
 	answers: string[];
-	creator: bigint;
+	creator: string;
 	creatorGetsTwoGuesses?: boolean;
 }) {
 	const channel = globalClient.channels.cache.get(channelID.toString());
@@ -28,34 +28,29 @@ export async function buttonUserPicker({
 
 	const correctCustomID = murmurhash(answers[0]).toString();
 
-	const buttons: MessageOptions['components'] = answers.map(
-		i =>
-			new MessageButton({
-				label: i,
-				style: 'SECONDARY',
-				customID: murmurhash(i).toString()
-			})
+	const buttons = answers.map(i =>
+		new ButtonBuilder().setLabel(i).setStyle(ButtonStyle.Secondary).setCustomId(murmurhash(i).toString())
 	);
 
 	const confirmMessage = await channel.send({
 		content: str,
-		components: [shuffleArr(buttons)]
+		components: [new ActionRowBuilder<ButtonBuilder>().addComponents(shuffleArr(buttons))]
 	});
-	const guessed: bigint[] = [];
+	const guessed: string[] = [];
 
-	return new Promise<bigint | null>(async resolve => {
-		const collector = confirmMessage.createMessageComponentInteractionCollector({
+	return new Promise<string | null>(async resolve => {
+		const collector = confirmMessage.createMessageComponentCollector({
 			time: timer
 		});
 
 		collector.on('collect', async i => {
-			const id = BigInt(i.user.id);
+			const { id } = i.user;
 			const mUser = await mahojiUsersSettingsFetch(id);
 			const isCreator = id === creator;
 			let notAllowed = !ironmenAllowed && mUser.minion_ironman;
 			if (notAllowed && !isCreator) {
 				i.reply({ ephemeral: true, content: "You aren't allowed to participate.." });
-				return false;
+				return;
 			}
 			if (guessed.includes(id)) {
 				const amountTimesGuessed = guessed.filter(g => g.toString() === i.user.id).length;
@@ -64,10 +59,11 @@ export async function buttonUserPicker({
 					i.user.id !== creator.toString() ||
 					(amountTimesGuessed >= 2 && isCreator && creatorGetsTwoGuesses)
 				) {
-					return i.reply({ ephemeral: true, content: 'You already guessed wrong.' });
+					i.reply({ ephemeral: true, content: 'You already guessed wrong.' });
+					return;
 				}
 			}
-			if (i.customID === correctCustomID) {
+			if (i.customId === correctCustomID) {
 				resolve(id);
 				collector.stop();
 				i.reply({ ephemeral: true, content: 'You got it!' });

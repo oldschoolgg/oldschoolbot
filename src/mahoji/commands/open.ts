@@ -2,13 +2,13 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { allOpenables, allOpenablesIDs } from '../../lib/openables';
 import { truncateString } from '../../lib/util';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import {
 	abstractedOpenCommand,
 	abstractedOpenUntilCommand,
 	OpenUntilItems
 } from '../lib/abstracted_commands/openCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const openCommand: OSBMahojiCommand = {
 	name: 'open',
@@ -20,9 +20,8 @@ export const openCommand: OSBMahojiCommand = {
 			description: 'The thing you want to open.',
 			required: false,
 			autocomplete: async (value, user) => {
-				const botUser = await globalClient.fetchUser(user.id);
-				return botUser
-					.bank()
+				const botUser = await mUserFetch(user.id);
+				return botUser.bank
 					.items()
 					.filter(i => allOpenablesIDs.has(i[0].id))
 					.filter(i => {
@@ -64,24 +63,20 @@ export const openCommand: OSBMahojiCommand = {
 		options,
 		interaction
 	}: CommandRunOptions<{ name?: string; quantity?: number; open_until?: string }>) => {
-		if (interaction) await interaction.deferReply();
-		const user = await globalClient.fetchUser(userID);
-		const mahojiUser = await mahojiUsersSettingsFetch(userID);
+		if (interaction) await deferInteraction(interaction);
+		const user = await mUserFetch(userID);
 		if (!options.name) {
 			return `You have... ${truncateString(
-				user
-					.bank()
-					.filter(item => allOpenablesIDs.has(item.id), false)
-					.toString(),
+				user.bank.filter(item => allOpenablesIDs.has(item.id), false).toString(),
 				1950
 			)}.`;
 		}
 		if (options.open_until) {
-			return abstractedOpenUntilCommand(interaction, user, mahojiUser, options.name, options.open_until);
+			return abstractedOpenUntilCommand(user.id, options.name, options.open_until);
 		}
 		if (options.name.toLowerCase() === 'all') {
-			return abstractedOpenCommand(interaction, user, mahojiUser, ['all'], 'auto');
+			return abstractedOpenCommand(interaction, user.id, ['all'], 'auto');
 		}
-		return abstractedOpenCommand(interaction, user, mahojiUser, [options.name], options.quantity);
+		return abstractedOpenCommand(interaction, user.id, [options.name], options.quantity);
 	}
 };

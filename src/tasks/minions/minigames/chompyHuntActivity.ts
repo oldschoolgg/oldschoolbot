@@ -1,5 +1,4 @@
 import { roll } from 'e';
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { userhasDiaryTier, WesternProv } from '../../../lib/diaries';
@@ -8,10 +7,11 @@ import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { chompyHats } from '../../../mahoji/lib/abstracted_commands/chompyHuntCommand';
 
-export default class extends Task {
+export const chompHuntTask: MinionTask = {
+	type: 'BigChompyBirdHunting',
 	async run(data: MinigameActivityTaskOptions) {
 		const { channelID, quantity, userID } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
 		const previousScore = (await getMinigameEntity(user.id)).big_chompy_bird_hunting;
 		const { newScore } = await incrementMinigameScore(userID, 'big_chompy_bird_hunting', quantity);
@@ -51,4 +51,4 @@ export default class extends Task {
 			loot
 		);
 	}
-}
+};

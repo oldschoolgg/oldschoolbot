@@ -1,5 +1,4 @@
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import Prayer from '../../../lib/skilling/skills/prayer';
@@ -9,7 +8,7 @@ import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
-export async function buryCommand(user: KlasaUser, channelID: bigint, boneName: string, quantity?: number) {
+export async function buryCommand(user: MUser, channelID: string, boneName: string, quantity?: number) {
 	const speedMod = 1;
 
 	const bone = Prayer.Bones.find(
@@ -29,7 +28,7 @@ export async function buryCommand(user: KlasaUser, channelID: bigint, boneName: 
 	const maxTripLength = calcMaxTripLength(user, 'Burying');
 
 	if (!quantity) {
-		const amountOfBonesOwned = user.bank().amount(bone.inputId);
+		const amountOfBonesOwned = user.bank.amount(bone.inputId);
 		if (!amountOfBonesOwned) return `You have no ${bone.name}.`;
 		quantity = Math.min(Math.floor(maxTripLength / timeToBuryABone), amountOfBonesOwned);
 	}

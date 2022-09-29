@@ -1,4 +1,3 @@
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../../lib/constants';
@@ -10,10 +9,11 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { PlunderActivityTaskOptions } from './../../../lib/types/minions';
 
-export default class extends Task {
+export const plunderTask: MinionTask = {
+	type: 'Plunder',
 	async run(data: PlunderActivityTaskOptions) {
 		const { channelID, quantity, rooms, userID, duration } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		await incrementMinigameScore(userID, 'pyramid_plunder', quantity);
 		const allRooms = plunderRooms.filter(room => rooms.includes(room.number));
 		const completedRooms = [
@@ -28,7 +28,7 @@ export default class extends Task {
 
 		for (let i = 0; i < quantity; i++) {
 			for (const room of completedRooms) {
-				[currentLootRoom, amountUrns] = lootRoom(room.number);
+				[currentLootRoom, amountUrns] = lootRoom(user, room.number);
 				totalAmountUrns += amountUrns;
 				loot.add(currentLootRoom);
 				thievingXP += room.xp;
@@ -51,45 +51,9 @@ export default class extends Task {
 
 		if (loot.amount('Rocky') > 0) {
 			str += "\n\n**You have a funny feeling you're being followed...**";
-			this.client.emit(
+			globalClient.emit(
 				Events.ServerNotification,
-				`**${user.username}'s** minion, ${
-					user.minionName
-				}, just received a **Rocky** <:Rocky:324127378647285771> while doing the Pyramid Plunder, their Thieving level is ${user.skillLevel(
-					SkillsEnum.Thieving
-				)}!`
-			);
-		}
-
-		if (loot.amount('Rocky') > 0) {
-			str += "\n\n**You have a funny feeling you're being followed...**";
-			this.client.emit(
-				Events.ServerNotification,
-				`**${user.username}'s** minion, ${
-					user.minionName
-				}, just received a **Rocky** <:Rocky:324127378647285771> while doing the Pyramid Plunder, their Thieving level is ${user.skillLevel(
-					SkillsEnum.Thieving
-				)}!`
-			);
-		}
-
-		if (loot.amount('Rocky') > 0) {
-			str += "\n\n**You have a funny feeling you're being followed...**";
-			this.client.emit(
-				Events.ServerNotification,
-				`**${user.username}'s** minion, ${
-					user.minionName
-				}, just received a **Rocky** <:Rocky:324127378647285771> while doing the Pyramid Plunder, their Thieving level is ${user.skillLevel(
-					SkillsEnum.Thieving
-				)}!`
-			);
-		}
-
-		if (loot.amount('Rocky') > 0) {
-			str += "\n\n**You have a funny feeling you're being followed...**";
-			this.client.emit(
-				Events.ServerNotification,
-				`**${user.username}'s** minion, ${
+				`**${user.usernameOrMention}'s** minion, ${
 					user.minionName
 				}, just received a **Rocky** <:Rocky:324127378647285771> while doing the Pyramid Plunder, their Thieving level is ${user.skillLevel(
 					SkillsEnum.Thieving
@@ -109,9 +73,9 @@ export default class extends Task {
 			channelID,
 			str,
 			['minigames', { pyramid_plunder: {} }, true],
-			image.file.buffer,
+			image.file.attachment,
 			data,
 			itemsAdded
 		);
 	}
-}
+};

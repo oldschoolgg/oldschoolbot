@@ -1,4 +1,3 @@
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { GrandHallowedCoffin } from 'oldschooljs/dist/simulation/misc/GrandHallowedCoffin';
 
@@ -12,10 +11,11 @@ import { roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 
-export default class extends Task {
+export const sepulchreTask: MinionTask = {
+	type: 'Sepulchre',
 	async run(data: SepulchreActivityTaskOptions) {
 		const { channelID, quantity, floors, userID, duration } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		await incrementMinigameScore(userID, 'sepulchre', quantity);
 
 		const completedFloors = sepulchreFloors.filter(fl => floors.includes(fl.number));
@@ -24,6 +24,7 @@ export default class extends Task {
 		let thievingXP = 0;
 		let numCoffinsOpened = 0;
 
+		const highestCompletedFloor = completedFloors.reduce((prev, next) => (prev.number > next.number ? prev : next));
 		for (let i = 0; i < quantity; i++) {
 			for (const floor of completedFloors) {
 				if (floor.number >= 5) {
@@ -35,11 +36,10 @@ export default class extends Task {
 				for (let i = 0; i < numCoffinsToOpen; i++) {
 					loot.add(openCoffin(floor.number, user));
 				}
-
 				agilityXP += floor.xp;
 				thievingXP = 200 * numCoffinsOpened;
 			}
-			if (roll(completedFloors[completedFloors.length - 1].petChance)) {
+			if (roll(highestCompletedFloor.petChance)) {
 				loot.add('Giant squirrel');
 			}
 		}
@@ -94,9 +94,9 @@ export default class extends Task {
 			channelID,
 			str,
 			['minigames', { sepulchre: { start: {} } }, true],
-			image.file.buffer,
+			image.file.attachment,
 			data,
 			itemsAdded
 		);
 	}
-}
+};

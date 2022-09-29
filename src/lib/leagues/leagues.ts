@@ -16,12 +16,7 @@ import {
 	personalSpellCastStats,
 	personalWoodcuttingStats
 } from '../../mahoji/lib/abstracted_commands/statCommand';
-import {
-	allItemsOwned,
-	getUserGear,
-	mahojiUserSettingsUpdate,
-	mahojiUsersSettingsFetch
-} from '../../mahoji/mahojiSettings';
+import { mahojiUserSettingsUpdate } from '../../mahoji/settingsUpdate';
 import { getParsedStashUnits } from '../clues/stashUnits';
 import { BitField } from '../constants';
 import { calcCLDetails } from '../data/Collections';
@@ -69,7 +64,7 @@ export function generateLeaguesTasksTextFile(finishedTasksIDs: number[], exclude
 		str += '\n\n';
 	}
 	str = `There are a total of ${totalTasks} tasks (${totalPoints.toLocaleString()} Points).\n\n${str}`;
-	return { attachments: [{ buffer: Buffer.from(str), fileName: 'all-tasks.txt' }] };
+	return { files: [{ attachment: Buffer.from(str), name: 'all-tasks.txt' }] };
 }
 
 async function getActivityCounts(user: User) {
@@ -138,11 +133,7 @@ WHERE COALESCE(cardinality(leagues_completed_tasks_ids), 0) > ${user.leagues_com
 }
 
 export async function leaguesCheckUser(userID: string) {
-	const [klasaUser, mahojiUser, roboChimpUser] = await Promise.all([
-		globalClient.fetchUser(userID),
-		mahojiUsersSettingsFetch(userID),
-		roboChimpUserFetch(BigInt(userID))
-	]);
+	const [mahojiUser, roboChimpUser] = await Promise.all([mUserFetch(userID), roboChimpUserFetch(userID)]);
 	const [
 		conStats,
 		poh,
@@ -168,11 +159,11 @@ export async function leaguesCheckUser(userID: string) {
 		getPOH(userID),
 		getAllUserTames(userID),
 		getSlayerTaskStats(userID),
-		getActivityCounts(mahojiUser),
+		getActivityCounts(mahojiUser.user),
 		getMinigameEntity(userID),
 		prisma.slayerTask.count({ where: { user_id: userID } }),
 		personalAlchingStats(mahojiUser),
-		personalHerbloreStatsWithoutZahur(mahojiUser),
+		personalHerbloreStatsWithoutZahur(mahojiUser.user),
 		personalMiningStats(mahojiUser),
 		personalFiremakingStats(mahojiUser),
 		personalSmithingStats(mahojiUser),
@@ -188,25 +179,25 @@ export async function leaguesCheckUser(userID: string) {
 	const herbloreStats = betterHerbloreStats(_herbloreStats);
 	const smithingSuppliesUsed = calcSuppliesUsedForSmithing(smithingStats);
 	const args: HasFunctionArgs = {
-		cl: new Bank(mahojiUser.collectionLogBank as ItemBank),
-		bank: new Bank(mahojiUser.bank as ItemBank),
-		user: klasaUser,
-		mahojiUser,
-		skillsLevels: getSkillsOfMahojiUser(mahojiUser, true),
-		skillsXP: getSkillsOfMahojiUser(mahojiUser, false),
+		cl: mahojiUser.cl,
+		bank: mahojiUser.bank,
+		user: mahojiUser,
+		mahojiUser: mahojiUser.user,
+		skillsLevels: getSkillsOfMahojiUser(mahojiUser.user, true),
+		skillsXP: getSkillsOfMahojiUser(mahojiUser.user, false),
 		poh,
-		gear: getUserGear(mahojiUser),
-		allItemsOwned: allItemsOwned(mahojiUser),
-		monsterScores: mahojiUser.monsterScores as ItemBank,
-		creatureScores: mahojiUser.creatureScores as ItemBank,
-		opens: new Bank(mahojiUser.openable_scores as ItemBank),
-		disassembledItems: new Bank(mahojiUser.disassembled_items_bank as ItemBank),
+		gear: mahojiUser.gear,
+		allItemsOwned: mahojiUser.allItemsOwned(),
+		monsterScores: mahojiUser.user.monsterScores as ItemBank,
+		creatureScores: mahojiUser.user.creatureScores as ItemBank,
+		opens: new Bank(mahojiUser.user.openable_scores as ItemBank),
+		disassembledItems: new Bank(mahojiUser.user.disassembled_items_bank as ItemBank),
 		tames,
-		sacrificedBank: new Bank(mahojiUser.sacrificedBank as ItemBank),
+		sacrificedBank: new Bank(mahojiUser.user.sacrificedBank as ItemBank),
 		slayerStats,
 		activityCounts,
 		minigames,
-		lapScores: mahojiUser.lapsScores as ItemBank,
+		lapScores: mahojiUser.user.lapsScores as ItemBank,
 		slayerTasksCompleted,
 		clPercent,
 		conStats,
@@ -259,25 +250,24 @@ ${resStr}`,
 const unlockables: {
 	name: string;
 	points: number;
-	onUnlock: (user: User) => Promise<string>;
-	hasUnlockedAlready: (user: User) => boolean;
+	onUnlock: (user: MUser) => Promise<string>;
+	hasUnlockedAlready: (user: MUser) => boolean;
 }[] = [
 	{
 		name: 'Brain lee pet',
 		points: 40_000,
-		onUnlock: async (user: User) => {
-			const klasaUser = await globalClient.fetchUser(user.id);
-			await klasaUser.addItemsToBank({ items: new Bank().add('Brain lee'), collectionLog: true });
+		onUnlock: async (user: MUser) => {
+			await user.addItemsToBank({ items: new Bank().add('Brain lee'), collectionLog: true });
 			return 'You received a very brainly Brain lee!';
 		},
-		hasUnlockedAlready: (user: User) => {
-			return new Bank(user.collectionLogBank as ItemBank).has('Brain lee');
+		hasUnlockedAlready: (user: MUser) => {
+			return user.cl.has('Brain lee');
 		}
 	},
 	{
 		name: '+1m max trip length',
 		points: 50_000,
-		onUnlock: async (user: User) => {
+		onUnlock: async (user: MUser) => {
 			await mahojiUserSettingsUpdate(user.id, {
 				bitfield: {
 					push: BitField.HasLeaguesOneMinuteLengthBoost
@@ -285,15 +275,15 @@ const unlockables: {
 			});
 			return "You've unlocked a global +1minute trip length boost!";
 		},
-		hasUnlockedAlready: (user: User) => {
+		hasUnlockedAlready: (user: MUser) => {
 			return user.bitfield.includes(BitField.HasLeaguesOneMinuteLengthBoost);
 		}
 	}
 ];
 
-export async function leaguesClaimCommand(userID: bigint, finishedTaskIDs: number[]) {
+export async function leaguesClaimCommand(userID: string, finishedTaskIDs: number[]) {
 	const roboChimpUser = await roboChimpUserFetch(userID);
-	const mahojiUser = await mahojiUsersSettingsFetch(userID);
+	const mahojiUser = await mUserFetch(userID);
 	const newlyFinishedTasks = finishedTaskIDs.filter(i => !roboChimpUser.leagues_completed_tasks_ids.includes(i));
 
 	const unlockMessages: string[] = [];
@@ -320,7 +310,7 @@ export async function leaguesClaimCommand(userID: bigint, finishedTaskIDs: numbe
 
 	const newUser = await roboChimpClient.user.update({
 		where: {
-			id: userID
+			id: BigInt(userID)
 		},
 		data: {
 			leagues_completed_tasks_ids: {
@@ -346,8 +336,8 @@ export async function leaguesClaimCommand(userID: bigint, finishedTaskIDs: numbe
 
 	if (newlyFinishedTasks.length > 10) {
 		response.content += '\nAttached is a text file showing all the tasks you just claimed.';
-		response.attachments = [
-			{ buffer: Buffer.from(fullNewlyFinishedTasks.map(i => i.name).join('\n')), fileName: 'new-tasks.txt' }
+		response.files = [
+			{ attachment: Buffer.from(fullNewlyFinishedTasks.map(i => i.name).join('\n')), name: 'new-tasks.txt' }
 		];
 	} else {
 		response.content += `\n**Finished Tasks:** ${fullNewlyFinishedTasks.map(i => i.name).join(', ')}.`;

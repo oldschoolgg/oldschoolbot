@@ -1,13 +1,18 @@
-import { MessageButton } from 'discord.js';
+import { Prisma } from '@prisma/client';
+import {
+	APIButtonComponent,
+	APIInteractionDataResolvedChannel,
+	APIRole,
+	ButtonBuilder,
+	ButtonStyle,
+	ComponentType
+} from 'discord.js';
 import { Time } from 'e';
-import { Command, KlasaMessage } from 'klasa';
-import { APIButtonComponent, APIButtonComponentWithCustomId, ButtonStyle, ComponentType } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { Bank } from 'oldschooljs';
+import { CommandOptions } from 'mahoji/dist/lib/types';
 import { convertLVLtoXP } from 'oldschooljs/dist/util/util';
-import { join } from 'path';
 
-import { DISCORD_SETTINGS, production } from '../config';
+import { DISCORD_SETTINGS } from '../config';
 import { AbstractCommand, CommandArgs } from '../mahoji/lib/inhibitors';
 import { RunCommandArgs } from './settings/settings';
 import { SkillsEnum } from './skilling/types';
@@ -26,7 +31,7 @@ export const Channel = {
 	BlacklistLogs: DISCORD_SETTINGS.Channels?.BlacklistLogs ?? '782459317218967602',
 	EconomyLogs: DISCORD_SETTINGS.Channels?.EconomyLogs ?? '802029843712573510',
 	NewSponsors: DISCORD_SETTINGS.Channels?.NewSponsors ?? '806744016309714966',
-	HelpAndSupport: DISCORD_SETTINGS.Channels?.HelpAndSupport ?? '668073484731154462',
+	HelpAndSupport: '970752140324790384',
 	TestingMain: DISCORD_SETTINGS.Channels?.TestingMain ?? '680770361893322761',
 	// BSO Channels
 	BSOGeneral: DISCORD_SETTINGS.Channels?.BSOGeneral ?? '792691343284764693',
@@ -105,7 +110,6 @@ export const enum Emoji {
 	Firemaking = '<:firemaking:630911040175210518>',
 	Crafting = '<:crafting:630911040460161047>',
 	EasterEgg = '<:easterEgg:695473553314938920>',
-	Join = '<:join:705971600956194907>',
 	TzRekJad = '<:Tzrekjad:324127379188613121>',
 	Phoenix = '<:Phoenix:324127378223792129>',
 	TinyTempor = '<:TinyTempor:824483631694217277>',
@@ -163,113 +167,6 @@ export const enum Emoji {
 	Invention = '<:Invention:936219232146980874>'
 }
 
-export const ReactionEmoji = {
-	Join: production ? '705971600956194907' : '951309579302604900',
-	Stop: production ? '705972260950769669' : '951309579248091166',
-	Start: production ? '705973302719414329' : '951309579302604880'
-};
-
-export const enum Image {
-	DiceBag = 'https://i.imgur.com/sySQkSX.png'
-}
-
-export const enum Color {
-	Orange = 16_098_851
-}
-
-export const enum Tasks {
-	AgilityActivity = 'agilityActivity',
-	CookingActivity = 'cookingActivity',
-	MonsterActivity = 'monsterActivity',
-	GroupMonsterActivity = 'groupMonsterActivity',
-	ClueActivity = 'clueActivity',
-	FishingActivity = 'fishingActivity',
-	MiningActivity = 'miningActivity',
-	SmeltingActivity = 'smeltingActivity',
-	SmithingActivity = 'smithingActivity',
-	WoodcuttingActivity = 'woodcuttingActivity',
-	RunecraftActivity = 'runecraftActivity',
-	FiremakingActivity = 'firemakingActivity',
-	CraftingActivity = 'craftingActivity',
-	BuryingActivity = 'buryingActivity',
-	OfferingActivity = 'offeringActivity',
-	FletchingActivity = 'fletchingActivity',
-	FarmingActivity = 'farmingActivity',
-	HerbloreActivity = 'herbloreActivity',
-	HunterActivity = 'hunterActivity',
-	ConstructionActivity = 'constructionActivity',
-	QuestingActivity = 'questingActivity',
-	FightCavesActivity = 'fightCavesActivity',
-	WintertodtActivity = 'wintertodtActivity',
-	TemporossActivity = 'temporossActivity',
-	AlchingActivity = 'alchingActivity',
-	RaidsActivity = 'raidsActivity',
-	NightmareActivity = 'nightmareActivity',
-	AnimatedArmourActivity = 'animatedArmourActivity',
-	CyclopsActivity = 'cyclopsActivity',
-	SepulchreActivity = 'sepulchreActivity',
-	PlunderActivity = 'plunderActivity',
-	FishingTrawler = 'trawlerActivity',
-	ZalcanoActivity = 'zalcanoActivity',
-	SawmillActivity = 'sawmillActivity',
-	PickpocketActivity = 'pickpocketActivity',
-	Enchanting = 'enchantingActivity',
-	Casting = 'castingActivity',
-	GloryCharging = 'gloryChargingActivity',
-	WealthCharging = 'wealthChargingActivity',
-	TitheFarmActivity = 'titheFarmActivity',
-	BarbarianAssault = 'barbarianAssaultActivity',
-	AgilityArena = 'agilityArenaActivity',
-	ChampionsChallenge = 'championsChallengeActivity',
-	BirdhouseActivity = 'birdhouseActivity',
-	AerialFishingActivity = 'aerialFishingActivity',
-	DriftNetActivity = 'driftNetActivity',
-	MahoganyHomes = 'mahoganyHomesActivity',
-	NexActivity = 'nexActivity',
-	GnomeRestaurant = 'gnomeRestaurantActivity',
-	SoulWars = 'soulWarsActivity',
-	RoguesDenMaze = 'roguesDenMazeActivity',
-	KalphiteKing = 'kalphiteKingActivity',
-	Gauntlet = 'gauntletActivity',
-	Dungeoneering = 'dungeoneeringActivity',
-	CastleWars = 'castleWarsActivity',
-	MageArena = 'mageArenaActivity',
-	Collecting = 'collectingActivity',
-	MageTrainingArena = 'mageTrainingArenaActivity',
-	MageArena2 = 'mageArena2Activity',
-	BigChompyBirdHunting = 'chompyHuntActivity',
-	KingGoldemar = 'kingGoldemarActivity',
-	VasaMagus = 'vasaMagusActivity',
-	OuraniaDeliveryService = 'ouraniaDeliveryServiceActivity',
-	DarkAltar = 'darkAltarActivity',
-	Ignecarus = 'ignecarusActivity',
-	TrekkingActivity = 'templeTrekkingActivity',
-	KibbleActivity = 'kibbleActivity',
-	RevenantsActivity = 'revenantsActivity',
-	PestControl = 'pestControlActivity',
-	VolcanicMine = 'volcanicMineActivity',
-	MonkeyRumble = 'monkeyRumbleActivity',
-	TrickOrTreat = 'trickOrTreatActivity',
-	BossEvent = 'bossEventActivity',
-	KourendFavour = 'kourendFavourActivity',
-	Inferno = 'infernoActivity',
-	ToB = 'tobActivity',
-	FishingContest = 'fishingContestActivity',
-	TearsOfGuthix = 'tearsOfGuthixActivity',
-	LastManStanding = 'lmsActivity',
-	BirthdayEvent = 'birthdayEventActivity',
-	TokkulShop = 'tokkulShopActivity',
-	Nex = 'nexActivity',
-	BaxtorianBathhouses = 'bathhousesActivity',
-	TroubleBrewing = 'troubleBrewingActivity',
-	PuroPuro = 'puroPuroActivity',
-	Naxxus = 'naxxusActivity',
-	Disassembling = 'disassemblingActivity',
-	Research = 'researchActivity',
-	Moktang = 'moktangActivity',
-	REMOVED = '__REMOVED__'
-}
-
 export enum ActivityGroup {
 	Skilling = 'Skilling',
 	Clue = 'Clue',
@@ -288,8 +185,6 @@ export const enum Events {
 	SkillLevelUp = 'skillLevelUp',
 	EconomyLog = 'economyLog'
 }
-
-export const rootFolder = join(__dirname, '..', '..', '..');
 
 export const COINS_ID = 995;
 
@@ -317,7 +212,11 @@ export const enum PerkTier {
 	/**
 	 * Tier 5 Patron
 	 */
-	Six = 6
+	Six = 6,
+	/**
+	 * Tier 6 Patron
+	 */
+	Seven = 7
 }
 
 export enum BitField {
@@ -340,6 +239,7 @@ export enum BitField {
 	HasTornPrayerScroll = 18,
 	IsWikiContributor = 19,
 	HasSlepeyTablet = 20,
+	IsPatronTier6 = 21,
 	HasGivenBirthdayPack = 200,
 	HasPermanentSpawnLamp = 201,
 	HasScrollOfFarming = 202,
@@ -372,6 +272,7 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	[BitField.IsPatronTier3]: { name: 'Tier 3 Patron', protected: false, userConfigurable: false },
 	[BitField.IsPatronTier4]: { name: 'Tier 4 Patron', protected: false, userConfigurable: false },
 	[BitField.IsPatronTier5]: { name: 'Tier 5 Patron', protected: false, userConfigurable: false },
+	[BitField.IsPatronTier6]: { name: 'Tier 6 Patron', protected: false, userConfigurable: false },
 
 	[BitField.HasHosidiusWallkit]: { name: 'Hosidius Wall Kit Unlocked', protected: false, userConfigurable: false },
 	[BitField.HasDexScroll]: { name: 'Dexterous Scroll Used', protected: false, userConfigurable: false },
@@ -472,6 +373,7 @@ export const ZALCANO_ID = 9049;
 export const NIGHTMARE_ID = 9415;
 export const MIN_LENGTH_FOR_PET = Time.Minute * 5;
 export const HESPORI_ID = 8583;
+export const NEX_ID = 11_278;
 
 export const skillEmoji = {
 	runecraft: '<:runecraft:630911040435257364>',
@@ -536,7 +438,7 @@ const buttonSource = [
 ];
 
 export const informationalButtons = buttonSource.map(i =>
-	new MessageButton().setLabel(i.label).setEmoji(i.emoji).setURL(i.url).setStyle('LINK')
+	new ButtonBuilder().setLabel(i.label).setEmoji(i.emoji).setURL(i.url).setStyle(ButtonStyle.Link)
 );
 export const mahojiInformationalButtons: APIButtonComponent[] = buttonSource.map(i => ({
 	type: ComponentType.Button,
@@ -596,38 +498,6 @@ export const scaryEatables = [
 	}
 ];
 
-export function getScaryFoodFromBank(userBank: Bank, totalHealingNeeded: number): false | Bank {
-	let totalHealingCalc = totalHealingNeeded;
-	let foodToRemove = new Bank();
-
-	const sorted = [...scaryEatables]
-		.sort((i, j) => (i.healAmount > j.healAmount ? 1 : -1))
-		.sort((a, b) => {
-			if (!userBank.has(a.item.id!)) return 1;
-			if (!userBank.has(b.item.id!)) return -1;
-			return 0;
-		});
-
-	// Gets all the eatables in the user bank
-	for (const eatable of sorted) {
-		const { id } = eatable.item;
-		const { healAmount } = eatable;
-		const amountOwned = userBank.amount(id!);
-		const toRemove = Math.ceil(totalHealingCalc / healAmount);
-		if (!amountOwned) continue;
-		if (amountOwned >= toRemove) {
-			totalHealingCalc -= Math.ceil(healAmount * toRemove);
-			foodToRemove.add(id!, toRemove);
-			break;
-		} else {
-			totalHealingCalc -= Math.ceil(healAmount * amountOwned);
-			foodToRemove.add(id!, amountOwned);
-		}
-	}
-	// Check if qty is still above 0. If it is, it means the user doesn't have enough food.
-	if (totalHealingCalc > 0) return false;
-	return foodToRemove;
-}
 export type ProjectileType = 'arrow' | 'bolt';
 export const projectiles: Record<ProjectileType, number[]> = {
 	arrow: resolveItems(['Adamant arrow', 'Rune arrow', 'Amethyst arrow', 'Dragon arrow', 'Hellfire arrow']),
@@ -652,36 +522,56 @@ export function shouldTrackCommand(command: AbstractCommand, args: CommandArgs) 
 	}
 	return true;
 }
-export function getCommandArgs(command: Command, args: any[]) {
-	if (args.length === 0) return undefined;
-	if (command.name === 'bank') return undefined;
-	if (command.name === 'rp' && ['c'].includes(args[0])) return undefined;
-	if (command.name === 'eval') return undefined;
-	return args;
+
+function compressMahojiArgs(options: CommandArgs) {
+	let newOptions: Record<string, string | number | boolean | null | undefined> = {};
+	for (const [key, val] of Object.entries(options) as [
+		keyof CommandOptions,
+		CommandOptions[keyof CommandOptions]
+	][]) {
+		if (
+			typeof val === 'string' ||
+			typeof val === 'number' ||
+			typeof val === 'boolean' ||
+			typeof val === 'undefined'
+		) {
+			newOptions[key] = val;
+			continue;
+		}
+
+		if ('user' in val && 'member' in val) {
+			newOptions[key] = (val.user as { id: string }).id;
+			continue;
+		}
+
+		if ('id' in val) {
+			newOptions[key] = (val as APIRole | APIInteractionDataResolvedChannel).id;
+			continue;
+		}
+
+		newOptions[key] = null;
+	}
+	return newOptions;
 }
 
+export function getCommandArgs(
+	commandName: string,
+	args: CommandArgs
+): Prisma.InputJsonObject | Prisma.InputJsonArray | undefined {
+	if (Array.isArray(args) && args.length === 0) return undefined;
+	if (!Array.isArray(args) && Object.keys(args).length === 0) return undefined;
+	if (commandName === 'bank') return undefined;
+	if (commandName === 'rp' && Array.isArray(args) && ['c', 'eval'].includes(args[0] as string)) return undefined;
+	return (Array.isArray(args) ? args : compressMahojiArgs(args)) as Prisma.InputJsonObject | Prisma.InputJsonArray;
+}
 export const GLOBAL_BSO_XP_MULTIPLIER = 5;
-
-export const COMMAND_BECAME_SLASH_COMMAND_MESSAGE = (
-	msg: KlasaMessage | null,
-	commandName?: string
-) => `This command you're trying to use, has been changed to a 'slash command'.
-
-- Slash commands are integrated into the actual Discord client. We are *required* to change our commands to be slash commands.
-- Slash commands are generally easier to use, and also have new features like autocompletion. They take some time to get used to though.
-- You no longer use this command using \`+${commandName ?? msg?.command?.name}\`, now you use: \`/${
-	commandName ?? msg?.command?.name
-}\`
-`;
 
 export const DISABLED_COMMANDS = new Set<string>();
 export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'none'] as const;
 export type PvMMethod = typeof PVM_METHODS[number];
 export const usernameCache = new Map<string, string>();
-export const minionBuyButton: APIButtonComponentWithCustomId = {
-	type: ComponentType.Button,
-	custom_id: 'BUY_MINION',
-	label: 'Buy Minion',
-	emoji: { id: '778418736180494347' },
-	style: ButtonStyle.Success
-};
+export const minionBuyButton = new ButtonBuilder()
+	.setCustomId('BUY_MINION')
+	.setLabel('Buy Minion')
+	.setStyle(ButtonStyle.Success);
+export const FormattedCustomEmoji = /<a?:\w{2,32}:\d{17,20}>/;

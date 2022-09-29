@@ -1,4 +1,3 @@
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { birdsNestID, nestTable } from '../../simulation/birdsNest';
@@ -15,7 +14,7 @@ const clues = [
 ];
 
 export default function addSkillingClueToLoot(
-	user: KlasaUser,
+	user: MUser,
 	skill: SkillsEnum,
 	quantity: number,
 	clueChance: number,

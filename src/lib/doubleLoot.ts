@@ -1,11 +1,9 @@
+import { TextChannel } from 'discord.js';
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
 
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../mahoji/mahojiSettings';
-import { syncPrescence } from '../tasks/presence';
 import { Channel } from './constants';
 import { formatDuration } from './util';
-import { sendToChannelID } from './util/webhook';
 
 export let DOUBLE_LOOT_FINISH_TIME_CACHE = 0;
 
@@ -26,15 +24,14 @@ export async function addToDoubleLootTimer(amount: number, reason: string) {
 		double_loot_finish_time: newDoubleLootTimer
 	});
 	DOUBLE_LOOT_FINISH_TIME_CACHE = newDoubleLootTimer;
-	sendToChannelID(Channel.BSOGeneral, {
-		content: `<@&923768318442229792> 🎉 ${formatDuration(
-			amount
-		)} added to the Double Loot timer because: ${reason}. 🎉`
-	});
+	(globalClient.channels.cache.get(Channel.BSOGeneral)! as TextChannel).send(
+		`<@&923768318442229792> 🎉 ${formatDuration(amount)} added to the Double Loot timer because: ${reason}. 🎉`
+	);
+
 	syncPrescence();
 }
 
-export async function addPatronLootTime(_tier: number, user?: KlasaUser) {
+export async function addPatronLootTime(_tier: number, user: MUser | null) {
 	let map: Record<number, number> = {
 		1: 3,
 		2: 6,
@@ -54,4 +51,15 @@ export async function syncDoubleLoot() {
 		double_loot_finish_time: true
 	});
 	DOUBLE_LOOT_FINISH_TIME_CACHE = Number(clientSettings.double_loot_finish_time);
+}
+
+export async function syncPrescence() {
+	await syncDoubleLoot();
+
+	let str = isDoubleLootActive()
+		? `${formatDuration(DOUBLE_LOOT_FINISH_TIME_CACHE - Date.now(), true)} Double Loot!`
+		: '/help';
+	if (globalClient.user!.presence.activities[0]?.name !== str) {
+		globalClient.user?.setActivity(str);
+	}
 }

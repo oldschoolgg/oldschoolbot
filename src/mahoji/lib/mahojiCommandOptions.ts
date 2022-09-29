@@ -1,5 +1,5 @@
+import { APIApplicationCommandOptionChoice, ApplicationCommandOptionType } from 'discord.js';
 import { uniqueArr } from 'e';
-import { APIApplicationCommandOptionChoice, ApplicationCommandOptionType } from 'mahoji';
 import { CommandOption } from 'mahoji/dist/lib/types';
 import { Bank, Items } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
@@ -11,7 +11,7 @@ import { prisma } from '../../lib/settings/prisma';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { toTitleCase } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
-import { getUserGear, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const filterOption: CommandOption = {
 	type: ApplicationCommandOptionType.String,
@@ -78,10 +78,10 @@ export const equippedItemOption = (): CommandOption => ({
 	description: 'The item you want to pick.',
 	required: false,
 	autocomplete: async (value, user) => {
-		const mUser = await mahojiUsersSettingsFetch(user.id);
+		const mUser = await mUserFetch(user.id);
 
 		let results: APIApplicationCommandOptionChoice[] = [];
-		const entries: [string, Item[]][] = Object.entries(getUserGear(mUser)).map(entry => [
+		const entries: [string, Item[]][] = Object.entries(mUser.gear).map(entry => [
 			entry[0],
 			entry[1].allItems(false).map(getOSItem)
 		]);

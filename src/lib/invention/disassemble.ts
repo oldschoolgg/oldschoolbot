@@ -1,29 +1,17 @@
-import { userMention } from '@discordjs/builders';
-import { User } from '@prisma/client';
-import { calcWhatPercent, percentChance, reduceNumByPercent, roll, Time, uniqueArr } from 'e';
-import { KlasaUser } from 'klasa';
+import { calcWhatPercent, percentChance, reduceNumByPercent, Time, uniqueArr } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { table } from 'table';
 
-import {
-	mahojiClientSettingsFetch,
-	mahojiClientSettingsUpdate,
-	mahojiUsersSettingsFetch
-} from '../../mahoji/mahojiSettings';
-import { Emoji } from '../constants';
 import Skillcapes from '../skilling/skillcapes';
 import { SkillsEnum } from '../skilling/types';
-import { ItemBank } from '../types';
 import { ActivityTaskOptions } from '../types/minions';
-import { calcPerHour, clamp, formatDuration, getSkillsOfMahojiUser, itemID, toKMB } from '../util';
+import { calcPerHour, clamp, formatDuration, toKMB } from '../util';
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
-import getOSItem, { getItem } from '../util/getOSItem';
-import { handleTripFinish } from '../util/handleTripFinish';
+import { getItem } from '../util/getOSItem';
 import { minionIsBusy } from '../util/minionIsBusy';
-import { hasItemsEquippedOrInBank, minionName, userHasItemsEquippedAnywhere } from '../util/minionUtils';
 import {
 	allItemsThatCanBeDisassembledIDs,
 	DisassembleFlag,
@@ -33,13 +21,7 @@ import {
 	MaterialType
 } from '.';
 import { DisassemblyGroupMap, DisassemblySourceGroups } from './groups';
-import {
-	inventionBoosts,
-	InventionID,
-	inventionItemBoost,
-	materialBoosts,
-	transactMaterialsFromUser
-} from './inventions';
+import { inventionBoosts, InventionID, inventionItemBoost, materialBoosts } from './inventions';
 import { MaterialBank } from './MaterialBank';
 import MaterialLootTable from './MaterialLootTable';
 
@@ -80,14 +62,14 @@ const masterCapeBoosts: Record<SkillsEnum, DisassemblySourceGroup[]> = {
 };
 
 function doesHaveMasterCapeBoost(
-	user: User,
+	user: MUser,
 	group: DisassemblySourceGroup
 ): { has: false } | { has: true; cape: string } {
 	for (const [skill, groups] of Object.entries(masterCapeBoosts)) {
 		const skillCape = Skillcapes.find(i => i.skill === skill);
 		if (!skillCape) continue;
 		if (!groups.includes(group)) continue;
-		const has = hasItemsEquippedOrInBank(user, [skillCape.masterCape.name]);
+		const has = user.hasEquippedOrInBank([skillCape.masterCape.name]);
 		return has
 			? {
 					has: true,
@@ -177,14 +159,14 @@ export async function handleDisassembly({
 	inputQuantity,
 	item
 }: {
-	user: User;
+	user: MUser;
 	inputQuantity?: number;
 	item: Item;
 }): Promise<DisassemblyResult> {
 	const _group = findDisassemblyGroup(item);
 	if (!_group) throw new Error(`No data for ${item.name}`);
 	const { data, group } = _group;
-	const skills = getSkillsOfMahojiUser(user, true);
+	const skills = user.skillsAsLevels;
 
 	if (skills.invention < data.lvl) {
 		return {
@@ -195,7 +177,7 @@ export async function handleDisassembly({
 	const materialLoot = new MaterialBank();
 	const table = new MaterialLootTable(group.parts);
 
-	const bank = new Bank(user.bank as ItemBank).freeze();
+	const bank = user.bank.freeze();
 
 	// The time it takes to disassemble 1 of this item.
 	let timePer = Time.Second * 0.33;
@@ -205,7 +187,7 @@ export async function handleDisassembly({
 	if (bank.has('Dwarven toolkit')) {
 		const boostedActionTime = reduceNumByPercent(timePer, inventionBoosts.dwarvenToolkit.disassembleBoostPercent);
 		const boostRes = await inventionItemBoost({
-			userID: user.id,
+			user,
 			inventionID: InventionID.DwarvenToolkit,
 			duration: Math.min(
 				maxTripLength,
@@ -220,7 +202,7 @@ export async function handleDisassembly({
 			);
 		}
 	}
-	if (userHasItemsEquippedAnywhere(user, 'Invention master cape')) {
+	if (user.hasEquipped('Invention master cape')) {
 		timePer = reduceNumByPercent(timePer, inventionBoosts.inventionMasterCape.disassemblySpeedBoostPercent);
 		messages.push(
 			`${inventionBoosts.inventionMasterCape.disassemblySpeedBoostPercent}% faster disassembly for mastery`
@@ -274,7 +256,7 @@ export async function handleDisassembly({
 	};
 }
 
-async function materialAnalysis(user: User, bank: Bank) {
+async function materialAnalysis(user: MUser, bank: Bank) {
 	let materialAnalysis = '';
 	let totalXP = 0;
 	let totalDur = 0;
@@ -317,7 +299,7 @@ Total\t${toKMB(totalXP)}\t${formatDuration(totalDur)}\t${totalMats}\t${totalCost
 	return materialAnalysis;
 }
 
-export async function bankDisassembleAnalysis({ bank, user }: { bank: Bank; user: User }): CommandResponse {
+export async function bankDisassembleAnalysis({ bank, user }: { bank: Bank; user: MUser }): CommandResponse {
 	let totalXP = 0;
 	let totalMaterials = new MaterialBank();
 	const results: ({ item: Item } & DisassemblyResult)[] = [];
@@ -334,7 +316,7 @@ export async function bankDisassembleAnalysis({ bank, user }: { bank: Bank; user
 			item
 		});
 		if (result.error !== null) return result.error;
-		const { xp } = calculateDisXP(group.group, getSkillsOfMahojiUser(user, true).invention, qty, group.data.lvl);
+		const { xp } = calculateDisXP(group.group, user.skillsAsLevels.invention, qty, group.data.lvl);
 		totalXP += xp;
 		totalMaterials.add(result.materials);
 		results.push({ ...result, item });
@@ -353,9 +335,9 @@ export async function bankDisassembleAnalysis({ bank, user }: { bank: Bank; user
 			.map(i => i.name)
 			.join(', ')
 			.slice(0, 1500)}`,
-		attachments: [
-			{ fileName: 'disassemble-analysis.txt', buffer: Buffer.from(normalTable) },
-			{ fileName: 'material-analysis.txt', buffer: Buffer.from(await materialAnalysis(user, bank)) }
+		files: [
+			{ name: 'disassemble-analysis.txt', attachment: Buffer.from(normalTable) },
+			{ name: 'material-analysis.txt', attachment: Buffer.from(await materialAnalysis(user, bank)) }
 		]
 	};
 }
@@ -368,37 +350,35 @@ export interface DisassembleTaskOptions extends ActivityTaskOptions {
 }
 
 export async function disassembleCommand({
-	mahojiUser,
-	klasaUser,
+	user,
 	itemToDisassembleName,
 	quantityToDisassemble,
 	channelID
 }: {
-	mahojiUser: User;
-	klasaUser: KlasaUser;
+	user: MUser;
 	itemToDisassembleName: string;
 	quantityToDisassemble: number | undefined;
-	channelID: bigint;
+	channelID: string;
 }): CommandResponse {
-	if (minionIsBusy(mahojiUser.id)) return 'Your minion is busy.';
+	if (minionIsBusy(user.id)) return 'Your minion is busy.';
 	const item = getItem(itemToDisassembleName);
 	if (!item) return "That's not a valid item.";
 	const group = findDisassemblyGroup(item);
 	if (!group) return 'This item cannot be disassembled.';
 	const result = await handleDisassembly({
-		user: mahojiUser,
+		user,
 		inputQuantity: quantityToDisassemble,
 		item
 	});
 	if (result.error !== null) return result.error;
 
-	if (!klasaUser.owns(result.cost)) {
+	if (!user.owns(result.cost)) {
 		return `You don't own ${result.cost}.`;
 	}
-	await klasaUser.removeItemsFromBank(result.cost);
+	await user.removeItemsFromBank(result.cost);
 
 	await addSubTaskToActivityTask<DisassembleTaskOptions>({
-		userID: mahojiUser.id,
+		userID: user.id,
 		channelID: channelID.toString(),
 		duration: result.duration,
 		type: 'Disassembling',
@@ -408,126 +388,20 @@ export async function disassembleCommand({
 		xp: result.xp
 	});
 
-	return `${klasaUser}, ${klasaUser.minionName} is now disassembling ${result.quantity}x ${
+	return `${user}, ${user.minionName} is now disassembling ${result.quantity}x ${
 		item.name
 	}, the trip will take approximately ${formatDuration(result.duration)}
 **Junk Chance:** ${result.junkChance.toFixed(2)}%
 ${result.messages.length > 0 ? `**Messages:** ${result.messages.join(', ')}` : ''}`;
 }
 
-async function handleInventionPrize(isIron: boolean): Promise<Bank | null> {
-	const remaining = (await mahojiClientSettingsFetch({ invention_prizes_remaining: true }))
-		.invention_prizes_remaining as ItemBank;
-	const remainingBank = new Bank(remaining);
-	const toGive = remainingBank.random()?.id;
-	if (isIron && toGive !== itemID('Double loot token')) return null;
-	if (!toGive) return null;
-	const loot = new Bank().add(toGive);
-	await mahojiClientSettingsUpdate({
-		invention_prizes_remaining: remainingBank.remove(loot).bank
-	});
-	return loot;
-}
-
-export function calcWholeDisXP(user: KlasaUser, item: Item, quantity: number) {
+export function calcWholeDisXP(user: MUser, item: Item, quantity: number) {
 	const group = findDisassemblyGroup(item);
 	const inventionLevel = user.skillLevel(SkillsEnum.Invention);
 	if (group && inventionLevel >= group.data.lvl) {
 		return calculateDisXP(group.group, inventionLevel, quantity, group.data.lvl).xp;
 	}
 	return null;
-}
-
-export async function disassemblyTask(data: DisassembleTaskOptions) {
-	const { userID, qty } = data;
-	const klasaUser = await globalClient.fetchUser(userID);
-	const mahojiUser = await mahojiUsersSettingsFetch(userID);
-	const item = getOSItem(data.i);
-
-	const messages: string[] = [];
-	const cost = new Bank().add(item.id, qty);
-	const materialLoot = new MaterialBank(data.mats);
-	if (userHasItemsEquippedAnywhere(mahojiUser, 'Invention master cape')) {
-		materialLoot.mutIncreaseAllValuesByPercent(inventionBoosts.inventionMasterCape.extraMaterialsPercent);
-		messages.push(`${inventionBoosts.inventionMasterCape.extraMaterialsPercent}% bonus materials for mastery`);
-	}
-
-	await transactMaterialsFromUser({
-		userID: BigInt(data.userID),
-		add: materialLoot,
-		addToDisassembledItemsBank: cost
-	});
-
-	const { items_disassembled_cost } = await mahojiClientSettingsFetch({
-		items_disassembled_cost: true
-	});
-	await mahojiClientSettingsUpdate({
-		items_disassembled_cost: new Bank(items_disassembled_cost as ItemBank).add(cost).bank
-	});
-
-	const xpStr = await klasaUser.addXP({
-		skillName: SkillsEnum.Invention,
-		amount: data.xp,
-		duration: data.duration,
-		multiplier: false,
-		masterCapeBoost: true
-	});
-
-	let str = `${userMention(data.userID)}, ${minionName(
-		mahojiUser
-	)} finished disassembling ${cost}. You received these materials: ${materialLoot}.
-${xpStr}`;
-
-	const loot = new Bank();
-	const minutes = floor(data.duration / Time.Minute);
-	const cogsworthChancePerHour = 100;
-	const chancePerMinute = cogsworthChancePerHour * 60;
-	const prizeLoot = new Bank();
-	const prizeChance = Math.floor(chancePerMinute / 40);
-	for (let i = 0; i < minutes; i++) {
-		if (roll(chancePerMinute)) {
-			loot.add('Cogsworth');
-		}
-		if (roll(prizeChance)) {
-			const prize = await handleInventionPrize(klasaUser.isIronman);
-			if (prize) prizeLoot.add(prize);
-		}
-	}
-	if (loot.has('Cogsworth')) {
-		messages.push(
-			'**While disassembling some items, your minion suddenly was inspired to create a mechanical pet out of some scraps!**'
-		);
-	}
-
-	if (prizeLoot.length > 0) {
-		loot.add(prizeLoot);
-		messages.push(`${Emoji.Gift} You received ${prizeLoot} as a bonus!`);
-	}
-	if (loot.length > 0) {
-		await klasaUser.addItemsToBank({ items: loot, collectionLog: true });
-	}
-	if (messages.length > 0) {
-		str += `\n**Messages:** ${messages.join(', ')}`;
-	}
-
-	handleTripFinish(
-		klasaUser,
-		data.channelID,
-		str,
-		[
-			'invention',
-			{
-				disassemble: {
-					name: item.name,
-					quantity: qty
-				}
-			},
-			true
-		],
-		undefined,
-		data,
-		null
-	);
 }
 
 const duplicateItems = [];

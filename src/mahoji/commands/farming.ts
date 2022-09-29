@@ -1,19 +1,20 @@
-import { APIUser, ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { User } from 'discord.js';
+import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import TitheFarmBuyables from '../../lib/data/buyables/titheFarmBuyables';
 import { superCompostables } from '../../lib/data/filterables';
 import { ContractOption, ContractOptions } from '../../lib/minions/farming/types';
 import { autoFarm } from '../../lib/minions/functions/autoFarm';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Farming, { CompostName, CompostTiers } from '../../lib/skilling/skills/farming';
 import { getSkillsOfMahojiUser, stringMatches } from '../../lib/util';
 import { farmingPatchNames, userGrowingProgressStr } from '../../lib/util/farmingHelpers';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { compostBinCommand, farmingPlantCommand, harvestCommand } from '../lib/abstracted_commands/farmingCommand';
 import { farmingContractCommand } from '../lib/abstracted_commands/farmingContractCommand';
 import { titheFarmCommand, titheFarmShopCommand } from '../lib/abstracted_commands/titheFarmCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const farmingCommand: OSBMahojiCommand = {
 	name: 'farming',
@@ -36,7 +37,7 @@ export const farmingCommand: OSBMahojiCommand = {
 					name: 'plant_name',
 					description: 'The plant you want to plant.',
 					required: true,
-					autocomplete: async (value: string, user: APIUser) => {
+					autocomplete: async (value: string, user: User) => {
 						const mUser = await mahojiUsersSettingsFetch(user.id);
 						const farmingLevel = getSkillsOfMahojiUser(mUser, true).farming;
 						return Farming.Plants.filter(i => farmingLevel >= i.level)
@@ -177,15 +178,16 @@ export const farmingCommand: OSBMahojiCommand = {
 		compost_bin?: { plant_name: string; quantity?: number };
 		contract?: { input?: ContractOption };
 	}>) => {
-		const klasaUser = await globalClient.fetchUser(userID);
+		await deferInteraction(interaction);
+		const klasaUser = await mUserFetch(userID);
 		const { patchesDetailed } = await getFarmingInfo(userID);
 
 		if (options.auto_farm) {
 			return autoFarm(klasaUser, patchesDetailed, channelID);
 		}
 		if (options.always_pay) {
-			const isEnabled = klasaUser.settings.get(UserSettings.Minion.DefaultPay);
-			await mahojiUserSettingsUpdate(userID, {
+			const isEnabled = klasaUser.user.minion_defaultPay;
+			await klasaUser.update({
 				minion_defaultPay: !isEnabled
 			});
 			return `'Always pay farmers' is now ${!isEnabled ? 'enabled' : 'disabled'}.`;
@@ -193,14 +195,14 @@ export const farmingCommand: OSBMahojiCommand = {
 		if (options.default_compost) {
 			const tier = CompostTiers.find(i => stringMatches(i.name, options.default_compost!.compost));
 			if (!tier) return 'Invalid tier.';
-			await mahojiUserSettingsUpdate(userID, {
+			await klasaUser.update({
 				minion_defaultCompostToUse: tier.name
 			});
 			return `You will now use ${tier.item.name} by default.`;
 		}
 		if (options.plant) {
 			return farmingPlantCommand({
-				user: klasaUser,
+				userID: klasaUser.id,
 				plantName: options.plant.plant_name,
 				quantity: options.plant.quantity ?? null,
 				autoFarmed: false,

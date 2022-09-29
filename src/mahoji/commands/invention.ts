@@ -1,6 +1,7 @@
 import { time } from '@discordjs/builders';
+import { User } from 'discord.js';
 import { reduceNumByPercent, Time } from 'e';
-import { APIUser, ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { table } from 'table';
@@ -19,6 +20,7 @@ import { MaterialBank } from '../../lib/invention/MaterialBank';
 import { researchCommand } from '../../lib/invention/research';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { calcPerHour, stringMatches, toKMB, toTitleCase } from '../../lib/util';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiParseNumber, mahojiUsersSettingsFetch } from '../mahojiSettings';
@@ -41,11 +43,10 @@ export const inventionCommand: OSBMahojiCommand = {
 					description: 'The item you want to disassemble.',
 					required: true,
 					autocomplete: async (value, { id }) => {
-						const user = await globalClient.fetchUser(id);
+						const user = await mUserFetch(id);
 						const inventionLevel = user.skillLevel(SkillsEnum.Invention);
 
-						return user
-							.bank()
+						return user.bank
 							.items()
 							.filter(
 								i =>
@@ -78,7 +79,7 @@ export const inventionCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.String,
 					description: 'The type of materials you want to research with.',
 					required: true,
-					autocomplete: async (value: string, user: APIUser) => {
+					autocomplete: async (value: string, user: User) => {
 						const mahojiUser = await mahojiUsersSettingsFetch(user.id, { materials_owned: true });
 						const bank = new MaterialBank(mahojiUser.materials_owned as IMaterialBank);
 						return materialTypes
@@ -221,8 +222,7 @@ export const inventionCommand: OSBMahojiCommand = {
 		};
 		details?: { invention: string };
 	}>) => {
-		const user = await globalClient.fetchUser(userID);
-		const mahojiUser = await mahojiUsersSettingsFetch(userID);
+		const user = await mUserFetch(userID);
 		if (options.details) {
 			const invention = Inventions.find(i => stringMatches(i.name, options.details!.invention!));
 			if (!invention) return 'No invention found.';
@@ -238,7 +238,7 @@ export const inventionCommand: OSBMahojiCommand = {
 			return str;
 		}
 		if (options.materials) {
-			return `You own: ${new MaterialBank(mahojiUser.materials_owned as IMaterialBank)}`;
+			return `You own: ${user.materialsOwned()}`;
 		}
 
 		if (options.group) {
@@ -262,12 +262,12 @@ export const inventionCommand: OSBMahojiCommand = {
 					.values()
 					.map(i => `${i.type}[${i.quantity}]`)
 					.join(' ')}`,
-				attachments: [{ buffer: Buffer.from(str), fileName: `${group.name}.txt` }]
+				files: [{ attachment: Buffer.from(str), name: `${group.name}.txt` }]
 			};
 		}
 
 		if (options.tools) {
-			await interaction.deferReply();
+			await deferInteraction(interaction);
 			switch (options.tools.command) {
 				case 'items_disassembled': {
 					const a = await mahojiUsersSettingsFetch(user.id, {
@@ -276,7 +276,7 @@ export const inventionCommand: OSBMahojiCommand = {
 
 					return {
 						content: "These are all the items you've ever disassembled.",
-						attachments: [
+						files: [
 							(
 								await makeBankImage({
 									bank: new Bank(a.disassembled_items_bank as ItemBank),
@@ -299,8 +299,8 @@ export const inventionCommand: OSBMahojiCommand = {
 					};
 				}
 				case 'unlocked_blueprints': {
-					const unlocked = Inventions.filter(i => mahojiUser.unlocked_blueprints.includes(i.id));
-					const locked = Inventions.filter(i => !mahojiUser.unlocked_blueprints.includes(i.id));
+					const unlocked = Inventions.filter(i => user.user.unlocked_blueprints.includes(i.id));
+					const locked = Inventions.filter(i => !user.user.unlocked_blueprints.includes(i.id));
 					return `You have the following blueprints unlocked: ${
 						unlocked.length === 0
 							? 'None! Do some research to unlock some.'
@@ -351,7 +351,7 @@ These Inventions are still not unlocked: ${locked
 					}
 
 					return {
-						attachments: [{ buffer: Buffer.from(table(xpTable)), fileName: 'invention-xp.txt' }]
+						files: [{ attachment: Buffer.from(table(xpTable)), name: 'invention-xp.txt' }]
 					};
 				}
 				case 'groups': {
@@ -370,7 +370,7 @@ These Inventions are still not unlocked: ${locked
 			.join('\n       ')}`;
 						str += '\n';
 					}
-					return { attachments: [{ buffer: Buffer.from(str), fileName: 'groups.txt' }] };
+					return { files: [{ attachment: Buffer.from(str), name: 'groups.txt' }] };
 				}
 			}
 		}
@@ -394,8 +394,7 @@ In the meantime...
 
 		if (options.disassemble) {
 			return disassembleCommand({
-				klasaUser: user,
-				mahojiUser,
+				user,
 				itemToDisassembleName: options.disassemble.name,
 				quantityToDisassemble: mahojiParseNumber({ input: options.disassemble.quantity, min: 1 }) ?? undefined,
 				channelID
@@ -403,7 +402,7 @@ In the meantime...
 		}
 		if (options.research) {
 			return researchCommand({
-				user: mahojiUser,
+				user,
 				inputQuantity: options.research.quantity,
 				material: options.research.material,
 				channelID,
@@ -411,7 +410,7 @@ In the meantime...
 			});
 		}
 		if (options.invent) {
-			return inventCommand(mahojiUser, user, options.invent.name);
+			return inventCommand(user, options.invent.name);
 		}
 
 		return 'Invalid command.';

@@ -1,15 +1,14 @@
-import { Task } from 'klasa';
-
 import Prayer from '../../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { OfferingActivityTaskOptions } from '../../../lib/types/minions';
 import { rand, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
-export default class extends Task {
+export const offeringTask: MinionTask = {
+	type: 'Offering',
 	async run(data: OfferingActivityTaskOptions) {
 		const { boneID, quantity, userID, channelID } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Prayer);
 
 		const bone = Prayer.Bones.find(bone => bone.inputId === boneID);
@@ -46,7 +45,7 @@ export default class extends Task {
 		}
 
 		await user.addXP({ skillName: SkillsEnum.Prayer, amount: xpReceived });
-		const newLevel = user.skillLevel(SkillsEnum.Prayer);
+		const newLevel = user.skillLevel('prayer');
 
 		let str = `${user}, ${user.minionName} finished offering ${newQuantity} ${
 			bone.name
@@ -62,4 +61,4 @@ export default class extends Task {
 
 		handleTripFinish(user, channelID, str, ['offer', { quantity, name: bone.name }, true], undefined, data, null);
 	}
-}
+};

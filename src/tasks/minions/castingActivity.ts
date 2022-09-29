@@ -1,14 +1,13 @@
-import { Task } from 'klasa';
-
 import { Castables } from '../../lib/skilling/skills/magic/castables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { CastingActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
-export default class extends Task {
+export const castingTask: MinionTask = {
+	type: 'Casting',
 	async run(data: CastingActivityTaskOptions) {
 		let { spellID, quantity, userID, channelID, duration } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
 		const spell = Castables.find(i => i.id === spellID)!;
 
@@ -66,4 +65,4 @@ export default class extends Task {
 			loot ?? null
 		);
 	}
-}
+};

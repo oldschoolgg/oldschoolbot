@@ -1,18 +1,15 @@
 import { randFloat } from 'e';
-import { Task } from 'klasa';
 import { Bank, LootTable } from 'oldschooljs';
 import { PrayerPageTable } from 'oldschooljs/dist/simulation/clues/General';
 
 import { userHasFlappy } from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/settings/prisma';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { ExoticSeedsTable } from '../../../lib/simulation/sharedTables';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
-import { updateBankSetting } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { updateBankSetting } from '../../../mahoji/mahojiSettings';
 
 const boxTable = new LootTable()
 	.add('Tradeable mystery box', [1, 2], 100)
@@ -27,21 +24,25 @@ const BaseTable = new LootTable()
 	.add('Magical artifact');
 const OuraniaTipTable = new LootTable().tertiary(9, BaseTable);
 
-export default class extends Task {
+export const odsTask: MinionTask = {
+	type: 'OuraniaDeliveryService',
 	async run(data: MinigameActivityTaskOptions) {
 		const { channelID, quantity, duration, userID } = data;
 
 		incrementMinigameScore(userID, 'ourania_delivery_service', quantity);
 
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const level = user.skillLevel(SkillsEnum.Magic);
 		let tokens = Math.floor((quantity / 2) * 3.235 * (level / 25 + 1));
 
 		const flappyRes = await userHasFlappy({ user, duration });
 
 		if (flappyRes.shouldGiveBoost) tokens *= 2;
-
-		await user.settings.update(UserSettings.OuraniaTokens, user.settings.get(UserSettings.OuraniaTokens) + tokens);
+		await user.update({
+			ourania_tokens: {
+				increment: tokens
+			}
+		});
 
 		let totalXP = level * (quantity * randFloat(39, 41));
 		const xpRes = await user.addXP({
@@ -61,7 +62,7 @@ export default class extends Task {
 				loot.multiply(2);
 			}
 			await user.addItemsToBank({ items: loot, collectionLog: true });
-			updateBankSetting(this.client, ClientSettings.EconomyStats.ODSLoot, loot);
+			updateBankSetting('ods_loot', loot);
 			await trackLoot({
 				duration,
 				teamSize: 1,
@@ -93,4 +94,4 @@ export default class extends Task {
 			null
 		);
 	}
-}
+};

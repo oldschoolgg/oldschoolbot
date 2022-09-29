@@ -1,27 +1,25 @@
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
 import { userHasFlappy } from '../../../lib/invention/inventions';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { TitheFarmActivityTaskOptions } from '../../../lib/types/minions';
-import { roll } from '../../../lib/util';
+import { roll, skillingPetDropRate } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { hasItemsEquippedOrInBank } from '../../../lib/util/minionUtils';
 
-export default class extends Task {
+export const titheFarmTask: MinionTask = {
+	type: 'TitheFarm',
 	async run(data: TitheFarmActivityTaskOptions) {
 		const { userID, channelID, duration } = data;
 		const baseHarvest = 85;
 		const lootStr: string[] = [];
 		const levelStr: string[] = [];
 
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
 		const farmingLvl = user.skillLevel(SkillsEnum.Farming);
-		const titheFarmsCompleted = user.settings.get(UserSettings.Stats.TitheFarmsCompleted);
-		const titheFarmPoints = user.settings.get(UserSettings.Stats.TitheFarmPoints);
+		const titheFarmsCompleted = user.user.stats_titheFarmsCompleted;
+		const titheFarmPoints = user.user.stats_titheFarmPoints;
 
 		const determineHarvest = baseHarvest + Math.min(15, titheFarmsCompleted);
 		let determinePoints = determineHarvest - 74;
@@ -31,8 +29,14 @@ export default class extends Task {
 			determinePoints *= 2;
 		}
 
-		await user.settings.update(UserSettings.Stats.TitheFarmsCompleted, titheFarmsCompleted + 1);
-		await user.settings.update(UserSettings.Stats.TitheFarmPoints, titheFarmPoints + determinePoints);
+		await user.update({
+			stats_titheFarmsCompleted: {
+				increment: 1
+			},
+			stats_titheFarmPoints: {
+				increment: determinePoints
+			}
+		});
 
 		let fruit = '';
 		let fruitXp = 0;
@@ -59,19 +63,19 @@ export default class extends Task {
 
 		let bonusXpMultiplier = 0;
 		let farmersPiecesCheck = 0;
-		if (hasItemsEquippedOrInBank(user, ["Farmer's strawhat"])) {
+		if (user.hasEquippedOrInBank(["Farmer's strawhat"])) {
 			bonusXpMultiplier += 0.004;
 			farmersPiecesCheck += 1;
 		}
-		if (hasItemsEquippedOrInBank(user, ["Farmer's jacket", "Farmer's shirt"], 'every')) {
+		if (user.hasEquippedOrInBank(["Farmer's jacket", "Farmer's shirt"], 'every')) {
 			bonusXpMultiplier += 0.008;
 			farmersPiecesCheck += 1;
 		}
-		if (hasItemsEquippedOrInBank(user, ["Farmer's boro trousers"])) {
+		if (user.hasEquippedOrInBank(["Farmer's boro trousers"])) {
 			bonusXpMultiplier += 0.006;
 			farmersPiecesCheck += 1;
 		}
-		if (hasItemsEquippedOrInBank(user, ["Farmer's boots"])) {
+		if (user.hasEquippedOrInBank(["Farmer's boots"])) {
 			bonusXpMultiplier += 0.002;
 			farmersPiecesCheck += 1;
 		}
@@ -94,15 +98,15 @@ export default class extends Task {
 		}
 
 		const loot = new Bank();
-
-		if (roll((7_494_389 - user.skillLevel(SkillsEnum.Farming) * 25) / determineHarvest)) {
+		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Farming, 7_494_389);
+		if (roll(petDropRate / determineHarvest)) {
 			loot.add('Tangleroot');
 			lootStr.push('\n\n```diff');
 			lootStr.push("\n- You have a funny feeling you're being followed...");
 			lootStr.push('```');
-			this.client.emit(
+			globalClient.emit(
 				Events.ServerNotification,
-				`${Emoji.Farming} **${user.username}'s** minion, ${
+				`${Emoji.Farming} **${user.usernameOrMention}'s** minion, ${
 					user.minionName
 				}, just received a Tangleroot by completing the ${Emoji.MinigameIcon} Tithe Farm on their ${
 					titheFarmsCompleted + 1
@@ -128,4 +132,4 @@ export default class extends Task {
 			loot.length > 0 ? loot : null
 		);
 	}
-}
+};

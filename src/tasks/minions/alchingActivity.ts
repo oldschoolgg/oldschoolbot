@@ -1,5 +1,4 @@
 import { Time } from 'e';
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { resolveNameBank } from 'oldschooljs/dist/util';
 
@@ -11,10 +10,11 @@ import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { updateGPTrackSetting } from '../../mahoji/mahojiSettings';
 
-export default class extends Task {
+export const alchingTask: MinionTask = {
+	type: 'Alching',
 	async run(data: AlchingActivityTaskOptions) {
 		let { itemID, quantity, channelID, alchValue, userID, duration } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const loot = new Bank({ Coins: alchValue });
 
 		const item = getOSItem(itemID);
@@ -22,8 +22,8 @@ export default class extends Task {
 		// If bryophyta's staff is equipped when starting the alch activity
 		// calculate how many runes have been saved
 		let savedRunes = 0;
-		const hasImbuedStaff = user.hasItemEquippedAnywhere("Bryophyta's staff(i)");
-		const hasStaff = user.hasItemEquippedAnywhere("Bryophyta's staff");
+		const hasImbuedStaff = user.hasEquippedOrInBank("Bryophyta's staff(i)");
+		const hasStaff = user.hasEquipped("Bryophyta's staff");
 		if (hasImbuedStaff || hasStaff) {
 			for (let i = 0; i < quantity; i++) {
 				if (roll(hasImbuedStaff ? 7 : 15)) savedRunes++;
@@ -72,4 +72,4 @@ export default class extends Task {
 			loot
 		);
 	}
-}
+};

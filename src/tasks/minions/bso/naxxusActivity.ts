@@ -1,42 +1,46 @@
 import { roll } from 'e';
-import { Task } from 'klasa';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { Naxxus, NaxxusLootTable } from '../../../lib/minions/data/killableMonsters/custom/bosses/Naxxus';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import { trackLoot } from '../../../lib/settings/prisma';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { updateBankSetting } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
+import { updateBankSetting } from '../../../mahoji/mahojiSettings';
 
-export default class extends Task {
+export const naxxusTask: MinionTask = {
+	type: 'Naxxus',
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { channelID, userID, quantity, duration } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 
 		const loot = new Bank();
 		loot.add(NaxxusLootTable.roll(quantity));
 
 		// Handle uniques => Don't give duplicates until log full
 		const uniqueChance = 150;
-		if (roll(uniqueChance)) {
-			const uniques = [
-				{ name: 'Dark crystal', weight: 2 },
-				{ name: 'Abyssal gem', weight: 3 },
-				{ name: 'Tattered tome', weight: 2 },
-				{ name: 'Spellbound ring', weight: 3 }
-			];
-			const cl = user.cl();
-			const filteredUniques = uniques.filter(u => !cl.has(u.name));
-			const uniqueTable = filteredUniques.length === 0 ? uniques : filteredUniques;
-			const lootTable = new LootTable();
-			uniqueTable.map(u => lootTable.add(u.name, 1, u.weight));
+		// Add new uniques to a dummy CL to support multiple uniques per trip.
+		const tempClWithNewUniques = user.cl.clone();
+		for (let i = 0; i < quantity; i++) {
+			if (roll(uniqueChance)) {
+				const uniques = [
+					{ name: 'Dark crystal', weight: 2 },
+					{ name: 'Abyssal gem', weight: 3 },
+					{ name: 'Tattered tome', weight: 2 },
+					{ name: 'Spellbound ring', weight: 3 }
+				];
 
-			loot.add(lootTable.roll());
+				const filteredUniques = uniques.filter(u => !tempClWithNewUniques.has(u.name));
+				const uniqueTable = filteredUniques.length === 0 ? uniques : filteredUniques;
+				const lootTable = new LootTable();
+				uniqueTable.map(u => lootTable.add(u.name, 1, u.weight));
+
+				const unique = lootTable.roll();
+				tempClWithNewUniques.add(unique);
+				loot.add(unique);
+			}
 		}
 
 		const xpStr = await addMonsterXP(user, {
@@ -49,7 +53,7 @@ export default class extends Task {
 
 		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
 
-		await user.incrementMonsterScore(Naxxus.id, quantity);
+		await user.incrementKC(Naxxus.id, quantity);
 
 		announceLoot({
 			user,
@@ -58,7 +62,7 @@ export default class extends Task {
 			notifyDrops: Naxxus.notifyDrops
 		});
 
-		updateBankSetting(this.client, ClientSettings.EconomyStats.NaxxusLoot, loot);
+		updateBankSetting('naxxus_loot', loot);
 		await trackLoot({
 			duration,
 			loot,
@@ -78,13 +82,13 @@ export default class extends Task {
 		handleTripFinish(
 			user,
 			channelID,
-			`${user}, ${user.minionName} finished killing ${quantity} ${Naxxus.name}. Your Naxxus KC is now ${
-				user.settings.get(UserSettings.MonsterScores)[Naxxus.id] ?? 0
-			}.\n\n${xpStr}`,
+			`${user}, ${user.minionName} finished killing ${quantity} ${
+				Naxxus.name
+			}. Your Naxxus KC is now ${user.getKC(Naxxus.id)}.\n\n${xpStr}`,
 			['k', { name: 'Naxxus' }, true],
-			image.file.buffer,
+			image.file.attachment,
 			data,
 			itemsAdded
 		);
 	}
-}
+};

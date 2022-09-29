@@ -5,7 +5,6 @@ import * as jwt from 'jwt-simple';
 
 import { CLIENT_SECRET, GITHUB_TOKEN, patreonConfig } from '../../config';
 import { PerkTier } from '../constants';
-import { prisma } from '../settings/prisma';
 
 export function rateLimit(max: number, timeWindow: string) {
 	return {
@@ -33,7 +32,6 @@ export function verifyPatreonSecret(body: string, signature?: string | string[])
 	const hmac = createHmac('md5', patreonConfig!.webhookSecret);
 	hmac.update(body);
 	const calculated = hmac.digest('hex');
-	console.log(signature, calculated, signature === calculated);
 	return signature === calculated;
 }
 
@@ -57,9 +55,8 @@ export function parseStrToTier(str: string) {
 			return PerkTier.Six;
 		case '$99 a month':
 			return PerkTier.Six;
-		default: {
-			throw new Error(`Unmatched patron tier: ${str}`);
-		}
+		default:
+			return null;
 	}
 }
 
@@ -119,12 +116,13 @@ export async function fetchSponsors() {
 	return data;
 }
 
-export async function getUserFromGithubID(githubID: string) {
-	const result = await prisma.$queryRawUnsafe<{ id: string }[]>(
-		`SELECT id FROM users WHERE github_id = '${githubID}';`
-	);
-	if (result.length === 0) return null;
-	return globalClient.fetchUser(result[0].id);
+export async function getUserIdFromGithubID(githubID: string) {
+	const result = await roboChimpClient.user.findFirst({
+		select: { id: true },
+		where: { github_id: Number(githubID) }
+	});
+	if (!result) return null;
+	return result.id.toString();
 }
 
 export function encryptJWT(payload: unknown, secret = CLIENT_SECRET) {

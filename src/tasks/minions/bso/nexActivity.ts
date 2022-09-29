@@ -1,5 +1,4 @@
 import { calcWhatPercent, noOp, percentChance, randArrItem } from 'e';
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
@@ -10,15 +9,14 @@ import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import { NexMonster } from '../../../lib/nex';
 import { trackLoot } from '../../../lib/settings/prisma';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../../lib/types';
 import { BossActivityTaskOptions } from '../../../lib/types/minions';
-import { roll, updateBankSetting } from '../../../lib/util';
+import { roll } from '../../../lib/util';
 import { getNexGearStats } from '../../../lib/util/getNexGearStats';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { sendToChannelID } from '../../../lib/util/webhook';
+import { updateBankSetting } from '../../../mahoji/mahojiSettings';
 
 interface NexUser {
 	id: string;
@@ -26,7 +24,8 @@ interface NexUser {
 	damageDone: number;
 }
 
-export default class extends Task {
+export const nexTask: MinionTask = {
+	type: 'Nex',
 	async run(data: BossActivityTaskOptions) {
 		const { channelID, userID, users, quantity, duration } = data;
 		const teamsLoot: { [key: string]: ItemBank } = {};
@@ -36,7 +35,7 @@ export default class extends Task {
 
 		// For each user in the party, calculate their damage and death chance.
 		for (const id of users) {
-			const user = await this.client.fetchUser(id).catch(noOp);
+			const user = await mUserFetch(id).catch(noOp);
 			if (!user) continue;
 			const [data] = getNexGearStats(user, users);
 			parsedUsers.push({ ...data, id: user.id });
@@ -86,7 +85,7 @@ export default class extends Task {
 			kcAmounts[winner] = Boolean(kcAmounts[winner]) ? ++kcAmounts[winner] : 1;
 		}
 
-		const leaderUser = await this.client.fetchUser(userID);
+		const leaderUser = await mUserFetch(userID);
 		let resultStr = `${leaderUser}, your party finished killing ${quantity}x ${NexMonster.name}!\n\n`;
 		const totalLoot = new Bank();
 
@@ -95,7 +94,7 @@ export default class extends Task {
 		let soloItemsAdded: Bank = new Bank();
 
 		for (let [userID, loot] of Object.entries(teamsLoot)) {
-			const user = await this.client.fetchUser(userID).catch(noOp);
+			const user = await mUserFetch(userID).catch(noOp);
 			if (!user) continue;
 			let xpStr = '';
 			if (kcAmounts[user.id]) {
@@ -117,7 +116,7 @@ export default class extends Task {
 			}
 
 			const kcToAdd = kcAmounts[user.id];
-			if (kcToAdd) await user.incrementMonsterScore(NexMonster.id, kcToAdd);
+			if (kcToAdd) await user.incrementKC(NexMonster.id, kcToAdd);
 			const purple = Object.keys(loot).some(id => nexCL.includes(parseInt(id)));
 
 			resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${new Bank(loot)}||\n`;
@@ -135,7 +134,7 @@ export default class extends Task {
 			});
 		}
 
-		updateBankSetting(this.client, ClientSettings.EconomyStats.NexLoot, totalLoot);
+		updateBankSetting('nex_loot', totalLoot);
 		await trackLoot({
 			duration,
 			teamSize: users.length,
@@ -151,9 +150,8 @@ export default class extends Task {
 		if (deathEntries.length > 0) {
 			const deaths = [];
 			for (const [id, qty] of deathEntries) {
-				const user = await this.client.fetchUser(id).catch(noOp);
-				if (!user) continue;
-				deaths.push(`**${user.username}**: ${qty}x`);
+				const user = await mUserFetch(id);
+				deaths.push(`**${user.usernameOrMention}**: ${qty}x`);
 			}
 			resultStr += `\n**Deaths**: ${deaths.join(', ')}.`;
 		}
@@ -176,7 +174,7 @@ export default class extends Task {
 							user: leaderUser,
 							previousCL: soloPrevCl
 						})
-				  ).file.buffer;
+				  ).file.attachment;
 			handleTripFinish(
 				leaderUser,
 				channelID,
@@ -184,9 +182,9 @@ export default class extends Task {
 					? `${leaderUser}, ${leaderUser.minionName} died in all their attempts to kill Nex, they apologize and promise to try harder next time.`
 					: `${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${
 							NexMonster.name
-					  }, you died ${deaths[userID] ?? 0} times. Your Nex KC is now ${
-							leaderUser.settings.get(UserSettings.MonsterScores)[NexMonster.id] ?? 0
-					  }.\n\n${soloXP}`,
+					  }, you died ${deaths[userID] ?? 0} times. Your Nex KC is now ${leaderUser.getKC(
+							NexMonster.id
+					  )}.\n\n${soloXP}`,
 				['k', { name: users.length === 1 ? 'Nex (Solo)' : 'Nex (Mass)' }, true],
 				image!,
 				data,
@@ -194,4 +192,4 @@ export default class extends Task {
 			);
 		}
 	}
-}
+};

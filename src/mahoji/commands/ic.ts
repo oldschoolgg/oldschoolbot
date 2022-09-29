@@ -1,9 +1,8 @@
-import { User } from '@prisma/client';
+import { ChatInputCommandInteraction } from 'discord.js';
 import { randArrItem, roll } from 'e';
-import { KlasaUser } from 'klasa';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank, LootTable } from 'oldschooljs';
+import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { allMbTables, MysteryBoxes, PMBTable } from '../../lib/bsoOpenables';
 import { Emoji } from '../../lib/constants';
@@ -13,11 +12,9 @@ import { kalphiteKingLootTable } from '../../lib/minions/data/killableMonsters/c
 import { VasaMagus } from '../../lib/minions/data/killableMonsters/custom/bosses/VasaMagus';
 import { BSOMonsters } from '../../lib/minions/data/killableMonsters/custom/customMonsters';
 import { nexLootTable } from '../../lib/nex';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { DragonTable } from '../../lib/simulation/grandmasterClue';
 import { allThirdAgeItems, runeAlchablesTable } from '../../lib/simulation/sharedTables';
-import { formatDuration, itemID, updateBankSetting } from '../../lib/util';
+import { formatDuration, itemID } from '../../lib/util';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';
 import { itemContractResetTime } from '../../lib/util/getUsersPerkTier';
@@ -25,10 +22,8 @@ import resolveItems from '../../lib/util/resolveItems';
 import { LampTable } from '../../lib/xpLamps';
 import { OSBMahojiCommand } from '../lib/util';
 import {
-	getMahojiBank,
 	handleMahojiConfirmation,
-	mahojiUserSettingsUpdate,
-	mahojiUsersSettingsFetch,
+	updateBankSetting,
 	updateGPTrackSetting,
 	userStatsBankUpdate
 } from '../mahojiSettings';
@@ -97,17 +92,17 @@ function pickItemContract(streak: number) {
 	return item;
 }
 
-export function getItemContractDetails(mUser: User) {
+export function getItemContractDetails(mUser: MUser) {
 	const currentDate = Date.now();
-	let lastDate = Number(mUser.last_item_contract_date);
+	let lastDate = Number(mUser.user.last_item_contract_date);
 	if (lastDate === 0) lastDate = Date.now() - itemContractResetTime;
 	const difference = currentDate - lastDate;
-	const totalContracts = mUser.total_item_contracts;
-	const streak = mUser.item_contract_streak;
-	const currentItem = mUser.current_item_contract ? getOSItem(mUser.current_item_contract) : null;
+	const totalContracts = mUser.user.total_item_contracts;
+	const streak = mUser.user.item_contract_streak;
+	const currentItem = mUser.user.current_item_contract ? getOSItem(mUser.user.current_item_contract) : null;
 	let durationRemaining = Date.now() - (lastDate + itemContractResetTime);
 	const nextContractIsReady = difference >= itemContractResetTime;
-	const bank = getMahojiBank(mUser);
+	const { bank } = mUser;
 
 	const owns = currentItem ? bank.has(currentItem.id) : null;
 	return {
@@ -129,8 +124,8 @@ ${!currentItem ? `**Next Contract:** ${nextContractIsReady ? 'Ready now.' : form
 	};
 }
 
-async function skip(interaction: SlashCommandInteraction, user: KlasaUser, mUser: User) {
-	const { currentItem, differenceFromLastContract, streak, canSkip } = getItemContractDetails(mUser);
+async function skip(interaction: ChatInputCommandInteraction, user: MUser) {
+	const { currentItem, differenceFromLastContract, streak, canSkip } = getItemContractDetails(user);
 	if (!currentItem) return "You don't have a contract to skip.";
 	if (canSkip) {
 		return `Your current contract is a ${currentItem.name} (ID:${
@@ -149,7 +144,7 @@ async function skip(interaction: SlashCommandInteraction, user: KlasaUser, mUser
 
 	const newItem = pickItemContract(streak);
 
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		last_item_contract_date: Date.now() - itemContractResetTime / 2,
 		current_item_contract: newItem,
 		item_contract_streak: 0
@@ -160,24 +155,20 @@ async function skip(interaction: SlashCommandInteraction, user: KlasaUser, mUser
 	)}.`;
 }
 
-async function handInContract(
-	interaction: SlashCommandInteraction | null,
-	user: KlasaUser,
-	mUser: User
-): Promise<string> {
+async function handInContract(interaction: ChatInputCommandInteraction | null, user: MUser): Promise<string> {
 	const { nextContractIsReady, durationRemaining, currentItem, owns, streak, totalContracts } =
-		getItemContractDetails(mUser);
+		getItemContractDetails(user);
 
 	if (!nextContractIsReady) {
 		return `You have no item contract available at the moment. Come back in ${formatDuration(durationRemaining)}.`;
 	}
 
 	if (!currentItem) {
-		const { newUser } = await mahojiUserSettingsUpdate(user.id, {
+		await user.update({
 			current_item_contract: pickItemContract(streak),
 			last_item_contract_date: Date.now()
 		});
-		return handInContract(interaction, user, newUser);
+		return handInContract(interaction, user);
 	}
 
 	if (!owns) {
@@ -211,13 +202,13 @@ async function handInContract(
 		}
 	}
 
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		last_item_contract_date: Date.now(),
 		total_item_contracts: {
 			increment: 1
 		},
 		current_item_contract: pickItemContract(newStreak),
-		item_contract_bank: new Bank().add(currentItem.id).add(user.settings.get(UserSettings.ItemContractBank)).bank,
+		item_contract_bank: new Bank().add(currentItem.id).add(user.user.item_contract_bank as ItemBank).bank,
 		item_contract_streak: {
 			increment: 1
 		}
@@ -227,8 +218,8 @@ async function handInContract(
 	await user.addItemsToBank({ items: loot, collectionLog: false });
 
 	await Promise.all([
-		updateBankSetting(globalClient, ClientSettings.EconomyStats.ItemContractCost, cost),
-		updateBankSetting(globalClient, ClientSettings.EconomyStats.ItemContractLoot, loot),
+		updateBankSetting('item_contract_cost', cost),
+		updateBankSetting('item_contract_loot', loot),
 		updateGPTrackSetting('gp_ic', loot.amount('Coins')),
 		userStatsBankUpdate(user.id, 'ic_cost_bank', cost),
 		userStatsBankUpdate(user.id, 'ic_loot_bank', loot)
@@ -267,13 +258,9 @@ export const icCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ options, userID, interaction }: CommandRunOptions<{ info?: {}; send?: {}; skip?: {} }>) => {
-		const user = await globalClient.fetchUser(userID);
-		const mUser = await mahojiUsersSettingsFetch(userID);
-		if (options.info) return `${Emoji.ItemContract} ${getItemContractDetails(mUser).infoStr}`;
-		const res = options.skip
-			? await skip(interaction, user, mUser)
-			: await handInContract(interaction, user, mUser);
-		const newUser = await mahojiUsersSettingsFetch(user.id);
-		return `${Emoji.ItemContract} ${res}\n\n${getItemContractDetails(newUser).infoStr}`;
+		const user = await mUserFetch(userID);
+		if (options.info) return `${Emoji.ItemContract} ${getItemContractDetails(user).infoStr}`;
+		const res = options.skip ? await skip(interaction, user) : await handInContract(interaction, user);
+		return `${Emoji.ItemContract} ${res}\n\n${getItemContractDetails(user).infoStr}`;
 	}
 };

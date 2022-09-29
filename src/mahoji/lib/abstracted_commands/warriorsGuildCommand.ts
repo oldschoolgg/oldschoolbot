@@ -1,8 +1,6 @@
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { SkillsEnum } from '../../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity, AnimatedArmourActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
@@ -36,9 +34,9 @@ export const Armours = [
 	}
 ];
 
-async function tokensCommand(user: KlasaUser, channelID: bigint, quantity: number | undefined) {
+async function tokensCommand(user: MUser, channelID: string, quantity: number | undefined) {
 	const maxTripLength = calcMaxTripLength(user, 'AnimatedArmour');
-	const userBank = user.bank();
+	const userBank = user.bank;
 
 	const armorSet = Armours.find(set => userBank.has(set.items));
 	if (!armorSet) {
@@ -77,9 +75,9 @@ async function tokensCommand(user: KlasaUser, channelID: bigint, quantity: numbe
 	return response;
 }
 
-async function cyclopsCommand(user: KlasaUser, channelID: bigint, quantity: number | undefined) {
-	const userBank = user.bank();
-	const hasAttackCape = user.getGear('melee').hasEquipped('Attack cape');
+async function cyclopsCommand(user: MUser, channelID: string, quantity: number | undefined) {
+	const userBank = user.bank;
+	const hasAttackCape = user.gear.melee.hasEquipped('Attack cape');
 	const maxTripLength = calcMaxTripLength(user, 'Cyclops');
 	// Check if either 100 warrior guild tokens or attack cape (similar items in future)
 	const amountTokens = userBank.amount('Warrior guild token');
@@ -138,13 +136,13 @@ async function cyclopsCommand(user: KlasaUser, channelID: bigint, quantity: numb
 }
 
 export async function warriorsGuildCommand(
-	user: KlasaUser,
-	channelID: bigint,
+	user: MUser,
+	channelID: string,
 	choice: string,
 	quantity: number | undefined
 ) {
-	const atkLvl = user.skillLevel(SkillsEnum.Attack);
-	const strLvl = user.skillLevel(SkillsEnum.Strength);
+	const atkLvl = user.skillLevel('attack');
+	const strLvl = user.skillLevel('strength');
 	if (atkLvl + strLvl < 130 && atkLvl !== 99 && strLvl !== 99) {
 		return "To enter the Warrior's Guild, your Attack and Strength levels must add up to atleast 130, or you must have level 99 in either.";
 	}

@@ -1,19 +1,15 @@
-import { KlasaUser } from 'klasa';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { PerkTier } from '../../lib/constants';
 import { stringMatches, toTitleCase } from '../../lib/util';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { Workers } from '../../lib/workers';
 import { OSBMahojiCommand } from '../lib/util';
 
-export function determineKillLimit(user: KlasaUser) {
-	if (globalClient.owners.has(user)) {
-		return Infinity;
-	}
-
+export function determineKillLimit(user: MUser) {
 	const perkTier = getUsersPerkTier(user);
 
 	if (perkTier >= PerkTier.Six) {
@@ -75,8 +71,8 @@ export const killCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ options, userID, interaction }: CommandRunOptions<{ name: string; quantity: number }>) => {
-		const user = await globalClient.fetchUser(userID);
-		interaction.deferReply();
+		const user = await mUserFetch(userID);
+		deferInteraction(interaction);
 		const osjsMonster = Monsters.find(mon => mon.aliases.some(alias => stringMatches(alias, options.name)));
 
 		let limit = determineKillLimit(user);
@@ -107,7 +103,7 @@ export const killCommand: OSBMahojiCommand = {
 		});
 
 		return {
-			attachments: [image.file],
+			files: [image.file],
 			content: result.content
 		};
 	}

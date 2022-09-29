@@ -1,25 +1,22 @@
-import { MessageEmbed } from 'discord.js';
+import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
-import { Emoji } from '../../../lib/constants';
 import { dwarvenOutfit } from '../../../lib/data/CollectionsExport';
 import { Ignecarus } from '../../../lib/minions/data/killableMonsters/custom/bosses/Ignecarus';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { BossInstance } from '../../../lib/structures/Boss';
 import { Gear } from '../../../lib/structures/Gear';
 import { channelIsSendable, formatDuration } from '../../../lib/util';
+import { deferInteraction } from '../../../lib/util/interactionReply';
 
 export async function igneCommand(
-	interaction: SlashCommandInteraction | null,
-	user: KlasaUser,
-	channelID: bigint,
+	interaction: ChatInputCommandInteraction | null,
+	user: MUser,
+	channelID: string,
 	inputName: string,
 	quantity: number | undefined
 ) {
-	if (interaction) interaction.deferReply();
+	if (interaction) await deferInteraction(interaction);
 	const channel = globalClient.channels.cache.get(channelID.toString());
 	if (!channelIsSendable(channel)) return 'Invalid channel.';
 	const type = inputName.toLowerCase().includes('mass') ? 'mass' : 'solo';
@@ -55,7 +52,7 @@ export async function igneCommand(
 		}),
 		gearSetup: 'melee',
 		itemCost: async data => {
-			const userBank = data.user.bank();
+			const userBank = data.user.bank;
 			const kc = data.user.getKC(Ignecarus.id);
 
 			let brewsNeeded = Math.max(1, 10 - Math.max(1, Math.ceil((kc + 1) / 30))) + 2;
@@ -75,17 +72,18 @@ export async function igneCommand(
 			return userBank.has(heatResBank.bank) ? heatResBank : normalBank;
 		},
 		mostImportantStat: 'attack_crush',
+		ignoreStats: ['attack_ranged', 'attack_magic'],
 		food: () => new Bank(),
-		settingsKeys: [ClientSettings.EconomyStats.IgnecarusCost, ClientSettings.EconomyStats.IgnecarusLoot],
+		settingsKeys: ['ignecarus_cost', 'ignecarus_loot'],
 		channel,
 		activity: 'Ignecarus',
-		massText: `${user.username} is assembling a team to fight Ignecarus! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
+		massText: `${user.usernameOrMention} is assembling a team to fight Ignecarus! Use the buttons below to join/leave.`,
 		minSize: 1,
 		solo: type === 'solo',
 		canDie: true,
 		customDeathChance: (user, preCalcedDeathChance, solo) => {
 			let baseDeathChance = 95;
-			const gear = user.getGear('melee');
+			const gear = user.gear.melee;
 			for (const item of dwarvenOutfit) {
 				if (gear.hasEquipped(item)) {
 					baseDeathChance -= 9.5;
@@ -114,13 +112,13 @@ export async function igneCommand(
 	try {
 		const { bossUsers } = await instance.start();
 
-		const embed = new MessageEmbed()
+		const embed = new EmbedBuilder()
 			.setDescription(
 				`Your team is off to fight ${instance.quantity}x Ignecarus. The total trip will take ${formatDuration(
 					instance.duration
 				)}.
 
-${bossUsers.map(u => `**${u.user.username}**: ${u.debugStr}`).join('\n\n')}
+${bossUsers.map(u => `**${u.user.usernameOrMention}**: ${u.debugStr}`).join('\n\n')}
 `
 			)
 			.setImage(
@@ -128,10 +126,10 @@ ${bossUsers.map(u => `**${u.user.username}**: ${u.debugStr}`).join('\n\n')}
 			);
 
 		return {
-			embeds: [embed],
+			embeds: [embed.data],
 			content: instance.boosts.length > 0 ? `**Boosts:** ${instance.boosts.join(', ')}.` : undefined
 		};
 	} catch (err: any) {
-		return `The mass failed to start for this reason: ${err.message}.`;
+		return `The mass failed to start for this reason: ${err}.`;
 	}
 }

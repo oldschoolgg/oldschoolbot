@@ -1,6 +1,5 @@
+import { ChatInputCommandInteraction } from 'discord.js';
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
 import { LMSBuyables } from '../../../lib/data/CollectionsExport';
@@ -10,7 +9,7 @@ import { formatDuration, randomVariation, stringMatches } from '../../../lib/uti
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { getUsersLMSStats } from '../../../tasks/minions/minigames/lmsActivity';
-import { handleMahojiConfirmation, mahojiUserSettingsUpdate } from '../../mahojiSettings';
+import { handleMahojiConfirmation } from '../../mahojiSettings';
 
 export async function lmsCommand(
 	options: {
@@ -19,9 +18,9 @@ export async function lmsCommand(
 		buy?: { name?: string; quantity?: number };
 		simulate?: { names?: string };
 	},
-	user: KlasaUser,
-	channelID: bigint,
-	interaction: SlashCommandInteraction
+	user: MUser,
+	channelID: string,
+	interaction: ChatInputCommandInteraction
 ) {
 	const stats = await getUsersLMSStats(user);
 
@@ -67,13 +66,13 @@ export async function lmsCommand(
 			return `You received ${loot}.`;
 		}
 
-		const { newUser } = await mahojiUserSettingsUpdate(user, {
+		const { newUser } = await user.update({
 			lms_points: {
 				decrement: cost
 			}
 		});
 		if (itemToBuy.onlyCL) {
-			await user.addItemsToCollectionLog({ items: loot });
+			await user.addItemsToCollectionLog(loot);
 		} else {
 			await transactItems({
 				userID: user.id,

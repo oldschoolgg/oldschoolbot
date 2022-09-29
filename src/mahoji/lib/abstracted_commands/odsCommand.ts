@@ -1,6 +1,4 @@
-import { User } from '@prisma/client';
 import { randInt, Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { randomVariation } from 'oldschooljs/dist/util';
@@ -8,14 +6,13 @@ import { randomVariation } from 'oldschooljs/dist/util';
 import { Emoji } from '../../../lib/constants';
 import { getMinigameEntity } from '../../../lib/settings/minigames';
 import { trackLoot } from '../../../lib/settings/prisma';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, updateBankSetting } from '../../../lib/util';
+import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../../lib/util/cleanString';
 import getOSItem from '../../../lib/util/getOSItem';
-import { mahojiUserSettingsUpdate } from '../../mahojiSettings';
+import { updateBankSetting } from '../../mahojiSettings';
 
 export const OuraniaBuyables = [
 	{
@@ -48,31 +45,31 @@ export const OuraniaBuyables = [
 	}
 ];
 
-export async function odsBuyCommand(user: User, klasaUser: KlasaUser, name: string, qty: number): CommandResponse {
+export async function odsBuyCommand(user: MUser, name: string, qty: number): CommandResponse {
 	const buyable = OuraniaBuyables.find(i => stringMatches(name, i.item.name));
 	if (!buyable) return "That's not a valid item to buy.";
 
 	let { item, cost } = buyable;
 	cost *= qty;
-	const balance = user.ourania_tokens;
+	const balance = user.user.ourania_tokens;
 	if (balance < cost) {
 		return `You don't have enough Ourania Tokens to buy the ${qty.toLocaleString()}x ${
 			item.name
 		}. You need ${cost.toLocaleString()}, but you have only ${balance.toLocaleString()}.`;
 	}
 
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		ourania_tokens: {
 			decrement: cost
 		}
 	});
 
-	await klasaUser.addItemsToBank({ items: { [item.id]: qty }, collectionLog: true });
+	await user.addItemsToBank({ items: { [item.id]: qty }, collectionLog: true });
 
 	return `Successfully purchased ${qty.toLocaleString()}x ${item.name} for ${cost.toLocaleString()} Ourania Tokens.`;
 }
 
-export async function odsStartCommand(klasaUser: KlasaUser, channelID: bigint) {
+export async function odsStartCommand(klasaUser: MUser, channelID: string) {
 	if (klasaUser.minionIsBusy) {
 		return 'Your minion is busy.';
 	}
@@ -80,7 +77,7 @@ export async function odsStartCommand(klasaUser: KlasaUser, channelID: bigint) {
 
 	let waveTime = randomVariation(Time.Minute * 4, 10);
 
-	if (klasaUser.hasItemEquippedAnywhere('Runecraft master cape')) {
+	if (klasaUser.hasEquipped('Runecraft master cape')) {
 		waveTime /= 2;
 		boosts.push(`${Emoji.RunecraftMasterCape} 2x faster`);
 	}
@@ -94,7 +91,7 @@ export async function odsStartCommand(klasaUser: KlasaUser, channelID: bigint) {
 	}
 
 	await klasaUser.removeItemsFromBank(cost);
-	updateBankSetting(globalClient, ClientSettings.EconomyStats.ODSCost, cost);
+	updateBankSetting('ods_cost', cost);
 
 	let str = `${
 		klasaUser.minionName
@@ -125,10 +122,10 @@ export async function odsStartCommand(klasaUser: KlasaUser, channelID: bigint) {
 	return str;
 }
 
-export async function odsStatsCommand(user: User) {
+export async function odsStatsCommand(user: MUser) {
 	const minigames = await getMinigameEntity(user.id);
 	return `**Ourania Delivery Service** (ODS)
 
 **Deliveries done:** ${minigames.ourania_delivery_service.toLocaleString()}
-**Ourania Tokens:** ${user.ourania_tokens.toLocaleString()}`;
+**Ourania Tokens:** ${user.user.ourania_tokens.toLocaleString()}`;
 }

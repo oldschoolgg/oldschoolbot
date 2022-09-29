@@ -1,5 +1,4 @@
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
-import { KlasaUser } from 'klasa';
 import { Monsters } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
@@ -14,7 +13,6 @@ import { ResearchTaskOptions } from '../invention/research';
 import killableMonsters from '../minions/data/killableMonsters';
 import { Planks } from '../minions/data/planks';
 import { getActivityOfUser } from '../settings/settings';
-import { UserSettings } from '../settings/types/UserSettings';
 import Agility from '../skilling/skills/agility';
 import Cooking from '../skilling/skills/cooking';
 import Crafting from '../skilling/skills/crafting';
@@ -81,11 +79,10 @@ import {
 import { formatDuration, itemNameFromID, randomVariation, toTitleCase } from '../util';
 import { stringMatches } from './cleanString';
 import { formatOrdinal } from './formatOrdinal';
-import { minionName } from './minionUtils';
 
-export function minionStatus(user: KlasaUser) {
+export function minionStatus(user: MUser) {
 	const currentTask = getActivityOfUser(user.id);
-	const name = minionName(user);
+	const name = user.minionName;
 	if (!currentTask) {
 		return `${name} is currently doing nothing.`;
 	}
@@ -224,9 +221,7 @@ export function minionStatus(user: KlasaUser) {
 		}
 
 		case 'Questing': {
-			return `${name} is currently Questing. ${formattedDuration} Your current Quest Point count is: ${user.settings.get(
-				UserSettings.QP
-			)}.`;
+			return `${name} is currently Questing. ${formattedDuration} Your current Quest Point count is: ${user.QP}.`;
 		}
 
 		case 'Woodcutting': {
@@ -234,9 +229,15 @@ export function minionStatus(user: KlasaUser) {
 
 			const log = Woodcutting.Logs.find(log => log.id === data.logID);
 
-			return `${name} is currently chopping ${data.quantity}x ${log!.name}. ${formattedDuration} Your ${
-				Emoji.Woodcutting
-			} Woodcutting level is ${user.skillLevel(SkillsEnum.Woodcutting)}`;
+			return `${name} is currently chopping ${log!.name}. ${
+				data.fakeDurationMax === data.fakeDurationMin
+					? formattedDuration
+					: `approximately ${formatDuration(
+							randomVariation(reduceNumByPercent(durationRemaining, 25), 20)
+					  )} **to** ${formatDuration(
+							randomVariation(increaseNumByPercent(durationRemaining, 25), 20)
+					  )} remaining.`
+			} Your ${Emoji.Woodcutting} Woodcutting level is ${user.skillLevel(SkillsEnum.Woodcutting)}`;
 		}
 		case 'Runecraft': {
 			const data = currentTask as RunecraftActivityTaskOptions;
@@ -634,6 +635,11 @@ export function minionStatus(user: KlasaUser) {
 		case 'Moktang': {
 			const data = currentTask as MoktangTaskOptions;
 			return `${name} is currently killing ${data.qty}x Moktang. The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
+		case 'ShootingStars': {
+			return `${name} is currently mining a Crashed Star. The trip should take ${formatDuration(
 				durationRemaining
 			)}.`;
 		}

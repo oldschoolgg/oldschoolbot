@@ -1,13 +1,13 @@
-import { Prisma, User } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { notEmpty } from 'e';
 import { Items } from 'oldschooljs';
 
-import { mahojiUserSettingsUpdate } from '../../mahoji/mahojiSettings';
+import { mahojiUserSettingsUpdate } from '../../mahoji/settingsUpdate';
 import { GearSetup, GearSetupTypes } from '../gear';
 import { ItemBank } from '../types';
 import { moidLink } from '../util';
 
-export async function repairBrokenItemsFromUser(user: User): Promise<[string] | [string, any[]]> {
+export async function repairBrokenItemsFromUser({ user }: MUser): Promise<[string] | [string, any[]]> {
 	const changes: Prisma.UserUpdateArgs['data'] = {};
 	const rawBank = user.bank as ItemBank;
 	const rawCL = user.collectionLogBank as ItemBank;

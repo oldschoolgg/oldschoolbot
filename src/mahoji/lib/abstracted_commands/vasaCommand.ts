@@ -1,18 +1,14 @@
-import { Embed } from '@discordjs/builders';
-import { TextChannel } from 'discord.js';
-import { randInt, Time } from 'e';
-import { KlasaUser } from 'klasa';
+import { EmbedBuilder, TextChannel } from 'discord.js';
+import { randInt, sumArr, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
-import { Emoji } from '../../../lib/constants';
 import { VasaMagus } from '../../../lib/minions/data/killableMonsters/custom/bosses/VasaMagus';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { BossInstance } from '../../../lib/structures/Boss';
 import { Gear } from '../../../lib/structures/Gear';
 import { formatDuration } from '../../../lib/util';
 
-export async function vasaCommand(user: KlasaUser, channelID: bigint, quantity?: number): CommandResponse {
+export async function vasaCommand(user: MUser, channelID: string, quantity?: number): CommandResponse {
 	const instance = new BossInstance({
 		leader: user,
 		id: VasaMagus.id,
@@ -48,13 +44,21 @@ export async function vasaCommand(user: KlasaUser, channelID: bigint, quantity?:
 		}),
 		gearSetup: 'mage',
 		itemCost: async data =>
-			data.baseFood.multiply(data.kills).add('Elder rune', randInt(55 * data.kills, 100 * data.kills)),
+			data.baseFood.multiply(data.kills).add(
+				'Elder rune',
+				sumArr(
+					Array(data.kills)
+						.fill(0)
+						.map(() => randInt(55, 100))
+				)
+			),
 		mostImportantStat: 'attack_magic',
+		ignoreStats: ['attack_ranged', 'attack_crush', 'attack_slash', 'attack_stab'],
 		food: () => new Bank(),
-		settingsKeys: [ClientSettings.EconomyStats.VasaCost, ClientSettings.EconomyStats.VasaLoot],
+		settingsKeys: ['vasa_cost', 'vasa_loot'],
 		channel: globalClient.channels.cache.get(channelID.toString())! as TextChannel,
 		activity: 'VasaMagus',
-		massText: `${user.username} is assembling a team to fight Vasa Magus! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
+		massText: `${user.usernameOrMention} is assembling a team to fight Vasa Magus! Use the buttons below to join/leave.`,
 		minSize: 1,
 		solo: true,
 		canDie: false,
@@ -63,20 +67,20 @@ export async function vasaCommand(user: KlasaUser, channelID: bigint, quantity?:
 	});
 	try {
 		const { bossUsers } = await instance.start();
-		const embed = new Embed().setDescription(
+		const embed = new EmbedBuilder().setDescription(
 			`Your team is off to fight ${instance.quantity}x Vasa Magus. The total trip will take ${formatDuration(
 				instance.duration
 			)}.
 
-${bossUsers.map(u => `**${u.user.username}**: ${u.debugStr}`).join('\n\n')}
+${bossUsers.map(u => `**${u.user.usernameOrMention}**: ${u.debugStr}`).join('\n\n')}
 `
 		);
 
 		return {
-			embeds: [embed],
+			embeds: [embed.data],
 			content: instance.boosts.length > 0 ? `**Boosts:** ${instance.boosts.join(', ')}.` : undefined
 		};
 	} catch (err: any) {
-		return `The mass failed to start for this reason: ${err.message}.`;
+		return `The mass failed to start for this reason: ${err}.`;
 	}
 }

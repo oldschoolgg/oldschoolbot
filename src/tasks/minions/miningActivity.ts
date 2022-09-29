@@ -1,5 +1,4 @@
 import { roll, Time } from 'e';
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
@@ -10,18 +9,18 @@ import Mining from '../../lib/skilling/skills/mining';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
-import { rand } from '../../lib/util';
+import { rand, skillingPetDropRate } from '../../lib/util';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { userHasItemsEquippedAnywhere } from '../../lib/util/minionUtils';
 import resolveItems from '../../lib/util/resolveItems';
 import { mahojiUsersSettingsFetch, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 
-export default class extends Task {
+export const miningTask: MinionTask = {
+	type: 'Mining',
 	async run(data: MiningActivityTaskOptions) {
 		const { oreID, userID, channelID, duration, powermine } = data;
 		let { quantity } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const ore = Mining.Ores.find(ore => ore.id === oreID)!;
 
 		let xpReceived = quantity * ore.xp;
@@ -29,7 +28,7 @@ export default class extends Task {
 
 		// If they have the entire prospector outfit, give an extra 0.5% xp bonus
 		if (
-			user.getGear('skilling').hasEquipped(
+			user.gear.skilling.hasEquipped(
 				Object.keys(Mining.prospectorItems).map(i => parseInt(i)),
 				true
 			)
@@ -40,7 +39,7 @@ export default class extends Task {
 		} else {
 			// For each prospector item, check if they have it, give its' XP boost if so.
 			for (const [itemID, bonus] of Object.entries(Mining.prospectorItems)) {
-				if (user.hasItemEquippedAnywhere(parseInt(itemID))) {
+				if (user.hasEquipped(parseInt(itemID))) {
 					const amountToAdd = Math.floor(xpReceived * (bonus / 100));
 					xpReceived += amountToAdd;
 					bonusXP += amountToAdd;
@@ -66,18 +65,21 @@ export default class extends Task {
 		}
 
 		// Roll for pet
-		if (ore.petChance && roll((ore.petChance - currentLevel * 25) / quantity)) {
-			loot.add('Rock golem');
-			str += "\nYou have a funny feeling you're being followed...";
-			this.client.emit(
-				Events.ServerNotification,
-				`${Emoji.Mining} **${user.username}'s** minion, ${user.minionName}, just received a Rock golem while mining ${ore.name} at level ${currentLevel} Mining!`
-			);
+		if (ore.petChance) {
+			const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Mining, ore.petChance);
+			if (roll(petDropRate / quantity)) {
+				loot.add('Rock golem');
+				str += "\nYou have a funny feeling you're being followed...";
+				globalClient.emit(
+					Events.ServerNotification,
+					`${Emoji.Mining} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Rock golem while mining ${ore.name} at level ${currentLevel} Mining!`
+				);
+			}
 		}
 
 		if (numberOfMinutes > 10 && ore.nuggets) {
 			let numberOfNuggets = rand(0, Math.floor(numberOfMinutes / 4));
-			if (user.hasItemEquippedAnywhere('Mining master cape')) {
+			if (user.hasEquipped('Mining master cape')) {
 				numberOfNuggets *= 2;
 			}
 			loot.add('Golden nugget', numberOfNuggets);
@@ -88,7 +90,7 @@ export default class extends Task {
 			}
 
 			if (numberOfMinerals > 0) {
-				if (user.hasItemEquippedAnywhere('Mining master cape')) {
+				if (user.hasEquipped('Mining master cape')) {
 					numberOfMinerals *= 2;
 				}
 				loot.add('Unidentified minerals', numberOfMinerals);
@@ -107,10 +109,10 @@ export default class extends Task {
 			}
 		}
 
-		const isUsingObsidianPickaxe = userHasItemsEquippedAnywhere(user, ['Offhand volcanic pickaxe'], false);
+		const isUsingObsidianPickaxe = user.hasEquipped(['Offhand volcanic pickaxe'], false);
 		const isDestroyed = isUsingObsidianPickaxe && !resolveItems(['Obsidian shards']).includes(ore.id);
 		if (isDestroyed) str += '\nYour volcanic pickaxe destroyed the ores.';
-		const hasAdze = userHasItemsEquippedAnywhere(user, ['Superior inferno adze']);
+		const hasAdze = user.hasEquipped(['Superior inferno adze']);
 		const adzeIsDisabled = (
 			await mahojiUsersSettingsFetch(user.id, { disabled_inventions: true })
 		).disabled_inventions.includes(InventionID.SuperiorInfernoAdze);
@@ -172,7 +174,7 @@ export default class extends Task {
 				}
 			}
 
-			const userBank = user.bank();
+			const userBank = user.bank;
 			const spiritOre = stoneSpirits.find(t => t.ore.id === oreID);
 			if (spiritOre) {
 				const amountOfSpirits = Math.min(quantity, userBank.amount(spiritOre.spirit.id));
@@ -208,7 +210,7 @@ export default class extends Task {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
 		}
 
-		if (user.hasItemEquippedAnywhere('Mining master cape')) {
+		if (user.hasEquipped('Mining master cape')) {
 			str += '\n2x minerals/nuggets for Mining master cape.';
 		}
 
@@ -237,4 +239,4 @@ export default class extends Task {
 			loot
 		);
 	}
-}
+};

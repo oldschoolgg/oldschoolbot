@@ -1,17 +1,16 @@
 import { calcPercentOfNum, calcWhatPercent, randArrItem, randInt, roll, Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
+import { getMinigameScore } from '../../../lib/settings/minigames';
 import { Plank } from '../../../lib/skilling/skills/construction/constructables';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { MahoganyHomesActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, stringMatches, updateBankSetting } from '../../../lib/util';
+import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
+import { updateBankSetting } from '../../mahojiSettings';
 
 const contractTiers = [
 	{
@@ -92,7 +91,7 @@ export const mahoganyHomesBuyables = [
 	{ item: getOSItem("Carpenter's boots"), cost: 200 }
 ];
 
-export async function mahoganyHomesBuyCommand(user: KlasaUser, input = '', quantity?: number) {
+export async function mahoganyHomesBuyCommand(user: MUser, input = '', quantity?: number) {
 	const buyable = mahoganyHomesBuyables.find(i => stringMatches(input, i.item.name));
 	if (!buyable) {
 		return `Here are the items you can buy: \n\n${mahoganyHomesBuyables
@@ -105,27 +104,30 @@ export async function mahoganyHomesBuyCommand(user: KlasaUser, input = '', quant
 	}
 
 	const { item, cost } = buyable;
-	const balance = user.settings.get(UserSettings.CarpenterPoints);
+	const balance = user.user.carpenter_points;
 	if (balance < cost * quantity) {
 		return `You don't have enough Carpenter Points to buy ${quantity.toLocaleString()}x ${item.name}. You need ${
 			cost * quantity
 		}, but you have only ${balance}.`;
 	}
+	await user.update({
+		carpenter_points: {
+			decrement: cost * quantity
+		}
+	});
+	const loot = new Bank().add(item.id, quantity);
+	await transactItems({ userID: user.id, itemsToAdd: loot, collectionLog: true });
 
-	await user.settings.update(UserSettings.CarpenterPoints, balance - cost * quantity);
-	await user.addItemsToBank({ items: new Bank().add(item.id, quantity), collectionLog: true });
-
-	return `Successfully purchased ${quantity.toLocaleString()}x ${item.name} for ${cost * quantity} Carpenter Points.`;
+	return `Successfully purchased ${loot} for ${cost * quantity} Carpenter Points.`;
 }
 
-export async function mahoganyHomesBuildCommand(user: KlasaUser, channelID: bigint): CommandResponse {
+export async function mahoganyHomesBuildCommand(user: MUser, channelID: string): CommandResponse {
 	if (user.minionIsBusy) return `${user.minionName} is currently busy.`;
-	await user.settings.sync(true);
 
 	const conLevel = user.skillLevel(SkillsEnum.Construction);
-	const kc = await user.getMinigameScore('mahogany_homes');
+	const kc = await getMinigameScore(user.id, 'mahogany_homes');
 
-	const hasSack = user.hasItemEquippedOrInBank('Plank sack');
+	const hasSack = user.hasEquippedOrInBank('Plank sack');
 	const [quantity, itemsNeeded, xp, duration, points] = calcTrip(
 		conLevel,
 		kc,
@@ -133,12 +135,12 @@ export async function mahoganyHomesBuildCommand(user: KlasaUser, channelID: bigi
 		hasSack
 	);
 
-	if (!user.bank().has(itemsNeeded.bank)) {
+	if (!user.owns(itemsNeeded)) {
 		return `You don't have enough items for this trip. You need: ${itemsNeeded}.`;
 	}
-	await user.removeItemsFromBank(itemsNeeded.bank);
+	await user.removeItemsFromBank(itemsNeeded);
 
-	updateBankSetting(globalClient, ClientSettings.EconomyStats.ConstructCostBank, itemsNeeded);
+	updateBankSetting('construction_cost_bank', itemsNeeded);
 
 	await addSubTaskToActivityTask<MahoganyHomesActivityTaskOptions>({
 		userID: user.id,

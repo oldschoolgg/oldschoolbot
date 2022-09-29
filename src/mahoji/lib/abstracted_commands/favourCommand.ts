@@ -1,13 +1,6 @@
-import { User } from '@prisma/client';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import {
-	baseUserKourendFavour,
-	findFavour,
-	KourendFavours,
-	UserKourendFavour
-} from '../../../lib/minions/data/kourendFavour';
+import { findFavour, KourendFavours } from '../../../lib/minions/data/kourendFavour';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { KourendFavourActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
@@ -16,13 +9,12 @@ import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 
 export async function favourCommand(
-	klasaUser: KlasaUser,
-	user: User,
+	user: MUser,
 	favourName: string | undefined,
-	channelID: bigint,
+	channelID: string,
 	noStams: boolean | undefined
 ) {
-	const currentUserFavour = (user.kourend_favour ?? baseUserKourendFavour) as any as UserKourendFavour;
+	const currentUserFavour = user.kourendFavour;
 	if (!favourName || minionIsBusy(user.id)) {
 		let allFavourString: string = 'Your current Kourend Favour:';
 		for (const [key, value] of Object.entries(currentUserFavour)) {
@@ -57,7 +49,7 @@ export async function favourCommand(
 
 	if (favour.skillReqs) {
 		for (const [skillName, lvl] of Object.entries(favour.skillReqs)) {
-			if (klasaUser.skillLevel(skillName as SkillsEnum) < lvl) {
+			if (user.skillLevel(skillName as SkillsEnum) < lvl) {
 				return `You need ${lvl} ${skillName} to do ${favour.name} Favour.`;
 			}
 		}
@@ -72,22 +64,22 @@ export async function favourCommand(
 			duration *= 1.5;
 			cost.remove('Stamina potion(4)', cost.amount('Stamina potion (4)'));
 		}
-		if (!klasaUser.owns(cost)) {
+		if (!user.owns(cost)) {
 			return `You don't have the items needed for this trip, you need: ${cost}.`;
 		}
-		await klasaUser.removeItemsFromBank(cost);
+		await user.removeItemsFromBank(cost);
 	}
 
 	await addSubTaskToActivityTask<KourendFavourActivityTaskOptions>({
 		favour,
-		userID: klasaUser.id,
+		userID: user.id,
 		channelID: channelID.toString(),
 		quantity,
 		duration,
 		type: 'KourendFavour'
 	});
 
-	return `${klasaUser.minionName} is now completing ${favour.name} Favour tasks, it'll take around ${formatDuration(
+	return `${user.minionName} is now completing ${favour.name} Favour tasks, it'll take around ${formatDuration(
 		duration
 	)} to finish.${cost.toString().length > 0 ? ` Removed ${cost} from your bank.` : ''}${
 		ns ? '\n50% longer trip due to not using Stamina potions.' : ''

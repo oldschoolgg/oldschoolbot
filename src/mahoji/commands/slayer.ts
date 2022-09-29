@@ -1,4 +1,5 @@
-import { APIUser, ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { User } from 'discord.js';
+import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Monsters } from 'oldschooljs';
 
 import { autoslayChoices, slayerMasterChoices } from '../../lib/slayer/constants';
@@ -129,7 +130,7 @@ export const slayerCommand: OSBMahojiCommand = {
 							name: 'assignment',
 							description: 'Assignment to unblock',
 							required: true,
-							autocomplete: async (value: string, user: APIUser) => {
+							autocomplete: async (value: string, user: User) => {
 								const blockList = await mahojiUsersSettingsFetch(user.id, { slayer_blocked_ids: true });
 								if (blockList.slayer_blocked_ids.length === 0) {
 									return [{ name: "You don't have any monsters blocked", value: '' }];
@@ -214,7 +215,7 @@ export const slayerCommand: OSBMahojiCommand = {
 							name: 'unlockable',
 							description: 'Slayer unlock to disable',
 							required: true,
-							autocomplete: async (value: string, user: APIUser) => {
+							autocomplete: async (value: string, user: User) => {
 								const mahojiUser = await mahojiUsersSettingsFetch(user.id, { slayer_unlocks: true });
 								return SlayerRewardsShop.filter(
 									r =>
@@ -264,41 +265,42 @@ export const slayerCommand: OSBMahojiCommand = {
 		};
 		status?: {};
 	}>) => {
-		const klasaUser = await globalClient.fetchUser(userID);
-		const mahojiUser = await mahojiUsersSettingsFetch(userID);
-		await klasaUser.settings.sync(true);
+		const mahojiUser = await mUserFetch(userID);
 
 		if (options.autoslay) {
-			return autoSlayCommand({
+			autoSlayCommand({
 				mahojiUser,
 				channelID,
 				modeOverride: options.autoslay.mode,
 				saveMode: Boolean(options.autoslay.save),
 				interaction
 			});
+			return null;
 		}
 		if (options.new_task) {
-			return slayerNewTaskCommand({
-				mahojiUser,
+			slayerNewTaskCommand({
+				userID: mahojiUser.id,
 				interaction,
 				channelID,
 				slayerMasterOverride: options.new_task.master,
 				saveDefaultSlayerMaster: Boolean(options.new_task.save),
 				showButtons: true
 			});
+			return null;
 		}
 		if (options.manage) {
 			if (options.manage.command === 'list_blocks') {
 				return slayerListBlocksCommand(mahojiUser);
 			}
 			if (options.manage.command === 'skip' || options.manage.command === 'block') {
-				return slayerSkipTaskCommand({
-					mahojiUser,
+				slayerSkipTaskCommand({
+					userID: mahojiUser.id,
 					block: options.manage.command === 'block',
 					newTask: Boolean(options.manage.new),
 					interaction,
 					channelID
 				});
+				return null;
 			}
 		}
 		if (options.rewards) {
@@ -313,7 +315,7 @@ export const slayerCommand: OSBMahojiCommand = {
 			}
 			if (options.rewards.disable) {
 				return slayerShopBuyCommand({
-					mahojiUser,
+					userID: mahojiUser.id,
 					disable: true,
 					buyable: options.rewards.disable.unlockable,
 					interaction
@@ -321,7 +323,7 @@ export const slayerCommand: OSBMahojiCommand = {
 			}
 			if (options.rewards.buy) {
 				return slayerShopBuyCommand({
-					mahojiUser,
+					userID: mahojiUser.id,
 					buyable: options.rewards.buy.item,
 					quantity: options.rewards.buy.quantity,
 					interaction
@@ -329,7 +331,7 @@ export const slayerCommand: OSBMahojiCommand = {
 			}
 			if (options.rewards.unlock) {
 				return slayerShopBuyCommand({
-					mahojiUser,
+					userID: mahojiUser.id,
 					buyable: options.rewards.unlock.unlockable,
 					interaction
 				});

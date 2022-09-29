@@ -291,8 +291,8 @@ export const eliteTasks: Task[] = [
 	{
 		id: 3036,
 		name: 'Complete 100 Farming contracts',
-		has: async ({ mahojiUser }) => {
-			const contract = getFarmingContractOfUser(mahojiUser);
+		has: async ({ user }) => {
+			const contract = getFarmingContractOfUser(user);
 			return contract.contractsCompleted >= 100;
 		}
 	},

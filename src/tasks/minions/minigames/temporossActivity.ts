@@ -1,5 +1,4 @@
 import { increaseNumByPercent, randInt } from 'e';
-import { Task } from 'klasa';
 
 import { Emoji, Events } from '../../../lib/constants';
 import { getMinigameEntity, incrementMinigameScore } from '../../../lib/settings/settings';
@@ -11,10 +10,11 @@ import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 
-export default class extends Task {
+export const temporossTask: MinionTask = {
+	type: 'Tempoross',
 	async run(data: TemporossActivityTaskOptions) {
 		const { userID, channelID, quantity, rewardBoost, duration } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
 		const previousScore = (await getMinigameEntity(user.id)).tempoross;
 		const { newScore } = await incrementMinigameScore(userID, 'tempoross', quantity);
@@ -24,12 +24,12 @@ export default class extends Task {
 		if (rewardBoost > 0) {
 			rewardTokens = Math.ceil(increaseNumByPercent(rewardTokens, rewardBoost));
 		}
-		const loot = getTemporossLoot(rewardTokens, currentLevel, user.bank());
+		const loot = getTemporossLoot(rewardTokens, currentLevel, user.bank);
 
 		if (loot.has('Tiny tempor')) {
-			this.client.emit(
+			globalClient.emit(
 				Events.ServerNotification,
-				`${Emoji.TinyTempor} **${user.username}'s** minion, ${
+				`${Emoji.TinyTempor} **${user.usernameOrMention}'s** minion, ${
 					user.minionName
 				}, just received a Tiny tempor! They got the pet on the ${formatOrdinal(
 					kcForPet
@@ -42,7 +42,7 @@ export default class extends Task {
 
 		// If they have the entire angler outfit, give an extra 0.5% xp bonus
 		if (
-			user.getGear('skilling').hasEquipped(
+			user.gear.skilling.hasEquipped(
 				Object.keys(Fishing.anglerItems).map(i => parseInt(i)),
 				true
 			)
@@ -53,7 +53,7 @@ export default class extends Task {
 		} else {
 			// For each angler item, check if they have it, give its' XP boost if so.
 			for (const [itemID, bonus] of Object.entries(Fishing.anglerItems)) {
-				if (user.hasItemEquippedAnywhere(parseInt(itemID))) {
+				if (user.hasEquipped(parseInt(itemID))) {
 					const amountToAdd = Math.floor(fXPtoGive * (bonus / 100));
 					fXPtoGive += amountToAdd;
 					fBonusXP += amountToAdd;
@@ -89,9 +89,9 @@ export default class extends Task {
 			channelID,
 			output,
 			['k', { name: 'Tempoross', quantity }, true],
-			image.file.buffer,
+			image.file.attachment,
 			data,
 			itemsAdded
 		);
 	}
-}
+};

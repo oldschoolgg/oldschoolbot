@@ -1,26 +1,26 @@
-import { MessageAttachment, TextChannel } from 'discord.js';
+import { AttachmentBuilder, TextChannel } from 'discord.js';
 import { calcPercentOfNum, calcWhatPercent, randFloat, reduceNumByPercent, sumArr, Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { table } from 'table';
 
+import { setupParty } from '../../extendables/Message/Party';
+import { ClientBankKey, updateBankSetting } from '../../mahoji/mahojiSettings';
 import { GearSetupType, GearStats } from '../gear';
 import { effectiveMonsters } from '../minions/data/killableMonsters';
 import { trackLoot } from '../settings/prisma';
 import { PUMPKINHEAD_ID } from '../simulation/pumpkinHead';
 import { Skills } from '../types';
 import { NewBossOptions } from '../types/minions';
-import { formatDuration, formatSkillRequirements, isWeekend, updateBankSetting } from '../util';
+import { formatDuration, formatSkillRequirements, hasSkillReqs, isWeekend } from '../util';
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import { Gear } from './Gear';
-import { Mass } from './Mass';
 import { activity_type_enum } from '.prisma/client';
 
-export const gpCostPerKill = (user: KlasaUser) =>
-	user.getGear('melee').hasEquipped(['Ring of charos', 'Ring of charos(a)'], false) ? 5_000_000 : 10_000_000;
+export const gpCostPerKill = (user: MUser) =>
+	user.gear.melee.hasEquipped(['Ring of charos', 'Ring of charos(a)'], false) ? 5_000_000 : 10_000_000;
 
-export const calcDwwhChance = (users: KlasaUser[]) => {
+export const calcDwwhChance = (users: MUser[]) => {
 	const size = Math.min(users.length, 10);
 	const baseRate = 850;
 	const modDenominator = 15;
@@ -29,7 +29,7 @@ export const calcDwwhChance = (users: KlasaUser[]) => {
 	let groupRate = Math.ceil(dropRate / size);
 	groupRate = Math.ceil(groupRate);
 
-	if (users.some(u => u.getGear('melee').hasEquipped('Ring of luck'))) {
+	if (users.some(u => u.gear.melee.hasEquipped('Ring of luck'))) {
 		groupRate = Math.floor(reduceNumByPercent(groupRate, 15));
 	}
 	return groupRate;
@@ -113,22 +113,23 @@ export interface BossOptions {
 	skillRequirements: Skills;
 	// The total combined values for item boosts equal their relative contribution to the speed, see `speedMaxReduction`
 	itemBoosts: [string, number][];
-	customDenier: (user: KlasaUser) => Promise<UserDenyResult>;
+	customDenier: (user: MUser) => Promise<UserDenyResult>;
 	bisGear: Gear;
 	gearSetup: GearSetupType;
-	itemCost?: (options: { user: KlasaUser; kills: number; baseFood: Bank; solo: boolean }) => Promise<Bank>;
+	itemCost?: (options: { user: MUser; kills: number; baseFood: Bank; solo: boolean }) => Promise<Bank>;
 	mostImportantStat: keyof GearStats;
-	food: Bank | ((user: KlasaUser) => Bank);
-	settingsKeys?: [string, string];
+	ignoreStats?: (keyof GearStats)[];
+	food: Bank | ((user: MUser) => Bank);
+	settingsKeys?: [ClientBankKey, ClientBankKey];
 	channel: TextChannel;
 	activity: activity_type_enum;
 	massText: string;
-	leader?: KlasaUser;
+	leader: MUser;
 	minSize: number;
 	solo: boolean;
 	canDie: boolean;
 	kcLearningCap?: number;
-	customDeathChance?: (user: KlasaUser, deathChance: number, solo: boolean) => number;
+	customDeathChance?: (user: MUser, deathChance: number, solo: boolean) => number;
 	allowMoreThan1Solo?: boolean;
 	allowMoreThan1Group?: boolean;
 	quantity?: number;
@@ -142,7 +143,7 @@ export interface BossOptions {
 }
 
 export interface BossUser {
-	user: KlasaUser;
+	user: MUser;
 	userPercentChange: number;
 	deathChance: number;
 	itemsToRemove: Bank;
@@ -154,30 +155,31 @@ export class BossInstance {
 	baseDuration: number;
 	skillRequirements: Skills;
 	itemBoosts: [string, number][];
-	customDenier: (user: KlasaUser) => Promise<UserDenyResult>;
+	customDenier: (user: MUser) => Promise<UserDenyResult>;
 	bisGear: Gear;
 	gearSetup: GearSetupType;
-	itemCost?: (options: { user: KlasaUser; kills: number; baseFood: Bank; solo: boolean }) => Promise<Bank>;
+	itemCost?: (options: { user: MUser; kills: number; baseFood: Bank; solo: boolean }) => Promise<Bank>;
 	mostImportantStat: keyof GearStats;
-	food: Bank | ((user: KlasaUser) => Bank);
+	ignoreStats: (keyof GearStats)[] = [];
+	food: Bank | ((user: MUser) => Bank);
 	bossUsers: BossUser[] = [];
 	duration: number = -1;
-	quantity: number = 1;
-	tempQty: number = NaN;
+	quantity: number | null = null;
+	tempQty: number | null = null;
 	allowMoreThan1Solo: boolean = false;
 	allowMoreThan1Group: boolean = false;
 	totalPercent: number = -1;
-	settingsKeys?: [string, string];
+	settingsKeys?: [ClientBankKey, ClientBankKey];
 	channel: TextChannel;
 	activity: activity_type_enum;
 	massText: string;
-	users: KlasaUser[] | null = null;
-	leader?: KlasaUser;
+	users: MUser[] | null = null;
+	leader: MUser;
 	minSize: number;
 	solo: boolean;
 	canDie: boolean;
 	kcLearningCap: number;
-	customDeathChance: null | ((user: KlasaUser, deathChance: number, solo: boolean) => number);
+	customDeathChance: null | ((user: MUser, deathChance: number, solo: boolean) => number);
 	boosts: string[] = [];
 	automaticStartTime?: number;
 	maxSize: number;
@@ -194,6 +196,7 @@ export class BossInstance {
 		this.gearSetup = options.gearSetup;
 		this.itemCost = options.itemCost;
 		this.mostImportantStat = options.mostImportantStat;
+		this.ignoreStats = options.ignoreStats ?? [];
 		this.id = options.id;
 		this.food = options.food;
 		this.settingsKeys = options.settingsKeys;
@@ -210,7 +213,7 @@ export class BossInstance {
 		this.customDeathChance = options.customDeathChance ?? null;
 		this.allowMoreThan1Solo = options.allowMoreThan1Solo ?? false;
 		this.allowMoreThan1Group = options.allowMoreThan1Group ?? false;
-		this.quantity = options.quantity ?? NaN;
+		this.quantity = options.quantity ?? null;
 		this.maxSize = options.maxSize ?? 10;
 		let massText = [options.massText, '\n'];
 		if (Object.keys(this.skillRequirements).length > 0) {
@@ -241,35 +244,36 @@ export class BossInstance {
 		let tempQty = 1;
 		const maxTripLength = this.leader ? calcMaxTripLength(this.leader, this.activity) : Time.Hour;
 		tempQty = Math.max(tempQty, Math.floor(maxTripLength / duration));
-		// This boss doesnt allow more than 1KC at time, limits to 1
+		// If this boss doesn't allow more than 1KC at time, limit to 1
 		if (
 			(this.users && this.users.length === 1 && !this.allowMoreThan1Solo) ||
 			(this.users && this.users.length > 1 && !this.allowMoreThan1Group)
 		) {
 			tempQty = 1;
 		}
-		// If the user informed a higher qty than it can kill or is NaN, defaults to max
-		if (isNaN(baseQty) || baseQty > tempQty) return tempQty;
+		// If the user informed a higher qty than it can kill or is null, defaults to max
+		if (!baseQty || baseQty > tempQty) return tempQty;
 		return baseQty;
 	}
 
 	async init() {
-		const mass = new Mass({
-			channel: this.channel,
-			maxSize: this.maxSize ?? 10,
-			minSize: this.minSize,
-			leader: this.leader,
-			text: this.massText,
-			ironmenAllowed: true,
-			customDenier: async (user: KlasaUser) => {
-				return this.checkUser(user);
-			},
-			automaticStartTime: this.automaticStartTime
-		});
+		this.users =
+			this.solo && this.leader
+				? [this.leader]
+				: await setupParty(this.channel, this.leader, {
+						ironmanAllowed: true,
+						minSize: this.minSize,
+						maxSize: this.maxSize,
+						leader: this.leader,
+						customDenier: async (user: MUser) => {
+							return this.checkUser(user);
+						},
+						message: this.massText
+				  });
+
 		this.tempQty = this.quantity;
 		// Force qty to 1 for init calculations
 		this.quantity = this.calculateQty(this.baseDuration);
-		this.users = this.solo && this.leader ? [this.leader] : await mass.init();
 		await this.validateTeam();
 		const { bossUsers, duration, totalPercent } = await this.calculateBossUsers();
 		this.quantity = this.calculateQty(duration);
@@ -285,26 +289,33 @@ export class BossInstance {
 		this.totalPercent = totalPercent;
 	}
 
-	async checkUser(user: KlasaUser): Promise<UserDenyResult> {
+	async checkUser(user: MUser): Promise<UserDenyResult> {
 		const [denied, reason] = await this.customDenier(user);
 		if (denied) {
 			return [true, reason!];
 		}
-		if (!user.hasMinion) {
+		if (!user.user.minion_hasBought) {
 			return [true, "doesn't have a minion"];
 		}
 		if (user.minionIsBusy) {
 			return [true, 'minion is busy'];
 		}
-		if (!user.hasSkillReqs(this.skillRequirements)[0]) {
+		if (!hasSkillReqs(user, this.skillRequirements)[0]) {
 			return [true, "doesn't meet skill requirements"];
 		}
-		const itemCost = await this.calcFoodForUser(user, false);
-		if (!user.owns(itemCost)) {
-			return [true, `doesn't have ${itemCost}`];
+		if (this.quantity) {
+			const itemCost = await this.calcFoodForUser(user, false);
+			if (!user.owns(itemCost)) {
+				return [true, `doesn't have ${itemCost}`];
+			}
 		}
 
-		const gearPercent = calcSetupPercent(this.bisGear, user.getGear(this.gearSetup), this.mostImportantStat, []);
+		const gearPercent = calcSetupPercent(
+			this.bisGear,
+			user.gear[this.gearSetup],
+			this.mostImportantStat,
+			this.ignoreStats
+		);
 		if (gearPercent < 20) {
 			return [true, 'has terrible gear'];
 		}
@@ -312,13 +323,13 @@ export class BossInstance {
 		return [false];
 	}
 
-	async calcFoodForUser(user: KlasaUser, solo = false) {
+	async calcFoodForUser(user: MUser, solo = false) {
 		const kc = user.getKC(this.id);
 		let itemsToRemove = calcFood(solo, kc);
 		if (this.itemCost) {
-			return this.itemCost({ user, kills: this.quantity, baseFood: itemsToRemove, solo });
+			return this.itemCost({ user, kills: this.quantity ?? 0, baseFood: itemsToRemove, solo });
 		}
-		return itemsToRemove.multiply(this.quantity);
+		return itemsToRemove.multiply(this.quantity ?? 0);
 	}
 
 	async calculateBossUsers() {
@@ -338,12 +349,12 @@ export class BossInstance {
 
 		// Track user len outside the loop because the loop corrupts it. (calcFoodForUser())
 		for (const user of this.users!) {
-			const gear = user.getGear(this.gearSetup);
+			const gear = user.gear[this.gearSetup];
 			let debugStr = [];
 			let userPercentChange = 0;
 
 			// Gear
-			const gearPercent = calcSetupPercent(this.bisGear, gear, this.mostImportantStat, []);
+			const gearPercent = calcSetupPercent(this.bisGear, gear, this.mostImportantStat, this.ignoreStats);
 			const gearBoostPercent = calcPercentOfNum(gearPercent, speedReductionForGear);
 			userPercentChange += gearBoostPercent;
 			debugStr.push(`**Gear**[${gearPercent.toFixed(1)}%]`);
@@ -420,7 +431,7 @@ export class BossInstance {
 			totalCost.add(itemsToRemove);
 		}
 		if (this.settingsKeys) {
-			updateBankSetting(globalClient, this.settingsKeys[0], totalCost);
+			updateBankSetting(this.settingsKeys[0], totalCost);
 		}
 
 		const monster = effectiveMonsters.find(m => m.id === this.id);
@@ -438,7 +449,7 @@ export class BossInstance {
 		await addSubTaskToActivityTask<NewBossOptions>({
 			userID: this.users![0].id,
 			channelID: this.channel.id,
-			quantity: this.quantity,
+			quantity: this.quantity!,
 			duration: this.duration,
 			type: this.activity,
 			users: this.users!.map(u => u.id),
@@ -475,6 +486,6 @@ export class BossInstance {
 			['Team Size', '%', 'Duration', 'Death Chance', 'DWWH Chance', 'DWWH Hours', 'Item Cost For DWWH'],
 			...results
 		]);
-		return new MessageAttachment(Buffer.from(normalTable), 'boss-sim.txt');
+		return new AttachmentBuilder(Buffer.from(normalTable), { name: 'boss-sim.txt' });
 	}
 }

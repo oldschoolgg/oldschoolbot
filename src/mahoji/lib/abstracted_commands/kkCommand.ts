@@ -1,46 +1,44 @@
+import { ChatInputCommandInteraction } from 'discord.js';
 import { increaseNumByPercent, reduceNumByPercent, round, Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
 import { setupParty } from '../../../extendables/Message/Party';
-import { Emoji } from '../../../lib/constants';
 import { gorajanWarriorOutfit, torvaOutfit } from '../../../lib/data/CollectionsExport';
 import { KalphiteKingMonster } from '../../../lib/minions/data/killableMonsters/custom/bosses/KalphiteKing';
 import { calculateMonsterFood } from '../../../lib/minions/functions';
 import hasEnoughFoodForMonster from '../../../lib/minions/functions/hasEnoughFoodForMonster';
 import { KillableMonster } from '../../../lib/minions/types';
 import { trackLoot } from '../../../lib/settings/prisma';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { Gear } from '../../../lib/structures/Gear';
 import { MakePartyOptions } from '../../../lib/types';
 import { BossActivityTaskOptions } from '../../../lib/types/minions';
-import { channelIsSendable, formatDuration, isWeekend, updateBankSetting } from '../../../lib/util';
+import { channelIsSendable, formatDuration, isWeekend } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../../lib/util/calcMassDurationQuantity';
 import { getKalphiteKingGearStats } from '../../../lib/util/getKalphiteKingGearStats';
+import { deferInteraction } from '../../../lib/util/interactionReply';
+import { hasMonsterRequirements, updateBankSetting } from '../../mahojiSettings';
 
-function checkReqs(users: KlasaUser[], monster: KillableMonster, quantity: number): string | undefined {
+function checkReqs(users: MUser[], monster: KillableMonster, quantity: number): string | undefined {
 	// Check if every user has the requirements for this monster.
 	for (const user of users) {
-		if (!user.hasMinion) {
-			return `${user.username} doesn't have a minion, so they can't join!`;
+		if (!user.user.minion_hasBought) {
+			return `${user.usernameOrMention} doesn't have a minion, so they can't join!`;
 		}
 
 		if (user.minionIsBusy) {
-			return `${user.username} is busy right now and can't join!`;
+			return `${user.usernameOrMention} is busy right now and can't join!`;
 		}
 
-		const [hasReqs, reason] = user.hasMonsterRequirements(monster);
+		const [hasReqs, reason] = hasMonsterRequirements(user, monster);
 		if (!hasReqs) {
-			return `${user.username} doesn't have the requirements for this monster: ${reason}`;
+			return `${user.usernameOrMention} doesn't have the requirements for this monster: ${reason}`;
 		}
 
 		if (!hasEnoughFoodForMonster(monster, user, quantity, users.length)) {
 			return `${
-				users.length === 1 ? "You don't" : `${user.username} doesn't`
+				users.length === 1 ? "You don't" : `${user.usernameOrMention} doesn't`
 			} have enough brews/restores. You need at least ${monster.healAmountNeeded! * quantity} HP in food to ${
 				users.length === 1 ? 'start the mass' : 'enter the mass'
 			}.`;
@@ -55,9 +53,9 @@ const minimumSoloGear = new Gear({
 	hands: 'Torva gloves'
 });
 
-function calcFood(user: KlasaUser, teamSize: number, quantity: number) {
+function calcFood(user: MUser, teamSize: number, quantity: number) {
 	let [healAmountNeeded] = calculateMonsterFood(KalphiteKingMonster, user);
-	const kc = user.settings.get(UserSettings.MonsterScores)[KalphiteKingMonster.id] ?? 0;
+	const kc = user.getKC(KalphiteKingMonster.id);
 	if (kc > 50) healAmountNeeded *= 0.5;
 	else if (kc > 30) healAmountNeeded *= 0.6;
 	else if (kc > 15) healAmountNeeded *= 0.7;
@@ -75,13 +73,13 @@ function calcFood(user: KlasaUser, teamSize: number, quantity: number) {
 }
 
 export async function kkCommand(
-	interaction: SlashCommandInteraction | null,
-	user: KlasaUser,
-	channelID: bigint,
+	interaction: ChatInputCommandInteraction | null,
+	user: MUser,
+	channelID: string,
 	inputName: string,
 	inputQuantity: number | undefined
 ): CommandResponse {
-	if (interaction) interaction.deferReply();
+	if (interaction) await deferInteraction(interaction);
 	const failureRes = checkReqs([user], KalphiteKingMonster, 2);
 	if (failureRes) return failureRes;
 
@@ -92,15 +90,15 @@ export async function kkCommand(
 		minSize: 2,
 		maxSize: 8,
 		ironmanAllowed: true,
-		message: `${user.username} is doing a ${KalphiteKingMonster.name} mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
+		message: `${user.usernameOrMention} is doing a ${KalphiteKingMonster.name} mass! Use the buttons below to join/leave.`,
 		customDenier: async user => {
-			if (!user.hasMinion) {
+			if (!user.user.minion_hasBought) {
 				return [true, "you don't have a minion."];
 			}
 			if (user.minionIsBusy) {
 				return [true, 'your minion is busy.'];
 			}
-			const [hasReqs, reason] = user.hasMonsterRequirements(KalphiteKingMonster);
+			const [hasReqs, reason] = hasMonsterRequirements(user, KalphiteKingMonster);
 			if (!hasReqs) {
 				return [true, `you don't have the requirements for this monster; ${reason}`];
 			}
@@ -130,17 +128,16 @@ export async function kkCommand(
 
 	const channel = globalClient.channels.cache.get(channelID.toString());
 	if (!channelIsSendable(channel)) return 'No channel found.';
-	let users: KlasaUser[] = [];
+	let users: MUser[] = [];
 	if (type === 'mass') {
-		const [usersWhoConfirmed, reactionAwaiter] = await setupParty(channel, user, partyOptions);
-		await reactionAwaiter();
+		const usersWhoConfirmed = await setupParty(channel, user, partyOptions);
 		users = usersWhoConfirmed.filter(u => !u.minionIsBusy);
 	} else {
 		users = [user];
 	}
 
 	if (users.length === 1) {
-		if (!user.getGear('melee').meetsStatRequirements(minimumSoloGear.stats)) {
+		if (!user.gear.melee.meetsStatRequirements(minimumSoloGear.stats)) {
 			return "Your gear isn't good enough to solo the Kalphite King.";
 		}
 	}
@@ -157,11 +154,11 @@ export async function kkCommand(
 			user,
 			users.map(u => u.id)
 		);
-		debugStr += `**${user.username}**: `;
+		debugStr += `**${user.usernameOrMention}**: `;
 		let msgs = [];
 
 		// Special inquisitor outfit damage boost
-		const meleeGear = user.getGear('melee');
+		const meleeGear = user.gear.melee;
 		const equippedWeapon = meleeGear.equippedWeapon();
 		if (meleeGear.hasEquipped(torvaOutfit, true, true)) {
 			const percent = 8;
@@ -253,19 +250,19 @@ export async function kkCommand(
 
 		if (data.kc > 500) {
 			effectiveTime = reduceNumByPercent(effectiveTime, 15);
-			msgs.push(`15% for ${user.username} over 500 kc`);
+			msgs.push(`15% for ${user.usernameOrMention} over 500 kc`);
 		} else if (data.kc > 300) {
 			effectiveTime = reduceNumByPercent(effectiveTime, 13);
-			msgs.push(`13% for ${user.username} over 300 kc`);
+			msgs.push(`13% for ${user.usernameOrMention} over 300 kc`);
 		} else if (data.kc > 200) {
 			effectiveTime = reduceNumByPercent(effectiveTime, 10);
-			msgs.push(`10% for ${user.username} over 200 kc`);
+			msgs.push(`10% for ${user.usernameOrMention} over 200 kc`);
 		} else if (data.kc > 100) {
 			effectiveTime = reduceNumByPercent(effectiveTime, 7);
-			msgs.push(`7% for ${user.username} over 100 kc`);
+			msgs.push(`7% for ${user.usernameOrMention} over 100 kc`);
 		} else if (data.kc > 50) {
 			effectiveTime = reduceNumByPercent(effectiveTime, 5);
-			msgs.push(`5% for ${user.username} over 50 kc`);
+			msgs.push(`5% for ${user.usernameOrMention} over 50 kc`);
 		}
 
 		debugStr += `${msgs.join(', ')}. `;
@@ -280,13 +277,15 @@ export async function kkCommand(
 	if (users.length === 5) minDuration = 1.2;
 	if (users.length >= 6) minDuration = 1;
 
-	let [quantity, duration, perKillTime] = await calcDurQty(
+	let durQtyRes = await calcDurQty(
 		users,
 		{ ...KalphiteKingMonster, timeToFinish: effectiveTime },
 		inputQuantity,
 		Time.Minute * minDuration,
 		Time.Minute * 30
 	);
+	if (typeof durQtyRes === 'string') return durQtyRes;
+	let [quantity, duration, perKillTime] = durQtyRes;
 	const secondCheck = checkReqs(users, KalphiteKingMonster, quantity);
 	if (secondCheck) return secondCheck;
 
@@ -294,16 +293,16 @@ export async function kkCommand(
 	let foodRemoved = [];
 	for (const user of users) {
 		const food = calcFood(user, users.length, quantity);
-		if (!user.bank().has(food.bank)) {
-			return `${user.username} doesn't have enough brews or restores.`;
+		if (!user.bank.has(food.bank)) {
+			return `${user.usernameOrMention} doesn't have enough brews or restores.`;
 		}
 	}
 	const totalCost = new Bank();
 	for (const user of users) {
 		const food = calcFood(user, users.length, quantity);
-		await user.removeItemsFromBank(food.bank);
+		await user.removeItemsFromBank(food);
 		totalCost.add(food);
-		foodRemoved.push(`${food} from ${user.username}`);
+		foodRemoved.push(`${food} from ${user.usernameOrMention}`);
 	}
 	foodString += `${foodRemoved.join(', ')}.`;
 
@@ -323,10 +322,10 @@ export async function kkCommand(
 		users: users.map(u => u.id)
 	});
 
-	updateBankSetting(globalClient, ClientSettings.EconomyStats.KalphiteKingCost, totalCost);
+	updateBankSetting('kk_cost', totalCost);
 
-	let str = `${partyOptions.leader.username}'s party (${users
-		.map(u => u.username)
+	let str = `${partyOptions.leader.usernameOrMention}'s party (${users
+		.map(u => u.usernameOrMention)
 		.join(', ')}) is now off to kill ${quantity}x ${KalphiteKingMonster.name}. Each kill takes ${formatDuration(
 		perKillTime
 	)} instead of ${formatDuration(KalphiteKingMonster.timeToFinish)} - the total trip will take ${formatDuration(

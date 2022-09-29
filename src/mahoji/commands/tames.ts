@@ -1,5 +1,6 @@
 import { time } from '@discordjs/builders';
 import { Tame, tame_growth, TameActivity } from '@prisma/client';
+import { ChatInputCommandInteraction, User } from 'discord.js';
 import {
 	calcPercentOfNum,
 	calcWhatPercent,
@@ -11,10 +12,8 @@ import {
 	Time
 } from 'e';
 import { readFile } from 'fs/promises';
-import { KlasaClient, KlasaUser } from 'klasa';
-import { APIUser, ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import { Canvas, CanvasRenderingContext2D, Image, loadImage } from 'skia-canvas/lib';
@@ -24,8 +23,6 @@ import { Eatables } from '../../lib/data/eatables';
 import { getSimilarItems } from '../../lib/data/similarItems';
 import getUserFoodFromBank from '../../lib/minions/functions/getUserFoodFromBank';
 import { prisma, trackLoot } from '../../lib/settings/prisma';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import {
 	createTameTask,
@@ -51,21 +48,20 @@ import {
 	itemID,
 	itemNameFromID,
 	stringMatches,
-	toTitleCase,
-	updateBankSetting
+	toTitleCase
 } from '../../lib/util';
+import { patronMaxTripBonus } from '../../lib/util/calcMaxTripLength';
 import { fillTextXTimesInCtx, getClippedRegion } from '../../lib/util/canvasUtil';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
-import getUsersPerkTier, { patronMaxTripCalc } from '../../lib/util/getUsersPerkTier';
+import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseStringBank } from '../../lib/util/parseStringBank';
 import resolveItems from '../../lib/util/resolveItems';
-import BankImageTask from '../../tasks/bankImage';
 import { collectables } from '../lib/abstracted_commands/collectCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiUserSettingsUpdate } from '../mahojiSettings';
+import { handleMahojiConfirmation, updateBankSetting } from '../mahojiSettings';
 
-async function tameAutocomplete(value: string, user: APIUser) {
+async function tameAutocomplete(value: string, user: User) {
 	const tames = await prisma.tame.findMany({
 		where: {
 			user_id: user.id
@@ -261,7 +257,7 @@ function drawText(ctx: CanvasRenderingContext2D, text: string, x: number, y: num
 	fillTextXTimesInCtx(ctx, text, x, y);
 }
 
-export async function tameImage(user: KlasaUser): CommandResponse {
+export async function tameImage(user: MUser): CommandResponse {
 	const userTames = await prisma.tame.findMany({
 		where: {
 			user_id: user.id
@@ -278,14 +274,13 @@ export async function tameImage(user: KlasaUser): CommandResponse {
 	let { tame, activity } = await getUsersTame(user);
 
 	// Init the background images if they are not already
-	const bankTask = globalClient.tasks.get('bankImage') as BankImageTask;
 
 	let {
 		sprite,
 		uniqueSprite,
 		background: userBgImage
-	} = bankTask.getBgAndSprite(user.settings.get(UserSettings.BankBackground) ?? 1);
-	const hexColor = user.settings.get(UserSettings.BankBackgroundHex);
+	} = bankImageGenerator.getBgAndSprite(user.user.bankBackground ?? 1);
+	const hexColor = user.user.bank_bg_hex;
 
 	const tamesPerLine = 3;
 
@@ -323,7 +318,7 @@ export async function tameImage(user: KlasaUser): CommandResponse {
 		);
 	}
 
-	if (!userBgImage.transparent) bankTask.drawBorder(ctx, sprite, false);
+	if (!userBgImage.transparent) bankImageGenerator.drawBorder(ctx, sprite, false);
 
 	ctx.translate(16, 16);
 	let i = 0;
@@ -401,7 +396,7 @@ export async function tameImage(user: KlasaUser): CommandResponse {
 		let feedQty = 0;
 		for (const { item } of feedableItems.filter(f => f.tameSpeciesCanBeFedThis.includes(species.type))) {
 			if (tameHasBeenFed(t, item.id)) {
-				const itemImage = await bankTask.getItemImage(item.id);
+				const itemImage = await bankImageGenerator.getItemImage(item.id);
 				if (itemImage) {
 					let ratio = 19 / itemImage.height;
 					const yLine = Math.floor(feedQty / 3);
@@ -429,7 +424,7 @@ export async function tameImage(user: KlasaUser): CommandResponse {
 			const thisY = tameY + tameImageSize;
 			const iconSize = Math.floor(calcPercentOfNum(75, sprites.gearIconBg.width));
 			ctx.drawImage(sprites.gearIconBg, thisX, thisY, iconSize, iconSize);
-			const icon = await bankTask.getItemImage(equippedInThisSlot);
+			const icon = await bankImageGenerator.getItemImage(equippedInThisSlot);
 			const iconWidth = Math.floor(calcPercentOfNum(65, icon.width));
 			const iconHeight = Math.floor(calcPercentOfNum(65, icon.height));
 			ctx.drawImage(
@@ -444,18 +439,19 @@ export async function tameImage(user: KlasaUser): CommandResponse {
 		i++;
 	}
 
-	const rawBadges = user.settings.get(UserSettings.Badges);
+	const rawBadges = user.user.badges;
 	const badgesStr = rawBadges.map(num => badges[num]).join(' ');
 	const buffer = await canvas.toBuffer('png');
 
 	return {
-		content: `${badgesStr}${user.username}, ${userTames.length > 1 ? 'here are your tames' : 'this is your tame'}!`,
-		attachments: [{ buffer, fileName: `${user.username}_${user.discriminator}_tames.png` }]
+		content: `${badgesStr}${user.usernameOrMention}, ${
+			userTames.length > 1 ? 'here are your tames' : 'this is your tame'
+		}!`,
+		files: [{ attachment: buffer, name: `${user.usernameOrMention}_tames.png` }]
 	};
 }
 
 export async function removeRawFood({
-	client,
 	user,
 	totalHealingNeeded,
 	healPerAction,
@@ -463,8 +459,7 @@ export async function removeRawFood({
 	quantity,
 	tame
 }: {
-	client: KlasaClient;
-	user: KlasaUser;
+	user: MUser;
 	totalHealingNeeded: number;
 	healPerAction: number;
 	raw?: boolean;
@@ -474,7 +469,6 @@ export async function removeRawFood({
 }): Promise<{ success: false; str: string } | { success: true; str: string; removed: Bank }> {
 	totalHealingNeeded = increaseNumByPercent(totalHealingNeeded, 25);
 	healPerAction = increaseNumByPercent(healPerAction, 25);
-	await user.settings.sync(true);
 
 	const foodBoosts: string[] = [];
 
@@ -491,12 +485,7 @@ export async function removeRawFood({
 		foodBoosts.push(`${obj.foodReduction}% less for ${obj.item.name}`);
 	}
 
-	const foodToRemove = getUserFoodFromBank(
-		user,
-		totalHealingNeeded,
-		user.settings.get(UserSettings.FavoriteFood),
-		true
-	);
+	const foodToRemove = getUserFoodFromBank(user, totalHealingNeeded, user.user.favorite_food, true);
 	if (!foodToRemove) {
 		return {
 			success: false,
@@ -522,11 +511,11 @@ export async function removeRawFood({
 	}
 	await user.removeItemsFromBank(itemCost);
 
-	updateBankSetting(client, ClientSettings.EconomyStats.PVMCost, itemCost);
+	updateBankSetting('economyStats_PVMCost', itemCost);
 
 	return {
 		success: true,
-		str: `${itemCost} from ${user.username}${foodBoosts.length > 0 ? `(${foodBoosts.join(', ')})` : ''}`,
+		str: `${itemCost} from ${user.usernameOrMention}${foodBoosts.length > 0 ? `(${foodBoosts.join(', ')})` : ''}`,
 		removed: itemCost
 	};
 }
@@ -553,7 +542,7 @@ export function getTameStatus(tameActivity: TameActivity | null) {
 	return ['Idle'];
 }
 
-async function setNameCommand(user: KlasaUser, name: string) {
+async function setNameCommand(user: MUser, name: string) {
 	if (!name || name.length < 2 || name.length > 30 || ['\n', '`', '@', '<', ':'].some(char => name.includes(char))) {
 		return "That's not a valid name for your tame.";
 	}
@@ -574,7 +563,7 @@ async function setNameCommand(user: KlasaUser, name: string) {
 	return `Updated the nickname of your selected tame to ${name}.`;
 }
 
-async function cancelCommand(user: KlasaUser) {
+async function cancelCommand(user: MUser) {
 	const { tame, activity } = await getUsersTame(user);
 	if (!tame) {
 		return 'You have no selected tame.';
@@ -593,7 +582,7 @@ async function cancelCommand(user: KlasaUser) {
 	return "You cancelled your tames' task.";
 }
 
-async function mergeCommand(user: KlasaUser, interaction: SlashCommandInteraction, tameID: number) {
+async function mergeCommand(user: MUser, interaction: ChatInputCommandInteraction, tameID: number) {
 	const requirements = {
 		[SkillsEnum.Magic]: 110,
 		[SkillsEnum.Runecraft]: 110,
@@ -629,7 +618,7 @@ async function mergeCommand(user: KlasaUser, interaction: SlashCommandInteractio
 	if (!user.owns(mergingCost)) {
 		return `You don't have enough materials for this ritual. You need ${mergingCost}. You are missing **${mergingCost
 			.clone()
-			.remove(user.bank())}**.`;
+			.remove(user.bank)}**.`;
 	}
 
 	const mergeStuff = {
@@ -657,7 +646,7 @@ async function mergeCommand(user: KlasaUser, interaction: SlashCommandInteractio
 	);
 
 	await user.removeItemsFromBank(mergingCost);
-	updateBankSetting(globalClient, ClientSettings.EconomyStats.TameMergingCost, mergingCost);
+	updateBankSetting('tame_merging_cost', mergingCost);
 
 	// Set the merged tame activities to the tame that is consuming it
 	await prisma.tameActivity.updateMany({
@@ -693,7 +682,7 @@ async function mergeCommand(user: KlasaUser, interaction: SlashCommandInteractio
 	return `${tameName(tame)} consumed ${tameName(toSelect)} and all its attributes.`;
 }
 
-async function feedCommand(interaction: SlashCommandInteraction, user: KlasaUser, str: string) {
+async function feedCommand(interaction: ChatInputCommandInteraction, user: MUser, str: string) {
 	const { tame, species } = await getUsersTame(user);
 	if (!tame) {
 		return 'You have no selected tame.';
@@ -701,7 +690,7 @@ async function feedCommand(interaction: SlashCommandInteraction, user: KlasaUser
 
 	let rawBank = parseStringBank(str);
 	let bankToAdd = new Bank();
-	let userBank = user.bank();
+	let userBank = user.bank;
 	for (const [item, qty] of rawBank) {
 		let qtyOwned = userBank.amount(item.id);
 		if (qtyOwned === 0) continue;
@@ -766,6 +755,7 @@ Note: Some items must be equipped to your tame, not fed. Check that you are feed
 		}
 	}
 
+	if (!user.owns(bankToAdd)) return "You don't own those items.";
 	await user.removeItemsFromBank(bankToAdd);
 
 	await prisma.tame.update({
@@ -782,7 +772,7 @@ Note: Some items must be equipped to your tame, not fed. Check that you are feed
 	}${specialStr}${egg}`;
 }
 
-async function killCommand(user: KlasaUser, channelID: bigint, str: string) {
+async function killCommand(user: MUser, channelID: string, str: string) {
 	const { tame, activity, species } = await getUsersTame(user);
 	if (!tame || !species) {
 		return 'You have no selected tame.';
@@ -826,7 +816,7 @@ async function killCommand(user: KlasaUser, channelID: bigint, str: string) {
 		boosts.push('+35mins trip length (ate a Zak)');
 	}
 
-	const patronBoost = patronMaxTripCalc(user) * 2;
+	const patronBoost = patronMaxTripBonus(user) * 2;
 	if (patronBoost > 0) {
 		maxTripLength += patronBoost;
 		boosts.push(`+${formatDuration(patronBoost, true)} trip length for T${getUsersPerkTier(user) - 1} patron`);
@@ -866,7 +856,6 @@ async function killCommand(user: KlasaUser, channelID: bigint, str: string) {
 	}
 
 	const foodRes = await removeRawFood({
-		client: globalClient,
 		totalHealingNeeded: (monster.healAmountNeeded ?? 1) * quantity,
 		healPerAction: monster.healAmountNeeded ?? 1,
 		user,
@@ -931,7 +920,7 @@ async function killCommand(user: KlasaUser, channelID: bigint, str: string) {
 	return reply;
 }
 
-async function collectCommand(user: KlasaUser, channelID: bigint, str: string) {
+async function collectCommand(user: MUser, channelID: string, str: string) {
 	const { tame, activity } = await getUsersTame(user);
 	if (!tame) {
 		return 'You have no selected tame.';
@@ -985,7 +974,7 @@ async function collectCommand(user: KlasaUser, channelID: bigint, str: string) {
 		maxTripLength += Time.Minute * 35;
 		boosts.push('+35mins trip length (ate a Zak)');
 	}
-	maxTripLength += patronMaxTripCalc(user) * 2;
+	maxTripLength += patronMaxTripBonus(user) * 2;
 	// Calculate monster quantity:
 	const quantity = Math.floor(maxTripLength / speed);
 	if (quantity < 1) {
@@ -1019,7 +1008,7 @@ async function collectCommand(user: KlasaUser, channelID: bigint, str: string) {
 	return reply;
 }
 
-async function selectCommand(user: KlasaUser, tameID: number) {
+async function selectCommand(user: MUser, tameID: number) {
 	const tames = await prisma.tame.findMany({ where: { user_id: user.id } });
 	const toSelect = tames.find(t => t.id === tameID);
 	if (!toSelect) {
@@ -1029,13 +1018,13 @@ async function selectCommand(user: KlasaUser, tameID: number) {
 	if (activity) {
 		return "You can't select a different tame, because your current one is busy.";
 	}
-	await mahojiUserSettingsUpdate(user.id, {
+	await user.update({
 		selected_tame: toSelect.id
 	});
 	return `You selected your ${tameName(toSelect)}.`;
 }
 
-async function viewCommand(user: KlasaUser, tameID: number): CommandResponse {
+async function viewCommand(user: MUser, tameID: number): CommandResponse {
 	const tames = await prisma.tame.findMany({ where: { user_id: user.id } });
 	const tame = tames.find(t => t.id === tameID);
 	if (!tame) {
@@ -1074,11 +1063,11 @@ async function viewCommand(user: KlasaUser, tameID: number): CommandResponse {
 	}
 	return {
 		content,
-		attachments: [image.file, fedImage.file]
+		files: [image.file.attachment, fedImage.file.attachment]
 	};
 }
 
-async function statusCommand(user: KlasaUser) {
+async function statusCommand(user: MUser) {
 	const { tame, activity } = await getUsersTame(user);
 	if (!tame) {
 		return 'You have no tame selected.';
@@ -1086,7 +1075,7 @@ async function statusCommand(user: KlasaUser) {
 	return `${tameName(tame)} is currently: ${getTameStatus(activity)}`;
 }
 
-async function tameEquipCommand(user: KlasaUser, itemName: string) {
+async function tameEquipCommand(user: MUser, itemName: string) {
 	const { tame, activity } = await getUsersTame(user);
 	if (!tame) return "You don't have a tame selected.";
 	if (activity) {
@@ -1125,7 +1114,7 @@ async function tameEquipCommand(user: KlasaUser, itemName: string) {
 	return `You equipped a ${equippable.item.name} to your ${tameName(tame)}.${refundStr}`;
 }
 
-async function tameUnequipCommand(user: KlasaUser, itemName: string) {
+async function tameUnequipCommand(user: MUser, itemName: string) {
 	const { tame, activity } = await getUsersTame(user);
 	if (!tame) return "You don't have a tame selected.";
 	if (activity) {
@@ -1329,7 +1318,7 @@ export const tamesCommand: OSBMahojiCommand = {
 					description: 'The item you want to unequip.',
 					required: true,
 					autocomplete: async (_, user) => {
-						const klasaUser = await globalClient.fetchUser(user.id);
+						const klasaUser = await mUserFetch(user.id);
 						const { tame } = await getUsersTame(klasaUser);
 						return tameEquipSlots
 							.map(i => tame?.[i])
@@ -1343,7 +1332,7 @@ export const tamesCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ options, userID, channelID, interaction }: TamesCommandOptions) => {
-		const user = await globalClient.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		if (options.set_name) return setNameCommand(user, options.set_name.name);
 		if (options.cancel) return cancelCommand(user);
 		if (options.list) return tameImage(user);

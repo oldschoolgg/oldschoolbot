@@ -1,24 +1,24 @@
 import { increaseNumByPercent, randInt, roll, Time } from 'e';
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
+import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { Emoji, Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import { isDoubleLootActive } from '../../lib/doubleLoot';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Agility from '../../lib/skilling/skills/agility';
 import { gorajanShardChance } from '../../lib/skilling/skills/dung/dungDbFunctions';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { AgilityActivityTaskOptions } from '../../lib/types/minions';
-import { addItemToBank, clAdjustedDroprate, randomVariation } from '../../lib/util';
+import { addItemToBank, clAdjustedDroprate, randomVariation, skillingPetDropRate } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { updateGPTrackSetting } from '../../mahoji/mahojiSettings';
 
-export default class extends Task {
+export const agilityTask: MinionTask = {
+	type: 'Agility',
 	async run(data: AgilityActivityTaskOptions) {
 		let { courseID, quantity, userID, channelID, duration, alch } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Agility);
 
 		const course = Agility.Courses.find(course => course.name === courseID)!;
@@ -57,10 +57,9 @@ export default class extends Task {
 
 		const xpReceived = (quantity - lapsFailed / 2) * course.xp;
 
-		await user.settings.update(
-			UserSettings.LapsScores,
-			addItemToBank(user.settings.get(UserSettings.LapsScores), course.id, quantity - lapsFailed)
-		);
+		await user.update({
+			lapsScores: addItemToBank(user.user.lapsScores as ItemBank, course.id, quantity - lapsFailed)
+		});
 
 		let xpRes = await user.addXP({
 			skillName: SkillsEnum.Agility,
@@ -99,10 +98,10 @@ export default class extends Task {
 			str += 'Harry found you extra Marks of grace.';
 		}
 		if (course.id === 6) {
-			const currentLapCount = user.settings.get(UserSettings.LapsScores)[course.id];
+			const currentLapCount = (user.user.lapsScores as ItemBank)[course.id];
 			for (const monkey of Agility.MonkeyBackpacks) {
 				if (currentLapCount < monkey.lapsRequired) break;
-				if (!user.hasItemEquippedOrInBank(monkey.id)) {
+				if (!user.hasEquippedOrInBank(monkey.id)) {
 					loot.add(monkey.id);
 					str += `\nYou received the ${monkey.name} monkey backpack!`;
 				}
@@ -162,12 +161,13 @@ export default class extends Task {
 			}
 		}
 		// Roll for pet
-		if (course.petChance && roll((course.petChance - user.skillLevel(SkillsEnum.Agility) * 25) / quantity)) {
+		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Agility, course.petChance);
+		if (roll(petDropRate / quantity)) {
 			loot.add('Giant squirrel');
 			str += "\nYou have a funny feeling you're being followed...";
-			this.client.emit(
+			globalClient.emit(
 				Events.ServerNotification,
-				`${Emoji.Agility} **${user.username}'s** minion, ${user.minionName}, just received a Giant squirrel while running ${course.name} laps at level ${currentLevel} Agility!`
+				`${Emoji.Agility} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Giant squirrel while running ${course.name} laps at level ${currentLevel} Agility!`
 			);
 		}
 
@@ -187,4 +187,4 @@ export default class extends Task {
 			loot
 		);
 	}
-}
+};

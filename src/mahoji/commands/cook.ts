@@ -3,12 +3,10 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import Cooking, { Cookables } from '../../lib/skilling/skills/cooking';
-import { SkillsEnum } from '../../lib/skilling/types';
 import { CookingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { userHasItemsEquippedAnywhere } from '../../lib/util/minionUtils';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const cookCommand: OSBMahojiCommand = {
@@ -43,9 +41,7 @@ export const cookCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
-		const user = await globalClient.fetchUser(userID);
-
-		await user.settings.sync(true);
+		const user = await mUserFetch(userID);
 		const cookable = Cooking.Cookables.find(
 			cookable =>
 				stringMatches(cookable.name, options.name) ||
@@ -58,7 +54,7 @@ export const cookCommand: OSBMahojiCommand = {
 			).join(', ')}.`;
 		}
 
-		if (user.skillLevel(SkillsEnum.Cooking) < cookable.level) {
+		if (user.skillLevel('cooking') < cookable.level) {
 			return `${user.minionName} needs ${cookable.level} Cooking to cook ${cookable.name}s.`;
 		}
 
@@ -67,15 +63,15 @@ export const cookCommand: OSBMahojiCommand = {
 		if (cookable.id === itemID('Jug of wine') || cookable.id === itemID('Wine of zamorak')) {
 			timeToCookSingleCookable /= 1.6;
 			if (hasRemy) timeToCookSingleCookable /= 1.5;
-		} else if (userHasItemsEquippedAnywhere(user, 'Cooking master cape')) {
+		} else if (user.hasEquipped('Cooking master cape')) {
 			timeToCookSingleCookable /= 5;
 		} else if (hasRemy) {
 			timeToCookSingleCookable /= 2;
-		} else if (userHasItemsEquippedAnywhere(user, 'Dwarven gauntlets')) {
+		} else if (user.hasEquipped('Dwarven gauntlets')) {
 			timeToCookSingleCookable /= 3;
 		}
 
-		const userBank = user.bank();
+		const userBank = user.bank;
 		const inputCost = new Bank(cookable.inputCookables);
 
 		const maxTripLength = calcMaxTripLength(user, 'Cooking');

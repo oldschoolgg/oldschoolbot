@@ -1,4 +1,4 @@
-import { Embed } from '@discordjs/builders';
+import { EmbedBuilder } from 'discord.js';
 import { CommandRunOptions } from 'mahoji';
 import { toKMB } from 'oldschooljs/dist/util';
 
@@ -23,7 +23,7 @@ export const priceCommand: OSBMahojiCommand = {
 
 		const priceOfItem = item.price;
 
-		const embed = new Embed()
+		const embed = new EmbedBuilder()
 			.setTitle(item.name)
 			.setColor(52_224)
 			.setThumbnail(
@@ -35,6 +35,6 @@ export const priceCommand: OSBMahojiCommand = {
 **Alch value:** ${toKMB(item.highalch ?? 0)}`
 			);
 
-		return { embeds: [embed] };
+		return { embeds: [embed.data] };
 	}
 };

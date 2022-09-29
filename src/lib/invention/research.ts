@@ -1,31 +1,26 @@
 import { bold, userMention } from '@discordjs/builders';
-import { User } from '@prisma/client';
+import { ChatInputCommandInteraction } from 'discord.js';
 import { shuffleArr, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 
-import {
-	handleMahojiConfirmation,
-	mahojiUserSettingsUpdate,
-	mahojiUsersSettingsFetch
-} from '../../mahoji/mahojiSettings';
+import { handleMahojiConfirmation } from '../../mahoji/mahojiSettings';
 import { SkillsEnum } from '../skilling/types';
 import { ActivityTaskOptions } from '../types/minions';
-import { clamp, formatDuration, getSkillsOfMahojiUser, roll } from '../util';
+import { clamp, formatDuration, roll } from '../util';
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import { handleTripFinish } from '../util/handleTripFinish';
 import { minionIsBusy } from '../util/minionIsBusy';
 import { minionName } from '../util/minionUtils';
-import { IMaterialBank, MaterialType, materialTypes } from '.';
+import { MaterialType, materialTypes } from '.';
 import { Invention, Inventions, transactMaterialsFromUser } from './inventions';
 import { MaterialBank } from './MaterialBank';
 
-function inventionsCanUnlockFromResearch(user: User, researchedMaterial: MaterialType): Invention[] {
-	const inventionLevel = getSkillsOfMahojiUser(user, true).invention;
+function inventionsCanUnlockFromResearch(user: MUser, researchedMaterial: MaterialType): Invention[] {
+	const inventionLevel = user.skillsAsLevels.invention;
 	return Inventions.filter(i => {
 		if (!i.materialTypeBank.has(researchedMaterial)) return false;
-		if (user.unlocked_blueprints.includes(i.id)) return false;
+		if (user.user.unlocked_blueprints.includes(i.id)) return false;
 		if (i.inventionLevelNeeded > inventionLevel) return false;
 		return true;
 	});
@@ -43,11 +38,11 @@ export async function researchCommand({
 	channelID,
 	interaction
 }: {
-	user: User;
+	user: MUser;
 	material: MaterialType;
 	inputQuantity: number | undefined;
-	channelID: bigint;
-	interaction?: SlashCommandInteraction;
+	channelID: string;
+	interaction?: ChatInputCommandInteraction;
 }): CommandResponse {
 	if (minionIsBusy(user.id)) return 'Your minion is busy.';
 	material = material.toLowerCase() as MaterialType;
@@ -58,7 +53,7 @@ export async function researchCommand({
 	let timePerResearchPerMaterial = Time.Second * 3.59;
 	const maxQuantity = Math.floor(maxTripLength / timePerResearchPerMaterial);
 	let quantity = inputQuantity ?? maxQuantity;
-	const ownedBank = new MaterialBank(user.materials_owned as IMaterialBank);
+	const ownedBank = user.materialsOwned();
 
 	if (ownedBank.amount(material) === 0) {
 		return "You don't own any of that material! Go disassemble some items to receive some of this material.";
@@ -102,11 +97,10 @@ export async function researchCommand({
 
 export async function researchTask(data: ResearchTaskOptions) {
 	const { userID, material, quantity } = data;
-	const klasaUser = await globalClient.fetchUser(userID);
-	const mahojiUser = await mahojiUsersSettingsFetch(userID);
+	const user = await mUserFetch(userID);
 
 	const inventionToTryUnlock: Invention | null =
-		shuffleArr(inventionsCanUnlockFromResearch(mahojiUser, data.material))[0] ?? null;
+		shuffleArr(inventionsCanUnlockFromResearch(user, data.material))[0] ?? null;
 	let unlockedBlueprint: Invention | null = null;
 
 	for (let i = 0; i < quantity; i++) {
@@ -119,10 +113,10 @@ export async function researchTask(data: ResearchTaskOptions) {
 			? "You didn't discover or find anything."
 			: `You found the blueprint for the '${unlockedBlueprint.name}'!`;
 	if (unlockedBlueprint) {
-		if (mahojiUser.unlocked_blueprints.includes(unlockedBlueprint.id)) {
+		if (user.user.unlocked_blueprints.includes(unlockedBlueprint.id)) {
 			discoveredStr = `You found a ${unlockedBlueprint.name} blueprint, but you already know how to make it!`;
 		} else {
-			await mahojiUserSettingsUpdate(userID, {
+			await user.update({
 				unlocked_blueprints: {
 					push: unlockedBlueprint.id
 				}
@@ -131,21 +125,21 @@ export async function researchTask(data: ResearchTaskOptions) {
 		discoveredStr = bold(discoveredStr);
 	}
 
-	const xpStr = await klasaUser.addXP({
+	const xpStr = await user.addXP({
 		skillName: SkillsEnum.Invention,
 		amount: quantity * 56.39,
 		duration: data.duration,
 		multiplier: false,
 		masterCapeBoost: true
 	});
-	let str = `${userMention(data.userID)}, ${minionName(
-		mahojiUser
-	)} finished researching with ${quantity}x ${material} materials.
+	let str = `${userMention(data.userID)}, ${
+		user.minionName
+	} finished researching with ${quantity}x ${material} materials.
 ${discoveredStr}
 ${xpStr}`;
 
 	handleTripFinish(
-		klasaUser,
+		user,
 		data.channelID,
 		str,
 		[

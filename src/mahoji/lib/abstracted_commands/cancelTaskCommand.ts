@@ -1,33 +1,20 @@
-import { User } from '@prisma/client';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
+import { ChatInputCommandInteraction } from 'discord.js';
 
 import { cancelTask, getActivityOfUser } from '../../../lib/settings/settings';
 import { NexTaskOptions, RaidsOptions } from '../../../lib/types/minions';
-import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
-import { minionName } from '../../../lib/util/minionUtils';
 import { handleMahojiConfirmation } from '../../mahojiSettings';
 
-export async function cancelTaskCommand(user: User, interaction?: SlashCommandInteraction) {
+export async function cancelTaskCommand(user: MUser, interaction?: ChatInputCommandInteraction): Promise<string> {
 	const currentTask = getActivityOfUser(user.id);
 
-	const mName = minionName(user);
+	const mName = user.minionName;
 
 	if (!currentTask) {
 		return `${mName} isn't doing anything at the moment, so there's nothing to cancel.`;
 	}
 
 	if (currentTask.type === 'MonkeyRumble') {
-		return {
-			attachments: [
-				{
-					fileName: 'image.jpg',
-					buffer: await newChatHeadImage({
-						content: 'You no allowed to leave the arena! You finish fight!',
-						head: 'marimbo'
-					})
-				}
-			]
-		};
+		return `${mName} can't leave the Monkey Rumble arena?`;
 	}
 
 	if (currentTask.type === 'Inferno') {

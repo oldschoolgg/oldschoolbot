@@ -1,17 +1,18 @@
 import { objectEntries, reduceNumByPercent, Time } from 'e';
-import { KlasaUser } from 'klasa';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { addArrayOfNumbers } from 'oldschooljs/dist/util';
 
 import { sepulchreBoosts, sepulchreFloors } from '../../../lib/minions/data/sepulchre';
+import { getMinigameScore } from '../../../lib/settings/minigames';
 import { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, itemNameFromID } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import { userHasGracefulEquipped } from '../../mahojiSettings';
 
-export async function sepulchreCommand(user: KlasaUser, channelID: bigint) {
-	const agilityLevel = user.skillLevel(SkillsEnum.Agility);
-	const thievingLevel = user.skillLevel(SkillsEnum.Thieving);
+export async function sepulchreCommand(user: MUser, channelID: string) {
+	const skills = user.skillsAsLevels;
+	const agilityLevel = skills.agility;
+	const thievingLevel = skills.thieving;
 	const minLevel = sepulchreFloors[0].agilityLevel;
 	if (agilityLevel < minLevel) {
 		return `You need atleast level ${minLevel} Agility to do the Hallowed Sepulchre.`;
@@ -21,7 +22,7 @@ export async function sepulchreCommand(user: KlasaUser, channelID: bigint) {
 		return 'You need atleast level 66 Thieving to do the Hallowed Sepulchre.';
 	}
 
-	if (!user.hasGracefulEquipped()) {
+	if (!userHasGracefulEquipped(user)) {
 		return 'You need Graceful equipped in your Skilling setup to do the Hallowed Sepulchre.';
 	}
 
@@ -32,7 +33,7 @@ export async function sepulchreCommand(user: KlasaUser, channelID: bigint) {
 
 	// Every 1h becomes 1% faster to a cap of 10%
 	const percentReduced = Math.min(
-		Math.floor((await user.getMinigameScore('sepulchre')) / (Time.Hour / lapLength)),
+		Math.floor((await getMinigameScore(user.id, 'sepulchre')) / (Time.Hour / lapLength)),
 		10
 	);
 
@@ -48,7 +49,7 @@ export async function sepulchreCommand(user: KlasaUser, channelID: bigint) {
 	}
 
 	for (const [id, percent] of objectEntries(sepulchreBoosts)) {
-		if (user.hasItemEquippedOrInBank(Number(id))) {
+		if (user.hasEquippedOrInBank([Number(id)])) {
 			boosts.push(`${percent}% for ${itemNameFromID(Number(id))}`);
 			lapLength = reduceNumByPercent(lapLength, percent);
 		}

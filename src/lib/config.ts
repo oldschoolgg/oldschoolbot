@@ -1,35 +1,51 @@
-import { Intents } from 'discord.js';
-import { KlasaClient, KlasaClientOptions } from 'klasa';
+import { ClientOptions, GatewayIntentBits, Options, Partials } from 'discord.js';
+import { Time } from 'e';
 
-import { OWNER_IDS, production, providerConfig } from '../config';
+import { DEV_SERVER_ID, SupportServer } from '../config';
+import { CACHED_ACTIVE_USER_IDS } from './util/cachedUserIDs';
 
-export const clientOptions: KlasaClientOptions = {
-	/* Discord.js Options */
-	messageCacheMaxSize: 200,
-	messageCacheLifetime: 120,
-	messageSweepInterval: 5000,
-	owners: [...OWNER_IDS],
+export const clientOptions: ClientOptions = {
 	shards: 'auto',
-	http: {
-		api: 'https://discord.com/api'
-	},
-	intents: new Intents([
-		'GUILDS',
-		'GUILD_MESSAGES',
-		'GUILD_MESSAGE_REACTIONS',
-		'DIRECT_MESSAGES',
-		'DIRECT_MESSAGE_REACTIONS',
-		'GUILD_WEBHOOKS'
-	]),
-	/* Klasa Options */
-	prefix: '=',
-	providers: providerConfig ?? undefined,
-	readyMessage: (client: KlasaClient) => {
-		return `[Bot School School] Ready to serve ${client.guilds.cache.size} guilds.`;
-	},
-	partials: ['USER', 'CHANNEL'],
-	production,
+	intents: [
+		GatewayIntentBits.Guilds,
+		GatewayIntentBits.GuildMessages,
+		GatewayIntentBits.GuildMessageReactions,
+		GatewayIntentBits.DirectMessages,
+		GatewayIntentBits.DirectMessageReactions,
+		GatewayIntentBits.GuildWebhooks
+	],
+	partials: [Partials.User, Partials.Channel],
 	allowedMentions: {
-		parse: ['roles', 'users']
+		parse: ['users']
+	},
+	makeCache: Options.cacheWithLimits({
+		MessageManager: {
+			maxSize: 0
+		},
+		UserManager: {
+			maxSize: 1000,
+			keepOverLimit: user => CACHED_ACTIVE_USER_IDS.has(user.id)
+		},
+		GuildMemberManager: {
+			maxSize: 200,
+			keepOverLimit: member => CACHED_ACTIVE_USER_IDS.has(member.user.id)
+		},
+		GuildEmojiManager: { maxSize: 1, keepOverLimit: i => [DEV_SERVER_ID, SupportServer].includes(i.guild.id) },
+		GuildStickerManager: { maxSize: 0 },
+		PresenceManager: { maxSize: 0 },
+		VoiceStateManager: { maxSize: 0 },
+		GuildInviteManager: { maxSize: 0 },
+		ThreadManager: { maxSize: 0 },
+		ThreadMemberManager: { maxSize: 0 }
+	}),
+	sweepers: {
+		guildMembers: {
+			interval: Time.Minute * 15,
+			filter: () => member => !CACHED_ACTIVE_USER_IDS.has(member.user.id)
+		},
+		users: {
+			interval: Time.Minute * 15,
+			filter: () => user => !CACHED_ACTIVE_USER_IDS.has(user.id)
+		}
 	}
 };

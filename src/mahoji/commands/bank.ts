@@ -1,15 +1,15 @@
-import { codeBlock } from '@discordjs/builders';
-import { MessageEmbed } from 'discord.js';
+import { codeBlock, Embed } from '@discordjs/builders';
 import { chunk } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions, MessageFlags } from 'mahoji';
+import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
+import { BankFlag, bankFlags } from '../../lib/bankImage';
 import { Emoji } from '../../lib/constants';
 import { Flags } from '../../lib/minions/types';
 import { BankSortMethod, BankSortMethods } from '../../lib/sorts';
 import { channelIsSendable, makePaginatedMessage } from '../../lib/util';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
-import { BankFlag, bankFlags } from '../../tasks/bankImage';
 import { filterOption, itemOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -85,10 +85,9 @@ export const bankCommand: OSBMahojiCommand = {
 		flag?: BankFlag;
 		flag_extra?: BankFlag;
 	}>) => {
-		await interaction.deferReply();
-		const klasaUser = await globalClient.fetchUser(user.id);
-		await klasaUser.settings.sync(true);
-		const baseBank = klasaUser.bank({ withGP: true });
+		if (interaction) await deferInteraction(interaction);
+		const klasaUser = await mUserFetch(user.id);
+		const baseBank = klasaUser.bankWithGP;
 		const mahojiFlags: BankFlag[] = [];
 
 		if (options.flag) mahojiFlags.push(options.flag);
@@ -132,7 +131,7 @@ export const bankCommand: OSBMahojiCommand = {
 
 				return {
 					content: 'Here is your selected bank in text file format.',
-					attachments: [{ buffer: attachment, fileName: 'Bank.txt' }]
+					files: [{ attachment, name: 'Bank.txt' }]
 				};
 			}
 
@@ -140,21 +139,20 @@ export const bankCommand: OSBMahojiCommand = {
 			for (const page of chunk(textBank, bankItemsPerPage)) {
 				pages.push({
 					embeds: [
-						new MessageEmbed().setTitle(`${klasaUser.username}'s Bank`).setDescription(page.join('\n'))
+						new Embed().setTitle(`${klasaUser.usernameOrMention}'s Bank`).setDescription(page.join('\n'))
 					]
 				});
 			}
 			const channel = globalClient.channels.cache.get(channelID.toString());
 			if (!channelIsSendable(channel)) return 'Failed to send paginated bank message, sorry.';
-			const bankMessage = await channel.send({ embeds: [new MessageEmbed().setDescription('Loading')] });
 
-			makePaginatedMessage(bankMessage, pages, klasaUser);
-			return { content: 'Here is your selected bank:', flags: MessageFlags.Ephemeral };
+			makePaginatedMessage(channel, pages, user.id);
+			return { content: 'Here is your selected bank:', ephemeral: true };
 		}
 		if (options.format === 'json') {
 			const json = JSON.stringify(baseBank.bank);
 			if (json.length > 1900) {
-				return { attachments: [{ buffer: Buffer.from(json), fileName: 'bank.json' }] };
+				return { files: [{ attachment: Buffer.from(json), name: 'bank.json' }] };
 			}
 			return `${codeBlock('json', json)}`;
 		}
@@ -165,11 +163,11 @@ export const bankCommand: OSBMahojiCommand = {
 		if (options.sort) flags.sort = options.sort;
 
 		return {
-			attachments: [
+			files: [
 				(
 					await makeBankImage({
 						bank,
-						title: `${klasaUser.username}'s Bank`,
+						title: `${klasaUser.rawUsername ? `${klasaUser.rawUsername}'s` : 'Your'} Bank`,
 						flags,
 						user: klasaUser,
 						mahojiFlags

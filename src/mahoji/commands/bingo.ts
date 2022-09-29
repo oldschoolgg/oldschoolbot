@@ -1,9 +1,9 @@
 import { time, userMention } from '@discordjs/builders';
 import { BingoTeam, User } from '@prisma/client';
+import { ChatInputCommandInteraction } from 'discord.js';
 import { chunk, uniqueArr } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions, MessageFlags } from 'mahoji';
+import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
@@ -24,7 +24,7 @@ import {
 	determineBingoProgress
 } from '../lib/bingo';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { handleMahojiConfirmation, mahojiUsersSettingsFetch } from '../mahojiSettings';
 import { doMenu, getPos } from './leaderboard';
 
 type MakeTeamOptions = {
@@ -51,7 +51,7 @@ async function findBingoTeamWithUser(userID: string) {
 	return teamWithUser;
 }
 
-async function bingoLeaderboard(userID: string, channelID: bigint): CommandResponse {
+async function bingoLeaderboard(userID: string, channelID: string): CommandResponse {
 	const allBingoTeams = await prisma.bingoTeam.findMany({});
 	const allBingoUsers = await prisma.user.findMany({
 		where: {
@@ -82,7 +82,7 @@ async function bingoLeaderboard(userID: string, channelID: bigint): CommandRespo
 
 	parsedTeams.sort((a, b) => b.tilesCompleted - a.tilesCompleted);
 	doMenu(
-		await globalClient.fetchUser(userID),
+		await mUserFetch(userID),
 		channelID,
 		chunk(parsedTeams, 10).map((subList, i) =>
 			subList
@@ -97,7 +97,7 @@ async function bingoLeaderboard(userID: string, channelID: bigint): CommandRespo
 		'Bingo Leaderboard'
 	);
 	return {
-		flags: MessageFlags.Ephemeral,
+		ephemeral: true,
 		content: 'Loading Bingo Leaderboard...'
 	};
 }
@@ -124,7 +124,7 @@ async function userCanJoinTeam(userID: string) {
 	return true;
 }
 
-async function makeTeamCommand(interaction: SlashCommandInteraction, user: User, options: MakeTeamOptions) {
+async function makeTeamCommand(interaction: ChatInputCommandInteraction, user: User, options: MakeTeamOptions) {
 	if (bingoIsActive() && production) {
 		return 'You cannot make a Bingo team, because the bingo has already started!';
 	}
@@ -167,15 +167,14 @@ async function makeTeamCommand(interaction: SlashCommandInteraction, user: User,
 }
 
 export async function buyBingoTicketCommand(
-	interaction: SlashCommandInteraction | null,
+	interaction: ChatInputCommandInteraction | null,
 	userID: string,
 	quantity = 1
 ): Promise<string> {
-	const klasaUser = await globalClient.fetchUser(userID);
-	const mahojiUser = await mahojiUsersSettingsFetch(userID);
+	const user = await mUserFetch(userID);
 
-	if (mahojiUser.minion_ironman && mahojiUser.bingo_tickets_bought === 0) {
-		await mahojiUserSettingsUpdate(userID, {
+	if (user.isIronman && user.user.bingo_tickets_bought === 0) {
+		await user.update({
 			bingo_tickets_bought: 1
 		});
 		return 'You got a free Bingo ticket.';
@@ -185,19 +184,19 @@ export async function buyBingoTicketCommand(
 	const gpCost = quantity * BINGO_TICKET_PRICE;
 	const cost = new Bank().add('Coins', gpCost);
 
-	if ((mahojiUser.bingo_tickets_bought > 0 || quantity > 1) && interaction) {
+	if ((user.user.bingo_tickets_bought > 0 || quantity > 1) && interaction) {
 		await handleMahojiConfirmation(
 			interaction,
 			`Are you sure you want to buy ${quantity}x Bingo Tickets for ${cost}? Tickets cannot be refunded or transferred.${
-				mahojiUser.bingo_tickets_bought > 0
-					? ` **You have already bought ${mahojiUser.bingo_tickets_bought} tickets.**`
+				user.user.bingo_tickets_bought > 0
+					? ` **You have already bought ${user.user.bingo_tickets_bought} tickets.**`
 					: ''
 			}`
 		);
 	}
 
-	if (Number(mahojiUser.GP) < gpCost) return "You don't have enough GP.";
-	await mahojiUserSettingsUpdate(userID, {
+	if (Number(user.GP) < gpCost) return "You don't have enough GP.";
+	await user.update({
 		bingo_tickets_bought: {
 			increment: quantity
 		},
@@ -205,11 +204,11 @@ export async function buyBingoTicketCommand(
 			increment: quantity * BINGO_TICKET_PRICE
 		}
 	});
-	await klasaUser.removeItemsFromBank(cost);
+	await user.removeItemsFromBank(cost);
 	return `You bought ${quantity}x Bingo Tickets for ${toKMB(gpCost)} GP!`;
 }
 
-async function leaveTeamCommand(interaction: SlashCommandInteraction) {
+async function leaveTeamCommand(interaction: ChatInputCommandInteraction) {
 	const bingoTeam = await findBingoTeamWithUser(interaction.user.id);
 	if (!bingoTeam) return "You're not in a bingo team.";
 	if (bingoIsActive() && production) return "You can't leave a bingo team after bingo has started.";

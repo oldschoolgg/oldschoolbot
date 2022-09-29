@@ -1,5 +1,4 @@
-import { percentChance, randInt, Time } from 'e';
-import { Task } from 'klasa';
+import { percentChance, randInt, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { ClueTiers } from '../../lib/clues/clueTiers';
@@ -7,12 +6,12 @@ import { Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { Stealable, stealables } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
-import { rogueOutfitPercentBonus, roll } from '../../lib/util';
+import { skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import resolveItems from '../../lib/util/resolveItems';
-import { updateGPTrackSetting } from '../../mahoji/mahojiSettings';
+import { rogueOutfitPercentBonus, updateGPTrackSetting } from '../../mahoji/mahojiSettings';
 import { clueUpgraderEffect } from './monsterActivity';
 
 const notMultiplied = resolveItems([
@@ -62,39 +61,48 @@ export function calcLootXPPickpocketing(
 	return [successful, damageTaken, xpReceived, chanceOfSuccess];
 }
 
-export default class extends Task {
+export const pickpocketTask: MinionTask = {
+	type: 'Pickpocket',
 	async run(data: PickpocketActivityTaskOptions) {
 		const { monsterID, quantity, successfulQuantity, userID, channelID, xpReceived, duration } = data;
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const obj = stealables.find(_obj => _obj.id === monsterID)!;
-
-		const currentLevel = user.skillLevel(SkillsEnum.Thieving);
+		const currentLevel = user.skillLevel('thieving');
 		let rogueOutfitBoostActivated = false;
 
 		const loot = new Bank();
+		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Thieving, obj.petChance);
 
 		if (obj.type === 'pickpockable') {
 			for (let i = 0; i < successfulQuantity; i++) {
 				const lootItems = obj.table.roll();
+				// TODO: Remove Rocky from loot tables in oldschoolJS
+				if (lootItems.has('Rocky')) lootItems.remove('Rocky');
 
 				if (randInt(1, 100) <= rogueOutfitPercentBonus(user)) {
 					rogueOutfitBoostActivated = true;
 					const doubledLoot = lootItems.multiply(2);
-					if (doubledLoot.has('Rocky')) doubledLoot.remove('Rocky');
 					loot.add(doubledLoot);
 				} else {
 					loot.add(lootItems);
 				}
+
+				// Roll for pet
+				if (roll(petDropRate)) {
+					loot.add('Rocky');
+				}
 			}
 		} else if (obj.type === 'stall') {
-			for (let i = 0; i < (successfulQuantity * obj.lootPercent!) / 100; i++) {
-				loot.add(obj.table.roll());
+			for (let i = 0; i < successfulQuantity; i++) {
+				if (percentChance(obj.lootPercent!)) {
+					loot.add(obj.table.roll());
+				}
 			}
 		}
 
 		let boosts: string[] = [];
 		await clueUpgraderEffect(user, loot, boosts, 'pickpocketing');
-		if (user.hasItemEquippedOrInBank(itemID("Thieves' armband"))) {
+		if (user.hasEquippedOrInBank(itemID("Thieves' armband"))) {
 			boosts.push('3x loot for Thieves armband');
 			loot.multiply(3, notMultiplied);
 		}
@@ -144,9 +152,9 @@ export default class extends Task {
 
 		if (loot.amount('Rocky') > 0) {
 			str += "\n**You have a funny feeling you're being followed...**";
-			this.client.emit(
+			globalClient.emit(
 				Events.ServerNotification,
-				`**${user.username}'s** minion, ${
+				`**${user.usernameOrMention}'s** minion, ${
 					user.minionName
 				}, just received a **Rocky** <:Rocky:324127378647285771> while ${
 					obj.type === 'pickpockable' ? 'pickpocketing' : 'stealing'
@@ -172,9 +180,9 @@ export default class extends Task {
 			channelID,
 			str,
 			['steal', { name: obj.name, quantity }, true],
-			image?.file.buffer,
+			image?.file.attachment,
 			data,
 			loot
 		);
 	}
-}
+};

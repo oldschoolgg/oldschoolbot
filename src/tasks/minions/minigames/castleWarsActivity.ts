@@ -1,4 +1,3 @@
-import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
@@ -6,17 +5,17 @@ import { userHasFlappy } from '../../../lib/invention/inventions';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { minionName } from '../../../lib/util/minionUtils';
 
 const ticketTable = new SimpleTable<number>().add(1, 4).add(2, 4).add(3, 1);
 
-export default class extends Task {
+export const castleWarsTask: MinionTask = {
+	type: 'CastleWars',
 	async run(data: MinigameActivityTaskOptions) {
 		const { channelID, quantity, userID, duration } = data;
 
 		incrementMinigameScore(userID, 'castle_wars', quantity);
 
-		const user = await this.client.fetchUser(userID);
+		const user = await mUserFetch(userID);
 		const loot = new Bank();
 		for (let i = 0; i < quantity; i++) {
 			loot.add('Castle wars ticket', ticketTable.roll().item);
@@ -40,13 +39,11 @@ export default class extends Task {
 		handleTripFinish(
 			user,
 			channelID,
-			`<@${userID}>, ${minionName(
-				user
-			)} finished ${quantity}x Castle Wars games and received ${loot}.${boostMsg}`,
+			`<@${userID}>, ${user.minionName} finished ${quantity}x Castle Wars games and received ${loot}.${boostMsg}`,
 			['minigames', { castle_wars: { start: {} } }, true, 'play'],
 			undefined,
 			data,
 			loot
 		);
 	}
-}
+};
