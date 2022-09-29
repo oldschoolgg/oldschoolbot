@@ -1239,7 +1239,12 @@ export const tamesCommand: OSBMahojiCommand = {
 					required: true,
 					autocomplete: async (value: string) => {
 						return tameKillableMonsters
-							.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
+							.filter(i =>
+								!value
+									? true
+									: i.name.toLowerCase().includes(value.toLowerCase()) ||
+									  i.aliases.some(alias => stringMatches(alias, value))
+							)
 							.map(i => ({ name: i.name, value: i.name }));
 					}
 				}
