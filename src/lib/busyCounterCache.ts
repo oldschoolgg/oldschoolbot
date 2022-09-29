@@ -1,11 +1,11 @@
-import { assert } from './util';
-
 export function baseModifyBusyCounter(map: Map<string, number>, userID: string, amount: -1 | 1) {
 	const entry = map.get(userID);
-	if (entry) assert(entry >= 1, 'Busy counter should be no less than 1');
-	if (amount === -1) {
-		assert(entry !== undefined && entry > 0, `Tried to decrement busy counter by 1, when its ${entry}`);
-	}
+	// if (entry) {
+	// assert(entry >= 1, 'Busy counter should be no less than 1');
+	// }
+	// if (amount === -1) {
+	// assert(entry !== undefined && entry > 0, `Tried to decrement busy counter by 1, when its ${entry}`);
+	// }
 	if (!entry) {
 		map.set(userID, amount);
 		return amount;

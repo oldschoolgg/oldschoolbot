@@ -3,6 +3,7 @@ import { calcPercentOfNum, calcWhatPercent, randFloat, reduceNumByPercent, sumAr
 import { Bank } from 'oldschooljs';
 import { table } from 'table';
 
+import { setupParty } from '../../extendables/Message/Party';
 import { ClientBankKey, updateBankSetting } from '../../mahoji/mahojiSettings';
 import { GearSetupType, GearStats } from '../gear';
 import { effectiveMonsters } from '../minions/data/killableMonsters';
@@ -14,7 +15,6 @@ import { formatDuration, formatSkillRequirements, hasSkillReqs, isWeekend } from
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import { Gear } from './Gear';
-import { Mass } from './Mass';
 import { activity_type_enum } from '.prisma/client';
 
 export const gpCostPerKill = (user: MUser) =>
@@ -254,22 +254,23 @@ export class BossInstance {
 	}
 
 	async init() {
-		const mass = new Mass({
-			channel: this.channel,
-			maxSize: this.maxSize ?? 10,
-			minSize: this.minSize,
-			leader: this.leader,
-			text: this.massText,
-			ironmenAllowed: true,
-			customDenier: async (user: MUser) => {
-				return this.checkUser(user);
-			},
-			automaticStartTime: this.automaticStartTime
-		});
+		this.users =
+			this.solo && this.leader
+				? [this.leader]
+				: await setupParty(this.channel, this.leader, {
+						ironmanAllowed: true,
+						minSize: this.minSize,
+						maxSize: this.maxSize,
+						leader: this.leader,
+						customDenier: async (user: MUser) => {
+							return this.checkUser(user);
+						},
+						message: this.massText
+				  });
+
 		this.tempQty = this.quantity;
 		// Force qty to 1 for init calculations
 		this.quantity = this.calculateQty(this.baseDuration);
-		this.users = this.solo && this.leader ? [this.leader] : await mass.init();
 		await this.validateTeam();
 		const { bossUsers, duration, totalPercent } = await this.calculateBossUsers();
 		this.quantity = this.calculateQty(duration);
