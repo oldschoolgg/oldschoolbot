@@ -19,7 +19,6 @@ export class OldSchoolBotClient extends Client {
 	public production = production ?? false;
 	public mahojiClient!: MahojiClient;
 	public isShuttingDown = false;
-	_emojis: any;
 
 	_fileChangeWatcher?: FSWatcher;
 	_badgeCache: Map<string, string> = new Map();
@@ -28,17 +27,6 @@ export class OldSchoolBotClient extends Client {
 
 	public constructor(clientOptions: ClientOptions) {
 		super(clientOptions);
-		this._emojis = super.emojis;
-	}
-
-	refreshEmojis() {
-		this._emojis = super.emojis;
-	}
-
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	// @ts-ignore
-	get emojis() {
-		return this._emojis;
 	}
 
 	async fetchUser(id: string | bigint): Promise<User> {
@@ -48,7 +36,6 @@ export class OldSchoolBotClient extends Client {
 
 	init = () => {
 		initCrons(this);
-		this.refreshEmojis();
 		cacheUsernames();
 	};
 }
