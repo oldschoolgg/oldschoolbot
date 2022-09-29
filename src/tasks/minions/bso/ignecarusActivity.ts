@@ -157,7 +157,7 @@ export const ignecarusTask: MinionTask = {
 			bossUsers[0].user,
 			channelID,
 			resultStr,
-			['k', { name: bossUsers.length === 1 ? 'Ignecarus (Solo)' : 'Ignecarus (Mass)' }, true],
+			['k', { name: bossUsers.length === 1 ? 'Ignecarus (Solo)' : 'Ignecarus (Mass)', quantity }, true],
 			undefined,
 			data,
 			null

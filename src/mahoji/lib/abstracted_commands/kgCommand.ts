@@ -58,6 +58,7 @@ export async function kgCommand(
 		gearSetup: 'melee',
 		itemCost: async data => data.baseFood.multiply(data.kills).add('Coins', gpCostPerKill(data.user) * data.kills),
 		mostImportantStat: 'attack_slash',
+		ignoreStats: ['attack_ranged', 'attack_magic'],
 		food: () => new Bank(),
 		settingsKeys: ['kg_cost', 'kg_loot'],
 		channel,

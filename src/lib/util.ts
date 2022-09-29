@@ -859,6 +859,17 @@ export async function runTimedLoggedFn(name: string, fn: () => Promise<unknown>)
 	console.log(`Finished ${name} in ${stopwatch.toString()}`);
 }
 
+const emojiServers = new Set([
+	'342983479501389826',
+	'940758552425955348',
+	'869497440947015730',
+	'324127314361319427',
+	'363252822369894400',
+	'395236850119213067',
+	'325950337271857152',
+	'395236894096621568'
+]);
+
 export function cacheCleanup() {
 	return runTimedLoggedFn('Cache Cleanup', async () => {
 		for (const channel of globalClient.channels.cache.values()) {
@@ -866,10 +877,9 @@ export function cacheCleanup() {
 				globalClient.channels.cache.delete(channel.id);
 			}
 			if (channel.type === ChannelType.GuildText) {
+				channel.threads.cache.clear();
 				// @ts-ignore ignore
 				delete channel.topic;
-				// @ts-ignore ignore
-				delete channel.threads;
 				// @ts-ignore ignore
 				delete channel.rateLimitPerUser;
 				// @ts-ignore ignore
@@ -878,6 +888,11 @@ export function cacheCleanup() {
 				delete channel.parentId;
 				// @ts-ignore ignore
 				delete channel.name;
+			}
+		}
+		for (const emoji of globalClient.emojis.cache.values()) {
+			if (!emojiServers.has(emoji.guild.id)) {
+				globalClient.emojis.cache.delete(emoji.id);
 			}
 		}
 	});
