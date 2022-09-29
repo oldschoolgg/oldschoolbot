@@ -1,7 +1,7 @@
 import { APIButtonComponent, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
-import { DISCORD_SETTINGS, production } from '../config';
+import { DISCORD_SETTINGS } from '../config';
 import { AbstractCommand, CommandArgs } from '../mahoji/lib/inhibitors';
 import { RunCommandArgs } from './settings/settings';
 import { SkillsEnum } from './skilling/types';
@@ -139,12 +139,6 @@ export const enum Emoji {
 	OSRSSkull = '<:skull:863392427040440320>',
 	SOTWTrophy = '<:SOTWtrophy:842938096097820693>'
 }
-
-export const ReactionEmoji = {
-	Join: production ? '705971600956194907' : '951309579302604900',
-	Stop: production ? '705972260950769669' : '951309579248091166',
-	Start: production ? '705973302719414329' : '951309579302604880'
-};
 
 export enum ActivityGroup {
 	Skilling = 'Skilling',
