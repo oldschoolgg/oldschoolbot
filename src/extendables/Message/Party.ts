@@ -102,7 +102,7 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 
 					if (options.usersAllowed && !options.usersAllowed.includes(user.id)) {
 						interaction.reply({
-							content: 'You are not alloewd to join this mass.',
+							content: 'You are not allowed to join this mass.',
 							ephemeral: true
 						});
 						return false;
