@@ -711,10 +711,9 @@ export function cacheCleanup() {
 				globalClient.channels.cache.delete(channel.id);
 			}
 			if (channel.type === ChannelType.GuildText) {
+				channel.threads.cache.clear();
 				// @ts-ignore ignore
 				delete channel.topic;
-				// @ts-ignore ignore
-				delete channel.threads;
 				// @ts-ignore ignore
 				delete channel.rateLimitPerUser;
 				// @ts-ignore ignore
