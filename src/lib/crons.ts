@@ -1,4 +1,4 @@
-import { ChannelType, EmbedBuilder, PermissionsBitField, resolveColor, TextChannel } from 'discord.js';
+import { EmbedBuilder, PermissionsBitField, resolveColor, TextChannel } from 'discord.js';
 import { Time } from 'e';
 import he from 'he';
 import { schedule } from 'node-cron';
@@ -9,7 +9,7 @@ import { untrustedGuildSettingsCache } from '../mahoji/mahojiSettings';
 import { analyticsTick } from './analytics';
 import { prisma } from './settings/prisma';
 import { OldSchoolBotClient } from './structures/OldSchoolBotClient';
-import { runTimedLoggedFn } from './util';
+import { cacheCleanup } from './util';
 import { logError } from './util/logError';
 import { sendToChannelID } from './util/webhook';
 
@@ -110,13 +110,7 @@ GROUP BY item_id;`);
 	/**
 	 * Delete all voice channels
 	 */
-	schedule('*/5 * * * *', async () => {
-		await runTimedLoggedFn('Delete Voice Channels', async () => {
-			for (const channel of globalClient.channels.cache.values()) {
-				if (channel.type === ChannelType.GuildVoice || channel.type === ChannelType.GuildCategory) {
-					globalClient.channels.cache.delete(channel.id);
-				}
-			}
-		});
+	schedule('0 */2 * * *', async () => {
+		cacheCleanup();
 	});
 }
