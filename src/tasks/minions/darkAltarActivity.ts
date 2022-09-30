@@ -67,6 +67,6 @@ export const darkAltarTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		handleTripFinish(user, channelID, str, ['runecraft', { rune }, true], undefined, data, loot);
+		handleTripFinish(user, channelID, str, undefined, data, loot);
 	}
 };

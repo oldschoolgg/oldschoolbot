@@ -22,7 +22,6 @@ export const tokkulShopTask: MinionTask = {
 			channelID,
 			`${user}, ${user.minionName} finished shopping in Tzhaar City and received ${loot}.`,
 			undefined,
-			undefined,
 			data,
 			null
 		);

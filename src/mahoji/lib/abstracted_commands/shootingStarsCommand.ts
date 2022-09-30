@@ -293,7 +293,7 @@ export async function shootingStarsActivity(data: ShootingStarsData) {
 		str += "\nYou have a funny feeling you're being followed...";
 	}
 
-	handleTripFinish(user, data.channelID, str, undefined, undefined!, data, null);
+	handleTripFinish(user, data.channelID, str, undefined, data, null);
 }
 
 const activitiesCantGetStars: activity_type_enum[] = [
