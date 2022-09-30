@@ -148,19 +148,5 @@ export async function moktangActivity(data: MoktangTaskOptions) {
 
 ${xpStr}`;
 
-	handleTripFinish(
-		user,
-		data.channelID,
-		str,
-		[
-			'k',
-			{
-				name: 'moktang'
-			},
-			true
-		],
-		image.file.attachment,
-		data,
-		loot
-	);
+	handleTripFinish(user, data.channelID, str, image.file.attachment, data, loot);
 }

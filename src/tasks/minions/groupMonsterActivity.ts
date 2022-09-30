@@ -82,6 +82,6 @@ export const groupoMonsterTask: MinionTask = {
 			resultStr += `${usersWithoutLoot.map(id => `<@${id}>`).join(', ')} - Got no loot, sad!`;
 		}
 
-		handleTripFinish(leaderUser, channelID, resultStr, undefined, undefined, data, totalLoot);
+		handleTripFinish(leaderUser, channelID, resultStr, undefined, data, totalLoot);
 	}
 };

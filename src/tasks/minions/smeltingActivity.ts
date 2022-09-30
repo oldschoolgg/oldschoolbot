@@ -83,22 +83,6 @@ export const smeltingTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			[
-				'smelt',
-				{
-					name: bar.name,
-					quantity: oldQuantity,
-					blast_furnace: blastf
-				},
-				true
-			],
-			undefined,
-			data,
-			loot
-		);
+		handleTripFinish(user, channelID, str, undefined, data, loot);
 	}
 };

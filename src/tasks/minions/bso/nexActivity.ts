@@ -185,7 +185,6 @@ export const nexTask: MinionTask = {
 					  }, you died ${deaths[userID] ?? 0} times. Your Nex KC is now ${leaderUser.getKC(
 							NexMonster.id
 					  )}.\n\n${soloXP}`,
-				['k', { name: users.length === 1 ? 'Nex (Solo)' : 'Nex (Mass)' }, true],
 				image!,
 				data,
 				soloItemsAdded

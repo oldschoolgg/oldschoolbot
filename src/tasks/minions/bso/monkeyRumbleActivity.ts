@@ -90,15 +90,6 @@ export const mrTask: MinionTask = {
 			`${user}, ${user.minionName} finished fighting ${quantity}x monkeys, your monkey tier is ${monkeyTier}. ${rumbleTokensPerHour} tokens/hr, ${fightsPerHour} fights/hr
 ${xpStr}
 You received **${loot}.**`,
-			[
-				'bsominigames',
-				{
-					monkey_rumble: {
-						start: {}
-					}
-				},
-				true
-			],
 			files[0],
 			data,
 			loot

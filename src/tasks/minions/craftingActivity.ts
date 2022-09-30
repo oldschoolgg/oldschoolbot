@@ -62,6 +62,6 @@ export const craftingTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		handleTripFinish(user, channelID, str, ['craft', { name: item.name, quantity }], undefined, data, loot);
+		handleTripFinish(user, channelID, str, undefined, data, loot);
 	}
 };

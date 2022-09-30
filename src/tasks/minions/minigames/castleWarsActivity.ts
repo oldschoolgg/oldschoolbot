@@ -40,7 +40,6 @@ export const castleWarsTask: MinionTask = {
 			user,
 			channelID,
 			`<@${userID}>, ${user.minionName} finished ${quantity}x Castle Wars games and received ${loot}.${boostMsg}`,
-			['minigames', { castle_wars: { start: {} } }, true, 'play'],
 			undefined,
 			data,
 			loot

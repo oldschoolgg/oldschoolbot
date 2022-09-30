@@ -47,14 +47,6 @@ export const firemakingTask: MinionTask = {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
 		}
 
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			['light', { name: burnable.name, quantity }, true],
-			undefined,
-			data,
-			null
-		);
+		handleTripFinish(user, channelID, str, undefined, data, null);
 	}
 };

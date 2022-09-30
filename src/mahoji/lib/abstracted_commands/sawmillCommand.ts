@@ -17,7 +17,10 @@ export async function sawmillCommand(
 	speed: number | undefined
 ) {
 	const plank = Planks.find(
-		plank => stringMatches(plank.name, plankName) || stringMatches(plank.name.split(' ')[0], plankName)
+		plank =>
+			stringMatches(plank.outputItem, plankName) ||
+			stringMatches(plank.name, plankName) ||
+			stringMatches(plank.name.split(' ')[0], plankName)
 	);
 
 	if (!plank) {

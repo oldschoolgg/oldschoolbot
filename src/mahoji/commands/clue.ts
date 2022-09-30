@@ -52,7 +52,9 @@ export const clueCommand: OSBMahojiCommand = {
 		const user = await mUserFetch(userID);
 		const clueScores = user.openableScores();
 
-		const clueTier = ClueTiers.find(tier => stringMatches(tier.name, options.tier));
+		const clueTier = ClueTiers.find(
+			tier => stringMatches(tier.id.toString(), options.tier) || stringMatches(tier.name, options.tier)
+		);
 		if (!clueTier) return 'Invalid clue tier.';
 
 		if (clueTier.name === 'Grandmaster' && (!clueScores[19_836] || clueScores[19_836] < 100)) {

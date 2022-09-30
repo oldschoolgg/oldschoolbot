@@ -122,14 +122,6 @@ export const titheFarmTask: MinionTask = {
 
 		const returnStr = `${harvestStr} ${bonusXpStr}\n\n${completedStr}${levelStr}${lootStr}\n${flappyRes.userMsg}`;
 
-		handleTripFinish(
-			user,
-			channelID,
-			returnStr,
-			['farming', { tithe_farm: {} }, true],
-			undefined,
-			data,
-			loot.length > 0 ? loot : null
-		);
+		handleTripFinish(user, channelID, returnStr, undefined, data, loot.length > 0 ? loot : null);
 	}
 };

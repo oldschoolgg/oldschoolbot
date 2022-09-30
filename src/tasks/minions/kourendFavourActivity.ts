@@ -8,7 +8,8 @@ import { KourendFavours, UserKourendFavour } from './../../lib/minions/data/kour
 export const kourendTask: MinionTask = {
 	type: 'KourendFavour',
 	async run(data: KourendFavourActivityTaskOptions) {
-		let { favour, quantity, userID, channelID, duration } = data;
+		let { quantity, userID, channelID, duration } = data;
+		const favour = KourendFavours.find(i => i.name === data.favour)!;
 		const user = await mUserFetch(userID);
 		let favourPoints = favour.pointsGain * quantity;
 		let shayzienDone = false;
@@ -80,14 +81,6 @@ export const kourendTask: MinionTask = {
 			str += `\n\n${flappyRes.userMsg}`;
 		}
 
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			['activities', { favour: { name: confirmedFavour.name } }, true],
-			undefined,
-			data,
-			loot ?? null
-		);
+		handleTripFinish(user, channelID, str, undefined, data, loot ?? null);
 	}
 };

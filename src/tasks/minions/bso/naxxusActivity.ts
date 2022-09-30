@@ -85,7 +85,6 @@ export const naxxusTask: MinionTask = {
 			`${user}, ${user.minionName} finished killing ${quantity} ${
 				Naxxus.name
 			}. Your Naxxus KC is now ${user.getKC(Naxxus.id)}.\n\n${xpStr}`,
-			['k', { name: 'Naxxus' }, true],
 			image.file.attachment,
 			data,
 			itemsAdded

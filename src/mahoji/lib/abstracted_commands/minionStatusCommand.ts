@@ -1,7 +1,7 @@
 import { ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 
 import { ClueTiers } from '../../../lib/clues/clueTiers';
-import { Emoji, lastTripCache, minionBuyButton, PerkTier } from '../../../lib/constants';
+import { Emoji, minionBuyButton, PerkTier } from '../../../lib/constants';
 import { getUsersFishingContestDetails } from '../../../lib/fishingContest';
 import { getUsersTame, shortTameTripDesc, tameLastFinishedActivity } from '../../../lib/tames';
 import { makeComponents } from '../../../lib/util';
@@ -9,6 +9,7 @@ import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
 import { minionStatus } from '../../../lib/util/minionStatus';
 import { getItemContractDetails } from '../../commands/ic';
 import { spawnLampIsReady } from '../../commands/tools';
+import { makeRepeatTripButtons } from '../../mahojiSettings';
 import { calculateBirdhouseDetails } from './birdhousesCommand';
 import { isUsersDailyReady } from './dailyCommand';
 import { canRunAutoContract } from './farmingContractCommand';
@@ -108,15 +109,9 @@ export async function minionStatusCommand(user: MUser, channelID: string) {
 		);
 	}
 
-	const lastTrip = lastTripCache.get(user.id);
-	if (lastTrip && !user.minionIsBusy) {
-		buttons.push(
-			new ButtonBuilder()
-				.setCustomId('REPEAT_TRIP')
-				.setLabel('Repeat Trip')
-				.setEmoji('🔁')
-				.setStyle(ButtonStyle.Secondary)
-		);
+	if (!user.minionIsBusy) {
+		const repeatButtons = await makeRepeatTripButtons(user.id);
+		buttons.push(...repeatButtons);
 	}
 
 	const { bank } = user;

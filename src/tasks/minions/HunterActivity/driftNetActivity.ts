@@ -1,4 +1,3 @@
-import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import driftNetCreatures from '../../../lib/skilling/skills/hunter/driftNet';
@@ -101,14 +100,6 @@ export const driftNetTask: MinionTask = {
 		});
 		str += `\n\nYou received: ${loot}.`;
 
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			['activities', { driftnet_fishing: { minutes: Math.floor(duration / Time.Minute) } }, true],
-			undefined,
-			data,
-			loot
-		);
+		handleTripFinish(user, channelID, str, undefined, data, loot);
 	}
 };

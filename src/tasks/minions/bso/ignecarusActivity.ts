@@ -58,15 +58,7 @@ export const ignecarusTask: MinionTask = {
 		}
 
 		if (addArrayOfNumbers(objectValues(deaths).map(d => d.qty)) === idArr.length * quantity) {
-			handleTripFinish(
-				bossUsers[0].user,
-				channelID,
-				`${tagAll}\n\nYour team all died.`,
-				['k', { name: bossUsers.length === 1 ? 'Ignecarus (Solo)' : 'Ignecarus (Mass)' }, true],
-				undefined,
-				data,
-				null
-			);
+			handleTripFinish(bossUsers[0].user, channelID, `${tagAll}\n\nYour team all died.`, undefined, data, null);
 			return;
 		}
 
@@ -153,14 +145,6 @@ export const ignecarusTask: MinionTask = {
 			kc: quantity
 		});
 
-		handleTripFinish(
-			bossUsers[0].user,
-			channelID,
-			resultStr,
-			['k', { name: bossUsers.length === 1 ? 'Ignecarus (Solo)' : 'Ignecarus (Mass)', quantity }, true],
-			undefined,
-			data,
-			null
-		);
+		handleTripFinish(bossUsers[0].user, channelID, resultStr, undefined, data, null);
 	}
 };

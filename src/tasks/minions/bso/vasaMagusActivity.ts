@@ -109,14 +109,6 @@ export const vasaTask: MinionTask = {
 
 		updateBankSetting('vasa_loot', loot);
 
-		handleTripFinish(
-			user,
-			channelID,
-			resultStr,
-			['k', { name: 'vasa', quantity }, true],
-			image.file.attachment,
-			data,
-			itemsAdded
-		);
+		handleTripFinish(user, channelID, resultStr, image.file.attachment, data, itemsAdded);
 	}
 };

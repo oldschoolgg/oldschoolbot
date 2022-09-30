@@ -138,22 +138,5 @@ export async function researchTask(data: ResearchTaskOptions) {
 ${discoveredStr}
 ${xpStr}`;
 
-	handleTripFinish(
-		user,
-		data.channelID,
-		str,
-		[
-			'invention',
-			{
-				research: {
-					material,
-					quantity
-				}
-			},
-			true
-		],
-		undefined,
-		data,
-		null
-	);
+	handleTripFinish(user, data.channelID, str, undefined, data, null);
 }

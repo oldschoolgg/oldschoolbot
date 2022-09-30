@@ -1,8 +1,8 @@
 import { Message } from 'discord.js';
 
-import { CLIENT_ID } from '../config';
+import { CLIENT_ID, OWNER_IDS } from '../config';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
-import { channelIsSendable } from './util';
+import { channelIsSendable, memoryAnalysis } from './util';
 import { makeBankImage } from './util/makeBankImage';
 
 const mentionText = `<@${CLIENT_ID}>`;
@@ -47,6 +47,14 @@ export async function onMessage(msg: Message) {
 			],
 			components
 		});
+		return;
+	}
+	if (content.includes(`${mentionText} mem`) && OWNER_IDS.includes(msg.author.id)) {
+		msg.reply(
+			Object.entries(memoryAnalysis())
+				.map(ent => `**${ent[0]}:** ${ent[1]}`)
+				.join('\n')
+		);
 		return;
 	}
 

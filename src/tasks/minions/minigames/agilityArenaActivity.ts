@@ -89,14 +89,6 @@ export const agilityArenaTask: MinionTask = {
 			collectionLog: true
 		});
 
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			['minigames', { agility_arena: { start: {} } }, true],
-			undefined,
-			data,
-			null
-		);
+		handleTripFinish(user, channelID, str, undefined, data, null);
 	}
 };

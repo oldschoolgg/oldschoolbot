@@ -49,14 +49,6 @@ export const soulWarsTask: MinionTask = {
 		let str = `${user}, ${user.minionName} finished doing ${quantity}x games of Soul Wars, you received ${points} Zeal Tokens, you now have ${user.user.zeal_tokens}.\n\n`;
 		if (flappyRes.shouldGiveBoost) str += `\n${flappyRes.userMsg}`;
 
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			['minigames', { soul_wars: { start: {} } }, true],
-			undefined!,
-			data,
-			null
-		);
+		handleTripFinish(user, channelID, str, undefined!, data, null);
 	}
 };

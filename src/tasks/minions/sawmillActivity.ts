@@ -12,8 +12,7 @@ export const sawmillTask: MinionTask = {
 	async run(data: SawmillActivityTaskOptions) {
 		const { userID, channelID, plankID, plankQuantity } = data;
 		const user = await mUserFetch(userID);
-		const plank = Planks.find(plank => plank.outputItem === plankID)!;
-
+		const plank = Planks.find(i => i.outputItem === plankID)!;
 		const loot = new Bank({
 			[plankID]: plankQuantity
 		});
@@ -44,14 +43,6 @@ export const sawmillTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			['activities', { sawmill: { quantity: plankQuantity, type: plank.name } }, true],
-			undefined,
-			data,
-			loot
-		);
+		handleTripFinish(user, channelID, str, undefined, data, loot);
 	}
 };

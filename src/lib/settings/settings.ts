@@ -1,5 +1,11 @@
 import { Activity, NewUser, Prisma } from '@prisma/client';
-import { APIInteractionGuildMember, ButtonInteraction, ChatInputCommandInteraction, GuildMember } from 'discord.js';
+import {
+	APIInteractionGuildMember,
+	ButtonInteraction,
+	ChatInputCommandInteraction,
+	GuildMember,
+	User
+} from 'discord.js';
 import { Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
@@ -75,7 +81,7 @@ export async function runMahojiCommand({
 	channelID: string;
 	userID: string;
 	guildID: string | undefined | null;
-	user: MUser;
+	user: User | MUser;
 	member: APIInteractionGuildMember | GuildMember | null;
 }) {
 	const mahojiCommand = globalClient.mahojiClient.commands.values.find(c => c.name === commandName);
@@ -98,7 +104,7 @@ export async function runMahojiCommand({
 export interface RunCommandArgs {
 	commandName: string;
 	args: CommandArgs;
-	user: MUser;
+	user: User | MUser;
 	channelID: string;
 	member: APIInteractionGuildMember | GuildMember | null;
 	isContinue?: boolean;

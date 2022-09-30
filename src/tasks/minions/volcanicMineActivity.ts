@@ -118,14 +118,6 @@ export const vmTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			['minigames', { volcanic_mine: { start: { quantity } } }, true],
-			undefined,
-			data,
-			itemsAdded
-		);
+		handleTripFinish(user, channelID, str, undefined, data, itemsAdded);
 	}
 };

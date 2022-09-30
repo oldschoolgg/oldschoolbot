@@ -10,7 +10,6 @@ import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import { rand, skillingPetDropRate } from '../../lib/util';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import resolveItems from '../../lib/util/resolveItems';
 import { mahojiUsersSettingsFetch, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
@@ -220,23 +219,6 @@ export const miningTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		const theQuantity = duration > 0.9 * calcMaxTripLength(user, 'Mining') ? undefined : quantity;
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			[
-				'mine',
-				{
-					name: ore.name,
-					quantity: theQuantity,
-					powermine
-				},
-				true
-			],
-			undefined,
-			data,
-			loot
-		);
+		handleTripFinish(user, channelID, str, undefined, data, loot);
 	}
 };

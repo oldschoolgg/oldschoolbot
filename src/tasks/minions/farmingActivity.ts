@@ -90,7 +90,6 @@ export const farmingTask: MinionTask = {
 			channelID,
 			planting,
 			currentDate,
-			autoFarmed,
 			duration
 		} = data;
 		const user = await mUserFetch(userID);
@@ -250,15 +249,7 @@ export const farmingTask: MinionTask = {
 
 			if (hasPlopper) str += '\nYou received 4x loot from Plopper';
 
-			handleTripFinish(
-				user,
-				channelID,
-				str,
-				autoFarmed ? ['farming', { auto_farm: {} }, true] : undefined,
-				undefined,
-				data,
-				null
-			);
+			handleTripFinish(user, channelID, str, undefined, data, null);
 		} else if (patchType.patchPlanted) {
 			const plantToHarvest = Farming.Plants.find(plant => plant.name === patchType.lastPlanted);
 			if (!plantToHarvest) return;
@@ -615,7 +606,6 @@ export const farmingTask: MinionTask = {
 				user,
 				channelID,
 				infoStr.join('\n'),
-				autoFarmed ? ['farming', { auto_farm: {} }, true] : undefined,
 				janeMessage
 					? await chatHeadImage({
 							content: `You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${

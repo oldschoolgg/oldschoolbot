@@ -31,14 +31,6 @@ export const pestControlTask: MinionTask = {
 		let str = `${user}, ${user.minionName} finished ${quantity}x games of Pest Control on the ${boatType} boat. You received ${points}x Void Knight commendation points, you now have ${newUser.pest_control_points} points. ${perHour}`;
 		if (flappyRes.shouldGiveBoost) str += `\n${flappyRes.userMsg}`;
 
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			['minigames', { pest_control: { start: {} } }, true, 'start'],
-			undefined,
-			data,
-			null
-		);
+		handleTripFinish(user, channelID, str, undefined, data, null);
 	}
 };

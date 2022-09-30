@@ -459,7 +459,7 @@ export async function baxtorianBathhousesActivity(data: BathhouseTaskOptions) {
 	const { userID, channelID, quantity, duration } = data;
 	const user = await mUserFetch(userID);
 	const { cl } = user;
-	const { loot, herbXP, firemakingXP, tier, speciesServed, ore, mixture, gaveExtraTips } = calculateResult(data);
+	const { loot, herbXP, firemakingXP, tier, speciesServed, gaveExtraTips } = calculateResult(data);
 	await incrementMinigameScore(userID, 'bax_baths', quantity);
 
 	const uniques = resolveItems(['Inferno adze', 'Flame gloves', 'Ring of fire']);
@@ -504,15 +504,6 @@ ${gotPurple ? `${Emoji.Purple} ` : ''}**Tips received:** ${loot}.${
 				: ''
 		}
 ${xpStr}`,
-		[
-			'bsominigames',
-			{
-				baxtorian_bathhouses: {
-					start: { tier: tier.name, heating: ore.item.name, water_mixture: mixture.name }
-				}
-			},
-			true
-		],
 		undefined,
 		data,
 		loot

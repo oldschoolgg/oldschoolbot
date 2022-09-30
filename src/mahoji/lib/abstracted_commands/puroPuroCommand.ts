@@ -111,7 +111,10 @@ export async function puroPuroStartCommand(
 	}
 
 	const impToHunt = puroOptions.find(
-		i => stringMatches(i.name, impling) || stringMatches(i.name.split(' ')[0], impling)
+		i =>
+			stringMatches(i.name, impling) ||
+			stringMatches(i.item?.id.toString() ?? '', impling) ||
+			stringMatches(i.name.split(' ')[0], impling)
 	);
 
 	if (!impToHunt) {

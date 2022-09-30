@@ -31,7 +31,6 @@ export const kibbleTask: MinionTask = {
 			user,
 			channelID,
 			`${user}, your minion finished cooking ${quantity}x ${kibble.item.name}. ${xpRes}`,
-			['kibble', { quantity, kibble: kibble.item.name }, true],
 			undefined,
 			data,
 			loot

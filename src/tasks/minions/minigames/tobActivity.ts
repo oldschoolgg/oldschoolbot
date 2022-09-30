@@ -63,27 +63,7 @@ export const tobTask: MinionTask = {
 			const resultMessage = `${allTag} Your team wiped in the Theatre of Blood, in the ${
 				TOBRooms[wipedRoom].name
 			} room!${diedToMaiden ? ' The team died very early, and nobody learnt much from this raid.' : ''}`;
-			handleTripFinish(
-				allUsers[0],
-				channelID,
-				resultMessage,
-				[
-					'raid',
-					{
-						tob: {
-							start: {
-								hard_mode: hardMode,
-								max_team_size: allUsers.length,
-								solo: allUsers.length === 1
-							}
-						}
-					},
-					true
-				],
-				undefined,
-				data,
-				null
-			);
+			handleTripFinish(allUsers[0], channelID, resultMessage, undefined, data, null);
 			// They each paid 100k tax, it doesn't get refunded, so track it in economy stats.
 			await updateBankSetting('tob_cost', new Bank().add('Coins', users.length * 100_000));
 			return;
@@ -167,26 +147,6 @@ Unique chance: ${result.percentChanceOfUnique.toFixed(2)}% (1 in ${convertPercen
 			teamSize: users.length
 		});
 
-		handleTripFinish(
-			allUsers[0],
-			channelID,
-			resultMessage,
-			[
-				'raid',
-				{
-					tob: {
-						start: {
-							hard_mode: hardMode,
-							max_team_size: allUsers.length,
-							solo: allUsers.length === 1
-						}
-					}
-				},
-				true
-			],
-			undefined,
-			data,
-			null
-		);
+		handleTripFinish(allUsers[0], channelID, resultMessage, undefined, data, null);
 	}
 };

@@ -65,14 +65,6 @@ export const questingTask: MinionTask = {
 			str += `${Emoji.Magic} You received 2500 Magic XP for completing Recipe For Disaster (Lumbridge guide subquest).`;
 		}
 
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			hasMaxQP ? undefined : ['activities', { quest: {} }, true],
-			undefined,
-			data,
-			null
-		);
+		handleTripFinish(user, channelID, str, undefined, data, null);
 	}
 };
