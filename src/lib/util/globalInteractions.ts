@@ -6,7 +6,6 @@ import { buyBingoTicketCommand } from '../../mahoji/commands/bingo';
 import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { shootingStarsCommand, starCache } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
 import { Cooldowns } from '../../mahoji/lib/Cooldowns';
-import { fetchRepeatTrips, repeatTrip } from '../../mahoji/mahojiSettings';
 import { ClueTier } from '../clues/clueTiers';
 import { PerkTier } from '../constants';
 import { prisma } from '../settings/prisma';
@@ -17,6 +16,7 @@ import getUsersPerkTier from './getUsersPerkTier';
 import { updateGiveawayMessage } from './giveaway';
 import { interactionReply } from './interactionReply';
 import { minionIsBusy } from './minionIsBusy';
+import { fetchRepeatTrips, repeatTrip } from './repeatStoredTrip';
 
 const globalInteractionActions = [
 	'DO_BEGINNER_CLUE',

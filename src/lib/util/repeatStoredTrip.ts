@@ -1,10 +1,13 @@
-import { activity_type_enum } from '@prisma/client';
+import { activity_type_enum, Prisma } from '@prisma/client';
+import { ButtonBuilder, ButtonInteraction, ButtonStyle } from 'discord.js';
 import { Time } from 'e';
 
 import { autocompleteMonsters } from '../../mahoji/commands/k';
 import { PvMMethod } from '../constants';
 import { SlayerActivityConstants } from '../minions/data/combatConstants';
 import { darkAltarRunes } from '../minions/functions/darkAltarCommand';
+import { prisma } from '../settings/prisma';
+import { runCommand } from '../settings/settings';
 import {
 	ActivityTaskOptionsWithQuantity,
 	AgilityActivityTaskOptions,
@@ -478,4 +481,65 @@ for (const type of Object.values(activity_type_enum)) {
 	if (!tripHandlers[type]) {
 		throw new Error(`Missing trip handler for ${type}`);
 	}
+}
+
+export async function fetchRepeatTrips(userID: string) {
+	const res = await prisma.activity.findMany({
+		where: {
+			user_id: BigInt(userID),
+			finish_date: {
+				gt: new Date(Date.now() - Time.Day * 7)
+			}
+		},
+		orderBy: {
+			id: 'desc'
+		},
+		take: 20,
+		select: {
+			data: true,
+			type: true
+		}
+	});
+	const filtered: {
+		type: activity_type_enum;
+		data: Prisma.JsonValue;
+	}[] = [];
+	for (const trip of res) {
+		if (!taskCanBeRepeated(trip.type)) continue;
+		if (!filtered.some(i => i.type === trip.type)) {
+			filtered.push(trip);
+		}
+	}
+	return filtered;
+}
+
+export async function makeRepeatTripButtons(userID: string) {
+	const trips = await fetchRepeatTrips(userID);
+	const buttons: ButtonBuilder[] = [];
+	for (const trip of trips.slice(0, 5)) {
+		buttons.push(
+			new ButtonBuilder()
+				.setLabel(`Repeat ${trip.type}`)
+				.setCustomId(`REPEAT_TRIP_${trip.type}`)
+				.setStyle(ButtonStyle.Secondary)
+		);
+	}
+	return buttons;
+}
+
+export async function repeatTrip(
+	interaction: ButtonInteraction,
+	data: { data: Prisma.JsonValue; type: activity_type_enum }
+) {
+	const handler = tripHandlers[data.type];
+	return runCommand({
+		commandName: handler.commandName,
+		isContinue: true,
+		args: handler.args(data.data as any),
+		interaction,
+		guildID: interaction.guildId,
+		member: interaction.member,
+		channelID: interaction.channelId,
+		user: interaction.user
+	});
 }
