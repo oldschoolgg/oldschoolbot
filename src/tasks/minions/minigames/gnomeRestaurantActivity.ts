@@ -93,14 +93,6 @@ export const gnomeResTask: MinionTask = {
 
 		updateBankSetting('gnome_res_loot', loot);
 
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			['minigames', { gnome_restaurant: { start: {} } }, true],
-			undefined,
-			data,
-			loot
-		);
+		handleTripFinish(user, channelID, str, undefined, data, loot);
 	}
 };

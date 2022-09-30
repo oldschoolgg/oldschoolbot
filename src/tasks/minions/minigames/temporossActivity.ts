@@ -84,14 +84,6 @@ export const temporossTask: MinionTask = {
 			output += `\n\n**Fishing Bonus XP:** ${fBonusXP.toLocaleString()}`;
 		}
 
-		handleTripFinish(
-			user,
-			channelID,
-			output,
-			['k', { name: 'Tempoross', quantity }, true],
-			image.file.attachment,
-			data,
-			itemsAdded
-		);
+		handleTripFinish(user, channelID, output, image.file.attachment, data, itemsAdded);
 	}
 };

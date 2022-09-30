@@ -19,7 +19,6 @@ export const mageArenaTask: MinionTask = {
 			channelID,
 			`${user}, ${user.minionName} finished the Mage Arena, you received: ${loot}.`,
 			undefined,
-			undefined,
 			data,
 			loot
 		);
