@@ -44,7 +44,6 @@ import {
 	SmithingActivityTaskOptions,
 	TempleTrekkingActivityTaskOptions,
 	TheatreOfBloodTaskOptions,
-	TokkulShopOptions,
 	WoodcuttingActivityTaskOptions
 } from '../types/minions';
 import { itemNameFromID } from '../util';
@@ -56,12 +55,17 @@ export const taskCanBeRepeated = (type: activity_type_enum) =>
 			activity_type_enum.ShootingStars,
 			activity_type_enum.BirthdayEvent,
 			activity_type_enum.BlastFurnace,
-			activity_type_enum.Easter
+			activity_type_enum.Easter,
+			activity_type_enum.TokkulShop
 		] as activity_type_enum[]
 	).includes(type);
 
 export const tripHandlers = {
 	[activity_type_enum.TearsOfGuthix]: {
+		commandName: 'm',
+		args: () => ({})
+	},
+	[activity_type_enum.TokkulShop]: {
 		commandName: 'm',
 		args: () => ({})
 	},
@@ -438,10 +442,6 @@ export const tripHandlers = {
 	[activity_type_enum.TitheFarm]: {
 		commandName: 'farming',
 		args: () => ({ tithe_farm: {} })
-	},
-	[activity_type_enum.TokkulShop]: {
-		commandName: 'tokkulshop',
-		args: (data: TokkulShopOptions) => ({ buy: { name: itemNameFromID(data.itemID), quantity: data.quantity } })
 	},
 	[activity_type_enum.Trekking]: {
 		commandName: 'minigames',
