@@ -18,7 +18,6 @@ import type {
 	AgilityActivityTaskOptions,
 	AlchingActivityTaskOptions,
 	AnimatedArmourActivityTaskOptions,
-	BirdhouseActivityTaskOptions,
 	BuryingActivityTaskOptions,
 	CastingActivityTaskOptions,
 	ClueActivityTaskOptions,
@@ -70,7 +69,8 @@ export const taskCanBeRepeated = (type: activity_type_enum) =>
 			activity_type_enum.TokkulShop,
 			activity_type_enum.FishingContest,
 			activity_type_enum.TrickOrTreat,
-			activity_type_enum.BossEvent
+			activity_type_enum.BossEvent,
+			activity_type_enum.Birdhouse
 		] as activity_type_enum[]
 	).includes(type);
 
@@ -84,6 +84,10 @@ export const tripHandlers = {
 		args: () => ({})
 	},
 	[activity_type_enum.FishingContest]: {
+		commandName: 'm',
+		args: () => ({})
+	},
+	[activity_type_enum.Birdhouse]: {
 		commandName: 'm',
 		args: () => ({})
 	},
@@ -150,12 +154,6 @@ export const tripHandlers = {
 	[activity_type_enum.BigChompyBirdHunting]: {
 		commandName: 'activities',
 		args: () => ({ chompy_hunt: { action: 'start' } })
-	},
-	[activity_type_enum.Birdhouse]: {
-		commandName: 'activities',
-		args: (data: BirdhouseActivityTaskOptions) => ({
-			birdhouses: { action: 'harvest', birdhouse: data.birdhouseName }
-		})
 	},
 	[activity_type_enum.Smelting]: {
 		commandName: 'smelt',
