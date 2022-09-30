@@ -562,7 +562,7 @@ export const tripHandlers = {
 	[activity_type_enum.KibbleMaking]: {
 		commandName: 'kibble',
 		args: (data: KibbleOptions) => ({
-			name: kibbles.find(i => i.type === data.kibbleType)?.item.name,
+			kibble: kibbles.find(i => i.type === data.kibbleType)?.item.name,
 			quantity: data.quantity
 		})
 	},
