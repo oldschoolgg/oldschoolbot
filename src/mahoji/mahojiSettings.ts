@@ -1,4 +1,4 @@
-import type { activity_type_enum, ClientStorage, Guild, Prisma, User, UserStats } from '@prisma/client';
+import type { ClientStorage, Guild, Prisma, User, UserStats } from '@prisma/client';
 import {
 	ActionRowBuilder,
 	ButtonBuilder,
@@ -24,7 +24,6 @@ import { KillableMonster } from '../lib/minions/types';
 import { MUserClass } from '../lib/MUser';
 import { getMinigameScore, Minigames } from '../lib/settings/minigames';
 import { prisma } from '../lib/settings/prisma';
-import { runCommand } from '../lib/settings/settings';
 import creatures from '../lib/skilling/skills/hunter/creatures';
 import { Rune } from '../lib/skilling/skills/runecraft';
 import { filterLootReplace } from '../lib/slayer/slayerUtil';
@@ -40,7 +39,6 @@ import {
 	validateItemBankAndThrow
 } from '../lib/util';
 import { deferInteraction, interactionReply } from '../lib/util/interactionReply';
-import { taskCanBeRepeated, tripHandlers } from '../lib/util/repeatStoredTrip';
 import resolveItems from '../lib/util/resolveItems';
 import { bingoIsActive, determineBingoProgress, onFinishTile } from './lib/bingo';
 import { mahojiUserSettingsUpdate } from './settingsUpdate';
@@ -791,65 +789,4 @@ export async function syncLinkedAccounts() {
 		const mUser = new MUserClass(u as User);
 		await syncLinkedAccountPerks(mUser);
 	}
-}
-
-export async function fetchRepeatTrips(userID: string) {
-	const res = await prisma.activity.findMany({
-		where: {
-			user_id: BigInt(userID),
-			finish_date: {
-				gt: new Date(Date.now() - Time.Day * 7)
-			}
-		},
-		orderBy: {
-			id: 'desc'
-		},
-		take: 20,
-		select: {
-			data: true,
-			type: true
-		}
-	});
-	const filtered: {
-		type: activity_type_enum;
-		data: Prisma.JsonValue;
-	}[] = [];
-	for (const trip of res) {
-		if (!taskCanBeRepeated(trip.type)) continue;
-		if (!filtered.some(i => i.type === trip.type)) {
-			filtered.push(trip);
-		}
-	}
-	return filtered;
-}
-
-export async function makeRepeatTripButtons(userID: string) {
-	const trips = await fetchRepeatTrips(userID);
-	const buttons: ButtonBuilder[] = [];
-	for (const trip of trips.slice(0, 5)) {
-		buttons.push(
-			new ButtonBuilder()
-				.setLabel(`Repeat ${trip.type}`)
-				.setCustomId(`REPEAT_TRIP_${trip.type}`)
-				.setStyle(ButtonStyle.Secondary)
-		);
-	}
-	return buttons;
-}
-
-export async function repeatTrip(
-	interaction: ButtonInteraction,
-	data: { data: Prisma.JsonValue; type: activity_type_enum }
-) {
-	const handler = tripHandlers[data.type];
-	return runCommand({
-		commandName: handler.commandName,
-		isContinue: true,
-		args: handler.args(data.data as any),
-		interaction,
-		guildID: interaction.guildId,
-		member: interaction.member,
-		channelID: interaction.channelId,
-		user: interaction.user
-	});
 }

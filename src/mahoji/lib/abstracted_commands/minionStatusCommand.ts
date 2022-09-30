@@ -7,9 +7,9 @@ import { getUsersTame, shortTameTripDesc, tameLastFinishedActivity } from '../..
 import { makeComponents } from '../../../lib/util';
 import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
 import { minionStatus } from '../../../lib/util/minionStatus';
+import { makeRepeatTripButtons } from '../../../lib/util/repeatStoredTrip';
 import { getItemContractDetails } from '../../commands/ic';
 import { spawnLampIsReady } from '../../commands/tools';
-import { makeRepeatTripButtons } from '../../mahojiSettings';
 import { calculateBirdhouseDetails } from './birdhousesCommand';
 import { isUsersDailyReady } from './dailyCommand';
 import { canRunAutoContract } from './farmingContractCommand';
