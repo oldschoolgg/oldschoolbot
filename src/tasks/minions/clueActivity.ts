@@ -31,6 +31,6 @@ export const clueTask: MinionTask = {
 			collectionLog: true,
 			itemsToAdd: loot
 		});
-		handleTripFinish(user, channelID, str, undefined, undefined, data, loot);
+		handleTripFinish(user, channelID, str, undefined, data, loot);
 	}
 };

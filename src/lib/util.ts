@@ -47,6 +47,7 @@ import {
 	RaidsOptions,
 	TheatreOfBloodTaskOptions
 } from './types/minions';
+import { CACHED_ACTIVE_USER_IDS } from './util/cachedUserIDs';
 import { getItem } from './util/getOSItem';
 import itemID from './util/itemID';
 import { logError } from './util/logError';
@@ -704,30 +705,66 @@ const emojiServers = new Set([
 	'395236894096621568'
 ]);
 
+export function memoryAnalysis() {
+	let guilds = globalClient.guilds.cache.size;
+	let emojis = 0;
+	let channels = globalClient.channels.cache.size;
+	let voiceChannels = 0;
+	let guildTextChannels = 0;
+	let roles = 0;
+	for (const guild of globalClient.guilds.cache.values()) {
+		emojis += guild.emojis.cache.size;
+		for (const channel of guild.channels.cache.values()) {
+			if (channel.type === ChannelType.GuildVoice) voiceChannels++;
+			if (channel.type === ChannelType.GuildText) guildTextChannels++;
+		}
+		roles += guild.roles.cache.size;
+	}
+	return {
+		guilds,
+		emojis,
+		channels,
+		voiceChannels,
+		guildTextChannels,
+		roles,
+		activeIDs: CACHED_ACTIVE_USER_IDS.size
+	};
+}
+
 export function cacheCleanup() {
 	return runTimedLoggedFn('Cache Cleanup', async () => {
-		for (const channel of globalClient.channels.cache.values()) {
-			if (channel.type === ChannelType.GuildVoice || channel.type === ChannelType.GuildCategory) {
-				globalClient.channels.cache.delete(channel.id);
+		await runTimedLoggedFn('Clear Channels', async () => {
+			for (const channel of globalClient.channels.cache.values()) {
+				if (channel.type === ChannelType.GuildVoice || channel.type === ChannelType.GuildCategory) {
+					globalClient.channels.cache.delete(channel.id);
+				}
+				if (channel.type === ChannelType.GuildText) {
+					channel.threads.cache.clear();
+					// @ts-ignore ignore
+					delete channel.topic;
+					// @ts-ignore ignore
+					delete channel.rateLimitPerUser;
+					// @ts-ignore ignore
+					delete channel.nsfw;
+					// @ts-ignore ignore
+					delete channel.parentId;
+					// @ts-ignore ignore
+					delete channel.name;
+				}
 			}
-			if (channel.type === ChannelType.GuildText) {
-				channel.threads.cache.clear();
-				// @ts-ignore ignore
-				delete channel.topic;
-				// @ts-ignore ignore
-				delete channel.rateLimitPerUser;
-				// @ts-ignore ignore
-				delete channel.nsfw;
-				// @ts-ignore ignore
-				delete channel.parentId;
-				// @ts-ignore ignore
-				delete channel.name;
+		});
+
+		await runTimedLoggedFn('Guild Emoji/Roles/Member cache clear', async () => {
+			for (const guild of globalClient.guilds.cache.values()) {
+				if (emojiServers.has(guild.id)) continue;
+				guild.roles.cache.clear();
+				guild.emojis.cache.clear();
+				for (const member of guild.members.cache.values()) {
+					if (!CACHED_ACTIVE_USER_IDS.has(member.user.id)) {
+						guild.members.cache.delete(member.user.id);
+					}
+				}
 			}
-		}
-		for (const emoji of globalClient.emojis.cache.values()) {
-			if (!emojiServers.has(emoji.guild.id)) {
-				globalClient.emojis.cache.delete(emoji.id);
-			}
-		}
+		});
 	});
 }

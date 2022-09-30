@@ -51,6 +51,6 @@ export const offeringTask: MinionTask = {
 			str += `\n\n${user.minionName}'s Prayer level is now ${newLevel}!`;
 		}
 
-		handleTripFinish(user, channelID, str, ['offer', { quantity, name: bone.name }, true], undefined, data, null);
+		handleTripFinish(user, channelID, str, undefined, data, null);
 	}
 };

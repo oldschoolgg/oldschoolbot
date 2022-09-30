@@ -76,8 +76,8 @@ export const massCommand: OSBMahojiCommand = {
 		const channel = globalClient.channels.cache.get(channelID.toString());
 		if (!channel || !channelIsSendable(channel)) return 'Invalid channel.';
 		const monster = findMonster(options.monster);
-		if (!monster) throw "That monster doesn't exist!";
-		if (!monster.groupKillable) throw "This monster can't be killed in groups!";
+		if (!monster) return "That monster doesn't exist!";
+		if (!monster.groupKillable) return "This monster can't be killed in groups!";
 
 		checkReqs([user], monster, 2);
 

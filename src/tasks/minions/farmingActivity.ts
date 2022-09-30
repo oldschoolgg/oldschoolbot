@@ -18,18 +18,8 @@ import { mahojiUsersSettingsFetch, updateBankSetting } from '../../mahoji/mahoji
 export const farmingTask: MinionTask = {
 	type: 'Farming',
 	async run(data: FarmingActivityTaskOptions) {
-		const {
-			plantsName,
-			patchType,
-			quantity,
-			upgradeType,
-			payment,
-			userID,
-			channelID,
-			planting,
-			currentDate,
-			autoFarmed
-		} = data;
+		const { plantsName, patchType, quantity, upgradeType, payment, userID, channelID, planting, currentDate } =
+			data;
 		const user = await mUserFetch(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 		const currentFarmingLevel = user.skillLevel(SkillsEnum.Farming);
@@ -159,15 +149,7 @@ export const farmingTask: MinionTask = {
 
 			str += `\n\n${user.minionName} tells you to come back after your plants have finished growing!`;
 
-			handleTripFinish(
-				user,
-				channelID,
-				str,
-				autoFarmed ? ['farming', { auto_farm: {} }, true] : undefined,
-				undefined,
-				data,
-				null
-			);
+			handleTripFinish(user, channelID, str, undefined, data, null);
 		} else if (patchType.patchPlanted) {
 			const plantToHarvest = Farming.Plants.find(plant => plant.name === patchType.lastPlanted);
 			if (!plantToHarvest) return;
@@ -443,7 +425,6 @@ export const farmingTask: MinionTask = {
 				user,
 				channelID,
 				infoStr.join('\n'),
-				autoFarmed ? ['farming', { auto_farm: {} }, true] : undefined,
 				janeMessage
 					? await chatHeadImage({
 							content: `You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${

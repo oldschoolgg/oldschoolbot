@@ -7,7 +7,7 @@ import { prisma } from '../../lib/settings/prisma';
 import { minionKillCommand, monsterInfo } from '../lib/abstracted_commands/minionKill';
 import { OSBMahojiCommand } from '../lib/util';
 
-const autocompleteMonsters = [
+export const autocompleteMonsters = [
 	...killableMonsters,
 	...revenantMonsters,
 	{

@@ -154,14 +154,6 @@ export const wintertodtTask: MinionTask = {
 			kc: quantity
 		});
 
-		handleTripFinish(
-			user,
-			channelID,
-			output,
-			['k', { name: 'wintertodt' }, true],
-			image.file.attachment,
-			data,
-			itemsAdded
-		);
+		handleTripFinish(user, channelID, output, image.file.attachment, data, itemsAdded);
 	}
 };

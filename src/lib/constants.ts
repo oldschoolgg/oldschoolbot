@@ -1,11 +1,8 @@
 import { APIButtonComponent, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
 import { DISCORD_SETTINGS } from '../config';
 import { AbstractCommand, CommandArgs } from '../mahoji/lib/inhibitors';
-import { RunCommandArgs } from './settings/settings';
 import { SkillsEnum } from './skilling/types';
-import { ActivityTaskOptions } from './types/minions';
 import resolveItems from './util/resolveItems';
 
 export const BotID = DISCORD_SETTINGS.BotID ?? '303730326692429825';
@@ -379,12 +376,6 @@ export const mahojiInformationalButtons: APIButtonComponent[] = buttonSource.map
 	style: ButtonStyle.Link,
 	url: i.url
 }));
-
-export type LastTripRunArgs = Omit<RunCommandArgs, 'commandName' | 'args'>;
-export const lastTripCache = new Map<
-	string,
-	{ continue: (args: LastTripRunArgs) => Promise<null | CommandResponse>; data: ActivityTaskOptions }
->();
 
 export const PATRON_ONLY_GEAR_SETUP =
 	'Sorry - but the `other` gear setup is only available for Tier 3 Patrons (and higher) to use.';
