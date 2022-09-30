@@ -233,7 +233,7 @@ export const tripHandlers = {
 	},
 	[activity_type_enum.Fishing]: {
 		commandName: 'fish',
-		args: (data: FishingActivityTaskOptions) => ({ name: itemNameFromID(data.fishID), quantity: data.quantity })
+		args: (data: FishingActivityTaskOptions) => ({ name: data.fishID, quantity: data.quantity })
 	},
 	[activity_type_enum.FishingTrawler]: {
 		commandName: 'minigames',
@@ -307,7 +307,7 @@ export const tripHandlers = {
 	[activity_type_enum.Mining]: {
 		commandName: 'mine',
 		args: (data: MiningActivityTaskOptions) => ({
-			name: itemNameFromID(data.oreID),
+			name: data.oreID,
 			quantity: data.quantity,
 			powermine: data.powermine
 		})
@@ -413,7 +413,7 @@ export const tripHandlers = {
 	[activity_type_enum.Sawmill]: {
 		commandName: 'activities',
 		args: (data: SawmillActivityTaskOptions) => ({
-			sawmill: { quantity: data.plankQuantity, type: itemNameFromID(data.plankID) }
+			sawmill: { quantity: data.plankQuantity, type: data.plankID }
 		})
 	},
 	[activity_type_enum.Sepulchre]: {

@@ -733,34 +733,38 @@ export function memoryAnalysis() {
 
 export function cacheCleanup() {
 	return runTimedLoggedFn('Cache Cleanup', async () => {
-		for (const channel of globalClient.channels.cache.values()) {
-			if (channel.type === ChannelType.GuildVoice || channel.type === ChannelType.GuildCategory) {
-				globalClient.channels.cache.delete(channel.id);
-			}
-			if (channel.type === ChannelType.GuildText) {
-				channel.threads.cache.clear();
-				// @ts-ignore ignore
-				delete channel.topic;
-				// @ts-ignore ignore
-				delete channel.rateLimitPerUser;
-				// @ts-ignore ignore
-				delete channel.nsfw;
-				// @ts-ignore ignore
-				delete channel.parentId;
-				// @ts-ignore ignore
-				delete channel.name;
-			}
-		}
-
-		for (const guild of globalClient.guilds.cache.values()) {
-			if (emojiServers.has(guild.id)) continue;
-			guild.roles.cache.clear();
-			guild.emojis.cache.clear();
-			for (const member of guild.members.cache.values()) {
-				if (!CACHED_ACTIVE_USER_IDS.has(member.user.id)) {
-					guild.members.cache.delete(member.user.id);
+		await runTimedLoggedFn('Clear Channels', async () => {
+			for (const channel of globalClient.channels.cache.values()) {
+				if (channel.type === ChannelType.GuildVoice || channel.type === ChannelType.GuildCategory) {
+					globalClient.channels.cache.delete(channel.id);
+				}
+				if (channel.type === ChannelType.GuildText) {
+					channel.threads.cache.clear();
+					// @ts-ignore ignore
+					delete channel.topic;
+					// @ts-ignore ignore
+					delete channel.rateLimitPerUser;
+					// @ts-ignore ignore
+					delete channel.nsfw;
+					// @ts-ignore ignore
+					delete channel.parentId;
+					// @ts-ignore ignore
+					delete channel.name;
 				}
 			}
-		}
+		});
+
+		await runTimedLoggedFn('Guild Emoji/Roles/Member cache clear', async () => {
+			for (const guild of globalClient.guilds.cache.values()) {
+				if (emojiServers.has(guild.id)) continue;
+				guild.roles.cache.clear();
+				guild.emojis.cache.clear();
+				for (const member of guild.members.cache.values()) {
+					if (!CACHED_ACTIVE_USER_IDS.has(member.user.id)) {
+						guild.members.cache.delete(member.user.id);
+					}
+				}
+			}
+		});
 	});
 }
