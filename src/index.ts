@@ -154,6 +154,8 @@ client.on('guildCreate', guild => {
 });
 initTickers();
 
+client.on('ready', () => runTimedLoggedFn('OnStartup', async () => onStartup()));
+
 async function main() {
 	client.fastifyServer = makeServer();
 	let promises = [];
@@ -165,7 +167,6 @@ async function main() {
 
 	await client.login(botToken);
 	await runTimedLoggedFn('Client.Init', async () => client.init());
-	await runTimedLoggedFn('OnStartup', async () => onStartup());
 }
 
 process.on('uncaughtException', logError);
