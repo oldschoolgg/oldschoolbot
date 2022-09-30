@@ -763,6 +763,11 @@ export function cacheCleanup() {
 						guild.members.cache.delete(member.user.id);
 					}
 				}
+				for (const channel of guild.channels.cache.values()) {
+					if (channel.type === ChannelType.GuildVoice) {
+						guild.channels.cache.delete(channel.id);
+					}
+				}
 			}
 		});
 	});
