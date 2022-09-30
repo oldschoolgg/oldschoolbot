@@ -387,7 +387,7 @@ export const tripHandlers = {
 	[activity_type_enum.Questing]: {
 		commandName: 'activities',
 		args: () => ({
-			activities: { quest: {} }
+			quest: {}
 		})
 	},
 	[activity_type_enum.Raids]: {
