@@ -76,22 +76,6 @@ export const odsTask: MinionTask = {
 		}
 		if (flappyRes.userMsg) str += `\n${flappyRes.userMsg}`;
 
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			[
-				'bsominigames',
-				{
-					ourania_delivery_service: {
-						start: {}
-					}
-				},
-				true
-			],
-			undefined,
-			data,
-			null
-		);
+		handleTripFinish(user, channelID, str, undefined, data, null);
 	}
 };

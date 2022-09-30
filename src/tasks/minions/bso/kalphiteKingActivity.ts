@@ -200,7 +200,6 @@ export const kalphiteKingTask: MinionTask = {
 					  }, you died ${deaths[userID] ?? 0} times. Your Kalphite King KC is now ${leaderUser.getKC(
 							KalphiteKingMonster.id
 					  )}.\n\n${soloXP}`,
-				['k', { name: 'Kalphite King' }, true],
 				image!,
 				data,
 				soloItemsAdded

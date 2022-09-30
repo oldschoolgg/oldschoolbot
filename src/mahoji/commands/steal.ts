@@ -56,7 +56,9 @@ export const stealCommand: OSBMahojiCommand = {
 		stealables;
 		const stealable: Stealable | undefined = stealables.find(
 			obj =>
-				stringMatches(obj.name, options.name) || obj.aliases?.some(alias => stringMatches(alias, options.name))
+				stringMatches(obj.name, options.name) ||
+				stringMatches(obj.id.toString(), options.name) ||
+				obj.aliases?.some(alias => stringMatches(alias, options.name))
 		);
 
 		if (!stealable) {

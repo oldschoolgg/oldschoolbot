@@ -132,25 +132,6 @@ export const raidsTask: MinionTask = {
 			teamSize: users.length
 		});
 
-		handleTripFinish(
-			allUsers[0],
-			channelID,
-			resultMessage,
-			[
-				'raid',
-				{
-					cox: {
-						start: {
-							challenge_mode: challengeMode,
-							type: users.length === 1 ? 'solo' : 'mass'
-						}
-					}
-				},
-				true
-			],
-			undefined,
-			data,
-			null
-		);
+		handleTripFinish(allUsers[0], channelID, resultMessage, undefined, data, null);
 	}
 };

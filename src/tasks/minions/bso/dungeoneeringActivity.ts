@@ -90,14 +90,6 @@ export const dungeoneeringTask: MinionTask = {
 			str += '\n';
 		}
 
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			['dg', { start: { floor, solo: users.length === 1 } }, true],
-			undefined,
-			data,
-			null
-		);
+		handleTripFinish(user, channelID, str, undefined, data, null);
 	}
 };

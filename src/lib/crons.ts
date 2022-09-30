@@ -34,7 +34,7 @@ GROUP BY item_id;`);
 	/**
 	 * Delete all voice channels
 	 */
-	schedule('0 */2 * * *', async () => {
+	schedule('0 */1 * * *', async () => {
 		cacheCleanup();
 	});
 }

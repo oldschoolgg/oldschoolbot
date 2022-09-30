@@ -124,7 +124,11 @@ export const lapsCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{ name: string; quantity?: number; alch?: boolean }>) => {
 		const user = await mUserFetch(userID);
 
-		const course = courses.find(course => course.aliases.some(alias => stringMatches(alias, options.name)));
+		const course = courses.find(
+			course =>
+				stringMatches(course.id.toString(), options.name) ||
+				course.aliases.some(alias => stringMatches(alias, options.name))
+		);
 
 		if (!course) {
 			return 'Thats not a valid course.';

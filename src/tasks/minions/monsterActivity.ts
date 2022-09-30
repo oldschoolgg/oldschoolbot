@@ -4,16 +4,14 @@ import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
 import { MysteryBoxes } from '../../lib/bsoOpenables';
 import { ClueTiers } from '../../lib/clues/clueTiers';
-import { BitField, Emoji, PvMMethod } from '../../lib/constants';
+import { BitField, Emoji } from '../../lib/constants';
 import { isDoubleLootActive } from '../../lib/doubleLoot';
 import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
-import { SlayerActivityConstants } from '../../lib/minions/data/combatConstants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import { KillableMonster } from '../../lib/minions/types';
 import { prisma, trackLoot } from '../../lib/settings/prisma';
-import { runCommand } from '../../lib/settings/settings';
 import { bones } from '../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
@@ -433,32 +431,6 @@ export const monsterTask: MinionTask = {
 						previousCL
 				  });
 
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			isOnTask && thisTripFinishesTask
-				? undefined
-				: res => {
-						let method: PvMMethod = 'none';
-						if (usingCannon) method = 'cannon';
-						else if (burstOrBarrage === SlayerActivityConstants.IceBarrage) method = 'barrage';
-						else if (burstOrBarrage === SlayerActivityConstants.IceBurst) method = 'burst';
-						return runCommand({
-							...res,
-							commandName: 'k',
-							args: {
-								name: monster.name,
-								quantity,
-								method
-							},
-							isContinue: true
-						});
-				  },
-			image?.file.attachment,
-			data,
-			itemsAdded,
-			messages
-		);
+		handleTripFinish(user, channelID, str, image?.file.attachment, data, itemsAdded, messages);
 	}
 };

@@ -52,7 +52,6 @@ export const kingGoldemarTask: MinionTask = {
 					users[0],
 					channelID,
 					`${tagAll}\n\nYou were crushed by King Goldemar, you never stood a chance.`,
-					['k', { name: 'King Goldemar (Solo)' }, true],
 					undefined,
 					data,
 					null
@@ -133,15 +132,7 @@ export const kingGoldemarTask: MinionTask = {
 		if (!solo) {
 			sendToChannelID(channelID, { content: resultStr });
 		} else {
-			handleTripFinish(
-				users[0],
-				channelID,
-				resultStr,
-				['k', { name: 'King Goldemar (Solo)' }, true],
-				undefined,
-				data,
-				totalLoot
-			);
+			handleTripFinish(users[0], channelID, resultStr, undefined, data, totalLoot);
 		}
 	}
 };

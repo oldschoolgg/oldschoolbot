@@ -116,7 +116,6 @@ export const fishingContestTask: MinionTask = {
 ${caughtFish[0].boosts.length > 0 ? `**Boosts:** ${caughtFish[0].boosts.join(', ')}` : ''}
 ${xpStr}`,
 			undefined,
-			undefined,
 			data,
 			loot
 		);

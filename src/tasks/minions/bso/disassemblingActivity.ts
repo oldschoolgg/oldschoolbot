@@ -78,24 +78,7 @@ ${xpStr}`;
 		str += `\n**Messages:** ${messages.join(', ')}`;
 	}
 
-	handleTripFinish(
-		user,
-		data.channelID,
-		str,
-		[
-			'invention',
-			{
-				disassemble: {
-					name: item.name,
-					quantity: qty
-				}
-			},
-			true
-		],
-		undefined,
-		data,
-		null
-	);
+	handleTripFinish(user, data.channelID, str, undefined, data, null);
 }
 
 export const disassemblingTask: MinionTask = {

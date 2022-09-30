@@ -27,14 +27,6 @@ export const enchantingTask: MinionTask = {
 
 		let str = `${user}, ${user.minionName} finished enchanting ${quantity}x ${enchantable.name}, you received ${loot}. ${xpRes}`;
 
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			['activities', { enchant: { quantity, name: enchantable.name } }, true],
-			undefined,
-			data,
-			loot
-		);
+		handleTripFinish(user, channelID, str, undefined, data, loot);
 	}
 };

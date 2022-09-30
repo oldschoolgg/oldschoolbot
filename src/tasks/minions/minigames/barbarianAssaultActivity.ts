@@ -45,14 +45,6 @@ export const barbAssaultTask: MinionTask = {
 ${resultStr}`;
 		if (flappyRes.shouldGiveBoost) resultStr += `\n\n${flappyRes.userMsg}`;
 
-		handleTripFinish(
-			user,
-			channelID,
-			resultStr,
-			['minigames', { barb_assault: { start: {} } }, true, 'play'],
-			undefined,
-			data,
-			null
-		);
+		handleTripFinish(user, channelID, resultStr, undefined, data, null);
 	}
 };

@@ -129,15 +129,7 @@ export const puroPuroTask: MinionTask = {
 			str += `\n${xpStr}. You are getting ${hunterXpHr}.`;
 		} else {
 			str += `\n${user.minionName} failed to spot any ${huntedImplingName} this trip.`;
-			handleTripFinish(
-				user,
-				channelID,
-				str,
-				['activities', { puro_puro: { impling: huntedImplingName, dark_lure: darkLure } }, true],
-				undefined,
-				data,
-				bank
-			);
+			handleTripFinish(user, channelID, str, undefined, data, bank);
 			return;
 		}
 
@@ -202,14 +194,6 @@ export const puroPuroTask: MinionTask = {
 
 		userStatsBankUpdate(user.id, 'puropuro_implings_bank', bank);
 
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			['activities', { puro_puro: { impling: huntedImplingName, dark_lure: darkLure } }, true],
-			undefined,
-			data,
-			bank
-		);
+		handleTripFinish(user, channelID, str, undefined, data, bank);
 	}
 };

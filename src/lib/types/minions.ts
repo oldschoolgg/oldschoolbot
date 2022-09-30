@@ -7,7 +7,6 @@ import { Monkey } from '../monkeyRumble';
 import { MinigameName } from '../settings/settings';
 import { BossUser } from '../structures/Boss';
 import { Peak } from '../tickers';
-import { KourendFavour } from './../minions/data/kourendFavour';
 import { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
 import { activity_type_enum } from '.prisma/client';
 
@@ -366,7 +365,7 @@ export interface FishingContestOptions extends MinigameActivityTaskOptions {
 export interface TearsOfGuthixActivityTaskOptions extends MinigameActivityTaskOptions {}
 
 export interface KourendFavourActivityTaskOptions extends ActivityTaskOptions {
-	favour: KourendFavour;
+	favour: string;
 	quantity: number;
 }
 

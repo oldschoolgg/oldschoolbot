@@ -10,7 +10,7 @@ import { updateBankSetting } from '../../mahoji/mahojiSettings';
 export const collectingTask: MinionTask = {
 	type: 'Collecting',
 	async run(data: CollectingOptions) {
-		let { collectableID, quantity, userID, channelID, duration, noStaminas } = data;
+		let { collectableID, quantity, userID, channelID, duration } = data;
 		const user = await mUserFetch(userID);
 
 		const collectable = collectables.find(c => c.item.id === collectableID)!;
@@ -43,14 +43,6 @@ export const collectingTask: MinionTask = {
 
 		updateBankSetting('collecting_loot', loot);
 
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			['activities', { collect: { item: collectable.item.name, no_stams: noStaminas, quantity } }],
-			undefined,
-			data,
-			loot ?? null
-		);
+		handleTripFinish(user, channelID, str, undefined, data, loot ?? null);
 	}
 };
