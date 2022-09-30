@@ -1,11 +1,8 @@
 import { APIButtonComponent, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
-import { DISCORD_SETTINGS, production } from '../config';
+import { DISCORD_SETTINGS } from '../config';
 import { AbstractCommand, CommandArgs } from '../mahoji/lib/inhibitors';
-import { RunCommandArgs } from './settings/settings';
 import { SkillsEnum } from './skilling/types';
-import { ActivityTaskOptions } from './types/minions';
 import resolveItems from './util/resolveItems';
 
 export const BotID = DISCORD_SETTINGS.BotID ?? '303730326692429825';
@@ -89,7 +86,6 @@ export const enum Emoji {
 	Firemaking = '<:firemaking:630911040175210518>',
 	Crafting = '<:crafting:630911040460161047>',
 	EasterEgg = '<:easterEgg:695473553314938920>',
-	Join = '<:join:705971600956194907>',
 	TzRekJad = '<:Tzrekjad:324127379188613121>',
 	Phoenix = '<:Phoenix:324127378223792129>',
 	TinyTempor = '<:TinyTempor:824483631694217277>',
@@ -139,12 +135,6 @@ export const enum Emoji {
 	OSRSSkull = '<:skull:863392427040440320>',
 	SOTWTrophy = '<:SOTWtrophy:842938096097820693>'
 }
-
-export const ReactionEmoji = {
-	Join: production ? '705971600956194907' : '951309579302604900',
-	Stop: production ? '705972260950769669' : '951309579248091166',
-	Start: production ? '705973302719414329' : '951309579302604880'
-};
 
 export enum ActivityGroup {
 	Skilling = 'Skilling',
@@ -386,12 +376,6 @@ export const mahojiInformationalButtons: APIButtonComponent[] = buttonSource.map
 	style: ButtonStyle.Link,
 	url: i.url
 }));
-
-export type LastTripRunArgs = Omit<RunCommandArgs, 'commandName' | 'args'>;
-export const lastTripCache = new Map<
-	string,
-	{ continue: (args: LastTripRunArgs) => Promise<null | CommandResponse>; data: ActivityTaskOptions }
->();
 
 export const PATRON_ONLY_GEAR_SETUP =
 	'Sorry - but the `other` gear setup is only available for Tier 3 Patrons (and higher) to use.';

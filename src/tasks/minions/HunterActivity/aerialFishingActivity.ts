@@ -162,6 +162,6 @@ export const aerialFishingTask: MinionTask = {
 			);
 		}
 
-		handleTripFinish(user, channelID, str, ['activities', { aerial_fishing: {} }, true], undefined, data, loot);
+		handleTripFinish(user, channelID, str, undefined, data, loot);
 	}
 };

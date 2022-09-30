@@ -1,9 +1,10 @@
 import { ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 
 import { ClueTiers } from '../../../lib/clues/clueTiers';
-import { Emoji, lastTripCache, minionBuyButton } from '../../../lib/constants';
+import { Emoji, minionBuyButton } from '../../../lib/constants';
 import { makeComponents } from '../../../lib/util';
 import { minionStatus } from '../../../lib/util/minionStatus';
+import { makeRepeatTripButtons } from '../../../lib/util/repeatStoredTrip';
 import { calculateBirdhouseDetails } from './birdhousesCommand';
 import { isUsersDailyReady } from './dailyCommand';
 import { canRunAutoContract } from './farmingContractCommand';
@@ -87,15 +88,9 @@ export async function minionStatusCommand(user: MUser) {
 		);
 	}
 
-	const lastTrip = lastTripCache.get(user.id);
-	if (lastTrip && !user.minionIsBusy) {
-		buttons.push(
-			new ButtonBuilder()
-				.setCustomId('REPEAT_TRIP')
-				.setLabel('Repeat Trip')
-				.setEmoji('🔁')
-				.setStyle(ButtonStyle.Secondary)
-		);
+	if (!user.minionIsBusy) {
+		const repeatButtons = await makeRepeatTripButtons(user);
+		buttons.push(...repeatButtons);
 	}
 
 	const { bank } = user;
