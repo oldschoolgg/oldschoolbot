@@ -194,7 +194,10 @@ export const tripHandlers = {
 	},
 	[activity_type_enum.Runecraft]: {
 		commandName: 'runecraft',
-		args: (data: RunecraftActivityTaskOptions) => ({ rune: itemNameFromID(data.runeID) })
+		args: (data: RunecraftActivityTaskOptions) => ({
+			rune: itemNameFromID(data.runeID),
+			quantity: data.essenceQuantity
+		})
 	},
 	[activity_type_enum.DriftNet]: {
 		commandName: 'activities',
@@ -222,7 +225,7 @@ export const tripHandlers = {
 		args: () => ({ fight_caves: {} })
 	},
 	[activity_type_enum.Firemaking]: {
-		commandName: 'activities',
+		commandName: 'light',
 		args: (data: FiremakingActivityTaskOptions) => ({
 			name: itemNameFromID(data.burnableID),
 			quantity: data.quantity
