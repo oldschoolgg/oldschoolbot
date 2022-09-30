@@ -4,7 +4,7 @@ import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { Emoji, minionBuyButton } from '../../../lib/constants';
 import { makeComponents } from '../../../lib/util';
 import { minionStatus } from '../../../lib/util/minionStatus';
-import { makeRepeatTripButtons } from '../../mahojiSettings';
+import { makeRepeatTripButtons } from '../../../lib/util/repeatStoredTrip';
 import { calculateBirdhouseDetails } from './birdhousesCommand';
 import { isUsersDailyReady } from './dailyCommand';
 import { canRunAutoContract } from './farmingContractCommand';
