@@ -89,7 +89,7 @@ export async function minionStatusCommand(user: MUser) {
 	}
 
 	if (!user.minionIsBusy) {
-		const repeatButtons = await makeRepeatTripButtons(user.id);
+		const repeatButtons = await makeRepeatTripButtons(user);
 		buttons.push(...repeatButtons);
 	}
 

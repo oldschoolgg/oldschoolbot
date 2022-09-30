@@ -513,10 +513,11 @@ export async function fetchRepeatTrips(userID: string) {
 	return filtered;
 }
 
-export async function makeRepeatTripButtons(userID: string) {
-	const trips = await fetchRepeatTrips(userID);
+export async function makeRepeatTripButtons(user: MUser) {
+	const trips = await fetchRepeatTrips(user.id);
 	const buttons: ButtonBuilder[] = [];
-	for (const trip of trips.slice(0, 5)) {
+	const limit = Math.min(user.perkTier + 1, 5);
+	for (const trip of trips.slice(0, limit)) {
 		buttons.push(
 			new ButtonBuilder()
 				.setLabel(`Repeat ${trip.type}`)
