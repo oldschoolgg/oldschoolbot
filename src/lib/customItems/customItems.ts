@@ -2723,7 +2723,7 @@ setCustomItem(
 			melee_strength: 0,
 			ranged_strength: 0,
 			magic_damage: 2.5,
-			prayer: 0,
+			prayer: 5,
 			slot: EquipmentSlot.Shield,
 			requirements: { magic: 90 }
 		},
