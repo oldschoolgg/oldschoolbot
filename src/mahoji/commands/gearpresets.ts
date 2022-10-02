@@ -250,6 +250,7 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 				userID: user.id,
 				setup: options.equip.gear_setup,
 				item: undefined,
+				items: undefined,
 				preset: options.equip.preset,
 				quantity: undefined,
 				unEquippedItem: undefined,
