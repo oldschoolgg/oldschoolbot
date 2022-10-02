@@ -3,7 +3,7 @@ import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import { convertLVLtoXP, itemID } from 'oldschooljs/dist/util';
 
 import { Gear } from '../src/lib/structures/Gear';
-import { gearEquipMultiImpl } from '../src/mahoji/lib/abstracted_commands/gearCommands';
+import { gearEquipMultiImpl } from '../src/lib/util/equipMulti';
 import { mockMUser } from './utils';
 
 describe('Multi-equip Gear Test', () => {
