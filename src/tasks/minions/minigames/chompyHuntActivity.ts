@@ -41,14 +41,6 @@ export const chompHuntTask: MinionTask = {
 			}
 		}
 
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			['activities', { chompy_hunt: { action: 'start' } }],
-			undefined,
-			data,
-			loot
-		);
+		handleTripFinish(user, channelID, str, undefined, data, loot);
 	}
 };

@@ -71,7 +71,10 @@ export const buildCommand: OSBMahojiCommand = {
 	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
 		const user = await mUserFetch(userID);
 		const object = Constructables.find(
-			object => stringMatches(object.name, options.name) || stringMatches(object.name.split(' ')[0], options.name)
+			object =>
+				stringMatches(object.id.toString(), options.name) ||
+				stringMatches(object.name, options.name) ||
+				stringMatches(object.name.split(' ')[0], options.name)
 		);
 		const [hasDs2Requirements, ds2Reason] = hasSkillReqs(user, ds2Requirements);
 

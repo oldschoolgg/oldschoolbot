@@ -62,14 +62,6 @@ export const roguesDenTask: MinionTask = {
 			previousCL
 		});
 
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			['minigames', { rogues_den: {} }, true],
-			gotLoot ? image.file.attachment : undefined,
-			data,
-			itemsAdded
-		);
+		handleTripFinish(user, channelID, str, gotLoot ? image.file.attachment : undefined, data, itemsAdded);
 	}
 };

@@ -7,7 +7,7 @@ import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContra
 import { shootingStarsCommand, starCache } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
 import { Cooldowns } from '../../mahoji/lib/Cooldowns';
 import { ClueTier } from '../clues/clueTiers';
-import { lastTripCache, PerkTier } from '../constants';
+import { PerkTier } from '../constants';
 import { prisma } from '../settings/prisma';
 import { runCommand } from '../settings/settings';
 import { ItemBank } from '../types';
@@ -16,6 +16,7 @@ import getUsersPerkTier from './getUsersPerkTier';
 import { updateGiveawayMessage } from './giveaway';
 import { interactionReply } from './interactionReply';
 import { minionIsBusy } from './minionIsBusy';
+import { fetchRepeatTrips, repeatTrip } from './repeatStoredTrip';
 
 const globalInteractionActions = [
 	'DO_BEGINNER_CLUE',
@@ -30,7 +31,6 @@ const globalInteractionActions = [
 	'OPEN_HARD_CASKET',
 	'OPEN_ELITE_CASKET',
 	'OPEN_MASTER_CASKET',
-	'REPEAT_TRIP',
 	'DO_BIRDHOUSE_RUN',
 	'CLAIM_DAILY',
 	'CHECK_PATCHES',
@@ -191,6 +191,17 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 	return interaction.reply({ content: 'You left the giveaway.', ephemeral: true });
 }
 
+async function repeatTripHandler(user: MUser, interaction: ButtonInteraction) {
+	if (user.minionIsBusy) return 'Your minion is busy.';
+	const trips = await fetchRepeatTrips(interaction.user.id);
+	if (trips.length === 0) return interaction.reply("Couldn't find a trip to repeat.");
+	const id = interaction.customId;
+	const split = id.split('_');
+	const matchingActivity = trips.find(i => i.type === split[2]);
+	if (!matchingActivity) return repeatTrip(interaction, trips[0]);
+	return repeatTrip(interaction, matchingActivity);
+}
+
 export async function interactionHook(interaction: Interaction) {
 	if (!interaction.isButton()) return;
 	const id = interaction.customId;
@@ -198,6 +209,7 @@ export async function interactionHook(interaction: Interaction) {
 
 	const user = await mUserFetch(userID);
 	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, interaction);
+	if (id.includes('REPEAT_TRIP')) return repeatTripHandler(user, interaction);
 
 	if (!isValidGlobalInteraction(id)) return;
 	if (user.isBusy || globalClient.isShuttingDown) {
@@ -311,15 +323,6 @@ export async function interactionHook(interaction: Interaction) {
 	}
 
 	switch (id) {
-		case 'REPEAT_TRIP': {
-			const entry = lastTripCache.get(userID);
-			if (entry) {
-				return entry.continue({
-					...options
-				});
-			}
-			return interaction.reply("Couldn't find a last trip to repeat.");
-		}
 		case 'DO_BEGINNER_CLUE':
 			return doClue('Beginner');
 		case 'DO_EASY_CLUE':

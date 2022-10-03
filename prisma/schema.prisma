@@ -166,13 +166,10 @@ model Giveaway {
 
 model Guild {
   id                String   @id @db.VarChar(19)
-  prefix            String   @default("+")
-  language          String   @default("en-US") @db.VarChar(5)
   disabledCommands  String[]
   jmodComments      String?  @db.VarChar(19)
   petchannel        String?  @db.VarChar(19)
   tweetchannel      String?  @db.VarChar(19)
-  levelUpMessages   String?  @db.VarChar(19)
   staffOnlyChannels String[] @db.VarChar(19)
 
   @@map("guilds")
