@@ -98,7 +98,7 @@ async function petMessages(msg: Message) {
 			msg.channel.send(`${msg.author} has a funny feeling like they would have been followed. ${pet.emoji}`);
 		} else {
 			msg.channel.send(`You have a funny feeling like you’re being followed, ${msg.author} ${pet.emoji}
-Type \`${cachedSettings.prefix ?? '+'}mypets\` to see your pets.`);
+Type \`/tools user mypets\` to see your pets.`);
 		}
 	}
 }

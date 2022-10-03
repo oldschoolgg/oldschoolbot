@@ -506,6 +506,9 @@ export async function fetchRepeatTrips(userID: string) {
 	}[] = [];
 	for (const trip of res) {
 		if (!taskCanBeRepeated(trip.type)) continue;
+		if (trip.type === activity_type_enum.Farming && !(trip.data as any as FarmingActivityTaskOptions).autoFarmed) {
+			continue;
+		}
 		if (!filtered.some(i => i.type === trip.type)) {
 			filtered.push(trip);
 		}
