@@ -116,8 +116,8 @@ export const wintertodtTask: MinionTask = {
 			}
 		}
 
-		xpStr += ` ${await user.addXP({ skillName: SkillsEnum.Woodcutting, amount: wcXpToGive })}`;
-		xpStr += ` ${await user.addXP({ skillName: SkillsEnum.Firemaking, amount: fmXpToGive })}`;
+		xpStr += `, ${await user.addXP({ skillName: SkillsEnum.Woodcutting, amount: wcXpToGive })}`;
+		xpStr += `, ${await user.addXP({ skillName: SkillsEnum.Firemaking, amount: fmXpToGive })}`;
 		const newLevel = user.skillLevel(SkillsEnum.Firemaking);
 
 		const { itemsAdded, previousCL } = await transactItems({
@@ -135,7 +135,7 @@ export const wintertodtTask: MinionTask = {
 
 		let output = `${user}, ${
 			user.minionName
-		} finished subduing Wintertodt ${quantity}x times. You got ${xpStr} Firemaking XP, ${wcXpToGive.toLocaleString()}, you cut ${numberOfRoots}x Bruma roots.`;
+		} finished subduing Wintertodt ${quantity}x times. ${xpStr}, you cut ${numberOfRoots}x Bruma roots.`;
 
 		if (fmBonusXP > 0) {
 			output += `\n\n**Firemaking Bonus XP:** ${fmBonusXP.toLocaleString()}`;
