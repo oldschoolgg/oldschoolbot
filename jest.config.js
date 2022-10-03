@@ -14,7 +14,8 @@ module.exports = {
 	collectCoverageFrom: [
 		"./src/lib/structures/Gear.ts",
 		"./src/lib/util/parseStringBank.ts",
-		"./src/lib/util/buyLimit.ts"
+		"./src/lib/util/buyLimit.ts",
+		"./src/lib/util/equipMulti.ts"
 	],
 	coverageThreshold: {
     	global: {
