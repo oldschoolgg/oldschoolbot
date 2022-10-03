@@ -258,7 +258,9 @@ export const tripHandlers = {
 	},
 	[activity_type_enum.GroupMonsterKilling]: {
 		commandName: 'mass',
-		args: (data: GroupMonsterActivityTaskOptions) => ({ monster: data.monsterID })
+		args: (data: GroupMonsterActivityTaskOptions) => ({
+			monster: autocompleteMonsters.find(i => i.id === data.monsterID)?.name ?? data.monsterID.toString()
+		})
 	},
 	[activity_type_enum.Herblore]: {
 		commandName: 'mix',
@@ -321,7 +323,7 @@ export const tripHandlers = {
 			else if (data.burstOrBarrage === SlayerActivityConstants.IceBarrage) method = 'barrage';
 			else if (data.burstOrBarrage === SlayerActivityConstants.IceBurst) method = 'burst';
 			return {
-				name: autocompleteMonsters.find(i => i.id === data.monsterID)?.name ?? data.monsterID,
+				name: autocompleteMonsters.find(i => i.id === data.monsterID)?.name ?? data.monsterID.toString(),
 				quantity: data.quantity,
 				method
 			};
@@ -402,7 +404,7 @@ export const tripHandlers = {
 	[activity_type_enum.Revenants]: {
 		commandName: 'k',
 		args: (data: RevenantOptions) => ({
-			name: data.monsterID
+			name: autocompleteMonsters.find(i => i.id === data.monsterID)?.name ?? data.monsterID.toString()
 		})
 	},
 	[activity_type_enum.RoguesDenMaze]: {
