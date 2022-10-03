@@ -184,7 +184,7 @@ export const gambleCommand: OSBMahojiCommand = {
 		}
 
 		if (options.dice) {
-			return diceCommand(user, options.dice.amount);
+			return diceCommand(user, interaction, options.dice.amount);
 		}
 
 		if (options.duel) {
