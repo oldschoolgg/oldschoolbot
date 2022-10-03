@@ -12,6 +12,7 @@ import {
 } from '../../lib/leagues/leagues';
 import { formatDuration } from '../../lib/util';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { Cooldowns } from '../lib/Cooldowns';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -62,6 +63,7 @@ export const leaguesCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		options,
+		interaction,
 		userID
 	}: CommandRunOptions<{
 		check?: {};
@@ -69,6 +71,7 @@ export const leaguesCommand: OSBMahojiCommand = {
 		claim?: {};
 		view_all_tasks?: { exclude_finished?: boolean };
 	}>) => {
+		await deferInteraction(interaction);
 		const user = await mUserFetch(userID);
 		const cooldown = Cooldowns.get(
 			userID.toString(),
