@@ -15,7 +15,6 @@ import {
 	AnimatedArmourActivityTaskOptions,
 	BuryingActivityTaskOptions,
 	CastingActivityTaskOptions,
-	ClueActivityTaskOptions,
 	CollectingOptions,
 	ConstructionActivityTaskOptions,
 	CookingActivityTaskOptions,
@@ -59,11 +58,16 @@ export const taskCanBeRepeated = (type: activity_type_enum) =>
 			activity_type_enum.BlastFurnace,
 			activity_type_enum.Easter,
 			activity_type_enum.TokkulShop,
-			activity_type_enum.Birdhouse
+			activity_type_enum.Birdhouse,
+			activity_type_enum.ClueCompletion
 		] as activity_type_enum[]
 	).includes(type);
 
 export const tripHandlers = {
+	[activity_type_enum.ClueCompletion]: {
+		commandName: 'm',
+		args: () => ({})
+	},
 	[activity_type_enum.Birdhouse]: {
 		commandName: 'm',
 		args: () => ({})
@@ -157,10 +161,6 @@ export const tripHandlers = {
 	[activity_type_enum.ChampionsChallenge]: {
 		commandName: 'activities',
 		args: () => ({ champions_challenge: {} })
-	},
-	[activity_type_enum.ClueCompletion]: {
-		commandName: 'clue',
-		args: (data: ClueActivityTaskOptions) => ({ tier: data.clueID })
 	},
 	[activity_type_enum.Collecting]: {
 		commandName: 'activities',
