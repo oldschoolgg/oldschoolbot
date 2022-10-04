@@ -109,18 +109,16 @@ export async function handleTripFinish(
 
 	const components = new ActionRowBuilder<ButtonBuilder>();
 	if (taskCanBeRepeated(data.type)) components.addComponents(makeRepeatTripButton());
-	if (clueReceived && perkTier > PerkTier.One) components.addComponents(makeDoClueButton(clueReceived));
 	const casketReceived = loot ? ClueTiers.find(i => loot?.has(i.id)) : undefined;
 	if (casketReceived) components.addComponents(makeOpenCasketButton(casketReceived));
-	const birdHousedetails = await calculateBirdhouseDetails(user.id);
-	if (birdHousedetails.isReady && perkTier > PerkTier.One) components.addComponents(makeBirdHouseTripButton());
-	const { currentTask } = await getUsersCurrentSlayerInfo(user.id);
-	if (
-		(currentTask === null || currentTask.quantity_remaining <= 0) &&
-		perkTier > PerkTier.One &&
-		data.type === 'MonsterKilling'
-	) {
-		components.addComponents(makeNewSlayerTaskButton());
+	if (perkTier > PerkTier.One) {
+		if (clueReceived) components.addComponents(makeDoClueButton(clueReceived));
+		const birdHousedetails = await calculateBirdhouseDetails(user.id);
+		if (birdHousedetails.isReady) components.addComponents(makeBirdHouseTripButton());
+		const { currentTask } = await getUsersCurrentSlayerInfo(user.id);
+		if ((currentTask === null || currentTask.quantity_remaining <= 0) && data.type === 'MonsterKilling') {
+			components.addComponents(makeNewSlayerTaskButton());
+		}
 	}
 	handleTriggerShootingStar(user, data, components);
 
