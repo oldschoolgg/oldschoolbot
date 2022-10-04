@@ -305,7 +305,6 @@ const activitiesCantGetStars: activity_type_enum[] = [
 	'Plunder',
 	'Nightmare',
 	'Inferno',
-	'Trekking',
 	'TokkulShop',
 	'ShootingStars',
 	'Nex'
