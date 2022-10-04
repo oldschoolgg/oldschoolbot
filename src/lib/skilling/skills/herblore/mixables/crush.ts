@@ -99,7 +99,7 @@ const Crush: Mixable[] = [
 	},
 	{
 		name: 'Nihil Dust',
-		aliases: ['nihil shard', 'nihil'],
+		aliases: ['nihil dust', 'nihil shard', 'nihil'],
 		id: itemID('Nihil dust'),
 		level: 1,
 		xp: 0,
