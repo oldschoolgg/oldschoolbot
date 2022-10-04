@@ -59,6 +59,6 @@ export const togTask: MinionTask = {
 			hasDiary ? '\n10% XP bonus for Lumbridge & Draynor Hard diary.' : ''
 		}`;
 
-		handleTripFinish(user, channelID, output, undefined, undefined, data, null);
+		handleTripFinish(user, channelID, output, undefined, data, null);
 	}
 };

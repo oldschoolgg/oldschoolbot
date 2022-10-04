@@ -71,7 +71,7 @@ export async function favourCommand(
 	}
 
 	await addSubTaskToActivityTask<KourendFavourActivityTaskOptions>({
-		favour,
+		favour: favour.name,
 		userID: user.id,
 		channelID: channelID.toString(),
 		quantity,

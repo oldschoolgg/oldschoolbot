@@ -1,9 +1,12 @@
+import { ChatInputCommandInteraction } from 'discord.js';
 import { Bank, Util } from 'oldschooljs';
 
 import { rand } from '../../../lib/util';
+import { deferInteraction } from '../../../lib/util/interactionReply';
 import { mahojiParseNumber, updateGPTrackSetting } from '../../mahojiSettings';
 
-export async function diceCommand(user: MUser, diceamount?: string) {
+export async function diceCommand(user: MUser, interaction: ChatInputCommandInteraction, diceamount?: string) {
+	await deferInteraction(interaction);
 	const roll = rand(1, 100);
 	const amount = mahojiParseNumber({ input: diceamount, min: 1, max: 500_000_000_000 });
 

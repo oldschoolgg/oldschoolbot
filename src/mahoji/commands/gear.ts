@@ -30,6 +30,11 @@ export const gearCommand: OSBMahojiCommand = {
 					required: true
 				},
 				{
+					type: ApplicationCommandOptionType.String,
+					name: 'items',
+					description: 'A list of equippable items to equip.'
+				},
+				{
 					...ownedItemOption(item => Boolean(item.equipable_by_player) && Boolean(item.equipment)),
 					name: 'item',
 					description: 'The item you want to equip.'
@@ -165,7 +170,14 @@ export const gearCommand: OSBMahojiCommand = {
 		interaction,
 		userID
 	}: CommandRunOptions<{
-		equip?: { gear_setup: GearSetupType; item?: string; preset?: string; quantity?: number; auto?: string };
+		equip?: {
+			gear_setup: GearSetupType;
+			item?: string;
+			items?: string;
+			preset?: string;
+			quantity?: number;
+			auto?: string;
+		};
 		unequip?: { gear_setup: GearSetupType; item?: string; all?: boolean };
 		stats?: { gear_setup: string };
 		pet?: { equip?: string; unequip?: string };
@@ -179,6 +191,7 @@ export const gearCommand: OSBMahojiCommand = {
 				userID: user.id,
 				setup: options.equip.gear_setup,
 				item: options.equip.item,
+				items: options.equip.items,
 				preset: options.equip.preset,
 				quantity: options.equip.quantity,
 				unEquippedItem: undefined,

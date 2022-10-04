@@ -1,13 +1,13 @@
 import { Message, TextChannel } from 'discord.js';
 import { roll, Time } from 'e';
 
-import { CLIENT_ID, production, SupportServer } from '../config';
+import { CLIENT_ID, OWNER_IDS, production, SupportServer } from '../config';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
 import { untrustedGuildSettingsCache } from '../mahoji/mahojiSettings';
 import { Channel, Emoji } from './constants';
 import pets from './data/pets';
 import { ItemBank } from './types';
-import { channelIsSendable } from './util';
+import { channelIsSendable, memoryAnalysis } from './util';
 import { makeBankImage } from './util/makeBankImage';
 
 const rareRolesSrc: [string, number, string][] = [
@@ -98,7 +98,7 @@ async function petMessages(msg: Message) {
 			msg.channel.send(`${msg.author} has a funny feeling like they would have been followed. ${pet.emoji}`);
 		} else {
 			msg.channel.send(`You have a funny feeling like you’re being followed, ${msg.author} ${pet.emoji}
-Type \`${cachedSettings.prefix ?? '+'}mypets\` to see your pets.`);
+Type \`/tools user mypets\` to see your pets.`);
 		}
 	}
 }
@@ -147,6 +147,14 @@ export async function onMessage(msg: Message) {
 			],
 			components
 		});
+		return;
+	}
+	if (content.includes(`${mentionText} mem`) && OWNER_IDS.includes(msg.author.id)) {
+		msg.reply(
+			Object.entries(memoryAnalysis())
+				.map(ent => `**${ent[0]}:** ${ent[1]}`)
+				.join('\n')
+		);
 		return;
 	}
 
