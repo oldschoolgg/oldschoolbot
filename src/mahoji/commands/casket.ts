@@ -42,6 +42,7 @@ export const casketCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ options, userID, interaction }: CommandRunOptions<{ name: string; quantity: number }>) => {
+		await deferInteraction(interaction);
 		const user = await mUserFetch(userID.toString());
 		const limit = determineLimit(user);
 		if (options.quantity > limit) {
