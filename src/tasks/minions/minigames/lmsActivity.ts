@@ -133,7 +133,6 @@ ${result
 			} kills`
 	)
 	.join('\n')}`,
-			['minigames', { lms: { start: {} } }, true, 'build'],
 			undefined,
 			data,
 			null
