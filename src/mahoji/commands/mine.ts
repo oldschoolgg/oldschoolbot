@@ -249,7 +249,10 @@ export const mineCommand: OSBMahojiCommand = {
 		channelID
 	}: CommandRunOptions<{ name: string; quantity?: number; powermine?: boolean }>) => {
 		const ore = Mining.Ores.find(
-			ore => stringMatches(ore.name, options.name) || stringMatches(ore.name.split(' ')[0], options.name)
+			ore =>
+				stringMatches(ore.id, options.name) ||
+				stringMatches(ore.name, options.name) ||
+				stringMatches(ore.name.split(' ')[0], options.name)
 		);
 
 		if (!ore) {
@@ -342,7 +345,6 @@ export const mineCommand: OSBMahojiCommand = {
 			boosts.push('**Powermining**');
 		}
 		// Calculate the time it takes to mine specific quantity or as many as possible
-
 		let [timeToMine, newQuantity] = determineMiningTime({
 			quantity,
 			user,

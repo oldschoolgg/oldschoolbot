@@ -86,12 +86,12 @@ function checkGear(user: MUser): string | undefined {
 	}
 }
 
-export async function fightCavesCommand(user: MUser, channelID: bigint): CommandResponse {
+export async function fightCavesCommand(user: MUser, channelID: string): CommandResponse {
 	const gearFailure = checkGear(user);
 	if (gearFailure) {
 		return {
-			attachments: [
-				{ buffer: await newChatHeadImage({ content: gearFailure, head: 'mejJal' }), fileName: 'fightcaves.jpg' }
+			files: [
+				{ attachment: await newChatHeadImage({ content: gearFailure, head: 'mejJal' }), name: 'fightcaves.jpg' }
 			]
 		};
 	}
@@ -151,13 +151,13 @@ export async function fightCavesCommand(user: MUser, channelID: bigint): Command
 **Attempts:** ${attempts}
 
 **Removed from your bank:** ${fightCavesCost}`,
-		attachments: [
+		files: [
 			{
-				buffer: await newChatHeadImage({
+				attachment: await newChatHeadImage({
 					content: `You're on your own now JalYt, prepare to fight for your life! I think you have ${totalDeathChance}% chance of survival.`,
 					head: 'mejJal'
 				}),
-				fileName: 'fightcaves.jpg'
+				name: 'fightcaves.jpg'
 			}
 		]
 	};

@@ -1,7 +1,6 @@
 import { IPatchData } from '../minions/farming/types';
 import { MinigameName } from '../settings/minigames';
 import { Peak } from '../tickers';
-import { KourendFavour } from './../minions/data/kourendFavour';
 import { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
 import { ItemBank } from '.';
 import { activity_type_enum } from '.prisma/client';
@@ -104,6 +103,9 @@ export interface FiremakingActivityTaskOptions extends ActivityTaskOptions {
 }
 
 export interface WoodcuttingActivityTaskOptions extends ActivityTaskOptions {
+	fakeDurationMax: number;
+	fakeDurationMin: number;
+	powerchopping: boolean;
 	logID: number;
 	quantity: number;
 }
@@ -298,7 +300,7 @@ export interface CollectingOptions extends ActivityTaskOptions {
 }
 
 export interface KourendFavourActivityTaskOptions extends ActivityTaskOptions {
-	favour: KourendFavour;
+	favour: string;
 	quantity: number;
 }
 

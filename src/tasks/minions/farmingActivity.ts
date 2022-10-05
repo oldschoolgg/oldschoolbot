@@ -7,7 +7,7 @@ import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
 import Farming from '../../lib/skilling/skills/farming';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FarmingActivityTaskOptions } from '../../lib/types/minions';
-import { assert, rand, roll } from '../../lib/util';
+import { assert, rand, roll, skillingPetDropRate } from '../../lib/util';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import { getFarmingKeyFromName } from '../../lib/util/farmingHelpers';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
@@ -18,18 +18,8 @@ import { mahojiUsersSettingsFetch, updateBankSetting } from '../../mahoji/mahoji
 export const farmingTask: MinionTask = {
 	type: 'Farming',
 	async run(data: FarmingActivityTaskOptions) {
-		const {
-			plantsName,
-			patchType,
-			quantity,
-			upgradeType,
-			payment,
-			userID,
-			channelID,
-			planting,
-			currentDate,
-			autoFarmed
-		} = data;
+		const { plantsName, patchType, quantity, upgradeType, payment, userID, channelID, planting, currentDate } =
+			data;
 		const user = await mUserFetch(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 		const currentFarmingLevel = user.skillLevel(SkillsEnum.Farming);
@@ -159,15 +149,7 @@ export const farmingTask: MinionTask = {
 
 			str += `\n\n${user.minionName} tells you to come back after your plants have finished growing!`;
 
-			handleTripFinish(
-				user,
-				channelID,
-				str,
-				autoFarmed ? ['farming', { auto_farm: {} }, true] : undefined,
-				undefined,
-				data,
-				null
-			);
+			handleTripFinish(user, channelID, str, undefined, data, null);
 		} else if (patchType.patchPlanted) {
 			const plantToHarvest = Farming.Plants.find(plant => plant.name === patchType.lastPlanted);
 			if (!plantToHarvest) return;
@@ -336,16 +318,19 @@ export const farmingTask: MinionTask = {
 			}
 
 			let tangleroot = false;
+			const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Farming, plantToHarvest.petChance);
 			if (plantToHarvest.seedType === 'hespori') {
-				await user.incrementKC(Monsters.Hespori.id);
-				const hesporiLoot = Monsters.Hespori.kill(1, { farmingLevel: currentFarmingLevel });
+				await user.incrementKC(Monsters.Hespori.id, patchType.lastQuantity);
+				const hesporiLoot = Monsters.Hespori.kill(patchType.lastQuantity, {
+					farmingLevel: currentFarmingLevel
+				});
 				loot = hesporiLoot;
 				if (hesporiLoot.amount('Tangleroot')) tangleroot = true;
 			} else if (
 				patchType.patchPlanted &&
 				plantToHarvest.petChance &&
 				alivePlants > 0 &&
-				roll((plantToHarvest.petChance - user.skillLevel(SkillsEnum.Farming) * 25) / alivePlants)
+				roll(petDropRate / alivePlants)
 			) {
 				loot.add('Tangleroot');
 				tangleroot = true;
@@ -440,7 +425,6 @@ export const farmingTask: MinionTask = {
 				user,
 				channelID,
 				infoStr.join('\n'),
-				autoFarmed ? ['farming', { auto_farm: {} }, true] : undefined,
 				janeMessage
 					? await chatHeadImage({
 							content: `You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${

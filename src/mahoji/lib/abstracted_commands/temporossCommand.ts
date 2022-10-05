@@ -6,7 +6,7 @@ import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
-export async function temporossCommand(user: MUser, channelID: bigint, quantity: number | undefined) {
+export async function temporossCommand(user: MUser, channelID: string, quantity: number | undefined) {
 	const fLevel = user.skillLevel('fishing');
 	if (fLevel < 35) {
 		return 'You need 35 Fishing to have a chance at defeating Tempoross.';

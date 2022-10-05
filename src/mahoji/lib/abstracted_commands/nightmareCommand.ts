@@ -116,7 +116,7 @@ function perUserCost(isPhosani: boolean, quantity: number) {
 	return cost;
 }
 
-export async function nightmareCommand(user: MUser, channelID: bigint, name: string) {
+export async function nightmareCommand(user: MUser, channelID: string, name: string) {
 	name = name.toLowerCase();
 	let isPhosani = false;
 	let type: 'solo' | 'mass' = 'solo';
@@ -209,13 +209,16 @@ export async function nightmareCommand(user: MUser, channelID: bigint, name: str
 		}
 	}
 
-	let [quantity, duration, perKillTime] = await calcDurQty(
+	let durQtyRes = await calcDurQty(
 		users,
 		{ ...NightmareMonster, timeToFinish: effectiveTime },
 		undefined,
 		Time.Minute * 5,
 		Time.Minute * 30
 	);
+	if (typeof durQtyRes === 'string') return durQtyRes;
+	let [quantity, duration, perKillTime] = durQtyRes;
+
 	const secondErr = checkReqs(users, NightmareMonster, quantity, isPhosani);
 	if (secondErr) return secondErr;
 

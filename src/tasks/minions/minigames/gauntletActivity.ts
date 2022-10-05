@@ -75,14 +75,6 @@ export const gauntletTask: MinionTask = {
 			previousCL
 		});
 
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			['minigames', { gauntlet: { start: { corrupted } } }, true],
-			image.file.buffer,
-			data,
-			loot
-		);
+		handleTripFinish(user, channelID, str, image.file.attachment, data, loot);
 	}
 };

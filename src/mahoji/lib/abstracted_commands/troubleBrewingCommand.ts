@@ -5,7 +5,7 @@ import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
-export async function troubleBrewingStartCommand(user: MUser, channelID: bigint) {
+export async function troubleBrewingStartCommand(user: MUser, channelID: string) {
 	let timePerGame = Time.Minute * 20;
 	let maxTripLength = calcMaxTripLength(user, 'TroubleBrewing');
 	const quantity = Math.floor(maxTripLength / timePerGame);

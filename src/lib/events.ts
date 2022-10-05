@@ -1,13 +1,13 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Message, TextChannel } from 'discord.js';
+import { Message, TextChannel } from 'discord.js';
 import { roll, Time } from 'e';
 
-import { CLIENT_ID, production, SupportServer } from '../config';
+import { CLIENT_ID, OWNER_IDS, production, SupportServer } from '../config';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
 import { untrustedGuildSettingsCache } from '../mahoji/mahojiSettings';
 import { Channel, Emoji } from './constants';
 import pets from './data/pets';
 import { ItemBank } from './types';
-import { channelIsSendable } from './util';
+import { channelIsSendable, memoryAnalysis } from './util';
 import { makeBankImage } from './util/makeBankImage';
 
 const rareRolesSrc: [string, number, string][] = [
@@ -109,24 +109,11 @@ export async function onMessage(msg: Message) {
 	rareRoles(msg);
 	petMessages(msg);
 	if (!msg.content || msg.author.bot || !channelIsSendable(msg.channel)) return;
-
 	const content = msg.content.trim();
 	if (!content.includes(mentionText)) return;
 	const user = await mUserFetch(msg.author.id);
 	const result = await minionStatusCommand(user);
-	const components = result.components?.map(i => {
-		const row = new ActionRowBuilder<ButtonBuilder>();
-		for (const a of i.components as any[]) {
-			row.addComponents(
-				new ButtonBuilder()
-					.setCustomId(a.custom_id)
-					.setLabel(a.label!)
-					.setEmoji(a.emoji!.id ?? a.emoji!.name!)
-					.setStyle(ButtonStyle.Secondary)
-			);
-		}
-		return row;
-	});
+	const { components } = result;
 
 	if (content === `${mentionText} b`) {
 		msg.reply({
@@ -140,7 +127,7 @@ export async function onMessage(msg: Message) {
 							page: 1
 						}
 					})
-				).file.buffer
+				).file.attachment
 			],
 			components
 		});
@@ -156,10 +143,18 @@ export async function onMessage(msg: Message) {
 						title: 'Your Bank',
 						user
 					})
-				).file.buffer
+				).file.attachment
 			],
 			components
 		});
+		return;
+	}
+	if (content.includes(`${mentionText} mem`) && OWNER_IDS.includes(msg.author.id)) {
+		msg.reply(
+			Object.entries(memoryAnalysis())
+				.map(ent => `**${ent[0]}:** ${ent[1]}`)
+				.join('\n')
+		);
 		return;
 	}
 

@@ -23,6 +23,7 @@ export const sepulchreTask: MinionTask = {
 		let thievingXP = 0;
 		let numCoffinsOpened = 0;
 
+		const highestCompletedFloor = completedFloors.reduce((prev, next) => (prev.number > next.number ? prev : next));
 		for (let i = 0; i < quantity; i++) {
 			for (const floor of completedFloors) {
 				if (floor.number === 5) {
@@ -34,11 +35,10 @@ export const sepulchreTask: MinionTask = {
 				for (let i = 0; i < numCoffinsToOpen; i++) {
 					loot.add(openCoffin(floor.number, user));
 				}
-
 				agilityXP += floor.xp;
 				thievingXP = 200 * numCoffinsOpened;
 			}
-			if (roll(completedFloors[completedFloors.length - 1].petChance)) {
+			if (roll(highestCompletedFloor.petChance)) {
 				loot.add('Giant squirrel');
 			}
 		}
@@ -81,14 +81,6 @@ export const sepulchreTask: MinionTask = {
 			previousCL
 		});
 
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			['minigames', { sepulchre: { start: {} } }, true],
-			image.file.buffer,
-			data,
-			itemsAdded
-		);
+		handleTripFinish(user, channelID, str, image.file.attachment, data, itemsAdded);
 	}
 };

@@ -49,7 +49,9 @@ export const fishCommand: OSBMahojiCommand = {
 
 		const fish = Fishing.Fishes.find(
 			fish =>
-				stringMatches(fish.name, options.name) || fish.alias?.some(alias => stringMatches(alias, options.name))
+				stringMatches(fish.id, options.name) ||
+				stringMatches(fish.name, options.name) ||
+				fish.alias?.some(alias => stringMatches(alias, options.name))
 		);
 		if (!fish) return 'Thats not a valid fish to catch.';
 

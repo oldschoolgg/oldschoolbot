@@ -5,7 +5,6 @@ import { Bank } from 'oldschooljs';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { revenantMonsters } from '../../lib/minions/data/killableMonsters/revs';
 import announceLoot from '../../lib/minions/functions/announceLoot';
-import { runCommand } from '../../lib/settings/settings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { filterLootReplace } from '../../lib/slayer/slayerUtil';
 import { Gear } from '../../lib/structures/Gear';
@@ -55,16 +54,6 @@ export const revenantsTask: MinionTask = {
 				} You died, you lost all your loot, and these equipped items: ${
 					calc.lostItems
 				}.\nHere is what you saved:`,
-				res => {
-					return runCommand({
-						...res,
-						commandName: 'k',
-						args: {
-							name: monster.name
-						},
-						isContinue: true
-					});
-				},
 				image,
 				data,
 				null
@@ -104,23 +93,6 @@ export const revenantsTask: MinionTask = {
 			previousCL
 		});
 
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			res => {
-				return runCommand({
-					...res,
-					commandName: 'k',
-					args: {
-						name: monster.name
-					},
-					isContinue: true
-				});
-			},
-			image.file.buffer,
-			data,
-			itemsAdded
-		);
+		handleTripFinish(user, channelID, str, image.file.attachment, data, itemsAdded);
 	}
 };

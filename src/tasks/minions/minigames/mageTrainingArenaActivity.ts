@@ -39,14 +39,6 @@ export const mageTrainingTask: MinionTask = {
 
 		let str = `${user}, ${user.minionName} finished completing ${quantity}x Magic Training Arena rooms. You received **${pizazzPoints} Pizazz points**. ${xpRes}`;
 
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			['minigames', { mage_training_arena: { start: {} } }, true],
-			undefined,
-			data,
-			loot
-		);
+		handleTripFinish(user, channelID, str, undefined, data, loot);
 	}
 };
