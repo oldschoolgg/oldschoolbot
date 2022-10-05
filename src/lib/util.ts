@@ -916,6 +916,8 @@ export function cacheCleanup() {
 					delete channel.parentId;
 					// @ts-ignore ignore
 					delete channel.name;
+					channel.lastMessageId = null;
+					channel.lastPinTimestamp = null;
 				}
 			}
 		});
@@ -927,6 +929,11 @@ export function cacheCleanup() {
 				for (const member of guild.members.cache.values()) {
 					if (!CACHED_ACTIVE_USER_IDS.has(member.user.id)) {
 						guild.members.cache.delete(member.user.id);
+					}
+				}
+				for (const channel of guild.channels.cache.values()) {
+					if (channel.type === ChannelType.GuildVoice) {
+						guild.channels.cache.delete(channel.id);
 					}
 				}
 			}

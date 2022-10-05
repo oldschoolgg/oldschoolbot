@@ -150,7 +150,7 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 	}
 
 	if (giveaway.finish_date.getTime() < Date.now() || giveaway.completed) {
-		return interaction.reply('This giveaway has finished.');
+		return interaction.reply({ content: 'This giveaway has finished.', ephemeral: true });
 	}
 
 	const action = split[1] === 'ENTER' ? 'ENTER' : 'LEAVE';

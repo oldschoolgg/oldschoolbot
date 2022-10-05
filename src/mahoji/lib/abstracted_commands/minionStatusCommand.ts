@@ -3,6 +3,7 @@ import { ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { Emoji, minionBuyButton, PerkTier } from '../../../lib/constants';
 import { getUsersFishingContestDetails } from '../../../lib/fishingContest';
+import { roboChimpUserFetch } from '../../../lib/roboChimp';
 import { getUsersTame, shortTameTripDesc, tameLastFinishedActivity } from '../../../lib/tames';
 import { makeComponents } from '../../../lib/util';
 import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
@@ -169,13 +170,16 @@ export async function minionStatusCommand(user: MUser, channelID: string) {
 		);
 	}
 
-	buttons.push(
-		new ButtonBuilder()
-			.setCustomId('VIEW_BANK')
-			.setLabel('View Bank')
-			.setEmoji('739459924693614653')
-			.setStyle(ButtonStyle.Secondary)
-	);
+	const roboChimpUser = await roboChimpUserFetch(user.id);
+	if (roboChimpUser.leagues_points_total === 0) {
+		buttons.push(
+			new ButtonBuilder()
+				.setLabel('OSB/BSO Leagues')
+				.setEmoji('660333438016028723')
+				.setStyle(ButtonStyle.Link)
+				.setURL('https://bso-wiki.oldschool.gg/leagues')
+		);
+	}
 
 	return {
 		content: status,
