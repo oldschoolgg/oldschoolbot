@@ -750,6 +750,8 @@ export function cacheCleanup() {
 					delete channel.parentId;
 					// @ts-ignore ignore
 					delete channel.name;
+					channel.lastMessageId = null;
+					channel.lastPinTimestamp = null;
 				}
 			}
 		});
