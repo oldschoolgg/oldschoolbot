@@ -76,8 +76,8 @@ export const igneArmors = [
 export type TameKillableMonster = {
 	loot: (opts: { quantity: number; tame: Tame }) => Bank;
 	deathChance?: (opts: { tame: Tame }) => number;
-	oriWorks?: false;
-	mustBeAdult?: true;
+	oriWorks?: boolean;
+	mustBeAdult?: boolean;
 	minArmorTier?: Item;
 } & Omit<KillableMonster, 'table'>;
 
@@ -550,7 +550,7 @@ export async function tameLastFinishedActivity(user: MUser) {
 			tame_id: tameID
 		},
 		orderBy: {
-			finish_date: 'desc'
+			start_date: 'desc'
 		}
 	});
 }
