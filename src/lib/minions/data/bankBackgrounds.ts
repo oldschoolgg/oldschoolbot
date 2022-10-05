@@ -264,9 +264,12 @@ const backgroundImages: BankBackground[] = [
 	},
 	{
 		id: 28,
-		name: 'cerb',
+		name: 'Sandwich Lady',
 		image: null,
-		available: false
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 20_000_000,
+		transparent: true
 	},
 	{
 		id: 30,

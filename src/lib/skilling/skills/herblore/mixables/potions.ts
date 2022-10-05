@@ -328,7 +328,7 @@ const Potions: Mixable[] = [
 	},
 	{
 		name: 'Cadantine blood potion (unf)',
-		aliases: ['cadantine blood potion', 'cadantine blood'],
+		aliases: ['cadantine blood potion (unf)', 'cadantine blood potion', 'cadantine blood'],
 		id: itemID('Cadantine blood potion (unf)'),
 		level: 80,
 		xp: 0,

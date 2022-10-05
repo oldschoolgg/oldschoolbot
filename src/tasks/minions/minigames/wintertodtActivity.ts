@@ -78,7 +78,7 @@ export const wintertodtTask: MinionTask = {
 			numberOfBraziers += randInt(1, 7);
 		}
 		const conXP = numberOfBraziers * constructionXPPerBrazier;
-		user.addXP({ skillName: SkillsEnum.Construction, amount: conXP });
+		let xpStr = await user.addXP({ skillName: SkillsEnum.Construction, amount: conXP });
 
 		// If they have the entire pyromancer outfit, give an extra 0.5% xp bonus
 		if (
@@ -101,8 +101,8 @@ export const wintertodtTask: MinionTask = {
 			}
 		}
 
-		await user.addXP({ skillName: SkillsEnum.Woodcutting, amount: wcXpToGive });
-		await user.addXP({ skillName: SkillsEnum.Firemaking, amount: fmXpToGive });
+		xpStr += `, ${await user.addXP({ skillName: SkillsEnum.Woodcutting, amount: wcXpToGive })}`;
+		xpStr += `, ${await user.addXP({ skillName: SkillsEnum.Firemaking, amount: fmXpToGive })}`;
 		const newLevel = user.skillLevel(SkillsEnum.Firemaking);
 		const flappyRes = await userHasFlappy({ user, duration });
 		if (flappyRes.shouldGiveBoost) {
@@ -125,9 +125,7 @@ export const wintertodtTask: MinionTask = {
 			previousCL
 		});
 
-		let output = `${user}, ${
-			user.minionName
-		} finished subduing Wintertodt ${quantity}x times. You got ${fmXpToGive.toLocaleString()} Firemaking XP, ${wcXpToGive.toLocaleString()} Woodcutting XP and ${conXP.toLocaleString()} Construction XP, you cut ${numberOfRoots}x Bruma roots.`;
+		let output = `${user}, ${user.minionName} finished subduing Wintertodt ${quantity}x times. ${xpStr}, you cut ${numberOfRoots}x Bruma roots.`;
 
 		if (fmBonusXP > 0) {
 			output += `\n\n**Firemaking Bonus XP:** ${fmBonusXP.toLocaleString()}`;
