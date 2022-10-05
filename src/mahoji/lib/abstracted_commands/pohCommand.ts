@@ -3,7 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import { BitField } from '../../../lib/constants';
 import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
-import { getPOHObject, itemsNotRefundable, PoHObjects } from '../../../lib/poh';
+import { getPOHObject, GroupedPohObjects, itemsNotRefundable, PoHObjects } from '../../../lib/poh';
 import { pohImageGenerator } from '../../../lib/pohImage';
 import { prisma } from '../../../lib/settings/prisma';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -249,4 +249,20 @@ export async function pohDestroyCommand(user: MUser, name: string) {
 	});
 
 	return { ...(await makePOHImage(user)), content: str };
+}
+
+export async function pohListItemsCommand() {
+	const textStr = [];
+
+	for (const [key, arr] of Object.entries(GroupedPohObjects)) {
+		textStr.push(`${key}: ${arr.map(i => i.name).join(', ')}`);
+	}
+
+	const attachment = Buffer.from(textStr.join('\n'));
+
+	return {
+		content: 'Here are all the items you can build in your PoH.',
+
+		files: [{ attachment, name: 'Buildables.txt' }]
+	};
 }
