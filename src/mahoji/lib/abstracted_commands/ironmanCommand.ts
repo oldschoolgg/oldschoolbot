@@ -77,7 +77,26 @@ After becoming an ironman:
 		| 'pets'
 		| 'RSN'
 		| 'patreon_id'
-		| 'github_id';
+		| 'github_id'
+		| 'bitfield';
+
+	const bitFieldsToKeep: BitField[] = [
+		BitField.IsPatronTier1,
+		BitField.IsPatronTier2,
+		BitField.IsPatronTier3,
+		BitField.IsPatronTier4,
+		BitField.IsPatronTier5,
+		BitField.isModerator,
+		BitField.isContributor,
+		BitField.BypassAgeRestriction,
+		BitField.HasPermanentEventBackgrounds,
+		BitField.HasPermanentTierOne,
+		BitField.DisabledRandomEvents,
+		BitField.AlwaysSmallBank,
+		BitField.IsWikiContributor,
+		BitField.IsPatronTier6
+	];
+
 	const createOptions: Required<Pick<Prisma.UserCreateInput, KeysThatArentReset>> = {
 		id: user.id,
 		main_account: mUser.main_account,
@@ -91,7 +110,8 @@ After becoming an ironman:
 		RSN: mUser.RSN,
 		premium_balance_expiry_date: mUser.premium_balance_expiry_date,
 		premium_balance_tier: mUser.premium_balance_tier,
-		pets: mUser.pets as ItemBank
+		pets: mUser.pets as ItemBank,
+		bitfield: bitFieldsToKeep.filter(i => user.bitfield.includes(i))
 	};
 
 	try {
