@@ -128,7 +128,7 @@ export const infernoTask: MinionTask = {
 				},
 				data: {
 					quantity_remaining: 0,
-					skipped: deathTime ? true : false
+					skipped: false
 				}
 			});
 
