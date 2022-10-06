@@ -88,11 +88,6 @@ export const nightmareTask: MinionTask = {
 				user,
 				channelID,
 				`${user}, ${user.minionName} died in all their attempts to kill the ${monsterName}, they apologize and promise to try harder next time.`,
-				[
-					'k',
-					{ name: isPhosani ? 'phosani nightmare' : method === 'solo' ? 'solo nightmare' : 'mass nightmare' },
-					true
-				],
 				undefined,
 				data,
 				null
@@ -110,12 +105,7 @@ export const nightmareTask: MinionTask = {
 				user,
 				channelID,
 				`${user}, ${user.minionName} finished killing ${quantity} ${monsterName}, you died ${deaths} times. Your ${monsterName} KC is now ${kc}.`,
-				[
-					'k',
-					{ name: isPhosani ? 'phosani nightmare' : method === 'solo' ? 'solo nightmare' : 'mass nightmare' },
-					true
-				],
-				image.file.buffer,
+				image.file.attachment,
 				data,
 				itemsAdded
 			);

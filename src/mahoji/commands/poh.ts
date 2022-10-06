@@ -1,4 +1,5 @@
-import { APIUser, ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { User } from 'discord.js';
+import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { PoHObjects } from '../../lib/poh';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
@@ -7,6 +8,7 @@ import {
 	makePOHImage,
 	pohBuildCommand,
 	pohDestroyCommand,
+	pohListItemsCommand,
 	pohMountItemCommand,
 	pohWallkitCommand,
 	pohWallkits
@@ -81,7 +83,7 @@ export const pohCommand: OSBMahojiCommand = {
 					name: 'name',
 					description: 'The object you want to destroy.',
 					required: true,
-					autocomplete: async (value: string, user: APIUser) => {
+					autocomplete: async (value: string, user: User) => {
 						const poh = await getPOH(user.id);
 						return PoHObjects.filter(obj => poh[obj.slot] !== obj.id)
 							.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
@@ -102,6 +104,11 @@ export const pohCommand: OSBMahojiCommand = {
 					required: true
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'items',
+			description: 'List the buildable items in your POH.'
 		}
 	],
 	run: async ({
@@ -114,6 +121,7 @@ export const pohCommand: OSBMahojiCommand = {
 		build?: { name: string };
 		destroy?: { name: string };
 		mount_item?: { name: string };
+		items?: { name: string };
 	}>) => {
 		const user = await mUserFetch(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
@@ -133,6 +141,9 @@ export const pohCommand: OSBMahojiCommand = {
 		}
 		if (options.mount_item) {
 			return pohMountItemCommand(user, options.mount_item.name);
+		}
+		if (options.items) {
+			return pohListItemsCommand();
 		}
 		return 'Invalid command.';
 	}

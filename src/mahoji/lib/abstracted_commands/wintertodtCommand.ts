@@ -10,7 +10,7 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../mahojiSettings';
 
-export async function wintertodtCommand(user: MUser, channelID: bigint) {
+export async function wintertodtCommand(user: MUser, channelID: string) {
 	const fmLevel = user.skillLevel(SkillsEnum.Firemaking);
 	const wcLevel = user.skillLevel(SkillsEnum.Woodcutting);
 	if (fmLevel < 50) {

@@ -1,16 +1,20 @@
 import { bold } from '@discordjs/builders';
 import type { User } from '@prisma/client';
+import { Stopwatch } from '@sapphire/stopwatch';
 import {
-	AttachmentBuilder,
+	ButtonBuilder,
 	ButtonInteraction,
 	CacheType,
 	Channel,
+	ChannelType,
 	Collection,
 	CollectorFilter,
+	ComponentType,
 	DMChannel,
 	escapeMarkdown,
 	Guild,
 	GuildTextBasedChannel,
+	InteractionReplyOptions,
 	Message,
 	MessageEditOptions,
 	MessageOptions,
@@ -20,8 +24,7 @@ import {
 	User as DJSUser
 } from 'discord.js';
 import { calcWhatPercent, chunk, isObject, objectEntries, Time } from 'e';
-import { APIButtonComponentWithCustomId, APIInteractionResponseCallbackData, APIUser, ComponentType } from 'mahoji';
-import { CommandResponse, InteractionResponseDataWithBufferAttachments } from 'mahoji/dist/lib/structures/ICommand';
+import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import murmurHash from 'murmurhash';
 import { gzip } from 'node:zlib';
 import { Bank } from 'oldschooljs';
@@ -33,6 +36,7 @@ import { production, SupportServer } from '../config';
 import { skillEmoji, usernameCache } from './constants';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
 import { Consumable } from './minions/types';
+import { MUserClass } from './MUser';
 import { PaginatedMessage } from './PaginatedMessage';
 import { POHBoosts } from './poh';
 import { SkillsEnum } from './skilling/types';
@@ -43,6 +47,7 @@ import {
 	RaidsOptions,
 	TheatreOfBloodTaskOptions
 } from './types/minions';
+import { CACHED_ACTIVE_USER_IDS } from './util/cachedUserIDs';
 import { getItem } from './util/getOSItem';
 import itemID from './util/itemID';
 import { logError } from './util/logError';
@@ -53,7 +58,11 @@ const emojiRegex = require('emoji-regex');
 export * from 'oldschooljs/dist/util/index';
 
 const zeroWidthSpace = '\u200b';
-
+// @ts-ignore ignore
+// eslint-disable-next-line no-extend-native, func-names
+BigInt.prototype.toJSON = function () {
+	return this.toString();
+};
 export function cleanMentions(guild: Guild | null, input: string, showAt = true) {
 	const at = showAt ? '@' : '';
 	return input
@@ -68,10 +77,6 @@ export function cleanMentions(guild: Guild | null, input: string, showAt = true)
 				case '@&': {
 					const role = guild?.roles.cache.get(id);
 					return role ? `${at}${role.name}` : match;
-				}
-				case '#': {
-					const channel = guild?.channels.cache.get(id);
-					return channel ? `#${channel.name}` : `<${type}${zeroWidthSpace}${id}>`;
 				}
 				default:
 					return `<${type}${zeroWidthSpace}${id}>`;
@@ -146,11 +151,6 @@ export function convertXPtoLVL(xp: number, cap = 99) {
 	}
 
 	return cap;
-}
-
-export function determineScaledLogTime(xp: number, respawnTime: number, lvl: number) {
-	const t = xp / (lvl / 4 + 0.5) + ((100 - lvl) / 100 + 0.75);
-	return Math.floor((t + respawnTime) * 1000) * 1.2;
 }
 
 export function rand(min: number, max: number) {
@@ -253,6 +253,7 @@ export function getSkillsOfMahojiUser(user: User, levels = false): Required<Skil
 }
 
 export function getSupportGuild(): Guild | null {
+	if (!globalClient || Object.keys(globalClient).length === 0) return null;
 	const guild = globalClient.guilds.cache.get(SupportServer);
 	if (!guild) return null;
 	return guild;
@@ -551,28 +552,6 @@ export function calcPerHour(value: number, duration: number) {
 	return (value / (duration / Time.Minute)) * 60;
 }
 
-export function convertDJSUserToAPIUser(user: DJSUser): APIUser {
-	const apiUser: APIUser = {
-		id: user.id,
-		username: user.username,
-		discriminator: user.discriminator,
-		avatar: user.avatar,
-		bot: user.bot,
-		system: user.system,
-		flags: undefined,
-		mfa_enabled: undefined,
-		banner: undefined,
-		accent_color: undefined,
-		locale: undefined,
-		verified: undefined,
-		email: undefined,
-		premium_type: undefined,
-		public_flags: undefined
-	};
-
-	return apiUser;
-}
-
 export function removeFromArr<T>(arr: T[] | readonly T[], item: T) {
 	return arr.filter(i => i !== item);
 }
@@ -588,7 +567,7 @@ export function exponentialPercentScale(percent: number, decay = 0.021) {
 	return 100 * Math.pow(Math.E, -decay * (100 - percent));
 }
 
-export function discrimName(user: APIUser) {
+export function discrimName(user: DJSUser) {
 	return `${user.username}#${user.discriminator}`;
 }
 
@@ -596,29 +575,25 @@ export function isValidSkill(skill: string): skill is SkillsEnum {
 	return Object.values(SkillsEnum).includes(skill as SkillsEnum);
 }
 
-export function convertMahojiResponseToDJSResponse(response: Awaited<CommandResponse>): string | MessageOptions {
-	if (typeof response === 'string') return response;
-	return {
-		content: response.content,
-		files: response.attachments?.map(i => new AttachmentBuilder(i.buffer, { name: i.fileName }))
-	};
-}
-
-function normalizeMahojiResponse(one: Awaited<CommandResponse>): InteractionResponseDataWithBufferAttachments {
+function normalizeMahojiResponse(one: Awaited<CommandResponse>): MessageOptions {
+	if (!one) return {};
 	if (typeof one === 'string') return { content: one };
-	const response: InteractionResponseDataWithBufferAttachments = {};
+	const response: MessageOptions = {};
 	if (one.content) response.content = one.content;
-	if (one.attachments) response.attachments = one.attachments;
+	if (one.files) response.files = one.files;
 	return response;
 }
 
-export function roughMergeMahojiResponse(one: Awaited<CommandResponse>, two: Awaited<CommandResponse>) {
+export function roughMergeMahojiResponse(
+	one: Awaited<CommandResponse>,
+	two: Awaited<CommandResponse>
+): InteractionReplyOptions {
 	const first = normalizeMahojiResponse(one);
 	const second = normalizeMahojiResponse(two);
-	const newResponse: InteractionResponseDataWithBufferAttachments = { content: '', attachments: [] };
+	const newResponse: InteractionReplyOptions = { content: '', files: [] };
 	for (const res of [first, second]) {
 		if (res.content) newResponse.content += `${res.content} `;
-		if (res.attachments) newResponse.attachments = [...newResponse.attachments!, ...res.attachments];
+		if (res.files) newResponse.files = [...newResponse.files!, ...res.files];
 	}
 	return newResponse;
 }
@@ -634,6 +609,18 @@ export async function asyncGzip(buffer: Buffer) {
 	});
 }
 
+export function skillingPetDropRate(
+	user: MUserClass,
+	skill: SkillsEnum,
+	baseDropRate: number
+): { petDropRate: number } {
+	const twoHundredMillXP = user.skillsAsXP[skill] >= 200_000_000;
+	const skillLevel = user.skillsAsLevels[skill];
+	const petRateDivisor = twoHundredMillXP ? 15 : 1;
+	const dropRate = Math.floor((baseDropRate - skillLevel * 25) / petRateDivisor);
+	return { petDropRate: dropRate };
+}
+
 export function getUsername(id: string | bigint) {
 	return usernameCache.get(id.toString()) ?? 'Unknown';
 }
@@ -643,9 +630,7 @@ export function shuffleRandom<T>(input: number, arr: readonly T[]): T[] {
 	return shuffle(engine, [...arr]);
 }
 
-export function makeComponents(
-	components: APIButtonComponentWithCustomId[]
-): APIInteractionResponseCallbackData['components'] {
+export function makeComponents(components: ButtonBuilder[]): InteractionReplyOptions['components'] {
 	return chunk(components, 5).map(i => ({ components: i, type: ComponentType.ActionRow }));
 }
 
@@ -699,4 +684,93 @@ export function awaitMessageComponentInteraction({
 
 export function isGuildChannel(channel?: Channel): channel is GuildTextBasedChannel {
 	return channel !== undefined && !channel.isDMBased() && Boolean(channel.guild);
+}
+
+export async function runTimedLoggedFn(name: string, fn: () => Promise<unknown>) {
+	const stopwatch = new Stopwatch();
+	stopwatch.start();
+	await fn();
+	stopwatch.stop();
+	console.log(`Finished ${name} in ${stopwatch.toString()}`);
+}
+
+const emojiServers = new Set([
+	'342983479501389826',
+	'940758552425955348',
+	'869497440947015730',
+	'324127314361319427',
+	'363252822369894400',
+	'395236850119213067',
+	'325950337271857152',
+	'395236894096621568'
+]);
+
+export function memoryAnalysis() {
+	let guilds = globalClient.guilds.cache.size;
+	let emojis = 0;
+	let channels = globalClient.channels.cache.size;
+	let voiceChannels = 0;
+	let guildTextChannels = 0;
+	let roles = 0;
+	for (const guild of globalClient.guilds.cache.values()) {
+		emojis += guild.emojis.cache.size;
+		for (const channel of guild.channels.cache.values()) {
+			if (channel.type === ChannelType.GuildVoice) voiceChannels++;
+			if (channel.type === ChannelType.GuildText) guildTextChannels++;
+		}
+		roles += guild.roles.cache.size;
+	}
+	return {
+		guilds,
+		emojis,
+		channels,
+		voiceChannels,
+		guildTextChannels,
+		roles,
+		activeIDs: CACHED_ACTIVE_USER_IDS.size
+	};
+}
+
+export function cacheCleanup() {
+	return runTimedLoggedFn('Cache Cleanup', async () => {
+		await runTimedLoggedFn('Clear Channels', async () => {
+			for (const channel of globalClient.channels.cache.values()) {
+				if (channel.type === ChannelType.GuildVoice || channel.type === ChannelType.GuildCategory) {
+					globalClient.channels.cache.delete(channel.id);
+				}
+				if (channel.type === ChannelType.GuildText) {
+					channel.threads.cache.clear();
+					// @ts-ignore ignore
+					delete channel.topic;
+					// @ts-ignore ignore
+					delete channel.rateLimitPerUser;
+					// @ts-ignore ignore
+					delete channel.nsfw;
+					// @ts-ignore ignore
+					delete channel.parentId;
+					// @ts-ignore ignore
+					delete channel.name;
+					channel.lastMessageId = null;
+					channel.lastPinTimestamp = null;
+				}
+			}
+		});
+
+		await runTimedLoggedFn('Guild Emoji/Roles/Member cache clear', async () => {
+			for (const guild of globalClient.guilds.cache.values()) {
+				if (emojiServers.has(guild.id)) continue;
+				guild.emojis.cache.clear();
+				for (const member of guild.members.cache.values()) {
+					if (!CACHED_ACTIVE_USER_IDS.has(member.user.id)) {
+						guild.members.cache.delete(member.user.id);
+					}
+				}
+				for (const channel of guild.channels.cache.values()) {
+					if (channel.type === ChannelType.GuildVoice) {
+						guild.channels.cache.delete(channel.id);
+					}
+				}
+			}
+		});
+	});
 }

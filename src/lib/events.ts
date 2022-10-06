@@ -1,13 +1,14 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Message, TextChannel } from 'discord.js';
+import { Message, TextChannel } from 'discord.js';
 import { roll, Time } from 'e';
+import LRUCache from 'lru-cache';
 
-import { CLIENT_ID, production, SupportServer } from '../config';
+import { CLIENT_ID, OWNER_IDS, production, SupportServer } from '../config';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
 import { untrustedGuildSettingsCache } from '../mahoji/mahojiSettings';
 import { Channel, Emoji } from './constants';
 import pets from './data/pets';
 import { ItemBank } from './types';
-import { channelIsSendable } from './util';
+import { channelIsSendable, memoryAnalysis } from './util';
 import { makeBankImage } from './util/makeBankImage';
 
 const rareRolesSrc: [string, number, string][] = [
@@ -33,7 +34,7 @@ const rareRolesSrc: [string, number, string][] = [
 	['670212876832735244', 1_000_000, 'Third Age']
 ];
 
-const userCache = new Map<string, number>();
+const userCache = new LRUCache<string, number>({ max: 1000 });
 function rareRoles(msg: Message) {
 	if (!msg.guild || msg.guild.id !== SupportServer) {
 		return;
@@ -71,7 +72,7 @@ function rareRoles(msg: Message) {
 	}
 }
 
-const petCache = new Map<string, number>();
+const petCache = new LRUCache<string, number>({ max: 1000 });
 async function petMessages(msg: Message) {
 	if (!msg.guild) return;
 	const cachedSettings = untrustedGuildSettingsCache.get(msg.guild.id);
@@ -98,7 +99,7 @@ async function petMessages(msg: Message) {
 			msg.channel.send(`${msg.author} has a funny feeling like they would have been followed. ${pet.emoji}`);
 		} else {
 			msg.channel.send(`You have a funny feeling like you’re being followed, ${msg.author} ${pet.emoji}
-Type \`${cachedSettings.prefix ?? '+'}mypets\` to see your pets.`);
+Type \`/tools user mypets\` to see your pets.`);
 		}
 	}
 }
@@ -109,24 +110,11 @@ export async function onMessage(msg: Message) {
 	rareRoles(msg);
 	petMessages(msg);
 	if (!msg.content || msg.author.bot || !channelIsSendable(msg.channel)) return;
-
 	const content = msg.content.trim();
 	if (!content.includes(mentionText)) return;
 	const user = await mUserFetch(msg.author.id);
 	const result = await minionStatusCommand(user);
-	const components = result.components?.map(i => {
-		const row = new ActionRowBuilder<ButtonBuilder>();
-		for (const a of i.components as any[]) {
-			row.addComponents(
-				new ButtonBuilder()
-					.setCustomId(a.custom_id)
-					.setLabel(a.label!)
-					.setEmoji(a.emoji!.id ?? a.emoji!.name!)
-					.setStyle(ButtonStyle.Secondary)
-			);
-		}
-		return row;
-	});
+	const { components } = result;
 
 	if (content === `${mentionText} b`) {
 		msg.reply({
@@ -140,7 +128,7 @@ export async function onMessage(msg: Message) {
 							page: 1
 						}
 					})
-				).file.buffer
+				).file.attachment
 			],
 			components
 		});
@@ -156,10 +144,18 @@ export async function onMessage(msg: Message) {
 						title: 'Your Bank',
 						user
 					})
-				).file.buffer
+				).file.attachment
 			],
 			components
 		});
+		return;
+	}
+	if (content.includes(`${mentionText} mem`) && OWNER_IDS.includes(msg.author.id)) {
+		msg.reply(
+			Object.entries(memoryAnalysis())
+				.map(ent => `**${ent[0]}:** ${ent[1]}`)
+				.join('\n')
+		);
 		return;
 	}
 

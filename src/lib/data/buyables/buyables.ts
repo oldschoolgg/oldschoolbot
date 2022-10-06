@@ -758,6 +758,11 @@ const Buyables: Buyable[] = [
 		ironmanPrice: 2
 	},
 	{
+		name: 'Bucket',
+		gpCost: 30,
+		ironmanPrice: 5
+	},
+	{
 		name: 'Cup of hot water',
 		aliases: ['cup of hot water', 'hot water'],
 		gpCost: 1500
@@ -983,6 +988,21 @@ const Buyables: Buyable[] = [
 	{
 		name: 'Crystal bow',
 		gpCost: 900_000
+	},
+	{
+		name: 'Bronze axe',
+		gpCost: 500,
+		ironmanPrice: 16
+	},
+	{
+		name: 'Iron axe',
+		gpCost: 1000,
+		ironmanPrice: 56
+	},
+	{
+		name: 'Steel axe',
+		gpCost: 2000,
+		ironmanPrice: 200
 	},
 	...sepulchreBuyables,
 	...constructionBuyables,

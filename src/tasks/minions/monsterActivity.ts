@@ -1,12 +1,9 @@
 import { MonsterKillOptions, Monsters } from 'oldschooljs';
 
-import { PvMMethod } from '../../lib/constants';
-import { SlayerActivityConstants } from '../../lib/minions/data/combatConstants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import { prisma, trackLoot } from '../../lib/settings/prisma';
-import { runCommand } from '../../lib/settings/settings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { calculateSlayerPoints, getSlayerMasterOSJSbyID, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
@@ -192,32 +189,6 @@ export const monsterTask: MinionTask = {
 						previousCL
 				  });
 
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			isOnTask && thisTripFinishesTask
-				? undefined
-				: res => {
-						let method: PvMMethod = 'none';
-						if (usingCannon) method = 'cannon';
-						else if (burstOrBarrage === SlayerActivityConstants.IceBarrage) method = 'barrage';
-						else if (burstOrBarrage === SlayerActivityConstants.IceBurst) method = 'burst';
-						return runCommand({
-							...res,
-							commandName: 'k',
-							args: {
-								name: monster.name,
-								quantity,
-								method
-							},
-							isContinue: true
-						});
-				  },
-			image?.file.buffer,
-			data,
-			itemsAdded,
-			messages
-		);
+		handleTripFinish(user, channelID, str, image?.file.attachment, data, itemsAdded, messages);
 	}
 };

@@ -12,7 +12,7 @@ export async function leaguesBuyCommand(user: MUser, itemName: string, quantity 
 
 	let baseCost = item.price * pointsCostMultiplier;
 	const cost = quantity * baseCost;
-	const roboChimpUser = await roboChimpUserFetch(BigInt(user.id));
+	const roboChimpUser = await roboChimpUserFetch(user.id);
 	if (roboChimpUser.leagues_points_balance_osb < cost) {
 		return `You don't have enough League Points to purchase this. You need ${cost}, but you have ${roboChimpUser.leagues_points_balance_osb}.`;
 	}

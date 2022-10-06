@@ -1,9 +1,9 @@
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
+import { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { BitField } from '../../../lib/constants';
 import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
-import { getPOHObject, itemsNotRefundable, PoHObjects } from '../../../lib/poh';
+import { getPOHObject, GroupedPohObjects, itemsNotRefundable, PoHObjects } from '../../../lib/poh';
 import { pohImageGenerator } from '../../../lib/pohImage';
 import { prisma } from '../../../lib/settings/prisma';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -33,7 +33,7 @@ export async function getPOH(userID: string) {
 export async function makePOHImage(user: MUser, showSpaces = false) {
 	const poh = await getPOH(user.id);
 	const buffer = await pohImageGenerator.run(poh, showSpaces);
-	return { attachments: [{ buffer, fileName: 'image.jpg' }] };
+	return { files: [{ attachment: buffer, name: 'image.jpg' }] };
 }
 
 export async function pohWallkitCommand(user: MUser, input: string) {
@@ -76,7 +76,7 @@ export async function pohWallkitCommand(user: MUser, input: string) {
 	return makePOHImage(user);
 }
 
-export async function pohBuildCommand(interaction: SlashCommandInteraction, user: MUser, name: string) {
+export async function pohBuildCommand(interaction: ChatInputCommandInteraction, user: MUser, name: string) {
 	const poh = await getPOH(user.id);
 
 	if (!name) {
@@ -249,4 +249,20 @@ export async function pohDestroyCommand(user: MUser, name: string) {
 	});
 
 	return { ...(await makePOHImage(user)), content: str };
+}
+
+export async function pohListItemsCommand() {
+	const textStr = [];
+
+	for (const [key, arr] of Object.entries(GroupedPohObjects)) {
+		textStr.push(`${key}: ${arr.map(i => i.name).join(', ')}`);
+	}
+
+	const attachment = Buffer.from(textStr.join('\n'));
+
+	return {
+		content: 'Here are all the items you can build in your PoH.',
+
+		files: [{ attachment, name: 'Buildables.txt' }]
+	};
 }

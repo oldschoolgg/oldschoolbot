@@ -114,9 +114,6 @@ async function addRoles({
 export async function runRolesTask() {
 	const g = globalClient.guilds.cache.get(SupportServer);
 	if (!g) throw new Error('No support guild');
-	if (BOT_TYPE === 'OSB' && production) {
-		await g.members.fetch();
-	}
 	const skillVals = Object.values(Skills);
 
 	let result = '';

@@ -1760,6 +1760,50 @@ const Createables: Createable[] = [
 			Cabbage: 10
 		})
 	},
+	{
+		name: 'Bucket of sand (1kg)',
+		inputItems: new Bank({
+			'Sandstone (1kg)': 1,
+			Bucket: 1
+		}),
+		outputItems: new Bank({
+			'Bucket of sand': 1
+		}),
+		GPCost: 50
+	},
+	{
+		name: 'Bucket of sand (2kg)',
+		inputItems: new Bank({
+			'Sandstone (2kg)': 1,
+			Bucket: 2
+		}),
+		outputItems: new Bank({
+			'Bucket of sand': 2
+		}),
+		GPCost: 100
+	},
+	{
+		name: 'Bucket of sand (5kg)',
+		inputItems: new Bank({
+			'Sandstone (5kg)': 1,
+			Bucket: 4
+		}),
+		outputItems: new Bank({
+			'Bucket of sand': 4
+		}),
+		GPCost: 200
+	},
+	{
+		name: 'Bucket of sand (10kg)',
+		inputItems: new Bank({
+			'Sandstone (10kg)': 1,
+			Bucket: 8
+		}),
+		outputItems: new Bank({
+			'Bucket of sand': 8
+		}),
+		GPCost: 400
+	},
 	/* {
 		name: 'Toxic blowpipe (empty)',
 		inputItems: {
@@ -2040,6 +2084,16 @@ const Createables: Createable[] = [
 		outputItems: new Bank({
 			'Daeyalt essence': 1
 		})
+	},
+	{
+		name: 'Celestial signet',
+		inputItems: new Bank({
+			'Celestial ring': 1,
+			'Elven signet': 1,
+			Stardust: 1000,
+			'Crystal shard': 100
+		}),
+		outputItems: new Bank().add('Celestial signet')
 	},
 	...Reverteables,
 	...crystalTools,

@@ -6,9 +6,9 @@ import { Duration } from '@sapphire/time-utilities';
 import Type from '@sapphire/type';
 import { isThenable } from '@sentry/utils';
 import { escapeCodeBlock } from 'discord.js';
-import { randArrItem, Time, uniqueArr } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions, InteractionResponseType, InteractionType } from 'mahoji';
-import { CommandResponse, MahojiAttachment } from 'mahoji/dist/lib/structures/ICommand';
+import { randArrItem, sleep, Time, uniqueArr } from 'e';
+import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { bulkUpdateCommands } from 'mahoji/dist/lib/util';
 import { inspect } from 'node:util';
@@ -22,6 +22,7 @@ import { patreonTask } from '../../lib/patreon';
 import { runRolesTask } from '../../lib/rolesTask';
 import { countUsersWithItemInCl, prisma } from '../../lib/settings/prisma';
 import { cancelTask, minionActivityCacheDelete } from '../../lib/settings/settings';
+import { tickers } from '../../lib/tickers';
 import {
 	calcPerHour,
 	convertBankToPerHourStats,
@@ -32,6 +33,7 @@ import {
 } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import { deferInteraction, interactionReply } from '../../lib/util/interactionReply';
 import { logError } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
@@ -43,7 +45,8 @@ import {
 	handleMahojiConfirmation,
 	mahojiClientSettingsFetch,
 	mahojiClientSettingsUpdate,
-	mahojiUsersSettingsFetch
+	mahojiUsersSettingsFetch,
+	syncLinkedAccounts
 } from '../mahojiSettings';
 import { mahojiUserSettingsUpdate } from '../settingsUpdate';
 import { getUserInfo } from './minion';
@@ -86,13 +89,13 @@ async function unsafeEval({ userID, code }: { userID: string; code: string }) {
 
 	stopwatch.stop();
 	if (result instanceof Bank) {
-		return { files: [await makeBankImage({ bank: result })], rawOutput: result };
+		return { files: [(await makeBankImage({ bank: result })).file] };
 	}
 
 	if (Buffer.isBuffer(result)) {
 		return {
 			content: 'The result was a buffer.',
-			rawOutput: 'Buffer'
+			files: [result]
 		};
 	}
 
@@ -107,8 +110,7 @@ async function unsafeEval({ userID, code }: { userID: string; code: string }) {
 		content: `${codeBlock(escapeCodeBlock(result))}
 **Type:** ${inlineCode(type.toString())}
 **Time:** ${asyncTime ? `⏱ ${asyncTime}<${syncTime}>` : `⏱ ${syncTime}`}
-`,
-		rawOutput: result
+`
 	};
 }
 
@@ -121,7 +123,7 @@ async function evalCommand(userID: string, code: string): CommandResponse {
 
 		if (res.content && res.content.length > 2000) {
 			return {
-				attachments: [{ buffer: Buffer.from(res.content), fileName: 'output.txt' }]
+				files: [{ attachment: Buffer.from(res.content), name: 'output.txt' }]
 			};
 		}
 
@@ -511,7 +513,7 @@ export const adminCommand: OSBMahojiCommand = {
 		wipe_bingo_temp_cls?: {};
 		give_items?: { user: MahojiUserOption; items: string };
 	}>) => {
-		await interaction.deferReply();
+		await deferInteraction(interaction);
 
 		const adminUser = await mahojiUsersSettingsFetch(userID);
 		const isOwner = OWNER_IDS.includes(userID.toString());
@@ -554,8 +556,7 @@ export const adminCommand: OSBMahojiCommand = {
 		if (options.cancel_task) {
 			const { user } = options.cancel_task.user;
 			await cancelTask(user.id);
-			globalClient.oneCommandAtATimeCache.delete(user.id);
-			globalClient.secondaryUserBusyCache.delete(user.id);
+			globalClient.busyCounterCache.delete(user.id);
 			Cooldowns.delete(user.id);
 			minionActivityCacheDelete(user.id);
 			return 'Done.';
@@ -571,6 +572,7 @@ export const adminCommand: OSBMahojiCommand = {
 		}
 		if (options.sync_patreon) {
 			await patreonTask.run();
+			syncLinkedAccounts();
 			return 'Finished syncing patrons.';
 		}
 		if (options.add_ironman_alt) {
@@ -793,113 +795,23 @@ LIMIT 10;
 				options.bitfield.user.user.username
 			}.`;
 		}
-
-		/**
-		 *
-		 * Owner Only Commands
-		 *
-		 */
-		if (!isOwner) {
-			return randArrItem(gifs);
+		if (options.reboot) {
+			globalClient.isShuttingDown = true;
+			for (const ticker of tickers) {
+				if (ticker.timer) clearTimeout(ticker.timer);
+			}
+			await sleep(Time.Second * 20);
+			await interactionReply(interaction, {
+				content: 'https://media.discordapp.net/attachments/357422607982919680/1004657720722464880/freeze.gif'
+			});
+			process.exit();
 		}
 		if (options.viewbank) {
 			const userToCheck = await mUserFetch(options.viewbank.user.user.id);
 			const bank = userToCheck.allItemsOwned();
-			return { attachments: [(await makeBankImage({ bank, title: userToCheck.usernameOrMention })).file] };
-		}
-		if (options.reboot) {
-			await interaction.respond({
-				response: {
-					data: {
-						content:
-							'https://media.discordapp.net/attachments/357422607982919680/1004657720722464880/freeze.gif'
-					},
-					type: InteractionResponseType.ChannelMessageWithSource
-				},
-				interaction,
-				type: InteractionType.ApplicationCommand
-			});
-			process.exit();
-		}
-		if (options.debug_patreon) {
-			const result = await patreonTask.fetchPatrons();
-			return {
-				attachments: [{ buffer: Buffer.from(JSON.stringify(result, null, 4)), fileName: 'patreon.txt' }]
-			};
-		}
-		if (options.eval) {
-			return evalCommand(userID.toString(), options.eval.code);
-		}
-		if (options.sync_commands) {
-			const global = Boolean(options.sync_commands.global);
-			const totalCommands = globalClient.mahojiClient.commands.values;
-			const globalCommands = totalCommands.filter(i => !i.guildID);
-			const guildCommands = totalCommands.filter(i => Boolean(i.guildID));
-			if (global) {
-				await bulkUpdateCommands({
-					client: globalClient.mahojiClient,
-					commands: globalCommands,
-					guildID: null
-				});
-				await bulkUpdateCommands({
-					client: globalClient.mahojiClient,
-					commands: guildCommands,
-					guildID: guildID.toString()
-				});
-			} else {
-				await bulkUpdateCommands({
-					client: globalClient.mahojiClient,
-					commands: totalCommands,
-					guildID: guildID.toString()
-				});
-			}
-
-			return `Synced commands ${global ? 'globally' : 'locally'}.
-${totalCommands.length} Total commands
-${globalCommands.length} Global commands
-${guildCommands.length} Guild commands`;
-		}
-		if (options.item_stats) {
-			const item = getItem(options.item_stats.item);
-			if (!item) return 'Invalid item.';
-			const isIron = false;
-			const ownedResult: any = await prisma.$queryRawUnsafe(`SELECT SUM((bank->>'${item.id}')::int) as qty
-FROM users
-WHERE bank->>'${item.id}' IS NOT NULL;`);
-			return `There are ${ownedResult[0].qty.toLocaleString()} ${item.name} owned by everyone.
-There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' : 'people'} with atleast 1 ${
-				item.name
-			} in their collection log.`;
-		}
-		if (options.sync_blacklist) {
-			await syncBlacklists();
-			return `Users Blacklisted: ${BLACKLISTED_USERS.size}
-Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
+			return { files: [(await makeBankImage({ bank, title: userToCheck.usernameOrMention })).file] };
 		}
 
-		if (options.loot_track) {
-			const loot = await prisma.lootTrack.findFirst({
-				where: {
-					id: options.loot_track.name
-				}
-			});
-			if (!loot) return 'Invalid';
-
-			const durationMillis = loot.total_duration * Time.Minute;
-
-			const arr = [
-				['Cost', new Bank(loot.cost as ItemBank)],
-				['Loot', new Bank(loot.loot as ItemBank)]
-			] as const;
-
-			let content = `${loot.id} ${formatDuration(loot.total_duration * Time.Minute)} KC${loot.total_kc}`;
-			const attachments: MahojiAttachment[] = [];
-			for (const [name, bank] of arr) {
-				content += `\n${convertBankToPerHourStats(bank, durationMillis).join(', ')}`;
-				attachments.push((await makeBankImage({ bank, title: name })).file);
-			}
-			return { content, attachments };
-		}
 		if (options.add_patron_time) {
 			const { tier, time, user: userToGive } = options.add_patron_time;
 			if (![1, 2, 3, 4, 5].includes(tier)) return 'Invalid input.';
@@ -949,6 +861,95 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 			}. They have ${formatDuration(newBalanceExpiryTime - Date.now())} remaining.`;
 		}
 
+		if (options.sync_blacklist) {
+			await syncBlacklists();
+			return `Users Blacklisted: ${BLACKLISTED_USERS.size}
+Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
+		}
+
+		/**
+		 *
+		 * Owner Only Commands
+		 *
+		 */
+		if (!isOwner) {
+			return randArrItem(gifs);
+		}
+
+		if (options.debug_patreon) {
+			const result = await patreonTask.fetchPatrons();
+			return {
+				files: [{ attachment: Buffer.from(JSON.stringify(result, null, 4)), name: 'patreon.txt' }]
+			};
+		}
+		if (options.eval) {
+			return evalCommand(userID.toString(), options.eval.code);
+		}
+		if (options.sync_commands) {
+			const global = Boolean(options.sync_commands.global);
+			const totalCommands = globalClient.mahojiClient.commands.values;
+			const globalCommands = totalCommands.filter(i => !i.guildID);
+			const guildCommands = totalCommands.filter(i => Boolean(i.guildID));
+			if (global) {
+				await bulkUpdateCommands({
+					client: globalClient.mahojiClient,
+					commands: globalCommands,
+					guildID: null
+				});
+				await bulkUpdateCommands({
+					client: globalClient.mahojiClient,
+					commands: guildCommands,
+					guildID: guildID.toString()
+				});
+			} else {
+				await bulkUpdateCommands({
+					client: globalClient.mahojiClient,
+					commands: totalCommands,
+					guildID: guildID.toString()
+				});
+			}
+
+			return `Synced commands ${global ? 'globally' : 'locally'}.
+${totalCommands.length} Total commands
+${globalCommands.length} Global commands
+${guildCommands.length} Guild commands`;
+		}
+		if (options.item_stats) {
+			const item = getItem(options.item_stats.item);
+			if (!item) return 'Invalid item.';
+			const isIron = false;
+			const ownedResult: any = await prisma.$queryRawUnsafe(`SELECT SUM((bank->>'${item.id}')::int) as qty
+FROM users
+WHERE bank->>'${item.id}' IS NOT NULL;`);
+			return `There are ${ownedResult[0].qty.toLocaleString()} ${item.name} owned by everyone.
+There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' : 'people'} with atleast 1 ${
+				item.name
+			} in their collection log.`;
+		}
+
+		if (options.loot_track) {
+			const loot = await prisma.lootTrack.findFirst({
+				where: {
+					id: options.loot_track.name
+				}
+			});
+			if (!loot) return 'Invalid';
+
+			const durationMillis = loot.total_duration * Time.Minute;
+
+			const arr = [
+				['Cost', new Bank(loot.cost as ItemBank)],
+				['Loot', new Bank(loot.loot as ItemBank)]
+			] as const;
+
+			let content = `${loot.id} ${formatDuration(loot.total_duration * Time.Minute)} KC${loot.total_kc}`;
+			const files = [];
+			for (const [name, bank] of arr) {
+				content += `\n${convertBankToPerHourStats(bank, durationMillis).join(', ')}`;
+				files.push((await makeBankImage({ bank, title: name })).file);
+			}
+			return { content, files };
+		}
 		if (options.ltc) {
 			let str = '';
 			const results = await prisma.lootTrack.findMany();
@@ -980,7 +981,7 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 			}
 
 			return {
-				attachments: [{ buffer: Buffer.from(str), fileName: 'output.txt' }]
+				files: [{ attachment: Buffer.from(str), name: 'output.txt' }]
 			};
 		}
 
@@ -989,7 +990,7 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 			if (!thing) return 'Invalid';
 			const clientSettings = await mahojiClientSettingsFetch();
 			const image = await makeBankImage({ bank: thing.run(clientSettings), title: thing.name });
-			return { attachments: [image.file] };
+			return { files: [image.file] };
 		}
 
 		if (options.give_items) {

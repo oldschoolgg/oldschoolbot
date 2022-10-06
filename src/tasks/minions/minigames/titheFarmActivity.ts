@@ -3,7 +3,7 @@ import { Bank } from 'oldschooljs';
 import { Emoji, Events } from '../../../lib/constants';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { TitheFarmActivityTaskOptions } from '../../../lib/types/minions';
-import { roll } from '../../../lib/util';
+import { roll, skillingPetDropRate } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export const titheFarmTask: MinionTask = {
@@ -92,8 +92,8 @@ export const titheFarmTask: MinionTask = {
 		}
 
 		const loot = new Bank();
-
-		if (roll((7_494_389 - user.skillLevel(SkillsEnum.Farming) * 25) / determineHarvest)) {
+		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Farming, 7_494_389);
+		if (roll(petDropRate / determineHarvest)) {
 			loot.add('Tangleroot');
 			lootStr.push('\n\n```diff');
 			lootStr.push("\n- You have a funny feeling you're being followed...");
@@ -116,14 +116,6 @@ export const titheFarmTask: MinionTask = {
 
 		const returnStr = `${harvestStr} ${bonusXpStr}\n\n${completedStr}${levelStr}${lootStr}\n`;
 
-		handleTripFinish(
-			user,
-			channelID,
-			returnStr,
-			['farming', { tithe_farm: {} }, true],
-			undefined,
-			data,
-			loot.length > 0 ? loot : null
-		);
+		handleTripFinish(user, channelID, returnStr, undefined, data, loot.length > 0 ? loot : null);
 	}
 };

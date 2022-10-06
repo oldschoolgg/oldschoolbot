@@ -6,8 +6,9 @@ import { cacheBadges } from '../../lib/badges';
 import { syncBlacklists } from '../../lib/blacklists';
 import { DISABLED_COMMANDS } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
+import { cacheCleanup } from '../../lib/util';
 import { CUSTOM_PRICE_CACHE } from '../commands/sell';
-import { mahojiClientSettingsFetch } from '../mahojiSettings';
+import { mahojiClientSettingsFetch, syncLinkedAccounts } from '../mahojiSettings';
 
 export async function syncCustomPrices() {
 	const clientData = await mahojiClientSettingsFetch();
@@ -48,4 +49,7 @@ export async function onStartup() {
 	await syncCustomPrices();
 
 	await cacheBadges();
+
+	await syncLinkedAccounts();
+	await cacheCleanup();
 }

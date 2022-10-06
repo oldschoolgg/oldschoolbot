@@ -55,7 +55,7 @@ export async function tobStatsCommand(user: MUser) {
 		.join(', ')}`;
 }
 
-export async function tobStartCommand(user: MUser, channelID: bigint, isHardMode: boolean, maxSizeInput?: number) {
+export async function tobStartCommand(user: MUser, channelID: string, isHardMode: boolean, maxSizeInput?: number) {
 	if (user.minionIsBusy) {
 		return `${user.usernameOrMention} minion is busy`;
 	}
@@ -83,7 +83,7 @@ export async function tobStartCommand(user: MUser, channelID: bigint, isHardMode
 		ironmanAllowed: true,
 		message: `${user.usernameOrMention} is hosting a ${
 			isHardMode ? '**Hard mode** ' : ''
-		}Theatre of Blood mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
+		}Theatre of Blood mass! Use the buttons below to join/leave.`,
 		customDenier: async user => {
 			if (user.minionIsBusy) {
 				return [true, `${user.usernameOrMention} minion is busy`];
@@ -95,8 +95,15 @@ export async function tobStartCommand(user: MUser, channelID: bigint, isHardMode
 
 	const channel = globalClient.channels.cache.get(channelID.toString());
 	if (!channelIsSendable(channel)) return 'No channel found.';
-	const reactionAwaiter = await setupParty(channel, user, partyOptions);
-	const usersWhoConfirmed = await reactionAwaiter;
+	let usersWhoConfirmed = [];
+	try {
+		usersWhoConfirmed = await setupParty(channel, user, partyOptions);
+	} catch (err: any) {
+		return {
+			content: typeof err === 'string' ? err : 'Your mass failed to start.',
+			ephemeral: true
+		};
+	}
 	const users = usersWhoConfirmed.filter(u => !u.minionIsBusy).slice(0, maxSize);
 
 	const teamCheckFailure = await checkTOBTeam(users, isHardMode);

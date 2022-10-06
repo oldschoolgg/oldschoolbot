@@ -6,7 +6,7 @@ import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
-export async function castleWarsStartCommand(user: MUser, channelID: bigint) {
+export async function castleWarsStartCommand(user: MUser, channelID: string) {
 	if (user.minionIsBusy) return `${user.minionName} is busy.`;
 	const gameLength = Time.Minute * 18;
 	const quantity = Math.floor(calcMaxTripLength(user, 'CastleWars') / gameLength);

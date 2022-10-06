@@ -11,7 +11,7 @@ import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 export async function favourCommand(
 	user: MUser,
 	favourName: string | undefined,
-	channelID: bigint,
+	channelID: string,
 	noStams: boolean | undefined
 ) {
 	const currentUserFavour = user.kourendFavour;
@@ -71,7 +71,7 @@ export async function favourCommand(
 	}
 
 	await addSubTaskToActivityTask<KourendFavourActivityTaskOptions>({
-		favour,
+		favour: favour.name,
 		userID: user.id,
 		channelID: channelID.toString(),
 		quantity,

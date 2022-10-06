@@ -1,7 +1,9 @@
+import LRUCache from 'lru-cache';
+
 import { assert } from '../../lib/util';
 
 class CooldownsSingleton {
-	cooldownMap = new Map<string, Map<string, number>>();
+	cooldownMap = new LRUCache<string, Map<string, number>>({ max: 1000 });
 
 	get(userID: string, key: string, cooldown: number): number | null {
 		const map = this.cooldownMap.get(userID);

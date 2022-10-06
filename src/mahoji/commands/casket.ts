@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { PerkTier } from '../../lib/constants';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { Workers } from '../../lib/workers';
 import { OSBMahojiCommand } from '../lib/util';
@@ -41,6 +42,7 @@ export const casketCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ options, userID, interaction }: CommandRunOptions<{ name: string; quantity: number }>) => {
+		await deferInteraction(interaction);
 		const user = await mUserFetch(userID.toString());
 		const limit = determineLimit(user);
 		if (options.quantity > limit) {
@@ -53,7 +55,7 @@ export const casketCommand: OSBMahojiCommand = {
 			return `Not a valid clue tier. The valid tiers are: ${ClueTiers.map(_tier => _tier.name).join(', ')}`;
 		}
 
-		await interaction.deferReply();
+		await deferInteraction(interaction);
 
 		const [loot, title] = await Workers.casketOpen({ quantity: options.quantity, clueTierID: clueTier.id });
 
@@ -66,7 +68,7 @@ export const casketCommand: OSBMahojiCommand = {
 		});
 
 		return {
-			attachments: [image.file]
+			files: [image.file]
 		};
 	}
 };

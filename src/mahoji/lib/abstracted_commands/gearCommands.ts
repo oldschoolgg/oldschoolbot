@@ -1,7 +1,7 @@
 import { GearPreset } from '@prisma/client';
+import { ChatInputCommandInteraction } from 'discord.js';
 import { objectValues } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
@@ -13,6 +13,7 @@ import { unEquipAllCommand } from '../../../lib/minions/functions/unequipAllComm
 import { prisma } from '../../../lib/settings/prisma';
 import { Gear } from '../../../lib/structures/Gear';
 import { assert, formatSkillRequirements, isValidGearSetup, stringMatches, toTitleCase } from '../../../lib/util';
+import { gearEquipMultiImpl } from '../../../lib/util/equipMulti';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
 import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
@@ -86,27 +87,77 @@ export async function gearPresetEquipCommand(user: MUser, gearSetup: string, pre
 
 	return {
 		content: `You equipped the ${preset.name} preset in your ${gearSetup} setup.`,
-		attachments: [{ fileName: 'gear.jpg', buffer: image }]
+		files: [{ name: 'gear.jpg', attachment: image }]
+	};
+}
+
+export async function gearEquipMultiCommand(
+	user: MUser,
+	interaction: ChatInputCommandInteraction,
+	setup: string,
+	items: string
+) {
+	if (!isValidGearSetup(setup)) return 'Invalid gear setup.';
+	if (setup === 'wildy') {
+		await handleMahojiConfirmation(
+			interaction,
+			"You're trying to equip items into your *wildy* setup. ANY item in this setup can potentially be lost if doing Wilderness activities. Please confirm you understand this."
+		);
+	}
+
+	const {
+		success: resultSuccess,
+		failMsg,
+		skillFailBank,
+		equippedGear,
+		equipBank,
+		unequipBank
+	} = gearEquipMultiImpl(user, setup, items);
+	if (!resultSuccess) return failMsg!;
+
+	const dbKey = `gear_${setup}` as const;
+	const { newUser } = await user.update({
+		[dbKey]: equippedGear
+	});
+	await transactItems({
+		userID: user.id,
+		filterLoot: false,
+		itemsToRemove: equipBank,
+		itemsToAdd: unequipBank
+	});
+
+	const image = await generateGearImage(user, newUser[dbKey] as GearSetup, setup, user.user.minion_equippedPet);
+	let content = `You equipped ${equipBank} on your ${setup} setup, and unequipped ${unequipBank}.`;
+	if (skillFailBank!.length > 0) {
+		content += `\nThese items failed to be equipped as you don't have the requirements: ${skillFailBank}.`;
+	}
+	return {
+		content,
+		files: [{ name: 'gear.jpg', attachment: image }]
 	};
 }
 
 export async function gearEquipCommand(args: {
-	interaction: SlashCommandInteraction;
+	interaction: ChatInputCommandInteraction;
 	userID: string;
 	setup: string;
 	item: string | undefined;
+	items: string | undefined;
 	preset: string | undefined;
 	quantity: number | undefined;
 	unEquippedItem: Bank | undefined;
 	auto: string | undefined;
 }): CommandResponse {
-	const { interaction, userID, setup, item, preset, quantity: _quantity, auto } = args;
+	const { interaction, userID, setup, item, items, preset, quantity: _quantity, auto } = args;
 	if (!isValidGearSetup(setup)) return 'Invalid gear setup.';
 	const user = await mUserFetch(userID);
 	if (minionIsBusy(user.id)) {
 		return `${user.minionName} is currently out on a trip, so you can't change their gear!`;
 	}
 
+	if (items) {
+		return gearEquipMultiCommand(user, interaction, setup, items);
+	}
 	if (setup === 'other' && getUsersPerkTier(user) < PerkTier.Four) {
 		return PATRON_ONLY_GEAR_SETUP;
 	}
@@ -185,6 +236,7 @@ export async function gearEquipCommand(args: {
 			interaction,
 			setup,
 			item,
+			items,
 			preset,
 			quantity,
 			unEquippedItem: loot,
@@ -208,7 +260,7 @@ export async function gearEquipCommand(args: {
 
 	return {
 		content: `You equipped ${itemToEquip.name} in your ${toTitleCase(setup)} setup.`,
-		attachments: [{ buffer: image, fileName: 'osbot.png' }]
+		files: [{ attachment: image, name: 'osbot.png' }]
 	};
 }
 
@@ -259,7 +311,7 @@ export async function gearUnequipCommand(
 
 	return {
 		content: `You unequipped ${item.name} from your ${toTitleCase(gearSetup)} setup.`,
-		attachments: [{ fileName: 'gear.jpg', buffer: image }]
+		files: [{ name: 'gear.jpg', attachment: image }]
 	};
 }
 
@@ -298,7 +350,7 @@ export async function autoEquipCommand(user: MUser, gearSetup: GearSetupType, eq
 	const image = await generateGearImage(user, user.gear[gearSetup], gearSetup, user.user.minion_equippedPet);
 	return {
 		content: `You auto-equipped your best ${equipmentType} in your ${gearSetup} preset.`,
-		attachments: [{ fileName: 'gear.jpg', buffer: image }]
+		files: [{ name: 'gear.jpg', attachment: image }]
 	};
 }
 
@@ -311,24 +363,24 @@ export async function gearStatsCommand(user: MUser, input: string): CommandRespo
 		}
 	}
 	const image = await generateGearImage(user, new Gear(gear), null, null);
-	return { attachments: [{ fileName: 'image.jpg', buffer: image }] };
+	return { files: [{ name: 'image.jpg', attachment: image }] };
 }
 
 export async function gearViewCommand(user: MUser, input: string, text: boolean): CommandResponse {
 	if (stringMatches(input, 'all')) {
 		const file = text
 			? {
-					buffer: Buffer.from(
+					attachment: Buffer.from(
 						Object.entries(user.gear)
 							.map(i => `${i[0]}: ${i[1].toString()}`)
 							.join('\n')
 					),
-					fileName: 'gear.txt'
+					name: 'gear.txt'
 			  }
-			: { buffer: await generateAllGearImage(user), fileName: 'osbot.png' };
+			: { attachment: await generateAllGearImage(user), name: 'osbot.png' };
 		return {
 			content: 'Here are all your gear setups',
-			attachments: [file]
+			files: [file]
 		};
 	}
 	if (!isValidGearSetup(input)) return 'Invalid setup.';
@@ -337,11 +389,11 @@ export async function gearViewCommand(user: MUser, input: string, text: boolean)
 		return gear.toString();
 	}
 	const image = await generateGearImage(user, gear, input, user.user.minion_equippedPet);
-	return { attachments: [{ buffer: image, fileName: 'gear.jpg' }] };
+	return { files: [{ attachment: image, name: 'gear.jpg' }] };
 }
 
 export async function gearSwapCommand(
-	interaction: SlashCommandInteraction,
+	interaction: ChatInputCommandInteraction,
 	user: MUser,
 	first: GearSetupType,
 	second: GearSetupType

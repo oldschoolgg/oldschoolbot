@@ -27,7 +27,7 @@ export const plunderTask: MinionTask = {
 
 		for (let i = 0; i < quantity; i++) {
 			for (const room of completedRooms) {
-				[currentLootRoom, amountUrns] = lootRoom(room.number);
+				[currentLootRoom, amountUrns] = lootRoom(user, room.number);
 				totalAmountUrns += amountUrns;
 				loot.add(currentLootRoom);
 				thievingXP += room.xp;
@@ -62,14 +62,6 @@ export const plunderTask: MinionTask = {
 			title: `Loot From ${quantity}x Pyramid Plunder:`
 		});
 
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			['minigames', { pyramid_plunder: {} }, true],
-			image.file.buffer,
-			data,
-			itemsAdded
-		);
+		handleTripFinish(user, channelID, str, image.file.attachment, data, itemsAdded);
 	}
 };

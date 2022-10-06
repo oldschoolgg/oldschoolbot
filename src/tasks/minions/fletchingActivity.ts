@@ -36,7 +36,6 @@ export const fletchingTask: MinionTask = {
 			user,
 			channelID,
 			`${user}, ${user.minionName} finished fletching ${quantity}${sets} ${fletchableItem.name}, and received ${loot}. ${xpRes}`,
-			['fletch', { name: fletchableItem.name, quantity }, true],
 			undefined,
 			data,
 			loot

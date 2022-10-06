@@ -8,7 +8,7 @@ export default async function calcDurQty(
 	quantity: number | undefined,
 	min?: number,
 	max?: number
-): Promise<[number, number, number, string[]]> {
+): Promise<string | [number, number, number, string[]]> {
 	let [perKillTime, messages] = await reducedTimeForGroup(users, monster);
 
 	if (min) {
@@ -21,7 +21,7 @@ export default async function calcDurQty(
 	const maxQty = Math.floor(calcMaxTripLength(users[0], 'GroupMonsterKilling') / perKillTime);
 	if (!quantity) quantity = maxQty;
 	if (quantity > maxQty) {
-		throw `The max amount of ${monster.name} this party can kill per trip is ${maxQty}.`;
+		return `The max amount of ${monster.name} this party can kill per trip is ${maxQty}.`;
 	}
 	const duration = quantity * perKillTime - monster.respawnTime!;
 	return [quantity, duration, perKillTime, messages];

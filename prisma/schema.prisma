@@ -166,13 +166,10 @@ model Giveaway {
 
 model Guild {
   id                String   @id @db.VarChar(19)
-  prefix            String   @default("+")
-  language          String   @default("en-US") @db.VarChar(5)
   disabledCommands  String[]
   jmodComments      String?  @db.VarChar(19)
   petchannel        String?  @db.VarChar(19)
   tweetchannel      String?  @db.VarChar(19)
-  levelUpMessages   String?  @db.VarChar(19)
   staffOnlyChannels String[] @db.VarChar(19)
 
   @@map("guilds")
@@ -375,8 +372,9 @@ model User {
   temp_cl            Json      @default("{}") @db.Json
   last_temp_cl_reset DateTime? @db.Timestamp(6)
 
-  tentacle_charges Int @default(0)
-  sang_charges     Int @default(0)
+  tentacle_charges       Int @default(0)
+  sang_charges           Int @default(0)
+  celestial_ring_charges Int @default(0)
 
   gp_luckypick BigInt @default(0)
   gp_dice      BigInt @default(0)
@@ -666,6 +664,7 @@ enum activity_type_enum {
   TroubleBrewing
   PuroPuro
   Easter
+  ShootingStars
 }
 
 enum xp_gains_skill_enum {

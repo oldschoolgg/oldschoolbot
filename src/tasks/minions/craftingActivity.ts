@@ -37,7 +37,7 @@ export const craftingTask: MinionTask = {
 
 		const xpRes = await user.addXP({ skillName: SkillsEnum.Crafting, amount: xpReceived, duration });
 
-		let str = `${user}, ${user.minionName} finished crafting ${quantity}${sets} ${item.name}, and received ${loot}.${xpRes}`;
+		let str = `${user}, ${user.minionName} finished crafting ${quantity}${sets} ${item.name}, and received ${loot}. ${xpRes}`;
 
 		await transactItems({
 			userID: user.id,
@@ -45,6 +45,6 @@ export const craftingTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		handleTripFinish(user, channelID, str, ['craft', { name: item.name, quantity }], undefined, data, loot);
+		handleTripFinish(user, channelID, str, undefined, data, loot);
 	}
 };
