@@ -35,7 +35,7 @@ export const docsCommand: OSBMahojiCommand = {
 						for (let section of item.sections) {
 							if (section.title === '') continue;
 							returnArr.push({
-								name: section.title,
+								name: `${item.title} - ${section.title}`.toString(),
 								value: section.path
 							});
 						}
