@@ -4,23 +4,15 @@ import { docArticles } from '../../lib/docsHelper';
 import { stringMatches } from '../../lib/util/cleanString';
 import { OSBMahojiCommand } from '../lib/util';
 
-export const docsCommand: OSBMahojiCommand = {
+export const docsSyncCommand: OSBMahojiCommand = {
 	name: 'docs',
 	description: 'Search the BSO wiki.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.String,
-			name: 'query',
+			type: ApplicationCommandOptionType.Boolean,
+			name: 'update',
 			description: 'Your search query.',
-			required: true,
-			autocomplete: async (value: string) => {
-				return docArticles
-					.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
-					.map(i => ({
-						name: i.name,
-						value: i.name
-					}));
-			}
+			required: true
 		}
 	],
 	run: async ({ options }: CommandRunOptions<{ query: string }>) => {
