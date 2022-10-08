@@ -30,7 +30,7 @@ export let docArticles: docArticle[] = [
 export async function syncDocs() {
 	console.log(docArticles);
 	try {
-		const results = await fetch(`https://api.gitbook.com/v1/spaces/${GITBOOK_SPACE_ID}/search`, {
+		const results = await fetch(`https://api.gitbook.com/v1/spaces/${GITBOOK_SPACE_ID}/search&limit=10`, {
 			headers: {
 				Authorization: `Bearer ${GITBOOK_TOKEN}`
 			}
