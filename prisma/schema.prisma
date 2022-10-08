@@ -582,6 +582,14 @@ model BingoTeam {
   @@map("bingo_team")
 }
 
+model WikiDocs {
+  id        String   @db.VarChar(64) @id 
+  name      String   @db.VarChar(64)
+  path      String
+
+  @@map("wiki_docs")
+}
+
 enum command_usage_status {
   Unknown
   Success

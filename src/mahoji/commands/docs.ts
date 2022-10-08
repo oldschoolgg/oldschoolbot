@@ -1,8 +1,6 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
-import fetch from 'node-fetch';
 
-import { GITBOOK_SPACE_ID, GITBOOK_TOKEN } from '../../config';
-import { DocsResponse } from '../../lib/docsTypes';
+import { getDocsResults } from '../../lib/docsActivity';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const docsCommand: OSBMahojiCommand = {
@@ -17,28 +15,10 @@ export const docsCommand: OSBMahojiCommand = {
 			autocomplete: async value => {
 				if (!value) return [];
 				try {
-					const autocompleteResult = await fetch(
-						`https://api.gitbook.com/v1/spaces/${GITBOOK_SPACE_ID}/search?query=${encodeURIComponent(
-							value
-						)}&limit=10`,
-						{
-							headers: {
-								Authorization: `Bearer ${GITBOOK_TOKEN}`
-							}
-						}
-					);
-					const resultJson = await autocompleteResult.json();
-					const { items } = resultJson as DocsResponse;
+					const autocompleteResult = await getDocsResults(value);
 					const returnArr: { name: string; value: string }[] = [];
-					for (let item of items) {
-						returnArr.push({ name: item.title, value: item.path });
-						for (let section of item.sections) {
-							if (section.title === '') continue;
-							returnArr.push({
-								name: `${item.title} - ${section.title}`.toString(),
-								value: section.path
-							});
-						}
+					for (let index = 0; index < autocompleteResult.length; index++) {
+						returnArr.push({ name: autocompleteResult[index].name, value: autocompleteResult[index].path });
 					}
 					console.log(returnArr);
 					return returnArr;
