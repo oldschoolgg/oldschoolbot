@@ -1,7 +1,8 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import fetch from 'node-fetch';
 
-import { docArticles } from '../../lib/docsHelper';
-import { stringMatches } from '../../lib/util/cleanString';
+import { GITBOOK_SPACE_ID, GITBOOK_TOKEN } from '../../config';
+import { DocsResponse } from '../../lib/docsTypes';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const docsCommand: OSBMahojiCommand = {
@@ -13,21 +14,41 @@ export const docsCommand: OSBMahojiCommand = {
 			name: 'query',
 			description: 'Your search query.',
 			required: true,
-			autocomplete: async (value: string) => {
-				return docArticles
-					.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
-					.map(i => ({
-						name: i.name,
-						value: i.name
-					}));
+			autocomplete: async value => {
+				if (!value) return [];
+				try {
+					const autocompleteResult = await fetch(
+						`https://api.gitbook.com/v1/spaces/${GITBOOK_SPACE_ID}/search?query=${encodeURIComponent(
+							value
+						)}&limit=10`,
+						{
+							headers: {
+								Authorization: `Bearer ${GITBOOK_TOKEN}`
+							}
+						}
+					);
+					const resultJson = await autocompleteResult.json();
+					const { items } = resultJson as DocsResponse;
+					const returnArr: { name: string; value: string }[] = [];
+					for (let item of items) {
+						returnArr.push({ name: item.title, value: item.path });
+						for (let section of item.sections) {
+							if (section.title === '') continue;
+							returnArr.push({
+								name: `${item.title} - ${section.title}`.toString(),
+								value: section.path
+							});
+						}
+					}
+					console.log(returnArr);
+					return returnArr;
+				} catch (_) {
+					return [];
+				}
 			}
 		}
 	],
 	run: async ({ options }: CommandRunOptions<{ query: string }>) => {
-		const foundArticle = docArticles.find(item => stringMatches(item.name, options.query));
-		console.log(foundArticle);
-		console.log(docArticles);
-		if (!foundArticle) return 'That article could not be found.';
-		return `https://bso-wiki.oldschool.gg/${foundArticle.value}`;
+		return `https://bso-wiki.oldschool.gg/${options.query}`;
 	}
 };

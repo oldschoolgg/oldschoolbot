@@ -19,6 +19,7 @@ import { CLIENT_ID, OWNER_IDS, production, SupportServer } from '../../config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../../lib/blacklists';
 import { badges, BadgesEnum, BitField, BitFieldData, DISABLED_COMMANDS } from '../../lib/constants';
 import { syncDocs } from '../../lib/docsHelper';
+import { addToDoubleLootTimer } from '../../lib/doubleLoot';
 import { patreonTask } from '../../lib/patreon';
 import { runRolesTask } from '../../lib/rolesTask';
 import { countUsersWithItemInCl, prisma } from '../../lib/settings/prisma';
@@ -481,11 +482,6 @@ export const adminCommand: OSBMahojiCommand = {
 					required: true
 				}
 			]
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'sync_docs',
-			description: 'Syncs wiki articles for docs command'
 		}
 	],
 	run: async ({
@@ -515,7 +511,6 @@ export const adminCommand: OSBMahojiCommand = {
 		most_active?: {};
 		bitfield?: { user: MahojiUserOption; add?: string; remove?: string };
 		ltc?: {};
-		sync_docs?: {};
 		view?: { thing: string };
 		wipe_bingo_temp_cls?: {};
 		give_items?: { user: MahojiUserOption; items: string };
