@@ -481,6 +481,11 @@ export const adminCommand: OSBMahojiCommand = {
 					required: true
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'sync_docs',
+			description: 'Sync docs'
 		}
 	],
 	run: async ({
@@ -528,8 +533,9 @@ export const adminCommand: OSBMahojiCommand = {
 
 		if (!IsWikiContributor) return randArrItem(gifs);
 		if (options.sync_docs) {
-			syncDocs();
-			return 'Docs articles updated';
+			await deferInteraction(interaction);
+			await syncDocs();
+			return 'Docs updated';
 		}
 		if (!guildID || !isMod || (production && guildID.toString() !== SupportServer)) return randArrItem(gifs);
 
