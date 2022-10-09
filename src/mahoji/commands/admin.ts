@@ -18,7 +18,7 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { CLIENT_ID, OWNER_IDS, production, SupportServer } from '../../config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../../lib/blacklists';
 import { badges, BadgesEnum, BitField, BitFieldData, DISABLED_COMMANDS } from '../../lib/constants';
-import { syncDocs } from '../../lib/docsHelper';
+import { syncDocs } from '../../lib/docsActivity';
 import { addToDoubleLootTimer } from '../../lib/doubleLoot';
 import { patreonTask } from '../../lib/patreon';
 import { runRolesTask } from '../../lib/rolesTask';
@@ -514,6 +514,7 @@ export const adminCommand: OSBMahojiCommand = {
 		view?: { thing: string };
 		wipe_bingo_temp_cls?: {};
 		give_items?: { user: MahojiUserOption; items: string };
+		sync_docs?: {};
 	}>) => {
 		await deferInteraction(interaction);
 
