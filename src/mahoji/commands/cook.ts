@@ -69,7 +69,7 @@ export const cookCommand: OSBMahojiCommand = {
 			timeToCookSingleCookable /= 3;
 		} else if (hasRemy) {
 			timeToCookSingleCookable /= 2;
-		
+		}
 
 		const userBank = user.bank;
 		const inputCost = new Bank(cookable.inputCookables);
