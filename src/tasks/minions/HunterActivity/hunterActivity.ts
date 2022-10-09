@@ -3,7 +3,7 @@ import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
-import { Events } from '../../../lib/constants';
+import { Events, MAX_LEVEL } from '../../../lib/constants';
 import { hasWildyHuntGearEquipped } from '../../../lib/gear/functions/hasWildyHuntGearEquipped';
 import { trackLoot } from '../../../lib/settings/prisma';
 import { calcLootXPHunting, generateHerbiTable } from '../../../lib/skilling/functions/calcsHunter';
@@ -55,7 +55,7 @@ export const hunterTask: MinionTask = {
 		if (!creature) return;
 
 		let [successfulQuantity, xpReceived] = calcLootXPHunting(
-			Math.min(Math.floor(currentLevel + (usingHuntPotion ? 2 : 0)), 99),
+			Math.min(Math.floor(currentLevel + (usingHuntPotion ? 2 : 0)), MAX_LEVEL),
 			creature,
 			quantity
 		);
