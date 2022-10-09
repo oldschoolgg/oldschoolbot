@@ -65,11 +65,11 @@ export const cookCommand: OSBMahojiCommand = {
 			if (hasRemy) timeToCookSingleCookable /= 1.5;
 		} else if (user.hasEquipped('Cooking master cape')) {
 			timeToCookSingleCookable /= 5;
-		} else if (hasRemy) {
-			timeToCookSingleCookable /= 2;
 		} else if (user.hasEquipped('Dwarven gauntlets')) {
 			timeToCookSingleCookable /= 3;
-		}
+		} else if (hasRemy) {
+			timeToCookSingleCookable /= 2;
+		
 
 		const userBank = user.bank;
 		const inputCost = new Bank(cookable.inputCookables);
