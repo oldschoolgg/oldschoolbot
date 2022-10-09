@@ -68,21 +68,24 @@ export async function syncDocs() {
 					})
 				)
 			);
-			console.log('end of ');
 			page++;
 		} catch (err: any) {
 			logError(err);
 		}
-		console.log(next);
 	} while (typeof next !== 'undefined');
 
 	return 'Updating Docs';
 }
 
 export async function getDocsResults(SearchString: string) {
-	console.log(SearchString);
 	const articleResults: WikiDocs[] = await prisma.$queryRawUnsafe(`SELECT *
 FROM wiki_docs
 WHERE replace(name, ' - ', ' ') ilike replace('%${SearchString}%', ' - ', ' ') limit 10;`);
+	return articleResults;
+}
+
+export async function getAllDocsResults() {
+	const articleResults: WikiDocs[] = await prisma.$queryRawUnsafe(`SELECT *
+FROM wiki_docs;`);
 	return articleResults;
 }

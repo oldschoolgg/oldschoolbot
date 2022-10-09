@@ -1,6 +1,7 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
-import { getDocsResults } from '../../lib/docsActivity';
+import { getAllDocsResults, getDocsResults } from '../../lib/docsActivity';
+import { stringMatches } from '../../lib/util';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const docsCommand: OSBMahojiCommand = {
@@ -20,7 +21,6 @@ export const docsCommand: OSBMahojiCommand = {
 					for (let index = 0; index < autocompleteResult.length; index++) {
 						returnArr.push({ name: autocompleteResult[index].name, value: autocompleteResult[index].path });
 					}
-					console.log(returnArr);
 					return returnArr;
 				} catch (_) {
 					return [];
@@ -29,6 +29,11 @@ export const docsCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ options }: CommandRunOptions<{ query: string }>) => {
+		const liveDocs = await getAllDocsResults();
+		const validDoc = liveDocs.find(item => stringMatches(item.path, options.query));
+
+		if (!validDoc) return 'That article was not found.';
+
 		return `https://bso-wiki.oldschool.gg/${options.query}`;
 	}
 };
