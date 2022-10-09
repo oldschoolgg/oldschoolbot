@@ -1,5 +1,6 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
+import { GITBOOK_URL } from '../../config';
 import { getAllDocsResults, getDocsResults } from '../../lib/docsActivity';
 import { stringMatches } from '../../lib/util';
 import { OSBMahojiCommand } from '../lib/util';
@@ -34,6 +35,6 @@ export const docsCommand: OSBMahojiCommand = {
 
 		if (!validDoc) return 'That article was not found.';
 
-		return `https://bso-wiki.oldschool.gg/${options.query}`;
+		return `${GITBOOK_URL}${options.query}`;
 	}
 };
