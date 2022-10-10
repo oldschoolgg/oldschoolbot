@@ -1,6 +1,6 @@
 import { Time } from '@sapphire/time-utilities';
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
-import { calcWhatPercent, randArrItem, randInt, roll } from 'e';
+import { calcWhatPercent, randArrItem, roll } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { spookyEpic, spookyTable } from './bsoOpenables';
@@ -63,7 +63,7 @@ export function pickMinigameAndItem(user: MUser) {
 		button: new ButtonBuilder()
 			.setLabel(minigame.name)
 			.setEmoji(minigame.emoji)
-			.setCustomId(`hw-${user.id}-${minigame.id}-${randInt(1, 100_000)}`)
+			.setCustomId(`hw-${user.id}-${minigame.id}-${Date.now()}`)
 			.setStyle(ButtonStyle.Danger)
 	};
 }
