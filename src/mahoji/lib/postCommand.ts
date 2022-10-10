@@ -66,7 +66,6 @@ export async function postCommand({
 }): Promise<string | undefined> {
 	setTimeout(() => modifyBusyCounter(userID, -1), 1000);
 
-	if (inhibited) return;
 	if (shouldTrackCommand(abstractCommand, args)) {
 		const commandUsage = makeCommandUsage({
 			userID,
@@ -86,6 +85,7 @@ export async function postCommand({
 			logError(err);
 		}
 	}
+	if (inhibited) return;
 
 	if (error) {
 		handleCommandError({ error, userID, args, commandName: abstractCommand.name, channelID: channelID.toString() });
