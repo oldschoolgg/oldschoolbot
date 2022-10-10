@@ -6,6 +6,8 @@ import { bathhouseTask } from '../tasks/minions/bso/bathhousesActivity';
 import { disassemblingTask } from '../tasks/minions/bso/disassemblingActivity';
 import { dungeoneeringTask } from '../tasks/minions/bso/dungeoneeringActivity';
 import { fishingContestTask } from '../tasks/minions/bso/fishingContestActivity';
+import { fogTask } from '../tasks/minions/bso/fogActivity';
+import { hweenTask } from '../tasks/minions/bso/halloweenMinigamesActivity';
 import { ignecarusTask } from '../tasks/minions/bso/ignecarusActivity';
 import { kalphiteKingTask } from '../tasks/minions/bso/kalphiteKingActivity';
 import { kibbleTask } from '../tasks/minions/bso/kibbleActivity';
@@ -16,6 +18,7 @@ import { naxxusTask } from '../tasks/minions/bso/naxxusActivity';
 import { nexTask } from '../tasks/minions/bso/nexActivity';
 import { odsTask } from '../tasks/minions/bso/ouraniaDeliveryServiceActivity';
 import { researchActivityTask } from '../tasks/minions/bso/researchActivity';
+import { scTask } from '../tasks/minions/bso/stealingCreationActivity';
 import { vasaTask } from '../tasks/minions/bso/vasaMagusActivity';
 import { castingTask } from '../tasks/minions/castingActivity';
 import { clueTask } from '../tasks/minions/clueActivity';
@@ -178,7 +181,10 @@ export const tasks: MinionTask[] = [
 	researchActivityTask,
 	vasaTask,
 	dungeoneeringTask,
-	shootingStarTask
+	shootingStarTask,
+	fogTask,
+	scTask,
+	hweenTask
 ];
 
 export async function syncActivityCache() {

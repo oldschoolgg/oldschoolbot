@@ -1,5 +1,6 @@
 import { percentChance, Time } from 'e';
 
+import { IVY_MAX_TRIP_LENGTH_BOOST } from '../../constants';
 import { calcMaxTripLength } from '../../util/calcMaxTripLength';
 import { MUserClass } from './../../MUser';
 import { Log } from './../types';
@@ -34,7 +35,9 @@ export function determineWoodcuttingTime({
 
 	let newQuantity = 0;
 
-	const userMaxTripTicks = calcMaxTripLength(user, 'Woodcutting') / (Time.Second * 0.6);
+	let userMaxTripLength = calcMaxTripLength(user, 'Woodcutting');
+	if (log.name === 'Ivy') userMaxTripLength += IVY_MAX_TRIP_LENGTH_BOOST;
+	const userMaxTripTicks = userMaxTripLength / (Time.Second * 0.6);
 
 	while (timeElapsed < userMaxTripTicks) {
 		// Keep rolling until log chopped

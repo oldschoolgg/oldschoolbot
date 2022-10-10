@@ -1,6 +1,7 @@
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
+import { IVY_MAX_TRIP_LENGTH_BOOST } from '../../lib/constants';
 import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
 import { determineWoodcuttingTime } from '../../lib/skilling/functions/determineWoodcuttingTime';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
@@ -141,6 +142,11 @@ export const chopCommand: OSBMahojiCommand = {
 			)} needs ${requiredPoints}% Hosidius Favour to chop Redwood at the Woodcutting Guild!`;
 		}
 
+		if (log.customReq) {
+			const res = await log.customReq(user);
+			if (typeof res === 'string') return res;
+		}
+
 		const boosts = [];
 
 		let wcLvl = skills.woodcutting;
@@ -166,6 +172,11 @@ export const chopCommand: OSBMahojiCommand = {
 			boosts.pop();
 			boosts.push(`**${axeMultiplier}x** success multiplier for ${itemNameFromID(axe.id)}`);
 			break;
+		}
+
+		if (log.name === 'Ivy') {
+			boosts.push(`+${formatDuration(IVY_MAX_TRIP_LENGTH_BOOST, true)} max trip length for Ivy`);
+			powerchop = false;
 		}
 
 		if (!powerchop) {

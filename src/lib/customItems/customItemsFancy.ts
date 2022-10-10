@@ -1846,3 +1846,509 @@ setCustomItem(
 	},
 	100
 );
+
+setCustomItem(
+	70_025,
+	'Black afro',
+	'Rune full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100
+);
+
+setCustomItem(
+	70_026,
+	'Brown afro',
+	'Rune full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100
+);
+
+setCustomItem(
+	70_027,
+	'Burgundy afro',
+	'Rune full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100
+);
+
+setCustomItem(
+	70_028,
+	'Dark blue afro',
+	'Rune full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100
+);
+
+setCustomItem(
+	70_029,
+	'Dark brown afro',
+	'Rune full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100
+);
+
+setCustomItem(
+	70_030,
+	'Dark green afro',
+	'Rune full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100
+);
+
+setCustomItem(
+	70_031,
+	'Dark grey afro',
+	'Rune full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100
+);
+
+setCustomItem(
+	70_032,
+	'Green afro',
+	'Rune full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100
+);
+
+setCustomItem(
+	70_033,
+	'Indigo afro',
+	'Rune full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100
+);
+
+setCustomItem(
+	70_034,
+	'Light blue afro',
+	'Rune full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100
+);
+
+setCustomItem(
+	70_035,
+	'Light brown afro',
+	'Rune full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100
+);
+
+setCustomItem(
+	70_036,
+	'Light grey afro',
+	'Rune full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100
+);
+setCustomItem(
+	70_037,
+	'Military grey afro',
+	'Rune full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100
+);
+
+setCustomItem(
+	70_038,
+	'Mint green afro',
+	'Rune full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100
+);
+setCustomItem(
+	70_039,
+	'Orange afro',
+	'Rune full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100
+);
+
+setCustomItem(
+	70_040,
+	'Peach afro',
+	'Rune full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100
+);
+
+setCustomItem(
+	70_041,
+	'Pink afro',
+	'Rune full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100
+);
+
+setCustomItem(
+	70_042,
+	'Purple afro',
+	'Rune full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100
+);
+
+setCustomItem(
+	70_043,
+	'Red afro',
+	'Rune full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100
+);
+
+setCustomItem(
+	70_044,
+	'Rainbow afro',
+	'Rune full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100
+);
+
+setCustomItem(
+	70_045,
+	'Taupe afro',
+	'Rune full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100
+);
+
+setCustomItem(
+	70_046,
+	'Turquoise afro',
+	'Rune full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100
+);
+
+setCustomItem(
+	70_047,
+	'Vermilion afro',
+	'Rune full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100
+);
+
+setCustomItem(
+	70_048,
+	'Violet afro',
+	'Rune full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100
+);
+
+setCustomItem(
+	70_049,
+	'White afro',
+	'Rune full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100
+);
+
+setCustomItem(
+	70_050,
+	'Yellow afro',
+	'Rune full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100
+);
+
+setCustomItem(
+	70_051,
+	'Red top hat',
+	'Rune full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100
+);
+
+setCustomItem(
+	70_052,
+	'Green top hat',
+	'Rune full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100
+);
+
+setCustomItem(
+	70_053,
+	'Blue top hat',
+	'Rune full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100
+);
+
+setCustomItem(
+	70_054,
+	'White top hat',
+	'Rune full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100
+);
+/**
+ *
+ * Disco
+ *
+ */
+setCustomItem(
+	70_070,
+	'Pink disco top',
+	'Bronze platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100
+);
+
+setCustomItem(
+	70_071,
+	'Pink disco legs',
+	'Bronze platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100
+);
+
+setCustomItem(
+	70_072,
+	'Pink disco gloves',
+	'Bronze gloves',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100
+);
+
+setCustomItem(
+	70_073,
+	'Pink disco boots',
+	'Bronze gloves',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100
+);
+//
+setCustomItem(
+	70_074,
+	'Green disco top',
+	'Bronze platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100
+);
+
+setCustomItem(
+	70_075,
+	'Green disco legs',
+	'Bronze platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100
+);
+
+setCustomItem(
+	70_076,
+	'Green disco gloves',
+	'Bronze gloves',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100
+);
+
+setCustomItem(
+	70_077,
+	'Green disco boots',
+	'Bronze gloves',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100
+);
+//
+setCustomItem(
+	70_078,
+	'Blue disco top',
+	'Bronze platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100
+);
+
+setCustomItem(
+	70_079,
+	'Blue disco legs',
+	'Bronze platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100
+);
+
+setCustomItem(
+	70_080,
+	'Blue disco gloves',
+	'Bronze gloves',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100
+);
+
+setCustomItem(
+	70_081,
+	'Blue disco boots',
+	'Bronze gloves',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100
+);

@@ -1481,6 +1481,9 @@ export const troubleBrewingCL = resolveItems([
 	'Grey naval shirt',
 	'Grey tricorn hat',
 	'Grey navy slacks',
+	'Golden naval shirt',
+	'Golden tricorn hat',
+	'Golden navy slacks',
 	'Cutthroat flag',
 	'Gilded smile flag',
 	'Bronze fist flag',
@@ -1887,7 +1890,8 @@ export const miscellaneousCL = resolveItems([
 	'Dragonstone boots',
 	'Uncut onyx',
 	// 'Merfolk trident',
-	'Brackish blade'
+	'Brackish blade',
+	'Ivy seed'
 ]);
 export const diariesCL = [
 	'Karamja gloves 1',
@@ -2566,8 +2570,51 @@ export const cmbClothes = resolveItems([
 	'Evening dipped skirt',
 	'Evening gloves',
 	'Evening boots',
-	'Evening masquerade mask'
+	'Evening masquerade mask',
+	'Black afro',
+	'Brown afro',
+	'Burgundy afro',
+	'Dark blue afro',
+	'Dark brown afro',
+	'Dark green afro',
+	'Dark grey afro',
+	'Green afro',
+	'Indigo afro',
+	'Light blue afro',
+	'Light brown afro',
+	'Light grey afro',
+	'Military grey afro',
+	'Mint green afro',
+	'Orange afro',
+	'Peach afro',
+	'Pink afro',
+	'Purple afro',
+	'Red afro',
+	'Rainbow afro',
+	'Taupe afro',
+	'Turquoise afro',
+	'Vermilion afro',
+	'Violet afro',
+	'White afro',
+	'Yellow afro',
+	'Red top hat',
+	'Green top hat',
+	'Blue top hat',
+	'White top hat',
+	'Pink disco top',
+	'Pink disco legs',
+	'Pink disco gloves',
+	'Pink disco boots',
+	'Green disco top',
+	'Green disco legs',
+	'Green disco gloves',
+	'Green disco boots',
+	'Blue disco top',
+	'Blue disco legs',
+	'Blue disco gloves',
+	'Blue disco boots'
 ]);
+
 assert(cmbClothes.length === new Set(cmbClothes).size, 'Should be no duplicates in CMB clothes');
 
 export const allClueItems = [

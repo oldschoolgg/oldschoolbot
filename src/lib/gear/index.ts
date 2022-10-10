@@ -226,3 +226,26 @@ export const globalPresets: GearPreset[] = [
 		ammo_qty: null
 	}
 ];
+
+const bsoPresets: GearPreset[] = [
+	{
+		name: 'fletcher',
+		user_id: '123',
+		head: itemID("Fletcher's hat"),
+		neck: null,
+		body: itemID("Fletcher's top"),
+		legs: itemID("Fletcher's legs"),
+		cape: null,
+		two_handed: null,
+		hands: itemID("Fletcher's gloves"),
+		feet: itemID("Fletcher's boots"),
+		shield: null,
+		weapon: null,
+		ring: null,
+		ammo: null,
+		ammo_qty: null
+	}
+];
+for (const preset of bsoPresets) {
+	globalPresets.push(preset);
+}

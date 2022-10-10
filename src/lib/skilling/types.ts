@@ -65,6 +65,8 @@ export interface Log {
 	petChance?: number;
 	qpRequired: number;
 	clueScrollChance?: number;
+	customReq?: (user: MUser) => string | undefined;
+	hasNoLoot?: true;
 }
 
 export interface Burnable {

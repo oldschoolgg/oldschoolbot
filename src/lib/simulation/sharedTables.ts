@@ -1,3 +1,4 @@
+import { MasterRareTable } from 'oldschooljs/dist/simulation/clues/Master';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { GemRockTable } from '../skilling/skills/mining';
@@ -192,3 +193,21 @@ export const MithrilItemsTable = new LootTable()
 	.add('Mithril claws')
 	.add('Mithril mace')
 	.add('Mithril spear');
+
+export const CosmeticsTable = new LootTable()
+	.oneIn(32, 'Monkey hat')
+	.add('Penguin head')
+	.add('Penguin torso')
+	.add('Penguin legs')
+	.add('Penguin boots')
+	.add('Penguin gloves')
+	.add("Craftman's monocle")
+	.add('Fish mask')
+	.add('Turkey hat')
+	.add('Potion hat')
+	.add('Map hat')
+	.add('Sombrero')
+	.add('Leprechaun top hat')
+	.add('Oriental fan');
+
+MasterRareTable.add(new LootTable({ limit: 3 }).add(CosmeticsTable));

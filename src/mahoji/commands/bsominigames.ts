@@ -14,6 +14,7 @@ import {
 	fishingContestStartCommand,
 	fishingContestStatsCommand
 } from '../lib/abstracted_commands/fishingContestCommand';
+import { fistOfGuthixCommand } from '../lib/abstracted_commands/fistOfGuthix';
 import { monkeyRumbleCommand, monkeyRumbleStatsCommand } from '../lib/abstracted_commands/monkeyRumbleCommand';
 import {
 	odsBuyCommand,
@@ -21,6 +22,7 @@ import {
 	odsStatsCommand,
 	OuraniaBuyables
 } from '../lib/abstracted_commands/odsCommand';
+import { stealingCreationCommand } from '../lib/abstracted_commands/stealingCreation';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const minigamesCommand: OSBMahojiCommand = {
@@ -160,6 +162,30 @@ export const minigamesCommand: OSBMahojiCommand = {
 					description: 'Check your Fishing Contest stats, and current info.'
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			name: 'fist_of_guthix',
+			description: 'The Fist of Guthix minigame.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'start',
+					description: 'Start a Fist of Guthix trip.'
+				}
+			]
+		},
+		{
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			name: 'stealing_creation',
+			description: 'The Stealing Creation minigame.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'start',
+					description: 'Start a Stealing Creation trip.'
+				}
+			]
 		}
 	],
 	run: async ({
@@ -184,9 +210,22 @@ export const minigamesCommand: OSBMahojiCommand = {
 			stats_info?: {};
 			fish?: { location?: string };
 		};
+		fist_of_guthix?: {
+			start?: {};
+		};
+		stealing_creation?: {
+			start?: {};
+		};
 	}>) => {
 		const klasaUser = await mUserFetch(userID);
-		const { baxtorian_bathhouses, monkey_rumble, ourania_delivery_service, fishing_contest } = options;
+		const {
+			baxtorian_bathhouses,
+			monkey_rumble,
+			ourania_delivery_service,
+			fishing_contest,
+			fist_of_guthix,
+			stealing_creation
+		} = options;
 
 		if (baxtorian_bathhouses?.help) {
 			const sim = baxBathSim();
@@ -222,6 +261,13 @@ export const minigamesCommand: OSBMahojiCommand = {
 		if (fishing_contest?.stats_info) return fishingContestStatsCommand(klasaUser);
 		if (fishing_contest?.fish) {
 			return fishingContestStartCommand(klasaUser, channelID, fishing_contest.fish.location);
+		}
+
+		if (fist_of_guthix?.start) {
+			return fistOfGuthixCommand(klasaUser, channelID);
+		}
+		if (stealing_creation?.start) {
+			return stealingCreationCommand(klasaUser, channelID);
 		}
 
 		return 'Invalid command.';

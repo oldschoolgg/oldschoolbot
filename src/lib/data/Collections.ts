@@ -894,6 +894,17 @@ export const allCollectionLogs: ICollection = {
 			'Baxtorian Bathhouses': {
 				alias: ['bb', 'bax bath', 'baxtorian bathhouses', 'bath', 'baths'],
 				items: resolveItems(['Inferno adze', 'Flame gloves', 'Ring of fire', 'Phoenix eggling'])
+			},
+			'Fist of Guthix': {
+				alias: ['fog', 'fist of guthix'],
+				items: resolveItems([
+					'Rune spikeshield',
+					'Rune berserker shield',
+					'Adamant spikeshield',
+					'Adamant berserker shield',
+					'Guthix engram',
+					'Fist of guthix token'
+				])
 			}
 		}
 	},

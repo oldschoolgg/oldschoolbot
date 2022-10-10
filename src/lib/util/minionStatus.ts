@@ -8,6 +8,7 @@ import { bossEvents } from '../bossEvents';
 import { ClueTiers } from '../clues/clueTiers';
 import { Emoji } from '../constants';
 import { fishingLocations } from '../fishingContest';
+import { miniMinigames } from '../hweenEvent';
 import { DisassembleTaskOptions } from '../invention/disassemble';
 import { ResearchTaskOptions } from '../invention/research';
 import killableMonsters from '../minions/data/killableMonsters';
@@ -52,6 +53,7 @@ import {
 	FletchingActivityTaskOptions,
 	GauntletOptions,
 	GroupMonsterActivityTaskOptions,
+	HalloweenMinigameOptions,
 	HerbloreActivityTaskOptions,
 	HunterActivityTaskOptions,
 	InfernoOptions,
@@ -642,6 +644,25 @@ export function minionStatus(user: MUser) {
 			return `${name} is currently mining a Crashed Star. The trip should take ${formatDuration(
 				durationRemaining
 			)}.`;
+		}
+		case 'FistOfGuthix': {
+			const data = currentTask as MinigameActivityTaskOptions;
+			return `${name} is currently doing ${
+				data.quantity
+			}x games of Fist of Guthix. The trip should take ${formatDuration(durationRemaining)}.`;
+		}
+		case 'StealingCreation': {
+			const data = currentTask as MinigameActivityTaskOptions;
+			return `${name} is currently doing ${
+				data.quantity
+			}x games of Stealing Creation. The trip should take ${formatDuration(durationRemaining)}.`;
+		}
+		case 'HalloweenMiniMinigame': {
+			const data = currentTask as HalloweenMinigameOptions;
+			const minigame = miniMinigames.find(i => i.id === data.minigameID)!;
+			return `${name} is currently doing the ${
+				minigame.name
+			} mini-minigame! The trip should take ${formatDuration(durationRemaining)}.`;
 		}
 		case 'Easter':
 		case 'BlastFurnace': {

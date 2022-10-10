@@ -1,3 +1,4 @@
+import { activity_type_enum } from '@prisma/client';
 import { ButtonBuilder, ButtonInteraction, ButtonStyle, Interaction } from 'discord.js';
 import { Time, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
@@ -8,11 +9,14 @@ import { shootingStarsCommand, starCache } from '../../mahoji/lib/abstracted_com
 import { Cooldowns } from '../../mahoji/lib/Cooldowns';
 import { ClueTier } from '../clues/clueTiers';
 import { PerkTier } from '../constants';
+import { miniMinigames } from '../hweenEvent';
 import { prisma } from '../settings/prisma';
 import { runCommand } from '../settings/settings';
 import { repeatTameTrip } from '../tames';
 import { ItemBank } from '../types';
-import { formatDuration, removeFromArr } from '../util';
+import { HalloweenMinigameOptions } from '../types/minions';
+import { formatDuration, randomVariation, removeFromArr } from '../util';
+import addSubTaskToActivityTask from './addSubTaskToActivityTask';
 import getUsersPerkTier from './getUsersPerkTier';
 import { updateGiveawayMessage } from './giveaway';
 import { interactionReply } from './interactionReply';
@@ -209,6 +213,43 @@ async function repeatTripHandler(user: MUser, interaction: ButtonInteraction) {
 	return repeatTrip(interaction, matchingActivity);
 }
 
+async function halloweenHandler(user: MUser, interaction: ButtonInteraction) {
+	const id = interaction.customId;
+	const split = id.split('-');
+	const [, userID, minigameID, _nonce] = split;
+	if (!userID || user.id !== userID) {
+		return interaction.reply("This isn't your mini-minigame button!");
+	}
+	const minigame = miniMinigames.find(i => i.id === Number(minigameID));
+	if (!minigame || !_nonce) return interaction.reply('Invalid interaction.');
+
+	if (user.minionIsBusy) return interaction.reply('Your minion is busy.');
+	const nonce = Number(_nonce);
+	const dupeActivity = await prisma.$queryRaw<
+		{ count: number }[]
+	>`SELECT COUNT(*) FROM activity WHERE type = ${activity_type_enum.HalloweenMiniMinigame} AND (data->>'nonce')::int = ${nonce};`;
+	console.log(dupeActivity);
+	if (dupeActivity[0].count !== 0) {
+		return interaction.reply('You already used this button!');
+	}
+	const duration = randomVariation(Time.Minute * 15, 10);
+
+	let str = `${user.minionName} is now off to play a game of ${
+		minigame.name
+	}! The total trip will take ${formatDuration(duration)}.`;
+
+	await addSubTaskToActivityTask<HalloweenMinigameOptions>({
+		userID: user.id,
+		channelID: interaction.channelId,
+		duration,
+		type: 'HalloweenMiniMinigame',
+		minigameID: minigame.id,
+		nonce
+	});
+
+	return interaction.reply(str);
+}
+
 export async function interactionHook(interaction: Interaction) {
 	if (!interaction.isButton()) return;
 	const id = interaction.customId;
@@ -217,6 +258,7 @@ export async function interactionHook(interaction: Interaction) {
 	const user = await mUserFetch(userID);
 	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, interaction);
 	if (id.includes('REPEAT_TRIP')) return repeatTripHandler(user, interaction);
+	if (id.includes('hw')) return halloweenHandler(user, interaction);
 
 	if (!isValidGlobalInteraction(id)) return;
 	if (user.isBusy || globalClient.isShuttingDown) {

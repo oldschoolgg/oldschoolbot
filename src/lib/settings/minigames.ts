@@ -190,6 +190,16 @@ export const Minigames: readonly BotMinigame[] = [
 		name: 'Trouble Brewing',
 		aliases: ['trouble brewing', 'tb'],
 		column: 'trouble_brewing'
+	},
+	{
+		name: 'Fist of Guthix',
+		aliases: ['fist of guthix', 'fog'],
+		column: 'fist_of_guthix'
+	},
+	{
+		name: 'Stealing Creation',
+		aliases: ['stealing creation', 'sc'],
+		column: 'stealing_creation'
 	}
 ];
 

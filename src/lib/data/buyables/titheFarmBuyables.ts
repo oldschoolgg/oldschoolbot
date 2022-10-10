@@ -126,6 +126,14 @@ const TitheFarmBuyables: TitheFarmBuyable[] = [
 			[itemID('Lychee seed')]: 1
 		},
 		titheFarmPoints: 5
+	},
+	{
+		name: 'Ivy seed',
+		aliases: ['ivy seed'],
+		outputItems: {
+			[itemID('ivy seed')]: 1
+		},
+		titheFarmPoints: 600
 	}
 ];
 

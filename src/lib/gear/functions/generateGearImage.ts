@@ -18,9 +18,22 @@ import {
 import getOSItem from '../../util/getOSItem';
 import { GearSetup, GearSetupType, GearSetupTypes, GearStats, maxDefenceStats, maxOffenceStats } from '..';
 
-const gearTemplateFile = fs.readFileSync('./src/lib/resources/images/gear_template.png');
-const gearTemplateCompactFile = fs.readFileSync('./src/lib/resources/images/gear_template_compact.png');
 const banana = canvasImageFromBuffer(fs.readFileSync('./src/lib/resources/images/banana.png'));
+
+export const gearImages = [
+	{
+		id: 0,
+		template: fs.readFileSync('./src/lib/resources/images/gear_template.png'),
+		templateCompact: fs.readFileSync('./src/lib/resources/images/gear_template_compact.png'),
+		name: 'Default'
+	},
+	{
+		id: 1,
+		template: fs.readFileSync('./src/lib/resources/images/gear_template_hween.png'),
+		templateCompact: fs.readFileSync('./src/lib/resources/images/gear_template_compact_hween.png'),
+		name: 'Spooky'
+	}
+] as const;
 
 /**
  * The default gear in a gear setup, when nothing is equipped.
@@ -206,7 +219,22 @@ const transmogItems: TransmogItem[] = [
 		image: fsPromises.readFile('./src/lib/resources/images/mmmr/gorilla.png').then(canvasImageFromBuffer),
 		maxHeight: 170
 	},
-	...monkeyTiers.map(m => m.greegrees.map(g => ({ item: g, image: m.image }))).flat(2)
+	...monkeyTiers.map(m => m.greegrees.map(g => ({ item: g, image: m.image }))).flat(2),
+	{
+		item: getOSItem('Gastly ghost cape'),
+		image: fsPromises.readFile('./src/lib/resources/images/ghost.png').then(canvasImageFromBuffer),
+		maxHeight: 170
+	},
+	{
+		item: getOSItem('Spooky cat ears'),
+		image: fsPromises.readFile('./src/lib/resources/images/cat.png').then(canvasImageFromBuffer),
+		maxHeight: 74
+	},
+	{
+		item: getOSItem('Pumpkinpole'),
+		image: fsPromises.readFile('./src/lib/resources/images/pumpkin.png').then(canvasImageFromBuffer),
+		maxHeight: 180
+	}
 ];
 
 export async function generateGearImage(
@@ -225,7 +253,7 @@ export async function generateGearImage(
 	const hexColor = user.user.bank_bg_hex;
 
 	const gearStats = gearSetup instanceof Gear ? gearSetup.stats : new Gear(gearSetup).stats;
-	const gearTemplateImage = await canvasImageFromBuffer(gearTemplateFile);
+	const gearTemplateImage = await canvasImageFromBuffer(user.gearTemplate.template);
 	const canvas = new Canvas(gearTemplateImage.width, gearTemplateImage.height);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
@@ -318,7 +346,7 @@ export async function generateAllGearImage(user: MUser) {
 
 	const hexColor = user.user.bank_bg_hex;
 
-	const gearTemplateImage = await canvasImageFromBuffer(gearTemplateCompactFile);
+	const gearTemplateImage = await canvasImageFromBuffer(user.gearTemplate.templateCompact);
 	const canvas = new Canvas((gearTemplateImage.width + 10) * 4 + 20, Number(gearTemplateImage.height) * 2 + 70);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;

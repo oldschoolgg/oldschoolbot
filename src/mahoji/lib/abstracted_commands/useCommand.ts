@@ -5,6 +5,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { BitField } from '../../../lib/constants';
 import { addToDoubleLootTimer } from '../../../lib/doubleLoot';
 import { dyedItems } from '../../../lib/dyedItems';
+import { gearImages } from '../../../lib/gear/functions/generateGearImage';
 import { assert } from '../../../lib/util';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
 import { flowerTable } from './hotColdCommand';
@@ -67,6 +68,11 @@ const usableUnlocks: UsableUnlock[] = [
 		item: getOSItem('Daemonheim agility pass'),
 		bitfield: BitField.HasDaemonheimAgilityPass,
 		resultMessage: 'You show your pass to the Daemonheim guards, and they grant you access to their rooftops.'
+	},
+	{
+		item: getOSItem('Guthix engram'),
+		bitfield: BitField.HasGuthixEngram,
+		resultMessage: "You place the Guthix engram in Juna's cave, restoring some balance to the world..."
 	}
 ];
 for (const usableUnlock of usableUnlocks) {
@@ -150,6 +156,40 @@ const genericUsables: {
 		response: loot => `You planted a Mithril seed and got ${loot}!`
 	}
 ];
+usables.push({
+	items: [getOSItem('Ivy seed')],
+	run: async user => {
+		if (user.bitfield.includes(BitField.HasPlantedIvy)) {
+			return 'You already planted Ivy in your PoH.';
+		}
+		if (user.skillsAsLevels.farming < 80) {
+			return 'You need 80 Farming to plant the Ivy seeds in your PoH.';
+		}
+		await user.removeItemsFromBank(new Bank().add('Ivy seed'));
+		await user.update({
+			bitfield: {
+				push: BitField.HasPlantedIvy
+			}
+		});
+		return 'You planted Ivy seeds in your PoH! You can now chop Ivy.';
+	}
+});
+usables.push({
+	items: [getOSItem('Spooky gear frame unlock')],
+	run: async user => {
+		const gearFrame = gearImages[1];
+		if (user.user.unlocked_gear_templates.includes(gearFrame.id)) {
+			return 'You already have this gear frame unlocked.';
+		}
+		await user.removeItemsFromBank(new Bank().add('Spooky gear frame unlock'));
+		await user.update({
+			unlocked_gear_templates: {
+				push: gearFrame.id
+			}
+		});
+		return 'You unlocked a spooky gear frame! You can switch to it using `/config user gearframe`';
+	}
+});
 
 const allDyes = [
 	'Dungeoneering dye',

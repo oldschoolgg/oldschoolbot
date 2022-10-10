@@ -1,6 +1,6 @@
 import { activity_type_enum } from '@prisma/client';
 import { ActionRowBuilder, AttachmentBuilder, ButtonBuilder, MessageCollector } from 'discord.js';
-import { randInt, roll, Time } from 'e';
+import { percentChance, randInt, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { alching } from '../../mahoji/commands/laps';
@@ -16,6 +16,7 @@ import { MysteryBoxes } from '../bsoOpenables';
 import { ClueTiers } from '../clues/clueTiers';
 import { COINS_ID, Emoji, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
+import { chanceOfHweenEvent, pickMinigameAndItem } from '../hweenEvent';
 import { handlePassiveImplings } from '../implings';
 import { inventionBoosts, InventionID, inventionItemBoost } from '../invention/inventions';
 import { triggerRandomEvent } from '../randomEvents';
@@ -318,6 +319,14 @@ export async function handleTripFinish(
 		}
 	}
 	handleTriggerShootingStar(user, data, components);
+
+	if (data.type !== 'HalloweenMiniMinigame' && percentChance(chanceOfHweenEvent(data))) {
+		const res = pickMinigameAndItem(user);
+		if (res) {
+			components.addComponents(res.button);
+			message += `\n\nYou are invited to play a spooky mini-minigame! Click the red button to play... ${res.minigame.name}!`;
+		}
+	}
 
 	sendToChannelID(channelID, {
 		content: message,

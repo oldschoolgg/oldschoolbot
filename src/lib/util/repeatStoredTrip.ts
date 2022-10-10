@@ -71,11 +71,16 @@ export const taskCanBeRepeated = (type: activity_type_enum) =>
 			activity_type_enum.TrickOrTreat,
 			activity_type_enum.BossEvent,
 			activity_type_enum.Birdhouse,
-			activity_type_enum.ClueCompletion
+			activity_type_enum.ClueCompletion,
+			activity_type_enum.HalloweenMiniMinigame
 		] as activity_type_enum[]
 	).includes(type);
 
 export const tripHandlers = {
+	[activity_type_enum.HalloweenMiniMinigame]: {
+		commandName: 'm',
+		args: () => ({})
+	},
 	[activity_type_enum.BossEvent]: {
 		commandName: 'm',
 		args: () => ({})
@@ -593,6 +598,22 @@ export const tripHandlers = {
 	[activity_type_enum.ClueCompletion]: {
 		commandName: 'clue',
 		args: (data: ClueActivityTaskOptions) => ({ tier: data.clueID })
+	},
+	[activity_type_enum.FistOfGuthix]: {
+		commandName: 'bsominigames',
+		args: () => ({
+			fist_of_guthix: {
+				start: {}
+			}
+		})
+	},
+	[activity_type_enum.StealingCreation]: {
+		commandName: 'bsominigames',
+		args: () => ({
+			stealing_creation: {
+				start: {}
+			}
+		})
 	}
 } as const;
 

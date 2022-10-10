@@ -8,6 +8,7 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { BitField, PerkTier } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
+import { gearImages } from '../../lib/gear/functions/generateGearImage';
 import { Inventions } from '../../lib/invention/inventions';
 import { CombatOptionsArray, CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
 import { prisma } from '../../lib/settings/prisma';
@@ -773,6 +774,27 @@ export const configCommand: OSBMahojiCommand = {
 							}
 						}
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'gearframe',
+					description: 'Change your gear frame.',
+					options: [
+						{
+							name: 'name',
+							type: ApplicationCommandOptionType.String,
+							description: 'The gear frame you want to use.',
+							required: true,
+							autocomplete: async value => {
+								return gearImages
+									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
+									.map(i => ({
+										name: i.name,
+										value: i.name
+									}));
+							}
+						}
+					]
 				}
 			]
 		}
@@ -800,6 +822,7 @@ export const configCommand: OSBMahojiCommand = {
 			favorite_items?: { add?: string; remove?: string; reset?: boolean };
 			slayer?: { master?: string; autoslay?: string };
 			toggle_invention?: { invention: string };
+			gearframe?: { name: string };
 		};
 	}>) => {
 		const user = await mUserFetch(userID);
@@ -885,6 +908,17 @@ export const configCommand: OSBMahojiCommand = {
 					}
 				});
 				return `${invention.name} is now **Disabled**.`;
+			}
+			if (options.user.gearframe) {
+				const matchingFrame = gearImages.find(i => stringMatches(i.name, options.user?.gearframe?.name ?? ''));
+				if (!matchingFrame) return 'Invalid name.';
+				if (!user.user.unlocked_gear_templates.includes(matchingFrame.id) && matchingFrame.id !== 0) {
+					return "You don't have this gear frame unlocked.";
+				}
+				await user.update({
+					gear_template: matchingFrame.id
+				});
+				return `Your gear frame is now set to **${matchingFrame.name}**!`;
 			}
 		}
 		return 'Invalid command.';

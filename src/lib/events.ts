@@ -2,6 +2,7 @@ import { Message } from 'discord.js';
 
 import { CLIENT_ID, OWNER_IDS } from '../config';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
+import { simulateFinishEvent } from './hweenEvent';
 import { channelIsSendable, memoryAnalysis } from './util';
 import { makeBankImage } from './util/makeBankImage';
 
@@ -15,6 +16,11 @@ export async function onMessage(msg: Message) {
 	const result = await minionStatusCommand(user, msg.channelId);
 	const { components } = result;
 
+	if (OWNER_IDS.includes(msg.author.id) && content.includes(`${mentionText} sim`)) {
+		const res = simulateFinishEvent();
+		msg.reply(res.msg);
+		return;
+	}
 	if (content === `${mentionText} b`) {
 		msg.reply({
 			files: [

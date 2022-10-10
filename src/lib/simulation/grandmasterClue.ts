@@ -7,7 +7,7 @@ import Clue from 'oldschooljs/dist/structures/Clue';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { LampTable } from '../xpLamps';
-import { AllBarrows, BattlestaffTable, runeAlchablesTable, StaffOrbTable } from './sharedTables';
+import { AllBarrows, BattlestaffTable, CosmeticsTable, runeAlchablesTable, StaffOrbTable } from './sharedTables';
 
 const ClueHunterTable = new LootTable()
 	.add('Helm of raedwald')
@@ -89,6 +89,7 @@ const table = new LootTable()
 	.tertiary(30, boxTable, [1, 3])
 	.oneIn(40, 'Clothing mystery box')
 	.oneIn(90, 'Holiday mystery box')
+	.oneIn(20, CosmeticsTable)
 	.add(ClueTable, [1, 3])
 	.add(DragonTable, [2, 5], 2)
 	.add(runeAlchablesTable, 12, 2)
