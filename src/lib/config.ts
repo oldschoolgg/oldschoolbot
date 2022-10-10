@@ -20,8 +20,7 @@ export const clientOptions: ClientOptions = {
 	},
 	makeCache: Options.cacheWithLimits({
 		MessageManager: {
-			maxSize: 100,
-			keepOverLimit: msg => msg.author.id === globalClient.user!.id || Boolean(msg.content)
+			maxSize: 0
 		},
 		UserManager: {
 			maxSize: 1000,
@@ -31,12 +30,13 @@ export const clientOptions: ClientOptions = {
 			maxSize: 200,
 			keepOverLimit: member => CACHED_ACTIVE_USER_IDS.has(member.user.id)
 		},
-		// Useless props for the bot
-		GuildEmojiManager: { maxSize: 0, keepOverLimit: i => [DEV_SERVER_ID, SupportServer].includes(i.guild.id) },
+		GuildEmojiManager: { maxSize: 1, keepOverLimit: i => [DEV_SERVER_ID, SupportServer].includes(i.guild.id) },
 		GuildStickerManager: { maxSize: 0 },
 		PresenceManager: { maxSize: 0 },
 		VoiceStateManager: { maxSize: 0 },
-		GuildInviteManager: { maxSize: 0 }
+		GuildInviteManager: { maxSize: 0 },
+		ThreadManager: { maxSize: 0 },
+		ThreadMemberManager: { maxSize: 0 }
 	}),
 	sweepers: {
 		guildMembers: {

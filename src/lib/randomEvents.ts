@@ -1,4 +1,5 @@
 import { randArrItem, roll, Time } from 'e';
+import LRUCache from 'lru-cache';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
@@ -127,7 +128,7 @@ export const RandomEvents: RandomEvent[] = [
 	}
 ];
 
-const cache = new Map<string, number>();
+const cache = new LRUCache<string, number>({ max: 500 });
 
 export async function triggerRandomEvent(user: MUser, duration: number, messages: string[]) {
 	const minutes = Math.min(30, duration / Time.Minute);

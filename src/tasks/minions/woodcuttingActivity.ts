@@ -6,7 +6,6 @@ import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
 import { roll, skillingPetDropRate } from '../../lib/util';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export const woodcuttingTask: MinionTask = {
@@ -88,23 +87,6 @@ export const woodcuttingTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		const theQuantity = duration > 0.9 * calcMaxTripLength(user, 'Woodcutting') ? undefined : quantity;
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			[
-				'chop',
-				{
-					name: log.name,
-					quantity: theQuantity,
-					powerchop: powerchopping
-				},
-				true
-			],
-			undefined,
-			data,
-			loot
-		);
+		handleTripFinish(user, channelID, str, undefined, data, loot);
 	}
 };

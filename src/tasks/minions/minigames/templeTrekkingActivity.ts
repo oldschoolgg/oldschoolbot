@@ -98,14 +98,6 @@ export const templeTrekkingTask: MinionTask = {
 			previousCL
 		});
 
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			['minigames', { temple_trek: { start: { difficulty, quantity } } }, true],
-			image.file.attachment,
-			data,
-			itemsAdded
-		);
+		handleTripFinish(user, channelID, str, image.file.attachment, data, itemsAdded);
 	}
 };

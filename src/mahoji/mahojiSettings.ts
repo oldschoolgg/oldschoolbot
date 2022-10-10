@@ -11,6 +11,7 @@ import {
 	Routes
 } from 'discord.js';
 import { noOp, objectEntries, round, Time } from 'e';
+import LRUCache from 'lru-cache';
 import { Bank } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import PromiseQueue from 'p-queue';
@@ -183,7 +184,7 @@ export async function mahojiUsersSettingsFetch(user: bigint | string, select?: P
  *
  */
 
-export const untrustedGuildSettingsCache = new Map<string, Guild>();
+export const untrustedGuildSettingsCache = new LRUCache<string, Guild>({ max: 1000 });
 
 export async function mahojiGuildSettingsFetch(guild: string | DJSGuild) {
 	const id = typeof guild === 'string' ? guild : guild.id;
