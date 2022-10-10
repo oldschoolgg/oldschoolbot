@@ -24,9 +24,12 @@ export async function addToDoubleLootTimer(amount: number, reason: string) {
 		double_loot_finish_time: newDoubleLootTimer
 	});
 	DOUBLE_LOOT_FINISH_TIME_CACHE = newDoubleLootTimer;
-	(globalClient.channels.cache.get(Channel.BSOGeneral)! as TextChannel).send(
-		`<@&923768318442229792> 🎉 ${formatDuration(amount)} added to the Double Loot timer because: ${reason}. 🎉`
-	);
+	(globalClient.channels.cache.get(Channel.BSOGeneral)! as TextChannel).send({
+		content: `<@&923768318442229792> 🎉 ${formatDuration(
+			amount
+		)} added to the Double Loot timer because: ${reason}. 🎉`,
+		allowedMentions: { roles: ['923768318442229792'] }
+	});
 
 	syncPrescence();
 }
