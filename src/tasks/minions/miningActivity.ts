@@ -7,11 +7,7 @@ import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueTo
 import Mining from '../../lib/skilling/skills/mining';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
-
-
-
 import { rand, skillingPetDropRate } from '../../lib/util';
-
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export const miningTask: MinionTask = {
