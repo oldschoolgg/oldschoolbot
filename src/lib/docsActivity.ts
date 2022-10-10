@@ -24,6 +24,30 @@ export interface DocsResponse {
 	next: JSON;
 }
 
+export interface DocsDefaultResults {
+	name: string;
+	value: string;
+}
+
+export const DefaultDocsResults: DocsDefaultResults[] = [
+	{
+		name: 'Home',
+		value: ''
+	},
+	{
+		name: 'FAQ',
+		value: 'getting-started/faq'
+	},
+	{
+		name: 'Rules',
+		value: 'getting-started/rules'
+	},
+	{
+		name: 'Beginner Guide',
+		value: 'getting-started/beginner-guide'
+	}
+];
+
 export async function syncDocs() {
 	let page = 0;
 	let next = [];
@@ -39,18 +63,25 @@ export async function syncDocs() {
 			);
 
 			const resultJson = await results.json();
-			let articlesToUpdate: { id: string; name: string; value: string }[] = [];
+			let articlesToUpdate: { id: string; name: string; value: string; body: string }[] = [];
 			next = resultJson.next;
 			const { items } = resultJson as DocsResponse;
 			for (let item of items) {
 				if (item.path === '') continue;
-				articlesToUpdate.push({ id: item.id, name: item.title, value: item.path });
 				for (let section of item.sections) {
-					if (section.title === '') continue;
+					if (section.title === '')
+						articlesToUpdate.push({
+							id: section.id,
+							name: item.title,
+							value: item.path,
+							body: section.body.substring(0, 497)
+						});
+					console.log(`id: ${section.id} \n name: ${item.title} - ${section.title}\n value: ${section.path}`);
 					articlesToUpdate.push({
 						id: section.id,
 						name: `${item.title} - ${section.title}`.toString(),
-						value: section.path
+						value: section.path,
+						body: section.body.substring(0, 497)
 					});
 				}
 			}
@@ -63,7 +94,8 @@ export async function syncDocs() {
 						create: {
 							id: a.id,
 							name: a.name,
-							path: a.value
+							path: a.value,
+							body: a.body.substring(0, 497)
 						}
 					})
 				)
@@ -80,7 +112,7 @@ export async function syncDocs() {
 export async function getDocsResults(SearchString: string) {
 	const articleResults: WikiDocs[] = await prisma.$queryRawUnsafe(`SELECT *
 FROM wiki_docs
-WHERE replace(name, ' - ', ' ') ilike replace('%${SearchString}%', ' - ', ' ') limit 10;`);
+WHERE REPLACE(replace(name, ' - ', ' '),'''','') ilike replace('%${SearchString}%', ' - ', ' ') or replace(body, ' - ', ' ') ilike replace('%${SearchString}%', ' - ', ' ') limit 10;`);
 	return articleResults;
 }
 

@@ -1,7 +1,7 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { GITBOOK_URL } from '../../config';
-import { getAllDocsResults, getDocsResults } from '../../lib/docsActivity';
+import { DefaultDocsResults, getAllDocsResults, getDocsResults } from '../../lib/docsActivity';
 import { stringMatches } from '../../lib/util';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -15,7 +15,11 @@ export const docsCommand: OSBMahojiCommand = {
 			description: 'Your search query.',
 			required: true,
 			autocomplete: async value => {
-				if (!value) return [];
+				if (!value)
+					return DefaultDocsResults.map(i => ({
+						name: i.name,
+						value: i.value
+					}));
 				try {
 					const autocompleteResult = await getDocsResults(value);
 					const returnArr: { name: string; value: string }[] = [];
@@ -33,7 +37,7 @@ export const docsCommand: OSBMahojiCommand = {
 		const liveDocs = await getAllDocsResults();
 		const validDoc = liveDocs.find(item => stringMatches(item.path, options.query));
 
-		if (!validDoc) return 'That article was not found.';
+		if (!validDoc && options.query !== '') return 'That article was not found.';
 
 		return `${GITBOOK_URL}${options.query}`;
 	}

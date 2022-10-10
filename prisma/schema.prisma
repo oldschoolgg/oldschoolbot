@@ -584,8 +584,9 @@ model BingoTeam {
 
 model WikiDocs {
   id        String   @db.VarChar(64) @id 
-  name      String   @db.VarChar(64)
-  path      String
+  name      String   @db.VarChar(124)
+  path      String   @db.VarChar(124)
+  body      String   @db.VarChar(500)
 
   @@map("wiki_docs")
 }
