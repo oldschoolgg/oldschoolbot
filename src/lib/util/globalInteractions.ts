@@ -203,7 +203,8 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 async function repeatTripHandler(user: MUser, interaction: ButtonInteraction) {
 	if (user.minionIsBusy) return 'Your minion is busy.';
 	const trips = await fetchRepeatTrips(interaction.user.id);
-	if (trips.length === 0) return interactionReply(interaction, "Couldn't find a trip to repeat.");
+	if (trips.length === 0)
+		return interactionReply(interaction, { content: "Couldn't find a trip to repeat.", ephemeral: true });
 	const id = interaction.customId;
 	const split = id.split('_');
 	const matchingActivity = trips.find(i => i.type === split[2]);
