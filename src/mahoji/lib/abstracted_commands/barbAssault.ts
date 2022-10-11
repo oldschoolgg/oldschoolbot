@@ -183,11 +183,15 @@ export async function barbAssaultGambleCommand(
 	const { newUser } = await user.update({
 		honour_points: {
 			decrement: cost * quantity
-		},
-		high_gambles: {
-			increment: quantity
 		}
 	});
+	if (name === 'High') {
+		await user.update({
+			high_gambles: {
+				increment: quantity
+			}
+		});
+	}
 	const loot = new Bank().add(table.roll(quantity));
 	if (loot.has('Pet penance queen')) {
 		const amount = await countUsersWithItemInCl(itemID('Pet penance queen'), false);
