@@ -3942,15 +3942,20 @@ lru-cache@^6.0.0:
   dependencies:
     yallist "^4.0.0"
 
+lru-cache@^7.14.0:
+  version "7.14.0"
+  resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-7.14.0.tgz#21be64954a4680e303a09e9468f880b98a0b3c7f"
+  integrity sha512-EIRtP1GrSJny0dqb50QXRUNBxHJhcpxHC++M5tD7RYbvLLn5KVWKsbyswSSqDuU15UFi3bgTQIY8nhDMeF6aDQ==
+
 lru_map@^0.3.3:
   version "0.3.3"
   resolved "https://registry.yarnpkg.com/lru_map/-/lru_map-0.3.3.tgz#b5c8351b9464cbd750335a79650a0ec0e56118dd"
   integrity sha1-tcg1G5Rky9dQM1p5ZQoOwOVhGN0=
 
-mahoji@^0.0.58:
-  version "0.0.58"
-  resolved "https://registry.yarnpkg.com/mahoji/-/mahoji-0.0.58.tgz#3c44138f328fc707695f6755b93f29853a06c0fc"
-  integrity sha512-darSh5qZLSwjIfZLUa0hO8ldPMpoO2Cmix+ACiVrA2XkKN/dpIvW9lQ/cq0AdJRPfkvx80E/EfnI7dtfa4Os+g==
+mahoji@^0.0.61:
+  version "0.0.61"
+  resolved "https://registry.yarnpkg.com/mahoji/-/mahoji-0.0.61.tgz#a2cd19f3bfe43b62536a79b0c252573d3aaa281b"
+  integrity sha512-zZZ7flcndi4EGfYeir+Z3GjbtlZi3buHm8kJY8s5Ub98wEI1RToGkWIyzjwAhZblpL+U4xPjzX82NYXGYECXDg==
 
 make-dir@^3.0.0, make-dir@^3.1.0:
   version "3.1.0"

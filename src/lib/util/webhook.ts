@@ -15,25 +15,14 @@ import { channelIsSendable } from '../util';
 import { logError } from './logError';
 import { splitMessage } from './splitMessage';
 
-const webhookCache: Map<string, WebhookClient> = new Map();
-
-export const webhookMessageCache = new Map<string, WebhookClient>();
-
 export async function resolveChannel(channelID: string): Promise<WebhookClient | Message['channel'] | undefined> {
 	const channel = globalClient.channels.cache.get(channelID);
 	if (!channel || channel instanceof PartialGroupDMChannel) return undefined;
-	if (channel.isDMBased()) {
-		return channel;
-	}
+	if (channel.isDMBased()) return channel;
 	if (!channelIsSendable(channel)) return undefined;
-
-	const cached = webhookCache.get(channelID);
-	if (cached) return cached;
-
 	const db = await prisma.webhook.findFirst({ where: { channel_id: channelID } });
 	if (db) {
-		webhookCache.set(db.channel_id, new WebhookClient({ id: db.webhook_id, token: db.webhook_token }));
-		return webhookCache.get(db.channel_id);
+		return new WebhookClient({ id: db.webhook_id, token: db.webhook_token });
 	}
 
 	if (!channel.permissionsFor(globalClient.user!)?.has(PermissionsBitField.Flags.ManageWebhooks)) {
@@ -53,7 +42,6 @@ export async function resolveChannel(channelID: string): Promise<WebhookClient |
 			}
 		});
 		const webhook = new WebhookClient({ id: createdWebhook.id, token: createdWebhook.token! });
-		webhookCache.set(channelID, webhook);
 		return webhook;
 	} catch (_) {
 		return channel;
@@ -61,7 +49,6 @@ export async function resolveChannel(channelID: string): Promise<WebhookClient |
 }
 
 async function deleteWebhook(channelID: string) {
-	webhookCache.delete(channelID);
 	await prisma.webhook.delete({ where: { channel_id: channelID } });
 }
 
@@ -74,8 +61,12 @@ export async function sendToChannelID(
 		image?: Buffer | AttachmentBuilder;
 		embed?: Embed | EmbedBuilder;
 		components?: MessageOptions['components'];
+		allowedMentions?: MessageOptions['allowedMentions'];
 	}
 ) {
+	const allowedMentions = data.allowedMentions ?? {
+		parse: ['users']
+	};
 	async function queuedFn() {
 		const channel = await resolveChannel(channelID);
 		if (!channel) return;
@@ -89,7 +80,8 @@ export async function sendToChannelID(
 					content: data.content,
 					files,
 					embeds,
-					components: data.components
+					components: data.components,
+					allowedMentions
 				});
 			} catch (err: any) {
 				const error = err as Error;
@@ -102,13 +94,16 @@ export async function sendToChannelID(
 						channelID
 					});
 				}
+			} finally {
+				channel.destroy();
 			}
 		} else {
 			await channel.send({
 				content: data.content,
 				files,
 				embeds,
-				components: data.components
+				components: data.components,
+				allowedMentions
 			});
 		}
 	}
@@ -144,10 +139,7 @@ async function webhookSend(channel: WebhookClient, input: MessageOptions) {
 		embeds: input.embeds,
 		files: input.files,
 		components: input.components,
-		allowedMentions: {
-			parse: ['users']
-		}
+		allowedMentions: input.allowedMentions
 	});
-	webhookMessageCache.set(res.id, channel);
 	return res;
 }

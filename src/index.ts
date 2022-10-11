@@ -18,8 +18,12 @@ import { Channel, Events, SILENT_ERROR } from './lib/constants';
 import { onMessage } from './lib/events';
 import { makeServer } from './lib/http';
 import { modalInteractionHook } from './lib/modals';
+import { runStartupScripts } from './lib/startupScripts';
 import { OldSchoolBotClient } from './lib/structures/OldSchoolBotClient';
+import { syncActivityCache } from './lib/Task';
 import { initTickers } from './lib/tickers';
+import { runTimedLoggedFn } from './lib/util';
+import { syncActiveUserIDs } from './lib/util/cachedUserIDs';
 import { interactionHook } from './lib/util/globalInteractions';
 import { interactionReply } from './lib/util/interactionReply';
 import { logError } from './lib/util/logError';
@@ -53,15 +57,15 @@ export const mahojiClient = new MahojiClient({
 				bypassInhibitors: false,
 				apiUser: interaction.user
 			});
-			return result?.reason;
+			return result;
 		},
-		postCommand: ({ command, interaction, error, inhibited }) =>
+		postCommand: ({ command, interaction, error, inhibited, options }) =>
 			postCommand({
 				abstractCommand: convertMahojiCommandToAbstractCommand(command),
 				userID: interaction.user.id,
 				guildID: interaction.guildId,
 				channelID: interaction.channelId,
-				args: interaction.options,
+				args: options,
 				error,
 				isContinue: false,
 				inhibited
@@ -85,6 +89,9 @@ client.mahojiClient = mahojiClient;
 global.globalClient = client;
 client.on('messageCreate', onMessage);
 client.on('interactionCreate', async interaction => {
+	if (BLACKLISTED_USERS.has(interaction.user.id)) return;
+	if (interaction.guildId && BLACKLISTED_GUILDS.has(interaction.guildId)) return;
+
 	if (!client.isReady()) {
 		if (interaction.isChatInputCommand()) {
 			interaction.reply({
@@ -133,7 +140,8 @@ client.on(Events.EconomyLog, async (message: string) => {
 	economyLogBuffer.push(message);
 	if (economyLogBuffer.length === 10) {
 		await sendToChannelID(Channel.EconomyLogs, {
-			content: economyLogBuffer.join('\n---------------------------------\n')
+			content: economyLogBuffer.join('\n---------------------------------\n'),
+			allowedMentions: { parse: [], users: [], roles: [] }
 		});
 		economyLogBuffer = [];
 	}
@@ -144,30 +152,23 @@ client.on('guildCreate', guild => {
 		guild.leave();
 	}
 });
-
 initTickers();
+
+client.on('ready', () => runTimedLoggedFn('OnStartup', async () => onStartup()));
 
 async function main() {
 	client.fastifyServer = makeServer();
-	await mahojiClient.start();
-	console.log('Starting mahoji client...');
+	let promises = [];
+	promises.push(runTimedLoggedFn('Start Mahoji Client', async () => mahojiClient.start()));
+	promises.push(runTimedLoggedFn('Sync Activity Cache', syncActivityCache));
+	promises.push(runTimedLoggedFn('Startup Scripts', runStartupScripts));
+	promises.push(runTimedLoggedFn('Sync Active User IDs', syncActiveUserIDs));
+	await Promise.all(promises);
+
 	await client.login(botToken);
-	console.log('Logging in...');
-	await client.init();
-	console.log('Init...');
-	await onStartup();
+	await runTimedLoggedFn('Client.Init', async () => client.init());
 }
 
-const terminateCb = async () => {
-	await globalClient.destroy();
-	process.exit(0);
-};
-
-process.removeAllListeners('SIGTERM');
-process.removeAllListeners('SIGINT');
-
-process.on('SIGTERM', terminateCb);
-process.on('SIGINT', terminateCb);
 process.on('uncaughtException', logError);
 
 main();

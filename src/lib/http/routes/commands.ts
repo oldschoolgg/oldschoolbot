@@ -33,7 +33,6 @@ export const commandsRoute = (server: FastifyServer) =>
 						name: cmd.name,
 						desc: cmd.attributes?.description,
 						examples: cmd.attributes?.examples,
-						perkTier: cmd.attributes?.perkTier,
 						flags: cmd.attributes?.categoryFlags,
 						subOptions
 					};

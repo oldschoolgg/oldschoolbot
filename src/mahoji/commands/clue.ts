@@ -44,7 +44,9 @@ export const clueCommand: OSBMahojiCommand = {
 		const user = await mUserFetch(userID);
 		let quantity = 1;
 
-		const clueTier = ClueTiers.find(tier => stringMatches(tier.name, options.tier));
+		const clueTier = ClueTiers.find(
+			tier => stringMatches(tier.id.toString(), options.tier) || stringMatches(tier.name, options.tier)
+		);
 		if (!clueTier) return 'Invalid clue tier.';
 
 		const boosts = [];

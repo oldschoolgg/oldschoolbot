@@ -11,7 +11,7 @@ import { ItemBank } from '../../../lib/types';
 import { ActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, itemNameFromID } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import { calcMaxTripLength, patronMaxTripBonus } from '../../../lib/util/calcMaxTripLength';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { minionName } from '../../../lib/util/minionUtils';
 import { pickaxes } from '../../commands/mine';
@@ -235,7 +235,7 @@ export async function shootingStarsCommand(channelID: string, user: MUserClass, 
 		}
 		// Add clue scrolls , TODO: convert klasaUsers to user
 		if (star.clueScrollChance) {
-			loot.add(addSkillingClueToLoot(user, SkillsEnum.Mining, newQuantity, star.clueScrollChance, loot));
+			addSkillingClueToLoot(user, SkillsEnum.Mining, newQuantity, star.clueScrollChance, loot);
 		}
 
 		// Roll for pet
@@ -293,7 +293,7 @@ export async function shootingStarsActivity(data: ShootingStarsData) {
 		str += "\nYou have a funny feeling you're being followed...";
 	}
 
-	handleTripFinish(user, data.channelID, str, undefined, undefined!, data, null);
+	handleTripFinish(user, data.channelID, str, undefined, data, null);
 }
 
 const activitiesCantGetStars: activity_type_enum[] = [
@@ -305,7 +305,6 @@ const activitiesCantGetStars: activity_type_enum[] = [
 	'Plunder',
 	'Nightmare',
 	'Inferno',
-	'Trekking',
 	'TokkulShop',
 	'ShootingStars',
 	'Nex'
@@ -335,5 +334,5 @@ export function handleTriggerShootingStar(
 		.setEmoji('⭐')
 		.setStyle(ButtonStyle.Secondary);
 	components.addComponents(button);
-	starCache.set(user.id, { ...star, expiry: Date.now() + Time.Minute * 2 });
+	starCache.set(user.id, { ...star, expiry: Date.now() + Time.Minute * 5 + patronMaxTripBonus(user) / 2 });
 }

@@ -3,7 +3,7 @@ import { ChannelType, ChatInputCommandInteraction, TextChannel } from 'discord.j
 import { Bank } from 'oldschooljs';
 
 import { setupParty } from '../../../extendables/Message/Party';
-import { Emoji, NEX_ID } from '../../../lib/constants';
+import { NEX_ID } from '../../../lib/constants';
 import { trackLoot } from '../../../lib/settings/prisma';
 import { calculateNexDetails, checkNexUser } from '../../../lib/simulation/nex';
 import { NexTaskOptions } from '../../../lib/types/minions';
@@ -23,17 +23,16 @@ export async function nexCommand(interaction: ChatInputCommandInteraction, user:
 
 	await deferInteraction(interaction);
 
-	let reactionAwaiter = await setupParty(channel as TextChannel, user, {
-		minSize: 2,
-		maxSize: 10,
-		leader: user,
-		ironmanAllowed: true,
-		message: `${user} is hosting a Nex mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
-		customDenier: async user => checkNexUser(await mUserFetch(user.id))
-	});
 	let usersWhoConfirmed: MUser[] = [];
 	try {
-		usersWhoConfirmed = await reactionAwaiter;
+		usersWhoConfirmed = await setupParty(channel as TextChannel, user, {
+			minSize: 2,
+			maxSize: 10,
+			leader: user,
+			ironmanAllowed: true,
+			message: `${user} is hosting a Nex mass! Use the buttons below to join/leave.`,
+			customDenier: async user => checkNexUser(await mUserFetch(user.id))
+		});
 	} catch (err: any) {
 		return {
 			content: typeof err === 'string' ? err : 'Your mass failed to start.',

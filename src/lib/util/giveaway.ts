@@ -97,7 +97,7 @@ export async function handleGiveawayCompletion(_giveaway: Giveaway) {
 
 		globalClient.emit(
 			Events.EconomyLog,
-			`${winner.usernameOrMention}[${winner.id}] won ${loot} in a giveaway of ${users.length} made by ${creator.usernameOrMention}[${creator.id}].`
+			`${winner.mention}[${winner.id}] won ${loot} in a giveaway of ${users.length} made by ${creator.mention}[${creator.id}].`
 		);
 
 		const str = `<@${giveaway.user_id}> **Giveaway finished:** ${users.length} users joined, the winner is... **${winner.mention}**

@@ -9,6 +9,7 @@ import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Farming, { CompostName, CompostTiers } from '../../lib/skilling/skills/farming';
 import { getSkillsOfMahojiUser, stringMatches } from '../../lib/util';
 import { farmingPatchNames, userGrowingProgressStr } from '../../lib/util/farmingHelpers';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { compostBinCommand, farmingPlantCommand, harvestCommand } from '../lib/abstracted_commands/farmingCommand';
 import { farmingContractCommand } from '../lib/abstracted_commands/farmingContractCommand';
 import { titheFarmCommand, titheFarmShopCommand } from '../lib/abstracted_commands/titheFarmCommand';
@@ -195,6 +196,7 @@ export const farmingCommand: OSBMahojiCommand = {
 		compost_bin?: { plant_name: string; quantity?: number };
 		contract?: { input?: ContractOption };
 	}>) => {
+		await deferInteraction(interaction);
 		const klasaUser = await mUserFetch(userID);
 		const { patchesDetailed } = await getFarmingInfo(userID);
 

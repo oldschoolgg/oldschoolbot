@@ -1,3 +1,4 @@
+import { modifyBusyCounter } from '../../lib/busyCounterCache';
 import { shouldTrackCommand, SILENT_ERROR } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
 import { channelIsSendable, cleanMentions } from '../../lib/util';
@@ -55,7 +56,7 @@ export async function postCommand({
 	inhibited
 }: {
 	abstractCommand: AbstractCommand;
-	userID: string | bigint;
+	userID: string;
 	guildID?: string | bigint | null;
 	channelID: string | bigint;
 	error: Error | string | null;
@@ -63,7 +64,8 @@ export async function postCommand({
 	isContinue: boolean;
 	inhibited: boolean;
 }): Promise<string | undefined> {
-	if (inhibited) return;
+	setTimeout(() => modifyBusyCounter(userID, -1), 1000);
+
 	if (shouldTrackCommand(abstractCommand, args)) {
 		const commandUsage = makeCommandUsage({
 			userID,
@@ -75,16 +77,19 @@ export async function postCommand({
 			flags: null,
 			inhibited
 		});
-		await prisma.commandUsage.create({
-			data: commandUsage
-		});
+		try {
+			await prisma.commandUsage.create({
+				data: commandUsage
+			});
+		} catch (err) {
+			logError(err);
+		}
 	}
+	if (inhibited) return;
 
 	if (error) {
 		handleCommandError({ error, userID, args, commandName: abstractCommand.name, channelID: channelID.toString() });
 	}
-
-	setTimeout(() => globalClient.oneCommandAtATimeCache.delete(userID.toString()), 1000);
 
 	return undefined;
 }

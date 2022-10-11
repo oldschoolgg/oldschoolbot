@@ -1,10 +1,12 @@
 import { bold } from '@discordjs/builders';
 import type { User } from '@prisma/client';
+import { Stopwatch } from '@sapphire/stopwatch';
 import {
 	ButtonBuilder,
 	ButtonInteraction,
 	CacheType,
 	Channel,
+	ChannelType,
 	Collection,
 	CollectorFilter,
 	ComponentType,
@@ -45,6 +47,7 @@ import {
 	RaidsOptions,
 	TheatreOfBloodTaskOptions
 } from './types/minions';
+import { CACHED_ACTIVE_USER_IDS } from './util/cachedUserIDs';
 import { getItem } from './util/getOSItem';
 import itemID from './util/itemID';
 import { logError } from './util/logError';
@@ -74,10 +77,6 @@ export function cleanMentions(guild: Guild | null, input: string, showAt = true)
 				case '@&': {
 					const role = guild?.roles.cache.get(id);
 					return role ? `${at}${role.name}` : match;
-				}
-				case '#': {
-					const channel = guild?.channels.cache.get(id);
-					return channel ? `#${channel.name}` : `<${type}${zeroWidthSpace}${id}>`;
 				}
 				default:
 					return `<${type}${zeroWidthSpace}${id}>`;
@@ -685,4 +684,93 @@ export function awaitMessageComponentInteraction({
 
 export function isGuildChannel(channel?: Channel): channel is GuildTextBasedChannel {
 	return channel !== undefined && !channel.isDMBased() && Boolean(channel.guild);
+}
+
+export async function runTimedLoggedFn(name: string, fn: () => Promise<unknown>) {
+	const stopwatch = new Stopwatch();
+	stopwatch.start();
+	await fn();
+	stopwatch.stop();
+	console.log(`Finished ${name} in ${stopwatch.toString()}`);
+}
+
+const emojiServers = new Set([
+	'342983479501389826',
+	'940758552425955348',
+	'869497440947015730',
+	'324127314361319427',
+	'363252822369894400',
+	'395236850119213067',
+	'325950337271857152',
+	'395236894096621568'
+]);
+
+export function memoryAnalysis() {
+	let guilds = globalClient.guilds.cache.size;
+	let emojis = 0;
+	let channels = globalClient.channels.cache.size;
+	let voiceChannels = 0;
+	let guildTextChannels = 0;
+	let roles = 0;
+	for (const guild of globalClient.guilds.cache.values()) {
+		emojis += guild.emojis.cache.size;
+		for (const channel of guild.channels.cache.values()) {
+			if (channel.type === ChannelType.GuildVoice) voiceChannels++;
+			if (channel.type === ChannelType.GuildText) guildTextChannels++;
+		}
+		roles += guild.roles.cache.size;
+	}
+	return {
+		guilds,
+		emojis,
+		channels,
+		voiceChannels,
+		guildTextChannels,
+		roles,
+		activeIDs: CACHED_ACTIVE_USER_IDS.size
+	};
+}
+
+export function cacheCleanup() {
+	return runTimedLoggedFn('Cache Cleanup', async () => {
+		await runTimedLoggedFn('Clear Channels', async () => {
+			for (const channel of globalClient.channels.cache.values()) {
+				if (channel.type === ChannelType.GuildVoice || channel.type === ChannelType.GuildCategory) {
+					globalClient.channels.cache.delete(channel.id);
+				}
+				if (channel.type === ChannelType.GuildText) {
+					channel.threads.cache.clear();
+					// @ts-ignore ignore
+					delete channel.topic;
+					// @ts-ignore ignore
+					delete channel.rateLimitPerUser;
+					// @ts-ignore ignore
+					delete channel.nsfw;
+					// @ts-ignore ignore
+					delete channel.parentId;
+					// @ts-ignore ignore
+					delete channel.name;
+					channel.lastMessageId = null;
+					channel.lastPinTimestamp = null;
+				}
+			}
+		});
+
+		await runTimedLoggedFn('Guild Emoji/Roles/Member cache clear', async () => {
+			for (const guild of globalClient.guilds.cache.values()) {
+				if (emojiServers.has(guild.id)) continue;
+				guild.emojis.cache.clear();
+				for (const member of guild.members.cache.values()) {
+					if (!CACHED_ACTIVE_USER_IDS.has(member.user.id)) {
+						guild.members.cache.delete(member.user.id);
+					}
+				}
+				for (const channel of guild.channels.cache.values()) {
+					if (channel.type === ChannelType.GuildVoice) {
+						guild.channels.cache.delete(channel.id);
+					}
+				}
+			}
+		});
+	});
 }

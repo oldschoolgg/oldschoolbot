@@ -5,7 +5,7 @@ import { PerkTier } from '../constants';
 import { SkillsEnum } from '../skilling/types';
 import { skillLevel } from './minionUtils';
 
-function patronMaxTripBonus(user: MUser) {
+export function patronMaxTripBonus(user: MUser) {
 	const { perkTier } = user;
 	if (perkTier === PerkTier.Two) return Time.Minute * 3;
 	else if (perkTier === PerkTier.Three) return Time.Minute * 6;
@@ -19,6 +19,11 @@ export function calcMaxTripLength(user: MUser, activity?: activity_type_enum) {
 	max += patronMaxTripBonus(user);
 
 	switch (activity) {
+		case 'Fishing':
+			if (user.allItemsOwned().has('Fish sack barrel') || user.allItemsOwned().has('Fish barrel')) {
+				max += Time.Minute * 9;
+			}
+			break;
 		case 'Nightmare':
 		case 'GroupMonsterKilling':
 		case 'MonsterKilling':
