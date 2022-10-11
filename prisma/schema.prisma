@@ -274,6 +274,7 @@ model User {
   total_cox_points           Int      @default(0)
   combat_options             Int[]
   farming_patch_reminders    Boolean  @default(true)
+  autoFarm_filter            autoFarm_filter_enum @default(allFarm)
   pest_control_points        Int      @default(0)
   inferno_attempts           Int      @default(0)
   infernal_cape_sacrifices   Int      @default(0)
@@ -301,7 +302,6 @@ model User {
   minion_equippedPet         Int?     @map("minion.equippedPet")
   minion_farmingContract     Json?    @map("minion.farmingContract") @db.Json
   minion_defaultCompostToUse String   @default("compost") @map("minion.defaultCompostToUse")
-  minion_autoFarmFilterToUse autoFarm_filter_enum @default(allfarm) @map("minion.autoFarmFilterToUse")
   minion_defaultPay          Boolean  @default(false) @map("minion.defaultPay")
   minion_birdhouseTraps      Json?    @map("minion.birdhouseTraps") @db.Json
   stats_deaths               Int      @default(0) @map("stats.deaths")
@@ -695,6 +695,6 @@ enum xp_gains_skill_enum {
 }
 
 enum autoFarm_filter_enum {
-	allfarm
+	allFarm
 	replant
 }

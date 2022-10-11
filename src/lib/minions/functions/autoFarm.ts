@@ -2,13 +2,10 @@ import { autoFarm_filter_enum } from '@prisma/client';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { farmingPlantCommand } from '../../../mahoji/lib/abstracted_commands/farmingCommand';
-import { mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings';
 import { plants } from '../../skilling/skills/farming';
 import { IPatchDataDetailed } from '../farming/types';
 import { Plant } from './../../skilling/types';
 import { allFarm, replant } from './autoFarmFilters';
-
-autoFarm_filter_enum;
 
 export async function autoFarm(user: MUser, patchesDetailed: IPatchDataDetailed[], channelID: string) {
 	if (user.minionIsBusy) {
@@ -21,13 +18,10 @@ export async function autoFarm(user: MUser, patchesDetailed: IPatchDataDetailed[
 	let canHarvest: Plant | undefined = undefined;
 	let elligible: Plant[] = [];
 	let errorString = '';
-	let fetchAutoFarmFilter = await mahojiUsersSettingsFetch(user.id, {
-		minion_autoFarmFilterToUse: true
-	});
-	let autoFarmFilter = fetchAutoFarmFilter.minion_autoFarmFilterToUse as autoFarm_filter_enum;
+	let autoFarmFilter = user.autoFarm_filter;
 
 	if (!autoFarmFilter) {
-		autoFarmFilter = autoFarm_filter_enum.allfarm;
+		autoFarmFilter = autoFarm_filter_enum.allFarm;
 	}
 
 	const autoFarmFilterString = autoFarmFilter.toString().toLowerCase();
@@ -35,7 +29,7 @@ export async function autoFarm(user: MUser, patchesDetailed: IPatchDataDetailed[
 	elligible = [...plants]
 		.filter(p => {
 			switch (autoFarmFilterString) {
-				case autoFarm_filter_enum.allfarm: {
+				case autoFarm_filter_enum.allFarm: {
 					return allFarm(p, farmingLevel, user, userBank);
 				}
 				case autoFarm_filter_enum.replant: {
@@ -48,7 +42,7 @@ export async function autoFarm(user: MUser, patchesDetailed: IPatchDataDetailed[
 		})
 		.sort((a, b) => b.level - a.level);
 
-	if (autoFarmFilterString === autoFarm_filter_enum.allfarm) {
+	if (autoFarmFilterString === autoFarm_filter_enum.allFarm) {
 		canHarvest = elligible.find(p => patchesDetailed.find(_p => _p.patchName === p.seedType)!.ready);
 		errorString = "There's no Farming crops that you have the requirements to plant, and nothing to harvest.";
 	}

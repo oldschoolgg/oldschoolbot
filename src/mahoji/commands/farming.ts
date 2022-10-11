@@ -18,6 +18,11 @@ import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 import { mahojiUserSettingsUpdate } from '../settingsUpdate';
 import { autoFarm_filter_enum } from '.prisma/client';
 
+const autoFarmFilterTexts: Record<autoFarm_filter_enum, string> = {
+	allFarm: 'All crops will be farmed with the highest available seed',
+	replant: 'Only planted crops will be replanted, using the same seed'
+};
+
 export const farmingCommand: OSBMahojiCommand = {
 	name: 'farming',
 	description: 'Allows you to do Farming related things.',
@@ -226,16 +231,10 @@ export const farmingCommand: OSBMahojiCommand = {
 			const autoFarmFilter = autoFarmFilterString as autoFarm_filter_enum;
 
 			await mahojiUserSettingsUpdate(userID, {
-				minion_autoFarmFilterToUse: autoFarmFilter
+				autoFarm_filter: autoFarmFilter
 			});
 
-			const filterTexts = {
-				allfarm: 'All crops will be farmed with the highest available seed',
-				replant: 'Only planted crops will be replanted, using the same seed'
-			};
-			type FilterKey = keyof typeof filterTexts;
-			const key = autoFarmFilter.toString().toLowerCase() as FilterKey;
-			return `${autoFarmFilter} filter is now enabled when autofarming: ${filterTexts[key]}.`;
+			return `${autoFarmFilter} filter is now enabled when autofarming: ${autoFarmFilterTexts[autoFarmFilter]}.`;
 		}
 		if (options.plant) {
 			return farmingPlantCommand({
