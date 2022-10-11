@@ -94,6 +94,8 @@ export async function sendToChannelID(
 						channelID
 					});
 				}
+			} finally {
+				channel.destroy();
 			}
 		} else {
 			await channel.send({
