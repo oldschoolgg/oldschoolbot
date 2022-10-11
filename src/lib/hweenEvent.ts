@@ -12,23 +12,26 @@ export const miniMinigames: { id: number; name: string; items: number[]; emoji: 
 	{
 		id: 1,
 		name: 'Pumpkin-patch Pumpkin-smash',
-		items: resolveItems(['Pumpkinpole', 'Pumpkin seed', 'Dirty hoe']),
+		items: resolveItems(['Pumpkin seed', 'Dirty hoe']),
 		emoji: '764130154662199347',
-		extraLoot: new LootTable().oneIn(2, 'Pumpkin seed')
+		extraLoot: new LootTable().oneIn(2, 'Pumpkin seed').tertiary(111, 'Pumpkinpole')
 	},
 	{
 		id: 2,
 		name: 'Ghostly Golfing',
-		items: resolveItems(['Gastly ghost cape', 'Boo-balloon', 'Spooky cat ears']),
+		items: resolveItems(['Boo-balloon']),
 		emoji: '👻',
-		extraLoot: new LootTable().oneIn(5, 'Bones')
+		extraLoot: new LootTable().oneIn(5, 'Bones').tertiary(111, 'Gastly ghost cape')
 	},
 	{
 		id: 3,
 		name: 'Manic Magic',
-		items: resolveItems(['Spooky cat ears', 'Spooky gear frame unlock', 'Twinkly topper', 'Broomstick']),
+		items: resolveItems(['Twinkly topper', 'Broomstick']),
 		emoji: '🪄',
-		extraLoot: new LootTable().oneIn(5, 'Tiny lamp')
+		extraLoot: new LootTable()
+			.oneIn(5, 'Tiny lamp')
+			.tertiary(111, 'Spooky cat ears')
+			.tertiary(22, 'Spooky gear frame unlock')
 	},
 	{
 		id: 4,
