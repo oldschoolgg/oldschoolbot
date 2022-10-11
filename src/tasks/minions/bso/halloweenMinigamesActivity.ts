@@ -14,6 +14,9 @@ export const hweenTask: MinionTask = {
 		const item = minigame.items.find(i => !user.cl.has(i));
 		const loot = new Bank().add(item);
 		loot.add(minigame.extraLoot.roll());
+		if (roll(KURO_DROPRATE(user.cl.amount('Spooky gear frame unlock')))) {
+			loot.add('Spooky gear frame unlock');
+		}
 		if (roll(KURO_DROPRATE(user.cl.amount('Kuro')))) {
 			loot.add('Kuro');
 		}

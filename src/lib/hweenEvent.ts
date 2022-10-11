@@ -28,10 +28,7 @@ export const miniMinigames: { id: number; name: string; items: number[]; emoji: 
 		name: 'Manic Magic',
 		items: resolveItems(['Twinkly topper', 'Broomstick']),
 		emoji: '🪄',
-		extraLoot: new LootTable()
-			.oneIn(5, 'Tiny lamp')
-			.tertiary(111, 'Spooky cat ears')
-			.tertiary(22, 'Spooky gear frame unlock')
+		extraLoot: new LootTable().oneIn(5, 'Tiny lamp').tertiary(111, 'Spooky cat ears')
 	},
 	{
 		id: 4,
