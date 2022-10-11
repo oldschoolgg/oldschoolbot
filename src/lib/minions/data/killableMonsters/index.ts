@@ -231,6 +231,17 @@ const killableMonsters: KillableMonster[] = [
 		itemInBankBoosts: [
 			{
 				[itemID('Dragon claws')]: 5
+			},
+			{
+				[itemID('Abyssal bludgeon')]: 8,
+				[itemID("Inquisitor's mace")]: 12,
+				[itemID('Scythe of vitur')]: 15
+			},
+			{
+				[itemID("Karil's leathertop")]: 3
+			},
+			{
+				[itemID("Karil's leatherskirt")]: 2
 			}
 		],
 		levelRequirements: {

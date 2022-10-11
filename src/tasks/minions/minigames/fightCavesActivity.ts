@@ -95,7 +95,7 @@ export const fightCavesTask: MinionTask = {
 			let msg = `${rangeXP}. ${hpXP}.`;
 			if (isOnTask) {
 				const slayXP = await user.addXP({ skillName: SkillsEnum.Slayer, amount: 11_760, duration });
-				msg = `**Task cancelled.** \n${msg} ${slayXP}.`;
+				msg = `**Slayer task cancelled.** \n${msg} ${slayXP}.`;
 
 				await prisma.slayerTask.update({
 					where: {
@@ -153,17 +153,20 @@ export const fightCavesTask: MinionTask = {
 
 		let msg = `${rangeXP}. ${hpXP}.`;
 		if (isOnTask) {
-			// 25,250 for Jad + 11,760 for waves.
-			const slayerXP = 37_010;
-			const currentStreak = user.user.slayer_task_streak;
-			const points = await calculateSlayerPoints(currentStreak, usersTask.slayerMaster!, user);
-
 			const { newUser } = await user.update({
-				slayer_points: {
-					increment: points
-				},
 				slayer_task_streak: {
 					increment: 1
+				}
+			});
+
+			// 25,250 for Jad + 11,760 for waves.
+			const slayerXP = 37_010;
+			const currentStreak = newUser.slayer_task_streak;
+			const points = await calculateSlayerPoints(currentStreak, usersTask.slayerMaster!, user);
+
+			const secondNewUser = await user.update({
+				slayer_points: {
+					increment: points
 				}
 			});
 
@@ -179,7 +182,7 @@ export const fightCavesTask: MinionTask = {
 			const slayXP = await user.addXP({ skillName: SkillsEnum.Slayer, amount: slayerXP, duration });
 			const xpMessage = `${msg} ${slayXP}`;
 
-			msg = `Jad task completed. ${xpMessage}. \n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${newUser.slayer_points}; return to a Slayer master.**`;
+			msg = `Jad task completed. ${xpMessage}. \n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${secondNewUser.newUser.slayer_points}; return to a Slayer master.**`;
 			// End slayer code
 		}
 

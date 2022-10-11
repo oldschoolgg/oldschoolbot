@@ -758,6 +758,11 @@ const Buyables: Buyable[] = [
 		ironmanPrice: 2
 	},
 	{
+		name: 'Bucket',
+		gpCost: 30,
+		ironmanPrice: 5
+	},
+	{
 		name: 'Cup of hot water',
 		aliases: ['cup of hot water', 'hot water'],
 		gpCost: 1500

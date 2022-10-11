@@ -1,5 +1,6 @@
 import { Message, TextChannel } from 'discord.js';
 import { roll, Time } from 'e';
+import LRUCache from 'lru-cache';
 
 import { CLIENT_ID, OWNER_IDS, production, SupportServer } from '../config';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
@@ -33,7 +34,7 @@ const rareRolesSrc: [string, number, string][] = [
 	['670212876832735244', 1_000_000, 'Third Age']
 ];
 
-const userCache = new Map<string, number>();
+const userCache = new LRUCache<string, number>({ max: 1000 });
 function rareRoles(msg: Message) {
 	if (!msg.guild || msg.guild.id !== SupportServer) {
 		return;
@@ -71,7 +72,7 @@ function rareRoles(msg: Message) {
 	}
 }
 
-const petCache = new Map<string, number>();
+const petCache = new LRUCache<string, number>({ max: 1000 });
 async function petMessages(msg: Message) {
 	if (!msg.guild) return;
 	const cachedSettings = untrustedGuildSettingsCache.get(msg.guild.id);
@@ -98,7 +99,7 @@ async function petMessages(msg: Message) {
 			msg.channel.send(`${msg.author} has a funny feeling like they would have been followed. ${pet.emoji}`);
 		} else {
 			msg.channel.send(`You have a funny feeling like you’re being followed, ${msg.author} ${pet.emoji}
-Type \`${cachedSettings.prefix ?? '+'}mypets\` to see your pets.`);
+Type \`/tools user mypets\` to see your pets.`);
 		}
 	}
 }

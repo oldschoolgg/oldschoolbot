@@ -116,11 +116,14 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 		}
 	});
 	if (!giveaway) {
-		return interaction.reply('Invalid giveaway.');
+		return interactionReply(interaction, { content: 'Invalid giveaway.', ephemeral: true });
 	}
 	if (split[1] === 'REPEAT') {
 		if (user.id !== giveaway.user_id) {
-			return interaction.reply("You cannot repeat other peoples' giveaways.");
+			return interactionReply(interaction, {
+				content: "You cannot repeat other peoples' giveaways.",
+				ephemeral: true
+			});
 		}
 
 		return runCommand({
@@ -143,22 +146,28 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 	}
 
 	if (giveaway.finish_date.getTime() < Date.now() || giveaway.completed) {
-		return interaction.reply('This giveaway has finished.');
+		return interactionReply(interaction, { content: 'This giveaway has finished.', ephemeral: true });
 	}
 
 	const action = split[1] === 'ENTER' ? 'ENTER' : 'LEAVE';
 
 	if (user.isIronman) {
-		return interaction.reply({ content: 'You are an ironman, you cannot enter giveaways.', ephemeral: true });
+		return interactionReply(interaction, {
+			content: 'You are an ironman, you cannot enter giveaways.',
+			ephemeral: true
+		});
 	}
 
 	if (user.id === giveaway.user_id) {
-		return interaction.reply({ content: 'You cannot join your own giveaway.', ephemeral: true });
+		return interactionReply(interaction, { content: 'You cannot join your own giveaway.', ephemeral: true });
 	}
 
 	if (action === 'ENTER') {
 		if (giveaway.users_entered.includes(user.id)) {
-			return interaction.reply({ content: 'You are already entered in this giveaway.', ephemeral: true });
+			return interactionReply(interaction, {
+				content: 'You are already entered in this giveaway.',
+				ephemeral: true
+			});
 		}
 		await prisma.giveaway.update({
 			where: {
@@ -171,10 +180,10 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 			}
 		});
 		updateGiveawayMessage(giveaway);
-		return interaction.reply({ content: 'You are now entered in this giveaway.', ephemeral: true });
+		return interactionReply(interaction, { content: 'You are now entered in this giveaway.', ephemeral: true });
 	}
 	if (!giveaway.users_entered.includes(user.id)) {
-		return interaction.reply({
+		return interactionReply(interaction, {
 			content: "You aren't entered in this giveaway, so you can't leave it.",
 			ephemeral: true
 		});
@@ -188,13 +197,14 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 		}
 	});
 	updateGiveawayMessage(giveaway);
-	return interaction.reply({ content: 'You left the giveaway.', ephemeral: true });
+	return interactionReply(interaction, { content: 'You left the giveaway.', ephemeral: true });
 }
 
 async function repeatTripHandler(user: MUser, interaction: ButtonInteraction) {
 	if (user.minionIsBusy) return 'Your minion is busy.';
 	const trips = await fetchRepeatTrips(interaction.user.id);
-	if (trips.length === 0) return interaction.reply("Couldn't find a trip to repeat.");
+	if (trips.length === 0)
+		return interactionReply(interaction, { content: "Couldn't find a trip to repeat.", ephemeral: true });
 	const id = interaction.customId;
 	const split = id.split('_');
 	const matchingActivity = trips.find(i => i.type === split[2]);
@@ -213,7 +223,7 @@ export async function interactionHook(interaction: Interaction) {
 
 	if (!isValidGlobalInteraction(id)) return;
 	if (user.isBusy || globalClient.isShuttingDown) {
-		return interaction.reply('You cannot use a command right now.');
+		return interactionReply(interaction, { content: 'You cannot use a command right now.', ephemeral: true });
 	}
 
 	const options = {
@@ -226,10 +236,10 @@ export async function interactionHook(interaction: Interaction) {
 
 	const cd = Cooldowns.get(userID, 'button', Time.Second * 3);
 	if (cd !== null) {
-		return interactionReply(
-			interaction,
-			`You're on cooldown from clicking buttons, please wait: ${formatDuration(cd, true)}.`
-		);
+		return interactionReply(interaction, {
+			content: `You're on cooldown from clicking buttons, please wait: ${formatDuration(cd, true)}.`,
+			ephemeral: true
+		});
 	}
 
 	const timeSinceMessage = Date.now() - new Date(interaction.message.createdTimestamp).getTime();
@@ -242,11 +252,12 @@ export async function interactionHook(interaction: Interaction) {
 		);
 	}
 	if (1 > 2 && timeSinceMessage > timeLimit) {
-		return interaction.reply(
-			`<@${userID}>, this button is too old, you can no longer use it. You can only only use buttons that are up to ${formatDuration(
+		return interactionReply(interaction, {
+			content: `<@${userID}>, this button is too old, you can no longer use it. You can only only use buttons that are up to ${formatDuration(
 				timeLimit
-			)} old, up to 300 hours for patrons.`
-		);
+			)} old, up to 300 hours for patrons.`,
+			ephemeral: true
+		});
 	}
 
 	async function doClue(tier: ClueTier['name']) {
@@ -306,7 +317,7 @@ export async function interactionHook(interaction: Interaction) {
 	}
 
 	if (id === 'BUY_BINGO_TICKET') {
-		return interaction.reply(await buyBingoTicketCommand(null, userID, 1));
+		return interactionReply(interaction, await buyBingoTicketCommand(null, userID, 1));
 	}
 
 	if (id === 'VIEW_BANK') {
@@ -319,7 +330,7 @@ export async function interactionHook(interaction: Interaction) {
 	}
 
 	if (minionIsBusy(user.id)) {
-		return interaction.reply(`${user.minionName} is busy.`);
+		return interactionReply(interaction, { content: `${user.minionName} is busy.`, ephemeral: true });
 	}
 
 	switch (id) {
@@ -375,7 +386,7 @@ export async function interactionHook(interaction: Interaction) {
 		}
 		case 'AUTO_FARMING_CONTRACT': {
 			const response = await autoContract(await mUserFetch(user.id), options.channelID, user.id);
-			if (response) interaction.reply(response);
+			if (response) interactionReply(interaction, response);
 			return;
 		}
 		case 'NEW_SLAYER_TASK': {
@@ -391,15 +402,16 @@ export async function interactionHook(interaction: Interaction) {
 			starCache.delete(user.id);
 			if (star && star.expiry > Date.now()) {
 				const str = await shootingStarsCommand(interaction.channelId, user, star);
-				return interaction.reply(str);
+				return interactionReply(interaction, str);
 			}
-			return interaction.reply(
-				`${
+			return interactionReply(interaction, {
+				content: `${
 					star && star.expiry < Date.now()
 						? 'The Crashed Star has expired!'
 						: `That Crashed Star was not discovered by ${user.minionName}.`
-				}`
-			);
+				}`,
+				ephemeral: true
+			});
 		}
 		default: {
 		}

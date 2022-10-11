@@ -8,8 +8,6 @@ import {
 } from 'discord.js';
 import { Time } from 'e';
 
-const paginatedMessageCache = new Set<PaginatedMessage>();
-
 const controlButtons: {
 	customId: string;
 	emoji: string;
@@ -57,8 +55,6 @@ export class PaginatedMessage {
 	constructor({ channel, pages }: { channel: TextChannel; pages: MessageEditOptions[] }) {
 		this.pages = pages;
 		this.channel = channel;
-
-		paginatedMessageCache.add(this);
 	}
 
 	render(): MessageEditOptions {
