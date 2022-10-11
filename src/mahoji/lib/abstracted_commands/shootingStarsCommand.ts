@@ -11,7 +11,7 @@ import { ItemBank } from '../../../lib/types';
 import { ActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, itemNameFromID } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import { calcMaxTripLength, patronMaxTripBonus } from '../../../lib/util/calcMaxTripLength';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { minionName } from '../../../lib/util/minionUtils';
 import { pickaxes } from '../../commands/mine';
@@ -334,5 +334,5 @@ export function handleTriggerShootingStar(
 		.setEmoji('⭐')
 		.setStyle(ButtonStyle.Secondary);
 	components.addComponents(button);
-	starCache.set(user.id, { ...star, expiry: Date.now() + Time.Minute * 2 });
+	starCache.set(user.id, { ...star, expiry: Date.now() + Time.Minute * 5 + patronMaxTripBonus(user) / 2 });
 }
