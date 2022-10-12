@@ -421,7 +421,11 @@ export const lotteryCommand: OSBMahojiCommand = {
 				amountOfTickets === 0 ? 0 : calcWhatPercent(amountOfTickets, totalTickets).toFixed(4)
 			}% chance of winning (will fluctuate based on you/others buying tickets.)
 
-This is a special lottery: all GP will be deleted, and the rewards are as follows:
+**This is a special lottery, the rules are:** 
+1. All GP will be deleted
+2. You can win a max of two times, after that if you win again the prize will be rerolled
+3. The rewards are as follows:
+
 ${LOTTERY_PRIZES_STRING}
 
 Top ticket holders: ${users
