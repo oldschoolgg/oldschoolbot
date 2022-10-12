@@ -81,13 +81,15 @@ export const runecraftTask: MinionTask = {
 				[tiara.id]: essenceQuantity
 			});
 
-		str += `\n\nYou received: ${loot}.`;
+			str += `\n\nYou received: ${loot}.`;
 
-		await transactItems({
-			userID: user.id,
-			collectionLog: true,
-			itemsToAdd: loot
-		});
+			await transactItems({
+				userID: user.id,
+				collectionLog: true,
+				itemsToAdd: loot
+			});
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
-	}}};
+			handleTripFinish(user, channelID, str, undefined, data, loot);
+		}
+	}
+};
