@@ -249,7 +249,10 @@ export const mineCommand: OSBMahojiCommand = {
 		channelID
 	}: CommandRunOptions<{ name: string; quantity?: number; powermine?: boolean }>) => {
 		const ore = Mining.Ores.find(
-			ore => stringMatches(ore.name, options.name) || stringMatches(ore.name.split(' ')[0], options.name)
+			ore =>
+				stringMatches(ore.id, options.name) ||
+				stringMatches(ore.name, options.name) ||
+				stringMatches(ore.name.split(' ')[0], options.name)
 		);
 
 		if (!ore) {

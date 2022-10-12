@@ -11,7 +11,7 @@ import { calcMaxRCQuantity } from '../../mahoji/mahojiSettings';
 export const runecraftTask: MinionTask = {
 	type: 'Runecraft',
 	async run(data: RunecraftActivityTaskOptions) {
-		const { runeID, essenceQuantity, userID, channelID, imbueCasts, duration, useStaminas, daeyaltEssence } = data;
+		const { runeID, essenceQuantity, userID, channelID, imbueCasts, duration, daeyaltEssence } = data;
 		const user = await mUserFetch(userID);
 
 		const rune = Runecraft.Runes.find(_rune => _rune.id === runeID)!;
@@ -67,24 +67,7 @@ export const runecraftTask: MinionTask = {
 				itemsToAdd: loot
 			});
 
-			handleTripFinish(
-				user,
-				channelID,
-				str,
-				[
-					'runecraft',
-					{
-						quantity: essenceQuantity,
-						rune: rune.name,
-						usestams: useStaminas,
-						daeyalt_essence: daeyaltEssence
-					},
-					true
-				],
-				undefined,
-				data,
-				loot
-			);
+			handleTripFinish(user, channelID, str, undefined, data, loot);
 		} else {
 			const xpReceived = essenceQuantity * tiara.xp;
 			let xpRes = `\n${await user.addXP({
@@ -98,23 +81,13 @@ export const runecraftTask: MinionTask = {
 				[tiara.id]: essenceQuantity
 			});
 
-			str += `\n\nYou received: ${loot}.`;
+		str += `\n\nYou received: ${loot}.`;
 
-			await transactItems({
-				userID: user.id,
-				collectionLog: true,
-				itemsToAdd: loot
-			});
+		await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
 
-			handleTripFinish(
-				user,
-				channelID,
-				str,
-				['runecraft', { essenceQuantity, rune: tiara.name }, true],
-				undefined,
-				data,
-				loot
-			);
-		}
-	}
-};
+		handleTripFinish(user, channelID, str, undefined, data, loot);
+	}}};

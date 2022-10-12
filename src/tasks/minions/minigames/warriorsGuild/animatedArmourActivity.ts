@@ -25,14 +25,6 @@ export const animatedArmorTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			['activities', { warriors_guild: { action: 'tokens', quantity } }, true],
-			undefined,
-			data,
-			loot
-		);
+		handleTripFinish(user, channelID, str, undefined, data, loot);
 	}
 };

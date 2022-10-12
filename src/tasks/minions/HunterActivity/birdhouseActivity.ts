@@ -140,7 +140,7 @@ export const birdHouseTask: MinionTask = {
 				str += `\n${user.minionName} tells you to come back after your birdhouses are full!`;
 			}
 
-			handleTripFinish(user, channelID, str, undefined, undefined, data, loot);
+			handleTripFinish(user, channelID, str, undefined, data, loot);
 		}
 	}
 };

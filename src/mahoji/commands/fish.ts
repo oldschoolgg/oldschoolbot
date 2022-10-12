@@ -49,7 +49,9 @@ export const fishCommand: OSBMahojiCommand = {
 
 		const fish = Fishing.Fishes.find(
 			fish =>
-				stringMatches(fish.name, options.name) || fish.alias?.some(alias => stringMatches(alias, options.name))
+				stringMatches(fish.id, options.name) ||
+				stringMatches(fish.name, options.name) ||
+				fish.alias?.some(alias => stringMatches(alias, options.name))
 		);
 		if (!fish) return 'Thats not a valid fish to catch.';
 
@@ -119,6 +121,14 @@ export const fishCommand: OSBMahojiCommand = {
 				-0.000_541_351 * user.skillLevel(SkillsEnum.Fishing) ** 2 +
 					0.089_066_3 * user.skillLevel(SkillsEnum.Fishing) -
 					2.681_53
+			);
+		}
+
+		if (user.allItemsOwned().has('Fish sack barrel') || user.allItemsOwned().has('Fish barrel')) {
+			boosts.push(
+				`+9 trip minutes for having a ${
+					user.allItemsOwned().has('Fish sack barrel') ? 'Fish sack barrel' : 'Fish barrel'
+				}`
 			);
 		}
 

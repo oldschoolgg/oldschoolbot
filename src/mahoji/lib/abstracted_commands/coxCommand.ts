@@ -107,7 +107,7 @@ export async function coxCommand(channelID: string, user: MUser, type: 'solo' | 
 		ironmanAllowed: true,
 		message: `${user.usernameOrMention} is hosting a ${
 			isChallengeMode ? '**Challenge mode** ' : ''
-		}Chambers of Xeric mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
+		}Chambers of Xeric mass! Use the buttons below to join/leave.`,
 		customDenier: async user => {
 			if (!user.user.minion_hasBought) {
 				return [true, "you don't have a minion."];

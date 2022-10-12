@@ -81,14 +81,6 @@ export const sepulchreTask: MinionTask = {
 			previousCL
 		});
 
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			['minigames', { sepulchre: { start: {} } }, true],
-			image.file.attachment,
-			data,
-			itemsAdded
-		);
+		handleTripFinish(user, channelID, str, image.file.attachment, data, itemsAdded);
 	}
 };
