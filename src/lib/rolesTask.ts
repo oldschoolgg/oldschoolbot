@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 
 import { production, SupportServer } from '../config';
 import { ClueTiers } from '../lib/clues/clueTiers';
-import { BOT_TYPE, Roles, usernameCache } from '../lib/constants';
+import { Roles, usernameCache } from '../lib/constants';
 import { getCollectionItems } from '../lib/data/Collections';
 import { Minigames } from '../lib/settings/minigames';
 import { prisma } from '../lib/settings/prisma';
@@ -127,9 +127,6 @@ async function addRoles({
 export async function runRolesTask() {
 	const g = globalClient.guilds.cache.get(SupportServer);
 	if (!g) throw new Error('No support guild');
-	if (BOT_TYPE === 'OSB' && production) {
-		await g.members.fetch();
-	}
 	const skillVals = Object.values(Skills);
 
 	let result = '';

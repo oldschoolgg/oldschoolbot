@@ -3,6 +3,7 @@ import { ChatInputCommandInteraction } from 'discord.js';
 import { noOp } from 'e';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
+import { BitField } from '../../../lib/constants';
 import { roboChimpUserFetch } from '../../../lib/roboChimp';
 import { prisma } from '../../../lib/settings/prisma';
 import { assert } from '../../../lib/util';
@@ -54,7 +55,26 @@ Type \`confirm permanent ironman\` if you understand the above information, and 
 		| 'pets'
 		| 'RSN'
 		| 'patreon_id'
-		| 'github_id';
+		| 'github_id'
+		| 'bitfield';
+
+	const bitFieldsToKeep: BitField[] = [
+		BitField.IsPatronTier1,
+		BitField.IsPatronTier2,
+		BitField.IsPatronTier3,
+		BitField.IsPatronTier4,
+		BitField.IsPatronTier5,
+		BitField.isModerator,
+		BitField.isContributor,
+		BitField.BypassAgeRestriction,
+		BitField.HasPermanentEventBackgrounds,
+		BitField.HasPermanentTierOne,
+		BitField.DisabledRandomEvents,
+		BitField.AlwaysSmallBank,
+		BitField.IsWikiContributor,
+		BitField.IsPatronTier6
+	];
+
 	const createOptions: Required<Pick<Prisma.UserCreateInput, KeysThatArentReset>> = {
 		id: user.id,
 		main_account: mUser.main_account,
@@ -68,7 +88,8 @@ Type \`confirm permanent ironman\` if you understand the above information, and 
 		RSN: mUser.RSN,
 		premium_balance_expiry_date: mUser.premium_balance_expiry_date,
 		premium_balance_tier: mUser.premium_balance_tier,
-		pets: mUser.pets as ItemBank
+		pets: mUser.pets as ItemBank,
+		bitfield: bitFieldsToKeep.filter(i => user.bitfield.includes(i))
 	};
 
 	try {

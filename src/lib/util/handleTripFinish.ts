@@ -32,7 +32,6 @@ import {
 	makeOpenCasketButton,
 	makeRepeatTripButton
 } from './globalInteractions';
-import { taskCanBeRepeated } from './repeatStoredTrip';
 import { sendToChannelID } from './webhook';
 
 export const collectors = new Map<string, MessageCollector>();
@@ -305,7 +304,7 @@ export async function handleTripFinish(
 	if (!channelIsSendable(channel)) return;
 
 	const components = new ActionRowBuilder<ButtonBuilder>();
-	if (taskCanBeRepeated(data.type)) components.addComponents(makeRepeatTripButton());
+	components.addComponents(makeRepeatTripButton());
 	const casketReceived = loot ? ClueTiers.find(i => loot?.has(i.id)) : undefined;
 	if (casketReceived) components.addComponents(makeOpenCasketButton(casketReceived));
 	if (perkTier > PerkTier.One) {

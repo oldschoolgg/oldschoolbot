@@ -160,6 +160,13 @@ export const fishCommand: OSBMahojiCommand = {
 				break;
 			}
 		}
+		if (user.allItemsOwned().has('Fish sack barrel') || user.allItemsOwned().has('Fish barrel')) {
+			boosts.push(
+				`+9 trip minutes for having a ${
+					user.allItemsOwned().has('Fish sack barrel') ? 'Fish sack barrel' : 'Fish barrel'
+				}`
+			);
+		}
 
 		let { quantity } = options;
 		if (!quantity) quantity = Math.floor(maxTripLength / scaledTimePerFish);

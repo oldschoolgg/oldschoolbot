@@ -54,6 +54,7 @@ export interface Log {
 	level: number;
 	xp: number;
 	id: number;
+	lootTable?: LootTable;
 	name: string;
 	aliases?: string[];
 	findNewTreeTime: number;
@@ -65,6 +66,7 @@ export interface Log {
 	petChance?: number;
 	qpRequired: number;
 	clueScrollChance?: number;
+	clueNestsOnly?: boolean;
 }
 
 export interface Burnable {
