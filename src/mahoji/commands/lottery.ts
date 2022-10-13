@@ -423,7 +423,7 @@ export const lotteryCommand: OSBMahojiCommand = {
 
 **This is a special lottery, the rules are:** 
 1. All GP will be deleted
-2. You can win a max of two times, after that if you win again the prize will be rerolled
+2. No limit to the number of prizes you can win
 3. The rewards are as follows:
 
 ${LOTTERY_PRIZES_STRING}
