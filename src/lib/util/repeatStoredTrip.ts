@@ -216,7 +216,9 @@ export const tripHandlers = {
 		commandName: 'runecraft',
 		args: (data: RunecraftActivityTaskOptions) => ({
 			rune: itemNameFromID(data.runeID),
-			quantity: data.essenceQuantity
+			quantity: data.essenceQuantity,
+			daeyalt_essence: data.daeyaltEssence,
+			usestams: data.useStaminas
 		})
 	},
 	[activity_type_enum.DriftNet]: {

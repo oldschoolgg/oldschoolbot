@@ -24,7 +24,7 @@ export async function onMessage(msg: Message) {
 						title: 'Your Bank',
 						user,
 						flags: {
-							page: 1
+							page: 0
 						}
 					})
 				).file.attachment
