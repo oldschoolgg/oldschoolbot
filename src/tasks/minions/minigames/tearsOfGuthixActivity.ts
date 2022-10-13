@@ -34,7 +34,7 @@ export const togTask: MinionTask = {
 		const streams = Math.floor(qp / 15);
 		let tears = 0;
 		for (let stream = 0; stream < streams; stream++) {
-			const percentCollected = randInt(40, 95); // Collect 40 - 95% of each stream
+			const percentCollected = randInt(80, 100); // Collect 80 - 100% of each stream, depending on RNG of spawn and Runelite
 			tears += Math.ceil(15 * (percentCollected / 100));
 		}
 

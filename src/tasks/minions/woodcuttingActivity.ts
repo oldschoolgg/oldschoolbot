@@ -37,7 +37,7 @@ export const woodcuttingTask: MinionTask = {
 			xpReceived += amountToAdd;
 			bonusXP += amountToAdd;
 		} else {
-			// For each lumberjack item, check if they have it, give its' XP boost if so.
+			// For each lumberjack item, check if they have it, give its XP boost if so.
 			for (const [itemID, bonus] of Object.entries(Woodcutting.lumberjackItems)) {
 				if (user.gear.skilling.hasEquipped([parseInt(itemID)], false)) {
 					const amountToAdd = Math.floor(xpReceived * (bonus / 100));
@@ -55,17 +55,21 @@ export const woodcuttingTask: MinionTask = {
 
 		let loot = new Bank();
 		if (!powerchopping) {
-			if (!log.hasNoLoot) loot.add(log.id, quantity);
-			const logItem = Firemaking.Burnables.find(i => i.inputLogs === log.id);
-			if (user.hasEquipped('Inferno adze') && logItem) {
-				loot.remove(log.id, quantity);
-				loot.add('Ashes', quantity);
-				xpRes += '\n';
-				xpRes += await user.addXP({
-					skillName: SkillsEnum.Firemaking,
-					amount: logItem.xp * quantity,
-					duration
-				});
+			if (log.lootTable) {
+				loot.add(log.lootTable.roll(quantity));
+			} else {
+				loot.add(log.id, quantity);
+				const logItem = Firemaking.Burnables.find(i => i.inputLogs === log.id);
+				if (user.hasEquipped('Inferno adze') && logItem) {
+					loot.remove(log.id, quantity);
+					loot.add('Ashes', quantity);
+					xpRes += '\n';
+					xpRes += await user.addXP({
+						skillName: SkillsEnum.Firemaking,
+						amount: logItem.xp * quantity,
+						duration
+					});
+				}
 			}
 		}
 
@@ -74,7 +78,9 @@ export const woodcuttingTask: MinionTask = {
 		}
 
 		// Add clue scrolls
-		if (clueChance) addSkillingClueToLoot(user, SkillsEnum.Woodcutting, quantity, clueChance, loot);
+		if (clueChance) {
+			addSkillingClueToLoot(user, SkillsEnum.Woodcutting, quantity, clueChance, loot, log.clueNestsOnly);
+		}
 
 		let str = `${user}, ${user.minionName} finished woodcutting. ${xpRes}`;
 

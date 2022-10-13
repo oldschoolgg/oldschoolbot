@@ -116,6 +116,8 @@ export const infernoTask: MinionTask = {
 
 		if (deathTime) {
 			if (isOnTask) {
+				text += '**Slayer task cancelled.**\n';
+
 				await prisma.slayerTask.update({
 					where: {
 						id: usersTask.currentTask!.id
@@ -128,14 +130,18 @@ export const infernoTask: MinionTask = {
 			}
 		}
 
-		if (isOnTask) {
-			const points = await calculateSlayerPoints(user.user.slayer_last_task, usersTask.slayerMaster!, user);
+		if (isOnTask && !deathTime) {
 			const { newUser } = await user.update({
-				slayer_points: {
-					increment: points
-				},
 				slayer_task_streak: {
 					increment: 1
+				}
+			});
+
+			const currentStreak = newUser.slayer_task_streak;
+			const points = await calculateSlayerPoints(currentStreak, usersTask.slayerMaster!, user);
+			const secondNewUser = await user.update({
+				slayer_points: {
+					increment: points
 				}
 			});
 
@@ -145,11 +151,11 @@ export const infernoTask: MinionTask = {
 				},
 				data: {
 					quantity_remaining: 0,
-					skipped: deathTime ? true : false
+					skipped: false
 				}
 			});
 
-			text += `\n\n**You've completed ${newUser.slayer_task_streak} tasks and received ${points} points; giving you a total of ${newUser.slayer_points}; return to a Slayer master.**`;
+			text += `\n\n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${secondNewUser.newUser.slayer_points}; return to a Slayer master.**`;
 		}
 
 		if (unusedItems.length > 0) {
@@ -164,12 +170,12 @@ export const infernoTask: MinionTask = {
 		}
 
 		if (diedPreZuk) {
-			text = `You died ${formatDuration(deathTime!)} into your attempt, before you reached Zuk.`;
+			text += `You died ${formatDuration(deathTime!)} into your attempt, before you reached Zuk.`;
 			chatText = `You die before you even reach TzKal-Zuk...atleast you tried, I give you ${baseBank.amount(
 				'Tokkul'
 			)}x Tokkul.`;
 		} else if (diedZuk) {
-			text = `You died ${formatDuration(deathTime!)} into your attempt, during the Zuk fight.`;
+			text += `You died ${formatDuration(deathTime!)} into your attempt, during the Zuk fight.`;
 			chatText = `You died to Zuk. Nice try JalYt, for your effort I give you ${baseBank.amount(
 				'Tokkul'
 			)}x Tokkul.`;

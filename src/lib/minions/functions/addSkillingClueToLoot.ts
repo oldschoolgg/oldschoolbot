@@ -18,7 +18,8 @@ export default function addSkillingClueToLoot(
 	skill: SkillsEnum,
 	quantity: number,
 	clueChance: number,
-	loot: Bank
+	loot: Bank,
+	clueNestsOnly?: boolean
 ) {
 	const userLevel = user.skillLevel(skill);
 	const chance = Math.floor(clueChance / (100 + userLevel));
@@ -26,7 +27,7 @@ export default function addSkillingClueToLoot(
 	const cluesTotalWeight = addArrayOfNumbers(clues.map(c => c[1]));
 
 	for (let i = 0; i < quantity; i++) {
-		if (skill === SkillsEnum.Woodcutting && roll(256)) {
+		if (skill === SkillsEnum.Woodcutting && !clueNestsOnly && roll(256)) {
 			loot.add(nestTable.roll());
 		}
 

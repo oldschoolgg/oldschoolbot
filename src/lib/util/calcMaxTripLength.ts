@@ -24,7 +24,7 @@ export function calcMaxTripLength(user: MUser, activity?: activity_type_enum) {
 
 	switch (activity) {
 		case 'Fishing':
-			if (user.hasEquipped('Fish sack')) {
+			if (user.allItemsOwned().has('Fish sack barrel') || user.allItemsOwned().has('Fish barrel')) {
 				max += Time.Minute * 9;
 			}
 			break;

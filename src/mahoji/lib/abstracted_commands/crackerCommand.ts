@@ -30,7 +30,7 @@ export async function crackerCommand({
 }) {
 	const otherPerson = await mUserFetch(otherPersonID);
 	const owner = await mUserFetch(ownerID);
-	if (owner.isIronman && owner === otherPerson) {
+	if (owner.isIronman && owner.id === otherPerson.id) {
 		await owner.removeItemsFromBank(new Bank().add('Christmas cracker', 1));
 		const loot = partyHatTableRoll();
 		await owner.addItemsToBank({ items: loot, collectionLog: true });

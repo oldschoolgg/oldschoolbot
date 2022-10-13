@@ -784,7 +784,9 @@ async function killCommand(user: MUser, channelID: string, str: string) {
 		return `${tameName(tame)} is busy.`;
 	}
 	//
-	const monster = tameKillableMonsters.find(i => stringMatches(i.name, str));
+	const monster = tameKillableMonsters.find(
+		i => stringMatches(i.name, str) || i.aliases.some(alias => stringMatches(alias, str))
+	);
 	if (!monster) return "That's not a valid monster.";
 	if (monster.mustBeAdult && tame.growth_stage !== tame_growth.adult) {
 		return 'Only fully grown tames can kill this monster.';
@@ -1237,7 +1239,12 @@ export const tamesCommand: OSBMahojiCommand = {
 					required: true,
 					autocomplete: async (value: string) => {
 						return tameKillableMonsters
-							.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
+							.filter(i =>
+								!value
+									? true
+									: i.name.toLowerCase().includes(value.toLowerCase()) ||
+									  i.aliases.some(alias => stringMatches(alias, value))
+							)
 							.map(i => ({ name: i.name, value: i.name }));
 					}
 				}

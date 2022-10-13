@@ -14,7 +14,7 @@ export const miniMinigames: { id: number; name: string; items: number[]; emoji: 
 		name: 'Pumpkin-patch Pumpkin-smash',
 		items: resolveItems(['Pumpkin seed', 'Dirty hoe']),
 		emoji: '764130154662199347',
-		extraLoot: new LootTable().oneIn(2, 'Pumpkin seed').tertiary(111, 'Pumpkinpole')
+		extraLoot: new LootTable().tertiary(111, 'Pumpkinpole')
 	},
 	{
 		id: 2,
