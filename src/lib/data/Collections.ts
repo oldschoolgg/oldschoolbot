@@ -1240,6 +1240,24 @@ export const allCollectionLogs: ICollection = {
 				]),
 				counts: false
 			},
+			'Halloween 2022': {
+				alias: ['hween2022', 'halloween 2022'],
+				items: resolveItems([
+					'Dirty hoe',
+					'Boo-balloon',
+					'Twinkly topper',
+					'Broomstick',
+					'Spooky graceful hood',
+					'Spooky graceful top',
+					'Spooky graceful legs',
+					'Spooky graceful cape',
+					'Spooky graceful boots',
+					'Spooky graceful gloves',
+					'Kuro',
+					'Spooky box'
+				]),
+				counts: false
+			},
 			'Christmas 2021': {
 				alias: ['xmas 2021', 'christmas 2021'],
 				items: resolveItems([
