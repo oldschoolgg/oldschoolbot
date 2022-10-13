@@ -4,6 +4,7 @@ import { percentChance, randInt, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
+import { Emoji, Events } from '../../../lib/constants';
 import addSkillingClueToLoot from '../../../lib/minions/functions/addSkillingClueToLoot';
 import { determineMiningTime } from '../../../lib/skilling/functions/determineMiningTime';
 import { Ore, SkillsEnum } from '../../../lib/skilling/types';
@@ -278,6 +279,7 @@ export async function shootingStarsActivity(data: ShootingStarsData) {
 	const star = starSizes.find(i => i.size === data.size)!;
 	const { usersWith } = data;
 	const loot = new Bank(data.lootItems);
+	const userMiningLevel = user.skillLevel(SkillsEnum.Mining);
 
 	await user.addItemsToBank({ items: loot, collectionLog: true });
 	const xpStr = await user.addXP({
@@ -291,6 +293,12 @@ export async function shootingStarsActivity(data: ShootingStarsData) {
 	} other players mining with you.\nYou received ${loot}.\n${xpStr}`;
 	if (loot.has('Rock golem')) {
 		str += "\nYou have a funny feeling you're being followed...";
+		globalClient.emit(
+			Events.ServerNotification,
+			`${Emoji.Mining} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received ${
+				loot.amount('Rock golem') > 1 ? `${loot.amount('Rock golem')}x ` : 'a'
+			} Rock golem while mining a fallen Shooting Star at level ${userMiningLevel} Mining!`
+		);
 	}
 
 	handleTripFinish(user, data.channelID, str, undefined, data, null);
