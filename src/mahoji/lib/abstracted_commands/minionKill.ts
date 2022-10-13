@@ -652,8 +652,8 @@ export async function monsterInfo(user: MUser, name: string): CommandResponse {
 	if (monster.healAmountNeeded) {
 		const [hpNeededPerKill] = calculateMonsterFood(monster, user);
 		if (hpNeededPerKill === 0) {
-			timeToFinish = reduceNumByPercent(timeToFinish, 4);
-			hpString = '4% boost for no food';
+			timeToFinish = reduceNumByPercent(timeToFinish, 5);
+			hpString = '5% boost for no food';
 		}
 	}
 	const maxCanKillSlay = Math.floor(calcMaxTripLength(user, 'MonsterKilling') / reduceNumByPercent(timeToFinish, 15));
