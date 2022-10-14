@@ -422,9 +422,10 @@ export const lotteryCommand: OSBMahojiCommand = {
 			}% chance of winning (will fluctuate based on you/others buying tickets.)
 
 **This is a special lottery, the rules are:** 
-1. All GP will be deleted
-2. No limit to the number of prizes you can win
-3. The rewards are as follows:
+1. Tickets purchasable with GP Only
+2. All GP entered will be deleted
+3. There is no limit to the number of prizes you can win
+4. There will be 12 spins, each winner will win the prize specified at the time of the roll.
 
 ${LOTTERY_PRIZES_STRING}
 
