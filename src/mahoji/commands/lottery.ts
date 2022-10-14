@@ -10,12 +10,29 @@ import { prisma } from '../../lib/settings/prisma';
 import Firemaking from '../../lib/skilling/skills/firemaking';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import { assert, isSuperUntradeable } from '../../lib/util';
+import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 import { handleMahojiConfirmation, mahojiClientSettingsFetch, updateLegacyUserBankSetting } from '../mahojiSettings';
+
+const LOTTERY_PRIZES = [
+	new Bank().add('Cob'),
+	new Bank().add('Corgi'),
+	new Bank().add('Craig'),
+	new Bank().add('Flappy'),
+	new Bank().add('Flappy'),
+	new Bank().add('Mini Pumpkinhead').add('Gregoyle'),
+	new Bank().add('Hoppy').add('Seer'),
+	new Bank().add('Hoppy').add('Gregoyle'),
+	new Bank().add('Seer').add('Blackswan').add('Gregoyle'),
+	new Bank().add('Seer').add('Buzz').add('Leia'),
+	new Bank().add('Seer').add('Buzz').add('Leia'),
+	new Bank().add('Seer').add('Buzz').add('Leia')
+];
+const LOTTERY_PRIZES_STRING = LOTTERY_PRIZES.map((prize, idx) => `**${formatOrdinal(idx + 1)}**: ${prize}`).join('\n');
 
 const specialPricesBeforeMultiplying = new Bank()
 	.add('Monkey egg', 4_000_000_000)
@@ -242,6 +259,19 @@ export const lotteryCommand: OSBMahojiCommand = {
 	options: [
 		{
 			type: ApplicationCommandOptionType.Subcommand,
+			name: 'buy_tickets',
+			description: 'Deposit items into the lottery to receive tickets.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Integer,
+					name: 'quantity',
+					description: 'The number of tickets to buy',
+					required: true
+				}
+			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
 			name: 'deposit_items',
 			description: 'Deposit items into the lottery to receive tickets.',
 			options: [
@@ -278,6 +308,7 @@ export const lotteryCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{
 		info?: {};
 		prices?: {};
+		buy_tickets?: { quantity: number };
 		deposit_items?: { items?: string; filter?: string; search?: string };
 	}>) => {
 		const active = await isLotteryActive();
@@ -286,10 +317,37 @@ export const lotteryCommand: OSBMahojiCommand = {
 		if (user.isIronman) return 'Ironmen cannot partake in the Lottery.';
 
 		if (options.prices) {
+			if (2 > 1) return 'This lottery is for **GP only**. Just use `/lottery buy_tickets`';
 			return { files: [(await makeBankImage({ bank: parsedPriceBank, title: 'Prices' })).file] };
 		}
+		if (options.buy_tickets) {
+			const amountOfTickets = options.buy_tickets.quantity;
+			if (amountOfTickets < 1) {
+				return 'You need to buy at least one ticket.';
+			}
+			const totalPrice = amountOfTickets * VALUE_PER_TICKET;
+			const bankToSell = new Bank().add('Coins', totalPrice);
 
+			if (!user.owns(bankToSell)) return 'You do not have enough GP to buy these tickets.';
+
+			await handleMahojiConfirmation(
+				interaction,
+				`${user.mention}, are you sure you want to add ${bankToSell} to the bank lottery - you'll receive **${amountOfTickets} bank lottery tickets**.
+
+**WARNING:** This lottery is only for the discontinued pets on offer. All GP added will be **deleted**. Check \`/lottery info\` to see full prize list.`
+			);
+
+			await user.sync();
+			if (!user.owns(bankToSell)) return "You don't have enough GP to buy these tickets.";
+			await user.removeItemsFromBank(bankToSell);
+
+			await updateLegacyUserBankSetting(user.id, 'lottery_input', bankToSell);
+
+			return `You put ${bankToSell} to the bank lottery, and received ${amountOfTickets}x bank lottery tickets.`;
+		}
 		if (options.deposit_items) {
+			if (2 > 1) return 'This lottery is for **GP only**. Try `/lottery buy_tickets`';
+
 			const bankToSell = parseBank({
 				inputStr: options.deposit_items.items,
 				inputBank: user.bankWithGP,
@@ -359,18 +417,23 @@ export const lotteryCommand: OSBMahojiCommand = {
 		const { totalLoot, totalTickets, users } = await getLotteryBank();
 
 		return {
-			content: `There have been ${totalTickets} purchased, you have ${amountOfTickets}x tickets, and a ${
+			content: `There have been ${totalTickets.toLocaleString()} purchased, you have ${amountOfTickets.toLocaleString()}x tickets, and a ${
 				amountOfTickets === 0 ? 0 : calcWhatPercent(amountOfTickets, totalTickets).toFixed(4)
 			}% chance of winning (will fluctuate based on you/others buying tickets.)
 
-This is a special lottery: the reward is ONE smokey. All other items/GP will be deleted from the game as an item sink.
+**This is a special lottery, the rules are:** 
+1. All GP will be deleted
+2. No limit to the number of prizes you can win
+3. The rewards are as follows:
+
+${LOTTERY_PRIZES_STRING}
 
 Top ticket holders: ${users
 				.slice(0, 10)
-				.map(i => `${userMention(i.id)} has ${i.tickets} tickets`)
+				.map(i => `${userMention(i.id)} has ${i.tickets.toLocaleString()} tickets`)
 				.join(',')}`,
 			files: [
-				(await makeBankImage({ bank: totalLoot, title: 'Smokey Lottery' })).file,
+				(await makeBankImage({ bank: totalLoot, title: 'DC Pet Lottery' })).file,
 				(await makeBankImage({ bank: input, title: 'Your Lottery Input' })).file
 			],
 			allowedMentions: {
