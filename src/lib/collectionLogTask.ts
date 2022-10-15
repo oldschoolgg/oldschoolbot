@@ -231,7 +231,7 @@ class CollectionLogTask {
 		ctx.save();
 		ctx.font = '16px RuneScape Bold 12';
 		ctx.fillStyle = '#FF981F';
-		const title = `${user.usernameOrMention}'s ${
+		const title = `${user.rawUsername}'s ${
 			type === 'sacrifice'
 				? 'Sacrifice'
 				: type === 'collection'
