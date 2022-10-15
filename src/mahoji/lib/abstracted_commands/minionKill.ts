@@ -649,11 +649,13 @@ export async function monsterInfo(user: MUser, name: string): CommandResponse {
 		timeToFinish = reduceNumByPercent(timeToFinish, percent);
 	}
 	let hpString = '';
+	// Find best eatable boost and add 1% extra
+	const noFoodBoost = Math.floor(Math.max(...Eatables.map(eatable => eatable.pvmBoost ?? 0)) + 1);
 	if (monster.healAmountNeeded) {
 		const [hpNeededPerKill] = calculateMonsterFood(monster, user);
 		if (hpNeededPerKill === 0) {
-			timeToFinish = reduceNumByPercent(timeToFinish, 4);
-			hpString = '4% boost for no food';
+			timeToFinish = reduceNumByPercent(timeToFinish, noFoodBoost);
+			hpString = `${noFoodBoost}% boost for no food`;
 		}
 	}
 	const maxCanKillSlay = Math.floor(calcMaxTripLength(user, 'MonsterKilling') / reduceNumByPercent(timeToFinish, 15));
