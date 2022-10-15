@@ -36,9 +36,12 @@ export const docsCommand: OSBMahojiCommand = {
 	run: async ({ options }: CommandRunOptions<{ query: string }>) => {
 		const liveDocs = await getAllDocsResults();
 		const validDoc = liveDocs.find(item => stringMatches(item.path, options.query));
+		const defaultDoc = DefaultDocsResults.find(item => stringMatches(item.value, options.query));
 
-		if (!validDoc && options.query !== '') return 'That article was not found.';
+		if (!validDoc && options.query !== '' && !defaultDoc) return 'That article was not found.';
 
-		return `${GITBOOK_URL}${options.query}`;
+		if (defaultDoc) return `<${GITBOOK_URL}${options.query}>`;
+
+		return `${validDoc?.body.replace(/[\r\n]{2,}/gs, '\n')} \nRead more: <${GITBOOK_URL}${options.query}>`;
 	}
 };
