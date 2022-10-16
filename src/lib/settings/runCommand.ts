@@ -1,0 +1,147 @@
+import {
+	APIInteractionGuildMember,
+	ButtonInteraction,
+	ChatInputCommandInteraction,
+	GuildMember,
+	User
+} from 'discord.js';
+import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+
+import { CommandArgs } from '../../mahoji/lib/inhibitors';
+import { postCommand } from '../../mahoji/lib/postCommand';
+import { preCommand } from '../../mahoji/lib/preCommand';
+import { convertMahojiCommandToAbstractCommand } from '../../mahoji/lib/util';
+import { channelIsSendable } from '../util';
+import { interactionReply } from '../util/interactionReply';
+import { logError } from '../util/logError';
+
+export interface RunCommandArgs {
+	commandName: string;
+	args: CommandArgs;
+	user: User | MUser;
+	channelID: string;
+	member: APIInteractionGuildMember | GuildMember | null;
+	isContinue?: boolean;
+	bypassInhibitors?: true;
+	guildID: string | undefined | null;
+	interaction: ButtonInteraction | ChatInputCommandInteraction;
+}
+
+export async function runCommand({
+	commandName,
+	args,
+	isContinue,
+	bypassInhibitors,
+	channelID,
+	guildID,
+	user,
+	member,
+	interaction
+}: RunCommandArgs): Promise<null | CommandResponse> {
+	const channel = globalClient.channels.cache.get(channelID.toString());
+	if (!channel || !channelIsSendable(channel)) return null;
+	const mahojiCommand = globalClient.mahojiClient.commands.values.find(c => c.name === commandName);
+	if (!mahojiCommand) throw new Error('No command found');
+	const abstractCommand = convertMahojiCommandToAbstractCommand(mahojiCommand);
+
+	let error: Error | null = null;
+	let inhibited = false;
+	try {
+		const inhibitedReason = await preCommand({
+			abstractCommand,
+			userID: user.id,
+			channelID,
+			guildID,
+			bypassInhibitors: bypassInhibitors ?? false,
+			apiUser: null
+		});
+
+		if (inhibitedReason) {
+			inhibited = true;
+			if (inhibitedReason.silent) return null;
+
+			await interaction.reply({
+				content:
+					typeof inhibitedReason.reason! === 'string'
+						? inhibitedReason.reason
+						: inhibitedReason.reason!.content!,
+				ephemeral: true
+			});
+			return null;
+		}
+
+		if (Array.isArray(args)) throw new Error(`Had array of args for mahoji command called ${commandName}`);
+		const result = await runMahojiCommand({
+			options: args,
+			commandName,
+			guildID,
+			channelID,
+			userID: user.id,
+			member,
+			user,
+			interaction
+		});
+		if (result && !interaction.replied) await interactionReply(interaction, result);
+		return result;
+	} catch (err: any) {
+		if (typeof err === 'string') {
+			if (channelIsSendable(channel)) {
+				channel.send(err);
+				return null;
+			}
+		}
+		error = err as Error;
+	} finally {
+		try {
+			await postCommand({
+				abstractCommand,
+				userID: user.id,
+				guildID,
+				channelID,
+				args,
+				error,
+				isContinue: isContinue ?? false,
+				inhibited
+			});
+		} catch (err) {
+			logError(err);
+		}
+	}
+
+	return null;
+}
+
+export async function runMahojiCommand({
+	channelID,
+	userID,
+	guildID,
+	commandName,
+	options,
+	user,
+	interaction
+}: {
+	interaction: ChatInputCommandInteraction | ButtonInteraction;
+	commandName: string;
+	options: Record<string, unknown>;
+	channelID: string;
+	userID: string;
+	guildID: string | undefined | null;
+	user: User | MUser;
+	member: APIInteractionGuildMember | GuildMember | null;
+}) {
+	const mahojiCommand = globalClient.mahojiClient.commands.values.find(c => c.name === commandName);
+	if (!mahojiCommand) {
+		throw new Error(`No mahoji command found for ${commandName}`);
+	}
+
+	return mahojiCommand.run({
+		userID,
+		guildID: guildID ? guildID : undefined,
+		channelID,
+		options,
+		user: globalClient.users.cache.get(user.id)!,
+		member: guildID ? globalClient.guilds.cache.get(guildID)?.members.cache.get(user.id) : undefined,
+		client: globalClient.mahojiClient,
+		interaction: interaction as ChatInputCommandInteraction
+	});
+}

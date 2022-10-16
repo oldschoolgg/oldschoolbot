@@ -5,7 +5,7 @@ import { itemNameMap } from 'oldschooljs/dist/structures/Items';
 
 import { filterableTypes } from '../data/filterables';
 import { evalMathExpression } from '../expressionParser';
-import { cleanString, stringMatches } from '../util';
+import { cleanString, stringMatches } from '../util/cleanString';
 import itemIsTradeable from './itemIsTradeable';
 
 const { floor, max, min } = Math;

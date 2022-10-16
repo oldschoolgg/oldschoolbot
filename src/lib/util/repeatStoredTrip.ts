@@ -7,7 +7,7 @@ import { PvMMethod } from '../constants';
 import { SlayerActivityConstants } from '../minions/data/combatConstants';
 import { darkAltarRunes } from '../minions/functions/darkAltarCommand';
 import { prisma } from '../settings/prisma';
-import { runCommand } from '../settings/settings';
+import { runCommand } from '../settings/runCommand';
 import {
 	ActivityTaskOptionsWithQuantity,
 	AgilityActivityTaskOptions,

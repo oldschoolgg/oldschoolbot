@@ -3,7 +3,7 @@ import { Monsters } from 'oldschooljs';
 
 import { PvMMethod } from '../../../lib/constants';
 import killableMonsters from '../../../lib/minions/data/killableMonsters';
-import { runCommand } from '../../../lib/settings/settings';
+import { runCommand } from '../../../lib/settings/runCommand';
 import { autoslayModes, AutoslayOptionsEnum } from '../../../lib/slayer/constants';
 import { getCommonTaskName, getUsersCurrentSlayerInfo, SlayerMasterEnum } from '../../../lib/slayer/slayerUtil';
 import { hasSkillReqs, isGuildChannel, stringMatches } from '../../../lib/util';

@@ -1,24 +1,14 @@
 import { calcWhatPercent, percentChance, reduceNumByPercent, Time } from 'e';
 
 import { ZALCANO_ID } from '../../../lib/constants';
+import { soteSkillRequirements } from '../../../lib/data/miscRequirements';
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
-import { Skills } from '../../../lib/types';
 import { ZalcanoActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, hasSkillReqs } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { userHasGracefulEquipped } from '../../mahojiSettings';
 
-export const soteSkillRequirements: Skills = {
-	mining: 70,
-	smithing: 70,
-	farming: 70,
-	woodcutting: 70,
-	agility: 70,
-	herblore: 70,
-	construction: 70,
-	hunter: 70
-};
 function calcPerformance(kcLearned: number, skillPercentage: number) {
 	let basePerformance = 50;
 

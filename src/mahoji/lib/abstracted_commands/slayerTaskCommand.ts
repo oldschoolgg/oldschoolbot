@@ -4,7 +4,7 @@ import { Monsters } from 'oldschooljs';
 
 import killableMonsters from '../../../lib/minions/data/killableMonsters';
 import { prisma } from '../../../lib/settings/prisma';
-import { runCommand } from '../../../lib/settings/settings';
+import { runCommand } from '../../../lib/settings/runCommand';
 import { slayerMasters } from '../../../lib/slayer/slayerMasters';
 import { SlayerRewardsShop } from '../../../lib/slayer/slayerUnlocks';
 import {

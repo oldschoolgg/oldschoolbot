@@ -9,7 +9,7 @@ import { Cooldowns } from '../../mahoji/lib/Cooldowns';
 import { ClueTier } from '../clues/clueTiers';
 import { PerkTier } from '../constants';
 import { prisma } from '../settings/prisma';
-import { runCommand } from '../settings/settings';
+import { runCommand } from '../settings/runCommand';
 import { ItemBank } from '../types';
 import { formatDuration, removeFromArr } from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
