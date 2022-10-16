@@ -274,7 +274,7 @@ model User {
   total_cox_points           Int      @default(0)
   combat_options             Int[]
   farming_patch_reminders    Boolean  @default(true)
-  autoFarm_filter            autoFarm_filter_enum @default(allFarm)
+  auto_farm_filter           AutoFarmFilterEnum @default(allFarm)
   pest_control_points        Int      @default(0)
   inferno_attempts           Int      @default(0)
   infernal_cape_sacrifices   Int      @default(0)
@@ -694,7 +694,7 @@ enum xp_gains_skill_enum {
   slayer
 }
 
-enum autoFarm_filter_enum {
+enum AutoFarmFilterEnum {
 	allFarm
 	replant
 }

@@ -1,4 +1,4 @@
-import { autoFarm_filter_enum } from '@prisma/client';
+import { AutoFarmFilterEnum } from '@prisma/client';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { farmingPlantCommand } from '../../../mahoji/lib/abstracted_commands/farmingCommand';
@@ -18,10 +18,10 @@ export async function autoFarm(user: MUser, patchesDetailed: IPatchDataDetailed[
 	let canHarvest: Plant | undefined = undefined;
 	let elligible: Plant[] = [];
 	let errorString = '';
-	let autoFarmFilter = user.autoFarm_filter;
+	let { autoFarmFilter } = user;
 
 	if (!autoFarmFilter) {
-		autoFarmFilter = autoFarm_filter_enum.allFarm;
+		autoFarmFilter = AutoFarmFilterEnum.allFarm;
 	}
 
 	const autoFarmFilterString = autoFarmFilter.toString().toLowerCase();
@@ -29,10 +29,10 @@ export async function autoFarm(user: MUser, patchesDetailed: IPatchDataDetailed[
 	elligible = [...plants]
 		.filter(p => {
 			switch (autoFarmFilterString) {
-				case autoFarm_filter_enum.allFarm: {
+				case AutoFarmFilterEnum.allFarm: {
 					return allFarm(p, farmingLevel, user, userBank);
 				}
-				case autoFarm_filter_enum.replant: {
+				case AutoFarmFilterEnum.replant: {
 					return replant(p, farmingLevel, user, userBank, patchesDetailed);
 				}
 				default: {
@@ -42,11 +42,11 @@ export async function autoFarm(user: MUser, patchesDetailed: IPatchDataDetailed[
 		})
 		.sort((a, b) => b.level - a.level);
 
-	if (autoFarmFilterString === autoFarm_filter_enum.allFarm) {
+	if (autoFarmFilterString === AutoFarmFilterEnum.allFarm) {
 		canHarvest = elligible.find(p => patchesDetailed.find(_p => _p.patchName === p.seedType)!.ready);
 		errorString = "There's no Farming crops that you have the requirements to plant, and nothing to harvest.";
 	}
-	if (autoFarmFilterString === autoFarm_filter_enum.replant) {
+	if (autoFarmFilterString === AutoFarmFilterEnum.replant) {
 		errorString =
 			"There's no Farming crops that you have planted that are ready to be replanted or no seeds remaining.";
 	}

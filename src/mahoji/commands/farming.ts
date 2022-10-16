@@ -1,3 +1,4 @@
+import { AutoFarmFilterEnum } from '@prisma/client';
 import { User } from 'discord.js';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
@@ -16,9 +17,8 @@ import { titheFarmCommand, titheFarmShopCommand } from '../lib/abstracted_comman
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 import { mahojiUserSettingsUpdate } from '../settingsUpdate';
-import { autoFarm_filter_enum } from '.prisma/client';
 
-const autoFarmFilterTexts: Record<autoFarm_filter_enum, string> = {
+const autoFarmFilterTexts: Record<AutoFarmFilterEnum, string> = {
 	allFarm: 'All crops will be farmed with the highest available seed',
 	replant: 'Only planted crops will be replanted, using the same seed'
 };
@@ -83,7 +83,7 @@ export const farmingCommand: OSBMahojiCommand = {
 					name: 'auto_farm_filter_data',
 					description: 'The auto farm filter you want to use by default. (default: allfarm)',
 					required: true,
-					choices: Object.keys(autoFarm_filter_enum).map(i => ({ name: i, value: i }))
+					choices: Object.keys(AutoFarmFilterEnum).map(i => ({ name: i, value: i }))
 				}
 			]
 		},
@@ -224,14 +224,14 @@ export const farmingCommand: OSBMahojiCommand = {
 			return `You will now use ${tier.item.name} by default.`;
 		}
 		if (options.auto_farm_filter) {
-			const autoFarmFilterString = Object.keys(autoFarm_filter_enum).find(i =>
+			const autoFarmFilterString = Object.keys(AutoFarmFilterEnum).find(i =>
 				stringMatches(i, options.auto_farm_filter!.auto_farm_filter_data)
 			);
 			if (!autoFarmFilterString) return 'Invalid auto farm filter.';
-			const autoFarmFilter = autoFarmFilterString as autoFarm_filter_enum;
+			const autoFarmFilter = autoFarmFilterString as AutoFarmFilterEnum;
 
 			await mahojiUserSettingsUpdate(userID, {
-				autoFarm_filter: autoFarmFilter
+				auto_farm_filter: autoFarmFilter
 			});
 
 			return `${autoFarmFilter} filter is now enabled when autofarming: ${autoFarmFilterTexts[autoFarmFilter]}.`;
