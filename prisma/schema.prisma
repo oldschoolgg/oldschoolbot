@@ -586,7 +586,7 @@ model WikiDocs {
   id        String   @db.VarChar(64)
   name      String   @db.VarChar(124)
   path      String   @db.VarChar(124) @id
-  body      String   @db.VarChar(500)
+  body      String   @db.VarChar(750)
 
   @@map("wiki_docs")
 }
