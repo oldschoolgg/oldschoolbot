@@ -208,7 +208,8 @@ export enum BitField {
 	HasTornPrayerScroll = 18,
 	IsWikiContributor = 19,
 	HasSlepeyTablet = 20,
-	IsPatronTier6 = 21
+	IsPatronTier6 = 21,
+	DisableBirdhouseRunButton = 22
 }
 
 interface BitFieldData {
@@ -248,7 +249,12 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	[BitField.PermanentIronman]: { name: 'Permanent Ironman', protected: false, userConfigurable: false },
 
 	[BitField.AlwaysSmallBank]: { name: 'Always Use Small Banks', protected: false, userConfigurable: true },
-	[BitField.DisabledRandomEvents]: { name: 'Disabled Random Events', protected: false, userConfigurable: true }
+	[BitField.DisabledRandomEvents]: { name: 'Disabled Random Events', protected: false, userConfigurable: true },
+	[BitField.DisableBirdhouseRunButton]: {
+		name: 'Disable Birdhouse Run Button',
+		protected: false,
+		userConfigurable: true
+	}
 } as const;
 
 export const enum PatronTierID {
