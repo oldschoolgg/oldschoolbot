@@ -184,9 +184,12 @@ export async function barbAssaultGambleCommand(
 		honour_points: {
 			decrement: cost * quantity
 		},
-		high_gambles: {
-			increment: quantity
-		}
+		high_gambles:
+			name === 'High'
+				? {
+						increment: quantity
+				  }
+				: undefined
 	});
 	const loot = new Bank().add(table.roll(quantity));
 	if (loot.has('Pet penance queen')) {
