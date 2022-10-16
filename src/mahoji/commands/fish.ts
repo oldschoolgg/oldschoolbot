@@ -166,6 +166,7 @@ export const fishCommand: OSBMahojiCommand = {
 		}
 
 		const tenPercent = Math.floor(calcPercentOfNum(10, duration));
+		console.log(tenPercent);
 		duration += rand(-tenPercent, tenPercent);
 
 		await addSubTaskToActivityTask<FishingActivityTaskOptions>({

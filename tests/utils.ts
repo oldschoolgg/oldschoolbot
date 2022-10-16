@@ -1,33 +1,20 @@
 import { Prisma, User } from '@prisma/client';
+import { mockRandom, resetMockRandom } from 'jest-mock-random';
+import murmurhash from 'murmurhash';
 import { Bank } from 'oldschooljs';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
 
 import { BitField } from '../src/lib/constants';
 import { filterGearSetup, GearSetup, PartialGearSetup } from '../src/lib/gear';
+import { baseUserKourendFavour } from '../src/lib/minions/data/kourendFavour';
 import { MUserClass } from '../src/lib/MUser';
 import { Gear } from '../src/lib/structures/Gear';
-
-export function mockArgument(arg: any) {
-	return new arg(
-		{
-			name: 'arguments',
-			client: {
-				options: {
-					pieceDefaults: {
-						arguments: {}
-					}
-				}
-			}
-		},
-		['1'],
-		'',
-		{}
-	);
-}
+import { OSBMahojiCommand } from '../src/mahoji/lib/util';
 
 interface MockUserArgs {
 	bank?: Bank;
 	cl?: Bank;
+	QP?: number;
 	meleeGear?: GearSetup | PartialGearSetup;
 	skills_agility?: number;
 	skills_attack?: number;
@@ -37,10 +24,12 @@ interface MockUserArgs {
 	skills_defence?: number;
 	skills_hitpoints?: number;
 	skills_prayer?: number;
+	skills_fishing?: number;
 	GP?: number;
 	premium_balance_tier?: number;
 	premium_balance_expiry_date?: number;
 	bitfield?: BitField[];
+	id: string;
 }
 
 export const mockUser = (overrides?: MockUserArgs): User => {
@@ -58,7 +47,7 @@ export const mockUser = (overrides?: MockUserArgs): User => {
 		collectionLogBank: overrides?.cl?.bank ?? {},
 		skills_agility: overrides?.skills_agility ?? 0,
 		skills_cooking: 0,
-		skills_fishing: 0,
+		skills_fishing: overrides?.skills_fishing ?? 0,
 		skills_mining: 0,
 		skills_smithing: 0,
 		skills_woodcutting: 0,
@@ -83,9 +72,34 @@ export const mockUser = (overrides?: MockUserArgs): User => {
 		premium_balance_tier: overrides?.premium_balance_tier,
 		premium_balance_expiry_date: overrides?.premium_balance_expiry_date,
 		ironman_alts: [],
-		bitfield: overrides?.bitfield ?? []
+		bitfield: overrides?.bitfield ?? [],
+		username: 'Magnaboy',
+		QP: overrides?.QP ?? 0,
+		kourend_favour: baseUserKourendFavour
 	} as unknown as User;
 };
 export const mockMUser = (overrides?: MockUserArgs) => {
 	return new MUserClass(mockUser(overrides));
 };
+
+export const mockUserMap = new Map<string, MUser>();
+
+export function testRunCmd({ cmd, opts, user }: { cmd: OSBMahojiCommand; opts: any; user?: Omit<MockUserArgs, 'id'> }) {
+	const hash = murmurhash(JSON.stringify({ name: cmd.name, opts, user })).toString();
+	mockUserMap.set(hash, mockMUser({ id: hash, ...user }));
+	const options: any = {
+		user: mockUser({ id: hash, ...user }),
+		channelID: '1234',
+		userID: hash,
+		options: opts
+	};
+	return cmd.run(options);
+}
+
+export function commandTestSetup() {
+	mockRandom([0.1]);
+}
+
+export function commandTestTeardown() {
+	resetMockRandom();
+}

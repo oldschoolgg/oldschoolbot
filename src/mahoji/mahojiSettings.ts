@@ -23,7 +23,6 @@ import { evalMathExpression } from '../lib/expressionParser';
 import { hasGracefulEquipped, readableStatName } from '../lib/gear';
 import { effectiveMonsters } from '../lib/minions/data/killableMonsters';
 import { KillableMonster } from '../lib/minions/types';
-import { MUserClass } from '../lib/MUser';
 import { getMinigameScore, Minigames } from '../lib/settings/minigames';
 import { prisma } from '../lib/settings/prisma';
 import creatures from '../lib/skilling/skills/hunter/creatures';
@@ -686,44 +685,4 @@ export async function updateLegacyUserBankSetting(userID: string, key: 'tob_cost
 		[key]: newBank.bank
 	});
 	return res;
-}
-
-export async function syncLinkedAccountPerks(user: MUser) {
-	let main = user.user.main_account;
-	const allAccounts: string[] = [...user.user.ironman_alts];
-	if (main) {
-		allAccounts.push(main);
-	}
-	const allUsers = await Promise.all(
-		allAccounts.map(a =>
-			mahojiUsersSettingsFetch(a, {
-				id: true,
-				premium_balance_tier: true,
-				premium_balance_expiry_date: true,
-				bitfield: true
-			})
-		)
-	);
-	allUsers.map(u => new MUserClass(u));
-}
-
-export async function syncLinkedAccounts() {
-	const users = await prisma.user.findMany({
-		where: {
-			ironman_alts: {
-				isEmpty: false
-			}
-		},
-		select: {
-			id: true,
-			ironman_alts: true,
-			premium_balance_tier: true,
-			premium_balance_expiry_date: true,
-			bitfield: true
-		}
-	});
-	for (const u of users) {
-		const mUser = new MUserClass(u as User);
-		await syncLinkedAccountPerks(mUser);
-	}
 }

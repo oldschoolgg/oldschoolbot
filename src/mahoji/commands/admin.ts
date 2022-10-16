@@ -34,6 +34,7 @@ import {
 import { getItem } from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { deferInteraction, interactionReply } from '../../lib/util/interactionReply';
+import { syncLinkedAccounts } from '../../lib/util/linkedAccountsUtil';
 import { logError } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
@@ -45,8 +46,7 @@ import {
 	handleMahojiConfirmation,
 	mahojiClientSettingsFetch,
 	mahojiClientSettingsUpdate,
-	mahojiUsersSettingsFetch,
-	syncLinkedAccounts
+	mahojiUsersSettingsFetch
 } from '../mahojiSettings';
 import { mahojiUserSettingsUpdate } from '../settingsUpdate';
 import { getUserInfo } from './minion';
