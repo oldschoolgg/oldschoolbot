@@ -29,7 +29,7 @@ export interface DocsDefaultResults {
 	value: string;
 }
 
-export const DefaultDocsResults: DocsDefaultResults[] = [
+export const osbDefaultDocsResults: DocsDefaultResults[] = [
 	{
 		name: 'Home',
 		value: ''
@@ -45,6 +45,25 @@ export const DefaultDocsResults: DocsDefaultResults[] = [
 	{
 		name: 'Beginner Guide',
 		value: 'getting-started/beginner-guide'
+	}
+];
+
+export const DefaultDocsResults: DocsDefaultResults[] = [
+	{
+		name: 'Home',
+		value: ''
+	},
+	{
+		name: 'Getting Started',
+		value: 'getting-started'
+	},
+	{
+		name: 'Rules',
+		value: 'rules'
+	},
+	{
+		name: 'Leagues',
+		value: 'leagues'
 	}
 ];
 
@@ -67,7 +86,7 @@ export async function syncDocs() {
 			next = resultJson.next;
 			const { items } = resultJson as DocsResponse;
 			for (let item of items) {
-				if (item.path === '') continue;
+				if (typeof item.sections === 'string') continue;
 				for (let section of item.sections) {
 					if (section.title === '')
 						articlesToUpdate.push({
@@ -89,7 +108,7 @@ export async function syncDocs() {
 			await prisma.$transaction(
 				articlesToUpdate.map(a =>
 					prisma.wikiDocs.upsert({
-						where: { id: a.id },
+						where: { path: a.value },
 						update: {},
 						create: {
 							id: a.id,
@@ -110,9 +129,23 @@ export async function syncDocs() {
 }
 
 export async function getDocsResults(SearchString: string) {
-	const articleResults: WikiDocs[] = await prisma.$queryRawUnsafe(`SELECT *
+	const articleResults: WikiDocs[] = await prisma.$queryRawUnsafe(`
+	SELECT *,
+length(name) as namelen,
+case 
+	when path like '%#%' then '2'
+	else '1'
+end as mainpageprio, 
+case 
+	when REPLACE(replace(name, ' - ', ' '),'''','') ~ '(?i)(?<= |^)${SearchString}(?= |$)' then '1'
+	when REPLACE(replace(name, ' - ', ' '),'''','') ilike '%${SearchString}%' then '2'
+	when body ilike '%${SearchString}%' then '3'
+	else '4'
+end as prio
 FROM wiki_docs
-WHERE REPLACE(replace(name, ' - ', ' '),'''','') ilike replace('%${SearchString}%', ' - ', ' ') or replace(body, ' - ', ' ') ilike replace('%${SearchString}%', ' - ', ' ') limit 10;`);
+WHERE REPLACE(replace(name, ' - ', ' '),'''','') ilike '%${SearchString}%' or body ilike '%${SearchString}%' 
+order by mainpageprio asc,prio asc,namelen asc
+limit 12;`);
 	return articleResults;
 }
 

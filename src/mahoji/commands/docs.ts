@@ -7,7 +7,7 @@ import { OSBMahojiCommand } from '../lib/util';
 
 export const docsCommand: OSBMahojiCommand = {
 	name: 'docs',
-	description: 'Search the BSO wiki.',
+	description: 'Search the bot wiki.',
 	options: [
 		{
 			type: ApplicationCommandOptionType.String,
@@ -18,13 +18,13 @@ export const docsCommand: OSBMahojiCommand = {
 				if (!value)
 					return DefaultDocsResults.map(i => ({
 						name: i.name,
-						value: i.value
+						value: i.name
 					}));
 				try {
 					const autocompleteResult = await getDocsResults(value);
 					const returnArr: { name: string; value: string }[] = [];
 					for (let index = 0; index < autocompleteResult.length; index++) {
-						returnArr.push({ name: autocompleteResult[index].name, value: autocompleteResult[index].path });
+						returnArr.push({ name: autocompleteResult[index].name, value: autocompleteResult[index].name });
 					}
 					return returnArr;
 				} catch (_) {
@@ -35,13 +35,13 @@ export const docsCommand: OSBMahojiCommand = {
 	],
 	run: async ({ options }: CommandRunOptions<{ query: string }>) => {
 		const liveDocs = await getAllDocsResults();
-		const validDoc = liveDocs.find(item => stringMatches(item.path, options.query));
-		const defaultDoc = DefaultDocsResults.find(item => stringMatches(item.value, options.query));
+		const validDoc = liveDocs.find(item => stringMatches(item.name, options.query));
+		const defaultDoc = DefaultDocsResults.find(item => stringMatches(item.name, options.query));
 
 		if (!validDoc && options.query !== '' && !defaultDoc) return 'That article was not found.';
 
-		if (defaultDoc) return `<${GITBOOK_URL}${options.query}>`;
+		if (defaultDoc) return `<${GITBOOK_URL}${defaultDoc.value}>`;
 
-		return `${validDoc?.body.replace(/[\r\n]{2,}/gs, '\n')} \nRead more: <${GITBOOK_URL}${options.query}>`;
+		return `${validDoc?.body.replace(/[\r\n]{2,}/gs, '\n')} \nRead more: <${GITBOOK_URL}${validDoc?.path}>`;
 	}
 };
