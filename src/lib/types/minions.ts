@@ -316,7 +316,7 @@ export interface PuroPuroActivityTaskOptions extends MinigameActivityTaskOptions
 }
 
 export interface GiantsFoundryActivityTaskOptions extends MinigameActivityTaskOptions {
-	alloyName: string;
+	alloyID: number;
 	quantity: number;
 	metalScore: number;
 }

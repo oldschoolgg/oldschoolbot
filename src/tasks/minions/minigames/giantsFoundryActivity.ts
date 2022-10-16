@@ -6,6 +6,7 @@ import { SkillsEnum } from '../../../lib/skilling/types';
 import { GiantsFoundryActivityTaskOptions } from '../../../lib/types/minions';
 import { randomVariation } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { giantsFoundryAlloys } from './../../../mahoji/lib/abstracted_commands/giantsFoundryCommand';
 
 const tipMoulds: string[] = [
 	'Saw Tip',
@@ -52,8 +53,12 @@ const forteMoulds: string[] = [
 export const giantsFoundryTask: MinionTask = {
 	type: 'GiantsFoundry',
 	async run(data: GiantsFoundryActivityTaskOptions) {
-		const { quantity, userID, channelID, duration, metalScore, alloyName } = data;
+		const { quantity, userID, channelID, duration, metalScore, alloyID } = data;
 		const user = await mUserFetch(userID);
+		const alloy = giantsFoundryAlloys.find(i => i.id === alloyID);
+		if (!alloy) {
+			return 'A issue occured trying to find a alloy using the alloy ID.';
+		}
 		const userSmithingLevel = user.skillLevel(SkillsEnum.Smithing);
 		const boosts = [];
 		let avgMouldBonus = 37.667;
@@ -103,14 +108,6 @@ export const giantsFoundryTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			['minigames', { giants_foundry: { start: { name: alloyName, quantity } } }, true],
-			undefined,
-			data,
-			itemsAdded
-		);
+		handleTripFinish(user, channelID, str, undefined, data, itemsAdded);
 	}
 };

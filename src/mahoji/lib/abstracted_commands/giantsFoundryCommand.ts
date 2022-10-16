@@ -1,7 +1,6 @@
 import { ChatInputCommandInteraction } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
-import { itemID, resolveNameBank } from 'oldschooljs/dist/util';
 
 import Smithing from '../../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -10,140 +9,126 @@ import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { handleMahojiConfirmation } from '../../mahojiSettings';
-import { ItemBank } from './../../../lib/types/index';
 
 export const giantsFoundryAlloys = [
 	{
 		name: 'Bronze',
+		id: 1,
 		level: 15,
-		cost: {
-			[itemID('Bronze bar')]: 28
-		},
+		cost: new Bank().add('Bronze bar', 28),
 		metalScore: 10,
 		sections: 3
 	},
 	{
 		name: 'Iron',
+		id: 2,
 		level: 15,
-		cost: {
-			[itemID('Iron bar')]: 28
-		},
+		cost: new Bank().add('Iron bar', 28),
 		metalScore: 20,
 		sections: 4
 	},
 	{
 		name: 'Steel',
+		id: 3,
 		level: 30,
-		cost: {
-			[itemID('Steel bar')]: 28
-		},
+		cost: new Bank().add('Steel bar', 28),
 		metalScore: 30,
 		sections: 4
 	},
 	{
 		name: 'Iron/Steel 14/14',
+		id: 4,
 		level: 30,
-		cost: {
-			[itemID('Iron bar')]: 14,
-			[itemID('Steel bar')]: 14
-		},
+		cost: new Bank().add('Iron bar', 14).add('Steel bar', 14),
 		metalScore: 40,
 		sections: 4
 	},
 	{
 		name: 'Steel/Mithril 14/14',
+		id: 5,
 		level: 50,
-		cost: {
-			[itemID('Steel bar')]: 14,
-			[itemID('Mithril bar')]: 14
-		},
+		cost: new Bank().add('Steel bar', 14).add('Mithril bar', 14),
 		metalScore: 65,
 		sections: 5
 	},
 	{
 		name: 'Mithril/Adamantite 14/14',
+		id: 6,
 		level: 70,
-		cost: {
-			[itemID('Mithril bar')]: 14,
-			[itemID('Adamantite bar')]: 14
-		},
+		cost: new Bank().add('Mithril bar', 14).add('Adamantite bar', 14),
 		metalScore: 95,
 		sections: 6
 	},
 	{
 		name: 'Mithril/Runite 14/14',
+		id: 7,
 		level: 85,
-		cost: {
-			[itemID('Mithril bar')]: 14,
-			[itemID('Runite bar')]: 14
-		},
+		cost: new Bank().add('Mithril bar', 14).add('Runite bar', 14),
 		metalScore: 110,
 		sections: 6
 	},
 	{
 		name: 'Adamantite/Runite 14/14',
+		id: 8,
 		level: 85,
-		cost: {
-			[itemID('Adamantite bar')]: 14,
-			[itemID('Runite bar')]: 14
-		},
+		cost: new Bank().add('Adamantite bar', 14).add('Runite bar', 14),
 		metalScore: 130,
 		sections: 7
 	}
 ];
 
-export const giantsFoundryBuyables: { name: string; output: ItemBank; cost: number; aliases: string[] }[] = [
+export const giantsFoundryBuyables: { name: string; output: Bank; cost: number; aliases: string[] }[] = [
 	{
 		name: 'Double ammo mould',
-		output: resolveNameBank({ 'Double ammo mould': 1 }),
+		output: new Bank().add('Double ammo mould', 1),
 		cost: 2000,
 		aliases: ['double ammo', 'double cannonballs']
 	},
 	{
 		name: "Kovac's grog",
-		output: resolveNameBank({ "Kovac's grog": 1 }),
+		output: new Bank().add("Kovac's grog", 1),
 		cost: 300,
 		aliases: ['grog', 'kovacs grog']
 	},
 	{
 		name: 'Smithing catalyst',
-		output: resolveNameBank({ 'Smithing catalyst': 1 }),
+		output: new Bank().add('Smithing catalyst', 1),
 		cost: 15,
 		aliases: []
 	},
 	{
 		name: 'Ore pack',
-		output: resolveNameBank({ 'Ore pack': 1 }),
+		output: new Bank().add('Ore pack', 1),
 		cost: 200,
 		aliases: []
 	},
 	{
 		name: 'Smiths tunic',
-		output: resolveNameBank({ 'Smiths tunic': 1 }),
+		output: new Bank().add('Smiths tunic', 1),
 		cost: 4000,
 		aliases: []
 	},
 	{
 		name: 'Smiths trousers',
-		output: resolveNameBank({ 'Smiths trousers': 1 }),
+		output: new Bank().add('Smiths trousers', 1),
 		cost: 4000,
 		aliases: []
 	},
 	{
 		name: 'Smiths boots',
-		output: resolveNameBank({ 'Smiths boots': 1 }),
+		output: new Bank().add('Smiths boots', 1),
 		cost: 3500,
 		aliases: []
 	},
 	{
 		name: 'Smiths gloves',
-		output: resolveNameBank({ 'Smiths gloves': 1 }),
+		output: new Bank().add('Smiths gloves', 1),
 		cost: 3500,
 		aliases: []
 	},
 	{
 		name: 'Colossal blade',
-		output: resolveNameBank({ 'Colossal blade': 1 }),
+		output: new Bank().add('Colossal blade', 1),
 		cost: 5000,
 		aliases: []
 	}
@@ -209,7 +194,7 @@ export async function giantsFoundryStartCommand(
 		type: 'GiantsFoundry',
 		channelID: channelID.toString(),
 		minigameID: 'giants_foundry',
-		alloyName: alloy.name,
+		alloyID: alloy.id,
 		metalScore: alloy.metalScore
 	});
 

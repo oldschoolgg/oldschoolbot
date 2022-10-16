@@ -824,7 +824,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 						{
 							type: ApplicationCommandOptionType.String,
 							name: 'name',
-							description: 'The alloy/metal you wanna use.',
+							description: 'The alloy/metal you want to use.',
 							required: true,
 							autocomplete: async value => {
 								return giantsFoundryAlloys
@@ -835,7 +835,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 						{
 							type: ApplicationCommandOptionType.Number,
 							name: 'quantity',
-							description: 'The amount of giant weapons you wanna do.',
+							description: 'The amount of giant weapons you want to do.',
 							required: false,
 							min_value: 1
 						}

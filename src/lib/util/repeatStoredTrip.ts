@@ -48,6 +48,8 @@ import {
 	WoodcuttingActivityTaskOptions
 } from '../types/minions';
 import { itemNameFromID } from '../util';
+import { giantsFoundryAlloys } from './../../mahoji/lib/abstracted_commands/giantsFoundryCommand';
+import { GiantsFoundryActivityTaskOptions } from './../types/minions';
 
 export const taskCanBeRepeated = (type: activity_type_enum) =>
 	!(
@@ -475,6 +477,14 @@ export const tripHandlers = {
 			name: itemNameFromID(data.logID),
 			quantity: data.quantity,
 			powerchop: data.powerchopping
+		})
+	},
+	[activity_type_enum.GiantsFoundry]: {
+		commandName: 'minigames',
+		args: (data: GiantsFoundryActivityTaskOptions) => ({
+			giants_foundry: {
+				start: { name: giantsFoundryAlloys.find(i => i.id === data.alloyID), quantity: data.quantity }
+			}
 		})
 	}
 } as const;
