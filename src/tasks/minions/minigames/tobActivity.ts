@@ -144,25 +144,6 @@ Unique chance: ${result.percentChanceOfUnique.toFixed(2)}% (1 in ${convertPercen
 			teamSize: users.length
 		});
 
-		handleTripFinish(
-			allUsers[0],
-			channelID,
-			resultMessage,
-			[
-				'raid',
-				{
-					tob: {
-						start: {
-							hard_mode: hardMode,
-							max_team_size: allUsers.length
-						}
-					}
-				},
-				true
-			],
-			undefined,
-			data,
-			null
-		);
+		handleTripFinish(allUsers[0], channelID, resultMessage, undefined, data, null);
 	}
 };

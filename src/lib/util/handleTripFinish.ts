@@ -1,17 +1,15 @@
 import { activity_type_enum } from '@prisma/client';
 import { ActionRowBuilder, AttachmentBuilder, ButtonBuilder, MessageCollector } from 'discord.js';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
 import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
 import { updateGPTrackSetting, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { ClueTiers } from '../clues/clueTiers';
-import { COINS_ID, Emoji, lastTripCache, LastTripRunArgs, PerkTier } from '../constants';
+import { BitField, COINS_ID, Emoji, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
 import { triggerRandomEvent } from '../randomEvents';
-import { runCommand } from '../settings/settings';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import { ActivityTaskOptions } from '../types/minions';
 import { channelIsSendable } from '../util';
@@ -78,10 +76,6 @@ export async function handleTripFinish(
 	user: MUser,
 	channelID: string,
 	message: string,
-	onContinue:
-		| undefined
-		| [string, Record<string, unknown>, boolean?, string?]
-		| ((args: LastTripRunArgs) => Promise<CommandResponse | null>),
 	attachment: AttachmentBuilder | Buffer | undefined,
 	data: ActivityTaskOptions,
 	loot: Bank | null,
@@ -112,41 +106,19 @@ export async function handleTripFinish(
 	const channel = globalClient.channels.cache.get(channelID);
 	if (!channelIsSendable(channel)) return;
 
-	const runCmdOptions = {
-		channelID,
-		userID: user.id,
-		guildID: channel.guild ? channel.guild.id : undefined,
-		user,
-		member: null
-	};
-
-	const onContinueFn = Array.isArray(onContinue)
-		? (args: LastTripRunArgs) =>
-				runCommand({
-					commandName: onContinue[0],
-					args: onContinue[1],
-					isContinue: onContinue[2],
-					bypassInhibitors: true,
-					...runCmdOptions,
-					...args
-				})
-		: onContinue;
-
-	if (onContinueFn) lastTripCache.set(user.id, { data, continue: onContinueFn });
 	const components = new ActionRowBuilder<ButtonBuilder>();
-	if (onContinueFn) components.addComponents(makeRepeatTripButton());
-	if (clueReceived && perkTier > PerkTier.One) components.addComponents(makeDoClueButton(clueReceived));
+	components.addComponents(makeRepeatTripButton());
 	const casketReceived = loot ? ClueTiers.find(i => loot?.has(i.id)) : undefined;
 	if (casketReceived) components.addComponents(makeOpenCasketButton(casketReceived));
-	const birdHousedetails = await calculateBirdhouseDetails(user.id);
-	if (birdHousedetails.isReady && perkTier > PerkTier.One) components.addComponents(makeBirdHouseTripButton());
-	const { currentTask } = await getUsersCurrentSlayerInfo(user.id);
-	if (
-		(currentTask === null || currentTask.quantity_remaining <= 0) &&
-		perkTier > PerkTier.One &&
-		data.type === 'MonsterKilling'
-	) {
-		components.addComponents(makeNewSlayerTaskButton());
+	if (perkTier > PerkTier.One) {
+		if (clueReceived) components.addComponents(makeDoClueButton(clueReceived));
+		const birdHousedetails = await calculateBirdhouseDetails(user.id);
+		if (birdHousedetails.isReady && !user.bitfield.includes(BitField.DisableBirdhouseRunButton))
+			components.addComponents(makeBirdHouseTripButton());
+		const { currentTask } = await getUsersCurrentSlayerInfo(user.id);
+		if ((currentTask === null || currentTask.quantity_remaining <= 0) && data.type === 'MonsterKilling') {
+			components.addComponents(makeNewSlayerTaskButton());
+		}
 	}
 	handleTriggerShootingStar(user, data, components);
 

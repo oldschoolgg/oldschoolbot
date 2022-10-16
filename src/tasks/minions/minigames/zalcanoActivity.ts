@@ -68,7 +68,6 @@ export const zalcanoTask: MinionTask = {
 			`${user}, ${user.minionName} finished killing ${quantity}x Zalcano. Your Zalcano KC is now ${
 				kc + quantity
 			}. ${xpRes}`,
-			['k', { name: 'zalcano' }, true],
 			image.file.attachment,
 			data,
 			itemsAdded

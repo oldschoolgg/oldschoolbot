@@ -2,6 +2,8 @@ import { CLIENT_ID, OWNER_IDS } from '../../config';
 import { prisma } from '../settings/prisma';
 
 export const CACHED_ACTIVE_USER_IDS = new Set();
+CACHED_ACTIVE_USER_IDS.add(CLIENT_ID);
+for (const id of OWNER_IDS) CACHED_ACTIVE_USER_IDS.add(id);
 
 export async function syncActiveUserIDs() {
 	const [users, otherUsers] = await Promise.all([
@@ -15,9 +17,8 @@ WHERE main_account IS NOT NULL
 	  OR bitfield && ARRAY[2,3,4,5,6,7,8,12,11,21,19];`
 	]);
 
-	for (const id of [...users.map(i => i.user_id), ...otherUsers.map(i => i.id), ...OWNER_IDS]) {
+	for (const id of [...users.map(i => i.user_id), ...otherUsers.map(i => i.id)]) {
 		CACHED_ACTIVE_USER_IDS.add(id);
 	}
-	CACHED_ACTIVE_USER_IDS.add(CLIENT_ID);
 	console.log(`${CACHED_ACTIVE_USER_IDS.size} cached active user IDs`);
 }

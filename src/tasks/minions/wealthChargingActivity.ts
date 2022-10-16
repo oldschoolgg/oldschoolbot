@@ -38,14 +38,6 @@ export const wealthChargeTask: MinionTask = {
 			collectionLog: true,
 			itemsToAdd: loot
 		});
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			['activities', { charge: { item: 'wealth', quantity } }, true],
-			undefined,
-			data,
-			loot
-		);
+		handleTripFinish(user, channelID, str, undefined, data, loot);
 	}
 };

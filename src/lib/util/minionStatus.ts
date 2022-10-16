@@ -504,7 +504,7 @@ export function minionStatus(user: MUser) {
 		}
 		case 'KourendFavour': {
 			const data = currentTask as KourendFavourActivityTaskOptions;
-			return `${name} is currently doing ${data.favour.name} Favour tasks. ${formattedDuration}`;
+			return `${name} is currently doing ${data.favour} Favour tasks. ${formattedDuration}`;
 		}
 		case 'Inferno': {
 			const data = currentTask as InfernoOptions;

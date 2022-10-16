@@ -117,14 +117,6 @@ export const agilityTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			['laps', { name: course.name, quantity, alch: Boolean(alch) }, true],
-			undefined,
-			data,
-			loot
-		);
+		handleTripFinish(user, channelID, str, undefined, data, loot);
 	}
 };
