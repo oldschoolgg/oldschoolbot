@@ -93,14 +93,14 @@ export async function syncDocs() {
 							id: section.id,
 							name: item.title,
 							value: item.path,
-							body: section.body.substring(0, 497)
+							body: section.body.substring(0, 749)
 						});
 					console.log(`id: ${section.id} \n name: ${item.title} - ${section.title}\n value: ${section.path}`);
 					articlesToUpdate.push({
 						id: section.id,
 						name: `${item.title} - ${section.title}`.toString(),
 						value: section.path,
-						body: section.body.substring(0, 497)
+						body: section.body.substring(0, 749)
 					});
 				}
 			}
@@ -114,7 +114,7 @@ export async function syncDocs() {
 							id: a.id,
 							name: a.name,
 							path: a.value,
-							body: a.body.substring(0, 497)
+							body: a.body.substring(0, 749)
 						}
 					})
 				)
