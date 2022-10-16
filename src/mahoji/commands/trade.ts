@@ -127,8 +127,8 @@ Both parties must click confirm to make the trade.`,
 
 		await senderUser.removeItemsFromBank(itemsSent);
 		await recipientUser.removeItemsFromBank(itemsReceived);
-		await senderUser.addItemsToBank({ items: itemsReceived, collectionLog: false });
-		await recipientUser.addItemsToBank({ items: itemsSent, collectionLog: false });
+		await senderUser.addItemsToBank({ items: itemsReceived, collectionLog: false, filterLoot: false });
+		await recipientUser.addItemsToBank({ items: itemsSent, collectionLog: false, filterLoot: false });
 
 		await prisma.economyTransaction.create({
 			data: {
