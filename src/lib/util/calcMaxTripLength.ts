@@ -15,7 +15,6 @@ export function patronMaxTripBonus(user: MUser) {
 
 export function calcMaxTripLength(user: MUser, activity?: activity_type_enum) {
 	let max = Time.Minute * 30;
-
 	max += patronMaxTripBonus(user);
 
 	switch (activity) {

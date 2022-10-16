@@ -40,8 +40,6 @@ export enum Favours {
 	Shayzien = 'shayzien'
 }
 
-console.log(Time.Day);
-
 export const KourendFavours: KourendFavour[] = [
 	{
 		name: 'Arceuus',

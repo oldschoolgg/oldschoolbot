@@ -75,7 +75,9 @@ export const mockUser = (overrides?: MockUserArgs): User => {
 		bitfield: overrides?.bitfield ?? [],
 		username: 'Magnaboy',
 		QP: overrides?.QP ?? 0,
-		kourend_favour: baseUserKourendFavour
+		kourend_favour: baseUserKourendFavour,
+		sacrificedValue: 0,
+		id: overrides?.id ?? ''
 	} as unknown as User;
 };
 export const mockMUser = (overrides?: MockUserArgs) => {
@@ -86,18 +88,20 @@ export const mockUserMap = new Map<string, MUser>();
 
 export function testRunCmd({ cmd, opts, user }: { cmd: OSBMahojiCommand; opts: any; user?: Omit<MockUserArgs, 'id'> }) {
 	const hash = murmurhash(JSON.stringify({ name: cmd.name, opts, user })).toString();
-	mockUserMap.set(hash, mockMUser({ id: hash, ...user }));
+	const mockedUser = mockMUser({ id: hash, ...user });
+	mockUserMap.set(hash, mockedUser);
+	console.log(mockedUser.id);
 	const options: any = {
-		user: mockUser({ id: hash, ...user }),
+		user: mockedUser.user,
 		channelID: '1234',
-		userID: hash,
+		userID: mockedUser.id,
 		options: opts
 	};
 	return cmd.run(options);
 }
 
 export function commandTestSetup() {
-	mockRandom([0.1]);
+	mockRandom(0.5);
 }
 
 export function commandTestTeardown() {
