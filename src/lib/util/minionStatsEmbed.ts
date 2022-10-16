@@ -13,8 +13,9 @@ import { getAllMinigameScores } from '../settings/settings';
 import { courses } from '../skilling/skills/agility';
 import creatures from '../skilling/skills/hunter/creatures';
 import { ItemBank, Skills } from '../types';
-import { addArrayOfNumbers, toTitleCase } from '../util';
+import { addArrayOfNumbers } from '../util';
 import { logError } from './logError';
+import { toTitleCase } from './toTitleCase';
 
 export async function minionStatsEmbed(user: MUser): Promise<Embed> {
 	const { QP } = user;

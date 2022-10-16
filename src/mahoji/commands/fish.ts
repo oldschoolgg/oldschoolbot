@@ -45,7 +45,6 @@ export const fishCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
-		console.log(userID);
 		const user = await mUserFetch(userID);
 		const fish = Fishing.Fishes.find(
 			fish =>
@@ -166,7 +165,6 @@ export const fishCommand: OSBMahojiCommand = {
 		}
 
 		const tenPercent = Math.floor(calcPercentOfNum(10, duration));
-		console.log({ duration, tenPercent, quantity, scaledTimePerFish, maxTripLength });
 		duration += rand(-tenPercent, tenPercent);
 
 		await addSubTaskToActivityTask<FishingActivityTaskOptions>({

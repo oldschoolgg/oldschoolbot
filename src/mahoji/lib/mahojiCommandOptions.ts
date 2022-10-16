@@ -9,8 +9,8 @@ import { GearSetupTypes, globalPresets } from '../../lib/gear';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { prisma } from '../../lib/settings/prisma';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { toTitleCase } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
+import { toTitleCase } from '../../lib/util/toTitleCase';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const filterOption: CommandOption = {

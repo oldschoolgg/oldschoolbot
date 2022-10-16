@@ -1,16 +1,10 @@
-import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
+import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { Gear } from '../structures/Gear';
-import { itemID, toTitleCase } from '../util';
-import getOSItem from '../util/getOSItem';
+import { itemID } from '../util';
+import { toTitleCase } from '../util/toTitleCase';
 import { GearSetup } from '.';
 import { GearPreset } from '.prisma/client';
-
-export function itemInSlot(setup: GearSetup, slot: EquipmentSlot): [null, null] | [Item, number] {
-	const equipped = setup[slot];
-	if (!equipped) return [null, null];
-	return [getOSItem(equipped.item), equipped.quantity];
-}
 
 export function readableStatName(slot: string) {
 	return toTitleCase(slot.replace('_', ' '));

@@ -12,11 +12,12 @@ import getUserBestGearFromBank from '../../../lib/minions/functions/getUserBestG
 import { unEquipAllCommand } from '../../../lib/minions/functions/unequipAllCommand';
 import { prisma } from '../../../lib/settings/prisma';
 import { Gear } from '../../../lib/structures/Gear';
-import { assert, formatSkillRequirements, isValidGearSetup, stringMatches, toTitleCase } from '../../../lib/util';
+import { assert, formatSkillRequirements, isValidGearSetup, stringMatches } from '../../../lib/util';
 import { gearEquipMultiImpl } from '../../../lib/util/equipMulti';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
 import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
+import { toTitleCase } from '../../../lib/util/toTitleCase';
 import { handleMahojiConfirmation, mahojiParseNumber } from '../../mahojiSettings';
 
 export async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName: string): CommandResponse {

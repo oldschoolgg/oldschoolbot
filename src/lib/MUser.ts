@@ -46,6 +46,10 @@ export class MUserClass {
 		syncPerkTierOfUser(this);
 	}
 
+	countSkillsAtleast99() {
+		return Object.values(this.skillsAsLevels).filter(lvl => lvl >= 99).length;
+	}
+
 	async update(data: Prisma.UserUpdateArgs['data']) {
 		const result = await mahojiUserSettingsUpdate(this.id, data);
 		this.user = result.newUser;

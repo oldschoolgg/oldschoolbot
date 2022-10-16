@@ -31,15 +31,13 @@ describe('Fish Command', () => {
 	});
 
 	it('should fish', () => {
-		testRunCmd({
-			cmd: fishCommand,
-			opts: { name: 'shrimps' }
-		});
 		expect(
 			testRunCmd({
 				cmd: fishCommand,
 				opts: { name: 'shrimps' }
 			})
-		).resolves.toEqual('Thats not a valid fish to catch.');
+		).resolves.toEqual(
+			"<:minion:778418736180494347> Your minion is now fishing 251x Shrimps, it'll take around 27 minutes, 8 seconds to finish."
+		);
 	});
 });

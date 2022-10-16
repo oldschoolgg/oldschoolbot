@@ -482,10 +482,6 @@ export function rogueOutfitPercentBonus(user: MUser): number {
 	return amountEquipped * 20;
 }
 
-export function countSkillsAtleast99(user: MUser) {
-	return Object.values(user.skillsAsLevels).filter(lvl => lvl >= 99).length;
-}
-
 export function hasMonsterRequirements(user: MUser, monster: KillableMonster) {
 	if (monster.qpRequired && user.QP < monster.qpRequired) {
 		return [

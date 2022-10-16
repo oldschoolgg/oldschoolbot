@@ -67,8 +67,9 @@ import {
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '../types/minions';
-import { formatDuration, itemNameFromID, randomVariation, toTitleCase } from '../util';
+import { formatDuration, itemNameFromID, randomVariation } from '../util';
 import { stringMatches } from './cleanString';
+import { toTitleCase } from './toTitleCase';
 
 export function minionStatus(user: MUser) {
 	const currentTask = getActivityOfUser(user.id);

@@ -6,10 +6,9 @@ import { convertLVLtoXP } from 'oldschooljs/dist/util';
 
 import { BitField } from '../src/lib/constants';
 import { filterGearSetup, GearSetup, PartialGearSetup } from '../src/lib/gear';
-import { baseUserKourendFavour } from '../src/lib/minions/data/kourendFavour';
 import { MUserClass } from '../src/lib/MUser';
 import { Gear } from '../src/lib/structures/Gear';
-import { OSBMahojiCommand } from '../src/mahoji/lib/util';
+import type { OSBMahojiCommand } from '../src/mahoji/lib/util';
 
 interface MockUserArgs {
 	bank?: Bank;
@@ -75,7 +74,13 @@ export const mockUser = (overrides?: MockUserArgs): User => {
 		bitfield: overrides?.bitfield ?? [],
 		username: 'Magnaboy',
 		QP: overrides?.QP ?? 0,
-		kourend_favour: baseUserKourendFavour,
+		kourend_favour: {
+			Arceuus: 0,
+			Hosidius: 0,
+			Lovakengj: 0,
+			Piscarilius: 0,
+			Shayzien: 0
+		},
 		sacrificedValue: 0,
 		id: overrides?.id ?? ''
 	} as unknown as User;
@@ -90,7 +95,6 @@ export function testRunCmd({ cmd, opts, user }: { cmd: OSBMahojiCommand; opts: a
 	const hash = murmurhash(JSON.stringify({ name: cmd.name, opts, user })).toString();
 	const mockedUser = mockMUser({ id: hash, ...user });
 	mockUserMap.set(hash, mockedUser);
-	console.log(mockedUser.id);
 	const options: any = {
 		user: mockedUser.user,
 		channelID: '1234',
@@ -101,7 +105,7 @@ export function testRunCmd({ cmd, opts, user }: { cmd: OSBMahojiCommand; opts: a
 }
 
 export function commandTestSetup() {
-	mockRandom(0.5);
+	mockRandom([0.5]);
 }
 
 export function commandTestTeardown() {
