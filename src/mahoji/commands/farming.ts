@@ -19,8 +19,8 @@ import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 import { mahojiUserSettingsUpdate } from '../settingsUpdate';
 
 const autoFarmFilterTexts: Record<AutoFarmFilterEnum, string> = {
-	allFarm: 'All crops will be farmed with the highest available seed',
-	replant: 'Only planted crops will be replanted, using the same seed'
+	AllFarm: 'All crops will be farmed with the highest available seed',
+	Replant: 'Only planted crops will be replanted, using the same seed'
 };
 
 export const farmingCommand: OSBMahojiCommand = {
