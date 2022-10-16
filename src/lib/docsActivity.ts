@@ -29,7 +29,7 @@ export interface DocsDefaultResults {
 	value: string;
 }
 
-export const osbDefaultDocsResults: DocsDefaultResults[] = [
+export const DefaultDocsResults: DocsDefaultResults[] = [
 	{
 		name: 'Home',
 		value: ''
@@ -45,25 +45,6 @@ export const osbDefaultDocsResults: DocsDefaultResults[] = [
 	{
 		name: 'Beginner Guide',
 		value: 'getting-started/beginner-guide'
-	}
-];
-
-export const DefaultDocsResults: DocsDefaultResults[] = [
-	{
-		name: 'Home',
-		value: ''
-	},
-	{
-		name: 'Getting Started',
-		value: 'getting-started'
-	},
-	{
-		name: 'Rules',
-		value: 'rules'
-	},
-	{
-		name: 'Leagues',
-		value: 'leagues'
 	}
 ];
 
