@@ -82,12 +82,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.BlackDragon,
 		amount: [10, 15],
 		weight: 6,
-		monsters: [
-			Monsters.BlackDragon.id,
-			Monsters.BabyBlackDragon.id,
-			Monsters.BrutalBlackDragon.id,
-			Monsters.KingBlackDragon.id
-		],
+		monsters: [Monsters.BlackDragon.id, Monsters.BabyBlackDragon.id, Monsters.BrutalBlackDragon.id],
 		extendedAmount: [40, 60],
 		extendedUnlockId: SlayerTaskUnlocksEnum.FireAndDarkness,
 		slayerLevel: 77,

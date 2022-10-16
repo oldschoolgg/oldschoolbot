@@ -262,7 +262,7 @@ export const konarMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 4,
-		notifyDrops: resolveItems(['Dragon chainbody', 'Smoke Battlestaff', 'Pet smoke devil']),
+		notifyDrops: resolveItems(['Dragon chainbody', 'Smoke Battlestaff', 'Jar of smoke', 'Pet smoke devil']),
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 93
