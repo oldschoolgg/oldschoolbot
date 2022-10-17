@@ -566,21 +566,20 @@ async function checkMassesCommand(guildID: string | undefined) {
 ${massStr}`;
 }
 
-function calcTime(user: MUser) {
+function calcTime(perkTier: number) {
 	for (const [bit, dur] of [
-		[BitField.IsPatronTier6, Time.Minute * 90],
-		[BitField.IsPatronTier5, Time.Minute * 40],
-		[BitField.IsPatronTier4, Time.Minute * 20]
+		[7, Time.Minute * 90],
+		[6, Time.Minute * 40],
+		[5, Time.Minute * 20]
 	] as const) {
-		if (user.bitfield.includes(bit)) return dur;
+		if (perkTier === bit) return dur;
 	}
-	throw new Error('User had no 4/5/6 bit');
+	throw new Error('User is not a Tier 4+ Patron');
 }
 
 async function patronTriggerDoubleLoot(user: MUser) {
-	if (
-		![BitField.IsPatronTier4, BitField.IsPatronTier5, BitField.IsPatronTier6].some(i => user.bitfield.includes(i))
-	) {
+	const perkTier = getUsersPerkTier(user);
+	if (perkTier < 5) {
 		return 'Only T4, T5 or T6 patrons can use this command.';
 	}
 	const lastTime = user.user.last_patron_double_time_trigger;
@@ -592,13 +591,13 @@ async function patronTriggerDoubleLoot(user: MUser) {
 		)}.`;
 	}
 
-	const time = calcTime(user);
+	const time = calcTime(perkTier);
 	await mahojiUserSettingsUpdate(user.id, {
 		last_patron_double_time_trigger: new Date()
 	});
 	await addToDoubleLootTimer(
 		time,
-		`${userMention(user.id)} used their monthly Tier ${getUsersPerkTier(user) - 1} double loot time`
+		`${userMention(user.id)} used their monthly Tier ${perkTier - 1} double loot time`
 	);
 	return `Added ${formatDuration(time)} of double loot.`;
 }
