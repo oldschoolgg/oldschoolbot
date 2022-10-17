@@ -282,7 +282,7 @@ export async function baxtorianBathhousesStartCommand({
 	user: MUser;
 	tier: string;
 	channelID: string;
-	ore?: string;
+	ore?: string | number;
 	mixture?: string;
 }) {
 	if (user.minionIsBusy) {
@@ -297,7 +297,11 @@ export async function baxtorianBathhousesStartCommand({
 	const warmthNeeded = bathHouseTier.warmthPerBath * quantity;
 	const herbsNeeded = calcHerbsNeeded(quantity);
 
-	let oreToUse = ore ? BathhouseOres.find(o => stringMatches(o.item.name, ore)) : null;
+	let oreToUse = ore
+		? typeof ore === 'number'
+			? BathhouseOres.find(o => stringMatches(o.item.id, ore))
+			: BathhouseOres.find(o => stringMatches(o.item.name, ore))
+		: null;
 	if (!oreToUse) {
 		oreToUse = BathhouseOres.find(o => userBank.amount(o.item.id) >= warmthNeeded / o.warmth) ?? BathhouseOres[0];
 	}
