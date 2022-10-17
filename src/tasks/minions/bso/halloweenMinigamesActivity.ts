@@ -23,7 +23,7 @@ export const hweenTask: MinionTask = {
 		}
 		if (roll(HALLOWEEN_BOX_DROPRATE)) {
 			loot.add('Spooky box');
-			if (isDoubleLootActive()) {
+			if (isDoubleLootActive(data.duration)) {
 				loot.add('Spooky box');
 			}
 		}
