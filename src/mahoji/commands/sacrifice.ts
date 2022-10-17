@@ -132,15 +132,15 @@ export const sacrificeCommand: OSBMahojiCommand = {
 			totalPrice = Math.floor(totalPrice * 1.3);
 		}
 
-		let gotHammy = false;
+		let hammyCount = 0;
 		for (let i = 0; i < Math.floor(totalPrice / 51_530_000); i++) {
 			if (roll(140)) {
-				gotHammy = true;
+				hammyCount++;
 				break;
 			}
 		}
-		if (gotHammy) {
-			await user.addItemsToBank({ items: new Bank().add('Hammy'), collectionLog: true });
+		if (hammyCount) {
+			await user.addItemsToBank({ items: new Bank().add('Hammy', hammyCount), collectionLog: true });
 		}
 
 		const { newUser } = await user.update({
@@ -170,9 +170,12 @@ export const sacrificeCommand: OSBMahojiCommand = {
 			}
 		}
 
-		if (gotHammy) {
+		if (hammyCount) {
 			str +=
 				'\n\n<:Hamstare:685036648089780234> A small hamster called Hammy has crawled into your bank and is now staring intensely into your eyes.';
+			if (hammyCount > 1) {
+				str += ` **(x${hammyCount})**`;
+			}
 		}
 		if (hasSkipper) {
 			str +=
