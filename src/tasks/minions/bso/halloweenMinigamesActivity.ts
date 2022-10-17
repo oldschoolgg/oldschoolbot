@@ -1,6 +1,7 @@
 import { roll } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { isDoubleLootActive } from '../../../lib/doubleLoot';
 import { HALLOWEEN_BOX_DROPRATE, KURO_DROPRATE, miniMinigames } from '../../../lib/hweenEvent';
 import { HalloweenMinigameOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -22,6 +23,9 @@ export const hweenTask: MinionTask = {
 		}
 		if (roll(HALLOWEEN_BOX_DROPRATE)) {
 			loot.add('Spooky box');
+			if (isDoubleLootActive()) {
+				loot.add('Spooky box');
+			}
 		}
 
 		await user.addItemsToBank({ items: loot, collectionLog: true });
