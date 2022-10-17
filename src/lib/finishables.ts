@@ -1,10 +1,25 @@
 import { notEmpty, roll } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
-import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc';
+import { ChambersOfXeric, Nightmare } from 'oldschooljs/dist/simulation/misc';
 
 import { allCollectionLogsFlat } from './data/Collections';
-import { chambersOfXericNormalCL, wintertodtCL } from './data/CollectionsExport';
+import {
+	chambersOfXericCL,
+	chambersOfXericNormalCL,
+	NexCL,
+	temporossCL,
+	theatreOfBLoodCL,
+	theatreOfBLoodNormalCL,
+	theGauntletCL,
+	theNightmareCL,
+	theNightmareNormalCL,
+	wintertodtCL
+} from './data/CollectionsExport';
 import pets from './data/pets';
+import { gauntlet } from './simulation/gauntlet';
+import { handleNexKills } from './simulation/nex';
+import { getTemporossLoot } from './simulation/tempoross';
+import { TheatreOfBlood } from './simulation/tob';
 import { WintertodtCrate } from './simulation/wintertodt';
 import { stringMatches } from './util';
 import itemID from './util/itemID';
@@ -15,6 +30,7 @@ interface KillArgs {
 
 interface Finishable {
 	name: string;
+	aliases?: string[];
 	cl: number[];
 	kill: (args: KillArgs) => Bank;
 	customResponse?: (kc: number) => string;
@@ -24,12 +40,67 @@ interface Finishable {
 export const finishables: Finishable[] = [
 	{
 		name: 'Chambers of Xeric (Solo, Non-CM)',
+		aliases: ['raids', 'cox'],
 		cl: chambersOfXericNormalCL,
 		kill: () => ChambersOfXeric.complete({ team: [{ id: '1', personalPoints: 25_000 }] })['1']
 	},
 	{
+		name: 'Chambers of Xeric (Solo, CM)',
+		aliases: ['raids cm', 'cox cm'],
+		cl: chambersOfXericCL,
+		kill: () =>
+			ChambersOfXeric.complete({
+				challengeMode: true,
+				team: [{ id: '1', personalPoints: 25_000, canReceiveAncientTablet: true, canReceiveDust: true }],
+				timeToComplete: 1
+			})['1']
+	},
+	{
+		name: 'Theatre of Blood (Solo, Non-HM)',
+		aliases: ['tob', 'theatre of blood'],
+		cl: theatreOfBLoodNormalCL,
+		kill: () => new Bank(TheatreOfBlood.complete({ hardMode: false, team: [{ id: '1', deaths: [] }] }).loot['1'])
+	},
+	{
+		name: 'Theatre of Blood (Solo, HM)',
+		aliases: ['tob hm', 'theatre of blood hm'],
+		cl: theatreOfBLoodCL,
+		kill: () => new Bank(TheatreOfBlood.complete({ hardMode: true, team: [{ id: '1', deaths: [] }] }).loot['1'])
+	},
+	{
+		name: 'The Nightmare',
+		aliases: ['nightmare'],
+		cl: theNightmareNormalCL,
+		kill: () => new Bank(Nightmare.kill({ isPhosani: false, team: [{ id: '1', damageDone: 2400 }] })['1'])
+	},
+	{
+		name: "Phosani's Nightmare",
+		aliases: ['phosani'],
+		cl: theNightmareCL,
+		kill: () => new Bank(Nightmare.kill({ isPhosani: true, team: [{ id: '1', damageDone: 2400 }] })['1'])
+	},
+	{
+		name: 'Gauntlet',
+		aliases: [],
+		cl: theGauntletCL.filter(i => i !== itemID('Gauntlet cape')),
+		kill: () => gauntlet({ died: false, type: 'normal' })
+	},
+	{
+		name: 'Corrupted Gauntlet',
+		aliases: ['cg'],
+		cl: theGauntletCL,
+		kill: () => gauntlet({ died: false, type: 'corrupted' })
+	},
+	{
+		name: 'Nex',
+		aliases: [],
+		cl: NexCL,
+		kill: () => handleNexKills({ quantity: 1, team: [{ id: '1', contribution: 100, deaths: [] }] }).get('1')
+	},
+	{
 		name: 'Wintertodt (500pt crates, Max stats)',
 		cl: wintertodtCL,
+		aliases: ['todt', 'wintertodt', 'wt'],
 		kill: ({ accumulatedLoot }) =>
 			new Bank(
 				WintertodtCrate.open({
@@ -46,6 +117,12 @@ export const finishables: Finishable[] = [
 					}
 				})
 			)
+	},
+	{
+		name: 'Tempoross',
+		cl: temporossCL,
+		aliases: ['temp'],
+		kill: () => getTemporossLoot(1, 99, new Bank())
 	}
 ];
 
@@ -55,6 +132,7 @@ const monsterPairedCLs = Monsters.map(mon => {
 	if (!cl.items.every(id => mon.allItems.includes(id))) return null;
 	return {
 		name: mon.name,
+		aliases: mon.aliases,
 		cl: cl.items,
 		mon
 	};
@@ -63,6 +141,7 @@ const monsterPairedCLs = Monsters.map(mon => {
 for (const mon of monsterPairedCLs) {
 	finishables.push({
 		name: mon.name,
+		aliases: mon.aliases,
 		cl: mon.cl,
 		kill: () => mon.mon.kill(1, {})
 	});
