@@ -8,6 +8,8 @@ import {
 } from 'discord.js';
 import { Time } from 'e';
 
+import { isFunction, PaginatedMessagePage } from './util';
+
 const controlButtons: {
 	customId: string;
 	emoji: string;
@@ -49,17 +51,28 @@ const controlButtons: {
 
 export class PaginatedMessage {
 	public index = 0;
-	public pages: MessageEditOptions[];
+	public pages: PaginatedMessagePage[];
 	public channel: TextChannel;
 
-	constructor({ channel, pages }: { channel: TextChannel; pages: MessageEditOptions[] }) {
+	constructor({
+		channel,
+		pages,
+		startingPage
+	}: {
+		channel: TextChannel;
+		pages: PaginatedMessagePage[];
+		startingPage?: number;
+	}) {
 		this.pages = pages;
 		this.channel = channel;
+		this.index = startingPage ?? 0;
 	}
 
-	render(): MessageEditOptions {
+	async render(): Promise<MessageEditOptions> {
+		const rawPage = this.pages[this.index];
+		const rendered = isFunction(rawPage) ? await rawPage({ currentPage: this.index }) : rawPage;
 		return {
-			...(this.pages[this.index] as MessageEditOptions),
+			...rendered,
 			components: [
 				new ActionRowBuilder<ButtonBuilder>().addComponents(
 					controlButtons.map(i =>
@@ -71,7 +84,7 @@ export class PaginatedMessage {
 	}
 
 	async run(targetUsers?: string[]) {
-		const message = await this.channel.send(this.render() as MessageOptions);
+		const message = await this.channel.send((await this.render()) as MessageOptions);
 		if (this.pages.length === 1) return;
 		const collector = await message.createMessageComponentCollector({
 			time: Time.Minute * 10,
@@ -88,7 +101,7 @@ export class PaginatedMessage {
 					});
 
 					if (previousIndex !== this.index) {
-						await interaction.update(this.render());
+						await interaction.update(await this.render());
 						return;
 					}
 				}

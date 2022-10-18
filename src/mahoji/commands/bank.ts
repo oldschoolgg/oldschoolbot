@@ -1,12 +1,14 @@
 import { codeBlock, Embed } from '@discordjs/builders';
 import { chunk } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { Bank } from 'oldschooljs';
 
 import { BankFlag, bankFlags } from '../../lib/bankImage';
 import { Emoji } from '../../lib/constants';
 import { Flags } from '../../lib/minions/types';
+import { PaginatedMessage } from '../../lib/PaginatedMessage';
 import { BankSortMethod, BankSortMethods } from '../../lib/sorts';
-import { channelIsSendable, makePaginatedMessage } from '../../lib/util';
+import { channelIsSendable, makePaginatedMessage, PaginatedMessagePage } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
@@ -16,6 +18,38 @@ import { OSBMahojiCommand } from '../lib/util';
 const bankFormats = ['json', 'text_paged', 'text_full'] as const;
 const bankItemsPerPage = 10;
 type BankFormat = typeof bankFormats[number];
+
+async function getBankPage({
+	user,
+	bank,
+	mahojiFlags,
+	page,
+	flags = {}
+}: {
+	user: MUser;
+	bank: Bank;
+	page: number;
+	mahojiFlags: BankFlag[];
+	flags?: Record<string, number | string>;
+}) {
+	const msg = {
+		files: [
+			(
+				await makeBankImage({
+					bank,
+					title: `${user.rawUsername ? `${user.rawUsername}'s` : 'Your'} Bank`,
+					flags: {
+						...flags,
+						page
+					},
+					user,
+					mahojiFlags
+				})
+			).file
+		]
+	};
+	return msg;
+}
 
 export const bankCommand: OSBMahojiCommand = {
 	name: 'bank',
@@ -162,18 +196,26 @@ export const bankCommand: OSBMahojiCommand = {
 		};
 		if (options.sort) flags.sort = options.sort;
 
+		const result = await getBankPage({ user: klasaUser, bank, flags, mahojiFlags, page: Number(flags.page) });
+
+		const channel = globalClient.channels.cache.get(channelID);
+		if (!channel || !channelIsSendable(channel) || options.flag === 'show_all' || options.flag_extra === 'wide') {
+			return result;
+		}
+
+		const pages: PaginatedMessagePage[] = [];
+		const bankSize = Math.ceil(klasaUser.bankWithGP.length / 56);
+		for (let i = 0; i < bankSize; i++) {
+			pages.push(async ({ currentPage }) => {
+				return getBankPage({ user: klasaUser, bank, flags, mahojiFlags, page: currentPage });
+			});
+		}
+
+		const m = new PaginatedMessage({ pages, channel, startingPage: Number(flags.page) });
+		m.run([user.id]);
 		return {
-			files: [
-				(
-					await makeBankImage({
-						bank,
-						title: `${klasaUser.rawUsername ? `${klasaUser.rawUsername}'s` : 'Your'} Bank`,
-						flags,
-						user: klasaUser,
-						mahojiFlags
-					})
-				).file
-			]
+			content: 'Running...',
+			ephemeral: true
 		};
 	}
 };
