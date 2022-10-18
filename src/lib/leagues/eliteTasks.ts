@@ -622,7 +622,7 @@ export const eliteTasks: Task[] = [
 		id: 3081,
 		name: 'Acquire, complete and open 500 Elite clues/caskets',
 		has: async ({ actualClues }) => {
-			return actualClues.amount('Clue scroll (elite)') >= 300;
+			return actualClues.amount('Clue scroll (elite)') >= 500;
 		}
 	},
 	{
