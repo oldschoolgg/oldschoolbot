@@ -6,7 +6,7 @@ import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/
 import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
 import { updateGPTrackSetting, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { ClueTiers } from '../clues/clueTiers';
-import { COINS_ID, Emoji, PerkTier } from '../constants';
+import { BitField, COINS_ID, Emoji, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
 import { triggerRandomEvent } from '../randomEvents';
@@ -20,7 +20,6 @@ import {
 	makeOpenCasketButton,
 	makeRepeatTripButton
 } from './globalInteractions';
-import { taskCanBeRepeated } from './repeatStoredTrip';
 import { sendToChannelID } from './webhook';
 
 export const collectors = new Map<string, MessageCollector>();
@@ -108,13 +107,14 @@ export async function handleTripFinish(
 	if (!channelIsSendable(channel)) return;
 
 	const components = new ActionRowBuilder<ButtonBuilder>();
-	if (taskCanBeRepeated(data.type)) components.addComponents(makeRepeatTripButton());
+	components.addComponents(makeRepeatTripButton());
 	const casketReceived = loot ? ClueTiers.find(i => loot?.has(i.id)) : undefined;
 	if (casketReceived) components.addComponents(makeOpenCasketButton(casketReceived));
 	if (perkTier > PerkTier.One) {
 		if (clueReceived) components.addComponents(makeDoClueButton(clueReceived));
 		const birdHousedetails = await calculateBirdhouseDetails(user.id);
-		if (birdHousedetails.isReady) components.addComponents(makeBirdHouseTripButton());
+		if (birdHousedetails.isReady && !user.bitfield.includes(BitField.DisableBirdhouseRunButton))
+			components.addComponents(makeBirdHouseTripButton());
 		const { currentTask } = await getUsersCurrentSlayerInfo(user.id);
 		if ((currentTask === null || currentTask.quantity_remaining <= 0) && data.type === 'MonsterKilling') {
 			components.addComponents(makeNewSlayerTaskButton());
