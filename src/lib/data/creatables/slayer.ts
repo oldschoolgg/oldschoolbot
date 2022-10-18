@@ -114,7 +114,7 @@ export const slayerCreatables: Createable[] = [
 			'Uncharged trident': 1,
 			'Death rune': 2500,
 			'Chaos rune': 2500,
-			'Fire rune': 12_500,
+			'Fire rune': 12_500
 		}),
 		GPCost: 0
 	},
