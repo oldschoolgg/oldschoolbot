@@ -81,9 +81,9 @@ export const farmingCommand: OSBMahojiCommand = {
 				{
 					type: ApplicationCommandOptionType.String,
 					name: 'auto_farm_filter_data',
-					description: 'The auto farm filter you want to use by default. (default: allfarm)',
+					description: 'The auto farm filter you want to use by default. (default: AllFarm)',
 					required: true,
-					choices: Object.keys(AutoFarmFilterEnum).map(i => ({ name: i, value: i }))
+					choices: Object.values(AutoFarmFilterEnum).map(i => ({ name: i, value: i }))
 				}
 			]
 		},
@@ -224,8 +224,8 @@ export const farmingCommand: OSBMahojiCommand = {
 			return `You will now use ${tier.item.name} by default.`;
 		}
 		if (options.auto_farm_filter) {
-			const autoFarmFilterString = Object.keys(AutoFarmFilterEnum).find(i =>
-				stringMatches(i, options.auto_farm_filter!.auto_farm_filter_data)
+			const autoFarmFilterString = Object.values(AutoFarmFilterEnum).find(
+				i => i === options.auto_farm_filter!.auto_farm_filter_data
 			);
 			if (!autoFarmFilterString) return 'Invalid auto farm filter.';
 			const autoFarmFilter = autoFarmFilterString as AutoFarmFilterEnum;

@@ -24,11 +24,9 @@ export async function autoFarm(user: MUser, patchesDetailed: IPatchDataDetailed[
 		autoFarmFilter = AutoFarmFilterEnum.AllFarm;
 	}
 
-	const autoFarmFilterString = autoFarmFilter.toString().toLowerCase();
-
 	elligible = [...plants]
 		.filter(p => {
-			switch (autoFarmFilterString) {
+			switch (autoFarmFilter) {
 				case AutoFarmFilterEnum.AllFarm: {
 					return allFarm(p, farmingLevel, user, userBank);
 				}
@@ -42,11 +40,11 @@ export async function autoFarm(user: MUser, patchesDetailed: IPatchDataDetailed[
 		})
 		.sort((a, b) => b.level - a.level);
 
-	if (autoFarmFilterString === AutoFarmFilterEnum.AllFarm) {
+	if (autoFarmFilter === AutoFarmFilterEnum.AllFarm) {
 		canHarvest = elligible.find(p => patchesDetailed.find(_p => _p.patchName === p.seedType)!.ready);
 		errorString = "There's no Farming crops that you have the requirements to plant, and nothing to harvest.";
 	}
-	if (autoFarmFilterString === AutoFarmFilterEnum.Replant) {
+	if (autoFarmFilter === AutoFarmFilterEnum.Replant) {
 		errorString =
 			"There's no Farming crops that you have planted that are ready to be replanted or no seeds remaining.";
 	}
