@@ -615,7 +615,7 @@ const Reverteables: Createable[] = [
 		noCl: true
 	},
 	{
-		name: 'revert trident of the seas',
+		name: 'Revert trident of the seas',
 		inputItems: {
 			[itemID('Trident of the seas (full)')]: 1
 		},
@@ -625,7 +625,6 @@ const Reverteables: Createable[] = [
 			[itemID('Chaos rune')]: 2500,
 			[itemID('Fire rune')]: 12_500
 		},
-		GPCost: 0,
 		noCl: true
 	},
 	{
