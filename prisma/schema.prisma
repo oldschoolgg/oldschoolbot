@@ -619,6 +619,7 @@ enum activity_type_enum {
   AnimatedArmour
   Cyclops
   Sawmill
+  Butler
   Nightmare
   Sepulchre
   Plunder
