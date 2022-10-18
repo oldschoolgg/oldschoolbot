@@ -88,12 +88,14 @@ export const askCommand: OSBMahojiCommand = {
 						maxSize: 70,
 						flags: { tradeables: 'tradeables' },
 						filters: [options.filter],
-						search: options.search
+						search: options.search,
+						noDuplicateItems: true
 				  }).filter(i => itemIsTradeable(i.id, true));
 		const itemsReceived = parseBank({
 			inputStr: options.receive,
 			maxSize: 70,
-			flags: { tradeables: 'tradeables' }
+			flags: { tradeables: 'tradeables' },
+			noDuplicateItems: true
 		}).filter(i => itemIsTradeable(i.id, true));
 
 		if (options.price) {
@@ -127,8 +129,8 @@ Both parties must click confirm to make the trade.`,
 
 		await senderUser.removeItemsFromBank(itemsSent);
 		await recipientUser.removeItemsFromBank(itemsReceived);
-		await senderUser.addItemsToBank({ items: itemsReceived, collectionLog: false });
-		await recipientUser.addItemsToBank({ items: itemsSent, collectionLog: false });
+		await senderUser.addItemsToBank({ items: itemsReceived, collectionLog: false, filterLoot: false });
+		await recipientUser.addItemsToBank({ items: itemsSent, collectionLog: false, filterLoot: false });
 
 		await prisma.economyTransaction.create({
 			data: {
