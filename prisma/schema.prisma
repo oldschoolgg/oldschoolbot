@@ -393,6 +393,8 @@ model User {
   bingo_tickets_bought Int    @default(0)
   bingo_gp_contributed BigInt @default(0)
 
+  RedeemUsage RedeemUsage[]
+
   @@index([bingo_tickets_bought])
   @@map("users")
 }
@@ -580,6 +582,40 @@ model BingoTeam {
   third_user  String @unique @db.VarChar(19)
 
   @@map("bingo_team")
+}
+
+enum RedeemType {
+  GuildPromotion
+  UserReferrals
+}
+
+model Redeem {
+  id   String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  type RedeemType
+
+  is_active            Boolean @default(true)
+  times_used           Int     @default(0)
+  static_code          String  @db.VarChar(64)
+  new_users_only       Boolean
+  total_uses_available Int?
+
+  RedeemUsage RedeemUsage[]
+
+  @@map("redeem")
+}
+
+model RedeemUsage {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+
+  date_used DateTime @default(now()) @db.Timestamp(6)
+
+  // Relations
+  redeem_id String @db.Uuid
+  user_id   String
+  user      User   @relation(fields: [user_id], references: [id])
+  redeem    Redeem @relation(fields: [redeem_id], references: [id])
+
+  @@map("redeem_usage")
 }
 
 enum command_usage_status {
