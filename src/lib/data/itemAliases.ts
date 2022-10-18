@@ -321,3 +321,6 @@ setItemAlias(7126, 'Pirate leggings (red)');
 
 setItemAlias(6107, 'Ghostly robe top');
 setItemAlias(6108, 'Ghostly robe bottom');
+
+// JMOD Scythe:
+setItemAlias(22_664, 'JMOD Scythe of vitur');
