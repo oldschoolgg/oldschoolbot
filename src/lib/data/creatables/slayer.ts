@@ -106,17 +106,18 @@ export const slayerCreatables: Createable[] = [
 		GPCost: 0
 	},
 	{
-		name: 'Uncharged trident',
-		inputItems: new Bank({
-			'Trident of the seas (full)': 1
-		}),
+		name: 'Trident of the Seas (full)',
 		outputItems: new Bank({
+			
+		}),
+		inputItems: new Bank({
 			'Uncharged trident': 1,
 			'Death rune': 2500,
 			'Chaos rune': 2500,
 			'Fire rune': 12_500
 		}),
-		GPCost: 0
+		GPCost: 662_500,
+		noCl: true
 	},
 	{
 		name: "Bryophyta's staff",
