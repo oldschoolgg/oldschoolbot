@@ -116,7 +116,7 @@ export const slayerCreatables: Createable[] = [
 			'Chaos rune': 2500,
 			'Fire rune': 12_500
 		}),
-		GPCost: 662_500,
+		GPCost: 25_000,
 		noCl: true
 	},
 	{
