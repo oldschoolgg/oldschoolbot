@@ -7,14 +7,13 @@ import { ContractOption, ContractOptions } from '../../lib/minions/farming/types
 import { autoFarm } from '../../lib/minions/functions/autoFarm';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Farming, { CompostName, CompostTiers } from '../../lib/skilling/skills/farming';
-import { getSkillsOfMahojiUser, stringMatches } from '../../lib/util';
+import { stringMatches } from '../../lib/util';
 import { farmingPatchNames, userGrowingProgressStr } from '../../lib/util/farmingHelpers';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { compostBinCommand, farmingPlantCommand, harvestCommand } from '../lib/abstracted_commands/farmingCommand';
 import { farmingContractCommand } from '../lib/abstracted_commands/farmingContractCommand';
 import { titheFarmCommand, titheFarmShopCommand } from '../lib/abstracted_commands/titheFarmCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const farmingCommand: OSBMahojiCommand = {
 	name: 'farming',
@@ -38,8 +37,8 @@ export const farmingCommand: OSBMahojiCommand = {
 					description: 'The plant you want to plant.',
 					required: true,
 					autocomplete: async (value: string, user: User) => {
-						const mUser = await mahojiUsersSettingsFetch(user.id);
-						const farmingLevel = getSkillsOfMahojiUser(mUser, true).farming;
+						const mUser = await mUserFetch(user.id);
+						const farmingLevel = mUser.skillLevel('farming');
 						return Farming.Plants.filter(i => farmingLevel >= i.level)
 							.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i.name, value: i.name }));

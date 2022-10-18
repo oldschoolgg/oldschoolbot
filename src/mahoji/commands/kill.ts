@@ -2,7 +2,6 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { PerkTier } from '../../lib/constants';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { toTitleCase } from '../../lib/util/toTitleCase';
@@ -10,7 +9,7 @@ import { Workers } from '../../lib/workers';
 import { OSBMahojiCommand } from '../lib/util';
 
 export function determineKillLimit(user: MUser) {
-	const perkTier = getUsersPerkTier(user);
+	const perkTier = user.perkTier();
 
 	if (perkTier >= PerkTier.Six) {
 		return 1_000_000;

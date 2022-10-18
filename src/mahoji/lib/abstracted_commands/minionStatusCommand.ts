@@ -79,7 +79,7 @@ export async function minionStatusCommand(user: MUser) {
 		);
 	}
 
-	if (!user.minionIsBusy && (await canRunAutoContract(user.id))) {
+	if (!user.minionIsBusy && (await canRunAutoContract(user))) {
 		buttons.push(
 			new ButtonBuilder()
 				.setCustomId('AUTO_FARMING_CONTRACT')

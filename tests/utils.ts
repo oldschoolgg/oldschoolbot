@@ -5,9 +5,9 @@ import { Bank } from 'oldschooljs';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
 
 import { BitField } from '../src/lib/constants';
-import { filterGearSetup, GearSetup, PartialGearSetup } from '../src/lib/gear';
+import { GearSetup } from '../src/lib/gear/types';
 import { MUserClass } from '../src/lib/MUser';
-import { Gear } from '../src/lib/structures/Gear';
+import { filterGearSetup, Gear, PartialGearSetup } from '../src/lib/structures/Gear';
 import type { OSBMahojiCommand } from '../src/mahoji/lib/util';
 
 interface MockUserArgs {
@@ -28,7 +28,7 @@ interface MockUserArgs {
 	premium_balance_tier?: number;
 	premium_balance_expiry_date?: number;
 	bitfield?: BitField[];
-	id: string;
+	id?: string;
 }
 
 export const mockUser = (overrides?: MockUserArgs): User => {
@@ -91,7 +91,15 @@ export const mockMUser = (overrides?: MockUserArgs) => {
 
 export const mockUserMap = new Map<string, MUser>();
 
-export function testRunCmd({ cmd, opts, user }: { cmd: OSBMahojiCommand; opts: any; user?: Omit<MockUserArgs, 'id'> }) {
+export async function testRunCmd({
+	cmd,
+	opts,
+	user
+}: {
+	cmd: OSBMahojiCommand;
+	opts: any;
+	user?: Omit<MockUserArgs, 'id'>;
+}) {
 	const hash = murmurhash(JSON.stringify({ name: cmd.name, opts, user })).toString();
 	const mockedUser = mockMUser({ id: hash, ...user });
 	mockUserMap.set(hash, mockedUser);
@@ -101,6 +109,7 @@ export function testRunCmd({ cmd, opts, user }: { cmd: OSBMahojiCommand; opts: a
 		userID: mockedUser.id,
 		options: opts
 	};
+
 	return cmd.run(options);
 }
 

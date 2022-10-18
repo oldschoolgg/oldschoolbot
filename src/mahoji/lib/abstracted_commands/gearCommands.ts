@@ -6,16 +6,15 @@ import { Bank } from 'oldschooljs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { MAX_INT_JAVA, PATRON_ONLY_GEAR_SETUP, PerkTier } from '../../../lib/constants';
-import { defaultGear, GearSetup, GearSetupType, GearStat, globalPresets } from '../../../lib/gear';
 import { generateAllGearImage, generateGearImage } from '../../../lib/gear/functions/generateGearImage';
+import { GearSetup, GearSetupType, GearStat } from '../../../lib/gear/types';
 import getUserBestGearFromBank from '../../../lib/minions/functions/getUserBestGearFromBank';
 import { unEquipAllCommand } from '../../../lib/minions/functions/unequipAllCommand';
 import { prisma } from '../../../lib/settings/prisma';
-import { Gear } from '../../../lib/structures/Gear';
+import { defaultGear, Gear, globalPresets } from '../../../lib/structures/Gear';
 import { assert, formatSkillRequirements, isValidGearSetup, stringMatches } from '../../../lib/util';
 import { gearEquipMultiImpl } from '../../../lib/util/equipMulti';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
-import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 import { toTitleCase } from '../../../lib/util/toTitleCase';
 import { handleMahojiConfirmation, mahojiParseNumber } from '../../mahojiSettings';
@@ -159,7 +158,7 @@ export async function gearEquipCommand(args: {
 	if (items) {
 		return gearEquipMultiCommand(user, interaction, setup, items);
 	}
-	if (setup === 'other' && getUsersPerkTier(user) < PerkTier.Four) {
+	if (setup === 'other' && user.perkTier() < PerkTier.Four) {
 		return PATRON_ONLY_GEAR_SETUP;
 	}
 	if (preset) {
@@ -317,7 +316,7 @@ export async function gearUnequipCommand(
 }
 
 export async function autoEquipCommand(user: MUser, gearSetup: GearSetupType, equipmentType: string): CommandResponse {
-	if (gearSetup === 'other' && user.perkTier < PerkTier.Four) {
+	if (gearSetup === 'other' && user.perkTier() < PerkTier.Four) {
 		return PATRON_ONLY_GEAR_SETUP;
 	}
 
@@ -409,7 +408,7 @@ export async function gearSwapCommand(
 		);
 	}
 
-	if ([first, second].includes('other') && getUsersPerkTier(user) < PerkTier.Four) {
+	if ([first, second].includes('other') && user.perkTier() < PerkTier.Four) {
 		return PATRON_ONLY_GEAR_SETUP;
 	}
 

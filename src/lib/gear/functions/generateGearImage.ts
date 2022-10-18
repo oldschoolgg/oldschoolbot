@@ -3,11 +3,10 @@ import * as fs from 'fs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import { Canvas } from 'skia-canvas/lib';
 
-import { Gear } from '../../structures/Gear';
+import { Gear, maxDefenceStats, maxOffenceStats } from '../../structures/Gear';
 import { canvasImageFromBuffer, drawItemQuantityText, drawTitleText, fillTextXTimesInCtx } from '../../util/canvasUtil';
 import { toTitleCase } from '../../util/toTitleCase';
-import { GearSetupType, GearSetupTypes, maxDefenceStats, maxOffenceStats } from '..';
-import { GearSetup } from '../types';
+import { GearSetup, GearSetupType, GearSetupTypes } from '../types';
 
 const gearTemplateFile = fs.readFileSync('./src/lib/resources/images/gear_template.png');
 const gearTemplateCompactFile = fs.readFileSync('./src/lib/resources/images/gear_template_compact.png');

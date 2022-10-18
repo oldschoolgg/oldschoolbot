@@ -6,7 +6,7 @@ import { allCollectionLogsFlat } from './data/Collections';
 import { chambersOfXericNormalCL, wintertodtCL } from './data/CollectionsExport';
 import pets from './data/pets';
 import { WintertodtCrate } from './simulation/wintertodt';
-import { stringMatches } from './util';
+import { stringMatches } from './util/cleanString';
 import itemID from './util/itemID';
 
 interface KillArgs {

@@ -81,7 +81,7 @@ export async function handleTripFinish(
 	loot: Bank | null,
 	_messages?: string[]
 ) {
-	const { perkTier } = user;
+	const perkTier = user.perkTier();
 	const messages: string[] = [];
 	for (const effect of tripFinishEffects) await effect.fn({ data, user, loot, messages });
 
