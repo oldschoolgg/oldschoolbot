@@ -88,12 +88,14 @@ export const askCommand: OSBMahojiCommand = {
 						maxSize: 70,
 						flags: { tradeables: 'tradeables' },
 						filters: [options.filter],
-						search: options.search
+						search: options.search,
+						noDuplicateItems: true
 				  }).filter(i => itemIsTradeable(i.id, true));
 		const itemsReceived = parseBank({
 			inputStr: options.receive,
 			maxSize: 70,
-			flags: { tradeables: 'tradeables' }
+			flags: { tradeables: 'tradeables' },
+			noDuplicateItems: true
 		}).filter(i => itemIsTradeable(i.id, true));
 
 		if (options.price) {
