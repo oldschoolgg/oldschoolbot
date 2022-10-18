@@ -566,11 +566,11 @@ async function checkMassesCommand(guildID: string | undefined) {
 ${massStr}`;
 }
 
-function calcTime(perkTier: number) {
+function calcTime(perkTier: PerkTier) {
 	for (const [bit, dur] of [
-		[7, Time.Minute * 90],
-		[6, Time.Minute * 40],
-		[5, Time.Minute * 20]
+		[PerkTier.Seven, Time.Minute * 90],
+		[PerkTier.Six, Time.Minute * 40],
+		[PerkTier.Five, Time.Minute * 20]
 	] as const) {
 		if (perkTier === bit) return dur;
 	}
@@ -579,7 +579,7 @@ function calcTime(perkTier: number) {
 
 async function patronTriggerDoubleLoot(user: MUser) {
 	const perkTier = getUsersPerkTier(user);
-	if (perkTier < 5) {
+	if (perkTier < PerkTier.Five) {
 		return 'Only T4, T5 or T6 patrons can use this command.';
 	}
 	const lastTime = user.user.last_patron_double_time_trigger;
