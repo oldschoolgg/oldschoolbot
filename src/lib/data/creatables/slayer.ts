@@ -108,7 +108,7 @@ export const slayerCreatables: Createable[] = [
 	{
 		name: 'Trident of the seas (full)',
 		outputItems: new Bank({
-			
+			'Trident of the seas (full)': 1
 		}),
 		inputItems: new Bank({
 			'Uncharged trident': 1,
