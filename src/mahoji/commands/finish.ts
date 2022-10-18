@@ -32,6 +32,7 @@ export const finishCommand: OSBMahojiCommand = {
 		const kcBank = new Bank();
 		let kc = 0;
 		const maxAttempts = val.maxAttempts ?? 100_000;
+		let unlockedSpiritOutfit = false;
 		for (let i = 0; i < maxAttempts; i++) {
 			if (val.cl.every(id => loot.has(id))) break;
 			kc++;
@@ -52,14 +53,13 @@ export const finishCommand: OSBMahojiCommand = {
 				if (kc === 1500) thisLoot.add('Sinhaza shroud tier 4', 1);
 				if (kc === 2000) thisLoot.add('Sinhaza shroud tier 5', 1);
 			}
-			if (val.name === 'Corrupted Gauntlet') thisLoot.add('Gauntlet cape', 1);
-			if (val.name === 'Tempoross') {
-				if (loot.amount('Spirit flakes') >= 4800) {
-					thisLoot.add('Spirit angler top', 1);
-					thisLoot.add('Spirit angler waders', 1);
-					thisLoot.add('Spirit angler boots', 1);
-					thisLoot.add('Spirit angler headband', 1);
-				}
+			if (val.name === 'Corrupted Gauntlet' && kc === 1) thisLoot.add('Gauntlet cape', 1);
+			if (val.name === 'Tempoross' && !unlockedSpiritOutfit && loot.amount('Spirit flakes') >= 4800) {
+				thisLoot.add('Spirit angler top', 1);
+				thisLoot.add('Spirit angler waders', 1);
+				thisLoot.add('Spirit angler boots', 1);
+				thisLoot.add('Spirit angler headband', 1);
+				unlockedSpiritOutfit = true;
 			}
 
 			const purpleItems = thisLoot.items().filter(i => val.cl.includes(i[0].id) && !loot.has(i[0].id));
