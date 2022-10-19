@@ -124,7 +124,6 @@ export class PaginatedMessage {
 
 					if (previousIndex !== this.index) {
 						await interaction.update(await this.render());
-						console.log(`On page ${this.index}`);
 						return;
 					}
 				}

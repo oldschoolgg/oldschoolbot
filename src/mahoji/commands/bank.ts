@@ -4,7 +4,7 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import { BankFlag, bankFlags } from '../../lib/bankImage';
-import { Emoji } from '../../lib/constants';
+import { Emoji, PerkTier } from '../../lib/constants';
 import { Flags } from '../../lib/minions/types';
 import { PaginatedMessage } from '../../lib/PaginatedMessage';
 import { BankSortMethod, BankSortMethods } from '../../lib/sorts';
@@ -207,7 +207,13 @@ export const bankCommand: OSBMahojiCommand = {
 		const result = await getBankPage(params);
 
 		const channel = globalClient.channels.cache.get(channelID);
-		if (!channel || !channelIsSendable(channel) || options.flag === 'show_all' || options.flag_extra === 'wide') {
+		if (
+			!channel ||
+			!channelIsSendable(channel) ||
+			options.flag === 'show_all' ||
+			options.flag_extra === 'wide' ||
+			klasaUser.perkTier < PerkTier.Four
+		) {
 			return result;
 		}
 
