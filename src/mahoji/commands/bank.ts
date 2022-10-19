@@ -8,7 +8,7 @@ import { Emoji } from '../../lib/constants';
 import { Flags } from '../../lib/minions/types';
 import { PaginatedMessage } from '../../lib/PaginatedMessage';
 import { BankSortMethod, BankSortMethods } from '../../lib/sorts';
-import { channelIsSendable, makePaginatedMessage, PaginatedMessagePage } from '../../lib/util';
+import { channelIsSendable, makePaginatedMessage } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
@@ -196,22 +196,32 @@ export const bankCommand: OSBMahojiCommand = {
 		};
 		if (options.sort) flags.sort = options.sort;
 
-		const result = await getBankPage({ user: klasaUser, bank, flags, mahojiFlags, page: Number(flags.page) });
+		const params: Parameters<typeof getBankPage>['0'] = {
+			user: klasaUser,
+			bank,
+			flags,
+			mahojiFlags,
+			page: Number(flags.page)
+		};
+
+		const result = await getBankPage(params);
 
 		const channel = globalClient.channels.cache.get(channelID);
 		if (!channel || !channelIsSendable(channel) || options.flag === 'show_all' || options.flag_extra === 'wide') {
 			return result;
 		}
 
-		const pages: PaginatedMessagePage[] = [];
-		const bankSize = Math.ceil(klasaUser.bankWithGP.length / 56);
-		for (let i = 0; i < bankSize; i++) {
-			pages.push(async ({ currentPage }) => {
-				return getBankPage({ user: klasaUser, bank, flags, mahojiFlags, page: currentPage });
-			});
-		}
-
-		const m = new PaginatedMessage({ pages, channel, startingPage: Number(flags.page) });
+		const bankSize = Math.ceil(bank.length / 56);
+		const m = new PaginatedMessage({
+			pages: {
+				numPages: bankSize,
+				generate: async ({ currentPage }) => {
+					return getBankPage({ ...params, page: currentPage });
+				}
+			},
+			channel,
+			startingPage: Number(flags.page)
+		});
 		m.run([user.id]);
 		return {
 			content: 'Click the buttons below to view different pages of your bank.',

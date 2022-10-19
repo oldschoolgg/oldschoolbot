@@ -9,7 +9,7 @@ import {
 import { Time } from 'e';
 
 import { UserError } from './UserError';
-import { isFunction, PaginatedMessagePage } from './util';
+import { PaginatedMessagePage } from './util';
 import { logError } from './util/logError';
 
 const controlButtons: {
@@ -27,7 +27,7 @@ const controlButtons: {
 		emoji: '◀️',
 		run: ({ paginatedMessage }) => {
 			if (paginatedMessage.index === 0) {
-				paginatedMessage.index = paginatedMessage.pages.length - 1;
+				paginatedMessage.index = paginatedMessage.totalPages - 1;
 			} else {
 				--paginatedMessage.index;
 			}
@@ -37,7 +37,7 @@ const controlButtons: {
 		customId: 'pm-next-page',
 		emoji: '▶️',
 		run: ({ paginatedMessage }) => {
-			if (paginatedMessage.index === paginatedMessage.pages.length - 1) {
+			if (paginatedMessage.index === paginatedMessage.totalPages - 1) {
 				paginatedMessage.index = 0;
 			} else {
 				++paginatedMessage.index;
@@ -47,14 +47,19 @@ const controlButtons: {
 	{
 		customId: 'pm-last-page',
 		emoji: '⏩',
-		run: ({ paginatedMessage }) => (paginatedMessage.index = paginatedMessage.pages.length - 1)
+		run: ({ paginatedMessage }) => (paginatedMessage.index = paginatedMessage.totalPages - 1)
 	}
 ];
 
+type PaginatedPages =
+	| { numPages: number; generate: (opts: { currentPage: number }) => Promise<MessageEditOptions> }
+	| PaginatedMessagePage[];
+
 export class PaginatedMessage {
 	public index = 0;
-	public pages: PaginatedMessagePage[];
+	public pages: PaginatedPages;
 	public channel: TextChannel;
+	public totalPages: number;
 
 	constructor({
 		channel,
@@ -62,20 +67,22 @@ export class PaginatedMessage {
 		startingPage
 	}: {
 		channel: TextChannel;
-		pages: PaginatedMessagePage[];
+		pages: PaginatedPages;
 		startingPage?: number;
 	}) {
 		this.pages = pages;
 		this.channel = channel;
 		this.index = startingPage ?? 0;
+		this.totalPages = Array.isArray(pages) ? pages.length : pages.numPages;
 	}
 
 	async render(): Promise<MessageEditOptions | string> {
 		try {
-			const rawPage = this.pages[this.index];
-			const rendered = isFunction(rawPage) ? await rawPage({ currentPage: this.index }) : rawPage;
+			const rawPage = !Array.isArray(this.pages)
+				? await this.pages.generate({ currentPage: this.index })
+				: this.pages[this.index];
 			return {
-				...rendered,
+				...rawPage,
 				components: [
 					new ActionRowBuilder<ButtonBuilder>().addComponents(
 						controlButtons.map(i =>
@@ -97,7 +104,7 @@ export class PaginatedMessage {
 
 	async run(targetUsers?: string[]) {
 		const message = await this.channel.send((await this.render()) as MessageOptions);
-		if (this.pages.length === 1) return;
+		if (this.totalPages === 1) return;
 		const collector = await message.createMessageComponentCollector({
 			time: Time.Minute * 10
 		});
@@ -117,6 +124,7 @@ export class PaginatedMessage {
 
 					if (previousIndex !== this.index) {
 						await interaction.update(await this.render());
+						console.log(`On page ${this.index}`);
 						return;
 					}
 				}

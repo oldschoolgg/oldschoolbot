@@ -446,9 +446,8 @@ export function isValidNickname(str?: string) {
 	);
 }
 
-export type PaginatedMessagePage =
-	| MessageEditOptions
-	| ((opts: { currentPage: number }) => Promise<MessageEditOptions>);
+export type PaginatedMessagePage = MessageEditOptions;
+
 export async function makePaginatedMessage(channel: TextChannel, pages: PaginatedMessagePage[], target?: string) {
 	const m = new PaginatedMessage({ pages, channel });
 	return m.run(target ? [target] : undefined);
