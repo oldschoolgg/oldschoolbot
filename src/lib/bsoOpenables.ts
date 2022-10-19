@@ -297,6 +297,7 @@ const cantBeDropped = resolveItems([
 	'Bank lottery ticket',
 	'Tester gift box',
 	'Coins',
+	22_664, // JMOD Scythe of Vitur,
 	'Red Partyhat',
 	'Yellow partyhat',
 	'Blue partyhat',
