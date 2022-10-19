@@ -245,11 +245,10 @@ setCustomItem(
 	'Gorajan warrior helmet',
 	'Torva full helm',
 	{
-		/** 
 		equipment: {
-			attack_stab: 36,
-			attack_slash: 19,
-			attack_crush: 19,
+			attack_stab: 30,
+			attack_slash: 15,
+			attack_crush: 15,
 			attack_magic: -5,
 			attack_ranged: 0,
 
@@ -265,29 +264,417 @@ setCustomItem(
 			prayer: 1,
 			slot: EquipmentSlot.Head,
 			requirements: null
-		}*/
+		}
 	},
 	55_000_000
 );
-setCustomItem(40_034, 'Gorajan warrior top', 'Torva platebody', {}, 55_000_000);
-setCustomItem(40_035, 'Gorajan warrior legs', 'Torva platelegs', {}, 55_000_000);
-setCustomItem(40_036, 'Gorajan warrior gloves', 'Torva gloves', {}, 55_000_000);
-setCustomItem(40_037, 'Gorajan warrior boots', 'Torva boots', {}, 55_000_000);
+setCustomItem(
+	40_034,
+	'Gorajan warrior top',
+	'Torva platebody',
+	{
+		equipment: {
+			attack_stab: 44,
+			attack_slash: 23,
+			attack_crush: 23,
+			attack_magic: -5,
+			attack_ranged: 0,
+
+			defence_stab: 160,
+			defence_slash: 150,
+			defence_crush: 150,
+			defence_magic: 0,
+			defence_ranged: 165,
+
+			melee_strength: 5,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Body,
+			requirements: null
+		}
+	},
+	55_000_000
+);
+setCustomItem(
+	40_035,
+	'Gorajan warrior legs',
+	'Torva platelegs',
+	{
+		equipment: {
+			attack_stab: 37,
+			attack_slash: 19,
+			attack_crush: 19,
+			attack_magic: -5,
+			attack_ranged: 0,
+
+			defence_stab: 130,
+			defence_slash: 130,
+			defence_crush: 130,
+			defence_magic: 0,
+			defence_ranged: 130,
+
+			melee_strength: 5,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Legs,
+			requirements: null
+		}
+	},
+	55_000_000
+);
+
+setCustomItem(
+	40_036,
+	'Gorajan warrior gloves',
+	'Torva gloves',
+	{
+		equipment: {
+			attack_stab: 19,
+			attack_slash: 10,
+			attack_crush: 10,
+			attack_magic: -5,
+			attack_ranged: 0,
+
+			defence_stab: 18,
+			defence_slash: 18,
+			defence_crush: 18,
+			defence_magic: 0,
+			defence_ranged: 35,
+
+			melee_strength: 5,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Hands,
+			requirements: null
+		}
+	},
+	55_000_000
+);
+
+setCustomItem(
+	40_037,
+	'Gorajan warrior boots',
+	'Torva boots',
+	{
+		equipment: {
+			attack_stab: 19,
+			attack_slash: 10,
+			attack_crush: 10,
+			attack_magic: -5,
+			attack_ranged: 0,
+
+			defence_stab: 24,
+			defence_slash: 24,
+			defence_crush: 24,
+			defence_magic: 0,
+			defence_ranged: 35,
+
+			melee_strength: 5,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Feet,
+			requirements: null
+		}
+	},
+	55_000_000
+);
 
 setCustomItem(40_038, 'Scroll of proficiency', 'Coal', {}, 1_000_000);
 setCustomItem(40_040, 'Chaotic remnant', 'Coal', {}, 10_000_000);
 
-setCustomItem(40_042, 'Gorajan occult helmet', 'Virtus mask', {}, 55_000_000);
-setCustomItem(40_043, 'Gorajan occult top', 'Virtus robe top', {}, 55_000_000);
-setCustomItem(40_044, 'Gorajan occult legs', 'Virtus robe legs', {}, 55_000_000);
-setCustomItem(40_045, 'Gorajan occult gloves', 'Virtus gloves', {}, 55_000_000);
-setCustomItem(40_046, 'Gorajan occult boots', 'Virtus boots', {}, 55_000_000);
+setCustomItem(
+	40_042,
+	'Gorajan occult helmet',
+	'Virtus mask',
+	{
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 21,
+			attack_ranged: -3,
 
-setCustomItem(40_047, 'Gorajan archer helmet', 'Pernix cowl', {}, 55_000_000);
-setCustomItem(40_048, 'Gorajan archer top', 'Pernix body', {}, 55_000_000);
-setCustomItem(40_049, 'Gorajan archer legs', 'Pernix chaps', {}, 55_000_000);
-setCustomItem(40_050, 'Gorajan archer gloves', 'Pernix gloves', {}, 55_000_000);
-setCustomItem(40_051, 'Gorajan archer boots', 'Pernix boots', {}, 55_000_000);
+			defence_stab: 35,
+			defence_slash: 35,
+			defence_crush: 35,
+			defence_magic: 85,
+			defence_ranged: 75,
+
+			melee_strength: 0,
+			ranged_strength: 0,
+			magic_damage: 5,
+			prayer: 1,
+			slot: EquipmentSlot.Head,
+			requirements: null
+		}
+	},
+	55_000_000
+);
+
+setCustomItem(
+	40_043,
+	'Gorajan occult top',
+	'Virtus robe top',
+	{
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 46,
+			attack_ranged: -5,
+
+			defence_stab: 44,
+			defence_slash: 44,
+			defence_crush: 55,
+			defence_magic: 65,
+			defence_ranged: 5,
+
+			melee_strength: 0,
+			ranged_strength: 0,
+			magic_damage: 5,
+			prayer: 1,
+			slot: EquipmentSlot.Body,
+			requirements: null
+		}
+	},
+	55_000_000
+);
+
+setCustomItem(
+	40_044,
+	'Gorajan occult legs',
+	'Virtus robe legs',
+	{
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 41,
+			attack_ranged: -5,
+
+			defence_stab: 22,
+			defence_slash: 20,
+			defence_crush: 15,
+			defence_magic: 65,
+			defence_ranged: 15,
+
+			melee_strength: 0,
+			ranged_strength: 0,
+			magic_damage: 5,
+			prayer: 1,
+			slot: EquipmentSlot.Legs,
+			requirements: null
+		}
+	},
+	55_000_000
+);
+
+setCustomItem(
+	40_045,
+	'Gorajan occult gloves',
+	'Virtus gloves',
+	{
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 23,
+			attack_ranged: -5,
+
+			defence_stab: 9,
+			defence_slash: 9,
+			defence_crush: 9,
+			defence_magic: 12,
+			defence_ranged: 9,
+
+			melee_strength: 0,
+			ranged_strength: 0,
+			magic_damage: 5,
+			prayer: 1,
+			slot: EquipmentSlot.Hands,
+			requirements: null
+		}
+	},
+	55_000_000
+);
+
+setCustomItem(
+	40_046,
+	'Gorajan occult boots',
+	'Virtus boots',
+	{
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 23,
+			attack_ranged: -5,
+
+			defence_stab: 9,
+			defence_slash: 9,
+			defence_crush: 9,
+			defence_magic: 12,
+			defence_ranged: 9,
+
+			melee_strength: 0,
+			ranged_strength: 0,
+			magic_damage: 5,
+			prayer: 1,
+			slot: EquipmentSlot.Feet,
+			requirements: null
+		}
+	},
+	55_000_000
+);
+
+setCustomItem(
+	40_047,
+	'Gorajan archer helmet',
+	'Pernix cowl',
+	{
+		equipment: {
+			attack_stab: -5,
+			attack_slash: -5,
+			attack_crush: -5,
+			attack_magic: -12,
+			attack_ranged: 21,
+
+			defence_stab: 25,
+			defence_slash: 25,
+			defence_crush: 17,
+			defence_magic: 25,
+			defence_ranged: 58,
+
+			melee_strength: 0,
+			ranged_strength: 5,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Head,
+			requirements: null
+		}
+	},
+	55_000_000
+);
+
+setCustomItem(
+	40_048,
+	'Gorajan archer top',
+	'Pernix body',
+	{
+		equipment: {
+			attack_stab: -5,
+			attack_slash: -5,
+			attack_crush: -5,
+			attack_magic: -12,
+			attack_ranged: 42,
+
+			defence_stab: 25,
+			defence_slash: 25,
+			defence_crush: 25,
+			defence_magic: 73,
+			defence_ranged: 62,
+
+			melee_strength: 0,
+			ranged_strength: 5,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Body,
+			requirements: null
+		}
+	},
+	55_000_000
+);
+
+setCustomItem(
+	40_049,
+	'Gorajan archer legs',
+	'Pernix chaps',
+	{
+		equipment: {
+			attack_stab: -5,
+			attack_slash: -5,
+			attack_crush: -5,
+			attack_magic: -12,
+			attack_ranged: 26,
+
+			defence_stab: 25,
+			defence_slash: 15,
+			defence_crush: 5,
+			defence_magic: 45,
+			defence_ranged: 38,
+
+			melee_strength: 0,
+			ranged_strength: 5,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Legs,
+			requirements: null
+		}
+	},
+	55_000_000
+);
+
+setCustomItem(
+	40_050,
+	'Gorajan archer gloves',
+	'Pernix gloves',
+	{
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: -5,
+			attack_magic: -5,
+			attack_ranged: 20,
+
+			defence_stab: 4,
+			defence_slash: 4,
+			defence_crush: 1,
+			defence_magic: 27,
+			defence_ranged: 15,
+
+			melee_strength: 0,
+			ranged_strength: 5,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Hands,
+			requirements: null
+		}
+	},
+	55_000_000
+);
+
+setCustomItem(
+	40_051,
+	'Gorajan archer boots',
+	'Pernix boots',
+	{
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: -12,
+			attack_ranged: 20,
+
+			defence_stab: 4,
+			defence_slash: 4,
+			defence_crush: 3,
+			defence_magic: 6,
+			defence_ranged: 6,
+
+			melee_strength: 0,
+			ranged_strength: 5,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Feet,
+			requirements: null
+		}
+	},
+	55_000_000
+);
 
 setCustomItem(40_052, 'Scroll of mystery', 'Coal', {}, 1_000_000);
 
