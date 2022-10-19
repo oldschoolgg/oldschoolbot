@@ -446,7 +446,9 @@ export function isValidNickname(str?: string) {
 	);
 }
 
-export async function makePaginatedMessage(channel: TextChannel, pages: MessageEditOptions[], target?: string) {
+export type PaginatedMessagePage = MessageEditOptions;
+
+export async function makePaginatedMessage(channel: TextChannel, pages: PaginatedMessagePage[], target?: string) {
 	const m = new PaginatedMessage({ pages, channel });
 	return m.run(target ? [target] : undefined);
 }
@@ -750,7 +752,9 @@ export function cacheCleanup() {
 					delete channel.parentId;
 					// @ts-ignore ignore
 					delete channel.name;
+					// @ts-ignore ignore
 					channel.lastMessageId = null;
+					// @ts-ignore ignore
 					channel.lastPinTimestamp = null;
 				}
 			}
@@ -766,11 +770,33 @@ export function cacheCleanup() {
 					}
 				}
 				for (const channel of guild.channels.cache.values()) {
-					if (channel.type === ChannelType.GuildVoice) {
+					if (channel.type === ChannelType.GuildVoice || channel.type === ChannelType.GuildNewsThread) {
 						guild.channels.cache.delete(channel.id);
 					}
+				}
+				for (const role of guild.roles.cache.values()) {
+					// @ts-ignore ignore
+					delete role.managed;
+					// @ts-ignore ignore
+					delete role.name;
+					// @ts-ignore ignore
+					delete role.tags;
+					// @ts-ignore ignore
+					delete role.icon;
+					// @ts-ignore ignore
+					delete role.unicodeEmoji;
+					// @ts-ignore ignore
+					delete role.rawPosition;
+					// @ts-ignore ignore
+					delete role.color;
+					// @ts-ignore ignore
+					delete role.hoist;
 				}
 			}
 		});
 	});
+}
+
+export function isFunction(input: unknown): input is Function {
+	return typeof input === 'function';
 }

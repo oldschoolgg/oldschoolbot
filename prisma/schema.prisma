@@ -274,6 +274,7 @@ model User {
   total_cox_points           Int      @default(0)
   combat_options             Int[]
   farming_patch_reminders    Boolean  @default(true)
+  auto_farm_filter           AutoFarmFilterEnum @default(AllFarm)
   pest_control_points        Int      @default(0)
   inferno_attempts           Int      @default(0)
   infernal_cape_sacrifices   Int      @default(0)
@@ -619,6 +620,7 @@ enum activity_type_enum {
   AnimatedArmour
   Cyclops
   Sawmill
+  Butler
   Nightmare
   Sepulchre
   Plunder
@@ -691,4 +693,9 @@ enum xp_gains_skill_enum {
   magic
   hitpoints
   slayer
+}
+
+enum AutoFarmFilterEnum {
+	AllFarm
+	Replant
 }
