@@ -174,6 +174,10 @@ export class MUserClass {
 		return this.user.QP;
 	}
 
+	get autoFarmFilter() {
+		return this.user.auto_farm_filter;
+	}
+
 	addXP(params: AddXpParams) {
 		return addXP(this.id, params);
 	}
