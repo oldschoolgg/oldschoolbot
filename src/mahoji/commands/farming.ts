@@ -1,3 +1,4 @@
+import { AutoFarmFilterEnum } from '@prisma/client';
 import { User } from 'discord.js';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
@@ -15,6 +16,12 @@ import { farmingContractCommand } from '../lib/abstracted_commands/farmingContra
 import { titheFarmCommand, titheFarmShopCommand } from '../lib/abstracted_commands/titheFarmCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { mahojiUserSettingsUpdate } from '../settingsUpdate';
+
+const autoFarmFilterTexts: Record<AutoFarmFilterEnum, string> = {
+	AllFarm: 'All crops will be farmed with the highest available seed',
+	Replant: 'Only planted crops will be replanted, using the same seed'
+};
 
 export const farmingCommand: OSBMahojiCommand = {
 	name: 'farming',
@@ -64,6 +71,21 @@ export const farmingCommand: OSBMahojiCommand = {
 			name: 'auto_farm',
 			description: 'Automatically farm any available things you can do.',
 			required: false
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'auto_farm_filter',
+			description: 'Set which auto farm filter you want to use by default.',
+			required: false,
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'auto_farm_filter_data',
+					description: 'The auto farm filter you want to use by default. (default: AllFarm)',
+					required: true,
+					choices: Object.values(AutoFarmFilterEnum).map(i => ({ name: i, value: i }))
+				}
+			]
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -170,6 +192,7 @@ export const farmingCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{
 		check_patches?: {};
 		auto_farm?: {};
+		auto_farm_filter?: { auto_farm_filter_data: string };
 		default_compost?: { compost: CompostName };
 		always_pay?: {};
 		plant?: { plant_name: string; quantity?: number; pay?: boolean };
@@ -199,6 +222,19 @@ export const farmingCommand: OSBMahojiCommand = {
 				minion_defaultCompostToUse: tier.name
 			});
 			return `You will now use ${tier.item.name} by default.`;
+		}
+		if (options.auto_farm_filter) {
+			const autoFarmFilterString = Object.values(AutoFarmFilterEnum).find(
+				i => i === options.auto_farm_filter!.auto_farm_filter_data
+			);
+			if (!autoFarmFilterString) return 'Invalid auto farm filter.';
+			const autoFarmFilter = autoFarmFilterString as AutoFarmFilterEnum;
+
+			await mahojiUserSettingsUpdate(userID, {
+				auto_farm_filter: autoFarmFilter
+			});
+
+			return `${autoFarmFilter} filter is now enabled when autofarming: ${autoFarmFilterTexts[autoFarmFilter]}.`;
 		}
 		if (options.plant) {
 			return farmingPlantCommand({

@@ -1,6 +1,7 @@
 import { prisma } from '../settings/prisma';
 import { activitySync, getActivityOfUser } from '../settings/settings';
 import { ActivityTaskOptions } from '../types/minions';
+import { UserError } from '../UserError';
 import { isGroupActivity } from '../util';
 import { logError } from './logError';
 
@@ -9,7 +10,9 @@ export default async function addSubTaskToActivityTask<T extends ActivityTaskOpt
 ) {
 	const usersTask = getActivityOfUser(taskToAdd.userID);
 	if (usersTask) {
-		throw `That user is busy, so they can't do this minion activity. They have a ${usersTask.type} activity still ongoing`;
+		throw new UserError(
+			`That user is busy, so they can't do this minion activity. They have a ${usersTask.type} activity still ongoing`
+		);
 	}
 
 	let duration = Math.floor(taskToAdd.duration);
@@ -53,6 +56,6 @@ export default async function addSubTaskToActivityTask<T extends ActivityTaskOpt
 		return createdActivity;
 	} catch (err: any) {
 		logError(err);
-		throw 'There was an error starting your activity.';
+		throw new UserError('There was an error starting your activity.');
 	}
 }

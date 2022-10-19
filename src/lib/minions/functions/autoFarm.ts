@@ -1,10 +1,11 @@
-import { Bank } from 'oldschooljs';
+import { AutoFarmFilterEnum } from '@prisma/client';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { farmingPlantCommand } from '../../../mahoji/lib/abstracted_commands/farmingCommand';
-import { calcNumOfPatches } from '../../skilling/functions/calcsFarming';
 import { plants } from '../../skilling/skills/farming';
 import { IPatchDataDetailed } from '../farming/types';
+import { Plant } from './../../skilling/types';
+import { allFarm, replant } from './autoFarmFilters';
 
 export async function autoFarm(user: MUser, patchesDetailed: IPatchDataDetailed[], channelID: string) {
 	if (user.minionIsBusy) {
@@ -12,26 +13,50 @@ export async function autoFarm(user: MUser, patchesDetailed: IPatchDataDetailed[
 	}
 	const userBank = user.bank;
 	const farmingLevel = user.skillLevel(SkillsEnum.Farming);
-	const elligible = [...plants]
+	let toPlant: Plant | undefined = undefined;
+	let canPlant: Plant | undefined = undefined;
+	let canHarvest: Plant | undefined = undefined;
+	let elligible: Plant[] = [];
+	let errorString = '';
+	let { autoFarmFilter } = user;
+
+	if (!autoFarmFilter) {
+		autoFarmFilter = AutoFarmFilterEnum.AllFarm;
+	}
+
+	elligible = [...plants]
 		.filter(p => {
-			if (p.level > farmingLevel) return false;
-			const [numOfPatches] = calcNumOfPatches(p, user, user.QP);
-			if (numOfPatches === 0) return false;
-			const reqItems = new Bank(p.inputItems).multiply(numOfPatches);
-			if (!userBank.has(reqItems.bank)) return false;
-			return true;
+			switch (autoFarmFilter) {
+				case AutoFarmFilterEnum.AllFarm: {
+					return allFarm(p, farmingLevel, user, userBank);
+				}
+				case AutoFarmFilterEnum.Replant: {
+					return replant(p, farmingLevel, user, userBank, patchesDetailed);
+				}
+				default: {
+					return allFarm(p, farmingLevel, user, userBank);
+				}
+			}
 		})
 		.sort((a, b) => b.level - a.level);
 
-	const canPlant = elligible.find(p => {
+	if (autoFarmFilter === AutoFarmFilterEnum.AllFarm) {
+		canHarvest = elligible.find(p => patchesDetailed.find(_p => _p.patchName === p.seedType)!.ready);
+		errorString = "There's no Farming crops that you have the requirements to plant, and nothing to harvest.";
+	}
+	if (autoFarmFilter === AutoFarmFilterEnum.Replant) {
+		errorString =
+			"There's no Farming crops that you have planted that are ready to be replanted or no seeds remaining.";
+	}
+
+	canPlant = elligible.find(p => {
 		const patchData = patchesDetailed.find(_p => _p.patchName === p.seedType)!;
 		if (patchData.ready === false) return false;
 		return true;
 	});
-	const canHarvest = elligible.find(p => patchesDetailed.find(_p => _p.patchName === p.seedType)!.ready);
-	const toPlant = canPlant ?? canHarvest;
+	toPlant = canPlant ?? canHarvest;
 	if (!toPlant) {
-		return "There's no Farming crops that you have the requirements to plant, and nothing to harvest.";
+		return errorString;
 	}
 
 	return farmingPlantCommand({

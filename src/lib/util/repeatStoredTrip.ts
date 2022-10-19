@@ -14,6 +14,7 @@ import {
 	AlchingActivityTaskOptions,
 	AnimatedArmourActivityTaskOptions,
 	BuryingActivityTaskOptions,
+	ButlerActivityTaskOptions,
 	CastingActivityTaskOptions,
 	CollectingOptions,
 	ConstructionActivityTaskOptions,
@@ -425,7 +426,13 @@ export const tripHandlers = {
 	[activity_type_enum.Sawmill]: {
 		commandName: 'activities',
 		args: (data: SawmillActivityTaskOptions) => ({
-			sawmill: { quantity: data.plankQuantity, type: data.plankID }
+			plank_make: { action: 'sawmill', quantity: data.plankQuantity, type: itemNameFromID(data.plankID) }
+		})
+	},
+	[activity_type_enum.Butler]: {
+		commandName: 'activities',
+		args: (data: ButlerActivityTaskOptions) => ({
+			plank_make: { action: 'butler', quantity: data.plankQuantity, type: itemNameFromID(data.plankID) }
 		})
 	},
 	[activity_type_enum.Sepulchre]: {

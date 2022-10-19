@@ -2,6 +2,7 @@ import { Activity, activity_type_enum } from '@prisma/client';
 
 import { agilityTask } from '../tasks/minions/agilityActivity';
 import { alchingTask } from '../tasks/minions/alchingActivity';
+import { butlerTask } from '../tasks/minions/butlerActivity';
 import { castingTask } from '../tasks/minions/castingActivity';
 import { clueTask } from '../tasks/minions/clueActivity';
 import { collectingTask } from '../tasks/minions/collectingActivity';
@@ -152,6 +153,7 @@ export const tasks: MinionTask[] = [
 	titheFarmTask,
 	temporossTask,
 	smithingTask,
+	butlerTask,
 	shootingStarTask
 ];
 
