@@ -2,6 +2,7 @@ import { Activity, activity_type_enum } from '@prisma/client';
 
 import { agilityTask } from '../tasks/minions/agilityActivity';
 import { alchingTask } from '../tasks/minions/alchingActivity';
+import { bossEventTask } from '../tasks/minions/bossEventActivity';
 import { bathhouseTask } from '../tasks/minions/bso/bathhousesActivity';
 import { disassemblingTask } from '../tasks/minions/bso/disassemblingActivity';
 import { dungeoneeringTask } from '../tasks/minions/bso/dungeoneeringActivity';
@@ -184,7 +185,8 @@ export const tasks: MinionTask[] = [
 	shootingStarTask,
 	fogTask,
 	scTask,
-	hweenTask
+	hweenTask,
+	bossEventTask
 ];
 
 export async function syncActivityCache() {

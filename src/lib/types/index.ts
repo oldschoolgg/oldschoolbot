@@ -38,6 +38,7 @@ export interface MakePartyOptions {
 	ironmanAllowed: boolean;
 	usersAllowed?: string[];
 	customDenier?(user: MUser): Promise<[false] | [true, string]>;
+	massTimeout?: number;
 }
 
 export type Skills = Partial<{

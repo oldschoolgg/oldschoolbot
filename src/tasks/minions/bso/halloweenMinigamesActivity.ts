@@ -1,8 +1,9 @@
-import { roll } from 'e';
+import { randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { isDoubleLootActive } from '../../../lib/doubleLoot';
 import { HALLOWEEN_BOX_DROPRATE, KURO_DROPRATE, miniMinigames } from '../../../lib/hweenEvent';
+import { treatTable } from '../../../lib/simulation/pumpkinHead';
 import { HalloweenMinigameOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
@@ -27,16 +28,18 @@ export const hweenTask: MinionTask = {
 				loot.add('Spooky box');
 			}
 		}
+		const candyRolls = randInt(2, 5);
+		loot.add(treatTable.roll(candyRolls));
 
 		await user.addItemsToBank({ items: loot, collectionLog: true });
 
-		handleTripFinish(
-			user,
-			channelID,
-			`${user}, ${user.minionName} finished playing a mini-minigame of ${minigame.name}! You received... ${loot}.`,
-			undefined,
-			data,
-			null
-		);
+		let msg = `${user}, ${user.minionName} finished playing a mini-minigame of ${minigame.name}!`;
+		if (loot.has('Kuro')) {
+			msg +=
+				"\n\n<:kuro:1032277900579319888> While you were playing, a cute black cat crossed your path. You pick it up so you don't trip.";
+		}
+		msg += `\n\n You found some Halloween candy, too. Your rewards: ${loot}`;
+
+		handleTripFinish(user, channelID, msg, undefined, data, null);
 	}
 };

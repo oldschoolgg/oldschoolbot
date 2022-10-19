@@ -14,7 +14,7 @@ import { debounce, noOp, Time } from 'e';
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { SILENT_ERROR, usernameCache } from '../../lib/constants';
 import { MakePartyOptions } from '../../lib/types';
-import { makeComponents } from '../../lib/util';
+import { formatDuration, makeComponents } from '../../lib/util';
 import { CACHED_ACTIVE_USER_IDS } from '../../lib/util/cachedUserIDs';
 
 const partyLockCache = new Set<string>();
@@ -42,14 +42,19 @@ const buttons = [
 export async function setupParty(channel: TextChannel, leaderUser: MUser, options: MakePartyOptions): Promise<MUser[]> {
 	const usersWhoConfirmed: string[] = [options.leader.id];
 	let deleted = false;
+	const massTimeout = options.massTimeout ?? Time.Minute * 2;
 
 	function getMessageContent(): MessageOptions & MessageEditOptions {
+		const userText =
+			usersWhoConfirmed.length > 25
+				? `${usersWhoConfirmed.length} users have joined`
+				: usersWhoConfirmed.map(u => usernameCache.get(u) ?? userMention(u)).join(', ');
 		return {
-			content: `${options.message}\n\n**Users Joined:** ${usersWhoConfirmed
-				.map(u => usernameCache.get(u) ?? userMention(u))
-				.join(
-					', '
-				)}\n\nThis party will automatically depart in 2 minutes, or if the leader clicks the start (start early) or stop button.`,
+			content: `${
+				options.message
+			}\n\n**Users Joined:** ${userText}\n\nThis party will automatically depart in ${formatDuration(
+				massTimeout
+			)}, or if the leader clicks the start (start early) or stop button.`,
 			components: makeComponents(buttons.map(i => i.button)),
 			allowedMentions: {
 				users: []
@@ -78,7 +83,7 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 		new Promise<MUser[]>(async (resolve, reject) => {
 			let partyCancelled = false;
 			const collector = new InteractionCollector(globalClient, {
-				time: Time.Minute * 2,
+				time: massTimeout,
 				maxUsers: options.usersAllowed?.length ?? options.maxSize,
 				dispose: true,
 				channel,

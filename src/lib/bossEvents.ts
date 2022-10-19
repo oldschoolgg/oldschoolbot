@@ -28,13 +28,16 @@ interface BossEvent {
 	handleFinish: (options: NewBossOptions, bossUsers: BossUser[]) => Promise<void>;
 }
 
-export const bossEventChannelID = production ? '897170239333220432' : '895410639835639808';
+export const bossEventChannelID = production ? '897170239333220432' : '1023760501957722163';
 
-function getScaryFoodFromBank(userBank: Bank, totalHealingNeeded: number): false | Bank {
+function getScaryFoodFromBank(user: MUser, totalHealingNeeded: number, _userBank?: Bank): false | Bank {
+	if (OWNER_IDS.includes(user.id)) return new Bank();
 	let totalHealingCalc = totalHealingNeeded;
 	let foodToRemove = new Bank();
+	const userBank = _userBank ?? user.bank;
 
 	const sorted = [...scaryEatables]
+		.filter(i => !user.user.favoriteItems.includes(i.item.id))
 		.sort((i, j) => (i.healAmount > j.healAmount ? 1 : -1))
 		.sort((a, b) => {
 			if (!userBank.has(a.item.id!)) return 1;
@@ -129,7 +132,7 @@ export const bossEvents: BossEvent[] = [
 				}
 				const hasPet = items.has('Mini Pumpkinhead');
 				let str = `${rerolled ? '♻️ ' : ''}${recip.user} got ${items}`;
-				if (hasPet) str = `**${str}**`;
+				if (hasPet) str = `<:Mini_pumpkinhead:904028863724675072>**${str}**`;
 				if (secondChancePeople.includes(recip)) str = `<:Haunted_amulet:898407574527942677>${str}`;
 				uniqueLootStr.push(str);
 				userLoot[recip.user.id].add(items);
@@ -174,7 +177,7 @@ ${specialLootRecipient.user.usernameOrMention} received ${specialLoot}.
 			skillRequirements: {},
 			itemBoosts: [],
 			customDenier: async user => {
-				const foodRequired = getScaryFoodFromBank(user.bank, PUMPKINHEAD_HEALING_NEEDED);
+				const foodRequired = getScaryFoodFromBank(user, PUMPKINHEAD_HEALING_NEEDED);
 				if (!foodRequired) {
 					return [
 						true,
@@ -188,11 +191,11 @@ ${specialLootRecipient.user.usernameOrMention} received ${specialLoot}.
 			bisGear: new Gear(),
 			gearSetup: 'melee',
 			itemCost: async data => {
-				const foodRequired = getScaryFoodFromBank(data.user.bank, PUMPKINHEAD_HEALING_NEEDED);
+				const foodRequired = getScaryFoodFromBank(data.user, PUMPKINHEAD_HEALING_NEEDED);
 				if (!foodRequired) {
 					let fakeBank = new Bank();
 					for (const { item } of scaryEatables) fakeBank.add(item.id, 100);
-					return getScaryFoodFromBank(fakeBank, PUMPKINHEAD_HEALING_NEEDED) as Bank;
+					return getScaryFoodFromBank(data.user, PUMPKINHEAD_HEALING_NEEDED, fakeBank) as Bank;
 				}
 
 				return foodRequired;
@@ -209,8 +212,10 @@ ${specialLootRecipient.user.usernameOrMention} received ${specialLoot}.
 			quantity: 1,
 			allowMoreThan1Solo: false,
 			allowMoreThan1Group: false,
-			automaticStartTime: production ? Time.Minute * 5 : Time.Minute,
-			maxSize: 500
+			automaticStartTime: production ? Time.Minute * 5 : Time.Second * 30,
+			maxSize: 500,
+			skipInvalidUsers: true,
+			speedMaxReduction: 50
 		}
 	}
 ];

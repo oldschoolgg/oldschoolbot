@@ -2,10 +2,12 @@ import { notEmpty, randInt, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
+import { bossActiveIsActiveOrSoonActive, bossEvents, startBossEvent } from '../../../lib/bossEvents';
 import { BitField } from '../../../lib/constants';
 import { addToDoubleLootTimer } from '../../../lib/doubleLoot';
 import { dyedItems } from '../../../lib/dyedItems';
 import { gearImages } from '../../../lib/gear/functions/generateGearImage';
+import { PUMPKINHEAD_ID } from '../../../lib/simulation/pumpkinHead';
 import { assert } from '../../../lib/util';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
 import { flowerTable } from './hotColdCommand';
@@ -188,6 +190,19 @@ usables.push({
 			}
 		});
 		return 'You unlocked a spooky gear frame! You can switch to it using `/config user gearframe`';
+	}
+});
+usables.push({
+	items: [getOSItem('Mysterious token')],
+	run: async user => {
+		if (await bossActiveIsActiveOrSoonActive()) {
+			return "You can't use your Mysterious token right now.";
+		}
+		startBossEvent({
+			boss: bossEvents.find(b => b.id === PUMPKINHEAD_ID)!
+		});
+		await user.removeItemsFromBank(new Bank().add('Mysterious token'));
+		return 'You used your Mysterious token... I wonder what will happen?';
 	}
 });
 
