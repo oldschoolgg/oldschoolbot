@@ -214,7 +214,7 @@ export const bankCommand: OSBMahojiCommand = {
 		const m = new PaginatedMessage({ pages, channel, startingPage: Number(flags.page) });
 		m.run([user.id]);
 		return {
-			content: 'Running...',
+			content: 'Click the buttons below to view different pages of your bank.',
 			ephemeral: true
 		};
 	}
