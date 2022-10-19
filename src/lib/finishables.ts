@@ -35,37 +35,59 @@ interface Finishable {
 	kill: (args: KillArgs) => Bank;
 	customResponse?: (kc: number) => string;
 	maxAttempts?: number;
+	tertiaryDrops?: { itemId: number; kcNeeded: number }[];
 }
 
 export const finishables: Finishable[] = [
 	{
 		name: 'Chambers of Xeric (Solo, Non-CM)',
-		aliases: ['raids', 'cox'],
+		aliases: ['cox', 'raid1', 'raids1', 'chambers', 'xeric'],
 		cl: chambersOfXericNormalCL,
 		kill: () => ChambersOfXeric.complete({ team: [{ id: '1', personalPoints: 25_000 }] })['1']
 	},
 	{
 		name: 'Chambers of Xeric (Solo, CM)',
-		aliases: ['raids cm', 'cox cm'],
+		aliases: ['coxcm', 'raid1cm', 'raids1cm', 'chamberscm', 'xericcm'],
 		cl: chambersOfXericCL,
 		kill: () =>
 			ChambersOfXeric.complete({
 				challengeMode: true,
 				team: [{ id: '1', personalPoints: 25_000, canReceiveAncientTablet: true, canReceiveDust: true }],
 				timeToComplete: 1
-			})['1']
+			})['1'],
+		tertiaryDrops: [
+			{ itemId: itemID("Xeric's guard"), kcNeeded: 100 },
+			{ itemId: itemID("Xeric's warrior"), kcNeeded: 500 },
+			{ itemId: itemID("Xeric's sentinel"), kcNeeded: 1000 },
+			{ itemId: itemID("Xeric's general"), kcNeeded: 1500 },
+			{ itemId: itemID("Xeric's champion"), kcNeeded: 2000 }
+		]
 	},
 	{
 		name: 'Theatre of Blood (Solo, Non-HM)',
 		aliases: ['tob', 'theatre of blood'],
 		cl: theatreOfBLoodNormalCL,
-		kill: () => new Bank(TheatreOfBlood.complete({ hardMode: false, team: [{ id: '1', deaths: [] }] }).loot['1'])
+		kill: () => new Bank(TheatreOfBlood.complete({ hardMode: false, team: [{ id: '1', deaths: [] }] }).loot['1']),
+		tertiaryDrops: [
+			{ itemId: itemID('Sinhaza shroud tier 1'), kcNeeded: 100 },
+			{ itemId: itemID('Sinhaza shroud tier 2'), kcNeeded: 500 },
+			{ itemId: itemID('Sinhaza shroud tier 3'), kcNeeded: 1000 },
+			{ itemId: itemID('Sinhaza shroud tier 4'), kcNeeded: 1500 },
+			{ itemId: itemID('Sinhaza shroud tier 5'), kcNeeded: 2000 }
+		]
 	},
 	{
 		name: 'Theatre of Blood (Solo, HM)',
-		aliases: ['tob hm', 'theatre of blood hm'],
+		aliases: ['tob hard', 'tob hard mode', 'tobhm'],
 		cl: theatreOfBLoodCL,
-		kill: () => new Bank(TheatreOfBlood.complete({ hardMode: true, team: [{ id: '1', deaths: [] }] }).loot['1'])
+		kill: () => new Bank(TheatreOfBlood.complete({ hardMode: true, team: [{ id: '1', deaths: [] }] }).loot['1']),
+		tertiaryDrops: [
+			{ itemId: itemID('Sinhaza shroud tier 1'), kcNeeded: 100 },
+			{ itemId: itemID('Sinhaza shroud tier 2'), kcNeeded: 500 },
+			{ itemId: itemID('Sinhaza shroud tier 3'), kcNeeded: 1000 },
+			{ itemId: itemID('Sinhaza shroud tier 4'), kcNeeded: 1500 },
+			{ itemId: itemID('Sinhaza shroud tier 5'), kcNeeded: 2000 }
+		]
 	},
 	{
 		name: 'The Nightmare',
@@ -81,15 +103,16 @@ export const finishables: Finishable[] = [
 	},
 	{
 		name: 'Gauntlet',
-		aliases: [],
+		aliases: ['gauntlet', 'gaunt', 'ng'],
 		cl: theGauntletCL.filter(i => i !== itemID('Gauntlet cape')),
 		kill: () => gauntlet({ died: false, type: 'normal' })
 	},
 	{
 		name: 'Corrupted Gauntlet',
-		aliases: ['cg'],
+		aliases: ['cgauntlet', 'corruptedg', 'corruptg', 'cg'],
 		cl: theGauntletCL,
-		kill: () => gauntlet({ died: false, type: 'corrupted' })
+		kill: () => gauntlet({ died: false, type: 'corrupted' }),
+		tertiaryDrops: [{ itemId: itemID('Gauntlet cape'), kcNeeded: 1 }]
 	},
 	{
 		name: 'Nex',
@@ -121,8 +144,14 @@ export const finishables: Finishable[] = [
 	{
 		name: 'Tempoross',
 		cl: temporossCL,
-		aliases: ['temp'],
-		kill: () => getTemporossLoot(1, 99, new Bank())
+		aliases: ['temp', 'ross', 'tempo', 'watertodt'],
+		kill: () => getTemporossLoot(1, 99, new Bank()),
+		tertiaryDrops: [
+			{ itemId: itemID('Spirit angler top'), kcNeeded: 65 },
+			{ itemId: itemID('Spirit angler waders'), kcNeeded: 65 },
+			{ itemId: itemID('Spirit angler headband'), kcNeeded: 65 },
+			{ itemId: itemID('Spirit angler boots'), kcNeeded: 65 }
+		]
 	}
 ];
 
