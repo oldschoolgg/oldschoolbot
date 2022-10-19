@@ -221,9 +221,9 @@ setCustomItem(
 	'Rune full helm',
 	{
 		equipment: {
-			attack_stab: 35,
-			attack_slash: 18,
-			attack_crush: 18,
+			attack_stab: 29,
+			attack_slash: 14,
+			attack_crush: 14,
 			attack_magic: -5,
 			attack_ranged: 0,
 
@@ -253,9 +253,9 @@ setCustomItem(
 	'Rune platebody',
 	{
 		equipment: {
-			attack_stab: 35,
-			attack_slash: 18,
-			attack_crush: 18,
+			attack_stab: 43,
+			attack_slash: 22,
+			attack_crush: 22,
 			attack_magic: -5,
 			attack_ranged: 0,
 
@@ -285,9 +285,9 @@ setCustomItem(
 	'Rune platelegs',
 	{
 		equipment: {
-			attack_stab: 35,
-			attack_slash: 18,
-			attack_crush: 18,
+			attack_stab: 36,
+			attack_slash: 20,
+			attack_crush: 20,
 			attack_magic: -5,
 			attack_ranged: 0,
 
@@ -317,9 +317,9 @@ setCustomItem(
 	'Rune boots',
 	{
 		equipment: {
-			attack_stab: 22,
-			attack_slash: 2,
-			attack_crush: 2,
+			attack_stab: 18,
+			attack_slash: 9,
+			attack_crush: 9,
 			attack_magic: -5,
 			attack_ranged: 0,
 
@@ -349,9 +349,9 @@ setCustomItem(
 	'Rune gloves',
 	{
 		equipment: {
-			attack_stab: 26,
-			attack_slash: 16,
-			attack_crush: 16,
+			attack_stab: 18,
+			attack_slash: 9,
+			attack_crush: 9,
 			attack_magic: -5,
 			attack_ranged: 0,
 
@@ -425,12 +425,14 @@ setCustomItem(
 			attack_slash: -5,
 			attack_crush: -5,
 			attack_magic: -12,
-			attack_ranged: 45,
+			attack_ranged: 41,
+
 			defence_stab: 25,
 			defence_slash: 25,
 			defence_crush: 25,
 			defence_magic: 73,
 			defence_ranged: 62,
+
 			melee_strength: 0,
 			ranged_strength: 5,
 			magic_damage: 0,
@@ -456,6 +458,7 @@ setCustomItem(
 			attack_crush: -5,
 			attack_magic: -12,
 			attack_ranged: 25,
+
 			defence_stab: 25,
 			defence_slash: 15,
 			defence_crush: 5,
@@ -518,12 +521,14 @@ setCustomItem(
 			attack_slash: 0,
 			attack_crush: -5,
 			attack_magic: -5,
-			attack_ranged: 15,
+			attack_ranged: 19,
+
 			defence_stab: 4,
 			defence_slash: 4,
 			defence_crush: 1,
 			defence_magic: 27,
 			defence_ranged: 15,
+
 			melee_strength: 0,
 			ranged_strength: 5,
 			magic_damage: 0,
@@ -694,7 +699,7 @@ setCustomItem(
 
 			melee_strength: 0,
 			ranged_strength: 0,
-			magic_damage: 1,
+			magic_damage: 5,
 			prayer: 1,
 			slot: EquipmentSlot.Hands,
 			requirements: null

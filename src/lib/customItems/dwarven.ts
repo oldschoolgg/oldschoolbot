@@ -41,8 +41,8 @@ setCustomItem(
 	{
 		equipment: {
 			attack_stab: 7,
-			attack_slash: 7,
-			attack_crush: 28,
+			attack_slash: 8,
+			attack_crush: 26,
 			attack_magic: -5,
 			attack_ranged: 0,
 
@@ -70,7 +70,7 @@ setCustomItem(
 		equipment: {
 			attack_stab: 12,
 			attack_slash: 12,
-			attack_crush: 43,
+			attack_crush: 39,
 			attack_magic: -5,
 			attack_ranged: 0,
 
@@ -80,7 +80,7 @@ setCustomItem(
 			defence_magic: 0,
 			defence_ranged: 105,
 
-			melee_strength: 2,
+			melee_strength: 3,
 			ranged_strength: 0,
 			magic_damage: 0,
 			prayer: 1,
@@ -98,7 +98,7 @@ setCustomItem(
 		equipment: {
 			attack_stab: 8,
 			attack_slash: 8,
-			attack_crush: 34,
+			attack_crush: 33,
 			attack_magic: -5,
 			attack_ranged: 0,
 
@@ -125,8 +125,8 @@ setCustomItem(
 	{
 		equipment: {
 			attack_stab: 5,
-			attack_slash: 2,
-			attack_crush: 10,
+			attack_slash: 5,
+			attack_crush: 16,
 			attack_magic: -5,
 			attack_ranged: 0,
 
@@ -152,9 +152,9 @@ setCustomItem(
 	'Torva gloves',
 	{
 		equipment: {
-			attack_stab: 4,
-			attack_slash: 9,
-			attack_crush: 15,
+			attack_stab: 5,
+			attack_slash: 5,
+			attack_crush: 16,
 			attack_magic: -5,
 			attack_ranged: 0,
 

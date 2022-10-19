@@ -240,7 +240,35 @@ setCustomItem(40_030, 'Amulet of zealots', 'Amulet of fury', {}, 1_000_000);
 setCustomItem(40_031, 'Scroll of dexterity', 'Coal', {}, 1_000_000);
 setCustomItem(40_032, 'Scroll of teleportation', 'Coal', {}, 1_000_000);
 
-setCustomItem(40_033, 'Gorajan warrior helmet', 'Torva full helm', {}, 55_000_000);
+setCustomItem(
+	40_033,
+	'Gorajan warrior helmet',
+	'Torva full helm',
+	{
+		/** 
+		equipment: {
+			attack_stab: 36,
+			attack_slash: 19,
+			attack_crush: 19,
+			attack_magic: -5,
+			attack_ranged: 0,
+
+			defence_stab: 70,
+			defence_slash: 75,
+			defence_crush: 75,
+			defence_magic: -5,
+			defence_ranged: 55,
+
+			melee_strength: 5,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Head,
+			requirements: null
+		}*/
+	},
+	55_000_000
+);
 setCustomItem(40_034, 'Gorajan warrior top', 'Torva platebody', {}, 55_000_000);
 setCustomItem(40_035, 'Gorajan warrior legs', 'Torva platelegs', {}, 55_000_000);
 setCustomItem(40_036, 'Gorajan warrior gloves', 'Torva gloves', {}, 55_000_000);
