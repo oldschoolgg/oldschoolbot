@@ -111,9 +111,18 @@ export async function claimAchievementDiaryCommand(user: MUser, diaryName: strin
 		const diaryTier = diary[tier];
 		const [canDo, reason] = await userhasDiaryTier(user, diaryTier);
 		const name = `${toTitleCase(diaryTier.name)} ${diary.name} Diary`;
+		let hasItems = true;
 
 		if (canDo) {
-			if (allItems.has(diaryTier.item.id)) continue;
+			for (const item of diaryTier.items) {
+				if (!allItems.has(item.id)) {
+					hasItems = false;
+					console.log(item.id);
+				}
+			}
+
+			if (hasItems) continue;
+
 			const hasCompleted = await howManyOfTierCompleted(
 				user,
 				diaries.map(d => d[tier])
@@ -122,7 +131,10 @@ export async function claimAchievementDiaryCommand(user: MUser, diaryName: strin
 			if (cl.amount(lampRewards[diaryTier.name]) < hasCompleted) {
 				loot.add(lampRewards[diaryTier.name]);
 			}
-			loot.add(diaryTier.item.id);
+
+			for (const item of diaryTier.items) {
+				loot.add(item.id);
+			}
 
 			await user.addItemsToBank({
 				items: loot,

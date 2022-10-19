@@ -856,6 +856,15 @@ GROUP BY "bankBackground";`);
 		run: async (_, stats) => {
 			return `You've received **${Number(stats.sell_gp).toLocaleString()}** GP from selling items.`;
 		}
+	},
+	{
+		name: 'Prayer XP from Ash Sanctifier',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return `You've received **${Number(
+				stats.ash_sanctifier_prayer_xp
+			).toLocaleString()}** XP from using the Ash Sanctifier.`;
+		}
 	}
 ] as const;
 

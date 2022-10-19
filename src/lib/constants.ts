@@ -209,7 +209,8 @@ export enum BitField {
 	IsWikiContributor = 19,
 	HasSlepeyTablet = 20,
 	IsPatronTier6 = 21,
-	DisableBirdhouseRunButton = 22
+	DisableBirdhouseRunButton = 22,
+	DisableAshSanctifier = 23
 }
 
 interface BitFieldData {
@@ -254,7 +255,8 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 		name: 'Disable Birdhouse Run Button',
 		protected: false,
 		userConfigurable: true
-	}
+	},
+	[BitField.DisableAshSanctifier]: { name: 'Disable Ash Sanctifier', protected: false, userConfigurable: true }
 } as const;
 
 export const enum PatronTierID {

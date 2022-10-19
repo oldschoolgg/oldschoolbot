@@ -1,16 +1,89 @@
-import { MonsterKillOptions, Monsters } from 'oldschooljs';
+import { Bank, MonsterKillOptions, Monsters } from 'oldschooljs';
 
+import { checkUserCanUseDegradeableItem, degradeItem } from '../../lib/degradeableItems';
+import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import { prisma, trackLoot } from '../../lib/settings/prisma';
+import { ashes } from '../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { calculateSlayerPoints, getSlayerMasterOSJSbyID, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
+import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
+import { userStatsUpdate } from '../../mahoji/mahojiSettings';
+import { BitField } from './../../lib/constants';
+
+async function ashSanctifierEffect(user: MUser, loot: Bank, duration: number, quantity: number, messages: string[]) {
+	if (!user.bank.has('Ash sanctifier')) return;
+	if (user.bitfield.includes(BitField.DisableAshSanctifier)) return;
+
+	const [hasEliteDiary] = await userhasDiaryTier(user, KourendKebosDiary.elite);
+	const ashXpModifider = hasEliteDiary ? 1 : 0.5;
+
+	let chargesUsed = 0;
+	const ashSanctifierCheck = checkUserCanUseDegradeableItem({
+		item: getOSItem('Ash sanctifier'),
+		chargesToDegrade: quantity,
+		user
+	});
+
+	if (ashSanctifierCheck.hasEnough) {
+		chargesUsed = quantity;
+	} else {
+		chargesUsed = ashSanctifierCheck.availableCharges;
+	}
+
+	if (chargesUsed === 0) return;
+
+	await degradeItem({
+		item: getOSItem('Ash sanctifier'),
+		chargesToDegrade: chargesUsed,
+		user
+	});
+
+	let chargesLeft = chargesUsed;
+	let totalXP = 0;
+	let ashesSanctified: { name: string; amount: number }[] = [];
+	while (chargesLeft > 0) {
+		for (const ash of ashes) {
+			const amount = loot.amount(ash.inputId);
+			if (amount > 0 && chargesLeft >= amount) {
+				totalXP += ash.xp * ashXpModifider * amount;
+				ashesSanctified.push({ name: ash.name, amount });
+				loot.remove(ash.inputId, amount);
+				chargesLeft -= amount;
+			} else if (amount > 0 && chargesLeft < amount) {
+				totalXP += ash.xp * ashXpModifider * chargesLeft;
+				ashesSanctified.push({ name: ash.name, amount });
+				loot.remove(ash.inputId, chargesLeft);
+				chargesLeft = 0;
+			}
+		}
+	}
+
+	userStatsUpdate(user.id, () => ({
+		ash_sanctifier_prayer_xp: {
+			increment: Math.floor(totalXP)
+		}
+	}));
+	const xpStr = await user.addXP({
+		skillName: SkillsEnum.Prayer,
+		amount: totalXP,
+		duration,
+		minimal: true,
+		multiplier: false
+	});
+	messages.push(
+		`${xpStr} Prayer XP from purifying ${ashesSanctified.map(
+			ash => ` ${ash.amount}x ${ash.name}`
+		)} using the Ash Sanctifier.`
+	);
+}
 
 export const monsterTask: MinionTask = {
 	type: 'MonsterKilling',
@@ -18,6 +91,7 @@ export const monsterTask: MinionTask = {
 		const { monsterID, userID, channelID, quantity, duration, usingCannon, cannonMulti, burstOrBarrage } = data;
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 		const user = await mUserFetch(userID);
+		const [hasKourendHard] = await userhasDiaryTier(user, KourendKebosDiary.hard);
 		await user.incrementKC(monsterID, quantity);
 
 		const usersTask = await getUsersCurrentSlayerInfo(user.id);
@@ -103,6 +177,10 @@ export const monsterTask: MinionTask = {
 			str += '\n\nWhile killing a Unicorn, you discover some strange clothing in the ground - you pick them up.';
 		}
 
+		const messages: string[] = [];
+
+		if (hasKourendHard) await ashSanctifierEffect(user, loot, duration, quantity, messages);
+
 		let thisTripFinishesTask = false;
 
 		if (isOnTask) {
@@ -153,7 +231,6 @@ export const monsterTask: MinionTask = {
 			});
 		}
 
-		const messages: string[] = [];
 		if (monster.effect) {
 			await monster.effect({
 				user,
