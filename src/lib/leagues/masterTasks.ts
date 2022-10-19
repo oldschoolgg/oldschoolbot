@@ -454,7 +454,7 @@ export const masterTasks: Task[] = [
 	},
 	{
 		id: 4059,
-		name: 'Receive 500m Fleching',
+		name: 'Receive 500m Fletching',
 		has: async ({ skillsXP }) => {
 			return skillsXP.fletching >= 500_000_000;
 		}
@@ -629,7 +629,7 @@ export const masterTasks: Task[] = [
 	},
 	{
 		id: 4085,
-		name: 'Receive 1b Fleching',
+		name: 'Receive 1b Fletching',
 		has: async ({ skillsXP }) => {
 			return skillsXP.fletching >= 1_000_000_000;
 		}

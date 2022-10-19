@@ -641,7 +641,7 @@ export const hardTasks: Task[] = [
 	},
 	{
 		id: 2079,
-		name: 'Achieve level 120 Fleching',
+		name: 'Achieve level 120 Fletching',
 		has: async ({ skillsLevels }) => {
 			return skillsLevels.fletching >= 120;
 		}
