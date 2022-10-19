@@ -253,7 +253,7 @@ setCustomItem(
 	'Rune platebody',
 	{
 		equipment: {
-			attack_stab: 43,
+			attack_stab: 42,
 			attack_slash: 22,
 			attack_crush: 22,
 			attack_magic: -5,

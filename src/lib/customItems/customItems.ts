@@ -274,7 +274,7 @@ setCustomItem(
 	'Torva platebody',
 	{
 		equipment: {
-			attack_stab: 44,
+			attack_stab: 43,
 			attack_slash: 23,
 			attack_crush: 23,
 			attack_magic: -5,
