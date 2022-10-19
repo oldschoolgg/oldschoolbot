@@ -16,7 +16,7 @@ import { Minigames } from '../../lib/settings/minigames';
 import { minionActivityCache } from '../../lib/settings/settings';
 import Skills from '../../lib/skilling/skills';
 import creatures from '../../lib/skilling/skills/hunter/creatures';
-import { convertLVLtoXP, getUsername, isValidNickname } from '../../lib/util';
+import { convertLVLtoXP, getAllIDsOfUser, getUsername, isValidNickname } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { deferInteraction } from '../../lib/util/interactionReply';
@@ -193,15 +193,21 @@ export const minionCommand: OSBMahojiCommand = {
 						const mUser = await mUserFetch(user.id);
 						const isMod = mUser.bitfield.includes(BitField.isModerator);
 						const bankImages = bankImageGenerator.backgroundImages;
-						return bankImages
-							.filter(bg => isMod || bg.available)
-							.filter(bg => (!value ? true : bg.name.toLowerCase().includes(value.toLowerCase())))
-							.map(i => {
-								const name = i.perkTierNeeded
-									? `${i.name} (Tier ${i.perkTierNeeded - 1} patrons)`
-									: i.name;
-								return { name, value: i.name };
-							});
+						const allAccounts = getAllIDsOfUser(mUser);
+						const owned = bankImages.filter(i => i.owners?.some(i => allAccounts.includes(i)));
+						return [
+							...owned,
+							...bankImages
+								.filter(bg => isMod || bg.available)
+								.filter(bg => (!value ? true : bg.name.toLowerCase().includes(value.toLowerCase())))
+						].map(i => {
+							const name = owned.includes(i)
+								? `${i.name} (Your Custom Bg)`
+								: i.perkTierNeeded
+								? `${i.name} (Tier ${i.perkTierNeeded - 1} patrons)`
+								: i.name;
+							return { name, value: i.name };
+						});
 					}
 				}
 			]

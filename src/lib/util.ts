@@ -960,3 +960,12 @@ export function cacheCleanup() {
 		});
 	});
 }
+
+export function getAllIDsOfUser(user: MUser) {
+	let main = user.user.main_account;
+	const allAccounts: string[] = [...user.user.ironman_alts, user.id];
+	if (main) {
+		allAccounts.push(main);
+	}
+	return allAccounts;
+}
