@@ -254,7 +254,7 @@ setCustomItem(
 	{
 		equipment: {
 			attack_stab: 42,
-			attack_slash: 22,
+			attack_slash: 18,
 			attack_crush: 22,
 			attack_magic: -5,
 			attack_ranged: 0,
@@ -286,7 +286,7 @@ setCustomItem(
 	{
 		equipment: {
 			attack_stab: 36,
-			attack_slash: 20,
+			attack_slash: 16,
 			attack_crush: 20,
 			attack_magic: -5,
 			attack_ranged: 0,
@@ -318,7 +318,7 @@ setCustomItem(
 	{
 		equipment: {
 			attack_stab: 18,
-			attack_slash: 9,
+			attack_slash: 8,
 			attack_crush: 9,
 			attack_magic: -5,
 			attack_ranged: 0,
@@ -350,7 +350,7 @@ setCustomItem(
 	{
 		equipment: {
 			attack_stab: 18,
-			attack_slash: 9,
+			attack_slash: 16,
 			attack_crush: 9,
 			attack_magic: -5,
 			attack_ranged: 0,

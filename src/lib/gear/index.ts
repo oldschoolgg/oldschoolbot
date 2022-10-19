@@ -17,17 +17,17 @@ export const maxDefenceStats: { [key in DefenceGearStat]: number } = {
 };
 
 export const maxOffenceStats: { [key in OffenceGearStat]: number } = {
-	[GearStat.AttackCrush]: 360,
-	[GearStat.AttackMagic]: 509,
-	[GearStat.AttackRanged]: 431,
-	[GearStat.AttackSlash]: 295,
-	[GearStat.AttackStab]: 361
+	[GearStat.AttackCrush]: 359,
+	[GearStat.AttackMagic]: 537,
+	[GearStat.AttackRanged]: 436,
+	[GearStat.AttackSlash]: 300,
+	[GearStat.AttackStab]: 364
 };
 
 export const maxOtherStats: { [key in OtherGearStat]: number } = {
 	[GearStat.MeleeStrength]: 243,
 	[GearStat.RangedStrength]: 172,
-	[GearStat.MagicDamage]: 51,
+	[GearStat.MagicDamage]: 60,
 	[GearStat.Prayer]: 66
 };
 
