@@ -8,6 +8,7 @@ import { maxDefenceStats, maxOffenceStats } from '../../../lib/gear';
 import { revenantMonsters } from '../../../lib/minions/data/killableMonsters/revs';
 import { convertAttackStylesToSetup } from '../../../lib/minions/functions';
 import { SkillsEnum } from '../../../lib/skilling/types';
+import { Skills } from '../../../lib/types';
 import { RevenantOptions } from '../../../lib/types/minions';
 import { formatDuration, percentChance, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
@@ -21,6 +22,16 @@ const specialWeapons = {
 	mage: getOSItem("Thammaron's sceptre")
 } as const;
 
+const maxCombat: Skills = {
+	magic: 99,
+	ranged: 99,
+	prayer: 99,
+	hitpoints: 99,
+	attack: 99,
+	strength: 99,
+	defence: 99
+};
+
 export async function revsCommand(
 	user: MUser,
 	channelID: string,
@@ -29,6 +40,7 @@ export async function revsCommand(
 ): CommandResponse {
 	const style = convertAttackStylesToSetup(user.user.attack_style);
 	const userGear = user.gear.wildy;
+	const hasMaxed = user.hasSkillReqs(maxCombat);
 
 	const boosts = [];
 	const monster = revenantMonsters.find(
@@ -90,6 +102,10 @@ export async function revsCommand(
 	let deathChanceFromDefenceLevel = (100 - (defLvl === 99 ? 100 : defLvl)) / 4;
 	deathChance += deathChanceFromDefenceLevel;
 
+	if (hasMaxed) {
+		deathChance -= 5;
+	}
+
 	const defensiveGearPercent = Math.max(
 		0,
 		calcWhatPercent(userGear.getStats().defence_magic, maxDefenceStats['defence_magic'])
@@ -119,7 +135,12 @@ export async function revsCommand(
 ${Emoji.OSRSSkull} Skulled
 **Death Chance:** ${deathChance.toFixed(2)}% (${deathChanceFromGear.toFixed(2)}% from magic def${
 		deathChanceFromDefenceLevel > 0 ? `, ${deathChanceFromDefenceLevel.toFixed(2)}% from defence level` : ''
-	} + 5% as default chance).${cost.length > 0 ? `\nRemoved from bank: ${cost}` : ''}${
+	}`;
+	if (hasMaxed) {
+		response += '.) (Your default chance has been removed due to being maxed combat.)';
+	} else response += ' + 5% as default chance.)';
+
+	response += `${cost.length > 0 ? `\nRemoved from bank: ${cost}` : ''}${
 		boosts.length > 0 ? `\nBoosts: ${boosts.join(', ')}` : ''
 	}`;
 
