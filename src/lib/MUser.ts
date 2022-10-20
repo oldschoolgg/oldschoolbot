@@ -159,7 +159,7 @@ export class MUserClass {
 	}
 
 	get rawUsername() {
-		return globalClient.users.cache.get(this.id)?.username;
+		return globalClient.users.cache.get(this.id)?.username ?? usernameCache.get(this.id) ?? 'Unknown';
 	}
 
 	get usernameOrMention() {
@@ -172,6 +172,10 @@ export class MUserClass {
 
 	get QP() {
 		return this.user.QP;
+	}
+
+	get autoFarmFilter() {
+		return this.user.auto_farm_filter;
 	}
 
 	addXP(params: AddXpParams) {

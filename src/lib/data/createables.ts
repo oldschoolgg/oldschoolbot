@@ -28,6 +28,7 @@ export interface Createable {
 	requiredSkills?: Skills;
 	QPRequired?: number;
 	noCl?: boolean;
+	forceAddToCl?: boolean;
 	GPCost?: number;
 	cantBeInCL?: boolean;
 	requiredSlayerUnlocks?: SlayerTaskUnlocksEnum[];
@@ -1759,6 +1760,50 @@ const Createables: Createable[] = [
 		outputItems: new Bank({
 			Cabbage: 10
 		})
+	},
+	{
+		name: 'Bucket of sand (1kg)',
+		inputItems: new Bank({
+			'Sandstone (1kg)': 1,
+			Bucket: 1
+		}),
+		outputItems: new Bank({
+			'Bucket of sand': 1
+		}),
+		GPCost: 50
+	},
+	{
+		name: 'Bucket of sand (2kg)',
+		inputItems: new Bank({
+			'Sandstone (2kg)': 1,
+			Bucket: 2
+		}),
+		outputItems: new Bank({
+			'Bucket of sand': 2
+		}),
+		GPCost: 100
+	},
+	{
+		name: 'Bucket of sand (5kg)',
+		inputItems: new Bank({
+			'Sandstone (5kg)': 1,
+			Bucket: 4
+		}),
+		outputItems: new Bank({
+			'Bucket of sand': 4
+		}),
+		GPCost: 200
+	},
+	{
+		name: 'Bucket of sand (10kg)',
+		inputItems: new Bank({
+			'Sandstone (10kg)': 1,
+			Bucket: 8
+		}),
+		outputItems: new Bank({
+			'Bucket of sand': 8
+		}),
+		GPCost: 400
 	},
 	/* {
 		name: 'Toxic blowpipe (empty)',

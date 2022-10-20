@@ -1,7 +1,8 @@
 import { ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 
 import { ClueTiers } from '../../../lib/clues/clueTiers';
-import { Emoji, minionBuyButton } from '../../../lib/constants';
+import { BitField, Emoji, minionBuyButton } from '../../../lib/constants';
+import { roboChimpUserFetch } from '../../../lib/roboChimp';
 import { makeComponents } from '../../../lib/util';
 import { minionStatus } from '../../../lib/util/minionStatus';
 import { makeRepeatTripButtons } from '../../../lib/util/repeatStoredTrip';
@@ -68,7 +69,7 @@ export async function minionStatusCommand(user: MUser) {
 			.setStyle(ButtonStyle.Secondary)
 	);
 
-	if (!user.minionIsBusy && birdhouseDetails.isReady) {
+	if (!user.minionIsBusy && birdhouseDetails.isReady && !user.bitfield.includes(BitField.DisableBirdhouseRunButton)) {
 		buttons.push(
 			new ButtonBuilder()
 				.setCustomId('DO_BIRDHOUSE_RUN')
@@ -109,11 +110,24 @@ export async function minionStatusCommand(user: MUser) {
 		}
 	}
 
-	new ButtonBuilder()
-		.setCustomId('VIEW_BANK')
-		.setLabel('View Bank')
-		.setEmoji('739459924693614653')
-		.setStyle(ButtonStyle.Secondary);
+	buttons.push(
+		new ButtonBuilder()
+			.setCustomId('VIEW_BANK')
+			.setLabel('View Bank')
+			.setEmoji('739459924693614653')
+			.setStyle(ButtonStyle.Secondary)
+	);
+
+	const roboChimpUser = await roboChimpUserFetch(user.id);
+	if (roboChimpUser.leagues_points_total === 0) {
+		buttons.push(
+			new ButtonBuilder()
+				.setLabel('OSB/BSO Leagues')
+				.setEmoji('660333438016028723')
+				.setStyle(ButtonStyle.Link)
+				.setURL('https://bso-wiki.oldschool.gg/leagues')
+		);
+	}
 
 	return {
 		content: status,

@@ -1,35 +1,42 @@
 import { InteractionReplyOptions, TextChannel, User } from 'discord.js';
 
 import { modifyBusyCounter } from '../../lib/busyCounterCache';
-import { usernameCache } from '../../lib/constants';
+import { badges, Emoji, usernameCache } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
-import { removeMarkdownEmojis } from '../../lib/util';
+import { removeMarkdownEmojis, stripEmojis } from '../../lib/util';
 import { CACHED_ACTIVE_USER_IDS } from '../../lib/util/cachedUserIDs';
 import { AbstractCommand, runInhibitors } from './inhibitors';
 
 function cleanUsername(username: string) {
 	return removeMarkdownEmojis(username).substring(0, 32);
 }
-export async function syncNewUserUsername(userID: string, username: string) {
+export async function syncNewUserUsername(user: MUser, username: string) {
 	const newUsername = cleanUsername(username);
 	const newUser = await prisma.newUser.findUnique({
-		where: { id: userID }
+		where: { id: user.id }
 	});
 	if (!newUser || newUser.username !== newUsername) {
 		await prisma.newUser.upsert({
 			where: {
-				id: userID
+				id: user.id
 			},
 			update: {
 				username
 			},
 			create: {
-				id: userID,
+				id: user.id,
 				username
 			}
 		});
 	}
-	usernameCache.set(userID, newUsername);
+	let name = stripEmojis(username);
+	const rawBadges = user.user.badges.map(num => badges[num]);
+	if (user.isIronman) {
+		rawBadges.push(Emoji.Ironman);
+	}
+	name = `${rawBadges.join(' ')} ${name}`;
+
+	usernameCache.set(user.id, name);
 }
 
 export async function preCommand({
@@ -71,7 +78,7 @@ export async function preCommand({
 	const member = guild?.members.cache.get(userID.toString());
 	const channel = globalClient.channels.cache.get(channelID.toString()) as TextChannel;
 	if (apiUser) {
-		await syncNewUserUsername(user.id, apiUser.username);
+		await syncNewUserUsername(user, apiUser.username);
 	}
 	const inhibitResult = await runInhibitors({
 		user,
