@@ -1,6 +1,6 @@
 import { ButtonBuilder, ButtonInteraction, ButtonStyle, Interaction } from 'discord.js';
-import { Time, uniqueArr } from 'e';
-import { Bank } from 'oldschooljs';
+import { randInt, roll, Time, uniqueArr } from 'e';
+import { Bank, LootTable } from 'oldschooljs';
 
 import { buyBingoTicketCommand } from '../../mahoji/commands/bingo';
 import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
@@ -8,6 +8,7 @@ import { shootingStarsCommand, starCache } from '../../mahoji/lib/abstracted_com
 import { Cooldowns } from '../../mahoji/lib/Cooldowns';
 import { ClueTier } from '../clues/clueTiers';
 import { PerkTier } from '../constants';
+import { HighSeedPackTable, LowSeedPackTable, MediumSeedPackTable } from '../data/seedPackTables';
 import { prisma } from '../settings/prisma';
 import { runCommand } from '../settings/settings';
 import { ItemBank } from '../types';
@@ -38,6 +39,7 @@ const globalInteractionActions = [
 	'CANCEL_TRIP',
 	'AUTO_FARM',
 	'AUTO_FARMING_CONTRACT',
+	'OPEN_SEED_PACK',
 	'BUY_MINION',
 	'BUY_BINGO_TICKET',
 	'NEW_SLAYER_TASK',
@@ -68,6 +70,14 @@ export function makeOpenCasketButton(tier: ClueTier) {
 		.setLabel(`Open ${tier.name} Casket`)
 		.setStyle(ButtonStyle.Secondary)
 		.setEmoji('365003978678730772');
+}
+
+export function makeOpenSeedPackButton() {
+	return new ButtonBuilder()
+		.setCustomId('OPEN_SEED_PACK')
+		.setLabel('Open Seed Pack')
+		.setStyle(ButtonStyle.Secondary)
+		.setEmoji('1032695783960625233');
 }
 
 export function makeRepeatTripButton() {
@@ -280,6 +290,64 @@ export async function interactionHook(interaction: Interaction) {
 		});
 	}
 
+	async function openSeedPack(seedTier: number) {
+		const loot = new Bank();
+
+		const tempTable = new LootTable();
+
+		// Roll amount variables
+		let high = 0;
+		let medium = 0;
+		let low = 0;
+
+		switch (seedTier) {
+			case 0:
+			case 1: {
+				high = 0;
+				medium = randInt(1, 3);
+				low = 6 - medium;
+				break;
+			}
+			case 2: {
+				if (roll(11)) {
+					high = 1;
+				}
+				medium = randInt(2, 3);
+				low = 7 - medium - high;
+				break;
+			}
+			case 3: {
+				high = randInt(0, 1);
+				medium = randInt(2, 4);
+				low = 8 - medium - high;
+				break;
+			}
+			case 4: {
+				high = randInt(1, 2);
+				medium = randInt(3, 5);
+				low = 9 - medium - high;
+				break;
+			}
+			case 5: {
+				high = randInt(1, 3);
+				medium = randInt(4, 6);
+				low = 10 - medium - high;
+				break;
+			}
+		}
+
+		// Low seed roll
+		tempTable.every(LowSeedPackTable, low);
+		// Medium seed roll
+		tempTable.every(MediumSeedPackTable, medium);
+		// High seed roll
+		tempTable.every(HighSeedPackTable, high);
+
+		loot.add(tempTable.roll());
+
+		return loot;
+	}
+
 	if (id === 'CLAIM_DAILY') {
 		return runCommand({
 			commandName: 'minion',
@@ -388,6 +456,9 @@ export async function interactionHook(interaction: Interaction) {
 			const response = await autoContract(await mUserFetch(user.id), options.channelID, user.id);
 			if (response) interactionReply(interaction, response);
 			return;
+		}
+		case 'OPEN_SEED_PACK': {
+			return openSeedPack;
 		}
 		case 'NEW_SLAYER_TASK': {
 			return runCommand({

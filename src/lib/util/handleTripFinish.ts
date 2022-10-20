@@ -18,6 +18,7 @@ import {
 	makeDoClueButton,
 	makeNewSlayerTaskButton,
 	makeOpenCasketButton,
+	makeOpenSeedPackButton,
 	makeRepeatTripButton
 } from './globalInteractions';
 import { sendToChannelID } from './webhook';
@@ -119,8 +120,11 @@ export async function handleTripFinish(
 		if ((currentTask === null || currentTask.quantity_remaining <= 0) && data.type === 'MonsterKilling') {
 			components.addComponents(makeNewSlayerTaskButton());
 		}
+		const seedPackReceived = loot?.has('Seed pack');
+		if (seedPackReceived === true) components.addComponents(makeOpenSeedPackButton());
 	}
 	handleTriggerShootingStar(user, data, components);
+	
 
 	sendToChannelID(channelID, {
 		content: message,
