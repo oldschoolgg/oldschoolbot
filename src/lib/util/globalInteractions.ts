@@ -10,7 +10,6 @@ import { ClueTier } from '../clues/clueTiers';
 import { PerkTier } from '../constants';
 import { prisma } from '../settings/prisma';
 import { runCommand } from '../settings/settings';
-import { openSeedPack } from '../skilling/functions/calcFarmingContracts';
 import { ItemBank } from '../types';
 import { formatDuration, removeFromArr } from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
@@ -77,7 +76,7 @@ export function makeOpenSeedPackButton() {
 		.setCustomId('OPEN_SEED_PACK')
 		.setLabel('Open Seed Pack')
 		.setStyle(ButtonStyle.Secondary)
-		.setEmoji('1032695783960625233');
+		.setEmoji('405245077611347978');
 }
 
 export function makeRepeatTripButton() {
@@ -400,7 +399,14 @@ export async function interactionHook(interaction: Interaction) {
 			return;
 		}
 		case 'OPEN_SEED_PACK': {
-			return openSeedPack;
+			return runCommand({
+				commandName: 'open',
+				args: {
+					name: 'Seed pack',
+					quantity: 1
+				},
+				...options
+			});
 		}
 		case 'NEW_SLAYER_TASK': {
 			return runCommand({
