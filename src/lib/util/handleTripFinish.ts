@@ -14,6 +14,7 @@ import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import { ActivityTaskOptions } from '../types/minions';
 import { channelIsSendable } from '../util';
 import {
+	canRunAutoContract,
 	makeBirdHouseTripButton,
 	makeDoClueButton,
 	makeNewSlayerTaskButton,
@@ -121,7 +122,8 @@ export async function handleTripFinish(
 			components.addComponents(makeNewSlayerTaskButton());
 		}
 		const seedPackReceived = loot?.has('Seed pack');
-		if (seedPackReceived === true) components.addComponents(makeOpenSeedPackButton());
+		if (seedPackReceived === true)
+			components.addComponents(canRunAutoContract()) && components.addComponents(makeOpenSeedPackButton());
 	}
 	handleTriggerShootingStar(user, data, components);
 

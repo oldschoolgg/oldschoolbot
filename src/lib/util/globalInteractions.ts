@@ -76,7 +76,15 @@ export function makeOpenSeedPackButton() {
 		.setCustomId('OPEN_SEED_PACK')
 		.setLabel('Open Seed Pack')
 		.setStyle(ButtonStyle.Secondary)
-		.setEmoji('1032716008705765376');
+		.setEmoji('977410792754413668');
+}
+
+export function canRunAutoContract() {
+	return new ButtonBuilder()
+		.setCustomId('AUTO_FARMING_CONTRACT')
+		.setLabel('Auto Farming Contract')
+		.setStyle(ButtonStyle.Secondary)
+		.setEmoji('977410792754413668');
 }
 
 export function makeRepeatTripButton() {
