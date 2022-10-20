@@ -121,8 +121,7 @@ export async function handleTripFinish(
 		if ((currentTask === null || currentTask.quantity_remaining <= 0) && data.type === 'MonsterKilling') {
 			components.addComponents(makeNewSlayerTaskButton());
 		}
-		const seedPackReceived = loot?.has('Seed pack');
-		if (seedPackReceived === true) {
+		if (loot?.has('Seed pack')) {
 			components.addComponents(canRunAutoContract());
 			components.addComponents(makeOpenSeedPackButton());
 		}
