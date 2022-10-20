@@ -76,7 +76,7 @@ export function makeOpenSeedPackButton() {
 		.setCustomId('OPEN_SEED_PACK')
 		.setLabel('Open Seed Pack')
 		.setStyle(ButtonStyle.Secondary)
-		.setEmoji('405245077611347978');
+		.setEmoji('1032716008705765376');
 }
 
 export function makeRepeatTripButton() {
