@@ -124,7 +124,6 @@ export async function handleTripFinish(
 		if (seedPackReceived === true) components.addComponents(makeOpenSeedPackButton());
 	}
 	handleTriggerShootingStar(user, data, components);
-	
 
 	sendToChannelID(channelID, {
 		content: message,
