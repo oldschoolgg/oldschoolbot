@@ -158,7 +158,7 @@ export const raidsTask: MinionTask = {
 			const isGreen = items.some(([item]) => greenItems.includes(item.id));
 			const isBlue = items.some(([item]) => blueItems.includes(item.id));
 			const isOrange = items.some(([item]) => orangeItems.includes(item.id));
-			const specialLoot = isPurple || isGreen || isBlue || isOrange;
+			const specialLoot = isPurple || isOrange;
 			const emote = isOrange ? Emoji.Orange : isBlue ? Emoji.Blue : isGreen ? Emoji.Green : Emoji.Purple;
 			if (items.some(([item]) => purpleItems.includes(item.id) && !purpleButNotAnnounced.includes(item.id))) {
 				const itemsToAnnounce = itemsAdded.filter(item => purpleItems.includes(item.id), false);
