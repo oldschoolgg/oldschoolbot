@@ -301,7 +301,7 @@ export async function shootingStarsActivity(data: ShootingStarsData) {
 		);
 	}
 
-	handleTripFinish(user, data.channelID, str, undefined, data, null);
+	handleTripFinish(user, data.channelID, str, undefined, data, loot);
 }
 
 const activitiesCantGetStars: activity_type_enum[] = [
