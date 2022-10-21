@@ -1,4 +1,4 @@
-import { calcWhatPercent } from 'e';
+import { calcWhatPercent, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { setupParty } from '../../../extendables/Message/Party';
@@ -168,13 +168,19 @@ export async function coxCommand(
 	const maxTripLength = calcMaxTripLength(user, 'Raids');
 	const maxCanDo = Math.max(Math.floor(maxTripLength / raidDuration), 1);
 	const quantity = _quantity && _quantity * raidDuration <= maxTripLength ? _quantity : maxCanDo;
-	let duration = quantity * raidDuration;
+
 	const teamCheckFailure = await checkCoxTeam(users, isChallengeMode, quantity);
 	if (teamCheckFailure) {
 		return `Your mass failed to start because of this reason: ${teamCheckFailure}`;
 	}
 
-	duration = randomVariation(duration, 5);
+	// This gives a normal duration distribution. Better than (raidDuration * quantity) +/- 5%
+	let duration = sumArr(
+		Array(quantity)
+			.fill(raidDuration)
+			.map(d => randomVariation(d, 5))
+	);
+
 	let debugStr = '';
 	const isSolo = users.length === 1;
 

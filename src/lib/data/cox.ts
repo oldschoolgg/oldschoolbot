@@ -425,20 +425,20 @@ const itemBoosts: ItemBoost[][] = [
 	],
 	[
 		{
-			item: getOSItem('Sanguinesti staff'),
-			boost: 7,
-			mustBeEquipped: false,
-			setup: 'mage',
-			mustBeCharged: true,
-			requiredCharges: SANGUINESTI_CHARGES_PER_COX
-		},
-		{
 			item: getOSItem('Void staff'),
 			boost: 8,
 			mustBeEquipped: true,
 			setup: 'mage',
 			mustBeCharged: true,
 			requiredCharges: VOID_STAFF_CHARGES_PER_COX
+		},
+		{
+			item: getOSItem('Sanguinesti staff'),
+			boost: 7,
+			mustBeEquipped: false,
+			setup: 'mage',
+			mustBeCharged: true,
+			requiredCharges: SANGUINESTI_CHARGES_PER_COX
 		}
 	],
 	[
