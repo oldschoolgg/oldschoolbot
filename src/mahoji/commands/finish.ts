@@ -26,7 +26,9 @@ export const finishCommand: OSBMahojiCommand = {
 	],
 	run: async ({ interaction, options }: CommandRunOptions<{ input: string }>) => {
 		await deferInteraction(interaction);
-		const val = finishables.find(i => stringMatches(i.name, options.input));
+		const val = finishables.find(
+			i => stringMatches(i.name, options.input) || i.aliases?.some(alias => stringMatches(alias, options.input))
+		);
 		if (!val) return "That's not a valid thing you can simulate finishing.";
 		let loot = new Bank();
 		const kcBank = new Bank();
@@ -36,6 +38,15 @@ export const finishCommand: OSBMahojiCommand = {
 			if (val.cl.every(id => loot.has(id))) break;
 			kc++;
 			const thisLoot = val.kill({ accumulatedLoot: loot });
+
+			if (val.tertiaryDrops) {
+				for (const drop of val.tertiaryDrops) {
+					if (kc === drop.kcNeeded) {
+						thisLoot.add(drop.itemId);
+					}
+				}
+			}
+
 			const purpleItems = thisLoot.items().filter(i => val.cl.includes(i[0].id) && !loot.has(i[0].id));
 			for (const p of purpleItems) kcBank.add(p[0].id, kc);
 			loot.add(thisLoot);
