@@ -27,7 +27,7 @@ import { runTimedLoggedFn } from './lib/util';
 import { syncActiveUserIDs } from './lib/util/cachedUserIDs';
 import { interactionHook } from './lib/util/globalInteractions';
 import { interactionReply } from './lib/util/interactionReply';
-import { logError } from './lib/util/logError';
+import { logError, logErrorForInteraction } from './lib/util/logError';
 import { sendToChannelID } from './lib/util/webhook';
 import { onStartup } from './mahoji/lib/events';
 import { postCommand } from './mahoji/lib/postCommand';
@@ -119,17 +119,12 @@ client.on('interactionCreate', async interaction => {
 			await interaction.reply(result.error.message);
 			return;
 		}
-		logError(result.error, {
-			interaction: JSON.stringify(interaction)
-		});
+		logErrorForInteraction(result.error, interaction);
 		if (interaction.isChatInputCommand()) {
 			try {
 				await interactionReply(interaction, 'Sorry, an error occured while trying to run this command.');
 			} catch (err: unknown) {
-				logError(err, {
-					user_id: interaction.user.id,
-					interaction: JSON.stringify(interaction)
-				});
+				logErrorForInteraction(err, interaction);
 			}
 		}
 	}
