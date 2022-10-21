@@ -14,6 +14,7 @@ import { debounce, noOp, Time } from 'e';
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { SILENT_ERROR, usernameCache } from '../../lib/constants';
 import { MakePartyOptions } from '../../lib/types';
+import { UserError } from '../../lib/UserError';
 import { makeComponents } from '../../lib/util';
 import { CACHED_ACTIVE_USER_IDS } from '../../lib/util/cachedUserIDs';
 
@@ -189,7 +190,9 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 						if (mUser.id === options.leader.id) {
 							partyCancelled = true;
 							reply('You cancelled the mass.');
-							reject(`The leader (${options.leader.usernameOrMention}) cancelled this mass!`);
+							reject(
+								new UserError(`The leader (${options.leader.usernameOrMention}) cancelled this mass!`)
+							);
 							collector.stop('partyCreatorEnd');
 							return;
 						}
