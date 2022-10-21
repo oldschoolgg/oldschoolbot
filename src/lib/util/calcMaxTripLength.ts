@@ -36,6 +36,7 @@ export function calcMaxTripLength(user: MUser, activity?: activity_type_enum) {
 		case 'AnimatedArmour':
 		case 'Sepulchre':
 		case 'Pickpocket':
+		case 'Raids':
 		case 'SoulWars':
 		case 'Cyclops': {
 			masterHPCapeBoost = 20;
