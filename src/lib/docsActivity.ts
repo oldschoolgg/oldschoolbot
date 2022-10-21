@@ -112,21 +112,24 @@ export async function syncDocs() {
 export async function getDocsResults(SearchString: string) {
 	const articleResults: WikiDocs[] = await prisma.$queryRawUnsafe(`
 	SELECT *,
-length(name) as namelen,
-case 
-	when path like '%#%' then '2'
-	else '1'
-end as mainpageprio, 
-case 
-	when REPLACE(replace(name, ' - ', ' '),'''','') ~ '(?i)(?<= |^)${SearchString}(?= |$)' then '1'
-	when REPLACE(replace(name, ' - ', ' '),'''','') ilike '%${SearchString}%' then '2'
-	when body ilike '%${SearchString}%' then '3'
-	else '4'
-end as prio
+    LENGTH(name) as namelen,
+    CASE
+        WHEN path like '%#%' THEN '2'
+        ELSE '1'
+    END as mainpageprio,
+    CASE
+        WHEN REPLACE(REPLACE(name, ' - ', ' '), '''', '') ~ '(?i)(?<= |^)${SearchString}(?= |$)' THEN '1'
+        WHEN REPLACE(REPLACE(name, ' - ', ' '), '''', '') ILIKE '%${SearchString}%' THEN '2'
+        WHEN body ILIKE '%${SearchString}%' THEN '3'
+        ELSE '4'
+    END as prio
 FROM wiki_docs
-WHERE REPLACE(replace(name, ' - ', ' '),'''','') ilike '%${SearchString}%' or body ilike '%${SearchString}%' 
-order by mainpageprio asc,prio asc,namelen asc
-limit 12;`);
+WHERE REPLACE(REPLACE(name, ' - ', ' '), '''', '') ILIKE '%${SearchString}%'
+    OR body ILIKE '%${SearchString}%'
+ORDER BY mainpageprio ASC,
+    prio ASC,
+    namelen ASC
+LIMIT 12;`);
 	return articleResults;
 }
 
