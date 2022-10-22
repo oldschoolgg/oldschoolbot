@@ -102,10 +102,10 @@ export const bossEvents: BossEvent[] = [
 			for (const recip of uniqueItemRecipients) {
 				const { cl } = recip.user;
 				const items = pumpkinHeadUniqueTable.roll();
-				if (!cl.has('Mini Pumpkinhead')) {
-					if (roll(40)) {
-						items.add('Mini Pumpkinhead');
-					}
+				const numPetsInCL = cl.amount('Mini Pumpkinhead');
+				const pheadDropRate = 40 * (numPetsInCL + 1);
+				if (roll(pheadDropRate)) {
+					items.add('Mini Pumpkinhead');
 				}
 
 				let rerolled = false;
