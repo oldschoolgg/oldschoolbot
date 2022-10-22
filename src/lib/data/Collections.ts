@@ -9,6 +9,7 @@ import { getKCByName, mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettin
 import { CollectionLogType } from '../collectionLogTask';
 import { dyedItems } from '../dyedItems';
 import { growablePets } from '../growablePets';
+import { everyHalloween2022Item } from '../hweenEvent';
 import { Inventions } from '../invention/inventions';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../minions/data/killableMonsters';
 import { Ignecarus } from '../minions/data/killableMonsters/custom/bosses/Ignecarus';
@@ -1256,7 +1257,8 @@ export const allCollectionLogs: ICollection = {
 					'Kuro',
 					'Spooky box'
 				]),
-				counts: false
+				counts: false,
+				allItems: everyHalloween2022Item
 			},
 			'Christmas 2021': {
 				alias: ['xmas 2021', 'christmas 2021'],

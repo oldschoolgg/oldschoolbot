@@ -67,8 +67,16 @@ export function pickMinigameAndItem(user: MUser) {
 			.setStyle(ButtonStyle.Danger)
 	};
 }
-// const allItems = miniMinigames.map(i => i.items).flat(1);
-// const everyyyyyHalloweenItem = resolveItems([...allItems, 'Kuro', 'Spooky box', ...spookyTable.allItems]);
+
+const allItems = miniMinigames.map(i => i.items).flat(1);
+
+export const everyHalloween2022Item = resolveItems([
+	...allItems,
+	...spookyTable.allItems,
+	'Kuro',
+	'Spooky box',
+	'Grim sweeper'
+]);
 const effectiveTimeToDoOneTrip = Time.Minute * 60 + Time.Minute * 15;
 const nolifingTime = 16 * 16 * Time.Hour;
 
