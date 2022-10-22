@@ -115,7 +115,7 @@ export const spawnLampResetTime = (user: MUser) => {
 		cooldown = Time.Hour * 48;
 	}
 
-	return cooldown;
+	return cooldown - Time.Minute * 15;
 };
-export const itemContractResetTime = Time.Hour * 8;
-export const giveBoxResetTime = Time.Hour * 24;
+export const itemContractResetTime = Time.Hour * 7.8;
+export const giveBoxResetTime = Time.Hour * 23.5;
