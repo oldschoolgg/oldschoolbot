@@ -5,12 +5,48 @@ import { Items } from 'oldschooljs';
 
 import { CLIENT_ID } from '../config';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
-import { cooldownTimers, Emoji } from './constants';
+import { Cooldowns } from '../mahoji/lib/Cooldowns';
+import { Emoji } from './constants';
+import { customItems } from './customItems/util';
 import { prisma } from './settings/prisma';
-import { channelIsSendable, formatDuration, toKMB } from './util';
+import { channelIsSendable, formatDuration, isFunction, toKMB } from './util';
+import { giveBoxResetTime, itemContractResetTime, spawnLampResetTime } from './util/getUsersPerkTier';
 import { makeBankImage } from './util/makeBankImage';
 
 const mentionText = `<@${CLIENT_ID}>`;
+
+const cooldownTimers = [
+	{
+		name: 'Tears of Guthix',
+		timeStamp: (user: MUser) => Number(user.user.lastTearsOfGuthixTimestamp),
+		cd: Time.Day * 7
+	},
+	{
+		name: 'Daily',
+		timeStamp: (user: MUser) => Number(user.user.lastDailyTimestamp),
+		cd: Time.Hour * 12
+	},
+	{
+		name: 'Spawn Lamp',
+		timeStamp: (user: MUser) => Number(user.user.lastSpawnLamp),
+		cd: (user: MUser) => spawnLampResetTime(user)
+	},
+	{
+		name: 'Spawn Box',
+		timeStamp: (user: MUser) => Cooldowns.cooldownMap.get(user.id)?.get('SPAWN_BOX') ?? 0,
+		cd: Time.Minute * 45
+	},
+	{
+		name: 'Give Box',
+		timeStamp: (user: MUser) => Number(user.user.lastGivenBoxx),
+		cd: giveBoxResetTime
+	},
+	{
+		name: 'Item Contract',
+		timeStamp: (user: MUser) => Number(user.user.last_item_contract_date),
+		cd: itemContractResetTime
+	}
+];
 
 interface MentionCommandOptions {
 	msg: Message;
@@ -76,12 +112,15 @@ const mentionCommands: MentionCommand[] = [
 					if (user.cl.has(item.id)) icons.push(Emoji.CollectionLog);
 					if (user.bank.has(item.id)) icons.push(Emoji.Bank);
 					if (user.sacrificedItems.has(item.id)) icons.push(Emoji.Incinerator);
+					const isCustom = customItems.includes(item.id);
+					if (isCustom) icons.push(Emoji.BSO);
 
 					const price = toKMB(Math.floor(item.price));
 
+					const wikiURL = isCustom ? '' : `[Wiki Page](${item.wiki_url}) `;
 					let str = `${index + 1}. ${item.name} ID[${item.id}] Price[${price}] ${
 						item.tradeable ? 'Tradeable' : 'Untradeable'
-					} [Wiki Page](${item.wiki_url}) ${icons.join(' ')}`;
+					} ${wikiURL}${icons.join(' ')}`;
 					if (gettedItem.id === item.id) {
 						str = bold(str);
 					}
@@ -129,8 +168,9 @@ const mentionCommands: MentionCommand[] = [
 					.map(cd => {
 						const lastDone = cd.timeStamp(user);
 						const difference = Date.now() - lastDone;
-						if (difference < cd.cd) {
-							const durationRemaining = formatDuration(Date.now() - (lastDone + Time.Day * 7));
+						const cooldown = isFunction(cd.cd) ? cd.cd(user) : cd.cd;
+						if (difference < cooldown) {
+							const durationRemaining = formatDuration(Date.now() - (lastDone + cooldown));
 							return `${cd.name}: ${durationRemaining}`;
 						}
 						return bold(`${cd.name}: Ready`);

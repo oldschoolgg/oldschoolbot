@@ -12,11 +12,9 @@ import { CommandOptions } from 'mahoji/dist/lib/types';
 import { convertLVLtoXP } from 'oldschooljs/dist/util/util';
 
 import { DISCORD_SETTINGS } from '../config';
-import { Cooldowns } from '../mahoji/lib/Cooldowns';
 import { AbstractCommand, CommandArgs } from '../mahoji/lib/inhibitors';
 import { SkillsEnum } from './skilling/types';
 import getOSItem from './util/getOSItem';
-import { giveBoxResetTime, itemContractResetTime, spawnLampResetTime } from './util/getUsersPerkTier';
 import resolveItems from './util/resolveItems';
 
 export const BotID = DISCORD_SETTINGS.BotID ?? '729244028989603850';
@@ -164,7 +162,8 @@ export const enum Emoji {
 	CombatSword = '<:combat:802136963956080650>',
 	SOTW = '<:SOTWtrophy:842938096097820693>',
 	OSRSSkull = '<:skull:863392427040440320>',
-	Invention = '<:Invention:936219232146980874>'
+	Invention = '<:Invention:936219232146980874>',
+	BSO = '<:BSO:863823820435619890>'
 }
 
 export enum ActivityGroup {
@@ -575,36 +574,3 @@ export const minionBuyButton = new ButtonBuilder()
 	.setLabel('Buy Minion')
 	.setStyle(ButtonStyle.Success);
 export const FormattedCustomEmoji = /<a?:\w{2,32}:\d{17,20}>/;
-
-export const cooldownTimers = [
-	{
-		name: 'Tears of Guthix',
-		timeStamp: (user: MUser) => Number(user.user.lastTearsOfGuthixTimestamp),
-		cd: Time.Day * 7
-	},
-	{
-		name: 'Daily',
-		timeStamp: (user: MUser) => Number(user.user.lastDailyTimestamp),
-		cd: Time.Hour * 12
-	},
-	{
-		name: 'Spawn Lamp',
-		timeStamp: (user: MUser) => Number(user.user.lastSpawnLamp),
-		cd: (user: MUser) => spawnLampResetTime(user)
-	},
-	{
-		name: 'Spawn Box',
-		timeStamp: (user: MUser) => Cooldowns.cooldownMap.get(user.id)?.get('SPAWN_BOX') ?? 0,
-		cd: Time.Minute * 45
-	},
-	{
-		name: 'Give Box',
-		timeStamp: (user: MUser) => user.user.lastGivenBoxx,
-		cd: giveBoxResetTime
-	},
-	{
-		name: 'Item Contract',
-		timeStamp: (user: MUser) => user.user.last_item_contract_date,
-		cd: itemContractResetTime
-	}
-];
