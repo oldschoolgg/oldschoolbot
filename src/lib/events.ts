@@ -7,11 +7,11 @@ import { Items } from 'oldschooljs';
 import { CLIENT_ID, production, SupportServer } from '../config';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
 import { untrustedGuildSettingsCache } from '../mahoji/mahojiSettings';
-import { Channel, cooldownTimers, Emoji } from './constants';
+import { Channel, Emoji } from './constants';
 import pets from './data/pets';
 import { prisma } from './settings/prisma';
 import { ItemBank } from './types';
-import { channelIsSendable, formatDuration, toKMB } from './util';
+import { channelIsSendable, formatDuration, isFunction, toKMB } from './util';
 import { makeBankImage } from './util/makeBankImage';
 
 const rareRolesSrc: [string, number, string][] = [
@@ -108,6 +108,19 @@ Type \`/tools user mypets\` to see your pets.`);
 }
 
 const mentionText = `<@${CLIENT_ID}>`;
+
+const cooldownTimers = [
+	{
+		name: 'Tears of Guthix',
+		timeStamp: (user: MUser) => Number(user.user.lastTearsOfGuthixTimestamp),
+		cd: Time.Day * 7
+	},
+	{
+		name: 'Daily',
+		timeStamp: (user: MUser) => Number(user.user.lastDailyTimestamp),
+		cd: Time.Hour * 12
+	}
+];
 
 interface MentionCommandOptions {
 	msg: Message;
@@ -226,8 +239,9 @@ const mentionCommands: MentionCommand[] = [
 					.map(cd => {
 						const lastDone = cd.timeStamp(user);
 						const difference = Date.now() - lastDone;
-						if (difference < cd.cd) {
-							const durationRemaining = formatDuration(Date.now() - (lastDone + Time.Day * 7));
+						const cooldown = isFunction(cd.cd) ? cd.cd(user) : cd.cd;
+						if (difference < cooldown) {
+							const durationRemaining = formatDuration(Date.now() - (lastDone + cooldown));
 							return `${cd.name}: ${durationRemaining}`;
 						}
 						return bold(`${cd.name}: Ready`);
