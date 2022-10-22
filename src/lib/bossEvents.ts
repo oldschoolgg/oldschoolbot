@@ -168,7 +168,8 @@ ${specialLootRecipient.user.usernameOrMention} received ${specialLoot}.
 								.map(arr => arr.join(', '))
 								.join('\n')
 						: 'Nobody received any unique items!'
-				}`
+				}`,
+				allowedMentions: { roles: ['896845245873025067'] }
 			});
 		},
 		bossOptions: {
