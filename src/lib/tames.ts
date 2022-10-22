@@ -106,7 +106,7 @@ export const tameKillableMonsters: TameKillableMonster[] = [
 				loot.add(
 					ChambersOfXeric.complete({ team: [{ id: '1', personalPoints: calcPointsForTame(tame) }] })['1']
 				);
-				handleSpecialCoxLoot(loot);
+				handleSpecialCoxLoot(null, loot);
 			}
 
 			return loot;
