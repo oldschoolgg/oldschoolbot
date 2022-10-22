@@ -1,5 +1,4 @@
 import { APIButtonComponent, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
-import { Time } from 'e';
 
 import { DISCORD_SETTINGS } from '../config';
 import { AbstractCommand, CommandArgs } from '../mahoji/lib/inhibitors';
@@ -422,16 +421,3 @@ export const minionBuyButton = new ButtonBuilder()
 	.setLabel('Buy Minion')
 	.setStyle(ButtonStyle.Success);
 export const FormattedCustomEmoji = /<a?:\w{2,32}:\d{17,20}>/;
-
-export const cooldownTimers = [
-	{
-		name: 'Tears of Guthix',
-		timeStamp: (user: MUser) => Number(user.user.lastTearsOfGuthixTimestamp),
-		cd: Time.Day * 7
-	},
-	{
-		name: 'Daily',
-		timeStamp: (user: MUser) => Number(user.user.lastDailyTimestamp),
-		cd: Time.Hour * 12
-	}
-];
