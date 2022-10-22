@@ -1,7 +1,7 @@
 import { ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 
 import { ClueTiers } from '../../../lib/clues/clueTiers';
-import { Emoji, minionBuyButton, PerkTier } from '../../../lib/constants';
+import { BitField, Emoji, minionBuyButton, PerkTier } from '../../../lib/constants';
 import { getUsersFishingContestDetails } from '../../../lib/fishingContest';
 import { roboChimpUserFetch } from '../../../lib/roboChimp';
 import { getUsersTame, shortTameTripDesc, tameLastFinishedActivity } from '../../../lib/tames';
@@ -90,7 +90,7 @@ export async function minionStatusCommand(user: MUser, channelID: string) {
 			.setStyle(ButtonStyle.Secondary)
 	);
 
-	if (!user.minionIsBusy && birdhouseDetails.isReady) {
+	if (!user.minionIsBusy && birdhouseDetails.isReady && !user.bitfield.includes(BitField.DisableBirdhouseRunButton)) {
 		buttons.push(
 			new ButtonBuilder()
 				.setCustomId('DO_BIRDHOUSE_RUN')

@@ -14,7 +14,7 @@ import {
 } from '../../mahoji/mahojiSettings';
 import { MysteryBoxes } from '../bsoOpenables';
 import { ClueTiers } from '../clues/clueTiers';
-import { COINS_ID, Emoji, PerkTier } from '../constants';
+import { BitField, COINS_ID, Emoji, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
 import { inventionBoosts, InventionID, inventionItemBoost } from '../invention/inventions';
@@ -310,7 +310,8 @@ export async function handleTripFinish(
 	if (perkTier > PerkTier.One) {
 		if (clueReceived) components.addComponents(makeDoClueButton(clueReceived));
 		const birdHousedetails = await calculateBirdhouseDetails(user.id);
-		if (birdHousedetails.isReady) components.addComponents(makeBirdHouseTripButton());
+		if (birdHousedetails.isReady && !user.bitfield.includes(BitField.DisableBirdhouseRunButton))
+			components.addComponents(makeBirdHouseTripButton());
 		const { currentTask } = await getUsersCurrentSlayerInfo(user.id);
 		if ((currentTask === null || currentTask.quantity_remaining <= 0) && data.type === 'MonsterKilling') {
 			components.addComponents(makeNewSlayerTaskButton());

@@ -436,6 +436,8 @@ model User {
 
   minion_bought_date DateTime? @db.Timestamp(6)
 
+  auto_farm_filter AutoFarmFilterEnum @default(AllFarm)
+
   bingo_tickets_bought Int    @default(0)
   bingo_gp_contributed BigInt @default(0)
 
@@ -615,13 +617,15 @@ model Tame {
 
 model CommandUsage {
   id           Int                  @id @default(autoincrement())
-  date         DateTime             @db.Timestamp(6)
+  date         DateTime             @default(now()) @db.Timestamp(6)
   user_id      BigInt
   command_name String               @db.VarChar(32)
   status       command_usage_status @default(value: Unknown)
   is_continue  Boolean              @default(false)
   flags        Json?
   inhibited    Boolean?             @default(false)
+
+  is_mention_command Boolean @default(false)
 
   args       Json?   @db.Json
   channel_id BigInt?
@@ -792,6 +796,7 @@ enum activity_type_enum {
   AnimatedArmour
   Cyclops
   Sawmill
+  Butler
   Nightmare
   Sepulchre
   Plunder
@@ -887,4 +892,9 @@ enum tame_growth {
   baby
   juvenile
   adult
+}
+
+enum AutoFarmFilterEnum {
+  AllFarm
+  Replant
 }

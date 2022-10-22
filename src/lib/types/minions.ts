@@ -299,6 +299,11 @@ export interface SawmillActivityTaskOptions extends ActivityTaskOptions {
 	plankQuantity: number;
 }
 
+export interface ButlerActivityTaskOptions extends ActivityTaskOptions {
+	plankID: number;
+	plankQuantity: number;
+}
+
 export interface GnomeRestaurantActivityTaskOptions extends MinigameActivityTaskOptions {
 	gloriesRemoved: number;
 }
@@ -394,6 +399,7 @@ export type ActivityTaskData =
 	| HunterActivityTaskOptions
 	| ZalcanoActivityTaskOptions
 	| SawmillActivityTaskOptions
+	| ButlerActivityTaskOptions
 	| FarmingActivityTaskOptions
 	| HerbloreActivityTaskOptions
 	| FletchingActivityTaskOptions

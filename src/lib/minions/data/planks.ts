@@ -3,25 +3,25 @@ import itemID from '../../util/itemID';
 
 export const Planks: Plankable[] = [
 	{
-		name: 'Logs',
+		name: 'Plank',
 		inputItem: itemID('Logs'),
 		outputItem: itemID('Plank'),
 		gpCost: 100
 	},
 	{
-		name: 'Oak',
+		name: 'Oak plank',
 		inputItem: itemID('Oak logs'),
 		outputItem: itemID('Oak plank'),
 		gpCost: 250
 	},
 	{
-		name: 'Teak',
+		name: 'Teak plank',
 		inputItem: itemID('Teak logs'),
 		outputItem: itemID('Teak plank'),
 		gpCost: 500
 	},
 	{
-		name: 'Mahogany',
+		name: 'Mahogany plank',
 		inputItem: itemID('Mahogany logs'),
 		outputItem: itemID('Mahogany plank'),
 		gpCost: 1500

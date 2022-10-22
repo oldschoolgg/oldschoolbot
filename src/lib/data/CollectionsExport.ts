@@ -346,7 +346,7 @@ export const kingBlackDragonCL = resolveItems([
 	'Draconic visage'
 ]);
 export const krakenCL = resolveItems(['Pet kraken', 'Kraken tentacle', 'Trident of the seas (full)', 'Jar of dirt']);
-export const theNightmareCL = resolveItems([
+export const theNightmareNormalCL = resolveItems([
 	'Little nightmare',
 	"Inquisitor's mace",
 	"Inquisitor's great helm",
@@ -356,10 +356,9 @@ export const theNightmareCL = resolveItems([
 	'Volatile orb',
 	'Harmonised orb',
 	'Eldritch orb',
-	'Jar of dreams',
-	'Slepey tablet',
-	'Parasitic egg'
+	'Jar of dreams'
 ]);
+export const theNightmareCL = resolveItems([...theNightmareNormalCL, 'Slepey tablet', 'Parasitic egg']);
 export const oborCL = resolveItems(['Hill giant club']);
 export const sarachnisCL = resolveItems(['Sraracha', 'Jar of eyes', 'Giant egg sac(full)', 'Sarachnis cudgel']);
 export const scorpiaCL = resolveItems(["Scorpia's offspring", 'Odium shard 3', 'Malediction shard 3']);

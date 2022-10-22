@@ -241,7 +241,12 @@ export const createCommand: OSBMahojiCommand = {
 		}
 
 		// Only allow +create to add items to CL
-		const addToCl = !createableItem.noCl && action === 'create';
+		let addToCl = !createableItem.noCl && action === 'create';
+
+		if (createableItem.forceAddToCl) {
+			addToCl = true;
+		}
+
 		await transactItems({
 			userID: userID.toString(),
 			collectionLog: addToCl,

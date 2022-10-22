@@ -1,11 +1,146 @@
-import { Message } from 'discord.js';
+import { Embed } from '@discordjs/builders';
+import { bold, Message, MessageOptions } from 'discord.js';
+import { Time } from 'e';
+import { Items } from 'oldschooljs';
 
-import { CLIENT_ID, OWNER_IDS } from '../config';
+import { CLIENT_ID } from '../config';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
-import { channelIsSendable, memoryAnalysis } from './util';
+import { cooldownTimers, Emoji } from './constants';
+import { prisma } from './settings/prisma';
+import { channelIsSendable, formatDuration, toKMB } from './util';
 import { makeBankImage } from './util/makeBankImage';
 
 const mentionText = `<@${CLIENT_ID}>`;
+
+interface MentionCommandOptions {
+	msg: Message;
+	user: MUser;
+	components: MessageOptions['components'];
+	content: string;
+}
+interface MentionCommand {
+	name: string;
+	aliases: string[];
+	description: string;
+	run: (options: MentionCommandOptions) => Promise<unknown>;
+}
+
+const mentionCommands: MentionCommand[] = [
+	{
+		name: 'bs',
+		aliases: ['bs'],
+		description: 'Searches your bank.',
+		run: async ({ msg, user, components, content }: MentionCommandOptions) => {
+			msg.reply({
+				files: [
+					(
+						await makeBankImage({
+							bank: user.bankWithGP.filter(i => i.name.toLowerCase().includes(content.toLowerCase())),
+							title: 'Your Bank',
+							user
+						})
+					).file.attachment
+				],
+				components
+			});
+		}
+	},
+	{
+		name: 'bal',
+		aliases: ['bal', 'gp'],
+		description: 'Shows how much GP you have.',
+		run: async ({ msg, user, components }: MentionCommandOptions) => {
+			msg.reply({
+				content: `${Emoji.MoneyBag} You have ${toKMB(user.GP)} (${user.GP.toLocaleString()}) GP.`,
+				components
+			});
+		}
+	},
+	{
+		name: 'is',
+		aliases: ['is'],
+		description: 'Searches for items.',
+		run: async ({ msg, components, user, content }: MentionCommandOptions) => {
+			const items = Items.filter(i =>
+				[i.id.toString(), i.name.toLowerCase()].includes(content.toLowerCase())
+			).array();
+			if (items.length === 0) return msg.reply('No results for that item.');
+
+			const gettedItem = items[0];
+
+			let str = `Found ${items.length} items:\n${items
+				.slice(0, 5)
+				.map((item, index) => {
+					const icons = [];
+
+					if (user.cl.has(item.id)) icons.push(Emoji.CollectionLog);
+					if (user.bank.has(item.id)) icons.push(Emoji.Bank);
+					if (user.sacrificedItems.has(item.id)) icons.push(Emoji.Incinerator);
+
+					const price = toKMB(Math.floor(item.price));
+
+					let str = `${index + 1}. ${item.name} ID[${item.id}] Price[${price}] ${
+						item.tradeable ? 'Tradeable' : 'Untradeable'
+					} [Wiki Page](${item.wiki_url}) ${icons.join(' ')}`;
+					if (gettedItem.id === item.id) {
+						str = bold(str);
+					}
+
+					return str;
+				})
+				.join('\n')}`;
+
+			if (items.length > 5) {
+				str += `\n...and ${items.length - 5} others`;
+			}
+
+			return msg.reply({ embeds: [new Embed().setDescription(str)], components });
+		}
+	},
+	{
+		name: 'bank',
+		aliases: ['b', 'bank'],
+		description: 'Shows your bank.',
+		run: async ({ msg, user, components }: MentionCommandOptions) => {
+			msg.reply({
+				files: [
+					(
+						await makeBankImage({
+							bank: user.bankWithGP,
+							title: 'Your Bank',
+							user,
+							flags: {
+								page: 0
+							}
+						})
+					).file.attachment
+				],
+				components
+			});
+		}
+	},
+	{
+		name: 'cd',
+		aliases: ['cd'],
+		description: 'Shows your cooldowns.',
+		run: async ({ msg, user, components }: MentionCommandOptions) => {
+			msg.reply({
+				content: cooldownTimers
+					.map(cd => {
+						const lastDone = cd.timeStamp(user);
+						const difference = Date.now() - lastDone;
+						if (difference < cd.cd) {
+							const durationRemaining = formatDuration(Date.now() - (lastDone + Time.Day * 7));
+							return `${cd.name}: ${durationRemaining}`;
+						}
+						return bold(`${cd.name}: Ready`);
+					})
+					.join('\n'),
+				components
+			});
+		}
+	}
+];
 
 export async function onMessage(msg: Message) {
 	if (!msg.content || msg.author.bot || !channelIsSendable(msg.channel)) return;
@@ -15,46 +150,24 @@ export async function onMessage(msg: Message) {
 	const result = await minionStatusCommand(user, msg.channelId);
 	const { components } = result;
 
-	if (content === `${mentionText} b`) {
-		msg.reply({
-			files: [
-				(
-					await makeBankImage({
-						bank: user.bankWithGP,
-						title: 'Your Bank',
-						user,
-						flags: {
-							page: 0
-						}
-					})
-				).file.attachment
-			],
-			components
+	const command = mentionCommands.find(i =>
+		i.aliases.some(alias => msg.content.startsWith(`${mentionText} ${alias}`))
+	);
+	if (command) {
+		const msgContentWithoutCommand = msg.content.split(' ').slice(2).join(' ');
+		await prisma.commandUsage.create({
+			data: {
+				user_id: BigInt(user.id),
+				channel_id: BigInt(msg.channelId),
+				guild_id: msg.guildId ? BigInt(msg.guildId) : undefined,
+				command_name: command.name,
+				args: msgContentWithoutCommand,
+				flags: undefined,
+				inhibited: false,
+				is_mention_command: true
+			}
 		});
-		return;
-	}
-	if (content.includes(`${mentionText} bs `)) {
-		const searchText = content.split(' ')[2];
-		msg.reply({
-			files: [
-				(
-					await makeBankImage({
-						bank: user.bankWithGP.filter(i => i.name.toLowerCase().includes(searchText.toLowerCase())),
-						title: 'Your Bank',
-						user
-					})
-				).file.attachment
-			],
-			components
-		});
-		return;
-	}
-	if (content.includes(`${mentionText} mem`) && OWNER_IDS.includes(msg.author.id)) {
-		msg.reply(
-			Object.entries(memoryAnalysis())
-				.map(ent => `**${ent[0]}:** ${ent[1]}`)
-				.join('\n')
-		);
+		await command.run({ msg, user, components, content: msgContentWithoutCommand });
 		return;
 	}
 

@@ -17,6 +17,7 @@ import { nexTask } from '../tasks/minions/bso/nexActivity';
 import { odsTask } from '../tasks/minions/bso/ouraniaDeliveryServiceActivity';
 import { researchActivityTask } from '../tasks/minions/bso/researchActivity';
 import { vasaTask } from '../tasks/minions/bso/vasaMagusActivity';
+import { butlerTask } from '../tasks/minions/butlerActivity';
 import { castingTask } from '../tasks/minions/castingActivity';
 import { clueTask } from '../tasks/minions/clueActivity';
 import { collectingTask } from '../tasks/minions/collectingActivity';
@@ -178,6 +179,7 @@ export const tasks: MinionTask[] = [
 	researchActivityTask,
 	vasaTask,
 	dungeoneeringTask,
+	butlerTask,
 	shootingStarTask
 ];
 

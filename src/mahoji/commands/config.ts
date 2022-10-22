@@ -38,6 +38,10 @@ const toggles = [
 		bit: BitField.AlwaysSmallBank
 	},
 	{
+		name: 'Disable Birdhouse Run Button',
+		bit: BitField.DisableBirdhouseRunButton
+	},
+	{
 		name: 'Disable Gorajan Bonecrusher',
 		bit: BitField.DisabledGorajanBoneCrusher
 	}
