@@ -156,6 +156,14 @@ const genericUsables: {
 		cost: new Bank().add('Mithril seeds').freeze(),
 		loot: () => flowerTable.roll(),
 		response: loot => `You planted a Mithril seed and got ${loot}!`
+	},
+	{
+		items: [getOSItem('Gloom and doom potion'), getOSItem('Broomstick')],
+		cost: new Bank().add('Gloom and doom potion').add('Broomstick'),
+		loot: new Bank().add('Grim sweeper'),
+		response: () =>
+			'You pour the Gloom and doom potion on the Broomstick... it transforms into an evil.. deathly broom with a scythe on one end and a skull handle!',
+		addToCL: true
 	}
 ];
 usables.push({

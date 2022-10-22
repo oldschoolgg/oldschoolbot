@@ -3521,3 +3521,15 @@ setCustomItem(
 	},
 	1000
 );
+
+setCustomItem(
+	70_194,
+	'Grim sweeper',
+	'Bronze dagger',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
