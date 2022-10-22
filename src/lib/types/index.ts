@@ -1,3 +1,5 @@
+import { MessageOptions } from 'discord.js';
+
 import { SkillsEnum } from '../skilling/types';
 
 export interface ItemBank {
@@ -39,6 +41,7 @@ export interface MakePartyOptions {
 	usersAllowed?: string[];
 	customDenier?(user: MUser): Promise<[false] | [true, string]>;
 	massTimeout?: number;
+	allowedMentions?: MessageOptions['allowedMentions'];
 }
 
 export type Skills = Partial<{

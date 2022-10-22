@@ -168,8 +168,7 @@ ${specialLootRecipient.user.usernameOrMention} received ${specialLoot}.
 								.map(arr => arr.join(', '))
 								.join('\n')
 						: 'Nobody received any unique items!'
-				}`,
-				allowedMentions: { roles: ['896845245873025067'] }
+				}`
 			});
 		},
 		bossOptions: {
@@ -256,6 +255,7 @@ export async function startBossEvent({ boss, id }: { boss: BossEvent; id?: BossE
 		...boss.bossOptions,
 		channel,
 		massText: `<@&896845245873025067> Pumpkinhead the Pumpkinheaded ${getPHeadDescriptor()} ${getPHeadDescriptor()} Horror has spawned! Who will fight him?!`,
+		allowedMentions: { roles: ['896845245873025067'] },
 		quantity: 1,
 		leader: await mUserFetch(OWNER_IDS[0])
 	});

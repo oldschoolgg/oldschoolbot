@@ -49,6 +49,7 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 			usersWhoConfirmed.length > 25
 				? `${usersWhoConfirmed.length} users have joined`
 				: usersWhoConfirmed.map(u => usernameCache.get(u) ?? userMention(u)).join(', ');
+		const allowedMentions = options.allowedMentions ?? { users: [] };
 		return {
 			content: `${
 				options.message
@@ -56,9 +57,7 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 				massTimeout
 			)}, or if the leader clicks the start (start early) or stop button.`,
 			components: makeComponents(buttons.map(i => i.button)),
-			allowedMentions: {
-				users: []
-			}
+			allowedMentions
 		};
 	}
 

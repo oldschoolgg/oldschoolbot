@@ -1,4 +1,4 @@
-import { AttachmentBuilder, TextChannel } from 'discord.js';
+import { AttachmentBuilder, MessageOptions, TextChannel } from 'discord.js';
 import { calcPercentOfNum, calcWhatPercent, randFloat, reduceNumByPercent, sumArr, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { table } from 'table';
@@ -132,6 +132,7 @@ export interface BossOptions {
 	allowMoreThan1Solo?: boolean;
 	allowMoreThan1Group?: boolean;
 	quantity?: number;
+	allowedMentions?: MessageOptions['allowedMentions'];
 	// Duration before mass is automatically send
 	automaticStartTime?: number;
 	// The total % reduction that perfect gear/kc/boosts nets:
@@ -190,6 +191,7 @@ export class BossInstance {
 	speedGearWeight: number = 25;
 	speedKcWeight: number = 35;
 	skipInvalidUsers?: boolean = false;
+	allowedMentions?: MessageOptions['allowedMentions'];
 
 	constructor(options: BossOptions) {
 		this.baseDuration = options.baseDuration;
@@ -232,6 +234,7 @@ export class BossInstance {
 		this.massText = massText.join('\n');
 		this.automaticStartTime = options.automaticStartTime ?? Time.Minute * 2;
 		if (options.skipInvalidUsers) this.skipInvalidUsers = options.skipInvalidUsers;
+		this.allowedMentions = options.allowedMentions;
 	}
 
 	async validateTeam() {
@@ -274,7 +277,8 @@ export class BossInstance {
 							return this.checkUser(user);
 						},
 						message: this.massText,
-						massTimeout: this.automaticStartTime
+						massTimeout: this.automaticStartTime,
+						allowedMentions: this.allowedMentions
 				  });
 
 		this.tempQty = this.quantity;
