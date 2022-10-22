@@ -109,7 +109,7 @@ Type \`/tools user mypets\` to see your pets.`);
 
 const mentionText = `<@${CLIENT_ID}>`;
 
-const cooldownTimers = [
+const cooldownTimers: { name: string; timeStamp: (user: MUser) => number; cd: number | ((user: MUser) => number) }[] = [
 	{
 		name: 'Tears of Guthix',
 		timeStamp: (user: MUser) => Number(user.user.lastTearsOfGuthixTimestamp),
