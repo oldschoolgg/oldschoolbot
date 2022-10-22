@@ -238,7 +238,6 @@ async function halloweenHandler(user: MUser, interaction: ButtonInteraction) {
 	const dupeActivity: { count: number }[] = await prisma.$queryRawUnsafe(
 		`SELECT COUNT(*) as count FROM activity WHERE type = '${activity_type_enum.HalloweenMiniMinigame}' AND user_id = ${userID} AND (data->>'nonce')::bigint = ${nonce};`
 	);
-	console.log(dupeActivity);
 	if (dupeActivity[0].count !== 0) {
 		return interaction.reply('You already used this button!');
 	}
