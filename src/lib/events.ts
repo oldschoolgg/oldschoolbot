@@ -7,11 +7,11 @@ import { Items } from 'oldschooljs';
 import { CLIENT_ID, production, SupportServer } from '../config';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
 import { untrustedGuildSettingsCache } from '../mahoji/mahojiSettings';
-import { Channel, Emoji } from './constants';
+import { Channel, cooldownTimers, Emoji } from './constants';
 import pets from './data/pets';
 import { prisma } from './settings/prisma';
 import { ItemBank } from './types';
-import { channelIsSendable, toKMB } from './util';
+import { channelIsSendable, formatDuration, toKMB } from './util';
 import { makeBankImage } from './util/makeBankImage';
 
 const rareRolesSrc: [string, number, string][] = [
@@ -212,6 +212,27 @@ const mentionCommands: MentionCommand[] = [
 						})
 					).file.attachment
 				],
+				components
+			});
+		}
+	},
+	{
+		name: 'cd',
+		aliases: ['cd'],
+		description: 'Shows your cooldowns.',
+		run: async ({ msg, user, components }: MentionCommandOptions) => {
+			msg.reply({
+				content: cooldownTimers
+					.map(cd => {
+						const lastDone = cd.timeStamp(user);
+						const difference = Date.now() - lastDone;
+						if (difference < cd.cd) {
+							const durationRemaining = formatDuration(Date.now() - (lastDone + Time.Day * 7));
+							return `${cd.name}: ${durationRemaining}`;
+						}
+						return bold(`${cd.name}: Ready`);
+					})
+					.join('\n'),
 				components
 			});
 		}
