@@ -152,7 +152,8 @@ export const tasks: MinionTask[] = [
 	temporossTask,
 	smithingTask,
 	butlerTask,
-	shootingStarTask
+	shootingStarTask,
+	tiaraRunecraftTask
 ];
 
 export async function syncActivityCache() {
