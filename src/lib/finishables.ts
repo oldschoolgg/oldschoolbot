@@ -1,4 +1,4 @@
-import { notEmpty, roll } from 'e';
+import { notEmpty, randArrItem, roll } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 import BeginnerClueTable from 'oldschooljs/dist/simulation/clues/Beginner';
 import EasyClueTable from 'oldschooljs/dist/simulation/clues/Easy';
@@ -19,6 +19,7 @@ import {
 	cluesHardCL,
 	cluesMasterCL,
 	cluesMediumCL,
+	evilChickenOutfit,
 	NexCL,
 	temporossCL,
 	theatreOfBLoodCL,
@@ -29,6 +30,7 @@ import {
 	wintertodtCL
 } from './data/CollectionsExport';
 import pets from './data/pets';
+import { birdsNestID, treeSeedsNest } from './simulation/birdsNest';
 import { gauntlet } from './simulation/gauntlet';
 import { handleNexKills } from './simulation/nex';
 import { getTemporossLoot } from './simulation/tempoross';
@@ -210,6 +212,21 @@ export const finishables: Finishable[] = [
 				return MasterMimicTable.roll().add(MasterCasket.open());
 			}
 			return MasterCasket.open();
+		}
+	},
+	{
+		name: 'Evil Chicken Outfit',
+		cl: evilChickenOutfit,
+		aliases: ['evil chicken outfit'],
+		kill: () => {
+			const loot = new Bank();
+			if (roll(300)) {
+				loot.add(randArrItem(evilChickenOutfit));
+			} else {
+				loot.add(birdsNestID);
+				loot.add(treeSeedsNest.roll());
+			}
+			return loot;
 		}
 	}
 ];
