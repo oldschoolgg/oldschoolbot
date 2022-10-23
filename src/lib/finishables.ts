@@ -1,11 +1,23 @@
 import { notEmpty, roll } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
+import BeginnerClueTable from 'oldschooljs/dist/simulation/clues/Beginner';
+import EasyClueTable from 'oldschooljs/dist/simulation/clues/Easy';
+import EliteClueTable from 'oldschooljs/dist/simulation/clues/Elite';
+import HardClueTable from 'oldschooljs/dist/simulation/clues/Hard';
+import MasterCasket from 'oldschooljs/dist/simulation/clues/Master';
+import MediumClueTable from 'oldschooljs/dist/simulation/clues/Medium';
 import { ChambersOfXeric, Nightmare } from 'oldschooljs/dist/simulation/misc';
 
 import { allCollectionLogsFlat } from './data/Collections';
 import {
 	chambersOfXericCL,
 	chambersOfXericNormalCL,
+	cluesBeginnerCL,
+	cluesEasyCL,
+	cluesEliteCL,
+	cluesHardCL,
+	cluesMasterCL,
+	cluesMediumCL,
 	NexCL,
 	temporossCL,
 	theatreOfBLoodCL,
@@ -152,6 +164,42 @@ export const finishables: Finishable[] = [
 			{ itemId: itemID('Spirit angler headband'), kcNeeded: 65 },
 			{ itemId: itemID('Spirit angler boots'), kcNeeded: 65 }
 		]
+	},
+	{
+		name: 'Beginner Clue Scolls',
+		cl: cluesBeginnerCL,
+		aliases: ['beginner clues', 'beginner clue', 'beginner clue scroll', 'beginner clue scrolls'],
+		kill: () => BeginnerClueTable.open()
+	},
+	{
+		name: 'Easy Clue Scolls',
+		cl: cluesEasyCL,
+		aliases: ['easy clues', 'easy clue', 'easy clue scroll', 'easy clue scrolls'],
+		kill: () => EasyClueTable.open()
+	},
+	{
+		name: 'Medium Clue Scolls',
+		cl: cluesMediumCL,
+		aliases: ['medium clues', 'medium clue', 'medium clue scroll', 'medium clue scrolls'],
+		kill: () => MediumClueTable.open()
+	},
+	{
+		name: 'Hard Clue Scolls',
+		cl: cluesHardCL,
+		aliases: ['hard clues', 'hard clue', 'hard clue scroll', 'hard clue scrolls'],
+		kill: () => HardClueTable.open()
+	},
+	{
+		name: 'Elite Clue Scolls',
+		cl: cluesEliteCL,
+		aliases: ['elite clues', 'elite clue', 'elite clue scroll', 'elite clue scrolls'],
+		kill: () => EliteClueTable.open()
+	},
+	{
+		name: 'Master Clue Scolls',
+		cl: cluesMasterCL,
+		aliases: ['master clues', 'master clue', 'master clue scroll', 'master clue scrolls'],
+		kill: () => MasterCasket.open()
 	}
 ];
 
