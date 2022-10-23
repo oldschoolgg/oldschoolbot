@@ -7,6 +7,7 @@ import HardClueTable from 'oldschooljs/dist/simulation/clues/Hard';
 import MasterCasket from 'oldschooljs/dist/simulation/clues/Master';
 import MediumClueTable from 'oldschooljs/dist/simulation/clues/Medium';
 import { ChambersOfXeric, Nightmare } from 'oldschooljs/dist/simulation/misc';
+import { EliteMimicTable, MasterMimicTable } from 'oldschooljs/dist/simulation/misc/Mimic';
 
 import { allCollectionLogsFlat } from './data/Collections';
 import {
@@ -193,13 +194,23 @@ export const finishables: Finishable[] = [
 		name: 'Elite Clue Scolls',
 		cl: cluesEliteCL,
 		aliases: ['elite clues', 'elite clue', 'elite clue scroll', 'elite clue scrolls'],
-		kill: () => EliteClueTable.open()
+		kill: () => {
+			if (roll(35)) {
+				return EliteMimicTable.roll().add(EliteClueTable.open());
+			}
+			return EliteClueTable.open();
+		}
 	},
 	{
 		name: 'Master Clue Scolls',
 		cl: cluesMasterCL,
 		aliases: ['master clues', 'master clue', 'master clue scroll', 'master clue scrolls'],
-		kill: () => MasterCasket.open()
+		kill: () => {
+			if (roll(15)) {
+				return MasterMimicTable.roll().add(MasterCasket.open());
+			}
+			return MasterCasket.open();
+		}
 	}
 ];
 

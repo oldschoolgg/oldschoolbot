@@ -44,7 +44,7 @@ export const finishCommand: OSBMahojiCommand = {
 
 		const result = `It took you ${kc.toLocaleString()} KC to finish the ${val.name} CL.`;
 		const finishStr = kcBank.items().sort(sorts.quantity).reverse();
-		if (finishStr.length < 50) {
+		if (finishStr.length < 20) {
 			return {
 				content: `${result}
 ${finishStr.map(i => `**${i[0].name}:** ${i[1]} KC`).join('\n')}`,

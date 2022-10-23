@@ -35,13 +35,13 @@ export type FinishWorkerReturn =
 			kc: number;
 	  }
 	| string;
-export const piscinaPool = new Piscina();
+
 export const finishWorker = new Piscina({ filename: resolve(__dirname, 'finish.worker.js') });
+export const killWorker = new Piscina({ filename: resolve(__dirname, 'kill.worker.js') });
+export const casketWorker = new Piscina({ filename: resolve(__dirname, 'casket.worker.js') });
 
 export const Workers = {
-	casketOpen: (args: CasketWorkerArgs): Promise<[Bank, string]> =>
-		piscinaPool.runTask(args, resolve(__dirname, 'casket.worker.js')),
-	kill: (args: KillWorkerArgs): Promise<KillWorkerReturn> =>
-		piscinaPool.runTask(args, resolve(__dirname, 'kill.worker.js')),
+	casketOpen: (args: CasketWorkerArgs): Promise<[Bank, string]> => casketWorker.run(args),
+	kill: (args: KillWorkerArgs): Promise<KillWorkerReturn> => killWorker.run(args),
 	finish: (args: FinishWorkerArgs): Promise<FinishWorkerReturn> => finishWorker.run(args)
 };
