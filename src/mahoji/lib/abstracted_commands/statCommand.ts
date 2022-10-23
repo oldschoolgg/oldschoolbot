@@ -856,6 +856,13 @@ GROUP BY "bankBackground";`);
 		run: async (_, stats) => {
 			return `You've received **${Number(stats.sell_gp).toLocaleString()}** GP from selling items.`;
 		}
+	},
+	{
+		name: 'Bird Eggs Offered',
+		perkTierNeeded: null,
+		run: async (_, stats) => {
+			return `You've offered... **${new Bank(stats.bird_eggs_offered_bank as ItemBank)}**.`;
+		}
 	}
 ] as const;
 

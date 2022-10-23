@@ -572,6 +572,7 @@ model UserStats {
   passive_implings_bank  Json   @default("{}") @db.Json
   create_cost_bank       Json   @default("{}") @db.Json
   create_loot_bank       Json   @default("{}") @db.Json
+  bird_eggs_offered_bank Json   @default("{}") @db.Json
 
   @@map("user_stats")
 }
