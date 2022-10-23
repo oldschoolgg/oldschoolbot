@@ -390,6 +390,8 @@ model User {
 
   minion_bought_date DateTime? @db.Timestamp(6)
 
+  auto_farm_filter AutoFarmFilterEnum @default(AllFarm)
+
   bingo_tickets_bought Int    @default(0)
   bingo_gp_contributed BigInt @default(0)
 
@@ -477,13 +479,15 @@ model Minigame {
 
 model CommandUsage {
   id           Int                  @id @default(autoincrement())
-  date         DateTime             @db.Timestamp(6)
+  date         DateTime             @default(now()) @db.Timestamp(6)
   user_id      BigInt
   command_name String               @db.VarChar(32)
   status       command_usage_status @default(value: Unknown)
   is_continue  Boolean              @default(false)
   flags        Json?
   inhibited    Boolean?             @default(false)
+
+  is_mention_command Boolean @default(false)
 
   args       Json?   @db.Json
   channel_id BigInt?
@@ -568,6 +572,7 @@ model UserStats {
   passive_implings_bank  Json   @default("{}") @db.Json
   create_cost_bank       Json   @default("{}") @db.Json
   create_loot_bank       Json   @default("{}") @db.Json
+  bird_eggs_offered_bank Json   @default("{}") @db.Json
 
   @@map("user_stats")
 }
@@ -619,6 +624,7 @@ enum activity_type_enum {
   AnimatedArmour
   Cyclops
   Sawmill
+  Butler
   Nightmare
   Sepulchre
   Plunder
@@ -691,4 +697,9 @@ enum xp_gains_skill_enum {
   magic
   hitpoints
   slayer
+}
+
+enum AutoFarmFilterEnum {
+  AllFarm
+  Replant
 }
