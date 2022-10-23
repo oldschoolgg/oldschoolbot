@@ -45,7 +45,7 @@ export async function ashSanctifierEffect(user: MUser, loot: Bank, duration: num
 			chargesLeft -= amount;
 		} else if (amount > 0 && chargesLeft < amount) {
 			totalXP += ash.xp * ashXpModifider * chargesLeft;
-			ashesSanctified.push({ name: ash.name, amount });
+			ashesSanctified.push({ name: ash.name, amount: chargesLeft });
 			loot.remove(ash.inputId, chargesLeft);
 			chargesLeft = 0;
 			break;
