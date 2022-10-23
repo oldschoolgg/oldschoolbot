@@ -43,7 +43,6 @@ export const runecraftTask: MinionTask = {
 		const loot = new Bank({
 			[rune.id]: runeQuantity
 		});
-
 		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Runecraft, 1_795_758);
 		if (roll(petDropRate / essenceQuantity)) {
 			loot.add('Rift guardian');
@@ -57,6 +56,11 @@ export const runecraftTask: MinionTask = {
 				)} Runecrafting!`
 			);
 		}
+
+		if (daeyaltEssence) {
+			str += '\nYou are gaining 50% more Runecrafting XP due to using Daeyalt Essence.';
+		}
+
 		str += `\n\nYou received: ${loot}.`;
 
 		await transactItems({
