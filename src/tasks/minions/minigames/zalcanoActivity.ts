@@ -74,11 +74,10 @@ export const zalcanoTask: MinionTask = {
 			channelID,
 			`${user}, ${user.minionName} finished killing ${quantity}x Zalcano. Your Zalcano KC is now ${
 				kc + quantity
-			}.\n`,
+			}.\n\n **XP Gains:** ${xpRes.join(', ')}\n`,
 			image.file.attachment,
 			data,
-			itemsAdded,
-			xpRes
+			itemsAdded
 		);
 	}
 };

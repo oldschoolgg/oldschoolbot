@@ -129,18 +129,23 @@ export const monsterTask: MinionTask = {
 			if (isInCatacombs) loot.add('Dark totem base', newSuperiorCount);
 		}
 
-		const xpRes = await addMonsterXP(user, {
-			monsterID,
-			quantity,
-			duration,
-			isOnTask,
-			taskQuantity: quantitySlayed,
-			minimal: true,
-			usingCannon,
-			cannonMulti,
-			burstOrBarrage,
-			superiorCount: newSuperiorCount
-		});
+		const xpRes: string[] = [];
+		xpRes.push(
+			await addMonsterXP(user, {
+				monsterID,
+				quantity,
+				duration,
+				isOnTask,
+				taskQuantity: quantitySlayed,
+				minimal: true,
+				usingCannon,
+				cannonMulti,
+				burstOrBarrage,
+				superiorCount: newSuperiorCount
+			})
+		);
+
+		if (hasKourendHard) await ashSanctifierEffect(user, loot, duration, xpRes);
 
 		announceLoot({
 			user: await mUserFetch(user.id),
@@ -159,7 +164,7 @@ export const monsterTask: MinionTask = {
 		const superiorMessage = newSuperiorCount ? `, including **${newSuperiorCount} superiors**` : '';
 		let str =
 			`${user}, ${user.minionName} finished killing ${quantity} ${monster.name}${superiorMessage}.` +
-			` Your ${monster.name} KC is now ${user.getKC(monsterID)}.\n${xpRes}\n`;
+			` Your ${monster.name} KC is now ${user.getKC(monsterID)}.\n\n${xpRes.join(' ')}\n`;
 		if (
 			monster.id === Monsters.Unicorn.id &&
 			user.hasEquipped('Iron dagger') &&
@@ -170,10 +175,6 @@ export const monsterTask: MinionTask = {
 
 			str += '\n\nWhile killing a Unicorn, you discover some strange clothing in the ground - you pick them up.';
 		}
-
-		const messages: string[] = [];
-
-		if (hasKourendHard) await ashSanctifierEffect(user, loot, duration, messages);
 
 		let thisTripFinishesTask = false;
 
@@ -225,6 +226,7 @@ export const monsterTask: MinionTask = {
 			});
 		}
 
+		const messages: string[] = [];
 		if (monster.effect) {
 			await monster.effect({
 				user,
