@@ -5,7 +5,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { TiaraRunecraftActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
-export const runecraftTask: MinionTask = {
+export const tiaraRunecraftTask: MinionTask = {
 	type: 'TiaraRunecraft',
 	async run(data: TiaraRunecraftActivityTaskOptions) {
 		const { tiaraID, tiaraQuantity, userID, channelID, duration } = data;
