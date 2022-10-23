@@ -866,7 +866,7 @@ GROUP BY "bankBackground";`);
 			).toLocaleString()}** XP from using the Ash Sanctifier.`;
 		}
 	},
-  {
+	{
 		name: 'Bird Eggs Offered',
 		perkTierNeeded: null,
 		run: async (_, stats) => {
