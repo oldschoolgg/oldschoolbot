@@ -65,10 +65,12 @@ export async function tiaraRunecraftCommand({
 
 	if (numTiaraOwned === 0 || numTalismansOwned === 0) {
 		return `You don't have any ${
-			numTiaraOwned === 0 ? 'tiaras' : 'talismans'
+			numTiaraOwned === 0 ? 'tiaras' : `${tiaraObj.inputTalisman}`
 		}. You can acquire some through crafting at a furnance, or purchasing from other players.`;
 	} else if (numTalismansOwned < quantity || numTiaraOwned < quantity) {
-		return `You don't have enough ${numTiaraOwned < quantity ? 'tiaras' : 'talismans'} to craft ${quantity}x ${
+		return `You don't have enough ${
+			numTiaraOwned < quantity ? 'tiaras' : `${tiaraObj.inputTalisman}`
+		} to craft ${quantity}x ${
 			tiaraObj.name
 		}. You can acquire some through drops, or purchasing from other players.`;
 	}
