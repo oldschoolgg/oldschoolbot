@@ -52,6 +52,8 @@ export async function ashSanctifierEffect(user: MUser, loot: Bank, duration: num
 		}
 	}
 
+	if (startingAshSanctifierCharges - chargesLeft === 0) return;
+
 	await degradeItem({
 		item: getOSItem('Ash sanctifier'),
 		chargesToDegrade: startingAshSanctifierCharges - chargesLeft,
@@ -70,10 +72,10 @@ export async function ashSanctifierEffect(user: MUser, loot: Bank, duration: num
 		minimal: true,
 		multiplier: false
 	});
+
+	const ashString = ashesSanctified.map(ash => `${ash.amount}x ${ash.name}`).join(', ');
 	messages.push(
-		`${xpStr} Prayer XP from purifying ${ashesSanctified.map(
-			ash => ` ${ash.amount}x ${ash.name}`
-		)} using the Ash Sanctifier (${chargesLeft} charges left).`
+		`${xpStr} Prayer XP from purifying ${ashString} using the Ash Sanctifier (${chargesLeft} charges left).`
 	);
 }
 

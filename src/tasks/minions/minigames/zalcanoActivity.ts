@@ -50,7 +50,8 @@ export const zalcanoTask: MinionTask = {
 		if (loot.amount('Smolcano') > 0) {
 			globalClient.emit(
 				Events.ServerNotification,
-				`**${user.usernameOrMention}'s** minion, ${user.minionName
+				`**${user.usernameOrMention}'s** minion, ${
+					user.minionName
 				}, just received **Smolcano**, their Zalcano KC is ${randInt(kc || 1, (kc || 1) + quantity)}!`
 			);
 		}
@@ -71,7 +72,8 @@ export const zalcanoTask: MinionTask = {
 		handleTripFinish(
 			user,
 			channelID,
-			`${user}, ${user.minionName} finished killing ${quantity}x Zalcano. Your Zalcano KC is now ${kc + quantity
+			`${user}, ${user.minionName} finished killing ${quantity}x Zalcano. Your Zalcano KC is now ${
+				kc + quantity
 			}.\n`,
 			image.file.attachment,
 			data,
