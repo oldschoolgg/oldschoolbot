@@ -207,7 +207,7 @@ export const tripHandlers = {
 	[activity_type_enum.TiaraRunecraft]: {
 		commandName: 'runecraft',
 		args: (data: TiaraRunecraftActivityTaskOptions) => ({
-			tiara: itemNameFromID(data.tiaraID),
+			rune: itemNameFromID(data.tiaraID),
 			quantity: data.tiaraQuantity
 		})
 	},
