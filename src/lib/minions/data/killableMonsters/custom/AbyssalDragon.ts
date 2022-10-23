@@ -7,12 +7,11 @@ import LootTable from 'oldschooljs/dist/structures/LootTable';
 const petTrollTable = new LootTable().add('Ori', 1, 1).add('Abyssal head', 1, 9);
 
 const clueTable = new LootTable()
-	.add('Clue scroll (master)', [1, 3], 1)
-	.add('Clue scroll (master)', 1, 2)
-	.add('Clue scroll (elite)', [1, 4], 2)
-	.add('Clue scroll (elite)', 1, 4)
-	.add('Clue scroll (hard)', [1, 5], 4)
-	.add('Clue scroll (hard)', 1, 8);
+	.add('Clue scroll (master)', 1, 1)
+	.add('Clue scroll (elite)', [1, 2], 2)
+	.add('Clue scroll (elite)', 1, 2)
+	.add('Clue scroll (hard)', [1, 2], 4)
+	.add('Clue scroll (hard)', 1, 2);
 
 const VisageTable = new LootTable()
 	.add('Draconic visage', 1, 3)
