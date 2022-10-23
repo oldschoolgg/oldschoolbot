@@ -865,6 +865,13 @@ GROUP BY "bankBackground";`);
 				stats.ash_sanctifier_prayer_xp
 			).toLocaleString()}** XP from using the Ash Sanctifier.`;
 		}
+	},
+  {
+		name: 'Bird Eggs Offered',
+		perkTierNeeded: null,
+		run: async (_, stats) => {
+			return `You've offered... **${new Bank(stats.bird_eggs_offered_bank as ItemBank)}**.`;
+		}
 	}
 ] as const;
 

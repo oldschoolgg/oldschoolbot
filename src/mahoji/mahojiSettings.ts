@@ -263,7 +263,12 @@ export async function userStatsUpdate(userID: string, data: (u: UserStats) => Pr
 	});
 }
 
-type UserStatsBankKey = 'puropuro_implings_bank' | 'passive_implings_bank' | 'create_cost_bank' | 'create_loot_bank';
+type UserStatsBankKey =
+	| 'puropuro_implings_bank'
+	| 'passive_implings_bank'
+	| 'create_cost_bank'
+	| 'create_loot_bank'
+	| 'bird_eggs_offered_bank';
 export async function userStatsBankUpdate(userID: string, key: UserStatsBankKey, bank: Bank) {
 	await userStatsUpdate(userID, u => ({
 		[key]: bank.clone().add(u[key] as ItemBank).bank
