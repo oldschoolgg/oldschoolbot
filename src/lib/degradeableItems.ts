@@ -80,7 +80,7 @@ export function checkUserCanUseDegradeableItem({
 	item: Item;
 	chargesToDegrade: number;
 	user: MUser;
-}): { hasEnough: true } | { hasEnough: false; userMessage: string; availableCharges: number } {
+}): { hasEnough: true } | { hasEnough: false; userMessage: string } {
 	const degItem = degradeableItems.find(i => i.item === item);
 	if (!degItem) throw new Error('Invalid degradeable item');
 	const currentCharges = user.user[degItem.settingsKey];
@@ -89,8 +89,7 @@ export function checkUserCanUseDegradeableItem({
 	if (newCharges < 0) {
 		return {
 			hasEnough: false,
-			userMessage: `${user.usernameOrMention}, your ${item.name} has only ${currentCharges} charges remaining, but you need ${chargesToDegrade}.`,
-			availableCharges: currentCharges
+			userMessage: `${user.usernameOrMention}, your ${item.name} has only ${currentCharges} charges remaining, but you need ${chargesToDegrade}.`
 		};
 	}
 	return {
@@ -161,4 +160,13 @@ export async function degradeItem({
 	return {
 		userMessage: `Your ${item.name} degraded by ${chargesToDegrade} charges, and now has ${chargesAfter} remaining.`
 	};
+}
+
+export async function checkDegradeableItemCharges({ item, user }: { item: Item; user: MUser }) {
+	const degItem = degradeableItems.find(i => i.item === item);
+	if (!degItem) throw new Error('Invalid degradeable item');
+
+	const currentCharges = user.user[degItem.settingsKey];
+	assert(typeof currentCharges === 'number');
+	return currentCharges;
 }

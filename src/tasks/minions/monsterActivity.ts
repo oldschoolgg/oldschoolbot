@@ -1,6 +1,6 @@
 import { Bank, MonsterKillOptions, Monsters } from 'oldschooljs';
 
-import { checkUserCanUseDegradeableItem, degradeItem } from '../../lib/degradeableItems';
+import { checkDegradeableItemCharges, degradeItem } from '../../lib/degradeableItems';
 import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
@@ -18,53 +18,45 @@ import { makeBankImage } from '../../lib/util/makeBankImage';
 import { userStatsUpdate } from '../../mahoji/mahojiSettings';
 import { BitField } from './../../lib/constants';
 
-async function ashSanctifierEffect(user: MUser, loot: Bank, duration: number, quantity: number, messages: string[]) {
+export async function ashSanctifierEffect(user: MUser, loot: Bank, duration: number, messages: string[]) {
 	if (!user.bank.has('Ash sanctifier')) return;
 	if (user.bitfield.includes(BitField.DisableAshSanctifier)) return;
 
 	const [hasEliteDiary] = await userhasDiaryTier(user, KourendKebosDiary.elite);
 	const ashXpModifider = hasEliteDiary ? 1 : 0.5;
 
-	let chargesUsed = 0;
-	const ashSanctifierCheck = checkUserCanUseDegradeableItem({
+	let startingAshSanctifierCharges = await checkDegradeableItemCharges({
 		item: getOSItem('Ash sanctifier'),
-		chargesToDegrade: quantity,
 		user
 	});
 
-	if (ashSanctifierCheck.hasEnough) {
-		chargesUsed = quantity;
-	} else {
-		chargesUsed = ashSanctifierCheck.availableCharges;
-	}
+	if (startingAshSanctifierCharges === 0) return;
 
-	if (chargesUsed === 0) return;
+	let chargesLeft = startingAshSanctifierCharges;
+	let totalXP = 0;
+
+	const ashesSanctified: { name: string; amount: number }[] = [];
+	for (const ash of ashes) {
+		const amount = loot.amount(ash.inputId);
+		if (amount > 0 && chargesLeft >= amount) {
+			totalXP += ash.xp * ashXpModifider * amount;
+			ashesSanctified.push({ name: ash.name, amount });
+			loot.remove(ash.inputId, amount);
+			chargesLeft -= amount;
+		} else if (amount > 0 && chargesLeft < amount) {
+			totalXP += ash.xp * ashXpModifider * chargesLeft;
+			ashesSanctified.push({ name: ash.name, amount });
+			loot.remove(ash.inputId, chargesLeft);
+			chargesLeft = 0;
+			break;
+		}
+	}
 
 	await degradeItem({
 		item: getOSItem('Ash sanctifier'),
-		chargesToDegrade: chargesUsed,
+		chargesToDegrade: startingAshSanctifierCharges - chargesLeft,
 		user
 	});
-
-	let chargesLeft = chargesUsed;
-	let totalXP = 0;
-	let ashesSanctified: { name: string; amount: number }[] = [];
-	while (chargesLeft > 0) {
-		for (const ash of ashes) {
-			const amount = loot.amount(ash.inputId);
-			if (amount > 0 && chargesLeft >= amount) {
-				totalXP += ash.xp * ashXpModifider * amount;
-				ashesSanctified.push({ name: ash.name, amount });
-				loot.remove(ash.inputId, amount);
-				chargesLeft -= amount;
-			} else if (amount > 0 && chargesLeft < amount) {
-				totalXP += ash.xp * ashXpModifider * chargesLeft;
-				ashesSanctified.push({ name: ash.name, amount });
-				loot.remove(ash.inputId, chargesLeft);
-				chargesLeft = 0;
-			}
-		}
-	}
 
 	userStatsUpdate(user.id, () => ({
 		ash_sanctifier_prayer_xp: {
@@ -81,7 +73,7 @@ async function ashSanctifierEffect(user: MUser, loot: Bank, duration: number, qu
 	messages.push(
 		`${xpStr} Prayer XP from purifying ${ashesSanctified.map(
 			ash => ` ${ash.amount}x ${ash.name}`
-		)} using the Ash Sanctifier.`
+		)} using the Ash Sanctifier (${chargesLeft} charges left).`
 	);
 }
 
@@ -179,7 +171,7 @@ export const monsterTask: MinionTask = {
 
 		const messages: string[] = [];
 
-		if (hasKourendHard) await ashSanctifierEffect(user, loot, duration, quantity, messages);
+		if (hasKourendHard) await ashSanctifierEffect(user, loot, duration, messages);
 
 		let thisTripFinishesTask = false;
 
