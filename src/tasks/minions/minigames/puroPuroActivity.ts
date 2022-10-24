@@ -117,16 +117,12 @@ export const puroPuroTask: MinionTask = {
 
 		let str = `<@${userID}>, ${user.minionName} finished hunting in Puro-Puro. `;
 
-		const xpStr = await user.addXP({ skillName: SkillsEnum.Hunter, amount: hunterXP });
-
-		const hunterXpHr = `${Math.round(
-			(hunterXP / (data.duration / Time.Minute)) * 60
-		).toLocaleString()} Hunter XP/Hr`;
+		const xpStr = await user.addXP({ skillName: SkillsEnum.Hunter, amount: hunterXP, duration: data.duration });
 
 		const huntedImplingName = puroOptions.find(i => (i.item?.id ?? null) === implingID)!.name;
 
 		if (hunterXP > 0) {
-			str += `\n${xpStr}. You are getting ${hunterXpHr}.`;
+			str += `\n${xpStr}.`;
 		} else {
 			str += `\n${user.minionName} failed to spot any ${huntedImplingName} this trip.`;
 			handleTripFinish(user, channelID, str, undefined, data, bank);
@@ -156,13 +152,13 @@ export const puroPuroTask: MinionTask = {
 
 			magicXP += spellsUsed * 60;
 
-			const magicXpStr = await user.addXP({ skillName: SkillsEnum.Magic, amount: magicXP });
+			const magicXpStr = await user.addXP({
+				skillName: SkillsEnum.Magic,
+				amount: magicXP,
+				duration: data.duration
+			});
 
-			const magicXpHr = `${Math.round(
-				(magicXP / (data.duration / Time.Minute)) * 60
-			).toLocaleString()} Magic XP/Hr`;
-
-			if (magicXP > 0) str += `\n${magicXpStr}. You are getting ${magicXpHr}.`;
+			if (magicXP > 0) str += `\n${magicXpStr}.`;
 
 			if (implingID === itemID('Dragon impling jar')) {
 				str += `\n**Boosts:** You have an increased chance of getting ${huntedImplingName} due to using Dark Lure. You used: ${itemCost}. ${saved}`;

@@ -11,8 +11,6 @@ export const buryingTask: MinionTask = {
 		const { boneID, quantity, userID, channelID } = data;
 		const user = await mUserFetch(userID);
 
-		const currentLevel = user.skillLevel(SkillsEnum.Prayer);
-
 		const bone = Prayer.Bones.find(bone => bone.inputId === boneID);
 
 		if (!bone) return;
@@ -20,16 +18,9 @@ export const buryingTask: MinionTask = {
 		const XPMod = 1;
 		const xpReceived = quantity * bone.xp * XPMod;
 
-		await user.addXP({ skillName: SkillsEnum.Prayer, amount: xpReceived });
-		const newLevel = user.skillLevel(SkillsEnum.Prayer);
+		const xpRes = await user.addXP({ skillName: SkillsEnum.Prayer, amount: xpReceived, duration: data.duration });
 
-		let str = `${user}, ${user.minionName} finished burying ${quantity} ${
-			bone.name
-		}, you also received ${xpReceived.toLocaleString()} XP.`;
-
-		if (newLevel > currentLevel) {
-			str += `\n\n${user.minionName}'s Prayer level is now ${newLevel}!`;
-		}
+		let str = `${user}, ${user.minionName} finished burying ${quantity} ${bone.name}, ${xpRes}.`;
 
 		if (
 			user.hasEquipped(['Iron dagger', 'Bronze arrow', 'Iron med helm'], true) &&

@@ -118,7 +118,8 @@ export const farmingTask: MinionTask = {
 
 			await user.addXP({
 				skillName: SkillsEnum.Farming,
-				amount: Math.floor(farmingXpReceived + bonusXP)
+				amount: Math.floor(farmingXpReceived + bonusXP),
+				duration: data.duration
 			});
 			const newLevel = user.skillLevel(SkillsEnum.Farming);
 
@@ -299,7 +300,8 @@ export const farmingTask: MinionTask = {
 
 			await user.addXP({
 				skillName: SkillsEnum.Farming,
-				amount: Math.floor(farmingXpReceived + bonusXP)
+				amount: Math.floor(farmingXpReceived + bonusXP),
+				duration: data.duration
 			});
 			await user.addXP({
 				skillName: SkillsEnum.Woodcutting,

@@ -23,8 +23,6 @@ export const birdHouseTask: MinionTask = {
 		const { birdhouseName, birdhouseData, userID, channelID, duration, placing, gotCraft, currentDate } = data;
 
 		const user = await mUserFetch(userID);
-		const currentHunterLevel = user.skillLevel(SkillsEnum.Hunter);
-		const currentCraftingLevel = user.skillLevel(SkillsEnum.Crafting);
 		let hunterXP = 0;
 		let craftingXP = 0;
 		const loot = new Bank();
@@ -41,7 +39,11 @@ export const birdHouseTask: MinionTask = {
 
 			if (placing && gotCraft) {
 				craftingXP = birdhouse.craftXP * 4;
-				str += await user.addXP({ skillName: SkillsEnum.Crafting, amount: craftingXP });
+				str += await user.addXP({
+					skillName: SkillsEnum.Crafting,
+					amount: craftingXP,
+					duration: data.duration
+				});
 			}
 
 			const updateBirdhouseData: BirdhouseData = {
@@ -95,23 +97,18 @@ export const birdHouseTask: MinionTask = {
 				collectionLog: true,
 				itemsToAdd: loot
 			});
-			await user.addXP({ skillName: SkillsEnum.Hunter, amount: hunterXP });
-			const newHuntLevel = user.skillLevel(SkillsEnum.Hunter);
+			const xpRes = await user.addXP({ skillName: SkillsEnum.Hunter, amount: hunterXP, duration: data.duration });
 
-			str += `\n\nYou received ${hunterXP.toLocaleString()} XP from collecting the birdhouses.`;
+			str += `\n\n${xpRes} from collecting the birdhouses.`;
 
 			if (placing && gotCraft) {
 				craftingXP = birdhouse.craftXP * 4;
-				await user.addXP({ skillName: SkillsEnum.Crafting, amount: craftingXP });
-				str += `You also received ${craftingXP.toLocaleString()} crafting XP for making own birdhouses.`;
-				const newCraftLevel = user.skillLevel(SkillsEnum.Crafting);
-				if (newCraftLevel > currentCraftingLevel) {
-					str += `\n\n${user.minionName}'s Crafting level is now ${newCraftLevel}!`;
-				}
-			}
-
-			if (newHuntLevel > currentHunterLevel) {
-				str += `\n${user.minionName}'s Hunter level is now ${newHuntLevel}!`;
+				const xpRes = await user.addXP({
+					skillName: SkillsEnum.Crafting,
+					amount: craftingXP,
+					duration: data.duration
+				});
+				str += `${xpRes} for making own birdhouses.`;
 			}
 
 			str += `\n\nYou received: ${loot}.`;
