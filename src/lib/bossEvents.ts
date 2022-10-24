@@ -218,7 +218,7 @@ ${rerolledUsersStr.length > 0 ? rerolledUsersStr.join('\n') : 'Nobody was reroll
 			quantity: 1,
 			allowMoreThan1Solo: false,
 			allowMoreThan1Group: false,
-			automaticStartTime: production ? Time.Minute * 5 : Time.Second * 30,
+			automaticStartTime: production ? Time.Minute * 10 : Time.Second * 30,
 			maxSize: 500,
 			skipInvalidUsers: true,
 			speedMaxReduction: 50
