@@ -47,7 +47,7 @@ export const miniMinigames: { id: number; name: string; items: number[]; emoji: 
 ];
 
 // 1 in 18.8 people won't get Pet while nolifing. Increase rarity for each add'l Kuro cl
-export const KURO_DROPRATE = (amountInCl: number) => Math.ceil(70 * (amountInCl * 1.25 + 1));
+export const KURO_DROPRATE = (amountInCl: number) => Math.ceil(70 * (1 + amountInCl * (amountInCl + 1)));
 export const HALLOWEEN_BOX_DROPRATE = 10;
 
 // Give one event every 60 minutes, or fractional chance equivalent to duration
