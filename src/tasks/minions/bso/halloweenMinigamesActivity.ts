@@ -1,8 +1,10 @@
-import { randInt, roll } from 'e';
+import { activity_type_enum } from '@prisma/client';
+import { randInt, reduceNumByPercent, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { isDoubleLootActive } from '../../../lib/doubleLoot';
 import { HALLOWEEN_BOX_DROPRATE, KURO_DROPRATE, miniMinigames } from '../../../lib/hweenEvent';
+import { prisma } from '../../../lib/settings/prisma';
 import { treatTable } from '../../../lib/simulation/pumpkinHead';
 import { HalloweenMinigameOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -19,7 +21,17 @@ export const hweenTask: MinionTask = {
 		if (roll(KURO_DROPRATE(user.cl.amount('Spooky gear frame unlock')))) {
 			loot.add('Spooky gear frame unlock');
 		}
-		if (roll(KURO_DROPRATE(user.cl.amount('Kuro')))) {
+		const completedMinigames = await prisma.activity.count({
+			where: {
+				user_id: BigInt(user.id),
+				type: activity_type_enum.HalloweenMiniMinigame
+			}
+		});
+		let kuroRate = KURO_DROPRATE(user.cl.amount('Kuro'));
+		if (user.cl.amount('Kuro') === 0 && completedMinigames > 100) {
+			kuroRate = Math.floor(reduceNumByPercent(kuroRate, 25));
+		}
+		if (roll(kuroRate)) {
 			loot.add('Kuro');
 		}
 		if (roll(HALLOWEEN_BOX_DROPRATE)) {
