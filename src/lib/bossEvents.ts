@@ -85,6 +85,7 @@ export const bossEvents: BossEvent[] = [
 			const lootGroups = chunk(lootElligible, 4).filter(i => i.length === 4);
 			const uniqueItemRecipients = lootGroups.map(groupArr => randArrItem(groupArr));
 			let uniqueLootStr = [];
+			let rerolledUsersStr = [];
 
 			let secondChancePeople = [];
 			for (const lootElliPerson of lootElligible) {
@@ -99,6 +100,8 @@ export const bossEvents: BossEvent[] = [
 				}
 			}
 
+			const failoverEmojis = ['🙈', '🙉', '🙊'];
+			const randomFailEmoji = () => randArrItem(failoverEmojis);
 			for (const recip of uniqueItemRecipients) {
 				const { cl } = recip.user;
 				const items = pumpkinHeadUniqueTable.roll();
@@ -122,7 +125,7 @@ export const bossEvents: BossEvent[] = [
 						const newRecipient = randArrItem(lootElligible.filter(u => !uniqueItemRecipients.includes(u)));
 						if (newRecipient && roll(2)) {
 							uniqueItemRecipients.push(newRecipient);
-							uniqueLootStr.push(`${recip.user}'s loot got rerolled to ${newRecipient.user}!`);
+							rerolledUsersStr.push(`${recip.user}'s loot got rerolled to ${newRecipient.user}!`);
 						}
 						continue;
 					}
@@ -162,13 +165,16 @@ export const bossEvents: BossEvent[] = [
 
 *Everyone* received some Halloween candy!
 ${specialLootRecipient.user.usernameOrMention} received ${specialLoot}.
-**Unique Loot:** ${
-					uniqueLootStr.length > 0
-						? chunk(uniqueLootStr, 10)
-								.map(arr => arr.join(', '))
-								.join('\n')
-						: 'Nobody received any unique items!'
-				}`
+**Unique Loot:**
+${uniqueLootStr.length > 0 ? uniqueLootStr.join('\n') : 'Nobody received any unique items!'}
+
+**${randomFailEmoji()} Rerolled players:**
+${rerolledUsersStr.length > 0 ? rerolledUsersStr.join('\n') : 'Nobody was rerolled!'}
+
+**Key:** These Emoji by your name mean:
+<:Haunted_amulet:898407574527942677> - Your Haunted amulet activated to give you a second chance!
+♻ - You already had 2+ of the selected item and got a second chance.
+<:Mini_pumpkinhead:904028863724675072> - You got the pet! Congratulations 🙂`
 			});
 		},
 		bossOptions: {

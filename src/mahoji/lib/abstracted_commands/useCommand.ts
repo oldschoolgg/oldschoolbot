@@ -2,14 +2,22 @@ import { notEmpty, randInt, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { bossActiveIsActiveOrSoonActive, bossEvents, startBossEvent } from '../../../lib/bossEvents';
+import { production } from '../../../config';
+import {
+	bossActiveIsActiveOrSoonActive,
+	bossEventChannelID,
+	bossEvents,
+	startBossEvent
+} from '../../../lib/bossEvents';
 import { BitField } from '../../../lib/constants';
 import { addToDoubleLootTimer } from '../../../lib/doubleLoot';
 import { dyedItems } from '../../../lib/dyedItems';
 import { gearImages } from '../../../lib/gear/functions/generateGearImage';
+import { prisma } from '../../../lib/settings/prisma';
 import { PUMPKINHEAD_ID } from '../../../lib/simulation/pumpkinHead';
-import { assert } from '../../../lib/util';
+import { assert, formatDuration } from '../../../lib/util';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
+import { sendToChannelID } from '../../../lib/util/webhook';
 import { flowerTable } from './hotColdCommand';
 
 interface Usable {
@@ -206,9 +214,30 @@ usables.push({
 		if (await bossActiveIsActiveOrSoonActive()) {
 			return "You can't use your Mysterious token right now.";
 		}
-		startBossEvent({
-			boss: bossEvents.find(b => b.id === PUMPKINHEAD_ID)!
-		});
+		const instantStartDate = new Date('2022-10-31 04:00');
+		const instantEndDate = new Date('2022-11-01 04:00');
+		const now = new Date(Date.now());
+		if (now > instantStartDate && now < instantEndDate) {
+			startBossEvent({
+				boss: bossEvents.find(b => b.id === PUMPKINHEAD_ID)!
+			});
+		} else {
+			const startDelay = production ? Time.Hour : Time.Second * 30;
+			await prisma.bossEvent.create({
+				data: {
+					start_date: new Date(Date.now() + startDelay),
+					boss_id: PUMPKINHEAD_ID,
+					completed: false,
+					data: {}
+				}
+			});
+			sendToChannelID(bossEventChannelID, {
+				content: `<@&896845245873025067> **You feel the ground quake beneath your feet... It feels like Pumpkinhead is only ${formatDuration(
+					startDelay
+				)} away!**`,
+				allowedMentions: { roles: ['896845245873025067'] }
+			});
+		}
 		await user.removeItemsFromBank(new Bank().add('Mysterious token'));
 		return 'You used your Mysterious token... I wonder what will happen?';
 	}
