@@ -13,6 +13,7 @@ import { darkAltarRunes } from '../minions/functions/darkAltarCommand';
 import { prisma } from '../settings/prisma';
 import { runCommand } from '../settings/settings';
 import type { DungeoneeringOptions } from '../skilling/skills/dung/dungData';
+import Woodcutting from '../skilling/skills/woodcutting';
 import type {
 	ActivityTaskOptionsWithQuantity,
 	AgilityActivityTaskOptions,
@@ -496,7 +497,7 @@ export const tripHandlers = {
 	[activity_type_enum.Woodcutting]: {
 		commandName: 'chop',
 		args: (data: WoodcuttingActivityTaskOptions) => ({
-			name: itemNameFromID(data.logID),
+			name: Woodcutting.Logs.find(log => log.id === data.logID)!.name,
 			quantity: data.quantity,
 			powerchop: data.powerchopping
 		})
