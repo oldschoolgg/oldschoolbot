@@ -1,11 +1,14 @@
 /*
-    Winwheel.js, by Douglas McKechie @ www.dougtesting.net
-    See website for tutorials and other documentation.
-
     The MIT License (MIT)
+    Copyright (c) 2012-2019 Douglas McKechie
 */
 
-const defaultOptions = {
+import { shuffleArr, sumArr } from "e";
+import { Canvas } from "skia-canvas/lib";
+
+
+export function Winwheel(options, drawWheel) {
+    let defaultOptions = {
         'canvasId'          : 'canvas',     // Id of the canvas which the wheel is to draw on to.
         'centerX'           : null,         // X position of the center of the wheel. The default of these are null which means will be placed in center of the canvas.
         'centerY'           : null,         // Y position of the wheel center. If left null at time of construct the center of the canvas is used.
@@ -37,13 +40,6 @@ const defaultOptions = {
         'scaleFactor'       : 1,            // Set by the responsive function. Used in many calculations to scale the wheel.
     };
 
-export function Winwheel(options, drawWheel)
-{
-    
-
-    // -----------------------------------------
-    // Loop through the default options and create properties of this class set to the value for the option passed in
-    // or if not value for the option was passed in then to the default.
     for (let key in defaultOptions) {
         if ((options != null) && (typeof(options[key]) !== 'undefined')) {
             this[key] = options[key];
@@ -52,7 +48,6 @@ export function Winwheel(options, drawWheel)
         }
     }
 
-    // Also loop though the passed in options and add anything specified not part of the class in to it as a property.
     if (options != null) {
         for (let key in options) {
             if (typeof(this[key]) === 'undefined') {
@@ -62,122 +57,87 @@ export function Winwheel(options, drawWheel)
     }
 
 
-    // ------------------------------------------
-    // If the id of the canvas is set, try to get the canvas as we need it for drawing.
-    if (options.canvas) {
-        this.canvas = options.canvas;
-        this.ctx = this.canvas.getContext('2d');
-    } else {
-        this.canvas = null;
-        this.ctx = null;
+    const size = options.size ?? 500;
+    this.canvas = new Canvas(size, size);
+
+    if (this.centerX == null) {
+        this.centerX = this.canvas.width / 2;
     }
 
-    // ------------------------------------------
-    // Add array of segments to the wheel, then populate with segments if number of segments is specified for this object.
-    this.segments = new Array(null);
+    if (this.centerY == null) {
+        this.centerY = this.canvas.height / 2;
+    }
 
-    for (let x = 1; x <= this.numSegments; x++) {
-        // If options for the segments have been specified then create a segment sending these options so
-        // the specified values are used instead of the defaults.
-        if ((options != null) && (options['segments']) && (typeof(options['segments'][x-1]) !== 'undefined')) {
-            this.segments[x] = new Segment(options['segments'][x-1]);
+    if (this.outerRadius == null) {
+        if (this.canvas.width < this.canvas.height) {
+            this.outerRadius = (this.canvas.width / 2) - this.lineWidth;
         } else {
-            this.segments[x] = new Segment();
+            this.outerRadius = (this.canvas.height / 2) - this.lineWidth;
         }
     }
 
-    // ------------------------------------------
-    // Call function to update the segment sizes setting the starting and ending angles.
+    this.ctx = this.canvas.getContext('2d');
+
+    this.segments = new Array();
+    options.segments = shuffleArr(options.segments);
+    const totalWeight = sumArr(options.segments.map(i => i.weight))
+
+    for (let x = 1; x <= this.numSegments; x++) {
+       this.segments[x] = new Segment(options['segments'][x - 1]);
+       this.segments[x].size = (this.segments[x].weight / totalWeight) * 360;
+    }
+
     this.updateSegmentSizes();
 
-    // If the text margin is null then set to same as font size as we want some by default.
     if (this.textMargin === null) {
         this.textMargin = (this.textFontSize / 1.7);
     }
 
-    // ------------------------------------------
-    // If the animation options have been passed in then create animation object as a property of this class
-    // and pass the options to it so the animation is set. Otherwise create default animation object.
     if ((options != null) && (options['animation']) && (typeof(options['animation']) !== 'undefined')) {
         this.animation = new Animation(options['animation']);
     } else {
         this.animation = new Animation();
     }
 
-    // ------------------------------------------
-    // If some pin options then create create a pin object and then pass them in.
     if ((options != null) && (options['pins']) && (typeof(options['pins']) !== 'undefined')) {
         this.pins = new Pin(options['pins']);
     }
 
-    // ------------------------------------------
-    // If the drawMode is image change some defaults provided a value has not been specified.
     if ((this.drawMode == 'image') || (this.drawMode == 'segmentImage')) {
-        // Remove grey fillStyle.
         if (typeof(options['fillStyle']) === 'undefined') {
             this.fillStyle = null;
         }
 
-        // Set strokeStyle to red.
         if (typeof(options['strokeStyle']) === 'undefined') {
             this.strokeStyle = 'red';
         }
 
-        // Set drawText to false as we will assume any text is part of the image.
         if (typeof(options['drawText']) === 'undefined') {
             this.drawText = false;
         }
 
-        // Also set the lineWidth to 1 so that segment overlay will look correct.
         if (typeof(options['lineWidth']) === 'undefined') {
             this.lineWidth = 1;
         }
 
-        // Set drawWheel to false as normally the image needs to be loaded first.
         if (typeof(drawWheel) === 'undefined') {
             drawWheel = false;
         }
     } else {
-        // When in code drawMode the default is the wheel will draw.
         if (typeof(drawWheel) === 'undefined') {
             drawWheel = true;
         }
     }
 
-    // Create pointer guide.
     if ((options != null) && (options['pointerGuide']) && (typeof(options['pointerGuide']) !== 'undefined')) {
         this.pointerGuide = new PointerGuide(options['pointerGuide']);
     } else {
         this.pointerGuide = new PointerGuide();
     }
 
-    // Check if the wheel is to be responsive, if so then need to save the original size of the canvas
-    // and also check for data- attributes on the canvas which help control the scaling.
-    if (this.responsive) {
-        winwheelToDrawDuringAnimation = this;
-
-        // Save the original defined width and height of the canvas, this is needed later to work out the scaling.
-        this._originalCanvasWidth = this.canvas.width;
-        this._originalCanvasHeight = this.canvas.height;
-
-        // Get data-attributes on the canvas.
-        this._responsiveScaleHeight = this.canvas.dataset.responsivescaleheight;
-        this._responsiveMinWidth = this.canvas.dataset.responsiveminwidth;
-        this._responsiveMinHeight = this.canvas.dataset.responsiveminheight;
-        this._responsiveMargin = this.canvas.dataset.responsivemargin;
-
-        // Add event listeners for onload and onresize and call a function defined at the bottom
-        // of this script which will handle that and work out the scale factor.
-        window.addEventListener("load", winwheelResize);
-        window.addEventListener("resize", winwheelResize);
-    }
-
-    // Finally if drawWheel is true then call function to render the wheel, segment text, overlay etc.
     if (drawWheel == true) {
         this.draw(this.clearTheCanvas);
     } else if (this.drawMode == 'segmentImage') {
-        // If segment image then loop though all the segments and load the images for them setting a callback
-        // which will call the draw function of the wheel once all the images have been loaded.
         winwheelToDrawDuringAnimation = this;
         winhweelAlreadyDrawn = false;
 
@@ -191,10 +151,6 @@ export function Winwheel(options, drawWheel)
     }
 }
 
-// ====================================================================================================================
-// This function sorts out the segment sizes. Some segments may have set sizes, for the others what is left out of
-// 360 degrees is shared evenly. What this function actually does is set the start and end angle of the arcs.
-// ====================================================================================================================
 Winwheel.prototype.updateSegmentSizes = function()
 {
     // If this object actually contains some segments
@@ -1355,7 +1311,6 @@ Winwheel.prototype.addSegment = function(options, position)
     return this.segments[segmentPos];
 }
 
-
 // ====================================================================================================================
 // This function deletes the specified segment from the wheel by removing it from the segments array.
 // It then sorts out the other bits such as update of the numSegments.
@@ -1652,7 +1607,133 @@ Winwheel.prototype.getRotationPosition = function()
     return rawAngle;
 }
 
+// ==================================================================================================================================================
+// This function starts the wheel's animation by using the properties of the animation object of of the wheel to begin the a greensock tween.
+// ==================================================================================================================================================
+Winwheel.prototype.startAnimation = function()
+{
+    if (this.animation) {
+        // Call function to compute the animation properties.
+        this.computeAnimation();
 
+        // Set this global variable to this object as an external function is required to call the draw() function on the wheel
+        // each loop of the animation as Greensock cannot call the draw function directly on this class.
+        winwheelToDrawDuringAnimation = this;
+
+        // Put together the properties of the greesock animation.
+        let properties = new Array(null);
+        properties[this.animation.propertyName] = this.animation.propertyValue; // Here we set the property to be animated and its value.
+        properties['yoyo']       = this.animation.yoyo;     // Set others.
+        properties['repeat']     = this.animation.repeat;
+        properties['ease']       = this.animation.easing;
+        properties['onUpdate']   = winwheelAnimationLoop;   // Call function to re-draw the canvas.
+        properties['onComplete'] = winwheelStopAnimation;   // Call function to perform actions when animation has finished.
+        winwheelStopAnimation();
+        // Do the tween animation passing the properties from the animation object as an array of key => value pairs.
+        // Keep reference to the tween object in the wheel as that allows pausing, resuming, and stopping while the animation is still running.
+        // this.tween = TweenMax.to(this, this.animation.duration, properties);
+    }
+}
+
+// ==================================================================================================================================================
+// Use same function which needs to be outside the class for the callback when it stops because is finished.
+// ==================================================================================================================================================
+Winwheel.prototype.stopAnimation = function(canCallback)
+{
+    // @TODO as part of multiwheel, need to work out how to stop the tween for a single wheel but allow others to continue.
+
+    // We can kill the animation using our tween object.
+    if (winwheelToDrawDuringAnimation) {
+        // If the wheel has a tween animation then kill it.
+        if (winwheelToDrawDuringAnimation.tween) {
+            winwheelToDrawDuringAnimation.tween.kill();
+        }
+
+        // Call the callback function.
+        winwheelStopAnimation(canCallback);
+    }
+
+    // Ensure the winwheelToDrawDuringAnimation is set to this class.
+    winwheelToDrawDuringAnimation = this;
+}
+
+// ==================================================================================================================================================
+// Pause animation by telling tween to pause.
+// ==================================================================================================================================================
+Winwheel.prototype.pauseAnimation = function()
+{
+    if (this.tween) {
+        this.tween.pause();
+    }
+}
+
+// ==================================================================================================================================================
+// Resume the animation by telling tween to continue playing it.
+// ==================================================================================================================================================
+Winwheel.prototype.resumeAnimation = function()
+{
+    if (this.tween) {
+        this.tween.play();
+    }
+}
+
+// ====================================================================================================================
+// Called at the beginning of the startAnimation function and computes the values needed to do the animation
+// before it starts. This allows the developer to change the animation properties after the wheel has been created
+// and have the animation use the new values of the animation properties.
+// ====================================================================================================================
+Winwheel.prototype.staticSpin = async function () {
+    const oldCanvas = this.canvas.toBuffer()
+    this.rotationAngle = Math.floor((Math.random() * 359)); 
+    this.draw();
+    const winner = this.getIndicatedSegment();
+    return { winner, winnerIndex: this.getIndicatedSegmentNumber(), newCanvas: await this.canvas.toBuffer(), oldCanvas: await oldCanvas };
+}
+Winwheel.prototype.computeAnimation = function()
+{
+    if (this.animation) {
+        if (this.animation.type == 'spinToStop') {
+            // Spin to stop the rotation angle is affected.
+            this.animation.propertyName = 'rotationAngle';
+
+            if (this.animation.spins == null) {
+                this.animation.spins = 5;
+            }
+
+            if (this.animation.repeat == null) {
+                this.animation.repeat = 0;        // As this is spin to stop we don't normally want it repeated.
+            }
+
+            if (this.animation.easing == null) {
+                this.animation.easing = 'Power3.easeOut';     // This easing is fast start and slows over time.
+            }
+
+            if (this.animation.stopAngle == null) {
+                // If the stop angle has not been specified then pick random between 0 and 359.
+                this.animation._stopAngle = Math.floor((Math.random() * 359));
+            } else {
+                // We need to set the internal to 360 minus what the user entered because the wheel spins past 0 without
+                // this it would indicate the prize on the opposite side of the wheel. We aslo need to take in to account
+                // the pointerAngle as the stop angle needs to be relative to that.
+                this.animation._stopAngle = (360 - this.animation.stopAngle + this.pointerAngle);
+            }
+
+            // The property value is the spins * 360 then plus or minus the stopAngle depending on if the rotation is clockwise or anti-clockwise.
+            this.animation.propertyValue = (this.animation.spins * 360);
+
+            if (this.animation.direction == 'anti-clockwise') {
+                this.animation.propertyValue = (0 - this.animation.propertyValue);
+
+                // Also if the value is anti-clockwise we need subtract the stopAngle (but to get the wheel to stop in the correct
+                // place this is 360 minus the stop angle as the wheel is rotating backwards).
+                this.animation.propertyValue -= (360 - this.animation._stopAngle);
+            } else {
+                // Add the stopAngle to the propertyValue as the wheel must rotate around to this place and stop there.
+                this.animation.propertyValue += this.animation._stopAngle;
+            }
+        } 
+    }
+}
 
 // ====================================================================================================================
 // Calculates and returns a random stop angle inside the specified segment number. Value will always be 1 degree inside
@@ -1911,24 +1992,32 @@ function winwheelAnimationLoop()
             // If the property is a function then call it, otherwise eval the proptery as javascript code.
             if (typeof callbackAfter === 'function') {
                 callbackAfter();
-            } else {
-                eval(callbackAfter);
             }
-        }
-
-        // If there is a sound callback then call a function which figures out if the sound should be triggered
-        // and if so then call the function specified by the developer.
-        if (winwheelToDrawDuringAnimation.animation.callbackSound) {
-            winwheelTriggerSound();
         }
     }
 }
-
 
 // ====================================================================================================================
 // This function is called-back when the greensock animation has finished.
 // ====================================================================================================================
 let winwheelToDrawDuringAnimation = null;  // This global is set by the winwheel class to the wheel object to be re-drawn.
+
+function winwheelStopAnimation(canCallback)
+{
+    // When the animation is stopped if canCallback is not false then try to call the callback.
+    // false can be passed in to stop the after happening if the animation has been stopped before it ended normally.
+    if (canCallback != false) {
+        let callback = winwheelToDrawDuringAnimation.animation.callbackFinished;
+
+        if (callback != null) {
+            // If the callback is a function then call it, otherwise evaluate the property as javascript code.
+            if (typeof callback === 'function') {
+                // Pass back the indicated segment as 99% of the time you will want to know this to inform the user of their prize.
+                callback(winwheelToDrawDuringAnimation.getIndicatedSegment());
+            }
+        }
+    }
+}
 
 // ====================================================================================================================
 // Called after the image has loaded for each segment. Once all the images are loaded it then calls the draw function
