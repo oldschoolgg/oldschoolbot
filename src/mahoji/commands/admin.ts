@@ -22,7 +22,6 @@ import { patreonTask } from '../../lib/patreon';
 import { runRolesTask } from '../../lib/rolesTask';
 import { countUsersWithItemInCl, prisma } from '../../lib/settings/prisma';
 import { cancelTask, minionActivityCacheDelete } from '../../lib/settings/settings';
-import { tickers } from '../../lib/tickers';
 import {
 	calcPerHour,
 	convertBankToPerHourStats,
@@ -797,9 +796,6 @@ LIMIT 10;
 		}
 		if (options.reboot) {
 			globalClient.isShuttingDown = true;
-			for (const ticker of tickers) {
-				if (ticker.timer) clearTimeout(ticker.timer);
-			}
 			await sleep(Time.Second * 20);
 			await interactionReply(interaction, {
 				content: 'https://media.discordapp.net/attachments/357422607982919680/1004657720722464880/freeze.gif'
