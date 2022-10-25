@@ -1683,11 +1683,11 @@ Winwheel.prototype.resumeAnimation = function()
 // and have the animation use the new values of the animation properties.
 // ====================================================================================================================
 Winwheel.prototype.staticSpin = async function () {
-    const oldCanvas = this.canvas.toBuffer()
+    const oldCanvas = this.canvas.toBuffer('png');
     this.rotationAngle = Math.floor((Math.random() * 359)); 
     this.draw();
     const winner = this.getIndicatedSegment();
-    return { winner, winnerIndex: this.getIndicatedSegmentNumber(), newCanvas: await this.canvas.toBuffer(), oldCanvas: await oldCanvas };
+    return { winner, winnerIndex: this.getIndicatedSegmentNumber(), newCanvas: await this.canvas.toBuffer('png'), oldCanvas: await oldCanvas };
 }
 Winwheel.prototype.computeAnimation = function()
 {

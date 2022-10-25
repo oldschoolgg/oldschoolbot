@@ -10,9 +10,12 @@ export function interactionReply(
 	return interaction.reply(response);
 }
 
-export function deferInteraction(interaction: ButtonInteraction | ChatInputCommandInteraction) {
+export function deferInteraction(
+	interaction: ButtonInteraction | ChatInputCommandInteraction,
+	options?: Parameters<ChatInputCommandInteraction['deferReply']>['0']
+) {
 	if (!interaction.deferred) {
-		const promise = interaction.deferReply();
+		const promise = interaction.deferReply(options);
 		interaction.deferred = true;
 		return promise;
 	}

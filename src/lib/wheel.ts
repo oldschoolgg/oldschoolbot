@@ -1,39 +1,34 @@
-import { shuffleArr } from 'e';
+import { shuffleArr, sumArr } from 'e';
 
 import { Winwheel } from './winwheel';
-
-const users = [
-	['45x', 45],
-	['20x', 20],
-	['5x', 5],
-	['1x', 1],
-	['1x', 1],
-	['28x', 28]
-] as const;
-let entries: { text: string; textAlignment: string; weight: number; size: number; fillStyle: string }[] = [];
-
-for (const u of shuffleArr(users)) {
-	entries.push({
-		fillStyle: randomHexColor(users.indexOf(u)),
-		text: `${u[0]}`,
-		textAlignment: 'outer',
-		weight: u[1],
-		size: 0
-	});
-}
 
 function randomHexColor(num: number) {
 	const hue = num * 137.508;
 	return `hsl(${hue},50%,75%)`;
 }
 
-export async function makeWheel() {
+export async function makeWheel(_entries: readonly (readonly [string, number])[]) {
+	const totalWeight = sumArr(_entries.map(i => i[1]));
+	const entries = shuffleArr(_entries).map(i => ({
+		fillStyle: randomHexColor(_entries.indexOf(i)),
+		text: `${i[0]}`,
+		textAlignment: 'outer',
+		weight: i[1],
+		size: (i[1] / totalWeight) * 360
+	}));
+
 	const wheel = new Winwheel({
 		size: 500,
 		numSegments: entries.length,
 		textFontSize: 12,
 		segments: entries,
-		lineWidth: 1
+		lineWidth: 1,
+		pointerAngle: 90,
+		pointerGuide: {
+			display: true,
+			strokeStyle: 'red',
+			lineWidth: 3
+		}
 	});
 
 	const result = await wheel.staticSpin();
