@@ -14,7 +14,7 @@ export const pumpkinHeadUniqueTable = new LootTable()
 
 export const PUMPKINHEAD_HEALING_NEEDED = 60;
 const pumpkinHeadDescriptors = [
-	['Head', 'Skull', 'Body', 'Minion'],
+	['Head', 'Skull', 'Body', 'Minion', 'Limb'],
 	['Crushing', 'Slashing', 'Chopping', 'Destroying', 'Stomping', 'Ripping', 'Slicing', 'Stabbing']
 ];
 
@@ -42,8 +42,6 @@ export const treatTable = new LootTable()
 	.add('Hairyfloss', 1, 240)
 	.add('Eyescream', 1, 180)
 	.add('Goblinfinger soup', 1, 180)
-	.add("Benny's brain brew", 1, 60)
-	.add("Choc'rock", 1, 7)
-	.add('Roasted newt', 1, 1);
+	.add("Choc'rock", 1, 7);
 
 export const pumpkinHeadNonUniqueTable = new LootTable().every(treatTable, [1, 6]);

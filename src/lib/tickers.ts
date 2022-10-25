@@ -5,6 +5,7 @@ import { noOp, randInt, shuffleArr, Time } from 'e';
 
 import { production } from '../config';
 import { mahojiUserSettingsUpdate } from '../mahoji/settingsUpdate';
+import { bossEvents, startBossEvent } from './bossEvents';
 import { BitField, Channel, informationalButtons } from './constants';
 import { collectMetrics } from './metrics';
 import { prisma, queryCountStore } from './settings/prisma';
@@ -398,6 +399,34 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 
 			for (const task of tameTasks) {
 				runTameTask(task, task.tame);
+			}
+		}
+	},
+
+	{
+		name: 'pumpkinhead',
+		timer: null,
+		interval: Time.Second * 5,
+		cb: async () => {
+			const mass = await prisma.bossEvent.findFirst({
+				where: {
+					start_date: { lt: new Date() },
+					completed: false
+				}
+			});
+			if (mass) {
+				startBossEvent({ boss: bossEvents.find(b => b.id === mass.boss_id)!, id: mass.id });
+
+				prisma.bossEvent
+					.update({
+						where: {
+							id: mass.id
+						},
+						data: {
+							completed: true
+						}
+					})
+					.catch(noOp);
 			}
 		}
 	}

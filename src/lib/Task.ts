@@ -2,10 +2,13 @@ import { Activity, activity_type_enum } from '@prisma/client';
 
 import { agilityTask } from '../tasks/minions/agilityActivity';
 import { alchingTask } from '../tasks/minions/alchingActivity';
+import { bossEventTask } from '../tasks/minions/bossEventActivity';
 import { bathhouseTask } from '../tasks/minions/bso/bathhousesActivity';
 import { disassemblingTask } from '../tasks/minions/bso/disassemblingActivity';
 import { dungeoneeringTask } from '../tasks/minions/bso/dungeoneeringActivity';
 import { fishingContestTask } from '../tasks/minions/bso/fishingContestActivity';
+import { fogTask } from '../tasks/minions/bso/fogActivity';
+import { hweenTask } from '../tasks/minions/bso/halloweenMinigamesActivity';
 import { ignecarusTask } from '../tasks/minions/bso/ignecarusActivity';
 import { kalphiteKingTask } from '../tasks/minions/bso/kalphiteKingActivity';
 import { kibbleTask } from '../tasks/minions/bso/kibbleActivity';
@@ -16,6 +19,7 @@ import { naxxusTask } from '../tasks/minions/bso/naxxusActivity';
 import { nexTask } from '../tasks/minions/bso/nexActivity';
 import { odsTask } from '../tasks/minions/bso/ouraniaDeliveryServiceActivity';
 import { researchActivityTask } from '../tasks/minions/bso/researchActivity';
+import { scTask } from '../tasks/minions/bso/stealingCreationActivity';
 import { vasaTask } from '../tasks/minions/bso/vasaMagusActivity';
 import { butlerTask } from '../tasks/minions/butlerActivity';
 import { castingTask } from '../tasks/minions/castingActivity';
@@ -180,7 +184,11 @@ export const tasks: MinionTask[] = [
 	vasaTask,
 	dungeoneeringTask,
 	butlerTask,
-	shootingStarTask
+	shootingStarTask,
+	fogTask,
+	scTask,
+	hweenTask,
+	bossEventTask
 ];
 
 export async function syncActivityCache() {

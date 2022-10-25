@@ -1,6 +1,8 @@
 import { Bank } from 'oldschooljs';
 
 import { Buyable } from './buyables';
+import { fistOfGuthixBuyables } from './fistOfGuthixBuyables';
+import { stealingCreationBuyables } from './stealingCreationBuyables';
 
 const items = [
 	['Castle wars cape (beginner)', 100],
@@ -62,5 +64,7 @@ export const bsoBuyables: Buyable[] = [
 			'Rainbow cape': 1
 		}),
 		gpCost: 1_000_000
-	}
+	},
+	...fistOfGuthixBuyables,
+	...stealingCreationBuyables
 ];

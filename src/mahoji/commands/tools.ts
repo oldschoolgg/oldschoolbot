@@ -11,7 +11,7 @@ import { CoXUniqueTable } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric
 import { ToBUniqueTable } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
 
 import { OWNER_IDS, production } from '../../config';
-import { MysteryBoxes } from '../../lib/bsoOpenables';
+import { MysteryBoxes, spookyTable } from '../../lib/bsoOpenables';
 import {
 	allStashUnitsFlat,
 	getParsedStashUnits,
@@ -21,7 +21,7 @@ import {
 	stashUnitViewCommand
 } from '../../lib/clues/stashUnits';
 import { BitField, Channel, Emoji, PerkTier } from '../../lib/constants';
-import { allCLItemsFiltered, allDroppedItems } from '../../lib/data/Collections';
+import { allCLItems, allDroppedItems } from '../../lib/data/Collections';
 import { anglerOutfit, gnomeRestaurantCL } from '../../lib/data/CollectionsExport';
 import pets from '../../lib/data/pets';
 import { addToDoubleLootTimer } from '../../lib/doubleLoot';
@@ -368,6 +368,45 @@ interface DrystreakEntity {
 }
 const dryStreakEntities: DrystreakEntity[] = [
 	{
+		name: 'Halloween Mini-Minigames',
+		items: resolveItems([
+			'Spooky gear frame unlock',
+			'Kuro',
+			'Spooky cat ears',
+			'Pumpkinpole',
+			'Gastly ghost cape',
+			'Spooky box'
+		]),
+		run: async ({ item, ironmanOnly }) => {
+			const result = await prisma.$queryRawUnsafe<
+				{ id: string; val: number }[]
+			>(`SELECT user_id::text AS id, COUNT(1) as val
+FROM activity WHERE
+user_id IN (SELECT id::bigint FROM users WHERE "collectionLogBank"->'${item.id}' IS NULL
+${ironmanOnly ? ' AND "minion.ironman" = TRUE' : ''})
+AND type = 'HalloweenMiniMinigame' GROUP BY user_id
+ORDER BY val DESC LIMIT 10`);
+			return result;
+		},
+		format: num => `${num} Mini-Minigames`
+	},
+	{
+		name: 'Spooky box',
+		items: spookyTable.allItems,
+		run: async ({ item, ironmanOnly }) => {
+			const spookyBox = getItem('Spooky box');
+			const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(`
+SELECT id, (openable_scores->>'${spookyBox!.id}')::int as val FROM users WHERE
+${ironmanOnly ? '"minion.ironman" = true AND' : ''}
+openable_scores->>'${spookyBox!.id}' IS NOT NULL AND
+"collectionLogBank"->'${item.id}' IS NULL
+ORDER BY val DESC
+LIMIT 10`);
+			return result;
+		},
+		format: num => `${num} Spooky box${num > 1 ? 'es' : ''}`
+	},
+	{
 		name: 'Chambers of Xeric (CoX)',
 		items: CoXUniqueTable.allItems,
 		run: async ({ item, ironmanOnly }) => {
@@ -662,7 +701,7 @@ export const toolsCommand: OSBMahojiCommand = {
 							}
 						},
 						{
-							...itemOption(item => allCLItemsFiltered.includes(item.id)),
+							...itemOption(item => [...allCLItems, ...spookyTable.allItems].includes(item.id)),
 							required: true
 						},
 						{

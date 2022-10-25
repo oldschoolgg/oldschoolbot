@@ -57,7 +57,7 @@ export const woodcuttingTask: MinionTask = {
 		if (!powerchopping) {
 			if (log.lootTable) {
 				loot.add(log.lootTable.roll(quantity));
-			} else {
+			} else if (!log.hasNoLoot) {
 				loot.add(log.id, quantity);
 				const logItem = Firemaking.Burnables.find(i => i.inputLogs === log.id);
 				if (user.hasEquipped('Inferno adze') && logItem) {

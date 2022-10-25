@@ -248,7 +248,9 @@ export enum BitField {
 	HasBananaEnchantmentScroll = 205,
 	HasDaemonheimAgilityPass = 206,
 	DisabledGorajanBoneCrusher = 207,
-	HasLeaguesOneMinuteLengthBoost = 208
+	HasLeaguesOneMinuteLengthBoost = 208,
+	HasPlantedIvy = 209,
+	HasGuthixEngram = 210
 }
 
 interface BitFieldData {
@@ -282,6 +284,8 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	[BitField.HasScrollOfFarming]: { name: 'Scroll of Farming Used', protected: false, userConfigurable: false },
 	[BitField.HasScrollOfLongevity]: { name: 'Scroll of Longevity Used', protected: false, userConfigurable: false },
 	[BitField.HasScrollOfTheHunt]: { name: 'Scroll of the Hunt Used', protected: false, userConfigurable: false },
+	[BitField.HasPlantedIvy]: { name: 'Has Planted Ivy Seed', protected: false, userConfigurable: false },
+	[BitField.HasGuthixEngram]: { name: 'Has Guthix Engram', protected: false, userConfigurable: false },
 	[BitField.HasBananaEnchantmentScroll]: {
 		name: 'Banana Enchantment Scroll Used',
 		protected: false,
@@ -574,3 +578,5 @@ export const minionBuyButton = new ButtonBuilder()
 	.setLabel('Buy Minion')
 	.setStyle(ButtonStyle.Success);
 export const FormattedCustomEmoji = /<a?:\w{2,32}:\d{17,20}>/;
+
+export const IVY_MAX_TRIP_LENGTH_BOOST = Time.Minute * 25;

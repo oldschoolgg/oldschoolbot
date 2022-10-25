@@ -2,11 +2,22 @@ import { notEmpty, randInt, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
+import { production } from '../../../config';
+import {
+	bossActiveIsActiveOrSoonActive,
+	bossEventChannelID,
+	bossEvents,
+	startBossEvent
+} from '../../../lib/bossEvents';
 import { BitField } from '../../../lib/constants';
 import { addToDoubleLootTimer } from '../../../lib/doubleLoot';
 import { dyedItems } from '../../../lib/dyedItems';
-import { assert } from '../../../lib/util';
+import { gearImages } from '../../../lib/gear/functions/generateGearImage';
+import { prisma } from '../../../lib/settings/prisma';
+import { PUMPKINHEAD_ID } from '../../../lib/simulation/pumpkinHead';
+import { assert, formatDuration } from '../../../lib/util';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
+import { sendToChannelID } from '../../../lib/util/webhook';
 import { flowerTable } from './hotColdCommand';
 
 interface Usable {
@@ -67,6 +78,11 @@ const usableUnlocks: UsableUnlock[] = [
 		item: getOSItem('Daemonheim agility pass'),
 		bitfield: BitField.HasDaemonheimAgilityPass,
 		resultMessage: 'You show your pass to the Daemonheim guards, and they grant you access to their rooftops.'
+	},
+	{
+		item: getOSItem('Guthix engram'),
+		bitfield: BitField.HasGuthixEngram,
+		resultMessage: "You place the Guthix engram in Juna's cave, restoring some balance to the world..."
 	}
 ];
 for (const usableUnlock of usableUnlocks) {
@@ -148,8 +164,84 @@ const genericUsables: {
 		cost: new Bank().add('Mithril seeds').freeze(),
 		loot: () => flowerTable.roll(),
 		response: loot => `You planted a Mithril seed and got ${loot}!`
+	},
+	{
+		items: [getOSItem('Gloom and doom potion'), getOSItem('Broomstick')],
+		cost: new Bank().add('Gloom and doom potion').add('Broomstick'),
+		loot: new Bank().add('Grim sweeper'),
+		response: () =>
+			'You pour the Gloom and doom potion on the Broomstick... it transforms into an evil.. deathly broom with a scythe on one end and a skull handle!',
+		addToCL: true
 	}
 ];
+usables.push({
+	items: [getOSItem('Ivy seed')],
+	run: async user => {
+		if (user.bitfield.includes(BitField.HasPlantedIvy)) {
+			return 'You already planted Ivy in your PoH.';
+		}
+		if (user.skillsAsLevels.farming < 80) {
+			return 'You need 80 Farming to plant the Ivy seeds in your PoH.';
+		}
+		await user.removeItemsFromBank(new Bank().add('Ivy seed'));
+		await user.update({
+			bitfield: {
+				push: BitField.HasPlantedIvy
+			}
+		});
+		return 'You planted Ivy seeds in your PoH! You can now chop Ivy.';
+	}
+});
+usables.push({
+	items: [getOSItem('Spooky gear frame unlock')],
+	run: async user => {
+		const gearFrame = gearImages[1];
+		if (user.user.unlocked_gear_templates.includes(gearFrame.id)) {
+			return 'You already have this gear frame unlocked.';
+		}
+		await user.removeItemsFromBank(new Bank().add('Spooky gear frame unlock'));
+		await user.update({
+			unlocked_gear_templates: {
+				push: gearFrame.id
+			}
+		});
+		return 'You unlocked a spooky gear frame! You can switch to it using `/config user gearframe`';
+	}
+});
+usables.push({
+	items: [getOSItem('Mysterious token')],
+	run: async user => {
+		if (await bossActiveIsActiveOrSoonActive()) {
+			return "You can't use your Mysterious token right now.";
+		}
+		const instantStartDate = new Date('2022-10-31 04:00');
+		const instantEndDate = new Date('2022-11-01 04:00');
+		const now = new Date(Date.now());
+		if (now > instantStartDate && now < instantEndDate) {
+			startBossEvent({
+				boss: bossEvents.find(b => b.id === PUMPKINHEAD_ID)!
+			});
+		} else {
+			const startDelay = production ? Time.Hour : Time.Second * 30;
+			await prisma.bossEvent.create({
+				data: {
+					start_date: new Date(Date.now() + startDelay),
+					boss_id: PUMPKINHEAD_ID,
+					completed: false,
+					data: {}
+				}
+			});
+			sendToChannelID(bossEventChannelID, {
+				content: `<@&896845245873025067> **You feel the ground quake beneath your feet... It feels like Pumpkinhead is only ${formatDuration(
+					startDelay
+				)} away!**`,
+				allowedMentions: { roles: ['896845245873025067'] }
+			});
+		}
+		await user.removeItemsFromBank(new Bank().add('Mysterious token'));
+		return 'You used your Mysterious token... I wonder what will happen?';
+	}
+});
 
 const allDyes = [
 	'Dungeoneering dye',

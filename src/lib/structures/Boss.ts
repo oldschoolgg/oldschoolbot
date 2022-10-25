@@ -1,4 +1,4 @@
-import { AttachmentBuilder, TextChannel } from 'discord.js';
+import { AttachmentBuilder, MessageOptions, TextChannel } from 'discord.js';
 import { calcPercentOfNum, calcWhatPercent, randFloat, reduceNumByPercent, sumArr, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { table } from 'table';
@@ -8,7 +8,6 @@ import { ClientBankKey, updateBankSetting } from '../../mahoji/mahojiSettings';
 import { GearSetupType, GearStats } from '../gear';
 import { effectiveMonsters } from '../minions/data/killableMonsters';
 import { trackLoot } from '../settings/prisma';
-import { PUMPKINHEAD_ID } from '../simulation/pumpkinHead';
 import { Skills } from '../types';
 import { NewBossOptions } from '../types/minions';
 import { formatDuration, formatSkillRequirements, hasSkillReqs, isWeekend } from '../util';
@@ -133,6 +132,8 @@ export interface BossOptions {
 	allowMoreThan1Solo?: boolean;
 	allowMoreThan1Group?: boolean;
 	quantity?: number;
+	allowedMentions?: MessageOptions['allowedMentions'];
+	// Duration before mass is automatically send
 	automaticStartTime?: number;
 	// The total % reduction that perfect gear/kc/boosts nets:
 	speedMaxReduction?: number;
@@ -140,6 +141,8 @@ export interface BossOptions {
 	speedGearWeight?: number;
 	// The relative weight that KC contributes to the speed:
 	speedKcWeight?: number;
+	// Skip users without item cost (masses)
+	skipInvalidUsers?: boolean;
 }
 
 export interface BossUser {
@@ -148,6 +151,7 @@ export interface BossUser {
 	deathChance: number;
 	itemsToRemove: Bank;
 	debugStr: string;
+	invalid?: boolean;
 }
 
 export class BossInstance {
@@ -181,11 +185,13 @@ export class BossInstance {
 	kcLearningCap: number;
 	customDeathChance: null | ((user: MUser, deathChance: number, solo: boolean) => number);
 	boosts: string[] = [];
-	automaticStartTime?: number;
+	automaticStartTime: number;
 	maxSize: number;
 	speedMaxReduction: number = 40;
 	speedGearWeight: number = 25;
 	speedKcWeight: number = 35;
+	skipInvalidUsers?: boolean = false;
+	allowedMentions?: MessageOptions['allowedMentions'];
 
 	constructor(options: BossOptions) {
 		this.baseDuration = options.baseDuration;
@@ -226,13 +232,15 @@ export class BossInstance {
 			massText.push(`**BiS Gear:** ${this.bisGear}`);
 		}
 		this.massText = massText.join('\n');
-		this.automaticStartTime = options.automaticStartTime;
+		this.automaticStartTime = options.automaticStartTime ?? Time.Minute * 2;
+		if (options.skipInvalidUsers) this.skipInvalidUsers = options.skipInvalidUsers;
+		this.allowedMentions = options.allowedMentions;
 	}
 
 	async validateTeam() {
 		for (const user of this.users!) {
 			const [denied, reason] = await this.checkUser(user);
-			if (denied && this.id !== PUMPKINHEAD_ID) {
+			if (denied && !this.skipInvalidUsers) {
 				throw new Error(`${user} ${reason}`);
 			}
 		}
@@ -268,7 +276,9 @@ export class BossInstance {
 						customDenier: async (user: MUser) => {
 							return this.checkUser(user);
 						},
-						message: this.massText
+						message: this.massText,
+						massTimeout: this.automaticStartTime,
+						allowedMentions: this.allowedMentions
 				  });
 
 		this.tempQty = this.quantity;
@@ -426,9 +436,17 @@ export class BossInstance {
 		await this.validateTeam();
 
 		const totalCost = new Bank();
-		for (const { user, itemsToRemove } of this.bossUsers) {
-			await user.removeItemsFromBank(itemsToRemove);
-			totalCost.add(itemsToRemove);
+		for (const bossUser of this.bossUsers) {
+			try {
+				await bossUser.user.removeItemsFromBank(bossUser.itemsToRemove);
+				totalCost.add(bossUser.itemsToRemove);
+			} catch (e) {
+				if (!this.skipInvalidUsers) throw e;
+				bossUser.invalid = true;
+			}
+		}
+		if (this.skipInvalidUsers) {
+			this.bossUsers = this.bossUsers.filter(bu => !bu.invalid);
 		}
 		if (this.settingsKeys) {
 			updateBankSetting(this.settingsKeys[0], totalCost);
@@ -465,8 +483,7 @@ export class BossInstance {
 		const arr = Array(30).fill(this.leader);
 		let results: any[] = [];
 		for (const num of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) {
-			let ar = arr.slice(0, num);
-			this.users = ar;
+			this.users = arr.slice(0, num);
 			const { bossUsers, duration } = await this.calculateBossUsers();
 			if (this.users.length !== bossUsers.length) {
 				console.error('wtfffffffff');

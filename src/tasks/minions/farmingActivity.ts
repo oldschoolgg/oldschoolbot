@@ -70,6 +70,11 @@ const mutations = [
 		chance: 7,
 		plantName: 'Strawberry',
 		output: itemID('White strawberry')
+	},
+	{
+		chance: 7,
+		plantName: 'Mushroom',
+		output: itemID('Mooshroom')
 	}
 ];
 for (const mut of mutations) {

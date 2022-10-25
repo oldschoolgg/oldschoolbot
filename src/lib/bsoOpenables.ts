@@ -28,10 +28,10 @@ const MR_E_DROPRATE_FROM_PMB = 200;
 const MR_E_DROPRATE_FROM_EMB = 500;
 
 export const MysteryBoxes = new LootTable()
-	.oneIn(40, 'Pet Mystery Box')
-	.oneIn(150, 'Holiday Mystery Box')
-	.oneIn(30, 'Equippable mystery box')
-	.oneIn(30, 'Clothing Mystery Box')
+	.oneIn(55, 'Pet Mystery Box')
+	.oneIn(165, 'Holiday Mystery Box')
+	.oneIn(35, 'Equippable mystery box')
+	.oneIn(35, 'Clothing Mystery Box')
 	.add('Tradeable Mystery Box')
 	.add('Untradeable Mystery Box');
 
@@ -237,6 +237,24 @@ const FestivePresentTable = new LootTable()
 	.add('Toy cat');
 
 const IndependenceBoxTable = new LootTable().add('Fireworks').add('Fireworks').add('Liber tea').add("Sam's hat");
+
+export const spookyEpic = new LootTable().add('Spooky partyhat').add('Orange halloween mask');
+const spookyRare = new LootTable()
+	.add('Necronomicon')
+	.add("M'eye hat")
+	.add('Back pain')
+	.add('Witch hat')
+	.add('Spooky mask');
+const spookyCommon = new LootTable()
+	.add('Toffeet')
+	.add('Chocolified skull')
+	.add('Eyescream')
+	.add("Choc'rock")
+	.add('Rotten sweets')
+	.add('Gloom and doom potion')
+	.add('Handled candle');
+
+export const spookyTable = new LootTable().add(spookyEpic, 1, 1).add(spookyRare, 1, 3).add(spookyCommon, 1, 8);
 
 const RoyalMysteryBoxTable = new LootTable().add('Diamond crown', 1, 2).add('Diamond sceptre', 1, 2).add('Corgi');
 const GamblersBagTable = new LootTable()
@@ -567,6 +585,14 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		aliases: InfernalImpling.aliases,
 		output: InfernalImpling.table,
 		allItems: InfernalImpling.table.allItems
+	},
+	{
+		name: 'Spooky box',
+		id: itemID('Spooky box'),
+		openedItem: getOSItem('Spooky box'),
+		aliases: ['spooky box'],
+		output: spookyTable,
+		allItems: spookyTable.allItems
 	}
 ];
 

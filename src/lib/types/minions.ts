@@ -231,6 +231,11 @@ export interface MinigameActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface HalloweenMinigameOptions extends ActivityTaskOptions {
+	minigameID: number;
+	nonce: number;
+}
+
 export interface MahoganyHomesActivityTaskOptions extends MinigameActivityTaskOptions {
 	xp: number;
 	quantity: number;

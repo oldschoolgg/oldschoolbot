@@ -13,6 +13,7 @@ import { darkAltarRunes } from '../minions/functions/darkAltarCommand';
 import { prisma } from '../settings/prisma';
 import { runCommand } from '../settings/settings';
 import type { DungeoneeringOptions } from '../skilling/skills/dung/dungData';
+import Woodcutting from '../skilling/skills/woodcutting';
 import type {
 	ActivityTaskOptionsWithQuantity,
 	AgilityActivityTaskOptions,
@@ -71,11 +72,16 @@ export const taskCanBeRepeated = (type: activity_type_enum) =>
 			activity_type_enum.FishingContest,
 			activity_type_enum.TrickOrTreat,
 			activity_type_enum.BossEvent,
-			activity_type_enum.Birdhouse
+			activity_type_enum.Birdhouse,
+			activity_type_enum.HalloweenMiniMinigame
 		] as activity_type_enum[]
 	).includes(type);
 
 export const tripHandlers = {
+	[activity_type_enum.HalloweenMiniMinigame]: {
+		commandName: 'm',
+		args: () => ({})
+	},
 	[activity_type_enum.BossEvent]: {
 		commandName: 'm',
 		args: () => ({})
@@ -498,7 +504,7 @@ export const tripHandlers = {
 	[activity_type_enum.Woodcutting]: {
 		commandName: 'chop',
 		args: (data: WoodcuttingActivityTaskOptions) => ({
-			name: itemNameFromID(data.logID),
+			name: Woodcutting.Logs.find(log => log.id === data.logID)!.name,
 			quantity: data.quantity,
 			powerchop: data.powerchopping
 		})
@@ -601,6 +607,22 @@ export const tripHandlers = {
 	[activity_type_enum.ClueCompletion]: {
 		commandName: 'clue',
 		args: (data: ClueActivityTaskOptions) => ({ tier: data.clueID })
+	},
+	[activity_type_enum.FistOfGuthix]: {
+		commandName: 'bsominigames',
+		args: () => ({
+			fist_of_guthix: {
+				start: {}
+			}
+		})
+	},
+	[activity_type_enum.StealingCreation]: {
+		commandName: 'bsominigames',
+		args: () => ({
+			stealing_creation: {
+				start: {}
+			}
+		})
 	}
 } as const;
 

@@ -77,6 +77,21 @@ const staticXPBoosts = new Map<SkillsEnum, StaticXPBoost[]>().set(SkillsEnum.Fir
 	}
 ]);
 
+const skillingOutfitBoosts = [
+	{
+		skill: SkillsEnum.Fletching,
+		outfit: resolveItems([
+			"Fletcher's gloves",
+			"Fletcher's boots",
+			"Fletcher's legs",
+			"Fletcher's top",
+			"Fletcher's hat"
+		]),
+		individualBoost: 0.5,
+		totalBoost: 3
+	}
+] as const;
+
 // Build list of all Master capes including combined capes.
 const allMasterCapes = Skillcapes.map(i => i.masterCape)
 	.map(msc => getSimilarItems(msc.id))
@@ -173,6 +188,15 @@ export async function addXP(userID: string, params: AddXpParams): Promise<string
 			}
 		}
 	}
+
+	const skillOutfit = skillingOutfitBoosts.find(i => i.skill === params.skillName);
+	if (!params.artificial && skillOutfit) {
+		const amountBoost = user.hasEquipped(skillOutfit.outfit, true)
+			? skillOutfit.totalBoost
+			: skillOutfit.outfit.filter(i => user.hasEquipped(i)).length * skillOutfit.individualBoost;
+		params.amount = increaseNumByPercent(params.amount, amountBoost);
+	}
+
 	params.amount = Math.floor(params.amount);
 	const name = toTitleCase(params.skillName);
 

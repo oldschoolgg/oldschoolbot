@@ -13,6 +13,7 @@ import { BitField, projectiles, usernameCache } from './constants';
 import { allPetIDs } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
 import { defaultGear, GearSetup, UserFullGearSetup } from './gear';
+import { gearImages } from './gear/functions/generateGearImage';
 import { IMaterialBank } from './invention';
 import { MaterialBank } from './invention/MaterialBank';
 import { CombatOptionsEnum } from './minions/data/combatConstants';
@@ -46,6 +47,10 @@ export class MUserClass {
 		this.id = user.id;
 
 		syncPerkTierOfUser(this);
+	}
+
+	get gearTemplate() {
+		return gearImages.find(i => i.id === this.user.gear_template)!;
 	}
 
 	async update(data: Prisma.UserUpdateArgs['data']) {

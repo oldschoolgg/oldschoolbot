@@ -305,7 +305,12 @@ class BankImageTask {
 
 		const isOnDisk = this.itemIconsList.has(itemID);
 		if (!isOnDisk) {
-			await this.fetchAndCacheImage(itemID);
+			try {
+				await this.fetchAndCacheImage(itemID);
+			} catch (err) {
+				console.error(`Failed to load ${itemID} image`);
+				return this.getItemImage(1);
+			}
 			return this.getItemImage(itemID);
 		}
 

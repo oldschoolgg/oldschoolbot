@@ -144,4 +144,8 @@ export const PartyhatTable = new LootTable()
 	.add('Green partyhat')
 	.add('White partyhat');
 
+export const partyHatTableRoll = () => {
+	return PartyhatTable.roll();
+};
+
 export const allHolidayItems = [...baseHolidayItems.allItems, ...PartyhatTable.allItems];

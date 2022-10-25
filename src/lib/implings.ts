@@ -147,7 +147,8 @@ export async function handlePassiveImplings(user: MUser, data: ActivityTaskOptio
 			activity_type_enum.BarbarianAssault,
 			activity_type_enum.CastleWars,
 			activity_type_enum.LastManStanding,
-			activity_type_enum.PestControl
+			activity_type_enum.PestControl,
+			activity_type_enum.FistOfGuthix
 		].includes(data.type)
 	)
 		return null;

@@ -45,8 +45,8 @@ export const NihilizLootTable = new LootTable()
 	.every(regularTable, 3)
 
 	/* Tertiary */
-	.tertiary(4, rawFoodTable)
-	.tertiary(8, clueTable)
+	.tertiary(6, rawFoodTable)
+	.tertiary(12, clueTable)
 	.tertiary(10, 'Nihil shard', [5, 20])
 	.tertiary(2000, 'Nihil horn')
 	.tertiary(1200, 'Zaryte vambraces')
