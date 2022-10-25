@@ -133,7 +133,7 @@ export const bankCommand: OSBMahojiCommand = {
 		if (!options.page) options.page = 1;
 
 		if (baseBank.length === 0) {
-			return `You have no items or GP yet ${Emoji.Sad} You can get some GP by using the +daily command, and you can get items by sending your minion to do tasks.`;
+			return `You have no items or GP yet ${Emoji.Sad} You can get some GP by using the \`/minion daily\` command, and you can get items by sending your minion to do tasks.`;
 		}
 
 		const bank = parseBank({

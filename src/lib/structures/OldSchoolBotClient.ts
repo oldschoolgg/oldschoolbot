@@ -7,7 +7,6 @@ import { production } from '../../config';
 import { cacheUsernames } from '../../mahoji/commands/leaderboard';
 import { initCrons } from '../crons';
 import { Peak } from '../tickers';
-import { piscinaPool } from '../workers';
 
 if (typeof production !== 'boolean') {
 	throw new Error('Must provide production boolean.');
@@ -15,7 +14,6 @@ if (typeof production !== 'boolean') {
 
 export class OldSchoolBotClient extends Client {
 	public busyCounterCache = new Map<string, number>();
-	public piscinaPool = piscinaPool;
 	public production = production ?? false;
 	public mahojiClient!: MahojiClient;
 	public isShuttingDown = false;

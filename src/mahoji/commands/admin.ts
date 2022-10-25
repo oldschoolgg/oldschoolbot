@@ -26,13 +26,14 @@ import { cancelTask, minionActivityCacheDelete } from '../../lib/settings/settin
 import { tickers } from '../../lib/tickers';
 import {
 	calcPerHour,
+	cleanString,
 	convertBankToPerHourStats,
 	formatDuration,
 	sanitizeBank,
 	stringMatches,
 	toKMB
 } from '../../lib/util';
-import { getItem } from '../../lib/util/getOSItem';
+import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { deferInteraction, interactionReply } from '../../lib/util/interactionReply';
 import { logError } from '../../lib/util/logError';
@@ -505,7 +506,15 @@ export const adminCommand: OSBMahojiCommand = {
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'ltc',
-			description: 'Ltc?'
+			description: 'Ltc?',
+			options: [
+				{
+					...itemOption(),
+					name: 'item',
+					description: 'The item.',
+					required: false
+				}
+			]
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -555,7 +564,7 @@ export const adminCommand: OSBMahojiCommand = {
 		most_active?: {};
 		bitfield?: { user: MahojiUserOption; add?: string; remove?: string };
 		double_loot?: { reset?: boolean; add?: string };
-		ltc?: {};
+		ltc?: { item?: string };
 		view?: { thing: string };
 		// wipe_bingo_temp_cls?: {};
 		lottery_dump?: {};
@@ -1027,6 +1036,27 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 		if (options.ltc) {
 			let str = '';
 			const results = await prisma.lootTrack.findMany();
+
+			if (options.ltc.item) {
+				str += `${['id', 'total_of_item', 'item_per_kc', 'per_hour'].join('\t')}\n`;
+				const item = getOSItem(options.ltc.item);
+
+				for (const res of results) {
+					const loot = new Bank(res.loot as ItemBank);
+					if (!loot.has(item.id)) continue;
+					const qty = loot.amount(item.id);
+					str += `${[
+						res.id,
+						qty,
+						qty / res.total_kc,
+						calcPerHour(qty, res.total_duration * Time.Minute)
+					].join('\t')}\n`;
+				}
+
+				return {
+					files: [{ attachment: Buffer.from(str), name: `${cleanString(item.name)}.txt` }]
+				};
+			}
 
 			str += `${['id', 'cost_h', 'cost', 'loot_h', 'loot', 'per_hour_h', 'per_hour', 'ratio'].join('\t')}\n`;
 			for (const res of results) {

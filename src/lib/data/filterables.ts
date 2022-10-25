@@ -1,4 +1,3 @@
-import { Bank } from 'oldschooljs';
 import { BeginnerClueTable } from 'oldschooljs/dist/simulation/clues/Beginner';
 import { EasyClueTable } from 'oldschooljs/dist/simulation/clues/Easy';
 import { EliteClueTable } from 'oldschooljs/dist/simulation/clues/Elite';
@@ -1243,11 +1242,10 @@ export const baseFilters: Filterable[] = [
 		aliases: ['not sacrificed', 'not sac'],
 		items: user => {
 			if (!user) return [];
-			const sacBank = new Bank(user.user.sacrificedBank as ItemBank);
-			return user.bank
-				.items()
-				.filter(i => !sacBank.has(i[0].id))
-				.map(i => i[0].id);
+			const sacBank = user.user.sacrificedBank as ItemBank;
+			return Object.entries(user.bank.bank)
+				.filter(i => !sacBank[i[0]])
+				.map(i => Number(i[0]));
 		}
 	}
 ];

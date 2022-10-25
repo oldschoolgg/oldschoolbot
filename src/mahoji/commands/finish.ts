@@ -1,11 +1,13 @@
+import { AttachmentBuilder } from 'discord.js';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import { finishables } from '../../lib/finishables';
 import { sorts } from '../../lib/sorts';
-import { itemNameFromID, stringMatches } from '../../lib/util';
+import { stringMatches } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
+import { Workers } from '../../lib/workers';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const finishCommand: OSBMahojiCommand = {
@@ -30,46 +32,33 @@ export const finishCommand: OSBMahojiCommand = {
 			i => stringMatches(i.name, options.input) || i.aliases?.some(alias => stringMatches(alias, options.input))
 		);
 		if (!val) return "That's not a valid thing you can simulate finishing.";
-		let loot = new Bank();
-		const kcBank = new Bank();
-		let kc = 0;
-		const maxAttempts = val.maxAttempts ?? 100_000;
-		for (let i = 0; i < maxAttempts; i++) {
-			if (val.cl.every(id => loot.has(id))) break;
-			kc++;
-			const thisLoot = val.kill({ accumulatedLoot: loot });
-
-			if (val.tertiaryDrops) {
-				for (const drop of val.tertiaryDrops) {
-					if (kc === drop.kcNeeded) {
-						thisLoot.add(drop.itemId);
-					}
-				}
-			}
-
-			const purpleItems = thisLoot.items().filter(i => val.cl.includes(i[0].id) && !loot.has(i[0].id));
-			for (const p of purpleItems) kcBank.add(p[0].id, kc);
-			loot.add(thisLoot);
-			if (kc === maxAttempts) {
-				return `After ${maxAttempts.toLocaleString()} KC, you still didn't finish the CL, so we're giving up! Missing: ${val.cl
-					.filter(id => !loot.has(id))
-					.map(itemNameFromID)
-					.join(', ')}`;
-			}
-		}
+		const workerRes = await Workers.finish({ name: val.name });
+		if (typeof workerRes === 'string') return workerRes;
+		const { kc } = workerRes;
+		const kcBank = new Bank(workerRes.kcBank);
+		const loot = new Bank(workerRes.loot);
 		if ('customResponse' in val && val.customResponse) {
 			return val.customResponse(kc);
 		}
 		const image = await makeBankImage({ bank: loot, title: `Loot from ${kc}x ${val.name}` });
+
+		const result = `It took you ${kc.toLocaleString()} KC to finish the ${val.name} CL.`;
+		const finishStr = kcBank.items().sort(sorts.quantity).reverse();
+		if (finishStr.length < 20) {
+			return {
+				content: `${result}
+${finishStr.map(i => `**${i[0].name}:** ${i[1]} KC`).join('\n')}`,
+				files: [image.file]
+			};
+		}
 		return {
-			content: `It took you ${kc.toLocaleString()} KC to finish the ${val.name} CL.
-${kcBank
-	.items()
-	.sort(sorts.quantity)
-	.reverse()
-	.map(i => `**${i[0].name}:** ${i[1]} KC`)
-	.join('\n')}`,
-			files: [image.file]
+			content: `It took you ${kc.toLocaleString()} KC to finish the ${val.name} CL.`,
+			files: [
+				image.file,
+				new AttachmentBuilder(Buffer.from(finishStr.map(i => `${i[0].name}: ${i[1]} KC`).join('\n')), {
+					name: 'finish.txt'
+				})
+			]
 		};
 	}
 };

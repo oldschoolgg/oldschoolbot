@@ -102,6 +102,7 @@ export function parseBankFromFlags({
 		type.aliases.some(alias => flagsKeys.some(i => stringMatches(i, alias)))
 	);
 
+	const itemFilter = filter ? filter.items(user) : undefined;
 	for (const [item, quantity] of bank.items()) {
 		if (maxSize && newBank.length >= maxSize) break;
 		if (flagsKeys.includes('tradeables') && !item.tradeable) continue;
@@ -116,7 +117,7 @@ export function parseBankFromFlags({
 		}
 
 		const qty = Math.min(maxQuantity, quantity === 0 ? Math.max(1, bank.amount(item.id)) : quantity);
-		if (filter && !filter.items(user).includes(item.id)) continue;
+		if (itemFilter && !itemFilter.includes(item.id)) continue;
 		if (excludeItems.includes(item.id)) continue;
 
 		newBank.add(item.id, qty);
