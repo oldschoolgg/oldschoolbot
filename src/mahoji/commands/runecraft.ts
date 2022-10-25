@@ -203,14 +203,16 @@ export const runecraftCommand: OSBMahojiCommand = {
 		if (runeObj.name === 'Elder rune') {
 			outputQuantity = Math.max(1, Math.floor((quantityPerEssence * quantity) / 3));
 		}
-		if (
-			numEssenceOwned === 0 ||
-			quantity === 0 ||
-			numEssenceOwned < quantity ||
-			!essenceRequired ||
-			numEssenceOwned < essenceRequired
-		) {
-			return "You don't have enough Pure Essence to craft these runes. You can acquire some through Mining, or purchasing from other players.";
+		if (!daeyalt_essence) {
+			if (
+				numEssenceOwned === 0 ||
+				quantity === 0 ||
+				numEssenceOwned < quantity ||
+				!essenceRequired ||
+				numEssenceOwned < essenceRequired
+			) {
+				return "You don't have enough Pure Essence to craft these runes. You can acquire some through Mining, or purchasing from other players.";
+			}
 		}
 
 		const numberOfInventories = Math.max(Math.ceil(quantity / inventorySize), 1);
