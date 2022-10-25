@@ -1,3 +1,4 @@
+import { randInt } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
@@ -335,12 +336,10 @@ export const farmingTask: MinionTask = {
 				loot.add('Tangleroot');
 				tangleroot = true;
 			}
-			
 			if (plantToHarvest.seedType === 'seaweed') {
 				let seaweedSpores = 0;
-					if (roll(3)) {
-						seaweedSpores+= randInt(1, 3);
-					}
+					if (roll(3)) {seaweedSpores+= randInt(1, 3);
+			}
 				if (seaweedSpores > 0) loot.add('Seaweed spore', seaweedSpores);
 			}
 
