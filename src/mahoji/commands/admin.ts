@@ -448,7 +448,7 @@ export const adminCommand: OSBMahojiCommand = {
 					...itemOption(),
 					name: 'item',
 					description: 'The item.',
-					required: true
+					required: false
 				}
 			]
 		},
@@ -517,7 +517,7 @@ export const adminCommand: OSBMahojiCommand = {
 		set_price?: { item: string; price: number };
 		most_active?: {};
 		bitfield?: { user: MahojiUserOption; add?: string; remove?: string };
-		ltc?: { item: string };
+		ltc?: { item?: string };
 		view?: { thing: string };
 		wipe_bingo_temp_cls?: {};
 		give_items?: { user: MahojiUserOption; items: string };
