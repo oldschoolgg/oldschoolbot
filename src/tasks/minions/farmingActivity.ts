@@ -338,8 +338,10 @@ export const farmingTask: MinionTask = {
 			}
 			if (plantToHarvest.seedType === 'seaweed') {
 				let seaweedSpores = 0;
-					if (roll(3)) {seaweedSpores+= randInt(1, 3);
+				if (roll(3)) {
+					seaweedSpores+= randInt(1, 3);
 			}
+				
 				if (seaweedSpores > 0) loot.add('Seaweed spore', seaweedSpores);
 			}
 
