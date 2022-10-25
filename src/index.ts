@@ -1,6 +1,7 @@
 import './lib/data/itemAliases';
 import './lib/crons';
 import './lib/MUser';
+import './lib/wheel';
 
 import * as Sentry from '@sentry/node';
 import { Chart } from 'chart.js';
