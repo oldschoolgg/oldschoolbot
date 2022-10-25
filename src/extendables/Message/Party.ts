@@ -155,14 +155,14 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 
 				switch (btn.id) {
 					case 'PARTY_JOIN': {
+						if (usersWhoConfirmed.includes(mUser.id)) {
+							return reply('You are already in this mass.');
+						}
 						if (
 							partyLockCache.has(mUser.id) ||
 							(options.usersAllowed && !options.usersAllowed.includes(mUser.id))
 						) {
 							return reply('You cannot join this mass.');
-						}
-						if (usersWhoConfirmed.includes(mUser.id)) {
-							return reply('You are already in this mass.');
 						}
 
 						// Add the user
