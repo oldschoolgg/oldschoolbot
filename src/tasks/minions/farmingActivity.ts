@@ -336,7 +336,9 @@ export const farmingTask: MinionTask = {
 				loot.add('Tangleroot');
 				tangleroot = true;
 			}
-			if (plantToHarvest.seedType === 'seaweed' && roll(3)) loot.add('Seaweed spore', randInt(1,3));
+			if (plantToHarvest.seedType === 'seaweed' && roll(3)) {
+				loot.add('Seaweed spore', randInt(1,3));
+			}
 
 			if (plantToHarvest.seedType !== 'hespori') {
 				let hesporiSeeds = 0;
