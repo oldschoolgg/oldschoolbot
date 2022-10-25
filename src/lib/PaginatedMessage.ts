@@ -111,7 +111,7 @@ export class PaginatedMessage {
 
 		collector.on('collect', async interaction => {
 			if (targetUsers && !targetUsers.includes(interaction.user.id)) {
-				interaction.reply("This isn't your message!");
+				interaction.reply({ content: "This isn't your message!", ephemeral: true });
 				return;
 			}
 			for (const action of controlButtons) {
