@@ -34,7 +34,11 @@ export const hweenTask: MinionTask = {
 		if (roll(kuroRate)) {
 			loot.add('Kuro');
 		}
-		if (roll(HALLOWEEN_BOX_DROPRATE)) {
+
+		let boxDroprate = HALLOWEEN_BOX_DROPRATE;
+		if (user.isIronman) boxDroprate /= 2;
+
+		if (roll(boxDroprate)) {
 			loot.add('Spooky box');
 			if (isDoubleLootActive(data.duration)) {
 				loot.add('Spooky box');
