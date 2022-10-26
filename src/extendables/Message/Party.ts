@@ -143,7 +143,6 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 
 			collector.on('collect', async interaction => {
 				if (BLACKLISTED_USERS.has(interaction.user.id)) return;
-				const mUser = await mUserFetch(interaction.user.id);
 				const btn = buttons.find(i => i.id === interaction.customId);
 				if (!btn) return;
 
@@ -153,19 +152,19 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 
 				switch (btn.id) {
 					case 'PARTY_JOIN': {
-						if (usersWhoConfirmed.includes(mUser.id)) {
+						if (usersWhoConfirmed.includes(interaction.user.id)) {
 							return reply('You are already in this mass.');
 						}
 						if (
-							partyLockCache.has(mUser.id) ||
-							(options.usersAllowed && !options.usersAllowed.includes(mUser.id))
+							partyLockCache.has(interaction.user.id) ||
+							(options.usersAllowed && !options.usersAllowed.includes(interaction.user.id))
 						) {
 							return reply('You cannot join this mass.');
 						}
 
 						// Add the user
-						usersWhoConfirmed.push(mUser.id);
-						partyLockCache.add(mUser.id);
+						usersWhoConfirmed.push(interaction.user.id);
+						partyLockCache.add(interaction.user.id);
 						updateUsersIn();
 
 						reply('You joined this mass.');
@@ -178,18 +177,18 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 					}
 
 					case 'PARTY_LEAVE': {
-						if (!usersWhoConfirmed.includes(mUser.id) || mUser.id === options.leader.id) {
+						if (!usersWhoConfirmed.includes(interaction.user.id) || interaction.user.id === options.leader.id) {
 							reply('You cannot leave this mass.');
 							return;
 						}
-						partyLockCache.delete(mUser.id);
-						removeUser(mUser.id);
+						partyLockCache.delete(interaction.user.id);
+						removeUser(interaction.user.id);
 						reply('You left this this mass.');
 						break;
 					}
 
 					case 'PARTY_CANCEL': {
-						if (mUser.id === options.leader.id) {
+						if (interaction.user.id === options.leader.id) {
 							partyCancelled = true;
 							reply('You cancelled the mass.');
 							reject(
@@ -203,7 +202,7 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 					}
 
 					case 'PARTY_START': {
-						if (mUser.id === options.leader.id) {
+						if (interaction.user.id === options.leader.id) {
 							startTrip();
 							collector.stop('partyCreatorEnd');
 							reply('You started the mass.');
