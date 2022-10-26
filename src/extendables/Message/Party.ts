@@ -95,7 +95,9 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 						!user.user.minion_hasBought
 					) {
 						interaction.reply({
-							content: 'You cannot mass if you are busy, an ironman, or have no minion.',
+							content: `You cannot mass if you are busy${
+								!options.ironmanAllowed ? ', an ironman' : ''
+							}, or have no minion.`,
 							ephemeral: true
 						});
 						return false;
