@@ -174,7 +174,8 @@ ${rerolledUsersStr.length > 0 ? rerolledUsersStr.join('\n') : 'Nobody was reroll
 **Key:** These Emoji by your name mean:
 <:Haunted_amulet:898407574527942677> - Your Haunted amulet activated to give you a second chance!
 ♻ - You already had 2+ of the selected item and got a second chance.
-<:Mini_pumpkinhead:904028863724675072> - You got the pet! Congratulations 🙂`
+<:Mini_pumpkinhead:904028863724675072> - You got the pet! Congratulations 🙂`,
+				allowedMentions: { roles: ['896845245873025067'] }
 			});
 		},
 		bossOptions: {
