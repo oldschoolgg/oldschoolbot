@@ -439,9 +439,7 @@ export class BossInstance {
 		if (this.skipInvalidUsers) {
 			// Handle big masses - Asynchronously process food removal to speed it up dramatically
 			await Promise.allSettled(
-				this.bossUsers.map(bu =>
-					bu.user.removeItemsFromBank(bu.itemsToRemove).catch(() => (bu.invalid = true))
-				)
+				this.bossUsers.map(bu => bu.user.removeItemsFromBank(bu.itemsToRemove).catch(() => (bu.invalid = true)))
 			);
 			this.bossUsers = this.bossUsers.filter(bu => !bu.invalid);
 			this.bossUsers.map(bu => totalCost.add(bu.itemsToRemove));
