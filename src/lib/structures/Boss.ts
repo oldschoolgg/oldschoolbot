@@ -448,12 +448,8 @@ export class BossInstance {
 		} else {
 			// Small masses that fail if a user has no food anymore.
 			for (const bossUser of this.bossUsers) {
-				try {
-					await bossUser.user.removeItemsFromBank(bossUser.itemsToRemove);
-					totalCost.add(bossUser.itemsToRemove);
-				} catch (e) {
-					throw e;
-				}
+				await bossUser.user.removeItemsFromBank(bossUser.itemsToRemove);
+				totalCost.add(bossUser.itemsToRemove);
 			}
 		}
 		if (this.settingsKeys) {
