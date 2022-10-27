@@ -658,7 +658,7 @@ export const adminCommand: OSBMahojiCommand = {
 
 			return `${action === 'add' ? 'Added' : 'Removed'} ${badgeName} ${badges[badgeID]} badge to ${
 				options.badges.user.user.username
-			}}.`;
+			}.`;
 		}
 
 		if (options.bypass_age) {
