@@ -43,6 +43,7 @@ const buttons = [
 export async function setupParty(channel: TextChannel, leaderUser: MUser, options: MakePartyOptions): Promise<MUser[]> {
 	const usersWhoConfirmed: string[] = [options.leader.id];
 	let deleted = false;
+	let massStarted = false;
 
 	function getMessageContent(): MessageOptions & MessageEditOptions {
 		return {
@@ -131,6 +132,8 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 			});
 
 			async function startTrip() {
+				if (massStarted) return;
+				massStarted = true;
 				await confirmMessage.delete().catch(noOp);
 				if (!partyCancelled && usersWhoConfirmed.length < options.minSize) {
 					channel.send(`${leaderUser} Not enough people joined your mass!`);
@@ -177,7 +180,10 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 					}
 
 					case 'PARTY_LEAVE': {
-						if (!usersWhoConfirmed.includes(interaction.user.id) || interaction.user.id === options.leader.id) {
+						if (
+							!usersWhoConfirmed.includes(interaction.user.id) ||
+							interaction.user.id === options.leader.id
+						) {
 							reply('You cannot leave this mass.');
 							return;
 						}
