@@ -284,7 +284,6 @@ export class BossInstance {
 		this.tempQty = this.quantity;
 		// Force qty to 1 for init calculations
 		this.quantity = this.calculateQty(this.baseDuration);
-		await this.validateTeam();
 		const { bossUsers, duration, totalPercent } = await this.calculateBossUsers();
 		this.quantity = this.calculateQty(duration);
 		this.duration = duration * this.quantity;
@@ -436,17 +435,26 @@ export class BossInstance {
 		await this.validateTeam();
 
 		const totalCost = new Bank();
-		for (const bossUser of this.bossUsers) {
-			try {
-				await bossUser.user.removeItemsFromBank(bossUser.itemsToRemove);
-				totalCost.add(bossUser.itemsToRemove);
-			} catch (e) {
-				if (!this.skipInvalidUsers) throw e;
-				bossUser.invalid = true;
-			}
-		}
+
 		if (this.skipInvalidUsers) {
+			// Handle big masses - Asynchronously process food removal to speed it up dramatically
+			await Promise.allSettled(
+				this.bossUsers.map(bu =>
+					bu.user.removeItemsFromBank(bu.itemsToRemove).catch(_res => (bu.invalid = true))
+				)
+			);
 			this.bossUsers = this.bossUsers.filter(bu => !bu.invalid);
+			this.bossUsers.map(bu => totalCost.add(bu.itemsToRemove));
+		} else {
+			// Small masses that fail if a user has no food anymore.
+			for (const bossUser of this.bossUsers) {
+				try {
+					await bossUser.user.removeItemsFromBank(bossUser.itemsToRemove);
+					totalCost.add(bossUser.itemsToRemove);
+				} catch (e) {
+					throw e;
+				}
+			}
 		}
 		if (this.settingsKeys) {
 			updateBankSetting(this.settingsKeys[0], totalCost);
