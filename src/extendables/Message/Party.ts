@@ -44,7 +44,6 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 	const usersWhoConfirmed: string[] = [options.leader.id];
 	let deleted = false;
 	const massTimeout = options.massTimeout ?? Time.Minute * 2;
-	let massStarted = false;
 
 	function getMessageContent(): MessageOptions & MessageEditOptions {
 		const userText =
@@ -134,8 +133,6 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 			});
 
 			async function startTrip() {
-				if (massStarted) return;
-				massStarted = true;
 				await confirmMessage.delete().catch(noOp);
 				if (!partyCancelled && usersWhoConfirmed.length < options.minSize) {
 					channel.send(`${leaderUser} Not enough people joined your mass!`);
