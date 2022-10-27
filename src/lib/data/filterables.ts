@@ -1,3 +1,4 @@
+import { gracefulItems } from '../skilling/skills/agility';
 import { BeginnerClueTable } from 'oldschooljs/dist/simulation/clues/Beginner';
 import { EasyClueTable } from 'oldschooljs/dist/simulation/clues/Easy';
 import { EliteClueTable } from 'oldschooljs/dist/simulation/clues/Elite';
@@ -12,7 +13,6 @@ import { DisassemblySourceGroups } from '../invention/groups';
 import { monkeyEatables } from '../monkeyRumble';
 import { allOpenables } from '../openables';
 import { GrandmasterClueTable } from '../simulation/grandmasterClue';
-import { gracefulItems } from '../skilling/skills/agility';
 import { Craftables } from '../skilling/skills/crafting/craftables';
 import { Fletchables } from '../skilling/skills/fletching/fletchables';
 import { ItemBank } from '../types';

@@ -1,4 +1,3 @@
-import { captureMessage } from '@sentry/minimal';
 import {
 	calcPercentOfNum,
 	calcWhatPercent,
@@ -21,6 +20,7 @@ import { Gear } from '../structures/Gear';
 import { Skills } from '../types';
 import { randomVariation } from '../util';
 import getOSItem from '../util/getOSItem';
+import { logError } from '../util/logError';
 
 export const bareMinStats: Skills = {
 	attack: 80,
@@ -106,7 +106,7 @@ export async function createTeam(
 
 		points = Math.floor(randomVariation(points, 5));
 		if (points < 1 || points > 60_000) {
-			captureMessage(`${u.usernameOrMention} had ${points} points in a team of ${users.length}.`);
+			logError(`${u.usernameOrMention} had ${points} points in a team of ${users.length}.`);
 			points = 10_000;
 		}
 
