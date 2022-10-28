@@ -1,5 +1,5 @@
 import { activity_type_enum } from '@prisma/client';
-import { ActionRowBuilder, AttachmentBuilder, ButtonBuilder, MessageCollector } from 'discord.js';
+import { AttachmentBuilder, ButtonBuilder, MessageCollector } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
@@ -11,6 +11,7 @@ import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
 import { triggerRandomEvent } from '../randomEvents';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
+import { AutoComponentGrid } from '../structures/AutoComponentGrid';
 import { ActivityTaskOptions } from '../types/minions';
 import { channelIsSendable } from '../util';
 import {
@@ -106,7 +107,7 @@ export async function handleTripFinish(
 	const channel = globalClient.channels.cache.get(channelID);
 	if (!channelIsSendable(channel)) return;
 
-	const components = new ActionRowBuilder<ButtonBuilder>();
+	const components = new AutoComponentGrid<ButtonBuilder>();
 	components.addComponents(makeRepeatTripButton());
 	const casketReceived = loot ? ClueTiers.find(i => loot?.has(i.id)) : undefined;
 	if (casketReceived) components.addComponents(makeOpenCasketButton(casketReceived));
@@ -125,6 +126,6 @@ export async function handleTripFinish(
 	sendToChannelID(channelID, {
 		content: message,
 		image: attachment,
-		components: components.components.length > 0 ? [components] : undefined
+		components: components.components.length > 0 ? components.outputComponents() : undefined
 	});
 }

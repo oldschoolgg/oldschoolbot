@@ -1,5 +1,5 @@
 import { activity_type_enum } from '@prisma/client';
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
+import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { percentChance, randInt, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
@@ -8,6 +8,7 @@ import { Emoji, Events } from '../../../lib/constants';
 import addSkillingClueToLoot from '../../../lib/minions/functions/addSkillingClueToLoot';
 import { determineMiningTime } from '../../../lib/skilling/functions/determineMiningTime';
 import { Ore, SkillsEnum } from '../../../lib/skilling/types';
+import { AutoComponentGrid } from '../../../lib/structures/AutoComponentGrid';
 import { ItemBank } from '../../../lib/types';
 import { ActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, itemNameFromID } from '../../../lib/util';
@@ -323,7 +324,7 @@ export const starCache = new Map<string, Star & { expiry: number }>();
 export function handleTriggerShootingStar(
 	user: MUserClass,
 	data: ActivityTaskOptions,
-	components: ActionRowBuilder<ButtonBuilder>
+	components: AutoComponentGrid<ButtonBuilder>
 ) {
 	if (activitiesCantGetStars.includes(data.type)) return;
 	const miningLevel = user.skillLevel(SkillsEnum.Mining);
