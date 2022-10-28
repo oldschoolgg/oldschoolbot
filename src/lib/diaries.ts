@@ -43,7 +43,7 @@ export async function userhasDiaryTier(user: MUser, tier: DiaryTier): Promise<[t
 			if (skills[skill[0]] < skill[1]!) failSkills[skill[0]] = skill[1]!;
 			canDo = false;
 		}
-		reasons.push(`\n- You don't have these stats: ${formatSkillRequirements(failSkills)!}`);
+		reasons.push(`You don't have these stats: ${formatSkillRequirements(failSkills)!}`);
 	}
 
 	const { bank } = user;
