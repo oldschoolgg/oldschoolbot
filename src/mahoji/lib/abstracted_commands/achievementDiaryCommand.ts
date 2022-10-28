@@ -132,7 +132,7 @@ export async function claimAchievementDiaryCommand(user: MUser, diaryName: strin
 			return `You successfully completed the ${name} and received ${loot}.`;
 		}
 
-		return `You can't claim the ${name} because ${reason}.`;
+		return `You can't claim the ${name} because: ${reason}.`;
 	}
 
 	return `You have already completed the entire ${diary.name} diary!`;
