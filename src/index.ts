@@ -115,7 +115,7 @@ client.on('interactionCreate', async interaction => {
 
 	if (isObject(result) && 'error' in result) {
 		if (result.error.message === SILENT_ERROR) return;
-		if (result.error instanceof UserError && interaction.isRepliable()) {
+		if (result.error instanceof UserError && interaction.isRepliable() && !interaction.replied) {
 			await interaction.reply(result.error.message);
 			return;
 		}
