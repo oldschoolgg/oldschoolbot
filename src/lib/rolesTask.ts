@@ -20,18 +20,14 @@ function addToUserMap(userMap: Record<string, string[]>, id: string, reason: str
 
 const minigames = Minigames.map(game => game.column).filter(i => i !== 'tithe_farm');
 
-const collections = [
-	'rolepets',
-	'skilling',
-	'clues',
-	'bosses',
-	'minigames',
-	'raids',
-	'Dyed Items',
-	'slayer',
-	'other',
-	'custom'
-];
+const collections = ['skilling', 'clues', 'minigames', 'raids', 'Dyed Items', 'slayer', 'other'];
+
+for (const cl of collections) {
+	const items = getCollectionItems(cl);
+	if (!items || items.length === 0) {
+		throw new Error(`${cl} isn't a valid CL.`);
+	}
+}
 
 const mostSlayerPointsQuery = `SELECT id, 'Most Points' as desc
 FROM users
