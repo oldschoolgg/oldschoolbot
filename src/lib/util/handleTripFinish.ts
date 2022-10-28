@@ -1,5 +1,5 @@
 import { activity_type_enum } from '@prisma/client';
-import { ActionRowBuilder, AttachmentBuilder, ButtonBuilder, MessageCollector } from 'discord.js';
+import { AttachmentBuilder, ButtonBuilder, MessageCollector } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
@@ -12,7 +12,7 @@ import { handlePassiveImplings } from '../implings';
 import { triggerRandomEvent } from '../randomEvents';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import { ActivityTaskOptions } from '../types/minions';
-import { channelIsSendable } from '../util';
+import { channelIsSendable, makeComponents } from '../util';
 import {
 	makeBirdHouseTripButton,
 	makeDoClueButton,
@@ -106,18 +106,18 @@ export async function handleTripFinish(
 	const channel = globalClient.channels.cache.get(channelID);
 	if (!channelIsSendable(channel)) return;
 
-	const components = new ActionRowBuilder<ButtonBuilder>();
-	components.addComponents(makeRepeatTripButton());
+	const components: ButtonBuilder[] = [];
+	components.push(makeRepeatTripButton());
 	const casketReceived = loot ? ClueTiers.find(i => loot?.has(i.id)) : undefined;
-	if (casketReceived) components.addComponents(makeOpenCasketButton(casketReceived));
+	if (casketReceived) components.push(makeOpenCasketButton(casketReceived));
 	if (perkTier > PerkTier.One) {
-		if (clueReceived.length > 0) clueReceived.map(clue => components.addComponents(makeDoClueButton(clue)));
+		if (clueReceived.length > 0) clueReceived.map(clue => components.push(makeDoClueButton(clue)));
 		const birdHousedetails = await calculateBirdhouseDetails(user.id);
 		if (birdHousedetails.isReady && !user.bitfield.includes(BitField.DisableBirdhouseRunButton))
-			components.addComponents(makeBirdHouseTripButton());
+			components.push(makeBirdHouseTripButton());
 		const { currentTask } = await getUsersCurrentSlayerInfo(user.id);
 		if ((currentTask === null || currentTask.quantity_remaining <= 0) && data.type === 'MonsterKilling') {
-			components.addComponents(makeNewSlayerTaskButton());
+			components.push(makeNewSlayerTaskButton());
 		}
 	}
 	handleTriggerShootingStar(user, data, components);
@@ -125,6 +125,6 @@ export async function handleTripFinish(
 	sendToChannelID(channelID, {
 		content: message,
 		image: attachment,
-		components: components.components.length > 0 ? [components] : undefined
+		components: components.length > 0 ? makeComponents(components) : undefined
 	});
 }
