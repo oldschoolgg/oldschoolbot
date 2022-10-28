@@ -576,7 +576,6 @@ export function minionStatus(user: MUser) {
 		case 'Easter':
 		case 'BlastFurnace': {
 			throw new Error('Removed');
-			throw new Error('Removed');
 		}
 	}
 }
