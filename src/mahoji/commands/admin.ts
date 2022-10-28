@@ -23,7 +23,6 @@ import { patreonTask } from '../../lib/patreon';
 import { runRolesTask } from '../../lib/rolesTask';
 import { countUsersWithItemInCl, prisma } from '../../lib/settings/prisma';
 import { cancelTask, minionActivityCacheDelete } from '../../lib/settings/settings';
-import { tickers } from '../../lib/tickers';
 import {
 	calcPerHour,
 	cleanString,
@@ -449,6 +448,19 @@ export const adminCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
+			name: 'ltc',
+			description: 'Ltc?',
+			options: [
+				{
+					...itemOption(),
+					name: 'item',
+					description: 'The item.',
+					required: false
+				}
+			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
 			name: 'double_loot',
 			description: 'Manage double loot',
 			options: [
@@ -505,19 +517,6 @@ export const adminCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
-			name: 'ltc',
-			description: 'Ltc?',
-			options: [
-				{
-					...itemOption(),
-					name: 'item',
-					description: 'The item.',
-					required: false
-				}
-			]
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
 			name: 'give_items',
 			description: 'Spawn items for a user',
 			options: [
@@ -563,8 +562,8 @@ export const adminCommand: OSBMahojiCommand = {
 		set_price?: { item: string; price: number };
 		most_active?: {};
 		bitfield?: { user: MahojiUserOption; add?: string; remove?: string };
-		double_loot?: { reset?: boolean; add?: string };
 		ltc?: { item?: string };
+		double_loot?: { reset?: boolean; add?: string };
 		view?: { thing: string };
 		// wipe_bingo_temp_cls?: {};
 		lottery_dump?: {};
@@ -866,9 +865,6 @@ LIMIT 10;
 		}
 		if (options.reboot) {
 			globalClient.isShuttingDown = true;
-			for (const ticker of tickers) {
-				if (ticker.timer) clearTimeout(ticker.timer);
-			}
 			await sleep(Time.Second * 20);
 			await interactionReply(interaction, {
 				content: 'https://media.discordapp.net/attachments/357422607982919680/1004657720722464880/freeze.gif'

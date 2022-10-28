@@ -437,6 +437,7 @@ export function initTickers() {
 		if (ticker.timer !== null) clearTimeout(ticker.timer);
 		const fn = async () => {
 			try {
+				if (globalClient.isShuttingDown) return;
 				await ticker.cb();
 			} catch (err) {
 				logError(err);

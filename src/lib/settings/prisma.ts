@@ -5,7 +5,7 @@ import { Bank } from 'oldschooljs';
 import { CLIENT_ID, production } from '../../config';
 import { ItemBank } from '../types';
 import { ActivityTaskData } from '../types/minions';
-import { cleanString } from '../util';
+import { cleanString } from '../util/cleanString';
 
 declare global {
 	namespace NodeJS {

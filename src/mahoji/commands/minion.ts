@@ -136,6 +136,11 @@ export const minionCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
+			name: 'stats',
+			description: 'Check the stats of your minion.'
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
 			name: 'achievementdiary',
 			description: 'Manage your achievement diary.',
 			options: [
