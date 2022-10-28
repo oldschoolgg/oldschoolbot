@@ -14,7 +14,7 @@ import { prisma } from '../../../lib/settings/prisma';
 import { Gear } from '../../../lib/structures/Gear';
 import { assert, formatSkillRequirements, isValidGearSetup, stringMatches, toTitleCase } from '../../../lib/util';
 import { gearEquipMultiImpl } from '../../../lib/util/equipMulti';
-import getOSItem, { getItem } from '../../../lib/util/getOSItem';
+import { getItem } from '../../../lib/util/getOSItem';
 import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 import { handleMahojiConfirmation, mahojiParseNumber } from '../../mahojiSettings';
@@ -357,8 +357,8 @@ export async function autoEquipCommand(user: MUser, gearSetup: GearSetupType, eq
 export async function gearStatsCommand(user: MUser, input: string): CommandResponse {
 	const gear = { ...defaultGear };
 	for (const name of input.split(',')) {
-		const item = getOSItem(name);
-		if (item.equipment) {
+		const item = getItem(name);
+		if (item && item.equipment) {
 			gear[item.equipment.slot] = { item: item.id, quantity: 1 };
 		}
 	}
