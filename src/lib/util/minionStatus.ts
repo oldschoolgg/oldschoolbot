@@ -570,8 +570,12 @@ export function minionStatus(user: MUser) {
 				durationRemaining
 			)}.`;
 		}
+		case 'HalloweenEvent': {
+			return `${name} is currently Trick-or-Treating! The trip should take ${formatDuration(durationRemaining)}.`;
+		}
 		case 'Easter':
 		case 'BlastFurnace': {
+			throw new Error('Removed');
 			throw new Error('Removed');
 		}
 	}
