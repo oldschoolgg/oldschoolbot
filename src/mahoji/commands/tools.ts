@@ -70,6 +70,7 @@ function dateDiff(first: number, second: number) {
 }
 
 async function giveBox(mahojiUser: MUser, _recipient: MahojiUserOption) {
+	if (!_recipient) return 'You need to specify a user to give a box to.';
 	const recipient = await mUserFetch(_recipient.user.id);
 	if (!isPrimaryPatron(mahojiUser)) {
 		return 'Shared-perk accounts cannot use this.';
