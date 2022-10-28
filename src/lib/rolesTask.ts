@@ -33,6 +33,13 @@ const collections = [
 	'custom'
 ];
 
+for (const cl of collections) {
+	const items = getCollectionItems(cl);
+	if (!items || items.length === 0) {
+		throw new Error(`${cl} isn't a valid CL.`);
+	}
+}
+
 const mostSlayerPointsQuery = `SELECT id, 'Most Points' as desc
 FROM users
 WHERE "slayer.points" > 50
