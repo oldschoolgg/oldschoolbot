@@ -11,6 +11,7 @@ import {
 	reduceNumByPercent,
 	Time
 } from 'e';
+import { readFileSync } from 'fs';
 import { readFile } from 'fs/promises';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
@@ -60,6 +61,8 @@ import resolveItems from '../../lib/util/resolveItems';
 import { collectables } from '../lib/abstracted_commands/collectCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { handleMahojiConfirmation, updateBankSetting } from '../mahojiSettings';
+
+const tameImageSize = 96;
 
 async function tameAutocomplete(value: string, user: User) {
 	const tames = await prisma.tame.findMany({
@@ -190,6 +193,13 @@ const feedingEasterEggs: [Bank, number, tame_growth[], string][] = [
 		[tame_growth.juvenile, tame_growth.adult],
 		'https://c.tenor.com/ZHBDNOEv_m4AAAAM/monkey-monke.gif'
 	]
+];
+
+const tameForegrounds = [
+	{
+		shouldActivate: (t: Tame) => t.nickname?.toLowerCase() === 'smaug' && t.species_id === TameSpeciesID.Igne,
+		image: readFileSync('./src/lib/resources/images/tames/foreground_1.png')
+	}
 ];
 
 // eslint-disable-next-line @typescript-eslint/init-declarations
@@ -340,12 +350,16 @@ export async function tameImage(user: MUser): CommandResponse {
 
 		const tameX = (10 + 256) * x + (isTameActive ? 96 : 256 - 96) / 2;
 		const tameY = (10 + 128) * y + 10;
-		const tameImageSize = 96;
+
 		const tameImage = sprites
 			.tames!.find(t => t.id === species.id)!
 			.sprites.find(f => f.type === t.species_variant)!.growthStage[t.growth_stage];
 		// Draw tame
 		ctx.drawImage(tameImage, tameX, tameY, tameImageSize, tameImageSize);
+		const foreground = tameForegrounds.find(i => i.shouldActivate(t));
+		if (foreground) {
+			ctx.drawImage(await loadImage(foreground.image), tameX, tameY, tameImageSize, tameImageSize);
+		}
 
 		// Draw tame name / level / stats
 		ctx.fillStyle = '#ffffff';
