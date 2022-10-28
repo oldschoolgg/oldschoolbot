@@ -483,6 +483,10 @@ export const tripHandlers = {
 			quantity: data.quantity,
 			powerchop: data.powerchopping
 		})
+	},
+	[activity_type_enum.HalloweenEvent]: {
+		commandName: 'trickortreat',
+		args: () => ({ start: {} })
 	}
 } as const;
 

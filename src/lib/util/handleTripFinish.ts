@@ -85,15 +85,15 @@ export async function handleTripFinish(
 	const messages: string[] = [];
 	for (const effect of tripFinishEffects) await effect.fn({ data, user, loot, messages });
 
-	const clueReceived = loot ? ClueTiers.find(tier => loot.amount(tier.scrollID) > 0) : undefined;
+	const clueReceived = loot ? ClueTiers.filter(tier => loot.amount(tier.scrollID) > 0) : [];
 
 	if (_messages) messages.push(..._messages);
 	if (messages.length > 0) {
 		message += `\n**Messages:** ${messages.join(', ')}`;
 	}
 
-	if (clueReceived && perkTier < PerkTier.Two) {
-		message += `\n${Emoji.Casket} **You got a ${clueReceived.name} clue scroll** in your loot.`;
+	if (clueReceived.length > 0 && perkTier < PerkTier.Two) {
+		clueReceived.map(clue => (message += `\n${Emoji.Casket} **You got a ${clue.name} clue scroll** in your loot.`));
 	}
 
 	const existingCollector = collectors.get(user.id);
@@ -111,7 +111,7 @@ export async function handleTripFinish(
 	const casketReceived = loot ? ClueTiers.find(i => loot?.has(i.id)) : undefined;
 	if (casketReceived) components.addComponents(makeOpenCasketButton(casketReceived));
 	if (perkTier > PerkTier.One) {
-		if (clueReceived) components.addComponents(makeDoClueButton(clueReceived));
+		if (clueReceived.length > 0) clueReceived.map(clue => components.addComponents(makeDoClueButton(clue)));
 		const birdHousedetails = await calculateBirdhouseDetails(user.id);
 		if (birdHousedetails.isReady && !user.bitfield.includes(BitField.DisableBirdhouseRunButton))
 			components.addComponents(makeBirdHouseTripButton());
