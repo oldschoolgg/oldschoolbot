@@ -146,6 +146,10 @@ export class MUserClass {
 		return new Bank(this.user.bank as ItemBank);
 	}
 
+	get sacrificedItems() {
+		return new Bank(this.user.sacrificedBank as ItemBank);
+	}
+
 	get cl() {
 		return new Bank(this.user.collectionLogBank as ItemBank);
 	}

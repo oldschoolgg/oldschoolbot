@@ -133,7 +133,7 @@ export const bankCommand: OSBMahojiCommand = {
 		if (!options.page) options.page = 1;
 
 		if (baseBank.length === 0) {
-			return `You have no items or GP yet ${Emoji.Sad} You can get some GP by using the +daily command, and you can get items by sending your minion to do tasks.`;
+			return `You have no items or GP yet ${Emoji.Sad} You can get some GP by using the \`/minion daily\` command, and you can get items by sending your minion to do tasks.`;
 		}
 
 		const bank = parseBank({
@@ -207,17 +207,19 @@ export const bankCommand: OSBMahojiCommand = {
 		const result = await getBankPage(params);
 
 		const channel = globalClient.channels.cache.get(channelID);
+		const bankSize = Math.ceil(bank.length / 56);
+
 		if (
 			!channel ||
 			!channelIsSendable(channel) ||
 			options.flag === 'show_all' ||
 			options.flag_extra === 'wide' ||
-			klasaUser.perkTier < PerkTier.Four
+			klasaUser.perkTier < PerkTier.Four ||
+			bankSize === 1
 		) {
 			return result;
 		}
 
-		const bankSize = Math.ceil(bank.length / 56);
 		const m = new PaginatedMessage({
 			pages: {
 				numPages: bankSize,
