@@ -9,6 +9,7 @@ import MediumClueTable from 'oldschooljs/dist/simulation/clues/Medium';
 import { ChambersOfXeric, Nightmare, TheatreOfBlood } from 'oldschooljs/dist/simulation/misc';
 import { EliteMimicTable, MasterMimicTable } from 'oldschooljs/dist/simulation/misc/Mimic';
 
+import { rollNaxxusLoot } from '../tasks/minions/bso/naxxusActivity';
 import { allCollectionLogsFlat } from './data/Collections';
 import {
 	chambersOfXericCL,
@@ -21,6 +22,7 @@ import {
 	cluesMediumCL,
 	evilChickenOutfit,
 	moktangCL,
+	naxxusCL,
 	temporossCL,
 	theatreOfBLoodCL,
 	theGauntletCL,
@@ -30,6 +32,7 @@ import {
 } from './data/CollectionsExport';
 import pets from './data/pets';
 import { MoktangLootTable } from './minions/data/killableMonsters/custom/bosses/Moktang';
+import { Naxxus } from './minions/data/killableMonsters/custom/bosses/Naxxus';
 import { birdsNestID, treeSeedsNest } from './simulation/birdsNest';
 import { gauntlet } from './simulation/gauntlet';
 import { getTemporossLoot } from './simulation/tempoross';
@@ -131,8 +134,8 @@ export const finishables: Finishable[] = [
 		name: 'Wintertodt (500pt crates, Max stats)',
 		cl: wintertodtCL,
 		aliases: ['todt', 'wintertodt', 'wt'],
-		kill: ({ accumulatedLoot }) =>
-			new Bank(
+		kill: ({ accumulatedLoot }) => {
+			const loot = new Bank(
 				WintertodtCrate.open({
 					points: 500,
 					itemsOwned: accumulatedLoot.bank,
@@ -146,7 +149,17 @@ export const finishables: Finishable[] = [
 						farming: 99
 					}
 				})
-			)
+			);
+			// Wintertoad: Assume 1 game per 5 minutes, Wintertoad rate is 1 in 3k minutes
+			if (roll(600)) loot.add('Wintertoad');
+			return loot;
+		}
+	},
+	{
+		name: Naxxus.name,
+		cl: naxxusCL,
+		aliases: Naxxus.aliases,
+		kill: ({ accumulatedLoot }) => rollNaxxusLoot(1, accumulatedLoot)
 	},
 	{
 		name: 'Moktang',
