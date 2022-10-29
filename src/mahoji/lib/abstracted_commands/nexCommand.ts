@@ -1,12 +1,10 @@
 import { ChatInputCommandInteraction } from 'discord.js';
 import { increaseNumByPercent, reduceNumByPercent, round, Time } from 'e';
 import { Bank } from 'oldschooljs';
-import { resolveNameBank } from 'oldschooljs/dist/util';
 
 import { setupParty } from '../../../extendables/Message/Party';
 import { gorajanArcherOutfit, pernixOutfit } from '../../../lib/data/CollectionsExport';
 import { calculateMonsterFood } from '../../../lib/minions/functions';
-import hasEnoughFoodForMonster from '../../../lib/minions/functions/hasEnoughFoodForMonster';
 import { KillableMonster } from '../../../lib/minions/types';
 import { NexMonster } from '../../../lib/nex';
 import { trackLoot } from '../../../lib/settings/prisma';
@@ -39,14 +37,34 @@ function checkReqs(users: MUser[], monster: KillableMonster, quantity: number): 
 			return `${user} doesn't have a Frozen key.`;
 		}
 
-		if (!hasEnoughFoodForMonster(monster, user, quantity, users.length)) {
+		const potionsRequired = calcFood(user, users.length, quantity);
+		if (!user.bank.has(potionsRequired)) {
 			return `${
 				users.length === 1 ? "You don't" : `${user.usernameOrMention} doesn't`
-			} have enough brews/restores. You need at least ${monster.healAmountNeeded! * quantity} HP in food to ${
+			} have enough brews/restores. You need at least ${potionsRequired} to ${
 				users.length === 1 ? 'start the mass' : 'enter the mass'
 			}.`;
 		}
 	}
+}
+
+function calcFood(user: MUser, teamSize: number, quantity: number) {
+	let [healAmountNeeded] = calculateMonsterFood(NexMonster, user);
+	const kc = user.getKC(NexMonster.id);
+	if (kc > 50) healAmountNeeded *= 0.5;
+	else if (kc > 30) healAmountNeeded *= 0.6;
+	else if (kc > 15) healAmountNeeded *= 0.7;
+	else if (kc > 10) healAmountNeeded *= 0.8;
+	else if (kc > 5) healAmountNeeded *= 0.9;
+	healAmountNeeded /= (teamSize + 1) / 1.5;
+
+	const brewsNeeded = Math.ceil(healAmountNeeded / 16) * quantity;
+	const restoresNeeded = Math.ceil(brewsNeeded / 3);
+	const items = new Bank({
+		'Saradomin brew(4)': brewsNeeded,
+		'Super restore(4)': restoresNeeded
+	});
+	return items;
 }
 
 export async function nexCommand(
@@ -95,15 +113,11 @@ export async function nexCommand(
 					return [true, err];
 				}
 
-				// Ensure people have enough food for at least 2 full KC
-				// This makes it so the users will always have enough food for any amount of KC
-				if (!hasEnoughFoodForMonster(NexMonster, user, 2)) {
-					return [
-						true,
-						`You don't have enough food. You need at least ${
-							NexMonster.healAmountNeeded * 2
-						} HP in food to enter the mass.`
-					];
+				// Ensure people have enough food for at least 10 kills.
+				// We don't want to overshoot, as the mass will still fail if there's not enough food
+				const potionReq = calcFood(user, 1, 10);
+				if (!user.bank.has(potionReq)) {
+					return [true, `You don't have enough food. You need at least ${potionReq} to Join the mass.`];
 				}
 			}
 
@@ -254,53 +268,17 @@ export async function nexCommand(
 	let foodString = 'Removed brews/restores from users: ';
 	let foodRemoved = [];
 	for (const user of users) {
-		let [healAmountNeeded] = calculateMonsterFood(NexMonster, user);
-		const kc = user.getKC(NexMonster.id);
-		if (kc > 50) healAmountNeeded *= 0.5;
-		else if (kc > 30) healAmountNeeded *= 0.6;
-		else if (kc > 15) healAmountNeeded *= 0.7;
-		else if (kc > 10) healAmountNeeded *= 0.8;
-		else if (kc > 5) healAmountNeeded *= 0.9;
-		if (users.length > 1) {
-			healAmountNeeded /= (users.length + 1) / 1.5;
-		}
-
-		const brewsNeeded = Math.ceil(healAmountNeeded / 16) * quantity;
-		const restoresNeeded = Math.ceil(brewsNeeded / 3);
-		if (
-			!user.bank.has(
-				resolveNameBank({
-					'Saradomin brew(4)': brewsNeeded,
-					'Super restore(4)': restoresNeeded
-				})
-			)
-		) {
+		const food = calcFood(user, users.length, quantity);
+		if (!user.bank.has(food)) {
 			throw `${user.usernameOrMention} doesn't have enough brews or restores.`;
 		}
 	}
 	const totalCost = new Bank();
 	for (const user of users) {
-		let [healAmountNeeded] = calculateMonsterFood(NexMonster, user);
-		const kc = user.getKC(NexMonster.id);
-		if (kc > 50) healAmountNeeded *= 0.5;
-		else if (kc > 30) healAmountNeeded *= 0.6;
-		else if (kc > 15) healAmountNeeded *= 0.7;
-		else if (kc > 10) healAmountNeeded *= 0.8;
-		else if (kc > 5) healAmountNeeded *= 0.9;
-
-		if (users.length > 1) {
-			healAmountNeeded /= (users.length + 1) / 1.5;
-		}
-
-		const brewsNeeded = Math.ceil(healAmountNeeded / 16) * quantity;
-		const restoresNeeded = Math.ceil(brewsNeeded / 3);
-		const items = new Bank({
-			'Saradomin brew(4)': brewsNeeded,
-			'Super restore(4)': restoresNeeded
-		});
-		totalCost.add(items);
-		await user.removeItemsFromBank(items);
-		foodRemoved.push(`${brewsNeeded}/${restoresNeeded} from ${user.usernameOrMention}`);
+		const food = calcFood(user, users.length, quantity);
+		totalCost.add(food);
+		await user.removeItemsFromBank(food);
+		foodRemoved.push(`${food} from ${user.usernameOrMention}`);
 	}
 
 	await trackLoot({
