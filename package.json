@@ -18,7 +18,6 @@
 		"@sapphire/discord-utilities": "^2.8.0",
 		"@sapphire/stopwatch": "^1.4.0",
 		"@sapphire/time-utilities": "^1.6.0",
-		"@sapphire/type": "^2.1.2",
 		"@sentry/node": "^7.16.0",
 		"@sinclair/typebox": "^0.12.9",
 		"bufferutil": "^4.0.6",

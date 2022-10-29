@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { codeBlock, inlineCode } from '@discordjs/builders';
+import { codeBlock } from '@discordjs/builders';
 import { ClientStorage } from '@prisma/client';
 import { Stopwatch } from '@sapphire/stopwatch';
 import { Duration } from '@sapphire/time-utilities';
-import Type from '@sapphire/type';
 import { isThenable } from '@sentry/utils';
 import { escapeCodeBlock } from 'discord.js';
 import { randArrItem, sleep, Time, uniqueArr } from 'e';
@@ -66,13 +65,11 @@ async function unsafeEval({ userID, code }: { userID: string; code: string }) {
 	let result = null;
 	let thenable = false;
 	// eslint-disable-next-line @typescript-eslint/init-declarations
-	let type!: Type;
 	try {
 		code = `\nconst {Bank} = require('oldschooljs');\n${code}`;
 		// eslint-disable-next-line no-eval
 		result = eval(code);
 		syncTime = stopwatch.toString();
-		type = new Type(result);
 		if (isThenable(result)) {
 			thenable = true;
 			stopwatch.restart();
@@ -81,7 +78,6 @@ async function unsafeEval({ userID, code }: { userID: string; code: string }) {
 		}
 	} catch (error: any) {
 		if (!syncTime) syncTime = stopwatch.toString();
-		if (!type) type = new Type(error);
 		if (thenable && !asyncTime) asyncTime = stopwatch.toString();
 		if (error && error.stack) logError(error);
 		result = error;
@@ -108,7 +104,6 @@ async function unsafeEval({ userID, code }: { userID: string; code: string }) {
 
 	return {
 		content: `${codeBlock(escapeCodeBlock(result))}
-**Type:** ${inlineCode(type.toString())}
 **Time:** ${asyncTime ? `⏱ ${asyncTime}<${syncTime}>` : `⏱ ${syncTime}`}
 `
 	};
