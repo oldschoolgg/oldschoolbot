@@ -4,13 +4,14 @@ import { Bank } from 'oldschooljs';
 
 import TrekShopItems, { TrekExperience } from '../../../lib/data/buyables/trekBuyables';
 import { MorytaniaDiary, userhasDiaryTier } from '../../../lib/diaries';
-import { GearStat, readableStatName } from '../../../lib/gear';
+import { GearStat } from '../../../lib/gear/types';
 import { difficulties, rewardTokens, trekBankBoosts } from '../../../lib/minions/data/templeTrekking';
 import { AddXpParams, GearRequirement } from '../../../lib/minions/types';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
+import { readableStatName } from '../../../lib/structures/Gear';
 import { TempleTrekkingActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, itemNameFromID, percentChance, rand, stringMatches } from '../../../lib/util';
+import { formatDuration, percentChance, rand, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { handleMahojiConfirmation, userHasGracefulEquipped } from '../../mahojiSettings';
@@ -97,9 +98,9 @@ export async function trekCommand(user: MUser, channelID: string, difficulty: st
 
 	tripTime = reduceNumByPercent(tripTime, percentFaster);
 
-	for (const [id, percent] of objectEntries(trekBankBoosts)) {
-		if (user.hasEquippedOrInBank([Number(id)])) {
-			boosts.push(`${percent}% for ${itemNameFromID(Number(id))}`);
+	for (const [item, percent] of trekBankBoosts.items()) {
+		if (user.hasEquippedOrInBank(item.id)) {
+			boosts.push(`${percent}% for ${item.name}`);
 			tripTime = reduceNumByPercent(tripTime, percent);
 		}
 	}

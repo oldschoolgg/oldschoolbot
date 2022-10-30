@@ -3,15 +3,8 @@ import { objectEntries, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { ItemBank } from '../../../lib/types';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import {
-	formatDuration,
-	formatSkillRequirements,
-	hasSkillReqs,
-	resolveNameBank,
-	stringMatches
-} from '../../../lib/util';
+import { formatDuration, formatSkillRequirements, hasSkillReqs, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { handleMahojiConfirmation } from '../../mahojiSettings';
@@ -24,72 +17,72 @@ const skillReqs = {
 
 export const VolcanicMineGameTime = Time.Minute * 10;
 
-export const VolcanicMineShop: { name: string; output: ItemBank; cost: number; clOnly?: boolean; addToCl?: true }[] = [
+export const VolcanicMineShop: { name: string; output: Bank; cost: number; clOnly?: boolean; addToCl?: true }[] = [
 	{
 		name: 'Iron ore',
-		output: resolveNameBank({ 'Iron ore': 1 }),
+		output: new Bank({ 'Iron ore': 1 }),
 		cost: 30
 	},
 	{
 		name: 'Silver ore',
-		output: resolveNameBank({ 'Silver ore': 1 }),
+		output: new Bank({ 'Silver ore': 1 }),
 		cost: 55
 	},
 	{
 		name: 'Coal',
-		output: resolveNameBank({ Coal: 1 }),
+		output: new Bank({ Coal: 1 }),
 		cost: 60
 	},
 	{
 		name: 'Gold ore',
-		output: resolveNameBank({ 'Gold ore': 1 }),
+		output: new Bank({ 'Gold ore': 1 }),
 		cost: 150
 	},
 	{
 		name: 'Mithril ore',
-		output: resolveNameBank({ 'Mithril ore': 1 }),
+		output: new Bank({ 'Mithril ore': 1 }),
 		cost: 150
 	},
 	{
 		name: 'Adamantite ore',
-		output: resolveNameBank({ 'Adamantite ore': 1 }),
+		output: new Bank({ 'Adamantite ore': 1 }),
 		cost: 300
 	},
 	{
 		name: 'Runite ore',
-		output: resolveNameBank({ 'Runite ore': 1 }),
+		output: new Bank({ 'Runite ore': 1 }),
 		cost: 855
 	},
 	{
 		name: 'Volcanic ash',
-		output: resolveNameBank({ 'Volcanic ash': 1 }),
+		output: new Bank({ 'Volcanic ash': 1 }),
 		cost: 40
 	},
 	{
 		name: 'Calcite',
-		output: resolveNameBank({ Calcite: 1 }),
+		output: new Bank({ Calcite: 1 }),
 		cost: 70
 	},
 	{
 		name: 'Pyrophosphite',
-		output: resolveNameBank({ Pyrophosphite: 1 }),
+		output: new Bank({ Pyrophosphite: 1 }),
 		cost: 70
 	},
 	{
 		name: 'Volcanic mine teleport',
-		output: resolveNameBank({ 'Volcanic mine teleport': 1 }),
+		output: new Bank({ 'Volcanic mine teleport': 1 }),
 		cost: 200,
 		addToCl: true
 	},
 	{
 		name: 'Large water container',
-		output: resolveNameBank({ 'Large water container': 1 }),
+		output: new Bank({ 'Large water container': 1 }),
 		cost: 10_000,
 		clOnly: true
 	},
 	{
 		name: 'Ash covered tome',
-		output: resolveNameBank({ 'Ash covered tome': 1 }),
+		output: new Bank({ 'Ash covered tome': 1 }),
 		cost: 40_000,
 		clOnly: true
 	}

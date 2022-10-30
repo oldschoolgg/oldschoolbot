@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 
 import { SkillsEnum } from '../../lib/skilling/types';
-import { SawmillActivityTaskOptions } from '../../lib/types/minions';
+import type { SawmillActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export const sawmillTask: MinionTask = {
