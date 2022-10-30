@@ -1,8 +1,7 @@
 import { Time } from 'e';
 
 import { BitField, PerkTier } from '../src/lib/constants';
-import { MUserClass } from '../src/lib/MUser';
-import getUsersPerkTier from '../src/lib/util/getUsersPerkTier';
+import { getUsersPerkTier, MUserClass } from '../src/lib/MUser';
 import { mockMUser } from './utils';
 
 describe('getUsersPerkTier', () => {
@@ -16,6 +15,6 @@ describe('getUsersPerkTier', () => {
 		const user = mockMUser({ premium_balance_expiry_date: Date.now() + Time.Day, premium_balance_tier: 3 });
 		expect(user instanceof MUserClass).toEqual(true);
 		expect(user.user.premium_balance_tier !== null).toEqual(true);
-		expect(getUsersPerkTier(user)).toEqual(PerkTier.Four);
+		expect(user.perkTier()).toEqual(PerkTier.Four);
 	});
 });

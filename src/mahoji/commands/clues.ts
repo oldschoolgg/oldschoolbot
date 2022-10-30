@@ -2,7 +2,7 @@ import { Embed } from '@discordjs/builders';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Hiscores } from 'oldschooljs';
 
-import { toTitleCase } from '../../lib/util';
+import { toTitleCase } from '../../lib/util/toTitleCase';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const cluesCommand: OSBMahojiCommand = {

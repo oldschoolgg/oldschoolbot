@@ -5,7 +5,7 @@ import { itemID } from 'oldschooljs/dist/util';
 import { updateBankSetting } from '../../../mahoji/mahojiSettings';
 import { Emoji } from '../../constants';
 import { Eatables } from '../../data/eatables';
-import { GearSetupType } from '../../gear';
+import { GearSetupType } from '../../gear/types';
 import { UserError } from '../../UserError';
 import getUserFoodFromBank from './getUserFoodFromBank';
 

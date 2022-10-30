@@ -1,5 +1,4 @@
 import { Bank } from 'oldschooljs';
-import { resolveNameBank } from 'oldschooljs/dist/util';
 
 import { SkillsEnum } from '../../lib/skilling/types';
 import { AlchingActivityTaskOptions } from '../../lib/types/minions';
@@ -29,7 +28,7 @@ export const alchingTask: MinionTask = {
 			}
 
 			if (savedRunes > 0) {
-				const returnedRunes = resolveNameBank({
+				const returnedRunes = new Bank({
 					'Nature rune': savedRunes
 				});
 

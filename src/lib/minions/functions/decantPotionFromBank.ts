@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import { stringMatches } from '../../util';
+import { stringMatches } from '../../util/cleanString';
 import Potions from '../data/potions';
 
 export default function decantPotionFromBank(
