@@ -491,6 +491,10 @@ export const tripHandlers = {
 			quantity: data.quantity,
 			powerchop: data.powerchopping
 		})
+	},
+	[activity_type_enum.HalloweenEvent]: {
+		commandName: 'trickortreat',
+		args: () => ({ start: {} })
 	}
 } as const;
 
@@ -536,7 +540,7 @@ export async function fetchRepeatTrips(userID: string) {
 export async function makeRepeatTripButtons(user: MUser) {
 	const trips = await fetchRepeatTrips(user.id);
 	const buttons: ButtonBuilder[] = [];
-	const limit = Math.min(user.perkTier + 1, 5);
+	const limit = Math.min(user.perkTier() + 1, 5);
 	for (const trip of trips.slice(0, limit)) {
 		buttons.push(
 			new ButtonBuilder()

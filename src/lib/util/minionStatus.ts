@@ -69,8 +69,9 @@ import {
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '../types/minions';
-import { formatDuration, itemNameFromID, randomVariation, toTitleCase } from '../util';
+import { formatDuration, itemNameFromID, randomVariation } from '../util';
 import { stringMatches } from './cleanString';
+import { toTitleCase } from './toTitleCase';
 
 export function minionStatus(user: MUser) {
 	const currentTask = getActivityOfUser(user.id);
@@ -579,6 +580,9 @@ export function minionStatus(user: MUser) {
 			return `${name} is currently mining a Crashed Star. The trip should take ${formatDuration(
 				durationRemaining
 			)}.`;
+		}
+		case 'HalloweenEvent': {
+			return `${name} is currently Trick-or-Treating! The trip should take ${formatDuration(durationRemaining)}.`;
 		}
 		case 'Easter':
 		case 'BlastFurnace': {

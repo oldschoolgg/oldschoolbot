@@ -151,9 +151,7 @@ const inhibitors: Inhibitor[] = [
 			if (!guild || guild.id !== SupportServer) return false;
 			if (channel.id !== Channel.General) return false;
 
-			const { perkTier } = user;
-
-			if (member && perkTier >= PerkTier.Two) {
+			if (member && user.perkTier() >= PerkTier.Two) {
 				return false;
 			}
 

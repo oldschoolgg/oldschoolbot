@@ -42,6 +42,11 @@ if (SENTRY_DSN) {
 	});
 }
 
+if (process.env.TZ !== 'UTC') {
+	console.error('Must be using UTC timezone');
+	process.exit(1);
+}
+
 const client = new OldSchoolBotClient(clientOptions);
 
 export const mahojiClient = new MahojiClient({
@@ -115,7 +120,7 @@ client.on('interactionCreate', async interaction => {
 
 	if (isObject(result) && 'error' in result) {
 		if (result.error.message === SILENT_ERROR) return;
-		if (result.error instanceof UserError && interaction.isRepliable()) {
+		if (result.error instanceof UserError && interaction.isRepliable() && !interaction.replied) {
 			await interaction.reply(result.error.message);
 			return;
 		}
