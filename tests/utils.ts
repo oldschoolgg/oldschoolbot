@@ -1,11 +1,12 @@
 import { Prisma, User } from '@prisma/client';
 import { mockRandom, resetMockRandom } from 'jest-mock-random';
+import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import murmurhash from 'murmurhash';
 import { Bank } from 'oldschooljs';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
 
 import { BitField } from '../src/lib/constants';
-import { GearSetup } from '../src/lib/gear/types';
+import type { GearSetup } from '../src/lib/gear/types';
 import { MUserClass } from '../src/lib/MUser';
 import { filterGearSetup, Gear, PartialGearSetup } from '../src/lib/structures/Gear';
 import type { OSBMahojiCommand } from '../src/mahoji/lib/util';
@@ -34,6 +35,7 @@ interface MockUserArgs {
 export const mockUser = (overrides?: MockUserArgs): User => {
 	const gearMelee = filterGearSetup(overrides?.meleeGear);
 	return {
+		cl: {},
 		gear_fashion: new Gear().raw() as Prisma.JsonValue,
 		gear_mage: new Gear().raw() as Prisma.JsonValue,
 		gear_melee: new Gear(gearMelee).raw() as Prisma.JsonValue,
@@ -94,12 +96,15 @@ export const mockUserMap = new Map<string, MUser>();
 export async function testRunCmd({
 	cmd,
 	opts,
-	user
+	user,
+	result
 }: {
 	cmd: OSBMahojiCommand;
 	opts: any;
 	user?: Omit<MockUserArgs, 'id'>;
+	result: Awaited<CommandResponse>;
 }) {
+	mockRandom([0.5]);
 	const hash = murmurhash(JSON.stringify({ name: cmd.name, opts, user })).toString();
 	const mockedUser = mockMUser({ id: hash, ...user });
 	mockUserMap.set(hash, mockedUser);
@@ -110,13 +115,7 @@ export async function testRunCmd({
 		options: opts
 	};
 
-	return cmd.run(options);
-}
-
-export function commandTestSetup() {
-	mockRandom([0.5]);
-}
-
-export function commandTestTeardown() {
+	const commandResponse = await cmd.run(options);
 	resetMockRandom();
+	return expect(commandResponse).toEqual(result);
 }

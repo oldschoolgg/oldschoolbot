@@ -20,8 +20,7 @@ module.exports = {
 		"./src/lib/structures/Gear.ts",
 		"./src/lib/util/parseStringBank.ts",
 		"./src/lib/util/buyLimit.ts",
-		"./src/lib/util/equipMulti.ts",
-		"./src/mahoji/commands/fish.ts"
+		"./src/lib/util/equipMulti.ts"
 	],
 	coverageThreshold: {
     	global: {

@@ -1,7 +1,6 @@
 import '../src/lib/data/itemAliases';
 
 import { PrismaClient } from '@prisma/client';
-import { randInt } from 'e';
 import { mockDeep } from 'jest-mock-extended';
 
 import { mockMUser, mockUserMap } from './utils';
@@ -26,7 +25,26 @@ jest.mock('../src/lib/util/addSubTaskToActivityTask.ts', () => ({
 	default: () => {}
 }));
 
-jest.mock('../src/lib/util.ts', () => ({
-	__esModule: true,
-	rand: (min: number, max: number) => randInt(min, max)
-}));
+jest.mock('../src/lib/util.ts', () => {
+	const originalModule = jest.requireActual('../src/lib/util.ts');
+	return {
+		__esModule: true,
+		...originalModule
+	};
+});
+
+async function mockTransactItems() {
+	return { newUser: {} };
+}
+
+jest.mock('../src/mahoji/mahojiSettings.ts', () => {
+	const originalModule = jest.requireActual('../src/lib/util.ts');
+	return {
+		__esModule: true,
+		...originalModule,
+		transactItems: mockTransactItems
+	};
+});
+
+// @ts-ignore Mock
+global.transactItems = mockTransactItems;
