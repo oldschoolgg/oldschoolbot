@@ -3,7 +3,8 @@ import { Bank, Monsters } from 'oldschooljs';
 
 import { diaries, DiaryTier, userhasDiaryTier } from '../../../lib/diaries';
 import { Minigames } from '../../../lib/settings/minigames';
-import { formatSkillRequirements, itemNameFromID, stringMatches, toTitleCase } from '../../../lib/util';
+import { formatSkillRequirements, itemNameFromID, stringMatches } from '../../../lib/util';
+import { toTitleCase } from '../../../lib/util/toTitleCase';
 
 const lampRewards = {
 	Easy: 'Antique lamp 1',

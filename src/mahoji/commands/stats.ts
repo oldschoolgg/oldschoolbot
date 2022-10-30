@@ -2,8 +2,8 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Hiscores } from 'oldschooljs';
 import { AccountType } from 'oldschooljs/dist/meta/types';
 
-import { toTitleCase } from '../../lib/util';
 import { statsEmbed } from '../../lib/util/statsEmbed';
+import { toTitleCase } from '../../lib/util/toTitleCase';
 import { OSBMahojiCommand } from '../lib/util';
 
 const accountTypeOptions = Object.values(AccountType).map(val => {

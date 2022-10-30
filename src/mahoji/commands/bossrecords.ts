@@ -6,8 +6,9 @@ import { Hiscores } from 'oldschooljs';
 import { bossNameMap } from 'oldschooljs/dist/constants';
 
 import pets from '../../lib/data/pets';
-import { channelIsSendable, makePaginatedMessage, toTitleCase } from '../../lib/util';
+import { channelIsSendable, makePaginatedMessage } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
+import { toTitleCase } from '../../lib/util/toTitleCase';
 import { OSBMahojiCommand } from '../lib/util';
 
 // Emojis for bosses with no pets

@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import { deepClone, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
@@ -8,7 +8,7 @@ import announceLoot from '../../lib/minions/functions/announceLoot';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { filterLootReplace } from '../../lib/slayer/slayerUtil';
 import { Gear } from '../../lib/structures/Gear';
-import { RevenantOptions } from '../../lib/types/minions';
+import type { RevenantOptions } from '../../lib/types/minions';
 import { hasSkillReqs } from '../../lib/util';
 import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLostOnDeathWilderness';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
