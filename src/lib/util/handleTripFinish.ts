@@ -14,7 +14,7 @@ import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import { ActivityTaskOptions } from '../types/minions';
 import { channelIsSendable } from '../util';
 import {
-	canRunAutoContract,
+	makeAutoContractButton,
 	makeBirdHouseTripButton,
 	makeDoClueButton,
 	makeNewSlayerTaskButton,
@@ -122,7 +122,7 @@ export async function handleTripFinish(
 			components.addComponents(makeNewSlayerTaskButton());
 		}
 		if (loot?.has('Seed pack')) {
-			components.addComponents(canRunAutoContract());
+			components.addComponents(makeAutoContractButton());
 			components.addComponents(makeOpenSeedPackButton());
 		}
 	}

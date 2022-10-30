@@ -79,7 +79,7 @@ export function makeOpenSeedPackButton() {
 		.setEmoji('977410792754413668');
 }
 
-export function canRunAutoContract() {
+export function makeAutoContractButton() {
 	return new ButtonBuilder()
 		.setCustomId('AUTO_FARMING_CONTRACT')
 		.setLabel('Auto Farming Contract')
