@@ -7,7 +7,6 @@ import { setupParty } from '../../../extendables/Message/Party';
 import { gorajanWarriorOutfit, torvaOutfit } from '../../../lib/data/CollectionsExport';
 import { KalphiteKingMonster } from '../../../lib/minions/data/killableMonsters/custom/bosses/KalphiteKing';
 import { calculateMonsterFood } from '../../../lib/minions/functions';
-import hasEnoughFoodForMonster from '../../../lib/minions/functions/hasEnoughFoodForMonster';
 import { KillableMonster } from '../../../lib/minions/types';
 import { trackLoot } from '../../../lib/settings/prisma';
 import { Gear } from '../../../lib/structures/Gear';
@@ -36,10 +35,11 @@ function checkReqs(users: MUser[], monster: KillableMonster, quantity: number): 
 			return `${user.usernameOrMention} doesn't have the requirements for this monster: ${reason}`;
 		}
 
-		if (!hasEnoughFoodForMonster(monster, user, quantity, users.length)) {
+		const potionReq = calcFood(user, users.length, quantity);
+		if (!user.bank.has(potionReq)) {
 			return `${
 				users.length === 1 ? "You don't" : `${user.usernameOrMention} doesn't`
-			} have enough brews/restores. You need at least ${monster.healAmountNeeded! * quantity} HP in food to ${
+			} have enough brews/restores. You need at least ${potionReq} to ${
 				users.length === 1 ? 'start the mass' : 'enter the mass'
 			}.`;
 		}
@@ -110,15 +110,11 @@ export async function kkCommand(
 					return [true, err];
 				}
 
-				// Ensure people have enough food for at least 2 full KC
-				// This makes it so the users will always have enough food for any amount of KC
-				if (!hasEnoughFoodForMonster(KalphiteKingMonster, user, 2)) {
-					return [
-						true,
-						`You don't have enough food. You need at least ${
-							KalphiteKingMonster.healAmountNeeded * 2
-						} HP in food to enter the mass.`
-					];
+				// Ensure people have enough food for at least 10 kills.
+				// We don't want to overshoot, as the mass will still fail if there's not enough food
+				const potionReq = calcFood(user, 1, 10);
+				if (!user.bank.has(potionReq)) {
+					return [true, `You don't have enough food. You need at least ${potionReq} to Join the mass.`];
 				}
 			}
 
