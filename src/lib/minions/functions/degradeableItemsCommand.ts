@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 
 import { handleMahojiConfirmation, mahojiParseNumber, updateBankSetting } from '../../../mahoji/mahojiSettings';
 import { degradeableItems } from '../../degradeableItems';
-import { stringMatches } from '../../util';
+import { stringMatches } from '../../util/cleanString';
 
 export async function degradeableItemsCommand(
 	interaction: ChatInputCommandInteraction,

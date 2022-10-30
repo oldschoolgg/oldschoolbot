@@ -3,14 +3,13 @@ import { Bank } from 'oldschooljs';
 
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { PerkTier } from '../../lib/constants';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { Workers } from '../../lib/workers';
 import { OSBMahojiCommand } from '../lib/util';
 
 function determineLimit(user: MUser) {
-	const perkTier = getUsersPerkTier(user);
+	const perkTier = user.perkTier();
 	if (perkTier >= PerkTier.Six) return 300_000;
 	if (perkTier >= PerkTier.Five) return 200_000;
 	if (perkTier >= PerkTier.Four) return 100_000;

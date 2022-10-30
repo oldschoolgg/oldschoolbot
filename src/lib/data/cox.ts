@@ -1,4 +1,3 @@
-import { captureMessage } from '@sentry/minimal';
 import {
 	calcPercentOfNum,
 	calcWhatPercent,
@@ -14,13 +13,14 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { ChambersOfXericOptions } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 
 import { checkUserCanUseDegradeableItem } from '../degradeableItems';
-import { constructGearSetup, GearStats } from '../gear';
+import { GearStats } from '../gear/types';
 import { getMinigameScore } from '../settings/minigames';
 import { SkillsEnum } from '../skilling/types';
-import { Gear } from '../structures/Gear';
+import { constructGearSetup, Gear } from '../structures/Gear';
 import { Skills } from '../types';
 import { randomVariation } from '../util';
 import getOSItem from '../util/getOSItem';
+import { logError } from '../util/logError';
 
 export const bareMinStats: Skills = {
 	attack: 80,
@@ -105,7 +105,7 @@ export async function createTeam(
 
 		points = Math.floor(randomVariation(points, 5));
 		if (points < 1 || points > 60_000) {
-			captureMessage(`${u.usernameOrMention} had ${points} points in a team of ${users.length}.`);
+			logError(`${u.usernameOrMention} had ${points} points in a team of ${users.length}.`);
 			points = 10_000;
 		}
 

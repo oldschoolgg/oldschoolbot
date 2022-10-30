@@ -19,10 +19,10 @@ import {
 	getUsername,
 	makePaginatedMessage,
 	stringMatches,
-	stripEmojis,
-	toTitleCase
+	stripEmojis
 } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
+import { toTitleCase } from '../../lib/util/toTitleCase';
 import { sendToChannelID } from '../../lib/util/webhook';
 import { OSBMahojiCommand } from '../lib/util';
 

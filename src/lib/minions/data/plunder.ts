@@ -1,6 +1,5 @@
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
-import { resolveNameBank } from 'oldschooljs/dist/util';
 
 import { SkillsEnum } from '../../skilling/types';
 import { ItemBank } from '../../types';
@@ -123,7 +122,7 @@ export const plunderRooms = [
 	}
 ];
 
-export const plunderBoosts = resolveNameBank({
+export const plunderBoosts = new Bank({
 	"Pharaoh's sceptre": 5
 });
 
