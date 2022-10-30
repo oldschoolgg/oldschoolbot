@@ -209,16 +209,6 @@ export const farmingTask: MinionTask = {
 			const res = await arcaneHarvesterEffect(user, plant, loot);
 			if (res) infoStr.push(res);
 
-			// This code gives the boxes for planing when ONLY planting.
-			if (plant.name === 'Mysterious tree') {
-				for (let j = 0; j < quantity; j++) {
-					let upper = randInt(1, 4);
-					for (let i = 0; i < upper; i++) {
-						loot.add(MysteryBoxes.roll());
-					}
-				}
-			}
-
 			if (loot.has('Plopper')) {
 				loot.bank[itemID('Plopper')] = 1;
 			}
@@ -571,7 +561,7 @@ export const farmingTask: MinionTask = {
 			// Give boxes for planting when harvesting
 			if (planting && plant.name === 'Mysterious tree') {
 				for (let j = 0; j < quantity; j++) {
-					let upper = randInt(1, 4);
+					let upper = randInt(1, 2);
 					for (let i = 0; i < upper; i++) {
 						loot.add(MysteryBoxes.roll());
 					}
@@ -580,7 +570,7 @@ export const farmingTask: MinionTask = {
 			// Give the boxes for harvesting during a harvest
 			if (alivePlants && plantToHarvest.name === 'Mysterious tree') {
 				for (let j = 0; j < alivePlants; j++) {
-					let upper = randInt(1, 6);
+					let upper = randInt(1, 3);
 					for (let i = 0; i < upper; i++) {
 						loot.add(MysteryBoxes.roll());
 					}
