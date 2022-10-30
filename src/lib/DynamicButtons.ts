@@ -1,5 +1,4 @@
 import {
-	ActionRowBuilder,
 	ButtonBuilder,
 	ButtonStyle,
 	DMChannel,
@@ -10,11 +9,11 @@ import {
 	TextChannel,
 	ThreadChannel
 } from 'discord.js';
-import { chunk, noOp, Time } from 'e';
+import { noOp, Time } from 'e';
 import murmurhash from 'murmurhash';
 
 import { BLACKLISTED_USERS } from './blacklists';
-import { awaitMessageComponentInteraction } from './util';
+import { awaitMessageComponentInteraction, makeComponents } from './util';
 import { minionIsBusy } from './util/minionIsBusy';
 
 type DynamicButtonFn = (opts: { message: Message; interaction: MessageComponentInteraction }) => unknown;
@@ -80,16 +79,10 @@ export class DynamicButtons {
 					})
 			)
 			.concat(extraButtons);
-		const chunkedButtons = chunk(buttons, 5);
-
-		let components: ActionRowBuilder<ButtonBuilder>[] = [];
-		for (const arr of chunkedButtons) {
-			components.push(new ActionRowBuilder<ButtonBuilder>().addComponents(arr));
-		}
 
 		this.message = await this.channel.send({
 			...messageOptions,
-			components
+			components: makeComponents(buttons)
 		});
 		const collectedInteraction = await awaitMessageComponentInteraction({
 			message: this.message,
