@@ -41,29 +41,29 @@ Contributors are listed in this file, and given a Contributor role in the suppor
 7. Create a file called `.env` in your project's root directory with the content
    (change as necessary for your DB, this is known as a DSN): `DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres?schema=public`
 8. Run `yarn` then `yarn install`
-8. Run `npx prisma generate` to generate the Prisma client files and load the DSN from #6
-9. Run `npx prisma db push` to create the tables on the database referenced in .env
-10. Run `yarn build` - then run `yarn start`. In the future, you can type only `yarn start` to start the bot.
+9. Run `npx prisma generate` to generate the Prisma client files and load the DSN from #6
+10. Run `npx prisma db push` to create the tables on the database referenced in .env
+11. Run `yarn build` - then run `yarn start`. In the future, you can type only `yarn start` to start the bot.
 
 If you have errors or issues, you can ask us for help in the developer channel in the [discord server](https://discord.gg/ob).
 
 ### Contributors
 
--   [[Ciaran](https://github.com/ciaranlangton)]
--   [[Devin](https://github.com/devin8)]
--   [[ms813](https://github.com/ms813)]
--   [[Alexsuperfly](alexsuperfly)]
--   [[Umdlye](https://github.com/umdlye)]
--   [[Kyra](https://github.com/kyranet)]
--   [[Wyatt](https://github.com/wyattos)]
--   [[coolbop32](https://github.com/coolbop32)]
--   [[duracell33](https://github.com/duracell33)]
--   [[themrrobert](https://github.com/themrrobert)]
--   [[Fishy](https://github.com/Lajnux)]
--   [[Lilylicious](https://github.com/Lilylicious)]
--   [[Gidedin](https://github.com/imgidedin)]
--   [[Andre](https://github.com/ard35)]
--   [[TastyPumPum](https://github.com/TastyPumPum)]
+- [[Ciaran](https://github.com/ciaranlangton)]
+- [[Devin](https://github.com/devin8)]
+- [[ms813](https://github.com/ms813)]
+- [[Alexsuperfly](alexsuperfly)]
+- [[Umdlye](https://github.com/umdlye)]
+- [[Kyra](https://github.com/kyranet)]
+- [[Wyatt](https://github.com/wyattos)]
+- [[coolbop32](https://github.com/coolbop32)]
+- [[duracell33](https://github.com/duracell33)]
+- [[themrrobert](https://github.com/themrrobert)]
+- [[Fishy](https://github.com/Lajnux)]
+- [[Lilylicious](https://github.com/Lilylicious)]
+- [[Gidedin](https://github.com/imgidedin)]
+- [[Andre](https://github.com/ard35)]
+- [[TastyPumPum](https://github.com/TastyPumPum)]
 
 ## Self Hosting
 

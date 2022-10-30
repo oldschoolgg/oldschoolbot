@@ -1,7 +1,7 @@
 {
 	"scripts": {
 		"gen": "concurrently \"prisma generate\" \"prisma generate --schema prisma/robochimp.prisma\"",
-		"lint": "eslint \"{src,tests}/**/*.ts\" --fix",
+		"lint": "concurrently \"prettier *.{js,md} --write\" \"eslint \"{src,tests}/**/*.ts\" --fix\"",
 		"build:tsc": "tsc -p src",
 		"build": "concurrently \"yarn wipedist\" \"yarn gen\" && yarn build:tsc",
 		"wipedist": "rimraf \"dist/\"",
