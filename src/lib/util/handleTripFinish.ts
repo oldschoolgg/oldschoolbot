@@ -122,8 +122,8 @@ export async function handleTripFinish(
 			components.push(makeNewSlayerTaskButton());
 		}
 		if (loot?.has('Seed pack')) {
-			components.addComponents(makeAutoContractButton());
-			components.addComponents(makeOpenSeedPackButton());
+			components.push(makeAutoContractButton());
+			components.push(makeOpenSeedPackButton());
 		}
 	}
 	handleTriggerShootingStar(user, data, components);
