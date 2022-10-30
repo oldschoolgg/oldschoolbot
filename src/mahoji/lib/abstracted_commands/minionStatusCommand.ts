@@ -1,7 +1,7 @@
 import { ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 
 import { ClueTiers } from '../../../lib/clues/clueTiers';
-import { Emoji, minionBuyButton } from '../../../lib/constants';
+import { BitField, Emoji, minionBuyButton } from '../../../lib/constants';
 import { roboChimpUserFetch } from '../../../lib/roboChimp';
 import { makeComponents } from '../../../lib/util';
 import { minionStatus } from '../../../lib/util/minionStatus';
@@ -69,7 +69,7 @@ export async function minionStatusCommand(user: MUser) {
 			.setStyle(ButtonStyle.Secondary)
 	);
 
-	if (!user.minionIsBusy && birdhouseDetails.isReady) {
+	if (!user.minionIsBusy && birdhouseDetails.isReady && !user.bitfield.includes(BitField.DisableBirdhouseRunButton)) {
 		buttons.push(
 			new ButtonBuilder()
 				.setCustomId('DO_BIRDHOUSE_RUN')

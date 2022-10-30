@@ -51,7 +51,7 @@ export async function revsCommand(
 	}
 
 	if (weapon.equipment![key] < 10) {
-		return `Your weapon is terrible, you can't kill revenants. You should have ${style} gear equipped in your wildy outfit, as this is what you're currently training. You can change this using \`+m train\``;
+		return `Your weapon is terrible, you can't kill revenants. You should have ${style} gear equipped in your wildy outfit, as this is what you're currently training. You can change this using \`/minion train\``;
 	}
 
 	let timePerMonster = monster.timeToFinish;

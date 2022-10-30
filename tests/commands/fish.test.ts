@@ -1,9 +1,10 @@
-import { fishCommand } from '../../src/mahoji/commands/fish';
 import { commandTestSetup, commandTestTeardown, testRunCmd } from '../utils';
 
-describe('Fish Command', () => {
+describe('Fish Command', async () => {
 	beforeEach(commandTestSetup);
 	afterEach(commandTestTeardown);
+
+	const { fishCommand } = await import('../../src/mahoji/commands/fish');
 
 	it('should handle insufficient fishing level', () => {
 		expect(testRunCmd({ cmd: fishCommand, opts: { name: 'trout', quantity: 1 } })).resolves.toEqual(

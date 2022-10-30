@@ -129,6 +129,7 @@ export const enum Emoji {
 	Skiller = '<:skiller:802136963775463435>',
 	Incinerator = '<:incinerator:802136963674275882>',
 	CollectionLog = '<:collectionLog:802136964027121684>',
+	Bank = '<:bank:739459924693614653>',
 	Minigames = '<:minigameIcon:630400565070921761>',
 	Skull = '<:Skull:802136963926065165>',
 	CombatSword = '<:combat:802136963956080650>',
@@ -208,7 +209,8 @@ export enum BitField {
 	HasTornPrayerScroll = 18,
 	IsWikiContributor = 19,
 	HasSlepeyTablet = 20,
-	IsPatronTier6 = 21
+	IsPatronTier6 = 21,
+	DisableBirdhouseRunButton = 22
 }
 
 interface BitFieldData {
@@ -248,7 +250,12 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	[BitField.PermanentIronman]: { name: 'Permanent Ironman', protected: false, userConfigurable: false },
 
 	[BitField.AlwaysSmallBank]: { name: 'Always Use Small Banks', protected: false, userConfigurable: true },
-	[BitField.DisabledRandomEvents]: { name: 'Disabled Random Events', protected: false, userConfigurable: true }
+	[BitField.DisabledRandomEvents]: { name: 'Disabled Random Events', protected: false, userConfigurable: true },
+	[BitField.DisableBirdhouseRunButton]: {
+		name: 'Disable Birdhouse Run Button',
+		protected: false,
+		userConfigurable: true
+	}
 } as const;
 
 export const enum PatronTierID {

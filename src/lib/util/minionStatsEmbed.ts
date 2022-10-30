@@ -9,7 +9,6 @@ import { getClueScoresFromOpenables } from '../clues/clueUtils';
 import { badges, skillEmoji } from '../constants';
 import { calcCLDetails } from '../data/Collections';
 import { effectiveMonsters } from '../minions/data/killableMonsters';
-import { getAllMinigameScores } from '../settings/settings';
 import { courses } from '../skilling/skills/agility';
 import creatures from '../skilling/skills/hunter/creatures';
 import { ItemBank, Skills } from '../types';
@@ -39,7 +38,7 @@ export async function minionStatsEmbed(user: MUser): Promise<Embed> {
 	getClueScoresFromOpenables(openableScores, true);
 
 	const clueEntries = Object.entries(openableScores.bank);
-	const minigameScores = (await getAllMinigameScores(user.id))
+	const minigameScores = (await user.fetchMinigameScores())
 		.filter(i => i.score > 0)
 		.sort((a, b) => b.score - a.score);
 

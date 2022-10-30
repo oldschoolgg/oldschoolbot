@@ -39,7 +39,6 @@ import { getItem } from '../../lib/util/getOSItem';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import resolveItems from '../../lib/util/resolveItems';
-import { dataPoints, statsCommand } from '../lib/abstracted_commands/statCommand';
 import { itemOption, monsterOption, skillOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 import { handleMahojiConfirmation, patronMsg } from '../mahojiSettings';
@@ -542,28 +541,6 @@ export const toolsCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'activity_export',
 					description: 'Export all your activities (For advanced users).'
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'stats',
-					description: 'Check various stats.',
-					options: [
-						{
-							type: ApplicationCommandOptionType.String,
-							name: 'stat',
-							description: 'The stat you want to check',
-							autocomplete: async (value: string) => {
-								return dataPoints
-									.map(i => i.name)
-									.filter(i => (!value ? true : i.toLowerCase().includes(value.toLowerCase())))
-									.map(i => ({
-										name: i,
-										value: i
-									}));
-							},
-							required: true
-						}
-					]
 				}
 			]
 		},
@@ -767,9 +744,6 @@ export const toolsCommand: OSBMahojiCommand = {
 				);
 				const result = await promise;
 				return result;
-			}
-			if (patron.stats) {
-				return statsCommand(mahojiUser, patron.stats.stat);
 			}
 		}
 		if (options.user) {

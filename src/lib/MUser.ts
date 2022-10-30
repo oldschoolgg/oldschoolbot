@@ -19,6 +19,7 @@ import { baseUserKourendFavour, UserKourendFavour } from './minions/data/kourend
 import { AttackStyles } from './minions/functions';
 import { blowpipeDarts, validateBlowpipeData } from './minions/functions/blowpipeCommand';
 import { AddXpParams, BlowpipeData } from './minions/types';
+import { getMinigameEntity, Minigames, MinigameScore } from './settings/minigames';
 import { SkillsEnum } from './skilling/types';
 import { BankSortMethod } from './sorts';
 import { defaultGear, Gear } from './structures/Gear';
@@ -163,6 +164,10 @@ export class MUserClass {
 		return new Bank(this.user.bank as ItemBank);
 	}
 
+	get sacrificedItems() {
+		return new Bank(this.user.sacrificedBank as ItemBank);
+	}
+
 	get cl() {
 		return new Bank(this.user.collectionLogBank as ItemBank);
 	}
@@ -189,6 +194,10 @@ export class MUserClass {
 
 	get QP() {
 		return this.user.QP;
+	}
+
+	get autoFarmFilter() {
+		return this.user.auto_farm_filter;
 	}
 
 	addXP(params: AddXpParams) {
@@ -282,6 +291,16 @@ export class MUserClass {
 		}
 
 		return bank;
+	}
+
+	async fetchMinigameScores() {
+		const userMinigames = await getMinigameEntity(this.id);
+		const scores: MinigameScore[] = [];
+		for (const minigame of Minigames) {
+			const score = userMinigames[minigame.column];
+			scores.push({ minigame, score });
+		}
+		return scores;
 	}
 
 	hasEquippedOrInBank(_items: string | number | (string | number)[], type: 'every' | 'one' = 'one') {

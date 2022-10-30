@@ -29,6 +29,7 @@ import {
 	AgilityActivityTaskOptions,
 	AlchingActivityTaskOptions,
 	BuryingActivityTaskOptions,
+	ButlerActivityTaskOptions,
 	CastingActivityTaskOptions,
 	ClueActivityTaskOptions,
 	CollectingOptions,
@@ -392,6 +393,14 @@ export function minionStatus(user: MUser) {
 			)}. ${formattedDuration}`;
 		}
 
+		case 'Butler': {
+			const data = currentTask as ButlerActivityTaskOptions;
+			const plank = Planks.find(_plank => _plank.outputItem === data.plankID);
+			return `${name} is currently creating ${data.plankQuantity}x ${itemNameFromID(
+				plank!.outputItem
+			)}s. ${formattedDuration}`;
+		}
+
 		case 'MahoganyHomes': {
 			return `${name} is currently doing Mahogany Homes. ${formattedDuration}`;
 		}
@@ -561,6 +570,9 @@ export function minionStatus(user: MUser) {
 			return `${name} is currently mining a Crashed Star. The trip should take ${formatDuration(
 				durationRemaining
 			)}.`;
+		}
+		case 'HalloweenEvent': {
+			return `${name} is currently Trick-or-Treating! The trip should take ${formatDuration(durationRemaining)}.`;
 		}
 		case 'Easter':
 		case 'BlastFurnace': {

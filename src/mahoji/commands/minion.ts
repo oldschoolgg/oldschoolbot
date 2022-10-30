@@ -18,7 +18,6 @@ import Skills from '../../lib/skilling/skills';
 import creatures from '../../lib/skilling/skills/hunter/creatures';
 import { convertLVLtoXP, getUsername, isValidNickname } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
-import { deferInteraction } from '../../lib/util/interactionReply';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
 import {
 	achievementDiaryCommand,
@@ -32,9 +31,7 @@ import { ironmanCommand } from '../lib/abstracted_commands/ironmanCommand';
 import { Lampables, lampCommand } from '../lib/abstracted_commands/lampCommand';
 import { minionBuyCommand } from '../lib/abstracted_commands/minionBuyCommand';
 import { minionStatusCommand } from '../lib/abstracted_commands/minionStatusCommand';
-import { dataPoints, statsCommand } from '../lib/abstracted_commands/statCommand';
-import { allUsableItems, useCommand } from '../lib/abstracted_commands/useCommand';
-import { ownedItemOption, skillOption } from '../lib/mahojiCommandOptions';
+import { skillOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 import { getKCByName, handleMahojiConfirmation, patronMsg } from '../mahojiSettings';
 
@@ -138,25 +135,7 @@ export const minionCommand: OSBMahojiCommand = {
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'stats',
-			description: 'Check the stats of your minion.',
-			options: [
-				{
-					type: ApplicationCommandOptionType.String,
-					name: 'stat',
-					description: 'The stat you want to see.',
-					autocomplete: async (value: string) => {
-						return dataPoints
-							.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
-							.map(i => ({
-								name: `${i.name} ${
-									i.perkTierNeeded === null ? '' : `(Tier ${i.perkTierNeeded - 1} Patrons)`
-								}`,
-								value: i.name
-							}));
-					},
-					required: false
-				}
-			]
+			description: 'Check the stats of your minion.'
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -242,24 +221,6 @@ export const minionCommand: OSBMahojiCommand = {
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'cancel',
 			description: 'Cancel your current trip.'
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'use',
-			description: 'Allows you to use items.',
-			options: [
-				{
-					...ownedItemOption(i => allUsableItems.has(i.id)),
-					required: true,
-					name: 'item'
-				},
-				{
-					...ownedItemOption(i => allUsableItems.has(i.id)),
-					required: false,
-					name: 'secondary_item',
-					description: 'Optional second item to use the first one on.'
-				}
-			]
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -427,7 +388,6 @@ export const minionCommand: OSBMahojiCommand = {
 		cracker?: { user: MahojiUserOption };
 		lamp?: { item: string; quantity?: number; skill: string };
 		cancel?: {};
-		use?: { item: string; secondary_item?: string };
 		set_icon?: { icon: string };
 		set_name?: { name: string };
 		level?: { skill: string };
@@ -449,10 +409,6 @@ export const minionCommand: OSBMahojiCommand = {
 		if (options.status) return minionStatusCommand(user);
 
 		if (options.stats) {
-			if (options.stats.stat) {
-				await deferInteraction(interaction);
-				return statsCommand(user, options.stats.stat);
-			}
 			return { embeds: [await minionStatsEmbed(user)] };
 		}
 
@@ -481,7 +437,6 @@ export const minionCommand: OSBMahojiCommand = {
 
 		if (options.cancel) return cancelTaskCommand(user, interaction);
 
-		if (options.use) return useCommand(user, options.use.item, options.use.secondary_item);
 		if (options.set_icon) {
 			if (perkTier < PerkTier.Four) return patronMsg(PerkTier.Four);
 

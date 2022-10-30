@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { codeBlock, inlineCode } from '@discordjs/builders';
+import { codeBlock } from '@discordjs/builders';
 import { ClientStorage } from '@prisma/client';
 import { Stopwatch } from '@sapphire/stopwatch';
 import { Duration } from '@sapphire/time-utilities';
-import Type from '@sapphire/type';
 import { isThenable } from '@sentry/utils';
 import { escapeCodeBlock } from 'discord.js';
 import { randArrItem, sleep, Time, uniqueArr } from 'e';
@@ -23,16 +22,16 @@ import { patreonTask } from '../../lib/patreon';
 import { runRolesTask } from '../../lib/rolesTask';
 import { countUsersWithItemInCl, prisma } from '../../lib/settings/prisma';
 import { cancelTask, minionActivityCacheDelete } from '../../lib/settings/settings';
-import { tickers } from '../../lib/tickers';
 import {
 	calcPerHour,
+	cleanString,
 	convertBankToPerHourStats,
 	formatDuration,
 	sanitizeBank,
 	stringMatches,
 	toKMB
 } from '../../lib/util';
-import { getItem } from '../../lib/util/getOSItem';
+import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import { deferInteraction, interactionReply } from '../../lib/util/interactionReply';
 import { syncLinkedAccounts } from '../../lib/util/linkedAccountsUtil';
 import { logError } from '../../lib/util/logError';
@@ -66,13 +65,11 @@ async function unsafeEval({ userID, code }: { userID: string; code: string }) {
 	let result = null;
 	let thenable = false;
 	// eslint-disable-next-line @typescript-eslint/init-declarations
-	let type!: Type;
 	try {
 		code = `\nconst {Bank} = require('oldschooljs');\n${code}`;
 		// eslint-disable-next-line no-eval
 		result = eval(code);
 		syncTime = stopwatch.toString();
-		type = new Type(result);
 		if (isThenable(result)) {
 			thenable = true;
 			stopwatch.restart();
@@ -81,7 +78,6 @@ async function unsafeEval({ userID, code }: { userID: string; code: string }) {
 		}
 	} catch (error: any) {
 		if (!syncTime) syncTime = stopwatch.toString();
-		if (!type) type = new Type(error);
 		if (thenable && !asyncTime) asyncTime = stopwatch.toString();
 		if (error && error.stack) logError(error);
 		result = error;
@@ -108,7 +104,6 @@ async function unsafeEval({ userID, code }: { userID: string; code: string }) {
 
 	return {
 		content: `${codeBlock(escapeCodeBlock(result))}
-**Type:** ${inlineCode(type.toString())}
 **Time:** ${asyncTime ? `⏱ ${asyncTime}<${syncTime}>` : `⏱ ${syncTime}`}
 `
 	};
@@ -441,7 +436,15 @@ export const adminCommand: OSBMahojiCommand = {
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'ltc',
-			description: 'Ltc?'
+			description: 'Ltc?',
+			options: [
+				{
+					...itemOption(),
+					name: 'item',
+					description: 'The item.',
+					required: false
+				}
+			]
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -508,7 +511,7 @@ export const adminCommand: OSBMahojiCommand = {
 		set_price?: { item: string; price: number };
 		most_active?: {};
 		bitfield?: { user: MahojiUserOption; add?: string; remove?: string };
-		ltc?: {};
+		ltc?: { item?: string };
 		view?: { thing: string };
 		wipe_bingo_temp_cls?: {};
 		give_items?: { user: MahojiUserOption; items: string };
@@ -650,7 +653,7 @@ export const adminCommand: OSBMahojiCommand = {
 
 			return `${action === 'add' ? 'Added' : 'Removed'} ${badgeName} ${badges[badgeID]} badge to ${
 				options.badges.user.user.username
-			}}.`;
+			}.`;
 		}
 
 		if (options.bypass_age) {
@@ -797,9 +800,6 @@ LIMIT 10;
 		}
 		if (options.reboot) {
 			globalClient.isShuttingDown = true;
-			for (const ticker of tickers) {
-				if (ticker.timer) clearTimeout(ticker.timer);
-			}
 			await sleep(Time.Second * 20);
 			await interactionReply(interaction, {
 				content: 'https://media.discordapp.net/attachments/357422607982919680/1004657720722464880/freeze.gif'
@@ -953,6 +953,27 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 		if (options.ltc) {
 			let str = '';
 			const results = await prisma.lootTrack.findMany();
+
+			if (options.ltc.item) {
+				str += `${['id', 'total_of_item', 'item_per_kc', 'per_hour'].join('\t')}\n`;
+				const item = getOSItem(options.ltc.item);
+
+				for (const res of results) {
+					const loot = new Bank(res.loot as ItemBank);
+					if (!loot.has(item.id)) continue;
+					const qty = loot.amount(item.id);
+					str += `${[
+						res.id,
+						qty,
+						qty / res.total_kc,
+						calcPerHour(qty, res.total_duration * Time.Minute)
+					].join('\t')}\n`;
+				}
+
+				return {
+					files: [{ attachment: Buffer.from(str), name: `${cleanString(item.name)}.txt` }]
+				};
+			}
 
 			str += `${['id', 'cost_h', 'cost', 'loot_h', 'loot', 'per_hour_h', 'per_hour', 'ratio'].join('\t')}\n`;
 			for (const res of results) {

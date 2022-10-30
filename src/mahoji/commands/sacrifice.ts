@@ -64,7 +64,8 @@ export const sacrificeCommand: OSBMahojiCommand = {
 			user,
 			search: options.search,
 			filters: [options.filter],
-			maxSize: 70
+			maxSize: 70,
+			noDuplicateItems: true
 		});
 
 		const sacVal = Number(user.user.sacrificedValue);

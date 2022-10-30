@@ -6,6 +6,7 @@ import { updateBankSetting } from '../../../mahoji/mahojiSettings';
 import { Emoji } from '../../constants';
 import { Eatables } from '../../data/eatables';
 import { GearSetupType } from '../../gear/types';
+import { UserError } from '../../UserError';
 import getUserFoodFromBank from './getUserFoodFromBank';
 
 export default async function removeFoodFromUser({
@@ -48,9 +49,11 @@ export default async function removeFoodFromUser({
 
 	const foodToRemove = getUserFoodFromBank(user, totalHealingNeeded, favoriteFood);
 	if (!foodToRemove) {
-		throw `You don't have enough food to do ${activityName}! You need enough food to heal at least ${totalHealingNeeded} HP (${healPerAction} per action). You can use these food items: ${Eatables.map(
-			i => i.name
-		).join(', ')}.`;
+		throw new UserError(
+			`You don't have enough food to do ${activityName}! You need enough food to heal at least ${totalHealingNeeded} HP (${healPerAction} per action). You can use these food items: ${Eatables.map(
+				i => i.name
+			).join(', ')}.`
+		);
 	} else {
 		await transactItems({ userID: user.id, itemsToRemove: foodToRemove });
 

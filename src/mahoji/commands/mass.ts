@@ -21,24 +21,24 @@ function checkReqs(users: MUser[], monster: KillableMonster, quantity: number) {
 	// Check if every user has the requirements for this monster.
 	for (const user of users) {
 		if (!user.user.minion_hasBought) {
-			throw `${user.usernameOrMention} doesn't have a minion, so they can't join!`;
+			return `${user.usernameOrMention} doesn't have a minion, so they can't join!`;
 		}
 
 		if (user.minionIsBusy) {
-			throw `${user.usernameOrMention} is busy right now and can't join!`;
+			return `${user.usernameOrMention} is busy right now and can't join!`;
 		}
 
 		if (user.user.minion_ironman) {
-			throw `${user.usernameOrMention} is an ironman, so they can't join!`;
+			return `${user.usernameOrMention} is an ironman, so they can't join!`;
 		}
 
 		const [hasReqs, reason] = hasMonsterRequirements(user, monster);
 		if (!hasReqs) {
-			throw `${user.usernameOrMention} doesn't have the requirements for this monster: ${reason}`;
+			return `${user.usernameOrMention} doesn't have the requirements for this monster: ${reason}`;
 		}
 
 		if (1 > 2 && !hasEnoughFoodForMonster(monster, user, quantity, users.length)) {
-			throw `${
+			return `${
 				users.length === 1 ? "You don't" : `${user.usernameOrMention} doesn't`
 			} have enough food. You need at least ${monster!.healAmountNeeded! * quantity} HP in food to ${
 				users.length === 1 ? 'start the mass' : 'enter the mass'
@@ -79,7 +79,8 @@ export const massCommand: OSBMahojiCommand = {
 		if (!monster) return "That monster doesn't exist!";
 		if (!monster.groupKillable) return "This monster can't be killed in groups!";
 
-		checkReqs([user], monster, 2);
+		const check = checkReqs([user], monster, 2);
+		if (check) return check;
 
 		let users: MUser[] = [];
 		try {
@@ -137,7 +138,8 @@ export const massCommand: OSBMahojiCommand = {
 		if (typeof durQtyRes === 'string') return durQtyRes;
 		const [quantity, duration, perKillTime, boostMsgs] = durQtyRes;
 
-		checkReqs(users, monster, quantity);
+		const checkRes = checkReqs(users, monster, quantity);
+		if (checkRes) return checkRes;
 
 		if (1 > 2 && monster.healAmountNeeded) {
 			for (const user of users) {

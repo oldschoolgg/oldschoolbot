@@ -2,6 +2,7 @@ import { Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { production } from '../../config';
+import { UserError } from '../UserError';
 
 const cache = new Map();
 
@@ -23,7 +24,7 @@ export default function getOSItem(itemName: string | number): Item {
 	}
 
 	const osItem = Items.get(identifier) as Item | undefined;
-	if (!osItem) throw `${production ? 'That item' : identifier} doesn't exist.`;
+	if (!osItem) throw new UserError(`${production ? 'That item' : identifier} doesn't exist.`);
 	cache.set(itemName, osItem);
 	return osItem;
 }

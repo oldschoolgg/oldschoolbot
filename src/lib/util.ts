@@ -403,7 +403,9 @@ export function isValidNickname(str?: string) {
 	);
 }
 
-export async function makePaginatedMessage(channel: TextChannel, pages: MessageEditOptions[], target?: string) {
+export type PaginatedMessagePage = MessageEditOptions;
+
+export async function makePaginatedMessage(channel: TextChannel, pages: PaginatedMessagePage[], target?: string) {
 	const m = new PaginatedMessage({ pages, channel });
 	return m.run(target ? [target] : undefined);
 }
@@ -750,4 +752,8 @@ export function cacheCleanup() {
 			}
 		});
 	});
+}
+
+export function isFunction(input: unknown): input is Function {
+	return typeof input === 'function';
 }
