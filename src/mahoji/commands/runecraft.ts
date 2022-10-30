@@ -204,11 +204,12 @@ export const runecraftCommand: OSBMahojiCommand = {
 			outputQuantity = Math.max(1, Math.floor((quantityPerEssence * quantity) / 3));
 		}
 		if (
-			numEssenceOwned === 0 ||
-			quantity === 0 ||
-			numEssenceOwned < quantity ||
-			!essenceRequired ||
-			numEssenceOwned < essenceRequired
+			!daeyalt_essence &&
+			(numEssenceOwned === 0 ||
+				quantity === 0 ||
+				numEssenceOwned < quantity ||
+				!essenceRequired ||
+				numEssenceOwned < essenceRequired)
 		) {
 			return "You don't have enough Pure Essence to craft these runes. You can acquire some through Mining, or purchasing from other players.";
 		}
