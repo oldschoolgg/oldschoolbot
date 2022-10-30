@@ -36,7 +36,7 @@ import { handleNexKills } from './simulation/nex';
 import { getTemporossLoot } from './simulation/tempoross';
 import { TheatreOfBlood } from './simulation/tob';
 import { WintertodtCrate } from './simulation/wintertodt';
-import { stringMatches } from './util';
+import { stringMatches } from './util/cleanString';
 import itemID from './util/itemID';
 
 interface KillArgs {

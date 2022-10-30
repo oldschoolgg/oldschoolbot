@@ -2,7 +2,7 @@ import { Bank } from 'oldschooljs';
 
 import Prayer from '../../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { BuryingActivityTaskOptions } from '../../../lib/types/minions';
+import type { BuryingActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export const buryingTask: MinionTask = {
