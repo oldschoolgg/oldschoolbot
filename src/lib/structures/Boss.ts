@@ -238,10 +238,14 @@ export class BossInstance {
 	}
 
 	async validateTeam() {
-		for (const user of this.users!) {
-			const [denied, reason] = await this.checkUser(user);
-			if (denied && !this.skipInvalidUsers) {
-				throw new Error(`${user} ${reason}`);
+		for (const bossUser of this.bossUsers!) {
+			const [denied, reason] = await this.checkUser(bossUser.user);
+			if (denied) {
+				if (!this.skipInvalidUsers) {
+					throw new Error(`${bossUser.user} ${reason}`);
+				} else {
+					bossUser.invalid = true;
+				}
 			}
 		}
 	}
@@ -472,7 +476,7 @@ export class BossInstance {
 			quantity: this.quantity!,
 			duration: this.duration,
 			type: this.activity,
-			users: this.users!.map(u => u.id),
+			users: this.bossUsers.map(u => u.user.id),
 			bossUsers: this.bossUsers.map(u => ({ ...u, itemsToRemove: u.itemsToRemove.bank, user: u.user.id })),
 			bossID: this.id
 		});
