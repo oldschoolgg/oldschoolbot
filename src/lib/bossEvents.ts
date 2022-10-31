@@ -16,7 +16,7 @@ import {
 import { BossInstance, BossOptions, BossUser } from './structures/Boss';
 import { Gear } from './structures/Gear';
 import { NewBossOptions } from './types/minions';
-import { formatDuration, roll } from './util';
+import { formatDuration, isHalloween, roll } from './util';
 import { logError } from './util/logError';
 import { sendToChannelID } from './util/webhook';
 import { LampTable } from './xpLamps';
@@ -219,7 +219,7 @@ ${rerolledUsersStr.length > 0 ? rerolledUsersStr.join('\n') : 'Nobody was reroll
 			quantity: 1,
 			allowMoreThan1Solo: false,
 			allowMoreThan1Group: false,
-			automaticStartTime: production ? Time.Minute * 10 : Time.Second * 30,
+			automaticStartTime: production ? (isHalloween() ? Time.Minute * 3 : Time.Minute * 10) : Time.Second * 30,
 			maxSize: 500,
 			skipInvalidUsers: true,
 			speedMaxReduction: 50

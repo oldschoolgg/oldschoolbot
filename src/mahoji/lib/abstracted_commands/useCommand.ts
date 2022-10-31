@@ -15,7 +15,7 @@ import { dyedItems } from '../../../lib/dyedItems';
 import { gearImages } from '../../../lib/gear/functions/generateGearImage';
 import { prisma } from '../../../lib/settings/prisma';
 import { PUMPKINHEAD_ID } from '../../../lib/simulation/pumpkinHead';
-import { assert, formatDuration } from '../../../lib/util';
+import { assert, formatDuration, isHalloween } from '../../../lib/util';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
 import { sendToChannelID } from '../../../lib/util/webhook';
 import { flowerTable } from './hotColdCommand';
@@ -214,10 +214,7 @@ usables.push({
 		if (await bossActiveIsActiveOrSoonActive()) {
 			return "You can't use your Mysterious token right now.";
 		}
-		const instantStartDate = new Date('2022-10-31 04:00');
-		const instantEndDate = new Date('2022-11-01 04:00');
-		const now = new Date(Date.now());
-		if (now > instantStartDate && now < instantEndDate) {
+		if (isHalloween()) {
 			startBossEvent({
 				boss: bossEvents.find(b => b.id === PUMPKINHEAD_ID)!
 			});

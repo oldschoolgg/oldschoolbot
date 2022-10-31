@@ -28,8 +28,16 @@ export const hweenTask: MinionTask = {
 			}
 		});
 		let kuroRate = KURO_DROPRATE(user.cl.amount('Kuro'));
-		if (user.cl.amount('Kuro') === 0 && completedMinigames > 100) {
-			kuroRate = Math.floor(reduceNumByPercent(kuroRate, 25));
+		if (user.cl.amount('Kuro') === 0) {
+			if (completedMinigames > 100) {
+				kuroRate = Math.floor(reduceNumByPercent(kuroRate, 30));
+			}
+			if (completedMinigames > 150) {
+				kuroRate = Math.floor(reduceNumByPercent(kuroRate, 30));
+			}
+			if (completedMinigames > 175) {
+				kuroRate = Math.floor(reduceNumByPercent(kuroRate, 30));
+			}
 		}
 		if (roll(kuroRate)) {
 			loot.add('Kuro');
