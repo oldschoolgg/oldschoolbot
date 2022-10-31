@@ -746,9 +746,12 @@ export const leaderboardCommand: OSBMahojiCommand = {
 					description: 'The cl you want to select.',
 					required: true,
 					autocomplete: async value => {
-						return ['overall', ...allClNames.map(i => i)]
-							.filter(name => (!value ? true : name.toLowerCase().includes(value.toLowerCase())))
-							.map(i => ({ name: toTitleCase(i), value: i }));
+						return [
+							{ name: 'Overall (Main Leaderboard)', value: 'overall' },
+							...['overall+', ...allClNames.map(i => i)]
+								.filter(name => (!value ? true : name.toLowerCase().includes(value.toLowerCase())))
+								.map(i => ({ name: toTitleCase(i), value: i }))
+						];
 					}
 				},
 				ironmanOnlyOption
