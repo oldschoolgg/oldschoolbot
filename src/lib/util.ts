@@ -975,11 +975,3 @@ export function getAllIDsOfUser(user: MUser) {
 export function isFunction(input: unknown): input is Function {
 	return typeof input === 'function';
 }
-
-export function isHalloween() {
-	// Return true if it's Halloween on the continental US
-	const instantStartDate = new Date('2022-10-31 04:00');
-	const instantEndDate = new Date('2022-11-01 07:00');
-	const now = new Date(Date.now());
-	return now > instantStartDate && now < instantEndDate;
-}
