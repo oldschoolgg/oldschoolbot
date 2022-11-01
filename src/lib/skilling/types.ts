@@ -186,7 +186,7 @@ export interface Mixable {
 	id: number;
 	level: number;
 	xp: number;
-	inputItems: ItemBank;
+	inputItems: Bank;
 	tickRate: number;
 	bankTimePerPotion: number;
 	outputMultiple?: number;

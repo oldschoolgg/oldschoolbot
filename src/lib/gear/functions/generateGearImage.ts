@@ -7,7 +7,6 @@ import { Canvas, Image } from 'skia-canvas/lib';
 
 import { monkeyTiers } from '../../monkeyRumble';
 import { Gear } from '../../structures/Gear';
-import { toTitleCase } from '../../util';
 import {
 	calcAspectRatioFit,
 	canvasImageFromBuffer,
@@ -16,6 +15,7 @@ import {
 	fillTextXTimesInCtx
 } from '../../util/canvasUtil';
 import getOSItem from '../../util/getOSItem';
+import { toTitleCase } from '../../util/toTitleCase';
 import { GearSetup, GearSetupType, GearSetupTypes, GearStats, maxDefenceStats, maxOffenceStats } from '..';
 
 const banana = canvasImageFromBuffer(fs.readFileSync('./src/lib/resources/images/banana.png'));

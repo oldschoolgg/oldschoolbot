@@ -3,7 +3,7 @@ import { Bank, Monsters } from 'oldschooljs';
 import SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
 
 import { corporealBeastCL } from '../../../../data/CollectionsExport';
-import { GearStat } from '../../../../gear';
+import { GearStat } from '../../../../gear/types';
 import { CorporealBeastTable } from '../../../../simulation/Corp';
 import { SkillsEnum } from '../../../../skilling/types';
 import itemID from '../../../../util/itemID';

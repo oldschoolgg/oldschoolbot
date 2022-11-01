@@ -1,6 +1,6 @@
 import { activity_type_enum } from '@prisma/client';
-import { ActionRowBuilder, AttachmentBuilder, ButtonBuilder, MessageCollector } from 'discord.js';
-import { percentChance, randInt, roll, Time } from 'e';
+import { AttachmentBuilder, ButtonBuilder, MessageCollector } from 'discord.js';
+import { randInt, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { alching } from '../../mahoji/commands/laps';
@@ -25,7 +25,7 @@ import { DougTable, PekyTable } from '../simulation/sharedTables';
 import { SkillsEnum } from '../skilling/types';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import { ActivityTaskOptions } from '../types/minions';
-import { channelIsSendable, itemID, toKMB } from '../util';
+import { channelIsSendable, itemID, makeComponents, percentChance, roll, toKMB } from '../util';
 import {
 	makeBirdHouseTripButton,
 	makeDoClueButton,
@@ -279,7 +279,7 @@ export async function handleTripFinish(
 	loot: Bank | null,
 	_messages?: string[]
 ) {
-	const { perkTier } = user;
+	const perkTier = user.perkTier();
 	const messages: string[] = [];
 	for (const effect of tripFinishEffects) await effect.fn({ data, user, loot, messages });
 
@@ -304,18 +304,18 @@ export async function handleTripFinish(
 	const channel = globalClient.channels.cache.get(channelID);
 	if (!channelIsSendable(channel)) return;
 
-	const components = new ActionRowBuilder<ButtonBuilder>();
-	components.addComponents(makeRepeatTripButton());
+	const components: ButtonBuilder[] = [];
+	components.push(makeRepeatTripButton());
 	const casketReceived = loot ? ClueTiers.find(i => loot?.has(i.id)) : undefined;
-	if (casketReceived) components.addComponents(makeOpenCasketButton(casketReceived));
+	if (casketReceived) components.push(makeOpenCasketButton(casketReceived));
 	if (perkTier > PerkTier.One) {
-		if (clueReceived.length > 0) clueReceived.map(clue => components.addComponents(makeDoClueButton(clue)));
+		if (clueReceived.length > 0) clueReceived.map(clue => components.push(makeDoClueButton(clue)));
 		const birdHousedetails = await calculateBirdhouseDetails(user.id);
 		if (birdHousedetails.isReady && !user.bitfield.includes(BitField.DisableBirdhouseRunButton))
-			components.addComponents(makeBirdHouseTripButton());
+			components.push(makeBirdHouseTripButton());
 		const { currentTask } = await getUsersCurrentSlayerInfo(user.id);
 		if ((currentTask === null || currentTask.quantity_remaining <= 0) && data.type === 'MonsterKilling') {
-			components.addComponents(makeNewSlayerTaskButton());
+			components.push(makeNewSlayerTaskButton());
 		}
 	}
 	handleTriggerShootingStar(user, data, components);
@@ -323,7 +323,7 @@ export async function handleTripFinish(
 	if (data.type !== 'HalloweenMiniMinigame' && percentChance(chanceOfHweenEvent(data))) {
 		const res = pickMinigameAndItem(user);
 		if (res) {
-			components.addComponents(res.button);
+			components.push(res.button);
 			message += `\n\nYou are invited to play a spooky mini-minigame! Click the red button to play... ${res.minigame.name}!`;
 		}
 	}
@@ -331,6 +331,6 @@ export async function handleTripFinish(
 	sendToChannelID(channelID, {
 		content: message,
 		image: attachment,
-		components: components.components.length > 0 ? [components] : undefined
+		components: components.length > 0 ? makeComponents(components) : undefined
 	});
 }

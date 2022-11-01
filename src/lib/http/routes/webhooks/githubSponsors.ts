@@ -1,10 +1,10 @@
 import { TextChannel } from 'discord.js';
 
-import { syncLinkedAccounts } from '../../../../mahoji/mahojiSettings';
 import { boxFrenzy } from '../../../boxFrenzy';
 import { Channel } from '../../../constants';
 import { addPatronLootTime } from '../../../doubleLoot';
 import { patreonTask } from '../../../patreon';
+import { syncLinkedAccounts } from '../../../util/linkedAccountsUtil';
 import { sendToChannelID } from '../../../util/webhook';
 import { GithubSponsorsWebhookData } from '../../githubApiTypes';
 import { FastifyServer } from '../../types';

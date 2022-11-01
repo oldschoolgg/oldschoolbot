@@ -18,10 +18,11 @@ import { prisma } from './settings/prisma';
 import Skillcapes from './skilling/skillcapes';
 import Skills from './skilling/skills';
 import { SkillsEnum } from './skilling/types';
-import { convertLVLtoXP, convertXPtoLVL, itemNameFromID, toKMB, toTitleCase } from './util';
+import { convertLVLtoXP, convertXPtoLVL, itemNameFromID, toKMB } from './util';
 import { formatOrdinal } from './util/formatOrdinal';
 import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
+import { toTitleCase } from './util/toTitleCase';
 import { sendToChannelID } from './util/webhook';
 
 const skillsVals = Object.values(Skills);

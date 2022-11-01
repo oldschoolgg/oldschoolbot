@@ -11,13 +11,13 @@ import { Ignecarus } from '../../lib/minions/data/killableMonsters/custom/bosses
 import { kalphiteKingLootTable } from '../../lib/minions/data/killableMonsters/custom/bosses/KalphiteKing';
 import { VasaMagus } from '../../lib/minions/data/killableMonsters/custom/bosses/VasaMagus';
 import { BSOMonsters } from '../../lib/minions/data/killableMonsters/custom/customMonsters';
+import { itemContractResetTime } from '../../lib/MUser';
 import { nexLootTable } from '../../lib/nex';
 import { DragonTable } from '../../lib/simulation/grandmasterClue';
 import { allThirdAgeItems, runeAlchablesTable } from '../../lib/simulation/sharedTables';
 import { formatDuration, itemID } from '../../lib/util';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';
-import { itemContractResetTime } from '../../lib/util/getUsersPerkTier';
 import resolveItems from '../../lib/util/resolveItems';
 import { LampTable } from '../../lib/xpLamps';
 import { OSBMahojiCommand } from '../lib/util';

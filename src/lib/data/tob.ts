@@ -3,11 +3,11 @@ import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { checkUserCanUseDegradeableItem } from '../degradeableItems';
-import { constructGearSetup, GearStats } from '../gear';
+import { GearStats } from '../gear/types';
 import { blowpipeDarts } from '../minions/functions/blowpipeCommand';
 import getUserFoodFromBank from '../minions/functions/getUserFoodFromBank';
 import { getMinigameScore } from '../settings/minigames';
-import { Gear } from '../structures/Gear';
+import { constructGearSetup, Gear } from '../structures/Gear';
 import { Skills } from '../types';
 import { assert, formatSkillRequirements, randFloat, randomVariation, skillsMeetRequirements } from '../util';
 import getOSItem from '../util/getOSItem';

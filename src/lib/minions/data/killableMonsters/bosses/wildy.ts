@@ -1,7 +1,7 @@
 import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
-import { GearStat } from '../../../../gear';
+import { GearStat } from '../../../../gear/types';
 import { SkillsEnum } from '../../../../skilling/types';
 import itemID from '../../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';

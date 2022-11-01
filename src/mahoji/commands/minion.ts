@@ -18,7 +18,6 @@ import Skills from '../../lib/skilling/skills';
 import creatures from '../../lib/skilling/skills/hunter/creatures';
 import { convertLVLtoXP, getAllIDsOfUser, getUsername, isValidNickname } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
 import {
 	achievementDiaryCommand,
@@ -66,7 +65,7 @@ export async function getUserInfo(user: MUser) {
 	const premiumTier = user.user.premium_balance_tier;
 
 	const result = {
-		perkTier: getUsersPerkTier(user),
+		perkTier: user.perkTier(),
 		isBlacklisted: BLACKLISTED_USERS.has(user.id),
 		badges: userBadges,
 		mainAccount:
@@ -424,7 +423,7 @@ export const minionCommand: OSBMahojiCommand = {
 		};
 	}>) => {
 		const user = await mUserFetch(userID);
-		const perkTier = getUsersPerkTier(user);
+		const perkTier = user.perkTier();
 
 		if (options.info) return (await getUserInfo(user)).everythingString;
 		if (options.status) return minionStatusCommand(user, channelID.toString());

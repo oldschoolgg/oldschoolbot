@@ -1,4 +1,4 @@
-import { randInt } from 'e';
+import { objectValues, randInt } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { templeTrekkingOutfit } from '../../../lib/data/CollectionsExport';
@@ -23,7 +23,7 @@ function getLowestCountOutfitPiece(bank: Bank, user: MUser): number {
 	for (const piece of templeTrekkingOutfit) {
 		let amount = bank.amount(piece);
 
-		for (const setup of Object.values(user.gear)) {
+		for (const setup of objectValues(user.gear)) {
 			const thisItemEquipped = Object.values(setup).find(setup => setup?.item === piece);
 			if (thisItemEquipped) amount += thisItemEquipped.quantity;
 		}

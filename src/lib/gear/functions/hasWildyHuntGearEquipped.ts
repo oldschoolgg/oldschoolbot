@@ -1,5 +1,5 @@
 import getOSItem from '../../util/getOSItem';
-import { GearSetup } from '..';
+import { GearSetup } from '../types';
 
 export function hasWildyHuntGearEquipped(setup: GearSetup): [boolean, string, number] {
 	const userBodyID = setup.body?.item;

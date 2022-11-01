@@ -43,6 +43,11 @@ if (SENTRY_DSN) {
 	});
 }
 
+if (process.env.TZ !== 'UTC') {
+	console.error('Must be using UTC timezone');
+	process.exit(1);
+}
+
 const client = new OldSchoolBotClient(clientOptions);
 
 export const mahojiClient = new MahojiClient({

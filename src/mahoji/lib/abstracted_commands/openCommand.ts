@@ -10,7 +10,6 @@ import { ItemBank } from '../../../lib/types';
 import { assert } from '../../../lib/util';
 import { stringMatches } from '../../../lib/util/cleanString';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
-import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import resolveItems from '../../../lib/util/resolveItems';
 import { handleMahojiConfirmation, patronMsg, updateGPTrackSetting, userStatsBankUpdate } from '../../mahojiSettings';
@@ -50,7 +49,7 @@ async function addToOpenablesScores(mahojiUser: MUser, kcBank: Bank) {
 
 export async function abstractedOpenUntilCommand(userID: string, name: string, openUntilItem: string) {
 	const user = await mUserFetch(userID);
-	const perkTier = getUsersPerkTier(user);
+	const perkTier = user.perkTier();
 	if (perkTier < PerkTier.Three) return patronMsg(PerkTier.Three);
 	name = name.replace(regex, '$1');
 	const openableItem = allOpenables.find(o => o.aliases.some(alias => stringMatches(alias, name)));
@@ -218,7 +217,7 @@ export async function abstractedOpenCommand(
 
 	if (names.includes('all')) {
 		if (!openables.length) return 'You have no openable items.';
-		if (user.perkTier < PerkTier.Two) return patronMsg(PerkTier.Two);
+		if (user.perkTier() < PerkTier.Two) return patronMsg(PerkTier.Two);
 		if (interaction) await handleMahojiConfirmation(interaction, 'Are you sure you want to open ALL your items?');
 	}
 

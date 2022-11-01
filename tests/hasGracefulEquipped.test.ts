@@ -1,4 +1,4 @@
-import { constructGearSetup, hasGracefulEquipped } from '../src/lib/gear';
+import { constructGearSetup, hasGracefulEquipped } from '../src/lib/structures/Gear';
 
 describe('hasGracefulEquipped', () => {
 	test('has graceful equipped', () => {

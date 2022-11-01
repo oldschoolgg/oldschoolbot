@@ -23,7 +23,7 @@ import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '
 import { Eatables } from '../../../lib/data/eatables';
 import { getSimilarItems } from '../../../lib/data/similarItems';
 import { checkUserCanUseDegradeableItem, degradeItem } from '../../../lib/degradeableItems';
-import { GearSetupType } from '../../../lib/gear';
+import { GearSetupType } from '../../../lib/gear/types';
 import { canAffordInventionBoost, InventionID, inventionItemBoost } from '../../../lib/invention/inventions';
 import {
 	boostCannon,

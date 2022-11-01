@@ -10,8 +10,8 @@ import {
 	leaguesClaimCommand,
 	leagueTasks
 } from '../../lib/leagues/leagues';
+import { getUsersPerkTier } from '../../lib/MUser';
 import { formatDuration } from '../../lib/util';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { Cooldowns } from '../lib/Cooldowns';
 import { OSBMahojiCommand } from '../lib/util';
