@@ -490,7 +490,7 @@ export const tripHandlers = {
 		commandName: 'minigames',
 		args: (data: GiantsFoundryActivityTaskOptions) => ({
 			giants_foundry: {
-				start: { name: giantsFoundryAlloys.find(i => i.id === data.alloyID), quantity: data.quantity }
+				start: { name: giantsFoundryAlloys.find(i => i.id === data.alloyID)?.name, quantity: data.quantity }
 			}
 		})
 	},

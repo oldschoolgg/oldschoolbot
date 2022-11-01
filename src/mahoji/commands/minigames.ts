@@ -850,7 +850,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 							type: ApplicationCommandOptionType.String,
 							name: 'item',
 							description: 'The item to buy.',
-							required: true,
+							required: false,
 							autocomplete: async (value: string) => {
 								return giantsFoundryBuyables
 									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
