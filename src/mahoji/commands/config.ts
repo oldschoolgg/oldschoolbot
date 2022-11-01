@@ -34,6 +34,10 @@ const toggles = [
 	{
 		name: 'Small Bank Images',
 		bit: BitField.AlwaysSmallBank
+	},
+	{
+		name: 'Disable Birdhouse Run Button',
+		bit: BitField.DisableBirdhouseRunButton
 	}
 ];
 
@@ -96,7 +100,7 @@ async function favItemConfig(
 	}.`;
 	if (!item) return currentItems;
 	if (itemToAdd) {
-		let limit = (user.perkTier + 1) * 100;
+		let limit = (user.perkTier() + 1) * 100;
 		if (currentFavorites.length >= limit) {
 			return `You can't favorite anymore items, you can favorite a maximum of ${limit}.`;
 		}
@@ -178,7 +182,7 @@ async function bankSortConfig(
 	const currentMethod = user.user.bank_sort_method;
 	const currentWeightingBank = new Bank(user.user.bank_sort_weightings as ItemBank);
 
-	const { perkTier } = user;
+	const perkTier = user.perkTier();
 	if (perkTier < PerkTier.Two) {
 		return patronMsg(PerkTier.Two);
 	}
@@ -348,7 +352,7 @@ async function handleJModCommentsEnable(
 	const settings = await mahojiGuildSettingsFetch(guild);
 
 	if (choice === 'enable') {
-		if (guild!.memberCount < 20 && user.perkTier < PerkTier.Four) {
+		if (guild!.memberCount < 20 && user.perkTier() < PerkTier.Four) {
 			return 'This server is too small to enable this feature in.';
 		}
 		if (settings.jmodComments === cID) {
@@ -407,16 +411,6 @@ async function handleCommandEnable(
 	return `Successfully disabled the \`${command.name}\` command.`;
 }
 
-async function handlePrefixChange(user: MUser, guild: Guild | null, newPrefix: string) {
-	if (!newPrefix || newPrefix.length === 0 || newPrefix.length > 3) return 'Invalid prefix.';
-	if (!guild) return 'This command can only be run in servers.';
-	if (!(await hasBanMemberPerms(user.id, guild)))
-		return "You need to be 'Ban Member' permissions to use this command.";
-	await mahojiGuildSettingsUpdate(guild.id, {
-		prefix: newPrefix
-	});
-	return `Changed Command Prefix for this server to \`${newPrefix}\``;
-}
 const priorityWarningMsg =
 	"\n\n**Important: By default, 'Always barrage/burst' will take priority if 'Always cannon' is also enabled.**";
 async function handleCombatOptions(user: MUser, command: 'add' | 'remove' | 'list' | 'help', option?: string) {
@@ -607,19 +601,6 @@ export const configCommand: OSBMahojiCommand = {
 								{ name: 'Enable', value: 'enable' },
 								{ name: 'Disable', value: 'disable' }
 							]
-						}
-					]
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'prefix',
-					description: 'Change the prefix for your server.',
-					options: [
-						{
-							type: ApplicationCommandOptionType.String,
-							name: 'new_prefix',
-							description: 'The new prefix you want for your server.',
-							required: true
 						}
 					]
 				}
@@ -879,7 +860,6 @@ export const configCommand: OSBMahojiCommand = {
 			pet_messages?: { choice: 'enable' | 'disable' };
 			jmod_comments?: { choice: 'enable' | 'disable' };
 			command?: { command: string; choice: 'enable' | 'disable' };
-			prefix?: { new_prefix: string };
 		};
 		user?: {
 			toggle?: { name: string };
@@ -907,9 +887,6 @@ export const configCommand: OSBMahojiCommand = {
 			}
 			if (options.server.command) {
 				return handleCommandEnable(user, guild, options.server.command.command, options.server.command.choice);
-			}
-			if (options.server.prefix) {
-				return handlePrefixChange(user, guild, options.server.prefix.new_prefix);
 			}
 		}
 		if (options.user) {

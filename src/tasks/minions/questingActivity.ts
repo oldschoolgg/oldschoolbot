@@ -1,6 +1,6 @@
 import { Emoji, MAX_QP } from '../../lib/constants';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
+import type { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
 import { rand, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
@@ -60,14 +60,6 @@ export const questingTask: MinionTask = {
 			str += `${Emoji.Magic} You received 2500 Magic XP for completing Recipe For Disaster (Lumbridge guide subquest).`;
 		}
 
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			hasMaxQP ? undefined : ['activities', { quest: {} }, true],
-			undefined,
-			data,
-			null
-		);
+		handleTripFinish(user, channelID, str, undefined, data, null);
 	}
 };

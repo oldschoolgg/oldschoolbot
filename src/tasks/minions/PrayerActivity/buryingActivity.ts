@@ -2,7 +2,7 @@ import { Bank } from 'oldschooljs';
 
 import Prayer from '../../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { BuryingActivityTaskOptions } from '../../../lib/types/minions';
+import type { BuryingActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export const buryingTask: MinionTask = {
@@ -43,14 +43,6 @@ export const buryingTask: MinionTask = {
 			str += '\n\nWhile digging a hole to bury bones in, you find a garb and pair of trousers.';
 		}
 
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			['activities', { bury: { quantity, name: bone.name } }, true],
-			undefined,
-			data,
-			null
-		);
+		handleTripFinish(user, channelID, str, undefined, data, null);
 	}
 };

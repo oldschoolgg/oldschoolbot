@@ -89,14 +89,6 @@ export const cyclopsTask: MinionTask = {
 			previousCL
 		});
 
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			['activities', { warriors_guild: { action: 'cyclops', quantity } }, true],
-			image.file.attachment,
-			data,
-			itemsAdded
-		);
+		handleTripFinish(user, channelID, str, image.file.attachment, data, itemsAdded);
 	}
 };

@@ -51,6 +51,7 @@ export interface Log {
 	level: number;
 	xp: number;
 	id: number;
+	lootTable?: LootTable;
 	name: string;
 	aliases?: string[];
 	findNewTreeTime: number;
@@ -62,6 +63,7 @@ export interface Log {
 	petChance?: number;
 	qpRequired: number;
 	clueScrollChance?: number;
+	clueNestsOnly?: boolean;
 }
 
 export interface Burnable {
@@ -175,7 +177,7 @@ export interface Mixable {
 	id: number;
 	level: number;
 	xp: number;
-	inputItems: ItemBank;
+	inputItems: Bank;
 	tickRate: number;
 	bankTimePerPotion: number;
 	outputMultiple?: number;

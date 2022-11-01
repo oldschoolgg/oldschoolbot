@@ -6,11 +6,11 @@ import { patreonConfig, production } from '../config';
 import { mahojiUserSettingsUpdate } from '../mahoji/settingsUpdate';
 import { cacheBadges } from './badges';
 import { BadgesEnum, BitField, Channel, PatronTierID, PerkTier } from './constants';
-import { fetchSponsors, getUserFromGithubID } from './http/util';
+import { fetchSponsors, getUserIdFromGithubID } from './http/util';
 import backgroundImages from './minions/data/bankBackgrounds';
+import { getUsersPerkTier } from './MUser';
 import { roboChimpUserFetch } from './roboChimp';
 import { Patron } from './types';
-import getUsersPerkTier from './util/getUsersPerkTier';
 import { logError } from './util/logError';
 
 const patreonApiURL = new URL(`https://patreon.com/api/oauth2/v2/campaigns/${patreonConfig?.campaignID}/members`);
@@ -191,9 +191,9 @@ class PatreonTask {
 		const sponsors = await fetchSponsors();
 		for (const sponsor of sponsors) {
 			if (!sponsor.tier) continue;
-			const user = await getUserFromGithubID(sponsor.githubID);
-			if (!user) continue;
-			let res = await this.validatePerks(user.id, sponsor.tier);
+			const userID = await getUserIdFromGithubID(sponsor.githubID);
+			if (!userID) continue;
+			let res = await this.validatePerks(userID, sponsor.tier);
 			if (res) {
 				messages.push(res);
 			}

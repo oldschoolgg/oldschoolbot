@@ -78,5 +78,7 @@ export function minionName(user: MUser) {
 	const prefix = isIronman ? Emoji.Ironman : '';
 	icon ??= Emoji.Minion;
 
-	return name ? `${prefix} ${icon} **${escapeMarkdown(name)}**` : `${prefix} ${icon} Your minion`;
+	let strPrefix = prefix ? `${prefix} ` : '';
+
+	return name ? `${strPrefix}${icon} **${escapeMarkdown(name)}**` : `${strPrefix}${icon} Your minion`;
 }

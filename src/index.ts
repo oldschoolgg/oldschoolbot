@@ -18,11 +18,15 @@ import { Channel, Events, SILENT_ERROR } from './lib/constants';
 import { onMessage } from './lib/events';
 import { makeServer } from './lib/http';
 import { modalInteractionHook } from './lib/modals';
+import { runStartupScripts } from './lib/startupScripts';
 import { OldSchoolBotClient } from './lib/structures/OldSchoolBotClient';
-import { initTickers } from './lib/tickers';
+import { syncActivityCache } from './lib/Task';
+import { UserError } from './lib/UserError';
+import { runTimedLoggedFn } from './lib/util';
+import { syncActiveUserIDs } from './lib/util/cachedUserIDs';
 import { interactionHook } from './lib/util/globalInteractions';
 import { interactionReply } from './lib/util/interactionReply';
-import { logError } from './lib/util/logError';
+import { logError, logErrorForInteraction } from './lib/util/logError';
 import { sendToChannelID } from './lib/util/webhook';
 import { onStartup } from './mahoji/lib/events';
 import { postCommand } from './mahoji/lib/postCommand';
@@ -35,6 +39,11 @@ if (SENTRY_DSN) {
 	Sentry.init({
 		dsn: SENTRY_DSN
 	});
+}
+
+if (process.env.TZ !== 'UTC') {
+	console.error('Must be using UTC timezone');
+	process.exit(1);
 }
 
 const client = new OldSchoolBotClient(clientOptions);
@@ -55,13 +64,13 @@ export const mahojiClient = new MahojiClient({
 			});
 			return result;
 		},
-		postCommand: ({ command, interaction, error, inhibited }) =>
+		postCommand: ({ command, interaction, error, inhibited, options }) =>
 			postCommand({
 				abstractCommand: convertMahojiCommandToAbstractCommand(command),
 				userID: interaction.user.id,
 				guildID: interaction.guildId,
 				channelID: interaction.channelId,
-				args: interaction.options,
+				args: options,
 				error,
 				isContinue: false,
 				inhibited
@@ -110,17 +119,16 @@ client.on('interactionCreate', async interaction => {
 
 	if (isObject(result) && 'error' in result) {
 		if (result.error.message === SILENT_ERROR) return;
-		logError(result.error, {
-			interaction: JSON.stringify(interaction)
-		});
+		if (result.error instanceof UserError && interaction.isRepliable() && !interaction.replied) {
+			await interaction.reply(result.error.message);
+			return;
+		}
+		logErrorForInteraction(result.error, interaction);
 		if (interaction.isChatInputCommand()) {
 			try {
 				await interactionReply(interaction, 'Sorry, an error occured while trying to run this command.');
 			} catch (err: unknown) {
-				logError(err, {
-					user_id: interaction.user.id,
-					interaction: JSON.stringify(interaction)
-				});
+				logErrorForInteraction(err, interaction);
 			}
 		}
 	}
@@ -149,29 +157,21 @@ client.on('guildCreate', guild => {
 	}
 });
 
-initTickers();
+client.on('ready', () => runTimedLoggedFn('OnStartup', async () => onStartup()));
 
 async function main() {
 	client.fastifyServer = makeServer();
-	await mahojiClient.start();
-	console.log('Starting mahoji client...');
+	let promises = [];
+	promises.push(runTimedLoggedFn('Start Mahoji Client', async () => mahojiClient.start()));
+	promises.push(runTimedLoggedFn('Sync Activity Cache', syncActivityCache));
+	promises.push(runTimedLoggedFn('Startup Scripts', runStartupScripts));
+	promises.push(runTimedLoggedFn('Sync Active User IDs', syncActiveUserIDs));
+	await Promise.all(promises);
+
 	await client.login(botToken);
-	console.log('Logging in...');
-	await client.init();
-	console.log('Init...');
-	await onStartup();
+	await runTimedLoggedFn('Client.Init', async () => client.init());
 }
 
-const terminateCb = async () => {
-	await globalClient.destroy();
-	process.exit(0);
-};
-
-process.removeAllListeners('SIGTERM');
-process.removeAllListeners('SIGINT');
-
-process.on('SIGTERM', terminateCb);
-process.on('SIGINT', terminateCb);
 process.on('uncaughtException', logError);
 
 main();

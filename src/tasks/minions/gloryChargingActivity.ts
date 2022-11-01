@@ -53,14 +53,6 @@ export const gloryChargingTask: MinionTask = {
 			collectionLog: true,
 			itemsToAdd: loot
 		});
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			['activities', { charge: { item: 'glory', quantity } }, true],
-			undefined,
-			data,
-			loot
-		);
+		handleTripFinish(user, channelID, str, undefined, data, loot);
 	}
 };

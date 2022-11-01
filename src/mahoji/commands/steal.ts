@@ -7,14 +7,14 @@ import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { Stealable, stealables } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, getSkillsOfMahojiUser, rand } from '../../lib/util';
+import { formatDuration, rand } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
 import { logError } from '../../lib/util/logError';
 import { calcLootXPPickpocketing } from '../../tasks/minions/pickpocketActivity';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch, rogueOutfitPercentBonus, updateBankSetting } from '../mahojiSettings';
+import { rogueOutfitPercentBonus, updateBankSetting } from '../mahojiSettings';
 
 export const stealCommand: OSBMahojiCommand = {
 	name: 'steal',
@@ -31,8 +31,8 @@ export const stealCommand: OSBMahojiCommand = {
 			description: 'The object you try to steal from.',
 			required: true,
 			autocomplete: async (value: string, user: User) => {
-				const mUser = await mahojiUsersSettingsFetch(user.id);
-				const conLevel = getSkillsOfMahojiUser(mUser, true).thieving;
+				const mUser = await mUserFetch(user.id);
+				const conLevel = mUser.skillLevel('thieving');
 				return stealables
 					.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 					.filter(c => c.level <= conLevel)
@@ -55,7 +55,9 @@ export const stealCommand: OSBMahojiCommand = {
 		stealables;
 		const stealable: Stealable | undefined = stealables.find(
 			obj =>
-				stringMatches(obj.name, options.name) || obj.aliases?.some(alias => stringMatches(alias, options.name))
+				stringMatches(obj.name, options.name) ||
+				stringMatches(obj.id.toString(), options.name) ||
+				obj.aliases?.some(alias => stringMatches(alias, options.name))
 		);
 
 		if (!stealable) {

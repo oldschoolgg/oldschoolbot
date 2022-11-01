@@ -202,13 +202,3 @@ export async function incrementMinigameScore(userID: string, minigame: MinigameN
 		entity: result
 	};
 }
-
-export async function getAllMinigameScores(userID: string): Promise<MinigameScore[]> {
-	const UserMinigames = await getMinigameEntity(userID);
-	const scores: MinigameScore[] = [];
-	for (const minigame of Minigames) {
-		const score = UserMinigames[minigame.column];
-		scores.push({ minigame, score });
-	}
-	return scores;
-}

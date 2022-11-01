@@ -4,8 +4,9 @@ import { Time } from 'e';
 import { mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings';
 import { defaultPatches } from '../../minions/farming';
 import { IPatchData, IPatchDataDetailed } from '../../minions/farming/types';
-import { assert, formatDuration, toTitleCase } from '../../util';
+import { assert, formatDuration } from '../../util';
 import { farmingKeys, FarmingPatchName, farmingPatchNames, findPlant } from '../../util/farmingHelpers';
+import { toTitleCase } from '../../util/toTitleCase';
 
 export async function getFarmingInfo(userID: string | string) {
 	let keys: Partial<Record<keyof User, true>> = {};

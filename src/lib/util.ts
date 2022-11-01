@@ -1,10 +1,11 @@
 import { bold } from '@discordjs/builders';
-import type { User } from '@prisma/client';
+import { Stopwatch } from '@sapphire/stopwatch';
 import {
 	ButtonBuilder,
 	ButtonInteraction,
 	CacheType,
 	Channel,
+	ChannelType,
 	Collection,
 	CollectorFilter,
 	ComponentType,
@@ -45,9 +46,11 @@ import {
 	RaidsOptions,
 	TheatreOfBloodTaskOptions
 } from './types/minions';
+import { CACHED_ACTIVE_USER_IDS } from './util/cachedUserIDs';
 import { getItem } from './util/getOSItem';
 import itemID from './util/itemID';
 import { logError } from './util/logError';
+import { toTitleCase } from './util/toTitleCase';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const emojiRegex = require('emoji-regex');
@@ -75,10 +78,6 @@ export function cleanMentions(guild: Guild | null, input: string, showAt = true)
 					const role = guild?.roles.cache.get(id);
 					return role ? `${at}${role.name}` : match;
 				}
-				case '#': {
-					const channel = guild?.channels.cache.get(id);
-					return channel ? `#${channel.name}` : `<${type}${zeroWidthSpace}${id}>`;
-				}
 				default:
 					return `<${type}${zeroWidthSpace}${id}>`;
 			}
@@ -104,14 +103,6 @@ export function formatItemStackQuantity(quantity: number) {
 		return `${Math.floor(quantity / 1000)}K`;
 	}
 	return quantity.toString();
-}
-
-export function toTitleCase(str: string) {
-	const splitStr = str.toLowerCase().split(' ');
-	for (let i = 0; i < splitStr.length; i++) {
-		splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
-	}
-	return splitStr.join(' ');
 }
 
 export function formatDuration(ms: number, short = false) {
@@ -217,40 +208,6 @@ export function isTobActivity(data: any): data is TheatreOfBloodTaskOptions {
 
 export function isNexActivity(data: any): data is NexTaskOptions {
 	return 'wipedKill' in data && 'userDetails' in data && 'leader' in data;
-}
-
-export function getSkillsOfMahojiUser(user: User, levels = false): Required<Skills> {
-	const skills: Required<Skills> = {
-		agility: Number(user.skills_agility),
-		cooking: Number(user.skills_cooking),
-		fishing: Number(user.skills_fishing),
-		mining: Number(user.skills_mining),
-		smithing: Number(user.skills_smithing),
-		woodcutting: Number(user.skills_woodcutting),
-		firemaking: Number(user.skills_firemaking),
-		runecraft: Number(user.skills_runecraft),
-		crafting: Number(user.skills_crafting),
-		prayer: Number(user.skills_prayer),
-		fletching: Number(user.skills_fletching),
-		farming: Number(user.skills_farming),
-		herblore: Number(user.skills_herblore),
-		thieving: Number(user.skills_thieving),
-		hunter: Number(user.skills_hunter),
-		construction: Number(user.skills_construction),
-		magic: Number(user.skills_magic),
-		attack: Number(user.skills_attack),
-		strength: Number(user.skills_strength),
-		defence: Number(user.skills_defence),
-		ranged: Number(user.skills_ranged),
-		hitpoints: Number(user.skills_hitpoints),
-		slayer: Number(user.skills_slayer)
-	};
-	if (levels) {
-		for (const [key, val] of Object.entries(skills) as [keyof Skills, number][]) {
-			skills[key] = convertXPtoLVL(val);
-		}
-	}
-	return skills;
 }
 
 export function getSupportGuild(): Guild | null {
@@ -381,9 +338,7 @@ export function formatMissingItems(consumables: Consumable[], timeToFinish: numb
 export function formatSkillRequirements(reqs: Record<string, number>, emojis = true) {
 	let arr = [];
 	for (const [name, num] of objectEntries(reqs)) {
-		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		// @ts-ignore
-		arr.push(`${emojis ? ` ${skillEmoji[name]} ` : ''}**${num}** ${toTitleCase(name)}`);
+		arr.push(`${emojis ? ` ${(skillEmoji as any)[name]} ` : ''}**${num}** ${toTitleCase(name)}`);
 	}
 	return arr.join(', ');
 }
@@ -447,7 +402,9 @@ export function isValidNickname(str?: string) {
 	);
 }
 
-export async function makePaginatedMessage(channel: TextChannel, pages: MessageEditOptions[], target?: string) {
+export type PaginatedMessagePage = MessageEditOptions;
+
+export async function makePaginatedMessage(channel: TextChannel, pages: PaginatedMessagePage[], target?: string) {
 	const m = new PaginatedMessage({ pages, channel });
 	return m.run(target ? [target] : undefined);
 }
@@ -685,4 +642,117 @@ export function awaitMessageComponentInteraction({
 
 export function isGuildChannel(channel?: Channel): channel is GuildTextBasedChannel {
 	return channel !== undefined && !channel.isDMBased() && Boolean(channel.guild);
+}
+
+export async function runTimedLoggedFn(name: string, fn: () => Promise<unknown>) {
+	const stopwatch = new Stopwatch();
+	stopwatch.start();
+	await fn();
+	stopwatch.stop();
+	console.log(`Finished ${name} in ${stopwatch.toString()}`);
+}
+
+const emojiServers = new Set([
+	'342983479501389826',
+	'940758552425955348',
+	'869497440947015730',
+	'324127314361319427',
+	'363252822369894400',
+	'395236850119213067',
+	'325950337271857152',
+	'395236894096621568'
+]);
+
+export function memoryAnalysis() {
+	let guilds = globalClient.guilds.cache.size;
+	let emojis = 0;
+	let channels = globalClient.channels.cache.size;
+	let voiceChannels = 0;
+	let guildTextChannels = 0;
+	let roles = 0;
+	for (const guild of globalClient.guilds.cache.values()) {
+		emojis += guild.emojis.cache.size;
+		for (const channel of guild.channels.cache.values()) {
+			if (channel.type === ChannelType.GuildVoice) voiceChannels++;
+			if (channel.type === ChannelType.GuildText) guildTextChannels++;
+		}
+		roles += guild.roles.cache.size;
+	}
+	return {
+		guilds,
+		emojis,
+		channels,
+		voiceChannels,
+		guildTextChannels,
+		roles,
+		activeIDs: CACHED_ACTIVE_USER_IDS.size
+	};
+}
+
+export function cacheCleanup() {
+	return runTimedLoggedFn('Cache Cleanup', async () => {
+		await runTimedLoggedFn('Clear Channels', async () => {
+			for (const channel of globalClient.channels.cache.values()) {
+				if (channel.type === ChannelType.GuildVoice || channel.type === ChannelType.GuildCategory) {
+					globalClient.channels.cache.delete(channel.id);
+				}
+				if (channel.type === ChannelType.GuildText) {
+					channel.threads.cache.clear();
+					// @ts-ignore ignore
+					delete channel.topic;
+					// @ts-ignore ignore
+					delete channel.rateLimitPerUser;
+					// @ts-ignore ignore
+					delete channel.nsfw;
+					// @ts-ignore ignore
+					delete channel.parentId;
+					// @ts-ignore ignore
+					delete channel.name;
+					// @ts-ignore ignore
+					channel.lastMessageId = null;
+					// @ts-ignore ignore
+					channel.lastPinTimestamp = null;
+				}
+			}
+		});
+
+		await runTimedLoggedFn('Guild Emoji/Roles/Member cache clear', async () => {
+			for (const guild of globalClient.guilds.cache.values()) {
+				if (emojiServers.has(guild.id)) continue;
+				guild.emojis.cache.clear();
+				for (const member of guild.members.cache.values()) {
+					if (!CACHED_ACTIVE_USER_IDS.has(member.user.id)) {
+						guild.members.cache.delete(member.user.id);
+					}
+				}
+				for (const channel of guild.channels.cache.values()) {
+					if (channel.type === ChannelType.GuildVoice || channel.type === ChannelType.GuildNewsThread) {
+						guild.channels.cache.delete(channel.id);
+					}
+				}
+				for (const role of guild.roles.cache.values()) {
+					// @ts-ignore ignore
+					delete role.managed;
+					// @ts-ignore ignore
+					delete role.name;
+					// @ts-ignore ignore
+					delete role.tags;
+					// @ts-ignore ignore
+					delete role.icon;
+					// @ts-ignore ignore
+					delete role.unicodeEmoji;
+					// @ts-ignore ignore
+					delete role.rawPosition;
+					// @ts-ignore ignore
+					delete role.color;
+					// @ts-ignore ignore
+					delete role.hoist;
+				}
+			}
+		});
+	});
+}
+
+export function isFunction(input: unknown): input is Function {
+	return typeof input === 'function';
 }

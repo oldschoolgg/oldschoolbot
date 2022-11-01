@@ -3,7 +3,7 @@ import { Bank } from 'oldschooljs';
 import { Emoji, Events } from '../../lib/constants';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { RunecraftActivityTaskOptions } from '../../lib/types/minions';
+import type { RunecraftActivityTaskOptions } from '../../lib/types/minions';
 import { roll, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { calcMaxRCQuantity } from '../../mahoji/mahojiSettings';
@@ -11,7 +11,7 @@ import { calcMaxRCQuantity } from '../../mahoji/mahojiSettings';
 export const runecraftTask: MinionTask = {
 	type: 'Runecraft',
 	async run(data: RunecraftActivityTaskOptions) {
-		const { runeID, essenceQuantity, userID, channelID, imbueCasts, duration, useStaminas, daeyaltEssence } = data;
+		const { runeID, essenceQuantity, userID, channelID, imbueCasts, duration, daeyaltEssence } = data;
 		const user = await mUserFetch(userID);
 
 		const rune = Runecraft.Runes.find(_rune => _rune.id === runeID)!;
@@ -95,18 +95,6 @@ export const runecraftTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			[
-				'runecraft',
-				{ quantity: essenceQuantity, rune: rune.name, usestams: useStaminas, daeyalt_essence: daeyaltEssence },
-				true
-			],
-			undefined,
-			data,
-			loot
-		);
+		handleTripFinish(user, channelID, str, undefined, data, loot);
 	}
 };

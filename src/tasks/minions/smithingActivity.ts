@@ -2,7 +2,7 @@ import { Bank } from 'oldschooljs';
 
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { SmithingActivityTaskOptions } from '../../lib/types/minions';
+import type { SmithingActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export const smithingTask: MinionTask = {
@@ -32,14 +32,6 @@ export const smithingTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			['smith', { name: smithedItem.name, quantity }, true],
-			undefined,
-			data,
-			loot
-		);
+		handleTripFinish(user, channelID, str, undefined, data, loot);
 	}
 };

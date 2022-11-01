@@ -2,7 +2,7 @@ import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { updateBankSetting } from '../mahoji/mahojiSettings';
-import { GearSetupType } from './gear';
+import { GearSetupType } from './gear/types';
 import { assert } from './util';
 import getOSItem from './util/getOSItem';
 
@@ -99,7 +99,7 @@ export async function degradeItem({
 
 	const currentCharges = user.user[degItem.settingsKey];
 	assert(typeof currentCharges === 'number');
-	const newCharges = currentCharges - chargesToDegrade;
+	const newCharges = Math.floor(currentCharges - chargesToDegrade);
 
 	if (newCharges <= 0) {
 		// If no more charges left, break and refund the item.

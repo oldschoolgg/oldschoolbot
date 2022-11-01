@@ -36,14 +36,6 @@ export const mahoganyHomesTask: MinionTask = {
 			str += `\nYou received ${bonusXP.toLocaleString()} bonus XP from your Carpenter's outfit.`;
 		}
 
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			['minigames', { mahogany_homes: { start: {} } }, true],
-			undefined,
-			data,
-			null
-		);
+		handleTripFinish(user, channelID, str, undefined, data, null);
 	}
 };

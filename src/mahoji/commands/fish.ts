@@ -1,4 +1,4 @@
-import { calcPercentOfNum, Time } from 'e';
+import { calcPercentOfNum, randInt, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import TzTokJad from 'oldschooljs/dist/simulation/monsters/special/TzTokJad';
@@ -7,7 +7,7 @@ import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FishingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, itemID, itemNameFromID, rand } from '../../lib/util';
+import { formatDuration, itemID, itemNameFromID } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
@@ -46,10 +46,11 @@ export const fishCommand: OSBMahojiCommand = {
 	],
 	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
 		const user = await mUserFetch(userID);
-
 		const fish = Fishing.Fishes.find(
 			fish =>
-				stringMatches(fish.name, options.name) || fish.alias?.some(alias => stringMatches(alias, options.name))
+				stringMatches(fish.id, options.name) ||
+				stringMatches(fish.name, options.name) ||
+				fish.alias?.some(alias => stringMatches(alias, options.name))
 		);
 		if (!fish) return 'Thats not a valid fish to catch.';
 
@@ -91,22 +92,22 @@ export const fishCommand: OSBMahojiCommand = {
 			case itemID('Fishing bait'):
 				if (fish.name === 'Infernal eel') {
 					scaledTimePerFish *= 1;
-				} else if (user.hasEquipped(itemID('Pearl fishing rod')) && fish.name !== 'Infernal eel') {
+				} else if (user.hasEquipped('Pearl fishing rod') && fish.name !== 'Infernal eel') {
 					scaledTimePerFish *= 0.95;
 					boosts.push('5% for Pearl fishing rod');
 				}
 				break;
 			case itemID('Feather'):
-				if (fish.name === 'Barbarian fishing' && user.hasEquipped(itemID('Pearl barbarian rod'))) {
+				if (fish.name === 'Barbarian fishing' && user.hasEquipped('Pearl barbarian rod')) {
 					scaledTimePerFish *= 0.95;
 					boosts.push('5% for Pearl barbarian rod');
-				} else if (user.hasEquipped(itemID('Pearl fly fishing rod')) && fish.name !== 'Barbarian fishing') {
+				} else if (user.hasEquipped('Pearl fly fishing rod') && fish.name !== 'Barbarian fishing') {
 					scaledTimePerFish *= 0.95;
 					boosts.push('5% for Pearl fly fishing rod');
 				}
 				break;
 			default:
-				if (user.hasEquipped(itemID('Crystal harpoon'))) {
+				if (user.hasEquipped('Crystal harpoon')) {
 					scaledTimePerFish *= 0.95;
 					boosts.push('5% for Crystal harpoon');
 				}
@@ -119,6 +120,14 @@ export const fishCommand: OSBMahojiCommand = {
 				-0.000_541_351 * user.skillLevel(SkillsEnum.Fishing) ** 2 +
 					0.089_066_3 * user.skillLevel(SkillsEnum.Fishing) -
 					2.681_53
+			);
+		}
+
+		if (user.allItemsOwned().has('Fish sack barrel') || user.allItemsOwned().has('Fish barrel')) {
+			boosts.push(
+				`+9 trip minutes for having a ${
+					user.allItemsOwned().has('Fish sack barrel') ? 'Fish sack barrel' : 'Fish barrel'
+				}`
 			);
 		}
 
@@ -156,7 +165,7 @@ export const fishCommand: OSBMahojiCommand = {
 		}
 
 		const tenPercent = Math.floor(calcPercentOfNum(10, duration));
-		duration += rand(-tenPercent, tenPercent);
+		duration += randInt(-tenPercent, tenPercent);
 
 		await addSubTaskToActivityTask<FishingActivityTaskOptions>({
 			fishID: fish.id,

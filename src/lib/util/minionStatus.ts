@@ -29,6 +29,7 @@ import {
 	AgilityActivityTaskOptions,
 	AlchingActivityTaskOptions,
 	BuryingActivityTaskOptions,
+	ButlerActivityTaskOptions,
 	CastingActivityTaskOptions,
 	ClueActivityTaskOptions,
 	CollectingOptions,
@@ -67,8 +68,9 @@ import {
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '../types/minions';
-import { formatDuration, itemNameFromID, randomVariation, toTitleCase } from '../util';
+import { formatDuration, itemNameFromID, randomVariation } from '../util';
 import { stringMatches } from './cleanString';
+import { toTitleCase } from './toTitleCase';
 
 export function minionStatus(user: MUser) {
 	const currentTask = getActivityOfUser(user.id);
@@ -391,6 +393,14 @@ export function minionStatus(user: MUser) {
 			)}. ${formattedDuration}`;
 		}
 
+		case 'Butler': {
+			const data = currentTask as ButlerActivityTaskOptions;
+			const plank = Planks.find(_plank => _plank.outputItem === data.plankID);
+			return `${name} is currently creating ${data.plankQuantity}x ${itemNameFromID(
+				plank!.outputItem
+			)}s. ${formattedDuration}`;
+		}
+
 		case 'MahoganyHomes': {
 			return `${name} is currently doing Mahogany Homes. ${formattedDuration}`;
 		}
@@ -504,7 +514,7 @@ export function minionStatus(user: MUser) {
 		}
 		case 'KourendFavour': {
 			const data = currentTask as KourendFavourActivityTaskOptions;
-			return `${name} is currently doing ${data.favour.name} Favour tasks. ${formattedDuration}`;
+			return `${name} is currently doing ${data.favour} Favour tasks. ${formattedDuration}`;
 		}
 		case 'Inferno': {
 			const data = currentTask as InfernoOptions;
@@ -565,6 +575,9 @@ export function minionStatus(user: MUser) {
 			return `${name} is currently helping the Great Guardian to close the rift. The trip should take ${formatDuration(
 				durationRemaining
 			)}.`;
+		}
+		case 'HalloweenEvent': {
+			return `${name} is currently Trick-or-Treating! The trip should take ${formatDuration(durationRemaining)}.`;
 		}
 		case 'Easter':
 		case 'BlastFurnace': {

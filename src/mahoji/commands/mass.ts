@@ -3,7 +3,6 @@ import { objectKeys, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { setupParty } from '../../extendables/Message/Party';
-import { Emoji } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
@@ -22,24 +21,24 @@ function checkReqs(users: MUser[], monster: KillableMonster, quantity: number) {
 	// Check if every user has the requirements for this monster.
 	for (const user of users) {
 		if (!user.user.minion_hasBought) {
-			throw `${user.usernameOrMention} doesn't have a minion, so they can't join!`;
+			return `${user.usernameOrMention} doesn't have a minion, so they can't join!`;
 		}
 
 		if (user.minionIsBusy) {
-			throw `${user.usernameOrMention} is busy right now and can't join!`;
+			return `${user.usernameOrMention} is busy right now and can't join!`;
 		}
 
 		if (user.user.minion_ironman) {
-			throw `${user.usernameOrMention} is an ironman, so they can't join!`;
+			return `${user.usernameOrMention} is an ironman, so they can't join!`;
 		}
 
 		const [hasReqs, reason] = hasMonsterRequirements(user, monster);
 		if (!hasReqs) {
-			throw `${user.usernameOrMention} doesn't have the requirements for this monster: ${reason}`;
+			return `${user.usernameOrMention} doesn't have the requirements for this monster: ${reason}`;
 		}
 
 		if (1 > 2 && !hasEnoughFoodForMonster(monster, user, quantity, users.length)) {
-			throw `${
+			return `${
 				users.length === 1 ? "You don't" : `${user.usernameOrMention} doesn't`
 			} have enough food. You need at least ${monster!.healAmountNeeded! * quantity} HP in food to ${
 				users.length === 1 ? 'start the mass' : 'enter the mass'
@@ -77,10 +76,11 @@ export const massCommand: OSBMahojiCommand = {
 		const channel = globalClient.channels.cache.get(channelID.toString());
 		if (!channel || !channelIsSendable(channel)) return 'Invalid channel.';
 		const monster = findMonster(options.monster);
-		if (!monster) throw "That monster doesn't exist!";
-		if (!monster.groupKillable) throw "This monster can't be killed in groups!";
+		if (!monster) return "That monster doesn't exist!";
+		if (!monster.groupKillable) return "This monster can't be killed in groups!";
 
-		checkReqs([user], monster, 2);
+		const check = checkReqs([user], monster, 2);
+		if (check) return check;
 
 		let users: MUser[] = [];
 		try {
@@ -89,7 +89,7 @@ export const massCommand: OSBMahojiCommand = {
 				minSize: 2,
 				maxSize: 10,
 				ironmanAllowed: false,
-				message: `${user.usernameOrMention} is doing a ${monster.name} mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
+				message: `${user.usernameOrMention} is doing a ${monster.name} mass! Use the buttons below to join/leave.`,
 				customDenier: async user => {
 					if (!user.user.minion_hasBought) {
 						return [true, "you don't have a minion."];
@@ -134,9 +134,12 @@ export const massCommand: OSBMahojiCommand = {
 		users = users.filter(i => !i.minionIsBusy);
 		const usersKickedForBusy = unchangedUsers.filter(i => !users.includes(i));
 
-		const [quantity, duration, perKillTime, boostMsgs] = await calcDurQty(users, monster, undefined);
+		const durQtyRes = await calcDurQty(users, monster, undefined);
+		if (typeof durQtyRes === 'string') return durQtyRes;
+		const [quantity, duration, perKillTime, boostMsgs] = durQtyRes;
 
-		checkReqs(users, monster, quantity);
+		const checkRes = checkReqs(users, monster, quantity);
+		if (checkRes) return checkRes;
 
 		if (1 > 2 && monster.healAmountNeeded) {
 			for (const user of users) {

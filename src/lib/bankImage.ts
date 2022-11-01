@@ -2,7 +2,7 @@ import { chunk } from 'e';
 import { existsSync } from 'fs';
 import * as fs from 'fs/promises';
 import fetch from 'node-fetch';
-import { Bank, Items } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { toKMB } from 'oldschooljs/dist/util/util';
 import * as path from 'path';
@@ -17,9 +17,9 @@ import { BankSortMethod, BankSortMethods, sorts } from '../lib/sorts';
 import { ItemBank } from '../lib/types';
 import { addArrayOfNumbers, cleanString, formatItemStackQuantity, generateHexColorForCashStack } from '../lib/util';
 import { drawImageWithOutline, fillTextXTimesInCtx, getClippedRegion } from '../lib/util/canvasUtil';
-import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 import itemID from '../lib/util/itemID';
 import { logError } from '../lib/util/logError';
+import { UserError } from './UserError';
 
 FontLibrary.use({
 	OSRSFont: './src/lib/resources/osrs-font.ttf',
@@ -518,7 +518,7 @@ class BankImageTask {
 		// Sorting
 		const favorites = user?.user.favoriteItems;
 		const weightings = user?.user.bank_sort_weightings as ItemBank;
-		const perkTier = user ? getUsersPerkTier(user) : 0;
+		const perkTier = user ? user.perkTier() : 0;
 		const defaultSort: BankSortMethod = perkTier < PerkTier.Two ? 'value' : user?.bankSortMethod ?? 'value';
 		const sortInput = flags.get('sort');
 		const sort = sortInput ? BankSortMethods.find(s => s === sortInput) ?? defaultSort : defaultSort;
@@ -566,16 +566,7 @@ class BankImageTask {
 		// Paging
 		if (typeof page === 'number' && !isShowingFullBankImage) {
 			let pageLoot = chunked[page];
-			let asItem = Items.get(page + 1);
-			if (asItem && !pageLoot) {
-				const amount = bank.amount(asItem.id);
-				if (!amount) {
-					throw `You have no ${asItem.name}.`;
-				}
-				pageLoot = [[asItem, amount]];
-			}
-
-			if (!pageLoot) throw 'You have no items on this page.';
+			if (!pageLoot) throw new UserError('You have no items on this page.');
 			items = pageLoot;
 		}
 

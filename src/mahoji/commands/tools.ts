@@ -35,12 +35,10 @@ import {
 	itemNameFromID,
 	stringMatches
 } from '../../lib/util';
-import getOSItem, { getItem } from '../../lib/util/getOSItem';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import { getItem } from '../../lib/util/getOSItem';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import resolveItems from '../../lib/util/resolveItems';
-import { dataPoints, statsCommand } from '../lib/abstracted_commands/statCommand';
 import { itemOption, monsterOption, skillOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 import { handleMahojiConfirmation, patronMsg } from '../mahojiSettings';
@@ -150,7 +148,7 @@ LIMIT 10;`);
 }
 
 async function kcGains(user: MUser, interval: string, monsterName: string): CommandResponse {
-	if (getUsersPerkTier(user) < PerkTier.Four) return patronMsg(PerkTier.Four);
+	if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 	if (!TimeIntervals.includes(interval as any)) return 'Invalid time interval.';
 	const monster = killableMonsters.find(
 		k => stringMatches(k.name, monsterName) || k.aliases.some(a => stringMatches(a, monsterName))
@@ -308,10 +306,10 @@ LIMIT 10;`);
 }
 
 async function dryStreakCommand(user: MUser, monsterName: string, itemName: string, ironmanOnly: boolean) {
-	if (getUsersPerkTier(user) < PerkTier.Four) return patronMsg(PerkTier.Four);
+	if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 
-	const item = getOSItem(itemName);
-
+	const item = getItem(itemName);
+	if (!item) return 'Invalid item.';
 	const entity = dryStreakEntities.find(i => stringMatches(i.name, monsterName));
 	if (entity) {
 		if (!entity.items.includes(item.id)) {
@@ -353,7 +351,7 @@ async function dryStreakCommand(user: MUser, monsterName: string, itemName: stri
 }
 
 async function mostDrops(user: MUser, itemName: string, ironmanOnly: boolean) {
-	if (getUsersPerkTier(user) < PerkTier.Four) return patronMsg(PerkTier.Four);
+	if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 	const item = getItem(itemName);
 	const ironmanPart = ironmanOnly ? 'AND "minion.ironman" = true' : '';
 	if (!item) return "That's not a valid item.";
@@ -543,28 +541,6 @@ export const toolsCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'activity_export',
 					description: 'Export all your activities (For advanced users).'
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'stats',
-					description: 'Check various stats.',
-					options: [
-						{
-							type: ApplicationCommandOptionType.String,
-							name: 'stat',
-							description: 'The stat you want to check',
-							autocomplete: async (value: string) => {
-								return dataPoints
-									.map(i => i.name)
-									.filter(i => (!value ? true : i.toLowerCase().includes(value.toLowerCase())))
-									.map(i => ({
-										name: i,
-										value: i
-									}));
-							},
-							required: true
-						}
-					]
 				}
 			]
 		},
@@ -724,7 +700,7 @@ export const toolsCommand: OSBMahojiCommand = {
 				return mostDrops(mahojiUser, patron.mostdrops.item, Boolean(patron.mostdrops.ironman));
 			}
 			if (patron.sacrificed_bank) {
-				if (getUsersPerkTier(mahojiUser) < PerkTier.Two) return patronMsg(PerkTier.Two);
+				if (mahojiUser.perkTier() < PerkTier.Two) return patronMsg(PerkTier.Two);
 				const image = await makeBankImage({
 					bank: new Bank(mahojiUser.user.sacrificedBank as ItemBank),
 					title: 'Your Sacrificed Items'
@@ -734,7 +710,7 @@ export const toolsCommand: OSBMahojiCommand = {
 				};
 			}
 			if (patron.cl_bank) {
-				if (getUsersPerkTier(mahojiUser) < PerkTier.Two) return patronMsg(PerkTier.Two);
+				if (mahojiUser.perkTier() < PerkTier.Two) return patronMsg(PerkTier.Two);
 				const clBank = mahojiUser.cl;
 				if (patron.cl_bank.format === 'json') {
 					const json = JSON.stringify(clBank);
@@ -751,16 +727,16 @@ export const toolsCommand: OSBMahojiCommand = {
 				};
 			}
 			if (patron.xp_gains) {
-				if (getUsersPerkTier(mahojiUser) < PerkTier.Four) return patronMsg(PerkTier.Four);
+				if (mahojiUser.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return xpGains(patron.xp_gains.time, patron.xp_gains.skill);
 			}
 			if (patron.minion_stats) {
 				deferInteraction(interaction);
-				if (getUsersPerkTier(mahojiUser) < PerkTier.Four) return patronMsg(PerkTier.Four);
+				if (mahojiUser.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return minionStats(mahojiUser.user);
 			}
 			if (patron.activity_export) {
-				if (getUsersPerkTier(mahojiUser) < PerkTier.Four) return patronMsg(PerkTier.Four);
+				if (mahojiUser.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 				const promise = activityExport(mahojiUser.user);
 				await handleMahojiConfirmation(
 					interaction,
@@ -768,9 +744,6 @@ export const toolsCommand: OSBMahojiCommand = {
 				);
 				const result = await promise;
 				return result;
-			}
-			if (patron.stats) {
-				return statsCommand(mahojiUser, patron.stats.stat);
 			}
 		}
 		if (options.user) {

@@ -1,38 +1,65 @@
 /* eslint-disable prefer-promise-reject-errors */
 import { userMention } from '@discordjs/builders';
-import { MessageReaction, TextChannel, User } from 'discord.js';
-import { debounce, noOp, sleep, Time } from 'e';
+import {
+	ButtonBuilder,
+	ButtonStyle,
+	ComponentType,
+	InteractionCollector,
+	MessageEditOptions,
+	MessageOptions,
+	TextChannel
+} from 'discord.js';
+import { debounce, noOp, Time } from 'e';
 
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
-import { ReactionEmoji, SILENT_ERROR, usernameCache } from '../../lib/constants';
-import { CustomReactionCollector } from '../../lib/structures/CustomReactionCollector';
+import { SILENT_ERROR, usernameCache } from '../../lib/constants';
 import { MakePartyOptions } from '../../lib/types';
+import { UserError } from '../../lib/UserError';
+import { makeComponents } from '../../lib/util';
+import { CACHED_ACTIVE_USER_IDS } from '../../lib/util/cachedUserIDs';
 
 const partyLockCache = new Set<string>();
 setInterval(() => partyLockCache.clear(), Time.Minute * 20);
 
-export async function setupParty(channel: TextChannel, user: MUser, options: MakePartyOptions): Promise<MUser[]> {
+const buttons = [
+	{
+		id: 'PARTY_JOIN',
+		button: new ButtonBuilder().setLabel('Join').setStyle(ButtonStyle.Primary).setCustomId('PARTY_JOIN')
+	},
+	{
+		id: 'PARTY_LEAVE',
+		button: new ButtonBuilder().setLabel('Leave').setStyle(ButtonStyle.Secondary).setCustomId('PARTY_LEAVE')
+	},
+	{
+		id: 'PARTY_CANCEL',
+		button: new ButtonBuilder().setLabel('Cancel').setStyle(ButtonStyle.Danger).setCustomId('PARTY_CANCEL')
+	},
+	{
+		id: 'PARTY_START',
+		button: new ButtonBuilder().setLabel('Start').setStyle(ButtonStyle.Success).setCustomId('PARTY_START')
+	}
+] as const;
+
+export async function setupParty(channel: TextChannel, leaderUser: MUser, options: MakePartyOptions): Promise<MUser[]> {
 	const usersWhoConfirmed: string[] = [options.leader.id];
 	let deleted = false;
+	let massStarted = false;
 
-	function getMessageContent() {
-		return `${options.message}\n\n**Users Joined:** ${usersWhoConfirmed
-			.map(u => usernameCache.get(u) ?? userMention(u))
-			.join(
-				', '
-			)}\n\nThis party will automatically depart in 2 minutes, or if the leader clicks the start (start early) or stop button.`;
+	function getMessageContent(): MessageOptions & MessageEditOptions {
+		return {
+			content: `${options.message}\n\n**Users Joined:** ${usersWhoConfirmed
+				.map(u => usernameCache.get(u) ?? userMention(u))
+				.join(
+					', '
+				)}\n\nThis party will automatically depart in 2 minutes, or if the leader clicks the start (start early) or stop button.`,
+			components: makeComponents(buttons.map(i => i.button)),
+			allowedMentions: {
+				users: []
+			}
+		};
 	}
 
 	const confirmMessage = await channel.send(getMessageContent());
-	async function addEmojis() {
-		await confirmMessage.react(ReactionEmoji.Join);
-		await sleep(50);
-		await confirmMessage.react(ReactionEmoji.Stop);
-		await sleep(50);
-		await confirmMessage.react(ReactionEmoji.Start);
-	}
-
-	addEmojis();
 
 	// Debounce message edits to prevent spam.
 	const updateUsersIn = debounce(() => {
@@ -52,54 +79,64 @@ export async function setupParty(channel: TextChannel, user: MUser, options: Mak
 	const reactionAwaiter = () =>
 		new Promise<MUser[]>(async (resolve, reject) => {
 			let partyCancelled = false;
-			const collector = new CustomReactionCollector(confirmMessage, {
-				time: 120_000,
-				max: options.usersAllowed?.length ?? options.maxSize,
+			const collector = new InteractionCollector(globalClient, {
+				time: Time.Minute * 2,
+				maxUsers: options.usersAllowed?.length ?? options.maxSize,
 				dispose: true,
-				filter: async (reaction: MessageReaction, _user: User) => {
-					const user = await mUserFetch(_user.id);
+				channel,
+				componentType: ComponentType.Button,
+				message: confirmMessage,
+				filter: async interaction => {
+					CACHED_ACTIVE_USER_IDS.add(interaction.user.id);
+					const user = await mUserFetch(interaction.user.id);
 					if (
 						(!options.ironmanAllowed && user.user.minion_ironman) ||
-						_user.bot ||
+						interaction.user.bot ||
 						user.minionIsBusy ||
-						!reaction.emoji.id ||
 						!user.user.minion_hasBought
 					) {
+						interaction.reply({
+							content: `You cannot mass if you are busy${
+								!options.ironmanAllowed ? ', an ironman' : ''
+							}, or have no minion.`,
+							ephemeral: true
+						});
 						return false;
 					}
 
 					if (options.usersAllowed && !options.usersAllowed.includes(user.id)) {
+						interaction.reply({
+							content: 'You are not allowed to join this mass.',
+							ephemeral: true
+						});
 						return false;
 					}
 
-					if (options.customDenier && reaction.emoji.id === ReactionEmoji.Join) {
+					const btn = buttons.find(i => i.id === interaction.customId);
+					if (!btn) return false;
+
+					if (options.customDenier && btn.id === 'PARTY_JOIN') {
 						const [customDenied, reason] = await options.customDenier(user);
 						if (customDenied) {
-							const fullUser = globalClient.users.cache.get(user.id);
-							if (fullUser) {
-								fullUser.send(`You couldn't join this mass, for this reason: ${reason}`).catch(noOp);
-							}
+							interaction.reply({
+								content: `You couldn't join this mass, for this reason: ${reason}`,
+								ephemeral: true
+							});
+
 							return false;
 						}
 					}
 
-					return ([ReactionEmoji.Join, ReactionEmoji.Stop, ReactionEmoji.Start] as string[]).includes(
-						reaction.emoji.id
-					);
+					return true;
 				}
 			});
 
-			collector.on('remove', (reaction: MessageReaction, user: User) => {
-				if (!usersWhoConfirmed.includes(user.id)) return false;
-				if (reaction.emoji.id !== ReactionEmoji.Join) return false;
-				partyLockCache.delete(user.id);
-				removeUser(user.id);
-			});
-
 			async function startTrip() {
+				if (massStarted) return;
+				massStarted = true;
 				await confirmMessage.delete().catch(noOp);
 				if (!partyCancelled && usersWhoConfirmed.length < options.minSize) {
-					channel.send(`${user} Not enough people joined your mass!`);
+					channel.send(`${leaderUser} Not enough people joined your mass!`);
 					reject(new Error(SILENT_ERROR));
 					return;
 				}
@@ -107,46 +144,77 @@ export async function setupParty(channel: TextChannel, user: MUser, options: Mak
 				resolve(await Promise.all(usersWhoConfirmed.map(mUserFetch)));
 			}
 
-			collector.on('collect', async (reaction, user) => {
-				if (user.partial) await user.fetch();
-				if (BLACKLISTED_USERS.has(user.id)) return;
+			collector.on('collect', async interaction => {
+				if (BLACKLISTED_USERS.has(interaction.user.id)) return;
+				const btn = buttons.find(i => i.id === interaction.customId);
+				if (!btn) return;
 
-				const mUser = await mUserFetch(user.id);
-				switch (reaction.emoji.id) {
-					case ReactionEmoji.Join: {
-						if (usersWhoConfirmed.includes(mUser.id) || partyLockCache.has(user.id)) return;
+				function reply(str: string) {
+					interaction.reply({ content: str, ephemeral: true });
+				}
 
-						if (options.usersAllowed && !options.usersAllowed.includes(user.id)) {
-							return;
+				switch (btn.id) {
+					case 'PARTY_JOIN': {
+						if (usersWhoConfirmed.includes(interaction.user.id)) {
+							return reply('You are already in this mass.');
+						}
+						if (
+							partyLockCache.has(interaction.user.id) ||
+							(options.usersAllowed && !options.usersAllowed.includes(interaction.user.id))
+						) {
+							return reply('You cannot join this mass.');
 						}
 
 						// Add the user
-						usersWhoConfirmed.push(user.id);
-						partyLockCache.add(user.id);
+						usersWhoConfirmed.push(interaction.user.id);
+						partyLockCache.add(interaction.user.id);
 						updateUsersIn();
+
+						reply('You joined this mass.');
 
 						if (usersWhoConfirmed.length >= options.maxSize) {
 							collector.stop('everyoneJoin');
 							break;
 						}
-
 						break;
 					}
 
-					case ReactionEmoji.Stop: {
-						if (user.id === options.leader.id) {
-							partyCancelled = true;
-							reject(`The leader (${options.leader.usernameOrMention}) cancelled this mass!`);
-							collector.stop('partyCreatorEnd');
+					case 'PARTY_LEAVE': {
+						if (
+							!usersWhoConfirmed.includes(interaction.user.id) ||
+							interaction.user.id === options.leader.id
+						) {
+							reply('You cannot leave this mass.');
+							return;
 						}
+						partyLockCache.delete(interaction.user.id);
+						removeUser(interaction.user.id);
+						reply('You left this this mass.');
 						break;
 					}
 
-					case ReactionEmoji.Start: {
-						if (user.id === options.leader.id) {
+					case 'PARTY_CANCEL': {
+						if (interaction.user.id === options.leader.id) {
+							partyCancelled = true;
+							reply('You cancelled the mass.');
+							reject(
+								new UserError(`The leader (${options.leader.usernameOrMention}) cancelled this mass!`)
+							);
+							collector.stop('partyCreatorEnd');
+							return;
+						}
+						reply('You cannot cancel this mass.');
+						break;
+					}
+
+					case 'PARTY_START': {
+						if (interaction.user.id === options.leader.id) {
 							startTrip();
 							collector.stop('partyCreatorEnd');
+							reply('You started the mass.');
+							return;
 						}
+						reply('You cannot start this mass.');
 						break;
 					}
 
@@ -161,7 +229,7 @@ export async function setupParty(channel: TextChannel, user: MUser, options: Mak
 				for (const user of usersWhoConfirmed) {
 					partyLockCache.delete(user);
 				}
-				setTimeout(() => startTrip(), 750);
+				setTimeout(() => startTrip(), 250);
 			});
 		});
 

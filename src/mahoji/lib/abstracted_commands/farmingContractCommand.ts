@@ -5,7 +5,7 @@ import { defaultFarmingContract } from '../../../lib/minions/farming';
 import { ContractOption, FarmingContract, FarmingContractDifficultyLevel } from '../../../lib/minions/farming/types';
 import { getPlantToGrow } from '../../../lib/skilling/functions/calcFarmingContracts';
 import { getFarmingInfo } from '../../../lib/skilling/functions/getFarmingInfo';
-import { getSkillsOfMahojiUser, roughMergeMahojiResponse } from '../../../lib/util';
+import { roughMergeMahojiResponse } from '../../../lib/util';
 import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import { findPlant } from '../../../lib/util/farmingHelpers';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
@@ -122,17 +122,11 @@ export async function farmingContractCommand(userID: string, input?: ContractOpt
 	);
 }
 
-export async function canRunAutoContract(userID: string) {
-	const partialUser = await mahojiUsersSettingsFetch(userID, {
-		minion_farmingContract: true,
-		skills_farming: true
-	});
-	const farmingDetails = await getFarmingInfo(userID);
-	const contract = partialUser.minion_farmingContract as FarmingContract | null;
+export async function canRunAutoContract(user: MUser) {
+	const farmingDetails = await getFarmingInfo(user.id);
+	const contract = user.user.minion_farmingContract as FarmingContract | null;
 	const contractedPlant = farmingDetails.patchesDetailed.find(p => p.plant?.name === contract?.plantToGrow);
-	return (
-		getSkillsOfMahojiUser(partialUser, true).farming > 45 && (!contractedPlant || contractedPlant.ready !== false)
-	);
+	return user.skillLevel('farming') > 45 && (!contractedPlant || contractedPlant.ready !== false);
 }
 
 export async function autoContract(user: MUser, channelID: string, userID: string): CommandResponse {

@@ -7,7 +7,7 @@ import {
 	collectionLogTypes
 } from '../../lib/collectionLogTask';
 import { allCollectionLogs } from '../../lib/data/Collections';
-import { toTitleCase } from '../../lib/util';
+import { toTitleCase } from '../../lib/util/toTitleCase';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
