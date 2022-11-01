@@ -74,6 +74,11 @@ export async function guardiansOfTheRiftStartCommand(
 		break;
 	}
 
+	if (user.skillLevel(SkillsEnum.Mining) >= 99 && user.hasEquippedOrInBank('Mining cape')) {
+		boosts.push('**5%** chance to mine an extra essence/fragment using Mining cape');
+		minedFragments *= 1.05;
+	}
+
 	if (inventorySize > 28) {
 		rolls += Math.max(Math.ceil(inventorySize / 28), 1);
 		boosts.push(
@@ -153,7 +158,6 @@ export async function guardiansOfTheRiftStartCommand(
 	}
 
 	// 5.5 rolls, 120 is average mined essences, 14 is averge created guardians/barriers per game at max efficiency
-	boosts.push('**Performance varies slightly each game**');
 	minedFragments = Math.round(randomVariation(minedFragments, 10));
 	barrierAndGuardian = Math.round(randomVariation(barrierAndGuardian, 10));
 	rolls = Math.min(Math.round(Math.max(rolls, 1)), 6);
