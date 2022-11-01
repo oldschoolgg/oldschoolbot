@@ -162,14 +162,6 @@ export const guardiansOfTheRiftTask: MinionTask = {
 			);
 		}
 
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			['minigames', { gotr: { start: { combination_runes: combinationRunes } } }, true],
-			image.file.attachment,
-			data,
-			null
-		);
+		handleTripFinish(user, channelID, str, image.file.attachment, data, null);
 	}
 };
