@@ -66,6 +66,7 @@ import { getItem } from './util/getOSItem';
 import itemID from './util/itemID';
 import { logError } from './util/logError';
 import resolveItems from './util/resolveItems';
+import { toTitleCase } from './util/toTitleCase';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const emojiRegex = require('emoji-regex');
@@ -370,9 +371,7 @@ export function formatMissingItems(consumables: Consumable[], timeToFinish: numb
 export function formatSkillRequirements(reqs: Record<string, number>, emojis = true) {
 	let arr = [];
 	for (const [name, num] of objectEntries(reqs)) {
-		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		// @ts-ignore
-		arr.push(`${emojis ? ` ${skillEmoji[name]} ` : ''}**${num}** ${toTitleCase(name)}`);
+		arr.push(`${emojis ? ` ${(skillEmoji as any)[name]} ` : ''}**${num}** ${toTitleCase(name)}`);
 	}
 	return arr.join(', ');
 }
