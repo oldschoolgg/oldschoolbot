@@ -26,6 +26,7 @@ import { anglerOutfit, gnomeRestaurantCL } from '../../lib/data/CollectionsExpor
 import pets from '../../lib/data/pets';
 import { addToDoubleLootTimer } from '../../lib/doubleLoot';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../../lib/minions/data/killableMonsters';
+import { getUsersPerkTier, giveBoxResetTime, isPrimaryPatron, spawnLampResetTime } from '../../lib/MUser';
 import { MinigameName, Minigames } from '../../lib/settings/minigames';
 import { convertStoredActivityToFlatActivity, prisma } from '../../lib/settings/prisma';
 import Skills from '../../lib/skilling/skills';
@@ -44,11 +45,6 @@ import {
 	stringMatches
 } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
-import getUsersPerkTier, {
-	giveBoxResetTime,
-	isPrimaryPatron,
-	spawnLampResetTime
-} from '../../lib/util/getUsersPerkTier';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { repairBrokenItemsFromUser } from '../../lib/util/repairBrokenItems';
@@ -197,7 +193,7 @@ LIMIT 10;`);
 }
 
 async function kcGains(user: MUser, interval: string, monsterName: string): CommandResponse {
-	if (getUsersPerkTier(user) < PerkTier.Four) return patronMsg(PerkTier.Four);
+	if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 	if (!TimeIntervals.includes(interval as any)) return 'Invalid time interval.';
 	const monster = killableMonsters.find(
 		k => stringMatches(k.name, monsterName) || k.aliases.some(a => stringMatches(a, monsterName))
@@ -487,7 +483,7 @@ LIMIT 10;`);
 }
 
 async function dryStreakCommand(user: MUser, monsterName: string, itemName: string, ironmanOnly: boolean) {
-	if (getUsersPerkTier(user) < PerkTier.Four) return patronMsg(PerkTier.Four);
+	if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 
 	const item = getItem(itemName);
 	if (!item) return 'Invalid item.';
@@ -532,7 +528,7 @@ async function dryStreakCommand(user: MUser, monsterName: string, itemName: stri
 }
 
 async function mostDrops(user: MUser, itemName: string, ironmanOnly: boolean) {
-	if (getUsersPerkTier(user) < PerkTier.Four) return patronMsg(PerkTier.Four);
+	if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 	const item = getItem(itemName);
 	const ironmanPart = ironmanOnly ? 'AND "minion.ironman" = true' : '';
 	if (!item) return "That's not a valid item.";
@@ -606,21 +602,20 @@ async function checkMassesCommand(guildID: string | undefined) {
 ${massStr}`;
 }
 
-function calcTime(user: MUser) {
+function calcTime(perkTier: PerkTier) {
 	for (const [bit, dur] of [
-		[BitField.IsPatronTier6, Time.Minute * 90],
-		[BitField.IsPatronTier5, Time.Minute * 40],
-		[BitField.IsPatronTier4, Time.Minute * 20]
+		[PerkTier.Seven, Time.Minute * 90],
+		[PerkTier.Six, Time.Minute * 40],
+		[PerkTier.Five, Time.Minute * 20]
 	] as const) {
-		if (user.bitfield.includes(bit)) return dur;
+		if (perkTier === bit) return dur;
 	}
-	throw new Error('User had no 4/5/6 bit');
+	throw new Error('User is not a Tier 4+ Patron');
 }
 
 async function patronTriggerDoubleLoot(user: MUser) {
-	if (
-		![BitField.IsPatronTier4, BitField.IsPatronTier5, BitField.IsPatronTier6].some(i => user.bitfield.includes(i))
-	) {
+	const perkTier = getUsersPerkTier(user);
+	if (perkTier < PerkTier.Five) {
 		return 'Only T4, T5 or T6 patrons can use this command.';
 	}
 	const lastTime = user.user.last_patron_double_time_trigger;
@@ -632,13 +627,13 @@ async function patronTriggerDoubleLoot(user: MUser) {
 		)}.`;
 	}
 
-	const time = calcTime(user);
+	const time = calcTime(perkTier);
 	await mahojiUserSettingsUpdate(user.id, {
 		last_patron_double_time_trigger: new Date()
 	});
 	await addToDoubleLootTimer(
 		time,
-		`${userMention(user.id)} used their monthly Tier ${getUsersPerkTier(user) - 1} double loot time`
+		`${userMention(user.id)} used their monthly Tier ${perkTier - 1} double loot time`
 	);
 	return `Added ${formatDuration(time)} of double loot.`;
 }
@@ -980,7 +975,7 @@ export const toolsCommand: OSBMahojiCommand = {
 				return mostDrops(mahojiUser, patron.mostdrops.item, Boolean(patron.mostdrops.ironman));
 			}
 			if (patron.sacrificed_bank) {
-				if (getUsersPerkTier(mahojiUser) < PerkTier.Two) return patronMsg(PerkTier.Two);
+				if (mahojiUser.perkTier() < PerkTier.Two) return patronMsg(PerkTier.Two);
 				const image = await makeBankImage({
 					bank: new Bank(mahojiUser.user.sacrificedBank as ItemBank),
 					title: 'Your Sacrificed Items'
@@ -990,7 +985,7 @@ export const toolsCommand: OSBMahojiCommand = {
 				};
 			}
 			if (patron.cl_bank) {
-				if (getUsersPerkTier(mahojiUser) < PerkTier.Two) return patronMsg(PerkTier.Two);
+				if (mahojiUser.perkTier() < PerkTier.Two) return patronMsg(PerkTier.Two);
 				const clBank = mahojiUser.cl;
 				if (patron.cl_bank.format === 'json') {
 					const json = JSON.stringify(clBank);
@@ -1007,12 +1002,12 @@ export const toolsCommand: OSBMahojiCommand = {
 				};
 			}
 			if (patron.xp_gains) {
-				if (getUsersPerkTier(mahojiUser) < PerkTier.Four) return patronMsg(PerkTier.Four);
+				if (mahojiUser.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return xpGains(patron.xp_gains.time, patron.xp_gains.skill);
 			}
 			if (patron.minion_stats) {
 				await deferInteraction(interaction);
-				if (getUsersPerkTier(mahojiUser) < PerkTier.Four) return patronMsg(PerkTier.Four);
+				if (mahojiUser.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return minionStats(mahojiUser.user);
 			}
 			if (patron.give_box) {
@@ -1020,7 +1015,7 @@ export const toolsCommand: OSBMahojiCommand = {
 				return giveBox(mahojiUser, patron.give_box.user);
 			}
 			if (patron.activity_export) {
-				if (getUsersPerkTier(mahojiUser) < PerkTier.Four) return patronMsg(PerkTier.Four);
+				if (mahojiUser.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 				const promise = activityExport(mahojiUser.user);
 				await handleMahojiConfirmation(
 					interaction,

@@ -8,7 +8,6 @@ import { bossEvents } from '../bossEvents';
 import { ClueTiers } from '../clues/clueTiers';
 import { Emoji } from '../constants';
 import { fishingLocations } from '../fishingContest';
-import { miniMinigames } from '../hweenEvent';
 import { DisassembleTaskOptions } from '../invention/disassemble';
 import { ResearchTaskOptions } from '../invention/research';
 import killableMonsters from '../minions/data/killableMonsters';
@@ -54,7 +53,6 @@ import {
 	FletchingActivityTaskOptions,
 	GauntletOptions,
 	GroupMonsterActivityTaskOptions,
-	HalloweenMinigameOptions,
 	HerbloreActivityTaskOptions,
 	HunterActivityTaskOptions,
 	InfernoOptions,
@@ -79,9 +77,10 @@ import {
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '../types/minions';
-import { formatDuration, itemNameFromID, randomVariation, toTitleCase } from '../util';
+import { formatDuration, itemNameFromID, randomVariation } from '../util';
 import { stringMatches } from './cleanString';
 import { formatOrdinal } from './formatOrdinal';
+import { toTitleCase } from './toTitleCase';
 
 export function minionStatus(user: MUser) {
 	const currentTask = getActivityOfUser(user.id);
@@ -666,13 +665,7 @@ export function minionStatus(user: MUser) {
 				data.quantity
 			}x games of Stealing Creation. The trip should take ${formatDuration(durationRemaining)}.`;
 		}
-		case 'HalloweenMiniMinigame': {
-			const data = currentTask as HalloweenMinigameOptions;
-			const minigame = miniMinigames.find(i => i.id === data.minigameID)!;
-			return `${name} is currently doing the ${
-				minigame.name
-			} mini-minigame! The trip should take ${formatDuration(durationRemaining)}.`;
-		}
+		case 'HalloweenMiniMinigame':
 		case 'Easter':
 		case 'BlastFurnace': {
 			throw new Error('Removed');

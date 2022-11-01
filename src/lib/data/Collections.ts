@@ -9,7 +9,6 @@ import { getKCByName, mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettin
 import { CollectionLogType } from '../collectionLogTask';
 import { dyedItems } from '../dyedItems';
 import { growablePets } from '../growablePets';
-import { everyHalloween2022Item } from '../hweenEvent';
 import { Inventions } from '../invention/inventions';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../minions/data/killableMonsters';
 import { Ignecarus } from '../minions/data/killableMonsters/custom/bosses/Ignecarus';
@@ -1258,7 +1257,36 @@ export const allCollectionLogs: ICollection = {
 					'Spooky box'
 				]),
 				counts: false,
-				allItems: everyHalloween2022Item
+				allItems: resolveItems([
+					'Pumpkin seed',
+					'Dirty hoe',
+					'Boo-balloon',
+					'Twinkly topper',
+					'Broomstick',
+					'Spooky graceful hood',
+					'Spooky graceful top',
+					'Spooky graceful legs',
+					'Spooky graceful cape',
+					'Spooky graceful boots',
+					'Spooky graceful gloves',
+					'Spooky partyhat',
+					'Orange halloween mask',
+					'Necronomicon',
+					"M'eye hat",
+					'Back pain',
+					'Witch hat',
+					'Spooky mask',
+					'Toffeet',
+					'Chocolified skull',
+					'Eyescream',
+					"Choc'rock",
+					'Rotten sweets',
+					'Gloom and doom potion',
+					'Handled candle',
+					'Kuro',
+					'Spooky box',
+					'Grim sweeper'
+				])
 			},
 			'Christmas 2021': {
 				alias: ['xmas 2021', 'christmas 2021'],
@@ -1331,6 +1359,15 @@ export const allCLItemsFiltered = [
 					.filter(f => f.counts === undefined)
 					.map(a => a.items)
 			)
+			.flat(100)
+	)
+];
+
+export const overallPlusItems = [
+	...new Set(
+		Object.entries(allCollectionLogs)
+			.filter(i => i[0] !== 'Discontinued')
+			.map(e => Object.values(e[1].activities).map(a => a.items))
 			.flat(100)
 	)
 ];
@@ -1436,6 +1473,9 @@ export function getPossibleOptions() {
 }
 
 export function getCollectionItems(collection: string, allItems = false, removeCoins = false): number[] {
+	if (collection === 'overall+') {
+		return overallPlusItems;
+	}
 	if (['overall', 'all'].some(s => stringMatches(collection, s))) {
 		return allCLItemsFiltered;
 	}
@@ -1509,12 +1549,36 @@ export async function getCollection(options: {
 	const userCheckBank = await getBank(user, options.mahojiUser, logType);
 
 	let clItems = getCollectionItems(search, allItems, logType === 'sacrifice');
+	const isOverall = search.toLowerCase().startsWith('overall');
 
-	if (Boolean(flags.missing)) {
+	if (isOverall || Boolean(flags.missing)) {
 		clItems = clItems.filter(i => !userCheckBank.has(i));
 	}
 
 	const [totalCl, userAmount] = getUserClData(userCheckBank, clItems);
+
+	if (stringMatches(search, 'overall+')) {
+		return {
+			category: 'Other',
+			name: 'Overall+',
+			collection: clItems,
+			collectionObtained: userAmount,
+			collectionTotal: totalCl,
+			userItems: userCheckBank,
+			counts: false
+		};
+	}
+	if (stringMatches(search, 'overall')) {
+		return {
+			category: 'Other',
+			name: 'Overall',
+			collection: clItems,
+			collectionObtained: userAmount,
+			collectionTotal: totalCl,
+			userItems: userCheckBank,
+			counts: false
+		};
+	}
 
 	for (const [category, entries] of Object.entries(allCollectionLogs)) {
 		if (stringMatches(category, search) || (entries.alias && entries.alias.some(a => stringMatches(a, search)))) {

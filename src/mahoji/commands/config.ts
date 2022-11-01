@@ -107,7 +107,7 @@ async function favItemConfig(
 	}.`;
 	if (!item) return currentItems;
 	if (itemToAdd) {
-		let limit = (user.perkTier + 1) * 100;
+		let limit = (user.perkTier() + 1) * 100;
 		if (currentFavorites.length >= limit) {
 			return `You can't favorite anymore items, you can favorite a maximum of ${limit}.`;
 		}
@@ -189,7 +189,7 @@ async function bankSortConfig(
 	const currentMethod = user.user.bank_sort_method;
 	const currentWeightingBank = new Bank(user.user.bank_sort_weightings as ItemBank);
 
-	const { perkTier } = user;
+	const perkTier = user.perkTier();
 	if (perkTier < PerkTier.Two) {
 		return patronMsg(PerkTier.Two);
 	}

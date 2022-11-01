@@ -13,10 +13,10 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { ChambersOfXericOptions } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 
 import { checkUserCanUseDegradeableItem } from '../degradeableItems';
-import { constructGearSetup, GearStats } from '../gear';
+import { GearStats } from '../gear/types';
 import { getMinigameScore } from '../settings/minigames';
 import { SkillsEnum } from '../skilling/types';
-import { Gear } from '../structures/Gear';
+import { constructGearSetup, Gear } from '../structures/Gear';
 import { Skills } from '../types';
 import { randomVariation } from '../util';
 import getOSItem from '../util/getOSItem';

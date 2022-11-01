@@ -7,7 +7,8 @@ import {
 	collectionLogTypes
 } from '../../lib/collectionLogTask';
 import { allCollectionLogs } from '../../lib/data/Collections';
-import { toTitleCase } from '../../lib/util';
+import { deferInteraction } from '../../lib/util/interactionReply';
+import { toTitleCase } from '../../lib/util/toTitleCase';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
@@ -25,18 +26,21 @@ export const collectionLogCommand: OSBMahojiCommand = {
 			description: 'The log you want to see.',
 			required: true,
 			autocomplete: async (value: string) => {
-				return Object.entries(allCollectionLogs)
-					.map(i => {
-						return [
-							{ name: `${i[0]} (Group)`, value: i[0] },
-							...Object.entries(i[1].activities).map(act => ({
-								name: `${act[0]} (${act[1].items.length} Items)`,
-								value: act[0]
-							}))
-						];
-					})
-					.flat(3)
-					.filter(i => (!value ? true : i.name.toLowerCase().includes(value)));
+				return [
+					...['overall+', 'overall'].map(i => ({ name: toTitleCase(i), value: i })),
+					...Object.entries(allCollectionLogs)
+						.map(i => {
+							return [
+								{ name: `${i[0]} (Group)`, value: i[0] },
+								...Object.entries(i[1].activities).map(act => ({
+									name: `${act[0]} (${act[1].items.length} Items)`,
+									value: act[0]
+								}))
+							];
+						})
+						.flat(3)
+						.filter(i => (!value ? true : i.name.toLowerCase().includes(value)))
+				];
 			}
 		},
 		{
@@ -62,8 +66,10 @@ export const collectionLogCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		options,
-		userID
+		userID,
+		interaction
 	}: CommandRunOptions<{ name: string; type?: CollectionLogType; flag?: string; all?: boolean }>) => {
+		await deferInteraction(interaction);
 		const user = await mUserFetch(userID);
 		let flags: Record<string, string> = {};
 		if (options.flag) flags[options.flag] = options.flag;

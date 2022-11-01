@@ -1,6 +1,7 @@
 import { calcPercentOfNum } from 'e';
 
-import { assert, toTitleCase } from '../util';
+import { assert } from '../util';
+import { toTitleCase } from '../util/toTitleCase';
 import { IMaterialBank, MaterialType, materialTypes } from '.';
 
 export class MaterialBank {

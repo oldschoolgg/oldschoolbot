@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { codeBlock, inlineCode } from '@discordjs/builders';
+import { codeBlock } from '@discordjs/builders';
 import { ClientStorage } from '@prisma/client';
 import { Stopwatch } from '@sapphire/stopwatch';
 import { Duration } from '@sapphire/time-utilities';
-import Type from '@sapphire/type';
 import { isThenable } from '@sentry/utils';
 import { escapeCodeBlock } from 'discord.js';
 import { randArrItem, sleep, Time, uniqueArr } from 'e';
@@ -19,6 +18,7 @@ import { CLIENT_ID, OWNER_IDS, production, SupportServer } from '../../config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../../lib/blacklists';
 import { badges, BadgesEnum, BitField, BitFieldData, DISABLED_COMMANDS } from '../../lib/constants';
 import { addToDoubleLootTimer } from '../../lib/doubleLoot';
+import { getUsersPerkTier } from '../../lib/MUser';
 import { patreonTask } from '../../lib/patreon';
 import { runRolesTask } from '../../lib/rolesTask';
 import { countUsersWithItemInCl, prisma } from '../../lib/settings/prisma';
@@ -33,8 +33,8 @@ import {
 	toKMB
 } from '../../lib/util';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { deferInteraction, interactionReply } from '../../lib/util/interactionReply';
+import { syncLinkedAccounts } from '../../lib/util/linkedAccountsUtil';
 import { logError } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
@@ -46,8 +46,7 @@ import {
 	handleMahojiConfirmation,
 	mahojiClientSettingsFetch,
 	mahojiClientSettingsUpdate,
-	mahojiUsersSettingsFetch,
-	syncLinkedAccounts
+	mahojiUsersSettingsFetch
 } from '../mahojiSettings';
 import { mahojiUserSettingsUpdate } from '../settingsUpdate';
 import { getLotteryBank } from './lottery';
@@ -68,13 +67,11 @@ async function unsafeEval({ userID, code }: { userID: string; code: string }) {
 	let result = null;
 	let thenable = false;
 	// eslint-disable-next-line @typescript-eslint/init-declarations
-	let type!: Type;
 	try {
 		code = `\nconst {Bank} = require('oldschooljs');\n${code}`;
 		// eslint-disable-next-line no-eval
 		result = eval(code);
 		syncTime = stopwatch.toString();
-		type = new Type(result);
 		if (isThenable(result)) {
 			thenable = true;
 			stopwatch.restart();
@@ -83,7 +80,6 @@ async function unsafeEval({ userID, code }: { userID: string; code: string }) {
 		}
 	} catch (error: any) {
 		if (!syncTime) syncTime = stopwatch.toString();
-		if (!type) type = new Type(error);
 		if (thenable && !asyncTime) asyncTime = stopwatch.toString();
 		if (error && error.stack) logError(error);
 		result = error;
@@ -110,7 +106,6 @@ async function unsafeEval({ userID, code }: { userID: string; code: string }) {
 
 	return {
 		content: `${codeBlock(escapeCodeBlock(result))}
-**Type:** ${inlineCode(type.toString())}
 **Time:** ${asyncTime ? `⏱ ${asyncTime}<${syncTime}>` : `⏱ ${syncTime}`}
 `
 	};

@@ -10,38 +10,43 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { updateBankSetting } from '../../../mahoji/mahojiSettings';
 
+export function rollNaxxusLoot(quantity: number = 1, cl?: Bank) {
+	const loot = new Bank();
+	loot.add(NaxxusLootTable.roll(quantity));
+
+	// Handle uniques => Don't give duplicates until log full
+	const uniqueChance = 150;
+	// Add new uniques to a dummy CL to support multiple uniques per trip.
+	const tempClWithNewUniques = cl ? cl.clone() : new Bank();
+	for (let i = 0; i < quantity; i++) {
+		if (roll(uniqueChance)) {
+			const uniques = [
+				{ name: 'Dark crystal', weight: 2 },
+				{ name: 'Abyssal gem', weight: 3 },
+				{ name: 'Tattered tome', weight: 2 },
+				{ name: 'Spellbound ring', weight: 3 }
+			];
+
+			const filteredUniques = uniques.filter(u => !tempClWithNewUniques.has(u.name));
+			const uniqueTable = filteredUniques.length === 0 ? uniques : filteredUniques;
+			const lootTable = new LootTable();
+			uniqueTable.map(u => lootTable.add(u.name, 1, u.weight));
+
+			const unique = lootTable.roll();
+			tempClWithNewUniques.add(unique);
+			loot.add(unique);
+		}
+	}
+	return loot;
+}
+
 export const naxxusTask: MinionTask = {
 	type: 'Naxxus',
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { channelID, userID, quantity, duration } = data;
 		const user = await mUserFetch(userID);
 
-		const loot = new Bank();
-		loot.add(NaxxusLootTable.roll(quantity));
-
-		// Handle uniques => Don't give duplicates until log full
-		const uniqueChance = 150;
-		// Add new uniques to a dummy CL to support multiple uniques per trip.
-		const tempClWithNewUniques = user.cl.clone();
-		for (let i = 0; i < quantity; i++) {
-			if (roll(uniqueChance)) {
-				const uniques = [
-					{ name: 'Dark crystal', weight: 2 },
-					{ name: 'Abyssal gem', weight: 3 },
-					{ name: 'Tattered tome', weight: 2 },
-					{ name: 'Spellbound ring', weight: 3 }
-				];
-
-				const filteredUniques = uniques.filter(u => !tempClWithNewUniques.has(u.name));
-				const uniqueTable = filteredUniques.length === 0 ? uniques : filteredUniques;
-				const lootTable = new LootTable();
-				uniqueTable.map(u => lootTable.add(u.name, 1, u.weight));
-
-				const unique = lootTable.roll();
-				tempClWithNewUniques.add(unique);
-				loot.add(unique);
-			}
-		}
+		const loot = rollNaxxusLoot(quantity, user.cl);
 
 		const xpStr = await addMonsterXP(user, {
 			monsterID: Naxxus.id,

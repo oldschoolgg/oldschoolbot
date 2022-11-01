@@ -19,10 +19,10 @@ import {
 	getUsername,
 	makePaginatedMessage,
 	stringMatches,
-	stripEmojis,
-	toTitleCase
+	stripEmojis
 } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
+import { toTitleCase } from '../../lib/util/toTitleCase';
 import { sendToChannelID } from '../../lib/util/webhook';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -746,9 +746,12 @@ export const leaderboardCommand: OSBMahojiCommand = {
 					description: 'The cl you want to select.',
 					required: true,
 					autocomplete: async value => {
-						return ['overall', ...allClNames.map(i => i)]
-							.filter(name => (!value ? true : name.toLowerCase().includes(value.toLowerCase())))
-							.map(i => ({ name: toTitleCase(i), value: i }));
+						return [
+							{ name: 'Overall (Main Leaderboard)', value: 'overall' },
+							...['overall+', ...allClNames.map(i => i)]
+								.filter(name => (!value ? true : name.toLowerCase().includes(value.toLowerCase())))
+								.map(i => ({ name: toTitleCase(i), value: i }))
+						];
 					}
 				},
 				ironmanOnlyOption

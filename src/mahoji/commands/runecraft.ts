@@ -8,10 +8,11 @@ import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/inve
 import { darkAltarCommand } from '../../lib/minions/functions/darkAltarCommand';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import { RunecraftActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, stringMatches, toTitleCase } from '../../lib/util';
+import { formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../lib/util/determineRunes';
+import { toTitleCase } from '../../lib/util/toTitleCase';
 import { OSBMahojiCommand } from '../lib/util';
 import { calcMaxRCQuantity, updateBankSetting, userHasGracefulEquipped } from '../mahojiSettings';
 
@@ -204,11 +205,12 @@ export const runecraftCommand: OSBMahojiCommand = {
 			outputQuantity = Math.max(1, Math.floor((quantityPerEssence * quantity) / 3));
 		}
 		if (
-			numEssenceOwned === 0 ||
-			quantity === 0 ||
-			numEssenceOwned < quantity ||
-			!essenceRequired ||
-			numEssenceOwned < essenceRequired
+			!daeyalt_essence &&
+			(numEssenceOwned === 0 ||
+				quantity === 0 ||
+				numEssenceOwned < quantity ||
+				!essenceRequired ||
+				numEssenceOwned < essenceRequired)
 		) {
 			return "You don't have enough Pure Essence to craft these runes. You can acquire some through Mining, or purchasing from other players.";
 		}

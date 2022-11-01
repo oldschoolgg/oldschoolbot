@@ -83,7 +83,7 @@ export const NAXXUS_HP = 3900;
 export const Naxxus: KillableMonster = {
 	id: 294_820,
 	name: 'Naxxus',
-	aliases: ['nax'],
+	aliases: ['nax', 'naxx', 'naxus', 'naxxus'],
 	timeToFinish: Time.Minute * 30,
 	notifyDrops: resolveItems(['Dark crystal', 'Abyssal gem', 'Tattered tome', 'Spellbound ring']),
 	table: makeKillTable(NaxxusLootTableFinishable),

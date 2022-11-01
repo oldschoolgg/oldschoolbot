@@ -27,7 +27,6 @@ import smithables from '../skilling/skills/smithing/smithables';
 import { getSlayerTaskStats } from '../slayer/slayerUtil';
 import { getAllUserTames } from '../tames';
 import { ItemBank } from '../types';
-import { getSkillsOfMahojiUser } from '../util';
 import { getItem } from '../util/getOSItem';
 import { easyTasks } from './easyTasks';
 import { eliteTasks } from './eliteTasks';
@@ -183,8 +182,8 @@ export async function leaguesCheckUser(userID: string) {
 		bank: mahojiUser.bank,
 		user: mahojiUser,
 		mahojiUser: mahojiUser.user,
-		skillsLevels: getSkillsOfMahojiUser(mahojiUser.user, true),
-		skillsXP: getSkillsOfMahojiUser(mahojiUser.user, false),
+		skillsLevels: mahojiUser.skillsAsLevels,
+		skillsXP: mahojiUser.skillsAsXP,
 		poh,
 		gear: mahojiUser.gear,
 		allItemsOwned: mahojiUser.allItemsOwned(),

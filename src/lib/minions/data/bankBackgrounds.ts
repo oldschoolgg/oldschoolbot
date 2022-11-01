@@ -1,5 +1,6 @@
+import { Bank } from 'oldschooljs';
+
 import { BitField, PerkTier } from '../../constants';
-import { resolveNameBank } from '../../util';
 import { BankBackground } from '../types';
 
 const backgroundImages: BankBackground[] = [
@@ -50,7 +51,7 @@ const backgroundImages: BankBackground[] = [
 		name: 'Bandos',
 		image: null,
 		available: true,
-		collectionLogItemsNeeded: resolveNameBank({
+		collectionLogItemsNeeded: new Bank({
 			'Armadyl hilt': 1,
 			'Zamorak hilt': 1,
 			'Bandos hilt': 1,
@@ -72,7 +73,7 @@ const backgroundImages: BankBackground[] = [
 			"Pet kree'arra": 1,
 			'Pet zilyana': 1
 		}),
-		itemCost: resolveNameBank({
+		itemCost: new Bank({
 			'Armadyl godsword': 1,
 			'Zamorak godsword': 1,
 			'Bandos godsword': 1,
@@ -86,7 +87,7 @@ const backgroundImages: BankBackground[] = [
 		name: 'Corporeal Beast',
 		image: null,
 		available: true,
-		collectionLogItemsNeeded: resolveNameBank({
+		collectionLogItemsNeeded: new Bank({
 			'Spirit shield': 4,
 			'Holy elixir': 4,
 			'Spectral sigil': 1,
@@ -95,7 +96,7 @@ const backgroundImages: BankBackground[] = [
 			'Pet dark core': 1,
 			'Jar of spirits': 1
 		}),
-		itemCost: resolveNameBank({
+		itemCost: new Bank({
 			'Spectral spirit shield': 1,
 			'Arcane spirit shield': 1,
 			'Elysian spirit shield': 1
@@ -107,7 +108,7 @@ const backgroundImages: BankBackground[] = [
 		name: 'Casket',
 		image: null,
 		available: true,
-		collectionLogItemsNeeded: resolveNameBank({
+		collectionLogItemsNeeded: new Bank({
 			'Large spade': 1,
 			'Clueless scroll': 1,
 			'Heavy casket': 1,
@@ -120,7 +121,7 @@ const backgroundImages: BankBackground[] = [
 		name: 'Nightmare',
 		image: null,
 		available: true,
-		collectionLogItemsNeeded: resolveNameBank({
+		collectionLogItemsNeeded: new Bank({
 			'Little nightmare': 1,
 			'Jar of dreams': 1,
 			'Nightmare staff': 1,
@@ -134,7 +135,7 @@ const backgroundImages: BankBackground[] = [
 			'Slepey tablet': 1,
 			'Parasitic egg': 1
 		}),
-		itemCost: resolveNameBank({
+		itemCost: new Bank({
 			'Eldritch orb': 1,
 			'Harmonised orb': 1,
 			'Volatile orb': 1
@@ -393,7 +394,7 @@ const backgroundImages: BankBackground[] = [
 		image: null,
 		available: true,
 		perkTierNeeded: PerkTier.Four,
-		collectionLogItemsNeeded: resolveNameBank({
+		collectionLogItemsNeeded: new Bank({
 			'Dragon pickaxe': 1,
 			'Dragon med helm': 1,
 			'Kbd heads': 1,
@@ -416,7 +417,7 @@ const backgroundImages: BankBackground[] = [
 			'Ring of the gods': 1,
 			"Vet'ion jr.": 1
 		}),
-		itemCost: resolveNameBank({
+		itemCost: new Bank({
 			'Dragon pickaxe': 1,
 			'Dragon med helm': 1,
 			'Draconic visage': 1,
@@ -444,7 +445,7 @@ const backgroundImages: BankBackground[] = [
 		image: null,
 		available: true,
 		perkTierNeeded: PerkTier.Four,
-		collectionLogItemsNeeded: resolveNameBank({
+		collectionLogItemsNeeded: new Bank({
 			Tangleroot: 1
 		}),
 		gpCost: 100_000_000,
@@ -551,13 +552,13 @@ const backgroundImages: BankBackground[] = [
 		name: 'Ignecarus',
 		image: null,
 		available: true,
-		collectionLogItemsNeeded: resolveNameBank({
+		collectionLogItemsNeeded: new Bank({
 			'Dragon egg': 1,
 			'Ignis ring': 1,
 			'Ignecarus dragonclaw': 1,
 			'Ignecarus scales': 1
 		}),
-		itemCost: resolveNameBank({
+		itemCost: new Bank({
 			'Ignecarus scales': 1,
 			'Ignecarus dragonclaw': 1
 		}),

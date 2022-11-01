@@ -6,7 +6,6 @@ import { getUsersFishingContestDetails } from '../../../lib/fishingContest';
 import { roboChimpUserFetch } from '../../../lib/roboChimp';
 import { getUsersTame, shortTameTripDesc, tameLastFinishedActivity } from '../../../lib/tames';
 import { makeComponents } from '../../../lib/util';
-import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
 import { minionStatus } from '../../../lib/util/minionStatus';
 import { makeRepeatTripButtons } from '../../../lib/util/repeatStoredTrip';
 import { getItemContractDetails } from '../../commands/ic';
@@ -34,7 +33,7 @@ export async function minionStatusCommand(user: MUser, channelID: string) {
 
 	const result = await getUsersFishingContestDetails(user);
 	if (
-		user.perkTier >= PerkTier.Four &&
+		user.perkTier() >= PerkTier.Four &&
 		result.catchesFromToday.length === 0 &&
 		!user.minionIsBusy &&
 		['Contest rod', "Beginner's tackle box"].every(i => user.hasEquippedOrInBank(i))
@@ -100,7 +99,7 @@ export async function minionStatusCommand(user: MUser, channelID: string) {
 		);
 	}
 
-	if (!user.minionIsBusy && (await canRunAutoContract(user.id))) {
+	if (!user.minionIsBusy && (await canRunAutoContract(user))) {
 		buttons.push(
 			new ButtonBuilder()
 				.setCustomId('AUTO_FARMING_CONTRACT')
@@ -131,7 +130,7 @@ export async function minionStatusCommand(user: MUser, channelID: string) {
 		}
 	}
 
-	const perkTier = getUsersPerkTier(user);
+	const perkTier = user.perkTier();
 	if (perkTier >= PerkTier.Two) {
 		const { tame, species, activity } = await getUsersTame(user);
 		if (tame && !activity) {

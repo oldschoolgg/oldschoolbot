@@ -3,7 +3,7 @@ import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { updateBankSetting } from '../mahoji/mahojiSettings';
-import { GearSetupType } from './gear';
+import { GearSetupType } from './gear/types';
 import { assert } from './util';
 import getOSItem from './util/getOSItem';
 

@@ -207,17 +207,19 @@ export const bankCommand: OSBMahojiCommand = {
 		const result = await getBankPage(params);
 
 		const channel = globalClient.channels.cache.get(channelID);
+		const bankSize = Math.ceil(bank.length / 56);
+
 		if (
 			!channel ||
 			!channelIsSendable(channel) ||
 			options.flag === 'show_all' ||
 			options.flag_extra === 'wide' ||
-			klasaUser.perkTier < PerkTier.Four
+			klasaUser.perkTier() < PerkTier.Four ||
+			bankSize === 1
 		) {
 			return result;
 		}
 
-		const bankSize = Math.ceil(bank.length / 56);
 		const m = new PaginatedMessage({
 			pages: {
 				numPages: bankSize,
