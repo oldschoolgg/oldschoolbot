@@ -1,5 +1,5 @@
-import { constructGearSetup, GearStat } from '../src/lib/gear';
-import { Gear } from '../src/lib/structures/Gear';
+import { GearStat } from '../src/lib/gear/types';
+import { constructGearSetup, Gear } from '../src/lib/structures/Gear';
 import { itemNameFromID } from '../src/lib/util';
 import getOSItem from '../src/lib/util/getOSItem';
 import itemID from '../src/lib/util/itemID';

@@ -2,7 +2,7 @@ import { deepClone, objectEntries } from 'e';
 import { Bank } from 'oldschooljs';
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 
-import { GearSetup } from '../gear';
+import { GearSetup } from '../gear/types';
 import getOSItem from './getOSItem';
 import itemID from './itemID';
 import resolveItems from './resolveItems';

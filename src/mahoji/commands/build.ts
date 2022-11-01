@@ -6,12 +6,12 @@ import { Bank } from 'oldschooljs';
 import Constructables from '../../lib/skilling/skills/construction/constructables';
 import { Skills } from '../../lib/types';
 import { ConstructionActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, getSkillsOfMahojiUser, hasSkillReqs } from '../../lib/util';
+import { formatDuration, hasSkillReqs } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch, updateBankSetting } from '../mahojiSettings';
+import { updateBankSetting } from '../mahojiSettings';
 
 const ds2Requirements: Skills = {
 	magic: 75,
@@ -50,8 +50,8 @@ export const buildCommand: OSBMahojiCommand = {
 			description: 'The object you want to build.',
 			required: true,
 			autocomplete: async (value: string, user: User) => {
-				const mUser = await mahojiUsersSettingsFetch(user.id);
-				const conLevel = getSkillsOfMahojiUser(mUser, true).construction;
+				const mUser = await mUserFetch(user.id);
+				const conLevel = mUser.skillLevel('construction');
 				return Constructables.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 					.filter(c => c.level <= conLevel)
 					.map(i => ({

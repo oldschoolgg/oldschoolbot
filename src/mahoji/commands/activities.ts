@@ -11,6 +11,7 @@ import { aerialFishingCommand } from '../lib/abstracted_commands/aerialFishingCo
 import { alchCommand } from '../lib/abstracted_commands/alchCommand';
 import { birdhouseCheckCommand, birdhouseHarvestCommand } from '../lib/abstracted_commands/birdhousesCommand';
 import { buryCommand } from '../lib/abstracted_commands/buryCommand';
+import { butlerCommand } from '../lib/abstracted_commands/butlerCommand';
 import { castCommand } from '../lib/abstracted_commands/castCommand';
 import { championsChallengeCommand } from '../lib/abstracted_commands/championsChallenge';
 import { chargeGloriesCommand } from '../lib/abstracted_commands/chargeGloriesCommand';
@@ -36,9 +37,19 @@ export const activitiesCommand: OSBMahojiCommand = {
 	options: [
 		{
 			type: ApplicationCommandOptionType.Subcommand,
-			name: 'sawmill',
-			description: 'Send your minion to the sawmill to turn logs into planks.',
+			name: 'plank_make',
+			description: 'Send your minion turn logs into planks, in a variety of ways.',
 			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'action',
+					description: 'The method you wish to make planks.',
+					required: true,
+					choices: [
+						{ name: 'Demon Butler', value: 'butler' },
+						{ name: 'Sawmill', value: 'sawmill' }
+					]
+				},
 				{
 					type: ApplicationCommandOptionType.String,
 					name: 'type',
@@ -391,7 +402,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 		userID,
 		interaction
 	}: CommandRunOptions<{
-		sawmill?: { type: string; quantity?: number };
+		plank_make?: { action: string; type: string; quantity?: number };
 		chompy_hunt?: { action: 'start' | 'claim' };
 		champions_challenge?: {};
 		warriors_guild?: { action: string; quantity?: number };
@@ -428,8 +439,11 @@ export const activitiesCommand: OSBMahojiCommand = {
 			return birdhouseHarvestCommand(user, channelID, options.birdhouses.birdhouse);
 		}
 		if (options.inferno?.action === 'start') return infernoStartCommand(user, channelID);
-		if (options.sawmill) {
-			return sawmillCommand(user, options.sawmill.type, options.sawmill.quantity, channelID);
+		if (options.plank_make?.action === 'sawmill') {
+			return sawmillCommand(user, options.plank_make.type, options.plank_make.quantity, channelID);
+		}
+		if (options.plank_make?.action === 'butler') {
+			return butlerCommand(user, options.plank_make.type, options.plank_make.quantity, channelID);
 		}
 		if (options.chompy_hunt?.action === 'start') {
 			return chompyHuntCommand(user, channelID);

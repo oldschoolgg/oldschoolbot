@@ -1,10 +1,12 @@
 import { codeBlock, Embed } from '@discordjs/builders';
 import { chunk } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { Bank } from 'oldschooljs';
 
 import { BankFlag, bankFlags } from '../../lib/bankImage';
-import { Emoji } from '../../lib/constants';
+import { Emoji, PerkTier } from '../../lib/constants';
 import { Flags } from '../../lib/minions/types';
+import { PaginatedMessage } from '../../lib/PaginatedMessage';
 import { BankSortMethod, BankSortMethods } from '../../lib/sorts';
 import { channelIsSendable, makePaginatedMessage } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
@@ -16,6 +18,38 @@ import { OSBMahojiCommand } from '../lib/util';
 const bankFormats = ['json', 'text_paged', 'text_full'] as const;
 const bankItemsPerPage = 10;
 type BankFormat = typeof bankFormats[number];
+
+async function getBankPage({
+	user,
+	bank,
+	mahojiFlags,
+	page,
+	flags = {}
+}: {
+	user: MUser;
+	bank: Bank;
+	page: number;
+	mahojiFlags: BankFlag[];
+	flags?: Record<string, number | string>;
+}) {
+	const msg = {
+		files: [
+			(
+				await makeBankImage({
+					bank,
+					title: `${user.rawUsername ? `${user.rawUsername}'s` : 'Your'} Bank`,
+					flags: {
+						...flags,
+						page
+					},
+					user,
+					mahojiFlags
+				})
+			).file
+		]
+	};
+	return msg;
+}
 
 export const bankCommand: OSBMahojiCommand = {
 	name: 'bank',
@@ -99,7 +133,7 @@ export const bankCommand: OSBMahojiCommand = {
 		if (!options.page) options.page = 1;
 
 		if (baseBank.length === 0) {
-			return `You have no items or GP yet ${Emoji.Sad} You can get some GP by using the +daily command, and you can get items by sending your minion to do tasks.`;
+			return `You have no items or GP yet ${Emoji.Sad} You can get some GP by using the \`/minion daily\` command, and you can get items by sending your minion to do tasks.`;
 		}
 
 		const bank = parseBank({
@@ -162,18 +196,44 @@ export const bankCommand: OSBMahojiCommand = {
 		};
 		if (options.sort) flags.sort = options.sort;
 
+		const params: Parameters<typeof getBankPage>['0'] = {
+			user: klasaUser,
+			bank,
+			flags,
+			mahojiFlags,
+			page: Number(flags.page)
+		};
+
+		const result = await getBankPage(params);
+
+		const channel = globalClient.channels.cache.get(channelID);
+		const bankSize = Math.ceil(bank.length / 56);
+
+		if (
+			!channel ||
+			!channelIsSendable(channel) ||
+			options.flag === 'show_all' ||
+			options.flag_extra === 'wide' ||
+			klasaUser.perkTier() < PerkTier.Four ||
+			bankSize === 1
+		) {
+			return result;
+		}
+
+		const m = new PaginatedMessage({
+			pages: {
+				numPages: bankSize,
+				generate: async ({ currentPage }) => {
+					return getBankPage({ ...params, page: currentPage });
+				}
+			},
+			channel,
+			startingPage: Number(flags.page)
+		});
+		m.run([user.id]);
 		return {
-			files: [
-				(
-					await makeBankImage({
-						bank,
-						title: `${klasaUser.rawUsername ? `${klasaUser.rawUsername}'s` : 'Your'} Bank`,
-						flags,
-						user: klasaUser,
-						mahojiFlags
-					})
-				).file
-			]
+			content: 'Click the buttons below to view different pages of your bank.',
+			ephemeral: true
 		};
 	}
 };

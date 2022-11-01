@@ -20,15 +20,14 @@ import { CLIENT_ID } from '../config';
 import { deduplicateClueScrolls } from '../lib/clues/clueUtils';
 import { SILENT_ERROR } from '../lib/constants';
 import { evalMathExpression } from '../lib/expressionParser';
-import { hasGracefulEquipped, readableStatName } from '../lib/gear';
 import { effectiveMonsters } from '../lib/minions/data/killableMonsters';
 import { KillableMonster } from '../lib/minions/types';
-import { MUserClass } from '../lib/MUser';
 import { getMinigameScore, Minigames } from '../lib/settings/minigames';
 import { prisma } from '../lib/settings/prisma';
 import creatures from '../lib/skilling/skills/hunter/creatures';
 import { Rune } from '../lib/skilling/skills/runecraft';
 import { filterLootReplace } from '../lib/slayer/slayerUtil';
+import { hasGracefulEquipped, readableStatName } from '../lib/structures/Gear';
 import type { ItemBank } from '../lib/types';
 import {
 	anglerBoosts,
@@ -263,7 +262,12 @@ export async function userStatsUpdate(userID: string, data: (u: UserStats) => Pr
 	});
 }
 
-type UserStatsBankKey = 'puropuro_implings_bank' | 'passive_implings_bank' | 'create_cost_bank' | 'create_loot_bank';
+type UserStatsBankKey =
+	| 'puropuro_implings_bank'
+	| 'passive_implings_bank'
+	| 'create_cost_bank'
+	| 'create_loot_bank'
+	| 'bird_eggs_offered_bank';
 export async function userStatsBankUpdate(userID: string, key: UserStatsBankKey, bank: Bank) {
 	await userStatsUpdate(userID, u => ({
 		[key]: bank.clone().add(u[key] as ItemBank).bank
@@ -483,10 +487,6 @@ export function rogueOutfitPercentBonus(user: MUser): number {
 	return amountEquipped * 20;
 }
 
-export function countSkillsAtleast99(user: MUser) {
-	return Object.values(user.skillsAsLevels).filter(lvl => lvl >= 99).length;
-}
-
 export function hasMonsterRequirements(user: MUser, monster: KillableMonster) {
 	if (monster.qpRequired && user.QP < monster.qpRequired) {
 		return [
@@ -686,44 +686,4 @@ export async function updateLegacyUserBankSetting(userID: string, key: 'tob_cost
 		[key]: newBank.bank
 	});
 	return res;
-}
-
-export async function syncLinkedAccountPerks(user: MUser) {
-	let main = user.user.main_account;
-	const allAccounts: string[] = [...user.user.ironman_alts];
-	if (main) {
-		allAccounts.push(main);
-	}
-	const allUsers = await Promise.all(
-		allAccounts.map(a =>
-			mahojiUsersSettingsFetch(a, {
-				id: true,
-				premium_balance_tier: true,
-				premium_balance_expiry_date: true,
-				bitfield: true
-			})
-		)
-	);
-	allUsers.map(u => new MUserClass(u));
-}
-
-export async function syncLinkedAccounts() {
-	const users = await prisma.user.findMany({
-		where: {
-			ironman_alts: {
-				isEmpty: false
-			}
-		},
-		select: {
-			id: true,
-			ironman_alts: true,
-			premium_balance_tier: true,
-			premium_balance_expiry_date: true,
-			bitfield: true
-		}
-	});
-	for (const u of users) {
-		const mUser = new MUserClass(u as User);
-		await syncLinkedAccountPerks(mUser);
-	}
 }

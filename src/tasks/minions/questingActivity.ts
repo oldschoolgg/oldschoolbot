@@ -1,6 +1,6 @@
 import { Emoji, MAX_QP } from '../../lib/constants';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
+import type { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
 import { rand, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 

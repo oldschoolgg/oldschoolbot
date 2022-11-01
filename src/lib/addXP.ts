@@ -5,8 +5,9 @@ import { Events, LEVEL_99_XP, MAX_TOTAL_LEVEL, MAX_XP, skillEmoji } from './cons
 import { AddXpParams } from './minions/types';
 import { prisma } from './settings/prisma';
 import Skills from './skilling/skills';
-import { convertXPtoLVL, toKMB, toTitleCase } from './util';
+import { convertXPtoLVL, toKMB } from './util';
 import { formatOrdinal } from './util/formatOrdinal';
+import { toTitleCase } from './util/toTitleCase';
 import { sendToChannelID } from './util/webhook';
 
 const skillsVals = Object.values(Skills);

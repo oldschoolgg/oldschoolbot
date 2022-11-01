@@ -14,6 +14,7 @@ import {
 	AlchingActivityTaskOptions,
 	AnimatedArmourActivityTaskOptions,
 	BuryingActivityTaskOptions,
+	ButlerActivityTaskOptions,
 	CastingActivityTaskOptions,
 	CollectingOptions,
 	ConstructionActivityTaskOptions,
@@ -420,7 +421,13 @@ export const tripHandlers = {
 	[activity_type_enum.Sawmill]: {
 		commandName: 'activities',
 		args: (data: SawmillActivityTaskOptions) => ({
-			sawmill: { quantity: data.plankQuantity, type: data.plankID }
+			plank_make: { action: 'sawmill', quantity: data.plankQuantity, type: itemNameFromID(data.plankID) }
+		})
+	},
+	[activity_type_enum.Butler]: {
+		commandName: 'activities',
+		args: (data: ButlerActivityTaskOptions) => ({
+			plank_make: { action: 'butler', quantity: data.plankQuantity, type: itemNameFromID(data.plankID) }
 		})
 	},
 	[activity_type_enum.Sepulchre]: {
@@ -486,6 +493,10 @@ export const tripHandlers = {
 				start: { name: giantsFoundryAlloys.find(i => i.id === data.alloyID), quantity: data.quantity }
 			}
 		})
+	},
+	[activity_type_enum.HalloweenEvent]: {
+		commandName: 'trickortreat',
+		args: () => ({ start: {} })
 	}
 } as const;
 
@@ -531,7 +542,7 @@ export async function fetchRepeatTrips(userID: string) {
 export async function makeRepeatTripButtons(user: MUser) {
 	const trips = await fetchRepeatTrips(user.id);
 	const buttons: ButtonBuilder[] = [];
-	const limit = Math.min(user.perkTier + 1, 5);
+	const limit = Math.min(user.perkTier() + 1, 5);
 	for (const trip of trips.slice(0, limit)) {
 		buttons.push(
 			new ButtonBuilder()

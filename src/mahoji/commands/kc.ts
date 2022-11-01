@@ -2,8 +2,8 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Hiscores } from 'oldschooljs';
 import { bossNameMap, mappedBossNames } from 'oldschooljs/dist/constants';
 
-import { toTitleCase } from '../../lib/util';
 import { cleanString } from '../../lib/util/cleanString';
+import { toTitleCase } from '../../lib/util/toTitleCase';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const kcCommand: OSBMahojiCommand = {

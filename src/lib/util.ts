@@ -1,5 +1,4 @@
 import { bold } from '@discordjs/builders';
-import type { User } from '@prisma/client';
 import { Stopwatch } from '@sapphire/stopwatch';
 import {
 	ButtonBuilder,
@@ -105,14 +104,6 @@ export function formatItemStackQuantity(quantity: number) {
 	return quantity.toString();
 }
 
-export function toTitleCase(str: string) {
-	const splitStr = str.toLowerCase().split(' ');
-	for (let i = 0; i < splitStr.length; i++) {
-		splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
-	}
-	return splitStr.join(' ');
-}
-
 export function formatDuration(ms: number, short = false) {
 	if (ms < 0) ms = -ms;
 	const time = {
@@ -216,40 +207,6 @@ export function isTobActivity(data: any): data is TheatreOfBloodTaskOptions {
 
 export function isNexActivity(data: any): data is NexTaskOptions {
 	return 'wipedKill' in data && 'userDetails' in data && 'leader' in data;
-}
-
-export function getSkillsOfMahojiUser(user: User, levels = false): Required<Skills> {
-	const skills: Required<Skills> = {
-		agility: Number(user.skills_agility),
-		cooking: Number(user.skills_cooking),
-		fishing: Number(user.skills_fishing),
-		mining: Number(user.skills_mining),
-		smithing: Number(user.skills_smithing),
-		woodcutting: Number(user.skills_woodcutting),
-		firemaking: Number(user.skills_firemaking),
-		runecraft: Number(user.skills_runecraft),
-		crafting: Number(user.skills_crafting),
-		prayer: Number(user.skills_prayer),
-		fletching: Number(user.skills_fletching),
-		farming: Number(user.skills_farming),
-		herblore: Number(user.skills_herblore),
-		thieving: Number(user.skills_thieving),
-		hunter: Number(user.skills_hunter),
-		construction: Number(user.skills_construction),
-		magic: Number(user.skills_magic),
-		attack: Number(user.skills_attack),
-		strength: Number(user.skills_strength),
-		defence: Number(user.skills_defence),
-		ranged: Number(user.skills_ranged),
-		hitpoints: Number(user.skills_hitpoints),
-		slayer: Number(user.skills_slayer)
-	};
-	if (levels) {
-		for (const [key, val] of Object.entries(skills) as [keyof Skills, number][]) {
-			skills[key] = convertXPtoLVL(val);
-		}
-	}
-	return skills;
 }
 
 export function getSupportGuild(): Guild | null {
@@ -446,7 +403,9 @@ export function isValidNickname(str?: string) {
 	);
 }
 
-export async function makePaginatedMessage(channel: TextChannel, pages: MessageEditOptions[], target?: string) {
+export type PaginatedMessagePage = MessageEditOptions;
+
+export async function makePaginatedMessage(channel: TextChannel, pages: PaginatedMessagePage[], target?: string) {
 	const m = new PaginatedMessage({ pages, channel });
 	return m.run(target ? [target] : undefined);
 }
@@ -793,4 +752,8 @@ export function cacheCleanup() {
 			}
 		});
 	});
+}
+
+export function isFunction(input: unknown): input is Function {
+	return typeof input === 'function';
 }
