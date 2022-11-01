@@ -16,7 +16,6 @@ import { MysteryBoxes } from '../bsoOpenables';
 import { ClueTiers } from '../clues/clueTiers';
 import { BitField, COINS_ID, Emoji, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
-import { chanceOfHweenEvent, pickMinigameAndItem } from '../hweenEvent';
 import { handlePassiveImplings } from '../implings';
 import { inventionBoosts, InventionID, inventionItemBoost } from '../invention/inventions';
 import { triggerRandomEvent } from '../randomEvents';
@@ -25,7 +24,7 @@ import { DougTable, PekyTable } from '../simulation/sharedTables';
 import { SkillsEnum } from '../skilling/types';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import { ActivityTaskOptions } from '../types/minions';
-import { channelIsSendable, itemID, makeComponents, percentChance, roll, toKMB } from '../util';
+import { channelIsSendable, itemID, makeComponents, roll, toKMB } from '../util';
 import {
 	makeBirdHouseTripButton,
 	makeDoClueButton,
@@ -319,14 +318,6 @@ export async function handleTripFinish(
 		}
 	}
 	handleTriggerShootingStar(user, data, components);
-
-	if (data.type !== 'HalloweenMiniMinigame' && percentChance(chanceOfHweenEvent(data))) {
-		const res = pickMinigameAndItem(user);
-		if (res) {
-			components.push(res.button);
-			message += `\n\nYou are invited to play a spooky mini-minigame! Click the red button to play... ${res.minigame.name}!`;
-		}
-	}
 
 	sendToChannelID(channelID, {
 		content: message,

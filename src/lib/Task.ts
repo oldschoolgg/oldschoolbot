@@ -8,7 +8,6 @@ import { disassemblingTask } from '../tasks/minions/bso/disassemblingActivity';
 import { dungeoneeringTask } from '../tasks/minions/bso/dungeoneeringActivity';
 import { fishingContestTask } from '../tasks/minions/bso/fishingContestActivity';
 import { fogTask } from '../tasks/minions/bso/fogActivity';
-import { hweenTask } from '../tasks/minions/bso/halloweenMinigamesActivity';
 import { ignecarusTask } from '../tasks/minions/bso/ignecarusActivity';
 import { kalphiteKingTask } from '../tasks/minions/bso/kalphiteKingActivity';
 import { kibbleTask } from '../tasks/minions/bso/kibbleActivity';
@@ -187,7 +186,6 @@ export const tasks: MinionTask[] = [
 	shootingStarTask,
 	fogTask,
 	scTask,
-	hweenTask,
 	bossEventTask
 ];
 
