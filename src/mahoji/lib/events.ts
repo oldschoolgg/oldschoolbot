@@ -7,6 +7,7 @@ import { syncBlacklists } from '../../lib/blacklists';
 import { DISABLED_COMMANDS } from '../../lib/constants';
 import { syncDoubleLoot } from '../../lib/doubleLoot';
 import { prisma } from '../../lib/settings/prisma';
+import { initTickers } from '../../lib/tickers';
 import { cacheCleanup } from '../../lib/util';
 import { syncLinkedAccounts } from '../../lib/util/linkedAccountsUtil';
 import { CUSTOM_PRICE_CACHE } from '../commands/sell';
@@ -54,4 +55,6 @@ export async function onStartup() {
 
 	await syncLinkedAccounts();
 	await cacheCleanup();
+
+	initTickers();
 }

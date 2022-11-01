@@ -22,7 +22,6 @@ import { modalInteractionHook } from './lib/modals';
 import { runStartupScripts } from './lib/startupScripts';
 import { OldSchoolBotClient } from './lib/structures/OldSchoolBotClient';
 import { syncActivityCache } from './lib/Task';
-import { initTickers } from './lib/tickers';
 import { UserError } from './lib/UserError';
 import { runTimedLoggedFn } from './lib/util';
 import { syncActiveUserIDs } from './lib/util/cachedUserIDs';
@@ -158,7 +157,6 @@ client.on('guildCreate', guild => {
 		guild.leave();
 	}
 });
-initTickers();
 
 client.on('ready', () => runTimedLoggedFn('OnStartup', async () => onStartup()));
 
