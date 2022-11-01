@@ -9,7 +9,7 @@ import {
 	baxtorianBathhousesStartCommand
 } from '../../lib/baxtorianBathhouses';
 import { fishingLocations } from '../../lib/fishingContest';
-import { toTitleCase } from '../../lib/util';
+import { toTitleCase } from '../../lib/util/toTitleCase';
 import {
 	fishingContestStartCommand,
 	fishingContestStatsCommand

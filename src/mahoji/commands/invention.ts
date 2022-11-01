@@ -19,9 +19,10 @@ import { inventCommand, inventingCost, inventionBoosts, Inventions } from '../..
 import { MaterialBank } from '../../lib/invention/MaterialBank';
 import { researchCommand } from '../../lib/invention/research';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { calcPerHour, stringMatches, toKMB, toTitleCase } from '../../lib/util';
+import { calcPerHour, stringMatches, toKMB } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
+import { toTitleCase } from '../../lib/util/toTitleCase';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiParseNumber, mahojiUsersSettingsFetch } from '../mahojiSettings';
 

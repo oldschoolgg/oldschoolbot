@@ -37,7 +37,7 @@ import { birdsNestID, treeSeedsNest } from './simulation/birdsNest';
 import { gauntlet } from './simulation/gauntlet';
 import { getTemporossLoot } from './simulation/tempoross';
 import { WintertodtCrate } from './simulation/wintertodt';
-import { stringMatches } from './util';
+import { stringMatches } from './util/cleanString';
 import itemID from './util/itemID';
 
 interface KillArgs {

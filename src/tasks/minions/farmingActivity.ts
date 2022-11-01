@@ -470,6 +470,7 @@ export const farmingTask: MinionTask = {
 				);
 				if (roll(plopperDroprate)) loot.add('Plopper');
 			}
+			if (plantToHarvest.seedType === 'seaweed' && roll(3)) loot.add('Seaweed spore', randInt(1, 3));
 
 			if (plantToHarvest.seedType !== 'hespori') {
 				let hesporiSeeds = 0;

@@ -8,9 +8,9 @@ import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionSta
 import { Cooldowns } from '../mahoji/lib/Cooldowns';
 import { Emoji } from './constants';
 import { customItems } from './customItems/util';
+import { giveBoxResetTime, itemContractResetTime, spawnLampResetTime } from './MUser';
 import { prisma } from './settings/prisma';
 import { channelIsSendable, formatDuration, isFunction, toKMB } from './util';
-import { giveBoxResetTime, itemContractResetTime, spawnLampResetTime } from './util/getUsersPerkTier';
 import { makeBankImage } from './util/makeBankImage';
 
 const mentionText = `<@${CLIENT_ID}>`;

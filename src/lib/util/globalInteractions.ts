@@ -17,7 +17,6 @@ import { ItemBank } from '../types';
 import { HalloweenMinigameOptions } from '../types/minions';
 import { formatDuration, randomVariation, removeFromArr } from '../util';
 import addSubTaskToActivityTask from './addSubTaskToActivityTask';
-import getUsersPerkTier from './getUsersPerkTier';
 import { updateGiveawayMessage } from './giveaway';
 import { interactionReply } from './interactionReply';
 import { minionIsBusy } from './minionIsBusy';
@@ -291,7 +290,7 @@ export async function interactionHook(interaction: Interaction) {
 	}
 
 	const timeSinceMessage = Date.now() - new Date(interaction.message.createdTimestamp).getTime();
-	const timeLimit = reactionTimeLimit(getUsersPerkTier(user));
+	const timeLimit = reactionTimeLimit(user.perkTier());
 	if (timeSinceMessage > Time.Day) {
 		console.log(
 			`${user.id} clicked Diff[${formatDuration(timeSinceMessage)}] Button[${id}] Message[${
@@ -389,7 +388,7 @@ export async function interactionHook(interaction: Interaction) {
 	}
 
 	if (id === 'DO_FISHING_CONTEST') {
-		if (getUsersPerkTier(user) < PerkTier.Four) {
+		if (user.perkTier() < PerkTier.Four) {
 			return interaction.reply({
 				content: 'You need to be a Tier 3 patron to use this button.',
 				ephemeral: true

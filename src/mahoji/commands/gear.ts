@@ -1,10 +1,11 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { allPetIDs } from '../../lib/data/CollectionsExport';
-import { GearSetupType, GearSetupTypes, GearStat } from '../../lib/gear';
+import { GearSetupType, GearSetupTypes, GearStat } from '../../lib/gear/types';
 import { equipPet } from '../../lib/minions/functions/equipPet';
 import { unequipPet } from '../../lib/minions/functions/unequipPet';
-import { itemNameFromID, toTitleCase } from '../../lib/util';
+import { itemNameFromID } from '../../lib/util';
+import { toTitleCase } from '../../lib/util/toTitleCase';
 import {
 	gearEquipCommand,
 	gearStatsCommand,

@@ -1,8 +1,9 @@
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 
 import { Gear } from '../structures/Gear';
-import { itemID, toTitleCase } from '../util';
+import { itemID } from '../util';
 import getOSItem from '../util/getOSItem';
+import { toTitleCase } from '../util/toTitleCase';
 import { GearSetup } from '.';
 import { GearPreset } from '.prisma/client';
 
@@ -34,16 +35,6 @@ export function constructGearSetup(setup: PartialGearSetup): Gear {
 		shield: setup.shield ? { item: itemID(setup.shield), quantity: 1 } : null,
 		weapon: setup.weapon ? { item: itemID(setup.weapon), quantity: 1 } : null
 	});
-}
-
-export function hasGracefulEquipped(setup: Gear) {
-	return (
-		setup.hasEquipped('Agility master cape') ||
-		setup.hasEquipped(
-			['Graceful hood', 'Graceful top', 'Graceful legs', 'Graceful boots', 'Graceful gloves', 'Graceful cape'],
-			true
-		)
-	);
 }
 
 export function gearPresetToGear(gearPreset: GearPreset) {

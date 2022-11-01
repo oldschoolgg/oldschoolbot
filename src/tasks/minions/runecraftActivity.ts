@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 import { Emoji, Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { RunecraftActivityTaskOptions } from '../../lib/types/minions';
+import type { RunecraftActivityTaskOptions } from '../../lib/types/minions';
 import { roll, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { calcMaxRCQuantity } from '../../mahoji/mahojiSettings';

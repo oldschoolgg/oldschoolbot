@@ -1,6 +1,5 @@
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
-import { resolveNameBank } from 'oldschooljs/dist/util';
 
 import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -30,7 +29,7 @@ export const alchingTask: MinionTask = {
 			}
 
 			if (savedRunes > 0) {
-				const returnedRunes = resolveNameBank({
+				const returnedRunes = new Bank({
 					'Nature rune': savedRunes
 				});
 

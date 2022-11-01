@@ -3,7 +3,7 @@ import { Bank } from 'oldschooljs';
 import { BlacksmithOutfit } from '../../lib/bsoOpenables';
 import Smithing from '../../lib/skilling/skills/smithing/';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { SmithingActivityTaskOptions } from '../../lib/types/minions';
+import type { SmithingActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export const smithingTask: MinionTask = {

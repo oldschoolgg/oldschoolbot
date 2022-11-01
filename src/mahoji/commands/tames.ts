@@ -1,5 +1,6 @@
 import { time } from '@discordjs/builders';
 import { Tame, tame_growth, TameActivity } from '@prisma/client';
+import { toTitleCase } from '@sapphire/utilities';
 import { ChatInputCommandInteraction, User } from 'discord.js';
 import {
 	calcPercentOfNum,
@@ -22,6 +23,7 @@ import { badges } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { getSimilarItems } from '../../lib/data/similarItems';
 import getUserFoodFromBank from '../../lib/minions/functions/getUserFoodFromBank';
+import { getUsersPerkTier } from '../../lib/MUser';
 import { prisma, trackLoot } from '../../lib/settings/prisma';
 import { SkillsEnum } from '../../lib/skilling/types';
 import {
@@ -47,13 +49,11 @@ import {
 	isWeekend,
 	itemID,
 	itemNameFromID,
-	stringMatches,
-	toTitleCase
+	stringMatches
 } from '../../lib/util';
 import { patronMaxTripBonus } from '../../lib/util/calcMaxTripLength';
 import { fillTextXTimesInCtx, getClippedRegion } from '../../lib/util/canvasUtil';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseStringBank } from '../../lib/util/parseStringBank';
 import resolveItems from '../../lib/util/resolveItems';

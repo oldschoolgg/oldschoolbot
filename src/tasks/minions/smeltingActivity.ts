@@ -5,7 +5,7 @@ import { BlacksmithOutfit } from '../../lib/bsoOpenables';
 import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
+import type { SmeltingActivityTaskOptions } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';

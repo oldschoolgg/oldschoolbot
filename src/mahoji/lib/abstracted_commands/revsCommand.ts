@@ -4,10 +4,10 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
 import { Emoji } from '../../../lib/constants';
-import { maxDefenceStats, maxOffenceStats } from '../../../lib/gear';
 import { revenantMonsters } from '../../../lib/minions/data/killableMonsters/revs';
 import { convertAttackStylesToSetup } from '../../../lib/minions/functions';
 import { SkillsEnum } from '../../../lib/skilling/types';
+import { maxDefenceStats, maxOffenceStats } from '../../../lib/structures/Gear';
 import { RevenantOptions } from '../../../lib/types/minions';
 import { formatDuration, percentChance, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';

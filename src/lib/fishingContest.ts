@@ -13,8 +13,9 @@ import {
 } from './diaries';
 import { prisma } from './settings/prisma';
 import { SkillsEnum } from './skilling/types';
-import { averageArr, gaussianRandom, ISODateString, murMurSort, toTitleCase } from './util';
+import { averageArr, gaussianRandom, ISODateString, murMurSort } from './util';
 import getOSItem from './util/getOSItem';
+import { toTitleCase } from './util/toTitleCase';
 
 const warmVerbs = ['freshwater', 'waterborn', 'silver'];
 const coldVerbs = ['pacific', 'long-finned', 'spotted'];

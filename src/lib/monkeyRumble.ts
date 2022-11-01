@@ -3,10 +3,10 @@ import fs from 'fs/promises';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { Canvas, Image } from 'skia-canvas/lib';
 
-import { toTitleCase } from './util';
 import { canvasImageFromBuffer, printWrappedText } from './util/canvasUtil';
 import { textBoxFile } from './util/chatHeadImage';
 import getOSItem from './util/getOSItem';
+import { toTitleCase } from './util/toTitleCase';
 
 interface MonkeyTier {
 	id: number;
