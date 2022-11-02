@@ -5,10 +5,13 @@ import { CLIENT_ID, DEV_SERVER_ID, production } from '../../config';
 import { cacheBadges } from '../../lib/badges';
 import { syncBlacklists } from '../../lib/blacklists';
 import { DISABLED_COMMANDS } from '../../lib/constants';
+import { initCrons } from '../../lib/crons';
 import { prisma } from '../../lib/settings/prisma';
 import { initTickers } from '../../lib/tickers';
-import { cacheCleanup } from '../../lib/util';
+import { cacheCleanup, runTimedLoggedFn } from '../../lib/util';
 import { syncLinkedAccounts } from '../../lib/util/linkedAccountsUtil';
+import { log } from '../../lib/util/log';
+import { cacheUsernames } from '../commands/leaderboard';
 import { CUSTOM_PRICE_CACHE } from '../commands/sell';
 import { mahojiClientSettingsFetch } from '../mahojiSettings';
 
@@ -40,7 +43,7 @@ export async function onStartup() {
 	await syncBlacklists();
 
 	if (!production) {
-		console.log('Syncing commands locally...');
+		log('Syncing commands locally...');
 		await bulkUpdateCommands({
 			client: globalClient.mahojiClient,
 			commands: globalClient.mahojiClient.commands.values,
@@ -54,6 +57,9 @@ export async function onStartup() {
 
 	await syncLinkedAccounts();
 	await cacheCleanup();
+
+	initCrons();
+	runTimedLoggedFn('Cache Usernames', cacheUsernames);
 
 	initTickers();
 }
