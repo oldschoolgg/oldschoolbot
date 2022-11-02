@@ -10,7 +10,7 @@ if (typeof production !== 'boolean') {
 	throw new Error('Must provide production boolean.');
 }
 
-export class OldSchoolBotClient extends Client {
+export class OldSchoolBotClient extends Client<true> {
 	public busyCounterCache = new Map<string, number>();
 	public production = production ?? false;
 	public mahojiClient!: MahojiClient;
