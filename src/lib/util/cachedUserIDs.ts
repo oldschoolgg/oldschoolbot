@@ -1,5 +1,6 @@
 import { CLIENT_ID, OWNER_IDS } from '../../config';
 import { prisma } from '../settings/prisma';
+import { log } from './log';
 
 export const CACHED_ACTIVE_USER_IDS = new Set();
 CACHED_ACTIVE_USER_IDS.add(CLIENT_ID);
@@ -20,5 +21,5 @@ WHERE main_account IS NOT NULL
 	for (const id of [...users.map(i => i.user_id), ...otherUsers.map(i => i.id)]) {
 		CACHED_ACTIVE_USER_IDS.add(id);
 	}
-	console.log(`${CACHED_ACTIVE_USER_IDS.size} cached active user IDs`);
+	log(`${CACHED_ACTIVE_USER_IDS.size} cached active user IDs`);
 }
