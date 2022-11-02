@@ -49,6 +49,7 @@ import {
 import { CACHED_ACTIVE_USER_IDS } from './util/cachedUserIDs';
 import { getItem } from './util/getOSItem';
 import itemID from './util/itemID';
+import { log } from './util/log';
 import { logError } from './util/logError';
 import { toTitleCase } from './util/toTitleCase';
 
@@ -645,11 +646,12 @@ export function isGuildChannel(channel?: Channel): channel is GuildTextBasedChan
 }
 
 export async function runTimedLoggedFn(name: string, fn: () => Promise<unknown>) {
+	log(`Starting ${name}...`);
 	const stopwatch = new Stopwatch();
 	stopwatch.start();
 	await fn();
 	stopwatch.stop();
-	console.log(`Finished ${name} in ${stopwatch.toString()}`);
+	log(`Finished ${name} in ${stopwatch.toString()}`);
 }
 
 const emojiServers = new Set([
