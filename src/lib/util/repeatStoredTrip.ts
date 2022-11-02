@@ -33,6 +33,7 @@ import {
 	KourendFavourActivityTaskOptions,
 	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
+	MotherlodeMiningActivityTaskOptions,
 	NexTaskOptions,
 	NightmareActivityTaskOptions,
 	OfferingActivityTaskOptions,
@@ -316,6 +317,13 @@ export const tripHandlers = {
 			name: data.oreID,
 			quantity: data.quantity,
 			powermine: data.powermine
+		})
+	},
+	[activity_type_enum.MotherlodeMining]: {
+		commandName: 'mine',
+		args: (data: MotherlodeMiningActivityTaskOptions) => ({
+			name: data.oreID,
+			quantity: data.quantity
 		})
 	},
 	[activity_type_enum.MonsterKilling]: {

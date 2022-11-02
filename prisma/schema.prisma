@@ -606,6 +606,7 @@ enum activity_type_enum {
   ClueCompletion
   Fishing
   Mining
+  MotherlodeMining 
   Smithing
   Woodcutting
   Questing

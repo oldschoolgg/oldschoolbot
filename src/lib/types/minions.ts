@@ -86,6 +86,13 @@ export interface MiningActivityTaskOptions extends ActivityTaskOptions {
 	powermine: boolean;
 }
 
+export interface MotherlodeMiningActivityTaskOptions extends ActivityTaskOptions {
+	fakeDurationMax: number;
+	fakeDurationMin: number;
+	oreID: number;
+	quantity: number;
+}
+
 export interface SmeltingActivityTaskOptions extends ActivityTaskOptions {
 	barID: number;
 	quantity: number;

@@ -5,7 +5,7 @@ import { Bank } from 'oldschooljs';
 import { determineMiningTime } from '../../lib/skilling/functions/determineMiningTime';
 import Mining from '../../lib/skilling/skills/mining';
 import { Skills } from '../../lib/types';
-import { MiningActivityTaskOptions } from '../../lib/types/minions';
+import { MiningActivityTaskOptions, MotherlodeMiningActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, formatSkillRequirements, itemNameFromID, randomVariation } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { stringMatches } from '../../lib/util/cleanString';
@@ -352,7 +352,9 @@ export const mineCommand: OSBMahojiCommand = {
 			}
 		}
 
-		if (!powermine) {
+		if (ore.name === 'Motherlode mine') {
+			powermine = false;
+		} else if (!powermine) {
 			powermine = false;
 		} else {
 			boosts.push('**Powermining**');
@@ -378,6 +380,32 @@ export const mineCommand: OSBMahojiCommand = {
 
 		if (ore.name === 'Gem rock' && user.hasEquipped('Amulet of glory')) {
 			boosts.push('3x success rate for having an Amulet of glory equipped');
+		}
+
+		if (ore.name === 'Motherlode mine') {
+			await addSubTaskToActivityTask<MotherlodeMiningActivityTaskOptions>({
+				oreID: ore.id,
+				userID: userID.toString(),
+				channelID: channelID.toString(),
+				quantity: newQuantity,
+				duration,
+				fakeDurationMax,
+				fakeDurationMin,
+				type: 'Mining'
+			});
+			let response = `${minionName(user)} is now mining ${ore.name} until your minion ${
+				quantity ? `mined ${quantity}x or gets tired` : 'is satisfied'
+			}, it'll take ${
+				quantity
+					? `between ${formatDuration(fakeDurationMin)} **and** ${formatDuration(fakeDurationMax)}`
+					: formatDuration(duration)
+			} to finish.`;
+
+			if (boosts.length > 0) {
+				response += `\n\n**Boosts:** ${boosts.join(', ')}.`;
+			}
+
+			return response;
 		}
 
 		await addSubTaskToActivityTask<MiningActivityTaskOptions>({

@@ -52,6 +52,7 @@ import {
 	MinigameActivityTaskOptions,
 	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
+	MotherlodeMiningActivityTaskOptions,
 	NexTaskOptions,
 	NightmareActivityTaskOptions,
 	OfferingActivityTaskOptions,
@@ -148,6 +149,22 @@ export function minionStatus(user: MUser) {
 
 		case 'Mining': {
 			const data = currentTask as MiningActivityTaskOptions;
+
+			const ore = Mining.Ores.find(ore => ore.id === data.oreID);
+
+			return `${name} is currently mining ${ore!.name}. ${
+				data.fakeDurationMax === data.fakeDurationMin
+					? formattedDuration
+					: `approximately ${formatDuration(
+							randomVariation(reduceNumByPercent(durationRemaining, 25), 20)
+					  )} **to** ${formatDuration(
+							randomVariation(increaseNumByPercent(durationRemaining, 25), 20)
+					  )} remaining.`
+			} Your ${Emoji.Mining} Mining level is ${user.skillLevel(SkillsEnum.Mining)}`;
+		}
+
+		case 'MotherlodeMining': {
+			const data = currentTask as MotherlodeMiningActivityTaskOptions;
 
 			const ore = Mining.Ores.find(ore => ore.id === data.oreID);
 
