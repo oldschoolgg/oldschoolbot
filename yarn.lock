@@ -1195,14 +1195,11 @@
   dependencies:
     "@sapphire/utilities" "^3.3.0"
 
-<<<<<<< HEAD
 "@sapphire/utilities@^1.4.7":
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/@sapphire/utilities/-/utilities-1.7.0.tgz#b40adc0f092ce988232da3879c68d0ee17ee8908"
   integrity sha512-+bU6rGr529oj1RoK31aHkBoLYnEqawRwwwUMSRPeaZx21gPrvqjJgwyBBMPEWTv2kjRSyzTTVtV7U0bkZ2RMjQ==
 
-=======
->>>>>>> master
 "@sapphire/utilities@^3.3.0":
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/@sapphire/utilities/-/utilities-3.3.0.tgz#62ff0a52cd86bd6169a94b2f217d72da6772a3cd"
