@@ -53,11 +53,9 @@ export async function onStartup() {
 
 	runTimedLoggedFn('Syncing prices', syncCustomPrices);
 
-	if (1 > 2) {
-		runTimedLoggedFn('Caching badges', cacheBadges);
-		runTimedLoggedFn('Cache Usernames', cacheUsernames);
-		cacheCleanup();
-	}
+	runTimedLoggedFn('Caching badges', cacheBadges);
+	runTimedLoggedFn('Cache Usernames', cacheUsernames);
+	cacheCleanup();
 
 	runTimedLoggedFn('Sync Linked Accounts', syncLinkedAccounts);
 
