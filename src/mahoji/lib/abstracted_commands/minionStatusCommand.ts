@@ -1,4 +1,4 @@
-import { ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
+import { BaseMessageOptions, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { BitField, Emoji, minionBuyButton, PerkTier } from '../../../lib/constants';
@@ -14,7 +14,7 @@ import { calculateBirdhouseDetails } from './birdhousesCommand';
 import { isUsersDailyReady } from './dailyCommand';
 import { canRunAutoContract } from './farmingContractCommand';
 
-export async function minionStatusCommand(user: MUser, channelID: string) {
+export async function minionStatusCommand(user: MUser, channelID: string): Promise<BaseMessageOptions> {
 	if (!user.user.minion_hasBought) {
 		return {
 			content:

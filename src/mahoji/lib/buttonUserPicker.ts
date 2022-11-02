@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 import { noOp, shuffleArr, Time } from 'e';
 import murmurhash from 'murmurhash';
 
@@ -39,7 +39,7 @@ export async function buttonUserPicker({
 	const guessed: string[] = [];
 
 	return new Promise<string | null>(async resolve => {
-		const collector = confirmMessage.createMessageComponentCollector({
+		const collector = confirmMessage.createMessageComponentCollector<ComponentType.Button>({
 			time: timer
 		});
 

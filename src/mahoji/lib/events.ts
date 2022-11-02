@@ -53,14 +53,14 @@ export async function onStartup() {
 	}
 
 	await syncDoubleLoot();
-	await syncCustomPrices();
-	await cacheBadges();
+	runTimedLoggedFn('Syncing prices', syncCustomPrices);
 
-	await syncLinkedAccounts();
-	await cacheCleanup();
+	runTimedLoggedFn('Caching badges', cacheBadges);
+	runTimedLoggedFn('Cache Usernames', cacheUsernames);
+	cacheCleanup();
+
+	runTimedLoggedFn('Sync Linked Accounts', syncLinkedAccounts);
 
 	initCrons();
-	runTimedLoggedFn('Cache Usernames', cacheUsernames);
-
 	initTickers();
 }

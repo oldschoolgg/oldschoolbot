@@ -1,5 +1,5 @@
 import { Embed } from '@discordjs/builders';
-import { bold, Message, MessageOptions } from 'discord.js';
+import { BaseMessageOptions, bold, Message } from 'discord.js';
 import { Time } from 'e';
 import { Items } from 'oldschooljs';
 
@@ -51,7 +51,7 @@ const cooldownTimers: { name: string; timeStamp: (user: MUser) => number; cd: nu
 interface MentionCommandOptions {
 	msg: Message;
 	user: MUser;
-	components: MessageOptions['components'];
+	components: BaseMessageOptions['components'];
 	content: string;
 }
 interface MentionCommand {

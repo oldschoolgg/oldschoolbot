@@ -1,12 +1,12 @@
 /* eslint-disable prefer-promise-reject-errors */
 import { userMention } from '@discordjs/builders';
 import {
+	BaseMessageOptions,
 	ButtonBuilder,
 	ButtonStyle,
 	ComponentType,
 	InteractionCollector,
 	MessageEditOptions,
-	MessageOptions,
 	TextChannel
 } from 'discord.js';
 import { debounce, noOp, Time } from 'e';
@@ -46,7 +46,7 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 	const massTimeout = options.massTimeout ?? Time.Minute * 2;
 	let massStarted = false;
 
-	function getMessageContent(): MessageOptions & MessageEditOptions {
+	function getMessageContent(): BaseMessageOptions & MessageEditOptions {
 		const userText =
 			usersWhoConfirmed.length > 25
 				? `${usersWhoConfirmed.length} users have joined`
