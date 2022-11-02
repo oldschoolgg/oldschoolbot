@@ -51,20 +51,16 @@ export async function onStartup() {
 		});
 	}
 
-	log('Syncing prices');
-	await syncCustomPrices();
-
-	log('Caching badges');
-	await cacheBadges();
-
-	log('Syncing');
-	await syncLinkedAccounts();
+	runTimedLoggedFn('Syncing prices', syncCustomPrices);
 
 	if (1 > 2) {
-		await cacheCleanup();
+		runTimedLoggedFn('Caching badges', cacheBadges);
 	}
 
-	log('Caching usernames');
+	runTimedLoggedFn('Sync Linked Accounts', syncLinkedAccounts);
+
+	cacheCleanup();
+
 	runTimedLoggedFn('Cache Usernames', cacheUsernames);
 
 	initCrons();
