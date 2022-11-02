@@ -109,7 +109,7 @@ GROUP BY item_id;`);
 	/**
 	 * Delete all voice channels
 	 */
-	schedule('0 */1 * * *', async () => {
+	schedule('0 0 * * *', async () => {
 		cacheCleanup();
 	});
 }
