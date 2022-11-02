@@ -1,4 +1,10 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, MessageOptions } from 'discord.js';
+import {
+	ActionRowBuilder,
+	BaseMessageOptions,
+	ButtonBuilder,
+	ButtonStyle,
+	ChatInputCommandInteraction
+} from 'discord.js';
 import { chunk, noOp, randInt, shuffleArr, sleep } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
@@ -121,7 +127,7 @@ ${buttonsData.map(b => `${b.name}: ${b.mod(1)}x`).join('\n')}`;
 
 	const { winningRow, amountReceived } = determineWinnings(amount, buttonsToShow);
 
-	function getCurrentButtons({ columnsToHide }: { columnsToHide: number[] }): MessageOptions['components'] {
+	function getCurrentButtons({ columnsToHide }: { columnsToHide: number[] }): BaseMessageOptions['components'] {
 		return chunkedButtons.map(c =>
 			new ActionRowBuilder<ButtonBuilder>().addComponents(
 				c.map((b, index) => {

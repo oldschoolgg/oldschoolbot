@@ -1,7 +1,7 @@
 import { bold } from '@discordjs/builders';
-import type { User } from '@prisma/client';
 import { Stopwatch } from '@sapphire/stopwatch';
 import {
+	BaseMessageOptions,
 	ButtonBuilder,
 	ButtonInteraction,
 	CacheType,
@@ -17,7 +17,6 @@ import {
 	InteractionReplyOptions,
 	Message,
 	MessageEditOptions,
-	MessageOptions,
 	PermissionsBitField,
 	SelectMenuInteraction,
 	TextChannel,
@@ -50,7 +49,9 @@ import {
 import { CACHED_ACTIVE_USER_IDS } from './util/cachedUserIDs';
 import { getItem } from './util/getOSItem';
 import itemID from './util/itemID';
+import { log } from './util/log';
 import { logError } from './util/logError';
+import { toTitleCase } from './util/toTitleCase';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const emojiRegex = require('emoji-regex');
@@ -103,14 +104,6 @@ export function formatItemStackQuantity(quantity: number) {
 		return `${Math.floor(quantity / 1000)}K`;
 	}
 	return quantity.toString();
-}
-
-export function toTitleCase(str: string) {
-	const splitStr = str.toLowerCase().split(' ');
-	for (let i = 0; i < splitStr.length; i++) {
-		splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
-	}
-	return splitStr.join(' ');
 }
 
 export function formatDuration(ms: number, short = false) {
@@ -216,40 +209,6 @@ export function isTobActivity(data: any): data is TheatreOfBloodTaskOptions {
 
 export function isNexActivity(data: any): data is NexTaskOptions {
 	return 'wipedKill' in data && 'userDetails' in data && 'leader' in data;
-}
-
-export function getSkillsOfMahojiUser(user: User, levels = false): Required<Skills> {
-	const skills: Required<Skills> = {
-		agility: Number(user.skills_agility),
-		cooking: Number(user.skills_cooking),
-		fishing: Number(user.skills_fishing),
-		mining: Number(user.skills_mining),
-		smithing: Number(user.skills_smithing),
-		woodcutting: Number(user.skills_woodcutting),
-		firemaking: Number(user.skills_firemaking),
-		runecraft: Number(user.skills_runecraft),
-		crafting: Number(user.skills_crafting),
-		prayer: Number(user.skills_prayer),
-		fletching: Number(user.skills_fletching),
-		farming: Number(user.skills_farming),
-		herblore: Number(user.skills_herblore),
-		thieving: Number(user.skills_thieving),
-		hunter: Number(user.skills_hunter),
-		construction: Number(user.skills_construction),
-		magic: Number(user.skills_magic),
-		attack: Number(user.skills_attack),
-		strength: Number(user.skills_strength),
-		defence: Number(user.skills_defence),
-		ranged: Number(user.skills_ranged),
-		hitpoints: Number(user.skills_hitpoints),
-		slayer: Number(user.skills_slayer)
-	};
-	if (levels) {
-		for (const [key, val] of Object.entries(skills) as [keyof Skills, number][]) {
-			skills[key] = convertXPtoLVL(val);
-		}
-	}
-	return skills;
 }
 
 export function getSupportGuild(): Guild | null {
@@ -380,9 +339,7 @@ export function formatMissingItems(consumables: Consumable[], timeToFinish: numb
 export function formatSkillRequirements(reqs: Record<string, number>, emojis = true) {
 	let arr = [];
 	for (const [name, num] of objectEntries(reqs)) {
-		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		// @ts-ignore
-		arr.push(`${emojis ? ` ${skillEmoji[name]} ` : ''}**${num}** ${toTitleCase(name)}`);
+		arr.push(`${emojis ? ` ${(skillEmoji as any)[name]} ` : ''}**${num}** ${toTitleCase(name)}`);
 	}
 	return arr.join(', ');
 }
@@ -446,7 +403,9 @@ export function isValidNickname(str?: string) {
 	);
 }
 
-export async function makePaginatedMessage(channel: TextChannel, pages: MessageEditOptions[], target?: string) {
+export type PaginatedMessagePage = MessageEditOptions;
+
+export async function makePaginatedMessage(channel: TextChannel, pages: PaginatedMessagePage[], target?: string) {
 	const m = new PaginatedMessage({ pages, channel });
 	return m.run(target ? [target] : undefined);
 }
@@ -575,10 +534,10 @@ export function isValidSkill(skill: string): skill is SkillsEnum {
 	return Object.values(SkillsEnum).includes(skill as SkillsEnum);
 }
 
-function normalizeMahojiResponse(one: Awaited<CommandResponse>): MessageOptions {
+function normalizeMahojiResponse(one: Awaited<CommandResponse>): BaseMessageOptions {
 	if (!one) return {};
 	if (typeof one === 'string') return { content: one };
-	const response: MessageOptions = {};
+	const response: BaseMessageOptions = {};
 	if (one.content) response.content = one.content;
 	if (one.files) response.files = one.files;
 	return response;
@@ -673,7 +632,7 @@ export function awaitMessageComponentInteraction({
 	filter: test;
 }): Promise<SelectMenuInteraction<CacheType> | ButtonInteraction<CacheType>> {
 	return new Promise((resolve, reject) => {
-		const collector = message.createMessageComponentCollector({ max: 1, filter, time });
+		const collector = message.createMessageComponentCollector<ComponentType.Button>({ max: 1, filter, time });
 		collector.once('end', (interactions, reason) => {
 			const interaction = interactions.first();
 			if (interaction) resolve(interaction);
@@ -687,11 +646,12 @@ export function isGuildChannel(channel?: Channel): channel is GuildTextBasedChan
 }
 
 export async function runTimedLoggedFn(name: string, fn: () => Promise<unknown>) {
+	log(`Starting ${name}...`);
 	const stopwatch = new Stopwatch();
 	stopwatch.start();
 	await fn();
 	stopwatch.stop();
-	console.log(`Finished ${name} in ${stopwatch.toString()}`);
+	log(`Finished ${name} in ${stopwatch.toString()}`);
 }
 
 const emojiServers = new Set([
@@ -750,7 +710,9 @@ export function cacheCleanup() {
 					delete channel.parentId;
 					// @ts-ignore ignore
 					delete channel.name;
+					// @ts-ignore ignore
 					channel.lastMessageId = null;
+					// @ts-ignore ignore
 					channel.lastPinTimestamp = null;
 				}
 			}
@@ -766,11 +728,33 @@ export function cacheCleanup() {
 					}
 				}
 				for (const channel of guild.channels.cache.values()) {
-					if (channel.type === ChannelType.GuildVoice) {
+					if (channel.type === ChannelType.GuildVoice || channel.type === ChannelType.GuildNewsThread) {
 						guild.channels.cache.delete(channel.id);
 					}
+				}
+				for (const role of guild.roles.cache.values()) {
+					// @ts-ignore ignore
+					delete role.managed;
+					// @ts-ignore ignore
+					delete role.name;
+					// @ts-ignore ignore
+					delete role.tags;
+					// @ts-ignore ignore
+					delete role.icon;
+					// @ts-ignore ignore
+					delete role.unicodeEmoji;
+					// @ts-ignore ignore
+					delete role.rawPosition;
+					// @ts-ignore ignore
+					delete role.color;
+					// @ts-ignore ignore
+					delete role.hoist;
 				}
 			}
 		});
 	});
+}
+
+export function isFunction(input: unknown): input is Function {
+	return typeof input === 'function';
 }

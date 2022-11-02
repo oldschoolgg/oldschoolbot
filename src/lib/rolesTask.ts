@@ -20,6 +20,13 @@ const minigames = Minigames.map(game => game.column).filter(i => i !== 'tithe_fa
 
 const collections = ['pets', 'skilling', 'clues', 'bosses', 'minigames', 'raids', 'slayer', 'other', 'custom'];
 
+for (const cl of collections) {
+	const items = getCollectionItems(cl);
+	if (!items || items.length === 0) {
+		throw new Error(`${cl} isn't a valid CL.`);
+	}
+}
+
 const mostSlayerPointsQuery = `SELECT id, 'Most Points' as desc
 FROM users
 WHERE "slayer.points" > 50
@@ -272,8 +279,14 @@ SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
   SELECT (SELECT COUNT(*) FROM JSON_OBJECT_KEYS("sacrificedBank")) sacbanklength, id FROM users
 ) u
 ORDER BY u.sacbanklength DESC LIMIT 1;`);
+		const mostUniquesIron = await q<any[]>(`SELECT u.id, u.sacbanklength FROM (
+  SELECT (SELECT COUNT(*) FROM JSON_OBJECT_KEYS("sacrificedBank")) sacbanklength, id FROM users WHERE "minion.ironman" = true
+) u
+ORDER BY u.sacbanklength DESC LIMIT 1;`);
 		topSacrificers.push(mostUniques[0].id);
 		addToUserMap(userMap, mostUniques[0].id, 'Most Uniques Sacrificed');
+		topSacrificers.push(mostUniquesIron[0].id);
+		addToUserMap(userMap, mostUniquesIron[0].id, 'Most Ironman Uniques Sacrificed');
 
 		result += await addRoles({ g: g!, users: topSacrificers, role: Roles.TopSacrificer, badge: 8, userMap });
 	}

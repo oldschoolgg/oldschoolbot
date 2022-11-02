@@ -4,10 +4,10 @@ import { calcWhatPercent, reduceNumByPercent, roll, round, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../../lib/constants';
-import { maxOtherStats } from '../../../lib/gear';
 import { countUsersWithItemInCl } from '../../../lib/settings/prisma';
 import { getMinigameScore } from '../../../lib/settings/settings';
 import { HighGambleTable, LowGambleTable, MediumGambleTable } from '../../../lib/simulation/baGamble';
+import { maxOtherStats } from '../../../lib/structures/Gear';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { clamp, formatDuration, itemID, randomVariation, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
@@ -184,9 +184,12 @@ export async function barbAssaultGambleCommand(
 		honour_points: {
 			decrement: cost * quantity
 		},
-		high_gambles: {
-			increment: quantity
-		}
+		high_gambles:
+			name === 'High'
+				? {
+						increment: quantity
+				  }
+				: undefined
 	});
 	const loot = new Bank().add(table.roll(quantity));
 	if (loot.has('Pet penance queen')) {

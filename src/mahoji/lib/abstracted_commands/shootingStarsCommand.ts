@@ -1,9 +1,10 @@
 import { activity_type_enum } from '@prisma/client';
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
+import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { percentChance, randInt, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
+import { Emoji, Events } from '../../../lib/constants';
 import addSkillingClueToLoot from '../../../lib/minions/functions/addSkillingClueToLoot';
 import { determineMiningTime } from '../../../lib/skilling/functions/determineMiningTime';
 import { Ore, SkillsEnum } from '../../../lib/skilling/types';
@@ -11,7 +12,7 @@ import { ItemBank } from '../../../lib/types';
 import { ActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, itemNameFromID } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import { calcMaxTripLength, patronMaxTripBonus } from '../../../lib/util/calcMaxTripLength';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { minionName } from '../../../lib/util/minionUtils';
 import { pickaxes } from '../../commands/mine';
@@ -278,6 +279,7 @@ export async function shootingStarsActivity(data: ShootingStarsData) {
 	const star = starSizes.find(i => i.size === data.size)!;
 	const { usersWith } = data;
 	const loot = new Bank(data.lootItems);
+	const userMiningLevel = user.skillLevel(SkillsEnum.Mining);
 
 	await user.addItemsToBank({ items: loot, collectionLog: true });
 	const xpStr = await user.addXP({
@@ -291,9 +293,15 @@ export async function shootingStarsActivity(data: ShootingStarsData) {
 	} other players mining with you.\nYou received ${loot}.\n${xpStr}`;
 	if (loot.has('Rock golem')) {
 		str += "\nYou have a funny feeling you're being followed...";
+		globalClient.emit(
+			Events.ServerNotification,
+			`${Emoji.Mining} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received ${
+				loot.amount('Rock golem') > 1 ? `${loot.amount('Rock golem')}x ` : 'a'
+			} Rock golem while mining a fallen Shooting Star at level ${userMiningLevel} Mining!`
+		);
 	}
 
-	handleTripFinish(user, data.channelID, str, undefined, data, null);
+	handleTripFinish(user, data.channelID, str, undefined, data, loot);
 }
 
 const activitiesCantGetStars: activity_type_enum[] = [
@@ -312,11 +320,7 @@ const activitiesCantGetStars: activity_type_enum[] = [
 
 export const starCache = new Map<string, Star & { expiry: number }>();
 
-export function handleTriggerShootingStar(
-	user: MUserClass,
-	data: ActivityTaskOptions,
-	components: ActionRowBuilder<ButtonBuilder>
-) {
+export function handleTriggerShootingStar(user: MUserClass, data: ActivityTaskOptions, components: ButtonBuilder[]) {
 	if (activitiesCantGetStars.includes(data.type)) return;
 	const miningLevel = user.skillLevel(SkillsEnum.Mining);
 	const elligibleStars = starSizes.filter(i => i.chance > 0 && i.level <= miningLevel);
@@ -333,6 +337,6 @@ export function handleTriggerShootingStar(
 		.setLabel(`Mine Size ${star.size} Crashed Star`)
 		.setEmoji('⭐')
 		.setStyle(ButtonStyle.Secondary);
-	components.addComponents(button);
-	starCache.set(user.id, { ...star, expiry: Date.now() + Time.Minute * 2 });
+	components.push(button);
+	starCache.set(user.id, { ...star, expiry: Date.now() + Time.Minute * 5 + patronMaxTripBonus(user) / 2 });
 }

@@ -1,9 +1,9 @@
 import { Embed } from '@discordjs/builders';
 import {
 	AttachmentBuilder,
+	BaseMessageOptions,
 	EmbedBuilder,
 	Message,
-	MessageOptions,
 	PartialGroupDMChannel,
 	PermissionsBitField,
 	WebhookClient
@@ -60,8 +60,8 @@ export async function sendToChannelID(
 		content?: string;
 		image?: Buffer | AttachmentBuilder;
 		embed?: Embed | EmbedBuilder;
-		components?: MessageOptions['components'];
-		allowedMentions?: MessageOptions['allowedMentions'];
+		components?: BaseMessageOptions['components'];
+		allowedMentions?: BaseMessageOptions['allowedMentions'];
 	}
 ) {
 	const allowedMentions = data.allowedMentions ?? {
@@ -94,6 +94,8 @@ export async function sendToChannelID(
 						channelID
 					});
 				}
+			} finally {
+				channel.destroy();
 			}
 		} else {
 			await channel.send({
@@ -108,7 +110,7 @@ export async function sendToChannelID(
 	queue.add(queuedFn);
 }
 
-async function webhookSend(channel: WebhookClient, input: MessageOptions) {
+async function webhookSend(channel: WebhookClient, input: BaseMessageOptions) {
 	const maxLength = 2000;
 
 	if (input.content && input.content.length > maxLength) {

@@ -23,7 +23,6 @@ export function makeCommandUsage({
 	inhibited: boolean;
 }): Prisma.CommandUsageCreateInput {
 	return {
-		date: new Date(),
 		user_id: BigInt(userID),
 		command_name: commandName,
 		status: command_usage_status.Unknown,
