@@ -1,5 +1,5 @@
 import { Duration } from '@sapphire/time-utilities';
-import { ActionRowBuilder, AttachmentBuilder, ButtonBuilder, ButtonStyle, MessageOptions } from 'discord.js';
+import { ActionRowBuilder, AttachmentBuilder, BaseMessageOptions, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { randInt, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
@@ -13,7 +13,7 @@ import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 import { handleMahojiConfirmation, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
-function makeGiveawayButtons(giveawayID: number): MessageOptions['components'] {
+function makeGiveawayButtons(giveawayID: number): BaseMessageOptions['components'] {
 	return [
 		new ActionRowBuilder<ButtonBuilder>().addComponents([
 			new ButtonBuilder()

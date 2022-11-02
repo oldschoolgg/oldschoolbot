@@ -2,6 +2,7 @@ import { bold } from '@discordjs/builders';
 import type { PrismaClient } from '@prisma/client';
 import { Stopwatch } from '@sapphire/stopwatch';
 import {
+	BaseMessageOptions,
 	ButtonBuilder,
 	ButtonInteraction,
 	CacheType,
@@ -17,7 +18,6 @@ import {
 	InteractionReplyOptions,
 	Message,
 	MessageEditOptions,
-	MessageOptions,
 	PermissionsBitField,
 	SelectMenuInteraction,
 	TextChannel,
@@ -655,10 +655,10 @@ export function isValidSkill(skill: string): skill is SkillsEnum {
 	return Object.values(SkillsEnum).includes(skill as SkillsEnum);
 }
 
-function normalizeMahojiResponse(one: Awaited<CommandResponse>): MessageOptions {
+function normalizeMahojiResponse(one: Awaited<CommandResponse>): BaseMessageOptions {
 	if (!one) return {};
 	if (typeof one === 'string') return { content: one };
-	const response: MessageOptions = {};
+	const response: BaseMessageOptions = {};
 	if (one.content) response.content = one.content;
 	if (one.files) response.files = one.files;
 	return response;
@@ -797,7 +797,7 @@ export function awaitMessageComponentInteraction({
 	filter: test;
 }): Promise<SelectMenuInteraction<CacheType> | ButtonInteraction<CacheType>> {
 	return new Promise((resolve, reject) => {
-		const collector = message.createMessageComponentCollector({ max: 1, filter, time });
+		const collector = message.createMessageComponentCollector<ComponentType.Button>({ max: 1, filter, time });
 		collector.once('end', (interactions, reason) => {
 			const interaction = interactions.first();
 			if (interaction) resolve(interaction);
