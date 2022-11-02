@@ -78,9 +78,19 @@ export async function postCommand({
 			inhibited
 		});
 		try {
-			await prisma.commandUsage.create({
-				data: commandUsage
-			});
+			await prisma.$transaction([
+				prisma.commandUsage.create({
+					data: commandUsage
+				}),
+				prisma.newUser.update({
+					where: {
+						id: userID
+					},
+					data: {
+						last_command_date: new Date()
+					}
+				})
+			]);
 		} catch (err) {
 			logError(err);
 		}
