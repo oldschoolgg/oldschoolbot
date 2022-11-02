@@ -1,10 +1,10 @@
 import {
+	BaseMessageOptions,
 	ButtonBuilder,
 	ButtonStyle,
 	DMChannel,
 	Message,
 	MessageComponentInteraction,
-	MessageOptions,
 	NewsChannel,
 	TextChannel,
 	ThreadChannel
@@ -61,7 +61,7 @@ export class DynamicButtons {
 		extraButtons = []
 	}: {
 		isBusy: boolean;
-		messageOptions: MessageOptions;
+		messageOptions: BaseMessageOptions;
 		extraButtons?: ButtonBuilder[];
 	}) {
 		const buttons = this.buttons
