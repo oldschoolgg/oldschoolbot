@@ -203,8 +203,6 @@ client.on('guildCreate', guild => {
 	}
 });
 
-client.on('ready', () => runTimedLoggedFn('OnStartup', async () => onStartup()));
-
 async function main() {
 	client.fastifyServer = makeServer();
 	runTimedLoggedFn('Sync Active User IDs', syncActiveUserIDs);
@@ -214,6 +212,7 @@ async function main() {
 		runTimedLoggedFn('Startup Scripts', runStartupScripts)
 	]);
 	await runTimedLoggedFn('Log In', () => client.login(botToken));
+	runTimedLoggedFn('OnStartup', async () => onStartup());
 }
 
 process.on('uncaughtException', logError);

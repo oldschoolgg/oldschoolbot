@@ -55,13 +55,11 @@ export async function onStartup() {
 
 	if (1 > 2) {
 		runTimedLoggedFn('Caching badges', cacheBadges);
+		runTimedLoggedFn('Cache Usernames', cacheUsernames);
+		cacheCleanup();
 	}
 
 	runTimedLoggedFn('Sync Linked Accounts', syncLinkedAccounts);
-
-	cacheCleanup();
-
-	runTimedLoggedFn('Cache Usernames', cacheUsernames);
 
 	initCrons();
 	initTickers();
