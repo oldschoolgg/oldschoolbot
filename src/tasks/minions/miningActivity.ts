@@ -41,8 +41,33 @@ export const miningTask: MinionTask = {
 			}
 		}
 		const currentLevel = user.skillLevel(SkillsEnum.Mining);
+		const xpRes = await user.addXP({
+			skillName: SkillsEnum.Mining,
+			amount: xpReceived,
+			duration
+		});
+
+		let str = `${user}, ${user.minionName} finished mining ${quantity} ${ore.name}. ${xpRes}`;
 
 		const loot = new Bank();
+
+		// Add clue scrolls
+		if (ore.clueScrollChance) {
+			addSkillingClueToLoot(user, SkillsEnum.Mining, quantity, ore.clueScrollChance, loot);
+		}
+
+		// Roll for pet
+		if (ore.petChance) {
+			const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Mining, ore.petChance);
+			if (roll(petDropRate / quantity)) {
+				loot.add('Rock golem');
+				str += "\nYou have a funny feeling you're being followed...";
+				globalClient.emit(
+					Events.ServerNotification,
+					`${Emoji.Mining} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Rock golem while mining ${ore.name} at level ${currentLevel} Mining!`
+				);
+			}
+		}
 
 		const numberOfMinutes = duration / Time.Minute;
 
@@ -99,32 +124,6 @@ export const miningTask: MinionTask = {
 				loot.add(ore.id, daeyaltQty);
 			} else {
 				loot.add(ore.id, quantity);
-			}
-		}
-
-		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Mining,
-			amount: xpReceived,
-			duration
-		});
-
-		let str = `${user}, ${user.minionName} finished mining ${quantity} ${ore.name}. ${xpRes}`;
-
-		// Add clue scrolls
-		if (ore.clueScrollChance) {
-			addSkillingClueToLoot(user, SkillsEnum.Mining, quantity, ore.clueScrollChance, loot);
-		}
-
-		// Roll for pet
-		if (ore.petChance) {
-			const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Mining, ore.petChance);
-			if (roll(petDropRate / quantity)) {
-				loot.add('Rock golem');
-				str += "\nYou have a funny feeling you're being followed...";
-				globalClient.emit(
-					Events.ServerNotification,
-					`${Emoji.Mining} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Rock golem while mining ${ore.name} at level ${currentLevel} Mining!`
-				);
 			}
 		}
 
