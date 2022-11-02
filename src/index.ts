@@ -140,43 +140,47 @@ client.mahojiClient = mahojiClient;
 global.globalClient = client;
 client.on('messageCreate', onMessage);
 client.on('interactionCreate', async interaction => {
-	if (BLACKLISTED_USERS.has(interaction.user.id)) return;
-	if (interaction.guildId && BLACKLISTED_GUILDS.has(interaction.guildId)) return;
+	try {
+		if (BLACKLISTED_USERS.has(interaction.user.id)) return;
+		if (interaction.guildId && BLACKLISTED_GUILDS.has(interaction.guildId)) return;
 
-	if (!client.isReady()) {
-		if (interaction.isChatInputCommand()) {
-			interaction.reply({
-				content:
-					'Old School Bot is currently down for maintenance/updates, please try again in a couple minutes! Thank you <3',
-				ephemeral: true
-			});
-		}
-		return;
-	}
-
-	interactionHook(interaction);
-	if (interaction.isModalSubmit()) {
-		modalInteractionHook(interaction);
-		return;
-	}
-
-	const result = await mahojiClient.parseInteraction(interaction);
-	if (result === null) return;
-
-	if (isObject(result) && 'error' in result) {
-		if (result.error.message === SILENT_ERROR) return;
-		if (result.error instanceof UserError && interaction.isRepliable() && !interaction.replied) {
-			await interaction.reply(result.error.message);
+		if (!client.isReady()) {
+			if (interaction.isChatInputCommand()) {
+				interaction.reply({
+					content:
+						'Old School Bot is currently down for maintenance/updates, please try again in a couple minutes! Thank you <3',
+					ephemeral: true
+				});
+			}
 			return;
 		}
-		logErrorForInteraction(result.error, interaction);
-		if (interaction.isChatInputCommand()) {
-			try {
-				await interactionReply(interaction, 'Sorry, an error occured while trying to run this command.');
-			} catch (err: unknown) {
-				logErrorForInteraction(err, interaction);
+
+		await interactionHook(interaction);
+		if (interaction.isModalSubmit()) {
+			await modalInteractionHook(interaction);
+			return;
+		}
+
+		const result = await mahojiClient.parseInteraction(interaction);
+		if (result === null) return;
+
+		if (isObject(result) && 'error' in result) {
+			if (result.error.message === SILENT_ERROR) return;
+			if (result.error instanceof UserError && interaction.isRepliable() && !interaction.replied) {
+				await interaction.reply(result.error.message);
+				return;
+			}
+			logErrorForInteraction(result.error, interaction);
+			if (interaction.isChatInputCommand()) {
+				try {
+					await interactionReply(interaction, 'Sorry, an error occured while trying to run this command.');
+				} catch (err: unknown) {
+					logErrorForInteraction(err, interaction);
+				}
 			}
 		}
+	} catch (err) {
+		logErrorForInteraction(err, interaction);
 	}
 });
 
