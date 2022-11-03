@@ -507,7 +507,7 @@ enum loot_track_type {
 }
 
 model LootTrack {
-  id             String          @db.VarChar(32)
+  key            String          @db.VarChar(32)
   type           loot_track_type
   // In minutes
   total_duration Int
@@ -515,7 +515,7 @@ model LootTrack {
   loot           Json            @default("{}") @db.Json
   cost           Json            @default("{}") @db.Json
 
-  @@id([id, type])
+  @@id([key, type])
   @@map("loot_track")
 }
 
