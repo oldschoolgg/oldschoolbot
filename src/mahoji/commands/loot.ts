@@ -1,5 +1,6 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
+import { PerkTier } from '../../lib/constants';
 import { getAllTrackedLootForUser, getDetailsOfSingleTrackedLoot } from '../../lib/lootTrack';
 import { prisma } from '../../lib/settings/prisma';
 import { OSBMahojiCommand } from '../lib/util';
@@ -62,12 +63,23 @@ export const lootCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{ view?: { name: string }; reset?: { name: string } }>) => {
 		const user = await mUserFetch(userID);
 		const name = options.view?.name ?? options.reset?.name ?? '';
-		const trackedLoot = await prisma.lootTrack.findFirst({
-			where: {
-				id: name,
-				user_id: BigInt(userID)
-			}
-		});
+		if (user.perkTier() < PerkTier.Four) {
+			const res = await prisma.lootTrack.count({
+				where: {
+					user_id: BigInt(userID)
+				}
+			});
+			return `You need to be a Tier 3 Patron to use this feature. You have ${res}x loot trackers stored currently.`;
+		}
+
+		const trackedLoot = await prisma.lootTrack
+			.findFirst({
+				where: {
+					id: name,
+					user_id: BigInt(userID)
+				}
+			})
+			.catch(() => null);
 		if (!trackedLoot) {
 			return "The name you specified doesn't exist.";
 		}

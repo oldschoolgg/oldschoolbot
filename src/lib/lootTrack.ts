@@ -157,7 +157,7 @@ export async function getDetailsOfSingleTrackedLoot(user: MUser, trackedLoot: Lo
 	]);
 	return {
 		content: `Loot/Cost from ${trackedLoot.total_kc.toLocaleString()}x ${trackedLoot.key} for ${user.rawUsername}
-**Total Duration:** ${formatDuration(trackedLoot.total_duration * Time.Minute)}
+**Total Duration:** ${formatDuration(trackedLoot.total_duration / Time.Minute)}
 **Total KC:** ${trackedLoot.total_kc}`,
 		files: [cost.file, loot.file]
 	};
