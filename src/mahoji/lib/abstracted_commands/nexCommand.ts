@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 
 import { setupParty } from '../../../extendables/Message/Party';
 import { NEX_ID } from '../../../lib/constants';
-import { trackLoot } from '../../../lib/settings/prisma';
+import { trackLoot } from '../../../lib/lootTrack';
 import { calculateNexDetails, checkNexUser } from '../../../lib/simulation/nex';
 import { NexTaskOptions } from '../../../lib/types/minions';
 import { calcPerHour, formatDuration } from '../../../lib/util';
@@ -70,10 +70,14 @@ export async function nexCommand(interaction: ChatInputCommandInteraction, user:
 	await Promise.all([
 		await updateBankSetting('tob_cost', totalCost),
 		await trackLoot({
-			cost: totalCost,
+			totalCost,
 			id: 'nex',
 			type: 'Monster',
-			changeType: 'cost'
+			changeType: 'cost',
+			users: details.team.map(i => ({
+				id: i.id,
+				cost: i.cost
+			}))
 		}),
 		...details.team.map(async i => {
 			const klasaUser = await mUserFetch(i.id);
