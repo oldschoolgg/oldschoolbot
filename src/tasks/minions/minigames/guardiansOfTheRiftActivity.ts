@@ -4,12 +4,13 @@ import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { Events } from '../../../lib/constants';
 import { getMinigameEntity, incrementMinigameScore } from '../../../lib/settings/minigames';
+import { trackLoot } from '../../../lib/settings/prisma';
 import Runecraft from '../../../lib/skilling/skills/runecraft';
 import { itemID, stringMatches } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { calcMaxRCQuantity } from '../../../mahoji/mahojiSettings';
+import { calcMaxRCQuantity, updateBankSetting } from '../../../mahoji/mahojiSettings';
 import { rewardsGuardianTable } from './../../../lib/simulation/rewardsGuardian';
 import { GuardiansOfTheRiftActivityTaskOptions } from './../../../lib/types/minions';
 
@@ -161,6 +162,16 @@ export const guardiansOfTheRiftTask: MinionTask = {
 				)} Runecrafting and on run ${formatOrdinal(kcForPet)}!`
 			);
 		}
+
+		updateBankSetting('gotr_loot', totalLoot);
+		await trackLoot({
+			loot: totalLoot,
+			id: 'guardians_of_the_rift',
+			type: 'Minigame',
+			changeType: 'loot',
+			duration,
+			kc: quantity
+		});
 
 		handleTripFinish(user, channelID, str, image.file.attachment, data, null);
 	}
