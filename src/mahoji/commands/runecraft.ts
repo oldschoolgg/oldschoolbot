@@ -11,12 +11,13 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../lib/util/determineRunes';
 import { toTitleCase } from '../../lib/util/toTitleCase';
+import { tiaraRunecraftCommand } from '../lib/abstracted_commands/tiaraRunecraftCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { calcMaxRCQuantity, updateBankSetting, userHasGracefulEquipped } from '../mahojiSettings';
 
 export const runecraftCommand: OSBMahojiCommand = {
 	name: 'runecraft',
-	description: 'Sends your minion to craft runes with essence.',
+	description: 'Sends your minion to craft runes with essence, or craft tiaras.',
 	attributes: {
 		requiresMinion: true,
 		requiresMinionNotBusy: true,
@@ -27,10 +28,15 @@ export const runecraftCommand: OSBMahojiCommand = {
 		{
 			type: ApplicationCommandOptionType.String,
 			name: 'rune',
-			description: 'The Rune you want to craft.',
+			description: 'The Rune/Tiara you want to craft.',
 			required: true,
 			autocomplete: async value => {
-				return [...Runecraft.Runes.map(i => i.name), 'blood rune', 'soul rune']
+				return [
+					...Runecraft.Runes.map(i => i.name),
+					'blood rune',
+					'soul rune',
+					...Runecraft.Tiara.map(i => i.name)
+				]
 					.filter(name => (!value ? true : name.toLowerCase().includes(value.toLowerCase())))
 					.map(i => ({
 						name: toTitleCase(i),
@@ -41,7 +47,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 		{
 			type: ApplicationCommandOptionType.Integer,
 			name: 'quantity',
-			description: 'The amount of runes you want to craft.',
+			description: 'The amount of runes/tiaras you want to craft.',
 			required: false,
 			min_value: 1,
 			max_value: 1_000_000_000
@@ -73,6 +79,11 @@ export const runecraftCommand: OSBMahojiCommand = {
 			rune = rune.slice(0, rune.length - 1);
 		}
 
+		const tiaraObj = Runecraft.Tiara.find(_tiara => stringMatches(_tiara.name, rune));
+
+		if (tiaraObj) {
+			return tiaraRunecraftCommand({ user, channelID, name: rune, quantity });
+		}
 		if (['blood', 'soul'].includes(rune)) {
 			return darkAltarCommand({ user, channelID, name: rune });
 		}
@@ -81,7 +92,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 			_rune => stringMatches(_rune.name, rune) || stringMatches(_rune.name.split(' ')[0], rune)
 		);
 		if (!runeObj) {
-			return `Thats not a valid rune. Valid rune are ${Runecraft.Runes.map(_rune => _rune.name).join(', ')}.`;
+			return `That's not a valid rune. Valid rune are ${Runecraft.Runes.map(_rune => _rune.name).join(', ')}.`;
 		}
 
 		if (usestams === undefined) {

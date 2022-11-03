@@ -507,15 +507,17 @@ enum loot_track_type {
 }
 
 model LootTrack {
-  id             String          @db.VarChar(32)
+  id String @id @default(uuid()) @db.Uuid
+
+  key            String          @db.VarChar(32)
   type           loot_track_type
   // In minutes
   total_duration Int
   total_kc       Int
   loot           Json            @default("{}") @db.Json
   cost           Json            @default("{}") @db.Json
+  user_id        BigInt?
 
-  @@id([id, type])
   @@map("loot_track")
 }
 
@@ -612,6 +614,7 @@ enum activity_type_enum {
   Questing
   Firemaking
   Runecraft
+  TiaraRunecraft
   Smelting
   Crafting
   Burying
