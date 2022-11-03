@@ -2093,16 +2093,6 @@ const Createables: Createable[] = [
 		}
 	},
 	{
-		name: 'Death tiara',
-		inputItems: new Bank({
-			'Death talisman': 1,
-			Tiara: 1
-		}),
-		outputItems: {
-			[itemID('Death tiara')]: 1
-		}
-	},
-	{
 		name: 'Daeyalt essence',
 		inputItems: new Bank({
 			'Daeyalt shard': 1

@@ -26,6 +26,11 @@ export interface RunecraftActivityTaskOptions extends ActivityTaskOptions {
 	daeyaltEssence?: boolean;
 }
 
+export interface TiaraRunecraftActivityTaskOptions extends ActivityTaskOptions {
+	tiaraID: number;
+	tiaraQuantity: number;
+}
+
 export interface DarkAltarOptions extends ActivityTaskOptions {
 	quantity: number;
 	hasElite: boolean;
