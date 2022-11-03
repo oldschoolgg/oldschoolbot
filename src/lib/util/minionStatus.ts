@@ -65,11 +65,13 @@ import {
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
 	TheatreOfBloodTaskOptions,
+	TiaraRunecraftActivityTaskOptions,
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '../types/minions';
-import { formatDuration, itemNameFromID, randomVariation, toTitleCase } from '../util';
+import { formatDuration, itemNameFromID, randomVariation } from '../util';
 import { stringMatches } from './cleanString';
+import { toTitleCase } from './toTitleCase';
 
 export function minionStatus(user: MUser) {
 	const currentTask = getActivityOfUser(user.id);
@@ -240,6 +242,15 @@ export function minionStatus(user: MUser) {
 			}. ${formattedDuration} Your ${Emoji.Runecraft} Runecraft level is ${user.skillLevel(
 				SkillsEnum.Runecraft
 			)}`;
+		}
+
+		case 'TiaraRunecraft': {
+			const data = currentTask as TiaraRunecraftActivityTaskOptions;
+			const tiara = Runecraft.Tiara.find(_tiara => _tiara.id === data.tiaraID);
+
+			return `${name} is currently crafting ${data.tiaraQuantity} ${tiara!.name}. ${formattedDuration} Your ${
+				Emoji.Runecraft
+			} Runecraft level is ${user.skillLevel(SkillsEnum.Runecraft)}`;
 		}
 
 		case 'FightCaves': {
@@ -569,6 +580,9 @@ export function minionStatus(user: MUser) {
 			return `${name} is currently mining a Crashed Star. The trip should take ${formatDuration(
 				durationRemaining
 			)}.`;
+		}
+		case 'HalloweenEvent': {
+			return `${name} is currently Trick-or-Treating! The trip should take ${formatDuration(durationRemaining)}.`;
 		}
 		case 'Easter':
 		case 'BlastFurnace': {

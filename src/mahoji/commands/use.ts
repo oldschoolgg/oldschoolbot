@@ -9,7 +9,6 @@ export const mahojiUseCommand: OSBMahojiCommand = {
 	description: 'Use items/things.',
 	attributes: {
 		requiresMinion: true,
-		requiresMinionNotBusy: true,
 		examples: ['/use name:Mithril seeds']
 	},
 	options: [

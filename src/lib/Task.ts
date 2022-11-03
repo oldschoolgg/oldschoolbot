@@ -17,6 +17,7 @@ import { fishingTask } from '../tasks/minions/fishingActivity';
 import { fletchingTask } from '../tasks/minions/fletchingActivity';
 import { gloryChargingTask } from '../tasks/minions/gloryChargingActivity';
 import { groupoMonsterTask } from '../tasks/minions/groupMonsterActivity';
+import { halloweenTask } from '../tasks/minions/halloweenActivity';
 import { herbloreTask } from '../tasks/minions/herbloreActivity';
 import { aerialFishingTask } from '../tasks/minions/HunterActivity/aerialFishingActivity';
 import { birdHouseTask } from '../tasks/minions/HunterActivity/birdhouseActivity';
@@ -69,6 +70,7 @@ import { sawmillTask } from '../tasks/minions/sawmillActivity';
 import { shootingStarTask } from '../tasks/minions/shootingStarsActivity';
 import { smeltingTask } from '../tasks/minions/smeltingActivity';
 import { smithingTask } from '../tasks/minions/smithingActivity';
+import { tiaraRunecraftTask } from '../tasks/minions/tiaraRunecraftActivity';
 import { tokkulShopTask } from '../tasks/minions/tokkulShopActivity';
 import { vmTask } from '../tasks/minions/volcanicMineActivity';
 import { wealthChargeTask } from '../tasks/minions/wealthChargingActivity';
@@ -152,7 +154,9 @@ export const tasks: MinionTask[] = [
 	temporossTask,
 	smithingTask,
 	butlerTask,
-	shootingStarTask
+	shootingStarTask,
+	tiaraRunecraftTask,
+	halloweenTask
 ];
 
 export async function syncActivityCache() {

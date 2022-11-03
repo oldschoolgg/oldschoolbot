@@ -1,12 +1,12 @@
 /* eslint-disable prefer-promise-reject-errors */
 import { userMention } from '@discordjs/builders';
 import {
+	BaseMessageOptions,
 	ButtonBuilder,
 	ButtonStyle,
 	ComponentType,
 	InteractionCollector,
 	MessageEditOptions,
-	MessageOptions,
 	TextChannel
 } from 'discord.js';
 import { debounce, noOp, Time } from 'e';
@@ -43,8 +43,9 @@ const buttons = [
 export async function setupParty(channel: TextChannel, leaderUser: MUser, options: MakePartyOptions): Promise<MUser[]> {
 	const usersWhoConfirmed: string[] = [options.leader.id];
 	let deleted = false;
+	let massStarted = false;
 
-	function getMessageContent(): MessageOptions & MessageEditOptions {
+	function getMessageContent(): BaseMessageOptions & MessageEditOptions {
 		return {
 			content: `${options.message}\n\n**Users Joined:** ${usersWhoConfirmed
 				.map(u => usernameCache.get(u) ?? userMention(u))
@@ -95,7 +96,9 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 						!user.user.minion_hasBought
 					) {
 						interaction.reply({
-							content: 'You cannot mass if you are busy, an ironman, or have no minion.',
+							content: `You cannot mass if you are busy${
+								!options.ironmanAllowed ? ', an ironman' : ''
+							}, or have no minion.`,
 							ephemeral: true
 						});
 						return false;
@@ -129,6 +132,8 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 			});
 
 			async function startTrip() {
+				if (massStarted) return;
+				massStarted = true;
 				await confirmMessage.delete().catch(noOp);
 				if (!partyCancelled && usersWhoConfirmed.length < options.minSize) {
 					channel.send(`${leaderUser} Not enough people joined your mass!`);
@@ -141,7 +146,6 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 
 			collector.on('collect', async interaction => {
 				if (BLACKLISTED_USERS.has(interaction.user.id)) return;
-				const mUser = await mUserFetch(interaction.user.id);
 				const btn = buttons.find(i => i.id === interaction.customId);
 				if (!btn) return;
 
@@ -151,19 +155,19 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 
 				switch (btn.id) {
 					case 'PARTY_JOIN': {
+						if (usersWhoConfirmed.includes(interaction.user.id)) {
+							return reply('You are already in this mass.');
+						}
 						if (
-							partyLockCache.has(mUser.id) ||
-							(options.usersAllowed && !options.usersAllowed.includes(mUser.id))
+							partyLockCache.has(interaction.user.id) ||
+							(options.usersAllowed && !options.usersAllowed.includes(interaction.user.id))
 						) {
 							return reply('You cannot join this mass.');
 						}
-						if (usersWhoConfirmed.includes(mUser.id)) {
-							return reply('You are already in this mass.');
-						}
 
 						// Add the user
-						usersWhoConfirmed.push(mUser.id);
-						partyLockCache.add(mUser.id);
+						usersWhoConfirmed.push(interaction.user.id);
+						partyLockCache.add(interaction.user.id);
 						updateUsersIn();
 
 						reply('You joined this mass.');
@@ -176,18 +180,21 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 					}
 
 					case 'PARTY_LEAVE': {
-						if (!usersWhoConfirmed.includes(mUser.id) || mUser.id === options.leader.id) {
+						if (
+							!usersWhoConfirmed.includes(interaction.user.id) ||
+							interaction.user.id === options.leader.id
+						) {
 							reply('You cannot leave this mass.');
 							return;
 						}
-						partyLockCache.delete(mUser.id);
-						removeUser(mUser.id);
+						partyLockCache.delete(interaction.user.id);
+						removeUser(interaction.user.id);
 						reply('You left this this mass.');
 						break;
 					}
 
 					case 'PARTY_CANCEL': {
-						if (mUser.id === options.leader.id) {
+						if (interaction.user.id === options.leader.id) {
 							partyCancelled = true;
 							reply('You cancelled the mass.');
 							reject(
@@ -201,7 +208,7 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 					}
 
 					case 'PARTY_START': {
-						if (mUser.id === options.leader.id) {
+						if (interaction.user.id === options.leader.id) {
 							startTrip();
 							collector.stop('partyCreatorEnd');
 							reply('You started the mass.');

@@ -23,7 +23,6 @@ import { InfernoOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../../lib/util';
 import { barChart, lineChart, pieChart } from '../../../lib/util/chart';
 import { getItem } from '../../../lib/util/getOSItem';
-import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
 import { Cooldowns } from '../Cooldowns';
@@ -874,7 +873,7 @@ export async function statsCommand(user: MUser, type: string): CommandResponse {
 	const dataPoint = dataPoints.find(dp => stringMatches(dp.name, type));
 	if (!dataPoint) return 'Invalid stat name.';
 	const { perkTierNeeded } = dataPoint;
-	if (perkTierNeeded !== null && getUsersPerkTier(user) < perkTierNeeded) {
+	if (perkTierNeeded !== null && user.perkTier() < perkTierNeeded) {
 		return `Sorry, you need to be a Tier ${perkTierNeeded - 1} Patron to see this stat.`;
 	}
 	const userStats = await prisma.userStats.upsert({

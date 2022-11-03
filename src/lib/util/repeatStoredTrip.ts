@@ -46,6 +46,7 @@ import {
 	SmithingActivityTaskOptions,
 	TempleTrekkingActivityTaskOptions,
 	TheatreOfBloodTaskOptions,
+	TiaraRunecraftActivityTaskOptions,
 	WoodcuttingActivityTaskOptions
 } from '../types/minions';
 import { itemNameFromID } from '../util';
@@ -201,6 +202,13 @@ export const tripHandlers = {
 			quantity: data.essenceQuantity,
 			daeyalt_essence: data.daeyaltEssence,
 			usestams: data.useStaminas
+		})
+	},
+	[activity_type_enum.TiaraRunecraft]: {
+		commandName: 'runecraft',
+		args: (data: TiaraRunecraftActivityTaskOptions) => ({
+			rune: itemNameFromID(data.tiaraID),
+			quantity: data.tiaraQuantity
 		})
 	},
 	[activity_type_enum.DriftNet]: {
@@ -483,6 +491,10 @@ export const tripHandlers = {
 			quantity: data.quantity,
 			powerchop: data.powerchopping
 		})
+	},
+	[activity_type_enum.HalloweenEvent]: {
+		commandName: 'trickortreat',
+		args: () => ({ start: {} })
 	}
 } as const;
 
@@ -528,7 +540,7 @@ export async function fetchRepeatTrips(userID: string) {
 export async function makeRepeatTripButtons(user: MUser) {
 	const trips = await fetchRepeatTrips(user.id);
 	const buttons: ButtonBuilder[] = [];
-	const limit = Math.min(user.perkTier + 1, 5);
+	const limit = Math.min(user.perkTier() + 1, 5);
 	for (const trip of trips.slice(0, limit)) {
 		buttons.push(
 			new ButtonBuilder()
