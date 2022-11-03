@@ -246,7 +246,7 @@ export function minionStatus(user: MUser) {
 
 		case 'TiaraRunecraft': {
 			const data = currentTask as TiaraRunecraftActivityTaskOptions;
-			const tiara = Runecraft.Tiara.find(_tiara => _tiara.id === data.tiaraID);
+			const tiara = Runecraft.Tiaras.find(_tiara => _tiara.id === data.tiaraID);
 
 			return `${name} is currently crafting ${data.tiaraQuantity} ${tiara!.name}. ${formattedDuration} Your ${
 				Emoji.Runecraft

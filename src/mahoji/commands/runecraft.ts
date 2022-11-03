@@ -35,7 +35,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 					...Runecraft.Runes.map(i => i.name),
 					'blood rune',
 					'soul rune',
-					...Runecraft.Tiara.map(i => i.name)
+					...Runecraft.Tiaras.map(i => i.name)
 				]
 					.filter(name => (!value ? true : name.toLowerCase().includes(value.toLowerCase())))
 					.map(i => ({
@@ -79,7 +79,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 			rune = rune.slice(0, rune.length - 1);
 		}
 
-		const tiaraObj = Runecraft.Tiara.find(_tiara => stringMatches(_tiara.name, rune));
+		const tiaraObj = Runecraft.Tiaras.find(_tiara => stringMatches(_tiara.name, rune));
 
 		if (tiaraObj) {
 			return tiaraRunecraftCommand({ user, channelID, name: rune, quantity });
