@@ -507,6 +507,8 @@ enum loot_track_type {
 }
 
 model LootTrack {
+  id String? @default(uuid()) @db.Uuid
+
   key            String          @db.VarChar(32)
   type           loot_track_type
   // In minutes
