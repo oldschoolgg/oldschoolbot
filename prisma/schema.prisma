@@ -613,6 +613,7 @@ enum activity_type_enum {
   Questing
   Firemaking
   Runecraft
+  TiaraRunecraft
   Smelting
   Crafting
   Burying
