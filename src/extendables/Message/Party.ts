@@ -1,12 +1,12 @@
 /* eslint-disable prefer-promise-reject-errors */
 import { userMention } from '@discordjs/builders';
 import {
+	BaseMessageOptions,
 	ButtonBuilder,
 	ButtonStyle,
 	ComponentType,
 	InteractionCollector,
 	MessageEditOptions,
-	MessageOptions,
 	TextChannel
 } from 'discord.js';
 import { debounce, noOp, Time } from 'e';
@@ -45,7 +45,7 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 	let deleted = false;
 	let massStarted = false;
 
-	function getMessageContent(): MessageOptions & MessageEditOptions {
+	function getMessageContent(): BaseMessageOptions & MessageEditOptions {
 		return {
 			content: `${options.message}\n\n**Users Joined:** ${usersWhoConfirmed
 				.map(u => usernameCache.get(u) ?? userMention(u))

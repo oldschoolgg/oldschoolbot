@@ -1,9 +1,10 @@
 import {
 	ActionRowBuilder,
+	BaseMessageOptions,
 	ButtonBuilder,
 	ButtonStyle,
+	ComponentType,
 	MessageEditOptions,
-	MessageOptions,
 	TextChannel
 } from 'discord.js';
 import { Time } from 'e';
@@ -103,9 +104,9 @@ export class PaginatedMessage {
 	}
 
 	async run(targetUsers?: string[]) {
-		const message = await this.channel.send((await this.render()) as MessageOptions);
+		const message = await this.channel.send((await this.render()) as BaseMessageOptions);
 		if (this.totalPages === 1) return;
-		const collector = await message.createMessageComponentCollector({
+		const collector = await message.createMessageComponentCollector<ComponentType.Button>({
 			time: Time.Minute * 10
 		});
 
