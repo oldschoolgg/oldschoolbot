@@ -116,6 +116,8 @@ model ClientStorage {
   create_loot                  Json     @default("{}") @db.Json
   tob_cost                     Json     @default("{}") @db.Json
   tob_loot                     Json     @default("{}") @db.Json
+  nex_cost                     Json     @default("{}") @db.Json
+  nex_loot                     Json     @default("{}") @db.Json
   degraded_items_cost          Json     @default("{}") @db.Json
   tks_cost                     Json     @default("{}") @db.Json
   tks_loot                     Json     @default("{}") @db.Json

@@ -22,6 +22,7 @@ import { Eatables } from '../../../lib/data/eatables';
 import { getSimilarItems } from '../../../lib/data/similarItems';
 import { checkUserCanUseDegradeableItem, degradeItem } from '../../../lib/degradeableItems';
 import { GearSetupType } from '../../../lib/gear/types';
+import { trackLoot } from '../../../lib/lootTrack';
 import {
 	boostCannon,
 	boostCannonMulti,
@@ -42,7 +43,6 @@ import reducedTimeFromKC from '../../../lib/minions/functions/reducedTimeFromKC'
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
 import { Consumable, KillableMonster } from '../../../lib/minions/types';
 import { calcPOHBoosts } from '../../../lib/poh';
-import { trackLoot } from '../../../lib/settings/prisma';
 import { SlayerTaskUnlocksEnum } from '../../../lib/slayer/slayerUnlocks';
 import { determineBoostChoice, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../../lib/types/minions';
@@ -536,9 +536,15 @@ export async function minionKillCommand(
 	if (totalCost.length > 0) {
 		await trackLoot({
 			id: monster.name,
-			cost: totalCost,
+			totalCost,
 			type: 'Monster',
-			changeType: 'cost'
+			changeType: 'cost',
+			users: [
+				{
+					id: user.id,
+					cost: totalCost
+				}
+			]
 		});
 	}
 
