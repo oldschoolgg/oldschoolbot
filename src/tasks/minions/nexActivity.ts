@@ -6,6 +6,7 @@ import { handleNexKills } from '../../lib/simulation/nex';
 import { NexTaskOptions } from '../../lib/types/minions';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import { sendToChannelID } from '../../lib/util/webhook';
+import { updateBankSetting } from '../../mahoji/mahojiSettings';
 
 export const nexTask: MinionTask = {
 	type: 'Nex',
@@ -42,6 +43,7 @@ export const nexTask: MinionTask = {
 				duration
 			}))
 		});
+		await updateBankSetting('nex_loot', loot.totalLoot());
 
 		const embed = new Embed().setThumbnail(
 			'https://cdn.discordapp.com/attachments/342983479501389826/951730848426786846/Nex.webp'

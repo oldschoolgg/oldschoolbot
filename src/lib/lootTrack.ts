@@ -3,7 +3,6 @@ import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { prisma } from './settings/prisma';
-import { bankIsEqual } from './stressTest';
 import { ItemBank } from './types';
 import { assert, cleanString, formatDuration } from './util';
 import { makeBankImage } from './util/makeBankImage';
@@ -111,16 +110,6 @@ export async function trackLoot(opts: TrackLootOptions) {
 	const totalBank = opts.changeType === 'cost' ? opts.totalCost : opts.totalLoot;
 	if (totalBank.length === 0) return;
 
-	if (opts.changeType === 'cost') {
-		const totalLootCalc = new Bank();
-		for (const u of opts.users) totalLootCalc.add(u.cost);
-		assert(bankIsEqual(totalLootCalc, opts.totalCost));
-	} else {
-		const totalLootCalc = new Bank();
-		for (const u of opts.users) totalLootCalc.add(u.loot);
-		assert(bankIsEqual(totalLootCalc, opts.totalLoot));
-	}
-
 	let teamDuration = 0;
 	if (opts.changeType === 'loot') {
 		teamDuration = Math.floor((opts.duration * opts.users.length) / Time.Minute);
@@ -131,7 +120,7 @@ export async function trackLoot(opts: TrackLootOptions) {
 			opts.users.map(u =>
 				trackIndividualsLoot({
 					key,
-					bankToAdd: opts.changeType === 'cost' ? opts.totalCost : opts.totalLoot,
+					bankToAdd: 'cost' in u ? u.cost : u.loot,
 					duration: 'duration' in opts ? opts.duration : 0,
 					data: opts,
 					userID: BigInt(u.id)

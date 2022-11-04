@@ -58,30 +58,37 @@ export async function nexCommand(interaction: ChatInputCommandInteraction, user:
 		team: mahojiUsers
 	});
 
-	const totalCost = new Bank();
 	for (const user of details.team) {
 		const mUser = await mUserFetch(user.id);
 		if (!mUser.allItemsOwned().has(user.cost)) {
 			return `${mUser.usernameOrMention} doesn't have the required items: ${user.cost}.`;
 		}
-		totalCost.add(user.cost);
 	}
 
+	const removeResult = await Promise.all(
+		details.team.map(async i => {
+			const klasaUser = await mUserFetch(i.id);
+			return {
+				id: klasaUser.id,
+				cost: (await klasaUser.specialRemoveItems(i.cost)).realCost
+			};
+		})
+	);
+
+	const totalCost = new Bank();
+	for (const u of removeResult) totalCost.add(u.cost);
+
 	await Promise.all([
-		await updateBankSetting('tob_cost', totalCost),
+		await updateBankSetting('nex_cost', totalCost),
 		await trackLoot({
 			totalCost,
 			id: 'nex',
 			type: 'Monster',
 			changeType: 'cost',
-			users: details.team.map(i => ({
+			users: removeResult.map(i => ({
 				id: i.id,
 				cost: i.cost
 			}))
-		}),
-		...details.team.map(async i => {
-			const klasaUser = await mUserFetch(i.id);
-			await klasaUser.specialRemoveItems(i.cost);
 		})
 	]);
 
