@@ -2,22 +2,12 @@ import { notEmpty, randInt, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { production } from '../../../config';
-import {
-	bossActiveIsActiveOrSoonActive,
-	bossEventChannelID,
-	bossEvents,
-	startBossEvent
-} from '../../../lib/bossEvents';
 import { BitField } from '../../../lib/constants';
 import { addToDoubleLootTimer } from '../../../lib/doubleLoot';
 import { dyedItems } from '../../../lib/dyedItems';
 import { gearImages } from '../../../lib/gear/functions/generateGearImage';
-import { prisma } from '../../../lib/settings/prisma';
-import { PUMPKINHEAD_ID } from '../../../lib/simulation/pumpkinHead';
-import { assert, formatDuration } from '../../../lib/util';
+import { assert } from '../../../lib/util';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
-import { sendToChannelID } from '../../../lib/util/webhook';
 import { flowerTable } from './hotColdCommand';
 
 interface Usable {
@@ -210,33 +200,8 @@ usables.push({
 });
 usables.push({
 	items: [getOSItem('Mysterious token')],
-	run: async user => {
-		if (await bossActiveIsActiveOrSoonActive()) {
-			return "You can't use your Mysterious token right now.";
-		}
-		if (1 > 0) {
-			startBossEvent({
-				boss: bossEvents.find(b => b.id === PUMPKINHEAD_ID)!
-			});
-		} else {
-			const startDelay = production ? Time.Hour : Time.Second * 30;
-			await prisma.bossEvent.create({
-				data: {
-					start_date: new Date(Date.now() + startDelay),
-					boss_id: PUMPKINHEAD_ID,
-					completed: false,
-					data: {}
-				}
-			});
-			sendToChannelID(bossEventChannelID, {
-				content: `<@&896845245873025067> **You feel the ground quake beneath your feet... It feels like Pumpkinhead is only ${formatDuration(
-					startDelay
-				)} away!**`,
-				allowedMentions: { roles: ['896845245873025067'] }
-			});
-		}
-		await user.removeItemsFromBank(new Bank().add('Mysterious token'));
-		return 'You used your Mysterious token... I wonder what will happen?';
+	run: async () => {
+		return 'Nothing mysterious happens.';
 	}
 });
 

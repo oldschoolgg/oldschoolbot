@@ -1059,7 +1059,7 @@ setCustomItem(48_307, "Pumpkinhead's pumpkin head", 'Rune full helm', {}, 10_000
 setCustomItem(48_308, 'Haunted amulet', 'Amulet of strength', {}, 10_000);
 setCustomItem(48_309, 'Haunted gloves', 'Rune gloves', {}, 10_000);
 setCustomItem(48_310, 'Haunted boots', 'Rune boots', {}, 10_000);
-setCustomItem(48_312, 'Mysterious token', 'Coal', {}, 1_000_000);
+setCustomItem(48_312, 'Mysterious token', 'Coal', {}, 100_000);
 
 setCustomItem(48_313, 'Baby raven', 'Herbi', {}, 1_000_000);
 setCustomItem(48_314, 'Raven', 'Herbi', {}, 1_000_000);
@@ -3115,8 +3115,7 @@ setCustomItem(
 	'White partyhat',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	1_000_000
