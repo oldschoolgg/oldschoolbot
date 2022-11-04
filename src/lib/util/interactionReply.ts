@@ -1,9 +1,11 @@
-import { ButtonInteraction, ChatInputCommandInteraction, InteractionReplyOptions } from 'discord.js';
+import {
+	ButtonInteraction,
+	ChatInputCommandInteraction,
+	InteractionReplyOptions,
+	RepliableInteraction
+} from 'discord.js';
 
-export function interactionReply(
-	interaction: ButtonInteraction | ChatInputCommandInteraction,
-	response: string | InteractionReplyOptions
-) {
+export function interactionReply(interaction: RepliableInteraction, response: string | InteractionReplyOptions) {
 	if (interaction.deferred) {
 		return interaction.editReply(response);
 	}
