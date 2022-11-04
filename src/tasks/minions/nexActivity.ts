@@ -1,11 +1,12 @@
 import { Embed, userMention } from '@discordjs/builders';
 
 import { NEX_ID } from '../../lib/constants';
-import { trackLoot } from '../../lib/settings/prisma';
+import { trackLoot } from '../../lib/lootTrack';
 import { handleNexKills } from '../../lib/simulation/nex';
 import { NexTaskOptions } from '../../lib/types/minions';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import { sendToChannelID } from '../../lib/util/webhook';
+import { updateBankSetting } from '../../mahoji/mahojiSettings';
 
 export const nexTask: MinionTask = {
 	type: 'Nex',
@@ -30,13 +31,19 @@ export const nexTask: MinionTask = {
 		}
 
 		await trackLoot({
-			loot: loot.totalLoot(),
+			totalLoot: loot.totalLoot(),
 			id: 'nex',
 			type: 'Monster',
 			changeType: 'loot',
 			duration: duration * users.length,
-			kc: quantity
+			kc: quantity,
+			users: userDetails.map(i => ({
+				id: i[0],
+				loot: loot.get(i[0]),
+				duration
+			}))
 		});
+		await updateBankSetting('nex_loot', loot.totalLoot());
 
 		const embed = new Embed().setThumbnail(
 			'https://cdn.discordapp.com/attachments/342983479501389826/951730848426786846/Nex.webp'

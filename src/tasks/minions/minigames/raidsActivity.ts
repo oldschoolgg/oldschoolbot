@@ -5,7 +5,7 @@ import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeri
 import { Emoji, Events } from '../../../lib/constants';
 import { chambersOfXericCL, chambersOfXericMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { createTeam } from '../../../lib/data/cox';
-import { trackLoot } from '../../../lib/settings/prisma';
+import { trackLoot } from '../../../lib/lootTrack';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import { RaidsOptions } from '../../../lib/types/minions';
 import { roll } from '../../../lib/util';
@@ -96,13 +96,17 @@ export const raidsTask: MinionTask = {
 
 		updateBankSetting('cox_loot', totalLoot);
 		await trackLoot({
-			loot: totalLoot,
+			totalLoot,
 			id: minigameID,
 			type: 'Minigame',
 			changeType: 'loot',
 			duration,
 			kc: 1,
-			teamSize: users.length
+			users: allUsers.map(i => ({
+				id: i.id,
+				duration,
+				loot: loot[i.id] ? new Bank(loot[i.id]) : new Bank()
+			}))
 		});
 
 		handleTripFinish(allUsers[0], channelID, resultMessage, undefined, data, null);

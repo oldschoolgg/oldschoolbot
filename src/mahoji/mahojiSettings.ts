@@ -656,7 +656,9 @@ type ClientBankKey =
 	| 'tob_loot'
 	| 'degraded_items_cost'
 	| 'tks_cost'
-	| 'tks_loot';
+	| 'tks_loot'
+	| 'nex_cost'
+	| 'nex_loot';
 
 export async function updateBankSetting(key: ClientBankKey, bankToAdd: Bank) {
 	if (bankToAdd === undefined || bankToAdd === null) throw new Error(`Gave null bank for ${key}`);

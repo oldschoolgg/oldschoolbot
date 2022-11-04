@@ -5,7 +5,7 @@ import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { Events } from '../../../lib/constants';
 import { hasWildyHuntGearEquipped } from '../../../lib/gear/functions/hasWildyHuntGearEquipped';
-import { trackLoot } from '../../../lib/settings/prisma';
+import { trackLoot } from '../../../lib/lootTrack';
 import { calcLootXPHunting, generateHerbiTable } from '../../../lib/skilling/functions/calcsHunter';
 import Hunter from '../../../lib/skilling/skills/hunter/hunter';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -191,8 +191,15 @@ export const hunterTask: MinionTask = {
 			changeType: 'loot',
 			duration,
 			kc: quantity,
-			loot,
-			type: 'Skilling'
+			totalLoot: loot,
+			type: 'Skilling',
+			users: [
+				{
+					id: user.id,
+					duration,
+					loot
+				}
+			]
 		});
 
 		handleTripFinish(user, channelID, str, undefined, data, loot);
