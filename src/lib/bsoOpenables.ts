@@ -254,7 +254,11 @@ const spookyCommon = new LootTable()
 	.add('Gloom and doom potion')
 	.add('Handled candle');
 
-export const spookyTable = new LootTable().add(spookyEpic, 1, 1).add(spookyRare, 1, 3).add(spookyCommon, 1, 8);
+export const spookyTable = new LootTable()
+	.tertiary(10, 'Mysterious token')
+	.add(spookyEpic, 1, 1)
+	.add(spookyRare, 1, 3)
+	.add(spookyCommon, 1, 8);
 
 const RoyalMysteryBoxTable = new LootTable().add('Diamond crown', 1, 2).add('Diamond sceptre', 1, 2).add('Corgi');
 const GamblersBagTable = new LootTable()
