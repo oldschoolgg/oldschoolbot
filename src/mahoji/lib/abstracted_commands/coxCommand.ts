@@ -13,8 +13,8 @@ import {
 	minimumCoxSuppliesNeeded
 } from '../../../lib/data/cox';
 import { degradeItem } from '../../../lib/degradeableItems';
+import { trackLoot } from '../../../lib/lootTrack';
 import { getMinigameScore } from '../../../lib/settings/minigames';
-import { trackLoot } from '../../../lib/settings/prisma';
 import { MakePartyOptions } from '../../../lib/types';
 import { RaidsOptions } from '../../../lib/types/minions';
 import { channelIsSendable, formatDuration } from '../../../lib/util';
@@ -168,10 +168,13 @@ export async function coxCommand(channelID: string, user: MUser, type: 'solo' | 
 
 	const totalCost = new Bank();
 
-	await Promise.all([
+	await Promise.all(
 		degradeables.map(async d => {
 			await degradeItem(d);
-		}),
+		})
+	);
+
+	const costResult = await Promise.all([
 		...users.map(async u => {
 			const supplies = await calcCoxInput(u, isSolo);
 			await u.removeItemsFromBank(supplies);
@@ -180,6 +183,10 @@ export async function coxCommand(channelID: string, user: MUser, type: 'solo' | 
 			debugStr += `${u.usernameOrMention} (${Emoji.Gear}${total.toFixed(1)}% ${
 				Emoji.CombatSword
 			} ${calcWhatPercent(reductions[u.id], totalReduction).toFixed(1)}%) used ${supplies}\n`;
+			return {
+				userID: u.id,
+				itemsRemoved: supplies
+			};
 		})
 	]);
 
@@ -187,9 +194,13 @@ export async function coxCommand(channelID: string, user: MUser, type: 'solo' | 
 
 	await trackLoot({
 		id: minigameID,
-		cost: totalCost,
+		totalCost,
 		type: 'Minigame',
-		changeType: 'cost'
+		changeType: 'cost',
+		users: costResult.map(i => ({
+			id: i.userID,
+			cost: i.itemsRemoved
+		}))
 	});
 
 	await addSubTaskToActivityTask<RaidsOptions>({
