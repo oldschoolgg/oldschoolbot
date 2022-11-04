@@ -1879,7 +1879,7 @@ export const diariesCL = [
 	"Rada's blessing 4"
 ];
 export const dailyCL = resolveItems([
-	'Event rpg',
+	'Goblin paint cannon',
 	'Green banner',
 	'Spinning plate',
 	'Brown toy horsey',
