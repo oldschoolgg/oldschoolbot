@@ -3,8 +3,8 @@ import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { Events } from '../../../lib/constants';
+import { trackLoot } from '../../../lib/lootTrack';
 import { getMinigameEntity, incrementMinigameScore } from '../../../lib/settings/minigames';
-import { trackLoot } from '../../../lib/settings/prisma';
 import Runecraft from '../../../lib/skilling/skills/runecraft';
 import { itemID, stringMatches } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
@@ -165,12 +165,19 @@ export const guardiansOfTheRiftTask: MinionTask = {
 
 		updateBankSetting('gotr_loot', totalLoot);
 		await trackLoot({
-			loot: totalLoot,
 			id: 'guardians_of_the_rift',
 			type: 'Minigame',
-			changeType: 'loot',
 			duration,
-			kc: quantity
+			kc: quantity,
+			totalLoot,
+			changeType: 'loot',
+			users: [
+				{
+					id: user.id,
+					loot: totalLoot,
+					duration
+				}
+			]
 		});
 
 		handleTripFinish(user, channelID, str, image.file.attachment, data, null);

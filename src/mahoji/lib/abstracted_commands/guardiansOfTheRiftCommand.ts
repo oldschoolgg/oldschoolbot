@@ -1,7 +1,7 @@
 import { randInt, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { trackLoot } from '../../../lib/settings/prisma';
+import { trackLoot } from '../../../lib/lootTrack';
 import Runecraft from '../../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { formatDuration, itemID, itemNameFromID, randomVariation } from '../../../lib/util';
@@ -159,9 +159,15 @@ export async function guardiansOfTheRiftStartCommand(
 		updateBankSetting('gotr_cost', removeRunesAndNecks);
 		await trackLoot({
 			id: 'guardians_of_the_rift',
-			cost: removeRunesAndNecks,
 			type: 'Minigame',
-			changeType: 'cost'
+			totalCost: removeRunesAndNecks,
+			changeType: 'cost',
+			users: [
+				{
+					id: user.id,
+					cost: removeRunesAndNecks
+				}
+			]
 		});
 	}
 
