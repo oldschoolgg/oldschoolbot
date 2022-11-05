@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 
 import { prisma } from './settings/prisma';
 import { ItemBank } from './types';
-import { cleanString, formatDuration } from './util';
+import { assert, cleanString, formatDuration } from './util';
 import { makeBankImage } from './util/makeBankImage';
 
 type TrackLootOptions =
@@ -47,6 +47,22 @@ async function trackIndividualsLoot({
 	userID: bigint | null;
 	data: TrackLootOptions;
 }) {
+	// TODO: remove these
+	const sanityCheck = await prisma.lootTrack.count({
+		where: {
+			key,
+			user_id: userID
+		}
+	});
+	const sanityCheckTwo = await prisma.lootTrack.count({
+		where: {
+			key,
+			user_id: null
+		}
+	});
+	assert(sanityCheck < 2);
+	assert(sanityCheckTwo < 2);
+
 	// Find the existing loot track
 	let current = await prisma.lootTrack.findFirst({
 		where: {
@@ -69,7 +85,7 @@ async function trackIndividualsLoot({
 		});
 	}
 	// If there was one, update it.
-	return prisma.lootTrack.updateMany({
+	return prisma.lootTrack.update({
 		where: {
 			id: current.id
 		},
@@ -106,12 +122,12 @@ export async function trackLoot(opts: TrackLootOptions) {
 	}
 
 	if (opts.users) {
-		return Promise.all(
+		await Promise.all(
 			opts.users.map(u =>
 				trackIndividualsLoot({
 					key,
 					bankToAdd: 'cost' in u ? u.cost : u.loot,
-					duration: 'duration' in opts ? opts.duration : 0,
+					duration: 'duration' in opts ? Math.floor(opts.duration / Time.Minute) : 0,
 					data: opts,
 					userID: BigInt(u.id)
 				})
@@ -134,9 +150,10 @@ export async function getDetailsOfSingleTrackedLoot(user: MUser, trackedLoot: Lo
 		makeBankImage({ bank: new Bank(trackedLoot.cost as ItemBank), title: `Cost For ${trackedLoot.key}` }),
 		makeBankImage({ bank: new Bank(trackedLoot.loot as ItemBank), title: `Loot For ${trackedLoot.key}` })
 	]);
+
 	return {
 		content: `Loot/Cost from ${trackedLoot.total_kc.toLocaleString()}x ${trackedLoot.key} for ${user.rawUsername}
-**Total Duration:** ${formatDuration(trackedLoot.total_duration / Time.Minute)}
+**Total Duration:** ${formatDuration(trackedLoot.total_duration * Time.Minute)}
 **Total KC:** ${trackedLoot.total_kc}`,
 		files: [cost.file, loot.file]
 	};

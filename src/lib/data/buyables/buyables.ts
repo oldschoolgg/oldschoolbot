@@ -934,12 +934,12 @@ const Buyables: Buyable[] = [
 		ironmanPrice: 32_000
 	},
 	{
-		name: 'Rainbow flower crown',
+		name: 'Flower crown',
 		itemCost: new Bank({
 			Coins: 5000
 		}),
 		outputItems: new Bank({
-			'Rainbow flower crown': 1
+			'Flower crown': 1
 		})
 	},
 	{

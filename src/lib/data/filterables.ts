@@ -899,7 +899,7 @@ const diango = resolveItems([
 	'Chaotic handegg',
 	'Rainbow scarf',
 	"Diango's claws",
-	'Event rpg',
+	'Goblin paint cannon',
 	'Green banner',
 	'Spinning plate',
 	'Brown toy horsey',

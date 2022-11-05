@@ -86,7 +86,9 @@ describe('Sanity', () => {
 			'Justiciar armour set',
 			'Justiciar legguards',
 			'Justiciar chestguard',
-			'Justiciar faceguard'
+			'Justiciar faceguard',
+			'Accursed sceptre',
+			'Masori assembler max cape'
 		]);
 		for (const i of shouldntBeIn) {
 			if (allMbTables.includes(i)) {
@@ -190,7 +192,6 @@ describe('Sanity', () => {
 			['Virtus boots (broken)', 51_009],
 			['Torva boots (broken)', 51_004],
 			['Bandosian components', 26_394],
-			['Masori headdress', 26_217],
 			["Osmumten's fang", 26_219]
 		];
 		for (const [name, id] of expectedIDs) {
