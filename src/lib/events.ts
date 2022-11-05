@@ -9,6 +9,7 @@ import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionSta
 import { untrustedGuildSettingsCache } from '../mahoji/mahojiSettings';
 import { Channel, Emoji } from './constants';
 import pets from './data/pets';
+import { globalEconomyItemSync } from './economyItemTracking';
 import { prisma } from './settings/prisma';
 import { ItemBank } from './types';
 import { channelIsSendable, formatDuration, isFunction, toKMB } from './util';
@@ -249,6 +250,15 @@ const mentionCommands: MentionCommand[] = [
 					.join('\n'),
 				components
 			});
+		}
+	},
+	{
+		name: 'econsync',
+		aliases: ['econsync'],
+		description: 'Econ sync.',
+		run: async ({ msg }: MentionCommandOptions) => {
+			await globalEconomyItemSync();
+			msg.reply('Done');
 		}
 	}
 ];

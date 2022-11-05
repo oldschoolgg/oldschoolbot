@@ -401,6 +401,8 @@ model User {
 
   treats_delivered Int @default(0)
 
+  last_command_date DateTime? @db.Timestamp(6)
+
   @@index([bingo_tickets_bought])
   @@map("users")
 }
@@ -530,6 +532,16 @@ model EconomyItem {
 
   @@id([item_id, date])
   @@map("economy_item")
+}
+
+model UserEconomyItem {
+  user_id  BigInt
+  item_id  Int
+  quantity BigInt
+  date     DateTime @default(now())
+
+  @@id([user_id, item_id, date])
+  @@map("user_economy_item")
 }
 
 model LastManStandingGame {
