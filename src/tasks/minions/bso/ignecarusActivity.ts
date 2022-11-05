@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import { Emoji } from '../../../lib/constants';
 import { isDoubleLootActive } from '../../../lib/doubleLoot';
+import { trackLoot } from '../../../lib/lootTrack';
 import {
 	Ignecarus,
 	IgnecarusLootTable,
@@ -10,7 +11,8 @@ import {
 } from '../../../lib/minions/data/killableMonsters/custom/bosses/Ignecarus';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
-import { prisma, trackLoot } from '../../../lib/settings/prisma';
+import { prisma } from '../../../lib/settings/prisma';
+import { TeamLoot } from '../../../lib/simulation/TeamLoot';
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { BossUser } from '../../../lib/structures/Boss';
 import { NewBossOptions } from '../../../lib/types/minions';
@@ -34,6 +36,8 @@ export const ignecarusTask: MinionTask = {
 				user: await mUserFetch(u.user)
 			}))
 		);
+
+		const teamLoot = new TeamLoot([]);
 
 		// Deaths
 		for (let i = 0; i < quantity; i++) {
@@ -95,6 +99,7 @@ export const ignecarusTask: MinionTask = {
 			if (isDoubleLootActive(duration)) {
 				loot.multiply(2);
 			}
+			teamLoot.add(user.id, loot);
 			totalLoot.add(loot);
 			await addMonsterXP(user, {
 				monsterID: Ignecarus.id,
@@ -137,12 +142,16 @@ export const ignecarusTask: MinionTask = {
 
 		await trackLoot({
 			duration,
-			teamSize: idArr.length,
-			loot: totalLoot,
+			totalLoot,
 			type: 'Monster',
 			changeType: 'loot',
 			id: Ignecarus.name,
-			kc: quantity
+			kc: quantity,
+			users: bossUsers.map(i => ({
+				id: i.user.id,
+				loot: teamLoot.get(i.user.id),
+				duration
+			}))
 		});
 
 		handleTripFinish(bossUsers[0].user, channelID, resultStr, undefined, data, null);

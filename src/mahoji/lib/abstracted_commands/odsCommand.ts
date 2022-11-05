@@ -4,8 +4,8 @@ import { Bank } from 'oldschooljs';
 import { randomVariation } from 'oldschooljs/dist/util';
 
 import { Emoji } from '../../../lib/constants';
+import { trackLoot } from '../../../lib/lootTrack';
 import { getMinigameEntity } from '../../../lib/settings/minigames';
-import { trackLoot } from '../../../lib/settings/prisma';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
@@ -105,9 +105,15 @@ export async function odsStartCommand(klasaUser: MUser, channelID: string) {
 
 	await trackLoot({
 		changeType: 'cost',
-		cost,
+		totalCost: cost,
 		id: 'ourania_delivery_service',
-		type: 'Monster'
+		type: 'Monster',
+		users: [
+			{
+				id: klasaUser.id,
+				cost
+			}
+		]
 	});
 
 	await addSubTaskToActivityTask<MinigameActivityTaskOptions>({

@@ -4,10 +4,10 @@ import { Bank } from 'oldschooljs';
 
 import { setupParty } from '../../../extendables/Message/Party';
 import { gorajanArcherOutfit, pernixOutfit } from '../../../lib/data/CollectionsExport';
+import { trackLoot } from '../../../lib/lootTrack';
 import { calculateMonsterFood } from '../../../lib/minions/functions';
 import { KillableMonster } from '../../../lib/minions/types';
 import { NexMonster } from '../../../lib/nex';
-import { trackLoot } from '../../../lib/settings/prisma';
 import { MakePartyOptions } from '../../../lib/types';
 import { BossActivityTaskOptions } from '../../../lib/types/minions';
 import { channelIsSendable, formatDuration, isWeekend } from '../../../lib/util';
@@ -266,26 +266,38 @@ export async function nexCommand(
 	if (secondCheck) return secondCheck;
 
 	let foodString = 'Removed brews/restores from users: ';
-	let foodRemoved = [];
+	let foodRemoved: string[] = [];
 	for (const user of users) {
 		const food = calcFood(user, users.length, quantity);
 		if (!user.bank.has(food)) {
-			throw `${user.usernameOrMention} doesn't have enough brews or restores.`;
+			return `${user.usernameOrMention} doesn't have enough brews or restores.`;
 		}
 	}
+
+	const removeResult = await Promise.all(
+		users.map(async user => {
+			const cost = calcFood(user, users.length, quantity);
+			foodRemoved.push(`${cost} from ${user.usernameOrMention}`);
+			await user.removeItemsFromBank(cost);
+			return {
+				id: user.id,
+				cost
+			};
+		})
+	);
+
 	const totalCost = new Bank();
-	for (const user of users) {
-		const food = calcFood(user, users.length, quantity);
-		totalCost.add(food);
-		await user.removeItemsFromBank(food);
-		foodRemoved.push(`${food} from ${user.usernameOrMention}`);
-	}
+	for (const u of removeResult) totalCost.add(u.cost);
 
 	await trackLoot({
 		changeType: 'cost',
-		cost: totalCost,
+		totalCost,
 		id: NexMonster.name,
-		type: 'Monster'
+		type: 'Monster',
+		users: removeResult.map(i => ({
+			id: i.id,
+			cost: i.cost
+		}))
 	});
 
 	foodString += `${foodRemoved.join(', ')}.`;

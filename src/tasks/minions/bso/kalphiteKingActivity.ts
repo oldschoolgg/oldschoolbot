@@ -5,12 +5,13 @@ import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 import { Emoji } from '../../../lib/constants';
 import { kalphiteKingCL } from '../../../lib/data/CollectionsExport';
 import { isDoubleLootActive } from '../../../lib/doubleLoot';
+import { trackLoot } from '../../../lib/lootTrack';
 import { KalphiteKingMonster } from '../../../lib/minions/data/killableMonsters/custom/bosses/KalphiteKing';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
-import { prisma, trackLoot } from '../../../lib/settings/prisma';
+import { prisma } from '../../../lib/settings/prisma';
+import { TeamLoot } from '../../../lib/simulation/TeamLoot';
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
-import { ItemBank } from '../../../lib/types';
 import { BossActivityTaskOptions } from '../../../lib/types/minions';
 import { getKalphiteKingGearStats } from '../../../lib/util/getKalphiteKingGearStats';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -28,7 +29,7 @@ export const kalphiteKingTask: MinionTask = {
 	type: 'KalphiteKing',
 	async run(data: BossActivityTaskOptions) {
 		const { channelID, userID, users, quantity, duration } = data;
-		const teamsLoot: { [key: string]: ItemBank } = {};
+		const teamsLoot = new TeamLoot([]);
 		const kcAmounts: { [key: string]: number } = {};
 
 		const parsedUsers: NexUser[] = [];
@@ -75,9 +76,7 @@ export const kalphiteKingTask: MinionTask = {
 			}
 			const winner = teamTable.roll()?.item;
 			if (!winner) continue;
-			const currentLoot = teamsLoot[winner];
-			if (!currentLoot) teamsLoot[winner] = loot.bank;
-			else teamsLoot[winner] = new Bank().add(currentLoot).add(loot).bank;
+			teamsLoot.add(winner, loot);
 
 			kcAmounts[winner] = Boolean(kcAmounts[winner]) ? ++kcAmounts[winner] : 1;
 		}
@@ -150,12 +149,16 @@ export const kalphiteKingTask: MinionTask = {
 
 		await trackLoot({
 			duration,
-			teamSize: users.length,
-			loot: totalLoot,
+			totalLoot,
 			type: 'Monster',
 			changeType: 'loot',
 			id: KalphiteKingMonster.name,
-			kc: quantity
+			kc: quantity,
+			users: users.map(i => ({
+				id: i,
+				loot: teamsLoot.get(i),
+				duration
+			}))
 		});
 
 		// Show deaths in the result

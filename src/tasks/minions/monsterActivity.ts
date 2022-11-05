@@ -7,11 +7,12 @@ import { ClueTiers } from '../../lib/clues/clueTiers';
 import { BitField, Emoji } from '../../lib/constants';
 import { isDoubleLootActive } from '../../lib/doubleLoot';
 import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
+import { trackLoot } from '../../lib/lootTrack';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import { KillableMonster } from '../../lib/minions/types';
-import { prisma, trackLoot } from '../../lib/settings/prisma';
+import { prisma } from '../../lib/settings/prisma';
 import { bones } from '../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
@@ -413,12 +414,19 @@ export const monsterTask: MinionTask = {
 		});
 
 		await trackLoot({
-			loot: itemsAdded,
+			totalLoot: itemsAdded,
 			id: monster.name.toString(),
 			type: 'Monster',
 			changeType: 'loot',
 			kc: quantity,
-			duration
+			duration,
+			users: [
+				{
+					id: user.id,
+					loot: itemsAdded,
+					duration
+				}
+			]
 		});
 
 		const image =

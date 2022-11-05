@@ -3,7 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
 import { userHasFlappy } from '../../../lib/invention/inventions';
-import { trackLoot } from '../../../lib/settings/prisma';
+import { trackLoot } from '../../../lib/lootTrack';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
 import Firemaking from '../../../lib/skilling/skills/firemaking';
@@ -141,12 +141,19 @@ export const wintertodtTask: MinionTask = {
 		if (flappyRes.shouldGiveBoost) output += `\n${flappyRes.userMsg}`;
 
 		await trackLoot({
-			loot: itemsAdded,
+			totalLoot: itemsAdded,
 			id: 'wintertodt',
 			type: 'Minigame',
 			changeType: 'loot',
 			duration: data.duration,
-			kc: quantity
+			kc: quantity,
+			users: [
+				{
+					id: user.id,
+					loot: itemsAdded,
+					duration: data.duration
+				}
+			]
 		});
 
 		handleTripFinish(user, channelID, output, image.file.attachment, data, itemsAdded);

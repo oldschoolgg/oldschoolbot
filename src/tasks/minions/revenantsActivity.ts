@@ -3,6 +3,7 @@ import { deepClone, objectEntries, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
+import { trackLoot } from '../../lib/lootTrack';
 import { revenantMonsters } from '../../lib/minions/data/killableMonsters/revs';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -19,7 +20,7 @@ import { updateBankSetting } from '../../mahoji/mahojiSettings';
 export const revenantsTask: MinionTask = {
 	type: 'Revenants',
 	async run(data: RevenantOptions) {
-		const { monsterID, userID, channelID, quantity, died, skulled } = data;
+		const { monsterID, userID, channelID, quantity, died, skulled, duration } = data;
 		const monster = revenantMonsters.find(mon => mon.id === monsterID)!;
 		const user = await mUserFetch(userID);
 		if (died) {
@@ -42,6 +43,35 @@ export const revenantsTask: MinionTask = {
 			});
 
 			updateBankSetting('revs_cost', calc.lostItems);
+			// Track items lost
+			await trackLoot({
+				totalCost: calc.lostItems,
+				id: monster.name,
+				type: 'Monster',
+				changeType: 'cost',
+				users: [
+					{
+						id: user.id,
+						cost: calc.lostItems
+					}
+				]
+			});
+			// Track loot (For duration)
+			await trackLoot({
+				totalLoot: new Bank(),
+				id: monster.name,
+				type: 'Monster',
+				changeType: 'loot',
+				duration,
+				kc: quantity,
+				users: [
+					{
+						id: user.id,
+						loot: new Bank(),
+						duration
+					}
+				]
+			});
 
 			let extraMsg = '';
 
@@ -93,6 +123,22 @@ export const revenantsTask: MinionTask = {
 			userID: user.id,
 			itemsToAdd: loot,
 			collectionLog: false
+		});
+
+		await trackLoot({
+			totalLoot: itemsAdded,
+			id: monster.name,
+			type: 'Monster',
+			changeType: 'loot',
+			duration,
+			kc: quantity,
+			users: [
+				{
+					id: user.id,
+					loot: itemsAdded,
+					duration
+				}
+			]
 		});
 
 		const image = await makeBankImage({

@@ -4,11 +4,11 @@ import Monster from 'oldschooljs/dist/structures/Monster';
 
 import { isDoubleLootActive } from '../../../lib/doubleLoot';
 import { kittens } from '../../../lib/growablePets';
+import { trackLoot } from '../../../lib/lootTrack';
 import { bossKillables } from '../../../lib/minions/data/killableMonsters/bosses';
 import { VasaMagus, VasaMagusLootTable } from '../../../lib/minions/data/killableMonsters/custom/bosses/VasaMagus';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
-import { trackLoot } from '../../../lib/settings/prisma';
 import { NewBossOptions } from '../../../lib/types/minions';
 import { getMonster, itemNameFromID } from '../../../lib/util';
 import getOSItem from '../../../lib/util/getOSItem';
@@ -84,12 +84,18 @@ export const vasaTask: MinionTask = {
 		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
 		await trackLoot({
 			duration,
-			teamSize: 1,
-			loot,
+			totalLoot: loot,
 			type: 'Monster',
 			changeType: 'loot',
 			id: VasaMagus.name,
-			kc: quantity
+			kc: quantity,
+			users: [
+				{
+					id: user.id,
+					loot,
+					duration
+				}
+			]
 		});
 		const image = await makeBankImage({
 			bank: itemsAdded,

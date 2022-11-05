@@ -56,6 +56,7 @@ import type {
 	SmithingActivityTaskOptions,
 	TempleTrekkingActivityTaskOptions,
 	TheatreOfBloodTaskOptions,
+	TiaraRunecraftActivityTaskOptions,
 	WoodcuttingActivityTaskOptions
 } from '../types/minions';
 import { itemNameFromID } from '../util';
@@ -226,6 +227,13 @@ export const tripHandlers = {
 			quantity: data.essenceQuantity,
 			daeyalt_essence: data.daeyaltEssence,
 			usestams: data.useStaminas
+		})
+	},
+	[activity_type_enum.TiaraRunecraft]: {
+		commandName: 'runecraft',
+		args: (data: TiaraRunecraftActivityTaskOptions) => ({
+			rune: itemNameFromID(data.tiaraID),
+			quantity: data.tiaraQuantity
 		})
 	},
 	[activity_type_enum.DriftNet]: {

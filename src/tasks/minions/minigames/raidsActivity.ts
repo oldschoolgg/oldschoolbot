@@ -7,8 +7,9 @@ import { Emoji, Events } from '../../../lib/constants';
 import { chambersOfXericCL, chambersOfXericMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { createTeam } from '../../../lib/data/cox';
 import { userHasFlappy } from '../../../lib/invention/inventions';
-import { trackLoot } from '../../../lib/settings/prisma';
+import { trackLoot } from '../../../lib/lootTrack';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
+import { TeamLoot } from '../../../lib/simulation/TeamLoot';
 import { RaidsOptions } from '../../../lib/types/minions';
 import { clAdjustedDroprate, roll } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
@@ -59,6 +60,7 @@ export const raidsTask: MinionTask = {
 		const minigameID = challengeMode ? 'raids_challenge_mode' : 'raids';
 
 		const totalLoot = new Bank();
+		const teamLoot = new TeamLoot([]);
 
 		let resultMessage = `<@${leader}> Your ${
 			challengeMode ? 'Challenge Mode Raid' : 'Raid'
@@ -96,8 +98,10 @@ export const raidsTask: MinionTask = {
 				}
 			}
 			handleSpecialCoxLoot(user, userLoot);
+			teamLoot.add(user.id, userLoot);
 
 			const { itemsAdded } = await transactItems({ userID: user.id, itemsToAdd: userLoot, collectionLog: true });
+
 			totalLoot.add(itemsAdded);
 
 			const items = itemsAdded.items();
@@ -126,13 +130,17 @@ export const raidsTask: MinionTask = {
 
 		updateBankSetting('cox_loot', totalLoot);
 		await trackLoot({
-			loot: totalLoot,
+			totalLoot,
 			id: minigameID,
 			type: 'Minigame',
 			changeType: 'loot',
 			duration,
 			kc: 1,
-			teamSize: users.length
+			users: allUsers.map(i => ({
+				id: i.id,
+				duration,
+				loot: teamLoot.get(i.id)
+			}))
 		});
 
 		handleTripFinish(allUsers[0], channelID, resultMessage, undefined, data, null);

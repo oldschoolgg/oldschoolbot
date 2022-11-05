@@ -5,10 +5,10 @@ import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 import { Emoji } from '../../../lib/constants';
 import { nexCL, nexUniqueDrops } from '../../../lib/data/CollectionsExport';
 import { isDoubleLootActive } from '../../../lib/doubleLoot';
+import { trackLoot } from '../../../lib/lootTrack';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import { NexMonster } from '../../../lib/nex';
-import { trackLoot } from '../../../lib/settings/prisma';
 import { ItemBank } from '../../../lib/types';
 import { BossActivityTaskOptions } from '../../../lib/types/minions';
 import { roll } from '../../../lib/util';
@@ -137,12 +137,16 @@ export const nexTask: MinionTask = {
 		updateBankSetting('nex_loot', totalLoot);
 		await trackLoot({
 			duration,
-			teamSize: users.length,
-			loot: totalLoot,
+			totalLoot,
 			type: 'Monster',
 			changeType: 'loot',
 			id: NexMonster.name,
-			kc: quantity
+			kc: quantity,
+			users: users.map(i => ({
+				id: i,
+				loot: teamsLoot[i] ? new Bank(teamsLoot[i]) : new Bank(),
+				duration
+			}))
 		});
 
 		// Show deaths in the result

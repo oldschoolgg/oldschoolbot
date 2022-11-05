@@ -5,8 +5,8 @@ import { Item } from 'oldschooljs/dist/meta/types';
 
 import { checkUserCanUseDegradeableItem, degradeableItems, degradeItem } from '../../../lib/degradeableItems';
 import { GearStats } from '../../../lib/gear';
+import { trackLoot } from '../../../lib/lootTrack';
 import { Naxxus, NAXXUS_HP } from '../../../lib/minions/data/killableMonsters/custom/bosses/Naxxus';
-import { trackLoot } from '../../../lib/settings/prisma';
 import { Gear } from '../../../lib/structures/Gear';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { formatDuration, isWeekend } from '../../../lib/util';
@@ -231,9 +231,15 @@ export async function naxxusCommand(user: MUser, channelID: string, quantity: nu
 
 	await trackLoot({
 		changeType: 'cost',
-		cost: foodBank,
+		totalCost: foodBank,
 		id: Naxxus.name,
-		type: 'Monster'
+		type: 'Monster',
+		users: [
+			{
+				id: user.id,
+				cost: foodBank
+			}
+		]
 	});
 
 	await addSubTaskToActivityTask<ActivityTaskOptionsWithQuantity>({

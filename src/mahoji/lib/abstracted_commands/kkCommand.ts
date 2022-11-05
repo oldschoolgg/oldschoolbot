@@ -5,10 +5,10 @@ import { Bank } from 'oldschooljs';
 
 import { setupParty } from '../../../extendables/Message/Party';
 import { gorajanWarriorOutfit, torvaOutfit } from '../../../lib/data/CollectionsExport';
+import { trackLoot } from '../../../lib/lootTrack';
 import { KalphiteKingMonster } from '../../../lib/minions/data/killableMonsters/custom/bosses/KalphiteKing';
 import { calculateMonsterFood } from '../../../lib/minions/functions';
 import { KillableMonster } from '../../../lib/minions/types';
-import { trackLoot } from '../../../lib/settings/prisma';
 import { Gear } from '../../../lib/structures/Gear';
 import { MakePartyOptions } from '../../../lib/types';
 import { BossActivityTaskOptions } from '../../../lib/types/minions';
@@ -286,27 +286,40 @@ export async function kkCommand(
 	if (secondCheck) return secondCheck;
 
 	let foodString = 'Removed brews/restores from users: ';
-	let foodRemoved = [];
+	let foodRemoved: string[] = [];
 	for (const user of users) {
 		const food = calcFood(user, users.length, quantity);
 		if (!user.bank.has(food.bank)) {
 			return `${user.usernameOrMention} doesn't have enough brews or restores.`;
 		}
 	}
+
+	const removeResult = await Promise.all(
+		users.map(async user => {
+			const cost = calcFood(user, users.length, quantity);
+			foodRemoved.push(`${cost} from ${user.usernameOrMention}`);
+			await user.removeItemsFromBank(cost);
+			return {
+				id: user.id,
+				cost
+			};
+		})
+	);
+
 	const totalCost = new Bank();
-	for (const user of users) {
-		const food = calcFood(user, users.length, quantity);
-		await user.removeItemsFromBank(food);
-		totalCost.add(food);
-		foodRemoved.push(`${food} from ${user.usernameOrMention}`);
-	}
+	for (const u of removeResult) totalCost.add(u.cost);
+
 	foodString += `${foodRemoved.join(', ')}.`;
 
 	await trackLoot({
 		changeType: 'cost',
-		cost: totalCost,
+		totalCost,
 		id: KalphiteKingMonster.name,
-		type: 'Monster'
+		type: 'Monster',
+		users: removeResult.map(i => ({
+			id: i.id,
+			cost: i.cost
+		}))
 	});
 
 	await addSubTaskToActivityTask<BossActivityTaskOptions>({

@@ -4,6 +4,7 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
 import { Emoji } from '../../../lib/constants';
+import { trackLoot } from '../../../lib/lootTrack';
 import { revenantMonsters } from '../../../lib/minions/data/killableMonsters/revs';
 import { convertAttackStylesToSetup } from '../../../lib/minions/functions';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -102,6 +103,20 @@ export async function revsCommand(
 
 	updateBankSetting('economyStats_PVMCost', cost);
 	await transactItems({ userID: user.id, itemsToRemove: cost });
+	if (cost.length > 0) {
+		await trackLoot({
+			id: monster.name,
+			totalCost: cost,
+			type: 'Monster',
+			changeType: 'cost',
+			users: [
+				{
+					id: user.id,
+					cost
+				}
+			]
+		});
+	}
 
 	let deathChance = 5;
 	let defLvl = user.skillLevel(SkillsEnum.Defence);

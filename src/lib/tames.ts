@@ -19,10 +19,11 @@ import { collectables } from '../mahoji/lib/abstracted_commands/collectCommand';
 import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
 import { handleSpecialCoxLoot } from '../tasks/minions/minigames/raidsActivity';
 import { getSimilarItems } from './data/similarItems';
+import { trackLoot } from './lootTrack';
 import killableMonsters from './minions/data/killableMonsters';
 import { customDemiBosses } from './minions/data/killableMonsters/custom/demiBosses';
 import { KillableMonster } from './minions/types';
-import { prisma, trackLoot } from './settings/prisma';
+import { prisma } from './settings/prisma';
 import { runCommand } from './settings/settings';
 import { assert, channelIsSendable, itemNameFromID, roll } from './util';
 import getOSItem from './util/getOSItem';
@@ -505,8 +506,15 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 				id: mon.name,
 				changeType: 'loot',
 				type: 'Monster',
-				loot,
-				suffix: 'tame'
+				totalLoot: loot,
+				suffix: 'tame',
+				users: [
+					{
+						id: user.id,
+						loot: itemsAdded,
+						duration: activity.duration
+					}
+				]
 			});
 			handleFinish({
 				loot: itemsAdded,

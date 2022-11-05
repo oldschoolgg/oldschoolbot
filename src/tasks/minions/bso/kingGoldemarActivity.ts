@@ -3,11 +3,12 @@ import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
 import { isDoubleLootActive } from '../../../lib/doubleLoot';
+import { trackLoot } from '../../../lib/lootTrack';
 import KingGoldemar, {
 	KingGoldemarLootTable
 } from '../../../lib/minions/data/killableMonsters/custom/bosses/KingGoldemar';
 import { addMonsterXP } from '../../../lib/minions/functions';
-import { trackLoot } from '../../../lib/settings/prisma';
+import { TeamLoot } from '../../../lib/simulation/TeamLoot';
 import { calcDwwhChance, gpCostPerKill } from '../../../lib/structures/Boss';
 import { NewBossOptions } from '../../../lib/types/minions';
 import { formatDuration, roll, toKMB } from '../../../lib/util';
@@ -84,6 +85,7 @@ export const kingGoldemarTask: MinionTask = {
 			);
 		}
 
+		const teamLoot = new TeamLoot([]);
 		const totalLoot = new Bank();
 		for (const user of users.filter(u => !deaths.includes(u))) {
 			const loot = new Bank().add(KingGoldemarLootTable.roll());
@@ -102,18 +104,23 @@ export const kingGoldemarTask: MinionTask = {
 				taskQuantity: null
 			});
 			await user.addItemsToBank({ items: loot, collectionLog: true });
+			teamLoot.add(user.id, loot);
 			resultStr += `\n${user} received ${loot}.`;
 		}
 		updateBankSetting('kg_loot', totalLoot);
 
 		await trackLoot({
 			duration,
-			teamSize: users.length,
-			loot: totalLoot,
+			totalLoot,
 			type: 'Monster',
 			changeType: 'loot',
 			id: KingGoldemar.name,
-			kc: 1
+			kc: 1,
+			users: users.map(i => ({
+				id: i.id,
+				loot: teamLoot.get(i.id),
+				duration
+			}))
 		});
 
 		// Show deaths in the result

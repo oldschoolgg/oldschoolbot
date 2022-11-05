@@ -6,8 +6,8 @@ import { table } from 'table';
 import { setupParty } from '../../extendables/Message/Party';
 import { ClientBankKey, updateBankSetting } from '../../mahoji/mahojiSettings';
 import { GearSetupType, GearStats } from '../gear';
+import { trackLoot } from '../lootTrack';
 import { effectiveMonsters } from '../minions/data/killableMonsters';
-import { trackLoot } from '../settings/prisma';
 import { Skills } from '../types';
 import { NewBossOptions } from '../types/minions';
 import { formatDuration, formatSkillRequirements, hasSkillReqs, isWeekend } from '../util';
@@ -464,9 +464,13 @@ export class BossInstance {
 		} else {
 			await trackLoot({
 				changeType: 'cost',
-				cost: totalCost,
+				totalCost,
 				id: monster.name,
-				type: 'Monster'
+				type: 'Monster',
+				users: this.bossUsers.map(i => ({
+					id: i.user.id,
+					cost: i.itemsToRemove
+				}))
 			});
 		}
 
