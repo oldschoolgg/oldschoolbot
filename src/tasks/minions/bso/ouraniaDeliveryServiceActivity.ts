@@ -3,7 +3,7 @@ import { Bank, LootTable } from 'oldschooljs';
 import { PrayerPageTable } from 'oldschooljs/dist/simulation/clues/General';
 
 import { userHasFlappy } from '../../../lib/invention/inventions';
-import { trackLoot } from '../../../lib/settings/prisma';
+import { trackLoot } from '../../../lib/lootTrack';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ExoticSeedsTable } from '../../../lib/simulation/sharedTables';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -65,12 +65,18 @@ export const odsTask: MinionTask = {
 			updateBankSetting('ods_loot', loot);
 			await trackLoot({
 				duration,
-				teamSize: 1,
-				loot,
+				totalLoot: loot,
 				type: 'Minigame',
 				changeType: 'loot',
 				id: 'ourania_delivery_service',
-				kc: quantity
+				kc: quantity,
+				users: [
+					{
+						id: user.id,
+						loot,
+						duration
+					}
+				]
 			});
 			str += `\n\nYou received some tips from Wizards in your delivery route: ${loot}.`;
 		}

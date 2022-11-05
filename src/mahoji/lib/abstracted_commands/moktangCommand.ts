@@ -5,8 +5,8 @@ import { Bank } from 'oldschooljs';
 import { Events } from '../../../lib/constants';
 import { dwarvenOutfit } from '../../../lib/data/CollectionsExport';
 import { isDoubleLootActive } from '../../../lib/doubleLoot';
+import { trackLoot } from '../../../lib/lootTrack';
 import { MOKTANG_ID, MoktangLootTable } from '../../../lib/minions/data/killableMonsters/custom/bosses/Moktang';
-import { trackLoot } from '../../../lib/settings/prisma';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { PercentCounter } from '../../../lib/structures/PercentCounter';
 import { ActivityTaskOptions } from '../../../lib/types/minions';
@@ -68,9 +68,15 @@ export async function moktangCommand(user: MUser, channelID: string, inputQuanti
 	await updateBankSetting('moktang_cost', cost);
 	await trackLoot({
 		changeType: 'cost',
-		cost,
+		totalCost: cost,
 		id: 'moktang',
-		type: 'Monster'
+		type: 'Monster',
+		users: [
+			{
+				id: user.id,
+				cost
+			}
+		]
 	});
 
 	await addSubTaskToActivityTask<MoktangTaskOptions>({
@@ -109,12 +115,18 @@ export async function moktangActivity(data: MoktangTaskOptions) {
 	await updateBankSetting('moktang_loot', loot);
 	await trackLoot({
 		duration: data.duration,
-		teamSize: 1,
-		loot,
+		totalLoot: loot,
 		type: 'Monster',
 		changeType: 'loot',
 		id: 'moktang',
-		kc: qty
+		kc: qty,
+		users: [
+			{
+				id: user.id,
+				loot,
+				duration: data.duration
+			}
+		]
 	});
 
 	const xpStr = await user.addXP({

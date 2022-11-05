@@ -8,8 +8,8 @@ import {
 	getUsersFishingContestDetails,
 	getValidLocationsForFishType
 } from '../../../lib/fishingContest';
+import { trackLoot } from '../../../lib/lootTrack';
 import { getMinigameScore } from '../../../lib/settings/minigames';
-import { trackLoot } from '../../../lib/settings/prisma';
 import { FishingContestOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
@@ -82,10 +82,16 @@ export async function fishingContestStartCommand(user: MUser, channelID: string,
 	});
 
 	await trackLoot({
-		cost,
+		totalCost: cost,
 		id: 'fishing_contest',
 		type: 'Minigame',
-		changeType: 'cost'
+		changeType: 'cost',
+		users: [
+			{
+				id: user.id,
+				cost
+			}
+		]
 	});
 
 	return {

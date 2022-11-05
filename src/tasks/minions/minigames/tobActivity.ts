@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 import { Emoji, Events } from '../../../lib/constants';
 import { tobMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { TOBRooms, TOBUniques, TOBUniquesToAnnounce, totalXPFromRaid } from '../../../lib/data/tob';
-import { trackLoot } from '../../../lib/settings/prisma';
+import { trackLoot } from '../../../lib/lootTrack';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import { TheatreOfBlood } from '../../../lib/simulation/tob';
 import { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
@@ -138,13 +138,17 @@ Unique chance: ${result.percentChanceOfUnique.toFixed(2)}% (1 in ${convertPercen
 
 		updateBankSetting('tob_loot', totalLoot);
 		await trackLoot({
-			loot: totalLoot,
+			totalLoot,
 			id: minigameID,
 			type: 'Minigame',
 			changeType: 'loot',
 			duration,
 			kc: 1,
-			teamSize: users.length
+			users: allUsers.map(i => ({
+				id: i.id,
+				loot: result.loot[i.id] ? new Bank(result.loot[i.id]) : new Bank(),
+				duration
+			}))
 		});
 
 		handleTripFinish(allUsers[0], channelID, resultMessage, undefined, data, null);

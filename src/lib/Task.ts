@@ -86,6 +86,7 @@ import { sawmillTask } from '../tasks/minions/sawmillActivity';
 import { shootingStarTask } from '../tasks/minions/shootingStarsActivity';
 import { smeltingTask } from '../tasks/minions/smeltingActivity';
 import { smithingTask } from '../tasks/minions/smithingActivity';
+import { tiaraRunecraftTask } from '../tasks/minions/tiaraRunecraftActivity';
 import { tokkulShopTask } from '../tasks/minions/tokkulShopActivity';
 import { vmTask } from '../tasks/minions/volcanicMineActivity';
 import { wealthChargeTask } from '../tasks/minions/wealthChargingActivity';
@@ -186,7 +187,8 @@ export const tasks: MinionTask[] = [
 	shootingStarTask,
 	fogTask,
 	scTask,
-	bossEventTask
+	bossEventTask,
+	tiaraRunecraftTask
 ];
 
 export async function syncActivityCache() {

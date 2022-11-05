@@ -5,8 +5,8 @@ import { Bank } from 'oldschooljs';
 import { HERBIBOAR_ID, RAZOR_KEBBIT_ID } from '../../lib/constants';
 import { hasWildyHuntGearEquipped } from '../../lib/gear/functions/hasWildyHuntGearEquipped';
 import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
+import { trackLoot } from '../../lib/lootTrack';
 import { monkeyTiers } from '../../lib/monkeyRumble';
-import { trackLoot } from '../../lib/settings/prisma';
 import creatures from '../../lib/skilling/skills/hunter/creatures';
 import Hunter from '../../lib/skilling/skills/hunter/hunter';
 import { HunterTechniqueEnum, SkillsEnum } from '../../lib/skilling/types';
@@ -276,9 +276,15 @@ export const huntCommand: OSBMahojiCommand = {
 
 		await trackLoot({
 			id: creature.name,
-			cost: removeBank,
+			totalCost: removeBank,
 			type: 'Skilling',
-			changeType: 'cost'
+			changeType: 'cost',
+			users: [
+				{
+					id: user.id,
+					cost: removeBank
+				}
+			]
 		});
 
 		await addSubTaskToActivityTask<HunterActivityTaskOptions>({

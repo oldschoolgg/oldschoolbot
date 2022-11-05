@@ -22,9 +22,10 @@ import { Canvas, CanvasRenderingContext2D, Image, loadImage } from 'skia-canvas/
 import { badges } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { getSimilarItems } from '../../lib/data/similarItems';
+import { trackLoot } from '../../lib/lootTrack';
 import getUserFoodFromBank from '../../lib/minions/functions/getUserFoodFromBank';
 import { getUsersPerkTier } from '../../lib/MUser';
-import { prisma, trackLoot } from '../../lib/settings/prisma';
+import { prisma } from '../../lib/settings/prisma';
 import { SkillsEnum } from '../../lib/skilling/types';
 import {
 	createTameTask,
@@ -875,8 +876,14 @@ async function killCommand(user: MUser, channelID: string, str: string) {
 		id: monster.name,
 		changeType: 'cost',
 		type: 'Monster',
-		cost: foodRes.removed,
-		suffix: 'tame'
+		totalCost: foodRes.removed,
+		suffix: 'tame',
+		users: [
+			{
+				id: user.id,
+				cost: foodRes.removed
+			}
+		]
 	});
 
 	const deathChance = monster.deathChance ? monster.deathChance({ tame }) : 0;

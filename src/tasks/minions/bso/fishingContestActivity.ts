@@ -3,7 +3,8 @@ import { Bank } from 'oldschooljs';
 
 import { MysteryBoxes } from '../../../lib/bsoOpenables';
 import { catchFishAtLocation, fishingLocations } from '../../../lib/fishingContest';
-import { prisma, trackLoot } from '../../../lib/settings/prisma';
+import { trackLoot } from '../../../lib/lootTrack';
+import { prisma } from '../../../lib/settings/prisma';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClueTable } from '../../../lib/simulation/sharedTables';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -99,12 +100,19 @@ export const fishingContestTask: MinionTask = {
 		await updateBankSetting('fc_loot', loot);
 
 		await trackLoot({
-			loot,
+			totalLoot: loot,
 			id: 'fishing_contest',
 			type: 'Minigame',
 			changeType: 'loot',
 			duration,
-			kc: 1
+			kc: 1,
+			users: [
+				{
+					id: user.id,
+					loot,
+					duration
+				}
+			]
 		});
 
 		handleTripFinish(
