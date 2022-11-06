@@ -7,12 +7,10 @@ import { chambersOfXericCL, chambersOfXericMetamorphPets } from '../../../lib/da
 import { createTeam } from '../../../lib/data/cox';
 import { trackLoot } from '../../../lib/lootTrack';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
-import { TeamLoot } from '../../../lib/simulation/TeamLoot';
 import { RaidsOptions } from '../../../lib/types/minions';
-import { roll } from '../../../lib/util';
+import { randomVariation, roll } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import itemID from '../../../lib/util/itemID';
 import resolveItems from '../../../lib/util/resolveItems';
 import { updateBankSetting } from '../../../mahoji/mahojiSettings';
 
@@ -22,6 +20,7 @@ interface RaidResultUser {
 	mUser: MUser;
 	deaths: number;
 	deathChance: number;
+	gotAncientTablet?: boolean;
 }
 
 const notPurple = resolveItems(['Torn prayer scroll', 'Dark relic', 'Onyx']);
@@ -40,12 +39,17 @@ export const raidsTask: MinionTask = {
 
 		let totalPoints = 0;
 		const raidResults = new Map<string, RaidResultUser>();
-		const teamLoot = new TeamLoot([]);
 		for (let x = 0; x < quantity; x++) {
 			const team = await createTeam(allUsers, challengeMode);
+			// Prevent getting multiple Ancient Tablets
+			for (const teamMate of team) {
+				if (raidResults.get(teamMate.id)?.gotAncientTablet) {
+					teamMate.canReceiveAncientTablet = false;
+				}
+			}
 			const raidLoot = ChambersOfXeric.complete({
 				challengeMode,
-				timeToComplete: duration,
+				timeToComplete: randomVariation(duration / quantity, 5),
 				team
 			});
 			for (const [userID, userLoot] of Object.entries(raidLoot)) {
@@ -54,7 +58,6 @@ export const raidsTask: MinionTask = {
 				if (!userData) {
 					// User already fetched earlier, no need to make another DB call
 					const mUser = allUsers.find(u => u.id === userID)!;
-
 					userData = {
 						personalPoints: 0,
 						loot: new Bank(),
@@ -70,23 +73,19 @@ export const raidsTask: MinionTask = {
 				userData.deathChance = member.deathChance;
 				totalPoints += member.personalPoints;
 
-				if (challengeMode && roll(50) && userData.mUser.cl.has('Metamorphic dust')) {
-					const { bank } = userData.mUser.allItemsOwned();
+				const hasDust = userData.loot.has('Metamorphic dust') || userData.mUser.cl.has('Metamorphic dust');
+				if (challengeMode && roll(50) && hasDust) {
+					const { bank } = userData.loot.clone().add(userData.mUser.allItemsOwned());
 					const unownedPet = shuffleArr(chambersOfXericMetamorphPets).find(pet => !bank[pet]);
 					if (unownedPet) {
 						userLoot.add(unownedPet);
-						// Add pet to the mUser, this doesn't add to actual bank, just prevents duplicates
-						userData.mUser.bank.add(unownedPet);
 					}
 				}
 				if (userLoot.has('Ancient tablet')) {
-					userLoot.bank[itemID('Ancient tablet')] = 1;
-					// Add tablet to mUser, this doesn't add to user's bank, just prevents duplicates which would deny real loot rolls.
-					userData.mUser.bank.add('Ancient tablet');
+					userData.gotAncientTablet = true;
 				}
 
 				userData.loot.add(userLoot);
-				teamLoot.add(userID, userLoot);
 				raidResults.set(userID, userData);
 			}
 		}
@@ -148,11 +147,11 @@ export const raidsTask: MinionTask = {
 			type: 'Minigame',
 			changeType: 'loot',
 			duration,
-			kc: 1,
+			kc: quantity,
 			users: allUsers.map(i => ({
 				id: i.id,
 				duration,
-				loot: teamLoot.get(i.id)
+				loot: raidResults.get(i.id)?.loot ?? new Bank()
 			}))
 		});
 
