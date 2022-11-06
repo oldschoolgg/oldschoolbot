@@ -375,6 +375,11 @@ export interface FishingContestOptions extends MinigameActivityTaskOptions {
 	quantity: number;
 	location: number;
 }
+
+export interface MoktangTaskOptions extends ActivityTaskOptions {
+	qty: number;
+}
+
 export interface TearsOfGuthixActivityTaskOptions extends MinigameActivityTaskOptions {}
 
 export interface KourendFavourActivityTaskOptions extends ActivityTaskOptions {

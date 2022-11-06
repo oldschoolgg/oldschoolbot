@@ -1,4 +1,5 @@
-import { moktangActivity, MoktangTaskOptions } from '../../../mahoji/lib/abstracted_commands/moktangCommand';
+import { MoktangTaskOptions } from '../../../lib/types/minions';
+import { moktangActivity } from '../moktangActivity';
 
 export const moktangTask: MinionTask = {
 	type: 'Moktang',

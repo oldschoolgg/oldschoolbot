@@ -3,7 +3,6 @@ import { Monsters } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { collectables } from '../../mahoji/lib/abstracted_commands/collectCommand';
-import { MoktangTaskOptions } from '../../mahoji/lib/abstracted_commands/moktangCommand';
 import { bossEvents } from '../bossEvents';
 import { ClueTiers } from '../clues/clueTiers';
 import { Emoji } from '../constants';
@@ -59,6 +58,7 @@ import {
 	KourendFavourActivityTaskOptions,
 	MinigameActivityTaskOptions,
 	MiningActivityTaskOptions,
+	MoktangTaskOptions,
 	MonkeyRumbleOptions,
 	MonsterActivityTaskOptions,
 	NewBossOptions,
