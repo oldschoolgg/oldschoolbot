@@ -9,7 +9,6 @@ import { untrustedGuildSettingsCache } from '../mahoji/mahojiSettings';
 import { analyticsTick } from './analytics';
 import { prisma } from './settings/prisma';
 import { cacheCleanup } from './util';
-import { logError } from './util/logError';
 import { sendToChannelID } from './util/webhook';
 
 export function initCrons() {
@@ -90,9 +89,7 @@ GROUP BY item_id;`);
 					sendReddit({ post: entity, type });
 					alreadySentCache.add(entity.id);
 				}
-			} catch (err) {
-				logError(err);
-			}
+			} catch {}
 		}
 	});
 
