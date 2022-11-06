@@ -407,7 +407,8 @@ export const tripHandlers = {
 			cox: {
 				start: {
 					challenge_mode: data.challengeMode,
-					type: data.users.length === 1 ? 'solo' : 'mass'
+					type: data.users.length === 1 ? 'solo' : 'mass',
+					quantity: data.quantity
 				}
 			}
 		})
