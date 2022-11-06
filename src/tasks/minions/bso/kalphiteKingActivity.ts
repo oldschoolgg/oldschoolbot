@@ -89,7 +89,7 @@ export const kalphiteKingTask: MinionTask = {
 		let soloItemsAdded = null;
 
 		const totalLoot = new Bank();
-		for (let [userID, loot] of Object.entries(teamsLoot)) {
+		for (let [userID, loot] of teamsLoot.entries()) {
 			const user = await mUserFetch(userID).catch(noOp);
 			if (!user) continue;
 			totalLoot.add(loot);
