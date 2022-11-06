@@ -20,13 +20,13 @@ import { CLIENT_ID } from '../config';
 import { deduplicateClueScrolls } from '../lib/clues/clueUtils';
 import { SILENT_ERROR } from '../lib/constants';
 import { evalMathExpression } from '../lib/expressionParser';
+import { filterLootReplace } from '../lib/filterLootReplace';
 import { effectiveMonsters } from '../lib/minions/data/killableMonsters';
 import { KillableMonster } from '../lib/minions/types';
 import { getMinigameScore, Minigames } from '../lib/settings/minigames';
 import { prisma } from '../lib/settings/prisma';
 import creatures from '../lib/skilling/skills/hunter/creatures';
 import { Rune } from '../lib/skilling/skills/runecraft';
-import { filterLootReplace } from '../lib/slayer/slayerUtil';
 import { hasGracefulEquipped, readableStatName } from '../lib/structures/Gear';
 import type { ItemBank } from '../lib/types';
 import {
