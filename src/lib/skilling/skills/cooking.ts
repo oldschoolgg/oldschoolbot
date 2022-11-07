@@ -124,8 +124,8 @@ export const Cookables: Cookable[] = [
 		level: 30,
 		xp: 190,
 		id: itemID('Cooked karambwan'),
-		name: 'Karambwan',
-		alias: ['cooked karambwan'],
+		name: 'Cooked karambwan',
+		alias: ['karambwan'],
 		inputCookables: { [itemID('Raw karambwan')]: 1 },
 		stopBurnAt: 99,
 		burntCookable: itemID('Burnt karambwan')
