@@ -13,7 +13,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 export const motherlodeMiningTask: MinionTask = {
 	type: 'MotherlodeMining',
 	async run(data: MotherlodeMiningActivityTaskOptions) {
-		const { oreID, userID, channelID, duration } = data;
+		const { userID, oreID, channelID, duration } = data;
 		let { quantity } = data;
 		const user = await mUserFetch(userID);
 		const ore = Mining.Ores.find(ore => ore.id === oreID)!;
@@ -22,6 +22,7 @@ export const motherlodeMiningTask: MinionTask = {
 		let bonusXP = 0;
 		let cleaningXP = 0;
 
+		console.log(oreID);
 		// If they have the entire prospector outfit, give an extra 0.5% xp bonus
 		if (
 			user.gear.skilling.hasEquipped(
@@ -97,7 +98,7 @@ export const motherlodeMiningTask: MinionTask = {
 			duration
 		});
 
-		let str = `${user}, ${user.minionName} finished mining ${quantity} ${ore.name}. ${xpRes}`;
+		let str = `${user}, ${user.minionName} finished mining ${quantity} Pay-dirt. ${xpRes}`;
 
 		// Add clue scrolls
 		if (ore.clueScrollChance) {

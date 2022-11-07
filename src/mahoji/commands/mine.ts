@@ -5,12 +5,13 @@ import { Bank } from 'oldschooljs';
 import { determineMiningTime } from '../../lib/skilling/functions/determineMiningTime';
 import Mining from '../../lib/skilling/skills/mining';
 import { Skills } from '../../lib/types';
-import { MiningActivityTaskOptions, MotherlodeMiningActivityTaskOptions } from '../../lib/types/minions';
+import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, formatSkillRequirements, itemNameFromID, randomVariation } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { stringMatches } from '../../lib/util/cleanString';
 import itemID from '../../lib/util/itemID';
 import { minionName } from '../../lib/util/minionUtils';
+import { motherlodeMineCommand } from '../lib/abstracted_commands/motherlodeMineCommand';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const pickaxes = [
@@ -248,6 +249,13 @@ export const mineCommand: OSBMahojiCommand = {
 		userID,
 		channelID
 	}: CommandRunOptions<{ name: string; quantity?: number; powermine?: boolean }>) => {
+		const user = await mUserFetch(userID);
+		let { quantity, powermine, name } = options;
+
+		if (name === 'Motherlode mine') {
+			return motherlodeMineCommand({ user, channelID, name });
+		}
+
 		const ore = Mining.Ores.find(
 			ore =>
 				stringMatches(ore.id, options.name) ||
@@ -259,8 +267,6 @@ export const mineCommand: OSBMahojiCommand = {
 			return `Thats not a valid ore to mine. Valid ores are ${Mining.Ores.map(ore => ore.name).join(', ')}.`;
 		}
 
-		let { quantity, powermine } = options;
-		const user = await mUserFetch(userID);
 		if (user.skillsAsLevels.mining < ore.level) {
 			return `${minionName(user)} needs ${ore.level} Mining to mine ${ore.name}.`;
 		}
@@ -339,22 +345,7 @@ export const mineCommand: OSBMahojiCommand = {
 			}
 		}
 
-		// Check for 100 golden nuggets and 72 mining for upper motherlode mine access.
-
-		const gotNuggets = user.cl.amount('Golden nugget') >= 100;
-		if (ore.name === 'Motherlode mine') {
-			if (gotNuggets && miningLevel >= 72) {
-				ore.respawnTime = 4;
-				ore.bankingTime = 40;
-				boosts.push(
-					'\nYou are mining on the upper level of the motherlode mine, due to having 100 golden nuggets in your cl and 72 mining or higher'
-				);
-			}
-		}
-
-		if (ore.name === 'Motherlode mine') {
-			powermine = false;
-		} else if (!powermine) {
+		if (!powermine) {
 			powermine = false;
 		} else {
 			boosts.push('**Powermining**');
@@ -380,32 +371,6 @@ export const mineCommand: OSBMahojiCommand = {
 
 		if (ore.name === 'Gem rock' && user.hasEquipped('Amulet of glory')) {
 			boosts.push('3x success rate for having an Amulet of glory equipped');
-		}
-
-		if (ore.name === 'Motherlode mine') {
-			await addSubTaskToActivityTask<MotherlodeMiningActivityTaskOptions>({
-				oreID: ore.id,
-				userID: userID.toString(),
-				channelID: channelID.toString(),
-				quantity: newQuantity,
-				duration,
-				fakeDurationMax,
-				fakeDurationMin,
-				type: 'Mining'
-			});
-			let response = `${minionName(user)} is now mining ${ore.name} until your minion ${
-				quantity ? `mined ${quantity}x or gets tired` : 'is satisfied'
-			}, it'll take ${
-				quantity
-					? `between ${formatDuration(fakeDurationMin)} **and** ${formatDuration(fakeDurationMax)}`
-					: formatDuration(duration)
-			} to finish.`;
-
-			if (boosts.length > 0) {
-				response += `\n\n**Boosts:** ${boosts.join(', ')}.`;
-			}
-
-			return response;
 		}
 
 		await addSubTaskToActivityTask<MiningActivityTaskOptions>({
