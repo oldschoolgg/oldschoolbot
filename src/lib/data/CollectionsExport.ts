@@ -1220,6 +1220,25 @@ export const castleWarsCL = resolveItems([
 ]);
 export const fishingTrawlerCL = resolveItems(['Angler hat', 'Angler top', 'Angler waders', 'Angler boots']);
 export const gnomeRestaurantCL = resolveItems(['Grand seed pod', 'Gnome scarf', 'Gnome goggles', 'Mint cake']);
+export const guardiansOfTheRiftCL = resolveItems([
+	'Abyssal protector',
+	'Abyssal pearls',
+	'Catalytic talisman',
+	'Abyssal needle',
+	'Abyssal green dye',
+	'Abyssal blue dye',
+	'Abyssal red dye ',
+	'Hat of the eye',
+	'Robe top of the eye',
+	'Robe bottoms of the eye',
+	'Boots of the eye',
+	'Ring of the elements',
+	'Abyssal lantern',
+	"Guardian's eye",
+	'Intricate pouch',
+	'Lost bag',
+	'Tarnished locket'
+]);
 export const hallowedSepulchreCL = resolveItems([
 	'Hallowed mark',
 	'Hallowed token',
@@ -1879,7 +1898,7 @@ export const diariesCL = [
 	"Rada's blessing 4"
 ];
 export const dailyCL = resolveItems([
-	'Event rpg',
+	'Goblin paint cannon',
 	'Green banner',
 	'Spinning plate',
 	'Brown toy horsey',

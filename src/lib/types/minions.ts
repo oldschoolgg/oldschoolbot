@@ -283,6 +283,7 @@ export interface RaidsOptions extends ActivityTaskOptions {
 	leader: string;
 	users: string[];
 	challengeMode: boolean;
+	quantity?: number;
 }
 
 export interface TheatreOfBloodTaskOptions extends ActivityTaskOptions {
@@ -323,6 +324,13 @@ export interface PuroPuroActivityTaskOptions extends MinigameActivityTaskOptions
 	quantity: number;
 	implingID: number | null;
 	darkLure: boolean;
+}
+
+export interface GuardiansOfTheRiftActivityTaskOptions extends MinigameActivityTaskOptions {
+	minedFragments: number;
+	barrierAndGuardian: number;
+	rolls: number;
+	combinationRunes: boolean;
 }
 
 export type ActivityTaskData =

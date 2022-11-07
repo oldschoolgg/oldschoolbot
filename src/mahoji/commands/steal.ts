@@ -52,7 +52,7 @@ export const stealCommand: OSBMahojiCommand = {
 	],
 	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
 		const user = await mUserFetch(userID);
-		stealables;
+
 		const stealable: Stealable | undefined = stealables.find(
 			obj =>
 				stringMatches(obj.name, options.name) ||

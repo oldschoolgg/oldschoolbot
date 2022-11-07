@@ -201,7 +201,7 @@ export class MUserClass {
 	}
 
 	addXP(params: AddXpParams) {
-		return addXP(this.id, params);
+		return addXP(this, params);
 	}
 
 	getKC(monsterID: number) {
