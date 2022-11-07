@@ -60,6 +60,7 @@ import type {
 	WoodcuttingActivityTaskOptions
 } from '../types/minions';
 import { itemNameFromID } from '../util';
+import { GuardiansOfTheRiftActivityTaskOptions } from './../types/minions';
 
 export const taskCanBeRepeated = (type: activity_type_enum) =>
 	!(
@@ -632,6 +633,17 @@ export const tripHandlers = {
 				start: {}
 			}
 		})
+	[activity_type_enum.GuardiansOfTheRift]: {
+		commandName: 'minigames',
+		args: (data: GuardiansOfTheRiftActivityTaskOptions) => ({
+			gotr: {
+				start: { combination_runes: data.combinationRunes }
+			}
+		})
+	},
+	[activity_type_enum.HalloweenEvent]: {
+		commandName: 'trickortreat',
+		args: () => ({ start: {} })
 	}
 } as const;
 

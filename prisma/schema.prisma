@@ -122,6 +122,8 @@ model ClientStorage {
   tks_loot                     Json     @default("{}") @db.Json
   disabled_commands            String[] @db.VarChar(32)
   gp_tax_balance               BigInt   @default(0)
+  gotr_cost                    Json     @default("{}") @db.Json
+  gotr_loot                    Json     @default("{}") @db.Json
 
   // BSO
   gp_ic                   BigInt @default(0)
@@ -225,8 +227,6 @@ model NewUser {
   id            String  @id @db.VarChar(19)
   username      String? @db.VarChar(32)
   pizazz_points Int     @default(0)
-
-  last_command_date DateTime? @db.Timestamp(6)
 
   // Relations
   minigame_id  Int?         @unique
@@ -473,6 +473,8 @@ model User {
   unlocked_blueprints       Int[]
   disabled_inventions       Int[]
 
+  last_command_date DateTime? @db.Timestamp(6)
+
   @@index([bingo_tickets_bought])
   @@map("users")
 }
@@ -548,6 +550,7 @@ model Minigame {
   lms                     Int    @default(0)
   trouble_brewing         Int    @default(0)
   puro_puro               Int    @default(0)
+  guardians_of_the_rift   Int    @default(0)
 
   // BSO
   ourania_delivery_service Int @default(0)
@@ -871,6 +874,7 @@ enum activity_type_enum {
   FistOfGuthix
   StealingCreation
   HalloweenMiniMinigame
+  GuardiansOfTheRift
 }
 
 enum xp_gains_skill_enum {

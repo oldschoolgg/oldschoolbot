@@ -1,7 +1,6 @@
 import { calcWhatPercent, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { setupParty } from '../../../extendables/Message/Party';
 import { Emoji } from '../../../lib/constants';
 import {
 	calcCoxDuration,
@@ -14,6 +13,7 @@ import {
 } from '../../../lib/data/cox';
 import { degradeItem } from '../../../lib/degradeableItems';
 import { trackLoot } from '../../../lib/lootTrack';
+import { setupParty } from '../../../lib/party';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { MakePartyOptions } from '../../../lib/types';
 import { RaidsOptions } from '../../../lib/types/minions';

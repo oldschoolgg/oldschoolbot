@@ -11,12 +11,12 @@ import {
 } from 'discord.js';
 import { debounce, noOp, Time } from 'e';
 
-import { BLACKLISTED_USERS } from '../../lib/blacklists';
-import { SILENT_ERROR, usernameCache } from '../../lib/constants';
-import { MakePartyOptions } from '../../lib/types';
-import { UserError } from '../../lib/UserError';
-import { formatDuration, makeComponents } from '../../lib/util';
-import { CACHED_ACTIVE_USER_IDS } from '../../lib/util/cachedUserIDs';
+import { BLACKLISTED_USERS } from './blacklists';
+import { SILENT_ERROR, usernameCache } from './constants';
+import { MakePartyOptions } from './types';
+import { UserError } from './UserError';
+import { formatDuration, makeComponents } from './util';
+import { CACHED_ACTIVE_USER_IDS } from './util/cachedUserIDs';
 
 const partyLockCache = new Set<string>();
 setInterval(() => partyLockCache.clear(), Time.Minute * 20);
