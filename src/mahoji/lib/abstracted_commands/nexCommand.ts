@@ -2,9 +2,9 @@ import { userMention } from '@discordjs/builders';
 import { ChannelType, ChatInputCommandInteraction, TextChannel } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { setupParty } from '../../../extendables/Message/Party';
 import { NEX_ID } from '../../../lib/constants';
 import { trackLoot } from '../../../lib/lootTrack';
+import { setupParty } from '../../../lib/party';
 import { calculateNexDetails, checkNexUser } from '../../../lib/simulation/nex';
 import { NexTaskOptions } from '../../../lib/types/minions';
 import { calcPerHour, formatDuration } from '../../../lib/util';
