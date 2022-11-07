@@ -8,7 +8,7 @@ import { trackLoot } from '../../../lib/lootTrack';
 import { KalphiteKingMonster } from '../../../lib/minions/data/killableMonsters/custom/bosses/KalphiteKing';
 import { calculateMonsterFood } from '../../../lib/minions/functions';
 import { KillableMonster } from '../../../lib/minions/types';
-import { setupParty } from '../../../lib/Party';
+import { setupParty } from '../../../lib/party';
 import { Gear } from '../../../lib/structures/Gear';
 import { MakePartyOptions } from '../../../lib/types';
 import { BossActivityTaskOptions } from '../../../lib/types/minions';
