@@ -47,9 +47,11 @@ export const raidsTask: MinionTask = {
 					teamMate.canReceiveAncientTablet = false;
 				}
 			}
+			// Vary completion times for CM time limits
+			const timeToComplete = quantity === 1 ? duration : randomVariation(duration / quantity, 5);
 			const raidLoot = ChambersOfXeric.complete({
 				challengeMode,
-				timeToComplete: randomVariation(duration / quantity, 5),
+				timeToComplete,
 				team
 			});
 			for (const [userID, userLoot] of Object.entries(raidLoot)) {
