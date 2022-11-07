@@ -1,4 +1,4 @@
-import { calcWhatPercent } from 'e';
+import { calcWhatPercent, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { setupParty } from '../../../extendables/Message/Party';
@@ -17,8 +17,9 @@ import { trackLoot } from '../../../lib/lootTrack';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { MakePartyOptions } from '../../../lib/types';
 import { RaidsOptions } from '../../../lib/types/minions';
-import { channelIsSendable, formatDuration } from '../../../lib/util';
+import { channelIsSendable, formatDuration, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../mahojiSettings';
 
 const uniques = [
@@ -78,7 +79,13 @@ export async function coxStatsCommand(user: MUser) {
 **Total Gear Score:** ${Emoji.Gear} ${total.toFixed(1)}%`;
 }
 
-export async function coxCommand(channelID: string, user: MUser, type: 'solo' | 'mass', isChallengeMode: boolean) {
+export async function coxCommand(
+	channelID: string,
+	user: MUser,
+	type: 'solo' | 'mass',
+	isChallengeMode: boolean,
+	_quantity?: number
+) {
 	if (type !== 'mass' && type !== 'solo') {
 		return 'Specify your team setup for Chambers of Xeric, either solo or mass.';
 	}
@@ -152,13 +159,27 @@ export async function coxCommand(channelID: string, user: MUser, type: 'solo' | 
 		users = [user];
 	}
 
-	const teamCheckFailure = await checkCoxTeam(users, isChallengeMode);
+	const {
+		duration: raidDuration,
+		totalReduction,
+		reductions,
+		degradeables
+	} = await calcCoxDuration(users, isChallengeMode);
+	const maxTripLength = calcMaxTripLength(user, 'Raids');
+	const maxCanDo = Math.max(Math.floor(maxTripLength / raidDuration), 1);
+	const quantity = _quantity && _quantity * raidDuration <= maxTripLength ? _quantity : maxCanDo;
+
+	const teamCheckFailure = await checkCoxTeam(users, isChallengeMode, quantity);
 	if (teamCheckFailure) {
 		return `Your mass failed to start because of this reason: ${teamCheckFailure}`;
 	}
 
-	const { duration, totalReduction, reductions, degradeables } = await calcCoxDuration(users, isChallengeMode);
-
+	// This gives a normal duration distribution. Better than (raidDuration * quantity) +/- 5%
+	let duration = sumArr(
+		Array(quantity)
+			.fill(raidDuration)
+			.map(d => randomVariation(d, 5))
+	);
 	let debugStr = '';
 	const isSolo = users.length === 1;
 
@@ -172,7 +193,7 @@ export async function coxCommand(channelID: string, user: MUser, type: 'solo' | 
 
 	const costResult = await Promise.all([
 		...users.map(async u => {
-			const supplies = await calcCoxInput(u, isSolo);
+			const supplies = (await calcCoxInput(u, isSolo)).multiply(quantity);
 			await u.removeItemsFromBank(supplies);
 			totalCost.add(supplies);
 			const { total } = calculateUserGearPercents(u);
@@ -206,18 +227,19 @@ export async function coxCommand(channelID: string, user: MUser, type: 'solo' | 
 		type: 'Raids',
 		leader: user.id,
 		users: users.map(u => u.id),
-		challengeMode: isChallengeMode
+		challengeMode: isChallengeMode,
+		quantity
 	});
 
 	let str = isSolo
-		? `${user.minionName} is now doing a Chambers of Xeric raid. The total trip will take ${formatDuration(
-				duration
-		  )}.`
+		? `${user.minionName} is now doing ${quantity > 1 ? quantity : 'a'} Chambers of Xeric raid${
+				quantity > 1 ? 's' : ''
+		  }. The total trip will take ${formatDuration(duration)}.`
 		: `${partyOptions.leader.usernameOrMention}'s party (${users
 				.map(u => u.usernameOrMention)
-				.join(', ')}) is now off to do a Chambers of Xeric raid - the total trip will take ${formatDuration(
-				duration
-		  )}.`;
+				.join(', ')}) is now off to do ${quantity > 1 ? quantity : 'a'} Chambers of Xeric raid${
+				quantity > 1 ? 's' : ''
+		  } - the total trip will take ${formatDuration(duration)}.`;
 
 	str += ` \n\n${debugStr}`;
 

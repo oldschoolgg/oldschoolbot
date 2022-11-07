@@ -105,8 +105,7 @@ function getEquippedMasterCapes(user: MUser) {
 		.map(i => i.item);
 }
 
-export async function addXP(userID: string, params: AddXpParams): Promise<string> {
-	const user = await mUserFetch(userID);
+export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 	const currentXP = Number(user.user[`skills_${params.skillName}`]);
 	const currentLevel = user.skillLevel(params.skillName);
 	const currentTotalLevel = user.totalLevel;
