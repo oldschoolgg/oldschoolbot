@@ -182,8 +182,6 @@ model NewUser {
   username      String? @db.VarChar(32)
   pizazz_points Int     @default(0)
 
-  last_command_date DateTime? @db.Timestamp(6)
-
   // Relations
   minigame_id  Int?         @unique
   minigame     Minigame?    @relation(fields: [minigame_id], references: [id])
@@ -400,6 +398,8 @@ model User {
   bingo_gp_contributed BigInt @default(0)
 
   treats_delivered Int @default(0)
+
+  last_command_date DateTime? @db.Timestamp(6)
 
   @@index([bingo_tickets_bought])
   @@map("users")
