@@ -469,7 +469,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 				options.plank_make.type,
 				options.plank_make.quantity,
 				channelID,
-				options.plank_make?.speed
+				options.plank_make.speed
 			);
 		}
 		if (options.plank_make?.action === 'butler') {
