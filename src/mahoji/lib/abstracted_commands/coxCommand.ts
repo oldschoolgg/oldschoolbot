@@ -193,7 +193,7 @@ export async function coxCommand(
 
 	const costResult = await Promise.all([
 		...users.map(async u => {
-			const supplies = await calcCoxInput(u, isSolo);
+			const supplies = (await calcCoxInput(u, isSolo)).multiply(quantity);
 			await u.removeItemsFromBank(supplies);
 			totalCost.add(supplies);
 			const { total } = calculateUserGearPercents(u);
