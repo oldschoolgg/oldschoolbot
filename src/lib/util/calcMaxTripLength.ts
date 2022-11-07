@@ -35,6 +35,7 @@ export function calcMaxTripLength(user: MUser, activity?: activity_type_enum) {
 		case 'BarbarianAssault':
 		case 'AnimatedArmour':
 		case 'Sepulchre':
+		case 'Raids':
 		case 'Pickpocket':
 		case 'SoulWars':
 		case 'Cyclops': {

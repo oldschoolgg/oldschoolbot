@@ -327,6 +327,7 @@ export interface RaidsOptions extends ActivityTaskOptions {
 	leader: string;
 	users: string[];
 	challengeMode: boolean;
+	quantity?: number;
 }
 
 export interface TheatreOfBloodTaskOptions extends ActivityTaskOptions {
