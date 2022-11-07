@@ -112,6 +112,45 @@ export const sellCommand: OSBMahojiCommand = {
 			return `You exchanged ${moleBank} and received: ${loot}.`;
 		}
 
+		if (
+			bankToSell.has('Abyssal blue dye') ||
+			bankToSell.has('Abyssal green dye') ||
+			bankToSell.has('Abyssal red dye') ||
+			bankToSell.has('Abyssal lantern')
+		) {
+			const abbyBank = new Bank();
+			const loot = new Bank();
+			if (bankToSell.has('Abyssal lantern')) {
+				abbyBank.add('Abyssal lantern', bankToSell.amount('Abyssal lantern'));
+				loot.add('Abyssal pearls', bankToSell.amount('Abyssal lantern') * 100);
+			}
+			if (bankToSell.has('Abyssal red dye')) {
+				abbyBank.add('Abyssal red dye', bankToSell.amount('Abyssal red dye'));
+				loot.add('Abyssal pearls', bankToSell.amount('Abyssal red dye') * 50);
+			}
+			if (bankToSell.has('Abyssal blue dye')) {
+				abbyBank.add('Abyssal blue dye', bankToSell.amount('Abyssal blue dye'));
+				loot.add('Abyssal pearls', bankToSell.amount('Abyssal blue dye') * 50);
+			}
+			if (bankToSell.has('Abyssal green dye')) {
+				abbyBank.add('Abyssal green dye', bankToSell.amount('Abyssal green dye'));
+				loot.add('Abyssal pearls', bankToSell.amount('Abyssal green dye') * 50);
+			}
+
+			await handleMahojiConfirmation(
+				interaction,
+				`${user}, please confirm you want to sell ${abbyBank} for **${loot}**.`
+			);
+
+			await user.removeItemsFromBank(abbyBank);
+			await transactItems({
+				userID: user.id,
+				collectionLog: false,
+				itemsToAdd: loot
+			});
+			return `You exchanged ${abbyBank} and received: ${loot}.`;
+		}
+
 		if (bankToSell.has('Golden tench')) {
 			const loot = new Bank();
 			const tenchBank = new Bank();

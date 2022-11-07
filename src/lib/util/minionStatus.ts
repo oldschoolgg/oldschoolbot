@@ -246,7 +246,7 @@ export function minionStatus(user: MUser) {
 
 		case 'TiaraRunecraft': {
 			const data = currentTask as TiaraRunecraftActivityTaskOptions;
-			const tiara = Runecraft.Tiara.find(_tiara => _tiara.id === data.tiaraID);
+			const tiara = Runecraft.Tiaras.find(_tiara => _tiara.id === data.tiaraID);
 
 			return `${name} is currently crafting ${data.tiaraQuantity} ${tiara!.name}. ${formattedDuration} Your ${
 				Emoji.Runecraft
@@ -578,6 +578,11 @@ export function minionStatus(user: MUser) {
 		}
 		case 'ShootingStars': {
 			return `${name} is currently mining a Crashed Star. The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
+		case 'GuardiansOfTheRift': {
+			return `${name} is currently helping the Great Guardian to close the rift. The trip should take ${formatDuration(
 				durationRemaining
 			)}.`;
 		}
