@@ -1,4 +1,4 @@
-import { randInt, Time } from 'e';
+import { randInt, reduceNumByPercent, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { randomVariation } from 'oldschooljs/dist/util';
@@ -80,6 +80,11 @@ export async function odsStartCommand(klasaUser: MUser, channelID: string) {
 	if (klasaUser.hasEquipped('Runecraft master cape')) {
 		waveTime /= 2;
 		boosts.push(`${Emoji.RunecraftMasterCape} 2x faster`);
+	}
+
+	if (klasaUser.hasEquipped('Kuro')) {
+		waveTime = reduceNumByPercent(waveTime, 5);
+		boosts.push(`${Emoji.Kuro} 5% faster with Kuro's help`);
 	}
 
 	const quantity = Math.floor(calcMaxTripLength(klasaUser, 'OuraniaDeliveryService') / waveTime);
