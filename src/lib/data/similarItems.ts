@@ -371,7 +371,7 @@ const source: [string, (string | number)[]][] = [
 	[
 		'Robe bottoms of the eye',
 		['Robe bottoms of the eye (red)', 'Robe bottoms of the eye (green)', 'Robe bottoms of the eye (blue)']
-	]
+	],
 
 	// Inventions
 	['Inferno adze', ['Superior inferno adze']],

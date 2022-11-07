@@ -1,7 +1,7 @@
 import { reduceNumByPercent, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
-import { setupParty } from '../../extendables/Message/Party';
+import { setupParty } from '../../lib/Party';
 import {
 	determineDgLevelForFloor,
 	dungBuyables,

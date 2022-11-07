@@ -24,9 +24,6 @@ export interface KibbleOptions extends ActivityTaskOptions {
 	quantity: number;
 	kibbleType: Kibble['type'];
 }
-export interface TrickOrTreatOptions extends ActivityTaskOptions {
-	rolls: number;
-}
 
 export interface ActivityTaskOptionsWithQuantity extends ActivityTaskOptions {
 	quantity: number;

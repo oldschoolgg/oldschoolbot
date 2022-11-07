@@ -615,9 +615,6 @@ export function minionStatus(user: MUser) {
 				data.quantity
 			} fights in Monkey Rumble. ${formattedDuration}`;
 		}
-		case 'TrickOrTreat': {
-			return `${name} is currently trick or treating! ${formattedDuration}`;
-		}
 		case 'BossEvent': {
 			const data = currentTask as NewBossOptions;
 			const bossDoing = bossEvents.find(b => b.id === data.bossID)!;

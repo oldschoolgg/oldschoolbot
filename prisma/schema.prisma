@@ -852,7 +852,6 @@ enum activity_type_enum {
   PestControl
   VolcanicMine
   MonkeyRumble
-  TrickOrTreat
   BossEvent
   KourendFavour
   Inferno

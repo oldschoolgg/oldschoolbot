@@ -20,7 +20,6 @@ export const runecraftTask: MinionTask = {
 		const quantityPerEssence = calcMaxRCQuantity(rune, user);
 		let runeQuantity = essenceQuantity * quantityPerEssence;
 		let bonusQuantity = 0;
-		let runeQuantity = essenceQuantity * quantityPerEssence;
 		if (rune.name === 'Elder rune') {
 			runeQuantity = Math.max(1, Math.floor(runeQuantity / 3));
 		}

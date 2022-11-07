@@ -2146,7 +2146,7 @@ const Createables: Createable[] = [
 	...amrodCreatables,
 	...goldenProspectorCreatables,
 	...leaguesCreatables,
-	...guardiansOfTheRiftCreatables
+	...guardiansOfTheRiftCreatables,
 	...tameCreatables,
 	...moktangCreatables
 ];
