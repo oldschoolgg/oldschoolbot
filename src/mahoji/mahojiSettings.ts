@@ -657,6 +657,8 @@ type ClientBankKey =
 	| 'degraded_items_cost'
 	| 'tks_cost'
 	| 'tks_loot'
+	| 'gotr_cost'
+	| 'gotr_loot'
 	| 'nex_cost'
 	| 'nex_loot';
 

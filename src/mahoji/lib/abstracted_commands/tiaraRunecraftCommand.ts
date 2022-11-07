@@ -21,12 +21,12 @@ export async function tiaraRunecraftCommand({
 	name: string;
 }) {
 	const TIARAS_PER_INVENTORY = 14;
-	const tiaraObj = Runecraft.Tiara.find(
+	const tiaraObj = Runecraft.Tiaras.find(
 		_tiara => stringMatches(_tiara.name, name) || stringMatches(_tiara.name.split(' ')[0], name)
 	);
 
 	if (!tiaraObj) {
-		return `That's not a valid tiara. Valid tiaras are ${Runecraft.Tiara.map(_tiara => _tiara.name).join(', ')}.`;
+		return `That's not a valid tiara. Valid tiaras are ${Runecraft.Tiaras.map(_tiara => _tiara.name).join(', ')}.`;
 	}
 
 	if (tiaraObj.qpRequired && user.QP < tiaraObj.qpRequired) {
