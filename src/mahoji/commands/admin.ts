@@ -829,11 +829,6 @@ LIMIT 10;
 
 			const currentBalanceTier = input.premium_balance_tier;
 
-			const oldPerkTier = getUsersPerkTier(input.bitfield);
-			if (oldPerkTier > 1 && !currentBalanceTier && oldPerkTier <= tier + 1) {
-				return `${userToGive.user.username} is already a patron of at least that tier.`;
-			}
-
 			if (currentBalanceTier !== null && currentBalanceTier !== tier) {
 				await handleMahojiConfirmation(
 					interaction,
