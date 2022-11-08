@@ -14,10 +14,12 @@ import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import { ActivityTaskOptions } from '../types/minions';
 import { channelIsSendable, makeComponents } from '../util';
 import {
+	makeAutoContractButton,
 	makeBirdHouseTripButton,
 	makeDoClueButton,
 	makeNewSlayerTaskButton,
 	makeOpenCasketButton,
+	makeOpenSeedPackButton,
 	makeRepeatTripButton
 } from './globalInteractions';
 import { sendToChannelID } from './webhook';
@@ -121,6 +123,10 @@ export async function handleTripFinish(
 			['MonsterKilling', 'Inferno', 'FightCaves'].includes(data.type)
 		) {
 			components.push(makeNewSlayerTaskButton());
+		}
+		if (loot?.has('Seed pack')) {
+			components.push(makeAutoContractButton());
+			components.push(makeOpenSeedPackButton());
 		}
 	}
 
