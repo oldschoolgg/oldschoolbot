@@ -424,8 +424,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 		userID,
 		interaction
 	}: CommandRunOptions<{
-		sawmill?: { type: string; quantity?: number; speed?: number };
-		plank_make?: { action: string; type: string; quantity?: number };
+		plank_make?: { action: string; type: string; quantity?: number; speed?: number };
 		chompy_hunt?: { action: 'start' | 'claim' };
 		champions_challenge?: {};
 		warriors_guild?: { action: string; quantity?: number };
@@ -470,7 +469,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 				options.plank_make.type,
 				options.plank_make.quantity,
 				channelID,
-				options.sawmill?.speed
+				options.plank_make.speed
 			);
 		}
 		if (options.plank_make?.action === 'butler') {
