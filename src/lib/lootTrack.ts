@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 
 import { prisma } from './settings/prisma';
 import { ItemBank } from './types';
-import { assert, cleanString, formatDuration } from './util';
+import { cleanString, formatDuration } from './util';
 import { makeBankImage } from './util/makeBankImage';
 
 type TrackLootOptions =
@@ -37,34 +37,22 @@ async function trackIndividualsLoot({
 	userID,
 	data,
 	bankToAdd,
-	duration
+	duration,
+	type
 }: {
 	duration: number;
 	bankToAdd: Bank;
 	key: string;
 	userID: bigint | null;
 	data: TrackLootOptions;
+	type: loot_track_type;
 }) {
-	const sanityCheck = await prisma.lootTrack.count({
-		where: {
-			key,
-			user_id: userID
-		}
-	});
-	const sanityCheckTwo = await prisma.lootTrack.count({
-		where: {
-			key,
-			user_id: null
-		}
-	});
-	assert(sanityCheck < 2);
-	assert(sanityCheckTwo < 2);
-
 	// Find the existing loot track
 	let current = await prisma.lootTrack.findFirst({
 		where: {
 			key,
-			user_id: userID
+			user_id: userID,
+			type
 		}
 	});
 
@@ -123,12 +111,20 @@ export async function trackLoot(opts: TrackLootOptions) {
 					bankToAdd: 'cost' in u ? u.cost : u.loot,
 					duration: 'duration' in opts ? Math.floor(opts.duration / Time.Minute) : 0,
 					data: opts,
-					userID: BigInt(u.id)
+					userID: BigInt(u.id),
+					type: opts.type
 				})
 			)
 		);
 	}
-	return trackIndividualsLoot({ key, bankToAdd: totalBank, duration: teamDuration, data: opts, userID: null });
+	return trackIndividualsLoot({
+		key,
+		bankToAdd: totalBank,
+		duration: teamDuration,
+		data: opts,
+		userID: null,
+		type: opts.type
+	});
 }
 
 export async function getAllTrackedLootForUser(userID: string) {
