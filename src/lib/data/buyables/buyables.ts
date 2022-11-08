@@ -16,6 +16,7 @@ import { capeBuyables } from './capes';
 import { castleWarsBuyables } from './castleWars';
 import { fremennikClothes } from './frem';
 import { gnomeClothes } from './gnomeClothes';
+import { guardiansOfTheRiftBuyables } from './guardiansOfTheRifBuyables';
 import { miningBuyables } from './mining';
 import { perduBuyables } from './perdu';
 import { runeBuyables } from './runes';
@@ -873,12 +874,12 @@ const Buyables: Buyable[] = [
 		ironmanPrice: 32_000
 	},
 	{
-		name: 'Rainbow flower crown',
+		name: 'Flower crown',
 		itemCost: new Bank({
 			Coins: 5000
 		}),
 		outputItems: new Bank({
-			'Rainbow flower crown': 1
+			'Flower crown': 1
 		})
 	},
 	{
@@ -1026,7 +1027,8 @@ const Buyables: Buyable[] = [
 	...aerialFishBuyables,
 	...troubleBrewingBuyables,
 	...ironmenBuyables,
-	...shootingStarsBuyables
+	...shootingStarsBuyables,
+	...guardiansOfTheRiftBuyables
 ];
 
 for (const [chompyHat, qty] of chompyHats) {

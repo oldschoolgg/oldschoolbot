@@ -118,7 +118,10 @@ export async function handleTripFinish(
 		if (birdHousedetails.isReady && !user.bitfield.includes(BitField.DisableBirdhouseRunButton))
 			components.push(makeBirdHouseTripButton());
 		const { currentTask } = await getUsersCurrentSlayerInfo(user.id);
-		if ((currentTask === null || currentTask.quantity_remaining <= 0) && data.type === 'MonsterKilling') {
+		if (
+			(currentTask === null || currentTask.quantity_remaining <= 0) &&
+			['MonsterKilling', 'Inferno', 'FightCaves'].includes(data.type)
+		) {
 			components.push(makeNewSlayerTaskButton());
 		}
 		if (loot?.has('Seed pack')) {
@@ -126,6 +129,7 @@ export async function handleTripFinish(
 			components.push(makeOpenSeedPackButton());
 		}
 	}
+
 	handleTriggerShootingStar(user, data, components);
 
 	sendToChannelID(channelID, {

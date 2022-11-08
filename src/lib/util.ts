@@ -1,6 +1,7 @@
 import { bold } from '@discordjs/builders';
 import { Stopwatch } from '@sapphire/stopwatch';
 import {
+	BaseMessageOptions,
 	ButtonBuilder,
 	ButtonInteraction,
 	CacheType,
@@ -16,7 +17,6 @@ import {
 	InteractionReplyOptions,
 	Message,
 	MessageEditOptions,
-	MessageOptions,
 	PermissionsBitField,
 	SelectMenuInteraction,
 	TextChannel,
@@ -49,7 +49,9 @@ import {
 import { CACHED_ACTIVE_USER_IDS } from './util/cachedUserIDs';
 import { getItem } from './util/getOSItem';
 import itemID from './util/itemID';
+import { log } from './util/log';
 import { logError } from './util/logError';
+import { toTitleCase } from './util/toTitleCase';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const emojiRegex = require('emoji-regex');
@@ -337,9 +339,7 @@ export function formatMissingItems(consumables: Consumable[], timeToFinish: numb
 export function formatSkillRequirements(reqs: Record<string, number>, emojis = true) {
 	let arr = [];
 	for (const [name, num] of objectEntries(reqs)) {
-		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		// @ts-ignore
-		arr.push(`${emojis ? ` ${skillEmoji[name]} ` : ''}**${num}** ${toTitleCase(name)}`);
+		arr.push(`${emojis ? ` ${(skillEmoji as any)[name]} ` : ''}**${num}** ${toTitleCase(name)}`);
 	}
 	return arr.join(', ');
 }
@@ -534,10 +534,10 @@ export function isValidSkill(skill: string): skill is SkillsEnum {
 	return Object.values(SkillsEnum).includes(skill as SkillsEnum);
 }
 
-function normalizeMahojiResponse(one: Awaited<CommandResponse>): MessageOptions {
+function normalizeMahojiResponse(one: Awaited<CommandResponse>): BaseMessageOptions {
 	if (!one) return {};
 	if (typeof one === 'string') return { content: one };
-	const response: MessageOptions = {};
+	const response: BaseMessageOptions = {};
 	if (one.content) response.content = one.content;
 	if (one.files) response.files = one.files;
 	return response;
@@ -632,7 +632,7 @@ export function awaitMessageComponentInteraction({
 	filter: test;
 }): Promise<SelectMenuInteraction<CacheType> | ButtonInteraction<CacheType>> {
 	return new Promise((resolve, reject) => {
-		const collector = message.createMessageComponentCollector({ max: 1, filter, time });
+		const collector = message.createMessageComponentCollector<ComponentType.Button>({ max: 1, filter, time });
 		collector.once('end', (interactions, reason) => {
 			const interaction = interactions.first();
 			if (interaction) resolve(interaction);
@@ -646,11 +646,12 @@ export function isGuildChannel(channel?: Channel): channel is GuildTextBasedChan
 }
 
 export async function runTimedLoggedFn(name: string, fn: () => Promise<unknown>) {
+	log(`Starting ${name}...`);
 	const stopwatch = new Stopwatch();
 	stopwatch.start();
 	await fn();
 	stopwatch.stop();
-	console.log(`Finished ${name} in ${stopwatch.toString()}`);
+	log(`Finished ${name} in ${stopwatch.toString()}`);
 }
 
 const emojiServers = new Set([

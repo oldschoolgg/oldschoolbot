@@ -65,6 +65,7 @@ import {
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
 	TheatreOfBloodTaskOptions,
+	TiaraRunecraftActivityTaskOptions,
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '../types/minions';
@@ -241,6 +242,15 @@ export function minionStatus(user: MUser) {
 			}. ${formattedDuration} Your ${Emoji.Runecraft} Runecraft level is ${user.skillLevel(
 				SkillsEnum.Runecraft
 			)}`;
+		}
+
+		case 'TiaraRunecraft': {
+			const data = currentTask as TiaraRunecraftActivityTaskOptions;
+			const tiara = Runecraft.Tiaras.find(_tiara => _tiara.id === data.tiaraID);
+
+			return `${name} is currently crafting ${data.tiaraQuantity} ${tiara!.name}. ${formattedDuration} Your ${
+				Emoji.Runecraft
+			} Runecraft level is ${user.skillLevel(SkillsEnum.Runecraft)}`;
 		}
 
 		case 'FightCaves': {
@@ -568,6 +578,11 @@ export function minionStatus(user: MUser) {
 		}
 		case 'ShootingStars': {
 			return `${name} is currently mining a Crashed Star. The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
+		case 'GuardiansOfTheRift': {
+			return `${name} is currently helping the Great Guardian to close the rift. The trip should take ${formatDuration(
 				durationRemaining
 			)}.`;
 		}

@@ -70,10 +70,12 @@ import { sawmillTask } from '../tasks/minions/sawmillActivity';
 import { shootingStarTask } from '../tasks/minions/shootingStarsActivity';
 import { smeltingTask } from '../tasks/minions/smeltingActivity';
 import { smithingTask } from '../tasks/minions/smithingActivity';
+import { tiaraRunecraftTask } from '../tasks/minions/tiaraRunecraftActivity';
 import { tokkulShopTask } from '../tasks/minions/tokkulShopActivity';
 import { vmTask } from '../tasks/minions/volcanicMineActivity';
 import { wealthChargeTask } from '../tasks/minions/wealthChargingActivity';
 import { woodcuttingTask } from '../tasks/minions/woodcuttingActivity';
+import { guardiansOfTheRiftTask } from './../tasks/minions/minigames/guardiansOfTheRiftActivity';
 import { modifyBusyCounter } from './busyCounterCache';
 import { convertStoredActivityToFlatActivity, prisma } from './settings/prisma';
 import { activitySync, minionActivityCache, minionActivityCacheDelete } from './settings/settings';
@@ -152,8 +154,10 @@ export const tasks: MinionTask[] = [
 	titheFarmTask,
 	temporossTask,
 	smithingTask,
-	butlerTask,
 	shootingStarTask,
+	guardiansOfTheRiftTask,
+	butlerTask,
+	tiaraRunecraftTask,
 	halloweenTask
 ];
 
