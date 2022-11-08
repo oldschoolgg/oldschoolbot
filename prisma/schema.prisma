@@ -860,6 +860,7 @@ enum activity_type_enum {
   LastManStanding
   FishingContest
   BirthdayEvent
+  TrickOrTreat
   TokkulShop
   TroubleBrewing
   PuroPuro
