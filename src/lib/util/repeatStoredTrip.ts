@@ -83,6 +83,10 @@ export const tripHandlers = {
 		commandName: 'm',
 		args: () => ({})
 	},
+	[activity_type_enum.TrickOrTreat]: {
+		commandName: 'm',
+		args: () => ({})
+	},
 	[activity_type_enum.BossEvent]: {
 		commandName: 'm',
 		args: () => ({})
