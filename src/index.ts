@@ -141,21 +141,21 @@ client.mahojiClient = mahojiClient;
 global.globalClient = client;
 client.on('messageCreate', onMessage);
 client.on('interactionCreate', async interaction => {
-	try {
-		if (BLACKLISTED_USERS.has(interaction.user.id)) return;
-		if (interaction.guildId && BLACKLISTED_GUILDS.has(interaction.guildId)) return;
+	if (BLACKLISTED_USERS.has(interaction.user.id)) return;
+	if (interaction.guildId && BLACKLISTED_GUILDS.has(interaction.guildId)) return;
 
-		if (!client.isReady()) {
-			if (interaction.isChatInputCommand()) {
-				interaction.reply({
-					content:
-						'BSO is currently down for maintenance/updates, please try again in a couple minutes! Thank you <3',
-					ephemeral: true
-				});
-			}
-			return;
+	if (!client.isReady()) {
+		if (interaction.isChatInputCommand()) {
+			interaction.reply({
+				content:
+					'BSO is currently down for maintenance/updates, please try again in a couple minutes! Thank you <3',
+				ephemeral: true
+			});
 		}
+		return;
+	}
 
+	try {
 		await interactionHook(interaction);
 		if (interaction.isModalSubmit()) {
 			await modalInteractionHook(interaction);
@@ -181,6 +181,10 @@ client.on('interactionCreate', async interaction => {
 			}
 		}
 	} catch (err) {
+		if (err instanceof UserError && interaction.isRepliable()) {
+			await interactionReply(interaction, err.message);
+			return;
+		}
 		logErrorForInteraction(err, interaction);
 	}
 });

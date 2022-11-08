@@ -41,6 +41,7 @@ const globalInteractionActions = [
 	'CANCEL_TRIP',
 	'AUTO_FARM',
 	'AUTO_FARMING_CONTRACT',
+	'OPEN_SEED_PACK',
 	'BUY_MINION',
 	'BUY_BINGO_TICKET',
 	'NEW_SLAYER_TASK',
@@ -75,6 +76,22 @@ export function makeOpenCasketButton(tier: ClueTier) {
 		.setLabel(`Open ${tier.name} Casket`)
 		.setStyle(ButtonStyle.Secondary)
 		.setEmoji('365003978678730772');
+}
+
+export function makeOpenSeedPackButton() {
+	return new ButtonBuilder()
+		.setCustomId('OPEN_SEED_PACK')
+		.setLabel('Open Seed Pack')
+		.setStyle(ButtonStyle.Secondary)
+		.setEmoji('977410792754413668');
+}
+
+export function makeAutoContractButton() {
+	return new ButtonBuilder()
+		.setCustomId('AUTO_FARMING_CONTRACT')
+		.setLabel('Auto Farming Contract')
+		.setStyle(ButtonStyle.Secondary)
+		.setEmoji('977410792754413668');
 }
 
 export function makeRepeatTripButton() {
@@ -434,6 +451,16 @@ export async function interactionHook(interaction: Interaction) {
 			const response = await autoContract(await mUserFetch(user.id), options.channelID, user.id);
 			if (response) interactionReply(interaction, response);
 			return;
+		}
+		case 'OPEN_SEED_PACK': {
+			return runCommand({
+				commandName: 'open',
+				args: {
+					name: 'Seed pack',
+					quantity: 1
+				},
+				...options
+			});
 		}
 		case 'NEW_SLAYER_TASK': {
 			return runCommand({

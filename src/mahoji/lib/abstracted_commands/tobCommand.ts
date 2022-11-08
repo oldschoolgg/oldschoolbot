@@ -2,7 +2,6 @@ import { calcWhatPercent } from 'e';
 import { Bank } from 'oldschooljs';
 import { TOBRooms } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
 
-import { setupParty } from '../../../extendables/Message/Party';
 import { Emoji } from '../../../lib/constants';
 import {
 	baseTOBUniques,
@@ -16,6 +15,7 @@ import {
 } from '../../../lib/data/tob';
 import { degradeItem } from '../../../lib/degradeableItems';
 import { trackLoot } from '../../../lib/lootTrack';
+import { setupParty } from '../../../lib/party';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { MakePartyOptions } from '../../../lib/types';
 import { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';

@@ -3,11 +3,11 @@ import { calcPercentOfNum, calcWhatPercent, randFloat, reduceNumByPercent, sumAr
 import { Bank } from 'oldschooljs';
 import { table } from 'table';
 
-import { setupParty } from '../../extendables/Message/Party';
 import { ClientBankKey, updateBankSetting } from '../../mahoji/mahojiSettings';
 import { GearSetupType, GearStats } from '../gear';
 import { trackLoot } from '../lootTrack';
 import { effectiveMonsters } from '../minions/data/killableMonsters';
+import { setupParty } from '../party';
 import { Skills } from '../types';
 import { NewBossOptions } from '../types/minions';
 import { formatDuration, formatSkillRequirements, hasSkillReqs, isWeekend } from '../util';

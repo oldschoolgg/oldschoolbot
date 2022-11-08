@@ -22,6 +22,7 @@ interface NexUser {
 	id: string;
 	chanceOfDeath: number;
 	damageDone: number;
+	user: MUser;
 }
 
 export const nexTask: MinionTask = {
@@ -38,7 +39,7 @@ export const nexTask: MinionTask = {
 			const user = await mUserFetch(id).catch(noOp);
 			if (!user) continue;
 			const [data] = getNexGearStats(user, users);
-			parsedUsers.push({ ...data, id: user.id });
+			parsedUsers.push({ ...data, id: user.id, user });
 		}
 
 		// Store total amount of deaths
@@ -85,7 +86,7 @@ export const nexTask: MinionTask = {
 			kcAmounts[winner] = Boolean(kcAmounts[winner]) ? ++kcAmounts[winner] : 1;
 		}
 
-		const leaderUser = await mUserFetch(userID);
+		const leaderUser = parsedUsers.find(p => p.id === userID)?.user ?? parsedUsers[0].user;
 		let resultStr = `${leaderUser}, your party finished killing ${quantity}x ${NexMonster.name}!\n\n`;
 		const totalLoot = new Bank();
 
@@ -94,12 +95,12 @@ export const nexTask: MinionTask = {
 		let soloItemsAdded: Bank = new Bank();
 
 		for (let [userID, loot] of Object.entries(teamsLoot)) {
-			const user = await mUserFetch(userID).catch(noOp);
+			const { user } = parsedUsers.find(p => p.id === userID)!;
 			if (!user) continue;
 			let xpStr = '';
 			if (kcAmounts[user.id]) {
 				xpStr = await addMonsterXP(user, {
-					monsterID: 46_274,
+					monsterID: NexMonster.id,
 					quantity: Math.ceil(quantity / users.length),
 					duration,
 					isOnTask: false,
@@ -154,7 +155,7 @@ export const nexTask: MinionTask = {
 		if (deathEntries.length > 0) {
 			const deaths = [];
 			for (const [id, qty] of deathEntries) {
-				const user = await mUserFetch(id);
+				const { user } = parsedUsers.find(p => p.id === id)!;
 				deaths.push(`**${user.usernameOrMention}**: ${qty}x`);
 			}
 			resultStr += `\n**Deaths**: ${deaths.join(', ')}.`;

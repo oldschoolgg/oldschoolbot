@@ -82,7 +82,7 @@ export async function postCommand({
 				prisma.commandUsage.create({
 					data: commandUsage
 				}),
-				prisma.newUser.update({
+				prisma.user.update({
 					where: {
 						id: userID
 					},

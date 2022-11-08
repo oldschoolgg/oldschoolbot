@@ -232,8 +232,9 @@ setItemAlias(23_639, "Dharok's helm (LMS)");
 setItemAlias(25_515, "Dharok's platebody (LMS)");
 setItemAlias(23_633, "Dharok's platelegs (LMS)");
 setItemAlias(25_516, "Dharok's greataxe (LMS)");
-// Weird/broken/untradeable items
+// Weird/broken/untradeable/scam/similarly named items
 setItemAlias(19_559, 'Elysian spirit shield dust');
+setItemAlias(2422, "Wise old man's partyhat");
 // Metamorphs
 setItemAlias(24_555, 'Crystal tangleroot');
 setItemAlias(24_557, 'Dragonfruit tangleroot');

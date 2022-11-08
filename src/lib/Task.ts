@@ -91,6 +91,7 @@ import { tokkulShopTask } from '../tasks/minions/tokkulShopActivity';
 import { vmTask } from '../tasks/minions/volcanicMineActivity';
 import { wealthChargeTask } from '../tasks/minions/wealthChargingActivity';
 import { woodcuttingTask } from '../tasks/minions/woodcuttingActivity';
+import { guardiansOfTheRiftTask } from './../tasks/minions/minigames/guardiansOfTheRiftActivity';
 import { modifyBusyCounter } from './busyCounterCache';
 import { convertStoredActivityToFlatActivity, prisma } from './settings/prisma';
 import { activitySync, minionActivityCache, minionActivityCacheDelete } from './settings/settings';
@@ -168,6 +169,10 @@ export const tasks: MinionTask[] = [
 	titheFarmTask,
 	temporossTask,
 	smithingTask,
+	shootingStarTask,
+	guardiansOfTheRiftTask,
+	butlerTask,
+	tiaraRunecraftTask,
 	nexTask,
 	bathhouseTask,
 	disassemblingTask,
@@ -183,12 +188,9 @@ export const tasks: MinionTask[] = [
 	researchActivityTask,
 	vasaTask,
 	dungeoneeringTask,
-	butlerTask,
-	shootingStarTask,
 	fogTask,
 	scTask,
-	bossEventTask,
-	tiaraRunecraftTask
+	bossEventTask
 ];
 
 export async function syncActivityCache() {
@@ -235,7 +237,7 @@ const ignored: activity_type_enum[] = [
 	activity_type_enum.BirthdayEvent,
 	activity_type_enum.BlastFurnace,
 	activity_type_enum.Easter,
-	activity_type_enum.TrickOrTreat,
+	activity_type_enum.HalloweenMiniMinigame,
 	activity_type_enum.BossEvent
 ];
 for (const a of Object.values(activity_type_enum)) {

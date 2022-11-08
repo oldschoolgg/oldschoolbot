@@ -8,7 +8,7 @@ import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/inve
 import { darkAltarCommand } from '../../lib/minions/functions/darkAltarCommand';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import { RunecraftActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../lib/util';
+import { formatDuration, itemID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../lib/util/determineRunes';
@@ -37,7 +37,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 					...Runecraft.Runes.map(i => i.name),
 					'blood rune',
 					'soul rune',
-					...Runecraft.Tiara.map(i => i.name)
+					...Runecraft.Tiaras.map(i => i.name)
 				]
 					.filter(name => (!value ? true : name.toLowerCase().includes(value.toLowerCase())))
 					.map(i => ({
@@ -81,7 +81,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 			rune = rune.slice(0, rune.length - 1);
 		}
 
-		const tiaraObj = Runecraft.Tiara.find(_tiara => stringMatches(_tiara.name, rune));
+		const tiaraObj = Runecraft.Tiaras.find(_tiara => stringMatches(_tiara.name, rune));
 
 		if (tiaraObj) {
 			return tiaraRunecraftCommand({ user, channelID, name: rune, quantity });
@@ -155,8 +155,9 @@ export const runecraftCommand: OSBMahojiCommand = {
 
 		// For each pouch the user has, increase their inventory size.
 		for (const pouch of Runecraft.pouches) {
-			if (user.skillLevel(SkillsEnum.Runecraft) < pouch.level) break;
+			if (user.skillLevel(SkillsEnum.Runecraft) < pouch.level) continue;
 			if (bank.has(pouch.id)) inventorySize += pouch.capacity - 1;
+			if (bank.has(pouch.id) && pouch.id === itemID('Colossal pouch')) break;
 		}
 
 		if (inventorySize > 28) boosts.push(`+${inventorySize - 28} inv spaces from pouches`);
@@ -169,6 +170,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 			tripLength *= 0.97;
 			boosts.push('3% for Runecraft cape');
 		}
+
 		const maxTripLength = calcMaxTripLength(user, 'Runecraft');
 
 		if (user.hasEquippedOrInBank(['Abyssal amulet'])) {
@@ -227,7 +229,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 		}
 
 		const numberOfInventories = Math.max(Math.ceil(quantity / inventorySize), 1);
-		const duration = numberOfInventories * tripLength;
+		let duration = numberOfInventories * tripLength;
 
 		if (duration > maxTripLength) {
 			return `${user.minionName} can't go on trips longer than ${formatDuration(
@@ -240,6 +242,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 		let imbueCasts = 0;
 		let teleportReduction = 1;
 		let removeTalismanAndOrRunes = new Bank();
+		let hasRingOfTheElements = false;
 		if (runeObj.inputTalisman) {
 			const tomeOfFire = user.hasEquipped(['Tome of fire', 'Tome of fire (empty)']) ? 0 : 7;
 			const tomeOfWater = user.hasEquipped(['Tome of water', 'Tome of water (empty)']) ? 0 : 7;
@@ -266,26 +269,45 @@ export const runecraftCommand: OSBMahojiCommand = {
 					?.clone()
 					.multiply(quantity)}.`;
 			}
-			removeTalismanAndOrRunes.add('Binding necklace', Math.max(Math.floor(numberOfInventories / 8), 1));
+			removeTalismanAndOrRunes.add(
+				'Binding necklace',
+				Math.max(Math.floor(numberOfInventories / (16 / Math.ceil(inventorySize / 28))), 1)
+			);
 			if (!user.owns(removeTalismanAndOrRunes)) {
 				return `You don't have enough Binding necklaces for this trip. You need ${Math.max(
-					Math.floor(numberOfInventories / 8),
+					Math.floor(numberOfInventories / (16 / Math.ceil(inventorySize / 28))),
 					1
 				)}x Binding necklace.`;
 			}
 			if (user.skillLevel(SkillsEnum.Crafting) >= 99 && user.hasEquippedOrInBank('Crafting cape')) {
 				teleportReduction = 2;
 			}
-			removeTalismanAndOrRunes.add(
-				'Ring of dueling(8)',
-				Math.ceil(numberOfInventories / (8 * teleportReduction))
+			const ringOfTheElementsRuneCost = determineRunes(
+				user,
+				new Bank({ 'Law rune': 1, 'Fire rune': 1, 'Water rune': 1, 'Earth rune': 1, 'Air rune': 1 })
+					.clone()
+					.multiply(numberOfInventories)
 			);
+			if (user.hasEquippedOrInBank('Ring of the elements') && bank.has(ringOfTheElementsRuneCost)) {
+				hasRingOfTheElements = true;
+				duration *= 0.97;
+				boosts.push('3% for Ring of the elements');
+				removeTalismanAndOrRunes.add(ringOfTheElementsRuneCost);
+				// if no crafting cape still consume ring of dueling charge
+				if (teleportReduction !== 2) {
+					removeTalismanAndOrRunes.add('Ring of dueling(8)', Math.ceil(numberOfInventories / 8));
+				}
+			} else {
+				removeTalismanAndOrRunes.add(
+					'Ring of dueling(8)',
+					Math.ceil(numberOfInventories / (4 * teleportReduction))
+				);
+			}
 			if (!user.owns(removeTalismanAndOrRunes)) {
 				return `You don't have enough Ring of dueling(8) for this trip. You need ${Math.ceil(
-					numberOfInventories / (8 * teleportReduction)
+					numberOfInventories / (4 * teleportReduction)
 				)}x Ring of dueling(8).`;
 			}
-
 			if (usestams) {
 				removeTalismanAndOrRunes.add('Stamina potion(4)', Math.max(Math.ceil(duration / (Time.Minute * 8)), 1));
 				if (!user.owns(removeTalismanAndOrRunes)) {
@@ -342,7 +364,9 @@ export const runecraftCommand: OSBMahojiCommand = {
 
 		if (runeObj.inputRune) {
 			response += `\nYour minion also consumed ${removeTalismanAndOrRunes}${
-				teleportReduction > 1 ? ', 50% less ring of dueling charges due to Crafting cape' : ''
+				teleportReduction > 1 && !hasRingOfTheElements
+					? ', 50% less ring of dueling charges due to Crafting cape'
+					: ''
 			}.`;
 		}
 

@@ -26,10 +26,12 @@ import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import { ActivityTaskOptions } from '../types/minions';
 import { channelIsSendable, itemID, makeComponents, roll, toKMB } from '../util';
 import {
+	makeAutoContractButton,
 	makeBirdHouseTripButton,
 	makeDoClueButton,
 	makeNewSlayerTaskButton,
 	makeOpenCasketButton,
+	makeOpenSeedPackButton,
 	makeRepeatTripButton
 } from './globalInteractions';
 import { sendToChannelID } from './webhook';
@@ -315,6 +317,10 @@ export async function handleTripFinish(
 		const { currentTask } = await getUsersCurrentSlayerInfo(user.id);
 		if ((currentTask === null || currentTask.quantity_remaining <= 0) && data.type === 'MonsterKilling') {
 			components.push(makeNewSlayerTaskButton());
+		}
+		if (loot?.has('Seed pack')) {
+			components.push(makeAutoContractButton());
+			components.push(makeOpenSeedPackButton());
 		}
 	}
 	handleTriggerShootingStar(user, data, components);

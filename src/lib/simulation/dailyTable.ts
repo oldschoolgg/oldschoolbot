@@ -23,7 +23,7 @@ const UncommonTable = new LootTable()
 	.add("Diango's claws");
 
 const CommonTable = new LootTable()
-	.add('Event rpg', 1, 2)
+	.add('Goblin paint cannon', 1, 2)
 	.add('Green banner', 1, 2)
 	.add('Spinning plate', [1, 20])
 	.add('Brown toy horsey')
