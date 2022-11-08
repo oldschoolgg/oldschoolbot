@@ -436,7 +436,7 @@ export const farmingTask: MinionTask = {
 					  })
 					: undefined,
 				data,
-				null
+				loot
 			);
 		}
 	}
