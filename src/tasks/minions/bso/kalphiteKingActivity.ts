@@ -19,10 +19,11 @@ import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { sendToChannelID } from '../../../lib/util/webhook';
 import { updateBankSetting } from '../../../mahoji/mahojiSettings';
 
-interface NexUser {
+interface KalphiteKingUser {
 	id: string;
 	chanceOfDeath: number;
 	damageDone: number;
+	user: MUser;
 }
 
 export const kalphiteKingTask: MinionTask = {
@@ -32,14 +33,14 @@ export const kalphiteKingTask: MinionTask = {
 		const teamsLoot = new TeamLoot([]);
 		const kcAmounts: { [key: string]: number } = {};
 
-		const parsedUsers: NexUser[] = [];
+		const parsedUsers: KalphiteKingUser[] = [];
 
 		// For each user in the party, calculate their damage and death chance.
 		for (const id of users) {
-			const user = await mUserFetch(id);
+			const user = await mUserFetch(id).catch(noOp);
 			if (!user) continue;
 			const [data] = getKalphiteKingGearStats(user, users);
-			parsedUsers.push({ ...data, id: user.id });
+			parsedUsers.push({ ...data, id: user.id, user });
 		}
 
 		// Store total amount of deaths
@@ -81,7 +82,7 @@ export const kalphiteKingTask: MinionTask = {
 			kcAmounts[winner] = Boolean(kcAmounts[winner]) ? ++kcAmounts[winner] : 1;
 		}
 
-		const leaderUser = await mUserFetch(userID);
+		const leaderUser = parsedUsers.find(p => p.id === userID)?.user ?? parsedUsers[0].user;
 		let resultStr = `${leaderUser}, your party finished killing ${quantity}x ${KalphiteKingMonster.name}!\n\n`;
 
 		let soloXP = '';
@@ -90,7 +91,7 @@ export const kalphiteKingTask: MinionTask = {
 
 		const totalLoot = new Bank();
 		for (let [userID, loot] of teamsLoot.entries()) {
-			const user = await mUserFetch(userID).catch(noOp);
+			const { user } = parsedUsers.find(p => p.id === userID)!;
 			if (!user) continue;
 			totalLoot.add(loot);
 			const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
@@ -166,7 +167,7 @@ export const kalphiteKingTask: MinionTask = {
 		if (deathEntries.length > 0) {
 			const deaths = [];
 			for (const [id, qty] of deathEntries) {
-				const user = await mUserFetch(id);
+				const { user } = parsedUsers.find(p => p.id === id)!;
 				deaths.push(`**${user.usernameOrMention}**: ${qty}x`);
 			}
 			resultStr += `\n**Deaths**: ${deaths.join(', ')}.`;
