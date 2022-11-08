@@ -192,6 +192,11 @@ export const Minigames: readonly BotMinigame[] = [
 		column: 'trouble_brewing'
 	},
 	{
+		name: 'Guardians Of The Rift',
+		aliases: ['guardians of the rift', 'gotr', 'guardian of the rift'],
+		column: 'guardians_of_the_rift'
+	},
+	{
 		name: 'Fist of Guthix',
 		aliases: ['fist of guthix', 'fog'],
 		column: 'fist_of_guthix'

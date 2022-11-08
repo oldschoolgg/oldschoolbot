@@ -24,9 +24,6 @@ export interface KibbleOptions extends ActivityTaskOptions {
 	quantity: number;
 	kibbleType: Kibble['type'];
 }
-export interface TrickOrTreatOptions extends ActivityTaskOptions {
-	rolls: number;
-}
 
 export interface ActivityTaskOptionsWithQuantity extends ActivityTaskOptions {
 	quantity: number;
@@ -389,6 +386,13 @@ export interface PuroPuroActivityTaskOptions extends MinigameActivityTaskOptions
 	quantity: number;
 	implingID: number | null;
 	darkLure: boolean;
+}
+
+export interface GuardiansOfTheRiftActivityTaskOptions extends MinigameActivityTaskOptions {
+	minedFragments: number;
+	barrierAndGuardian: number;
+	rolls: number;
+	combinationRunes: boolean;
 }
 
 export type ActivityTaskData =

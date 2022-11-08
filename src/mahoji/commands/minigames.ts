@@ -22,6 +22,7 @@ import { castleWarsStartCommand, castleWarsStatsCommand } from '../lib/abstracte
 import { fishingTrawlerCommand } from '../lib/abstracted_commands/fishingTrawler';
 import { gauntletCommand } from '../lib/abstracted_commands/gauntletCommand';
 import { gnomeRestaurantCommand } from '../lib/abstracted_commands/gnomeRestaurantCommand';
+import { guardiansOfTheRiftStartCommand } from '../lib/abstracted_commands/guardiansOfTheRiftCommand';
 import { lmsCommand } from '../lib/abstracted_commands/lmsCommand';
 import { mageArena2Command } from '../lib/abstracted_commands/mageArena2Command';
 import { mageArenaCommand } from '../lib/abstracted_commands/mageArenaCommand';
@@ -808,6 +809,26 @@ export const minigamesCommand: OSBMahojiCommand = {
 					description: 'Start a trip.'
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			name: 'gotr',
+			description: 'The Guardians of the Rift minigame.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'start',
+					description: 'Start a trip.',
+					options: [
+						{
+							name: 'combination_runes',
+							description: 'Craft combination runes giving additional points.',
+							type: ApplicationCommandOptionType.Boolean,
+							required: false
+						}
+					]
+				}
+			]
 		}
 	],
 	run: async ({
@@ -868,6 +889,9 @@ export const minigamesCommand: OSBMahojiCommand = {
 		};
 		trouble_brewing?: {
 			start?: {};
+		};
+		gotr?: {
+			start?: { combination_runes?: boolean };
 		};
 	}>) => {
 		const user = await mUserFetch(userID);
@@ -1120,8 +1144,22 @@ export const minigamesCommand: OSBMahojiCommand = {
 			return agilityArenaXPCommand(user, options.agility_arena.xp.quantity);
 		}
 
+		/**
+		 *
+		 * Trouble Brewing
+		 *
+		 */
 		if (options.trouble_brewing) {
 			return troubleBrewingStartCommand(user, channelID);
+		}
+
+		/**
+		 *
+		 * Guardians Of The Rift
+		 *
+		 */
+		if (options.gotr) {
+			return guardiansOfTheRiftStartCommand(user, channelID, options.gotr.start?.combination_runes);
 		}
 
 		return 'Invalid command.';

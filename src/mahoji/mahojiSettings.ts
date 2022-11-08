@@ -671,15 +671,8 @@ export type ClientBankKey =
 	| 'degraded_items_cost'
 	| 'tks_cost'
 	| 'tks_loot'
-	| 'zippy_loot'
-	| 'trip_doubling_loot'
-	| 'nex_cost'
-	| 'vasa_loot'
-	| 'ods_loot'
-	| 'nex_loot'
-	| 'tame_merging_cost'
-	| 'naxxus_loot'
-	| 'naxxus_cost'
+	| 'gotr_cost'
+	| 'gotr_loot'
 	| 'ignecarus_cost'
 	| 'ignecarus_loot'
 	| 'kibble_cost'
@@ -708,8 +701,7 @@ export type ClientBankKey =
 	| 'bb_cost'
 	| 'bb_loot'
 	| 'moktang_cost'
-	| 'moktang_loot'
-	| 'kk_cost';
+	| 'moktang_loot';
 
 export async function updateBankSetting(key: ClientBankKey, bankToAdd: Bank) {
 	if (bankToAdd === undefined || bankToAdd === null) throw new Error(`Gave null bank for ${key}`);

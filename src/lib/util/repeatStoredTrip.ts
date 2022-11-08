@@ -60,6 +60,7 @@ import type {
 	WoodcuttingActivityTaskOptions
 } from '../types/minions';
 import { itemNameFromID } from '../util';
+import { GuardiansOfTheRiftActivityTaskOptions } from './../types/minions';
 
 export const taskCanBeRepeated = (type: activity_type_enum) =>
 	!(
@@ -71,7 +72,6 @@ export const taskCanBeRepeated = (type: activity_type_enum) =>
 			activity_type_enum.Easter,
 			activity_type_enum.TokkulShop,
 			activity_type_enum.FishingContest,
-			activity_type_enum.TrickOrTreat,
 			activity_type_enum.BossEvent,
 			activity_type_enum.Birdhouse,
 			activity_type_enum.HalloweenMiniMinigame
@@ -84,10 +84,6 @@ export const tripHandlers = {
 		args: () => ({})
 	},
 	[activity_type_enum.BossEvent]: {
-		commandName: 'm',
-		args: () => ({})
-	},
-	[activity_type_enum.TrickOrTreat]: {
 		commandName: 'm',
 		args: () => ({})
 	},
@@ -630,6 +626,14 @@ export const tripHandlers = {
 		args: () => ({
 			stealing_creation: {
 				start: {}
+			}
+		})
+	},
+	[activity_type_enum.GuardiansOfTheRift]: {
+		commandName: 'minigames',
+		args: (data: GuardiansOfTheRiftActivityTaskOptions) => ({
+			gotr: {
+				start: { combination_runes: data.combinationRunes }
 			}
 		})
 	}
