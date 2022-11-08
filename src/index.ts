@@ -181,7 +181,16 @@ client.on('interactionCreate', async interaction => {
 		}
 	} catch (err) {
 		if (err instanceof UserError && interaction.isRepliable()) {
-			await interactionReply(interaction, err.message);
+			if (interaction.replied) {
+				logErrorForInteraction(
+					new Error(
+						`Tried to respond with '${err.message}' to this interaction, but it was already replied too.`
+					),
+					interaction
+				);
+			} else {
+				await interactionReply(interaction, err.message);
+			}
 			return;
 		}
 		logErrorForInteraction(err, interaction);
