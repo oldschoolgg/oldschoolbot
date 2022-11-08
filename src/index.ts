@@ -1,3 +1,4 @@
+import 'source-map-support/register';
 import './lib/data/itemAliases';
 import './lib/crons';
 import './lib/MUser';
@@ -12,20 +13,19 @@ import { join } from 'path';
 
 import { botToken, CLIENT_ID, DEV_SERVER_ID, production, SENTRY_DSN, SupportServer } from './config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from './lib/blacklists';
-import { Channel, Events, SILENT_ERROR } from './lib/constants';
+import { Channel, Events } from './lib/constants';
 import { onMessage } from './lib/events';
 import { makeServer } from './lib/http';
 import { modalInteractionHook } from './lib/modals';
 import { runStartupScripts } from './lib/startupScripts';
 import { OldSchoolBotClient } from './lib/structures/OldSchoolBotClient';
 import { syncActivityCache } from './lib/Task';
-import { UserError } from './lib/UserError';
 import { assert, runTimedLoggedFn } from './lib/util';
 import { CACHED_ACTIVE_USER_IDS, syncActiveUserIDs } from './lib/util/cachedUserIDs';
 import { interactionHook } from './lib/util/globalInteractions';
-import { interactionReply } from './lib/util/interactionReply';
+import { handleInteractionError } from './lib/util/interactionReply';
 import { startLog } from './lib/util/log';
-import { logError, logErrorForInteraction } from './lib/util/logError';
+import { logError } from './lib/util/logError';
 import { sendToChannelID } from './lib/util/webhook';
 import { onStartup } from './mahoji/lib/events';
 import { postCommand } from './mahoji/lib/postCommand';
@@ -163,37 +163,11 @@ client.on('interactionCreate', async interaction => {
 
 		const result = await mahojiClient.parseInteraction(interaction);
 		if (result === null) return;
-
 		if (isObject(result) && 'error' in result) {
-			if (result.error.message === SILENT_ERROR) return;
-			if (result.error instanceof UserError && interaction.isRepliable() && !interaction.replied) {
-				await interaction.reply(result.error.message);
-				return;
-			}
-			logErrorForInteraction(result.error, interaction);
-			if (interaction.isChatInputCommand()) {
-				try {
-					await interactionReply(interaction, 'Sorry, an error occured while trying to run this command.');
-				} catch (err: unknown) {
-					logErrorForInteraction(err, interaction);
-				}
-			}
+			handleInteractionError(result.error, interaction);
 		}
 	} catch (err) {
-		if (err instanceof UserError && interaction.isRepliable()) {
-			if (interaction.replied) {
-				logErrorForInteraction(
-					new Error(
-						`Tried to respond with '${err.message}' to this interaction, but it was already replied too.`
-					),
-					interaction
-				);
-			} else {
-				await interactionReply(interaction, err.message);
-			}
-			return;
-		}
-		logErrorForInteraction(err, interaction);
+		handleInteractionError(err, interaction);
 	}
 });
 
