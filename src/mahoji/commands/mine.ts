@@ -225,10 +225,16 @@ export const mineCommand: OSBMahojiCommand = {
 			name: 'name',
 			description: 'The thing you want to mine.',
 			required: true,
-			choices: Mining.Ores.map(i => ({
-				name: i.name,
-				value: i.name
-			}))
+			choices: [
+				...Mining.Ores.map(i => ({
+					name: i.name,
+					value: i.name
+				})),
+				...Mining.MiscMinings.map(i => ({
+					name: i.name,
+					value: i.name
+				}))
+			]
 		},
 		{
 			type: ApplicationCommandOptionType.Integer,

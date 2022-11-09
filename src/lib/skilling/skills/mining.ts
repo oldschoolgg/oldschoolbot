@@ -4,6 +4,19 @@ import { Emoji } from '../../constants';
 import itemID from '../../util/itemID';
 import { Ore, SkillsEnum } from '../types';
 
+export interface MiscMining {
+	level: number;
+	xp: number;
+	id: number;
+	name: string;
+	respawnTime: number;
+	bankingTime: number;
+	slope: number;
+	intercept: number;
+	petChance?: number;
+	clueScrollChance?: number;
+}
+
 const GemRockTable = new LootTable()
 	.add('Uncut opal', 1, 60)
 	.add('Uncut jade', 1, 30)
@@ -116,17 +129,6 @@ const ores: Ore[] = [
 	},
 	{
 		level: 30,
-		xp: 60,
-		id: 12_011,
-		name: 'Motherlode mine',
-		respawnTime: 5.5,
-		bankingTime: 60,
-		slope: 0.181,
-		intercept: 23.48,
-		petChance: 247_200
-	},
-	{
-		level: 30,
 		xp: 5,
 		id: 7936,
 		name: 'Pure essence',
@@ -159,18 +161,6 @@ const ores: Ore[] = [
 		intercept: 10.01,
 		petChance: 741_600,
 		clueScrollChance: 741_600
-	},
-	{
-		level: 40,
-		xp: 65,
-		id: 1625,
-		name: 'Gem rock',
-		respawnTime: 3,
-		bankingTime: 16,
-		slope: 0.18,
-		intercept: 10.04,
-		petChance: 211_886,
-		clueScrollChance: 211_886
 	},
 	{
 		level: 40,
@@ -257,6 +247,32 @@ const ores: Ore[] = [
 	}
 ];
 
+const MiscMinings: MiscMining[] = [
+	{
+		level: 30,
+		xp: 60,
+		id: 12_011,
+		name: 'Motherlode mine',
+		respawnTime: 5.5,
+		bankingTime: 60,
+		slope: 0.181,
+		intercept: 23.48,
+		petChance: 247_200
+	},
+	{
+		level: 40,
+		xp: 65,
+		id: 1625,
+		name: 'Gem rock',
+		respawnTime: 3,
+		bankingTime: 16,
+		slope: 0.18,
+		intercept: 10.04,
+		petChance: 211_886,
+		clueScrollChance: 211_886
+	}
+];
+
 const prospectorItems: { [key: number]: number } = {
 	[itemID('Prospector helmet')]: 0.4,
 	[itemID('Prospector jacket')]: 0.8,
@@ -267,6 +283,7 @@ const prospectorItems: { [key: number]: number } = {
 const Mining = {
 	aliases: ['mining'],
 	Ores: ores,
+	MiscMinings,
 	GemRockTable,
 	GraniteRockTable,
 	SandstoneRockTable,
