@@ -217,8 +217,8 @@ export async function minionKillCommand(
 	const degItemBeingUsed = [];
 	for (const degItem of degradeableItemsCanUse) {
 		const isUsing =
-			convertPvmStylesToGearSetup(attackStyles).includes(degItem.attackStyle as GearSetupType) &&
-			user.gear[degItem.attackStyle as GearSetupType].hasEquipped(degItem.item.id);
+			convertPvmStylesToGearSetup(attackStyles).includes(degItem.attackStyle) &&
+			user.gear[degItem.attackStyle].hasEquipped(degItem.item.id);
 		if (isUsing) {
 			const estimatedChargesNeeded = degItem.charges(monster, osjsMon!, totalMonsterHP);
 			await checkUserCanUseDegradeableItem({
