@@ -911,6 +911,17 @@ export const allCollectionLogs: ICollection = {
 					'Guthix engram',
 					'Fist of guthix token'
 				])
+			},
+			'Stealing Creation': {
+				alias: ['stealing creation', 'sc'],
+				items: resolveItems([
+					'Stealing creation token',
+					"Fletcher's gloves",
+					"Fletcher's boots",
+					"Fletcher's top",
+					"Fletcher's hat",
+					"Fletcher's legs"
+				])
 			}
 		}
 	},
