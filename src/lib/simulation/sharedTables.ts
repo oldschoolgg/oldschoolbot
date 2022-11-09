@@ -93,9 +93,9 @@ export const runeAlchablesTable = new LootTable()
 	.add('Rune 2h sword', [2, 5]);
 
 export const ExoticSeedsTable = new LootTable()
-	.add('Mango seed')
-	.add('Avocado seed')
-	.add('Lychee seed')
+	.add('Mango seed', 1, 2)
+	.add('Avocado seed', 1, 2)
+	.add('Lychee seed', 1, 2)
 	.add('Mysterious seed');
 
 export const BattlestaffTable = new LootTable()

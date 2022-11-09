@@ -164,7 +164,8 @@ export const enum Emoji {
 	SOTW = '<:SOTWtrophy:842938096097820693>',
 	OSRSSkull = '<:skull:863392427040440320>',
 	Invention = '<:Invention:936219232146980874>',
-	BSO = '<:BSO:863823820435619890>'
+	BSO = '<:BSO:863823820435619890>',
+	Kuro = '<:kuro:1032277900579319888>'
 }
 
 export enum ActivityGroup {

@@ -1,5 +1,14 @@
 import { EmbedBuilder, TextChannel } from 'discord.js';
-import { chunk, percentChance, randArrItem, shuffleArr, Time } from 'e';
+import {
+	calcPercentOfNum,
+	calcWhatPercent,
+	chunk,
+	percentChance,
+	randArrItem,
+	reduceNumByPercent,
+	shuffleArr,
+	Time
+} from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { OWNER_IDS, production } from '../config';
@@ -106,7 +115,13 @@ export const bossEvents: BossEvent[] = [
 				const { cl } = recip.user;
 				const items = pumpkinHeadUniqueTable.roll();
 				const numPetsInCL = cl.amount('Mini Pumpkinhead');
-				const pheadDropRate = 40 * (numPetsInCL + 1);
+				let pheadDropRate = 40 * (numPetsInCL + 1);
+				const userPhKc = recip.user.getKC(PUMPKINHEAD_ID);
+				if (numPetsInCL === 0) {
+					// 140 kc gets 60%
+					const reductionPercent = calcPercentOfNum(calcWhatPercent(Math.min(140, userPhKc), 140), 60);
+					pheadDropRate = Math.floor(reduceNumByPercent(pheadDropRate, reductionPercent));
+				}
 				if (roll(pheadDropRate)) {
 					items.add('Mini Pumpkinhead');
 				}
@@ -219,7 +234,7 @@ ${rerolledUsersStr.length > 0 ? rerolledUsersStr.join('\n') : 'Nobody was reroll
 			quantity: 1,
 			allowMoreThan1Solo: false,
 			allowMoreThan1Group: false,
-			automaticStartTime: production ? Time.Minute * 10 : Time.Second * 30,
+			automaticStartTime: production ? Time.Minute * 3 : Time.Second * 30,
 			maxSize: 500,
 			skipInvalidUsers: true,
 			speedMaxReduction: 50
