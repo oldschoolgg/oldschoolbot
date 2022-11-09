@@ -122,10 +122,10 @@ export const guardiansOfTheRiftTask: MinionTask = {
 		let rewardsGuardianLoot = new Bank();
 		let rewardsQty = 0;
 		for (let i = 0; i < quantity; i++) {
-			const thisTrip = randInt(rolls - 1, rolls);
-			rewardsQty += thisTrip;
-			rewardsGuardianLoot.add(rewardsGuardianTable.roll(thisTrip));
+			rewardsQty += randInt(rolls - 1, rolls);
 		}
+		rewardsGuardianLoot.add(rewardsGuardianTable.roll(rewardsQty));
+
 		// Only give one book:
 		if (rewardsGuardianLoot.has("Atlax's diary")) {
 			if (user.cl.has("Atlax's diary")) {
