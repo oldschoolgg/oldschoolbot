@@ -126,7 +126,7 @@ export const guardiansOfTheRiftTask: MinionTask = {
 			rewardsQty += randInt(rolls - 1, rolls);
 		}
 		const flappyRes = await userHasFlappy({ user, duration });
-		if (flappyRes?.shouldGiveBoost) rewardsQty *= 2;
+		if (flappyRes.shouldGiveBoost) rewardsQty *= 2;
 		rewardsGuardianLoot.add(rewardsGuardianTable.roll(rewardsQty));
 
 		const totalLoot = new Bank();
@@ -155,7 +155,7 @@ export const guardiansOfTheRiftTask: MinionTask = {
 				? ` ${Math.floor((setBonus - 1) * 100)}% Quantity bonus for Raiments Of The Eye Set Items`
 				: ''
 		}. ${xpResRunecraft} ${xpResCrafting} ${xpResMining}`;
-		if (flappyRes) str += `\n${flappyRes.userMsg}`;
+		if (flappyRes.userMsg) str += `\n${flappyRes.userMsg}`;
 
 		if (rewardsGuardianLoot.amount('Abyssal Protector') > 0) {
 			str += "\n\n**You have a funny feeling you're being followed...**";
