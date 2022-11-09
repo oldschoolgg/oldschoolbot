@@ -1011,7 +1011,7 @@ export const toolsCommand: OSBMahojiCommand = {
 				return minionStats(mahojiUser.user);
 			}
 			if (patron.give_box) {
-				if (getUsersPerkTier(mahojiUser) < PerkTier.One) return patronMsg(PerkTier.Two);
+				if (getUsersPerkTier(mahojiUser) < PerkTier.Two) return patronMsg(PerkTier.Two);
 				return giveBox(mahojiUser, patron.give_box.user);
 			}
 			if (patron.activity_export) {
