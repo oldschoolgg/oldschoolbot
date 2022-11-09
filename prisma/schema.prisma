@@ -613,7 +613,7 @@ enum activity_type_enum {
   ClueCompletion
   Fishing
   Mining
-  MotherlodeMining 
+
   Smithing
   Woodcutting
   Questing
@@ -664,6 +664,7 @@ enum activity_type_enum {
   Raids
   Collecting
   MageTrainingArena
+  MotherlodeMining
   BlastFurnace
   MageArena2
   BigChompyBirdHunting

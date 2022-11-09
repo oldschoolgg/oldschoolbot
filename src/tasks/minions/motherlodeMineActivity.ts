@@ -22,7 +22,6 @@ export const motherlodeMiningTask: MinionTask = {
 		let bonusXP = 0;
 		let cleaningXP = 0;
 
-		console.log(oreID);
 		// If they have the entire prospector outfit, give an extra 0.5% xp bonus
 		if (
 			user.gear.skilling.hasEquipped(

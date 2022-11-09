@@ -155,9 +155,9 @@ export async function motherlodeMineCommand({
 		duration,
 		fakeDurationMax,
 		fakeDurationMin,
-		type: 'Mining'
+		type: 'MotherlodeMining'
 	});
-	let response = `${minionName(user)} is now mining ${ore.name} until your minion ${
+	let response = `${minionName(user)} is now mining at the ${ore.name} until your minion ${
 		quantity ? `mined ${quantity}x or gets tired` : 'is satisfied'
 	}, it'll take ${
 		quantity
