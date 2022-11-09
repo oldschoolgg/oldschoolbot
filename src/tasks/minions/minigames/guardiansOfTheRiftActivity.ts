@@ -126,15 +126,6 @@ export const guardiansOfTheRiftTask: MinionTask = {
 		}
 		rewardsGuardianLoot.add(rewardsGuardianTable.roll(rewardsQty));
 
-		// Only give one book:
-		if (rewardsGuardianLoot.has("Atlax's diary")) {
-			if (user.cl.has("Atlax's diary")) {
-				rewardsGuardianLoot.remove("Atlax's diary", rewardsGuardianLoot.amount("Atlax's diary"));
-			} else {
-				rewardsGuardianLoot.bank[itemID("Atlax's diary")] = 1;
-			}
-		}
-
 		const totalLoot = new Bank();
 		totalLoot.add(rewardsGuardianLoot);
 		totalLoot.add(runesLoot);
