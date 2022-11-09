@@ -16,7 +16,7 @@ import { convertMahojiCommandToAbstractCommand } from '../../mahoji/lib/util';
 import { PerkTier } from '../constants';
 import { ActivityTaskData } from '../types/minions';
 import { channelIsSendable, isGroupActivity } from '../util';
-import { interactionReply } from '../util/interactionReply';
+import { handleInteractionError, interactionReply } from '../util/interactionReply';
 import { logError } from '../util/logError';
 import { convertStoredActivityToFlatActivity, prisma } from './prisma';
 
@@ -169,13 +169,7 @@ export async function runCommand({
 		if (result && !interaction.replied) await interactionReply(interaction, result);
 		return result;
 	} catch (err: any) {
-		if (typeof err === 'string') {
-			if (channelIsSendable(channel)) {
-				channel.send(err);
-				return null;
-			}
-		}
-		error = err as Error;
+		handleInteractionError(err, interaction);
 	} finally {
 		try {
 			await postCommand({
