@@ -13,7 +13,6 @@ import {
 } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, Monsters } from 'oldschooljs';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import { addArrayOfNumbers, itemID } from 'oldschooljs/dist/util';
@@ -49,6 +48,7 @@ import reducedTimeFromKC from '../../../lib/minions/functions/reducedTimeFromKC'
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
 import { Consumable, KillableMonster } from '../../../lib/minions/types';
 import { calcPOHBoosts } from '../../../lib/poh';
+import { SkillsEnum } from '../../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../../lib/slayer/slayerUnlocks';
 import { determineBoostChoice, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../../lib/types/minions';
@@ -481,6 +481,21 @@ export async function minionKillCommand(
 		}
 	}
 
+	if (attackStyles.includes(SkillsEnum.Ranged) && user.hasEquipped('Ranged master cape')) {
+		timeToFinish *= 0.85;
+		boosts.push('15% for Ranged master cape');
+	} else if (attackStyles.includes(SkillsEnum.Magic) && user.hasEquipped('Magic master cape')) {
+		timeToFinish *= 0.85;
+		boosts.push('15% for Magic master cape');
+	} else if (
+		!attackStyles.includes(SkillsEnum.Magic) &&
+		!attackStyles.includes(SkillsEnum.Ranged) &&
+		user.hasEquipped('Attack master cape')
+	) {
+		timeToFinish *= 0.85;
+		boosts.push('15% for Attack master cape');
+	}
+
 	// If no quantity provided, set it to the max.
 	if (!quantity) {
 		if ([Monsters.Skotizo.id].includes(monster.id)) {
@@ -691,20 +706,9 @@ export async function minionKillCommand(
 		duration *= 0.9;
 	}
 
-	if (attackStyles.includes(SkillsEnum.Ranged) && user.hasEquipped('Ranged master cape')) {
-		duration *= 0.85;
-		boosts.push('15% for Ranged master cape');
-	} else if (attackStyles.includes(SkillsEnum.Magic) && user.hasEquipped('Magic master cape')) {
-		duration *= 0.85;
-		boosts.push('15% for Magic master cape');
-	} else if (user.hasEquipped('Attack master cape')) {
-		duration *= 0.85;
-		boosts.push('15% for Attack master cape');
-	}
 	if (hasBlessing && prayerPotsNeeded) {
 		const prayerPotsBank = new Bank().add('Prayer potion(4)', prayerPotsNeeded);
-		totalCost.add(prayerPotsBank);
-		await user.removeItemsFromBank(prayerPotsBank);
+		lootToRemove.add(prayerPotsBank);
 	}
 	const rangeSetup = { ...user.gear.range.raw() };
 	let usedDart = false;
@@ -825,13 +829,13 @@ export async function monsterInfo(user: MUser, name: string): CommandResponse {
 			!attackStyles.includes(SkillsEnum.Ranged) &&
 			!attackStyles.includes(SkillsEnum.Magic)
 		) {
-			timeToFinish = reduceNumByPercent(timeToFinish, 15);
+			timeToFinish = reduceNumByPercent(timeToFinish, 20);
 			ownedBoostItems.push('Dragon hunter lance');
-			totalItemBoost += 15;
+			totalItemBoost += 20;
 		} else if (user.hasEquippedOrInBank('Dragon hunter crossbow') && attackStyles.includes(SkillsEnum.Ranged)) {
-			timeToFinish = reduceNumByPercent(timeToFinish, 15);
+			timeToFinish = reduceNumByPercent(timeToFinish, 20);
 			ownedBoostItems.push('Dragon hunter crossbow');
-			totalItemBoost += 15;
+			totalItemBoost += 20;
 		}
 	}
 	// poh boosts

@@ -679,7 +679,8 @@ export function minionStatus(user: MUser) {
 		}
 		case 'HalloweenMiniMinigame':
 		case 'Easter':
-		case 'BlastFurnace': {
+		case 'BlastFurnace':
+		case 'TrickOrTreat': {
 			throw new Error('Removed');
 		}
 	}
