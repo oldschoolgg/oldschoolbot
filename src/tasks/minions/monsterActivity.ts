@@ -1,9 +1,10 @@
 import { MonsterKillOptions, Monsters } from 'oldschooljs';
 
+import { trackLoot } from '../../lib/lootTrack';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
-import { prisma, trackLoot } from '../../lib/settings/prisma';
+import { prisma } from '../../lib/settings/prisma';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { calculateSlayerPoints, getSlayerMasterOSJSbyID, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
@@ -171,12 +172,19 @@ export const monsterTask: MinionTask = {
 		});
 
 		await trackLoot({
-			loot: itemsAdded,
+			totalLoot: itemsAdded,
 			id: monster.name.toString(),
 			type: 'Monster',
 			changeType: 'loot',
 			kc: quantity,
-			duration
+			duration,
+			users: [
+				{
+					id: user.id,
+					loot: itemsAdded,
+					duration
+				}
+			]
 		});
 
 		const image =

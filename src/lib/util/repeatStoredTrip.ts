@@ -51,6 +51,7 @@ import {
 	WoodcuttingActivityTaskOptions
 } from '../types/minions';
 import { itemNameFromID } from '../util';
+import { GuardiansOfTheRiftActivityTaskOptions } from './../types/minions';
 
 export const taskCanBeRepeated = (type: activity_type_enum) =>
 	!(
@@ -415,7 +416,8 @@ export const tripHandlers = {
 			cox: {
 				start: {
 					challenge_mode: data.challengeMode,
-					type: data.users.length === 1 ? 'solo' : 'mass'
+					type: data.users.length === 1 ? 'solo' : 'mass',
+					quantity: data.quantity
 				}
 			}
 		})
@@ -498,6 +500,14 @@ export const tripHandlers = {
 			name: itemNameFromID(data.logID),
 			quantity: data.quantity,
 			powerchop: data.powerchopping
+		})
+	},
+	[activity_type_enum.GuardiansOfTheRift]: {
+		commandName: 'minigames',
+		args: (data: GuardiansOfTheRiftActivityTaskOptions) => ({
+			gotr: {
+				start: { combination_runes: data.combinationRunes }
+			}
 		})
 	},
 	[activity_type_enum.HalloweenEvent]: {

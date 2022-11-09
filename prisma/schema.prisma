@@ -116,11 +116,15 @@ model ClientStorage {
   create_loot                  Json     @default("{}") @db.Json
   tob_cost                     Json     @default("{}") @db.Json
   tob_loot                     Json     @default("{}") @db.Json
+  nex_cost                     Json     @default("{}") @db.Json
+  nex_loot                     Json     @default("{}") @db.Json
   degraded_items_cost          Json     @default("{}") @db.Json
   tks_cost                     Json     @default("{}") @db.Json
   tks_loot                     Json     @default("{}") @db.Json
   disabled_commands            String[] @db.VarChar(32)
   gp_tax_balance               BigInt   @default(0)
+  gotr_cost                    Json     @default("{}") @db.Json
+  gotr_loot                    Json     @default("{}") @db.Json
 
   @@map("clientStorage")
 }
@@ -179,8 +183,6 @@ model NewUser {
   id            String  @id @db.VarChar(19)
   username      String? @db.VarChar(32)
   pizazz_points Int     @default(0)
-
-  last_command_date DateTime? @db.Timestamp(6)
 
   // Relations
   minigame_id  Int?         @unique
@@ -399,6 +401,8 @@ model User {
 
   treats_delivered Int @default(0)
 
+  last_command_date DateTime? @db.Timestamp(6)
+
   @@index([bingo_tickets_bought])
   @@map("users")
 }
@@ -474,6 +478,7 @@ model Minigame {
   lms                     Int    @default(0)
   trouble_brewing         Int    @default(0)
   puro_puro               Int    @default(0)
+  guardians_of_the_rift   Int    @default(0)
 
   new_user NewUser?
 
@@ -679,6 +684,7 @@ enum activity_type_enum {
   PuroPuro
   Easter
   ShootingStars
+  GuardiansOfTheRift
   HalloweenEvent
 }
 

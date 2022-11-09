@@ -96,7 +96,7 @@ export const raidCommand: OSBMahojiCommand = {
 		userID,
 		channelID
 	}: CommandRunOptions<{
-		cox?: { start?: { type: 'solo' | 'mass'; challenge_mode?: boolean }; stats?: {} };
+		cox?: { start?: { type: 'solo' | 'mass'; challenge_mode?: boolean; quantity?: number }; stats?: {} };
 		tob?: { start?: { hard_mode?: boolean; max_team_size?: number }; stats?: {}; check?: { hard_mode?: boolean } };
 	}>) => {
 		if (interaction) await deferInteraction(interaction);
@@ -108,8 +108,8 @@ export const raidCommand: OSBMahojiCommand = {
 
 		if (minionIsBusy(user.id)) return "Your minion is busy, you can't do this.";
 
-		if (cox) {
-			if (cox.start) return coxCommand(channelID, user, cox.start.type, Boolean(cox.start.challenge_mode));
+		if (cox && cox.start) {
+			return coxCommand(channelID, user, cox.start.type, Boolean(cox.start.challenge_mode), cox.start.quantity);
 		}
 		if (tob?.start) {
 			return tobStartCommand(user, channelID, Boolean(tob.start.hard_mode), tob.start.max_team_size);
