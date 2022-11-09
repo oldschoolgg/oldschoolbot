@@ -11,6 +11,7 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { stringMatches } from '../../lib/util/cleanString';
 import itemID from '../../lib/util/itemID';
 import { minionName } from '../../lib/util/minionUtils';
+import { toTitleCase } from '../../lib/util/toTitleCase';
 import { motherlodeMineCommand } from '../lib/abstracted_commands/motherlodeMineCommand';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -225,16 +226,14 @@ export const mineCommand: OSBMahojiCommand = {
 			name: 'name',
 			description: 'The thing you want to mine.',
 			required: true,
-			choices: [
-				...Mining.Ores.map(i => ({
-					name: i.name,
-					value: i.name
-				})),
-				...Mining.MotherlodeMines.map(i => ({
-					name: i.name,
-					value: i.name
-				}))
-			]
+			autocomplete: async (value: string) => {
+				return [...Mining.Ores.map(i => i.name), ...Mining.MotherlodeMines.map(i => i.name)]
+					.filter(name => (!value ? true : name.toLowerCase().includes(value.toLowerCase())))
+					.map(i => ({
+						name: toTitleCase(i),
+						value: i
+					}));
+			}
 		},
 		{
 			type: ApplicationCommandOptionType.Integer,
@@ -261,7 +260,7 @@ export const mineCommand: OSBMahojiCommand = {
 		const MotherlodeMine = Mining.MotherlodeMines.find(_motherlode => stringMatches(_motherlode.name, name));
 
 		if (MotherlodeMine) {
-			return motherlodeMineCommand({ user, channelID, name });
+			return motherlodeMineCommand({ user, channelID, name, quantity, powermine });
 		}
 
 		const ore = Mining.Ores.find(
@@ -270,7 +269,6 @@ export const mineCommand: OSBMahojiCommand = {
 				stringMatches(ore.name, options.name) ||
 				stringMatches(ore.name.split(' ')[0], options.name)
 		);
-
 		if (!ore) {
 			return `Thats not a valid ore to mine. Valid ores are ${Mining.Ores.map(ore => ore.name).join(', ')}.`;
 		}
