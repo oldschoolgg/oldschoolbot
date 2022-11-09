@@ -26,7 +26,6 @@ export function deferInteraction(interaction: ButtonInteraction | ChatInputComma
 }
 
 export async function handleInteractionError(err: unknown, interaction: Interaction) {
-	console.log(`handleInteractionError called for ${interaction.user.username} Error[${err}]`);
 	// For silent errors, just return and do nothing. Users could see an error.
 	if (err instanceof Error && err.message === SILENT_ERROR) return;
 
@@ -44,5 +43,6 @@ export async function handleInteractionError(err: unknown, interaction: Interact
 			interaction
 		);
 	}
+
 	await interactionReply(interaction, err.message);
 }

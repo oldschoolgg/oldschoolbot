@@ -168,7 +168,6 @@ export async function runCommand({
 		return result;
 	} catch (err: any) {
 		handleInteractionError(err, interaction);
-		error = err as Error;
 	} finally {
 		try {
 			await postCommand({
