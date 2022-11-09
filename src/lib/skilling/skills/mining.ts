@@ -4,7 +4,7 @@ import { Emoji } from '../../constants';
 import itemID from '../../util/itemID';
 import { Ore, SkillsEnum } from '../types';
 
-export interface MiscMining {
+export interface MotherlodeMine {
 	level: number;
 	xp: number;
 	id: number;
@@ -165,6 +165,18 @@ const ores: Ore[] = [
 	{
 		level: 40,
 		xp: 65,
+		id: 1625,
+		name: 'Gem rock',
+		respawnTime: 3,
+		bankingTime: 16,
+		slope: 0.18,
+		intercept: 10.04,
+		petChance: 211_886,
+		clueScrollChance: 211_886
+	},
+	{
+		level: 40,
+		xp: 65,
 		id: 444,
 		name: 'Gold ore',
 		respawnTime: 7,
@@ -247,7 +259,7 @@ const ores: Ore[] = [
 	}
 ];
 
-const MiscMinings: MiscMining[] = [
+const MotherlodeMines: MotherlodeMine[] = [
 	{
 		level: 30,
 		xp: 60,
@@ -258,18 +270,6 @@ const MiscMinings: MiscMining[] = [
 		slope: 0.181,
 		intercept: 23.48,
 		petChance: 247_200
-	},
-	{
-		level: 40,
-		xp: 65,
-		id: 1625,
-		name: 'Gem rock',
-		respawnTime: 3,
-		bankingTime: 16,
-		slope: 0.18,
-		intercept: 10.04,
-		petChance: 211_886,
-		clueScrollChance: 211_886
 	}
 ];
 
@@ -283,7 +283,7 @@ const prospectorItems: { [key: number]: number } = {
 const Mining = {
 	aliases: ['mining'],
 	Ores: ores,
-	MiscMinings,
+	MotherlodeMines,
 	GemRockTable,
 	GraniteRockTable,
 	SandstoneRockTable,

@@ -230,7 +230,7 @@ export const mineCommand: OSBMahojiCommand = {
 					name: i.name,
 					value: i.name
 				})),
-				...Mining.MiscMinings.map(i => ({
+				...Mining.MotherlodeMines.map(i => ({
 					name: i.name,
 					value: i.name
 				}))
@@ -258,7 +258,9 @@ export const mineCommand: OSBMahojiCommand = {
 		const user = await mUserFetch(userID);
 		let { quantity, powermine, name } = options;
 
-		if (name === 'Motherlode mine') {
+		const MotherlodeMine = Mining.MotherlodeMines.find(_motherlode => stringMatches(_motherlode.name, name));
+
+		if (MotherlodeMine) {
 			return motherlodeMineCommand({ user, channelID, name });
 		}
 
