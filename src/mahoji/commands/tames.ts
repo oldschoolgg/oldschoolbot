@@ -20,7 +20,7 @@ import { Bank } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import { Canvas, CanvasRenderingContext2D, Image, loadImage } from 'skia-canvas/lib';
 
-import { badges } from '../../lib/constants';
+import { badges, PerkTier } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { getSimilarItems } from '../../lib/data/similarItems';
 import { trackLoot } from '../../lib/lootTrack';
@@ -1056,16 +1056,25 @@ async function viewCommand(user: MUser, tameID: number): CommandResponse {
 	const species = tameSpecies.find(i => i.id === tame.species_id)!;
 	const fedItems = new Bank(tame.fed_items as ItemBank);
 	const loot = new Bank(tame.max_total_loot as ItemBank);
-	const image = await makeBankImage({
-		bank: loot,
-		title: 'Total Loot From This Tame',
-		user
-	});
 	const fedImage = await makeBankImage({
 		bank: fedItems,
 		title: 'Items Fed To This Tame',
 		user
 	});
+
+	const files = [fedImage.file.attachment];
+	const isTierThree = user.perkTier() >= PerkTier.Four;
+	if (isTierThree) {
+		files.push(
+			(
+				await makeBankImage({
+					bank: loot,
+					title: 'Total Loot From This Tame',
+					user
+				})
+			).file.attachment
+		);
+	}
 
 	let content = `**Name:** ${tame.nickname ?? 'No name'}
 **Species:** ${species.name}
@@ -1084,9 +1093,12 @@ async function viewCommand(user: MUser, tameID: number): CommandResponse {
 			.map(i => `${i[1]}x ${i[0]}`)
 			.join(', ')}`;
 	}
+	if (!isTierThree) {
+		content += '\nYou need to be a Tier 3 patron to see all the loot your tame has collected.';
+	}
 	return {
 		content,
-		files: [image.file.attachment, fedImage.file.attachment]
+		files
 	};
 }
 
