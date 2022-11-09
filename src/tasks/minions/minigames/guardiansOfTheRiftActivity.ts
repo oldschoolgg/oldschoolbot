@@ -120,8 +120,19 @@ export const guardiansOfTheRiftTask: MinionTask = {
 		}
 
 		let rewardsGuardianLoot = new Bank();
+		let rewardsQty = 0;
 		for (let i = 0; i < quantity; i++) {
-			rewardsGuardianLoot.add(rewardsGuardianTable.roll(randInt(rolls - 1, rolls)));
+			const thisTrip = randInt(rolls - 1, rolls);
+			rewardsQty += thisTrip;
+			rewardsGuardianLoot.add(rewardsGuardianTable.roll(thisTrip));
+		}
+		// Only give one book:
+		if (rewardsGuardianLoot.has("Atlax's diary")) {
+			if (user.cl.has("Atlax's diary")) {
+				rewardsGuardianLoot.remove("Atlax's diary", rewardsGuardianLoot.amount("Atlax's diary"));
+			} else {
+				rewardsGuardianLoot.bank[itemID("Atlax's diary")] = 1;
+			}
 		}
 
 		const totalLoot = new Bank();
@@ -136,16 +147,14 @@ export const guardiansOfTheRiftTask: MinionTask = {
 
 		const image = await makeBankImage({
 			bank: rewardsGuardianLoot,
-			title: `Loot From ${quantity * rolls}x Rewards Guardian rolls`,
+			title: `Loot From ${rewardsQty}x Rewards Guardian rolls`,
 			user,
 			previousCL
 		});
 
 		let str = `<@${userID}>, ${
 			user.minionName
-		} finished ${quantity}x Guardians Of The Rift runs and looted the Rewards Guardian ${
-			quantity * rolls
-		}x times, also recieved: ${runesLoot}${
+		} finished ${quantity}x Guardians Of The Rift runs and looted the Rewards Guardian ${rewardsQty}x times, also recieved: ${runesLoot}${
 			setBonus - 1 > 0
 				? ` ${Math.floor((setBonus - 1) * 100)}% Quantity bonus for Raiments Of The Eye Set Items`
 				: ''
