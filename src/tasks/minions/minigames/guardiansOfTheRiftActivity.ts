@@ -120,8 +120,8 @@ export const guardiansOfTheRiftTask: MinionTask = {
 		}
 
 		let rewardsGuardianLoot = new Bank();
-		for (let i = 0; i < quantity * rolls; i++) {
-			rewardsGuardianLoot.add(rewardsGuardianTable.roll());
+		for (let i = 0; i < quantity; i++) {
+			rewardsGuardianLoot.add(rewardsGuardianTable.roll(randInt(rolls - 1, rolls)));
 		}
 
 		const totalLoot = new Bank();
