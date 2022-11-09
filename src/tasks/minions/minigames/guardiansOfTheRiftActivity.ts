@@ -126,7 +126,7 @@ export const guardiansOfTheRiftTask: MinionTask = {
 			rewardsQty += randInt(rolls - 1, rolls);
 		}
 		const flappyRes = await userHasFlappy({ user, duration });
-		if (flappyRes.shouldGiveBoost) rewardsQty *= 2;
+		if (flappyRes?.shouldGiveBoost) rewardsQty *= 2;
 		rewardsGuardianLoot.add(rewardsGuardianTable.roll(rewardsQty));
 
 		const totalLoot = new Bank();
