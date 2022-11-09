@@ -13,6 +13,7 @@ import {
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
+import { Item } from 'oldschooljs/dist/meta/types';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import { addArrayOfNumbers, itemID } from 'oldschooljs/dist/util';
 
@@ -77,7 +78,12 @@ const invalidMonsterMsg = "That isn't a valid monster.\n\nFor example, `/k name:
 
 const { floor } = Math;
 
-const degradeableItemsCanUse = [
+const degradeableItemsCanUse: {
+	item: Item;
+	attackStyle: GearSetupType;
+	charges: (killableMon: KillableMonster, monster: Monster, totalHP: number) => number;
+	boost: number;
+}[] = [
 	{
 		item: getOSItem('Sanguinesti staff'),
 		attackStyle: 'mage',
