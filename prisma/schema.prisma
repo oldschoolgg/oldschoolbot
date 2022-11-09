@@ -613,7 +613,6 @@ enum activity_type_enum {
   ClueCompletion
   Fishing
   Mining
-
   Smithing
   Woodcutting
   Questing
