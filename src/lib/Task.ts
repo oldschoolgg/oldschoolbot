@@ -63,6 +63,7 @@ import { nexTask } from '../tasks/minions/nexActivity';
 import { pickpocketTask } from '../tasks/minions/pickpocketActivity';
 import { buryingTask } from '../tasks/minions/PrayerActivity/buryingActivity';
 import { offeringTask } from '../tasks/minions/PrayerActivity/offeringActivity';
+import { scatteringTask } from '../tasks/minions/PrayerActivity/scatteringActivity';
 import { questingTask } from '../tasks/minions/questingActivity';
 import { revenantsTask } from '../tasks/minions/revenantsActivity';
 import { runecraftTask } from '../tasks/minions/runecraftActivity';
@@ -115,6 +116,7 @@ export const tasks: MinionTask[] = [
 	wintertodtTask,
 	zalcanoTask,
 	buryingTask,
+	scatteringTask,
 	offeringTask,
 	agilityTask,
 	alchingTask,
