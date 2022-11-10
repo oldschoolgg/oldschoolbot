@@ -6,6 +6,7 @@ import { SkillsEnum } from '../../../lib/skilling/types';
 import { ZalcanoActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
+import { ashSanctifierEffect } from '../monsterActivity';
 
 export const zalcanoTask: MinionTask = {
 	type: 'Zalcano',
@@ -32,13 +33,19 @@ export const zalcanoTask: MinionTask = {
 			miningXP += randInt(1100, 1400);
 		}
 
-		let xpRes = await user.addXP({
-			skillName: SkillsEnum.Mining,
-			amount: miningXP,
-			duration
-		});
-		xpRes += await user.addXP({ skillName: SkillsEnum.Smithing, amount: smithingXP });
-		xpRes += await user.addXP({ skillName: SkillsEnum.Runecraft, amount: runecraftXP });
+		const xpRes: string[] = [];
+		xpRes.push(
+			await user.addXP({
+				skillName: SkillsEnum.Mining,
+				amount: miningXP,
+				duration
+			})
+		);
+
+		xpRes.push(await user.addXP({ skillName: SkillsEnum.Smithing, amount: smithingXP }));
+		xpRes.push(await user.addXP({ skillName: SkillsEnum.Runecraft, amount: runecraftXP }));
+
+		await ashSanctifierEffect(user, loot, duration, xpRes);
 
 		if (loot.amount('Smolcano') > 0) {
 			globalClient.emit(
@@ -67,7 +74,7 @@ export const zalcanoTask: MinionTask = {
 			channelID,
 			`${user}, ${user.minionName} finished killing ${quantity}x Zalcano. Your Zalcano KC is now ${
 				kc + quantity
-			}. ${xpRes}`,
+			}.\n\n **XP Gains:** ${xpRes.join(', ')}\n`,
 			image.file.attachment,
 			data,
 			itemsAdded

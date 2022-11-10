@@ -38,6 +38,10 @@ const toggles = [
 	{
 		name: 'Disable Birdhouse Run Button',
 		bit: BitField.DisableBirdhouseRunButton
+	},
+	{
+		name: 'Disable Ash Sanctifier',
+		bit: BitField.DisableAshSanctifier
 	}
 ];
 

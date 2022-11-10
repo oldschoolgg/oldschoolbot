@@ -62,6 +62,7 @@ import {
 	RevenantOptions,
 	RunecraftActivityTaskOptions,
 	SawmillActivityTaskOptions,
+	ScatteringActivityTaskOptions,
 	SepulchreActivityTaskOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
@@ -216,6 +217,16 @@ export function minionStatus(user: MUser) {
 			const bones = Prayer.Bones.find(bones => bones.inputId === data.boneID);
 
 			return `${name} is currently burying ${data.quantity}x ${bones!.name}. ${formattedDuration} Your ${
+				Emoji.Prayer
+			} Prayer level is ${user.skillLevel(SkillsEnum.Prayer)}`;
+		}
+
+		case 'Scattering': {
+			const data = currentTask as ScatteringActivityTaskOptions;
+
+			const ashes = Prayer.Ashes.find(ashes => ashes.inputId === data.ashID);
+
+			return `${name} is currently scattering ${data.quantity}x ${ashes!.name}. ${formattedDuration} Your ${
 				Emoji.Prayer
 			} Prayer level is ${user.skillLevel(SkillsEnum.Prayer)}`;
 		}

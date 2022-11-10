@@ -27,6 +27,7 @@ import { infernoStartCommand, infernoStatsCommand } from '../lib/abstracted_comm
 import puroOptions, { puroPuroStartCommand } from '../lib/abstracted_commands/puroPuroCommand';
 import { questCommand } from '../lib/abstracted_commands/questCommand';
 import { sawmillCommand } from '../lib/abstracted_commands/sawmillCommand';
+import { scatterCommand } from '../lib/abstracted_commands/scatterCommand';
 import { warriorsGuildCommand } from '../lib/abstracted_commands/warriorsGuildCommand';
 import { ownedItemOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
@@ -315,7 +316,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 				{
 					type: ApplicationCommandOptionType.String,
 					name: 'name',
-					description: 'The item you want to enchant.',
+					description: 'The bone you want to bury.',
 					required: true,
 					autocomplete: async (value: string) => {
 						return Prayer.Bones.filter(i =>
@@ -332,7 +333,31 @@ export const activitiesCommand: OSBMahojiCommand = {
 				}
 			]
 		},
-
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'scatter',
+			description: 'Scatter ashes!',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'name',
+					description: 'The ash you want to scatter.',
+					required: true,
+					autocomplete: async (value: string) => {
+						return Prayer.Ashes.filter(i =>
+							!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
+						).map(i => ({ name: i.name, value: i.name }));
+					}
+				},
+				{
+					type: ApplicationCommandOptionType.Integer,
+					name: 'quantity',
+					description: 'The quantity you want to scatter.',
+					required: false,
+					min_value: 1
+				}
+			]
+		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'puro_puro',
@@ -418,6 +443,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 		aerial_fishing?: {};
 		enchant?: { name: string; quantity?: number };
 		bury?: { name: string; quantity?: number };
+		scatter?: { name: string; quantity?: number };
 		puro_puro?: { impling: string; dark_lure?: boolean };
 		alch?: { item: string; quantity?: number };
 		cast?: { spell: string; quantity?: number };
@@ -496,6 +522,9 @@ export const activitiesCommand: OSBMahojiCommand = {
 		}
 		if (options.bury) {
 			return buryCommand(user, channelID, options.bury.name, options.bury.quantity);
+		}
+		if (options.scatter) {
+			return scatterCommand(user, channelID, options.scatter.name, options.scatter.quantity);
 		}
 		if (options.alch) {
 			return alchCommand(interaction, channelID, user, options.alch.item, options.alch.quantity);
