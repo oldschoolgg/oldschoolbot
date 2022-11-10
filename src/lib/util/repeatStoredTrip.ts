@@ -42,6 +42,7 @@ import {
 	RevenantOptions,
 	RunecraftActivityTaskOptions,
 	SawmillActivityTaskOptions,
+	ScatteringActivityTaskOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
 	TempleTrekkingActivityTaskOptions,
@@ -151,6 +152,12 @@ export const tripHandlers = {
 		commandName: 'activities',
 		args: (data: BuryingActivityTaskOptions) => ({
 			bury: { quantity: data.quantity, name: itemNameFromID(data.boneID) }
+		})
+	},
+	[activity_type_enum.Scattering]: {
+		commandName: 'activities',
+		args: (data: ScatteringActivityTaskOptions) => ({
+			scatter: { quantity: data.quantity, name: itemNameFromID(data.ashID) }
 		})
 	},
 	[activity_type_enum.Casting]: {
