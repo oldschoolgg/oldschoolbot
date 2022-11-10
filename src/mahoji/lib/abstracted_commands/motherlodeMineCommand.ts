@@ -6,61 +6,8 @@ import Mining from '../../../lib/skilling/skills/mining';
 import { MotherlodeMiningActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, itemNameFromID, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import itemID from '../../../lib/util/itemID';
 import { minionName } from '../../../lib/util/minionUtils';
-
-export const pickaxes = [
-	{
-		id: itemID('Crystal pickaxe'),
-		ticksBetweenRolls: 2.75,
-		miningLvl: 71
-	},
-	{
-		id: itemID('Infernal pickaxe'),
-		ticksBetweenRolls: 2.83,
-		miningLvl: 61
-	},
-	{
-		id: itemID('Dragon pickaxe'),
-		ticksBetweenRolls: 2.83,
-		miningLvl: 61
-	},
-	{
-		id: itemID('Rune pickaxe'),
-		ticksBetweenRolls: 3,
-		miningLvl: 41
-	},
-	{
-		id: itemID('Adamant pickaxe'),
-		ticksBetweenRolls: 4,
-		miningLvl: 31
-	},
-	{
-		id: itemID('Mithril pickaxe'),
-		ticksBetweenRolls: 5,
-		miningLvl: 21
-	},
-	{
-		id: itemID('Black pickaxe'),
-		ticksBetweenRolls: 5,
-		miningLvl: 11
-	},
-	{
-		id: itemID('Steel pickaxe'),
-		ticksBetweenRolls: 6,
-		miningLvl: 6
-	},
-	{
-		id: itemID('Iron pickaxe'),
-		ticksBetweenRolls: 7,
-		miningLvl: 1
-	},
-	{
-		id: itemID('Bronze pickaxe'),
-		ticksBetweenRolls: 8,
-		miningLvl: 1
-	}
-];
+import { pickaxes } from '../../commands/mine';
 
 export async function motherlodeMineCommand({
 	user,
@@ -74,21 +21,19 @@ export async function motherlodeMineCommand({
 	quantity?: number;
 	powermine?: boolean;
 }) {
-	if (name !== 'Motherlode mine') {
-		return 'Invalid ore.';
-	}
-
 	if (user.skillsAsLevels.mining < 30) {
 		return `${minionName(user)} needs 30 Mining to mine ${name}.`;
 	}
 
-	const ore = Mining.Ores.find(
+	const ore = Mining.MotherlodeMines.find(
 		ore =>
 			stringMatches(ore.id, name) || stringMatches(ore.name, name) || stringMatches(ore.name.split(' ')[0], name)
 	);
 
 	if (!ore) {
-		return `Thats not a valid ore to mine. Valid ores are ${Mining.Ores.map(ore => ore.name).join(', ')}.`;
+		return `Thats not a valid ore to mine. Valid ores are ${Mining.Ores.map(ore => ore.name).join(
+			', '
+		)}, ${Mining.MotherlodeMines.map(name => name.name).join(', ')}.`;
 	}
 
 	let miningLevel = user.skillsAsLevels.mining;
