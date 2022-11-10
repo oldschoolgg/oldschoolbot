@@ -379,6 +379,7 @@ model User {
   tentacle_charges       Int @default(0)
   sang_charges           Int @default(0)
   celestial_ring_charges Int @default(0)
+  ash_sanctifier_charges Int @default(0)
 
   gp_luckypick BigInt @default(0)
   gp_dice      BigInt @default(0)
@@ -584,6 +585,7 @@ model UserStats {
   create_cost_bank       Json   @default("{}") @db.Json
   create_loot_bank       Json   @default("{}") @db.Json
   bird_eggs_offered_bank Json   @default("{}") @db.Json
+  ash_sanctifier_prayer_xp BigInt @default(0)
 
   @@map("user_stats")
 }
@@ -622,6 +624,7 @@ enum activity_type_enum {
   Smelting
   Crafting
   Burying
+  Scattering
   Offering
   FightCaves
   Wintertodt
