@@ -105,7 +105,7 @@ async function makeImage(location: MegaDuckLocation) {
 		noMoveCanvas.width
 	);
 
-	ctx.fillStyle = 'rgba(0,0,255,0.25)';
+	ctx.fillStyle = 'rgba(0,0,255,0.05)';
 	for (const [_xS, _yS] of steps) {
 		let xS = _xS - x + centerPosition;
 		let yS = _yS - y + centerPosition;
