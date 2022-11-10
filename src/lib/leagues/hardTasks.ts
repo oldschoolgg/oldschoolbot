@@ -408,7 +408,7 @@ export const hardTasks: Task[] = [
 		has: async ({ cl, herbloreStats, skillsLevels }) => {
 			return (
 				skillsLevels.farming >= 99 &&
-				skillsLevels.herblore >= 120 &&
+				skillsLevels.herblore >= 110 &&
 				cl.amount('Athelas seed') >= 3 &&
 				cl.amount('Athelas') >= 100 &&
 				cl.amount('Heat res. vial') >= 250 &&
@@ -1042,7 +1042,7 @@ export const hardTasks: Task[] = [
 		has: async ({ cl, herbloreStats, skillsLevels }) => {
 			return (
 				skillsLevels.farming >= 99 &&
-				skillsLevels.herblore >= 120 &&
+				skillsLevels.herblore >= 110 &&
 				cl.amount('Athelas seed') >= 3 &&
 				cl.amount('Athelas') >= 100 &&
 				cl.amount('Heat res. vial') >= 250 &&
