@@ -331,8 +331,8 @@ GROUP BY data->>'monsterID';`);
 				await prisma.$queryRaw`SELECT mins, COUNT(mins) FROM (SELECT ((data->>'deathTime')::int / 1000 / 60) as mins
 FROM activity
 WHERE type = 'Inferno'
-AND data->>'deathTime' IS NOT NULL) death_mins
 AND completed = true
+AND data->>'deathTime' IS NOT NULL) death_mins
 GROUP BY mins;`;
 			const buffer = await lineChart(
 				'Global Inferno Death Times',
@@ -351,8 +351,8 @@ GROUP BY mins;`;
 FROM activity
 WHERE type = 'Inferno'
 AND user_id = ${BigInt(user.id)}
-AND data->>'deathTime' IS NOT NULL) death_mins
 AND completed = true
+AND data->>'deathTime' IS NOT NULL) death_mins
 GROUP BY mins;`);
 			const buffer = await lineChart(
 				'Personal Inferno Death Times',

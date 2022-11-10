@@ -1,16 +1,16 @@
-import { randInt, Time } from 'e';
+import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { trackLoot } from '../../../lib/lootTrack';
 import Runecraft from '../../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../../lib/skilling/types';
+import { GuardiansOfTheRiftActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, itemID, itemNameFromID, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../../lib/util/determineRunes';
 import { pickaxes, varrockArmours } from '../../commands/mine';
 import { updateBankSetting, userHasGracefulEquipped } from '../../mahojiSettings';
-import { GuardiansOfTheRiftActivityTaskOptions } from './../../../lib/types/minions';
 
 export async function guardiansOfTheRiftStartCommand(
 	user: MUser,
@@ -174,8 +174,7 @@ export async function guardiansOfTheRiftStartCommand(
 	// 5.5 rolls, 120 is average mined essences, 14 is averge created guardians/barriers per game at max efficiency
 	minedFragments = Math.round(randomVariation(minedFragments, 10));
 	barrierAndGuardian = Math.round(randomVariation(barrierAndGuardian, 10));
-	rolls = Math.min(Math.round(Math.max(rolls, 1)), 6);
-	rolls = randInt(Math.max(rolls - 1, 1), rolls);
+	rolls = Math.max(rolls, 1);
 
 	await addSubTaskToActivityTask<GuardiansOfTheRiftActivityTaskOptions>({
 		quantity,
