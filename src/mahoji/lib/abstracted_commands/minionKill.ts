@@ -12,8 +12,8 @@ import {
 } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, Monsters } from 'oldschooljs';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
+import { Item } from 'oldschooljs/dist/meta/types';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import { addArrayOfNumbers, itemID } from 'oldschooljs/dist/util';
 
@@ -43,11 +43,13 @@ import reducedTimeFromKC from '../../../lib/minions/functions/reducedTimeFromKC'
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
 import { Consumable, KillableMonster } from '../../../lib/minions/types';
 import { calcPOHBoosts } from '../../../lib/poh';
+import { SkillsEnum } from '../../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../../lib/slayer/slayerUnlocks';
 import { determineBoostChoice, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../../lib/types/minions';
 import {
 	convertAttackStyleToGearSetup,
+	convertPvmStylesToGearSetup,
 	formatDuration,
 	formatItemBoosts,
 	formatItemCosts,
@@ -76,7 +78,12 @@ const invalidMonsterMsg = "That isn't a valid monster.\n\nFor example, `/k name:
 
 const { floor } = Math;
 
-const degradeableItemsCanUse = [
+const degradeableItemsCanUse: {
+	item: Item;
+	attackStyle: GearSetupType;
+	charges: (killableMon: KillableMonster, monster: Monster, totalHP: number) => number;
+	boost: number;
+}[] = [
 	{
 		item: getOSItem('Sanguinesti staff'),
 		attackStyle: 'mage',
@@ -210,8 +217,7 @@ export async function minionKillCommand(
 	const degItemBeingUsed = [];
 	for (const degItem of degradeableItemsCanUse) {
 		const isUsing =
-			monster.attackStyleToUse &&
-			convertAttackStyleToGearSetup(monster.attackStyleToUse) === degItem.attackStyle &&
+			convertPvmStylesToGearSetup(attackStyles).includes(degItem.attackStyle) &&
 			user.gear[degItem.attackStyle].hasEquipped(degItem.item.id);
 		if (isUsing) {
 			const estimatedChargesNeeded = degItem.charges(monster, osjsMon!, totalMonsterHP);
@@ -359,6 +365,11 @@ export async function minionKillCommand(
 		quantity = Math.min(quantity, effectiveQtyRemaining);
 	}
 
+	for (const degItem of degItemBeingUsed) {
+		boosts.push(`${degItem.boost}% for ${degItem.item.name}`);
+		timeToFinish = reduceNumByPercent(timeToFinish, degItem.boost);
+	}
+
 	quantity = Math.max(1, quantity);
 	let duration = timeToFinish * quantity;
 	if (quantity > 1 && duration > maxTripLength) {
@@ -367,6 +378,15 @@ export async function minionKillCommand(
 		)}, try a lower quantity. The highest amount you can do for ${monster.name} is ${floor(
 			maxTripLength / timeToFinish
 		)}.`;
+	}
+
+	for (const degItem of degItemBeingUsed) {
+		const chargesNeeded = degItem.charges(monster, osjsMon!, monsterHP * quantity);
+		await degradeItem({
+			item: degItem.item,
+			chargesToDegrade: chargesNeeded,
+			user
+		});
 	}
 
 	const totalCost = new Bank();
@@ -510,17 +530,6 @@ export async function minionKillCommand(
 
 	// Boosts that don't affect quantity:
 	duration = randomVariation(duration, 3);
-
-	for (const degItem of degItemBeingUsed) {
-		const chargesNeeded = degItem.charges(monster, osjsMon!, monsterHP * quantity);
-		await degradeItem({
-			item: degItem.item,
-			chargesToDegrade: chargesNeeded,
-			user
-		});
-		boosts.push(`${degItem.boost}% for ${degItem.item.name}`);
-		duration = reduceNumByPercent(duration, degItem.boost);
-	}
 
 	if (isWeekend()) {
 		boosts.push('10% for Weekend');
