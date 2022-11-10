@@ -120,9 +120,11 @@ export const guardiansOfTheRiftTask: MinionTask = {
 		}
 
 		let rewardsGuardianLoot = new Bank();
-		for (let i = 0; i < quantity * rolls; i++) {
-			rewardsGuardianLoot.add(rewardsGuardianTable.roll());
+		let rewardsQty = 0;
+		for (let i = 0; i < quantity; i++) {
+			rewardsQty += randInt(rolls - 1, rolls);
 		}
+		rewardsGuardianLoot.add(rewardsGuardianTable.roll(rewardsQty));
 
 		const totalLoot = new Bank();
 		totalLoot.add(rewardsGuardianLoot);
@@ -136,16 +138,14 @@ export const guardiansOfTheRiftTask: MinionTask = {
 
 		const image = await makeBankImage({
 			bank: rewardsGuardianLoot,
-			title: `Loot From ${quantity * rolls}x Rewards Guardian rolls`,
+			title: `Loot From ${rewardsQty}x Rewards Guardian rolls`,
 			user,
 			previousCL
 		});
 
 		let str = `<@${userID}>, ${
 			user.minionName
-		} finished ${quantity}x Guardians Of The Rift runs and looted the Rewards Guardian ${
-			quantity * rolls
-		}x times, also recieved: ${runesLoot}${
+		} finished ${quantity}x Guardians Of The Rift runs and looted the Rewards Guardian ${rewardsQty}x times, also recieved: ${runesLoot}${
 			setBonus - 1 > 0
 				? ` ${Math.floor((setBonus - 1) * 100)}% Quantity bonus for Raiments Of The Eye Set Items`
 				: ''
