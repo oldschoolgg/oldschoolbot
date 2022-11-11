@@ -183,7 +183,7 @@ export async function mahojiUsersSettingsFetch(user: bigint | string, select?: P
  *
  */
 
-export const untrustedGuildSettingsCache = new LRUCache<string, Guild>({ max: 1000 });
+export const untrustedGuildSettingsCache = new LRUCache<string, Guild>({ max: 5000 });
 
 export async function mahojiGuildSettingsFetch(guild: string | DJSGuild) {
 	const id = typeof guild === 'string' ? guild : guild.id;
