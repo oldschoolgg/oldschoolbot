@@ -2,6 +2,7 @@ import { ChatInputCommandInteraction } from 'discord.js';
 import { increaseNumByPercent, reduceNumByPercent, round, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { calcBossFood } from '../../../lib/bso/calcBossFood';
 import { gorajanArcherOutfit, pernixOutfit } from '../../../lib/data/CollectionsExport';
 import { trackLoot } from '../../../lib/lootTrack';
 import { calculateMonsterFood } from '../../../lib/minions/functions';
@@ -10,7 +11,7 @@ import { NexMonster } from '../../../lib/nex';
 import { setupParty } from '../../../lib/party';
 import { MakePartyOptions } from '../../../lib/types';
 import { BossActivityTaskOptions } from '../../../lib/types/minions';
-import { calcBossFood, channelIsSendable, formatDuration, isWeekend } from '../../../lib/util';
+import { channelIsSendable, formatDuration, isWeekend } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../../lib/util/calcMassDurationQuantity';
 import { getNexGearStats } from '../../../lib/util/getNexGearStats';
