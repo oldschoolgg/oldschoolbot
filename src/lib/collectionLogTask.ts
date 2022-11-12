@@ -1,7 +1,7 @@
+import { Canvas, SKRSContext2D } from '@napi-rs/canvas';
 import { User } from '@prisma/client';
 import { calcWhatPercent, objectEntries } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { Canvas, CanvasRenderingContext2D } from 'skia-canvas/lib';
 
 import { allCollectionLogs, getCollection, getTotalCl } from '../lib/data/Collections';
 import { IToReturnCollection } from '../lib/data/CollectionsExport';
@@ -25,12 +25,12 @@ export const CollectionLogFlags = [
 class CollectionLogTask {
 	run() {}
 
-	drawBorder(ctx: CanvasRenderingContext2D, sprite: IBgSprite) {
-		return bankImageGenerator.drawBorder(ctx, sprite);
+	drawBorder(canvas: Canvas, ctx: SKRSContext2D, sprite: IBgSprite) {
+		return bankImageGenerator.drawBorder(canvas, ctx, sprite);
 	}
 
 	drawSquare(
-		ctx: CanvasRenderingContext2D,
+		ctx: SKRSContext2D,
 		x: number,
 		y: number,
 		w: number,
@@ -55,7 +55,7 @@ class CollectionLogTask {
 		ctx.restore();
 	}
 
-	drawText(ctx: CanvasRenderingContext2D, text: string, x: number, y: number) {
+	drawText(ctx: SKRSContext2D, text: string, x: number, y: number) {
 		const baseFill = ctx.fillStyle;
 		ctx.fillStyle = '#000000';
 		fillTextXTimesInCtx(ctx, text, x + 1, y + 1);
@@ -210,7 +210,7 @@ class CollectionLogTask {
 		ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
 		// Draw cl box lines
-		this.drawBorder(ctx, sprite);
+		this.drawBorder(canvas, ctx, sprite);
 		ctx.strokeStyle = sprite.oddListColor;
 		if (!fullSize) {
 			this.drawSquare(ctx, 10, 59, ctx.canvas.width - 20, boxHeight);
@@ -444,7 +444,7 @@ class CollectionLogTask {
 		}
 
 		return {
-			files: [{ attachment: await canvas.toBuffer('png'), name: `${type}_log_${new Date().valueOf()}.png` }]
+			files: [{ attachment: await canvas.toBuffer('image/png'), name: `${type}_log_${new Date().valueOf()}.png` }]
 		};
 	}
 }

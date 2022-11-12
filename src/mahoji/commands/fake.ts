@@ -1,7 +1,7 @@
+import { Canvas, loadImage, SKRSContext2D } from '@napi-rs/canvas';
 import { randInt } from 'e';
 import fs from 'fs';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
-import { Canvas, CanvasRenderingContext2D, loadImage } from 'skia-canvas/lib';
 
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -9,7 +9,7 @@ const bg = fs.readFileSync('./src/lib/resources/images/tob-bg.png');
 
 const randomMessages = ['omfgggggg', '!#@$@#$@##@$', 'adfsjklfadkjsl;l', 'l00000l wtf'];
 
-function arma(ctx: CanvasRenderingContext2D, username: string) {
+function arma(ctx: SKRSContext2D, username: string) {
 	ctx.fillText("Your Kree'arra kill count is: ", 11, 10);
 	ctx.fillStyle = '#ff0000';
 	ctx.fillText(randInt(1, 20).toString(), 12 + ctx.measureText("Your Kree'arra kill count is: ").width, 10);
@@ -31,7 +31,7 @@ function arma(ctx: CanvasRenderingContext2D, username: string) {
 	ctx.fillText(`${randMessage}*`, 12 + ctx.measureText(`${username}: `).width, 69);
 }
 
-function bandos(ctx: CanvasRenderingContext2D, username: string) {
+function bandos(ctx: SKRSContext2D, username: string) {
 	ctx.fillText('Your General Graardor kill count is: ', 11, 10);
 	ctx.fillStyle = '#ff0000';
 	ctx.fillText(randInt(1, 20).toString(), 12 + ctx.measureText('Your General Graardor kill count is: ').width, 10);
@@ -53,7 +53,7 @@ function bandos(ctx: CanvasRenderingContext2D, username: string) {
 	ctx.fillText(`${randMessage}*`, 12 + ctx.measureText(`${username}: `).width, 69);
 }
 
-function ely(ctx: CanvasRenderingContext2D, username: string) {
+function ely(ctx: SKRSContext2D, username: string) {
 	ctx.fillText('Your Corporeal Beast kill count is: ', 11, 40);
 	ctx.fillStyle = '#ff0000';
 	ctx.fillText(
@@ -71,7 +71,7 @@ function ely(ctx: CanvasRenderingContext2D, username: string) {
 	ctx.fillText('*', 12 + ctx.measureText(`${username}: `).width, 70);
 }
 
-function sara(ctx: CanvasRenderingContext2D, username: string) {
+function sara(ctx: SKRSContext2D, username: string) {
 	ctx.fillText('Your Commander Zilyana kill count is: ', 11, 10);
 	ctx.fillStyle = '#ff0000';
 	ctx.fillText(randInt(1, 20).toString(), 12 + ctx.measureText('Your Commander Zilyana kill count is: ').width, 10);
@@ -91,7 +91,7 @@ function sara(ctx: CanvasRenderingContext2D, username: string) {
 	ctx.fillText(`${randMessage}*`, 12 + ctx.measureText(`${username}: `).width, 69);
 }
 
-function scythe(ctx: CanvasRenderingContext2D, username: string) {
+function scythe(ctx: SKRSContext2D, username: string) {
 	const kc = randInt(1, 20);
 	/* Your completed Theatre of Blood count is: X. */
 	ctx.fillText('Your completed Theatre of Blood count is: ', 11, 10);
@@ -130,7 +130,7 @@ function scythe(ctx: CanvasRenderingContext2D, username: string) {
 	ctx.fillText('*', 12 + ctx.measureText(`${username}: `).width, 70);
 }
 
-function zammy(ctx: CanvasRenderingContext2D, username: string) {
+function zammy(ctx: SKRSContext2D, username: string) {
 	ctx.fillText("Your K'ril Tsutsaroth kill count is: ", 11, 10);
 	ctx.fillStyle = '#ff0000';
 	ctx.fillText(randInt(1, 20).toString(), 12 + ctx.measureText("Your K'ril Tsutsaroth kill count is: ").width, 10);
@@ -194,8 +194,8 @@ export const fakeCommand: OSBMahojiCommand = {
 				return {
 					files: [
 						{
-							attachment: await canvas.toBuffer('png'),
-							name: `${Math.round(Math.random() * 10_000)}.jpg`
+							attachment: await canvas.toBuffer('image/png'),
+							name: `${Math.round(Math.random() * 10_000)}.png`
 						}
 					]
 				};

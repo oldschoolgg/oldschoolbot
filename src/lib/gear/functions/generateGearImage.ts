@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/restrict-plus-operands */
+import { Canvas } from '@napi-rs/canvas';
 import * as fs from 'fs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
-import { Canvas } from 'skia-canvas/lib';
 
 import { Gear, maxDefenceStats, maxOffenceStats } from '../../structures/Gear';
 import { canvasImageFromBuffer, drawItemQuantityText, drawTitleText, fillTextXTimesInCtx } from '../../util/canvasUtil';
@@ -106,7 +106,7 @@ export async function generateGearImage(
 	}
 	ctx.drawImage(gearTemplateImage, 0, 0, gearTemplateImage.width, gearTemplateImage.height);
 
-	if (!userBgImage.transparent) bankImageGenerator.drawBorder(ctx, sprite, false);
+	if (!userBgImage.transparent) bankImageGenerator.drawBorder(canvas, ctx, sprite, false);
 
 	ctx.font = '16px OSRSFontCompact';
 	// Draw preset title
@@ -233,7 +233,7 @@ export async function generateGearImage(
 		}
 	}
 
-	return canvas.toBuffer('png');
+	return canvas.toBuffer('image/png');
 }
 
 export async function generateAllGearImage(user: MUser) {
@@ -319,7 +319,7 @@ export async function generateAllGearImage(user: MUser) {
 		ctx.drawImage(image, petX, petY, image.width, image.height);
 	}
 
-	if (!userBg.transparent) bankImageGenerator.drawBorder(ctx, bgSprite, false);
+	if (!userBg.transparent) bankImageGenerator.drawBorder(canvas, ctx, bgSprite, false);
 
-	return canvas.toBuffer('png');
+	return canvas.toBuffer('image/png');
 }

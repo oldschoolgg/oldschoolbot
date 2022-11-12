@@ -1,13 +1,12 @@
-import { Canvas, CanvasRenderingContext2D, Image, loadImage } from 'skia-canvas/lib';
+import { Canvas, Image, loadImage, SKRSContext2D } from '@napi-rs/canvas';
 
 import { formatItemStackQuantity, generateHexColorForCashStack } from '../util';
 
-export function fillTextXTimesInCtx(ctx: CanvasRenderingContext2D, text: string, x: number, y: number) {
-	let textPath = ctx.outlineText(text);
-	ctx.fill(textPath.offset(x, y));
+export function fillTextXTimesInCtx(ctx: SKRSContext2D, text: string, x: number, y: number) {
+	ctx.fillText(text, x, y);
 }
 
-export function drawItemQuantityText(ctx: CanvasRenderingContext2D, quantity: number, x: number, y: number) {
+export function drawItemQuantityText(ctx: SKRSContext2D, quantity: number, x: number, y: number) {
 	const quantityColor = generateHexColorForCashStack(quantity);
 	const formattedQuantity = formatItemStackQuantity(quantity);
 	ctx.font = '16px OSRSFontCompact';
@@ -20,7 +19,7 @@ export function drawItemQuantityText(ctx: CanvasRenderingContext2D, quantity: nu
 	fillTextXTimesInCtx(ctx, formattedQuantity, x, y);
 }
 
-export function drawTitleText(ctx: CanvasRenderingContext2D, title: string, x: number, y: number) {
+export function drawTitleText(ctx: SKRSContext2D, title: string, x: number, y: number) {
 	ctx.textAlign = 'center';
 	ctx.font = '16px RuneScape Bold 12';
 
@@ -36,7 +35,7 @@ export function canvasImageFromBuffer(imageBuffer: Buffer): Promise<Image> {
 }
 
 export function drawImageWithOutline(
-	ctx: CanvasRenderingContext2D,
+	ctx: SKRSContext2D,
 	image: Canvas | Image,
 	dx: number,
 	dy: number,
@@ -59,7 +58,7 @@ export function drawImageWithOutline(
 	ctx.drawImage(image, dx, dy, dw, dh);
 }
 
-function printMultilineText(ctx: CanvasRenderingContext2D, text: string, x: number, y: number) {
+function printMultilineText(ctx: SKRSContext2D, text: string, x: number, y: number) {
 	const lines = text.split(/\r?\n/);
 
 	let linePositionY = y;
@@ -73,7 +72,7 @@ function printMultilineText(ctx: CanvasRenderingContext2D, text: string, x: numb
 }
 
 // MIT Copyright (c) 2017 Antonio Román
-const textWrap = (ctx: CanvasRenderingContext2D, text: string, wrapWidth: number): string => {
+const textWrap = (ctx: SKRSContext2D, text: string, wrapWidth: number): string => {
 	const result = [];
 	const buffer = [];
 
@@ -109,12 +108,12 @@ const textWrap = (ctx: CanvasRenderingContext2D, text: string, wrapWidth: number
 	return result.join('\n');
 };
 
-export function printWrappedText(ctx: CanvasRenderingContext2D, text: string, x: number, y: number, wrapWidth: number) {
+export function printWrappedText(ctx: SKRSContext2D, text: string, x: number, y: number, wrapWidth: number) {
 	const wrappedText = textWrap(ctx, text, wrapWidth);
 	return printMultilineText(ctx, wrappedText, x, y);
 }
 
-export function getClippedRegion(image: Image | Canvas, x: number, y: number, width: number, height: number) {
+export function getClippedRegion(image: Image | Canvas, x: number, y: number, width: number, height: number): Canvas {
 	const canvas = new Canvas(width, height);
 	const ctx = canvas.getContext('2d');
 	if (image instanceof Canvas) {

@@ -1,7 +1,7 @@
+import { Canvas, Image, SKRSContext2D } from '@napi-rs/canvas';
 import { objectEntries, randInt } from 'e';
 import * as fs from 'fs';
 import path from 'path';
-import { Canvas, CanvasRenderingContext2D, Image } from 'skia-canvas/lib';
 
 import { DUNGEON_FLOOR_Y, GROUND_FLOOR_Y, HOUSE_WIDTH, Placeholders, TOP_FLOOR_Y } from './poh';
 import { getActivityOfUser } from './settings/settings';
@@ -50,7 +50,7 @@ class PoHImage {
 		}
 	}
 
-	generateCanvas(bgId: number): [Canvas, CanvasRenderingContext2D] {
+	generateCanvas(bgId: number): [Canvas, SKRSContext2D] {
 		const bgImage = this.bgImages[bgId - 1]!;
 		const canvas = new Canvas(bgImage.width, bgImage.height);
 
@@ -118,7 +118,7 @@ class PoHImage {
 			const [x, y] = this.randMinionCoords();
 			ctx.drawImage(image, x - image.width, y - image.height, image.width, image.height);
 		}
-		return canvas.toBuffer('png');
+		return canvas.toBuffer('image/png');
 	}
 }
 

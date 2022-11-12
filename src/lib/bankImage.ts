@@ -1,3 +1,4 @@
+import { Canvas, GlobalFonts, Image, loadImage, SKRSContext2D } from '@napi-rs/canvas';
 import { chunk } from 'e';
 import { existsSync } from 'fs';
 import * as fs from 'fs/promises';
@@ -6,28 +7,25 @@ import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { toKMB } from 'oldschooljs/dist/util/util';
 import * as path from 'path';
-import { Canvas, CanvasRenderingContext2D, FontLibrary, Image, loadImage } from 'skia-canvas/lib';
 
-import { BitField, PerkTier } from '../lib/constants';
-import { allCLItems } from '../lib/data/Collections';
-import { filterableTypes } from '../lib/data/filterables';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
-import { BankBackground, FlagMap, Flags } from '../lib/minions/types';
-import { BankSortMethod, BankSortMethods, sorts } from '../lib/sorts';
-import { ItemBank } from '../lib/types';
 import { addArrayOfNumbers, cleanString, formatItemStackQuantity, generateHexColorForCashStack } from '../lib/util';
-import { drawImageWithOutline, fillTextXTimesInCtx, getClippedRegion } from '../lib/util/canvasUtil';
 import itemID from '../lib/util/itemID';
-import { logError } from '../lib/util/logError';
+import { BitField, PerkTier } from './constants';
+import { allCLItems } from './data/Collections';
+import { filterableTypes } from './data/filterables';
+import { BankBackground, FlagMap, Flags } from './minions/types';
+import { BankSortMethod, BankSortMethods, sorts } from './sorts';
+import { ItemBank } from './types';
 import { UserError } from './UserError';
+import { drawImageWithOutline, fillTextXTimesInCtx, getClippedRegion } from './util/canvasUtil';
+import { logError } from './util/logError';
 
-FontLibrary.use({
-	OSRSFont: './src/lib/resources/osrs-font.ttf',
-	OSRSFontCompact: './src/lib/resources/osrs-font-compact.otf',
-	'RuneScape Bold 12': './src/lib/resources/osrs-font-bold.ttf',
-	'Smallest Pixel-7': './src/lib/resources/small-pixel.ttf',
-	'RuneScape Quill 8': './src/lib/resources/osrs-font-quill-8.ttf'
-});
+GlobalFonts.registerFromPath('./src/lib/resources/osrs-font.ttf', 'OSRSFont');
+GlobalFonts.registerFromPath('./src/lib/resources/osrs-font-compact.otf', 'OSRSFontCompact');
+GlobalFonts.registerFromPath('./src/lib/resources/osrs-font-bold.ttf', 'RuneScape Bold 12');
+GlobalFonts.registerFromPath('./src/lib/resources/small-pixel.ttf', 'Smallest Pixel-7');
+GlobalFonts.registerFromPath('./src/lib/resources/osrs-font-quill-8.ttf', 'RuneScape Quill 8');
 
 export interface BankImageResult {
 	image: Buffer;
@@ -45,10 +43,10 @@ const { floor, ceil } = Math;
 type BGSpriteName = 'dark' | 'default' | 'transparent';
 export interface IBgSprite {
 	name: BGSpriteName;
-	border: Canvas;
-	borderCorner: Canvas;
-	borderTitle: Canvas;
-	repeatableBg: Canvas;
+	border: Image;
+	borderCorner: Image;
+	borderTitle: Image;
+	repeatableBg: Image;
 	tabBorderInactive: Canvas;
 	tabBorderActive: Canvas;
 	oddListColor: string;
@@ -225,12 +223,12 @@ class BankImageTask {
 			this._bgSpriteData = d;
 			this.bgSpriteList[bgName] = {
 				name: bgName,
-				border: getClippedRegion(d, 0, 0, 18, 6),
-				borderCorner: getClippedRegion(d, 19, 0, 6, 6),
-				borderTitle: getClippedRegion(d, 26, 0, 18, 6),
+				border: await loadImage(getClippedRegion(d, 0, 0, 18, 6).toBuffer('image/png')),
+				borderCorner: await loadImage(getClippedRegion(d, 19, 0, 6, 6).toBuffer('image/png')),
+				borderTitle: await loadImage(getClippedRegion(d, 26, 0, 18, 6).toBuffer('image/png')),
 				tabBorderInactive: getClippedRegion(d, 0, 7, 75, 20),
 				tabBorderActive: getClippedRegion(d, 0, 45, 75, 20),
-				repeatableBg: getClippedRegion(d, 93, 0, 96, 65),
+				repeatableBg: await loadImage(getClippedRegion(d, 93, 0, 96, 65).toBuffer('image/png')),
 				oddListColor: colors[bgName]
 			};
 		}
@@ -308,34 +306,34 @@ class BankImageTask {
 		this.itemIconImagesCache.set(itemID, image);
 	}
 
-	drawBorder(ctx: CanvasRenderingContext2D, sprite: IBgSprite, titleLine = true) {
+	drawBorder(canvas: Canvas, ctx: SKRSContext2D, sprite: IBgSprite, titleLine = true) {
 		// Top border
 		ctx.save();
 		ctx.fillStyle = ctx.createPattern(sprite.border, 'repeat-x')!;
 		ctx.translate(0, 0);
 		ctx.scale(1, 1);
-		ctx.fillRect(0, 0, ctx.canvas.width, sprite.border.height);
+		ctx.fillRect(0, 0, canvas.width, sprite.border.height);
 		ctx.restore();
 		// Bottom border
 		ctx.save();
 		ctx.fillStyle = ctx.createPattern(sprite.border, 'repeat-x')!;
-		ctx.translate(0, ctx.canvas.height);
+		ctx.translate(0, canvas.height);
 		ctx.scale(1, -1);
-		ctx.fillRect(0, 0, ctx.canvas.width, sprite.border.height);
+		ctx.fillRect(0, 0, canvas.width, sprite.border.height);
 		ctx.restore();
 		// Right border
 		ctx.save();
 		ctx.fillStyle = ctx.createPattern(sprite.border, 'repeat-x')!;
 		ctx.rotate((Math.PI / 180) * 90);
-		ctx.translate(0, -ctx.canvas.width);
-		ctx.fillRect(0, 0, ctx.canvas.height, sprite.border.height);
+		ctx.translate(0, -canvas.width);
+		ctx.fillRect(0, 0, canvas.height, sprite.border.height);
 		ctx.restore();
 		// Left border
 		ctx.save();
 		ctx.fillStyle = ctx.createPattern(sprite.border, 'repeat-x')!;
 		ctx.rotate((Math.PI / 180) * 90);
 		ctx.scale(1, -1);
-		ctx.fillRect(0, 0, ctx.canvas.height, sprite.border.height);
+		ctx.fillRect(0, 0, canvas.height, sprite.border.height);
 		ctx.restore();
 		// Corners
 		// Top left
@@ -345,19 +343,19 @@ class BankImageTask {
 		ctx.restore();
 		// Top right
 		ctx.save();
-		ctx.translate(ctx.canvas.width, 0);
+		ctx.translate(canvas.width, 0);
 		ctx.scale(-1, 1);
 		ctx.drawImage(sprite.borderCorner, 0, 0);
 		ctx.restore();
 		// Bottom right
 		ctx.save();
-		ctx.translate(ctx.canvas.width, ctx.canvas.height);
+		ctx.translate(canvas.width, canvas.height);
 		ctx.scale(-1, -1);
 		ctx.drawImage(sprite.borderCorner, 0, 0);
 		ctx.restore();
 		// Bottom left
 		ctx.save();
-		ctx.translate(0, ctx.canvas.height);
+		ctx.translate(0, canvas.height);
 		ctx.scale(1, -1);
 		ctx.drawImage(sprite.borderCorner, 0, 0);
 		ctx.restore();
@@ -366,7 +364,7 @@ class BankImageTask {
 			ctx.save();
 			ctx.fillStyle = ctx.createPattern(sprite.borderTitle, 'repeat-x')!;
 			ctx.translate(sprite.border.height - 1, 27);
-			ctx.fillRect(0, 0, ctx.canvas.width - sprite.border.height * 2 + 2, sprite.borderTitle.height);
+			ctx.fillRect(0, 0, canvas.width - sprite.border.height * 2 + 2, sprite.borderTitle.height);
 			ctx.restore();
 		}
 	}
@@ -383,7 +381,7 @@ class BankImageTask {
 	}
 
 	async drawItems(
-		ctx: CanvasRenderingContext2D,
+		ctx: SKRSContext2D,
 		compact: boolean,
 		spacer: number,
 		itemsPerRow: number,
@@ -652,7 +650,7 @@ class BankImageTask {
 
 		// Skips border if noBorder is set
 		if (!isTransparent && noBorder !== 1) {
-			this.drawBorder(ctx, bgSprite, bgImage.name === 'Default');
+			this.drawBorder(canvas, ctx, bgSprite, bgImage.name === 'Default');
 		}
 		await this.drawItems(
 			ctx,
@@ -667,7 +665,7 @@ class BankImageTask {
 			weightings
 		);
 
-		const image = await canvas.toBuffer('png');
+		const image = await canvas.toBuffer('image/png');
 
 		return {
 			image,
