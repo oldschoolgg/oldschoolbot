@@ -203,22 +203,22 @@ class CollectionLogTask {
 		ctx.imageSmoothingEnabled = false;
 
 		// 69 = top border height + bottom border height + title space + tab space
-		const boxHeight = ctx.canvas.height - 69;
+		const boxHeight = canvas.height - 69;
 
 		// Draw base background
 		ctx.fillStyle = ctx.createPattern(sprite.repeatableBg, 'repeat')!;
-		ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 		// Draw cl box lines
 		this.drawBorder(canvas, ctx, sprite);
 		ctx.strokeStyle = sprite.oddListColor;
 		if (!fullSize) {
-			this.drawSquare(ctx, 10, 59, ctx.canvas.width - 20, boxHeight);
+			this.drawSquare(ctx, 10, 59, canvas.width - 20, boxHeight);
 			this.drawSquare(ctx, leftDivisor, 59, rightArea, 47);
 			this.drawSquare(ctx, leftDivisor, 59, rightArea, boxHeight);
 		} else {
-			this.drawSquare(ctx, 10, 59, ctx.canvas.width - 20, boxHeight);
-			this.drawSquare(ctx, 10, 59, ctx.canvas.width - 20, 47);
+			this.drawSquare(ctx, 10, 59, canvas.width - 20, boxHeight);
+			this.drawSquare(ctx, 10, 59, canvas.width - 20, 47);
 		}
 
 		// Draw Title
@@ -231,7 +231,7 @@ class CollectionLogTask {
 			userTotalCl[1],
 			userTotalCl[0]
 		).toFixed(2)}%`;
-		const titleX = ctx.canvas.width / 2 - ctx.measureText(title).width / 2;
+		const titleX = canvas.width / 2 - ctx.measureText(title).width / 2;
 		this.drawText(ctx, title, titleX, 22);
 		ctx.restore();
 
@@ -381,7 +381,7 @@ class CollectionLogTask {
 		ctx.font = '16px OSRSFontCompact';
 		ctx.fillStyle = generateHexColorForCashStack(totalPrice);
 		let value = toKMB(totalPrice);
-		this.drawText(ctx, value, ctx.canvas.width - 15 - ctx.measureText(value).width, 75 + 25);
+		this.drawText(ctx, value, canvas.width - 15 - ctx.measureText(value).width, 75 + 25);
 		ctx.restore();
 
 		if (leftListCanvas && !fullSize) {
@@ -393,7 +393,7 @@ class CollectionLogTask {
 					selectedPos += listItemSize;
 				}
 				// Canvas height - top area until list starts - left area, where list should end
-				const listHeightSpace = ctx.canvas.height - 62 - 13;
+				const listHeightSpace = canvas.height - 62 - 13;
 
 				// Check if in the start of the list
 				if (selectedPos <= listHeightSpace || selectedPos > leftListCanvas.height) {

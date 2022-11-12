@@ -381,6 +381,7 @@ class BankImageTask {
 	}
 
 	async drawItems(
+		canvas: Canvas,
 		ctx: SKRSContext2D,
 		compact: boolean,
 		spacer: number,
@@ -414,6 +415,7 @@ class BankImageTask {
 				flags.has('showNewCL') && currentCL && !currentCL.has(item.id) && allCLItems.includes(item.id);
 			if (isNewCLItem) {
 				drawImageWithOutline(
+					canvas,
 					ctx,
 					itemImage,
 					floor(xLoc + (itemSize - itemWidth) / 2) + 2,
@@ -653,6 +655,7 @@ class BankImageTask {
 			this.drawBorder(canvas, ctx, bgSprite, bgImage.name === 'Default');
 		}
 		await this.drawItems(
+			canvas,
 			ctx,
 			compact,
 			spacer,

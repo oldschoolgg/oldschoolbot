@@ -35,6 +35,7 @@ export function canvasImageFromBuffer(imageBuffer: Buffer): Promise<Image> {
 }
 
 export function drawImageWithOutline(
+	canvas: Canvas,
 	ctx: SKRSContext2D,
 	image: Canvas | Image,
 	dx: number,
@@ -52,9 +53,9 @@ export function drawImageWithOutline(
 	pctx.globalAlpha = alpha;
 	pctx.globalCompositeOperation = 'source-in';
 	pctx.fillStyle = outlineColor;
-	pctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+	pctx.fillRect(0, 0, canvas.width, canvas.height);
 	pctx.globalCompositeOperation = 'source-over';
-	ctx.drawImage(pctx.canvas, dx, dy, dw + (outlineWidth + 2), dh + (outlineWidth + 2));
+	ctx.drawImage(purplecanvas, dx, dy, dw + (outlineWidth + 2), dh + (outlineWidth + 2));
 	ctx.drawImage(image, dx, dy, dw, dh);
 }
 
