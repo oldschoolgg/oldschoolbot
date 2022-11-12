@@ -48,7 +48,8 @@ import { bool, integer, MersenneTwister19937, nodeCrypto, real, shuffle } from '
 import { CLIENT_ID, production, SupportServer } from '../config';
 import { BitField, ProjectileType, skillEmoji, usernameCache } from './constants';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
-import { Consumable } from './minions/types';
+import calculateMonsterFood from './minions/functions/calculateMonsterFood';
+import { Consumable, KillableMonster } from './minions/types';
 import { MUserClass } from './MUser';
 import { PaginatedMessage } from './PaginatedMessage';
 import { POHBoosts } from './poh';
@@ -931,4 +932,23 @@ export function getAllIDsOfUser(user: MUser) {
 
 export function isFunction(input: unknown): input is Function {
 	return typeof input === 'function';
+}
+
+export function calcBossFood(user: MUser, monster: KillableMonster, teamSize: number, quantity: number) {
+	let [healAmountNeeded] = calculateMonsterFood(monster, user);
+	const kc = user.getKC(monster.id);
+	if (kc > 50) healAmountNeeded *= 0.5;
+	else if (kc > 30) healAmountNeeded *= 0.6;
+	else if (kc > 15) healAmountNeeded *= 0.7;
+	else if (kc > 10) healAmountNeeded *= 0.8;
+	else if (kc > 5) healAmountNeeded *= 0.9;
+	healAmountNeeded /= (teamSize + 1) / 1.5;
+	let brewsNeeded = Math.ceil((healAmountNeeded * quantity) / 16);
+	if (teamSize === 1) brewsNeeded += 2;
+	const restoresNeeded = Math.ceil(brewsNeeded / 3);
+	const items = new Bank({
+		'Saradomin brew(4)': brewsNeeded,
+		'Super restore(4)': restoresNeeded
+	});
+	return items;
 }

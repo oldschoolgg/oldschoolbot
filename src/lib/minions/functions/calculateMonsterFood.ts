@@ -3,7 +3,6 @@ import { calcWhatPercent, reduceNumByPercent } from 'e';
 import { GearSetupType, GearStat } from '../../gear';
 import { inverseOfOffenceStat } from '../../gear/functions/inverseOfStat';
 import { maxDefenceStats, maxOffenceStats, readableStatName } from '../../structures/Gear';
-import killableMonsters from '../data/killableMonsters';
 import { KillableMonster } from '../types';
 
 const { floor, max } = Math;
@@ -16,7 +15,7 @@ export default function calculateMonsterFood(monster: Readonly<KillableMonster>,
 	}
 
 	if (monster.name === 'Koschei the deathless') {
-		return [killableMonsters.find(m => m.id === monster.id)!.healAmountNeeded!, ''];
+		return [monster.healAmountNeeded!, ''];
 	}
 
 	let gearToCheck: GearSetupType = 'melee';

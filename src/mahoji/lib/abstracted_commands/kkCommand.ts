@@ -12,7 +12,7 @@ import { setupParty } from '../../../lib/party';
 import { Gear } from '../../../lib/structures/Gear';
 import { MakePartyOptions } from '../../../lib/types';
 import { BossActivityTaskOptions } from '../../../lib/types/minions';
-import { channelIsSendable, formatDuration, isWeekend } from '../../../lib/util';
+import { calcBossFood, channelIsSendable, formatDuration, isWeekend } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../../lib/util/calcMassDurationQuantity';
 import { getKalphiteKingGearStats } from '../../../lib/util/getKalphiteKingGearStats';
@@ -35,7 +35,7 @@ function checkReqs(users: MUser[], monster: KillableMonster, quantity: number): 
 			return `${user.usernameOrMention} doesn't have the requirements for this monster: ${reason}`;
 		}
 
-		const potionReq = calcFood(user, users.length, quantity);
+		const potionReq = calcBossFood(user, KalphiteKingMonster, users.length, quantity);
 		if (!user.bank.has(potionReq)) {
 			return `${
 				users.length === 1 ? "You don't" : `${user.usernameOrMention} doesn't`
@@ -52,25 +52,6 @@ const minimumSoloGear = new Gear({
 	feet: 'Torva boots',
 	hands: 'Torva gloves'
 });
-
-function calcFood(user: MUser, teamSize: number, quantity: number) {
-	let [healAmountNeeded] = calculateMonsterFood(KalphiteKingMonster, user);
-	const kc = user.getKC(KalphiteKingMonster.id);
-	if (kc > 50) healAmountNeeded *= 0.5;
-	else if (kc > 30) healAmountNeeded *= 0.6;
-	else if (kc > 15) healAmountNeeded *= 0.7;
-	else if (kc > 10) healAmountNeeded *= 0.8;
-	else if (kc > 5) healAmountNeeded *= 0.9;
-	healAmountNeeded /= (teamSize + 1) / 1.5;
-	let brewsNeeded = Math.ceil((healAmountNeeded * quantity) / 16);
-	if (teamSize === 1) brewsNeeded += 2;
-	const restoresNeeded = Math.ceil(brewsNeeded / 3);
-	const items = new Bank({
-		'Saradomin brew(4)': brewsNeeded,
-		'Super restore(4)': restoresNeeded
-	});
-	return items;
-}
 
 export async function kkCommand(
 	interaction: ChatInputCommandInteraction | null,
@@ -112,7 +93,7 @@ export async function kkCommand(
 
 				// Ensure people have enough food for at least 10 kills.
 				// We don't want to overshoot, as the mass will still fail if there's not enough food
-				const potionReq = calcFood(user, 1, 10);
+				const potionReq = calcBossFood(user, KalphiteKingMonster, 1, 10);
 				if (!user.bank.has(potionReq)) {
 					return [true, `You don't have enough food. You need at least ${potionReq} to Join the mass.`];
 				}
@@ -288,7 +269,7 @@ export async function kkCommand(
 	let foodString = 'Removed brews/restores from users: ';
 	let foodRemoved: string[] = [];
 	for (const user of users) {
-		const food = calcFood(user, users.length, quantity);
+		const food = calcBossFood(user, KalphiteKingMonster, users.length, quantity);
 		if (!user.bank.has(food.bank)) {
 			return `${user.usernameOrMention} doesn't have enough brews or restores.`;
 		}
@@ -296,7 +277,7 @@ export async function kkCommand(
 
 	const removeResult = await Promise.all(
 		users.map(async user => {
-			const cost = calcFood(user, users.length, quantity);
+			const cost = calcBossFood(user, KalphiteKingMonster, users.length, quantity);
 			foodRemoved.push(`${cost} from ${user.usernameOrMention}`);
 			await user.removeItemsFromBank(cost);
 			return {
