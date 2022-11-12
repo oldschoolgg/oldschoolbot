@@ -871,6 +871,13 @@ GROUP BY "bankBackground";`);
 		run: async (_, stats) => {
 			return `You've offered... **${new Bank(stats.bird_eggs_offered_bank as ItemBank)}**.`;
 		}
+	},
+	{
+		name: 'Ashes Scattered',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(new Bank(stats.scattered_ashes_bank as ItemBank), "You've scattered...");
+		}
 	}
 ] as const;
 
