@@ -402,6 +402,8 @@ model User {
 
   last_command_date DateTime? @db.Timestamp(6)
 
+  ge_transactions GETransaction[]
+
   @@index([bingo_tickets_bought])
   @@map("users")
 }
@@ -575,14 +577,14 @@ model StashUnit {
 }
 
 model UserStats {
-  user_id                BigInt @id
-  sell_gp                BigInt @default(0)
-  items_sold_bank        Json   @default("{}") @db.Json
-  puropuro_implings_bank Json   @default("{}") @db.Json
-  passive_implings_bank  Json   @default("{}") @db.Json
-  create_cost_bank       Json   @default("{}") @db.Json
-  create_loot_bank       Json   @default("{}") @db.Json
-  bird_eggs_offered_bank Json   @default("{}") @db.Json
+  user_id                  BigInt @id
+  sell_gp                  BigInt @default(0)
+  items_sold_bank          Json   @default("{}") @db.Json
+  puropuro_implings_bank   Json   @default("{}") @db.Json
+  passive_implings_bank    Json   @default("{}") @db.Json
+  create_cost_bank         Json   @default("{}") @db.Json
+  create_loot_bank         Json   @default("{}") @db.Json
+  bird_eggs_offered_bank   Json   @default("{}") @db.Json
   ash_sanctifier_prayer_xp BigInt @default(0)
 
   @@map("user_stats")
@@ -596,6 +598,43 @@ model BingoTeam {
   third_user  String @unique @db.VarChar(19)
 
   @@map("bingo_team")
+}
+
+model GEListing {
+  id Int @id @unique @default(autoincrement())
+
+  is_open Boolean @default(true)
+
+  userfacing_id Int
+  user_id       String @db.VarChar(19)
+
+  created_at DateTime @default(now())
+
+  asking_price_per_item Int
+  item_id               Int
+  total_quantity        BigInt
+  quantity_remaining    Int
+
+  locked         Boolean         @default(false)
+  ge_transaction GETransaction[]
+
+  @@map("ge_listing")
+}
+
+model GETransaction {
+  id   Int      @id @unique @default(autoincrement())
+  date DateTime @default(now())
+
+  quantity_bought Int
+  price_per_item  Int
+
+  buyer   User   @relation(fields: [user_id], references: [id])
+  user_id String @db.VarChar(19)
+
+  ge_listing    GEListing @relation(fields: [ge_listing_id], references: [id])
+  ge_listing_id Int
+
+  @@map("ge_transaction")
 }
 
 enum command_usage_status {
