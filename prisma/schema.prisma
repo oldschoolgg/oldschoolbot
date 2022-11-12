@@ -269,8 +269,6 @@ model User {
   honour_level               Int      @default(1)
   honour_points              Int      @default(0)
   high_gambles               Int      @default(0)
-  patreon_id                 String?
-  github_id                  Int?
   carpenter_points           Int      @default(0)
   zeal_tokens                Int      @default(0)
   openable_scores            Json     @default("{}") @db.Json
