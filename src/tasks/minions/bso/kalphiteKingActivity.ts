@@ -16,7 +16,6 @@ import { BossActivityTaskOptions } from '../../../lib/types/minions';
 import { getKalphiteKingGearStats } from '../../../lib/util/getKalphiteKingGearStats';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { sendToChannelID } from '../../../lib/util/webhook';
 import { updateBankSetting } from '../../../mahoji/mahojiSettings';
 
 interface KalphiteKingUser {
@@ -175,14 +174,11 @@ export const kalphiteKingTask: MinionTask = {
 
 		if (users.length > 1) {
 			if (Object.values(kcAmounts).length === 0) {
-				sendToChannelID(channelID, {
-					content: `${users
-						.map(id => `<@${id}>`)
-						.join(' ')} Your team all died, and failed to defeat the Kalphite King.`
-				});
-			} else {
-				sendToChannelID(channelID, { content: resultStr });
+				resultStr = `${users
+					.map(id => `<@${id}>`)
+					.join(' ')} Your team all died, and failed to defeat the Kalphite King.`;
 			}
+			handleTripFinish(leaderUser, channelID, resultStr, undefined, data, null);
 		} else {
 			const image = !kcAmounts[userID]
 				? undefined
