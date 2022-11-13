@@ -1,4 +1,5 @@
-import { shootingStarsActivity, ShootingStarsData } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
+import { ShootingStarsData } from '../../lib/types/minions';
+import { shootingStarsActivity } from './minigames/shootingStarsActivity';
 
 export const shootingStarTask: MinionTask = {
 	type: 'ShootingStars',

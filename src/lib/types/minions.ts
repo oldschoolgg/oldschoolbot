@@ -325,6 +325,13 @@ export interface TokkulShopOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface ShootingStarsData extends ActivityTaskOptions {
+	size: number;
+	usersWith: number;
+	totalXp: number;
+	lootItems: ItemBank;
+}
+
 export interface PuroPuroActivityTaskOptions extends MinigameActivityTaskOptions {
 	quantity: number;
 	implingID: number | null;

@@ -1,0 +1,155 @@
+import { Ore } from '../skilling/types';
+
+export interface Star extends Ore {
+	size: number;
+	level: number;
+	chance: number;
+	dustAvailable: number;
+	additionalDustPercent: number;
+}
+export const starSizes: Star[] = [
+	{
+		size: 9,
+		level: 90,
+		id: 25_527,
+		name: 'Star 9',
+		respawnTime: 1,
+		bankingTime: 0,
+		slope: 0.01,
+		intercept: 6,
+		chance: 3,
+		dustAvailable: 15,
+		additionalDustPercent: 90,
+		xp: 244,
+		petChance: 87_840,
+		clueScrollChance: 87_840
+	},
+	{
+		size: 8,
+		level: 80,
+		id: 25_527,
+		name: 'Star 8',
+		respawnTime: 1,
+		bankingTime: 0,
+		slope: 0.03,
+		intercept: 7,
+		chance: 5,
+		dustAvailable: 40,
+		additionalDustPercent: 72,
+		xp: 162,
+		petChance: 118_035,
+		clueScrollChance: 118_035
+	},
+	{
+		size: 7,
+		level: 70,
+		id: 25_527,
+		name: 'Star 7',
+		respawnTime: 1,
+		bankingTime: 0,
+		slope: 0.04,
+		intercept: 9,
+		chance: 9,
+		dustAvailable: 40,
+		additionalDustPercent: 56,
+		xp: 123,
+		petChance: 148_230,
+		clueScrollChance: 148_230
+	},
+	{
+		size: 6,
+		level: 60,
+		id: 25_527,
+		name: 'Star 6',
+		respawnTime: 1,
+		bankingTime: 0,
+		slope: 0.051,
+		intercept: 15,
+		chance: 12,
+		dustAvailable: 80,
+		additionalDustPercent: 42,
+		xp: 74,
+		petChance: 244_305,
+		clueScrollChance: 244_305
+	},
+	{
+		size: 5,
+		level: 50,
+		id: 25_527,
+		name: 'Star 5',
+		respawnTime: 1,
+		bankingTime: 0,
+		slope: 0.071,
+		intercept: 22.9,
+		chance: 17,
+		dustAvailable: 175,
+		additionalDustPercent: 30,
+		xp: 48,
+		petChance: 373_320,
+		clueScrollChance: 373_320
+	},
+	{
+		size: 4,
+		level: 40,
+		id: 25_527,
+		name: 'Star 4',
+		respawnTime: 1,
+		bankingTime: 0,
+		slope: 0.143,
+		intercept: 29.9,
+		chance: 20,
+		dustAvailable: 300,
+		additionalDustPercent: 20,
+		xp: 31,
+		petChance: 521_550,
+		clueScrollChance: 521_550
+	},
+	{
+		size: 3,
+		level: 30,
+		id: 25_527,
+		name: 'Star 3',
+		respawnTime: 1,
+		bankingTime: 0,
+		slope: 0.194,
+		intercept: 29.8,
+		chance: 18,
+		dustAvailable: 430,
+		additionalDustPercent: 12,
+		xp: 26,
+		petChance: 554_490,
+		clueScrollChance: 554_490
+	},
+	{
+		size: 2,
+		level: 20,
+		id: 25_527,
+		name: 'Star 2',
+		respawnTime: 1,
+		bankingTime: 0,
+		slope: 0.276,
+		intercept: 29.7,
+		chance: 16,
+		dustAvailable: 700,
+		additionalDustPercent: 6,
+		xp: 22,
+		petChance: 609_390,
+		clueScrollChance: 609_390
+	},
+	{
+		size: 1,
+		level: 10,
+		id: 25_527,
+		name: 'Star 1',
+		respawnTime: 1,
+		bankingTime: 0,
+		slope: 0.714,
+		intercept: 29.3,
+		chance: 0,
+		dustAvailable: 1200,
+		additionalDustPercent: 2,
+		xp: 12,
+		petChance: 911_340,
+		clueScrollChance: 911_340
+	}
+];
