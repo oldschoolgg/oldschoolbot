@@ -4,9 +4,9 @@ import { Bank, Misc } from 'oldschooljs';
 import { Events, ZALCANO_ID } from '../../../lib/constants';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ZalcanoActivityTaskOptions } from '../../../lib/types/minions';
+import { ashSanctifierEffect } from '../../../lib/util/ashSanctifier';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { ashSanctifierEffect } from '../monsterActivity';
 
 export const zalcanoTask: MinionTask = {
 	type: 'Zalcano',
