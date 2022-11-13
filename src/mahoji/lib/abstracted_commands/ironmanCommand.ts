@@ -54,8 +54,6 @@ Type \`confirm permanent ironman\` if you understand the above information, and 
 		| 'id'
 		| 'pets'
 		| 'RSN'
-		| 'patreon_id'
-		| 'github_id'
 		| 'bitfield';
 
 	const bitFieldsToKeep: BitField[] = [
@@ -83,8 +81,6 @@ Type \`confirm permanent ironman\` if you understand the above information, and 
 		bank_sort_method: mUser.bank_sort_method,
 		bank_sort_weightings: mUser.bank_sort_weightings as ItemBank,
 		minion_bought_date: mUser.minion_bought_date,
-		github_id: mUser.github_id,
-		patreon_id: mUser.patreon_id,
 		RSN: mUser.RSN,
 		premium_balance_expiry_date: mUser.premium_balance_expiry_date,
 		premium_balance_tier: mUser.premium_balance_tier,

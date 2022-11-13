@@ -45,6 +45,10 @@ const toggles = [
 	{
 		name: 'Disable Gorajan Bonecrusher',
 		bit: BitField.DisabledGorajanBoneCrusher
+	},
+	{
+		name: 'Disable Ash Sanctifier',
+		bit: BitField.DisableAshSanctifier
 	}
 ];
 

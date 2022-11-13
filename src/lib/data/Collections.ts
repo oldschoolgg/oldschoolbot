@@ -911,6 +911,17 @@ export const allCollectionLogs: ICollection = {
 					'Guthix engram',
 					'Fist of guthix token'
 				])
+			},
+			'Stealing Creation': {
+				alias: ['stealing creation', 'sc'],
+				items: resolveItems([
+					'Stealing creation token',
+					"Fletcher's gloves",
+					"Fletcher's boots",
+					"Fletcher's top",
+					"Fletcher's hat",
+					"Fletcher's legs"
+				])
 			}
 		}
 	},
@@ -1423,7 +1434,7 @@ function getLeftList(
 	return leftList;
 }
 
-export async function getBank(user: MUser, mahojiUser: User, type: CollectionLogType) {
+export async function getBank(user: MUser, type: CollectionLogType) {
 	const userCheckBank = new Bank();
 	switch (type) {
 		case 'collection':
@@ -1440,7 +1451,7 @@ export async function getBank(user: MUser, mahojiUser: User, type: CollectionLog
 			return getUsersTamesCollectionLog(user);
 		}
 		case 'temp':
-			userCheckBank.add(mahojiUser.temp_cl as ItemBank);
+			userCheckBank.add(user.user.temp_cl as ItemBank);
 			break;
 		case 'disassembly': {
 			const items = await mahojiUsersSettingsFetch(user.id, { disassembled_items_bank: true });
@@ -1452,8 +1463,8 @@ export async function getBank(user: MUser, mahojiUser: User, type: CollectionLog
 }
 
 // Get the total items the user has in its CL and the total items to collect
-export async function getTotalCl(user: MUser, mahojiUser: User, logType: CollectionLogType) {
-	const b = await getBank(user, mahojiUser, logType);
+export async function getTotalCl(user: MUser, logType: CollectionLogType) {
+	const b = await getBank(user, logType);
 	return getUserClData(b, allCLItemsFiltered);
 }
 
@@ -1525,7 +1536,7 @@ export function getCollectionItems(collection: string, allItems = false, removeC
 	return _items;
 }
 
-function getUserClData(userBank: Bank, clItems: number[]) {
+function getUserClData(userBank: Bank, clItems: number[]): [number, number] {
 	const owned = userBank.items().filter(([item]) => clItems.includes(item.id));
 	return [clItems.length, owned.length];
 }
@@ -1552,8 +1563,7 @@ export async function getCollection(options: {
 	if (flags.tame) {
 		logType = 'tame';
 	}
-	const userCheckBank = await getBank(user, options.mahojiUser, logType);
-
+	const userCheckBank = await getBank(user, logType);
 	let clItems = getCollectionItems(search, allItems, logType === 'sacrifice');
 	const isOverall = search.toLowerCase().startsWith('overall');
 

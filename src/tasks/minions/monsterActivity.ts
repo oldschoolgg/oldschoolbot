@@ -5,6 +5,7 @@ import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 import { MysteryBoxes } from '../../lib/bsoOpenables';
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { BitField, Emoji } from '../../lib/constants';
+import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
 import { isDoubleLootActive } from '../../lib/doubleLoot';
 import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
 import { trackLoot } from '../../lib/lootTrack';
@@ -19,6 +20,7 @@ import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { calculateSlayerPoints, getSlayerMasterOSJSbyID, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { assert, clAdjustedDroprate, roll } from '../../lib/util';
+import { ashSanctifierEffect } from '../../lib/util/ashSanctifier';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
@@ -159,6 +161,7 @@ export const monsterTask: MinionTask = {
 			});
 		}
 
+		const [hasKourendHard] = await userhasDiaryTier(user, KourendKebosDiary.hard);
 		await user.incrementKC(monsterID, quantity);
 
 		// Abyssal set bonuses -- grants the user a few extra kills
@@ -226,18 +229,23 @@ export const monsterTask: MinionTask = {
 			if (isInCatacombs) loot.add('Dark totem base', newSuperiorCount);
 		}
 
-		const xpRes = await addMonsterXP(user, {
-			monsterID,
-			quantity,
-			duration,
-			isOnTask,
-			taskQuantity: quantitySlayed,
-			minimal: true,
-			usingCannon,
-			cannonMulti,
-			burstOrBarrage,
-			superiorCount: newSuperiorCount
-		});
+		const xpRes: string[] = [];
+		xpRes.push(
+			await addMonsterXP(user, {
+				monsterID,
+				quantity,
+				duration,
+				isOnTask,
+				taskQuantity: quantitySlayed,
+				minimal: true,
+				usingCannon,
+				cannonMulti,
+				burstOrBarrage,
+				superiorCount: newSuperiorCount
+			})
+		);
+
+		if (hasKourendHard) await ashSanctifierEffect(user, loot, duration, xpRes);
 
 		const superiorMessage = newSuperiorCount ? `, including **${newSuperiorCount} superiors**` : '';
 		const messages: string[] = [];

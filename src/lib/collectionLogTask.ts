@@ -169,7 +169,7 @@ class CollectionLogTask {
 
 		const fullSize = flags.nl || !collectionLog.leftList;
 
-		const userTotalCl = await getTotalCl(user, options.mahojiUser, type);
+		const userTotalCl = await getTotalCl(user, type);
 		const leftListCanvas = this.drawLeftList(collectionLog, sprite);
 
 		let leftDivisor = 214;

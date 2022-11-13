@@ -14,6 +14,7 @@ import {
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
+import { Item } from 'oldschooljs/dist/meta/types';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import { addArrayOfNumbers, itemID } from 'oldschooljs/dist/util';
 
@@ -54,6 +55,7 @@ import { determineBoostChoice, getUsersCurrentSlayerInfo } from '../../../lib/sl
 import { MonsterActivityTaskOptions } from '../../../lib/types/minions';
 import {
 	convertAttackStyleToGearSetup,
+	convertPvmStylesToGearSetup,
 	formatDuration,
 	formatItemBoosts,
 	formatItemCosts,
@@ -102,7 +104,18 @@ const gearstatToSetup = new Map()
 	.set('attack_magic', 'mage')
 	.set('attack_ranged', 'range');
 
-const degradeableItemsCanUse = [
+const degradeableItemsCanUse: {
+	item: Item;
+	attackStyle: GearSetupType;
+	charges: (
+		_killableMon: KillableMonster,
+		_monster: Monster,
+		_totalHP: number,
+		duration: number,
+		user: MUser
+	) => number;
+	boost: number;
+}[] = [
 	{
 		item: getOSItem('Sanguinesti staff'),
 		attackStyle: 'mage',
@@ -287,8 +300,7 @@ export async function minionKillCommand(
 	const degItemBeingUsed = [];
 	for (const degItemCanUse of degradeableItemsCanUse) {
 		const isUsing =
-			monster.attackStyleToUse &&
-			convertAttackStyleToGearSetup(monster.attackStyleToUse) === degItemCanUse.attackStyle &&
+			convertPvmStylesToGearSetup(attackStyles).includes(degItemCanUse.attackStyle) &&
 			user.gear[degItemCanUse.attackStyle].hasEquipped(degItemCanUse.item.id);
 		if (isUsing) {
 			const estimatedChargesNeeded = degItemCanUse.charges(
@@ -537,6 +549,11 @@ export async function minionKillCommand(
 		if (prayerPots < prayerPotsNeeded) {
 			return "You don't have enough Prayer potion(4)'s to power your Dwarven blessing.";
 		}
+	}
+
+	for (const degItem of degItemBeingUsed) {
+		boosts.push(`${degItem.boost}% for ${degItem.item.name}`);
+		timeToFinish = reduceNumByPercent(timeToFinish, degItem.boost);
 	}
 
 	quantity = Math.max(1, quantity);

@@ -159,6 +159,11 @@ export interface BuryingActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface ScatteringActivityTaskOptions extends ActivityTaskOptions {
+	ashID: number;
+	quantity: number;
+}
+
 export interface OfferingActivityTaskOptions extends ActivityTaskOptions {
 	boneID: number;
 	quantity: number;

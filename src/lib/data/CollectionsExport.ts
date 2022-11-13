@@ -1510,7 +1510,8 @@ export const troubleBrewingCL = resolveItems([
 	'Phasmatys flag',
 	'The stuff',
 	'Red rum (trouble brewing)',
-	'Blue rum (trouble brewing)'
+	'Blue rum (trouble brewing)',
+	'Jolly roger cape'
 ]);
 export const volcanicMineCL = resolveItems(['Ash covered tome', 'Large water container', 'Volcanic mine teleport']);
 export const anglerOutfit = resolveItems(['Angler hat', 'Angler top', 'Angler waders', 'Angler boots']);
