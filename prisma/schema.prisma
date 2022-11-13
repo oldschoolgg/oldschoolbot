@@ -269,8 +269,6 @@ model User {
   honour_level               Int      @default(1)
   honour_points              Int      @default(0)
   high_gambles               Int      @default(0)
-  patreon_id                 String?
-  github_id                  Int?
   carpenter_points           Int      @default(0)
   zeal_tokens                Int      @default(0)
   openable_scores            Json     @default("{}") @db.Json
@@ -404,7 +402,7 @@ model User {
 
   last_command_date DateTime? @db.Timestamp(6)
 
-  @@index([bingo_tickets_bought])
+  @@index([id, last_command_date])
   @@map("users")
 }
 
@@ -577,14 +575,15 @@ model StashUnit {
 }
 
 model UserStats {
-  user_id                BigInt @id
-  sell_gp                BigInt @default(0)
-  items_sold_bank        Json   @default("{}") @db.Json
-  puropuro_implings_bank Json   @default("{}") @db.Json
-  passive_implings_bank  Json   @default("{}") @db.Json
-  create_cost_bank       Json   @default("{}") @db.Json
-  create_loot_bank       Json   @default("{}") @db.Json
-  bird_eggs_offered_bank Json   @default("{}") @db.Json
+  user_id                  BigInt @id
+  sell_gp                  BigInt @default(0)
+  items_sold_bank          Json   @default("{}") @db.Json
+  puropuro_implings_bank   Json   @default("{}") @db.Json
+  passive_implings_bank    Json   @default("{}") @db.Json
+  create_cost_bank         Json   @default("{}") @db.Json
+  create_loot_bank         Json   @default("{}") @db.Json
+  bird_eggs_offered_bank   Json   @default("{}") @db.Json
+  scattered_ashes_bank     Json   @default("{}") @db.Json
   ash_sanctifier_prayer_xp BigInt @default(0)
 
   @@map("user_stats")
