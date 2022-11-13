@@ -402,7 +402,7 @@ model User {
 
   last_command_date DateTime? @db.Timestamp(6)
 
-  @@index([bingo_tickets_bought])
+  @@index([id, last_command_date])
   @@map("users")
 }
 
