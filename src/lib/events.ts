@@ -1,7 +1,17 @@
 import { Embed } from '@discordjs/builders';
-import { BaseMessageOptions, bold, Message, TextChannel } from 'discord.js';
+import {
+	BaseMessageOptions,
+	bold,
+	EmbedBuilder,
+	Message,
+	PermissionsBitField,
+	resolveColor,
+	TextChannel
+} from 'discord.js';
 import { roll, Time } from 'e';
+import he from 'he';
 import LRUCache from 'lru-cache';
+import fetch from 'node-fetch';
 import { Items } from 'oldschooljs';
 
 import { CLIENT_ID, production, SupportServer } from '../config';
@@ -9,11 +19,12 @@ import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionSta
 import { untrustedGuildSettingsCache } from '../mahoji/mahojiSettings';
 import { Channel, Emoji } from './constants';
 import pets from './data/pets';
+import { collectMetrics } from './metrics';
 import { prisma } from './settings/prisma';
 import { ItemBank } from './types';
-import { channelIsSendable, formatDuration, isFunction, toKMB } from './util';
+import { channelIsSendable, formatDuration, isFunction, memoryAnalysis, toKMB } from './util';
 import { makeBankImage } from './util/makeBankImage';
-import { minionStatsEmbed } from './util/minionStatsEmbed';
+import { sendToChannelID } from './util/webhook';
 
 const rareRolesSrc: [string, number, string][] = [
 	['670211706907000842', 250, 'Bronze'],
@@ -135,8 +146,100 @@ interface MentionCommand {
 	description: string;
 	run: (options: MentionCommandOptions) => Promise<unknown>;
 }
+async function sendReddit({ post }: { post: any; type: 'comment' | 'submission' }) {
+	const author = (post.author as string) ?? 'Unknown Author';
+	const embed = new EmbedBuilder().setAuthor({ name: author }).setColor(resolveColor('#ff9500'));
 
+	const url = post.full_link ?? `https://old.reddit.com${post.permalink}`;
+
+	if (post.body) {
+		embed.setDescription(he.decode(post.body));
+	}
+
+	if (post.title) {
+		embed.setTitle(post.title);
+		embed.setURL(url);
+	}
+
+	const guildsToSendToo = await prisma.guild.findMany({
+		where: {
+			jmodComments: {
+				not: null
+			}
+		},
+		select: {
+			id: true,
+			jmodComments: true
+		}
+	});
+
+	for (const { id, jmodComments } of guildsToSendToo) {
+		const guild = globalClient.guilds.cache.get(id);
+		if (!guild) continue;
+
+		const channel = guild.channels.cache.get(jmodComments!);
+
+		if (
+			channel &&
+			channel instanceof TextChannel &&
+			channel.permissionsFor(globalClient.user!)?.has(PermissionsBitField.Flags.EmbedLinks) &&
+			channel.permissionsFor(globalClient.user!)?.has(PermissionsBitField.Flags.SendMessages)
+		) {
+			sendToChannelID(channel.id, { content: `<${url}>`, embed });
+		}
+	}
+}
+const alreadySentCache = new Set();
 const mentionCommands: MentionCommand[] = [
+	{
+		name: 'mem',
+		aliases: ['mem'],
+		description: 'mem',
+		run: async ({ msg }: MentionCommandOptions) => {
+			msg.reply(
+				Object.entries({ ...memoryAnalysis(), ...collectMetrics() })
+					.map(ent => `${ent[0]}: ${ent[1]}`)
+					.join('\n')
+			);
+		}
+	},
+	{
+		name: 'rtest',
+		aliases: ['rt', 'rtest'],
+		description: 'reddit test',
+		// run: async ({ _msg, _user, _components, _content }: MentionCommandOptions) => {
+		run: async (_options: MentionCommandOptions) => {
+			const post = {
+				author: 'Reddit test',
+				permalink: '/r/2007scape/comments/y14shz/quest_speedrunning_launch_tomorrow_weekly_game/irvf90l/',
+				title: 'Title',
+				body: 'Post body'
+			};
+			sendReddit({ post, type: 'comment' });
+		}
+	},
+	{
+		name: 'bt',
+		aliases: ['bt'],
+		description: 'big reddit test',
+		run: async (_options: MentionCommandOptions) => {
+			const redditGranularity = Time.Month / Time.Minute;
+			for (const type of ['comment', 'submission'] as const) {
+				const utcTime = Math.floor((Date.now() - Time.Minute * redditGranularity) / 1000);
+
+				const url = `https://api.pushshift.io/reddit/search/${type}/?subreddit=2007scape&size=10&author_flair_text=:jagexmod:&after=${utcTime}`;
+				try {
+					const _result = await fetch(url).then(res => res.json());
+					if (!_result || !_result.data || !Array.isArray(_result.data)) continue;
+					for (const entity of _result.data) {
+						if (alreadySentCache.has(entity.id)) continue;
+						sendReddit({ post: entity, type });
+						alreadySentCache.add(entity.id);
+					}
+				} catch {}
+			}
+		}
+	},
 	{
 		name: 'bs',
 		aliases: ['bs'],
@@ -248,17 +351,6 @@ const mentionCommands: MentionCommand[] = [
 						return bold(`${cd.name}: Ready`);
 					})
 					.join('\n'),
-				components
-			});
-		}
-	},
-	{
-		name: 's',
-		aliases: ['s', 'stats'],
-		description: 'Shows your stats.',
-		run: async ({ msg, user, components }: MentionCommandOptions) => {
-			msg.reply({
-				embeds: [await minionStatsEmbed(user)],
 				components
 			});
 		}

@@ -1,8 +1,6 @@
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { chompyHats } from '../../../mahoji/lib/abstracted_commands/chompyHuntCommand';
-import { soteSkillRequirements } from '../../../mahoji/lib/abstracted_commands/zalcanoCommand';
 import { MAX_QP } from '../../constants';
 import { CombatCannonItemBank } from '../../minions/data/combatConstants';
 import { Favours } from '../../minions/data/kourendFavour';
@@ -10,6 +8,8 @@ import { MinigameName } from '../../settings/settings';
 import { Skills } from '../../types';
 import getOSItem from '../../util/getOSItem';
 import itemID from '../../util/itemID';
+import { chompyHats } from '../chompyHats';
+import { soteSkillRequirements } from '../questRequirements';
 import { aerialFishBuyables } from './aerialFishBuyables';
 import { canifisClothes } from './canifisClothes';
 import { capeBuyables } from './capes';

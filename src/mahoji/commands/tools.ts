@@ -771,7 +771,7 @@ export const toolsCommand: OSBMahojiCommand = {
 				);
 			}
 			if (options.stash_units.build_all) return stashUnitBuildAllCommand(mahojiUser);
-			if (options.stash_units.fill_all) return stashUnitFillAllCommand(mahojiUser, mahojiUser.user);
+			if (options.stash_units.fill_all) return stashUnitFillAllCommand(mahojiUser);
 			if (options.stash_units.unfill) {
 				return stashUnitUnfillCommand(mahojiUser, options.stash_units.unfill.unit);
 			}

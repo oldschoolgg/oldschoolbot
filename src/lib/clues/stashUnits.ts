@@ -4,7 +4,6 @@ import { partition } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
-import { getMahojiBank } from '../../mahoji/mahojiSettings';
 import { allTeamCapes } from '../data/buyables/buyables';
 import {
 	barrowsItemArr,
@@ -733,12 +732,12 @@ export async function stashUnitBuildAllCommand(user: MUser) {
 	return `You created ${toBuild.length} STASH units, using ${costBank}.`;
 }
 
-export async function stashUnitFillAllCommand(user: MUser, mahojiUser: User): CommandResponse {
+export async function stashUnitFillAllCommand(user: MUser): CommandResponse {
 	const parsedUnits = await getParsedStashUnits(user.id);
 	const notBuiltAndNotFilled = parsedUnits.filter(i => i.builtUnit !== undefined && !i.isFull);
 	if (notBuiltAndNotFilled.length === 0) return 'There are no STASH units left that you can fill.';
 
-	const checkBank = getMahojiBank(mahojiUser);
+	const checkBank = user.bank;
 	const costBank = new Bank();
 
 	const toFill: (ParsedUnit & { itemsToFillWith: Bank })[] = [];
