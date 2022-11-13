@@ -19,7 +19,6 @@
 		"@sapphire/time-utilities": "^1.6.0",
 		"@sapphire/utilities": "^1.4.7",
 		"@sentry/node": "^7.16.0",
-		"@sinclair/typebox": "^0.12.9",
 		"bufferutil": "^4.0.7",
 		"chart.js": "^3.7.0",
 		"chartjs-node-canvas": "github:gc/ChartjsNodeCanvas#06dc1b3e310747d9803413ebd7b2984ac4335cfe",
@@ -48,12 +47,13 @@
 		"piscina": "^3.2.0",
 		"random-js": "^2.1.0",
 		"skia-canvas": "^1.0.1",
-		"source-map-support": "^0.5.21",
 		"table": "^6.8.0",
 		"utf-8-validate": "^5.0.10",
 		"zlib-sync": "^0.1.7"
 	},
 	"devDependencies": {
+		"@sinclair/typebox": "^0.12.9",
+		"source-map-support": "^0.5.21",
 		"@oldschoolgg/eslint-config": "^1.2.5",
 		"@types/he": "^1.1.2",
 		"@types/jest": "^26.0.24",

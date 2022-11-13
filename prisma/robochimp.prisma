@@ -34,13 +34,27 @@ model BlacklistedEntity {
 model User {
     id         BigInt  @id @unique
     bits       Int[]
-    github_id  Int?
-    patreon_id String?
+    github_id  Int?    @unique
+    patreon_id String? @unique
 
     leagues_completed_tasks_ids Int[]
     leagues_points_balance_osb  Int   @default(0)
     leagues_points_balance_bso  Int   @default(0)
     leagues_points_total        Int   @default(0)
 
+    react_emoji_id String?
+
+    osb_total_level Int?
+    bso_total_level Int?
+    osb_cl_percent  Float?
+    bso_cl_percent  Float?
+
     @@map("user")
+}
+
+model PingableRole {
+    role_id String @id
+    name    String @unique @db.VarChar(32)
+
+    @@map("pingable_role")
 }

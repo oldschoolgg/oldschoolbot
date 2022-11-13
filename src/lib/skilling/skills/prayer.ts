@@ -1,6 +1,6 @@
 import { Emoji } from '../../constants';
 import itemID from '../../util/itemID';
-import { Bone, SkillsEnum } from '../types';
+import { Ash, Bone, SkillsEnum } from '../types';
 
 export const bones: Bone[] = [
 	{
@@ -143,9 +143,43 @@ export const bones: Bone[] = [
 	}
 ];
 
+export const ashes: Ash[] = [
+	{
+		name: 'Fiendish ashes',
+		level: 1,
+		xp: 10,
+		inputId: itemID('Fiendish ashes')
+	},
+	{
+		name: 'Vile ashes',
+		level: 1,
+		xp: 25,
+		inputId: itemID('Vile ashes')
+	},
+	{
+		name: 'Malicious ashes',
+		level: 1,
+		xp: 65,
+		inputId: itemID('Malicious ashes')
+	},
+	{
+		name: 'Abyssal ashes',
+		level: 1,
+		xp: 85,
+		inputId: itemID('Abyssal ashes')
+	},
+	{
+		name: 'Infernal ashes',
+		level: 1,
+		xp: 110,
+		inputId: itemID('Infernal ashes')
+	}
+];
+
 const Prayer = {
 	aliases: ['prayer', 'pray'],
 	Bones: bones,
+	Ashes: ashes,
 	id: SkillsEnum.Prayer,
 	emoji: Emoji.Prayer,
 	name: 'Prayer'

@@ -9,7 +9,12 @@ import getOSItem from './util/getOSItem';
 
 interface DegradeableItem {
 	item: Item;
-	settingsKey: 'tentacle_charges' | 'sang_charges' | 'void_staff_charges' | 'celestial_ring_charges';
+	settingsKey:
+		| 'tentacle_charges'
+		| 'sang_charges'
+		| 'void_staff_charges'
+		| 'celestial_ring_charges'
+		| 'ash_sanctifier_charges';
 	itemsToRefundOnBreak: Bank;
 	setup: GearSetupType;
 	aliases: string[];
@@ -85,6 +90,20 @@ export const degradeableItems: DegradeableItem[] = [
 		unchargedItem: getOSItem('Celestial ring (uncharged)'),
 		convertOnCharge: true,
 		charges: (duration: number) => duration
+	},
+	{
+		item: getOSItem('Ash sanctifier'),
+		settingsKey: 'ash_sanctifier_charges',
+		itemsToRefundOnBreak: new Bank().add('Ash sanctifier'),
+		setup: 'skilling',
+		aliases: ['ash sanctifier'],
+		chargeInput: {
+			cost: new Bank().add('Death rune', 1),
+			charges: 10
+		},
+		unchargedItem: getOSItem('Ash sanctifier'),
+		// Unused
+		charges: () => 1000
 	}
 ];
 
@@ -176,4 +195,13 @@ export async function degradeItem({
 	return {
 		userMessage: `Your ${item.name} degraded by ${chargesToDegrade} charges, and now has ${chargesAfter} remaining.`
 	};
+}
+
+export async function checkDegradeableItemCharges({ item, user }: { item: Item; user: MUser }) {
+	const degItem = degradeableItems.find(i => i.item === item);
+	if (!degItem) throw new Error('Invalid degradeable item');
+
+	const currentCharges = user.user[degItem.settingsKey];
+	assert(typeof currentCharges === 'number');
+	return currentCharges;
 }
