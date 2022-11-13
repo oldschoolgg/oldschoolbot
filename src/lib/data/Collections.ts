@@ -950,7 +950,7 @@ function getLeftList(
 	return leftList;
 }
 
-export function getBank(user: MUser, mahojiUser: User, type: 'sacrifice' | 'bank' | 'collection' | 'temp') {
+export function getBank(user: MUser, type: 'sacrifice' | 'bank' | 'collection' | 'temp') {
 	const userCheckBank = new Bank();
 	switch (type) {
 		case 'collection':
@@ -963,15 +963,15 @@ export function getBank(user: MUser, mahojiUser: User, type: 'sacrifice' | 'bank
 			userCheckBank.add(user.user.sacrificedBank as ItemBank);
 			break;
 		case 'temp':
-			userCheckBank.add(mahojiUser.temp_cl as ItemBank);
+			userCheckBank.add(user.user.temp_cl as ItemBank);
 			break;
 	}
 	return userCheckBank;
 }
 
 // Get the total items the user has in its CL and the total items to collect
-export function getTotalCl(user: MUser, mahojiUser: User, logType: 'sacrifice' | 'bank' | 'collection' | 'temp') {
-	return getUserClData(getBank(user, mahojiUser, logType).bank, allCLItemsFiltered);
+export function getTotalCl(user: MUser, logType: 'sacrifice' | 'bank' | 'collection' | 'temp') {
+	return getUserClData(getBank(user, logType).bank, allCLItemsFiltered);
 }
 
 export function getPossibleOptions() {
@@ -1039,7 +1039,7 @@ export function getCollectionItems(collection: string, allItems = false, removeC
 	return _items;
 }
 
-function getUserClData(usarBank: ItemBank, clItems: number[]) {
+function getUserClData(usarBank: ItemBank, clItems: number[]): [number, number] {
 	const owned = Object.keys(usarBank).filter(i => clItems.includes(Number(i)));
 	return [clItems.length, owned.length];
 }
@@ -1064,7 +1064,7 @@ export async function getCollection(options: {
 	const allItems = Boolean(flags.all);
 	if (logType === undefined) logType = 'collection';
 
-	const userCheckBank = getBank(user, options.mahojiUser, logType);
+	const userCheckBank = getBank(user, logType);
 	let clItems = getCollectionItems(search, allItems, logType === 'sacrifice');
 
 	if (Boolean(flags.missing)) {
