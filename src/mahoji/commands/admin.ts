@@ -139,28 +139,28 @@ function verifyCommandPath(input: string): { fullCommand: string; errorResult: s
 
 	const mahojiCommand = globalClient.mahojiClient.commands.values.find(c => c.name === commandParts[0]);
 	if (!mahojiCommand) return { fullCommand, errorResult: "That's not a valid command" };
-	if (mahojiCommand) {
-		commandParts.shift();
-		let matchCount = 0;
-		let currentPlace = mahojiCommand as any;
-		for (const part of commandParts) {
-			try {
-				if ('options' in currentPlace) {
-					const nextOpt = currentPlace.options.find((opt: any) => opt.name === part);
-					if (nextOpt) {
-						matchCount++;
-						currentPlace = nextOpt;
-					}
+
+	commandParts.shift();
+	let matchCount = 0;
+	let currentPlace = mahojiCommand as any;
+	for (const part of commandParts) {
+		try {
+			if ('options' in currentPlace) {
+				const nextOpt = currentPlace.options.find((opt: any) => opt.name === part);
+				if (nextOpt) {
+					matchCount++;
+					currentPlace = nextOpt;
 				}
-			} catch {}
-		}
-		if (matchCount !== commandParts.length) {
-			return {
-				fullCommand,
-				errorResult: 'Not a valid sub-command. Be sure to use format: `/admin command disable:minion:daily`'
-			};
-		}
+			}
+		} catch {}
 	}
+	if (matchCount !== commandParts.length) {
+		return {
+			fullCommand,
+			errorResult: 'Not a valid sub-command. Be sure to use format: `/admin command disable:minion:daily`'
+		};
+	}
+
 	return { fullCommand, errorResult: null };
 }
 
