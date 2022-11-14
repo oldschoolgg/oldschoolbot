@@ -29,7 +29,6 @@ import {
 	convertBankToPerHourStats,
 	formatDuration,
 	sanitizeBank,
-	stringMatches,
 	toKMB
 } from '../../lib/util';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
@@ -132,6 +131,37 @@ async function evalCommand(userID: string, code: string): CommandResponse {
 	} catch (err: any) {
 		return err.message ?? err;
 	}
+}
+
+function verifyCommandPath(input: string): { fullCommand: string; errorResult: string | null } {
+	let fullCommand = input.toLowerCase();
+	const commandParts = fullCommand.split(':');
+
+	const mahojiCommand = globalClient.mahojiClient.commands.values.find(c => c.name === commandParts[0]);
+	if (!mahojiCommand) return { fullCommand, errorResult: "That's not a valid command" };
+	if (mahojiCommand) {
+		commandParts.shift();
+		let matchCount = 0;
+		let currentPlace = mahojiCommand as any;
+		for (const part of commandParts) {
+			try {
+				if ('options' in currentPlace) {
+					const nextOpt = currentPlace.options.find((opt: any) => opt.name === part);
+					if (nextOpt) {
+						matchCount++;
+						currentPlace = nextOpt;
+					}
+				}
+			} catch {}
+		}
+		if (matchCount !== commandParts.length) {
+			return {
+				fullCommand,
+				errorResult: 'Not a valid sub-command. Be sure to use format: `/admin command disable:minion:daily`'
+			};
+		}
+	}
+	return { fullCommand, errorResult: null };
 }
 
 const viewableThings: {
@@ -676,24 +706,33 @@ export const adminCommand: OSBMahojiCommand = {
 		}
 
 		if (options.command) {
-			const { disable } = options.command;
-			const { enable } = options.command;
+			const { disable, enable } = options.command;
 
+			const inputCommand = disable ?? enable;
+			if (!inputCommand) {
+				return `Disabled Commands: ${Array.from(DISABLED_COMMANDS).join(', ')}.`;
+			}
+
+			const { fullCommand, errorResult } = verifyCommandPath(inputCommand);
+			if (errorResult) {
+				return errorResult;
+			}
 			const currentDisabledCommands = (await prisma.clientStorage.findFirst({
 				where: { id: CLIENT_ID },
 				select: { disabled_commands: true }
 			}))!.disabled_commands;
 
+			/*
 			const command = allAbstractCommands(globalClient.mahojiClient).find(c =>
 				stringMatches(c.name, disable ?? enable ?? '-')
 			);
 			if (!command) return "That's not a valid command.";
-
+			*/
 			if (disable) {
-				if (currentDisabledCommands.includes(command.name)) {
+				if (currentDisabledCommands.includes(fullCommand)) {
 					return 'That command is already disabled.';
 				}
-				const newDisabled = [...currentDisabledCommands, command.name.toLowerCase()];
+				const newDisabled = [...currentDisabledCommands, fullCommand];
 				await prisma.clientStorage.update({
 					where: {
 						id: CLIENT_ID
@@ -702,11 +741,11 @@ export const adminCommand: OSBMahojiCommand = {
 						disabled_commands: newDisabled
 					}
 				});
-				DISABLED_COMMANDS.add(command.name);
-				return `Disabled \`${command.name}\`.`;
+				DISABLED_COMMANDS.add(fullCommand);
+				return `Disabled \`${fullCommand}\`.`;
 			}
 			if (enable) {
-				if (!currentDisabledCommands.includes(command.name)) {
+				if (!currentDisabledCommands.includes(fullCommand)) {
 					return 'That command is not disabled.';
 				}
 				await prisma.clientStorage.update({
@@ -714,11 +753,11 @@ export const adminCommand: OSBMahojiCommand = {
 						id: CLIENT_ID
 					},
 					data: {
-						disabled_commands: currentDisabledCommands.filter(i => i !== command.name)
+						disabled_commands: currentDisabledCommands.filter(i => i !== fullCommand)
 					}
 				});
-				DISABLED_COMMANDS.delete(command.name);
-				return `Enabled \`${command.name}\`.`;
+				DISABLED_COMMANDS.delete(fullCommand);
+				return `Enabled \`${fullCommand}\`.`;
 			}
 			return 'Invalid.';
 		}

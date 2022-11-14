@@ -152,7 +152,7 @@ const inhibitors: Inhibitor[] = [
 				}
 			}
 			if (!OWNER_IDS.includes(APIUser.id) && (command.attributes?.enabled === false || isDisabled)) {
-				return 'This command is globally disabled.';
+				return { content: 'This command is globally disabled.' };
 			}
 			if (!guild) return false;
 			const cachedSettings = untrustedGuildSettingsCache.get(guild.id);
