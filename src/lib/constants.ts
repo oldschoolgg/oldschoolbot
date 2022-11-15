@@ -211,7 +211,8 @@ export enum BitField {
 	HasSlepeyTablet = 20,
 	IsPatronTier6 = 21,
 	DisableBirdhouseRunButton = 22,
-	DisableAshSanctifier = 23
+	DisableAshSanctifier = 23,
+	BothBotsMaxedFreeTierOnePerks = 24
 }
 
 interface BitFieldData {
@@ -249,6 +250,11 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 		userConfigurable: false
 	},
 	[BitField.PermanentIronman]: { name: 'Permanent Ironman', protected: false, userConfigurable: false },
+	[BitField.BothBotsMaxedFreeTierOnePerks]: {
+		name: 'Free T1 Perks for Maxed in OSB/BSO',
+		protected: false,
+		userConfigurable: false
+	},
 
 	[BitField.AlwaysSmallBank]: { name: 'Always Use Small Banks', protected: false, userConfigurable: true },
 	[BitField.DisabledRandomEvents]: { name: 'Disabled Random Events', protected: false, userConfigurable: true },
