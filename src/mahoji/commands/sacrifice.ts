@@ -2,11 +2,9 @@ import { roll } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
-
 import { Events } from '../../lib/constants';
 import { cats } from '../../lib/growablePets';
 import minionIcons from '../../lib/minions/data/minionIcons';
-import { clAdjustedDroprate, toKMB } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption } from '../lib/mahojiCommandOptions';
@@ -134,9 +132,8 @@ export const sacrificeCommand: OSBMahojiCommand = {
 		}
 
 		let hammyCount = 0;
-		const hammyDroprate = clAdjustedDroprate(user, 'Hammy', 140, 1.175);
 		for (let i = 0; i < Math.floor(totalPrice / 51_530_000); i++) {
-			if (roll(hammyDroprate)) {
+			if (roll(140)) {
 				hammyCount++;
 				break;
 			}
