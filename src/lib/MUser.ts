@@ -611,11 +611,11 @@ export function getUsersPerkTier(
 		return PerkTier.Three;
 	}
 
-	if (bitfield.includes(BitField.IsPatronTier1)) {
-		return PerkTier.Two;
-	}
-
-	if (bitfield.includes(BitField.HasPermanentTierOne)) {
+	if (
+		bitfield.includes(BitField.IsPatronTier1) ||
+		bitfield.includes(BitField.HasPermanentTierOne) ||
+		bitfield.includes(BitField.BothBotsMaxedFreeTierOnePerks)
+	) {
 		return PerkTier.Two;
 	}
 
