@@ -9,9 +9,12 @@ import { OSBMahojiCommand } from '../lib/util';
 const claimables = [
 	{
 		name: 'Free T1 Perks',
-		hasRequirement: async (user: MUser) => {
+		hasRequirement: async (user: MUser): Promise<true | string> => {
 			const roboChimpUser = await roboChimpUserFetch(user.id);
-			return roboChimpUser.osb_total_level === 2277 && roboChimpUser.bso_total_level === 3000;
+			if (roboChimpUser.osb_total_level === 2277 && roboChimpUser.bso_total_level === 3000) {
+				return true;
+			}
+			return 'You need to be maxed in both bots (OSB and BSO) to claim this.';
 		},
 		action: async (user: MUser) => {
 			if (user.bitfield.includes(BitField.BothBotsMaxedFreeTierOnePerks)) {
@@ -39,9 +42,8 @@ export const claimCommand: OSBMahojiCommand = {
 			name: 'name',
 			description: 'The thing you want to claim.',
 			required: true,
-			autocomplete: async (_, u) => {
-				const user = await mUserFetch(u.id);
-				return (await Promise.all(claimables.filter(i => i.hasRequirement(user)))).map(i => ({
+			autocomplete: async () => {
+				return claimables.map(i => ({
 					name: i.name,
 					value: i.name
 				}));
@@ -56,7 +58,7 @@ export const claimCommand: OSBMahojiCommand = {
 		}
 
 		if (!(await claimable.hasRequirement(user))) {
-			return 'You are not elligible for this reward.';
+			return 'You are not eligible for this reward.';
 		}
 
 		const result = await claimable.action(user);
