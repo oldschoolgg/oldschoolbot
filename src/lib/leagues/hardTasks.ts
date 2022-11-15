@@ -213,9 +213,9 @@ export const hardTasks: Task[] = [
 	},
 	{
 		id: 2024,
-		name: 'Complete 250 Castle Wars games',
+		name: 'Complete 50 Castle Wars games',
 		has: async ({ minigames }) => {
-			return minigames.castle_wars >= 250;
+			return minigames.castle_wars >= 50;
 		}
 	},
 	{
@@ -227,9 +227,9 @@ export const hardTasks: Task[] = [
 	},
 	{
 		id: 2026,
-		name: 'Complete 500 Last Man Standing games',
+		name: 'Complete 150 Last Man Standing games',
 		has: async ({ minigames }) => {
-			return minigames.lms >= 500;
+			return minigames.lms >= 150;
 		}
 	},
 	{
