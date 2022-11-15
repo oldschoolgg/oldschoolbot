@@ -40,6 +40,7 @@ import mixables from '../skilling/skills/herblore/mixables';
 import smithables from '../skilling/skills/smithing/smithables';
 import { ItemBank } from '../types';
 import { addArrayOfNumbers, removeFromArr, shuffleRandom, stringMatches } from '../util';
+import { repairBrokenItemsFromUser } from '../util/repairBrokenItems';
 import resolveItems from '../util/resolveItems';
 import {
 	abyssalDragonCL,
@@ -1465,7 +1466,14 @@ export async function getBank(user: MUser, type: CollectionLogType) {
 // Get the total items the user has in its CL and the total items to collect
 export async function getTotalCl(user: MUser, logType: CollectionLogType) {
 	const b = await getBank(user, logType);
-	return getUserClData(b, allCLItemsFiltered);
+	let result = undefined;
+	try {
+		result = getUserClData(b, allCLItemsFiltered);
+	} catch (_e) {
+		await repairBrokenItemsFromUser(user);
+		result = getUserClData(b, allCLItemsFiltered);
+	}
+	return result;
 }
 
 export function getPossibleOptions() {

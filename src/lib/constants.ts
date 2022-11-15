@@ -243,6 +243,7 @@ export enum BitField {
 	IsPatronTier6 = 21,
 	DisableBirdhouseRunButton = 22,
 	DisableAshSanctifier = 23,
+	BothBotsMaxedFreeTierOnePerks = 24,
 	HasGivenBirthdayPack = 200,
 	HasPermanentSpawnLamp = 201,
 	HasScrollOfFarming = 202,
@@ -310,6 +311,11 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	[BitField.PermanentIronman]: { name: 'Permanent Ironman', protected: false, userConfigurable: false },
 	[BitField.HasLeaguesOneMinuteLengthBoost]: {
 		name: 'Leagues One Minute Trip Length Boost',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.BothBotsMaxedFreeTierOnePerks]: {
+		name: 'Free T1 Perks for Maxed in OSB/BSO',
 		protected: false,
 		userConfigurable: false
 	},

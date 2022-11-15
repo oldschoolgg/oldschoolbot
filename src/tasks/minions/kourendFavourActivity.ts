@@ -34,7 +34,7 @@ export const kourendTask: MinionTask = {
 			}
 		}
 		const confirmedFavour = KourendFavours.find(i => i.name === favour.name)!;
-		const loot = confirmedFavour.itemsRecieved?.clone().multiply(quantity);
+		const loot = confirmedFavour.itemsReceived?.clone().multiply(quantity);
 		if (shayzienDone && loot) {
 			loot.add(
 				new Bank({
