@@ -2095,7 +2095,8 @@ export const metamorphPets = resolveItems([
 	'Tzrek-zuk',
 	'Ziggy',
 	'Red',
-	'Great blue heron'
+	'Great blue heron',
+	'Greatish guardian'
 ]);
 
 export const allPetIDs = [
