@@ -1471,7 +1471,9 @@ export async function getTotalCl(user: MUser, logType: CollectionLogType) {
 		result = getUserClData(b, allCLItemsFiltered);
 	} catch (_e) {
 		await repairBrokenItemsFromUser(user);
-		result = getUserClData(b, allCLItemsFiltered);
+		const newUser = await mUserFetch(user.id);
+		const newBank = await getBank(newUser, logType);
+		result = getUserClData(newBank, allCLItemsFiltered);
 	}
 	return result;
 }
