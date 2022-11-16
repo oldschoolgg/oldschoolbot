@@ -117,6 +117,10 @@ async function sendToChannelOrWebhook(channel: WebhookClient | Message['channel'
 	if (input.content && input.content.length > maxLength) {
 		// Moves files + components to the final message.
 		const split = splitMessage(input.content, { maxLength });
+		if (split.length > 4) {
+			logError(`Tried to send ${split.length} messages.`);
+			return;
+		}
 		const newPayload = { ...input };
 		// Separate files and components from payload for interactions
 		const { files, embeds, components, allowedMentions } = newPayload;
