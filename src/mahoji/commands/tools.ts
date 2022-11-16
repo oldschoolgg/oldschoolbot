@@ -208,11 +208,6 @@ const dryStreakMinigames: DrystreakMinigame[] = [
 		items: resolveItems(['Crystal weapon seed', 'Crystal armour seed', 'Enhanced crystal weapon seed', 'Youngllef'])
 	},
 	{
-		name: 'Guardians of the Rift',
-		key: 'guardians_of_the_rift',
-		items: guardiansOfTheRiftCL
-	},
-	{
 		name: 'Inferno',
 		key: 'inferno',
 		items: resolveItems(['Jal-nib-rek'])
@@ -287,6 +282,23 @@ LIMIT 10;`);
 			return result;
 		},
 		format: num => `${num.toLocaleString()} Gambles`
+	},
+	{
+		name: 'Guardians of the Rift',
+		items: guardiansOfTheRiftCL,
+		run: async ({ item, ironmanOnly }) => {
+			const result = await prisma.$queryRawUnsafe<
+				{ id: string; val: number }[]
+			>(`SELECT users.id, gotr_rift_searches AS val
+            FROM users
+            INNER JOIN "user_stats" "userstats" on "userstats"."user_id"::text = "users"."id"
+            WHERE "collectionLogBank"->>'${item.id}' IS NULL
+            ${ironmanOnly ? ' AND "minion.ironman" = true' : ''}
+            ORDER BY gotr_rift_searches DESC
+            LIMIT 10;`);
+			return result;
+		},
+		format: num => `${num.toLocaleString()} Rift Searches`
 	}
 ];
 for (const minigame of dryStreakMinigames) {
