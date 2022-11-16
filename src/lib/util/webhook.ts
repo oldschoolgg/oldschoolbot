@@ -118,8 +118,8 @@ async function sendToChannelOrWebhook(channel: WebhookClient | Message['channel'
 		// Moves files + components to the final message.
 		const split = splitMessage(input.content, { maxLength });
 		if (split.length > 4) {
-			logError(`Tried to send ${split.length} messages.`, {
-				content: `${split[0].substring(0, 50)}...`
+			logError(new Error(`Tried to send ${split.length} messages.`), undefined, {
+				content: `${split[0].substring(0, 120)}...`
 			});
 			return;
 		}
