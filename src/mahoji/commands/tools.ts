@@ -289,11 +289,12 @@ LIMIT 10;`);
 		run: async ({ item, ironmanOnly }) => {
 			const result = await prisma.$queryRawUnsafe<
 				{ id: string; val: number }[]
-			>(`SELECT users.id, SUM((bird_eggs_offered_bank->>'quantity')::int) AS val
+			>(`SELECT users.id:: text, SUM((bird_eggs_offered_bank->>'quantity')::int) AS val
             FROM users
             INNER JOIN "user_stats" "userstats" on "userstats"."user_id"::text = "users"."id"
             WHERE "collectionLogBank"->>'${item.id}' IS NULL
             ${ironmanOnly ? ' AND "minion.ironman" = true' : ''}
+			GROUP BY users.id
             ORDER BY SUM((bird_eggs_offered_bank->>'quantity')::int) DESC
             LIMIT 10;`);
 			return result;
