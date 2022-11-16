@@ -380,9 +380,10 @@ class CollectionLogTask {
 				this.drawText(ctx, ' Rifts searches: ', ctx.measureText(drawnSoFar).width, pixelLevel);
 				drawnSoFar += ' Rifts searches: ';
 				ctx.fillStyle = '#FFFFFF';
+				const stats = await user.fetchStats();
 				this.drawText(
 					ctx,
-					user.user.gotr_rifts_searches.toLocaleString(),
+					stats.gotr_rift_searches.toLocaleString(),
 					ctx.measureText(drawnSoFar).width,
 					pixelLevel
 				);
