@@ -108,37 +108,37 @@ export const guardiansOfTheRiftCreatables: Createable[] = [
 	{
 		name: 'Swap Abyssal green dye for Abyssal blue dye',
 		inputItems: new Bank({ 'Abyssal green dye': 1 }),
-		outputItems: new Bank({ 'Abyssal blue dye': 1  }),
+		outputItems: new Bank({ 'Abyssal blue dye': 1 }),
 		noCl: true
 	},
 	{
 		name: 'Swap Abyssal green dye for Abyssal red dye',
 		inputItems: new Bank({ 'Abyssal green dye': 1 }),
-		outputItems: new Bank({ 'Abyssal red dye': 1  }),
+		outputItems: new Bank({ 'Abyssal red dye': 1 }),
 		noCl: true
 	},
 	{
 		name: 'Swap Abyssal blue dye for Abyssal green dye',
 		inputItems: new Bank({ 'Abyssal blue dye': 1 }),
-		outputItems: new Bank({ 'Abyssal green dye': 1  }),
+		outputItems: new Bank({ 'Abyssal green dye': 1 }),
 		noCl: true
 	},
 	{
 		name: 'Swap Abyssal blue dye for Abyssal red dye',
 		inputItems: new Bank({ 'Abyssal blue dye': 1 }),
-		outputItems: new Bank({ 'Abyssal red dye': 1  }),
+		outputItems: new Bank({ 'Abyssal red dye': 1 }),
 		noCl: true
 	},
     {
 		name: 'Swap Abyssal red dye for Abyssal green dye',
 		inputItems: new Bank({ 'Abyssal red dye': 1 }),
-		outputItems: new Bank({ 'Abyssal green dye': 1  }),
+		outputItems: new Bank({ 'Abyssal green dye': 1 }),
 		noCl: true
 	},
 	{
 		name: 'Swap Abyssal red dye for Abyssal blue dye',
 		inputItems: new Bank({ 'Abyssal red dye': 1 }),
-		outputItems: new Bank({ 'Abyssal blue dye': 1  }),
+		outputItems: new Bank({ 'Abyssal blue dye': 1 }),
 		noCl: true
 	}
 ];
