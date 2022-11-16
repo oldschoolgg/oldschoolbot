@@ -19,6 +19,7 @@ model Activity {
   channel_id     BigInt
   data           Json               @db.Json
 
+  @@index([finish_date])
   @@index([group_activity])
   @@index([completed])
   @@index([user_id, type])
