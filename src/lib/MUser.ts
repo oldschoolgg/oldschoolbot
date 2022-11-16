@@ -1,5 +1,5 @@
 import { userMention } from '@discordjs/builders';
-import { Prisma, User, xp_gains_skill_enum } from '@prisma/client';
+import { Prisma, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
 import { notEmpty, objectEntries, sumArr, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
@@ -20,6 +20,7 @@ import { AttackStyles } from './minions/functions';
 import { blowpipeDarts, validateBlowpipeData } from './minions/functions/blowpipeCommand';
 import { AddXpParams, BlowpipeData } from './minions/types';
 import { getMinigameEntity, Minigames, MinigameScore } from './settings/minigames';
+import { prisma } from './settings/prisma';
 import { SkillsEnum } from './skilling/types';
 import { BankSortMethod } from './sorts';
 import { defaultGear, Gear } from './structures/Gear';
@@ -534,6 +535,20 @@ export class MUserClass {
 
 	async sync() {
 		this.user = await mahojiUsersSettingsFetch(this.id);
+	}
+
+	async fetchStats(): Promise<UserStats> {
+		const result = await prisma.userStats.upsert({
+			where: {
+				user_id: BigInt(this.id)
+			},
+			create: {
+				user_id: BigInt(this.id)
+			},
+			update: {}
+		});
+		if (!result) throw new Error(`fetchStats returned no result for ${this.id}`);
+		return result;
 	}
 }
 declare global {
