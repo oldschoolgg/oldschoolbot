@@ -126,6 +126,12 @@ export const guardiansOfTheRiftTask: MinionTask = {
 		}
 		rewardsGuardianLoot.add(rewardsGuardianTable.roll(rewardsQty));
 
+		await user.update({
+			gotr_rifts_searches: {
+				increment: rewardsQty
+			}
+		});
+
 		const totalLoot = new Bank();
 		totalLoot.add(rewardsGuardianLoot);
 		totalLoot.add(runesLoot);

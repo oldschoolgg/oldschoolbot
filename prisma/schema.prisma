@@ -280,6 +280,7 @@ model User {
   pest_control_points        Int      @default(0)
   inferno_attempts           Int      @default(0)
   infernal_cape_sacrifices   Int      @default(0)
+  gotr_rifts_searches        Int      @default(0)
   tob_attempts               Int      @default(0)
   tob_hard_attempts          Int      @default(0)
   volcanic_mine_points       Int      @default(0)
