@@ -901,6 +901,11 @@ const Buyables: Buyable[] = [
 		ironmanPrice: 100
 	},
 	{
+		name: 'Pink skirt',
+		gpCost: 1000,
+		ironmanPrice: 2
+	},
+	{
 		name: 'Bull roarer',
 		gpCost: 1000,
 		ironmanPrice: 100
