@@ -18,7 +18,7 @@ import {
 } from '../../lib/clues/stashUnits';
 import { BitField, PerkTier } from '../../lib/constants';
 import { allCLItemsFiltered, allDroppedItems } from '../../lib/data/Collections';
-import { anglerOutfit, gnomeRestaurantCL } from '../../lib/data/CollectionsExport';
+import { anglerOutfit, gnomeRestaurantCL, guardiansOfTheRiftCL } from '../../lib/data/CollectionsExport';
 import pets from '../../lib/data/pets';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import { MinigameName, Minigames } from '../../lib/settings/minigames';
@@ -206,6 +206,11 @@ const dryStreakMinigames: DrystreakMinigame[] = [
 		name: 'Gauntlet',
 		key: 'gauntlet',
 		items: resolveItems(['Crystal weapon seed', 'Crystal armour seed', 'Enhanced crystal weapon seed', 'Youngllef'])
+	},
+	{
+		name: 'Guardians of the Rift',
+		key: 'guardians_of_the_rift',
+		items: guardiansOfTheRiftCL
 	},
 	{
 		name: 'Inferno',
