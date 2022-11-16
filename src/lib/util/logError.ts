@@ -4,10 +4,11 @@ import { convertAPIOptionsToCommandOptions } from 'mahoji/dist/lib/util';
 
 import { production } from '../../config';
 
-export function logError(err: Error | unknown, context?: Record<string, string>) {
+export function logError(err: Error | unknown, context?: Record<string, string>, extra?: Record<string, string>) {
 	if (production) {
 		captureException(err, {
-			tags: context
+			tags: context,
+			extra
 		});
 	} else {
 		console.error(context, err);
