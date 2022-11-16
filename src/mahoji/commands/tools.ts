@@ -287,15 +287,19 @@ LIMIT 10;`);
 		name: 'Evil Chicken Outfit',
 		items: evilChickenOutfit,
 		run: async ({ item, ironmanOnly }) => {
-			const result = await prisma.$queryRawUnsafe<
-				{ id: string; val: number }[]
-			>(`SELECT users.id:: text, SUM((bird_eggs_offered_bank->>'quantity')::int) AS val
+			const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(`
+            SELECT users.id::text
+            , COALESCE(SUM((bird_eggs_offered_bank->>'5076')::int),0)
+                + COALESCE(SUM((bird_eggs_offered_bank->>'5077')::int),0)
+                + COALESCE(SUM((bird_eggs_offered_bank->>'5078')::int),0) AS val
             FROM users
             INNER JOIN "user_stats" "userstats" on "userstats"."user_id"::text = "users"."id"
             WHERE "collectionLogBank"->>'${item.id}' IS NULL
             ${ironmanOnly ? ' AND "minion.ironman" = true' : ''}
-			GROUP BY users.id
-            ORDER BY SUM((bird_eggs_offered_bank->>'quantity')::int) DESC
+            GROUP BY users.id
+            ORDER BY COALESCE(SUM((bird_eggs_offered_bank->>'5076')::int),0)
+                + COALESCE(SUM((bird_eggs_offered_bank->>'5077')::int),0)
+                + COALESCE(SUM((bird_eggs_offered_bank->>'5078')::int),0) DESC
             LIMIT 10;`);
 			return result;
 		},
