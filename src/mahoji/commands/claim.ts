@@ -57,8 +57,9 @@ export const claimCommand: OSBMahojiCommand = {
 			return 'Invalid thing to claim.';
 		}
 
-		if (!(await claimable.hasRequirement(user))) {
-			return 'You are not eligible for this reward.';
+		const requirementCheck = await claimable.hasRequirement(user);
+		if (typeof requirementCheck === 'string') {
+			return `You are not eligible to claim this: ${requirementCheck}`;
 		}
 
 		const result = await claimable.action(user);
