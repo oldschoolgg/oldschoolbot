@@ -14,21 +14,21 @@ export const questingTask: MinionTask = {
 		const currentQP = user.QP;
 
 		// This assumes you do quests in order of scaling difficulty, ~115 hours for max qp
-		let qpRecieved = rand(1, 30);
+		let qpReceived = rand(1, 30);
 
 		const max = user.isIronman ? 100_000 : MAX_QP;
 
-		const newQP = currentQP + qpRecieved;
+		const newQP = currentQP + qpReceived;
 
 		// The minion could be at (max - 1) QP, but gain 4 QP here, so we'll trim that down from 4 to 1.
 		if (newQP > max) {
-			qpRecieved -= newQP - max;
+			qpReceived -= newQP - max;
 		}
 
 		let str = `${user}, ${
 			user.minionName
-		} finished questing, you received ${qpRecieved.toLocaleString()} QP. Your current QP is ${
-			currentQP + qpRecieved
+		} finished questing, you received ${qpReceived.toLocaleString()} QP. Your current QP is ${
+			currentQP + qpReceived
 		}.`;
 
 		const hasMaxQP = newQP >= max;
@@ -38,7 +38,7 @@ export const questingTask: MinionTask = {
 
 		await user.update({
 			QP: {
-				increment: qpRecieved
+				increment: qpReceived
 			}
 		});
 		const herbLevel = user.skillLevel(SkillsEnum.Herblore);
