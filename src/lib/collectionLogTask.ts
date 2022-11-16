@@ -374,7 +374,22 @@ class CollectionLogTask {
 				this.drawText(ctx, value.toLocaleString(), ctx.measureText(drawnSoFar).width, pixelLevel);
 				drawnSoFar += value.toLocaleString();
 			}
+			// TODO: Make looting count generic in future
+			if (collectionLog.name === 'Guardians of the Rift') {
+				ctx.fillStyle = '#FF981F';
+				this.drawText(ctx, ' Rifts searches: ', ctx.measureText(drawnSoFar).width, pixelLevel);
+				drawnSoFar += ' Rifts searches: ';
+				ctx.fillStyle = '#FFFFFF';
+				const stats = await user.fetchStats();
+				this.drawText(
+					ctx,
+					stats.gotr_rift_searches.toLocaleString(),
+					ctx.measureText(drawnSoFar).width,
+					pixelLevel
+				);
+			}
 		}
+
 		ctx.restore();
 
 		ctx.save();

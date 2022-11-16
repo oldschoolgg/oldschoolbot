@@ -586,6 +586,7 @@ model UserStats {
   bird_eggs_offered_bank   Json   @default("{}") @db.Json
   scattered_ashes_bank     Json   @default("{}") @db.Json
   ash_sanctifier_prayer_xp BigInt @default(0)
+  gotr_rift_searches       Int    @default(0)
 
   @@map("user_stats")
 }

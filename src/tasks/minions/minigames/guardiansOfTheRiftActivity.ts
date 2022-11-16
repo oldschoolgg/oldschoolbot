@@ -10,7 +10,7 @@ import { itemID, stringMatches } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { calcMaxRCQuantity, updateBankSetting } from '../../../mahoji/mahojiSettings';
+import { calcMaxRCQuantity, updateBankSetting, userStatsUpdate } from '../../../mahoji/mahojiSettings';
 import { rewardsGuardianTable } from './../../../lib/simulation/rewardsGuardian';
 import { GuardiansOfTheRiftActivityTaskOptions } from './../../../lib/types/minions';
 
@@ -125,6 +125,12 @@ export const guardiansOfTheRiftTask: MinionTask = {
 			rewardsQty += randInt(rolls - 1, rolls);
 		}
 		rewardsGuardianLoot.add(rewardsGuardianTable.roll(rewardsQty));
+
+		await userStatsUpdate(user.id, () => ({
+			gotr_rift_searches: {
+				increment: rewardsQty
+			}
+		}));
 
 		const totalLoot = new Bank();
 		totalLoot.add(rewardsGuardianLoot);
