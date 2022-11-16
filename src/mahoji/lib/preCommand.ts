@@ -5,7 +5,7 @@ import { badges, Emoji, usernameCache } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
 import { removeMarkdownEmojis, stripEmojis } from '../../lib/util';
 import { CACHED_ACTIVE_USER_IDS } from '../../lib/util/cachedUserIDs';
-import { AbstractCommand, runInhibitors } from './inhibitors';
+import { AbstractCommand, CommandArgs, runInhibitors } from './inhibitors';
 
 function cleanUsername(username: string) {
 	return removeMarkdownEmojis(username).substring(0, 32);
@@ -41,6 +41,7 @@ export async function syncNewUserUsername(user: MUser, username: string) {
 
 export async function preCommand({
 	abstractCommand,
+	args,
 	userID,
 	guildID,
 	channelID,
@@ -49,6 +50,7 @@ export async function preCommand({
 }: {
 	apiUser: User | null;
 	abstractCommand: AbstractCommand;
+	args?: CommandArgs;
 	userID: string;
 	guildID?: string | bigint | null;
 	channelID: string | bigint;
@@ -86,6 +88,7 @@ export async function preCommand({
 		guild: guild ?? null,
 		member: member ?? null,
 		command: abstractCommand,
+		args: args ?? null,
 		channel: channel ?? null,
 		bypassInhibitors
 	});

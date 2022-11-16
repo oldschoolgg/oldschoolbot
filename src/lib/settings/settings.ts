@@ -132,6 +132,7 @@ export async function runCommand({
 	try {
 		const inhibitedReason = await preCommand({
 			abstractCommand,
+			args,
 			userID: user.id,
 			channelID,
 			guildID,
