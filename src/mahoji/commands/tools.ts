@@ -285,9 +285,9 @@ LIMIT 10;`);
 	},
 	{
 		name: 'Evil Chicken Outfit',
-        items: evilChickenOutfit,
-        run: async ({ item, ironmanOnly }) => {
-            const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(`
+		items: evilChickenOutfit,
+		run: async ({ item, ironmanOnly }) => {
+			const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(`
             SELECT *
 			FROM
 			(
@@ -305,9 +305,9 @@ LIMIT 10;`);
 			)
 			AS eggs
 			WHERE eggs.val > 0;`);
-            return result;
-        },
-        format: num => `${num.toLocaleString()} Bird Eggs Offered`
+			return result;
+		},
+		format: num => `${num.toLocaleString()} Bird Eggs Offered`
 	}
 ];
 for (const minigame of dryStreakMinigames) {
