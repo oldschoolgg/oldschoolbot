@@ -2,6 +2,7 @@ import { ChatInputCommandInteraction } from 'discord.js';
 import { increaseNumByPercent, reduceNumByPercent, round, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { calcBossFood } from '../../../lib/bso/calcBossFood';
 import { gorajanArcherOutfit, pernixOutfit } from '../../../lib/data/CollectionsExport';
 import { trackLoot } from '../../../lib/lootTrack';
 import { calculateMonsterFood } from '../../../lib/minions/functions';
@@ -37,7 +38,7 @@ function checkReqs(users: MUser[], monster: KillableMonster, quantity: number): 
 			return `${user} doesn't have a Frozen key.`;
 		}
 
-		const potionsRequired = calcFood(user, users.length, quantity);
+		const potionsRequired = calcBossFood(user, NexMonster, users.length, quantity);
 		if (!user.bank.has(potionsRequired)) {
 			return `${
 				users.length === 1 ? "You don't" : `${user.usernameOrMention} doesn't`
@@ -46,25 +47,6 @@ function checkReqs(users: MUser[], monster: KillableMonster, quantity: number): 
 			}.`;
 		}
 	}
-}
-
-function calcFood(user: MUser, teamSize: number, quantity: number) {
-	let [healAmountNeeded] = calculateMonsterFood(NexMonster, user);
-	const kc = user.getKC(NexMonster.id);
-	if (kc > 50) healAmountNeeded *= 0.5;
-	else if (kc > 30) healAmountNeeded *= 0.6;
-	else if (kc > 15) healAmountNeeded *= 0.7;
-	else if (kc > 10) healAmountNeeded *= 0.8;
-	else if (kc > 5) healAmountNeeded *= 0.9;
-	healAmountNeeded /= (teamSize + 1) / 1.5;
-
-	const brewsNeeded = Math.ceil(healAmountNeeded / 16) * quantity;
-	const restoresNeeded = Math.ceil(brewsNeeded / 3);
-	const items = new Bank({
-		'Saradomin brew(4)': brewsNeeded,
-		'Super restore(4)': restoresNeeded
-	});
-	return items;
 }
 
 export async function nexCommand(
@@ -115,7 +97,7 @@ export async function nexCommand(
 
 				// Ensure people have enough food for at least 10 kills.
 				// We don't want to overshoot, as the mass will still fail if there's not enough food
-				const potionReq = calcFood(user, 1, 10);
+				const potionReq = calcBossFood(user, NexMonster, 1, 10);
 				if (!user.bank.has(potionReq)) {
 					return [true, `You don't have enough food. You need at least ${potionReq} to Join the mass.`];
 				}
@@ -253,11 +235,16 @@ export async function nexCommand(
 		debugStr += `${msgs.join(', ')}. `;
 	}
 
+	let minDuration = 2;
+	if (users.length === 4) minDuration = 1.5;
+	if (users.length === 5) minDuration = 1.2;
+	if (users.length >= 6) minDuration = 1;
+
 	let durQtyRes = await calcDurQty(
 		users,
 		{ ...NexMonster, timeToFinish: effectiveTime },
 		inputQuantity,
-		Time.Minute * 2,
+		Time.Minute * minDuration,
 		Time.Minute * 30
 	);
 	if (typeof durQtyRes === 'string') return durQtyRes;
@@ -268,7 +255,7 @@ export async function nexCommand(
 	let foodString = 'Removed brews/restores from users: ';
 	let foodRemoved: string[] = [];
 	for (const user of users) {
-		const food = calcFood(user, users.length, quantity);
+		const food = calcBossFood(user, NexMonster, users.length, quantity);
 		if (!user.bank.has(food)) {
 			return `${user.usernameOrMention} doesn't have enough brews or restores.`;
 		}
@@ -276,7 +263,7 @@ export async function nexCommand(
 
 	const removeResult = await Promise.all(
 		users.map(async user => {
-			const cost = calcFood(user, users.length, quantity);
+			const cost = calcBossFood(user, NexMonster, users.length, quantity);
 			foodRemoved.push(`${cost} from ${user.usernameOrMention}`);
 			await user.removeItemsFromBank(cost);
 			return {

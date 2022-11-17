@@ -202,9 +202,12 @@ export async function minionKillCommand(
 	if (['vasa', 'vasa magus'].some(i => stringMatches(i, name))) return vasaCommand(user, channelID, quantity);
 	if (name.toLowerCase().includes('nightmare')) return nightmareCommand(user, channelID, name);
 	if (name.toLowerCase().includes('wintertodt')) return wintertodtCommand(user, channelID);
-	if (name.toLowerCase().includes('ignecarus')) return igneCommand(interaction, user, channelID, name, quantity);
-	if (name.toLowerCase().includes('goldemar')) return kgCommand(interaction, user, channelID, name, quantity);
-	if (name.toLowerCase().includes('kalphite king')) return kkCommand(interaction, user, channelID, name, quantity);
+	if (['igne ', 'ignecarus'].some(i => name.toLowerCase().includes(i)))
+		return igneCommand(interaction, user, channelID, name, quantity);
+	if (['kg', 'goldemar'].some(i => name.toLowerCase().includes(i)))
+		return kgCommand(interaction, user, channelID, name, quantity);
+	if (['kk', 'kalphite king'].some(i => name.toLowerCase().includes(i)))
+		return kkCommand(interaction, user, channelID, name, quantity);
 	if (name.toLowerCase().includes('nex')) return nexCommand(interaction, user, channelID, name, quantity);
 	if (name.toLowerCase().includes('moktang')) return moktangCommand(user, channelID, quantity);
 	if (name.toLowerCase().includes('naxxus')) return naxxusCommand(user, channelID, quantity);
