@@ -288,7 +288,10 @@ LIMIT 10;`);
         items: evilChickenOutfit,
         run: async ({ item, ironmanOnly }) => {
             const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(`
-            SELECT users.id::text
+            SELECT *
+			FROM
+			(
+			SELECT users.id::text
             , COALESCE(SUM((bird_eggs_offered_bank->>'5076')::int),0)
                 + COALESCE(SUM((bird_eggs_offered_bank->>'5077')::int),0)
                 + COALESCE(SUM((bird_eggs_offered_bank->>'5078')::int),0) AS val
@@ -298,7 +301,10 @@ LIMIT 10;`);
             ${ironmanOnly ? ' AND "minion.ironman" = true' : ''}
             GROUP BY users.id
             ORDER BY val DESC
-            LIMIT 10;`);
+            LIMIT 10 
+			)
+			AS eggs
+			WHERE eggs.val > 0;`);
             return result;
         },
         format: num => `${num.toLocaleString()} Bird Eggs Offered`
