@@ -285,9 +285,9 @@ LIMIT 10;`);
 	},
 	{
 		name: 'Evil Chicken Outfit',
-		items: evilChickenOutfit,
-		run: async ({ item, ironmanOnly }) => {
-			const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(`
+        items: evilChickenOutfit,
+        run: async ({ item, ironmanOnly }) => {
+            const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(`
             SELECT users.id::text
             , COALESCE(SUM((bird_eggs_offered_bank->>'5076')::int),0)
                 + COALESCE(SUM((bird_eggs_offered_bank->>'5077')::int),0)
@@ -297,13 +297,11 @@ LIMIT 10;`);
             WHERE "collectionLogBank"->>'${item.id}' IS NULL
             ${ironmanOnly ? ' AND "minion.ironman" = true' : ''}
             GROUP BY users.id
-            ORDER BY COALESCE(SUM((bird_eggs_offered_bank->>'5076')::int),0)
-                + COALESCE(SUM((bird_eggs_offered_bank->>'5077')::int),0)
-                + COALESCE(SUM((bird_eggs_offered_bank->>'5078')::int),0) DESC
+            ORDER BY val DESC
             LIMIT 10;`);
-			return result;
-		},
-		format: num => `${num.toLocaleString()} Bird Eggs Offered`
+            return result;
+        },
+        format: num => `${num.toLocaleString()} Bird Eggs Offered`
 	}
 ];
 for (const minigame of dryStreakMinigames) {
