@@ -90,6 +90,7 @@ export const RandomEvents: RandomEvent[] = [
 		id: 10,
 		name: 'Sandwich lady',
 		loot: new LootTable()
+			.oneIn(64, 'Stale baguette')
 			.add('Baguette')
 			.add('Triangle sandwich')
 			.add('Square sandwich')
