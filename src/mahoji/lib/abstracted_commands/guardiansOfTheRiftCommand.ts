@@ -9,8 +9,9 @@ import { formatDuration, itemID, itemNameFromID, randomVariation } from '../../.
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../../lib/util/determineRunes';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { pickaxes, varrockArmours } from '../../commands/mine';
-import { updateBankSetting, userHasGracefulEquipped } from '../../mahojiSettings';
+import { userHasGracefulEquipped } from '../../mahojiSettings';
 
 export async function guardiansOfTheRiftStartCommand(
 	user: MUser,

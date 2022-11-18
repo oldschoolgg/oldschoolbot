@@ -21,6 +21,7 @@ import {
 	stringMatches,
 	stripEmojis
 } from '../../lib/util';
+import { fetchCLLeaderboard } from '../../lib/util/clLeaderboard';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { toTitleCase } from '../../lib/util/toTitleCase';
 import { sendToChannelID } from '../../lib/util/webhook';
@@ -208,23 +209,7 @@ async function clLb(user: MUser, channelID: string, inputType: string, ironmenOn
 	if (!items || items.length === 0) {
 		return "That's not a valid collection log category. Check +cl for all possible logs.";
 	}
-	const users = (
-		await prisma.$queryRawUnsafe<{ id: string; qty: number }[]>(`
-SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
-				  FROM (
-  SELECT array(SELECT * FROM jsonb_object_keys("collectionLogBank")) "cl_keys",
-  				id, "collectionLogBank",
-			    cardinality(array(SELECT * FROM jsonb_object_keys("collectionLogBank" - array[${items
-					.map(i => `'${i}'`)
-					.join(', ')}]))) "inverse_length"
-  FROM users
-  WHERE "collectionLogBank" ?| array[${items.map(i => `'${i}'`).join(', ')}]
-  ${ironmenOnly ? 'AND "minion.ironman" = true' : ''}
-) u
-ORDER BY qty DESC
-LIMIT 50;
-`)
-	).filter(i => i.qty > 0);
+	const users = await fetchCLLeaderboard({ ironmenOnly, items, resultLimit: 50 });
 
 	inputType = toTitleCase(inputType.toLowerCase());
 	doMenu(
