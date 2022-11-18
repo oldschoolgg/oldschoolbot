@@ -235,10 +235,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 
 	// If they reached a XP milestone, send a server notification.
 	if (preMax !== -1) {
-		for (const XPMilestone of [
-			50_000_000, 100_000_000, 150_000_000, 200_000_000, 1_000_000_000, 2_000_000_000, 3_000_000_000,
-			4_000_000_000
-		]) {
+		for (const XPMilestone of [200_000_000, 1_000_000_000, 2_000_000_000, 3_000_000_000, 4_000_000_000]) {
 			if (newXP < XPMilestone) break;
 
 			if (currentXP < XPMilestone && newXP >= XPMilestone) {
