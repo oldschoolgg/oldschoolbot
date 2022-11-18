@@ -22,7 +22,7 @@ import { Castables } from '../../../lib/skilling/skills/magic/castables';
 import { getSlayerTaskStats } from '../../../lib/slayer/slayerUtil';
 import { sorts } from '../../../lib/sorts';
 import { InfernoOptions } from '../../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../../lib/util';
+import { formatDuration, sanitizeBank, stringMatches } from '../../../lib/util';
 import { barChart, lineChart, pieChart } from '../../../lib/util/chart';
 import { getItem } from '../../../lib/util/getOSItem';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
@@ -1055,6 +1055,48 @@ GROUP BY "bankBackground";`);
 			return `You've received **${Number(
 				stats.ash_sanctifier_prayer_xp
 			).toLocaleString()}** XP from using the Ash Sanctifier.`;
+		}
+	},
+	{
+		name: 'Total Giveaway Cost',
+		perkTierNeeded: PerkTier.Four,
+		run: async u => {
+			const giveaways = await prisma.economyTransaction.findMany({
+				where: {
+					sender: BigInt(u.id),
+					type: 'giveaway'
+				},
+				select: {
+					items_sent: true
+				}
+			});
+			let items = new Bank();
+			for (const g of giveaways) {
+				items.add(g.items_sent as ItemBank);
+			}
+			sanitizeBank(items);
+			return makeResponseForBank(items, "You've given away...");
+		}
+	},
+	{
+		name: 'Total Giveaway Winnings/Loot',
+		perkTierNeeded: PerkTier.Four,
+		run: async u => {
+			const giveaways = await prisma.economyTransaction.findMany({
+				where: {
+					recipient: BigInt(u.id),
+					type: 'giveaway'
+				},
+				select: {
+					items_sent: true
+				}
+			});
+			let items = new Bank();
+			for (const g of giveaways) {
+				items.add(g.items_sent as ItemBank);
+			}
+			sanitizeBank(items);
+			return makeResponseForBank(items, "You've received from giveaways...");
 		}
 	}
 ] as const;
