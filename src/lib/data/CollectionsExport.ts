@@ -1,3 +1,4 @@
+import { Minigame } from '@prisma/client';
 import { objectEntries } from 'e';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
@@ -36,6 +37,16 @@ export interface IKCActivity {
 	[key: string]: string | string[] | ((user: MUser) => Promise<number>);
 }
 
+export type FormatProgressFunction = ({
+	getKC,
+	minigames,
+	user
+}: {
+	user: MUser;
+	getKC: (id: number) => number;
+	minigames: Minigame;
+}) => string | string[];
+
 export interface ICollectionActivity {
 	[key: string]: {
 		// If the collection will count towards the collection log counter
@@ -45,6 +56,7 @@ export interface ICollectionActivity {
 		allItems?: number[];
 		kcActivity?: string | IKCActivity;
 		isActivity?: boolean;
+		fmtProg?: FormatProgressFunction;
 	};
 }
 
