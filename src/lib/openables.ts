@@ -86,8 +86,7 @@ const clueItemsToNotifyOf = resolveItems([
 			'First age bracelet',
 			'First age ring'
 		])
-	)
-	.concat([itemID('Bloodhound'), itemID('Ranger boots')]);
+	);
 
 const clueOpenables: UnifiedOpenable[] = [];
 for (const clueTier of ClueTiers) {
