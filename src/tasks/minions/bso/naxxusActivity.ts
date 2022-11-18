@@ -8,7 +8,7 @@ import announceLoot from '../../../lib/minions/functions/announceLoot';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { updateBankSetting } from '../../../mahoji/mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 export function rollNaxxusLoot(quantity: number = 1, cl?: Bank) {
 	const loot = new Bank();

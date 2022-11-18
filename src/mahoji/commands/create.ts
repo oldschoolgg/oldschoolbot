@@ -13,13 +13,9 @@ import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
 import { stringMatches } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
+import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { OSBMahojiCommand } from '../lib/util';
-import {
-	handleMahojiConfirmation,
-	mahojiUsersSettingsFetch,
-	updateBankSetting,
-	userStatsBankUpdate
-} from '../mahojiSettings';
+import { handleMahojiConfirmation, mahojiUsersSettingsFetch, userStatsBankUpdate } from '../mahojiSettings';
 
 function showAllCreatables(user: MUser) {
 	let content = 'This are the items that you can create:';

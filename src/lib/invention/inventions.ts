@@ -5,15 +5,12 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import {
-	mahojiClientSettingsFetch,
-	mahojiClientSettingsUpdate,
-	mahojiUsersSettingsFetch
-} from '../../mahoji/mahojiSettings';
+import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 import { mahojiUserSettingsUpdate } from '../../mahoji/settingsUpdate';
 import { ClueTier, ClueTiers } from '../clues/clueTiers';
 import { ItemBank } from '../types';
 import { clamp, formatDuration, stringMatches, toKMB } from '../util';
+import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../util/clientSettings';
 import getOSItem from '../util/getOSItem';
 import { logError } from '../util/logError';
 import { minionIsBusy } from '../util/minionIsBusy';

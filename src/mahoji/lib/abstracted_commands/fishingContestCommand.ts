@@ -13,7 +13,7 @@ import { getMinigameScore } from '../../../lib/settings/minigames';
 import { FishingContestOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { updateBankSetting } from '../../mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 export async function fishingContestStartCommand(user: MUser, channelID: string, loc: string | undefined) {
 	const currentFishType = getCurrentFishType();

@@ -9,14 +9,13 @@ import { trackLoot } from '../../../lib/lootTrack';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import { NexMonster } from '../../../lib/nex';
-import { ItemBank } from '../../../lib/types';
+import { TeamLoot } from '../../../lib/simulation/TeamLoot';
 import { BossActivityTaskOptions } from '../../../lib/types/minions';
 import { roll } from '../../../lib/util';
 import { getNexGearStats } from '../../../lib/util/getNexGearStats';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { sendToChannelID } from '../../../lib/util/webhook';
-import { updateBankSetting } from '../../../mahoji/mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 interface NexUser {
 	id: string;
@@ -29,7 +28,7 @@ export const nexTask: MinionTask = {
 	type: 'Nex',
 	async run(data: BossActivityTaskOptions) {
 		const { channelID, userID, users, quantity, duration } = data;
-		const teamsLoot: { [key: string]: ItemBank } = {};
+		const teamsLoot = new TeamLoot([]);
 		const kcAmounts: { [key: string]: number } = {};
 
 		const parsedUsers: NexUser[] = [];
@@ -79,9 +78,7 @@ export const nexTask: MinionTask = {
 			}
 			const winner = teamTable.roll()?.item;
 			if (!winner) continue;
-			const currentLoot = teamsLoot[winner];
-			if (!currentLoot) teamsLoot[winner] = loot.bank;
-			else teamsLoot[winner] = new Bank().add(currentLoot).add(loot).bank;
+			teamsLoot.add(winner, loot);
 
 			kcAmounts[winner] = Boolean(kcAmounts[winner]) ? ++kcAmounts[winner] : 1;
 		}
@@ -94,7 +91,7 @@ export const nexTask: MinionTask = {
 		let soloPrevCl = new Bank();
 		let soloItemsAdded: Bank = new Bank();
 
-		for (let [userID, loot] of Object.entries(teamsLoot)) {
+		for (let [userID, loot] of teamsLoot.entries()) {
 			const { user } = parsedUsers.find(p => p.id === userID)!;
 			if (!user) continue;
 			let xpStr = '';
@@ -118,7 +115,7 @@ export const nexTask: MinionTask = {
 
 			const kcToAdd = kcAmounts[user.id];
 			if (kcToAdd) await user.incrementKC(NexMonster.id, kcToAdd);
-			const purple = Object.keys(loot).some(id => nexCL.includes(parseInt(id)));
+			const purple = Object.keys(loot.bank).some(id => nexCL.includes(parseInt(id)));
 
 			resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${new Bank(loot)}||\n`;
 
@@ -145,7 +142,7 @@ export const nexTask: MinionTask = {
 			kc: quantity,
 			users: users.map(i => ({
 				id: i,
-				loot: teamsLoot[i] ? new Bank(teamsLoot[i]) : new Bank(),
+				loot: teamsLoot.get(i),
 				duration
 			}))
 		});
@@ -163,12 +160,9 @@ export const nexTask: MinionTask = {
 
 		if (users.length > 1) {
 			if (Object.values(kcAmounts).length === 0) {
-				sendToChannelID(channelID, {
-					content: `${users.map(id => `<@${id}>`).join(' ')} Your team all died, and failed to defeat Nex.`
-				});
-			} else {
-				sendToChannelID(channelID, { content: resultStr });
+				resultStr = `${users.map(id => `<@${id}>`).join(' ')} Your team all died, and failed to defeat Nex.`;
 			}
+			handleTripFinish(leaderUser, channelID, resultStr, undefined, data, null);
 		} else {
 			const image = !kcAmounts[userID]
 				? undefined

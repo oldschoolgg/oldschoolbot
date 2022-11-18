@@ -19,14 +19,10 @@ import { formatDuration, itemID } from '../../lib/util';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';
 import resolveItems from '../../lib/util/resolveItems';
+import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { LampTable } from '../../lib/xpLamps';
 import { OSBMahojiCommand } from '../lib/util';
-import {
-	handleMahojiConfirmation,
-	updateBankSetting,
-	updateGPTrackSetting,
-	userStatsBankUpdate
-} from '../mahojiSettings';
+import { handleMahojiConfirmation, updateGPTrackSetting, userStatsBankUpdate } from '../mahojiSettings';
 
 const contractTable = new LootTable()
 	.every('Coins', [1_000_000, 3_500_000])

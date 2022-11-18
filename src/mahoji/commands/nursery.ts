@@ -11,8 +11,9 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { Nursery, Species, tameSpecies } from '../../lib/tames';
 import { formatDuration, gaussianRandom, roll } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
+import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiUsersSettingsFetch, updateBankSetting } from '../mahojiSettings';
+import { handleMahojiConfirmation, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export async function generateNewTame(user: MUser, species: Species) {
 	let shinyChance = user.hasEquippedOrInBank(['Ring of luck'])

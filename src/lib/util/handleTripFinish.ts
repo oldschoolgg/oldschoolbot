@@ -6,12 +6,7 @@ import { Bank } from 'oldschooljs';
 import { alching } from '../../mahoji/commands/laps';
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
 import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
-import {
-	updateBankSetting,
-	updateGPTrackSetting,
-	userStatsBankUpdate,
-	userStatsUpdate
-} from '../../mahoji/mahojiSettings';
+import { updateGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from '../../mahoji/mahojiSettings';
 import { MysteryBoxes } from '../bsoOpenables';
 import { ClueTiers } from '../clues/clueTiers';
 import { BitField, COINS_ID, Emoji, PerkTier } from '../constants';
@@ -34,6 +29,7 @@ import {
 	makeOpenSeedPackButton,
 	makeRepeatTripButton
 } from './globalInteractions';
+import { updateBankSetting } from './updateBankSetting';
 import { sendToChannelID } from './webhook';
 
 export const collectors = new Map<string, MessageCollector>();

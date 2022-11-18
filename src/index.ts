@@ -3,6 +3,7 @@ import './lib/customItems/customItems';
 import './lib/data/itemAliases';
 import './lib/crons';
 import './lib/MUser';
+import './lib/util/transactItemsFromBank';
 
 import * as Sentry from '@sentry/node';
 import { Chart } from 'chart.js';
@@ -174,7 +175,7 @@ client.on('interactionCreate', async interaction => {
 
 client.on(Events.ServerNotification, (message: string) => {
 	const channel = globalClient.channels.cache.get(Channel.Notifications);
-	if (channel && globalClient.production) (channel as TextChannel).send(message);
+	if (channel) (channel as TextChannel).send(message);
 });
 let economyLogBuffer: string[] = [];
 

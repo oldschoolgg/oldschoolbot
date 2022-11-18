@@ -11,7 +11,7 @@ import { SkillsEnum } from '../../../lib/skilling/types';
 import { FishingContestOptions } from '../../../lib/types/minions';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { updateBankSetting } from '../../../mahoji/mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 export function calculateFishingContestXP({ fishingLevel, fishSizeCM }: { fishSizeCM: number; fishingLevel: number }) {
 	let fishingXP = (fishSizeCM + 100) * (170 + Math.min(100, fishingLevel) / 5);

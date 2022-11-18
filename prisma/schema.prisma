@@ -19,6 +19,7 @@ model Activity {
   channel_id     BigInt
   data           Json               @db.Json
 
+  @@index([finish_date])
   @@index([group_activity])
   @@index([completed])
   @@index([user_id, type])
@@ -733,6 +734,7 @@ model UserStats {
   bird_eggs_offered_bank   Json   @default("{}") @db.Json
   scattered_ashes_bank     Json   @default("{}") @db.Json
   ash_sanctifier_prayer_xp BigInt @default(0)
+  gotr_rift_searches       Int    @default(0)
 
   // BSO
   bars_from_adze_bank    Json @default("{}") @db.Json

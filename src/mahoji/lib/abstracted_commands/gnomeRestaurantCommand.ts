@@ -9,7 +9,8 @@ import { GnomeRestaurantActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { updateBankSetting, userHasGracefulEquipped } from '../../mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { userHasGracefulEquipped } from '../../mahojiSettings';
 import { getPOH } from './pohCommand';
 
 export async function gnomeRestaurantCommand(user: MUser, channelID: string) {

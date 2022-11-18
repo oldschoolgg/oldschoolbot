@@ -16,8 +16,7 @@ import { BossActivityTaskOptions } from '../../../lib/types/minions';
 import { getKalphiteKingGearStats } from '../../../lib/util/getKalphiteKingGearStats';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { sendToChannelID } from '../../../lib/util/webhook';
-import { updateBankSetting } from '../../../mahoji/mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 interface KalphiteKingUser {
 	id: string;
@@ -97,7 +96,7 @@ export const kalphiteKingTask: MinionTask = {
 			const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
 			const kcToAdd = kcAmounts[user.id];
 			if (kcToAdd) await user.incrementKC(KalphiteKingMonster.id, kcToAdd);
-			const purple = Object.keys(loot).some(id => kalphiteKingCL.includes(parseInt(id)));
+			const purple = Object.keys(loot.bank).some(id => kalphiteKingCL.includes(parseInt(id)));
 
 			const usersTask = await getUsersCurrentSlayerInfo(user.id);
 			const isOnTask =
@@ -175,14 +174,11 @@ export const kalphiteKingTask: MinionTask = {
 
 		if (users.length > 1) {
 			if (Object.values(kcAmounts).length === 0) {
-				sendToChannelID(channelID, {
-					content: `${users
-						.map(id => `<@${id}>`)
-						.join(' ')} Your team all died, and failed to defeat the Kalphite King.`
-				});
-			} else {
-				sendToChannelID(channelID, { content: resultStr });
+				resultStr = `${users
+					.map(id => `<@${id}>`)
+					.join(' ')} Your team all died, and failed to defeat the Kalphite King.`;
 			}
+			handleTripFinish(leaderUser, channelID, resultStr, undefined, data, null);
 		} else {
 			const image = !kcAmounts[userID]
 				? undefined

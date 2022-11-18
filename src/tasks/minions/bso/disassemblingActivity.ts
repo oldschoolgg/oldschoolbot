@@ -8,9 +8,9 @@ import { DisassembleTaskOptions } from '../../../lib/invention/disassemble';
 import { inventionBoosts, transactMaterialsFromUser } from '../../../lib/invention/inventions';
 import { MaterialBank } from '../../../lib/invention/MaterialBank';
 import { SkillsEnum } from '../../../lib/skilling/types';
+import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../../lib/util/clientSettings';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../../mahoji/mahojiSettings';
 
 export async function disassemblyTask(data: DisassembleTaskOptions) {
 	const { userID, qty } = data;

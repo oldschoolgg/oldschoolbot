@@ -1,5 +1,4 @@
 import { StashUnit, User } from '@prisma/client';
-import { assert } from 'console';
 import { partition } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
@@ -19,7 +18,7 @@ import {
 	stoles
 } from '../data/CollectionsExport';
 import { prisma } from '../settings/prisma';
-import { itemNameFromID, stringMatches } from '../util';
+import { assert, itemNameFromID, stringMatches } from '../util';
 import { makeBankImage } from '../util/makeBankImage';
 import resolveItems, { deepResolveItems } from '../util/resolveItems';
 import { ClueTier } from './clueTiers';

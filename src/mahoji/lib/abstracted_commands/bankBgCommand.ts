@@ -4,7 +4,8 @@ import { Bank } from 'oldschooljs';
 import { BitField } from '../../../lib/constants';
 import { formatSkillRequirements, stringMatches, toKMB } from '../../../lib/util';
 import resolveItems from '../../../lib/util/resolveItems';
-import { handleMahojiConfirmation, updateBankSetting } from '../../mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { handleMahojiConfirmation } from '../../mahojiSettings';
 
 export async function bankBgCommand(interaction: ChatInputCommandInteraction, user: MUser, name: string) {
 	const bankImages = bankImageGenerator.backgroundImages;

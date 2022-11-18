@@ -1,5 +1,5 @@
 import { userMention } from '@discordjs/builders';
-import { Prisma, User, xp_gains_skill_enum } from '@prisma/client';
+import { Prisma, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
 import { notEmpty, objectEntries, sumArr, Time, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
@@ -9,6 +9,7 @@ import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
 import { mahojiUserSettingsUpdate } from '../mahoji/settingsUpdate';
 import { addXP } from './addXP';
 import { userIsBusy } from './busyCounterCache';
+import { ClueTiers } from './clues/clueTiers';
 import { BitField, PerkTier, projectiles, Roles, usernameCache } from './constants';
 import { allPetIDs } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
@@ -22,6 +23,7 @@ import { AttackStyles } from './minions/functions';
 import { blowpipeDarts, validateBlowpipeData } from './minions/functions/blowpipeCommand';
 import { AddXpParams, BlowpipeData } from './minions/types';
 import { getMinigameEntity, Minigames, MinigameScore } from './settings/minigames';
+import { prisma } from './settings/prisma';
 import { SkillsEnum } from './skilling/types';
 import { BankSortMethod } from './sorts';
 import { defaultGear, Gear } from './structures/Gear';
@@ -310,6 +312,10 @@ export class MUserClass {
 		return scores;
 	}
 
+	async fetchMinigames() {
+		return getMinigameEntity(this.id);
+	}
+
 	hasEquippedOrInBank(_items: string | number | (string | number)[], type: 'every' | 'one' = 'one') {
 		const { bank } = this;
 		const items = resolveItems(_items);
@@ -551,6 +557,35 @@ export class MUserClass {
 
 	async sync() {
 		this.user = await mahojiUsersSettingsFetch(this.id);
+	}
+
+	async fetchStats(): Promise<UserStats> {
+		const result = await prisma.userStats.upsert({
+			where: {
+				user_id: BigInt(this.id)
+			},
+			create: {
+				user_id: BigInt(this.id)
+			},
+			update: {}
+		});
+		if (!result) throw new Error(`fetchStats returned no result for ${this.id}`);
+		return result;
+	}
+
+	clueScores() {
+		return Object.entries(this.openableScores())
+			.map(entry => {
+				const tier = ClueTiers.find(i => i.id === parseInt(entry[0]));
+				if (!tier) return;
+				return {
+					tier,
+					casket: getOSItem(tier.id),
+					clueScroll: getOSItem(tier.scrollID),
+					opened: this.openableScores()[tier.id] ?? 0
+				};
+			})
+			.filter(notEmpty);
 	}
 }
 declare global {

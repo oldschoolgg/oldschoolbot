@@ -13,7 +13,8 @@ import { formatDuration, isWeekend } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
-import { hasMonsterRequirements, updateBankSetting } from '../../mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { hasMonsterRequirements } from '../../mahojiSettings';
 
 const bisMageGear = new Gear({
 	head: 'Gorajan occult helmet', // 20

@@ -376,8 +376,8 @@ export const tripHandlers = {
 		commandName: 'k',
 		args: (data: NexTaskOptions) => {
 			return {
-				name: 'nex',
-				quantity: data.quantity
+				name: `nex ${data.users.length === 1 ? 'solo' : 'mass'}`,
+				quantity: data.users.length === 1 ? data.quantity : undefined
 			};
 		}
 	},
@@ -577,7 +577,8 @@ export const tripHandlers = {
 	[activity_type_enum.KalphiteKing]: {
 		commandName: 'k',
 		args: (data: NewBossOptions) => ({
-			name: `Kalphite King ${data.users.length === 1 ? 'solo' : 'mass'}`
+			name: `Kalphite King ${data.users.length === 1 ? 'solo' : 'mass'}`,
+			quantity: data.users.length === 1 ? data.quantity : undefined
 		})
 	},
 	[activity_type_enum.Ignecarus]: {

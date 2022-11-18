@@ -7,7 +7,8 @@ import { SawmillActivityTaskOptions } from '../../../lib/types/minions';
 import { clamp, formatDuration, itemNameFromID, stringMatches, toKMB } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { updateBankSetting, userHasGracefulEquipped } from '../../mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { userHasGracefulEquipped } from '../../mahojiSettings';
 
 export async function sawmillCommand(
 	user: MUser,

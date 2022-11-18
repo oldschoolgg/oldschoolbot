@@ -10,13 +10,14 @@ import { prisma } from '../../lib/settings/prisma';
 import Firemaking from '../../lib/skilling/skills/firemaking';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import { assert, isSuperUntradeable } from '../../lib/util';
+import { mahojiClientSettingsFetch } from '../../lib/util/clientSettings';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiClientSettingsFetch, updateLegacyUserBankSetting } from '../mahojiSettings';
+import { handleMahojiConfirmation, updateLegacyUserBankSetting } from '../mahojiSettings';
 
 const LOTTERY_PRIZES = [
 	new Bank().add('Cob'),

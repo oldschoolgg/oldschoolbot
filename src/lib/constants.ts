@@ -11,7 +11,7 @@ import { Time } from 'e';
 import { CommandOptions } from 'mahoji/dist/lib/types';
 import { convertLVLtoXP } from 'oldschooljs/dist/util/util';
 
-import { DISCORD_SETTINGS } from '../config';
+import { DISCORD_SETTINGS, production } from '../config';
 import { AbstractCommand, CommandArgs } from '../mahoji/lib/inhibitors';
 import { SkillsEnum } from './skilling/types';
 import getOSItem from './util/getOSItem';
@@ -21,7 +21,7 @@ export const BotID = DISCORD_SETTINGS.BotID ?? '729244028989603850';
 
 export const Channel = {
 	General: DISCORD_SETTINGS.Channels?.General ?? '342983479501389826',
-	Notifications: DISCORD_SETTINGS.Channels?.Notifications ?? '811589869314899980',
+	Notifications: production ? '811589869314899980' : '1042760447830536212',
 	ErrorLogs: DISCORD_SETTINGS.Channels?.ErrorLogs ?? '665678499578904596',
 	GrandExchange: DISCORD_SETTINGS.Channels?.GrandExchange ?? '738780181946171493',
 	Developers: DISCORD_SETTINGS.Channels?.Developers ?? '648196527294251020',
@@ -590,3 +590,23 @@ export const minionBuyButton = new ButtonBuilder()
 export const FormattedCustomEmoji = /<a?:\w{2,32}:\d{17,20}>/;
 
 export const IVY_MAX_TRIP_LENGTH_BOOST = Time.Minute * 25;
+export const chompyHats = [
+	[getOSItem('Chompy bird hat (ogre bowman)'), 30],
+	[getOSItem('Chompy bird hat (bowman)'), 40],
+	[getOSItem('Chompy bird hat (ogre yeoman)'), 50],
+	[getOSItem('Chompy bird hat (yeoman)'), 70],
+	[getOSItem('Chompy bird hat (ogre marksman)'), 95],
+	[getOSItem('Chompy bird hat (marksman)'), 125],
+	[getOSItem('Chompy bird hat (ogre woodsman)'), 170],
+	[getOSItem('Chompy bird hat (woodsman)'), 225],
+	[getOSItem('Chompy bird hat (ogre forester)'), 300],
+	[getOSItem('Chompy bird hat (forester)'), 400],
+	[getOSItem('Chompy bird hat (ogre bowmaster)'), 550],
+	[getOSItem('Chompy bird hat (bowmaster)'), 700],
+	[getOSItem('Chompy bird hat (ogre expert)'), 1000],
+	[getOSItem('Chompy bird hat (expert)'), 1300],
+	[getOSItem('Chompy bird hat (ogre dragon archer)'), 1700],
+	[getOSItem('Chompy bird hat (dragon archer)'), 2250],
+	[getOSItem('Chompy bird hat (expert ogre dragon archer)'), 3000],
+	[getOSItem('Chompy bird hat (expert dragon archer)'), 4000]
+] as const;

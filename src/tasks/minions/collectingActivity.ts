@@ -4,8 +4,8 @@ import { Bank } from 'oldschooljs';
 import { MorytaniaDiary, userhasDiaryTier } from '../../lib/diaries';
 import { CollectingOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { collectables } from '../../mahoji/lib/abstracted_commands/collectCommand';
-import { updateBankSetting } from '../../mahoji/mahojiSettings';
 
 export const collectingTask: MinionTask = {
 	type: 'Collecting',

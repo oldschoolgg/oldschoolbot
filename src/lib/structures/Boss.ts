@@ -3,7 +3,6 @@ import { calcPercentOfNum, calcWhatPercent, randFloat, reduceNumByPercent, sumAr
 import { Bank } from 'oldschooljs';
 import { table } from 'table';
 
-import { ClientBankKey, updateBankSetting } from '../../mahoji/mahojiSettings';
 import { GearSetupType, GearStats } from '../gear';
 import { trackLoot } from '../lootTrack';
 import { effectiveMonsters } from '../minions/data/killableMonsters';
@@ -13,6 +12,7 @@ import { NewBossOptions } from '../types/minions';
 import { formatDuration, formatSkillRequirements, hasSkillReqs, isWeekend } from '../util';
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
+import { ClientBankKey, updateBankSetting } from '../util/updateBankSetting';
 import { Gear } from './Gear';
 import { activity_type_enum } from '.prisma/client';
 

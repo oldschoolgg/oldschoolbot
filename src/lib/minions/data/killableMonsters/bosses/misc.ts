@@ -246,9 +246,17 @@ const killableBosses: KillableMonster[] = [
 
 		difficultyRating: 7,
 		itemsRequired: deepResolveItems([
-			['Torva platebody', "Torag's platebody", "Dharok's platebody", 'Bandos chestplate'],
-			['Torva platelegs', "Torag's platelegs", "Dharok's platelegs", 'Bandos tassets'],
-			['Zamorakian spear', 'Zamorakian hasta']
+			["Torag's platebody", "Dharok's platebody", 'Bandos chestplate', 'Torva platebody', "Inquisitor's hauberk"],
+			["Torag's platelegs", "Dharok's platelegs", 'Bandos tassets', 'Torva platelegs', "Inquisitor's plateskirt"],
+			[
+				'Zamorakian spear',
+				'Zamorakian hasta',
+				'Arclight',
+				'Abyssal whip',
+				'Abyssal tentacle',
+				'Abyssal bludgeon',
+				"Inquisitor's mace"
+			]
 		]),
 		qpRequired: 0,
 		itemInBankBoosts: [
