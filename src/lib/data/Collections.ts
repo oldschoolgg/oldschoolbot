@@ -1,5 +1,5 @@
 import { AttachmentBuilder } from 'discord.js';
-import { calcWhatPercent, uniqueArr } from 'e';
+import { calcWhatPercent, notEmpty, uniqueArr } from 'e';
 import { Bank, Clues, Monsters } from 'oldschooljs';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 import Monster from 'oldschooljs/dist/structures/Monster';
@@ -143,11 +143,14 @@ function skillProg(skillName: SkillsEnum): FormatProgressFunction {
 function clueProg(tiers: ClueTier['name'][]): FormatProgressFunction {
 	return ({ user }) => {
 		const clueScores = user.clueScores();
-		return tiers.map(i => {
-			const tier = ClueTiers.find(_tier => _tier.name === i)!;
-			const score = clueScores.find(i => i.tier.name === tier.name)!;
-			return `${score.opened} ${tier.name} Opens`;
-		});
+		return tiers
+			.map(i => {
+				const tier = ClueTiers.find(_tier => _tier.name === i)!;
+				const score = clueScores.find(i => i.tier.name === tier.name);
+				if (!score) return;
+				return `${score.opened} ${tier.name} Opens`;
+			})
+			.filter(notEmpty);
 	};
 }
 
