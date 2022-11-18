@@ -10,6 +10,7 @@ import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
 import { mahojiUserSettingsUpdate } from '../mahoji/settingsUpdate';
 import { addXP } from './addXP';
 import { userIsBusy } from './busyCounterCache';
+import { ClueTiers } from './clues/clueTiers';
 import { BitField, PerkTier, projectiles, Roles, usernameCache } from './constants';
 import { allPetIDs } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
@@ -304,6 +305,10 @@ export class MUserClass {
 		return scores;
 	}
 
+	async fetchMinigames() {
+		return getMinigameEntity(this.id);
+	}
+
 	hasEquippedOrInBank(_items: string | number | (string | number)[], type: 'every' | 'one' = 'one') {
 		const { bank } = this;
 		const items = resolveItems(_items);
@@ -549,6 +554,21 @@ export class MUserClass {
 		});
 		if (!result) throw new Error(`fetchStats returned no result for ${this.id}`);
 		return result;
+	}
+
+	clueScores() {
+		return Object.entries(this.openableScores())
+			.map(entry => {
+				const tier = ClueTiers.find(i => i.id === parseInt(entry[0]));
+				if (!tier) return;
+				return {
+					tier,
+					casket: getOSItem(tier.id),
+					clueScroll: getOSItem(tier.scrollID),
+					opened: this.openableScores()[tier.id] ?? 0
+				};
+			})
+			.filter(notEmpty);
 	}
 }
 declare global {

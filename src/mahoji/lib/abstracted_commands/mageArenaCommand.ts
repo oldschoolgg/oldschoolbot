@@ -6,7 +6,7 @@ import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUse
 import { ActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { updateBankSetting } from '../../mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 export async function mageArenaCommand(user: MUser, channelID: string) {
 	if (user.skillLevel(SkillsEnum.Magic) < 60) {
