@@ -1,9 +1,11 @@
+import { Stopwatch } from '@sapphire/stopwatch';
 import { Bank } from 'oldschooljs';
 
 import { Events } from './constants';
 import { allCLItems, allCollectionLogsFlat } from './data/Collections';
 import { fetchCLLeaderboard } from './util/clLeaderboard';
 import { formatOrdinal } from './util/formatOrdinal';
+import { log } from './util/log';
 
 export async function handleNewCLItems({
 	itemsAdded,
@@ -43,9 +45,11 @@ export async function handleNewCLItems({
 			  })}!`
 			: '';
 
+		const stopwatch = new Stopwatch();
 		const nthUser = (
 			await fetchCLLeaderboard({ ironmenOnly: false, items: finishedCL.items, resultLimit: 100_000 })
 		).length;
+		log(`Took ${stopwatch.stop()} to calc cl leaderboard for ${finishedCL.name}`);
 
 		globalClient.emit(
 			Events.ServerNotification,
