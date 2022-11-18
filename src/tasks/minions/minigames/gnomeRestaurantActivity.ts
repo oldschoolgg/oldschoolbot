@@ -7,7 +7,7 @@ import { SkillsEnum } from '../../../lib/skilling/types';
 import { GnomeRestaurantActivityTaskOptions } from '../../../lib/types/minions';
 import { roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { updateBankSetting } from '../../../mahoji/mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 const tipTable = new LootTable()
 	.oneIn(210, 'Gnome scarf')

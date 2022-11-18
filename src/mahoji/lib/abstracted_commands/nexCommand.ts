@@ -16,7 +16,8 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import calcDurQty from '../../../lib/util/calcMassDurationQuantity';
 import { getNexGearStats } from '../../../lib/util/getNexGearStats';
 import { deferInteraction } from '../../../lib/util/interactionReply';
-import { hasMonsterRequirements, updateBankSetting } from '../../mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { hasMonsterRequirements } from '../../mahojiSettings';
 
 function checkReqs(users: MUser[], monster: KillableMonster, quantity: number): string | undefined {
 	// Check if every user has the requirements for this monster.

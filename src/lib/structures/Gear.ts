@@ -253,6 +253,23 @@ export const globalPresets: GearPreset[] = [
 		ring: null,
 		ammo: null,
 		ammo_qty: null
+	},
+	{
+		name: 'runecraft',
+		user_id: '123',
+		head: itemID('Hat of the eye'),
+		neck: null,
+		body: itemID('Robe top of the eye'),
+		legs: itemID('Robe bottoms of the eye'),
+		cape: null,
+		two_handed: null,
+		hands: null,
+		feet: itemID('Boots of the eye'),
+		shield: null,
+		weapon: null,
+		ring: null,
+		ammo: null,
+		ammo_qty: null
 	}
 ];
 

@@ -13,9 +13,10 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
 import { logError } from '../../lib/util/logError';
+import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { calcLootXPPickpocketing } from '../../tasks/minions/pickpocketActivity';
 import { OSBMahojiCommand } from '../lib/util';
-import { rogueOutfitPercentBonus, updateBankSetting } from '../mahojiSettings';
+import { rogueOutfitPercentBonus } from '../mahojiSettings';
 
 export const stealCommand: OSBMahojiCommand = {
 	name: 'steal',

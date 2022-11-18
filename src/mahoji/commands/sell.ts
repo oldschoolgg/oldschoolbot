@@ -8,9 +8,10 @@ import { customPrices } from '../../lib/customItems/util';
 import { NestBoxesTable } from '../../lib/simulation/misc';
 import { clamp, itemID, toKMB } from '../../lib/util';
 import { parseBank } from '../../lib/util/parseStringBank';
+import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, updateBankSetting, updateGPTrackSetting, userStatsUpdate } from '../mahojiSettings';
+import { handleMahojiConfirmation, updateGPTrackSetting, userStatsUpdate } from '../mahojiSettings';
 
 /**
  * - Hardcoded prices

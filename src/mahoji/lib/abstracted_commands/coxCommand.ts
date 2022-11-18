@@ -20,7 +20,7 @@ import { RaidsOptions } from '../../../lib/types/minions';
 import { channelIsSendable, formatDuration, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 const uniques = [
 	'Dexterous prayer scroll',

@@ -71,8 +71,9 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import findMonster from '../../../lib/util/findMonster';
 import getOSItem from '../../../lib/util/getOSItem';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { sendToChannelID } from '../../../lib/util/webhook';
-import { hasMonsterRequirements, resolveAvailableItemBoosts, updateBankSetting } from '../../mahojiSettings';
+import { hasMonsterRequirements, resolveAvailableItemBoosts } from '../../mahojiSettings';
 import { igneCommand } from './igneCommand';
 import { kgCommand } from './kgCommand';
 import { kkCommand } from './kkCommand';

@@ -6,7 +6,7 @@ import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { MonkeyRumbleOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { updateBankSetting } from '../../../mahoji/mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 const rewardTable = new LootTable().add('Monkey egg').add('Monkey dye').add('Big banana').add('Monkey crate', [5, 10]);
 const baseTable = new LootTable().tertiary(25, 'Monkey crate');

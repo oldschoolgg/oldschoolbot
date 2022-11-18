@@ -7,7 +7,8 @@ import { Events } from '../../lib/constants';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { rand, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { updateBankSetting, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
+import { updateBankSetting } from '../../lib/util/updateBankSetting';
+import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 
 const possibleFound = new LootTable()
 	.add('Reward casket (beginner)')

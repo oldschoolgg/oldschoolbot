@@ -16,7 +16,7 @@ import { BossActivityTaskOptions } from '../../../lib/types/minions';
 import { getKalphiteKingGearStats } from '../../../lib/util/getKalphiteKingGearStats';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { updateBankSetting } from '../../../mahoji/mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 interface KalphiteKingUser {
 	id: string;

@@ -9,8 +9,8 @@ import { KibbleOptions } from '../../lib/types/minions';
 import { formatDuration, itemNameFromID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
+import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { OSBMahojiCommand } from '../lib/util';
-import { updateBankSetting } from '../mahojiSettings';
 
 export const kibbleCommand: OSBMahojiCommand = {
 	name: 'kibble',

@@ -7,7 +7,8 @@ import defaultBirdhouseTrap, { BirdhouseData } from '../../../lib/skilling/skill
 import { BirdhouseActivityTaskOptions } from '../../../lib/types/minions';
 import { birdhouseLimit, formatDuration, itemID, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { mahojiUsersSettingsFetch, updateBankSetting, userHasGracefulEquipped } from '../../mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { mahojiUsersSettingsFetch, userHasGracefulEquipped } from '../../mahojiSettings';
 
 interface BirdhouseDetails {
 	raw: BirdhouseData;

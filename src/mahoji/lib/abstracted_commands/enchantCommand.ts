@@ -8,7 +8,7 @@ import { formatDuration, itemID, itemNameFromID, stringMatches } from '../../../
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../../lib/util/determineRunes';
-import { updateBankSetting } from '../../mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 export async function enchantCommand(user: MUser, channelID: string, name: string, quantity?: number) {
 	const enchantable = Enchantables.find(

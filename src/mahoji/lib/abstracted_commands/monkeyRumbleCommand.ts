@@ -20,7 +20,7 @@ import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { mahojiChatHead } from '../../../lib/util/chatHeadImage';
-import { updateBankSetting } from '../../mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 export async function monkeyRumbleStatsCommand(user: MUser) {
 	const tier = monkeyTiers.find(t => t.id === monkeyTierOfUser(user))!;

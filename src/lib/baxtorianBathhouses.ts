@@ -5,7 +5,6 @@ import { Bank, LootTable } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { table } from 'table';
 
-import { updateBankSetting } from '../mahoji/mahojiSettings';
 import { MysteryBoxes } from './bsoOpenables';
 import { Emoji, GLOBAL_BSO_XP_MULTIPLIER } from './constants';
 import { incrementMinigameScore } from './settings/minigames';
@@ -20,6 +19,7 @@ import { calcMaxTripLength } from './util/calcMaxTripLength';
 import getOSItem from './util/getOSItem';
 import { handleTripFinish } from './util/handleTripFinish';
 import resolveItems, { resolveOSItems } from './util/resolveItems';
+import { updateBankSetting } from './util/updateBankSetting';
 
 export const bathhouseTierNames = ['Warm', 'Hot', 'Fiery'] as const;
 type BathhouseTierName = typeof bathhouseTierNames[number];

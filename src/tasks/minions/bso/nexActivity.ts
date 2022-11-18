@@ -15,7 +15,7 @@ import { roll } from '../../../lib/util';
 import { getNexGearStats } from '../../../lib/util/getNexGearStats';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { updateBankSetting } from '../../../mahoji/mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 interface NexUser {
 	id: string;

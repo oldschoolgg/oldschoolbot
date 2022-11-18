@@ -8,7 +8,7 @@ import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 export async function wintertodtCommand(user: MUser, channelID: string) {
 	const fmLevel = user.skillLevel(SkillsEnum.Firemaking);
