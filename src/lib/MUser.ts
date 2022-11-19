@@ -199,7 +199,7 @@ export class MUserClass {
 	}
 
 	get badgedUsername() {
-		return `${this.badgeString.length > 0 ? `${this.badgeString} ` : ''}${this.usernameOrMention}`;
+		return `${this.badgeString} ${this.usernameOrMention}`;
 	}
 
 	toString() {
