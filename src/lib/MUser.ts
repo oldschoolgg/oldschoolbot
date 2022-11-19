@@ -190,20 +190,16 @@ export class MUserClass {
 		return usernameCache.get(this.id) ?? this.mention;
 	}
 
-	get badgedUsername() {
-		const rawBadges = this.user.badges.map(num => badges[num]);
-		if (this.isIronman) {
-			rawBadges.push(Emoji.Ironman);
-		}
-		return `${rawBadges.length > 0 ? `${rawBadges.join(' ')} ` : ''}${this.usernameOrMention}`;
-	}
-
-	badgeString() {
+	get badgeString() {
 		const rawBadges = this.user.badges.map(num => badges[num]);
 		if (this.isIronman) {
 			rawBadges.push(Emoji.Ironman);
 		}
 		return rawBadges.join(' ');
+	}
+
+	get badgedUsername() {
+		return `${this.badgeString.length > 0 ? `${this.badgeString} ` : ''}${this.usernameOrMention}`;
 	}
 
 	toString() {

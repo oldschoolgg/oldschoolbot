@@ -595,7 +595,7 @@ export function getBadges(user: MUser | string | bigint) {
 	if (typeof user === 'string' || typeof user === 'bigint') {
 		return badgesCache.get(user.toString()) ?? '';
 	}
-	return user.badgeString();
+	return user.badgeString;
 }
 
 export function getUsername(id: string | bigint, withBadges: boolean = true) {
