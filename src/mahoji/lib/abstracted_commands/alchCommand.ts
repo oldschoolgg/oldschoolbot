@@ -78,7 +78,7 @@ export async function alchCommand(
 		'Nature rune': quantity
 	});
 	let speed = speedInput ? clamp(speedInput, 1, 5) : null;
-	if (speed && !isNaN(speed) && typeof speed === 'number' && speed > 1 && speed < 6) {
+	if (speed && speed > 1 && speed < 6) {
 		consumedItems.multiply(speed);
 		consumedItems.add('Nature rune', Math.floor(consumedItems.amount('Nature rune') * 0.5));
 		duration /= speed;

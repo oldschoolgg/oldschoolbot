@@ -62,7 +62,7 @@ export async function sawmillCommand(
 
 	let cost = plank!.gpCost * 2 * quantity;
 
-	if (speed && !isNaN(speed) && typeof speed === 'number' && speed > 1 && speed < 6) {
+	if (speed && speed > 1 && speed < 6) {
 		cost += Math.ceil(cost * (speed * ((speed + 0.2) / 6)));
 		duration /= speed;
 	}
