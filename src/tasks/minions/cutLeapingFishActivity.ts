@@ -22,13 +22,11 @@ export const cutLeapingFishTask: MinionTask = {
 		if (BarbarianFish.name === 'Cut leaping sturgeon') {
 			caviarChance = 0.0125 * currentLevel;
 			if (caviarChance > 1) caviarChance = 1;
+			caviarCreated = caviarChance * quantity;
+			fishOffcutsCreated += Math.floor((caviarCreated * 5) / 6);
 		}
 
-		caviarCreated = caviarChance * quantity;
-
 		roeCreated = roeChance * quantity;
-
-		fishOffcutsCreated += Math.floor((caviarCreated * 5) / 6);
 
 		let loot = new Bank();
 
