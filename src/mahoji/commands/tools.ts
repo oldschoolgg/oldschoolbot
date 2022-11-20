@@ -779,7 +779,7 @@ export const toolsCommand: OSBMahojiCommand = {
 			}
 		}
 		if (options.user?.temp_cl) {
-			if (options.user.temp_cl === true) {
+			if (options.user.temp_cl.reset === true) {
 				await handleMahojiConfirmation(interaction, 'Are you sure you want to reset your temporary CL?');
 				await mahojiUser.update({
 					temp_cl: {},
