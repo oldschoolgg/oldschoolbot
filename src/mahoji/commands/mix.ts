@@ -3,6 +3,7 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import Herblore from '../../lib/skilling/skills/herblore/herblore';
+import LeapingFish from '../../lib/skilling/skills/herblore/mixables/leapingFish';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { HerbloreActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration } from '../../lib/util';
@@ -10,6 +11,7 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
+import { cutLeapingFishCommand } from '../lib/abstracted_commands/cutLeapingFishCommand';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const mineCommand: OSBMahojiCommand = {
@@ -27,12 +29,12 @@ export const mineCommand: OSBMahojiCommand = {
 			description: 'The potion you want to mix.',
 			required: true,
 			autocomplete: async (value: string) => {
-				return Herblore.Mixables.filter(i =>
-					!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
-				).map(i => ({
-					name: i.name,
-					value: i.name
-				}));
+				return [...Herblore.Mixables.map(i => i.name), ...LeapingFish.map(i => i.name)]
+					.filter(name => (!value ? true : name.toLowerCase().includes(value.toLowerCase())))
+					.map(i => ({
+						name: i,
+						value: 1
+					}));
 			}
 		},
 		{
@@ -61,6 +63,17 @@ export const mineCommand: OSBMahojiCommand = {
 		channelID
 	}: CommandRunOptions<{ name: string; quantity?: number; wesley?: boolean; zahur?: boolean }>) => {
 		const user = await mUserFetch(userID);
+		let { quantity, name } = options;
+
+		const BarbarianFish = LeapingFish.find(
+			_leapingFish =>
+				stringMatches(_leapingFish.name, name) || stringMatches(_leapingFish.name.split(' ')[0], name)
+		);
+
+		if (BarbarianFish) {
+			return cutLeapingFishCommand({ user, channelID, name, quantity });
+		}
+
 		const mixableItem = Herblore.Mixables.find(
 			item =>
 				stringMatches(item.name, options.name) || item.aliases.some(alias => stringMatches(alias, options.name))
@@ -102,7 +115,6 @@ export const mineCommand: OSBMahojiCommand = {
 
 		const maxTripLength = calcMaxTripLength(user, 'Herblore');
 
-		let { quantity } = options;
 		if (!quantity) quantity = Math.floor(maxTripLength / timeToMixSingleItem);
 
 		const baseCost = new Bank(mixableItem.inputItems);

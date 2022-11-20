@@ -168,6 +168,11 @@ export interface HerbloreActivityTaskOptions extends ActivityTaskOptions {
 	zahur: boolean;
 }
 
+export interface CutLeapingFishActivityTaskOptions extends ActivityTaskOptions {
+	fishName: string;
+	quantity: number;
+}
+
 export interface HunterActivityTaskOptions extends ActivityTaskOptions {
 	creatureName: string;
 	quantity: number;
