@@ -67,10 +67,10 @@ export async function cutLeapingFishCommand({
 		channelID: channelID.toString(),
 		quantity,
 		duration,
-		type: 'Herblore'
+		type: 'CutLeapingFish'
 	});
 
-	return `${user.minionName} ${quantity} ${BarbarianFish.name}, it'll take around ${formatDuration(
+	return `${user.minionName} is now cutting ${quantity} ${BarbarianFish.name}, it'll take around ${formatDuration(
 		duration
 	)} to finish.`;
 }

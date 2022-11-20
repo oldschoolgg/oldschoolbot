@@ -1,3 +1,5 @@
+import { Bank } from 'oldschooljs';
+
 import LeapingFish from '../../lib/skilling/skills/herblore/mixables/leapingFish';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { CutLeapingFishActivityTaskOptions } from '../../lib/types/minions';
@@ -10,19 +12,33 @@ export const cutLeapingFishTask: MinionTask = {
 		const user = await mUserFetch(userID);
 		const BarbarianFish = LeapingFish.find(LeapingFish => LeapingFish.name === fishName)!;
 
+		console.log(fishName);
+
 		const currentLevel = user.skillLevel(SkillsEnum.Cooking);
 		let caviarChance = 0;
+		let caviarCreated = 0;
+		let roeChance = 0;
+		let roeCreated = 0;
+		let fishOffcutsChance = 0;
+		let fishOffcutsCreated = 0;
 
 		if (BarbarianFish.name === 'Cut leaping sturgeon') {
-			
+			caviarChance = (1 + (1 * (99 - currentLevel)) / 98 + 80 * (currentLevel - 1)) / 256;
 		}
 
+		caviarCreated = caviarChance * quantity;
 
+		roeCreated = roeChance * quantity;
 
+		fishOffcutsCreated = fishOffcutsChance * quantity;
 
+		let loot = new Bank();
 
+		loot.add('Roe', roeCreated);
+		loot.add('Caviar', caviarCreated);
+		loot.add('Fish offcuts', fishOffcutsCreated);
 
-		const xpReceived = quantity * BarbarianFish.xp;
+		let xpReceived = quantity * BarbarianFish.xp;
 
 		const xpRes = await user.addXP({
 			skillName: SkillsEnum.Cooking,

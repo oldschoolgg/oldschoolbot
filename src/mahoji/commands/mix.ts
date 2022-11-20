@@ -33,7 +33,7 @@ export const mineCommand: OSBMahojiCommand = {
 					.filter(name => (!value ? true : name.toLowerCase().includes(value.toLowerCase())))
 					.map(i => ({
 						name: i,
-						value: 1
+						value: i
 					}));
 			}
 		},
