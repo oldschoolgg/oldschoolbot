@@ -590,12 +590,6 @@ export const allCollectionLogs: ICollection = {
 				alias: ['td', 'tormented demon', 'tormented demons'],
 				fmtProg: kcProg(BSOMonsters.TormentedDemon.id)
 			},
-			Cyclopes: {
-				alias: ['cyclops', 'wg', 'warriors guild', 'warrior guild'],
-				kcActivity: Monsters.Cyclops.name,
-				allItems: Monsters.Cyclops.allItems,
-				items: cyclopsCL
-			},
 			"Champion's Challenge": {
 				alias: ['champion', 'champion scrolls', 'champion scroll', 'scroll', 'scrolls'],
 				items: championsChallengeCL,
