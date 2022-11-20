@@ -6,31 +6,29 @@ import { CutLeapingFishActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export const cutLeapingFishTask: MinionTask = {
-	type: 'Herblore',
+	type: 'CutLeapingFish',
 	async run(data: CutLeapingFishActivityTaskOptions) {
 		let { fishName, userID, channelID, quantity, duration } = data;
 		const user = await mUserFetch(userID);
 		const BarbarianFish = LeapingFish.find(LeapingFish => LeapingFish.name === fishName)!;
-
-		console.log(fishName);
 
 		const currentLevel = user.skillLevel(SkillsEnum.Cooking);
 		let caviarChance = 0;
 		let caviarCreated = 0;
 		let roeChance = 0;
 		let roeCreated = 0;
-		let fishOffcutsChance = 0;
 		let fishOffcutsCreated = 0;
 
 		if (BarbarianFish.name === 'Cut leaping sturgeon') {
-			caviarChance = (1 + (1 * (99 - currentLevel)) / 98 + 80 * (currentLevel - 1)) / 256;
+			caviarChance = 0.0125 * currentLevel;
+			if (caviarChance > 1) caviarChance = 1;
 		}
 
 		caviarCreated = caviarChance * quantity;
 
 		roeCreated = roeChance * quantity;
 
-		fishOffcutsCreated = fishOffcutsChance * quantity;
+		fishOffcutsCreated += Math.floor((caviarCreated * 5) / 6);
 
 		let loot = new Bank();
 
@@ -46,7 +44,7 @@ export const cutLeapingFishTask: MinionTask = {
 			duration
 		});
 
-		let str = `${user}, ${user.minionName} finished ${BarbarianFish.name}. ${xpRes}`;
+		let str = `${user}, ${user.minionName} finished ${BarbarianFish.name}. ${xpRes}\n\n You received: ${loot}.`;
 
 		await transactItems({
 			userID: user.id,
