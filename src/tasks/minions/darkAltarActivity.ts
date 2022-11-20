@@ -80,7 +80,7 @@ export const darkAltarTask: MinionTask = {
 			str += "\n\n**You have a funny feeling you're being followed...**";
 			globalClient.emit(
 				Events.ServerNotification,
-				`**${user.usernameOrMention}'s** minion, ${
+				`**${user.badgedUsername}'s** minion, ${
 					user.minionName
 				}, just received a Rift guardian while crafting ${runeData.item.name}s at level ${user.skillLevel(
 					SkillsEnum.Runecraft

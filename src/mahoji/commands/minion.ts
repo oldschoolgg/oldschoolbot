@@ -85,7 +85,7 @@ export async function getUserInfo(user: MUser) {
 	};
 	return {
 		...result,
-		everythingString: `${user.usernameOrMention}[${user.id}]
+		everythingString: `${user.badgedUsername}[${user.id}]
 **Perk Tier:** ${result.perkTier}
 **Blacklisted:** ${result.isBlacklisted}
 **Badges:** ${result.badges.join(' ')}

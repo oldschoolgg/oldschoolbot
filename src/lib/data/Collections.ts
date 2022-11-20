@@ -325,11 +325,7 @@ export const allCollectionLogs: ICollection = {
 				kcActivity: Monsters.TzTokJad.name,
 				alias: ['firecape', 'jad', 'fightcave'],
 				items: fightCavesCL,
-				fmtProg: ({ getKC }) => [
-					`${getKC(Monsters.DagannothPrime.id)} Prime KC`,
-					`${getKC(Monsters.DagannothRex.id)} Rex KC`,
-					`${getKC(Monsters.DagannothSupreme.id)} Supreme KC`
-				]
+				fmtProg: kcProg(Monsters.TzTokJad)
 			},
 			'The Gauntlet': {
 				alias: ['gauntlet', 'crystalline hunllef', 'hunllef'],

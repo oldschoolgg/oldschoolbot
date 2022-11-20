@@ -123,7 +123,7 @@ Unique chance: ${result.percentChanceOfUnique.toFixed(2)}% (1 in ${convertPercen
 				globalClient.emit(
 					Events.ServerNotification,
 					`${Emoji.Purple} ${
-						user.usernameOrMention
+						user.badgedUsername
 					} just received **${itemsToAnnounce}** on their ${formatOrdinal(
 						await getMinigameScore(user.id, minigameID)
 					)} raid.`
