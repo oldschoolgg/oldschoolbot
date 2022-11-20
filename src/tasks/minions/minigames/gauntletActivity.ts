@@ -58,7 +58,7 @@ export const gauntletTask: MinionTask = {
 			str += "\n\n**You have a funny feeling you're being followed...**";
 			globalClient.emit(
 				Events.ServerNotification,
-				`**${user.usernameOrMention}'s** minion, ${
+				`**${user.badgedUsername}'s** minion, ${
 					user.minionName
 				}, just received a **Youngllef** <:Youngllef:604670894798798858> while doing the ${name} for the ${formatOrdinal(
 					newKc

@@ -11,7 +11,7 @@ import { mahojiUserSettingsUpdate } from '../mahoji/settingsUpdate';
 import { addXP } from './addXP';
 import { userIsBusy } from './busyCounterCache';
 import { ClueTiers } from './clues/clueTiers';
-import { BitField, PerkTier, projectiles, Roles, usernameCache } from './constants';
+import { badges, BitField, Emoji, PerkTier, projectiles, Roles, usernameCache } from './constants';
 import { allPetIDs } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
 import { GearSetup, UserFullGearSetup } from './gear/types';
@@ -188,6 +188,18 @@ export class MUserClass {
 
 	get usernameOrMention() {
 		return usernameCache.get(this.id) ?? this.mention;
+	}
+
+	get badgeString() {
+		const rawBadges = this.user.badges.map(num => badges[num]);
+		if (this.isIronman) {
+			rawBadges.push(Emoji.Ironman);
+		}
+		return rawBadges.join(' ');
+	}
+
+	get badgedUsername() {
+		return `${this.badgeString} ${this.usernameOrMention}`;
 	}
 
 	toString() {

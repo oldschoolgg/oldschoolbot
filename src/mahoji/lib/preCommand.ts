@@ -1,7 +1,7 @@
 import { InteractionReplyOptions, TextChannel, User } from 'discord.js';
 
 import { modifyBusyCounter } from '../../lib/busyCounterCache';
-import { badges, Emoji, usernameCache } from '../../lib/constants';
+import { badges, badgesCache, Emoji, usernameCache } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
 import { removeMarkdownEmojis, stripEmojis } from '../../lib/util';
 import { CACHED_ACTIVE_USER_IDS } from '../../lib/util/cachedUserIDs';
@@ -30,13 +30,12 @@ export async function syncNewUserUsername(user: MUser, username: string) {
 		});
 	}
 	let name = stripEmojis(username);
+	usernameCache.set(user.id, name);
 	const rawBadges = user.user.badges.map(num => badges[num]);
 	if (user.isIronman) {
 		rawBadges.push(Emoji.Ironman);
 	}
-	name = `${rawBadges.join(' ')} ${name}`;
-
-	usernameCache.set(user.id, name);
+	badgesCache.set(user.id, rawBadges.join(' '));
 }
 
 export async function preCommand({
