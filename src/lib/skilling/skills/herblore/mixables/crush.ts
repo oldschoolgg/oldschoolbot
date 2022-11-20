@@ -11,8 +11,8 @@ const Crush: Mixable[] = [
 		level: 1,
 		xp: 0,
 		inputItems: new Bank({ 'Unicorn horn': 1 }),
-		tickRate: 2,
-		bankTimePerPotion: 0.17,
+		tickRate: 1,
+		bankTimePerPotion: 0,
 		wesley: true
 	},
 	{
@@ -22,8 +22,8 @@ const Crush: Mixable[] = [
 		level: 1,
 		xp: 0,
 		inputItems: new Bank({ 'Chocolate bar': 1 }),
-		tickRate: 2,
-		bankTimePerPotion: 0.17,
+		tickRate: 1,
+		bankTimePerPotion: 0,
 		wesley: true
 	},
 	{
@@ -33,8 +33,8 @@ const Crush: Mixable[] = [
 		level: 1,
 		xp: 0,
 		inputItems: new Bank({ 'Kebbit teeth': 1 }),
-		tickRate: 2,
-		bankTimePerPotion: 0.17,
+		tickRate: 1,
+		bankTimePerPotion: 0,
 		wesley: true
 	},
 	{
@@ -44,8 +44,8 @@ const Crush: Mixable[] = [
 		level: 1,
 		xp: 0,
 		inputItems: new Bank({ 5075: 1 }),
-		tickRate: 2,
-		bankTimePerPotion: 0.17,
+		tickRate: 1,
+		bankTimePerPotion: 0,
 		wesley: true
 	},
 	{
@@ -55,8 +55,8 @@ const Crush: Mixable[] = [
 		level: 1,
 		xp: 0,
 		inputItems: new Bank({ 'Desert goat horn': 1 }),
-		tickRate: 2,
-		bankTimePerPotion: 0.17,
+		tickRate: 1,
+		bankTimePerPotion: 0,
 		wesley: true
 	},
 	{
@@ -66,8 +66,8 @@ const Crush: Mixable[] = [
 		level: 1,
 		xp: 0,
 		inputItems: new Bank({ 'Silver bar': 1 }),
-		tickRate: 6,
-		bankTimePerPotion: 1,
+		tickRate: 1,
+		bankTimePerPotion: 0,
 		wesley: false
 	},
 	{
@@ -83,8 +83,8 @@ const Crush: Mixable[] = [
 		level: 1,
 		xp: 0,
 		inputItems: new Bank({ 'Superior dragon bones': 1 }),
-		tickRate: 2,
-		bankTimePerPotion: 0.17,
+		tickRate: 1,
+		bankTimePerPotion: 0,
 		wesley: true
 	},
 	{
@@ -94,8 +94,8 @@ const Crush: Mixable[] = [
 		level: 1,
 		xp: 0,
 		inputItems: new Bank({ 'Blue dragon scale': 1 }),
-		tickRate: 2,
-		bankTimePerPotion: 0.17,
+		tickRate: 1,
+		bankTimePerPotion: 0,
 		wesley: true
 	},
 	{
@@ -105,7 +105,7 @@ const Crush: Mixable[] = [
 		level: 1,
 		xp: 0,
 		inputItems: new Bank({ 'Nihil shard': 1 }),
-		tickRate: 2,
+		tickRate: 1,
 		bankTimePerPotion: 0,
 		wesley: true
 	}
