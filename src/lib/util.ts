@@ -32,7 +32,7 @@ import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, MersenneTwister19937, nodeCrypto, real, shuffle } from 'random-js';
 
 import { production, SupportServer } from '../config';
-import { skillEmoji, usernameCache } from './constants';
+import { badgesCache, skillEmoji, usernameCache } from './constants';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
 import { Consumable } from './minions/types';
 import { MUserClass } from './MUser';
@@ -591,8 +591,17 @@ export function skillingPetDropRate(
 	return { petDropRate: dropRate };
 }
 
-export function getUsername(id: string | bigint) {
-	return usernameCache.get(id.toString()) ?? 'Unknown';
+export function getBadges(user: MUser | string | bigint) {
+	if (typeof user === 'string' || typeof user === 'bigint') {
+		return badgesCache.get(user.toString()) ?? '';
+	}
+	return user.badgeString;
+}
+
+export function getUsername(id: string | bigint, withBadges: boolean = true) {
+	let username = usernameCache.get(id.toString()) ?? 'Unknown';
+	if (withBadges) username = `${getBadges(id)} ${username}`;
+	return username;
 }
 
 export function shuffleRandom<T>(input: number, arr: readonly T[]): T[] {
