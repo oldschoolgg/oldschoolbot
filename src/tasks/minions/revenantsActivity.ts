@@ -7,7 +7,6 @@ import { trackLoot } from '../../lib/lootTrack';
 import { revenantMonsters } from '../../lib/minions/data/killableMonsters/revs';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { filterLootReplace } from '../../lib/slayer/slayerUtil';
 import { Gear } from '../../lib/structures/Gear';
 import type { RevenantOptions } from '../../lib/types/minions';
 import { hasSkillReqs } from '../../lib/util';
@@ -114,15 +113,10 @@ export const revenantsTask: MinionTask = {
 			notifyDrops: monster.notifyDrops
 		});
 
-		const { clLoot } = filterLootReplace(user.allItemsOwned(), loot);
-
-		await user.update({
-			collectionLogBank: new Bank(user.cl).add(clLoot).bank
-		});
 		const { previousCL, itemsAdded } = await transactItems({
 			userID: user.id,
 			itemsToAdd: loot,
-			collectionLog: false
+			collectionLog: true
 		});
 
 		await trackLoot({

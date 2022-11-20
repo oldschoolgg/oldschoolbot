@@ -101,7 +101,7 @@ export const woodcuttingTask: MinionTask = {
 				str += "\n**You have a funny feeling you're being followed...**";
 				globalClient.emit(
 					Events.ServerNotification,
-					`${Emoji.Woodcutting} **${user.usernameOrMention}'s** minion, ${
+					`${Emoji.Woodcutting} **${user.badgedUsername}'s** minion, ${
 						user.minionName
 					}, just received a Beaver while cutting ${log.name} at level ${user.skillLevel(
 						'woodcutting'

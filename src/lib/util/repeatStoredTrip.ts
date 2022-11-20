@@ -96,6 +96,10 @@ export const tripHandlers = {
 		commandName: 'm',
 		args: () => ({})
 	},
+	[activity_type_enum.ClueCompletion]: {
+		commandName: 'm',
+		args: () => ({})
+	},
 	[activity_type_enum.Birdhouse]: {
 		commandName: 'm',
 		args: () => ({})

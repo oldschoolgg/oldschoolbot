@@ -2,7 +2,7 @@ import { Embed } from '@discordjs/builders';
 import { chunk } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
-import { badges, Emoji, usernameCache } from '../../lib/constants';
+import { badges, badgesCache, Emoji, usernameCache } from '../../lib/constants';
 import { allClNames, getCollectionItems } from '../../lib/data/Collections';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { allOpenables } from '../../lib/openables';
@@ -454,15 +454,15 @@ export async function cacheUsernames() {
 
 	for (const user of allNewUsers) {
 		const badgeUser = arrayOfIronmenAndBadges.find(i => i.id === user.id);
-		let name = stripEmojis(user.username!);
+		const name = stripEmojis(user.username!);
+		usernameCache.set(user.id, name);
 		if (badgeUser) {
 			const rawBadges = badgeUser.badges.map(num => badges[num]);
 			if (badgeUser.ironman) {
 				rawBadges.push(Emoji.Ironman);
 			}
-			name = `${rawBadges.join(' ')} ${name}`;
+			badgesCache.set(user.id, rawBadges.join(' '));
 		}
-		usernameCache.set(user.id, name);
 	}
 }
 

@@ -241,7 +241,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 			if (currentXP < XPMilestone && newXP >= XPMilestone) {
 				globalClient.emit(
 					Events.ServerNotification,
-					`${skill.emoji} **${user.usernameOrMention}'s** minion, ${
+					`${skill.emoji} **${user.badgedUsername}'s** minion, ${
 						user.minionName
 					}, just achieved ${newXP.toLocaleString()} XP in ${toTitleCase(params.skillName)}!`
 				);

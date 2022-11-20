@@ -206,7 +206,7 @@ export const infernoTask: MinionTask = {
 			if (baseBank.has('Jal-nib-rek')) {
 				globalClient.emit(
 					Events.ServerNotification,
-					`**${user.usernameOrMention}** just received their ${formatOrdinal(
+					`**${user.badgedUsername}** just received their ${formatOrdinal(
 						user.cl.amount('Jal-nib-rek') + 1
 					)} Jal-nib-rek pet by killing TzKal-Zuk, on their ${formatOrdinal(
 						await getMinigameScore(user.id, 'inferno')
@@ -230,7 +230,7 @@ export const infernoTask: MinionTask = {
 				const usersWithInfernalCape = await countUsersWithItemInCl(itemID('Infernal cape'), false);
 				globalClient.emit(
 					Events.ServerNotification,
-					`**${user.usernameOrMention}** just received their first Infernal cape on their ${formatOrdinal(
+					`**${user.badgedUsername}** just received their first Infernal cape on their ${formatOrdinal(
 						user.user.inferno_attempts
 					)} attempt! They are the ${formatOrdinal(
 						usersWithInfernalCape + 1

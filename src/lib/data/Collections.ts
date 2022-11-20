@@ -325,11 +325,7 @@ export const allCollectionLogs: ICollection = {
 				kcActivity: Monsters.TzTokJad.name,
 				alias: ['firecape', 'jad', 'fightcave'],
 				items: fightCavesCL,
-				fmtProg: ({ getKC }) => [
-					`${getKC(Monsters.DagannothPrime.id)} Prime KC`,
-					`${getKC(Monsters.DagannothRex.id)} Rex KC`,
-					`${getKC(Monsters.DagannothSupreme.id)} Supreme KC`
-				]
+				fmtProg: kcProg(Monsters.TzTokJad)
 			},
 			'The Gauntlet': {
 				alias: ['gauntlet', 'crystalline hunllef', 'hunllef'],
@@ -589,12 +585,6 @@ export const allCollectionLogs: ICollection = {
 				]),
 				alias: ['td', 'tormented demon', 'tormented demons'],
 				fmtProg: kcProg(BSOMonsters.TormentedDemon.id)
-			},
-			Cyclopes: {
-				alias: ['cyclops', 'wg', 'warriors guild', 'warrior guild'],
-				kcActivity: Monsters.Cyclops.name,
-				allItems: Monsters.Cyclops.allItems,
-				items: cyclopsCL
 			},
 			"Champion's Challenge": {
 				alias: ['champion', 'champion scrolls', 'champion scroll', 'scroll', 'scrolls'],

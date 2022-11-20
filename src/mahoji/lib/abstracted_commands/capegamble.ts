@@ -43,7 +43,7 @@ export async function capeGambleCommand(user: MUser, type: string, interaction: 
 		await user.addItemsToBank({ items: new Bank().add(pet.id), collectionLog: true });
 		globalClient.emit(
 			Events.ServerNotification,
-			`**${user.usernameOrMention}'s** just received their ${formatOrdinal(
+			`**${user.badgedUsername}'s** just received their ${formatOrdinal(
 				(await mUserFetch(user.id)).cl.amount(pet.id)
 			)} ${pet.name} pet by sacrificing a ${item.name} for the ${formatOrdinal(newSacrificedCount)} time!`
 		);

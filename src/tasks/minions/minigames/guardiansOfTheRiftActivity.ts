@@ -166,7 +166,7 @@ export const guardiansOfTheRiftTask: MinionTask = {
 			str += "\n\n**You have a funny feeling you're being followed...**";
 			globalClient.emit(
 				Events.ServerNotification,
-				`**${user.usernameOrMention}'s** minion, ${
+				`**${user.badgedUsername}'s** minion, ${
 					user.minionName
 				}, just received a Abyssal Protector while doing the Guardians of the Rift minigame at level ${user.skillLevel(
 					SkillsEnum.Runecraft

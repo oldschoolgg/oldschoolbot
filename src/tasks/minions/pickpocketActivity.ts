@@ -154,7 +154,7 @@ export const pickpocketTask: MinionTask = {
 			str += "\n**You have a funny feeling you're being followed...**";
 			globalClient.emit(
 				Events.ServerNotification,
-				`**${user.usernameOrMention}'s** minion, ${
+				`**${user.badgedUsername}'s** minion, ${
 					user.minionName
 				}, just received a **Rocky** <:Rocky:324127378647285771> while ${
 					obj.type === 'pickpockable' ? 'pickpocketing' : 'stealing'

@@ -51,11 +51,11 @@ export async function handleNewCLItems({
 		).length;
 		log(`Took ${stopwatch.stop()} to calc cl leaderboard for ${finishedCL.name}`);
 
+		const placeStr = nthUser > 100 ? '' : ` They are the ${formatOrdinal(nthUser)} user to finish this CL.`;
+
 		globalClient.emit(
 			Events.ServerNotification,
-			`${user} just finished the ${finishedCL.name} collection log! They are the ${formatOrdinal(
-				nthUser
-			)} user to finish this CL. ${kcString}`
+			`${user} just finished the ${finishedCL.name} collection log!${placeStr} ${kcString}`
 		);
 	}
 }

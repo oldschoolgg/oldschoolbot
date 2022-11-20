@@ -197,7 +197,7 @@ export async function barbAssaultGambleCommand(
 
 		globalClient.emit(
 			Events.ServerNotification,
-			`<:Pet_penance_queen:324127377649303553> **${user.usernameOrMention}'s** minion, ${
+			`<:Pet_penance_queen:324127377649303553> **${user.badgedUsername}'s** minion, ${
 				user.minionName
 			}, just received a Pet penance queen from their ${formatOrdinal(
 				newUser.high_gambles
