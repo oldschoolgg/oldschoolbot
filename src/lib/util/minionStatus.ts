@@ -296,9 +296,9 @@ export function minionStatus(user: MUser) {
 		}
 		case 'CutLeapingFish': {
 			const data = currentTask as CutLeapingFishActivityTaskOptions;
-			const BarbarianFish = LeapingFish.find(item => item.name === data.fishName);
+			const barbarianFish = LeapingFish.find(item => item.name === data.fishName);
 
-			return `${name} is currently cutting ${data.quantity}x ${BarbarianFish!.name}. ${formattedDuration} Your ${
+			return `${name} is currently cutting ${data.quantity}x ${barbarianFish!.name}. ${formattedDuration} Your ${
 				Emoji.Cooking
 			} Cooking level is ${user.skillLevel(SkillsEnum.Cooking)}`;
 		}

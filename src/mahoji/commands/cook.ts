@@ -46,12 +46,12 @@ export const cookCommand: OSBMahojiCommand = {
 		const user = await mUserFetch(userID);
 		let { quantity, name } = options;
 
-		const BarbarianFish = LeapingFish.find(
+		const barbarianFish = LeapingFish.find(
 			_leapingFish =>
 				stringMatches(_leapingFish.name, name) || stringMatches(_leapingFish.name.split(' ')[0], name)
 		);
 
-		if (BarbarianFish) {
+		if (barbarianFish) {
 			return cutLeapingFishCommand({ user, channelID, name, quantity });
 		}
 

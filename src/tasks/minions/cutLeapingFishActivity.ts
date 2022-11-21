@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 import LeapingFish from '../../lib/skilling/skills/cooking/leapingFish';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { CutLeapingFishActivityTaskOptions } from '../../lib/types/minions';
+import { clamp } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export const cutLeapingFishTask: MinionTask = {
@@ -11,7 +12,7 @@ export const cutLeapingFishTask: MinionTask = {
 	async run(data: CutLeapingFishActivityTaskOptions) {
 		let { fishName, userID, channelID, quantity, duration } = data;
 		const user = await mUserFetch(userID);
-		const BarbarianFish = LeapingFish.find(LeapingFish => LeapingFish.name === fishName)!;
+		const barbarianFish = LeapingFish.find(LeapingFish => LeapingFish.name === fishName)!;
 
 		const currentLevel = user.skillLevel(SkillsEnum.Cooking);
 		let caviarChance = 0;
@@ -21,10 +22,9 @@ export const cutLeapingFishTask: MinionTask = {
 		let fishOffcutsChance = 0;
 		let fishOffcutsCreated = 0;
 
-		if (BarbarianFish.name === 'Cut leaping sturgeon') {
-			caviarChance = 1.25 * currentLevel;
+		if (barbarianFish.name === 'Cut leaping sturgeon') {
+			caviarChance = clamp(1.25 * currentLevel, 0, 100);
 			fishOffcutsChance = (5 / 6) * 100;
-			if (caviarChance > 100) caviarChance = 100;
 			for (let i = 0; i < quantity; i++) {
 				if (percentChance(caviarChance)) {
 					caviarCreated += 1;
@@ -34,10 +34,9 @@ export const cutLeapingFishTask: MinionTask = {
 				}
 			}
 		}
-		if (BarbarianFish.name === 'Cut leaping salmon') {
-			roeChance = 1.25 * currentLevel;
+		if (barbarianFish.name === 'Cut leaping salmon') {
+			roeChance = clamp(1.25 * currentLevel, 0, 100);
 			fishOffcutsChance = (3 / 4) * 100;
-			if (roeChance > 100) roeChance = 100;
 			for (let i = 0; i < quantity; i++) {
 				if (percentChance(roeChance)) {
 					roeCreated += 1;
@@ -48,10 +47,9 @@ export const cutLeapingFishTask: MinionTask = {
 			}
 		}
 
-		if (BarbarianFish.name === 'Cut leaping trout') {
-			roeChance = 0.67 * currentLevel;
+		if (barbarianFish.name === 'Cut leaping trout') {
+			roeChance = clamp(0.67 * currentLevel, 0, 100);
 			fishOffcutsChance = (1 / 2) * 100;
-			if (roeChance > 100) roeChance = 100;
 			for (let i = 0; i < quantity; i++) {
 				if (percentChance(roeChance)) {
 					roeCreated += 1;
@@ -78,7 +76,7 @@ export const cutLeapingFishTask: MinionTask = {
 			duration
 		});
 
-		let str = `${user}, ${user.minionName} finished ${BarbarianFish.name}. ${xpRes}\n\n You received: ${loot}.`;
+		let str = `${user}, ${user.minionName} finished ${barbarianFish.name}. ${xpRes}\n\n You received: ${loot}.`;
 
 		await transactItems({
 			userID: user.id,

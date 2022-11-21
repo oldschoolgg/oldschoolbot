@@ -19,25 +19,25 @@ export async function cutLeapingFishCommand({
 	name: string;
 	quantity?: number;
 }) {
-	const BarbarianFish = LeapingFish.find(
+	const barbarianFish = LeapingFish.find(
 		_leapingFish => stringMatches(_leapingFish.name, name) || stringMatches(_leapingFish.name.split(' ')[0], name)
 	);
 
-	if (!BarbarianFish) return 'That is not a valid fish to cut.';
+	if (!barbarianFish) return 'That is not a valid fish to cut.';
 
-	let requiredItems = new Bank(BarbarianFish.inputItems);
+	let requiredItems = new Bank(barbarianFish.inputItems);
 
-	let timeToCutSingleItem = BarbarianFish.tickRate * Time.Second * 0.6;
+	let timeToCutSingleItem = barbarianFish.tickRate * Time.Second * 0.6;
 
 	const maxTripLength = calcMaxTripLength(user, 'Herblore');
 
 	if (!quantity) quantity = Math.floor(maxTripLength / timeToCutSingleItem);
 
-	const baseCost = new Bank(BarbarianFish.inputItems);
+	const baseCost = new Bank(barbarianFish.inputItems);
 
 	const maxCanDo = user.bankWithGP.fits(baseCost);
 	if (maxCanDo === 0) {
-		return `You don't have enough supplies to cut even one of this item!\nTo ${BarbarianFish.name}, you need to have ${baseCost}.`;
+		return `You don't have enough supplies to cut even one of this item!\nTo ${barbarianFish.name}, you need to have ${baseCost}.`;
 	}
 	if (maxCanDo < quantity) {
 		quantity = maxCanDo;
@@ -48,7 +48,7 @@ export async function cutLeapingFishCommand({
 	if (duration > maxTripLength) {
 		return `${user.minionName} can't go on trips longer than ${formatDuration(
 			maxTripLength
-		)}, try a lower quantity. The highest amount of ${BarbarianFish.name}s you can cut is ${Math.floor(
+		)}, try a lower quantity. The highest amount of ${barbarianFish.name}s you can cut is ${Math.floor(
 			maxTripLength / timeToCutSingleItem
 		)}.`;
 	}
@@ -62,7 +62,7 @@ export async function cutLeapingFishCommand({
 	updateBankSetting('herblore_cost_bank', finalCost);
 
 	await addSubTaskToActivityTask<CutLeapingFishActivityTaskOptions>({
-		fishName: BarbarianFish.name,
+		fishName: barbarianFish.name,
 		userID: user.id,
 		channelID: channelID.toString(),
 		quantity,
@@ -70,7 +70,7 @@ export async function cutLeapingFishCommand({
 		type: 'CutLeapingFish'
 	});
 
-	return `${user.minionName} is now cutting ${quantity} ${BarbarianFish.name}, it'll take around ${formatDuration(
+	return `${user.minionName} is now cutting ${quantity} ${barbarianFish.name}, it'll take around ${formatDuration(
 		duration
 	)} to finish.`;
 }
