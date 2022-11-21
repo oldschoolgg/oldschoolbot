@@ -1,7 +1,7 @@
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import LeapingFish from '../../../lib/skilling/skills/herblore/mixables/leapingFish';
+import LeapingFish from '../../../lib/skilling/skills/cooking/leapingFish';
 import { CutLeapingFishActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';

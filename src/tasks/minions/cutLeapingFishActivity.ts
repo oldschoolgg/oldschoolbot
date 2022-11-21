@@ -1,7 +1,7 @@
 import { percentChance } from 'e';
 import { Bank } from 'oldschooljs';
 
-import LeapingFish from '../../lib/skilling/skills/herblore/mixables/leapingFish';
+import LeapingFish from '../../lib/skilling/skills/cooking/leapingFish';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { CutLeapingFishActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';

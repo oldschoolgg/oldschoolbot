@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 
 import calcBurntCookables from '../../lib/skilling/functions/calcBurntCookables';
-import Cooking from '../../lib/skilling/skills/cooking';
+import Cooking from '../../lib/skilling/skills/cooking/cooking';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { CookingActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';

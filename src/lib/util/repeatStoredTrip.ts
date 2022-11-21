@@ -295,7 +295,7 @@ export const tripHandlers = {
 		})
 	},
 	[activity_type_enum.CutLeapingFish]: {
-		commandName: 'mix',
+		commandName: 'cook',
 		args: (data: CutLeapingFishActivityTaskOptions) => ({
 			name: data.fishName,
 			quantity: data.quantity

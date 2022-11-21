@@ -186,10 +186,9 @@ export interface Mixable {
 	qpRequired?: number;
 }
 
-export interface BarbarianMixable {
+export interface CutLeapingFish {
 	name: string;
 	aliases: string[];
-	xp: number;
 	inputItems: Bank;
 	tickRate: number;
 }
