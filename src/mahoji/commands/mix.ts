@@ -61,7 +61,6 @@ export const mineCommand: OSBMahojiCommand = {
 		channelID
 	}: CommandRunOptions<{ name: string; quantity?: number; wesley?: boolean; zahur?: boolean }>) => {
 		const user = await mUserFetch(userID);
-
 		const mixableItem = Herblore.Mixables.find(
 			item =>
 				stringMatches(item.name, options.name) || item.aliases.some(alias => stringMatches(alias, options.name))
