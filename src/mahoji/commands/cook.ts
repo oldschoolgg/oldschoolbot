@@ -48,7 +48,9 @@ export const cookCommand: OSBMahojiCommand = {
 
 		const barbarianFish = LeapingFish.find(
 			_leapingFish =>
-				stringMatches(_leapingFish.name, name) || stringMatches(_leapingFish.name.split(' ')[0], name)
+				stringMatches(_leapingFish.name, name) ||
+				stringMatches(_leapingFish.name.split(' ')[0], name) ||
+				_leapingFish.aliases.some(alias => stringMatches(alias, name))
 		);
 
 		if (barbarianFish) {

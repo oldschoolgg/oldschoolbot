@@ -20,7 +20,10 @@ export async function cutLeapingFishCommand({
 	quantity?: number;
 }) {
 	const barbarianFish = LeapingFish.find(
-		_leapingFish => stringMatches(_leapingFish.name, name) || stringMatches(_leapingFish.name.split(' ')[0], name)
+		_leapingFish =>
+			stringMatches(_leapingFish.name, name) ||
+			stringMatches(_leapingFish.name.split(' ')[0], name) ||
+			_leapingFish.aliases.some(alias => stringMatches(alias, name))
 	);
 
 	if (!barbarianFish) return 'That is not a valid fish to cut.';
