@@ -28,15 +28,12 @@ export const cutLeapingFishTask: MinionTask = {
 			for (let i = 0; i < quantity; i++) {
 				if (percentChance(caviarChance)) {
 					caviarCreated += 1;
-				}
-			}
-			for (let i = 0; i < caviarCreated; i++) {
-				if (percentChance(fishOffcutsChance)) {
-					fishOffcutsCreated += 1;
+					if (percentChance(fishOffcutsChance)) {
+						fishOffcutsCreated += 1;
+					}
 				}
 			}
 		}
-
 		if (BarbarianFish.name === 'Cut leaping salmon') {
 			roeChance = 1.25 * currentLevel;
 			fishOffcutsChance = (3 / 4) * 100;
@@ -44,11 +41,9 @@ export const cutLeapingFishTask: MinionTask = {
 			for (let i = 0; i < quantity; i++) {
 				if (percentChance(roeChance)) {
 					roeCreated += 1;
-				}
-			}
-			for (let i = 0; i < roeCreated; i++) {
-				if (percentChance(fishOffcutsChance)) {
-					fishOffcutsCreated += 1;
+					if (percentChance(fishOffcutsChance)) {
+						fishOffcutsCreated += 1;
+					}
 				}
 			}
 		}
@@ -60,11 +55,9 @@ export const cutLeapingFishTask: MinionTask = {
 			for (let i = 0; i < quantity; i++) {
 				if (percentChance(roeChance)) {
 					roeCreated += 1;
-				}
-			}
-			for (let i = 0; i < roeCreated; i++) {
-				if (percentChance(fishOffcutsChance)) {
-					fishOffcutsCreated += 1;
+					if (percentChance(fishOffcutsChance)) {
+						fishOffcutsCreated += 1;
+					}
 				}
 			}
 		}
