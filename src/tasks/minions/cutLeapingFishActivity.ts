@@ -1,3 +1,4 @@
+import { percentChance } from 'e';
 import { Bank } from 'oldschooljs';
 
 import LeapingFish from '../../lib/skilling/skills/herblore/mixables/leapingFish';
@@ -17,16 +18,56 @@ export const cutLeapingFishTask: MinionTask = {
 		let caviarCreated = 0;
 		let roeChance = 0;
 		let roeCreated = 0;
+		let fishOffcutsChance = 0;
 		let fishOffcutsCreated = 0;
 
 		if (BarbarianFish.name === 'Cut leaping sturgeon') {
-			caviarChance = 0.0125 * currentLevel;
-			if (caviarChance > 1) caviarChance = 1;
-			caviarCreated = caviarChance * quantity;
-			fishOffcutsCreated += Math.floor((caviarCreated * 5) / 6);
+			caviarChance = 1.25 * currentLevel;
+			fishOffcutsChance = (5 / 6) * 100;
+			if (caviarChance > 100) caviarChance = 100;
+			for (let i = 0; i < quantity; i++) {
+				if (percentChance(caviarChance)) {
+					caviarCreated += 1;
+				}
+			}
+			for (let i = 0; i < caviarCreated; i++) {
+				if (percentChance(fishOffcutsChance)) {
+					fishOffcutsCreated += 1;
+				}
+			}
 		}
 
-		roeCreated = roeChance * quantity;
+		if (BarbarianFish.name === 'Cut leaping salmon') {
+			roeChance = 1.25 * currentLevel;
+			fishOffcutsChance = (3 / 4) * 100;
+			if (roeChance > 100) roeChance = 100;
+			for (let i = 0; i < quantity; i++) {
+				if (percentChance(roeChance)) {
+					roeCreated += 1;
+				}
+			}
+			for (let i = 0; i < roeCreated; i++) {
+				if (percentChance(fishOffcutsChance)) {
+					fishOffcutsCreated += 1;
+				}
+			}
+		}
+
+		if (BarbarianFish.name === 'Cut leaping trout') {
+			roeChance = 0.67 * currentLevel;
+			fishOffcutsChance = (1 / 2) * 100;
+			if (roeChance > 100) roeChance = 100;
+			for (let i = 0; i < quantity; i++) {
+				if (percentChance(roeChance)) {
+					roeCreated += 1;
+				}
+			}
+			for (let i = 0; i < roeCreated; i++) {
+				if (percentChance(fishOffcutsChance)) {
+					fishOffcutsCreated += 1;
+				}
+			}
+		}
 
 		let loot = new Bank();
 
@@ -34,7 +75,9 @@ export const cutLeapingFishTask: MinionTask = {
 		loot.add('Caviar', caviarCreated);
 		loot.add('Fish offcuts', fishOffcutsCreated);
 
-		let xpReceived = quantity * BarbarianFish.xp;
+		let xpReceived = 0;
+		xpReceived += 10 * roeCreated;
+		xpReceived += 15 * caviarCreated;
 
 		const xpRes = await user.addXP({
 			skillName: SkillsEnum.Cooking,
