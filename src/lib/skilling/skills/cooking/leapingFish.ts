@@ -11,13 +11,13 @@ const LeapingFish: CutLeapingFish[] = [
 	},
 	{
 		name: 'Cut leaping trout',
-		aliases: ['leaping trout', 'cut leaping trout', 'trout'],
+		aliases: ['leaping trout', 'cut leaping trout'],
 		inputItems: new Bank({ 'Leaping trout': 1 }),
 		tickRate: 1
 	},
 	{
 		name: 'Cut leaping salmon',
-		aliases: ['leaping salmon', 'cut leaping salmon', 'salmon'],
+		aliases: ['leaping salmon', 'cut leaping salmon'],
 		inputItems: new Bank({ 'Leaping salmon': 1 }),
 		tickRate: 1
 	}
