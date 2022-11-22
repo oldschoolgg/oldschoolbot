@@ -1,7 +1,8 @@
 import fs from 'fs';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
-import { Canvas, loadImage } from 'skia-canvas/lib';
+import { loadImage } from 'skia-canvas/lib';
 
+import { createCanvas } from '../../lib/util/canvasUtil';
 import { OSBMahojiCommand } from '../lib/util';
 
 const bg = loadImage(fs.readFileSync('./src/lib/resources/images/pm-bg.png'));
@@ -24,7 +25,7 @@ export const fakepmCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ options }: CommandRunOptions<{ message: string; username: string }>) => {
-		const canvas = new Canvas(376, 174);
+		const canvas = createCanvas(376, 174);
 		const ctx = canvas.getContext('2d');
 		ctx.font = '16px OSRSFont';
 		const img = await bg;

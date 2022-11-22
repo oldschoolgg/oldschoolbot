@@ -1,12 +1,12 @@
 import { User } from '@prisma/client';
 import { calcWhatPercent, objectEntries } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { Canvas, CanvasRenderingContext2D } from 'skia-canvas/lib';
+import { CanvasRenderingContext2D } from 'skia-canvas/lib';
 
 import { allCollectionLogs, getCollection, getTotalCl } from '../lib/data/Collections';
 import { IToReturnCollection } from '../lib/data/CollectionsExport';
 import { formatItemStackQuantity, generateHexColorForCashStack, toKMB } from '../lib/util';
-import { fillTextXTimesInCtx, getClippedRegion } from '../lib/util/canvasUtil';
+import { createCanvas, fillTextXTimesInCtx, getClippedRegion } from '../lib/util/canvasUtil';
 import getOSItem from '../lib/util/getOSItem';
 import { IBgSprite } from './bankImage';
 
@@ -75,7 +75,7 @@ class CollectionLogTask {
 		};
 
 		// Create base canvas
-		const canvasList = new Canvas(200, leftHeight);
+		const canvasList = createCanvas(200, leftHeight);
 		// Get the canvas context
 		const ctxl = canvasList.getContext('2d');
 		ctxl.font = '16px OSRSFontCompact';
@@ -195,7 +195,7 @@ class CollectionLogTask {
 		);
 
 		// Create base canvas
-		const canvas = new Canvas(canvasWidth, canvasHeight);
+		const canvas = createCanvas(canvasWidth, canvasHeight);
 		// Get the canvas context
 		const ctx = canvas.getContext('2d');
 		ctx.font = '16px OSRSFontCompact';

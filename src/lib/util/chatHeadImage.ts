@@ -1,8 +1,7 @@
 import { AttachmentBuilder } from 'discord.js';
 import * as fs from 'fs';
-import { Canvas } from 'skia-canvas/lib';
 
-import { canvasImageFromBuffer, printWrappedText } from './canvasUtil';
+import { canvasImageFromBuffer, createCanvas, printWrappedText } from './canvasUtil';
 
 export const textBoxFile = fs.readFileSync('./src/lib/resources/images/textbox.png');
 const mejJalChatHead = fs.readFileSync('./src/lib/resources/images/mejJal.png');
@@ -37,7 +36,7 @@ const names: Record<keyof typeof chatHeads, string> = {
 };
 
 export async function newChatHeadImage({ content, head }: { content: string; head: keyof typeof chatHeads }) {
-	const canvas = new Canvas(519, 142);
+	const canvas = createCanvas(519, 142);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
 	const headImage = await canvasImageFromBuffer(chatHeads[head]);

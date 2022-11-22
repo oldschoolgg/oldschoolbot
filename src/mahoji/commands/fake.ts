@@ -1,8 +1,9 @@
 import { randInt } from 'e';
 import fs from 'fs';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
-import { Canvas, CanvasRenderingContext2D, loadImage } from 'skia-canvas/lib';
+import { CanvasRenderingContext2D, loadImage } from 'skia-canvas/lib';
 
+import { createCanvas } from '../../lib/util/canvasUtil';
 import { OSBMahojiCommand } from '../lib/util';
 
 const bg = fs.readFileSync('./src/lib/resources/images/tob-bg.png');
@@ -180,7 +181,7 @@ export const fakeCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ options }: CommandRunOptions<{ type: string; username: string }>) => {
-		const canvas = new Canvas(399, 100);
+		const canvas = createCanvas(399, 100);
 		const ctx = canvas.getContext('2d');
 
 		ctx.font = '16px OSRSFont';

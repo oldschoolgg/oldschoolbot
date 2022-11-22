@@ -1,6 +1,13 @@
 import { Canvas, CanvasRenderingContext2D, Image, loadImage } from 'skia-canvas/lib';
 
+import { production } from '../../config';
 import { formatItemStackQuantity, generateHexColorForCashStack } from '../util';
+
+export function createCanvas(width?: number, height?: number) {
+	const canvas = new Canvas(width, height);
+	if (!production) canvas.gpu = false;
+	return canvas;
+}
 
 export function fillTextXTimesInCtx(ctx: CanvasRenderingContext2D, text: string, x: number, y: number) {
 	let textPath = ctx.outlineText(text);
@@ -47,7 +54,7 @@ export function drawImageWithOutline(
 	alpha: number = 0.5
 ): void {
 	const dArr = [-1, -1, 0, -1, 1, -1, -1, 0, 1, 0, -1, 1, 0, 1, 1, 1];
-	const purplecanvas = new Canvas(image.width + (outlineWidth + 2), image.height + (outlineWidth + 2));
+	const purplecanvas = createCanvas(image.width + (outlineWidth + 2), image.height + (outlineWidth + 2));
 	const pctx = purplecanvas.getContext('2d');
 	for (let i = 0; i < dArr.length; i += 2) pctx.drawImage(image, dArr[i] * outlineWidth, dArr[i + 1] * outlineWidth);
 	pctx.globalAlpha = alpha;
@@ -115,7 +122,7 @@ export function printWrappedText(ctx: CanvasRenderingContext2D, text: string, x:
 }
 
 export function getClippedRegion(image: Image | Canvas, x: number, y: number, width: number, height: number) {
-	const canvas = new Canvas(width, height);
+	const canvas = createCanvas(width, height);
 	const ctx = canvas.getContext('2d');
 	if (image instanceof Canvas) {
 		ctx.drawCanvas(image, x, y, width, height, 0, 0, width, height);

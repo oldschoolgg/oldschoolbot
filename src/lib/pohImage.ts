@@ -5,7 +5,7 @@ import { Canvas, CanvasRenderingContext2D, Image } from 'skia-canvas/lib';
 
 import { DUNGEON_FLOOR_Y, GROUND_FLOOR_Y, HOUSE_WIDTH, Placeholders, TOP_FLOOR_Y } from './poh';
 import { getActivityOfUser } from './settings/settings';
-import { canvasImageFromBuffer } from './util/canvasUtil';
+import { canvasImageFromBuffer, createCanvas } from './util/canvasUtil';
 import { PlayerOwnedHouse } from '.prisma/client';
 
 const CONSTRUCTION_IMG_DIR = './src/lib/poh/images';
@@ -52,7 +52,7 @@ class PoHImage {
 
 	generateCanvas(bgId: number): [Canvas, CanvasRenderingContext2D] {
 		const bgImage = this.bgImages[bgId - 1]!;
-		const canvas = new Canvas(bgImage.width, bgImage.height);
+		const canvas = createCanvas(bgImage.width, bgImage.height);
 
 		const ctx = canvas.getContext('2d');
 		ctx.imageSmoothingEnabled = false;
