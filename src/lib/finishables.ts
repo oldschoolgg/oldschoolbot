@@ -245,6 +245,7 @@ const monsterPairedCLs = Monsters.map(mon => {
 	const cl = allCollectionLogsFlat.find(c => stringMatches(c.name, mon.name));
 	if (!cl) return null;
 	if (!cl.items.every(id => mon.allItems.includes(id))) return null;
+	if (finishables.some(f => stringMatches(f.name, mon.name))) return null;
 	return {
 		name: mon.name,
 		aliases: mon.aliases,
