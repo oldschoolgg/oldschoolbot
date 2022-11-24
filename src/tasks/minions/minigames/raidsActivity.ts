@@ -10,8 +10,9 @@ import { userHasFlappy } from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/lootTrack';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import { RaidsOptions } from '../../../lib/types/minions';
-import { clAdjustedDroprate, randomVariation, roll } from '../../../lib/util';
+import { randomVariation, roll } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
+import { handleSpecialCoxLoot } from '../../../lib/util/handleSpecialCoxLoot';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import resolveItems from '../../../lib/util/resolveItems';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
@@ -34,21 +35,6 @@ const blueItems = resolveItems(['Metamorphic dust']);
 const purpleButNotAnnounced = resolveItems(['Dexterous prayer scroll', 'Arcane prayer scroll']);
 
 const purpleItems = chambersOfXericCL.filter(i => !notPurple.includes(i));
-
-// user is null if tame is killing
-export function handleSpecialCoxLoot(user: MUser | null, loot: Bank) {
-	const takonDropRate = user ? clAdjustedDroprate(user, 'Takon', 600, 2) : 4500;
-	if (roll(takonDropRate)) {
-		loot.add('Takon');
-	}
-	const steveDropRate = user ? clAdjustedDroprate(user, 'Steve', 300, 2) : 500;
-	if (roll(steveDropRate)) {
-		loot.add('Steve');
-	}
-	if (roll(140)) {
-		loot.add('Clue scroll (grandmaster)');
-	}
-}
 
 export const raidsTask: MinionTask = {
 	type: 'Raids',
