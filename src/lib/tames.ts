@@ -17,7 +17,6 @@ import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc';
 
 import { collectables } from '../mahoji/lib/abstracted_commands/collectCommand';
 import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
-import { handleSpecialCoxLoot } from '../tasks/minions/minigames/raidsActivity';
 import { getSimilarItems } from './data/similarItems';
 import { trackLoot } from './lootTrack';
 import killableMonsters from './minions/data/killableMonsters';
@@ -27,6 +26,7 @@ import { prisma } from './settings/prisma';
 import { runCommand } from './settings/settings';
 import { assert, channelIsSendable, itemNameFromID, roll } from './util';
 import getOSItem from './util/getOSItem';
+import { handleSpecialCoxLoot } from './util/handleSpecialCoxLoot';
 import { makeBankImage } from './util/makeBankImage';
 import resolveItems from './util/resolveItems';
 import { Tame, tame_growth, TameActivity, User } from '.prisma/client';

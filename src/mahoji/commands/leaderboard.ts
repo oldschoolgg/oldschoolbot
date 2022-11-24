@@ -4,6 +4,7 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { badges, badgesCache, Emoji, usernameCache } from '../../lib/constants';
 import { allClNames, getCollectionItems } from '../../lib/data/Collections';
+import { allLeagueTasks } from '../../lib/leagues/leagues';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { allOpenables } from '../../lib/openables';
 import { Minigames } from '../../lib/settings/minigames';
@@ -522,8 +523,48 @@ async function leaguesPointsLeaderboard(user: MUser, channelID: string) {
 	return lbMsg('Leagues Points');
 }
 
-async function leaguesLeaderboard(user: MUser, channelID: string, type: 'points' | 'tasks') {
+async function leastCompletedLeagueTasksLb() {
+	const taskCounts = await roboChimpClient.$queryRaw<
+		{ task_id: number; qty: number }[]
+	>`SELECT task_id, count(*) AS qty
+FROM (
+   SELECT unnest(leagues_completed_tasks_ids) AS task_id
+   FROM public.user
+   ) sub
+GROUP BY 1
+ORDER BY 2 ASC;`;
+	let taskObj: Record<number, number> = {};
+	for (const task of allLeagueTasks) {
+		taskObj[task.id] = 0;
+	}
+	for (const task of taskCounts) {
+		taskObj[task.task_id] = task.qty;
+	}
+
+	return `**Least Commonly Completed Tasks:**
+${Object.entries(taskObj)
+	.sort((a, b) => a[1] - b[1])
+	.slice(0, 10)
+	.map(task => {
+		const taskObj = allLeagueTasks.find(t => t.id === parseInt(task[0]))!;
+		return `${taskObj.name}: ${task[1]} users completed`;
+	})
+	.join('\n')}	
+	
+**Most Commonly Completed Tasks:**
+${Object.entries(taskObj)
+	.sort((a, b) => b[1] - a[1])
+	.slice(0, 10)
+	.map((task, index) => {
+		const taskObj = allLeagueTasks.find(t => t.id === parseInt(task[0]))!;
+		return `${index + 1}. ${taskObj.name}`;
+	})
+	.join('\n')}`;
+}
+
+async function leaguesLeaderboard(user: MUser, channelID: string, type: 'points' | 'tasks' | 'hardest_tasks') {
 	if (type === 'points') return leaguesPointsLeaderboard(user, channelID);
+	if (type === 'hardest_tasks') return leastCompletedLeagueTasksLb();
 	const result: { id: number; tasks_completed: number }[] =
 		await roboChimpClient.$queryRaw`SELECT id::text, COALESCE(cardinality(leagues_completed_tasks_ids), 0) AS tasks_completed
 										  FROM public.user
@@ -757,7 +798,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 					name: 'type',
 					description: 'The leagues lb you want to select.',
 					required: true,
-					choices: ['points', 'tasks'].map(i => ({ name: i, value: i }))
+					choices: ['points', 'tasks', 'hardest_tasks'].map(i => ({ name: i, value: i }))
 				}
 			]
 		}
@@ -780,7 +821,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		opens?: { openable: string; ironmen_only?: boolean };
 		cl?: { cl: string; ironmen_only?: boolean };
 		item_contract_streak?: {};
-		leagues?: { type: 'points' | 'tasks' };
+		leagues?: { type: 'points' | 'tasks' | 'hardest_tasks' };
 	}>) => {
 		await deferInteraction(interaction);
 		const user = await mUserFetch(userID);
