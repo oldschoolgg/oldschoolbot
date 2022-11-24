@@ -3531,3 +3531,42 @@ setCustomItem(
 	},
 	10_000
 );
+
+setCustomItem(
+	70_195,
+	'Turkey recipes',
+	'Bronze kiteshield',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_196,
+	'Rubber turkey',
+	'Bronze dagger',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_197,
+	'Offhand rubber turkey',
+	'Bronze kiteshield',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	10_000
+);

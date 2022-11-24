@@ -5,7 +5,9 @@ import {
 	calcWhatPercent,
 	increaseNumByPercent,
 	objectKeys,
+	randArrItem,
 	reduceNumByPercent,
+	roll,
 	round,
 	sumArr,
 	Time,
@@ -71,6 +73,7 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import findMonster from '../../../lib/util/findMonster';
 import getOSItem from '../../../lib/util/getOSItem';
+import resolveItems from '../../../lib/util/resolveItems';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { sendToChannelID } from '../../../lib/util/webhook';
 import { hasMonsterRequirements, resolveAvailableItemBoosts } from '../../mahojiSettings';
@@ -215,6 +218,20 @@ export async function minionKillCommand(
 
 	if (revenantMonsters.some(i => i.aliases.some(a => stringMatches(a, name)))) {
 		return revsCommand(user, channelID, interaction, name);
+	}
+
+	if (stringMatches(name, 'turkey')) {
+		const allItems = resolveItems(['Turkey recipes', 'Offhand rubber turkey', 'Rubber turkey']);
+		const { cl } = user;
+		if (allItems.every(i => cl.has(i))) {
+			return 'You killed the thanksgiving turkey so many times already, do you have no heart?!';
+		}
+		const itemPicked = randArrItem(allItems);
+		const loot = new Bank();
+		if (roll(2)) loot.add('Raw turkey');
+		if (!user.cl.has(itemPicked)) loot.add(itemPicked);
+		await user.addItemsToBank({ items: loot, collectionLog: true });
+		return `You killed the thanksgiving turkey and received... ${loot}.`;
 	}
 
 	const monster = findMonster(name);

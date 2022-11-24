@@ -80,6 +80,11 @@ export const autocompleteMonsters = [
 		name: 'Moktang',
 		aliases: ['moktang'],
 		id: MOKTANG_ID
+	},
+	{
+		id: -1,
+		name: 'Turkey',
+		aliases: ['turkey']
 	}
 ];
 
