@@ -1019,6 +1019,15 @@ export const allCLItemsFiltered = [
 	)
 ];
 
+export const overallPlusItems = [
+	...new Set(
+		Object.entries(allCollectionLogs)
+			.filter(i => i[0] !== 'Discontinued')
+			.map(e => Object.values(e[1].activities).map(a => a.items))
+			.flat(100)
+	)
+];
+
 export function calcCLDetails(user: MUser) {
 	const clItems = user.cl.filter(i => allCLItemsFiltered.includes(i.id), true);
 	const debugBank = new Bank().add(clItems);
@@ -1110,6 +1119,9 @@ export function getPossibleOptions() {
 }
 
 export function getCollectionItems(collection: string, allItems = false, removeCoins = false): number[] {
+	if (collection === 'overall+') {
+		return overallPlusItems;
+	}
 	if (['overall', 'all'].some(s => stringMatches(collection, s))) {
 		return allCLItemsFiltered;
 	}
@@ -1185,6 +1197,29 @@ export async function getCollection(options: {
 	}
 
 	const [totalCl, userAmount] = getUserClData(userCheckBank.bank, clItems);
+
+	if (stringMatches(search, 'overall+')) {
+		return {
+			category: 'Other',
+			name: 'Overall+',
+			collection: clItems,
+			collectionObtained: userAmount,
+			collectionTotal: totalCl,
+			userItems: userCheckBank,
+			counts: false
+		};
+	}
+	if (stringMatches(search, 'overall')) {
+		return {
+			category: 'Other',
+			name: 'Overall',
+			collection: clItems,
+			collectionObtained: userAmount,
+			collectionTotal: totalCl,
+			userItems: userCheckBank,
+			counts: false
+		};
+	}
 
 	for (const [category, entries] of Object.entries(allCollectionLogs)) {
 		if (stringMatches(category, search) || (entries.alias && entries.alias.some(a => stringMatches(a, search)))) {
