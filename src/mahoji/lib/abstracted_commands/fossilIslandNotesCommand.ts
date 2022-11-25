@@ -24,6 +24,10 @@ export async function fossilIslandNotesCommand(user: MUser, interaction: ChatInp
 
 	let str = 'You insert 100 numulites into a stone chest.';
 
+	if (user.minionIsBusy) {
+		return 'Your minion is busy.';
+	}
+
 	if (!user.owns(inItems)) {
 		return "You don't have 100 numulites";
 	}

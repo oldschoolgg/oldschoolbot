@@ -177,7 +177,7 @@ export const gambleCommand: OSBMahojiCommand = {
 		interaction,
 		userID
 	}: CommandRunOptions<{
-		fossil_island_notes: any;
+		fossil_island_notes?: any;
 		cape?: { type?: string };
 		dice?: { amount?: string };
 		duel?: { user: MahojiUserOption; amount?: string };
