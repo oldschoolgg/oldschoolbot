@@ -17,6 +17,7 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { CLIENT_ID, OWNER_IDS, production, SupportServer } from '../../config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../../lib/blacklists';
 import { badges, BadgesEnum, BitField, BitFieldData, DISABLED_COMMANDS } from '../../lib/constants';
+import { syncDocs } from '../../lib/docsActivity';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { patreonTask } from '../../lib/patreon';
 import { runRolesTask } from '../../lib/rolesTask';
@@ -485,6 +486,11 @@ export const adminCommand: OSBMahojiCommand = {
 					required: true
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'sync_docs',
+			description: 'Sync docs'
 		}
 	],
 	run: async ({
@@ -517,12 +523,25 @@ export const adminCommand: OSBMahojiCommand = {
 		view?: { thing: string };
 		wipe_bingo_temp_cls?: {};
 		give_items?: { user: MahojiUserOption; items: string };
+		sync_docs?: {};
 	}>) => {
 		await deferInteraction(interaction);
 
 		const adminUser = await mahojiUsersSettingsFetch(userID);
 		const isOwner = OWNER_IDS.includes(userID.toString());
 		const isMod = isOwner || adminUser.bitfield.includes(BitField.isModerator);
+		const IsWikiContributor = isMod || adminUser.bitfield.includes(BitField.IsWikiContributor);
+
+		/**
+		 * Docs/Wiki command(s)
+		 */
+
+		if (!IsWikiContributor) return randArrItem(gifs);
+		if (options.sync_docs) {
+			await deferInteraction(interaction);
+			await syncDocs();
+			return 'Docs updated';
+		}
 		if (!guildID || !isMod || (production && guildID.toString() !== SupportServer)) return randArrItem(gifs);
 
 		if (options.wipe_bingo_temp_cls) {
