@@ -388,6 +388,33 @@ export async function interactionHook(interaction: Interaction) {
 		});
 	}
 
+	if (id === 'OPEN_BEGINNER_CASKET') {
+		return openCasket('Beginner');
+	}
+
+	if (id === 'OPEN_EASY_CASKET') {
+		return openCasket('Easy');
+	}
+
+	if (id === 'OPEN_MEDIUM_CASKET') {
+		return openCasket('Medium');
+	}
+
+	if (id === 'OPEN_HARD_CASKET') {
+		return openCasket('Hard');
+	}
+
+	if (id === 'OPEN_ELITE_CASKET') {
+		return openCasket('Elite');
+	}
+
+	if (id === 'OPEN_MASTER_CASKET') {
+		return openCasket('Master');
+	}
+	if (id === 'OPEN_GRANDMASTER_CASKET') {
+		return openCasket('Grandmaster');
+	}
+
 	if (minionIsBusy(user.id)) {
 		return interactionReply(interaction, { content: `${user.minionName} is busy.`, ephemeral: true });
 	}
@@ -408,20 +435,6 @@ export async function interactionHook(interaction: Interaction) {
 		case 'DO_GRANDMASTER_CLUE':
 			return doClue('Grandmaster');
 
-		case 'OPEN_BEGINNER_CASKET':
-			return openCasket('Beginner');
-		case 'OPEN_EASY_CASKET':
-			return openCasket('Easy');
-		case 'OPEN_MEDIUM_CASKET':
-			return openCasket('Medium');
-		case 'OPEN_HARD_CASKET':
-			return openCasket('Hard');
-		case 'OPEN_ELITE_CASKET':
-			return openCasket('Elite');
-		case 'OPEN_MASTER_CASKET':
-			return openCasket('Master');
-		case 'OPEN_GRANDMASTER_CASKET':
-			return openCasket('Grandmaster');
 		case 'DO_BIRDHOUSE_RUN':
 			return runCommand({
 				commandName: 'activities',
