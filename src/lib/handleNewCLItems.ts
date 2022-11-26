@@ -55,7 +55,7 @@ export async function handleNewCLItems({
 
 		globalClient.emit(
 			Events.ServerNotification,
-			`${user} just finished the ${finishedCL.name} collection log!${placeStr} ${kcString}`
+			`${user.badgedUsername} just finished the ${finishedCL.name} collection log!${placeStr} ${kcString}`
 		);
 	}
 }
