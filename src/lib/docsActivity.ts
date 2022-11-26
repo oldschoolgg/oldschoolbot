@@ -67,7 +67,12 @@ export async function syncDocs() {
 			next = resultJson.next;
 			const { items } = resultJson as DocsResponse;
 			for (let item of items) {
-				if (typeof item.sections === 'string') continue;
+				articlesToUpdate.push({
+					id: item.id,
+					name: item.title,
+					value: item.path,
+					body: `${item.title} - homepage`
+				});
 				for (let section of item.sections) {
 					if (section.title === '')
 						articlesToUpdate.push({
@@ -76,6 +81,7 @@ export async function syncDocs() {
 							value: item.path,
 							body: section.body.substring(0, 749)
 						});
+					console.log(`id: ${section.id} \nname: ${item.title}\nvalue: ${item.path}\n\n`);
 					console.log(`id: ${section.id} \n name: ${item.title} - ${section.title}\n value: ${section.path}`);
 					articlesToUpdate.push({
 						id: section.id,
