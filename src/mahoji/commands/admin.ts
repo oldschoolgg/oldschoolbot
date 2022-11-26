@@ -18,10 +18,12 @@ import { CLIENT_ID, OWNER_IDS, production, SupportServer } from '../../config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../../lib/blacklists';
 import { badges, BadgesEnum, BitField, BitFieldData, DISABLED_COMMANDS } from '../../lib/constants';
 import { syncDocs } from '../../lib/docsActivity';
+import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { patreonTask } from '../../lib/patreon';
 import { runRolesTask } from '../../lib/rolesTask';
 import { countUsersWithItemInCl, prisma } from '../../lib/settings/prisma';
 import { cancelTask, minionActivityCacheDelete } from '../../lib/settings/settings';
+import { Gear } from '../../lib/structures/Gear';
 import {
 	calcPerHour,
 	cleanString,
@@ -31,9 +33,10 @@ import {
 	stringMatches,
 	toKMB
 } from '../../lib/util';
+import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../lib/util/clientSettings';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { deferInteraction, interactionReply } from '../../lib/util/interactionReply';
+import { syncLinkedAccounts } from '../../lib/util/linkedAccountsUtil';
 import { logError } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
@@ -41,13 +44,7 @@ import { Cooldowns } from '../lib/Cooldowns';
 import { syncCustomPrices } from '../lib/events';
 import { itemOption } from '../lib/mahojiCommandOptions';
 import { allAbstractCommands, OSBMahojiCommand } from '../lib/util';
-import {
-	handleMahojiConfirmation,
-	mahojiClientSettingsFetch,
-	mahojiClientSettingsUpdate,
-	mahojiUsersSettingsFetch,
-	syncLinkedAccounts
-} from '../mahojiSettings';
+import { handleMahojiConfirmation, mahojiUsersSettingsFetch } from '../mahojiSettings';
 import { mahojiUserSettingsUpdate } from '../settingsUpdate';
 import { getUserInfo } from './minion';
 
@@ -67,6 +64,7 @@ async function unsafeEval({ userID, code }: { userID: string; code: string }) {
 	let thenable = false;
 	// eslint-disable-next-line @typescript-eslint/init-declarations
 	try {
+		code = `\nconst {Gear} = require('../../lib/structures/Gear')\n${code};`;
 		code = `\nconst {Bank} = require('oldschooljs');\n${code}`;
 		// eslint-disable-next-line no-eval
 		result = eval(code);
@@ -87,6 +85,10 @@ async function unsafeEval({ userID, code }: { userID: string; code: string }) {
 	stopwatch.stop();
 	if (result instanceof Bank) {
 		return { files: [(await makeBankImage({ bank: result })).file] };
+	}
+	if (result instanceof Gear) {
+		const image = await generateGearImage(await mUserFetch(userID), result, null, null);
+		return { files: [image] };
 	}
 
 	if (Buffer.isBuffer(result)) {
@@ -840,11 +842,6 @@ LIMIT 10;
 			const input = await mahojiUsersSettingsFetch(userToGive.user.id);
 
 			const currentBalanceTier = input.premium_balance_tier;
-
-			const oldPerkTier = getUsersPerkTier(input.bitfield);
-			if (oldPerkTier > 1 && !currentBalanceTier && oldPerkTier <= tier + 1) {
-				return `${userToGive.user.username} is already a patron of at least that tier.`;
-			}
 
 			if (currentBalanceTier !== null && currentBalanceTier !== tier) {
 				await handleMahojiConfirmation(

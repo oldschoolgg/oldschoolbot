@@ -177,7 +177,7 @@ export interface Mixable {
 	id: number;
 	level: number;
 	xp: number;
-	inputItems: ItemBank;
+	inputItems: Bank;
 	tickRate: number;
 	bankTimePerPotion: number;
 	outputMultiple?: number;
@@ -187,6 +187,13 @@ export interface Mixable {
 }
 
 export interface Bone {
+	level: number;
+	xp: number;
+	name: string;
+	inputId: number;
+}
+
+export interface Ash {
 	level: number;
 	xp: number;
 	name: string;

@@ -2,7 +2,7 @@ import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { corporealBeastCL } from '../../../../data/CollectionsExport';
-import { GearStat } from '../../../../gear';
+import { GearStat } from '../../../../gear/types';
 import { SkillsEnum } from '../../../../skilling/types';
 import itemID from '../../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
@@ -234,9 +234,17 @@ const killableBosses: KillableMonster[] = [
 
 		difficultyRating: 7,
 		itemsRequired: deepResolveItems([
-			["Torag's platebody", "Dharok's platebody", 'Bandos chestplate', 'Torva platebody'],
-			["Torag's platelegs", "Dharok's platelegs", 'Bandos tassets', 'Torva platelegs'],
-			['Zamorakian spear', 'Zamorakian hasta']
+			["Torag's platebody", "Dharok's platebody", 'Bandos chestplate', 'Torva platebody', "Inquisitor's hauberk"],
+			["Torag's platelegs", "Dharok's platelegs", 'Bandos tassets', 'Torva platelegs', "Inquisitor's plateskirt"],
+			[
+				'Zamorakian spear',
+				'Zamorakian hasta',
+				'Arclight',
+				'Abyssal whip',
+				'Abyssal tentacle',
+				'Abyssal bludgeon',
+				"Inquisitor's mace"
+			]
 		]),
 		notifyDrops: resolveItems(['Hellpuppy', 'Jar of souls']),
 		qpRequired: 0,

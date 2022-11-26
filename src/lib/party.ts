@@ -1,22 +1,22 @@
 /* eslint-disable prefer-promise-reject-errors */
 import { userMention } from '@discordjs/builders';
 import {
+	BaseMessageOptions,
 	ButtonBuilder,
 	ButtonStyle,
 	ComponentType,
 	InteractionCollector,
 	MessageEditOptions,
-	MessageOptions,
 	TextChannel
 } from 'discord.js';
 import { debounce, noOp, Time } from 'e';
 
-import { BLACKLISTED_USERS } from '../../lib/blacklists';
-import { SILENT_ERROR, usernameCache } from '../../lib/constants';
-import { MakePartyOptions } from '../../lib/types';
-import { UserError } from '../../lib/UserError';
-import { makeComponents } from '../../lib/util';
-import { CACHED_ACTIVE_USER_IDS } from '../../lib/util/cachedUserIDs';
+import { BLACKLISTED_USERS } from './blacklists';
+import { SILENT_ERROR, usernameCache } from './constants';
+import { MakePartyOptions } from './types';
+import { UserError } from './UserError';
+import { makeComponents } from './util';
+import { CACHED_ACTIVE_USER_IDS } from './util/cachedUserIDs';
 
 const partyLockCache = new Set<string>();
 setInterval(() => partyLockCache.clear(), Time.Minute * 20);
@@ -45,7 +45,7 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 	let deleted = false;
 	let massStarted = false;
 
-	function getMessageContent(): MessageOptions & MessageEditOptions {
+	function getMessageContent(): BaseMessageOptions & MessageEditOptions {
 		return {
 			content: `${options.message}\n\n**Users Joined:** ${usersWhoConfirmed
 				.map(u => usernameCache.get(u) ?? userMention(u))

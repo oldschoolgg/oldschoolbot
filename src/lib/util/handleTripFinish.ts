@@ -1,5 +1,6 @@
 import { activity_type_enum } from '@prisma/client';
 import { AttachmentBuilder, ButtonBuilder, MessageCollector } from 'discord.js';
+import { shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
@@ -14,10 +15,12 @@ import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import { ActivityTaskOptions } from '../types/minions';
 import { channelIsSendable, makeComponents } from '../util';
 import {
+	makeAutoContractButton,
 	makeBirdHouseTripButton,
 	makeDoClueButton,
 	makeNewSlayerTaskButton,
 	makeOpenCasketButton,
+	makeOpenSeedPackButton,
 	makeRepeatTripButton
 } from './globalInteractions';
 import { sendToChannelID } from './webhook';
@@ -81,7 +84,7 @@ export async function handleTripFinish(
 	loot: Bank | null,
 	_messages?: string[]
 ) {
-	const { perkTier } = user;
+	const perkTier = user.perkTier();
 	const messages: string[] = [];
 	for (const effect of tripFinishEffects) await effect.fn({ data, user, loot, messages });
 
@@ -116,15 +119,23 @@ export async function handleTripFinish(
 		if (birdHousedetails.isReady && !user.bitfield.includes(BitField.DisableBirdhouseRunButton))
 			components.push(makeBirdHouseTripButton());
 		const { currentTask } = await getUsersCurrentSlayerInfo(user.id);
-		if ((currentTask === null || currentTask.quantity_remaining <= 0) && data.type === 'MonsterKilling') {
+		if (
+			(currentTask === null || currentTask.quantity_remaining <= 0) &&
+			['MonsterKilling', 'Inferno', 'FightCaves'].includes(data.type)
+		) {
 			components.push(makeNewSlayerTaskButton());
 		}
+		if (loot?.has('Seed pack')) {
+			components.push(makeAutoContractButton());
+			components.push(makeOpenSeedPackButton());
+		}
 	}
+
 	handleTriggerShootingStar(user, data, components);
 
 	sendToChannelID(channelID, {
 		content: message,
 		image: attachment,
-		components: components.length > 0 ? makeComponents(components) : undefined
+		components: components.length > 0 ? makeComponents(shuffleArr(components)) : undefined
 	});
 }

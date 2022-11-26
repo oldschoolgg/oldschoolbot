@@ -2,12 +2,12 @@ import { TextChannel } from 'discord.js';
 import { objectKeys, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
-import { setupParty } from '../../extendables/Message/Party';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { KillableMonster } from '../../lib/minions/types';
+import { setupParty } from '../../lib/party';
 import { GroupMonsterActivityTaskOptions } from '../../lib/types/minions';
 import { channelIsSendable, formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
@@ -89,7 +89,7 @@ export const massCommand: OSBMahojiCommand = {
 				minSize: 2,
 				maxSize: 10,
 				ironmanAllowed: false,
-				message: `${user.usernameOrMention} is doing a ${monster.name} mass! Use the buttons below to join/leave.`,
+				message: `${user.badgedUsername} is doing a ${monster.name} mass! Use the buttons below to join/leave.`,
 				customDenier: async user => {
 					if (!user.user.minion_hasBought) {
 						return [true, "you don't have a minion."];

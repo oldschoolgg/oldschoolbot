@@ -1,3 +1,4 @@
+import { Minigame } from '@prisma/client';
 import { objectEntries } from 'e';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
@@ -36,6 +37,16 @@ export interface IKCActivity {
 	[key: string]: string | string[] | ((user: MUser) => Promise<number>);
 }
 
+export type FormatProgressFunction = ({
+	getKC,
+	minigames,
+	user
+}: {
+	user: MUser;
+	getKC: (id: number) => number;
+	minigames: Minigame;
+}) => string | string[];
+
 export interface ICollectionActivity {
 	[key: string]: {
 		// If the collection will count towards the collection log counter
@@ -45,6 +56,7 @@ export interface ICollectionActivity {
 		allItems?: number[];
 		kcActivity?: string | IKCActivity;
 		isActivity?: boolean;
+		fmtProg?: FormatProgressFunction;
 	};
 }
 
@@ -1220,6 +1232,25 @@ export const castleWarsCL = resolveItems([
 ]);
 export const fishingTrawlerCL = resolveItems(['Angler hat', 'Angler top', 'Angler waders', 'Angler boots']);
 export const gnomeRestaurantCL = resolveItems(['Grand seed pod', 'Gnome scarf', 'Gnome goggles', 'Mint cake']);
+export const guardiansOfTheRiftCL = resolveItems([
+	'Abyssal protector',
+	'Abyssal pearls',
+	'Catalytic talisman',
+	'Abyssal needle',
+	'Abyssal green dye',
+	'Abyssal blue dye',
+	'Abyssal red dye ',
+	'Hat of the eye',
+	'Robe top of the eye',
+	'Robe bottoms of the eye',
+	'Boots of the eye',
+	'Ring of the elements',
+	'Abyssal lantern',
+	"Guardian's eye",
+	'Intricate pouch',
+	'Lost bag',
+	'Tarnished locket'
+]);
 export const hallowedSepulchreCL = resolveItems([
 	'Hallowed mark',
 	'Hallowed token',
@@ -1879,7 +1910,7 @@ export const diariesCL = [
 	"Rada's blessing 4"
 ];
 export const dailyCL = resolveItems([
-	'Event rpg',
+	'Goblin paint cannon',
 	'Green banner',
 	'Spinning plate',
 	'Brown toy horsey',
@@ -2076,7 +2107,8 @@ export const metamorphPets = resolveItems([
 	'Tzrek-zuk',
 	'Ziggy',
 	'Red',
-	'Great blue heron'
+	'Great blue heron',
+	'Greatish guardian'
 ]);
 
 export const allPetIDs = [

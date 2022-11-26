@@ -19,6 +19,7 @@ model Activity {
   channel_id     BigInt
   data           Json               @db.Json
 
+  @@index([user_id, finish_date])
   @@index([group_activity])
   @@index([completed])
   @@index([user_id, type])
@@ -116,11 +117,15 @@ model ClientStorage {
   create_loot                  Json     @default("{}") @db.Json
   tob_cost                     Json     @default("{}") @db.Json
   tob_loot                     Json     @default("{}") @db.Json
+  nex_cost                     Json     @default("{}") @db.Json
+  nex_loot                     Json     @default("{}") @db.Json
   degraded_items_cost          Json     @default("{}") @db.Json
   tks_cost                     Json     @default("{}") @db.Json
   tks_loot                     Json     @default("{}") @db.Json
   disabled_commands            String[] @db.VarChar(32)
   gp_tax_balance               BigInt   @default(0)
+  gotr_cost                    Json     @default("{}") @db.Json
+  gotr_loot                    Json     @default("{}") @db.Json
 
   @@map("clientStorage")
 }
@@ -265,8 +270,6 @@ model User {
   honour_level               Int      @default(1)
   honour_points              Int      @default(0)
   high_gambles               Int      @default(0)
-  patreon_id                 String?
-  github_id                  Int?
   carpenter_points           Int      @default(0)
   zeal_tokens                Int      @default(0)
   openable_scores            Json     @default("{}") @db.Json
@@ -375,6 +378,7 @@ model User {
   tentacle_charges       Int @default(0)
   sang_charges           Int @default(0)
   celestial_ring_charges Int @default(0)
+  ash_sanctifier_charges Int @default(0)
 
   gp_luckypick BigInt @default(0)
   gp_dice      BigInt @default(0)
@@ -397,7 +401,9 @@ model User {
 
   treats_delivered Int @default(0)
 
-  @@index([bingo_tickets_bought])
+  last_command_date DateTime? @db.Timestamp(6)
+
+  @@index([id, last_command_date])
   @@map("users")
 }
 
@@ -472,6 +478,7 @@ model Minigame {
   lms                     Int    @default(0)
   trouble_brewing         Int    @default(0)
   puro_puro               Int    @default(0)
+  guardians_of_the_rift   Int    @default(0)
 
   new_user NewUser?
 
@@ -505,15 +512,17 @@ enum loot_track_type {
 }
 
 model LootTrack {
-  id             String          @db.VarChar(32)
+  id String @id @default(uuid()) @db.Uuid
+
+  key            String          @db.VarChar(32)
   type           loot_track_type
   // In minutes
   total_duration Int
   total_kc       Int
   loot           Json            @default("{}") @db.Json
   cost           Json            @default("{}") @db.Json
+  user_id        BigInt?
 
-  @@id([id, type])
   @@map("loot_track")
 }
 
@@ -567,14 +576,17 @@ model StashUnit {
 }
 
 model UserStats {
-  user_id                BigInt @id
-  sell_gp                BigInt @default(0)
-  items_sold_bank        Json   @default("{}") @db.Json
-  puropuro_implings_bank Json   @default("{}") @db.Json
-  passive_implings_bank  Json   @default("{}") @db.Json
-  create_cost_bank       Json   @default("{}") @db.Json
-  create_loot_bank       Json   @default("{}") @db.Json
-  bird_eggs_offered_bank Json   @default("{}") @db.Json
+  user_id                  BigInt @id
+  sell_gp                  BigInt @default(0)
+  items_sold_bank          Json   @default("{}") @db.Json
+  puropuro_implings_bank   Json   @default("{}") @db.Json
+  passive_implings_bank    Json   @default("{}") @db.Json
+  create_cost_bank         Json   @default("{}") @db.Json
+  create_loot_bank         Json   @default("{}") @db.Json
+  bird_eggs_offered_bank   Json   @default("{}") @db.Json
+  scattered_ashes_bank     Json   @default("{}") @db.Json
+  ash_sanctifier_prayer_xp BigInt @default(0)
+  gotr_rift_searches       Int    @default(0)
 
   @@map("user_stats")
 }
@@ -618,9 +630,11 @@ enum activity_type_enum {
   Questing
   Firemaking
   Runecraft
+  TiaraRunecraft
   Smelting
   Crafting
   Burying
+  Scattering
   Offering
   FightCaves
   Wintertodt
@@ -682,6 +696,7 @@ enum activity_type_enum {
   PuroPuro
   Easter
   ShootingStars
+  GuardiansOfTheRift
   HalloweenEvent
 }
 

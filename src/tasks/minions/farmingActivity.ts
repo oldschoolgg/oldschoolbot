@@ -1,3 +1,4 @@
+import { randInt } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
@@ -12,8 +13,9 @@ import chatHeadImage from '../../lib/util/chatHeadImage';
 import { getFarmingKeyFromName } from '../../lib/util/farmingHelpers';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { logError } from '../../lib/util/logError';
+import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { sendToChannelID } from '../../lib/util/webhook';
-import { mahojiUsersSettingsFetch, updateBankSetting } from '../../mahoji/mahojiSettings';
+import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 
 export const farmingTask: MinionTask = {
 	type: 'Farming',
@@ -335,6 +337,7 @@ export const farmingTask: MinionTask = {
 				loot.add('Tangleroot');
 				tangleroot = true;
 			}
+			if (plantToHarvest.seedType === 'seaweed' && roll(3)) loot.add('Seaweed spore', randInt(1, 3));
 
 			if (plantToHarvest.seedType !== 'hespori') {
 				let hesporiSeeds = 0;
@@ -352,7 +355,7 @@ export const farmingTask: MinionTask = {
 				infoStr.push('```');
 				globalClient.emit(
 					Events.ServerNotification,
-					`${Emoji.Farming} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Tangleroot while farming ${patchType.lastPlanted} at level ${currentFarmingLevel} Farming!`
+					`${Emoji.Farming} **${user.badgedUsername}'s** minion, ${user.minionName}, just received a Tangleroot while farming ${patchType.lastPlanted} at level ${currentFarmingLevel} Farming!`
 				);
 			}
 
@@ -434,7 +437,7 @@ export const farmingTask: MinionTask = {
 					  })
 					: undefined,
 				data,
-				null
+				loot
 			);
 		}
 	}

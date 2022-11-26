@@ -1,7 +1,6 @@
 import { randInt, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
-import { resolveNameBank } from 'oldschooljs/dist/util';
 
 import { ItemBank } from '../../types';
 import { roll } from '../../util';
@@ -119,7 +118,7 @@ export const sepulchreFloors = [
 	}
 ];
 
-export const sepulchreBoosts = resolveNameBank({
+export const sepulchreBoosts = new Bank({
 	'Strange old lockpick': 1,
 	'Hallowed grapple': 4,
 	'Hallowed focus': 4,

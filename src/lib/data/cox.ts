@@ -13,10 +13,10 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { ChambersOfXericOptions } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 
 import { checkUserCanUseDegradeableItem } from '../degradeableItems';
-import { constructGearSetup, GearStats } from '../gear';
+import { GearStats } from '../gear/types';
 import { getMinigameScore } from '../settings/minigames';
 import { SkillsEnum } from '../skilling/types';
-import { Gear } from '../structures/Gear';
+import { constructGearSetup, Gear } from '../structures/Gear';
 import { Skills } from '../types';
 import { randomVariation } from '../util';
 import getOSItem from '../util/getOSItem';
@@ -236,7 +236,7 @@ export const minimumCoxSuppliesNeeded = new Bank({
 	'Super restore(4)': 5
 });
 
-export async function checkCoxTeam(users: MUser[], cm: boolean): Promise<string | null> {
+export async function checkCoxTeam(users: MUser[], cm: boolean, quantity: number = 1): Promise<string | null> {
 	const hasHerbalist = users.some(u => u.skillLevel(SkillsEnum.Herblore) >= 78);
 	if (!hasHerbalist) {
 		return 'nobody with atleast level 78 Herblore';
@@ -245,9 +245,12 @@ export async function checkCoxTeam(users: MUser[], cm: boolean): Promise<string 
 	if (!hasFarmer) {
 		return 'nobody with atleast level 55 Farming';
 	}
-	const userWithoutSupplies = users.find(u => !u.bank.has(minimumCoxSuppliesNeeded));
+	const suppliesNeeded = minimumCoxSuppliesNeeded.clone().multiply(quantity);
+	const userWithoutSupplies = users.find(u => !u.bank.has(suppliesNeeded));
 	if (userWithoutSupplies) {
-		return `${userWithoutSupplies.usernameOrMention} doesn't have enough supplies`;
+		return `${userWithoutSupplies.usernameOrMention} doesn't have enough supplies for ${quantity} Raid${
+			quantity > 1 ? 's' : ''
+		}`;
 	}
 
 	for (const user of users) {
@@ -501,7 +504,6 @@ export async function calcCoxDuration(
 
 	duration -= duration * (teamSizeBoostPercent(size) / 100);
 
-	duration = randomVariation(duration, 5);
 	return { duration, reductions, totalReduction: totalSpeedReductions / size, degradeables: degradeableItems };
 }
 

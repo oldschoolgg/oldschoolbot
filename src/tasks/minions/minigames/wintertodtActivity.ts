@@ -3,7 +3,7 @@ import { Bank } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { Emoji, Events } from '../../../lib/constants';
-import { trackLoot } from '../../../lib/settings/prisma';
+import { trackLoot } from '../../../lib/lootTrack';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
 import Firemaking from '../../../lib/skilling/skills/firemaking';
@@ -11,7 +11,7 @@ import { SkillsEnum } from '../../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { updateBankSetting } from '../../../mahoji/mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 const PointsTable = new SimpleTable<number>()
 	.add(420)
@@ -66,7 +66,7 @@ export const wintertodtTask: MinionTask = {
 		if (loot.has('Phoenix')) {
 			globalClient.emit(
 				Events.ServerNotification,
-				`${Emoji.Phoenix} **${user.usernameOrMention}'s** minion, ${
+				`${Emoji.Phoenix} **${user.badgedUsername}'s** minion, ${
 					user.minionName
 				}, just received a Phoenix! Their Wintertodt KC is ${
 					(await getMinigameScore(user.id, 'wintertodt')) + quantity
@@ -144,12 +144,19 @@ export const wintertodtTask: MinionTask = {
 		}
 
 		await trackLoot({
-			loot: itemsAdded,
+			totalLoot: itemsAdded,
 			id: 'wintertodt',
 			type: 'Minigame',
 			changeType: 'loot',
 			duration: data.duration,
-			kc: quantity
+			kc: quantity,
+			users: [
+				{
+					id: user.id,
+					loot: itemsAdded,
+					duration: data.duration
+				}
+			]
 		});
 
 		handleTripFinish(user, channelID, output, image.file.attachment, data, itemsAdded);

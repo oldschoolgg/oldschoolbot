@@ -1,4 +1,3 @@
-import { AttachmentBuilder, TextChannel } from 'discord.js';
 import { Time } from 'e';
 import fetch from 'node-fetch';
 
@@ -8,10 +7,11 @@ import { cacheBadges } from './badges';
 import { BadgesEnum, BitField, Channel, PatronTierID, PerkTier } from './constants';
 import { fetchSponsors, getUserIdFromGithubID } from './http/util';
 import backgroundImages from './minions/data/bankBackgrounds';
+import { getUsersPerkTier } from './MUser';
 import { roboChimpUserFetch } from './roboChimp';
 import { Patron } from './types';
-import getUsersPerkTier from './util/getUsersPerkTier';
 import { logError } from './util/logError';
+import { sendToChannelID } from './util/webhook';
 
 const patreonApiURL = new URL(`https://patreon.com/api/oauth2/v2/campaigns/${patreonConfig?.campaignID}/members`);
 
@@ -203,8 +203,7 @@ class PatreonTask {
 
 	async run() {
 		const fetchedPatrons = await this.fetchPatrons();
-		const result = [];
-		let messages = [];
+		let result = [];
 
 		for (const patron of fetchedPatrons) {
 			if (!patron.discordID) {
@@ -212,19 +211,20 @@ class PatreonTask {
 				continue;
 			}
 
-			const duplicateAccount = fetchedPatrons.find(
+			// See if any duplicates are newer than this one:
+			const duplicateAccounts = fetchedPatrons.filter(
 				p => p.discordID === patron.discordID && p.patreonID !== patron.patreonID
 			);
-			if (duplicateAccount) {
-				const thisDate = new Date(patron.lastChargeDate).getTime();
-				const duplicateDate = new Date(duplicateAccount.lastChargeDate).getTime();
-				// If the other account paid after this one did, we should skip this account.
-				if (duplicateDate > thisDate) {
-					messages.push(
-						`Discord[${patron.discordID}] Patron[${patron.patreonID}] is a duplicate of Patron[${duplicateAccount.patreonID}], so continuing.`
-					);
-					continue;
-				}
+			// We do this in 2 steps to avoid creating new Date objects for every patron entry; only when needed.
+			const newerAccount = duplicateAccounts.find(
+				p => new Date(p.lastChargeDate).getTime() > new Date(patron.lastChargeDate).getTime()
+			);
+
+			if (newerAccount) {
+				result.push(
+					`Discord[${patron.discordID}] Found Patron[${newerAccount.patreonID}] that's newer than the current Patron[${patron.patreonID}], so skipping.`
+				);
+				continue;
 			}
 
 			const user = await mUserFetch(patron.discordID);
@@ -233,8 +233,8 @@ class PatreonTask {
 
 			if (roboChimpUser.github_id) continue;
 
-			const username =
-				globalClient.users.cache.get(patron.discordID)?.username ?? `${patron.discordID}|${patron.patreonID}`;
+			const username = globalClient.users.cache.get(patron.discordID)?.username ?? '';
+			const userIdentifier = `${username}(${patron.discordID}|${patron.patreonID})`;
 
 			if (roboChimpUser.patreon_id !== patron.patreonID) {
 				try {
@@ -275,8 +275,7 @@ class PatreonTask {
 			) {
 				const perkTier = getUsersPerkTier([...userBitfield]);
 				if (perkTier < PerkTier.Two) continue;
-				result.push(`${username} hasn't paid in over 1 month, so removing perks.`);
-				messages.push(`Removing T${perkTier} patron perks from ${username} PatreonID[${patron.patreonID}]`);
+				result.push(`${userIdentifier} hasn't paid in over 1 month, so removing perks (T${perkTier + 1}).`);
 				this.removePerks(patron.discordID);
 				continue;
 			}
@@ -287,22 +286,22 @@ class PatreonTask {
 				if (!patron.entitledTiers.includes(tierID)) continue;
 				if (userBitfield.includes(bitField)) break;
 
-				result.push(`${username} was given Tier ${i + 1}.`);
-				messages.push(`Giving T${i + 1} patron perks to ${username} PatreonID[${patron.patreonID}]`);
+				result.push(`${userIdentifier} was given Tier${i + 1}.`);
 				await this.givePerks(patron.discordID, perkTierFromBitfield(bitField));
 				break;
 			}
 		}
 
 		const githubResult = await this.syncGithub();
-		messages = messages.concat(githubResult);
+		result.push('------------------ Github ------------------');
+		result = result.concat(githubResult);
 
-		const channel = globalClient.channels.cache.get(Channel.ErrorLogs) as TextChannel;
 		if (production) {
-			channel.send({ files: [new AttachmentBuilder(Buffer.from(result.join('\n')), { name: 'patreon.txt' })] });
-			channel.send(messages.join(', '));
+			sendToChannelID(Channel.ErrorLogs, {
+				files: [{ attachment: Buffer.from(result.join('\n')), name: 'patron.txt' }]
+			});
 		} else {
-			console.log(messages.join('\n'));
+			console.log(result.join('\n'));
 		}
 
 		cacheBadges();

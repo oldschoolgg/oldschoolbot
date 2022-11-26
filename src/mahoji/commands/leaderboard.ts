@@ -2,7 +2,7 @@ import { Embed } from '@discordjs/builders';
 import { chunk } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
-import { badges, Emoji, usernameCache } from '../../lib/constants';
+import { badges, badgesCache, Emoji, usernameCache } from '../../lib/constants';
 import { allClNames, getCollectionItems } from '../../lib/data/Collections';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { allOpenables } from '../../lib/openables';
@@ -19,10 +19,11 @@ import {
 	getUsername,
 	makePaginatedMessage,
 	stringMatches,
-	stripEmojis,
-	toTitleCase
+	stripEmojis
 } from '../../lib/util';
+import { fetchCLLeaderboard } from '../../lib/util/clLeaderboard';
 import { deferInteraction } from '../../lib/util/interactionReply';
+import { toTitleCase } from '../../lib/util/toTitleCase';
 import { sendToChannelID } from '../../lib/util/webhook';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -208,23 +209,7 @@ async function clLb(user: MUser, channelID: string, inputType: string, ironmenOn
 	if (!items || items.length === 0) {
 		return "That's not a valid collection log category. Check +cl for all possible logs.";
 	}
-	const users = (
-		await prisma.$queryRawUnsafe<{ id: string; qty: number }[]>(`
-SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
-				  FROM (
-  SELECT array(SELECT * FROM jsonb_object_keys("collectionLogBank")) "cl_keys",
-  				id, "collectionLogBank",
-			    cardinality(array(SELECT * FROM jsonb_object_keys("collectionLogBank" - array[${items
-					.map(i => `'${i}'`)
-					.join(', ')}]))) "inverse_length"
-  FROM users
-  WHERE "collectionLogBank" ?| array[${items.map(i => `'${i}'`).join(', ')}]
-  ${ironmenOnly ? 'AND "minion.ironman" = true' : ''}
-) u
-ORDER BY qty DESC
-LIMIT 50;
-`)
-	).filter(i => i.qty > 0);
+	const users = await fetchCLLeaderboard({ ironmenOnly, items, resultLimit: 50 });
 
 	inputType = toTitleCase(inputType.toLowerCase());
 	doMenu(
@@ -468,15 +453,15 @@ export async function cacheUsernames() {
 
 	for (const user of allNewUsers) {
 		const badgeUser = arrayOfIronmenAndBadges.find(i => i.id === user.id);
-		let name = stripEmojis(user.username!);
+		const name = stripEmojis(user.username!);
+		usernameCache.set(user.id, name);
 		if (badgeUser) {
 			const rawBadges = badgeUser.badges.map(num => badges[num]);
 			if (badgeUser.ironman) {
 				rawBadges.push(Emoji.Ironman);
 			}
-			name = `${rawBadges.join(' ')} ${name}`;
+			badgesCache.set(user.id, rawBadges.join(' '));
 		}
-		usernameCache.set(user.id, name);
 	}
 }
 
@@ -664,9 +649,12 @@ export const leaderboardCommand: OSBMahojiCommand = {
 					description: 'The cl you want to select.',
 					required: true,
 					autocomplete: async value => {
-						return ['overall', ...allClNames.map(i => i)]
-							.filter(name => (!value ? true : name.toLowerCase().includes(value.toLowerCase())))
-							.map(i => ({ name: toTitleCase(i), value: i }));
+						return [
+							{ name: 'Overall (Main Leaderboard)', value: 'overall' },
+							...['overall+', ...allClNames.map(i => i)]
+								.filter(name => (!value ? true : name.toLowerCase().includes(value.toLowerCase())))
+								.map(i => ({ name: toTitleCase(i), value: i }))
+						];
 					}
 				},
 				ironmanOnlyOption

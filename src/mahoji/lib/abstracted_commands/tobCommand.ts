@@ -2,7 +2,6 @@ import { calcWhatPercent } from 'e';
 import { Bank } from 'oldschooljs';
 import { TOBRooms } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
 
-import { setupParty } from '../../../extendables/Message/Party';
 import { Emoji } from '../../../lib/constants';
 import {
 	baseTOBUniques,
@@ -15,14 +14,16 @@ import {
 	TENTACLE_CHARGES_PER_RAID
 } from '../../../lib/data/tob';
 import { degradeItem } from '../../../lib/degradeableItems';
+import { trackLoot } from '../../../lib/lootTrack';
+import { setupParty } from '../../../lib/party';
 import { getMinigameScore } from '../../../lib/settings/minigames';
-import { trackLoot } from '../../../lib/settings/prisma';
 import { MakePartyOptions } from '../../../lib/types';
 import { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
 import { channelIsSendable, formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import getOSItem from '../../../lib/util/getOSItem';
-import { mahojiParseNumber, updateBankSetting, updateLegacyUserBankSetting } from '../../mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { mahojiParseNumber, updateLegacyUserBankSetting } from '../../mahojiSettings';
 
 export async function tobStatsCommand(user: MUser) {
 	const hardKC = await getMinigameScore(user.id, 'tob_hard');
@@ -137,7 +138,7 @@ export async function tobStartCommand(user: MUser, channelID: string, isHardMode
 
 	const totalCost = new Bank();
 
-	await Promise.all(
+	const costResult = await Promise.all(
 		users.map(async u => {
 			const supplies = await calcTOBInput(u);
 			const { total } = calculateTOBUserGearPercents(u);
@@ -150,7 +151,8 @@ export async function tobStartCommand(user: MUser, channelID: string, isHardMode
 					.add(u.gear.range.ammo!.item, 100)
 			);
 			await updateLegacyUserBankSetting(u.id, 'tob_cost', realCost);
-			totalCost.add(realCost.clone().remove('Coins', realCost.amount('Coins')));
+			const effectiveCost = realCost.clone().remove('Coins', realCost.amount('Coins'));
+			totalCost.add(effectiveCost);
 			if (u.gear.melee.hasEquipped('Abyssal tentacle')) {
 				await degradeItem({
 					item: getOSItem('Abyssal tentacle'),
@@ -161,15 +163,24 @@ export async function tobStartCommand(user: MUser, channelID: string, isHardMode
 			debugStr += `**- ${u.usernameOrMention}** (${Emoji.Gear}${total.toFixed(1)}% ${
 				Emoji.CombatSword
 			} ${calcWhatPercent(reductions[u.id], totalReduction).toFixed(1)}%) used ${realCost}\n\n`;
+			return {
+				userID: u.id,
+				effectiveCost
+			};
 		})
 	);
 
 	updateBankSetting('tob_cost', totalCost);
 	await trackLoot({
-		cost: totalCost,
+		totalCost,
 		id: isHardMode ? 'tob_hard' : 'tob',
 		type: 'Minigame',
-		changeType: 'cost'
+		changeType: 'cost',
+		users: costResult.map(i => ({
+			id: i.userID,
+			cost: i.effectiveCost,
+			duration
+		}))
 	});
 
 	await addSubTaskToActivityTask<TheatreOfBloodTaskOptions>({

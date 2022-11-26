@@ -1,4 +1,5 @@
-import { resolveNameBank } from '../../../../util';
+import { Bank } from 'oldschooljs';
+
 import itemID from '../../../../util/itemID';
 import { Mixable } from '../../../types';
 
@@ -9,7 +10,7 @@ const unfinishedPotions: Mixable[] = [
 		id: itemID('Guam potion (unf)'),
 		level: 3,
 		xp: 0,
-		inputItems: resolveNameBank({ 'guam leaf': 1, 'Vial of water': 1 }),
+		inputItems: new Bank({ 'guam leaf': 1, 'Vial of water': 1 }),
 		tickRate: 1,
 		bankTimePerPotion: 0.3,
 		zahur: true
@@ -20,7 +21,7 @@ const unfinishedPotions: Mixable[] = [
 		id: itemID('Marrentill potion (unf)'),
 		level: 5,
 		xp: 0,
-		inputItems: resolveNameBank({ Marrentill: 1, 'Vial of water': 1 }),
+		inputItems: new Bank({ Marrentill: 1, 'Vial of water': 1 }),
 		tickRate: 1,
 		bankTimePerPotion: 0.3,
 		zahur: true
@@ -31,7 +32,7 @@ const unfinishedPotions: Mixable[] = [
 		id: itemID('Tarromin potion (unf)'),
 		level: 11,
 		xp: 0,
-		inputItems: resolveNameBank({ Tarromin: 1, 'Vial of water': 1 }),
+		inputItems: new Bank({ Tarromin: 1, 'Vial of water': 1 }),
 		tickRate: 1,
 		bankTimePerPotion: 0.3,
 		zahur: true
@@ -42,7 +43,7 @@ const unfinishedPotions: Mixable[] = [
 		id: itemID('Harralander potion (unf)'),
 		level: 20,
 		xp: 0,
-		inputItems: resolveNameBank({ Harralander: 1, 'Vial of water': 1 }),
+		inputItems: new Bank({ Harralander: 1, 'Vial of water': 1 }),
 		tickRate: 1,
 		bankTimePerPotion: 0.3,
 		zahur: true
@@ -53,7 +54,7 @@ const unfinishedPotions: Mixable[] = [
 		id: itemID('Ranarr potion (unf)'),
 		level: 25,
 		xp: 0,
-		inputItems: resolveNameBank({ 'Ranarr weed': 1, 'Vial of water': 1 }),
+		inputItems: new Bank({ 'Ranarr weed': 1, 'Vial of water': 1 }),
 		tickRate: 1,
 		bankTimePerPotion: 0.3,
 		zahur: true
@@ -64,7 +65,7 @@ const unfinishedPotions: Mixable[] = [
 		id: itemID('Toadflax potion (unf)'),
 		level: 30,
 		xp: 0,
-		inputItems: resolveNameBank({ Toadflax: 1, 'Vial of water': 1 }),
+		inputItems: new Bank({ Toadflax: 1, 'Vial of water': 1 }),
 		tickRate: 1,
 		bankTimePerPotion: 0.3,
 		zahur: true
@@ -75,7 +76,7 @@ const unfinishedPotions: Mixable[] = [
 		id: itemID('Irit potion (unf)'),
 		level: 40,
 		xp: 0,
-		inputItems: resolveNameBank({ 'Irit leaf': 1, 'Vial of water': 1 }),
+		inputItems: new Bank({ 'Irit leaf': 1, 'Vial of water': 1 }),
 		tickRate: 1,
 		bankTimePerPotion: 0.3,
 		zahur: true
@@ -86,7 +87,7 @@ const unfinishedPotions: Mixable[] = [
 		id: itemID('Avantoe potion (unf)'),
 		level: 48,
 		xp: 0,
-		inputItems: resolveNameBank({ Avantoe: 1, 'Vial of water': 1 }),
+		inputItems: new Bank({ Avantoe: 1, 'Vial of water': 1 }),
 		tickRate: 1,
 		bankTimePerPotion: 0.3,
 		zahur: true
@@ -97,7 +98,7 @@ const unfinishedPotions: Mixable[] = [
 		id: itemID('Kwuarm potion (unf)'),
 		level: 54,
 		xp: 0,
-		inputItems: resolveNameBank({ Kwuarm: 1, 'Vial of water': 1 }),
+		inputItems: new Bank({ Kwuarm: 1, 'Vial of water': 1 }),
 		tickRate: 1,
 		bankTimePerPotion: 0.3,
 		zahur: true
@@ -108,7 +109,7 @@ const unfinishedPotions: Mixable[] = [
 		id: itemID('Snapdragon potion (unf)'),
 		level: 59,
 		xp: 0,
-		inputItems: resolveNameBank({ Snapdragon: 1, 'Vial of water': 1 }),
+		inputItems: new Bank({ Snapdragon: 1, 'Vial of water': 1 }),
 		tickRate: 1,
 		bankTimePerPotion: 0.3,
 		zahur: true
@@ -119,7 +120,7 @@ const unfinishedPotions: Mixable[] = [
 		id: itemID('Cadantine potion (unf)'),
 		level: 65,
 		xp: 0,
-		inputItems: resolveNameBank({ Cadantine: 1, 'Vial of water': 1 }),
+		inputItems: new Bank({ Cadantine: 1, 'Vial of water': 1 }),
 		tickRate: 1,
 		bankTimePerPotion: 0.3,
 		zahur: true
@@ -130,7 +131,7 @@ const unfinishedPotions: Mixable[] = [
 		id: itemID('Lantadyme potion (unf)'),
 		level: 67,
 		xp: 0,
-		inputItems: resolveNameBank({ Lantadyme: 1, 'Vial of water': 1 }),
+		inputItems: new Bank({ Lantadyme: 1, 'Vial of water': 1 }),
 		tickRate: 1,
 		bankTimePerPotion: 0.3,
 		zahur: true
@@ -141,7 +142,7 @@ const unfinishedPotions: Mixable[] = [
 		id: itemID('Dwarf weed potion (unf)'),
 		level: 70,
 		xp: 0,
-		inputItems: resolveNameBank({ 'Dwarf weed': 1, 'Vial of water': 1 }),
+		inputItems: new Bank({ 'Dwarf weed': 1, 'Vial of water': 1 }),
 		tickRate: 1,
 		bankTimePerPotion: 0.3,
 		zahur: true
@@ -152,7 +153,7 @@ const unfinishedPotions: Mixable[] = [
 		id: itemID('Torstol potion (unf)'),
 		level: 75,
 		xp: 0,
-		inputItems: resolveNameBank({ Torstol: 1, 'Vial of water': 1 }),
+		inputItems: new Bank({ Torstol: 1, 'Vial of water': 1 }),
 		tickRate: 1,
 		bankTimePerPotion: 0.3,
 		zahur: true

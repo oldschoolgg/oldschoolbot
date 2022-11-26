@@ -1,5 +1,5 @@
 import { Embed } from '@discordjs/builders';
-import { bold, Message, MessageOptions, TextChannel } from 'discord.js';
+import { BaseMessageOptions, bold, Message, TextChannel } from 'discord.js';
 import { roll, Time } from 'e';
 import LRUCache from 'lru-cache';
 import { Items } from 'oldschooljs';
@@ -13,6 +13,7 @@ import { prisma } from './settings/prisma';
 import { ItemBank } from './types';
 import { channelIsSendable, formatDuration, isFunction, toKMB } from './util';
 import { makeBankImage } from './util/makeBankImage';
+import { minionStatsEmbed } from './util/minionStatsEmbed';
 
 const rareRolesSrc: [string, number, string][] = [
 	['670211706907000842', 250, 'Bronze'],
@@ -125,7 +126,7 @@ const cooldownTimers: { name: string; timeStamp: (user: MUser) => number; cd: nu
 interface MentionCommandOptions {
 	msg: Message;
 	user: MUser;
-	components: MessageOptions['components'];
+	components: BaseMessageOptions['components'];
 	content: string;
 }
 interface MentionCommand {
@@ -247,6 +248,17 @@ const mentionCommands: MentionCommand[] = [
 						return bold(`${cd.name}: Ready`);
 					})
 					.join('\n'),
+				components
+			});
+		}
+	},
+	{
+		name: 's',
+		aliases: ['s', 'stats'],
+		description: 'Shows your stats.',
+		run: async ({ msg, user, components }: MentionCommandOptions) => {
+			msg.reply({
+				embeds: [await minionStatsEmbed(user)],
 				components
 			});
 		}

@@ -36,7 +36,6 @@ import {
 	stringMatches
 } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import resolveItems from '../../lib/util/resolveItems';
@@ -149,7 +148,7 @@ LIMIT 10;`);
 }
 
 async function kcGains(user: MUser, interval: string, monsterName: string): CommandResponse {
-	if (getUsersPerkTier(user) < PerkTier.Four) return patronMsg(PerkTier.Four);
+	if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 	if (!TimeIntervals.includes(interval as any)) return 'Invalid time interval.';
 	const monster = killableMonsters.find(
 		k => stringMatches(k.name, monsterName) || k.aliases.some(a => stringMatches(a, monsterName))
@@ -175,7 +174,9 @@ LIMIT 10`;
 	const embed = new Embed()
 		.setTitle(`Highest ${monster.name} KC gains in the past ${interval}`)
 		.setDescription(
-			res.map((i: any) => `${++place}. **${getUsername(i.user)}**: ${Number(i.qty).toLocaleString()}`).join('\n')
+			res
+				.map((i: any) => `${++place}. **${getUsername(i.user_id)}**: ${Number(i.qty).toLocaleString()}`)
+				.join('\n')
 		);
 
 	return { embeds: [embed] };
@@ -307,7 +308,7 @@ LIMIT 10;`);
 }
 
 async function dryStreakCommand(user: MUser, monsterName: string, itemName: string, ironmanOnly: boolean) {
-	if (getUsersPerkTier(user) < PerkTier.Four) return patronMsg(PerkTier.Four);
+	if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 
 	const item = getItem(itemName);
 	if (!item) return 'Invalid item.';
@@ -352,7 +353,7 @@ async function dryStreakCommand(user: MUser, monsterName: string, itemName: stri
 }
 
 async function mostDrops(user: MUser, itemName: string, ironmanOnly: boolean) {
-	if (getUsersPerkTier(user) < PerkTier.Four) return patronMsg(PerkTier.Four);
+	if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 	const item = getItem(itemName);
 	const ironmanPart = ironmanOnly ? 'AND "minion.ironman" = true' : '';
 	if (!item) return "That's not a valid item.";
@@ -701,7 +702,7 @@ export const toolsCommand: OSBMahojiCommand = {
 				return mostDrops(mahojiUser, patron.mostdrops.item, Boolean(patron.mostdrops.ironman));
 			}
 			if (patron.sacrificed_bank) {
-				if (getUsersPerkTier(mahojiUser) < PerkTier.Two) return patronMsg(PerkTier.Two);
+				if (mahojiUser.perkTier() < PerkTier.Two) return patronMsg(PerkTier.Two);
 				const image = await makeBankImage({
 					bank: new Bank(mahojiUser.user.sacrificedBank as ItemBank),
 					title: 'Your Sacrificed Items'
@@ -711,7 +712,7 @@ export const toolsCommand: OSBMahojiCommand = {
 				};
 			}
 			if (patron.cl_bank) {
-				if (getUsersPerkTier(mahojiUser) < PerkTier.Two) return patronMsg(PerkTier.Two);
+				if (mahojiUser.perkTier() < PerkTier.Two) return patronMsg(PerkTier.Two);
 				const clBank = mahojiUser.cl;
 				if (patron.cl_bank.format === 'json') {
 					const json = JSON.stringify(clBank);
@@ -728,16 +729,16 @@ export const toolsCommand: OSBMahojiCommand = {
 				};
 			}
 			if (patron.xp_gains) {
-				if (getUsersPerkTier(mahojiUser) < PerkTier.Four) return patronMsg(PerkTier.Four);
+				if (mahojiUser.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return xpGains(patron.xp_gains.time, patron.xp_gains.skill);
 			}
 			if (patron.minion_stats) {
 				deferInteraction(interaction);
-				if (getUsersPerkTier(mahojiUser) < PerkTier.Four) return patronMsg(PerkTier.Four);
+				if (mahojiUser.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return minionStats(mahojiUser.user);
 			}
 			if (patron.activity_export) {
-				if (getUsersPerkTier(mahojiUser) < PerkTier.Four) return patronMsg(PerkTier.Four);
+				if (mahojiUser.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 				const promise = activityExport(mahojiUser.user);
 				await handleMahojiConfirmation(
 					interaction,
@@ -778,7 +779,7 @@ export const toolsCommand: OSBMahojiCommand = {
 			}
 		}
 		if (options.user?.temp_cl) {
-			if (options.user.temp_cl === true) {
+			if (options.user.temp_cl.reset === true) {
 				await handleMahojiConfirmation(interaction, 'Are you sure you want to reset your temporary CL?');
 				await mahojiUser.update({
 					temp_cl: {},

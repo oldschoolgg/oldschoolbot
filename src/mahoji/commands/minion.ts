@@ -17,8 +17,8 @@ import { minionActivityCache } from '../../lib/settings/settings';
 import Skills from '../../lib/skilling/skills';
 import creatures from '../../lib/skilling/skills/hunter/creatures';
 import { convertLVLtoXP, getUsername, isValidNickname } from '../../lib/util';
+import { getKCByName } from '../../lib/util/getKCByName';
 import getOSItem from '../../lib/util/getOSItem';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
 import {
 	achievementDiaryCommand,
@@ -34,7 +34,7 @@ import { minionBuyCommand } from '../lib/abstracted_commands/minionBuyCommand';
 import { minionStatusCommand } from '../lib/abstracted_commands/minionStatusCommand';
 import { skillOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { getKCByName, handleMahojiConfirmation, patronMsg } from '../mahojiSettings';
+import { handleMahojiConfirmation, patronMsg } from '../mahojiSettings';
 
 const patMessages = [
 	'You pat {name} on the head.',
@@ -65,7 +65,7 @@ export async function getUserInfo(user: MUser) {
 	const premiumTier = user.user.premium_balance_tier;
 
 	const result = {
-		perkTier: getUsersPerkTier(user),
+		perkTier: user.perkTier(),
 		isBlacklisted: BLACKLISTED_USERS.has(user.id),
 		badges: userBadges,
 		mainAccount:
@@ -84,7 +84,7 @@ export async function getUserInfo(user: MUser) {
 	};
 	return {
 		...result,
-		everythingString: `${user.usernameOrMention}[${user.id}]
+		everythingString: `${user.badgedUsername}[${user.id}]
 **Perk Tier:** ${result.perkTier}
 **Blacklisted:** ${result.isBlacklisted}
 **Badges:** ${result.badges.join(' ')}
@@ -404,7 +404,7 @@ export const minionCommand: OSBMahojiCommand = {
 		info?: {};
 	}>) => {
 		const user = await mUserFetch(userID);
-		const perkTier = getUsersPerkTier(user);
+		const perkTier = user.perkTier();
 
 		if (options.info) return (await getUserInfo(user)).everythingString;
 		if (options.status) return minionStatusCommand(user);

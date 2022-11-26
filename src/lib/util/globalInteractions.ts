@@ -12,9 +12,9 @@ import { prisma } from '../settings/prisma';
 import { runCommand } from '../settings/settings';
 import { ItemBank } from '../types';
 import { formatDuration, removeFromArr } from '../util';
-import getUsersPerkTier from './getUsersPerkTier';
 import { updateGiveawayMessage } from './giveaway';
 import { interactionReply } from './interactionReply';
+import { log } from './log';
 import { minionIsBusy } from './minionIsBusy';
 import { fetchRepeatTrips, repeatTrip } from './repeatStoredTrip';
 
@@ -38,6 +38,7 @@ const globalInteractionActions = [
 	'CANCEL_TRIP',
 	'AUTO_FARM',
 	'AUTO_FARMING_CONTRACT',
+	'OPEN_SEED_PACK',
 	'BUY_MINION',
 	'BUY_BINGO_TICKET',
 	'NEW_SLAYER_TASK',
@@ -68,6 +69,22 @@ export function makeOpenCasketButton(tier: ClueTier) {
 		.setLabel(`Open ${tier.name} Casket`)
 		.setStyle(ButtonStyle.Secondary)
 		.setEmoji('365003978678730772');
+}
+
+export function makeOpenSeedPackButton() {
+	return new ButtonBuilder()
+		.setCustomId('OPEN_SEED_PACK')
+		.setLabel('Open Seed Pack')
+		.setStyle(ButtonStyle.Secondary)
+		.setEmoji('977410792754413668');
+}
+
+export function makeAutoContractButton() {
+	return new ButtonBuilder()
+		.setCustomId('AUTO_FARMING_CONTRACT')
+		.setLabel('Auto Farming Contract')
+		.setStyle(ButtonStyle.Secondary)
+		.setEmoji('977410792754413668');
 }
 
 export function makeRepeatTripButton() {
@@ -243,9 +260,9 @@ export async function interactionHook(interaction: Interaction) {
 	}
 
 	const timeSinceMessage = Date.now() - new Date(interaction.message.createdTimestamp).getTime();
-	const timeLimit = reactionTimeLimit(getUsersPerkTier(user));
+	const timeLimit = reactionTimeLimit(user.perkTier());
 	if (timeSinceMessage > Time.Day) {
-		console.log(
+		log(
 			`${user.id} clicked Diff[${formatDuration(timeSinceMessage)}] Button[${id}] Message[${
 				interaction.message.id
 			}]`
@@ -329,6 +346,30 @@ export async function interactionHook(interaction: Interaction) {
 		});
 	}
 
+	if (id === 'OPEN_BEGINNER_CASKET') {
+		return openCasket('Beginner');
+	}
+
+	if (id === 'OPEN_EASY_CASKET') {
+		return openCasket('Easy');
+	}
+
+	if (id === 'OPEN_MEDIUM_CASKET') {
+		return openCasket('Medium');
+	}
+
+	if (id === 'OPEN_HARD_CASKET') {
+		return openCasket('Hard');
+	}
+
+	if (id === 'OPEN_ELITE_CASKET') {
+		return openCasket('Elite');
+	}
+
+	if (id === 'OPEN_MASTER_CASKET') {
+		return openCasket('Master');
+	}
+
 	if (minionIsBusy(user.id)) {
 		return interactionReply(interaction, { content: `${user.minionName} is busy.`, ephemeral: true });
 	}
@@ -347,18 +388,6 @@ export async function interactionHook(interaction: Interaction) {
 		case 'DO_MASTER_CLUE':
 			return doClue('Master');
 
-		case 'OPEN_BEGINNER_CASKET':
-			return openCasket('Beginner');
-		case 'OPEN_EASY_CASKET':
-			return openCasket('Easy');
-		case 'OPEN_MEDIUM_CASKET':
-			return openCasket('Medium');
-		case 'OPEN_HARD_CASKET':
-			return openCasket('Hard');
-		case 'OPEN_ELITE_CASKET':
-			return openCasket('Elite');
-		case 'OPEN_MASTER_CASKET':
-			return openCasket('Master');
 		case 'DO_BIRDHOUSE_RUN':
 			return runCommand({
 				commandName: 'activities',
@@ -388,6 +417,16 @@ export async function interactionHook(interaction: Interaction) {
 			const response = await autoContract(await mUserFetch(user.id), options.channelID, user.id);
 			if (response) interactionReply(interaction, response);
 			return;
+		}
+		case 'OPEN_SEED_PACK': {
+			return runCommand({
+				commandName: 'open',
+				args: {
+					name: 'Seed pack',
+					quantity: 1
+				},
+				...options
+			});
 		}
 		case 'NEW_SLAYER_TASK': {
 			return runCommand({

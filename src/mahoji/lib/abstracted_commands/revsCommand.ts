@@ -4,16 +4,18 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
 import { Emoji } from '../../../lib/constants';
-import { maxDefenceStats, maxOffenceStats } from '../../../lib/gear';
+import { trackLoot } from '../../../lib/lootTrack';
 import { revenantMonsters } from '../../../lib/minions/data/killableMonsters/revs';
 import { convertAttackStylesToSetup } from '../../../lib/minions/functions';
 import { SkillsEnum } from '../../../lib/skilling/types';
+import { maxDefenceStats, maxOffenceStats } from '../../../lib/structures/Gear';
 import { RevenantOptions } from '../../../lib/types/minions';
 import { formatDuration, percentChance, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
-import { handleMahojiConfirmation, updateBankSetting } from '../../mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { handleMahojiConfirmation } from '../../mahojiSettings';
 
 const specialWeapons = {
 	melee: getOSItem("Viggora's chainmace"),
@@ -84,6 +86,20 @@ export async function revsCommand(
 
 	updateBankSetting('economyStats_PVMCost', cost);
 	await transactItems({ userID: user.id, itemsToRemove: cost });
+	if (cost.length > 0) {
+		await trackLoot({
+			id: monster.name,
+			totalCost: cost,
+			type: 'Monster',
+			changeType: 'cost',
+			users: [
+				{
+					id: user.id,
+					cost
+				}
+			]
+		});
+	}
 
 	let deathChance = 5;
 	let defLvl = user.skillLevel(SkillsEnum.Defence);
