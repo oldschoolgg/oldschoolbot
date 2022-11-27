@@ -111,6 +111,7 @@ After becoming an ironman:
 	};
 
 	try {
+		await prisma.farmedCrop.deleteMany({ where: { user_id: user.id } }).catch(noOp);
 		await prisma.user.delete({
 			where: { id: user.id }
 		});

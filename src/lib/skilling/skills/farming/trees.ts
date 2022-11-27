@@ -5,6 +5,7 @@ import { Plant } from '../../types';
 
 const trees: Plant[] = [
 	{
+		id: itemID('Oak logs'),
 		level: 15,
 		plantXp: 14,
 		checkXp: 467.3,
@@ -43,6 +44,7 @@ const trees: Plant[] = [
 		timePerHarvest: 10
 	},
 	{
+		id: itemID('Willow logs'),
 		level: 30,
 		plantXp: 25,
 		checkXp: 1456.5,
@@ -81,6 +83,7 @@ const trees: Plant[] = [
 		timePerHarvest: 10
 	},
 	{
+		id: itemID('Maple logs'),
 		level: 45,
 		plantXp: 45,
 		checkXp: 3403.4,
@@ -119,6 +122,7 @@ const trees: Plant[] = [
 		timePerHarvest: 10
 	},
 	{
+		id: itemID('Yew logs'),
 		level: 60,
 		plantXp: 81,
 		checkXp: 7069.9,
@@ -157,6 +161,7 @@ const trees: Plant[] = [
 		timePerHarvest: 10
 	},
 	{
+		id: itemID('Magic logs'),
 		level: 75,
 		plantXp: 145.4,
 		checkXp: 13_768.3,

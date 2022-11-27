@@ -2,7 +2,7 @@ import { Embed } from '@discordjs/builders';
 import { BaseMessageOptions, bold, Message, TextChannel } from 'discord.js';
 import { roll, Time } from 'e';
 import LRUCache from 'lru-cache';
-import { Items } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 
 import { CLIENT_ID, production, SupportServer } from '../config';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
@@ -11,7 +11,8 @@ import { Channel, Emoji } from './constants';
 import pets from './data/pets';
 import { prisma } from './settings/prisma';
 import { ItemBank } from './types';
-import { channelIsSendable, formatDuration, isFunction, toKMB } from './util';
+import { channelIsSendable, dateFm, formatDuration, isFunction, toKMB } from './util';
+import { parseFarmedCrop } from './util/farmingHelpers';
 import { makeBankImage } from './util/makeBankImage';
 import { minionStatsEmbed } from './util/minionStatsEmbed';
 
@@ -260,6 +261,35 @@ const mentionCommands: MentionCommand[] = [
 			msg.reply({
 				embeds: [await minionStatsEmbed(user)],
 				components
+			});
+		}
+	},
+	{
+		name: 'f',
+		aliases: ['f'],
+		description: 'ffdsadfsar stats.',
+		run: async ({ msg, user }: MentionCommandOptions) => {
+			const a = await prisma.farmedCrop.findMany({ where: { user_id: user.id } });
+			const userStats = await user.fetchStats();
+			msg.reply({
+				content: `Your Farmed Crops:
+
+${a
+	.map(parseFarmedCrop)
+	.sort((a, b) => b.datePlanted.getTime() - a.datePlanted.getTime())
+	.map(i => {
+		let str = `${i.quantityPlanted}x ${i.plant.name} was planted [${dateFm(i.datePlanted)}] Paid4Protect[${
+			i.paid
+		}] Compost[${i.upgradeType}]`;
+		if (i.dateHarvested) {
+			str += ` Harvested [${dateFm(i.dateHarvested)}]`;
+		}
+		return str;
+	})
+	.join('\n')}
+	
+Cost: ${new Bank(userStats.farming_plant_cost_bank as ItemBank)}
+Loot: ${new Bank(userStats.farming_harvest_loot_bank as ItemBank)}				`
 			});
 		}
 	}
