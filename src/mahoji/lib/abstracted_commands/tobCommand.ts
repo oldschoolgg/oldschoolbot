@@ -22,7 +22,8 @@ import { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
 import { channelIsSendable, formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import getOSItem from '../../../lib/util/getOSItem';
-import { mahojiParseNumber, updateBankSetting, updateLegacyUserBankSetting } from '../../mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { mahojiParseNumber, updateLegacyUserBankSetting } from '../../mahojiSettings';
 
 export async function tobStatsCommand(user: MUser) {
 	const hardKC = await getMinigameScore(user.id, 'tob_hard');

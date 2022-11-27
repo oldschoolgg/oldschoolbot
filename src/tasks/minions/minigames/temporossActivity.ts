@@ -29,7 +29,7 @@ export const temporossTask: MinionTask = {
 		if (loot.has('Tiny tempor')) {
 			globalClient.emit(
 				Events.ServerNotification,
-				`${Emoji.TinyTempor} **${user.usernameOrMention}'s** minion, ${
+				`${Emoji.TinyTempor} **${user.badgedUsername}'s** minion, ${
 					user.minionName
 				}, just received a Tiny tempor! They got the pet on the ${formatOrdinal(
 					kcForPet

@@ -10,7 +10,8 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { getItem } from '../../../lib/util/getOSItem';
 import resolveItems from '../../../lib/util/resolveItems';
-import { handleMahojiConfirmation, updateBankSetting } from '../../mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { handleMahojiConfirmation } from '../../mahojiSettings';
 
 const unlimitedFireRuneProviders = resolveItems([
 	'Staff of fire',

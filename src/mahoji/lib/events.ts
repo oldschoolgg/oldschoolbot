@@ -9,11 +9,11 @@ import { initCrons } from '../../lib/crons';
 import { prisma } from '../../lib/settings/prisma';
 import { initTickers } from '../../lib/tickers';
 import { cacheCleanup, runTimedLoggedFn } from '../../lib/util';
+import { mahojiClientSettingsFetch } from '../../lib/util/clientSettings';
 import { syncLinkedAccounts } from '../../lib/util/linkedAccountsUtil';
 import { log } from '../../lib/util/log';
 import { cacheUsernames } from '../commands/leaderboard';
 import { CUSTOM_PRICE_CACHE } from '../commands/sell';
-import { mahojiClientSettingsFetch } from '../mahojiSettings';
 
 export async function syncCustomPrices() {
 	const clientData = await mahojiClientSettingsFetch();

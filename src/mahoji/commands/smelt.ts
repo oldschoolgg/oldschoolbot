@@ -9,8 +9,9 @@ import { formatDuration, formatSkillRequirements, itemID, stringMatches } from '
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import resolveItems from '../../lib/util/resolveItems';
+import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { OSBMahojiCommand } from '../lib/util';
-import { updateBankSetting, userHasGracefulEquipped } from '../mahojiSettings';
+import { userHasGracefulEquipped } from '../mahojiSettings';
 
 export const smeltingCommand: OSBMahojiCommand = {
 	name: 'smelt',

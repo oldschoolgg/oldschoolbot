@@ -37,7 +37,7 @@ function notifyUniques(user: MUser, activity: string, uniques: number[], loot: B
 	if (itemsToAnnounce.length > 0) {
 		globalClient.emit(
 			Events.ServerNotification,
-			`**${user.usernameOrMention}'s** minion, ${
+			`**${user.badgedUsername}'s** minion, ${
 				user.minionName
 			}, while offering ${qty}x ${activity}, found **${itemsToAnnounce}**${
 				randQty ? ` on their ${formatOrdinal(randQty)} offering!` : '!'

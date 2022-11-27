@@ -47,7 +47,7 @@ export async function diceCommand(user: MUser, interaction: ChatInputCommandInte
 		await user.removeItemsFromBank(new Bank().add('Coins', amount));
 	}
 
-	return `${user.usernameOrMention} rolled **${roll}** on the percentile dice, and you ${
+	return `${user.badgedUsername} rolled **${roll}** on the percentile dice, and you ${
 		won ? 'won' : 'lost'
 	} ${Util.toKMB(amountToAdd)} GP.`;
 }

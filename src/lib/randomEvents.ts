@@ -13,6 +13,8 @@ export interface RandomEvent {
 	loot: LootTable;
 }
 
+const baguetteTable = new LootTable().add('Baguette', 1, 63).add('Stale baguette', 1, 1);
+
 export const beekeeperOutfit = resolveItems([
 	"Beekeeper's hat",
 	"Beekeeper's top",
@@ -90,7 +92,7 @@ export const RandomEvents: RandomEvent[] = [
 		id: 10,
 		name: 'Sandwich lady',
 		loot: new LootTable()
-			.add('Baguette')
+			.add(baguetteTable)
 			.add('Triangle sandwich')
 			.add('Square sandwich')
 			.add('Chocolate bar')

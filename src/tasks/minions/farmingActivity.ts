@@ -13,8 +13,9 @@ import chatHeadImage from '../../lib/util/chatHeadImage';
 import { getFarmingKeyFromName } from '../../lib/util/farmingHelpers';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { logError } from '../../lib/util/logError';
+import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { sendToChannelID } from '../../lib/util/webhook';
-import { mahojiUsersSettingsFetch, updateBankSetting } from '../../mahoji/mahojiSettings';
+import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 
 export const farmingTask: MinionTask = {
 	type: 'Farming',
@@ -354,7 +355,7 @@ export const farmingTask: MinionTask = {
 				infoStr.push('```');
 				globalClient.emit(
 					Events.ServerNotification,
-					`${Emoji.Farming} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Tangleroot while farming ${patchType.lastPlanted} at level ${currentFarmingLevel} Farming!`
+					`${Emoji.Farming} **${user.badgedUsername}'s** minion, ${user.minionName}, just received a Tangleroot while farming ${patchType.lastPlanted} at level ${currentFarmingLevel} Farming!`
 				);
 			}
 

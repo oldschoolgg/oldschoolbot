@@ -68,6 +68,10 @@ export const taskCanBeRepeated = (type: activity_type_enum) =>
 	).includes(type);
 
 export const tripHandlers = {
+	[activity_type_enum.HalloweenEvent]: {
+		commandName: 'm',
+		args: () => ({})
+	},
 	[activity_type_enum.ClueCompletion]: {
 		commandName: 'm',
 		args: () => ({})
@@ -508,10 +512,6 @@ export const tripHandlers = {
 				start: { combination_runes: data.combinationRunes }
 			}
 		})
-	},
-	[activity_type_enum.HalloweenEvent]: {
-		commandName: 'trickortreat',
-		args: () => ({ start: {} })
 	}
 } as const;
 
