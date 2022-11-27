@@ -618,5 +618,12 @@ export const easyTasks: Task[] = [
 		has: async ({ stashUnits }) => {
 			return stashUnits.filter(i => i.tier.tier === 'Medium').every(i => i.isFull && Boolean(i.builtUnit));
 		}
+	},
+	{
+		id: 85,
+		name: 'Open the Crystal chest',
+		has: async ({ opens }) => {
+			return opens.has('Crystal key');
+		}
 	}
 ];

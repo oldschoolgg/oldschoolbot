@@ -1077,5 +1077,12 @@ export const hardTasks: Task[] = [
 		has: async ({ cl }) => {
 			return cl.has('Volcanic igne claws');
 		}
+	},
+	{
+		id: 2143,
+		name: 'Open the Crystal chest 50x times',
+		has: async ({ opens }) => {
+			return opens.amount('Crystal key') >= 50;
+		}
 	}
 ];

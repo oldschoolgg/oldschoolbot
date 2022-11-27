@@ -906,5 +906,12 @@ export const mediumTasks: Task[] = [
 		has: async ({ stashUnits }) => {
 			return stashUnits.filter(i => i.tier.tier === 'Elite').every(i => i.isFull && Boolean(i.builtUnit));
 		}
+	},
+	{
+		id: 1127,
+		name: 'Open the Crystal chest 15x times',
+		has: async ({ opens }) => {
+			return opens.amount('Crystal key') >= 15;
+		}
 	}
 ];
