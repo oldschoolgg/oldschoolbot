@@ -89,7 +89,7 @@ export const massCommand: OSBMahojiCommand = {
 				minSize: 2,
 				maxSize: 10,
 				ironmanAllowed: false,
-				message: `${user.usernameOrMention} is doing a ${monster.name} mass! Use the buttons below to join/leave.`,
+				message: `${user.badgedUsername} is doing a ${monster.name} mass! Use the buttons below to join/leave.`,
 				customDenier: async user => {
 					if (!user.user.minion_hasBought) {
 						return [true, "you don't have a minion."];

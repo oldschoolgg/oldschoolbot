@@ -119,7 +119,6 @@ class CollectionLogTask {
 		if (collection) {
 			collectionLog = await getCollection({
 				user,
-				mahojiUser: options.mahojiUser,
 				search: collection,
 				flags,
 				logType: type

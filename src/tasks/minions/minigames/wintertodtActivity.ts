@@ -11,7 +11,7 @@ import { SkillsEnum } from '../../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { updateBankSetting } from '../../../mahoji/mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 const PointsTable = new SimpleTable<number>()
 	.add(420)
@@ -66,7 +66,7 @@ export const wintertodtTask: MinionTask = {
 		if (loot.has('Phoenix')) {
 			globalClient.emit(
 				Events.ServerNotification,
-				`${Emoji.Phoenix} **${user.usernameOrMention}'s** minion, ${
+				`${Emoji.Phoenix} **${user.badgedUsername}'s** minion, ${
 					user.minionName
 				}, just received a Phoenix! Their Wintertodt KC is ${
 					(await getMinigameScore(user.id, 'wintertodt')) + quantity

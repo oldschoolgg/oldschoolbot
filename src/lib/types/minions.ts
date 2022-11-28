@@ -1,3 +1,5 @@
+import { CropUpgradeType } from '@prisma/client';
+
 import { IPatchData } from '../minions/farming/types';
 import { MinigameName } from '../settings/minigames';
 import { Peak } from '../tickers';
@@ -200,9 +202,10 @@ export interface InfernoOptions extends ActivityTaskOptions {
 }
 
 export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
+	pid?: number;
 	plantsName: string | null;
 	quantity: number;
-	upgradeType: string | null;
+	upgradeType: CropUpgradeType | null;
 	payment?: boolean;
 	patchType: IPatchData;
 	planting: boolean;

@@ -11,8 +11,9 @@ import { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
 import { convertPercentChance } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { sendToChannelID } from '../../../lib/util/webhook';
-import { updateBankSetting, updateLegacyUserBankSetting } from '../../../mahoji/mahojiSettings';
+import { updateLegacyUserBankSetting } from '../../../mahoji/mahojiSettings';
 
 export const tobTask: MinionTask = {
 	type: 'TheatreOfBlood',
@@ -119,7 +120,7 @@ Unique chance: ${result.percentChanceOfUnique.toFixed(2)}% (1 in ${convertPercen
 				globalClient.emit(
 					Events.ServerNotification,
 					`${Emoji.Purple} ${
-						user.usernameOrMention
+						user.badgedUsername
 					} just received **${itemsToAnnounce}** on their ${formatOrdinal(
 						await getMinigameScore(user.id, minigameID)
 					)} raid.`
