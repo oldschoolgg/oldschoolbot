@@ -6,6 +6,7 @@ import { Emoji, Events } from '../../lib/constants';
 import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
 import { defaultFarmingContract, PatchTypes } from '../../lib/minions/farming';
 import { FarmingContract } from '../../lib/minions/farming/types';
+import { prisma } from '../../lib/settings/prisma';
 import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
 import Farming, { plants } from '../../lib/skilling/skills/farming';
 import { Plant, SkillsEnum } from '../../lib/skilling/types';
@@ -23,10 +24,9 @@ import {
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import { getFarmingKeyFromName } from '../../lib/util/farmingHelpers';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { logError } from '../../lib/util/logError';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { sendToChannelID } from '../../lib/util/webhook';
-import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
+import { mahojiUsersSettingsFetch, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 
 const plantsNotUsedForArcaneHarvester = ['Mysterious tree'].map(i => Farming.Plants.find(p => p.name === i)!);
 assert(!(plantsNotUsedForArcaneHarvester as any[]).includes(undefined));
@@ -96,6 +96,7 @@ export const farmingTask: MinionTask = {
 			channelID,
 			planting,
 			currentDate,
+			pid,
 			duration
 		} = data;
 		const user = await mUserFetch(userID);
@@ -127,7 +128,8 @@ export const farmingTask: MinionTask = {
 
 		const hasPlopper = user.allItemsOwned().has('Plopper');
 
-		const plant = Farming.Plants.find(plant => plant.name === plantsName);
+		const plant = Farming.Plants.find(plant => plant.name === plantsName)!;
+		assert(Boolean(plant));
 
 		if (user.hasEquippedOrInBank('Magic secateurs')) {
 			baseBonus += 0.1;
@@ -175,12 +177,8 @@ export const farmingTask: MinionTask = {
 		}
 		if (farmersPiecesCheck === 4) bonusXpMultiplier += 0.005;
 
+		// If they have nothing planted here, just plant the seeds and return.
 		if (!patchType.patchPlanted) {
-			if (!plant) {
-				logError(new Error(`${user.usernameOrMention}'s new patch had no plant found.`), { user_id: user.id });
-				return;
-			}
-
 			rakeXp = quantity * 4 * 3; // # of patches * exp per weed * # of weeds
 			plantXp = quantity * (plant.plantXp + compostXp);
 			farmingXpReceived = plantXp + harvestXp + rakeXp;
@@ -196,15 +194,10 @@ export const farmingTask: MinionTask = {
 				str += ` You received an additional ${bonusXP.toLocaleString()} in bonus XP.`;
 			}
 
-			await user.addXP({
+			str += `\n${await user.addXP({
 				skillName: SkillsEnum.Farming,
 				amount: Math.floor(farmingXpReceived + bonusXP)
-			});
-			const newLevel = Math.min(99, user.skillLevel(SkillsEnum.Farming));
-
-			if (newLevel > currentFarmingLevel) {
-				str += `\n${user.minionName}'s Farming level is now ${newLevel}!`;
-			}
+			})}`;
 
 			if (hasPlopper) loot.multiply(4);
 			const res = await arcaneHarvesterEffect(user, plant, loot);
@@ -228,13 +221,15 @@ export const farmingTask: MinionTask = {
 				collectionLog: true,
 				itemsToAdd: loot
 			});
+
 			const newPatch: PatchTypes.PatchData = {
 				lastPlanted: plant.name,
 				patchPlanted: true,
 				plantTime: currentDate,
 				lastQuantity: quantity,
 				lastUpgradeType: upgradeType,
-				lastPayment: payment ?? false
+				lastPayment: payment ?? false,
+				pid
 			};
 
 			await user.update({
@@ -247,9 +242,8 @@ export const farmingTask: MinionTask = {
 
 			handleTripFinish(user, channelID, str, undefined, data, null);
 		} else if (patchType.patchPlanted) {
-			const plantToHarvest = Farming.Plants.find(plant => plant.name === patchType.lastPlanted);
-			if (!plantToHarvest) return;
-			if (!plant) return;
+			// If they do have something planted here, harvest it and possibly replant.
+			const plantToHarvest = Farming.Plants.find(plant => plant.name === patchType.lastPlanted)!;
 
 			let quantityDead = 0;
 			if (!hasPlopper) {
@@ -428,7 +422,6 @@ export const farmingTask: MinionTask = {
 				loot.add(MysteryBoxes.roll());
 			}
 
-			let tangleroot = false;
 			const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Farming, plantToHarvest.petChance);
 			if (plantToHarvest.seedType === 'hespori') {
 				await user.incrementKC(Monsters.Hespori.id, patchType.lastQuantity);
@@ -436,7 +429,6 @@ export const farmingTask: MinionTask = {
 					farmingLevel: currentFarmingLevel
 				});
 				loot = hesporiLoot;
-				if (hesporiLoot.amount('Tangleroot')) tangleroot = true;
 				const plopperDroprate = clAdjustedDroprate(
 					user,
 					'Plopper',
@@ -451,7 +443,6 @@ export const farmingTask: MinionTask = {
 				roll(petDropRate / alivePlants)
 			) {
 				loot.add('Tangleroot');
-				tangleroot = true;
 			} else if (patchType.patchPlanted && plantToHarvest.petChance && alivePlants > 0) {
 				const plopperDroprate = clAdjustedDroprate(
 					user,
@@ -473,7 +464,7 @@ export const farmingTask: MinionTask = {
 				if (hesporiSeeds > 0) loot.add('Hespori seed', hesporiSeeds);
 			}
 
-			if (tangleroot) {
+			if (loot.has('Tangleroot')) {
 				infoStr.push('\n```diff');
 				infoStr.push("\n- You have a funny feeling you're being followed...");
 				infoStr.push('```');
@@ -499,7 +490,8 @@ export const farmingTask: MinionTask = {
 					plantTime: currentDate,
 					lastQuantity: quantity,
 					lastUpgradeType: upgradeType,
-					lastPayment: payment ? payment : false
+					lastPayment: payment ? payment : false,
+					pid
 				};
 			}
 
@@ -596,6 +588,17 @@ export const farmingTask: MinionTask = {
 				collectionLog: true,
 				itemsToAdd: loot
 			});
+			await userStatsBankUpdate(user.id, 'farming_harvest_loot_bank', loot);
+			if (pid) {
+				await prisma.farmedCrop.update({
+					where: {
+						id: pid
+					},
+					data: {
+						date_harvested: new Date()
+					}
+				});
+			}
 
 			if (hasPlopper) infoStr.push('\nYou received 4x loot from Plopper');
 

@@ -21,6 +21,7 @@ import {
 	PermissionsBitField,
 	SelectMenuInteraction,
 	TextChannel,
+	time,
 	User as DJSUser
 } from 'discord.js';
 import {
@@ -951,4 +952,8 @@ export function getAllIDsOfUser(user: MUser) {
 
 export function isFunction(input: unknown): input is Function {
 	return typeof input === 'function';
+}
+
+export function dateFm(date: Date) {
+	return `${time(date, 'T')} (${time(date, 'R')})`;
 }
