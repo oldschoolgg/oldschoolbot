@@ -1,3 +1,4 @@
+import { CropUpgradeType } from '@prisma/client';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { TeamMember } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 
@@ -215,9 +216,10 @@ export interface InfernoOptions extends ActivityTaskOptions {
 }
 
 export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
+	pid?: number;
 	plantsName: string | null;
 	quantity: number;
-	upgradeType: string | null;
+	upgradeType: CropUpgradeType | null;
 	payment?: boolean;
 	patchType: IPatchData;
 	planting: boolean;

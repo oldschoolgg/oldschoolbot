@@ -5,6 +5,7 @@ import { Plant } from '../../types';
 
 const hopsPlants: Plant[] = [
 	{
+		id: itemID('Barley'),
 		level: 3,
 		plantXp: 8.5,
 		checkXp: 0,
@@ -38,6 +39,7 @@ const hopsPlants: Plant[] = [
 		timePerHarvest: 20
 	},
 	{
+		id: itemID('Hammerstone hops'),
 		level: 4,
 		plantXp: 9,
 		checkXp: 0,
@@ -71,6 +73,7 @@ const hopsPlants: Plant[] = [
 		timePerHarvest: 20
 	},
 	{
+		id: itemID('Asgarnian hops'),
 		level: 8,
 		plantXp: 10.9,
 		checkXp: 0,
@@ -104,6 +107,7 @@ const hopsPlants: Plant[] = [
 		timePerHarvest: 20
 	},
 	{
+		id: itemID('Jute fibre'),
 		level: 13,
 		plantXp: 13,
 		checkXp: 0,
@@ -137,6 +141,7 @@ const hopsPlants: Plant[] = [
 		timePerHarvest: 20
 	},
 	{
+		id: itemID('Yanillian hops'),
 		level: 16,
 		plantXp: 14.5,
 		checkXp: 0,
@@ -170,6 +175,7 @@ const hopsPlants: Plant[] = [
 		timePerHarvest: 20
 	},
 	{
+		id: itemID('Krandorian hops'),
 		level: 21,
 		plantXp: 17.5,
 		checkXp: 0,
@@ -203,6 +209,7 @@ const hopsPlants: Plant[] = [
 		timePerHarvest: 20
 	},
 	{
+		id: itemID('Wildblood hops'),
 		level: 28,
 		plantXp: 23,
 		checkXp: 0,

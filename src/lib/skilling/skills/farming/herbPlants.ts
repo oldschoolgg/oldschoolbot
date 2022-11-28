@@ -5,6 +5,7 @@ import { Plant } from '../../types';
 
 const herbPlants: Plant[] = [
 	{
+		id: itemID('Grimy guam leaf'),
 		level: 9,
 		plantXp: 0,
 		checkXp: 11,
@@ -44,6 +45,7 @@ const herbPlants: Plant[] = [
 		timePerHarvest: 10
 	},
 	{
+		id: itemID('Grimy marrentill'),
 		level: 14,
 		plantXp: 0,
 		checkXp: 13.5,
@@ -83,6 +85,7 @@ const herbPlants: Plant[] = [
 		timePerHarvest: 10
 	},
 	{
+		id: itemID('Grimy tarromin'),
 		level: 19,
 		plantXp: 0,
 		checkXp: 16,
@@ -122,6 +125,7 @@ const herbPlants: Plant[] = [
 		timePerHarvest: 10
 	},
 	{
+		id: itemID('Grimy harralander'),
 		level: 26,
 		plantXp: 0,
 		checkXp: 21.5,
@@ -161,6 +165,7 @@ const herbPlants: Plant[] = [
 		timePerHarvest: 10
 	},
 	{
+		id: itemID('Grimy ranarr weed'),
 		level: 32,
 		plantXp: 0,
 		checkXp: 27,
@@ -200,6 +205,7 @@ const herbPlants: Plant[] = [
 		timePerHarvest: 10
 	},
 	{
+		id: itemID('Grimy toadflax'),
 		level: 38,
 		plantXp: 0,
 		checkXp: 34,
@@ -239,6 +245,7 @@ const herbPlants: Plant[] = [
 		timePerHarvest: 10
 	},
 	{
+		id: itemID('Grimy irit leaf'),
 		level: 44,
 		plantXp: 0,
 		checkXp: 43,
@@ -278,6 +285,7 @@ const herbPlants: Plant[] = [
 		timePerHarvest: 10
 	},
 	{
+		id: itemID('Grimy avantoe'),
 		level: 50,
 		plantXp: 0,
 		checkXp: 54.5,
@@ -317,6 +325,7 @@ const herbPlants: Plant[] = [
 		timePerHarvest: 10
 	},
 	{
+		id: itemID('Grimy kwuarm'),
 		level: 56,
 		plantXp: 0,
 		checkXp: 69,
@@ -356,6 +365,7 @@ const herbPlants: Plant[] = [
 		timePerHarvest: 10
 	},
 	{
+		id: itemID('Grimy snapdragon'),
 		level: 62,
 		plantXp: 0,
 		checkXp: 87.5,
@@ -395,6 +405,7 @@ const herbPlants: Plant[] = [
 		timePerHarvest: 10
 	},
 	{
+		id: itemID('Grimy cadantine'),
 		level: 67,
 		plantXp: 0,
 		checkXp: 106.5,
@@ -434,6 +445,7 @@ const herbPlants: Plant[] = [
 		timePerHarvest: 10
 	},
 	{
+		id: itemID('Grimy lantadyme'),
 		level: 73,
 		plantXp: 0,
 		checkXp: 134.5,
@@ -473,6 +485,7 @@ const herbPlants: Plant[] = [
 		timePerHarvest: 10
 	},
 	{
+		id: itemID('Grimy dwarf weed'),
 		level: 79,
 		plantXp: 0,
 		checkXp: 170.5,
@@ -512,6 +525,7 @@ const herbPlants: Plant[] = [
 		timePerHarvest: 10
 	},
 	{
+		id: itemID('Grimy torstol'),
 		level: 85,
 		plantXp: 0,
 		checkXp: 199.5,
@@ -551,6 +565,7 @@ const herbPlants: Plant[] = [
 		timePerHarvest: 10
 	},
 	{
+		id: itemID('Athelas seed'),
 		level: 99,
 		plantXp: 0,
 		checkXp: 9199.5,
@@ -587,6 +602,7 @@ const herbPlants: Plant[] = [
 		additionalPatchesByFarmGuildAndLvl: []
 	},
 	{
+		id: itemID('Korulsi seed'),
 		level: 110,
 		plantXp: 0,
 		checkXp: 12_443,
