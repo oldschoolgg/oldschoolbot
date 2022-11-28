@@ -98,7 +98,7 @@ export const giantsFoundryTask: MinionTask = {
 			', '
 		)}.\n${xpRes}\nKovac gave you **${reputationReceived.toLocaleString()}** Foundry Reputation ${
 			loot.length > 0 ? `and ${loot}.` : ''
-		}\nThe most presigues weapon created by your minion was a **${randArrItem(tipMoulds)} ${randArrItem(
+		}\nThe most prestigious weapon created by your minion was a **${randArrItem(tipMoulds)} ${randArrItem(
 			bladeMoulds
 		)} ${randArrItem(forteMoulds)}**.`;
 
