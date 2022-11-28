@@ -303,7 +303,6 @@ model User {
   minion_icon                String?  @map("minion.icon")
   minion_equippedPet         Int?     @map("minion.equippedPet")
   minion_farmingContract     Json?    @map("minion.farmingContract") @db.Json
-  minion_defaultCompostToUse String   @default("compost") @map("minion.defaultCompostToUse")
   minion_defaultPay          Boolean  @default(false) @map("minion.defaultPay")
   minion_birdhouseTraps      Json?    @map("minion.birdhouseTraps") @db.Json
   stats_deaths               Int      @default(0) @map("stats.deaths")
@@ -401,7 +400,10 @@ model User {
 
   treats_delivered Int @default(0)
 
-  last_command_date DateTime? @db.Timestamp(6)
+  last_command_date DateTime?    @db.Timestamp(6)
+  farmed_crops      FarmedCrop[]
+
+  minion_defaultCompostToUse CropUpgradeType @default(compost) @map("minion.defaultCompostToUse")
 
   @@index([id, last_command_date])
   @@map("users")
@@ -588,6 +590,9 @@ model UserStats {
   ash_sanctifier_prayer_xp BigInt @default(0)
   gotr_rift_searches       Int    @default(0)
 
+  farming_plant_cost_bank   Json @default("{}") @db.Json
+  farming_harvest_loot_bank Json @default("{}") @db.Json
+
   @@map("user_stats")
 }
 
@@ -599,6 +604,33 @@ model BingoTeam {
   third_user  String @unique @db.VarChar(19)
 
   @@map("bingo_team")
+}
+
+enum CropUpgradeType {
+  compost
+  supercompost
+  ultracompost
+}
+
+// FarmedCrop
+// - Not a source of truth, just used for tracking/stats.
+// - One is made each time you plant a crop, and then updated when you harvest that crop.
+// - Deleted when you become an iron.
+model FarmedCrop {
+  id Int @id @default(autoincrement())
+
+  user_id String @db.VarChar(19)
+  user    User   @relation(fields: [user_id], references: [id])
+
+  date_planted        DateTime
+  date_harvested      DateTime?
+  item_id             Int
+  quantity_planted    Int
+  upgrade_type        CropUpgradeType?
+  was_autofarmed      Boolean
+  paid_for_protection Boolean
+
+  @@map("farmed_crop")
 }
 
 enum command_usage_status {
