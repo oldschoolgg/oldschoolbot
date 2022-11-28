@@ -18,7 +18,7 @@ import {
 } from '../../lib/clues/stashUnits';
 import { BitField, PerkTier } from '../../lib/constants';
 import { allCLItemsFiltered, allDroppedItems } from '../../lib/data/Collections';
-import { anglerOutfit, gnomeRestaurantCL } from '../../lib/data/CollectionsExport';
+import { anglerOutfit, gnomeRestaurantCL, guardiansOfTheRiftCL } from '../../lib/data/CollectionsExport';
 import pets from '../../lib/data/pets';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import { MinigameName, Minigames } from '../../lib/settings/minigames';
@@ -174,7 +174,9 @@ LIMIT 10`;
 	const embed = new Embed()
 		.setTitle(`Highest ${monster.name} KC gains in the past ${interval}`)
 		.setDescription(
-			res.map((i: any) => `${++place}. **${getUsername(i.user)}**: ${Number(i.qty).toLocaleString()}`).join('\n')
+			res
+				.map((i: any) => `${++place}. **${getUsername(i.user_id)}**: ${Number(i.qty).toLocaleString()}`)
+				.join('\n')
 		);
 
 	return { embeds: [embed] };
@@ -282,6 +284,23 @@ LIMIT 10;`);
 			return result;
 		},
 		format: num => `${num.toLocaleString()} Gambles`
+	},
+	{
+		name: 'Guardians of the Rift',
+		items: guardiansOfTheRiftCL,
+		run: async ({ item, ironmanOnly }) => {
+			const result = await prisma.$queryRawUnsafe<
+				{ id: string; val: number }[]
+			>(`SELECT users.id, gotr_rift_searches AS val
+            FROM users
+            INNER JOIN "user_stats" "userstats" on "userstats"."user_id"::text = "users"."id"
+            WHERE "collectionLogBank"->>'${item.id}' IS NULL
+            ${ironmanOnly ? ' AND "minion.ironman" = true' : ''}
+            ORDER BY gotr_rift_searches DESC
+            LIMIT 10;`);
+			return result;
+		},
+		format: num => `${num.toLocaleString()} Rift Searches`
 	}
 ];
 for (const minigame of dryStreakMinigames) {
@@ -777,7 +796,7 @@ export const toolsCommand: OSBMahojiCommand = {
 			}
 		}
 		if (options.user?.temp_cl) {
-			if (options.user.temp_cl === true) {
+			if (options.user.temp_cl.reset === true) {
 				await handleMahojiConfirmation(interaction, 'Are you sure you want to reset your temporary CL?');
 				await mahojiUser.update({
 					temp_cl: {},

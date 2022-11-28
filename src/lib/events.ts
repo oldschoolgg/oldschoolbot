@@ -13,6 +13,7 @@ import { prisma } from './settings/prisma';
 import { ItemBank } from './types';
 import { channelIsSendable, formatDuration, isFunction, toKMB } from './util';
 import { makeBankImage } from './util/makeBankImage';
+import { minionStatsEmbed } from './util/minionStatsEmbed';
 
 const rareRolesSrc: [string, number, string][] = [
 	['670211706907000842', 250, 'Bronze'],
@@ -247,6 +248,17 @@ const mentionCommands: MentionCommand[] = [
 						return bold(`${cd.name}: Ready`);
 					})
 					.join('\n'),
+				components
+			});
+		}
+	},
+	{
+		name: 's',
+		aliases: ['s', 'stats'],
+		description: 'Shows your stats.',
+		run: async ({ msg, user, components }: MentionCommandOptions) => {
+			msg.reply({
+				embeds: [await minionStatsEmbed(user)],
 				components
 			});
 		}

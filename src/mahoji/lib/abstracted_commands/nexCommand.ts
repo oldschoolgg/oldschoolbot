@@ -10,7 +10,7 @@ import { NexTaskOptions } from '../../../lib/types/minions';
 import { calcPerHour, formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { deferInteraction } from '../../../lib/util/interactionReply';
-import { updateBankSetting } from '../../mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 export async function nexCommand(interaction: ChatInputCommandInteraction, user: MUser, channelID: string) {
 	const channel = globalClient.channels.cache.get(channelID.toString());

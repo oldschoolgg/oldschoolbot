@@ -12,7 +12,7 @@ import { randomVariation, roll } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import resolveItems from '../../../lib/util/resolveItems';
-import { updateBankSetting } from '../../../mahoji/mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 interface RaidResultUser {
 	personalPoints: number;
@@ -129,7 +129,7 @@ export const raidsTask: MinionTask = {
 				const itemsToAnnounce = itemsAdded.filter(item => purpleItems.includes(item.id), false);
 				globalClient.emit(
 					Events.ServerNotification,
-					`${emote} ${user.usernameOrMention} just received **${itemsToAnnounce}** on their ${formatOrdinal(
+					`${emote} ${user.badgedUsername} just received **${itemsToAnnounce}** on their ${formatOrdinal(
 						await getMinigameScore(user.id, minigameID)
 					)} raid.`
 				);

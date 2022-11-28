@@ -1,7 +1,6 @@
-import { userMention } from '@discordjs/builders';
 import { Bank } from 'oldschooljs';
 
-import { Events, usernameCache } from '../../constants';
+import { Events } from '../../constants';
 import { ArrayItemsResolved } from '../../types';
 import { minionName } from '../../util/minionUtils';
 import { effectiveMonsters } from '../data/killableMonsters';
@@ -27,13 +26,11 @@ export default async function announceLoot({
 		let notif = '';
 
 		if (team && team.size > 1) {
-			notif = `In ${team.leader.usernameOrMention}'s party of ${team.size} minions killing ${
+			notif = `In ${team.leader.badgedUsername}'s party of ${team.size} minions killing ${
 				effectiveMonsters.find(m => m.id === monsterID)!.name
-			}, **${team.lootRecipient.usernameOrMention}** just received **${itemsToAnnounce}**!`;
+			}, **${team.lootRecipient.badgedUsername}** just received **${itemsToAnnounce}**!`;
 		} else {
-			const username = usernameCache.get(user.id);
-
-			notif = `**${username ?? userMention(user.id)}'s** minion, ${minionName(
+			notif = `**${user.badgedUsername}'s** minion, ${minionName(
 				user
 			)}, just received **${itemsToAnnounce}**, their ${
 				effectiveMonsters.find(m => m.id === monsterID)!.name

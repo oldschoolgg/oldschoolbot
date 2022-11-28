@@ -8,7 +8,7 @@ import { GauntletOptions } from '../../../lib/types/minions';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { updateBankSetting } from '../../../mahoji/mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 export const gauntletTask: MinionTask = {
 	type: 'Gauntlet',
@@ -58,7 +58,7 @@ export const gauntletTask: MinionTask = {
 			str += "\n\n**You have a funny feeling you're being followed...**";
 			globalClient.emit(
 				Events.ServerNotification,
-				`**${user.usernameOrMention}'s** minion, ${
+				`**${user.badgedUsername}'s** minion, ${
 					user.minionName
 				}, just received a **Youngllef** <:Youngllef:604670894798798858> while doing the ${name} for the ${formatOrdinal(
 					newKc

@@ -5,7 +5,6 @@ import { schedule } from 'node-cron';
 import fetch from 'node-fetch';
 
 import { production } from '../config';
-import { untrustedGuildSettingsCache } from '../mahoji/mahojiSettings';
 import { analyticsTick } from './analytics';
 import { prisma } from './settings/prisma';
 import { cacheCleanup } from './util';
@@ -54,17 +53,16 @@ GROUP BY item_id;`);
 					}
 				},
 				select: {
-					id: true
+					id: true,
+					jmodComments: true
 				}
 			});
 
-			for (const { id } of guildsToSendToo) {
+			for (const { id, jmodComments } of guildsToSendToo) {
 				const guild = globalClient.guilds.cache.get(id);
 				if (!guild) continue;
-				const settings = untrustedGuildSettingsCache.get(guild.id);
-				if (!settings?.jmodComments) continue;
 
-				const channel = guild.channels.cache.get(settings.jmodComments);
+				const channel = guild.channels.cache.get(jmodComments!);
 
 				if (
 					channel &&
@@ -106,7 +104,7 @@ GROUP BY item_id;`);
 	/**
 	 * Delete all voice channels
 	 */
-	schedule('0 0 * * *', async () => {
+	schedule('0 0 */3 * *', async () => {
 		cacheCleanup();
 	});
 }

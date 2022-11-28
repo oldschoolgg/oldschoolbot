@@ -2,9 +2,10 @@ import { ChatInputCommandInteraction } from 'discord.js';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
-import { handleMahojiConfirmation, mahojiParseNumber, updateBankSetting } from '../../../mahoji/mahojiSettings';
+import { handleMahojiConfirmation, mahojiParseNumber } from '../../../mahoji/mahojiSettings';
 import { degradeableItems } from '../../degradeableItems';
 import { stringMatches } from '../../util/cleanString';
+import { updateBankSetting } from '../../util/updateBankSetting';
 
 export async function degradeableItemsCommand(
 	interaction: ChatInputCommandInteraction,

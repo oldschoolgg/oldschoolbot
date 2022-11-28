@@ -10,7 +10,8 @@ import { itemID, stringMatches } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { calcMaxRCQuantity, updateBankSetting } from '../../../mahoji/mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { calcMaxRCQuantity, userStatsUpdate } from '../../../mahoji/mahojiSettings';
 import { rewardsGuardianTable } from './../../../lib/simulation/rewardsGuardian';
 import { GuardiansOfTheRiftActivityTaskOptions } from './../../../lib/types/minions';
 
@@ -126,6 +127,12 @@ export const guardiansOfTheRiftTask: MinionTask = {
 		}
 		rewardsGuardianLoot.add(rewardsGuardianTable.roll(rewardsQty));
 
+		await userStatsUpdate(user.id, () => ({
+			gotr_rift_searches: {
+				increment: rewardsQty
+			}
+		}));
+
 		const totalLoot = new Bank();
 		totalLoot.add(rewardsGuardianLoot);
 		totalLoot.add(runesLoot);
@@ -145,7 +152,7 @@ export const guardiansOfTheRiftTask: MinionTask = {
 
 		let str = `<@${userID}>, ${
 			user.minionName
-		} finished ${quantity}x Guardians Of The Rift runs and looted the Rewards Guardian ${rewardsQty}x times, also recieved: ${runesLoot}${
+		} finished ${quantity}x Guardians Of The Rift runs and looted the Rewards Guardian ${rewardsQty}x times, also received: ${runesLoot}${
 			setBonus - 1 > 0
 				? ` ${Math.floor((setBonus - 1) * 100)}% Quantity bonus for Raiments Of The Eye Set Items`
 				: ''
@@ -155,7 +162,7 @@ export const guardiansOfTheRiftTask: MinionTask = {
 			str += "\n\n**You have a funny feeling you're being followed...**";
 			globalClient.emit(
 				Events.ServerNotification,
-				`**${user.usernameOrMention}'s** minion, ${
+				`**${user.badgedUsername}'s** minion, ${
 					user.minionName
 				}, just received a Abyssal Protector while doing the Guardians of the Rift minigame at level ${user.skillLevel(
 					SkillsEnum.Runecraft

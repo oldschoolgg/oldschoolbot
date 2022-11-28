@@ -71,7 +71,7 @@ export const runecraftTask: MinionTask = {
 			str += "\nYou have a funny feeling you're being followed...";
 			globalClient.emit(
 				Events.ServerNotification,
-				`${Emoji.Runecraft} **${user.usernameOrMention}'s** minion, ${
+				`${Emoji.Runecraft} **${user.badgedUsername}'s** minion, ${
 					user.minionName
 				}, just received a Rift guardian while crafting ${rune.name}s at level ${user.skillLevel(
 					SkillsEnum.Runecraft

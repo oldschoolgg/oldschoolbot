@@ -15,7 +15,8 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import calcDurQty from '../../../lib/util/calcMassDurationQuantity';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
 import resolveItems from '../../../lib/util/resolveItems';
-import { hasMonsterRequirements, updateBankSetting } from '../../mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { hasMonsterRequirements } from '../../mahojiSettings';
 
 function soloMessage(user: MUser, duration: number, quantity: number, isPhosani: boolean) {
 	const name = isPhosani ? "Phosani's Nightmare" : 'The Nightmare';
