@@ -5,8 +5,8 @@ import { trackLoot } from '../../lib/lootTrack';
 import { handleNexKills } from '../../lib/simulation/nex';
 import { NexTaskOptions } from '../../lib/types/minions';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
+import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { sendToChannelID } from '../../lib/util/webhook';
-import { updateBankSetting } from '../../mahoji/mahojiSettings';
 
 export const nexTask: MinionTask = {
 	type: 'Nex',

@@ -1,9 +1,8 @@
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { chompyHats } from '../../../mahoji/lib/abstracted_commands/chompyHuntCommand';
 import { soteSkillRequirements } from '../../../mahoji/lib/abstracted_commands/zalcanoCommand';
-import { MAX_QP } from '../../constants';
+import { chompyHats, MAX_QP } from '../../constants';
 import { CombatCannonItemBank } from '../../minions/data/combatConstants';
 import { Favours } from '../../minions/data/kourendFavour';
 import { MinigameName } from '../../settings/settings';
@@ -899,6 +898,11 @@ const Buyables: Buyable[] = [
 		name: 'White apron',
 		gpCost: 1000,
 		ironmanPrice: 100
+	},
+	{
+		name: 'Pink skirt',
+		gpCost: 1000,
+		ironmanPrice: 2
 	},
 	{
 		name: 'Bull roarer',

@@ -8,7 +8,7 @@ import { clamp, formatDuration, itemNameFromID, stringMatches, toKMB } from '../
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import resolveItems from '../../../lib/util/resolveItems';
-import { updateBankSetting } from '../../mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 const unlimitedEarthRuneProviders = resolveItems([
 	'Staff of earth',
