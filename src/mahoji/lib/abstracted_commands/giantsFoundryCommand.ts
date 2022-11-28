@@ -1,4 +1,3 @@
-import { ItemBank } from './../../../lib/types/index';
 import { ChatInputCommandInteraction } from 'discord.js';
 import { calcWhatPercent, Time } from 'e';
 import { Bank } from 'oldschooljs';
@@ -12,8 +11,9 @@ import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { handleMahojiConfirmation } from '../../mahojiSettings';
 import { TOTAL_WEAPONS } from '../../../tasks/minions/minigames/giantsFoundryActivity';
+import { handleMahojiConfirmation } from '../../mahojiSettings';
+import { ItemBank } from './../../../lib/types/index';
 
 export const giantsFoundryAlloys = [
 	{
@@ -141,14 +141,17 @@ export const giantsFoundryBuyables: { name: string; output: Bank; cost: number; 
 
 export async function giantsFoundryStatsCommand(user: MUser) {
 	const scores = await getMinigameEntity(user.id);
-	const weaponsMade = user.user.gf_weapons_made as ItemBank
-	return `**Giants' Foundry Stats**
+	const weaponsMade = user.user.gf_weapons_made as ItemBank;
+	return `**Giants' Foundry Stats:**
 
-**Weapons Done:** ${scores.giants_foundry}
-**Unique Weapons Made:** ${Object.keys(weaponsMade).length.toLocaleString()}/${TOTAL_WEAPONS.toLocaleString()} - ${calcWhatPercent(
-	Object.keys(weaponsMade).length,
-	TOTAL_WEAPONS).toFixed(2)}%
-**Foundry Reputation:** ${user.user.foundry_reputation} Reputation.`;;
+**Weapons Created in total:** ${scores.giants_foundry} Created.
+**Unique Weapons Made:** ${Object.keys(
+		weaponsMade
+	).length.toLocaleString()} / ${TOTAL_WEAPONS.toLocaleString()}, ${calcWhatPercent(
+		Object.keys(weaponsMade).length,
+		TOTAL_WEAPONS
+	).toFixed(2)}% Collected.
+**Foundry Reputation:** ${user.user.foundry_reputation} Reputation.`;
 }
 
 export async function giantsFoundryStartCommand(

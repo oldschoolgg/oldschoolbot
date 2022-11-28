@@ -78,12 +78,12 @@ export const giantsFoundryTask: MinionTask = {
 			xpReceived += (Math.pow(quality, 2) / 73 + 1.5 * quality + 1) * 30;
 			reputationReceived += quality;
 
-			//Increse and save down Giant Weapons Made
+			// Increse and save down Giant Weapons Made
 			const tipID = randInt(1, tipMoulds.length);
 			const bladeMouldID = randInt(1, bladeMoulds.length);
 			const forteMouldID = randInt(1, forteMoulds.length);
 			const weaponID = tipID.toString() + bladeMouldID.toString() + forteMouldID.toString();
-			weaponName = tipMoulds[tipID - 1] + ' ' + bladeMoulds[bladeMouldID - 1] + ' ' + forteMoulds[forteMouldID - 1];
+			weaponName = `${tipMoulds[tipID - 1]} ${bladeMoulds[bladeMouldID - 1]} ${forteMoulds[forteMouldID - 1]}`;
 			await user.incrementGiantsWeaponsMade(parseInt(weaponID));
 		}
 		xpReceived = Math.floor(xpReceived);
@@ -107,11 +107,11 @@ export const giantsFoundryTask: MinionTask = {
 
 		let str = `${user}, ${
 			user.minionName
-		} finished creating ${quantity}x giant weapons in the Giants' Foundry minigame. **Boosts:** ${boosts.join(
-			', '
-		)}.\n${xpRes}\nKovac gave you **${reputationReceived.toLocaleString()}** Foundry Reputation ${
+		} finished creating ${quantity}x giant weapons in the Giants' Foundry minigame. ${
+			boosts.length > 0 ? `**Boosts:** ${boosts.join(', ')}.` : ''
+		}\n${xpRes}\nKovac gave you **${reputationReceived.toLocaleString()}** Foundry Reputation ${
 			loot.length > 0 ? `and ${loot}.` : ''
-		}\nThe most prestigious weapon created by your minion was a **${weaponName}}**.`;
+		}\nThe most prestigious weapon created by your minion was a **${weaponName}**.`;
 
 		const { itemsAdded } = await transactItems({
 			userID: user.id,

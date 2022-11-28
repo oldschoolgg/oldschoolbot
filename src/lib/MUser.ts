@@ -397,9 +397,9 @@ export class MUserClass {
 		const { newUser } = await mahojiUserSettingsUpdate(this.id, {
 			gf_weapons_made: newWeapons.bank
 		});
-	
+
 		this.user = newUser;
-	
+
 		return this;
 	}
 

@@ -21,7 +21,11 @@ import {
 import { castleWarsStartCommand, castleWarsStatsCommand } from '../lib/abstracted_commands/castleWarsCommand';
 import { fishingTrawlerCommand } from '../lib/abstracted_commands/fishingTrawler';
 import { gauntletCommand } from '../lib/abstracted_commands/gauntletCommand';
-import { giantsFoundryShopCommand, giantsFoundryStartCommand, giantsFoundryStatsCommand } from '../lib/abstracted_commands/giantsFoundryCommand';
+import {
+	giantsFoundryShopCommand,
+	giantsFoundryStartCommand,
+	giantsFoundryStatsCommand
+} from '../lib/abstracted_commands/giantsFoundryCommand';
 import { gnomeRestaurantCommand } from '../lib/abstracted_commands/gnomeRestaurantCommand';
 import { guardiansOfTheRiftStartCommand } from '../lib/abstracted_commands/guardiansOfTheRiftCommand';
 import { lmsCommand } from '../lib/abstracted_commands/lmsCommand';
