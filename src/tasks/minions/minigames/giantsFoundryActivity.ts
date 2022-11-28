@@ -1,11 +1,13 @@
 import { randArrItem } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { trackLoot } from '../../../lib/lootTrack';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { GiantsFoundryActivityTaskOptions } from '../../../lib/types/minions';
 import { randomVariation } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { giantsFoundryAlloys } from './../../../mahoji/lib/abstracted_commands/giantsFoundryCommand';
 
 const tipMoulds: string[] = [
@@ -106,6 +108,23 @@ export const giantsFoundryTask: MinionTask = {
 			userID: user.id,
 			collectionLog: true,
 			itemsToAdd: loot
+		});
+
+		updateBankSetting('gf_loot', loot);
+		await trackLoot({
+			id: 'giants_foundry',
+			type: 'Minigame',
+			duration,
+			kc: quantity,
+			totalLoot: loot,
+			changeType: 'loot',
+			users: [
+				{
+					id: user.id,
+					loot,
+					duration
+				}
+			]
 		});
 
 		handleTripFinish(user, channelID, str, undefined, data, itemsAdded);

@@ -2,12 +2,14 @@ import { ChatInputCommandInteraction } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { trackLoot } from '../../../lib/lootTrack';
 import Smithing from '../../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { GiantsFoundryActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { handleMahojiConfirmation } from '../../mahojiSettings';
 
 export const giantsFoundryAlloys = [
@@ -185,6 +187,20 @@ export async function giantsFoundryStartCommand(
 	}
 
 	await user.removeItemsFromBank(totalCost);
+	updateBankSetting('gf_cost', totalCost);
+	await trackLoot({
+		id: 'giants_foundry',
+		type: 'Minigame',
+		totalCost,
+		changeType: 'cost',
+		users: [
+			{
+				id: user.id,
+				cost: totalCost
+			}
+		]
+	});
+
 	const duration = quantity * alloy.sections * timePerSection;
 
 	await addSubTaskToActivityTask<GiantsFoundryActivityTaskOptions>({

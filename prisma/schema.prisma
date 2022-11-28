@@ -126,6 +126,8 @@ model ClientStorage {
   gp_tax_balance               BigInt   @default(0)
   gotr_cost                    Json     @default("{}") @db.Json
   gotr_loot                    Json     @default("{}") @db.Json
+  gf_cost                    Json     @default("{}") @db.Json
+  gf_loot                    Json     @default("{}") @db.Json
 
   @@map("clientStorage")
 }
