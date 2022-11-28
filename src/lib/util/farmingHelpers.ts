@@ -1,9 +1,9 @@
-import { time } from '@discordjs/builders';
-import { User } from '@prisma/client';
+import { FarmedCrop, User } from '@prisma/client';
 
 import { Emoji } from '../constants';
 import { IPatchData, IPatchDataDetailed } from '../minions/farming/types';
 import Farming from '../skilling/skills/farming';
+import { dateFm } from '../util';
 import { stringMatches } from './cleanString';
 
 export const farmingPatchNames = [
@@ -56,9 +56,23 @@ export function userGrowingProgressStr(patchesDetailed: IPatchDataDetailed[]) {
 	for (const patch of patchesDetailed.filter(i => i.ready === false)) {
 		str += `${Emoji.Stopwatch} **${patch.friendlyName}**: ${patch.lastQuantity} ${
 			patch.lastPlanted
-		} ready at ${time(patch.readyAt!, 'T')} (${time(patch.readyAt!, 'R')})\n`;
+		} ready at ${dateFm(patch.readyAt!)}\n`;
 	}
 	const notReady = patchesDetailed.filter(i => i.ready === null);
 	str += `${Emoji.RedX} **Nothing planted:** ${notReady.map(i => i.friendlyName).join(', ')}.`;
 	return str;
+}
+
+export function parseFarmedCrop(crop: FarmedCrop) {
+	return {
+		id: crop.id,
+		userID: crop.user_id,
+		datePlanted: crop.date_planted,
+		dateHarvested: crop.date_harvested,
+		itemID: crop.item_id,
+		plant: Farming.Plants.find(i => i.id === crop.item_id)!,
+		quantityPlanted: crop.quantity_planted,
+		upgradeType: crop.upgrade_type,
+		paid: crop.paid_for_protection
+	};
 }
