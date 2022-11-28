@@ -124,6 +124,13 @@ export const activitiesCommand: OSBMahojiCommand = {
 					required: true
 				},
 				{
+					type: ApplicationCommandOptionType.Integer,
+					name: 'quantity',
+					description: 'The quantity of collecting trips you wish to make.',
+					required: false,
+					min_value: 1
+				},
+				{
 					type: ApplicationCommandOptionType.Boolean,
 					name: 'no_stams',
 					description: "Enable if you don't want to use stamina potions when collecting.",
@@ -431,7 +438,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 		chompy_hunt?: { action: 'start' | 'claim' };
 		champions_challenge?: {};
 		warriors_guild?: { action: string; quantity?: number };
-		collect?: { item: string; no_stams?: boolean };
+		collect?: { item: string; quantity?: number; no_stams?: boolean };
 		quest?: {};
 		favour?: { name?: string; no_stams?: boolean };
 		decant?: { potion_name: string; dose?: number };
@@ -489,7 +496,13 @@ export const activitiesCommand: OSBMahojiCommand = {
 			);
 		}
 		if (options.collect) {
-			return collectCommand(user, channelID, options.collect.item, options.collect.no_stams);
+			return collectCommand(
+				user,
+				channelID,
+				options.collect.item,
+				options.collect.quantity,
+				options.collect.no_stams
+			);
 		}
 		if (options.quest) {
 			return questCommand(user, channelID);
