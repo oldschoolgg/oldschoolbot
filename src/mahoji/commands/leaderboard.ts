@@ -467,7 +467,7 @@ export async function cacheUsernames() {
 	}
 }
 
-async function itemContractLb(user: MUser, channelID: string) {
+async function itemContractLb(user: MUser, channelID: string, ironmanOnly?: boolean) {
 	const results = await prisma.user.findMany({
 		select: {
 			id: true,
@@ -476,7 +476,8 @@ async function itemContractLb(user: MUser, channelID: string) {
 		where: {
 			item_contract_streak: {
 				gte: 5
-			}
+			},
+			minion_ironman: ironmanOnly ? true : undefined
 		},
 		orderBy: {
 			item_contract_streak: 'desc'
@@ -786,7 +787,8 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'item_contract_streak',
-			description: 'The item contract streak leaderboard.'
+			description: 'The item contract streak leaderboard.',
+			options: [ironmanOnlyOption]
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -820,7 +822,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		skills?: { skill: string; ironmen_only?: boolean; xp?: boolean };
 		opens?: { openable: string; ironmen_only?: boolean };
 		cl?: { cl: string; ironmen_only?: boolean };
-		item_contract_streak?: {};
+		item_contract_streak?: { ironmen_only?: boolean };
 		leagues?: { type: 'points' | 'tasks' | 'hardest_tasks' };
 	}>) => {
 		await deferInteraction(interaction);
@@ -853,7 +855,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		}
 		if (opens) return openLb(user, channelID, opens.openable, Boolean(opens.ironmen_only));
 		if (cl) return clLb(user, channelID, cl.cl, Boolean(cl.ironmen_only));
-		if (item_contract_streak) return itemContractLb(user, channelID);
+		if (item_contract_streak) return itemContractLb(user, channelID, item_contract_streak.ironmen_only);
 		if (leagues) return leaguesLeaderboard(user, channelID, leagues.type);
 		return 'Invalid input.';
 	}
