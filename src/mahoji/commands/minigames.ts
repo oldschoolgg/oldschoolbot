@@ -816,8 +816,6 @@ export const minigamesCommand: OSBMahojiCommand = {
 			type: ApplicationCommandOptionType.SubcommandGroup,
 			name: 'giants_foundry',
 			description: "The Giants' Foundry minigame.",
-			name: 'gotr',
-			description: 'The Guardians of the Rift minigame.',
 			options: [
 				{
 					type: ApplicationCommandOptionType.Subcommand,

@@ -27,7 +27,9 @@ import {
 	FishingActivityTaskOptions,
 	FletchingActivityTaskOptions,
 	GauntletOptions,
+	GiantsFoundryActivityTaskOptions,
 	GroupMonsterActivityTaskOptions,
+	GuardiansOfTheRiftActivityTaskOptions,
 	HerbloreActivityTaskOptions,
 	HunterActivityTaskOptions,
 	KourendFavourActivityTaskOptions,
@@ -48,9 +50,7 @@ import {
 	TempleTrekkingActivityTaskOptions,
 	TheatreOfBloodTaskOptions,
 	TiaraRunecraftActivityTaskOptions,
-	WoodcuttingActivityTaskOptions,
-	GiantsFoundryActivityTaskOptions,
-	GuardiansOfTheRiftActivityTaskOptions
+	WoodcuttingActivityTaskOptions
 } from '../types/minions';
 import { itemNameFromID } from '../util';
 import { giantsFoundryAlloys } from './../../mahoji/lib/abstracted_commands/giantsFoundryCommand';
