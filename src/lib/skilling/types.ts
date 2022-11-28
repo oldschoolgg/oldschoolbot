@@ -193,6 +193,13 @@ export interface Bone {
 	inputId: number;
 }
 
+export interface Ash {
+	level: number;
+	xp: number;
+	name: string;
+	inputId: number;
+}
+
 export type LevelRequirements = Partial<{
 	[key in SkillsEnum]: number;
 }>;
@@ -212,6 +219,7 @@ export interface Plankable {
 }
 
 export interface Plant {
+	id: number;
 	level: number;
 	plantXp: number;
 	checkXp: number;

@@ -9,7 +9,7 @@ import { FightCavesActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, rand } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
-import { updateBankSetting } from '../../mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 export const fightCavesCost = new Bank({
 	'Prayer potion(4)': 10,

@@ -2,7 +2,7 @@ import { ActivityGroup } from '../lib/constants';
 import { prisma } from '../lib/settings/prisma';
 import { GroupMonsterActivityTaskOptions } from '../lib/types/minions';
 import { taskGroupFromActivity } from '../lib/util/taskGroupFromActivity';
-import { mahojiClientSettingsFetch } from '../mahoji/mahojiSettings';
+import { mahojiClientSettingsFetch } from './util/clientSettings';
 
 async function calculateMinionTaskCounts() {
 	const minionTaskCounts: Record<ActivityGroup, number> = {

@@ -2,7 +2,7 @@ import { BaseMessageOptions, ButtonBuilder, ButtonStyle, ComponentType } from 'd
 
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { BitField, Emoji, minionBuyButton } from '../../../lib/constants';
-import { roboChimpUserFetch } from '../../../lib/roboChimp';
+import { roboChimpSyncData, roboChimpUserFetch } from '../../../lib/roboChimp';
 import { makeComponents } from '../../../lib/util';
 import { minionStatus } from '../../../lib/util/minionStatus';
 import { makeRepeatTripButtons } from '../../../lib/util/repeatStoredTrip';
@@ -11,6 +11,9 @@ import { isUsersDailyReady } from './dailyCommand';
 import { canRunAutoContract } from './farmingContractCommand';
 
 export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptions> {
+	const roboChimpUser = await roboChimpUserFetch(user.id);
+	roboChimpSyncData(roboChimpUser, user);
+
 	if (!user.user.minion_hasBought) {
 		return {
 			content:
@@ -118,7 +121,6 @@ export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptio
 			.setStyle(ButtonStyle.Secondary)
 	);
 
-	const roboChimpUser = await roboChimpUserFetch(user.id);
 	if (roboChimpUser.leagues_points_total === 0) {
 		buttons.push(
 			new ButtonBuilder()

@@ -11,10 +11,10 @@ import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/s
 import { InfernoOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import chatHeadImage from '../../../lib/util/chatHeadImage';
+import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../../lib/util/clientSettings';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
-import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../../mahoji/mahojiSettings';
 
 export const infernoTask: MinionTask = {
 	type: 'Inferno',
@@ -164,7 +164,7 @@ export const infernoTask: MinionTask = {
 			if (baseBank.has('Jal-nib-rek')) {
 				globalClient.emit(
 					Events.ServerNotification,
-					`**${user.usernameOrMention}** just received their ${formatOrdinal(
+					`**${user.badgedUsername}** just received their ${formatOrdinal(
 						user.cl.amount('Jal-nib-rek') + 1
 					)} Jal-nib-rek pet by killing TzKal-Zuk, on their ${formatOrdinal(
 						await getMinigameScore(user.id, 'inferno')
@@ -176,7 +176,7 @@ export const infernoTask: MinionTask = {
 				const usersWithInfernalCape = await countUsersWithItemInCl(itemID('Infernal cape'), false);
 				globalClient.emit(
 					Events.ServerNotification,
-					`**${user.usernameOrMention}** just received their first Infernal cape on their ${formatOrdinal(
+					`**${user.badgedUsername}** just received their first Infernal cape on their ${formatOrdinal(
 						user.user.inferno_attempts
 					)} attempt! They are the ${formatOrdinal(
 						usersWithInfernalCape + 1

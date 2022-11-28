@@ -3,9 +3,10 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { itemNameFromID } from '../../lib/util';
 import { parseBank } from '../../lib/util/parseStringBank';
+import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiUsersSettingsFetch, updateBankSetting } from '../mahojiSettings';
+import { handleMahojiConfirmation, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const dropCommand: OSBMahojiCommand = {
 	name: 'drop',

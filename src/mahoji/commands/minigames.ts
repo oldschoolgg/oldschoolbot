@@ -23,6 +23,7 @@ import { fishingTrawlerCommand } from '../lib/abstracted_commands/fishingTrawler
 import { gauntletCommand } from '../lib/abstracted_commands/gauntletCommand';
 import { giantsFoundryShopCommand, giantsFoundryStartCommand } from '../lib/abstracted_commands/giantsFoundryCommand';
 import { gnomeRestaurantCommand } from '../lib/abstracted_commands/gnomeRestaurantCommand';
+import { guardiansOfTheRiftStartCommand } from '../lib/abstracted_commands/guardiansOfTheRiftCommand';
 import { lmsCommand } from '../lib/abstracted_commands/lmsCommand';
 import { mageArena2Command } from '../lib/abstracted_commands/mageArena2Command';
 import { mageArenaCommand } from '../lib/abstracted_commands/mageArenaCommand';
@@ -815,6 +816,8 @@ export const minigamesCommand: OSBMahojiCommand = {
 			type: ApplicationCommandOptionType.SubcommandGroup,
 			name: 'giants_foundry',
 			description: "The Giants' Foundry minigame.",
+			name: 'gotr',
+			description: 'The Guardians of the Rift minigame.',
 			options: [
 				{
 					type: ApplicationCommandOptionType.Subcommand,
@@ -863,6 +866,26 @@ export const minigamesCommand: OSBMahojiCommand = {
 							description: 'The amount to buy.',
 							required: false,
 							min_value: 1
+						}
+					]
+				}
+			]
+		},
+		{
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			name: 'gotr',
+			description: 'The Guardians of the Rift minigame.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'start',
+					description: 'Start a trip.',
+					options: [
+						{
+							name: 'combination_runes',
+							description: 'Craft combination runes giving additional points.',
+							type: ApplicationCommandOptionType.Boolean,
+							required: false
 						}
 					]
 				}
@@ -931,6 +954,9 @@ export const minigamesCommand: OSBMahojiCommand = {
 		giants_foundry?: {
 			start?: { name: string; quantity?: number };
 			buy?: { item: string; quantity?: number };
+		};
+		gotr?: {
+			start?: { combination_runes?: boolean };
 		};
 	}>) => {
 		const user = await mUserFetch(userID);
@@ -1183,6 +1209,11 @@ export const minigamesCommand: OSBMahojiCommand = {
 			return agilityArenaXPCommand(user, options.agility_arena.xp.quantity);
 		}
 
+		/**
+		 *
+		 * Trouble Brewing
+		 *
+		 */
 		if (options.trouble_brewing) {
 			return troubleBrewingStartCommand(user, channelID);
 		}
@@ -1207,6 +1238,15 @@ export const minigamesCommand: OSBMahojiCommand = {
 				options.giants_foundry.buy.item,
 				options.giants_foundry.buy.quantity
 			);
+		}
+
+		/**
+		 *
+		 * Guardians Of The Rift
+		 *
+		 */
+		if (options.gotr) {
+			return guardiansOfTheRiftStartCommand(user, channelID, options.gotr.start?.combination_runes);
 		}
 
 		return 'Invalid command.';

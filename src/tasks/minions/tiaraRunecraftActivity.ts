@@ -11,7 +11,7 @@ export const tiaraRunecraftTask: MinionTask = {
 		const { tiaraID, tiaraQuantity, userID, channelID, duration } = data;
 		const user = await mUserFetch(userID);
 
-		const tiara = Runecraft.Tiara.find(_tiara => _tiara.id === tiaraID)!;
+		const tiara = Runecraft.Tiaras.find(_tiara => _tiara.id === tiaraID)!;
 
 		const xpReceived = tiaraQuantity * tiara.xp;
 		let xpRes = `\n${await user.addXP({

@@ -42,16 +42,18 @@ import {
 	RevenantOptions,
 	RunecraftActivityTaskOptions,
 	SawmillActivityTaskOptions,
+	ScatteringActivityTaskOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
 	TempleTrekkingActivityTaskOptions,
 	TheatreOfBloodTaskOptions,
 	TiaraRunecraftActivityTaskOptions,
-	WoodcuttingActivityTaskOptions
+	WoodcuttingActivityTaskOptions,
+	GiantsFoundryActivityTaskOptions,
+	GuardiansOfTheRiftActivityTaskOptions
 } from '../types/minions';
 import { itemNameFromID } from '../util';
 import { giantsFoundryAlloys } from './../../mahoji/lib/abstracted_commands/giantsFoundryCommand';
-import { GiantsFoundryActivityTaskOptions } from './../types/minions';
 
 export const taskCanBeRepeated = (type: activity_type_enum) =>
 	!(
@@ -68,6 +70,10 @@ export const taskCanBeRepeated = (type: activity_type_enum) =>
 	).includes(type);
 
 export const tripHandlers = {
+	[activity_type_enum.HalloweenEvent]: {
+		commandName: 'm',
+		args: () => ({})
+	},
 	[activity_type_enum.ClueCompletion]: {
 		commandName: 'm',
 		args: () => ({})
@@ -152,6 +158,12 @@ export const tripHandlers = {
 		commandName: 'activities',
 		args: (data: BuryingActivityTaskOptions) => ({
 			bury: { quantity: data.quantity, name: itemNameFromID(data.boneID) }
+		})
+	},
+	[activity_type_enum.Scattering]: {
+		commandName: 'activities',
+		args: (data: ScatteringActivityTaskOptions) => ({
+			scatter: { quantity: data.quantity, name: itemNameFromID(data.ashID) }
 		})
 	},
 	[activity_type_enum.Casting]: {
@@ -409,7 +421,8 @@ export const tripHandlers = {
 			cox: {
 				start: {
 					challenge_mode: data.challengeMode,
-					type: data.users.length === 1 ? 'solo' : 'mass'
+					type: data.users.length === 1 ? 'solo' : 'mass',
+					quantity: data.quantity
 				}
 			}
 		})
@@ -502,9 +515,13 @@ export const tripHandlers = {
 			}
 		})
 	},
-	[activity_type_enum.HalloweenEvent]: {
-		commandName: 'trickortreat',
-		args: () => ({ start: {} })
+	[activity_type_enum.GuardiansOfTheRift]: {
+		commandName: 'minigames',
+		args: (data: GuardiansOfTheRiftActivityTaskOptions) => ({
+			gotr: {
+				start: { combination_runes: data.combinationRunes }
+			}
+		})
 	}
 } as const;
 
