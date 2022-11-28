@@ -1060,7 +1060,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 
 		/**
 		 *
-		 * Trek
+		 * The Temple Trekking
 		 *
 		 */
 		if (options.temple_trek) {
