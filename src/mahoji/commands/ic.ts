@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction } from 'discord.js';
+import { ButtonBuilder, ButtonStyle, ChatInputCommandInteraction } from 'discord.js';
 import { randArrItem, roll } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank, LootTable } from 'oldschooljs';
@@ -15,7 +15,7 @@ import { itemContractResetTime } from '../../lib/MUser';
 import { nexLootTable } from '../../lib/nex';
 import { DragonTable } from '../../lib/simulation/grandmasterClue';
 import { allThirdAgeItems, runeAlchablesTable } from '../../lib/simulation/sharedTables';
-import { formatDuration, itemID } from '../../lib/util';
+import { formatDuration, itemID, makeComponents } from '../../lib/util';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';
 import resolveItems from '../../lib/util/resolveItems';
@@ -151,7 +151,7 @@ async function skip(interaction: ChatInputCommandInteraction, user: MUser) {
 	)}.`;
 }
 
-async function handInContract(interaction: ChatInputCommandInteraction | null, user: MUser): Promise<string> {
+export async function handInContract(interaction: ChatInputCommandInteraction | null, user: MUser): Promise<string> {
 	const { nextContractIsReady, durationRemaining, currentItem, owns, streak, totalContracts } =
 		getItemContractDetails(user);
 
@@ -255,8 +255,33 @@ export const icCommand: OSBMahojiCommand = {
 	],
 	run: async ({ options, userID, interaction }: CommandRunOptions<{ info?: {}; send?: {}; skip?: {} }>) => {
 		const user = await mUserFetch(userID);
-		if (options.info) return `${Emoji.ItemContract} ${getItemContractDetails(user).infoStr}`;
+		const details = getItemContractDetails(user);
+		const components =
+			details.nextContractIsReady && details.currentItem !== null
+				? makeComponents([
+						new ButtonBuilder()
+							.setStyle(ButtonStyle.Primary)
+							.setLabel('Donate IC')
+							.setEmoji('988422348434718812')
+							.setCustomId(`DONATE_IC_${user.id}`)
+				  ])
+				: undefined;
+
+		if (options.info) {
+			if (!details.nextContractIsReady) {
+				return {
+					content: `${
+						Emoji.ItemContract
+					} You have no item contract available at the moment. Come back in ${formatDuration(
+						details.durationRemaining
+					)}.
+			
+${details.infoStr}`
+				};
+			}
+			return { content: `${Emoji.ItemContract} ${details.infoStr}`, components };
+		}
 		const res = options.skip ? await skip(interaction, user) : await handInContract(interaction, user);
-		return `${Emoji.ItemContract} ${res}\n\n${getItemContractDetails(user).infoStr}`;
+		return `${Emoji.ItemContract} ${res}\n\n${details.infoStr}`;
 	}
 };

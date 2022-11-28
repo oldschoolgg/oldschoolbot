@@ -3,9 +3,12 @@ import { Time, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { buyBingoTicketCommand } from '../../mahoji/commands/bingo';
+import { getItemContractDetails, handInContract } from '../../mahoji/commands/ic';
 import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { shootingStarsCommand, starCache } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
 import { Cooldowns } from '../../mahoji/lib/Cooldowns';
+import { handleMahojiConfirmation } from '../../mahoji/mahojiSettings';
+import { modifyBusyCounter } from '../busyCounterCache';
 import { ClueTier } from '../clues/clueTiers';
 import { PerkTier } from '../constants';
 import { prisma } from '../settings/prisma';
@@ -13,9 +16,11 @@ import { runCommand } from '../settings/settings';
 import { repeatTameTrip } from '../tames';
 import { ItemBank } from '../types';
 import { formatDuration, removeFromArr } from '../util';
+import { CACHED_ACTIVE_USER_IDS } from './cachedUserIDs';
 import { updateGiveawayMessage } from './giveaway';
 import { interactionReply } from './interactionReply';
 import { log } from './log';
+import { logErrorForInteraction } from './logError';
 import { minionIsBusy } from './minionIsBusy';
 import { fetchRepeatTrips, repeatTrip } from './repeatStoredTrip';
 
@@ -236,6 +241,59 @@ async function repeatTripHandler(user: MUser, interaction: ButtonInteraction) {
 	return repeatTrip(interaction, matchingActivity);
 }
 
+async function donateICHandler(interaction: ButtonInteraction) {
+	const userID = interaction.customId.split('_')[2];
+	if (!userID || !CACHED_ACTIVE_USER_IDS.has(userID)) {
+		return interactionReply(interaction, { content: 'Invalid user.', ephemeral: true });
+	}
+	const user = await mUserFetch(userID);
+	const donator = await mUserFetch(interaction.user.id);
+
+	if (user.isIronman || donator.isIronman) {
+		return interactionReply(interaction, { content: 'Ironmen stand alone!', ephemeral: true });
+	}
+	if (user.id === donator.id) {
+		return interactionReply(interaction, { content: 'You cannot donate to yourself.', ephemeral: true });
+	}
+
+	const details = getItemContractDetails(user);
+	if (!details.nextContractIsReady || !details.currentItem) {
+		return interactionReply(interaction, { content: "That user's Item Contract isn't ready.", ephemeral: true });
+	}
+
+	if (user.isBusy || donator.isBusy) {
+		return interactionReply(interaction, {
+			content: 'One of you is busy, and cannot do this trade right now.',
+			ephemeral: true
+		});
+	}
+
+	try {
+		modifyBusyCounter(donator.id, 1);
+
+		const cost = new Bank().add(details.currentItem.id);
+		if (!donator.owns(cost)) {
+			return interactionReply(interaction, { ephemeral: true, content: `You don't own ${cost}.` });
+		}
+		await handleMahojiConfirmation(interaction, `Are you sure you want to give ${cost} to ${user}?`, [donator.id]);
+		await donator.removeItemsFromBank(cost);
+		await user.addItemsToBank({ items: cost, collectionLog: false });
+
+		return interactionReply(interaction, {
+			content: `${donator}, you donated ${cost} to ${user}!
+	
+${user.mention} ${await handInContract(null, user)}`,
+			allowedMentions: {
+				users: [user.id]
+			}
+		});
+	} catch (err) {
+		logErrorForInteraction(err, interaction);
+	} finally {
+		modifyBusyCounter(donator.id, -1);
+	}
+}
+
 export async function interactionHook(interaction: Interaction) {
 	if (!interaction.isButton()) return;
 	const id = interaction.customId;
@@ -244,6 +302,7 @@ export async function interactionHook(interaction: Interaction) {
 	const user = await mUserFetch(userID);
 	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, interaction);
 	if (id.includes('REPEAT_TRIP')) return repeatTripHandler(user, interaction);
+	if (id.includes('DONATE_IC')) return donateICHandler(interaction);
 
 	if (!isValidGlobalInteraction(id)) return;
 	if (user.isBusy || globalClient.isShuttingDown) {
@@ -366,7 +425,7 @@ export async function interactionHook(interaction: Interaction) {
 
 	if (id === 'DO_FISHING_CONTEST') {
 		if (user.perkTier() < PerkTier.Four) {
-			return interaction.reply({
+			return interactionReply(interaction, {
 				content: 'You need to be a Tier 3 patron to use this button.',
 				ephemeral: true
 			});
