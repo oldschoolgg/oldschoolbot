@@ -1,4 +1,4 @@
-import { randArrItem } from 'e';
+import { randInt } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { trackLoot } from '../../../lib/lootTrack';
@@ -52,6 +52,8 @@ const forteMoulds: string[] = [
 	'Spiker!'
 ];
 
+export const TOTAL_WEAPONS = tipMoulds.length * bladeMoulds.length * forteMoulds.length;
+
 export const giantsFoundryTask: MinionTask = {
 	type: 'GiantsFoundry',
 	async run(data: GiantsFoundryActivityTaskOptions) {
@@ -70,10 +72,19 @@ export const giantsFoundryTask: MinionTask = {
 		}
 		let reputationReceived = 0;
 		let xpReceived = 0;
+		let weaponName = '';
 		for (let i = 0; i < quantity; i++) {
 			let quality = Math.min(Math.floor(randomVariation(metalScore - 5 + avgMouldBonus, 10)), 199);
 			xpReceived += (Math.pow(quality, 2) / 73 + 1.5 * quality + 1) * 30;
 			reputationReceived += quality;
+
+			//Increse and save down Giant Weapons Made
+			const tipID = randInt(1, tipMoulds.length);
+			const bladeMouldID = randInt(1, bladeMoulds.length);
+			const forteMouldID = randInt(1, forteMoulds.length);
+			const weaponID = tipID.toString() + bladeMouldID.toString() + forteMouldID.toString();
+			weaponName = tipMoulds[tipID - 1] + ' ' + bladeMoulds[bladeMouldID - 1] + ' ' + forteMoulds[forteMouldID - 1];
+			await user.incrementGiantsWeaponsMade(parseInt(weaponID));
 		}
 		xpReceived = Math.floor(xpReceived);
 		reputationReceived = Math.floor(reputationReceived);
@@ -100,9 +111,7 @@ export const giantsFoundryTask: MinionTask = {
 			', '
 		)}.\n${xpRes}\nKovac gave you **${reputationReceived.toLocaleString()}** Foundry Reputation ${
 			loot.length > 0 ? `and ${loot}.` : ''
-		}\nThe most prestigious weapon created by your minion was a **${randArrItem(tipMoulds)} ${randArrItem(
-			bladeMoulds
-		)} ${randArrItem(forteMoulds)}**.`;
+		}\nThe most prestigious weapon created by your minion was a **${weaponName}}**.`;
 
 		const { itemsAdded } = await transactItems({
 			userID: user.id,

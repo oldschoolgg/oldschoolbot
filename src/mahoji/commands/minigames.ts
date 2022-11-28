@@ -21,7 +21,7 @@ import {
 import { castleWarsStartCommand, castleWarsStatsCommand } from '../lib/abstracted_commands/castleWarsCommand';
 import { fishingTrawlerCommand } from '../lib/abstracted_commands/fishingTrawler';
 import { gauntletCommand } from '../lib/abstracted_commands/gauntletCommand';
-import { giantsFoundryShopCommand, giantsFoundryStartCommand } from '../lib/abstracted_commands/giantsFoundryCommand';
+import { giantsFoundryShopCommand, giantsFoundryStartCommand, giantsFoundryStatsCommand } from '../lib/abstracted_commands/giantsFoundryCommand';
 import { gnomeRestaurantCommand } from '../lib/abstracted_commands/gnomeRestaurantCommand';
 import { guardiansOfTheRiftStartCommand } from '../lib/abstracted_commands/guardiansOfTheRiftCommand';
 import { lmsCommand } from '../lib/abstracted_commands/lmsCommand';
@@ -866,6 +866,11 @@ export const minigamesCommand: OSBMahojiCommand = {
 							min_value: 1
 						}
 					]
+				},
+				{
+					name: 'stats',
+					type: ApplicationCommandOptionType.Subcommand,
+					description: "Giants' Foundry stats"
 				}
 			]
 		},
@@ -952,6 +957,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 		giants_foundry?: {
 			start?: { name: string; quantity?: number };
 			buy?: { item: string; quantity?: number };
+			stats?: {};
 		};
 		gotr?: {
 			start?: { combination_runes?: boolean };
@@ -1237,6 +1243,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 				options.giants_foundry.buy.quantity
 			);
 		}
+		if (options.giants_foundry?.stats) return giantsFoundryStatsCommand(user);
 
 		/**
 		 *

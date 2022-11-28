@@ -392,6 +392,17 @@ export class MUserClass {
 		this.user = newUser;
 	}
 
+	async incrementGiantsWeaponsMade(weaponID: number, amountToAdd = 1) {
+		const newWeapons = new Bank().add(this.user.gf_weapons_made as ItemBank).add(weaponID, amountToAdd);
+		const { newUser } = await mahojiUserSettingsUpdate(this.id, {
+			gf_weapons_made: newWeapons.bank
+		});
+	
+		this.user = newUser;
+	
+		return this;
+	}
+
 	get blowpipe() {
 		const blowpipe = this.user.blowpipe as any as BlowpipeData;
 		validateBlowpipeData(blowpipe);

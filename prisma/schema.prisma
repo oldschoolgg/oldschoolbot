@@ -128,7 +128,6 @@ model ClientStorage {
   gotr_loot                    Json     @default("{}") @db.Json
   gf_cost                      Json     @default("{}") @db.Json
   gf_loot                      Json     @default("{}") @db.Json
-  gf_weapons_made              Json     @default("{}") @db.Json
 
   @@map("clientStorage")
 }
@@ -390,6 +389,8 @@ model User {
 
   tob_cost Json @default("{}") @db.Json
   tob_loot Json @default("{}") @db.Json
+
+  gf_weapons_made Json @default("{}") @db.Json
 
   total_gp_traded BigInt @default(0)
 
