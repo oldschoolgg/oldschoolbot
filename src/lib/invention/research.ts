@@ -91,7 +91,7 @@ export async function researchCommand({
 	});
 
 	return `${minionName(user)} is now researching with ${cost}. The trip will take ${formatDuration(duration)}.`;
-	}
+}
 
 export async function researchTask(data: ResearchTaskOptions) {
 	const { userID, material, quantity } = data;
