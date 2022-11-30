@@ -8,9 +8,10 @@ import { GiantsFoundryActivityTaskOptions } from '../../../lib/types/minions';
 import { randomVariation } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { ItemBank } from './../../../lib/types/index';
 import { giantsFoundryAlloys } from './../../../mahoji/lib/abstracted_commands/giantsFoundryCommand';
 
-const tipMoulds: string[] = [
+export const tipMoulds: string[] = [
 	'Saw Tip',
 	'Gladius Point',
 	"Serpent's Fang",
@@ -24,7 +25,7 @@ const tipMoulds: string[] = [
 	'The Point!'
 ];
 
-const bladeMoulds: string[] = [
+export const bladeMoulds: string[] = [
 	'Gladius Edge',
 	'Stiletto Blade',
 	'Medusa Blade',
@@ -38,7 +39,7 @@ const bladeMoulds: string[] = [
 	'Choppa!'
 ];
 
-const forteMoulds: string[] = [
+export const forteMoulds: string[] = [
 	'Serrated Forte',
 	'Serpent Ricasso',
 	'Medusa Ricasso',
@@ -73,18 +74,18 @@ export const giantsFoundryTask: MinionTask = {
 		let reputationReceived = 0;
 		let xpReceived = 0;
 		let weaponName = '';
+		const newWeapons = new Bank().add(user.user.gf_weapons_made as ItemBank);
 		for (let i = 0; i < quantity; i++) {
 			let quality = Math.min(Math.floor(randomVariation(metalScore - 5 + avgMouldBonus, 10)), 199);
 			xpReceived += (Math.pow(quality, 2) / 73 + 1.5 * quality + 1) * 30;
 			reputationReceived += quality;
 
-			// Increse and save down Giant Weapons Made
-			const tipID = randInt(1, tipMoulds.length);
-			const bladeMouldID = randInt(1, bladeMoulds.length);
-			const forteMouldID = randInt(1, forteMoulds.length);
-			const weaponID = tipID.toString() + bladeMouldID.toString() + forteMouldID.toString();
-			weaponName = `${tipMoulds[tipID - 1]} ${bladeMoulds[bladeMouldID - 1]} ${forteMoulds[forteMouldID - 1]}`;
-			await user.incrementGiantsWeaponsMade(parseInt(weaponID));
+			const tipID = randInt(0, tipMoulds.length - 1);
+			const bladeMouldID = randInt(0, bladeMoulds.length - 1);
+			const forteMouldID = randInt(0, forteMoulds.length - 1);
+			const weaponID = `${tipID.toString()}-${bladeMouldID.toString()}-${forteMouldID.toString()}`;
+			weaponName = `${tipMoulds[tipID]} ${bladeMoulds[bladeMouldID]} ${forteMoulds[forteMouldID]}`;
+			newWeapons.add(weaponID, 1);
 		}
 		xpReceived = Math.floor(xpReceived);
 		reputationReceived = Math.floor(reputationReceived);
@@ -98,6 +99,7 @@ export const giantsFoundryTask: MinionTask = {
 		const currentUserReputation = user.user.foundry_reputation;
 
 		await user.update({
+			gf_weapons_made: newWeapons.bank,
 			foundry_reputation: currentUserReputation + reputationReceived
 		});
 

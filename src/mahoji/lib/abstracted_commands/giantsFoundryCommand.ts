@@ -15,6 +15,16 @@ import { TOTAL_WEAPONS } from '../../../tasks/minions/minigames/giantsFoundryAct
 import { handleMahojiConfirmation } from '../../mahojiSettings';
 import { ItemBank } from './../../../lib/types/index';
 
+// weaponID stored as int-int-int: 5-11-7
+export function parseGiantWeapons(weaponID: string) {
+	const splitIDs = weaponID.split('-');
+	if (splitIDs.length < 2) return undefined;
+	const tipMould = parseInt(splitIDs[0]);
+	const bladeMould = parseInt(splitIDs[1]);
+	const fortMould = parseInt(splitIDs[2]);
+	return [tipMould, bladeMould, fortMould];
+}
+
 export const giantsFoundryAlloys = [
 	{
 		name: 'Bronze',
