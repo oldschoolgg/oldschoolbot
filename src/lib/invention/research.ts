@@ -90,7 +90,7 @@ export async function researchCommand({
 		quantity
 	});
 
-	return `${userMention(user.id)}, ${minionName(
+	return `${minionName(
 		user
 	)} is now researching with ${cost}. The trip will take ${formatDuration(duration)}.`;
 }
