@@ -2,28 +2,18 @@ import { ChatInputCommandInteraction } from 'discord.js';
 import { calcWhatPercent, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { TOTAL_GIANT_WEAPONS } from '../../../lib/giantsFoundry';
 import { trackLoot } from '../../../lib/lootTrack';
 import { getMinigameEntity } from '../../../lib/settings/minigames';
 import Smithing from '../../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../../lib/skilling/types';
+import { ItemBank } from '../../../lib/types';
 import { GiantsFoundryActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { TOTAL_WEAPONS } from '../../../tasks/minions/minigames/giantsFoundryActivity';
 import { handleMahojiConfirmation } from '../../mahojiSettings';
-import { ItemBank } from './../../../lib/types/index';
-
-// weaponID stored as int-int-int: 5-11-7
-export function parseGiantWeapons(weaponID: string) {
-	const splitIDs = weaponID.split('-');
-	if (splitIDs.length < 2) return undefined;
-	const tipMould = parseInt(splitIDs[0]);
-	const bladeMould = parseInt(splitIDs[1]);
-	const fortMould = parseInt(splitIDs[2]);
-	return [tipMould, bladeMould, fortMould];
-}
 
 export const giantsFoundryAlloys = [
 	{
@@ -157,9 +147,9 @@ export async function giantsFoundryStatsCommand(user: MUser) {
 **Weapons Created in total:** ${scores.giants_foundry} Created.
 **Unique Weapons Made:** ${Object.keys(
 		weaponsMade
-	).length.toLocaleString()} / ${TOTAL_WEAPONS.toLocaleString()}, ${calcWhatPercent(
+	).length.toLocaleString()} / ${TOTAL_GIANT_WEAPONS.toLocaleString()}, ${calcWhatPercent(
 		Object.keys(weaponsMade).length,
-		TOTAL_WEAPONS
+		TOTAL_GIANT_WEAPONS
 	).toFixed(2)}% Collected.
 **Foundry Reputation:** ${user.user.foundry_reputation} Reputation.`;
 }

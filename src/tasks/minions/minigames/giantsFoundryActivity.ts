@@ -1,6 +1,12 @@
-import { randInt } from 'e';
+import { deepClone } from 'e';
 import { Bank } from 'oldschooljs';
 
+import {
+	encodeGiantWeapons,
+	generateRandomGiantWeapon,
+	GiantsFoundryBank,
+	giantWeaponName
+} from '../../../lib/giantsFoundry';
 import { trackLoot } from '../../../lib/lootTrack';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -8,52 +14,7 @@ import { GiantsFoundryActivityTaskOptions } from '../../../lib/types/minions';
 import { randomVariation } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { ItemBank } from './../../../lib/types/index';
-import { giantsFoundryAlloys } from './../../../mahoji/lib/abstracted_commands/giantsFoundryCommand';
-
-export const tipMoulds: string[] = [
-	'Saw Tip',
-	'Gladius Point',
-	"Serpent's Fang",
-	"Medusa's Head",
-	'Chopper Tip',
-	'People Poker Point',
-	'Corrupted Point',
-	"Defender's Tip",
-	'Serrated Tip',
-	'Needle Point',
-	'The Point!'
-];
-
-export const bladeMoulds: string[] = [
-	'Gladius Edge',
-	'Stiletto Blade',
-	'Medusa Blade',
-	'Fish Blade',
-	"Defender's Edge",
-	'Saw Blade',
-	'Flamberge Blade',
-	'Serpent Blade',
-	'Claymore Blade',
-	'Fleur de Blade',
-	'Choppa!'
-];
-
-export const forteMoulds: string[] = [
-	'Serrated Forte',
-	'Serpent Ricasso',
-	'Medusa Ricasso',
-	'Disarming Forte',
-	'Gladius Ricasso',
-	'Chopper Forte',
-	'Stiletto Forte',
-	"Defender's Base",
-	"Juggernaut's Forte",
-	'Chopper Forte +1',
-	'Spiker!'
-];
-
-export const TOTAL_WEAPONS = tipMoulds.length * bladeMoulds.length * forteMoulds.length;
+import { giantsFoundryAlloys } from '../../../mahoji/lib/abstracted_commands/giantsFoundryCommand';
 
 export const giantsFoundryTask: MinionTask = {
 	type: 'GiantsFoundry',
@@ -62,7 +23,7 @@ export const giantsFoundryTask: MinionTask = {
 		const user = await mUserFetch(userID);
 		const alloy = giantsFoundryAlloys.find(i => i.id === alloyID);
 		if (!alloy) {
-			return 'A issue occured trying to find a alloy using the alloy ID.';
+			return 'An issue occurred trying to find a alloy using the alloy ID.';
 		}
 		const userSmithingLevel = user.skillLevel(SkillsEnum.Smithing);
 		const boosts = [];
@@ -74,18 +35,23 @@ export const giantsFoundryTask: MinionTask = {
 		let reputationReceived = 0;
 		let xpReceived = 0;
 		let weaponName = '';
-		const newWeapons = new Bank().add(user.user.gf_weapons_made as ItemBank);
+		let highestQuality = 0;
+		let highestQualitySword = '';
+		const newWeapons = deepClone(user.user.gf_weapons_made) as GiantsFoundryBank;
 		for (let i = 0; i < quantity; i++) {
 			let quality = Math.min(Math.floor(randomVariation(metalScore - 5 + avgMouldBonus, 10)), 199);
 			xpReceived += (Math.pow(quality, 2) / 73 + 1.5 * quality + 1) * 30;
 			reputationReceived += quality;
 
-			const tipID = randInt(0, tipMoulds.length - 1);
-			const bladeMouldID = randInt(0, bladeMoulds.length - 1);
-			const forteMouldID = randInt(0, forteMoulds.length - 1);
-			const weaponID = `${tipID.toString()}-${bladeMouldID.toString()}-${forteMouldID.toString()}`;
-			weaponName = `${tipMoulds[tipID]} ${bladeMoulds[bladeMouldID]} ${forteMoulds[forteMouldID]}`;
-			newWeapons.add(weaponID, 1);
+			const weapon = generateRandomGiantWeapon();
+			const weaponID = encodeGiantWeapons(weapon);
+			weaponName = giantWeaponName(weapon);
+			newWeapons[weaponID] = newWeapons[weaponID] ? newWeapons[weaponID]++ : 1;
+			// Determine best sword of session:
+			if (quality > highestQuality) {
+				highestQuality = quality;
+				highestQualitySword = weaponName;
+			}
 		}
 		xpReceived = Math.floor(xpReceived);
 		reputationReceived = Math.floor(reputationReceived);
@@ -99,7 +65,7 @@ export const giantsFoundryTask: MinionTask = {
 		const currentUserReputation = user.user.foundry_reputation;
 
 		await user.update({
-			gf_weapons_made: newWeapons.bank,
+			gf_weapons_made: newWeapons,
 			foundry_reputation: currentUserReputation + reputationReceived
 		});
 
@@ -113,7 +79,7 @@ export const giantsFoundryTask: MinionTask = {
 			boosts.length > 0 ? `**Boosts:** ${boosts.join(', ')}.` : ''
 		}\n${xpRes}\nKovac gave you **${reputationReceived.toLocaleString()}** Foundry Reputation ${
 			loot.length > 0 ? `and ${loot}.` : ''
-		}\nThe most prestigious weapon created by your minion was a **${weaponName}**.`;
+		}\nThe most prestigious weapon created by your minion was a **${highestQualitySword}** with a score of **${highestQuality}**.`;
 
 		const { itemsAdded } = await transactItems({
 			userID: user.id,
