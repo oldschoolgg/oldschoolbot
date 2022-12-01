@@ -226,6 +226,7 @@ export interface Plankable {
 }
 
 export interface Plant {
+	id: number;
 	level: number;
 	plantXp: number;
 	checkXp: number;
