@@ -1,5 +1,7 @@
 import { randInt } from 'e';
 
+import { logError } from './util/logError';
+
 // Difference between this and ItemBank, is ItemBank is expected to have only integers as strings
 export interface GiantsFoundryBank {
 	[key: string]: number;
@@ -64,7 +66,10 @@ export function generateRandomGiantWeapon(): [number, number, number] {
 }
 
 export function giantWeaponName(weapon: string | number[]) {
-	if (typeof weapon !== 'string' && weapon.length < 3) return '';
+	if (typeof weapon !== 'string' && weapon.length < 3) {
+		logError(new Error('Invalid weapon data'));
+		return '';
+	}
 	const [tipMouldID, bladeMouldID, forteMouldID] = typeof weapon === 'string' ? decodeGiantWeapons(weapon) : weapon;
 	return `${tipMoulds[tipMouldID]} ${bladeMoulds[bladeMouldID]} ${forteMoulds[forteMouldID]}`;
 }
