@@ -1,5 +1,5 @@
 import { userMention } from '@discordjs/builders';
-import { Prisma, User, xp_gains_skill_enum } from '@prisma/client';
+import { Prisma, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
 import { notEmpty, objectEntries, sumArr, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
@@ -10,7 +10,8 @@ import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
 import { mahojiUserSettingsUpdate } from '../mahoji/settingsUpdate';
 import { addXP } from './addXP';
 import { userIsBusy } from './busyCounterCache';
-import { BitField, PerkTier, projectiles, Roles, usernameCache } from './constants';
+import { ClueTiers } from './clues/clueTiers';
+import { badges, BitField, Emoji, PerkTier, projectiles, Roles, usernameCache } from './constants';
 import { allPetIDs } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
 import { GearSetup, UserFullGearSetup } from './gear/types';
@@ -20,6 +21,7 @@ import { AttackStyles } from './minions/functions';
 import { blowpipeDarts, validateBlowpipeData } from './minions/functions/blowpipeCommand';
 import { AddXpParams, BlowpipeData } from './minions/types';
 import { getMinigameEntity, Minigames, MinigameScore } from './settings/minigames';
+import { prisma } from './settings/prisma';
 import { SkillsEnum } from './skilling/types';
 import { BankSortMethod } from './sorts';
 import { defaultGear, Gear } from './structures/Gear';
@@ -188,6 +190,18 @@ export class MUserClass {
 		return usernameCache.get(this.id) ?? this.mention;
 	}
 
+	get badgeString() {
+		const rawBadges = this.user.badges.map(num => badges[num]);
+		if (this.isIronman) {
+			rawBadges.push(Emoji.Ironman);
+		}
+		return rawBadges.join(' ');
+	}
+
+	get badgedUsername() {
+		return `${this.badgeString} ${this.usernameOrMention}`;
+	}
+
 	toString() {
 		return this.mention;
 	}
@@ -201,7 +215,7 @@ export class MUserClass {
 	}
 
 	addXP(params: AddXpParams) {
-		return addXP(this.id, params);
+		return addXP(this, params);
 	}
 
 	getKC(monsterID: number) {
@@ -301,6 +315,10 @@ export class MUserClass {
 			scores.push({ minigame, score });
 		}
 		return scores;
+	}
+
+	async fetchMinigames() {
+		return getMinigameEntity(this.id);
 	}
 
 	hasEquippedOrInBank(_items: string | number | (string | number)[], type: 'every' | 'one' = 'one') {
@@ -535,6 +553,35 @@ export class MUserClass {
 	async sync() {
 		this.user = await mahojiUsersSettingsFetch(this.id);
 	}
+
+	async fetchStats(): Promise<UserStats> {
+		const result = await prisma.userStats.upsert({
+			where: {
+				user_id: BigInt(this.id)
+			},
+			create: {
+				user_id: BigInt(this.id)
+			},
+			update: {}
+		});
+		if (!result) throw new Error(`fetchStats returned no result for ${this.id}`);
+		return result;
+	}
+
+	clueScores() {
+		return Object.entries(this.openableScores())
+			.map(entry => {
+				const tier = ClueTiers.find(i => i.id === parseInt(entry[0]));
+				if (!tier) return;
+				return {
+					tier,
+					casket: getOSItem(tier.id),
+					clueScroll: getOSItem(tier.scrollID),
+					opened: this.openableScores()[tier.id] ?? 0
+				};
+			})
+			.filter(notEmpty);
+	}
 }
 declare global {
 	export type MUser = MUserClass;
@@ -611,11 +658,11 @@ export function getUsersPerkTier(
 		return PerkTier.Three;
 	}
 
-	if (bitfield.includes(BitField.IsPatronTier1)) {
-		return PerkTier.Two;
-	}
-
-	if (bitfield.includes(BitField.HasPermanentTierOne)) {
+	if (
+		bitfield.includes(BitField.IsPatronTier1) ||
+		bitfield.includes(BitField.HasPermanentTierOne) ||
+		bitfield.includes(BitField.BothBotsMaxedFreeTierOnePerks)
+	) {
 		return PerkTier.Two;
 	}
 

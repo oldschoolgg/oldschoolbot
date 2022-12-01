@@ -1,14 +1,17 @@
 import { MonsterKillOptions, Monsters } from 'oldschooljs';
 
+import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
+import { trackLoot } from '../../lib/lootTrack';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
-import { prisma, trackLoot } from '../../lib/settings/prisma';
+import { prisma } from '../../lib/settings/prisma';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { calculateSlayerPoints, getSlayerMasterOSJSbyID, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
+import { ashSanctifierEffect } from '../../lib/util/ashSanctifier';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 
@@ -18,6 +21,7 @@ export const monsterTask: MinionTask = {
 		const { monsterID, userID, channelID, quantity, duration, usingCannon, cannonMulti, burstOrBarrage } = data;
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 		const user = await mUserFetch(userID);
+		const [hasKourendHard] = await userhasDiaryTier(user, KourendKebosDiary.hard);
 		await user.incrementKC(monsterID, quantity);
 
 		const usersTask = await getUsersCurrentSlayerInfo(user.id);
@@ -61,18 +65,23 @@ export const monsterTask: MinionTask = {
 			if (isInCatacombs) loot.add('Dark totem base', newSuperiorCount);
 		}
 
-		const xpRes = await addMonsterXP(user, {
-			monsterID,
-			quantity,
-			duration,
-			isOnTask,
-			taskQuantity: quantitySlayed,
-			minimal: true,
-			usingCannon,
-			cannonMulti,
-			burstOrBarrage,
-			superiorCount: newSuperiorCount
-		});
+		const xpRes: string[] = [];
+		xpRes.push(
+			await addMonsterXP(user, {
+				monsterID,
+				quantity,
+				duration,
+				isOnTask,
+				taskQuantity: quantitySlayed,
+				minimal: true,
+				usingCannon,
+				cannonMulti,
+				burstOrBarrage,
+				superiorCount: newSuperiorCount
+			})
+		);
+
+		if (hasKourendHard) await ashSanctifierEffect(user, loot, duration, xpRes);
 
 		announceLoot({
 			user: await mUserFetch(user.id),
@@ -91,7 +100,7 @@ export const monsterTask: MinionTask = {
 		const superiorMessage = newSuperiorCount ? `, including **${newSuperiorCount} superiors**` : '';
 		let str =
 			`${user}, ${user.minionName} finished killing ${quantity} ${monster.name}${superiorMessage}.` +
-			` Your ${monster.name} KC is now ${user.getKC(monsterID)}.\n${xpRes}\n`;
+			` Your ${monster.name} KC is now ${user.getKC(monsterID)}.\n\n${xpRes.join(' ')}\n`;
 		if (
 			monster.id === Monsters.Unicorn.id &&
 			user.hasEquipped('Iron dagger') &&
@@ -171,12 +180,19 @@ export const monsterTask: MinionTask = {
 		});
 
 		await trackLoot({
-			loot: itemsAdded,
+			totalLoot: itemsAdded,
 			id: monster.name.toString(),
 			type: 'Monster',
 			changeType: 'loot',
 			kc: quantity,
-			duration
+			duration,
+			users: [
+				{
+					id: user.id,
+					loot: itemsAdded,
+					duration
+				}
+			]
 		});
 
 		const image =

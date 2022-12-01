@@ -10,8 +10,8 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../../lib/util/determineRunes';
 import getOSItem from '../../../lib/util/getOSItem';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { pizazzPointsPerHour } from '../../../tasks/minions/minigames/mageTrainingArenaActivity';
-import { updateBankSetting } from '../../mahojiSettings';
 
 const RuneTable = new LootTable()
 	.every('Law rune', [11, 14])

@@ -91,7 +91,7 @@ for (const clueTier of ClueTiers) {
 			if (announcedLoot.length > 0) {
 				globalClient.emit(
 					Events.ServerNotification,
-					`**${user.usernameOrMention}'s** minion, ${user.minionName}, just opened their ${formatOrdinal(
+					`**${user.badgedUsername}'s** minion, ${user.minionName}, just opened their ${formatOrdinal(
 						nthCasket
 					)} ${clueTier.name} casket and received **${announcedLoot}**!`
 				);
@@ -269,6 +269,22 @@ const osjsOpenables: UnifiedOpenable[] = [
 		aliases: ['sinister chest', 'sinister'],
 		output: Openables.SinisterChest.table,
 		allItems: Openables.SinisterChest.table.allItems
+	},
+	{
+		name: 'Ore pack',
+		id: 27_019,
+		openedItem: getOSItem(27_019),
+		aliases: ['ore pack'],
+		output: Openables.OrePack.table,
+		allItems: Openables.OrePack.table.allItems
+	},
+	{
+		name: 'Intricate pouch',
+		id: 26_908,
+		openedItem: getOSItem(26_908),
+		aliases: ['intricate pouch', 'intricate'],
+		output: Openables.IntricatePouch.table,
+		allItems: Openables.IntricatePouch.table.allItems
 	}
 ];
 

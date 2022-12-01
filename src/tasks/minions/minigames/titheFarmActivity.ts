@@ -97,7 +97,7 @@ export const titheFarmTask: MinionTask = {
 			lootStr.push('```');
 			globalClient.emit(
 				Events.ServerNotification,
-				`${Emoji.Farming} **${user.usernameOrMention}'s** minion, ${
+				`${Emoji.Farming} **${user.badgedUsername}'s** minion, ${
 					user.minionName
 				}, just received a Tangleroot by completing the ${Emoji.MinigameIcon} Tithe Farm on their ${
 					titheFarmsCompleted + 1

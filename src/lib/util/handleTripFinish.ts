@@ -1,5 +1,6 @@
 import { activity_type_enum } from '@prisma/client';
 import { AttachmentBuilder, ButtonBuilder, MessageCollector } from 'discord.js';
+import { shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
@@ -14,10 +15,12 @@ import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import { ActivityTaskOptions } from '../types/minions';
 import { channelIsSendable, makeComponents } from '../util';
 import {
+	makeAutoContractButton,
 	makeBirdHouseTripButton,
 	makeDoClueButton,
 	makeNewSlayerTaskButton,
 	makeOpenCasketButton,
+	makeOpenSeedPackButton,
 	makeRepeatTripButton
 } from './globalInteractions';
 import { sendToChannelID } from './webhook';
@@ -122,6 +125,10 @@ export async function handleTripFinish(
 		) {
 			components.push(makeNewSlayerTaskButton());
 		}
+		if (loot?.has('Seed pack')) {
+			components.push(makeAutoContractButton());
+			components.push(makeOpenSeedPackButton());
+		}
 	}
 
 	handleTriggerShootingStar(user, data, components);
@@ -129,6 +136,6 @@ export async function handleTripFinish(
 	sendToChannelID(channelID, {
 		content: message,
 		image: attachment,
-		components: components.length > 0 ? makeComponents(components) : undefined
+		components: components.length > 0 ? makeComponents(shuffleArr(components)) : undefined
 	});
 }

@@ -61,6 +61,7 @@ import {
 	RevenantOptions,
 	RunecraftActivityTaskOptions,
 	SawmillActivityTaskOptions,
+	ScatteringActivityTaskOptions,
 	SepulchreActivityTaskOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
@@ -203,6 +204,16 @@ export function minionStatus(user: MUser) {
 			} Prayer level is ${user.skillLevel(SkillsEnum.Prayer)}`;
 		}
 
+		case 'Scattering': {
+			const data = currentTask as ScatteringActivityTaskOptions;
+
+			const ashes = Prayer.Ashes.find(ashes => ashes.inputId === data.ashID);
+
+			return `${name} is currently scattering ${data.quantity}x ${ashes!.name}. ${formattedDuration} Your ${
+				Emoji.Prayer
+			} Prayer level is ${user.skillLevel(SkillsEnum.Prayer)}`;
+		}
+
 		case 'Firemaking': {
 			const data = currentTask as FiremakingActivityTaskOptions;
 
@@ -246,7 +257,7 @@ export function minionStatus(user: MUser) {
 
 		case 'TiaraRunecraft': {
 			const data = currentTask as TiaraRunecraftActivityTaskOptions;
-			const tiara = Runecraft.Tiara.find(_tiara => _tiara.id === data.tiaraID);
+			const tiara = Runecraft.Tiaras.find(_tiara => _tiara.id === data.tiaraID);
 
 			return `${name} is currently crafting ${data.tiaraQuantity} ${tiara!.name}. ${formattedDuration} Your ${
 				Emoji.Runecraft
@@ -578,6 +589,11 @@ export function minionStatus(user: MUser) {
 		}
 		case 'ShootingStars': {
 			return `${name} is currently mining a Crashed Star. The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
+		case 'GuardiansOfTheRift': {
+			return `${name} is currently helping the Great Guardian to close the rift. The trip should take ${formatDuration(
 				durationRemaining
 			)}.`;
 		}

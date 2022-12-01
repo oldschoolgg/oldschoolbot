@@ -1,11 +1,7 @@
-import { Activity, activity_type_enum, loot_track_type, Prisma, PrismaClient } from '@prisma/client';
-import { Time } from 'e';
-import { Bank } from 'oldschooljs';
+import { Activity, activity_type_enum, Prisma, PrismaClient } from '@prisma/client';
 
 import { CLIENT_ID, production } from '../../config';
-import { ItemBank } from '../types';
 import { ActivityTaskData } from '../types/minions';
-import { cleanString } from '../util/cleanString';
 
 declare global {
 	namespace NodeJS {
@@ -62,73 +58,6 @@ export async function countUsersWithItemInCl(itemID: number, ironmenOnly: boolea
 		throw new Error(`countUsersWithItemInCl produced invalid number '${result}' for ${itemID}`);
 	}
 	return result;
-}
-
-type TrackLootOptions =
-	| {
-			id: string;
-			type: loot_track_type;
-			duration: number;
-			kc: number;
-			teamSize?: number;
-			loot: Bank;
-			changeType: 'loot';
-	  }
-	| {
-			id: string;
-			type: loot_track_type;
-			cost: Bank;
-			changeType: 'cost';
-	  };
-
-export async function trackLoot(opts: TrackLootOptions) {
-	const key = cleanString(opts.id).toLowerCase().replace(/ /g, '_');
-	const bank = opts.changeType === 'cost' ? opts.cost : opts.loot;
-	if (bank.length === 0) return;
-
-	let duration = opts.changeType === 'loot' ? Math.floor((opts.duration * (opts.teamSize ?? 1)) / Time.Minute) : 0;
-
-	let current = await prisma.lootTrack.findFirst({
-		where: {
-			key,
-			user_id: null
-		}
-	});
-
-	// If no existing loot track, create one.
-	if (!current) {
-		await prisma.lootTrack.create({
-			data: {
-				key,
-				total_kc: opts.changeType === 'loot' ? opts.kc : 0,
-				total_duration: duration,
-				[opts.changeType]: bank.bank,
-				type: opts.type
-			}
-		});
-	} else {
-		// If there was one, update it.
-		await prisma.lootTrack.updateMany({
-			where: {
-				id: current.id
-			},
-			data: {
-				total_duration:
-					opts.changeType === 'loot'
-						? {
-								increment: duration
-						  }
-						: undefined,
-				total_kc:
-					opts.changeType === 'loot'
-						? {
-								increment: opts.kc
-						  }
-						: undefined,
-				[opts.changeType]: bank.clone().add(current?.[opts.changeType] as ItemBank | undefined).bank
-			}
-		});
-	}
 }
 
 export async function addToGPTaxBalance(userID: string | string, amount: number) {

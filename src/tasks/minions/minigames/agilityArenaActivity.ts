@@ -54,7 +54,7 @@ export const agilityArenaTask: MinionTask = {
 				str += "**\nYou have a funny feeling you're being followed...**";
 				globalClient.emit(
 					Events.ServerNotification,
-					`${Emoji.Agility} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Giant squirrel while running at the Agility Arena at level ${currentLevel} Agility!`
+					`${Emoji.Agility} **${user.badgedUsername}'s** minion, ${user.minionName}, just received a Giant squirrel while running at the Agility Arena at level ${currentLevel} Agility!`
 				);
 			}
 		}

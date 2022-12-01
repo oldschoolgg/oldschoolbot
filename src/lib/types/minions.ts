@@ -1,3 +1,5 @@
+import { CropUpgradeType } from '@prisma/client';
+
 import { IPatchData } from '../minions/farming/types';
 import { MinigameName } from '../settings/minigames';
 import { Peak } from '../tickers';
@@ -147,6 +149,11 @@ export interface BuryingActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface ScatteringActivityTaskOptions extends ActivityTaskOptions {
+	ashID: number;
+	quantity: number;
+}
+
 export interface OfferingActivityTaskOptions extends ActivityTaskOptions {
 	boneID: number;
 	quantity: number;
@@ -195,9 +202,10 @@ export interface InfernoOptions extends ActivityTaskOptions {
 }
 
 export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
+	pid?: number;
 	plantsName: string | null;
 	quantity: number;
-	upgradeType: string | null;
+	upgradeType: CropUpgradeType | null;
 	payment?: boolean;
 	patchType: IPatchData;
 	planting: boolean;
@@ -283,6 +291,7 @@ export interface RaidsOptions extends ActivityTaskOptions {
 	leader: string;
 	users: string[];
 	challengeMode: boolean;
+	quantity?: number;
 }
 
 export interface TheatreOfBloodTaskOptions extends ActivityTaskOptions {
@@ -323,6 +332,13 @@ export interface PuroPuroActivityTaskOptions extends MinigameActivityTaskOptions
 	quantity: number;
 	implingID: number | null;
 	darkLure: boolean;
+}
+
+export interface GuardiansOfTheRiftActivityTaskOptions extends MinigameActivityTaskOptions {
+	minedFragments: number;
+	barrierAndGuardian: number;
+	rolls: number;
+	combinationRunes: boolean;
 }
 
 export type ActivityTaskData =

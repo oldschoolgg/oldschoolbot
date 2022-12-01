@@ -4,6 +4,7 @@ import { Bank, Monsters } from 'oldschooljs';
 import { Emoji, Events } from '../../lib/constants';
 import { defaultFarmingContract, PatchTypes } from '../../lib/minions/farming';
 import { FarmingContract } from '../../lib/minions/farming/types';
+import { prisma } from '../../lib/settings/prisma';
 import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
 import Farming from '../../lib/skilling/skills/farming';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -12,14 +13,14 @@ import { assert, rand, roll, skillingPetDropRate } from '../../lib/util';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import { getFarmingKeyFromName } from '../../lib/util/farmingHelpers';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { logError } from '../../lib/util/logError';
+import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { sendToChannelID } from '../../lib/util/webhook';
-import { mahojiUsersSettingsFetch, updateBankSetting } from '../../mahoji/mahojiSettings';
+import { mahojiUsersSettingsFetch, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 
 export const farmingTask: MinionTask = {
 	type: 'Farming',
 	async run(data: FarmingActivityTaskOptions) {
-		const { plantsName, patchType, quantity, upgradeType, payment, userID, channelID, planting, currentDate } =
+		const { plantsName, patchType, quantity, upgradeType, payment, userID, channelID, planting, currentDate, pid } =
 			data;
 		const user = await mUserFetch(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
@@ -48,7 +49,8 @@ export const farmingTask: MinionTask = {
 		let farmersPiecesCheck = 0;
 		let loot = new Bank();
 
-		const plant = Farming.Plants.find(plant => plant.name === plantsName);
+		const plant = Farming.Plants.find(plant => plant.name === plantsName)!;
+		assert(Boolean(plant));
 
 		if (user.hasEquippedOrInBank('Magic secateurs')) {
 			baseBonus += 0.1;
@@ -96,33 +98,28 @@ export const farmingTask: MinionTask = {
 		}
 		if (farmersPiecesCheck === 4) bonusXpMultiplier += 0.005;
 
+		// If they have nothing planted here, just plant the seeds and return.
 		if (!patchType.patchPlanted) {
-			if (!plant) {
-				logError(new Error(`${user.usernameOrMention}'s new patch had no plant found.`), { user_id: user.id });
-				return;
-			}
-
 			rakeXp = quantity * 4 * 3; // # of patches * exp per weed * # of weeds
 			plantXp = quantity * (plant.plantXp + compostXp);
 			farmingXpReceived = plantXp + harvestXp + rakeXp;
 
 			loot.add('Weeds', quantity * 3);
 
-			bonusXP += Math.floor(farmingXpReceived * bonusXpMultiplier);
-
-			const xpRes = await user.addXP({
-				skillName: SkillsEnum.Farming,
-				amount: Math.floor(farmingXpReceived + bonusXP),
-				duration: data.duration
-			});
-
 			let str = `${user}, ${user.minionName} finished raking ${quantity} patches and planting ${quantity}x ${
 				plant.name
-			}.\n\nYou received ${plantXp.toLocaleString()} XP from planting and ${rakeXp.toLocaleString()} XP from raking. In total: ${xpRes}.`;
+			}.\n\nYou received ${plantXp.toLocaleString()} XP from planting and ${rakeXp.toLocaleString()} XP from raking for a total of ${farmingXpReceived.toLocaleString()} Farming XP.`;
 
+			bonusXP += Math.floor(farmingXpReceived * bonusXpMultiplier);
 			if (bonusXP > 0) {
 				str += ` You received an additional ${bonusXP.toLocaleString()} in bonus XP.`;
 			}
+
+			str += `\n${await user.addXP({
+				skillName: SkillsEnum.Farming,
+				amount: Math.floor(farmingXpReceived + bonusXP),
+				duration: data.duration
+			})}`;
 
 			if (loot.length > 0) str += `\n\nYou received: ${loot}.`;
 
@@ -132,13 +129,15 @@ export const farmingTask: MinionTask = {
 				collectionLog: true,
 				itemsToAdd: loot
 			});
+
 			const newPatch: PatchTypes.PatchData = {
 				lastPlanted: plant.name,
 				patchPlanted: true,
 				plantTime: currentDate,
 				lastQuantity: quantity,
 				lastUpgradeType: upgradeType,
-				lastPayment: payment ?? false
+				lastPayment: payment ?? false,
+				pid
 			};
 
 			await user.update({
@@ -149,9 +148,8 @@ export const farmingTask: MinionTask = {
 
 			handleTripFinish(user, channelID, str, undefined, data, null);
 		} else if (patchType.patchPlanted) {
-			const plantToHarvest = Farming.Plants.find(plant => plant.name === patchType.lastPlanted);
-			if (!plantToHarvest) return;
-			if (!plant) return;
+			// If they do have something planted here, harvest it and possibly replant.
+			const plantToHarvest = Farming.Plants.find(plant => plant.name === patchType.lastPlanted)!;
 
 			let quantityDead = 0;
 			for (let i = 0; i < patchType.lastQuantity; i++) {
@@ -307,7 +305,6 @@ export const farmingTask: MinionTask = {
 				);
 			}
 
-			let tangleroot = false;
 			const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Farming, plantToHarvest.petChance);
 			if (plantToHarvest.seedType === 'hespori') {
 				await user.incrementKC(Monsters.Hespori.id, patchType.lastQuantity);
@@ -315,7 +312,6 @@ export const farmingTask: MinionTask = {
 					farmingLevel: currentFarmingLevel
 				});
 				loot = hesporiLoot;
-				if (hesporiLoot.amount('Tangleroot')) tangleroot = true;
 			} else if (
 				patchType.patchPlanted &&
 				plantToHarvest.petChance &&
@@ -323,7 +319,6 @@ export const farmingTask: MinionTask = {
 				roll(petDropRate / alivePlants)
 			) {
 				loot.add('Tangleroot');
-				tangleroot = true;
 			}
 			if (plantToHarvest.seedType === 'seaweed' && roll(3)) loot.add('Seaweed spore', randInt(1, 3));
 
@@ -337,13 +332,13 @@ export const farmingTask: MinionTask = {
 				if (hesporiSeeds > 0) loot.add('Hespori seed', hesporiSeeds);
 			}
 
-			if (tangleroot) {
+			if (loot.has('Tangleroot')) {
 				infoStr.push('\n```diff');
 				infoStr.push("\n- You have a funny feeling you're being followed...");
 				infoStr.push('```');
 				globalClient.emit(
 					Events.ServerNotification,
-					`${Emoji.Farming} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Tangleroot while farming ${patchType.lastPlanted} at level ${currentFarmingLevel} Farming!`
+					`${Emoji.Farming} **${user.badgedUsername}'s** minion, ${user.minionName}, just received a Tangleroot while farming ${patchType.lastPlanted} at level ${currentFarmingLevel} Farming!`
 				);
 			}
 
@@ -363,7 +358,8 @@ export const farmingTask: MinionTask = {
 					plantTime: currentDate,
 					lastQuantity: quantity,
 					lastUpgradeType: upgradeType,
-					lastPayment: payment ? payment : false
+					lastPayment: payment ? payment : false,
+					pid
 				};
 			}
 
@@ -411,6 +407,17 @@ export const farmingTask: MinionTask = {
 				collectionLog: true,
 				itemsToAdd: loot
 			});
+			await userStatsBankUpdate(user.id, 'farming_harvest_loot_bank', loot);
+			if (pid) {
+				await prisma.farmedCrop.update({
+					where: {
+						id: pid
+					},
+					data: {
+						date_harvested: new Date()
+					}
+				});
+			}
 
 			handleTripFinish(
 				user,
@@ -425,7 +432,7 @@ export const farmingTask: MinionTask = {
 					  })
 					: undefined,
 				data,
-				null
+				loot
 			);
 		}
 	}

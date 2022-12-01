@@ -10,9 +10,10 @@ import { getMinigameScore, Minigames } from '../../lib/settings/minigames';
 import { formatSkillRequirements, itemNameFromID, stringMatches } from '../../lib/util';
 import { mahojiChatHead } from '../../lib/util/chatHeadImage';
 import getOSItem from '../../lib/util/getOSItem';
+import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { leaguesBuyCommand } from '../lib/abstracted_commands/leaguesBuyCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiParseNumber, updateBankSetting } from '../mahojiSettings';
+import { handleMahojiConfirmation, mahojiParseNumber } from '../mahojiSettings';
 
 const allBuyablesAutocomplete = [...Buyables, ...leagueBuyables.map(i => ({ name: i.item.name })), { name: 'Kitten' }];
 
