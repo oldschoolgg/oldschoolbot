@@ -10,7 +10,8 @@ import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
 import { mahojiUserSettingsUpdate } from '../mahoji/settingsUpdate';
 import { addXP } from './addXP';
 import { userIsBusy } from './busyCounterCache';
-import { BitField, PerkTier, projectiles, Roles, usernameCache } from './constants';
+import { ClueTiers } from './clues/clueTiers';
+import { badges, BitField, Emoji, PerkTier, projectiles, Roles, usernameCache } from './constants';
 import { allPetIDs } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
 import { GearSetup, UserFullGearSetup } from './gear/types';
@@ -189,6 +190,18 @@ export class MUserClass {
 		return usernameCache.get(this.id) ?? this.mention;
 	}
 
+	get badgeString() {
+		const rawBadges = this.user.badges.map(num => badges[num]);
+		if (this.isIronman) {
+			rawBadges.push(Emoji.Ironman);
+		}
+		return rawBadges.join(' ');
+	}
+
+	get badgedUsername() {
+		return `${this.badgeString} ${this.usernameOrMention}`;
+	}
+
 	toString() {
 		return this.mention;
 	}
@@ -302,6 +315,10 @@ export class MUserClass {
 			scores.push({ minigame, score });
 		}
 		return scores;
+	}
+
+	async fetchMinigames() {
+		return getMinigameEntity(this.id);
 	}
 
 	hasEquippedOrInBank(_items: string | number | (string | number)[], type: 'every' | 'one' = 'one') {
@@ -549,6 +566,21 @@ export class MUserClass {
 		});
 		if (!result) throw new Error(`fetchStats returned no result for ${this.id}`);
 		return result;
+	}
+
+	clueScores() {
+		return Object.entries(this.openableScores())
+			.map(entry => {
+				const tier = ClueTiers.find(i => i.id === parseInt(entry[0]));
+				if (!tier) return;
+				return {
+					tier,
+					casket: getOSItem(tier.id),
+					clueScroll: getOSItem(tier.scrollID),
+					opened: this.openableScores()[tier.id] ?? 0
+				};
+			})
+			.filter(notEmpty);
 	}
 }
 declare global {
