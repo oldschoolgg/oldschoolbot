@@ -17,7 +17,7 @@ import { fremennikClothes } from './frem';
 import { gnomeClothes } from './gnomeClothes';
 import { guardiansOfTheRiftBuyables } from './guardiansOfTheRifBuyables';
 import { miningBuyables } from './mining';
-import { perduBuyables, prayerBooks } from './perdu';
+import { godCapes, perduBuyables, prayerBooks } from './perdu';
 import { runeBuyables } from './runes';
 import { shootingStarsBuyables } from './shootingStarsBuyables';
 import { skillCapeBuyables } from './skillCapeBuyables';
@@ -1028,6 +1028,7 @@ const Buyables: Buyable[] = [
 	...tobCapes,
 	...perduBuyables,
 	...prayerBooks,
+	...godCapes,
 	...skillCapeBuyables,
 	...aerialFishBuyables,
 	...troubleBrewingBuyables,
