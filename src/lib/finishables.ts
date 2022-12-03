@@ -35,7 +35,7 @@ import {
 import pets from './data/pets';
 import { MoktangLootTable } from './minions/data/killableMonsters/custom/bosses/Moktang';
 import { Naxxus } from './minions/data/killableMonsters/custom/bosses/Naxxus';
-import { NexMonster } from './nex';
+import { NEX_UNIQUE_DROPRATE, NexMonster } from './nex';
 import { birdsNestID, treeSeedsNest } from './simulation/birdsNest';
 import { gauntlet } from './simulation/gauntlet';
 import { getTemporossLoot } from './simulation/tempoross';
@@ -169,7 +169,7 @@ export const finishables: Finishable[] = [
 		cl: nexCL.filter(i => i !== itemID('Frozen key')),
 		kill: () => {
 			const loot = new Bank(NexMonster.table.kill(1, {}));
-			if (roll(82)) {
+			if (roll(NEX_UNIQUE_DROPRATE(1))) {
 				loot.add(randArrItem(nexUniqueDrops), 1);
 			}
 			return loot;
