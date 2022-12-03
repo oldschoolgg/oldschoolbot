@@ -22,7 +22,6 @@ export const prayerBooks: Buyable[] = [
 	name: `Reclaim ${book}`,
 	outputItems: new Bank({ [book]: 1 }),
 	gpCost: 12_000,
-	ironmanPrice: 1000,
 	collectionLogReqs: resolveItems(book)
 }));
 
@@ -30,6 +29,5 @@ export const godCapes: Buyable[] = ['Guthix cape', 'Saradomin cape', 'Zamorak ca
 	name: `Reclaim ${cape}`,
 	outputItems: new Bank({ [cape]: 1 }),
 	gpCost: 23_000,
-	ironmanPrice: 1000,
 	collectionLogReqs: resolveItems(cape)
 }));
