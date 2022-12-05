@@ -390,8 +390,6 @@ model User {
   tob_cost Json @default("{}") @db.Json
   tob_loot Json @default("{}") @db.Json
 
-  gf_weapons_made Json @default("{}") @db.Json
-
   total_gp_traded BigInt @default(0)
 
   lms_points Int @default(0)
@@ -593,6 +591,7 @@ model UserStats {
   create_loot_bank         Json   @default("{}") @db.Json
   bird_eggs_offered_bank   Json   @default("{}") @db.Json
   scattered_ashes_bank     Json   @default("{}") @db.Json
+  gf_weapons_made          Json   @default("{}") @db.Json
   ash_sanctifier_prayer_xp BigInt @default(0)
   gotr_rift_searches       Int    @default(0)
 

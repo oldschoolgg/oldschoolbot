@@ -7,13 +7,13 @@ import { trackLoot } from '../../../lib/lootTrack';
 import { getMinigameEntity } from '../../../lib/settings/minigames';
 import Smithing from '../../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { ItemBank } from '../../../lib/types';
 import { GiantsFoundryActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { handleMahojiConfirmation } from '../../mahojiSettings';
+import { GiantsFoundryBank } from './../../../lib/giantsFoundry';
 
 export const giantsFoundryAlloys = [
 	{
@@ -141,7 +141,8 @@ export const giantsFoundryBuyables: { name: string; output: Bank; cost: number; 
 
 export async function giantsFoundryStatsCommand(user: MUser) {
 	const scores = await getMinigameEntity(user.id);
-	const weaponsMade = user.user.gf_weapons_made as ItemBank;
+	const stats = await user.fetchStats();
+	const weaponsMade = stats.gf_weapons_made as GiantsFoundryBank;
 	return `**Giants' Foundry Stats:**
 
 **Weapons Created in total:** ${scores.giants_foundry} Created.
@@ -287,7 +288,7 @@ export async function giantsFoundryShopCommand(
 		}
 	});
 
-	return `You sucessfully bought **${quantity.toLocaleString()}x ${shopItem.name}** for ${(
+	return `You successfully bought **${quantity.toLocaleString()}x ${shopItem.name}** for ${(
 		shopItem.cost * quantity
 	).toLocaleString()} Foundry Reputation.\nYou now have ${currentUserReputation - cost} Foundry Reputation left.`;
 }
