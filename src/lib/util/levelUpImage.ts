@@ -3,6 +3,7 @@ import { AttachmentBuilder } from 'discord.js';
 import * as fs from 'fs';
 import { Canvas } from 'skia-canvas/lib';
 import { canvasImageFromBuffer, printWrappedText } from './canvasUtil';
+import { toTitleCase } from './toTitleCase';
 
 export const textBoxFile = fs.readFileSync('./src/lib/resources/images/textbox.png');
 const fishingLevelUpImage = fs.readFileSync('./src/lib/resources/images/skillLevelUpImages/fishing.png');
@@ -61,17 +62,17 @@ export async function newLevelUpImage({ lvl, skill }: { lvl: number; skill: keyo
 	ctx.imageSmoothingEnabled = false;
 	const levelUpImage = await canvasImageFromBuffer(skillLevelUpImages[skill]);
 	const bg = await canvasImageFromBuffer(textBoxFile);
-	const capitalizedSkillName = skill.charAt(0).toUpperCase() + skill.slice(1);
+	const skillName = toTitleCase(skill);
 	ctx.drawImage(bg, 0, 0);
 	ctx.drawImage(levelUpImage, 38 - Math.floor(levelUpImage.width / (6 * 1.9)), Math.floor(bg.height / 2 - levelUpImage.height / (2 * 1.9) + 2), Math.floor(levelUpImage.width / 1.9), Math.floor(levelUpImage.height / 1.9));
 	ctx.font = '16px RuneScape Quill 8';
 
 	ctx.fillStyle = '#0a0880';
-	const congratzMessage = `Congratulations, you just advanced ${skill.startsWith("a") ? 'an' : "a"} ${capitalizedSkillName} level.`
+	const congratzMessage = `Congratulations, you just advanced ${skill.startsWith("a") ? 'an' : "a"} ${skillName} level.`
 	const congratzMessageWidth = Math.floor(ctx.measureText(congratzMessage).width);
 	ctx.fillText(congratzMessage, Math.floor(287 - congratzMessageWidth / 2), 52);
 	ctx.fillStyle = '#000';
-	const levelUpMessage = `Your ${capitalizedSkillName} level is now ${lvl}.`;
+	const levelUpMessage = `Your ${skillName} level is now ${lvl}.`;
 	printWrappedText(ctx, levelUpMessage, 287, bg.height / 2 + 12, 361);
 
 	return canvas.toBuffer('png');
