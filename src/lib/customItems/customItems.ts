@@ -1076,7 +1076,7 @@ setCustomItem(
 			defence_ranged: 36,
 			melee_strength: 0,
 			ranged_strength: 0,
-			magic_damage: 0,
+			magic_damage: 2,
 			prayer: 10,
 			slot: EquipmentSlot.Cape,
 			requirements: null

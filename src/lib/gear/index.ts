@@ -27,7 +27,7 @@ export const maxOffenceStats: { [key in OffenceGearStat]: number } = {
 export const maxOtherStats: { [key in OtherGearStat]: number } = {
 	[GearStat.MeleeStrength]: 243,
 	[GearStat.RangedStrength]: 172,
-	[GearStat.MagicDamage]: 60,
+	[GearStat.MagicDamage]: 62,
 	[GearStat.Prayer]: 66
 };
 
