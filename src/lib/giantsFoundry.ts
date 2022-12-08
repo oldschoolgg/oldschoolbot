@@ -1,6 +1,6 @@
 import { randInt } from 'e';
 
-import { logError } from './util/logError';
+import { assert } from './util';
 
 // Difference between this and ItemBank, is ItemBank is expected to have only integers as strings
 export interface GiantsFoundryBank {
@@ -50,26 +50,24 @@ export const forteMoulds: string[] = [
 
 export const TOTAL_GIANT_WEAPONS = tipMoulds.length * bladeMoulds.length * forteMoulds.length;
 
-// weaponID stored as hex 0a0403 => 10, 4, 3
+// weaponID stored as 10-4-3 => 10, 4, 3
 export function decodeGiantWeapons(weaponID: string) {
-	const decimal = parseInt(weaponID, 16);
-	const [tipMould, bladeMould, forteMould] = [decimal >> 16, (decimal >> 8) & 255, decimal & 255];
-	return [tipMould, bladeMould, forteMould];
+	const weaponIDs = weaponID.split('-');
+	assert(weaponIDs.length === 3);
+	const [tipMould, bladeMould, forteMould] = weaponIDs;
+	return [parseInt(tipMould), parseInt(bladeMould), parseInt(forteMould)];
 }
 
+// weaponID encoded as 10-4-3
 export function encodeGiantWeapons([tip, blade, forte]: [number, number, number]) {
-	return ((tip << 16) | (blade << 8) | forte).toString(16);
+	return `${tip.toString()}-${blade.toString()}-${forte.toString()}`;
 }
 
 export function generateRandomGiantWeapon(): [number, number, number] {
 	return [randInt(0, tipMoulds.length - 1), randInt(0, bladeMoulds.length - 1), randInt(0, forteMoulds.length - 1)];
 }
 
-export function giantWeaponName(weapon: string | number[]) {
-	if (typeof weapon !== 'string' && weapon.length < 3) {
-		logError(new Error('Invalid weapon data'));
-		return '';
-	}
-	const [tipMouldID, bladeMouldID, forteMouldID] = typeof weapon === 'string' ? decodeGiantWeapons(weapon) : weapon;
+export function giantWeaponName(weapon: number[]) {
+	const [tipMouldID, bladeMouldID, forteMouldID] = weapon;
 	return `${tipMoulds[tipMouldID]} ${bladeMoulds[bladeMouldID]} ${forteMoulds[forteMouldID]}`;
 }
