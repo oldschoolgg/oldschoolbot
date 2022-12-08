@@ -2216,7 +2216,7 @@ export const customPetsCL = resolveItems([
 	'Sandy',
 	'Baby kalphite king',
 	'Steve',
-	'Frosty',
+	'Frostbite',
 	'Voidling',
 	'Baby duckling',
 	'Jal-MejJak',

@@ -2,6 +2,7 @@ import { randArrItem, roll } from 'e';
 import { Bank, Items, LootTable } from 'oldschooljs';
 import TreeHerbSeedTable from 'oldschooljs/dist/simulation/subtables/TreeHerbSeedTable';
 
+import { christmasLootTable } from './christmasEvent';
 import { Emoji } from './constants';
 import {
 	allPetIDs,
@@ -231,7 +232,7 @@ const FestivePresentTable = new LootTable()
 	.tertiary(50, 'Seer')
 	.tertiary(20, 'Frozen santa hat')
 	.tertiary(3, 'Golden shard')
-	.tertiary(4, 'Festive jumper')
+	.tertiary(4, 'Festive jumper (2021)')
 	.add('Toy soldier')
 	.add('Toy doll')
 	.add('Toy cat');
@@ -531,6 +532,12 @@ function makeOutputFromArrayOfItemIDs(fn: () => number, quantity: number) {
 	return { bank: loot };
 }
 
+const ChristmasBoxTable = new LootTable()
+	.add('Candy partyhat')
+	.add(christmasLootTable, 3)
+	.add('Christmas dye', 3)
+	.add('Coal', 1);
+
 export const bsoOpenables: UnifiedOpenable[] = [
 	{
 		name: 'Tradeables Mystery box',
@@ -736,6 +743,14 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		aliases: ['spooky box'],
 		output: spookyTable,
 		allItems: spookyTable.allItems
+	},
+	{
+		name: 'Christmas box',
+		id: itemID('Christmas box'),
+		openedItem: getOSItem('Christmas box'),
+		aliases: ['christmas box'],
+		output: ChristmasBoxTable,
+		allItems: ChristmasBoxTable.allItems
 	}
 ];
 
