@@ -12,7 +12,7 @@ import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { handleMahojiConfirmation } from '../../mahojiSettings';
+import { handleMahojiConfirmation, userStatsBankUpdate } from '../../mahojiSettings';
 import { GiantsFoundryBank } from './../../../lib/giantsFoundry';
 
 export const giantsFoundryAlloys = [
@@ -219,6 +219,7 @@ export async function giantsFoundryStartCommand(
 			}
 		]
 	});
+	await userStatsBankUpdate(user.id, 'gf_cost', totalCost);
 
 	const duration = quantity * alloy.sections * timePerSection;
 

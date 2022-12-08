@@ -591,7 +591,11 @@ model UserStats {
   create_loot_bank         Json   @default("{}") @db.Json
   bird_eggs_offered_bank   Json   @default("{}") @db.Json
   scattered_ashes_bank     Json   @default("{}") @db.Json
+
   gf_weapons_made          Json   @default("{}") @db.Json
+  gf_cost                  Json   @default("{}") @db.Json
+  gf_loot                  Json   @default("{}") @db.Json
+
   ash_sanctifier_prayer_xp BigInt @default(0)
   gotr_rift_searches       Int    @default(0)
 

@@ -14,7 +14,7 @@ import { GiantsFoundryActivityTaskOptions } from '../../../lib/types/minions';
 import { randomVariation } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
+import { userStatsBankUpdate, userStatsUpdate } from '../../../mahoji/mahojiSettings';
 
 export const giantsFoundryTask: MinionTask = {
 	type: 'GiantsFoundry',
@@ -88,7 +88,6 @@ export const giantsFoundryTask: MinionTask = {
 			collectionLog: true,
 			itemsToAdd: loot
 		});
-
 		updateBankSetting('gf_loot', loot);
 		await trackLoot({
 			id: 'giants_foundry',
@@ -105,6 +104,7 @@ export const giantsFoundryTask: MinionTask = {
 				}
 			]
 		});
+		await userStatsBankUpdate(user.id, 'gf_loot', loot);
 
 		handleTripFinish(user, channelID, str, undefined, data, itemsAdded);
 	}
