@@ -3869,12 +3869,78 @@ setCustomItem(
 	10_000
 );
 
-setCustomItem(70_237, 'Offhand drygore rapier (xmas)', 'Offhand drygore rapier', {}, 200_000_000);
-setCustomItem(70_238, 'Drygore rapier (xmas)', 'Drygore rapier', {}, 200_000_000);
-setCustomItem(70_239, 'Offhand drygore mace (xmas)', 'Offhand Drygore mace', {}, 200_000_000);
-setCustomItem(70_240, 'Drygore mace (xmas)', 'Drygore mace', {}, 200_000_000);
-setCustomItem(70_241, 'Offhand drygore longsword (xmas)', 'Offhand drygore longsword', {}, 200_000_000);
-setCustomItem(70_242, 'Drygore longsword (xmas)', 'Drygore longsword', {}, 200_000_000);
+setCustomItem(
+	70_237,
+	'Offhand drygore rapier (xmas)',
+	'Offhand drygore rapier',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	200_000_000
+);
+setCustomItem(
+	70_238,
+	'Drygore rapier (xmas)',
+	'Drygore rapier',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	200_000_000
+);
+setCustomItem(
+	70_239,
+	'Offhand drygore mace (xmas)',
+	'Offhand Drygore mace',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	200_000_000
+);
+setCustomItem(
+	70_240,
+	'Drygore mace (xmas)',
+	'Drygore mace',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	200_000_000
+);
+setCustomItem(
+	70_241,
+	'Offhand drygore longsword (xmas)',
+	'Offhand drygore longsword',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	200_000_000
+);
+setCustomItem(
+	70_242,
+	'Drygore longsword (xmas)',
+	'Drygore longsword',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	200_000_000
+);
 
 setCustomItem(
 	70_244,
