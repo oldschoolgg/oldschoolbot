@@ -18,7 +18,7 @@ import { gnomeClothes } from './gnomeClothes';
 import { guardiansOfTheRiftBuyables } from './guardiansOfTheRifBuyables';
 import { miningBuyables } from './mining';
 import { monkeyRumbleBuyables } from './monkeyRumbleBuyables';
-import { perduBuyables } from './perdu';
+import { godCapes, perduBuyables, prayerBooks } from './perdu';
 import { runeBuyables } from './runes';
 import { shootingStarsBuyables } from './shootingStarsBuyables';
 import { skillCapeBuyables } from './skillCapeBuyables';
@@ -1089,6 +1089,8 @@ const Buyables: Buyable[] = [
 	...randomEventBuyables,
 	...tobCapes,
 	...perduBuyables,
+	...prayerBooks,
+	...godCapes,
 	...skillCapeBuyables,
 	...aerialFishBuyables,
 	...troubleBrewingBuyables,
