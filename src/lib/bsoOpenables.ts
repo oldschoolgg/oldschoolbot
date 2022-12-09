@@ -534,9 +534,9 @@ function makeOutputFromArrayOfItemIDs(fn: () => number, quantity: number) {
 
 const ChristmasBoxTable = new LootTable()
 	.add('Candy partyhat')
-	.add(christmasLootTable, 3)
-	.add('Christmas dye', 2)
-	.add('Coal', 2);
+	.add(christmasLootTable, 1, 3)
+	.add('Christmas dye', 1, 2)
+	.add('Coal', 1, 2);
 
 export const bsoOpenables: UnifiedOpenable[] = [
 	{
