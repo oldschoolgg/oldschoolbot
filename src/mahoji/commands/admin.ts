@@ -171,7 +171,7 @@ export const adminCommand: OSBMahojiCommand = {
 					name: 'tier',
 					description: 'The tier to give.',
 					required: true,
-					choices: [1, 2, 3, 4, 5].map(i => ({ name: i.toString(), value: i }))
+					choices: [1, 2, 3, 4, 5, 6].map(i => ({ name: i.toString(), value: i }))
 				},
 				{
 					type: ApplicationCommandOptionType.String,
