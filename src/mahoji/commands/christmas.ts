@@ -39,6 +39,7 @@ export const christmasCommand: OSBMahojiCommand = {
 				}
 			}));
 			const loot = christmasEventReward(user, snowMenToBuild);
+			await user.addItemsToBank({ items: loot, collectionLog: true });
 			return `You used ${cost} to build ${snowMenToBuild}x Snowmen! As a reward, you received... ${loot}.`;
 		}
 
