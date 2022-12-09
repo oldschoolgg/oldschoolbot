@@ -7,8 +7,6 @@ export const christmasLootTable = new LootTable()
 	.tertiary(18, 'Christmas box')
 	.add(
 		new LootTable()
-
-			.add('Christmas dye')
 			.add('Festive jumper (2022)', 1, 2)
 			.add('Christmas cape', 1, 2)
 			.add('Christmas socks', 1, 2)
