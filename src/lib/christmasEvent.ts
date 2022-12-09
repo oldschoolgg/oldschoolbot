@@ -76,5 +76,6 @@ export const allChristmasItems = resolveItems([
 	'Christmas socks',
 	'Christmas dye',
 	'Festive jumper (2022)',
-	'Christmas box'
+	'Christmas box',
+	'Candy partyhat'
 ]);
