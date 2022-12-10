@@ -230,12 +230,12 @@ export const adminCommand: OSBMahojiCommand = {
 				}
 			]
 		},
-		// {
-		// 	type: ApplicationCommandOptionType.Subcommand,
-		// 	name: 'item_stats',
-		// 	description: 'item stats',
-		// 	options: [{ ...itemOption(), required: true }]
-		// },
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'item_stats',
+			description: 'item stats',
+			options: [{ ...itemOption(), required: true }]
+		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'sync_blacklist',
@@ -507,11 +507,11 @@ export const adminCommand: OSBMahojiCommand = {
 		// 	name: 'wipe_bingo_temp_cls',
 		// 	description: 'Wipe all temp cls of bingo users'
 		// },
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'lottery_dump',
-			description: 'lottery dump'
-		},
+		// {
+		// 	type: ApplicationCommandOptionType.Subcommand,
+		// 	name: 'lottery_dump',
+		// 	description: 'lottery dump'
+		// },
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'give_items',
