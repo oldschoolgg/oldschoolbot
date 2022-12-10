@@ -45,14 +45,14 @@ export function christmasEventReward(user: MUser, quantity: number) {
 	for (let i = 0; i < quantity; i++) {
 		loot.add(christmasLootTable.roll());
 
-		if (!effectiveCL.has('Snowman plushie') && roll(50)) {
+		if (!effectiveCL.has('Snowman plushie') && roll(100)) {
 			[loot, effectiveCL].map(b => b.add('Snowman plushie'));
 		}
 
 		// Roll for a snowman top hat and/or festive scarf, scaling to amount in CL
 		for (const item of ['Snowman top hat', 'Festive scarf']) {
-			let baseRate = 10;
-			let dropRate = effectiveCL.has(item) ? effectiveCL.amount(item) * baseRate * 2.2 : baseRate;
+			let baseRate = 16;
+			let dropRate = effectiveCL.has(item) ? effectiveCL.amount(item) * baseRate * 2.5 : baseRate;
 			if (roll(dropRate)) {
 				[loot, effectiveCL].map(b => b.add(item));
 			}
