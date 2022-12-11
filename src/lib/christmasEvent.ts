@@ -3,6 +3,18 @@ import { Bank, LootTable } from 'oldschooljs';
 
 import resolveItems from './util/resolveItems';
 
+const christmasPetFoodTable = new LootTable()
+	.add('Pumpkinhead praline')
+	.add('Takon truffle')
+	.add('Seer sweet')
+	.add('Cob cup')
+	.add('Craig creme')
+	.add('Moktang mint')
+	.add('Festive treats')
+	.add('Pork sausage')
+	.add('Pork crackling')
+	.add('Reinbeer');
+
 export const christmasLootTable = new LootTable()
 	.tertiary(18, 'Christmas box')
 	.add(
@@ -13,30 +25,22 @@ export const christmasLootTable = new LootTable()
 			.add('Tinsel scarf', 1, 4)
 			.add('Frosted wreath', 1, 4)
 			.add('Edible yoyo', 1, 4)
-			.add(
-				new LootTable()
-					.add('Pumpkinhead praline')
-					.add('Takon truffle')
-					.add('Seer sweet')
-					.add('Cob cup')
-					.add('Craig creme')
-					.add('Moktang mint')
-					.add('Festive treats')
-					.add('Pork sausage')
-					.add('Pork crackling')
-					.add('Reinbeer'),
-				1,
-				5
-			)
+			.add(christmasPetFoodTable, 1, 5)
 	)
-	.add('Pavlova')
-	.add('Prawns')
-	.add('Roast potatoes')
-	.add('Cake')
-	.add('Chocolate cake')
-	.add('Chocolate bar')
-	.add('Bucket of milk')
-	.add('Chocchip crunchies');
+	.add(christmasPetFoodTable, 1, 4)
+	.add(
+		new LootTable()
+			.add('Pavlova')
+			.add('Prawns')
+			.add('Roast potatoes')
+			.add('Cake')
+			.add('Chocolate cake')
+			.add('Chocolate bar')
+			.add('Bucket of milk')
+			.add('Chocchip crunchies'),
+		1,
+		4
+	);
 
 export function christmasEventReward(user: MUser, quantity: number) {
 	const effectiveCL = user.cl.clone();
