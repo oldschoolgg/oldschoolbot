@@ -1,6 +1,6 @@
 import { activity_type_enum } from '@prisma/client';
 import { AttachmentBuilder, ButtonBuilder, MessageCollector } from 'discord.js';
-import { percentChance, randInt, shuffleArr, Time } from 'e';
+import { percentChance, randInt, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { alching } from '../../mahoji/commands/laps';
@@ -361,6 +361,6 @@ export async function handleTripFinish(
 	sendToChannelID(channelID, {
 		content: message,
 		image: attachment,
-		components: components.length > 0 ? makeComponents(shuffleArr(components)) : undefined
+		components: components.length > 0 ? makeComponents(components) : undefined
 	});
 }
