@@ -659,7 +659,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						let b = actualPreset[1];
 						if (actualPreset[0] === 'random') {
 							b = new Bank();
-							for (let i = 0; i < 200; i++) {
+							for (let i = 0; i < 1000; i++) {
 								b.add(Items.random().id);
 							}
 						}
