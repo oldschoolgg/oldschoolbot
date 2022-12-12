@@ -652,7 +652,7 @@ export const easyTasks: Task[] = [
 		id: 89,
 		name: 'Receive 10,000 Prayer XP from the ash sanctifier',
 		has: async ({ userStats }) => {
-			return Number(userStats.ash_sanctifier_prayer_xp) >= 10_000;
+			return userStats.ash_sanctifier_prayer_xp >= 10_000;
 		}
 	},
 	{

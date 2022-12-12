@@ -688,7 +688,7 @@ export const eliteTasks: Task[] = [
 	},
 	{
 		id: 3091,
-		name: 'Sacrifice 100 of each bird egg',
+		name: 'Offer 100 of each bird egg',
 		has: async ({ userStats }) => {
 			let vals = Object.values(userStats.bird_eggs_offered_bank as ItemBank);
 			return vals.length === eggs.length && vals.every(i => Number(i) >= 100);
