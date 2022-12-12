@@ -1,7 +1,10 @@
+import { UserStats } from '@prisma/client';
+import { sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { ClueTiers } from '../clues/clueTiers';
 import { prisma } from '../settings/prisma';
+import { ItemBank } from '../types';
 import { getItem } from '../util/getOSItem';
 
 // Functions in this file should not depend on any other commands
@@ -35,4 +38,8 @@ GROUP BY data->>'clueID';`);
 	}
 
 	return actualClues;
+}
+
+export function totalLampedXP(userStats: UserStats) {
+	return sumArr(Object.values(userStats.lamped_xp as ItemBank));
 }

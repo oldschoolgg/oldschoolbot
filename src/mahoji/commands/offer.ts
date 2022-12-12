@@ -30,7 +30,7 @@ const specialBones = [
 	}
 ];
 
-const eggs = ['Red bird egg', 'Green bird egg', 'Blue bird egg'].map(getOSItem);
+export const eggs = ['Red bird egg', 'Green bird egg', 'Blue bird egg'].map(getOSItem);
 
 function notifyUniques(user: MUser, activity: string, uniques: number[], loot: Bank, qty: number, randQty?: number) {
 	const itemsToAnnounce = loot.filter(item => uniques.includes(item.id), false);

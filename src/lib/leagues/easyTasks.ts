@@ -1,6 +1,7 @@
 import { sumArr } from 'e';
 import { Monsters } from 'oldschooljs';
 
+import { eggs } from '../../mahoji/commands/offer';
 import { getFarmingContractOfUser } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { barrowsChestCL, customPetsCL } from '../data/CollectionsExport';
 import {
@@ -617,6 +618,90 @@ export const easyTasks: Task[] = [
 		name: 'Build and fill all medium stash units',
 		has: async ({ stashUnits }) => {
 			return stashUnits.filter(i => i.tier.tier === 'Medium').every(i => i.isFull && Boolean(i.builtUnit));
+		}
+	},
+	{
+		id: 85,
+		name: 'Offer one of each bird egg',
+		has: async ({ userStats }) => {
+			return Object.keys(userStats.bird_eggs_offered_bank as ItemBank).length >= eggs.length;
+		}
+	},
+	{
+		id: 86,
+		name: 'Catch 10 unique implings in puro puro',
+		has: async ({ userStats }) => {
+			return Object.values(userStats.puropuro_implings_bank as ItemBank).length >= 10;
+		}
+	},
+	{
+		id: 87,
+		name: 'Catch 10 implings passively',
+		has: async ({ userStats }) => {
+			return sumArr(Object.values(userStats.passive_implings_bank as ItemBank)) >= 10;
+		}
+	},
+	{
+		id: 88,
+		name: 'Scatter some ashes',
+		has: async ({ userStats }) => {
+			return Object.values(userStats.scattered_ashes_bank as ItemBank).length >= 1;
+		}
+	},
+	{
+		id: 89,
+		name: 'Receive 10,000 Prayer XP from the ash sanctifier',
+		has: async ({ userStats }) => {
+			return Number(userStats.ash_sanctifier_prayer_xp) >= 10_000;
+		}
+	},
+	{
+		id: 90,
+		name: 'Receive some bars from an adze',
+		has: async ({ userStats }) => {
+			return Object.values(userStats.bars_from_adze_bank as ItemBank).length >= 1;
+		}
+	},
+	{
+		id: 91,
+		name: 'Receive some ores from ore spirits',
+		has: async ({ userStats }) => {
+			return Object.values(userStats.ores_from_spirits_bank as ItemBank).length >= 1;
+		}
+	},
+	{
+		id: 92,
+		name: 'Smelt some bars with Klik',
+		has: async ({ userStats }) => {
+			return Object.values(userStats.bars_from_klik_bank as ItemBank).length >= 1;
+		}
+	},
+	{
+		id: 93,
+		name: 'Tan some hides with the portable tanner',
+		has: async ({ userStats }) => {
+			return Object.values(userStats.portable_tanner_bank as ItemBank).length >= 1;
+		}
+	},
+	{
+		id: 94,
+		name: 'Upgrade some clues with the clue upgrader',
+		has: async ({ userStats }) => {
+			return Object.values(userStats.clue_upgrader_bank as ItemBank).length >= 1;
+		}
+	},
+	{
+		id: 95,
+		name: 'Receive some XP from silverhawk boots',
+		has: async ({ userStats }) => {
+			return userStats.silverhawk_boots_passive_xp >= 1;
+		}
+	},
+	{
+		id: 96,
+		name: 'Open the Crystal chest',
+		has: async ({ opens }) => {
+			return opens.has('Crystal key');
 		}
 	}
 ];

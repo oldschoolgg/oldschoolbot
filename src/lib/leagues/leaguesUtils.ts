@@ -1,4 +1,4 @@
-import { activity_type_enum, Minigame, PlayerOwnedHouse, Tame, User } from '@prisma/client';
+import { activity_type_enum, Minigame, PlayerOwnedHouse, Tame, User, UserStats } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
@@ -49,6 +49,8 @@ export interface HasFunctionArgs {
 	actualClues: Bank;
 	smeltingStats: Bank;
 	stashUnits: ParsedUnit[];
+	totalLampedXP: number;
+	userStats: UserStats;
 }
 
 export interface Task {

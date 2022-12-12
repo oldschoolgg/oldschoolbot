@@ -1,6 +1,7 @@
 import { sumArr } from 'e';
 import { Monsters } from 'oldschooljs';
 
+import { eggs } from '../../mahoji/commands/offer';
 import { getFarmingContractOfUser } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { barrowsChestCL, customPetsCL, cyclopsCL, treeBeardCL } from '../data/CollectionsExport';
 import {
@@ -18,9 +19,11 @@ import {
 	WesternProv,
 	WildernessDiary
 } from '../diaries';
+import { implings } from '../implings';
 import { QueenBlackDragon } from '../minions/data/killableMonsters/custom/demiBosses';
 import { TormentedDemon } from '../minions/data/killableMonsters/custom/TormentedDemon';
 import { baseUserKourendFavour, UserKourendFavour } from '../minions/data/kourendFavour';
+import { ashes } from '../skilling/skills/prayer';
 import { ItemBank } from '../types';
 import { calcCombatLevel, calcTotalLevel } from '../util';
 import resolveItems from '../util/resolveItems';
@@ -905,6 +908,85 @@ export const mediumTasks: Task[] = [
 		name: 'Build and fill all elite stash units',
 		has: async ({ stashUnits }) => {
 			return stashUnits.filter(i => i.tier.tier === 'Elite').every(i => i.isFull && Boolean(i.builtUnit));
+		}
+	},
+	{
+		id: 1128,
+		name: 'Sacrifice 5 of each bird egg',
+		has: async ({ userStats }) => {
+			let vals = Object.values(userStats.bird_eggs_offered_bank as ItemBank);
+			return vals.length === eggs.length && vals.every(i => Number(i) >= 5);
+		}
+	},
+	{
+		id: 1129,
+		name: 'Catch 1 of every impling passively',
+		has: async ({ userStats }) => {
+			return Object.keys(userStats.passive_implings_bank as ItemBank).length === Object.keys(implings).length;
+		}
+	},
+	{
+		id: 1130,
+		name: 'Scatter 100 of every ashes',
+		has: async ({ userStats }) => {
+			let vals = Object.values(userStats.scattered_ashes_bank as ItemBank);
+			return vals.length === ashes.length && vals.every(i => i >= 100);
+		}
+	},
+	{
+		id: 1131,
+		name: 'Receive 25,000 Prayer XP from the ash sanctifier',
+		has: async ({ userStats }) => {
+			return userStats.ash_sanctifier_prayer_xp >= 25_000;
+		}
+	},
+	{
+		id: 1132,
+		name: 'Receive 50,000 XP from silverhawk boots',
+		has: async ({ userStats }) => {
+			return userStats.silverhawk_boots_passive_xp >= 50_000;
+		}
+	},
+	{
+		id: 1133,
+		name: 'Upgrade 25 clues with the clue upgrader',
+		has: async ({ userStats }) => {
+			return sumArr(Object.values(userStats.clue_upgrader_bank as ItemBank)) >= 25;
+		}
+	},
+	{
+		id: 1134,
+		name: 'Tan 1000 hides with the portable tanner',
+		has: async ({ userStats }) => {
+			return sumArr(Object.values(userStats.portable_tanner_bank as ItemBank)) >= 1000;
+		}
+	},
+	{
+		id: 1135,
+		name: 'Receive 1000 bars from an adze',
+		has: async ({ userStats }) => {
+			return sumArr(Object.values(userStats.bars_from_adze_bank as ItemBank)) >= 1000;
+		}
+	},
+	{
+		id: 1136,
+		name: 'Receive 250 ores from ore spirits',
+		has: async ({ userStats }) => {
+			return sumArr(Object.values(userStats.ores_from_spirits_bank as ItemBank)) >= 250;
+		}
+	},
+	{
+		id: 1137,
+		name: 'Smelt 1000 bars with Klik',
+		has: async ({ userStats }) => {
+			return sumArr(Object.values(userStats.bars_from_klik_bank as ItemBank)) >= 1000;
+		}
+	},
+	{
+		id: 1138,
+		name: 'Open the Crystal chest 50 times',
+		has: async ({ opens }) => {
+			return opens.amount('Crystal key') >= 50;
 		}
 	}
 ];
