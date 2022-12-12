@@ -20,7 +20,7 @@ export const prisma =
 			}
 		]
 	});
-if (process.env.NODE_ENV !== 'production') global.prisma = prisma;
+if (!production) global.prisma = prisma;
 
 export const prismaQueries: Prisma.QueryEvent[] = [];
 export let queryCountStore = { value: 0 };
