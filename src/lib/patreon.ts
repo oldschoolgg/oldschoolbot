@@ -207,7 +207,6 @@ class PatreonTask {
 
 		for (const patron of fetchedPatrons) {
 			if (!patron.discordID) {
-				result.push(`Patron[${patron.patreonID}] has no discord connected, so continuing.`);
 				continue;
 			}
 
