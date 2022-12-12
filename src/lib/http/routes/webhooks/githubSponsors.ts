@@ -26,9 +26,8 @@ const githubSponsors = (server: FastifyServer) =>
 				case 'created': {
 					const tier = parseStrToTier(data.sponsorship.tier.name);
 					if (!tier) return;
-					let effectiveTier = tier - 1;
-					sendToChannelID(Channel.NewSponsors, {
-						content: `${data.sender.login}[${data.sender.id}] became a Tier ${effectiveTier} sponsor.`
+					sendToChannelID(Channel.PatronLogs, {
+						content: `${data.sender.login}[${data.sender.id}] became a Tier ${tier - 1} sponsor.`
 					});
 					if (userID) {
 						await patreonTask.givePerks(userID, tier);
@@ -53,7 +52,7 @@ ${data.sender.login} became a Github sponsor, as a reward for everyone, here is 
 					const from = parseStrToTier(data.changes!.tier.from.name);
 					const to = parseStrToTier(data.sponsorship.tier.name);
 					if (!from || !to) return;
-					sendToChannelID(Channel.NewSponsors, {
+					sendToChannelID(Channel.PatronLogs, {
 						content: `${data.sender.login}[${data.sender.id}] changed their sponsorship from Tier ${
 							from - 1
 						} to Tier ${to - 1}.`
@@ -70,7 +69,7 @@ ${data.sender.login} became a Github sponsor, as a reward for everyone, here is 
 						await patreonTask.removePerks(userID);
 					}
 
-					sendToChannelID(Channel.NewSponsors, {
+					sendToChannelID(Channel.PatronLogs, {
 						content: `${data.sender.login}[${data.sender.id}] cancelled being a Tier ${tier - 1} sponsor. ${
 							userID ? 'Removing perks.' : "Cant remove perks because couldn't find discord user."
 						}`

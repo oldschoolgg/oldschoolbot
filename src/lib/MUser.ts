@@ -599,6 +599,10 @@ export class MUserClass {
 			})
 			.filter(notEmpty);
 	}
+
+	get logName() {
+		return `${this.rawUsername}[${this.id}]`;
+	}
 }
 declare global {
 	export type MUser = MUserClass;

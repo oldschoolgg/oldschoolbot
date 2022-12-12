@@ -4,6 +4,7 @@ import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import { allMbTables, embTable, PMBTable, tmbTable, umbTable } from '../src/lib/bsoOpenables';
 import { allPetIDs, masterCapesCL } from '../src/lib/data/CollectionsExport';
 import { itemsToDelete } from '../src/lib/deletedItems';
+import { dyedItems } from '../src/lib/dyedItems';
 import { growablePets } from '../src/lib/growablePets';
 import killableMonsters from '../src/lib/minions/data/killableMonsters';
 import { Ignecarus } from '../src/lib/minions/data/killableMonsters/custom/bosses/Ignecarus';
@@ -12,7 +13,7 @@ import KingGoldemar from '../src/lib/minions/data/killableMonsters/custom/bosses
 import { VasaMagus } from '../src/lib/minions/data/killableMonsters/custom/bosses/VasaMagus';
 import { allOpenables } from '../src/lib/openables';
 import { Gear } from '../src/lib/structures/Gear';
-import { exponentialPercentScale, isSuperUntradeable, itemNameFromID } from '../src/lib/util';
+import { assert, exponentialPercentScale, isSuperUntradeable, itemNameFromID } from '../src/lib/util';
 import getOSItem from '../src/lib/util/getOSItem';
 import itemID from '../src/lib/util/itemID';
 import itemIsTradeable from '../src/lib/util/itemIsTradeable';
@@ -248,5 +249,11 @@ describe('Sanity', () => {
 		expect(scep.id).toEqual(9044);
 		expect(scep.equipable).toEqual(true);
 		expect(scep.equipment?.slot).toEqual(EquipmentSlot.Weapon);
+	});
+	test('all dyed items should be untradeable and not in boxes', () => {
+		for (const item of dyedItems.map(i => i.dyedVersions.map(t => t.item)).flat()) {
+			assert(!itemIsTradeable(item.id), `${item.name} should be super-untradeable`);
+			assert(!allMbTables.includes(item.id), `${item.name} shouldnt drop from boxes`);
+		}
 	});
 });

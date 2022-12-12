@@ -20,6 +20,8 @@ import resolveItems from './util/resolveItems';
 
 export const BotID = DISCORD_SETTINGS.BotID ?? '729244028989603850';
 
+const TestingMainChannelID = DISCORD_SETTINGS.Channels?.TestingMain ?? '944924763405574174';
+
 export const Channel = {
 	General: DISCORD_SETTINGS.Channels?.General ?? '342983479501389826',
 	Notifications: production ? '811589869314899980' : '1042760447830536212',
@@ -31,6 +33,8 @@ export const Channel = {
 	NewSponsors: DISCORD_SETTINGS.Channels?.NewSponsors ?? '806744016309714966',
 	HelpAndSupport: '970752140324790384',
 	TestingMain: DISCORD_SETTINGS.Channels?.TestingMain ?? '680770361893322761',
+	BotLogs: production ? '1051725977320964197' : TestingMainChannelID,
+	PatronLogs: '806744016309714966',
 	// BSO Channels
 	BSOGeneral: DISCORD_SETTINGS.Channels?.BSOGeneral ?? '792691343284764693',
 	BSOChannel: DISCORD_SETTINGS.Channels?.BSOChannel ?? '732207379818479756',
