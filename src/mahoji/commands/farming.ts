@@ -1,3 +1,4 @@
+import { AutoFarmFilterEnum, CropUpgradeType } from '@prisma/client';
 import { User } from 'discord.js';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
@@ -6,15 +7,20 @@ import { superCompostables } from '../../lib/data/filterables';
 import { ContractOption, ContractOptions } from '../../lib/minions/farming/types';
 import { autoFarm } from '../../lib/minions/functions/autoFarm';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
-import Farming, { CompostName, CompostTiers } from '../../lib/skilling/skills/farming';
-import { getSkillsOfMahojiUser, stringMatches } from '../../lib/util';
+import Farming, { CompostTiers } from '../../lib/skilling/skills/farming';
+import { stringMatches } from '../../lib/util';
 import { farmingPatchNames, userGrowingProgressStr } from '../../lib/util/farmingHelpers';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { compostBinCommand, farmingPlantCommand, harvestCommand } from '../lib/abstracted_commands/farmingCommand';
 import { farmingContractCommand } from '../lib/abstracted_commands/farmingContractCommand';
 import { titheFarmCommand, titheFarmShopCommand } from '../lib/abstracted_commands/titheFarmCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { mahojiUserSettingsUpdate } from '../settingsUpdate';
+
+const autoFarmFilterTexts: Record<AutoFarmFilterEnum, string> = {
+	AllFarm: 'All crops will be farmed with the highest available seed',
+	Replant: 'Only planted crops will be replanted, using the same seed'
+};
 
 export const farmingCommand: OSBMahojiCommand = {
 	name: 'farming',
@@ -38,8 +44,8 @@ export const farmingCommand: OSBMahojiCommand = {
 					description: 'The plant you want to plant.',
 					required: true,
 					autocomplete: async (value: string, user: User) => {
-						const mUser = await mahojiUsersSettingsFetch(user.id);
-						const farmingLevel = getSkillsOfMahojiUser(mUser, true).farming;
+						const mUser = await mUserFetch(user.id);
+						const farmingLevel = mUser.skillLevel('farming');
 						return Farming.Plants.filter(i => farmingLevel >= i.level)
 							.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i.name, value: i.name }));
@@ -64,6 +70,21 @@ export const farmingCommand: OSBMahojiCommand = {
 			name: 'auto_farm',
 			description: 'Automatically farm any available things you can do.',
 			required: false
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'auto_farm_filter',
+			description: 'Set which auto farm filter you want to use by default.',
+			required: false,
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'auto_farm_filter_data',
+					description: 'The auto farm filter you want to use by default. (default: AllFarm)',
+					required: true,
+					choices: Object.values(AutoFarmFilterEnum).map(i => ({ name: i, value: i }))
+				}
+			]
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -170,7 +191,8 @@ export const farmingCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{
 		check_patches?: {};
 		auto_farm?: {};
-		default_compost?: { compost: CompostName };
+		auto_farm_filter?: { auto_farm_filter_data: string };
+		default_compost?: { compost: CropUpgradeType };
 		always_pay?: {};
 		plant?: { plant_name: string; quantity?: number; pay?: boolean };
 		harvest?: { patch_name: string };
@@ -199,6 +221,19 @@ export const farmingCommand: OSBMahojiCommand = {
 				minion_defaultCompostToUse: tier.name
 			});
 			return `You will now use ${tier.item.name} by default.`;
+		}
+		if (options.auto_farm_filter) {
+			const autoFarmFilterString = Object.values(AutoFarmFilterEnum).find(
+				i => i === options.auto_farm_filter!.auto_farm_filter_data
+			);
+			if (!autoFarmFilterString) return 'Invalid auto farm filter.';
+			const autoFarmFilter = autoFarmFilterString as AutoFarmFilterEnum;
+
+			await mahojiUserSettingsUpdate(userID, {
+				auto_farm_filter: autoFarmFilter
+			});
+
+			return `${autoFarmFilter} filter is now enabled when autofarming: ${autoFarmFilterTexts[autoFarmFilter]}.`;
 		}
 		if (options.plant) {
 			return farmingPlantCommand({

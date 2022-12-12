@@ -86,7 +86,7 @@ export const vmTask: MinionTask = {
 			str += "\nYou have a funny feeling you're being followed...";
 			globalClient.emit(
 				Events.ServerNotification,
-				`${Emoji.Mining} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received ${
+				`${Emoji.Mining} **${user.badgedUsername}'s** minion, ${user.minionName}, just received ${
 					loot.amount('Rock golem') > 1 ? `${loot.amount('Rock golem')}x ` : 'a'
 				} Rock golem while mining on the Volcanic Mine at level ${userMiningLevel} Mining!`
 			);

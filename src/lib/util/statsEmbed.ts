@@ -3,7 +3,7 @@ import { Player } from 'oldschooljs';
 import { CluesScore, SkillScore, SkillsScore } from 'oldschooljs/dist/meta/types';
 
 import { skillEmoji } from '../constants';
-import { toTitleCase } from '../util';
+import { toTitleCase } from './toTitleCase';
 
 export function statsEmbed({
 	username,

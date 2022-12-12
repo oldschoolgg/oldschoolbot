@@ -165,6 +165,11 @@ export const Minigames: readonly BotMinigame[] = [
 		name: 'Trouble Brewing',
 		aliases: ['trouble brewing', 'tb'],
 		column: 'trouble_brewing'
+	},
+	{
+		name: 'Guardians Of The Rift',
+		aliases: ['guardians of the rift', 'gotr', 'guardian of the rift'],
+		column: 'guardians_of_the_rift'
 	}
 ];
 
@@ -196,14 +201,4 @@ export async function incrementMinigameScore(userID: string, minigame: MinigameN
 		newScore: result[minigame],
 		entity: result
 	};
-}
-
-export async function getAllMinigameScores(userID: string): Promise<MinigameScore[]> {
-	const UserMinigames = await getMinigameEntity(userID);
-	const scores: MinigameScore[] = [];
-	for (const minigame of Minigames) {
-		const score = UserMinigames[minigame.column];
-		scores.push({ minigame, score });
-	}
-	return scores;
 }

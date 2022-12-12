@@ -20,10 +20,9 @@ import { Castables } from '../../../lib/skilling/skills/magic/castables';
 import { getSlayerTaskStats } from '../../../lib/slayer/slayerUtil';
 import { sorts } from '../../../lib/sorts';
 import { InfernoOptions } from '../../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../../lib/util';
+import { formatDuration, sanitizeBank, stringMatches } from '../../../lib/util';
 import { barChart, lineChart, pieChart } from '../../../lib/util/chart';
 import { getItem } from '../../../lib/util/getOSItem';
-import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
 import { Cooldowns } from '../Cooldowns';
@@ -332,8 +331,8 @@ GROUP BY data->>'monsterID';`);
 				await prisma.$queryRaw`SELECT mins, COUNT(mins) FROM (SELECT ((data->>'deathTime')::int / 1000 / 60) as mins
 FROM activity
 WHERE type = 'Inferno'
-AND data->>'deathTime' IS NOT NULL) death_mins
 AND completed = true
+AND data->>'deathTime' IS NOT NULL) death_mins
 GROUP BY mins;`;
 			const buffer = await lineChart(
 				'Global Inferno Death Times',
@@ -352,8 +351,8 @@ GROUP BY mins;`;
 FROM activity
 WHERE type = 'Inferno'
 AND user_id = ${BigInt(user.id)}
-AND data->>'deathTime' IS NOT NULL) death_mins
 AND completed = true
+AND data->>'deathTime' IS NOT NULL) death_mins
 GROUP BY mins;`);
 			const buffer = await lineChart(
 				'Personal Inferno Death Times',
@@ -856,6 +855,71 @@ GROUP BY "bankBackground";`);
 		run: async (_, stats) => {
 			return `You've received **${Number(stats.sell_gp).toLocaleString()}** GP from selling items.`;
 		}
+	},
+	{
+		name: 'Prayer XP from Ash Sanctifier',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return `You've received **${Number(
+				stats.ash_sanctifier_prayer_xp
+			).toLocaleString()}** XP from using the Ash Sanctifier.`;
+		}
+	},
+	{
+		name: 'Bird Eggs Offered',
+		perkTierNeeded: null,
+		run: async (_, stats) => {
+			return `You've offered... **${new Bank(stats.bird_eggs_offered_bank as ItemBank)}**.`;
+		}
+	},
+	{
+		name: 'Ashes Scattered',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(new Bank(stats.scattered_ashes_bank as ItemBank), "You've scattered...");
+		}
+	},
+	{
+		name: 'Total Giveaway Cost',
+		perkTierNeeded: PerkTier.Four,
+		run: async u => {
+			const giveaways = await prisma.economyTransaction.findMany({
+				where: {
+					sender: BigInt(u.id),
+					type: 'giveaway'
+				},
+				select: {
+					items_sent: true
+				}
+			});
+			let items = new Bank();
+			for (const g of giveaways) {
+				items.add(g.items_sent as ItemBank);
+			}
+			sanitizeBank(items);
+			return makeResponseForBank(items, "You've given away...");
+		}
+	},
+	{
+		name: 'Total Giveaway Winnings/Loot',
+		perkTierNeeded: PerkTier.Four,
+		run: async u => {
+			const giveaways = await prisma.economyTransaction.findMany({
+				where: {
+					recipient: BigInt(u.id),
+					type: 'giveaway'
+				},
+				select: {
+					items_sent: true
+				}
+			});
+			let items = new Bank();
+			for (const g of giveaways) {
+				items.add(g.items_sent as ItemBank);
+			}
+			sanitizeBank(items);
+			return makeResponseForBank(items, "You've received from giveaways...");
+		}
 	}
 ] as const;
 
@@ -867,7 +931,7 @@ export async function statsCommand(user: MUser, type: string): CommandResponse {
 	const dataPoint = dataPoints.find(dp => stringMatches(dp.name, type));
 	if (!dataPoint) return 'Invalid stat name.';
 	const { perkTierNeeded } = dataPoint;
-	if (perkTierNeeded !== null && getUsersPerkTier(user) < perkTierNeeded) {
+	if (perkTierNeeded !== null && user.perkTier() < perkTierNeeded) {
 		return `Sorry, you need to be a Tier ${perkTierNeeded - 1} Patron to see this stat.`;
 	}
 	const userStats = await prisma.userStats.upsert({

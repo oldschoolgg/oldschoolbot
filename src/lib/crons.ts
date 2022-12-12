@@ -5,15 +5,12 @@ import { schedule } from 'node-cron';
 import fetch from 'node-fetch';
 
 import { production } from '../config';
-import { untrustedGuildSettingsCache } from '../mahoji/mahojiSettings';
 import { analyticsTick } from './analytics';
 import { prisma } from './settings/prisma';
-import { OldSchoolBotClient } from './structures/OldSchoolBotClient';
 import { cacheCleanup } from './util';
-import { logError } from './util/logError';
 import { sendToChannelID } from './util/webhook';
 
-export function initCrons(client: OldSchoolBotClient) {
+export function initCrons() {
 	/**
 	 * Capture economy item data
 	 */
@@ -56,23 +53,22 @@ GROUP BY item_id;`);
 					}
 				},
 				select: {
-					id: true
+					id: true,
+					jmodComments: true
 				}
 			});
 
-			for (const { id } of guildsToSendToo) {
-				const guild = client.guilds.cache.get(id);
+			for (const { id, jmodComments } of guildsToSendToo) {
+				const guild = globalClient.guilds.cache.get(id);
 				if (!guild) continue;
-				const settings = untrustedGuildSettingsCache.get(guild.id);
-				if (!settings?.jmodComments) continue;
 
-				const channel = guild.channels.cache.get(settings.jmodComments);
+				const channel = guild.channels.cache.get(jmodComments!);
 
 				if (
 					channel &&
 					channel instanceof TextChannel &&
-					channel.permissionsFor(client.user!)?.has(PermissionsBitField.Flags.EmbedLinks) &&
-					channel.permissionsFor(client.user!)?.has(PermissionsBitField.Flags.SendMessages)
+					channel.permissionsFor(globalClient.user!)?.has(PermissionsBitField.Flags.EmbedLinks) &&
+					channel.permissionsFor(globalClient.user!)?.has(PermissionsBitField.Flags.SendMessages)
 				) {
 					sendToChannelID(channel.id, { content: `<${url}>`, embed });
 				}
@@ -91,9 +87,7 @@ GROUP BY item_id;`);
 					sendReddit({ post: entity, type });
 					alreadySentCache.add(entity.id);
 				}
-			} catch (err) {
-				logError(err);
-			}
+			} catch {}
 		}
 	});
 
@@ -110,7 +104,7 @@ GROUP BY item_id;`);
 	/**
 	 * Delete all voice channels
 	 */
-	schedule('0 */1 * * *', async () => {
+	schedule('0 0 */3 * *', async () => {
 		cacheCleanup();
 	});
 }

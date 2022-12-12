@@ -8,13 +8,14 @@ import {
 } from 'discord.js';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
+import { production } from '../../config';
 import { CommandArgs } from '../../mahoji/lib/inhibitors';
 import { postCommand } from '../../mahoji/lib/postCommand';
 import { preCommand } from '../../mahoji/lib/preCommand';
 import { convertMahojiCommandToAbstractCommand } from '../../mahoji/lib/util';
 import { ActivityTaskData } from '../types/minions';
 import { channelIsSendable, isGroupActivity } from '../util';
-import { interactionReply } from '../util/interactionReply';
+import { handleInteractionError, interactionReply } from '../util/interactionReply';
 import { logError } from '../util/logError';
 import { convertStoredActivityToFlatActivity, prisma } from './prisma';
 
@@ -42,7 +43,7 @@ declare global {
 }
 export const minionActivityCache: Map<string, ActivityTaskData> = global.minionActivityCache || new Map();
 
-if (process.env.NODE_ENV !== 'production') global.minionActivityCache = minionActivityCache;
+if (production) global.minionActivityCache = minionActivityCache;
 
 export function getActivityOfUser(userID: string) {
 	const task = minionActivityCache.get(userID);
@@ -167,13 +168,7 @@ export async function runCommand({
 		if (result && !interaction.replied) await interactionReply(interaction, result);
 		return result;
 	} catch (err: any) {
-		if (typeof err === 'string') {
-			if (channelIsSendable(channel)) {
-				channel.send(err);
-				return null;
-			}
-		}
-		error = err as Error;
+		handleInteractionError(err, interaction);
 	} finally {
 		try {
 			await postCommand({

@@ -18,7 +18,12 @@ import {
 } from '../../lib/clues/stashUnits';
 import { BitField, PerkTier } from '../../lib/constants';
 import { allCLItemsFiltered, allDroppedItems } from '../../lib/data/Collections';
-import { anglerOutfit, gnomeRestaurantCL } from '../../lib/data/CollectionsExport';
+import {
+	anglerOutfit,
+	evilChickenOutfit,
+	gnomeRestaurantCL,
+	guardiansOfTheRiftCL
+} from '../../lib/data/CollectionsExport';
 import pets from '../../lib/data/pets';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import { MinigameName, Minigames } from '../../lib/settings/minigames';
@@ -36,11 +41,9 @@ import {
 	stringMatches
 } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import resolveItems from '../../lib/util/resolveItems';
-import { dataPoints, statsCommand } from '../lib/abstracted_commands/statCommand';
 import { itemOption, monsterOption, skillOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 import { handleMahojiConfirmation, patronMsg } from '../mahojiSettings';
@@ -150,7 +153,7 @@ LIMIT 10;`);
 }
 
 async function kcGains(user: MUser, interval: string, monsterName: string): CommandResponse {
-	if (getUsersPerkTier(user) < PerkTier.Four) return patronMsg(PerkTier.Four);
+	if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 	if (!TimeIntervals.includes(interval as any)) return 'Invalid time interval.';
 	const monster = killableMonsters.find(
 		k => stringMatches(k.name, monsterName) || k.aliases.some(a => stringMatches(a, monsterName))
@@ -176,7 +179,9 @@ LIMIT 10`;
 	const embed = new Embed()
 		.setTitle(`Highest ${monster.name} KC gains in the past ${interval}`)
 		.setDescription(
-			res.map((i: any) => `${++place}. **${getUsername(i.user)}**: ${Number(i.qty).toLocaleString()}`).join('\n')
+			res
+				.map((i: any) => `${++place}. **${getUsername(i.user_id)}**: ${Number(i.qty).toLocaleString()}`)
+				.join('\n')
 		);
 
 	return { embeds: [embed] };
@@ -284,6 +289,49 @@ LIMIT 10;`);
 			return result;
 		},
 		format: num => `${num.toLocaleString()} Gambles`
+	},
+	{
+		name: 'Guardians of the Rift',
+		items: guardiansOfTheRiftCL,
+		run: async ({ item, ironmanOnly }) => {
+			const result = await prisma.$queryRawUnsafe<
+				{ id: string; val: number }[]
+			>(`SELECT users.id, gotr_rift_searches AS val
+            FROM users
+            INNER JOIN "user_stats" "userstats" on "userstats"."user_id"::text = "users"."id"
+            WHERE "collectionLogBank"->>'${item.id}' IS NULL
+            ${ironmanOnly ? ' AND "minion.ironman" = true' : ''}
+            ORDER BY gotr_rift_searches DESC
+            LIMIT 10;`);
+			return result;
+		},
+		format: num => `${num.toLocaleString()} Rift Searches`
+	},
+	{
+		name: 'Evil Chicken Outfit',
+		items: evilChickenOutfit,
+		run: async ({ item, ironmanOnly }) => {
+			const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(`
+            SELECT *
+			FROM
+			(
+			SELECT users.id::text
+            , COALESCE(SUM((bird_eggs_offered_bank->>'5076')::int),0)
+                + COALESCE(SUM((bird_eggs_offered_bank->>'5077')::int),0)
+                + COALESCE(SUM((bird_eggs_offered_bank->>'5078')::int),0) AS val
+            FROM users
+            INNER JOIN "user_stats" "userstats" on "userstats"."user_id"::text = "users"."id"
+            WHERE "collectionLogBank"->>'${item.id}' IS NULL
+            ${ironmanOnly ? ' AND "minion.ironman" = true' : ''}
+            GROUP BY users.id
+            ORDER BY val DESC
+            LIMIT 10 
+			)
+			AS eggs
+			WHERE eggs.val > 0;`);
+			return result;
+		},
+		format: num => `${num.toLocaleString()} Bird Eggs Offered`
 	}
 ];
 for (const minigame of dryStreakMinigames) {
@@ -308,7 +356,7 @@ LIMIT 10;`);
 }
 
 async function dryStreakCommand(user: MUser, monsterName: string, itemName: string, ironmanOnly: boolean) {
-	if (getUsersPerkTier(user) < PerkTier.Four) return patronMsg(PerkTier.Four);
+	if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 
 	const item = getItem(itemName);
 	if (!item) return 'Invalid item.';
@@ -353,7 +401,7 @@ async function dryStreakCommand(user: MUser, monsterName: string, itemName: stri
 }
 
 async function mostDrops(user: MUser, itemName: string, ironmanOnly: boolean) {
-	if (getUsersPerkTier(user) < PerkTier.Four) return patronMsg(PerkTier.Four);
+	if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 	const item = getItem(itemName);
 	const ironmanPart = ironmanOnly ? 'AND "minion.ironman" = true' : '';
 	if (!item) return "That's not a valid item.";
@@ -543,28 +591,6 @@ export const toolsCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'activity_export',
 					description: 'Export all your activities (For advanced users).'
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'stats',
-					description: 'Check various stats.',
-					options: [
-						{
-							type: ApplicationCommandOptionType.String,
-							name: 'stat',
-							description: 'The stat you want to check',
-							autocomplete: async (value: string) => {
-								return dataPoints
-									.map(i => i.name)
-									.filter(i => (!value ? true : i.toLowerCase().includes(value.toLowerCase())))
-									.map(i => ({
-										name: i,
-										value: i
-									}));
-							},
-							required: true
-						}
-					]
 				}
 			]
 		},
@@ -724,7 +750,7 @@ export const toolsCommand: OSBMahojiCommand = {
 				return mostDrops(mahojiUser, patron.mostdrops.item, Boolean(patron.mostdrops.ironman));
 			}
 			if (patron.sacrificed_bank) {
-				if (getUsersPerkTier(mahojiUser) < PerkTier.Two) return patronMsg(PerkTier.Two);
+				if (mahojiUser.perkTier() < PerkTier.Two) return patronMsg(PerkTier.Two);
 				const image = await makeBankImage({
 					bank: new Bank(mahojiUser.user.sacrificedBank as ItemBank),
 					title: 'Your Sacrificed Items'
@@ -734,7 +760,7 @@ export const toolsCommand: OSBMahojiCommand = {
 				};
 			}
 			if (patron.cl_bank) {
-				if (getUsersPerkTier(mahojiUser) < PerkTier.Two) return patronMsg(PerkTier.Two);
+				if (mahojiUser.perkTier() < PerkTier.Two) return patronMsg(PerkTier.Two);
 				const clBank = mahojiUser.cl;
 				if (patron.cl_bank.format === 'json') {
 					const json = JSON.stringify(clBank);
@@ -751,16 +777,16 @@ export const toolsCommand: OSBMahojiCommand = {
 				};
 			}
 			if (patron.xp_gains) {
-				if (getUsersPerkTier(mahojiUser) < PerkTier.Four) return patronMsg(PerkTier.Four);
+				if (mahojiUser.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return xpGains(patron.xp_gains.time, patron.xp_gains.skill);
 			}
 			if (patron.minion_stats) {
 				deferInteraction(interaction);
-				if (getUsersPerkTier(mahojiUser) < PerkTier.Four) return patronMsg(PerkTier.Four);
+				if (mahojiUser.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return minionStats(mahojiUser.user);
 			}
 			if (patron.activity_export) {
-				if (getUsersPerkTier(mahojiUser) < PerkTier.Four) return patronMsg(PerkTier.Four);
+				if (mahojiUser.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 				const promise = activityExport(mahojiUser.user);
 				await handleMahojiConfirmation(
 					interaction,
@@ -768,9 +794,6 @@ export const toolsCommand: OSBMahojiCommand = {
 				);
 				const result = await promise;
 				return result;
-			}
-			if (patron.stats) {
-				return statsCommand(mahojiUser, patron.stats.stat);
 			}
 		}
 		if (options.user) {
@@ -804,7 +827,7 @@ export const toolsCommand: OSBMahojiCommand = {
 			}
 		}
 		if (options.user?.temp_cl) {
-			if (options.user.temp_cl === true) {
+			if (options.user.temp_cl.reset === true) {
 				await handleMahojiConfirmation(interaction, 'Are you sure you want to reset your temporary CL?');
 				await mahojiUser.update({
 					temp_cl: {},

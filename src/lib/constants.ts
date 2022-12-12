@@ -1,25 +1,28 @@
 import { APIButtonComponent, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 
-import { DISCORD_SETTINGS } from '../config';
+import { DISCORD_SETTINGS, production } from '../config';
 import { AbstractCommand, CommandArgs } from '../mahoji/lib/inhibitors';
 import { SkillsEnum } from './skilling/types';
+import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
 
 export const BotID = DISCORD_SETTINGS.BotID ?? '303730326692429825';
 
+const TestingMainChannelID = DISCORD_SETTINGS.Channels?.TestingMain ?? '940760643525570591';
+
 export const Channel = {
 	General: DISCORD_SETTINGS.Channels?.General ?? '342983479501389826',
-	Notifications: DISCORD_SETTINGS.Channels?.Notifications ?? '469523207691436042',
-	ErrorLogs: DISCORD_SETTINGS.Channels?.ErrorLogs ?? '665678499578904596',
+	Notifications: production ? '469523207691436042' : '1042760447830536212',
 	GrandExchange: DISCORD_SETTINGS.Channels?.GrandExchange ?? '682996313209831435',
 	Developers: DISCORD_SETTINGS.Channels?.Developers ?? '648196527294251020',
 	BlacklistLogs: DISCORD_SETTINGS.Channels?.BlacklistLogs ?? '782459317218967602',
 	EconomyLogs: DISCORD_SETTINGS.Channels?.EconomyLogs ?? '802029843712573510',
-	NewSponsors: DISCORD_SETTINGS.Channels?.NewSponsors ?? '806744016309714966',
+	PatronLogs: '806744016309714966',
 	HelpAndSupport: '668073484731154462',
-	TestingMain: DISCORD_SETTINGS.Channels?.TestingMain ?? '680770361893322761',
+	TestingMain: TestingMainChannelID,
 	BarbarianAssault: DISCORD_SETTINGS.Channels?.BarbarianAssault ?? '789717054902763520',
-	ChambersOfXeric: DISCORD_SETTINGS.Channels?.ChambersOfXeric ?? '835876917252587581'
+	ChambersOfXeric: DISCORD_SETTINGS.Channels?.ChambersOfXeric ?? '835876917252587581',
+	BotLogs: production ? '1051725977320964197' : TestingMainChannelID
 };
 
 export const Roles = {
@@ -129,6 +132,7 @@ export const enum Emoji {
 	Skiller = '<:skiller:802136963775463435>',
 	Incinerator = '<:incinerator:802136963674275882>',
 	CollectionLog = '<:collectionLog:802136964027121684>',
+	Bank = '<:bank:739459924693614653>',
 	Minigames = '<:minigameIcon:630400565070921761>',
 	Skull = '<:Skull:802136963926065165>',
 	CombatSword = '<:combat:802136963956080650>',
@@ -208,7 +212,10 @@ export enum BitField {
 	HasTornPrayerScroll = 18,
 	IsWikiContributor = 19,
 	HasSlepeyTablet = 20,
-	IsPatronTier6 = 21
+	IsPatronTier6 = 21,
+	DisableBirdhouseRunButton = 22,
+	DisableAshSanctifier = 23,
+	BothBotsMaxedFreeTierOnePerks = 24
 }
 
 interface BitFieldData {
@@ -246,9 +253,20 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 		userConfigurable: false
 	},
 	[BitField.PermanentIronman]: { name: 'Permanent Ironman', protected: false, userConfigurable: false },
+	[BitField.BothBotsMaxedFreeTierOnePerks]: {
+		name: 'Free T1 Perks for Maxed in OSB/BSO',
+		protected: false,
+		userConfigurable: false
+	},
 
 	[BitField.AlwaysSmallBank]: { name: 'Always Use Small Banks', protected: false, userConfigurable: true },
-	[BitField.DisabledRandomEvents]: { name: 'Disabled Random Events', protected: false, userConfigurable: true }
+	[BitField.DisabledRandomEvents]: { name: 'Disabled Random Events', protected: false, userConfigurable: true },
+	[BitField.DisableBirdhouseRunButton]: {
+		name: 'Disable Birdhouse Run Button',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisableAshSanctifier]: { name: 'Disable Ash Sanctifier', protected: false, userConfigurable: true }
 } as const;
 
 export const enum PatronTierID {
@@ -409,8 +427,30 @@ export const DISABLED_COMMANDS = new Set<string>();
 export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'none'] as const;
 export type PvMMethod = typeof PVM_METHODS[number];
 export const usernameCache = new Map<string, string>();
+export const badgesCache = new Map<string, string>();
 export const minionBuyButton = new ButtonBuilder()
 	.setCustomId('BUY_MINION')
 	.setLabel('Buy Minion')
 	.setStyle(ButtonStyle.Success);
 export const FormattedCustomEmoji = /<a?:\w{2,32}:\d{17,20}>/;
+
+export const chompyHats = [
+	[getOSItem('Chompy bird hat (ogre bowman)'), 30],
+	[getOSItem('Chompy bird hat (bowman)'), 40],
+	[getOSItem('Chompy bird hat (ogre yeoman)'), 50],
+	[getOSItem('Chompy bird hat (yeoman)'), 70],
+	[getOSItem('Chompy bird hat (ogre marksman)'), 95],
+	[getOSItem('Chompy bird hat (marksman)'), 125],
+	[getOSItem('Chompy bird hat (ogre woodsman)'), 170],
+	[getOSItem('Chompy bird hat (woodsman)'), 225],
+	[getOSItem('Chompy bird hat (ogre forester)'), 300],
+	[getOSItem('Chompy bird hat (forester)'), 400],
+	[getOSItem('Chompy bird hat (ogre bowmaster)'), 550],
+	[getOSItem('Chompy bird hat (bowmaster)'), 700],
+	[getOSItem('Chompy bird hat (ogre expert)'), 1000],
+	[getOSItem('Chompy bird hat (expert)'), 1300],
+	[getOSItem('Chompy bird hat (ogre dragon archer)'), 1700],
+	[getOSItem('Chompy bird hat (dragon archer)'), 2250],
+	[getOSItem('Chompy bird hat (expert ogre dragon archer)'), 3000],
+	[getOSItem('Chompy bird hat (expert dragon archer)'), 4000]
+] as const;

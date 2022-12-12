@@ -9,8 +9,9 @@ import { TokkulShopOptions } from '../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
+import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, updateBankSetting } from '../mahojiSettings';
+import { handleMahojiConfirmation } from '../mahojiSettings';
 
 const { TzTokJad } = Monsters;
 

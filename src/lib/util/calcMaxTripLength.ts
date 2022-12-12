@@ -6,7 +6,7 @@ import { SkillsEnum } from '../skilling/types';
 import { skillLevel } from './minionUtils';
 
 export function patronMaxTripBonus(user: MUser) {
-	const { perkTier } = user;
+	const perkTier = user.perkTier();
 	if (perkTier === PerkTier.Two) return Time.Minute * 3;
 	else if (perkTier === PerkTier.Three) return Time.Minute * 6;
 	else if (perkTier >= PerkTier.Four) return Time.Minute * 10;
@@ -15,7 +15,6 @@ export function patronMaxTripBonus(user: MUser) {
 
 export function calcMaxTripLength(user: MUser, activity?: activity_type_enum) {
 	let max = Time.Minute * 30;
-
 	max += patronMaxTripBonus(user);
 
 	switch (activity) {
@@ -32,6 +31,7 @@ export function calcMaxTripLength(user: MUser, activity?: activity_type_enum) {
 		case 'BarbarianAssault':
 		case 'AnimatedArmour':
 		case 'Sepulchre':
+		case 'Raids':
 		case 'Pickpocket':
 		case 'SoulWars':
 		case 'Cyclops': {
@@ -52,7 +52,7 @@ export function calcMaxTripLength(user: MUser, activity?: activity_type_enum) {
 	const sac = Number(user.user.sacrificedValue);
 	const { isIronman } = user;
 	const sacPercent = Math.min(100, calcWhatPercent(sac, isIronman ? 5_000_000_000 : 10_000_000_000));
-	const { perkTier } = user;
+	const perkTier = user.perkTier();
 	max += calcPercentOfNum(sacPercent, perkTier >= PerkTier.Four ? Time.Minute * 3 : Time.Minute);
 	return max;
 }

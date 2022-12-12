@@ -84,12 +84,12 @@ export async function duelCommand(
 		await duelTargetUser.removeItemsFromBank(b);
 
 		await duelMessage
-			.edit(`${duelTargetUser.usernameOrMention} accepted the duel. You both enter the duel arena...`)
+			.edit(`${duelTargetUser.badgedUsername} accepted the duel. You both enter the duel arena...`)
 			.catch(noOp);
 
 		await sleep(2000);
 		await duelMessage
-			.edit(`${duelSourceUser.usernameOrMention} and ${duelTargetUser.usernameOrMention} begin fighting...`)
+			.edit(`${duelSourceUser.badgedUsername} and ${duelTargetUser.badgedUsername} begin fighting...`)
 			.catch(noOp);
 
 		const [winner, loser] =
@@ -121,9 +121,9 @@ export async function duelCommand(
 		if (amount >= 1_000_000_000) {
 			globalClient.emit(
 				Events.ServerNotification,
-				`${Emoji.MoneyBag} **${winner.usernameOrMention}** just won a **${Util.toKMB(
+				`${Emoji.MoneyBag} **${winner.badgedUsername}** just won a **${Util.toKMB(
 					winningAmount
-				)}** GP duel against ${loser.usernameOrMention}.`
+				)}** GP duel against ${loser.badgedUsername}.`
 			);
 		}
 
@@ -133,7 +133,7 @@ export async function duelCommand(
 		);
 
 		duelMessage.edit(
-			`Congratulations ${winner.usernameOrMention}! You won ${Util.toKMB(winningAmount)}, and paid ${Util.toKMB(
+			`Congratulations ${winner.badgedUsername}! You won ${Util.toKMB(winningAmount)}, and paid ${Util.toKMB(
 				tax
 			)} tax.`
 		);

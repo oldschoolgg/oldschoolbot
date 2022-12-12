@@ -1,8 +1,8 @@
-import { ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
+import { BaseMessageOptions, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 
 import { ClueTiers } from '../../../lib/clues/clueTiers';
-import { Emoji, minionBuyButton } from '../../../lib/constants';
-import { roboChimpUserFetch } from '../../../lib/roboChimp';
+import { BitField, Emoji, minionBuyButton } from '../../../lib/constants';
+import { roboChimpSyncData, roboChimpUserFetch } from '../../../lib/roboChimp';
 import { makeComponents } from '../../../lib/util';
 import { minionStatus } from '../../../lib/util/minionStatus';
 import { makeRepeatTripButtons } from '../../../lib/util/repeatStoredTrip';
@@ -10,7 +10,10 @@ import { calculateBirdhouseDetails } from './birdhousesCommand';
 import { isUsersDailyReady } from './dailyCommand';
 import { canRunAutoContract } from './farmingContractCommand';
 
-export async function minionStatusCommand(user: MUser) {
+export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptions> {
+	const roboChimpUser = await roboChimpUserFetch(user.id);
+	roboChimpSyncData(roboChimpUser, user);
+
 	if (!user.user.minion_hasBought) {
 		return {
 			content:
@@ -69,7 +72,7 @@ export async function minionStatusCommand(user: MUser) {
 			.setStyle(ButtonStyle.Secondary)
 	);
 
-	if (!user.minionIsBusy && birdhouseDetails.isReady) {
+	if (!user.minionIsBusy && birdhouseDetails.isReady && !user.bitfield.includes(BitField.DisableBirdhouseRunButton)) {
 		buttons.push(
 			new ButtonBuilder()
 				.setCustomId('DO_BIRDHOUSE_RUN')
@@ -79,7 +82,7 @@ export async function minionStatusCommand(user: MUser) {
 		);
 	}
 
-	if (!user.minionIsBusy && (await canRunAutoContract(user.id))) {
+	if (!user.minionIsBusy && (await canRunAutoContract(user))) {
 		buttons.push(
 			new ButtonBuilder()
 				.setCustomId('AUTO_FARMING_CONTRACT')
@@ -118,7 +121,6 @@ export async function minionStatusCommand(user: MUser) {
 			.setStyle(ButtonStyle.Secondary)
 	);
 
-	const roboChimpUser = await roboChimpUserFetch(user.id);
 	if (roboChimpUser.leagues_points_total === 0) {
 		buttons.push(
 			new ButtonBuilder()

@@ -14,6 +14,7 @@ import {
 	AlchingActivityTaskOptions,
 	AnimatedArmourActivityTaskOptions,
 	BuryingActivityTaskOptions,
+	ButlerActivityTaskOptions,
 	CastingActivityTaskOptions,
 	CollectingOptions,
 	ConstructionActivityTaskOptions,
@@ -41,13 +42,16 @@ import {
 	RevenantOptions,
 	RunecraftActivityTaskOptions,
 	SawmillActivityTaskOptions,
+	ScatteringActivityTaskOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
 	TempleTrekkingActivityTaskOptions,
 	TheatreOfBloodTaskOptions,
+	TiaraRunecraftActivityTaskOptions,
 	WoodcuttingActivityTaskOptions
 } from '../types/minions';
 import { itemNameFromID } from '../util';
+import { GuardiansOfTheRiftActivityTaskOptions } from './../types/minions';
 
 export const taskCanBeRepeated = (type: activity_type_enum) =>
 	!(
@@ -64,6 +68,10 @@ export const taskCanBeRepeated = (type: activity_type_enum) =>
 	).includes(type);
 
 export const tripHandlers = {
+	[activity_type_enum.HalloweenEvent]: {
+		commandName: 'm',
+		args: () => ({})
+	},
 	[activity_type_enum.ClueCompletion]: {
 		commandName: 'm',
 		args: () => ({})
@@ -150,6 +158,12 @@ export const tripHandlers = {
 			bury: { quantity: data.quantity, name: itemNameFromID(data.boneID) }
 		})
 	},
+	[activity_type_enum.Scattering]: {
+		commandName: 'activities',
+		args: (data: ScatteringActivityTaskOptions) => ({
+			scatter: { quantity: data.quantity, name: itemNameFromID(data.ashID) }
+		})
+	},
 	[activity_type_enum.Casting]: {
 		commandName: 'activities',
 		args: (data: CastingActivityTaskOptions) => ({ cast: { spell: data.spellID, quantity: data.quantity } })
@@ -200,6 +214,13 @@ export const tripHandlers = {
 			quantity: data.essenceQuantity,
 			daeyalt_essence: data.daeyaltEssence,
 			usestams: data.useStaminas
+		})
+	},
+	[activity_type_enum.TiaraRunecraft]: {
+		commandName: 'runecraft',
+		args: (data: TiaraRunecraftActivityTaskOptions) => ({
+			rune: itemNameFromID(data.tiaraID),
+			quantity: data.tiaraQuantity
 		})
 	},
 	[activity_type_enum.DriftNet]: {
@@ -398,7 +419,8 @@ export const tripHandlers = {
 			cox: {
 				start: {
 					challenge_mode: data.challengeMode,
-					type: data.users.length === 1 ? 'solo' : 'mass'
+					type: data.users.length === 1 ? 'solo' : 'mass',
+					quantity: data.quantity
 				}
 			}
 		})
@@ -418,7 +440,13 @@ export const tripHandlers = {
 	[activity_type_enum.Sawmill]: {
 		commandName: 'activities',
 		args: (data: SawmillActivityTaskOptions) => ({
-			sawmill: { quantity: data.plankQuantity, type: data.plankID }
+			plank_make: { action: 'sawmill', quantity: data.plankQuantity, type: itemNameFromID(data.plankID) }
+		})
+	},
+	[activity_type_enum.Butler]: {
+		commandName: 'activities',
+		args: (data: ButlerActivityTaskOptions) => ({
+			plank_make: { action: 'butler', quantity: data.plankQuantity, type: itemNameFromID(data.plankID) }
 		})
 	},
 	[activity_type_enum.Sepulchre]: {
@@ -476,6 +504,14 @@ export const tripHandlers = {
 			quantity: data.quantity,
 			powerchop: data.powerchopping
 		})
+	},
+	[activity_type_enum.GuardiansOfTheRift]: {
+		commandName: 'minigames',
+		args: (data: GuardiansOfTheRiftActivityTaskOptions) => ({
+			gotr: {
+				start: { combination_runes: data.combinationRunes }
+			}
+		})
 	}
 } as const;
 
@@ -521,7 +557,7 @@ export async function fetchRepeatTrips(userID: string) {
 export async function makeRepeatTripButtons(user: MUser) {
 	const trips = await fetchRepeatTrips(user.id);
 	const buttons: ButtonBuilder[] = [];
-	const limit = Math.min(user.perkTier + 1, 5);
+	const limit = Math.min(user.perkTier() + 1, 5);
 	for (const trip of trips.slice(0, limit)) {
 		buttons.push(
 			new ButtonBuilder()

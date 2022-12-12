@@ -8,9 +8,10 @@ import minionIcons from '../../lib/minions/data/minionIcons';
 import { toKMB } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { parseBank } from '../../lib/util/parseStringBank';
+import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, updateBankSetting } from '../mahojiSettings';
+import { handleMahojiConfirmation } from '../mahojiSettings';
 import { sellPriceOfItem } from './sell';
 
 async function trackSacBank(user: MUser, bank: Bank) {
@@ -64,7 +65,8 @@ export const sacrificeCommand: OSBMahojiCommand = {
 			user,
 			search: options.search,
 			filters: [options.filter],
-			maxSize: 70
+			maxSize: 70,
+			noDuplicateItems: true
 		});
 
 		const sacVal = Number(user.user.sacrificedValue);
@@ -87,7 +89,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 
 			await handleMahojiConfirmation(
 				interaction,
-				`${user.usernameOrMention}.. are you sure you want to sacrifice your ${item.name}${
+				`${user.badgedUsername}.. are you sure you want to sacrifice your ${item.name}${
 					bankToSac.length > 1 ? 's' : ''
 				} for ${deathRunes} death runes? *Note: These are cute, fluffy little cats.*`
 			);
@@ -101,7 +103,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 				totalCatsSacrificed += sacBank.amount(cat);
 			}
 
-			return `${user.usernameOrMention}, you sacrificed ${bankToSac} and received ${loot}. You've sacrificed ${totalCatsSacrificed} cats.`;
+			return `${user.badgedUsername}, you sacrificed ${bankToSac} and received ${loot}. You've sacrificed ${totalCatsSacrificed} cats.`;
 		}
 
 		let totalPrice = 0;
@@ -118,7 +120,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 		await user.removeItemsFromBank(bankToSac);
 
 		if (totalPrice > 200_000_000) {
-			globalClient.emit(Events.ServerNotification, `${user.usernameOrMention} just sacrificed ${bankToSac}!`);
+			globalClient.emit(Events.ServerNotification, `${user.badgedUsername} just sacrificed ${bankToSac}!`);
 		}
 
 		const { newUser } = await user.update({
@@ -142,7 +144,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 					str += `\n\nYou have now unlocked the **${icon.name}** minion icon!`;
 					globalClient.emit(
 						Events.ServerNotification,
-						`**${user.usernameOrMention}** just unlocked the ${icon.emoji} icon for their minion.`
+						`**${user.badgedUsername}** just unlocked the ${icon.emoji} icon for their minion.`
 					);
 					break;
 				}

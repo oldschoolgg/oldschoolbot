@@ -17,6 +17,7 @@ import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { OSBMahojiCommand } from '../lib/util';
+import { userStatsBankUpdate } from '../mahojiSettings';
 
 const specialBones = [
 	{
@@ -36,7 +37,7 @@ function notifyUniques(user: MUser, activity: string, uniques: number[], loot: B
 	if (itemsToAnnounce.length > 0) {
 		globalClient.emit(
 			Events.ServerNotification,
-			`**${user.usernameOrMention}'s** minion, ${
+			`**${user.badgedUsername}'s** minion, ${
 				user.minionName
 			}, while offering ${qty}x ${activity}, found **${itemsToAnnounce}**${
 				randQty ? ` on their ${formatOrdinal(randQty)} offering!` : '!'
@@ -140,7 +141,9 @@ export const mineCommand: OSBMahojiCommand = {
 				return "You don't own any of these eggs.";
 			}
 			if (!quantity) quantity = quantityOwned;
-			await user.removeItemsFromBank(new Bank({ [egg.id]: quantity }));
+			const cost = new Bank().add(egg.id, quantity);
+			await user.removeItemsFromBank(cost);
+			await userStatsBankUpdate(user.id, 'bird_eggs_offered_bank', cost);
 			let loot = new Bank();
 			for (let i = 0; i < quantity; i++) {
 				if (roll(300)) {

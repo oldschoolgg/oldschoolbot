@@ -1,4 +1,4 @@
-import { Embed } from '@discordjs/builders';
+import { EmbedBuilder } from 'discord.js';
 import { shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
 import { SkillsScore } from 'oldschooljs/dist/meta/types';
@@ -9,14 +9,14 @@ import { getClueScoresFromOpenables } from '../clues/clueUtils';
 import { badges, skillEmoji } from '../constants';
 import { calcCLDetails } from '../data/Collections';
 import { effectiveMonsters } from '../minions/data/killableMonsters';
-import { getAllMinigameScores } from '../settings/settings';
 import { courses } from '../skilling/skills/agility';
 import creatures from '../skilling/skills/hunter/creatures';
 import { ItemBank, Skills } from '../types';
-import { addArrayOfNumbers, toTitleCase } from '../util';
+import { addArrayOfNumbers } from '../util';
 import { logError } from './logError';
+import { toTitleCase } from './toTitleCase';
 
-export async function minionStatsEmbed(user: MUser): Promise<Embed> {
+export async function minionStatsEmbed(user: MUser): Promise<EmbedBuilder> {
 	const { QP } = user;
 
 	const xp = addArrayOfNumbers(Object.values(user.skillsAsXP) as number[]);
@@ -38,43 +38,43 @@ export async function minionStatsEmbed(user: MUser): Promise<Embed> {
 	getClueScoresFromOpenables(openableScores, true);
 
 	const clueEntries = Object.entries(openableScores.bank);
-	const minigameScores = (await getAllMinigameScores(user.id))
+	const minigameScores = (await user.fetchMinigameScores())
 		.filter(i => i.score > 0)
 		.sort((a, b) => b.score - a.score);
 
 	const rawBadges = user.user.badges;
 	const badgesStr = rawBadges.map(num => badges[num]).join(' ');
 
-	const embed = new Embed()
-		.setTitle(`${badgesStr}${user.minionName}`)
-		.addField({
+	const embed = new EmbedBuilder().setTitle(`${badgesStr}${user.minionName}`.slice(1, 255)).addFields(
+		{
 			name: '\u200b',
 			value: ['attack', 'strength', 'defence', 'ranged', 'prayer', 'magic', 'runecraft', 'construction']
 				.map(skillCell)
 				.join('\n'),
 			inline: true
-		})
-		.addField({
+		},
+		{
 			name: '\u200b',
 			value: ['hitpoints', 'agility', 'herblore', 'thieving', 'crafting', 'fletching', 'slayer', 'hunter']
 				.map(skillCell)
 				.join('\n'),
 			inline: true
-		})
-		.addField({
+		},
+		{
 			name: '\u200b',
 			value: ['mining', 'smithing', 'fishing', 'cooking', 'firemaking', 'woodcutting', 'farming', 'overall']
 				.map(skillCell)
 				.join('\n'),
 			inline: true
-		});
+		}
+	);
 
 	if (user.isIronman) {
 		embed.setColor(5_460_819);
 	}
 
 	const { percent } = calcCLDetails(user);
-	embed.addField({
+	embed.addFields({
 		name: `${skillEmoji.total} Overall`,
 		value: `**Level:** ${totalLevel}
 **XP:** ${xp.toLocaleString()}
@@ -84,7 +84,7 @@ export async function minionStatsEmbed(user: MUser): Promise<Embed> {
 	});
 
 	if (clueEntries.length > 0) {
-		embed.addField({
+		embed.addFields({
 			name: '<:Clue_scroll:365003979840552960> Clue Scores',
 			value: clueEntries
 				.map(([id, qty]) => {
@@ -101,7 +101,7 @@ export async function minionStatsEmbed(user: MUser): Promise<Embed> {
 	}
 
 	if (minigameScores.length > 0) {
-		embed.addField({
+		embed.addFields({
 			name: '<:minigameIcon:630400565070921761> Minigames',
 			value: minigameScores
 				.slice(0, 4)
@@ -154,7 +154,7 @@ export async function minionStatsEmbed(user: MUser): Promise<Embed> {
 		}
 	}
 
-	embed.addField({
+	embed.addFields({
 		name: 'Other',
 		value: shuffleArr(otherStats)
 			.slice(0, 4)
