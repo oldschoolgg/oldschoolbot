@@ -1,3 +1,4 @@
+import { CropUpgradeType } from '@prisma/client';
 import { ChatInputCommandInteraction } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
@@ -5,9 +6,10 @@ import { Bank } from 'oldschooljs';
 import { superCompostables } from '../../../lib/data/filterables';
 import { ArdougneDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
+import { prisma } from '../../../lib/settings/prisma';
 import { calcNumOfPatches } from '../../../lib/skilling/functions/calcsFarming';
 import { getFarmingInfo } from '../../../lib/skilling/functions/getFarmingInfo';
-import Farming, { CompostName } from '../../../lib/skilling/skills/farming';
+import Farming from '../../../lib/skilling/skills/farming';
 import { Plant, SkillsEnum } from '../../../lib/skilling/types';
 import { FarmingActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../../lib/util';
@@ -15,7 +17,7 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { farmingPatchNames, findPlant, isPatchName } from '../../../lib/util/farmingHelpers';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { handleMahojiConfirmation, userHasGracefulEquipped } from '../../mahojiSettings';
+import { handleMahojiConfirmation, userHasGracefulEquipped, userStatsBankUpdate } from '../../mahojiSettings';
 
 function treeCheck(plant: Plant, wcLevel: number, bal: number, quantity: number): string | null {
 	if (plant.needsChopForHarvest && plant.treeWoodcuttingLevel && wcLevel < plant.treeWoodcuttingLevel) {
@@ -250,8 +252,8 @@ export async function farmingPlantCommand({
 		}
 	}
 
-	const compostTier = (user.user.minion_defaultCompostToUse as CompostName) ?? 'compost';
-	let upgradeType: CompostName | null = null;
+	const compostTier = (user.user.minion_defaultCompostToUse as CropUpgradeType) ?? 'compost';
+	let upgradeType: CropUpgradeType | null = null;
 	if ((didPay && plant.canCompostandPay) || (!didPay && plant.canCompostPatch && compostTier)) {
 		const compostCost = new Bank().add(compostTier, quantity);
 		if (user.owns(compostCost)) {
@@ -291,6 +293,20 @@ export async function farmingPlantCommand({
 
 	if (noFarmGuild) boostStr.push(noFarmGuild);
 
+	const inserted = await prisma.farmedCrop.create({
+		data: {
+			user_id: user.id,
+			date_planted: new Date(),
+			item_id: plant.id,
+			quantity_planted: quantity,
+			was_autofarmed: autoFarmed,
+			paid_for_protection: didPay,
+			upgrade_type: upgradeType
+		}
+	});
+
+	await userStatsBankUpdate(user.id, 'farming_plant_cost_bank', cost);
+
 	await addSubTaskToActivityTask<FarmingActivityTaskOptions>({
 		plantsName: plant.name,
 		patchType,
@@ -303,7 +319,8 @@ export async function farmingPlantCommand({
 		duration,
 		currentDate,
 		type: 'Farming',
-		autoFarmed
+		autoFarmed,
+		pid: inserted.id
 	});
 
 	return `${infoStr.join(' ')}

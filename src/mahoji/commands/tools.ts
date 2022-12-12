@@ -18,7 +18,12 @@ import {
 } from '../../lib/clues/stashUnits';
 import { BitField, PerkTier } from '../../lib/constants';
 import { allCLItemsFiltered, allDroppedItems } from '../../lib/data/Collections';
-import { anglerOutfit, gnomeRestaurantCL } from '../../lib/data/CollectionsExport';
+import {
+	anglerOutfit,
+	evilChickenOutfit,
+	gnomeRestaurantCL,
+	guardiansOfTheRiftCL
+} from '../../lib/data/CollectionsExport';
 import pets from '../../lib/data/pets';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import { MinigameName, Minigames } from '../../lib/settings/minigames';
@@ -284,6 +289,49 @@ LIMIT 10;`);
 			return result;
 		},
 		format: num => `${num.toLocaleString()} Gambles`
+	},
+	{
+		name: 'Guardians of the Rift',
+		items: guardiansOfTheRiftCL,
+		run: async ({ item, ironmanOnly }) => {
+			const result = await prisma.$queryRawUnsafe<
+				{ id: string; val: number }[]
+			>(`SELECT users.id, gotr_rift_searches AS val
+            FROM users
+            INNER JOIN "user_stats" "userstats" on "userstats"."user_id"::text = "users"."id"
+            WHERE "collectionLogBank"->>'${item.id}' IS NULL
+            ${ironmanOnly ? ' AND "minion.ironman" = true' : ''}
+            ORDER BY gotr_rift_searches DESC
+            LIMIT 10;`);
+			return result;
+		},
+		format: num => `${num.toLocaleString()} Rift Searches`
+	},
+	{
+		name: 'Evil Chicken Outfit',
+		items: evilChickenOutfit,
+		run: async ({ item, ironmanOnly }) => {
+			const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(`
+            SELECT *
+			FROM
+			(
+			SELECT users.id::text
+            , COALESCE(SUM((bird_eggs_offered_bank->>'5076')::int),0)
+                + COALESCE(SUM((bird_eggs_offered_bank->>'5077')::int),0)
+                + COALESCE(SUM((bird_eggs_offered_bank->>'5078')::int),0) AS val
+            FROM users
+            INNER JOIN "user_stats" "userstats" on "userstats"."user_id"::text = "users"."id"
+            WHERE "collectionLogBank"->>'${item.id}' IS NULL
+            ${ironmanOnly ? ' AND "minion.ironman" = true' : ''}
+            GROUP BY users.id
+            ORDER BY val DESC
+            LIMIT 10 
+			)
+			AS eggs
+			WHERE eggs.val > 0;`);
+			return result;
+		},
+		format: num => `${num.toLocaleString()} Bird Eggs Offered`
 	}
 ];
 for (const minigame of dryStreakMinigames) {

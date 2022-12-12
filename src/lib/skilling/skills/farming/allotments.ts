@@ -5,6 +5,7 @@ import { Plant } from '../../types';
 
 const allotmentPlants: Plant[] = [
 	{
+		id: itemID('Potato'),
 		level: 1,
 		plantXp: 8,
 		checkXp: 0,
@@ -44,6 +45,7 @@ const allotmentPlants: Plant[] = [
 		timePerHarvest: 20
 	},
 	{
+		id: itemID('Onion'),
 		level: 5,
 		plantXp: 9.5,
 		checkXp: 0,
@@ -83,6 +85,7 @@ const allotmentPlants: Plant[] = [
 		timePerHarvest: 20
 	},
 	{
+		id: itemID('Cabbage'),
 		level: 7,
 		plantXp: 10,
 		checkXp: 0,
@@ -122,6 +125,7 @@ const allotmentPlants: Plant[] = [
 		timePerHarvest: 20
 	},
 	{
+		id: itemID('Tomato'),
 		level: 12,
 		plantXp: 12.5,
 		checkXp: 0,
@@ -161,6 +165,7 @@ const allotmentPlants: Plant[] = [
 		timePerHarvest: 20
 	},
 	{
+		id: itemID('Sweetcorn'),
 		level: 20,
 		plantXp: 17,
 		checkXp: 0,
@@ -200,6 +205,7 @@ const allotmentPlants: Plant[] = [
 		timePerHarvest: 20
 	},
 	{
+		id: itemID('Strawberry'),
 		level: 31,
 		plantXp: 26,
 		checkXp: 0,
@@ -239,6 +245,7 @@ const allotmentPlants: Plant[] = [
 		timePerHarvest: 20
 	},
 	{
+		id: itemID('Watermelon'),
 		level: 47,
 		plantXp: 48.5,
 		checkXp: 0,
@@ -278,6 +285,7 @@ const allotmentPlants: Plant[] = [
 		timePerHarvest: 20
 	},
 	{
+		id: itemID('Snape grass'),
 		level: 61,
 		plantXp: 82,
 		checkXp: 0,
