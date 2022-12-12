@@ -1,6 +1,7 @@
 import { sumArr } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
+import { eggs } from '../../mahoji/commands/offer';
 import { feedableItems } from '../../mahoji/commands/tames';
 import { getFarmingContractOfUser } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import {
@@ -31,6 +32,9 @@ import {
 	WesternProv,
 	WildernessDiary
 } from '../diaries';
+import { implings } from '../implings';
+import { Naxxus } from '../minions/data/killableMonsters/custom/bosses/Naxxus';
+import { ashes } from '../skilling/skills/prayer';
 import { TameSpeciesID, TameType } from '../tames';
 import { ItemBank } from '../types';
 import { calcTotalLevel } from '../util';
@@ -644,6 +648,79 @@ export const eliteTasks: Task[] = [
 		name: 'Create Dwarven igne claws',
 		has: async ({ cl }) => {
 			return cl.has('Dwarven igne claws');
+		}
+	},
+	{
+		id: 3086,
+		name: 'Receive 1,000,000 XP from silverhawk boots',
+		has: async ({ userStats }) => {
+			return userStats.silverhawk_boots_passive_xp >= 1_000_000;
+		}
+	},
+	{
+		id: 3087,
+		name: 'Tan 20,000 hides with the portable tanner',
+		has: async ({ userStats }) => {
+			return Object.values(userStats.portable_tanner_bank as ItemBank).length >= 20_000;
+		}
+	},
+	{
+		id: 3088,
+		name: 'Upgrade 500 clues with the clue upgrader',
+		has: async ({ userStats }) => {
+			return sumArr(Object.values(userStats.clue_upgrader_bank as ItemBank)) >= 500;
+		}
+	},
+	{
+		id: 3089,
+		name: 'Scatter 1000 of every ashes',
+		has: async ({ userStats }) => {
+			let vals = Object.values(userStats.scattered_ashes_bank as ItemBank);
+			return vals.length === ashes.length && vals.every(i => i >= 1000);
+		}
+	},
+	{
+		id: 3090,
+		name: 'Receive 10,000 bars from an adze',
+		has: async ({ userStats }) => {
+			return sumArr(Object.values(userStats.bars_from_adze_bank as ItemBank)) >= 10_000;
+		}
+	},
+	{
+		id: 3091,
+		name: 'Offer 100 of each bird egg',
+		has: async ({ userStats }) => {
+			let vals = Object.values(userStats.bird_eggs_offered_bank as ItemBank);
+			return vals.length === eggs.length && vals.every(i => Number(i) >= 100);
+		}
+	},
+	{
+		id: 3092,
+		name: 'Receive 5000 ores from ore spirits',
+		has: async ({ userStats }) => {
+			return sumArr(Object.values(userStats.ores_from_spirits_bank as ItemBank)) >= 5000;
+		}
+	},
+	{
+		id: 3093,
+		name: 'Kill Naxxus 300 times',
+		has: async args => {
+			return leaguesHasKC(args, Naxxus, 300);
+		}
+	},
+	{
+		id: 3094,
+		name: 'Catch 5 of every impling passively',
+		has: async ({ userStats }) => {
+			let vals = Object.values(userStats.passive_implings_bank as ItemBank);
+			return vals.length === Object.keys(implings).length && vals.every(i => Number(i) >= 50);
+		}
+	},
+	{
+		id: 3095,
+		name: 'Open the Crystal chest 1000 times',
+		has: async ({ opens }) => {
+			return opens.amount('Crystal key') >= 1000;
 		}
 	}
 ];

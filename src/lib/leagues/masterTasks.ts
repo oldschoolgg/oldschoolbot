@@ -11,13 +11,17 @@ import {
 	godWarsDungeonCL,
 	gorajanArcherOutfit,
 	gorajanOccultOutfit,
-	gorajanWarriorOutfit
+	gorajanWarriorOutfit,
+	naxxusCL
 } from '../data/CollectionsExport';
+import { implings } from '../implings';
 import { Inventions } from '../invention/inventions';
 import { dungBuyables } from '../skilling/skills/dung/dungData';
+import { ashes } from '../skilling/skills/prayer';
 import Dwarven from '../skilling/skills/smithing/smithables/dwarven';
 import { slayerUnlockableRewards } from '../slayer/slayerUnlocks';
 import { getTameSpecies } from '../tames';
+import { ItemBank } from '../types';
 import { calcTotalLevel } from '../util';
 import resolveItems from '../util/resolveItems';
 import { Task } from './leaguesUtils';
@@ -1043,6 +1047,57 @@ export const masterTasks: Task[] = [
 		name: 'Create Gorajan igne claws',
 		has: async ({ cl }) => {
 			return cl.has('Gorajan igne claws');
+		}
+	},
+	{
+		id: 4146,
+		name: 'Receive 5,000,000 XP from silverhawk boots',
+		has: async ({ userStats }) => {
+			return userStats.silverhawk_boots_passive_xp >= 5_000_000;
+		}
+	},
+	{
+		id: 4147,
+		name: 'Upgrade 2000 clues with the clue upgrader',
+		has: async ({ userStats }) => {
+			return sumArr(Object.values(userStats.clue_upgrader_bank as ItemBank)) >= 2000;
+		}
+	},
+	{
+		id: 4148,
+		name: 'Tan 70,000 hides with the portable tanner',
+		has: async ({ userStats }) => {
+			return Object.values(userStats.portable_tanner_bank as ItemBank).length >= 70_000;
+		}
+	},
+	{
+		id: 4149,
+		name: 'Finish the Naxxus CL',
+		has: async ({ cl }) => {
+			return naxxusCL.every(i => cl.has(i));
+		}
+	},
+	{
+		id: 4150,
+		name: 'Scatter 5000 of every ashes',
+		has: async ({ userStats }) => {
+			let vals = Object.values(userStats.scattered_ashes_bank as ItemBank);
+			return vals.length === ashes.length && vals.every(i => i >= 5000);
+		}
+	},
+	{
+		id: 4151,
+		name: 'Catch 100 of every impling passively',
+		has: async ({ userStats }) => {
+			let vals = Object.values(userStats.passive_implings_bank as ItemBank);
+			return vals.length === Object.keys(implings).length && vals.every(i => Number(i) >= 100);
+		}
+	},
+	{
+		id: 4152,
+		name: 'Open the Crystal chest 3000 times',
+		has: async ({ opens }) => {
+			return opens.amount('Crystal key') >= 3000;
 		}
 	}
 ];

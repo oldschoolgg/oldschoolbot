@@ -34,7 +34,7 @@ import { hardTasks } from './hardTasks';
 import { betterHerbloreStats, HasFunctionArgs, Task } from './leaguesUtils';
 import { masterTasks } from './masterTasks';
 import { mediumTasks } from './mediumTasks';
-import { calcActualClues } from './stats';
+import { calcActualClues, totalLampedXP } from './stats';
 
 export const leagueTasks = [
 	{ name: 'Easy', tasks: easyTasks, points: 20 },
@@ -177,6 +177,9 @@ export async function leaguesCheckUser(userID: string) {
 	const clPercent = calcCLDetails(mahojiUser).percent;
 	const herbloreStats = betterHerbloreStats(_herbloreStats);
 	const smithingSuppliesUsed = calcSuppliesUsedForSmithing(smithingStats);
+
+	const userStats = await mahojiUser.fetchStats();
+
 	const args: HasFunctionArgs = {
 		cl: mahojiUser.cl,
 		bank: mahojiUser.bank,
@@ -211,7 +214,9 @@ export async function leaguesCheckUser(userID: string) {
 		smithingSuppliesUsed,
 		actualClues,
 		smeltingStats,
-		stashUnits
+		stashUnits,
+		totalLampedXP: totalLampedXP(userStats),
+		userStats
 	};
 
 	let resStr = '\n';
