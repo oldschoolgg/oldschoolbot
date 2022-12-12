@@ -207,7 +207,6 @@ class PatreonTask {
 
 		for (const patron of fetchedPatrons) {
 			if (!patron.discordID) {
-				result.push(`Patron[${patron.patreonID}] has no discord connected, so continuing.`);
 				continue;
 			}
 
@@ -297,7 +296,7 @@ class PatreonTask {
 		result = result.concat(githubResult);
 
 		if (production) {
-			sendToChannelID(Channel.ErrorLogs, {
+			sendToChannelID(Channel.PatronLogs, {
 				files: [{ attachment: Buffer.from(result.join('\n')), name: 'patron.txt' }]
 			});
 		} else {
