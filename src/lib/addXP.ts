@@ -2,6 +2,7 @@ import { noOp, Time } from 'e';
 
 import { MAXING_MESSAGE, SupportServer } from '../config';
 import { Events, LEVEL_99_XP, MAX_TOTAL_LEVEL, MAX_XP, skillEmoji } from './constants';
+import { thievingLevelUpTable } from './data/LevelUpTables/thievingLevelUpTable';
 import { AddXpParams } from './minions/types';
 import { prisma } from './settings/prisma';
 import Skills from './skilling/skills';
@@ -149,9 +150,10 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 			str += '\n\n**Congratulations, your minion has reached the maximum total level!**\n\n';
 			onMax(user);
 		} else if (currentLevel !== newLevel) {
+			const content = thievingLevelUpTable.find((content => content.lvl === newLevel));
 			str += params.minimal
 				? `(Levelled up to ${newLevel})`
-				: `\n**Congratulations! Your ${name} level is now ${newLevel}** 🎉`;
+				: `\n**Congratulations! Your ${name} level is now ${newLevel}** 🎉${content ? `\n**You can now ${content.messages.join(', ')}!**` : ''}`;
 		}
 	}
 	return str;
