@@ -296,7 +296,7 @@ class PatreonTask {
 		result = result.concat(githubResult);
 
 		if (production) {
-			sendToChannelID(Channel.ErrorLogs, {
+			sendToChannelID(Channel.PatronLogs, {
 				files: [{ attachment: Buffer.from(result.join('\n')), name: 'patron.txt' }]
 			});
 		} else {
