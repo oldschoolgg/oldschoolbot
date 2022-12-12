@@ -150,10 +150,12 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 			str += '\n\n**Congratulations, your minion has reached the maximum total level!**\n\n';
 			onMax(user);
 		} else if (currentLevel !== newLevel) {
-			const content = thievingLevelUpTable.find((content => content.lvl === newLevel));
+			const content = thievingLevelUpTable.find(content => content.lvl === newLevel);
 			str += params.minimal
 				? `(Levelled up to ${newLevel})`
-				: `\n**Congratulations! Your ${name} level is now ${newLevel}** 🎉${content ? `\n**You can now ${content.messages.join(', ')}!**` : ''}`;
+				: `\n**Congratulations! Your ${name} level is now ${newLevel}** 🎉${
+						content ? `\n**You can now ${content.messages.join(', ')}!**` : ''
+				  }`;
 		}
 	}
 	return str;
