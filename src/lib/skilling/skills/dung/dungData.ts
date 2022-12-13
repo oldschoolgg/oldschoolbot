@@ -92,7 +92,7 @@ export const dungBuyables = [
 		cost: 900_000
 	},
 	{
-		item: getOSItem('Frosty'),
+		item: getOSItem('Frostbite'),
 		cost: 2_000_000
 	},
 	{

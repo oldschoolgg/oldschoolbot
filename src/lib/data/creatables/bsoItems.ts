@@ -1120,6 +1120,17 @@ const dragonBoneCreatables: Createable[] = [
 		outputItems: resolveNameBank({
 			'Royal dragon platebody': 1
 		})
+	},
+	{
+		name: 'Frosty',
+		inputItems: resolveNameBank({
+			Snowball: 50,
+			'Festive scarf': 1,
+			'Snowman top hat': 1
+		}),
+		outputItems: resolveNameBank({
+			Frosty: 1
+		})
 	}
 ];
 

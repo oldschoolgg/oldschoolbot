@@ -445,6 +445,7 @@ export async function makePaginatedMessage(channel: TextChannel, pages: Paginate
 export function isSuperUntradeable(item: number | Item) {
 	const id = typeof item === 'number' ? item : item.id;
 	if (id === 5021) return true;
+	if (id === itemID('Snowball')) return true;
 	const fullItem = Items.get(id);
 	if (fullItem?.customItemData?.isSuperUntradeable) {
 		return true;

@@ -765,6 +765,8 @@ model UserStats {
 
   lamped_xp Json @default("{}") @db.Json
 
+  snowmen_built Int @default(0)
+
   @@map("user_stats")
 }
 
