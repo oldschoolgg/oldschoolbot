@@ -204,6 +204,17 @@ const gorajan = [
 	}
 ];
 
+export const allDyes = [
+	'Dungeoneering dye',
+	'Blood dye',
+	'Ice dye',
+	'Shadow dye',
+	'Third age dye',
+	'Monkey dye',
+	'Volcanic dye',
+	'Christmas dye'
+].map(getOSItem);
+
 export const dyedItems: DyedItem[] = [
 	{
 		baseItem: getOSItem('Drygore rapier'),
