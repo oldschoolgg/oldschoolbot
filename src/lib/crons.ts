@@ -83,6 +83,8 @@ GROUP BY item_id;`);
 				const _result = await fetch(url).then(res => res.json());
 				if (!_result || !_result.data || !Array.isArray(_result.data)) continue;
 				for (const entity of _result.data) {
+					if (entity.author_flair_text === null) continue;
+					if (entity.author_flair_text !== ':jagexmod:') continue;
 					if (alreadySentCache.has(entity.id)) continue;
 					sendReddit({ post: entity, type });
 					alreadySentCache.add(entity.id);
