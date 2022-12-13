@@ -18,7 +18,8 @@ const arrayColumns = [
 	['users', 'ironman_alts'],
 	['users', 'slayer.unlocks'],
 	['users', 'slayer.blocked_ids'],
-	['users', 'slayer.autoslay_options']
+	['users', 'slayer.autoslay_options'],
+	['users', 'gf_weapons_made']
 ];
 
 for (const [table, column] of arrayColumns) {
