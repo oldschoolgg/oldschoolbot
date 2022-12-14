@@ -170,7 +170,7 @@ export const slayerLevelUpTable = [
 	},
 	{
 		lvl: 75,
-		messages: ['slay Gargoyles and the Groteque Guardians'],
+		messages: ['slay Gargoyles and the Grotesque Guardians'],
 		skill: SkillsEnum.Slayer
 	},
 	{

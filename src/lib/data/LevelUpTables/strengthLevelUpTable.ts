@@ -54,7 +54,7 @@ export const strengthLevelUpTable = [
 	{
 		lvl: 60,
 		messages: [
-			'enter the God Wards Dungeon via the strength route',
+			'enter the God Wars Dungeon via the strength route',
 			'wield Dragon warhammers',
 			'wield Tzhaar-ket-oms'
 		],
