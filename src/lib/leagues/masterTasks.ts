@@ -1067,7 +1067,7 @@ export const masterTasks: Task[] = [
 		id: 4148,
 		name: 'Tan 70,000 hides with the portable tanner',
 		has: async ({ userStats }) => {
-			return Object.values(userStats.portable_tanner_bank as ItemBank).length >= 70_000;
+			return sumArr(Object.values(userStats.portable_tanner_bank as ItemBank)) >= 70_000;
 		}
 	},
 	{
