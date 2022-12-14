@@ -56,7 +56,7 @@ export const miningLevelUpTable = [
 		messages: [
 			'mine Coal',
 			'mine Stardust from size-3 crashed stars',
-			'access to the lower level of the Motherlode Mine',
+			'access the lower level of the Motherlode Mine',
 			'mine Pay-dirt',
 			'mine Pure essence'
 		],
@@ -94,7 +94,7 @@ export const miningLevelUpTable = [
 	},
 	{
 		lvl: 43,
-		messages: ['access to the Blast mine and mine Blasted ore'],
+		messages: ['access the Blast mine and mine Blasted ore'],
 		skill: SkillsEnum.Mining
 	},
 	{
@@ -104,7 +104,7 @@ export const miningLevelUpTable = [
 	},
 	{
 		lvl: 50,
-		messages: ['mine Stardust from size-5 crashed stars', 'access to the Volcanic Mine'],
+		messages: ['mine Stardust from size-5 crashed stars', 'access the Volcanic Mine'],
 		skill: SkillsEnum.Mining
 	},
 	{
@@ -115,7 +115,7 @@ export const miningLevelUpTable = [
 	{
 		lvl: 60,
 		messages: [
-			'access to the Mining Guild',
+			'access the Mining Guild',
 			'mine Stardust from size-6 crashed stars',
 			'mine Lunar ore',
 			'mine Daeyalt shards'
@@ -149,7 +149,7 @@ export const miningLevelUpTable = [
 	},
 	{
 		lvl: 72,
-		messages: ['access to the upper level of the Motherlode Mine'],
+		messages: ['access the upper level of the Motherlode Mine'],
 		skill: SkillsEnum.Mining
 	},
 	{

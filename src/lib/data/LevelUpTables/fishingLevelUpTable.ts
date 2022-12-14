@@ -143,7 +143,7 @@ export const fishingLevelUpTable = [
 	},
 	{
 		lvl: 68,
-		messages: ['access to the Fishing Guild'],
+		messages: ['access the Fishing Guild'],
 		skill: SkillsEnum.Fishing
 	},
 	{

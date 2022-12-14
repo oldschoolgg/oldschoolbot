@@ -3,7 +3,7 @@ import { SkillsEnum } from '../../skilling/types';
 export const fletchingLevelUpTable = [
 	{
 		lvl: 1,
-		messages: ['fletch Arrow shafs', 'fletch Bronze arrows', 'fletch Headless arrows'],
+		messages: ['fletch Arrow shafts', 'fletch Bronze arrows', 'fletch Headless arrows'],
 		skill: SkillsEnum.Fletching
 	},
 	{

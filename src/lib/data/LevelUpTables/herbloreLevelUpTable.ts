@@ -19,7 +19,7 @@ export const herbloreLevelUpTable = [
 	},
 	{
 		lvl: 8,
-		messages: ["mix Relicym's balmes"],
+		messages: ["mix Relicym's balm"],
 		skill: SkillsEnum.Herblore
 	},
 	{
@@ -74,7 +74,7 @@ export const herbloreLevelUpTable = [
 	},
 	{
 		lvl: 30,
-		messages: ['clean Grimy toadflaxs', 'mix Defence potions', 'mix Ranarr potions (unf)'],
+		messages: ['clean Grimy toadflaxes', 'mix Defence potions', 'mix Ranarr potions (unf)'],
 		skill: SkillsEnum.Herblore
 	},
 	{
@@ -165,11 +165,6 @@ export const herbloreLevelUpTable = [
 	{
 		lvl: 63,
 		messages: ['mix Snapdragon potions (unf)', 'mix Super restores'],
-		skill: SkillsEnum.Herblore
-	},
-	{
-		lvl: 38,
-		messages: ['craft Coifs', 'craft Topaz bracelets'],
 		skill: SkillsEnum.Herblore
 	},
 	{

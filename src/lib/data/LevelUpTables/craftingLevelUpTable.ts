@@ -163,7 +163,7 @@ export const craftingLevelUpTable = [
 	},
 	{
 		lvl: 40,
-		messages: ['access to the Crafting Guild', 'craft Ruby necklaces'],
+		messages: ['access the Crafting Guild', 'craft Ruby necklaces'],
 		skill: SkillsEnum.Crafting
 	},
 	{

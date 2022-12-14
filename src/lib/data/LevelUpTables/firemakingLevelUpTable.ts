@@ -53,7 +53,7 @@ export const firemakingLevelUpTable = [
 	},
 	{
 		lvl: 50,
-		messages: ['burn Mahogany logs', 'burn Maple pyre logs', 'subdue to Wintertodt'],
+		messages: ['burn Mahogany logs', 'burn Maple pyre logs', 'subdue the Wintertodt'],
 		skill: SkillsEnum.Firemaking
 	},
 	{

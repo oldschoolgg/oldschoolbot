@@ -43,7 +43,7 @@ export const cookingLevelUpTable = [
 	},
 	{
 		lvl: 35,
-		messages: ['brew jug of wine'],
+		messages: ['brew Jugs of wine'],
 		skill: SkillsEnum.Cooking
 	},
 	{
