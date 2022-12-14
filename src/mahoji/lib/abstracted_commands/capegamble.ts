@@ -22,11 +22,15 @@ export async function capeGambleCommand(user: MUser, type: string, interaction: 
 	const item = getOSItem(type === 'fire' ? 'Fire cape' : 'Infernal cape');
 	const key: 'infernal_cape_sacrifices' | 'stats_fireCapesSacrificed' =
 		type === 'fire' ? 'stats_fireCapesSacrificed' : 'infernal_cape_sacrifices';
-	const capesOwned = await user.bank.amount(item.id);
+	const capesOwned = user.bank.amount(item.id);
 
 	if (capesOwned < 1) return `You have no ${item.name}'s to gamble!`;
 
 	await handleMahojiConfirmation(interaction, `Are you sure you want to gamble a ${item.name}?`);
+
+	// Double check after confirmation dialogue:
+	await user.sync();
+	if (user.bank.amount(item.id) < 1) return `You have no ${item.name}'s to gamble!`;
 
 	const newUser = await user.update({
 		[key]: {

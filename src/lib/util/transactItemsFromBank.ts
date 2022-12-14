@@ -41,6 +41,9 @@ export async function transactItemsFromBank({
 	let itemsToRemove = options.itemsToRemove ? options.itemsToRemove.clone() : undefined;
 	return userQueueFn(userID, async () => {
 		const settings = await mUserFetch(userID);
+		if (itemsToRemove && settings.GP < itemsToRemove.amount('Coins') - (itemsToAdd?.amount('Coins') ?? 0)) {
+			throw new Error("User doesn't have enough coins!");
+		}
 		const currentBank = new Bank().add(settings.user.bank as ItemBank);
 		const previousCL = new Bank().add(settings.user.collectionLogBank as ItemBank);
 		const previousTempCL = new Bank().add(settings.user.temp_cl as ItemBank);

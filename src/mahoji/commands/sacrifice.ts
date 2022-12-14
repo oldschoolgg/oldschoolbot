@@ -95,7 +95,11 @@ export const sacrificeCommand: OSBMahojiCommand = {
 			);
 
 			const loot = new Bank().add('Death rune', deathRunes);
-			await user.removeItemsFromBank(bankToSac);
+			try {
+				await user.removeItemsFromBank(bankToSac);
+			} catch (e: any) {
+				return `Failed to sacrifice cats: ${e.message}`;
+			}
 			await user.addItemsToBank({ items: loot, collectionLog: false });
 			const sacBank = await trackSacBank(user, bankToSac);
 			let totalCatsSacrificed = 0;
@@ -117,7 +121,11 @@ export const sacrificeCommand: OSBMahojiCommand = {
 				totalPrice
 			)}) to your sacrificed amount.`
 		);
-		await user.removeItemsFromBank(bankToSac);
+		try {
+			await user.removeItemsFromBank(bankToSac);
+		} catch (e: any) {
+			return `Failed to sacrifice items: ${e.message}`;
+		}
 
 		if (totalPrice > 200_000_000) {
 			globalClient.emit(Events.ServerNotification, `${user.badgedUsername} just sacrificed ${bankToSac}!`);
