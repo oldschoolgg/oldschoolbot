@@ -8,6 +8,7 @@ import {
 } from 'discord.js';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
+import { production } from '../../config';
 import { CommandArgs } from '../../mahoji/lib/inhibitors';
 import { postCommand } from '../../mahoji/lib/postCommand';
 import { preCommand } from '../../mahoji/lib/preCommand';
@@ -42,7 +43,7 @@ declare global {
 }
 export const minionActivityCache: Map<string, ActivityTaskData> = global.minionActivityCache || new Map();
 
-if (process.env.NODE_ENV !== 'production') global.minionActivityCache = minionActivityCache;
+if (production) global.minionActivityCache = minionActivityCache;
 
 export function getActivityOfUser(userID: string) {
 	const task = minionActivityCache.get(userID);

@@ -4,8 +4,8 @@ import { ClientStorage } from '@prisma/client';
 import { Stopwatch } from '@sapphire/stopwatch';
 import { Duration } from '@sapphire/time-utilities';
 import { isThenable } from '@sentry/utils';
-import { escapeCodeBlock } from 'discord.js';
-import { randArrItem, sleep, Time, uniqueArr } from 'e';
+import { AttachmentBuilder, escapeCodeBlock } from 'discord.js';
+import { notEmpty, randArrItem, sleep, Time, uniqueArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
@@ -14,10 +14,11 @@ import { inspect } from 'node:util';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { CLIENT_ID, OWNER_IDS, production, SupportServer } from '../../config';
+import { ADMIN_IDS, CLIENT_ID, OWNER_IDS, production, SupportServer } from '../../config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../../lib/blacklists';
-import { badges, BadgesEnum, BitField, BitFieldData, DISABLED_COMMANDS } from '../../lib/constants';
+import { badges, BadgesEnum, BitField, BitFieldData, Channel, DISABLED_COMMANDS } from '../../lib/constants';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
+import { GearSetup } from '../../lib/gear/types';
 import { patreonTask } from '../../lib/patreon';
 import { runRolesTask } from '../../lib/rolesTask';
 import { countUsersWithItemInCl, prisma } from '../../lib/settings/prisma';
@@ -39,6 +40,7 @@ import { syncLinkedAccounts } from '../../lib/util/linkedAccountsUtil';
 import { logError } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
+import { sendToChannelID } from '../../lib/util/webhook';
 import { Cooldowns } from '../lib/Cooldowns';
 import { syncCustomPrices } from '../lib/events';
 import { itemOption } from '../lib/mahojiCommandOptions';
@@ -132,12 +134,48 @@ async function evalCommand(userID: string, code: string): CommandResponse {
 
 const viewableThings: {
 	name: string;
-	run: (clientSettings: ClientStorage) => Bank;
+	run: (clientSettings: ClientStorage) => Promise<Bank>;
 }[] = [
 	{
 		name: 'ToB Cost',
-		run: clientSettings => {
+		run: async clientSettings => {
 			return new Bank(clientSettings.tob_cost as ItemBank);
+		}
+	},
+	{
+		name: 'All Equipped Items',
+		run: async () => {
+			const res = await prisma.$queryRaw<Record<string, GearSetup | null>[]>`SELECT "gear.melee",
+"gear.mage",
+"gear.range",
+"gear.misc",
+"gear.skilling",
+"gear.wildy",
+"gear.fashion",
+"gear.other"
+FROM users
+WHERE last_command_date > now() - INTERVAL '1 weeks'
+AND ("gear.melee" IS NOT NULL OR
+"gear.mage" IS NOT NULL OR
+"gear.range" IS NOT NULL OR
+"gear.misc" IS NOT NULL OR
+"gear.skilling" IS NOT NULL OR
+"gear.wildy" IS NOT NULL OR
+"gear.fashion" IS NOT NULL OR
+"gear.other" IS NOT NULL);`;
+			const bank = new Bank();
+			for (const user of res) {
+				for (const gear of Object.values(user)
+					.map(i => (i === null ? [] : Object.values(i)))
+					.flat()
+					.filter(notEmpty)) {
+					let item = getItem(gear.item);
+					if (item) {
+						bank.add(gear.item, gear.quantity);
+					}
+				}
+			}
+			return bank;
 		}
 	}
 ];
@@ -163,7 +201,7 @@ export const adminCommand: OSBMahojiCommand = {
 					name: 'tier',
 					description: 'The tier to give.',
 					required: true,
-					choices: [1, 2, 3, 4, 5].map(i => ({ name: i.toString(), value: i }))
+					choices: [1, 2, 3, 4, 5, 6].map(i => ({ name: i.toString(), value: i }))
 				},
 				{
 					type: ApplicationCommandOptionType.String,
@@ -483,6 +521,11 @@ export const adminCommand: OSBMahojiCommand = {
 					name: 'items',
 					description: 'The items to give',
 					required: true
+				},
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'reason',
+					description: 'The reason'
 				}
 			]
 		}
@@ -516,11 +559,11 @@ export const adminCommand: OSBMahojiCommand = {
 		ltc?: { item?: string };
 		view?: { thing: string };
 		wipe_bingo_temp_cls?: {};
-		give_items?: { user: MahojiUserOption; items: string };
+		give_items?: { user: MahojiUserOption; items: string; reason?: string };
 	}>) => {
 		await deferInteraction(interaction);
 
-		const adminUser = await mahojiUsersSettingsFetch(userID);
+		const adminUser = await mUserFetch(userID);
 		const isOwner = OWNER_IDS.includes(userID.toString());
 		const isMod = isOwner || adminUser.bitfield.includes(BitField.isModerator);
 		if (!guildID || !isMod || (production && guildID.toString() !== SupportServer)) return randArrItem(gifs);
@@ -569,7 +612,11 @@ export const adminCommand: OSBMahojiCommand = {
 		if (options.sync_roles) {
 			try {
 				const result = await runRolesTask();
-				return result.slice(0, 2500);
+				if (result.length < 2000) return result;
+				return {
+					content: 'The result was too big! Check the file.',
+					files: [new AttachmentBuilder(Buffer.from(result), { name: 'roles.txt' })]
+				};
 			} catch (err: any) {
 				logError(err);
 				return `Failed to run roles task. ${err.message}`;
@@ -866,22 +913,13 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 
 		/**
 		 *
-		 * Owner Only Commands
+		 * Admin Only Commands
 		 *
 		 */
-		if (!isOwner) {
+		if (!isOwner && !ADMIN_IDS.includes(userID)) {
 			return randArrItem(gifs);
 		}
 
-		if (options.debug_patreon) {
-			const result = await patreonTask.fetchPatrons();
-			return {
-				files: [{ attachment: Buffer.from(JSON.stringify(result, null, 4)), name: 'patreon.txt' }]
-			};
-		}
-		if (options.eval) {
-			return evalCommand(userID.toString(), options.eval.code);
-		}
 		if (options.sync_commands) {
 			const global = Boolean(options.sync_commands.global);
 			const totalCommands = globalClient.mahojiClient.commands.values;
@@ -910,6 +948,55 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 ${totalCommands.length} Total commands
 ${globalCommands.length} Global commands
 ${guildCommands.length} Guild commands`;
+		}
+
+		if (options.view) {
+			const thing = viewableThings.find(i => i.name === options.view?.thing);
+			if (!thing) return 'Invalid';
+			const clientSettings = await mahojiClientSettingsFetch();
+			const image = await makeBankImage({
+				bank: await thing.run(clientSettings),
+				title: thing.name,
+				flags: { sort: thing.name === 'All Equipped Items' ? 'name' : (undefined as any) }
+			});
+			return { files: [image.file] };
+		}
+
+		if (options.give_items) {
+			const items = parseBank({ inputStr: options.give_items.items });
+			const user = await mUserFetch(options.give_items.user.user.id);
+			await handleMahojiConfirmation(
+				interaction,
+				`Are you sure you want to give ${items} to ${user.usernameOrMention}?`
+			);
+			await sendToChannelID(Channel.BotLogs, {
+				content: `${adminUser.logName} sent \`${items}\` to ${user.logName} for ${
+					options.give_items.reason ?? 'No reason'
+				}`
+			});
+
+			await user.addItemsToBank({ items, collectionLog: false });
+			return `Gave ${items} to ${user.mention}`;
+		}
+
+		if (options.debug_patreon) {
+			const result = await patreonTask.fetchPatrons();
+			return {
+				files: [{ attachment: Buffer.from(JSON.stringify(result, null, 4)), name: 'patreon.txt' }]
+			};
+		}
+
+		/**
+		 *
+		 * Owner Only Commands
+		 *
+		 */
+		if (!isOwner) {
+			return randArrItem(gifs);
+		}
+
+		if (options.eval) {
+			return evalCommand(userID.toString(), options.eval.code);
 		}
 		if (options.item_stats) {
 			const item = getItem(options.item_stats.item);
@@ -1001,25 +1088,6 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 			return {
 				files: [{ attachment: Buffer.from(str), name: 'output.txt' }]
 			};
-		}
-
-		if (options.view) {
-			const thing = viewableThings.find(i => i.name === options.view?.thing);
-			if (!thing) return 'Invalid';
-			const clientSettings = await mahojiClientSettingsFetch();
-			const image = await makeBankImage({ bank: thing.run(clientSettings), title: thing.name });
-			return { files: [image.file] };
-		}
-
-		if (options.give_items) {
-			const items = parseBank({ inputStr: options.give_items.items });
-			const user = await mUserFetch(options.give_items.user.user.id);
-			await handleMahojiConfirmation(
-				interaction,
-				`Are you sure you want to give ${items} to ${user.usernameOrMention}?`
-			);
-			await user.addItemsToBank({ items, collectionLog: false });
-			return `Gave ${items} to ${user.mention}`;
 		}
 
 		return 'Invalid command.';
