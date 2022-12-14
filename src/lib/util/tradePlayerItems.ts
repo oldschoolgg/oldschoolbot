@@ -49,10 +49,10 @@ export async function tradePlayerItems(sender: MUser, recipient: MUser, _itemsSe
 				recipientGP += sentCoins;
 			}
 			if (itemsReceived.has(COINS_ID)) {
-				const rcvdCoins = itemsReceived.amount(COINS_ID);
-				recipientGP -= rcvdCoins;
-				itemsReceived.remove(COINS_ID, rcvdCoins);
-				senderGP += rcvdCoins;
+				const receivedCoins = itemsReceived.amount(COINS_ID);
+				recipientGP -= receivedCoins;
+				itemsReceived.remove(COINS_ID, receivedCoins);
+				senderGP += receivedCoins;
 			}
 
 			newSenderBank.remove(itemsSent);
