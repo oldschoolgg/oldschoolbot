@@ -155,8 +155,8 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 			);
 			let messages: string[] = [];
 			if (content) {
-				messages = content.messages;
-				messages = messages.map(i => `${i}!`);
+				messages = content.messages.sort(() => 0.5 - Math.random()).slice(0, 2);
+				messages = messages.map(i => `${i}.`);
 			}
 
 			str += params.minimal
