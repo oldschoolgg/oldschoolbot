@@ -10,7 +10,7 @@ import { getCollectionItems } from '../lib/data/Collections';
 import { Minigames } from '../lib/settings/minigames';
 import { prisma } from '../lib/settings/prisma';
 import Skills from '../lib/skilling/skills';
-import { assert, convertXPtoLVL } from '../lib/util';
+import { assert, convertXPtoLVL, sanitizeBank } from '../lib/util';
 import { logError } from '../lib/util/logError';
 import { TeamLoot } from './simulation/TeamLoot';
 import { ItemBank } from './types';
@@ -433,7 +433,6 @@ LIMIT 2;`
 
 	// Top giveawayers
 	async function giveaways() {
-		console.log('starting giveaways');
 		const GIVEAWAY_CHANNELS = [
 			'792691343284764693',
 			'732207379818479756',
@@ -464,6 +463,9 @@ LIMIT 50;`;
 		});
 		for (const giveaway of giveaways) {
 			giveawayBank.add(giveaway.user_id, giveaway.loot as ItemBank);
+		}
+		for (const [, bank] of giveawayBank.entries()) {
+			sanitizeBank(bank);
 		}
 
 		let userMap = {};
