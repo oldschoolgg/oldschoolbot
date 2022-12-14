@@ -432,7 +432,6 @@ LIMIT 2;`
 
 	// Top giveawayers
 	async function giveaways() {
-		console.log('starting giveaways');
 		const GIVEAWAY_CHANNELS = [
 			'792691343284764693',
 			'732207379818479756',
@@ -466,7 +465,7 @@ LIMIT 50;`;
 		}
 
 		let userMap = {};
-		const [[highestID, loot]] = giveawayBank.entries().sort((a, b) => a[1].value() - b[1].value());
+		const [[highestID, loot]] = giveawayBank.entries().sort((a, b) => b[1].value() - a[1].value());
 		addToUserMap(userMap, highestID, `Most Value Given Away (${loot.value()})`);
 
 		results.push(
