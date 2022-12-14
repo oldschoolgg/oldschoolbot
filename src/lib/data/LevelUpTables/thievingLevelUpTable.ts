@@ -48,7 +48,7 @@ export const thievingLevelUpTable = [
 	},
 	{
 		lvl: 32,
-		messages: ['pickpocket from Rouges'],
+		messages: ['pickpocket from Rogues'],
 		skill: SkillsEnum.Thieving
 	},
 	{
@@ -118,7 +118,7 @@ export const thievingLevelUpTable = [
 	},
 	{
 		lvl: 75,
-		messages: ['pickpocket from Gnomes', 'pickpocket from Gem stalls'],
+		messages: ['pickpocket from Gnomes', 'steal from Gem stalls'],
 		skill: SkillsEnum.Thieving
 	},
 	{
