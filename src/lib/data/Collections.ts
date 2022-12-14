@@ -1491,6 +1491,27 @@ export const allCollectionLogs: ICollection = {
 				alias: ['bso birthday 2022'],
 				items: resolveItems(['Honey', 'Honeycomb', 'Beehive', 'Buzz']),
 				counts: false
+			},
+			'Christmas 2022': {
+				alias: ['xmas 2022', 'christmas 2022'],
+				items: resolveItems([
+					'Christmas snowglobe',
+					'Festive jumper (2022)',
+					'Christmas cape',
+					'Christmas socks',
+					'Tinsel scarf',
+					'Frosted wreath',
+					'Edible yoyo',
+					'Reinbeer',
+					'Pork sausage',
+					'Pork crackling',
+					'Festive treats',
+					'Snowman plushie',
+					'Snowman top hat',
+					'Festive scarf',
+					'Frosty'
+				]),
+				counts: false
 			}
 		}
 	}
