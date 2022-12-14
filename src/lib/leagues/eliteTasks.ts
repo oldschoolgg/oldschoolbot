@@ -710,7 +710,7 @@ export const eliteTasks: Task[] = [
 	},
 	{
 		id: 3094,
-		name: 'Catch 5 of every impling passively',
+		name: 'Catch 50 of every impling passively',
 		has: async ({ userStats }) => {
 			let vals = Object.values(userStats.passive_implings_bank as ItemBank);
 			return vals.length === Object.keys(implings).length && vals.every(i => Number(i) >= 50);

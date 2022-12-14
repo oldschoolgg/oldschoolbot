@@ -7,8 +7,8 @@ export class TeamLoot {
 	map = new Map<string, Bank>();
 	purpleItems: number[];
 
-	constructor(purpleItems: number[]) {
-		this.purpleItems = purpleItems;
+	constructor(purpleItems?: number[]) {
+		this.purpleItems = purpleItems ?? [];
 	}
 
 	totalLoot() {

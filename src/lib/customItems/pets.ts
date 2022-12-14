@@ -254,7 +254,7 @@ setCustomItem(
 
 setCustomItem(
 	40_039,
-	'Frosty',
+	'Frostbite',
 	'Herbi',
 	{
 		customItemData: {

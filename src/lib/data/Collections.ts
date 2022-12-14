@@ -98,6 +98,7 @@ import {
 	fossilIslandNotesCL,
 	generalGraardorCL,
 	giantMoleCL,
+	giantsFoundryCL,
 	gnomeRestaurantCL,
 	godWarsDungeonGodswordShards,
 	gracefulCL,
@@ -885,6 +886,11 @@ export const allCollectionLogs: ICollection = {
 				isActivity: true,
 				fmtProg: mgProg('fishing_trawler')
 			},
+			"Giants' Foundry": {
+				alias: ['giants', 'giants foundry', 'giants foundry'],
+				items: giantsFoundryCL,
+				isActivity: true
+			},
 			'Gnome Restaurant': {
 				alias: ['gnome', 'restaurant'],
 				allItems: resolveItems(['Snake charm', 'Gnomeball']),
@@ -1148,7 +1154,7 @@ export const allCollectionLogs: ICollection = {
 					'Scroll of the hunt',
 					'Farseer kiteshield',
 					'Chaotic remnant',
-					'Frosty',
+					'Frostbite',
 					'Gorajan shards',
 					'Amulet of zealots',
 					'Herbicide',
@@ -1472,7 +1478,7 @@ export const allCollectionLogs: ICollection = {
 					'Festive mistletoe',
 					'Christmas tree kite',
 					'Festive wrapping paper',
-					'Festive jumper',
+					'Festive jumper (2021)',
 					'Frozen santa hat',
 					'Golden shard',
 					'Seer',
@@ -1484,6 +1490,27 @@ export const allCollectionLogs: ICollection = {
 			'BSO Birthday 2022': {
 				alias: ['bso birthday 2022'],
 				items: resolveItems(['Honey', 'Honeycomb', 'Beehive', 'Buzz']),
+				counts: false
+			},
+			'Christmas 2022': {
+				alias: ['xmas 2022', 'christmas 2022'],
+				items: resolveItems([
+					'Christmas snowglobe',
+					'Festive jumper (2022)',
+					'Christmas cape',
+					'Christmas socks',
+					'Tinsel scarf',
+					'Frosted wreath',
+					'Edible yoyo',
+					'Reinbeer',
+					'Pork sausage',
+					'Pork crackling',
+					'Festive treats',
+					'Snowman plushie',
+					'Snowman top hat',
+					'Festive scarf',
+					'Frosty'
+				]),
 				counts: false
 			}
 		}

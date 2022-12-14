@@ -240,26 +240,441 @@ setCustomItem(40_030, 'Amulet of zealots', 'Amulet of fury', {}, 1_000_000);
 setCustomItem(40_031, 'Scroll of dexterity', 'Coal', {}, 1_000_000);
 setCustomItem(40_032, 'Scroll of teleportation', 'Coal', {}, 1_000_000);
 
-setCustomItem(40_033, 'Gorajan warrior helmet', 'Torva full helm', {}, 55_000_000);
-setCustomItem(40_034, 'Gorajan warrior top', 'Torva platebody', {}, 55_000_000);
-setCustomItem(40_035, 'Gorajan warrior legs', 'Torva platelegs', {}, 55_000_000);
-setCustomItem(40_036, 'Gorajan warrior gloves', 'Torva gloves', {}, 55_000_000);
-setCustomItem(40_037, 'Gorajan warrior boots', 'Torva boots', {}, 55_000_000);
+setCustomItem(
+	40_033,
+	'Gorajan warrior helmet',
+	'Torva full helm',
+	{
+		equipment: {
+			attack_stab: 30,
+			attack_slash: 15,
+			attack_crush: 15,
+			attack_magic: -5,
+			attack_ranged: 0,
+
+			defence_stab: 70,
+			defence_slash: 75,
+			defence_crush: 75,
+			defence_magic: -5,
+			defence_ranged: 55,
+
+			melee_strength: 5,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Head,
+			requirements: null
+		}
+	},
+	55_000_000
+);
+setCustomItem(
+	40_034,
+	'Gorajan warrior top',
+	'Torva platebody',
+	{
+		equipment: {
+			attack_stab: 43,
+			attack_slash: 19,
+			attack_crush: 23,
+			attack_magic: -5,
+			attack_ranged: 0,
+
+			defence_stab: 160,
+			defence_slash: 150,
+			defence_crush: 150,
+			defence_magic: 0,
+			defence_ranged: 165,
+
+			melee_strength: 5,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Body,
+			requirements: null
+		}
+	},
+	55_000_000
+);
+setCustomItem(
+	40_035,
+	'Gorajan warrior legs',
+	'Torva platelegs',
+	{
+		equipment: {
+			attack_stab: 37,
+			attack_slash: 16,
+			attack_crush: 19,
+			attack_magic: -5,
+			attack_ranged: 0,
+
+			defence_stab: 130,
+			defence_slash: 130,
+			defence_crush: 130,
+			defence_magic: 0,
+			defence_ranged: 130,
+
+			melee_strength: 5,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Legs,
+			requirements: null
+		}
+	},
+	55_000_000
+);
+
+setCustomItem(
+	40_036,
+	'Gorajan warrior gloves',
+	'Torva gloves',
+	{
+		equipment: {
+			attack_stab: 19,
+			attack_slash: 17,
+			attack_crush: 10,
+			attack_magic: -5,
+			attack_ranged: 0,
+
+			defence_stab: 18,
+			defence_slash: 18,
+			defence_crush: 18,
+			defence_magic: 0,
+			defence_ranged: 35,
+
+			melee_strength: 5,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Hands,
+			requirements: null
+		}
+	},
+	55_000_000
+);
+
+setCustomItem(
+	40_037,
+	'Gorajan warrior boots',
+	'Torva boots',
+	{
+		equipment: {
+			attack_stab: 19,
+			attack_slash: 9,
+			attack_crush: 10,
+			attack_magic: -5,
+			attack_ranged: 0,
+
+			defence_stab: 24,
+			defence_slash: 24,
+			defence_crush: 24,
+			defence_magic: 0,
+			defence_ranged: 35,
+
+			melee_strength: 5,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Feet,
+			requirements: null
+		}
+	},
+	55_000_000
+);
 
 setCustomItem(40_038, 'Scroll of proficiency', 'Coal', {}, 1_000_000);
 setCustomItem(40_040, 'Chaotic remnant', 'Coal', {}, 10_000_000);
 
-setCustomItem(40_042, 'Gorajan occult helmet', 'Virtus mask', {}, 55_000_000);
-setCustomItem(40_043, 'Gorajan occult top', 'Virtus robe top', {}, 55_000_000);
-setCustomItem(40_044, 'Gorajan occult legs', 'Virtus robe legs', {}, 55_000_000);
-setCustomItem(40_045, 'Gorajan occult gloves', 'Virtus gloves', {}, 55_000_000);
-setCustomItem(40_046, 'Gorajan occult boots', 'Virtus boots', {}, 55_000_000);
+setCustomItem(
+	40_042,
+	'Gorajan occult helmet',
+	'Virtus mask',
+	{
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 21,
+			attack_ranged: -3,
 
-setCustomItem(40_047, 'Gorajan archer helmet', 'Pernix cowl', {}, 55_000_000);
-setCustomItem(40_048, 'Gorajan archer top', 'Pernix body', {}, 55_000_000);
-setCustomItem(40_049, 'Gorajan archer legs', 'Pernix chaps', {}, 55_000_000);
-setCustomItem(40_050, 'Gorajan archer gloves', 'Pernix gloves', {}, 55_000_000);
-setCustomItem(40_051, 'Gorajan archer boots', 'Pernix boots', {}, 55_000_000);
+			defence_stab: 35,
+			defence_slash: 35,
+			defence_crush: 35,
+			defence_magic: 85,
+			defence_ranged: 75,
+
+			melee_strength: 0,
+			ranged_strength: 0,
+			magic_damage: 5,
+			prayer: 1,
+			slot: EquipmentSlot.Head,
+			requirements: null
+		}
+	},
+	55_000_000
+);
+
+setCustomItem(
+	40_043,
+	'Gorajan occult top',
+	'Virtus robe top',
+	{
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 46,
+			attack_ranged: -5,
+
+			defence_stab: 44,
+			defence_slash: 44,
+			defence_crush: 55,
+			defence_magic: 65,
+			defence_ranged: 5,
+
+			melee_strength: 0,
+			ranged_strength: 0,
+			magic_damage: 5,
+			prayer: 1,
+			slot: EquipmentSlot.Body,
+			requirements: null
+		}
+	},
+	55_000_000
+);
+
+setCustomItem(
+	40_044,
+	'Gorajan occult legs',
+	'Virtus robe legs',
+	{
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 41,
+			attack_ranged: -5,
+
+			defence_stab: 22,
+			defence_slash: 20,
+			defence_crush: 15,
+			defence_magic: 65,
+			defence_ranged: 15,
+
+			melee_strength: 0,
+			ranged_strength: 0,
+			magic_damage: 5,
+			prayer: 1,
+			slot: EquipmentSlot.Legs,
+			requirements: null
+		}
+	},
+	55_000_000
+);
+
+setCustomItem(
+	40_045,
+	'Gorajan occult gloves',
+	'Virtus gloves',
+	{
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 23,
+			attack_ranged: -5,
+
+			defence_stab: 9,
+			defence_slash: 9,
+			defence_crush: 9,
+			defence_magic: 12,
+			defence_ranged: 9,
+
+			melee_strength: 0,
+			ranged_strength: 0,
+			magic_damage: 5,
+			prayer: 1,
+			slot: EquipmentSlot.Hands,
+			requirements: null
+		}
+	},
+	55_000_000
+);
+
+setCustomItem(
+	40_046,
+	'Gorajan occult boots',
+	'Virtus boots',
+	{
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 23,
+			attack_ranged: -5,
+
+			defence_stab: 9,
+			defence_slash: 9,
+			defence_crush: 9,
+			defence_magic: 12,
+			defence_ranged: 9,
+
+			melee_strength: 0,
+			ranged_strength: 0,
+			magic_damage: 5,
+			prayer: 1,
+			slot: EquipmentSlot.Feet,
+			requirements: null
+		}
+	},
+	55_000_000
+);
+
+setCustomItem(
+	40_047,
+	'Gorajan archer helmet',
+	'Pernix cowl',
+	{
+		equipment: {
+			attack_stab: -5,
+			attack_slash: -5,
+			attack_crush: -5,
+			attack_magic: -12,
+			attack_ranged: 21,
+
+			defence_stab: 25,
+			defence_slash: 25,
+			defence_crush: 17,
+			defence_magic: 25,
+			defence_ranged: 58,
+
+			melee_strength: 0,
+			ranged_strength: 5,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Head,
+			requirements: null
+		}
+	},
+	55_000_000
+);
+
+setCustomItem(
+	40_048,
+	'Gorajan archer top',
+	'Pernix body',
+	{
+		equipment: {
+			attack_stab: -5,
+			attack_slash: -5,
+			attack_crush: -5,
+			attack_magic: -12,
+			attack_ranged: 42,
+
+			defence_stab: 25,
+			defence_slash: 25,
+			defence_crush: 25,
+			defence_magic: 73,
+			defence_ranged: 62,
+
+			melee_strength: 0,
+			ranged_strength: 5,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Body,
+			requirements: null
+		}
+	},
+	55_000_000
+);
+
+setCustomItem(
+	40_049,
+	'Gorajan archer legs',
+	'Pernix chaps',
+	{
+		equipment: {
+			attack_stab: -5,
+			attack_slash: -5,
+			attack_crush: -5,
+			attack_magic: -12,
+			attack_ranged: 26,
+
+			defence_stab: 25,
+			defence_slash: 15,
+			defence_crush: 5,
+			defence_magic: 45,
+			defence_ranged: 38,
+
+			melee_strength: 0,
+			ranged_strength: 5,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Legs,
+			requirements: null
+		}
+	},
+	55_000_000
+);
+
+setCustomItem(
+	40_050,
+	'Gorajan archer gloves',
+	'Pernix gloves',
+	{
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: -5,
+			attack_magic: -5,
+			attack_ranged: 20,
+
+			defence_stab: 4,
+			defence_slash: 4,
+			defence_crush: 1,
+			defence_magic: 27,
+			defence_ranged: 15,
+
+			melee_strength: 0,
+			ranged_strength: 5,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Hands,
+			requirements: null
+		}
+	},
+	55_000_000
+);
+
+setCustomItem(
+	40_051,
+	'Gorajan archer boots',
+	'Pernix boots',
+	{
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: -12,
+			attack_ranged: 20,
+
+			defence_stab: 4,
+			defence_slash: 4,
+			defence_crush: 3,
+			defence_magic: 6,
+			defence_ranged: 6,
+
+			melee_strength: 0,
+			ranged_strength: 5,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Feet,
+			requirements: null
+		}
+	},
+	55_000_000
+);
 
 setCustomItem(40_052, 'Scroll of mystery', 'Coal', {}, 1_000_000);
 
@@ -661,7 +1076,7 @@ setCustomItem(
 			defence_ranged: 36,
 			melee_strength: 0,
 			ranged_strength: 0,
-			magic_damage: 0,
+			magic_damage: 2,
 			prayer: 10,
 			slot: EquipmentSlot.Cape,
 			requirements: null
@@ -2294,7 +2709,7 @@ setCustomItem(
 );
 setCustomItem(
 	62_336,
-	'Festive jumper',
+	'Festive jumper (2021)',
 	'Rune platebody',
 	{
 		customItemData: {
@@ -3538,8 +3953,7 @@ setCustomItem(
 	'Bronze kiteshield',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	10_000
@@ -3551,8 +3965,7 @@ setCustomItem(
 	'Bronze dagger',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	10_000
@@ -3564,8 +3977,429 @@ setCustomItem(
 	'Bronze kiteshield',
 	{
 		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_200,
+	'Christmas snowglobe',
+	'Coal',
+	{
+		customItemData: {
 			cantDropFromMysteryBoxes: true,
 			isSuperUntradeable: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_201,
+	'Pumpkinhead praline',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_202,
+	'Takon truffle',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_203,
+	'Seer sweet',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_204,
+	'Cob cup',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_205,
+	'Craig creme',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+setCustomItem(
+	70_207,
+	'Moktang mint',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_208,
+	'Festive treats',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_210,
+	'Pork sausage',
+	'Bronze dagger',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_211,
+	'Reinbeer',
+	'Bronze kiteshield',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_212,
+	'Christmas socks',
+	'Bronze boots',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_214,
+	'Christmas box',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	70_215,
+	'Tinsel scarf',
+	'Amulet of strength',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_217,
+	'Snowman top hat',
+	'Bronze full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_218,
+	'Festive scarf',
+	'Amulet of strength',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_219,
+	'Snowman plushie',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_220,
+	'Edible yoyo',
+	'Bronze dagger',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_227,
+	'Mistleboe',
+	'Hellfire bow',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_231,
+	'Candy partyhat',
+	'White partyhat',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	70_232,
+	'Frosty',
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_233,
+	'Ho-ho hammer',
+	'Dwarven warhammer',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	70_234,
+	'Frosted wreath',
+	'Rune full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_235,
+	'Christmas dye',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_237,
+	'Offhand drygore rapier (xmas)',
+	'Offhand drygore rapier',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	200_000_000
+);
+setCustomItem(
+	70_238,
+	'Drygore rapier (xmas)',
+	'Drygore rapier',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	200_000_000
+);
+setCustomItem(
+	70_239,
+	'Offhand drygore mace (xmas)',
+	'Offhand Drygore mace',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	200_000_000
+);
+setCustomItem(
+	70_240,
+	'Drygore mace (xmas)',
+	'Drygore mace',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	200_000_000
+);
+setCustomItem(
+	70_241,
+	'Offhand drygore longsword (xmas)',
+	'Offhand drygore longsword',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	200_000_000
+);
+setCustomItem(
+	70_242,
+	'Drygore longsword (xmas)',
+	'Drygore longsword',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	200_000_000
+);
+
+setCustomItem(
+	70_244,
+	'Festive jumper (2022)',
+	'Rune platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_245,
+	'Christmas cape',
+	'Red cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_246,
+	'Dwarven pickaxe (xmas)',
+	'Dwarven pickaxe',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_247,
+	'Zaryte crossbow (xmas)',
+	'Zaryte crossbow',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_248,
+	'Pork crackling',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	10_000

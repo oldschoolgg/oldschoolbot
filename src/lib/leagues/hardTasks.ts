@@ -1097,13 +1097,6 @@ export const hardTasks: Task[] = [
 		}
 	},
 	{
-		id: 2145,
-		name: 'Upgrade 25 clues with the clue upgrader',
-		has: async ({ userStats }) => {
-			return Object.values(userStats.clue_upgrader_bank as ItemBank).length >= 25;
-		}
-	},
-	{
 		id: 2146,
 		name: 'Upgrade 100 clues with the clue upgrader',
 		has: async ({ userStats }) => {
