@@ -270,6 +270,23 @@ export const globalPresets: GearPreset[] = [
 		ring: null,
 		ammo: null,
 		ammo_qty: null
+	},
+	{
+		name: 'smith',
+		user_id: '123',
+		head: null,
+		neck: null,
+		body: itemID('Smiths tunic'),
+		legs: itemID('Smiths trousers'),
+		cape: null,
+		two_handed: null,
+		hands: itemID('Smiths gloves'),
+		feet: itemID('Smiths boots'),
+		shield: null,
+		weapon: null,
+		ring: null,
+		ammo: null,
+		ammo_qty: null
 	}
 ];
 

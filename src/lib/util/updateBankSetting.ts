@@ -63,6 +63,8 @@ export type ClientBankKey =
 	| 'item_contract_loot'
 	| 'kg_cost'
 	| 'kg_loot'
+	| 'gf_cost'
+	| 'gf_loot'
 	| 'nex_cost'
 	| 'nex_loot'
 	| 'kk_cost'

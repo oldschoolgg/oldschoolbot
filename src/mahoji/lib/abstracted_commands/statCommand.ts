@@ -403,7 +403,7 @@ GROUP BY type;`);
 		}
 	},
 	{
-		name: 'Personal Activity Durations',
+		name: 'Personal Activity Durations (Hours)',
 		perkTierNeeded: PerkTier.Four,
 		run: async (user: MUser) => {
 			const result: { type: activity_type_enum; hours: number }[] =
@@ -618,15 +618,15 @@ WHERE "skills.${skillName}" = 200000000;`) as Promise<{ qty: number; skill_name:
 		perkTierNeeded: PerkTier.Four,
 		run: async (user: MUser) => {
 			const result: { plant: string; qty: number }[] =
-				await prisma.$queryRawUnsafe(`SELECT data->>'plantsname: ' as plant, COUNT(data->>'plantsname: ') AS qty
+				await prisma.$queryRawUnsafe(`SELECT data->>'plantsName' as plant, COUNT(data->>'plantsName') AS qty
 FROM activity
 WHERE type = 'Farming'
-AND data->>'plantsname: ' IS NOT NULL
+AND data->>'plantsName' IS NOT NULL
 AND user_id = ${BigInt(user.id)}
-GROUP BY data->>'plantsname: '`);
+GROUP BY data->>'plantsName'`);
 			result.sort((a, b) => b.qty - a.qty);
 			const buffer = await barChart(
-				'Global Farmed Crops',
+				'Personal Farmed Crops',
 				val => `${val} Crops`,
 				result.map(i => [i.plant, i.qty])
 			);
@@ -638,11 +638,11 @@ GROUP BY data->>'plantsname: '`);
 		perkTierNeeded: PerkTier.Four,
 		run: async () => {
 			const result: { plant: string; qty: number }[] =
-				await prisma.$queryRaw`SELECT data->>'plantsname: ' as plant, COUNT(data->>'plantsname: ') AS qty
+				await prisma.$queryRaw`SELECT data->>'plantsName' as plant, COUNT(data->>'plantsName') AS qty
 FROM activity
 WHERE type = 'Farming'
-AND data->>'plantsname: ' IS NOT NULL
-GROUP BY data->>'plantsname: '`;
+AND data->>'plantsName' IS NOT NULL
+GROUP BY data->>'plantsName'`;
 			result.sort((a, b) => b.qty - a.qty);
 			const buffer = await barChart(
 				'Global Farmed Crops',

@@ -98,6 +98,7 @@ import {
 	fossilIslandNotesCL,
 	generalGraardorCL,
 	giantMoleCL,
+	giantsFoundryCL,
 	gnomeRestaurantCL,
 	godWarsDungeonGodswordShards,
 	gracefulCL,
@@ -884,6 +885,11 @@ export const allCollectionLogs: ICollection = {
 				items: fishingTrawlerCL,
 				isActivity: true,
 				fmtProg: mgProg('fishing_trawler')
+			},
+			"Giants' Foundry": {
+				alias: ['giants', 'giants foundry', 'giants foundry'],
+				items: giantsFoundryCL,
+				isActivity: true
 			},
 			'Gnome Restaurant': {
 				alias: ['gnome', 'restaurant'],
