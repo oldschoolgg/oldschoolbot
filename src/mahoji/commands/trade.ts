@@ -9,6 +9,7 @@ import { discrimName, truncateString } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { parseBank } from '../../lib/util/parseStringBank';
+import { tradePlayerItems } from '../../lib/util/tradePlayerItems';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 import { handleMahojiConfirmation, mahojiParseNumber } from '../mahojiSettings';
@@ -127,11 +128,10 @@ Both parties must click confirm to make the trade.`,
 		if (!recipientUser.owns(itemsReceived)) return "They don't own those items.";
 		if (!senderUser.owns(itemsSent)) return "You don't own those items.";
 
-		await senderUser.removeItemsFromBank(itemsSent);
-		await recipientUser.removeItemsFromBank(itemsReceived);
-		await senderUser.addItemsToBank({ items: itemsReceived, collectionLog: false, filterLoot: false });
-		await recipientUser.addItemsToBank({ items: itemsSent, collectionLog: false, filterLoot: false });
-
+		const { success, message } = await tradePlayerItems(senderUser, recipientUser, itemsSent, itemsReceived);
+		if (!success) {
+			return `Trade failed because: ${message}`;
+		}
 		await prisma.economyTransaction.create({
 			data: {
 				guild_id: BigInt(guildID),
