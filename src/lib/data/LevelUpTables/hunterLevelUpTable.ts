@@ -48,7 +48,7 @@ export const hunterLevelUpTable = [
 	},
 	{
 		lvl: 17,
-		messages: ['access to Puro-Puro', 'catch Baby implings'],
+		messages: ['access Puro-Puro', 'catch Baby implings'],
 		skill: SkillsEnum.Hunter
 	},
 	{
