@@ -24,6 +24,7 @@ AS DATA
 GROUP BY item_id;`);
 	});
 
+	let REDDIT_POSTS_IS_DISABLED = true;
 	/**
 	 * JMod reddit posts/comments
 	 */
@@ -31,6 +32,7 @@ GROUP BY item_id;`);
 	const alreadySentCache = new Set();
 	schedule(`*/${redditGranularity} * * * *`, async () => {
 		if (!production) return;
+		if (REDDIT_POSTS_IS_DISABLED) return;
 		async function sendReddit({ post }: { post: any; type: 'comment' | 'submission' }) {
 			const author = (post.author as string) ?? 'Unknown Author';
 			const embed = new EmbedBuilder().setAuthor({ name: author }).setColor(resolveColor('#ff9500'));
