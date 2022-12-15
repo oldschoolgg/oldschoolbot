@@ -7,6 +7,7 @@ import { prisma } from '../../lib/settings/prisma';
 import { toKMB } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
+import { tradePlayerItems } from '../../lib/util/tradePlayerItems';
 import { OSBMahojiCommand } from '../lib/util';
 import { addToGPTaxBalance, mahojiParseNumber } from '../mahojiSettings';
 
@@ -61,16 +62,7 @@ export const payCommand: OSBMahojiCommand = {
 
 		const bank = new Bank().add('Coins', amount);
 
-		await transactItems({
-			userID: user.id,
-			itemsToRemove: bank
-		});
-
-		await transactItems({
-			userID: recipient.id,
-			itemsToAdd: bank,
-			collectionLog: false
-		});
+		await tradePlayerItems(user, recipient, bank);
 
 		await prisma.economyTransaction.create({
 			data: {
