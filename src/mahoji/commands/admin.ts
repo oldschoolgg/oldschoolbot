@@ -57,6 +57,7 @@ import { syncLinkedAccounts } from '../../lib/util/linkedAccountsUtil';
 import { logError } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
+import { activeTradeCache } from '../../lib/util/tradePlayerItems';
 import { sendToChannelID } from '../../lib/util/webhook';
 import { Cooldowns } from '../lib/Cooldowns';
 import { syncCustomPrices } from '../lib/events';
@@ -835,6 +836,7 @@ export const adminCommand: OSBMahojiCommand = {
 			globalClient.busyCounterCache.delete(user.id);
 			Cooldowns.delete(user.id);
 			minionActivityCacheDelete(user.id);
+			activeTradeCache.delete(user.id);
 			return 'Done.';
 		}
 		if (options.sync_roles) {
