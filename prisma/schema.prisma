@@ -602,6 +602,9 @@ model UserStats {
   farming_plant_cost_bank   Json @default("{}") @db.Json
   farming_harvest_loot_bank Json @default("{}") @db.Json
 
+  cl_array        Int[]
+  cl_array_length Int   @default(0)
+
   @@map("user_stats")
 }
 
