@@ -12,11 +12,6 @@ export const woodcuttingLevelUpTable = [
 		skill: SkillsEnum.Woodcutting
 	},
 	{
-		lvl: 10,
-		messages: ['chop Light jungle'],
-		skill: SkillsEnum.Woodcutting
-	},
-	{
 		lvl: 11,
 		messages: ['chop with Black axes'],
 		skill: SkillsEnum.Woodcutting
@@ -29,11 +24,6 @@ export const woodcuttingLevelUpTable = [
 	{
 		lvl: 15,
 		messages: ['chop Oak logs'],
-		skill: SkillsEnum.Woodcutting
-	},
-	{
-		lvl: 20,
-		messages: ['chop Medium jungle'],
 		skill: SkillsEnum.Woodcutting
 	},
 	{
@@ -58,7 +48,7 @@ export const woodcuttingLevelUpTable = [
 	},
 	{
 		lvl: 35,
-		messages: ['chop Dense jungle', 'chop Teak logs'],
+		messages: ['chop Teak logs'],
 		skill: SkillsEnum.Woodcutting
 	},
 	{
@@ -68,7 +58,7 @@ export const woodcuttingLevelUpTable = [
 	},
 	{
 		lvl: 42,
-		messages: ['carve Stable dugout canoes', 'chop Juniper logs'],
+		messages: ['carve Stable dugout canoes' /* , 'chop Juniper logs'*/],
 		skill: SkillsEnum.Woodcutting
 	},
 	{
@@ -92,11 +82,6 @@ export const woodcuttingLevelUpTable = [
 		skill: SkillsEnum.Woodcutting
 	},
 	{
-		lvl: 56,
-		messages: ['craft Neitiznot shield'],
-		skill: SkillsEnum.Woodcutting
-	},
-	{
 		lvl: 57,
 		messages: ['carve Waka canoes'],
 		skill: SkillsEnum.Woodcutting
@@ -111,11 +96,13 @@ export const woodcuttingLevelUpTable = [
 		messages: ['chop with Dragon/3rd age and Infernal axes'],
 		skill: SkillsEnum.Woodcutting
 	},
+	/*
 	{
 		lvl: 62,
 		messages: ['chop Blisterwood logs'],
 		skill: SkillsEnum.Woodcutting
 	},
+	*/
 	{
 		lvl: 65,
 		messages: ['chop Mushrooms/Mort myre fungus and Sulliuscep caps from Sulliuscep'],

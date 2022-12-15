@@ -66,11 +66,13 @@ export const firemakingLevelUpTable = [
 		messages: ['burn Yew logs'],
 		skill: SkillsEnum.Firemaking
 	},
+	/*
 	{
 		lvl: 62,
 		messages: ['burn Blisterwood logs'],
 		skill: SkillsEnum.Firemaking
 	},
+	*/
 	{
 		lvl: 65,
 		messages: ['burn Yew pyre logs'],

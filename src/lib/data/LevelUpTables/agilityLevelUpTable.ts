@@ -9,11 +9,13 @@ export const agilityLevelUpTable = [
 		],
 		skill: SkillsEnum.Agility
 	},
+	/*
 	{
 		lvl: 5,
 		messages: ['access the basic version of the Shayzien Agility Course'],
 		skill: SkillsEnum.Agility
 	},
+	*/
 	{
 		lvl: 10,
 		messages: ['access the Draynor Village Rooftop Course'],
@@ -36,11 +38,13 @@ export const agilityLevelUpTable = [
 		],
 		skill: SkillsEnum.Agility
 	},
+	/*
 	{
 		lvl: 35,
 		messages: ['access the Barbarian Outpost Agility Course'],
 		skill: SkillsEnum.Agility
 	},
+	*/
 	{
 		lvl: 40,
 		messages: ['access high level obstacles at the Brimhaven Agility Arena', 'access the Canifis Rooftop Course'],
@@ -58,12 +62,12 @@ export const agilityLevelUpTable = [
 	},
 	{
 		lvl: 52,
-		messages: ['access the first floor of the Hallowed Sepulchre', 'access the Wilderness Agility Course'],
+		messages: ['access the first floor of the Hallowed Sepulchre' /* , 'access the Wilderness Agility Course'*/],
 		skill: SkillsEnum.Agility
 	},
 	{
 		lvl: 60,
-		messages: ['access the Werewolf Agility Course', "access the Seers' Village Rooftop Course"],
+		messages: [/* 'access the Werewolf Agility Course',*/ "access the Seers' Village Rooftop Course"],
 		skill: SkillsEnum.Agility
 	},
 	{
@@ -73,7 +77,7 @@ export const agilityLevelUpTable = [
 	},
 	{
 		lvl: 70,
-		messages: ['access the Dorgesh-Kaan Agility Course', 'access the Pollnivneach Rooftop Course'],
+		messages: [/* 'access the Dorgesh-Kaan Agility Course',*/ 'access the Pollnivneach Rooftop Course'],
 		skill: SkillsEnum.Agility
 	},
 	{

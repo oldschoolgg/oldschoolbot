@@ -3,7 +3,7 @@ import { SkillsEnum } from '../../skilling/types';
 export const fishingLevelUpTable = [
 	{
 		lvl: 1,
-		messages: ['catch Shrimps', 'catch Pysk fish'],
+		messages: ['catch Shrimps'],
 		skill: SkillsEnum.Fishing
 	},
 	{
@@ -18,7 +18,7 @@ export const fishingLevelUpTable = [
 	},
 	{
 		lvl: 15,
-		messages: ['catch Anchovies', 'catch fish on the Fishing trawler boat', 'catch Suphi fish'],
+		messages: ['catch Anchovies', 'catch fish on the Fishing trawler boat'],
 		skill: SkillsEnum.Fishing
 	},
 	{
@@ -28,7 +28,7 @@ export const fishingLevelUpTable = [
 	},
 	{
 		lvl: 20,
-		messages: ['catch Trout', 'catch Cavefish'],
+		messages: ['catch Trout' /* , 'catch Cavefish'*/],
 		skill: SkillsEnum.Fishing
 	},
 	{
@@ -41,21 +41,25 @@ export const fishingLevelUpTable = [
 		messages: ['catch Pike'],
 		skill: SkillsEnum.Fishing
 	},
+	/*
 	{
 		lvl: 28,
 		messages: ['catch Slimy eels'],
 		skill: SkillsEnum.Fishing
 	},
+	*/
 	{
 		lvl: 30,
-		messages: ['catch Salmon', 'catch Leckish fish'],
+		messages: ['catch Salmon'],
 		skill: SkillsEnum.Fishing
 	},
+	/*
 	{
 		lvl: 33,
 		messages: ['catch Tetra'],
 		skill: SkillsEnum.Fishing
 	},
+	*/
 	{
 		lvl: 34,
 		messages: ["wear Angler's outfit"],
@@ -68,7 +72,7 @@ export const fishingLevelUpTable = [
 	},
 	{
 		lvl: 38,
-		messages: ['catch Cave eels', 'catch Rainbow fish'],
+		messages: ['catch Cave eels' /* , 'catch Rainbow fish'*/],
 		skill: SkillsEnum.Fishing
 	},
 	{
@@ -82,13 +86,8 @@ export const fishingLevelUpTable = [
 		skill: SkillsEnum.Fishing
 	},
 	{
-		lvl: 45,
-		messages: ['catch Brawk fish'],
-		skill: SkillsEnum.Fishing
-	},
-	{
 		lvl: 46,
-		messages: ['catch Bass', 'catch Catfish'],
+		messages: ['catch Bass' /* , 'catch Catfish'*/],
 		skill: SkillsEnum.Fishing
 	},
 	{
@@ -106,11 +105,13 @@ export const fishingLevelUpTable = [
 		messages: ['catch Swordfish'],
 		skill: SkillsEnum.Fishing
 	},
+	/*
 	{
 		lvl: 53,
 		messages: ['catch Lava eels'],
 		skill: SkillsEnum.Fishing
 	},
+	*/
 	{
 		lvl: 56,
 		messages: ['catch Common tenches'],
@@ -119,11 +120,6 @@ export const fishingLevelUpTable = [
 	{
 		lvl: 58,
 		messages: ['catch Leaping salmon'],
-		skill: SkillsEnum.Fishing
-	},
-	{
-		lvl: 60,
-		messages: ['catch Mycil fish'],
 		skill: SkillsEnum.Fishing
 	},
 	{
@@ -163,7 +159,7 @@ export const fishingLevelUpTable = [
 	},
 	{
 		lvl: 75,
-		messages: ['catch Roqed fish', 'craft and use Infernal harpoons'],
+		messages: ['craft and use Infernal harpoons'],
 		skill: SkillsEnum.Fishing
 	},
 	{
@@ -196,16 +192,13 @@ export const fishingLevelUpTable = [
 		messages: ['catch Dark crabs'],
 		skill: SkillsEnum.Fishing
 	},
+	/*
 	{
 		lvl: 87,
 		messages: ['catch Sacred eels'],
 		skill: SkillsEnum.Fishing
 	},
-	{
-		lvl: 90,
-		messages: ['catch Kyren fish'],
-		skill: SkillsEnum.Fishing
-	},
+	*/
 	{
 		lvl: 99,
 		messages: ['buy the Fishing cape and hood'],

@@ -324,11 +324,13 @@ export const farmingLevelUpTable = [
 		messages: ['grow Magic trees'],
 		skill: SkillsEnum.Farming
 	},
+	/*
 	{
 		lvl: 76,
 		messages: ['grow Attas plants', 'grow Iasor plants', 'grow Kronos plants'],
 		skill: SkillsEnum.Farming
 	},
+	*/
 	{
 		lvl: 79,
 		messages: ['grow Grimy dwarf weeds'],

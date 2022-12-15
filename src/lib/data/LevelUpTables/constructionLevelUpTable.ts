@@ -11,11 +11,13 @@ export const constructionLevelUpTable = [
 		messages: ['build a Wooden bookcase'],
 		skill: SkillsEnum.Construction
 	},
+	/*
 	{
 		lvl: 6,
 		messages: ['build Wooden shelves 1'],
 		skill: SkillsEnum.Construction
 	},
+	*/
 	{
 		lvl: 8,
 		messages: ['build a Wooden chair'],
@@ -31,11 +33,13 @@ export const constructionLevelUpTable = [
 		messages: ['build a Wooden bench', 'build a Wood dining table'],
 		skill: SkillsEnum.Construction
 	},
+	/*
 	{
 		lvl: 12,
 		messages: ['build a Kitchen table', 'build Wooden shelves 2'],
 		skill: SkillsEnum.Construction
 	},
+	*/
 	{
 		lvl: 14,
 		messages: ['build a Rocking chair'],
@@ -61,101 +65,129 @@ export const constructionLevelUpTable = [
 		messages: ['build an Oak bench', 'build an Oak dining table'],
 		skill: SkillsEnum.Construction
 	},
+	/*
 	{
 		lvl: 23,
 		messages: ['build Wooden shelves 3'],
 		skill: SkillsEnum.Construction
 	},
+	*/
+	/*
 	{
 		lvl: 25,
 		messages: ['build a Crafting table 2', 'build an Oak clock'],
 		skill: SkillsEnum.Construction
 	},
+	*/
 	{
 		lvl: 26,
 		messages: ['build an Oak armchair'],
 		skill: SkillsEnum.Construction
 	},
+	/*
 	{
 		lvl: 27,
 		messages: ['build Oak drawers', 'build an Oak staircase'],
 		skill: SkillsEnum.Construction
 	},
+	*/
+	/*
 	{
 		lvl: 29,
 		messages: ['build an Oak bookcase'],
 		skill: SkillsEnum.Construction
 	},
+	*/
 	{
 		lvl: 31,
 		messages: ['build Carved oak bench', 'build Carved oak table'],
 		skill: SkillsEnum.Construction
 	},
+	/*
 	{
 		lvl: 32,
 		messages: ['build an Oak kitchen table', 'build an Oak workbench'],
 		skill: SkillsEnum.Construction
 	},
+	*/
 	{
 		lvl: 33,
 		messages: ['build an Oak larder'],
 		skill: SkillsEnum.Construction
 	},
+	/*
 	{
 		lvl: 34,
 		messages: ['build a Crafting table 3', 'build Oak shelves 1'],
 		skill: SkillsEnum.Construction
 	},
+	*/
 	{
 		lvl: 35,
 		messages: ['build a Teak armchair'],
 		skill: SkillsEnum.Construction
 	},
+	/*
 	{
 		lvl: 36,
 		messages: ['build an Oak trophy case'],
 		skill: SkillsEnum.Construction
 	},
+	*/
 	{
 		lvl: 38,
 		messages: ['build a Teak dining bench', 'build a Teak table'],
 		skill: SkillsEnum.Construction
 	},
+	/*
 	{
 		lvl: 39,
 		messages: ['build an Oak wardrobe'],
 		skill: SkillsEnum.Construction
 	},
+	*/
+	/*
 	{
 		lvl: 40,
 		messages: ['build a Mahogany bookcase'],
 		skill: SkillsEnum.Construction
 	},
+	*/
+	/*
 	{
 		lvl: 42,
 		messages: ['build a Crafting table 4'],
 		skill: SkillsEnum.Construction
 	},
+	*/
+	/*
 	{
 		lvl: 43,
 		messages: ['build a Teak larder'],
 		skill: SkillsEnum.Construction
 	},
+	*/
+	/*
 	{
 		lvl: 44,
 		messages: ['build a Carved teak bench'],
 		skill: SkillsEnum.Construction
 	},
+	*/
+	/*
 	{
 		lvl: 45,
 		messages: ['build a Carved teak table', 'build Oak shelves 2'],
 		skill: SkillsEnum.Construction
 	},
+	*/
+	/*
 	{
 		lvl: 46,
 		messages: ['build a Teak dresser'],
 		skill: SkillsEnum.Construction
 	},
+	*/
 	{
 		lvl: 47,
 		messages: ['build a Mythical cape (mounted)'],

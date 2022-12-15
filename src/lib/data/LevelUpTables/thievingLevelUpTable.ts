@@ -13,7 +13,7 @@ export const thievingLevelUpTable = [
 	},
 	{
 		lvl: 5,
-		messages: ['steal from Bakery stalls', 'steal from Crafting stalls', 'steal from Tea stalls'],
+		messages: ['steal from Bakery stalls' /* , 'steal from Crafting stalls'*/, 'steal from Tea stalls'],
 		skill: SkillsEnum.Thieving
 	},
 	{
@@ -41,11 +41,13 @@ export const thievingLevelUpTable = [
 		messages: ['pickpocket Warriors', 'steal from Fruit stalls'],
 		skill: SkillsEnum.Thieving
 	},
+	/*
 	{
 		lvl: 27,
 		messages: ['steal from Seed stalls'],
 		skill: SkillsEnum.Thieving
 	},
+	*/
 	{
 		lvl: 32,
 		messages: ['pickpocket from Rogues'],
@@ -81,11 +83,13 @@ export const thievingLevelUpTable = [
 		messages: ['pickpocket from Bearded pollnivneach bandits', 'pickpocket from Fremennik citizens'],
 		skill: SkillsEnum.Thieving
 	},
+	/*
 	{
 		lvl: 49,
 		messages: ['steal from Crossbow stalls'],
 		skill: SkillsEnum.Thieving
 	},
+	*/
 	{
 		lvl: 50,
 		messages: ['steal from Silver stalls'],
@@ -105,9 +109,11 @@ export const thievingLevelUpTable = [
 		lvl: 65,
 		messages: [
 			'pickpocket from Menaphite thugs',
-			'pickpocket from Watchmen',
+			'pickpocket from Watchmen'
+			/*
 			'steal from magic stalls',
 			'steal from spice stalls'
+			*/
 		],
 		skill: SkillsEnum.Thieving
 	},

@@ -262,11 +262,13 @@ export const herbloreLevelUpTable = [
 		messages: ['mix Anti-venoms'],
 		skill: SkillsEnum.Herblore
 	},
+	/*
 	{
 		lvl: 88,
 		messages: ['mix Menaphite remedies'],
 		skill: SkillsEnum.Herblore
 	},
+	*/
 	{
 		lvl: 90,
 		messages: ['mix Super combat potions'],
