@@ -61,14 +61,11 @@ export const payCommand: OSBMahojiCommand = {
 
 		const bank = new Bank().add('Coins', amount);
 
-		try {
-			await transactItems({
-				userID: user.id,
-				itemsToRemove: bank
-			});
-		} catch (e: any) {
-			return "Couldn't send payment. Verify you have the funds and try again.";
-		}
+		await transactItems({
+			userID: user.id,
+			itemsToRemove: bank
+		});
+
 		await transactItems({
 			userID: recipient.id,
 			itemsToAdd: bank,

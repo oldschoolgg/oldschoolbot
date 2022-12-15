@@ -100,11 +100,19 @@ export async function transactItemsFromBank({
 				itemsToRemove.remove('Coins', itemsToRemove.amount('Coins'));
 			}
 			if (!newBank.has(itemsToRemove)) {
-				throw new Error(
+				const errObj = new Error(
 					`Tried to remove ${itemsToRemove} from ${userID}. but they don't own them. Missing: ${itemsToRemove
 						.clone()
 						.remove(currentBank)}`
 				);
+				logError(errObj, undefined, {
+					userID: settings.id,
+					previousGP: settings.GP.toString(),
+					gpToRemove: gpToRemove.toString(),
+					itemsToAdd: itemsToAdd?.toString() ?? '',
+					itemsToRemove: itemsToRemove.toString()
+				});
+				throw errObj;
 			}
 			newBank.remove(itemsToRemove);
 		}
