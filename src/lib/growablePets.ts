@@ -49,6 +49,9 @@ export async function handleGrowablePetGrowth(user: MUser, data: ActivityTaskOpt
 		if (nextPet === -1) {
 			throw new Error(`${user.usernameOrMention}'s pet[${equippedPet}] has no index in growable pet stages.`);
 		}
+
+		// Sync to avoid out of date CL
+		await user.sync();
 		await user.update({
 			minion_equippedPet: nextPet,
 			collectionLogBank: new Bank().add(user.cl).add(nextPet).bank
