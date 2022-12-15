@@ -10,7 +10,7 @@ import { log } from './util/log';
 
 async function clArrayUpdate(user: MUser, newCL: Bank) {
 	const id = BigInt(user.id);
-	const newCLArray = Object.values(newCL.bank).map(i => Number(i));
+	const newCLArray = Object.keys(newCL.bank).map(i => Number(i));
 	const updateObj = {
 		cl_array: newCLArray,
 		cl_array_length: newCLArray.length
