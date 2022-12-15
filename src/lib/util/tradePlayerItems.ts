@@ -28,9 +28,9 @@ export async function tradePlayerItems(sender: MUser, recipient: MUser, _itemsTo
 	});
 	// Queue the primary trade function: (Clears cache on completion/failure)
 	return userQueueFn(sender.id, async () => {
-		await sender.sync();
-		await recipient.sync();
 		try {
+			await sender.sync();
+			await recipient.sync();
 			if (!sender.owns(itemsToSend)) {
 				return { success: false, message: `${sender.usernameOrMention} doesn't own all items.` };
 			}
