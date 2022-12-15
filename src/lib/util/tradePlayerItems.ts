@@ -4,7 +4,7 @@ import { prisma } from '../settings/prisma';
 import { logError } from './logError';
 import { userQueueFn } from './userQueues';
 
-const activeTradeCache = new Map();
+export const activeTradeCache = new Map();
 
 function timeout(ms: number) {
 	return new Promise(resolve => setTimeout(resolve, ms));
