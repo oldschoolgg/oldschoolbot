@@ -14,7 +14,6 @@ import { NewBossOptions } from '../../../lib/types/minions';
 import { formatDuration, roll, toKMB } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { sendToChannelID } from '../../../lib/util/webhook';
 
 const methodsOfDeath = [
 	'Beheaded',
