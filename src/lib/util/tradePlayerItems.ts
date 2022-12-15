@@ -11,15 +11,15 @@ function timeout(ms: number) {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-export async function tradePlayerItems(sender: MUser, recipient: MUser, _itemsSent: Bank, _itemsReceived: Bank) {
+export async function tradePlayerItems(sender: MUser, recipient: MUser, _itemsToSend?: Bank, _itemsToReceive?: Bank) {
 	if (activeTradeCache.get(sender.id) || activeTradeCache.get(recipient.id)) {
 		return { success: false, message: 'Only one trade per player can be active at a time!' };
 	}
 	activeTradeCache.set(sender.id, true);
 	activeTradeCache.set(recipient.id, true);
 
-	const itemsSent = _itemsSent.clone();
-	const itemsReceived = _itemsReceived.clone();
+	const itemsToSend = _itemsToSend ? _itemsToSend.clone() : new Bank();
+	const itemsToReceive = _itemsToReceive ? _itemsToReceive.clone() : new Bank();
 
 	// Queue function for the recipient so no funny business / mistakes happen:
 	userQueueFn(recipient.id, async () => {
@@ -29,11 +29,13 @@ export async function tradePlayerItems(sender: MUser, recipient: MUser, _itemsSe
 	});
 	// Queue the primary trade function: (Clears cache on completion/failure)
 	return userQueueFn(sender.id, async () => {
+		await sender.sync();
+		await recipient.sync();
 		try {
-			if (!sender.owns(itemsSent)) {
+			if (!sender.owns(itemsToSend)) {
 				return { success: false, message: `${sender.usernameOrMention} doesn't own all items.` };
 			}
-			if (!recipient.owns(itemsReceived)) {
+			if (!recipient.owns(itemsToReceive)) {
 				return { success: false, message: `${recipient.usernameOrMention} doesn't own all items.` };
 			}
 			const newSenderBank = sender.bank.clone();
@@ -42,23 +44,23 @@ export async function tradePlayerItems(sender: MUser, recipient: MUser, _itemsSe
 			let senderGP = sender.GP;
 			let recipientGP = recipient.GP;
 
-			if (itemsSent.has(COINS_ID)) {
-				const sentCoins = itemsSent.amount(COINS_ID);
+			if (itemsToSend.has(COINS_ID)) {
+				const sentCoins = itemsToSend.amount(COINS_ID);
 				senderGP -= sentCoins;
-				itemsSent.remove(COINS_ID, sentCoins);
+				itemsToSend.remove(COINS_ID, sentCoins);
 				recipientGP += sentCoins;
 			}
-			if (itemsReceived.has(COINS_ID)) {
-				const receivedCoins = itemsReceived.amount(COINS_ID);
+			if (itemsToReceive.has(COINS_ID)) {
+				const receivedCoins = itemsToReceive.amount(COINS_ID);
 				recipientGP -= receivedCoins;
-				itemsReceived.remove(COINS_ID, receivedCoins);
+				itemsToReceive.remove(COINS_ID, receivedCoins);
 				senderGP += receivedCoins;
 			}
 
-			newSenderBank.remove(itemsSent);
-			newRecipientBank.remove(itemsReceived);
-			newSenderBank.add(itemsReceived);
-			newRecipientBank.add(itemsSent);
+			newSenderBank.remove(itemsToSend);
+			newRecipientBank.remove(itemsToReceive);
+			newSenderBank.add(itemsToReceive);
+			newRecipientBank.add(itemsToSend);
 
 			const updateSender = prisma.user.update({
 				data: {
@@ -87,8 +89,8 @@ export async function tradePlayerItems(sender: MUser, recipient: MUser, _itemsSe
 				sender: sender.id,
 				recipient: recipient.id,
 				command: 'trade',
-				items_sent: itemsSent.toString(),
-				items_received: itemsReceived.toString()
+				items_sent: itemsToSend.toString(),
+				items_received: itemsToReceive.toString()
 			});
 			return { success: false, message: 'Temporary error, please try again.' };
 		} finally {
