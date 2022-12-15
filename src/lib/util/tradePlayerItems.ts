@@ -23,7 +23,7 @@ export async function tradePlayerItems(sender: MUser, recipient: MUser, _itemsTo
 	// Queue function for the recipient so no funny business / mistakes happen:
 	userQueueFn(recipient.id, async () => {
 		while (activeTradeCache.get(recipient.id)) {
-			await timeout(500);
+			await timeout(100);
 		}
 	});
 	// Queue the primary trade function: (Clears cache on completion/failure)
