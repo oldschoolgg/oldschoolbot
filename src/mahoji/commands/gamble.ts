@@ -226,6 +226,7 @@ export const gambleCommand: OSBMahojiCommand = {
 				`Are you sure you want to give a random stack of items from your bank to ${recipientuser.usernameOrMention}? Untradeable and favorited items are not included.`
 			);
 
+			await senderUser.sync();
 			const bank = senderUser.bank
 				.items()
 				.filter(i => itemIsTradeable(i[0].id))
