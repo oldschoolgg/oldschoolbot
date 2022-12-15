@@ -62,7 +62,10 @@ export const payCommand: OSBMahojiCommand = {
 
 		const bank = new Bank().add('Coins', amount);
 
-		await tradePlayerItems(user, recipient, bank);
+		const { success, message } = await tradePlayerItems(user, recipient, bank);
+		if (!success) {
+			return message;
+		}
 
 		await prisma.economyTransaction.create({
 			data: {
