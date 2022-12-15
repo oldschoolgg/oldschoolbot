@@ -98,7 +98,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 			try {
 				await user.removeItemsFromBank(bankToSac);
 			} catch (e: any) {
-				return `Failed to sacrifice cats: ${e.message}`;
+				return 'Failed to sacrifice cats. Make sure you still have them and try again.';
 			}
 			await user.addItemsToBank({ items: loot, collectionLog: false });
 			const sacBank = await trackSacBank(user, bankToSac);
@@ -124,7 +124,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 		try {
 			await user.removeItemsFromBank(bankToSac);
 		} catch (e: any) {
-			return `Failed to sacrifice items: ${e.message}`;
+			return 'Failed to sacrifice items. Ensure you still have the items and try again.';
 		}
 
 		if (totalPrice > 200_000_000) {

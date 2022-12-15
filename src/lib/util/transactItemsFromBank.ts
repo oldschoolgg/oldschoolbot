@@ -8,6 +8,7 @@ import { handleNewCLItems } from '../handleNewCLItems';
 import { filterLootReplace } from '../slayer/slayerUtil';
 import { ItemBank } from '../types';
 import { sanitizeBank } from '../util';
+import { logError } from './logError';
 import { userQueueFn } from './userQueues';
 
 interface TransactItemsArgs {
@@ -41,8 +42,17 @@ export async function transactItemsFromBank({
 	let itemsToRemove = options.itemsToRemove ? options.itemsToRemove.clone() : undefined;
 	return userQueueFn(userID, async () => {
 		const settings = await mUserFetch(userID);
-		if (itemsToRemove && settings.GP < itemsToRemove.amount('Coins') - (itemsToAdd?.amount('Coins') ?? 0)) {
-			throw new Error("User doesn't have enough coins!");
+		const gpToRemove = (itemsToRemove?.amount('Coins') ?? 0) - (itemsToAdd?.amount('Coins') ?? 0);
+		if (itemsToRemove && settings.GP < gpToRemove) {
+			const errObj = new Error(`${settings.usernameOrMention} doesn't have enough coins!`);
+			logError(errObj, undefined, {
+				userID: settings.id,
+				previousGP: settings.GP.toString(),
+				gpToRemove: gpToRemove.toString(),
+				itemsToAdd: itemsToAdd?.toString() ?? '',
+				itemsToRemove: itemsToRemove.toString()
+			});
+			throw errObj;
 		}
 		const currentBank = new Bank().add(settings.user.bank as ItemBank);
 		const previousCL = new Bank().add(settings.user.collectionLogBank as ItemBank);

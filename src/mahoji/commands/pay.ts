@@ -67,7 +67,7 @@ export const payCommand: OSBMahojiCommand = {
 				itemsToRemove: bank
 			});
 		} catch (e: any) {
-			return `Couldn't send payment: ${e.message}`;
+			return "Couldn't send payment. Verify you have the funds and try again.";
 		}
 		await transactItems({
 			userID: recipient.id,
