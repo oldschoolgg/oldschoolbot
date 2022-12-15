@@ -105,6 +105,8 @@ export async function gearEquipMultiCommand(
 		);
 	}
 
+	// We must update the user after any confirmation because the bank/gear could change from something else.
+	await user.sync();
 	const {
 		success: resultSuccess,
 		failMsg,

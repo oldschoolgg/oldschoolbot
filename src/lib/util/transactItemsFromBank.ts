@@ -8,6 +8,7 @@ import { handleNewCLItems } from '../handleNewCLItems';
 import { filterLootReplace } from '../slayer/slayerUtil';
 import { ItemBank } from '../types';
 import { sanitizeBank } from '../util';
+import { logError } from './logError';
 import { userQueueFn } from './userQueues';
 
 interface TransactItemsArgs {
@@ -41,6 +42,18 @@ export async function transactItemsFromBank({
 	let itemsToRemove = options.itemsToRemove ? options.itemsToRemove.clone() : undefined;
 	return userQueueFn(userID, async () => {
 		const settings = await mUserFetch(userID);
+		const gpToRemove = (itemsToRemove?.amount('Coins') ?? 0) - (itemsToAdd?.amount('Coins') ?? 0);
+		if (itemsToRemove && settings.GP < gpToRemove) {
+			const errObj = new Error(`${settings.usernameOrMention} doesn't have enough coins!`);
+			logError(errObj, undefined, {
+				userID: settings.id,
+				previousGP: settings.GP.toString(),
+				gpToRemove: gpToRemove.toString(),
+				itemsToAdd: itemsToAdd?.toString() ?? '',
+				itemsToRemove: itemsToRemove.toString()
+			});
+			throw errObj;
+		}
 		const currentBank = new Bank().add(settings.user.bank as ItemBank);
 		const previousCL = new Bank().add(settings.user.collectionLogBank as ItemBank);
 		const previousTempCL = new Bank().add(settings.user.temp_cl as ItemBank);
@@ -87,11 +100,19 @@ export async function transactItemsFromBank({
 				itemsToRemove.remove('Coins', itemsToRemove.amount('Coins'));
 			}
 			if (!newBank.has(itemsToRemove)) {
-				throw new Error(
+				const errObj = new Error(
 					`Tried to remove ${itemsToRemove} from ${userID}. but they don't own them. Missing: ${itemsToRemove
 						.clone()
 						.remove(currentBank)}`
 				);
+				logError(errObj, undefined, {
+					userID: settings.id,
+					previousGP: settings.GP.toString(),
+					gpToRemove: gpToRemove.toString(),
+					itemsToAdd: itemsToAdd?.toString() ?? '',
+					itemsToRemove: itemsToRemove.toString()
+				});
+				throw errObj;
 			}
 			newBank.remove(itemsToRemove);
 		}
