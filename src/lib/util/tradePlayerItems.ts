@@ -1,6 +1,5 @@
 import { Bank } from 'oldschooljs';
 
-import { COINS_ID } from '../constants';
 import { prisma } from '../settings/prisma';
 import { logError } from './logError';
 import { userQueueFn } from './userQueues';
@@ -44,16 +43,16 @@ export async function tradePlayerItems(sender: MUser, recipient: MUser, _itemsTo
 			let senderGP = sender.GP;
 			let recipientGP = recipient.GP;
 
-			if (itemsToSend.has(COINS_ID)) {
-				const sentCoins = itemsToSend.amount(COINS_ID);
+			if (itemsToSend.has('Coins')) {
+				const sentCoins = itemsToSend.amount('Coins');
 				senderGP -= sentCoins;
-				itemsToSend.remove(COINS_ID, sentCoins);
+				itemsToSend.remove('Coins', sentCoins);
 				recipientGP += sentCoins;
 			}
-			if (itemsToReceive.has(COINS_ID)) {
-				const receivedCoins = itemsToReceive.amount(COINS_ID);
+			if (itemsToReceive.has('Coins')) {
+				const receivedCoins = itemsToReceive.amount('Coins');
 				recipientGP -= receivedCoins;
-				itemsToReceive.remove(COINS_ID, receivedCoins);
+				itemsToReceive.remove('Coins', receivedCoins);
 				senderGP += receivedCoins;
 			}
 
