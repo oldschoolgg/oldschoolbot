@@ -42,10 +42,10 @@ export const puroOptions: PuroImpling[] = [
 		item: null
 	},
 	{
-		name: 'Dragon Implings',
-		hunterLevel: 83,
+		name: 'High-tier Implings',
+		hunterLevel: 58,
 		spell: true,
-		item: getOSItem('Dragon impling jar')
+		item: getOSItem('Nature impling jar')
 	},
 	{
 		name: 'Eclectic Implings',
@@ -148,7 +148,7 @@ export async function puroPuroStartCommand(
 		const { bank } = user;
 		const natureRuneID = itemID('Nature rune');
 		const deathRuneID = itemID('Death rune');
-		if (impToHunt.name === 'Dragon Implings') {
+		if (impToHunt.name === 'High-tier Implings') {
 			if (bank.amount(natureRuneID) < 100 || bank.amount(deathRuneID) < 100) {
 				return "You don't have enough Nature and Death runes to start this trip, you need at least 100 of each.";
 			}

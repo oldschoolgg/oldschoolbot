@@ -77,6 +77,13 @@ export const puroImpNormalTable = new LootTable()
 	.add('Dragon impling jar', 1, 88)
 	.add('Lucky impling jar', 1, 18);
 
+export const puroImpHighTierTable = new LootTable()
+	.add('Nature impling jar', 1, 150)
+	.add('Magpie impling jar', 1, 114)
+	.add('Ninja impling jar', 1, 27)
+	.add('Dragon impling jar', 1, 9)
+	.add('Lucky impling jar', 1, 1);
+
 export const defaultImpTable = new LootTable()
 	.add('Baby impling jar', 1, 28_280)
 	.add('Young impling jar', 1, 28_280)

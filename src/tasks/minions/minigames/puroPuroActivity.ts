@@ -1,8 +1,14 @@
-import { randInt, reduceNumByPercent, roll, Time } from 'e';
+import { randFloat, randInt, reduceNumByPercent, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
-import { implings, puroImplings, puroImpNormalTable, puroImpSpellTable } from '../../../lib/implings';
+import {
+	implings,
+	puroImpHighTierTable,
+	puroImplings,
+	puroImpNormalTable,
+	puroImpSpellTable
+} from '../../../lib/implings';
 import { incrementMinigameScore } from '../../../lib/settings/minigames';
 import { PuroPuroActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -34,6 +40,19 @@ function allImpHunt(minutes: number, user: MUser) {
 	return totalQty;
 }
 
+function highTierImpHunt(minutes: number, user: MUser) {
+	let totalQty = 0;
+	for (let i = 0; i < minutes; i++) {
+		let qty = randFloat(0.75, 1);
+		totalQty += qty;
+	}
+	totalQty = Math.floor(totalQty);
+	if (!userHasGracefulEquipped(user)) {
+		totalQty = Math.floor(reduceNumByPercent(totalQty, 20));
+	}
+	return totalQty;
+}
+
 const bryophytasStaffId = itemID("Bryophyta's staff");
 
 export const puroPuroTask: MinionTask = {
@@ -54,27 +73,9 @@ export const puroPuroTask: MinionTask = {
 		const hunterLevel = user.skillLevel(SkillsEnum.Hunter);
 
 		const allImpQty = allImpHunt(minutes, user);
+		let highTierImpQty = highTierImpHunt(minutes, user);
 		const singleImpQty = singleImpHunt(minutes, user);
 		switch (implingID) {
-			case itemID('Dragon impling jar'): {
-				const dragonOdds = darkLure ? 25 : 45;
-				const luckyOdds = darkLure ? 200 : 360;
-				for (let i = 0; i < minutes; i++) {
-					if (roll(dragonOdds)) {
-						bank.add('Dragon impling jar');
-						hunterXP += 65;
-					}
-				}
-				if (hunterLevel >= 89) {
-					for (let i = 0; i < minutes; i++) {
-						if (roll(luckyOdds)) {
-							bank.add('Lucky impling jar');
-							hunterXP += 80;
-						}
-					}
-				}
-				break;
-			}
 			case itemID('Eclectic impling jar'):
 				bank.add('Eclectic impling jar', singleImpQty);
 				hunterXP += 30 * singleImpQty;
@@ -99,6 +100,21 @@ export const puroPuroTask: MinionTask = {
 				bank.add('Baby impling jar', singleImpQty);
 				hunterXP += 18 * singleImpQty;
 				break;
+			case itemID('Nature impling jar'): {
+				if (darkLure) highTierImpQty *= 1.2;
+				for (let j = 0; j < highTierImpQty; j++) {
+					const loot = puroImpHighTierTable.roll();
+					if (loot.length === 0) continue;
+					const implingReceived = implings[loot.items()[0][0].id]!;
+					if (hunterLevel < implingReceived.level) missed.add(loot);
+					else {
+						bank.add(loot);
+						const implingReceivedXP = puroImplings[loot.items()[0][0].id]!;
+						hunterXP += Number(implingReceivedXP.catchXP);
+					}
+				}
+				break;
+			}
 			default:
 				for (let j = 0; j < allImpQty; j++) {
 					const loot = darkLure ? puroImpSpellTable.roll() : puroImpNormalTable.roll();
@@ -164,8 +180,8 @@ export const puroPuroTask: MinionTask = {
 
 			if (magicXP > 0) str += `\n${magicXpStr}. You are getting ${magicXpHr}.`;
 
-			if (implingID === itemID('Dragon impling jar')) {
-				str += `\n**Boosts:** You have an increased chance of getting ${huntedImplingName} due to using Dark Lure. You used: ${itemCost}. ${saved}`;
+			if (implingID === itemID('Nature impling jar')) {
+				str += `\n**Boosts:** Due to using Dark Lure, you have are catching 20% more implings. You used: ${itemCost}. ${saved}`;
 			} else {
 				str += `\n**Boosts:** Due to using Dark Lure, you have an increased chance at getting Nature Implings and above. You used: ${itemCost}. ${saved}`;
 			}
