@@ -50,8 +50,8 @@ const pets: Pet[] = [
 		type: 'SKILL',
 		altNames: ['BEAVER', 'WC', 'WOODCUTTING'],
 		formatFinish: (num: number) =>
-			`You had to cut ${fm(num)} Magic Logs to get the Beaver Pet! <:Beaver:324127375761604611> ` +
-			`You also got...\n${xpEmoji} ${fm(num * 250)} XP\n${gpEmoji} ${fm(num * 1043)} GP`
+			`You had to cut ${fm(num)} Redwood Logs to get the Beaver Pet! <:Beaver:324127375761604611> ` +
+			`You also got...\n${xpEmoji} ${fm(num * 380)} XP\n${gpEmoji} ${fm(num * 335)} GP`
 	},
 	{
 		id: 4,
@@ -91,16 +91,16 @@ const pets: Pet[] = [
 	{
 		id: 7,
 		emoji: '<:Heron:324127376516841483>',
-		chance: 136_108,
+		chance: 168_399,
 		name: 'Heron',
 		type: 'SKILL',
 		altNames: ['HERON', 'FISHING', 'AGILITY'],
 		formatFinish: (num: number) =>
 			`You had to catch ${fm(
 				num
-			)} Monkfish to get the Heron Pet! <:Heron:324127376516841483> You also got...\n${xpEmoji} ${fm(
-				num * 120
-			)} XP\n${gpEmoji} ${fm(num * 294)} GP`
+			)} Karambwans to get the Heron Pet! <:Heron:324127376516841483> You also got...\n${xpEmoji} ${fm(
+				num * 50
+			)} XP\n${gpEmoji} ${fm(num * 291)} GP`
 	},
 	{
 		id: 8,
@@ -335,19 +335,19 @@ const pets: Pet[] = [
 		formatFinish: (num: number) =>
 			`You had to craft ${fm(
 				num
-			)} Nature Runes to get the Rift Guardian Pet! <:Rift_guardian_fire:324127378588827648>`
+			)} Mind Runes to get the Rift Guardian Pet! <:Rift_guardian_fire:324127378588827648>`
 	},
 	{
 		id: 27,
 		emoji: '<:Rock_golem:324127378429313026>',
-		chance: 244_725,
+		chance: 1500, // Average 40 fragments per game at 60K chance per fragment
 		name: 'Rock Golem',
 		type: 'SKILL',
 		altNames: ['GOLEM', 'ROCKGOLEM', 'MINING'],
 		formatFinish: (num: number) =>
-			`You had to mine ${fm(
+			`You had to play ${fm(
 				num
-			)} Paydirt at Motherlode Mine to get the Rock Golem Pet! <:Rock_golem:324127378429313026>`
+			)} games at Volcanic Mine to get the Rock Golem Pet! <:Rock_golem:324127378429313026>`
 	},
 	{
 		id: 28,
