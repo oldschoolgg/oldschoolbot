@@ -526,6 +526,14 @@ export async function removeRawFood({
 		return { success: false, str: `You don't have the required items, you need: ${itemCost}.` };
 	}
 	await user.removeItemsFromBank(itemCost);
+	await prisma.tame.update({
+		where: {
+			id: tame.id
+		},
+		data: {
+			total_cost: new Bank(tame.total_cost as ItemBank).add(itemCost).bank
+		}
+	});
 
 	updateBankSetting('economyStats_PVMCost', itemCost);
 
@@ -1064,6 +1072,7 @@ async function viewCommand(user: MUser, tameID: number): CommandResponse {
 	});
 
 	const files = [fedImage.file.attachment];
+
 	const isTierThree = user.perkTier() >= PerkTier.Four;
 	if (isTierThree) {
 		files.push(
@@ -1071,6 +1080,16 @@ async function viewCommand(user: MUser, tameID: number): CommandResponse {
 				await makeBankImage({
 					bank: loot,
 					title: 'Total Loot From This Tame',
+					user
+				})
+			).file.attachment
+		);
+
+		files.push(
+			(
+				await makeBankImage({
+					bank: new Bank(tame.total_cost as ItemBank),
+					title: 'Items This Tame Used',
 					user
 				})
 			).file.attachment

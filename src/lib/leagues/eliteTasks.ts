@@ -661,7 +661,7 @@ export const eliteTasks: Task[] = [
 		id: 3087,
 		name: 'Tan 20,000 hides with the portable tanner',
 		has: async ({ userStats }) => {
-			return Object.values(userStats.portable_tanner_bank as ItemBank).length >= 20_000;
+			return sumArr(Object.values(userStats.portable_tanner_bank as ItemBank)) >= 20_000;
 		}
 	},
 	{

@@ -1339,9 +1339,6 @@ export const fishingTrawlerCL = resolveItems(['Angler hat', 'Angler top', 'Angle
 export const giantsFoundryCL = resolveItems([
 	'Smiths tunic',
 	'Smiths trousers',
-	'Hallowed grapple',
-	'Smiths tunic',
-	'Smiths trousers',
 	'Smiths boots',
 	'Smiths gloves',
 	'Colossal blade',
