@@ -148,6 +148,10 @@ export const megaDuckCommand: OSBMahojiCommand = {
 		guildID,
 		interaction
 	}: CommandRunOptions<{ move?: MegaduckDirection; reset?: boolean }>) => {
+		debugLog('Mega Duck Command Running', {
+			type: 'MEGA_DUCK',
+			user_id: userID
+		});
 		const user = await mUserFetch(userID);
 		const guild = guildID ? globalClient.guilds.cache.get(guildID.toString()) : null;
 		if (!guild) return 'You can only run this in a guild.';

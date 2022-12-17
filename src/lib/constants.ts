@@ -1,4 +1,5 @@
 import { Prisma } from '@prisma/client';
+import { execSync } from 'child_process';
 import {
 	APIButtonComponent,
 	APIInteractionDataResolvedChannel,
@@ -618,3 +619,4 @@ export const chompyHats = [
 ] as const;
 
 export const secretItems = [...allChristmasItems];
+export const gitHash = execSync('git rev-parse HEAD').toString().trim();
