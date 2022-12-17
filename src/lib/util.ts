@@ -713,8 +713,8 @@ export function memoryAnalysis() {
 }
 
 export function cacheCleanup() {
-	debugLog('Analytics tick', {
-		type: 'ANALYTICS_TICK'
+	debugLog('Cache Cleanup', {
+		type: 'CACHE_CLEANUP'
 	});
 	return runTimedLoggedFn('Cache Cleanup', async () => {
 		await runTimedLoggedFn('Clear Channels', async () => {
