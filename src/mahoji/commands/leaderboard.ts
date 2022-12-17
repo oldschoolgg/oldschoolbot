@@ -210,7 +210,7 @@ async function clLb(user: MUser, channelID: string, inputType: string, ironmenOn
 	if (!items || items.length === 0) {
 		return "That's not a valid collection log category. Check +cl for all possible logs.";
 	}
-	const users = await fetchCLLeaderboard({ ironmenOnly, items, resultLimit: 50 });
+	const users = await fetchCLLeaderboard({ ironmenOnly, items, resultLimit: 200 });
 
 	inputType = toTitleCase(inputType.toLowerCase());
 	doMenu(

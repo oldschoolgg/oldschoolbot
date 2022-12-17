@@ -752,6 +752,9 @@ model UserStats {
   farming_plant_cost_bank   Json @default("{}") @db.Json
   farming_harvest_loot_bank Json @default("{}") @db.Json
 
+  cl_array        Int[]
+  cl_array_length Int   @default(0)
+
   // BSO
   bars_from_adze_bank    Json @default("{}") @db.Json
   ores_from_spirits_bank Json @default("{}") @db.Json
