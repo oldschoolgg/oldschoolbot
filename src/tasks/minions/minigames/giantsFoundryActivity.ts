@@ -35,7 +35,7 @@ export const giantsFoundryTask: MinionTask = {
 		let highestQualitySword = '';
 		const stats = await user.fetchStats();
 		const newWeapons = deepClone(stats.gf_weapons_made) as GiantsFoundryBank;
-		
+
 		for (let i = 0; i < quantity; i++) {
 			let quality = Math.min(Math.floor(randomVariation(metalScore - 5 + avgMouldBonus, 10)), 199);
 			xpReceived += (Math.pow(quality, 2) / 73 + 1.5 * quality + 1) * 30;
