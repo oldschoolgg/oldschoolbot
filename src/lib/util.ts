@@ -15,6 +15,7 @@ import {
 	Guild,
 	GuildTextBasedChannel,
 	InteractionReplyOptions,
+	InteractionType,
 	Message,
 	MessageEditOptions,
 	PermissionsBitField,
@@ -713,6 +714,9 @@ export function memoryAnalysis() {
 }
 
 export function cacheCleanup() {
+	debugLog('Analytics tick', {
+		type: 'ANALYTICS_TICK'
+	});
 	return runTimedLoggedFn('Cache Cleanup', async () => {
 		await runTimedLoggedFn('Clear Channels', async () => {
 			for (const channel of globalClient.channels.cache.values()) {
@@ -782,4 +786,28 @@ export function isFunction(input: unknown): input is Function {
 
 export function dateFm(date: Date) {
 	return `${time(date, 'T')} (${time(date, 'R')})`;
+}
+
+const validChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+
+export function miniID(length: number): string {
+	let id = '';
+
+	for (let i = 0; i < length; i++) {
+		const randomChar = validChars[Math.floor(Math.random() * validChars.length)];
+
+		id += randomChar;
+	}
+
+	return id;
+}
+
+export function getInteractionTypeName(type: InteractionType) {
+	return {
+		[InteractionType.Ping]: 'Ping',
+		[InteractionType.ApplicationCommand]: 'ApplicationCommand',
+		[InteractionType.MessageComponent]: 'MessageComponent',
+		[InteractionType.ApplicationCommandAutocomplete]: 'ApplicationCommandAutocomplete',
+		[InteractionType.ModalSubmit]: 'ModalSubmit'
+	}[type];
 }

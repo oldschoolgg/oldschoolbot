@@ -3,11 +3,12 @@ import './lib/data/itemAliases';
 import './lib/crons';
 import './lib/MUser';
 import './lib/util/transactItemsFromBank';
+import './lib/util/logger';
 
 import * as Sentry from '@sentry/node';
 import { Chart } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { GatewayIntentBits, Options, Partials, TextChannel } from 'discord.js';
+import { GatewayIntentBits, InteractionType, Options, Partials, TextChannel } from 'discord.js';
 import { isObject, Time } from 'e';
 import { MahojiClient } from 'mahoji';
 import { join } from 'path';
@@ -21,7 +22,7 @@ import { modalInteractionHook } from './lib/modals';
 import { runStartupScripts } from './lib/startupScripts';
 import { OldSchoolBotClient } from './lib/structures/OldSchoolBotClient';
 import { syncActivityCache } from './lib/Task';
-import { assert, runTimedLoggedFn } from './lib/util';
+import { assert, getInteractionTypeName, runTimedLoggedFn } from './lib/util';
 import { CACHED_ACTIVE_USER_IDS, syncActiveUserIDs } from './lib/util/cachedUserIDs';
 import { interactionHook } from './lib/util/globalInteractions';
 import { handleInteractionError } from './lib/util/interactionReply';
@@ -156,6 +157,16 @@ client.on('interactionCreate', async interaction => {
 	}
 
 	try {
+		if (interaction.type !== InteractionType.ApplicationCommandAutocomplete) {
+			debugLog(`Process ${getInteractionTypeName(interaction.type)} interaction`, {
+				type: 'COMMAND_INHIBITED',
+				user_id: interaction.user.id,
+				guild_id: interaction.guildId,
+				channel_id: interaction.channelId,
+				interaction_id: interaction.id,
+				interaction_type: interaction.type
+			});
+		}
 		await interactionHook(interaction);
 		if (interaction.isModalSubmit()) {
 			await modalInteractionHook(interaction);

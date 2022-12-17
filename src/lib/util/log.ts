@@ -1,4 +1,4 @@
-import { execSync } from 'child_process';
+import { gitHash } from '../constants';
 
 let { pid } = process;
 
@@ -7,6 +7,5 @@ export function log(message: string) {
 }
 
 export function startLog() {
-	const gitHash = execSync('git rev-parse HEAD').toString().trim();
 	log(`Starting... Git[${gitHash}] Pid[${pid}]`);
 }
