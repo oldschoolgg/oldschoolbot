@@ -617,12 +617,14 @@ model Tame {
   max_artisan_level  Int
   max_gatherer_level Int
   max_support_level  Int
-  max_total_loot     Json        @db.Json
+  max_total_loot     Json        @default("{}") @db.Json
   fed_items          Json        @default("{}") @db.Json
   species_variant    Int         @default(1)
 
   equipped_primary Int?
   equipped_armor   Int?
+
+  total_cost Json @default("{}") @db.Json
 
   tame_activity TameActivity[]
 
