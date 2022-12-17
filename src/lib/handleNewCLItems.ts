@@ -6,7 +6,6 @@ import { allCLItems, allCollectionLogsFlat } from './data/Collections';
 import { prisma } from './settings/prisma';
 import { fetchCLLeaderboard } from './util/clLeaderboard';
 import { formatOrdinal } from './util/formatOrdinal';
-import { log } from './util/log';
 
 async function clArrayUpdate(user: MUser, newCL: Bank) {
 	const id = BigInt(user.id);
@@ -73,7 +72,7 @@ export async function handleNewCLItems({
 		const nthUser = (
 			await fetchCLLeaderboard({ ironmenOnly: false, items: finishedCL.items, resultLimit: 100_000 })
 		).length;
-		log(`Took ${stopwatch.stop()} to calc cl leaderboard for ${finishedCL.name}`);
+		debugLog(`Took ${stopwatch.stop()} to calc cl leaderboard for ${finishedCL.name}`);
 
 		const placeStr = nthUser > 100 ? '' : ` They are the ${formatOrdinal(nthUser)} user to finish this CL.`;
 
