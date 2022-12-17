@@ -206,6 +206,9 @@ client.on('guildCreate', guild => {
 	}
 });
 
+client.on('shardDisconnect', ({ wasClean, code, reason }) => debugLog('Shard Disconnect', { wasClean, code, reason }));
+client.on('shardError', err => debugLog('Shard Error', { error: err.message }));
+
 async function main() {
 	client.fastifyServer = makeServer();
 	await Promise.all([
