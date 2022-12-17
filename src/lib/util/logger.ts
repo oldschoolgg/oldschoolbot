@@ -17,11 +17,11 @@ const pino = pinoCtor(
 );
 
 interface LogContext {
-	type: string;
+	type?: string;
 	[key: string]: unknown;
 }
 
-function _debugLog(str: string, context: LogContext) {
+function _debugLog(str: string, context: LogContext = {}) {
 	pino.debug({ ...context, message: str });
 }
 declare global {
