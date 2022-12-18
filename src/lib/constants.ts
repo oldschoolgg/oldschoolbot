@@ -1,3 +1,4 @@
+import { execSync } from 'child_process';
 import { APIButtonComponent, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 
 import { DISCORD_SETTINGS, production } from '../config';
@@ -454,3 +455,5 @@ export const chompyHats = [
 	[getOSItem('Chompy bird hat (expert ogre dragon archer)'), 3000],
 	[getOSItem('Chompy bird hat (expert dragon archer)'), 4000]
 ] as const;
+
+export const gitHash = execSync('git rev-parse HEAD').toString().trim();

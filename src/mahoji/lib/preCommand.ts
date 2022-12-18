@@ -73,6 +73,7 @@ export async function preCommand({
 		return { silent: true, reason: { content: 'You cannot use a command right now.' }, dontRunPostCommand: true };
 	}
 	modifyBusyCounter(userID, 1);
+
 	const guild = guildID ? globalClient.guilds.cache.get(guildID.toString()) : null;
 	const member = guild?.members.cache.get(userID.toString());
 	const channel = globalClient.channels.cache.get(channelID.toString()) as TextChannel;
@@ -90,6 +91,21 @@ export async function preCommand({
 	});
 
 	if (inhibitResult !== undefined) {
+		debugLog('Command inhibited', {
+			type: 'COMMAND_INHIBITED',
+			command_name: abstractCommand.name,
+			user_id: userID,
+			guild_id: guildID,
+			channel_id: channelID
+		});
 		return inhibitResult;
 	}
+
+	debugLog('Attempt to run command', {
+		type: 'RUN_COMMAND',
+		command_name: abstractCommand.name,
+		user_id: userID,
+		guild_id: guildID,
+		channel_id: channelID
+	});
 }
