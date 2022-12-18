@@ -154,7 +154,7 @@ export const raidsTask: MinionTask = {
 				const itemsToAnnounce = itemsAdded.filter(item => purpleItems.includes(item.id), false);
 				globalClient.emit(
 					Events.ServerNotification,
-					`${emote} ${user.badgedUsername} just received **${itemsToAnnounce}** on their ${formatOrdinal(
+					`${Emoji.Blue} ${user.badgedUsername} just received **${itemsToAnnounce}** on their ${formatOrdinal(
 						await getMinigameScore(user.id, minigameID)
 					)} raid.`
 				);
