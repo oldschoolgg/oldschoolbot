@@ -3,14 +3,16 @@ import './lib/data/itemAliases';
 import './lib/crons';
 import './lib/MUser';
 import './lib/util/transactItemsFromBank';
+import './lib/util/logger';
 
 import * as Sentry from '@sentry/node';
 import { Chart } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { GatewayIntentBits, Options, Partials, TextChannel } from 'discord.js';
+import { GatewayIntentBits, InteractionType, Options, Partials, TextChannel } from 'discord.js';
 import { isObject, Time } from 'e';
 import { MahojiClient } from 'mahoji';
 import { join } from 'path';
+import { debuglog } from 'util';
 
 import { botToken, CLIENT_ID, DEV_SERVER_ID, production, SENTRY_DSN, SupportServer } from './config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from './lib/blacklists';
@@ -21,11 +23,10 @@ import { modalInteractionHook } from './lib/modals';
 import { runStartupScripts } from './lib/startupScripts';
 import { OldSchoolBotClient } from './lib/structures/OldSchoolBotClient';
 import { syncActivityCache } from './lib/Task';
-import { assert, runTimedLoggedFn } from './lib/util';
+import { assert, getInteractionTypeName, runTimedLoggedFn } from './lib/util';
 import { CACHED_ACTIVE_USER_IDS, syncActiveUserIDs } from './lib/util/cachedUserIDs';
 import { interactionHook } from './lib/util/globalInteractions';
 import { handleInteractionError } from './lib/util/interactionReply';
-import { startLog } from './lib/util/log';
 import { logError } from './lib/util/logError';
 import { sendToChannelID } from './lib/util/webhook';
 import { onStartup } from './mahoji/lib/events';
@@ -33,11 +34,11 @@ import { postCommand } from './mahoji/lib/postCommand';
 import { preCommand } from './mahoji/lib/preCommand';
 import { convertMahojiCommandToAbstractCommand } from './mahoji/lib/util';
 
+debuglog('Starting...');
+
 if (!production) {
 	import('./lib/devHotReload');
 }
-
-startLog();
 
 Chart.register(ChartDataLabels);
 
@@ -156,6 +157,16 @@ client.on('interactionCreate', async interaction => {
 	}
 
 	try {
+		if (interaction.type !== InteractionType.ApplicationCommandAutocomplete) {
+			debugLog(`Process ${getInteractionTypeName(interaction.type)} interaction`, {
+				type: 'COMMAND_INHIBITED',
+				user_id: interaction.user.id,
+				guild_id: interaction.guildId,
+				channel_id: interaction.channelId,
+				interaction_id: interaction.id,
+				interaction_type: interaction.type
+			});
+		}
 		await interactionHook(interaction);
 		if (interaction.isModalSubmit()) {
 			await modalInteractionHook(interaction);
@@ -195,10 +206,15 @@ client.on('guildCreate', guild => {
 	}
 });
 
+client.on('shardDisconnect', ({ wasClean, code, reason }) => debugLog('Shard Disconnect', { wasClean, code, reason }));
+client.on('shardError', err => debugLog('Shard Error', { error: err.message }));
+
 async function main() {
 	client.fastifyServer = makeServer();
-	runTimedLoggedFn('Sync Active User IDs', syncActiveUserIDs);
-	runTimedLoggedFn('Sync Activity Cache', syncActivityCache);
+	await Promise.all([
+		runTimedLoggedFn('Sync Active User IDs', syncActiveUserIDs),
+		runTimedLoggedFn('Sync Activity Cache', syncActivityCache)
+	]);
 	await Promise.all([
 		runTimedLoggedFn('Start Mahoji Client', async () => mahojiClient.start()),
 		runTimedLoggedFn('Startup Scripts', runStartupScripts)
