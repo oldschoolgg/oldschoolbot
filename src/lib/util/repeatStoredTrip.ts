@@ -629,7 +629,7 @@ export const tripHandlers = {
 	},
 	[activity_type_enum.ClueCompletion]: {
 		commandName: 'clue',
-		args: (data: ClueActivityTaskOptions) => ({ tier: data.clueID })
+		args: (data: ClueActivityTaskOptions) => ({ tier: data.clueID, quantity: data.quantity })
 	},
 	[activity_type_enum.FistOfGuthix]: {
 		commandName: 'bsominigames',
