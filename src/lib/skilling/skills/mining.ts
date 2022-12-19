@@ -13,8 +13,7 @@ export interface MotherlodeMine {
 	bankingTime: number;
 	slope: number;
 	intercept: number;
-	petChance?: number;
-	clueScrollChance?: number;
+	petChance: number;
 }
 
 const GemRockTable = new LootTable()
@@ -259,7 +258,7 @@ const ores: Ore[] = [
 	}
 ];
 
-const MotherlodeMines: MotherlodeMine[] = [
+const MotherlodeMines = [
 	{
 		level: 30,
 		xp: 60,

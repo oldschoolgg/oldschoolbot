@@ -3,7 +3,6 @@ import { Bank, LootTable } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
 import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
-import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import Mining from '../../lib/skilling/skills/mining';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { MotherlodeMiningActivityTaskOptions } from '../../lib/types/minions';
@@ -99,22 +98,14 @@ export const motherlodeMiningTask: MinionTask = {
 
 		let str = `${user}, ${user.minionName} finished mining ${quantity} Pay-dirt. ${xpRes}`;
 
-		// Add clue scrolls
-		if (ore.clueScrollChance) {
-			addSkillingClueToLoot(user, SkillsEnum.Mining, quantity, ore.clueScrollChance, loot);
-		}
-
-		// Roll for pet
-		if (ore.petChance) {
-			const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Mining, ore.petChance);
-			if (roll(petDropRate / quantity)) {
-				loot.add('Rock golem');
-				str += "\nYou have a funny feeling you're being followed...";
-				globalClient.emit(
-					Events.ServerNotification,
-					`${Emoji.Mining} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Rock golem while mining ${ore.name} at level ${currentLevel} Mining!`
-				);
-			}
+		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Mining, ore.petChance);
+		if (roll(petDropRate / quantity)) {
+			loot.add('Rock golem');
+			str += "\nYou have a funny feeling you're being followed...";
+			globalClient.emit(
+				Events.ServerNotification,
+				`${Emoji.Mining} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Rock golem while mining ${ore.name} at level ${currentLevel} Mining!`
+			);
 		}
 
 		str += `\n\nYou received: ${loot}.`;
