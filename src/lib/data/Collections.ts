@@ -1616,7 +1616,7 @@ export async function getBank(user: MUser, type: CollectionLogType) {
 			break;
 		case 'tame': {
 			const { getUsersTamesCollectionLog } = await import('../util/getUsersTameCL');
-			return getUsersTamesCollectionLog(user);
+			return getUsersTamesCollectionLog(user.id);
 		}
 		case 'temp':
 			userCheckBank.add(user.user.temp_cl as ItemBank);

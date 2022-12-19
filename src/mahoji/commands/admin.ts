@@ -36,6 +36,7 @@ import {
 } from '../../lib/util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../lib/util/clientSettings';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
+import { getUsersTamesCollectionLog } from '../../lib/util/getUsersTameCL';
 import { deferInteraction, interactionReply } from '../../lib/util/interactionReply';
 import { syncLinkedAccounts } from '../../lib/util/linkedAccountsUtil';
 import { logError } from '../../lib/util/logError';
@@ -48,7 +49,6 @@ import { itemOption } from '../lib/mahojiCommandOptions';
 import { allAbstractCommands, OSBMahojiCommand } from '../lib/util';
 import { handleMahojiConfirmation, mahojiUsersSettingsFetch } from '../mahojiSettings';
 import { mahojiUserSettingsUpdate } from '../settingsUpdate';
-import { getLotteryBank } from './lottery';
 import { getUserInfo } from './minion';
 
 export const gifs = [
@@ -236,11 +236,6 @@ export const adminCommand: OSBMahojiCommand = {
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'reboot',
 			description: 'Reboot the bot.'
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'debug_patreon',
-			description: 'Debug patreon.'
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -545,11 +540,11 @@ export const adminCommand: OSBMahojiCommand = {
 		// 	name: 'wipe_bingo_temp_cls',
 		// 	description: 'Wipe all temp cls of bingo users'
 		// },
-		// {
-		// 	type: ApplicationCommandOptionType.Subcommand,
-		// 	name: 'lottery_dump',
-		// 	description: 'lottery dump'
-		// },
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'migrate_tames',
+			description: 'migrate tames'
+		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'give_items',
@@ -607,7 +602,7 @@ export const adminCommand: OSBMahojiCommand = {
 		view?: { thing: string };
 		wipe_bingo_temp_cls?: {};
 		give_items?: { user: MahojiUserOption; items: string; reason?: string };
-		lottery_dump?: {};
+		migrate_tames?: {};
 	}>) => {
 		await deferInteraction(interaction);
 
@@ -1164,27 +1159,34 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 			};
 		}
 
-		if (options.lottery_dump) {
-			const res = await getLotteryBank();
-			for (const user of res.users) {
-				if (!globalClient.users.cache.has(user.id)) {
-					await globalClient.users.fetch(user.id);
-				}
-			}
-			return {
-				files: [
-					{
-						name: 'lottery.txt',
-						attachment: Buffer.from(
-							JSON.stringify(
-								res.users.map(i => [globalClient.users.cache.get(i.id)?.username ?? i.id, i.tickets])
-							)
-						)
-					}
-				]
-			};
-		}
+		// if (options.lottery_dump) {
+		// 	const res = await getLotteryBank();
+		// 	for (const user of res.users) {
+		// 		if (!globalClient.users.cache.has(user.id)) {
+		// 			await globalClient.users.fetch(user.id);
+		// 		}
+		// 	}
+		// 	return {
+		// 		files: [
+		// 			{
+		// 				name: 'lottery.txt',
+		// 				attachment: Buffer.from(
+		// 					JSON.stringify(
+		// 						res.users.map(i => [globalClient.users.cache.get(i.id)?.username ?? i.id, i.tickets])
+		// 					)
+		// 				)
+		// 			}
+		// 		]
+		// 	};
+		// }
 
+		if (options.migrate_tames) {
+			const tameOwners = await prisma.$queryRaw<{ user_id: string }[]>`SELECT DISTINCT(user_id)
+FROM tames;`;
+			for (const { user_id } of tameOwners) {
+				await getUsersTamesCollectionLog(user_id);
+			}
+		}
 		return 'Invalid command.';
 	}
 };
