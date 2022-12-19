@@ -121,7 +121,7 @@ const componentRevertables: Createable[] = [
 			[itemID('Armadyl chestplate')]: 1
 		},
 		outputItems: {
-			[itemID('Armadylean components')]: 2
+			[itemID('Armadylean components')]: 3
 		}
 	},
 	{
