@@ -6,7 +6,7 @@ import { Bank } from 'oldschooljs';
 import { production, SupportServer } from '../config';
 import { ClueTiers } from '../lib/clues/clueTiers';
 import { Roles, usernameCache } from '../lib/constants';
-import { getCollectionItems } from '../lib/data/Collections';
+import { getCollectionItems, overallPlusItems } from '../lib/data/Collections';
 import { Minigames } from '../lib/settings/minigames';
 import { prisma } from '../lib/settings/prisma';
 import Skills from '../lib/skilling/skills';
@@ -14,6 +14,7 @@ import { assert, convertXPtoLVL, sanitizeBank } from '../lib/util';
 import { logError } from '../lib/util/logError';
 import { TeamLoot } from './simulation/TeamLoot';
 import { ItemBank } from './types';
+import { fetchTameCLLeaderboard } from './util/clLeaderboard';
 
 function addToUserMap(userMap: Record<string, string[]>, id: string, reason: string) {
 	if (!userMap[id]) userMap[id] = [];
@@ -534,6 +535,20 @@ ORDER BY u.uniques DESC LIMIT 300;`);
 		results.push(await addRoles({ g: g!, users: allLeagues, role: Roles.TopLeagues, badge: null, userMap }));
 	}
 
+	async function topTamer() {
+		const [rankOne] = await fetchTameCLLeaderboard({ items: overallPlusItems, resultLimit: 1 });
+		console.log(rankOne);
+		results.push(
+			await addRoles({
+				g: g!,
+				users: [rankOne.user_id],
+				role: '1054356709222666240',
+				badge: null,
+				userMap: { [rankOne.user_id]: ['Rank 1 Tames CL'] }
+			})
+		);
+	}
+
 	const tup = [
 		['Top Slayer', slayer],
 		['Top Clue Hunters', topClueHunters],
@@ -546,7 +561,8 @@ ORDER BY u.uniques DESC LIMIT 300;`);
 		['Monkey King', monkeyKing],
 		['Top Farmers', farmers],
 		['Top Inventor', topInventor],
-		['Top Leagues', topLeagues]
+		['Top Leagues', topLeagues],
+		['Top Tamer', topTamer]
 	] as const;
 
 	let failed: string[] = [];
