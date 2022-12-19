@@ -27,7 +27,9 @@ import {
 	FishingActivityTaskOptions,
 	FletchingActivityTaskOptions,
 	GauntletOptions,
+	GiantsFoundryActivityTaskOptions,
 	GroupMonsterActivityTaskOptions,
+	GuardiansOfTheRiftActivityTaskOptions,
 	HerbloreActivityTaskOptions,
 	HunterActivityTaskOptions,
 	KourendFavourActivityTaskOptions,
@@ -52,7 +54,7 @@ import {
 	WoodcuttingActivityTaskOptions
 } from '../types/minions';
 import { itemNameFromID } from '../util';
-import { GuardiansOfTheRiftActivityTaskOptions } from './../types/minions';
+import { giantsFoundryAlloys } from './../../mahoji/lib/abstracted_commands/giantsFoundryCommand';
 
 export const taskCanBeRepeated = (type: activity_type_enum) =>
 	!(
@@ -511,6 +513,14 @@ export const tripHandlers = {
 			name: itemNameFromID(data.logID),
 			quantity: data.quantity,
 			powerchop: data.powerchopping
+		})
+	},
+	[activity_type_enum.GiantsFoundry]: {
+		commandName: 'minigames',
+		args: (data: GiantsFoundryActivityTaskOptions) => ({
+			giants_foundry: {
+				start: { name: giantsFoundryAlloys.find(i => i.id === data.alloyID)?.name, quantity: data.quantity }
+			}
 		})
 	},
 	[activity_type_enum.GuardiansOfTheRift]: {

@@ -76,6 +76,7 @@ import { tokkulShopTask } from '../tasks/minions/tokkulShopActivity';
 import { vmTask } from '../tasks/minions/volcanicMineActivity';
 import { wealthChargeTask } from '../tasks/minions/wealthChargingActivity';
 import { woodcuttingTask } from '../tasks/minions/woodcuttingActivity';
+import { giantsFoundryTask } from './../tasks/minions/minigames/giantsFoundryActivity';
 import { guardiansOfTheRiftTask } from './../tasks/minions/minigames/guardiansOfTheRiftActivity';
 import { modifyBusyCounter } from './busyCounterCache';
 import { convertStoredActivityToFlatActivity, prisma } from './settings/prisma';
@@ -158,6 +159,7 @@ export const tasks: MinionTask[] = [
 	temporossTask,
 	smithingTask,
 	shootingStarTask,
+	giantsFoundryTask,
 	guardiansOfTheRiftTask,
 	butlerTask,
 	tiaraRunecraftTask

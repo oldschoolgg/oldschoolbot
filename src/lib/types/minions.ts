@@ -341,6 +341,12 @@ export interface PuroPuroActivityTaskOptions extends MinigameActivityTaskOptions
 	darkLure: boolean;
 }
 
+export interface GiantsFoundryActivityTaskOptions extends MinigameActivityTaskOptions {
+	alloyID: number;
+	quantity: number;
+	metalScore: number;
+}
+
 export interface GuardiansOfTheRiftActivityTaskOptions extends MinigameActivityTaskOptions {
 	minedFragments: number;
 	barrierAndGuardian: number;

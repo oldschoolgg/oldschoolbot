@@ -609,6 +609,14 @@ export function minionStatus(user: MUser) {
 				durationRemaining
 			)}.`;
 		}
+		case 'GiantsFoundry': {
+			const data = currentTask as MinigameActivityTaskOptions;
+			return `${name} is currently creating ${
+				data.quantity
+			}x giant weapons for Kovac in the Giants' Foundry minigame. The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
 		case 'GuardiansOfTheRift': {
 			return `${name} is currently helping the Great Guardian to close the rift. The trip should take ${formatDuration(
 				durationRemaining
