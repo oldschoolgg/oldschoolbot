@@ -25,7 +25,7 @@ export async function motherlodeMineCommand({
 		return `${minionName(user)} needs 30 Mining to mine ${name}.`;
 	}
 
-	const ore = Mining.MotherlodeMines.find(
+	const ore = Mining.MotherlodeMine.find(
 		ore =>
 			stringMatches(ore.id, name) || stringMatches(ore.name, name) || stringMatches(ore.name.split(' ')[0], name)
 	);
@@ -33,7 +33,7 @@ export async function motherlodeMineCommand({
 	if (!ore) {
 		return `Thats not a valid ore to mine. Valid ores are ${Mining.Ores.map(ore => ore.name).join(
 			', '
-		)}, ${Mining.MotherlodeMines.map(name => name.name).join(', ')}.`;
+		)}, ${Mining.MotherlodeMine.map(name => name.name).join(', ')}.`;
 	}
 
 	let miningLevel = user.skillsAsLevels.mining;

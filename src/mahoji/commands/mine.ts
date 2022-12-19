@@ -226,7 +226,7 @@ export const mineCommand: OSBMahojiCommand = {
 			description: 'The thing you want to mine.',
 			required: true,
 			autocomplete: async (value: string) => {
-				return [...Mining.Ores.map(i => i.name), ...Mining.MotherlodeMines.map(i => i.name)]
+				return [...Mining.Ores.map(i => i.name), ...Mining.MotherlodeMine.map(i => i.name)]
 					.filter(name => (!value ? true : name.toLowerCase().includes(value.toLowerCase())))
 					.map(i => ({
 						name: i,
@@ -256,7 +256,7 @@ export const mineCommand: OSBMahojiCommand = {
 		const user = await mUserFetch(userID);
 		let { quantity, powermine, name } = options;
 
-		const MotherlodeMine = Mining.MotherlodeMines.find(
+		const MotherlodeMine = Mining.MotherlodeMine.find(
 			_motherlode =>
 				stringMatches(_motherlode.name, name) ||
 				stringMatches(_motherlode.id, name) ||
@@ -276,7 +276,7 @@ export const mineCommand: OSBMahojiCommand = {
 		if (!ore) {
 			return `Thats not a valid ore to mine. Valid ores are ${Mining.Ores.map(ore => ore.name).join(
 				', '
-			)}, ${Mining.MotherlodeMines.map(name => name.name).join(', ')}.`;
+			)}, ${Mining.MotherlodeMine.map(name => name.name).join(', ')}.`;
 		}
 
 		if (user.skillsAsLevels.mining < ore.level) {

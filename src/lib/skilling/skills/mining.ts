@@ -4,18 +4,6 @@ import { Emoji } from '../../constants';
 import itemID from '../../util/itemID';
 import { Ore, SkillsEnum } from '../types';
 
-export interface MotherlodeMine {
-	level: number;
-	xp: number;
-	id: number;
-	name: string;
-	respawnTime: number;
-	bankingTime: number;
-	slope: number;
-	intercept: number;
-	petChance: number;
-}
-
 const GemRockTable = new LootTable()
 	.add('Uncut opal', 1, 60)
 	.add('Uncut jade', 1, 30)
@@ -258,7 +246,7 @@ const ores: Ore[] = [
 	}
 ];
 
-const MotherlodeMines = [
+const MotherlodeMine = [
 	{
 		level: 30,
 		xp: 60,
@@ -282,7 +270,7 @@ const prospectorItems: { [key: number]: number } = {
 const Mining = {
 	aliases: ['mining'],
 	Ores: ores,
-	MotherlodeMines,
+	MotherlodeMine,
 	GemRockTable,
 	GraniteRockTable,
 	SandstoneRockTable,

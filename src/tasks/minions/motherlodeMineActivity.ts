@@ -15,7 +15,7 @@ export const motherlodeMiningTask: MinionTask = {
 		const { userID, oreID, channelID, duration } = data;
 		let { quantity } = data;
 		const user = await mUserFetch(userID);
-		const ore = Mining.MotherlodeMines.find(ore => ore.id === oreID)!;
+		const ore = Mining.MotherlodeMine.find(ore => ore.id === oreID)!;
 
 		let xpReceived = quantity * ore.xp;
 		let bonusXP = 0;
