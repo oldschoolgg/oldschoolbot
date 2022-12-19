@@ -781,6 +781,8 @@ model UserStats {
 
   snowmen_built Int @default(0)
 
+  tame_cl_bank Json @default("{}") @db.JsonB
+
   @@map("user_stats")
 }
 

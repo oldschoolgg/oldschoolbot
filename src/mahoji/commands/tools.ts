@@ -663,17 +663,17 @@ function calcTime(perkTier: PerkTier) {
 	throw new Error('User is not a Tier 4+ Patron');
 }
 
+export const PATRON_DOUBLE_LOOT_COOLDOWN = Time.Day * 31;
 async function patronTriggerDoubleLoot(user: MUser) {
 	const perkTier = getUsersPerkTier(user);
 	if (perkTier < PerkTier.Five) {
 		return 'Only T4, T5 or T6 patrons can use this command.';
 	}
 	const lastTime = user.user.last_patron_double_time_trigger;
-	const cooldown = Time.Day * 31;
 	const differenceSinceLastUsage = lastTime ? Date.now() - lastTime.getTime() : null;
-	if (differenceSinceLastUsage && differenceSinceLastUsage < cooldown) {
+	if (differenceSinceLastUsage && differenceSinceLastUsage < PATRON_DOUBLE_LOOT_COOLDOWN) {
 		return `This command is still on cooldown, you can use it again in: ${formatDuration(
-			cooldown - differenceSinceLastUsage
+			PATRON_DOUBLE_LOOT_COOLDOWN - differenceSinceLastUsage
 		)}.`;
 	}
 
