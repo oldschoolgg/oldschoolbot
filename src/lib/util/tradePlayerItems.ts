@@ -20,6 +20,8 @@ export async function tradePlayerItems(sender: MUser, recipient: MUser, _itemsTo
 	const itemsToSend = _itemsToSend ? _itemsToSend.clone() : new Bank();
 	const itemsToReceive = _itemsToReceive ? _itemsToReceive.clone() : new Bank();
 
+	const pendingTrade = new Promise();
+
 	// Queue function for the recipient so no funny business / mistakes happen:
 	userQueueFn(recipient.id, async () => {
 		while (activeTradeCache.get(recipient.id)) {
@@ -29,8 +31,7 @@ export async function tradePlayerItems(sender: MUser, recipient: MUser, _itemsTo
 	// Queue the primary trade function: (Clears cache on completion/failure)
 	return userQueueFn(sender.id, async () => {
 		try {
-			await sender.sync();
-			await recipient.sync();
+			await Promise.all([sender.sync(), recipient.sync()]);
 			if (!sender.owns(itemsToSend)) {
 				return { success: false, message: `${sender.usernameOrMention} doesn't own all items.` };
 			}
