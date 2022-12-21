@@ -605,6 +605,8 @@ model UserStats {
   cl_array        Int[]
   cl_array_length Int   @default(0)
 
+  snowmen_built Int @default(0)
+
   @@map("user_stats")
 }
 
