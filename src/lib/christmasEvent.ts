@@ -30,7 +30,6 @@ const baseChristmasItems = resolveItems([
 	'Reindeer hat',
 	// 2014
 	'Santa mask',
-	'Santa hat',
 	'Santa jacket',
 	'Santa pantaloons',
 	'Santa gloves',
