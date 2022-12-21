@@ -4,7 +4,7 @@ import { ClientStorage } from '@prisma/client';
 import { Stopwatch } from '@sapphire/stopwatch';
 import { Duration } from '@sapphire/time-utilities';
 import { isThenable } from '@sentry/utils';
-import { AttachmentBuilder, escapeCodeBlock } from 'discord.js';
+import { AttachmentBuilder, escapeCodeBlock, MessageCreateOptions } from 'discord.js';
 import { notEmpty, randArrItem, sleep, Time, uniqueArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
@@ -19,6 +19,7 @@ import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../../lib
 import { badges, BadgesEnum, BitField, BitFieldData, Channel, DISABLED_COMMANDS } from '../../lib/constants';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { GearSetup } from '../../lib/gear/types';
+import { OSBTransferAccount } from '../../lib/osbAccountTransfer';
 import { patreonTask } from '../../lib/patreon';
 import { runRolesTask } from '../../lib/rolesTask';
 import { countUsersWithItemInCl, prisma } from '../../lib/settings/prisma';
@@ -134,7 +135,7 @@ async function evalCommand(userID: string, code: string): CommandResponse {
 
 const viewableThings: {
 	name: string;
-	run: (clientSettings: ClientStorage) => Promise<Bank>;
+	run: (clientSettings: ClientStorage) => Promise<Bank | MessageCreateOptions>;
 }[] = [
 	{
 		name: 'ToB Cost',
@@ -176,6 +177,15 @@ AND ("gear.melee" IS NOT NULL OR
 				}
 			}
 			return bank;
+		}
+	},
+	{
+		name: 'Patreon Debug',
+		run: async () => {
+			const result = await patreonTask.fetchPatrons();
+			return {
+				files: [{ attachment: Buffer.from(JSON.stringify(result, null, 4)), name: 'patreon.txt' }]
+			};
 		}
 	}
 ];
@@ -228,11 +238,6 @@ export const adminCommand: OSBMahojiCommand = {
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'reboot',
 			description: 'Reboot the bot.'
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'debug_patreon',
-			description: 'Debug patreon.'
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -528,6 +533,37 @@ export const adminCommand: OSBMahojiCommand = {
 					description: 'The reason'
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'transfer_account',
+			description: 'Transfer data from one account to another',
+			options: [
+				{
+					type: ApplicationCommandOptionType.User,
+					name: 'old_account',
+					description: 'The old account (must be blacklisted)',
+					required: true
+				},
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'new_account',
+					description: 'The new account',
+					required: true
+				},
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'reason',
+					description: 'The reason for the transfer',
+					required: true
+				},
+				{
+					type: ApplicationCommandOptionType.Boolean,
+					name: 'confirm',
+					description: 'Have you double-checked the right accounts are selected?',
+					required: true
+				}
+			]
 		}
 	],
 	run: async ({
@@ -538,7 +574,6 @@ export const adminCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{
 		viewbank?: { user: MahojiUserOption };
 		reboot?: {};
-		debug_patreon?: {};
 		eval?: { code: string };
 		sync_commands?: { global?: boolean };
 		item_stats?: { item: string };
@@ -560,6 +595,12 @@ export const adminCommand: OSBMahojiCommand = {
 		view?: { thing: string };
 		wipe_bingo_temp_cls?: {};
 		give_items?: { user: MahojiUserOption; items: string; reason?: string };
+		transfer_account?: {
+			old_account: MahojiUserOption;
+			new_account: MahojiUserOption;
+			reason: string;
+			confirm: boolean;
+		};
 	}>) => {
 		await deferInteraction(interaction);
 
@@ -920,6 +961,39 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 			return randArrItem(gifs);
 		}
 
+		if (options.transfer_account && options.transfer_account.confirm) {
+			await syncBlacklists();
+			const oldAccount = await mUserFetch(options.transfer_account.old_account.user.id);
+			const newAccount = await mUserFetch(options.transfer_account.new_account.user.id);
+			if (oldAccount.id === newAccount.id) return 'They are the same account';
+			if (userID === oldAccount.id || userID === newAccount.id) return "You can't transfer yourself";
+			await handleMahojiConfirmation(
+				interaction,
+				`Are you sure you want to transfer ${oldAccount}'s account to ${newAccount}?
+			
+- ALL of ${newAccount}'s data will be deleted/wiped.
+- The data ${oldAccount} will move over to the account of ${newAccount}
+- If ${oldAccount} was hacked/lost-access/banned, it must be blacklisted: \`/blacklist add user:${oldAccount.id} reason:Transferring account\`
+
+**Double check the information looks right!**`
+			);
+			debugLog(`Attempting to transfer ${oldAccount.id} to ${newAccount.id}`);
+			try {
+				await OSBTransferAccount({ newAccount: newAccount.id, oldAccount: oldAccount.id });
+			} catch (err: unknown) {
+				logError(err, {
+					oldAccount: oldAccount.id,
+					newAccount: newAccount.id
+				});
+				return 'Account transfer failed!';
+			}
+			debugLog(`Account transferred: ${oldAccount.id} to ${newAccount.id}`);
+			await sendToChannelID(Channel.BotLogs, {
+				content: `${adminUser.logName} transferred: ${oldAccount.id} to ${newAccount.id} for \`${options.transfer_account.reason}\``
+			});
+			return 'Account transferred.';
+		}
+
 		if (options.sync_commands) {
 			const global = Boolean(options.sync_commands.global);
 			const totalCommands = globalClient.mahojiClient.commands.values;
@@ -954,8 +1028,10 @@ ${guildCommands.length} Guild commands`;
 			const thing = viewableThings.find(i => i.name === options.view?.thing);
 			if (!thing) return 'Invalid';
 			const clientSettings = await mahojiClientSettingsFetch();
+			const result = await thing.run(clientSettings);
+			if (!(result instanceof Bank)) return result;
 			const image = await makeBankImage({
-				bank: await thing.run(clientSettings),
+				bank: result,
 				title: thing.name,
 				flags: { sort: thing.name === 'All Equipped Items' ? 'name' : (undefined as any) }
 			});
@@ -977,13 +1053,6 @@ ${guildCommands.length} Guild commands`;
 
 			await user.addItemsToBank({ items, collectionLog: false });
 			return `Gave ${items} to ${user.mention}`;
-		}
-
-		if (options.debug_patreon) {
-			const result = await patreonTask.fetchPatrons();
-			return {
-				files: [{ attachment: Buffer.from(JSON.stringify(result, null, 4)), name: 'patreon.txt' }]
-			};
 		}
 
 		/**
