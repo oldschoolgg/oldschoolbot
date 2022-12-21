@@ -25,9 +25,10 @@ export const christmasCommand: OSBMahojiCommand = {
 	run: async ({ options, userID }: CommandRunOptions<{ hand_in?: {} }>) => {
 		const user = await mUserFetch(userID);
 		const snowballsOwned = user.bank.amount('Snowball');
-		const itemsLeftStr = `You have ${findXmasItemsCanGive(user.cl, user).length}/${
-			findXmasItemsCanGive(user.cl, user, true).length
-		} of the items from the event!`;
+		const totalItemsCanGet = findXmasItemsCanGive(user.cl, user, true).length;
+		const totalItemsHas = totalItemsCanGet - findXmasItemsCanGive(user.cl, user).length;
+
+		const itemsLeftStr = `You have ${totalItemsHas}/${totalItemsCanGet} of the items from the event!`;
 		if (options.hand_in) {
 			if (!snowballsOwned) return 'You have no snowballs to make snowmen out of! Do some trips to get some.';
 			if (snowballsOwned < snowBallsPerSnowMan) {
@@ -43,7 +44,7 @@ export const christmasCommand: OSBMahojiCommand = {
 			}));
 			const loot = christmasEventReward(user, snowMenToBuild);
 			await user.addItemsToBank({ items: loot, collectionLog: true });
-			return `You used ${cost} to build ${snowMenToBuild}x Snowmen! As a reward, you received... ${loot}. ${itemsLeftStr}`;
+			return `You used ${cost} to build ${snowMenToBuild}x Snowmen! As a reward, you received... ${loot}.`;
 		}
 
 		const stats = await user.fetchStats();
