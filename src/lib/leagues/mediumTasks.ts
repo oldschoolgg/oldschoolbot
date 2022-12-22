@@ -355,7 +355,7 @@ export const mediumTasks: Task[] = [
 		id: 1051,
 		name: 'Disassemble some items',
 		has: async ({ disassembledItems }) => {
-			return disassembledItems.length >= 0;
+			return disassembledItems.length >= 1;
 		}
 	},
 	{
