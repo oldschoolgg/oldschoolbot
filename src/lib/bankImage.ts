@@ -656,7 +656,9 @@ class BankImageTask {
 
 		const hexColor = user?.user.bank_bg_hex;
 
-		const useSmallBank = user ? (hasBgSprite ? true : user.bitfield.includes(BitField.AlwaysSmallBank)) : true;
+		const useSmallBank =
+			bgImage.id !== 100 &&
+			(user ? (hasBgSprite ? true : user.bitfield.includes(BitField.AlwaysSmallBank)) : true);
 
 		const canvas = new Canvas(width, useSmallBank ? canvasHeight : Math.max(331, canvasHeight));
 
@@ -690,33 +692,40 @@ class BankImageTask {
 				wide ? canvas.height : actualBackground.height! * (resizeBg === -1 ? 1 : resizeBg)
 			);
 		}
-		if (title === 'Smokey Lottery') {
-			const smokeyImage = await this.getItemImage(itemID('Smokey'));
-			ctx.globalAlpha = 0.3;
-			ctx.drawImage(
-				smokeyImage,
-				resizeBg === -1 ? 0 : (canvas.width - smokeyImage.width! * resizeBg) / 2,
-				0,
-				canvas.width,
-				canvas.height
-			);
-			ctx.globalAlpha = 1;
-		}
 
 		if (showValue) {
 			title += ` (Value: ${toKMB(totalValue)})`;
 		}
 
-		// Draw Bank Title
-		ctx.font = '16px RuneScape Bold 12';
-		const titleWidthPx = ctx.measureText(title);
-		let titleX = Math.floor(floor(canvas.width / 2) - titleWidthPx.width / 2);
+		if (bgImage.id === 100) {
+			// Draw Bank Title
+			ctx.font = '16px RuneScape Bold 12';
+			const titleWidthPx = ctx.measureText(title);
+			let titleX = Math.floor(floor(canvas.width / 2) - titleWidthPx.width / 2);
 
-		ctx.fillStyle = '#000000';
-		fillTextXTimesInCtx(ctx, title, titleX + 1, 22);
+			ctx.fillStyle = '#000';
+			fillTextXTimesInCtx(ctx, title, titleX + 1, 22);
 
-		ctx.fillStyle = '#ff981f';
-		fillTextXTimesInCtx(ctx, title, titleX, 21);
+			ctx.fillStyle = '#fc0303';
+			fillTextXTimesInCtx(ctx, title, titleX, 21);
+
+			ctx.fillStyle = '#000';
+			fillTextXTimesInCtx(ctx, 'Merry Christmas!', titleX + 20 + 1, 37);
+
+			ctx.fillStyle = '#00ff1a';
+			fillTextXTimesInCtx(ctx, 'Merry Christmas!', titleX + 20, 37);
+		} else {
+			// Draw Bank Title
+			ctx.font = '16px RuneScape Bold 12';
+			const titleWidthPx = ctx.measureText(title);
+			let titleX = Math.floor(floor(canvas.width / 2) - titleWidthPx.width / 2);
+
+			ctx.fillStyle = '#000000';
+			fillTextXTimesInCtx(ctx, title, titleX + 1, 22);
+
+			ctx.fillStyle = '#ff981f';
+			fillTextXTimesInCtx(ctx, title, titleX, 21);
+		}
 
 		// Skips border if noBorder is set
 		if (!isTransparent && noBorder !== 1) {

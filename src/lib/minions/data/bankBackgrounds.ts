@@ -626,6 +626,12 @@ const backgroundImages: BankBackground[] = [
 		image: null,
 		available: false,
 		owners: ['673716808574042143']
+	},
+	{
+		id: 100,
+		name: 'Christmas Tree',
+		image: null,
+		available: false
 	}
 ];
 
