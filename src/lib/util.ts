@@ -47,7 +47,7 @@ import Monster from 'oldschooljs/dist/structures/Monster';
 import { convertLVLtoXP } from 'oldschooljs/dist/util/util';
 import { bool, integer, MersenneTwister19937, nodeCrypto, real, shuffle } from 'random-js';
 
-import { CLIENT_ID, production, SupportServer } from '../config';
+import { ADMIN_IDS, CLIENT_ID, OWNER_IDS, production, SupportServer } from '../config';
 import { badgesCache, BitField, ProjectileType, skillEmoji, usernameCache } from './constants';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
 import { Consumable } from './minions/types';
@@ -984,4 +984,8 @@ export function getInteractionTypeName(type: InteractionType) {
 		[InteractionType.ApplicationCommandAutocomplete]: 'ApplicationCommandAutocomplete',
 		[InteractionType.ModalSubmit]: 'ModalSubmit'
 	}[type];
+}
+
+export function isModOrAdmin(user: MUser) {
+	return [...OWNER_IDS, ...ADMIN_IDS].includes(user.id) || user.bitfield.includes(BitField.isModerator);
 }
