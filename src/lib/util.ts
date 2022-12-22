@@ -33,8 +33,8 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, MersenneTwister19937, nodeCrypto, real, shuffle } from 'random-js';
 
-import { production, SupportServer } from '../config';
-import { badgesCache, skillEmoji, usernameCache } from './constants';
+import { ADMIN_IDS, OWNER_IDS, production, SupportServer } from '../config';
+import { badgesCache, BitField, skillEmoji, usernameCache } from './constants';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
 import { Consumable } from './minions/types';
 import { MUserClass } from './MUser';
@@ -809,4 +809,8 @@ export function getInteractionTypeName(type: InteractionType) {
 		[InteractionType.ApplicationCommandAutocomplete]: 'ApplicationCommandAutocomplete',
 		[InteractionType.ModalSubmit]: 'ModalSubmit'
 	}[type];
+}
+
+export function isModOrAdmin(user: MUser) {
+	return [...OWNER_IDS, ...ADMIN_IDS].includes(user.id) || user.bitfield.includes(BitField.isModerator);
 }
