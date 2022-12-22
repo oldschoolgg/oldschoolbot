@@ -416,8 +416,8 @@ Top ticket holders: ${users
 					.map(i => `${userMention(i.id)} has ${i.tickets.toLocaleString()} tickets`)
 					.join(',')}`,
 				files: [
-					(await makeBankImage({ bank: totalLoot, title: 'Christmas Lottery' })).file,
-					(await makeBankImage({ bank: input, title: 'Your Lottery Input' })).file
+					(await makeBankImage({ bank: totalLoot, title: 'Christmas Lottery', background: 100 })).file,
+					(await makeBankImage({ bank: input, title: 'Your Lottery Input', background: 100 })).file
 				],
 				allowedMentions: {
 					users: []
