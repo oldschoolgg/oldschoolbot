@@ -22,7 +22,7 @@ import {
 	stringMatches,
 	stripEmojis
 } from '../../lib/util';
-import { fetchCLLeaderboard } from '../../lib/util/clLeaderboard';
+import { fetchCLLeaderboard, fetchTameCLLeaderboard } from '../../lib/util/clLeaderboard';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { toTitleCase } from '../../lib/util/toTitleCase';
 import { sendToChannelID } from '../../lib/util/webhook';
@@ -205,14 +205,30 @@ async function minigamesLb(user: MUser, channelID: string, name: string) {
 	return lbMsg(`${minigame.name} Leaderboard`);
 }
 
-async function clLb(user: MUser, channelID: string, inputType: string, ironmenOnly: boolean) {
+async function clLb(user: MUser, channelID: string, inputType: string, ironmenOnly: boolean, tames: boolean) {
 	const items = getCollectionItems(inputType, false);
 	if (!items || items.length === 0) {
 		return "That's not a valid collection log category. Check +cl for all possible logs.";
 	}
-	const users = await fetchCLLeaderboard({ ironmenOnly, items, resultLimit: 50 });
-
 	inputType = toTitleCase(inputType.toLowerCase());
+
+	if (tames) {
+		const tameLb = await fetchTameCLLeaderboard({ items, resultLimit: 200 });
+		doMenu(
+			user,
+			channelID,
+			chunk(tameLb, LB_PAGE_SIZE).map((subList, i) =>
+				subList
+					.map(({ user_id, qty }, j) => `${getPos(i, j)}**${getUsername(user_id)}:** ${qty.toLocaleString()}`)
+					.join('\n')
+			),
+			`${inputType} Tame Collection Log Leaderboard (${items.length} slots)`
+		);
+		return lbMsg(`${inputType} Tame Collection Log Leaderboard`);
+	}
+
+	const users = await fetchCLLeaderboard({ ironmenOnly, items, resultLimit: 200 });
+
 	doMenu(
 		user,
 		channelID,
@@ -467,7 +483,7 @@ export async function cacheUsernames() {
 	}
 }
 
-async function itemContractLb(user: MUser, channelID: string) {
+async function itemContractLb(user: MUser, channelID: string, ironmanOnly?: boolean) {
 	const results = await prisma.user.findMany({
 		select: {
 			id: true,
@@ -476,7 +492,8 @@ async function itemContractLb(user: MUser, channelID: string) {
 		where: {
 			item_contract_streak: {
 				gte: 5
-			}
+			},
+			minion_ironman: ironmanOnly ? true : undefined
 		},
 		orderBy: {
 			item_contract_streak: 'desc'
@@ -780,13 +797,20 @@ export const leaderboardCommand: OSBMahojiCommand = {
 						];
 					}
 				},
-				ironmanOnlyOption
+				ironmanOnlyOption,
+				{
+					type: ApplicationCommandOptionType.Boolean,
+					name: 'tames',
+					description: 'If you want to view the tame CL leaderboard.',
+					required: false
+				}
 			]
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'item_contract_streak',
-			description: 'The item contract streak leaderboard.'
+			description: 'The item contract streak leaderboard.',
+			options: [ironmanOnlyOption]
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -819,8 +843,8 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		gp?: { ironmen_only?: boolean };
 		skills?: { skill: string; ironmen_only?: boolean; xp?: boolean };
 		opens?: { openable: string; ironmen_only?: boolean };
-		cl?: { cl: string; ironmen_only?: boolean };
-		item_contract_streak?: {};
+		cl?: { cl: string; ironmen_only?: boolean; tames?: boolean };
+		item_contract_streak?: { ironmen_only?: boolean };
 		leagues?: { type: 'points' | 'tasks' | 'hardest_tasks' };
 	}>) => {
 		await deferInteraction(interaction);
@@ -852,8 +876,8 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			return skillsLb(user, channelID, skills.skill, skills.xp ? 'xp' : 'level', Boolean(skills.ironmen_only));
 		}
 		if (opens) return openLb(user, channelID, opens.openable, Boolean(opens.ironmen_only));
-		if (cl) return clLb(user, channelID, cl.cl, Boolean(cl.ironmen_only));
-		if (item_contract_streak) return itemContractLb(user, channelID);
+		if (cl) return clLb(user, channelID, cl.cl, Boolean(cl.ironmen_only), Boolean(cl.tames));
+		if (item_contract_streak) return itemContractLb(user, channelID, item_contract_streak.ironmen_only);
 		if (leagues) return leaguesLeaderboard(user, channelID, leagues.type);
 		return 'Invalid input.';
 	}

@@ -125,6 +125,8 @@ model ClientStorage {
   gp_tax_balance               BigInt   @default(0)
   gotr_cost                    Json     @default("{}") @db.Json
   gotr_loot                    Json     @default("{}") @db.Json
+  gf_cost                      Json     @default("{}") @db.Json
+  gf_loot                      Json     @default("{}") @db.Json
 
   // BSO
   gp_ic                   BigInt @default(0)
@@ -327,6 +329,7 @@ model User {
   tob_attempts               Int      @default(0)
   tob_hard_attempts          Int      @default(0)
   volcanic_mine_points       Int      @default(0)
+  foundry_reputation         Int      @default(0)
   blowpipe                   Json     @default("{\"scales\":0,\"dartID\":null,\"dartQuantity\":0}") @db.Json
   ironman_alts               String[]
   main_account               String?
@@ -347,7 +350,6 @@ model User {
   minion_icon                String?  @map("minion.icon")
   minion_equippedPet         Int?     @map("minion.equippedPet")
   minion_farmingContract     Json?    @map("minion.farmingContract") @db.Json
-  minion_defaultCompostToUse String   @default("compost") @map("minion.defaultCompostToUse")
   minion_defaultPay          Boolean  @default(false) @map("minion.defaultPay")
   minion_birdhouseTraps      Json?    @map("minion.birdhouseTraps") @db.Json
   stats_deaths               Int      @default(0) @map("stats.deaths")
@@ -473,7 +475,10 @@ model User {
   unlocked_blueprints       Int[]
   disabled_inventions       Int[]
 
-  last_command_date DateTime? @db.Timestamp(6)
+  last_command_date DateTime?    @db.Timestamp(6)
+  farmed_crops      FarmedCrop[]
+
+  minion_defaultCompostToUse CropUpgradeType @default(compost) @map("minion.defaultCompostToUse")
 
   @@index([id, last_command_date])
   @@map("users")
@@ -550,6 +555,7 @@ model Minigame {
   lms                     Int    @default(0)
   trouble_brewing         Int    @default(0)
   puro_puro               Int    @default(0)
+  giants_foundry          Int    @default(0)
   guardians_of_the_rift   Int    @default(0)
 
   // BSO
@@ -611,12 +617,14 @@ model Tame {
   max_artisan_level  Int
   max_gatherer_level Int
   max_support_level  Int
-  max_total_loot     Json        @db.Json
+  max_total_loot     Json        @default("{}") @db.Json
   fed_items          Json        @default("{}") @db.Json
   species_variant    Int         @default(1)
 
   equipped_primary Int?
   equipped_armor   Int?
+
+  total_cost Json @default("{}") @db.Json
 
   tame_activity TameActivity[]
 
@@ -724,17 +732,28 @@ model StashUnit {
 }
 
 model UserStats {
-  user_id                  BigInt @id
-  sell_gp                  BigInt @default(0)
-  items_sold_bank          Json   @default("{}") @db.Json
-  puropuro_implings_bank   Json   @default("{}") @db.Json
-  passive_implings_bank    Json   @default("{}") @db.Json
-  create_cost_bank         Json   @default("{}") @db.Json
-  create_loot_bank         Json   @default("{}") @db.Json
-  bird_eggs_offered_bank   Json   @default("{}") @db.Json
-  scattered_ashes_bank     Json   @default("{}") @db.Json
+  user_id                BigInt @id
+  sell_gp                BigInt @default(0)
+  items_sold_bank        Json   @default("{}") @db.Json
+  puropuro_implings_bank Json   @default("{}") @db.Json
+  passive_implings_bank  Json   @default("{}") @db.Json
+  create_cost_bank       Json   @default("{}") @db.Json
+  create_loot_bank       Json   @default("{}") @db.Json
+  bird_eggs_offered_bank Json   @default("{}") @db.Json
+  scattered_ashes_bank   Json   @default("{}") @db.Json
+
+  gf_weapons_made Json @default("{}") @db.Json
+  gf_cost         Json @default("{}") @db.Json
+  gf_loot         Json @default("{}") @db.Json
+
   ash_sanctifier_prayer_xp BigInt @default(0)
   gotr_rift_searches       Int    @default(0)
+
+  farming_plant_cost_bank   Json @default("{}") @db.Json
+  farming_harvest_loot_bank Json @default("{}") @db.Json
+
+  cl_array        Int[]
+  cl_array_length Int   @default(0)
 
   // BSO
   bars_from_adze_bank    Json @default("{}") @db.Json
@@ -763,6 +782,10 @@ model UserStats {
 
   lamped_xp Json @default("{}") @db.Json
 
+  snowmen_built Int @default(0)
+
+  tame_cl_bank Json @default("{}") @db.JsonB
+
   @@map("user_stats")
 }
 
@@ -774,6 +797,33 @@ model BingoTeam {
   third_user  String @unique @db.VarChar(19)
 
   @@map("bingo_team")
+}
+
+enum CropUpgradeType {
+  compost
+  supercompost
+  ultracompost
+}
+
+// FarmedCrop
+// - Not a source of truth, just used for tracking/stats.
+// - One is made each time you plant a crop, and then updated when you harvest that crop.
+// - Deleted when you become an iron.
+model FarmedCrop {
+  id Int @id @default(autoincrement())
+
+  user_id String @db.VarChar(19)
+  user    User   @relation(fields: [user_id], references: [id])
+
+  date_planted        DateTime
+  date_harvested      DateTime?
+  item_id             Int
+  quantity_planted    Int
+  upgrade_type        CropUpgradeType?
+  was_autofarmed      Boolean
+  paid_for_protection Boolean
+
+  @@map("farmed_crop")
 }
 
 enum command_usage_status {
@@ -881,6 +931,7 @@ enum activity_type_enum {
   FistOfGuthix
   StealingCreation
   HalloweenMiniMinigame
+  GiantsFoundry
   GuardiansOfTheRift
 }
 

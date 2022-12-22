@@ -74,6 +74,8 @@ export async function duelCommand(
 
 	async function confirm(amount: number) {
 		duelMessage.edit({ components: [] }).catch(noOp);
+		await duelSourceUser.sync();
+		await duelTargetUser.sync();
 		if (!(await checkBal(duelSourceUser, amount)) || !(await checkBal(duelTargetUser, amount))) {
 			duelMessage.delete().catch(noOp);
 			return 'User appears to be less wealthy than expected (they lost some money before accepting...).';

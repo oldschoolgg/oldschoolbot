@@ -73,6 +73,8 @@ export async function handleGrowablePetGrowth(user: MUser, data: ActivityTaskOpt
 			nextPet = equippedGrowablePet.shinyVersion;
 		}
 
+		// Sync to avoid out of date CL
+		await user.sync();
 		await user.update({
 			minion_equippedPet: nextPet,
 			collectionLogBank: new Bank().add(user.cl).add(nextPet).bank

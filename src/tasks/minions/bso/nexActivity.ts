@@ -8,7 +8,7 @@ import { isDoubleLootActive } from '../../../lib/doubleLoot';
 import { trackLoot } from '../../../lib/lootTrack';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
-import { NexMonster } from '../../../lib/nex';
+import { NEX_UNIQUE_DROPRATE, NexMonster } from '../../../lib/nex';
 import { TeamLoot } from '../../../lib/simulation/TeamLoot';
 import { BossActivityTaskOptions } from '../../../lib/types/minions';
 import { roll } from '../../../lib/util';
@@ -70,7 +70,7 @@ export const nexTask: MinionTask = {
 
 			const loot = new Bank();
 			loot.add(NexMonster.table.kill(1, {}));
-			if (roll(80 + users.length * 2)) {
+			if (roll(NEX_UNIQUE_DROPRATE(users.length))) {
 				loot.add(randArrItem(nexUniqueDrops), 1);
 			}
 			if (isDoubleLootActive(duration)) {

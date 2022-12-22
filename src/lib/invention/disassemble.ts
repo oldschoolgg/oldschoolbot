@@ -388,7 +388,7 @@ export async function disassembleCommand({
 		xp: result.xp
 	});
 
-	return `${user}, ${user.minionName} is now disassembling ${result.quantity}x ${
+	return `${user.minionName} is now disassembling ${result.quantity}x ${
 		item.name
 	}, the trip will take approximately ${formatDuration(result.duration)}
 **Junk Chance:** ${result.junkChance.toFixed(2)}%

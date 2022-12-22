@@ -116,6 +116,7 @@ ${buttonsData.map(b => `${b.name}: ${b.mod(1)}x`).join('\n')}`;
 		interaction,
 		`Are you sure you want to gamble ${toKMB(amount)}? You might lose it all, you might win a lot.`
 	);
+	await user.sync();
 	const currentBalance = user.GP;
 	if (currentBalance < amount) {
 		return "You don't have enough GP to make this bet.";

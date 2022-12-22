@@ -1,6 +1,7 @@
 import { sumArr } from 'e';
 import { Monsters } from 'oldschooljs';
 
+import { eggs } from '../../mahoji/commands/offer';
 import { getFarmingContractOfUser } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import {
 	allGildedItems,
@@ -33,10 +34,13 @@ import {
 	WildernessDiary
 } from '../diaries';
 import { dyedItems } from '../dyedItems';
+import { implings } from '../implings';
 import { Inventions } from '../invention/inventions';
 import { MOKTANG_ID } from '../minions/data/killableMonsters/custom/bosses/Moktang';
+import { Naxxus } from '../minions/data/killableMonsters/custom/bosses/Naxxus';
 import { NexMonster } from '../nex';
 import { allThirdAgeItems } from '../simulation/sharedTables';
+import { ashes } from '../skilling/skills/prayer';
 import { ItemBank } from '../types';
 import { calcCombatLevel, calcTotalLevel } from '../util';
 import resolveItems from '../util/resolveItems';
@@ -1076,6 +1080,93 @@ export const hardTasks: Task[] = [
 		name: 'Create Volcanic igne claws',
 		has: async ({ cl }) => {
 			return cl.has('Volcanic igne claws');
+		}
+	},
+	{
+		id: 2143,
+		name: 'Receive 100,000 Prayer XP from the ash sanctifier',
+		has: async ({ userStats }) => {
+			return userStats.ash_sanctifier_prayer_xp >= 100_000;
+		}
+	},
+	{
+		id: 2144,
+		name: 'Receive 500,000 XP from silverhawk boots',
+		has: async ({ userStats }) => {
+			return userStats.silverhawk_boots_passive_xp >= 500_000;
+		}
+	},
+	{
+		id: 2146,
+		name: 'Upgrade 100 clues with the clue upgrader',
+		has: async ({ userStats }) => {
+			return sumArr(Object.values(userStats.clue_upgrader_bank as ItemBank)) >= 100;
+		}
+	},
+	{
+		id: 2147,
+		name: 'Tan 10,000 hides with the portable tanner',
+		has: async ({ userStats }) => {
+			return sumArr(Object.values(userStats.portable_tanner_bank as ItemBank)) >= 10_000;
+		}
+	},
+	{
+		id: 2148,
+		name: 'Scatter 500 of every ashes',
+		has: async ({ userStats }) => {
+			let vals = Object.values(userStats.scattered_ashes_bank as ItemBank);
+			return vals.length === ashes.length && vals.every(i => i >= 500);
+		}
+	},
+	{
+		id: 2149,
+		name: 'Receive 5000 bars from an adze',
+		has: async ({ userStats }) => {
+			return sumArr(Object.values(userStats.bars_from_adze_bank as ItemBank)) >= 5000;
+		}
+	},
+	{
+		id: 2150,
+		name: 'Offer 25 of each bird egg',
+		has: async ({ userStats }) => {
+			let vals = Object.values(userStats.bird_eggs_offered_bank as ItemBank);
+			return vals.length === eggs.length && vals.every(i => Number(i) >= 25);
+		}
+	},
+	{
+		id: 2151,
+		name: 'Receive 1000 ores from ore spirits',
+		has: async ({ userStats }) => {
+			return sumArr(Object.values(userStats.ores_from_spirits_bank as ItemBank)) >= 1000;
+		}
+	},
+	{
+		id: 2152,
+		name: 'Kill Naxxus 10 times',
+		has: async args => {
+			return leaguesHasKC(args, Naxxus, 10);
+		}
+	},
+	{
+		id: 2153,
+		name: 'Catch 20 of every impling passively',
+		has: async ({ userStats }) => {
+			let vals = Object.values(userStats.passive_implings_bank as ItemBank);
+			return vals.length === Object.keys(implings).length && vals.every(i => Number(i) >= 20);
+		}
+	},
+	{
+		id: 2154,
+		name: 'Smelt 5000 bars with Klik',
+		has: async ({ userStats }) => {
+			return sumArr(Object.values(userStats.bars_from_klik_bank as ItemBank)) >= 5000;
+		}
+	},
+	{
+		id: 2155,
+		name: 'Open the Crystal chest 250 times',
+		has: async ({ opens }) => {
+			return opens.amount('Crystal key') >= 250;
 		}
 	}
 ];

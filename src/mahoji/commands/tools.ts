@@ -22,7 +22,12 @@ import {
 } from '../../lib/clues/stashUnits';
 import { BitField, Channel, Emoji, PerkTier } from '../../lib/constants';
 import { allCLItems, allDroppedItems } from '../../lib/data/Collections';
-import { anglerOutfit, gnomeRestaurantCL } from '../../lib/data/CollectionsExport';
+import {
+	anglerOutfit,
+	evilChickenOutfit,
+	gnomeRestaurantCL,
+	guardiansOfTheRiftCL
+} from '../../lib/data/CollectionsExport';
 import pets from '../../lib/data/pets';
 import { addToDoubleLootTimer } from '../../lib/doubleLoot';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../../lib/minions/data/killableMonsters';
@@ -461,6 +466,49 @@ LIMIT 10;`);
 			return result;
 		},
 		format: num => `${num.toLocaleString()} Gambles`
+	},
+	{
+		name: 'Guardians of the Rift',
+		items: guardiansOfTheRiftCL,
+		run: async ({ item, ironmanOnly }) => {
+			const result = await prisma.$queryRawUnsafe<
+				{ id: string; val: number }[]
+			>(`SELECT users.id, gotr_rift_searches AS val
+            FROM users
+            INNER JOIN "user_stats" "userstats" on "userstats"."user_id"::text = "users"."id"
+            WHERE "collectionLogBank"->>'${item.id}' IS NULL
+            ${ironmanOnly ? ' AND "minion.ironman" = true' : ''}
+            ORDER BY gotr_rift_searches DESC
+            LIMIT 10;`);
+			return result;
+		},
+		format: num => `${num.toLocaleString()} Rift Searches`
+	},
+	{
+		name: 'Evil Chicken Outfit',
+		items: evilChickenOutfit,
+		run: async ({ item, ironmanOnly }) => {
+			const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(`
+            SELECT *
+			FROM
+			(
+			SELECT users.id::text
+            , COALESCE(SUM((bird_eggs_offered_bank->>'5076')::int),0)
+                + COALESCE(SUM((bird_eggs_offered_bank->>'5077')::int),0)
+                + COALESCE(SUM((bird_eggs_offered_bank->>'5078')::int),0) AS val
+            FROM users
+            INNER JOIN "user_stats" "userstats" on "userstats"."user_id"::text = "users"."id"
+            WHERE "collectionLogBank"->>'${item.id}' IS NULL
+            ${ironmanOnly ? ' AND "minion.ironman" = true' : ''}
+            GROUP BY users.id
+            ORDER BY val DESC
+            LIMIT 10 
+			)
+			AS eggs
+			WHERE eggs.val > 0;`);
+			return result;
+		},
+		format: num => `${num.toLocaleString()} Bird Eggs Offered`
 	}
 ];
 for (const minigame of dryStreakMinigames) {
@@ -615,17 +663,17 @@ function calcTime(perkTier: PerkTier) {
 	throw new Error('User is not a Tier 4+ Patron');
 }
 
+export const PATRON_DOUBLE_LOOT_COOLDOWN = Time.Day * 31;
 async function patronTriggerDoubleLoot(user: MUser) {
 	const perkTier = getUsersPerkTier(user);
 	if (perkTier < PerkTier.Five) {
 		return 'Only T4, T5 or T6 patrons can use this command.';
 	}
 	const lastTime = user.user.last_patron_double_time_trigger;
-	const cooldown = Time.Day * 31;
 	const differenceSinceLastUsage = lastTime ? Date.now() - lastTime.getTime() : null;
-	if (differenceSinceLastUsage && differenceSinceLastUsage < cooldown) {
+	if (differenceSinceLastUsage && differenceSinceLastUsage < PATRON_DOUBLE_LOOT_COOLDOWN) {
 		return `This command is still on cooldown, you can use it again in: ${formatDuration(
-			cooldown - differenceSinceLastUsage
+			PATRON_DOUBLE_LOOT_COOLDOWN - differenceSinceLastUsage
 		)}.`;
 	}
 

@@ -192,7 +192,7 @@ export const Clothing: DisassemblySourceGroup = {
 				'Lesser demon mask',
 				'Kyatt top',
 				'Fremennik black cloak',
-				'Festive jumper',
+				'Festive jumper (2021)',
 				'Jungle camo legs',
 				'Jungle camo top',
 				'Jungle demon mask',

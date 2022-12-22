@@ -1,3 +1,4 @@
+import { CropUpgradeType } from '@prisma/client';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { TeamMember } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 
@@ -215,9 +216,10 @@ export interface InfernoOptions extends ActivityTaskOptions {
 }
 
 export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
+	pid?: number;
 	plantsName: string | null;
 	quantity: number;
-	upgradeType: string | null;
+	upgradeType: CropUpgradeType | null;
 	payment?: boolean;
 	patchType: IPatchData;
 	planting: boolean;
@@ -391,6 +393,12 @@ export interface PuroPuroActivityTaskOptions extends MinigameActivityTaskOptions
 	quantity: number;
 	implingID: number | null;
 	darkLure: boolean;
+}
+
+export interface GiantsFoundryActivityTaskOptions extends MinigameActivityTaskOptions {
+	alloyID: number;
+	quantity: number;
+	metalScore: number;
 }
 
 export interface GuardiansOfTheRiftActivityTaskOptions extends MinigameActivityTaskOptions {

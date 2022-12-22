@@ -4,7 +4,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 
 import { BitField } from '../../../lib/constants';
 import { addToDoubleLootTimer } from '../../../lib/doubleLoot';
-import { dyedItems } from '../../../lib/dyedItems';
+import { allDyes, dyedItems } from '../../../lib/dyedItems';
 import { gearImages } from '../../../lib/gear/functions/generateGearImage';
 import { assert } from '../../../lib/util';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
@@ -205,15 +205,6 @@ usables.push({
 	}
 });
 
-const allDyes = [
-	'Dungeoneering dye',
-	'Blood dye',
-	'Ice dye',
-	'Shadow dye',
-	'Third age dye',
-	'Monkey dye',
-	'Volcanic dye'
-].map(getOSItem);
 for (const group of dyedItems) {
 	for (const dyedVersion of group.dyedVersions) {
 		for (const dye of allDyes.filter(i => i !== dyedVersion.dye)) {

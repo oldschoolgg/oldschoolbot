@@ -52,6 +52,15 @@ const dwarvenDyed: DyedItem[] = [
 				dye: getOSItem('Volcanic dye')
 			}
 		]
+	},
+	{
+		baseItem: getOSItem('Dwarven pickaxe'),
+		dyedVersions: [
+			{
+				item: getOSItem('Dwarven pickaxe (xmas)'),
+				dye: getOSItem('Christmas dye')
+			}
+		]
 	}
 ];
 const gorajan = [
@@ -195,6 +204,17 @@ const gorajan = [
 	}
 ];
 
+export const allDyes = [
+	'Dungeoneering dye',
+	'Blood dye',
+	'Ice dye',
+	'Shadow dye',
+	'Third age dye',
+	'Monkey dye',
+	'Volcanic dye',
+	'Christmas dye'
+].map(getOSItem);
+
 export const dyedItems: DyedItem[] = [
 	{
 		baseItem: getOSItem('Drygore rapier'),
@@ -214,6 +234,10 @@ export const dyedItems: DyedItem[] = [
 			{
 				item: getOSItem('Drygore rapier (3a)'),
 				dye: getOSItem('Third age dye')
+			},
+			{
+				item: getOSItem('Drygore rapier (xmas)'),
+				dye: getOSItem('Christmas dye')
 			}
 		]
 	},
@@ -235,6 +259,10 @@ export const dyedItems: DyedItem[] = [
 			{
 				item: getOSItem('Offhand drygore rapier (3a)'),
 				dye: getOSItem('Third age dye')
+			},
+			{
+				item: getOSItem('Offhand drygore rapier (xmas)'),
+				dye: getOSItem('Christmas dye')
 			}
 		]
 	},
@@ -256,6 +284,10 @@ export const dyedItems: DyedItem[] = [
 			{
 				item: getOSItem('Drygore mace (3a)'),
 				dye: getOSItem('Third age dye')
+			},
+			{
+				item: getOSItem('Drygore mace (xmas)'),
+				dye: getOSItem('Christmas dye')
 			}
 		]
 	},
@@ -277,6 +309,10 @@ export const dyedItems: DyedItem[] = [
 			{
 				item: getOSItem('Offhand drygore mace (3a)'),
 				dye: getOSItem('Third age dye')
+			},
+			{
+				item: getOSItem('Offhand drygore mace (xmas)'),
+				dye: getOSItem('Christmas dye')
 			}
 		]
 	},
@@ -298,6 +334,10 @@ export const dyedItems: DyedItem[] = [
 			{
 				item: getOSItem('Drygore longsword (3a)'),
 				dye: getOSItem('Third age dye')
+			},
+			{
+				item: getOSItem('Drygore longsword (xmas)'),
+				dye: getOSItem('Christmas dye')
 			}
 		]
 	},
@@ -319,6 +359,10 @@ export const dyedItems: DyedItem[] = [
 			{
 				item: getOSItem('Offhand drygore longsword (3a)'),
 				dye: getOSItem('Third age dye')
+			},
+			{
+				item: getOSItem('Offhand drygore longsword (xmas)'),
+				dye: getOSItem('Christmas dye')
 			}
 		]
 	},
@@ -348,6 +392,10 @@ export const dyedItems: DyedItem[] = [
 			{
 				item: getOSItem('Dwarven warhammer (volcanic)'),
 				dye: getOSItem('Volcanic dye')
+			},
+			{
+				item: getOSItem('Ho-ho hammer'),
+				dye: getOSItem('Christmas dye')
 			}
 		]
 	},
@@ -407,6 +455,19 @@ export const dyedItems: DyedItem[] = [
 			{
 				item: getOSItem('Hellfire bownana'),
 				dye: getOSItem('Monkey dye')
+			},
+			{
+				item: getOSItem('Mistleboe'),
+				dye: getOSItem('Christmas dye')
+			}
+		]
+	},
+	{
+		baseItem: getOSItem('Zaryte crossbow'),
+		dyedVersions: [
+			{
+				item: getOSItem('Zaryte crossbow (xmas)'),
+				dye: getOSItem('Christmas dye')
 			}
 		]
 	},

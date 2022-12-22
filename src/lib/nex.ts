@@ -71,3 +71,5 @@ export const NexMonster: KillableMonster = {
 		}
 	}
 };
+
+export const NEX_UNIQUE_DROPRATE = (numPlayers: number) => 80 + numPlayers * 2;

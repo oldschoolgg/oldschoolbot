@@ -14,7 +14,6 @@ import { NewBossOptions } from '../../../lib/types/minions';
 import { formatDuration, roll, toKMB } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { sendToChannelID } from '../../../lib/util/webhook';
 
 const methodsOfDeath = [
 	'Beheaded',
@@ -58,9 +57,14 @@ export const kingGoldemarTask: MinionTask = {
 					null
 				);
 			}
-			return sendToChannelID(channelID, {
-				content: `${tagAll}\n\n${'Your team was'} crushed by King Goldemar, you never stood a chance.`
-			});
+			return handleTripFinish(
+				users[0],
+				channelID,
+				`${tagAll}\n\n${'Your team was'} crushed by King Goldemar, you never stood a chance.`,
+				undefined,
+				data,
+				null
+			);
 		}
 
 		await Promise.all(users.map(u => u.incrementKC(KingGoldemar.id, 1)));
@@ -137,7 +141,7 @@ export const kingGoldemarTask: MinionTask = {
 		}
 
 		if (!solo) {
-			sendToChannelID(channelID, { content: resultStr });
+			handleTripFinish(users[0], channelID, resultStr, undefined, data, null);
 		} else {
 			handleTripFinish(users[0], channelID, resultStr, undefined, data, totalLoot);
 		}

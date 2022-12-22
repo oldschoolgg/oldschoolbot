@@ -1336,6 +1336,17 @@ export const castleWarsCL = resolveItems([
 	'Castle wars cape (legend)'
 ]);
 export const fishingTrawlerCL = resolveItems(['Angler hat', 'Angler top', 'Angler waders', 'Angler boots']);
+export const giantsFoundryCL = resolveItems([
+	'Smiths tunic',
+	'Smiths trousers',
+	'Smiths boots',
+	'Smiths gloves',
+	'Colossal blade',
+	'Double ammo mould',
+	"Kovac's grog",
+	'Smithing catalyst',
+	'Ore pack'
+]);
 export const gnomeRestaurantCL = resolveItems(['Grand seed pod', 'Gnome scarf', 'Gnome goggles', 'Mint cake']);
 export const guardiansOfTheRiftCL = resolveItems([
 	'Abyssal protector',
@@ -2216,7 +2227,7 @@ export const customPetsCL = resolveItems([
 	'Sandy',
 	'Baby kalphite king',
 	'Steve',
-	'Frosty',
+	'Frostbite',
 	'Voidling',
 	'Baby duckling',
 	'Jal-MejJak',

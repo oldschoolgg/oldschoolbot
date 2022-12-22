@@ -817,6 +817,14 @@ export const vannakaMonsters: KillableMonster[] = [
 
 		existsInCatacombs: true,
 		difficultyRating: 2,
+		itemInBankBoosts: [
+			{
+				[itemID('Arclight')]: 12
+			},
+			{
+				[itemID('Saradomin godsword')]: 3
+			}
+		],
 		qpRequired: 0,
 		healAmountNeeded: 18,
 		attackStyleToUse: GearStat.AttackSlash,

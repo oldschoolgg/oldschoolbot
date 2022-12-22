@@ -19,7 +19,6 @@ import { formatDuration, removeFromArr } from '../util';
 import { CACHED_ACTIVE_USER_IDS } from './cachedUserIDs';
 import { updateGiveawayMessage } from './giveaway';
 import { interactionReply } from './interactionReply';
-import { log } from './log';
 import { logErrorForInteraction } from './logError';
 import { minionIsBusy } from './minionIsBusy';
 import { fetchRepeatTrips, repeatTrip } from './repeatStoredTrip';
@@ -328,7 +327,7 @@ export async function interactionHook(interaction: Interaction) {
 	const timeSinceMessage = Date.now() - new Date(interaction.message.createdTimestamp).getTime();
 	const timeLimit = reactionTimeLimit(user.perkTier());
 	if (timeSinceMessage > Time.Day) {
-		log(
+		console.log(
 			`${user.id} clicked Diff[${formatDuration(timeSinceMessage)}] Button[${id}] Message[${
 				interaction.message.id
 			}]`

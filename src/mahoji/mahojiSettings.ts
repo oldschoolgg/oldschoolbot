@@ -241,8 +241,7 @@ export async function userStatsUpdate(userID: string, data: (u: UserStats) => Pr
 	});
 }
 
-type UserStatsBankKey = keyof UserStats;
-export async function userStatsBankUpdate(userID: string, key: UserStatsBankKey, bank: Bank) {
+export async function userStatsBankUpdate(userID: string, key: keyof UserStats, bank: Bank) {
 	await userStatsUpdate(userID, u => ({
 		[key]: bank.clone().add(u[key] as ItemBank).bank
 	}));

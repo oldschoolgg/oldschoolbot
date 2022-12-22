@@ -1,4 +1,5 @@
 import { Prisma } from '@prisma/client';
+import { execSync } from 'child_process';
 import {
 	APIButtonComponent,
 	APIInteractionDataResolvedChannel,
@@ -13,11 +14,14 @@ import { convertLVLtoXP } from 'oldschooljs/dist/util/util';
 
 import { DISCORD_SETTINGS, production } from '../config';
 import { AbstractCommand, CommandArgs } from '../mahoji/lib/inhibitors';
+import { allChristmasItems } from './christmasEvent';
 import { SkillsEnum } from './skilling/types';
 import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
 
 export const BotID = DISCORD_SETTINGS.BotID ?? '729244028989603850';
+
+const TestingMainChannelID = DISCORD_SETTINGS.Channels?.TestingMain ?? '944924763405574174';
 
 export const Channel = {
 	General: DISCORD_SETTINGS.Channels?.General ?? '342983479501389826',
@@ -30,6 +34,8 @@ export const Channel = {
 	NewSponsors: DISCORD_SETTINGS.Channels?.NewSponsors ?? '806744016309714966',
 	HelpAndSupport: '970752140324790384',
 	TestingMain: DISCORD_SETTINGS.Channels?.TestingMain ?? '680770361893322761',
+	BotLogs: production ? '1051725977320964197' : TestingMainChannelID,
+	PatronLogs: '806744016309714966',
 	// BSO Channels
 	BSOGeneral: DISCORD_SETTINGS.Channels?.BSOGeneral ?? '792691343284764693',
 	BSOChannel: DISCORD_SETTINGS.Channels?.BSOChannel ?? '732207379818479756',
@@ -611,3 +617,6 @@ export const chompyHats = [
 	[getOSItem('Chompy bird hat (expert ogre dragon archer)'), 3000],
 	[getOSItem('Chompy bird hat (expert dragon archer)'), 4000]
 ] as const;
+
+export const secretItems = [...allChristmasItems];
+export const gitHash = execSync('git rev-parse HEAD').toString().trim();

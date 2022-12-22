@@ -23,6 +23,8 @@ import {
 	evilChickenOutfit,
 	moktangCL,
 	naxxusCL,
+	nexCL,
+	nexUniqueDrops,
 	temporossCL,
 	theatreOfBLoodCL,
 	theGauntletCL,
@@ -33,6 +35,7 @@ import {
 import pets from './data/pets';
 import { MoktangLootTable } from './minions/data/killableMonsters/custom/bosses/Moktang';
 import { Naxxus } from './minions/data/killableMonsters/custom/bosses/Naxxus';
+import { NEX_UNIQUE_DROPRATE, NexMonster } from './nex';
 import { birdsNestID, treeSeedsNest } from './simulation/birdsNest';
 import { gauntlet } from './simulation/gauntlet';
 import { getTemporossLoot } from './simulation/tempoross';
@@ -160,6 +163,17 @@ export const finishables: Finishable[] = [
 		cl: naxxusCL,
 		aliases: Naxxus.aliases,
 		kill: ({ accumulatedLoot }) => rollNaxxusLoot(1, accumulatedLoot)
+	},
+	{
+		name: 'Nex',
+		cl: nexCL.filter(i => i !== itemID('Frozen key')),
+		kill: () => {
+			const loot = new Bank(NexMonster.table.kill(1, {}));
+			if (roll(NEX_UNIQUE_DROPRATE(1))) {
+				loot.add(randArrItem(nexUniqueDrops), 1);
+			}
+			return loot;
+		}
 	},
 	{
 		name: 'Moktang',

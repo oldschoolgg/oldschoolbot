@@ -5,6 +5,7 @@ import { Plant } from '../../types';
 
 export const bushes: Plant[] = [
 	{
+		id: itemID('Avocado seed'),
 		level: 99,
 		plantXp: 290,
 		checkXp: 14_335,
@@ -43,6 +44,7 @@ export const bushes: Plant[] = [
 		additionalPatchesByFarmGuildAndLvl: []
 	},
 	{
+		id: itemID('Mango seed'),
 		level: 105,
 		plantXp: 290,
 		checkXp: 19_335,
@@ -81,6 +83,7 @@ export const bushes: Plant[] = [
 		additionalPatchesByFarmGuildAndLvl: []
 	},
 	{
+		id: itemID('Lychee seed'),
 		level: 111,
 		plantXp: 290,
 		checkXp: 22_335,

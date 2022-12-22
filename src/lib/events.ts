@@ -4,6 +4,7 @@ import { Time } from 'e';
 import { Items } from 'oldschooljs';
 
 import { CLIENT_ID } from '../config';
+import { PATRON_DOUBLE_LOOT_COOLDOWN } from '../mahoji/commands/tools';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
 import { Cooldowns } from '../mahoji/lib/Cooldowns';
 import { Emoji } from './constants';
@@ -46,6 +47,11 @@ const cooldownTimers: { name: string; timeStamp: (user: MUser) => number; cd: nu
 		name: 'Item Contract',
 		timeStamp: (user: MUser) => Number(user.user.last_item_contract_date),
 		cd: itemContractResetTime
+	},
+	{
+		name: 'Monthly Double Loot',
+		timeStamp: (user: MUser) => Number(user.user.last_patron_double_time_trigger),
+		cd: PATRON_DOUBLE_LOOT_COOLDOWN
 	}
 ];
 

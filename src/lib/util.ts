@@ -16,11 +16,13 @@ import {
 	Guild,
 	GuildTextBasedChannel,
 	InteractionReplyOptions,
+	InteractionType,
 	Message,
 	MessageEditOptions,
 	PermissionsBitField,
 	SelectMenuInteraction,
 	TextChannel,
+	time,
 	User as DJSUser
 } from 'discord.js';
 import {
@@ -64,7 +66,6 @@ import {
 import { CACHED_ACTIVE_USER_IDS } from './util/cachedUserIDs';
 import { getItem } from './util/getOSItem';
 import itemID from './util/itemID';
-import { log } from './util/log';
 import { logError } from './util/logError';
 import resolveItems from './util/resolveItems';
 import { toTitleCase } from './util/toTitleCase';
@@ -444,6 +445,7 @@ export async function makePaginatedMessage(channel: TextChannel, pages: Paginate
 export function isSuperUntradeable(item: number | Item) {
 	const id = typeof item === 'number' ? item : item.id;
 	if (id === 5021) return true;
+	if (id === itemID('Snowball')) return true;
 	const fullItem = Items.get(id);
 	if (fullItem?.customItemData?.isSuperUntradeable) {
 		return true;
@@ -831,12 +833,12 @@ export function isGuildChannel(channel?: Channel): channel is GuildTextBasedChan
 }
 
 export async function runTimedLoggedFn(name: string, fn: () => Promise<unknown>) {
-	log(`Starting ${name}...`);
+	debugLog(`Starting ${name}...`);
 	const stopwatch = new Stopwatch();
 	stopwatch.start();
 	await fn();
 	stopwatch.stop();
-	log(`Finished ${name} in ${stopwatch.toString()}`);
+	debugLog(`Finished ${name} in ${stopwatch.toString()}`);
 }
 
 const emojiServers = new Set([
@@ -877,6 +879,9 @@ export function memoryAnalysis() {
 }
 
 export function cacheCleanup() {
+	debugLog('Cache Cleanup', {
+		type: 'CACHE_CLEANUP'
+	});
 	return runTimedLoggedFn('Cache Cleanup', async () => {
 		await runTimedLoggedFn('Clear Channels', async () => {
 			for (const channel of globalClient.channels.cache.values()) {
@@ -951,4 +956,32 @@ export function getAllIDsOfUser(user: MUser) {
 
 export function isFunction(input: unknown): input is Function {
 	return typeof input === 'function';
+}
+
+export function dateFm(date: Date) {
+	return `${time(date, 'T')} (${time(date, 'R')})`;
+}
+
+const validChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+
+export function miniID(length: number): string {
+	let id = '';
+
+	for (let i = 0; i < length; i++) {
+		const randomChar = validChars[Math.floor(Math.random() * validChars.length)];
+
+		id += randomChar;
+	}
+
+	return id;
+}
+
+export function getInteractionTypeName(type: InteractionType) {
+	return {
+		[InteractionType.Ping]: 'Ping',
+		[InteractionType.ApplicationCommand]: 'ApplicationCommand',
+		[InteractionType.MessageComponent]: 'MessageComponent',
+		[InteractionType.ApplicationCommandAutocomplete]: 'ApplicationCommandAutocomplete',
+		[InteractionType.ModalSubmit]: 'ModalSubmit'
+	}[type];
 }
