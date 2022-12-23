@@ -777,6 +777,9 @@ model UserStats {
   silverhawk_boots_passive_xp BigInt @default(0)
   bonecrusher_prayer_xp       BigInt @default(0)
 
+  ic_donations_given_bank    Json @default("{}") @db.Json
+  ic_donations_received_bank Json @default("{}") @db.Json
+
   lamped_xp Json @default("{}") @db.Json
 
   snowmen_built Int @default(0)

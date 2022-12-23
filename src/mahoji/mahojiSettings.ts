@@ -63,7 +63,7 @@ async function silentButtonAck(interaction: ButtonInteraction) {
 }
 
 export async function handleMahojiConfirmation(
-	interaction: ChatInputCommandInteraction,
+	interaction: ChatInputCommandInteraction | ButtonInteraction,
 	str: string,
 	_users?: string[]
 ) {
