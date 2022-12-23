@@ -471,6 +471,15 @@ export const dyedItems: DyedItem[] = [
 			}
 		]
 	},
+	{
+		baseItem: getOSItem('Vasa cloak'),
+		dyedVersions: [
+			{
+				item: getOSItem('Vasa cloak (xmas)'),
+				dye: getOSItem('Christmas dye')
+			}
+		]
+	},
 	...gorajan,
 	...dwarvenDyed
 ];
