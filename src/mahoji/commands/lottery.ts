@@ -11,29 +11,12 @@ import Firemaking from '../../lib/skilling/skills/firemaking';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import { assert, isSuperUntradeable } from '../../lib/util';
 import { mahojiClientSettingsFetch } from '../../lib/util/clientSettings';
-import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 import { handleMahojiConfirmation, updateLegacyUserBankSetting } from '../mahojiSettings';
-
-const LOTTERY_PRIZES = [
-	new Bank().add('Cob'),
-	new Bank().add('Corgi'),
-	new Bank().add('Craig'),
-	new Bank().add('Flappy'),
-	new Bank().add('Flappy'),
-	new Bank().add('Mini Pumpkinhead').add('Gregoyle'),
-	new Bank().add('Hoppy').add('Seer'),
-	new Bank().add('Hoppy').add('Gregoyle'),
-	new Bank().add('Seer').add('Blackswan').add('Gregoyle'),
-	new Bank().add('Seer').add('Buzz').add('Leia'),
-	new Bank().add('Seer').add('Buzz').add('Leia'),
-	new Bank().add('Seer').add('Buzz').add('Leia')
-];
-const LOTTERY_PRIZES_STRING = LOTTERY_PRIZES.map((prize, idx) => `**${formatOrdinal(idx + 1)}**: ${prize}`).join('\n');
 
 const specialPricesBeforeMultiplying = new Bank()
 	.add('Monkey egg', 4_000_000_000)
@@ -312,13 +295,14 @@ export const lotteryCommand: OSBMahojiCommand = {
 		buy_tickets?: { quantity: number };
 		deposit_items?: { items?: string; filter?: string; search?: string };
 	}>) => {
+		let infoStr =
+			"This is a Christmas Lottery! Your tickets don't mean anything, ALL items will be given away *randomly* around Christmas Day. There'll be up to 100 hours of double loot based on how much is put in!";
 		const active = await isLotteryActive();
 		if (!active) return 'There is no lottery currently going on.';
 		const user = await mUserFetch(userID);
 		if (user.isIronman) return 'Ironmen cannot partake in the Lottery.';
 
 		if (options.prices) {
-			if (2 > 1) return 'This lottery is for **GP only**. Just use `/lottery buy_tickets`';
 			return { files: [(await makeBankImage({ bank: parsedPriceBank, title: 'Prices' })).file] };
 		}
 		if (options.buy_tickets) {
@@ -335,7 +319,7 @@ export const lotteryCommand: OSBMahojiCommand = {
 				interaction,
 				`${user.mention}, are you sure you want to add ${bankToSell} to the bank lottery - you'll receive **${amountOfTickets} bank lottery tickets**.
 
-**WARNING:** This lottery is only for the discontinued pets on offer. All GP added will be **deleted**. Check \`/lottery info\` to see full prize list.`
+**WARNING:** ${infoStr}`
 			);
 
 			await user.sync();
@@ -347,8 +331,6 @@ export const lotteryCommand: OSBMahojiCommand = {
 			return `You put ${bankToSell} to the bank lottery, and received ${amountOfTickets}x bank lottery tickets.`;
 		}
 		if (options.deposit_items) {
-			if (2 > 1) return 'This lottery is for **GP only**. Try `/lottery buy_tickets`';
-
 			const bankToSell = parseBank({
 				inputStr: options.deposit_items.items,
 				inputBank: user.bankWithGP,
@@ -402,7 +384,7 @@ export const lotteryCommand: OSBMahojiCommand = {
 					', '
 				)}
 
-**WARNING:** This lottery, has only ONE item that will be given out, a Smokey. Everything else (GP/Items) will be deleted as an item/GP sink, and not given to anyone.`
+**WARNING:** ${infoStr}`
 			);
 
 			await user.sync();
@@ -417,6 +399,32 @@ export const lotteryCommand: OSBMahojiCommand = {
 		const { amountOfTickets, input } = calcTicketsOfUser(user);
 		const { totalLoot, totalTickets, users } = await getLotteryBank();
 
+		if (2 > 1) {
+			return {
+				content: `
+<:santaHat:785874868905181195> **Christmas Lottery**
+
+There have been ${totalTickets.toLocaleString()} purchased, you have ${amountOfTickets.toLocaleString()}x tickets.
+
+**This is a special lottery, the rules are:** 
+1. Rewards will be given randomly and manually using normal giveaways. Therefore, the amount of tickets you have doesn't matter.
+2. *Nothing* will be deleted, all items will be given away.
+3. Click the BSO Giveaways button in <#1012924165910695998> to get pinged when giveaways are happening, and watch <#982989775399174184>
+
+Top ticket holders: ${users
+					.slice(0, 10)
+					.map(i => `${userMention(i.id)} has ${i.tickets.toLocaleString()} tickets`)
+					.join(',')}`,
+				files: [
+					(await makeBankImage({ bank: totalLoot, title: 'Christmas Lottery', background: 100 })).file,
+					(await makeBankImage({ bank: input, title: 'Your Lottery Input', background: 100 })).file
+				],
+				allowedMentions: {
+					users: []
+				}
+			};
+		}
+
 		return {
 			content: `There have been ${totalTickets.toLocaleString()} purchased, you have ${amountOfTickets.toLocaleString()}x tickets, and a ${
 				amountOfTickets === 0 ? 0 : calcWhatPercent(amountOfTickets, totalTickets).toFixed(4)
@@ -427,8 +435,6 @@ export const lotteryCommand: OSBMahojiCommand = {
 2. All GP entered will be deleted
 3. There is no limit to the number of prizes you can win
 4. There will be 12 spins, each winner will win the prize specified at the time of the roll.
-
-${LOTTERY_PRIZES_STRING}
 
 Top ticket holders: ${users
 				.slice(0, 10)
