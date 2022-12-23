@@ -7,7 +7,7 @@ import { getItemContractDetails, handInContract } from '../../mahoji/commands/ic
 import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { shootingStarsCommand, starCache } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
 import { Cooldowns } from '../../mahoji/lib/Cooldowns';
-import { handleMahojiConfirmation } from '../../mahoji/mahojiSettings';
+import { handleMahojiConfirmation, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { modifyBusyCounter } from '../busyCounterCache';
 import { ClueTier } from '../clues/clueTiers';
 import { PerkTier } from '../constants';
@@ -240,43 +240,66 @@ async function repeatTripHandler(user: MUser, interaction: ButtonInteraction) {
 	return repeatTrip(interaction, matchingActivity);
 }
 
+function icDonateValidation(user: MUser, donator: MUser) {
+	if (user.isIronman || donator.isIronman) {
+		return 'Ironmen stand alone!';
+	}
+	if (user.id === donator.id) {
+		return 'You cannot donate to yourself.';
+	}
+	const details = getItemContractDetails(user);
+	if (!details.nextContractIsReady || !details.currentItem) {
+		return "That user's Item Contract isn't ready.";
+	}
+
+	if (user.isBusy || donator.isBusy) {
+		return 'One of you is busy, and cannot do this trade right now.';
+	}
+
+	const cost = new Bank().add(details.currentItem.id);
+	if (!donator.bank.has(cost)) {
+		return `You don't own ${cost}.`;
+	}
+
+	return {
+		cost,
+		details
+	};
+}
+
 async function donateICHandler(interaction: ButtonInteraction) {
 	const userID = interaction.customId.split('_')[2];
 	if (!userID || !CACHED_ACTIVE_USER_IDS.has(userID)) {
 		return interactionReply(interaction, { content: 'Invalid user.', ephemeral: true });
 	}
+
 	const user = await mUserFetch(userID);
 	const donator = await mUserFetch(interaction.user.id);
 
-	if (user.isIronman || donator.isIronman) {
-		return interactionReply(interaction, { content: 'Ironmen stand alone!', ephemeral: true });
-	}
-	if (user.id === donator.id) {
-		return interactionReply(interaction, { content: 'You cannot donate to yourself.', ephemeral: true });
-	}
+	const errorStr = icDonateValidation(user, donator);
+	if (typeof errorStr === 'string') return interactionReply(interaction, { content: errorStr });
 
-	const details = getItemContractDetails(user);
-	if (!details.nextContractIsReady || !details.currentItem) {
-		return interactionReply(interaction, { content: "That user's Item Contract isn't ready.", ephemeral: true });
-	}
+	await handleMahojiConfirmation(
+		interaction,
+		`${donator}, are you sure you want to give ${errorStr.cost} to ${
+			user.badgedUsername
+		}? You own ${donator.bank.amount(errorStr.details.currentItem!.id)} of this item.`,
+		[donator.id]
+	);
 
-	if (user.isBusy || donator.isBusy) {
-		return interactionReply(interaction, {
-			content: 'One of you is busy, and cannot do this trade right now.',
-			ephemeral: true
-		});
-	}
+	await user.sync();
+	await donator.sync();
+
+	const secondaryErrorStr = icDonateValidation(user, donator);
+	if (typeof secondaryErrorStr === 'string') return interactionReply(interaction, { content: secondaryErrorStr });
+	const { cost } = secondaryErrorStr;
 
 	try {
 		modifyBusyCounter(donator.id, 1);
-
-		const cost = new Bank().add(details.currentItem.id);
-		if (!donator.owns(cost)) {
-			return interactionReply(interaction, { ephemeral: true, content: `You don't own ${cost}.` });
-		}
-		await handleMahojiConfirmation(interaction, `Are you sure you want to give ${cost} to ${user}?`, [donator.id]);
 		await donator.removeItemsFromBank(cost);
 		await user.addItemsToBank({ items: cost, collectionLog: false });
+		await userStatsBankUpdate(donator.id, 'ic_donations_given_bank', cost);
+		await userStatsBankUpdate(user.id, 'ic_donations_received_bank', cost);
 
 		return interactionReply(interaction, {
 			content: `${donator}, you donated ${cost} to ${user}!
