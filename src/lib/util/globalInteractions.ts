@@ -291,8 +291,7 @@ async function donateICHandler(interaction: ButtonInteraction) {
 	await donator.sync();
 
 	const secondaryErrorStr = icDonateValidation(user, donator);
-	if (typeof secondaryErrorStr === 'string')
-		return interactionReply(interaction, { content: secondaryErrorStr, ephemeral: true });
+	if (typeof secondaryErrorStr === 'string') return interactionReply(interaction, { content: secondaryErrorStr });
 	const { cost } = secondaryErrorStr;
 
 	try {
