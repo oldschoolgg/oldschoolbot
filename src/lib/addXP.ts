@@ -98,7 +98,7 @@ const allMasterCapes = Skillcapes.map(i => i.masterCape)
 	.map(msc => getSimilarItems(msc.id))
 	.flat(Infinity) as number[];
 
-function getEquippedMasterCapes(user: MUser) {
+function getEquippedCapes(user: MUser) {
 	return objectValues(user.gear)
 		.map(val => val.cape)
 		.filter(notEmpty)
@@ -113,26 +113,22 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 	if (multiplier) {
 		params.amount *= GLOBAL_BSO_XP_MULTIPLIER;
 	}
-	const allCapes = getEquippedMasterCapes(user);
 
-	// Get cape object from MasterSkillCapes that matches active skill.
-	const matchingCape =
-		multiplier || params.masterCapeBoost
-			? Skillcapes.find(cape => params.skillName === cape.skill)?.masterCape
-			: undefined;
-	// If the matching cape [or similar] is equipped, isMatchingCape = matched itemId.
-	const isMatchingCape =
-		(multiplier || params.masterCapeBoost) && matchingCape
-			? allCapes.find(cape => getSimilarItems(matchingCape.id).includes(cape))
-			: false;
-	// Get the masterCape itemId for use in text output, and check for non-matching cape.
-	const masterCape = isMatchingCape
-		? isMatchingCape
-		: multiplier || params.masterCapeBoost === true
-		? allMasterCapes.find(cape => allCapes.includes(cape))
-		: undefined;
-	if (masterCape) {
-		params.amount = increaseNumByPercent(params.amount, isMatchingCape ? 8 : 3);
+	// Look for Mastery skill cape:
+	let matchingCapeID: number | undefined = undefined;
+	let masterCape: number | undefined = undefined;
+	const skillCape = Skillcapes.find(cape => params.skillName === cape.skill)?.masterCape;
+
+	if (skillCape && (multiplier || params.masterCapeBoost)) {
+		const equippedCapes = getEquippedCapes(user);
+
+		matchingCapeID = equippedCapes.find(
+			cape => cape === skillCape.id || getSimilarItems(skillCape.id).includes(cape)
+		);
+		masterCape = matchingCapeID ?? allMasterCapes.find(cape => equippedCapes.includes(cape));
+		if (masterCape) {
+			params.amount = increaseNumByPercent(params.amount, matchingCapeID ? 8 : 3);
+		}
 	}
 	// Check if each gorajan set is equipped:
 	const wildyOutfit = user.gear.wildy;
@@ -353,11 +349,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 			? `+${Math.ceil(params.amount).toLocaleString()} ${skillEmoji[params.skillName]}`
 			: `You received ${Math.ceil(params.amount).toLocaleString()} ${skillEmoji[params.skillName]} XP`;
 		if (masterCape && !params.minimal) {
-			if (isMatchingCape) {
-				str += ` You received 8% bonus XP for having a ${itemNameFromID(masterCape)}.`;
-			} else {
-				str += ` You received 3% bonus XP for having a ${itemNameFromID(masterCape)}.`;
-			}
+			str += ` You received ${matchingCapeID ? '8' : '3'}% bonus XP for having a ${itemNameFromID(masterCape)}.`;
 		}
 		if (gorajanBoost && !params.minimal) {
 			str += ' (2x boost from Gorajan armor)';
