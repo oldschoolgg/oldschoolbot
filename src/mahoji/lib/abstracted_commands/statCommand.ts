@@ -1098,6 +1098,26 @@ GROUP BY "bankBackground";`);
 			sanitizeBank(items);
 			return makeResponseForBank(items, "You've received from giveaways...");
 		}
+	},
+	{
+		name: 'Item Contract Donations Given',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(
+				new Bank(stats.ic_donations_given_bank as ItemBank),
+				'Item Contract Donations Given'
+			);
+		}
+	},
+	{
+		name: 'Item Contract Donations Received',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(
+				new Bank(stats.ic_donations_received_bank as ItemBank),
+				'Item Contract Donations Received'
+			);
+		}
 	}
 ] as const;
 

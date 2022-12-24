@@ -4404,3 +4404,16 @@ setCustomItem(
 	},
 	10_000
 );
+
+setCustomItem(
+	70_249,
+	'Vasa cloak (xmas)',
+	'Vasa cloak',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	10_000
+);
