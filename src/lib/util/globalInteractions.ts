@@ -277,7 +277,7 @@ async function donateICHandler(interaction: ButtonInteraction) {
 	const donator = await mUserFetch(interaction.user.id);
 
 	const errorStr = icDonateValidation(user, donator);
-	if (typeof errorStr === 'string') return interactionReply(interaction, { content: errorStr });
+	if (typeof errorStr === 'string') return interactionReply(interaction, { content: errorStr, ephemeral: true });
 
 	await handleMahojiConfirmation(
 		interaction,
