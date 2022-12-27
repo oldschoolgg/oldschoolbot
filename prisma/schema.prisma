@@ -566,6 +566,7 @@ model Minigame {
   bax_baths                Int @default(0)
   fist_of_guthix           Int @default(0)
   stealing_creation        Int @default(0)
+  tinkering_workshop       Int @default(0)
 
   new_user NewUser?
 
@@ -933,6 +934,7 @@ enum activity_type_enum {
   HalloweenMiniMinigame
   GiantsFoundry
   GuardiansOfTheRift
+  TinkeringWorkshop
 }
 
 enum xp_gains_skill_enum {

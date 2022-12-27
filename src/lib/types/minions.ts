@@ -3,6 +3,7 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { TeamMember } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 
 import { Kibble } from '../data/kibble';
+import { MaterialType } from '../invention';
 import { IPatchData } from '../minions/farming/types';
 import { Monkey } from '../monkeyRumble';
 import { MinigameName } from '../settings/settings';
@@ -406,6 +407,10 @@ export interface GuardiansOfTheRiftActivityTaskOptions extends MinigameActivityT
 	barrierAndGuardian: number;
 	rolls: number;
 	combinationRunes: boolean;
+}
+
+export interface TinkeringWorkshopOptions extends MinigameActivityTaskOptions {
+	material: MaterialType;
 }
 
 export type ActivityTaskData =

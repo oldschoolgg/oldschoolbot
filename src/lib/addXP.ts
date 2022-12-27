@@ -90,6 +90,19 @@ const skillingOutfitBoosts = [
 		]),
 		individualBoost: 0.5,
 		totalBoost: 3
+	},
+	{
+		skill: SkillsEnum.Invention,
+		outfit: resolveItems([
+			"Inventors' gloves",
+			"Inventors' boots",
+			"Inventors' legs",
+			"Inventors' torso",
+			"Inventors' helmet",
+			"Inventors' backpack"
+		]),
+		individualBoost: 0.5,
+		totalBoost: 4
 	}
 ] as const;
 

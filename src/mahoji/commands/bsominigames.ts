@@ -9,6 +9,7 @@ import {
 	baxtorianBathhousesStartCommand
 } from '../../lib/baxtorianBathhouses';
 import { fishingLocations } from '../../lib/fishingContest';
+import { MaterialType } from '../../lib/invention';
 import { toTitleCase } from '../../lib/util/toTitleCase';
 import {
 	fishingContestStartCommand,
@@ -23,6 +24,8 @@ import {
 	OuraniaBuyables
 } from '../lib/abstracted_commands/odsCommand';
 import { stealingCreationCommand } from '../lib/abstracted_commands/stealingCreation';
+import { tinkeringWorkshopCommand } from '../lib/abstracted_commands/tinkeringWorkshopCommand';
+import { ownedMaterialOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const minigamesCommand: OSBMahojiCommand = {
@@ -186,6 +189,26 @@ export const minigamesCommand: OSBMahojiCommand = {
 					description: 'Start a Stealing Creation trip.'
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			name: 'tinkering_workshop',
+			description: 'The tinkering workshop minigame.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'start',
+					description: 'Start a tinkering workshop trip.',
+					options: [
+						{
+							...ownedMaterialOption,
+							type: ApplicationCommandOptionType.String,
+							name: 'material',
+							description: 'The material you want to use to tinker with.'
+						}
+					]
+				}
+			]
 		}
 	],
 	run: async ({
@@ -215,6 +238,11 @@ export const minigamesCommand: OSBMahojiCommand = {
 		};
 		stealing_creation?: {
 			start?: {};
+		};
+		tinkering_workshop?: {
+			start?: {
+				material: MaterialType;
+			};
 		};
 	}>) => {
 		const klasaUser = await mUserFetch(userID);
@@ -268,6 +296,9 @@ export const minigamesCommand: OSBMahojiCommand = {
 		}
 		if (stealing_creation?.start) {
 			return stealingCreationCommand(klasaUser, channelID);
+		}
+		if (options.tinkering_workshop?.start) {
+			return tinkeringWorkshopCommand(klasaUser, options.tinkering_workshop.start.material, channelID);
 		}
 
 		return 'Invalid command.';

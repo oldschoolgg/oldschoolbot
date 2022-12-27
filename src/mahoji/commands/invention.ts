@@ -1,13 +1,10 @@
-import { time } from '@discordjs/builders';
-import { User } from 'discord.js';
 import { reduceNumByPercent, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { table } from 'table';
 
-import { production } from '../../config';
-import { allItemsThatCanBeDisassembledIDs, IMaterialBank, MaterialType, materialTypes } from '../../lib/invention';
+import { allItemsThatCanBeDisassembledIDs, IMaterialBank, MaterialType } from '../../lib/invention';
 import {
 	calcJunkChance,
 	calculateDisXP,
@@ -22,12 +19,9 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { calcPerHour, stringMatches, toKMB } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
-import { toTitleCase } from '../../lib/util/toTitleCase';
+import { ownedMaterialOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiParseNumber, mahojiUsersSettingsFetch } from '../mahojiSettings';
-
-const RELEASE_TIME_UNIX_TIME = 1_656_766_800;
-const RELEASE_DATE = new Date(RELEASE_TIME_UNIX_TIME * 1000);
 
 export const inventionCommand: OSBMahojiCommand = {
 	name: 'invention',
@@ -76,27 +70,10 @@ export const inventionCommand: OSBMahojiCommand = {
 			type: ApplicationCommandOptionType.Subcommand,
 			options: [
 				{
+					...ownedMaterialOption,
 					name: 'material',
 					type: ApplicationCommandOptionType.String,
-					description: 'The type of materials you want to research with.',
-					required: true,
-					autocomplete: async (value: string, user: User) => {
-						const mahojiUser = await mahojiUsersSettingsFetch(user.id, { materials_owned: true });
-						const bank = new MaterialBank(mahojiUser.materials_owned as IMaterialBank);
-						return materialTypes
-							.filter(i => (!value ? true : i.includes(value.toLowerCase())))
-							.sort((a, b) => {
-								if (bank.has(b)) return 1;
-								if (bank.has(a)) return -1;
-								return 0;
-							})
-							.map(i => ({
-								name: `${toTitleCase(i)} ${
-									bank.has(i) ? `(${bank.amount(i).toLocaleString()}x Owned)` : ''
-								}`,
-								value: i
-							}));
-					}
+					description: 'The type of materials you want to research with.'
 				},
 				{
 					name: 'quantity',
@@ -374,19 +351,6 @@ These Inventions are still not unlocked: ${locked
 					return { files: [{ attachment: Buffer.from(str), name: 'groups.txt' }] };
 				}
 			}
-		}
-
-		if (user.id !== '157797566833098752' && production && Date.now() < RELEASE_DATE.getTime()) {
-			return `Invention will be released at ${time(RELEASE_DATE, 'F')}, ${time(RELEASE_DATE, 'R')}.
-In the meantime...
-- Read the wiki: <https://bso-wiki.oldschool.gg/skills/invention>
-- Think about what items you'll disassemble... doing a varying trips with your biggest (or cheapest) stacks of items is recommended for fast, cheap training.
-- Pick which invention you want to aim for first, and focus on getting the materials needed for it!
-- ${
-				user.skillLevel(SkillsEnum.Crafting) < 90
-					? "You don't have 90 Crafting, so you won't be able to train Invention."
-					: 'You have 90 Crafting! You can train Invention.'
-			}`;
 		}
 
 		if (user.skillLevel(SkillsEnum.Crafting) < 90) {

@@ -60,6 +60,7 @@ import type {
 	TempleTrekkingActivityTaskOptions,
 	TheatreOfBloodTaskOptions,
 	TiaraRunecraftActivityTaskOptions,
+	TinkeringWorkshopOptions,
 	WoodcuttingActivityTaskOptions
 } from '../types/minions';
 import { itemNameFromID } from '../util';
@@ -660,6 +661,16 @@ export const tripHandlers = {
 		args: (data: GuardiansOfTheRiftActivityTaskOptions) => ({
 			gotr: {
 				start: { combination_runes: data.combinationRunes }
+			}
+		})
+	},
+	[activity_type_enum.TinkeringWorkshop]: {
+		commandName: 'bsominigames',
+		args: (data: TinkeringWorkshopOptions) => ({
+			tinkering_workshop: {
+				start: {
+					material: data.material
+				}
 			}
 		})
 	}
