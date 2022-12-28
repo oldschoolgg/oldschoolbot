@@ -1,13 +1,16 @@
 import { randArrItem, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
+import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { userHasFlappy } from '../../../lib/invention/inventions';
+import { MaterialBank } from '../../../lib/invention/MaterialBank';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClueTable } from '../../../lib/simulation/sharedTables';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
+import { TinkeringWorkshopOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import resolveItems from '../../../lib/util/resolveItems';
+import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
 
 const inventorOutfit = resolveItems([
 	"Inventors' helmet",
@@ -19,16 +22,16 @@ const inventorOutfit = resolveItems([
 ]);
 function tinkerLoot(user: MUser, quantity: number) {
 	const loot = new Bank();
-	let effectiveCL = user.cl.clone();
+	let effectiveBank = user.bank.clone();
 	for (let i = 0; i < quantity; i++) {
-		const outfitPieceNotOwned = randArrItem(inventorOutfit.filter(p => !effectiveCL.has(p)));
+		const outfitPieceNotOwned = randArrItem(inventorOutfit.filter(p => !effectiveBank.has(p)));
 		if (roll(6)) {
 			loot.add(ClueTable.roll());
 		}
-		if (roll(150)) loot.add('Materials bag');
+		if (roll(120)) loot.add('Materials bag');
 		if (outfitPieceNotOwned && roll(16)) {
 			loot.add(outfitPieceNotOwned);
-			effectiveCL.add(outfitPieceNotOwned);
+			effectiveBank.add(outfitPieceNotOwned);
 			continue;
 		}
 	}
@@ -37,7 +40,7 @@ function tinkerLoot(user: MUser, quantity: number) {
 
 export const twTask: MinionTask = {
 	type: 'TinkeringWorkshop',
-	async run(data: MinigameActivityTaskOptions) {
+	async run(data: TinkeringWorkshopOptions) {
 		const { channelID, quantity, duration, userID } = data;
 
 		await incrementMinigameScore(userID, 'tinkering_workshop', quantity);
@@ -52,9 +55,20 @@ export const twTask: MinionTask = {
 
 		let xp = 0;
 		for (let i = 0; i < quantity; i++) {
-			xp += randInt(4000, 6000);
+			xp += randInt(8000, 15_000);
 		}
+
+		if (data.material === 'junk') xp /= 2;
+
 		const xpStr = await user.addXP({ amount: xp, skillName: SkillsEnum.Invention, duration });
+		await userStatsUpdate(user.id, oldStats => {
+			return {
+				tinker_workshop_mats_bank: new MaterialBank(oldStats.tinker_workshop_mats_bank as ItemBank).add(
+					data.material,
+					quantity
+				).bank
+			};
+		});
 
 		let str = `${user}, ${user.minionName} finished tinkering with ${quantity}x projects, you received ${loot} and ${xpStr}.`;
 

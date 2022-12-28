@@ -4502,8 +4502,7 @@ setCustomItem(
 	'Rune kiteshield',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	10_000

@@ -787,6 +787,8 @@ model UserStats {
 
   tame_cl_bank Json @default("{}") @db.JsonB
 
+  tinker_workshop_mats_bank Json @default("{}") @db.Json
+
   @@map("user_stats")
 }
 

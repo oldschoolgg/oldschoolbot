@@ -18,7 +18,9 @@ export async function tinkeringWorkshopCommand(user: MUser, material: MaterialTy
 	const quantity = Math.floor(calcMaxTripLength(user, 'TinkeringWorkshop') / gameTime);
 	const duration = randomVariation(quantity * gameTime, 5);
 
-	const materialCost = new MaterialBank().add(material, quantity * 3);
+	const MATERIAL_QTY_PER_PROJECT = 100;
+
+	const materialCost = new MaterialBank().add(material, quantity * MATERIAL_QTY_PER_PROJECT);
 	const ownedBank = user.materialsOwned();
 	if (!ownedBank.has(materialCost)) {
 		return `You don't have enough materials to workshop with this material, you need: ${materialCost}.`;
