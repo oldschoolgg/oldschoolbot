@@ -17,8 +17,6 @@ export function calcMaxTripLength(user: MUser, activity?: activity_type_enum) {
 	let max = Time.Minute * 30;
 	max += patronMaxTripBonus(user);
 
-	const hasMaterialsBag = user.hasEquipped('Materials bag');
-
 	const hasMasterHPCape = user.hasEquipped('Hitpoints master cape');
 	let masterHPCapeBoost = 0;
 	let regularHPBoost = false;
@@ -64,7 +62,7 @@ export function calcMaxTripLength(user: MUser, activity?: activity_type_enum) {
 		case 'TinkeringWorkshop':
 		case 'Disassembling':
 		case 'Research': {
-			if (hasMaterialsBag) {
+			if (user.hasEquipped('Materials bag') || user.owns('Materials bag')) {
 				max += Time.Minute * 7;
 			}
 			break;
