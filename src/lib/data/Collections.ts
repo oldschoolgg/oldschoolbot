@@ -1056,6 +1056,19 @@ export const allCollectionLogs: ICollection = {
 					"Fletcher's legs"
 				]),
 				fmtProg: mgProg('stealing_creation')
+			},
+			'Tinkering Workshop': {
+				alias: ['tw', 'tinkering workshop'],
+				items: resolveItems([
+					"Inventors' gloves",
+					"Inventors' boots",
+					"Inventors' legs",
+					"Inventors' torso",
+					"Inventors' helmet",
+					"Inventors' backpack",
+					'Materials bag'
+				]),
+				fmtProg: mgProg('tinkering_workshop')
 			}
 		}
 	},
