@@ -5,6 +5,7 @@ import { Bank, LootTable } from 'oldschooljs';
 
 import { Emoji, PerkTier } from '../../../lib/constants';
 import { allOpenables, UnifiedOpenable } from '../../../lib/openables';
+import { randomizeBank } from '../../../lib/randomizer';
 import { ItemBank } from '../../../lib/types';
 import { assert } from '../../../lib/util';
 import { stringMatches } from '../../../lib/util/cleanString';
@@ -103,16 +104,14 @@ const itemsThatDontAddToTempCL = resolveItems([
 	'Clothing Mystery Box',
 	'Equippable mystery box',
 	'Tester Gift box',
-	'Untradeable Mystery box',
 	'Pet Mystery box',
-	'Holiday Mystery box',
-	'Tradeable Mystery box'
+	'Holiday Mystery box'
 ]);
 
 async function finalizeOpening({
 	user,
 	cost,
-	loot,
+	loot: _loot,
 	messages,
 	openables,
 	kcBank
@@ -125,6 +124,7 @@ async function finalizeOpening({
 	openables: UnifiedOpenable[];
 }) {
 	if (!user.bank.has(cost)) return `You don't have ${cost}.`;
+	const loot = randomizeBank(user.id, _loot);
 	const newOpenableScores = await addToOpenablesScores(user, kcBank);
 
 	const hasSmokey = user.owns('Smokey');

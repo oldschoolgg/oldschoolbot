@@ -6,6 +6,7 @@ import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import { Events } from '../../../lib/constants';
 import { hasWildyHuntGearEquipped } from '../../../lib/gear/functions/hasWildyHuntGearEquipped';
 import { trackLoot } from '../../../lib/lootTrack';
+import { randomizeBank } from '../../../lib/randomizer';
 import { calcLootXPHunting, generateHerbiTable } from '../../../lib/skilling/functions/calcsHunter';
 import Hunter from '../../../lib/skilling/skills/hunter/hunter';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -137,7 +138,7 @@ export const hunterTask: MinionTask = {
 				});
 			}
 		}
-		const loot = new Bank();
+		let loot = new Bank();
 		for (let i = 0; i < successfulQuantity - pkedQuantity; i++) {
 			loot.add(creatureTable.roll());
 			if (roll(petDropRate) && creature.name.toLowerCase().includes('chinchompa')) {
@@ -165,6 +166,8 @@ export const hunterTask: MinionTask = {
 			amount: xpReceived,
 			duration
 		});
+
+		loot = randomizeBank(user.id, loot);
 
 		let str = `${user}, ${user.minionName} finished hunting ${
 			creature.name

@@ -1,6 +1,7 @@
 import { Bank } from 'oldschooljs';
 
 import { BlacksmithOutfit } from '../../lib/bsoOpenables';
+import { randomizeBank } from '../../lib/randomizer';
 import Smithing from '../../lib/skilling/skills/smithing/';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { SmithingActivityTaskOptions } from '../../lib/types/minions';
@@ -26,9 +27,10 @@ export const smithingTask: MinionTask = {
 			amount: xpReceived,
 			duration
 		});
-		const loot = new Bank({
+		let loot = new Bank({
 			[smithedItem.id]: quantity * smithedItem.outputMultiple
 		});
+		loot = randomizeBank(user.id, loot);
 		let str = `${user}, ${user.minionName} finished smithing, you received ${loot}. ${xpRes}`;
 		if (hasBS) {
 			str += '\n**10%** Bonus XP For Blacksmith Outfit';

@@ -23,8 +23,6 @@ export async function minionBuyCommand(apiUser: User, user: MUser, ironman: bool
 				'Anti-dragon shield': 1,
 				'Tiny lamp': 5,
 				'Small lamp': 2,
-				'Tradeable mystery box': 5,
-				'Untradeable Mystery box': 5,
 				'Dragon bones': 50,
 				Coins: 50_000_000,
 				'Clue scroll (beginner)': 10,

@@ -6,6 +6,7 @@ import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { Emoji, Events } from '../../../lib/constants';
 import addSkillingClueToLoot from '../../../lib/minions/functions/addSkillingClueToLoot';
+import { randomizeBank } from '../../../lib/randomizer';
 import { determineMiningTime } from '../../../lib/skilling/functions/determineMiningTime';
 import { Ore, SkillsEnum } from '../../../lib/skilling/types';
 import { ItemBank } from '../../../lib/types';
@@ -278,7 +279,8 @@ export async function shootingStarsActivity(data: ShootingStarsData) {
 	const user = await mUserFetch(data.userID);
 	const star = starSizes.find(i => i.size === data.size)!;
 	const { usersWith } = data;
-	const loot = new Bank(data.lootItems);
+	let loot = new Bank(data.lootItems);
+	loot = randomizeBank(user.id, loot);
 	const userMiningLevel = user.skillLevel(SkillsEnum.Mining);
 
 	await user.addItemsToBank({ items: loot, collectionLog: true });

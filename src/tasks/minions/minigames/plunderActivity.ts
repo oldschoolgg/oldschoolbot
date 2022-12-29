@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 import { Events } from '../../../lib/constants';
 import { userHasFlappy } from '../../../lib/invention/inventions';
 import { lootRoom, plunderRooms } from '../../../lib/minions/data/plunder';
+import { randomizeBank } from '../../../lib/randomizer';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -20,7 +21,7 @@ export const plunderTask: MinionTask = {
 			allRooms.length < 2 ? allRooms[allRooms.length - 1] : allRooms[allRooms.length - 2],
 			allRooms[allRooms.length - 1]
 		];
-		const loot = new Bank();
+		let loot = new Bank();
 		let amountUrns = 0;
 		let totalAmountUrns = 0;
 		let currentLootRoom = {};
@@ -39,6 +40,7 @@ export const plunderTask: MinionTask = {
 		if (flappyRes.shouldGiveBoost) {
 			loot.multiply(2);
 		}
+		loot = randomizeBank(user.id, loot);
 
 		const { itemsAdded, previousCL } = await transactItems({
 			userID: user.id,

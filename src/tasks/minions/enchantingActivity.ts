@@ -1,3 +1,4 @@
+import { randomizeBank } from '../../lib/randomizer';
 import { Enchantables } from '../../lib/skilling/skills/magic/enchantables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { EnchantingActivityTaskOptions } from '../../lib/types/minions';
@@ -18,7 +19,8 @@ export const enchantingTask: MinionTask = {
 			duration
 		});
 
-		const loot = enchantable.output.clone().multiply(quantity);
+		let loot = enchantable.output.clone().multiply(quantity);
+		loot = randomizeBank(user.id, loot);
 		await transactItems({
 			userID: user.id,
 			collectionLog: true,

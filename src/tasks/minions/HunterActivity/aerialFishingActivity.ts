@@ -2,6 +2,7 @@ import { calcPercentOfNum } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
+import { randomizeBank } from '../../../lib/randomizer';
 import Fishing from '../../../lib/skilling/skills/fishing';
 import aerialFishingCreatures from '../../../lib/skilling/skills/hunter/aerialFishing';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -32,7 +33,7 @@ export const aerialFishingTask: MinionTask = {
 
 		// Caught fish and molch pearls received formula
 		const maxRoll = (currentFishLevel * 2 + currentHuntLevel) / 3;
-		const loot = new Bank();
+		let loot = new Bank();
 
 		for (let i = 0; i < quantity; i++) {
 			if (roll(100 - ((maxRoll - 40) * 25) / 59)) {
@@ -147,6 +148,7 @@ export const aerialFishingTask: MinionTask = {
 			);
 		}
 
+		loot = randomizeBank(user.id, loot);
 		await transactItems({
 			userID: user.id,
 			collectionLog: true,

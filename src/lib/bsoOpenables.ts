@@ -3,7 +3,6 @@ import { Bank, Items, LootTable } from 'oldschooljs';
 import TreeHerbSeedTable from 'oldschooljs/dist/simulation/subtables/TreeHerbSeedTable';
 
 import { christmasLootTable } from './christmasEvent';
-import { Emoji } from './constants';
 import {
 	allPetIDs,
 	chambersOfXericCL,
@@ -32,9 +31,7 @@ export const MysteryBoxes = new LootTable()
 	.oneIn(55, 'Pet Mystery Box')
 	.oneIn(165, 'Holiday Mystery Box')
 	.oneIn(35, 'Equippable mystery box')
-	.oneIn(35, 'Clothing Mystery Box')
-	.add('Tradeable Mystery Box')
-	.add('Untradeable Mystery Box');
+	.oneIn(35, 'Clothing Mystery Box');
 
 export const magicCreateCrate = new LootTable()
 	.add('Pure essence', [500, 1000], 4)
@@ -167,7 +164,6 @@ export const NestBoxes = new LootTable()
 	.add('Nest box (empty)', 1, 3);
 
 const baseTGBTable = new LootTable()
-	.add('Tradeable mystery box', [1, 3])
 	.add('Reward casket (master)', [3, 6])
 	.add('Reward casket (beginner)', [3, 9])
 	.add('Reward casket (hard)', [3, 7])
@@ -175,7 +171,6 @@ const baseTGBTable = new LootTable()
 	.add(NestBoxes, 100)
 	.add('Holiday Mystery box')
 	.add('Pet Mystery box')
-	.add('Untradeable Mystery box')
 	.add('Abyssal dragon bones', [100, 500], 2)
 	.add('Coins', [20_000_000, 100_000_000], 2)
 	.add(LampTable, [1, 3])
@@ -202,7 +197,6 @@ const testerGiftTable = new LootTable()
 	.every('Clue scroll (grandmaster)', [1, 3])
 	.every(LampTable, [1, 2])
 	.add('Rocktail', [30, 60])
-	.add('Tradeable mystery box', [1, 3])
 	.add(baseTGBTable);
 
 export const IronmanPMBTable = new LootTable()
@@ -539,32 +533,6 @@ const ChristmasBoxTable = new LootTable()
 	.add('Coal', 1, 2);
 
 export const bsoOpenables: UnifiedOpenable[] = [
-	{
-		name: 'Tradeables Mystery box',
-		id: 6199,
-		openedItem: getOSItem(6199),
-		aliases: ['mystery', 'mystery box', 'tradeables mystery box', 'tmb'],
-
-		output: async ({ user, quantity, totalLeaguesPoints }) => ({
-			bank: getMysteryBoxItem(user, totalLeaguesPoints, true, quantity)
-		}),
-		emoji: Emoji.MysteryBox,
-		allItems: [],
-		isMysteryBox: true,
-		smokeyApplies: true
-	},
-	{
-		name: 'Untradeables Mystery box',
-		id: 19_939,
-		openedItem: getOSItem(19_939),
-		aliases: ['untradeables mystery box', 'umb'],
-		output: async ({ user, quantity, totalLeaguesPoints }) => ({
-			bank: getMysteryBoxItem(user, totalLeaguesPoints, false, quantity)
-		}),
-		allItems: [],
-		isMysteryBox: true,
-		smokeyApplies: true
-	},
 	{
 		name: 'Equippable mystery box',
 		id: itemID('Equippable mystery box'),

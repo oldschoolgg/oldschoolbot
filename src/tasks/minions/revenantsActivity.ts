@@ -6,6 +6,7 @@ import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { trackLoot } from '../../lib/lootTrack';
 import { revenantMonsters } from '../../lib/minions/data/killableMonsters/revs';
 import announceLoot from '../../lib/minions/functions/announceLoot';
+import { randomizeBank } from '../../lib/randomizer';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { Gear } from '../../lib/structures/Gear';
 import type { RevenantOptions } from '../../lib/types/minions';
@@ -101,7 +102,9 @@ export const revenantsTask: MinionTask = {
 
 		await user.incrementKC(monsterID, quantity);
 
-		const loot = monster.table.kill(quantity, { skulled });
+		let loot = monster.table.kill(quantity, { skulled });
+		loot = randomizeBank(user.id, loot);
+
 		let str =
 			`${user}, ${user.minionName} finished killing ${quantity} ${monster.name}.` +
 			` Your ${monster.name} KC is now ${user.getKC(monsterID)}.\n`;

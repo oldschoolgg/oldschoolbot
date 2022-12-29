@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
+import { randomizeBank } from '../../lib/randomizer';
 import { Stealable, stealables } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
@@ -70,7 +71,7 @@ export const pickpocketTask: MinionTask = {
 		const currentLevel = user.skillLevel('thieving');
 		let rogueOutfitBoostActivated = false;
 
-		const loot = new Bank();
+		let loot = new Bank();
 		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Thieving, obj.petChance);
 
 		if (obj.type === 'pickpockable') {
@@ -149,6 +150,8 @@ export const pickpocketTask: MinionTask = {
 		if (rogueOutfitBoostActivated) {
 			str += '\nYour rogue outfit allows you to take some extra loot.';
 		}
+
+		loot = randomizeBank(user.id, loot);
 
 		if (loot.amount('Rocky') > 0) {
 			str += "\n**You have a funny feeling you're being followed...**";

@@ -2,6 +2,7 @@ import { randInt } from 'e';
 import { Bank, Misc } from 'oldschooljs';
 
 import { Events, ZALCANO_ID } from '../../../lib/constants';
+import { randomizeBank } from '../../../lib/randomizer';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ZalcanoActivityTaskOptions } from '../../../lib/types/minions';
 import { ashSanctifierEffect } from '../../../lib/util/ashSanctifier';
@@ -16,7 +17,7 @@ export const zalcanoTask: MinionTask = {
 		const kc = user.getKC(ZALCANO_ID);
 		await user.incrementKC(ZALCANO_ID, quantity);
 
-		const loot = new Bank();
+		let loot = new Bank();
 
 		let runecraftXP = 0;
 		let smithingXP = 0;
@@ -55,7 +56,7 @@ export const zalcanoTask: MinionTask = {
 				}, just received **Smolcano**, their Zalcano KC is ${randInt(kc || 1, (kc || 1) + quantity)}!`
 			);
 		}
-
+		loot = randomizeBank(user.id, loot);
 		const { previousCL, itemsAdded } = await transactItems({
 			userID: user.id,
 			collectionLog: true,

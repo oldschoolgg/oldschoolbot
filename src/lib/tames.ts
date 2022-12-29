@@ -22,9 +22,10 @@ import { trackLoot } from './lootTrack';
 import killableMonsters from './minions/data/killableMonsters';
 import { customDemiBosses } from './minions/data/killableMonsters/custom/demiBosses';
 import { KillableMonster } from './minions/types';
+import { randomizeBank } from './randomizer';
 import { prisma } from './settings/prisma';
 import { runCommand } from './settings/settings';
-import { assert, channelIsSendable, itemNameFromID, roll } from './util';
+import { channelIsSendable, itemNameFromID, roll } from './util';
 import getOSItem from './util/getOSItem';
 import { handleSpecialCoxLoot } from './util/handleSpecialCoxLoot';
 import { makeBankImage } from './util/makeBankImage';
@@ -116,7 +117,6 @@ export const tameKillableMonsters: TameKillableMonster[] = [
 			const armorEquipped = tame.equipped_armor;
 			if (!armorEquipped) return 95;
 			const armorObj = igneArmors.find(i => i.item.id === armorEquipped)!;
-			assert(Boolean(armorObj), `${armorEquipped} not valid armor`);
 			return armorObj.coxDeathChance;
 		},
 		healAmountNeeded: 1588,
@@ -486,7 +486,7 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 					}
 				}
 			}
-			const loot = mon.loot({ quantity: killQty, tame });
+			const loot = randomizeBank(user.id, mon.loot({ quantity: killQty, tame }));
 			let str = `${user}, ${tameName(tame)} finished killing ${quantity}x ${mon.name}.${
 				activity.deaths > 0 ? ` ${tameName(tame)} died ${activity.deaths}x times.` : ''
 			}`;
@@ -527,8 +527,8 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 			const { quantity, itemID } = activityData;
 			const collectable = collectables.find(c => c.item.id === itemID)!;
 			const totalQuantity = quantity * collectable.quantity;
-			const loot = new Bank().add(collectable.item.id, totalQuantity);
 			const user = await mUserFetch(activity.user_id);
+			const loot = randomizeBank(user.id, new Bank().add(collectable.item.id, totalQuantity));
 			let str = `${user}, ${tameName(tame)} finished collecting ${totalQuantity}x ${
 				collectable.item.name
 			}. (${Math.round((totalQuantity / (activity.duration / Time.Minute)) * 60).toLocaleString()}/hr)`;

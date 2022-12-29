@@ -27,7 +27,6 @@ import { cancelTaskCommand } from '../lib/abstracted_commands/cancelTaskCommand'
 import { crackerCommand } from '../lib/abstracted_commands/crackerCommand';
 import { dailyCommand } from '../lib/abstracted_commands/dailyCommand';
 import { feedHammyCommand } from '../lib/abstracted_commands/hammyCommand';
-import { ironmanCommand } from '../lib/abstracted_commands/ironmanCommand';
 import { Lampables, lampCommand } from '../lib/abstracted_commands/lampCommand';
 import { minionBuyCommand } from '../lib/abstracted_commands/minionBuyCommand';
 import { minionStatusCommand } from '../lib/abstracted_commands/minionStatusCommand';
@@ -96,15 +95,7 @@ export const minionCommand: OSBMahojiCommand = {
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'buy',
-			description: 'Buy a minion so you can start playing the bot!',
-			options: [
-				{
-					type: ApplicationCommandOptionType.Boolean,
-					name: 'ironman',
-					description: 'Do you want to be an ironman?',
-					required: false
-				}
-			]
+			description: 'Buy a minion so you can start playing the bot!'
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -272,19 +263,6 @@ export const minionCommand: OSBMahojiCommand = {
 							.filter(i => (!value ? true : i.aliases.some(alias => alias.includes(value.toLowerCase()))))
 							.map(i => ({ name: i.name, value: i.name }));
 					}
-				}
-			]
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'ironman',
-			description: 'Become an ironman, or de-iron.',
-			options: [
-				{
-					type: ApplicationCommandOptionType.Boolean,
-					name: 'permanent',
-					description: 'Do you want to become a permanent ironman?',
-					required: false
 				}
 			]
 		},
@@ -493,7 +471,6 @@ export const minionCommand: OSBMahojiCommand = {
 
 		if (options.buy)
 			return minionBuyCommand(await globalClient.users.fetch(user.id), user, Boolean(options.buy.ironman));
-		if (options.ironman) return ironmanCommand(user, interaction);
 
 		if (options.charge) {
 			return degradeableItemsCommand(interaction, user, options.charge.item, options.charge.amount);

@@ -2,6 +2,7 @@ import { calcWhatPercent, percentChance } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../../lib/constants';
+import { randomizeBank } from '../../../lib/randomizer';
 import { getMinigameScore, incrementMinigameScore, MinigameName } from '../../../lib/settings/settings';
 import { gauntlet } from '../../../lib/simulation/gauntlet';
 import { GauntletOptions } from '../../../lib/types/minions';
@@ -22,7 +23,7 @@ export const gauntletTask: MinionTask = {
 		let chanceOfDeath = corrupted ? 6 : 3;
 		chanceOfDeath += Math.max(0, calcWhatPercent(50 - kc, 50) / 2);
 
-		const loot = new Bank();
+		let loot = new Bank();
 
 		let deaths = 0;
 		for (let i = 0; i < quantity; i++) {
@@ -42,7 +43,7 @@ export const gauntletTask: MinionTask = {
 		}
 
 		await incrementMinigameScore(userID, key, quantity - deaths);
-
+		loot = randomizeBank(user.id, loot);
 		const { previousCL } = await transactItems({
 			userID: user.id,
 			collectionLog: true,

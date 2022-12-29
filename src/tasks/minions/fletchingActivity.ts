@@ -1,5 +1,6 @@
 import { Bank } from 'oldschooljs';
 
+import { randomizeBank } from '../../lib/randomizer';
 import Fletching from '../../lib/skilling/skills/fletching/';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FletchingActivityTaskOptions } from '../../lib/types/minions';
@@ -25,7 +26,8 @@ export const fletchingTask: MinionTask = {
 		}
 		let quantityToGive = fletchableItem.outputMultiple ? quantity * fletchableItem.outputMultiple : quantity;
 
-		const loot = new Bank({ [fletchableItem.id]: quantityToGive });
+		let loot = new Bank({ [fletchableItem.id]: quantityToGive });
+		loot = randomizeBank(user.id, loot);
 		await transactItems({
 			userID: user.id,
 			collectionLog: true,

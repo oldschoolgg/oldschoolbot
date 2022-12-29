@@ -11,6 +11,7 @@ import {
 } from '../../../lib/minions/data/killableMonsters/custom/bosses/Ignecarus';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
+import { randomizeBank } from '../../../lib/randomizer';
 import { prisma } from '../../../lib/settings/prisma';
 import { TeamLoot } from '../../../lib/simulation/TeamLoot';
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
@@ -95,10 +96,11 @@ export const ignecarusTask: MinionTask = {
 				if (deaths[user.id].qty === quantity) continue;
 				else lootRolls = quantity - deaths[user.id].qty;
 			}
-			const loot = new Bank().add(IgnecarusLootTable.roll(lootRolls));
+			let loot = new Bank().add(IgnecarusLootTable.roll(lootRolls));
 			if (isDoubleLootActive(duration)) {
 				loot.multiply(2);
 			}
+			loot = randomizeBank(user.id, loot);
 			teamLoot.add(user.id, loot);
 			totalLoot.add(loot);
 			await addMonsterXP(user, {

@@ -5,6 +5,7 @@ import { BitField, NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID } from '../../../lib/const
 import { trackLoot } from '../../../lib/lootTrack';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
+import { randomizeBank } from '../../../lib/randomizer';
 import { NightmareActivityTaskOptions } from '../../../lib/types/minions';
 import { randomVariation } from '../../../lib/util';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
@@ -28,7 +29,7 @@ export const nightmareTask: MinionTask = {
 
 		const [userStats] = getNightmareGearStats(user, team, isPhosani);
 		const parsedUsers = team.map(id => ({ ...userStats, id }));
-		const userLoot = new Bank();
+		let userLoot = new Bank();
 		let kc = 0;
 		let deaths = 0;
 
@@ -57,6 +58,8 @@ export const nightmareTask: MinionTask = {
 			isOnTask: false,
 			taskQuantity: null
 		});
+
+		userLoot = randomizeBank(user.id, userLoot);
 
 		const bank = getMahojiBank(mahojiUser);
 		if (bank.has('Slepey tablet') || mahojiUser.bitfield.includes(BitField.HasSlepeyTablet)) {

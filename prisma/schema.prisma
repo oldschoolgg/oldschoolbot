@@ -346,7 +346,7 @@ model User {
   bank_bg_hex                String?
   minion_name                String?  @map("minion.name")
   minion_hasBought           Boolean  @default(false) @map("minion.hasBought")
-  minion_ironman             Boolean  @default(false) @map("minion.ironman")
+  minion_ironman             Boolean  @default(true) @map("minion.ironman")
   minion_icon                String?  @map("minion.icon")
   minion_equippedPet         Int?     @map("minion.equippedPet")
   minion_farmingContract     Json?    @map("minion.farmingContract") @db.Json

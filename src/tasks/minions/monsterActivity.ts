@@ -1,7 +1,6 @@
 import { calcWhatPercent, increaseNumByPercent, percentChance, reduceNumByPercent, sumArr, Time } from 'e';
-import { Bank, LootTable, Monsters } from 'oldschooljs';
+import { Bank, MonsterKillOptions, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
-import SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
 
 import { MysteryBoxes } from '../../lib/bsoOpenables';
 import { ClueTiers } from '../../lib/clues/clueTiers';
@@ -13,12 +12,13 @@ import { trackLoot } from '../../lib/lootTrack';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
-import { randomizeLootTable } from '../../lib/randomizer';
+import { KillableMonster } from '../../lib/minions/types';
+import { randomizeBank } from '../../lib/randomizer';
 import { prisma } from '../../lib/settings/prisma';
 import { bones } from '../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
-import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
+import { calculateSlayerPoints, getSlayerMasterOSJSbyID, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { assert, clAdjustedDroprate, roll } from '../../lib/util';
 import { ashSanctifierEffect } from '../../lib/util/ashSanctifier';
@@ -190,6 +190,7 @@ export const monsterTask: MinionTask = {
 
 		const mySlayerUnlocks = user.user.slayer_unlocks;
 
+		const slayerMaster = isOnTask ? getSlayerMasterOSJSbyID(usersTask.slayerMaster!.id) : undefined;
 		// Check if superiors unlock is purchased
 		const superiorsUnlocked = isOnTask
 			? mySlayerUnlocks.includes(SlayerTaskUnlocksEnum.BiggerAndBadder)
@@ -198,18 +199,17 @@ export const monsterTask: MinionTask = {
 		const superiorTable = superiorsUnlocked && monster.superior ? monster.superior : undefined;
 		const isInCatacombs = !usingCannon ? monster.existsInCatacombs ?? undefined : undefined;
 
+		const killOptions: MonsterKillOptions = {
+			onSlayerTask: isOnTask,
+			slayerMaster,
+			hasSuperiors: superiorTable,
+			inCatacombs: isInCatacombs
+		};
 		// Regular loot
-
-		let loot: Bank = new Bank();
-		if (fullMonster instanceof SimpleMonster && fullMonster.table) {
-			const table = randomizeLootTable(
-				user.id,
-				fullMonster instanceof SimpleMonster ? fullMonster.table! : new LootTable()
-			);
-			loot = table.roll(boostedQuantity);
-		} else {
-			loot = monster.table.kill(boostedQuantity, {});
-		}
+		let loot = (monster as KillableMonster).table.kill(
+			isDoubleLootActive(duration) ? quantity * 2 : boostedQuantity,
+			killOptions
+		);
 
 		// Calculate superiors and assign loot.
 		let newSuperiorCount = 0;
@@ -313,6 +313,7 @@ export const monsterTask: MinionTask = {
 			messages.push('Ori has used the abyss to transmute you +25% bonus loot!');
 		}
 
+		loot = randomizeBank(user.id, loot);
 		announceLoot({ user, monsterID: monster.id, loot, notifyDrops: monster.notifyDrops });
 
 		if (newSuperiorCount && newSuperiorCount > 0) {

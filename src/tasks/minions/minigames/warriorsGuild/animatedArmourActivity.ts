@@ -1,5 +1,6 @@
 import { Bank } from 'oldschooljs';
 
+import { randomizeBank } from '../../../../lib/randomizer';
 import { AnimatedArmourActivityTaskOptions } from '../../../../lib/types/minions';
 import { handleTripFinish } from '../../../../lib/util/handleTripFinish';
 import { Armours } from '../../../../mahoji/lib/abstracted_commands/warriorsGuildCommand';
@@ -15,9 +16,11 @@ export const animatedArmorTask: MinionTask = {
 			armour.name
 		} armour and received ${quantity * armour.tokens}x Warrior guild tokens.`;
 
-		const loot = new Bank({
+		let loot = new Bank({
 			'Warrior guild token': quantity * armour.tokens
 		});
+
+		loot = randomizeBank(user.id, loot);
 
 		await transactItems({
 			userID: user.id,

@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import { MysteryBoxes } from '../../../lib/bsoOpenables';
 import { ArdougneDiary, userhasDiaryTier } from '../../../lib/diaries';
+import { randomizeBank } from '../../../lib/randomizer';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { fishingTrawlerLoot } from '../../../lib/simulation/fishingTrawler';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -21,7 +22,7 @@ export const trawlerTask: MinionTask = {
 		const fishingLevel = user.skillLevel(SkillsEnum.Fishing);
 
 		const allItemsOwnedBank = user.allItemsOwned().bank;
-		const loot = new Bank();
+		let loot = new Bank();
 
 		let totalXP = 0;
 		const [hasEliteArdy] = await userhasDiaryTier(user, ArdougneDiary.elite);
@@ -67,6 +68,7 @@ export const trawlerTask: MinionTask = {
 			totalXP *= 1.5;
 			str += '\nYou received **2x** extra fish from Shelldon helping you.';
 		}
+		loot = randomizeBank(user.id, loot);
 
 		const { previousCL, itemsAdded } = await transactItems({
 			userID: user.id,

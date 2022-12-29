@@ -8,6 +8,7 @@ import KingGoldemar, {
 	KingGoldemarLootTable
 } from '../../../lib/minions/data/killableMonsters/custom/bosses/KingGoldemar';
 import { addMonsterXP } from '../../../lib/minions/functions';
+import { randomizeBank } from '../../../lib/randomizer';
 import { TeamLoot } from '../../../lib/simulation/TeamLoot';
 import { calcDwwhChance, gpCostPerKill } from '../../../lib/structures/Boss';
 import { NewBossOptions } from '../../../lib/types/minions';
@@ -92,7 +93,7 @@ export const kingGoldemarTask: MinionTask = {
 		const teamLoot = new TeamLoot([]);
 		const totalLoot = new Bank();
 		for (const user of users.filter(u => !deaths.includes(u))) {
-			const loot = new Bank().add(KingGoldemarLootTable.roll());
+			let loot = new Bank().add(KingGoldemarLootTable.roll());
 			if (dwwhRecipient === user) {
 				loot.add('Broken dwarven warhammer');
 			}
@@ -107,6 +108,7 @@ export const kingGoldemarTask: MinionTask = {
 				isOnTask: false,
 				taskQuantity: null
 			});
+			loot = randomizeBank(user.id, loot);
 			await user.addItemsToBank({ items: loot, collectionLog: true });
 			teamLoot.add(user.id, loot);
 			resultStr += `\n${user} received ${loot}.`;

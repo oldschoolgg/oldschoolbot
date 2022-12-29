@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { implings, puroImplings, puroImpNormalTable, puroImpSpellTable } from '../../../lib/implings';
+import { randomizeBank } from '../../../lib/randomizer';
 import { incrementMinigameScore } from '../../../lib/settings/minigames';
 import { PuroPuroActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -46,7 +47,7 @@ export const puroPuroTask: MinionTask = {
 
 		const minutes = Math.floor(data.duration / Time.Minute);
 
-		const bank = new Bank();
+		let bank = new Bank();
 		const missed = new Bank();
 		const itemCost = new Bank();
 		let hunterXP = 0;
@@ -170,6 +171,7 @@ export const puroPuroTask: MinionTask = {
 				str += `\n**Boosts:** Due to using Dark Lure, you have an increased chance at getting Nature Implings and above. You used: ${itemCost}. ${saved}`;
 			}
 		}
+		bank = randomizeBank(user.id, bank);
 
 		str += `\nYou received: **${bank
 			.items()
@@ -184,7 +186,6 @@ export const puroPuroTask: MinionTask = {
 			.join(', ')}**.`;
 
 		if (missed.length > 0) str += `\nYou missed out on ${missed} due to your hunter level being too low.`;
-
 		await transactItems({
 			userID: user.id,
 			itemsToAdd: bank,

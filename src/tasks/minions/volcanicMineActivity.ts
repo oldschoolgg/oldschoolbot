@@ -3,6 +3,7 @@ import { Bank, LootTable } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
 import { userHasFlappy } from '../../lib/invention/inventions';
+import { randomizeBank } from '../../lib/randomizer';
 import { incrementMinigameScore } from '../../lib/settings/settings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
@@ -84,7 +85,7 @@ export const vmTask: MinionTask = {
 		await incrementMinigameScore(userID, 'volcanic_mine', quantity);
 
 		const fragmentRolls = rand(38, 40) * quantity;
-		const loot = new Bank().add(fragmentTable.roll(fragmentRolls));
+		let loot = new Bank().add(fragmentTable.roll(fragmentRolls));
 		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Mining, 60_000);
 		// Iterate over the fragments received
 		for (let i = 0; i < fragmentRolls; i++) {
@@ -94,7 +95,7 @@ export const vmTask: MinionTask = {
 
 		// 4x Loot for having doug helping, as it helps mining more fragments
 		if (flappyRes.shouldGiveBoost) loot.multiply(2);
-
+		loot = randomizeBank(user.id, loot);
 		let str = `${user}, ${user.minionName} finished playing ${quantity} games of Volcanic Mine.\n${xpRes}${
 			loot.length > 0 ? `\nYou received ${loot}` : ''
 		}\nYou received **${pointsReceived.toLocaleString()}** Volcanic Mine points. ${warningMessage}`;

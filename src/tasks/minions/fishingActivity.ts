@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import { Emoji, Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
+import { randomizeBank } from '../../lib/randomizer';
 import { Cookables } from '../../lib/skilling/skills/cooking';
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -224,6 +225,8 @@ export const fishingTask: MinionTask = {
 				}
 			}
 		}
+
+		loot = randomizeBank(user.id, loot);
 
 		await transactItems({
 			userID: user.id,

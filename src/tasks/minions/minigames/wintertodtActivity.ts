@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 import { Emoji, Events } from '../../../lib/constants';
 import { userHasFlappy } from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/lootTrack';
+import { randomizeBank } from '../../../lib/randomizer';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
 import Firemaking from '../../../lib/skilling/skills/firemaking';
@@ -45,6 +46,7 @@ export const wintertodtTask: MinionTask = {
 			loot.add('Wintertoad');
 		}
 
+		loot = randomizeBank(user.id, loot);
 		// Track loot in Economy Stats
 		await updateBankSetting('economyStats_wintertodtLoot', loot);
 

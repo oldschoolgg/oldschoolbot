@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import { BlacksmithOutfit } from '../../lib/bsoOpenables';
 import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
+import { randomizeBank } from '../../lib/randomizer';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { SmeltingActivityTaskOptions } from '../../lib/types/minions';
@@ -61,9 +62,10 @@ export const smeltingTask: MinionTask = {
 			str += '\n10% more XP for owning the blacksmith outfit.';
 		}
 
-		const loot = new Bank({
+		let loot = new Bank({
 			[bar.id]: quantity
 		});
+		loot = randomizeBank(user.id, loot);
 
 		if (duration >= MIN_LENGTH_FOR_PET && !blastf && user.QP > 10) {
 			const numMinutes = duration / Time.Minute;

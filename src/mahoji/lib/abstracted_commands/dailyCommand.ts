@@ -6,6 +6,7 @@ import { Bank } from 'oldschooljs';
 import { SupportServer } from '../../../config';
 import { COINS_ID, Emoji } from '../../../lib/constants';
 import { dailyResetTime } from '../../../lib/MUser';
+import { randomizeBank } from '../../../lib/randomizer';
 import dailyRoll from '../../../lib/simulation/dailyTable';
 import { channelIsSendable, formatDuration, isWeekend } from '../../../lib/util';
 import { deferInteraction } from '../../../lib/util/interactionReply';
@@ -96,10 +97,11 @@ async function reward(user: MUser, triviaCorrect = true): CommandResponse {
 		delete loot[COINS_ID];
 	}
 
+	const bankLoot = randomizeBank(user.id, new Bank(loot));
 	const { itemsAdded, previousCL } = await transactItems({
 		userID: user.id,
 		collectionLog: true,
-		itemsToAdd: new Bank(loot)
+		itemsToAdd: bankLoot
 	});
 	const image = await makeBankImage({
 		bank: itemsAdded,
@@ -107,7 +109,7 @@ async function reward(user: MUser, triviaCorrect = true): CommandResponse {
 		previousCL,
 		showNewCL: true
 	});
-	return { content: `${dmStr}\nYou received ${new Bank(loot)}`, files: [image.file] };
+	return { content: `${dmStr}\nYou received ${bankLoot}`, files: [image.file] };
 }
 
 export async function dailyCommand(

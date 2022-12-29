@@ -2,6 +2,7 @@ import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { MorytaniaDiary, userhasDiaryTier } from '../../lib/diaries';
+import { randomizeBank } from '../../lib/randomizer';
 import { CollectingOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
@@ -22,7 +23,8 @@ export const collectingTask: MinionTask = {
 			colQuantity *= 2;
 		}
 		const totalQuantity = quantity * colQuantity;
-		const loot = new Bank().add(collectable.item.id, totalQuantity);
+		let loot = new Bank().add(collectable.item.id, totalQuantity);
+		loot = randomizeBank(user.id, loot);
 		await transactItems({
 			userID: user.id,
 			collectionLog: true,

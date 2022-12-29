@@ -7,6 +7,7 @@ import { dwarvenOutfit } from '../../../lib/data/CollectionsExport';
 import { isDoubleLootActive } from '../../../lib/doubleLoot';
 import { trackLoot } from '../../../lib/lootTrack';
 import { MOKTANG_ID, MoktangLootTable } from '../../../lib/minions/data/killableMonsters/custom/bosses/Moktang';
+import { randomizeBank } from '../../../lib/randomizer';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { PercentCounter } from '../../../lib/structures/PercentCounter';
 import { ActivityTaskOptions } from '../../../lib/types/minions';
@@ -110,6 +111,8 @@ export async function moktangActivity(data: MoktangTaskOptions) {
 		loot.multiply(2);
 		data.cantBeDoubled = true;
 	}
+
+	loot = randomizeBank(user.id, loot);
 
 	const res = await user.addItemsToBank({ items: loot, collectionLog: true });
 	await updateBankSetting('moktang_loot', loot);

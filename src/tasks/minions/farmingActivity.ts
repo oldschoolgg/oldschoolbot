@@ -6,6 +6,7 @@ import { Emoji, Events } from '../../lib/constants';
 import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
 import { defaultFarmingContract, PatchTypes } from '../../lib/minions/farming';
 import { FarmingContract } from '../../lib/minions/farming/types';
+import { randomizeBank } from '../../lib/randomizer';
 import { prisma } from '../../lib/settings/prisma';
 import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
 import Farming, { plants } from '../../lib/skilling/skills/farming';
@@ -211,6 +212,7 @@ export const farmingTask: MinionTask = {
 				loot.bank[itemID('Tormented skull')] = 1;
 			}
 
+			loot = randomizeBank(user.id, loot);
 			if (loot.length > 0) {
 				str += `\n\nYou received: ${loot}.`;
 			}
@@ -578,6 +580,7 @@ export const farmingTask: MinionTask = {
 				}
 			}
 
+			loot = randomizeBank(user.id, loot);
 			if (Object.keys(loot).length > 0) {
 				infoStr.push(`\nYou received: ${loot}.`);
 			}

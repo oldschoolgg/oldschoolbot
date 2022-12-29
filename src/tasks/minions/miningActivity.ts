@@ -5,6 +5,7 @@ import { Emoji, Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { InventionID } from '../../lib/invention/inventions';
 import { stoneSpirits } from '../../lib/minions/data/stoneSpirits';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
+import { randomizeBank } from '../../lib/randomizer';
 import Mining from '../../lib/skilling/skills/mining';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -54,7 +55,7 @@ export const miningTask: MinionTask = {
 
 		let str = `${user}, ${user.minionName} finished mining ${quantity} ${ore.name}. ${xpRes}`;
 
-		const loot = new Bank();
+		let loot = new Bank();
 
 		const numberOfMinutes = duration / Time.Minute;
 
@@ -212,6 +213,8 @@ export const miningTask: MinionTask = {
 		if (user.hasEquipped('Mining master cape')) {
 			str += '\n2x minerals/nuggets for Mining master cape.';
 		}
+
+		loot = randomizeBank(user.id, loot);
 
 		await transactItems({
 			userID: user.id,

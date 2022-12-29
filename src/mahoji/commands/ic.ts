@@ -57,14 +57,7 @@ const itemContractItemsSet = new Set([
 		...BSOMonsters.RumPumpedCrab.table.allItems,
 		...BSOMonsters.QueenBlackDragon.table.allItems
 	],
-	...resolveItems([
-		'Untradeable mystery box',
-		'Tradeable mystery box',
-		'Pet mystery box',
-		'Holiday mystery box',
-		'Dwarven bar',
-		'Dwarven ore'
-	])
+	...resolveItems(['Pet mystery box', 'Holiday mystery box', 'Dwarven bar', 'Dwarven ore'])
 ]);
 
 const cantBeContract = resolveItems(['Coins']);

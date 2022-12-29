@@ -9,6 +9,7 @@ import { bossKillables } from '../../../lib/minions/data/killableMonsters/bosses
 import { VasaMagus, VasaMagusLootTable } from '../../../lib/minions/data/killableMonsters/custom/bosses/VasaMagus';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
+import { randomizeBank } from '../../../lib/randomizer';
 import { NewBossOptions } from '../../../lib/types/minions';
 import { getMonster, itemNameFromID } from '../../../lib/util';
 import getOSItem from '../../../lib/util/getOSItem';
@@ -42,7 +43,7 @@ export const vasaTask: MinionTask = {
 
 		await user.incrementKC(VasaMagus.id, quantity);
 
-		const loot = new Bank();
+		let loot = new Bank();
 
 		const lootOf: Record<string, number> = {};
 		for (let i = 0; i < quantity; i++) {
@@ -81,6 +82,7 @@ export const vasaTask: MinionTask = {
 			isOnTask: false,
 			taskQuantity: null
 		});
+		loot = randomizeBank(user.id, loot);
 		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
 		await trackLoot({
 			duration,

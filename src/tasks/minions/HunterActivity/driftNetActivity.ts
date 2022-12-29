@@ -1,5 +1,6 @@
 import { Bank } from 'oldschooljs';
 
+import { randomizeBank } from '../../../lib/randomizer';
 import driftNetCreatures from '../../../lib/skilling/skills/hunter/driftNet';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
@@ -62,7 +63,7 @@ export const driftNetTask: MinionTask = {
 			}
 		}
 
-		const loot = new Bank();
+		let loot = new Bank();
 
 		for (let i = 0; i < quantity * 10; i++) {
 			loot.add(fishTable.roll());
@@ -90,7 +91,7 @@ export const driftNetTask: MinionTask = {
 		})}`;
 		xpRes += `\n${await user.addXP({ skillName: SkillsEnum.Fishing, amount: fishXpReceived, duration })}`;
 		await user.incrementCreatureScore(fishShoal.id, fishShoalCaught);
-
+		loot = randomizeBank(user.id, loot);
 		let str = `${user}, ${user.minionName} finished drift net fishing and caught ${quantity}x ${fishShoal.name}.${xpRes}${shelldonStr}\n${user.minionName} asks if you'd like them to do another of the same trip.`;
 
 		await transactItems({

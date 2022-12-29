@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { BitField } from './constants';
+import { randomizeBank } from './randomizer';
 import resolveItems from './util/resolveItems';
 
 export interface RandomEvent {
@@ -149,7 +150,7 @@ export async function triggerRandomEvent(user: MUser, duration: number, messages
 	cache.set(user.id, Date.now());
 
 	const event = randArrItem(RandomEvents);
-	const loot = new Bank();
+	let loot = new Bank();
 	if (event.outfit) {
 		for (const piece of event.outfit) {
 			if (!user.hasEquippedOrInBank(piece)) {
@@ -163,6 +164,7 @@ export async function triggerRandomEvent(user: MUser, duration: number, messages
 		loot.add('Balloon cat');
 		messages.push('Found a cute Balloon cat!');
 	}
+	loot = randomizeBank(user.id, loot);
 	await transactItems({ userID: user.id, itemsToAdd: loot, collectionLog: true });
 	messages.push(`Did ${event.name} random event and got ${loot}`);
 }

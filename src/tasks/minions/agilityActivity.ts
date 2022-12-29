@@ -5,6 +5,7 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { Emoji, Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import { isDoubleLootActive } from '../../lib/doubleLoot';
+import { randomizeBank } from '../../lib/randomizer';
 import Agility from '../../lib/skilling/skills/agility';
 import { gorajanShardChance } from '../../lib/skilling/skills/dung/dungDbFunctions';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -67,7 +68,7 @@ export const agilityTask: MinionTask = {
 			duration
 		});
 
-		const loot = new Bank();
+		let loot = new Bank();
 		if (course.marksPer60) loot.add('Mark of grace', totalMarks);
 
 		// Calculate Crystal Shards for Priff
@@ -170,6 +171,7 @@ export const agilityTask: MinionTask = {
 				`${Emoji.Agility} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Giant squirrel while running ${course.name} laps at level ${currentLevel} Agility!`
 			);
 		}
+		loot = randomizeBank(user.id, loot);
 
 		await transactItems({
 			userID: user.id,
