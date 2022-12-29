@@ -4392,10 +4392,10 @@ object.values@^1.1.5:
     define-properties "^1.1.3"
     es-abstract "^1.19.1"
 
-oldschooljs@^2.1.92:
-  version "2.1.92"
-  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-2.1.92.tgz#cce89966b2abc9deec68d937cb804f20b46639fd"
-  integrity sha512-bDLOJI+zREiwbZXcLBNe1zgkmeE25IxhiWH5ZfWfIRNpuKuOvvvKEYdiYtXi9sZY2xfAJrf+9OcQllBFpBBaeQ==
+oldschooljs@^2.1.93:
+  version "2.1.93"
+  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-2.1.93.tgz#db61d43a663d68dbbe2aced1bbf02335825f0fbd"
+  integrity sha512-OD2XjdH1mEA3Vw/zFIwlQA5g/UhhnKdYdJjU+/cyOgA7NHJy5KfZnMiMTbFTwub7TabxEvQ0sTsqDdkdIPuSXw==
   dependencies:
     "@oldschoolgg/eslint-config" "^1.2.5"
     e "^0.2.1"
