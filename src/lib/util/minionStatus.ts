@@ -605,6 +605,11 @@ export function minionStatus(user: MUser) {
 				durationRemaining
 			)}.`;
 		}
+		case 'NightmareZone': {
+			return `${name} is currently stuck in the Nightmare Zone. The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
 		case 'HalloweenEvent': {
 			return `${name} is currently Trick-or-Treating! The trip should take ${formatDuration(durationRemaining)}.`;
 		}

@@ -347,6 +347,11 @@ export interface GuardiansOfTheRiftActivityTaskOptions extends MinigameActivityT
 	combinationRunes: boolean;
 }
 
+export interface NightmareZoneActivityTaskOptions extends MinigameActivityTaskOptions {
+	stratergy: string;
+	quantity: number;
+}
+
 export type ActivityTaskData =
 	| ActivityTaskOptions
 	| MonsterActivityTaskOptions

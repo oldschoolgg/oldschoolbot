@@ -43,6 +43,11 @@ import {
 	mahoganyHomesBuyCommand
 } from '../lib/abstracted_commands/mahoganyHomesCommand';
 import {
+	nightmareZoneShopCommand,
+	nightmareZoneStartCommand,
+	nightmareZoneStatsCommand
+} from '../lib/abstracted_commands/nightmareZoneCommand';
+import {
 	pestControlBuyables,
 	pestControlBuyCommand,
 	pestControlStartCommand,
@@ -70,6 +75,11 @@ import {
 } from '../lib/abstracted_commands/volcanicMineCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { giantsFoundryAlloys, giantsFoundryBuyables } from './../lib/abstracted_commands/giantsFoundryCommand';
+import {
+	nightmareZoneBuyables,
+	nightmareZoneImbueables,
+	nightmareZoneImbueCommand
+} from './../lib/abstracted_commands/nightmareZoneCommand';
 
 export const minigamesCommand: OSBMahojiCommand = {
 	name: 'minigames',
@@ -897,6 +907,80 @@ export const minigamesCommand: OSBMahojiCommand = {
 					]
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			name: 'nmz',
+			description: 'The Nightmare Zone minigame.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'start',
+					description: 'Start a trip.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'stratergy',
+							description: 'The stratergy to use.',
+							required: true,
+							choices: [
+								{ name: 'experience', value: 'experience' },
+								{ name: 'points', value: 'points' }
+							]
+						}
+					]
+				},
+				{
+					name: 'buy',
+					type: ApplicationCommandOptionType.Subcommand,
+					description: 'Buy items with Nightmare Zone points.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'item',
+							description: 'The item to buy.',
+							required: false,
+							autocomplete: async (value: string) => {
+								return nightmareZoneBuyables
+									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
+									.map(i => ({ name: `${i.name}`, value: i.name }));
+							}
+						},
+						{
+							type: ApplicationCommandOptionType.Number,
+							name: 'quantity',
+							description: 'Quantity.',
+							required: false,
+							min_value: 1
+						}
+					]
+				},
+				{
+					name: 'stats',
+					type: ApplicationCommandOptionType.Subcommand,
+					description: 'Nightmare Zone stats'
+				},
+				{
+					name: 'imbue',
+					type: ApplicationCommandOptionType.Subcommand,
+					description: 'Imbue using Nightmare Zone points.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'name',
+							required: true,
+							description: 'The item to imbue.',
+							autocomplete: async value => {
+								return nightmareZoneImbueables
+									.filter(i =>
+										!value ? true : i.input.name.toLowerCase().includes(value.toLowerCase())
+									)
+									.map(i => ({ name: i.input.name, value: i.input.name }));
+							}
+						}
+					]
+				}
+			]
 		}
 	],
 	run: async ({
@@ -965,6 +1049,12 @@ export const minigamesCommand: OSBMahojiCommand = {
 		};
 		gotr?: {
 			start?: { combination_runes?: boolean };
+		};
+		nmz?: {
+			start?: { stratergy: string };
+			buy?: { item: string; quantity?: number };
+			stats?: {};
+			imbue?: { name: string };
 		};
 	}>) => {
 		const user = await mUserFetch(userID);
@@ -1256,6 +1346,22 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 */
 		if (options.gotr) {
 			return guardiansOfTheRiftStartCommand(user, channelID, options.gotr.start?.combination_runes);
+		}
+
+		/**
+		 *
+		 * Nightmare Zone
+		 *
+		 */
+		if (options.nmz?.start) {
+			return nightmareZoneStartCommand(user, options.nmz.start.stratergy, channelID);
+		}
+		if (options.nmz?.buy) {
+			return nightmareZoneShopCommand(interaction, user, options.nmz.buy.item, options.nmz.buy.quantity);
+		}
+		if (options.nmz?.stats) return nightmareZoneStatsCommand(user);
+		if (options.nmz?.imbue) {
+			return nightmareZoneImbueCommand(user, options.nmz.imbue.name);
 		}
 
 		return 'Invalid command.';

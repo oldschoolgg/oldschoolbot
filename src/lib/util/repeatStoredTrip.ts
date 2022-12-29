@@ -54,6 +54,7 @@ import {
 } from '../types/minions';
 import { itemNameFromID } from '../util';
 import { giantsFoundryAlloys } from './../../mahoji/lib/abstracted_commands/giantsFoundryCommand';
+import { NightmareZoneActivityTaskOptions } from './../types/minions';
 
 export const taskCanBeRepeated = (type: activity_type_enum) =>
 	!(
@@ -520,6 +521,14 @@ export const tripHandlers = {
 		args: (data: GuardiansOfTheRiftActivityTaskOptions) => ({
 			gotr: {
 				start: { combination_runes: data.combinationRunes }
+			}
+		})
+	},
+	[activity_type_enum.NightmareZone]: {
+		commandName: 'minigames',
+		args: (data: NightmareZoneActivityTaskOptions) => ({
+			nmz: {
+				start: { stratergy: data.stratergy }
 			}
 		})
 	}
