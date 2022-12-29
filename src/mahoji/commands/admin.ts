@@ -4,7 +4,7 @@ import { ClientStorage } from '@prisma/client';
 import { Stopwatch } from '@sapphire/stopwatch';
 import { Duration } from '@sapphire/time-utilities';
 import { isThenable } from '@sentry/utils';
-import { AttachmentBuilder, escapeCodeBlock } from 'discord.js';
+import { escapeCodeBlock } from 'discord.js';
 import { notEmpty, randArrItem, sleep, Time, uniqueArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
@@ -20,8 +20,6 @@ import { badges, BadgesEnum, BitField, BitFieldData, Channel, DISABLED_COMMANDS 
 import { addToDoubleLootTimer } from '../../lib/doubleLoot';
 import { GearSetup } from '../../lib/gear';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
-import { patreonTask } from '../../lib/patreon';
-import { runRolesTask } from '../../lib/rolesTask';
 import { countUsersWithItemInCl, prisma } from '../../lib/settings/prisma';
 import { cancelTask, minionActivityCacheDelete } from '../../lib/settings/settings';
 import { Gear } from '../../lib/structures/Gear';
@@ -36,9 +34,7 @@ import {
 } from '../../lib/util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../lib/util/clientSettings';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
-import { getUsersTamesCollectionLog } from '../../lib/util/getUsersTameCL';
 import { deferInteraction, interactionReply } from '../../lib/util/interactionReply';
-import { syncLinkedAccounts } from '../../lib/util/linkedAccountsUtil';
 import { logError } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
@@ -618,32 +614,6 @@ export const adminCommand: OSBMahojiCommand = {
 		 */
 		if (!guildID || (production && guildID.toString() !== SupportServer)) return randArrItem(gifs);
 
-		// if (options.wipe_bingo_temp_cls) {
-		// 	if (userID.toString() !== '319396464402890753' && !isMod) return randArrItem(gifs);
-		// 	const usersToReset = await prisma.user.findMany({
-		// 		where: {
-		// 			bingo_tickets_bought: {
-		// 				gt: 0
-		// 			}
-		// 		},
-		// 		select: {
-		// 			id: true
-		// 		}
-		// 	});
-		// 	await handleMahojiConfirmation(interaction, `Reset the temp CL of ${usersToReset.length} users?`);
-		// 	const res = await prisma.user.updateMany({
-		// 		where: {
-		// 			id: {
-		// 				in: usersToReset.map(i => i.id)
-		// 			}
-		// 		},
-		// 		data: {
-		// 			temp_cl: {}
-		// 		}
-		// 	});
-		// 	return `${res.count} temp CLs reset.`;
-		// }
-
 		if (!isMod && !isContributor) return randArrItem(gifs);
 		if (options.givetgb) {
 			const user = await mUserFetch(options.givetgb.user.user.id);
@@ -667,24 +637,7 @@ export const adminCommand: OSBMahojiCommand = {
 			minionActivityCacheDelete(user.id);
 			return 'Done.';
 		}
-		if (options.sync_roles) {
-			try {
-				const result = await runRolesTask();
-				if (result.length < 2000) return result;
-				return {
-					content: 'The result was too big! Check the file.',
-					files: [new AttachmentBuilder(Buffer.from(result), { name: 'roles.txt' })]
-				};
-			} catch (err: any) {
-				logError(err);
-				return `Failed to run roles task. ${err.message}`;
-			}
-		}
-		if (options.sync_patreon) {
-			await patreonTask.run();
-			syncLinkedAccounts();
-			return 'Finished syncing patrons.';
-		}
+
 		if (options.add_ironman_alt) {
 			const mainAccount = await mahojiUsersSettingsFetch(options.add_ironman_alt.main.user.id);
 			const altAccount = await mahojiUsersSettingsFetch(options.add_ironman_alt.ironman_alt.user.id);
@@ -990,13 +943,6 @@ ${guildCommands.length} Guild commands`;
 			return `Gave ${items} to ${user.mention}`;
 		}
 
-		if (options.debug_patreon) {
-			const result = await patreonTask.fetchPatrons();
-			return {
-				files: [{ attachment: Buffer.from(JSON.stringify(result, null, 4)), name: 'patreon.txt' }]
-			};
-		}
-
 		/**
 		 *
 		 * Owner Only Commands
@@ -1159,34 +1105,6 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 			};
 		}
 
-		// if (options.lottery_dump) {
-		// 	const res = await getLotteryBank();
-		// 	for (const user of res.users) {
-		// 		if (!globalClient.users.cache.has(user.id)) {
-		// 			await globalClient.users.fetch(user.id);
-		// 		}
-		// 	}
-		// 	return {
-		// 		files: [
-		// 			{
-		// 				name: 'lottery.txt',
-		// 				attachment: Buffer.from(
-		// 					JSON.stringify(
-		// 						res.users.map(i => [globalClient.users.cache.get(i.id)?.username ?? i.id, i.tickets])
-		// 					)
-		// 				)
-		// 			}
-		// 		]
-		// 	};
-		// }
-
-		if (options.migrate_tames) {
-			const tameOwners = await prisma.$queryRaw<{ user_id: string }[]>`SELECT DISTINCT(user_id)
-FROM tames;`;
-			for (const { user_id } of tameOwners) {
-				await getUsersTamesCollectionLog(user_id);
-			}
-		}
 		return 'Invalid command.';
 	}
 };

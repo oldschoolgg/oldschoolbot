@@ -2,7 +2,6 @@ import { ButtonBuilder, ButtonInteraction, ButtonStyle, Interaction } from 'disc
 import { Time, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { buyBingoTicketCommand } from '../../mahoji/commands/bingo';
 import { getItemContractDetails, handInContract } from '../../mahoji/commands/ic';
 import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { shootingStarsCommand, starCache } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
@@ -439,10 +438,6 @@ export async function interactionHook(interaction: Interaction) {
 			bypassInhibitors: true,
 			...options
 		});
-	}
-
-	if (id === 'BUY_BINGO_TICKET') {
-		return interactionReply(interaction, await buyBingoTicketCommand(null, userID, 1));
 	}
 
 	if (id === 'DO_FISHING_CONTEST') {

@@ -11,7 +11,6 @@ import { AttackStyles } from '../../lib/minions/functions';
 import { blowpipeCommand, blowpipeDarts } from '../../lib/minions/functions/blowpipeCommand';
 import { degradeableItemsCommand } from '../../lib/minions/functions/degradeableItemsCommand';
 import { allPossibleStyles, trainCommand } from '../../lib/minions/functions/trainCommand';
-import { roboChimpUserFetch } from '../../lib/roboChimp';
 import { Minigames } from '../../lib/settings/minigames';
 import { minionActivityCache } from '../../lib/settings/settings';
 import Skills from '../../lib/skilling/skills';
@@ -49,8 +48,6 @@ const patMessages = [
 const randomPatMessage = (minionName: string) => randArrItem(patMessages).replace('{name}', minionName);
 
 export async function getUserInfo(user: MUser) {
-	const roboChimpUser = await roboChimpUserFetch(user.id);
-
 	const bitfields = `${(user.bitfield as BitField[])
 		.map(i => BitFieldData[i])
 		.filter(notEmpty)
@@ -79,9 +76,7 @@ export async function getUserInfo(user: MUser) {
 		}`,
 		isIronman: user.isIronman,
 		bitfields,
-		currentTask: taskText,
-		patreon: roboChimpUser.patreon_id ? 'Yes' : 'None',
-		github: roboChimpUser.github_id ? 'Yes' : 'None'
+		currentTask: taskText
 	};
 	return {
 		...result,
@@ -93,9 +88,7 @@ export async function getUserInfo(user: MUser) {
 **Ironman Alts:** ${result.ironmanAlts}
 **Patron Balance:** ${result.premiumBalance}
 **Ironman:** ${result.isIronman}
-**Bitfields:** ${result.bitfields}
-**Patreon Connected:** ${result.patreon}
-**Github Connected:** ${result.github}`
+**Bitfields:** ${result.bitfields}`
 	};
 }
 

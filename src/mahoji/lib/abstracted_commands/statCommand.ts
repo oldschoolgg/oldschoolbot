@@ -1,4 +1,3 @@
-import { bold } from '@discordjs/builders';
 import { activity_type_enum, UserStats } from '@prisma/client';
 import { sumArr, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
@@ -12,7 +11,6 @@ import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { getClueScoresFromOpenables } from '../../../lib/clues/clueUtils';
 import { Emoji, PerkTier } from '../../../lib/constants';
 import { calcCLDetails } from '../../../lib/data/Collections';
-import { calcActualClues } from '../../../lib/leagues/stats';
 import backgroundImages from '../../../lib/minions/data/bankBackgrounds';
 import killableMonsters from '../../../lib/minions/data/killableMonsters';
 import { getMinigameScore } from '../../../lib/settings/minigames';
@@ -241,19 +239,6 @@ function makeResponseForBuffer(attachment: Buffer): Awaited<CommandResponse> {
 }
 
 const bsoOnlyDatapoints: readonly DataPiece[] = [
-	{
-		name: 'Actual Clues Done',
-		perkTierNeeded: null,
-		run: async (user: MUser) => {
-			const actualClues = await calcActualClues(user);
-			return `These are the clues you have acquired, completed and opened yourself:
-
-${actualClues
-	.items()
-	.map(i => `${bold(i[0].name)}: ${i[1].toLocaleString()}`)
-	.join('\n')}`;
-		}
-	},
 	{
 		name: 'Bars from Infernal adze',
 		perkTierNeeded: PerkTier.Four,

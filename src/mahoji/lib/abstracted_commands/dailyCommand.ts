@@ -1,13 +1,11 @@
-import { ChatInputCommandInteraction, TextChannel } from 'discord.js';
-import { roll, shuffleArr, uniqueArr } from 'e';
+import { ChatInputCommandInteraction } from 'discord.js';
+import { roll } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
 import { SupportServer } from '../../../config';
 import { COINS_ID, Emoji } from '../../../lib/constants';
-import { DynamicButtons } from '../../../lib/DynamicButtons';
 import { dailyResetTime } from '../../../lib/MUser';
-import { getRandomTriviaQuestions } from '../../../lib/roboChimp';
 import dailyRoll from '../../../lib/simulation/dailyTable';
 import { channelIsSendable, formatDuration, isWeekend } from '../../../lib/util';
 import { deferInteraction } from '../../../lib/util/interactionReply';
@@ -27,7 +25,7 @@ export function isUsersDailyReady(user: MUser): { isReady: true } | { isReady: f
 	return { isReady: true };
 }
 
-async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
+async function reward(user: MUser, triviaCorrect = true): CommandResponse {
 	const guild = globalClient.guilds.cache.get(SupportServer);
 	const member = await guild?.members.fetch(user.id).catch(() => null);
 
@@ -131,32 +129,5 @@ export async function dailyCommand(
 		lastDailyTimestamp: new Date().getTime()
 	});
 
-	const [question, ...fakeQuestions] = await getRandomTriviaQuestions();
-
-	let correctUser: string | null = null;
-	const buttons = new DynamicButtons({
-		channel: channel as TextChannel,
-		usersWhoCanInteract: [user.id],
-		deleteAfterConfirm: true
-	});
-	const allAnswers = uniqueArr(shuffleArr([question, ...fakeQuestions].map(q => q.answers[0])));
-	for (const answer of allAnswers) {
-		buttons.add({
-			name: answer,
-			fn: ({ interaction }) => {
-				if (question.answers.includes(answer) ? true : false) {
-					correctUser = interaction.user.id;
-				}
-			},
-			cantBeBusy: false
-		});
-	}
-
-	await buttons.render({
-		messageOptions: {
-			content: `**${Emoji.Diango} Diango asks ${user.badgedUsername}...** ${question.question}`
-		},
-		isBusy: false
-	});
-	return reward(user, correctUser !== null);
+	return reward(user);
 }
