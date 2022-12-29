@@ -146,9 +146,8 @@ const inhibitors: Inhibitor[] = [
 	},
 	{
 		name: 'commandRoleLimit',
-		run: async ({ member, guild, channel, user }) => {
+		run: async ({ member, guild, user }) => {
 			if (!guild || guild.id !== SupportServer) return false;
-			if (channel.id !== Channel.General) return false;
 
 			if (member && user.perkTier() >= PerkTier.Two) {
 				return false;

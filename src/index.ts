@@ -9,7 +9,7 @@ import './lib/util/logger';
 import * as Sentry from '@sentry/node';
 import { Chart } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { GatewayIntentBits, InteractionType, Options, Partials, TextChannel } from 'discord.js';
+import { GatewayIntentBits, InteractionType, Options, Partials } from 'discord.js';
 import { isObject, Time } from 'e';
 import { MahojiClient } from 'mahoji';
 import { join } from 'path';
@@ -180,10 +180,6 @@ client.on('interactionCreate', async interaction => {
 	}
 });
 
-client.on(Events.ServerNotification, (message: string) => {
-	const channel = globalClient.channels.cache.get(Channel.Notifications);
-	if (channel) (channel as TextChannel).send(message);
-});
 let economyLogBuffer: string[] = [];
 
 client.on(Events.EconomyLog, async (message: string) => {

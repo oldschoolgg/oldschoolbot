@@ -233,7 +233,7 @@ LIMIT 10`;
 }
 
 export function spawnLampIsReady(user: MUser, channelID: string): [true] | [false, string] {
-	if (production && ![Channel.BSOChannel, Channel.General, Channel.BSOGeneral].includes(channelID)) {
+	if (production && ![Channel.BSOChannel, Channel.BSOGeneral].includes(channelID)) {
 		return [false, "You can't use spawnlamp in this channel."];
 	}
 
@@ -283,7 +283,7 @@ async function spawnBoxCommand(user: MUser, channelID: string): CommandResponse 
 	if (perkTier < PerkTier.Four && !user.bitfield.includes(BitField.HasPermanentEventBackgrounds)) {
 		return 'You need to be a T3 patron or higher to use this command.';
 	}
-	if (production && ![Channel.BSOChannel, Channel.General, Channel.BSOGeneral].includes(channelID.toString())) {
+	if (production && ![Channel.BSOChannel, Channel.BSOGeneral].includes(channelID.toString())) {
 		return "You can't use spawnbox in this channel.";
 	}
 	const isOnCooldown = Cooldowns.get(user.id, 'SPAWN_BOX', Time.Minute * 45);

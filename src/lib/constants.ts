@@ -24,10 +24,9 @@ export const BotID = DISCORD_SETTINGS.BotID ?? '729244028989603850';
 const TestingMainChannelID = DISCORD_SETTINGS.Channels?.TestingMain ?? '944924763405574174';
 
 export const Channel = {
-	General: DISCORD_SETTINGS.Channels?.General ?? '342983479501389826',
-	Notifications: production ? '811589869314899980' : '1042760447830536212',
-	ErrorLogs: DISCORD_SETTINGS.Channels?.ErrorLogs ?? '665678499578904596',
-	GrandExchange: DISCORD_SETTINGS.Channels?.GrandExchange ?? '738780181946171493',
+	// General: DISCORD_SETTINGS.Channels?.General ?? '342983479501389826',
+	// Notifications: production ? '811589869314899980' : '1042760447830536212',
+	// GrandExchange: DISCORD_SETTINGS.Channels?.GrandExchange ?? '738780181946171493',
 	Developers: DISCORD_SETTINGS.Channels?.Developers ?? '648196527294251020',
 	BlacklistLogs: DISCORD_SETTINGS.Channels?.BlacklistLogs ?? '782459317218967602',
 	EconomyLogs: DISCORD_SETTINGS.Channels?.EconomyLogs ?? '802029843712573510',
@@ -39,8 +38,8 @@ export const Channel = {
 	// BSO Channels
 	BSOGeneral: DISCORD_SETTINGS.Channels?.BSOGeneral ?? '792691343284764693',
 	BSOChannel: DISCORD_SETTINGS.Channels?.BSOChannel ?? '732207379818479756',
-	BSOGambling: DISCORD_SETTINGS.Channels?.BSOChannel ?? '792692390778896424',
-	BSOGrandExchange: DISCORD_SETTINGS.Channels?.BSOChannel ?? '738780181946171493'
+	BSOGambling: DISCORD_SETTINGS.Channels?.BSOChannel ?? '792692390778896424'
+	// BSOGrandExchange: DISCORD_SETTINGS.Channels?.BSOChannel ?? '738780181946171493'
 };
 
 export const Roles = {
@@ -50,17 +49,17 @@ export const Roles = {
 	PatronTier1: DISCORD_SETTINGS.Roles?.PatronTier1 ?? '678970545789730826',
 	PatronTier2: DISCORD_SETTINGS.Roles?.PatronTier2 ?? '678967943979204608',
 	PatronTier3: DISCORD_SETTINGS.Roles?.PatronTier3 ?? '687408140832342043',
-	Patron: DISCORD_SETTINGS.Roles?.Patron ?? '679620175838183424',
-	MassHoster: DISCORD_SETTINGS.Roles?.MassHoster ?? '734055552933429280',
-	BSOMassHoster: DISCORD_SETTINGS.Roles?.BSOMassHoster ?? '759572886364225558',
-	TopSkiller: DISCORD_SETTINGS.Roles?.TopSkiller ?? '848966830617788427',
-	TopCollector: DISCORD_SETTINGS.Roles?.TopCollector ?? '848966773885763586',
-	TopSacrificer: DISCORD_SETTINGS.Roles?.TopSacrificer ?? '848966732265160775',
-	TopMinigamer: DISCORD_SETTINGS.Roles?.TopMinigamer ?? '867967884515770419',
-	TopClueHunter: DISCORD_SETTINGS.Roles?.TopClueHunter ?? '848967350120218636',
-	TopSlayer: DISCORD_SETTINGS.Roles?.TopSlayer ?? '867967551819358219',
-	TopInventor: '992799099801833582',
-	TopLeagues: '1005417171112972349'
+	Patron: DISCORD_SETTINGS.Roles?.Patron ?? '679620175838183424'
+	// MassHoster: DISCORD_SETTINGS.Roles?.MassHoster ?? '734055552933429280',
+	// BSOMassHoster: DISCORD_SETTINGS.Roles?.BSOMassHoster ?? '759572886364225558',
+	// TopSkiller: DISCORD_SETTINGS.Roles?.TopSkiller ?? '848966830617788427',
+	// TopCollector: DISCORD_SETTINGS.Roles?.TopCollector ?? '848966773885763586',
+	// TopSacrificer: DISCORD_SETTINGS.Roles?.TopSacrificer ?? '848966732265160775',
+	// TopMinigamer: DISCORD_SETTINGS.Roles?.TopMinigamer ?? '867967884515770419',
+	// TopClueHunter: DISCORD_SETTINGS.Roles?.TopClueHunter ?? '848967350120218636',
+	// TopSlayer: DISCORD_SETTINGS.Roles?.TopSlayer ?? '867967551819358219',
+	// TopInventor: '992799099801833582',
+	// TopLeagues: '1005417171112972349'
 };
 
 export const enum DefaultPingableRoles {
