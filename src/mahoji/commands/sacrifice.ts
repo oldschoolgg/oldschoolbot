@@ -58,6 +58,9 @@ export const sacrificeCommand: OSBMahojiCommand = {
 
 		deferInteraction(interaction);
 		const user = await mUserFetch(userID.toString());
+		if (user.user.sacrificedValue >= BigInt('1000000000000')) {
+			return "You can't sacrifice any more!";
+		}
 
 		const bankToSac = parseBank({
 			inputStr: options.items,
