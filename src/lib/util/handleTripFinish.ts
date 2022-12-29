@@ -14,6 +14,7 @@ import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
 import { inventionBoosts, InventionID, inventionItemBoost } from '../invention/inventions';
 import { triggerRandomEvent } from '../randomEvents';
+import { randomizeBank } from '../randomizer';
 import { RuneTable, WilvusTable, WoodTable } from '../simulation/seedTable';
 import { DougTable, PekyTable } from '../simulation/sharedTables';
 import { SkillsEnum } from '../skilling/types';
@@ -188,6 +189,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 				default: {
 				}
 			}
+			bonusLoot = randomizeBank(user.id, bonusLoot);
 			await user.addItemsToBank({ items: bonusLoot, collectionLog: true });
 		}
 	},
