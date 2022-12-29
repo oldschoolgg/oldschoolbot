@@ -469,7 +469,7 @@ export const minionCommand: OSBMahojiCommand = {
 			return `Your ${kcName} KC is: ${kcAmount}.`;
 		}
 
-		if (options.buy) return minionBuyCommand(await globalClient.users.fetch(user.id), user);
+		if (options.buy) return minionBuyCommand(user);
 
 		if (options.charge) {
 			return degradeableItemsCommand(interaction, user, options.charge.item, options.charge.amount);

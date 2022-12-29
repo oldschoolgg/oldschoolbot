@@ -18,7 +18,7 @@ import { prisma } from './settings/prisma';
 import Skillcapes from './skilling/skillcapes';
 import Skills from './skilling/skills';
 import { SkillsEnum } from './skilling/types';
-import { convertLVLtoXP, convertXPtoLVL, itemNameFromID, toKMB } from './util';
+import { assert, convertLVLtoXP, convertXPtoLVL, itemNameFromID, murMurSort, toKMB } from './util';
 import { formatOrdinal } from './util/formatOrdinal';
 import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
@@ -118,7 +118,22 @@ function getEquippedCapes(user: MUser) {
 		.map(i => i.item);
 }
 
+const allSkills = Object.values(SkillsEnum);
+
+function getMurSkill(userID: string, inputSkill: SkillsEnum) {
+	const index = allSkills.indexOf(inputSkill);
+	const sorted = murMurSort(allSkills, `${userID}-v1`);
+	return sorted[index];
+}
+
+let skillsTest = new Set();
+for (const skill of allSkills) {
+	skillsTest.add(getMurSkill('asdf', skill));
+}
+assert(skillsTest.size === allSkills.length);
+
 export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
+	params.skillName = getMurSkill(user.id, params.skillName);
 	const currentXP = Number(user.user[`skills_${params.skillName}`]);
 	const currentLevel = user.skillLevel(params.skillName);
 	const currentTotalLevel = user.totalLevel;

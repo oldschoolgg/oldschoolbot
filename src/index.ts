@@ -12,7 +12,6 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { GatewayIntentBits, InteractionType, Options, Partials } from 'discord.js';
 import { isObject, Time } from 'e';
 import { MahojiClient } from 'mahoji';
-import { bulkUpdateCommands } from 'mahoji/dist/lib/util';
 import { join } from 'path';
 import { debuglog } from 'util';
 
@@ -207,18 +206,6 @@ async function main() {
 	]);
 	await runTimedLoggedFn('Log In', () => client.login(botToken));
 	runTimedLoggedFn('OnStartup', async () => onStartup());
-
-	const totalCommands = globalClient.mahojiClient.commands.values;
-	const globalCommands = totalCommands.filter(i => !i.guildID);
-	await bulkUpdateCommands({
-		client: globalClient.mahojiClient,
-		commands: globalCommands,
-		guildID: null
-	});
-
-	console.log(`Synced commands ${global ? 'globally' : 'locally'}.
-${totalCommands.length} Total commands
-${globalCommands.length} Global commands`);
 }
 
 process.on('uncaughtException', logError);
