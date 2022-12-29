@@ -18,7 +18,6 @@ import { debuglog } from 'util';
 import { botToken, CLIENT_ID, DEV_SERVER_ID, production, SENTRY_DSN, SupportServer } from './config';
 import { Channel, Events } from './lib/constants';
 import { onMessage } from './lib/events';
-import { makeServer } from './lib/http';
 import { modalInteractionHook } from './lib/modals';
 import { runStartupScripts } from './lib/startupScripts';
 import { OldSchoolBotClient } from './lib/structures/OldSchoolBotClient';
@@ -197,7 +196,6 @@ client.on('shardDisconnect', ({ wasClean, code, reason }) => debugLog('Shard Dis
 client.on('shardError', err => debugLog('Shard Error', { error: err.message }));
 
 async function main() {
-	client.fastifyServer = makeServer();
 	await Promise.all([
 		runTimedLoggedFn('Sync Active User IDs', syncActiveUserIDs),
 		runTimedLoggedFn('Sync Activity Cache', syncActivityCache)
