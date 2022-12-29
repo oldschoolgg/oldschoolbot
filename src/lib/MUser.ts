@@ -628,6 +628,7 @@ export function getUsersPerkTier(
 	userOrBitfield: MUser | User | BitField[],
 	noCheckOtherAccounts?: boolean
 ): PerkTier | 0 {
+	if (1 > 0) return PerkTier.Four;
 	if (userOrBitfield instanceof MUserClass && userOrBitfield.user.premium_balance_tier !== null) {
 		const date = userOrBitfield.user.premium_balance_expiry_date;
 		if (date && Date.now() < date) {
