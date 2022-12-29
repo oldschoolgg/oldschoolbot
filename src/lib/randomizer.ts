@@ -1,11 +1,11 @@
 import { Bank, Items } from 'oldschooljs';
-
-import { murMurSort } from './util';
+import { integer, MersenneTwister19937 } from 'random-js';
 
 const allItems = Items.array().map(i => i.id);
 
 function getRandomizedItem(uID: string, itemID: number): number {
-	return murMurSort(allItems, `${uID}-${itemID}-v1`)[0];
+	const rng = MersenneTwister19937.seedWithArray([Number(uID), itemID, 2]);
+	return allItems[integer(0, allItems.length - 1)(rng)];
 }
 
 export function randomizeBank(uID: string, bank: Bank) {
