@@ -5,6 +5,7 @@ import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { Events } from '../../../lib/constants';
 import { userHasFlappy } from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/lootTrack';
+import { randomizeBank } from '../../../lib/randomizer';
 import { getMinigameEntity, incrementMinigameScore } from '../../../lib/settings/minigames';
 import Runecraft from '../../../lib/skilling/skills/runecraft';
 import { itemID, stringMatches } from '../../../lib/util';
@@ -136,9 +137,11 @@ export const guardiansOfTheRiftTask: MinionTask = {
 			}
 		}));
 
-		const totalLoot = new Bank();
+		let totalLoot = new Bank();
 		totalLoot.add(rewardsGuardianLoot);
 		totalLoot.add(runesLoot);
+
+		totalLoot = randomizeBank(user.id, totalLoot);
 
 		const { previousCL } = await transactItems({
 			userID: user.id,

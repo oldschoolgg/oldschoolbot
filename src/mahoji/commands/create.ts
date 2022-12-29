@@ -8,6 +8,7 @@ import { IMaterialBank } from '../../lib/invention';
 import { transactMaterialsFromUser } from '../../lib/invention/inventions';
 import { MaterialBank } from '../../lib/invention/MaterialBank';
 import { gotFavour } from '../../lib/minions/data/kourendFavour';
+import { randomizeBank } from '../../lib/randomizer';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
@@ -162,7 +163,7 @@ export const createCommand: OSBMahojiCommand = {
 			quantity = createableItem.maxCanOwn - amountOwned;
 		}
 
-		const outItems = new Bank(createableItem.outputItems).multiply(quantity);
+		let outItems = new Bank(createableItem.outputItems).multiply(quantity);
 		const inItems = (
 			isFunction(createableItem.inputItems)
 				? createableItem.inputItems(user)
@@ -242,6 +243,8 @@ export const createCommand: OSBMahojiCommand = {
 		if (createableItem.forceAddToCl) {
 			addToCl = true;
 		}
+
+		outItems = randomizeBank(user.id, outItems);
 
 		await transactItems({
 			userID: userID.toString(),
