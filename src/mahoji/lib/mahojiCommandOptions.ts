@@ -1,4 +1,4 @@
-import { APIApplicationCommandOptionChoice, ApplicationCommandOptionType } from 'discord.js';
+import { APIApplicationCommandOptionChoice, ApplicationCommandOptionType, User } from 'discord.js';
 import { uniqueArr } from 'e';
 import { CommandOption } from 'mahoji/dist/lib/types';
 import { Bank, Items } from 'oldschooljs';
@@ -7,6 +7,8 @@ import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import { secretItems } from '../../lib/constants';
 import { baseFilters, filterableTypes } from '../../lib/data/filterables';
 import { GearSetupTypes } from '../../lib/gear/types';
+import { IMaterialBank, materialTypes } from '../../lib/invention';
+import { MaterialBank } from '../../lib/invention/MaterialBank';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { prisma } from '../../lib/settings/prisma';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -134,3 +136,25 @@ export const gearPresetOption: CommandOption = {
 			.concat(globalPresets.map(i => ({ name: `${i.name} (Global)`, value: i.name })));
 	}
 };
+
+export const ownedMaterialOption = {
+	name: 'material',
+	type: ApplicationCommandOptionType.String,
+	description: 'The type of materials you want to research with.',
+	required: true,
+	autocomplete: async (value: string, user: User) => {
+		const mahojiUser = await mahojiUsersSettingsFetch(user.id, { materials_owned: true });
+		const bank = new MaterialBank(mahojiUser.materials_owned as IMaterialBank);
+		return materialTypes
+			.filter(i => (!value ? true : i.includes(value.toLowerCase())))
+			.sort((a, b) => {
+				if (bank.has(b)) return 1;
+				if (bank.has(a)) return -1;
+				return 0;
+			})
+			.map(i => ({
+				name: `${toTitleCase(i)} ${bank.has(i) ? `(${bank.amount(i).toLocaleString()}x Owned)` : ''}`,
+				value: i
+			}));
+	}
+} as const;

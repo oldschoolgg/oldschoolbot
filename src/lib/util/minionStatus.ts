@@ -76,6 +76,7 @@ import {
 	SmithingActivityTaskOptions,
 	TheatreOfBloodTaskOptions,
 	TiaraRunecraftActivityTaskOptions,
+	TinkeringWorkshopOptions,
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '../types/minions';
@@ -695,6 +696,12 @@ export function minionStatus(user: MUser) {
 			return `${name} is currently doing ${
 				data.quantity
 			}x games of Stealing Creation. The trip should take ${formatDuration(durationRemaining)}.`;
+		}
+		case 'TinkeringWorkshop': {
+			const data = currentTask as TinkeringWorkshopOptions;
+			return `${name} is currently doing ${data.quantity}x projects with ${
+				data.material
+			} materials in the Tinkering Workshop. The trip should take ${formatDuration(durationRemaining)}.`;
 		}
 		case 'HalloweenMiniMinigame':
 		case 'Easter':

@@ -19,6 +19,7 @@ import { nexTask } from '../tasks/minions/bso/nexActivity';
 import { odsTask } from '../tasks/minions/bso/ouraniaDeliveryServiceActivity';
 import { researchActivityTask } from '../tasks/minions/bso/researchActivity';
 import { scTask } from '../tasks/minions/bso/stealingCreationActivity';
+import { twTask } from '../tasks/minions/bso/tinkeringWorkshopActivity';
 import { vasaTask } from '../tasks/minions/bso/vasaMagusActivity';
 import { butlerTask } from '../tasks/minions/butlerActivity';
 import { castingTask } from '../tasks/minions/castingActivity';
@@ -194,7 +195,8 @@ export const tasks: MinionTask[] = [
 	dungeoneeringTask,
 	fogTask,
 	scTask,
-	bossEventTask
+	bossEventTask,
+	twTask
 ];
 
 export async function syncActivityCache() {
