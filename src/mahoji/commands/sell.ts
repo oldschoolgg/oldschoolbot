@@ -86,6 +86,7 @@ export const sellCommand: OSBMahojiCommand = {
 			excludeItems: user.user.favoriteItems,
 			noDuplicateItems: true
 		});
+		if (user.GP >= 1_000_000_000_000) return 'You have enough GP already!';
 		if (bankToSell.length === 0) return 'No items provided.';
 
 		if (bankToSell.has('mole claw') || bankToSell.has('mole skin')) {
@@ -180,6 +181,7 @@ export const sellCommand: OSBMahojiCommand = {
 			}
 		}
 
+		if (totalPrice >= 1_000_000_000_000) return "Wowww! I don't have that much GP.";
 		await handleMahojiConfirmation(
 			interaction,
 			`${user}, please confirm you want to sell ${bankToSell} for **${totalPrice.toLocaleString()}** (${toKMB(
