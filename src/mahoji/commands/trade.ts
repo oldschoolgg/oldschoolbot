@@ -2,7 +2,6 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { Bank } from 'oldschooljs';
 
-import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { Events } from '../../lib/constants';
 import { addToGPTaxBalance, prisma } from '../../lib/settings/prisma';
 import { discrimName, truncateString } from '../../lib/util';
@@ -70,8 +69,6 @@ export const askCommand: OSBMahojiCommand = {
 		const recipientUser = await mUserFetch(options.user.user.id);
 		const recipientAPIUser = options.user.user;
 
-		const isBlacklisted = BLACKLISTED_USERS.has(recipientUser.id);
-		if (isBlacklisted) return "Blacklisted players can't buy items.";
 		if (senderUser.user.minion_ironman || recipientUser.user.minion_ironman) {
 			return "Iron players can't trade items.";
 		}

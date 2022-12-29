@@ -2,7 +2,6 @@ import { notEmpty, randArrItem } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
 
-import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { badges, BitField, BitFieldData, FormattedCustomEmoji, MAX_LEVEL, PerkTier } from '../../lib/constants';
 import { degradeableItems } from '../../lib/degradeableItems';
 import { diaries } from '../../lib/diaries';
@@ -64,7 +63,6 @@ export async function getUserInfo(user: MUser) {
 
 	const result = {
 		perkTier: user.perkTier(),
-		isBlacklisted: BLACKLISTED_USERS.has(user.id),
 		badges: userBadges,
 		mainAccount:
 			user.user.main_account !== null
@@ -82,7 +80,6 @@ export async function getUserInfo(user: MUser) {
 		...result,
 		everythingString: `${user.badgedUsername}[${user.id}]
 **Perk Tier:** ${result.perkTier}
-**Blacklisted:** ${result.isBlacklisted}
 **Badges:** ${result.badges.join(' ')}
 **Main Account:** ${result.mainAccount}
 **Ironman Alts:** ${result.ironmanAlts}

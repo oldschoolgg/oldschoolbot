@@ -15,7 +15,6 @@ import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { ADMIN_IDS, CLIENT_ID, OWNER_IDS, production, SupportServer } from '../../config';
-import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../../lib/blacklists';
 import { badges, BadgesEnum, BitField, BitFieldData, Channel, DISABLED_COMMANDS } from '../../lib/constants';
 import { addToDoubleLootTimer } from '../../lib/doubleLoot';
 import { GearSetup } from '../../lib/gear';
@@ -867,12 +866,6 @@ LIMIT 10;
 			const userToCheck = await mUserFetch(options.viewbank.user.user.id);
 			const bank = userToCheck.allItemsOwned();
 			return { files: [(await makeBankImage({ bank, title: userToCheck.usernameOrMention })).file] };
-		}
-
-		if (options.sync_blacklist) {
-			await syncBlacklists();
-			return `Users Blacklisted: ${BLACKLISTED_USERS.size}
-Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 		}
 
 		/**

@@ -3,7 +3,6 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { CLIENT_ID, DEV_SERVER_ID, production } from '../../config';
 import { cacheBadges } from '../../lib/badges';
-import { syncBlacklists } from '../../lib/blacklists';
 import { DISABLED_COMMANDS } from '../../lib/constants';
 import { initCrons } from '../../lib/crons';
 import { syncDoubleLoot } from '../../lib/doubleLoot';
@@ -38,9 +37,6 @@ export async function onStartup() {
 	for (const command of disabledCommands!.disabled_commands) {
 		DISABLED_COMMANDS.add(command);
 	}
-
-	// Sync blacklists
-	await syncBlacklists();
 
 	if (!production) {
 		console.log('Syncing commands locally...');

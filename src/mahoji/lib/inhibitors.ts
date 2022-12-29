@@ -10,7 +10,6 @@ import {
 } from 'discord.js';
 
 import { OWNER_IDS, SupportServer } from '../../config';
-import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '../../lib/blacklists';
 import { BadgesEnum, BitField, Channel, DISABLED_COMMANDS, minionBuyButton, PerkTier } from '../../lib/constants';
 import { CategoryFlag } from '../../lib/types';
 import { formatDuration } from '../../lib/util';
@@ -205,20 +204,6 @@ const inhibitors: Inhibitor[] = [
 			return false;
 		},
 		canBeDisabled: true
-	},
-	{
-		name: 'blacklisted',
-		run: async ({ user, guild }) => {
-			if (BLACKLISTED_USERS.has(user.id)) {
-				return { content: 'This user is blacklisted.' };
-			}
-			if (guild && BLACKLISTED_GUILDS.has(guild.id)) {
-				return { content: 'This guild is blacklisted.' };
-			}
-			return false;
-		},
-		canBeDisabled: false,
-		silent: true
 	}
 ];
 
