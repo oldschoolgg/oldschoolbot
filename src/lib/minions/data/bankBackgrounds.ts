@@ -622,10 +622,10 @@ const backgroundImages: BankBackground[] = [
 	},
 	{
 		id: 98,
-		name: 'Arne CustomBG',
+		name: 'Jersey CustomBG',
 		image: null,
 		available: false,
-		owners: ['673716808574042143']
+		owners: ['252113050704805890']
 	},
 	{
 		id: 100,
