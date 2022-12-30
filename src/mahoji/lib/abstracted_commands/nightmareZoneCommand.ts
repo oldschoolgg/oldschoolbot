@@ -187,11 +187,11 @@ export async function nightmareZoneStatsCommand(user: MUser) {
 	const scores = await getMinigameEntity(user.id);
 	return `**Nightmare Zone Stats:**
 
-**Nightmare Zones completed in total:** ${scores.nmz} Completed.
+**Nightmare Zone monsters killed:** ${scores.nmz}.
 **Nightmare Zone points:** ${user.user.nmz_points} Points.`;
 }
 
-export async function nightmareZoneStartCommand(user: MUser, stratergy: string, channelID: string) {
+export async function nightmareZoneStartCommand(user: MUser, strategy: string, channelID: string) {
 	const skillReqs: Skills = {
 		defence: 70,
 		strength: 70,
@@ -220,7 +220,7 @@ export async function nightmareZoneStartCommand(user: MUser, stratergy: string, 
 			'every'
 		)
 	) {
-		return "The nightmare Zone minigame requires full Dharok's equipment for optimal experience/points gained.";
+		return "The Nightmare Zone minigame requires full Dharok's equipment for optimal experience/points gained.";
 	}
 
 	const boosts = [];
@@ -230,7 +230,7 @@ export async function nightmareZoneStartCommand(user: MUser, stratergy: string, 
 	// combat stat boosts
 	const [, , attackStyles] = resolveAttackStyles(user, { monsterID: Monsters.Cow.id });
 	const skillTotal = sumArr(attackStyles.map(s => user.skillLevel(s))) + user.skillLevel(SkillsEnum.Hitpoints);
-	if (attackStyles.includes(SkillsEnum.Magic || SkillsEnum.Ranged)) {
+	if (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic)) {
 		return 'The Nightmare Zone minigame requires melee combat for efficiency, swap training style.';
 	}
 
@@ -279,9 +279,9 @@ export async function nightmareZoneStartCommand(user: MUser, stratergy: string, 
 	// Consume GP (and prayer potion if experience setup)
 	const dreamCost = new Bank().add(
 		'Coins',
-		Math.floor(((QP >= MAX_QP ? 16_000 : 26_000) * duration) / ((stratergy === 'points' ? 30 : 60) * Time.Minute))
+		Math.floor(((QP >= MAX_QP ? 16_000 : 26_000) * duration) / ((strategy === 'points' ? 30 : 60) * Time.Minute))
 	);
-	if (stratergy === 'experience') {
+	if (strategy === 'experience') {
 		dreamCost.add('Prayer potion(4)', Math.floor(duration / (Time.Minute * 5)));
 	}
 	const totalCost = new Bank(dreamCost).clone();
@@ -312,10 +312,12 @@ export async function nightmareZoneStartCommand(user: MUser, stratergy: string, 
 		type: 'NightmareZone',
 		channelID: channelID.toString(),
 		minigameID: 'nmz',
-		stratergy
+		strategy
 	});
 
-	return `${user.minionName} is now kill ${quantity}x Nightmare Zone stuffs! It will take ${formatDuration(
+	return `${
+		user.minionName
+	} is now killing ${quantity}x monsters in the Nightmare Zone! It will take ${formatDuration(
 		duration
 	)} to finish. **Boosts:** ${boosts.join(', ')}\nYour minion used up ${totalCost}`;
 }

@@ -920,8 +920,8 @@ export const minigamesCommand: OSBMahojiCommand = {
 					options: [
 						{
 							type: ApplicationCommandOptionType.String,
-							name: 'stratergy',
-							description: 'The stratergy to use.',
+							name: 'strategy',
+							description: 'The strategy to use.',
 							required: true,
 							choices: [
 								{ name: 'experience', value: 'experience' },
@@ -1051,7 +1051,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 			start?: { combination_runes?: boolean };
 		};
 		nmz?: {
-			start?: { stratergy: string };
+			start?: { strategy: string };
 			buy?: { item: string; quantity?: number };
 			stats?: {};
 			imbue?: { name: string };
@@ -1354,7 +1354,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 *
 		 */
 		if (options.nmz?.start) {
-			return nightmareZoneStartCommand(user, options.nmz.start.stratergy, channelID);
+			return nightmareZoneStartCommand(user, options.nmz.start.strategy, channelID);
 		}
 		if (options.nmz?.buy) {
 			return nightmareZoneShopCommand(interaction, user, options.nmz.buy.item, options.nmz.buy.quantity);

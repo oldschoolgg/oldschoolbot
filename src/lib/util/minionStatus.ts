@@ -606,7 +606,7 @@ export function minionStatus(user: MUser) {
 			)}.`;
 		}
 		case 'NightmareZone': {
-			return `${name} is currently stuck in the Nightmare Zone. The trip should take ${formatDuration(
+			return `${name} is currently killing Monsters in the Nightmare Zone. The trip should take ${formatDuration(
 				durationRemaining
 			)}.`;
 		}

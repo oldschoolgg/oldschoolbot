@@ -348,7 +348,7 @@ export interface GuardiansOfTheRiftActivityTaskOptions extends MinigameActivityT
 }
 
 export interface NightmareZoneActivityTaskOptions extends MinigameActivityTaskOptions {
-	stratergy: string;
+	strategy: string;
 	quantity: number;
 }
 

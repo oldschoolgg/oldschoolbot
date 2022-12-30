@@ -528,7 +528,7 @@ export const tripHandlers = {
 		commandName: 'minigames',
 		args: (data: NightmareZoneActivityTaskOptions) => ({
 			nmz: {
-				start: { stratergy: data.stratergy }
+				start: { strategy: data.strategy }
 			}
 		})
 	}
