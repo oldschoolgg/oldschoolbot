@@ -13,7 +13,7 @@ export async function decantCommand(user: MUser, itemName: string, dose = 4) {
 	await user.removeItemsFromBank(potionsToRemove);
 
 	let loot = randomizeBank(user.id, potionsToAdd);
-	await user.addItemsToBank({ items: potionsToAdd });
+	await user.addItemsToBank({ items: loot });
 
 	return `You decanted **${sumOfPots}x ${potionName}${sumOfPots > 0 ? 's' : ''}** into **${loot}**.`;
 }

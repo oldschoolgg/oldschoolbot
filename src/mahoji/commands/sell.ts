@@ -5,6 +5,7 @@ import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { MAX_INT_JAVA } from '../../lib/constants';
 import { customPrices } from '../../lib/customItems/util';
+import { randomizeBank } from '../../lib/randomizer';
 import { NestBoxesTable } from '../../lib/simulation/misc';
 import { clamp, itemID, toKMB } from '../../lib/util';
 import { parseBank } from '../../lib/util/parseStringBank';
@@ -97,10 +98,11 @@ export const sellCommand: OSBMahojiCommand = {
 			if (bankToSell.has('Mole skin')) {
 				moleBank.add('Mole skin', bankToSell.amount('Mole skin'));
 			}
-			const loot = new Bank();
+			let loot = new Bank();
 			for (let i = 0; i < moleBank.amount('Mole claw') + moleBank.amount('Mole skin'); i++) {
 				loot.add(NestBoxesTable.roll());
 			}
+			loot = randomizeBank(user.id, loot);
 			await user.removeItemsFromBank(moleBank);
 			await transactItems({
 				userID: user.id,
