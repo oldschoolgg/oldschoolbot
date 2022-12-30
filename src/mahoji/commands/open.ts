@@ -3,11 +3,7 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { allOpenables, allOpenablesIDs } from '../../lib/openables';
 import { truncateString } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
-import {
-	abstractedOpenCommand,
-	abstractedOpenUntilCommand,
-	OpenUntilItems
-} from '../lib/abstracted_commands/openCommand';
+import { abstractedOpenCommand, OpenUntilItems } from '../lib/abstracted_commands/openCommand';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const openCommand: OSBMahojiCommand = {
@@ -72,11 +68,12 @@ export const openCommand: OSBMahojiCommand = {
 			)}.`;
 		}
 		if (options.open_until) {
-			return abstractedOpenUntilCommand(user.id, options.name, options.open_until);
+			return "Sorry, can't do this! Too much lag!";
 		}
 		if (options.name.toLowerCase() === 'all') {
-			return abstractedOpenCommand(interaction, user.id, ['all'], 'auto');
+			return "Sorry, can't do this! Too much lag!";
 		}
+		if (options.quantity) options.quantity = Math.min(options.quantity, 100);
 		return abstractedOpenCommand(interaction, user.id, [options.name], options.quantity);
 	}
 };

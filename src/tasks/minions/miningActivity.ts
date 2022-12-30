@@ -206,6 +206,8 @@ export const miningTask: MinionTask = {
 			}
 		}
 		str += `\n\nYou received: ${loot}.`;
+		loot = randomizeBank(user.id, loot);
+
 		if (bonusXP > 0) {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
 		}
@@ -213,8 +215,6 @@ export const miningTask: MinionTask = {
 		if (user.hasEquipped('Mining master cape')) {
 			str += '\n2x minerals/nuggets for Mining master cape.';
 		}
-
-		loot = randomizeBank(user.id, loot);
 
 		await transactItems({
 			userID: user.id,

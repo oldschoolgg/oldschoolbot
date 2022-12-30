@@ -121,6 +121,8 @@ export const pickpocketTask: MinionTask = {
 			updateGPTrackSetting('gp_pickpocket', loot.amount('Coins'));
 		}
 
+		loot = randomizeBank(user.id, loot);
+
 		const { previousCL, itemsAdded } = await transactItems({
 			userID: user.id,
 			collectionLog: true,
@@ -150,8 +152,6 @@ export const pickpocketTask: MinionTask = {
 		if (rogueOutfitBoostActivated) {
 			str += '\nYour rogue outfit allows you to take some extra loot.';
 		}
-
-		loot = randomizeBank(user.id, loot);
 
 		if (loot.amount('Rocky') > 0) {
 			str += "\n**You have a funny feeling you're being followed...**";

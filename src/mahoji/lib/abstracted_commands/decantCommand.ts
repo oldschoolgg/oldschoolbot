@@ -1,6 +1,5 @@
-import { Bank } from 'oldschooljs';
-
 import decantPotionFromBank from '../../../lib/minions/functions/decantPotionFromBank';
+import { randomizeBank } from '../../../lib/randomizer';
 
 export async function decantCommand(user: MUser, itemName: string, dose = 4) {
 	if (![1, 2, 3, 4].includes(dose)) return 'Invalid dose number.';
@@ -12,11 +11,9 @@ export async function decantCommand(user: MUser, itemName: string, dose = 4) {
 		return `You don't own ${potionsToRemove}.`;
 	}
 	await user.removeItemsFromBank(potionsToRemove);
+
+	let loot = randomizeBank(user.id, potionsToAdd);
 	await user.addItemsToBank({ items: potionsToAdd });
 
-	if (user.hasEquipped(['Iron dagger', 'Bronze arrow']) && !user.hasEquippedOrInBank('Clue hunter gloves')) {
-		await user.addItemsToBank({ items: new Bank({ 'Clue hunter gloves': 1 }), collectionLog: true });
-	}
-
-	return `You decanted **${sumOfPots}x ${potionName}${sumOfPots > 0 ? 's' : ''}** into **${potionsToAdd}**.`;
+	return `You decanted **${sumOfPots}x ${potionName}${sumOfPots > 0 ? 's' : ''}** into **${loot}**.`;
 }

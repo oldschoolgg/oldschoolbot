@@ -46,7 +46,12 @@ export const smeltingTask: MinionTask = {
 			duration
 		});
 
-		let str = `${user}, ${user.minionName} finished smelting ${quantity}x ${bar.name}. ${xpRes}`;
+		let loot = new Bank({
+			[bar.id]: quantity
+		});
+		loot = randomizeBank(user.id, loot);
+
+		let str = `${user}, ${user.minionName} finished smelting ${loot}. ${xpRes}`;
 
 		if (bar.chanceOfFail > 0 && oldQuantity > quantity) {
 			str += `\n\n${oldQuantity - quantity} ${bar.name}s failed to smelt.`;
@@ -61,11 +66,6 @@ export const smeltingTask: MinionTask = {
 		if (hasBS) {
 			str += '\n10% more XP for owning the blacksmith outfit.';
 		}
-
-		let loot = new Bank({
-			[bar.id]: quantity
-		});
-		loot = randomizeBank(user.id, loot);
 
 		if (duration >= MIN_LENGTH_FOR_PET && !blastf && user.QP > 10) {
 			const numMinutes = duration / Time.Minute;
