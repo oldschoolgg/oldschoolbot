@@ -14,7 +14,7 @@ export const questingTask: MinionTask = {
 		const currentQP = user.QP;
 
 		// This assumes you do quests in order of scaling difficulty, ~115 hours for max qp
-		let qpReceived = rand(1, 30);
+		let qpReceived = rand(50, 100);
 
 		const max = user.isIronman ? 100_000 : MAX_QP;
 

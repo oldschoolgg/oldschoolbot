@@ -1,18 +1,8 @@
-import { captureException } from '@sentry/node';
 import { Interaction } from 'discord.js';
 import { convertAPIOptionsToCommandOptions } from 'mahoji/dist/lib/util';
 
-import { production } from '../../config';
-
 export function logError(err: Error | unknown, context?: Record<string, string>, extra?: Record<string, string>) {
-	if (production) {
-		captureException(err, {
-			tags: context,
-			extra
-		});
-	} else {
-		console.error(context, err);
-	}
+	console.error(context, err, extra);
 }
 
 export function logErrorForInteraction(err: Error | unknown, interaction: Interaction) {

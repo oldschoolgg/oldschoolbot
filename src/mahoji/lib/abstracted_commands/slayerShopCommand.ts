@@ -2,6 +2,7 @@ import { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 import { table } from 'table';
 
+import { randomizeBank } from '../../../lib/randomizer';
 import { SlayerRewardsShop } from '../../../lib/slayer/slayerUnlocks';
 import { removeFromArr, stringMatches } from '../../../lib/util';
 import { logError } from '../../../lib/util/logError';
@@ -39,9 +40,11 @@ export async function slayerShopBuyCommand({
 		const cost = qty * buyableObj.slayerPointCost;
 		if (user.user.slayer_points >= cost) {
 			try {
+				let loot = new Bank().add(buyableObj.item, qty);
+				loot = randomizeBank(user.id, loot);
 				await user.update({ slayer_points: { decrement: cost } });
-				await user.addItemsToBank({ items: new Bank().add(buyableObj.item, qty), collectionLog: true });
-				return `You bought ${qty}x ${buyableObj.name}.`;
+				await user.addItemsToBank({ items: loot, collectionLog: true });
+				return `You bought ${loot}.`;
 			} catch (e) {
 				logError(e, {
 					user_id: user.id,

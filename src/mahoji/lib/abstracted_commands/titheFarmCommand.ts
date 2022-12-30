@@ -5,6 +5,7 @@ import { Bank } from 'oldschooljs';
 import { Emoji } from '../../../lib/constants';
 import TitheFarmBuyables from '../../../lib/data/buyables/titheFarmBuyables';
 import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
+import { randomizeBank } from '../../../lib/randomizer';
 import { TitheFarmActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
@@ -85,7 +86,7 @@ export async function titheFarmShopCommand(
 
 	const quantity = _quantity ?? 1;
 
-	const loot = new Bank(buyable.outputItems).multiply(quantity);
+	let loot = new Bank(buyable.outputItems).multiply(quantity);
 	const cost = buyable.titheFarmPoints * quantity;
 
 	const titheFarmPoints = user.user.stats_titheFarmPoints;
@@ -94,6 +95,7 @@ export async function titheFarmShopCommand(
 		return `You need ${cost} Tithe Farm points to make this purchase.`;
 	}
 
+	loot = randomizeBank(user.id, loot);
 	let purchaseMsg = `${loot} for ${cost} Tithe Farm points`;
 
 	await handleMahojiConfirmation(interaction, `${user}, please confirm that you want to purchase ${purchaseMsg}.`);
