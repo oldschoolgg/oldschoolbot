@@ -401,8 +401,6 @@ model User {
   bingo_tickets_bought Int    @default(0)
   bingo_gp_contributed BigInt @default(0)
 
-  treats_delivered Int @default(0)
-
   last_command_date DateTime?    @db.Timestamp(6)
   farmed_crops      FarmedCrop[]
 
