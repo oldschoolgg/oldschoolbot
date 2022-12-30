@@ -158,7 +158,7 @@ export const guardiansOfTheRiftTask: MinionTask = {
 
 		let str = `<@${userID}>, ${
 			user.minionName
-		} finished ${quantity}x Guardians Of The Rift runs and looted the Rewards Guardian ${rewardsQty}x times, also received: ${runesLoot}${
+		} finished ${quantity}x Guardians Of The Rift runs and looted the Rewards Guardian ${rewardsQty}x times, also received: ${totalLoot}${
 			setBonus - 1 > 0
 				? ` ${Math.floor((setBonus - 1) * 100)}% Quantity bonus for Raiments Of The Eye Set Items`
 				: ''

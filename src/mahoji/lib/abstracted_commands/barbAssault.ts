@@ -4,6 +4,7 @@ import { calcWhatPercent, reduceNumByPercent, roll, round, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../../lib/constants';
+import { randomizeBank } from '../../../lib/randomizer';
 import { countUsersWithItemInCl } from '../../../lib/settings/prisma';
 import { getMinigameScore } from '../../../lib/settings/settings';
 import { HighGambleTable, LowGambleTable, MediumGambleTable } from '../../../lib/simulation/baGamble';
@@ -133,16 +134,17 @@ export async function barbAssaultBuyCommand(
 
 	const { item, cost } = buyable;
 	const balance = user.user.honour_points;
+
+	let loot = new Bank().add(item.id, quantity);
+	loot = randomizeBank(user.id, loot);
 	if (balance < cost * quantity) {
-		return `You don't have enough Honour Points to buy ${quantity.toLocaleString()}x ${item.name}. You need ${(
+		return `You don't have enough Honour Points to buy ${loot}. You need ${(
 			cost * quantity
 		).toLocaleString()}, but you have only ${balance.toLocaleString()}.`;
 	}
 	await handleMahojiConfirmation(
 		interaction,
-		`Are you sure you want to buy ${quantity.toLocaleString()}x ${item.name}, for ${(
-			cost * quantity
-		).toLocaleString()} honour points?`
+		`Are you sure you want to buy ${loot}, for ${(cost * quantity).toLocaleString()} honour points?`
 	);
 	await user.update({
 		honour_points: {
@@ -150,11 +152,9 @@ export async function barbAssaultBuyCommand(
 		}
 	});
 
-	await user.addItemsToBank({ items: new Bank().add(item.id, quantity), collectionLog: true });
+	await user.addItemsToBank({ items: loot, collectionLog: true });
 
-	return `Successfully purchased ${quantity.toLocaleString()}x ${item.name} for ${(
-		cost * quantity
-	).toLocaleString()} Honour Points.`;
+	return `Successfully purchased ${loot} for ${(cost * quantity).toLocaleString()} Honour Points.`;
 }
 
 export async function barbAssaultGambleCommand(

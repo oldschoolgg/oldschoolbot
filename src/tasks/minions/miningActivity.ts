@@ -205,8 +205,8 @@ export const miningTask: MinionTask = {
 				str += ' Your Superior inferno adze smelted all the ore you mined (No materials used).';
 			}
 		}
-		str += `\n\nYou received: ${loot}.`;
 		loot = randomizeBank(user.id, loot);
+		str += `\n\nYou received: ${loot}.`;
 
 		if (bonusXP > 0) {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
