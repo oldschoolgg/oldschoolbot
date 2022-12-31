@@ -134,30 +134,22 @@ export async function mahoganyHomesBuyCommand(user: MUser, input = '', quantity?
 	return `Successfully purchased ${loot} for ${cost * quantity} Carpenter Points.`;
 }
 
-export async function mahoganyHomesBuildCommand(
-	user: MUser,
-	channelID: string,
-	tier?: string | undefined
-): CommandResponse {
+export async function mahoganyHomesBuildCommand(user: MUser, channelID: string, tier: string): CommandResponse {
 	if (user.minionIsBusy) return `${user.minionName} is currently busy.`;
 
 	const conLevel = user.skillLevel(SkillsEnum.Construction);
 	const kc = await getMinigameScore(user.id, 'mahogany_homes');
 
-	let tierData = contractTiers.find(contractTier => conLevel >= contractTier.level)!;
+	let contractTier = contractTiers.find(contract => stringMatches(contract.name, tier));
+	if (!contractTier) return 'Error selecting contract tier.';
 
-	if (tier) {
-		// If a tier was specified, reassign construction level to that tier to force a task of a lower tier
-		tierData = contractTiers.find(contractTier => tier.toLowerCase() === contractTier.name.toLowerCase())!;
-		if (!tierData) return `Tier ${tier} doesn't exist.`;
-		if (tierData.level > conLevel) return `Tier ${tierData.name} requires ${tierData.level} construction.`;
-	} 
-
-	console.log(tier);
+	if (contractTier.level > conLevel) {
+		return `Tier ${contractTier.name} requires ${contractTier.level} construction.`;
+	}
 
 	const hasSack = user.hasEquippedOrInBank('Plank sack');
 	const [quantity, itemsNeeded, xp, duration, points] = calcTrip(
-		tierData,
+		contractTier,
 		kc,
 		calcMaxTripLength(user, 'MahoganyHomes'),
 		hasSack
@@ -179,11 +171,11 @@ export async function mahoganyHomesBuildCommand(
 		duration,
 		points,
 		xp,
-		tier: tierData.name
+		tier: contractTier.name
 	});
 
 	let str = `${user.minionName} is now doing ${quantity}x Mahogany homes ${
-		tierData.name
+		contractTier.name
 	} contracts, the trip will take ${formatDuration(duration)}. Removed ${itemsNeeded} from your bank.`;
 
 	if (hasSack) {
