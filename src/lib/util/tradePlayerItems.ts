@@ -10,6 +10,7 @@ function timeout(ms: number) {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+export function tradePlayerItemsImpl(sender: MUser, recipient: MUser, lootSent: Bank, lootReceived: Bank) {}
 export async function tradePlayerItems(sender: MUser, recipient: MUser, _itemsToSend?: Bank, _itemsToReceive?: Bank) {
 	if (activeTradeCache.get(sender.id) || activeTradeCache.get(recipient.id)) {
 		return { success: false, message: 'Only one trade per player can be active at a time!' };
@@ -20,17 +21,10 @@ export async function tradePlayerItems(sender: MUser, recipient: MUser, _itemsTo
 	const itemsToSend = _itemsToSend ? _itemsToSend.clone() : new Bank();
 	const itemsToReceive = _itemsToReceive ? _itemsToReceive.clone() : new Bank();
 
-	const pendingTrade = new Promise();
-
-	// Queue function for the recipient so no funny business / mistakes happen:
-	userQueueFn(recipient.id, async () => {
-		while (activeTradeCache.get(recipient.id)) {
-			await timeout(100);
-		}
-	});
 	// Queue the primary trade function: (Clears cache on completion/failure)
-	return userQueueFn(sender.id, async () => {
+	const processTradePromise = userQueueFn(sender.id, async () => {
 		try {
+			await timeout(5000);
 			await Promise.all([sender.sync(), recipient.sync()]);
 			if (!sender.owns(itemsToSend)) {
 				return { success: false, message: `${sender.usernameOrMention} doesn't own all items.` };
@@ -97,5 +91,10 @@ export async function tradePlayerItems(sender: MUser, recipient: MUser, _itemsTo
 			activeTradeCache.delete(sender.id);
 			activeTradeCache.delete(recipient.id);
 		}
+	});
+
+	// Queue function for the recipient so no funny business / mistakes happen:
+	return userQueueFn(recipient.id, async () => {
+		return processTradePromise;
 	});
 }
