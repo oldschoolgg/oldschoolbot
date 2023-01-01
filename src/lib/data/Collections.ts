@@ -45,6 +45,7 @@ import { SkillsEnum } from '../skilling/types';
 import { ItemBank } from '../types';
 import { addArrayOfNumbers, removeFromArr, shuffleRandom, stringMatches } from '../util';
 import { getKCByName } from '../util/getKCByName';
+import itemID from '../util/itemID';
 import { repairBrokenItemsFromUser } from '../util/repairBrokenItems';
 import resolveItems from '../util/resolveItems';
 import {
@@ -1355,7 +1356,9 @@ export const allCollectionLogs: ICollection = {
 			},
 			'Dyed Items': {
 				counts: false,
-				items: dyedItems.map(i => i.dyedVersions.map(i => i.item.id)).flat(2)
+				items: dyedItems
+					.map(i => i.dyedVersions.filter(i => i.dye.id !== itemID('Christmas dye')).map(i => i.item.id))
+					.flat(2)
 			},
 			'Clothing Mystery Box': {
 				counts: false,
