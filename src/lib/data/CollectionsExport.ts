@@ -2257,7 +2257,8 @@ export const discontinuedCustomPetsCL = resolveItems([
 	'Seer',
 	'Leia',
 	'Buzz',
-	'Kuro'
+	'Kuro',
+	'Frosty'
 ]);
 
 export const kingGoldemarCL = resolveItems([
