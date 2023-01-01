@@ -282,6 +282,8 @@ ${details.infoStr}`
 			return { content: `${Emoji.ItemContract} ${details.infoStr}`, components };
 		}
 		const res = options.skip ? await skip(interaction, user) : await handInContract(interaction, user);
-		return `${Emoji.ItemContract} ${res}\n\n${details.infoStr}`;
+
+		const nextIcDetails = getItemContractDetails(user);
+		return `${Emoji.ItemContract} ${res}\n\n${nextIcDetails.infoStr}`;
 	}
 };

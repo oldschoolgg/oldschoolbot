@@ -13,7 +13,7 @@ import { CommandOptions } from 'mahoji/dist/lib/types';
 import { convertLVLtoXP } from 'oldschooljs/dist/util/util';
 
 import { DISCORD_SETTINGS, production } from '../config';
-import { AbstractCommand, CommandArgs } from '../mahoji/lib/inhibitors';
+import { AbstractCommand } from '../mahoji/lib/inhibitors';
 import { allChristmasItems } from './christmasEvent';
 import { SkillsEnum } from './skilling/types';
 import getOSItem from './util/getOSItem';
@@ -532,7 +532,7 @@ export const projectiles: Record<ProjectileType, number[]> = {
 export const PHOSANI_NIGHTMARE_ID = 9416;
 
 export const COMMANDS_TO_NOT_TRACK = [['minion', ['k', 'kill', 'clue', 'info']]];
-export function shouldTrackCommand(command: AbstractCommand, args: CommandArgs) {
+export function shouldTrackCommand(command: AbstractCommand, args: CommandOptions) {
 	if (!Array.isArray(args)) return true;
 	for (const [name, subs] of COMMANDS_TO_NOT_TRACK) {
 		if (command.name === name && typeof args[0] === 'string' && subs.includes(args[0])) {
@@ -542,7 +542,7 @@ export function shouldTrackCommand(command: AbstractCommand, args: CommandArgs) 
 	return true;
 }
 
-function compressMahojiArgs(options: CommandArgs) {
+function compressMahojiArgs(options: CommandOptions) {
 	let newOptions: Record<string, string | number | boolean | null | undefined> = {};
 	for (const [key, val] of Object.entries(options) as [
 		keyof CommandOptions,
@@ -575,7 +575,7 @@ function compressMahojiArgs(options: CommandArgs) {
 
 export function getCommandArgs(
 	commandName: string,
-	args: CommandArgs
+	args: CommandOptions
 ): Prisma.InputJsonObject | Prisma.InputJsonArray | undefined {
 	if (Array.isArray(args) && args.length === 0) return undefined;
 	if (!Array.isArray(args) && Object.keys(args).length === 0) return undefined;

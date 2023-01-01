@@ -483,12 +483,13 @@ export async function inventCommand(user: MUser, inventionName: string): Command
 			.join(', ')}.`;
 	}
 
-	const ownedBank = new MaterialBank(user.user.materials_owned as IMaterialBank);
 	const cost = inventingCost(invention);
 
 	if (invention.itemCost && !user.owns(invention.itemCost)) {
 		return `You don't own the items needed to create this invention, you need: ${invention.itemCost}.`;
 	}
+
+	const ownedBank = user.materialsOwned();
 	if (!ownedBank.has(cost)) {
 		return `You don't have enough materials to invent this item, it costs: ${cost}.`;
 	}

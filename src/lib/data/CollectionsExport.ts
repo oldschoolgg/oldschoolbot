@@ -1931,9 +1931,11 @@ export const miscellaneousCL = resolveItems([
 	'Dragonstone gauntlets',
 	'Dragonstone boots',
 	'Uncut onyx',
-	// 'Merfolk trident',
 	'Brackish blade',
-	'Ivy seed'
+	'Ivy seed',
+	'Merfolk trident',
+	'Orange egg sac',
+	'Blue egg sac'
 ]);
 export const diariesCL = [
 	'Karamja gloves 1',
