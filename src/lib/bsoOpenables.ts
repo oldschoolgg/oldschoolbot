@@ -2,7 +2,6 @@ import { randArrItem, roll } from 'e';
 import { Bank, Items, LootTable } from 'oldschooljs';
 import TreeHerbSeedTable from 'oldschooljs/dist/simulation/subtables/TreeHerbSeedTable';
 
-import { christmasLootTable } from './christmasEvent';
 import { Emoji } from './constants';
 import {
 	allPetIDs,
@@ -531,6 +530,45 @@ function makeOutputFromArrayOfItemIDs(fn: () => number, quantity: number) {
 	}
 	return { bank: loot };
 }
+
+const christmasPetFoodTable = new LootTable()
+	.add('Pumpkinhead praline')
+	.add('Takon truffle')
+	.add('Seer sweet')
+	.add('Cob cup')
+	.add('Craig creme')
+	.add('Moktang mint')
+	.add('Festive treats')
+	.add('Pork sausage')
+	.add('Pork crackling')
+	.add('Reinbeer');
+
+const christmasLootTable = new LootTable()
+	.tertiary(18, 'Christmas box')
+	.add(
+		new LootTable()
+			.add('Festive jumper (2022)', 1, 2)
+			.add('Christmas cape', 1, 2)
+			.add('Christmas socks', 1, 2)
+			.add('Tinsel scarf', 1, 4)
+			.add('Frosted wreath', 1, 4)
+			.add('Edible yoyo', 1, 4)
+			.add(christmasPetFoodTable, 1, 5)
+	)
+	.add(christmasPetFoodTable, 1, 4)
+	.add(
+		new LootTable()
+			.add('Pavlova')
+			.add('Prawns')
+			.add('Roast potatoes')
+			.add('Cake')
+			.add('Chocolate cake')
+			.add('Chocolate bar')
+			.add('Bucket of milk')
+			.add('Chocchip crunchies'),
+		1,
+		4
+	);
 
 const ChristmasBoxTable = new LootTable()
 	.add('Candy partyhat')
