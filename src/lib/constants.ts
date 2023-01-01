@@ -14,7 +14,6 @@ import { convertLVLtoXP } from 'oldschooljs/dist/util/util';
 
 import { DISCORD_SETTINGS, production } from '../config';
 import { AbstractCommand } from '../mahoji/lib/inhibitors';
-import { allChristmasItems } from './christmasEvent';
 import { SkillsEnum } from './skilling/types';
 import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
@@ -618,5 +617,5 @@ export const chompyHats = [
 	[getOSItem('Chompy bird hat (expert dragon archer)'), 4000]
 ] as const;
 
-export const secretItems = [...allChristmasItems];
+export const secretItems: number[] = [];
 export const gitHash = execSync('git rev-parse HEAD').toString().trim();
