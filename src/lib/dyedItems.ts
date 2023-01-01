@@ -480,6 +480,15 @@ export const dyedItems: DyedItem[] = [
 			}
 		]
 	},
+	{
+		baseItem: getOSItem('Dragon claws'),
+		dyedVersions: [
+			{
+				item: getOSItem('Santa claws'),
+				dye: getOSItem('Christmas dye')
+			}
+		]
+	},
 	...gorajan,
 	...dwarvenDyed
 ];

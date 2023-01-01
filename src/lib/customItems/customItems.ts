@@ -4500,3 +4500,16 @@ setCustomItem(
 	},
 	10_000
 );
+
+setCustomItem(
+	70_258,
+	'Santa claws',
+	'Dragon claws',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	10_000
+);
