@@ -635,7 +635,7 @@ export async function repeatTameTrip({
 				commandName: 'tames',
 				args: {
 					collect: {
-						name: itemNameFromID(data.itemID)
+						name: getOSItem(data.itemID).name
 					}
 				},
 				bypassInhibitors: true,

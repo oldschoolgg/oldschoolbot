@@ -70,7 +70,12 @@ export async function handleNewCLItems({
 
 		const stopwatch = new Stopwatch();
 		const nthUser = (
-			await fetchCLLeaderboard({ ironmenOnly: false, items: finishedCL.items, resultLimit: 100_000 })
+			await fetchCLLeaderboard({
+				ironmenOnly: false,
+				items: finishedCL.items,
+				resultLimit: 100_000,
+				method: 'raw_cl'
+			})
 		).length;
 		debugLog(`Took ${stopwatch.stop()} to calc cl leaderboard for ${finishedCL.name}`);
 

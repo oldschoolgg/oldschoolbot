@@ -789,6 +789,9 @@ model UserStats {
 
   tinker_workshop_mats_bank Json @default("{}") @db.Json
 
+  buy_cost_bank Json @default("{}") @db.Json
+  buy_loot_bank Json @default("{}") @db.Json
+
   @@map("user_stats")
 }
 

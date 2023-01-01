@@ -247,6 +247,16 @@ export async function userStatsBankUpdate(userID: string, key: keyof UserStats, 
 	}));
 }
 
+export async function multipleUserStatsBankUpdate(userID: string, updates: Partial<Record<keyof UserStats, Bank>>) {
+	await userStatsUpdate(userID, u => {
+		let updateObj: Prisma.UserStatsUpdateInput = {};
+		for (const [key, bank] of objectEntries(updates)) {
+			updateObj[key] = bank!.clone().add(u[key] as ItemBank).bank;
+		}
+		return updateObj;
+	});
+}
+
 export async function updateGPTrackSetting(
 	setting:
 		| 'gp_luckypick'
