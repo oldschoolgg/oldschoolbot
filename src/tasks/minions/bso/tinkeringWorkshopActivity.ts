@@ -2,7 +2,6 @@ import { randArrItem, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { userHasFlappy } from '../../../lib/invention/inventions';
 import { MaterialBank } from '../../../lib/invention/MaterialBank';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClueTable } from '../../../lib/simulation/sharedTables';
@@ -48,9 +47,6 @@ export const twTask: MinionTask = {
 		const user = await mUserFetch(userID);
 		const loot = tinkerLoot(user, quantity);
 
-		const flappyRes = await userHasFlappy({ user, duration });
-		if (flappyRes.shouldGiveBoost) loot.multiply(2);
-
 		await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		let xp = 0;
@@ -66,14 +62,20 @@ export const twTask: MinionTask = {
 				tinker_workshop_mats_bank: new MaterialBank(oldStats.tinker_workshop_mats_bank as ItemBank).add(
 					data.material,
 					quantity
-				).bank
+				).bank,
+				tworkshop_xp_gained: {
+					increment: xp
+				}
 			};
 		});
 
-		let str = `${user}, ${user.minionName} finished tinkering with ${quantity}x projects, you received ${loot} and ${xpStr}.`;
-
-		if (flappyRes.userMsg) str += `\n${flappyRes.userMsg}`;
-
-		handleTripFinish(user, channelID, str, undefined, data, null);
+		handleTripFinish(
+			user,
+			channelID,
+			`${user}, ${user.minionName} finished tinkering with ${quantity}x projects, you received ${loot} and ${xpStr}.`,
+			undefined,
+			data,
+			null
+		);
 	}
 };

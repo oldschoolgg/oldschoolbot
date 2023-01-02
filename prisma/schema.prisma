@@ -792,6 +792,9 @@ model UserStats {
   buy_cost_bank Json @default("{}") @db.Json
   buy_loot_bank Json @default("{}") @db.Json
 
+  tworkshop_material_cost_bank Json @default("{}") @db.Json
+  tworkshop_xp_gained          Int  @default(0)
+
   @@map("user_stats")
 }
 
