@@ -401,8 +401,6 @@ model User {
   bingo_tickets_bought Int    @default(0)
   bingo_gp_contributed BigInt @default(0)
 
-  treats_delivered Int @default(0)
-
   last_command_date DateTime?    @db.Timestamp(6)
   farmed_crops      FarmedCrop[]
 
@@ -582,19 +580,19 @@ model StashUnit {
 }
 
 model UserStats {
-  user_id                  BigInt @id
-  sell_gp                  BigInt @default(0)
-  items_sold_bank          Json   @default("{}") @db.Json
-  puropuro_implings_bank   Json   @default("{}") @db.Json
-  passive_implings_bank    Json   @default("{}") @db.Json
-  create_cost_bank         Json   @default("{}") @db.Json
-  create_loot_bank         Json   @default("{}") @db.Json
-  bird_eggs_offered_bank   Json   @default("{}") @db.Json
-  scattered_ashes_bank     Json   @default("{}") @db.Json
+  user_id                BigInt @id
+  sell_gp                BigInt @default(0)
+  items_sold_bank        Json   @default("{}") @db.Json
+  puropuro_implings_bank Json   @default("{}") @db.Json
+  passive_implings_bank  Json   @default("{}") @db.Json
+  create_cost_bank       Json   @default("{}") @db.Json
+  create_loot_bank       Json   @default("{}") @db.Json
+  bird_eggs_offered_bank Json   @default("{}") @db.Json
+  scattered_ashes_bank   Json   @default("{}") @db.Json
 
-  gf_weapons_made          Json   @default("{}") @db.Json
-  gf_cost                  Json   @default("{}") @db.Json
-  gf_loot                  Json   @default("{}") @db.Json
+  gf_weapons_made Json @default("{}") @db.Json
+  gf_cost         Json @default("{}") @db.Json
+  gf_loot         Json @default("{}") @db.Json
 
   ash_sanctifier_prayer_xp BigInt @default(0)
   gotr_rift_searches       Int    @default(0)
@@ -604,6 +602,11 @@ model UserStats {
 
   cl_array        Int[]
   cl_array_length Int   @default(0)
+
+  snowmen_built Int @default(0)
+
+  buy_cost_bank Json @default("{}") @db.Json
+  buy_loot_bank Json @default("{}") @db.Json
 
   @@map("user_stats")
 }

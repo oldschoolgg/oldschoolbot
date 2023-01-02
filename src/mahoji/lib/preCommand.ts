@@ -1,4 +1,5 @@
 import { InteractionReplyOptions, TextChannel, User } from 'discord.js';
+import { CommandOptions } from 'mahoji/dist/lib/types';
 
 import { modifyBusyCounter } from '../../lib/busyCounterCache';
 import { badges, badgesCache, Emoji, usernameCache } from '../../lib/constants';
@@ -44,7 +45,8 @@ export async function preCommand({
 	guildID,
 	channelID,
 	bypassInhibitors,
-	apiUser
+	apiUser,
+	options
 }: {
 	apiUser: User | null;
 	abstractCommand: AbstractCommand;
@@ -52,6 +54,7 @@ export async function preCommand({
 	guildID?: string | bigint | null;
 	channelID: string | bigint;
 	bypassInhibitors: boolean;
+	options: CommandOptions;
 }): Promise<
 	| undefined
 	| {
@@ -106,6 +109,7 @@ export async function preCommand({
 		command_name: abstractCommand.name,
 		user_id: userID,
 		guild_id: guildID,
-		channel_id: channelID
+		channel_id: channelID,
+		options
 	});
 }

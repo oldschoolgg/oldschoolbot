@@ -1,4 +1,5 @@
 import { ChatInputCommandInteraction } from 'discord.js';
+import { CommandOptions } from 'mahoji/dist/lib/types';
 import { Monsters } from 'oldschooljs';
 
 import { PvMMethod } from '../../../lib/constants';
@@ -302,12 +303,15 @@ export async function autoSlayCommand({
 		}
 
 		if (ehpMonster && ehpMonster.efficientName) {
+			let args: CommandOptions = {
+				name: ehpMonster.efficientName
+			};
+			if (ehpMonster.efficientMethod) {
+				args.method = ehpMonster.efficientMethod;
+			}
 			runCommand({
 				commandName: 'k',
-				args: {
-					name: ehpMonster.efficientName,
-					method: ehpMonster.efficientMethod
-				},
+				args,
 				bypassInhibitors: true,
 				...cmdRunOptions
 			});
