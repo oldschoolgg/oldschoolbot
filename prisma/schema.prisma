@@ -783,8 +783,6 @@ model UserStats {
 
   lamped_xp Json @default("{}") @db.Json
 
-  snowmen_built Int @default(0)
-
   tame_cl_bank Json @default("{}") @db.JsonB
 
   tinker_workshop_mats_bank Json @default("{}") @db.Json
