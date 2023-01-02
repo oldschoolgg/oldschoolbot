@@ -483,6 +483,7 @@ model Minigame {
   puro_puro               Int    @default(0)
   giants_foundry          Int    @default(0)
   guardians_of_the_rift   Int    @default(0)
+  som                     Int    @default(0)
 
   new_user NewUser?
 

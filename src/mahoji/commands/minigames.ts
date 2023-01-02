@@ -897,6 +897,26 @@ export const minigamesCommand: OSBMahojiCommand = {
 					]
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			name: 'shades_of_morton',
+			description: 'The Guardians of the Rift minigame.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'start',
+					description: 'Start a trip.',
+					options: [
+						{
+							name: 'combination_runes',
+							description: 'Craft combination runes for extra points.',
+							type: ApplicationCommandOptionType.Boolean,
+							required: false
+						}
+					]
+				}
+			]
 		}
 	],
 	run: async ({
@@ -965,6 +985,9 @@ export const minigamesCommand: OSBMahojiCommand = {
 		};
 		gotr?: {
 			start?: { combination_runes?: boolean };
+		};
+		shades_of_morton?: {
+			start?: {};
 		};
 	}>) => {
 		const user = await mUserFetch(userID);
