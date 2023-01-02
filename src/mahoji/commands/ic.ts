@@ -257,7 +257,7 @@ export const icCommand: OSBMahojiCommand = {
 		const user = await mUserFetch(userID);
 		const details = getItemContractDetails(user);
 		const components =
-			details.nextContractIsReady && details.currentItem !== null
+			details.nextContractIsReady && details.currentItem !== null && !user.isIronman
 				? makeComponents([
 						new ButtonBuilder()
 							.setStyle(ButtonStyle.Primary)
