@@ -82,7 +82,7 @@ const Steel: SmithedItem[] = [
 		xp: 37.5,
 		id: itemID('Cannonball'),
 		inputBars: { [itemID('Steel bar')]: 1 },
-		timeToUse: Time.Second * 3.4,
+		timeToUse: Time.Second * 6,
 		outputMultiple: 4
 	},
 	{
