@@ -18,6 +18,7 @@ import { handleMahojiConfirmation, userHasGracefulEquipped } from '../../mahojiS
 
 export async function trekCommand(user: MUser, channelID: string, difficulty: string, quantity: number | undefined) {
 	const tier = difficulties.find(item => stringMatches(item.difficulty, difficulty));
+	console.log(difficulty);
 	if (!tier) return 'that is not a valid difficulty';
 	const minLevel = tier.minCombat;
 	const qp = user.QP;

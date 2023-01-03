@@ -2,7 +2,6 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import TrekShopItems from '../../lib/data/buyables/trekBuyables';
 import { LMSBuyables } from '../../lib/data/CollectionsExport';
-import { toTitleCase } from '../../lib/util/toTitleCase';
 import {
 	agilityArenaBuyables,
 	agilityArenaBuyCommand,
@@ -564,12 +563,9 @@ export const minigamesCommand: OSBMahojiCommand = {
 							required: true,
 							description: 'The tier contract you wish to do.',
 							autocomplete: async value => {
-								return [...contractTiers.map(i => i.name)]
-									.filter(name => (!value ? true : name.toLowerCase().includes(value.toLowerCase())))
-									.map(i => ({
-										name: toTitleCase(i),
-										value: i
-									}));
+								return contractTiers
+									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
+									.map(i => ({ name: i.name, value: i.name }));
 							}
 						}
 					]

@@ -140,7 +140,10 @@ export async function mahoganyHomesBuildCommand(user: MUser, channelID: string, 
 	const conLevel = user.skillLevel(SkillsEnum.Construction);
 	const kc = await getMinigameScore(user.id, 'mahogany_homes');
 
-	let contractTier = contractTiers.find(contract => stringMatches(contract.name, tier));
+	const contractTier = contractTiers.find(contract => stringMatches(contract.name, tier));
+
+	console.log(tier);
+	console.log(contractTier);
 	if (!contractTier) return 'Error selecting contract tier.';
 
 	if (contractTier.level > conLevel) {
