@@ -23,7 +23,7 @@ interface IContract {
 
 export const contractTiers: IContract[] = [
 	{
-		name: 'Expert',
+		name: 'Expert (Mahogany Planks)',
 		level: 70,
 		plank: Plank.MahoganyPlank,
 		xp: 2750,
@@ -31,7 +31,7 @@ export const contractTiers: IContract[] = [
 		plankXP: [112, 240]
 	},
 	{
-		name: 'Adept',
+		name: 'Adept (Teak Planks)',
 		level: 50,
 		plank: Plank.TeakPlank,
 		xp: 2250,
@@ -39,7 +39,7 @@ export const contractTiers: IContract[] = [
 		plankXP: [72, 190]
 	},
 	{
-		name: 'Novice',
+		name: 'Novice (Oak Planks)',
 		level: 20,
 		plank: Plank.OakPlank,
 		xp: 1250,
@@ -47,7 +47,7 @@ export const contractTiers: IContract[] = [
 		plankXP: [48, 160]
 	},
 	{
-		name: 'Beginner',
+		name: 'Beginner (Planks)',
 		level: 1,
 		plank: Plank.Plank,
 		xp: 500,
