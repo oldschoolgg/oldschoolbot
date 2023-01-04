@@ -297,7 +297,7 @@ async function donateICHandler(interaction: ButtonInteraction) {
 	try {
 		modifyBusyCounter(donator.id, 1);
 		await donator.removeItemsFromBank(cost);
-		await user.addItemsToBank({ items: cost, collectionLog: false });
+		await user.addItemsToBank({ items: cost, collectionLog: false, filterLoot: false });
 		await userStatsBankUpdate(donator.id, 'ic_donations_given_bank', cost);
 		await userStatsBankUpdate(user.id, 'ic_donations_received_bank', cost);
 
