@@ -1,5 +1,7 @@
+import { increaseNumByPercent } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
+import { MorytaniaDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ShadesOfMortonOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -11,7 +13,7 @@ export const shadesOfMortonTask: MinionTask = {
 		const { channelID, quantity, userID, logID, shadeID, duration } = data;
 		const user = await mUserFetch(userID);
 
-		const log = shadesLogs.find(i => i.oiledLog.id === logID)!;
+		const log = shadesLogs.find(i => i.normalLog.id === logID)!;
 		const shade = shades.find(i => i.shadeName === shadeID)!;
 
 		let loot = new Bank();
@@ -33,13 +35,25 @@ export const shadesOfMortonTask: MinionTask = {
 			loot.add(table.roll());
 		}
 
+		let messages: string[] = [];
+
 		const { itemsAdded } = await transactItems({ userID: user.id, collectionLog: true, itemsToAdd: loot });
 
-		let xpStr = await user.addXP({ skillName: SkillsEnum.Firemaking, amount: quantity * log.fmXP, duration });
-		let prayerXP = log.prayerXP[shade.shadeName];
-		if (!prayerXP) {
-			throw new Error(`No prayer XP for ${shade.shadeName} in ${log.oiledLog.name}!`);
+		let firemakingXP = quantity * log.fmXP;
+		if ((await userhasDiaryTier(user, MorytaniaDiary.elite))[0]) {
+			firemakingXP = increaseNumByPercent(firemakingXP, 50);
+			messages.push('50% bonus firemaking xp for morytania hard diary');
 		}
+
+		let xpStr = await user.addXP({ skillName: SkillsEnum.Firemaking, amount: firemakingXP, duration });
+		let prayerXP = log.prayerXP[shade.shadeName];
+		if (!prayerXP) throw new Error(`No prayer XP for ${shade.shadeName} in ${log.oiledLog.name}!`);
+
+		if ((await userhasDiaryTier(user, MorytaniaDiary.hard))[0]) {
+			prayerXP = increaseNumByPercent(prayerXP, 50);
+			messages.push('50% bonus prayer xp for morytania hard diary');
+		}
+
 		xpStr += ', ';
 		xpStr += await user.addXP({ skillName: SkillsEnum.Prayer, amount: quantity * prayerXP, duration });
 

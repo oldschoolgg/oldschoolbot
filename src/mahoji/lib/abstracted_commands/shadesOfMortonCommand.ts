@@ -261,13 +261,13 @@ function timePerLog(_user: MUser) {
 export async function shadesOfMortonStartCommand(user: MUser, channelID: string, logStr: string, shadeStr: string) {
 	let totalTime = calcMaxTripLength(user, 'ShadesOfMorton');
 	const logItem = getItem(logStr);
-	if (!logItem) return 'Invalid item';
+	if (!logItem) return 'Invalid logs item';
 
 	const userBank = user.bank;
 	const logsOwned = userBank.amount(logItem.id);
 	if (logsOwned === 0) return `You don't own any ${logItem.name}!`;
 
-	const log = shadesLogs.find(i => i.oiledLog.id === logItem.id);
+	const log = shadesLogs.find(i => i.normalLog.id === logItem.id);
 	const shade = shades.find(i => i.shadeName === shadeStr);
 	if (!log || !shade) return 'Invalid item';
 
@@ -276,6 +276,11 @@ export async function shadesOfMortonStartCommand(user: MUser, channelID: string,
 
 	const quantity = Math.min(logsOwned, shadesOwned, Math.floor(totalTime / timePerLog(user)));
 	const duration = quantity * timePerLog(user);
+
+	let prayerXP = log.prayerXP[shade.shadeName];
+	if (!prayerXP) {
+		return `You can't use ${log.normalLog.name} with ${shade.item.name}.`;
+	}
 
 	const cost = new Bank();
 	cost.add(log.normalLog.id, quantity);
@@ -298,5 +303,5 @@ export async function shadesOfMortonStartCommand(user: MUser, channelID: string,
 
 	return `${
 		user.minionName
-	} is now off to do Shades of Mort'ton using ${cost}x - the total trip will take ${formatDuration(duration)}.`;
+	} is now off to do Shades of Mort'ton using ${cost} - the total trip will take ${formatDuration(duration)}.`;
 }
