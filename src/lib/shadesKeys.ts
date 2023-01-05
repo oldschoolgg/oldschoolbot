@@ -253,11 +253,11 @@ const chests = [
 
 const zealOutfit = resolveItems(["Zealot's boots", "Zealot's helm", "Zealot's robe bottom", "Zealot's robe top"]);
 
-function openShadeChest({ item, qty, user }: { user: MUser; item: Item; qty: number }) {
+export function openShadeChest({ item, qty, allItemsOwned }: { allItemsOwned: Bank; item: Item; qty: number }) {
 	const chest = chests.find(i => i.items.includes(item.id));
 	if (!chest) throw new Error(`No chest found for item ${item.name}.`);
 	const loot = new Bank();
-	const effectiveOwnedItems = user.allItemsOwned().clone();
+	const effectiveOwnedItems = allItemsOwned.clone();
 
 	for (let i = 0; i < qty; i++) {
 		const thisLoot = chest.table.roll();
@@ -289,7 +289,12 @@ for (const chest of chests) {
 			id: keyItem.id,
 			openedItem: keyItem,
 			aliases: [keyItem.name.toLowerCase()],
-			output: async args => openShadeChest({ item: args.self.openedItem, user: args.user, qty: args.quantity }),
+			output: async args =>
+				openShadeChest({
+					item: args.self.openedItem,
+					allItemsOwned: args.user.allItemsOwned(),
+					qty: args.quantity
+				}),
 			allItems: chest.table.allItems
 		});
 	}

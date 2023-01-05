@@ -3,7 +3,7 @@ import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { ShadesOfMortonOptions } from '../../../lib/types/minions';
-import { formatDuration } from '../../../lib/util';
+import { formatDuration, itemNameFromID } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
@@ -252,14 +252,22 @@ export const shadesLogs: ShadesLog[] = [
 	}
 ];
 
-// killing boosts for: salve amulet
-
 function timePerLog(_user: MUser) {
 	return Time.Minute * 3;
 }
 
+const coffins = ['Bronze coffin', 'Steel coffin', 'Black coffin', 'Silver coffin', 'Gold coffin'];
+
 export async function shadesOfMortonStartCommand(user: MUser, channelID: string, logStr: string, shadeStr: string) {
+	let messages: string[] = [];
 	let totalTime = calcMaxTripLength(user, 'ShadesOfMorton');
+	for (const coffin of coffins.reverse()) {
+		if (user.hasEquipped(coffin)) {
+			let bonusTime = coffins.indexOf(coffin) * Time.Minute;
+			messages.push(`${formatDuration(bonusTime)} bonus max trip length for ${itemNameFromID(coffin)}`);
+			break;
+		}
+	}
 	const logItem = getItem(logStr);
 	if (!logItem) return 'Invalid logs item';
 
@@ -301,7 +309,11 @@ export async function shadesOfMortonStartCommand(user: MUser, channelID: string,
 		shadeID: shade.shadeName
 	});
 
-	return `${
+	let str = `${
 		user.minionName
 	} is now off to do Shades of Mort'ton using ${cost} - the total trip will take ${formatDuration(duration)}.`;
+	if (messages.length > 0) {
+		str += `\n**Messages:** ${messages.join(', ')}}`;
+	}
+	return str;
 }
