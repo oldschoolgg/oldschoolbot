@@ -3,10 +3,10 @@ import '../data/itemAliases';
 import { Bank, Misc, Monsters } from 'oldschooljs';
 
 import { handleNexKills } from '../simulation/nex';
-import { calcDropRatesFromBank } from '../util';
+import { calcDropRatesFromBank } from '../util/calcDropRatesFromBank';
 import { stringMatches } from '../util/cleanString';
 import resolveItems from '../util/resolveItems';
-import { KillWorkerArgs, KillWorkerReturn } from '.';
+import type { KillWorkerArgs, KillWorkerReturn } from '.';
 
 export default ({ quantity, bossName, limit, catacombs, onTask }: KillWorkerArgs): KillWorkerReturn => {
 	const osjsMonster = Monsters.find(mon => mon.aliases.some(alias => stringMatches(alias, bossName)));

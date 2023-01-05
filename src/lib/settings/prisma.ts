@@ -1,4 +1,5 @@
 import { Activity, activity_type_enum, Prisma, PrismaClient } from '@prisma/client';
+import Piscina from 'piscina';
 
 import { CLIENT_ID, production } from '../../config';
 import { ActivityTaskData } from '../types/minions';
@@ -10,9 +11,13 @@ declare global {
 		}
 	}
 }
-export const prisma =
-	global.prisma ||
-	new PrismaClient({
+
+function makePrismaClient(): PrismaClient {
+	console.log('Attempt prisma client...');
+	if (Piscina.isWorkerThread) return null as any as PrismaClient;
+
+	console.log('Making prisma client...');
+	return new PrismaClient({
 		log: [
 			{
 				emit: 'event',
@@ -20,7 +25,10 @@ export const prisma =
 			}
 		]
 	});
-if (!production) global.prisma = prisma;
+}
+
+export const prisma = global.prisma || makePrismaClient();
+global.prisma = prisma;
 
 export const prismaQueries: Prisma.QueryEvent[] = [];
 export let queryCountStore = { value: 0 };
