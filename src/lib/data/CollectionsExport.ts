@@ -1361,7 +1361,7 @@ export const roguesDenOutfit = resolveItems([
 export const roguesDenCL = resolveItems([...roguesDenOutfit]);
 
 export const shadesOfMorttonCL = resolveItems([
-	'Amulet of the damned',
+	'Amulet of the damned (full)',
 	'Flamtaer bag',
 	'Fine cloth',
 	'Bronze locks',

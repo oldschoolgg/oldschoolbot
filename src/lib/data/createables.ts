@@ -18,6 +18,7 @@ import { lmsCreatables } from './creatables/lms';
 import { mysticStavesCreatables } from './creatables/mysticStaves';
 import { nexCreatables } from './creatables/nex';
 import { ornamentKits } from './creatables/ornaments';
+import { shadesOfMortonCreatables } from './creatables/shadesOfMorton';
 import { slayerCreatables } from './creatables/slayer';
 import { tobCreatables } from './creatables/tob';
 
@@ -2131,7 +2132,8 @@ const Createables: Createable[] = [
 	...amrodCreatables,
 	...goldenProspectorCreatables,
 	...leaguesCreatables,
-	...guardiansOfTheRiftCreatables
+	...guardiansOfTheRiftCreatables,
+	...shadesOfMortonCreatables
 ];
 
 export default Createables;
