@@ -557,6 +557,7 @@ model Minigame {
   puro_puro               Int    @default(0)
   giants_foundry          Int    @default(0)
   guardians_of_the_rift   Int    @default(0)
+  shades_of_morton        Int    @default(0)
 
   // BSO
   ourania_delivery_service Int @default(0)
@@ -783,14 +784,17 @@ model UserStats {
 
   lamped_xp Json @default("{}") @db.Json
 
-  snowmen_built Int @default(0)
-
   tame_cl_bank Json @default("{}") @db.JsonB
 
   tinker_workshop_mats_bank Json @default("{}") @db.Json
 
   buy_cost_bank Json @default("{}") @db.Json
   buy_loot_bank Json @default("{}") @db.Json
+
+  tworkshop_material_cost_bank Json @default("{}") @db.Json
+  tworkshop_xp_gained          Int  @default(0)
+
+  shades_of_morton_cost_bank Json @default("{}") @db.Json
 
   @@map("user_stats")
 }
@@ -940,6 +944,8 @@ enum activity_type_enum {
   GiantsFoundry
   GuardiansOfTheRift
   TinkeringWorkshop
+  HalloweenEvent
+  ShadesOfMorton
 }
 
 enum xp_gains_skill_enum {

@@ -55,6 +55,7 @@ import type {
 	RunecraftActivityTaskOptions,
 	SawmillActivityTaskOptions,
 	ScatteringActivityTaskOptions,
+	ShadesOfMortonOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
 	TempleTrekkingActivityTaskOptions,
@@ -128,6 +129,10 @@ export const tripHandlers = {
 		args: () => ({})
 	},
 	[activity_type_enum.Easter]: {
+		commandName: 'm',
+		args: () => ({})
+	},
+	[activity_type_enum.HalloweenEvent]: {
 		commandName: 'm',
 		args: () => ({})
 	},
@@ -671,6 +676,14 @@ export const tripHandlers = {
 				start: {
 					material: data.material
 				}
+			}
+		})
+	},
+	[activity_type_enum.ShadesOfMorton]: {
+		commandName: 'minigames',
+		args: (data: ShadesOfMortonOptions) => ({
+			shades_of_morton: {
+				start: { shade: data.shadeID, logs: itemNameFromID(data.logID) }
 			}
 		})
 	}

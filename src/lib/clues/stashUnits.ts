@@ -545,7 +545,7 @@ export const masterStashes: StashUnitTier = {
 		{
 			id: 94,
 			desc: 'Centre of the Catacombs of Kourend',
-			items: resolveItems(['Arclight', 'Amulet of the damned'])
+			items: resolveItems(['Arclight', 'Amulet of the damned (full)'])
 		},
 		{ id: 95, desc: "Outside K'ril Tsutsaroth's room", items: resolveItems(['Zamorak full helm', 'Shadow sword']) },
 		{ id: 96, desc: 'Outside the Wilderness axe hut', items: resolveItems(['Flared trousers']) },

@@ -412,6 +412,10 @@ export interface GuardiansOfTheRiftActivityTaskOptions extends MinigameActivityT
 export interface TinkeringWorkshopOptions extends MinigameActivityTaskOptions {
 	material: MaterialType;
 }
+export interface ShadesOfMortonOptions extends MinigameActivityTaskOptions {
+	shadeID: string;
+	logID: number;
+}
 
 export type ActivityTaskData =
 	| ActivityTaskOptions
