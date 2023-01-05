@@ -45,6 +45,7 @@ import {
 	RunecraftActivityTaskOptions,
 	SawmillActivityTaskOptions,
 	ScatteringActivityTaskOptions,
+	ShadesOfMortonOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
 	TempleTrekkingActivityTaskOptions,
@@ -520,6 +521,14 @@ export const tripHandlers = {
 		args: (data: GuardiansOfTheRiftActivityTaskOptions) => ({
 			gotr: {
 				start: { combination_runes: data.combinationRunes }
+			}
+		})
+	},
+	[activity_type_enum.ShadesOfMorton]: {
+		commandName: 'minigames',
+		args: (data: ShadesOfMortonOptions) => ({
+			shades_of_morton: {
+				start: { shade: data.shadeID, logs: itemNameFromID(data.logID) }
 			}
 		})
 	}
