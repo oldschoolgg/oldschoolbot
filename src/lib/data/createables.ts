@@ -21,6 +21,7 @@ import { moktangCreatables } from './creatables/moktangCreatables';
 import { mysticStavesCreatables } from './creatables/mysticStaves';
 import { nexCreatables } from './creatables/nex';
 import { ornamentKits } from './creatables/ornaments';
+import { shadesOfMortonCreatables } from './creatables/shadesOfMorton';
 import { slayerCreatables } from './creatables/slayer';
 import { tobCreatables } from './creatables/tob';
 import { tameCreatables } from './tameCreatables';
@@ -2148,7 +2149,8 @@ const Createables: Createable[] = [
 	...leaguesCreatables,
 	...guardiansOfTheRiftCreatables,
 	...tameCreatables,
-	...moktangCreatables
+	...moktangCreatables,
+	...shadesOfMortonCreatables
 ];
 
 export default Createables;

@@ -1070,6 +1070,10 @@ const Buyables: Buyable[] = [
 		gpCost: 2000,
 		ironmanPrice: 200
 	},
+	{
+		name: 'Broken coffin',
+		gpCost: 2000
+	},
 	...sepulchreBuyables,
 	...constructionBuyables,
 	...hunterBuyables,

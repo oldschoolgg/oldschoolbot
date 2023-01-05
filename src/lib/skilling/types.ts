@@ -178,6 +178,7 @@ export interface Fletchable {
 	tickRate: number;
 	outputMultiple?: number;
 	requiredSlayerUnlocks?: SlayerTaskUnlocksEnum[];
+	craftingXp?: number;
 }
 
 export interface Mixable {

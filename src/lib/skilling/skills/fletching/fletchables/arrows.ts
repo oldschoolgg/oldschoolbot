@@ -27,7 +27,8 @@ const Arrows: Fletchable[] = [
 		xp: 2.5,
 		inputItems: new Bank({ 'Wolf bones': 1 }),
 		tickRate: 0.13,
-		outputMultiple: 4
+		outputMultiple: 4,
+		craftingXp: 2.5
 	},
 	{
 		name: 'Flighted ogre arrow',

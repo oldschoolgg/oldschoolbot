@@ -19,6 +19,18 @@ export const fletchingTask: MinionTask = {
 			duration
 		});
 
+		let craftXpReceived = 0;
+		let craftXpRes = '';
+		if (fletchableItem.craftingXp) {
+			craftXpReceived = fletchableItem.craftingXp * quantity;
+
+			craftXpRes = await user.addXP({
+				skillName: SkillsEnum.Crafting,
+				amount: craftXpReceived,
+				duration
+			});
+		}
+
 		let sets = 'x';
 		if (fletchableItem.outputMultiple) {
 			sets = ' sets of';
@@ -35,7 +47,7 @@ export const fletchingTask: MinionTask = {
 		handleTripFinish(
 			user,
 			channelID,
-			`${user}, ${user.minionName} finished fletching ${quantity}${sets} ${fletchableItem.name}, and received ${loot}. ${xpRes}`,
+			`${user}, ${user.minionName} finished fletching ${quantity}${sets} ${fletchableItem.name}, and received ${loot}. ${xpRes}. ${craftXpRes}`,
 			undefined,
 			data,
 			loot
