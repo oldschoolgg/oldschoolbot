@@ -252,7 +252,7 @@ export const shadesLogs: ShadesLog[] = [
 	}
 ];
 
-function timePerLog(_user: MUser) {
+function timePerLog() {
 	return Time.Minute * 3;
 }
 
@@ -282,8 +282,8 @@ export async function shadesOfMortonStartCommand(user: MUser, channelID: string,
 	const shadesOwned = userBank.amount(shade.item.id);
 	if (!shadesOwned) return `You don't own any ${shade.item.name}! Go kill some shades.`;
 
-	const quantity = Math.min(logsOwned, shadesOwned, Math.floor(totalTime / timePerLog(user)));
-	const duration = quantity * timePerLog(user);
+	const quantity = Math.min(logsOwned, shadesOwned, Math.floor(totalTime / timePerLog()));
+	const duration = quantity * timePerLog();
 
 	let prayerXP = log.prayerXP[shade.shadeName];
 	if (!prayerXP) {
