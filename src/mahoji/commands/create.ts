@@ -98,8 +98,8 @@ export const createCommand: OSBMahojiCommand = {
 			quantity = 1;
 		}
 
-		let action = 'create';
-		for (const act of ['revert', 'fix', 'unpack']) {
+		let action: 'create' | 'revert' | 'fix' | 'unpack' = 'create';
+		for (const act of ['revert', 'fix', 'unpack'] as const) {
 			if (createableItem.name.toLowerCase().startsWith(act)) {
 				action = act;
 			}
@@ -197,23 +197,33 @@ export const createCommand: OSBMahojiCommand = {
 
 		const isDyeing = inItems.items().some(i => i[0].name.toLowerCase().includes('dye'));
 
-		if (action === 'revert') {
-			await handleMahojiConfirmation(
-				interaction,
-				`${user}, please confirm that you want to revert **${inItems}** into ${outItems}`
-			);
-		} else {
-			await handleMahojiConfirmation(
-				interaction,
-				`${user}, please confirm that you want to ${action} **${outItems}** using ${inItems}${
-					materialCost !== null ? `, and ${materialCost} materials` : ''
-				}${
-					isDyeing
-						? '\n\nIf you are putting a dye on an item - the action is irreversible, you cannot get back the dye or the item, it is dyed forever. Are you sure you want to do that?'
-						: ''
-				}`
-			);
+		let str =
+			{
+				revert: `${user}, please confirm that you want to revert **${inItems}** into ${outItems}`,
+				unpack: `${user}, please confirm that you want to unpack **${inItems}** into ${outItems}`
+			}[action as string] ??
+			`${user}, please confirm that you want to ${action} **${outItems}** using ${inItems}${
+				materialCost !== null ? `, and ${materialCost} materials` : ''
+			}${
+				isDyeing
+					? '\n\nIf you are putting a dye on an item - the action is irreversible, you cannot get back the dye or the item, it is dyed forever. Are you sure you want to do that?'
+					: ''
+			}`;
+
+		if (createableItem.type) {
+			switch (createableItem.type) {
+				case 'pack': {
+					str = `${user}, please confirm that you want to pack **${inItems}** into ${outItems}`;
+					break;
+				}
+				case 'unpack': {
+					str = `${user}, please confirm that you want to unpack **${inItems}** into ${outItems}`;
+					break;
+				}
+			}
 		}
+
+		await handleMahojiConfirmation(interaction, str);
 
 		// Ensure they have the required items to create the item.
 		if (!user.owns(inItems)) {

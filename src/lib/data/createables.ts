@@ -42,6 +42,7 @@ export interface Createable {
 	maxCanOwn?: number;
 	materialCost?: MaterialBank;
 	onCreate?: (qty: number, user: MUser) => Promise<{ result: boolean; message: string }>;
+	type?: 'pack' | 'unpack';
 }
 
 const goldenProspectorCreatables: Createable[] = [
