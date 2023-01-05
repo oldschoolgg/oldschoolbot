@@ -59,6 +59,10 @@ export const shadesOfMortonTask: MinionTask = {
 
 		let str = `You received ${loot}. ${xpStr}.`;
 
+		if (messages.length > 0) {
+			str += `\n**Messages:** ${messages.join(', ')}`;
+		}
+
 		handleTripFinish(user, channelID, str, undefined, data, itemsAdded);
 	}
 };
