@@ -175,6 +175,11 @@ export const Minigames: readonly BotMinigame[] = [
 		name: 'Guardians Of The Rift',
 		aliases: ['guardians of the rift', 'gotr', 'guardian of the rift'],
 		column: 'guardians_of_the_rift'
+	},
+	{
+		name: "Shades of Mort'ton",
+		aliases: ['som', "shades of mort'ton"],
+		column: 'shades_of_morton'
 	}
 ];
 
