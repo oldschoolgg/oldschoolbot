@@ -18,6 +18,7 @@ import { lmsCreatables } from './creatables/lms';
 import { mysticStavesCreatables } from './creatables/mysticStaves';
 import { nexCreatables } from './creatables/nex';
 import { ornamentKits } from './creatables/ornaments';
+import { shadesOfMortonCreatables } from './creatables/shadesOfMorton';
 import { slayerCreatables } from './creatables/slayer';
 import { tobCreatables } from './creatables/tob';
 
@@ -36,6 +37,7 @@ export interface Createable {
 	requiredFavour?: Favours;
 	maxCanOwn?: number;
 	onCreate?: (qty: number, user: MUser) => Promise<{ result: boolean; message: string }>;
+	type?: 'pack' | 'unpack';
 }
 
 const goldenProspectorCreatables: Createable[] = [
@@ -2131,7 +2133,8 @@ const Createables: Createable[] = [
 	...amrodCreatables,
 	...goldenProspectorCreatables,
 	...leaguesCreatables,
-	...guardiansOfTheRiftCreatables
+	...guardiansOfTheRiftCreatables,
+	...shadesOfMortonCreatables
 ];
 
 export default Createables;

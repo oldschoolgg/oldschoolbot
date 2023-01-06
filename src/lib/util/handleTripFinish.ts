@@ -1,6 +1,6 @@
 import { activity_type_enum } from '@prisma/client';
 import { AttachmentBuilder, ButtonBuilder, MessageCollector } from 'discord.js';
-import { shuffleArr } from 'e';
+import { percentChance, randInt, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
@@ -13,7 +13,7 @@ import { handlePassiveImplings } from '../implings';
 import { triggerRandomEvent } from '../randomEvents';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import { ActivityTaskOptions } from '../types/minions';
-import { channelIsSendable, makeComponents } from '../util';
+import { channelIsSendable, isGroupActivity, makeComponents } from '../util';
 import {
 	makeAutoContractButton,
 	makeBirdHouseTripButton,
@@ -33,6 +33,42 @@ const activitiesToTrackAsPVMGPSource: activity_type_enum[] = [
 	'Raids',
 	'ClueCompletion'
 ];
+
+async function christmasEffect(messages: string[], data: ActivityTaskOptions) {
+	const isMass = isGroupActivity(data);
+	const users = isMass ? data.users : [data.userID];
+	let soloMsg: string | null = null;
+	let usersWhoGotSnowballs = 0;
+	await Promise.all(
+		users.map(async uID => {
+			const user = await mUserFetch(uID);
+			const loot = new Bank();
+			if (!user.bank.has('Snow globe') && roll(2) && user.cl.amount('Snow globe') < 3) {
+				loot.add('Snow globe');
+				await user.addItemsToBank({ items: loot, collectionLog: true });
+				messages.push(`${user.rawUsername} received ${loot}!`);
+				return;
+			}
+
+			const minutes = Math.floor(data.duration / Time.Minute);
+			if (minutes > 1 && user.owns('Snow globe')) {
+				for (let i = 0; i < minutes; i++) {
+					if (percentChance(80)) {
+						loot.add('Snowball', randInt(1, 4));
+					}
+				}
+
+				await user.addItemsToBank({ items: loot, collectionLog: true });
+				usersWhoGotSnowballs++;
+				soloMsg = `<:santaHat:785874868905181195> Your snowglobe collects you ${loot}...`;
+			}
+		})
+	);
+	if (users.length === 1 && soloMsg !== null) messages.push(soloMsg);
+	if (usersWhoGotSnowballs > 0 && users.length !== 1) {
+		messages.push(`${usersWhoGotSnowballs} users got snowballs in this trip!`);
+	}
+}
 
 const tripFinishEffects: {
 	name: string;
@@ -87,6 +123,7 @@ export async function handleTripFinish(
 	const perkTier = user.perkTier();
 	const messages: string[] = [];
 	for (const effect of tripFinishEffects) await effect.fn({ data, user, loot, messages });
+	await christmasEffect(messages, data);
 
 	const clueReceived = loot ? ClueTiers.filter(tier => loot.amount(tier.scrollID) > 0) : [];
 
@@ -136,6 +173,6 @@ export async function handleTripFinish(
 	sendToChannelID(channelID, {
 		content: message,
 		image: attachment,
-		components: components.length > 0 ? makeComponents(shuffleArr(components)) : undefined
+		components: components.length > 0 ? makeComponents(components) : undefined
 	});
 }

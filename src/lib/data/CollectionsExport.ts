@@ -1361,7 +1361,7 @@ export const roguesDenOutfit = resolveItems([
 export const roguesDenCL = resolveItems([...roguesDenOutfit]);
 
 export const shadesOfMorttonCL = resolveItems([
-	'Amulet of the damned',
+	'Amulet of the damned (full)',
 	'Flamtaer bag',
 	'Fine cloth',
 	'Bronze locks',
@@ -1816,8 +1816,10 @@ export const miscellaneousCL = resolveItems([
 	'Dragonstone platelegs',
 	'Dragonstone gauntlets',
 	'Dragonstone boots',
-	'Uncut onyx'
-	// 'Merfolk trident'
+	'Uncut onyx',
+	'Merfolk trident',
+	'Orange egg sac',
+	'Blue egg sac'
 ]);
 export const holidayCL = resolveItems([
 	'Cow mask',

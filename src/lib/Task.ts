@@ -44,6 +44,7 @@ import { puroPuroTask } from '../tasks/minions/minigames/puroPuroActivity';
 import { raidsTask } from '../tasks/minions/minigames/raidsActivity';
 import { roguesDenTask } from '../tasks/minions/minigames/roguesDenMazeActivity';
 import { sepulchreTask } from '../tasks/minions/minigames/sepulchreActivity';
+import { shadesOfMortonTask } from '../tasks/minions/minigames/shadesOfMortonActivity';
 import { soulWarsTask } from '../tasks/minions/minigames/soulWarsActivity';
 import { togTask } from '../tasks/minions/minigames/tearsOfGuthixActivity';
 import { templeTrekkingTask } from '../tasks/minions/minigames/templeTrekkingActivity';
@@ -162,7 +163,8 @@ export const tasks: MinionTask[] = [
 	giantsFoundryTask,
 	guardiansOfTheRiftTask,
 	butlerTask,
-	tiaraRunecraftTask
+	tiaraRunecraftTask,
+	shadesOfMortonTask
 ];
 
 export async function syncActivityCache() {
