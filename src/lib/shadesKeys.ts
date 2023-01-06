@@ -203,13 +203,7 @@ const chests = [
 	{
 		name: 'Bronze chest',
 		table: BronzeChest,
-		items: resolveItems([
-			'Bronze key red',
-			'Bronze key brown',
-			'Bronze key crimson',
-			'Bronze key black',
-			'Bronze key purple'
-		])
+		items: resolveItems(['Bronze key red', 'Bronze key brown', 'Bronze key crimson', 'Bronze key black'])
 	},
 	{
 		name: 'Steel chest',
