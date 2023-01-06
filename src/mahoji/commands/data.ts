@@ -1,5 +1,6 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { dataPoints, statsCommand } from '../lib/abstracted_commands/statCommand';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -26,8 +27,9 @@ export const dataCommand: OSBMahojiCommand = {
 			required: true
 		}
 	],
-	run: async ({ options, userID }: CommandRunOptions<{ name: string }>) => {
+	run: async ({ interaction, options, userID }: CommandRunOptions<{ name: string }>) => {
 		const user = await mUserFetch(userID);
+		deferInteraction(interaction);
 		return statsCommand(user, options.name);
 	}
 };

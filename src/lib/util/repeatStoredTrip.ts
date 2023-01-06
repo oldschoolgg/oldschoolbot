@@ -28,7 +28,9 @@ import {
 	FishingActivityTaskOptions,
 	FletchingActivityTaskOptions,
 	GauntletOptions,
+	GiantsFoundryActivityTaskOptions,
 	GroupMonsterActivityTaskOptions,
+	GuardiansOfTheRiftActivityTaskOptions,
 	HerbloreActivityTaskOptions,
 	HunterActivityTaskOptions,
 	KourendFavourActivityTaskOptions,
@@ -44,6 +46,7 @@ import {
 	RunecraftActivityTaskOptions,
 	SawmillActivityTaskOptions,
 	ScatteringActivityTaskOptions,
+	ShadesOfMortonOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
 	TempleTrekkingActivityTaskOptions,
@@ -52,7 +55,7 @@ import {
 	WoodcuttingActivityTaskOptions
 } from '../types/minions';
 import { itemNameFromID } from '../util';
-import { GuardiansOfTheRiftActivityTaskOptions } from './../types/minions';
+import { giantsFoundryAlloys } from './../../mahoji/lib/abstracted_commands/giantsFoundryCommand';
 
 export const taskCanBeRepeated = (type: activity_type_enum) =>
 	!(
@@ -513,11 +516,27 @@ export const tripHandlers = {
 			powerchop: data.powerchopping
 		})
 	},
+	[activity_type_enum.GiantsFoundry]: {
+		commandName: 'minigames',
+		args: (data: GiantsFoundryActivityTaskOptions) => ({
+			giants_foundry: {
+				start: { name: giantsFoundryAlloys.find(i => i.id === data.alloyID)?.name, quantity: data.quantity }
+			}
+		})
+	},
 	[activity_type_enum.GuardiansOfTheRift]: {
 		commandName: 'minigames',
 		args: (data: GuardiansOfTheRiftActivityTaskOptions) => ({
 			gotr: {
 				start: { combination_runes: data.combinationRunes }
+			}
+		})
+	},
+	[activity_type_enum.ShadesOfMorton]: {
+		commandName: 'minigames',
+		args: (data: ShadesOfMortonOptions) => ({
+			shades_of_morton: {
+				start: { shade: data.shadeID, logs: itemNameFromID(data.logID) }
 			}
 		})
 	}

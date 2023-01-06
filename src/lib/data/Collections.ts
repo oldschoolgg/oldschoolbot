@@ -1,6 +1,7 @@
 import { AttachmentBuilder } from 'discord.js';
-import { calcWhatPercent, notEmpty, uniqueArr } from 'e';
+import { calcWhatPercent, isObject, notEmpty, uniqueArr } from 'e';
 import { Bank, Clues, Monsters } from 'oldschooljs';
+import { Item } from 'oldschooljs/dist/meta/types';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import { table } from 'table';
@@ -68,6 +69,7 @@ import {
 	fossilIslandNotesCL,
 	generalGraardorCL,
 	giantMoleCL,
+	giantsFoundryCL,
 	gnomeRestaurantCL,
 	godWarsDungeonCL,
 	gracefulCL,
@@ -634,6 +636,11 @@ export const allCollectionLogs: ICollection = {
 				items: fishingTrawlerCL,
 				isActivity: true,
 				fmtProg: mgProg('fishing_trawler')
+			},
+			"Giants' Foundry": {
+				alias: ['giants', 'giants foundry', 'giants foundry'],
+				items: giantsFoundryCL,
+				isActivity: true
 			},
 			'Gnome Restaurant': {
 				alias: ['gnome', 'restaurant'],
@@ -1307,3 +1314,8 @@ export async function getCollection(options: {
 export const allCollectionLogsFlat = Object.values(allCollectionLogs)
 	.map(i => Object.entries(i.activities).map(entry => ({ ...entry[1], name: entry[0] })))
 	.flat();
+
+export function isCLItem(item: Item | number | [Item, number]): boolean {
+	if (Array.isArray(item)) return isCLItem(item[0]);
+	return allCLItemsFiltered.includes(isObject(item) ? item.id : item);
+}

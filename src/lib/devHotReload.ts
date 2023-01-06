@@ -4,10 +4,8 @@ import { extname, join, sep } from 'path';
 
 import { mahojiClient } from '..';
 import { production } from '../config';
-import { log } from './util/log';
 
 if (!production) {
-	log('Hot reloading enabled');
 	const nodeModules = `${sep}node_modules${sep}`;
 	globalClient._fileChangeWatcher = watch(join(process.cwd(), 'dist/**/*.js'), {
 		persistent: true,

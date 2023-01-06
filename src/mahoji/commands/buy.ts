@@ -13,7 +13,7 @@ import getOSItem from '../../lib/util/getOSItem';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { leaguesBuyCommand } from '../lib/abstracted_commands/leaguesBuyCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiParseNumber } from '../mahojiSettings';
+import { handleMahojiConfirmation, mahojiParseNumber, multipleUserStatsBankUpdate } from '../mahojiSettings';
 
 const allBuyablesAutocomplete = [...Buyables, ...leagueBuyables.map(i => ({ name: i.item.name })), { name: 'Kitten' }];
 
@@ -166,19 +166,20 @@ export const buyCommand: OSBMahojiCommand = {
 			`${user}, please confirm that you want to buy **${outItems}** for: ${totalCost}.`
 		);
 
-		const econBankChanges = new Bank();
-
-		await user.removeItemsFromBank(totalCost);
-		econBankChanges.add(totalCost);
-
-		updateBankSetting('buy_cost_bank', econBankChanges);
-		updateBankSetting('buy_loot_bank', outItems);
-
 		await transactItems({
 			userID: user.id,
 			itemsToAdd: outItems,
-			collectionLog: true
+			collectionLog: true,
+			itemsToRemove: totalCost
 		});
+
+		updateBankSetting('buy_cost_bank', totalCost);
+		updateBankSetting('buy_loot_bank', outItems);
+		await multipleUserStatsBankUpdate(user.id, {
+			buy_cost_bank: totalCost,
+			buy_loot_bank: outItems
+		});
+
 		return `You purchased ${outItems}.`;
 	}
 };

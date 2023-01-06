@@ -54,6 +54,8 @@ type ClientBankKey =
 	| 'tks_loot'
 	| 'gotr_cost'
 	| 'gotr_loot'
+	| 'gf_cost'
+	| 'gf_loot'
 	| 'nex_cost'
 	| 'nex_loot';
 

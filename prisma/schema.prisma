@@ -126,6 +126,8 @@ model ClientStorage {
   gp_tax_balance               BigInt   @default(0)
   gotr_cost                    Json     @default("{}") @db.Json
   gotr_loot                    Json     @default("{}") @db.Json
+  gf_cost                      Json     @default("{}") @db.Json
+  gf_loot                      Json     @default("{}") @db.Json
 
   @@map("clientStorage")
 }
@@ -283,6 +285,7 @@ model User {
   tob_attempts               Int      @default(0)
   tob_hard_attempts          Int      @default(0)
   volcanic_mine_points       Int      @default(0)
+  foundry_reputation         Int      @default(0)
   blowpipe                   Json     @default("{\"scales\":0,\"dartID\":null,\"dartQuantity\":0}") @db.Json
   ironman_alts               String[]
   main_account               String?
@@ -398,8 +401,6 @@ model User {
   bingo_tickets_bought Int    @default(0)
   bingo_gp_contributed BigInt @default(0)
 
-  treats_delivered Int @default(0)
-
   last_command_date DateTime?    @db.Timestamp(6)
   farmed_crops      FarmedCrop[]
 
@@ -480,7 +481,9 @@ model Minigame {
   lms                     Int    @default(0)
   trouble_brewing         Int    @default(0)
   puro_puro               Int    @default(0)
+  giants_foundry          Int    @default(0)
   guardians_of_the_rift   Int    @default(0)
+  shades_of_morton        Int    @default(0)
 
   new_user NewUser?
 
@@ -578,20 +581,35 @@ model StashUnit {
 }
 
 model UserStats {
-  user_id                  BigInt @id
-  sell_gp                  BigInt @default(0)
-  items_sold_bank          Json   @default("{}") @db.Json
-  puropuro_implings_bank   Json   @default("{}") @db.Json
-  passive_implings_bank    Json   @default("{}") @db.Json
-  create_cost_bank         Json   @default("{}") @db.Json
-  create_loot_bank         Json   @default("{}") @db.Json
-  bird_eggs_offered_bank   Json   @default("{}") @db.Json
-  scattered_ashes_bank     Json   @default("{}") @db.Json
+  user_id                BigInt @id
+  sell_gp                BigInt @default(0)
+  items_sold_bank        Json   @default("{}") @db.Json
+  puropuro_implings_bank Json   @default("{}") @db.Json
+  passive_implings_bank  Json   @default("{}") @db.Json
+  create_cost_bank       Json   @default("{}") @db.Json
+  create_loot_bank       Json   @default("{}") @db.Json
+  bird_eggs_offered_bank Json   @default("{}") @db.Json
+  scattered_ashes_bank   Json   @default("{}") @db.Json
+
+  gf_weapons_made Json @default("{}") @db.Json
+  gf_cost         Json @default("{}") @db.Json
+  gf_loot         Json @default("{}") @db.Json
+
   ash_sanctifier_prayer_xp BigInt @default(0)
   gotr_rift_searches       Int    @default(0)
 
   farming_plant_cost_bank   Json @default("{}") @db.Json
   farming_harvest_loot_bank Json @default("{}") @db.Json
+
+  cl_array        Int[]
+  cl_array_length Int   @default(0)
+
+  snowmen_built Int @default(0)
+
+  buy_cost_bank Json @default("{}") @db.Json
+  buy_loot_bank Json @default("{}") @db.Json
+
+  shades_of_morton_cost_bank Json @default("{}") @db.Json
 
   @@map("user_stats")
 }
@@ -720,8 +738,10 @@ enum activity_type_enum {
   PuroPuro
   Easter
   ShootingStars
+  GiantsFoundry
   GuardiansOfTheRift
   HalloweenEvent
+  ShadesOfMorton
 }
 
 enum xp_gains_skill_enum {

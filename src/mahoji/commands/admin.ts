@@ -4,7 +4,7 @@ import { ClientStorage } from '@prisma/client';
 import { Stopwatch } from '@sapphire/stopwatch';
 import { Duration } from '@sapphire/time-utilities';
 import { isThenable } from '@sentry/utils';
-import { escapeCodeBlock } from 'discord.js';
+import { AttachmentBuilder, escapeCodeBlock, InteractionReplyOptions } from 'discord.js';
 import { notEmpty, randArrItem, sleep, Time, uniqueArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
@@ -134,7 +134,7 @@ async function evalCommand(userID: string, code: string): CommandResponse {
 
 const viewableThings: {
 	name: string;
-	run: (clientSettings: ClientStorage) => Promise<Bank>;
+	run: (clientSettings: ClientStorage) => Promise<Bank | InteractionReplyOptions>;
 }[] = [
 	{
 		name: 'ToB Cost',
@@ -612,7 +612,11 @@ export const adminCommand: OSBMahojiCommand = {
 		if (options.sync_roles) {
 			try {
 				const result = await runRolesTask();
-				return result.slice(0, 2500);
+				if (result.length < 2000) return result;
+				return {
+					content: 'The result was too big! Check the file.',
+					files: [new AttachmentBuilder(Buffer.from(result), { name: 'roles.txt' })]
+				};
 			} catch (err: any) {
 				logError(err);
 				return `Failed to run roles task. ${err.message}`;
@@ -950,8 +954,10 @@ ${guildCommands.length} Guild commands`;
 			const thing = viewableThings.find(i => i.name === options.view?.thing);
 			if (!thing) return 'Invalid';
 			const clientSettings = await mahojiClientSettingsFetch();
+			const res = await thing.run(clientSettings);
+			if (!(res instanceof Bank)) return res;
 			const image = await makeBankImage({
-				bank: await thing.run(clientSettings),
+				bank: res,
 				title: thing.name,
 				flags: { sort: thing.name === 'All Equipped Items' ? 'name' : (undefined as any) }
 			});

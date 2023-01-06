@@ -1,11 +1,10 @@
-import { CropUpgradeType } from '@prisma/client';
+import type { activity_type_enum, CropUpgradeType } from '@prisma/client';
 
-import { IPatchData } from '../minions/farming/types';
-import { MinigameName } from '../settings/minigames';
-import { Peak } from '../tickers';
-import { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
-import { ItemBank } from '.';
-import { activity_type_enum } from '.prisma/client';
+import type { IPatchData } from '../minions/farming/types';
+import type { MinigameName } from '../settings/minigames';
+import type { Peak } from '../tickers';
+import type { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
+import type { ItemBank } from '.';
 
 export interface ActivityTaskOptions {
 	type: activity_type_enum;
@@ -339,11 +338,22 @@ export interface PuroPuroActivityTaskOptions extends MinigameActivityTaskOptions
 	darkLure: boolean;
 }
 
+export interface GiantsFoundryActivityTaskOptions extends MinigameActivityTaskOptions {
+	alloyID: number;
+	quantity: number;
+	metalScore: number;
+}
+
 export interface GuardiansOfTheRiftActivityTaskOptions extends MinigameActivityTaskOptions {
 	minedFragments: number;
 	barrierAndGuardian: number;
 	rolls: number;
 	combinationRunes: boolean;
+}
+
+export interface ShadesOfMortonOptions extends MinigameActivityTaskOptions {
+	shadeID: string;
+	logID: number;
 }
 
 export type ActivityTaskData =

@@ -3,9 +3,30 @@ import { Bank } from 'oldschooljs';
 
 import { Events } from './constants';
 import { allCLItems, allCollectionLogsFlat } from './data/Collections';
+import { prisma } from './settings/prisma';
 import { fetchCLLeaderboard } from './util/clLeaderboard';
 import { formatOrdinal } from './util/formatOrdinal';
-import { log } from './util/log';
+
+async function clArrayUpdate(user: MUser, newCL: Bank) {
+	const id = BigInt(user.id);
+	const newCLArray = Object.keys(newCL.bank).map(i => Number(i));
+	const updateObj = {
+		cl_array: newCLArray,
+		cl_array_length: newCLArray.length
+	} as const;
+	await prisma.userStats.upsert({
+		where: {
+			user_id: id
+		},
+		create: {
+			user_id: id,
+			...updateObj
+		},
+		update: {
+			...updateObj
+		}
+	});
+}
 
 export async function handleNewCLItems({
 	itemsAdded,
@@ -24,6 +45,8 @@ export async function handleNewCLItems({
 	if (!newCLItems || newCLItems.length === 0) {
 		return;
 	}
+
+	clArrayUpdate(user, newCL);
 
 	const clsWithTheseItems = allCollectionLogsFlat.filter(
 		cl => cl.counts !== false && newCLItems.items().some(([newItem]) => cl.items.includes(newItem.id))
@@ -47,9 +70,14 @@ export async function handleNewCLItems({
 
 		const stopwatch = new Stopwatch();
 		const nthUser = (
-			await fetchCLLeaderboard({ ironmenOnly: false, items: finishedCL.items, resultLimit: 100_000 })
+			await fetchCLLeaderboard({
+				ironmenOnly: false,
+				items: finishedCL.items,
+				resultLimit: 100_000,
+				method: 'raw_cl'
+			})
 		).length;
-		log(`Took ${stopwatch.stop()} to calc cl leaderboard for ${finishedCL.name}`);
+		debugLog(`Took ${stopwatch.stop()} to calc cl leaderboard for ${finishedCL.name}`);
 
 		const placeStr = nthUser > 100 ? '' : ` They are the ${formatOrdinal(nthUser)} user to finish this CL.`;
 
