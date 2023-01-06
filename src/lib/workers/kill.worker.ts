@@ -2,7 +2,9 @@ import '../data/itemAliases';
 
 import { Bank, Misc, Monsters } from 'oldschooljs';
 
+import { calcDropRatesFromBank } from '../util/calcDropRatesFromBank';
 import { stringMatches } from '../util/cleanString';
+import resolveItems from '../util/resolveItems';
 import type { KillWorkerArgs, KillWorkerReturn } from '.';
 
 export default async ({ quantity, bossName, limit, catacombs, onTask }: KillWorkerArgs): KillWorkerReturn => {
@@ -31,37 +33,39 @@ export default async ({ quantity, bossName, limit, catacombs, onTask }: KillWork
 		return { bank };
 	}
 
-	// if (['nex', 'next'].some(alias => stringMatches(alias, bossName))) {
-	// 	if (quantity > 3000) {
-	// 		return { error: 'I can only kill a maximum of 3k Nex a time!' };
-	// 	}
-	// 	const loot = handleNexKills({
-	// 		quantity,
-	// 		team: [
-	// 			{ id: '1', contribution: 100, deaths: [] },
-	// 			{ id: '2', contribution: 100, deaths: [] },
-	// 			{ id: '3', contribution: 100, deaths: [] },
-	// 			{ id: '4', contribution: 100, deaths: [] }
-	// 		]
-	// 	});
-	// 	return {
-	// 		bank: loot.get('1'),
-	// 		title: `Personal Loot From ${quantity}x Nex, Team of 4`,
-	// 		content: calcDropRatesFromBank(
-	// 			loot.get('1'),
-	// 			quantity,
-	// 			resolveItems([
-	// 				'Nexling',
-	// 				'Ancient hilt',
-	// 				'Nihil horn',
-	// 				'Zaryte vambraces',
-	// 				'Torva full helm (damaged)',
-	// 				'Torva platebody (damaged)',
-	// 				'Torva platelegs (damaged)'
-	// 			])
-	// 		)
-	// 	};
-	// }
+	if (['nex', 'next'].some(alias => stringMatches(alias, bossName))) {
+		if (quantity > 3000) {
+			return { error: 'I can only kill a maximum of 3k Nex a time!' };
+		}
+		const { handleNexKills } = await import('../simulation/nex');
+
+		const loot = handleNexKills({
+			quantity,
+			team: [
+				{ id: '1', contribution: 100, deaths: [] },
+				{ id: '2', contribution: 100, deaths: [] },
+				{ id: '3', contribution: 100, deaths: [] },
+				{ id: '4', contribution: 100, deaths: [] }
+			]
+		});
+		return {
+			bank: loot.get('1'),
+			title: `Personal Loot From ${quantity}x Nex, Team of 4`,
+			content: calcDropRatesFromBank(
+				loot.get('1'),
+				quantity,
+				resolveItems([
+					'Nexling',
+					'Ancient hilt',
+					'Nihil horn',
+					'Zaryte vambraces',
+					'Torva full helm (damaged)',
+					'Torva platebody (damaged)',
+					'Torva platelegs (damaged)'
+				])
+			)
+		};
+	}
 
 	return { error: "I don't have that monster!" };
 };
