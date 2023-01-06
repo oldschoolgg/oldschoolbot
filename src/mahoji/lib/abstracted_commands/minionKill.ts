@@ -73,7 +73,7 @@ import findMonster from '../../../lib/util/findMonster';
 import getOSItem from '../../../lib/util/getOSItem';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { sendToChannelID } from '../../../lib/util/webhook';
-import { hasMonsterRequirements, resolveAvailableItemBoosts } from '../../mahojiSettings';
+import { hasMonsterRequirements, resolveAvailableItemBoosts, userStatsUpdate } from '../../mahojiSettings';
 import { igneCommand } from './igneCommand';
 import { kgCommand } from './kgCommand';
 import { kkCommand } from './kkCommand';
@@ -750,6 +750,11 @@ export async function minionKillCommand(
 			);
 		}
 		usedDart = true;
+		await userStatsUpdate(user.id, () => ({
+			death_touched_darts_used: {
+				increment: 1
+			}
+		}));
 	}
 	if (monster.name === 'Koschei the deathless') {
 		return 'You send your minion off to fight Koschei, before they even get close, they feel an immense, powerful fear and return back.';
