@@ -1,5 +1,5 @@
 import { sumArr } from 'e';
-import { Monsters } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 
 import { eggs } from '../../mahoji/commands/offer';
 import { getFarmingContractOfUser } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
@@ -34,7 +34,6 @@ import {
 	WildernessDiary
 } from '../diaries';
 import { dyedItems } from '../dyedItems';
-import { implings } from '../implings';
 import { Inventions } from '../invention/inventions';
 import { MOKTANG_ID } from '../minions/data/killableMonsters/custom/bosses/Moktang';
 import { Naxxus } from '../minions/data/killableMonsters/custom/bosses/Naxxus';
@@ -853,9 +852,9 @@ export const hardTasks: Task[] = [
 	},
 	{
 		id: 2109,
-		name: 'Catch 20 Lucky implings',
+		name: 'Catch 10 Lucky implings',
 		has: async ({ cl }) => {
-			return cl.amount('Lucky impling jar') >= 20;
+			return cl.amount('Lucky impling jar') >= 10;
 		}
 	},
 	{
@@ -1149,10 +1148,13 @@ export const hardTasks: Task[] = [
 	},
 	{
 		id: 2153,
-		name: 'Catch 20 of every impling passively',
+		name: 'Catch 20 of every impling passively (excluding Lucky implings)',
 		has: async ({ userStats }) => {
-			let vals = Object.values(userStats.passive_implings_bank as ItemBank);
-			return vals.length === Object.keys(implings).length && vals.every(i => Number(i) >= 20);
+			let loot = new Bank(userStats.passive_implings_bank as ItemBank);
+			return loot
+				.items()
+				.filter(i => i[0].name !== 'Lucky impling jar')
+				.every(i => i[1] >= 20);
 		}
 	},
 	{

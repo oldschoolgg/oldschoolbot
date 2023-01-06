@@ -32,7 +32,6 @@ import {
 	WesternProv,
 	WildernessDiary
 } from '../diaries';
-import { implings } from '../implings';
 import { Naxxus } from '../minions/data/killableMonsters/custom/bosses/Naxxus';
 import { ashes } from '../skilling/skills/prayer';
 import { TameSpeciesID, TameType } from '../tames';
@@ -710,10 +709,13 @@ export const eliteTasks: Task[] = [
 	},
 	{
 		id: 3094,
-		name: 'Catch 50 of every impling passively',
+		name: 'Catch 30 of every impling passively (excluding lucky implings)',
 		has: async ({ userStats }) => {
-			let vals = Object.values(userStats.passive_implings_bank as ItemBank);
-			return vals.length === Object.keys(implings).length && vals.every(i => Number(i) >= 50);
+			let loot = new Bank(userStats.passive_implings_bank as ItemBank);
+			return loot
+				.items()
+				.filter(i => i[0].name !== 'Lucky impling jar')
+				.every(i => i[1] >= 30);
 		}
 	},
 	{
@@ -721,6 +723,13 @@ export const eliteTasks: Task[] = [
 		name: 'Open the Crystal chest 1000 times',
 		has: async ({ opens }) => {
 			return opens.amount('Crystal key') >= 1000;
+		}
+	},
+	{
+		id: 3096,
+		name: 'Receive and use a deathtouched dart',
+		has: async ({ cl, userStats }) => {
+			return cl.has('Deathtouched dart') && userStats.death_touched_darts_used >= 1;
 		}
 	}
 ];
