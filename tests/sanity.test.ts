@@ -256,4 +256,15 @@ describe('Sanity', () => {
 			assert(!allMbTables.includes(item.id), `${item.name} shouldnt drop from boxes`);
 		}
 	});
+	test("klik shouldn't be openable", () => {
+		for (const openable of allOpenables) {
+			if (
+				openable.name === 'Klik' ||
+				openable.id === itemID('Klik') ||
+				openable.openedItem.id === itemID('Klik')
+			) {
+				throw new Error('Klik shouldnt be openable');
+			}
+		}
+	});
 });
