@@ -1,6 +1,7 @@
 import { Bank } from 'oldschooljs';
 
 import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
+import { mahojiUserSettingsUpdate } from '../mahoji/settingsUpdate';
 import { ItemBank } from './types';
 import { assert } from './util';
 
@@ -20,6 +21,7 @@ function diffBanks(bank1: Bank, bank2: Bank) {
 }
 
 export async function stressTest(userID: string) {
+	await mahojiUserSettingsUpdate(userID, { bank: {}, collectionLogBank: {} });
 	const user = await mUserFetch(userID);
 	const currentBank = user.bank;
 	const currentGP = user.GP;

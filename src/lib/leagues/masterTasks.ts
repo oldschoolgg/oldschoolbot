@@ -1087,10 +1087,13 @@ export const masterTasks: Task[] = [
 	},
 	{
 		id: 4151,
-		name: 'Catch 100 of every impling passively',
+		name: 'Catch 100 of every impling passively (excluding Lucky implings)',
 		has: async ({ userStats }) => {
-			let vals = Object.values(userStats.passive_implings_bank as ItemBank);
-			return vals.length === Object.keys(implings).length && vals.every(i => Number(i) >= 100);
+			let loot = new Bank(userStats.passive_implings_bank as ItemBank);
+			return loot
+				.items()
+				.filter(i => i[0].name !== 'Lucky impling jar')
+				.every(i => i[1] >= 100);
 		}
 	},
 	{
