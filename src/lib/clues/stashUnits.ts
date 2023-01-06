@@ -18,9 +18,11 @@ import {
 	stoles
 } from '../data/CollectionsExport';
 import { prisma } from '../settings/prisma';
-import { assert, itemNameFromID, stringMatches } from '../util';
+import { stringMatches } from '../util/cleanString';
+import { assert } from '../util/logError';
 import { makeBankImage } from '../util/makeBankImage';
 import resolveItems, { deepResolveItems } from '../util/resolveItems';
+import { itemNameFromID } from '../util/smallUtils';
 import { ClueTier } from './clueTiers';
 
 interface IStashUnit {

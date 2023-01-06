@@ -2,6 +2,7 @@ import '../data/itemAliases';
 
 import { Bank, Misc, Monsters } from 'oldschooljs';
 
+import { handleNexKills } from '../simulation/nex';
 import { calcDropRatesFromBank } from '../util/calcDropRatesFromBank';
 import { stringMatches } from '../util/cleanString';
 import resolveItems from '../util/resolveItems';
@@ -37,7 +38,6 @@ export default async ({ quantity, bossName, limit, catacombs, onTask }: KillWork
 		if (quantity > 3000) {
 			return { error: 'I can only kill a maximum of 3k Nex a time!' };
 		}
-		const { handleNexKills } = await import('../simulation/nex');
 
 		const loot = handleNexKills({
 			quantity,

@@ -1,5 +1,5 @@
 import { AttachmentBuilder } from 'discord.js';
-import { calcWhatPercent, isObject, notEmpty, uniqueArr } from 'e';
+import { calcWhatPercent, isObject, notEmpty, sumArr, uniqueArr } from 'e';
 import { Bank, Clues, Monsters } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
@@ -20,10 +20,12 @@ import { getMinigameScore, MinigameName } from '../settings/minigames';
 import { NexNonUniqueTable, NexUniqueTable } from '../simulation/misc';
 import { allFarmingItems } from '../skilling/skills/farming';
 import { SkillsEnum } from '../skilling/types';
-import { ItemBank } from '../types';
-import { addArrayOfNumbers, removeFromArr, shuffleRandom, stringMatches } from '../util';
+import type { ItemBank } from '../types';
+import { shuffleRandom } from '../util';
+import { stringMatches } from '../util/cleanString';
 import { getKCByName } from '../util/getKCByName';
 import resolveItems from '../util/resolveItems';
+import { removeFromArr } from '../util/smallUtils';
 import {
 	abyssalSireCL,
 	aerialFishingCL,
@@ -809,7 +811,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['revs'],
 				kcActivity: {
 					Default: async user => {
-						return addArrayOfNumbers(
+						return sumArr(
 							[
 								Monsters.RevenantImp.id,
 								Monsters.RevenantGoblin.id,

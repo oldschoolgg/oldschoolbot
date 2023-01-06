@@ -3,10 +3,10 @@ import '../data/itemAliases';
 import { roll } from 'e';
 import { Bank, Misc } from 'oldschooljs';
 
+import { ClueTiers } from '../clues/clueTiers';
 import type { CasketWorkerArgs } from '.';
 
 export default async ({ clueTierID, quantity }: CasketWorkerArgs): Promise<[Bank, string]> => {
-	const { ClueTiers } = await import('../clues/clueTiers');
 	const clueTier = ClueTiers.find(tier => tier.id === clueTierID)!;
 	let loot = clueTier.table.open(quantity);
 	let mimicNumber = 0;
