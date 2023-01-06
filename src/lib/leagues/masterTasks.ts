@@ -14,7 +14,6 @@ import {
 	gorajanWarriorOutfit,
 	naxxusCL
 } from '../data/CollectionsExport';
-import { implings } from '../implings';
 import { Inventions } from '../invention/inventions';
 import { dungBuyables } from '../skilling/skills/dung/dungData';
 import { ashes } from '../skilling/skills/prayer';

@@ -34,7 +34,6 @@ import {
 	WildernessDiary
 } from '../diaries';
 import { dyedItems } from '../dyedItems';
-import { implings } from '../implings';
 import { Inventions } from '../invention/inventions';
 import { MOKTANG_ID } from '../minions/data/killableMonsters/custom/bosses/Moktang';
 import { Naxxus } from '../minions/data/killableMonsters/custom/bosses/Naxxus';
