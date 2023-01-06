@@ -211,7 +211,7 @@ export const bankCommand: OSBMahojiCommand = {
 			!channelIsSendable(channel) ||
 			mahojiFlags.includes('show_all') ||
 			mahojiFlags.includes('wide') ||
-			mUser.perkTier() < PerkTier.Four ||
+			mUser.perkTier() < PerkTier.Two ||
 			bankSize === 1
 		) {
 			return result;

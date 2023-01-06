@@ -224,6 +224,14 @@ export async function farmingPlantCommand({
 		duration *= 0.9;
 	}
 
+	for (const [diary, tier] of [[ArdougneDiary, ArdougneDiary.elite]] as const) {
+		const [has] = await userhasDiaryTier(user, tier);
+		if (has) {
+			boostStr.push(`4% time for ${diary.name} ${tier.name}`);
+			duration *= 0.96;
+		}
+	}
+
 	if (duration > maxTripLength) {
 		return `${user.minionName} can't go on trips longer than ${formatDuration(
 			maxTripLength
@@ -246,7 +254,7 @@ export async function farmingPlantCommand({
 		if (userBank.has(paymentCost)) {
 			cost.add(paymentCost);
 			didPay = true;
-			infoStr.push(`You are paying a nearby farmer ${cost} to look after your patches.`);
+			infoStr.push(`You are paying a nearby farmer ${paymentCost} to look after your patches.`);
 		} else {
 			infoStr.push('You did not have enough payment to automatically pay for crop protection.');
 		}
@@ -281,14 +289,6 @@ export async function farmingPlantCommand({
 		infoStr.unshift(
 			`${user.minionName} is now harvesting ${patchType.lastQuantity}x ${patchType.lastPlanted}, and then planting ${quantity}x ${plant.name}.`
 		);
-	}
-
-	for (const [diary, tier] of [[ArdougneDiary, ArdougneDiary.elite]] as const) {
-		const [has] = await userhasDiaryTier(user, tier);
-		if (has) {
-			boostStr.push(`4% for ${diary.name} ${tier.name}`);
-			duration *= 0.96;
-		}
 	}
 
 	if (noFarmGuild) boostStr.push(noFarmGuild);

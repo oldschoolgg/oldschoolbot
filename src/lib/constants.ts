@@ -1,7 +1,9 @@
+import { execSync } from 'child_process';
 import { APIButtonComponent, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
+import { CommandOptions } from 'mahoji/dist/lib/types';
 
 import { DISCORD_SETTINGS, production } from '../config';
-import { AbstractCommand, CommandArgs } from '../mahoji/lib/inhibitors';
+import { AbstractCommand } from '../mahoji/lib/inhibitors';
 import { SkillsEnum } from './skilling/types';
 import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
@@ -413,7 +415,7 @@ export const projectiles: Record<ProjectileType, number[]> = {
 export const BOT_TYPE: 'BSO' | 'OSB' = 'OSB';
 export const PHOSANI_NIGHTMARE_ID = 9416;
 export const COMMANDS_TO_NOT_TRACK = [['minion', ['k', 'kill', 'clue', 'info']]];
-export function shouldTrackCommand(command: AbstractCommand, args: CommandArgs) {
+export function shouldTrackCommand(command: AbstractCommand, args: CommandOptions) {
 	if (!Array.isArray(args)) return true;
 	for (const [name, subs] of COMMANDS_TO_NOT_TRACK) {
 		if (command.name === name && typeof args[0] === 'string' && subs.includes(args[0])) {
@@ -454,3 +456,5 @@ export const chompyHats = [
 	[getOSItem('Chompy bird hat (expert ogre dragon archer)'), 3000],
 	[getOSItem('Chompy bird hat (expert dragon archer)'), 4000]
 ] as const;
+
+export const gitHash = execSync('git rev-parse HEAD').toString().trim();
