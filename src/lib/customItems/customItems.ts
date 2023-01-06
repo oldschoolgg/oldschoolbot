@@ -4513,3 +4513,243 @@ setCustomItem(
 	},
 	10_000
 );
+
+setCustomItem(
+	70_259,
+	'Necromancer kit',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_260,
+	'Necromancer hood',
+	"Dagon'hai hat",
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_261,
+	'Necromancer robe top',
+	"Dagon'hai robe top",
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_262,
+	'Necromancer robe bottom',
+	"Dagon'hai robe bottom",
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_263,
+	'Shade skull',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_265,
+	"Necromancer's air staff",
+	'Mystic air staff',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_266,
+	"Necromancer's earth staff",
+	'Mystic earth staff',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_267,
+	"Necromancer's fire staff",
+	'Mystic fire staff',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_268,
+	"Necromancer's lava staff",
+	'Mystic lava staff',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_269,
+	"Necromancer's mud staff",
+	'Mystic mud staff',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_270,
+	"Necromancer's steam staff",
+	'Mystic steam staff',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_271,
+	"Necromancer's water staff",
+	'Mystic water staff',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_272,
+	'Skeletal battlestaff of air',
+	'Air battlestaff',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_273,
+	'Skeletal battlestaff of earth',
+	'Earth battlestaff',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_274,
+	'Skeletal battlestaff of fire',
+	'Fire battlestaff',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_275,
+	'Skeletal battlestaff of water',
+	'Water battlestaff',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_276,
+	'Skeletal lava battlestaff',
+	'Lava battlestaff',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_277,
+	'Skeletal mud battlestaff',
+	'Mud battlestaff',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_278,
+	'Skeletal steam battlestaff',
+	'Steam battlestaff',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_289,
+	'Gary',
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);

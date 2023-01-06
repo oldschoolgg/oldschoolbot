@@ -1,9 +1,11 @@
-import { increaseNumByPercent } from 'e';
+import { bold } from 'discord.js';
+import { increaseNumByPercent, roll } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { MorytaniaDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ShadesOfMortonOptions } from '../../../lib/types/minions';
+import { assert, clAdjustedDroprate } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { shades, shadesLogs } from '../../../mahoji/lib/abstracted_commands/shadesOfMortonCommand';
 
@@ -31,11 +33,28 @@ export const shadesOfMortonTask: MinionTask = {
 			table.add(subTable, 1, shade.highMetalKeys.fraction * multiplier);
 		}
 
+		let messages: string[] = [];
+
+		// Pet droprate gets rarer if using lower tier shades
+		let gotPet = false;
+		let remains = ['Urium', 'Fiyr', 'Asyn', 'Riyl', 'Phrin', 'Loar'];
+		assert(remains.includes(shadeID), `Invalid shadeID: ${shadeID}`);
+		let baseGaryRate = (remains.indexOf(shadeID) + 1) * 1200;
+		let garyDroprate = clAdjustedDroprate(user, 'Gary', baseGaryRate, 1.4);
+
 		for (let i = 0; i < quantity; i++) {
 			loot.add(table.roll());
-		}
 
-		let messages: string[] = [];
+			if (!gotPet && roll(garyDroprate)) {
+				gotPet = true;
+				loot.add('Gary');
+				messages.push(
+					bold(
+						"While walking around in the wet, slimey Mort'ton area, you stumble on a gross, goofy looking snail with a blank, confused stare. You decide to take him with you so someone doesn't step on him."
+					)
+				);
+			}
+		}
 
 		const { itemsAdded } = await transactItems({ userID: user.id, collectionLog: true, itemsToAdd: loot });
 
@@ -59,10 +78,6 @@ export const shadesOfMortonTask: MinionTask = {
 
 		let str = `You received ${loot}. ${xpStr}.`;
 
-		if (messages.length > 0) {
-			str += `\n**Messages:** ${messages.join(', ')}`;
-		}
-
-		handleTripFinish(user, channelID, str, undefined, data, itemsAdded);
+		handleTripFinish(user, channelID, str, undefined, data, itemsAdded, messages);
 	}
 };
