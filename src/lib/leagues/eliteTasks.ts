@@ -726,7 +726,7 @@ export const eliteTasks: Task[] = [
 		}
 	},
 	{
-		id: 3095,
+		id: 3096,
 		name: 'Receive and use a deathtouched dart',
 		has: async ({ cl, userStats }) => {
 			return cl.has('Deathtouched dart') && userStats.death_touched_darts_used >= 1;
