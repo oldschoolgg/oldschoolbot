@@ -16,6 +16,91 @@ import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { handleMahojiConfirmation } from '../../mahojiSettings';
 import { NightmareZoneActivityTaskOptions } from './../../../lib/types/minions';
 
+const itemBoosts = [
+	// Special weapons
+	[
+		{
+			item: getOSItem('Dragon claws'),
+			boost: 20
+		},
+		{
+			item: getOSItem('Granite maul'),
+			boost: 15
+		},
+		{
+			item: getOSItem('Dragon dagger(p++)'),
+			boost: 10
+		}
+	],
+	// Amulets
+	[
+		{
+			item: getOSItem('Amulet of torture'),
+			boost: 5
+		},
+		{
+			item: getOSItem('Amulet of fury'),
+			boost: 3
+		},
+		{
+			item: getOSItem('Berserker necklace'),
+			boost: 1
+		}
+	],
+	// Capes
+	[
+		{
+			item: getOSItem('Infernal cape'),
+			boost: 5
+		},
+		{
+			item: getOSItem('Fire cape'),
+			boost: 3
+		}
+	],
+	// Gloves
+	[
+		{
+			item: getOSItem('Ferocious gloves'),
+			boost: 5
+		},
+		{
+			item: getOSItem('Barrows gloves'),
+			boost: 3
+		}
+	],
+	// Boots
+	[
+		{
+			item: getOSItem('Primordial boots'),
+			boost: 5
+		},
+		{
+			item: getOSItem('Dragon boots'),
+			boost: 3
+		},
+		{
+			item: getOSItem('Guardian boots'),
+			boost: 3
+		}
+	],
+	// Rings
+	[
+		{
+			item: getOSItem('Berserker ring (i)'),
+			boost: 5
+		},
+		{
+			item: getOSItem('Brimstone ring'),
+			boost: 3
+		},
+		{
+			item: getOSItem('Berserker ring'),
+			boost: 1
+		}
+	]
+];
+
 export const nightmareZoneImbueables = [
 	{ input: getOSItem('Black mask'), output: getOSItem('Black mask (i)'), points: 1_250_000 },
 	{ input: getOSItem('Slayer helmet'), output: getOSItem('Slayer helmet (i)'), points: 1_250_000 },
@@ -239,39 +324,16 @@ export async function nightmareZoneStartCommand(user: MUser, strategy: string, c
 	boosts.push(`${percent.toFixed(2)}% for your trained stats (incudling HP)`);
 	timePerMonster = reduceNumByPercent(timePerMonster, percent);
 
-	// Boost for dragon claws/granite maul
-	if (user.hasEquippedOrInBank('Dragon claws')) {
-		timePerMonster *= (100 - 20) / 100;
-		boosts.push('20% faster for Dragon claws');
-	} else if (user.hasEquippedOrInBank('Dragon claws')) {
-		timePerMonster *= (100 - 15) / 100;
-		boosts.push('15% faster for Dragon claws');
-	}
-
-	// Boost for gear
-	if (user.hasEquippedOrInBank('Amulet of torture')) {
-		timePerMonster *= (100 - 5) / 100;
-		boosts.push('5% faster for Amulet of torture');
-	}
-	if (user.hasEquippedOrInBank('Infernal cape')) {
-		timePerMonster *= (100 - 5) / 100;
-		boosts.push('5% faster for Infernal cape');
-	}
-	if (user.hasEquippedOrInBank('Ferocious gloves')) {
-		timePerMonster *= (100 - 5) / 100;
-		boosts.push('5% faster for Ferocious gloves');
-	}
-	if (user.hasEquippedOrInBank('Primordial boots')) {
-		timePerMonster *= (100 - 5) / 100;
-		boosts.push('5% faster for Primordial boots');
-	}
-	if (user.hasEquippedOrInBank('Berserker ring (i)')) {
-		timePerMonster *= (100 - 3) / 100;
-		boosts.push('3% faster for Berserker ring (i)');
-	} else if (user.hasEquippedOrInBank('Berserker ring')) {
-		timePerMonster *= (100 - 2) / 100;
-		boosts.push('2% faster for Berserker ring');
-	}
+	// Reduce time for item boosts
+	itemBoosts.forEach(set => {
+		for (const item of set) {
+			if (user.hasEquippedOrInBank(item.item.id)) {
+				timePerMonster *= (100 - item.boost) / 100;
+				boosts.push(`${item.boost}% faster for ${item.item.name}`);
+				break;
+			}
+		}
+	});
 
 	const maxTripLength = calcMaxTripLength(user, 'NightmareZone');
 	const quantity = Math.floor(maxTripLength / timePerMonster);
