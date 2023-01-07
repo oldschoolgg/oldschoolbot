@@ -18,6 +18,7 @@ import { CLIENT_ID } from '../config';
 import { SILENT_ERROR } from '../lib/constants';
 import { evalMathExpression } from '../lib/expressionParser';
 import { KillableMonster } from '../lib/minions/types';
+import { mahojiUserSettingsUpdate } from '../lib/MUser';
 import { prisma } from '../lib/settings/prisma';
 import { Rune } from '../lib/skilling/skills/runecraft';
 import { hasGracefulEquipped, readableStatName } from '../lib/structures/Gear';
@@ -32,7 +33,6 @@ import {
 } from '../lib/util';
 import { deferInteraction, interactionReply } from '../lib/util/interactionReply';
 import resolveItems from '../lib/util/resolveItems';
-import { mahojiUserSettingsUpdate } from './settingsUpdate';
 
 export function mahojiParseNumber({
 	input,
@@ -232,17 +232,20 @@ export async function userStatsUpdate(userID: string, data: (u: UserStats) => Pr
 	});
 }
 
-type UserStatsBankKey =
-	| 'puropuro_implings_bank'
-	| 'passive_implings_bank'
-	| 'create_cost_bank'
-	| 'create_loot_bank'
-	| 'bird_eggs_offered_bank'
-	| 'scattered_ashes_bank';
-export async function userStatsBankUpdate(userID: string, key: UserStatsBankKey, bank: Bank) {
+export async function userStatsBankUpdate(userID: string, key: keyof UserStats, bank: Bank) {
 	await userStatsUpdate(userID, u => ({
 		[key]: bank.clone().add(u[key] as ItemBank).bank
 	}));
+}
+
+export async function multipleUserStatsBankUpdate(userID: string, updates: Partial<Record<keyof UserStats, Bank>>) {
+	await userStatsUpdate(userID, u => {
+		let updateObj: Prisma.UserStatsUpdateInput = {};
+		for (const [key, bank] of objectEntries(updates)) {
+			updateObj[key] = bank!.clone().add(u[key] as ItemBank).bank;
+		}
+		return updateObj;
+	});
 }
 
 export async function updateGPTrackSetting(

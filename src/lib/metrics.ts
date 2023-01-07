@@ -57,5 +57,6 @@ export function collectMetrics() {
 		...getCPUMetrics()
 	};
 	h.reset();
+	debugLog('Collected metrics', { ...metrics, type: 'COLLECT_METRICS' });
 	return metrics;
 }

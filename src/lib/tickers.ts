@@ -4,9 +4,9 @@ import { ActionRowBuilder, ButtonBuilder, ButtonStyle, TextChannel } from 'disco
 import { noOp, randInt, shuffleArr, Time } from 'e';
 
 import { production } from '../config';
-import { mahojiUserSettingsUpdate } from '../mahoji/settingsUpdate';
 import { BitField, Channel, informationalButtons } from './constants';
 import { collectMetrics } from './metrics';
+import { mahojiUserSettingsUpdate } from './MUser';
 import { prisma, queryCountStore } from './settings/prisma';
 import { runCommand } from './settings/settings';
 import { getFarmingInfo } from './skilling/functions/getFarmingInfo';
@@ -275,10 +275,13 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 					);
 					const user = await globalClient.users.cache.get(id);
 					if (!user) continue;
-					const message = await user.send({
-						content: `The ${planted.name} planted in your ${patchType} patches is ready to be harvested!`,
-						components: [farmingReminderButtons]
-					});
+					const message = await user
+						.send({
+							content: `The ${planted.name} planted in your ${patchType} patches is ready to be harvested!`,
+							components: [farmingReminderButtons]
+						})
+						.catch(noOp);
+					if (!message) return;
 					try {
 						const selection = await awaitMessageComponentInteraction({
 							message,
@@ -293,7 +296,7 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 							await mahojiUserSettingsUpdate(user.id, {
 								farming_patch_reminders: false
 							});
-							await user.send('Farming patch reminders have been disabled..');
+							await user.send('Farming patch reminders have been disabled.');
 							return;
 						}
 						if (minionIsBusy(user.id)) {

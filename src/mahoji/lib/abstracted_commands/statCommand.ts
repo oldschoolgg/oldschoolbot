@@ -10,7 +10,7 @@ import { toKMB } from 'oldschooljs/dist/util';
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { getClueScoresFromOpenables } from '../../../lib/clues/clueUtils';
 import { Emoji, PerkTier } from '../../../lib/constants';
-import { calcCLDetails } from '../../../lib/data/Collections';
+import { calcCLDetails, isCLItem } from '../../../lib/data/Collections';
 import backgroundImages from '../../../lib/minions/data/bankBackgrounds';
 import killableMonsters from '../../../lib/minions/data/killableMonsters';
 import { getMinigameScore } from '../../../lib/settings/minigames';
@@ -254,7 +254,7 @@ GROUP BY type;`);
 		}
 	},
 	{
-		name: 'Personal Activity Durations',
+		name: 'Personal Activity Durations (Hours)',
 		perkTierNeeded: PerkTier.Four,
 		run: async (user: MUser) => {
 			const result: { type: activity_type_enum; hours: number }[] =
@@ -469,15 +469,15 @@ WHERE "skills.${skillName}" = 200000000;`) as Promise<{ qty: number; skill_name:
 		perkTierNeeded: PerkTier.Four,
 		run: async (user: MUser) => {
 			const result: { plant: string; qty: number }[] =
-				await prisma.$queryRawUnsafe(`SELECT data->>'plantsname: ' as plant, COUNT(data->>'plantsname: ') AS qty
+				await prisma.$queryRawUnsafe(`SELECT data->>'plantsName' as plant, COUNT(data->>'plantsName') AS qty
 FROM activity
 WHERE type = 'Farming'
-AND data->>'plantsname: ' IS NOT NULL
+AND data->>'plantsName' IS NOT NULL
 AND user_id = ${BigInt(user.id)}
-GROUP BY data->>'plantsname: '`);
+GROUP BY data->>'plantsName'`);
 			result.sort((a, b) => b.qty - a.qty);
 			const buffer = await barChart(
-				'Global Farmed Crops',
+				'Personal Farmed Crops',
 				val => `${val} Crops`,
 				result.map(i => [i.plant, i.qty])
 			);
@@ -489,11 +489,11 @@ GROUP BY data->>'plantsname: '`);
 		perkTierNeeded: PerkTier.Four,
 		run: async () => {
 			const result: { plant: string; qty: number }[] =
-				await prisma.$queryRaw`SELECT data->>'plantsname: ' as plant, COUNT(data->>'plantsname: ') AS qty
+				await prisma.$queryRaw`SELECT data->>'plantsName' as plant, COUNT(data->>'plantsName') AS qty
 FROM activity
 WHERE type = 'Farming'
-AND data->>'plantsname: ' IS NOT NULL
-GROUP BY data->>'plantsname: '`;
+AND data->>'plantsName' IS NOT NULL
+GROUP BY data->>'plantsName'`;
 			result.sort((a, b) => b.qty - a.qty);
 			const buffer = await barChart(
 				'Global Farmed Crops',
@@ -919,6 +919,57 @@ GROUP BY "bankBackground";`);
 			}
 			sanitizeBank(items);
 			return makeResponseForBank(items, "You've received from giveaways...");
+		}
+	},
+	{
+		name: 'Rarest CL Items',
+		perkTierNeeded: PerkTier.Four,
+		run: async () => {
+			const res = await prisma.$queryRaw<{ banks: ItemBank }[]>`SELECT jsonb_object_agg(itemid, itemqty) AS banks
+FROM   (
+                  SELECT     KEY             AS itemid,
+                             SUM(FLOOR(value::numeric)::bigint) AS itemqty
+                  FROM       users
+                  CROSS JOIN jsonb_each_text("collectionLogBank")
+                  GROUP BY   KEY ) s;`;
+			const bank = new Bank(res[0].banks);
+			return {
+				content: `**Rarest CL Items**
+${bank
+	.items()
+	.filter(isCLItem)
+	.sort(sorts.quantity)
+	.reverse()
+	.slice(0, 10)
+	.map((ent, ind) => `${++ind}. ${ent[0].name}: ${ent[1]}`)
+	.join('\n')}`
+			};
+		}
+	},
+	{
+		name: 'Rarest CL Items (Ironmen)',
+		perkTierNeeded: PerkTier.Four,
+		run: async () => {
+			const res = await prisma.$queryRaw<{ banks: ItemBank }[]>`SELECT jsonb_object_agg(itemid, itemqty) AS banks
+FROM   (
+                  SELECT     KEY             AS itemid,
+                             SUM(FLOOR(value::numeric)::bigint) AS itemqty
+                  FROM       users
+                  CROSS JOIN jsonb_each_text("collectionLogBank")
+				  WHERE "users"."minion.ironman" = true 
+                  GROUP BY   KEY ) s;`;
+			const bank = new Bank(res[0].banks);
+			return {
+				content: `**Rarest CL Items (Ironmen)**
+${bank
+	.items()
+	.filter(isCLItem)
+	.sort(sorts.quantity)
+	.reverse()
+	.slice(0, 10)
+	.map((ent, ind) => `${++ind}. ${ent[0].name}: ${ent[1]}`)
+	.join('\n')}`
+			};
 		}
 	}
 ] as const;

@@ -1,4 +1,4 @@
-import { AutoFarmFilterEnum } from '@prisma/client';
+import { AutoFarmFilterEnum, CropUpgradeType } from '@prisma/client';
 import { User } from 'discord.js';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
@@ -7,7 +7,7 @@ import { superCompostables } from '../../lib/data/filterables';
 import { ContractOption, ContractOptions } from '../../lib/minions/farming/types';
 import { autoFarm } from '../../lib/minions/functions/autoFarm';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
-import Farming, { CompostName, CompostTiers } from '../../lib/skilling/skills/farming';
+import Farming, { CompostTiers } from '../../lib/skilling/skills/farming';
 import { stringMatches } from '../../lib/util';
 import { farmingPatchNames, userGrowingProgressStr } from '../../lib/util/farmingHelpers';
 import { deferInteraction } from '../../lib/util/interactionReply';
@@ -15,7 +15,6 @@ import { compostBinCommand, farmingPlantCommand, harvestCommand } from '../lib/a
 import { farmingContractCommand } from '../lib/abstracted_commands/farmingContractCommand';
 import { titheFarmCommand, titheFarmShopCommand } from '../lib/abstracted_commands/titheFarmCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUserSettingsUpdate } from '../settingsUpdate';
 
 const autoFarmFilterTexts: Record<AutoFarmFilterEnum, string> = {
 	AllFarm: 'All crops will be farmed with the highest available seed',
@@ -192,7 +191,7 @@ export const farmingCommand: OSBMahojiCommand = {
 		check_patches?: {};
 		auto_farm?: {};
 		auto_farm_filter?: { auto_farm_filter_data: string };
-		default_compost?: { compost: CompostName };
+		default_compost?: { compost: CropUpgradeType };
 		always_pay?: {};
 		plant?: { plant_name: string; quantity?: number; pay?: boolean };
 		harvest?: { patch_name: string };
@@ -229,7 +228,7 @@ export const farmingCommand: OSBMahojiCommand = {
 			if (!autoFarmFilterString) return 'Invalid auto farm filter.';
 			const autoFarmFilter = autoFarmFilterString as AutoFarmFilterEnum;
 
-			await mahojiUserSettingsUpdate(userID, {
+			await klasaUser.update({
 				auto_farm_filter: autoFarmFilter
 			});
 

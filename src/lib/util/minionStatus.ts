@@ -3,6 +3,7 @@ import { Monsters } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { collectables } from '../../mahoji/lib/abstracted_commands/collectCommand';
+import { shades, shadesLogs } from '../../mahoji/lib/abstracted_commands/shadesOfMortonCommand';
 import { ClueTiers } from '../clues/clueTiers';
 import { Emoji } from '../constants';
 import killableMonsters from '../minions/data/killableMonsters';
@@ -63,6 +64,7 @@ import {
 	SawmillActivityTaskOptions,
 	ScatteringActivityTaskOptions,
 	SepulchreActivityTaskOptions,
+	ShadesOfMortonOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
 	TheatreOfBloodTaskOptions,
@@ -592,14 +594,28 @@ export function minionStatus(user: MUser) {
 				durationRemaining
 			)}.`;
 		}
+		case 'GiantsFoundry': {
+			const data = currentTask as MinigameActivityTaskOptions;
+			return `${name} is currently creating ${
+				data.quantity
+			}x giant weapons for Kovac in the Giants' Foundry minigame. The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
 		case 'GuardiansOfTheRift': {
 			return `${name} is currently helping the Great Guardian to close the rift. The trip should take ${formatDuration(
 				durationRemaining
 			)}.`;
 		}
-		case 'HalloweenEvent': {
-			return `${name} is currently Trick-or-Treating! The trip should take ${formatDuration(durationRemaining)}.`;
+		case 'ShadesOfMorton': {
+			const data = currentTask as ShadesOfMortonOptions;
+			const log = shadesLogs.find(i => i.normalLog.id === data.logID)!;
+			const shade = shades.find(i => i.shadeName === data.shadeID)!;
+			return `${name} is currently doing ${data.quantity} trips of Shades of Mort'ton, cremating ${
+				shade.shadeName
+			} remains with ${log.oiledLog.name}! The trip should take ${formatDuration(durationRemaining)}.`;
 		}
+		case 'HalloweenEvent':
 		case 'Easter':
 		case 'BlastFurnace': {
 			throw new Error('Removed');

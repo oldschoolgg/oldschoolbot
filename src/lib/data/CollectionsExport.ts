@@ -5,6 +5,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 
 import { growablePets } from '../growablePets';
 import { implings } from '../implings';
+import { MinigameScore } from '../settings/minigames';
 import getOSItem from '../util/getOSItem';
 import resolveItems from '../util/resolveItems';
 import {
@@ -34,7 +35,7 @@ export interface ILeftListStatus {
 }
 
 export interface IKCActivity {
-	[key: string]: string | string[] | ((user: MUser) => Promise<number>);
+	[key: string]: string | string[] | ((user: MUser, minigameScores: MinigameScore[]) => Promise<number>);
 }
 
 export type FormatProgressFunction = ({
@@ -1231,6 +1232,17 @@ export const castleWarsCL = resolveItems([
 	'Guthix halo'
 ]);
 export const fishingTrawlerCL = resolveItems(['Angler hat', 'Angler top', 'Angler waders', 'Angler boots']);
+export const giantsFoundryCL = resolveItems([
+	'Smiths tunic',
+	'Smiths trousers',
+	'Smiths boots',
+	'Smiths gloves',
+	'Colossal blade',
+	'Double ammo mould',
+	"Kovac's grog",
+	'Smithing catalyst',
+	'Ore pack'
+]);
 export const gnomeRestaurantCL = resolveItems(['Grand seed pod', 'Gnome scarf', 'Gnome goggles', 'Mint cake']);
 export const guardiansOfTheRiftCL = resolveItems([
 	'Abyssal protector',
@@ -1350,7 +1362,7 @@ export const roguesDenOutfit = resolveItems([
 export const roguesDenCL = resolveItems([...roguesDenOutfit]);
 
 export const shadesOfMorttonCL = resolveItems([
-	'Amulet of the damned',
+	'Amulet of the damned (full)',
 	'Flamtaer bag',
 	'Fine cloth',
 	'Bronze locks',
@@ -1805,8 +1817,10 @@ export const miscellaneousCL = resolveItems([
 	'Dragonstone platelegs',
 	'Dragonstone gauntlets',
 	'Dragonstone boots',
-	'Uncut onyx'
-	// 'Merfolk trident'
+	'Uncut onyx',
+	'Merfolk trident',
+	'Orange egg sac',
+	'Blue egg sac'
 ]);
 export const holidayCL = resolveItems([
 	'Cow mask',

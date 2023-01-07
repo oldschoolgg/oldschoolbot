@@ -2,12 +2,11 @@ import { Time } from 'e';
 import fetch from 'node-fetch';
 
 import { patreonConfig, production } from '../config';
-import { mahojiUserSettingsUpdate } from '../mahoji/settingsUpdate';
 import { cacheBadges } from './badges';
 import { BadgesEnum, BitField, Channel, PatronTierID, PerkTier } from './constants';
 import { fetchSponsors, getUserIdFromGithubID } from './http/util';
 import backgroundImages from './minions/data/bankBackgrounds';
-import { getUsersPerkTier } from './MUser';
+import { getUsersPerkTier, mahojiUserSettingsUpdate } from './MUser';
 import { roboChimpUserFetch } from './roboChimp';
 import { Patron } from './types';
 import { logError } from './util/logError';
@@ -207,7 +206,6 @@ class PatreonTask {
 
 		for (const patron of fetchedPatrons) {
 			if (!patron.discordID) {
-				result.push(`Patron[${patron.patreonID}] has no discord connected, so continuing.`);
 				continue;
 			}
 
@@ -297,7 +295,7 @@ class PatreonTask {
 		result = result.concat(githubResult);
 
 		if (production) {
-			sendToChannelID(Channel.ErrorLogs, {
+			sendToChannelID(Channel.PatronLogs, {
 				files: [{ attachment: Buffer.from(result.join('\n')), name: 'patron.txt' }]
 			});
 		} else {

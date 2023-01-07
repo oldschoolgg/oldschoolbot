@@ -54,7 +54,7 @@ export function parseStrToTier(str: string) {
 		case '$46 a month':
 			return PerkTier.Six;
 		case '$99 a month':
-			return PerkTier.Six;
+			return PerkTier.Seven;
 		default:
 			return null;
 	}
