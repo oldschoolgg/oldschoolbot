@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import { Skills } from '../types';
+import type { Skills } from '../types';
 import { ClueTier } from './clueTiers';
 import { allStashUnitTiers } from './stashUnits';
 
