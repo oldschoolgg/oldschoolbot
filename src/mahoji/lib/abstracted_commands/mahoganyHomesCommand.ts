@@ -145,9 +145,9 @@ export async function mahoganyHomesBuildCommand(user: MUser, channelID: string, 
 	if (tier) {
 		tierData =
 			contractTiers.find(contractTier => tier.toLowerCase() === contractTier.name.toLowerCase()) || tierData;
-		if (!tierData) return "That contract tier doesn't exist";
+		if (!tierData) return 'Error selecting contract tier.';
 		if (tierData.level > conLevel)
-			return `You need ${tierData.level} construction for this contract, you have ${conLevel}.`;
+			return `You need ${tierData.level} Construction for this contract, you have ${conLevel}.`;
 	}
 
 	if (!tierData) return 'Error selecting contract tier.';
