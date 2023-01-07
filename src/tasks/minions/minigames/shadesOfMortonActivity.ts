@@ -45,7 +45,7 @@ export const shadesOfMortonTask: MinionTask = {
 		let firemakingXP = quantity * log.fmXP;
 		if ((await userhasDiaryTier(user, MorytaniaDiary.elite))[0]) {
 			firemakingXP = increaseNumByPercent(firemakingXP, 50);
-			messages.push('50% bonus firemaking xp for morytania hard diary');
+			messages.push('50% bonus firemaking xp for morytania elite diary');
 		}
 
 		let xpStr = await user.addXP({ skillName: SkillsEnum.Firemaking, amount: firemakingXP, duration });
