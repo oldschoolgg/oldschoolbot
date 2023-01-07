@@ -254,12 +254,14 @@ export const nightmareZoneBuyables: { name: string; output: Bank; cost: number; 
 		cost: 70,
 		aliases: []
 	},
+	/* TODO: Lock this to max 15 Herb boxes per day
 	{
 		name: 'Herb box',
 		output: new Bank().add('Herb box', 1),
 		cost: 9500,
 		aliases: []
 	},
+	*/
 	{
 		name: 'Vial of water',
 		output: new Bank().add('Vial of water', 1),
@@ -316,7 +318,7 @@ export async function nightmareZoneStartCommand(user: MUser, strategy: string, c
 	const [, , attackStyles] = resolveAttackStyles(user, { monsterID: Monsters.Cow.id });
 	const skillTotal = sumArr(attackStyles.map(s => user.skillLevel(s))) + user.skillLevel(SkillsEnum.Hitpoints);
 	if (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic)) {
-		return 'The Nightmare Zone minigame requires melee combat for efficiency, swap training style.';
+		return 'The Nightmare Zone minigame requires melee combat for efficiency, swap training style using `/minion train style:`';
 	}
 
 	let percent = round(calcWhatPercent(skillTotal, (attackStyles.length + 1) * 99), 2);
@@ -393,6 +395,10 @@ export async function nightmareZoneShopCommand(
 	const currentUserPoints = user.user.nmz_points;
 	if (!item) {
 		return `You currently have ${currentUserPoints.toLocaleString()} Nightmare Zone points.`;
+	}
+
+	if (user.user.minion_ironman) {
+		return `${user.usernameOrMention} is an ironman, so they can't buy anything from this shop!`;
 	}
 
 	const shopItem = nightmareZoneBuyables.find(

@@ -1,7 +1,7 @@
 import { Monsters } from 'oldschooljs';
 
 import { resolveAttackStyles } from '../../../lib/minions/functions';
-import { getMinigameEntity, incrementMinigameScore } from '../../../lib/settings/settings';
+import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { NightmareZoneActivityTaskOptions } from './../../../lib/types/minions';
@@ -48,12 +48,11 @@ export const nightmareZoneTask: MinionTask = {
 			nmz_points: currentUserPoints + pointsReceived
 		});
 
-		await incrementMinigameScore(userID, 'nmz', quantity);
-		const scores = await getMinigameEntity(user.id);
+		const score = await incrementMinigameScore(userID, 'nmz', quantity);
 
 		let str = `${user}, ${
 			user.minionName
-		} finished killing ${quantity}x Nightmare Zone monsters. Your Nightmare Zone KC is now ${scores.nmz}.
+		} finished killing ${quantity}x Nightmare Zone monsters. Your Nightmare Zone KC is now ${score.newScore}.
  \n**XP Gains:** ${res.join(' ')}\nYou gained **${pointsReceived.toLocaleString()}** Nightmare Zone points.`;
 
 		handleTripFinish(user, channelID, str, undefined, data, null);
