@@ -143,9 +143,12 @@ export async function mahoganyHomesBuildCommand(user: MUser, channelID: string, 
 	let tierData = contractTiers.find(contractTier => conLevel >= contractTier.level)!;
 
 	if (tier) {
-		tierData = contractTiers.find(contractTier => tier.toLowerCase() === contractTier.name.toLowerCase())!;
-		if (!tierData) return `Tier ${tier} doesn't exist.`;
-		if (tierData.level > conLevel) return `Tier ${tierData.name} requires ${tierData.level} construction.`;
+		const tierString = contractTiers.find(contractTier => tier.toLowerCase() === contractTier.name.toLowerCase());
+		if (!tierString) return 'Error selecting contract tier.';
+		if (tierString.level > conLevel) return `Tier ${tierString.name} requires ${tierString.level} construction.`;
+		if (tierString) {
+			tierData = tierString;
+		}
 	}
 
 	if (!tierData) return 'Error selecting contract tier.';
