@@ -45,7 +45,7 @@ export const shadesOfMortonTask: MinionTask = {
 		let firemakingXP = quantity * log.fmXP;
 		if ((await userhasDiaryTier(user, MorytaniaDiary.elite))[0]) {
 			firemakingXP = increaseNumByPercent(firemakingXP, 50);
-			messages.push('50% bonus firemaking xp for morytania hard diary');
+			messages.push('50% bonus Firemaking xp for Morytania Elite diary');
 		}
 
 		let xpStr = await user.addXP({ skillName: SkillsEnum.Firemaking, amount: firemakingXP, duration });
@@ -54,13 +54,13 @@ export const shadesOfMortonTask: MinionTask = {
 
 		if ((await userhasDiaryTier(user, MorytaniaDiary.hard))[0]) {
 			prayerXP = increaseNumByPercent(prayerXP, 50);
-			messages.push('50% bonus prayer xp for morytania hard diary');
+			messages.push('50% bonus Prayer xp for Morytania Hard diary');
 		}
 
 		xpStr += ', ';
 		xpStr += await user.addXP({ skillName: SkillsEnum.Prayer, amount: quantity * prayerXP, duration });
 
-		let str = `You received ${loot}. ${xpStr}.`;
+		let str = `${user}, ${user.minionName} finished burning shade remains. You received ${loot}. ${xpStr}.`;
 
 		if (messages.length > 0) {
 			str += `\n**Messages:** ${messages.join(', ')}`;
