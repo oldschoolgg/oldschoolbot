@@ -1,8 +1,7 @@
 import { objectEntries, Time } from 'e';
 import { Items } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
-import { shuffle } from 'random-js/dist/distribution/shuffle';
-import { MersenneTwister19937 } from 'random-js/dist/engine/MersenneTwister19937';
+import { MersenneTwister19937, shuffle } from 'random-js';
 
 import { skillEmoji } from '../data/emojis';
 import type { ArrayItemsResolved, Skills } from '../types';
