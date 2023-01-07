@@ -1,10 +1,11 @@
-import { roll, sumArr } from 'e';
+import { percentChance, roll, sumArr } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 import { LootBank } from 'oldschooljs/dist/meta/types';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
+import { convertLootBanksToItemBanks, JSONClone } from 'oldschooljs/dist/util';
 
 import { TOBRooms } from '../data/tob';
-import { assert, convertLootBanksToItemBanks, JSONClone, percentChance } from '../util';
+import { assert } from '../util/logError';
 
 export interface TeamMember {
 	id: string;

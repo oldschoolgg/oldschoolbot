@@ -10,9 +10,10 @@ declare global {
 		}
 	}
 }
-export const prisma =
-	global.prisma ||
-	new PrismaClient({
+
+function makePrismaClient(): PrismaClient {
+	console.log('Making prisma client...');
+	return new PrismaClient({
 		log: [
 			{
 				emit: 'event',
@@ -20,7 +21,10 @@ export const prisma =
 			}
 		]
 	});
-if (!production) global.prisma = prisma;
+}
+
+export const prisma = global.prisma || makePrismaClient();
+global.prisma = prisma;
 
 export const prismaQueries: Prisma.QueryEvent[] = [];
 export let queryCountStore = { value: 0 };
