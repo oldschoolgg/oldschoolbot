@@ -1,11 +1,10 @@
-import { randInt, Time } from 'e';
+import { randInt, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import HerbDropTable from 'oldschooljs/dist/simulation/subtables/HerbDropTable';
 import RareDropTable from 'oldschooljs/dist/simulation/subtables/RareDropTable';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { ItemBank } from '../../types';
-import { roll } from '../../util';
 import resolveItems from '../../util/resolveItems';
 
 const LowTierCoffin = new LootTable()

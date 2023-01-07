@@ -1,7 +1,6 @@
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
 
-import { mahojiUserSettingsUpdate } from '../../../mahoji/settingsUpdate';
 import { SlayerTaskUnlocksEnum } from '../../slayer/slayerUnlocks';
 import { Createable } from '../createables';
 
@@ -134,7 +133,7 @@ export const slayerCreatables: Createable[] = [
 		GPCost: 0,
 		maxCanOwn: 1,
 		onCreate: async (qty, user) => {
-			await mahojiUserSettingsUpdate(user.id, { tentacle_charges: { increment: 10_000 * qty } });
+			await user.update({ tentacle_charges: { increment: 10_000 * qty } });
 			return {
 				result: true,
 				message: `Your Abyssal tentacle was given ${toKMB(

@@ -1,13 +1,12 @@
-import { bold } from '@discordjs/builders';
-import type { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { Stopwatch } from '@sapphire/stopwatch';
 import {
 	BaseMessageOptions,
+	bold,
 	ButtonBuilder,
 	ButtonInteraction,
 	CacheType,
 	Channel,
-	ChannelType,
 	Collection,
 	CollectorFilter,
 	ComponentType,
@@ -40,35 +39,31 @@ import {
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import murmurHash from 'murmurhash';
 import { gzip } from 'node:zlib';
-import { Bank, Monsters } from 'oldschooljs';
+import { Bank, Items, Monsters } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
-import Items from 'oldschooljs/dist/structures/Items';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import { convertLVLtoXP } from 'oldschooljs/dist/util/util';
-import { bool, integer, MersenneTwister19937, nodeCrypto, real, shuffle } from 'random-js';
+import { bool, integer, nodeCrypto, real } from 'random-js';
 
 import { ADMIN_IDS, CLIENT_ID, OWNER_IDS, production, SupportServer } from '../config';
-import { badgesCache, BitField, ProjectileType, skillEmoji, usernameCache } from './constants';
+import { badgesCache, BitField, ProjectileType, usernameCache } from './constants';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
-import { Consumable } from './minions/types';
+import type { Consumable } from './minions/types';
 import { MUserClass } from './MUser';
 import { PaginatedMessage } from './PaginatedMessage';
-import { POHBoosts } from './poh';
+import type { POHBoosts } from './poh';
 import { SkillsEnum } from './skilling/types';
 import { Gear } from './structures/Gear';
-import { ArrayItemsResolved, Skills } from './types';
-import {
+import type { Skills } from './types';
+import type {
 	GroupMonsterActivityTaskOptions,
 	NexTaskOptions,
 	RaidsOptions,
 	TheatreOfBloodTaskOptions
 } from './types/minions';
-import { CACHED_ACTIVE_USER_IDS } from './util/cachedUserIDs';
 import { getItem } from './util/getOSItem';
 import itemID from './util/itemID';
-import { logError } from './util/logError';
 import resolveItems from './util/resolveItems';
-import { toTitleCase } from './util/toTitleCase';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const emojiRegex = require('emoji-regex');
@@ -123,27 +118,6 @@ export function formatItemStackQuantity(quantity: number) {
 	return quantity.toString();
 }
 
-export function formatDuration(ms: number, short = false) {
-	if (ms < 0) ms = -ms;
-	const time = {
-		day: Math.floor(ms / 86_400_000),
-		hour: Math.floor(ms / 3_600_000) % 24,
-		minute: Math.floor(ms / 60_000) % 60,
-		second: Math.floor(ms / 1000) % 60
-	};
-	const shortTime = {
-		d: Math.floor(ms / 86_400_000),
-		h: Math.floor(ms / 3_600_000) % 24,
-		m: Math.floor(ms / 60_000) % 60,
-		s: Math.floor(ms / 1000) % 60
-	};
-	let nums = Object.entries(short ? shortTime : time).filter(val => val[1] !== 0);
-	if (nums.length === 0) return '1 second';
-	return nums
-		.map(([key, val]) => `${val}${short ? '' : ' '}${key}${val === 1 || short ? '' : 's'}`)
-		.join(short ? '' : ', ');
-}
-
 export function inlineCodeblock(input: string) {
 	return `\`${input.replace(/ /g, '\u00A0').replace(/`/g, '`\u200B')}\``;
 }
@@ -196,10 +170,6 @@ export function roll(max: number) {
 	return rand(1, max) === 1;
 }
 
-export function itemNameFromID(itemID: number | string) {
-	return Items.get(itemID)?.name;
-}
-
 const rawEmojiRegex = emojiRegex();
 
 export function stripEmojis(str: string) {
@@ -215,18 +185,6 @@ export const anglerBoosts = [
 
 export function isValidGearSetup(str: string): str is GearSetupType {
 	return GearSetupTypes.includes(str as any);
-}
-
-/**
- * Adds random variation to a number. For example, if you pass 10%, it can at most lower the value by 10%,
- * or increase it by 10%, and everything in between.
- * @param value The value to add variation too.
- * @param percentage The max percentage to fluctuate the value by, in both negative/positive.
- */
-export function randomVariation(value: number, percentage: number) {
-	const lowerLimit = value * (1 - percentage / 100);
-	const upperLimit = value * (1 + percentage / 100);
-	return randFloat(lowerLimit, upperLimit);
 }
 
 export function isGroupActivity(data: any): data is GroupMonsterActivityTaskOptions {
@@ -246,16 +204,6 @@ export function getSupportGuild(): Guild | null {
 	const guild = globalClient.guilds.cache.get(SupportServer);
 	if (!guild) return null;
 	return guild;
-}
-
-export function normal(mu = 0, sigma = 1, nsamples = 6) {
-	let run_total = 0;
-
-	for (let i = 0; i < nsamples; i++) {
-		run_total += Math.random();
-	}
-
-	return (sigma * (run_total - nsamples / 2)) / (nsamples / 2) + mu;
 }
 
 /**
@@ -307,18 +255,6 @@ export function skillsMeetRequirements(skills: Skills, requirements: Skills) {
 	return true;
 }
 
-export function formatItemReqs(items: ArrayItemsResolved) {
-	const str = [];
-	for (const item of items) {
-		if (Array.isArray(item)) {
-			str.push(item.map(itemNameFromID).join(' OR '));
-		} else {
-			str.push(itemNameFromID(item));
-		}
-	}
-	return str.join(', ');
-}
-
 export function formatItemCosts(consumable: Consumable, timeToFinish: number) {
 	const str = [];
 
@@ -367,34 +303,6 @@ export function formatMissingItems(consumables: Consumable[], timeToFinish: numb
 		str.push(formatItemCosts(consumable, timeToFinish));
 	}
 
-	return str.join(', ');
-}
-
-export function formatSkillRequirements(reqs: Record<string, number>, emojis = true) {
-	let arr = [];
-	for (const [name, num] of objectEntries(reqs)) {
-		arr.push(`${emojis ? ` ${(skillEmoji as any)[name]} ` : ''}**${num}** ${toTitleCase(name)}`);
-	}
-	return arr.join(', ');
-}
-
-export function formatItemBoosts(items: ItemBank[]) {
-	const str = [];
-	for (const itemSet of items) {
-		const itemEntries = Object.entries(itemSet);
-		const multiple = itemEntries.length > 1;
-		const bonusStr = [];
-
-		for (const [itemID, boostAmount] of itemEntries) {
-			bonusStr.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
-		}
-
-		if (multiple) {
-			str.push(`(${bonusStr.join(' OR ')})`);
-		} else {
-			str.push(bonusStr.join(''));
-		}
-	}
 	return str.join(', ');
 }
 
@@ -481,16 +389,6 @@ export function getMonster(str: string): Monster {
 		throw new Error(`Invalid monster name given: ${str}`);
 	}
 	return mon;
-}
-
-export function assert(condition: boolean, desc?: string, context?: Record<string, string>) {
-	if (!condition) {
-		if (production) {
-			logError(new Error(desc ?? 'Failed assertion'), context);
-		} else {
-			throw new Error(desc ?? 'Failed assertion');
-		}
-	}
 }
 
 export function calcDropRatesFromBank(bank: Bank, iterations: number, uniques: number[]) {
@@ -619,30 +517,6 @@ export function moidLink(items: number[]) {
 	return `https://chisel.weirdgloop.org/moid/item_id.html#${items.join(',')}`;
 }
 export { cleanString, stringMatches } from './util/cleanString';
-
-export function clamp(val: number, min: number, max: number) {
-	return Math.min(max, Math.max(min, val));
-}
-
-export function calcPerHour(value: number, duration: number) {
-	return (value / (duration / Time.Minute)) * 60;
-}
-
-export function removeFromArr<T>(arr: T[] | readonly T[], item: T) {
-	return arr.filter(i => i !== item);
-}
-
-/**
- * Scale percentage exponentially
- *
- * @param decay Between 0.01 and 0.05; bigger means more penalty.
- * @param percent The percent to scale
- * @returns percent
- */
-export function exponentialPercentScale(percent: number, decay = 0.021) {
-	return 100 * Math.pow(Math.E, -decay * (100 - percent));
-}
-
 export async function bankValueWithMarketPrices(prisma: PrismaClient, bank: Bank) {
 	const marketPrices = (await prisma.clientStorage.findFirst({
 		where: { id: CLIENT_ID },
@@ -761,11 +635,6 @@ export function getUsername(id: string | bigint, withBadges: boolean = true) {
 	return username;
 }
 
-export function shuffleRandom<T>(input: number, arr: readonly T[]): T[] {
-	const engine = MersenneTwister19937.seed(input);
-	return shuffle(engine, [...arr]);
-}
-
 export function clAdjustedDroprate(user: MUser, item: string | number, baseRate: number, increaseMultiplier: number) {
 	const amountInCL = user.cl.amount(item);
 	if (amountInCL === 0) return baseRate;
@@ -796,13 +665,6 @@ export function validateItemBankAndThrow(input: any): input is ItemBank {
 	return true;
 }
 
-export function hasSkillReqs(user: MUser, reqs: Skills): [boolean, string | null] {
-	const hasReqs = user.hasSkillReqs(reqs);
-	if (!hasReqs) {
-		return [false, formatSkillRequirements(reqs)];
-	}
-	return [true, null];
-}
 type test = CollectorFilter<
 	[
 		ButtonInteraction<CacheType> | SelectMenuInteraction<CacheType>,
@@ -839,110 +701,6 @@ export async function runTimedLoggedFn(name: string, fn: () => Promise<unknown>)
 	await fn();
 	stopwatch.stop();
 	debugLog(`Finished ${name} in ${stopwatch.toString()}`);
-}
-
-const emojiServers = new Set([
-	'342983479501389826',
-	'940758552425955348',
-	'869497440947015730',
-	'324127314361319427',
-	'363252822369894400',
-	'395236850119213067',
-	'325950337271857152',
-	'395236894096621568'
-]);
-
-export function memoryAnalysis() {
-	let guilds = globalClient.guilds.cache.size;
-	let emojis = 0;
-	let channels = globalClient.channels.cache.size;
-	let voiceChannels = 0;
-	let guildTextChannels = 0;
-	let roles = 0;
-	for (const guild of globalClient.guilds.cache.values()) {
-		emojis += guild.emojis.cache.size;
-		for (const channel of guild.channels.cache.values()) {
-			if (channel.type === ChannelType.GuildVoice) voiceChannels++;
-			if (channel.type === ChannelType.GuildText) guildTextChannels++;
-		}
-		roles += guild.roles.cache.size;
-	}
-	return {
-		guilds,
-		emojis,
-		channels,
-		voiceChannels,
-		guildTextChannels,
-		roles,
-		activeIDs: CACHED_ACTIVE_USER_IDS.size
-	};
-}
-
-export function cacheCleanup() {
-	debugLog('Cache Cleanup', {
-		type: 'CACHE_CLEANUP'
-	});
-	return runTimedLoggedFn('Cache Cleanup', async () => {
-		await runTimedLoggedFn('Clear Channels', async () => {
-			for (const channel of globalClient.channels.cache.values()) {
-				if (channel.type === ChannelType.GuildVoice || channel.type === ChannelType.GuildCategory) {
-					globalClient.channels.cache.delete(channel.id);
-				}
-				if (channel.type === ChannelType.GuildText) {
-					channel.threads.cache.clear();
-					// @ts-ignore ignore
-					delete channel.topic;
-					// @ts-ignore ignore
-					delete channel.rateLimitPerUser;
-					// @ts-ignore ignore
-					delete channel.nsfw;
-					// @ts-ignore ignore
-					delete channel.parentId;
-					// @ts-ignore ignore
-					delete channel.name;
-					// @ts-ignore ignore
-					channel.lastMessageId = null;
-					// @ts-ignore ignore
-					channel.lastPinTimestamp = null;
-				}
-			}
-		});
-
-		await runTimedLoggedFn('Guild Emoji/Roles/Member cache clear', async () => {
-			for (const guild of globalClient.guilds.cache.values()) {
-				if (emojiServers.has(guild.id)) continue;
-				guild.emojis.cache.clear();
-				for (const member of guild.members.cache.values()) {
-					if (!CACHED_ACTIVE_USER_IDS.has(member.user.id)) {
-						guild.members.cache.delete(member.user.id);
-					}
-				}
-				for (const channel of guild.channels.cache.values()) {
-					if (channel.type === ChannelType.GuildVoice || channel.type === ChannelType.GuildNewsThread) {
-						guild.channels.cache.delete(channel.id);
-					}
-				}
-				for (const role of guild.roles.cache.values()) {
-					// @ts-ignore ignore
-					delete role.managed;
-					// @ts-ignore ignore
-					delete role.name;
-					// @ts-ignore ignore
-					delete role.tags;
-					// @ts-ignore ignore
-					delete role.icon;
-					// @ts-ignore ignore
-					delete role.unicodeEmoji;
-					// @ts-ignore ignore
-					delete role.rawPosition;
-					// @ts-ignore ignore
-					delete role.color;
-					// @ts-ignore ignore
-					delete role.hoist;
-				}
-			}
-		});
-	});
 }
 
 export function getAllIDsOfUser(user: MUser) {
@@ -989,3 +747,6 @@ export function getInteractionTypeName(type: InteractionType) {
 export function isModOrAdmin(user: MUser) {
 	return [...OWNER_IDS, ...ADMIN_IDS].includes(user.id) || user.bitfield.includes(BitField.isModerator);
 }
+
+export { assert } from './util/logError';
+export * from './util/smallUtils';

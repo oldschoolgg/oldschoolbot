@@ -18,8 +18,9 @@ import { ADMIN_IDS, CLIENT_ID, OWNER_IDS, production, SupportServer } from '../.
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../../lib/blacklists';
 import { badges, BadgesEnum, BitField, BitFieldData, Channel, DISABLED_COMMANDS } from '../../lib/constants';
 import { addToDoubleLootTimer } from '../../lib/doubleLoot';
-import { GearSetup } from '../../lib/gear';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
+import { GearSetup } from '../../lib/gear/types';
+import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { patreonTask } from '../../lib/patreon';
 import { runRolesTask } from '../../lib/rolesTask';
 import { countUsersWithItemInCl, prisma } from '../../lib/settings/prisma';
@@ -48,7 +49,6 @@ import { syncCustomPrices } from '../lib/events';
 import { itemOption } from '../lib/mahojiCommandOptions';
 import { allAbstractCommands, OSBMahojiCommand } from '../lib/util';
 import { handleMahojiConfirmation, mahojiUsersSettingsFetch } from '../mahojiSettings';
-import { mahojiUserSettingsUpdate } from '../settingsUpdate';
 import { getUserInfo } from './minion';
 
 export const gifs = [

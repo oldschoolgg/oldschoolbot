@@ -6,8 +6,8 @@ import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
-import { mahojiUserSettingsUpdate } from '../../mahoji/settingsUpdate';
 import { ClueTier, ClueTiers } from '../clues/clueTiers';
+import { mahojiUserSettingsUpdate } from '../MUser';
 import { ItemBank } from '../types';
 import { clamp, formatDuration, stringMatches, toKMB } from '../util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../util/clientSettings';

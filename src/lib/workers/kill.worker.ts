@@ -6,9 +6,9 @@ import { Bank, Misc, Monsters } from 'oldschooljs';
 
 import { MoktangLootTable } from '../minions/data/killableMonsters/custom/bosses/Moktang';
 import { stringMatches } from '../util/cleanString';
-import { KillWorkerArgs, KillWorkerReturn } from '.';
+import type { KillWorkerArgs, KillWorkerReturn } from '.';
 
-export default ({ quantity, bossName, limit, catacombs, onTask }: KillWorkerArgs): KillWorkerReturn => {
+export default async ({ quantity, bossName, limit, catacombs, onTask }: KillWorkerArgs): KillWorkerReturn => {
 	const osjsMonster = Monsters.find(mon => mon.aliases.some(alias => stringMatches(alias, bossName)));
 
 	if (osjsMonster) {

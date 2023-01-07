@@ -1,5 +1,4 @@
 import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
 
 import { soteSkillRequirements } from '../../../mahoji/lib/abstracted_commands/zalcanoCommand';
 import { chompyHats, MAX_QP } from '../../constants';
@@ -7,7 +6,7 @@ import { diaries, userhasDiaryTier } from '../../diaries';
 import { Favours } from '../../minions/data/kourendFavour';
 import { MinigameName } from '../../settings/settings';
 import { Skills } from '../../types';
-import getOSItem from '../../util/getOSItem';
+import { allTeamCapes } from '../misc';
 import { aerialFishBuyables } from './aerialFishBuyables';
 import { bsoBuyables } from './bsoBuyables';
 import { canifisClothes } from './canifisClothes';
@@ -1113,10 +1112,6 @@ for (const [chompyHat, qty] of chompyHats) {
 	});
 }
 
-export const allTeamCapes: Item[] = [];
-for (let i = 1; i < 51; i++) {
-	allTeamCapes.push(getOSItem(`Team-${i} cape`));
-}
 for (const cape of allTeamCapes) {
 	Buyables.push({
 		name: cape.name,

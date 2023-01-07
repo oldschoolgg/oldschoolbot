@@ -5,6 +5,7 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
 import { getPOH } from '../../mahoji/lib/abstracted_commands/pohCommand';
+import { getParsedStashUnits } from '../../mahoji/lib/abstracted_commands/stashUnitsCommand';
 import {
 	personalAlchingStats,
 	personalCollectingStats,
@@ -16,10 +17,9 @@ import {
 	personalSpellCastStats,
 	personalWoodcuttingStats
 } from '../../mahoji/lib/abstracted_commands/statCommand';
-import { mahojiUserSettingsUpdate } from '../../mahoji/settingsUpdate';
-import { getParsedStashUnits } from '../clues/stashUnits';
 import { BitField } from '../constants';
 import { calcCLDetails } from '../data/Collections';
+import { mahojiUserSettingsUpdate } from '../MUser';
 import { roboChimpUserFetch } from '../roboChimp';
 import { getMinigameEntity } from '../settings/minigames';
 import { prisma } from '../settings/prisma';

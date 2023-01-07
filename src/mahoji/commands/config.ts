@@ -11,6 +11,7 @@ import { Eatables } from '../../lib/data/eatables';
 import { gearImages } from '../../lib/gear/functions/generateGearImage';
 import { Inventions } from '../../lib/invention/inventions';
 import { CombatOptionsArray, CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
+import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { prisma } from '../../lib/settings/prisma';
 import { autoslayChoices, slayerMasterChoices } from '../../lib/slayer/constants';
 import { setDefaultAutoslay, setDefaultSlayerMaster } from '../../lib/slayer/slayerUtil';
@@ -27,7 +28,6 @@ import {
 	mahojiUsersSettingsFetch,
 	patronMsg
 } from '../mahojiSettings';
-import { mahojiUserSettingsUpdate } from '../settingsUpdate';
 
 const toggles = [
 	{

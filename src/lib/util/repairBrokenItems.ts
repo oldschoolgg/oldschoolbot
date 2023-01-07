@@ -2,8 +2,8 @@ import { Prisma } from '@prisma/client';
 import { notEmpty } from 'e';
 import { Items } from 'oldschooljs';
 
-import { mahojiUserSettingsUpdate } from '../../mahoji/settingsUpdate';
 import { GearSetup, GearSetupTypes } from '../gear';
+import { mahojiUserSettingsUpdate } from '../MUser';
 import { ItemBank } from '../types';
 import { moidLink } from '../util';
 
