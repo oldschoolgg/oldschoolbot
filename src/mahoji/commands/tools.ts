@@ -8,14 +8,7 @@ import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import { CoXUniqueTable } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 import { ToBUniqueTable } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
 
-import {
-	allStashUnitsFlat,
-	getParsedStashUnits,
-	stashUnitBuildAllCommand,
-	stashUnitFillAllCommand,
-	stashUnitUnfillCommand,
-	stashUnitViewCommand
-} from '../../lib/clues/stashUnits';
+import { allStashUnitsFlat } from '../../lib/clues/stashUnits';
 import { BitField, PerkTier } from '../../lib/constants';
 import { allCLItemsFiltered, allDroppedItems } from '../../lib/data/Collections';
 import {
@@ -44,6 +37,13 @@ import { getItem } from '../../lib/util/getOSItem';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import resolveItems from '../../lib/util/resolveItems';
+import {
+	getParsedStashUnits,
+	stashUnitBuildAllCommand,
+	stashUnitFillAllCommand,
+	stashUnitUnfillCommand,
+	stashUnitViewCommand
+} from '../lib/abstracted_commands/stashUnitsCommand';
 import { itemOption, monsterOption, skillOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 import { handleMahojiConfirmation, patronMsg } from '../mahojiSettings';
