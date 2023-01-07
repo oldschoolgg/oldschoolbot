@@ -3,10 +3,11 @@ import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
 import { tobMetamorphPets } from '../../../lib/data/CollectionsExport';
-import { TOBRooms, TOBUniques, TOBUniquesToAnnounce, totalXPFromRaid } from '../../../lib/data/tob';
+import { TOBRooms, TOBUniques, TOBUniquesToAnnounce } from '../../../lib/data/tob';
 import { trackLoot } from '../../../lib/lootTrack';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import { TheatreOfBlood } from '../../../lib/simulation/tob';
+import { SkillsEnum } from '../../../lib/skilling/types';
 import { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
 import { convertPercentChance } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
@@ -14,6 +15,15 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { sendToChannelID } from '../../../lib/util/webhook';
 import { updateLegacyUserBankSetting } from '../../../mahoji/mahojiSettings';
+
+const totalXPFromRaid = {
+	[SkillsEnum.Attack]: 12_000,
+	[SkillsEnum.Hitpoints]: 13_100,
+	[SkillsEnum.Strength]: 12_000,
+	[SkillsEnum.Ranged]: 1000,
+	[SkillsEnum.Defence]: 12_000,
+	[SkillsEnum.Magic]: 1000
+} as const;
 
 export const tobTask: MinionTask = {
 	type: 'TheatreOfBlood',

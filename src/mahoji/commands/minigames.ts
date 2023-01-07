@@ -57,6 +57,7 @@ import {
 import { pyramidPlunderCommand } from '../lib/abstracted_commands/pyramidPlunderCommand';
 import { roguesDenCommand } from '../lib/abstracted_commands/roguesDenCommand';
 import { sepulchreCommand } from '../lib/abstracted_commands/sepulchreCommand';
+import { shades, shadesLogs, shadesOfMortonStartCommand } from '../lib/abstracted_commands/shadesOfMortonCommand';
 import {
 	soulWarsBuyables,
 	soulWarsBuyCommand,
@@ -981,6 +982,34 @@ export const minigamesCommand: OSBMahojiCommand = {
 					]
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			name: 'shades_of_morton',
+			description: "The Shades of Mort'ton minigame.",
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'start',
+					description: 'Start a trip.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'shade',
+							description: 'The shade you want to use.',
+							required: true,
+							choices: shades.map(i => ({ name: i.shadeName, value: i.shadeName }))
+						},
+						{
+							name: 'logs',
+							description: 'The logs you want to use.',
+							type: ApplicationCommandOptionType.String,
+							required: true,
+							choices: shadesLogs.map(i => ({ name: i.normalLog.name, value: i.normalLog.name }))
+						}
+					]
+				}
+			]
 		}
 	],
 	run: async ({
@@ -1055,6 +1084,12 @@ export const minigamesCommand: OSBMahojiCommand = {
 			buy?: { item: string; quantity?: number };
 			stats?: {};
 			imbue?: { name: string };
+		};
+		shades_of_morton?: {
+			start?: {
+				shade: string;
+				logs: string;
+			};
 		};
 	}>) => {
 		const user = await mUserFetch(userID);
@@ -1362,6 +1397,20 @@ export const minigamesCommand: OSBMahojiCommand = {
 		if (options.nmz?.stats) return nightmareZoneStatsCommand(user);
 		if (options.nmz?.imbue) {
 			return nightmareZoneImbueCommand(user, options.nmz.imbue.name);
+		}
+
+		/**
+		 *
+		 * Shades of Morton
+		 *
+		 */
+		if (options.shades_of_morton?.start) {
+			return shadesOfMortonStartCommand(
+				user,
+				channelID,
+				options.shades_of_morton.start.logs,
+				options.shades_of_morton.start.shade
+			);
 		}
 
 		return 'Invalid command.';
