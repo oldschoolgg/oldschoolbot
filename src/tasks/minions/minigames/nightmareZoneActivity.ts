@@ -14,7 +14,7 @@ export const nightmareZoneTask: MinionTask = {
 
 		const [, , attackStyles] = resolveAttackStyles(user, { monsterID: Monsters.Cow.id });
 
-		const monsterHP = 230;
+		const monsterHP = 227;
 		const monsterPoints = 3500;
 		const totalXP = (strategy === 'experience' ? 1.5 : 1) * monsterHP * 4 * quantity;
 		const pointsReceived = Math.floor((strategy === 'points' ? 4 : 0.8) * monsterPoints * quantity);
@@ -27,8 +27,7 @@ export const nightmareZoneTask: MinionTask = {
 				await user.addXP({
 					skillName: style,
 					amount: Math.floor(xpPerSkill),
-					duration,
-					minimal: true
+					duration
 				})
 			);
 		}
@@ -37,8 +36,7 @@ export const nightmareZoneTask: MinionTask = {
 			await user.addXP({
 				skillName: SkillsEnum.Hitpoints,
 				amount: Math.floor((strategy === 'experience' ? 1.5 : 1) * monsterHP * quantity * 1.33),
-				duration,
-				minimal: true
+				duration
 			})
 		);
 
