@@ -256,9 +256,9 @@ export const allCollectionLogs: ICollection = {
 				alias: ['gauntlet', 'crystalline hunllef', 'hunllef'],
 				kcActivity: {
 					Default: async (_, minigameScores) =>
-						minigameScores.find(i => i.minigame.name === 'gauntlet')!.score,
+						minigameScores.find(i => i.minigame.column === 'gauntlet')!.score,
 					Corrupted: async (_, minigameScores) =>
-						minigameScores.find(i => i.minigame.name === 'corrupted_gauntlet')!.score
+						minigameScores.find(i => i.minigame.column === 'corrupted_gauntlet')!.score
 				},
 				items: theGauntletCL,
 				fmtProg: ({ minigames }) => [`${minigames.gauntlet} KC`, `${minigames.corrupted_gauntlet} Corrupted KC`]
@@ -417,9 +417,10 @@ export const allCollectionLogs: ICollection = {
 			"Chamber's of Xeric": {
 				alias: ChambersOfXeric.aliases,
 				kcActivity: {
-					Default: async (_, minigameScores) => minigameScores.find(i => i.minigame.name === 'raids')!.score,
+					Default: async (_, minigameScores) =>
+						minigameScores.find(i => i.minigame.column === 'raids')!.score,
 					Challenge: async (_, minigameScores) =>
-						minigameScores.find(i => i.minigame.name === 'raids_challenge_mode')!.score
+						minigameScores.find(i => i.minigame.column === 'raids_challenge_mode')!.score
 				},
 				items: chambersOfXericCL,
 				isActivity: true,
@@ -430,8 +431,8 @@ export const allCollectionLogs: ICollection = {
 			'Theatre of Blood': {
 				alias: ['tob'],
 				kcActivity: {
-					Default: async (_, minigameScores) => minigameScores.find(i => i.minigame.name === 'tob')!.score,
-					Hard: async (_, minigameScores) => minigameScores.find(i => i.minigame.name === 'tob_hard')!.score
+					Default: async (_, minigameScores) => minigameScores.find(i => i.minigame.column === 'tob')!.score,
+					Hard: async (_, minigameScores) => minigameScores.find(i => i.minigame.column === 'tob_hard')!.score
 				},
 				items: theatreOfBLoodCL,
 				isActivity: true,
@@ -595,7 +596,7 @@ export const allCollectionLogs: ICollection = {
 				items: barbarianAssaultCL,
 				kcActivity: {
 					Default: async (_, minigameScores) =>
-						minigameScores.find(i => i.minigame.name === 'barb_assault')!.score,
+						minigameScores.find(i => i.minigame.column === 'barb_assault')!.score,
 					'High Gambles': async user => user.user.high_gambles
 				},
 				isActivity: true,
@@ -670,7 +671,7 @@ export const allCollectionLogs: ICollection = {
 				items: lastManStandingCL,
 				isActivity: true,
 				kcActivity: {
-					Default: async (_, minigameScores) => minigameScores.find(i => i.minigame.name === 'lms')!.score
+					Default: async (_, minigameScores) => minigameScores.find(i => i.minigame.column === 'lms')!.score
 				},
 				alias: ['lms'],
 				fmtProg: mgProg('sepulchre')
