@@ -2,6 +2,7 @@ import { increaseNumByPercent } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { MorytaniaDiary, userhasDiaryTier } from '../../../lib/diaries';
+import { incrementMinigameScore } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ShadesOfMortonOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -12,6 +13,8 @@ export const shadesOfMortonTask: MinionTask = {
 	async run(data: ShadesOfMortonOptions) {
 		const { channelID, quantity, userID, logID, shadeID, duration } = data;
 		const user = await mUserFetch(userID);
+
+		await incrementMinigameScore(user.id, 'shades_of_morton', quantity);
 
 		const log = shadesLogs.find(i => i.normalLog.id === logID)!;
 		const shade = shades.find(i => i.shadeName === shadeID)!;
