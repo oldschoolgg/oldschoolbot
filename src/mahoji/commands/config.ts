@@ -6,7 +6,7 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { BitField, PerkTier } from '../../lib/constants';
+import { BitField, PerkTier, secretItems } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { gearImages } from '../../lib/gear/functions/generateGearImage';
 import { Inventions } from '../../lib/invention/inventions';
@@ -78,7 +78,7 @@ async function favFoodConfig(
 	const currentItems = `Your current favorite food is: ${
 		currentFavorites.length === 0 ? 'None' : currentFavorites.map(itemNameFromID).join(', ')
 	}.`;
-	if (!item) return currentItems;
+	if (!item || secretItems.includes(item.id)) return currentItems;
 	if (!Eatables.some(i => i.id === item.id)) return "That's not a valid item.";
 
 	if (itemToAdd) {
@@ -109,7 +109,7 @@ async function favItemConfig(
 	const currentItems = `Your current favorite items are: ${
 		currentFavorites.length === 0 ? 'None' : currentFavorites.map(itemNameFromID).join(', ')
 	}.`;
-	if (!item) return currentItems;
+	if (!item || secretItems.includes(item.id)) return currentItems;
 	if (itemToAdd) {
 		let limit = (user.perkTier() + 1) * 100;
 		if (currentFavorites.length >= limit) {
