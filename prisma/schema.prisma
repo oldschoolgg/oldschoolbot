@@ -483,6 +483,7 @@ model Minigame {
   puro_puro               Int    @default(0)
   giants_foundry          Int    @default(0)
   guardians_of_the_rift   Int    @default(0)
+  shades_of_morton        Int    @default(0)
 
   new_user NewUser?
 
@@ -607,6 +608,8 @@ model UserStats {
 
   buy_cost_bank Json @default("{}") @db.Json
   buy_loot_bank Json @default("{}") @db.Json
+
+  shades_of_morton_cost_bank Json @default("{}") @db.Json
 
   @@map("user_stats")
 }
@@ -737,6 +740,7 @@ enum activity_type_enum {
   GiantsFoundry
   GuardiansOfTheRift
   HalloweenEvent
+  ShadesOfMorton
 }
 
 enum xp_gains_skill_enum {
