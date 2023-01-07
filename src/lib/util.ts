@@ -5,7 +5,6 @@ import {
 	ButtonInteraction,
 	CacheType,
 	Channel,
-	ChannelType,
 	Collection,
 	CollectorFilter,
 	ComponentType,
@@ -29,7 +28,7 @@ import murmurHash from 'murmurhash';
 import { gzip } from 'node:zlib';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
-import { bool, integer, MersenneTwister19937, nodeCrypto, real, shuffle } from 'random-js';
+import { bool, integer, nodeCrypto, real } from 'random-js';
 
 import { ADMIN_IDS, OWNER_IDS, SupportServer } from '../config';
 import { badgesCache, BitField, usernameCache } from './constants';
@@ -46,7 +45,6 @@ import type {
 	RaidsOptions,
 	TheatreOfBloodTaskOptions
 } from './types/minions';
-import { CACHED_ACTIVE_USER_IDS } from './util/cachedUserIDs';
 import { getItem } from './util/getOSItem';
 import itemID from './util/itemID';
 
@@ -176,16 +174,6 @@ export function getSupportGuild(): Guild | null {
 	const guild = globalClient.guilds.cache.get(SupportServer);
 	if (!guild) return null;
 	return guild;
-}
-
-export function normal(mu = 0, sigma = 1, nsamples = 6) {
-	let run_total = 0;
-
-	for (let i = 0; i < nsamples; i++) {
-		run_total += Math.random();
-	}
-
-	return (sigma * (run_total - nsamples / 2)) / (nsamples / 2) + mu;
 }
 
 /**
@@ -469,11 +457,6 @@ export function getUsername(id: string | bigint, withBadges: boolean = true) {
 	return username;
 }
 
-export function shuffleRandom<T>(input: number, arr: readonly T[]): T[] {
-	const engine = MersenneTwister19937.seed(input);
-	return shuffle(engine, [...arr]);
-}
-
 export function makeComponents(components: ButtonBuilder[]): InteractionReplyOptions['components'] {
 	return chunk(components, 5).map(i => ({ components: i, type: ComponentType.ActionRow }));
 }
@@ -530,110 +513,6 @@ export async function runTimedLoggedFn(name: string, fn: () => Promise<unknown>)
 	await fn();
 	stopwatch.stop();
 	debugLog(`Finished ${name} in ${stopwatch.toString()}`);
-}
-
-const emojiServers = new Set([
-	'342983479501389826',
-	'940758552425955348',
-	'869497440947015730',
-	'324127314361319427',
-	'363252822369894400',
-	'395236850119213067',
-	'325950337271857152',
-	'395236894096621568'
-]);
-
-export function memoryAnalysis() {
-	let guilds = globalClient.guilds.cache.size;
-	let emojis = 0;
-	let channels = globalClient.channels.cache.size;
-	let voiceChannels = 0;
-	let guildTextChannels = 0;
-	let roles = 0;
-	for (const guild of globalClient.guilds.cache.values()) {
-		emojis += guild.emojis.cache.size;
-		for (const channel of guild.channels.cache.values()) {
-			if (channel.type === ChannelType.GuildVoice) voiceChannels++;
-			if (channel.type === ChannelType.GuildText) guildTextChannels++;
-		}
-		roles += guild.roles.cache.size;
-	}
-	return {
-		guilds,
-		emojis,
-		channels,
-		voiceChannels,
-		guildTextChannels,
-		roles,
-		activeIDs: CACHED_ACTIVE_USER_IDS.size
-	};
-}
-
-export function cacheCleanup() {
-	debugLog('Cache Cleanup', {
-		type: 'CACHE_CLEANUP'
-	});
-	return runTimedLoggedFn('Cache Cleanup', async () => {
-		await runTimedLoggedFn('Clear Channels', async () => {
-			for (const channel of globalClient.channels.cache.values()) {
-				if (channel.type === ChannelType.GuildVoice || channel.type === ChannelType.GuildCategory) {
-					globalClient.channels.cache.delete(channel.id);
-				}
-				if (channel.type === ChannelType.GuildText) {
-					channel.threads.cache.clear();
-					// @ts-ignore ignore
-					delete channel.topic;
-					// @ts-ignore ignore
-					delete channel.rateLimitPerUser;
-					// @ts-ignore ignore
-					delete channel.nsfw;
-					// @ts-ignore ignore
-					delete channel.parentId;
-					// @ts-ignore ignore
-					delete channel.name;
-					// @ts-ignore ignore
-					channel.lastMessageId = null;
-					// @ts-ignore ignore
-					channel.lastPinTimestamp = null;
-				}
-			}
-		});
-
-		await runTimedLoggedFn('Guild Emoji/Roles/Member cache clear', async () => {
-			for (const guild of globalClient.guilds.cache.values()) {
-				if (emojiServers.has(guild.id)) continue;
-				guild.emojis.cache.clear();
-				for (const member of guild.members.cache.values()) {
-					if (!CACHED_ACTIVE_USER_IDS.has(member.user.id)) {
-						guild.members.cache.delete(member.user.id);
-					}
-				}
-				for (const channel of guild.channels.cache.values()) {
-					if (channel.type === ChannelType.GuildVoice || channel.type === ChannelType.GuildNewsThread) {
-						guild.channels.cache.delete(channel.id);
-					}
-				}
-				for (const role of guild.roles.cache.values()) {
-					// @ts-ignore ignore
-					delete role.managed;
-					// @ts-ignore ignore
-					delete role.name;
-					// @ts-ignore ignore
-					delete role.tags;
-					// @ts-ignore ignore
-					delete role.icon;
-					// @ts-ignore ignore
-					delete role.unicodeEmoji;
-					// @ts-ignore ignore
-					delete role.rawPosition;
-					// @ts-ignore ignore
-					delete role.color;
-					// @ts-ignore ignore
-					delete role.hoist;
-				}
-			}
-		});
-	});
 }
 
 export function isFunction(input: unknown): input is Function {

@@ -16,16 +16,14 @@ import {
 	MediumEncounterLoot,
 	rewardTokens
 } from '../minions/data/templeTrekking';
-import { getMinigameScore, MinigameName } from '../settings/minigames';
+import type { MinigameName } from '../settings/minigames';
 import { NexNonUniqueTable, NexUniqueTable } from '../simulation/misc';
 import { allFarmingItems } from '../skilling/skills/farming';
 import { SkillsEnum } from '../skilling/types';
 import type { ItemBank } from '../types';
-import { shuffleRandom } from '../util';
 import { stringMatches } from '../util/cleanString';
-import { getKCByName } from '../util/getKCByName';
 import resolveItems from '../util/resolveItems';
-import { removeFromArr } from '../util/smallUtils';
+import { removeFromArr, shuffleRandom } from '../util/smallUtils';
 import {
 	abyssalSireCL,
 	aerialFishingCL,
@@ -257,8 +255,10 @@ export const allCollectionLogs: ICollection = {
 			'The Gauntlet': {
 				alias: ['gauntlet', 'crystalline hunllef', 'hunllef'],
 				kcActivity: {
-					Default: user => getMinigameScore(user.id, 'gauntlet'),
-					Corrupted: user => getMinigameScore(user.id, 'corrupted_gauntlet')
+					Default: async (_, minigameScores) =>
+						minigameScores.find(i => i.minigame.name === 'gauntlet')!.score,
+					Corrupted: async (_, minigameScores) =>
+						minigameScores.find(i => i.minigame.name === 'corrupted_gauntlet')!.score
 				},
 				items: theGauntletCL,
 				fmtProg: ({ minigames }) => [`${minigames.gauntlet} KC`, `${minigames.corrupted_gauntlet} Corrupted KC`]
@@ -417,8 +417,9 @@ export const allCollectionLogs: ICollection = {
 			"Chamber's of Xeric": {
 				alias: ChambersOfXeric.aliases,
 				kcActivity: {
-					Default: user => getMinigameScore(user.id, 'raids'),
-					Challenge: user => getMinigameScore(user.id, 'raids_challenge_mode')
+					Default: async (_, minigameScores) => minigameScores.find(i => i.minigame.name === 'raids')!.score,
+					Challenge: async (_, minigameScores) =>
+						minigameScores.find(i => i.minigame.name === 'raids_challenge_mode')!.score
 				},
 				items: chambersOfXericCL,
 				isActivity: true,
@@ -429,8 +430,8 @@ export const allCollectionLogs: ICollection = {
 			'Theatre of Blood': {
 				alias: ['tob'],
 				kcActivity: {
-					Default: user => getMinigameScore(user.id, 'tob'),
-					Hard: user => getMinigameScore(user.id, 'tob_hard')
+					Default: async (_, minigameScores) => minigameScores.find(i => i.minigame.name === 'tob')!.score,
+					Hard: async (_, minigameScores) => minigameScores.find(i => i.minigame.name === 'tob_hard')!.score
 				},
 				items: theatreOfBLoodCL,
 				isActivity: true,
@@ -593,7 +594,8 @@ export const allCollectionLogs: ICollection = {
 				alias: ['ba', 'barb assault', 'barbarian assault'],
 				items: barbarianAssaultCL,
 				kcActivity: {
-					Default: async user => getMinigameScore(user.id, 'barb_assault'),
+					Default: async (_, minigameScores) =>
+						minigameScores.find(i => i.minigame.name === 'barb_assault')!.score,
 					'High Gambles': async user => user.user.high_gambles
 				},
 				isActivity: true,
@@ -668,7 +670,7 @@ export const allCollectionLogs: ICollection = {
 				items: lastManStandingCL,
 				isActivity: true,
 				kcActivity: {
-					Default: user => getMinigameScore(user.id, 'lms')
+					Default: async (_, minigameScores) => minigameScores.find(i => i.minigame.name === 'lms')!.score
 				},
 				alias: ['lms'],
 				fmtProg: mgProg('sepulchre')
@@ -1253,23 +1255,23 @@ export async function getCollection(options: {
 				// Defaults to the activity name
 				if (attributes.kcActivity) {
 					if (typeof attributes.kcActivity === 'string') {
-						userKC.Default += (await getKCByName(user, attributes.kcActivity))[1];
+						userKC.Default += (await user.getKCByName(attributes.kcActivity))[1];
 					} else {
 						for (const [type, value] of Object.entries(attributes.kcActivity)) {
 							if (!userKC[type]) userKC[type] = 0;
 							if (Array.isArray(value)) {
 								for (const name of value) {
-									userKC[type] += (await getKCByName(user, name))[1];
+									userKC[type] += (await user.getKCByName(name))[1];
 								}
 							} else if (typeof value === 'function') {
-								userKC[type] += await value(user);
+								userKC[type] += await value(user, await user.fetchMinigameScores());
 							} else {
-								userKC[type] += (await getKCByName(user, value))[1];
+								userKC[type] += (await user.getKCByName(value))[1];
 							}
 						}
 					}
 				} else {
-					const defaultKc = await getKCByName(user, activityName);
+					const defaultKc = await user.getKCByName(activityName);
 					if (defaultKc[0] !== null) userKC.Default += defaultKc[1];
 					else userKC = undefined;
 				}

@@ -1,6 +1,8 @@
 import { objectEntries, Time } from 'e';
 import { Items } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
+import { shuffle } from 'random-js/dist/distribution/shuffle';
+import { MersenneTwister19937 } from 'random-js/dist/engine/MersenneTwister19937';
 
 import { skillEmoji } from '../data/emojis';
 import type { ArrayItemsResolved, Skills } from '../types';
@@ -100,4 +102,19 @@ export function hasSkillReqs(user: MUser, reqs: Skills): [boolean, string | null
  */
 export function exponentialPercentScale(percent: number, decay = 0.021) {
 	return 100 * Math.pow(Math.E, -decay * (100 - percent));
+}
+
+export function normal(mu = 0, sigma = 1, nsamples = 6) {
+	let run_total = 0;
+
+	for (let i = 0; i < nsamples; i++) {
+		run_total += Math.random();
+	}
+
+	return (sigma * (run_total - nsamples / 2)) / (nsamples / 2) + mu;
+}
+
+export function shuffleRandom<T>(input: number, arr: readonly T[]): T[] {
+	const engine = MersenneTwister19937.seed(input);
+	return shuffle(engine, [...arr]);
 }
