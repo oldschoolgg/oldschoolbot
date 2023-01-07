@@ -9,6 +9,7 @@ import { Emoji, Events, MIMIC_MONSTER_ID } from './constants';
 import { cluesRaresCL } from './data/CollectionsExport';
 import { defaultFarmingContract } from './minions/farming';
 import { FarmingContract } from './minions/farming/types';
+import { shadeChestOpenables } from './shadesKeys';
 import {
 	BagFullOfGemsTable,
 	BuildersSupplyCrateTable,
@@ -371,7 +372,8 @@ export const allOpenables: UnifiedOpenable[] = [
 		allItems: BagFullOfGemsTable.allItems
 	},
 	...clueOpenables,
-	...osjsOpenables
+	...osjsOpenables,
+	...shadeChestOpenables
 ];
 
 for (const openable of allOpenables) {

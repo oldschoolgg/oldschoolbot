@@ -1,5 +1,5 @@
+import { resolve } from 'node:path';
 import { Bank } from 'oldschooljs';
-import { resolve } from 'path';
 import Piscina from 'piscina';
 
 import { ItemBank } from '../types';
@@ -17,24 +17,25 @@ export interface KillWorkerArgs {
 	catacombs: boolean;
 }
 
-export interface KillWorkerReturn {
+export type KillWorkerReturn = Promise<{
 	bank?: Bank;
 	error?: string;
 	title?: string;
 	content?: string;
-}
+}>;
 
 export interface FinishWorkerArgs {
 	name: string;
 }
 
-export type FinishWorkerReturn =
+export type FinishWorkerReturn = Promise<
 	| {
 			loot: ItemBank;
 			kcBank: ItemBank;
 			kc: number;
 	  }
-	| string;
+	| string
+>;
 
 export const finishWorker = new Piscina({ filename: resolve(__dirname, 'finish.worker.js') });
 export const killWorker = new Piscina({ filename: resolve(__dirname, 'kill.worker.js') });
