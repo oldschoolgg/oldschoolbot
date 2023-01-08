@@ -1,5 +1,10 @@
+import { Bank } from 'oldschooljs';
+
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
+import { ManiacalMonkeyTable } from './../../lib/simulation/maniacalMonkey';
+
+const maniacalMonkeyID = 6803;
 
 export const maniacalMonkeyTask: MinionTask = {
 	type: 'ManiacalMonkey',
@@ -7,7 +12,13 @@ export const maniacalMonkeyTask: MinionTask = {
 		const { userID, channelID, quantity, method, duration } = data;
 		const user = await mUserFetch(userID);
 
-		const xpStr = await user.addXP({ skillName: SkillsEnum.Fishing, amount: fXPtoGive, duration });
+		const userBank = user.bank;
+
+		let loot = new Bank();
+
+		for (let i = 0; i < quantity; i++) {
+			loot.add(ManiacalMonkeyTable.roll());
+		}
 
 		const { previousCL, itemsAdded } = await transactItems({
 			userID: user.id,
@@ -15,17 +26,21 @@ export const maniacalMonkeyTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
+		let str = `${user}, ${
+			user.minionName
+		} finished killing ${quantity} Maniacal monkey. Your Maniacal monkey KC is now ${
+			user.getKC(maniacalMonkeyID) + quantity
+		}.`;
+
+		await user.incrementKC(maniacalMonkeyID, quantity);
+
 		const image = await makeBankImage({
 			bank: itemsAdded,
-			title: `${rewardTokens} reward pool rolls`,
+			title: `Loot From ${quantity}x Maniacal Monkey`,
 			user,
 			previousCL
 		});
 
-		let output = `${user}, ${
-			user.minionName
-		} finished fighting Tempoross ${quantity}x times. ${xpStr.toLocaleString()}`;
-
-		handleTripFinish(user, channelID, output, image.file.attachment, data, itemsAdded);
+		handleTripFinish(user, channelID, str, image.file.attachment, data, itemsAdded);
 	}
 };
