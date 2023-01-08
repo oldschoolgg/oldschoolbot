@@ -56,6 +56,8 @@ type ClientBankKey =
 	| 'gotr_loot'
 	| 'gf_cost'
 	| 'gf_loot'
+	| 'mm_cost'
+	| 'mm_loot'
 	| 'nex_cost'
 	| 'nex_loot';
 

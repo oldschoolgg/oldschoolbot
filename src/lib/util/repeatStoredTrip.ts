@@ -33,6 +33,7 @@ import {
 	HerbloreActivityTaskOptions,
 	HunterActivityTaskOptions,
 	KourendFavourActivityTaskOptions,
+	ManiacalMonkeyTaskOptions,
 	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
 	NexTaskOptions,
@@ -531,7 +532,17 @@ export const tripHandlers = {
 				start: { shade: data.shadeID, logs: itemNameFromID(data.logID) }
 			}
 		})
-	}
+	},
+	[activity_type_enum.ManiacalMonkey]: {
+		commandName: 'k',
+		args: (data: ManiacalMonkeyTaskOptions) => {
+			return {
+				name: 'maniacal monkey',
+				quantity: data.quantity,
+				method: data.method
+			};
+		}
+	},
 } as const;
 
 for (const type of Object.values(activity_type_enum)) {

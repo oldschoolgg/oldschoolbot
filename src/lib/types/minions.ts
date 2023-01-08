@@ -5,6 +5,7 @@ import type { MinigameName } from '../settings/minigames';
 import type { Peak } from '../tickers';
 import type { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
 import type { ItemBank } from '.';
+import { PvMMethod } from '../constants';
 
 export interface ActivityTaskOptions {
 	type: activity_type_enum;
@@ -351,6 +352,11 @@ export interface ShadesOfMortonOptions extends MinigameActivityTaskOptions {
 	logID: number;
 }
 
+export interface ManiacalMonkeyTaskOptions extends ActivityTaskOptions {
+	quantity: number;
+	method: PvMMethod;
+}
+
 export type ActivityTaskData =
 	| ActivityTaskOptions
 	| MonsterActivityTaskOptions
@@ -374,4 +380,5 @@ export type ActivityTaskData =
 	| TemporossActivityTaskOptions
 	| PuroPuroActivityTaskOptions
 	| KourendFavourActivityTaskOptions
-	| AgilityActivityTaskOptions;
+	| AgilityActivityTaskOptions
+	| ManiacalMonkeyTaskOptions;

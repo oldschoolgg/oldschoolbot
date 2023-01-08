@@ -67,6 +67,7 @@ import findMonster from '../../../lib/util/findMonster';
 import getOSItem from '../../../lib/util/getOSItem';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { hasMonsterRequirements, resolveAvailableItemBoosts } from '../../mahojiSettings';
+import { maniacalMonkeyCommand } from './maniacalMonkeyCommand';
 import { nexCommand } from './nexCommand';
 import { nightmareCommand } from './nightmareCommand';
 import { getPOH } from './pohCommand';
@@ -141,6 +142,7 @@ export async function minionKillCommand(
 	if (stringMatches(name, 'nex')) return nexCommand(interaction, user, channelID);
 	if (stringMatches(name, 'zalcano')) return zalcanoCommand(user, channelID);
 	if (stringMatches(name, 'tempoross')) return temporossCommand(user, channelID, quantity);
+	if (stringMatches(name, 'maniacal monkey')) return maniacalMonkeyCommand(user, channelID, quantity, method);
 	if (name.toLowerCase().includes('nightmare')) return nightmareCommand(user, channelID, name);
 	if (name.toLowerCase().includes('wintertodt')) return wintertodtCommand(user, channelID);
 

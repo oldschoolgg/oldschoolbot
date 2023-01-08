@@ -128,6 +128,8 @@ model ClientStorage {
   gotr_loot                    Json     @default("{}") @db.Json
   gf_cost                      Json     @default("{}") @db.Json
   gf_loot                      Json     @default("{}") @db.Json
+  mm_cost                      Json     @default("{}") @db.Json
+  mm_loot                      Json     @default("{}") @db.Json
 
   @@map("clientStorage")
 }
@@ -741,6 +743,7 @@ enum activity_type_enum {
   GuardiansOfTheRift
   HalloweenEvent
   ShadesOfMorton
+  ManiacalMonkey
 }
 
 enum xp_gains_skill_enum {

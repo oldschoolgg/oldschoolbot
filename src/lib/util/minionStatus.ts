@@ -1,3 +1,4 @@
+import { ManiacalMonkeyTaskOptions } from './../types/minions';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { Monsters } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
@@ -614,6 +615,10 @@ export function minionStatus(user: MUser) {
 			return `${name} is currently doing ${data.quantity} trips of Shades of Mort'ton, cremating ${
 				shade.shadeName
 			} remains with ${log.oiledLog.name}! The trip should take ${formatDuration(durationRemaining)}.`;
+		}
+		case 'ManiacalMonkey': {
+			const data = currentTask as ManiacalMonkeyTaskOptions;
+			return `${name} is currently killing ${data.quantity}x Maniacal Monkey . ${formattedDuration}`;
 		}
 		case 'HalloweenEvent':
 		case 'Easter':

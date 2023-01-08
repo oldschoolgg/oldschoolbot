@@ -1,3 +1,4 @@
+import { maniacalMonkeyTask } from './../tasks/minions/maniacalMonkeyActivity';
 import { Activity, activity_type_enum } from '@prisma/client';
 
 import { agilityTask } from '../tasks/minions/agilityActivity';
@@ -162,7 +163,8 @@ export const tasks: MinionTask[] = [
 	guardiansOfTheRiftTask,
 	butlerTask,
 	tiaraRunecraftTask,
-	shadesOfMortonTask
+	shadesOfMortonTask,
+	maniacalMonkeyTask
 ];
 
 export async function syncActivityCache() {
