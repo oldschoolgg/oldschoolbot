@@ -34,8 +34,6 @@ const BronzeChest = new LootTable({ limit: 99 })
 	.add('Clue scroll (easy)', 1, 2)
 	.add('Sapphire ring', 1, 2);
 
-// GLOBAL There is a 1/2 chance of getting a Flamtaer bag if players do not own one.
-
 const SplitBarkScrollsTable = new LootTable()
 	.add("Tree wizards' journal")
 	.add('Runescroll of swampbark')
