@@ -100,7 +100,7 @@ const degradeableItemsCanUse: {
 	}
 ];
 
-function applySkillBoost(user: MUser, duration: number, styles: AttackStyles[]): [number, string] {
+export function applySkillBoost(user: MUser, duration: number, styles: AttackStyles[]): [number, string] {
 	const skillTotal = addArrayOfNumbers(styles.map(s => user.skillLevel(s)));
 
 	let newDuration = duration;
