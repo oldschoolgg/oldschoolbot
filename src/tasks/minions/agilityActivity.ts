@@ -10,7 +10,16 @@ import { AgilityActivityTaskOptions } from '../../lib/types/minions';
 import { addItemToBank, skillingPetDropRate } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { updateGPTrackSetting } from '../../mahoji/mahojiSettings';
+import { updateGPTrackSetting, userStatsUpdate } from '../../mahoji/mahojiSettings';
+
+function chanceOfFailingAgilityPyramid(user: MUser) {
+	const lvl = user.skillLevel(SkillsEnum.Agility);
+	if (lvl < 40) return 95;
+	if (lvl < 50) return 30;
+	if (lvl < 60) return 20;
+	if (lvl < 75) return 5;
+	return 0;
+}
 
 export const agilityTask: MinionTask = {
 	type: 'Agility',
@@ -23,9 +32,17 @@ export const agilityTask: MinionTask = {
 
 		// Calculate failed laps
 		let lapsFailed = 0;
-		for (let t = 0; t < quantity; t++) {
-			if (randInt(1, 100) > (100 * user.skillLevel(SkillsEnum.Agility)) / (course.level + 5)) {
-				lapsFailed += 1;
+		if (course.name === 'Agility Pyramid') {
+			for (let t = 0; t < quantity; t++) {
+				if (randInt(1, 100) < chanceOfFailingAgilityPyramid(user)) {
+					lapsFailed += 1;
+				}
+			}
+		} else {
+			for (let t = 0; t < quantity; t++) {
+				if (randInt(1, 100) > (100 * user.skillLevel(SkillsEnum.Agility)) / (course.level + 5)) {
+					lapsFailed += 1;
+				}
 			}
 		}
 
@@ -50,7 +67,8 @@ export const agilityTask: MinionTask = {
 			totalMarks = Math.floor(increaseNumByPercent(totalMarks, 25));
 		}
 
-		const xpReceived = (quantity - lapsFailed / 2) * course.xp;
+		const xpReceived =
+			(quantity - lapsFailed / 2) * (typeof course.xp === 'number' ? course.xp : course.xp(currentLevel));
 
 		await user.update({
 			lapsScores: addItemToBank(user.user.lapsScores as ItemBank, course.id, quantity - lapsFailed)
@@ -69,6 +87,15 @@ export const agilityTask: MinionTask = {
 		if (course.name === 'Prifddinas Rooftop Course') {
 			// 15 Shards per hour
 			loot.add('Crystal shard', Math.floor((duration / Time.Hour) * 15));
+		}
+
+		if (course.name === 'Agility Pyramid') {
+			loot.add('Coins', 10_000 * (quantity - lapsFailed));
+			await userStatsUpdate(user.id, () => ({
+				gp_from_agil_pyramid: {
+					increment: loot.amount('Coins')
+				}
+			}));
 		}
 
 		if (alch) {
