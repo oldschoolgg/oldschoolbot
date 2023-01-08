@@ -14,7 +14,7 @@ export const maniacalMonkeyTask: MinionTask = {
 			collectionLog: true,
 			itemsToAdd: loot
 		});
-		
+
 		const image = await makeBankImage({
 			bank: itemsAdded,
 			title: `${rewardTokens} reward pool rolls`,

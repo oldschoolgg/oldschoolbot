@@ -542,7 +542,7 @@ export const tripHandlers = {
 				method: data.method
 			};
 		}
-	},
+	}
 } as const;
 
 for (const type of Object.values(activity_type_enum)) {

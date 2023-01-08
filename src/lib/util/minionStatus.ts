@@ -1,4 +1,3 @@
-import { ManiacalMonkeyTaskOptions } from './../types/minions';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { Monsters } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
@@ -74,6 +73,7 @@ import {
 	ZalcanoActivityTaskOptions
 } from '../types/minions';
 import { formatDuration, itemNameFromID, randomVariation } from '../util';
+import { ManiacalMonkeyTaskOptions } from './../types/minions';
 import { stringMatches } from './cleanString';
 import { toTitleCase } from './toTitleCase';
 

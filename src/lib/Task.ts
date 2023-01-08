@@ -1,4 +1,3 @@
-import { maniacalMonkeyTask } from './../tasks/minions/maniacalMonkeyActivity';
 import { Activity, activity_type_enum } from '@prisma/client';
 
 import { agilityTask } from '../tasks/minions/agilityActivity';
@@ -77,6 +76,7 @@ import { tokkulShopTask } from '../tasks/minions/tokkulShopActivity';
 import { vmTask } from '../tasks/minions/volcanicMineActivity';
 import { wealthChargeTask } from '../tasks/minions/wealthChargingActivity';
 import { woodcuttingTask } from '../tasks/minions/woodcuttingActivity';
+import { maniacalMonkeyTask } from './../tasks/minions/maniacalMonkeyActivity';
 import { giantsFoundryTask } from './../tasks/minions/minigames/giantsFoundryActivity';
 import { guardiansOfTheRiftTask } from './../tasks/minions/minigames/guardiansOfTheRiftActivity';
 import { modifyBusyCounter } from './busyCounterCache';

@@ -41,7 +41,7 @@ export const autocompleteMonsters = [
 		id: -1,
 		name: 'Maniacal monkey',
 		aliases: ['maniacal', 'mani monkey', 'maniacal monkey']
-	},
+	}
 ];
 
 async function fetchUsersRecentlyKilledMonsters(userID: string) {

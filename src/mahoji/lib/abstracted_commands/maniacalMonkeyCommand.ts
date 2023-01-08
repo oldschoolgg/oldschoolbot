@@ -1,22 +1,26 @@
-import { ManiacalMonkeyTaskOptions } from './../../../lib/types/minions';
+import { Time } from 'e';
 
-import { PvMMethod } from './../../../lib/constants';
+import { resolveAttackStyles } from '../../../lib/minions/functions';
 import { Skills } from '../../../lib/types';
 import { formatDuration, hasSkillReqs } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { resolveAttackStyles } from '../../../lib/minions/functions';
-import { Time } from 'e';
+import { PvMMethod } from './../../../lib/constants';
+import { ManiacalMonkeyTaskOptions } from './../../../lib/types/minions';
 
-
-export async function maniacalMonkeyCommand(user: MUser, channelID: string, quantity: number | undefined, method: PvMMethod | undefined) {
+export async function maniacalMonkeyCommand(
+	user: MUser,
+	channelID: string,
+	quantity: number | undefined,
+	method: PvMMethod | undefined
+) {
 	const { minionName } = user;
 
 	const skillReqs: Skills = {
 		hitpoints: 74,
 		prayer: 74
 	};
-	
+
 	const [hasReqs] = hasSkillReqs(user, skillReqs);
 	if (!hasReqs) {
 		return `You not meet skill requirements, you need ${Object.entries(skillReqs)
@@ -25,22 +29,21 @@ export async function maniacalMonkeyCommand(user: MUser, channelID: string, quan
 	}
 	const magicLevel = user.skillLevel('magic');
 	const rangedLevel = user.skillLevel('ranged');
-	if (method === "burst" || method === "barrage" && magicLevel < 62) {
+	if (method === 'burst' || (method === 'barrage' && magicLevel < 62)) {
 		return 'You need atleast 62 magic to train magic on Maniacal Monkeys.';
-	}
-	else if (method === 'chinning' || method === 'cannon' && rangedLevel < 60) {
+	} else if (method === 'chinning' || (method === 'cannon' && rangedLevel < 60)) {
 		return 'You need atleast 60 ranged to train ranged on Maniacal Monkeys.';
 	}
 
 	const myCBOpts = user.combatOptions;
-	
+
 	const [, , attackStyles] = resolveAttackStyles(user, {
 		monsterID: -1
 	});
 
 	let timeToFinish = Time.Minute;
 
-	const messages:string[] = [];
+	const messages: string[] = [];
 
 	const maxTripLength = calcMaxTripLength(user, 'ManiacalMonkey');
 	// If no quantity provided, set it to the max.

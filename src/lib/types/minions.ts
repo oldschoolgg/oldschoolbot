@@ -1,11 +1,11 @@
 import type { activity_type_enum, CropUpgradeType } from '@prisma/client';
 
+import { PvMMethod } from '../constants';
 import type { IPatchData } from '../minions/farming/types';
 import type { MinigameName } from '../settings/minigames';
 import type { Peak } from '../tickers';
 import type { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
 import type { ItemBank } from '.';
-import { PvMMethod } from '../constants';
 
 export interface ActivityTaskOptions {
 	type: activity_type_enum;
