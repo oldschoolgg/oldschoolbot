@@ -60,7 +60,7 @@ export const shadesOfMortonTask: MinionTask = {
 		xpStr += ', ';
 		xpStr += await user.addXP({ skillName: SkillsEnum.Prayer, amount: quantity * prayerXP, duration });
 
-		let str = `You received ${loot}. ${xpStr}.`;
+		let str = `${user}, You received ${loot}. ${xpStr}.`;
 
 		if (messages.length > 0) {
 			str += `\n**Messages:** ${messages.join(', ')}`;
