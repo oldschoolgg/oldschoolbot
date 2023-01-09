@@ -1,3 +1,4 @@
+import { zealOutfit } from '../../../lib/shadesKeys';
 import Prayer from '../../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { OfferingActivityTaskOptions } from '../../../lib/types/minions';
@@ -35,7 +36,14 @@ export const offeringTask: MinionTask = {
 		for (let i = 0; i < deathCounter; i++) {
 			bonesLost += rand(1, maxPK);
 		}
-		const bonesSaved = Math.floor(quantity * (rand(90, 110) / 100));
+		let bonesSaved = Math.floor(quantity * (rand(90, 110) / 100));
+		let zealOutfitAmount = 0;
+		for (const piece of zealOutfit) {
+			if (user.gear.skilling.hasEquipped([piece])) {
+				zealOutfitAmount++;
+			}
+		}
+		bonesSaved += Math.floor(zealOutfitAmount * 0.0125 * quantity);
 		const newQuantity = quantity - bonesLost + bonesSaved;
 
 		const xpReceived = newQuantity * bone.xp * XPMod;
@@ -46,7 +54,9 @@ export const offeringTask: MinionTask = {
 		let str = `${user}, ${user.minionName} finished offering ${newQuantity} ${
 			bone.name
 		}, you managed to offer ${bonesSaved} extra bones because of the effects the Chaos altar and you lost ${bonesLost} to pkers, you also received ${xpReceived.toLocaleString()} XP.`;
-
+		if (zealOutfitAmount > 0) {
+			str += `\nYour ${zealOutfitAmount} pieces of zealot's robes are helping you save bones.`;
+		}
 		if (newLevel > currentLevel) {
 			str += `\n\n${user.minionName}'s Prayer level is now ${newLevel}!`;
 		}
