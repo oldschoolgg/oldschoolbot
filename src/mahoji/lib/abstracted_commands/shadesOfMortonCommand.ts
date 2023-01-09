@@ -102,7 +102,7 @@ export const shades: Shade[] = [
 		shadeName: 'Urium',
 		gpRange: [2000, 7000],
 		lowMetalKeys: {
-			fraction: 0.6379,
+			fraction: 0.79,
 			items: resolveItems([
 				'Gold key red',
 				'Gold key brown',
@@ -245,7 +245,7 @@ export const shadesLogs: ShadesLog[] = [
 			Loar: 35.5,
 			Phrin: 48,
 			Riyl: 63,
-			Asyn: 8.5,
+			Asyn: 80.5,
 			Fiyr: 100.5,
 			Urium: 120.5
 		}
