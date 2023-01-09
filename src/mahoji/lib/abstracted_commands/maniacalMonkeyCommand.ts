@@ -1,4 +1,4 @@
-import { deepClone, reduceNumByPercent, Time } from 'e';
+import { reduceNumByPercent, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { getSimilarItems } from '../../../lib/data/similarItems';
@@ -13,11 +13,7 @@ import resolveItems from '../../../lib/util/resolveItems';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { maniacalMonkeyID } from '../../../tasks/minions/maniacalMonkeyActivity';
 import { PvMMethod } from './../../../lib/constants';
-import {
-	chinningConsumables,
-	iceBarrageConsumables,
-	iceBurstConsumables
-} from './../../../lib/minions/data/combatConstants';
+import { iceBarrageConsumables, iceBurstConsumables } from './../../../lib/minions/data/combatConstants';
 import { Consumable } from './../../../lib/minions/types';
 import { ManiacalMonkeyTaskOptions } from './../../../lib/types/minions';
 import { applySkillBoost } from './minionKill';
@@ -173,19 +169,18 @@ export async function maniacalMonkeyCommand(
 		}
 		const chinBoostRapid = chinchompa === 'Chinchompa' ? 82 : chinchompa === 'Red chinchompa' ? 87 : 90;
 		const chinBoostLongRanged = chinchompa === 'Chinchompa' ? 77 : chinchompa === 'Red chinchompa' ? 83 : 87;
-		let chinConsumables = deepClone(chinningConsumables);
-		// circular bad logic
-		chinConsumables.itemCost.add(chinchompa, 1);
+		const chinningConsumables: Consumable = {
+			itemCost: new Bank().add(chinchompa, 1),
+			qtyPerMinute: attackStyles.includes(SkillsEnum.Defence) ? 24 : 33
+		};
 		if (attackStyles.includes(SkillsEnum.Defence)) {
-			// Also bad circular logic
-			chinConsumables.qtyPerMinute = 24;
 			timeToFinish = reduceNumByPercent(timeToFinish, chinBoostLongRanged);
 			boosts.push(`${chinBoostLongRanged}% for ${chinchompa}`);
 		} else {
 			timeToFinish = reduceNumByPercent(timeToFinish, chinBoostRapid);
 			boosts.push(`${chinBoostRapid}% for ${chinchompa}`);
 		}
-		consumableCosts.push(chinConsumables);
+		consumableCosts.push(chinningConsumables);
 	}
 
 	// If no quantity provided, set it to the max.
