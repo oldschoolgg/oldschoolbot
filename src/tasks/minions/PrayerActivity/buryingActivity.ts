@@ -1,5 +1,6 @@
 import { Bank } from 'oldschooljs';
 
+import { zealOutfit } from '../../../lib/shadesKeys';
 import Prayer from '../../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { BuryingActivityTaskOptions } from '../../../lib/types/minions';
@@ -17,15 +18,31 @@ export const buryingTask: MinionTask = {
 
 		if (!bone) return;
 
+		let zealOutfitAmount = 0;
+		for (const piece of zealOutfit) {
+			if (user.gear.skilling.hasEquipped([piece])) {
+				zealOutfitAmount++;
+			}
+		}
+
+		let bonesSaved = Math.floor(zealOutfitAmount * 0.0125 * quantity);
+
+		const saved = new Bank({ [bone.inputId]: bonesSaved });
+
 		const XPMod = 1;
 		const xpReceived = quantity * bone.xp * XPMod;
 
 		await user.addXP({ skillName: SkillsEnum.Prayer, amount: xpReceived });
+		await transactItems({ userID: user.id, itemsToAdd: saved });
 		const newLevel = user.skillLevel(SkillsEnum.Prayer);
 
 		let str = `${user}, ${user.minionName} finished burying ${quantity} ${
 			bone.name
 		}, you also received ${xpReceived.toLocaleString()} XP.`;
+
+		if (bonesSaved > 0) {
+			str += `\nYour ${zealOutfitAmount} pieces of Zealot's robes helped you save ${bonesSaved} ${bone.name}.`;
+		}
 
 		if (newLevel > currentLevel) {
 			str += `\n\n${user.minionName}'s Prayer level is now ${newLevel}!`;

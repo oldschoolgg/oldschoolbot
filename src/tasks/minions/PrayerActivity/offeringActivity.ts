@@ -55,7 +55,7 @@ export const offeringTask: MinionTask = {
 			bone.name
 		}, you managed to offer ${bonesSaved} extra bones because of the effects the Chaos altar and you lost ${bonesLost} to pkers, you also received ${xpReceived.toLocaleString()} XP.`;
 		if (zealOutfitAmount > 0) {
-			str += `\nYour ${zealOutfitAmount} pieces of zealot's robes are helping you save bones.`;
+			str += `\nYour ${zealOutfitAmount} pieces of Zealot's robes are helping you save bones.`;
 		}
 		if (newLevel > currentLevel) {
 			str += `\n\n${user.minionName}'s Prayer level is now ${newLevel}!`;
