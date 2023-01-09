@@ -313,7 +313,7 @@ export async function shadesOfMortonStartCommand(user: MUser, channelID: string,
 		user.minionName
 	} is now off to do Shades of Mort'ton using ${cost} - the total trip will take ${formatDuration(duration)}.`;
 	if (messages.length > 0) {
-		str += `\n**Messages:** ${messages.join(', ')}}`;
+		str += `\n**Messages:** ${messages.join(', ')}`;
 	}
 	return str;
 }
