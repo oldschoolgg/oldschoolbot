@@ -1,16 +1,18 @@
+import { percentChance } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { zealOutfit } from '../../../lib/shadesKeys';
 import Prayer from '../../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { BuryingActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { zealOutfitBoost } from './offeringActivity';
 
 export const buryingTask: MinionTask = {
 	type: 'Burying',
 	async run(data: BuryingActivityTaskOptions) {
 		const { boneID, quantity, userID, channelID } = data;
 		const user = await mUserFetch(userID);
+		const { zealOutfitAmount, zealOutfitChance } = zealOutfitBoost(user);
 
 		const currentLevel = user.skillLevel(SkillsEnum.Prayer);
 
@@ -18,30 +20,29 @@ export const buryingTask: MinionTask = {
 
 		if (!bone) return;
 
-		let zealOutfitAmount = 0;
-		for (const piece of zealOutfit) {
-			if (user.gear.skilling.hasEquipped([piece])) {
-				zealOutfitAmount++;
+		let zealBonesSaved = 0;
+
+		if (zealOutfitAmount > 0) {
+			for (let i = 0; i < quantity; i++) {
+				if (percentChance(zealOutfitChance)) {
+					zealBonesSaved++;
+				}
 			}
 		}
 
-		let bonesSaved = Math.floor(zealOutfitAmount * 0.0125 * quantity);
-
-		const saved = new Bank({ [bone.inputId]: bonesSaved });
-
+		const newQuantity = quantity + zealBonesSaved;
 		const XPMod = 1;
-		const xpReceived = quantity * bone.xp * XPMod;
+		const xpReceived = newQuantity * bone.xp * XPMod;
 
 		await user.addXP({ skillName: SkillsEnum.Prayer, amount: xpReceived });
-		await transactItems({ userID: user.id, itemsToAdd: saved });
 		const newLevel = user.skillLevel(SkillsEnum.Prayer);
 
 		let str = `${user}, ${user.minionName} finished burying ${quantity} ${
 			bone.name
 		}, you also received ${xpReceived.toLocaleString()} XP.`;
 
-		if (bonesSaved > 0) {
-			str += `\nYour ${zealOutfitAmount} pieces of Zealot's robes helped you save ${bonesSaved} ${bone.name}.`;
+		if (zealOutfitAmount > 0) {
+			str += `\nYour ${zealOutfitAmount} pieces of Zealot's robes helped you bury an extra ${zealBonesSaved} ${bone.name}.`;
 		}
 
 		if (newLevel > currentLevel) {
