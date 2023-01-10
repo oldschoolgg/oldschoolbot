@@ -52,7 +52,7 @@ export const offeringTask: MinionTask = {
 		for (let i = 0; i < deathCounter; i++) {
 			bonesLost += rand(1, maxPK);
 		}
-		let bonesSaved = Math.floor(quantity * (rand(90, 110) / 100));
+		const bonesSaved = Math.floor(quantity * (rand(90, 110) / 100));
 		let zealBonesSaved = 0;
 
 		if (zealOutfitAmount > 0) {
