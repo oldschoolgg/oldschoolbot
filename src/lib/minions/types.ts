@@ -87,6 +87,7 @@ export interface KillableMonster {
 	itemCost?: Consumable;
 	superior?: SimpleMonster;
 	slayerOnly?: boolean;
+	canChinning?: boolean;
 	canBarrage?: boolean;
 	canCannon?: boolean;
 	cannonMulti?: boolean;

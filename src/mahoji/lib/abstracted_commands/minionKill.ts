@@ -314,6 +314,9 @@ export async function minionKillCommand(
 	if (boostChoice === 'burst' && user.skillLevel(SkillsEnum.Magic) < 70) {
 		return `You need 70 Magic to use Ice Burst. You have ${user.skillLevel(SkillsEnum.Magic)}`;
 	}
+	if (boostChoice === 'chinning' && user.skillLevel(SkillsEnum.Ranged) < 65) {
+		return `You need 65 Ranged to use Chinning method. You have ${user.skillLevel(SkillsEnum.Ranged)}`;
+	}
 
 	if (boostChoice === 'barrage' && attackStyles.includes(SkillsEnum.Magic) && monster!.canBarrage) {
 		consumableCosts.push(iceBarrageConsumables);
@@ -336,6 +339,30 @@ export async function minionKillCommand(
 		consumableCosts.push(cannonSingleConsumables);
 		timeToFinish = reduceNumByPercent(timeToFinish, boostCannon);
 		boosts.push(`${boostCannon}% for Cannon in singles`);
+	} else if (method === 'chinning' && attackStyles.includes(SkillsEnum.Ranged) && monster!.canChinning) {
+		// Check what Chinchompa to use
+		const chinchompas = ['Black chinchompa', 'Red chinchompa', 'Chinchompa'];
+		let chinchompa = 'Black chinchompa';
+		for (let chin of chinchompas) {
+			if (user.owns(chin) && user.bank.amount(chin) > 5000) {
+				chinchompa = chin;
+				break;
+			}
+		}
+		const chinBoostRapid = chinchompa === 'Chinchompa' ? 82 : chinchompa === 'Red chinchompa' ? 87 : 90;
+		const chinBoostLongRanged = chinchompa === 'Chinchompa' ? 77 : chinchompa === 'Red chinchompa' ? 83 : 87;
+		const chinningConsumables: Consumable = {
+			itemCost: new Bank().add(chinchompa, 1),
+			qtyPerMinute: attackStyles.includes(SkillsEnum.Defence) ? 24 : 33
+		};
+		if (attackStyles.includes(SkillsEnum.Defence)) {
+			timeToFinish = reduceNumByPercent(timeToFinish, chinBoostLongRanged);
+			boosts.push(`${chinBoostLongRanged}% for ${chinchompa}`);
+		} else {
+			timeToFinish = reduceNumByPercent(timeToFinish, chinBoostRapid);
+			boosts.push(`${chinBoostRapid}% for ${chinchompa}`);
+		}
+		consumableCosts.push(chinningConsumables);
 	}
 
 	const maxTripLength = calcMaxTripLength(user, 'MonsterKilling');

@@ -395,7 +395,7 @@ export function shouldTrackCommand(command: AbstractCommand, args: CommandOption
 }
 
 export const DISABLED_COMMANDS = new Set<string>();
-export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'none'] as const;
+export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'chinning', 'none'] as const;
 export type PvMMethod = typeof PVM_METHODS[number];
 export const usernameCache = new Map<string, string>();
 export const badgesCache = new Map<string, string>();
