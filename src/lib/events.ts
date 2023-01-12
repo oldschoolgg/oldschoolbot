@@ -191,17 +191,6 @@ const mentionCommands: MentionCommand[] = [
 		}
 	},
 	{
-		name: 's',
-		aliases: ['s', 'stats'],
-		description: 'Shows your stats.',
-		run: async ({ msg, user, components }: MentionCommandOptions) => {
-			msg.reply({
-				embeds: [await minionStatsEmbed(user)],
-				components
-			});
-		}
-	},
-	{
 		name: 'sync',
 		aliases: ['sync'],
 		description: 'Sync.',
@@ -235,6 +224,17 @@ const mentionCommands: MentionCommand[] = [
 ${totalCommands.length} Total commands
 ${globalCommands.length} Global commands
 ${guildCommands.length} Guild commands`);
+		}
+	},
+	{
+		name: 's',
+		aliases: ['s', 'stats'],
+		description: 'Shows your stats.',
+		run: async ({ msg, user, components }: MentionCommandOptions) => {
+			msg.reply({
+				embeds: [await minionStatsEmbed(user)],
+				components
+			});
 		}
 	}
 ];
