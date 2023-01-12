@@ -43,7 +43,6 @@ const SplitBarkScrollsTable = new LootTable()
 const SteelChest = new LootTable({ limit: 134 })
 	.tertiary(597, SplitBarkScrollsTable)
 	.tertiary(62, 'Fine cloth')
-	.every('Swamp paste', [15, 30])
 	.tertiary(63, 'Steel locks')
 	.every('Swamp paste', [15, 30])
 	.add('Coins', [1, 700])
@@ -78,6 +77,7 @@ const SteelChest = new LootTable({ limit: 134 })
 const BlackChest = new LootTable({ limit: 140 })
 	.tertiary(61, 'Black locks')
 	.tertiary(61, SplitBarkScrollsTable)
+	.every('Swamp paste', [25, 40])
 	.add('Coins', [1, 1000])
 	.add('Staff of air', 1, 1)
 	.add('Staff of water', 1, 1)
@@ -249,7 +249,12 @@ const chests = [
 	}
 ] as const;
 
-const zealOutfit = resolveItems(["Zealot's boots", "Zealot's helm", "Zealot's robe bottom", "Zealot's robe top"]);
+export const zealOutfit = resolveItems([
+	"Zealot's boots",
+	"Zealot's helm",
+	"Zealot's robe bottom",
+	"Zealot's robe top"
+]);
 
 export function openShadeChest({ item, qty, allItemsOwned }: { allItemsOwned: Bank; item: Item; qty: number }) {
 	const chest = chests.find(i => i.items.includes(item.id));
