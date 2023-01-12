@@ -1,5 +1,3 @@
-import { Monsters } from 'oldschooljs';
-
 import { resolveAttackStyles } from '../../../lib/minions/functions';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -12,7 +10,8 @@ export const nightmareZoneTask: MinionTask = {
 		const { quantity, userID, channelID, duration, strategy } = data;
 		const user = await mUserFetch(userID);
 
-		const [, , attackStyles] = resolveAttackStyles(user, { monsterID: Monsters.Cow.id });
+		// No monster ID so use -1 as placeholder
+		const [, , attackStyles] = resolveAttackStyles(user, { monsterID: -1 });
 
 		const monsterHP = 227;
 		const monsterPoints = 3500;
@@ -40,10 +39,10 @@ export const nightmareZoneTask: MinionTask = {
 			})
 		);
 
-		const currentUserPoints = user.user.nmz_points;
-
 		await user.update({
-			nmz_points: currentUserPoints + pointsReceived
+			nmz_points: {
+				increment: pointsReceived
+			}
 		});
 
 		const score = await incrementMinigameScore(userID, 'nmz', quantity);

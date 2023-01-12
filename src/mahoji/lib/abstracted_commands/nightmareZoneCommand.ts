@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction } from 'discord.js';
 import { calcWhatPercent, reduceNumByPercent, round, sumArr, Time } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
 
 import { MAX_QP } from '../../../lib/constants';
 import { trackLoot } from '../../../lib/lootTrack';
@@ -318,7 +318,8 @@ export async function nightmareZoneStartCommand(user: MUser, strategy: NMZStrate
 	let timePerMonster = Time.Minute * 2;
 
 	// combat stat boosts
-	const [, , attackStyles] = resolveAttackStyles(user, { monsterID: Monsters.Cow.id });
+	// No monster ID so use -1 as placeholder
+	const [, , attackStyles] = resolveAttackStyles(user, { monsterID: -1 });
 	const skillTotal = sumArr(attackStyles.map(s => user.skillLevel(s))) + user.skillLevel(SkillsEnum.Hitpoints);
 	if (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic)) {
 		return 'The Nightmare Zone minigame requires melee combat for efficiency, swap training style using `/minion train style:`';
@@ -424,17 +425,16 @@ export async function nightmareZoneShopCommand(
 		}`;
 	}
 
+	const loot = new Bank(shopItem.output).multiply(quantity);
 	await handleMahojiConfirmation(
 		interaction,
-		`Are you sure you want to spend **${cost.toLocaleString()}** Nightmare Zone points to buy **${quantity.toLocaleString()}x ${
-			shopItem.name
-		}**?`
+		`Are you sure you want to spend **${cost.toLocaleString()}** Nightmare Zone points to buy **${loot}**?`
 	);
 
 	await transactItems({
 		userID: user.id,
 		collectionLog: true,
-		itemsToAdd: new Bank(shopItem.output).multiply(quantity)
+		itemsToAdd: loot
 	});
 
 	await user.update({

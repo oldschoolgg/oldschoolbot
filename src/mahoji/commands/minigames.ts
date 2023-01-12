@@ -45,7 +45,8 @@ import {
 import {
 	nightmareZoneShopCommand,
 	nightmareZoneStartCommand,
-	nightmareZoneStatsCommand
+	nightmareZoneStatsCommand,
+	NMZStrategy
 } from '../lib/abstracted_commands/nightmareZoneCommand';
 import {
 	pestControlBuyables,
@@ -1078,7 +1079,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 			start?: { combination_runes?: boolean };
 		};
 		nmz?: {
-			start?: { strategy: string };
+			start?: { strategy: NMZStrategy };
 			buy?: { item: string; quantity?: number };
 			stats?: {};
 			imbue?: { name: string };
