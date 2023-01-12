@@ -191,7 +191,8 @@ export async function barbAssaultGambleCommand(
 				  }
 				: undefined
 	});
-	const loot = new Bank().add(table.roll(quantity));
+	let loot = new Bank().add(table.roll(quantity));
+	loot = randomizeBank(user.id, loot);
 	if (loot.has('Pet penance queen')) {
 		const amount = await countUsersWithItemInCl(itemID('Pet penance queen'), false);
 
