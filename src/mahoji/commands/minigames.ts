@@ -272,7 +272,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 							name: 'skill',
 							required: true,
 							description: 'The skill to put XP in.',
-							choices: ['attack', 'strength ', 'defence', 'hitpoints', 'ranged', 'magic', 'prayer'].map(
+							choices: ['attack', 'strength', 'defence', 'hitpoints', 'ranged', 'magic', 'prayer'].map(
 								i => ({ name: i, value: i })
 							)
 						},
