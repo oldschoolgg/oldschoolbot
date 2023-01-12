@@ -56,8 +56,8 @@ const bowfaCorruptSimilar = resolveItems([
 ]);
 
 const source: [string, (string | number)[]][] = [
-	['Rune Axe', ['Gilded Axe']],
-	['Rune Pickaxe', ['Gilded Pickaxe']],
+	['Rune axe', ['Gilded axe']],
+	['Rune pickaxe', ['Gilded pickaxe']],
 	['Dragon full helm', ['Dragon full helm (g)']],
 	['Dragon chainbody', ['Dragon chainbody (g)']],
 	['Dragon platebody', ['Dragon platebody (g)']],
