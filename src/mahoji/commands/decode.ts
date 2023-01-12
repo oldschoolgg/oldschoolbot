@@ -20,7 +20,7 @@ export const decodeCommand: OSBMahojiCommand = {
 	run: async ({ options, userID }: CommandRunOptions<{ item: string }>) => {
 		const user = await mUserFetch(userID.toString());
 		const currentDate = Date.now();
-		const lastVoteDate = Number(user.user.lastDailyTimestamp);
+		const lastVoteDate = Number(user.user.last_decode_date);
 		const difference = currentDate - lastVoteDate;
 
 		let cd = Time.Day;
