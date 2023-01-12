@@ -2113,6 +2113,48 @@ const Createables: Createable[] = [
 		}),
 		outputItems: new Bank().add('Celestial signet')
 	},
+	{
+		name: "Xeric's talisman",
+		inputItems: new Bank({
+			"Xeric's talisman (inert)": 1,
+			'Lizardman fang': 1000
+		}),
+		outputItems: new Bank({
+			"Xeric's talisman": 1
+		})
+	},
+	{
+		name: 'Master scroll book',
+		inputItems: new Bank({
+			'Master scroll book (empty)': 1,
+			'Nardah teleport': 1,
+			'Digsite teleport': 1,
+			'Feldip hills teleport': 1,
+			'Lunar isle teleport': 1,
+			"Mort'ton teleport": 1,
+			'Pest control teleport': 1,
+			'Piscatoris teleport': 1,
+			'Tai bwo wannai teleport': 1,
+			'Iorwerth camp teleport': 1,
+			"Mos le'harmless teleport": 1,
+			'Lumberyard teleport': 1
+		}),
+		outputItems: new Bank({
+			'Master scroll book': 1
+		})
+	},
+	{
+		name: 'Eternal teleport crystal',
+		inputItems: new Bank({
+			'Enhanced crystal teleport seed': 1,
+			'Crystal shard': 100
+		}),
+		outputItems: new Bank({
+			'Eternal teleport crystal': 1
+		}),
+		requiredSkills: { smithing: 80, crafting: 80 },
+		QPRequired: 150
+	},
 	...Reverteables,
 	...crystalTools,
 	...ornamentKits,
