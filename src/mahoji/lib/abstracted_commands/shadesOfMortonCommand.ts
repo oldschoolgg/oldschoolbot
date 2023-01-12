@@ -264,6 +264,7 @@ export async function shadesOfMortonStartCommand(user: MUser, channelID: string,
 	for (const coffin of coffins.reverse()) {
 		if (user.hasEquipped(coffin)) {
 			let bonusTime = coffins.indexOf(coffin) * Time.Minute;
+			totalTime += bonusTime;
 			messages.push(`${formatDuration(bonusTime)} bonus max trip length for ${itemNameFromID(coffin)}`);
 			break;
 		}
