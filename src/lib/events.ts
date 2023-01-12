@@ -7,7 +7,7 @@ import { CLIENT_ID } from '../config';
 import { PATRON_DOUBLE_LOOT_COOLDOWN } from '../mahoji/commands/tools';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
 import { Cooldowns } from '../mahoji/lib/Cooldowns';
-import { Emoji } from './constants';
+import { Emoji, secretItems } from './constants';
 import { customItems } from './customItems/util';
 import { giveBoxResetTime, itemContractResetTime, spawnLampResetTime } from './MUser';
 import { prisma } from './settings/prisma';
@@ -104,8 +104,10 @@ const mentionCommands: MentionCommand[] = [
 		aliases: ['is'],
 		description: 'Searches for items.',
 		run: async ({ msg, components, user, content }: MentionCommandOptions) => {
-			const items = Items.filter(i =>
-				[i.id.toString(), i.name.toLowerCase()].includes(content.toLowerCase())
+			const items = Items.filter(
+				i =>
+					[i.id.toString(), i.name.toLowerCase()].includes(content.toLowerCase()) &&
+					!secretItems.includes(i.id)
 			).array();
 			if (items.length === 0) return msg.reply('No results for that item.');
 

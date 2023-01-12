@@ -13,8 +13,7 @@ import { CommandOptions } from 'mahoji/dist/lib/types';
 import { convertLVLtoXP } from 'oldschooljs/dist/util/util';
 
 import { DISCORD_SETTINGS, production } from '../config';
-import { AbstractCommand, CommandArgs } from '../mahoji/lib/inhibitors';
-import { allChristmasItems } from './christmasEvent';
+import type { AbstractCommand } from '../mahoji/lib/inhibitors';
 import { SkillsEnum } from './skilling/types';
 import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
@@ -399,39 +398,6 @@ export const MIN_LENGTH_FOR_PET = Time.Minute * 5;
 export const HESPORI_ID = 8583;
 export const NEX_ID = 11_278;
 
-export const skillEmoji = {
-	runecraft: '<:runecraft:630911040435257364>',
-	firemaking: '<:firemaking:630911040175210518>',
-	thieving: '<:thieving:630910829352452123>',
-	mining: '<:mining:630911040128811010>',
-	ranged: '<:ranged:630911040258834473>',
-	construction: '<:construction:630911040493715476>',
-	smithing: '<:smithing:630911040452034590>',
-	herblore: '<:herblore:630911040535658496>',
-	attack: '<:attack:630911039969427467>',
-	strength: '<:strength:630911040481263617>',
-	defence: '<:defence:630911040393052180>',
-	fishing: '<:fishing:630911040091193356>',
-	hitpoints: '<:hitpoints:630911040460292108>',
-	total: '<:xp:630911040510623745>',
-	overall: '<:xp:630911040510623745>',
-	magic: '<:magic:630911040334331917>',
-	crafting: '<:crafting:630911040460161047>',
-	agility: '<:agility:630911040355565568>',
-	fletching: '<:fletching:630911040544309258>',
-	cooking: '<:cooking:630911040426868756>',
-	farming: '<:farming:630911040355565599>',
-	slayer: '<:slayer:630911040560824330>',
-	prayer: '<:prayer:630911040426868746>',
-	woodcutting: '<:woodcutting:630911040099450892>',
-	hunter: '<:hunter:630911040166559784>',
-	cml: '<:CrystalMathLabs:364657225249062912>',
-	clock: '<:ehpclock:352323705210142721>',
-	combat: '<:combat:802136963956080650>',
-	dungeoneering: '<:dungeoneering:828683755198873623>',
-	invention: '<:Invention:936219232146980874>'
-};
-
 export const LEVEL_99_XP = convertLVLtoXP(99);
 export const LEVEL_120_XP = convertLVLtoXP(120);
 export const MAX_LEVEL = 120;
@@ -531,7 +497,7 @@ export const projectiles: Record<ProjectileType, number[]> = {
 export const PHOSANI_NIGHTMARE_ID = 9416;
 
 export const COMMANDS_TO_NOT_TRACK = [['minion', ['k', 'kill', 'clue', 'info']]];
-export function shouldTrackCommand(command: AbstractCommand, args: CommandArgs) {
+export function shouldTrackCommand(command: AbstractCommand, args: CommandOptions) {
 	if (!Array.isArray(args)) return true;
 	for (const [name, subs] of COMMANDS_TO_NOT_TRACK) {
 		if (command.name === name && typeof args[0] === 'string' && subs.includes(args[0])) {
@@ -541,7 +507,7 @@ export function shouldTrackCommand(command: AbstractCommand, args: CommandArgs) 
 	return true;
 }
 
-function compressMahojiArgs(options: CommandArgs) {
+function compressMahojiArgs(options: CommandOptions) {
 	let newOptions: Record<string, string | number | boolean | null | undefined> = {};
 	for (const [key, val] of Object.entries(options) as [
 		keyof CommandOptions,
@@ -574,7 +540,7 @@ function compressMahojiArgs(options: CommandArgs) {
 
 export function getCommandArgs(
 	commandName: string,
-	args: CommandArgs
+	args: CommandOptions
 ): Prisma.InputJsonObject | Prisma.InputJsonArray | undefined {
 	if (Array.isArray(args) && args.length === 0) return undefined;
 	if (!Array.isArray(args) && Object.keys(args).length === 0) return undefined;
@@ -617,5 +583,5 @@ export const chompyHats = [
 	[getOSItem('Chompy bird hat (expert dragon archer)'), 4000]
 ] as const;
 
-export const secretItems = [...allChristmasItems];
+export const secretItems: number[] = [];
 export const gitHash = execSync('git rev-parse HEAD').toString().trim();

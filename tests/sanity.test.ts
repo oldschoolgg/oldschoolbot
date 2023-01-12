@@ -256,4 +256,13 @@ describe('Sanity', () => {
 			assert(!allMbTables.includes(item.id), `${item.name} shouldnt drop from boxes`);
 		}
 	});
+	test("klik/divine shouldn't be openable", () => {
+		for (const openable of allOpenables) {
+			for (const name of ['Klik', 'Divine spirit shield']) {
+				if (openable.name === name || openable.id === itemID(name) || openable.openedItem.id === itemID(name)) {
+					throw new Error(`${name} shouldnt be openable`);
+				}
+			}
+		}
+	});
 });

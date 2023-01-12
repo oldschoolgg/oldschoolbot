@@ -4,7 +4,7 @@ import { ClientStorage } from '@prisma/client';
 import { Stopwatch } from '@sapphire/stopwatch';
 import { Duration } from '@sapphire/time-utilities';
 import { isThenable } from '@sentry/utils';
-import { escapeCodeBlock } from 'discord.js';
+import { escapeCodeBlock, InteractionReplyOptions } from 'discord.js';
 import { notEmpty, randArrItem, sleep, Time, uniqueArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
@@ -19,6 +19,7 @@ import { badges, BadgesEnum, BitField, BitFieldData, Channel, DISABLED_COMMANDS 
 import { addToDoubleLootTimer } from '../../lib/doubleLoot';
 import { GearSetup } from '../../lib/gear';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
+import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { countUsersWithItemInCl, prisma } from '../../lib/settings/prisma';
 import { cancelTask, minionActivityCacheDelete } from '../../lib/settings/settings';
 import { Gear } from '../../lib/structures/Gear';
@@ -43,7 +44,6 @@ import { syncCustomPrices } from '../lib/events';
 import { itemOption } from '../lib/mahojiCommandOptions';
 import { allAbstractCommands, OSBMahojiCommand } from '../lib/util';
 import { handleMahojiConfirmation, mahojiUsersSettingsFetch } from '../mahojiSettings';
-import { mahojiUserSettingsUpdate } from '../settingsUpdate';
 import { getUserInfo } from './minion';
 
 export const gifs = [
@@ -131,7 +131,7 @@ async function evalCommand(userID: string, code: string): CommandResponse {
 
 const viewableThings: {
 	name: string;
-	run: (clientSettings: ClientStorage) => Promise<Bank>;
+	run: (clientSettings: ClientStorage) => Promise<Bank | InteractionReplyOptions>;
 }[] = [
 	{
 		name: 'ToB Cost',
@@ -911,8 +911,10 @@ ${guildCommands.length} Guild commands`;
 			const thing = viewableThings.find(i => i.name === options.view?.thing);
 			if (!thing) return 'Invalid';
 			const clientSettings = await mahojiClientSettingsFetch();
+			const res = await thing.run(clientSettings);
+			if (!(res instanceof Bank)) return res;
 			const image = await makeBankImage({
-				bank: await thing.run(clientSettings),
+				bank: res,
 				title: thing.name,
 				flags: { sort: thing.name === 'All Equipped Items' ? 'name' : (undefined as any) }
 			});

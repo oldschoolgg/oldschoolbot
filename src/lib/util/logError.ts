@@ -1,6 +1,18 @@
 import { Interaction } from 'discord.js';
 import { convertAPIOptionsToCommandOptions } from 'mahoji/dist/lib/util';
 
+import { production } from '../../config';
+
+export function assert(condition: boolean, desc?: string, context?: Record<string, string>) {
+	if (!condition) {
+		if (production) {
+			logError(new Error(desc ?? 'Failed assertion'), context);
+		} else {
+			throw new Error(desc ?? 'Failed assertion');
+		}
+	}
+}
+
 export function logError(err: Error | unknown, context?: Record<string, string>, extra?: Record<string, string>) {
 	console.error(context, err, extra);
 }

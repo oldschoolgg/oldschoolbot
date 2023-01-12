@@ -497,13 +497,15 @@ export async function baxtorianBathhousesActivity(data: BathhouseTaskOptions) {
 	let uniqSpecies = uniqueArr(speciesServed);
 	updateBankSetting('bb_loot', loot);
 
+	const str = gotPurple ? `${Emoji.Purple} ||${loot}||` : loot.toString();
+
 	handleTripFinish(
 		user,
 		channelID,
 		`${userMention(userID)}, ${user.minionName} finished running ${quantity}x ${tier.name} baths for ${
 			uniqSpecies.length
 		} species (${uniqSpecies.map(i => i.name).join(', ')}) at the Baxtorian Bathhouses.
-${gotPurple ? `${Emoji.Purple} ` : ''}**Tips received:** ${loot}.${
+**Tips received:** ${str}.${
 			gaveExtraTips
 				? `\nYou got extra tips from ${gaveExtraTips.name} for using their preferred water mixture.`
 				: ''

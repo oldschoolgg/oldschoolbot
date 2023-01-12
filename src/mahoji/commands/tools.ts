@@ -12,14 +12,7 @@ import { ToBUniqueTable } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood'
 
 import { OWNER_IDS, production } from '../../config';
 import { MysteryBoxes, spookyTable } from '../../lib/bsoOpenables';
-import {
-	allStashUnitsFlat,
-	getParsedStashUnits,
-	stashUnitBuildAllCommand,
-	stashUnitFillAllCommand,
-	stashUnitUnfillCommand,
-	stashUnitViewCommand
-} from '../../lib/clues/stashUnits';
+import { allStashUnitsFlat } from '../../lib/clues/stashUnits';
 import { BitField, Channel, Emoji, PerkTier } from '../../lib/constants';
 import { allCLItems, allDroppedItems } from '../../lib/data/Collections';
 import {
@@ -31,7 +24,13 @@ import {
 import pets from '../../lib/data/pets';
 import { addToDoubleLootTimer } from '../../lib/doubleLoot';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../../lib/minions/data/killableMonsters';
-import { getUsersPerkTier, giveBoxResetTime, isPrimaryPatron, spawnLampResetTime } from '../../lib/MUser';
+import {
+	getUsersPerkTier,
+	giveBoxResetTime,
+	isPrimaryPatron,
+	mahojiUserSettingsUpdate,
+	spawnLampResetTime
+} from '../../lib/MUser';
 import { MinigameName, Minigames } from '../../lib/settings/minigames';
 import { convertStoredActivityToFlatActivity, prisma } from '../../lib/settings/prisma';
 import Skills from '../../lib/skilling/skills';
@@ -55,13 +54,19 @@ import { makeBankImage } from '../../lib/util/makeBankImage';
 import { repairBrokenItemsFromUser } from '../../lib/util/repairBrokenItems';
 import resolveItems from '../../lib/util/resolveItems';
 import { LampTable } from '../../lib/xpLamps';
+import {
+	getParsedStashUnits,
+	stashUnitBuildAllCommand,
+	stashUnitFillAllCommand,
+	stashUnitUnfillCommand,
+	stashUnitViewCommand
+} from '../lib/abstracted_commands/stashUnitsCommand';
 import { dataPoints, statsCommand } from '../lib/abstracted_commands/statCommand';
 import { buttonUserPicker } from '../lib/buttonUserPicker';
 import { Cooldowns } from '../lib/Cooldowns';
 import { itemOption, monsterOption, skillOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 import { handleMahojiConfirmation, patronMsg } from '../mahojiSettings';
-import { mahojiUserSettingsUpdate } from '../settingsUpdate';
 
 const TimeIntervals = ['day', 'week'] as const;
 const skillsVals = Object.values(Skills);

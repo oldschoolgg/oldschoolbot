@@ -1,24 +1,18 @@
 import { increaseNumByPercent, noOp, notEmpty, objectValues, Time } from 'e';
 import { Item } from 'oldschooljs/dist/meta/types';
+import { convertLVLtoXP, convertXPtoLVL, toKMB } from 'oldschooljs/dist/util/util';
 
 import { MAXING_MESSAGE } from '../config';
-import {
-	Channel,
-	Events,
-	GLOBAL_BSO_XP_MULTIPLIER,
-	LEVEL_120_XP,
-	MAX_TOTAL_LEVEL,
-	MAX_XP,
-	skillEmoji
-} from './constants';
+import { Channel, Events, GLOBAL_BSO_XP_MULTIPLIER, LEVEL_120_XP, MAX_TOTAL_LEVEL, MAX_XP } from './constants';
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from './data/CollectionsExport';
+import { skillEmoji } from './data/emojis';
 import { getSimilarItems } from './data/similarItems';
 import { AddXpParams } from './minions/types';
 import { prisma } from './settings/prisma';
 import Skillcapes from './skilling/skillcapes';
 import Skills from './skilling/skills';
 import { SkillsEnum } from './skilling/types';
-import { assert, convertLVLtoXP, convertXPtoLVL, itemNameFromID, murMurSort, toKMB } from './util';
+import { assert, itemNameFromID, murMurSort } from './util';
 import { formatOrdinal } from './util/formatOrdinal';
 import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';

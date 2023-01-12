@@ -3989,8 +3989,7 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	10_000
@@ -4109,8 +4108,7 @@ setCustomItem(
 	'Bronze boots',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	10_000
@@ -4134,8 +4132,7 @@ setCustomItem(
 	'Amulet of strength',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	10_000
@@ -4223,8 +4220,7 @@ setCustomItem(
 	'Herbi',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	10_000
@@ -4249,8 +4245,7 @@ setCustomItem(
 	'Rune full helm',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	10_000
@@ -4347,8 +4342,7 @@ setCustomItem(
 	'Rune platebody',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	10_000
@@ -4360,8 +4354,7 @@ setCustomItem(
 	'Red cape',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	10_000
@@ -4503,6 +4496,19 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_258,
+	'Santa claws',
+	'Dragon claws',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
 		}
 	},
 	10_000

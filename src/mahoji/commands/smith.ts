@@ -3,6 +3,7 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import { BlacksmithOutfit } from '../../lib/bsoOpenables';
+import { KaramjaDiary, userhasDiaryTier } from '../../lib/diaries';
 import Smithing from '../../lib/skilling/skills/smithing';
 import smithables from '../../lib/skilling/skills/smithing/smithables';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -86,22 +87,32 @@ export const smithCommand: OSBMahojiCommand = {
 			}
 		}
 
+		let maxTripLength = calcMaxTripLength(user, 'Smithing');
+		let { timeToUse } = smithedItem;
+		let doubleCBall = false;
+		let diaryCannonball = false;
+		if (smithedItem.name === 'Cannonball') {
+			if (user.bank.has('Double ammo mould')) {
+				doubleCBall = true;
+				timeToUse /= 2;
+			}
+			const [has] = await userhasDiaryTier(user, KaramjaDiary.elite);
+			if (has) {
+				diaryCannonball = true;
+				timeToUse /= 1.23;
+			}
+		}
+
 		// Time to smith an item, add on quarter of a second to account for banking/etc.
-		let timeToSmithSingleBar = smithedItem.timeToUse + Time.Second / 4 - (Time.Second * 0.6 * setBonus) / 100;
+		let timeToSmithSingleBar = timeToUse + Time.Second / 4 - (Time.Second * 0.6 * setBonus) / 100;
 		if (user.usingPet('Takon')) {
 			timeToSmithSingleBar /= 4;
 		} else if (user.hasEquipped('Dwarven greathammer')) {
 			timeToSmithSingleBar /= 2;
 		}
 
-		let maxTripLength = calcMaxTripLength(user, 'Smithing');
-		let doubleCBall = false;
 		if (smithedItem.name === 'Cannonball') {
 			maxTripLength *= 2;
-			if (user.bank.has('Double ammo mould')) {
-				doubleCBall = true;
-				timeToSmithSingleBar /= 2;
-			}
 		}
 
 		let { quantity } = options;
@@ -172,9 +183,13 @@ export const smithCommand: OSBMahojiCommand = {
 			smithedItem.name
 		}, removed ${cost} from your bank, it'll take around ${formatDuration(duration)} to finish. ${
 			setBonus > 0
-				? `${setBonus}% chance to save 1 tick while smithing each item for using Smiths' Uniform item/items. `
+				? `${setBonus}% chance to save 1 tick while smithing each item for using Smiths' Uniform item/items.`
 				: ''
-		}${doubleCBall ? 'Twice as fast Cannonball production using Double ammo mould.' : ''}`;
+		}${doubleCBall ? 'Twice as fast Cannonball production using Double ammo mould.' : ''}${
+			diaryCannonball
+				? 'Faster Cannonball production using the Shilo village furnance due to completing the Elite Karamja Diary.'
+				: ''
+		}`;
 
 		if (user.usingPet('Takon')) {
 			str += ' Takon is Smithing for you, at incredible speeds and skill.';

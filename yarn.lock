@@ -2091,7 +2091,7 @@ combined-stream@^1.0.8:
 concat-map@0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/concat-map/-/concat-map-0.0.1.tgz#d8a96bd77fd68df7793a73036a3ba0d5405d477b"
-  integrity sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=
+  integrity sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==
 
 concurrently@^6.5.1:
   version "6.5.1"
@@ -4104,10 +4104,10 @@ lru_map@^0.3.3:
   resolved "https://registry.yarnpkg.com/lru_map/-/lru_map-0.3.3.tgz#b5c8351b9464cbd750335a79650a0ec0e56118dd"
   integrity sha1-tcg1G5Rky9dQM1p5ZQoOwOVhGN0=
 
-mahoji@^0.0.61:
-  version "0.0.61"
-  resolved "https://registry.yarnpkg.com/mahoji/-/mahoji-0.0.61.tgz#a2cd19f3bfe43b62536a79b0c252573d3aaa281b"
-  integrity sha512-zZZ7flcndi4EGfYeir+Z3GjbtlZi3buHm8kJY8s5Ub98wEI1RToGkWIyzjwAhZblpL+U4xPjzX82NYXGYECXDg==
+mahoji@^0.0.62:
+  version "0.0.62"
+  resolved "https://registry.yarnpkg.com/mahoji/-/mahoji-0.0.62.tgz#c4c6164e788252396a2e7848af26d74814f161e3"
+  integrity sha512-XURC3zhuvToFTiiMiqB2ISKLpB/v4VsIrjZ2AfmHgbt2GqSNMhyRLpHt/Xh1TjiznAABfwj1P9X6kM3Q3gkhkw==
 
 make-dir@^3.0.0, make-dir@^3.1.0:
   version "3.1.0"
@@ -4184,9 +4184,9 @@ min-indent@^1.0.0:
   integrity sha512-I9jwMn07Sy/IwOj3zVkVik2JTvgpaykDZEigL6Rx6N9LbMywwUSMtxET+7lVoDLLd3O3IXwJwvuuns8UB/HeAg==
 
 minimatch@^3.0.4:
-  version "3.0.4"
-  resolved "https://registry.yarnpkg.com/minimatch/-/minimatch-3.0.4.tgz#5166e286457f03306064be5497e8dbb0c3d32083"
-  integrity sha512-yJHVQEhyqPLUTgt9B83PXu6W3rx4MvvHvSUvToogpwoGDOUQ+yDrR0HRot+yOCdCO7u4hX3pWft6kWBBcqh0UA==
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/minimatch/-/minimatch-3.1.2.tgz#19cd194bfd3e428f049a70817c038d89ab4be35b"
+  integrity sha512-J7p63hRiAjw1NDEww1W7i37+ByIrOWO5XQQAzZ3VOcL0PNybwpfmV/N05zFAzwQ9USyEcX6t3UO+K5aqBQOIHw==
   dependencies:
     brace-expansion "^1.1.7"
 
@@ -4397,10 +4397,10 @@ object.values@^1.1.5:
     define-properties "^1.1.3"
     es-abstract "^1.19.1"
 
-oldschooljs@^2.1.92:
-  version "2.1.92"
-  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-2.1.92.tgz#cce89966b2abc9deec68d937cb804f20b46639fd"
-  integrity sha512-bDLOJI+zREiwbZXcLBNe1zgkmeE25IxhiWH5ZfWfIRNpuKuOvvvKEYdiYtXi9sZY2xfAJrf+9OcQllBFpBBaeQ==
+oldschooljs@^2.1.93:
+  version "2.1.93"
+  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-2.1.93.tgz#db61d43a663d68dbbe2aced1bbf02335825f0fbd"
+  integrity sha512-OD2XjdH1mEA3Vw/zFIwlQA5g/UhhnKdYdJjU+/cyOgA7NHJy5KfZnMiMTbFTwub7TabxEvQ0sTsqDdkdIPuSXw==
   dependencies:
     "@oldschoolgg/eslint-config" "^1.2.5"
     e "^0.2.1"

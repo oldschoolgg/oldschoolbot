@@ -1,9 +1,11 @@
+import { CommandOptions } from 'mahoji/dist/lib/types';
+
 import { modifyBusyCounter } from '../../lib/busyCounterCache';
 import { shouldTrackCommand } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
 import { makeCommandUsage } from '../../lib/util/commandUsage';
 import { logError } from '../../lib/util/logError';
-import { AbstractCommand, CommandArgs } from './inhibitors';
+import { AbstractCommand } from './inhibitors';
 
 export async function postCommand({
 	abstractCommand,
@@ -19,7 +21,7 @@ export async function postCommand({
 	guildID?: string | bigint | null;
 	channelID: string | bigint;
 	error: Error | string | null;
-	args: CommandArgs;
+	args: CommandOptions;
 	isContinue: boolean;
 	inhibited: boolean;
 }): Promise<string | undefined> {

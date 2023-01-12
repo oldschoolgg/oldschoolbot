@@ -3,10 +3,12 @@ import { Time } from 'e';
 import { MaterialType, materialTypes } from '../../../lib/invention';
 import { transactMaterialsFromUser } from '../../../lib/invention/inventions';
 import { MaterialBank } from '../../../lib/invention/MaterialBank';
+import { ItemBank } from '../../../lib/types';
 import { TinkeringWorkshopOptions } from '../../../lib/types/minions';
 import { formatDuration, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import { userStatsUpdate } from '../../mahojiSettings';
 
 export async function tinkeringWorkshopCommand(user: MUser, material: MaterialType, channelID: string) {
 	if (!materialTypes.includes(material)) {
@@ -26,6 +28,13 @@ export async function tinkeringWorkshopCommand(user: MUser, material: MaterialTy
 		return `You don't have enough materials to workshop with this material, you need: ${materialCost}.`;
 	}
 	await transactMaterialsFromUser({ userID: BigInt(user.id), remove: materialCost });
+	await userStatsUpdate(user.id, oldStats => {
+		return {
+			tworkshop_material_cost_bank: new MaterialBank(oldStats.tworkshop_material_cost_bank as ItemBank).add(
+				materialCost
+			).bank
+		};
+	});
 
 	let str = `${
 		user.minionName

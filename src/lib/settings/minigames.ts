@@ -210,6 +210,16 @@ export const Minigames: readonly BotMinigame[] = [
 		name: 'Stealing Creation',
 		aliases: ['stealing creation', 'sc'],
 		column: 'stealing_creation'
+	},
+	{
+		name: "Shades of Mort'ton",
+		aliases: ['som', "shades of mort'ton"],
+		column: 'shades_of_morton'
+	},
+	{
+		name: 'Tinkering Workshop',
+		aliases: ['tinkering workshop', 'tw'],
+		column: 'tinkering_workshop'
 	}
 ];
 

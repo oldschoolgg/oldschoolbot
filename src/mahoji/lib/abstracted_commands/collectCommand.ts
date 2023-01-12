@@ -56,6 +56,11 @@ export const collectables: Collectable[] = [
 		duration: Time.Minute * 1.68
 	},
 	{
+		item: getOSItem('Swamp toad'),
+		quantity: 28,
+		duration: Time.Minute * 1.68
+	},
+	{
 		item: getOSItem("Red spiders' eggs"),
 		quantity: 80,
 		itemCost: new Bank({

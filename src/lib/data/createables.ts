@@ -5,8 +5,8 @@ import { Favours } from '../minions/data/kourendFavour';
 import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';
 import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import { ItemBank, Skills } from '../types';
-import { itemNameFromID } from '../util';
 import itemID from '../util/itemID';
+import { itemNameFromID } from '../util/smallUtils';
 import { chambersOfXericMetamorphPets } from './CollectionsExport';
 import { amrodCreatables } from './creatables/amrod';
 import { armorAndItemPacks } from './creatables/armorPacks';
@@ -21,6 +21,7 @@ import { moktangCreatables } from './creatables/moktangCreatables';
 import { mysticStavesCreatables } from './creatables/mysticStaves';
 import { nexCreatables } from './creatables/nex';
 import { ornamentKits } from './creatables/ornaments';
+import { shadesOfMortonCreatables } from './creatables/shadesOfMorton';
 import { slayerCreatables } from './creatables/slayer';
 import { tobCreatables } from './creatables/tob';
 import { tameCreatables } from './tameCreatables';
@@ -41,6 +42,7 @@ export interface Createable {
 	maxCanOwn?: number;
 	materialCost?: MaterialBank;
 	onCreate?: (qty: number, user: MUser) => Promise<{ result: boolean; message: string }>;
+	type?: 'pack' | 'unpack';
 }
 
 const goldenProspectorCreatables: Createable[] = [
@@ -2148,7 +2150,8 @@ const Createables: Createable[] = [
 	...leaguesCreatables,
 	...guardiansOfTheRiftCreatables,
 	...tameCreatables,
-	...moktangCreatables
+	...moktangCreatables,
+	...shadesOfMortonCreatables
 ];
 
 export default Createables;

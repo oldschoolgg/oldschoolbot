@@ -4,6 +4,7 @@ import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { collectables } from '../../mahoji/lib/abstracted_commands/collectCommand';
 import { MoktangTaskOptions } from '../../mahoji/lib/abstracted_commands/moktangCommand';
+import { shades, shadesLogs } from '../../mahoji/lib/abstracted_commands/shadesOfMortonCommand';
 import { bossEvents } from '../bossEvents';
 import { ClueTiers } from '../clues/clueTiers';
 import { Emoji } from '../constants';
@@ -72,6 +73,7 @@ import {
 	SawmillActivityTaskOptions,
 	ScatteringActivityTaskOptions,
 	SepulchreActivityTaskOptions,
+	ShadesOfMortonOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
 	TheatreOfBloodTaskOptions,
@@ -703,7 +705,16 @@ export function minionStatus(user: MUser) {
 				data.material
 			} materials in the Tinkering Workshop. The trip should take ${formatDuration(durationRemaining)}.`;
 		}
+		case 'ShadesOfMorton': {
+			const data = currentTask as ShadesOfMortonOptions;
+			const log = shadesLogs.find(i => i.normalLog.id === data.logID)!;
+			const shade = shades.find(i => i.shadeName === data.shadeID)!;
+			return `${name} is currently doing ${data.quantity} trips of Shades of Mort'ton, cremating ${
+				shade.shadeName
+			} remains with ${log.oiledLog.name}! The trip should take ${formatDuration(durationRemaining)}.`;
+		}
 		case 'HalloweenMiniMinigame':
+		case 'HalloweenEvent':
 		case 'Easter':
 		case 'BlastFurnace':
 		case 'TrickOrTreat': {

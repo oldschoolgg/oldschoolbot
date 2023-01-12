@@ -6,8 +6,9 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { growablePets } from '../growablePets';
 import { implings } from '../implings';
 import { stoneSpirits } from '../minions/data/stoneSpirits';
-import { assert } from '../util';
+import { MinigameScore } from '../settings/minigames';
 import getOSItem from '../util/getOSItem';
+import { assert } from '../util/logError';
 import resolveItems from '../util/resolveItems';
 import { LampTable } from '../xpLamps';
 import {
@@ -38,7 +39,7 @@ export interface ILeftListStatus {
 }
 
 export interface IKCActivity {
-	[key: string]: string | string[] | ((user: MUser) => Promise<number>);
+	[key: string]: string | string[] | ((user: MUser, minigameScores: MinigameScore[]) => Promise<number>);
 }
 
 export type FormatProgressFunction = ({
@@ -1466,7 +1467,7 @@ export const roguesDenOutfit = resolveItems([
 export const roguesDenCL = resolveItems([...roguesDenOutfit]);
 
 export const shadesOfMorttonCL = resolveItems([
-	'Amulet of the damned',
+	'Amulet of the damned (full)',
 	'Flamtaer bag',
 	'Fine cloth',
 	'Bronze locks',
@@ -1931,9 +1932,11 @@ export const miscellaneousCL = resolveItems([
 	'Dragonstone gauntlets',
 	'Dragonstone boots',
 	'Uncut onyx',
-	// 'Merfolk trident',
 	'Brackish blade',
-	'Ivy seed'
+	'Ivy seed',
+	'Merfolk trident',
+	'Orange egg sac',
+	'Blue egg sac'
 ]);
 export const diariesCL = [
 	'Karamja gloves 1',
@@ -2253,7 +2256,8 @@ export const discontinuedCustomPetsCL = resolveItems([
 	'Seer',
 	'Leia',
 	'Buzz',
-	'Kuro'
+	'Kuro',
+	'Frosty'
 ]);
 
 export const kingGoldemarCL = resolveItems([

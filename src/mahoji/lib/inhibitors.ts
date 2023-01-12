@@ -16,8 +16,6 @@ import { formatDuration } from '../../lib/util';
 import { mahojiGuildSettingsFetch, untrustedGuildSettingsCache } from '../mahojiSettings';
 import { Cooldowns } from './Cooldowns';
 
-export type CommandArgs = Record<string, unknown>;
-
 export interface AbstractCommandAttributes {
 	examples?: string[];
 	categoryFlags?: CategoryFlag[];

@@ -3,12 +3,13 @@ import { calcPercentOfNum, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
+import { convertXPtoLVL } from 'oldschooljs/dist/util/util';
 
 import { LevelRequirements, SkillsEnum } from '../skilling/types';
 import { ItemBank } from '../types';
-import { convertXPtoLVL, normal } from '../util';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
+import { normal } from '../util/smallUtils';
 
 interface WintertodtCrateOptions {
 	points: number;

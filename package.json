@@ -37,12 +37,12 @@
 		"he": "^1.2.0",
 		"jwt-simple": "^0.5.6",
 		"lru-cache": "^7.14.0",
-		"mahoji": "^0.0.61",
+		"mahoji": "^0.0.62",
 		"math-expression-evaluator": "^1.3.14",
 		"murmurhash": "^2.0.1",
 		"node-cron": "^3.0.2",
 		"node-fetch": "^2.6.7",
-		"oldschooljs": "^2.1.92",
+		"oldschooljs": "^2.1.93",
 		"p-queue": "^6.6.2",
 		"pino": "^8.8.0",
 		"piscina": "^3.2.0",
@@ -53,9 +53,8 @@
 		"zlib-sync": "^0.1.7"
 	},
 	"devDependencies": {
-		"@sinclair/typebox": "^0.12.9",
-		"source-map-support": "^0.5.21",
 		"@oldschoolgg/eslint-config": "^1.2.5",
+		"@sinclair/typebox": "^0.12.9",
 		"@types/he": "^1.1.2",
 		"@types/jest": "^26.0.24",
 		"@types/math-expression-evaluator": "^1.2.2",
@@ -71,6 +70,7 @@
 		"jest-mock-random": "^1.1.1",
 		"prisma": "^3.15.1",
 		"rimraf": "^3.0.2",
+		"source-map-support": "^0.5.21",
 		"ts-jest": "^29.0.3",
 		"typescript": "^4.8.4"
 	},

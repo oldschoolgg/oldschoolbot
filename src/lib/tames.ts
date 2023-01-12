@@ -13,7 +13,7 @@ import {
 import { increaseNumByPercent, objectEntries, round, Time } from 'e';
 import { Bank, Items } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
-import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc';
+import { ChambersOfXeric, TheatreOfBlood } from 'oldschooljs/dist/simulation/misc';
 
 import { collectables } from '../mahoji/lib/abstracted_commands/collectCommand';
 import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
@@ -126,6 +126,37 @@ export const tameKillableMonsters: TameKillableMonster[] = [
 			qtyPerKill: 1,
 			itemCost: new Bank().add('Stamina potion(4)', 2)
 		}
+	},
+	{
+		id: 315_932,
+		name: 'Theatre of Blood',
+		aliases: ['tob', 'theatre of blood'],
+		timeToFinish: Time.Minute * 90,
+		itemsRequired: resolveItems([]),
+		loot({ quantity }) {
+			let loot = new Bank();
+			for (let i = 0; i < quantity; i++) {
+				let thisLoot = TheatreOfBlood.complete({
+					hardMode: true,
+					team: [
+						{ id: '1', deaths: [] },
+						{ id: '2', deaths: [] }
+					]
+				});
+				loot.add(thisLoot.loot['1']);
+			}
+
+			return loot;
+		},
+		deathChance: ({ tame }) => {
+			const armorEquipped = tame.equipped_armor;
+			if (!armorEquipped) return 95;
+			const armorObj = igneArmors.find(i => i.item.id === armorEquipped)!;
+			return armorObj.coxDeathChance;
+		},
+		healAmountNeeded: 1888,
+		mustBeAdult: true,
+		oriWorks: false
 	},
 	...killableMonsters.map(
 		(i): TameKillableMonster => ({
@@ -604,7 +635,7 @@ export async function repeatTameTrip({
 				commandName: 'tames',
 				args: {
 					collect: {
-						name: itemNameFromID(data.itemID)
+						name: getOSItem(data.itemID).name
 					}
 				},
 				bypassInhibitors: true,

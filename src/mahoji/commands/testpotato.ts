@@ -25,6 +25,7 @@ import { DisassemblySourceGroups } from '../../lib/invention/groups';
 import { Inventions, transactMaterialsFromUser } from '../../lib/invention/inventions';
 import { MaterialBank } from '../../lib/invention/MaterialBank';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
+import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { allOpenables } from '../../lib/openables';
 import { tiers } from '../../lib/patreon';
 import { Minigames } from '../../lib/settings/minigames';
@@ -51,7 +52,6 @@ import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import { allUsableItems } from '../lib/abstracted_commands/useCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
-import { mahojiUserSettingsUpdate } from '../settingsUpdate';
 import { generateNewTame } from './nursery';
 import { tameImage } from './tames';
 
