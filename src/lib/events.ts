@@ -1,9 +1,10 @@
 import { Embed } from '@discordjs/builders';
 import { BaseMessageOptions, bold, Message } from 'discord.js';
 import { Time } from 'e';
+import { bulkUpdateCommands } from 'mahoji/dist/lib/util';
 import { Items } from 'oldschooljs';
 
-import { CLIENT_ID } from '../config';
+import { ADMIN_IDS, CLIENT_ID, OWNER_IDS } from '../config';
 import { PATRON_DOUBLE_LOOT_COOLDOWN } from '../mahoji/commands/tools';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
 import { Cooldowns } from '../mahoji/lib/Cooldowns';
@@ -198,6 +199,42 @@ const mentionCommands: MentionCommand[] = [
 				embeds: [await minionStatsEmbed(user)],
 				components
 			});
+		}
+	},
+	{
+		name: 'sync',
+		aliases: ['sync'],
+		description: 'Sync.',
+		run: async ({ msg, user }: MentionCommandOptions) => {
+			if (![...OWNER_IDS, ADMIN_IDS].includes(user.id)) return;
+			const global = true;
+			const guildID = '342983479501389826';
+			const totalCommands = globalClient.mahojiClient.commands.values;
+			const globalCommands = totalCommands.filter(i => !i.guildID);
+			const guildCommands = totalCommands.filter(i => Boolean(i.guildID));
+			if (global) {
+				await bulkUpdateCommands({
+					client: globalClient.mahojiClient,
+					commands: globalCommands,
+					guildID: null
+				});
+				await bulkUpdateCommands({
+					client: globalClient.mahojiClient,
+					commands: guildCommands,
+					guildID: guildID.toString()
+				});
+			} else {
+				await bulkUpdateCommands({
+					client: globalClient.mahojiClient,
+					commands: totalCommands,
+					guildID: guildID.toString()
+				});
+			}
+
+			return msg.reply(`Synced commands ${global ? 'globally' : 'locally'}.
+${totalCommands.length} Total commands
+${globalCommands.length} Global commands
+${guildCommands.length} Guild commands`);
 		}
 	}
 ];
