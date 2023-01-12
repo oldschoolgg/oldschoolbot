@@ -79,7 +79,8 @@ import { giantsFoundryAlloys, giantsFoundryBuyables } from './../lib/abstracted_
 import {
 	nightmareZoneBuyables,
 	nightmareZoneImbueables,
-	nightmareZoneImbueCommand
+	nightmareZoneImbueCommand,
+	NMZ_STRATEGY
 } from './../lib/abstracted_commands/nightmareZoneCommand';
 
 export const minigamesCommand: OSBMahojiCommand = {
@@ -924,10 +925,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 							name: 'strategy',
 							description: 'The strategy to use.',
 							required: true,
-							choices: [
-								{ name: 'experience', value: 'experience' },
-								{ name: 'points', value: 'points' }
-							]
+							choices: NMZ_STRATEGY.map(i => ({ name: i, value: i }))
 						}
 					]
 				},

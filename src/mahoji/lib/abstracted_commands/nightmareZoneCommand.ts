@@ -16,6 +16,9 @@ import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { handleMahojiConfirmation } from '../../mahojiSettings';
 import { NightmareZoneActivityTaskOptions } from './../../../lib/types/minions';
 
+export const NMZ_STRATEGY = ['experience', 'points'] as const;
+export type NMZStrategy = typeof NMZ_STRATEGY[number];
+
 const itemBoosts = [
 	// Special weapons
 	[
@@ -278,7 +281,7 @@ export async function nightmareZoneStatsCommand(user: MUser) {
 **Nightmare Zone points:** ${user.user.nmz_points} Points.`;
 }
 
-export async function nightmareZoneStartCommand(user: MUser, strategy: string, channelID: string) {
+export async function nightmareZoneStartCommand(user: MUser, strategy: NMZStrategy, channelID: string) {
 	const skillReqs: Skills = {
 		defence: 70,
 		strength: 70,
