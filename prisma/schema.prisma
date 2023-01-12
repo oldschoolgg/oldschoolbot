@@ -480,6 +480,8 @@ model User {
 
   minion_defaultCompostToUse CropUpgradeType @default(compost) @map("minion.defaultCompostToUse")
 
+  last_decode_date DateTime? @db.Timestamp(6)
+
   @@index([id, last_command_date])
   @@map("users")
 }
