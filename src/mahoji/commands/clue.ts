@@ -248,7 +248,7 @@ export const clueCommand: OSBMahojiCommand = {
 
 		if (clueTier.name === 'Easy') {
 			for (const [item, boost] of Object.entries(easyBoosts)) {
-				if (user.hasEquippedOrInBank(item) || user.owns(item)) {
+				if (user.hasEquippedOrInBank(item)) {
 					boosts.push(boost.boost);
 					duration *= boost.durationMultiplier;
 				}
@@ -257,7 +257,7 @@ export const clueCommand: OSBMahojiCommand = {
 
 		if (clueTier.name === 'Medium') {
 			for (const [item, boost] of Object.entries(mediumBoosts)) {
-				if (user.hasEquippedOrInBank(item) || user.owns(item)) {
+				if (user.hasEquippedOrInBank(item)) {
 					boosts.push(boost.boost);
 					duration *= boost.durationMultiplier;
 				}
@@ -267,7 +267,7 @@ export const clueCommand: OSBMahojiCommand = {
 		if (clueTier.name === 'Hard') {
 			let hasAchievementDiaryCape = false;
 			for (const [item, boost] of Object.entries(hardBoosts)) {
-				if (user.hasEquippedOrInBank(item) || user.owns(item)) {
+				if (user.hasEquippedOrInBank(item)) {
 					if (item !== 'Wilderness sword 3' || !hasAchievementDiaryCape) {
 						boosts.push(boost.boost);
 						duration *= boost.durationMultiplier;
@@ -282,7 +282,7 @@ export const clueCommand: OSBMahojiCommand = {
 		if (clueTier.name === 'Elite') {
 			let hasAchievementDiaryCape = false;
 			for (const [item, boost] of Object.entries(eliteBoosts)) {
-				if (user.hasEquippedOrInBank(item) || user.owns(item)) {
+				if (user.hasEquippedOrInBank(item)) {
 					if (
 						(item !== 'Kandarin headgear 4' && item !== 'Fremennik sea boots 4') ||
 						!hasAchievementDiaryCape
@@ -300,7 +300,7 @@ export const clueCommand: OSBMahojiCommand = {
 		if (clueTier.name === 'Master') {
 			let hasAchievementDiaryCape = false;
 			for (const [item, boost] of Object.entries(masterBoosts)) {
-				if (user.hasEquippedOrInBank(item) || user.owns(item)) {
+				if (user.hasEquippedOrInBank(item)) {
 					if (item !== 'Kandarin headgear 4' || !hasAchievementDiaryCape) {
 						boosts.push(boost.boost);
 						duration *= boost.durationMultiplier;
