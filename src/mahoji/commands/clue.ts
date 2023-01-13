@@ -1,4 +1,4 @@
-import { randInt, Time } from 'e';
+import { Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
@@ -76,98 +76,103 @@ export const clueCommand: OSBMahojiCommand = {
 		if (!user.owns(cost)) return `You don't own ${cost}.`;
 		await user.removeItemsFromBank(new Bank().add(clueTier.scrollID, quantity));
 
-		const randomAddedDuration = randInt(1, 20);
-		duration += (randomAddedDuration * duration) / 100;
-
 		const poh = await getPOH(user.id);
 		const hasOrnateJewelleryBox = poh.jewellery_box === getPOHObject('Ornate jewellery box').id;
 		const hasJewelleryBox = poh.jewellery_box !== null;
 
-		if (clueTier.name === 'Beginner') {
-			if (user.hasEquippedOrInBank('Ring of the elements')) {
-				boosts.push('4% for Ring of the elements');
-				duration *= 0.96;
-			}
+		// Global boosts
+		if (user.hasEquippedOrInBank('Max cape')) {
+			boosts.push('10% for Max cape');
+			duration *= 0.9;
+		} else if (user.hasEquippedOrInBank('Construct. cape')) {
+			boosts.push('6% for Construction cape');
+			duration *= 0.94;
 		}
 
-		if (clueTier.name !== 'Beginner') {
-			if (user.hasEquippedOrInBank('Max cape')) {
-				boosts.push('5% for Max cape');
-				duration *= 0.95;
-			} else if (user.hasEquippedOrInBank('Construct. cape')) {
-				boosts.push('3% for Construction cape');
-				duration *= 0.97;
+		if (hasOrnateJewelleryBox) {
+			boosts.push('10% for Ornate jewellery box');
+			duration *= 0.9;
+		} else if (hasJewelleryBox) {
+			boosts.push('5% for Basic/Fancy jewellery box');
+			duration *= 0.95;
+		}
+
+		// Specific boosts
+		if (clueTier.name === 'Beginner') {
+			if (user.hasEquippedOrInBank('Ring of the elements')) {
+				boosts.push('10% for Ring of the elements');
+				duration *= 0.9;
 			}
 		}
 
 		if (clueTier.name === 'Easy') {
 			if (user.hasEquippedOrInBank('Achievement diary cape')) {
-				boosts.push('5% for Achievement diary cape');
-				duration *= 0.95;
+				boosts.push('10% for Achievement diary cape');
+				duration *= 0.9;
 			}
 			if (user.hasEquippedOrInBank('Ring of the elements')) {
-				boosts.push('3% for Ring of the elements');
-				duration *= 0.97;
+				boosts.push('6% for Ring of the elements');
+				duration *= 0.94;
 			}
 			if (user.owns('Master scroll book')) {
-				boosts.push('3% for Master scroll book');
-				duration *= 0.97;
+				boosts.push('6% for Master scroll book');
+				duration *= 0.94;
 			}
 			if (user.hasEquippedOrInBank("Xeric's talisman")) {
-				boosts.push("2% for Xeric's talisman");
-				duration *= 0.98;
+				boosts.push("4% for Xeric's talisman");
+				duration *= 0.96;
 			}
 		}
 
 		if (clueTier.name === 'Medium') {
 			if (user.owns('Master scroll book')) {
-				boosts.push('5% for Master scroll book');
-				duration *= 0.95;
+				boosts.push('10% for Master scroll book');
+				duration *= 0.9;
 			}
 			if (user.hasEquippedOrInBank('Ring of the elements')) {
-				boosts.push('3% for Ring of the elements');
-				duration *= 0.97;
+				boosts.push('8% for Ring of the elements');
+				duration *= 0.92;
 			}
 			if (user.hasEquippedOrInBank("Xeric's talisman")) {
-				boosts.push("2% for Xeric's talisman");
-				duration *= 0.98;
+				boosts.push("6% for Xeric's talisman");
+				duration *= 0.94;
 			}
 		}
 
 		if (clueTier.name === 'Hard') {
 			if (user.hasEquippedOrInBank('Achievement diary cape')) {
-				boosts.push('5% for Achievement diary cape');
-				duration *= 0.95;
+				boosts.push('10% for Achievement diary cape');
+				duration *= 0.9;
 			} else if (user.hasEquippedOrInBank('Wilderness sword 3')) {
-				boosts.push('4% for Wilderness sword 3');
-				duration *= 0.96;
+				boosts.push('8% for Wilderness sword 3');
+				duration *= 0.92;
 			}
 			if (user.owns('Royal seed pod')) {
-				boosts.push('3% for Royal seed pod');
-				duration *= 0.97;
+				boosts.push('6% for Royal seed pod');
+				duration *= 0.94;
 			}
 			if (user.owns('Eternal teleport crystal')) {
-				boosts.push('2% for Eternal teleport crystal');
-				duration *= 0.98;
+				boosts.push('4% for Eternal teleport crystal');
+				duration *= 0.96;
 			}
 			if (user.owns("Pharaoh's sceptre")) {
-				boosts.push("2% for Pharaoh's sceptre");
-				duration *= 0.98;
+				boosts.push("4% for Pharaoh's sceptre");
+				duration *= 0.96;
 			}
 			if (user.hasEquippedOrInBank('Toxic blowpipe')) {
-				boosts.push('2% for Toxic blowpipe');
-				duration *= 0.98;
+				boosts.push('4% for Toxic blowpipe');
+				duration *= 0.96;
 			}
 		}
 
 		if (clueTier.name === 'Elite') {
 			if (user.hasEquippedOrInBank('Achievement diary cape')) {
-				boosts.push('8% for Achievement diary cape');
-				duration *= 0.92;
+				boosts.push('10% for Achievement diary cape');
+				duration *= 0.9;
 			} else {
 				if (user.hasEquippedOrInBank('Kandarin headgear 4')) {
-					boosts.push('5% for Kandarin headgear 4');
-					duration *= 0.95;
+					boosts.push('7% for Kandarin headgear 4');
+					duration *= 0.93;
 				}
 				if (user.hasEquippedOrInBank('Fremennik sea boots 4')) {
 					boosts.push('3% for Fremennik sea boots 4');
@@ -176,22 +181,22 @@ export const clueCommand: OSBMahojiCommand = {
 			}
 
 			if (user.owns("Pharaoh's sceptre")) {
-				boosts.push("2% for Pharaoh's sceptre");
-				duration *= 0.98;
+				boosts.push("4% for Pharaoh's sceptre");
+				duration *= 0.96;
 			}
 			if (user.hasEquippedOrInBank('Toxic blowpipe')) {
-				boosts.push('2% for Toxic blowpipe');
-				duration *= 0.98;
+				boosts.push('4% for Toxic blowpipe');
+				duration *= 0.96;
 			}
 		}
 
 		if (clueTier.name === 'Master') {
 			if (user.hasEquippedOrInBank('Achievement diary cape')) {
-				boosts.push('8% for Achievement diary cape');
-				duration *= 0.92;
+				boosts.push('10% for Achievement diary cape');
+				duration *= 0.90;
 			} else if (user.hasEquippedOrInBank('Kandarin headgear 4')) {
-				boosts.push('5% for Kandarin headgear 4');
-				duration *= 0.95;
+				boosts.push('6% for Kandarin headgear 4');
+				duration *= 0.94;
 			}
 			if (user.owns('Eternal teleport crystal')) {
 				boosts.push('3% for Eternal teleport crystal');
@@ -211,15 +216,6 @@ export const clueCommand: OSBMahojiCommand = {
 			}
 		}
 
-		// Global boosts
-		if (hasOrnateJewelleryBox) {
-			boosts.push('3% for Ornate jewellery box');
-			duration *= 0.97;
-		} else if (hasJewelleryBox) {
-			boosts.push('2% for Basic/Fancy jewellery box');
-			duration *= 0.98;
-		}
-
 		if (isWeekend()) {
 			boosts.push('10% for Weekend');
 			duration *= 0.9;
@@ -236,7 +232,7 @@ export const clueCommand: OSBMahojiCommand = {
 		return `${user.minionName} is now completing ${quantity}x ${
 			clueTier.name
 		} clues, it'll take around ${formatDuration(duration)} to finish.${
-			boosts.length > 0 ? `\n\n**Boosts:** ${boosts.join(', ')}` : ''
+			boosts.length > 0 ? `\n\n**Boosts:** ${boosts.join(', ')}.` : ''
 		}`;
 	}
 };
