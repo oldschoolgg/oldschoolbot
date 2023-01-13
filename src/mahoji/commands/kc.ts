@@ -1,6 +1,7 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Hiscores } from 'oldschooljs';
 import { bossNameMap, mappedBossNames } from 'oldschooljs/dist/constants';
+import { BossRecords } from 'oldschooljs/dist/meta/types';
 
 import { cleanString } from '../../lib/util/cleanString';
 import { toTitleCase } from '../../lib/util/toTitleCase';
@@ -41,7 +42,7 @@ export const kcCommand: OSBMahojiCommand = {
 						return `${toTitleCase(options.rsn)}'s has no recorded KC for that boss.`;
 					}
 					return `${toTitleCase(options.rsn)}'s ${bossNameMap.get(
-						boss
+						boss as keyof BossRecords
 					)} KC is **${score.toLocaleString()}** (Rank ${rank.toLocaleString()})`;
 				}
 			}

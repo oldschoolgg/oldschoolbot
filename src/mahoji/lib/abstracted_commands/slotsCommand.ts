@@ -57,7 +57,7 @@ const buttonTable = new SimpleTable<Button>()
 function generateColumn() {
 	const column: ButtonInstance[] = [];
 	while (column.length < 3) {
-		const button = buttonTable.roll().item;
+		const button = buttonTable.roll();
 		if (column.some(i => i.name === button.name)) continue;
 		column.push({ ...button, id: randInt(1, 999_999_999).toString() });
 	}

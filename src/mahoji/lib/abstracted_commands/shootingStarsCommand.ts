@@ -331,7 +331,7 @@ export function handleTriggerShootingStar(user: MUserClass, data: ActivityTaskOp
 	for (const star of elligibleStars) shootingStarTable.add(star, star.chance);
 	const starRoll = shootingStarTable.roll();
 	if (!starRoll) return;
-	const star = starRoll.item;
+	const star = starRoll;
 	const button = new ButtonBuilder()
 		.setCustomId('DO_SHOOTING_STAR')
 		.setLabel(`Mine Size ${star.size} Crashed Star`)
