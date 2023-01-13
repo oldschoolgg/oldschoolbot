@@ -174,9 +174,9 @@ export class WintertodtCrateClass {
 
 		if (roll <= 6) {
 			const matTable = roll === 1 ? SeedTables.roll() : MaterialTables.roll();
-			const skill = this.determineSkillOfTableSlot(matTable.item);
+			const skill = this.determineSkillOfTableSlot(matTable);
 			const skillLevel = convertXPtoLVL(skills[skill] ?? 1);
-			const rolledItem = this.pickWeightedLootItem<WintertodtTableSlot>(skillLevel, matTable.item);
+			const rolledItem = this.pickWeightedLootItem<WintertodtTableSlot>(skillLevel, matTable);
 			return [
 				{
 					item: rolledItem[0],
