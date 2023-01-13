@@ -1,4 +1,4 @@
-import { Time } from 'e';
+import { randInt, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
@@ -76,11 +76,18 @@ export const clueCommand: OSBMahojiCommand = {
 		if (!user.owns(cost)) return `You don't own ${cost}.`;
 		await user.removeItemsFromBank(new Bank().add(clueTier.scrollID, quantity));
 
+		const randomAddedDuration = randInt(1, 20);
+		duration += (randomAddedDuration * duration) / 100;
 		const poh = await getPOH(user.id);
 		const hasOrnateJewelleryBox = poh.jewellery_box === getPOHObject('Ornate jewellery box').id;
 		const hasJewelleryBox = poh.jewellery_box !== null;
 
 		// Global boosts
+		if (isWeekend()) {
+			boosts.push('10% for Weekend');
+			duration *= 0.9;
+		}
+
 		if (user.hasEquippedOrInBank('Max cape')) {
 			boosts.push('10% for Max cape');
 			duration *= 0.9;
@@ -214,11 +221,6 @@ export const clueCommand: OSBMahojiCommand = {
 				boosts.push('1% for Dragon claws');
 				duration *= 0.99;
 			}
-		}
-
-		if (isWeekend()) {
-			boosts.push('10% for Weekend');
-			duration *= 0.9;
 		}
 
 		await addSubTaskToActivityTask<ClueActivityTaskOptions>({

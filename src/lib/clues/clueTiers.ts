@@ -56,7 +56,7 @@ export const ClueTiers: ClueTier[] = [
 		table: Easy,
 		id: 20_546,
 		scrollID: 2677,
-		timeToFinish: Time.Minute * 6.5,
+		timeToFinish: Time.Minute * 5.5,
 		milestoneReward: {
 			itemReward: itemID('Large spade'),
 			scoreNeeded: 500
