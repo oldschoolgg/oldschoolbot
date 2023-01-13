@@ -45,7 +45,7 @@ export function calcMaxTripLength(user: MUser, activity?: activity_type_enum) {
 			break;
 		}
 		case 'NightmareZone': {
-			max *= 5;
+			max *= 3;
 			break;
 		}
 		default: {
