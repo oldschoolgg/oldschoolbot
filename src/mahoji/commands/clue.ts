@@ -193,7 +193,7 @@ export const clueCommand: OSBMahojiCommand = {
 		if (clueTier.name === 'Master') {
 			if (user.hasEquippedOrInBank('Achievement diary cape')) {
 				boosts.push('10% for Achievement diary cape');
-				duration *= 0.90;
+				duration *= 0.9;
 			} else if (user.hasEquippedOrInBank('Kandarin headgear 4')) {
 				boosts.push('6% for Kandarin headgear 4');
 				duration *= 0.94;
