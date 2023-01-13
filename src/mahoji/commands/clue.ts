@@ -82,144 +82,233 @@ export const clueCommand: OSBMahojiCommand = {
 		const hasOrnateJewelleryBox = poh.jewellery_box === getPOHObject('Ornate jewellery box').id;
 		const hasJewelleryBox = poh.jewellery_box !== null;
 
-		// Global boosts
-		if (isWeekend()) {
-			boosts.push('10% for Weekend');
-			duration *= 0.9;
-		}
-
-		if (user.hasEquippedOrInBank('Max cape')) {
-			boosts.push('10% for Max cape');
-			duration *= 0.9;
-		} else if (user.hasEquippedOrInBank('Construct. cape')) {
-			boosts.push('6% for Construction cape');
-			duration *= 0.94;
-		}
-
-		if (hasOrnateJewelleryBox) {
-			boosts.push('10% for Ornate jewellery box');
-			duration *= 0.9;
-		} else if (hasJewelleryBox) {
-			boosts.push('5% for Basic/Fancy jewellery box');
-			duration *= 0.95;
-		}
+		// Global Boosts
+		const globalBoosts = [
+			{
+				condition: isWeekend,
+				boost: '10% for Weekend',
+				durationMultiplier: 0.9
+			},
+			{
+				condition: () => user.hasEquippedOrInBank('Max cape'),
+				boost: '10% for Max cape',
+				durationMultiplier: 0.9
+			},
+			{
+				condition: () => !user.hasEquippedOrInBank('Max cape') && user.hasEquippedOrInBank('Construct. cape'),
+				boost: '6% for Construction cape',
+				durationMultiplier: 0.94
+			},
+			{
+				condition: () => hasOrnateJewelleryBox,
+				boost: '10% for Ornate jewellery box',
+				durationMultiplier: 0.9
+			},
+			{
+				condition: () => !hasOrnateJewelleryBox && hasJewelleryBox,
+				boost: '5% for Basic/Fancy jewellery box',
+				durationMultiplier: 0.95
+			}
+		];
 
 		// Specific boosts
+		const beginnerBoosts = {
+			'Ring of the elements': {
+				boost: '10% for Ring of the elements',
+				durationMultiplier: 0.9
+			}
+		};
+
+		const easyBoosts = {
+			'Achievement diary cape': {
+				boost: '10% for Achievement diary cape',
+				durationMultiplier: 0.9
+			},
+			'Ring of the elements': {
+				boost: '6% for Ring of the elements',
+				durationMultiplier: 0.94
+			},
+			'Master scroll book': {
+				boost: '6% for Master scroll book',
+				durationMultiplier: 0.94
+			},
+			"Xeric's talisman": {
+				boost: "4% for Xeric's talisman",
+				durationMultiplier: 0.96
+			}
+		};
+
+		const mediumBoosts = {
+			'Master scroll book': {
+				boost: '10% for Master scroll book',
+				durationMultiplier: 0.9
+			},
+			'Ring of the elements': {
+				boost: '8% for Ring of the elements',
+				durationMultiplier: 0.92
+			},
+			"Xeric's talisman": {
+				boost: "6% for Xeric's talisman",
+				durationMultiplier: 0.94
+			}
+		};
+
+		const hardBoosts = {
+			'Achievement diary cape': {
+				boost: '10% for Achievement diary cape',
+				durationMultiplier: 0.9
+			},
+			'Wilderness sword 3': {
+				boost: '8% for Wilderness sword 3',
+				durationMultiplier: 0.92
+			},
+			'Royal seed pod': {
+				boost: '6% for Royal seed pod',
+				durationMultiplier: 0.94
+			},
+			'Eternal teleport crystal': {
+				boost: '4% for Eternal teleport crystal',
+				durationMultiplier: 0.96
+			},
+			"Pharaoh's sceptre": {
+				boost: "4% for Pharaoh's sceptre",
+				durationMultiplier: 0.96
+			},
+			'Toxic blowpipe': {
+				boost: '4% for Toxic blowpipe',
+				durationMultiplier: 0.96
+			}
+		};
+
+		const eliteBoosts = {
+			'Achievement diary cape': {
+				boost: '10% for Achievement diary cape',
+				durationMultiplier: 0.9
+			},
+			'Kandarin headgear 4': {
+				boost: '7% for Kandarin headgear 4',
+				durationMultiplier: 0.93
+			},
+			'Fremennik sea boots 4': {
+				boost: '3% for Fremennik sea boots 4',
+				durationMultiplier: 0.97
+			},
+			"Pharaoh's sceptre": {
+				boost: "4% for Pharaoh's sceptre",
+				durationMultiplier: 0.96
+			},
+			'Toxic blowpipe': {
+				boost: '4% for Toxic blowpipe',
+				durationMultiplier: 0.96
+			}
+		};
+
+		const masterBoosts = {
+			'Achievement diary cape': {
+				boost: '10% for Achievement diary cape',
+				durationMultiplier: 0.9
+			},
+			'Kandarin headgear 4': {
+				boost: '6% for Kandarin headgear 4',
+				durationMultiplier: 0.94
+			},
+			'Eternal teleport crystal': {
+				boost: '3% for Eternal teleport crystal',
+				durationMultiplier: 0.97
+			},
+			"Xeric's talisman": {
+				boost: "2% for Xeric's talisman",
+				durationMultiplier: 0.98
+			},
+			'Toxic blowpipe': {
+				boost: '2% for Toxic blowpipe',
+				durationMultiplier: 0.98
+			},
+			'Dragon claws': {
+				boost: '1% for Dragon claws',
+				durationMultiplier: 0.99
+			}
+		};
+
+		globalBoosts.forEach(({ condition, boost, durationMultiplier }) => {
+			if (condition()) {
+				boosts.push(boost);
+				duration *= durationMultiplier;
+			}
+		});
+
 		if (clueTier.name === 'Beginner') {
-			if (user.hasEquippedOrInBank('Ring of the elements')) {
-				boosts.push('10% for Ring of the elements');
-				duration *= 0.9;
+			for (const [item, boost] of Object.entries(beginnerBoosts)) {
+				if (user.hasEquippedOrInBank(item)) {
+					boosts.push(boost.boost);
+					duration *= boost.durationMultiplier;
+				}
 			}
 		}
 
 		if (clueTier.name === 'Easy') {
-			if (user.hasEquippedOrInBank('Achievement diary cape')) {
-				boosts.push('10% for Achievement diary cape');
-				duration *= 0.9;
-			}
-			if (user.hasEquippedOrInBank('Ring of the elements')) {
-				boosts.push('6% for Ring of the elements');
-				duration *= 0.94;
-			}
-			if (user.owns('Master scroll book')) {
-				boosts.push('6% for Master scroll book');
-				duration *= 0.94;
-			}
-			if (user.hasEquippedOrInBank("Xeric's talisman")) {
-				boosts.push("4% for Xeric's talisman");
-				duration *= 0.96;
+			for (const [item, boost] of Object.entries(easyBoosts)) {
+				if (user.hasEquippedOrInBank(item) || user.owns(item)) {
+					boosts.push(boost.boost);
+					duration *= boost.durationMultiplier;
+				}
 			}
 		}
 
 		if (clueTier.name === 'Medium') {
-			if (user.owns('Master scroll book')) {
-				boosts.push('10% for Master scroll book');
-				duration *= 0.9;
-			}
-			if (user.hasEquippedOrInBank('Ring of the elements')) {
-				boosts.push('8% for Ring of the elements');
-				duration *= 0.92;
-			}
-			if (user.hasEquippedOrInBank("Xeric's talisman")) {
-				boosts.push("6% for Xeric's talisman");
-				duration *= 0.94;
+			for (const [item, boost] of Object.entries(mediumBoosts)) {
+				if (user.hasEquippedOrInBank(item) || user.owns(item)) {
+					boosts.push(boost.boost);
+					duration *= boost.durationMultiplier;
+				}
 			}
 		}
 
 		if (clueTier.name === 'Hard') {
-			if (user.hasEquippedOrInBank('Achievement diary cape')) {
-				boosts.push('10% for Achievement diary cape');
-				duration *= 0.9;
-			} else if (user.hasEquippedOrInBank('Wilderness sword 3')) {
-				boosts.push('8% for Wilderness sword 3');
-				duration *= 0.92;
-			}
-			if (user.owns('Royal seed pod')) {
-				boosts.push('6% for Royal seed pod');
-				duration *= 0.94;
-			}
-			if (user.owns('Eternal teleport crystal')) {
-				boosts.push('4% for Eternal teleport crystal');
-				duration *= 0.96;
-			}
-			if (user.owns("Pharaoh's sceptre")) {
-				boosts.push("4% for Pharaoh's sceptre");
-				duration *= 0.96;
-			}
-			if (user.hasEquippedOrInBank('Toxic blowpipe')) {
-				boosts.push('4% for Toxic blowpipe');
-				duration *= 0.96;
+			let hasAchievementDiaryCape = false;
+			for (const [item, boost] of Object.entries(hardBoosts)) {
+				if (user.hasEquippedOrInBank(item) || user.owns(item)) {
+					if (item !== 'Wilderness sword 3' || !hasAchievementDiaryCape) {
+						boosts.push(boost.boost);
+						duration *= boost.durationMultiplier;
+					}
+					if (item === 'Achievement diary cape') {
+						hasAchievementDiaryCape = true;
+					}
+				}
 			}
 		}
 
 		if (clueTier.name === 'Elite') {
-			if (user.hasEquippedOrInBank('Achievement diary cape')) {
-				boosts.push('10% for Achievement diary cape');
-				duration *= 0.9;
-			} else {
-				if (user.hasEquippedOrInBank('Kandarin headgear 4')) {
-					boosts.push('7% for Kandarin headgear 4');
-					duration *= 0.93;
+			let hasAchievementDiaryCape = false;
+			for (const [item, boost] of Object.entries(eliteBoosts)) {
+				if (user.hasEquippedOrInBank(item) || user.owns(item)) {
+					if (
+						(item !== 'Kandarin headgear 4' && item !== 'Fremennik sea boots 4') ||
+						!hasAchievementDiaryCape
+					) {
+						boosts.push(boost.boost);
+						duration *= boost.durationMultiplier;
+					}
+					if (item === 'Achievement diary cape') {
+						hasAchievementDiaryCape = true;
+					}
 				}
-				if (user.hasEquippedOrInBank('Fremennik sea boots 4')) {
-					boosts.push('3% for Fremennik sea boots 4');
-					duration *= 0.97;
-				}
-			}
-
-			if (user.owns("Pharaoh's sceptre")) {
-				boosts.push("4% for Pharaoh's sceptre");
-				duration *= 0.96;
-			}
-			if (user.hasEquippedOrInBank('Toxic blowpipe')) {
-				boosts.push('4% for Toxic blowpipe');
-				duration *= 0.96;
 			}
 		}
 
 		if (clueTier.name === 'Master') {
-			if (user.hasEquippedOrInBank('Achievement diary cape')) {
-				boosts.push('10% for Achievement diary cape');
-				duration *= 0.9;
-			} else if (user.hasEquippedOrInBank('Kandarin headgear 4')) {
-				boosts.push('6% for Kandarin headgear 4');
-				duration *= 0.94;
-			}
-			if (user.owns('Eternal teleport crystal')) {
-				boosts.push('3% for Eternal teleport crystal');
-				duration *= 0.97;
-			}
-			if (user.hasEquippedOrInBank("Xeric's talisman")) {
-				boosts.push("2% for Xeric's talisman");
-				duration *= 0.98;
-			}
-			if (user.hasEquippedOrInBank('Toxic blowpipe')) {
-				boosts.push('2% for Toxic blowpipe');
-				duration *= 0.98;
-			}
-			if (user.hasEquippedOrInBank('Dragon claws')) {
-				boosts.push('1% for Dragon claws');
-				duration *= 0.99;
+			let hasAchievementDiaryCape = false;
+			for (const [item, boost] of Object.entries(masterBoosts)) {
+				if (user.hasEquippedOrInBank(item) || user.owns(item)) {
+					if (item !== 'Kandarin headgear 4' || !hasAchievementDiaryCape) {
+						boosts.push(boost.boost);
+						duration *= boost.durationMultiplier;
+					}
+					if (item === 'Achievement diary cape') {
+						hasAchievementDiaryCape = true;
+					}
+				}
 			}
 		}
 
