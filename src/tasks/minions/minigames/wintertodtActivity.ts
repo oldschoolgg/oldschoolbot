@@ -48,7 +48,7 @@ export const wintertodtTask: MinionTask = {
 		let totalPoints = 0;
 
 		for (let i = 0; i < quantity; i++) {
-			const points = PointsTable.roll().item;
+			const points = PointsTable.roll();
 			totalPoints += points;
 
 			loot.add(
