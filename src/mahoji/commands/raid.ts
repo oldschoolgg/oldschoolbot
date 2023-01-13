@@ -1,5 +1,13 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
+import {
+	mileStoneBaseDeathChances,
+	RaidLevel,
+	toaCheckCommand,
+	toaHelpCommand,
+	toaStartCommand,
+	toaStatsCommand
+} from '../../lib/simulation/toa';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
 import { coxCommand, coxStatsCommand } from '../lib/abstracted_commands/coxCommand';
@@ -88,6 +96,54 @@ export const raidCommand: OSBMahojiCommand = {
 					]
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			name: 'toa',
+			description: 'The Tombs of Amascut.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'start',
+					description: 'Start a Tombs of Amascut trip',
+					options: [
+						{
+							type: ApplicationCommandOptionType.Number,
+							name: 'raid_level',
+							description: 'Choose the raid level you want to do (1-600).',
+							required: true,
+							choices: mileStoneBaseDeathChances.map(i => ({ name: i.level.toString(), value: i.level }))
+						},
+						{
+							type: ApplicationCommandOptionType.Boolean,
+							name: 'solo',
+							description: 'Do you want to solo?',
+							required: false
+						},
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'max_team_size',
+							description: 'Choose a max size for your team.',
+							required: false
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'stats',
+					description: 'Check your TOA stats.'
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'check',
+					description: "Check if you're ready for TOA."
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'help',
+					description: 'Helpful infor on TOA (maybe temporary before wiki).'
+				}
+			]
 		}
 	],
 	run: async ({
@@ -98,6 +154,12 @@ export const raidCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{
 		cox?: { start?: { type: 'solo' | 'mass'; challenge_mode?: boolean; quantity?: number }; stats?: {} };
 		tob?: { start?: { hard_mode?: boolean; max_team_size?: number }; stats?: {}; check?: { hard_mode?: boolean } };
+		toa?: {
+			start?: { raid_level: RaidLevel; max_team_size?: number; solo?: boolean };
+			check?: {};
+			stats?: {};
+			help?: {};
+		};
 	}>) => {
 		if (interaction) await deferInteraction(interaction);
 		const user = await mUserFetch(userID);
@@ -113,6 +175,26 @@ export const raidCommand: OSBMahojiCommand = {
 		}
 		if (tob?.start) {
 			return tobStartCommand(user, channelID, Boolean(tob.start.hard_mode), tob.start.max_team_size);
+		}
+
+		if (options.toa?.start) {
+			return toaStartCommand(
+				user,
+				Boolean(options.toa.start.solo),
+				channelID,
+				options.toa.start.raid_level,
+				options.toa.start.max_team_size
+			);
+		}
+
+		if (options.toa?.check) {
+			return toaCheckCommand(user);
+		}
+		if (options.toa?.stats) {
+			return toaStatsCommand(user);
+		}
+		if (options.toa?.help) {
+			return toaHelpCommand(user);
 		}
 
 		return 'Invalid command.';

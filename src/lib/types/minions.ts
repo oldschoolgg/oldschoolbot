@@ -302,6 +302,19 @@ export interface TheatreOfBloodTaskOptions extends ActivityTaskOptions {
 	deaths: number[][];
 }
 
+type UserID = string;
+type Points = number;
+type RoomIDsDiedAt = number[];
+
+export interface TOAOptions extends ActivityTaskOptions {
+	leader: string;
+	users: [UserID, Points[], RoomIDsDiedAt[]][];
+	raidLevel: number;
+	fakeDuration: number;
+	wipedRoom: null | number;
+	quantity: number;
+}
+
 export interface NexTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 	leader: string;

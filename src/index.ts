@@ -4,6 +4,7 @@ import './lib/crons';
 import './lib/MUser';
 import './lib/util/transactItemsFromBank';
 import './lib/util/logger';
+import './lib/simulation/toa';
 
 import * as Sentry from '@sentry/node';
 import { Chart } from 'chart.js';
@@ -86,11 +87,11 @@ const client = new OldSchoolBotClient({
 	}),
 	sweepers: {
 		guildMembers: {
-			interval: Time.Minute * 15,
+			interval: Time.Minute / Time.Second,
 			filter: () => member => !CACHED_ACTIVE_USER_IDS.has(member.user.id)
 		},
 		users: {
-			interval: Time.Minute * 15,
+			interval: Time.Minute / Time.Second,
 			filter: () => user => !CACHED_ACTIVE_USER_IDS.has(user.id)
 		}
 	}
