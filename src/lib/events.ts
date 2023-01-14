@@ -1,5 +1,5 @@
 import { Embed } from '@discordjs/builders';
-import { BaseMessageOptions, bold, Message } from 'discord.js';
+import { BaseMessageOptions, bold, Message, time } from 'discord.js';
 import { Time } from 'e';
 import { Items } from 'oldschooljs';
 
@@ -9,6 +9,7 @@ import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionSta
 import { Cooldowns } from '../mahoji/lib/Cooldowns';
 import { Emoji, secretItems } from './constants';
 import { customItems } from './customItems/util';
+import { DOUBLE_LOOT_FINISH_TIME_CACHE, isDoubleLootActive } from './doubleLoot';
 import { giveBoxResetTime, itemContractResetTime, spawnLampResetTime } from './MUser';
 import { prisma } from './settings/prisma';
 import { channelIsSendable, formatDuration, isFunction, toKMB } from './util';
@@ -172,19 +173,25 @@ const mentionCommands: MentionCommand[] = [
 		aliases: ['cd'],
 		description: 'Shows your cooldowns.',
 		run: async ({ msg, user, components }: MentionCommandOptions) => {
+			let content = cooldownTimers
+				.map(cd => {
+					const lastDone = cd.timeStamp(user);
+					const difference = Date.now() - lastDone;
+					const cooldown = isFunction(cd.cd) ? cd.cd(user) : cd.cd;
+					if (difference < cooldown) {
+						const durationRemaining = formatDuration(Date.now() - (lastDone + cooldown));
+						return `${cd.name}: ${durationRemaining}`;
+					}
+					return bold(`${cd.name}: Ready`);
+				})
+				.join('\n');
+
+			if (isDoubleLootActive()) {
+				let date = new Date(DOUBLE_LOOT_FINISH_TIME_CACHE);
+				content += `\n\n2️⃣🇽 **Double Loot is Active until ${time(date)} (${time(date, 'R')})**`;
+			}
 			msg.reply({
-				content: cooldownTimers
-					.map(cd => {
-						const lastDone = cd.timeStamp(user);
-						const difference = Date.now() - lastDone;
-						const cooldown = isFunction(cd.cd) ? cd.cd(user) : cd.cd;
-						if (difference < cooldown) {
-							const durationRemaining = formatDuration(Date.now() - (lastDone + cooldown));
-							return `${cd.name}: ${durationRemaining}`;
-						}
-						return bold(`${cd.name}: Ready`);
-					})
-					.join('\n'),
+				content,
 				components
 			});
 		}
