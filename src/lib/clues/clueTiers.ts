@@ -37,7 +37,6 @@ export interface ClueTier {
 	allItems: number[];
 	stashUnits: StashUnitTier;
 	reqs: ClueReqs;
-	boosts?: string;
 }
 
 export const ClueTiers: ClueTier[] = [
