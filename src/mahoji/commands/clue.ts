@@ -147,7 +147,6 @@ export const clueCommand: OSBMahojiCommand = {
 			}
 		];
 
-		
 		globalBoosts.forEach(({ condition, boost, durationMultiplier }) => {
 			if (condition()) {
 				boosts.push(boost);
