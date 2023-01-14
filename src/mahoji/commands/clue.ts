@@ -107,13 +107,12 @@ export const clueCommand: OSBMahojiCommand = {
 			)}.`;
 		}
 
-		const randomAddedDuration = randInt(1, 20);
-		duration += (randomAddedDuration * duration) / 100;
-
 		const cost = new Bank().add(clueTier.scrollID, quantity);
 		if (!user.owns(cost)) return `You don't own ${cost}.`;
 		await user.removeItemsFromBank(new Bank().add(clueTier.scrollID, quantity));
 
+		const randomAddedDuration = randInt(1, 20);
+		duration += (randomAddedDuration * duration) / 100;
 		const poh = await getPOH(user.id);
 		const hasOrnateJewelleryBox = poh.jewellery_box === getPOHObject('Ornate jewellery box').id;
 		const hasJewelleryBox = poh.jewellery_box !== null;
