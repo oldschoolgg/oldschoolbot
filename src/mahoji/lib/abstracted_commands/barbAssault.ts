@@ -1,6 +1,7 @@
 import { User } from '@prisma/client';
-import { ChatInputCommandInteraction } from 'discord.js';
+import { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { calcWhatPercent, reduceNumByPercent, roll, round, Time } from 'e';
+import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../../lib/constants';
@@ -9,13 +10,14 @@ import { getMinigameScore } from '../../../lib/settings/settings';
 import { HighGambleTable, LowGambleTable, MediumGambleTable } from '../../../lib/simulation/baGamble';
 import { maxOtherStats } from '../../../lib/structures/Gear';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
-import { clamp, formatDuration, itemID, randomVariation, stringMatches } from '../../../lib/util';
+import { clamp, formatDuration, itemID, makeComponents, randomVariation, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import getOSItem from '../../../lib/util/getOSItem';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { handleMahojiConfirmation } from '../../mahojiSettings';
+import { buildClueButtons } from './openCommand';
 
 export const BarbBuyables = [
 	{
@@ -206,7 +208,10 @@ export async function barbAssaultGambleCommand(
 	}
 	const { itemsAdded, previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
 
-	return {
+	const perkTier = user.perkTier();
+	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier);
+
+	let response: Awaited<CommandResponse> = {
 		content: `You spent ${(
 			cost * quantity
 		).toLocaleString()} Honour Points for ${quantity.toLocaleString()}x ${name} Gamble, and received...`,
@@ -219,8 +224,10 @@ export async function barbAssaultGambleCommand(
 					flags: { showNewCL: 1 }
 				})
 			).file
-		]
+		],
+		components: components.length > 0 ? makeComponents(components) : undefined
 	};
+	return response;
 }
 
 export async function barbAssaultStartCommand(channelID: string, user: MUser) {
