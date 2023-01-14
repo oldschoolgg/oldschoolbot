@@ -2127,17 +2127,17 @@ const Createables: Createable[] = [
 		name: 'Master scroll book',
 		inputItems: new Bank({
 			'Master scroll book (empty)': 1,
-			'Nardah teleport': 1,
-			'Digsite teleport': 1,
-			'Feldip hills teleport': 1,
-			'Lunar isle teleport': 1,
-			"Mort'ton teleport": 1,
-			'Pest control teleport': 1,
-			'Piscatoris teleport': 1,
-			'Tai bwo wannai teleport': 1,
-			'Iorwerth camp teleport': 1,
-			"Mos le'harmless teleport": 1,
-			'Lumberyard teleport': 1
+			'Nardah teleport': 100,
+			'Digsite teleport': 100,
+			'Feldip hills teleport': 100,
+			'Lunar isle teleport': 100,
+			"Mort'ton teleport": 100,
+			'Pest control teleport': 100,
+			'Piscatoris teleport': 100,
+			'Tai bwo wannai teleport': 100,
+			'Iorwerth camp teleport': 100,
+			"Mos le'harmless teleport": 100,
+			'Lumberyard teleport': 100
 		}),
 		outputItems: new Bank({
 			'Master scroll book': 1
