@@ -217,7 +217,8 @@ export enum BitField {
 	IsPatronTier6 = 21,
 	DisableBirdhouseRunButton = 22,
 	DisableAshSanctifier = 23,
-	BothBotsMaxedFreeTierOnePerks = 24
+	BothBotsMaxedFreeTierOnePerks = 24,
+	WebsiteDataConsentGiven = 24
 }
 
 interface BitFieldData {

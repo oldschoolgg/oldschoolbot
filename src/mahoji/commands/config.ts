@@ -42,6 +42,10 @@ const toggles = [
 	{
 		name: 'Disable Ash Sanctifier',
 		bit: BitField.DisableAshSanctifier
+	},
+	{
+		name: 'Website Data Consent',
+		bit: BitField.WebsiteDataConsentGiven
 	}
 ];
 
