@@ -22,6 +22,41 @@ function reducedClueTime(clueTier: ClueTier, score: number) {
 	return [reducedTime, percentReduced];
 }
 
+function shouldApplyBoost(clueTierName: string, item: string, hasAchievementDiaryCape: boolean) {
+	switch (clueTierName) {
+		case 'Elite':
+			return (item !== 'Kandarin headgear 4' && item !== 'Fremennik sea boots 4') || !hasAchievementDiaryCape;
+		case 'Master':
+			return item !== 'Kandarin headgear 4' || !hasAchievementDiaryCape;
+		case 'Hard':
+			return item !== 'Wilderness sword 3' || !hasAchievementDiaryCape;
+		default:
+			return true;
+	}
+}
+
+interface ClueBoost {
+	item: string;
+	boost: string;
+	durationMultiplier: number;
+}
+
+function applyClueBoosts(user: MUser, boostList: ClueBoost[], boosts: any[], duration: number, clueTierName: string) {
+	let hasAchievementDiaryCape = false;
+	Object.values(boostList).map(boost => {
+		if (user.hasEquippedOrInBank(boost.item)) {
+			if (shouldApplyBoost(clueTierName, boost.item, hasAchievementDiaryCape)) {
+				boosts.push(boost.boost);
+				duration *= boost.durationMultiplier;
+			}
+			if (boost.item === 'Achievement diary cape') {
+				hasAchievementDiaryCape = true;
+			}
+		}
+	});
+	return { duration, boosts };
+}
+
 export const clueCommand: OSBMahojiCommand = {
 	name: 'clue',
 	description: 'Send your minion to complete clue scrolls.',
@@ -72,12 +107,13 @@ export const clueCommand: OSBMahojiCommand = {
 			)}.`;
 		}
 
+		const randomAddedDuration = randInt(1, 20);
+		duration += (randomAddedDuration * duration) / 100;
+
 		const cost = new Bank().add(clueTier.scrollID, quantity);
 		if (!user.owns(cost)) return `You don't own ${cost}.`;
 		await user.removeItemsFromBank(new Bank().add(clueTier.scrollID, quantity));
 
-		const randomAddedDuration = randInt(1, 20);
-		duration += (randomAddedDuration * duration) / 100;
 		const poh = await getPOH(user.id);
 		const hasOrnateJewelleryBox = poh.jewellery_box === getPOHObject('Ornate jewellery box').id;
 		const hasJewelleryBox = poh.jewellery_box !== null;
@@ -87,7 +123,7 @@ export const clueCommand: OSBMahojiCommand = {
 			{
 				condition: isWeekend,
 				boost: '10% for Weekend',
-				durationMultiplier: 0.9
+				durationMultiplier: 1
 			},
 			{
 				condition: () => user.hasEquippedOrInBank('Max cape'),
@@ -111,125 +147,7 @@ export const clueCommand: OSBMahojiCommand = {
 			}
 		];
 
-		// Specific boosts
-		const beginnerBoosts = {
-			'Ring of the elements': {
-				boost: '10% for Ring of the elements',
-				durationMultiplier: 0.9
-			}
-		};
-
-		const easyBoosts = {
-			'Achievement diary cape': {
-				boost: '10% for Achievement diary cape',
-				durationMultiplier: 0.9
-			},
-			'Ring of the elements': {
-				boost: '6% for Ring of the elements',
-				durationMultiplier: 0.94
-			},
-			'Master scroll book': {
-				boost: '6% for Master scroll book',
-				durationMultiplier: 0.94
-			},
-			"Xeric's talisman": {
-				boost: "4% for Xeric's talisman",
-				durationMultiplier: 0.96
-			}
-		};
-
-		const mediumBoosts = {
-			'Master scroll book': {
-				boost: '10% for Master scroll book',
-				durationMultiplier: 0.9
-			},
-			'Ring of the elements': {
-				boost: '8% for Ring of the elements',
-				durationMultiplier: 0.92
-			},
-			"Xeric's talisman": {
-				boost: "6% for Xeric's talisman",
-				durationMultiplier: 0.94
-			}
-		};
-
-		const hardBoosts = {
-			'Achievement diary cape': {
-				boost: '10% for Achievement diary cape',
-				durationMultiplier: 0.9
-			},
-			'Wilderness sword 3': {
-				boost: '8% for Wilderness sword 3',
-				durationMultiplier: 0.92
-			},
-			'Royal seed pod': {
-				boost: '6% for Royal seed pod',
-				durationMultiplier: 0.94
-			},
-			'Eternal teleport crystal': {
-				boost: '4% for Eternal teleport crystal',
-				durationMultiplier: 0.96
-			},
-			"Pharaoh's sceptre": {
-				boost: "4% for Pharaoh's sceptre",
-				durationMultiplier: 0.96
-			},
-			'Toxic blowpipe': {
-				boost: '4% for Toxic blowpipe',
-				durationMultiplier: 0.96
-			}
-		};
-
-		const eliteBoosts = {
-			'Achievement diary cape': {
-				boost: '10% for Achievement diary cape',
-				durationMultiplier: 0.9
-			},
-			'Kandarin headgear 4': {
-				boost: '7% for Kandarin headgear 4',
-				durationMultiplier: 0.93
-			},
-			'Fremennik sea boots 4': {
-				boost: '3% for Fremennik sea boots 4',
-				durationMultiplier: 0.97
-			},
-			"Pharaoh's sceptre": {
-				boost: "4% for Pharaoh's sceptre",
-				durationMultiplier: 0.96
-			},
-			'Toxic blowpipe': {
-				boost: '4% for Toxic blowpipe',
-				durationMultiplier: 0.96
-			}
-		};
-
-		const masterBoosts = {
-			'Achievement diary cape': {
-				boost: '10% for Achievement diary cape',
-				durationMultiplier: 0.9
-			},
-			'Kandarin headgear 4': {
-				boost: '6% for Kandarin headgear 4',
-				durationMultiplier: 0.94
-			},
-			'Eternal teleport crystal': {
-				boost: '3% for Eternal teleport crystal',
-				durationMultiplier: 0.97
-			},
-			"Xeric's talisman": {
-				boost: "2% for Xeric's talisman",
-				durationMultiplier: 0.98
-			},
-			'Toxic blowpipe': {
-				boost: '2% for Toxic blowpipe',
-				durationMultiplier: 0.98
-			},
-			'Dragon claws': {
-				boost: '1% for Dragon claws',
-				durationMultiplier: 0.99
-			}
-		};
-
+		
 		globalBoosts.forEach(({ condition, boost, durationMultiplier }) => {
 			if (condition()) {
 				boosts.push(boost);
@@ -237,80 +155,145 @@ export const clueCommand: OSBMahojiCommand = {
 			}
 		});
 
-		if (clueTier.name === 'Beginner') {
-			for (const [item, boost] of Object.entries(beginnerBoosts)) {
-				if (user.hasEquippedOrInBank(item)) {
-					boosts.push(boost.boost);
-					duration *= boost.durationMultiplier;
+		// Specific boosts
+		const clueTierBoosts: { [index: string]: ClueBoost[] } = {
+			Beginner: [
+				{
+					item: 'Ring of the elements',
+					boost: '10% for Ring of the elements',
+					durationMultiplier: 0.9
 				}
-			}
-		}
+			],
+			Easy: [
+				{
+					item: 'Achievement diary cape',
+					boost: '10% for Achievement diary cape',
+					durationMultiplier: 0.9
+				},
+				{
+					item: 'Ring of the elements',
+					boost: '6% for Ring of the elements',
+					durationMultiplier: 0.94
+				},
+				{
+					item: 'Master scroll book',
+					boost: '6% for Master scroll book',
+					durationMultiplier: 0.94
+				},
+				{
+					item: "Xeric's talisman",
+					boost: "4% for Xeric's talisman",
+					durationMultiplier: 0.96
+				}
+			],
 
-		if (clueTier.name === 'Easy') {
-			for (const [item, boost] of Object.entries(easyBoosts)) {
-				if (user.hasEquippedOrInBank(item)) {
-					boosts.push(boost.boost);
-					duration *= boost.durationMultiplier;
+			Medium: [
+				{ item: 'Master scroll book', boost: '10% for Master scroll book', durationMultiplier: 0.9 },
+				{
+					item: 'Ring of the elements',
+					boost: '8% for Ring of the elements',
+					durationMultiplier: 0.92
+				},
+				{ item: "Xeric's talisman", boost: "6% for Xeric's talisman", durationMultiplier: 0.94 }
+			],
+			Hard: [
+				{
+					item: 'Achievement diary cape',
+					boost: '10% for Achievement diary cape',
+					durationMultiplier: 0.9
+				},
+				{
+					item: 'Wilderness sword 3',
+					boost: '8% for Wilderness sword 3',
+					durationMultiplier: 0.92
+				},
+				{
+					item: 'Royal seed pod',
+					boost: '6% for Royal seed pod',
+					durationMultiplier: 0.94
+				},
+				{
+					item: 'Eternal teleport crystal',
+					boost: '4% for Eternal teleport crystal',
+					durationMultiplier: 0.96
+				},
+				{
+					item: "Pharaoh's sceptre",
+					boost: "4% for Pharaoh's sceptre",
+					durationMultiplier: 0.96
+				},
+				{
+					item: 'Toxic blowpipe',
+					boost: '4% for Toxic blowpipe',
+					durationMultiplier: 0.96
 				}
-			}
-		}
+			],
+			Elite: [
+				{
+					item: 'Achievement diary cape',
+					boost: '10% for Achievement diary cape',
+					durationMultiplier: 0.9
+				},
+				{
+					item: 'Kandarin headgear 4',
+					boost: '7% for Kandarin headgear 4',
+					durationMultiplier: 0.93
+				},
+				{
+					item: 'Fremennik sea boots 4',
+					boost: '3% for Fremennik sea boots 4',
+					durationMultiplier: 0.97
+				},
+				{
+					item: "Pharaoh's sceptre",
+					boost: "4% for Pharaoh's sceptre",
+					durationMultiplier: 0.96
+				},
+				{
+					item: 'Toxic blowpipe',
+					boost: '4% for Toxic blowpipe',
+					durationMultiplier: 0.96
+				}
+			],
+			Master: [
+				{
+					item: 'Achievement diary cape',
+					boost: '10% for Achievement diary cape',
+					durationMultiplier: 0.9
+				},
+				{
+					item: 'Kandarin headgear 4',
+					boost: '6% for Kandarin headgear 4',
+					durationMultiplier: 0.94
+				},
+				{
+					item: 'Eternal teleport crystal',
+					boost: '3% for Eternal teleport crystal',
+					durationMultiplier: 0.97
+				},
+				{
+					item: "Xeric's talisman",
+					boost: "2% for Xeric's talisman",
+					durationMultiplier: 0.98
+				},
+				{
+					item: 'Toxic blowpipe',
+					boost: '2% for Toxic blowpipe',
+					durationMultiplier: 0.98
+				},
+				{
+					item: 'Dragon claws',
+					boost: '1% for Dragon claws',
+					durationMultiplier: 0.99
+				}
+			]
+		};
 
-		if (clueTier.name === 'Medium') {
-			for (const [item, boost] of Object.entries(mediumBoosts)) {
-				if (user.hasEquippedOrInBank(item)) {
-					boosts.push(boost.boost);
-					duration *= boost.durationMultiplier;
-				}
-			}
-		}
+		const clueTierName = clueTier.name;
+		const boostList = clueTierBoosts[clueTierName];
+		const result = applyClueBoosts(user, boostList, boosts, duration, clueTierName);
 
-		if (clueTier.name === 'Hard') {
-			let hasAchievementDiaryCape = false;
-			for (const [item, boost] of Object.entries(hardBoosts)) {
-				if (user.hasEquippedOrInBank(item)) {
-					if (item !== 'Wilderness sword 3' || !hasAchievementDiaryCape) {
-						boosts.push(boost.boost);
-						duration *= boost.durationMultiplier;
-					}
-					if (item === 'Achievement diary cape') {
-						hasAchievementDiaryCape = true;
-					}
-				}
-			}
-		}
-
-		if (clueTier.name === 'Elite') {
-			let hasAchievementDiaryCape = false;
-			for (const [item, boost] of Object.entries(eliteBoosts)) {
-				if (user.hasEquippedOrInBank(item)) {
-					if (
-						(item !== 'Kandarin headgear 4' && item !== 'Fremennik sea boots 4') ||
-						!hasAchievementDiaryCape
-					) {
-						boosts.push(boost.boost);
-						duration *= boost.durationMultiplier;
-					}
-					if (item === 'Achievement diary cape') {
-						hasAchievementDiaryCape = true;
-					}
-				}
-			}
-		}
-
-		if (clueTier.name === 'Master') {
-			let hasAchievementDiaryCape = false;
-			for (const [item, boost] of Object.entries(masterBoosts)) {
-				if (user.hasEquippedOrInBank(item)) {
-					if (item !== 'Kandarin headgear 4' || !hasAchievementDiaryCape) {
-						boosts.push(boost.boost);
-						duration *= boost.durationMultiplier;
-					}
-					if (item === 'Achievement diary cape') {
-						hasAchievementDiaryCape = true;
-					}
-				}
-			}
-		}
+		duration = result.duration;
 
 		await addSubTaskToActivityTask<ClueActivityTaskOptions>({
 			clueID: clueTier.id,
