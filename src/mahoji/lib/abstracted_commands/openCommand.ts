@@ -1,13 +1,16 @@
-import { ChatInputCommandInteraction } from 'discord.js';
+import { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { notEmpty, uniqueArr } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, LootTable } from 'oldschooljs';
 
+import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { PerkTier } from '../../../lib/constants';
 import { allOpenables, UnifiedOpenable } from '../../../lib/openables';
 import { ItemBank } from '../../../lib/types';
+import { makeComponents } from '../../../lib/util';
 import { stringMatches } from '../../../lib/util/cleanString';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
+import { makeDoClueButton } from '../../../lib/util/globalInteractions';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { handleMahojiConfirmation, patronMsg, updateGPTrackSetting } from '../../mahojiSettings';
 
@@ -32,6 +35,17 @@ async function addToOpenablesScores(mahojiUser: MUser, kcBank: Bank) {
 		openable_scores: new Bank().add(mahojiUser.user.openable_scores as ItemBank).add(kcBank).bank
 	});
 	return new Bank().add(mahojiUser.user.openable_scores as ItemBank);
+}
+
+export function buildClueButtons(loot: Bank | null, perkTier: number) {
+	const components: ButtonBuilder[] = [];
+	if (loot && perkTier > PerkTier.One) {
+		const clueReceived = ClueTiers.filter(tier => loot.amount(tier.scrollID) > 0);
+		if (clueReceived.length > 0) {
+			clueReceived.map(clue => components.push(makeDoClueButton(clue)));
+		}
+	}
+	return components;
 }
 
 export async function abstractedOpenUntilCommand(
@@ -133,6 +147,9 @@ async function finalizeOpening({
 		await updateGPTrackSetting('gp_open', loot.amount('Coins'));
 	}
 
+	const perkTier = user.perkTier();
+	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier);
+
 	const openedStr = openables
 		.map(({ openedItem }) => `${newOpenableScores.amount(openedItem.id)}x ${openedItem.name}`)
 		.join(', ');
@@ -140,7 +157,8 @@ async function finalizeOpening({
 	let response: Awaited<CommandResponse> = {
 		files: [image.file],
 		content: `You have now opened a total of ${openedStr}
-${messages.join(', ')}`
+${messages.join(', ')}`,
+		components: components.length > 0 ? makeComponents(components) : undefined
 	};
 	if (response.content!.length > 1900) {
 		response.files!.push({ name: 'response.txt', attachment: Buffer.from(response.content!) });

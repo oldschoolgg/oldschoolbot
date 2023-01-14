@@ -3,6 +3,7 @@ import { AttachmentBuilder, ButtonBuilder, MessageCollector } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
+import { buildClueButtons } from '../../mahoji/lib/abstracted_commands/openCommand';
 import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
 import { updateGPTrackSetting, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { ClueTiers } from '../clues/clueTiers';
@@ -16,7 +17,6 @@ import { channelIsSendable, makeComponents } from '../util';
 import {
 	makeAutoContractButton,
 	makeBirdHouseTripButton,
-	makeDoClueButton,
 	makeNewSlayerTaskButton,
 	makeOpenCasketButton,
 	makeOpenSeedPackButton,
@@ -113,7 +113,7 @@ export async function handleTripFinish(
 	const casketReceived = loot ? ClueTiers.find(i => loot?.has(i.id)) : undefined;
 	if (casketReceived) components.push(makeOpenCasketButton(casketReceived));
 	if (perkTier > PerkTier.One) {
-		if (clueReceived.length > 0) clueReceived.map(clue => components.push(makeDoClueButton(clue)));
+		components.push(...buildClueButtons(loot, perkTier));
 		const birdHousedetails = await calculateBirdhouseDetails(user.id);
 		if (birdHousedetails.isReady && !user.bitfield.includes(BitField.DisableBirdhouseRunButton))
 			components.push(makeBirdHouseTripButton());
