@@ -43,7 +43,7 @@ interface ClueBoost {
 
 function applyClueBoosts(user: MUser, boostList: ClueBoost[], boosts: any[], duration: number, clueTierName: string) {
 	let hasAchievementDiaryCape = false;
-	Object.values(boostList).map(boost => {
+	boostList.forEach(boost => {
 		if (user.hasEquippedOrInBank(boost.item)) {
 			if (shouldApplyBoost(clueTierName, boost.item, hasAchievementDiaryCape)) {
 				boosts.push(boost.boost);
