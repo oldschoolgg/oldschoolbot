@@ -15,6 +15,7 @@ export const motherlodeMiningTask: MinionTask = {
 		const { userID, channelID, duration } = data;
 		let { quantity } = data;
 		const user = await mUserFetch(userID);
+		const motherlode = Mining.MotherlodeMine;
 
 		let xpReceived = quantity * Mining.MotherlodeMine.xp;
 		let bonusXP = 0;
@@ -97,7 +98,7 @@ export const motherlodeMiningTask: MinionTask = {
 
 		let str = `${user}, ${user.minionName} finished mining ${quantity} Pay-dirt. ${xpRes}`;
 
-		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Mining, 247_200);
+		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Mining, motherlode.petChance!);
 		if (roll(petDropRate / quantity)) {
 			loot.add('Rock golem');
 			str += "\nYou have a funny feeling you're being followed...";

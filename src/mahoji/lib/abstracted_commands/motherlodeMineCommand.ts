@@ -12,28 +12,19 @@ import { pickaxes } from '../../commands/mine';
 export async function motherlodeMineCommand({
 	user,
 	channelID,
-	name,
 	quantity
 }: {
 	user: MUser;
 	channelID: string;
-	name: string;
 	quantity?: number;
 	powermine?: boolean;
 }) {
-	if (user.skillsAsLevels.mining < 30) {
-		return `${minionName(user)} needs 30 Mining to mine ${name}.`;
-	}
-
-	const ore = Mining.MotherlodeMine;
-
-	if (!ore) {
-		return `Thats not a valid ore to mine. Valid ores are ${Mining.Ores.map(ore => ore.name).join(', ')}, ${
-			Mining.MotherlodeMine.name
-		};.`;
-	}
-
 	let miningLevel = user.skillsAsLevels.mining;
+	if (miningLevel < 30) {
+		return `${minionName(user)} needs 30 Mining to mine at the ${name}.`;
+	}
+
+	const motherlode = Mining.MotherlodeMine;
 
 	const boosts = [];
 	// Checks if user own Celestial ring or Celestial signet
@@ -57,8 +48,8 @@ export async function motherlodeMineCommand({
 	// Check for 100 golden nuggets and 72 mining for upper motherlode mine access.
 	const gotNuggets = user.cl.amount('Golden nugget') >= 100;
 	if (gotNuggets && miningLevel >= 72) {
-		ore.respawnTime = 4;
-		ore.bankingTime = 40;
+		motherlode.respawnTime = 4;
+		motherlode.bankingTime = 40;
 		boosts.push(
 			'\nYou are mining on the upper level of the motherlode mine, due to having 100 golden nuggets in your cl and 72 mining or higher'
 		);
@@ -74,7 +65,7 @@ export async function motherlodeMineCommand({
 	let [timeToMine, newQuantity] = determineMiningTime({
 		quantity,
 		user,
-		ore,
+		ore: motherlode,
 		ticksBetweenRolls: currentPickaxe.ticksBetweenRolls,
 		glovesRate,
 		armourEffect,
@@ -98,7 +89,7 @@ export async function motherlodeMineCommand({
 		fakeDurationMin,
 		type: 'MotherlodeMining'
 	});
-	let response = `${minionName(user)} is now mining at the ${ore.name} until your minion ${
+	let response = `${minionName(user)} is now mining at the Motherlode Mine until your minion ${
 		quantity ? `mined ${quantity}x or gets tired` : 'is satisfied'
 	}, it'll take ${
 		quantity

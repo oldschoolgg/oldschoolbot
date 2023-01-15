@@ -226,7 +226,7 @@ export const mineCommand: OSBMahojiCommand = {
 			description: 'The thing you want to mine.',
 			required: true,
 			autocomplete: async (value: string) => {
-				return [...Mining.Ores.map(i => i.name), ...Mining.MotherlodeMine.name]
+				return [...Mining.Ores.map(i => i.name), Mining.MotherlodeMine.name]
 					.filter(name => (!value ? true : name.toLowerCase().includes(value.toLowerCase())))
 					.map(i => ({
 						name: i,
@@ -254,12 +254,12 @@ export const mineCommand: OSBMahojiCommand = {
 		channelID
 	}: CommandRunOptions<{ name: string; quantity?: number; powermine?: boolean }>) => {
 		const user = await mUserFetch(userID);
-		let { quantity, powermine, name } = options;
+		let { quantity, powermine } = options;
 
 		const MotherlodeMine = Mining.MotherlodeMine.name === options.name;
 
 		if (MotherlodeMine) {
-			return motherlodeMineCommand({ user, channelID, name, quantity, powermine });
+			return motherlodeMineCommand({ user, channelID, quantity, powermine });
 		}
 
 		const ore = Mining.Ores.find(
@@ -269,7 +269,7 @@ export const mineCommand: OSBMahojiCommand = {
 				stringMatches(ore.name.split(' ')[0], options.name)
 		);
 		if (!ore) {
-			return `Thats not a valid ore to mine. Valid ores are ${Mining.Ores.map(ore => ore.name).join(', ')}, ${
+			return `Thats not a valid ore to mine. Valid ores are ${Mining.Ores.map(ore => ore.name).join(', ')}, or ${
 				Mining.MotherlodeMine.name
 			}.`;
 		}
