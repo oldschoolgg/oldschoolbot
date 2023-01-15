@@ -1,7 +1,7 @@
+import { inlineCode } from 'discord.js';
 import { randArrItem } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
-import { cleanMentions } from '../../lib/util';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const chooseCommand: OSBMahojiCommand = {
@@ -18,10 +18,17 @@ export const chooseCommand: OSBMahojiCommand = {
 			required: true
 		}
 	],
-	run: async ({ options, guildID }: CommandRunOptions<{ list: string }>) => {
-		const guild = guildID ? globalClient.guilds.cache.get(guildID.toString()) : undefined;
+	run: async ({ options }: CommandRunOptions<{ list: string }>) => {
 		const list = options.list.split(',');
 		if (list.length === 0) return "You didn't supply a list.";
-		return `I choose... **${cleanMentions(guild ?? null, randArrItem(list))}**.`;
+		return {
+			content: `Out of ${list
+				.map(i => i.trim().replace(/`/g, ''))
+				.map(inlineCode)
+				.join(', ')}
+
+I choose... **${randArrItem(list)}**.`,
+			allowedMentions: { parse: [], roles: [], users: [] }
+		};
 	}
 };
