@@ -3,12 +3,13 @@ import { calcPercentOfNum, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
+import { convertXPtoLVL } from 'oldschooljs/dist/util/util';
 
 import { LevelRequirements, SkillsEnum } from '../skilling/types';
 import { ItemBank } from '../types';
-import { convertXPtoLVL, normal } from '../util';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
+import { normal } from '../util/smallUtils';
 
 interface WintertodtCrateOptions {
 	points: number;
@@ -173,9 +174,9 @@ export class WintertodtCrateClass {
 
 		if (roll <= 6) {
 			const matTable = roll === 1 ? SeedTables.roll() : MaterialTables.roll();
-			const skill = this.determineSkillOfTableSlot(matTable.item);
+			const skill = this.determineSkillOfTableSlot(matTable);
 			const skillLevel = convertXPtoLVL(skills[skill] ?? 1);
-			const rolledItem = this.pickWeightedLootItem<WintertodtTableSlot>(skillLevel, matTable.item);
+			const rolledItem = this.pickWeightedLootItem<WintertodtTableSlot>(skillLevel, matTable);
 			return [
 				{
 					item: rolledItem[0],
