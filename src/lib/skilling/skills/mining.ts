@@ -246,19 +246,18 @@ const ores: Ore[] = [
 	}
 ];
 
-const MotherlodeMine = [
-	{
-		level: 30,
-		xp: 60,
-		id: 12_011,
-		name: 'Motherlode mine',
-		respawnTime: 5.5,
-		bankingTime: 60,
-		slope: 0.181,
-		intercept: 23.48,
-		petChance: 247_200
-	}
-];
+// Uses determineMiningTime function, therefore Ore object and id -1
+const MotherlodeMine: Ore = {
+	level: 30,
+	xp: 60,
+	id: -1,
+	name: 'Motherlode mine',
+	respawnTime: 5.5,
+	bankingTime: 60,
+	slope: 0.181,
+	intercept: 23.48,
+	petChance: 247_200
+};
 
 const prospectorItems: { [key: number]: number } = {
 	[itemID('Prospector helmet')]: 0.4,

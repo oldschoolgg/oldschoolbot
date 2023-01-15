@@ -4,7 +4,7 @@ import { randomVariation } from 'oldschooljs/dist/util';
 import { determineMiningTime } from '../../../lib/skilling/functions/determineMiningTime';
 import Mining from '../../../lib/skilling/skills/mining';
 import { MotherlodeMiningActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, itemNameFromID, stringMatches } from '../../../lib/util';
+import { formatDuration, itemNameFromID } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { minionName } from '../../../lib/util/minionUtils';
 import { pickaxes } from '../../commands/mine';
@@ -25,15 +25,12 @@ export async function motherlodeMineCommand({
 		return `${minionName(user)} needs 30 Mining to mine ${name}.`;
 	}
 
-	const ore = Mining.MotherlodeMine.find(
-		ore =>
-			stringMatches(ore.id, name) || stringMatches(ore.name, name) || stringMatches(ore.name.split(' ')[0], name)
-	);
+	const ore = Mining.MotherlodeMine;
 
 	if (!ore) {
-		return `Thats not a valid ore to mine. Valid ores are ${Mining.Ores.map(ore => ore.name).join(
-			', '
-		)}, ${Mining.MotherlodeMine.map(name => name.name).join(', ')}.`;
+		return `Thats not a valid ore to mine. Valid ores are ${Mining.Ores.map(ore => ore.name).join(', ')}, ${
+			Mining.MotherlodeMine.name
+		};.`;
 	}
 
 	let miningLevel = user.skillsAsLevels.mining;
@@ -93,7 +90,6 @@ export async function motherlodeMineCommand({
 	const fakeDurationMax = quantity ? randomVariation(increaseNumByPercent(duration, 25), 20) : duration;
 
 	await addSubTaskToActivityTask<MotherlodeMiningActivityTaskOptions>({
-		oreID: ore.id,
 		userID: user.id,
 		channelID,
 		quantity: newQuantity,

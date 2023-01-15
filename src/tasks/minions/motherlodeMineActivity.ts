@@ -12,12 +12,11 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 export const motherlodeMiningTask: MinionTask = {
 	type: 'MotherlodeMining',
 	async run(data: MotherlodeMiningActivityTaskOptions) {
-		const { userID, oreID, channelID, duration } = data;
+		const { userID, channelID, duration } = data;
 		let { quantity } = data;
 		const user = await mUserFetch(userID);
-		const ore = Mining.MotherlodeMine.find(ore => ore.id === oreID)!;
 
-		let xpReceived = quantity * ore.xp;
+		let xpReceived = quantity * Mining.MotherlodeMine.xp;
 		let bonusXP = 0;
 		let cleaningXP = 0;
 
@@ -98,13 +97,13 @@ export const motherlodeMiningTask: MinionTask = {
 
 		let str = `${user}, ${user.minionName} finished mining ${quantity} Pay-dirt. ${xpRes}`;
 
-		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Mining, ore.petChance);
+		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Mining, 247_200);
 		if (roll(petDropRate / quantity)) {
 			loot.add('Rock golem');
 			str += "\nYou have a funny feeling you're being followed...";
 			globalClient.emit(
 				Events.ServerNotification,
-				`${Emoji.Mining} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Rock golem while mining ${ore.name} at level ${currentLevel} Mining!`
+				`${Emoji.Mining} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Rock golem while mining ${Mining.MotherlodeMine.name} at level ${currentLevel} Mining!`
 			);
 		}
 

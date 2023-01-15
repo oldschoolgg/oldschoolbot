@@ -170,9 +170,7 @@ export function minionStatus(user: MUser) {
 		case 'MotherlodeMining': {
 			const data = currentTask as MotherlodeMiningActivityTaskOptions;
 
-			const ore = Mining.Ores.find(ore => ore.id === data.oreID);
-
-			return `${name} is currently mining ${ore!.name}. ${
+			return `${name} is currently mining at the Motherlode Mine. ${
 				data.fakeDurationMax === data.fakeDurationMin
 					? formattedDuration
 					: `approximately ${formatDuration(

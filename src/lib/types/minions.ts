@@ -95,7 +95,6 @@ export interface MiningActivityTaskOptions extends ActivityTaskOptions {
 export interface MotherlodeMiningActivityTaskOptions extends ActivityTaskOptions {
 	fakeDurationMax: number;
 	fakeDurationMin: number;
-	oreID: number;
 	quantity: number;
 }
 
