@@ -154,7 +154,7 @@ export const clueCommand: OSBMahojiCommand = {
 		});
 
 		// Specific boosts
-		const clueTierBoosts: { [index: string]: ClueBoost[] } = {
+		const clueTierBoosts: Record<string, ClueBoost[]> = {
 			Beginner: [
 				{
 					item: 'Ring of the elements',
