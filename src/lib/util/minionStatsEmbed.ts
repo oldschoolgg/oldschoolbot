@@ -6,8 +6,9 @@ import { convertXPtoLVL, toKMB } from 'oldschooljs/dist/util';
 
 import { ClueTiers } from '../clues/clueTiers';
 import { getClueScoresFromOpenables } from '../clues/clueUtils';
-import { badges, skillEmoji } from '../constants';
+import { badges } from '../constants';
 import { calcCLDetails } from '../data/Collections';
+import { skillEmoji } from '../data/emojis';
 import { effectiveMonsters } from '../minions/data/killableMonsters';
 import { courses } from '../skilling/skills/agility';
 import creatures from '../skilling/skills/hunter/creatures';

@@ -91,7 +91,7 @@ export interface Course {
 	id: number;
 	name: string;
 	level: number;
-	xp: number;
+	xp: number | ((agilityLevel: number) => number);
 	marksPer60?: number;
 	lapTime: number;
 	petChance: number;

@@ -15,7 +15,6 @@ import { compostBinCommand, farmingPlantCommand, harvestCommand } from '../lib/a
 import { farmingContractCommand } from '../lib/abstracted_commands/farmingContractCommand';
 import { titheFarmCommand, titheFarmShopCommand } from '../lib/abstracted_commands/titheFarmCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUserSettingsUpdate } from '../settingsUpdate';
 
 const autoFarmFilterTexts: Record<AutoFarmFilterEnum, string> = {
 	AllFarm: 'All crops will be farmed with the highest available seed',
@@ -229,7 +228,7 @@ export const farmingCommand: OSBMahojiCommand = {
 			if (!autoFarmFilterString) return 'Invalid auto farm filter.';
 			const autoFarmFilter = autoFarmFilterString as AutoFarmFilterEnum;
 
-			await mahojiUserSettingsUpdate(userID, {
+			await klasaUser.update({
 				auto_farm_filter: autoFarmFilter
 			});
 

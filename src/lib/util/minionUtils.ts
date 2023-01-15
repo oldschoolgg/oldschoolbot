@@ -1,8 +1,8 @@
 import { escapeMarkdown } from 'discord.js';
+import { convertXPtoLVL } from 'oldschooljs/dist/util/util';
 
 import { Emoji } from '../constants';
 import { SkillsEnum } from '../skilling/types';
-import { convertXPtoLVL } from '../util';
 import resolveItems from './resolveItems';
 
 export function skillLevel(user: MUser, skill: SkillsEnum) {
