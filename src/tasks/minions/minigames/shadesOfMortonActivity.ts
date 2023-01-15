@@ -2,6 +2,7 @@ import { increaseNumByPercent } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { MorytaniaDiary, userhasDiaryTier } from '../../../lib/diaries';
+import { incrementMinigameScore } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ShadesOfMortonOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -12,6 +13,8 @@ export const shadesOfMortonTask: MinionTask = {
 	async run(data: ShadesOfMortonOptions) {
 		const { channelID, quantity, userID, logID, shadeID, duration } = data;
 		const user = await mUserFetch(userID);
+
+		await incrementMinigameScore(user.id, 'shades_of_morton', quantity);
 
 		const log = shadesLogs.find(i => i.normalLog.id === logID)!;
 		const shade = shades.find(i => i.shadeName === shadeID)!;
@@ -42,7 +45,7 @@ export const shadesOfMortonTask: MinionTask = {
 		let firemakingXP = quantity * log.fmXP;
 		if ((await userhasDiaryTier(user, MorytaniaDiary.elite))[0]) {
 			firemakingXP = increaseNumByPercent(firemakingXP, 50);
-			messages.push('50% bonus firemaking xp for morytania hard diary');
+			messages.push('50% bonus firemaking xp for morytania elite diary');
 		}
 
 		let xpStr = await user.addXP({ skillName: SkillsEnum.Firemaking, amount: firemakingXP, duration });
@@ -57,7 +60,7 @@ export const shadesOfMortonTask: MinionTask = {
 		xpStr += ', ';
 		xpStr += await user.addXP({ skillName: SkillsEnum.Prayer, amount: quantity * prayerXP, duration });
 
-		let str = `You received ${loot}. ${xpStr}.`;
+		let str = `${user}, You received ${loot}. ${xpStr}.`;
 
 		if (messages.length > 0) {
 			str += `\n**Messages:** ${messages.join(', ')}`;

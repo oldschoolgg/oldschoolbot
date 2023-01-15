@@ -7,7 +7,7 @@ import fetch from 'node-fetch';
 import { production } from '../config';
 import { analyticsTick } from './analytics';
 import { prisma } from './settings/prisma';
-import { cacheCleanup } from './util';
+import { cacheCleanup } from './util/cachedUserIDs';
 import { sendToChannelID } from './util/webhook';
 
 export function initCrons() {
