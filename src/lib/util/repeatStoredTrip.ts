@@ -345,7 +345,7 @@ export const tripHandlers = {
 	[activity_type_enum.MotherlodeMining]: {
 		commandName: 'mine',
 		args: (data: MotherlodeMiningActivityTaskOptions) => ({
-			name: 'motherlode mine',
+			name: 'Motherlode mine',
 			quantity: data.quantity
 		})
 	},
