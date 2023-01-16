@@ -36,25 +36,25 @@ function shouldApplyBoost(clueTierName: string, item: string, hasAchievementDiar
 }
 
 interface ClueBoost {
-	item: string;
+	item: Item;
 	boost: string;
 	durationMultiplier: number;
 }
 
 function applyClueBoosts(user: MUser, boostList: ClueBoost[], boosts: any[], duration: number, clueTierName: string) {
-	let hasAchievementDiaryCape = false;
-	boostList.forEach(boost => {
-		if (user.hasEquippedOrInBank(boost.item)) {
-			if (shouldApplyBoost(clueTierName, boost.item, hasAchievementDiaryCape)) {
-				boosts.push(boost.boost);
-				duration *= boost.durationMultiplier;
-			}
-			if (boost.item === 'Achievement diary cape') {
-				hasAchievementDiaryCape = true;
-			}
-		}
-	});
-	return { duration, boosts };
+    let hasAchievementDiaryCape = false;
+    for (const boost of boostList) {
+        if (user.hasEquippedOrInBank(boost.item)) {
+            if (shouldApplyBoost(clueTierName, boost.item, hasAchievementDiaryCape)) {
+                boosts.push(boost.boost);
+                duration *= boost.durationMultiplier;
+            }
+            if (boost.item === 'Achievement diary cape') {
+                hasAchievementDiaryCape = true;
+            }
+        }
+    }
+    return { duration, boosts };
 }
 
 export const clueCommand: OSBMahojiCommand = {
@@ -146,141 +146,141 @@ export const clueCommand: OSBMahojiCommand = {
 			}
 		];
 
-		globalBoosts.forEach(({ condition, boost, durationMultiplier }) => {
-			if (condition()) {
-				boosts.push(boost);
-				duration *= durationMultiplier;
-			}
-		});
+		for (const { condition, boost, durationMultiplier } of globalBoosts) {
+    		if (condition()) {
+     		   boosts.push(boost);
+      		  duration *= durationMultiplier;
+   		 }
+		}
 
 		// Specific boosts
 		const clueTierBoosts: Record<string, ClueBoost[]> = {
 			Beginner: [
 				{
-					item: 'Ring of the elements',
+					item: getOSItem('Ring of the elements'),
 					boost: '10% for Ring of the elements',
 					durationMultiplier: 0.9
 				}
 			],
 			Easy: [
 				{
-					item: 'Achievement diary cape',
+					item: getOSItem('Achievement diary cape'),
 					boost: '10% for Achievement diary cape',
 					durationMultiplier: 0.9
 				},
 				{
-					item: 'Ring of the elements',
+					item: getOSItem('Ring of the elements'),
 					boost: '6% for Ring of the elements',
 					durationMultiplier: 0.94
 				},
 				{
-					item: 'Master scroll book',
+					item: getOSItem('Master scroll book'),
 					boost: '6% for Master scroll book',
 					durationMultiplier: 0.94
 				},
 				{
-					item: "Xeric's talisman",
+					item: getOSItem("Xeric's talisman"),
 					boost: "4% for Xeric's talisman",
 					durationMultiplier: 0.96
 				}
 			],
 
 			Medium: [
-				{ item: 'Master scroll book', boost: '10% for Master scroll book', durationMultiplier: 0.9 },
+				{ item: getOSItem('Master scroll book'), boost: '10% for Master scroll book', durationMultiplier: 0.9 },
 				{
-					item: 'Ring of the elements',
+					item: getOSItem('Ring of the elements'),
 					boost: '8% for Ring of the elements',
 					durationMultiplier: 0.92
 				},
-				{ item: "Xeric's talisman", boost: "6% for Xeric's talisman", durationMultiplier: 0.94 }
+				{ item: getOSItem("Xeric's talisman"), boost: "6% for Xeric's talisman", durationMultiplier: 0.94 }
 			],
 			Hard: [
 				{
-					item: 'Achievement diary cape',
+					item: getOSItem('Achievement diary cape'),
 					boost: '10% for Achievement diary cape',
 					durationMultiplier: 0.9
 				},
 				{
-					item: 'Wilderness sword 3',
+					item: getOSItem('Wilderness sword 3'),
 					boost: '8% for Wilderness sword 3',
 					durationMultiplier: 0.92
 				},
 				{
-					item: 'Royal seed pod',
+					item: getOSItem('Royal seed pod'),
 					boost: '6% for Royal seed pod',
 					durationMultiplier: 0.94
 				},
 				{
-					item: 'Eternal teleport crystal',
+					item: getOSItem('Eternal teleport crystal'),
 					boost: '4% for Eternal teleport crystal',
 					durationMultiplier: 0.96
 				},
 				{
-					item: "Pharaoh's sceptre",
+					item: getOSItem("Pharaoh's sceptre"),
 					boost: "4% for Pharaoh's sceptre",
 					durationMultiplier: 0.96
 				},
 				{
-					item: 'Toxic blowpipe',
+					item: getOSItem('Toxic blowpipe'),
 					boost: '4% for Toxic blowpipe',
 					durationMultiplier: 0.96
 				}
 			],
 			Elite: [
 				{
-					item: 'Achievement diary cape',
+					item: getOSItem('Achievement diary cape'),
 					boost: '10% for Achievement diary cape',
 					durationMultiplier: 0.9
 				},
 				{
-					item: 'Kandarin headgear 4',
+					item: getOSItem('Kandarin headgear 4'),
 					boost: '7% for Kandarin headgear 4',
 					durationMultiplier: 0.93
 				},
 				{
-					item: 'Fremennik sea boots 4',
+					item: getOSItem('Fremennik sea boots 4'),
 					boost: '3% for Fremennik sea boots 4',
 					durationMultiplier: 0.97
 				},
 				{
-					item: "Pharaoh's sceptre",
+					item: getOSItem("Pharaoh's sceptre"),
 					boost: "4% for Pharaoh's sceptre",
 					durationMultiplier: 0.96
 				},
 				{
-					item: 'Toxic blowpipe',
+					item: getOSItem('Toxic blowpipe'),
 					boost: '4% for Toxic blowpipe',
 					durationMultiplier: 0.96
 				}
 			],
 			Master: [
 				{
-					item: 'Achievement diary cape',
+					item: getOSItem('Achievement diary cape'),
 					boost: '10% for Achievement diary cape',
 					durationMultiplier: 0.9
 				},
 				{
-					item: 'Kandarin headgear 4',
+					item: getOSItem('Kandarin headgear 4'),
 					boost: '6% for Kandarin headgear 4',
 					durationMultiplier: 0.94
 				},
 				{
-					item: 'Eternal teleport crystal',
+					item: getOSItem('Eternal teleport crystal'),
 					boost: '3% for Eternal teleport crystal',
 					durationMultiplier: 0.97
 				},
 				{
-					item: "Xeric's talisman",
+					item: getOSItem("Xeric's talisman"),
 					boost: "2% for Xeric's talisman",
 					durationMultiplier: 0.98
 				},
 				{
-					item: 'Toxic blowpipe',
+					item: getOSItem('Toxic blowpipe'),
 					boost: '2% for Toxic blowpipe',
 					durationMultiplier: 0.98
 				},
 				{
-					item: 'Dragon claws',
+					item: getOSItem('Dragon claws'),
 					boost: '1% for Dragon claws',
 					durationMultiplier: 0.99
 				}
