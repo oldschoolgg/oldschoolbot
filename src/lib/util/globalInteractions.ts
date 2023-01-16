@@ -132,7 +132,10 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 		}
 	});
 	if (!giveaway) {
-		return interactionReply(interaction, { content: 'Invalid giveaway.', ephemeral: true });
+		return interactionReply(interaction, {
+			content: 'Invalid giveaway.',
+			ephemeral: true
+		});
 	}
 	if (split[1] === 'REPEAT') {
 		if (user.id !== giveaway.user_id) {
@@ -162,7 +165,10 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 	}
 
 	if (giveaway.finish_date.getTime() < Date.now() || giveaway.completed) {
-		return interactionReply(interaction, { content: 'This giveaway has finished.', ephemeral: true });
+		return interactionReply(interaction, {
+			content: 'This giveaway has finished.',
+			ephemeral: true
+		});
 	}
 
 	const action = split[1] === 'ENTER' ? 'ENTER' : 'LEAVE';
@@ -175,7 +181,10 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 	}
 
 	if (user.id === giveaway.user_id) {
-		return interactionReply(interaction, { content: 'You cannot join your own giveaway.', ephemeral: true });
+		return interactionReply(interaction, {
+			content: 'You cannot join your own giveaway.',
+			ephemeral: true
+		});
 	}
 
 	if (action === 'ENTER') {
@@ -196,7 +205,10 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 			}
 		});
 		updateGiveawayMessage(giveaway);
-		return interactionReply(interaction, { content: 'You are now entered in this giveaway.', ephemeral: true });
+		return interactionReply(interaction, {
+			content: 'You are now entered in this giveaway.',
+			ephemeral: true
+		});
 	}
 	if (!giveaway.users_entered.includes(user.id)) {
 		return interactionReply(interaction, {
@@ -213,11 +225,14 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 		}
 	});
 	updateGiveawayMessage(giveaway);
-	return interactionReply(interaction, { content: 'You left the giveaway.', ephemeral: true });
+	return interactionReply(interaction, {
+		content: 'You left the giveaway.',
+		ephemeral: true
+	});
 }
 
 async function simRepeatHandler(user: MUser, interaction: ButtonInteraction) {
-	const [commandType, jsonData] = interaction.customId.replace('REPEAT_SIM_', '').split('_DATA_');
+	const [commandType, jsonData] = interaction.customId.replace('SIM_', '').split('_X_');
 	return runCommand({
 		commandName: commandType.toLowerCase(),
 		args: JSON.parse(jsonData),
@@ -233,7 +248,10 @@ async function repeatTripHandler(user: MUser, interaction: ButtonInteraction) {
 	if (user.minionIsBusy) return 'Your minion is busy.';
 	const trips = await fetchRepeatTrips(interaction.user.id);
 	if (trips.length === 0)
-		return interactionReply(interaction, { content: "Couldn't find a trip to repeat.", ephemeral: true });
+		return interactionReply(interaction, {
+			content: "Couldn't find a trip to repeat.",
+			ephemeral: true
+		});
 	const id = interaction.customId;
 	const split = id.split('_');
 	const matchingActivity = trips.find(i => i.type === split[2]);
@@ -249,11 +267,14 @@ export async function interactionHook(interaction: Interaction) {
 	const user = await mUserFetch(userID);
 	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, interaction);
 	if (id.includes('REPEAT_TRIP')) return repeatTripHandler(user, interaction);
-	if (id.includes('REPEAT_SIM_')) return simRepeatHandler(user, interaction);
+	if (id.startsWith('SIM_')) return simRepeatHandler(user, interaction);
 
 	if (!isValidGlobalInteraction(id)) return;
 	if (user.isBusy || globalClient.isShuttingDown) {
-		return interactionReply(interaction, { content: 'You cannot use a command right now.', ephemeral: true });
+		return interactionReply(interaction, {
+			content: 'You cannot use a command right now.',
+			ephemeral: true
+		});
 	}
 
 	const options = {
@@ -384,7 +405,10 @@ export async function interactionHook(interaction: Interaction) {
 	}
 
 	if (minionIsBusy(user.id)) {
-		return interactionReply(interaction, { content: `${user.minionName} is busy.`, ephemeral: true });
+		return interactionReply(interaction, {
+			content: `${user.minionName} is busy.`,
+			ephemeral: true
+		});
 	}
 
 	switch (id) {

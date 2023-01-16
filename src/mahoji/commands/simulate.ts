@@ -63,7 +63,6 @@ async function coxCommand(user: MUser, quantity: number, cm = false, points = 25
 		title: `Loot from ${quantity} ${cm ? 'challenge mode ' : ''}raids`
 	});
 
-
 	return {
 		content: `Personal Loot from ${quantity}x raids, with ${team.length} people, each with ${toKMB(
 			points
@@ -72,8 +71,13 @@ async function coxCommand(user: MUser, quantity: number, cm = false, points = 25
 		components: makeComponents([
 			new ButtonBuilder()
 				.setCustomId(
-					`REPEAT_SIM_SIMULATE_DATA_${JSON.stringify({
-						cox: { quantity, points, team_size: teamSize, challenge_mode: cm }
+					`SIM_SIMULATE_X_${JSON.stringify({
+						cox: {
+							quantity,
+							points,
+							team_size: teamSize,
+							challenge_mode: cm
+						}
 					})}`
 				)
 				.setLabel('Repeat Sim')
@@ -179,7 +183,7 @@ export const simulateCommand: OSBMahojiCommand = {
 				content: received.length === 0 ? "You didn't get any pets!" : received.join(' '),
 				components: makeComponents([
 					new ButtonBuilder()
-						.setCustomId(`REPEAT_SIM_SIMULATE_DATA_${JSON.stringify(options)}`)
+						.setCustomId(`SIM_SIMULATE_X_${JSON.stringify(options)}`)
 						.setLabel('Repeat Sim')
 						.setStyle(ButtonStyle.Secondary)
 						.setEmoji('📊')

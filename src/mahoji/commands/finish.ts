@@ -49,7 +49,7 @@ export const finishCommand: OSBMahojiCommand = {
 		const finishStr = kcBank.items().sort(sorts.quantity).reverse();
 		const repeatButton = makeComponents([
 			new ButtonBuilder()
-				.setCustomId(`REPEAT_SIM_FINISH_DATA_${JSON.stringify(options)}`)
+				.setCustomId(`SIM_FINISH_X_${JSON.stringify(options)}`)
 				.setLabel('Repeat Sim')
 				.setStyle(ButtonStyle.Secondary)
 				.setEmoji('📊')

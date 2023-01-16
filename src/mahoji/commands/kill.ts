@@ -51,7 +51,10 @@ export const killCommand: OSBMahojiCommand = {
 			required: true,
 			autocomplete: async (value: string) => {
 				return [
-					...Monsters.map(i => ({ name: i.name, aliases: i.aliases })),
+					...Monsters.map(i => ({
+						name: i.name,
+						aliases: i.aliases
+					})),
 					{ name: 'nex', aliases: ['nex'] },
 					{ name: 'nightmare', aliases: ['nightmare'] }
 				]
@@ -88,7 +91,7 @@ export const killCommand: OSBMahojiCommand = {
 
 		const repeatButton = makeComponents([
 			new ButtonBuilder()
-				.setCustomId(`REPEAT_SIM_KILL_DATA_${JSON.stringify(options)}`)
+				.setCustomId(`SIM_KILL_X_${JSON.stringify(options)}`)
 				.setLabel('Repeat Sim')
 				.setStyle(ButtonStyle.Secondary)
 				.setEmoji('📊')
