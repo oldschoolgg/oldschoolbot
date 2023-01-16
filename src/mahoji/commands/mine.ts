@@ -259,7 +259,7 @@ export const mineCommand: OSBMahojiCommand = {
 		const MotherlodeMine = Mining.MotherlodeMine.name === options.name;
 
 		if (MotherlodeMine) {
-			return motherlodeMineCommand({ user, channelID, quantity, powermine });
+			return motherlodeMineCommand({ user, channelID, quantity });
 		}
 
 		const ore = Mining.Ores.find(

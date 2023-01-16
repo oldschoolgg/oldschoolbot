@@ -17,7 +17,6 @@ export async function motherlodeMineCommand({
 	user: MUser;
 	channelID: string;
 	quantity?: number;
-	powermine?: boolean;
 }) {
 	let miningLevel = user.skillsAsLevels.mining;
 	if (miningLevel < 30) {
