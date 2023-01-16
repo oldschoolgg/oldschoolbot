@@ -30,11 +30,11 @@ export const decodeCommand: OSBMahojiCommand = {
 
 		const item = getItem(options.item);
 		if (!item) return 'Invalid item;';
-		
+
 		const mappedItem = findRandomizedItem(user.id, item);
 		if (!mappedItem)
 			return 'https://media.discordapp.net/attachments/342983479501389826/974780581445517372/caption.gif';
-		
+
 		await user.update({
 			last_decode_date: new Date()
 		});
