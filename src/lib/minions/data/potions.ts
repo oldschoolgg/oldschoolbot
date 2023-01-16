@@ -267,6 +267,10 @@ const Potions = [
 		items: resolveItems(['Antipoison mix(1)', 'Antipoison mix(2)'])
 	},
 	{
+		name: `Relicym's mix`,
+		items: resolveItems([`Relicym's mix(1)`, `Relicym's mix(2)`])
+	},
+	{
 		name: 'Strength mix',
 		items: resolveItems(['Strength mix(1)', 'Strength mix(2)'])
 	},
@@ -317,6 +321,10 @@ const Potions = [
 	{
 		name: 'Super str. mix',
 		items: resolveItems(['Super str. mix(1)', 'Super str. mix(2)'])
+	},
+	{
+		name: 'Magic essence mix',
+		items: resolveItems(['Magic essence mix(1)', 'Magic essence mix(2)'])
 	},
 	{
 		name: 'Super restore mix',

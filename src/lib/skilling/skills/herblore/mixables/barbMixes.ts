@@ -31,6 +31,19 @@ const barbMixes: Mixable[] = [
 		bankTimePerPotion: 0.088
 	},
 	{
+		name: `Relicym's mix(2)`,
+		aliases: ['Relicyms mix roe', 'Relicyms mix(2)', 'Relicyms mix 2 roe'],
+		id: itemID(`Relicym's mix(2)`),
+		level: 9,
+		xp: 14,
+		inputItems: new Bank({
+			4846: 1,
+			Roe: 1
+		}),
+		tickRate: 1,
+		bankTimePerPotion: 0.088
+	},
+	{
 		name: 'Strength mix(2)',
 		aliases: ['str mix(2)', 'strength mix(2)', 'strength mix roe'],
 		id: itemID('Strength mix(2)'),
@@ -194,6 +207,19 @@ const barbMixes: Mixable[] = [
 		xp: 42,
 		inputItems: new Bank({
 			'Super strength(2)': 1,
+			Caviar: 1
+		}),
+		tickRate: 1,
+		bankTimePerPotion: 0.088
+	},
+	{
+		name: 'Magic essence mix(2)',
+		aliases: ['essence mix(2)', 'magic essence mix', 'magic essence mix caviar'],
+		id: itemID('Magic essence mix(2)'),
+		level: 61,
+		xp: 43,
+		inputItems: new Bank({
+			'Magic essence(2)': 1,
 			Caviar: 1
 		}),
 		tickRate: 1,
