@@ -1,7 +1,7 @@
 import { randInt, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
+import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
 import { getPOHObject } from '../../lib/poh';
@@ -9,6 +9,7 @@ import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, isWeekend, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
+import getOSItem from '../../lib/util/getOSItem';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings';
@@ -42,19 +43,19 @@ interface ClueBoost {
 }
 
 function applyClueBoosts(user: MUser, boostList: ClueBoost[], boosts: any[], duration: number, clueTierName: string) {
-    let hasAchievementDiaryCape = false;
-    for (const boost of boostList) {
-        if (user.hasEquippedOrInBank(boost.item)) {
-            if (shouldApplyBoost(clueTierName, boost.item, hasAchievementDiaryCape)) {
-                boosts.push(boost.boost);
-                duration *= boost.durationMultiplier;
-            }
-            if (boost.item === 'Achievement diary cape') {
-                hasAchievementDiaryCape = true;
-            }
-        }
-    }
-    return { duration, boosts };
+	let hasAchievementDiaryCape = false;
+	for (const boost of boostList) {
+		if (user.hasEquippedOrInBank(boost.item.name)) {
+			if (shouldApplyBoost(clueTierName, boost.item.name, hasAchievementDiaryCape)) {
+				boosts.push(boost.boost);
+				duration *= boost.durationMultiplier;
+			}
+			if (boost.item.name === 'Achievement diary cape') {
+				hasAchievementDiaryCape = true;
+			}
+		}
+	}
+	return { duration, boosts };
 }
 
 export const clueCommand: OSBMahojiCommand = {
@@ -147,10 +148,10 @@ export const clueCommand: OSBMahojiCommand = {
 		];
 
 		for (const { condition, boost, durationMultiplier } of globalBoosts) {
-    		if (condition()) {
-     		   boosts.push(boost);
-      		  duration *= durationMultiplier;
-   		 }
+			if (condition()) {
+				boosts.push(boost);
+				duration *= durationMultiplier;
+			}
 		}
 
 		// Specific boosts
