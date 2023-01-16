@@ -1,10 +1,9 @@
 import { Time } from 'e';
 import { CommandRunOptions } from 'mahoji';
-import { Bank } from 'oldschooljs';
 
-import { randomizeBank } from '../../lib/randomizer';
+import { findRandomizedItem } from '../../lib/randomizer';
 import { getItem } from '../../lib/util/getOSItem';
-import { formatDuration } from '../../lib/util/smallUtils';
+import { formatDuration, itemNameFromID } from '../../lib/util/smallUtils';
 import { itemOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -31,10 +30,13 @@ export const decodeCommand: OSBMahojiCommand = {
 
 		const item = getItem(options.item);
 		if (!item) return 'Invalid item;';
-		let sample = new Bank().add(item.id);
 		await user.update({
 			last_decode_date: new Date()
 		});
-		return `For you, ${item.name} is randomized to... ${randomizeBank(user.id, sample).items()[0][0].name}.`;
+
+		const mappedItem = findRandomizedItem(user.id, item);
+		if (!mappedItem)
+			return 'https://media.discordapp.net/attachments/342983479501389826/974780581445517372/caption.gif';
+		return `For you, getting a ${itemNameFromID(mappedItem)} is how you obtain a ${item.name}`;
 	}
 };

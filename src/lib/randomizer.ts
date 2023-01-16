@@ -1,4 +1,5 @@
 import { Bank, Items } from 'oldschooljs';
+import { Item } from 'oldschooljs/dist/meta/types';
 import { integer, MersenneTwister19937 } from 'random-js';
 
 const allItems = Items.array().map(i => i.id);
@@ -14,4 +15,13 @@ export function randomizeBank(uID: string, bank: Bank) {
 		newBank.add(getRandomizedItem(uID, item.id) as number, qty);
 	}
 	return newBank;
+}
+
+export function findRandomizedItem(userID: string, itemToSearchFor: Item) {
+	for (const item of allItems) {
+		if (getRandomizedItem(userID, item) === itemToSearchFor.id) {
+			return item;
+		}
+	}
+	return null;
 }
