@@ -260,7 +260,7 @@ const Potions = [
 	},
 	{
 		name: 'Superattack mix',
-		items: resolveItems(['Superattack mix(1)', 'Superattack mix(2)',])
+		items: resolveItems(['Superattack mix(1)', 'Superattack mix(2)'])
 	}
 ];
 
