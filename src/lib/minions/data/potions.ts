@@ -267,8 +267,8 @@ const Potions = [
 		items: resolveItems(['Antipoison mix(1)', 'Antipoison mix(2)'])
 	},
 	{
-		name: `Relicym's mix`,
-		items: resolveItems([`Relicym's mix(1)`, `Relicym's mix(2)`])
+		name: "Relicym's mix",
+		items: resolveItems(["Relicym's mix(1)", "Relicym's mix(2)"])
 	},
 	{
 		name: 'Strength mix',

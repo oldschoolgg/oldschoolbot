@@ -31,9 +31,9 @@ const barbMixes: Mixable[] = [
 		bankTimePerPotion: 0.088
 	},
 	{
-		name: `Relicym's mix(2)`,
+		name: "Relicym's mix(2)",
 		aliases: ['Relicyms mix roe', 'Relicyms mix(2)', 'Relicyms mix 2 roe'],
-		id: itemID(`Relicym's mix(2)`),
+		id: itemID("Relicym's mix(2)"),
 		level: 9,
 		xp: 14,
 		inputItems: new Bank({
