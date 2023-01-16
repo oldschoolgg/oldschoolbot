@@ -8,7 +8,13 @@ import { updateBankSetting } from './util/updateBankSetting';
 
 interface DegradeableItem {
 	item: Item;
-	settingsKey: 'tentacle_charges' | 'sang_charges' | 'celestial_ring_charges' | 'ash_sanctifier_charges';
+	settingsKey:
+		| 'tentacle_charges'
+		| 'sang_charges'
+		| 'celestial_ring_charges'
+		| 'ash_sanctifier_charges'
+		| 'serp_helm_charges'
+		| 'blood_fury_charges';
 	itemsToRefundOnBreak: Bank;
 	setup: GearSetupType;
 	aliases: string[];
@@ -69,6 +75,32 @@ export const degradeableItems: DegradeableItem[] = [
 			charges: 10
 		},
 		unchargedItem: getOSItem('Ash sanctifier')
+	},
+	{
+		item: getOSItem('Serpentine helm'),
+		settingsKey: 'serp_helm_charges',
+		itemsToRefundOnBreak: new Bank().add('Serpentine helm (uncharged)'),
+		setup: 'melee',
+		aliases: ['serp', 'serp helm', 'serpentine helm'],
+		chargeInput: {
+			cost: new Bank().add("Zulrah's scales"),
+			charges: 1
+		},
+		unchargedItem: getOSItem('Serpentine helm (uncharged)'),
+		convertOnCharge: true
+	},
+	{
+		item: getOSItem('Amulet of blood fury'),
+		settingsKey: 'blood_fury_charges',
+		itemsToRefundOnBreak: new Bank().add('Amulet of fury'),
+		setup: 'melee',
+		aliases: ['blood fury', 'amulet of blood fury'],
+		chargeInput: {
+			cost: new Bank().add('Blood shard'),
+			charges: 10_000
+		},
+		unchargedItem: getOSItem('Amulet of fury'),
+		convertOnCharge: true
 	}
 ];
 

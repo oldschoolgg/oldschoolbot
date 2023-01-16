@@ -1,5 +1,5 @@
 import { objectEntries, Time } from 'e';
-import { Items } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { MersenneTwister19937, shuffle } from 'random-js';
 
@@ -132,4 +132,12 @@ export function normal(mu = 0, sigma = 1, nsamples = 6) {
 export function shuffleRandom<T>(input: number, arr: readonly T[]): T[] {
 	const engine = MersenneTwister19937.seed(input);
 	return shuffle(engine, [...arr]);
+}
+
+export function averageBank(bank: Bank, kc: number) {
+	let newBank = new Bank();
+	for (const [item, qty] of bank.items()) {
+		newBank.add(item.id, Math.floor(qty / kc));
+	}
+	return newBank;
 }

@@ -1,8 +1,3 @@
-The chance of receiving a Thread of Elidinis or one of the three Keris Partisan jewels is determined by a base rate that linearly interpolates to three times their base rate depending on kill count. The base rate for the thread is 1/10, and the base rate for a specific jewel is 1/180, or 1/60 for any jewel.[1]
-
-At 0 kill count, the chance of receiving one of these items is their base drop rate, whereas a kill count equivalent to 1.5x their base drop rate denominator will make the chances three times as likely. For example, at 0 kill count, players will have a 1/10 chance to receive the thread. However, at 15 kill count, they will have a 3/10 chance instead. In addition, Keris Partisan jewels are more likely to appear if the player already possesses one. Players cannot receive duplicate jewels until they’ve obtained all three first.
-
-The pet, Tumeken's guardian, is determined similarly to uniques but with different base values. Players will have a 1% chance to receive the pet for every {\displaystyle 350,000-700\left(X+{\frac {Y}{3}}\right)}{\displaystyle 350,000-700\left(X+{\frac {Y}{3}}\right)} total reward points, where {\displaystyle X}{\displaystyle X} is the number of raid levels less than or equal to 400, and {\displaystyle Y}{\displaystyle Y} is the number of raid levels from 400 to 550. Raid levels above 550 do not contribute to increasing pet chance, effectively capping pet drop chances at raid level 550.
 import { bold } from 'discord.js';
 import {
 	calcPercentOfNum,
@@ -24,6 +19,7 @@ import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { mahojiParseNumber, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { Emoji } from '../constants';
+import { degradeItem } from '../degradeableItems';
 import { GearStats, UserFullGearSetup } from '../gear/types';
 import { trackLoot } from '../lootTrack';
 import getUserFoodFromBank from '../minions/functions/getUserFoodFromBank';
@@ -44,6 +40,7 @@ import {
 } from '../util';
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import getOSItem from '../util/getOSItem';
+import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
 import { updateBankSetting } from '../util/updateBankSetting';
 import { TeamLoot } from './TeamLoot';
@@ -101,6 +98,10 @@ export const maxMeleeOver300Gear = constructGearSetup({
 	ring: 'Berserker ring(i)'
 });
 
+const SERP_HELM_CHARGES_PER_HOUR = 600;
+function calcSerpHelmCharges(time: number) {
+	return Math.floor(time / (Time.Hour / SERP_HELM_CHARGES_PER_HOUR));
+}
 const REQUIRED_ARROWS = resolveItems(['Dragon arrow', 'Amethyst arrow', 'Rune arrow', 'Adamant arrow']);
 // crossbows are spec boosts
 // bow in range setup, boost if its a tbow
@@ -120,6 +121,16 @@ const minimumSuppliesNeeded = new Bank({
 	'Rune pouch': 1
 });
 
+const rangeWeaponBoosts = [['Twisted bow', 4]] as const;
+const primarySpecWeaponBoosts = [
+	['Dragon claws', 6],
+	['Crystal halberd', 3]
+] as const;
+const secondarySpecWeaponBoosts = [
+	['Dragon warhammer', 6],
+	['Bandos godsword', 3],
+	['Dragon dagger', 1]
+] as const;
 const REQUIRED_RANGE_WEAPONS = resolveItems(['Dragon crossbow', 'Armadyl crossbow', 'Zaryte crossbow']);
 const MELEE_REQUIRED_WEAPONS = resolveItems(['Zamorakian hasta', 'Ghrazi rapier', "Osmumten's fang"]);
 const MELEE_REQUIRED_ARMOR = resolveItems(['Fire cape', 'Infernal cape']);
@@ -255,16 +266,23 @@ const toaRequirements: {
 			return true;
 		},
 		desc: () => `Need atleast ${minimumSuppliesNeeded}`
+	},
+	{
+		name: 'Poison Protection',
+		doesMeet: ({ user }) => {
+			const ownsSanfew = user.owns('Sanfew serum(4)');
+			const hasSerpHelm = user.gear.melee.hasEquipped('Serpentine helm', false);
+			const hasSerpHelmCharges = user.user.serp_helm_charges >= calcSerpHelmCharges(Time.Hour);
+			const canUseSerp = hasSerpHelm && hasSerpHelmCharges;
+
+			if (!ownsSanfew && !canUseSerp) {
+				return 'You need a charged Serpentine helmet equipped in melee, or a Sanfew serum(4) in your bank.';
+			}
+			return true;
+		},
+		desc: () => 'Need a charged Serpentine helmet equipped in melee, or a Sanfew serum(4) in your bank'
 	}
 ];
-
-/**
- * Costs
- * Requirements
- * Boosts
- * Speed
- * Deaths/Wiping, and trip length based on that
- */
 
 interface BaseTOAUser {
 	id: string;
@@ -285,6 +303,42 @@ interface TOAParsedUser extends TOAInputUser {
 	totalEffectiveness: number;
 }
 
+const untradeables = [
+	{
+		item: getOSItem('Thread of elidinis'),
+		dropRate: 10
+	},
+	{
+		item: getOSItem('Eye of the corruptor'),
+		dropRate: 60
+	},
+	{
+		item: getOSItem('Jewel of the sun'),
+		dropRate: 60
+	},
+	{
+		item: getOSItem('Breach of the scarab'),
+		dropRate: 60
+	}
+];
+
+function untradeableRoll(kc: number, cl: Bank) {
+	let loot = new Bank();
+	for (const { item, dropRate } of untradeables) {
+		let rolls = 1;
+		if (!cl.has(item.id) && kc > 5) {
+			rolls = Math.min(3, Math.floor(kc / 5));
+		}
+		for (let i = 0; i < rolls; i++) {
+			if (roll(dropRate)) {
+				loot.add(item.id);
+				break;
+			}
+		}
+	}
+	return loot;
+}
+
 let TOAUniqueTable = new LootTable()
 	.add('Lightbearer', 1, 7)
 	.add("Osmumten's fang", 1, 7)
@@ -294,15 +348,11 @@ let TOAUniqueTable = new LootTable()
 	.add('Masori chaps', 1, 2)
 	.add("Tumeken's shadow (uncharged)", 1, 1);
 
-function untradeableRoll() {
-	return new Bank();
-}
-
-function uniqueLootRoll(raidLevel: number) {
+function uniqueLootRoll(kc: number, cl: Bank, raidLevel: number) {
 	const [item] = TOAUniqueTable.roll().items()[0];
 
 	if (resolveItems(["Osmumten's fang", 'Lightbearer']).includes(item.id) && raidLevel < 50 && !roll(50)) {
-		return untradeableRoll();
+		return untradeableRoll(kc, cl);
 	}
 
 	if (
@@ -316,7 +366,7 @@ function uniqueLootRoll(raidLevel: number) {
 		raidLevel < 150 &&
 		!roll(50)
 	) {
-		return untradeableRoll();
+		return untradeableRoll(kc, cl);
 	}
 
 	return new Bank().add(item.id);
@@ -367,6 +417,9 @@ function nonUniqueLoot({ points }: { points: number }) {
 interface TOALootUser {
 	id: string;
 	points: number;
+	cl: Bank;
+	kc: number;
+	deaths: number[];
 }
 
 export function calcTOALoot({ users, raidLevel }: { users: TOALootUser[]; raidLevel: number }) {
@@ -381,21 +434,71 @@ export function calcTOALoot({ users, raidLevel }: { users: TOALootUser[]; raidLe
 	let y = Math.min(150, raidLevel - 400);
 
 	// prettier-ignore
-	let pointsForOnePercentChance = 10_500 - 20 * (x + (y / 3));
-	let chanceOfUnique = Math.min(totalTeamPoints / pointsForOnePercentChance, 55);
+	let pointsForOnePercentUniqueChance = 10_500 - 20 * (x + (y / 3));
+	let chanceOfUnique = Math.min(totalTeamPoints / pointsForOnePercentUniqueChance, 55);
 	let didGetUnique = percentChance(chanceOfUnique);
 	const uniqueRecipient = didGetUnique ? uniqueDeciderTable.roll() : null;
 
+	const messages: string[] = [`Your team had a ${chanceOfUnique.toFixed(2)}% chance of getting a unique drop.`];
+
 	for (const user of users) {
 		if (uniqueRecipient && user.id === uniqueRecipient) {
-			loot.add(user.id, uniqueLootRoll(raidLevel));
+			loot.add(user.id, uniqueLootRoll(user.kc, user.cl, raidLevel));
 		} else {
 			loot.add(user.id, nonUniqueLoot({ points: user.points }));
+		}
+		loot.add(user.id, untradeableRoll(user.kc, user.cl));
+
+		let pointsForOnePercentPetChance = 350_000 - 700 * (x + y / 3);
+		let chanceOfPet = Math.min(user.points / pointsForOnePercentPetChance, 55);
+		let didGetPet = percentChance(chanceOfPet);
+		if (didGetPet) {
+			loot.add(user.id, "Tumeken's guardian");
+		}
+	}
+
+	const ornamentKits = [
+		[getOSItem('Cursed phalanx'), 500],
+		[getOSItem('Menaphite ornament kit'), 425],
+		[getOSItem('Masori crafting kit'), 350]
+	] as const;
+
+	const specialItemsReceived: number[] = [];
+	const hadNoDeaths = users.every(u => u.deaths.length === 0);
+	if (hadNoDeaths) {
+		for (const kit of ornamentKits.filter(i => raidLevel >= i[1])) {
+			specialItemsReceived.push(kit[0].id);
+		}
+		if (raidLevel >= 450 && roll(3)) {
+			specialItemsReceived.push(
+				randArrItem(
+					resolveItems([
+						'Remnant of zebak',
+						'Ancient remnant',
+						'Remnant of kephri',
+						'Remnant of ba-ba',
+						'Remnant of akkha'
+					])
+				)
+			);
+		}
+		if (specialItemsReceived.length > 0) {
+			for (const user of users) {
+				for (const kit of specialItemsReceived) {
+					loot.add(user.id, kit);
+				}
+			}
+			messages.push(
+				`You all received a ${specialItemsReceived
+					.map(itemNameFromID)
+					.join(', ')} for completing the raid without any deaths!`
+			);
 		}
 	}
 
 	return {
-		teamLoot: loot
+		teamLoot: loot,
+		messages
 	};
 }
 
@@ -520,7 +623,7 @@ function calculatePointsAndDeaths(effectiveness: number, totalAttempts: number, 
 		}
 	}
 
-	points = Math.min(64_000, points);
+	points = clamp(points, 1, 64_000);
 
 	return {
 		points,
@@ -600,39 +703,82 @@ export function calculateUserGearPercents(gear: UserFullGearSetup, raidLevel: nu
 		total: (melee + range + mage) / 3
 	};
 }
+// 1x Super combat (4)
+// 1x Range pot (4)
+// 1x Sanfew serum (4) if no Serp help (Torva > Serp)
+// 8 to 3 Sara Brew (4) as experience goes up
+// 8 to 3 Super Restore (4) as experience goes up
+// 450rl+ with Sun Keris = 10 Super Restores, no brews
+// 50x Dragon arrows, scaling to more as weaker used.
+// 40x Dragon darts, same as above with arrows.
+// 200x Sang charges.
+// 150x Shadow charges.
+// 100x Blood fury charges.
+export async function calcTOAInput({
+	user,
+	kcOverride,
+	duration
+}: {
+	user: MUser;
+	kcOverride?: number;
+	duration: number;
+}): Promise<{
+	cost: Bank;
+	serpHelmCharges: number;
+	blowpipeCost: Bank;
+}> {
+	const cost = new Bank();
+	const kc = kcOverride ?? (await getMinigameScore(user.id, 'tombs_of_amascut'));
+	cost.add('Super combat potion(4)', 1);
+	cost.add('Ranging potion(4)', 1);
 
-export async function calcTOAInput(u: MUser) {
-	const items = new Bank();
-	const kc = await getMinigameScore(u.id, 'tombs_of_amascut');
-	items.add('Super combat potion(4)', 1);
-	items.add('Ranging potion(4)', 1);
+	let serpHelmCharges = 0;
 
-	let brewsNeeded = Math.max(1, 6 - Math.max(1, Math.ceil((kc + 1) / 10)));
+	if (!user.gear.melee.hasEquipped('Serpentine helm')) {
+		cost.add('Sanfew serum(4)', 1);
+	} else {
+		serpHelmCharges = calcSerpHelmCharges(duration);
+	}
+
+	// Between 8-1 brews
+	let brewsNeeded = Math.max(1, 9 - Math.max(1, Math.ceil((kc + 1) / 12)));
 	const restoresNeeded = Math.max(2, Math.floor(brewsNeeded / 3));
 
 	let healingNeeded = 60;
 	if (kc < 20) {
-		items.add('Cooked karambwan', 3);
+		cost.add('Cooked karambwan', 3);
 		healingNeeded += 40;
 	}
 
-	items.add(getUserFoodFromBank(u, healingNeeded, u.user.favorite_food, 20) || new Bank().add('Shark', 5));
+	cost.add(getUserFoodFromBank(user, healingNeeded, user.user.favorite_food, 20) || new Bank().add('Shark', 5));
 
-	items.add('Saradomin brew(4)', brewsNeeded);
-	items.add('Super restore(4)', restoresNeeded);
+	cost.add('Saradomin brew(4)', brewsNeeded);
+	cost.add('Super restore(4)', restoresNeeded);
 
-	items.add('Blood rune', 110);
-	items.add('Death rune', 100);
-	items.add('Water rune', 800);
+	cost.add('Blood rune', 110);
+	cost.add('Death rune', 100);
+	cost.add('Water rune', 800);
 
-	return items;
+	const { blowpipe } = user;
+	const dartID = blowpipe.dartID ?? itemID('Rune dart');
+	const dartQuantity = blowpipe.dartQuantity ?? BP_DARTS_NEEDED;
+	const blowpipeCost = new Bank();
+	blowpipeCost.add(dartID, Math.floor(Math.min(dartQuantity, BP_DARTS_NEEDED)));
+	blowpipeCost.add(user.gear.range.ammo!.item, BOW_ARROWS_NEEDED);
+
+	return {
+		cost,
+		serpHelmCharges,
+		blowpipeCost
+	};
 }
 
 export async function checkTOAUser(
 	user: MUser,
 	kc: number,
 	raidLevel: number,
-	teamSize: number
+	teamSize: number,
+	duration: number
 ): Promise<[false] | [true, string]> {
 	if (!user.hasMinion) {
 		return [true, `${user.usernameOrMention} doesn't have a minion`];
@@ -648,10 +794,22 @@ export async function checkTOAUser(
 		];
 	}
 
-	const cost = await calcTOAInput(user);
+	const { cost, serpHelmCharges } = await calcTOAInput({ user, duration });
 	if (!user.owns(cost)) {
-		return [true, `${user.usernameOrMention} doesn't own ${cost.remove(user.bankWithGP)}`];
+		return [true, `${user.usernameOrMention} doesn't own the required supplies: ${cost.remove(user.bankWithGP)}`];
 	}
+
+	if (user.user.serp_helm_charges < serpHelmCharges) {
+		return [
+			true,
+			`${
+				user.usernameOrMention
+			} doesn't have enough Serpentine helm charges. You need atleast ${serpHelmCharges} charges to do a ${formatDuration(
+				duration
+			)} TOA raid.`
+		];
+	}
+
 	if (teamSize < 3 && raidLevel > 200) {
 		let dividedRaidLevel = raidLevel / 10;
 		if (teamSize === 2) dividedRaidLevel /= 2;
@@ -683,7 +841,8 @@ export async function checkTOATeam(users: MUser[], raidLevel: number): Promise<s
 			user,
 			await getMinigameScore(user.id, 'tombs_of_amascut'),
 			raidLevel,
-			users.length
+			users.length,
+			Time.Hour
 		);
 		if (!checkResult[0]) {
 			continue;
@@ -710,7 +869,8 @@ export async function toaStartCommand(
 		user,
 		await getMinigameScore(user.id, 'tombs_of_amascut'),
 		raidLevel,
-		solo ? 1 : teamSize ?? 5
+		solo ? 1 : teamSize ?? 5,
+		Time.Hour
 	);
 	if (initialCheck[0]) {
 		return initialCheck[1];
@@ -733,7 +893,7 @@ export async function toaStartCommand(
 				return [true, `${user.usernameOrMention} minion is busy`];
 			}
 
-			return checkTOAUser(user, 0, 200, 5);
+			return checkTOAUser(user, 0, 200, 5, Time.Hour);
 		}
 	};
 
@@ -773,25 +933,20 @@ export async function toaStartCommand(
 
 	const costResult = await Promise.all(
 		users.map(async u => {
-			const supplies = await calcTOAInput(u);
-			const { total } = calculateUserGearPercents(u.gear, raidLevel);
-			const blowpipeData = u.blowpipe;
-			const { realCost } = await u.specialRemoveItems(
-				supplies
-					.clone()
-					.add(blowpipeData.dartID!, Math.floor(Math.min(blowpipeData.dartQuantity, 156)))
-					.add(u.gear.range.ammo!.item, 100)
-			);
+			const { cost, blowpipeCost } = await calcTOAInput({ user: u, duration });
+			const { realCost } = await u.specialRemoveItems(cost.clone().add(blowpipeCost));
+			if (u.gear.melee.hasEquipped('Serpentine helm')) {
+				await degradeItem({
+					item: getOSItem('Serpentine helm'),
+					chargesToDegrade: calcSerpHelmCharges(duration),
+					user: u
+				});
+			}
 			await userStatsBankUpdate(u.id, 'toa_cost', realCost);
 			const effectiveCost = realCost.clone();
 			totalCost.add(effectiveCost);
-			// if (u.gear.melee.hasEquipped('Abyssal tentacle')) {
-			// 	await degradeItem({
-			// 		item: getOSItem('Abyssal tentacle'),
-			// 		user: u,
-			// 		chargesToDegrade: TENTACLE_CHARGES_PER_RAID
-			// 	});
-			// }
+
+			const { total } = calculateUserGearPercents(u.gear, raidLevel);
 			debugStr += `**- ${u.usernameOrMention}** (${Emoji.Gear}${total.toFixed(1)}% ${
 				Emoji.CombatSword
 			} ${calcWhatPercent(reductions[u.id], totalReduction).toFixed(1)}%) used ${realCost}\n\n`;
@@ -948,27 +1103,20 @@ export async function createTOATeam({
 			}
 		}
 
-		const rangeWeaponBoosts = [['Twisted bow', 4]] as const;
 		for (const [name, percent] of rangeWeaponBoosts) {
 			if (u.gear.range.hasEquipped(name)) {
 				userPercentChange += percent;
 				break;
 			}
 		}
-		const primarySpecWeaponBoosts = [
-			['Dragon claws', 6],
-			['Crystal halberd', 3]
-		] as const;
+
 		for (const [name, percent] of primarySpecWeaponBoosts) {
 			if (u.user.hasEquippedOrInBank(name)) {
 				userPercentChange += percent;
 				break;
 			}
 		}
-		const secondarySpecWeaponBoosts = [
-			['Dragon warhammer', 6],
-			['Bandos godsword', 3]
-		] as const;
+
 		for (const [name, percent] of secondarySpecWeaponBoosts) {
 			if (u.user.hasEquippedOrInBank(name)) {
 				userPercentChange += percent;
@@ -1054,7 +1202,7 @@ export async function createTOATeam({
 }
 
 export async function toaCheckCommand(user: MUser) {
-	const result = await checkTOAUser(user, await getMinigameScore(user.id, 'tombs_of_amascut'), 200, 5);
+	const result = await checkTOAUser(user, await getMinigameScore(user.id, 'tombs_of_amascut'), 200, 5, Time.Hour);
 	if (result[0]) {
 		return `You aren't able to join a Tombs of Amascut raid, address these issues first: ${result[1]}`;
 	}
@@ -1098,10 +1246,12 @@ export async function toaHelpCommand(user: MUser) {
 **Requirements**
 ${toaRequirements
 	.map(i => {
-		if (i.doesMeet({ user, gearStats })) {
-			return `- ✅ ${bold(i.name)}`;
+		let res = i.doesMeet({ user, gearStats });
+		if (typeof res === 'string') {
+			return `- ❌ ${bold(i.name)} ${res}`;
 		}
-		return `- ❌ ${bold(i.name)} ${i.desc()}`;
+
+		return `- ✅ ${bold(i.name)}`;
 	})
 	.join('\n')}
 `;

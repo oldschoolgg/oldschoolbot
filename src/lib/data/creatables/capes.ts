@@ -88,15 +88,15 @@ export const capeCreatables: Createable[] = [
 		})
 	},
 	{
-		name: 'Fire max cape',
+		name: 'Masori assembler max cape',
 		inputItems: new Bank({
 			'Max hood': 1,
 			'Max cape': 1,
-			'Fire cape': 1
+			'Masori assembler': 1
 		}),
 		outputItems: new Bank({
-			'Fire max hood': 1,
-			'Fire max cape': 1
+			'Masori assembler max cape': 1,
+			'Masori assembler max hood': 1
 		})
 	}
 ];

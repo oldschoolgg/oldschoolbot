@@ -383,6 +383,8 @@ model User {
   sang_charges           Int @default(0)
   celestial_ring_charges Int @default(0)
   ash_sanctifier_charges Int @default(0)
+  serp_helm_charges      Int @default(0)
+  blood_fury_charges     Int @default(0)
 
   gp_luckypick BigInt @default(0)
   gp_dice      BigInt @default(0)

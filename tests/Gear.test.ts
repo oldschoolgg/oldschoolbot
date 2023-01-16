@@ -57,10 +57,11 @@ describe('Gear', () => {
 				'Smithing cape',
 				'Strength cape',
 				'Thieving cape',
-				'Woodcutting cape'
+				'Woodcutting cape',
+				'Infernal max cape',
+				'Masori assembler max cape'
 			].sort()
 		);
-		expect(allItems.length).toEqual(25);
 	});
 
 	test('equippedWeapon', () => {

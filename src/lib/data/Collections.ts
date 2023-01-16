@@ -117,6 +117,7 @@ import {
 	theNightmareCL,
 	thermonuclearSmokeDevilCL,
 	titheFarmCL,
+	toaCL,
 	troubleBrewingCL,
 	tzHaarCL,
 	venenatisCL,
@@ -438,6 +439,18 @@ export const allCollectionLogs: ICollection = {
 				isActivity: true,
 				fmtProg: ({ minigames }) => {
 					return [`${minigames.tob} KC, ${minigames.tob_hard} Hard KC`];
+				}
+			},
+			'Tombs of Amascut': {
+				alias: ['toa'],
+				kcActivity: {
+					Default: async (_, minigameScores) =>
+						minigameScores.find(i => i.minigame.column === 'tombs_of_amascut')!.score
+				},
+				items: toaCL,
+				isActivity: true,
+				fmtProg: ({ minigames }) => {
+					return [`${minigames.tombs_of_amascut} KC`];
 				}
 			}
 		}

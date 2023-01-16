@@ -79,6 +79,34 @@ const ironmenBuyables: Buyable[] = ['Ironman helm', 'Ironman platebody', 'Ironma
 	gpCost: 1000
 }));
 
+const toaCapes: Buyable[] = [
+	{
+		name: "Icthlarin's shroud (tier 1)",
+		gpCost: 100_000,
+		minigameScoreReq: ['tombs_of_amascut', 100]
+	},
+	{
+		name: "Icthlarin's shroud (tier 2)",
+		gpCost: 500_000,
+		minigameScoreReq: ['tombs_of_amascut', 500]
+	},
+	{
+		name: "Icthlarin's shroud (tier 3)",
+		gpCost: 500_000,
+		minigameScoreReq: ['tombs_of_amascut', 1000]
+	},
+	{
+		name: "Icthlarin's shroud (tier 4)",
+		gpCost: 500_000,
+		minigameScoreReq: ['tombs_of_amascut', 1500]
+	},
+	{
+		name: "Icthlarin's shroud (tier 5)",
+		gpCost: 500_000,
+		minigameScoreReq: ['tombs_of_amascut', 2000]
+	}
+];
+
 const tobCapes: Buyable[] = [
 	{
 		name: 'Sinhaza shroud tier 1',
@@ -1012,6 +1040,12 @@ const Buyables: Buyable[] = [
 		name: 'Broken coffin',
 		gpCost: 2000
 	},
+	{
+		name: 'Keris partisan',
+		gpCost: 100_000,
+		ironmanPrice: 60_000,
+		qpRequired: 172
+	},
 	...sepulchreBuyables,
 	...constructionBuyables,
 	...hunterBuyables,
@@ -1037,7 +1071,8 @@ const Buyables: Buyable[] = [
 	...troubleBrewingBuyables,
 	...ironmenBuyables,
 	...shootingStarsBuyables,
-	...guardiansOfTheRiftBuyables
+	...guardiansOfTheRiftBuyables,
+	...toaCapes
 ];
 
 for (const [chompyHat, qty] of chompyHats) {

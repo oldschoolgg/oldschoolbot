@@ -1,4 +1,4 @@
-import { sumArr } from 'e';
+import { sumArr, uniqueArr } from 'e';
 
 import { Emoji, Events } from '../../../lib/constants';
 import { trackLoot } from '../../../lib/lootTrack';
@@ -7,7 +7,6 @@ import { TeamLoot } from '../../../lib/simulation/TeamLoot';
 import { calcTOALoot } from '../../../lib/simulation/toa';
 import { TOAOptions } from '../../../lib/types/minions';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
-import { makeRepeatTripButton } from '../../../lib/util/globalInteractions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import resolveItems from '../../../lib/util/resolveItems';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
@@ -23,6 +22,7 @@ interface RaidResultUser {
 	points: number;
 	mUser: MUser;
 	deaths: number;
+	kc: number;
 }
 
 export const toaTask: MinionTask = {
@@ -53,8 +53,7 @@ export const toaTask: MinionTask = {
 				undefined,
 				data,
 				null,
-				undefined,
-				[makeRepeatTripButton()]
+				undefined
 			);
 		}
 
@@ -65,25 +64,40 @@ export const toaTask: MinionTask = {
 			raidResults.set(user.id, {
 				mUser: user,
 				points: 0,
-				deaths: 0
+				deaths: 0,
+				kc: await getMinigameScore(user.id, 'tombs_of_amascut')
 			});
 		}
 
+		let messages: string[] = [];
+
 		for (let x = 0; x < quantity; x++) {
 			const raidLoot = calcTOALoot({
-				users: users.map(i => ({ id: i[0], points: i[1][x] })),
+				users: users.map(i => {
+					const fullUser = allUsers.find(u => u.id === i[0])!;
+					return {
+						id: i[0],
+						points: i[1][x],
+						cl: fullUser.cl,
+						kc: raidResults.get(i[0])!.kc,
+						deaths: i[2][x]
+					};
+				}),
 				raidLevel
 			});
 			for (const [id, points, deaths] of users) {
 				const currentUser = raidResults.get(id)!;
 				currentUser.points += points[x];
 				currentUser.deaths += deaths[x].length;
+				currentUser.kc += 1;
 				raidResults.set(id, currentUser);
 			}
 			for (const [userID, userLoot] of raidLoot.teamLoot.entries()) {
 				totalLoot.add(userID, userLoot);
 			}
+			messages.push(...raidLoot.messages);
 		}
+		messages = uniqueArr(messages);
 		const totalPoints = sumArr(Array.from(raidResults.values()).map(i => i.points));
 
 		let resultMessage = `<@${leader}> Your Raid${
@@ -127,6 +141,10 @@ export const toaTask: MinionTask = {
 			resultMessage += `\n${deathStr} **${user}** received: ${str} (${points.toLocaleString()} pts, ${
 				Emoji.Skull
 			})`;
+		}
+
+		if (messages.length > 0) {
+			resultMessage += `\n\n${messages.join('\n')}`;
 		}
 
 		updateBankSetting('toa_loot', totalLoot.totalLoot());
