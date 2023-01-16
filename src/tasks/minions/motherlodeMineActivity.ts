@@ -104,7 +104,7 @@ export const motherlodeMiningTask: MinionTask = {
 			str += "\nYou have a funny feeling you're being followed...";
 			globalClient.emit(
 				Events.ServerNotification,
-				`${Emoji.Mining} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Rock golem while mining ${Mining.MotherlodeMine.name} at level ${currentLevel} Mining!`
+				`${Emoji.Mining} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Rock golem while mining at the ${Mining.MotherlodeMine.name} at level ${currentLevel} Mining!`
 			);
 		}
 
