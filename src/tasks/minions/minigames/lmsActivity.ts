@@ -69,7 +69,7 @@ function calculateResultOfLMSGames(qty: number, lmsStats: Awaited<ReturnType<typ
 	chanceToWinFight += experienceFactor * 75;
 
 	for (let i = 0; i < qty; i++) {
-		const encounters = 3 + extraEncountersTable.roll().item;
+		const encounters = 3 + extraEncountersTable.roll();
 		let kills = 0;
 		let died = false;
 		for (let t = 0; t < encounters; t++) {
