@@ -2114,36 +2114,6 @@ const Createables: Createable[] = [
 		outputItems: new Bank().add('Celestial signet')
 	},
 	{
-		name: "Xeric's talisman",
-		inputItems: new Bank({
-			"Xeric's talisman (inert)": 1,
-			'Lizardman fang': 1000
-		}),
-		outputItems: new Bank({
-			"Xeric's talisman": 1
-		})
-	},
-	{
-		name: 'Master scroll book',
-		inputItems: new Bank({
-			'Master scroll book (empty)': 1,
-			'Nardah teleport': 50,
-			'Digsite teleport': 50,
-			'Feldip hills teleport': 50,
-			'Lunar isle teleport': 50,
-			"Mort'ton teleport": 50,
-			'Pest control teleport': 50,
-			'Piscatoris teleport': 50,
-			'Tai bwo wannai teleport': 50,
-			'Iorwerth camp teleport': 50,
-			"Mos le'harmless teleport": 50,
-			'Lumberyard teleport': 50
-		}),
-		outputItems: new Bank({
-			'Master scroll book': 1
-		})
-	},
-	{
 		name: 'Eternal teleport crystal',
 		inputItems: new Bank({
 			'Enhanced crystal teleport seed': 1,

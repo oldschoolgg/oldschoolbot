@@ -173,27 +173,14 @@ export const clueCommand: OSBMahojiCommand = {
 					item: getOSItem('Ring of the elements'),
 					boost: '6% for Ring of the elements',
 					durationMultiplier: 0.94
-				},
-				{
-					item: getOSItem('Master scroll book'),
-					boost: '6% for Master scroll book',
-					durationMultiplier: 0.94
-				},
-				{
-					item: getOSItem("Xeric's talisman"),
-					boost: "4% for Xeric's talisman",
-					durationMultiplier: 0.96
 				}
 			],
-
 			Medium: [
-				{ item: getOSItem('Master scroll book'), boost: '10% for Master scroll book', durationMultiplier: 0.9 },
 				{
 					item: getOSItem('Ring of the elements'),
 					boost: '8% for Ring of the elements',
 					durationMultiplier: 0.92
-				},
-				{ item: getOSItem("Xeric's talisman"), boost: "6% for Xeric's talisman", durationMultiplier: 0.94 }
+				}
 			],
 			Hard: [
 				{
@@ -269,11 +256,6 @@ export const clueCommand: OSBMahojiCommand = {
 					item: getOSItem('Eternal teleport crystal'),
 					boost: '3% for Eternal teleport crystal',
 					durationMultiplier: 0.97
-				},
-				{
-					item: getOSItem("Xeric's talisman"),
-					boost: "2% for Xeric's talisman",
-					durationMultiplier: 0.98
 				},
 				{
 					item: getOSItem('Toxic blowpipe'),
