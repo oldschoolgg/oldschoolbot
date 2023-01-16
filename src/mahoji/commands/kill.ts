@@ -1,7 +1,9 @@
+import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { PerkTier } from '../../lib/constants';
+import { makeComponents } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { toTitleCase } from '../../lib/util/toTitleCase';
@@ -84,6 +86,14 @@ export const killCommand: OSBMahojiCommand = {
 			return result.error;
 		}
 
+		const repeatButton = makeComponents([
+			new ButtonBuilder()
+				.setCustomId(`REPEAT_SIM_KILL_DATA_${JSON.stringify(options)}`)
+				.setLabel('Repeat Sim')
+				.setStyle(ButtonStyle.Secondary)
+				.setEmoji('📊')
+		]);
+
 		const image = await makeBankImage({
 			bank: new Bank(result.bank?.bank),
 			title: result.title ?? `Loot from ${options.quantity.toLocaleString()} ${toTitleCase(options.name)}`,
@@ -91,7 +101,8 @@ export const killCommand: OSBMahojiCommand = {
 		});
 		return {
 			files: [image.file],
-			content: result.content
+			content: result.content,
+			components: repeatButton
 		};
 	}
 };

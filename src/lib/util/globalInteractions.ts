@@ -216,6 +216,19 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 	return interactionReply(interaction, { content: 'You left the giveaway.', ephemeral: true });
 }
 
+async function simRepeatHandler(user: MUser, interaction: ButtonInteraction) {
+	const [commandType, jsonData] = interaction.customId.replace('REPEAT_SIM_', '').split('_DATA_');
+	return runCommand({
+		commandName: commandType.toLowerCase(),
+		args: JSON.parse(jsonData),
+		user,
+		member: interaction.member,
+		channelID: interaction.channelId,
+		guildID: interaction.guildId,
+		interaction
+	});
+}
+
 async function repeatTripHandler(user: MUser, interaction: ButtonInteraction) {
 	if (user.minionIsBusy) return 'Your minion is busy.';
 	const trips = await fetchRepeatTrips(interaction.user.id);
@@ -236,6 +249,7 @@ export async function interactionHook(interaction: Interaction) {
 	const user = await mUserFetch(userID);
 	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, interaction);
 	if (id.includes('REPEAT_TRIP')) return repeatTripHandler(user, interaction);
+	if (id.includes('REPEAT_SIM_')) return simRepeatHandler(user, interaction);
 
 	if (!isValidGlobalInteraction(id)) return;
 	if (user.isBusy || globalClient.isShuttingDown) {

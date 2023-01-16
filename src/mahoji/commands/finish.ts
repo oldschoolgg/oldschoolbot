@@ -1,10 +1,10 @@
-import { AttachmentBuilder } from 'discord.js';
+import { AttachmentBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import { finishables } from '../../lib/finishables';
 import { sorts } from '../../lib/sorts';
-import { stringMatches } from '../../lib/util';
+import { makeComponents, stringMatches } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { Workers } from '../../lib/workers';
@@ -40,15 +40,27 @@ export const finishCommand: OSBMahojiCommand = {
 		if ('customResponse' in val && val.customResponse) {
 			return val.customResponse(kc);
 		}
-		const image = await makeBankImage({ bank: loot, title: `Loot from ${kc}x ${val.name}` });
+		const image = await makeBankImage({
+			bank: loot,
+			title: `Loot from ${kc}x ${val.name}`
+		});
 
 		const result = `It took you ${kc.toLocaleString()} KC to finish the ${val.name} CL.`;
 		const finishStr = kcBank.items().sort(sorts.quantity).reverse();
+		const repeatButton = makeComponents([
+			new ButtonBuilder()
+				.setCustomId(`REPEAT_SIM_FINISH_DATA_${JSON.stringify(options)}`)
+				.setLabel('Repeat Sim')
+				.setStyle(ButtonStyle.Secondary)
+				.setEmoji('📊')
+		]);
+
 		if (finishStr.length < 20) {
 			return {
 				content: `${result}
 ${finishStr.map(i => `**${i[0].name}:** ${i[1]} KC`).join('\n')}`,
-				files: [image.file]
+				files: [image.file],
+				components: repeatButton
 			};
 		}
 		return {
@@ -58,7 +70,8 @@ ${finishStr.map(i => `**${i[0].name}:** ${i[1]} KC`).join('\n')}`,
 				new AttachmentBuilder(Buffer.from(finishStr.map(i => `${i[0].name}: ${i[1]} KC`).join('\n')), {
 					name: 'finish.txt'
 				})
-			]
+			],
+			components: repeatButton
 		};
 	}
 };
