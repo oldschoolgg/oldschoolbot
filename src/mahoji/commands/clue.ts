@@ -14,6 +14,15 @@ import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
+enum ThisHere {
+    Beginner = 'Beginner',
+    Easy = 'Easy',
+    Medium = 'Medium',
+    Hard = 'Hard',
+    Elite = 'Elite',
+    Master = 'Master'
+}
+
 function reducedClueTime(clueTier: ClueTier, score: number) {
 	// Every 3 hours become 1% better to a cap of 10%
 	const percentReduced = Math.min(Math.floor(score / ((Time.Hour * 3) / clueTier.timeToFinish)), 10);
@@ -163,7 +172,7 @@ export const clueCommand: OSBMahojiCommand = {
 					durationMultiplier: 0.9
 				}
 			],
-			Easy: [
+			[ThisHere.Easy]: [
 				{
 					item: getOSItem('Achievement diary cape'),
 					boost: '10% for Achievement diary cape',
@@ -175,14 +184,14 @@ export const clueCommand: OSBMahojiCommand = {
 					durationMultiplier: 0.94
 				}
 			],
-			Medium: [
+			[ThisHere.Medium]: [
 				{
 					item: getOSItem('Ring of the elements'),
 					boost: '8% for Ring of the elements',
 					durationMultiplier: 0.92
 				}
 			],
-			Hard: [
+			[ThisHere.Hard]: [
 				{
 					item: getOSItem('Achievement diary cape'),
 					boost: '10% for Achievement diary cape',
@@ -214,7 +223,7 @@ export const clueCommand: OSBMahojiCommand = {
 					durationMultiplier: 0.96
 				}
 			],
-			Elite: [
+			[ThisHere.Elite]: [
 				{
 					item: getOSItem('Achievement diary cape'),
 					boost: '10% for Achievement diary cape',
@@ -241,7 +250,7 @@ export const clueCommand: OSBMahojiCommand = {
 					durationMultiplier: 0.96
 				}
 			],
-			Master: [
+			[ThisHere.Master]: [
 				{
 					item: getOSItem('Achievement diary cape'),
 					boost: '10% for Achievement diary cape',
