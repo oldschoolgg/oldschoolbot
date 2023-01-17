@@ -156,7 +156,7 @@ export const clueCommand: OSBMahojiCommand = {
 
 		// Specific boosts
 		const clueTierBoosts: Record<ThisHere, ClueBoost[]> = {
-			Beginner: [
+			[ThisHere.Beginner]: [
 				{
 					item: getOSItem('Ring of the elements'),
 					boost: '10% for Ring of the elements',
