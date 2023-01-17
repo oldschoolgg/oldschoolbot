@@ -137,7 +137,7 @@ export interface AddMonsterXpParams {
 }
 
 export interface ResolveAttackStylesParams {
-	monsterID: number;
+	monsterID: number | undefined;
 	boostMethod?: string;
 }
 

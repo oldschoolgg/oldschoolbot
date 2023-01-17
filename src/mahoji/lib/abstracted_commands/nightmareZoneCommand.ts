@@ -313,10 +313,8 @@ export async function nightmareZoneStartCommand(user: MUser, strategy: NMZStrate
 	const boosts = [];
 
 	let timePerMonster = Time.Minute * 2;
-
 	// combat stat boosts
-	// No monster ID so use -1 as placeholder
-	const [, , attackStyles] = resolveAttackStyles(user, { monsterID: -1 });
+	const [, , attackStyles] = resolveAttackStyles(user, { monsterID: undefined });
 	const skillTotal = sumArr(attackStyles.map(s => user.skillLevel(s))) + user.skillLevel(SkillsEnum.Hitpoints);
 	if (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic)) {
 		return 'The Nightmare Zone minigame requires melee combat for efficiency, swap training style using `/minion train style:`';
@@ -342,15 +340,11 @@ export async function nightmareZoneStartCommand(user: MUser, strategy: NMZStrate
 	const quantity = Math.floor(maxTripLength / timePerMonster);
 	const duration = quantity * timePerMonster;
 	// Consume GP (and prayer potion if experience setup)
-	const dreamCost = new Bank().add(
-		'Coins',
-		Math.max(
-			Math.floor(
-				((QP >= MAX_QP ? 16_000 : 26_000) * duration) / ((strategy === 'points' ? 30 : 60) * Time.Minute)
-			),
-			1
-		)
-	);
+	// Dream GP cost
+	const dreamGP = QP >= MAX_QP ? 16_000 : 26_000;
+	// Dream length
+	const dreamLength = (strategy === 'points' ? 30 : 60) * Time.Minute;
+	const dreamCost = new Bank().add('Coins', Math.max(Math.floor((dreamGP * duration) / dreamLength), 1));
 	if (strategy === 'experience') {
 		dreamCost.add('Prayer potion(4)', Math.max(Math.floor(duration / (Time.Minute * 5)), 1));
 	}
