@@ -14,15 +14,6 @@ import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
-enum ClueName {
-	Beginner = 'Beginner',
-	Easy = 'Easy',
-	Medium = 'Medium',
-	Hard = 'Hard',
-	Elite = 'Elite',
-	Master = 'Master'
-}
-
 function reducedClueTime(clueTier: ClueTier, score: number) {
 	// Every 3 hours become 1% better to a cap of 10%
 	const percentReduced = Math.min(Math.floor(score / ((Time.Hour * 3) / clueTier.timeToFinish)), 10);
@@ -164,15 +155,15 @@ export const clueCommand: OSBMahojiCommand = {
 		}
 
 		// Specific boosts
-		const clueTierBoosts: Record<ClueName, ClueBoost[]> = {
-			[ClueName.Beginner]: [
+		const clueTierBoosts: Record<ClueTier['name'], ClueBoost[]> = {
+			Beginner: [
 				{
 					item: getOSItem('Ring of the elements'),
 					boost: '10% for Ring of the elements',
 					durationMultiplier: 0.9
 				}
 			],
-			[ClueName.Easy]: [
+			Easy: [
 				{
 					item: getOSItem('Achievement diary cape'),
 					boost: '10% for Achievement diary cape',
@@ -184,14 +175,14 @@ export const clueCommand: OSBMahojiCommand = {
 					durationMultiplier: 0.94
 				}
 			],
-			[ClueName.Medium]: [
+			Medium: [
 				{
 					item: getOSItem('Ring of the elements'),
 					boost: '8% for Ring of the elements',
 					durationMultiplier: 0.92
 				}
 			],
-			[ClueName.Hard]: [
+			Hard: [
 				{
 					item: getOSItem('Achievement diary cape'),
 					boost: '10% for Achievement diary cape',
@@ -223,7 +214,7 @@ export const clueCommand: OSBMahojiCommand = {
 					durationMultiplier: 0.96
 				}
 			],
-			[ClueName.Elite]: [
+			Elite: [
 				{
 					item: getOSItem('Achievement diary cape'),
 					boost: '10% for Achievement diary cape',
@@ -250,7 +241,7 @@ export const clueCommand: OSBMahojiCommand = {
 					durationMultiplier: 0.96
 				}
 			],
-			[ClueName.Master]: [
+			Master: [
 				{
 					item: getOSItem('Achievement diary cape'),
 					boost: '10% for Achievement diary cape',
