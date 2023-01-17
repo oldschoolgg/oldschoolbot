@@ -85,7 +85,7 @@ export const pohCommand: OSBMahojiCommand = {
 					required: true,
 					autocomplete: async (value: string, user: User) => {
 						const poh = await getPOH(user.id);
-						return PoHObjects.filter(obj => poh[obj.slot] !== obj.id)
+						return PoHObjects.filter(obj => poh[obj.slot] === obj.id)
 							.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i.name, value: i.name }));
 					}
