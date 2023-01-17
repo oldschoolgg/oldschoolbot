@@ -25,7 +25,8 @@ const FOLDERS = [
 	'dungeon_decoration',
 	'prison',
 	'minion',
-	'garden_decoration'
+	'garden_decoration',
+	'amulet_space'
 ];
 
 const bg = fs.readFileSync('./src/lib/poh/images/bg_1.jpg');
