@@ -2,7 +2,7 @@ import { ChatInputCommandInteraction } from 'discord.js';
 import { calcWhatPercent, reduceNumByPercent, round, sumArr, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { MAX_QP } from '../../../lib/constants';
+import { MAX_QP, NMZStrategy } from '../../../lib/constants';
 import { trackLoot } from '../../../lib/lootTrack';
 import { resolveAttackStyles } from '../../../lib/minions/functions';
 import { getMinigameEntity } from '../../../lib/settings/minigames';
@@ -15,9 +15,6 @@ import getOSItem from '../../../lib/util/getOSItem';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { handleMahojiConfirmation } from '../../mahojiSettings';
 import { NightmareZoneActivityTaskOptions } from './../../../lib/types/minions';
-
-export const NMZ_STRATEGY = ['experience', 'points'] as const;
-export type NMZStrategy = typeof NMZ_STRATEGY[number];
 
 const itemBoosts = [
 	// Special weapons
@@ -292,7 +289,7 @@ export async function nightmareZoneStartCommand(user: MUser, strategy: NMZStrate
 
 	const [hasReqs] = hasSkillReqs(user, skillReqs);
 	if (!hasReqs) {
-		return `You not meet skill requirements, you need ${Object.entries(skillReqs)
+		return `You don't meet skill requirements, you need ${Object.entries(skillReqs)
 			.map(([name, lvl]) => `${lvl} ${name}`)
 			.join(', ')}.`;
 	}
@@ -300,7 +297,7 @@ export async function nightmareZoneStartCommand(user: MUser, strategy: NMZStrate
 	const { QP } = user;
 
 	if (QP < 100) {
-		return `The Nightmare Zone minigame requires **100 QP**, and you have ${QP} QP.\n`;
+		return `The Nightmare Zone minigame requires **100 QP**, and you have ${QP} QP.`;
 	}
 
 	// Check if user have full dharok's
@@ -331,7 +328,7 @@ export async function nightmareZoneStartCommand(user: MUser, strategy: NMZStrate
 	timePerMonster = reduceNumByPercent(timePerMonster, percent);
 
 	// Reduce time for item boosts
-	itemBoosts.forEach(set => {
+	for (const set of itemBoosts) {
 		for (const item of set) {
 			if (user.hasEquippedOrInBank(item.item.id)) {
 				timePerMonster *= (100 - item.boost) / 100;
@@ -339,7 +336,7 @@ export async function nightmareZoneStartCommand(user: MUser, strategy: NMZStrate
 				break;
 			}
 		}
-	});
+	}
 
 	const maxTripLength = calcMaxTripLength(user, 'NightmareZone');
 	const quantity = Math.floor(maxTripLength / timePerMonster);
@@ -347,10 +344,15 @@ export async function nightmareZoneStartCommand(user: MUser, strategy: NMZStrate
 	// Consume GP (and prayer potion if experience setup)
 	const dreamCost = new Bank().add(
 		'Coins',
-		Math.floor(((QP >= MAX_QP ? 16_000 : 26_000) * duration) / ((strategy === 'points' ? 30 : 60) * Time.Minute))
+		Math.max(
+			Math.floor(
+				((QP >= MAX_QP ? 16_000 : 26_000) * duration) / ((strategy === 'points' ? 30 : 60) * Time.Minute)
+			),
+			1
+		)
 	);
 	if (strategy === 'experience') {
-		dreamCost.add('Prayer potion(4)', Math.floor(duration / (Time.Minute * 5)));
+		dreamCost.add('Prayer potion(4)', Math.max(Math.floor(duration / (Time.Minute * 5)), 1));
 	}
 	const totalCost = new Bank(dreamCost).clone();
 

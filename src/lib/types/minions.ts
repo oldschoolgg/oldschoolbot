@@ -1,6 +1,6 @@
 import type { activity_type_enum, CropUpgradeType } from '@prisma/client';
 
-import { NMZStrategy } from '../../mahoji/lib/abstracted_commands/nightmareZoneCommand';
+import { NMZStrategy } from '../constants';
 import type { IPatchData } from '../minions/farming/types';
 import type { MinigameName } from '../settings/minigames';
 import type { Peak } from '../tickers';

@@ -45,8 +45,7 @@ import {
 import {
 	nightmareZoneShopCommand,
 	nightmareZoneStartCommand,
-	nightmareZoneStatsCommand,
-	NMZStrategy
+	nightmareZoneStatsCommand
 } from '../lib/abstracted_commands/nightmareZoneCommand';
 import {
 	pestControlBuyables,
@@ -76,12 +75,12 @@ import {
 	volcanicMineShopCommand
 } from '../lib/abstracted_commands/volcanicMineCommand';
 import { OSBMahojiCommand } from '../lib/util';
+import { NMZ_STRATEGY, NMZStrategy } from './../../lib/constants';
 import { giantsFoundryAlloys, giantsFoundryBuyables } from './../lib/abstracted_commands/giantsFoundryCommand';
 import {
 	nightmareZoneBuyables,
 	nightmareZoneImbueables,
-	nightmareZoneImbueCommand,
-	NMZ_STRATEGY
+	nightmareZoneImbueCommand
 } from './../lib/abstracted_commands/nightmareZoneCommand';
 
 export const minigamesCommand: OSBMahojiCommand = {
