@@ -14,13 +14,13 @@ import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
-enum ThisHere {
-    Beginner = 'Beginner',
-    Easy = 'Easy',
-    Medium = 'Medium',
-    Hard = 'Hard',
-    Elite = 'Elite',
-    Master = 'Master'
+enum ClueName {
+	Beginner = 'Beginner',
+	Easy = 'Easy',
+	Medium = 'Medium',
+	Hard = 'Hard',
+	Elite = 'Elite',
+	Master = 'Master'
 }
 
 function reducedClueTime(clueTier: ClueTier, score: number) {
@@ -164,15 +164,15 @@ export const clueCommand: OSBMahojiCommand = {
 		}
 
 		// Specific boosts
-		const clueTierBoosts: Record<ThisHere, ClueBoost[]> = {
-			[ThisHere.Beginner]: [
+		const clueTierBoosts: Record<ClueName, ClueBoost[]> = {
+			[ClueName.Beginner]: [
 				{
 					item: getOSItem('Ring of the elements'),
 					boost: '10% for Ring of the elements',
 					durationMultiplier: 0.9
 				}
 			],
-			[ThisHere.Easy]: [
+			[ClueName.Easy]: [
 				{
 					item: getOSItem('Achievement diary cape'),
 					boost: '10% for Achievement diary cape',
@@ -184,14 +184,14 @@ export const clueCommand: OSBMahojiCommand = {
 					durationMultiplier: 0.94
 				}
 			],
-			[ThisHere.Medium]: [
+			[ClueName.Medium]: [
 				{
 					item: getOSItem('Ring of the elements'),
 					boost: '8% for Ring of the elements',
 					durationMultiplier: 0.92
 				}
 			],
-			[ThisHere.Hard]: [
+			[ClueName.Hard]: [
 				{
 					item: getOSItem('Achievement diary cape'),
 					boost: '10% for Achievement diary cape',
@@ -223,7 +223,7 @@ export const clueCommand: OSBMahojiCommand = {
 					durationMultiplier: 0.96
 				}
 			],
-			[ThisHere.Elite]: [
+			[ClueName.Elite]: [
 				{
 					item: getOSItem('Achievement diary cape'),
 					boost: '10% for Achievement diary cape',
@@ -250,7 +250,7 @@ export const clueCommand: OSBMahojiCommand = {
 					durationMultiplier: 0.96
 				}
 			],
-			[ThisHere.Master]: [
+			[ClueName.Master]: [
 				{
 					item: getOSItem('Achievement diary cape'),
 					boost: '10% for Achievement diary cape',
