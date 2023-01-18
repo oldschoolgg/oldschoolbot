@@ -262,7 +262,7 @@ export async function shadesOfMortonStartCommand(user: MUser, channelID: string,
 	let messages: string[] = [];
 	let totalTime = calcMaxTripLength(user, 'ShadesOfMorton');
 	for (let i = coffins.length - 1; i >= 0; i--) {
-  		const coffin = coffins[i];
+		const coffin = coffins[i];
 		if (user.hasEquipped(coffin)) {
 			let bonusTime = i * Time.Minute;
 			totalTime += bonusTime;
