@@ -261,14 +261,16 @@ const coffins = ['Bronze coffin', 'Steel coffin', 'Black coffin', 'Silver coffin
 export async function shadesOfMortonStartCommand(user: MUser, channelID: string, logStr: string, shadeStr: string) {
 	let messages: string[] = [];
 	let totalTime = calcMaxTripLength(user, 'ShadesOfMorton');
-	for (const coffin of coffins.reverse()) {
+	for (let i = coffins.length - 1; i >= 0; i--) {
+  		const coffin = coffins[i];
 		if (user.hasEquipped(coffin)) {
-			let bonusTime = coffins.indexOf(coffin) * Time.Minute;
+			let bonusTime = i * Time.Minute;
 			totalTime += bonusTime;
 			messages.push(`${formatDuration(bonusTime)} bonus max trip length for ${itemNameFromID(coffin)}`);
 			break;
 		}
 	}
+
 	const logItem = getItem(logStr);
 	if (!logItem) return 'Invalid logs item';
 
