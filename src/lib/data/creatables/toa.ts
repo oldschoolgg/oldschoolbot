@@ -47,6 +47,15 @@ export const toaCreatables: Createable[] = [
 		outputItems: new Bank({ "Elidinis' ward (or)": 1 })
 	},
 	{
+		name: "Revert Elidinis' ward (or)",
+		inputItems: new Bank({ "Elidinis' ward (or)": 1 }),
+		outputItems: new Bank({
+			"Elidinis' ward (f)": 1,
+			'Menaphite ornament kit': 1
+		}),
+		noCl: true
+	},
+	{
 		name: 'Divine rune pouch',
 		inputItems: new Bank({
 			'Rune pouch': 1,
@@ -160,5 +169,3 @@ for (const [_sigil, _shield] of spiritShields) {
 		outputItems: new Bank().add(sigil.id)
 	});
 }
-
-console.log(toaCreatables.map(i => `**${i.name}** (Turns \`${i.inputItems}\` into \`${i.outputItems}\`)`).join(', '));

@@ -4,7 +4,7 @@ import { Emoji, Events } from '../../../lib/constants';
 import { trackLoot } from '../../../lib/lootTrack';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import { TeamLoot } from '../../../lib/simulation/TeamLoot';
-import { calcTOALoot } from '../../../lib/simulation/toa';
+import { calcTOALoot, toaOrnamentKits, toaPetTransmogItems } from '../../../lib/simulation/toa';
 import { TOAOptions } from '../../../lib/types/minions';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -112,6 +112,15 @@ export const toaTask: MinionTask = {
 					increment: points
 				}
 			}));
+
+			// If the user already has these in their bank they cannot get another
+			for (const itemID of [...toaPetTransmogItems, ...toaOrnamentKits.map(i => i[0].id)]) {
+				const fullUser = allUsers.find(u => u.id === userID)!;
+				const userLoot = totalLoot.get(userID);
+				if (fullUser.bank.has(itemID) && userLoot.has(itemID)) {
+					totalLoot.remove(user.id, itemID, userLoot.amount(itemID));
+				}
+			}
 
 			const { itemsAdded } = await transactItems({
 				userID,

@@ -57,9 +57,7 @@ describe('Gear', () => {
 				'Smithing cape',
 				'Strength cape',
 				'Thieving cape',
-				'Woodcutting cape',
-				'Infernal max cape',
-				'Masori assembler max cape'
+				'Woodcutting cape'
 			].sort()
 		);
 	});

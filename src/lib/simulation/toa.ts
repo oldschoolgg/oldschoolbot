@@ -22,7 +22,6 @@ import { Emoji } from '../constants';
 import { degradeItem } from '../degradeableItems';
 import { GearStats, UserFullGearSetup } from '../gear/types';
 import { trackLoot } from '../lootTrack';
-import getUserFoodFromBank from '../minions/functions/getUserFoodFromBank';
 import { setupParty } from '../party';
 import { getMinigameScore } from '../settings/minigames';
 import { SkillsEnum } from '../skilling/types';
@@ -195,7 +194,7 @@ const toaRequirements: {
 			return true;
 		},
 		desc: () =>
-			`decent range gear, atleast ${BOW_ARROWS_NEEDED}x arrows equipped, and one of these bows: ${REQUIRED_RANGE_WEAPONS.map(
+			`decent range gear (BiS is ${maxRangeGear.toString()}), atleast ${BOW_ARROWS_NEEDED}x arrows equipped, and one of these bows: ${REQUIRED_RANGE_WEAPONS.map(
 				itemNameFromID
 			).join(', ')}`
 	},
@@ -226,26 +225,14 @@ const toaRequirements: {
 	},
 	{
 		name: 'Mage gear',
-		doesMeet: ({ user, gearStats }) => {
-			if (gearStats.melee < 25) {
+		doesMeet: ({ gearStats }) => {
+			if (gearStats.mage < 25) {
 				return 'Terrible mage gear';
-			}
-
-			if (!user.gear.melee.hasEquipped(MELEE_REQUIRED_WEAPONS, false)) {
-				return `Need one of these weapons in your mage setup: ${MELEE_REQUIRED_WEAPONS.map(itemNameFromID).join(
-					', '
-				)}`;
-			}
-			if (!user.gear.melee.hasEquipped(MELEE_REQUIRED_ARMOR, false)) {
-				return `Need one of these in your mage setup: ${MELEE_REQUIRED_WEAPONS.map(itemNameFromID).join(', ')}`;
 			}
 
 			return true;
 		},
-		desc: () =>
-			`decent melee gear (BiS is ${maxMeleeLessThan300Gear.toString()}, switched to a Osmumten fang if the raid level is over 300), and one of these weapons: ${MELEE_REQUIRED_WEAPONS.map(
-				itemNameFromID
-			).join(', ')}, and one of these armor pieces: ${MELEE_REQUIRED_ARMOR.map(itemNameFromID).join(', ')}`
+		desc: () => `decent mage gear (BiS is ${maxMageGear.toString()})`
 	},
 	{
 		name: 'Stats',
@@ -422,6 +409,20 @@ interface TOALootUser {
 	deaths: number[];
 }
 
+export const toaOrnamentKits = [
+	[getOSItem('Cursed phalanx'), 500],
+	[getOSItem('Menaphite ornament kit'), 425],
+	[getOSItem('Masori crafting kit'), 350]
+] as const;
+
+export const toaPetTransmogItems = resolveItems([
+	'Remnant of zebak',
+	'Ancient remnant',
+	'Remnant of kephri',
+	'Remnant of ba-ba',
+	'Remnant of akkha'
+]);
+
 export function calcTOALoot({ users, raidLevel }: { users: TOALootUser[]; raidLevel: number }) {
 	const uniqueDeciderTable = new SimpleTable();
 	for (const user of users) uniqueDeciderTable.add(user.id, user.points);
@@ -442,6 +443,10 @@ export function calcTOALoot({ users, raidLevel }: { users: TOALootUser[]; raidLe
 	const messages: string[] = [`Your team had a ${chanceOfUnique.toFixed(2)}% chance of getting a unique drop.`];
 
 	for (const user of users) {
+		if (user.points < 1500) {
+			loot.add(user.id, 'Fossilised dung');
+			continue;
+		}
 		if (uniqueRecipient && user.id === uniqueRecipient) {
 			loot.add(user.id, uniqueLootRoll(user.kc, user.cl, raidLevel));
 		} else {
@@ -457,30 +462,15 @@ export function calcTOALoot({ users, raidLevel }: { users: TOALootUser[]; raidLe
 		}
 	}
 
-	const ornamentKits = [
-		[getOSItem('Cursed phalanx'), 500],
-		[getOSItem('Menaphite ornament kit'), 425],
-		[getOSItem('Masori crafting kit'), 350]
-	] as const;
-
 	const specialItemsReceived: number[] = [];
 	const hadNoDeaths = users.every(u => u.deaths.length === 0);
 	if (hadNoDeaths) {
-		for (const kit of ornamentKits.filter(i => raidLevel >= i[1])) {
+		for (const kit of toaOrnamentKits.filter(i => raidLevel >= i[1])) {
 			specialItemsReceived.push(kit[0].id);
+			break;
 		}
 		if (raidLevel >= 450 && roll(3)) {
-			specialItemsReceived.push(
-				randArrItem(
-					resolveItems([
-						'Remnant of zebak',
-						'Ancient remnant',
-						'Remnant of kephri',
-						'Remnant of ba-ba',
-						'Remnant of akkha'
-					])
-				)
-			);
+			specialItemsReceived.push(randArrItem(toaPetTransmogItems));
 		}
 		if (specialItemsReceived.length > 0) {
 			for (const user of users) {
@@ -703,11 +693,6 @@ export function calculateUserGearPercents(gear: UserFullGearSetup, raidLevel: nu
 		total: (melee + range + mage) / 3
 	};
 }
-// 1x Super combat (4)
-// 1x Range pot (4)
-// 1x Sanfew serum (4) if no Serp help (Torva > Serp)
-// 8 to 3 Sara Brew (4) as experience goes up
-// 8 to 3 Super Restore (4) as experience goes up
 // 450rl+ with Sun Keris = 10 Super Restores, no brews
 // 50x Dragon arrows, scaling to more as weaker used.
 // 40x Dragon darts, same as above with arrows.
@@ -744,14 +729,6 @@ export async function calcTOAInput({
 	let brewsNeeded = Math.max(1, 9 - Math.max(1, Math.ceil((kc + 1) / 12)));
 	const restoresNeeded = Math.max(2, Math.floor(brewsNeeded / 3));
 
-	let healingNeeded = 60;
-	if (kc < 20) {
-		cost.add('Cooked karambwan', 3);
-		healingNeeded += 40;
-	}
-
-	cost.add(getUserFoodFromBank(user, healingNeeded, user.user.favorite_food, 20) || new Bank().add('Shark', 5));
-
 	cost.add('Saradomin brew(4)', brewsNeeded);
 	cost.add('Super restore(4)', restoresNeeded);
 
@@ -786,7 +763,7 @@ export async function checkTOAUser(
 
 	const setupPercents = calculateUserGearPercents(user.gear, raidLevel);
 	const reqResults = toaRequirements.map(i => ({ ...i, result: i.doesMeet({ user, gearStats: setupPercents }) }));
-	const unmetReqs = reqResults.filter(i => typeof i === 'string');
+	const unmetReqs = reqResults.filter(i => typeof i.result === 'string');
 	if (unmetReqs.length > 0) {
 		return [
 			true,
@@ -1000,7 +977,16 @@ export async function toaStartCommand(
 const speedReductionForGear = 16;
 const speedReductionForKC = 40;
 const totalSpeedReductions = speedReductionForGear + speedReductionForKC + 15 + 4;
-const baseDuration = Time.Minute * 70;
+let baseTOADurations: Record<RaidLevel, number> = {
+	1: Time.Minute * 50,
+	100: Time.Minute * 50,
+	200: Time.Minute * 65,
+	300: Time.Minute * 70,
+	350: Time.Minute * 75,
+	400: Time.Minute * 80,
+	500: Time.Minute * 90,
+	600: Time.Minute * 100
+};
 
 const { ceil } = Math;
 function calcPerc(perc: number, num: number) {
@@ -1137,7 +1123,11 @@ export async function createTOATeam({
 			attempts: u.totalAttempts
 		});
 	}
-	let duration = baseDuration;
+	let duration = baseTOADurations[raidLevel];
+
+	if (raidLevel > 100) {
+		duration += (raidLevel / 100) * Time.Minute;
+	}
 
 	// Get the sum of individualReductions array
 	let totalReduction = individualReductions.reduce((a, c) => a + c);
