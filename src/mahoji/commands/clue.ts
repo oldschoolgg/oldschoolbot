@@ -24,12 +24,12 @@ function reducedClueTime(clueTier: ClueTier, score: number) {
 }
 
 function shouldApplyBoost(clueTier: ClueTier, item: string, hasAchievementDiaryCape: boolean) {
-	switch (clueTier) {
-		case Elite:
+	switch (clueTier.name) {
+		case 'Elite':
 			return (item !== 'Kandarin headgear 4' && item !== 'Fremennik sea boots 4') || !hasAchievementDiaryCape;
-		case Master:
+		case 'Master':
 			return item !== 'Kandarin headgear 4' || !hasAchievementDiaryCape;
-		case Hard:
+		case 'Hard':
 			return item !== 'Wilderness sword 3' || !hasAchievementDiaryCape;
 		default:
 			return true;
@@ -272,7 +272,7 @@ export const clueCommand: OSBMahojiCommand = {
 
 		const clueTierName = clueTier.name;
 		const boostList = clueTierBoosts[clueTierName];
-		const result = applyClueBoosts(user, boostList, boosts, duration, clueTierName);
+		const result = applyClueBoosts(user, boostList, boosts, duration, clueTier);
 
 		duration = result.duration;
 
