@@ -10,14 +10,13 @@ import { getMinigameScore } from '../../../lib/settings/settings';
 import { HighGambleTable, LowGambleTable, MediumGambleTable } from '../../../lib/simulation/baGamble';
 import { maxOtherStats } from '../../../lib/structures/Gear';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
-import { clamp, formatDuration, itemID, makeComponents, randomVariation, stringMatches } from '../../../lib/util';
+import { buildClueButtons, clamp, formatDuration, itemID, makeComponents, randomVariation, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import getOSItem from '../../../lib/util/getOSItem';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { handleMahojiConfirmation } from '../../mahojiSettings';
-import { buildClueButtons } from './openCommand';
 
 export const BarbBuyables = [
 	{
