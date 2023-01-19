@@ -1,13 +1,10 @@
-
 import { objectEntries, Time } from 'e';
 import { Items } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { MersenneTwister19937, shuffle } from 'random-js';
 
-
 import { skillEmoji } from '../data/emojis';
 import type { ArrayItemsResolved, Skills } from '../types';
-
 import { toTitleCase } from './toTitleCase';
 
 export function itemNameFromID(itemID: number | string) {
