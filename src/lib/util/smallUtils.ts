@@ -1,14 +1,13 @@
-import { ButtonBuilder } from 'discord.js';
+
 import { objectEntries, Time } from 'e';
-import { Bank, Items } from 'oldschooljs';
+import { Items } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { MersenneTwister19937, shuffle } from 'random-js';
 
-import { ClueTiers } from '../clues/clueTiers';
-import { PerkTier } from '../constants';
+
 import { skillEmoji } from '../data/emojis';
 import type { ArrayItemsResolved, Skills } from '../types';
-import { makeDoClueButton } from './globalInteractions';
+
 import { toTitleCase } from './toTitleCase';
 
 export function itemNameFromID(itemID: number | string) {
@@ -120,15 +119,4 @@ export function normal(mu = 0, sigma = 1, nsamples = 6) {
 export function shuffleRandom<T>(input: number, arr: readonly T[]): T[] {
 	const engine = MersenneTwister19937.seed(input);
 	return shuffle(engine, [...arr]);
-}
-
-export function buildClueButtons(loot: Bank | null, perkTier: number) {
-	const components: ButtonBuilder[] = [];
-	if (loot && perkTier > PerkTier.One) {
-		const clueReceived = ClueTiers.filter(tier => loot.amount(tier.scrollID) > 0);
-		if (clueReceived.length > 0) {
-			clueReceived.map(clue => components.push(makeDoClueButton(clue)));
-		}
-	}
-	return components;
 }
