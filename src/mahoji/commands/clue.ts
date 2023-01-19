@@ -24,7 +24,7 @@ function reducedClueTime(clueTier: ClueTier, score: number) {
 }
 
 function shouldApplyBoost(ClueTier['name'], item: string, hasAchievementDiaryCape: boolean) {
-	switch (clueTierName) {
+	switch (clueTier) {
 		case Elite:
 			return (item !== 'Kandarin headgear 4' && item !== 'Fremennik sea boots 4') || !hasAchievementDiaryCape;
 		case Master:
@@ -46,7 +46,7 @@ function applyClueBoosts(user: MUser, boostList: ClueBoost[], boosts: any[], dur
 	let hasAchievementDiaryCape = false;
 	for (const boost of boostList) {
 		if (user.hasEquippedOrInBank(boost.item.name)) {
-			if (shouldApplyBoost(clueTierName, boost.item.name, hasAchievementDiaryCape)) {
+			if (shouldApplyBoost(clueTier, boost.item.name, hasAchievementDiaryCape)) {
 				boosts.push(boost.boost);
 				duration *= boost.durationMultiplier;
 			}
