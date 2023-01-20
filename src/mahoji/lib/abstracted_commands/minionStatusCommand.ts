@@ -3,7 +3,6 @@ import { BaseMessageOptions, ButtonBuilder, ButtonStyle, ComponentType } from 'd
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { BitField, Emoji, minionBuyButton, PerkTier } from '../../../lib/constants';
 import { getUsersFishingContestDetails } from '../../../lib/fishingContest';
-import { roboChimpSyncData, roboChimpUserFetch } from '../../../lib/roboChimp';
 import { getUsersTame, shortTameTripDesc, tameLastFinishedActivity } from '../../../lib/tames';
 import { makeComponents } from '../../../lib/util';
 import { minionStatus } from '../../../lib/util/minionStatus';
@@ -15,9 +14,6 @@ import { isUsersDailyReady } from './dailyCommand';
 import { canRunAutoContract } from './farmingContractCommand';
 
 export async function minionStatusCommand(user: MUser, channelID: string): Promise<BaseMessageOptions> {
-	const roboChimpUser = await roboChimpUserFetch(user.id);
-	roboChimpSyncData(roboChimpUser, user);
-
 	if (!user.user.minion_hasBought) {
 		return {
 			content:
@@ -169,16 +165,6 @@ export async function minionStatusCommand(user: MUser, channelID: string): Promi
 				.setLabel(`IC: ${icDetails.currentItem.name.slice(0, 20)}`)
 				.setEmoji('988422348434718812')
 				.setStyle(ButtonStyle.Secondary)
-		);
-	}
-
-	if (roboChimpUser.leagues_points_total === 0) {
-		buttons.push(
-			new ButtonBuilder()
-				.setLabel('OSB/BSO Leagues')
-				.setEmoji('660333438016028723')
-				.setStyle(ButtonStyle.Link)
-				.setURL('https://bso-wiki.oldschool.gg/leagues')
 		);
 	}
 

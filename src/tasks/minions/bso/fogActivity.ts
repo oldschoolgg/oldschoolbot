@@ -1,6 +1,7 @@
 import { Bank } from 'oldschooljs';
 
 import { userHasFlappy } from '../../../lib/invention/inventions';
+import { randomizeBank } from '../../../lib/randomizer';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -13,8 +14,8 @@ export const fogTask: MinionTask = {
 		const { newScore } = await incrementMinigameScore(userID, 'fist_of_guthix', quantity);
 
 		const user = await mUserFetch(userID);
-		const loot = new Bank().add('Fist of guthix token', quantity * 15);
-
+		let loot = new Bank().add('Fist of guthix token', quantity * 15);
+		loot = randomizeBank(user.id, loot);
 		const flappyRes = await userHasFlappy({ user, duration });
 		if (flappyRes.shouldGiveBoost) loot.multiply(2);
 

@@ -2,6 +2,7 @@ import { increaseNumByPercent, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
+import { randomizeBank } from '../../lib/randomizer';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { RunecraftActivityTaskOptions } from '../../lib/types/minions';
@@ -81,7 +82,7 @@ export const runecraftTask: MinionTask = {
 			runeQuantity += bonusQuantity;
 		}
 
-		const loot = new Bank({
+		let loot = new Bank({
 			[rune.id]: runeQuantity
 		});
 
@@ -111,6 +112,8 @@ export const runecraftTask: MinionTask = {
 		if (daeyaltEssence) {
 			str += '\nYou are gaining 50% more Runecrafting XP due to using Daeyalt Essence.';
 		}
+
+		loot = randomizeBank(user.id, loot);
 
 		str += `\n\nYou received: ${loot}.`;
 

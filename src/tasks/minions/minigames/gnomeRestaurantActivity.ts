@@ -2,6 +2,7 @@ import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { userHasFlappy } from '../../../lib/invention/inventions';
+import { randomizeBank } from '../../../lib/randomizer';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { GnomeRestaurantActivityTaskOptions } from '../../../lib/types/minions';
@@ -65,7 +66,7 @@ export const gnomeResTask: MinionTask = {
 
 		incrementMinigameScore(userID, 'gnome_restaurant', quantity);
 
-		const loot = new Bank();
+		let loot = new Bank();
 
 		if (gloriesRemoved > 0) {
 			loot.add('Amulet of glory', gloriesRemoved);
@@ -84,6 +85,8 @@ export const gnomeResTask: MinionTask = {
 		if (flappyRes.shouldGiveBoost) {
 			loot.multiply(2);
 		}
+
+		loot = randomizeBank(user.id, loot);
 
 		await transactItems({
 			userID: user.id,

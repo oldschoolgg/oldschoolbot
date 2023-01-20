@@ -1,6 +1,7 @@
 import { increaseNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { randomizeBank } from '../../lib/randomizer';
 import { Craftables } from '../../lib/skilling/skills/crafting/craftables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { CraftingActivityTaskOptions } from '../../lib/types/minions';
@@ -21,7 +22,7 @@ export const craftingTask: MinionTask = {
 			sets = ' sets of';
 		}
 		let quantityToGive = item.outputMultiple ? quantity * item.outputMultiple : quantity;
-		const loot = new Bank();
+		let loot = new Bank();
 
 		let crushed = 0;
 		if (item.crushChance) {
@@ -49,6 +50,8 @@ export const craftingTask: MinionTask = {
 			amount: xpReceived,
 			duration
 		});
+
+		loot = randomizeBank(user.id, loot);
 
 		let str = `${user}, ${user.minionName} finished crafting ${quantity}${sets} ${item.name}, and received ${loot}. ${xpRes}`;
 

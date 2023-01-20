@@ -5,6 +5,7 @@ import { trackLoot } from '../../../lib/lootTrack';
 import { Naxxus, NaxxusLootTable } from '../../../lib/minions/data/killableMonsters/custom/bosses/Naxxus';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
+import { randomizeBank } from '../../../lib/randomizer';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
@@ -46,7 +47,7 @@ export const naxxusTask: MinionTask = {
 		const { channelID, userID, quantity, duration } = data;
 		const user = await mUserFetch(userID);
 
-		const loot = rollNaxxusLoot(quantity, user.cl);
+		let loot = rollNaxxusLoot(quantity, user.cl);
 
 		const xpStr = await addMonsterXP(user, {
 			monsterID: Naxxus.id,
@@ -56,6 +57,7 @@ export const naxxusTask: MinionTask = {
 			taskQuantity: null
 		});
 
+		loot = randomizeBank(user.id, loot);
 		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		await user.incrementKC(Naxxus.id, quantity);

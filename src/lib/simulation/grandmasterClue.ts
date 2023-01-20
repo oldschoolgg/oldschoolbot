@@ -42,11 +42,7 @@ export const DragonTable = new LootTable()
 	.add('Dragon battleaxe', [1, 5], 2)
 	.add('Dragon plateskirt', [1, 5], 2);
 
-const boxTable = new LootTable()
-	.add('Tradeable mystery box', [1, 2], 100)
-	.add('Untradeable mystery box', 1, 40)
-	.add('Equippable mystery box', 1, 5)
-	.add('Pet mystery box');
+const boxTable = new LootTable().add('Equippable mystery box', 1, 5).add('Pet mystery box');
 
 const LogsTable = new LootTable()
 	.add('Teak logs', [20, 100])

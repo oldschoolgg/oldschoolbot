@@ -2,6 +2,7 @@ import { Prisma } from '@prisma/client';
 import { randFloat, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { randomizeBank } from '../../../lib/randomizer';
 import birdhouses from '../../../lib/skilling/skills/hunter/birdHouseTrapping';
 import { BirdhouseData } from '../../../lib/skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -28,7 +29,7 @@ export const birdHouseTask: MinionTask = {
 		const currentCraftingLevel = user.skillLevel(SkillsEnum.Crafting);
 		let hunterXP = 0;
 		let craftingXP = 0;
-		const loot = new Bank();
+		let loot = new Bank();
 
 		const birdhouse = birdhouses.find(_birdhouse => _birdhouse.name === birdhouseName);
 		if (!birdhouse) return;
@@ -93,6 +94,7 @@ export const birdHouseTask: MinionTask = {
 			for (let i = 0; i < birdHouses; i++) {
 				loot.add(birdhouseToCollect.table.roll());
 			}
+			loot = randomizeBank(user.id, loot);
 			await transactItems({
 				userID: user.id,
 				collectionLog: true,

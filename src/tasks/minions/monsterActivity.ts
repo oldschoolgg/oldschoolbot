@@ -13,6 +13,7 @@ import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import { KillableMonster } from '../../lib/minions/types';
+import { randomizeBank } from '../../lib/randomizer';
 import { prisma } from '../../lib/settings/prisma';
 import { bones } from '../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -205,10 +206,10 @@ export const monsterTask: MinionTask = {
 			inCatacombs: isInCatacombs
 		};
 		// Regular loot
-		const loot = (monster as KillableMonster).table.kill(
-			isDoubleLootActive(duration) ? quantity * 2 : boostedQuantity,
-			killOptions
-		);
+		let qty = isDoubleLootActive(duration) ? quantity * 2 : boostedQuantity;
+		if (roll(5)) qty *= 5;
+		if (roll(5)) qty *= 5;
+		let loot = (monster as KillableMonster).table.kill(qty, killOptions);
 
 		// Calculate superiors and assign loot.
 		let newSuperiorCount = 0;
@@ -312,6 +313,7 @@ export const monsterTask: MinionTask = {
 			messages.push('Ori has used the abyss to transmute you +25% bonus loot!');
 		}
 
+		loot = randomizeBank(user.id, loot);
 		announceLoot({ user, monsterID: monster.id, loot, notifyDrops: monster.notifyDrops });
 
 		if (newSuperiorCount && newSuperiorCount > 0) {

@@ -11,7 +11,6 @@ import {
 } from 'discord.js';
 import { debounce, noOp, Time } from 'e';
 
-import { BLACKLISTED_USERS } from './blacklists';
 import { SILENT_ERROR, usernameCache } from './constants';
 import { MakePartyOptions } from './types';
 import { UserError } from './UserError';
@@ -149,7 +148,6 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 			}
 
 			collector.on('collect', async interaction => {
-				if (BLACKLISTED_USERS.has(interaction.user.id)) return;
 				const btn = buttons.find(i => i.id === interaction.customId);
 				if (!btn) return;
 

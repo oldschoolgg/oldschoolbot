@@ -120,8 +120,6 @@ const specialPricesBeforeMultiplying = new Bank()
 	.add('Abyssal cape', 750_000_000)
 	.add('Dwarven blessing', 250_000_000)
 	.add('Ent hide', 20_000_000)
-	.add('Tradeable mystery box', 7_500_000)
-	.add('Untradeable mystery box', 5_500_000)
 
 	.add('Ignecarus dragonclaw', 50_000_000)
 	.add('Blood dye', 1_500_000_000)

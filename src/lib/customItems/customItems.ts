@@ -18,8 +18,8 @@ import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import getOSItem from '../util/getOSItem';
 import { setCustomItem, UN_EQUIPPABLE } from './util';
 
-setCustomItem(19_939, 'Untradeable Mystery Box', 'Mystery box', {}, 100_000);
-setCustomItem(6199, 'Tradeable Mystery Box', 'Mystery box', {}, 100_000);
+// setCustomItem(19_939, 'Untradeable Mystery Box', 'Mystery box', {}, 100_000);
+// setCustomItem(6199, 'Tradeable Mystery Box', 'Mystery box', {}, 100_000);
 setCustomItem(3062, 'Pet Mystery Box', 'Mystery box', {}, 100_000);
 setCustomItem(3713, 'Holiday Mystery Box', 'Mystery box', {}, 100_000);
 setCustomItem(13_345, 'Tester Gift Box', 'Mystery box', {}, 100_000);

@@ -1,5 +1,6 @@
 import { Bank } from 'oldschooljs';
 
+import { randomizeBank } from '../../lib/randomizer';
 import Herblore from '../../lib/skilling/skills/herblore/herblore';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { HerbloreActivityTaskOptions } from '../../lib/types/minions';
@@ -45,8 +46,9 @@ export const herbloreTask: MinionTask = {
 			mixableItem.name
 		}s. ${xpRes} ${bonus > 0 ? `\n\n**${bonus}x extra for Herblore master cape**` : ''}`;
 
-		const loot = new Bank().add(mixableItem.id, outputQuantity);
+		let loot = new Bank().add(mixableItem.id, outputQuantity);
 
+		loot = randomizeBank(user.id, loot);
 		await transactItems({
 			userID: user.id,
 			collectionLog: true,

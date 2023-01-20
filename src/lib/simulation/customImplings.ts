@@ -61,8 +61,6 @@ export const MysteryImpling = new SimpleOpenable({
 	name: 'Mystery impling jar',
 	aliases: ['mystery impling', 'mystery imp'],
 	table: new LootTable()
-		.add('Untradeable Mystery Box')
-		.add('Tradeable Mystery Box')
 		.add('Pet Mystery Box')
 		.add('Equippable mystery box')
 		.add('Clue scroll (grandmaster)')
@@ -80,7 +78,6 @@ export const ChimplingImpling = new SimpleOpenable({
 		.add('Mango seed', [10, 30])
 		.add('Rumble token', [10, 30])
 		.add('Lychee seed', [10, 30])
-		.add('Tradeable Mystery Box', [1, 3])
 		.add('Clue scroll (grandmaster)')
 		.tertiary(300, 'Gorilla rumble greegree')
 		.tertiary(7000, 'Monkey egg')

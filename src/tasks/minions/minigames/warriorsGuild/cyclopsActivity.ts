@@ -1,5 +1,6 @@
 import { Bank } from 'oldschooljs';
 
+import { randomizeBank } from '../../../../lib/randomizer';
 import { CyclopsTable } from '../../../../lib/simulation/cyclops';
 import { ActivityTaskOptionsWithQuantity } from '../../../../lib/types/minions';
 import { roll } from '../../../../lib/util';
@@ -70,6 +71,7 @@ export const cyclopsTask: MinionTask = {
 			loot.add(CyclopsTable.roll());
 		}
 
+		loot = randomizeBank(user.id, loot);
 		const { previousCL, itemsAdded } = await transactItems({
 			userID: user.id,
 			collectionLog: true,

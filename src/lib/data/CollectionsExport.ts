@@ -2013,8 +2013,6 @@ export const dailyCL = resolveItems([
 	'Druidic wreath',
 	'Disk of returning',
 	'Stale baguette',
-	'Tradeable mystery box',
-	'Untradeable mystery box',
 	'Equippable mystery box',
 	'Holiday mystery box',
 	'Pet mystery box'

@@ -5,6 +5,7 @@ import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 import { convertLootBanksToItemBanks, JSONClone } from 'oldschooljs/dist/util';
 
 import { TOBRooms } from '../data/tob';
+import { randomizeBank } from '../randomizer';
 import { assert } from '../util/logError';
 
 export interface TeamMember {
@@ -114,7 +115,7 @@ export class TheatreOfBloodClass {
 			loot.add("Lil' zik");
 		}
 
-		return loot;
+		return randomizeBank(member.id, loot);
 	}
 
 	public uniqueDecide(team: ParsedMember[]) {

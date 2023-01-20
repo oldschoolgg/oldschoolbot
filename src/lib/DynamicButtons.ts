@@ -12,7 +12,6 @@ import {
 import { noOp, Time } from 'e';
 import murmurhash from 'murmurhash';
 
-import { BLACKLISTED_USERS } from './blacklists';
 import { awaitMessageComponentInteraction, makeComponents } from './util';
 import { minionIsBusy } from './util/minionIsBusy';
 
@@ -87,7 +86,6 @@ export class DynamicButtons {
 		const collectedInteraction = await awaitMessageComponentInteraction({
 			message: this.message,
 			filter: i => {
-				if (BLACKLISTED_USERS.has(i.user.id)) return false;
 				if (this.usersWhoCanInteract.includes(i.user.id)) {
 					return true;
 				}

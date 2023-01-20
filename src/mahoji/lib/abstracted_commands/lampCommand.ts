@@ -180,6 +180,7 @@ export const Lampables: IXPObject[] = [
 ];
 
 export async function lampCommand(user: MUser, itemToUse: string, skill: string, _quantity: number | undefined) {
+	if (1 > 0) return 'You cannot use lamps in Randomizer!';
 	const item = getItem(itemToUse);
 	if (!item) return "That's not a valid item.";
 

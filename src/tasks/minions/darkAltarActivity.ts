@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import { Events } from '../../lib/constants';
 import { darkAltarRunes } from '../../lib/minions/functions/darkAltarCommand';
+import { randomizeBank } from '../../lib/randomizer';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { DarkAltarOptions } from '../../lib/types/minions';
@@ -75,6 +76,8 @@ export const darkAltarTask: MinionTask = {
 		if (bonusQuantity > 0) {
 			str += ` **Bonus Quantity:** ${bonusQuantity.toLocaleString()}`;
 		}
+
+		loot = randomizeBank(user.id, loot);
 
 		if (loot.amount('Rift guardian') > 0) {
 			str += "\n\n**You have a funny feeling you're being followed...**";

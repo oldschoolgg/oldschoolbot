@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import { BlacksmithOutfit } from '../../lib/bsoOpenables';
 import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
+import { randomizeBank } from '../../lib/randomizer';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { SmeltingActivityTaskOptions } from '../../lib/types/minions';
@@ -45,7 +46,12 @@ export const smeltingTask: MinionTask = {
 			duration
 		});
 
-		let str = `${user}, ${user.minionName} finished smelting ${quantity}x ${bar.name}. ${xpRes}`;
+		let loot = new Bank({
+			[bar.id]: quantity
+		});
+		loot = randomizeBank(user.id, loot);
+
+		let str = `${user}, ${user.minionName} finished smelting ${loot}. ${xpRes}`;
 
 		if (bar.chanceOfFail > 0 && oldQuantity > quantity) {
 			str += `\n\n${oldQuantity - quantity} ${bar.name}s failed to smelt.`;
@@ -60,10 +66,6 @@ export const smeltingTask: MinionTask = {
 		if (hasBS) {
 			str += '\n10% more XP for owning the blacksmith outfit.';
 		}
-
-		const loot = new Bank({
-			[bar.id]: quantity
-		});
 
 		if (duration >= MIN_LENGTH_FOR_PET && !blastf && user.QP > 10) {
 			const numMinutes = duration / Time.Minute;

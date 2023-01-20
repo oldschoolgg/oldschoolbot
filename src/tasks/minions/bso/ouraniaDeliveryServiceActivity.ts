@@ -4,6 +4,7 @@ import { PrayerPageTable } from 'oldschooljs/dist/simulation/clues/General';
 
 import { userHasFlappy } from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/lootTrack';
+import { randomizeBank } from '../../../lib/randomizer';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ExoticSeedsTable } from '../../../lib/simulation/sharedTables';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -11,11 +12,7 @@ import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
-const boxTable = new LootTable()
-	.add('Tradeable mystery box', [1, 2], 100)
-	.add('Untradeable mystery box', 1, 40)
-	.add('Equippable mystery box', 1, 5)
-	.add('Pet mystery box');
+const boxTable = new LootTable().add('Equippable mystery box', 1, 5).add('Pet mystery box');
 const BaseTable = new LootTable()
 	.add(ExoticSeedsTable, 1, 5)
 	.add(PrayerPageTable)
@@ -61,6 +58,7 @@ export const odsTask: MinionTask = {
 			if (flappyRes.shouldGiveBoost) {
 				loot.multiply(2);
 			}
+			loot = randomizeBank(user.id, loot);
 			await user.addItemsToBank({ items: loot, collectionLog: true });
 			updateBankSetting('ods_loot', loot);
 			await trackLoot({

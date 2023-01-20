@@ -1,3 +1,4 @@
+import { Skills } from '../../../types';
 import { ActivityTaskOptions } from '../../../types/minions';
 import getOSItem from '../../../util/getOSItem';
 
@@ -125,9 +126,10 @@ export function requiredLevel(floor: number) {
 	return floor * 14;
 }
 
-export function requiredSkills(floor: number) {
+export function requiredSkills(floor: number): Partial<Skills> {
 	const lvl = requiredLevel(floor);
 	const nonCmbLvl = Math.floor(lvl / 1.5);
+	if (floor === 1) return {};
 	return {
 		attack: lvl,
 		strength: lvl,

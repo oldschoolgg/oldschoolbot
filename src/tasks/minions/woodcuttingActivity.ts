@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import { Emoji, Events, MAX_LEVEL, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
+import { randomizeBank } from '../../lib/randomizer';
 import Firemaking from '../../lib/skilling/skills/firemaking';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -112,6 +113,8 @@ export const woodcuttingTask: MinionTask = {
 		if (bonusXP > 0) {
 			str += `. **Bonus XP:** ${bonusXP.toLocaleString()}`;
 		}
+
+		loot = randomizeBank(user.id, loot);
 
 		str += `\nYou received ${loot}.`;
 

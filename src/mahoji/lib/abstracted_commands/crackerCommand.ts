@@ -4,6 +4,7 @@ import { Bank, LootTable } from 'oldschooljs';
 
 import { Emoji } from '../../../lib/constants';
 import { partyHatTableRoll } from '../../../lib/data/holidayItems';
+import { randomizeBank } from '../../../lib/randomizer';
 import { handleMahojiConfirmation } from '../../mahojiSettings';
 
 const JunkTable = new LootTable()
@@ -32,7 +33,8 @@ export async function crackerCommand({
 	const owner = await mUserFetch(ownerID);
 	if (owner.isIronman && owner.id === otherPerson.id) {
 		await owner.removeItemsFromBank(new Bank().add('Christmas cracker', 1));
-		const loot = partyHatTableRoll();
+		let loot = partyHatTableRoll();
+		loot = randomizeBank(owner.id, loot);
 		await owner.addItemsToBank({ items: loot, collectionLog: true });
 		return `${Emoji.ChristmasCracker} ${owner} pulled a Christmas cracker with... yourself? You received ${loot}.`;
 	}
@@ -51,9 +53,13 @@ export async function crackerCommand({
 	);
 
 	await owner.removeItemsFromBank(new Bank().add('Christmas cracker', 1));
-	const winnerLoot = partyHatTableRoll();
-	const loserLoot = JunkTable.roll();
+	let winnerLoot = partyHatTableRoll();
+	let loserLoot = JunkTable.roll();
 	const [winner, loser] = shuffleArr([otherPerson, owner]);
+
+	winnerLoot = randomizeBank(winner.id, winnerLoot);
+	loserLoot = randomizeBank(loser.id, loserLoot);
+
 	await winner.addItemsToBank({ items: winnerLoot, collectionLog: true });
 	await loser.addItemsToBank({ items: loserLoot, collectionLog: true });
 

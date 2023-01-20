@@ -9,17 +9,15 @@ import './lib/util/logger';
 import * as Sentry from '@sentry/node';
 import { Chart } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { GatewayIntentBits, InteractionType, Options, Partials, TextChannel } from 'discord.js';
+import { GatewayIntentBits, InteractionType, Options, Partials } from 'discord.js';
 import { isObject, Time } from 'e';
 import { MahojiClient } from 'mahoji';
 import { join } from 'path';
 import { debuglog } from 'util';
 
 import { botToken, CLIENT_ID, DEV_SERVER_ID, production, SENTRY_DSN, SupportServer } from './config';
-import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from './lib/blacklists';
 import { Channel, Events } from './lib/constants';
 import { onMessage } from './lib/events';
-import { makeServer } from './lib/http';
 import { modalInteractionHook } from './lib/modals';
 import { runStartupScripts } from './lib/startupScripts';
 import { OldSchoolBotClient } from './lib/structures/OldSchoolBotClient';
@@ -144,9 +142,6 @@ client.mahojiClient = mahojiClient;
 global.globalClient = client;
 client.on('messageCreate', onMessage);
 client.on('interactionCreate', async interaction => {
-	if (BLACKLISTED_USERS.has(interaction.user.id)) return;
-	if (interaction.guildId && BLACKLISTED_GUILDS.has(interaction.guildId)) return;
-
 	if (!client.isReady()) {
 		if (interaction.isChatInputCommand()) {
 			interaction.reply({
@@ -185,10 +180,6 @@ client.on('interactionCreate', async interaction => {
 	}
 });
 
-client.on(Events.ServerNotification, (message: string) => {
-	const channel = globalClient.channels.cache.get(Channel.Notifications);
-	if (channel) (channel as TextChannel).send(message);
-});
 let economyLogBuffer: string[] = [];
 
 client.on(Events.EconomyLog, async (message: string) => {
@@ -201,18 +192,11 @@ client.on(Events.EconomyLog, async (message: string) => {
 		economyLogBuffer = [];
 	}
 });
-client.on('guildCreate', guild => {
-	if (!guild.available) return;
-	if (BLACKLISTED_GUILDS.has(guild.id) || BLACKLISTED_USERS.has(guild.ownerId)) {
-		guild.leave();
-	}
-});
 
 client.on('shardDisconnect', ({ wasClean, code, reason }) => debugLog('Shard Disconnect', { wasClean, code, reason }));
 client.on('shardError', err => debugLog('Shard Error', { error: err.message }));
 
 async function main() {
-	client.fastifyServer = makeServer();
 	await Promise.all([
 		runTimedLoggedFn('Sync Active User IDs', syncActiveUserIDs),
 		runTimedLoggedFn('Sync Activity Cache', syncActivityCache)

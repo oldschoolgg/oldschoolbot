@@ -619,20 +619,6 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					return 'Invalid thing to reset.';
 				}
 				if (options.max) {
-					await roboChimpClient.user.upsert({
-						where: {
-							id: BigInt(user.id)
-						},
-						create: {
-							id: BigInt(user.id),
-							leagues_points_balance_osb: 25_000
-						},
-						update: {
-							leagues_points_balance_osb: {
-								increment: 25_000
-							}
-						}
-					});
 					return giveMaxStats(user);
 				}
 				if (options.patron) {

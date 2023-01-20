@@ -1,5 +1,5 @@
 import { userMention } from 'discord.js';
-import { randInt } from 'e';
+import { randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
@@ -7,6 +7,7 @@ import { Events } from '../../../lib/constants';
 import { isDoubleLootActive } from '../../../lib/doubleLoot';
 import { trackLoot } from '../../../lib/lootTrack';
 import { MOKTANG_ID, MoktangLootTable } from '../../../lib/minions/data/killableMonsters/custom/bosses/Moktang';
+import { randomizeBank } from '../../../lib/randomizer';
 import { itemNameFromID } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -32,6 +33,9 @@ export const moktangTask: MinionTask = {
 			loot.multiply(2);
 			data.cantBeDoubled = true;
 		}
+
+		if (roll(5)) loot.multiply(5);
+		loot = randomizeBank(user.id, loot);
 
 		const res = await user.addItemsToBank({ items: loot, collectionLog: true });
 		await updateBankSetting('moktang_loot', loot);

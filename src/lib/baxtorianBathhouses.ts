@@ -7,6 +7,7 @@ import { table } from 'table';
 
 import { MysteryBoxes } from './bsoOpenables';
 import { Emoji, GLOBAL_BSO_XP_MULTIPLIER } from './constants';
+import { randomizeBank } from './randomizer';
 import { incrementMinigameScore } from './settings/minigames';
 import Grimy from './skilling/skills/herblore/mixables/grimy';
 import { SkillsEnum } from './skilling/types';
@@ -413,7 +414,7 @@ function calculateResult(data: BathhouseTaskOptions) {
 	}
 
 	return {
-		loot,
+		loot: randomizeBank(data.userID, loot),
 		herbXP,
 		firemakingXP,
 		ore,

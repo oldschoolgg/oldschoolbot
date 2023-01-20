@@ -1,4 +1,4 @@
-import { increaseNumByPercent, noOp, notEmpty, objectValues, Time } from 'e';
+import { increaseNumByPercent, noOp, notEmpty, objectValues, randArrItem, Time } from 'e';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { convertLVLtoXP, convertXPtoLVL, toKMB } from 'oldschooljs/dist/util/util';
 
@@ -12,7 +12,7 @@ import { prisma } from './settings/prisma';
 import Skillcapes from './skilling/skillcapes';
 import Skills from './skilling/skills';
 import { SkillsEnum } from './skilling/types';
-import { itemNameFromID } from './util';
+import { assert, itemNameFromID, murMurSort } from './util';
 import { formatOrdinal } from './util/formatOrdinal';
 import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
@@ -112,13 +112,29 @@ function getEquippedCapes(user: MUser) {
 		.map(i => i.item);
 }
 
+const allSkills = Object.values(SkillsEnum);
+
+function getMurSkill(userID: string, inputSkill: SkillsEnum) {
+	const index = allSkills.indexOf(inputSkill);
+	const sorted = murMurSort(allSkills, `${userID}-v1`);
+	return sorted[index];
+}
+
+let skillsTest = new Set();
+for (const skill of allSkills) {
+	skillsTest.add(getMurSkill('asdf', skill));
+}
+assert(skillsTest.size === allSkills.length);
+
 export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
+	params.skillName = getMurSkill(user.id, params.skillName);
 	const currentXP = Number(user.user[`skills_${params.skillName}`]);
 	const currentLevel = user.skillLevel(params.skillName);
 	const currentTotalLevel = user.totalLevel;
 	const multiplier = params.multiplier !== false;
 	if (multiplier) {
 		params.amount *= GLOBAL_BSO_XP_MULTIPLIER;
+		params.amount *= randArrItem([10, 5, 10, 5, 20, 1, 5, 10, 20, 20, 50]);
 	}
 
 	// Look for Mastery skill cape:

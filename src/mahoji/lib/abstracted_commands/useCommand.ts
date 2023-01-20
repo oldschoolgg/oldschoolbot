@@ -1,9 +1,8 @@
-import { notEmpty, randInt, Time } from 'e';
+import { notEmpty } from 'e';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { BitField } from '../../../lib/constants';
-import { addToDoubleLootTimer } from '../../../lib/doubleLoot';
 import { allDyes, dyedItems } from '../../../lib/dyedItems';
 import { gearImages } from '../../../lib/gear/functions/generateGearImage';
 import { assert } from '../../../lib/util';
@@ -234,14 +233,7 @@ for (const genericU of genericUsables) {
 		}
 	});
 }
-usables.push({
-	items: [getOSItem('Double loot token')],
-	run: async (user: MUser) => {
-		await user.removeItemsFromBank(new Bank().add('Double loot token'));
-		await addToDoubleLootTimer(Time.Minute * randInt(6, 36), `${user} used a Double Loot token!`);
-		return 'You used your Double Loot Token!';
-	}
-});
+
 export const allUsableItems = new Set(usables.map(i => i.items.map(i => i.id)).flat(2));
 
 export async function useCommand(user: MUser, _firstItem: string, _secondItem?: string) {

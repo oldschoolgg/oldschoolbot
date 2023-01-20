@@ -2,6 +2,7 @@ import { randArrItem, roll, Time, uniqueArr } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { monkeyHeadImage, monkeyTierOfUser } from '../../../lib/monkeyRumble';
+import { randomizeBank } from '../../../lib/randomizer';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { MonkeyRumbleOptions } from '../../../lib/types/minions';
@@ -55,7 +56,7 @@ export const mrTask: MinionTask = {
 		});
 
 		const tokens = Math.ceil(quantity * (monkeyTier / 1.2));
-		const loot = new Bank().add('Rumble token', tokens);
+		let loot = new Bank().add('Rumble token', tokens);
 
 		let files = [];
 		const specialMonkeys = monkeys.filter(m => m.special);
@@ -77,6 +78,8 @@ export const mrTask: MinionTask = {
 		for (let i = 0; i < monkeys.length; i++) {
 			loot.add(baseTable.roll());
 		}
+
+		loot = randomizeBank(user.id, loot);
 
 		await user.addItemsToBank({ items: loot, collectionLog: true });
 		updateBankSetting('mr_loot', loot);

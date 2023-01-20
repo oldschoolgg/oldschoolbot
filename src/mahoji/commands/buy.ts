@@ -5,6 +5,7 @@ import { Bank } from 'oldschooljs';
 import Buyables from '../../lib/data/buyables/buyables';
 import { kittens } from '../../lib/growablePets';
 import { gotFavour } from '../../lib/minions/data/kourendFavour';
+import { randomizeBank } from '../../lib/randomizer';
 import { getMinigameScore, Minigames } from '../../lib/settings/minigames';
 import { isElligibleForPresent } from '../../lib/settings/settings';
 import { formatSkillRequirements, itemNameFromID, stringMatches } from '../../lib/util';
@@ -168,7 +169,9 @@ export const buyCommand: OSBMahojiCommand = {
 				? buyable.outputItems
 				: buyable.outputItems(await mUserFetch(user.id));
 
-		const outItems = singleOutput.clone().multiply(quantity);
+		let outItems = singleOutput.clone().multiply(quantity);
+
+		outItems = randomizeBank(user.id, outItems);
 
 		await handleMahojiConfirmation(
 			interaction,

@@ -7,6 +7,7 @@ import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import isImportantItemForMonster from '../../lib/minions/functions/isImportantItemForMonster';
+import { randomizeBank } from '../../lib/randomizer';
 import { GroupMonsterActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
@@ -36,7 +37,7 @@ export const groupoMonsterTask: MinionTask = {
 		let resultStr = `${leaderUser}, your party finished killing ${quantity}x ${monster.name}!\n\n`;
 		const totalLoot = new Bank();
 
-		for (const [userID, loot] of Object.entries(teamsLoot)) {
+		for (let [userID, loot] of Object.entries(teamsLoot)) {
 			const user = await mUserFetch(userID).catch(noOp);
 			if (!user) continue;
 			await addMonsterXP(user, {
@@ -52,6 +53,7 @@ export const groupoMonsterTask: MinionTask = {
 			if (user.usingPet('Ori') && duration > Time.Minute * 5) {
 				loot.add(monster.table.kill(Math.ceil(kcToAdd * 0.25), {}));
 			}
+			loot = randomizeBank(user.id, loot);
 			await transactItems({
 				userID: user.id,
 				collectionLog: true,

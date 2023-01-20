@@ -2,7 +2,6 @@ import { notEmpty, randArrItem } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
 
-import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { badges, BitField, BitFieldData, FormattedCustomEmoji, MAX_LEVEL, PerkTier } from '../../lib/constants';
 import { degradeableItems } from '../../lib/degradeableItems';
 import { diaries } from '../../lib/diaries';
@@ -11,7 +10,6 @@ import { AttackStyles } from '../../lib/minions/functions';
 import { blowpipeCommand, blowpipeDarts } from '../../lib/minions/functions/blowpipeCommand';
 import { degradeableItemsCommand } from '../../lib/minions/functions/degradeableItemsCommand';
 import { allPossibleStyles, trainCommand } from '../../lib/minions/functions/trainCommand';
-import { roboChimpUserFetch } from '../../lib/roboChimp';
 import { Minigames } from '../../lib/settings/minigames';
 import { minionActivityCache } from '../../lib/settings/settings';
 import Skills from '../../lib/skilling/skills';
@@ -29,7 +27,6 @@ import { cancelTaskCommand } from '../lib/abstracted_commands/cancelTaskCommand'
 import { crackerCommand } from '../lib/abstracted_commands/crackerCommand';
 import { dailyCommand } from '../lib/abstracted_commands/dailyCommand';
 import { feedHammyCommand } from '../lib/abstracted_commands/hammyCommand';
-import { ironmanCommand } from '../lib/abstracted_commands/ironmanCommand';
 import { Lampables, lampCommand } from '../lib/abstracted_commands/lampCommand';
 import { minionBuyCommand } from '../lib/abstracted_commands/minionBuyCommand';
 import { minionStatusCommand } from '../lib/abstracted_commands/minionStatusCommand';
@@ -49,8 +46,6 @@ const patMessages = [
 const randomPatMessage = (minionName: string) => randArrItem(patMessages).replace('{name}', minionName);
 
 export async function getUserInfo(user: MUser) {
-	const roboChimpUser = await roboChimpUserFetch(user.id);
-
 	const bitfields = `${(user.bitfield as BitField[])
 		.map(i => BitFieldData[i])
 		.filter(notEmpty)
@@ -67,7 +62,6 @@ export async function getUserInfo(user: MUser) {
 
 	const result = {
 		perkTier: user.perkTier(),
-		isBlacklisted: BLACKLISTED_USERS.has(user.id),
 		badges: userBadges,
 		mainAccount:
 			user.user.main_account !== null
@@ -79,23 +73,18 @@ export async function getUserInfo(user: MUser) {
 		}`,
 		isIronman: user.isIronman,
 		bitfields,
-		currentTask: taskText,
-		patreon: roboChimpUser.patreon_id ? 'Yes' : 'None',
-		github: roboChimpUser.github_id ? 'Yes' : 'None'
+		currentTask: taskText
 	};
 	return {
 		...result,
 		everythingString: `${user.badgedUsername}[${user.id}]
 **Perk Tier:** ${result.perkTier}
-**Blacklisted:** ${result.isBlacklisted}
 **Badges:** ${result.badges.join(' ')}
 **Main Account:** ${result.mainAccount}
 **Ironman Alts:** ${result.ironmanAlts}
 **Patron Balance:** ${result.premiumBalance}
 **Ironman:** ${result.isIronman}
-**Bitfields:** ${result.bitfields}
-**Patreon Connected:** ${result.patreon}
-**Github Connected:** ${result.github}`
+**Bitfields:** ${result.bitfields}`
 	};
 }
 
@@ -106,15 +95,7 @@ export const minionCommand: OSBMahojiCommand = {
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'buy',
-			description: 'Buy a minion so you can start playing the bot!',
-			options: [
-				{
-					type: ApplicationCommandOptionType.Boolean,
-					name: 'ironman',
-					description: 'Do you want to be an ironman?',
-					required: false
-				}
-			]
+			description: 'Buy a minion so you can start playing the bot!'
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -282,19 +263,6 @@ export const minionCommand: OSBMahojiCommand = {
 							.filter(i => (!value ? true : i.aliases.some(alias => alias.includes(value.toLowerCase()))))
 							.map(i => ({ name: i.name, value: i.name }));
 					}
-				}
-			]
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'ironman',
-			description: 'Become an ironman, or de-iron.',
-			options: [
-				{
-					type: ApplicationCommandOptionType.Boolean,
-					name: 'permanent',
-					description: 'Do you want to become a permanent ironman?',
-					required: false
 				}
 			]
 		},
@@ -501,9 +469,7 @@ export const minionCommand: OSBMahojiCommand = {
 			return `Your ${kcName} KC is: ${kcAmount}.`;
 		}
 
-		if (options.buy)
-			return minionBuyCommand(await globalClient.users.fetch(user.id), user, Boolean(options.buy.ironman));
-		if (options.ironman) return ironmanCommand(user, interaction);
+		if (options.buy) return minionBuyCommand(user);
 
 		if (options.charge) {
 			return degradeableItemsCommand(interaction, user, options.charge.item, options.charge.amount);

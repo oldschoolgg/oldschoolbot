@@ -1,6 +1,7 @@
 import { Bank } from 'oldschooljs';
 
 import { userHasFlappy } from '../../../lib/invention/inventions';
+import { randomizeBank } from '../../../lib/randomizer';
 import { incrementMinigameScore } from '../../../lib/settings/minigames';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -12,7 +13,7 @@ export const brewingTask: MinionTask = {
 		const user = await mUserFetch(userID);
 		await incrementMinigameScore(user.id, 'trouble_brewing', quantity);
 		let loot = new Bank().add('Pieces of eight', quantity * 100);
-
+		loot = randomizeBank(user.id, loot);
 		const flappyRes = await userHasFlappy({ user, duration });
 		if (flappyRes.shouldGiveBoost) loot.multiply(2);
 

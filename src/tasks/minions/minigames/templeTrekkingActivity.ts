@@ -9,6 +9,7 @@ import {
 	MediumEncounterLoot,
 	rewardTokens
 } from '../../../lib/minions/data/templeTrekking';
+import { randomizeBank } from '../../../lib/randomizer';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { TempleTrekkingActivityTaskOptions } from '../../../lib/types/minions';
 import { percentChance, stringMatches } from '../../../lib/util';
@@ -89,6 +90,7 @@ export const templeTrekkingTask: MinionTask = {
 			loot.multiply(2);
 		}
 
+		loot = randomizeBank(user.id, loot);
 		const { previousCL, itemsAdded } = await transactItems({
 			userID: user.id,
 			collectionLog: true,

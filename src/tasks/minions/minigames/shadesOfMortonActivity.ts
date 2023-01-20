@@ -2,6 +2,7 @@ import { increaseNumByPercent } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { MorytaniaDiary, userhasDiaryTier } from '../../../lib/diaries';
+import { randomizeBank } from '../../../lib/randomizer';
 import { incrementMinigameScore } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ShadesOfMortonOptions } from '../../../lib/types/minions';
@@ -37,6 +38,7 @@ export const shadesOfMortonTask: MinionTask = {
 		for (let i = 0; i < quantity; i++) {
 			loot.add(table.roll());
 		}
+		loot = randomizeBank(user.id, loot);
 
 		let messages: string[] = [];
 

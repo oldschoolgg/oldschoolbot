@@ -1,6 +1,7 @@
 import { Bank } from 'oldschooljs';
 
 import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
+import { randomizeBank } from '../../lib/randomizer';
 import calcBurntCookables from '../../lib/skilling/functions/calcBurntCookables';
 import Cooking from '../../lib/skilling/skills/cooking';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -41,9 +42,11 @@ export const cookingTask: MinionTask = {
 			str += `\n\n${burnedAmount}x ${cookable.name} failed to cook.`;
 		}
 
-		const loot = new Bank({ [cookable.id]: quantity });
+		let loot = new Bank({ [cookable.id]: quantity });
 		loot.remove(cookable.id, burnedAmount);
 		loot.add(cookable.burntCookable, burnedAmount);
+
+		loot = randomizeBank(user.id, loot);
 
 		if (duration >= MIN_LENGTH_FOR_PET) {
 			const dropRate = clAdjustedDroprate(user, 'Remy', 5000, 1.2);

@@ -1,5 +1,6 @@
 import { Bank } from 'oldschooljs';
 
+import { randomizeBank } from '../../lib/randomizer';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { TiaraRunecraftActivityTaskOptions } from '../../lib/types/minions';
@@ -21,10 +22,10 @@ export const tiaraRunecraftTask: MinionTask = {
 		})}`;
 		let str = `${user}, ${user.minionName} finished crafting ${tiaraQuantity} ${tiara.name}. ${xpRes}`;
 
-		const loot = new Bank({
+		let loot = new Bank({
 			[tiara.id]: tiaraQuantity
 		});
-
+		loot = randomizeBank(user.id, loot);
 		str += `\n\nYou received: ${loot}.`;
 
 		await transactItems({

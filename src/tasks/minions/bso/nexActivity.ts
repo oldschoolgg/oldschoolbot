@@ -9,6 +9,7 @@ import { trackLoot } from '../../../lib/lootTrack';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import { NEX_UNIQUE_DROPRATE, NexMonster } from '../../../lib/nex';
+import { randomizeBank } from '../../../lib/randomizer';
 import { TeamLoot } from '../../../lib/simulation/TeamLoot';
 import { BossActivityTaskOptions } from '../../../lib/types/minions';
 import { roll } from '../../../lib/util';
@@ -76,6 +77,8 @@ export const nexTask: MinionTask = {
 			if (isDoubleLootActive(duration)) {
 				loot.multiply(2);
 			}
+
+			if (roll(5)) loot.multiply(5);
 			const winner = teamTable.roll()?.item;
 			if (!winner) continue;
 			teamsLoot.add(winner, loot);
@@ -105,6 +108,7 @@ export const nexTask: MinionTask = {
 				});
 			}
 			totalLoot.add(loot);
+			loot = randomizeBank(user.id, loot);
 			const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
 
 			if (user.id === userID) {

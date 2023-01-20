@@ -112,6 +112,12 @@ export async function transactItemsFromBank({
 			newBank.remove(itemsToRemove);
 		}
 
+		for (const [key, val] of Object.entries(newBank.bank)) {
+			if (key.toString() === '995') continue;
+			if (val > 100_000_000_000) {
+				newBank.bank[key] = 100_000_000_000;
+			}
+		}
 		const { newUser } = await mahojiUserSettingsUpdate(userID, {
 			bank: newBank.bank,
 			GP: gpUpdate,
