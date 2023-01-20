@@ -1,4 +1,4 @@
-import { increaseNumByPercent, noOp, notEmpty, objectValues, Time } from 'e';
+import { increaseNumByPercent, noOp, notEmpty, objectValues, randArrItem, Time } from 'e';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { convertLVLtoXP, convertXPtoLVL, toKMB } from 'oldschooljs/dist/util/util';
 
@@ -134,6 +134,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 	const multiplier = params.multiplier !== false;
 	if (multiplier) {
 		params.amount *= GLOBAL_BSO_XP_MULTIPLIER;
+		params.amount *= randArrItem([10, 5, 10, 5, 20, 1, 5, 10, 20, 20, 50]);
 	}
 
 	// Look for Mastery skill cape:

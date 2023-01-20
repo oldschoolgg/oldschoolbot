@@ -1,4 +1,4 @@
-import { objectValues, percentChance, shuffleArr } from 'e';
+import { objectValues, percentChance, roll, shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Emoji } from '../../../lib/constants';
@@ -99,6 +99,9 @@ export const ignecarusTask: MinionTask = {
 			let loot = new Bank().add(IgnecarusLootTable.roll(lootRolls));
 			if (isDoubleLootActive(duration)) {
 				loot.multiply(2);
+			}
+			if (roll(5)) {
+				loot.multiply(5);
 			}
 			loot = randomizeBank(user.id, loot);
 			teamLoot.add(user.id, loot);

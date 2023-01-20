@@ -100,6 +100,8 @@ export const kingGoldemarTask: MinionTask = {
 			if (isDoubleLootActive(duration)) {
 				loot.multiply(2);
 			}
+
+			if (roll(5)) loot.multiply(5);
 			totalLoot.add(loot);
 			await addMonsterXP(user, {
 				monsterID: KingGoldemar.id,

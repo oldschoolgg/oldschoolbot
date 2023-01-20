@@ -206,10 +206,10 @@ export const monsterTask: MinionTask = {
 			inCatacombs: isInCatacombs
 		};
 		// Regular loot
-		let loot = (monster as KillableMonster).table.kill(
-			isDoubleLootActive(duration) ? quantity * 2 : boostedQuantity,
-			killOptions
-		);
+		let qty = isDoubleLootActive(duration) ? quantity * 2 : boostedQuantity;
+		if (roll(5)) qty *= 5;
+		if (roll(5)) qty *= 5;
+		let loot = (monster as KillableMonster).table.kill(qty, killOptions);
 
 		// Calculate superiors and assign loot.
 		let newSuperiorCount = 0;

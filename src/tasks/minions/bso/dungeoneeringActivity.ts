@@ -81,6 +81,7 @@ export const dungeoneeringTask: MinionTask = {
 				if (isDoubleLootActive(duration)) {
 					quantity *= 2;
 				}
+				if (roll(5)) quantity *= 5;
 				await u.addItemsToBank({ items: new Bank().add('Gorajan shards', quantity), collectionLog: true });
 			}
 			if (floor === 7 && roll(Math.floor(20_000 / minutes))) {

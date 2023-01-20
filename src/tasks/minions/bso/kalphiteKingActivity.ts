@@ -1,4 +1,4 @@
-import { calcWhatPercent, noOp, percentChance } from 'e';
+import { calcWhatPercent, noOp, percentChance, roll } from 'e';
 import { Bank } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
@@ -75,6 +75,7 @@ export const kalphiteKingTask: MinionTask = {
 			if (isDoubleLootActive(duration)) {
 				loot.multiply(2);
 			}
+			if (roll(5)) loot.multiply(5);
 			const winner = teamTable.roll()?.item;
 			if (!winner) continue;
 			teamsLoot.add(winner, randomizeBank(winner, loot));

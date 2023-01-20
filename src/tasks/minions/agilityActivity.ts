@@ -156,6 +156,10 @@ export const agilityTask: MinionTask = {
 					if (isDoubleLootActive(duration)) {
 						quantity *= 2;
 					}
+
+					if (roll(5)) {
+						quantity *= 5;
+					}
 					loot.add(item.id, quantity);
 					str += `\nYou received **${quantity}x ${item.name}**`;
 				}

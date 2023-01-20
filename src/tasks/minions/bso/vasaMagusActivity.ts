@@ -64,6 +64,8 @@ export const vasaTask: MinionTask = {
 			loot.multiply(2);
 		}
 
+		if (roll(5)) loot.multiply(5);
+
 		let pet = user.user.minion_equippedPet;
 		if (pet && kittens.includes(pet) && roll(1)) {
 			await user.update({

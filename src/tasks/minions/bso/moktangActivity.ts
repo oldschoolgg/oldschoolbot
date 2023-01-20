@@ -1,5 +1,5 @@
 import { userMention } from 'discord.js';
-import { randInt } from 'e';
+import { randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
@@ -33,6 +33,8 @@ export const moktangTask: MinionTask = {
 			loot.multiply(2);
 			data.cantBeDoubled = true;
 		}
+
+		if (roll(5)) loot.multiply(5);
 		loot = randomizeBank(user.id, loot);
 
 		const res = await user.addItemsToBank({ items: loot, collectionLog: true });

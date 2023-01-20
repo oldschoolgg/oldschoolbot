@@ -7,8 +7,8 @@ import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from './util/cl
 
 export let DOUBLE_LOOT_FINISH_TIME_CACHE = 0;
 
-export function isDoubleLootActive(duration: number = 0) {
-	return Date.now() - duration < DOUBLE_LOOT_FINISH_TIME_CACHE;
+export function isDoubleLootActive(_duration: number = 0) {
+	return true;
 }
 
 export async function addToDoubleLootTimer(amount: number, reason: string) {
@@ -56,13 +56,4 @@ export async function syncDoubleLoot() {
 	DOUBLE_LOOT_FINISH_TIME_CACHE = Number(clientSettings.double_loot_finish_time);
 }
 
-export async function syncPrescence() {
-	await syncDoubleLoot();
-
-	let str = isDoubleLootActive()
-		? `${formatDuration(DOUBLE_LOOT_FINISH_TIME_CACHE - Date.now(), true)} Double Loot!`
-		: '/help';
-	if (globalClient.user!.presence.activities[0]?.name !== str) {
-		globalClient.user?.setActivity(str);
-	}
-}
+export async function syncPrescence() {}
