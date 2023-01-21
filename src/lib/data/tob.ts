@@ -1,6 +1,6 @@
 import { calcPercentOfNum, calcWhatPercent, randFloat, randInt, reduceNumByPercent, round, Time } from 'e';
-import { Item } from 'oldschooljs/dist/meta/types';
 import { Bank } from 'oldschooljs';
+import { Item } from 'oldschooljs/dist/meta/types';
 import { randomVariation } from 'oldschooljs/dist/util';
 
 import type { GearStats } from '../gear/types';
@@ -421,18 +421,11 @@ export function createTOBTeam({
 		} else {
 			blowPipePercent = -(4 * (4 - dartIndex)) / 2;
 		}
-
-console.log(calcPerc(gearPercents.total, speedReductionForGear + blowPipePercent));
 		userPercentChange += calcPerc(gearPercents.total, speedReductionForGear + blowPipePercent);
 
 		// Reduce time for KC
-		const kcPercent = kcEffectiveness(
-			u.attempts,
-			u.hardAttempts,
-			hardMode
-		);
+		const kcPercent = kcEffectiveness(u.attempts, u.hardAttempts, hardMode);
 		userPercentChange += calcPerc(kcPercent, speedReductionForKC);
-console.log(calcPerc(kcPercent, speedReductionForKC));
 
 		const maxKcCurveBonus = 30;
 		const durationCurveModifier = Math.min(maxKcCurveBonus, kcPercent * 0.6);
