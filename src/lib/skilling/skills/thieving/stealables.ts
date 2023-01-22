@@ -251,9 +251,9 @@ const stalls: Stealable[] = [
 		xp: 22,
 		id: 4719,
 		table: new LootTable()
-			.add('Bronze bolts', 3, 72)
-			.add('Bronze limbs', 1, 20)
-			.add('Wooden stock', 1, 10),
+			.add('Bronze bolts', 3, 7)
+			.add('Bronze limbs', 1, 2)
+			.add('Wooden stock', 1, 1),
 		respawnTime: Time.Second * 10,
 		lootPercent: 100,
 		petChance: 36_490
