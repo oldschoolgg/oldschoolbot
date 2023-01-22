@@ -72,6 +72,48 @@ const stalls: Stealable[] = [
 		petChance: 124_066
 	},
 	{
+		name: 'Crafting stall',
+		type: 'stall',
+		aliases: ['crafting', 'crafting stall'],
+		level: 5,
+		xp: 16,
+		id: 4718,
+		table: new LootTable()
+			.add('Chisel')
+			.add('Necklace mould')
+			.add('Ring mould'),
+		respawnTime: Time.Second * 7,
+		lootPercent: 25,
+		petChance: 47_718
+	},
+	{
+		name: 'Monkey food stall',
+		type: 'stall',
+		aliases: ['monkey', 'food stall'],
+		level: 5,
+		xp: 16,
+		id: 4722,
+		table: new LootTable().add('Banana'),
+		respawnTime: Time.Second * 7,
+		lootPercent: 100,
+		petChance: 47_718
+	},
+	{
+		name: 'Monkey general stall',
+		type: 'stall',
+		aliases: ['monkey store', 'general stall'],
+		level: 5,
+		xp: 16,
+		id: 4723,
+		table: new LootTable()
+			.add('Hammer')
+			.add('Pot')
+			.add('Tinderbox'),
+		respawnTime: Time.Second * 7,
+		lootPercent: 25,
+		petChance: 47_718
+	},
+	{
 		name: 'Tea stall',
 		type: 'stall',
 		aliases: ['tea', 'tea stall'],
@@ -136,6 +178,35 @@ const stalls: Stealable[] = [
 		petChance: 124_066
 	},
 	{
+		name: 'Seed stall',
+		type: 'stall',
+		aliases: ['seed', 'seeds'],
+		level: 27,
+		xp: 10,
+		id: 4717,
+		table: new LootTable()
+			.add('Potato seed', 1, 12)
+			.add('Marigold seed', 1, 12)
+			.add('Barley seed', 1, 12)
+			.add('Hammerstone seed', 1, 12)
+			.add('Onion seed', 1, 9)
+			.add('Asgarnian seed', 1, 8)
+			.add('Cabbage seed', 1, 7)
+			.add('Yanillian seed', 1, 5)
+			.add('Rosemary seed', 1, 5)
+			.add('Nasturtium seed', 1, 4)
+			.add('Tomato seed', 1, 4)
+			.add('Jute seed', 1, 4)
+			.add('Sweetcorn seed', 1, 3)
+			.add('Krandorian seed', 1, 3)
+			.add('Strawberry seed', 1, 2)
+			.add('Wildblood seed', 1, 1)
+			.add('Watermelon seed', 1, 1),
+		respawnTime: Time.Second * 9,
+		lootPercent: 80,
+		petChance: 36_490
+	},
+	{
 		name: 'Fur stall',
 		type: 'stall',
 		aliases: ['fur', 'furs'],
@@ -160,6 +231,21 @@ const stalls: Stealable[] = [
 		petChance: 36_490
 	},
 	{
+		name: 'Crossbow stall',
+		type: 'stall',
+		aliases: ['xbow', 'crossbow'],
+		level: 49,
+		xp: 22,
+		id: 4719,
+		table: new LootTable()
+			.add('Bronze bolts', 3, 72)
+			.add('Bronze limbs', 1, 20)
+			.add('Wooden stock', 1, 10),
+		respawnTime: Time.Second * 10,
+		lootPercent: 100,
+		petChance: 36_490
+	},
+	{
 		name: 'Silver stall',
 		type: 'stall',
 		aliases: ['silver'],
@@ -169,6 +255,47 @@ const stalls: Stealable[] = [
 		table: new LootTable().every('Silver ore'),
 		respawnTime: Time.Second * 16,
 		lootPercent: 80,
+		petChance: 36_490
+	},
+	{
+		name: 'Spice stall',
+		type: 'stall',
+		aliases: ['spice'],
+		level: 65,
+		xp: 81,
+		id: 4724,
+		table: new LootTable().every('Spice'),
+		respawnTime: Time.Second * 40,
+		lootPercent: 25,
+		petChance: 36_490
+	},
+	{
+		name: 'Magic stall',
+		type: 'stall',
+		aliases: ['mage', 'magic'],
+		level: 65,
+		xp: 100,
+		id: 4721,
+		table: new LootTable()
+			.add('Air rune')
+			.add('Earth rune')
+			.add('Fire rune'),
+		respawnTime: Time.Second * 40,
+		lootPercent: 100,
+		petChance: 36_490
+	},
+	{
+		name: 'Scimitar stall',
+		type: 'stall',
+		aliases: ['scimmy', 'scimitar'],
+		level: 65,
+		xp: 160,
+		id: 4720,
+		table: new LootTable()
+			.add('Iron scimitar', 1, 67)
+			.add('Steel scimitar', 1, 33),
+		respawnTime: Time.Second * 40,
+		lootPercent: 100,
 		petChance: 36_490
 	},
 	{
@@ -186,6 +313,30 @@ const stalls: Stealable[] = [
 		// World hopping rate
 		respawnTime: Time.Second * 10,
 		lootPercent: 100,
+		petChance: 36_490
+	},
+	{
+		name: 'TzHaar gem stall',
+		type: 'stall',
+		aliases: ['tzhaar stall', 'gems'],
+		level: 75,
+		xp: 160,
+		id: 4725,
+		table: new LootTable()
+			.add('Sapphire', 1, 1000)
+			.add('Emerald', 1, 600)
+			.add('Uncut sapphire', 1, 500)
+			.add('Uncut emerald', 1, 300)
+			.add('Ruby', 1, 300)
+			.add('Uncut ruby', 1, 150)
+			.add('Diamond', 1, 98)
+			.add('Uncut diamond', 1, 49)
+			.add('Dragonstone', 1, 2)
+			.add('Uncut dragonstone', 1, 1)
+			.oneIn(50_000, 'Uncut onyx'),
+		respawnTime: Time.Second * 10,
+		lootPercent: 100,
+		fireCapeRequired: true,
 		petChance: 36_490
 	},
 	{
