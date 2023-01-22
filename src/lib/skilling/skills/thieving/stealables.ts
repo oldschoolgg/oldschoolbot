@@ -53,7 +53,12 @@ const stalls: Stealable[] = [
 		level: 2,
 		xp: 10,
 		id: 4706,
-		table: new LootTable().add('Cabbage').add('Potato').add('Onion').add('Tomato').add('Garlic'),
+		table: new LootTable()
+		.add('Cabbage', 1, 20)
+		.add('Potato', 1, 30)
+		.add('Onion', 1, 20)
+		.add('Tomato', 1, 20)
+		.add('Garlic', 1, 10),
 		qpRequired: 3,
 		respawnTime: Time.Second * 2,
 		lootPercent: 20,
@@ -66,9 +71,12 @@ const stalls: Stealable[] = [
 		level: 5,
 		xp: 16,
 		id: 4707,
-		table: new LootTable().add('Cake').add('Bread').add('Chocolate slice'),
+		table: new LootTable()
+		.add('Cake', 1, 13)
+		.add('Bread', 1, 5)
+		.add('Chocolate slice', 1, 2),
 		respawnTime: Time.Second * 2,
-		lootPercent: 20,
+		lootPercent: 30,
 		petChance: 124_066
 	},
 	{
@@ -145,13 +153,13 @@ const stalls: Stealable[] = [
 		xp: 27,
 		id: 4710,
 		table: new LootTable()
-			.add('Bottle of wine')
-			.add('Grapes')
-			.add('Jug', 1, 3)
-			.add('Jug of water')
-			.add('Jug of wine'),
+			.add('Bottle of wine', 1, 11)
+			.add('Grapes', 1, 17)
+			.add('Jug', 1, 39)
+			.add('Jug of water', 1, 20)
+			.add('Jug of wine', 1, 13),
 		respawnTime: Time.Second * 10,
-		lootPercent: 38,
+		lootPercent: 40,
 		petChance: 36_490
 	},
 	{
@@ -185,25 +193,25 @@ const stalls: Stealable[] = [
 		xp: 10,
 		id: 4717,
 		table: new LootTable()
-			.add('Potato seed', 1, 12)
-			.add('Marigold seed', 1, 12)
-			.add('Barley seed', 1, 12)
-			.add('Hammerstone seed', 1, 12)
-			.add('Onion seed', 1, 9)
-			.add('Asgarnian seed', 1, 8)
-			.add('Cabbage seed', 1, 7)
-			.add('Yanillian seed', 1, 5)
-			.add('Rosemary seed', 1, 5)
-			.add('Nasturtium seed', 1, 4)
-			.add('Tomato seed', 1, 4)
-			.add('Jute seed', 1, 4)
-			.add('Sweetcorn seed', 1, 3)
-			.add('Krandorian seed', 1, 3)
-			.add('Strawberry seed', 1, 2)
-			.add('Wildblood seed', 1, 1)
-			.add('Watermelon seed', 1, 1),
+			.add('Potato seed', 1, 30)
+			.add('Marigold seed', 1, 30)
+			.add('Barley seed', 1, 30)
+			.add('Hammerstone seed', 1, 30)
+			.add('Onion seed', 1, 23)
+			.add('Asgarnian seed', 1, 20)
+			.add('Cabbage seed', 1, 18)
+			.add('Yanillian seed', 1, 12)
+			.add('Rosemary seed', 1, 9)
+			.add('Nasturtium seed', 1, 9)
+			.add('Tomato seed', 1, 9)
+			.add('Jute seed', 1, 9)
+			.add('Sweetcorn seed', 1, 8)
+			.add('Krandorian seed', 1, 6)
+			.add('Strawberry seed', 1, 4)
+			.add('Wildblood seed', 1, 3)
+			.add('Watermelon seed', 1, 2),
 		respawnTime: Time.Second * 9,
-		lootPercent: 80,
+		lootPercent: 90,
 		petChance: 36_490
 	},
 	{
@@ -225,7 +233,10 @@ const stalls: Stealable[] = [
 		level: 42,
 		xp: 42,
 		id: 4713,
-		table: new LootTable().add('Raw salmon').add('Raw tuna').add('Raw lobster'),
+		table: new LootTable()
+		.add('Raw salmon', 1, 14)
+		.add('Raw tuna', 1, 4)
+		.add('Raw lobster'),
 		respawnTime: Time.Second * 10,
 		lootPercent: 75,
 		petChance: 36_490
@@ -295,7 +306,7 @@ const stalls: Stealable[] = [
 			.add('Iron scimitar', 1, 67)
 			.add('Steel scimitar', 1, 33),
 		respawnTime: Time.Second * 40,
-		lootPercent: 100,
+		lootPercent: 25,
 		petChance: 36_490
 	},
 	{
