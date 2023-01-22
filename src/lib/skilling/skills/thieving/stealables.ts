@@ -54,11 +54,11 @@ const stalls: Stealable[] = [
 		xp: 10,
 		id: 4706,
 		table: new LootTable()
-		.add('Cabbage', 1, 20)
-		.add('Potato', 1, 30)
-		.add('Onion', 1, 20)
-		.add('Tomato', 1, 20)
-		.add('Garlic', 1, 10),
+		.add('Cabbage', 1, 2)
+		.add('Potato', 1, 3)
+		.add('Onion', 1, 2)
+		.add('Tomato', 1, 2)
+		.add('Garlic',),
 		qpRequired: 3,
 		respawnTime: Time.Second * 2,
 		lootPercent: 20,
@@ -102,6 +102,7 @@ const stalls: Stealable[] = [
 		xp: 16,
 		id: 4722,
 		table: new LootTable().add('Banana'),
+		qpRequired: 105,
 		respawnTime: Time.Second * 7,
 		lootPercent: 100,
 		petChance: 47_718
@@ -117,6 +118,7 @@ const stalls: Stealable[] = [
 			.add('Hammer')
 			.add('Pot')
 			.add('Tinderbox'),
+		qpRequired: 105,
 		respawnTime: Time.Second * 7,
 		lootPercent: 25,
 		petChance: 47_718
@@ -291,6 +293,7 @@ const stalls: Stealable[] = [
 			.add('Air rune')
 			.add('Earth rune')
 			.add('Fire rune'),
+		qpRequired: 105,
 		respawnTime: Time.Second * 40,
 		lootPercent: 100,
 		petChance: 36_490
@@ -305,6 +308,7 @@ const stalls: Stealable[] = [
 		table: new LootTable()
 			.add('Iron scimitar', 1, 67)
 			.add('Steel scimitar', 1, 33),
+		qpRequired: 105,
 		respawnTime: Time.Second * 40,
 		lootPercent: 25,
 		petChance: 36_490
