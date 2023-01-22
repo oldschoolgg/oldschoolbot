@@ -54,11 +54,11 @@ const stalls: Stealable[] = [
 		xp: 10,
 		id: 4706,
 		table: new LootTable()
-		.add('Cabbage', 1, 2)
-		.add('Potato', 1, 3)
-		.add('Onion', 1, 2)
-		.add('Tomato', 1, 2)
-		.add('Garlic',),
+			.add('Cabbage', 1, 2)
+			.add('Potato', 1, 3)
+			.add('Onion', 1, 2)
+			.add('Tomato', 1, 2)
+			.add('Garlic'),
 		qpRequired: 3,
 		respawnTime: Time.Second * 2,
 		lootPercent: 20,
@@ -71,10 +71,7 @@ const stalls: Stealable[] = [
 		level: 5,
 		xp: 16,
 		id: 4707,
-		table: new LootTable()
-		.add('Cake', 1, 13)
-		.add('Bread', 1, 5)
-		.add('Chocolate slice', 1, 2),
+		table: new LootTable().add('Cake', 1, 13).add('Bread', 1, 5).add('Chocolate slice', 1, 2),
 		respawnTime: Time.Second * 2,
 		lootPercent: 30,
 		petChance: 124_066
@@ -86,10 +83,7 @@ const stalls: Stealable[] = [
 		level: 5,
 		xp: 16,
 		id: 4718,
-		table: new LootTable()
-			.add('Chisel')
-			.add('Necklace mould')
-			.add('Ring mould'),
+		table: new LootTable().add('Chisel').add('Necklace mould').add('Ring mould'),
 		respawnTime: Time.Second * 7,
 		lootPercent: 25,
 		petChance: 47_718
@@ -114,10 +108,7 @@ const stalls: Stealable[] = [
 		level: 5,
 		xp: 16,
 		id: 4723,
-		table: new LootTable()
-			.add('Hammer')
-			.add('Pot')
-			.add('Tinderbox'),
+		table: new LootTable().add('Hammer').add('Pot').add('Tinderbox'),
 		qpRequired: 105,
 		respawnTime: Time.Second * 7,
 		lootPercent: 25,
@@ -235,10 +226,7 @@ const stalls: Stealable[] = [
 		level: 42,
 		xp: 42,
 		id: 4713,
-		table: new LootTable()
-		.add('Raw salmon', 1, 14)
-		.add('Raw tuna', 1, 4)
-		.add('Raw lobster'),
+		table: new LootTable().add('Raw salmon', 1, 14).add('Raw tuna', 1, 4).add('Raw lobster'),
 		respawnTime: Time.Second * 10,
 		lootPercent: 75,
 		petChance: 36_490
@@ -250,10 +238,7 @@ const stalls: Stealable[] = [
 		level: 49,
 		xp: 22,
 		id: 4719,
-		table: new LootTable()
-			.add('Bronze bolts', 3, 7)
-			.add('Bronze limbs', 1, 2)
-			.add('Wooden stock', 1, 1),
+		table: new LootTable().add('Bronze bolts', 3, 7).add('Bronze limbs', 1, 2).add('Wooden stock', 1, 1),
 		respawnTime: Time.Second * 10,
 		lootPercent: 100,
 		petChance: 36_490
@@ -289,10 +274,7 @@ const stalls: Stealable[] = [
 		level: 65,
 		xp: 100,
 		id: 4721,
-		table: new LootTable()
-			.add('Air rune')
-			.add('Earth rune')
-			.add('Fire rune'),
+		table: new LootTable().add('Air rune').add('Earth rune').add('Fire rune'),
 		qpRequired: 105,
 		respawnTime: Time.Second * 40,
 		lootPercent: 100,
@@ -305,9 +287,7 @@ const stalls: Stealable[] = [
 		level: 65,
 		xp: 160,
 		id: 4720,
-		table: new LootTable()
-			.add('Iron scimitar', 1, 67)
-			.add('Steel scimitar', 1, 33),
+		table: new LootTable().add('Iron scimitar', 1, 67).add('Steel scimitar', 1, 33),
 		qpRequired: 105,
 		respawnTime: Time.Second * 40,
 		lootPercent: 25,
