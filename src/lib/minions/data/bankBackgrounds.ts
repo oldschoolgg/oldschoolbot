@@ -632,6 +632,20 @@ const backgroundImages: BankBackground[] = [
 		name: 'Christmas Tree',
 		image: null,
 		available: false
+	},
+	{
+		id: 101,
+		name: 'TastyPum CustomBG',
+		image: null,
+		available: false,
+		owners: ['794368001856110594']
+	},
+	{
+		id: 102,
+		name: 'Serg CustomBG',
+		image: null,
+		available: false,
+		owners: ['797618464176996372']
 	}
 ];
 
