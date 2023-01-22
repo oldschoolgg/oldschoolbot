@@ -2,6 +2,7 @@ import { EmbedBuilder } from 'discord.js';
 import { CommandRunOptions } from 'mahoji';
 import { toKMB } from 'oldschooljs/dist/util';
 
+import { secretItems } from '../../lib/constants';
 import { getItem } from '../../lib/util/getOSItem';
 import { itemOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
@@ -19,7 +20,7 @@ export const priceCommand: OSBMahojiCommand = {
 	],
 	run: async ({ options }: CommandRunOptions<{ item: string }>) => {
 		const item = getItem(options.item);
-		if (!item) return "Couldn't find that item.";
+		if (!item || secretItems.includes(item.id)) return "Couldn't find that item.";
 
 		const priceOfItem = item.price;
 

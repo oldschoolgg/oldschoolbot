@@ -2,8 +2,8 @@ import { Prisma } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 
 import { bingoIsActive, determineBingoProgress, onFinishTile } from '../../mahoji/lib/bingo';
-import { mahojiUserSettingsUpdate } from '../../mahoji/settingsUpdate';
 import { handleNewCLItems } from '../handleNewCLItems';
+import { mahojiUserSettingsUpdate } from '../MUser';
 import { filterLootReplace } from '../slayer/slayerUtil';
 import { ItemBank } from '../types';
 import { sanitizeBank } from '../util';

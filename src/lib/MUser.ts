@@ -6,7 +6,6 @@ import { Item } from 'oldschooljs/dist/meta/types';
 
 import { timePerAlch } from '../mahoji/lib/abstracted_commands/alchCommand';
 import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
-import { mahojiUserSettingsUpdate } from '../mahoji/settingsUpdate';
 import { addXP } from './addXP';
 import { userIsBusy } from './busyCounterCache';
 import { ClueTiers } from './clues/clueTiers';
@@ -30,12 +29,32 @@ import { defaultGear, Gear } from './structures/Gear';
 import { ItemBank, Skills } from './types';
 import { addItemToBank, assert, convertXPtoLVL, getSupportGuild, itemNameFromID, percentChance } from './util';
 import { determineRunes } from './util/determineRunes';
+import { getKCByName } from './util/getKCByName';
 import getOSItem from './util/getOSItem';
 import itemID from './util/itemID';
 import { logError } from './util/logError';
 import { minionIsBusy } from './util/minionIsBusy';
 import { minionName } from './util/minionUtils';
 import resolveItems from './util/resolveItems';
+
+export async function mahojiUserSettingsUpdate(user: string | bigint, data: Prisma.UserUpdateArgs['data']) {
+	try {
+		const newUser = await prisma.user.update({
+			data,
+			where: {
+				id: user.toString()
+			}
+		});
+
+		return { newUser };
+	} catch (err) {
+		logError(err, {
+			user_id: user.toString(),
+			updated_data: JSON.stringify(data)
+		});
+		throw err;
+	}
+}
 
 function alchPrice(bank: Bank, item: Item, tripLength: number) {
 	const maxCasts = Math.min(Math.floor(tripLength / timePerAlch), bank.amount(item.id));
@@ -602,6 +621,10 @@ export class MUserClass {
 
 	get logName() {
 		return `${this.rawUsername}[${this.id}]`;
+	}
+
+	async getKCByName(name: string) {
+		return getKCByName(this, name);
 	}
 }
 declare global {

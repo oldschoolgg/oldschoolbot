@@ -2,8 +2,8 @@ import { activity_type_enum, Minigame, PlayerOwnedHouse, Tame, User, UserStats }
 import { Bank } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
+import { ParsedUnit } from '../../mahoji/lib/abstracted_commands/stashUnitsCommand';
 import { personalSpellCastStats } from '../../mahoji/lib/abstracted_commands/statCommand';
-import { ParsedUnit } from '../clues/stashUnits';
 import { UserFullGearSetup } from '../gear';
 import { CustomMonster } from '../minions/data/killableMonsters/custom/customMonsters';
 import Grimy from '../skilling/skills/herblore/mixables/grimy';
