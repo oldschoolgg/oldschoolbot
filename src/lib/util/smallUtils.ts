@@ -1,9 +1,10 @@
-import { objectEntries, Time } from 'e';
-import { Items } from 'oldschooljs';
+import { objectEntries, reduceNumByPercent, Time } from 'e';
+import { Bank, Items } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { MersenneTwister19937, shuffle } from 'random-js';
 
 import { skillEmoji } from '../data/emojis';
+import { Plank } from '../skilling/skills/construction/constructables';
 import type { ArrayItemsResolved, Skills } from '../types';
 import { toTitleCase } from './toTitleCase';
 
@@ -116,4 +117,13 @@ export function normal(mu = 0, sigma = 1, nsamples = 6) {
 export function shuffleRandom<T>(input: number, arr: readonly T[]): T[] {
 	const engine = MersenneTwister19937.seed(input);
 	return shuffle(engine, [...arr]);
+}
+
+export function calcBabyYagaHouseDroprate(xpBeingReceived: number, plank: Plank, constructionLevel: number, cl: Bank) {
+	let rate = 1 / (((xpBeingReceived / 30) * constructionLevel) / 50_000_000);
+	rate *= 25;
+	if (plank === Plank.ElderPlank) rate = reduceNumByPercent(rate, 25);
+	let amountInCl = cl.amount('Baby yaga house');
+	if (amountInCl > 1) rate *= amountInCl;
+	return Math.floor(rate);
 }

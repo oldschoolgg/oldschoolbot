@@ -4753,3 +4753,16 @@ setCustomItem(
 	},
 	10_000
 );
+
+setCustomItem(
+	70_291,
+	'Baby yaga house',
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	10_000
+);
