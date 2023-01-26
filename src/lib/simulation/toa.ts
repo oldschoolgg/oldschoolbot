@@ -118,7 +118,9 @@ const minTOAStats: Skills = {
 };
 const minimumSuppliesNeeded = new Bank({
 	'Saradomin brew(4)': 10,
-	'Super restore(4)': 5
+	'Super restore(4)': 5,
+	'Ranging potion(4)': 1,
+	'Super combat potion(4)': 1
 });
 
 const miscBoosts = [
