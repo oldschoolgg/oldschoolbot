@@ -308,7 +308,8 @@ const source: [string, (string | number)[]][] = [
 	],
 	["Osmumten's fang", ["Osmumten's fang (or)"]],
 	["Elidinis' ward (f)", ["Elidinis' ward (or)"]],
-	['Rune pouch', ['Divine rune pouch']]
+	['Rune pouch', ['Divine rune pouch']],
+	['Ghrazi rapier', ['Holy ghrazi rapier']]
 ];
 
 export const similarItems: Map<number, number[]> = new Map(

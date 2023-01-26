@@ -106,7 +106,8 @@ export function handlePassiveImplings(user: MUser, data: ActivityTaskOptions) {
 			activity_type_enum.BarbarianAssault,
 			activity_type_enum.CastleWars,
 			activity_type_enum.LastManStanding,
-			activity_type_enum.PestControl
+			activity_type_enum.PestControl,
+			activity_type_enum.TombsOfAmascut
 		].includes(data.type)
 	)
 		return null;

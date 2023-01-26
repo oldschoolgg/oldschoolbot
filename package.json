@@ -5,7 +5,7 @@
 		"build:tsc": "tsc -p src",
 		"build": "concurrently \"yarn wipedist\" \"yarn gen\" && yarn build:tsc",
 		"wipedist": "rimraf \"dist/\"",
-		"start": "concurrently \"tsc -w -p src\" \"node dist/\"",
+		"start": "yarn build && concurrently \"tsc -w -p src\" \"node dist/\"",
 		"test": "concurrently \"tsc -p src\" \"yarn test:lint\" \"yarn test:unit\"",
 		"test:lint": "eslint \"{src,tests}/**/*.ts\"",
 		"test:unit": "jest --coverage --maxWorkers=4",

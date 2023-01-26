@@ -141,3 +141,7 @@ export function averageBank(bank: Bank, kc: number) {
 	}
 	return newBank;
 }
+
+export function scaleNumber(num: number, inMin: number, inMax: number, outMin: number, outMax: number): number {
+	return ((num - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
+}

@@ -971,6 +971,20 @@ ${bank
 	.join('\n')}`
 			};
 		}
+	},
+	{
+		name: 'Tombs of Amascut (TOA) cost',
+		perkTierNeeded: PerkTier.Four,
+		run: (user: MUser) => {
+			return makeResponseForBank(new Bank(user.user.tob_cost as ItemBank), 'Your TOA Cost');
+		}
+	},
+	{
+		name: 'Tombs of Amascut (TOA) loot',
+		perkTierNeeded: PerkTier.Four,
+		run: (_, userStats) => {
+			return makeResponseForBank(new Bank(userStats.toa_loot as ItemBank), 'Your TOA Loot');
+		}
 	}
 ] as const;
 

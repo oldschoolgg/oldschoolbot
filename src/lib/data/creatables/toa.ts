@@ -27,7 +27,11 @@ export const toaCreatables: Createable[] = [
 			'Arcane sigil': 1,
 			'Soul rune': 10_000
 		}),
-		outputItems: new Bank({ "Elidinis' ward (f)": 1 })
+		outputItems: new Bank({ "Elidinis' ward (f)": 1 }),
+		requiredSkills: {
+			prayer: 90,
+			smithing: 90
+		}
 	},
 	{
 		name: "Revert Elidinis' ward (f))",
@@ -131,6 +135,14 @@ export const toaCreatables: Createable[] = [
 			'Jewel of the sun': 1
 		}),
 		outputItems: new Bank({ 'Keris partisan of the sun': 1 })
+	},
+	{
+		name: 'Revert Masori assembler',
+		inputItems: new Bank({
+			'Masori assembler': 1
+		}),
+		outputItems: new Bank({ 'Masori crafting kit': 1, "Ava's assembler": 1 }),
+		noCl: true
 	}
 ];
 

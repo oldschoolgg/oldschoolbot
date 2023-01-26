@@ -1,3 +1,4 @@
+import { UserStats } from '@prisma/client';
 import { bold } from 'discord.js';
 import {
 	calcPercentOfNum,
@@ -13,20 +14,22 @@ import {
 	sumArr,
 	Time
 } from 'e';
-import { writeFileSync } from 'fs';
+import { writeFileSync } from 'node:fs';
 import { Bank, LootTable } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { mahojiParseNumber, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { Emoji } from '../constants';
+import { getSimilarItems } from '../data/similarItems';
 import { degradeItem } from '../degradeableItems';
 import { GearStats, UserFullGearSetup } from '../gear/types';
 import { trackLoot } from '../lootTrack';
+import { MUserClass } from '../MUser';
 import { setupParty } from '../party';
 import { getMinigameScore } from '../settings/minigames';
 import { SkillsEnum } from '../skilling/types';
 import { constructGearSetup, Gear } from '../structures/Gear';
-import { MakePartyOptions, Skills } from '../types';
+import { ItemBank, MakePartyOptions, Skills } from '../types';
 import { TOAOptions } from '../types/minions';
 import {
 	assert,
@@ -41,6 +44,7 @@ import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import getOSItem from '../util/getOSItem';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
+import { scaleNumber } from '../util/smallUtils';
 import { updateBankSetting } from '../util/updateBankSetting';
 import { TeamLoot } from './TeamLoot';
 
@@ -52,8 +56,7 @@ export const maxMageGear = constructGearSetup({
 	hands: 'Tormented bracelet',
 	legs: 'Ancestral robe bottom',
 	feet: 'Eternal boots',
-	weapon: "Tumeken's shadow (uncharged)",
-	shield: "Elidinis' ward (f)",
+	weapon: "Tumeken's shadow",
 	ring: 'Lightbearer'
 });
 const maxMage = new Gear(maxMageGear);
@@ -67,10 +70,12 @@ export const maxRangeGear = constructGearSetup({
 	legs: 'Masori chaps (f)',
 	feet: 'Pegasian boots',
 	'2h': 'Twisted bow',
-	ring: 'Archers ring(i)',
+	ring: 'Lightbearer',
 	ammo: 'Dragon arrow'
 });
+
 const maxRange = new Gear(maxRangeGear);
+maxRange.ammo!.quantity = 100_000;
 
 export const maxMeleeLessThan300Gear = constructGearSetup({
 	head: 'Torva full helm',
@@ -82,7 +87,7 @@ export const maxMeleeLessThan300Gear = constructGearSetup({
 	feet: 'Primordial boots',
 	weapon: 'Ghrazi rapier',
 	shield: 'Avernic defender',
-	ring: 'Berserker ring(i)'
+	ring: 'Lightbearer'
 });
 export const maxMeleeOver300Gear = constructGearSetup({
 	head: 'Torva full helm',
@@ -102,10 +107,7 @@ function calcSerpHelmCharges(time: number) {
 	return Math.floor(time / (Time.Hour / SERP_HELM_CHARGES_PER_HOUR));
 }
 const REQUIRED_ARROWS = resolveItems(['Dragon arrow', 'Amethyst arrow', 'Rune arrow', 'Adamant arrow']);
-// crossbows are spec boosts
-// bow in range setup, boost if its a tbow
-// u wouldnt take claws AND zcb tho btw,  one or the other, zcb being better
-// bofa still slaps
+
 const minTOAStats: Skills = {
 	attack: 90,
 	strength: 90,
@@ -116,21 +118,21 @@ const minTOAStats: Skills = {
 };
 const minimumSuppliesNeeded = new Bank({
 	'Saradomin brew(4)': 10,
-	'Super restore(4)': 5,
-	'Rune pouch': 1
+	'Super restore(4)': 5
 });
 
-const rangeWeaponBoosts = [['Twisted bow', 4]] as const;
+const miscBoosts = [
+	['Lightbearer', 5, 'anywhere'],
+	["Tumeken's shadow", 10, 'mage'],
+	['Bandos godsword', 2, null],
+	['Twisted bow', 4, 'range']
+] as const;
 const primarySpecWeaponBoosts = [
-	['Dragon claws', 6],
-	['Crystal halberd', 3]
+	['Zaryte crossbow', 9],
+	['Dragon claws', 6]
 ] as const;
-const secondarySpecWeaponBoosts = [
-	['Dragon warhammer', 6],
-	['Bandos godsword', 3],
-	['Dragon dagger', 1]
-] as const;
-const REQUIRED_RANGE_WEAPONS = resolveItems(['Dragon crossbow', 'Armadyl crossbow', 'Zaryte crossbow']);
+
+const REQUIRED_RANGE_WEAPONS = resolveItems(['Twisted bow', 'Bow of faerdhinen (c)']);
 const MELEE_REQUIRED_WEAPONS = resolveItems(['Zamorakian hasta', 'Ghrazi rapier', "Osmumten's fang"]);
 const MELEE_REQUIRED_ARMOR = resolveItems(['Fire cape', 'Infernal cape']);
 const BP_DARTS_NEEDED = 150;
@@ -182,13 +184,14 @@ const toaRequirements: {
 			}
 
 			const rangeAmmo = user.gear.range.ammo;
+			if (user.gear.range.weapon?.item !== itemID('Bow of faerdhinen (c)')) {
+				if (!rangeAmmo || rangeAmmo.quantity < BOW_ARROWS_NEEDED) {
+					return `Need ${BOW_ARROWS_NEEDED} arrows equipped`;
+				}
 
-			if (!rangeAmmo || rangeAmmo.quantity < BOW_ARROWS_NEEDED) {
-				return `Need ${BOW_ARROWS_NEEDED} arrows equipped`;
-			}
-
-			if (!REQUIRED_ARROWS.includes(rangeAmmo.item)) {
-				return `Need one of these arrows equipped: ${REQUIRED_ARROWS.map(itemNameFromID).join(', ')}`;
+				if (!REQUIRED_ARROWS.includes(rangeAmmo.item)) {
+					return `Need one of these arrows equipped: ${REQUIRED_ARROWS.map(itemNameFromID).join(', ')}`;
+				}
 			}
 
 			return true;
@@ -211,9 +214,7 @@ const toaRequirements: {
 				).join(', ')}`;
 			}
 			if (!user.gear.melee.hasEquipped(MELEE_REQUIRED_ARMOR, false)) {
-				return `Need one of these in your melee setup: ${MELEE_REQUIRED_WEAPONS.map(itemNameFromID).join(
-					', '
-				)}`;
+				return `Need one of these in your melee setup: ${MELEE_REQUIRED_ARMOR.map(itemNameFromID).join(', ')}`;
 			}
 
 			return true;
@@ -249,6 +250,17 @@ const toaRequirements: {
 		doesMeet: ({ user }) => {
 			if (!user.owns(minimumSuppliesNeeded)) {
 				return `You need atleast this much supplies: ${minimumSuppliesNeeded}.`;
+			}
+			return true;
+		},
+		desc: () => `Need atleast ${minimumSuppliesNeeded}`
+	},
+	{
+		name: 'Rune Pouch',
+		doesMeet: ({ user }) => {
+			const similarItems = getSimilarItems(itemID('Rune pouch'));
+			if (similarItems.every(item => !user.owns(item))) {
+				return 'You need to own a Rune pouch.';
 			}
 			return true;
 		},
@@ -335,7 +347,7 @@ let TOAUniqueTable = new LootTable()
 	.add('Masori chaps', 1, 2)
 	.add("Tumeken's shadow (uncharged)", 1, 1);
 
-function uniqueLootRoll(kc: number, cl: Bank, raidLevel: number) {
+function uniqueLootRoll(kc: number, cl: Bank, raidLevel: RaidLevel) {
 	const [item] = TOAUniqueTable.roll().items()[0];
 
 	if (resolveItems(["Osmumten's fang", 'Lightbearer']).includes(item.id) && raidLevel < 50 && !roll(50)) {
@@ -423,7 +435,7 @@ export const toaPetTransmogItems = resolveItems([
 	'Remnant of akkha'
 ]);
 
-export function calcTOALoot({ users, raidLevel }: { users: TOALootUser[]; raidLevel: number }) {
+export function calcTOALoot({ users, raidLevel }: { users: TOALootUser[]; raidLevel: RaidLevel }) {
 	const uniqueDeciderTable = new SimpleTable();
 	for (const user of users) uniqueDeciderTable.add(user.id, user.points);
 	const loot = new TeamLoot();
@@ -440,7 +452,11 @@ export function calcTOALoot({ users, raidLevel }: { users: TOALootUser[]; raidLe
 	let didGetUnique = percentChance(chanceOfUnique);
 	const uniqueRecipient = didGetUnique ? uniqueDeciderTable.roll() : null;
 
-	const messages: string[] = [`Your team had a ${chanceOfUnique.toFixed(2)}% chance of getting a unique drop.`];
+	const messages: string[] = [
+		`${users.length === 1 ? 'You' : 'Your team'} had a ${chanceOfUnique.toFixed(
+			2
+		)}% chance of getting a unique drop.`
+	];
 
 	for (const user of users) {
 		if (user.points < 1500) {
@@ -528,10 +544,12 @@ const TOARooms = [
 export const mileStoneBaseDeathChances = [
 	{ level: 600, chance: 40 },
 	{ level: 500, chance: 33 },
+	{ level: 450, chance: 31.5 },
 	{ level: 400, chance: 29 },
 	{ level: 350, chance: 25.5 },
 	{ level: 300, chance: 20 },
 	{ level: 200, chance: 15 },
+	{ level: 150, chance: 13 },
 	{ level: 100, chance: 10 },
 	{ level: 1, chance: 5 }
 ] as const;
@@ -541,27 +559,72 @@ export type RaidLevel = typeof mileStoneBaseDeathChances[number]['level'];
 function calcDeathChance(totalAttempts: number, raidLevel: RaidLevel) {
 	let deathChance: number = mileStoneBaseDeathChances.find(i => i.level === raidLevel)!.chance;
 
-	if (totalAttempts < 1) deathChance = increaseNumByPercent(deathChance, 99);
-	else if (totalAttempts < 5) deathChance = increaseNumByPercent(deathChance, 75);
-	else if (totalAttempts < 10) deathChance = increaseNumByPercent(deathChance, 55);
-	else if (totalAttempts < 20) deathChance = increaseNumByPercent(deathChance, 25);
-	else if (totalAttempts < 30) deathChance = increaseNumByPercent(deathChance, 15);
-	else if (totalAttempts < 50) deathChance = increaseNumByPercent(deathChance, 5);
+	const map = [
+		{
+			attemptsMax: 1,
+			increase: 250
+		},
+		{
+			attemptsMax: 5,
+			increase: 125
+		},
+		{
+			attemptsMax: 10,
+			increase: 100
+		},
+		{
+			attemptsMax: 20,
+			increase: 25
+		},
+		{
+			attemptsMax: 30,
+			increase: 15
+		},
+		{
+			attemptsMax: 50,
+			increase: 5
+		},
+		{
+			attemptsMax: 100,
+			increase: 1
+		}
+	] as const;
 
-	// deathChance = Math.round(randomVariation(deathChance, 2.5));
+	const match = map.find(i => totalAttempts <= i.attemptsMax)! ?? map[map.length - 1];
+	const nextMatch = map[map.indexOf(match) + 1] ?? { attemptsMax: Infinity, increase: 0 };
+
+	const increase = scaleNumber(
+		totalAttempts,
+		match.attemptsMax,
+		nextMatch.attemptsMax,
+		match.increase,
+		nextMatch.increase
+	);
+	deathChance = increaseNumByPercent(deathChance, increase);
+
+	if (totalAttempts > 100) {
+		deathChance = reduceNumByPercent(deathChance, scaleNumber(totalAttempts, 100, 250, 0, 50));
+	}
+
+	deathChance = clamp(deathChance, 1, 99);
+
+	// deathChance = Math.round(randomVariation(deathChance, 0.5));
 
 	return deathChance;
 }
 
-let a = '';
-a += ['Attempts', 'Raid Level', 'Death Chance'].join('\t');
-for (const { level } of mileStoneBaseDeathChances) {
-	for (const attempts of [0, 10, 20, 30, 50, 100, 500]) {
-		a += '\n';
-		a += [attempts, level, calcDeathChance(attempts, level)].join('\t');
+let str = 'Total Attempts/KC\tRaid Level\tDeath Chance (%)\n';
+let array = [];
+for (const attempts of [0, 10, 15, 20, 25, 30, 40, 50, 100, 125, 150, 175, 200, 250]) {
+	for (const { level } of mileStoneBaseDeathChances) {
+		array.push({ attempts, level, chance: Number(calcDeathChance(attempts, level).toFixed(2)) });
 	}
 }
-writeFileSync('./death-chances.txt', a);
+array.sort((a, b) => b.chance - a.chance);
+for (const { attempts, level, chance } of array) {
+	str += `${attempts}\t${level}\t${chance}\n`;
+}
+writeFileSync('./death-chances.txt', str);
 
 function calculateTotalEffectiveness({
 	totalAttempts,
@@ -693,13 +756,14 @@ export function calculateUserGearPercents(gear: UserFullGearSetup, raidLevel: nu
 		total: (melee + range + mage) / 3
 	};
 }
+
 // 450rl+ with Sun Keris = 10 Super Restores, no brews
 // 50x Dragon arrows, scaling to more as weaker used.
 // 40x Dragon darts, same as above with arrows.
 // 200x Sang charges.
 // 150x Shadow charges.
 // 100x Blood fury charges.
-export async function calcTOAInput({
+async function calcTOAInput({
 	user,
 	kcOverride,
 	duration
@@ -727,21 +791,26 @@ export async function calcTOAInput({
 
 	// Between 8-1 brews
 	let brewsNeeded = Math.max(1, 9 - Math.max(1, Math.ceil((kc + 1) / 12)));
-	const restoresNeeded = Math.max(2, Math.floor(brewsNeeded / 3));
+	let restoresNeeded = Math.max(2, Math.floor(brewsNeeded / 3));
+	if (kc < 2) restoresNeeded += 3;
+	else if (kc < 5) restoresNeeded += 2;
 
 	cost.add('Saradomin brew(4)', brewsNeeded);
 	cost.add('Super restore(4)', restoresNeeded);
 
-	cost.add('Blood rune', 110);
-	cost.add('Death rune', 100);
-	cost.add('Water rune', 800);
+	const rangeWeapon = user.gear.range.equippedWeapon();
+	if (!rangeWeapon) {
+		throw new Error(`${user.logName} had no range weapon for TOA`);
+	}
+	if (rangeWeapon.id !== itemID('Bow of faerdhinen (c)')) {
+		cost.add(user.gear.range.ammo!.item, BOW_ARROWS_NEEDED);
+	}
 
 	const { blowpipe } = user;
 	const dartID = blowpipe.dartID ?? itemID('Rune dart');
 	const dartQuantity = blowpipe.dartQuantity ?? BP_DARTS_NEEDED;
 	const blowpipeCost = new Bank();
 	blowpipeCost.add(dartID, Math.floor(Math.min(dartQuantity, BP_DARTS_NEEDED)));
-	blowpipeCost.add(user.gear.range.ammo!.item, BOW_ARROWS_NEEDED);
 
 	return {
 		cost,
@@ -874,7 +943,7 @@ export async function toaStartCommand(
 		}
 	};
 
-	const channel = globalClient.channels.cache.get(channelID.toString());
+	const channel = globalClient.channels.cache.get(channelID);
 	if (!channelIsSendable(channel)) return 'No channel found.';
 	let usersWhoConfirmed = [];
 	try {
@@ -926,7 +995,9 @@ export async function toaStartCommand(
 			const { total } = calculateUserGearPercents(u.gear, raidLevel);
 			debugStr += `**- ${u.usernameOrMention}** (${Emoji.Gear}${total.toFixed(1)}% ${
 				Emoji.CombatSword
-			} ${calcWhatPercent(reductions[u.id], totalReduction).toFixed(1)}%) used ${realCost}\n\n`;
+			} ${calcWhatPercent(reductions[u.id], totalReduction).toFixed(1)}% - [${
+				reductions[u.id]
+			} out of ${totalReduction}]) used ${realCost}\n\n`;
 			return {
 				userID: u.id,
 				effectiveCost
@@ -974,16 +1045,24 @@ export async function toaStartCommand(
 	return str;
 }
 
-const speedReductionForGear = 16;
-const speedReductionForKC = 40;
-const totalSpeedReductions = speedReductionForGear + speedReductionForKC + 15 + 4;
+const speedReductionForGear = 15;
+const speedReductionForKC = 38;
+const totalSpeedReductions =
+	speedReductionForGear +
+	speedReductionForKC +
+	primarySpecWeaponBoosts[0][1] +
+	sumArr(miscBoosts.map(i => i[1])) +
+	15; // Os fang;
+
 let baseTOADurations: Record<RaidLevel, number> = {
 	1: Time.Minute * 50,
 	100: Time.Minute * 50,
+	150: Time.Minute * 60,
 	200: Time.Minute * 65,
 	300: Time.Minute * 70,
 	350: Time.Minute * 75,
 	400: Time.Minute * 80,
+	450: Time.Minute * 85,
 	500: Time.Minute * 90,
 	600: Time.Minute * 100
 };
@@ -991,13 +1070,6 @@ let baseTOADurations: Record<RaidLevel, number> = {
 const { ceil } = Math;
 function calcPerc(perc: number, num: number) {
 	return ceil(calcPercentOfNum(ceil(perc), num));
-}
-
-function kcEffectiveness(normalKC: number) {
-	const kc = normalKC;
-	let cap = 400;
-	const kcEffectiveness = Math.min(100, calcWhatPercent(kc, cap));
-	return kcEffectiveness;
 }
 
 interface ParsedTeamMember {
@@ -1021,8 +1093,11 @@ export async function createTOATeam({
 
 	for (const user of team) {
 		let gearStats = calculateUserGearPercents(user.gear, raidLevel);
-		const totalAttempts = (await user.fetchStats()).toa_attempts;
-		const totalKC = await getMinigameScore(user.id, 'tombs_of_amascut');
+		const [userStats, totalKC] = await Promise.all([
+			user.fetchStats(),
+			getMinigameScore(user.id, 'tombs_of_amascut')
+		]);
+		const totalAttempts = userStats.toa_attempts;
 		const effectiveness = calculateTotalEffectiveness({
 			totalAttempts,
 			totalKC,
@@ -1058,23 +1133,14 @@ export async function createTOATeam({
 		let userPercentChange = 0;
 
 		// Reduce time for gear
-		const gearPerecents = calculateUserGearPercents(u.user.gear, raidLevel);
-		// Blowpipe
-		userPercentChange += calcPerc(gearPerecents.total, speedReductionForGear);
+		const gearPercents = calculateUserGearPercents(u.user.gear, raidLevel);
+		const gearPercentBoost = calcPerc(gearPercents.total, speedReductionForGear);
+		userPercentChange += gearPercentBoost;
 
 		// Reduce time for KC
-		const kcPercent = kcEffectiveness(Math.min(u.totalAttempts, maxScaling));
-		userPercentChange += calcPerc(kcPercent, speedReductionForKC);
-
-		const maxKcCurveBonus = 30;
-		const durationCurveModifier = Math.min(maxKcCurveBonus, kcPercent * 0.6);
-		userPercentChange *= 1 + durationCurveModifier / 100;
-
-		/**
-		 *
-		 * Item/Gear Boosts
-		 *
-		 */
+		const kcPercent = clamp(calcWhatPercent(u.totalAttempts, maxScaling), 1, 100);
+		let kcPercentBoost = calcPerc(kcPercent, speedReductionForKC);
+		userPercentChange += kcPercentBoost;
 
 		let weaponBoosts: string[] = ["Osmumten's fang", 'Ghrazi rapier'];
 		let boostAmounts = [15, 6] as const;
@@ -1089,13 +1155,6 @@ export async function createTOATeam({
 			}
 		}
 
-		for (const [name, percent] of rangeWeaponBoosts) {
-			if (u.gear.range.hasEquipped(name)) {
-				userPercentChange += percent;
-				break;
-			}
-		}
-
 		for (const [name, percent] of primarySpecWeaponBoosts) {
 			if (u.user.hasEquippedOrInBank(name)) {
 				userPercentChange += percent;
@@ -1103,10 +1162,15 @@ export async function createTOATeam({
 			}
 		}
 
-		for (const [name, percent] of secondarySpecWeaponBoosts) {
-			if (u.user.hasEquippedOrInBank(name)) {
+		for (const [name, percent, gearSetup] of miscBoosts) {
+			if (
+				gearSetup !== null
+					? gearSetup === 'anywhere'
+						? u.user.hasEquipped(name)
+						: u.user.gear[gearSetup].hasEquipped(name)
+					: u.user.hasEquippedOrInBank(name)
+			) {
 				userPercentChange += percent;
-				break;
 			}
 		}
 
@@ -1141,6 +1205,7 @@ export async function createTOATeam({
 	}
 
 	duration = reduceNumByPercent(duration, totalReduction);
+	console.log(`Total boost reduction: ${totalReduction}%`);
 
 	if (duration < Time.Minute * 20) {
 		duration = Math.max(Time.Minute * 20, duration);
@@ -1227,9 +1292,78 @@ export async function toaStatsCommand(user: MUser) {
 `;
 }
 
+function calculateBoostString(user: MUser) {
+	let str = '**Boosts**\n';
+	const hasMiscBoosts = miscBoosts.map(([name, _, gearSetup]) => ({
+		has:
+			gearSetup !== null
+				? gearSetup === 'anywhere'
+					? user.hasEquipped(name)
+					: user.gear[gearSetup].hasEquipped(name)
+				: user.hasEquippedOrInBank(name),
+		item: getOSItem(name)
+	}));
+	const hasEveryMisc = hasMiscBoosts.every(i => i.has);
+	const hasNoMisc = hasMiscBoosts.every(i => !i.has);
+	str += `**Misc Boosts:** ${hasEveryMisc ? '🟢' : hasNoMisc ? '🔴' : '🟠'}`;
+	if (!hasEveryMisc) {
+		str += ` (Missing ${hasMiscBoosts
+			.filter(i => !i.has)
+			.map(i => i.item.name)
+			.join(', ')})`;
+	}
+	str += '\n';
+
+	const hasSpecWepBoosts = primarySpecWeaponBoosts.map(([name], index) => ({
+		has: user.hasEquippedOrInBank(name),
+		item: getOSItem(name),
+		index
+	}));
+
+	const hasBestSpec = hasSpecWepBoosts.some(i => i.index === 0 && i.has);
+	const hasNoSpec = hasSpecWepBoosts.every(i => !i.has);
+
+	str += `**Spec Weapon Boosts:** ${hasBestSpec ? '🟢' : hasNoSpec ? '🔴' : '🟠'}`;
+
+	if (hasNoSpec) {
+		str += ` (Missing one of these: ${hasSpecWepBoosts.map(i => i.item.name).join(' OR ')})`;
+	} else if (!hasBestSpec) {
+		str += ` (Missing ${getOSItem(primarySpecWeaponBoosts[0][0]).name})`;
+	}
+	return str;
+}
+
+export async function getToaKCs(user: MUser | UserStats) {
+	const userStats = user instanceof MUserClass ? await user.fetchStats() : user;
+	let entryKC = 0;
+	let normalKC = 0;
+	let expertKC = 0;
+	for (const [levelStr, qty] of Object.entries(userStats.toa_raid_levels_bank as ItemBank)) {
+		const level = Number(levelStr);
+		if (level >= 300) {
+			expertKC += qty;
+			continue;
+		}
+		if (level >= 150) {
+			normalKC += qty;
+			continue;
+		}
+		entryKC += qty;
+	}
+	return { entryKC, normalKC, expertKC };
+}
+
 export async function toaHelpCommand(user: MUser) {
 	const gearStats = calculateUserGearPercents(user.gear, 300);
+	const userStats = await user.fetchStats();
+	const { entryKC, normalKC, expertKC } = await getToaKCs(userStats);
+
 	let str = `**Tombs of Amascut**
+
+**Attempts:** ${userStats.toa_attempts} 
+**Entry Mode:** ${entryKC} KC
+**Normal Mode:** ${normalKC} KC
+**Expert Mode:** ${expertKC} KC
 
 **Ready:** ${await toaCheckCommand(user)}
 
@@ -1244,6 +1378,8 @@ ${toaRequirements
 		return `- ✅ ${bold(i.name)}`;
 	})
 	.join('\n')}
+
+${calculateBoostString(user)}
 `;
 
 	return str;

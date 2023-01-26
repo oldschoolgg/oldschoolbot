@@ -2,6 +2,7 @@ import type { activity_type_enum, CropUpgradeType } from '@prisma/client';
 
 import type { IPatchData } from '../minions/farming/types';
 import type { MinigameName } from '../settings/minigames';
+import { RaidLevel } from '../simulation/toa';
 import type { Peak } from '../tickers';
 import type { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
 import type { ItemBank } from '.';
@@ -309,7 +310,7 @@ type RoomIDsDiedAt = number[];
 export interface TOAOptions extends ActivityTaskOptions {
 	leader: string;
 	users: [UserID, Points[], RoomIDsDiedAt[]][];
-	raidLevel: number;
+	raidLevel: RaidLevel;
 	fakeDuration: number;
 	wipedRoom: null | number;
 	quantity: number;

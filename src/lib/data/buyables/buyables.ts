@@ -5,6 +5,7 @@ import { chompyHats, MAX_QP } from '../../constants';
 import { CombatCannonItemBank } from '../../minions/data/combatConstants';
 import { Favours } from '../../minions/data/kourendFavour';
 import { MinigameName } from '../../settings/settings';
+import { getToaKCs } from '../../simulation/toa';
 import { Skills } from '../../types';
 import itemID from '../../util/itemID';
 import { allTeamCapes } from '../misc';
@@ -79,33 +80,29 @@ const ironmenBuyables: Buyable[] = ['Ironman helm', 'Ironman platebody', 'Ironma
 	gpCost: 1000
 }));
 
-const toaCapes: Buyable[] = [
-	{
-		name: "Icthlarin's shroud (tier 1)",
-		gpCost: 100_000,
-		minigameScoreReq: ['tombs_of_amascut', 100]
-	},
-	{
-		name: "Icthlarin's shroud (tier 2)",
-		gpCost: 500_000,
-		minigameScoreReq: ['tombs_of_amascut', 500]
-	},
-	{
-		name: "Icthlarin's shroud (tier 3)",
-		gpCost: 500_000,
-		minigameScoreReq: ['tombs_of_amascut', 1000]
-	},
-	{
-		name: "Icthlarin's shroud (tier 4)",
-		gpCost: 500_000,
-		minigameScoreReq: ['tombs_of_amascut', 1500]
-	},
-	{
-		name: "Icthlarin's shroud (tier 5)",
-		gpCost: 500_000,
-		minigameScoreReq: ['tombs_of_amascut', 2000]
-	}
-];
+const ichCapes = [
+	["Icthlarin's shroud (tier 1)", 100],
+	["Icthlarin's shroud (tier 2)", 500],
+	["Icthlarin's shroud (tier 3)", 1000],
+	["Icthlarin's shroud (tier 4)", 1500],
+	["Icthlarin's shroud (tier 5)", 2000],
+	["Icthlarin's hood (tier 5)", 2000]
+] as const;
+
+const toaCapes: Buyable[] = [];
+
+for (const [capeName, kcReq] of ichCapes) {
+	toaCapes.push({
+		name: capeName,
+		gpCost: kcReq * 10,
+		customReq: async (user: MUser) => {
+			const toaKCs = await getToaKCs(user);
+			return toaKCs.normalKC + toaKCs.expertKC >= kcReq
+				? [true]
+				: [false, `You need a combined amount of ${kcReq} Normal/Expert Tombs of Amascut KCs to buy this.`];
+		}
+	});
+}
 
 const tobCapes: Buyable[] = [
 	{

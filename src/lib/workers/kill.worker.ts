@@ -3,7 +3,6 @@ import '../data/itemAliases';
 import { Bank, Misc, Monsters } from 'oldschooljs';
 
 import { handleNexKills } from '../simulation/nex';
-import { calcTOALoot } from '../simulation/toa';
 import { calcDropRatesFromBank } from '../util/calcDropRatesFromBank';
 import { stringMatches } from '../util/cleanString';
 import resolveItems from '../util/resolveItems';
@@ -33,41 +32,6 @@ export default async ({ quantity, bossName, limit, catacombs, onTask }: KillWork
 			bank.add(Misc.Nightmare.kill({ team: [{ damageDone: 2400, id: 'id' }], isPhosani: false }).id);
 		}
 		return { bank };
-	}
-
-	if (stringMatches('toa', bossName)) {
-		const items = resolveItems([
-			'Lightbearer',
-			"Osmumten's fang",
-			"Elidinis' ward",
-			'Masori mask',
-			'Masori body',
-			'Masori chaps',
-			"Tumeken's shadow (uncharged)"
-		]);
-		const loot = new Bank();
-		let totalPoints = 0;
-		let raids = 0;
-		let invoLevel = 300;
-		while (items.some(i => !loot.has(i))) {
-			raids++;
-			let points = 10_000;
-			const res = calcTOALoot({ users: [{ id: '1', points }], raidLevel: invoLevel });
-			loot.add(res.teamLoot.get('1'));
-			totalPoints += points;
-		}
-		let totalUniques = 0;
-		for (const [item, qty] of loot.items()) {
-			if (items.includes(item.id)) {
-				totalUniques += qty;
-			}
-		}
-
-		return {
-			content: `It took you ${totalPoints.toLocaleString()} points and ${raids}x raids to get all the items from TOA, an average of 1 unique per ${(
-				totalPoints / totalUniques
-			).toLocaleString()} points.`
-		};
 	}
 
 	if (['nex', 'next'].some(alias => stringMatches(alias, bossName))) {

@@ -45,9 +45,10 @@ import resolveItems from './util/resolveItems';
 
 interface KillArgs {
 	accumulatedLoot: Bank;
+	totalRuns: number;
 }
 
-interface Finishable {
+export interface Finishable {
 	name: string;
 	aliases?: string[];
 	cl: number[];
@@ -252,12 +253,12 @@ export const finishables: Finishable[] = [
 			'Bloody notes'
 		]),
 		aliases: ['shades of morton'],
-		kill: ({ accumulatedLoot }) => {
+		kill: ({ accumulatedLoot, totalRuns }) => {
 			for (const tier of ['Bronze', 'Steel', 'Black', 'Silver', 'Gold'] as const) {
 				const key = getOSItem(`${tier} key red`);
 				const lock = getOSItem(`${tier} locks`);
 				if (accumulatedLoot.has(lock.id) && tier !== 'Gold') continue;
-				return openShadeChest({ item: key, allItemsOwned: accumulatedLoot, qty: 1 }).bank;
+				return openShadeChest({ item: key, allItemsOwned: accumulatedLoot, qty: totalRuns }).bank;
 			}
 			throw new Error('Not possible!');
 		}
@@ -265,17 +266,23 @@ export const finishables: Finishable[] = [
 	{
 		name: 'TOA',
 		cl: resolveItems([
-			'Lightbearer',
-			"Osmumten's fang",
+			"Tumeken's guardian",
+			"Tumeken's shadow (uncharged)",
 			"Elidinis' ward",
 			'Masori mask',
 			'Masori body',
 			'Masori chaps',
-			"Tumeken's shadow (uncharged)"
+			'Lightbearer',
+			"Osmumten's fang",
+			'Thread of elidinis',
+			'Cache of runes'
 		]),
 		aliases: ['toa'],
-		kill: () => {
-			const loot = calcTOALoot({ users: [{ id: '1', points: 10_000 }], raidLevel: 300 });
+		kill: ({ accumulatedLoot, totalRuns }) => {
+			const loot = calcTOALoot({
+				users: [{ id: '1', points: 22_000, kc: totalRuns, cl: accumulatedLoot, deaths: [] }],
+				raidLevel: 300
+			});
 			return loot.teamLoot.get('1');
 		}
 	}

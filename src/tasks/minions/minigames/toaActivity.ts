@@ -1,6 +1,9 @@
-import { sumArr, uniqueArr } from 'e';
+import { randArrItem, sumArr, uniqueArr } from 'e';
+import { Bank } from 'oldschooljs';
 
+import { drawChestLootImage } from '../../../lib/bankImage';
 import { Emoji, Events } from '../../../lib/constants';
+import { toaCL } from '../../../lib/data/CollectionsExport';
 import { trackLoot } from '../../../lib/lootTrack';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import { TeamLoot } from '../../../lib/simulation/TeamLoot';
@@ -10,13 +13,19 @@ import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import resolveItems from '../../../lib/util/resolveItems';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
+import { userStatsBankUpdate, userStatsUpdate } from '../../../mahoji/mahojiSettings';
 
-const greenItems = resolveItems(['Twisted ancestral colour kit']);
-const blueItems = resolveItems(['Metamorphic dust']);
 const purpleButNotAnnounced = resolveItems(['Dexterous prayer scroll', 'Arcane prayer scroll']);
-
-const purpleItems = [1];
+const purpleItems = resolveItems([
+	"Tumeken's guardian",
+	"Tumeken's shadow (uncharged)",
+	"Elidinis' ward",
+	'Masori mask',
+	'Masori body',
+	'Masori chaps',
+	'Lightbearer',
+	"Osmumten's fang"
+]);
 
 interface RaidResultUser {
 	points: number;
@@ -30,6 +39,9 @@ export const toaTask: MinionTask = {
 	async run(data: TOAOptions) {
 		const { channelID, users, raidLevel, duration, leader, quantity, wipedRoom } = data;
 		const allUsers = await Promise.all(users.map(async u => mUserFetch(u[0])));
+
+		const previousCLs = allUsers.map(i => i.cl.clone());
+
 		console.log(
 			allUsers.map(i => i.rawUsername),
 			users.map(i => i[0])
@@ -57,7 +69,7 @@ export const toaTask: MinionTask = {
 			);
 		}
 
-		const totalLoot = new TeamLoot();
+		const totalLoot = new TeamLoot(toaCL);
 
 		const raidResults: Map<string, RaidResultUser> = new Map();
 		for (const user of allUsers) {
@@ -128,23 +140,23 @@ export const toaTask: MinionTask = {
 				collectionLog: true
 			});
 
+			await userStatsBankUpdate(user.id, 'toa_raid_levels_bank', new Bank().add(raidLevel, quantity));
+
 			const items = itemsAdded.items();
 
 			const isPurple = items.some(([item]) => purpleItems.includes(item.id));
-			const isGreen = items.some(([item]) => greenItems.includes(item.id));
-			const isBlue = items.some(([item]) => blueItems.includes(item.id));
-			const specialLoot = isPurple;
-			const emote = isBlue ? Emoji.Blue : isGreen ? Emoji.Green : Emoji.Purple;
 			if (items.some(([item]) => purpleItems.includes(item.id) && !purpleButNotAnnounced.includes(item.id))) {
 				const itemsToAnnounce = itemsAdded.filter(item => purpleItems.includes(item.id), false);
 				globalClient.emit(
 					Events.ServerNotification,
-					`${emote} ${user.badgedUsername} just received **${itemsToAnnounce}** on their ${formatOrdinal(
+					`${Emoji.Purple} ${
+						user.badgedUsername
+					} just received **${itemsToAnnounce}** on their ${formatOrdinal(
 						await getMinigameScore(user.id, 'tombs_of_amascut')
 					)} raid.`
 				);
 			}
-			const str = specialLoot ? `${emote} ||${itemsAdded}||` : itemsAdded.toString();
+			const str = isPurple ? `${Emoji.Purple} ||${itemsAdded}||` : itemsAdded.toString();
 			const deathStr = deaths === 0 ? '' : new Array(deaths).fill(Emoji.Skull).join(' ');
 
 			resultMessage += `\n${deathStr} **${user}** received: ${str} (${points.toLocaleString()} pts, ${
@@ -171,6 +183,48 @@ export const toaTask: MinionTask = {
 			}))
 		});
 
-		handleTripFinish(allUsers[0], channelID, resultMessage, undefined, data, null);
+		totalLoot.add(allUsers[0].id, new Bank().add(randArrItem(toaCL)));
+
+		if (users.length === 1) {
+			const user = allUsers[0];
+			let soloMsg = `${user}, your minion finished a Tombs of Amascut raid!
+Your KC is now ${await getMinigameScore(user.id, 'tombs_of_amascut')}.`;
+			if (messages.length > 0) {
+				soloMsg += `\n${messages.join('\n')}`;
+			}
+			return handleTripFinish(
+				allUsers[0],
+				channelID,
+				soloMsg,
+				await drawChestLootImage({
+					entries: [
+						{
+							loot: totalLoot.totalLoot(),
+							user: allUsers[0],
+							previousCL: previousCLs[0]
+						}
+					],
+					type: 'Tombs of Amascut'
+				}),
+				data,
+				null
+			);
+		}
+
+		handleTripFinish(
+			allUsers[0],
+			channelID,
+			resultMessage,
+			await drawChestLootImage({
+				entries: allUsers.map((u, index) => ({
+					loot: totalLoot.get(u.id),
+					user: u,
+					previousCL: previousCLs[index]
+				})),
+				type: 'Tombs of Amascut'
+			}),
+			data,
+			null
+		);
 	}
 };

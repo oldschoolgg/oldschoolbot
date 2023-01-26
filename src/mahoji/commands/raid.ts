@@ -3,7 +3,6 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import {
 	mileStoneBaseDeathChances,
 	RaidLevel,
-	toaCheckCommand,
 	toaHelpCommand,
 	toaStartCommand,
 	toaStatsCommand
@@ -135,13 +134,8 @@ export const raidCommand: OSBMahojiCommand = {
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
-					name: 'check',
-					description: "Check if you're ready for TOA."
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
 					name: 'help',
-					description: 'Helpful infor on TOA (maybe temporary before wiki).'
+					description: 'Shows helpful information about TOA.'
 				}
 			]
 		}
@@ -187,9 +181,6 @@ export const raidCommand: OSBMahojiCommand = {
 			);
 		}
 
-		if (options.toa?.check) {
-			return toaCheckCommand(user);
-		}
 		if (options.toa?.stats) {
 			return toaStatsCommand(user);
 		}

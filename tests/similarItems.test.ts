@@ -161,4 +161,8 @@ describe('Gear', () => {
 		let testGear4 = new Gear({ cape: "Elidinis' ward (or)" });
 		expect(testGear4.hasEquipped("Elidinis' ward (f)")).toEqual(true);
 	});
+
+	test('Divine rune pouch', () => {
+		expect(getSimilarItems(itemID('Rune pouch'))).toEqual(resolveItems(['Rune pouch', 'Divine rune pouch']));
+	});
 });

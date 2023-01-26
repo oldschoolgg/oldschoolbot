@@ -14,7 +14,8 @@ interface DegradeableItem {
 		| 'celestial_ring_charges'
 		| 'ash_sanctifier_charges'
 		| 'serp_helm_charges'
-		| 'blood_fury_charges';
+		| 'blood_fury_charges'
+		| 'tum_shadow_charges';
 	itemsToRefundOnBreak: Bank;
 	setup: GearSetupType;
 	aliases: string[];
@@ -100,6 +101,19 @@ export const degradeableItems: DegradeableItem[] = [
 			charges: 10_000
 		},
 		unchargedItem: getOSItem('Amulet of fury'),
+		convertOnCharge: true
+	},
+	{
+		item: getOSItem("Tumeken's shadow"),
+		settingsKey: 'tum_shadow_charges',
+		itemsToRefundOnBreak: new Bank().add("Tumeken's shadow (uncharged)"),
+		setup: 'mage',
+		aliases: ['ts', 'tum shadow', 'tumekens shadow'],
+		chargeInput: {
+			cost: new Bank().add('Soul rune', 2).add('Chaos rune', 5),
+			charges: 1
+		},
+		unchargedItem: getOSItem("Tumeken's shadow (uncharged)"),
 		convertOnCharge: true
 	}
 ];

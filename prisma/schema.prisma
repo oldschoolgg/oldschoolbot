@@ -385,6 +385,7 @@ model User {
   ash_sanctifier_charges Int @default(0)
   serp_helm_charges      Int @default(0)
   blood_fury_charges     Int @default(0)
+  tum_shadow_charges     Int @default(0)
 
   gp_luckypick BigInt @default(0)
   gp_dice      BigInt @default(0)
@@ -621,7 +622,8 @@ model UserStats {
   toa_cost Json @default("{}") @db.Json
   toa_loot Json @default("{}") @db.Json
 
-  total_toa_points Int @default(0)
+  total_toa_points     Int  @default(0)
+  toa_raid_levels_bank Json @default("{}") @db.Json
 
   @@map("user_stats")
 }
