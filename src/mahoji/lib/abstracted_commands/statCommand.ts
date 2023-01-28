@@ -13,6 +13,7 @@ import { Emoji, PerkTier } from '../../../lib/constants';
 import { calcCLDetails, isCLItem } from '../../../lib/data/Collections';
 import backgroundImages from '../../../lib/minions/data/bankBackgrounds';
 import killableMonsters from '../../../lib/minions/data/killableMonsters';
+import { RandomEvents } from '../../../lib/randomEvents';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { prisma } from '../../../lib/settings/prisma';
 import Agility from '../../../lib/skilling/skills/agility';
@@ -970,6 +971,18 @@ ${bank
 	.map((ent, ind) => `${++ind}. ${ent[0].name}: ${ent[1]}`)
 	.join('\n')}`
 			};
+		}
+	},
+	{
+		name: 'Random Events',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, userStats) => {
+			let str = 'You have completed...\n\n';
+			for (const event of RandomEvents) {
+				const qty = (userStats.random_event_completions_bank as ItemBank)[event.id] ?? 0;
+				str += `${event.name}: ${qty}\n`;
+			}
+			return str;
 		}
 	},
 	{
