@@ -9,7 +9,7 @@ import { toKMB } from 'oldschooljs/dist/util/util';
 import * as path from 'path';
 import { Canvas, CanvasRenderingContext2D, FontLibrary, Image, loadImage } from 'skia-canvas/lib';
 
-import { BitField, PerkTier } from '../lib/constants';
+import { BitField, PerkTier, toaPurpleItems } from '../lib/constants';
 import { allCLItems } from '../lib/data/Collections';
 import { filterableTypes } from '../lib/data/filterables';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
@@ -677,7 +677,8 @@ const chestLootTypes = [
 		chestImage: loadImage('./src/lib/resources/images/toaChest.png'),
 		chestImagePurple: loadImage('./src/lib/resources/images/toaChestPurple.png'),
 		width: 240,
-		height: 220
+		height: 220,
+		purpleItems: toaPurpleItems
 	}
 ] as const;
 
@@ -687,8 +688,6 @@ export async function drawChestLootImage(options: {
 }) {
 	const type = chestLootTypes.find(t => t.title === options.type);
 	if (!type) throw new Error(`Invalid chest type: ${options.type}`);
-
-	const isSolo = options.entries.length === 1;
 
 	const canvases: Canvas[] = [];
 
@@ -703,14 +702,12 @@ export async function drawChestLootImage(options: {
 		ctx.imageSmoothingEnabled = false;
 		ctx.fillStyle = ctx.createPattern(sprite.repeatableBg, 'repeat')!;
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
-		const isPurple: boolean = loot
-			.items()
-			.some(([item]) => !previousCL.has(item.id) && allCLItems.includes(item.id));
+		const isPurple: boolean = loot.items().some(([item]) => type.purpleItems.includes(item.id));
 		if (isPurple) anyoneGotPurple = true;
 		const image = isPurple ? await type.chestImagePurple : await type.chestImage;
 		ctx.drawImage(image, canvas.width - image.width + 25, 44 + canvas.height / 4 - image.height / 2);
 
-		drawTitle(ctx, isSolo ? type.title : user.rawUsername, canvas);
+		drawTitle(ctx, `${user.rawUsername} (${toKMB(loot.value())})`, canvas);
 		ctx.font = '16px OSRSFontCompact';
 		bankImageGenerator.drawBorder(ctx, sprite, true);
 		await bankImageGenerator.drawItems(
@@ -729,7 +726,13 @@ export async function drawChestLootImage(options: {
 		canvases.push(canvas);
 	}
 
-	if (canvases.length === 1) return canvases[0].toBuffer('png');
+	const fileName = `${anyoneGotPurple ? 'SPOILER_' : ''}toaloot-${randInt(1, 1000)}.png`;
+
+	if (canvases.length === 1) {
+		return new AttachmentBuilder(await canvases[0].toBuffer('png'), {
+			name: fileName
+		});
+	}
 	let spaceBetweenImages = 15;
 	const combinedCanvas = new Canvas(
 		canvases[0].width * canvases.length + spaceBetweenImages * canvases.length,
@@ -741,7 +744,7 @@ export async function drawChestLootImage(options: {
 		combinedCtx.drawImage(c, index * c.width + spaceBetweenImages * index, 0);
 	}
 	return new AttachmentBuilder(await combinedCanvas.toBuffer('png'), {
-		name: `${anyoneGotPurple ? 'SPOILER_' : ''}toaloot-${randInt(1, 1000)}.png`
+		name: fileName
 	});
 }
 

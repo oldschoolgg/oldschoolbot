@@ -3,30 +3,63 @@ import { round, sumArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
-import { calcTOALoot, mileStoneBaseDeathChances } from '../../lib/simulation/toa';
+import type { Finishable } from '../../lib/finishables';
+import { calcTOALoot, mileStoneBaseDeathChances, RaidLevel } from '../../lib/simulation/toa';
+import getOSItem from '../../lib/util/getOSItem';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import resolveItems from '../../lib/util/resolveItems';
 import { averageBank } from '../../lib/util/smallUtils';
-import { doFinish } from '../../lib/workers/finish.worker';
 import { OSBMahojiCommand } from '../lib/util';
+
+export function doFinish(val: Finishable) {
+	let loot = new Bank();
+	const kcBank = new Bank();
+	let kc = 0;
+	const maxAttempts = val.maxAttempts ?? 100_000;
+	for (let i = 0; i < maxAttempts; i++) {
+		if (val.cl.every(id => loot.has(id))) break;
+		kc++;
+		const thisLoot = val.kill({ accumulatedLoot: loot, totalRuns: i });
+
+		if (val.tertiaryDrops) {
+			for (const drop of val.tertiaryDrops) {
+				if (kc === drop.kcNeeded) {
+					thisLoot.add(drop.itemId);
+				}
+			}
+		}
+
+		const purpleItems = thisLoot.items().filter(i => val.cl.includes(i[0].id) && !loot.has(i[0].id));
+		for (const p of purpleItems) kcBank.add(p[0].id, kc);
+		loot.add(thisLoot);
+		if (kc === maxAttempts) {
+			return `After ${maxAttempts.toLocaleString()} KC, you still didn't finish the CL, so we're giving up! Missing: ${val.cl
+				.filter(id => !loot.has(id))
+				.map(getOSItem)
+				.map(i => i.name)
+				.join(', ')}`;
+		}
+	}
+	return { kc, kcBank: kcBank.bank, loot: loot.bank };
+}
 
 function makeTOAFinishable(
 	points: number,
-	raidLevel: number,
+	raidLevel: RaidLevel,
 	teamSize: number
 ): { kill: (args: { accumulatedLoot: Bank; totalRuns: number }) => Bank } {
 	return {
 		kill: ({ accumulatedLoot, totalRuns }) => {
 			let users = [];
 			for (let i = 0; i < teamSize; i++) {
-				users.push({ id: '1', points, kc: totalRuns, cl: accumulatedLoot, deaths: [] });
+				users.push({ id: i.toString(), points, kc: totalRuns, cl: accumulatedLoot, deaths: [] });
 			}
 
 			const loot = calcTOALoot({
 				users,
 				raidLevel
 			});
-			return loot.teamLoot.get('1');
+			return loot.teamLoot.get('0');
 		}
 	};
 }
@@ -62,7 +95,7 @@ export const finishCommand: OSBMahojiCommand = {
 	run: async ({
 		options,
 		interaction
-	}: CommandRunOptions<{ points?: number; raid_level?: number; team_size: number }>) => {
+	}: CommandRunOptions<{ points?: number; raid_level?: RaidLevel; team_size: number }>) => {
 		await interaction.deferReply();
 		const val = makeTOAFinishable(options.points ?? 10_000, options.raid_level ?? 300, options.team_size ?? 1);
 		let sample = 150;
@@ -111,7 +144,7 @@ export const finishCommand: OSBMahojiCommand = {
 
 		return {
 			content: `**Average Finish - From ${sample}x samples**
-	
+
 Average KC to finish: ${avgKcFinish}
 Lowest KC to finish: ${kcsFinished[0]}
 Median KC to finish: ${kcsFinished[Math.floor(kcsFinished.length / 2)]}

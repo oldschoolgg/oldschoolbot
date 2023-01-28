@@ -423,6 +423,10 @@ model Webhook {
   @@map("webhook_table")
 }
 
+enum XpGainSource {
+  TombsOfAmascut
+}
+
 model XPGain {
   id         Int                 @id @default(autoincrement())
   user_id    BigInt
@@ -431,6 +435,7 @@ model XPGain {
   xp         Int
   artificial Boolean?
   post_max   Boolean             @default(false)
+  source     XpGainSource?
 
   @@index([date, skill])
   @@map("xp_gains")
