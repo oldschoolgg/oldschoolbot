@@ -102,7 +102,7 @@ export const shades: Shade[] = [
 		shadeName: 'Urium',
 		gpRange: [2000, 7000],
 		lowMetalKeys: {
-			fraction: 0.6379,
+			fraction: 0.79,
 			items: resolveItems([
 				'Gold key red',
 				'Gold key brown',
@@ -245,7 +245,7 @@ export const shadesLogs: ShadesLog[] = [
 			Loar: 35.5,
 			Phrin: 48,
 			Riyl: 63,
-			Asyn: 8.5,
+			Asyn: 80.5,
 			Fiyr: 100.5,
 			Urium: 120.5
 		}
@@ -264,6 +264,7 @@ export async function shadesOfMortonStartCommand(user: MUser, channelID: string,
 	for (const coffin of coffins.reverse()) {
 		if (user.hasEquipped(coffin)) {
 			let bonusTime = coffins.indexOf(coffin) * Time.Minute;
+			totalTime += bonusTime;
 			messages.push(`${formatDuration(bonusTime)} bonus max trip length for ${itemNameFromID(coffin)}`);
 			break;
 		}
@@ -313,7 +314,7 @@ export async function shadesOfMortonStartCommand(user: MUser, channelID: string,
 		user.minionName
 	} is now off to do Shades of Mort'ton using ${cost} - the total trip will take ${formatDuration(duration)}.`;
 	if (messages.length > 0) {
-		str += `\n**Messages:** ${messages.join(', ')}}`;
+		str += `\n**Messages:** ${messages.join(', ')}`;
 	}
 	return str;
 }

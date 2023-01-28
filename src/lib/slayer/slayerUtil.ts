@@ -12,6 +12,7 @@ import { getNewUser } from '../settings/settings';
 import { SkillsEnum } from '../skilling/types';
 import { bankHasItem, roll, stringMatches } from '../util';
 import itemID from '../util/itemID';
+import { logError } from '../util/logError';
 import resolveItems from '../util/resolveItems';
 import { autoslayModes } from './constants';
 import { slayerMasters } from './slayerMasters';
@@ -306,11 +307,32 @@ export async function getUsersCurrentSlayerInfo(id: string) {
 		}
 	});
 
-	const slayerMaster = currentTask ? slayerMasters.find(master => master.id === currentTask.slayer_master_id) : null;
+	if (!currentTask) {
+		return {
+			currentTask: null,
+			assignedTask: null,
+			slayerMaster: null
+		};
+	}
+
+	const slayerMaster = slayerMasters.find(master => master.id === currentTask.slayer_master_id);
+	const assignedTask = slayerMaster!.tasks.find(m => m.monster.id === currentTask.monster_id)!;
+
+	if (!assignedTask || !slayerMaster) {
+		logError(
+			`Could not find task or slayer master for user ${id} task ${currentTask.monster_id} master ${currentTask.slayer_master_id}`,
+			{ userID: id }
+		);
+		return {
+			currentTask: null,
+			assignedTask: null,
+			slayerMaster: null
+		};
+	}
 
 	return {
-		currentTask: currentTask ?? null,
-		assignedTask: currentTask ? slayerMaster!.tasks.find(m => m.monster.id === currentTask.monster_id)! : null,
+		currentTask,
+		assignedTask,
 		slayerMaster
 	};
 }
@@ -537,4 +559,33 @@ export async function setDefaultAutoslay(
 		slayer_autoslay_options: [autoslayOption.key]
 	});
 	return { success: true, message: `Autoslay method updated to: ${autoslayOption.name} (${autoslayOption.focus})` };
+}
+
+export async function isOnSlayerTask({
+	user,
+	monsterID,
+	quantityKilled
+}: {
+	user: MUser;
+	monsterID: number;
+	quantityKilled: number;
+}) {
+	const usersTask = await getUsersCurrentSlayerInfo(user.id);
+	const isOnTask =
+		usersTask.assignedTask !== null &&
+		usersTask.currentTask !== null &&
+		usersTask.assignedTask.monsters.includes(monsterID);
+
+	const hasSuperiorsUnlocked = user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.BiggerAndBadder);
+
+	if (!isOnTask) return { isOnTask, hasSuperiorsUnlocked };
+
+	const quantitySlayed = Math.min(usersTask.currentTask.quantity_remaining, quantityKilled);
+
+	return {
+		isOnTask,
+		hasSuperiorsUnlocked,
+		quantitySlayed,
+		...usersTask
+	};
 }
