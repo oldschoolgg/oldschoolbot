@@ -796,6 +796,10 @@ model UserStats {
 
   shades_of_morton_cost_bank Json @default("{}") @db.Json
 
+  gp_from_agil_pyramid Int @default(0)
+
+  random_event_completions_bank Json @default("{}") @db.Json
+
   death_touched_darts_used Int @default(0)
 
   @@map("user_stats")

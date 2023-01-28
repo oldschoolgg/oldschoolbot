@@ -262,7 +262,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 							name: 'skill',
 							required: true,
 							description: 'The skill to put XP in.',
-							choices: ['attack', 'strength ', 'defence', 'hitpoints', 'ranged', 'magic', 'prayer'].map(
+							choices: ['attack', 'strength', 'defence', 'hitpoints', 'ranged', 'magic', 'prayer'].map(
 								i => ({ name: i, value: i })
 							)
 						},
@@ -902,7 +902,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 		{
 			type: ApplicationCommandOptionType.SubcommandGroup,
 			name: 'shades_of_morton',
-			description: 'The Guardians of the Rift minigame.',
+			description: "The Shades of Mort'ton minigame.",
 			options: [
 				{
 					type: ApplicationCommandOptionType.Subcommand,

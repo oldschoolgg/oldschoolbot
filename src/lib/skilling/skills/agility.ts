@@ -164,6 +164,15 @@ export const courses: Course[] = [
 		qpRequired: 205
 	},
 	{
+		id: 14,
+		name: 'Agility Pyramid',
+		aliases: ['agility pyramid'],
+		level: 30,
+		xp: agilLevel => 722 + (300 + agilLevel * 8),
+		lapTime: 125.1,
+		petChance: 1_005_146
+	},
+	{
 		id: 30,
 		name: 'Daemonheim Rooftop Course',
 		aliases: ['daemonheim', 'dh', 'daemonheim rooftop course'],

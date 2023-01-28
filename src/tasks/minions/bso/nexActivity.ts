@@ -76,7 +76,7 @@ export const nexTask: MinionTask = {
 			if (isDoubleLootActive(duration)) {
 				loot.multiply(2);
 			}
-			const winner = teamTable.roll()?.item;
+			const winner = teamTable.roll();
 			if (!winner) continue;
 			teamsLoot.add(winner, loot);
 
