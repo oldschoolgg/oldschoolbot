@@ -27,7 +27,7 @@ import { GearStats, UserFullGearSetup } from '../gear/types';
 import { trackLoot } from '../lootTrack';
 import { MUserClass } from '../MUser';
 import { setupParty } from '../party';
-import { getMinigameScore } from '../settings/minigames';
+import { getMinigameEntity, getMinigameScore } from '../settings/minigames';
 import { SkillsEnum } from '../skilling/types';
 import { constructGearSetup, Gear } from '../structures/Gear';
 import { ItemBank, MakePartyOptions, Skills } from '../types';
@@ -256,7 +256,7 @@ const toaRequirements: {
 			}
 
 			if (
-				user.gear.melee.hasEquipped("Tumeken's shadow") &&
+				user.gear.mage.hasEquipped("Tumeken's shadow") &&
 				user.user.tum_shadow_charges < TUMEKEN_SHADOW_PER_RAID
 			) {
 				return `You need atleast ${TUMEKEN_SHADOW_PER_RAID} Tumeken's shadow charges to use it, otherwise it has to be unequipped.`;
@@ -320,7 +320,8 @@ export function calculateXPFromRaid({
 				skillName: style,
 				amount: calcPercentOfNum(percentOfRaid, xpPerStyle),
 				duration: realDuration,
-				source: XpGainSource.TombsOfAmascut
+				source: XpGainSource.TombsOfAmascut,
+				minimal: true
 			})
 		);
 	}
@@ -330,7 +331,8 @@ export function calculateXPFromRaid({
 			skillName: SkillsEnum.Magic,
 			amount: calcPercentOfNum(percentOfRaid, xpPerStyle * 1.35),
 			duration: realDuration,
-			source: XpGainSource.TombsOfAmascut
+			source: XpGainSource.TombsOfAmascut,
+			minimal: true
 		})
 	);
 	promises.push(
@@ -338,7 +340,8 @@ export function calculateXPFromRaid({
 			skillName: SkillsEnum.Ranged,
 			amount: calcPercentOfNum(percentOfRaid, xpPerStyle * 1.35),
 			duration: realDuration,
-			source: XpGainSource.TombsOfAmascut
+			source: XpGainSource.TombsOfAmascut,
+			minimal: true
 		})
 	);
 	return promises;
@@ -463,7 +466,7 @@ const nonUniqueTable = [
 ] as const;
 
 function nonUniqueLoot({ points }: { points: number }) {
-	assert(points >= 1 && points <= 60_000);
+	assert(points >= 1 && points <= 64_000, `Points (${points.toLocaleString()}) must be between 1-64,000`);
 	let loot = new Bank();
 
 	for (let i = 0; i < 3; i++) {
@@ -617,7 +620,7 @@ export const mileStoneBaseDeathChances = [
 
 export type RaidLevel = typeof mileStoneBaseDeathChances[number]['level'];
 
-function calcDeathChance(totalAttempts: number, raidLevel: RaidLevel) {
+function calcDeathChance(totalAttempts: number, raidLevel: RaidLevel, tobAndCoxKC: number) {
 	const obj = mileStoneBaseDeathChances.find(i => i.level === raidLevel)!;
 
 	let deathChance: number = obj.chance;
@@ -654,6 +657,11 @@ function calcDeathChance(totalAttempts: number, raidLevel: RaidLevel) {
 		}
 	] as const;
 
+	const tobCoxKCDivided = Math.floor(tobAndCoxKC / 250);
+	if (tobAndCoxKC > 0) {
+		totalAttempts += clamp(tobCoxKCDivided, 0, 2);
+	}
+
 	const match = map.find(i => totalAttempts <= i.attemptsMax)! ?? map[map.length - 1];
 	const nextMatch = map[map.indexOf(match) + 1] ?? { attemptsMax: Infinity, increase: 0 };
 
@@ -669,27 +677,29 @@ function calcDeathChance(totalAttempts: number, raidLevel: RaidLevel) {
 	if (totalAttempts > 100) {
 		deathChance = reduceNumByPercent(deathChance, scaleNumber(totalAttempts, 100, 250, 0, 50));
 	}
-
+	console.log({ deathChance, totalAttempts, tobAndCoxKC });
 	if (minChance) {
 		deathChance = clamp(deathChance, minChance, 99);
 	}
-	deathChance = clamp(deathChance, 1, 99);
+	deathChance = clamp(deathChance, 5, 99);
 
 	// deathChance = Math.round(randomVariation(deathChance, 0.5));
 
 	return deathChance;
 }
 
-let str = 'Total Attempts/KC\tRaid Level\tDeath Chance (%)\n';
+let str = 'Total Attempts/KC\tRaid Level\tCOX+TOB KC\tDeath Chance (%)\n';
 let array = [];
 for (const attempts of [0, 10, 15, 20, 25, 30, 40, 50, 100, 125, 150, 175, 200, 250]) {
 	for (const { level } of mileStoneBaseDeathChances) {
-		array.push({ attempts, level, chance: Number(calcDeathChance(attempts, level).toFixed(2)) });
+		for (const coxKC of [0, 10]) {
+			array.push({ attempts, level, chance: Number(calcDeathChance(attempts, level, coxKC).toFixed(2)), coxKC });
+		}
 	}
 }
 array.sort((a, b) => b.chance - a.chance);
-for (const { attempts, level, chance } of array) {
-	str += `${attempts}\t${level}\t${chance}\n`;
+for (const { attempts, level, chance, coxKC } of array) {
+	str += `${attempts}\t${level}\t${coxKC}\t${chance}\n`;
 }
 writeFileSync('./death-chances.txt', str);
 
@@ -708,11 +718,6 @@ function calculateTotalEffectiveness({
 }) {
 	let percents = [];
 
-	// let kcWeighting = 2;
-	// let attemptsWeighting = 1;
-	// let statsWeighting = 2;
-	// let skillsWeighting = 1.5;
-
 	percents.push(clamp(calcWhatPercent(totalKC, 20), 0, 100));
 	percents.push(clamp(calcWhatPercent(totalAttempts, 20), 0, 100));
 	const skillsThatMatter = [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic, SkillsEnum.Ranged];
@@ -726,22 +731,40 @@ function calculateTotalEffectiveness({
 		percents.push(randInt(50, 100));
 	}
 
-	return sumArr(percents) / percents.length;
+	return exponentialPercentScale(sumArr(percents) / percents.length);
 }
 
-function calculatePointsAndDeaths(effectiveness: number, totalAttempts: number, raidLevel: RaidLevel) {
+function tightenPoints(min: number, max: number) {
+	let results = [];
+
+	for (let i = 0; i < 3; i++) {
+		results.push(randInt(min, max));
+	}
+
+	return Math.floor(sumArr(results) / results.length);
+}
+
+function calculatePointsAndDeaths(
+	effectiveness: number,
+	totalAttempts: number,
+	raidLevel: RaidLevel,
+	coxAndTobKC: number
+) {
 	let points = 5000;
 
 	let deaths: number[] = [];
 	const messages: string[] = [];
-	let deathChance = calcDeathChance(totalAttempts, raidLevel);
+	let deathChance = calcDeathChance(totalAttempts, raidLevel, coxAndTobKC);
+	const harshEffectivenessScale = exponentialPercentScale(effectiveness, 0.05);
+	console.log(`BEFORE[${effectiveness}%] AFTER[${harshEffectivenessScale}%]`);
 
 	for (const room of TOARooms) {
 		if (percentChance(deathChance / TOARooms.length)) {
 			deaths.push(room.id);
 			points = reduceNumByPercent(points, 20);
 		} else {
-			points += randInt(1, calcPercentOfNum(effectiveness, 20_000));
+			let ptsForThisRoom = tightenPoints(1, calcPercentOfNum(harshEffectivenessScale, 9000));
+			points += ptsForThisRoom;
 		}
 	}
 
@@ -1198,11 +1221,9 @@ export async function createTOATeam({
 
 	for (const user of team) {
 		let gearStats = calculateUserGearPercents(user.gear, raidLevel);
-		const [userStats, totalKC] = await Promise.all([
-			user.fetchStats(),
-			getMinigameScore(user.id, 'tombs_of_amascut')
-		]);
+		const [userStats, minigameScores] = await Promise.all([user.fetchStats(), getMinigameEntity(user.id)]);
 		const totalAttempts = userStats.toa_attempts;
+		const totalKC = minigameScores.tombs_of_amascut;
 		const effectiveness = calculateTotalEffectiveness({
 			totalAttempts,
 			totalKC,
@@ -1214,7 +1235,12 @@ export async function createTOATeam({
 			points,
 			deaths,
 			messages: deathMessages
-		} = calculatePointsAndDeaths(effectiveness, totalAttempts, raidLevel);
+		} = calculatePointsAndDeaths(
+			effectiveness,
+			totalAttempts,
+			raidLevel,
+			minigameScores.raids + minigameScores.tob
+		);
 		messages.push(...deathMessages);
 		arr.push({
 			id: user.id,
