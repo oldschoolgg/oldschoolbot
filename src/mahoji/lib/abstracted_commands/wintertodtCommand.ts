@@ -23,7 +23,11 @@ export async function wintertodtCommand(user: MUser, channelID: string) {
 
 	// Up to a 10% boost for 99 WC
 	const wcBoost = (wcLevel + 1) / 10;
-	if (wcBoost > 1) messages.push(`${wcBoost.toFixed(2)}% boost for Woodcutting level`);
+	
+	if (wcBoost > 1) {
+		messages.push(`**Boosts: ** ${wcBoost.toFixed(2)}%  for Woodcutting level\n`);
+	}
+
 	durationPerTodt = reduceNumByPercent(durationPerTodt, wcBoost);
 
 	const baseHealAmountNeeded = 20 * 8;
@@ -40,15 +44,6 @@ export async function wintertodtCommand(user: MUser, channelID: string) {
 	healAmountNeeded -= warmGearAmount * 15;
 	durationPerTodt = reduceNumByPercent(durationPerTodt, 5 * warmGearAmount);
 
-	if (healAmountNeeded !== baseHealAmountNeeded) {
-		messages.push(
-			`${calcWhatPercent(
-				baseHealAmountNeeded - healAmountNeeded,
-				baseHealAmountNeeded
-			)}% less food for wearing warm gear`
-		);
-	}
-
 	const quantity = Math.floor(calcMaxTripLength(user, 'Wintertodt') / durationPerTodt);
 
 	for (const food of Eatables) {
@@ -63,7 +58,21 @@ export async function wintertodtCommand(user: MUser, channelID: string) {
 			continue;
 		}
 
-		messages.push(`Removed ${amountNeeded}x ${food.name}'s from your bank`);
+		let foodStr: string = `**Food:** ${healAmountNeeded} HP/kill`;
+
+		if (healAmountNeeded !== baseHealAmountNeeded) {
+			foodStr += `. Reduced from ${baseHealAmountNeeded}, -${calcWhatPercent(
+				baseHealAmountNeeded - healAmountNeeded,
+				baseHealAmountNeeded
+			)}% for wearing warm gear. `;
+		} else {
+			foodStr += `. `;
+		}
+	
+		foodStr += ` **Removed ${amountNeeded}x ${food.name}**`;
+
+		messages.push(foodStr);
+
 		await user.removeItemsFromBank(new Bank().add(food.id, amountNeeded));
 
 		// Track this food cost in Economy Stats
@@ -85,5 +94,5 @@ export async function wintertodtCommand(user: MUser, channelID: string) {
 
 	return `${user.minionName} is now off to kill Wintertodt ${quantity}x times, their trip will take ${formatDuration(
 		durationPerTodt * quantity
-	)}. (${formatDuration(durationPerTodt)} per todt)\n\n${messages.join(', ')}.`;
+	)}. (${formatDuration(durationPerTodt)} per Wintertodt)\n\n${messages.join('')}.`;
 }
