@@ -18,7 +18,7 @@ export const castleWarsTask: MinionTask = {
 		const user = await mUserFetch(userID);
 		const loot = new Bank();
 		for (let i = 0; i < quantity; i++) {
-			loot.add('Castle wars ticket', ticketTable.roll().item);
+			loot.add('Castle wars ticket', ticketTable.roll());
 		}
 		let boosts = [];
 

@@ -9,7 +9,8 @@
 		"test": "concurrently \"tsc -p src\" \"yarn test:lint\" \"yarn test:unit\"",
 		"test:lint": "eslint \"{src,tests}/**/*.ts\"",
 		"test:unit": "jest --coverage --maxWorkers=4",
-		"dev": "yarn wipedist && tsc -w -p src"
+		"dev": "yarn wipedist && tsc -w -p src",
+		"o": "yarn build && madge --circular ./dist"
 	},
 	"dependencies": {
 		"@discordjs/builders": "^0.11.0",
@@ -42,7 +43,7 @@
 		"murmurhash": "^2.0.1",
 		"node-cron": "^3.0.2",
 		"node-fetch": "^2.6.7",
-		"oldschooljs": "^2.1.93",
+		"oldschooljs": "^2.1.95",
 		"p-queue": "^6.6.2",
 		"pino": "^8.8.0",
 		"piscina": "^3.2.0",
@@ -68,6 +69,7 @@
 		"jest-circus": "^29.2.2",
 		"jest-mock-extended": "^3.0.1",
 		"jest-mock-random": "^1.1.1",
+		"madge": "^5.0.1",
 		"prisma": "^3.15.1",
 		"rimraf": "^3.0.2",
 		"source-map-support": "^0.5.21",

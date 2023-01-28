@@ -96,7 +96,7 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 	{
 		name: 'metrics',
 		timer: null,
-		interval: Time.Minute,
+		interval: production ? Time.Minute : Time.Second,
 		cb: async () => {
 			let storedCount = queryCountStore.value;
 			queryCountStore.value = 0;
