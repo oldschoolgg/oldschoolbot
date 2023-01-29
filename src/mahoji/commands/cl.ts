@@ -73,7 +73,13 @@ export const collectionLogCommand: OSBMahojiCommand = {
 	run: async ({
 		options,
 		userID
-	}: CommandRunOptions<{ name: string; type?: CollectionLogType; flag?: string; flag_extra?: string; all?: boolean }>) => {
+	}: CommandRunOptions<{
+		name: string;
+		type?: CollectionLogType;
+		flag?: string;
+		flag_extra?: string;
+		all?: boolean;
+	}>) => {
 		const user = await mUserFetch(userID);
 		let flags: Record<string, string> = {};
 		if (options.flag) flags[options.flag] = options.flag;
