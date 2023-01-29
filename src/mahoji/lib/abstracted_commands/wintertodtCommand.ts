@@ -23,7 +23,7 @@ export async function wintertodtCommand(user: MUser, channelID: string) {
 
 	// Up to a 10% boost for 99 WC
 	const wcBoost = (wcLevel + 1) / 10;
-	
+
 	if (wcBoost > 1) {
 		messages.push(`**Boosts: ** ${wcBoost.toFixed(2)}%  for Woodcutting level\n`);
 	}
@@ -66,9 +66,9 @@ export async function wintertodtCommand(user: MUser, channelID: string) {
 				baseHealAmountNeeded
 			)}% for wearing warm gear. `;
 		} else {
-			foodStr += `. `;
+			foodStr += '. ';
 		}
-	
+
 		foodStr += ` **Removed ${amountNeeded}x ${food.name}**`;
 
 		messages.push(foodStr);
