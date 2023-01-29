@@ -7,6 +7,7 @@ import { BuryingActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import { pluraliseItemName } from '../../../lib/util/pluraliseItemName';
 
 export async function buryCommand(user: MUser, channelID: string, boneName: string, quantity?: number) {
 	const speedMod = 1;
@@ -44,7 +45,7 @@ export async function buryCommand(user: MUser, channelID: string, boneName: stri
 	if (duration > maxTripLength) {
 		return `${user.minionName} can't go on trips longer than ${formatDuration(
 			maxTripLength
-		)}, try a lower quantity. The highest amount of ${bone.name}s you can bury is ${Math.floor(
+		)}, try a lower quantity. The highest amount of ${pluraliseItemName(bone.name)} you can bury is ${Math.floor(
 			maxTripLength / timeToBuryABone
 		)}.`;
 	}

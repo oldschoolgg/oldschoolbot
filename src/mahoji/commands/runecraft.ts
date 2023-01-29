@@ -10,6 +10,7 @@ import { formatDuration, itemID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../lib/util/determineRunes';
+import { pluraliseItemName } from '../../lib/util/pluraliseItemName';
 import { toTitleCase } from '../../lib/util/toTitleCase';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { tiaraRunecraftCommand } from '../lib/abstracted_commands/tiaraRunecraftCommand';
@@ -107,7 +108,9 @@ export const runecraftCommand: OSBMahojiCommand = {
 		const quantityPerEssence = calcMaxRCQuantity(runeObj, user);
 
 		if (quantityPerEssence === 0) {
-			return `${user.minionName} needs ${runeObj.levels[0][0]} Runecraft to create ${runeObj.name}s.`;
+			return `${user.minionName} needs ${runeObj.levels[0][0]} Runecraft to create ${pluraliseItemName(
+				runeObj.name
+			)}.`;
 		}
 
 		if (runeObj.qpRequired && user.user.QP < runeObj.qpRequired) {
@@ -310,7 +313,9 @@ export const runecraftCommand: OSBMahojiCommand = {
 		}x runes due to the multiplier.\n\n**Boosts:** ${boosts.join(', ')}`;
 
 		if (!runeObj.stams) {
-			response += `\nNote: You are unable to use Stamina Potion's when crafting ${runeObj.name}s.`;
+			response += `\nNote: You are unable to use Stamina Potion's when crafting ${pluraliseItemName(
+				runeObj.name
+			)}.`;
 		}
 
 		if (runeObj.inputRune) {

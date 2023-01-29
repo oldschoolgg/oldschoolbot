@@ -7,6 +7,7 @@ import { CookingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
+import { pluraliseItemName } from '../../lib/util/pluraliseItemName';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const cookCommand: OSBMahojiCommand = {
@@ -55,7 +56,7 @@ export const cookCommand: OSBMahojiCommand = {
 		}
 
 		if (user.skillLevel('cooking') < cookable.level) {
-			return `${user.minionName} needs ${cookable.level} Cooking to cook ${cookable.name}s.`;
+			return `${user.minionName} needs ${cookable.level} Cooking to cook ${pluraliseItemName(cookable.name)}.`;
 		}
 
 		// Based off catherby fish/hr rates
@@ -87,9 +88,9 @@ export const cookCommand: OSBMahojiCommand = {
 		if (duration > maxTripLength) {
 			return `${user.minionName} can't go on trips longer than ${formatDuration(
 				maxTripLength
-			)} minutes, try a lower quantity. The highest amount of ${cookable.name}s you can cook is ${Math.floor(
-				maxTripLength / timeToCookSingleCookable
-			)}.`;
+			)} minutes, try a lower quantity. The highest amount of ${pluraliseItemName(
+				cookable.name
+			)} you can cook is ${Math.floor(maxTripLength / timeToCookSingleCookable)}.`;
 		}
 
 		await user.removeItemsFromBank(totalCost);

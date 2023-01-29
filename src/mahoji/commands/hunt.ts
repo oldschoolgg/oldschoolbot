@@ -14,6 +14,7 @@ import { formatDuration, itemID } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
+import { pluraliseItemName } from '../../lib/util/pluraliseItemName';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { OSBMahojiCommand } from '../lib/util';
 import { userHasGracefulEquipped } from '../mahojiSettings';
@@ -175,7 +176,7 @@ export const huntCommand: OSBMahojiCommand = {
 						quantity = Math.floor(userBank.amount(item.id) / qty);
 						duration = Math.floor(((quantity * catchTime) / traps) * Time.Second);
 					} else {
-						return `You don't have enough ${item.name}s.`;
+						return `You don't have enough ${pluraliseItemName(item.name)}.`;
 					}
 				}
 				removeBank.add(item.id, qty * quantity);

@@ -6,6 +6,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import type { RunecraftActivityTaskOptions } from '../../lib/types/minions';
 import { roll, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { pluraliseItemName } from '../../lib/util/pluraliseItemName';
 import { calcMaxRCQuantity } from '../../mahoji/mahojiSettings';
 
 export const runecraftTask: MinionTask = {
@@ -73,9 +74,9 @@ export const runecraftTask: MinionTask = {
 				Events.ServerNotification,
 				`${Emoji.Runecraft} **${user.badgedUsername}'s** minion, ${
 					user.minionName
-				}, just received a Rift guardian while crafting ${rune.name}s at level ${user.skillLevel(
-					SkillsEnum.Runecraft
-				)} Runecrafting!`
+				}, just received a Rift guardian while crafting ${pluraliseItemName(
+					rune.name
+				)} at level ${user.skillLevel(SkillsEnum.Runecraft)} Runecrafting!`
 			);
 		}
 

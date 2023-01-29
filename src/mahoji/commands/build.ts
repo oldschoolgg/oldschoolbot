@@ -10,6 +10,7 @@ import { formatDuration, hasSkillReqs } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
+import { pluraliseItemName } from '../../lib/util/pluraliseItemName';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -122,9 +123,9 @@ export const buildCommand: OSBMahojiCommand = {
 		if (duration > maxTripLength) {
 			return `${user.minionName} can't go on trips longer than ${formatDuration(
 				maxTripLength
-			)} minutes, try a lower quantity. The highest amount of ${object.name}s you can build is ${Math.floor(
-				maxTripLength / timeToBuildSingleObject
-			)}.`;
+			)} minutes, try a lower quantity. The highest amount of ${pluraliseItemName(
+				object.name
+			)} you can build is ${Math.floor(maxTripLength / timeToBuildSingleObject)}.`;
 		}
 
 		const gpNeeded = Math.floor(10_000 * (invsPerTrip / 8));

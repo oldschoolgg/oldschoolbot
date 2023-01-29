@@ -7,6 +7,7 @@ import { ScatteringActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import { pluraliseItemName } from '../../../lib/util/pluraliseItemName';
 
 export async function scatterCommand(user: MUser, channelID: string, ashName: string, quantity?: number) {
 	const speedMod = 1;
@@ -44,7 +45,7 @@ export async function scatterCommand(user: MUser, channelID: string, ashName: st
 	if (duration > maxTripLength) {
 		return `${user.minionName} can't go on trips longer than ${formatDuration(
 			maxTripLength
-		)}, try a lower quantity. The highest amount of ${ash.name}s you can scatter is ${Math.floor(
+		)}, try a lower quantity. The highest amount of ${pluraliseItemName(ash.name)} you can scatter is ${Math.floor(
 			maxTripLength / timeToScatterAnAsh
 		)}.`;
 	}

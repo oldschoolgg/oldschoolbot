@@ -8,6 +8,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { DarkAltarOptions } from '../../lib/types/minions';
 import { skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { pluraliseItemName } from '../../lib/util/pluraliseItemName';
 
 export const darkAltarTask: MinionTask = {
 	type: 'DarkAltar',
@@ -82,9 +83,9 @@ export const darkAltarTask: MinionTask = {
 				Events.ServerNotification,
 				`**${user.badgedUsername}'s** minion, ${
 					user.minionName
-				}, just received a Rift guardian while crafting ${runeData.item.name}s at level ${user.skillLevel(
-					SkillsEnum.Runecraft
-				)} Runecrafting!`
+				}, just received a Rift guardian while crafting ${pluraliseItemName(
+					runeData.item.name
+				)} at level ${user.skillLevel(SkillsEnum.Runecraft)} Runecrafting!`
 			);
 		}
 

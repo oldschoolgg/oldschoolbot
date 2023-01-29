@@ -8,6 +8,7 @@ import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../../lib/util/determineRunes';
+import { pluraliseItemName } from '../../../lib/util/pluraliseItemName';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { userHasGracefulEquipped } from '../../mahojiSettings';
 
@@ -86,7 +87,7 @@ export async function castCommand(channelID: string, user: MUser, name: string, 
 	if (duration > maxTripLength) {
 		return `${user.minionName} can't go on trips longer than ${formatDuration(
 			maxTripLength
-		)}, try a lower quantity. The highest amount of ${spell.name}s you can cast is ${Math.floor(
+		)}, try a lower quantity. The highest amount of ${pluraliseItemName(spell.name)} you can cast is ${Math.floor(
 			maxTripLength / castTimeMilliSeconds
 		)}.`;
 	}

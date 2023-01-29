@@ -9,6 +9,7 @@ import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
+import { pluraliseItemName } from '../../lib/util/pluraliseItemName';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -120,9 +121,9 @@ export const mineCommand: OSBMahojiCommand = {
 		if (duration > maxTripLength) {
 			return `${user.minionName} can't go on trips longer than ${formatDuration(
 				maxTripLength
-			)}, try a lower quantity. The highest amount of ${mixableItem.name}s you can make is ${Math.floor(
-				maxTripLength / timeToMixSingleItem
-			)}.`;
+			)}, try a lower quantity. The highest amount of ${pluraliseItemName(
+				mixableItem.name
+			)} you can make is ${Math.floor(maxTripLength / timeToMixSingleItem)}.`;
 		}
 
 		const finalCost = requiredItems.multiply(quantity);

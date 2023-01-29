@@ -10,6 +10,7 @@ import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
+import { pluraliseItemName } from '../../lib/util/pluraliseItemName';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const fletchCommand: OSBMahojiCommand = {
@@ -90,9 +91,9 @@ export const fletchCommand: OSBMahojiCommand = {
 		if (duration > maxTripLength) {
 			return `${user.minionName} can't go on trips longer than ${formatDuration(
 				maxTripLength
-			)}, try a lower quantity. The highest amount of ${fletchable.name}s you can fletch is ${Math.floor(
-				maxTripLength / timeToFletchSingleItem
-			)}.`;
+			)}, try a lower quantity. The highest amount of ${pluraliseItemName(
+				fletchable.name
+			)} you can fletch is ${Math.floor(maxTripLength / timeToFletchSingleItem)}.`;
 		}
 
 		const itemsNeeded = fletchable.inputItems.clone().multiply(quantity);

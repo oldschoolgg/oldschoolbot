@@ -7,6 +7,7 @@ import { formatDuration, itemNameFromID, stringMatches } from '../../../lib/util
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../../lib/util/determineRunes';
+import { pluraliseItemName } from '../../../lib/util/pluraliseItemName';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 export async function enchantCommand(user: MUser, channelID: string, name: string, quantity?: number) {
@@ -43,9 +44,9 @@ export async function enchantCommand(user: MUser, channelID: string, name: strin
 	if (duration > maxTripLength) {
 		return `${user.minionName} can't go on trips longer than ${formatDuration(
 			maxTripLength
-		)}, try a lower quantity. The highest amount of ${enchantable.name}s you can enchant is ${Math.floor(
-			maxTripLength / timeToEnchantTen
-		)}.`;
+		)}, try a lower quantity. The highest amount of ${pluraliseItemName(
+			enchantable.name
+		)} you can enchant is ${Math.floor(maxTripLength / timeToEnchantTen)}.`;
 	}
 
 	const cost = determineRunes(user, enchantable.input.clone().multiply(quantity));

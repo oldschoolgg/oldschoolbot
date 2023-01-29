@@ -6,6 +6,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import type { SmeltingActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
+import { pluraliseItemName } from '../../lib/util/pluraliseItemName';
 
 export const smeltingTask: MinionTask = {
 	type: 'Smelting',
@@ -42,7 +43,7 @@ export const smeltingTask: MinionTask = {
 		let str = `${user}, ${user.minionName} finished smelting ${quantity}x ${bar.name}. ${xpRes}`;
 
 		if (bar.chanceOfFail > 0 && oldQuantity > quantity) {
-			str += `\n\n${oldQuantity - quantity} ${bar.name}s failed to smelt.`;
+			str += `\n\n${oldQuantity - quantity} ${pluraliseItemName(bar.name)} failed to smelt.`;
 		}
 
 		const loot = new Bank({

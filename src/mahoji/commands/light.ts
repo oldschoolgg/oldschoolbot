@@ -9,6 +9,7 @@ import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
+import { pluraliseItemName } from '../../lib/util/pluraliseItemName';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const lightCommand: OSBMahojiCommand = {
@@ -75,9 +76,9 @@ export const lightCommand: OSBMahojiCommand = {
 		if (duration > maxTripLength) {
 			return `${user.minionName} can't go on trips longer than ${formatDuration(
 				maxTripLength
-			)}, try a lower quantity. The highest amount of ${log.name}s you can light is ${Math.floor(
-				maxTripLength / timeToLightSingleLog
-			)}.`;
+			)}, try a lower quantity. The highest amount of ${pluraliseItemName(
+				log.name
+			)} you can light is ${Math.floor(maxTripLength / timeToLightSingleLog)}.`;
 		}
 
 		await transactItems({ userID: user.id, itemsToRemove: cost });

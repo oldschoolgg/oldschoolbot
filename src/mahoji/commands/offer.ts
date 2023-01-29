@@ -16,6 +16,7 @@ import { stringMatches } from '../../lib/util/cleanString';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';
 import { makeBankImage } from '../../lib/util/makeBankImage';
+import { pluraliseItemName } from '../../lib/util/pluraliseItemName';
 import { OSBMahojiCommand } from '../lib/util';
 import { userStatsBankUpdate } from '../mahojiSettings';
 
@@ -243,9 +244,9 @@ export const mineCommand: OSBMahojiCommand = {
 		if (duration > maxTripLength) {
 			return `${user.minionName} can't go on trips longer than ${formatDuration(
 				maxTripLength
-			)}, try a lower quantity. The highest amount of ${bone.name}s you can bury is ${Math.floor(
-				maxTripLength / timeToBuryABone
-			)}.`;
+			)}, try a lower quantity. The highest amount of ${pluraliseItemName(
+				bone.name
+			)} you can bury is ${Math.floor(maxTripLength / timeToBuryABone)}.`;
 		}
 
 		await user.removeItemsFromBank(new Bank().add(bone.inputId, quantity));

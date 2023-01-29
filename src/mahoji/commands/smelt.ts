@@ -8,6 +8,7 @@ import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, formatSkillRequirements, itemID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
+import { pluraliseItemName } from '../../lib/util/pluraliseItemName';
 import resolveItems from '../../lib/util/resolveItems';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { OSBMahojiCommand } from '../lib/util';
@@ -74,7 +75,7 @@ export const smeltingCommand: OSBMahojiCommand = {
 		}
 
 		if (user.skillLevel('smithing') < bar.level) {
-			return `${user.minionName} needs ${bar.level} Smithing to smelt ${bar.name}s.`;
+			return `${user.minionName} needs ${bar.level} Smithing to smelt ${pluraliseItemName(bar.name)}.`;
 		}
 
 		// All bars take 2.4s to smith normally, add on quarter of a second to account for banking/etc.
@@ -133,9 +134,9 @@ export const smeltingCommand: OSBMahojiCommand = {
 		if (duration > maxTripLength) {
 			return `${user.minionName} can't go on trips longer than ${formatDuration(
 				maxTripLength
-			)}, try a lower quantity. The highest amount of ${bar.name}s you can smelt is ${Math.floor(
-				maxTripLength / timeToSmithSingleBar
-			)}.`;
+			)}, try a lower quantity. The highest amount of ${pluraliseItemName(
+				bar.name
+			)} you can smelt is ${Math.floor(maxTripLength / timeToSmithSingleBar)}.`;
 		}
 
 		let coinsToRemove = 0;

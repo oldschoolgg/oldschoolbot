@@ -9,6 +9,7 @@ import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
+import { pluraliseItemName } from '../../lib/util/pluraliseItemName';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -96,9 +97,9 @@ export const craftCommand: OSBMahojiCommand = {
 		if (duration > maxTripLength) {
 			return `${user.minionName} can't go on trips longer than ${formatDuration(
 				maxTripLength
-			)}, try a lower quantity. The highest amount of ${craftable.name}s you can craft is ${Math.floor(
-				maxTripLength / timeToCraftSingleItem
-			)}.`;
+			)}, try a lower quantity. The highest amount of ${pluraliseItemName(
+				craftable.name
+			)} you can craft is ${Math.floor(maxTripLength / timeToCraftSingleItem)}.`;
 		}
 
 		const itemsNeeded = craftable.inputItems.clone().multiply(quantity);
