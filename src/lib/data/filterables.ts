@@ -1127,8 +1127,8 @@ export const baseFilters: Filterable[] = [
 		aliases: ['favourite alchs', 'favalchs'],
 		items: user => {
 			if (!user) return [];
-			
-			return user.user.favorite_alchables
+
+			return user.user.favorite_alchables;
 		}
 	}
 ];
