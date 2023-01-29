@@ -22,7 +22,7 @@ export const bsCommand: OSBMahojiCommand = {
 			description: 'The format to return your bank in.',
 			required: false,
 			choices: bankFormats.map(i => ({ name: i, value: i }))
-		},
+		}
 	],
 	run: async (
 		options: CommandRunOptions<{
