@@ -1,10 +1,12 @@
 import { FarmedCrop, User } from '@prisma/client';
+import { BaseMessageOptions, ButtonBuilder } from 'discord.js';
 
 import { Emoji } from '../constants';
 import { IPatchData, IPatchDataDetailed } from '../minions/farming/types';
 import Farming from '../skilling/skills/farming';
-import { dateFm } from '../util';
+import { dateFm, makeComponents } from '../util';
 import { stringMatches } from './cleanString';
+import { makeAutoFarmButton } from './globalInteractions';
 
 export const farmingPatchNames = [
 	'herb',
@@ -48,7 +50,7 @@ export function findPlant(lastPlanted: IPatchData['lastPlanted']) {
 	if (!plant) return null;
 	return plant;
 }
-export function userGrowingProgressStr(patchesDetailed: IPatchDataDetailed[]) {
+export function userGrowingProgressStr(patchesDetailed: IPatchDataDetailed[]): BaseMessageOptions {
 	let str = '';
 	for (const patch of patchesDetailed.filter(i => i.ready === true)) {
 		str += `${Emoji.Tick} **${patch.friendlyName}**: ${patch.lastQuantity} ${patch.lastPlanted} is ready to be harvested!\n`;
@@ -60,7 +62,17 @@ export function userGrowingProgressStr(patchesDetailed: IPatchDataDetailed[]) {
 	}
 	const notReady = patchesDetailed.filter(i => i.ready === null);
 	str += `${Emoji.RedX} **Nothing planted:** ${notReady.map(i => i.friendlyName).join(', ')}.`;
-	return str;
+
+	const buttons: ButtonBuilder[] = [];
+
+	if (patchesDetailed.filter(i => i.ready === true).length > 0) {
+		buttons.push(makeAutoFarmButton());
+	}
+
+	return {
+		content: str,
+		components: makeComponents(buttons)
+	};
 }
 
 export function parseFarmedCrop(crop: FarmedCrop) {
