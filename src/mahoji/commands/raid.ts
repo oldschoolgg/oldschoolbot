@@ -1,12 +1,6 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
-import {
-	mileStoneBaseDeathChances,
-	RaidLevel,
-	toaHelpCommand,
-	toaStartCommand,
-	toaStatsCommand
-} from '../../lib/simulation/toa';
+import { mileStoneBaseDeathChances, RaidLevel, toaHelpCommand, toaStartCommand } from '../../lib/simulation/toa';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
 import { coxCommand, coxStatsCommand } from '../lib/abstracted_commands/coxCommand';
@@ -129,13 +123,8 @@ export const raidCommand: OSBMahojiCommand = {
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
-					name: 'stats',
-					description: 'Check your TOA stats.'
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
 					name: 'help',
-					description: 'Shows helpful information about TOA.'
+					description: 'Shows helpful information and stats about TOA.'
 				}
 			]
 		}
@@ -150,8 +139,6 @@ export const raidCommand: OSBMahojiCommand = {
 		tob?: { start?: { hard_mode?: boolean; max_team_size?: number }; stats?: {}; check?: { hard_mode?: boolean } };
 		toa?: {
 			start?: { raid_level: RaidLevel; max_team_size?: number; solo?: boolean };
-			check?: {};
-			stats?: {};
 			help?: {};
 		};
 	}>) => {
@@ -181,9 +168,6 @@ export const raidCommand: OSBMahojiCommand = {
 			);
 		}
 
-		if (options.toa?.stats) {
-			return toaStatsCommand(user);
-		}
 		if (options.toa?.help) {
 			return toaHelpCommand(user);
 		}

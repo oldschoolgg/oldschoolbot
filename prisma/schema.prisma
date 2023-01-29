@@ -629,8 +629,9 @@ model UserStats {
   toa_cost Json @default("{}") @db.Json
   toa_loot Json @default("{}") @db.Json
 
-  total_toa_points     Int  @default(0)
-  toa_raid_levels_bank Json @default("{}") @db.Json
+  total_toa_points           Int  @default(0)
+  toa_raid_levels_bank       Json @default("{}") @db.Json
+  total_toa_duration_minutes Int  @default(0)
 
   @@map("user_stats")
 }

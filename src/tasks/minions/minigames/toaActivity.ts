@@ -1,5 +1,7 @@
-import { sumArr, uniqueArr } from 'e';
+import { bold } from 'discord.js';
+import { Time, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
+import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { drawChestLootImage } from '../../../lib/bankImage';
 import { Emoji, Events, toaPurpleItems } from '../../../lib/constants';
@@ -13,7 +15,7 @@ import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import resolveItems from '../../../lib/util/resolveItems';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { userStatsBankUpdate, userStatsUpdate } from '../../../mahoji/mahojiSettings';
+import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
 
 const purpleButNotAnnounced = resolveItems(['Dexterous prayer scroll', 'Arcane prayer scroll']);
 
@@ -97,15 +99,14 @@ export const toaTask: MinionTask = {
 			messages.push(...raidLoot.messages);
 		}
 		messages = uniqueArr(messages);
-		const totalPoints = sumArr(Array.from(raidResults.values()).map(i => i.points));
 		await Promise.all(allUsers.map(u => incrementMinigameScore(u.id, 'tombs_of_amascut', quantity)));
 
 		let resultMessage = isSolo
-			? `${leaderSoloUser}, your minion finished a Tombs of Amascut raid!
-Your KC is now ${await getMinigameScore(leaderSoloUser.id, 'tombs_of_amascut')}.`
-			: `<@${leader}> Your Raid${
-					quantity > 1 ? 's have' : ' has'
-			  } finished. The total amount of points your team got is ${totalPoints.toLocaleString()}.\n`;
+			? `${leaderSoloUser}, your minion finished a Tombs of Amascut raid! Your KC is now ${await getMinigameScore(
+					leaderSoloUser.id,
+					'tombs_of_amascut'
+			  )}.\n`
+			: `<@${leader}> Your Raid${quantity > 1 ? 's have' : ' has'} finished.\n`;
 
 		for (let [userID, userData] of raidResults.entries()) {
 			const { points, deaths, mUser: user } = userData;
@@ -130,7 +131,15 @@ Your KC is now ${await getMinigameScore(leaderSoloUser.id, 'tombs_of_amascut')}.
 				collectionLog: true
 			});
 
-			await userStatsBankUpdate(user.id, 'toa_raid_levels_bank', new Bank().add(raidLevel, quantity));
+			userStatsUpdate(user.id, u => {
+				return {
+					toa_raid_levels_bank: new Bank().add(u.toa_raid_levels_bank as ItemBank).add(raidLevel, quantity)
+						.bank,
+					total_toa_duration_minutes: {
+						increment: Math.floor(duration / Time.Minute)
+					}
+				};
+			});
 
 			const items = itemsAdded.items();
 
@@ -149,15 +158,19 @@ Your KC is now ${await getMinigameScore(leaderSoloUser.id, 'tombs_of_amascut')}.
 			const str = isPurple ? `${Emoji.Purple} ||${itemsAdded}||` : itemsAdded.toString();
 			const deathStr = deaths === 0 ? '' : new Array(deaths).fill(Emoji.Skull).join(' ');
 
-			resultMessage += `\n${deathStr} **${user}** received: ${str} (${points.toLocaleString()} pts, ${
-				Emoji.Skull
-			})`;
+			if (allUsers.length <= 3) {
+				resultMessage += `\n${deathStr} **${user}** ${bold(points.toLocaleString())} points`;
+			} else {
+				resultMessage += `\n${deathStr} **${user}** received: ${str} (${bold(points.toLocaleString())} points)`;
+			}
 
 			const xpPromises = calculateXPFromRaid({
 				realDuration: duration,
 				fakeDuration: data.fakeDuration,
 				user,
-				raidLevel
+				raidLevel,
+				teamSize: users.length,
+				points: raidResults.get(user.id)!.points
 			});
 			const xpStrings = await Promise.all(xpPromises);
 			resultMessage += ` ${xpStrings.join(', ')}`;
@@ -182,6 +195,27 @@ Your KC is now ${await getMinigameScore(leaderSoloUser.id, 'tombs_of_amascut')}.
 			}))
 		});
 
+		function makeCustomTexts(userID: string) {
+			const user = raidResults.get(userID)!;
+			return [
+				{
+					text: `${user.points.toLocaleString()} points`,
+					x: 149,
+					y: 150
+				},
+				{
+					text: `${user.deaths} deaths`,
+					x: 149,
+					y: 165
+				},
+				{
+					text: `Loot Value: ${Math.trunc(totalLoot.get(userID).value() / 1000)}K`,
+					x: 149,
+					y: 180
+				}
+			];
+		}
+
 		if (isSolo) {
 			return handleTripFinish(
 				allUsers[0],
@@ -192,7 +226,8 @@ Your KC is now ${await getMinigameScore(leaderSoloUser.id, 'tombs_of_amascut')}.
 						{
 							loot: totalLoot.totalLoot(),
 							user: allUsers[0],
-							previousCL: previousCLs[0]
+							previousCL: previousCLs[0],
+							customTexts: makeCustomTexts(leaderSoloUser.id)
 						}
 					],
 					type: 'Tombs of Amascut'
@@ -211,7 +246,8 @@ Your KC is now ${await getMinigameScore(leaderSoloUser.id, 'tombs_of_amascut')}.
 						entries: allUsers.map((u, index) => ({
 							loot: totalLoot.get(u.id),
 							user: u,
-							previousCL: previousCLs[index]
+							previousCL: previousCLs[index],
+							customTexts: makeCustomTexts(u.id)
 						})),
 						type: 'Tombs of Amascut'
 				  })

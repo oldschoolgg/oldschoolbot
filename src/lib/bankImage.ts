@@ -682,8 +682,13 @@ const chestLootTypes = [
 	}
 ] as const;
 
+interface CustomText {
+	x: number;
+	y: number;
+	text: string;
+}
 export async function drawChestLootImage(options: {
-	entries: { previousCL: Bank; user: MUser; loot: Bank }[];
+	entries: { previousCL: Bank; user: MUser; loot: Bank; customTexts: CustomText[] }[];
 	type: typeof chestLootTypes[number]['title'];
 }) {
 	const type = chestLootTypes.find(t => t.title === options.type);
@@ -693,7 +698,7 @@ export async function drawChestLootImage(options: {
 
 	let anyoneGotPurple = false;
 
-	for (const { previousCL, loot, user } of options.entries) {
+	for (const { previousCL, loot, user, customTexts } of options.entries) {
 		const canvas = new Canvas(type.width, type.height);
 		const ctx = canvas.getContext('2d');
 
@@ -723,6 +728,12 @@ export async function drawChestLootImage(options: {
 			undefined,
 			10
 		);
+
+		ctx.fillStyle = '#FFFF00';
+		ctx.font = '16px OSRSFontCompact';
+		for (const text of customTexts) {
+			fillTextXTimesInCtx(ctx, text.text, text.x, text.y);
+		}
 		canvases.push(canvas);
 	}
 

@@ -20,6 +20,7 @@ import { Bank, LootTable } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { mahojiParseNumber, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
+import { mentionCommand } from '../commandMention';
 import { Emoji } from '../constants';
 import { getSimilarItems } from '../data/similarItems';
 import { degradeItem } from '../degradeableItems';
@@ -32,7 +33,15 @@ import { SkillsEnum } from '../skilling/types';
 import { constructGearSetup, Gear } from '../structures/Gear';
 import { ItemBank, MakePartyOptions, Skills } from '../types';
 import { TOAOptions } from '../types/minions';
-import { assert, channelIsSendable, clamp, formatDuration, formatSkillRequirements, itemNameFromID } from '../util';
+import {
+	assert,
+	channelIsSendable,
+	clamp,
+	formatDuration,
+	formatSkillRequirements,
+	itemNameFromID,
+	randomVariation
+} from '../util';
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import getOSItem from '../util/getOSItem';
 import itemID from '../util/itemID';
@@ -40,6 +49,68 @@ import resolveItems from '../util/resolveItems';
 import { exponentialPercentScale, scaleNumber } from '../util/smallUtils';
 import { updateBankSetting } from '../util/updateBankSetting';
 import { TeamLoot } from './TeamLoot';
+
+const teamSizeScale: Record<number, number> = {
+	1: 1.0,
+	2: 1.9,
+	3: 2.8,
+	4: 3.4,
+	5: 4.0,
+	6: 4.6,
+	7: 5.2,
+	8: 5.8
+};
+const averageWTPLevel = { 0: 0, 1: 0, 2: 0, 3: 0 };
+
+function scaleHP(base: number, raidLevel: number, teamSize: keyof typeof teamSizeScale, pathLevel: number): number {
+	let pathMultiplier = 1.0;
+	if (pathLevel > 0) {
+		pathMultiplier = 1.03 + pathLevel * 0.05;
+	}
+	return Math.floor(base * (1 + raidLevel / 250) * teamSizeScale[teamSize] * pathMultiplier);
+}
+
+function estimatePoints(raidLevel: number, teamSize: number) {
+	const pointsTable = [
+		{ name: 'Akkha', hp: scaleHP(480, raidLevel, teamSize, averageWTPLevel[3]), mult: 1.0 },
+		{
+			name: "Akkha's Shadow",
+			hp: scaleHP(70, raidLevel, teamSize, averageWTPLevel[3]),
+			mult: 1.0,
+			count: 4
+		},
+		{ name: 'Baboons', hp: scaleHP(300, raidLevel, teamSize, 0), mult: 1.2, approx: true },
+		{ name: 'Ba-Ba', hp: scaleHP(380, raidLevel, teamSize, averageWTPLevel[0]), mult: 2.0 },
+		{ name: 'Zebak', hp: scaleHP(580, raidLevel, teamSize, averageWTPLevel[2]), mult: 1.5 },
+		{ name: 'Scarab Swarms', hp: 200, mult: 1.0, approx: true },
+		{ name: 'Scarabs', hp: 200, mult: 0.5, approx: true },
+		{
+			name: "Kephri's Shield",
+			hp: scaleHP(375, raidLevel, teamSize, averageWTPLevel[1]),
+			mult: 1.0,
+			approx: true
+		},
+		{ name: 'Kephri', hp: scaleHP(130, raidLevel, teamSize, averageWTPLevel[1]), mult: 1.0 },
+		{ name: 'P1 Obelisk', hp: scaleHP(260, raidLevel, teamSize, 0), mult: 1.5 },
+		{ name: 'P2 Warden', hp: scaleHP(140, raidLevel, teamSize, 0), mult: 2.0, count: 2 },
+		{ name: 'P3 Warden', hp: scaleHP(880, raidLevel, teamSize, 0), mult: 2.5 },
+		{ name: 'Misc. damage', hp: 80 * teamSize, mult: 1.0, approx: true },
+		{ name: 'Het - seal mining', hp: 130 + Math.floor(95.81 * (teamSize - 1)), mult: 2.5 },
+		{ name: 'Scabaras - puzzles', points: 300 * teamSize, approx: true },
+		{ name: 'Apmeken - traps', points: 450 * teamSize, approx: true },
+		{ name: 'Crondis - palm watering', points: 400 * teamSize },
+		{ name: 'MVP', points: 2700 * teamSize }
+	];
+	let totalPoints = 0;
+	for (const value of Object.values(pointsTable)) {
+		if (value.points) {
+			totalPoints += value.points;
+		} else {
+			totalPoints += Math.floor(value.hp! * value.mult! * (value.count ?? 1));
+		}
+	}
+	return totalPoints;
+}
 
 export const maxMageGear = constructGearSetup({
 	head: 'Ancestral hat',
@@ -145,22 +216,19 @@ const toaRequirements: {
 		name: 'Blowpipe',
 		doesMeet: ({ user }) => {
 			const blowpipeData = user.blowpipe;
-			if (
-				!user.owns('Toxic blowpipe') ||
-				!blowpipeData.scales ||
-				!blowpipeData.dartID ||
-				!blowpipeData.dartQuantity
-			) {
+			const cmdMention = mentionCommand('minion', 'blowpipe');
+			if (!user.owns('Toxic blowpipe')) {
 				return 'Needs Toxic blowpipe (with darts and scales equipped) in bank';
 			}
-			if (blowpipeData.dartQuantity < BP_DARTS_NEEDED) {
-				return `Needs ${BP_DARTS_NEEDED}x darts`;
+
+			if (!blowpipeData.dartID || !blowpipeData.dartQuantity || blowpipeData.dartQuantity < BP_DARTS_NEEDED) {
+				return `Needs ${BP_DARTS_NEEDED}x darts equipped in your blowpipe: ${cmdMention}`;
 			}
-			if (blowpipeData.scales < BP_SCALES_NEEDED) {
-				return `Needs ${BP_SCALES_NEEDED}x scales`;
+			if (!blowpipeData.scales || blowpipeData.scales < BP_SCALES_NEEDED) {
+				return `Needs ${BP_SCALES_NEEDED}x scales loaded in your blowpipe: ${cmdMention}`;
 			}
 			if (ALLOWED_DARTS.every(item => item.id !== blowpipeData.dartID)) {
-				return 'Darts are too weak';
+				return `Darts are too weak: ${cmdMention}`;
 			}
 			return true;
 		},
@@ -252,14 +320,20 @@ const toaRequirements: {
 				user.gear.melee.hasEquipped('Amulet of blood fury') &&
 				user.user.blood_fury_charges < BLOOD_FURY_CHARGES_PER_RAID
 			) {
-				return `You need atleast ${BLOOD_FURY_CHARGES_PER_RAID} Blood fury charges to use it, otherwise it has to be unequipped.`;
+				return `You need atleast ${BLOOD_FURY_CHARGES_PER_RAID} Blood fury charges to use it, otherwise it has to be unequipped: ${mentionCommand(
+					'minion',
+					'charge'
+				)}`;
 			}
 
 			if (
 				user.gear.mage.hasEquipped("Tumeken's shadow") &&
 				user.user.tum_shadow_charges < TUMEKEN_SHADOW_PER_RAID
 			) {
-				return `You need atleast ${TUMEKEN_SHADOW_PER_RAID} Tumeken's shadow charges to use it, otherwise it has to be unequipped.`;
+				return `You need atleast ${TUMEKEN_SHADOW_PER_RAID} Tumeken's shadow charges to use it, otherwise it has to be unequipped: ${mentionCommand(
+					'minion',
+					'charge'
+				)}`;
 			}
 
 			return true;
@@ -298,15 +372,27 @@ export function calculateXPFromRaid({
 	realDuration,
 	fakeDuration,
 	user,
-	raidLevel
+	raidLevel,
+	teamSize,
+	points
 }: {
 	raidLevel: number;
 	realDuration: number;
 	fakeDuration: number;
 	user: MUser;
+	teamSize: number;
+	points: number;
 }) {
 	const percentOfRaid = calcWhatPercent(realDuration, fakeDuration);
-	const totalMeleeXPPerRaid = 10_000 + increaseNumByPercent(10_000, calcWhatPercent(raidLevel, 600));
+	let totalMeleeXPPerRaid = 10_000 + increaseNumByPercent(10_000, calcWhatPercent(raidLevel, 600));
+
+	const possiblePoints = estimatePoints(raidLevel, teamSize) / teamSize;
+	const percentOfPossiblePoints = calcWhatPercent(points, possiblePoints);
+	console.log(
+		`${user.rawUsername} got ${points} points out of ${possiblePoints}, which is ${percentOfPossiblePoints}%`
+	);
+	totalMeleeXPPerRaid = calcPercentOfNum(percentOfPossiblePoints, totalMeleeXPPerRaid);
+
 	let meleeStyles = user.getAttackStyles();
 	const isTrainingMelee = meleeStyles.some(style =>
 		[SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence].includes(style)
@@ -314,11 +400,16 @@ export function calculateXPFromRaid({
 	if (!isTrainingMelee) meleeStyles = [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence];
 	const xpPerStyle = Math.floor(totalMeleeXPPerRaid / meleeStyles.length);
 	const promises: Promise<string>[] = [];
+
+	let totalCombatXP = 0;
+
 	for (const style of meleeStyles) {
+		let amount = calcPercentOfNum(percentOfRaid, xpPerStyle);
+		totalCombatXP += amount;
 		promises.push(
 			user.addXP({
 				skillName: style,
-				amount: calcPercentOfNum(percentOfRaid, xpPerStyle),
+				amount,
 				duration: realDuration,
 				source: XpGainSource.TombsOfAmascut,
 				minimal: true
@@ -326,22 +417,37 @@ export function calculateXPFromRaid({
 		);
 	}
 
+	const mageXP = calcPercentOfNum(percentOfRaid, totalMeleeXPPerRaid * 1.35);
+	totalCombatXP += mageXP;
+
 	promises.push(
 		user.addXP({
 			skillName: SkillsEnum.Magic,
-			amount: calcPercentOfNum(percentOfRaid, xpPerStyle * 1.35),
+			amount: mageXP,
 			duration: realDuration,
 			source: XpGainSource.TombsOfAmascut,
 			minimal: true
 		})
 	);
+
+	totalCombatXP += mageXP;
 	promises.push(
 		user.addXP({
 			skillName: SkillsEnum.Ranged,
-			amount: calcPercentOfNum(percentOfRaid, xpPerStyle * 1.35),
+			amount: mageXP,
 			duration: realDuration,
 			source: XpGainSource.TombsOfAmascut,
 			minimal: true
+		})
+	);
+
+	promises.push(
+		user.addXP({
+			skillName: SkillsEnum.Hitpoints,
+			amount: Math.floor(totalCombatXP / 4),
+			duration: realDuration,
+			minimal: true,
+			source: XpGainSource.TombsOfAmascut
 		})
 	);
 	return promises;
@@ -677,13 +783,12 @@ function calcDeathChance(totalAttempts: number, raidLevel: RaidLevel, tobAndCoxK
 	if (totalAttempts > 100) {
 		deathChance = reduceNumByPercent(deathChance, scaleNumber(totalAttempts, 100, 250, 0, 50));
 	}
-	console.log({ deathChance, totalAttempts, tobAndCoxKC });
 	if (minChance) {
 		deathChance = clamp(deathChance, minChance, 99);
 	}
 	deathChance = clamp(deathChance, 5, 99);
 
-	// deathChance = Math.round(randomVariation(deathChance, 0.5));
+	deathChance = Math.round(randomVariation(deathChance, 0.5));
 
 	return deathChance;
 }
@@ -734,44 +839,36 @@ function calculateTotalEffectiveness({
 	return exponentialPercentScale(sumArr(percents) / percents.length);
 }
 
-function tightenPoints(min: number, max: number) {
-	let results = [];
-
-	for (let i = 0; i < 3; i++) {
-		results.push(randInt(min, max));
-	}
-
-	return Math.floor(sumArr(results) / results.length);
-}
-
 function calculatePointsAndDeaths(
 	effectiveness: number,
 	totalAttempts: number,
 	raidLevel: RaidLevel,
-	coxAndTobKC: number
+	coxAndTobKC: number,
+	teamSize: number
 ) {
-	let points = 5000;
-
 	let deaths: number[] = [];
 	const messages: string[] = [];
 	let deathChance = calcDeathChance(totalAttempts, raidLevel, coxAndTobKC);
 	const harshEffectivenessScale = exponentialPercentScale(effectiveness, 0.05);
-	console.log(`BEFORE[${effectiveness}%] AFTER[${harshEffectivenessScale}%]`);
+
+	let points = estimatePoints(raidLevel, teamSize) / teamSize;
 
 	for (const room of TOARooms) {
 		if (percentChance(deathChance / TOARooms.length)) {
 			deaths.push(room.id);
 			points = reduceNumByPercent(points, 20);
-		} else {
-			let ptsForThisRoom = tightenPoints(1, calcPercentOfNum(harshEffectivenessScale, 9000));
-			points += ptsForThisRoom;
 		}
 	}
+
+	const tenPercent = calcPercentOfNum(10, points);
+	points -= tenPercent;
+	points += calcPercentOfNum(harshEffectivenessScale, tenPercent);
 
 	messages.push(
 		`In each of the ${TOARooms.length} rooms, you had a ${deathChance / TOARooms.length} chance of dying`
 	);
 
+	points = Math.floor(points);
 	points = clamp(points, 1, 64_000);
 
 	return {
@@ -854,12 +951,6 @@ export function calculateUserGearPercents(gear: UserFullGearSetup, raidLevel: nu
 	};
 }
 
-// 450rl+ with Sun Keris = 10 Super Restores, no brews
-// 50x Dragon arrows, scaling to more as weaker used.
-// 40x Dragon darts, same as above with arrows.
-// 200x Sang charges.
-// 150x Shadow charges.
-// 100x Blood fury charges.
 async function calcTOAInput({
 	user,
 	kcOverride,
@@ -1102,7 +1193,7 @@ export async function toaStartCommand(
 					user: u
 				});
 			}
-			if (u.gear.melee.hasEquipped("Tumeken's shadow")) {
+			if (u.gear.mage.hasEquipped("Tumeken's shadow")) {
 				await degradeItem({
 					item: getOSItem("Tumeken's shadow"),
 					chargesToDegrade: TUMEKEN_SHADOW_PER_RAID,
@@ -1239,7 +1330,8 @@ export async function createTOATeam({
 			effectiveness,
 			totalAttempts,
 			raidLevel,
-			minigameScores.raids + minigameScores.tob
+			minigameScores.raids + minigameScores.tob,
+			team.length
 		);
 		messages.push(...deathMessages);
 		arr.push({
@@ -1353,7 +1445,7 @@ export async function createTOATeam({
 		duration += (5 - team.length) * (Time.Minute * 1.3);
 	}
 
-	// duration = Math.floor(randomVariation(duration, 1));
+	duration = Math.floor(randomVariation(duration, 1));
 
 	let wipedRoom: number | null = null;
 	let deathDuration: number | null = 0;
@@ -1401,35 +1493,7 @@ export async function toaCheckCommand(user: MUser) {
 		return `🔴 You aren't able to join a Tombs of Amascut raid, address these issues first: ${result[1]}`;
 	}
 
-	return '✅ You are ready to do the Tombs of Amascut!';
-}
-
-export async function toaStatsCommand(user: MUser) {
-	const minigameScore = await getMinigameScore(user.id, 'tombs_of_amascut');
-	const stats = await user.fetchStats();
-
-	let totalUniques = 0;
-	for (const item of TOAUniqueTable.allItems) {
-		totalUniques += user.cl.amount(item);
-	}
-
-	const gear = calculateUserGearPercents(user.gear, 300);
-
-	return `**Tombs of Amascut**
-**Attempts:** ${stats.toa_attempts}
-**KC:** ${minigameScore} KC
-**Total Uniques:** ${totalUniques} ${
-		totalUniques > 0
-			? `(1 unique per ${Math.floor(
-					stats.total_toa_points / totalUniques
-			  ).toLocaleString()} pts, one unique every ${Math.floor(minigameScore / totalUniques)} raids)`
-			: ''
-	}
-**Melee:** ${gear.melee.toFixed(1)}%
-**Range:** ${gear.range.toFixed(1)}%
-**Mage:** ${gear.mage.toFixed(1)}%
-**Total Gear Score:** ${Emoji.Gear} ${gear.total.toFixed(1)}%
-`;
+	return `✅ You are ready to do the Tombs of Amascut! Start a raid: ${mentionCommand('raid', 'toa')}`;
 }
 
 function calculateBoostString(user: MUser) {
@@ -1485,13 +1549,18 @@ export async function getToaKCs(user: MUser | UserStats) {
 		}
 		entryKC += qty;
 	}
-	return { entryKC, normalKC, expertKC };
+	return { entryKC, normalKC, expertKC, totalKC: entryKC + normalKC + expertKC };
 }
 
 export async function toaHelpCommand(user: MUser) {
 	const gearStats = calculateUserGearPercents(user.gear, 300);
 	const userStats = await user.fetchStats();
-	const { entryKC, normalKC, expertKC } = await getToaKCs(userStats);
+	const { entryKC, normalKC, expertKC, totalKC } = await getToaKCs(userStats);
+
+	let totalUniques = 0;
+	for (const item of TOAUniqueTable.allItems) {
+		totalUniques += user.cl.amount(item);
+	}
 
 	let str = `**Tombs of Amascut**
 
@@ -1499,6 +1568,17 @@ export async function toaHelpCommand(user: MUser) {
 **Entry Mode:** ${entryKC} KC
 **Normal Mode:** ${normalKC} KC
 **Expert Mode:** ${expertKC} KC
+**Total Uniques:** ${totalUniques} ${
+		totalUniques > 0
+			? `(1 unique per ${Math.floor(
+					userStats.total_toa_points / totalUniques
+			  ).toLocaleString()} pts, one unique every ${Math.floor(
+					totalKC / totalUniques
+			  )} raids, one unique every ${formatDuration(
+					(userStats.total_toa_duration_minutes * 1000) / totalUniques
+			  )} raids)`
+			: ''
+	}
 
 **Requirements**
 ${toaRequirements
