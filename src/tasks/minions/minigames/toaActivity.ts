@@ -137,7 +137,8 @@ export const toaTask: MinionTask = {
 						.bank,
 					total_toa_duration_minutes: {
 						increment: Math.floor(duration / Time.Minute)
-					}
+					},
+					toa_loot: new Bank(u.toa_loot as ItemBank).add(totalLoot.get(userID)).bank
 				};
 			});
 

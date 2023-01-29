@@ -988,8 +988,8 @@ ${bank
 	{
 		name: 'Tombs of Amascut (TOA) cost',
 		perkTierNeeded: PerkTier.Four,
-		run: (user: MUser) => {
-			return makeResponseForBank(new Bank(user.user.tob_cost as ItemBank), 'Your TOA Cost');
+		run: (_, userStats) => {
+			return makeResponseForBank(new Bank(userStats.toa_cost as ItemBank), 'Your TOA Cost');
 		}
 	},
 	{
