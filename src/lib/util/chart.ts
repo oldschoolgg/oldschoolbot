@@ -77,7 +77,7 @@ export async function barChart(title: string, format: (value: any) => string, va
 	const options: ChartConfiguration = {
 		type: 'bar',
 		data: {
-			labels: values.map(i => i[0]),
+			labels: values.map(i => format(i[0])),
 			datasets: [
 				{
 					data: values.map(i => i[1]),

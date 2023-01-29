@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import { Events } from '../../lib/constants';
 import { darkAltarRunes } from '../../lib/minions/functions/darkAltarCommand';
+import Runecraft from '../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { DarkAltarOptions } from '../../lib/types/minions';
 import { skillingPetDropRate } from '../../lib/util';
@@ -35,8 +36,30 @@ export const darkAltarTask: MinionTask = {
 		]);
 
 		let runeQuantity = quantity;
+		let bonusQuantity = 0;
 		if (hasElite) {
 			runeQuantity = Math.floor(increaseNumByPercent(runeQuantity, 10));
+		}
+
+		// If they have the entire Raiments of the Eye outfit, give an extra 20% quantity bonus (NO bonus XP)
+		if (
+			user.gear.skilling.hasEquipped(
+				Object.keys(Runecraft.raimentsOfTheEyeItems).map(i => parseInt(i)),
+				true
+			)
+		) {
+			const amountToAdd = Math.floor(runeQuantity * (60 / 100));
+			runeQuantity += amountToAdd;
+			bonusQuantity += amountToAdd;
+		} else {
+			// For each Raiments of the Eye item, check if they have it, give its' quantity boost if so (NO bonus XP).
+			for (const [itemID, bonus] of Object.entries(Runecraft.raimentsOfTheEyeItems)) {
+				if (user.gear.skilling.hasEquipped([parseInt(itemID)], false)) {
+					const amountToAdd = Math.floor(runeQuantity * (bonus / 100));
+					bonusQuantity += amountToAdd;
+				}
+			}
+			runeQuantity += bonusQuantity;
 		}
 
 		let loot = new Bank().add(runeData.item.id, runeQuantity);
@@ -49,11 +72,15 @@ export const darkAltarTask: MinionTask = {
 
 		let str = `${user}, ${user.minionName} finished runecrafting at the Dark altar, you received ${loot}. ${xpRes1} ${xpRes2} ${xpRes3}`;
 
+		if (bonusQuantity > 0) {
+			str += ` **Bonus Quantity:** ${bonusQuantity.toLocaleString()}`;
+		}
+
 		if (loot.amount('Rift guardian') > 0) {
 			str += "\n\n**You have a funny feeling you're being followed...**";
 			globalClient.emit(
 				Events.ServerNotification,
-				`**${user.usernameOrMention}'s** minion, ${
+				`**${user.badgedUsername}'s** minion, ${
 					user.minionName
 				}, just received a Rift guardian while crafting ${runeData.item.name}s at level ${user.skillLevel(
 					SkillsEnum.Runecraft

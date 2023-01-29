@@ -17,8 +17,6 @@ import { formatDuration } from '../../lib/util';
 import { mahojiGuildSettingsFetch, untrustedGuildSettingsCache } from '../mahojiSettings';
 import { Cooldowns } from './Cooldowns';
 
-export type CommandArgs = Record<string, unknown>;
-
 export interface AbstractCommandAttributes {
 	examples?: string[];
 	categoryFlags?: CategoryFlag[];
@@ -151,9 +149,7 @@ const inhibitors: Inhibitor[] = [
 			if (!guild || guild.id !== SupportServer) return false;
 			if (channel.id !== Channel.General) return false;
 
-			const { perkTier } = user;
-
-			if (member && perkTier >= PerkTier.Two) {
+			if (member && user.perkTier() >= PerkTier.Two) {
 				return false;
 			}
 

@@ -158,7 +158,7 @@ export async function dailyCommand(
 
 	await buttons.render({
 		messageOptions: {
-			content: `**${Emoji.Diango} Diango asks ${user.usernameOrMention}...** ${question.question}`
+			content: `**${Emoji.Diango} Diango asks ${user.badgedUsername}...** ${question.question}`
 		},
 		isBusy: false
 	});

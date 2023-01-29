@@ -2,7 +2,7 @@ import { Bank } from 'oldschooljs';
 
 import { TokkulShopOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { updateBankSetting } from '../../mahoji/mahojiSettings';
+import { updateBankSetting } from '../../lib/util/updateBankSetting';
 
 export const tokkulShopTask: MinionTask = {
 	type: 'TokkulShop',

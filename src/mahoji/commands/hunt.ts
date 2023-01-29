@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 
 import { HERBIBOAR_ID, RAZOR_KEBBIT_ID } from '../../lib/constants';
 import { hasWildyHuntGearEquipped } from '../../lib/gear/functions/hasWildyHuntGearEquipped';
-import { trackLoot } from '../../lib/settings/prisma';
+import { trackLoot } from '../../lib/lootTrack';
 import creatures from '../../lib/skilling/skills/hunter/creatures';
 import Hunter from '../../lib/skilling/skills/hunter/hunter';
 import { HunterTechniqueEnum, SkillsEnum } from '../../lib/skilling/types';
@@ -14,8 +14,9 @@ import { formatDuration, itemID } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
+import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { OSBMahojiCommand } from '../lib/util';
-import { updateBankSetting, userHasGracefulEquipped } from '../mahojiSettings';
+import { userHasGracefulEquipped } from '../mahojiSettings';
 
 export const huntCommand: OSBMahojiCommand = {
 	name: 'hunt',
@@ -226,9 +227,15 @@ export const huntCommand: OSBMahojiCommand = {
 
 		await trackLoot({
 			id: creature.name,
-			cost: removeBank,
+			totalCost: removeBank,
 			type: 'Skilling',
-			changeType: 'cost'
+			changeType: 'cost',
+			users: [
+				{
+					id: user.id,
+					cost: removeBank
+				}
+			]
 		});
 
 		await addSubTaskToActivityTask<HunterActivityTaskOptions>({

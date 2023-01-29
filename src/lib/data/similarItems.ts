@@ -56,6 +56,8 @@ const bowfaCorruptSimilar = resolveItems([
 ]);
 
 const source: [string, (string | number)[]][] = [
+	['Rune axe', ['Gilded axe']],
+	['Rune pickaxe', ['Gilded pickaxe']],
 	['Dragon full helm', ['Dragon full helm (g)']],
 	['Dragon chainbody', ['Dragon chainbody (g)']],
 	['Dragon platebody', ['Dragon platebody (g)']],
@@ -296,7 +298,13 @@ const source: [string, (string | number)[]][] = [
 	['Prospector jacket', ['Golden prospector jacket', 'Varrock armour 4']],
 	['Prospector legs', ['Golden prospector legs']],
 	['Prospector boots', ['Golden prospector boots']],
-	['Prospector helmet', ['Golden prospector helmet']]
+	['Prospector helmet', ['Golden prospector helmet']],
+	['Hat of the eye', ['Hat of the eye (red)', 'Hat of the eye (green)', 'Hat of the eye (blue)']],
+	['Robe top of the eye', ['Robe top of the eye (red)', 'Robe top of the eye (green)', 'Robe top of the eye (blue)']],
+	[
+		'Robe bottoms of the eye',
+		['Robe bottoms of the eye (red)', 'Robe bottoms of the eye (green)', 'Robe bottoms of the eye (blue)']
+	]
 ];
 
 export const similarItems: Map<number, number[]> = new Map(

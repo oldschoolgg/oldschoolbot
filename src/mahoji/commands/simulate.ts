@@ -7,12 +7,11 @@ import { toKMB } from 'oldschooljs/dist/util';
 
 import { PerkTier } from '../../lib/constants';
 import pets from '../../lib/data/pets';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { OSBMahojiCommand } from '../lib/util';
 
 export function determineCoxLimit(user: MUser) {
-	const perkTier = getUsersPerkTier(user);
+	const perkTier = user.perkTier();
 
 	if (perkTier >= PerkTier.Three) {
 		return 2000;

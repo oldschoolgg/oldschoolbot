@@ -5,19 +5,19 @@ import { schedule } from 'node-cron';
 import fetch from 'node-fetch';
 
 import { production } from '../config';
-import { untrustedGuildSettingsCache } from '../mahoji/mahojiSettings';
 import { analyticsTick } from './analytics';
 import { prisma } from './settings/prisma';
-import { OldSchoolBotClient } from './structures/OldSchoolBotClient';
-import { cacheCleanup } from './util';
-import { logError } from './util/logError';
+import { cacheCleanup } from './util/cachedUserIDs';
 import { sendToChannelID } from './util/webhook';
 
-export function initCrons(client: OldSchoolBotClient) {
+export function initCrons() {
 	/**
 	 * Capture economy item data
 	 */
 	schedule('0 */6 * * *', async () => {
+		debugLog('Economy Item Insert', {
+			type: 'INSERT_ECONOMY_ITEM'
+		});
 		await prisma.$queryRawUnsafe(`INSERT INTO economy_item
 SELECT item_id::integer, SUM(qty)::bigint FROM 
 (
@@ -27,6 +27,7 @@ AS DATA
 GROUP BY item_id;`);
 	});
 
+	let REDDIT_POSTS_IS_DISABLED = true;
 	/**
 	 * JMod reddit posts/comments
 	 */
@@ -34,6 +35,7 @@ GROUP BY item_id;`);
 	const alreadySentCache = new Set();
 	schedule(`*/${redditGranularity} * * * *`, async () => {
 		if (!production) return;
+		if (REDDIT_POSTS_IS_DISABLED) return;
 		async function sendReddit({ post }: { post: any; type: 'comment' | 'submission' }) {
 			const author = (post.author as string) ?? 'Unknown Author';
 			const embed = new EmbedBuilder().setAuthor({ name: author }).setColor(resolveColor('#ff9500'));
@@ -56,23 +58,22 @@ GROUP BY item_id;`);
 					}
 				},
 				select: {
-					id: true
+					id: true,
+					jmodComments: true
 				}
 			});
 
-			for (const { id } of guildsToSendToo) {
-				const guild = client.guilds.cache.get(id);
+			for (const { id, jmodComments } of guildsToSendToo) {
+				const guild = globalClient.guilds.cache.get(id);
 				if (!guild) continue;
-				const settings = untrustedGuildSettingsCache.get(guild.id);
-				if (!settings?.jmodComments) continue;
 
-				const channel = guild.channels.cache.get(settings.jmodComments);
+				const channel = guild.channels.cache.get(jmodComments!);
 
 				if (
 					channel &&
 					channel instanceof TextChannel &&
-					channel.permissionsFor(client.user!)?.has(PermissionsBitField.Flags.EmbedLinks) &&
-					channel.permissionsFor(client.user!)?.has(PermissionsBitField.Flags.SendMessages)
+					channel.permissionsFor(globalClient.user!)?.has(PermissionsBitField.Flags.EmbedLinks) &&
+					channel.permissionsFor(globalClient.user!)?.has(PermissionsBitField.Flags.SendMessages)
 				) {
 					sendToChannelID(channel.id, { content: `<${url}>`, embed });
 				}
@@ -87,13 +88,13 @@ GROUP BY item_id;`);
 				const _result = await fetch(url).then(res => res.json());
 				if (!_result || !_result.data || !Array.isArray(_result.data)) continue;
 				for (const entity of _result.data) {
+					if (entity.author_flair_text === null) continue;
+					if (entity.author_flair_text !== ':jagexmod:') continue;
 					if (alreadySentCache.has(entity.id)) continue;
 					sendReddit({ post: entity, type });
 					alreadySentCache.add(entity.id);
 				}
-			} catch (err) {
-				logError(err);
-			}
+			} catch {}
 		}
 	});
 
@@ -110,7 +111,7 @@ GROUP BY item_id;`);
 	/**
 	 * Delete all voice channels
 	 */
-	schedule('0 */1 * * *', async () => {
+	schedule('0 0 */3 * *', async () => {
 		cacheCleanup();
 	});
 }

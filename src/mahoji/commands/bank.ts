@@ -32,7 +32,7 @@ async function getBankPage({
 	mahojiFlags: BankFlag[];
 	flags?: Record<string, number | string>;
 }) {
-	const msg = {
+	return {
 		files: [
 			(
 				await makeBankImage({
@@ -48,7 +48,6 @@ async function getBankPage({
 			).file
 		]
 	};
-	return msg;
 }
 
 export const bankCommand: OSBMahojiCommand = {
@@ -120,8 +119,8 @@ export const bankCommand: OSBMahojiCommand = {
 		flag_extra?: BankFlag;
 	}>) => {
 		if (interaction) await deferInteraction(interaction);
-		const klasaUser = await mUserFetch(user.id);
-		const baseBank = klasaUser.bankWithGP;
+		const mUser = await mUserFetch(user.id);
+		const baseBank = mUser.bankWithGP;
 		const mahojiFlags: BankFlag[] = [];
 
 		if (options.flag) mahojiFlags.push(options.flag);
@@ -133,7 +132,7 @@ export const bankCommand: OSBMahojiCommand = {
 		if (!options.page) options.page = 1;
 
 		if (baseBank.length === 0) {
-			return `You have no items or GP yet ${Emoji.Sad} You can get some GP by using the +daily command, and you can get items by sending your minion to do tasks.`;
+			return `You have no items or GP yet ${Emoji.Sad} You can get some GP by using the \`/minion daily\` command, and you can get items by sending your minion to do tasks.`;
 		}
 
 		const bank = parseBank({
@@ -143,7 +142,7 @@ export const bankCommand: OSBMahojiCommand = {
 				filter: options.filter
 			},
 			inputStr: options.item ?? options.items,
-			user: klasaUser,
+			user: mUser,
 			filters: options.filter ? [options.filter] : []
 		});
 
@@ -172,9 +171,7 @@ export const bankCommand: OSBMahojiCommand = {
 			const pages = [];
 			for (const page of chunk(textBank, bankItemsPerPage)) {
 				pages.push({
-					embeds: [
-						new Embed().setTitle(`${klasaUser.usernameOrMention}'s Bank`).setDescription(page.join('\n'))
-					]
+					embeds: [new Embed().setTitle(`${mUser.usernameOrMention}'s Bank`).setDescription(page.join('\n'))]
 				});
 			}
 			const channel = globalClient.channels.cache.get(channelID.toString());
@@ -197,7 +194,7 @@ export const bankCommand: OSBMahojiCommand = {
 		if (options.sort) flags.sort = options.sort;
 
 		const params: Parameters<typeof getBankPage>['0'] = {
-			user: klasaUser,
+			user: mUser,
 			bank,
 			flags,
 			mahojiFlags,
@@ -207,17 +204,19 @@ export const bankCommand: OSBMahojiCommand = {
 		const result = await getBankPage(params);
 
 		const channel = globalClient.channels.cache.get(channelID);
+		const bankSize = Math.ceil(bank.length / 56);
+
 		if (
 			!channel ||
 			!channelIsSendable(channel) ||
-			options.flag === 'show_all' ||
-			options.flag_extra === 'wide' ||
-			klasaUser.perkTier < PerkTier.Four
+			mahojiFlags.includes('show_all') ||
+			mahojiFlags.includes('wide') ||
+			mUser.perkTier() < PerkTier.Two ||
+			bankSize === 1
 		) {
 			return result;
 		}
 
-		const bankSize = Math.ceil(bank.length / 56);
 		const m = new PaginatedMessage({
 			pages: {
 				numPages: bankSize,

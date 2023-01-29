@@ -1,8 +1,8 @@
 import { escapeMarkdown } from 'discord.js';
+import { convertXPtoLVL } from 'oldschooljs/dist/util/util';
 
 import { Emoji } from '../constants';
 import { SkillsEnum } from '../skilling/types';
-import { convertXPtoLVL } from '../util';
 import resolveItems from './resolveItems';
 
 export function skillLevel(user: MUser, skill: SkillsEnum) {
@@ -78,5 +78,7 @@ export function minionName(user: MUser) {
 	const prefix = isIronman ? Emoji.Ironman : '';
 	icon ??= Emoji.Minion;
 
-	return name ? `${prefix} ${icon} **${escapeMarkdown(name)}**` : `${prefix} ${icon} Your minion`;
+	let strPrefix = prefix ? `${prefix} ` : '';
+
+	return name ? `${strPrefix}${icon} **${escapeMarkdown(name)}**` : `${strPrefix}${icon} Your minion`;
 }

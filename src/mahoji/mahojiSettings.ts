@@ -1,4 +1,4 @@
-import type { ClientStorage, Guild, Prisma, User, UserStats } from '@prisma/client';
+import type { Guild, Prisma, User, UserStats } from '@prisma/client';
 import {
 	ActionRowBuilder,
 	ButtonBuilder,
@@ -13,22 +13,15 @@ import {
 import { noOp, objectEntries, round, Time } from 'e';
 import LRUCache from 'lru-cache';
 import { Bank } from 'oldschooljs';
-import Monster from 'oldschooljs/dist/structures/Monster';
-import PromiseQueue from 'p-queue';
 
 import { CLIENT_ID } from '../config';
-import { deduplicateClueScrolls } from '../lib/clues/clueUtils';
 import { SILENT_ERROR } from '../lib/constants';
 import { evalMathExpression } from '../lib/expressionParser';
-import { hasGracefulEquipped, readableStatName } from '../lib/gear';
-import { effectiveMonsters } from '../lib/minions/data/killableMonsters';
 import { KillableMonster } from '../lib/minions/types';
-import { MUserClass } from '../lib/MUser';
-import { getMinigameScore, Minigames } from '../lib/settings/minigames';
+import { mahojiUserSettingsUpdate } from '../lib/MUser';
 import { prisma } from '../lib/settings/prisma';
-import creatures from '../lib/skilling/skills/hunter/creatures';
 import { Rune } from '../lib/skilling/skills/runecraft';
-import { filterLootReplace } from '../lib/slayer/slayerUtil';
+import { hasGracefulEquipped, readableStatName } from '../lib/structures/Gear';
 import type { ItemBank } from '../lib/types';
 import {
 	anglerBoosts,
@@ -36,14 +29,10 @@ import {
 	formatItemReqs,
 	hasSkillReqs,
 	itemNameFromID,
-	sanitizeBank,
-	stringMatches,
 	validateItemBankAndThrow
 } from '../lib/util';
 import { deferInteraction, interactionReply } from '../lib/util/interactionReply';
 import resolveItems from '../lib/util/resolveItems';
-import { bingoIsActive, determineBingoProgress, onFinishTile } from './lib/bingo';
-import { mahojiUserSettingsUpdate } from './settingsUpdate';
 
 export function mahojiParseNumber({
 	input,
@@ -184,7 +173,7 @@ export async function mahojiUsersSettingsFetch(user: bigint | string, select?: P
  *
  */
 
-export const untrustedGuildSettingsCache = new LRUCache<string, Guild>({ max: 1000 });
+export const untrustedGuildSettingsCache = new LRUCache<string, Guild>({ max: 5000 });
 
 export async function mahojiGuildSettingsFetch(guild: string | DJSGuild) {
 	const id = typeof guild === 'string' ? guild : guild.id;
@@ -220,26 +209,6 @@ export function patronMsg(tierNeeded: number) {
 	} Patron to use this command. You can become a patron to support the bot here: <https://www.patreon.com/oldschoolbot>`;
 }
 
-// Is not typesafe, returns only what is selected, but will say it contains everything.
-export async function mahojiClientSettingsFetch(select?: Prisma.ClientStorageSelect) {
-	const clientSettings = await prisma.clientStorage.findFirst({
-		where: {
-			id: CLIENT_ID
-		},
-		select
-	});
-	return clientSettings as ClientStorage;
-}
-
-export async function mahojiClientSettingsUpdate(data: Prisma.ClientStorageUpdateInput) {
-	await prisma.clientStorage.update({
-		where: {
-			id: CLIENT_ID
-		},
-		data
-	});
-}
-
 export function getMahojiBank(user: User) {
 	return new Bank(user.bank as ItemBank);
 }
@@ -263,151 +232,19 @@ export async function userStatsUpdate(userID: string, data: (u: UserStats) => Pr
 	});
 }
 
-type UserStatsBankKey = 'puropuro_implings_bank' | 'passive_implings_bank' | 'create_cost_bank' | 'create_loot_bank';
-export async function userStatsBankUpdate(userID: string, key: UserStatsBankKey, bank: Bank) {
+export async function userStatsBankUpdate(userID: string, key: keyof UserStats, bank: Bank) {
 	await userStatsUpdate(userID, u => ({
 		[key]: bank.clone().add(u[key] as ItemBank).bank
 	}));
 }
 
-export const userQueues: Map<string, PromiseQueue> = new Map();
-export function getUserUpdateQueue(userID: string) {
-	let currentQueue = userQueues.get(userID);
-	if (!currentQueue) {
-		let queue = new PromiseQueue({ concurrency: 1 });
-		userQueues.set(userID, queue);
-		return queue;
-	}
-	return currentQueue;
-}
-
-async function userQueueFn<T>(userID: string, fn: () => Promise<T>) {
-	const queue = getUserUpdateQueue(userID);
-	return queue.add(() => fn());
-}
-
-interface TransactItemsArgs {
-	userID: string;
-	itemsToAdd?: Bank;
-	itemsToRemove?: Bank;
-	collectionLog?: boolean;
-	filterLoot?: boolean;
-	dontAddToTempCL?: boolean;
-}
-
-declare global {
-	const transactItems: typeof transactItemsFromBank;
-}
-declare global {
-	namespace NodeJS {
-		interface Global {
-			transactItems: typeof transactItemsFromBank;
+export async function multipleUserStatsBankUpdate(userID: string, updates: Partial<Record<keyof UserStats, Bank>>) {
+	await userStatsUpdate(userID, u => {
+		let updateObj: Prisma.UserStatsUpdateInput = {};
+		for (const [key, bank] of objectEntries(updates)) {
+			updateObj[key] = bank!.clone().add(u[key] as ItemBank).bank;
 		}
-	}
-}
-global.transactItems = transactItemsFromBank;
-export async function transactItemsFromBank({
-	userID,
-	collectionLog = false,
-	filterLoot = true,
-	dontAddToTempCL = false,
-	...options
-}: TransactItemsArgs) {
-	let itemsToAdd = options.itemsToAdd ? options.itemsToAdd.clone() : undefined;
-	let itemsToRemove = options.itemsToRemove ? options.itemsToRemove.clone() : undefined;
-	return userQueueFn(userID, async () => {
-		const settings = await mUserFetch(userID);
-		const currentBank = new Bank().add(settings.user.bank as ItemBank);
-		const previousCL = new Bank().add(settings.user.collectionLogBank as ItemBank);
-		const previousTempCL = new Bank().add(settings.user.temp_cl as ItemBank);
-
-		let clUpdates: Prisma.UserUpdateArgs['data'] = {};
-		if (itemsToAdd) {
-			itemsToAdd = deduplicateClueScrolls({
-				loot: itemsToAdd.clone(),
-				currentBank: currentBank.clone().remove(itemsToRemove ?? {})
-			});
-			const { bankLoot, clLoot } = filterLoot
-				? filterLootReplace(settings.allItemsOwned(), itemsToAdd)
-				: { bankLoot: itemsToAdd, clLoot: itemsToAdd };
-			itemsToAdd = bankLoot;
-
-			clUpdates = collectionLog ? settings.calculateAddItemsToCLUpdates({ items: clLoot, dontAddToTempCL }) : {};
-		}
-
-		let gpUpdate: { increment: number } | undefined = undefined;
-		if (itemsToAdd) {
-			const coinsInLoot = itemsToAdd.amount('Coins');
-			if (coinsInLoot > 0) {
-				gpUpdate = {
-					increment: coinsInLoot
-				};
-				itemsToAdd.remove('Coins', itemsToAdd.amount('Coins'));
-			}
-		}
-
-		const newBank = new Bank().add(currentBank);
-		if (itemsToAdd) newBank.add(itemsToAdd);
-
-		sanitizeBank(newBank);
-
-		if (itemsToRemove) {
-			if (itemsToRemove.has('Coins')) {
-				if (!gpUpdate) {
-					gpUpdate = {
-						increment: 0 - itemsToRemove.amount('Coins')
-					};
-				} else {
-					gpUpdate.increment -= itemsToRemove.amount('Coins');
-				}
-				itemsToRemove.remove('Coins', itemsToRemove.amount('Coins'));
-			}
-			if (!newBank.has(itemsToRemove)) {
-				throw new Error(
-					`Tried to remove ${itemsToRemove} from ${userID}. but they don't own them. Missing: ${itemsToRemove
-						.clone()
-						.remove(currentBank)}`
-				);
-			}
-			newBank.remove(itemsToRemove);
-		}
-
-		const { newUser } = await mahojiUserSettingsUpdate(userID, {
-			bank: newBank.bank,
-			GP: gpUpdate,
-			...clUpdates
-		});
-
-		const itemsAdded = new Bank().add(itemsToAdd);
-		if (itemsAdded && gpUpdate && gpUpdate.increment > 0) {
-			itemsAdded.add('Coins', gpUpdate.increment);
-		}
-
-		const itemsRemoved = new Bank().add(itemsToRemove);
-		if (itemsRemoved && gpUpdate && gpUpdate.increment < 0) {
-			itemsRemoved.add('Coins', gpUpdate.increment);
-		}
-
-		const newCL = new Bank(newUser.collectionLogBank as ItemBank);
-		const newTempCL = new Bank(newUser.temp_cl as ItemBank);
-
-		if (newUser.bingo_tickets_bought > 0 && bingoIsActive()) {
-			const before = determineBingoProgress(previousTempCL);
-			const after = determineBingoProgress(newTempCL);
-			// If they finished a tile, process it.
-			if (before.tilesCompletedCount !== after.tilesCompletedCount) {
-				onFinishTile(newUser, before, after);
-			}
-		}
-
-		return {
-			previousCL,
-			itemsAdded,
-			itemsRemoved: itemsToRemove,
-			newBank: new Bank(newUser.bank as ItemBank),
-			newCL,
-			newUser
-		};
+		return updateObj;
 	});
 }
 
@@ -481,10 +318,6 @@ export function rogueOutfitPercentBonus(user: MUser): number {
 		}
 	}
 	return amountEquipped * 20;
-}
-
-export function countSkillsAtleast99(user: MUser) {
-	return Object.values(user.skillsAsLevels).filter(lvl => lvl >= 99).length;
 }
 
 export function hasMonsterRequirements(user: MUser, monster: KillableMonster) {
@@ -567,38 +400,6 @@ export function resolveAvailableItemBoosts(user: MUser, monster: KillableMonster
 	return boosts.bank;
 }
 
-export async function getKCByName(user: MUser, kcName: string): Promise<[string, number] | [null, 0]> {
-	const mon = effectiveMonsters.find(
-		mon => stringMatches(mon.name, kcName) || mon.aliases.some(alias => stringMatches(alias, kcName))
-	);
-	if (mon) {
-		return [mon.name, user.getKC((mon as unknown as Monster).id)];
-	}
-
-	const minigame = Minigames.find(
-		game => stringMatches(game.name, kcName) || game.aliases.some(alias => stringMatches(alias, kcName))
-	);
-	if (minigame) {
-		return [minigame.name, await getMinigameScore(user.id, minigame.column)];
-	}
-
-	const creature = creatures.find(c => c.aliases.some(alias => stringMatches(alias, kcName)));
-	if (creature) {
-		return [creature.name, user.getCreatureScore(creature.id)];
-	}
-
-	const special: [string[], number][] = [
-		[['superior', 'superiors', 'superior slayer monster'], user.user.slayer_superior_count],
-		[['tithefarm', 'tithe'], user.user.stats_titheFarmsCompleted]
-	];
-	const res = special.find(s => s[0].includes(kcName));
-	if (res) {
-		return [res[0][0], res[1]];
-	}
-
-	return [null, 0];
-}
-
 export function calcMaxRCQuantity(rune: Rune, user: MUser) {
 	const level = user.skillLevel('runecraft');
 	for (let i = rune.levels.length; i > 0; i--) {
@@ -607,70 +408,6 @@ export function calcMaxRCQuantity(rune: Rune, user: MUser) {
 	}
 
 	return 0;
-}
-
-type ClientBankKey =
-	| 'sold_items_bank'
-	| 'herblore_cost_bank'
-	| 'construction_cost_bank'
-	| 'farming_cost_bank'
-	| 'farming_loot_bank'
-	| 'buy_cost_bank'
-	| 'buy_loot_bank'
-	| 'magic_cost_bank'
-	| 'crafting_cost'
-	| 'gnome_res_cost'
-	| 'gnome_res_loot'
-	| 'rogues_den_cost'
-	| 'gauntlet_loot'
-	| 'cox_cost'
-	| 'cox_loot'
-	| 'collecting_cost'
-	| 'collecting_loot'
-	| 'mta_cost'
-	| 'bf_cost'
-	| 'mage_arena_cost'
-	| 'hunter_cost'
-	| 'hunter_loot'
-	| 'revs_cost'
-	| 'revs_loot'
-	| 'inferno_cost'
-	| 'dropped_items'
-	| 'runecraft_cost'
-	| 'smithing_cost'
-	| 'economyStats_dicingBank'
-	| 'economyStats_duelTaxBank'
-	| 'economyStats_dailiesAmount'
-	| 'economyStats_itemSellTaxBank'
-	| 'economyStats_bankBgCostBank'
-	| 'economyStats_sacrificedBank'
-	| 'economyStats_wintertodtCost'
-	| 'economyStats_wintertodtLoot'
-	| 'economyStats_fightCavesCost'
-	| 'economyStats_PVMCost'
-	| 'economyStats_thievingCost'
-	| 'nightmare_cost'
-	| 'create_cost'
-	| 'create_loot'
-	| 'tob_cost'
-	| 'tob_loot'
-	| 'degraded_items_cost'
-	| 'tks_cost'
-	| 'tks_loot';
-
-export async function updateBankSetting(key: ClientBankKey, bankToAdd: Bank) {
-	if (bankToAdd === undefined || bankToAdd === null) throw new Error(`Gave null bank for ${key}`);
-	const currentClientSettings = await mahojiClientSettingsFetch({
-		[key]: true
-	});
-	const current = currentClientSettings[key] as ItemBank;
-	validateItemBankAndThrow(current);
-	const newBank = new Bank().add(current).add(bankToAdd);
-
-	const res = await mahojiClientSettingsUpdate({
-		[key]: newBank.bank
-	});
-	return res;
 }
 
 export async function updateLegacyUserBankSetting(userID: string, key: 'tob_cost' | 'tob_loot', bankToAdd: Bank) {
@@ -686,44 +423,4 @@ export async function updateLegacyUserBankSetting(userID: string, key: 'tob_cost
 		[key]: newBank.bank
 	});
 	return res;
-}
-
-export async function syncLinkedAccountPerks(user: MUser) {
-	let main = user.user.main_account;
-	const allAccounts: string[] = [...user.user.ironman_alts];
-	if (main) {
-		allAccounts.push(main);
-	}
-	const allUsers = await Promise.all(
-		allAccounts.map(a =>
-			mahojiUsersSettingsFetch(a, {
-				id: true,
-				premium_balance_tier: true,
-				premium_balance_expiry_date: true,
-				bitfield: true
-			})
-		)
-	);
-	allUsers.map(u => new MUserClass(u));
-}
-
-export async function syncLinkedAccounts() {
-	const users = await prisma.user.findMany({
-		where: {
-			ironman_alts: {
-				isEmpty: false
-			}
-		},
-		select: {
-			id: true,
-			ironman_alts: true,
-			premium_balance_tier: true,
-			premium_balance_expiry_date: true,
-			bitfield: true
-		}
-	});
-	for (const u of users) {
-		const mUser = new MUserClass(u as User);
-		await syncLinkedAccountPerks(mUser);
-	}
 }

@@ -15,10 +15,10 @@ export type BankBackground = {
 	id: number;
 	name: string;
 	available: boolean;
-	collectionLogItemsNeeded?: ItemBank;
+	collectionLogItemsNeeded?: Bank;
 	perkTierNeeded?: PerkTier;
 	gpCost?: number;
-	itemCost?: ItemBank;
+	itemCost?: Bank;
 	repeatImage?: Image | null;
 	bitfield?: BitField;
 	sacValueRequired?: number;

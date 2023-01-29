@@ -1,9 +1,10 @@
-import { IPatchData } from '../minions/farming/types';
-import { MinigameName } from '../settings/minigames';
-import { Peak } from '../tickers';
-import { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
-import { ItemBank } from '.';
-import { activity_type_enum } from '.prisma/client';
+import type { activity_type_enum, CropUpgradeType } from '@prisma/client';
+
+import type { IPatchData } from '../minions/farming/types';
+import type { MinigameName } from '../settings/minigames';
+import type { Peak } from '../tickers';
+import type { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
+import type { ItemBank } from '.';
 
 export interface ActivityTaskOptions {
 	type: activity_type_enum;
@@ -24,6 +25,11 @@ export interface RunecraftActivityTaskOptions extends ActivityTaskOptions {
 	imbueCasts: number;
 	useStaminas?: boolean;
 	daeyaltEssence?: boolean;
+}
+
+export interface TiaraRunecraftActivityTaskOptions extends ActivityTaskOptions {
+	tiaraID: number;
+	tiaraQuantity: number;
 }
 
 export interface DarkAltarOptions extends ActivityTaskOptions {
@@ -142,6 +148,11 @@ export interface BuryingActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface ScatteringActivityTaskOptions extends ActivityTaskOptions {
+	ashID: number;
+	quantity: number;
+}
+
 export interface OfferingActivityTaskOptions extends ActivityTaskOptions {
 	boneID: number;
 	quantity: number;
@@ -190,9 +201,10 @@ export interface InfernoOptions extends ActivityTaskOptions {
 }
 
 export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
+	pid?: number;
 	plantsName: string | null;
 	quantity: number;
-	upgradeType: string | null;
+	upgradeType: CropUpgradeType | null;
 	payment?: boolean;
 	patchType: IPatchData;
 	planting: boolean;
@@ -278,6 +290,7 @@ export interface RaidsOptions extends ActivityTaskOptions {
 	leader: string;
 	users: string[];
 	challengeMode: boolean;
+	quantity?: number;
 }
 
 export interface TheatreOfBloodTaskOptions extends ActivityTaskOptions {
@@ -318,6 +331,24 @@ export interface PuroPuroActivityTaskOptions extends MinigameActivityTaskOptions
 	quantity: number;
 	implingID: number | null;
 	darkLure: boolean;
+}
+
+export interface GiantsFoundryActivityTaskOptions extends MinigameActivityTaskOptions {
+	alloyID: number;
+	quantity: number;
+	metalScore: number;
+}
+
+export interface GuardiansOfTheRiftActivityTaskOptions extends MinigameActivityTaskOptions {
+	minedFragments: number;
+	barrierAndGuardian: number;
+	rolls: number;
+	combinationRunes: boolean;
+}
+
+export interface ShadesOfMortonOptions extends MinigameActivityTaskOptions {
+	shadeID: string;
+	logID: number;
 }
 
 export type ActivityTaskData =

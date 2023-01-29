@@ -1,7 +1,8 @@
 import { InteractionReplyOptions, TextChannel, User } from 'discord.js';
+import { CommandOptions } from 'mahoji/dist/lib/types';
 
 import { modifyBusyCounter } from '../../lib/busyCounterCache';
-import { badges, Emoji, usernameCache } from '../../lib/constants';
+import { badges, badgesCache, Emoji, usernameCache } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
 import { removeMarkdownEmojis, stripEmojis } from '../../lib/util';
 import { CACHED_ACTIVE_USER_IDS } from '../../lib/util/cachedUserIDs';
@@ -30,13 +31,12 @@ export async function syncNewUserUsername(user: MUser, username: string) {
 		});
 	}
 	let name = stripEmojis(username);
+	usernameCache.set(user.id, name);
 	const rawBadges = user.user.badges.map(num => badges[num]);
 	if (user.isIronman) {
 		rawBadges.push(Emoji.Ironman);
 	}
-	name = `${rawBadges.join(' ')} ${name}`;
-
-	usernameCache.set(user.id, name);
+	badgesCache.set(user.id, rawBadges.join(' '));
 }
 
 export async function preCommand({
@@ -45,7 +45,8 @@ export async function preCommand({
 	guildID,
 	channelID,
 	bypassInhibitors,
-	apiUser
+	apiUser,
+	options
 }: {
 	apiUser: User | null;
 	abstractCommand: AbstractCommand;
@@ -53,6 +54,7 @@ export async function preCommand({
 	guildID?: string | bigint | null;
 	channelID: string | bigint;
 	bypassInhibitors: boolean;
+	options: CommandOptions;
 }): Promise<
 	| undefined
 	| {
@@ -74,6 +76,7 @@ export async function preCommand({
 		return { silent: true, reason: { content: 'You cannot use a command right now.' }, dontRunPostCommand: true };
 	}
 	modifyBusyCounter(userID, 1);
+
 	const guild = guildID ? globalClient.guilds.cache.get(guildID.toString()) : null;
 	const member = guild?.members.cache.get(userID.toString());
 	const channel = globalClient.channels.cache.get(channelID.toString()) as TextChannel;
@@ -91,6 +94,22 @@ export async function preCommand({
 	});
 
 	if (inhibitResult !== undefined) {
+		debugLog('Command inhibited', {
+			type: 'COMMAND_INHIBITED',
+			command_name: abstractCommand.name,
+			user_id: userID,
+			guild_id: guildID,
+			channel_id: channelID
+		});
 		return inhibitResult;
 	}
+
+	debugLog('Attempt to run command', {
+		type: 'RUN_COMMAND',
+		command_name: abstractCommand.name,
+		user_id: userID,
+		guild_id: guildID,
+		channel_id: channelID,
+		options
+	});
 }

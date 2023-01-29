@@ -1,9 +1,11 @@
+import { Minigame } from '@prisma/client';
 import { objectEntries } from 'e';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { growablePets } from '../growablePets';
 import { implings } from '../implings';
+import { MinigameScore } from '../settings/minigames';
 import getOSItem from '../util/getOSItem';
 import resolveItems from '../util/resolveItems';
 import {
@@ -33,8 +35,18 @@ export interface ILeftListStatus {
 }
 
 export interface IKCActivity {
-	[key: string]: string | string[] | ((user: MUser) => Promise<number>);
+	[key: string]: string | string[] | ((user: MUser, minigameScores: MinigameScore[]) => Promise<number>);
 }
+
+export type FormatProgressFunction = ({
+	getKC,
+	minigames,
+	user
+}: {
+	user: MUser;
+	getKC: (id: number) => number;
+	minigames: Minigame;
+}) => string | string[];
 
 export interface ICollectionActivity {
 	[key: string]: {
@@ -45,6 +57,7 @@ export interface ICollectionActivity {
 		allItems?: number[];
 		kcActivity?: string | IKCActivity;
 		isActivity?: boolean;
+		fmtProg?: FormatProgressFunction;
 	};
 }
 
@@ -324,7 +337,7 @@ export const kingBlackDragonCL = resolveItems([
 	'Draconic visage'
 ]);
 export const krakenCL = resolveItems(['Pet kraken', 'Kraken tentacle', 'Trident of the seas (full)', 'Jar of dirt']);
-export const theNightmareCL = resolveItems([
+export const theNightmareNormalCL = resolveItems([
 	'Little nightmare',
 	"Inquisitor's mace",
 	"Inquisitor's great helm",
@@ -334,10 +347,9 @@ export const theNightmareCL = resolveItems([
 	'Volatile orb',
 	'Harmonised orb',
 	'Eldritch orb',
-	'Jar of dreams',
-	'Slepey tablet',
-	'Parasitic egg'
+	'Jar of dreams'
 ]);
+export const theNightmareCL = resolveItems([...theNightmareNormalCL, 'Slepey tablet', 'Parasitic egg']);
 export const oborCL = resolveItems(['Hill giant club']);
 export const sarachnisCL = resolveItems(['Sraracha', 'Jar of eyes', 'Giant egg sac(full)', 'Sarachnis cudgel']);
 export const scorpiaCL = resolveItems(["Scorpia's offspring", 'Odium shard 3', 'Malediction shard 3']);
@@ -450,7 +462,7 @@ export const chambersOfXericCL = resolveItems([
 	"Xeric's general",
 	"Xeric's champion"
 ]);
-export const theatreOfBLoodCL = resolveItems([
+export const theatreOfBLoodNormalCL = resolveItems([
 	"Lil' zik",
 	'Scythe of vitur (uncharged)',
 	'Ghrazi rapier',
@@ -464,7 +476,11 @@ export const theatreOfBLoodCL = resolveItems([
 	'Sinhaza shroud tier 2',
 	'Sinhaza shroud tier 3',
 	'Sinhaza shroud tier 4',
-	'Sinhaza shroud tier 5',
+	'Sinhaza shroud tier 5'
+]);
+
+export const theatreOfBLoodCL = resolveItems([
+	...theatreOfBLoodNormalCL,
 	'Sanguine dust',
 	'Holy ornament kit',
 	'Sanguine ornament kit'
@@ -1216,7 +1232,37 @@ export const castleWarsCL = resolveItems([
 	'Guthix halo'
 ]);
 export const fishingTrawlerCL = resolveItems(['Angler hat', 'Angler top', 'Angler waders', 'Angler boots']);
+export const giantsFoundryCL = resolveItems([
+	'Smiths tunic',
+	'Smiths trousers',
+	'Smiths boots',
+	'Smiths gloves',
+	'Colossal blade',
+	'Double ammo mould',
+	"Kovac's grog",
+	'Smithing catalyst',
+	'Ore pack'
+]);
 export const gnomeRestaurantCL = resolveItems(['Grand seed pod', 'Gnome scarf', 'Gnome goggles', 'Mint cake']);
+export const guardiansOfTheRiftCL = resolveItems([
+	'Abyssal protector',
+	'Abyssal pearls',
+	'Catalytic talisman',
+	'Abyssal needle',
+	'Abyssal green dye',
+	'Abyssal blue dye',
+	'Abyssal red dye ',
+	'Hat of the eye',
+	'Robe top of the eye',
+	'Robe bottoms of the eye',
+	'Boots of the eye',
+	'Ring of the elements',
+	'Abyssal lantern',
+	"Guardian's eye",
+	'Intricate pouch',
+	'Lost bag',
+	'Tarnished locket'
+]);
 export const hallowedSepulchreCL = resolveItems([
 	'Hallowed mark',
 	'Hallowed token',
@@ -1316,7 +1362,7 @@ export const roguesDenOutfit = resolveItems([
 export const roguesDenCL = resolveItems([...roguesDenOutfit]);
 
 export const shadesOfMorttonCL = resolveItems([
-	'Amulet of the damned',
+	'Amulet of the damned (full)',
 	'Flamtaer bag',
 	'Fine cloth',
 	'Bronze locks',
@@ -1771,8 +1817,10 @@ export const miscellaneousCL = resolveItems([
 	'Dragonstone platelegs',
 	'Dragonstone gauntlets',
 	'Dragonstone boots',
-	'Uncut onyx'
-	// 'Merfolk trident'
+	'Uncut onyx',
+	'Merfolk trident',
+	'Orange egg sac',
+	'Blue egg sac'
 ]);
 export const holidayCL = resolveItems([
 	'Cow mask',
@@ -1876,7 +1924,7 @@ export const diariesCL = [
 	"Rada's blessing 4"
 ];
 export const dailyCL = resolveItems([
-	'Event rpg',
+	'Goblin paint cannon',
 	'Green banner',
 	'Spinning plate',
 	'Brown toy horsey',
@@ -2073,7 +2121,8 @@ export const metamorphPets = resolveItems([
 	'Tzrek-zuk',
 	'Ziggy',
 	'Red',
-	'Great blue heron'
+	'Great blue heron',
+	'Greatish guardian'
 ]);
 
 export const allPetIDs = [

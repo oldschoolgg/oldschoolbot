@@ -1,10 +1,10 @@
 import {
 	ActionRowBuilder,
+	BaseMessageOptions,
 	ButtonBuilder,
 	ButtonStyle,
 	ChatInputCommandInteraction,
-	MessageComponentInteraction,
-	MessageOptions
+	MessageComponentInteraction
 } from 'discord.js';
 import { chunk, noOp, roll, shuffleArr, Time } from 'e';
 import { Bank } from 'oldschooljs';
@@ -87,13 +87,14 @@ export async function luckyPickCommand(
 		interaction,
 		`Are you sure you want to gamble ${toKMB(amount)}? You might lose it all, you might win a lot.`
 	);
+	await user.sync();
 	const currentBalance = user.GP;
 	if (currentBalance < amount) {
 		return "You don't have enough GP to make this bet.";
 	}
 	await user.removeItemsFromBank(new Bank().add('Coins', amount));
 	const buttonsToShow = getButtons();
-	function getCurrentButtons({ showTrueNames }: { showTrueNames: boolean }): MessageOptions['components'] {
+	function getCurrentButtons({ showTrueNames }: { showTrueNames: boolean }): BaseMessageOptions['components'] {
 		let chunkedButtons = chunk(buttonsToShow, 5);
 		return chunkedButtons.map(c =>
 			new ActionRowBuilder<ButtonBuilder>().addComponents(

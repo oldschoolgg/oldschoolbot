@@ -2,7 +2,7 @@ import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
 
-import { GearStat } from '../../../gear';
+import { GearStat } from '../../../gear/types';
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';
 
@@ -815,6 +815,14 @@ export const vannakaMonsters: KillableMonster[] = [
 
 		existsInCatacombs: true,
 		difficultyRating: 2,
+		itemInBankBoosts: [
+			{
+				[itemID('Arclight')]: 12
+			},
+			{
+				[itemID('Saradomin godsword')]: 3
+			}
+		],
 		qpRequired: 0,
 		healAmountNeeded: 18,
 		attackStyleToUse: GearStat.AttackSlash,

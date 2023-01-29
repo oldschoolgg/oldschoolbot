@@ -4,8 +4,9 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { LootTable } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 
+import { mahojiClientSettingsUpdate } from '../../../lib/util/clientSettings';
 import resolveItems from '../../../lib/util/resolveItems';
-import { handleMahojiConfirmation, mahojiClientSettingsUpdate, mahojiParseNumber } from '../../mahojiSettings';
+import { handleMahojiConfirmation, mahojiParseNumber } from '../../mahojiSettings';
 
 export const flowerTable = new LootTable()
 	.add('Red flowers', 1, 150)
@@ -48,6 +49,8 @@ export async function hotColdCommand(
 ${explanation}`
 	);
 
+	await user.sync();
+	if (user.GP < amount) return "You can't afford to gamble that much.";
 	await transactItems({
 		userID: user.id,
 		itemsToAdd: flowerLoot,

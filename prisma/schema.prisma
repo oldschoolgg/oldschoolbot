@@ -19,6 +19,7 @@ model Activity {
   channel_id     BigInt
   data           Json               @db.Json
 
+  @@index([user_id, finish_date])
   @@index([group_activity])
   @@index([completed])
   @@index([user_id, type])
@@ -116,11 +117,17 @@ model ClientStorage {
   create_loot                  Json     @default("{}") @db.Json
   tob_cost                     Json     @default("{}") @db.Json
   tob_loot                     Json     @default("{}") @db.Json
+  nex_cost                     Json     @default("{}") @db.Json
+  nex_loot                     Json     @default("{}") @db.Json
   degraded_items_cost          Json     @default("{}") @db.Json
   tks_cost                     Json     @default("{}") @db.Json
   tks_loot                     Json     @default("{}") @db.Json
   disabled_commands            String[] @db.VarChar(32)
   gp_tax_balance               BigInt   @default(0)
+  gotr_cost                    Json     @default("{}") @db.Json
+  gotr_loot                    Json     @default("{}") @db.Json
+  gf_cost                      Json     @default("{}") @db.Json
+  gf_loot                      Json     @default("{}") @db.Json
 
   @@map("clientStorage")
 }
@@ -265,8 +272,6 @@ model User {
   honour_level               Int      @default(1)
   honour_points              Int      @default(0)
   high_gambles               Int      @default(0)
-  patreon_id                 String?
-  github_id                  Int?
   carpenter_points           Int      @default(0)
   zeal_tokens                Int      @default(0)
   openable_scores            Json     @default("{}") @db.Json
@@ -274,13 +279,13 @@ model User {
   total_cox_points           Int      @default(0)
   combat_options             Int[]
   farming_patch_reminders    Boolean  @default(true)
-  auto_farm_filter           AutoFarmFilterEnum @default(AllFarm)
   pest_control_points        Int      @default(0)
   inferno_attempts           Int      @default(0)
   infernal_cape_sacrifices   Int      @default(0)
   tob_attempts               Int      @default(0)
   tob_hard_attempts          Int      @default(0)
   volcanic_mine_points       Int      @default(0)
+  foundry_reputation         Int      @default(0)
   blowpipe                   Json     @default("{\"scales\":0,\"dartID\":null,\"dartQuantity\":0}") @db.Json
   ironman_alts               String[]
   main_account               String?
@@ -301,7 +306,6 @@ model User {
   minion_icon                String?  @map("minion.icon")
   minion_equippedPet         Int?     @map("minion.equippedPet")
   minion_farmingContract     Json?    @map("minion.farmingContract") @db.Json
-  minion_defaultCompostToUse String   @default("compost") @map("minion.defaultCompostToUse")
   minion_defaultPay          Boolean  @default(false) @map("minion.defaultPay")
   minion_birdhouseTraps      Json?    @map("minion.birdhouseTraps") @db.Json
   stats_deaths               Int      @default(0) @map("stats.deaths")
@@ -376,6 +380,7 @@ model User {
   tentacle_charges       Int @default(0)
   sang_charges           Int @default(0)
   celestial_ring_charges Int @default(0)
+  ash_sanctifier_charges Int @default(0)
 
   gp_luckypick BigInt @default(0)
   gp_dice      BigInt @default(0)
@@ -391,10 +396,17 @@ model User {
 
   minion_bought_date DateTime? @db.Timestamp(6)
 
+  auto_farm_filter AutoFarmFilterEnum @default(AllFarm)
+
   bingo_tickets_bought Int    @default(0)
   bingo_gp_contributed BigInt @default(0)
 
-  @@index([bingo_tickets_bought])
+  last_command_date DateTime?    @db.Timestamp(6)
+  farmed_crops      FarmedCrop[]
+
+  minion_defaultCompostToUse CropUpgradeType @default(compost) @map("minion.defaultCompostToUse")
+
+  @@index([id, last_command_date])
   @@map("users")
 }
 
@@ -469,6 +481,9 @@ model Minigame {
   lms                     Int    @default(0)
   trouble_brewing         Int    @default(0)
   puro_puro               Int    @default(0)
+  giants_foundry          Int    @default(0)
+  guardians_of_the_rift   Int    @default(0)
+  shades_of_morton        Int    @default(0)
 
   new_user NewUser?
 
@@ -478,13 +493,15 @@ model Minigame {
 
 model CommandUsage {
   id           Int                  @id @default(autoincrement())
-  date         DateTime             @db.Timestamp(6)
+  date         DateTime             @default(now()) @db.Timestamp(6)
   user_id      BigInt
   command_name String               @db.VarChar(32)
   status       command_usage_status @default(value: Unknown)
   is_continue  Boolean              @default(false)
   flags        Json?
   inhibited    Boolean?             @default(false)
+
+  is_mention_command Boolean @default(false)
 
   args       Json?   @db.Json
   channel_id BigInt?
@@ -500,15 +517,17 @@ enum loot_track_type {
 }
 
 model LootTrack {
-  id             String          @db.VarChar(32)
+  id String @id @default(uuid()) @db.Uuid
+
+  key            String          @db.VarChar(32)
   type           loot_track_type
   // In minutes
   total_duration Int
   total_kc       Int
   loot           Json            @default("{}") @db.Json
   cost           Json            @default("{}") @db.Json
+  user_id        BigInt?
 
-  @@id([id, type])
   @@map("loot_track")
 }
 
@@ -569,6 +588,30 @@ model UserStats {
   passive_implings_bank  Json   @default("{}") @db.Json
   create_cost_bank       Json   @default("{}") @db.Json
   create_loot_bank       Json   @default("{}") @db.Json
+  bird_eggs_offered_bank Json   @default("{}") @db.Json
+  scattered_ashes_bank   Json   @default("{}") @db.Json
+
+  gf_weapons_made Json @default("{}") @db.Json
+  gf_cost         Json @default("{}") @db.Json
+  gf_loot         Json @default("{}") @db.Json
+
+  ash_sanctifier_prayer_xp BigInt @default(0)
+  gotr_rift_searches       Int    @default(0)
+
+  farming_plant_cost_bank   Json @default("{}") @db.Json
+  farming_harvest_loot_bank Json @default("{}") @db.Json
+
+  cl_array        Int[]
+  cl_array_length Int   @default(0)
+
+  buy_cost_bank Json @default("{}") @db.Json
+  buy_loot_bank Json @default("{}") @db.Json
+
+  shades_of_morton_cost_bank Json @default("{}") @db.Json
+
+  gp_from_agil_pyramid Int @default(0)
+
+  random_event_completions_bank Json @default("{}") @db.Json
 
   @@map("user_stats")
 }
@@ -581,6 +624,33 @@ model BingoTeam {
   third_user  String @unique @db.VarChar(19)
 
   @@map("bingo_team")
+}
+
+enum CropUpgradeType {
+  compost
+  supercompost
+  ultracompost
+}
+
+// FarmedCrop
+// - Not a source of truth, just used for tracking/stats.
+// - One is made each time you plant a crop, and then updated when you harvest that crop.
+// - Deleted when you become an iron.
+model FarmedCrop {
+  id Int @id @default(autoincrement())
+
+  user_id String @db.VarChar(19)
+  user    User   @relation(fields: [user_id], references: [id])
+
+  date_planted        DateTime
+  date_harvested      DateTime?
+  item_id             Int
+  quantity_planted    Int
+  upgrade_type        CropUpgradeType?
+  was_autofarmed      Boolean
+  paid_for_protection Boolean
+
+  @@map("farmed_crop")
 }
 
 enum command_usage_status {
@@ -603,9 +673,11 @@ enum activity_type_enum {
   Questing
   Firemaking
   Runecraft
+  TiaraRunecraft
   Smelting
   Crafting
   Burying
+  Scattering
   Offering
   FightCaves
   Wintertodt
@@ -667,6 +739,10 @@ enum activity_type_enum {
   PuroPuro
   Easter
   ShootingStars
+  GiantsFoundry
+  GuardiansOfTheRift
+  HalloweenEvent
+  ShadesOfMorton
 }
 
 enum xp_gains_skill_enum {
@@ -696,6 +772,6 @@ enum xp_gains_skill_enum {
 }
 
 enum AutoFarmFilterEnum {
-	AllFarm
-	Replant
+  AllFarm
+  Replant
 }
