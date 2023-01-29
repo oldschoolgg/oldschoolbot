@@ -67,7 +67,8 @@ import { troubleBrewingStartCommand } from '../lib/abstracted_commands/troubleBr
 import {
 	volcanicMineCommand,
 	VolcanicMineShop,
-	volcanicMineShopCommand
+	volcanicMineShopCommand,
+	volcanicMineStatsCommand,
 } from '../lib/abstracted_commands/volcanicMineCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { giantsFoundryAlloys, giantsFoundryBuyables } from './../lib/abstracted_commands/giantsFoundryCommand';
@@ -750,6 +751,11 @@ export const minigamesCommand: OSBMahojiCommand = {
 							min_value: 1
 						}
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'stats',
+					description: 'Show Volcanic Mine stats.'
 				}
 			]
 		},
@@ -977,6 +983,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 		volcanic_mine?: {
 			start?: { quantity?: number };
 			buy?: { item: string; quantity?: number };
+			stats?: {};
 		};
 		agility_arena?: {
 			start?: {};
@@ -1231,6 +1238,11 @@ export const minigamesCommand: OSBMahojiCommand = {
 				user,
 				options.volcanic_mine.buy.item,
 				options.volcanic_mine.buy.quantity
+			);
+		}
+		if(options.volcanic_mine?.stats) {
+			return volcanicMineStatsCommand(
+				user
 			);
 		}
 
