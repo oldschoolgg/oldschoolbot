@@ -68,7 +68,7 @@ import {
 	volcanicMineCommand,
 	VolcanicMineShop,
 	volcanicMineShopCommand,
-	volcanicMineStatsCommand,
+	volcanicMineStatsCommand
 } from '../lib/abstracted_commands/volcanicMineCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { giantsFoundryAlloys, giantsFoundryBuyables } from './../lib/abstracted_commands/giantsFoundryCommand';
@@ -1240,10 +1240,8 @@ export const minigamesCommand: OSBMahojiCommand = {
 				options.volcanic_mine.buy.quantity
 			);
 		}
-		if(options.volcanic_mine?.stats) {
-			return volcanicMineStatsCommand(
-				user
-			);
+		if (options.volcanic_mine?.stats) {
+			return volcanicMineStatsCommand(user);
 		}
 
 		/**

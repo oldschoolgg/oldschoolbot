@@ -2,13 +2,13 @@ import { ChatInputCommandInteraction } from 'discord.js';
 import { objectEntries, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { getMinigameScore } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { formatDuration, formatSkillRequirements, hasSkillReqs, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { handleMahojiConfirmation } from '../../mahojiSettings';
-import { getMinigameScore } from '../../../lib/settings/minigames';
 
 const skillReqs = {
 	[SkillsEnum.Prayer]: 70,
