@@ -1,6 +1,6 @@
 import { applicationCommands } from '..';
 
-export function mentionCommand(name: string, subCommand?: string) {
+export function mentionCommand(name: string, subCommand?: string, subSubCommand?: string) {
 	const command = globalClient.mahojiClient.commands.values.find(i => i.name === name);
 	if (!command) {
 		throw new Error(`Command ${name} not found`);
@@ -15,7 +15,7 @@ export function mentionCommand(name: string, subCommand?: string) {
 	}
 
 	if (subCommand) {
-		return `</${name} ${subCommand}:${apiCommand.id}>`;
+		return `</${name} ${subCommand}${subSubCommand ? ` ${subSubCommand}` : ''}:${apiCommand.id}>`;
 	}
 
 	return `</${name}:${apiCommand.id}>`;

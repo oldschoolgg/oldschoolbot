@@ -15,7 +15,6 @@ import {
 	Time
 } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { writeFileSync } from 'node:fs';
 import { Bank, LootTable } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
@@ -793,21 +792,6 @@ function calcDeathChance(totalAttempts: number, raidLevel: RaidLevel, tobAndCoxK
 	return deathChance;
 }
 
-let str = 'Total Attempts/KC\tRaid Level\tCOX+TOB KC\tDeath Chance (%)\n';
-let array = [];
-for (const attempts of [0, 10, 15, 20, 25, 30, 40, 50, 100, 125, 150, 175, 200, 250]) {
-	for (const { level } of mileStoneBaseDeathChances) {
-		for (const coxKC of [0, 10]) {
-			array.push({ attempts, level, chance: Number(calcDeathChance(attempts, level, coxKC).toFixed(2)), coxKC });
-		}
-	}
-}
-array.sort((a, b) => b.chance - a.chance);
-for (const { attempts, level, chance, coxKC } of array) {
-	str += `${attempts}\t${level}\t${coxKC}\t${chance}\n`;
-}
-writeFileSync('./death-chances.txt', str);
-
 function calculateTotalEffectiveness({
 	totalAttempts,
 	totalKC,
@@ -1493,7 +1477,7 @@ export async function toaCheckCommand(user: MUser) {
 		return `🔴 You aren't able to join a Tombs of Amascut raid, address these issues first: ${result[1]}`;
 	}
 
-	return `✅ You are ready to do the Tombs of Amascut! Start a raid: ${mentionCommand('raid', 'toa')}`;
+	return `✅ You are ready to do the Tombs of Amascut! Start a raid: ${mentionCommand('raid', 'toa', 'start')}`;
 }
 
 function calculateBoostString(user: MUser) {
