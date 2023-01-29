@@ -35,7 +35,6 @@ import { birdsNestID, treeSeedsNest } from './simulation/birdsNest';
 import { gauntlet } from './simulation/gauntlet';
 import { handleNexKills } from './simulation/nex';
 import { getTemporossLoot } from './simulation/tempoross';
-import { calcTOALoot } from './simulation/toa';
 import { TheatreOfBlood } from './simulation/tob';
 import { WintertodtCrate } from './simulation/wintertodt';
 import { stringMatches } from './util/cleanString';
@@ -261,29 +260,6 @@ export const finishables: Finishable[] = [
 				return openShadeChest({ item: key, allItemsOwned: accumulatedLoot, qty: totalRuns }).bank;
 			}
 			throw new Error('Not possible!');
-		}
-	},
-	{
-		name: 'TOA',
-		cl: resolveItems([
-			"Tumeken's guardian",
-			"Tumeken's shadow (uncharged)",
-			"Elidinis' ward",
-			'Masori mask',
-			'Masori body',
-			'Masori chaps',
-			'Lightbearer',
-			"Osmumten's fang",
-			'Thread of elidinis',
-			'Cache of runes'
-		]),
-		aliases: ['toa'],
-		kill: ({ accumulatedLoot, totalRuns }) => {
-			const loot = calcTOALoot({
-				users: [{ id: '1', points: 22_000, kc: totalRuns, cl: accumulatedLoot, deaths: [] }],
-				raidLevel: 300
-			});
-			return loot.teamLoot.get('1');
 		}
 	}
 ];

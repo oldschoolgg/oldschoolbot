@@ -103,22 +103,6 @@ export function exponentialPercentScale(percent: number, decay = 0.021) {
 	return 100 * Math.pow(Math.E, -decay * (100 - percent));
 }
 
-// export function exponentialScale(val: number, max: number, decay = 0.21) {
-// 	return exponentialPercentScale(calcWhatPercent(val, max), decay);
-// }
-
-// let fn = (a: number) => Math.min(100, exponentialScale(a + a / 18, 600, 0.05) * 1.5);
-
-// for (let i = 0; i < 6; i++) {
-// 	let t = i * 100;
-
-// 	let numbers = [0, 25, 50, 75];
-// 	if (i === 5) numbers.push(100);
-// 	for (const number of numbers) {
-// 		console.log(`${t + number}	${fn(t + number)}`);
-// 	}
-// }
-
 export function normal(mu = 0, sigma = 1, nsamples = 6) {
 	let run_total = 0;
 
