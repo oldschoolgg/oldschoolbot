@@ -87,11 +87,11 @@ const client = new OldSchoolBotClient({
 	}),
 	sweepers: {
 		guildMembers: {
-			interval: Time.Minute / Time.Second,
+			interval: Time.Minute * 15,
 			filter: () => member => !CACHED_ACTIVE_USER_IDS.has(member.user.id)
 		},
 		users: {
-			interval: Time.Minute / Time.Second,
+			interval: Time.Minute * 15,
 			filter: () => user => !CACHED_ACTIVE_USER_IDS.has(user.id)
 		}
 	}
