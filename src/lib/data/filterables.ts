@@ -1121,6 +1121,15 @@ export const baseFilters: Filterable[] = [
 				.filter(i => !sacBank[i[0]])
 				.map(i => Number(i[0]));
 		}
+	},
+	{
+		name: 'Favourite Alchs',
+		aliases: ['favourite alchs', 'favalchs'],
+		items: user => {
+			if (!user) return [];
+			
+			return user.user.favorite_alchables
+		}
 	}
 ];
 
