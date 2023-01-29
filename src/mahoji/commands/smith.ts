@@ -54,7 +54,9 @@ export const smithCommand: OSBMahojiCommand = {
 		if (!smithedItem) return 'That is not a valid item to smith.';
 
 		if (user.skillLevel(SkillsEnum.Smithing) < smithedItem.level) {
-			return `${user.minionName} needs ${smithedItem.level} Smithing to smith ${smithedItem.name}${smithedItem.name.endsWith('s') ? '' : 's'}.`;
+			return `${user.minionName} needs ${smithedItem.level} Smithing to smith ${smithedItem.name}${
+				smithedItem.name.endsWith('s') ? '' : 's'
+			}.`;
 		}
 
 		const userQP = user.QP;
