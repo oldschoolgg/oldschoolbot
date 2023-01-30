@@ -315,7 +315,10 @@ const activitiesCantGetStars: activity_type_enum[] = [
 	'Inferno',
 	'TokkulShop',
 	'ShootingStars',
-	'Nex'
+	'Nex',
+	'TombsOfAmascut',
+	'TheatreOfBlood',
+	'Raids'
 ];
 
 export const starCache = new Map<string, Star & { expiry: number }>();
