@@ -388,9 +388,7 @@ export function calculateXPFromRaid({
 
 	const possiblePoints = estimatePoints(raidLevel, teamSize) / teamSize;
 	const percentOfPossiblePoints = calcWhatPercent(points, possiblePoints);
-	console.log(
-		`${user.rawUsername} got ${points} points out of ${possiblePoints}, which is ${percentOfPossiblePoints}%`
-	);
+
 	totalMeleeXPPerRaid = calcPercentOfNum(percentOfPossiblePoints, totalMeleeXPPerRaid);
 
 	let meleeStyles = user.getAttackStyles();
@@ -651,7 +649,6 @@ export function calcTOALoot({ users, raidLevel }: { users: TOALootUser[]; raidLe
 		if (percentChance(eliteClueChance)) {
 			loot.add(user.id, 'Clue scroll (elite)');
 		}
-		messages.push(`${eliteClueChance}% chance of elite clue`);
 	}
 
 	const specialItemsReceived: number[] = [];
@@ -1415,7 +1412,6 @@ export async function createTOATeam({
 	}
 
 	duration = reduceNumByPercent(duration, exponentialPercentScale(totalReduction));
-	console.log(`Total boost reduction: ${totalReduction}% vs ${exponentialPercentScale(totalReduction)})}`);
 
 	if (duration < Time.Minute * 20) {
 		duration = Math.max(Time.Minute * 20, duration);
