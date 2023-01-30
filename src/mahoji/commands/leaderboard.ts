@@ -1,5 +1,6 @@
 import { Embed } from '@discordjs/builders';
-import { chunk } from 'e';
+import type { Prisma } from '@prisma/client';
+import { chunk, objectValues, Time, uniqueArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { badges, badgesCache, Emoji, usernameCache } from '../../lib/constants';
@@ -435,10 +436,79 @@ async function skillsLb(
 }
 
 export async function cacheUsernames() {
+	const roboChimpUseresToCache = await roboChimpClient.user.findMany({
+		where: {
+			OR: [
+				{
+					osb_cl_percent: {
+						gte: 80
+					}
+				},
+				{
+					bso_total_level: {
+						gte: 80
+					}
+				},
+				{
+					osb_total_level: {
+						gte: 1500
+					}
+				},
+				{
+					bso_total_level: {
+						gte: 1500
+					}
+				},
+				{
+					leagues_points_total: {
+						gte: 20_000
+					}
+				}
+			]
+		},
+		select: {
+			id: true
+		}
+	});
+
+	let orConditions: Prisma.UserWhereInput[] = [];
+	for (const skill of objectValues(SkillsEnum)) {
+		orConditions.push({
+			[`skills_${skill}`]: {
+				gte: 15_000_000
+			}
+		});
+	}
+	const usersToCache = await prisma.user.findMany({
+		where: {
+			OR: [
+				...orConditions,
+				{
+					last_command_date: {
+						gt: new Date(Date.now() - Number(Time.Month))
+					}
+				}
+			],
+			id: {
+				notIn: roboChimpUseresToCache.map(i => i.id.toString())
+			}
+		},
+		select: {
+			id: true
+		}
+	});
+
+	const userIDsToCache = [...usersToCache, ...roboChimpUseresToCache].map(i => i.id.toString());
+	console.log(usersToCache.length, uniqueArr(userIDsToCache).length);
+	console.log(`Caching usernames of ${userIDsToCache.length} users`);
+
 	const allNewUsers = await prisma.newUser.findMany({
 		where: {
 			username: {
 				not: null
+			},
+			id: {
+				in: userIDsToCache
 			}
 		},
 		select: {

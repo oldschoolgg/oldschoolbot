@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { codeBlock } from '@discordjs/builders';
-import { ClientStorage } from '@prisma/client';
+import { ClientStorage, economy_transaction_type } from '@prisma/client';
 import { Stopwatch } from '@sapphire/stopwatch';
 import { Duration } from '@sapphire/time-utilities';
 import { isThenable } from '@sentry/utils';
@@ -24,6 +24,7 @@ import { patreonTask } from '../../lib/patreon';
 import { runRolesTask } from '../../lib/rolesTask';
 import { countUsersWithItemInCl, prisma } from '../../lib/settings/prisma';
 import { cancelTask, minionActivityCacheDelete } from '../../lib/settings/settings';
+import { sorts } from '../../lib/sorts';
 import { Gear } from '../../lib/structures/Gear';
 import {
 	calcPerHour,
@@ -132,6 +133,40 @@ async function evalCommand(userID: string, code: string): CommandResponse {
 	}
 }
 
+async function getAllTradedItems(giveUniques = false) {
+	const economyTrans = await prisma.economyTransaction.findMany({
+		where: {
+			date: {
+				gt: new Date(Date.now() - Time.Month)
+			},
+			type: economy_transaction_type.trade
+		},
+		select: {
+			items_received: true,
+			items_sent: true
+		}
+	});
+
+	let total = new Bank();
+
+	if (giveUniques) {
+		for (const trans of economyTrans) {
+			let bank = new Bank().add(trans.items_received as ItemBank).add(trans.items_sent as ItemBank);
+
+			for (const item of bank.items()) {
+				total.add(item[0].id);
+			}
+		}
+	} else {
+		for (const trans of economyTrans) {
+			total.add(trans.items_received as ItemBank);
+			total.add(trans.items_sent as ItemBank);
+		}
+	}
+
+	return total;
+}
+
 const viewableThings: {
 	name: string;
 	run: (clientSettings: ClientStorage) => Promise<Bank | InteractionReplyOptions>;
@@ -176,6 +211,34 @@ AND ("gear.melee" IS NOT NULL OR
 				}
 			}
 			return bank;
+		}
+	},
+	{
+		name: 'Most Traded Items (30d, Total Volume)',
+		run: async () => {
+			const items = await getAllTradedItems();
+			return {
+				content: items
+					.items()
+					.sort(sorts.quantity)
+					.slice(0, 10)
+					.map((i, index) => `${++index}. ${i[0].name} - ${i[1].toLocaleString()}x traded`)
+					.join('\n')
+			};
+		}
+	},
+	{
+		name: 'Most Traded Items (30d, Unique trades)',
+		run: async () => {
+			const items = await getAllTradedItems(true);
+			return {
+				content: items
+					.items()
+					.sort(sorts.quantity)
+					.slice(0, 10)
+					.map((i, index) => `${++index}. ${i[0].name} - Traded ${i[1].toLocaleString()}x times`)
+					.join('\n')
+			};
 		}
 	}
 ];

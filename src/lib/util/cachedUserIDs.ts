@@ -1,3 +1,4 @@
+import { Stopwatch } from '@sapphire/stopwatch';
 import { ChannelType } from 'discord.js';
 
 import { CLIENT_ID, OWNER_IDS } from '../../config';
@@ -64,7 +65,9 @@ const emojiServers = new Set([
 ]);
 
 export function cacheCleanup() {
-	debugLog('Cache Cleanup', {
+	let stopwatch = new Stopwatch();
+	stopwatch.start();
+	debugLog('Cache Cleanup Start', {
 		type: 'CACHE_CLEANUP'
 	});
 	return runTimedLoggedFn('Cache Cleanup', async () => {
@@ -126,6 +129,11 @@ export function cacheCleanup() {
 					delete role.hoist;
 				}
 			}
+		});
+
+		stopwatch.stop();
+		debugLog(`Cache Cleanup Finish After ${stopwatch.toString()}`, {
+			type: 'CACHE_CLEANUP'
 		});
 	});
 }

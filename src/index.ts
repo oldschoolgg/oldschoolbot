@@ -5,10 +5,11 @@ import './lib/MUser';
 import './lib/util/transactItemsFromBank';
 import './lib/util/logger';
 
+import { Stopwatch } from '@sapphire/stopwatch';
 import * as Sentry from '@sentry/node';
 import { Chart } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { GatewayIntentBits, InteractionType, Options, Partials, TextChannel } from 'discord.js';
+import { GatewayIntentBits, InteractionType, Options, Partials, Routes, TextChannel } from 'discord.js';
 import { isObject, Time } from 'e';
 import { MahojiClient } from 'mahoji';
 import { join } from 'path';
@@ -34,6 +35,7 @@ import { postCommand } from './mahoji/lib/postCommand';
 import { preCommand } from './mahoji/lib/preCommand';
 import { convertMahojiCommandToAbstractCommand } from './mahoji/lib/util';
 
+const stopwatch = new Stopwatch();
 debuglog('Starting...');
 
 if (!production) {
@@ -205,6 +207,15 @@ client.on('guildCreate', guild => {
 	if (BLACKLISTED_GUILDS.has(guild.id) || BLACKLISTED_USERS.has(guild.ownerId)) {
 		guild.leave();
 	}
+});
+
+export const applicationCommands: { id: string; name: string; guildID: string }[] = [];
+client.on('ready', () => console.log(`----------- READY AFTER ${stopwatch.stop().toString()} -----------`));
+client.on('ready', async () => {
+	const appCommands: any = await globalClient.rest.get(
+		production ? Routes.applicationCommands(CLIENT_ID) : Routes.applicationGuildCommands(CLIENT_ID, DEV_SERVER_ID)
+	);
+	applicationCommands.push(...appCommands);
 });
 
 client.on('shardDisconnect', ({ wasClean, code, reason }) => debugLog('Shard Disconnect', { wasClean, code, reason }));
