@@ -7,7 +7,9 @@ export function mentionCommand(name: string, subCommand?: string, subSubCommand?
 		throw new Error(`Command ${name} does not have subcommand ${subCommand}`);
 	}
 
-	const apiCommand = Array.from(globalClient.application?.commands.cache.values()).find(i => i.name === name);
+	const apiCommand = globalClient.application
+		? Array.from(globalClient.application.commands.cache.values()).find(i => i.name === name)
+		: null;
 	if (!apiCommand) {
 		throw new Error(`Command ${name} not found`);
 	}
