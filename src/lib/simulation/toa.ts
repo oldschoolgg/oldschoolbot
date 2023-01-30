@@ -248,7 +248,8 @@ const toaRequirements: {
 			}
 
 			const rangeAmmo = user.gear.range.ammo;
-			if (user.gear.range.weapon?.item !== itemID('Bow of faerdhinen (c)')) {
+			const rangeWeapon = user.gear.range.equippedWeapon();
+			if (rangeWeapon?.id !== itemID('Bow of faerdhinen (c)')) {
 				if (!rangeAmmo || rangeAmmo.quantity < BOW_ARROWS_NEEDED) {
 					return `Need ${BOW_ARROWS_NEEDED} arrows equipped`;
 				}
@@ -645,6 +646,12 @@ export function calcTOALoot({ users, raidLevel }: { users: TOALootUser[]; raidLe
 		if (didGetPet) {
 			loot.add(user.id, "Tumeken's guardian");
 		}
+
+		const eliteClueChance = (user.points / 200_000 / users.length) * 100;
+		if (percentChance(eliteClueChance)) {
+			loot.add(user.id, 'Clue scroll (elite)');
+		}
+		messages.push(`${eliteClueChance}% chance of elite clue`);
 	}
 
 	const specialItemsReceived: number[] = [];
@@ -831,7 +838,6 @@ function calculatePointsAndDeaths(
 	teamSize: number
 ) {
 	let deaths: number[] = [];
-	const messages: string[] = [];
 	let deathChance = calcDeathChance(totalAttempts, raidLevel, coxAndTobKC);
 	const harshEffectivenessScale = exponentialPercentScale(effectiveness, 0.05);
 
@@ -848,17 +854,12 @@ function calculatePointsAndDeaths(
 	points -= tenPercent;
 	points += calcPercentOfNum(harshEffectivenessScale, tenPercent);
 
-	messages.push(
-		`In each of the ${TOARooms.length} rooms, you had a ${deathChance / TOARooms.length} chance of dying`
-	);
-
 	points = Math.floor(points);
 	points = clamp(points, 1, 64_000);
 
 	return {
 		points,
-		deaths,
-		messages
+		deaths
 	};
 }
 
@@ -1306,18 +1307,13 @@ export async function createTOATeam({
 			gearStats,
 			randomNess: true
 		});
-		const {
-			points,
-			deaths,
-			messages: deathMessages
-		} = calculatePointsAndDeaths(
+		const { points, deaths } = calculatePointsAndDeaths(
 			effectiveness,
 			totalAttempts,
 			raidLevel,
 			minigameScores.raids + minigameScores.tob,
 			team.length
 		);
-		messages.push(...deathMessages);
 		arr.push({
 			id: user.id,
 			gearStats,
@@ -1560,7 +1556,7 @@ export async function toaHelpCommand(user: MUser) {
 					totalKC / totalUniques
 			  )} raids, one unique every ${formatDuration(
 					(userStats.total_toa_duration_minutes * 1000) / totalUniques
-			  )} raids)`
+			  )})`
 			: ''
 	}
 

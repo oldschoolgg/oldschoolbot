@@ -72,6 +72,8 @@ export const toaTask: MinionTask = {
 
 		let messages: string[] = [];
 
+		const itemsAddedTeamLoot = new TeamLoot();
+
 		for (let x = 0; x < quantity; x++) {
 			const raidLoot = calcTOALoot({
 				users: users.map(i => {
@@ -130,6 +132,8 @@ export const toaTask: MinionTask = {
 				itemsToAdd: totalLoot.get(userID),
 				collectionLog: true
 			});
+
+			itemsAddedTeamLoot.add(userID, itemsAdded);
 
 			userStatsUpdate(user.id, u => {
 				return {
@@ -192,7 +196,7 @@ export const toaTask: MinionTask = {
 			users: allUsers.map(i => ({
 				id: i.id,
 				duration,
-				loot: totalLoot.get(i.id)
+				loot: itemsAddedTeamLoot.get(i.id)
 			}))
 		});
 
@@ -225,7 +229,7 @@ export const toaTask: MinionTask = {
 				await drawChestLootImage({
 					entries: [
 						{
-							loot: totalLoot.totalLoot(),
+							loot: itemsAddedTeamLoot.totalLoot(),
 							user: allUsers[0],
 							previousCL: previousCLs[0],
 							customTexts: makeCustomTexts(leaderSoloUser.id)
@@ -245,7 +249,7 @@ export const toaTask: MinionTask = {
 			allUsers.length <= 3
 				? await drawChestLootImage({
 						entries: allUsers.map((u, index) => ({
-							loot: totalLoot.get(u.id),
+							loot: itemsAddedTeamLoot.get(u.id),
 							user: u,
 							previousCL: previousCLs[index],
 							customTexts: makeCustomTexts(u.id)
