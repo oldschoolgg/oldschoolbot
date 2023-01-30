@@ -2,6 +2,7 @@ import type { activity_type_enum, CropUpgradeType } from '@prisma/client';
 
 import type { IPatchData } from '../minions/farming/types';
 import type { MinigameName } from '../settings/minigames';
+import { RaidLevel } from '../simulation/toa';
 import type { Peak } from '../tickers';
 import type { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
 import type { ItemBank } from '.';
@@ -300,6 +301,19 @@ export interface TheatreOfBloodTaskOptions extends ActivityTaskOptions {
 	fakeDuration: number;
 	wipedRoom: null | number;
 	deaths: number[][];
+}
+
+type UserID = string;
+type Points = number;
+type RoomIDsDiedAt = number[];
+
+export interface TOAOptions extends ActivityTaskOptions {
+	leader: string;
+	users: [UserID, Points[], RoomIDsDiedAt[]][];
+	raidLevel: RaidLevel;
+	fakeDuration: number;
+	wipedRoom: null | number;
+	quantity: number;
 }
 
 export interface NexTaskOptions extends ActivityTaskOptions {

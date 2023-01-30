@@ -34,6 +34,12 @@ export class TeamLoot {
 		return bank;
 	}
 
+	remove(id: string, ...args: Parameters<Bank['remove']>) {
+		const bank = this.get(id);
+		bank.remove(...args);
+		return bank;
+	}
+
 	entries() {
 		return Array.from(this.map.entries());
 	}
