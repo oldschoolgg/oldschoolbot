@@ -101,13 +101,12 @@ export const toaTask: MinionTask = {
 			messages.push(...raidLoot.messages);
 		}
 		messages = uniqueArr(messages);
-		await Promise.all(allUsers.map(u => incrementMinigameScore(u.id, 'tombs_of_amascut', quantity)));
+		const minigameIncrementResult = await Promise.all(
+			allUsers.map(u => incrementMinigameScore(u.id, 'tombs_of_amascut', quantity))
+		);
 
 		let resultMessage = isSolo
-			? `${leaderSoloUser}, your minion finished a Tombs of Amascut raid! Your KC is now ${await getMinigameScore(
-					leaderSoloUser.id,
-					'tombs_of_amascut'
-			  )}.\n`
+			? `${leaderSoloUser}, your minion finished a Tombs of Amascut raid! Your KC is now ${minigameIncrementResult[0].newScore}.\n`
 			: `<@${leader}> Your Raid${quantity > 1 ? 's have' : ' has'} finished.\n`;
 
 		for (let [userID, userData] of raidResults.entries()) {
@@ -156,7 +155,7 @@ export const toaTask: MinionTask = {
 					`${Emoji.Purple} ${
 						user.badgedUsername
 					} just received **${itemsToAnnounce}** on their ${formatOrdinal(
-						await getMinigameScore(user.id, 'tombs_of_amascut')
+						minigameIncrementResult[0].newScore
 					)} raid.`
 				);
 			}
