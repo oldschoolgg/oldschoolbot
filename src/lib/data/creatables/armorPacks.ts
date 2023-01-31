@@ -2469,6 +2469,10 @@ const armorSetsSrc: { unpacked: Bank; packed: Item }[] = [
 	{
 		unpacked: new Bank().add("Dagon'hai hat").add("Dagon'hai robe top").add("Dagon'hai robe bottom"),
 		packed: getOSItem("Dagon'hai robes set")
+	},
+	{
+		unpacked: new Bank().add('Masori mask (f)').add('Masori body (f)').add('Masori chaps (f)'),
+		packed: getOSItem('Masori armour set (f)')
 	}
 ];
 

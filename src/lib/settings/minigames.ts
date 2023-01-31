@@ -220,6 +220,11 @@ export const Minigames: readonly BotMinigame[] = [
 		name: 'Tinkering Workshop',
 		aliases: ['tinkering workshop', 'tw'],
 		column: 'tinkering_workshop'
+	},
+	{
+		name: 'Tombs of Amascut',
+		aliases: ['toa', 'tombs of amascut'],
+		column: 'tombs_of_amascut'
 	}
 ];
 

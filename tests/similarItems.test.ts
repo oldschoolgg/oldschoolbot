@@ -1,6 +1,7 @@
 import { itemID } from 'oldschooljs/dist/util';
 
 import { gorajanWarriorOutfit } from '../src/lib/data/CollectionsExport';
+import { getSimilarItems } from '../src/lib/data/similarItems';
 import { Gear } from '../src/lib/structures/Gear';
 import { itemNameFromID } from '../src/lib/util';
 import resolveItems from '../src/lib/util/resolveItems';
@@ -233,4 +234,21 @@ describe('Gear', () => {
 			expect(is).toEqual(false);
 		}
 	}
+
+	expect(getSimilarItems(itemID('Infernal max cape'))).toEqual([]);
+
+	test('toa', () => {
+		let testGear = new Gear({ cape: 'Masori assembler max cape' });
+		expect(testGear.hasEquipped("Ava's assembler")).toEqual(true);
+		let testGear2 = new Gear({ weapon: "Osmumten's fang (or)" });
+		expect(testGear2.hasEquipped("Osmumten's fang")).toEqual(true);
+		let testGear3 = new Gear({ cape: 'Masori assembler' });
+		expect(testGear3.hasEquipped("Ava's assembler")).toEqual(true);
+		let testGear4 = new Gear({ cape: "Elidinis' ward (or)" });
+		expect(testGear4.hasEquipped("Elidinis' ward (f)")).toEqual(true);
+	});
+
+	test('Divine rune pouch', () => {
+		expect(getSimilarItems(itemID('Rune pouch'))).toEqual(resolveItems(['Rune pouch', 'Divine rune pouch']));
+	});
 });

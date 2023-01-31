@@ -19,7 +19,8 @@ import {
 	anglerOutfit,
 	evilChickenOutfit,
 	gnomeRestaurantCL,
-	guardiansOfTheRiftCL
+	guardiansOfTheRiftCL,
+	toaCL
 } from '../../lib/data/CollectionsExport';
 import pets from '../../lib/data/pets';
 import { addToDoubleLootTimer } from '../../lib/doubleLoot';
@@ -348,6 +349,11 @@ const dryStreakMinigames: DrystreakMinigame[] = [
 		name: 'Wintertodt',
 		key: 'wintertodt',
 		items: resolveItems(['Tome of fire', 'Phoenix', 'Bruma torch', 'Warm gloves'])
+	},
+	{
+		name: 'Tombs of Amascut',
+		key: 'tombs_of_amascut',
+		items: toaCL
 	},
 	{
 		name: 'Baxtorian Bathhouses',

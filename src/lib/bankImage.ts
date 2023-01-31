@@ -1,4 +1,5 @@
-import { chunk } from 'e';
+import { AttachmentBuilder } from 'discord.js';
+import { chunk, randInt } from 'e';
 import { existsSync } from 'fs';
 import * as fs from 'fs/promises';
 import fetch from 'node-fetch';
@@ -8,7 +9,7 @@ import { toKMB } from 'oldschooljs/dist/util/util';
 import * as path from 'path';
 import { Canvas, CanvasRenderingContext2D, FontLibrary, Image, loadImage } from 'skia-canvas/lib';
 
-import { BitField, PerkTier } from '../lib/constants';
+import { BitField, PerkTier, toaPurpleItems } from '../lib/constants';
 import { allCLItems } from '../lib/data/Collections';
 import { filterableTypes } from '../lib/data/filterables';
 import { calcWholeDisXP, findDisassemblyGroup } from '../lib/invention/disassemble';
@@ -195,6 +196,19 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Avocado seed'), 'avocado'],
 	[i('Lychee seed'), 'lychee']
 ]);
+
+function drawTitle(ctx: CanvasRenderingContext2D, title: string, canvas: Canvas) {
+	// Draw Bank Title
+	ctx.font = '16px RuneScape Bold 12';
+	const titleWidthPx = ctx.measureText(title);
+	let titleX = Math.floor(floor(canvas.width / 2) - titleWidthPx.width / 2);
+
+	ctx.fillStyle = '#000000';
+	fillTextXTimesInCtx(ctx, title, titleX + 1, 22);
+
+	ctx.fillStyle = '#ff981f';
+	fillTextXTimesInCtx(ctx, title, titleX, 21);
+}
 
 export const bankFlags = [
 	'show_price',
@@ -422,7 +436,8 @@ class BankImageTask {
 		currentCL: Bank | undefined,
 		user: MUser | undefined,
 		mahojiFlags: BankFlag[] | undefined,
-		weightings: Readonly<ItemBank> | undefined
+		weightings: Readonly<ItemBank> | undefined,
+		verticalSpacer = 0
 	) {
 		// Draw Items
 		ctx.textAlign = 'start';
@@ -432,7 +447,7 @@ class BankImageTask {
 		let xLoc = 0;
 		let yLoc = compact ? 5 : 0;
 		for (let i = 0; i < items.length; i++) {
-			if (i % itemsPerRow === 0) yLoc += floor((itemSize + spacer / 2) * (compact ? 0.9 : 1.08));
+			if (i % itemsPerRow === 0) yLoc += floor((itemSize + spacer / 2) * (compact ? 0.9 : 1.08)) + verticalSpacer;
 			// For some reason, it starts drawing at -2 so we compensate that
 			// Adds the border width
 			// Adds distance from side
@@ -445,6 +460,8 @@ class BankImageTask {
 			const isNewCLItem =
 				flags.has('showNewCL') && currentCL && !currentCL.has(item.id) && allCLItems.includes(item.id);
 
+			const x = floor(xLoc + (itemSize - itemWidth) / 2) + 2;
+			const y = floor(yLoc + (itemSize - itemHeight) / 2);
 			const glow = this.glows.get(item.id);
 			if (glow) {
 				const centerX = xLoc + itemImage.width / 2;
@@ -456,24 +473,9 @@ class BankImageTask {
 			}
 
 			if (isNewCLItem) {
-				drawImageWithOutline(
-					ctx,
-					itemImage,
-					floor(xLoc + (itemSize - itemWidth) / 2) + 2,
-					floor(yLoc + (itemSize - itemHeight) / 2),
-					itemWidth,
-					itemHeight,
-					'#ac7fff',
-					1
-				);
+				drawImageWithOutline(ctx, itemImage, x, y, itemWidth, itemHeight, '#ac7fff', 1);
 			} else {
-				ctx.drawImage(
-					itemImage,
-					floor(xLoc + (itemSize - itemWidth) / 2) + 2,
-					floor(yLoc + (itemSize - itemHeight) / 2),
-					itemWidth,
-					itemHeight
-				);
+				ctx.drawImage(itemImage, x, y, itemWidth, itemHeight);
 			}
 
 			// Do not draw the item qty if there is 0 of that item in the bank
@@ -697,35 +699,7 @@ class BankImageTask {
 			title += ` (Value: ${toKMB(totalValue)})`;
 		}
 
-		if (bgImage.id === 100) {
-			// Draw Bank Title
-			ctx.font = '16px RuneScape Bold 12';
-			const titleWidthPx = ctx.measureText(title);
-			let titleX = Math.floor(floor(canvas.width / 2) - titleWidthPx.width / 2);
-
-			ctx.fillStyle = '#000';
-			fillTextXTimesInCtx(ctx, title, titleX + 1, 22);
-
-			ctx.fillStyle = '#fc0303';
-			fillTextXTimesInCtx(ctx, title, titleX, 21);
-
-			ctx.fillStyle = '#000';
-			fillTextXTimesInCtx(ctx, 'Merry Christmas!', titleX + 20 + 1, 37);
-
-			ctx.fillStyle = '#00ff1a';
-			fillTextXTimesInCtx(ctx, 'Merry Christmas!', titleX + 20, 37);
-		} else {
-			// Draw Bank Title
-			ctx.font = '16px RuneScape Bold 12';
-			const titleWidthPx = ctx.measureText(title);
-			let titleX = Math.floor(floor(canvas.width / 2) - titleWidthPx.width / 2);
-
-			ctx.fillStyle = '#000000';
-			fillTextXTimesInCtx(ctx, title, titleX + 1, 22);
-
-			ctx.fillStyle = '#ff981f';
-			fillTextXTimesInCtx(ctx, title, titleX, 21);
-		}
+		drawTitle(ctx, title, canvas);
 
 		// Skips border if noBorder is set
 		if (!isTransparent && noBorder !== 1) {
@@ -752,6 +726,95 @@ class BankImageTask {
 			isTransparent
 		};
 	}
+}
+
+const chestLootTypes = [
+	{
+		title: 'Tombs of Amascut',
+		chestImage: loadImage('./src/lib/resources/images/toaChest.png'),
+		chestImagePurple: loadImage('./src/lib/resources/images/toaChestPurple.png'),
+		width: 240,
+		height: 220,
+		purpleItems: toaPurpleItems
+	}
+] as const;
+
+interface CustomText {
+	x: number;
+	y: number;
+	text: string;
+}
+export async function drawChestLootImage(options: {
+	entries: { previousCL: Bank; user: MUser; loot: Bank; customTexts: CustomText[] }[];
+	type: typeof chestLootTypes[number]['title'];
+}) {
+	const type = chestLootTypes.find(t => t.title === options.type);
+	if (!type) throw new Error(`Invalid chest type: ${options.type}`);
+
+	const canvases: Canvas[] = [];
+
+	let anyoneGotPurple = false;
+
+	for (const { previousCL, loot, user, customTexts } of options.entries) {
+		const canvas = new Canvas(type.width, type.height);
+		const ctx = canvas.getContext('2d');
+
+		const { sprite } = bankImageGenerator.getBgAndSprite();
+
+		ctx.imageSmoothingEnabled = false;
+		ctx.fillStyle = ctx.createPattern(sprite.repeatableBg, 'repeat')!;
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
+		const isPurple: boolean = loot.items().some(([item]) => type.purpleItems.includes(item.id));
+		if (isPurple) anyoneGotPurple = true;
+		const image = isPurple ? await type.chestImagePurple : await type.chestImage;
+		ctx.drawImage(image, canvas.width - image.width + 25, 44 + canvas.height / 4 - image.height / 2);
+
+		drawTitle(ctx, `${user.rawUsername} (${toKMB(loot.value())})`, canvas);
+		ctx.font = '16px OSRSFontCompact';
+		bankImageGenerator.drawBorder(ctx, sprite, true);
+		await bankImageGenerator.drawItems(
+			ctx,
+			false,
+			22,
+			2,
+			55,
+			loot.items(),
+			new Map().set('showNewCL', true),
+			previousCL,
+			user,
+			undefined,
+			undefined,
+			10
+		);
+
+		ctx.fillStyle = '#FFFF00';
+		ctx.font = '16px OSRSFontCompact';
+		for (const text of customTexts) {
+			fillTextXTimesInCtx(ctx, text.text, text.x, text.y);
+		}
+		canvases.push(canvas);
+	}
+
+	const fileName = `${anyoneGotPurple ? 'SPOILER_' : ''}toaloot-${randInt(1, 1000)}.png`;
+
+	if (canvases.length === 1) {
+		return new AttachmentBuilder(await canvases[0].toBuffer('png'), {
+			name: fileName
+		});
+	}
+	let spaceBetweenImages = 15;
+	const combinedCanvas = new Canvas(
+		canvases[0].width * canvases.length + spaceBetweenImages * canvases.length,
+		canvases[0].height
+	);
+	const combinedCtx = combinedCanvas.getContext('2d');
+	for (const c of canvases) {
+		const index = canvases.indexOf(c);
+		combinedCtx.drawImage(c, index * c.width + spaceBetweenImages * index, 0);
+	}
+	return new AttachmentBuilder(await combinedCanvas.toBuffer('png'), {
+		name: fileName
+	});
 }
 
 declare global {

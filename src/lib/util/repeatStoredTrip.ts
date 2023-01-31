@@ -62,6 +62,7 @@ import type {
 	TheatreOfBloodTaskOptions,
 	TiaraRunecraftActivityTaskOptions,
 	TinkeringWorkshopOptions,
+	TOAOptions,
 	WoodcuttingActivityTaskOptions
 } from '../types/minions';
 import { itemNameFromID } from '../util';
@@ -684,6 +685,18 @@ export const tripHandlers = {
 		args: (data: ShadesOfMortonOptions) => ({
 			shades_of_morton: {
 				start: { shade: data.shadeID, logs: itemNameFromID(data.logID) }
+			}
+		})
+	},
+	[activity_type_enum.TombsOfAmascut]: {
+		commandName: 'raid',
+		args: (data: TOAOptions) => ({
+			toa: {
+				start: {
+					raid_level: data.raidLevel,
+					max_team_size: data.users.length,
+					solo: data.users.length === 1
+				}
 			}
 		})
 	}

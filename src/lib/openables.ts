@@ -26,6 +26,17 @@ import { formatOrdinal } from './util/formatOrdinal';
 import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
 
+const CacheOfRunesTable = new LootTable()
+	.add('Death rune', [1000, 1500], 2)
+	.add('Blood rune', [1000, 1500], 2)
+	.add('Soul rune', [1000, 1500], 2)
+	.add('Death rune', [1800, 2400], 1)
+	.add('Soul rune', [1800, 2400], 1)
+	.add('Death rune', [1800, 2400], 1)
+	.add(
+		new LootTable().add('Death rune', [2800, 3600]).add('Soul rune', [2800, 3600]).add('Blood rune', [2800, 3600])
+	);
+
 export interface OpenArgs {
 	quantity: number;
 	user: MUser;
@@ -420,6 +431,14 @@ export const allOpenables: UnifiedOpenable[] = [
 		aliases: ['bag full of gems', 'gem bag'],
 		output: BagFullOfGemsTable,
 		allItems: BagFullOfGemsTable.allItems
+	},
+	{
+		name: 'Cache of runes',
+		id: itemID('Cache of runes'),
+		openedItem: getOSItem('Cache of runes'),
+		aliases: ['cache of runes'],
+		output: CacheOfRunesTable,
+		allItems: CacheOfRunesTable.allItems
 	},
 	...clueOpenables,
 	...osjsOpenables,

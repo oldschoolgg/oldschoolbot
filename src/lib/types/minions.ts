@@ -1,15 +1,16 @@
 import { CropUpgradeType } from '@prisma/client';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { TeamMember } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 
 import { Kibble } from '../data/kibble';
 import { MaterialType } from '../invention';
-import { IPatchData } from '../minions/farming/types';
+import type { IPatchData } from '../minions/farming/types';
 import { Monkey } from '../monkeyRumble';
-import { MinigameName } from '../settings/settings';
+import type { MinigameName } from '../settings/minigames';
+import { RaidLevel } from '../simulation/toa';
 import { BossUser } from '../structures/Boss';
-import { Peak } from '../tickers';
-import { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
+import type { Peak } from '../tickers';
+import type { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
+import type { ItemBank } from '.';
 import { activity_type_enum } from '.prisma/client';
 
 export interface ActivityTaskOptions {
@@ -342,6 +343,19 @@ export interface TheatreOfBloodTaskOptions extends ActivityTaskOptions {
 	fakeDuration: number;
 	wipedRoom: null | number;
 	deaths: number[][];
+}
+
+type UserID = string;
+type Points = number;
+type RoomIDsDiedAt = number[];
+
+export interface TOAOptions extends ActivityTaskOptions {
+	leader: string;
+	users: [UserID, Points[], RoomIDsDiedAt[]][];
+	raidLevel: RaidLevel;
+	fakeDuration: number;
+	wipedRoom: null | number;
+	quantity: number;
 }
 
 export interface NexTaskOptions extends ActivityTaskOptions {
