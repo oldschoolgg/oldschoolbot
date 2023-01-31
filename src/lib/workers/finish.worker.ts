@@ -16,7 +16,7 @@ export default async ({ name }: FinishWorkerArgs): FinishWorkerReturn => {
 	for (let i = 0; i < maxAttempts; i++) {
 		if (val.cl.every(id => loot.has(id))) break;
 		kc++;
-		const thisLoot = val.kill({ accumulatedLoot: loot });
+		const thisLoot = val.kill({ accumulatedLoot: loot, totalRuns: i });
 
 		if (val.tertiaryDrops) {
 			for (const drop of val.tertiaryDrops) {

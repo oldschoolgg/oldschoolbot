@@ -48,6 +48,7 @@ import resolveItems from './util/resolveItems';
 
 interface KillArgs {
 	accumulatedLoot: Bank;
+	totalRuns: number;
 }
 
 export interface Finishable {
@@ -275,12 +276,12 @@ export const finishables: Finishable[] = [
 			'Bloody notes'
 		]),
 		aliases: ['shades of morton'],
-		kill: ({ accumulatedLoot }) => {
+		kill: ({ accumulatedLoot, totalRuns }) => {
 			for (const tier of ['Bronze', 'Steel', 'Black', 'Silver', 'Gold'] as const) {
 				const key = getOSItem(`${tier} key red`);
 				const lock = getOSItem(`${tier} locks`);
 				if (accumulatedLoot.has(lock.id) && tier !== 'Gold') continue;
-				return openShadeChest({ item: key, allItemsOwned: accumulatedLoot, qty: 1 }).bank;
+				return openShadeChest({ item: key, allItemsOwned: accumulatedLoot, qty: totalRuns }).bank;
 			}
 			throw new Error('Not possible!');
 		}

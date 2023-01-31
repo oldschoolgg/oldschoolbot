@@ -166,7 +166,6 @@ const source: [string, (string | number)[]][] = [
 	['Infernal cape', ['Infernal max cape', 'Infernal max cape (l)', 'TzKal cape']],
 	['Ardougne cloak 4', ['Ardougne max cape']],
 	["Ava's accumulator", ['Accumulator max cape']],
-	["Ava's assembler", ['Assembler max cape', 'Assembler max cape (l)']],
 	['Mythical cape', ['Mythical max cape']],
 	['Achievement diary cape', ['Achievement diary cape(t)']],
 	[
@@ -266,7 +265,17 @@ const source: [string, (string | number)[]][] = [
 	['Prayer master cape', ["Combatant's cape"]],
 	['Ranged master cape', ["Combatant's cape"]],
 	['Strength master cape', ["Combatant's cape"]],
-	["Ava's assembler", ["Combatant's cape", 'Assembler max cape', 'Ranged master cape']],
+	[
+		"Ava's assembler",
+		[
+			"Combatant's cape",
+			'Assembler max cape',
+			'Ranged master cape',
+			'Assembler max cape (l)',
+			'Masori assembler',
+			'Masori assembler max cape'
+		]
+	],
 	['Crafting master cape', ["Artisan's cape"]],
 	['Construction master cape', ["Artisan's cape"]],
 	['Cooking master cape', ["Artisan's cape"]],
@@ -374,7 +383,10 @@ const source: [string, (string | number)[]][] = [
 		'Robe bottoms of the eye',
 		['Robe bottoms of the eye (red)', 'Robe bottoms of the eye (green)', 'Robe bottoms of the eye (blue)']
 	],
-
+	["Osmumten's fang", ["Osmumten's fang (or)"]],
+	["Elidinis' ward (f)", ["Elidinis' ward (or)"]],
+	['Rune pouch', ['Divine rune pouch']],
+	['Ghrazi rapier', ['Holy ghrazi rapier']],
 	// Inventions
 	['Inferno adze', ['Superior inferno adze']],
 	['Gorajan bonecrusher', ['Superior bonecrusher']],

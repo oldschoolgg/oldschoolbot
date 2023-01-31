@@ -458,6 +458,7 @@ export const chambersOfXericMetamorphPets = resolveItems([
 	'Vespina'
 ]);
 export const tobMetamorphPets = resolveItems(["Lil' Maiden", "Lil' Bloat", "Lil' Nylo", "Lil' Sot", "Lil' Xarp"]);
+export const toaMetamorphPets = resolveItems(['Zebo', "Tumeken's guardian", 'Kephriti', 'Babi', 'Akkhito']);
 export const chambersOfXericNormalCL = resolveItems([
 	'Olmlet',
 	'Twisted bow',
@@ -511,6 +512,36 @@ export const theatreOfBLoodCL = resolveItems([
 	...theatreOfBloodCapes,
 	...theatreOfBloodHardUniques
 ]);
+
+export const toaCL = resolveItems([
+	"Tumeken's guardian",
+	"Tumeken's shadow (uncharged)",
+	"Elidinis' ward",
+	'Masori mask',
+	'Masori body',
+	'Masori chaps',
+	'Lightbearer',
+	"Osmumten's fang",
+	'Thread of elidinis',
+	'Breach of the scarab',
+	'Eye of the corruptor',
+	'Jewel of the sun',
+	'Menaphite ornament kit',
+	'Cursed phalanx',
+	'Masori crafting kit',
+	'Cache of runes',
+	"Icthlarin's shroud (tier 1)",
+	"Icthlarin's shroud (tier 2)",
+	"Icthlarin's shroud (tier 3)",
+	"Icthlarin's shroud (tier 4)",
+	"Icthlarin's shroud (tier 5)",
+	'Remnant of akkha',
+	'Remnant of ba-ba',
+	'Remnant of kephri',
+	'Remnant of zebak',
+	'Ancient remnant'
+]);
+
 export const cluesBeginnerCL = resolveItems([
 	'Mole slippers',
 	'Frog slippers',
@@ -2454,7 +2485,8 @@ export const allPetIDs = [
 	...tobMetamorphPets,
 	...growablePets.map(petSeries => petSeries.stages).flat(1),
 	...resolveItems(['Little parasite', 'Dark squirrel', 'Black swan', 'Abyssal protector']),
-	...metamorphPets
+	...metamorphPets,
+	...toaMetamorphPets
 ];
 
 export const antiSantaOutfit = new Bank({

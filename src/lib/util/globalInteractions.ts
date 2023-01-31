@@ -13,6 +13,7 @@ import { ClueTier } from '../clues/clueTiers';
 import { PerkTier } from '../constants';
 import { prisma } from '../settings/prisma';
 import { runCommand } from '../settings/settings';
+import { toaHelpCommand } from '../simulation/toa';
 import { repeatTameTrip } from '../tames';
 import { ItemBank } from '../types';
 import { formatDuration, removeFromArr } from '../util';
@@ -54,7 +55,8 @@ const globalInteractionActions = [
 	'REPEAT_TAME_TRIP',
 	'ITEM_CONTRACT_SEND',
 	'DO_FISHING_CONTEST',
-	'DO_SHOOTING_STAR'
+	'DO_SHOOTING_STAR',
+	'CHECK_TOA'
 ] as const;
 
 export type GlobalInteractionAction = typeof globalInteractionActions[number];
@@ -325,6 +327,9 @@ export async function interactionHook(interaction: Interaction) {
 	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, interaction);
 	if (id.includes('REPEAT_TRIP')) return repeatTripHandler(user, interaction);
 	if (id.includes('DONATE_IC')) return donateICHandler(interaction);
+	if (id === 'TOA_CHECK') {
+		return interactionReply(interaction, { content: await toaHelpCommand(user), ephemeral: true });
+	}
 
 	if (!isValidGlobalInteraction(id)) return;
 	if (user.isBusy || globalClient.isShuttingDown) {

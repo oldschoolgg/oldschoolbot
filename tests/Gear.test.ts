@@ -60,7 +60,6 @@ describe('Gear', () => {
 				'Woodcutting cape'
 			].sort()
 		);
-		expect(allItems.length).toEqual(25);
 	});
 
 	test('equippedWeapon', () => {

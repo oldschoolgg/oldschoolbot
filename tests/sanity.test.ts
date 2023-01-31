@@ -2,7 +2,7 @@ import { Items, Monsters } from 'oldschooljs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { allMbTables, embTable, PMBTable, tmbTable, umbTable } from '../src/lib/bsoOpenables';
-import { allPetIDs, masterCapesCL } from '../src/lib/data/CollectionsExport';
+import { allPetIDs, masterCapesCL, toaCL } from '../src/lib/data/CollectionsExport';
 import { itemsToDelete } from '../src/lib/deletedItems';
 import { dyedItems } from '../src/lib/dyedItems';
 import { growablePets } from '../src/lib/growablePets';
@@ -89,12 +89,12 @@ describe('Sanity', () => {
 			'Justiciar chestguard',
 			'Justiciar faceguard',
 			'Accursed sceptre',
-			'Masori assembler max cape'
+			'Masori assembler max cape',
+			...toaCL
 		]);
 		for (const i of shouldntBeIn) {
 			if (allMbTables.includes(i)) {
-				console.error('wtf');
-				throw new Error(`Items rolled includes ${itemNameFromID(i)}`);
+				throw new Error(`${itemNameFromID(i)} is in the mystery box tables, but it shouldn't be.`);
 			}
 		}
 	});

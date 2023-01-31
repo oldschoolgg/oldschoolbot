@@ -1,5 +1,5 @@
 import { Embed } from '@discordjs/builders';
-import { BaseMessageOptions, bold, Message, time } from 'discord.js';
+import { BaseMessageOptions, bold, ButtonBuilder, ButtonStyle, Message, time } from 'discord.js';
 import { Time } from 'e';
 import { Items } from 'oldschooljs';
 
@@ -7,12 +7,13 @@ import { CLIENT_ID } from '../config';
 import { PATRON_DOUBLE_LOOT_COOLDOWN } from '../mahoji/commands/tools';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
 import { Cooldowns } from '../mahoji/lib/Cooldowns';
-import { Emoji, secretItems } from './constants';
+import { mentionCommand } from './commandMention';
+import { BitField, Emoji, secretItems } from './constants';
 import { customItems } from './customItems/util';
 import { DOUBLE_LOOT_FINISH_TIME_CACHE, isDoubleLootActive } from './doubleLoot';
 import { giveBoxResetTime, itemContractResetTime, spawnLampResetTime } from './MUser';
 import { prisma } from './settings/prisma';
-import { channelIsSendable, formatDuration, isFunction, toKMB } from './util';
+import { channelIsSendable, formatDuration, isFunction, makeComponents, toKMB } from './util';
 import { makeBankImage } from './util/makeBankImage';
 import { minionStatsEmbed } from './util/minionStatsEmbed';
 
@@ -193,6 +194,30 @@ const mentionCommands: MentionCommand[] = [
 			msg.reply({
 				content,
 				components
+			});
+		}
+	},
+	{
+		name: 'sendtoabutton',
+		aliases: ['sendtoabutton'],
+		description: 'Shows your stats.',
+		run: async ({ msg, user }: MentionCommandOptions) => {
+			if ([BitField.isModerator].every(bit => !user.bitfield.includes(bit))) {
+				return;
+			}
+			msg.reply({
+				content: `Click this button to find out if you're ready to do Tombs of Amascut! You can also use the ${mentionCommand(
+					'raid',
+					'toa',
+					'help'
+				)} command.`,
+				components: makeComponents([
+					new ButtonBuilder()
+						.setStyle(ButtonStyle.Primary)
+						.setCustomId('TOA_CHECK')
+						.setLabel('Check TOA Requirements')
+						.setEmoji('1069174271894638652')
+				])
 			});
 		}
 	},

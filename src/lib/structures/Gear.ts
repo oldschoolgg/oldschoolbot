@@ -1,5 +1,5 @@
 import { GearPreset } from '@prisma/client';
-import { notEmpty, objectKeys } from 'e';
+import { notEmpty, objectKeys, uniqueArr } from 'e';
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 
 import { getSimilarItems, inverseSimilarItems } from '../data/similarItems';
@@ -380,7 +380,7 @@ export class Gear {
 			}
 		}
 
-		return values;
+		return uniqueArr(values);
 	}
 
 	hasEquipped(_items: number | string | (string | number)[], every = false, includeSimilar = true) {

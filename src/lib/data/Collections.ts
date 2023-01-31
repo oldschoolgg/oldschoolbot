@@ -35,6 +35,7 @@ import { nexLootTable, NexMonster } from '../nex';
 import type { MinigameName } from '../settings/minigames';
 import { GrandmasterClueTable } from '../simulation/grandmasterClue';
 import { pumpkinHeadUniqueTable } from '../simulation/pumpkinHead';
+import { getToaKCs } from '../simulation/toa';
 import { Cookables } from '../skilling/skills/cooking';
 import { Craftables } from '../skilling/skills/crafting/craftables';
 import { allFarmingItems } from '../skilling/skills/farming';
@@ -158,6 +159,7 @@ import {
 	theNightmareCL,
 	thermonuclearSmokeDevilCL,
 	titheFarmCL,
+	toaCL,
 	treeBeardCL,
 	troubleBrewingCL,
 	tzHaarCL,
@@ -579,6 +581,21 @@ export const allCollectionLogs: ICollection = {
 				isActivity: true,
 				fmtProg: ({ minigames }) => {
 					return [`${minigames.tob} KC, ${minigames.tob_hard} Hard KC`];
+				}
+			},
+			'Tombs of Amascut': {
+				alias: ['toa'],
+				kcActivity: {
+					Default: async (_, minigameScores) =>
+						minigameScores.find(i => i.minigame.column === 'tombs_of_amascut')!.score,
+					Entry: async user => getToaKCs(user).then(i => i.entryKC),
+					Normal: async user => getToaKCs(user).then(i => i.normalKC),
+					Expert: async user => getToaKCs(user).then(i => i.expertKC)
+				},
+				items: toaCL,
+				isActivity: true,
+				fmtProg: ({ minigames }) => {
+					return [`${minigames.tombs_of_amascut} KC`];
 				}
 			},
 			'Tormented Demons': {
