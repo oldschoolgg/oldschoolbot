@@ -29,9 +29,9 @@ interface RaidResultUser {
 export const toaTask: MinionTask = {
 	type: 'TombsOfAmascut',
 	async run(data: TOAOptions) {
-		const { channelID, users, raidLevel, duration, leader, quantity, wipedRoom } = data;
-		const isSolo = users.length === 1;
-		const allUsers = await Promise.all(users.map(async u => mUserFetch(u[0])));
+		const { channelID, raidLevel, duration, leader, quantity, wipedRoom, detailedUsers } = data;
+		const isSolo = detailedUsers.length === 1;
+		const allUsers = await Promise.all(detailedUsers.map(async u => mUserFetch(u[0])));
 		const leaderSoloUser = allUsers[0];
 
 		const previousCLs = allUsers.map(i => i.cl.clone());
@@ -76,7 +76,7 @@ export const toaTask: MinionTask = {
 
 		for (let x = 0; x < quantity; x++) {
 			const raidLoot = calcTOALoot({
-				users: users.map(i => {
+				users: detailedUsers.map(i => {
 					const fullUser = allUsers.find(u => u.id === i[0])!;
 					return {
 						id: i[0],
@@ -88,7 +88,7 @@ export const toaTask: MinionTask = {
 				}),
 				raidLevel
 			});
-			for (const [id, points, deaths] of users) {
+			for (const [id, points, deaths] of detailedUsers) {
 				const currentUser = raidResults.get(id)!;
 				currentUser.points += points[x];
 				currentUser.deaths += deaths[x].length;
@@ -173,7 +173,7 @@ export const toaTask: MinionTask = {
 				fakeDuration: data.fakeDuration,
 				user,
 				raidLevel,
-				teamSize: users.length,
+				teamSize: detailedUsers.length,
 				points: raidResults.get(user.id)!.points
 			});
 			const xpStrings = await Promise.all(xpPromises);

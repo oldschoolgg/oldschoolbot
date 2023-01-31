@@ -20,6 +20,10 @@ export interface ActivityTaskOptionsWithQuantity extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface ActivityTaskOptionsWithUsers extends ActivityTaskOptions {
+	users: string[];
+}
+
 export interface RunecraftActivityTaskOptions extends ActivityTaskOptions {
 	runeID: number;
 	essenceQuantity: number;
@@ -287,14 +291,14 @@ export interface GroupMonsterActivityTaskOptions extends MonsterActivityTaskOpti
 	users: string[];
 }
 
-export interface RaidsOptions extends ActivityTaskOptions {
+export interface RaidsOptions extends ActivityTaskOptionsWithUsers {
 	leader: string;
 	users: string[];
 	challengeMode: boolean;
 	quantity?: number;
 }
 
-export interface TheatreOfBloodTaskOptions extends ActivityTaskOptions {
+export interface TheatreOfBloodTaskOptions extends ActivityTaskOptionsWithUsers {
 	leader: string;
 	users: string[];
 	hardMode: boolean;
@@ -307,19 +311,18 @@ type UserID = string;
 type Points = number;
 type RoomIDsDiedAt = number[];
 
-export interface TOAOptions extends ActivityTaskOptions {
+export interface TOAOptions extends ActivityTaskOptionsWithUsers {
 	leader: string;
-	users: [UserID, Points[], RoomIDsDiedAt[]][];
+	detailedUsers: [UserID, Points[], RoomIDsDiedAt[]][];
 	raidLevel: RaidLevel;
 	fakeDuration: number;
 	wipedRoom: null | number;
 	quantity: number;
 }
 
-export interface NexTaskOptions extends ActivityTaskOptions {
+export interface NexTaskOptions extends ActivityTaskOptionsWithUsers {
 	quantity: number;
 	leader: string;
-	users: string[];
 	userDetails: [string, number, number[]][];
 	fakeDuration: number;
 	wipedKill: number | null;

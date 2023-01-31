@@ -1210,7 +1210,7 @@ export async function toaStartCommand(
 		}))
 	});
 
-	let userArr: TOAOptions['users'] = [];
+	let userArr: TOAOptions['detailedUsers'] = [];
 	for (const user of parsedTeam) {
 		userArr.push([user.id, [user.points], [user.deaths]]);
 	}
@@ -1221,7 +1221,8 @@ export async function toaStartCommand(
 		duration: deathDuration ?? duration,
 		type: 'TombsOfAmascut',
 		leader: user.id,
-		users: userArr,
+		users: users.map(i => i.id),
+		detailedUsers: userArr,
 		wipedRoom: wipedRoom === null ? null : wipedRoom.id,
 		fakeDuration: duration,
 		raidLevel,
