@@ -609,6 +609,10 @@ export class MUserClass {
 	async getKCByName(name: string) {
 		return getKCByName(this, name);
 	}
+
+	get hasMinion() {
+		return Boolean(this.user.minion_hasBought);
+	}
 }
 declare global {
 	export type MUser = MUserClass;
