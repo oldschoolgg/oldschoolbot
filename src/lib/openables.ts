@@ -19,9 +19,10 @@ import {
 } from './simulation/misc';
 import { openSeedPack } from './skilling/functions/calcFarmingContracts';
 import { ItemBank } from './types';
-import { itemID, roll } from './util';
+import { roll } from './util';
 import { formatOrdinal } from './util/formatOrdinal';
 import getOSItem from './util/getOSItem';
+import itemID from './util/itemID';
 import resolveItems from './util/resolveItems';
 
 interface OpenArgs {
