@@ -646,6 +646,13 @@ const backgroundImages: BankBackground[] = [
 		image: null,
 		available: false,
 		owners: ['797618464176996372']
+	},
+	{
+		id: 103,
+		name: 'Epic CustomBG',
+		image: null,
+		available: false,
+		owners: ['874714227984719922']
 	}
 ];
 
