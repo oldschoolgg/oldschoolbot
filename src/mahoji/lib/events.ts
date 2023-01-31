@@ -23,6 +23,8 @@ export async function syncCustomPrices() {
 }
 
 export async function onStartup() {
+	globalClient.application.commands.fetch({ guildId: production ? undefined : DEV_SERVER_ID });
+
 	// Sync disabled commands
 	const disabledCommands = await prisma.clientStorage.upsert({
 		where: {

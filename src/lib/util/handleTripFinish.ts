@@ -80,7 +80,8 @@ export async function handleTripFinish(
 	attachment: AttachmentBuilder | Buffer | undefined,
 	data: ActivityTaskOptions,
 	loot: Bank | null,
-	_messages?: string[]
+	_messages?: string[],
+	_components?: ButtonBuilder[]
 ) {
 	const perkTier = user.perkTier();
 	const messages: string[] = [];
@@ -127,6 +128,10 @@ export async function handleTripFinish(
 			components.push(makeAutoContractButton());
 			components.push(makeOpenSeedPackButton());
 		}
+	}
+
+	if (_components) {
+		components.push(..._components);
 	}
 
 	handleTriggerShootingStar(user, data, components);
