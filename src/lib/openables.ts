@@ -19,10 +19,9 @@ import {
 } from './simulation/misc';
 import { openSeedPack } from './skilling/functions/calcFarmingContracts';
 import { ItemBank } from './types';
-import { roll } from './util';
+import { itemID, roll } from './util';
 import { formatOrdinal } from './util/formatOrdinal';
 import getOSItem from './util/getOSItem';
-import itemID from './util/itemID';
 import resolveItems from './util/resolveItems';
 
 const CacheOfRunesTable = new LootTable()
