@@ -802,6 +802,9 @@ model UserStats {
 
   death_touched_darts_used Int @default(0)
 
+  on_task_monster_scores           Json @default("{}") @db.Json
+  on_task_with_mask_monster_scores Json @default("{}") @db.Json
+
   @@map("user_stats")
 }
 
