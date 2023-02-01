@@ -3,6 +3,7 @@ import { bold } from 'discord.js';
 import {
 	calcPercentOfNum,
 	calcWhatPercent,
+	clamp,
 	increaseNumByPercent,
 	objectEntries,
 	percentChance,
@@ -11,6 +12,7 @@ import {
 	reduceNumByPercent,
 	roll,
 	round,
+	scaleNumber,
 	sumArr,
 	Time
 } from 'e';
@@ -35,7 +37,6 @@ import { TOAOptions } from '../types/minions';
 import {
 	assert,
 	channelIsSendable,
-	clamp,
 	formatDuration,
 	formatSkillRequirements,
 	itemNameFromID,
@@ -45,7 +46,7 @@ import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import getOSItem from '../util/getOSItem';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
-import { exponentialPercentScale, scaleNumber } from '../util/smallUtils';
+import { exponentialPercentScale } from '../util/smallUtils';
 import { updateBankSetting } from '../util/updateBankSetting';
 import { TeamLoot } from './TeamLoot';
 
@@ -1074,6 +1075,10 @@ export async function checkTOATeam(users: MUser[], raidLevel: number): Promise<s
 	return null;
 }
 
+const currentTime = Date.now();
+const releaseTimeUnix = 1_675_472_400;
+const releaseTimeJS = releaseTimeUnix * 1000;
+
 export async function toaStartCommand(
 	user: MUser,
 	solo: boolean,
@@ -1081,6 +1086,14 @@ export async function toaStartCommand(
 	raidLevel: RaidLevel,
 	teamSize?: number
 ): CommandResponse {
+	if (currentTime < releaseTimeJS) {
+		return `TOA is not released yet. It will be released... <t:${releaseTimeUnix}:R>  <t:${releaseTimeUnix}:F>. However, you can still check if you're ready for TOA using this command: ${mentionCommand(
+			'raid',
+			'toa',
+			'help'
+		)}`;
+	}
+
 	if (user.minionIsBusy) {
 		return `${user.usernameOrMention} minion is busy`;
 	}
@@ -1100,7 +1113,7 @@ export async function toaStartCommand(
 		return "Your minion is busy, so you can't start a raid.";
 	}
 
-	let maxSize = mahojiParseNumber({ input: teamSize, min: 2, max: 5 }) ?? 5;
+	let maxSize = mahojiParseNumber({ input: teamSize, min: 2, max: 8 }) ?? 8;
 
 	const partyOptions: MakePartyOptions = {
 		leader: user,
@@ -1475,7 +1488,7 @@ export async function toaCheckCommand(user: MUser) {
 
 function calculateBoostString(user: MUser) {
 	let str = '**Boosts**\n';
-	const hasMiscBoosts = miscBoosts.map(([name, _, gearSetup]) => ({
+	const hasMiscBoosts = miscBoosts.map(([name, , gearSetup]) => ({
 		has: gearSetup !== null ? user.gear[gearSetup].hasEquipped(name) : user.hasEquippedOrInBank(name),
 		item: getOSItem(name)
 	}));
@@ -1539,7 +1552,9 @@ export async function toaHelpCommand(user: MUser) {
 		totalUniques += user.cl.amount(item);
 	}
 
-	let str = `**Tombs of Amascut**
+	let str = `**Tombs of Amascut${
+		currentTime < releaseTimeJS ? ` - Released in... <t:${releaseTimeUnix}:R>  <t:${releaseTimeUnix}:F>` : ''
+	}** 
 
 **Attempts:** ${userStats.toa_attempts} 
 **Entry Mode:** ${entryKC} KC
