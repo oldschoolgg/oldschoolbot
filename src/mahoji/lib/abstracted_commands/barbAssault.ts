@@ -1,6 +1,6 @@
 import { User } from '@prisma/client';
 import { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
-import { calcWhatPercent, reduceNumByPercent, roll, round, Time } from 'e';
+import { calcWhatPercent, clamp, reduceNumByPercent, roll, round, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
@@ -10,7 +10,14 @@ import { getMinigameScore } from '../../../lib/settings/settings';
 import { HighGambleTable, LowGambleTable, MediumGambleTable } from '../../../lib/simulation/baGamble';
 import { maxOtherStats } from '../../../lib/structures/Gear';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
-import { buildClueButtons, formatDuration, itemID, makeComponents, randomVariation, stringMatches } from '../../../lib/util';
+import {
+	buildClueButtons,
+	formatDuration,
+	itemID,
+	makeComponents,
+	randomVariation,
+	stringMatches
+} from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
