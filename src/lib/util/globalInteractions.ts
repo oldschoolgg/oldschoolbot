@@ -52,14 +52,21 @@ function isValidGlobalInteraction(str: string): str is GlobalInteractionAction {
 	return globalInteractionActions.includes(str as GlobalInteractionAction);
 }
 
-export function makeDoClueButton(tier: ClueTier) {
-	const name: Uppercase<ClueTier['name']> = tier.name.toUpperCase() as Uppercase<ClueTier['name']>;
-	const id: GlobalInteractionAction = `DO_${name}_CLUE`;
-	return new ButtonBuilder()
-		.setCustomId(id)
-		.setLabel(`Do ${tier.name} Clue`)
-		.setStyle(ButtonStyle.Secondary)
-		.setEmoji('365003979840552960');
+export function buildClueButtons(loot: Bank | null, perkTier: number) {
+	const components: ButtonBuilder[] = [];
+	if (loot && perkTier > PerkTier.One) {
+		const clueReceived = ClueTiers.filter(tier => loot.amount(tier.scrollID) > 0);
+		components.push(
+			...clueReceived.map(clue =>
+				new ButtonBuilder()
+					.setCustomId(`DO_${clue.name.toUpperCase()}_CLUE`)
+					.setLabel(`Do ${clue.name} Clue`)
+					.setStyle(ButtonStyle.Secondary)
+					.setEmoji('365003979840552960')
+			)
+		);
+	}
+	return components;
 }
 
 export function makeOpenCasketButton(tier: ClueTier) {
@@ -228,17 +235,6 @@ async function repeatTripHandler(user: MUser, interaction: ButtonInteraction) {
 	const matchingActivity = trips.find(i => i.type === split[2]);
 	if (!matchingActivity) return repeatTrip(interaction, trips[0]);
 	return repeatTrip(interaction, matchingActivity);
-}
-
-export function buildClueButtons(loot: Bank | null, perkTier: number) {
-	const components: ButtonBuilder[] = [];
-	if (loot && perkTier > PerkTier.One) {
-		const clueReceived = ClueTiers.filter(tier => loot.amount(tier.scrollID) > 0);
-		if (clueReceived.length > 0) {
-			clueReceived.map(clue => components.push(makeDoClueButton(clue)));
-		}
-	}
-	return components;
 }
 
 export async function interactionHook(interaction: Interaction) {
