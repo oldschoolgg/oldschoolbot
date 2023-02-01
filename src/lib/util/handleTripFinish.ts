@@ -12,8 +12,9 @@ import { handlePassiveImplings } from '../implings';
 import { triggerRandomEvent } from '../randomEvents';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import { ActivityTaskOptions } from '../types/minions';
-import { buildClueButtons, channelIsSendable, makeComponents } from '../util';
+import { channelIsSendable, makeComponents } from '../util';
 import {
+	buildClueButtons,
 	makeAutoContractButton,
 	makeBirdHouseTripButton,
 	makeNewSlayerTaskButton,

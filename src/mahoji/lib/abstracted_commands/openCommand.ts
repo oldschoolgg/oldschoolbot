@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction } from 'discord.js';
+import { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { notEmpty, uniqueArr } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, LootTable } from 'oldschooljs';
@@ -6,8 +6,10 @@ import { Bank, LootTable } from 'oldschooljs';
 import { PerkTier } from '../../../lib/constants';
 import { allOpenables, UnifiedOpenable } from '../../../lib/openables';
 import { ItemBank } from '../../../lib/types';
+import { makeComponents } from '../../../lib/util';
 import { stringMatches } from '../../../lib/util/cleanString';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
+import { buildClueButtons } from '../../../lib/util/globalInteractions';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { handleMahojiConfirmation, patronMsg, updateGPTrackSetting } from '../../mahojiSettings';
 
@@ -137,10 +139,14 @@ async function finalizeOpening({
 		.map(({ openedItem }) => `${newOpenableScores.amount(openedItem.id)}x ${openedItem.name}`)
 		.join(', ');
 
+	const perkTier = user.perkTier();
+	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier);
+
 	let response: Awaited<CommandResponse> = {
 		files: [image.file],
 		content: `You have now opened a total of ${openedStr}
-${messages.join(', ')}`
+${messages.join(', ')}`,
+		components: components.length > 0 ? makeComponents(components) : undefined
 	};
 	if (response.content!.length > 1900) {
 		response.files!.push({ name: 'response.txt', attachment: Buffer.from(response.content!) });

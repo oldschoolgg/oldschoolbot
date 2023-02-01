@@ -31,8 +31,7 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { bool, integer, nodeCrypto, real } from 'random-js';
 
 import { ADMIN_IDS, OWNER_IDS, SupportServer } from '../config';
-import { ClueTiers } from './clues/clueTiers';
-import { badgesCache, BitField, PerkTier, usernameCache } from './constants';
+import { badgesCache, BitField, usernameCache } from './constants';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
 import type { Consumable } from './minions/types';
 import { MUserClass } from './MUser';
@@ -47,7 +46,6 @@ import type {
 	TheatreOfBloodTaskOptions
 } from './types/minions';
 import { getItem } from './util/getOSItem';
-import { makeDoClueButton } from './util/globalInteractions';
 import itemID from './util/itemID';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -92,6 +90,10 @@ export function generateHexColorForCashStack(coins: number) {
 	}
 
 	return '#FFFF00';
+}
+
+export function makeComponents(components: ButtonBuilder[]): InteractionReplyOptions['components'] {
+	return chunk(components, 5).map(i => ({ components: i, type: ComponentType.ActionRow }));
 }
 
 export function formatItemStackQuantity(quantity: number) {
@@ -457,21 +459,6 @@ export function getUsername(id: string | bigint, withBadges: boolean = true) {
 	let username = usernameCache.get(id.toString()) ?? 'Unknown';
 	if (withBadges) username = `${getBadges(id)} ${username}`;
 	return username;
-}
-
-export function makeComponents(components: ButtonBuilder[]): InteractionReplyOptions['components'] {
-	return chunk(components, 5).map(i => ({ components: i, type: ComponentType.ActionRow }));
-}
-
-export function buildClueButtons(loot: Bank | null, perkTier: number) {
-	const components: ButtonBuilder[] = [];
-	if (loot && perkTier > PerkTier.One) {
-		const clueReceived = ClueTiers.filter(tier => loot.amount(tier.scrollID) > 0);
-		if (clueReceived.length > 0) {
-			clueReceived.map(clue => components.push(makeDoClueButton(clue)));
-		}
-	}
-	return components;
 }
 
 export function validateItemBankAndThrow(input: any): input is ItemBank {
