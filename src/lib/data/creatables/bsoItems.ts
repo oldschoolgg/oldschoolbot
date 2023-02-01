@@ -107,7 +107,7 @@ const componentRevertables: Createable[] = [
 		}
 	},
 	{
-		name: 'Revert armadyl helmet',
+		name: 'Revert armadyl helmet (Components)',
 		inputItems: {
 			[itemID('Armadyl helmet')]: 1
 		},
@@ -116,7 +116,7 @@ const componentRevertables: Createable[] = [
 		}
 	},
 	{
-		name: 'Revert armadyl chestplate',
+		name: 'Revert armadyl chestplate (Components)',
 		inputItems: {
 			[itemID('Armadyl chestplate')]: 1
 		},
@@ -125,7 +125,7 @@ const componentRevertables: Createable[] = [
 		}
 	},
 	{
-		name: 'Revert armadyl chainskirt',
+		name: 'Revert armadyl chainskirt (Components)',
 		inputItems: {
 			[itemID('Armadyl chainskirt')]: 1
 		},
