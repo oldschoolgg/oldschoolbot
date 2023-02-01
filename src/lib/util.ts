@@ -92,10 +92,6 @@ export function generateHexColorForCashStack(coins: number) {
 	return '#FFFF00';
 }
 
-export function makeComponents(components: ButtonBuilder[]): InteractionReplyOptions['components'] {
-	return chunk(components, 5).map(i => ({ components: i, type: ComponentType.ActionRow }));
-}
-
 export function formatItemStackQuantity(quantity: number) {
 	if (quantity > 9_999_999) {
 		return `${Math.floor(quantity / 1_000_000)}M`;
@@ -459,6 +455,10 @@ export function getUsername(id: string | bigint, withBadges: boolean = true) {
 	let username = usernameCache.get(id.toString()) ?? 'Unknown';
 	if (withBadges) username = `${getBadges(id)} ${username}`;
 	return username;
+}
+
+export function makeComponents(components: ButtonBuilder[]): InteractionReplyOptions['components'] {
+	return chunk(components, 5).map(i => ({ components: i, type: ComponentType.ActionRow }));
 }
 
 export function validateItemBankAndThrow(input: any): input is ItemBank {
