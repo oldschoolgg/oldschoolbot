@@ -25,7 +25,7 @@
 		"chartjs-plugin-datalabels": "^2.0.0",
 		"chokidar": "^3.5.3",
 		"discord.js": "^14.6.0",
-		"e": "^0.2.2",
+		"e": "^0.2.3",
 		"emoji-regex": "^9.2.2",
 		"fastify": "^3.29.4",
 		"fastify-cors": "^5.2.0",

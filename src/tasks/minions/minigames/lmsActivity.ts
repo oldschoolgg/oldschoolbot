@@ -1,11 +1,11 @@
-import { percentChance } from 'e';
+import { clamp, percentChance } from 'e';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { Emoji } from '../../../lib/constants';
 import { prisma } from '../../../lib/settings/prisma';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
-import { addArrayOfNumbers, calcPerHour, clamp, gaussianRandom } from '../../../lib/util';
+import { addArrayOfNumbers, calcPerHour, gaussianRandom } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
