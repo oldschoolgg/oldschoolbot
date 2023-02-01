@@ -10,15 +10,7 @@ import { getMinigameScore } from '../../../lib/settings/settings';
 import { HighGambleTable, LowGambleTable, MediumGambleTable } from '../../../lib/simulation/baGamble';
 import { maxOtherStats } from '../../../lib/structures/Gear';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
-import {
-	buildClueButtons,
-	clamp,
-	formatDuration,
-	itemID,
-	makeComponents,
-	randomVariation,
-	stringMatches
-} from '../../../lib/util';
+import { buildClueButtons, formatDuration, itemID, makeComponents, randomVariation, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
