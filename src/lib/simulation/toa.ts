@@ -1101,7 +1101,7 @@ export async function toaStartCommand(
 		return "Your minion is busy, so you can't start a raid.";
 	}
 
-	let maxSize = mahojiParseNumber({ input: teamSize, min: 2, max: 5 }) ?? 5;
+	let maxSize = mahojiParseNumber({ input: teamSize, min: 2, max: 8 }) ?? 8;
 
 	const partyOptions: MakePartyOptions = {
 		leader: user,
