@@ -1,10 +1,10 @@
-import { Time } from 'e';
+import { clamp, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
 import { Planks } from '../../../lib/minions/data/planks';
 import { SawmillActivityTaskOptions } from '../../../lib/types/minions';
-import { clamp, formatDuration, itemNameFromID, stringMatches, toKMB } from '../../../lib/util';
+import { formatDuration, itemNameFromID, stringMatches, toKMB } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';

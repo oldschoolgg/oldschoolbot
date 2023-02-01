@@ -3,6 +3,7 @@ import { bold } from 'discord.js';
 import {
 	calcPercentOfNum,
 	calcWhatPercent,
+	clamp,
 	increaseNumByPercent,
 	objectEntries,
 	percentChance,
@@ -11,6 +12,7 @@ import {
 	reduceNumByPercent,
 	roll,
 	round,
+	scaleNumber,
 	sumArr,
 	Time
 } from 'e';
@@ -35,7 +37,6 @@ import { TOAOptions } from '../types/minions';
 import {
 	assert,
 	channelIsSendable,
-	clamp,
 	formatDuration,
 	formatSkillRequirements,
 	itemNameFromID,
@@ -45,7 +46,7 @@ import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import getOSItem from '../util/getOSItem';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
-import { exponentialPercentScale, scaleNumber } from '../util/smallUtils';
+import { exponentialPercentScale } from '../util/smallUtils';
 import { updateBankSetting } from '../util/updateBankSetting';
 import { TeamLoot } from './TeamLoot';
 
