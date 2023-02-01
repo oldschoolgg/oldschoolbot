@@ -1075,6 +1075,10 @@ export async function checkTOATeam(users: MUser[], raidLevel: number): Promise<s
 	return null;
 }
 
+const currentTime = Date.now();
+const releaseTimeUnix = 1_675_544_400;
+const releaseTimeJS = releaseTimeUnix * 1000;
+
 export async function toaStartCommand(
 	user: MUser,
 	solo: boolean,
@@ -1082,6 +1086,14 @@ export async function toaStartCommand(
 	raidLevel: RaidLevel,
 	teamSize?: number
 ): CommandResponse {
+	if (currentTime < releaseTimeJS) {
+		return `TOA is not released yet. It will be released... <t:${releaseTimeUnix}:R>  <t:${releaseTimeUnix}:F>. However, you can still check if you're ready for TOA using this command: ${mentionCommand(
+			'raid',
+			'toa',
+			'help'
+		)}`;
+	}
+
 	if (user.minionIsBusy) {
 		return `${user.usernameOrMention} minion is busy`;
 	}
@@ -1540,7 +1552,9 @@ export async function toaHelpCommand(user: MUser) {
 		totalUniques += user.cl.amount(item);
 	}
 
-	let str = `**Tombs of Amascut**
+	let str = `**Tombs of Amascut${
+		currentTime < releaseTimeJS ? ` - Released in... <t:${releaseTimeUnix}:R>  <t:${releaseTimeUnix}:F>` : ''
+	}** 
 
 **Attempts:** ${userStats.toa_attempts} 
 **Entry Mode:** ${entryKC} KC
