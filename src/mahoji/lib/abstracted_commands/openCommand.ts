@@ -6,7 +6,6 @@ import { Bank, LootTable } from 'oldschooljs';
 import { PerkTier } from '../../../lib/constants';
 import { allOpenables, UnifiedOpenable } from '../../../lib/openables';
 import { ItemBank } from '../../../lib/types';
-
 import { stringMatches } from '../../../lib/util/cleanString';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
@@ -134,8 +133,6 @@ async function finalizeOpening({
 		await updateGPTrackSetting('gp_open', loot.amount('Coins'));
 	}
 
-
-
 	const openedStr = openables
 		.map(({ openedItem }) => `${newOpenableScores.amount(openedItem.id)}x ${openedItem.name}`)
 		.join(', ');
@@ -143,8 +140,7 @@ async function finalizeOpening({
 	let response: Awaited<CommandResponse> = {
 		files: [image.file],
 		content: `You have now opened a total of ${openedStr}
-${messages.join(', ')}`,
-		
+${messages.join(', ')}`
 	};
 	if (response.content!.length > 1900) {
 		response.files!.push({ name: 'response.txt', attachment: Buffer.from(response.content!) });
