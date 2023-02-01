@@ -1076,7 +1076,7 @@ export async function checkTOATeam(users: MUser[], raidLevel: number): Promise<s
 }
 
 const currentTime = Date.now();
-const releaseTimeUnix = 1_675_544_400;
+const releaseTimeUnix = 1_675_472_400;
 const releaseTimeJS = releaseTimeUnix * 1000;
 
 export async function toaStartCommand(
