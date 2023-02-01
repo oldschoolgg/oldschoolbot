@@ -1476,7 +1476,7 @@ export async function toaCheckCommand(user: MUser) {
 
 function calculateBoostString(user: MUser) {
 	let str = '**Boosts**\n';
-	const hasMiscBoosts = miscBoosts.map(([name, _, gearSetup]) => ({
+	const hasMiscBoosts = miscBoosts.map(([name, , gearSetup]) => ({
 		has: gearSetup !== null ? user.gear[gearSetup].hasEquipped(name) : user.hasEquippedOrInBank(name),
 		item: getOSItem(name)
 	}));
