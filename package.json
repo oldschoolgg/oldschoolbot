@@ -9,7 +9,8 @@
 		"test": "concurrently \"tsc -p src\" \"yarn test:lint\" \"yarn test:unit\"",
 		"test:lint": "eslint \"{src,tests}/**/*.ts\"",
 		"test:unit": "jest --coverage --maxWorkers=4",
-		"dev": "yarn wipedist && tsc -w -p src"
+		"dev": "yarn wipedist && tsc -w -p src",
+		"o": "yarn build && madge --circular ./dist"
 	},
 	"dependencies": {
 		"@discordjs/builders": "^0.11.0",
@@ -24,7 +25,7 @@
 		"chartjs-plugin-datalabels": "^2.0.0",
 		"chokidar": "^3.5.3",
 		"discord.js": "^14.6.0",
-		"e": "^0.2.2",
+		"e": "^0.2.3",
 		"emoji-regex": "^9.2.2",
 		"fastify": "^3.29.4",
 		"fastify-cors": "^5.2.0",
@@ -66,6 +67,7 @@
 		"jest-circus": "^29.2.2",
 		"jest-mock-extended": "^3.0.1",
 		"jest-mock-random": "^1.1.1",
+		"madge": "^5.0.1",
 		"prisma": "^3.15.1",
 		"rimraf": "^3.0.2",
 		"source-map-support": "^0.5.21",

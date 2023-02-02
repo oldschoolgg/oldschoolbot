@@ -15,7 +15,8 @@ import {
 	anglerOutfit,
 	evilChickenOutfit,
 	gnomeRestaurantCL,
-	guardiansOfTheRiftCL
+	guardiansOfTheRiftCL,
+	toaCL
 } from '../../lib/data/CollectionsExport';
 import pets from '../../lib/data/pets';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../../lib/minions/data/killableMonsters';
@@ -223,14 +224,19 @@ const dryStreakMinigames: DrystreakMinigame[] = [
 		name: 'Wintertodt',
 		key: 'wintertodt',
 		items: resolveItems(['Tome of fire', 'Phoenix', 'Bruma torch', 'Warm gloves'])
+	},
+	{
+		name: 'Tombs of Amascut',
+		key: 'tombs_of_amascut',
+		items: toaCL
 	}
 ];
 
 interface DrystreakEntity {
 	name: string;
 	items: number[];
-	run: (args: { item: Item; ironmanOnly: boolean }) => Promise<{ id: string; val: number }[]>;
-	format: (num: number) => string;
+	run: (args: { item: Item; ironmanOnly: boolean }) => Promise<{ id: string; val: number | string }[]>;
+	format: (num: number | string) => string;
 }
 const dryStreakEntities: DrystreakEntity[] = [
 	{
@@ -332,6 +338,32 @@ LIMIT 10;`);
 			return result;
 		},
 		format: num => `${num.toLocaleString()} Bird Eggs Offered`
+	},
+	{
+		name: 'Random Events',
+		items: resolveItems(['Stale baguette']),
+		run: async ({ ironmanOnly }) => {
+			const result = await prisma.$queryRawUnsafe<
+				{ id: string; mbox_opens: number; baguettes_received: number }[]
+			>(`SELECT id, (openable_scores->>'6199')::int AS mbox_opens, ("collectionLogBank"->>'6961')::int AS baguettes_received, 
+
+(openable_scores->>'6199')::int + (("collectionLogBank"->>'6961')::int * 4) AS factor
+
+FROM users
+WHERE "collectionLogBank"->>'6199' IS NOT NULL
+AND "collectionLogBank"->>'6961' IS NOT NULL
+AND "collectionLogBank"->>'20590' IS NULL
+AND openable_scores->>'6199' IS NOT NULL
+AND (openable_scores->>'6199')::int > 3
+${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
+ORDER BY factor DESC
+LIMIT 10;`);
+			return result.map(i => ({
+				id: i.id,
+				val: `${i.mbox_opens} Mystery box Opens, ${i.baguettes_received} Baguettes`
+			}));
+		},
+		format: num => `${num.toLocaleString()}`
 	}
 ];
 for (const minigame of dryStreakMinigames) {
