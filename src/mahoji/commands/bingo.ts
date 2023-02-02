@@ -1,7 +1,7 @@
 import { time, userMention } from '@discordjs/builders';
 import { BingoTeam, User } from '@prisma/client';
 import { ChatInputCommandInteraction } from 'discord.js';
-import { chunk, uniqueArr } from 'e';
+import { chunk, clamp, uniqueArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
@@ -11,7 +11,7 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { production } from '../../config';
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { prisma } from '../../lib/settings/prisma';
-import { clamp, makeComponents, toKMB } from '../../lib/util';
+import { makeComponents, toKMB } from '../../lib/util';
 import { logError } from '../../lib/util/logError';
 import {
 	BINGO_TICKET_PRICE,

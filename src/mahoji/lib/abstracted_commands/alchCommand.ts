@@ -1,11 +1,11 @@
 import { ChatInputCommandInteraction } from 'discord.js';
-import { Time } from 'e';
+import { clamp, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { AlchingActivityTaskOptions } from '../../../lib/types/minions';
-import { clamp, formatDuration, toKMB } from '../../../lib/util';
+import { formatDuration, toKMB } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { getItem } from '../../../lib/util/getOSItem';
