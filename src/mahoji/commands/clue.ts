@@ -1,4 +1,4 @@
-import { Time } from 'e';
+import { clamp, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
@@ -6,7 +6,7 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
 import { clueHunterOutfit } from '../../lib/data/CollectionsExport';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
-import { clamp, formatDuration, isWeekend, randomVariation, stringMatches } from '../../lib/util';
+import { formatDuration, isWeekend, randomVariation, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { OSBMahojiCommand } from '../lib/util';

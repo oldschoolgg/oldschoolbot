@@ -1,4 +1,4 @@
-import { calcWhatPercent, percentChance, reduceNumByPercent, Time, uniqueArr } from 'e';
+import { calcWhatPercent, clamp, percentChance, reduceNumByPercent, Time, uniqueArr } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
@@ -7,7 +7,7 @@ import { table } from 'table';
 import Skillcapes from '../skilling/skillcapes';
 import { SkillsEnum } from '../skilling/types';
 import { ActivityTaskOptions } from '../types/minions';
-import { calcPerHour, clamp, formatDuration, toKMB } from '../util';
+import { calcPerHour, formatDuration, toKMB } from '../util';
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import { getItem } from '../util/getOSItem';

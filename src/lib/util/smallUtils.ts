@@ -43,10 +43,6 @@ export function formatItemBoosts(items: ItemBank[]) {
 	return str.join(', ');
 }
 
-export function clamp(val: number, min: number, max: number) {
-	return Math.min(max, Math.max(min, val));
-}
-
 export function calcPerHour(value: number, duration: number) {
 	return (value / (duration / Time.Minute)) * 60;
 }
@@ -124,8 +120,4 @@ export function averageBank(bank: Bank, kc: number) {
 		newBank.add(item.id, Math.floor(qty / kc));
 	}
 	return newBank;
-}
-
-export function scaleNumber(num: number, inMin: number, inMax: number, outMin: number, outMax: number): number {
-	return ((num - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
 }

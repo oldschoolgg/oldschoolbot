@@ -1,8 +1,10 @@
+import { SimpleTable } from '@oldschoolgg/toolkit';
 import { UserStats, XpGainSource } from '@prisma/client';
 import { bold } from 'discord.js';
 import {
 	calcPercentOfNum,
 	calcWhatPercent,
+	clamp,
 	increaseNumByPercent,
 	objectEntries,
 	percentChance,
@@ -11,12 +13,12 @@ import {
 	reduceNumByPercent,
 	roll,
 	round,
+	scaleNumber,
 	sumArr,
 	Time
 } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, LootTable } from 'oldschooljs';
-import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { mahojiParseNumber, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { mentionCommand } from '../commandMention';
@@ -35,7 +37,6 @@ import { TOAOptions } from '../types/minions';
 import {
 	assert,
 	channelIsSendable,
-	clamp,
 	formatDuration,
 	formatSkillRequirements,
 	itemNameFromID,
@@ -45,7 +46,7 @@ import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import getOSItem from '../util/getOSItem';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
-import { exponentialPercentScale, scaleNumber } from '../util/smallUtils';
+import { exponentialPercentScale } from '../util/smallUtils';
 import { updateBankSetting } from '../util/updateBankSetting';
 import { TeamLoot } from './TeamLoot';
 
@@ -1014,7 +1015,7 @@ export async function checkTOAUser(
 	}
 
 	const { cost, serpHelmCharges } = await calcTOAInput({ user, duration });
-	if (!user.owns(cost)) {
+	if (!user.owns(cost, { includeGear: true })) {
 		return [true, `${user.usernameOrMention} doesn't own the required supplies: ${cost.remove(user.bankWithGP)}`];
 	}
 
@@ -1100,7 +1101,7 @@ export async function toaStartCommand(
 		return "Your minion is busy, so you can't start a raid.";
 	}
 
-	let maxSize = mahojiParseNumber({ input: teamSize, min: 2, max: 5 }) ?? 5;
+	let maxSize = mahojiParseNumber({ input: teamSize, min: 2, max: 8 }) ?? 8;
 
 	const partyOptions: MakePartyOptions = {
 		leader: user,
@@ -1475,7 +1476,7 @@ export async function toaCheckCommand(user: MUser) {
 
 function calculateBoostString(user: MUser) {
 	let str = '**Boosts**\n';
-	const hasMiscBoosts = miscBoosts.map(([name, _, gearSetup]) => ({
+	const hasMiscBoosts = miscBoosts.map(([name, , gearSetup]) => ({
 		has: gearSetup !== null ? user.gear[gearSetup].hasEquipped(name) : user.hasEquippedOrInBank(name),
 		item: getOSItem(name)
 	}));
@@ -1529,7 +1530,7 @@ export async function getToaKCs(user: MUser | UserStats) {
 	return { entryKC, normalKC, expertKC, totalKC: entryKC + normalKC + expertKC };
 }
 
-export async function toaHelpCommand(user: MUser) {
+export async function toaHelpCommand(user: MUser, channelID: string) {
 	const gearStats = calculateUserGearPercents(user.gear, 300);
 	const userStats = await user.fetchStats();
 	const { entryKC, normalKC, expertKC, totalKC } = await getToaKCs(userStats);
@@ -1539,7 +1540,7 @@ export async function toaHelpCommand(user: MUser) {
 		totalUniques += user.cl.amount(item);
 	}
 
-	let str = `**Tombs of Amascut**
+	let str = `**Tombs of Amascut** 
 
 **Attempts:** ${userStats.toa_attempts} 
 **Entry Mode:** ${entryKC} KC
@@ -1574,5 +1575,5 @@ ${toaRequirements
 ${calculateBoostString(user)}
 `;
 
-	return str;
+	return channelID === '1069176960523190292' ? { content: str, ephemeral: true } : str;
 }

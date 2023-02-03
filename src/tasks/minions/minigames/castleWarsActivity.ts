@@ -1,5 +1,5 @@
+import { SimpleTable } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
-import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { userHasFlappy } from '../../../lib/invention/inventions';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
@@ -18,7 +18,7 @@ export const castleWarsTask: MinionTask = {
 		const user = await mUserFetch(userID);
 		const loot = new Bank();
 		for (let i = 0; i < quantity; i++) {
-			loot.add('Castle wars ticket', ticketTable.roll());
+			loot.add('Castle wars ticket', ticketTable.rollOrThrow());
 		}
 		let boosts = [];
 
