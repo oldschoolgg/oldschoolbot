@@ -574,8 +574,8 @@ const christmasLootTable = new LootTable()
 
 const ChristmasBoxTable = new LootTable()
 	.add('Candy partyhat')
-	.add(christmasLootTable, 1, 3)
-	.add('Christmas dye', 1, 2)
+	.add(christmasLootTable, 1, 4)
+	.add('Christmas dye', 1, 3)
 	.add('Coal', 1, 2);
 
 export const bsoOpenables: UnifiedOpenable[] = [
