@@ -166,6 +166,7 @@ export const raidCommand: OSBMahojiCommand = {
 		if (cox?.stats) return coxStatsCommand(user);
 		if (tob?.stats) return tobStatsCommand(user);
 		if (tob?.check) return tobCheckCommand(user, Boolean(tob.check.hard_mode));
+		if (options.toa?.help) return toaHelpCommand(user, channelID);
 
 		if (minionIsBusy(user.id)) return "Your minion is busy, you can't do this.";
 
@@ -192,10 +193,6 @@ export const raidCommand: OSBMahojiCommand = {
 				options.toa.start.raid_level,
 				options.toa.start.max_team_size
 			);
-		}
-
-		if (options.toa?.help) {
-			return toaHelpCommand(user);
 		}
 
 		return 'Invalid command.';

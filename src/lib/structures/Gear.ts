@@ -1,5 +1,6 @@
 import { GearPreset } from '@prisma/client';
 import { notEmpty, objectKeys, uniqueArr } from 'e';
+import { Bank } from 'oldschooljs';
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 
 import { getSimilarItems, inverseSimilarItems } from '../data/similarItems';
@@ -381,6 +382,18 @@ export class Gear {
 		}
 
 		return uniqueArr(values);
+	}
+
+	allItemsBank() {
+		const gear = this.raw();
+		const values = Object.values(gear).filter(notEmpty);
+
+		const bank = new Bank();
+
+		for (const item of values) {
+			bank.add(item.item, item.quantity);
+		}
+		return bank;
 	}
 
 	hasEquipped(_items: number | string | (string | number)[], every = false, includeSimilar = true) {

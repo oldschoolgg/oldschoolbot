@@ -1,6 +1,6 @@
 import { userMention } from '@discordjs/builders';
 import { Prisma } from '@prisma/client';
-import { reduceNumByPercent, Time } from 'e';
+import { clamp, reduceNumByPercent, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
@@ -9,7 +9,7 @@ import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 import { ClueTier, ClueTiers } from '../clues/clueTiers';
 import { mahojiUserSettingsUpdate } from '../MUser';
 import { ItemBank } from '../types';
-import { clamp, formatDuration, stringMatches, toKMB } from '../util';
+import { formatDuration, stringMatches, toKMB } from '../util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../util/clientSettings';
 import getOSItem from '../util/getOSItem';
 import { logError } from '../util/logError';

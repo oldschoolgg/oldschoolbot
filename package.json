@@ -15,6 +15,7 @@
 	"dependencies": {
 		"@discordjs/builders": "^0.11.0",
 		"@octokit/graphql": "^4.8.0",
+		"@oldschoolgg/toolkit": "^0.0.11",
 		"@prisma/client": "^3.15.1",
 		"@sapphire/stopwatch": "^1.4.0",
 		"@sapphire/time-utilities": "^1.6.0",
@@ -27,7 +28,7 @@
 		"chokidar": "^3.5.3",
 		"deepmerge": "^4.2.2",
 		"discord.js": "^14.6.0",
-		"e": "^0.2.2",
+		"e": "^0.2.3",
 		"emoji-regex": "^9.2.2",
 		"fastify": "^3.29.4",
 		"fastify-cors": "^5.2.0",

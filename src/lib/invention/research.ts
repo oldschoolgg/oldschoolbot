@@ -1,12 +1,12 @@
 import { bold, userMention } from '@discordjs/builders';
 import { ChatInputCommandInteraction } from 'discord.js';
-import { shuffleArr, Time } from 'e';
+import { clamp, shuffleArr, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
 import { handleMahojiConfirmation } from '../../mahoji/mahojiSettings';
 import { SkillsEnum } from '../skilling/types';
 import { ActivityTaskOptions } from '../types/minions';
-import { clamp, formatDuration, roll } from '../util';
+import { formatDuration, roll } from '../util';
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import { handleTripFinish } from '../util/handleTripFinish';

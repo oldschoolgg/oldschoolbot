@@ -11,6 +11,7 @@ import {
 } from 'discord.js';
 import { debounce, noOp, Time } from 'e';
 
+import { production } from '../config';
 import { BLACKLISTED_USERS } from './blacklists';
 import { SILENT_ERROR, usernameCache } from './constants';
 import { MakePartyOptions } from './types';
@@ -19,7 +20,9 @@ import { formatDuration, makeComponents } from './util';
 import { CACHED_ACTIVE_USER_IDS } from './util/cachedUserIDs';
 
 const partyLockCache = new Set<string>();
-setInterval(() => partyLockCache.clear(), Time.Minute * 20);
+if (production) {
+	setInterval(() => partyLockCache.clear(), Time.Minute * 20);
+}
 
 const buttons = [
 	{
