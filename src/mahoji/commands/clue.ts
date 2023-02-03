@@ -42,13 +42,7 @@ interface ClueBoost {
 	durationMultiplier: number;
 }
 
-function applyClueBoosts(
-	user: MUser,
-	boostList: ClueBoost[],
-	boosts: string[],
-	duration: number,
-	clueTier: ClueTier
-) {
+function applyClueBoosts(user: MUser, boostList: ClueBoost[], boosts: string[],	duration: number, clueTier: ClueTier) {
 	let hasAchievementDiaryCape = false;
 	for (const boost of boostList) {
 		if (user.hasEquippedOrInBank(boost.item.name)) {
