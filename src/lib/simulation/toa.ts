@@ -1,3 +1,4 @@
+import { SimpleTable } from '@oldschoolgg/toolkit';
 import { UserStats, XpGainSource } from '@prisma/client';
 import { bold } from 'discord.js';
 import {
@@ -18,7 +19,6 @@ import {
 } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, LootTable } from 'oldschooljs';
-import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { mahojiParseNumber, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { mentionCommand } from '../commandMention';

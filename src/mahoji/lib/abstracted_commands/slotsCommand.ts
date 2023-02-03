@@ -1,3 +1,4 @@
+import { SimpleTable } from '@oldschoolgg/toolkit';
 import {
 	ActionRowBuilder,
 	BaseMessageOptions,
@@ -8,7 +9,6 @@ import {
 import { chunk, noOp, randInt, shuffleArr, sleep } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
-import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import { channelIsSendable } from '../../../lib/util';
@@ -57,7 +57,7 @@ const buttonTable = new SimpleTable<Button>()
 function generateColumn() {
 	const column: ButtonInstance[] = [];
 	while (column.length < 3) {
-		const button = buttonTable.roll();
+		const button = buttonTable.rollOrThrow();
 		if (column.some(i => i.name === button.name)) continue;
 		column.push({ ...button, id: randInt(1, 999_999_999).toString() });
 	}
