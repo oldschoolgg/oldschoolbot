@@ -1,5 +1,5 @@
+import { SimpleTable } from '@oldschoolgg/toolkit';
 import { clamp, percentChance } from 'e';
-import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { Emoji } from '../../../lib/constants';
 import { prisma } from '../../../lib/settings/prisma';
@@ -69,7 +69,7 @@ function calculateResultOfLMSGames(qty: number, lmsStats: Awaited<ReturnType<typ
 	chanceToWinFight += experienceFactor * 75;
 
 	for (let i = 0; i < qty; i++) {
-		const encounters = 3 + extraEncountersTable.roll();
+		const encounters = 3 + extraEncountersTable.rollOrThrow();
 		let kills = 0;
 		let died = false;
 		for (let t = 0; t < encounters; t++) {
