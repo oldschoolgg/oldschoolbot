@@ -1,3 +1,4 @@
+import { SimpleTable } from '@oldschoolgg/toolkit';
 import { UserStats, XpGainSource } from '@prisma/client';
 import { bold } from 'discord.js';
 import {
@@ -18,7 +19,6 @@ import {
 } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, LootTable } from 'oldschooljs';
-import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { mahojiParseNumber, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { mentionCommand } from '../commandMention';
@@ -1015,7 +1015,7 @@ export async function checkTOAUser(
 	}
 
 	const { cost, serpHelmCharges } = await calcTOAInput({ user, duration });
-	if (!user.owns(cost)) {
+	if (!user.owns(cost, { includeGear: true })) {
 		return [true, `${user.usernameOrMention} doesn't own the required supplies: ${cost.remove(user.bankWithGP)}`];
 	}
 
@@ -1542,7 +1542,7 @@ export async function getToaKCs(user: MUser | UserStats) {
 	return { entryKC, normalKC, expertKC, totalKC: entryKC + normalKC + expertKC };
 }
 
-export async function toaHelpCommand(user: MUser) {
+export async function toaHelpCommand(user: MUser, channelID: string) {
 	const gearStats = calculateUserGearPercents(user.gear, 300);
 	const userStats = await user.fetchStats();
 	const { entryKC, normalKC, expertKC, totalKC } = await getToaKCs(userStats);
@@ -1589,5 +1589,5 @@ ${toaRequirements
 ${calculateBoostString(user)}
 `;
 
-	return str;
+	return channelID === '1069176960523190292' ? { content: str, ephemeral: true } : str;
 }

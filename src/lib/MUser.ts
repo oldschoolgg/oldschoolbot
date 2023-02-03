@@ -565,8 +565,22 @@ export class MUserClass {
 		return true;
 	}
 
-	owns(checkBank: Bank | number | string) {
-		return this.bank.clone().add('Coins', Number(this.user.GP)).has(checkBank);
+	allEquippedGearBank() {
+		const bank = new Bank();
+		for (const gear of Object.values(this.gear).flat()) {
+			bank.add(gear.allItemsBank());
+		}
+		return bank;
+	}
+
+	owns(checkBank: Bank | number | string, { includeGear }: { includeGear: boolean } = { includeGear: false }) {
+		const allItems = this.bank.clone().add('Coins', Number(this.user.GP));
+		if (includeGear) {
+			for (const [item, qty] of this.allEquippedGearBank().items()) {
+				allItems.add(item.id, qty);
+			}
+		}
+		return allItems.has(checkBank);
 	}
 
 	async sync() {
