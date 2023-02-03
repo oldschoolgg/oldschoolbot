@@ -239,7 +239,11 @@ export async function interactionHook(interaction: Interaction) {
 	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, interaction);
 	if (id.includes('REPEAT_TRIP')) return repeatTripHandler(user, interaction);
 	if (id === 'TOA_CHECK') {
-		return interactionReply(interaction, { content: await toaHelpCommand(user), ephemeral: true });
+		const response = await toaHelpCommand(user, interaction.channelId);
+		return interactionReply(interaction, {
+			content: typeof response === 'string' ? response : response.content,
+			ephemeral: true
+		});
 	}
 
 	if (!isValidGlobalInteraction(id)) return;
