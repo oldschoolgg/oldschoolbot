@@ -123,7 +123,7 @@ export const clueCommand: OSBMahojiCommand = {
 			{
 				condition: isWeekend,
 				boost: '10% for Weekend',
-				durationMultiplier: 1
+				durationMultiplier: 0.9
 			},
 			{
 				condition: () => user.hasEquippedOrInBank('Max cape'),
