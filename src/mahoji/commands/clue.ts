@@ -24,7 +24,7 @@ function reducedClueTime(clueTier: ClueTier, score: number) {
 }
 
 function shouldApplyBoost(clueTier: ClueTier, item: string, hasAchievementDiaryCape: boolean) {
-switch (clueTier.name) {
+	switch (clueTier.name) {
 		case 'Elite':
 			return (item !== 'Kandarin headgear 4' && item !== 'Fremennik sea boots 4') || !hasAchievementDiaryCape;
 		case 'Master':
