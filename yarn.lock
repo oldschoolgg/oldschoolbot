@@ -1163,6 +1163,13 @@
     eslint-plugin-unicorn "^39.0.0"
     prettier "^2.4.1"
 
+"@oldschoolgg/toolkit@^0.0.11":
+  version "0.0.11"
+  resolved "https://registry.yarnpkg.com/@oldschoolgg/toolkit/-/toolkit-0.0.11.tgz#86db22132aafbb0d72cd352666f467f8385c5100"
+  integrity sha512-dwpHXodibgT4tsbL91AXd12p3LTA7yHslmMI8AzZKLYrt1urzp5BRvKL4FahlZYgJ2b47MA8qGkX6QW21L0IIQ==
+  dependencies:
+    e "^0.2.3"
+
 "@prisma/client@^3.15.1":
   version "3.15.2"
   resolved "https://registry.yarnpkg.com/@prisma/client/-/client-3.15.2.tgz#2181398147afc79bfe0d83c03a88dc45b49bd365"
