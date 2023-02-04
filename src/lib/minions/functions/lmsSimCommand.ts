@@ -67,17 +67,18 @@ function makeResultEvents(game: LastManStandingGame, events: readonly LastManSta
 
 function buildTexts(game: LastManStandingGame, results: string[], deaths: string[]) {
 	const header = game.prep ? 'Preparation' : game.final ? `Finals, Round: ${game.round}` : `Round: ${game.round}`;
-	const death = deaths.length
-		? `${`**${deaths.length} new gravestone${
-				deaths.length === 1 ? ' litters' : 's litter'
-		  } the battlefield.**`}\n\n${deaths.map(d => `- ${d}`).join('\n')}`
-		: '';
+	const death =
+		deaths.length > 0
+			? `${`**${deaths.length} new gravestone${
+					deaths.length === 1 ? ' litters' : 's litter'
+			  } the battlefield.**`}\n\n${deaths.map(d => `- ${d}`).join('\n')}`
+			: '';
 	const panels = chunk(results, 5);
 
 	const texts = panels.map(
 		panel => `**Last Man Standing ${header}:**\n\n${panel.map(text => `- ${text}`).join('\n')}`
 	);
-	if (deaths.length) texts.push(`${death}`);
+	if (deaths.length > 0) texts.push(`${death}`);
 	return texts;
 }
 
