@@ -1,17 +1,18 @@
 import { Embed } from '@discordjs/builders';
-import { BaseMessageOptions, bold, Message, TextChannel } from 'discord.js';
+import { BaseMessageOptions, bold, ButtonBuilder, ButtonStyle, Message, TextChannel } from 'discord.js';
 import { roll, Time } from 'e';
 import LRUCache from 'lru-cache';
 import { Items } from 'oldschooljs';
 
 import { CLIENT_ID, production, SupportServer } from '../config';
+import { untrustedGuildSettingsCache } from '../mahoji/guildSettings';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
-import { untrustedGuildSettingsCache } from '../mahoji/mahojiSettings';
-import { Channel, Emoji } from './constants';
+import { mentionCommand } from './commandMention';
+import { BitField, Channel, Emoji } from './constants';
 import pets from './data/pets';
 import { prisma } from './settings/prisma';
 import { ItemBank } from './types';
-import { channelIsSendable, formatDuration, isFunction, toKMB } from './util';
+import { channelIsSendable, formatDuration, isFunction, makeComponents, toKMB } from './util';
 import { makeBankImage } from './util/makeBankImage';
 import { minionStatsEmbed } from './util/minionStatsEmbed';
 
@@ -249,6 +250,30 @@ const mentionCommands: MentionCommand[] = [
 					})
 					.join('\n'),
 				components
+			});
+		}
+	},
+	{
+		name: 'sendtoabutton',
+		aliases: ['sendtoabutton'],
+		description: 'Shows your stats.',
+		run: async ({ msg, user }: MentionCommandOptions) => {
+			if ([BitField.isModerator].every(bit => !user.bitfield.includes(bit))) {
+				return;
+			}
+			msg.reply({
+				content: `Click this button to find out if you're ready to do Tombs of Amascut! You can also use the ${mentionCommand(
+					'raid',
+					'toa',
+					'help'
+				)} command.`,
+				components: makeComponents([
+					new ButtonBuilder()
+						.setStyle(ButtonStyle.Primary)
+						.setCustomId('TOA_CHECK')
+						.setLabel('Check TOA Requirements')
+						.setEmoji('1069174271894638652')
+				])
 			});
 		}
 	},

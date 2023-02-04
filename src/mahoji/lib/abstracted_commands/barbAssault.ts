@@ -1,6 +1,6 @@
 import { User } from '@prisma/client';
 import { ChatInputCommandInteraction } from 'discord.js';
-import { calcWhatPercent, reduceNumByPercent, roll, round, Time } from 'e';
+import { calcWhatPercent, clamp, reduceNumByPercent, roll, round, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../../lib/constants';
@@ -9,13 +9,13 @@ import { getMinigameScore } from '../../../lib/settings/settings';
 import { HighGambleTable, LowGambleTable, MediumGambleTable } from '../../../lib/simulation/baGamble';
 import { maxOtherStats } from '../../../lib/structures/Gear';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
-import { clamp, formatDuration, itemID, randomVariation, stringMatches } from '../../../lib/util';
+import { formatDuration, itemID, randomVariation, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import getOSItem from '../../../lib/util/getOSItem';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { handleMahojiConfirmation } from '../../mahojiSettings';
 
 export const BarbBuyables = [
 	{

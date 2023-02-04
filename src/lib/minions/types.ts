@@ -1,3 +1,4 @@
+import { XpGainSource } from '@prisma/client';
 import { Bank, MonsterKillOptions } from 'oldschooljs';
 import SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
 import { Image } from 'skia-canvas/lib';
@@ -121,6 +122,7 @@ export interface AddXpParams {
 	multiplier?: boolean;
 	minimal?: boolean;
 	artificial?: boolean;
+	source?: XpGainSource;
 }
 
 export interface AddMonsterXpParams {

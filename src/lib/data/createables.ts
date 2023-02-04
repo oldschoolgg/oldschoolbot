@@ -20,6 +20,7 @@ import { nexCreatables } from './creatables/nex';
 import { ornamentKits } from './creatables/ornaments';
 import { shadesOfMortonCreatables } from './creatables/shadesOfMorton';
 import { slayerCreatables } from './creatables/slayer';
+import { toaCreatables } from './creatables/toa';
 import { tobCreatables } from './creatables/tob';
 
 export interface Createable {
@@ -2134,7 +2135,8 @@ const Createables: Createable[] = [
 	...goldenProspectorCreatables,
 	...leaguesCreatables,
 	...guardiansOfTheRiftCreatables,
-	...shadesOfMortonCreatables
+	...shadesOfMortonCreatables,
+	...toaCreatables
 ];
 
 export default Createables;
