@@ -345,9 +345,12 @@ export const monsterTask: MinionTask = {
 			 */
 			if (effectiveSlayed > 0) {
 				const bankToAdd = new Bank().add(monsterID, effectiveSlayed);
-				const matchingMaskOrHelm = slayerMaskHelms.find(
-					i => i.monsters.includes(monsterID) && user.hasEquipped([i.mask.id, i.helm.id])
-				);
+				const maskHelmForThisMonster = slayerMaskHelms.find(i => i.monsters.includes(monsterID));
+				const matchingMaskOrHelm =
+					maskHelmForThisMonster &&
+					user.hasEquipped([maskHelmForThisMonster.mask.id, maskHelmForThisMonster.helm.id])
+						? maskHelmForThisMonster
+						: null;
 
 				const currentUserStats = await user.fetchStats();
 				const oldMaskScores = new Bank(currentUserStats.on_task_with_mask_monster_scores as ItemBank);
@@ -358,13 +361,13 @@ export const monsterTask: MinionTask = {
 					newMaskScores.amount(monsterID) > matchingMaskOrHelm.killsRequiredForUpgrade
 				) {
 					loot.add(matchingMaskOrHelm.helm.id);
-				} else if (matchingMaskOrHelm && !user.owns(matchingMaskOrHelm.mask.id)) {
-					console.log(
-						`Giving ${user.rawUsername} ${effectiveSlayed}x rolls of 1 in ${matchingMaskOrHelm.maskDropRate} for ${matchingMaskOrHelm.mask.name}`
-					);
+				} else if (
+					maskHelmForThisMonster &&
+					!user.owns(maskHelmForThisMonster.mask.id, { includeGear: true })
+				) {
 					for (let i = 0; i < effectiveSlayed; i++) {
-						if (roll(matchingMaskOrHelm.maskDropRate)) {
-							loot.add(matchingMaskOrHelm.mask.id);
+						if (roll(maskHelmForThisMonster.maskDropRate)) {
+							loot.add(maskHelmForThisMonster.mask.id);
 							break;
 						}
 					}

@@ -162,10 +162,7 @@ export const slayerMaskHelms: SlayerMaskHelm[] = [
 const allPossibleSlayerMonster = slayerMasters.map(i => i.tasks.map(t => t.monsters)).flat(3);
 
 for (const a of slayerMaskHelms) {
-	console.log(
-		`${a.helm.name} requires ${a.killsRequiredForUpgrade} kills to upgrade, 1 in ${a.maskDropRate} to get mask`
-	);
 	if (!a.monsters.some(m => allPossibleSlayerMonster.includes(m))) {
-		console.log(`\n\nMissing ${a.mask.name} from slayerMasters\n\n`);
+		throw new Error(`\n\nMissing ${a.mask.name} from slayerMasters\n\n`);
 	}
 }
