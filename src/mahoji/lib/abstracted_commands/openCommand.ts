@@ -8,8 +8,9 @@ import { allOpenables, UnifiedOpenable } from '../../../lib/openables';
 import { ItemBank } from '../../../lib/types';
 import { stringMatches } from '../../../lib/util/cleanString';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { handleMahojiConfirmation, patronMsg, updateGPTrackSetting } from '../../mahojiSettings';
+import { patronMsg, updateGPTrackSetting } from '../../mahojiSettings';
 
 const regex = /^(.*?)( \([0-9]+x Owned\))?$/;
 

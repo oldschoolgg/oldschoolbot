@@ -35,6 +35,7 @@ import {
 	stringMatches
 } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
+import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import resolveItems from '../../lib/util/resolveItems';
@@ -47,7 +48,7 @@ import {
 } from '../lib/abstracted_commands/stashUnitsCommand';
 import { itemOption, monsterOption, skillOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, patronMsg } from '../mahojiSettings';
+import { patronMsg } from '../mahojiSettings';
 
 const TimeIntervals = ['day', 'week'] as const;
 const skillsVals = Object.values(Skills);

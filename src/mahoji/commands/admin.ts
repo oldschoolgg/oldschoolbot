@@ -36,6 +36,7 @@ import {
 } from '../../lib/util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../lib/util/clientSettings';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
+import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction, interactionReply } from '../../lib/util/interactionReply';
 import { syncLinkedAccounts } from '../../lib/util/linkedAccountsUtil';
 import { logError } from '../../lib/util/logError';
@@ -46,7 +47,7 @@ import { Cooldowns } from '../lib/Cooldowns';
 import { syncCustomPrices } from '../lib/events';
 import { itemOption } from '../lib/mahojiCommandOptions';
 import { allAbstractCommands, OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 import { getUserInfo } from './minion';
 
 export const gifs = [
