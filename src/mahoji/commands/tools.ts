@@ -15,7 +15,8 @@ import {
 	anglerOutfit,
 	evilChickenOutfit,
 	gnomeRestaurantCL,
-	guardiansOfTheRiftCL
+	guardiansOfTheRiftCL,
+	toaCL
 } from '../../lib/data/CollectionsExport';
 import pets from '../../lib/data/pets';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../../lib/minions/data/killableMonsters';
@@ -34,6 +35,7 @@ import {
 	stringMatches
 } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
+import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import resolveItems from '../../lib/util/resolveItems';
@@ -46,7 +48,7 @@ import {
 } from '../lib/abstracted_commands/stashUnitsCommand';
 import { itemOption, monsterOption, skillOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, patronMsg } from '../mahojiSettings';
+import { patronMsg } from '../mahojiSettings';
 
 const TimeIntervals = ['day', 'week'] as const;
 const skillsVals = Object.values(Skills);
@@ -223,6 +225,11 @@ const dryStreakMinigames: DrystreakMinigame[] = [
 		name: 'Wintertodt',
 		key: 'wintertodt',
 		items: resolveItems(['Tome of fire', 'Phoenix', 'Bruma torch', 'Warm gloves'])
+	},
+	{
+		name: 'Tombs of Amascut',
+		key: 'tombs_of_amascut',
+		items: toaCL
 	}
 ];
 

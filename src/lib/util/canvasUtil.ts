@@ -89,7 +89,7 @@ const textWrap = (ctx: CanvasRenderingContext2D, text: string, wrapWidth: number
 			const wordWidthWithSpace = wordWidth + spaceWidth;
 
 			if (wordWidthWithSpace > spaceLeft) {
-				if (buffer.length) {
+				if (buffer.length > 0) {
 					result.push(buffer.join(' '));
 					buffer.length = 0;
 				}
@@ -101,7 +101,7 @@ const textWrap = (ctx: CanvasRenderingContext2D, text: string, wrapWidth: number
 			}
 		}
 
-		if (buffer.length) {
+		if (buffer.length > 0) {
 			result.push(buffer.join(' '));
 			buffer.length = 0;
 		}
