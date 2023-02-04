@@ -5,6 +5,7 @@ import { chompyHats, MAX_QP } from '../../constants';
 import { CombatCannonItemBank } from '../../minions/data/combatConstants';
 import { Favours } from '../../minions/data/kourendFavour';
 import { MinigameName } from '../../settings/settings';
+import { getToaKCs } from '../../simulation/toa';
 import { Skills } from '../../types';
 import itemID from '../../util/itemID';
 import { allTeamCapes } from '../misc';
@@ -78,6 +79,30 @@ const ironmenBuyables: Buyable[] = ['Ironman helm', 'Ironman platebody', 'Ironma
 	},
 	gpCost: 1000
 }));
+
+const ichCapes = [
+	["Icthlarin's shroud (tier 1)", 100],
+	["Icthlarin's shroud (tier 2)", 500],
+	["Icthlarin's shroud (tier 3)", 1000],
+	["Icthlarin's shroud (tier 4)", 1500],
+	["Icthlarin's shroud (tier 5)", 2000],
+	["Icthlarin's hood (tier 5)", 2000]
+] as const;
+
+const toaCapes: Buyable[] = [];
+
+for (const [capeName, kcReq] of ichCapes) {
+	toaCapes.push({
+		name: capeName,
+		gpCost: kcReq * 10,
+		customReq: async (user: MUser) => {
+			const toaKCs = await getToaKCs(user);
+			return toaKCs.normalKC + toaKCs.expertKC >= kcReq
+				? [true]
+				: [false, `You need a combined amount of ${kcReq} Normal/Expert Tombs of Amascut KCs to buy this.`];
+		}
+	});
+}
 
 const tobCapes: Buyable[] = [
 	{
@@ -1012,6 +1037,12 @@ const Buyables: Buyable[] = [
 		name: 'Broken coffin',
 		gpCost: 2000
 	},
+	{
+		name: 'Keris partisan',
+		gpCost: 100_000,
+		ironmanPrice: 60_000,
+		qpRequired: 172
+	},
 	...sepulchreBuyables,
 	...constructionBuyables,
 	...hunterBuyables,
@@ -1037,7 +1068,8 @@ const Buyables: Buyable[] = [
 	...troubleBrewingBuyables,
 	...ironmenBuyables,
 	...shootingStarsBuyables,
-	...guardiansOfTheRiftBuyables
+	...guardiansOfTheRiftBuyables,
+	...toaCapes
 ];
 
 for (const [chompyHat, qty] of chompyHats) {

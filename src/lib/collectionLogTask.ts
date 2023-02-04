@@ -358,13 +358,12 @@ class CollectionLogTask {
 					ctx.measureText(drawnSoFar).width +
 						ctx.measureText(` / ${type}: `).width +
 						ctx.measureText(value.toLocaleString()).width >=
-					225
+					255
 				) {
 					pixelLevel += 10;
 					drawnSoFar = '';
 				}
 				if (type !== 'Default') {
-					if (value === 0) continue;
 					ctx.fillStyle = '#FF981F';
 					this.drawText(ctx, ` / ${type}: `, ctx.measureText(drawnSoFar).width, pixelLevel);
 					drawnSoFar += ` / ${type}: `;
