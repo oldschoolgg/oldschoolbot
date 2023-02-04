@@ -28,10 +28,10 @@ async function mockTransactItems() {
 	return { newUser: {} };
 }
 
-vi.mock('../src/mahoji/mahojiSettings.ts', originalModule => {
+vi.mock('../src/mahoji/mahojiSettings.ts', async () => {
+	const actual: any = await vi.importActual('../src/mahoji/mahojiSettings.ts');
 	return {
-		__esModule: true,
-		...originalModule,
+		...actual,
 		transactItems: mockTransactItems
 	};
 });

@@ -17,10 +17,10 @@ import {
 import { AssignableSlayerTask } from '../../../lib/slayer/types';
 import { awaitMessageComponentInteraction, channelIsSendable, removeFromArr } from '../../../lib/util';
 import { stringMatches } from '../../../lib/util/cleanString';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { interactionReply } from '../../../lib/util/interactionReply';
 import { logError } from '../../../lib/util/logError';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
-import { handleMahojiConfirmation } from '../../mahojiSettings';
 
 const returnSuccessButtons = [
 	new ActionRowBuilder<ButtonBuilder>().addComponents([

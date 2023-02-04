@@ -5,8 +5,8 @@ import LRUCache from 'lru-cache';
 import { Items } from 'oldschooljs';
 
 import { CLIENT_ID, production, SupportServer } from '../config';
+import { untrustedGuildSettingsCache } from '../mahoji/guildSettings';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
-import { untrustedGuildSettingsCache } from '../mahoji/mahojiSettings';
 import { mentionCommand } from './commandMention';
 import { BitField, Channel, Emoji } from './constants';
 import pets from './data/pets';

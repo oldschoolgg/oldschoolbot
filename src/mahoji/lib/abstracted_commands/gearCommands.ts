@@ -14,10 +14,11 @@ import { defaultGear, Gear, globalPresets } from '../../../lib/structures/Gear';
 import { assert, formatSkillRequirements, isValidGearSetup, stringMatches } from '../../../lib/util';
 import { gearEquipMultiImpl } from '../../../lib/util/equipMulti';
 import { getItem } from '../../../lib/util/getOSItem';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 import { toTitleCase } from '../../../lib/util/toTitleCase';
 import { transactItemsFromBank } from '../../../lib/util/transactItemsFromBank';
-import { handleMahojiConfirmation, mahojiParseNumber } from '../../mahojiSettings';
+import { mahojiParseNumber } from '../../mahojiSettings';
 
 export async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName: string): CommandResponse {
 	if (user.minionIsBusy) {
