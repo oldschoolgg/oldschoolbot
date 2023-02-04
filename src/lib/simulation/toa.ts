@@ -845,7 +845,7 @@ function calculatePointsAndDeaths(
 	for (const room of TOARooms) {
 		let roomDeathChance = deathChance / TOARooms.length;
 		if (minDeathChance) roomDeathChance += minDeathChance / 3;
-		if (percentChance(roomDeathChance)) {
+		if (percentChance(roomDeathChance) || (totalAttempts < 30 && raidLevel >= 500)) {
 			deaths.push(room.id);
 			points = reduceNumByPercent(points, 20);
 		}
