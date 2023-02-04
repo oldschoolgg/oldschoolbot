@@ -14,7 +14,6 @@ import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-
 import { NightmareZoneActivityTaskOptions } from './../../../lib/types/minions';
 
 const itemBoosts = [
