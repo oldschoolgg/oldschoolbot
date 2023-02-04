@@ -1,5 +1,6 @@
 import { Bank } from 'oldschooljs';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
+import { describe, expect, test } from 'vitest';
 
 import { GearSetup, GearStat } from '../src/lib/gear/types';
 import getUserBestGearFromBank from '../src/lib/minions/functions/getUserBestGearFromBank';

@@ -1,4 +1,5 @@
 import { Bank } from 'oldschooljs';
+import { describe, expect, test } from 'vitest';
 
 import { GearStat } from '../src/lib/gear/types';
 import { bankIsEqual } from '../src/lib/stressTest';

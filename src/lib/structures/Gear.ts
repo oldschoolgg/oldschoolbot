@@ -404,7 +404,7 @@ export class Gear {
 			let currentCount = 0;
 			for (const i of [...items]) {
 				const similarItems = getSimilarItems(i);
-				if (similarItems.length) {
+				if (similarItems.length > 0) {
 					if (similarItems.some(si => allItems.includes(si))) currentCount++;
 				} else if (allItems.includes(i)) currentCount++;
 			}
