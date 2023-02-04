@@ -25,7 +25,7 @@ export async function wintertodtCommand(user: MUser, channelID: string) {
 	const wcBoost = (wcLevel + 1) / 10;
 
 	if (wcBoost > 1) {
-		messages.push(`**Boosts: ** ${wcBoost.toFixed(2)}%  for Woodcutting level\n`);
+		messages.push(`**Boosts:** ${wcBoost.toFixed(2)}% for Woodcutting level\n`);
 	}
 
 	durationPerTodt = reduceNumByPercent(durationPerTodt, wcBoost);
