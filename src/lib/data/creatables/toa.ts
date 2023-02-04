@@ -166,7 +166,8 @@ for (const [ornament, _pet] of transMogPets) {
 	toaCreatables.push({
 		name: `Revert ${pet.name}`,
 		inputItems: new Bank().add(pet.id),
-		outputItems: new Bank().add("Tumeken's guardian").add(ornKit.id)
+		outputItems: new Bank().add("Tumeken's guardian").add(ornKit.id),
+		noCl: true
 	});
 }
 

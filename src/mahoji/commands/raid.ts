@@ -117,7 +117,9 @@ export const raidCommand: OSBMahojiCommand = {
 							type: ApplicationCommandOptionType.Integer,
 							name: 'max_team_size',
 							description: 'Choose a max size for your team.',
-							required: false
+							required: false,
+							min_value: 1,
+							max_value: 8
 						}
 					]
 				},
