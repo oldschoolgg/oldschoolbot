@@ -8,7 +8,6 @@ import {
 	Collection,
 	CollectorFilter,
 	ComponentType,
-	DMChannel,
 	escapeMarkdown,
 	Guild,
 	GuildTextBasedChannel,
@@ -16,7 +15,6 @@ import {
 	InteractionType,
 	Message,
 	MessageEditOptions,
-	PermissionsBitField,
 	SelectMenuInteraction,
 	TextChannel,
 	time,
@@ -176,23 +174,6 @@ export function getSupportGuild(): Guild | null {
 	return guild;
 }
 
-/**
- * Checks if the bot can send a message to a channel object.
- * @param channel The channel to check if the bot can send a message to.
- */
-export function channelIsSendable(channel: Channel | undefined | null): channel is TextChannel {
-	if (!channel) return false;
-	if (!channel.isTextBased()) return false;
-	if (!('guild' in channel)) return true;
-	const canSend = channel.guild
-		? channel.permissionsFor(globalClient.user!)!.has(PermissionsBitField.Flags.ViewChannel)
-		: true;
-	if (!(channel instanceof DMChannel) && !(channel instanceof TextChannel) && canSend) {
-		return false;
-	}
-
-	return true;
-}
 export function calcCombatLevel(skills: Skills) {
 	const defence = skills.defence ? convertXPtoLVL(skills.defence) : 1;
 	const ranged = skills.ranged ? convertXPtoLVL(skills.ranged) : 1;
@@ -553,3 +534,4 @@ export function isModOrAdmin(user: MUser) {
 
 export { assert } from './util/logError';
 export * from './util/smallUtils';
+export { channelIsSendable } from '@oldschoolgg/toolkit';

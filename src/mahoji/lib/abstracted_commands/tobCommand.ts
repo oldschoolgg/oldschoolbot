@@ -23,7 +23,8 @@ import { channelIsSendable, formatDuration, formatSkillRequirements, skillsMeetR
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import getOSItem from '../../../lib/util/getOSItem';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { mahojiParseNumber, updateLegacyUserBankSetting } from '../../mahojiSettings';
+import { updateLegacyUserBankSetting } from '../../../lib/util/updateLegacyUserBankSetting';
+import { mahojiParseNumber } from '../../mahojiSettings';
 
 const minStats = {
 	attack: 90,

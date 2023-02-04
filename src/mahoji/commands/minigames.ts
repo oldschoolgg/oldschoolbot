@@ -67,7 +67,8 @@ import { troubleBrewingStartCommand } from '../lib/abstracted_commands/troubleBr
 import {
 	volcanicMineCommand,
 	VolcanicMineShop,
-	volcanicMineShopCommand
+	volcanicMineShopCommand,
+	volcanicMineStatsCommand
 } from '../lib/abstracted_commands/volcanicMineCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { giantsFoundryAlloys, giantsFoundryBuyables } from './../lib/abstracted_commands/giantsFoundryCommand';
@@ -262,7 +263,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 							name: 'skill',
 							required: true,
 							description: 'The skill to put XP in.',
-							choices: ['attack', 'strength ', 'defence', 'hitpoints', 'ranged', 'magic', 'prayer'].map(
+							choices: ['attack', 'strength', 'defence', 'hitpoints', 'ranged', 'magic', 'prayer'].map(
 								i => ({ name: i, value: i })
 							)
 						},
@@ -750,6 +751,11 @@ export const minigamesCommand: OSBMahojiCommand = {
 							min_value: 1
 						}
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'stats',
+					description: 'Show Volcanic Mine stats.'
 				}
 			]
 		},
@@ -902,7 +908,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 		{
 			type: ApplicationCommandOptionType.SubcommandGroup,
 			name: 'shades_of_morton',
-			description: 'The Guardians of the Rift minigame.',
+			description: "The Shades of Mort'ton minigame.",
 			options: [
 				{
 					type: ApplicationCommandOptionType.Subcommand,
@@ -977,6 +983,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 		volcanic_mine?: {
 			start?: { quantity?: number };
 			buy?: { item: string; quantity?: number };
+			stats?: {};
 		};
 		agility_arena?: {
 			start?: {};
@@ -1232,6 +1239,9 @@ export const minigamesCommand: OSBMahojiCommand = {
 				options.volcanic_mine.buy.item,
 				options.volcanic_mine.buy.quantity
 			);
+		}
+		if (options.volcanic_mine?.stats) {
+			return volcanicMineStatsCommand(user);
 		}
 
 		/**

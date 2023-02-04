@@ -128,6 +128,8 @@ model ClientStorage {
   gotr_loot                    Json     @default("{}") @db.Json
   gf_cost                      Json     @default("{}") @db.Json
   gf_loot                      Json     @default("{}") @db.Json
+  toa_cost                     Json     @default("{}") @db.Json
+  toa_loot                     Json     @default("{}") @db.Json
 
   @@map("clientStorage")
 }
@@ -381,6 +383,9 @@ model User {
   sang_charges           Int @default(0)
   celestial_ring_charges Int @default(0)
   ash_sanctifier_charges Int @default(0)
+  serp_helm_charges      Int @default(0)
+  blood_fury_charges     Int @default(0)
+  tum_shadow_charges     Int @default(0)
 
   gp_luckypick BigInt @default(0)
   gp_dice      BigInt @default(0)
@@ -418,6 +423,10 @@ model Webhook {
   @@map("webhook_table")
 }
 
+enum XpGainSource {
+  TombsOfAmascut
+}
+
 model XPGain {
   id         Int                 @id @default(autoincrement())
   user_id    BigInt
@@ -426,6 +435,7 @@ model XPGain {
   xp         Int
   artificial Boolean?
   post_max   Boolean             @default(false)
+  source     XpGainSource?
 
   @@index([date, skill])
   @@map("xp_gains")
@@ -484,6 +494,7 @@ model Minigame {
   giants_foundry          Int    @default(0)
   guardians_of_the_rift   Int    @default(0)
   shades_of_morton        Int    @default(0)
+  tombs_of_amascut        Int    @default(0)
 
   new_user NewUser?
 
@@ -604,12 +615,23 @@ model UserStats {
   cl_array        Int[]
   cl_array_length Int   @default(0)
 
-  snowmen_built Int @default(0)
-
   buy_cost_bank Json @default("{}") @db.Json
   buy_loot_bank Json @default("{}") @db.Json
 
   shades_of_morton_cost_bank Json @default("{}") @db.Json
+
+  gp_from_agil_pyramid Int @default(0)
+
+  random_event_completions_bank Json @default("{}") @db.Json
+
+  toa_attempts Int @default(0)
+
+  toa_cost Json @default("{}") @db.Json
+  toa_loot Json @default("{}") @db.Json
+
+  total_toa_points           Int  @default(0)
+  toa_raid_levels_bank       Json @default("{}") @db.Json
+  total_toa_duration_minutes Int  @default(0)
 
   @@map("user_stats")
 }
@@ -741,6 +763,7 @@ enum activity_type_enum {
   GuardiansOfTheRift
   HalloweenEvent
   ShadesOfMorton
+  TombsOfAmascut
 }
 
 enum xp_gains_skill_enum {
