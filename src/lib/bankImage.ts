@@ -148,7 +148,6 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Dwarf weed'), 'dwarf'],
 	[i('Torstol'), 'torstol'],
 	[i('Korulsi'), 'korulsi'],
-	
 
 	[i('Grimy guam leaf'), 'guam'],
 	[i('Grimy marrentill'), 'marren'],
