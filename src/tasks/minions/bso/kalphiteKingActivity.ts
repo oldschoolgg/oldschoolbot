@@ -74,7 +74,7 @@ export const kalphiteKingTask: MinionTask = {
 			if (isDoubleLootActive(duration)) {
 				loot.multiply(2);
 			}
-			const winner = teamTable.roll();
+			const winner = teamTable.table.length ? teamTable.roll() : null;
 			if (!winner) continue;
 			teamsLoot.add(winner, loot);
 
