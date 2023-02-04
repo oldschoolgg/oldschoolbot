@@ -12,6 +12,7 @@ import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { getClueScoresFromOpenables } from '../../../lib/clues/clueUtils';
 import { Emoji, PerkTier } from '../../../lib/constants';
 import { calcCLDetails, isCLItem } from '../../../lib/data/Collections';
+import { slayerMaskHelms } from '../../../lib/data/slayerMaskHelms';
 import { calcActualClues } from '../../../lib/leagues/stats';
 import backgroundImages from '../../../lib/minions/data/bankBackgrounds';
 import killableMonsters from '../../../lib/minions/data/killableMonsters';
@@ -1195,6 +1196,19 @@ ${bank
 		perkTierNeeded: PerkTier.Four,
 		run: (_, userStats) => {
 			return makeResponseForBank(new Bank(userStats.toa_loot as ItemBank), 'Your TOA Loot');
+		}
+	},
+	{
+		name: 'Slayer Masks',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, userStats) => {
+			return Object.entries(userStats.on_task_with_mask_monster_scores as ItemBank)
+				.map(i => {
+					const monster = Monsters.find(m => m.id === Number(i[0]))!;
+					const mask = slayerMaskHelms.find(m => m.monsters.includes(monster.id))!;
+					return `${monster.name}: ${i[1]} kills towards mask, ${mask.killsRequiredForUpgrade} needed`;
+				})
+				.join('\n');
 		}
 	}
 ] as const;

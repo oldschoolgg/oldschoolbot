@@ -1,10 +1,12 @@
 import { calcWhatPercent, increaseNumByPercent, percentChance, reduceNumByPercent, sumArr, Time } from 'e';
 import { Bank, MonsterKillOptions, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
+import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { MysteryBoxes } from '../../lib/bsoOpenables';
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { BitField, Emoji } from '../../lib/constants';
+import { slayerMaskHelms } from '../../lib/data/slayerMaskHelms';
 import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
 import { isDoubleLootActive } from '../../lib/doubleLoot';
 import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
@@ -337,6 +339,44 @@ export const monsterTask: MinionTask = {
 					  user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.DoubleTrouble)
 					? quantitySlayed * 2
 					: quantitySlayed;
+
+			/**
+			 * Slayer masks/helms
+			 */
+			if (effectiveSlayed > 0) {
+				const bankToAdd = new Bank().add(monsterID, effectiveSlayed);
+				const matchingMaskOrHelm = slayerMaskHelms.find(
+					i => i.monsters.includes(monsterID) && user.hasEquipped([i.mask.id, i.helm.id])
+				);
+
+				const currentUserStats = await user.fetchStats();
+				const oldMaskScores = new Bank(currentUserStats.on_task_with_mask_monster_scores as ItemBank);
+				const newMaskScores = oldMaskScores.clone().add(bankToAdd);
+				if (
+					matchingMaskOrHelm &&
+					oldMaskScores.amount(monsterID) < matchingMaskOrHelm.killsRequiredForUpgrade &&
+					newMaskScores.amount(monsterID) > matchingMaskOrHelm.killsRequiredForUpgrade
+				) {
+					loot.add(matchingMaskOrHelm.helm.id);
+				} else if (matchingMaskOrHelm && !user.owns(matchingMaskOrHelm.mask.id)) {
+					console.log(
+						`Giving ${user.rawUsername} ${effectiveSlayed}x rolls of 1 in ${matchingMaskOrHelm.maskDropRate} for ${matchingMaskOrHelm.mask.name}`
+					);
+					for (let i = 0; i < effectiveSlayed; i++) {
+						if (roll(matchingMaskOrHelm.maskDropRate)) {
+							loot.add(matchingMaskOrHelm.mask.id);
+							break;
+						}
+					}
+				}
+
+				await userStatsUpdate(user.id, u => {
+					return {
+						on_task_monster_scores: new Bank(u.on_task_monster_scores as ItemBank).add(bankToAdd).bank,
+						on_task_with_mask_monster_scores: matchingMaskOrHelm ? newMaskScores.bank : undefined
+					};
+				});
+			}
 
 			const quantityLeft = Math.max(0, isOnTaskResult.currentTask!.quantity_remaining - effectiveSlayed);
 

@@ -822,6 +822,9 @@ model UserStats {
   toa_raid_levels_bank       Json @default("{}") @db.Json
   total_toa_duration_minutes Int  @default(0)
 
+  on_task_monster_scores           Json @default("{}") @db.Json
+  on_task_with_mask_monster_scores Json @default("{}") @db.Json
+
   @@map("user_stats")
 }
 
