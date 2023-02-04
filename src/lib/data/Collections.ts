@@ -1,6 +1,7 @@
 import { AttachmentBuilder } from 'discord.js';
-import { calcWhatPercent, notEmpty, uniqueArr } from 'e';
+import { calcWhatPercent, isObject, notEmpty, sumArr, uniqueArr } from 'e';
 import { Bank, Clues, Monsters } from 'oldschooljs';
+import { Item } from 'oldschooljs/dist/meta/types';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import { table } from 'table';
@@ -15,14 +16,15 @@ import {
 	MediumEncounterLoot,
 	rewardTokens
 } from '../minions/data/templeTrekking';
-import { getMinigameScore, MinigameName } from '../settings/minigames';
+import type { MinigameName } from '../settings/minigames';
 import { NexNonUniqueTable, NexUniqueTable } from '../simulation/misc';
+import { getToaKCs } from '../simulation/toa';
 import { allFarmingItems } from '../skilling/skills/farming';
 import { SkillsEnum } from '../skilling/types';
-import { ItemBank } from '../types';
-import { addArrayOfNumbers, removeFromArr, shuffleRandom, stringMatches } from '../util';
-import { getKCByName } from '../util/getKCByName';
+import type { ItemBank } from '../types';
+import { stringMatches } from '../util/cleanString';
 import resolveItems from '../util/resolveItems';
+import { removeFromArr, shuffleRandom } from '../util/smallUtils';
 import {
 	abyssalSireCL,
 	aerialFishingCL,
@@ -68,6 +70,7 @@ import {
 	fossilIslandNotesCL,
 	generalGraardorCL,
 	giantMoleCL,
+	giantsFoundryCL,
 	gnomeRestaurantCL,
 	godWarsDungeonCL,
 	gracefulCL,
@@ -115,6 +118,7 @@ import {
 	theNightmareCL,
 	thermonuclearSmokeDevilCL,
 	titheFarmCL,
+	toaCL,
 	troubleBrewingCL,
 	tzHaarCL,
 	venenatisCL,
@@ -253,8 +257,10 @@ export const allCollectionLogs: ICollection = {
 			'The Gauntlet': {
 				alias: ['gauntlet', 'crystalline hunllef', 'hunllef'],
 				kcActivity: {
-					Default: user => getMinigameScore(user.id, 'gauntlet'),
-					Corrupted: user => getMinigameScore(user.id, 'corrupted_gauntlet')
+					Default: async (_, minigameScores) =>
+						minigameScores.find(i => i.minigame.column === 'gauntlet')!.score,
+					Corrupted: async (_, minigameScores) =>
+						minigameScores.find(i => i.minigame.column === 'corrupted_gauntlet')!.score
 				},
 				items: theGauntletCL,
 				fmtProg: ({ minigames }) => [`${minigames.gauntlet} KC`, `${minigames.corrupted_gauntlet} Corrupted KC`]
@@ -413,8 +419,10 @@ export const allCollectionLogs: ICollection = {
 			"Chamber's of Xeric": {
 				alias: ChambersOfXeric.aliases,
 				kcActivity: {
-					Default: user => getMinigameScore(user.id, 'raids'),
-					Challenge: user => getMinigameScore(user.id, 'raids_challenge_mode')
+					Default: async (_, minigameScores) =>
+						minigameScores.find(i => i.minigame.column === 'raids')!.score,
+					Challenge: async (_, minigameScores) =>
+						minigameScores.find(i => i.minigame.column === 'raids_challenge_mode')!.score
 				},
 				items: chambersOfXericCL,
 				isActivity: true,
@@ -425,13 +433,28 @@ export const allCollectionLogs: ICollection = {
 			'Theatre of Blood': {
 				alias: ['tob'],
 				kcActivity: {
-					Default: user => getMinigameScore(user.id, 'tob'),
-					Hard: user => getMinigameScore(user.id, 'tob_hard')
+					Default: async (_, minigameScores) => minigameScores.find(i => i.minigame.column === 'tob')!.score,
+					Hard: async (_, minigameScores) => minigameScores.find(i => i.minigame.column === 'tob_hard')!.score
 				},
 				items: theatreOfBLoodCL,
 				isActivity: true,
 				fmtProg: ({ minigames }) => {
 					return [`${minigames.tob} KC, ${minigames.tob_hard} Hard KC`];
+				}
+			},
+			'Tombs of Amascut': {
+				alias: ['toa'],
+				kcActivity: {
+					Default: async (_, minigameScores) =>
+						minigameScores.find(i => i.minigame.column === 'tombs_of_amascut')!.score,
+					Entry: async user => getToaKCs(user).then(i => i.entryKC),
+					Normal: async user => getToaKCs(user).then(i => i.normalKC),
+					Expert: async user => getToaKCs(user).then(i => i.expertKC)
+				},
+				items: toaCL,
+				isActivity: true,
+				fmtProg: ({ minigames }) => {
+					return [`${minigames.tombs_of_amascut} KC`];
 				}
 			}
 		}
@@ -589,7 +612,8 @@ export const allCollectionLogs: ICollection = {
 				alias: ['ba', 'barb assault', 'barbarian assault'],
 				items: barbarianAssaultCL,
 				kcActivity: {
-					Default: async user => getMinigameScore(user.id, 'barb_assault'),
+					Default: async (_, minigameScores) =>
+						minigameScores.find(i => i.minigame.column === 'barb_assault')!.score,
 					'High Gambles': async user => user.user.high_gambles
 				},
 				isActivity: true,
@@ -635,6 +659,11 @@ export const allCollectionLogs: ICollection = {
 				isActivity: true,
 				fmtProg: mgProg('fishing_trawler')
 			},
+			"Giants' Foundry": {
+				alias: ['giants', 'giants foundry', 'giants foundry'],
+				items: giantsFoundryCL,
+				isActivity: true
+			},
 			'Gnome Restaurant': {
 				alias: ['gnome', 'restaurant'],
 				allItems: resolveItems(['Snake charm', 'Gnomeball']),
@@ -659,7 +688,7 @@ export const allCollectionLogs: ICollection = {
 				items: lastManStandingCL,
 				isActivity: true,
 				kcActivity: {
-					Default: user => getMinigameScore(user.id, 'lms')
+					Default: async (_, minigameScores) => minigameScores.find(i => i.minigame.column === 'lms')!.score
 				},
 				alias: ['lms'],
 				fmtProg: mgProg('sepulchre')
@@ -802,7 +831,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['revs'],
 				kcActivity: {
 					Default: async user => {
-						return addArrayOfNumbers(
+						return sumArr(
 							[
 								Monsters.RevenantImp.id,
 								Monsters.RevenantGoblin.id,
@@ -1244,23 +1273,23 @@ export async function getCollection(options: {
 				// Defaults to the activity name
 				if (attributes.kcActivity) {
 					if (typeof attributes.kcActivity === 'string') {
-						userKC.Default += (await getKCByName(user, attributes.kcActivity))[1];
+						userKC.Default += (await user.getKCByName(attributes.kcActivity))[1];
 					} else {
 						for (const [type, value] of Object.entries(attributes.kcActivity)) {
 							if (!userKC[type]) userKC[type] = 0;
 							if (Array.isArray(value)) {
 								for (const name of value) {
-									userKC[type] += (await getKCByName(user, name))[1];
+									userKC[type] += (await user.getKCByName(name))[1];
 								}
 							} else if (typeof value === 'function') {
-								userKC[type] += await value(user);
+								userKC[type] += await value(user, await user.fetchMinigameScores());
 							} else {
-								userKC[type] += (await getKCByName(user, value))[1];
+								userKC[type] += (await user.getKCByName(value))[1];
 							}
 						}
 					}
 				} else {
-					const defaultKc = await getKCByName(user, activityName);
+					const defaultKc = await user.getKCByName(activityName);
 					if (defaultKc[0] !== null) userKC.Default += defaultKc[1];
 					else userKC = undefined;
 				}
@@ -1307,3 +1336,8 @@ export async function getCollection(options: {
 export const allCollectionLogsFlat = Object.values(allCollectionLogs)
 	.map(i => Object.entries(i.activities).map(entry => ({ ...entry[1], name: entry[0] })))
 	.flat();
+
+export function isCLItem(item: Item | number | [Item, number]): boolean {
+	if (Array.isArray(item)) return isCLItem(item[0]);
+	return allCLItemsFiltered.includes(isObject(item) ? item.id : item);
+}

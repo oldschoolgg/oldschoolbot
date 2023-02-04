@@ -1,3 +1,7 @@
+import { Bank } from 'oldschooljs';
+import { Item } from 'oldschooljs/dist/meta/types';
+
+import getOSItem from '../../util/getOSItem';
 import itemID from '../../util/itemID';
 import { Createable } from '../createables';
 
@@ -2559,3 +2563,31 @@ export const armorAndItemPacks: Createable[] = [
 		}
 	}
 ];
+
+const armorSetsSrc: { unpacked: Bank; packed: Item }[] = [
+	{
+		unpacked: new Bank().add("Dagon'hai hat").add("Dagon'hai robe top").add("Dagon'hai robe bottom"),
+		packed: getOSItem("Dagon'hai robes set")
+	},
+	{
+		unpacked: new Bank().add('Masori mask (f)').add('Masori body (f)').add('Masori chaps (f)'),
+		packed: getOSItem('Masori armour set (f)')
+	}
+];
+
+for (const set of armorSetsSrc) {
+	armorAndItemPacks.push({
+		name: set.packed.name,
+		inputItems: set.unpacked,
+		outputItems: new Bank().add(set.packed.id, 1),
+		type: 'pack',
+		noCl: true
+	});
+	armorAndItemPacks.push({
+		name: `Unpack ${set.packed.name}`,
+		inputItems: new Bank().add(set.packed.id, 1),
+		outputItems: set.unpacked,
+		noCl: true,
+		type: 'unpack'
+	});
+}

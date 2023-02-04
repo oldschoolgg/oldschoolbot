@@ -1,5 +1,6 @@
 import { GearPreset } from '@prisma/client';
-import { notEmpty, objectKeys } from 'e';
+import { notEmpty, objectKeys, uniqueArr } from 'e';
+import { Bank } from 'oldschooljs';
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 
 import { getSimilarItems, inverseSimilarItems } from '../data/similarItems';
@@ -267,6 +268,23 @@ export const globalPresets: GearPreset[] = [
 		ring: null,
 		ammo: null,
 		ammo_qty: null
+	},
+	{
+		name: 'smith',
+		user_id: '123',
+		head: null,
+		neck: null,
+		body: itemID('Smiths tunic'),
+		legs: itemID('Smiths trousers'),
+		cape: null,
+		two_handed: null,
+		hands: itemID('Smiths gloves'),
+		feet: itemID('Smiths boots'),
+		shield: null,
+		weapon: null,
+		ring: null,
+		ammo: null,
+		ammo_qty: null
 	}
 ];
 
@@ -360,7 +378,19 @@ export class Gear {
 			}
 		}
 
-		return values;
+		return uniqueArr(values);
+	}
+
+	allItemsBank() {
+		const gear = this.raw();
+		const values = Object.values(gear).filter(notEmpty);
+
+		const bank = new Bank();
+
+		for (const item of values) {
+			bank.add(item.item, item.quantity);
+		}
+		return bank;
 	}
 
 	hasEquipped(_items: number | string | (string | number)[], every = false, includeSimilar = true) {
@@ -374,7 +404,7 @@ export class Gear {
 			let currentCount = 0;
 			for (const i of [...items]) {
 				const similarItems = getSimilarItems(i);
-				if (similarItems.length) {
+				if (similarItems.length > 0) {
 					if (similarItems.some(si => allItems.includes(si))) currentCount++;
 				} else if (allItems.includes(i)) currentCount++;
 			}

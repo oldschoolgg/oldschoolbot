@@ -7,7 +7,6 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { SupportServer } from '../config';
 import { timePerAlch } from '../mahoji/lib/abstracted_commands/alchCommand';
 import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
-import { mahojiUserSettingsUpdate } from '../mahoji/settingsUpdate';
 import { addXP } from './addXP';
 import { userIsBusy } from './busyCounterCache';
 import { ClueTiers } from './clues/clueTiers';
@@ -28,11 +27,31 @@ import { defaultGear, Gear } from './structures/Gear';
 import { ItemBank, Skills } from './types';
 import { addItemToBank, assert, convertXPtoLVL, itemNameFromID, percentChance } from './util';
 import { determineRunes } from './util/determineRunes';
+import { getKCByName } from './util/getKCByName';
 import getOSItem from './util/getOSItem';
 import { logError } from './util/logError';
 import { minionIsBusy } from './util/minionIsBusy';
 import { minionName } from './util/minionUtils';
 import resolveItems from './util/resolveItems';
+
+export async function mahojiUserSettingsUpdate(user: string | bigint, data: Prisma.UserUpdateArgs['data']) {
+	try {
+		const newUser = await prisma.user.update({
+			data,
+			where: {
+				id: user.toString()
+			}
+		});
+
+		return { newUser };
+	} catch (err) {
+		logError(err, {
+			user_id: user.toString(),
+			updated_data: JSON.stringify(data)
+		});
+		throw err;
+	}
+}
 
 function alchPrice(bank: Bank, item: Item, tripLength: number) {
 	const maxCasts = Math.min(Math.floor(tripLength / timePerAlch), bank.amount(item.id));
@@ -546,8 +565,22 @@ export class MUserClass {
 		return true;
 	}
 
-	owns(checkBank: Bank | number | string) {
-		return this.bank.clone().add('Coins', Number(this.user.GP)).has(checkBank);
+	allEquippedGearBank() {
+		const bank = new Bank();
+		for (const gear of Object.values(this.gear).flat()) {
+			bank.add(gear.allItemsBank());
+		}
+		return bank;
+	}
+
+	owns(checkBank: Bank | number | string, { includeGear }: { includeGear: boolean } = { includeGear: false }) {
+		const allItems = this.bank.clone().add('Coins', Number(this.user.GP));
+		if (includeGear) {
+			for (const [item, qty] of this.allEquippedGearBank().items()) {
+				allItems.add(item.id, qty);
+			}
+		}
+		return allItems.has(checkBank);
 	}
 
 	async sync() {
@@ -585,6 +618,14 @@ export class MUserClass {
 
 	get logName() {
 		return `${this.rawUsername}[${this.id}]`;
+	}
+
+	async getKCByName(name: string) {
+		return getKCByName(this, name);
+	}
+
+	get hasMinion() {
+		return Boolean(this.user.minion_hasBought);
 	}
 }
 declare global {

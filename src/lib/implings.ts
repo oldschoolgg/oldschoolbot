@@ -78,17 +78,17 @@ export const puroImpNormalTable = new LootTable()
 	.add('Lucky impling jar', 1, 18);
 
 export const defaultImpTable = new LootTable()
-	.add('Baby impling jar', 1, 66)
-	.add('Young impling jar', 1, 55)
-	.add('Gourmet impling jar', 1, 48)
-	.add('Earth impling jar', 1, 38)
-	.add('Essence impling jar', 1, 29)
-	.add('Eclectic impling jar', 1, 24)
-	.add('Nature impling jar', 1, 33)
-	.add('Magpie impling jar', 1, 24)
-	.add('Ninja impling jar', 1, 21)
-	.add('Dragon impling jar', 1, 10)
-	.add('Lucky impling jar', 1, 1);
+	.add('Baby impling jar', 1, 28_280)
+	.add('Young impling jar', 1, 28_280)
+	.add('Gourmet impling jar', 1, 35_350)
+	.add('Earth impling jar', 1, 35_350)
+	.add('Essence impling jar', 1, 28_280)
+	.add('Eclectic impling jar', 1, 40_299)
+	.add('Nature impling jar', 1, 18_140)
+	.add('Magpie impling jar', 1, 21_414)
+	.add('Ninja impling jar', 1, 12_707)
+	.add('Dragon impling jar', 1, 4000)
+	.add('Lucky impling jar', 1, 400);
 
 const implingTableByWorldLocation = {
 	[WorldLocations.Priffdinas]: new LootTable({ limit: 155 }).add('Crystal impling jar', 1, 1),
@@ -106,7 +106,9 @@ export function handlePassiveImplings(user: MUser, data: ActivityTaskOptions) {
 			activity_type_enum.BarbarianAssault,
 			activity_type_enum.CastleWars,
 			activity_type_enum.LastManStanding,
-			activity_type_enum.PestControl
+			activity_type_enum.PestControl,
+			activity_type_enum.Construction,
+			activity_type_enum.TombsOfAmascut
 		].includes(data.type)
 	)
 		return null;

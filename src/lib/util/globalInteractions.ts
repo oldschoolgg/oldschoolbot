@@ -10,11 +10,11 @@ import { ClueTier } from '../clues/clueTiers';
 import { PerkTier } from '../constants';
 import { prisma } from '../settings/prisma';
 import { runCommand } from '../settings/settings';
+import { toaHelpCommand } from '../simulation/toa';
 import { ItemBank } from '../types';
 import { formatDuration, removeFromArr } from '../util';
 import { updateGiveawayMessage } from './giveaway';
 import { interactionReply } from './interactionReply';
-import { log } from './log';
 import { minionIsBusy } from './minionIsBusy';
 import { fetchRepeatTrips, repeatTrip } from './repeatStoredTrip';
 
@@ -43,7 +43,8 @@ const globalInteractionActions = [
 	'BUY_BINGO_TICKET',
 	'NEW_SLAYER_TASK',
 	'VIEW_BANK',
-	'DO_SHOOTING_STAR'
+	'DO_SHOOTING_STAR',
+	'CHECK_TOA'
 ] as const;
 
 export type GlobalInteractionAction = typeof globalInteractionActions[number];
@@ -237,6 +238,13 @@ export async function interactionHook(interaction: Interaction) {
 	const user = await mUserFetch(userID);
 	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, interaction);
 	if (id.includes('REPEAT_TRIP')) return repeatTripHandler(user, interaction);
+	if (id === 'TOA_CHECK') {
+		const response = await toaHelpCommand(user, interaction.channelId);
+		return interactionReply(interaction, {
+			content: typeof response === 'string' ? response : response.content,
+			ephemeral: true
+		});
+	}
 
 	if (!isValidGlobalInteraction(id)) return;
 	if (user.isBusy || globalClient.isShuttingDown) {
@@ -262,7 +270,7 @@ export async function interactionHook(interaction: Interaction) {
 	const timeSinceMessage = Date.now() - new Date(interaction.message.createdTimestamp).getTime();
 	const timeLimit = reactionTimeLimit(user.perkTier());
 	if (timeSinceMessage > Time.Day) {
-		log(
+		console.log(
 			`${user.id} clicked Diff[${formatDuration(timeSinceMessage)}] Button[${id}] Message[${
 				interaction.message.id
 			}]`

@@ -1,6 +1,6 @@
+import { SimpleTable } from '@oldschoolgg/toolkit';
 import { randInt } from 'e';
 import { Bank } from 'oldschooljs';
-import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { Emoji, Events } from '../../../lib/constants';
 import { trackLoot } from '../../../lib/lootTrack';
@@ -48,7 +48,7 @@ export const wintertodtTask: MinionTask = {
 		let totalPoints = 0;
 
 		for (let i = 0; i < quantity; i++) {
-			const points = PointsTable.roll().item;
+			const points = PointsTable.rollOrThrow();
 			totalPoints += points;
 
 			loot.add(

@@ -7,8 +7,8 @@ export class TeamLoot {
 	map = new Map<string, Bank>();
 	purpleItems: number[];
 
-	constructor(purpleItems: number[]) {
-		this.purpleItems = purpleItems;
+	constructor(purpleItems?: number[]) {
+		this.purpleItems = purpleItems ?? [];
 	}
 
 	totalLoot() {
@@ -31,6 +31,12 @@ export class TeamLoot {
 	add(id: string, ...args: Parameters<Bank['add']>) {
 		const bank = this.get(id);
 		bank.add(...args);
+		return bank;
+	}
+
+	remove(id: string, ...args: Parameters<Bank['remove']>) {
+		const bank = this.get(id);
+		bank.remove(...args);
 		return bank;
 	}
 

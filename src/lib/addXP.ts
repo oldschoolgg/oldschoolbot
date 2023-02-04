@@ -1,11 +1,12 @@
 import { noOp, Time } from 'e';
+import { convertXPtoLVL, toKMB } from 'oldschooljs/dist/util/util';
 
 import { MAXING_MESSAGE, SupportServer } from '../config';
-import { Events, LEVEL_99_XP, MAX_TOTAL_LEVEL, MAX_XP, skillEmoji } from './constants';
+import { Events, LEVEL_99_XP, MAX_TOTAL_LEVEL, MAX_XP } from './constants';
+import { skillEmoji } from './data/emojis';
 import { AddXpParams } from './minions/types';
 import { prisma } from './settings/prisma';
 import Skills from './skilling/skills';
-import { convertXPtoLVL, toKMB } from './util';
 import { formatOrdinal } from './util/formatOrdinal';
 import { toTitleCase } from './util/toTitleCase';
 import { sendToChannelID } from './util/webhook';
@@ -67,7 +68,8 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 				user_id: BigInt(user.id),
 				skill: params.skillName,
 				xp: Math.floor(totalXPAdded),
-				artificial: params.artificial ? true : null
+				artificial: params.artificial ? true : null,
+				source: params.source
 			}
 		});
 	}
@@ -80,7 +82,8 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 				skill: params.skillName,
 				xp: Math.floor(params.amount - totalXPAdded),
 				artificial: params.artificial ? true : null,
-				post_max: true
+				post_max: true,
+				source: params.source
 			}
 		});
 	}
