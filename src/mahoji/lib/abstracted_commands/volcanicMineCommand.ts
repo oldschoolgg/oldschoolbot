@@ -8,7 +8,7 @@ import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { formatDuration, formatSkillRequirements, hasSkillReqs, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { handleMahojiConfirmation } from '../../mahojiSettings';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 
 const skillReqs = {
 	[SkillsEnum.Prayer]: 70,
