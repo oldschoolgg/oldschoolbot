@@ -217,6 +217,26 @@ const inhibitors: Inhibitor[] = [
 		},
 		canBeDisabled: false,
 		silent: true
+	},
+	{
+		name: 'toa_commands_channel',
+		run: async ({ user, guild, channel, command }) => {
+			if (!guild || guild.id !== SupportServer) return false;
+			if (channel.id !== '1069176960523190292') return false;
+
+			if (user.bitfield.includes(BitField.isModerator)) {
+				return false;
+			}
+
+			if (command.name === 'raid') return false;
+
+			return {
+				content: 'You can only send TOA commands in this channel! Please use <#346304390858145792> instead.',
+				ephemeral: true
+			};
+		},
+		canBeDisabled: false,
+		silent: true
 	}
 ];
 

@@ -35,6 +35,10 @@ export async function cancelTaskCommand(user: MUser, interaction?: ChatInputComm
 		}
 	}
 
+	if ((currentTask as any).users && (currentTask as any).users.length > 1) {
+		return 'Your minion is on a group activity and cannot cancel!';
+	}
+
 	if (interaction) {
 		await handleMahojiConfirmation(
 			interaction,

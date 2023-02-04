@@ -459,7 +459,7 @@ export const adminCommand: OSBMahojiCommand = {
 					description: 'The bitfield to add',
 					required: false,
 					autocomplete: async () => {
-						return Object.keys(BitField).map(i => ({ name: i, value: i }));
+						return Object.entries(BitFieldData).map(i => ({ name: i[1].name, value: i[0] }));
 					}
 				},
 				{
@@ -468,7 +468,7 @@ export const adminCommand: OSBMahojiCommand = {
 					description: 'The bitfield to remove',
 					required: false,
 					autocomplete: async () => {
-						return Object.keys(BitField).map(i => ({ name: i, value: i }));
+						return Object.entries(BitFieldData).map(i => ({ name: i[1].name, value: i[0] }));
 					}
 				}
 			]

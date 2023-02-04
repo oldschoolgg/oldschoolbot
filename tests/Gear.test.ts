@@ -1,4 +1,8 @@
+import { Bank } from 'oldschooljs';
+import { describe, expect, test } from 'vitest';
+
 import { GearStat } from '../src/lib/gear/types';
+import { bankIsEqual } from '../src/lib/stressTest';
 import { constructGearSetup, Gear } from '../src/lib/structures/Gear';
 import { itemNameFromID } from '../src/lib/util';
 import getOSItem from '../src/lib/util/getOSItem';
@@ -60,7 +64,6 @@ describe('Gear', () => {
 				'Woodcutting cape'
 			].sort()
 		);
-		expect(allItems.length).toEqual(25);
 	});
 
 	test('equippedWeapon', () => {
@@ -161,5 +164,16 @@ describe('Gear', () => {
 	test('toString', () => {
 		expect(testGear.toString()).toEqual('3rd age platebody, Dragon full helm (g), 3rd age platelegs, Twisted bow');
 		expect(new Gear().toString()).toEqual('No items');
+	});
+
+	test('allItemsBank', () => {
+		const gear = new Gear({
+			ammo: 'Dragon arrow',
+			body: '3rd age platebody'
+		});
+		gear.ammo!.quantity = 1000;
+		expect(bankIsEqual(gear.allItemsBank(), new Bank().add('Dragon arrow', 1000).add('3rd age platebody'))).toEqual(
+			true
+		);
 	});
 });
