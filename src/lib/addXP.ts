@@ -69,7 +69,8 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 				user_id: BigInt(user.id),
 				skill: params.skillName,
 				xp: Math.floor(totalXPAdded),
-				artificial: params.artificial ? true : null
+				artificial: params.artificial ? true : null,
+				source: params.source
 			}
 		});
 	}
@@ -82,7 +83,8 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 				skill: params.skillName,
 				xp: Math.floor(params.amount - totalXPAdded),
 				artificial: params.artificial ? true : null,
-				post_max: true
+				post_max: true,
+				source: params.source
 			}
 		});
 	}

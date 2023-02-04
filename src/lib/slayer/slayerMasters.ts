@@ -1,3 +1,5 @@
+import { MonsterSlayerMaster } from 'oldschooljs';
+
 import { chaeldarTasks } from './tasks/chaeldarTasks';
 import { duradelTasks } from './tasks/duradelTasks';
 import { konarTasks } from './tasks/konarTasks';
@@ -13,7 +15,8 @@ export const slayerMasters: SlayerMaster[] = [
 		name: 'Turael',
 		aliases: ['turael', 'tu', 'tura'],
 		tasks: turaelTasks,
-		basePoints: 0
+		basePoints: 0,
+		osjsEnum: MonsterSlayerMaster.Turael
 	},
 	{
 		id: 2,
@@ -22,7 +25,8 @@ export const slayerMasters: SlayerMaster[] = [
 		tasks: mazchnaTasks,
 		basePoints: 2,
 		combatLvl: 20,
-		questPoints: 1
+		questPoints: 1,
+		osjsEnum: MonsterSlayerMaster.Mazchna
 	},
 	{
 		id: 3,
@@ -30,7 +34,8 @@ export const slayerMasters: SlayerMaster[] = [
 		aliases: ['vannaka', 'van', 'vanna'],
 		tasks: vannakaTasks,
 		basePoints: 4,
-		combatLvl: 40
+		combatLvl: 40,
+		osjsEnum: MonsterSlayerMaster.Vannaka
 	},
 	{
 		id: 4,
@@ -39,7 +44,8 @@ export const slayerMasters: SlayerMaster[] = [
 		tasks: chaeldarTasks,
 		basePoints: 10,
 		combatLvl: 70,
-		questPoints: 3
+		questPoints: 3,
+		osjsEnum: MonsterSlayerMaster.Chaeldar
 	},
 	{
 		id: 5,
@@ -48,7 +54,8 @@ export const slayerMasters: SlayerMaster[] = [
 		tasks: konarTasks,
 		bossTasks: true,
 		basePoints: 18,
-		combatLvl: 75
+		combatLvl: 75,
+		osjsEnum: MonsterSlayerMaster.Konar
 	},
 	{
 		id: 6,
@@ -57,7 +64,8 @@ export const slayerMasters: SlayerMaster[] = [
 		tasks: nieveTasks,
 		bossTasks: true,
 		basePoints: 15,
-		combatLvl: 85
+		combatLvl: 85,
+		osjsEnum: MonsterSlayerMaster.Nieve
 	},
 	{
 		id: 7,
@@ -67,6 +75,7 @@ export const slayerMasters: SlayerMaster[] = [
 		bossTasks: true,
 		basePoints: 15,
 		combatLvl: 100,
-		slayerLvl: 50
+		slayerLvl: 50,
+		osjsEnum: MonsterSlayerMaster.Duradel
 	}
 ];

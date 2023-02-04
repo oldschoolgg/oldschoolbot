@@ -14,7 +14,8 @@ import { TempleTrekkingActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, percentChance, rand, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { handleMahojiConfirmation, userHasGracefulEquipped } from '../../mahojiSettings';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
+import { userHasGracefulEquipped } from '../../mahojiSettings';
 
 export async function trekCommand(user: MUser, channelID: string, difficulty: string, quantity: number | undefined) {
 	const tier = difficulties.find(item => stringMatches(item.difficulty, difficulty));
