@@ -163,7 +163,10 @@ const source: [string, (string | number)[]][] = [
 	['Infernal cape', ['Infernal max cape', 'Infernal max cape (l)']],
 	['Ardougne cloak 4', ['Ardougne max cape']],
 	["Ava's accumulator", ['Accumulator max cape']],
-	["Ava's assembler", ['Assembler max cape', 'Assembler max cape (l)']],
+	[
+		"Ava's assembler",
+		['Assembler max cape', 'Assembler max cape (l)', 'Masori assembler', 'Masori assembler max cape']
+	],
 	['Mythical cape', ['Mythical max cape']],
 	['Achievement diary cape', ['Achievement diary cape(t)']],
 	[
@@ -304,7 +307,11 @@ const source: [string, (string | number)[]][] = [
 	[
 		'Robe bottoms of the eye',
 		['Robe bottoms of the eye (red)', 'Robe bottoms of the eye (green)', 'Robe bottoms of the eye (blue)']
-	]
+	],
+	["Osmumten's fang", ["Osmumten's fang (or)"]],
+	["Elidinis' ward (f)", ["Elidinis' ward (or)"]],
+	['Rune pouch', ['Divine rune pouch']],
+	['Ghrazi rapier', ['Holy ghrazi rapier']]
 ];
 
 export const similarItems: Map<number, number[]> = new Map(

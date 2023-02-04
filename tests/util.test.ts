@@ -1,6 +1,7 @@
 import { reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
+import { describe, expect, test } from 'vitest';
 
 import { baseModifyBusyCounter } from '../src/lib/busyCounterCache';
 import { deduplicateClueScrolls } from '../src/lib/clues/clueUtils';
