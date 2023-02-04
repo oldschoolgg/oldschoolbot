@@ -3,8 +3,8 @@ import { AttachmentBuilder, ButtonBuilder, MessageCollector } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
-import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
 import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
+import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
 import { updateGPTrackSetting, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { ClueTiers } from '../clues/clueTiers';
 import { BitField, COINS_ID, Emoji, PerkTier } from '../constants';
@@ -120,9 +120,8 @@ export async function handleTripFinish(
 		if (birdHousedetails.isReady && !user.bitfield.includes(BitField.DisableBirdhouseRunButton))
 			components.push(makeBirdHouseTripButton());
 
-		if (await canRunAutoContract(user))
-			components.push(makeAutoContractButton());
-		
+		if (await canRunAutoContract(user)) components.push(makeAutoContractButton());
+
 		const { currentTask } = await getUsersCurrentSlayerInfo(user.id);
 		if (
 			(currentTask === null || currentTask.quantity_remaining <= 0) &&
