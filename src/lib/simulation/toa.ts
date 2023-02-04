@@ -716,10 +716,10 @@ const TOARooms = [
 ] as const;
 
 export const mileStoneBaseDeathChances = [
-	{ level: 600, chance: 97, minChance: 90 },
-	{ level: 500, chance: 85, minChance: 80 },
-	{ level: 450, chance: 45.5, minChance: null },
-	{ level: 400, chance: 30, minChance: null },
+	{ level: 600, chance: 97, minChance: 97 },
+	{ level: 500, chance: 85, minChance: 93 },
+	{ level: 450, chance: 48.5, minChance: null },
+	{ level: 400, chance: 36, minChance: null },
 	{ level: 350, chance: 25.5, minChance: null },
 	{ level: 300, chance: 23, minChance: null },
 	{ level: 200, chance: 15, minChance: null },
