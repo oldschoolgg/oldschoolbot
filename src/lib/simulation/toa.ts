@@ -841,8 +841,11 @@ function calculatePointsAndDeaths(
 
 	let points = estimatePoints(raidLevel, teamSize) / teamSize;
 
+	const minDeathChance = mileStoneBaseDeathChances.find(i => i.level === raidLevel)!.minChance;
 	for (const room of TOARooms) {
-		if (percentChance(deathChance / TOARooms.length)) {
+		let roomDeathChance = deathChance / TOARooms.length;
+		if (minDeathChance) roomDeathChance += minDeathChance / 3;
+		if (percentChance(roomDeathChance)) {
 			deaths.push(room.id);
 			points = reduceNumByPercent(points, 20);
 		}
