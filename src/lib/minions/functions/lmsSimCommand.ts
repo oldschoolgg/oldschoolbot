@@ -130,11 +130,11 @@ export async function lmsSimCommand(channel: Channel | undefined, names?: string
 		}
 	}
 
-	if (playing.has(channel.id)) {
-		channel.send('There is a game in progress in this channel already, try again when it finishes.');
+	if (playing.has(channel.guildId)) {
+		channel.send('There is a game in progress in this server already, try again when it finishes.');
 	}
 
-	playing.add(channel.id);
+	playing.add(channel.guildId);
 
 	let gameMessage: Message | null = null;
 	const game: LastManStandingGame = Object.seal({
@@ -159,7 +159,7 @@ export async function lmsSimCommand(channel: Channel | undefined, names?: string
 			if (!channelIsSendable(channel)) return;
 
 			gameMessage = await channel.send(text);
-			await sleep(Math.max(gameMessage!.content.length / 20, 7) * 1000);
+			await sleep(Math.max(gameMessage!.content.length / 20, 7) * 700);
 
 			// Delete the previous message, and if stopped, send stop.
 			gameMessage?.delete();
@@ -171,7 +171,7 @@ export async function lmsSimCommand(channel: Channel | undefined, names?: string
 
 	// The match finished with one remaining player
 	const winner = game.contestants.values().next().value;
-	playing.delete(channel.id);
+	playing.delete(channel.guildId);
 	return channel.send(`And the Last Man Standing is... **${winner}**!`);
 }
 
