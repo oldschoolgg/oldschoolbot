@@ -427,3 +427,14 @@ export const chompyHats = [
 ] as const;
 
 export const gitHash = execSync('git rev-parse HEAD').toString().trim();
+
+export const toaPurpleItems = resolveItems([
+	"Tumeken's guardian",
+	"Tumeken's shadow (uncharged)",
+	"Elidinis' ward",
+	'Masori mask',
+	'Masori body',
+	'Masori chaps',
+	'Lightbearer',
+	"Osmumten's fang"
+]);

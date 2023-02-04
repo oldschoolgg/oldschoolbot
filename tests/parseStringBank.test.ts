@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { randInt } from 'e';
 import { Bank, Items } from 'oldschooljs';
+import { describe, expect, test } from 'vitest';
 
 import getOSItem from '../src/lib/util/getOSItem';
 import itemID from '../src/lib/util/itemID';
