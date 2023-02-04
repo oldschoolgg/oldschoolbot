@@ -7,7 +7,7 @@
 		"wipedist": "rimraf \"dist/\"",
 		"start": "yarn build && concurrently \"tsc -w -p src\" \"node dist/\"",
 		"test": "concurrently \"tsc -p src\" \"yarn test:lint\" \"yarn test:unit\"",
-		"test:lint": "eslint \"{src,tests}/**/*.ts\"",
+		"test:lint": "eslint *.ts \"{src,tests}/**/*.ts\"",
 		"test:unit": "vitest run --coverage",
 		"dev": "yarn wipedist && tsc -w -p src",
 		"o": "yarn build && madge --circular ./dist",
