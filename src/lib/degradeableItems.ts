@@ -26,7 +26,7 @@ interface DegradeableItem {
 	unchargedItem?: Item;
 	convertOnCharge?: boolean;
 	emoji: string;
-	canUncharge: boolean;
+	unchargeItems?: Bank;
 }
 
 export const degradeableItems: DegradeableItem[] = [
@@ -40,8 +40,7 @@ export const degradeableItems: DegradeableItem[] = [
 			cost: new Bank().add('Abyssal whip'),
 			charges: 10_000
 		},
-		emoji: '<:Abyssal_tentacle:1068551359755989033>',
-		canUncharge: false
+		emoji: '<:Abyssal_tentacle:1068551359755989033>'
 	},
 	{
 		item: getOSItem('Sanguinesti staff'),
@@ -56,7 +55,7 @@ export const degradeableItems: DegradeableItem[] = [
 		unchargedItem: getOSItem('Sanguinesti staff (uncharged)'),
 		convertOnCharge: true,
 		emoji: '<:Sanguinesti_staff_uncharged:455403545298993162>',
-		canUncharge: true
+		unchargeItems: new Bank().add('Blood rune', 3)
 	},
 	{
 		item: getOSItem('Celestial ring'),
@@ -71,7 +70,7 @@ export const degradeableItems: DegradeableItem[] = [
 		unchargedItem: getOSItem('Celestial ring (uncharged)'),
 		convertOnCharge: true,
 		emoji: '<:Celestial_ring:1068551362587132084>',
-		canUncharge: true
+		unchargeItems: new Bank().add('Stardust', 10)
 	},
 	{
 		item: getOSItem('Ash sanctifier'),
@@ -85,7 +84,7 @@ export const degradeableItems: DegradeableItem[] = [
 		},
 		unchargedItem: getOSItem('Ash sanctifier'),
 		emoji: '<:Ash_sanctifier:1068551364168405032>',
-		canUncharge: true
+		unchargeItems: new Bank().add('Death rune', 1)
 	},
 	{
 		item: getOSItem('Serpentine helm'),
@@ -100,7 +99,7 @@ export const degradeableItems: DegradeableItem[] = [
 		unchargedItem: getOSItem('Serpentine helm (uncharged)'),
 		convertOnCharge: true,
 		emoji: '<:Serpentine_helm:1068491236123619379>',
-		canUncharge: true
+		unchargeItems: new Bank().add("Zulrah's scales", 1)
 	},
 	{
 		item: getOSItem('Amulet of blood fury'),
@@ -114,8 +113,7 @@ export const degradeableItems: DegradeableItem[] = [
 		},
 		unchargedItem: getOSItem('Amulet of fury'),
 		convertOnCharge: true,
-		emoji: '<:Amulet_of_blood_fury:1068491286530752562>',
-		canUncharge: false
+		emoji: '<:Amulet_of_blood_fury:1068491286530752562>'
 	},
 	{
 		item: getOSItem("Tumeken's shadow"),
@@ -130,7 +128,7 @@ export const degradeableItems: DegradeableItem[] = [
 		unchargedItem: getOSItem("Tumeken's shadow (uncharged)"),
 		convertOnCharge: true,
 		emoji: '<:Tumekens_shadow:1068491239302901831>',
-		canUncharge: true
+		unchargeItems: new Bank().add('Soul rune', 2).add('Chaos rune', 5)
 	}
 ];
 
