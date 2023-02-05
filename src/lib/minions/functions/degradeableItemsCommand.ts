@@ -19,7 +19,9 @@ export async function degradeableItemsCommand(
 
 	if (!uncharge) {
 		if (!input || !number || !item || number < 1 || number > 100_000) {
-			return `Use \`/minion charge item: [${degradeableItems.map(i => i.item.name).join('|')}] amount:[1-10,000]\`
+			return `Use \`/minion charge item: [${degradeableItems
+				.map(i => i.item.name)
+				.join('|')}] amount:[1-100,000]\`
 ${degradeableItems
 	.map(i => {
 		const charges = user.user[i.settingsKey];
@@ -38,6 +40,9 @@ ${degradeableItems
 		if (!user.owns(cost)) {
 			return `You don't own ${cost}.`;
 		}
+		if (!item.convertOnCharge && !user.hasEquippedOrInBank(item.item.id)) {
+			return `To charge a ${item.item.name} you must own one already.`;
+		}
 
 		const needConvert = item.convertOnCharge && item.unchargedItem;
 		if (needConvert && !user.hasEquippedOrInBank(item.item.id) && !user.owns(item.unchargedItem!.id)) {
@@ -51,7 +56,9 @@ ${degradeableItems
 				item.unchargedItem!.name
 			} and ${cost}**, it now has ${newCharges.toLocaleString()} charges.`;
 		} else {
-			chargeConfirmation += `Are you sure you want to use **${cost}** to add ${amountOfCharges} charges to your ${item.item.name}?`;
+			chargeConfirmation += `Are you sure you want to use **${cost}** to add ${amountOfCharges.toLocaleString()} charges to your ${
+				item.item.name
+			}?`;
 			chargeMessage += `You added **${cost}** to your ${
 				item.item.name
 			}, it now has ${newCharges.toLocaleString()} charges.`;
@@ -103,12 +110,6 @@ ${degradeableItems
 		}`
 	);
 	await transactItems({ userID: user.id, itemsToRemove: cost, itemsToAdd: unchargedItems });
-	/*
-	console.log('cost: ', cost, '\n', 'unchargedItems: ', unchargedItems);
-	await user.removeItemsFromBank(cost);
-	console.log(unchargedItems);
-	await user.addItemsToBank({ items: unchargedItems, collectionLog: false, filterLoot: false });
-*/
 	await user.update({
 		[item.settingsKey]: 0
 	});
