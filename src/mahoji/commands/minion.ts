@@ -308,6 +308,12 @@ export const minionCommand: OSBMahojiCommand = {
 					name: 'amount',
 					description: 'The amount you want to charge',
 					required: false
+				},
+				{
+					type: ApplicationCommandOptionType.Boolean,
+					name: 'uncharge',
+					description: 'Do you want to uncharge this item?',
+					required: false
 				}
 			]
 		},
@@ -395,7 +401,7 @@ export const minionCommand: OSBMahojiCommand = {
 		kc?: { name: string };
 		buy?: { ironman?: boolean };
 		ironman?: { permanent?: boolean };
-		charge?: { item?: string; amount?: number };
+		charge?: { item?: string; amount?: number; uncharge?: boolean };
 		daily?: {};
 		train?: { style: AttackStyles };
 		pat?: {};
@@ -484,7 +490,13 @@ export const minionCommand: OSBMahojiCommand = {
 		if (options.buy) return minionBuyCommand(user, Boolean(options.buy.ironman));
 		if (options.ironman) return ironmanCommand(user, interaction, Boolean(options.ironman.permanent));
 		if (options.charge) {
-			return degradeableItemsCommand(interaction, user, options.charge.item, options.charge.amount);
+			return degradeableItemsCommand(
+				interaction,
+				user,
+				options.charge.item,
+				options.charge.amount,
+				options.charge.uncharge
+			);
 		}
 		if (options.daily) {
 			return dailyCommand(interaction, channelID, user);
