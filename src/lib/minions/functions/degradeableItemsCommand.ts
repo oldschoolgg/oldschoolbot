@@ -20,12 +20,12 @@ export async function degradeableItemsCommand(
 	if (!uncharge) {
 		if (!input || !number || !item || number < 1 || number > 10_000) {
 			return `Use \`/minion charge item: [${degradeableItems.map(i => i.item.name).join('|')}] amount:[1-10,000]\`
-	${degradeableItems
-		.map(i => {
-			const charges = user.user[i.settingsKey];
-			return `${i.item.name}: ${charges.toLocaleString()} charges`;
-		})
-		.join('\n')}`;
+${degradeableItems
+	.map(i => {
+		const charges = user.user[i.settingsKey];
+		return `${i.item.name}: ${charges.toLocaleString()} charges`;
+	})
+	.join('\n')}`;
 		}
 
 		const cost = item.chargeInput.cost.clone().multiply(number);
@@ -65,33 +65,32 @@ export async function degradeableItemsCommand(
 		return `You added **${cost}** to your ${item.item.name}, it now has ${newCharges} charges.`;
 	}
 	// Uncharging item
-	if (!item || (number && (number < 1 || number > 10_000))) {
+	if (!item || (number && (number < 1 || number > 10_000)) || !user.hasEquippedOrInBank(item.item.id)) {
 		if (user.minionIsBusy) {
-			return "You can't uncharge an item because your minion is busy.";
+			return "You can't uncharge anything because your minion is busy.";
 		} else if (!item) {
 			return 'You must specify an item to uncharge.';
 		} else if (!item.canUncharge) {
-			return `You can't uncharge ${item.item.name}.`;
-		} else if (!user.hasEquippedOrInBank(item.item.id)) {
-			return `You can't uncharge ${item.item.name} because you don't have one.`;
+			return `You can't uncharge a ${item.item.name}.`;
+		} else if (user.hasEquipped(item.item.id)) {
+			return `You have to unequip your ${item.item.name} to uncharge it.`;
 		} else if (number && number > 1) {
 			return `You can only uncharge one ${item.item.name} at a time.`;
-		} else if (!user.hasEquipped(item.item.id)) {
-			return `You have to unequip ${item.item.name} to uncharge it.`;
+		} else if (!user.hasEquippedOrInBank(item.item.id)) {
+			return `You can't uncharge a ${item.item.name} because you don't have one.`;
 		}
 	}
 
 	const currentCharges = user.user[item.settingsKey];
 	const unchargeQuant = Math.floor(currentCharges / item.chargeInput.charges);
 	const cost = new Bank().add({ [item.item.id]: 1 });
-	const unchargedItems = new Bank().add(item.itemsToRefundOnBreak).add(item.chargeInput.cost.clone().multiply(unchargeQuant));
+	const unchargedItems = new Bank()
+		.add(item.itemsToRefundOnBreak)
+		.add(item.chargeInput.cost.clone().multiply(unchargeQuant));
 
-	await transactItems({ userID: user.id, itemsToRemove: cost });
-
-	await handleMahojiConfirmation(interaction, `Are you sure you want to uncharge your ${item.item.name}?`);	
-	await user.removeItemsFromBank(new Bank({ [item.unchargedItem!.id]: 1 }));
-	await user.addItemsToBank({ items: { [item.item.id]: 1 }, collectionLog: true, filterLoot: false });
-	
+	await handleMahojiConfirmation(interaction, `Are you sure you want to uncharge your ${item.item.name}?`);
+	await user.removeItemsFromBank(cost);
+	await user.addItemsToBank({ items: unchargedItems, collectionLog: false, filterLoot: false });
 	await transactItems({ userID: user.id, itemsToRemove: cost });
 
 	const newCharges = 0;
@@ -100,7 +99,5 @@ export async function degradeableItemsCommand(
 	});
 	await updateBankSetting('degraded_items_cost', cost);
 
-	return `You added **${cost}** to your ${item.item.name}, it now has ${newCharges} charges.`;
-
+	return `You uncharged your ${item.item.name} fully, you received **${cost}**`;
 }
-
