@@ -9,6 +9,7 @@ import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
+import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -58,6 +59,7 @@ export const mineCommand: OSBMahojiCommand = {
 	run: async ({
 		options,
 		userID,
+		interaction,
 		channelID
 	}: CommandRunOptions<{ name: string; quantity?: number; wesley?: boolean; zahur?: boolean }>) => {
 		const user = await mUserFetch(userID);
@@ -129,6 +131,14 @@ export const mineCommand: OSBMahojiCommand = {
 		if (!user.owns(finalCost)) {
 			return `You don't own: ${finalCost}.`;
 		}
+
+		if (mixableItem.name === 'Torstol potion (unf)') {
+			await handleMahojiConfirmation(
+				interaction,
+				'Are you sure you want to mix Torstol potion (unf)? Super Combat Potions can only be made with Torstol'
+			);
+		}
+
 		await user.removeItemsFromBank(finalCost);
 
 		updateBankSetting('herblore_cost_bank', finalCost);
