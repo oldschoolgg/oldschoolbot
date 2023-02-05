@@ -1,6 +1,6 @@
+import { SimpleTable } from '@oldschoolgg/toolkit';
 import { calcWhatPercent, noOp, percentChance, randArrItem } from 'e';
 import { Bank } from 'oldschooljs';
-import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { Emoji } from '../../../lib/constants';
 import { nexCL, nexUniqueDrops } from '../../../lib/data/CollectionsExport';
@@ -76,7 +76,7 @@ export const nexTask: MinionTask = {
 			if (isDoubleLootActive(duration)) {
 				loot.multiply(2);
 			}
-			const winner = teamTable.table.length ? teamTable.roll() : null;
+			const winner = teamTable.roll();
 			if (!winner) continue;
 			teamsLoot.add(winner, loot);
 

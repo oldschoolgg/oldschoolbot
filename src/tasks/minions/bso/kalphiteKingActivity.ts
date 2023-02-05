@@ -1,6 +1,6 @@
+import { SimpleTable } from '@oldschoolgg/toolkit';
 import { calcWhatPercent, noOp, percentChance } from 'e';
 import { Bank } from 'oldschooljs';
-import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { Emoji } from '../../../lib/constants';
 import { kalphiteKingCL } from '../../../lib/data/CollectionsExport';
@@ -74,7 +74,7 @@ export const kalphiteKingTask: MinionTask = {
 			if (isDoubleLootActive(duration)) {
 				loot.multiply(2);
 			}
-			const winner = teamTable.table.length ? teamTable.roll() : null;
+			const winner = teamTable.roll();
 			if (!winner) continue;
 			teamsLoot.add(winner, loot);
 
