@@ -169,10 +169,7 @@ async function infernoRun({
 	 */
 	const itemRequirementsRunePouch = new Bank().add('Rune pouch');
 	const itemRequirementsDivineRunePouch = new Bank().add('Divine Rune pouch');
-	if (
-		!user.owns(itemRequirementsRunePouch) && 
-		!user.owns(itemRequirementsDivineRunePouch)
-	) {
+	if (!user.owns(itemRequirementsRunePouch) && !user.owns(itemRequirementsDivineRunePouch)) {
 		return `To do the Inferno, you need one of these items: ${itemRequirementsRunePouch}, ${itemRequirementsDivineRunePouch}.`;
 	}
 
