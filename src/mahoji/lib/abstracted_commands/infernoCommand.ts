@@ -168,14 +168,14 @@ async function infernoRun({
 	 *
 	 */
 	const itemRequirements = getSimilarItems(itemID('Rune pouch'));
-	let hasPouch: boolean = false;
+	let hasPouch = false;
 	itemRequirements.forEach(pouch => {
 		if (user.owns(pouch)) hasPouch = true;
 	});
 	if (!hasPouch) {
 		let pouchNames: string[] = [];
 		itemRequirements.forEach(pouch => {
-			pouchNames.push(itemNameFromID(pouch));
+			pouchNames.push(itemNameFromID(pouch) as string);
 		});
 		return `To do the Inferno, you need one of these items: ${pouchNames.join(', ')}.`;
 	}
