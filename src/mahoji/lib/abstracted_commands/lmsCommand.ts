@@ -8,8 +8,8 @@ import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, randomVariation, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { getUsersLMSStats } from '../../../tasks/minions/minigames/lmsActivity';
-import { handleMahojiConfirmation } from '../../mahojiSettings';
 
 export async function lmsCommand(
 	options: {

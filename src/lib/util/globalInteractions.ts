@@ -10,6 +10,7 @@ import { ClueTier } from '../clues/clueTiers';
 import { PerkTier } from '../constants';
 import { prisma } from '../settings/prisma';
 import { runCommand } from '../settings/settings';
+import { toaHelpCommand } from '../simulation/toa';
 import { ItemBank } from '../types';
 import { formatDuration, removeFromArr } from '../util';
 import { updateGiveawayMessage } from './giveaway';
@@ -37,12 +38,14 @@ const globalInteractionActions = [
 	'CANCEL_TRIP',
 	'AUTO_FARM',
 	'AUTO_FARMING_CONTRACT',
+	'FARMING_CONTRACT_EASIER',
 	'OPEN_SEED_PACK',
 	'BUY_MINION',
 	'BUY_BINGO_TICKET',
 	'NEW_SLAYER_TASK',
 	'VIEW_BANK',
-	'DO_SHOOTING_STAR'
+	'DO_SHOOTING_STAR',
+	'CHECK_TOA'
 ] as const;
 
 export type GlobalInteractionAction = typeof globalInteractionActions[number];
@@ -90,6 +93,14 @@ export function makeAutoContractButton() {
 	return new ButtonBuilder()
 		.setCustomId('AUTO_FARMING_CONTRACT')
 		.setLabel('Auto Farming Contract')
+		.setStyle(ButtonStyle.Secondary)
+		.setEmoji('977410792754413668');
+}
+
+export function makeEasierFarmingContractButton() {
+	return new ButtonBuilder()
+		.setCustomId('FARMING_CONTRACT_EASIER')
+		.setLabel('Ask for easier Contract')
 		.setStyle(ButtonStyle.Secondary)
 		.setEmoji('977410792754413668');
 }
@@ -244,6 +255,13 @@ export async function interactionHook(interaction: Interaction) {
 	const user = await mUserFetch(userID);
 	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, interaction);
 	if (id.includes('REPEAT_TRIP')) return repeatTripHandler(user, interaction);
+	if (id === 'TOA_CHECK') {
+		const response = await toaHelpCommand(user, interaction.channelId);
+		return interactionReply(interaction, {
+			content: typeof response === 'string' ? response : response.content,
+			ephemeral: true
+		});
+	}
 
 	if (!isValidGlobalInteraction(id)) return;
 	if (user.isBusy || globalClient.isShuttingDown) {
@@ -424,6 +442,18 @@ export async function interactionHook(interaction: Interaction) {
 			const response = await autoContract(await mUserFetch(user.id), options.channelID, user.id);
 			if (response) interactionReply(interaction, response);
 			return;
+		}
+		case 'FARMING_CONTRACT_EASIER': {
+			return runCommand({
+				commandName: 'farming',
+				args: {
+					contract: {
+						input: 'easier'
+					}
+				},
+				bypassInhibitors: true,
+				...options
+			});
 		}
 		case 'OPEN_SEED_PACK': {
 			return runCommand({
