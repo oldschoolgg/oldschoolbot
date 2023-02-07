@@ -34,6 +34,12 @@ const specialBones = [
 
 const eggs = ['Red bird egg', 'Green bird egg', 'Blue bird egg'].map(getOSItem);
 
+const offerables = new Set(
+	[...Offerables, ...specialBones.map(i => i.item), ...eggs, ...Prayer.Bones]
+		.map(i => resolveItems(i.name))
+		.map(i => i[0])
+);
+
 function notifyUniques(user: MUser, activity: string, uniques: number[], loot: Bank, qty: number, randQty?: number) {
 	const itemsToAnnounce = loot.filter(item => uniques.includes(item.id), false);
 	if (itemsToAnnounce.length > 0) {
@@ -64,12 +70,6 @@ export const mineCommand: OSBMahojiCommand = {
 			required: true,
 			autocomplete: async (value: string, user: User) => {
 				const botUser = await mUserFetch(user.id);
-
-				let offerables = new Set(
-					[...Offerables, ...specialBones.map(i => i.item), ...eggs, ...Prayer.Bones]
-						.map(i => resolveItems(i.name))
-						.map(i => i[0])
-				);
 
 				return botUser.bank
 					.items()
