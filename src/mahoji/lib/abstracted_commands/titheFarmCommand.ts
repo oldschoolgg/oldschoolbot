@@ -1,5 +1,5 @@
+import { ChatInputCommandInteraction } from 'discord.js';
 import { Time } from 'e';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
 import { Emoji } from '../../../lib/constants';
@@ -8,8 +8,9 @@ import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
 import { TitheFarmActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
-import { handleMahojiConfirmation, userHasGracefulEquipped } from '../../mahojiSettings';
+import { userHasGracefulEquipped } from '../../mahojiSettings';
 
 function determineDuration(user: MUser): [number, string[]] {
 	let baseTime = Time.Second * 1500;
@@ -36,7 +37,7 @@ function determineDuration(user: MUser): [number, string[]] {
 	return [totalTime, boostStr];
 }
 
-export async function titheFarmCommand(user: MUser, channelID: bigint) {
+export async function titheFarmCommand(user: MUser, channelID: string) {
 	if (minionIsBusy(user.id)) {
 		return 'Your minion must not be busy to use this command.';
 	}
@@ -66,7 +67,7 @@ export async function titheFarmCommand(user: MUser, channelID: bigint) {
 }
 
 export async function titheFarmShopCommand(
-	interaction: SlashCommandInteraction,
+	interaction: ChatInputCommandInteraction,
 	user: MUser,
 	buyableName: string,
 	_quantity?: number

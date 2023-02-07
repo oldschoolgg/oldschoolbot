@@ -1,11 +1,11 @@
-import { percentChance } from 'e';
-import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
+import { SimpleTable } from '@oldschoolgg/toolkit';
+import { clamp, percentChance } from 'e';
 
 import { Emoji } from '../../../lib/constants';
 import { prisma } from '../../../lib/settings/prisma';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
-import { addArrayOfNumbers, calcPerHour, clamp, gaussianRandom } from '../../../lib/util';
+import { addArrayOfNumbers, calcPerHour, gaussianRandom } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
@@ -69,7 +69,7 @@ function calculateResultOfLMSGames(qty: number, lmsStats: Awaited<ReturnType<typ
 	chanceToWinFight += experienceFactor * 75;
 
 	for (let i = 0; i < qty; i++) {
-		const encounters = 3 + extraEncountersTable.roll().item;
+		const encounters = 3 + extraEncountersTable.rollOrThrow();
 		let kills = 0;
 		let died = false;
 		for (let t = 0; t < encounters; t++) {
@@ -133,7 +133,6 @@ ${result
 			} kills`
 	)
 	.join('\n')}`,
-			['minigames', { lms: { start: {} } }, true, 'build'],
 			undefined,
 			data,
 			null

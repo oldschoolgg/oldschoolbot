@@ -1,10 +1,12 @@
-import { IPatchData } from '../minions/farming/types';
-import { MinigameName } from '../settings/minigames';
-import { Peak } from '../tickers';
-import { KourendFavour } from './../minions/data/kourendFavour';
-import { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
-import { ItemBank } from '.';
-import { activity_type_enum } from '.prisma/client';
+import type { activity_type_enum, CropUpgradeType } from '@prisma/client';
+
+import { NMZStrategy } from '../constants';
+import type { IPatchData } from '../minions/farming/types';
+import type { MinigameName } from '../settings/minigames';
+import { RaidLevel } from '../simulation/toa';
+import type { Peak } from '../tickers';
+import type { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
+import type { ItemBank } from '.';
 
 export interface ActivityTaskOptions {
 	type: activity_type_enum;
@@ -19,12 +21,21 @@ export interface ActivityTaskOptionsWithQuantity extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface ActivityTaskOptionsWithUsers extends ActivityTaskOptions {
+	users: string[];
+}
+
 export interface RunecraftActivityTaskOptions extends ActivityTaskOptions {
 	runeID: number;
 	essenceQuantity: number;
 	imbueCasts: number;
 	useStaminas?: boolean;
 	daeyaltEssence?: boolean;
+}
+
+export interface TiaraRunecraftActivityTaskOptions extends ActivityTaskOptions {
+	tiaraID: number;
+	tiaraQuantity: number;
 }
 
 export interface DarkAltarOptions extends ActivityTaskOptions {
@@ -104,6 +115,9 @@ export interface FiremakingActivityTaskOptions extends ActivityTaskOptions {
 }
 
 export interface WoodcuttingActivityTaskOptions extends ActivityTaskOptions {
+	fakeDurationMax: number;
+	fakeDurationMin: number;
+	powerchopping: boolean;
 	logID: number;
 	quantity: number;
 }
@@ -137,6 +151,11 @@ export interface PickpocketActivityTaskOptions extends ActivityTaskOptions {
 
 export interface BuryingActivityTaskOptions extends ActivityTaskOptions {
 	boneID: number;
+	quantity: number;
+}
+
+export interface ScatteringActivityTaskOptions extends ActivityTaskOptions {
+	ashID: number;
 	quantity: number;
 }
 
@@ -188,9 +207,10 @@ export interface InfernoOptions extends ActivityTaskOptions {
 }
 
 export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
+	pid?: number;
 	plantsName: string | null;
 	quantity: number;
-	upgradeType: string | null;
+	upgradeType: CropUpgradeType | null;
 	payment?: boolean;
 	patchType: IPatchData;
 	planting: boolean;
@@ -253,6 +273,11 @@ export interface SawmillActivityTaskOptions extends ActivityTaskOptions {
 	plankQuantity: number;
 }
 
+export interface ButlerActivityTaskOptions extends ActivityTaskOptions {
+	plankID: number;
+	plankQuantity: number;
+}
+
 export interface GnomeRestaurantActivityTaskOptions extends MinigameActivityTaskOptions {
 	gloriesRemoved: number;
 }
@@ -267,13 +292,14 @@ export interface GroupMonsterActivityTaskOptions extends MonsterActivityTaskOpti
 	users: string[];
 }
 
-export interface RaidsOptions extends ActivityTaskOptions {
+export interface RaidsOptions extends ActivityTaskOptionsWithUsers {
 	leader: string;
 	users: string[];
 	challengeMode: boolean;
+	quantity?: number;
 }
 
-export interface TheatreOfBloodTaskOptions extends ActivityTaskOptions {
+export interface TheatreOfBloodTaskOptions extends ActivityTaskOptionsWithUsers {
 	leader: string;
 	users: string[];
 	hardMode: boolean;
@@ -282,10 +308,22 @@ export interface TheatreOfBloodTaskOptions extends ActivityTaskOptions {
 	deaths: number[][];
 }
 
-export interface NexTaskOptions extends ActivityTaskOptions {
+type UserID = string;
+type Points = number;
+type RoomIDsDiedAt = number[];
+
+export interface TOAOptions extends ActivityTaskOptionsWithUsers {
+	leader: string;
+	detailedUsers: [UserID, Points[], RoomIDsDiedAt[]][];
+	raidLevel: RaidLevel;
+	fakeDuration: number;
+	wipedRoom: null | number;
+	quantity: number;
+}
+
+export interface NexTaskOptions extends ActivityTaskOptionsWithUsers {
 	quantity: number;
 	leader: string;
-	users: string[];
 	userDetails: [string, number, number[]][];
 	fakeDuration: number;
 	wipedKill: number | null;
@@ -298,7 +336,7 @@ export interface CollectingOptions extends ActivityTaskOptions {
 }
 
 export interface KourendFavourActivityTaskOptions extends ActivityTaskOptions {
-	favour: KourendFavour;
+	favour: string;
 	quantity: number;
 }
 
@@ -311,6 +349,29 @@ export interface PuroPuroActivityTaskOptions extends MinigameActivityTaskOptions
 	quantity: number;
 	implingID: number | null;
 	darkLure: boolean;
+}
+
+export interface GiantsFoundryActivityTaskOptions extends MinigameActivityTaskOptions {
+	alloyID: number;
+	quantity: number;
+	metalScore: number;
+}
+
+export interface GuardiansOfTheRiftActivityTaskOptions extends MinigameActivityTaskOptions {
+	minedFragments: number;
+	barrierAndGuardian: number;
+	rolls: number;
+	combinationRunes: boolean;
+}
+
+export interface NightmareZoneActivityTaskOptions extends MinigameActivityTaskOptions {
+	strategy: NMZStrategy;
+	quantity: number;
+}
+
+export interface ShadesOfMortonOptions extends MinigameActivityTaskOptions {
+	shadeID: string;
+	logID: number;
 }
 
 export type ActivityTaskData =
@@ -327,6 +388,7 @@ export type ActivityTaskData =
 	| HunterActivityTaskOptions
 	| ZalcanoActivityTaskOptions
 	| SawmillActivityTaskOptions
+	| ButlerActivityTaskOptions
 	| FarmingActivityTaskOptions
 	| HerbloreActivityTaskOptions
 	| FletchingActivityTaskOptions

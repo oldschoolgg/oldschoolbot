@@ -1,5 +1,4 @@
 import { Bank } from 'oldschooljs';
-import { resolveNameBank } from 'oldschooljs/dist/util';
 
 import { SkillsEnum } from '../../lib/skilling/types';
 import { AlchingActivityTaskOptions } from '../../lib/types/minions';
@@ -29,7 +28,7 @@ export const alchingTask: MinionTask = {
 			}
 
 			if (savedRunes > 0) {
-				const returnedRunes = resolveNameBank({
+				const returnedRunes = new Bank({
 					'Nature rune': savedRunes
 				});
 
@@ -51,14 +50,6 @@ export const alchingTask: MinionTask = {
 			`${user}, ${user.minionName} has finished alching ${quantity}x ${item.name}! ${loot} has been added to your bank. ${xpRes}. ${saved}`
 		].join('\n');
 
-		handleTripFinish(
-			user,
-			channelID,
-			responses,
-			['activities', { alch: { quantity, item: item.name } }, true],
-			undefined,
-			data,
-			loot
-		);
+		handleTripFinish(user, channelID, responses, undefined, data, loot);
 	}
 };

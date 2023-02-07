@@ -2,7 +2,7 @@ import { Bank } from 'oldschooljs';
 
 import { TokkulShopOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { updateBankSetting } from '../../mahoji/mahojiSettings';
+import { updateBankSetting } from '../../lib/util/updateBankSetting';
 
 export const tokkulShopTask: MinionTask = {
 	type: 'TokkulShop',
@@ -21,7 +21,6 @@ export const tokkulShopTask: MinionTask = {
 			user,
 			channelID,
 			`${user}, ${user.minionName} finished shopping in Tzhaar City and received ${loot}.`,
-			undefined,
 			undefined,
 			data,
 			null

@@ -30,6 +30,6 @@ export const constructionTask: MinionTask = {
 			str += `\nYou received ${bonusXP.toLocaleString()} bonus XP from your Carpenter's outfit.`;
 		}
 
-		handleTripFinish(user, channelID, str, ['build', { name: object.name, quantity }, true], undefined, data, null);
+		handleTripFinish(user, channelID, str, undefined, data, null);
 	}
 };

@@ -1,21 +1,21 @@
 import { User } from '@prisma/client';
-import { calcWhatPercent, reduceNumByPercent, roll, round, Time } from 'e';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
+import { ChatInputCommandInteraction } from 'discord.js';
+import { calcWhatPercent, clamp, reduceNumByPercent, roll, round, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../../lib/constants';
-import { maxOtherStats } from '../../../lib/gear';
 import { countUsersWithItemInCl } from '../../../lib/settings/prisma';
 import { getMinigameScore } from '../../../lib/settings/settings';
 import { HighGambleTable, LowGambleTable, MediumGambleTable } from '../../../lib/simulation/baGamble';
+import { maxOtherStats } from '../../../lib/structures/Gear';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
-import { clamp, formatDuration, itemID, randomVariation, stringMatches } from '../../../lib/util';
+import { formatDuration, itemID, randomVariation, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import getOSItem from '../../../lib/util/getOSItem';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { handleMahojiConfirmation } from '../../mahojiSettings';
 
 export const BarbBuyables = [
 	{
@@ -114,7 +114,7 @@ export async function barbAssaultLevelCommand(user: MUser) {
 }
 
 export async function barbAssaultBuyCommand(
-	interaction: SlashCommandInteraction,
+	interaction: ChatInputCommandInteraction,
 	user: MUser,
 	input: string,
 	quantity?: number
@@ -158,7 +158,7 @@ export async function barbAssaultBuyCommand(
 }
 
 export async function barbAssaultGambleCommand(
-	interaction: SlashCommandInteraction,
+	interaction: ChatInputCommandInteraction,
 	user: MUser,
 	tier: string,
 	quantity: number
@@ -184,9 +184,12 @@ export async function barbAssaultGambleCommand(
 		honour_points: {
 			decrement: cost * quantity
 		},
-		high_gambles: {
-			increment: quantity
-		}
+		high_gambles:
+			name === 'High'
+				? {
+						increment: quantity
+				  }
+				: undefined
 	});
 	const loot = new Bank().add(table.roll(quantity));
 	if (loot.has('Pet penance queen')) {
@@ -194,7 +197,7 @@ export async function barbAssaultGambleCommand(
 
 		globalClient.emit(
 			Events.ServerNotification,
-			`<:Pet_penance_queen:324127377649303553> **${user.usernameOrMention}'s** minion, ${
+			`<:Pet_penance_queen:324127377649303553> **${user.badgedUsername}'s** minion, ${
 				user.minionName
 			}, just received a Pet penance queen from their ${formatOrdinal(
 				newUser.high_gambles
@@ -207,7 +210,7 @@ export async function barbAssaultGambleCommand(
 		content: `You spent ${(
 			cost * quantity
 		).toLocaleString()} Honour Points for ${quantity.toLocaleString()}x ${name} Gamble, and received...`,
-		attachments: [
+		files: [
 			(
 				await makeBankImage({
 					bank: itemsAdded,
@@ -220,7 +223,7 @@ export async function barbAssaultGambleCommand(
 	};
 }
 
-export async function barbAssaultStartCommand(channelID: bigint, user: MUser) {
+export async function barbAssaultStartCommand(channelID: string, user: MUser) {
 	const boosts = [];
 
 	let waveTime = randomVariation(Time.Minute * 4, 10);

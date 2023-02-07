@@ -10,7 +10,7 @@ import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
-import { updateBankSetting } from '../../mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 const contractTiers = [
 	{
@@ -121,7 +121,7 @@ export async function mahoganyHomesBuyCommand(user: MUser, input = '', quantity?
 	return `Successfully purchased ${loot} for ${cost * quantity} Carpenter Points.`;
 }
 
-export async function mahoganyHomesBuildCommand(user: MUser, channelID: bigint): CommandResponse {
+export async function mahoganyHomesBuildCommand(user: MUser, channelID: string): CommandResponse {
 	if (user.minionIsBusy) return `${user.minionName} is currently busy.`;
 
 	const conLevel = user.skillLevel(SkillsEnum.Construction);

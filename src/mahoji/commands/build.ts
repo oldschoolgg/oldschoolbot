@@ -1,16 +1,17 @@
+import { User } from 'discord.js';
 import { round, Time } from 'e';
-import { APIUser, ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import Constructables from '../../lib/skilling/skills/construction/constructables';
 import { Skills } from '../../lib/types';
 import { ConstructionActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, getSkillsOfMahojiUser, hasSkillReqs } from '../../lib/util';
+import { formatDuration, hasSkillReqs } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
+import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch, updateBankSetting } from '../mahojiSettings';
 
 const ds2Requirements: Skills = {
 	magic: 75,
@@ -48,9 +49,9 @@ export const buildCommand: OSBMahojiCommand = {
 			name: 'name',
 			description: 'The object you want to build.',
 			required: true,
-			autocomplete: async (value: string, user: APIUser) => {
-				const mUser = await mahojiUsersSettingsFetch(user.id);
-				const conLevel = getSkillsOfMahojiUser(mUser, true).construction;
+			autocomplete: async (value: string, user: User) => {
+				const mUser = await mUserFetch(user.id);
+				const conLevel = mUser.skillLevel('construction');
 				return Constructables.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 					.filter(c => c.level <= conLevel)
 					.map(i => ({
@@ -70,7 +71,10 @@ export const buildCommand: OSBMahojiCommand = {
 	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
 		const user = await mUserFetch(userID);
 		const object = Constructables.find(
-			object => stringMatches(object.name, options.name) || stringMatches(object.name.split(' ')[0], options.name)
+			object =>
+				stringMatches(object.id.toString(), options.name) ||
+				stringMatches(object.name, options.name) ||
+				stringMatches(object.name.split(' ')[0], options.name)
 		);
 		const [hasDs2Requirements, ds2Reason] = hasSkillReqs(user, ds2Requirements);
 

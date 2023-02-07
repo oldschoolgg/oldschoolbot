@@ -1,13 +1,13 @@
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
+import { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { BitField } from '../../../lib/constants';
 import { formatSkillRequirements, stringMatches, toKMB } from '../../../lib/util';
-import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import resolveItems from '../../../lib/util/resolveItems';
-import { handleMahojiConfirmation, updateBankSetting } from '../../mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
-export async function bankBgCommand(interaction: SlashCommandInteraction, user: MUser, name: string) {
+export async function bankBgCommand(interaction: ChatInputCommandInteraction, user: MUser, name: string) {
 	const bankImages = bankImageGenerator.backgroundImages;
 	const selectedImage = bankImages.find(img => stringMatches(img.name, name));
 
@@ -60,7 +60,7 @@ export async function bankBgCommand(interaction: SlashCommandInteraction, user: 
 	}
 
 	// Check they have the required perk tier.
-	if (selectedImage.perkTierNeeded && getUsersPerkTier(user) < selectedImage.perkTierNeeded) {
+	if (selectedImage.perkTierNeeded && user.perkTier() < selectedImage.perkTierNeeded) {
 		return `This background is only available for Tier ${Number(selectedImage.perkTierNeeded) - 1} patrons.`;
 	}
 

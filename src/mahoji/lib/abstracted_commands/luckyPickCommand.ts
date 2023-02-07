@@ -1,18 +1,25 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageComponentInteraction, MessageOptions } from 'discord.js';
+import {
+	ActionRowBuilder,
+	BaseMessageOptions,
+	ButtonBuilder,
+	ButtonStyle,
+	ChatInputCommandInteraction,
+	MessageComponentInteraction
+} from 'discord.js';
 import { chunk, noOp, roll, shuffleArr, Time } from 'e';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import { SILENT_ERROR } from '../../../lib/constants';
 import { awaitMessageComponentInteraction, channelIsSendable } from '../../../lib/util';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { logError } from '../../../lib/util/logError';
-import { handleMahojiConfirmation, mahojiParseNumber, updateGPTrackSetting } from '../../mahojiSettings';
+import { mahojiParseNumber, updateGPTrackSetting } from '../../mahojiSettings';
 
 export async function luckyPickCommand(
 	user: MUser,
 	luckypickamount: string,
-	interaction: SlashCommandInteraction
+	interaction: ChatInputCommandInteraction
 ): Promise<string> {
 	const amount = mahojiParseNumber({ input: luckypickamount, min: 1_000_000, max: 3_000_000_000 });
 
@@ -81,13 +88,14 @@ export async function luckyPickCommand(
 		interaction,
 		`Are you sure you want to gamble ${toKMB(amount)}? You might lose it all, you might win a lot.`
 	);
+	await user.sync();
 	const currentBalance = user.GP;
 	if (currentBalance < amount) {
 		return "You don't have enough GP to make this bet.";
 	}
 	await user.removeItemsFromBank(new Bank().add('Coins', amount));
 	const buttonsToShow = getButtons();
-	function getCurrentButtons({ showTrueNames }: { showTrueNames: boolean }): MessageOptions['components'] {
+	function getCurrentButtons({ showTrueNames }: { showTrueNames: boolean }): BaseMessageOptions['components'] {
 		let chunkedButtons = chunk(buttonsToShow, 5);
 		return chunkedButtons.map(c =>
 			new ActionRowBuilder<ButtonBuilder>().addComponents(
@@ -118,7 +126,7 @@ export async function luckyPickCommand(
 		);
 	}
 
-	const channel = globalClient.channels.cache.get(interaction.channelID.toString());
+	const channel = globalClient.channels.cache.get(interaction.channelId);
 	if (!channelIsSendable(channel)) throw new Error('Channel for confirmation not found.');
 	const sentMessage = await channel.send({
 		content: 'Pick *one* button!',
@@ -156,7 +164,7 @@ export async function luckyPickCommand(
 		const selection = await awaitMessageComponentInteraction({
 			message: sentMessage,
 			filter: i => {
-				if (i.user.id !== (user.id ?? interaction.userID).toString()) {
+				if (i.user.id !== (user.id ?? interaction.user.id).toString()) {
 					i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
 					return false;
 				}

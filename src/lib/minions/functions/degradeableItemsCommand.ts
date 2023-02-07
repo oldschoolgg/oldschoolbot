@@ -1,13 +1,15 @@
+import { ChatInputCommandInteraction } from 'discord.js';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
-import { handleMahojiConfirmation, mahojiParseNumber, updateBankSetting } from '../../../mahoji/mahojiSettings';
+import { mahojiParseNumber } from '../../../mahoji/mahojiSettings';
 import { degradeableItems } from '../../degradeableItems';
-import { stringMatches } from '../../util';
+import { stringMatches } from '../../util/cleanString';
+import { handleMahojiConfirmation } from '../../util/handleMahojiConfirmation';
+import { updateBankSetting } from '../../util/updateBankSetting';
 
 export async function degradeableItemsCommand(
-	interaction: SlashCommandInteraction,
+	interaction: ChatInputCommandInteraction,
 	user: MUser,
 	input: string | undefined,
 	quantity: number | undefined

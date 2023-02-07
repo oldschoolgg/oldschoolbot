@@ -1,7 +1,7 @@
 import { Embed, inlineCode } from '@discordjs/builders';
-import { Guild, HexColorString, resolveColor } from 'discord.js';
+import { Guild, HexColorString, resolveColor, User } from 'discord.js';
 import { uniqueArr } from 'e';
-import { APIUser, ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
@@ -17,14 +17,10 @@ import { itemNameFromID, removeFromArr, stringMatches } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
+import { mahojiGuildSettingsFetch, mahojiGuildSettingsUpdate } from '../guildSettings';
 import { itemOption } from '../lib/mahojiCommandOptions';
 import { allAbstractCommands, hasBanMemberPerms, OSBMahojiCommand } from '../lib/util';
-import {
-	mahojiGuildSettingsFetch,
-	mahojiGuildSettingsUpdate,
-	mahojiUsersSettingsFetch,
-	patronMsg
-} from '../mahojiSettings';
+import { mahojiUsersSettingsFetch, patronMsg } from '../mahojiSettings';
 
 const toggles = [
 	{
@@ -34,6 +30,14 @@ const toggles = [
 	{
 		name: 'Small Bank Images',
 		bit: BitField.AlwaysSmallBank
+	},
+	{
+		name: 'Disable Birdhouse Run Button',
+		bit: BitField.DisableBirdhouseRunButton
+	},
+	{
+		name: 'Disable Ash Sanctifier',
+		bit: BitField.DisableAshSanctifier
 	}
 ];
 
@@ -96,7 +100,7 @@ async function favItemConfig(
 	}.`;
 	if (!item) return currentItems;
 	if (itemToAdd) {
-		let limit = (user.perkTier + 1) * 100;
+		let limit = (user.perkTier() + 1) * 100;
 		if (currentFavorites.length >= limit) {
 			return `You can't favorite anymore items, you can favorite a maximum of ${limit}.`;
 		}
@@ -178,7 +182,7 @@ async function bankSortConfig(
 	const currentMethod = user.user.bank_sort_method;
 	const currentWeightingBank = new Bank(user.user.bank_sort_weightings as ItemBank);
 
-	const { perkTier } = user;
+	const perkTier = user.perkTier();
 	if (perkTier < PerkTier.Two) {
 		return patronMsg(PerkTier.Two);
 	}
@@ -194,7 +198,7 @@ async function bankSortConfig(
 		if (weightingBankStr.length < 500) {
 			response.content += `\n**Weightings:**${weightingBankStr}`;
 		} else {
-			response.attachments = [
+			response.files = [
 				(
 					await makeBankImage({
 						bank: currentWeightingBank,
@@ -279,7 +283,7 @@ async function bgColorConfig(user: MUser, hex?: string) {
 	};
 }
 
-async function handleChannelEnable(user: MUser, guild: Guild | null, channelID: bigint, choice: 'enable' | 'disable') {
+async function handleChannelEnable(user: MUser, guild: Guild | null, channelID: string, choice: 'enable' | 'disable') {
 	if (!guild) return 'This command can only be run in servers.';
 	if (!(await hasBanMemberPerms(user.id, guild)))
 		return "You need to be 'Ban Member' permissions to use this command.";
@@ -308,7 +312,7 @@ async function handleChannelEnable(user: MUser, guild: Guild | null, channelID: 
 async function handlePetMessagesEnable(
 	user: MUser,
 	guild: Guild | null,
-	channelID: bigint,
+	channelID: string,
 	choice: 'enable' | 'disable'
 ) {
 	if (!guild) return 'This command can only be run in servers.';
@@ -338,7 +342,7 @@ async function handlePetMessagesEnable(
 async function handleJModCommentsEnable(
 	user: MUser,
 	guild: Guild | null,
-	channelID: bigint,
+	channelID: string,
 	choice: 'enable' | 'disable'
 ) {
 	if (!guild) return 'This command can only be run in servers.';
@@ -348,7 +352,7 @@ async function handleJModCommentsEnable(
 	const settings = await mahojiGuildSettingsFetch(guild);
 
 	if (choice === 'enable') {
-		if (guild!.memberCount < 20 && user.perkTier < PerkTier.Four) {
+		if (guild!.memberCount < 20 && user.perkTier() < PerkTier.Four) {
 			return 'This server is too small to enable this feature in.';
 		}
 		if (settings.jmodComments === cID) {
@@ -407,16 +411,6 @@ async function handleCommandEnable(
 	return `Successfully disabled the \`${command.name}\` command.`;
 }
 
-async function handlePrefixChange(user: MUser, guild: Guild | null, newPrefix: string) {
-	if (!newPrefix || newPrefix.length === 0 || newPrefix.length > 3) return 'Invalid prefix.';
-	if (!guild) return 'This command can only be run in servers.';
-	if (!(await hasBanMemberPerms(user.id, guild)))
-		return "You need to be 'Ban Member' permissions to use this command.";
-	await mahojiGuildSettingsUpdate(guild.id, {
-		prefix: newPrefix
-	});
-	return `Changed Command Prefix for this server to \`${newPrefix}\``;
-}
 const priorityWarningMsg =
 	"\n\n**Important: By default, 'Always barrage/burst' will take priority if 'Always cannon' is also enabled.**";
 async function handleCombatOptions(user: MUser, command: 'add' | 'remove' | 'list' | 'help', option?: string) {
@@ -609,19 +603,6 @@ export const configCommand: OSBMahojiCommand = {
 							]
 						}
 					]
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'prefix',
-					description: 'Change the prefix for your server.',
-					options: [
-						{
-							type: ApplicationCommandOptionType.String,
-							name: 'new_prefix',
-							description: 'The new prefix you want for your server.',
-							required: true
-						}
-					]
 				}
 			]
 		},
@@ -800,7 +781,7 @@ export const configCommand: OSBMahojiCommand = {
 							name: 'remove',
 							description: 'Remove an item from your favorite food.',
 							required: false,
-							autocomplete: async (value: string, user: APIUser) => {
+							autocomplete: async (value: string, user: User) => {
 								const mUser = await mahojiUsersSettingsFetch(user.id, { favorite_food: true });
 								return Eatables.filter(i => {
 									if (!mUser.favorite_food.includes(i.id)) return false;
@@ -879,7 +860,6 @@ export const configCommand: OSBMahojiCommand = {
 			pet_messages?: { choice: 'enable' | 'disable' };
 			jmod_comments?: { choice: 'enable' | 'disable' };
 			command?: { command: string; choice: 'enable' | 'disable' };
-			prefix?: { new_prefix: string };
 		};
 		user?: {
 			toggle?: { name: string };
@@ -907,9 +887,6 @@ export const configCommand: OSBMahojiCommand = {
 			}
 			if (options.server.command) {
 				return handleCommandEnable(user, guild, options.server.command.command, options.server.command.choice);
-			}
-			if (options.server.prefix) {
-				return handlePrefixChange(user, guild, options.server.prefix.new_prefix);
 			}
 		}
 		if (options.user) {

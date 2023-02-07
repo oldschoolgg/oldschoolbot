@@ -1,15 +1,32 @@
+import { LootTable } from 'oldschooljs';
+
 import { Emoji } from '../../constants';
 import itemID from '../../util/itemID';
 import { Log, SkillsEnum } from '../types';
+
+const sulliuscepTable = new LootTable()
+	.add('Numulite', [4, 8], 34)
+	.add('Mushroom', 1, 58)
+	.add('Mort myre fungus', 1, 7)
+	.add('Sulliuscep cap', 1, 1)
+	.oneIn(70, 'Unidentified small fossil')
+	.oneIn(140, 'Unidentified medium fossil')
+	.oneIn(175, 'Unidentified large fossil')
+	.oneIn(700, 'Unidentified rare fossil');
 
 const logs: Log[] = [
 	{
 		level: 1,
 		xp: 25,
-		id: 1511,
+		id: itemID('Logs'),
 		name: 'Logs',
 		aliases: ['normal'],
-		respawnTime: 3,
+		findNewTreeTime: 9,
+		bankingTime: 20,
+		slope: 0.54,
+		intercept: 24.85,
+		depletionChance: 100,
+		wcGuild: true,
 		petChance: 317_647,
 		qpRequired: 0,
 		clueScrollChance: 317_647
@@ -17,9 +34,13 @@ const logs: Log[] = [
 	{
 		level: 1,
 		xp: 25,
-		id: 2862,
+		id: itemID('Achey tree logs'),
 		name: 'Achey Tree Logs',
-		respawnTime: 2.5,
+		findNewTreeTime: 8,
+		bankingTime: 40,
+		slope: 0.54,
+		intercept: 24.85,
+		depletionChance: 100,
 		petChance: 317_647,
 		qpRequired: 0,
 		clueScrollChance: 317_647
@@ -27,9 +48,14 @@ const logs: Log[] = [
 	{
 		level: 15,
 		xp: 37.5,
-		id: 1521,
+		id: itemID('Oak logs'),
 		name: 'Oak Logs',
-		respawnTime: 0.5,
+		findNewTreeTime: 7,
+		bankingTime: 20,
+		slope: 0.27,
+		intercept: 12.3,
+		depletionChance: 100 * (1 / 8),
+		wcGuild: true,
 		petChance: 361_146,
 		qpRequired: 0,
 		clueScrollChance: 361_146
@@ -37,9 +63,14 @@ const logs: Log[] = [
 	{
 		level: 30,
 		xp: 67.5,
-		id: 1519,
+		id: itemID('Willow logs'),
 		name: 'Willow Logs',
-		respawnTime: -0.25,
+		findNewTreeTime: 7,
+		bankingTime: 16,
+		slope: 0.14,
+		intercept: 5.92,
+		depletionChance: 100 * (1 / 8),
+		wcGuild: true,
 		petChance: 289_286,
 		qpRequired: 0,
 		clueScrollChance: 289_286
@@ -47,9 +78,13 @@ const logs: Log[] = [
 	{
 		level: 35,
 		xp: 85,
-		id: 6333,
+		id: itemID('Teak logs'),
 		name: 'Teak Logs',
-		respawnTime: -1,
+		findNewTreeTime: 4.5,
+		bankingTime: 60,
+		slope: 0.13,
+		intercept: 5.07,
+		depletionChance: 100 * (1 / 8),
 		petChance: 264_336,
 		qpRequired: 0,
 		clueScrollChance: 264_336
@@ -57,9 +92,14 @@ const logs: Log[] = [
 	{
 		level: 45,
 		xp: 100,
-		id: 1517,
+		id: itemID('Maple logs'),
 		name: 'Maple Logs',
-		respawnTime: 0.75,
+		findNewTreeTime: 6,
+		bankingTime: 16,
+		slope: 0.07,
+		intercept: 3,
+		depletionChance: 100 * (1 / 8),
+		wcGuild: true,
 		petChance: 221_918,
 		qpRequired: 0,
 		clueScrollChance: 221_918
@@ -67,9 +107,13 @@ const logs: Log[] = [
 	{
 		level: 45,
 		xp: 82.5,
-		id: 3239,
+		id: itemID('Bark'),
 		name: 'Bark',
-		respawnTime: 0,
+		findNewTreeTime: 5,
+		bankingTime: 60,
+		slope: 0.04,
+		intercept: 6.24,
+		depletionChance: 100 * (1 / 8),
 		petChance: 214_367,
 		qpRequired: 0,
 		clueScrollChance: 214_367
@@ -77,9 +121,13 @@ const logs: Log[] = [
 	{
 		level: 50,
 		xp: 125,
-		id: 6332,
+		id: itemID('Mahogany logs'),
 		name: 'Mahogany Logs',
-		respawnTime: 2,
+		findNewTreeTime: 4.5,
+		bankingTime: 60,
+		slope: 0.07,
+		intercept: 3.05,
+		depletionChance: 100 * (1 / 8),
 		petChance: 220_623,
 		qpRequired: 0,
 		clueScrollChance: 220_623
@@ -87,9 +135,13 @@ const logs: Log[] = [
 	{
 		level: 54,
 		xp: 40,
-		id: 10_810,
+		id: itemID('Arctic pine logs'),
 		name: 'Arctic Pine Logs',
-		respawnTime: 4.5,
+		findNewTreeTime: 7,
+		bankingTime: 30,
+		slope: 0.1,
+		intercept: 1.79,
+		depletionChance: 100 * (1 / 8),
 		petChance: 145_758,
 		qpRequired: 0,
 		clueScrollChance: 145_758
@@ -97,9 +149,14 @@ const logs: Log[] = [
 	{
 		level: 60,
 		xp: 175,
-		id: 1515,
+		id: itemID('Yew logs'),
 		name: 'Yew Logs',
-		respawnTime: 5,
+		findNewTreeTime: 7,
+		bankingTime: 16,
+		slope: 0.04,
+		intercept: 1.12,
+		depletionChance: 100 * (1 / 8),
+		wcGuild: true,
 		petChance: 145_013,
 		qpRequired: 0,
 		clueScrollChance: 145_013
@@ -107,20 +164,32 @@ const logs: Log[] = [
 	{
 		level: 65,
 		xp: 127,
-		id: 6004,
+		id: itemID('Mushroom'),
+		lootTable: sulliuscepTable,
 		name: 'Sulliusceps',
 		aliases: ['sul', 'sulli', 'mush', 'mushroom'],
-		respawnTime: -2,
+		findNewTreeTime: 38,
+		bankingTime: 100,
+		// TODO: Get real slope and intercept from wiki
+		slope: 0.13,
+		intercept: 9.47,
+		depletionChance: 100 * (1 / 16),
 		petChance: 343_000,
 		qpRequired: 25,
-		clueScrollChance: 343_000
+		clueScrollChance: 343_000,
+		clueNestsOnly: true
 	},
 	{
 		level: 75,
 		xp: 250,
-		id: 1513,
+		id: itemID('Magic logs'),
 		name: 'Magic Logs',
-		respawnTime: 15,
+		findNewTreeTime: 7,
+		bankingTime: 16,
+		slope: 0.03,
+		intercept: -0.49,
+		depletionChance: 100 * (1 / 8),
+		wcGuild: true,
 		petChance: 72_321,
 		qpRequired: 0,
 		clueScrollChance: 72_321
@@ -128,12 +197,18 @@ const logs: Log[] = [
 	{
 		level: 90,
 		xp: 380,
-		id: 19_669,
+		id: itemID('Redwood logs'),
 		name: 'Redwood Logs',
-		respawnTime: 1.5,
+		findNewTreeTime: 4.5,
+		bankingTime: 20,
+		slope: 0.04,
+		intercept: -1.56,
+		depletionChance: 100 * (1 / 11),
+		wcGuild: true,
 		petChance: 72_321,
 		qpRequired: 0,
-		clueScrollChance: 72_321
+		clueScrollChance: 72_321,
+		clueNestsOnly: true
 	}
 ];
 

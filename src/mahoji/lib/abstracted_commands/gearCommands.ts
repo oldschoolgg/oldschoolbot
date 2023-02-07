@@ -1,22 +1,24 @@
 import { GearPreset } from '@prisma/client';
+import { ChatInputCommandInteraction } from 'discord.js';
 import { objectValues } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
-import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { MAX_INT_JAVA, PATRON_ONLY_GEAR_SETUP, PerkTier } from '../../../lib/constants';
-import { defaultGear, GearSetup, GearSetupType, GearStat, globalPresets } from '../../../lib/gear';
 import { generateAllGearImage, generateGearImage } from '../../../lib/gear/functions/generateGearImage';
+import { GearSetup, GearSetupType, GearStat } from '../../../lib/gear/types';
 import getUserBestGearFromBank from '../../../lib/minions/functions/getUserBestGearFromBank';
 import { unEquipAllCommand } from '../../../lib/minions/functions/unequipAllCommand';
 import { prisma } from '../../../lib/settings/prisma';
-import { Gear } from '../../../lib/structures/Gear';
-import { assert, formatSkillRequirements, isValidGearSetup, stringMatches, toTitleCase } from '../../../lib/util';
-import getOSItem, { getItem } from '../../../lib/util/getOSItem';
-import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
+import { defaultGear, Gear, globalPresets } from '../../../lib/structures/Gear';
+import { assert, formatSkillRequirements, isValidGearSetup, stringMatches } from '../../../lib/util';
+import { gearEquipMultiImpl } from '../../../lib/util/equipMulti';
+import { getItem } from '../../../lib/util/getOSItem';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
-import { handleMahojiConfirmation, mahojiParseNumber } from '../../mahojiSettings';
+import { toTitleCase } from '../../../lib/util/toTitleCase';
+import { transactItemsFromBank } from '../../../lib/util/transactItemsFromBank';
+import { mahojiParseNumber } from '../../mahojiSettings';
 
 export async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName: string): CommandResponse {
 	if (user.minionIsBusy) {
@@ -86,28 +88,80 @@ export async function gearPresetEquipCommand(user: MUser, gearSetup: string, pre
 
 	return {
 		content: `You equipped the ${preset.name} preset in your ${gearSetup} setup.`,
-		attachments: [{ fileName: 'gear.jpg', buffer: image }]
+		files: [{ name: 'gear.jpg', attachment: image }]
+	};
+}
+
+export async function gearEquipMultiCommand(
+	user: MUser,
+	interaction: ChatInputCommandInteraction,
+	setup: string,
+	items: string
+) {
+	if (!isValidGearSetup(setup)) return 'Invalid gear setup.';
+	if (setup === 'wildy') {
+		await handleMahojiConfirmation(
+			interaction,
+			"You're trying to equip items into your *wildy* setup. ANY item in this setup can potentially be lost if doing Wilderness activities. Please confirm you understand this."
+		);
+	}
+
+	// We must update the user after any confirmation because the bank/gear could change from something else.
+	await user.sync();
+	const {
+		success: resultSuccess,
+		failMsg,
+		skillFailBank,
+		equippedGear,
+		equipBank,
+		unequipBank
+	} = gearEquipMultiImpl(user, setup, items);
+	if (!resultSuccess) return failMsg!;
+
+	const dbKey = `gear_${setup}` as const;
+	const { newUser } = await user.update({
+		[dbKey]: equippedGear
+	});
+	await transactItems({
+		userID: user.id,
+		filterLoot: false,
+		itemsToRemove: equipBank,
+		itemsToAdd: unequipBank
+	});
+
+	const image = await generateGearImage(user, newUser[dbKey] as GearSetup, setup, user.user.minion_equippedPet);
+	let content = `You equipped ${equipBank} on your ${setup} setup, and unequipped ${unequipBank}.`;
+	if (skillFailBank!.length > 0) {
+		content += `\nThese items failed to be equipped as you don't have the requirements: ${skillFailBank}.`;
+	}
+	return {
+		content,
+		files: [{ name: 'gear.jpg', attachment: image }]
 	};
 }
 
 export async function gearEquipCommand(args: {
-	interaction: SlashCommandInteraction;
+	interaction: ChatInputCommandInteraction;
 	userID: string;
 	setup: string;
 	item: string | undefined;
+	items: string | undefined;
 	preset: string | undefined;
 	quantity: number | undefined;
 	unEquippedItem: Bank | undefined;
 	auto: string | undefined;
 }): CommandResponse {
-	const { interaction, userID, setup, item, preset, quantity: _quantity, auto } = args;
+	const { interaction, userID, setup, item, items, preset, quantity: _quantity, auto } = args;
 	if (!isValidGearSetup(setup)) return 'Invalid gear setup.';
 	const user = await mUserFetch(userID);
 	if (minionIsBusy(user.id)) {
 		return `${user.minionName} is currently out on a trip, so you can't change their gear!`;
 	}
 
-	if (setup === 'other' && getUsersPerkTier(user) < PerkTier.Four) {
+	if (items) {
+		return gearEquipMultiCommand(user, interaction, setup, items);
+	}
+	if (setup === 'other' && user.perkTier() < PerkTier.Four) {
 		return PATRON_ONLY_GEAR_SETUP;
 	}
 	if (preset) {
@@ -125,27 +179,9 @@ export async function gearEquipCommand(args: {
 	const cost = new Bank().add(itemToEquip.id, quantity);
 	if (!bank.has(cost)) return `You don't own ${cost}.`;
 
-	const { slot } = itemToEquip.equipment!;
 	const dbKey = `gear_${setup}` as const;
 	const allGear = user.gear;
 	const currentEquippedGear = allGear[setup];
-
-	/**
-	 * Handle 2h items
-	 */
-	if (
-		slot === EquipmentSlot.TwoHanded &&
-		(currentEquippedGear[EquipmentSlot.Weapon] || currentEquippedGear[EquipmentSlot.Shield])
-	) {
-		return "You can't equip this two-handed item because you have items equipped in your weapon/shield slots.";
-	}
-
-	if (
-		[EquipmentSlot.Weapon, EquipmentSlot.Shield, EquipmentSlot.TwoHanded].includes(slot) &&
-		currentEquippedGear[EquipmentSlot.TwoHanded]
-	) {
-		return "You can't equip this weapon or shield, because you have a 2H weapon equipped, and need to unequip it first.";
-	}
 
 	if (!itemToEquip.stackable && quantity > 1) {
 		return "You can't equip more than 1 of this item at once, as it isn't stackable!";
@@ -167,48 +203,25 @@ export async function gearEquipCommand(args: {
 			"You are equipping items to your **wilderness** setup. *Every* item in this setup can potentially be lost if you're doing activities in the wilderness. Are you sure you want to equip it?"
 		);
 	}
-	/**
-	 * If there's already an item equipped in this slot, unequip it,
-	 * then recursively call this function again.
-	 */
-	const equippedInThisSlot = currentEquippedGear[slot];
-	if (equippedInThisSlot) {
-		const newGear = { ...currentEquippedGear.raw() };
-		newGear[slot] = null;
 
-		const loot = new Bank().add(equippedInThisSlot.item, equippedInThisSlot.quantity);
-		await user.addItemsToBank({ items: loot, collectionLog: false });
-		await user.update({
-			[dbKey]: newGear
-		});
-		return gearEquipCommand({
-			interaction,
-			setup,
-			item,
-			preset,
-			quantity,
-			unEquippedItem: loot,
-			auto: undefined,
-			userID: user.id
-		});
-	}
+	const result = currentEquippedGear.equip(itemToEquip);
 
-	await user.removeItemsFromBank(cost);
-
-	const newGear = { ...currentEquippedGear.raw() };
-	newGear[slot] = {
-		item: itemToEquip.id,
-		quantity
-	};
+	await transactItemsFromBank({
+		userID: user.id,
+		collectionLog: false,
+		dontAddToTempCL: true,
+		itemsToAdd: result.refundBank ?? undefined,
+		itemsToRemove: cost
+	});
 
 	const { newUser } = await user.update({
-		[dbKey]: newGear
+		[dbKey]: currentEquippedGear.raw()
 	});
 	const image = await generateGearImage(user, newUser[dbKey] as GearSetup, setup, user.user.minion_equippedPet);
 
 	return {
 		content: `You equipped ${itemToEquip.name} in your ${toTitleCase(setup)} setup.`,
-		attachments: [{ buffer: image, fileName: 'osbot.png' }]
+		files: [{ attachment: image, name: 'osbot.png' }]
 	};
 }
 
@@ -259,12 +272,12 @@ export async function gearUnequipCommand(
 
 	return {
 		content: `You unequipped ${item.name} from your ${toTitleCase(gearSetup)} setup.`,
-		attachments: [{ fileName: 'gear.jpg', buffer: image }]
+		files: [{ name: 'gear.jpg', attachment: image }]
 	};
 }
 
 export async function autoEquipCommand(user: MUser, gearSetup: GearSetupType, equipmentType: string): CommandResponse {
-	if (gearSetup === 'other' && user.perkTier < PerkTier.Four) {
+	if (gearSetup === 'other' && user.perkTier() < PerkTier.Four) {
 		return PATRON_ONLY_GEAR_SETUP;
 	}
 
@@ -298,37 +311,37 @@ export async function autoEquipCommand(user: MUser, gearSetup: GearSetupType, eq
 	const image = await generateGearImage(user, user.gear[gearSetup], gearSetup, user.user.minion_equippedPet);
 	return {
 		content: `You auto-equipped your best ${equipmentType} in your ${gearSetup} preset.`,
-		attachments: [{ fileName: 'gear.jpg', buffer: image }]
+		files: [{ name: 'gear.jpg', attachment: image }]
 	};
 }
 
 export async function gearStatsCommand(user: MUser, input: string): CommandResponse {
 	const gear = { ...defaultGear };
 	for (const name of input.split(',')) {
-		const item = getOSItem(name);
-		if (item.equipment) {
+		const item = getItem(name);
+		if (item && item.equipment) {
 			gear[item.equipment.slot] = { item: item.id, quantity: 1 };
 		}
 	}
 	const image = await generateGearImage(user, new Gear(gear), null, null);
-	return { attachments: [{ fileName: 'image.jpg', buffer: image }] };
+	return { files: [{ name: 'image.jpg', attachment: image }] };
 }
 
 export async function gearViewCommand(user: MUser, input: string, text: boolean): CommandResponse {
 	if (stringMatches(input, 'all')) {
 		const file = text
 			? {
-					buffer: Buffer.from(
+					attachment: Buffer.from(
 						Object.entries(user.gear)
 							.map(i => `${i[0]}: ${i[1].toString()}`)
 							.join('\n')
 					),
-					fileName: 'gear.txt'
+					name: 'gear.txt'
 			  }
-			: { buffer: await generateAllGearImage(user), fileName: 'osbot.png' };
+			: { attachment: await generateAllGearImage(user), name: 'osbot.png' };
 		return {
 			content: 'Here are all your gear setups',
-			attachments: [file]
+			files: [file]
 		};
 	}
 	if (!isValidGearSetup(input)) return 'Invalid setup.';
@@ -337,11 +350,11 @@ export async function gearViewCommand(user: MUser, input: string, text: boolean)
 		return gear.toString();
 	}
 	const image = await generateGearImage(user, gear, input, user.user.minion_equippedPet);
-	return { attachments: [{ buffer: image, fileName: 'gear.jpg' }] };
+	return { files: [{ attachment: image, name: 'gear.jpg' }] };
 }
 
 export async function gearSwapCommand(
-	interaction: SlashCommandInteraction,
+	interaction: ChatInputCommandInteraction,
 	user: MUser,
 	first: GearSetupType,
 	second: GearSetupType
@@ -356,7 +369,7 @@ export async function gearSwapCommand(
 		);
 	}
 
-	if ([first, second].includes('other') && getUsersPerkTier(user) < PerkTier.Four) {
+	if ([first, second].includes('other') && user.perkTier() < PerkTier.Four) {
 		return PATRON_ONLY_GEAR_SETUP;
 	}
 

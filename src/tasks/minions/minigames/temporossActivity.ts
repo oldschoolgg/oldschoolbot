@@ -29,7 +29,7 @@ export const temporossTask: MinionTask = {
 		if (loot.has('Tiny tempor')) {
 			globalClient.emit(
 				Events.ServerNotification,
-				`${Emoji.TinyTempor} **${user.usernameOrMention}'s** minion, ${
+				`${Emoji.TinyTempor} **${user.badgedUsername}'s** minion, ${
 					user.minionName
 				}, just received a Tiny tempor! They got the pet on the ${formatOrdinal(
 					kcForPet
@@ -84,14 +84,6 @@ export const temporossTask: MinionTask = {
 			output += `\n\n**Fishing Bonus XP:** ${fBonusXP.toLocaleString()}`;
 		}
 
-		handleTripFinish(
-			user,
-			channelID,
-			output,
-			['k', { name: 'Tempoross', quantity }, true],
-			image.file.buffer,
-			data,
-			itemsAdded
-		);
+		handleTripFinish(user, channelID, output, image.file.attachment, data, itemsAdded);
 	}
 };

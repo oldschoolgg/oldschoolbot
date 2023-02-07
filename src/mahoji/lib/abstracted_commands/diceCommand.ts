@@ -1,9 +1,12 @@
+import { ChatInputCommandInteraction } from 'discord.js';
 import { Bank, Util } from 'oldschooljs';
 
 import { rand } from '../../../lib/util';
+import { deferInteraction } from '../../../lib/util/interactionReply';
 import { mahojiParseNumber, updateGPTrackSetting } from '../../mahojiSettings';
 
-export async function diceCommand(user: MUser, diceamount?: string) {
+export async function diceCommand(user: MUser, interaction: ChatInputCommandInteraction, diceamount?: string) {
+	await deferInteraction(interaction);
 	const roll = rand(1, 100);
 	const amount = mahojiParseNumber({ input: diceamount, min: 1, max: 500_000_000_000 });
 
@@ -44,7 +47,7 @@ export async function diceCommand(user: MUser, diceamount?: string) {
 		await user.removeItemsFromBank(new Bank().add('Coins', amount));
 	}
 
-	return `${user.usernameOrMention} rolled **${roll}** on the percentile dice, and you ${
+	return `${user.badgedUsername} rolled **${roll}** on the percentile dice, and you ${
 		won ? 'won' : 'lost'
 	} ${Util.toKMB(amountToAdd)} GP.`;
 }

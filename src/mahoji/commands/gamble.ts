@@ -3,6 +3,7 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { Bank } from 'oldschooljs';
 
+import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { capeGambleCommand, capeGambleStatsCommand } from '../lib/abstracted_commands/capegamble';
 import { diceCommand } from '../lib/abstracted_commands/diceCommand';
@@ -11,7 +12,7 @@ import { hotColdCommand } from '../lib/abstracted_commands/hotColdCommand';
 import { luckyPickCommand } from '../lib/abstracted_commands/luckyPickCommand';
 import { slotsCommand } from '../lib/abstracted_commands/slotsCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const gambleCommand: OSBMahojiCommand = {
 	name: 'gamble',
@@ -184,7 +185,7 @@ export const gambleCommand: OSBMahojiCommand = {
 		}
 
 		if (options.dice) {
-			return diceCommand(user, options.dice.amount);
+			return diceCommand(user, interaction, options.dice.amount);
 		}
 
 		if (options.duel) {
@@ -226,6 +227,7 @@ export const gambleCommand: OSBMahojiCommand = {
 				`Are you sure you want to give a random stack of items from your bank to ${recipientuser.usernameOrMention}? Untradeable and favorited items are not included.`
 			);
 
+			await senderUser.sync();
 			const bank = senderUser.bank
 				.items()
 				.filter(i => itemIsTradeable(i[0].id))

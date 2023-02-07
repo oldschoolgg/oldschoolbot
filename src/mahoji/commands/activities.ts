@@ -11,6 +11,7 @@ import { aerialFishingCommand } from '../lib/abstracted_commands/aerialFishingCo
 import { alchCommand } from '../lib/abstracted_commands/alchCommand';
 import { birdhouseCheckCommand, birdhouseHarvestCommand } from '../lib/abstracted_commands/birdhousesCommand';
 import { buryCommand } from '../lib/abstracted_commands/buryCommand';
+import { butlerCommand } from '../lib/abstracted_commands/butlerCommand';
 import { castCommand } from '../lib/abstracted_commands/castCommand';
 import { championsChallengeCommand } from '../lib/abstracted_commands/championsChallenge';
 import { chargeGloriesCommand } from '../lib/abstracted_commands/chargeGloriesCommand';
@@ -26,6 +27,7 @@ import { infernoStartCommand, infernoStatsCommand } from '../lib/abstracted_comm
 import puroOptions, { puroPuroStartCommand } from '../lib/abstracted_commands/puroPuroCommand';
 import { questCommand } from '../lib/abstracted_commands/questCommand';
 import { sawmillCommand } from '../lib/abstracted_commands/sawmillCommand';
+import { scatterCommand } from '../lib/abstracted_commands/scatterCommand';
 import { warriorsGuildCommand } from '../lib/abstracted_commands/warriorsGuildCommand';
 import { ownedItemOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
@@ -36,9 +38,19 @@ export const activitiesCommand: OSBMahojiCommand = {
 	options: [
 		{
 			type: ApplicationCommandOptionType.Subcommand,
-			name: 'sawmill',
-			description: 'Send your minion to the sawmill to turn logs into planks.',
+			name: 'plank_make',
+			description: 'Send your minion turn logs into planks, in a variety of ways.',
 			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'action',
+					description: 'The method you wish to make planks.',
+					required: true,
+					choices: [
+						{ name: 'Demon Butler', value: 'butler' },
+						{ name: 'Sawmill', value: 'sawmill' }
+					]
+				},
 				{
 					type: ApplicationCommandOptionType.String,
 					name: 'type',
@@ -110,6 +122,13 @@ export const activitiesCommand: OSBMahojiCommand = {
 							.map(p => ({ name: p.item.name, value: p.item.name }));
 					},
 					required: true
+				},
+				{
+					type: ApplicationCommandOptionType.Integer,
+					name: 'quantity',
+					description: 'The quantity of collecting trips you wish to make.',
+					required: false,
+					min_value: 1
 				},
 				{
 					type: ApplicationCommandOptionType.Boolean,
@@ -304,7 +323,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 				{
 					type: ApplicationCommandOptionType.String,
 					name: 'name',
-					description: 'The item you want to enchant.',
+					description: 'The bone you want to bury.',
 					required: true,
 					autocomplete: async (value: string) => {
 						return Prayer.Bones.filter(i =>
@@ -321,7 +340,31 @@ export const activitiesCommand: OSBMahojiCommand = {
 				}
 			]
 		},
-
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'scatter',
+			description: 'Scatter ashes!',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'name',
+					description: 'The ash you want to scatter.',
+					required: true,
+					autocomplete: async (value: string) => {
+						return Prayer.Ashes.filter(i =>
+							!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
+						).map(i => ({ name: i.name, value: i.name }));
+					}
+				},
+				{
+					type: ApplicationCommandOptionType.Integer,
+					name: 'quantity',
+					description: 'The quantity you want to scatter.',
+					required: false,
+					min_value: 1
+				}
+			]
+		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'puro_puro',
@@ -391,11 +434,11 @@ export const activitiesCommand: OSBMahojiCommand = {
 		userID,
 		interaction
 	}: CommandRunOptions<{
-		sawmill?: { type: string; quantity?: number };
+		plank_make?: { action: string; type: string; quantity?: number };
 		chompy_hunt?: { action: 'start' | 'claim' };
 		champions_challenge?: {};
 		warriors_guild?: { action: string; quantity?: number };
-		collect?: { item: string; no_stams?: boolean };
+		collect?: { item: string; quantity?: number; no_stams?: boolean };
 		quest?: {};
 		favour?: { name?: string; no_stams?: boolean };
 		decant?: { potion_name: string; dose?: number };
@@ -407,12 +450,12 @@ export const activitiesCommand: OSBMahojiCommand = {
 		aerial_fishing?: {};
 		enchant?: { name: string; quantity?: number };
 		bury?: { name: string; quantity?: number };
+		scatter?: { name: string; quantity?: number };
 		puro_puro?: { impling: string; dark_lure?: boolean };
 		alch?: { item: string; quantity?: number };
 		cast?: { spell: string; quantity?: number };
 	}>) => {
 		const user = await mUserFetch(userID);
-
 		// Minion can be busy
 		if (options.decant) {
 			return decantCommand(user, options.decant.potion_name, options.decant.dose);
@@ -429,8 +472,11 @@ export const activitiesCommand: OSBMahojiCommand = {
 			return birdhouseHarvestCommand(user, channelID, options.birdhouses.birdhouse);
 		}
 		if (options.inferno?.action === 'start') return infernoStartCommand(user, channelID);
-		if (options.sawmill) {
-			return sawmillCommand(user, options.sawmill.type, options.sawmill.quantity, channelID);
+		if (options.plank_make?.action === 'sawmill') {
+			return sawmillCommand(user, options.plank_make.type, options.plank_make.quantity, channelID);
+		}
+		if (options.plank_make?.action === 'butler') {
+			return butlerCommand(user, options.plank_make.type, options.plank_make.quantity, channelID);
 		}
 		if (options.chompy_hunt?.action === 'start') {
 			return chompyHuntCommand(user, channelID);
@@ -450,7 +496,13 @@ export const activitiesCommand: OSBMahojiCommand = {
 			);
 		}
 		if (options.collect) {
-			return collectCommand(user, channelID, options.collect.item, options.collect.no_stams);
+			return collectCommand(
+				user,
+				channelID,
+				options.collect.item,
+				options.collect.quantity,
+				options.collect.no_stams
+			);
 		}
 		if (options.quest) {
 			return questCommand(user, channelID);
@@ -483,6 +535,9 @@ export const activitiesCommand: OSBMahojiCommand = {
 		}
 		if (options.bury) {
 			return buryCommand(user, channelID, options.bury.name, options.bury.quantity);
+		}
+		if (options.scatter) {
+			return scatterCommand(user, channelID, options.scatter.name, options.scatter.quantity);
 		}
 		if (options.alch) {
 			return alchCommand(interaction, channelID, user, options.alch.item, options.alch.quantity);

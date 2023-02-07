@@ -1,12 +1,15 @@
 import { Embed } from '@discordjs/builders';
 import { MessageEditOptions } from 'discord.js';
 import { chunk } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions, MessageFlags } from 'mahoji';
+import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Hiscores } from 'oldschooljs';
 import { bossNameMap } from 'oldschooljs/dist/constants';
+import { BossRecords } from 'oldschooljs/dist/meta/types';
 
 import pets from '../../lib/data/pets';
-import { channelIsSendable, makePaginatedMessage, toTitleCase } from '../../lib/util';
+import { channelIsSendable, makePaginatedMessage } from '../../lib/util';
+import { deferInteraction } from '../../lib/util/interactionReply';
+import { toTitleCase } from '../../lib/util/toTitleCase';
 import { OSBMahojiCommand } from '../lib/util';
 
 // Emojis for bosses with no pets
@@ -43,7 +46,7 @@ export const bossrecordCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ options, channelID, userID, interaction }: CommandRunOptions<{ rsn: string }>) => {
-		await interaction.deferReply({ ephemeral: true });
+		await deferInteraction(interaction);
 		const { bossRecords } = await Hiscores.fetch(options.rsn).catch(err => {
 			throw err.message;
 		});
@@ -64,7 +67,7 @@ export const bossrecordCommand: OSBMahojiCommand = {
 
 			for (const [name, { rank, score }] of page) {
 				embed.addField({
-					name: `${getEmojiForBoss(name) || ''} ${bossNameMap.get(name)}`,
+					name: `${getEmojiForBoss(name) || ''} ${bossNameMap.get(name as keyof BossRecords)}`,
 					value: `**KC:** ${score.toLocaleString()}\n**Rank:** ${rank.toLocaleString()}`,
 					inline: true
 				});
@@ -79,7 +82,7 @@ export const bossrecordCommand: OSBMahojiCommand = {
 		await makePaginatedMessage(channel, pages, userID.toString());
 		return {
 			content: `Showing OSRS Boss Records for \`${options.rsn}\`.`,
-			flags: MessageFlags.Ephemeral
+			ephemeral: true
 		};
 	}
 };

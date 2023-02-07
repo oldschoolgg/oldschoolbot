@@ -7,7 +7,8 @@ import defaultBirdhouseTrap, { BirdhouseData } from '../../../lib/skilling/skill
 import { BirdhouseActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, itemID, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { mahojiUsersSettingsFetch, updateBankSetting, userHasGracefulEquipped } from '../../mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { mahojiUsersSettingsFetch, userHasGracefulEquipped } from '../../mahojiSettings';
 
 interface BirdhouseDetails {
 	raw: BirdhouseData;
@@ -145,7 +146,7 @@ export async function birdhouseCheckCommand(user: User) {
 	return `Your ${details.birdHouse.name}'s are ready ${time(details.readyAt!, 'R')} (${time(details.readyAt!)})`;
 }
 
-export async function birdhouseHarvestCommand(user: MUser, channelID: bigint, inputBirdhouseName: string | undefined) {
+export async function birdhouseHarvestCommand(user: MUser, channelID: string, inputBirdhouseName: string | undefined) {
 	const userBank = user.bank;
 	const currentDate = new Date().getTime();
 	const infoStr: string[] = [];

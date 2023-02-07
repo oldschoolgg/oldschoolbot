@@ -8,8 +8,8 @@ import { AgilityActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
+import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { OSBMahojiCommand } from '../lib/util';
-import { updateBankSetting } from '../mahojiSettings';
 
 const unlimitedFireRuneProviders = [
 	'Staff of fire',
@@ -111,7 +111,11 @@ export const lapsCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{ name: string; quantity?: number; alch?: boolean }>) => {
 		const user = await mUserFetch(userID);
 
-		const course = courses.find(course => course.aliases.some(alias => stringMatches(alias, options.name)));
+		const course = courses.find(
+			course =>
+				stringMatches(course.id.toString(), options.name) ||
+				course.aliases.some(alias => stringMatches(alias, options.name))
+		);
 
 		if (!course) {
 			return 'Thats not a valid course.';

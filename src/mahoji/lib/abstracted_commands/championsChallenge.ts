@@ -6,7 +6,7 @@ import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 
-export async function championsChallengeCommand(user: MUser, channelID: bigint) {
+export async function championsChallengeCommand(user: MUser, channelID: string) {
 	const { bank } = user;
 	if (!bank.has(championScrolls)) {
 		return "You don't have a set of Champion Scrolls to do the Champion's Challenge! You need 1 of each.";

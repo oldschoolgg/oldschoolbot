@@ -1,15 +1,15 @@
-import { objectEntries, reduceNumByPercent, Time } from 'e';
+import { reduceNumByPercent, Time } from 'e';
 
 import { plunderBoosts, plunderRooms } from '../../../lib/minions/data/plunder';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { PlunderActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, itemNameFromID } from '../../../lib/util';
+import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 import { userHasGracefulEquipped } from '../../mahojiSettings';
 
-export async function pyramidPlunderCommand(user: MUser, channelID: bigint) {
+export async function pyramidPlunderCommand(user: MUser, channelID: string) {
 	if (minionIsBusy(user.id)) return `${user.minionName} is busy.`;
 	const skills = user.skillsAsLevels;
 	const thievingLevel = skills.thieving;
@@ -39,9 +39,9 @@ export async function pyramidPlunderCommand(user: MUser, channelID: bigint) {
 
 	plunderTime = reduceNumByPercent(plunderTime, percentFaster);
 
-	for (const [id, percent] of objectEntries(plunderBoosts)) {
-		if (user.hasEquippedOrInBank([Number(id)])) {
-			boosts.push(`${percent}% for ${itemNameFromID(Number(id))}`);
+	for (const [item, percent] of plunderBoosts.items()) {
+		if (user.hasEquippedOrInBank(item.id)) {
+			boosts.push(`${percent}% for ${item.name}`);
 			plunderTime = reduceNumByPercent(plunderTime, percent);
 		}
 	}

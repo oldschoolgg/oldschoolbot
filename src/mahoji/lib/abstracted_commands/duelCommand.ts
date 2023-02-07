@@ -1,12 +1,12 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction } from 'discord.js';
 import { noOp, sleep, Time } from 'e';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { Bank, Util } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
 import { MUserClass } from '../../../lib/MUser';
 import { awaitMessageComponentInteraction, channelIsSendable } from '../../../lib/util';
+import { deferInteraction } from '../../../lib/util/interactionReply';
 import { mahojiParseNumber, updateGPTrackSetting } from '../../mahojiSettings';
 
 async function checkBal(user: MUser, amount: number) {
@@ -15,12 +15,12 @@ async function checkBal(user: MUser, amount: number) {
 
 export async function duelCommand(
 	user: MUser,
-	interaction: SlashCommandInteraction,
+	interaction: ChatInputCommandInteraction,
 	duelUser: MUser,
 	targetAPIUser: MahojiUserOption,
 	duelAmount?: string
 ) {
-	await interaction.deferReply();
+	await deferInteraction(interaction);
 
 	const duelSourceUser = user;
 	const duelTargetUser = duelUser;
@@ -47,7 +47,7 @@ export async function duelCommand(
 		return "That person doesn't have enough GP to duel that much.";
 	}
 
-	const channel = globalClient.channels.cache.get(interaction.channelID.toString());
+	const channel = globalClient.channels.cache.get(interaction.channelId);
 	if (!channelIsSendable(channel)) throw new Error('Channel for confirmation not found.');
 	const duelMessage = await channel.send({
 		content: `${duelTargetUser}, do you accept the duel for ${Util.toKMB(amount)} GP?`,
@@ -74,6 +74,8 @@ export async function duelCommand(
 
 	async function confirm(amount: number) {
 		duelMessage.edit({ components: [] }).catch(noOp);
+		await duelSourceUser.sync();
+		await duelTargetUser.sync();
 		if (!(await checkBal(duelSourceUser, amount)) || !(await checkBal(duelTargetUser, amount))) {
 			duelMessage.delete().catch(noOp);
 			return 'User appears to be less wealthy than expected (they lost some money before accepting...).';
@@ -84,12 +86,12 @@ export async function duelCommand(
 		await duelTargetUser.removeItemsFromBank(b);
 
 		await duelMessage
-			.edit(`${duelTargetUser.usernameOrMention} accepted the duel. You both enter the duel arena...`)
+			.edit(`${duelTargetUser.badgedUsername} accepted the duel. You both enter the duel arena...`)
 			.catch(noOp);
 
 		await sleep(2000);
 		await duelMessage
-			.edit(`${duelSourceUser.usernameOrMention} and ${duelTargetUser.usernameOrMention} begin fighting...`)
+			.edit(`${duelSourceUser.badgedUsername} and ${duelTargetUser.badgedUsername} begin fighting...`)
 			.catch(noOp);
 
 		const [winner, loser] =
@@ -121,19 +123,19 @@ export async function duelCommand(
 		if (amount >= 1_000_000_000) {
 			globalClient.emit(
 				Events.ServerNotification,
-				`${Emoji.MoneyBag} **${winner.usernameOrMention}** just won a **${Util.toKMB(
+				`${Emoji.MoneyBag} **${winner.badgedUsername}** just won a **${Util.toKMB(
 					winningAmount
-				)}** GP duel against ${loser.usernameOrMention}.`
+				)}** GP duel against ${loser.badgedUsername}.`
 			);
 		}
 
 		globalClient.emit(
 			Events.EconomyLog,
-			`${winner.usernameOrMention} won ${winningAmount} GP in a duel with ${loser.usernameOrMention}.`
+			`${winner.mention} won ${winningAmount} GP in a duel with ${loser.mention}.`
 		);
 
 		duelMessage.edit(
-			`Congratulations ${winner.usernameOrMention}! You won ${Util.toKMB(winningAmount)}, and paid ${Util.toKMB(
+			`Congratulations ${winner.badgedUsername}! You won ${Util.toKMB(winningAmount)}, and paid ${Util.toKMB(
 				tax
 			)} tax.`
 		);
@@ -145,7 +147,7 @@ export async function duelCommand(
 		const selection = await awaitMessageComponentInteraction({
 			message: duelMessage,
 			filter: i => {
-				if (i.user.id !== (duelTargetUser.id ?? interaction.userID).toString()) {
+				if (i.user.id !== (duelTargetUser.id ?? interaction.user.id).toString()) {
 					i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
 					return false;
 				}

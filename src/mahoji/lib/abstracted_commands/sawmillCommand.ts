@@ -1,17 +1,26 @@
-import { Time } from 'e';
+import { clamp, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
 import { Planks } from '../../../lib/minions/data/planks';
 import { SawmillActivityTaskOptions } from '../../../lib/types/minions';
-import { clamp, formatDuration, itemNameFromID, stringMatches, toKMB } from '../../../lib/util';
+import { formatDuration, itemNameFromID, stringMatches, toKMB } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { updateBankSetting, userHasGracefulEquipped } from '../../mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { userHasGracefulEquipped } from '../../mahojiSettings';
 
-export async function sawmillCommand(user: MUser, plankName: string, quantity: number | undefined, channelID: bigint) {
+export async function sawmillCommand(
+	user: MUser,
+	plankName: string | number,
+	quantity: number | undefined,
+	channelID: string
+) {
 	const plank = Planks.find(
-		plank => stringMatches(plank.name, plankName) || stringMatches(plank.name.split(' ')[0], plankName)
+		plank =>
+			stringMatches(plank.outputItem, plankName) ||
+			stringMatches(plank.name, plankName) ||
+			stringMatches(plank.name.split(' ')[0], plankName)
 	);
 
 	if (!plank) {

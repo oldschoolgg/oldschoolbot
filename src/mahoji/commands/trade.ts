@@ -6,11 +6,13 @@ import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { Events } from '../../lib/constants';
 import { addToGPTaxBalance, prisma } from '../../lib/settings/prisma';
 import { discrimName, truncateString } from '../../lib/util';
+import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiParseNumber } from '../mahojiSettings';
+import { mahojiParseNumber } from '../mahojiSettings';
 
 export const askCommand: OSBMahojiCommand = {
 	name: 'trade',
@@ -62,7 +64,7 @@ export const askCommand: OSBMahojiCommand = {
 		filter?: string;
 		search?: string;
 	}>) => {
-		interaction.deferReply();
+		await deferInteraction(interaction);
 		if (!guildID) return 'You can only run this in a server.';
 		const senderUser = await mUserFetch(userID);
 		const senderAPIUser = user;
@@ -87,12 +89,14 @@ export const askCommand: OSBMahojiCommand = {
 						maxSize: 70,
 						flags: { tradeables: 'tradeables' },
 						filters: [options.filter],
-						search: options.search
+						search: options.search,
+						noDuplicateItems: true
 				  }).filter(i => itemIsTradeable(i.id, true));
 		const itemsReceived = parseBank({
 			inputStr: options.receive,
 			maxSize: 70,
-			flags: { tradeables: 'tradeables' }
+			flags: { tradeables: 'tradeables' },
+			noDuplicateItems: true
 		}).filter(i => itemIsTradeable(i.id, true));
 
 		if (options.price) {
@@ -126,12 +130,12 @@ Both parties must click confirm to make the trade.`,
 
 		await senderUser.removeItemsFromBank(itemsSent);
 		await recipientUser.removeItemsFromBank(itemsReceived);
-		await senderUser.addItemsToBank({ items: itemsReceived, collectionLog: false });
-		await recipientUser.addItemsToBank({ items: itemsSent, collectionLog: false });
+		await senderUser.addItemsToBank({ items: itemsReceived, collectionLog: false, filterLoot: false });
+		await recipientUser.addItemsToBank({ items: itemsSent, collectionLog: false, filterLoot: false });
 
 		await prisma.economyTransaction.create({
 			data: {
-				guild_id: guildID,
+				guild_id: BigInt(guildID),
 				sender: BigInt(senderUser.id),
 				recipient: BigInt(recipientUser.id),
 				items_sent: itemsSent.bank,
@@ -141,7 +145,7 @@ Both parties must click confirm to make the trade.`,
 		});
 		globalClient.emit(
 			Events.EconomyLog,
-			`${senderUser.usernameOrMention} sold ${itemsSent} to ${recipientUser.usernameOrMention} for ${itemsReceived}.`
+			`${senderUser.mention} sold ${itemsSent} to ${recipientUser.mention} for ${itemsReceived}.`
 		);
 		if (itemsReceived.has('Coins')) {
 			addToGPTaxBalance(recipientUser.id, itemsReceived.amount('Coins'));

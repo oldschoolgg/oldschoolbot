@@ -1,29 +1,30 @@
-import { ButtonBuilder } from 'discord.js';
-import { APIButtonComponent, APIButtonComponentWithCustomId, ButtonStyle, ComponentType } from 'mahoji';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import { execSync } from 'child_process';
+import { APIButtonComponent, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
+import { CommandOptions } from 'mahoji/dist/lib/types';
 
 import { DISCORD_SETTINGS, production } from '../config';
-import { AbstractCommand, CommandArgs } from '../mahoji/lib/inhibitors';
-import { RunCommandArgs } from './settings/settings';
+import type { AbstractCommand } from '../mahoji/lib/inhibitors';
 import { SkillsEnum } from './skilling/types';
-import { ActivityTaskOptions } from './types/minions';
+import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
 
 export const BotID = DISCORD_SETTINGS.BotID ?? '303730326692429825';
 
+const TestingMainChannelID = DISCORD_SETTINGS.Channels?.TestingMain ?? '940760643525570591';
+
 export const Channel = {
 	General: DISCORD_SETTINGS.Channels?.General ?? '342983479501389826',
-	Notifications: DISCORD_SETTINGS.Channels?.Notifications ?? '469523207691436042',
-	ErrorLogs: DISCORD_SETTINGS.Channels?.ErrorLogs ?? '665678499578904596',
+	Notifications: production ? '469523207691436042' : '1042760447830536212',
 	GrandExchange: DISCORD_SETTINGS.Channels?.GrandExchange ?? '682996313209831435',
 	Developers: DISCORD_SETTINGS.Channels?.Developers ?? '648196527294251020',
 	BlacklistLogs: DISCORD_SETTINGS.Channels?.BlacklistLogs ?? '782459317218967602',
 	EconomyLogs: DISCORD_SETTINGS.Channels?.EconomyLogs ?? '802029843712573510',
-	NewSponsors: DISCORD_SETTINGS.Channels?.NewSponsors ?? '806744016309714966',
+	PatronLogs: '806744016309714966',
 	HelpAndSupport: '668073484731154462',
-	TestingMain: DISCORD_SETTINGS.Channels?.TestingMain ?? '680770361893322761',
+	TestingMain: TestingMainChannelID,
 	BarbarianAssault: DISCORD_SETTINGS.Channels?.BarbarianAssault ?? '789717054902763520',
-	ChambersOfXeric: DISCORD_SETTINGS.Channels?.ChambersOfXeric ?? '835876917252587581'
+	ChambersOfXeric: DISCORD_SETTINGS.Channels?.ChambersOfXeric ?? '835876917252587581',
+	BotLogs: production ? '1051725977320964197' : TestingMainChannelID
 };
 
 export const Roles = {
@@ -90,7 +91,6 @@ export const enum Emoji {
 	Firemaking = '<:firemaking:630911040175210518>',
 	Crafting = '<:crafting:630911040460161047>',
 	EasterEgg = '<:easterEgg:695473553314938920>',
-	Join = '<:join:705971600956194907>',
 	TzRekJad = '<:Tzrekjad:324127379188613121>',
 	Phoenix = '<:Phoenix:324127378223792129>',
 	TinyTempor = '<:TinyTempor:824483631694217277>',
@@ -134,6 +134,7 @@ export const enum Emoji {
 	Skiller = '<:skiller:802136963775463435>',
 	Incinerator = '<:incinerator:802136963674275882>',
 	CollectionLog = '<:collectionLog:802136964027121684>',
+	Bank = '<:bank:739459924693614653>',
 	Minigames = '<:minigameIcon:630400565070921761>',
 	Skull = '<:Skull:802136963926065165>',
 	CombatSword = '<:combat:802136963956080650>',
@@ -141,12 +142,6 @@ export const enum Emoji {
 	SOTWTrophy = '<:SOTWtrophy:842938096097820693>',
 	Clue = '<:clue_scroll:365003979840552960>'
 }
-
-export const ReactionEmoji = {
-	Join: production ? '705971600956194907' : '951309579302604900',
-	Stop: production ? '705972260950769669' : '951309579248091166',
-	Start: production ? '705973302719414329' : '951309579302604880'
-};
 
 export enum ActivityGroup {
 	Skilling = 'Skilling',
@@ -220,7 +215,10 @@ export enum BitField {
 	HasTornPrayerScroll = 18,
 	IsWikiContributor = 19,
 	HasSlepeyTablet = 20,
-	IsPatronTier6 = 21
+	IsPatronTier6 = 21,
+	DisableBirdhouseRunButton = 22,
+	DisableAshSanctifier = 23,
+	BothBotsMaxedFreeTierOnePerks = 24
 }
 
 interface BitFieldData {
@@ -258,9 +256,20 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 		userConfigurable: false
 	},
 	[BitField.PermanentIronman]: { name: 'Permanent Ironman', protected: false, userConfigurable: false },
+	[BitField.BothBotsMaxedFreeTierOnePerks]: {
+		name: 'Free T1 Perks for Maxed in OSB/BSO',
+		protected: false,
+		userConfigurable: false
+	},
 
 	[BitField.AlwaysSmallBank]: { name: 'Always Use Small Banks', protected: false, userConfigurable: true },
-	[BitField.DisabledRandomEvents]: { name: 'Disabled Random Events', protected: false, userConfigurable: true }
+	[BitField.DisabledRandomEvents]: { name: 'Disabled Random Events', protected: false, userConfigurable: true },
+	[BitField.DisableBirdhouseRunButton]: {
+		name: 'Disable Birdhouse Run Button',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisableAshSanctifier]: { name: 'Disable Ash Sanctifier', protected: false, userConfigurable: true }
 } as const;
 
 export const enum PatronTierID {
@@ -304,7 +313,7 @@ export const badges: { [key: number]: string } = {
 	[BadgesEnum.SotWTrophy]: Emoji.SOTWTrophy
 };
 
-export const MAX_QP = 289;
+export const MAX_QP = 290;
 export const MAX_XP = 200_000_000;
 
 export const MIMIC_MONSTER_ID = 23_184;
@@ -318,37 +327,6 @@ export const BLACK_CHIN_ID = 9;
 export const ZALCANO_ID = 9049;
 export const NIGHTMARE_ID = 9415;
 export const NEX_ID = 11_278;
-
-export const skillEmoji = {
-	runecraft: '<:runecraft:630911040435257364>',
-	firemaking: '<:firemaking:630911040175210518>',
-	thieving: '<:thieving:630910829352452123>',
-	mining: '<:mining:630911040128811010>',
-	ranged: '<:ranged:630911040258834473>',
-	construction: '<:construction:630911040493715476>',
-	smithing: '<:smithing:630911040452034590>',
-	herblore: '<:herblore:630911040535658496>',
-	attack: '<:attack:630911039969427467>',
-	strength: '<:strength:630911040481263617>',
-	defence: '<:defence:630911040393052180>',
-	fishing: '<:fishing:630911040091193356>',
-	hitpoints: '<:hitpoints:630911040460292108>',
-	total: '<:xp:630911040510623745>',
-	overall: '<:xp:630911040510623745>',
-	magic: '<:magic:630911040334331917>',
-	crafting: '<:crafting:630911040460161047>',
-	agility: '<:agility:630911040355565568>',
-	fletching: '<:fletching:630911040544309258>',
-	cooking: '<:cooking:630911040426868756>',
-	farming: '<:farming:630911040355565599>',
-	slayer: '<:slayer:630911040560824330>',
-	prayer: '<:prayer:630911040426868746>',
-	woodcutting: '<:woodcutting:630911040099450892>',
-	hunter: '<:hunter:630911040166559784>',
-	cml: '<:CrystalMathLabs:364657225249062912>',
-	clock: '<:ehpclock:352323705210142721>',
-	combat: '<:combat:802136963956080650>'
-};
 
 export const LEVEL_99_XP = 13_034_431;
 export const MAX_LEVEL = 99;
@@ -389,12 +367,6 @@ export const mahojiInformationalButtons: APIButtonComponent[] = buttonSource.map
 	url: i.url
 }));
 
-export type LastTripRunArgs = Omit<RunCommandArgs, 'commandName' | 'args'>;
-export const lastTripCache = new Map<
-	string,
-	{ continue: (args: LastTripRunArgs) => Promise<null | CommandResponse>; data: ActivityTaskOptions }
->();
-
 export const PATRON_ONLY_GEAR_SETUP =
 	'Sorry - but the `other` gear setup is only available for Tier 3 Patrons (and higher) to use.';
 
@@ -413,7 +385,7 @@ export const projectiles: Record<ProjectileType, number[]> = {
 export const BOT_TYPE: 'BSO' | 'OSB' = 'OSB';
 export const PHOSANI_NIGHTMARE_ID = 9416;
 export const COMMANDS_TO_NOT_TRACK = [['minion', ['k', 'kill', 'clue', 'info']]];
-export function shouldTrackCommand(command: AbstractCommand, args: CommandArgs) {
+export function shouldTrackCommand(command: AbstractCommand, args: CommandOptions) {
 	if (!Array.isArray(args)) return true;
 	for (const [name, subs] of COMMANDS_TO_NOT_TRACK) {
 		if (command.name === name && typeof args[0] === 'string' && subs.includes(args[0])) {
@@ -426,12 +398,48 @@ export function shouldTrackCommand(command: AbstractCommand, args: CommandArgs) 
 export const DISABLED_COMMANDS = new Set<string>();
 export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'none'] as const;
 export type PvMMethod = typeof PVM_METHODS[number];
+
+export const NMZ_STRATEGY = ['experience', 'points'] as const;
+export type NMZStrategy = typeof NMZ_STRATEGY[number];
+
 export const usernameCache = new Map<string, string>();
-export const minionBuyButton: APIButtonComponentWithCustomId = {
-	type: ComponentType.Button,
-	custom_id: 'BUY_MINION',
-	label: 'Buy Minion',
-	emoji: { id: '778418736180494347' },
-	style: ButtonStyle.Success
-};
+export const badgesCache = new Map<string, string>();
+export const minionBuyButton = new ButtonBuilder()
+	.setCustomId('BUY_MINION')
+	.setLabel('Buy Minion')
+	.setStyle(ButtonStyle.Success);
 export const FormattedCustomEmoji = /<a?:\w{2,32}:\d{17,20}>/;
+
+export const chompyHats = [
+	[getOSItem('Chompy bird hat (ogre bowman)'), 30],
+	[getOSItem('Chompy bird hat (bowman)'), 40],
+	[getOSItem('Chompy bird hat (ogre yeoman)'), 50],
+	[getOSItem('Chompy bird hat (yeoman)'), 70],
+	[getOSItem('Chompy bird hat (ogre marksman)'), 95],
+	[getOSItem('Chompy bird hat (marksman)'), 125],
+	[getOSItem('Chompy bird hat (ogre woodsman)'), 170],
+	[getOSItem('Chompy bird hat (woodsman)'), 225],
+	[getOSItem('Chompy bird hat (ogre forester)'), 300],
+	[getOSItem('Chompy bird hat (forester)'), 400],
+	[getOSItem('Chompy bird hat (ogre bowmaster)'), 550],
+	[getOSItem('Chompy bird hat (bowmaster)'), 700],
+	[getOSItem('Chompy bird hat (ogre expert)'), 1000],
+	[getOSItem('Chompy bird hat (expert)'), 1300],
+	[getOSItem('Chompy bird hat (ogre dragon archer)'), 1700],
+	[getOSItem('Chompy bird hat (dragon archer)'), 2250],
+	[getOSItem('Chompy bird hat (expert ogre dragon archer)'), 3000],
+	[getOSItem('Chompy bird hat (expert dragon archer)'), 4000]
+] as const;
+
+export const gitHash = execSync('git rev-parse HEAD').toString().trim();
+
+export const toaPurpleItems = resolveItems([
+	"Tumeken's guardian",
+	"Tumeken's shadow (uncharged)",
+	"Elidinis' ward",
+	'Masori mask',
+	'Masori body',
+	'Masori chaps',
+	'Lightbearer',
+	"Osmumten's fang"
+]);

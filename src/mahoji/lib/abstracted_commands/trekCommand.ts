@@ -1,21 +1,23 @@
+import { ChatInputCommandInteraction } from 'discord.js';
 import { objectEntries, reduceNumByPercent } from 'e';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
 import TrekShopItems, { TrekExperience } from '../../../lib/data/buyables/trekBuyables';
 import { MorytaniaDiary, userhasDiaryTier } from '../../../lib/diaries';
-import { GearStat, readableStatName } from '../../../lib/gear';
+import { GearStat } from '../../../lib/gear/types';
 import { difficulties, rewardTokens, trekBankBoosts } from '../../../lib/minions/data/templeTrekking';
 import { AddXpParams, GearRequirement } from '../../../lib/minions/types';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
+import { readableStatName } from '../../../lib/structures/Gear';
 import { TempleTrekkingActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, itemNameFromID, percentChance, rand, stringMatches } from '../../../lib/util';
+import { formatDuration, percentChance, rand, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { handleMahojiConfirmation, userHasGracefulEquipped } from '../../mahojiSettings';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
+import { userHasGracefulEquipped } from '../../mahojiSettings';
 
-export async function trekCommand(user: MUser, channelID: BigInt, difficulty: string, quantity: number | undefined) {
+export async function trekCommand(user: MUser, channelID: string, difficulty: string, quantity: number | undefined) {
 	const tier = difficulties.find(item => stringMatches(item.difficulty, difficulty));
 	if (!tier) return 'that is not a valid difficulty';
 	const minLevel = tier.minCombat;
@@ -97,9 +99,9 @@ export async function trekCommand(user: MUser, channelID: BigInt, difficulty: st
 
 	tripTime = reduceNumByPercent(tripTime, percentFaster);
 
-	for (const [id, percent] of objectEntries(trekBankBoosts)) {
-		if (user.hasEquippedOrInBank([Number(id)])) {
-			boosts.push(`${percent}% for ${itemNameFromID(Number(id))}`);
+	for (const [item, percent] of trekBankBoosts.items()) {
+		if (user.hasEquippedOrInBank(item.id)) {
+			boosts.push(`${percent}% for ${item.name}`);
 			tripTime = reduceNumByPercent(tripTime, percent);
 		}
 	}
@@ -165,7 +167,7 @@ export async function trekShop(
 	reward: string,
 	difficulty: string,
 	quantity: number | undefined,
-	interaction: SlashCommandInteraction
+	interaction: ChatInputCommandInteraction
 ) {
 	const userBank = user.bank;
 	const specifiedItem = TrekShopItems.find(

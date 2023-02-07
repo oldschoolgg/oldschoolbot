@@ -1,37 +1,74 @@
 import { userMention } from '@discordjs/builders';
-import { Prisma, User, xp_gains_skill_enum } from '@prisma/client';
-import { objectEntries, sumArr, uniqueArr } from 'e';
+import { Prisma, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
+import { notEmpty, objectEntries, sumArr, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
+import { SupportServer } from '../config';
 import { timePerAlch } from '../mahoji/lib/abstracted_commands/alchCommand';
 import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
-import { mahojiUserSettingsUpdate } from '../mahoji/settingsUpdate';
 import { addXP } from './addXP';
-import { BitField, projectiles, usernameCache } from './constants';
+import { userIsBusy } from './busyCounterCache';
+import { ClueTiers } from './clues/clueTiers';
+import { badges, BitField, Emoji, PerkTier, projectiles, Roles, usernameCache } from './constants';
 import { allPetIDs } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
-import { defaultGear, GearSetup, UserFullGearSetup } from './gear';
+import { GearSetup, UserFullGearSetup } from './gear/types';
 import { CombatOptionsEnum } from './minions/data/combatConstants';
 import { baseUserKourendFavour, UserKourendFavour } from './minions/data/kourendFavour';
 import { AttackStyles } from './minions/functions';
 import { blowpipeDarts, validateBlowpipeData } from './minions/functions/blowpipeCommand';
 import { AddXpParams, BlowpipeData } from './minions/types';
+import { getMinigameEntity, Minigames, MinigameScore } from './settings/minigames';
+import { prisma } from './settings/prisma';
 import { SkillsEnum } from './skilling/types';
 import { BankSortMethod } from './sorts';
-import { Gear } from './structures/Gear';
+import { defaultGear, Gear } from './structures/Gear';
 import { ItemBank, Skills } from './types';
-import { addItemToBank, assert, getSkillsOfMahojiUser, itemNameFromID, percentChance } from './util';
+import { addItemToBank, assert, convertXPtoLVL, itemNameFromID, percentChance } from './util';
 import { determineRunes } from './util/determineRunes';
+import { getKCByName } from './util/getKCByName';
 import getOSItem from './util/getOSItem';
-import getUsersPerkTier, { syncPerkTierOfUser } from './util/getUsersPerkTier';
+import { logError } from './util/logError';
 import { minionIsBusy } from './util/minionIsBusy';
 import { minionName } from './util/minionUtils';
 import resolveItems from './util/resolveItems';
 
+export async function mahojiUserSettingsUpdate(user: string | bigint, data: Prisma.UserUpdateArgs['data']) {
+	try {
+		const newUser = await prisma.user.update({
+			data,
+			where: {
+				id: user.toString()
+			}
+		});
+
+		return { newUser };
+	} catch (err) {
+		logError(err, {
+			user_id: user.toString(),
+			updated_data: JSON.stringify(data)
+		});
+		throw err;
+	}
+}
+
 function alchPrice(bank: Bank, item: Item, tripLength: number) {
 	const maxCasts = Math.min(Math.floor(tripLength / timePerAlch), bank.amount(item.id));
 	return maxCasts * (item.highalch ?? 0);
+}
+
+const tier3ElligibleBits = [
+	BitField.IsPatronTier3,
+	BitField.isContributor,
+	BitField.isModerator,
+	BitField.IsWikiContributor
+];
+
+const perkTierCache = new Map<string, number>();
+
+export function syncPerkTierOfUser(user: MUser) {
+	perkTierCache.set(user.id, user.perkTier(true));
 }
 
 export class MUserClass {
@@ -43,6 +80,10 @@ export class MUserClass {
 		this.id = user.id;
 
 		syncPerkTierOfUser(this);
+	}
+
+	countSkillsAtleast99() {
+		return Object.values(this.skillsAsLevels).filter(lvl => lvl >= 99).length;
 	}
 
 	async update(data: Prisma.UserUpdateArgs['data']) {
@@ -92,21 +133,7 @@ export class MUserClass {
 	}
 
 	get isBusy() {
-		return globalClient.oneCommandAtATimeCache.has(this.id) || globalClient.secondaryUserBusyCache.has(this.id);
-	}
-
-	/**
-	 * Toggle whether this user is busy or not, this adds another layer of locking the user
-	 * from economy actions.
-	 *
-	 * @param busy boolean Whether the new toggled state will be busy or not busy.
-	 */
-	toggleBusy(busy: boolean) {
-		if (busy) {
-			globalClient.secondaryUserBusyCache.add(this.id);
-		} else {
-			globalClient.secondaryUserBusyCache.delete(this.id);
-		}
+		return userIsBusy(this.id);
 	}
 
 	get totalLevel() {
@@ -133,13 +160,12 @@ export class MUserClass {
 		return this.user.bitfield as readonly BitField[];
 	}
 
-	get perkTier() {
-		return getUsersPerkTier(this);
+	perkTier(noCheckOtherAccounts?: boolean | undefined) {
+		return getUsersPerkTier(this, noCheckOtherAccounts);
 	}
 
 	skillLevel(skill: xp_gains_skill_enum) {
-		const skills = getSkillsOfMahojiUser(this.user, true);
-		return skills[skill];
+		return this.skillsAsLevels[skill];
 	}
 
 	get gear(): UserFullGearSetup {
@@ -159,6 +185,10 @@ export class MUserClass {
 		return new Bank(this.user.bank as ItemBank);
 	}
 
+	get sacrificedItems() {
+		return new Bank(this.user.sacrificedBank as ItemBank);
+	}
+
 	get cl() {
 		return new Bank(this.user.collectionLogBank as ItemBank);
 	}
@@ -172,11 +202,23 @@ export class MUserClass {
 	}
 
 	get rawUsername() {
-		return globalClient.users.cache.get(this.id)?.username;
+		return globalClient.users.cache.get(this.id)?.username ?? usernameCache.get(this.id) ?? 'Unknown';
 	}
 
 	get usernameOrMention() {
 		return usernameCache.get(this.id) ?? this.mention;
+	}
+
+	get badgeString() {
+		const rawBadges = this.user.badges.map(num => badges[num]);
+		if (this.isIronman) {
+			rawBadges.push(Emoji.Ironman);
+		}
+		return rawBadges.join(' ');
+	}
+
+	get badgedUsername() {
+		return `${this.badgeString} ${this.usernameOrMention}`;
 	}
 
 	toString() {
@@ -187,8 +229,12 @@ export class MUserClass {
 		return this.user.QP;
 	}
 
+	get autoFarmFilter() {
+		return this.user.auto_farm_filter;
+	}
+
 	addXP(params: AddXpParams) {
-		return addXP(this.id, params);
+		return addXP(this, params);
 	}
 
 	getKC(monsterID: number) {
@@ -280,6 +326,20 @@ export class MUserClass {
 		return bank;
 	}
 
+	async fetchMinigameScores() {
+		const userMinigames = await getMinigameEntity(this.id);
+		const scores: MinigameScore[] = [];
+		for (const minigame of Minigames) {
+			const score = userMinigames[minigame.column];
+			scores.push({ minigame, score });
+		}
+		return scores;
+	}
+
+	async fetchMinigames() {
+		return getMinigameEntity(this.id);
+	}
+
 	hasEquippedOrInBank(_items: string | number | (string | number)[], type: 'every' | 'one' = 'one') {
 		const { bank } = this;
 		const items = resolveItems(_items);
@@ -297,12 +357,46 @@ export class MUserClass {
 		return type === 'one' ? false : true;
 	}
 
+	getSkills(levels: boolean) {
+		const skills: Required<Skills> = {
+			agility: Number(this.user.skills_agility),
+			cooking: Number(this.user.skills_cooking),
+			fishing: Number(this.user.skills_fishing),
+			mining: Number(this.user.skills_mining),
+			smithing: Number(this.user.skills_smithing),
+			woodcutting: Number(this.user.skills_woodcutting),
+			firemaking: Number(this.user.skills_firemaking),
+			runecraft: Number(this.user.skills_runecraft),
+			crafting: Number(this.user.skills_crafting),
+			prayer: Number(this.user.skills_prayer),
+			fletching: Number(this.user.skills_fletching),
+			farming: Number(this.user.skills_farming),
+			herblore: Number(this.user.skills_herblore),
+			thieving: Number(this.user.skills_thieving),
+			hunter: Number(this.user.skills_hunter),
+			construction: Number(this.user.skills_construction),
+			magic: Number(this.user.skills_magic),
+			attack: Number(this.user.skills_attack),
+			strength: Number(this.user.skills_strength),
+			defence: Number(this.user.skills_defence),
+			ranged: Number(this.user.skills_ranged),
+			hitpoints: Number(this.user.skills_hitpoints),
+			slayer: Number(this.user.skills_slayer)
+		};
+		if (levels) {
+			for (const [key, val] of Object.entries(skills) as [keyof Skills, number][]) {
+				skills[key] = convertXPtoLVL(val);
+			}
+		}
+		return skills;
+	}
+
 	get skillsAsXP() {
-		return getSkillsOfMahojiUser(this.user, false);
+		return this.getSkills(false);
 	}
 
 	get skillsAsLevels() {
-		return getSkillsOfMahojiUser(this.user, true);
+		return this.getSkills(true);
 	}
 
 	get minionIsBusy() {
@@ -471,18 +565,73 @@ export class MUserClass {
 		return true;
 	}
 
-	owns(checkBank: Bank | number | string) {
-		return this.bank.clone().add('Coins', Number(this.user.GP)).has(checkBank);
+	allEquippedGearBank() {
+		const bank = new Bank();
+		for (const gear of Object.values(this.gear).flat()) {
+			bank.add(gear.allItemsBank());
+		}
+		return bank;
+	}
+
+	owns(checkBank: Bank | number | string, { includeGear }: { includeGear: boolean } = { includeGear: false }) {
+		const allItems = this.bank.clone().add('Coins', Number(this.user.GP));
+		if (includeGear) {
+			for (const [item, qty] of this.allEquippedGearBank().items()) {
+				allItems.add(item.id, qty);
+			}
+		}
+		return allItems.has(checkBank);
 	}
 
 	async sync() {
 		this.user = await mahojiUsersSettingsFetch(this.id);
 	}
+
+	async fetchStats(): Promise<UserStats> {
+		const result = await prisma.userStats.upsert({
+			where: {
+				user_id: BigInt(this.id)
+			},
+			create: {
+				user_id: BigInt(this.id)
+			},
+			update: {}
+		});
+		if (!result) throw new Error(`fetchStats returned no result for ${this.id}`);
+		return result;
+	}
+
+	clueScores() {
+		return Object.entries(this.openableScores())
+			.map(entry => {
+				const tier = ClueTiers.find(i => i.id === parseInt(entry[0]));
+				if (!tier) return;
+				return {
+					tier,
+					casket: getOSItem(tier.id),
+					clueScroll: getOSItem(tier.scrollID),
+					opened: this.openableScores()[tier.id] ?? 0
+				};
+			})
+			.filter(notEmpty);
+	}
+
+	get logName() {
+		return `${this.rawUsername}[${this.id}]`;
+	}
+
+	async getKCByName(name: string) {
+		return getKCByName(this, name);
+	}
+
+	get hasMinion() {
+		return Boolean(this.user.minion_hasBought);
+	}
 }
 declare global {
 	export type MUser = MUserClass;
 }
-export async function srcMUserFetch(userID: bigint | string) {
+export async function srcMUserFetch(userID: string | string) {
 	const user = await mahojiUsersSettingsFetch(userID);
 	return new MUserClass(user);
 }
@@ -498,3 +647,77 @@ declare global {
 	}
 }
 global.mUserFetch = srcMUserFetch;
+
+export function getUsersPerkTier(
+	userOrBitfield: MUser | User | BitField[],
+	noCheckOtherAccounts?: boolean
+): PerkTier | 0 {
+	if (userOrBitfield instanceof MUserClass && userOrBitfield.user.premium_balance_tier !== null) {
+		const date = userOrBitfield.user.premium_balance_expiry_date;
+		if (date && Date.now() < date) {
+			return userOrBitfield.user.premium_balance_tier + 1;
+		} else if (date && Date.now() > date) {
+			userOrBitfield
+				.update({
+					premium_balance_tier: null,
+					premium_balance_expiry_date: null
+				})
+				.catch(e => {
+					logError(e, { user_id: userOrBitfield.id, message: 'Could not remove premium time' });
+				});
+		}
+	}
+
+	if (noCheckOtherAccounts !== true && userOrBitfield instanceof MUserClass) {
+		let main = userOrBitfield.user.main_account;
+		const allAccounts: string[] = [...userOrBitfield.user.ironman_alts, userOrBitfield.id];
+		if (main) {
+			allAccounts.push(main);
+		}
+
+		const allAccountTiers = allAccounts.map(id => perkTierCache.get(id)).filter(notEmpty);
+
+		const highestAccountTier = Math.max(0, ...allAccountTiers);
+		return highestAccountTier;
+	}
+
+	const bitfield = Array.isArray(userOrBitfield) ? userOrBitfield : userOrBitfield.bitfield;
+
+	if (bitfield.includes(BitField.IsPatronTier6)) {
+		return PerkTier.Seven;
+	}
+
+	if (bitfield.includes(BitField.IsPatronTier5)) {
+		return PerkTier.Six;
+	}
+
+	if (bitfield.includes(BitField.IsPatronTier4)) {
+		return PerkTier.Five;
+	}
+
+	if (tier3ElligibleBits.some(bit => bitfield.includes(bit))) {
+		return PerkTier.Four;
+	}
+
+	if (bitfield.includes(BitField.IsPatronTier2)) {
+		return PerkTier.Three;
+	}
+
+	if (
+		bitfield.includes(BitField.IsPatronTier1) ||
+		bitfield.includes(BitField.HasPermanentTierOne) ||
+		bitfield.includes(BitField.BothBotsMaxedFreeTierOnePerks)
+	) {
+		return PerkTier.Two;
+	}
+
+	if (userOrBitfield instanceof MUserClass) {
+		const guild = globalClient.guilds.cache.get(SupportServer);
+		const member = guild?.members.cache.get(userOrBitfield.id);
+		if (member && [Roles.Booster].some(roleID => member.roles.cache.has(roleID))) {
+			return PerkTier.One;
+		}
+	}
+
+	return 0;
+}

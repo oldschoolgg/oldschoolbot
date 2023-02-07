@@ -1,4 +1,6 @@
-import { constructGearSetup } from '../src/lib/gear';
+import { describe, expect, test } from 'vitest';
+
+import { constructGearSetup } from '../src/lib/structures/Gear';
 import { calcConBonusXP } from '../src/lib/util/calcConBonusXP';
 
 describe('calcConBonusXP.test', () => {

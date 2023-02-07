@@ -1,19 +1,21 @@
+import { ChatInputCommandInteraction } from 'discord.js';
 import { calcWhatPercent, randInt, reduceNumByPercent, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
 import { Emoji } from '../../../lib/constants';
-import { maxDefenceStats, maxOffenceStats } from '../../../lib/gear';
+import { trackLoot } from '../../../lib/lootTrack';
 import { revenantMonsters } from '../../../lib/minions/data/killableMonsters/revs';
 import { convertAttackStylesToSetup } from '../../../lib/minions/functions';
 import { SkillsEnum } from '../../../lib/skilling/types';
+import { maxDefenceStats, maxOffenceStats } from '../../../lib/structures/Gear';
 import { RevenantOptions } from '../../../lib/types/minions';
 import { formatDuration, percentChance, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
-import { handleMahojiConfirmation, updateBankSetting } from '../../mahojiSettings';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 const specialWeapons = {
 	melee: getOSItem("Viggora's chainmace"),
@@ -23,8 +25,8 @@ const specialWeapons = {
 
 export async function revsCommand(
 	user: MUser,
-	channelID: bigint,
-	interaction: SlashCommandInteraction | null,
+	channelID: string,
+	interaction: ChatInputCommandInteraction | null,
 	name: string
 ): CommandResponse {
 	const style = convertAttackStylesToSetup(user.user.attack_style);
@@ -51,7 +53,7 @@ export async function revsCommand(
 	}
 
 	if (weapon.equipment![key] < 10) {
-		return `Your weapon is terrible, you can't kill revenants. You should have ${style} gear equipped in your wildy outfit, as this is what you're currently training. You can change this using \`+m train\``;
+		return `Your weapon is terrible, you can't kill revenants. You should have ${style} gear equipped in your wildy outfit, as this is what you're currently training. You can change this using \`/minion train\``;
 	}
 
 	let timePerMonster = monster.timeToFinish;
@@ -84,6 +86,20 @@ export async function revsCommand(
 
 	updateBankSetting('economyStats_PVMCost', cost);
 	await transactItems({ userID: user.id, itemsToRemove: cost });
+	if (cost.length > 0) {
+		await trackLoot({
+			id: monster.name,
+			totalCost: cost,
+			type: 'Monster',
+			changeType: 'cost',
+			users: [
+				{
+					id: user.id,
+					cost
+				}
+			]
+		});
+	}
 
 	let deathChance = 5;
 	let defLvl = user.skillLevel(SkillsEnum.Defence);

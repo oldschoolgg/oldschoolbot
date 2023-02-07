@@ -1,4 +1,4 @@
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
+import { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../../lib/constants';
@@ -6,7 +6,7 @@ import { roll } from '../../../lib/util';
 import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import getOSItem from '../../../lib/util/getOSItem';
-import { handleMahojiConfirmation } from '../../mahojiSettings';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 
 export async function capeGambleStatsCommand(user: MUser) {
 	const firesGambled = user.user.stats_fireCapesSacrificed;
@@ -18,15 +18,19 @@ export async function capeGambleStatsCommand(user: MUser) {
 **Infernal Cape's Gambled:** ${infernalsGambled}`;
 }
 
-export async function capeGambleCommand(user: MUser, type: string, interaction: SlashCommandInteraction) {
+export async function capeGambleCommand(user: MUser, type: string, interaction: ChatInputCommandInteraction) {
 	const item = getOSItem(type === 'fire' ? 'Fire cape' : 'Infernal cape');
 	const key: 'infernal_cape_sacrifices' | 'stats_fireCapesSacrificed' =
 		type === 'fire' ? 'stats_fireCapesSacrificed' : 'infernal_cape_sacrifices';
-	const capesOwned = await user.bank.amount(item.id);
+	const capesOwned = user.bank.amount(item.id);
 
 	if (capesOwned < 1) return `You have no ${item.name}'s to gamble!`;
 
 	await handleMahojiConfirmation(interaction, `Are you sure you want to gamble a ${item.name}?`);
+
+	// Double check after confirmation dialogue:
+	await user.sync();
+	if (user.bank.amount(item.id) < 1) return `You have no ${item.name}'s to gamble!`;
 
 	const newUser = await user.update({
 		[key]: {
@@ -43,15 +47,15 @@ export async function capeGambleCommand(user: MUser, type: string, interaction: 
 		await user.addItemsToBank({ items: new Bank().add(pet.id), collectionLog: true });
 		globalClient.emit(
 			Events.ServerNotification,
-			`**${user.usernameOrMention}'s** just received their ${formatOrdinal(
+			`**${user.badgedUsername}'s** just received their ${formatOrdinal(
 				(await mUserFetch(user.id)).cl.amount(pet.id)
 			)} ${pet.name} pet by sacrificing a ${item.name} for the ${formatOrdinal(newSacrificedCount)} time!`
 		);
 		return {
-			attachments: [
+			files: [
 				{
-					fileName: 'image.jpg',
-					buffer: await newChatHeadImage({
+					name: 'image.jpg',
+					attachment: await newChatHeadImage({
 						content:
 							type === 'fire'
 								? 'You lucky. Better train him good else TzTok-Jad find you, JalYt.'
@@ -64,10 +68,10 @@ export async function capeGambleCommand(user: MUser, type: string, interaction: 
 	}
 
 	return {
-		attachments: [
+		files: [
 			{
-				fileName: 'image.jpg',
-				buffer: await newChatHeadImage({
+				name: 'image.jpg',
+				attachment: await newChatHeadImage({
 					content:
 						type === 'fire'
 							? `You not lucky. Maybe next time, JalYt. This is the ${formatOrdinal(

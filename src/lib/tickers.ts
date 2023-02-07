@@ -4,9 +4,9 @@ import { ActionRowBuilder, ButtonBuilder, ButtonStyle, TextChannel } from 'disco
 import { noOp, randInt, shuffleArr, Time } from 'e';
 
 import { production } from '../config';
-import { mahojiUserSettingsUpdate } from '../mahoji/settingsUpdate';
 import { BitField, Channel, informationalButtons } from './constants';
 import { collectMetrics } from './metrics';
+import { mahojiUserSettingsUpdate } from './MUser';
 import { prisma, queryCountStore } from './settings/prisma';
 import { runCommand } from './settings/settings';
 import { getFarmingInfo } from './skilling/functions/getFarmingInfo';
@@ -143,7 +143,7 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 	},
 	{
 		name: 'daily_reminders',
-		interval: Time.Minute,
+		interval: Time.Minute * 3,
 		timer: null,
 		cb: async () => {
 			const result = await prisma.$queryRawUnsafe<{ id: string }[]>(
@@ -208,7 +208,7 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 	},
 	{
 		name: 'farming_reminder_ticker',
-		interval: Time.Minute * 2,
+		interval: Time.Minute * 3.5,
 		timer: null,
 		cb: async () => {
 			if (!production) return;
@@ -221,6 +221,7 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 							BitField.IsPatronTier3,
 							BitField.IsPatronTier4,
 							BitField.IsPatronTier5,
+							BitField.IsPatronTier6,
 							BitField.isContributor,
 							BitField.isModerator
 						]
@@ -274,16 +275,20 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 					);
 					const user = await globalClient.users.cache.get(id);
 					if (!user) continue;
-					const message = await user.send({
-						content: `The ${planted.name} planted in your ${patchType} patches is ready to be harvested!`,
-						components: [farmingReminderButtons]
-					});
+					const message = await user
+						.send({
+							content: `The ${planted.name} planted in your ${patchType} patches is ready to be harvested!`,
+							components: [farmingReminderButtons]
+						})
+						.catch(noOp);
+					if (!message) return;
 					try {
 						const selection = await awaitMessageComponentInteraction({
 							message,
 							time: Time.Minute * 5,
 							filter: () => true
 						});
+						if (!selection.isButton()) return;
 						message.edit({ components: [] });
 
 						// Check disable first so minion doesn't have to be free to disable reminders.
@@ -291,7 +296,7 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 							await mahojiUserSettingsUpdate(user.id, {
 								farming_patch_reminders: false
 							});
-							await user.send('Farming patch reminders have been disabled..');
+							await user.send('Farming patch reminders have been disabled.');
 							return;
 						}
 						if (minionIsBusy(user.id)) {
@@ -307,7 +312,8 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 								channelID: message.channel.id,
 								guildID: undefined,
 								user: await mUserFetch(user.id),
-								member: message.member
+								member: message.member,
+								interaction: selection
 							});
 						}
 					} catch {
@@ -369,6 +375,7 @@ export function initTickers() {
 		if (ticker.timer !== null) clearTimeout(ticker.timer);
 		const fn = async () => {
 			try {
+				if (globalClient.isShuttingDown) return;
 				await ticker.cb();
 			} catch (err) {
 				logError(err);

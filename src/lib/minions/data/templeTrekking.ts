@@ -1,8 +1,8 @@
 import { Time } from 'e';
+import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
-import { resolveNameBank } from 'oldschooljs/dist/util';
 
-import { GearStat } from '../../gear';
+import { GearStat } from '../../gear/types';
 import { Skills } from '../../types';
 import { GearRequirements } from '../types';
 
@@ -85,7 +85,7 @@ export const difficulties: TrekDifficulty[] = [
 	}
 ];
 
-export const trekBankBoosts = resolveNameBank({
+export const trekBankBoosts = new Bank({
 	'Salve amulet (e)': 5
 });
 

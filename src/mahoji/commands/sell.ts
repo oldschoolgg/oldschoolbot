@@ -1,21 +1,17 @@
-import { reduceNumByPercent } from 'e';
+import { clamp, reduceNumByPercent } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { MAX_INT_JAVA } from '../../lib/constants';
 import { NestBoxesTable } from '../../lib/simulation/misc';
-import { clamp, itemID, toKMB } from '../../lib/util';
+import { itemID, toKMB } from '../../lib/util';
+import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { parseBank } from '../../lib/util/parseStringBank';
+import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import {
-	handleMahojiConfirmation,
-	mahojiUsersSettingsFetch,
-	updateBankSetting,
-	updateGPTrackSetting,
-	userStatsUpdate
-} from '../mahojiSettings';
+import { updateGPTrackSetting, userStatsUpdate } from '../mahojiSettings';
 
 /**
  * - Hardcoded prices
@@ -78,15 +74,15 @@ export const sellCommand: OSBMahojiCommand = {
 		options,
 		interaction
 	}: CommandRunOptions<{ items: string; filter?: string; search?: string }>) => {
-		const user = await mUserFetch(userID.toString());
-		const mUser = await mahojiUsersSettingsFetch(user.id, { favoriteItems: true });
+		const user = await mUserFetch(userID);
 		const bankToSell = parseBank({
 			inputBank: user.bank,
 			inputStr: options.items,
 			maxSize: 70,
 			filters: [options.filter],
 			search: options.search,
-			excludeItems: mUser.favoriteItems
+			excludeItems: user.user.favoriteItems,
+			noDuplicateItems: true
 		});
 		if (bankToSell.length === 0) return 'No items provided.';
 
@@ -109,6 +105,45 @@ export const sellCommand: OSBMahojiCommand = {
 				itemsToAdd: loot
 			});
 			return `You exchanged ${moleBank} and received: ${loot}.`;
+		}
+
+		if (
+			bankToSell.has('Abyssal blue dye') ||
+			bankToSell.has('Abyssal green dye') ||
+			bankToSell.has('Abyssal red dye') ||
+			bankToSell.has('Abyssal lantern')
+		) {
+			const abbyBank = new Bank();
+			const loot = new Bank();
+			if (bankToSell.has('Abyssal lantern')) {
+				abbyBank.add('Abyssal lantern', bankToSell.amount('Abyssal lantern'));
+				loot.add('Abyssal pearls', bankToSell.amount('Abyssal lantern') * 100);
+			}
+			if (bankToSell.has('Abyssal red dye')) {
+				abbyBank.add('Abyssal red dye', bankToSell.amount('Abyssal red dye'));
+				loot.add('Abyssal pearls', bankToSell.amount('Abyssal red dye') * 50);
+			}
+			if (bankToSell.has('Abyssal blue dye')) {
+				abbyBank.add('Abyssal blue dye', bankToSell.amount('Abyssal blue dye'));
+				loot.add('Abyssal pearls', bankToSell.amount('Abyssal blue dye') * 50);
+			}
+			if (bankToSell.has('Abyssal green dye')) {
+				abbyBank.add('Abyssal green dye', bankToSell.amount('Abyssal green dye'));
+				loot.add('Abyssal pearls', bankToSell.amount('Abyssal green dye') * 50);
+			}
+
+			await handleMahojiConfirmation(
+				interaction,
+				`${user}, please confirm you want to sell ${abbyBank} for **${loot}**.`
+			);
+
+			await user.removeItemsFromBank(abbyBank);
+			await transactItems({
+				userID: user.id,
+				collectionLog: false,
+				itemsToAdd: loot
+			});
+			return `You exchanged ${abbyBank} and received: ${loot}.`;
 		}
 
 		if (bankToSell.has('Golden tench')) {

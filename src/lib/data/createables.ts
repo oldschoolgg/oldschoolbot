@@ -4,20 +4,23 @@ import { Favours } from '../minions/data/kourendFavour';
 import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';
 import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import { ItemBank, Skills } from '../types';
-import { itemNameFromID } from '../util';
 import itemID from '../util/itemID';
+import { itemNameFromID } from '../util/smallUtils';
 import { chambersOfXericMetamorphPets } from './CollectionsExport';
 import { amrodCreatables } from './creatables/amrod';
 import { armorAndItemPacks } from './creatables/armorPacks';
 import { capeCreatables } from './creatables/capes';
 import { dragonFireShieldCreatables } from './creatables/dragonfireShields';
 import { gracefulOutfitCreatables } from './creatables/gracefulOutfits';
+import { guardiansOfTheRiftCreatables } from './creatables/guardiansOfTheRiftCreatables';
 import { leaguesCreatables } from './creatables/leagueCreatables';
 import { lmsCreatables } from './creatables/lms';
 import { mysticStavesCreatables } from './creatables/mysticStaves';
 import { nexCreatables } from './creatables/nex';
 import { ornamentKits } from './creatables/ornaments';
+import { shadesOfMortonCreatables } from './creatables/shadesOfMorton';
 import { slayerCreatables } from './creatables/slayer';
+import { toaCreatables } from './creatables/toa';
 import { tobCreatables } from './creatables/tob';
 
 export interface Createable {
@@ -28,12 +31,14 @@ export interface Createable {
 	requiredSkills?: Skills;
 	QPRequired?: number;
 	noCl?: boolean;
+	forceAddToCl?: boolean;
 	GPCost?: number;
 	cantBeInCL?: boolean;
 	requiredSlayerUnlocks?: SlayerTaskUnlocksEnum[];
 	requiredFavour?: Favours;
 	maxCanOwn?: number;
 	onCreate?: (qty: number, user: MUser) => Promise<{ result: boolean; message: string }>;
+	type?: 'pack' | 'unpack';
 }
 
 const goldenProspectorCreatables: Createable[] = [
@@ -559,6 +564,16 @@ const metamorphPets: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Great blue heron')]: 1
+		}
+	},
+	{
+		name: 'Greatish guardian',
+		inputItems: {
+			[itemID('Rift guardian')]: 1,
+			[itemID("Guardian's eye")]: 1
+		},
+		outputItems: {
+			[itemID('Greatish guardian')]: 1
 		}
 	}
 ];
@@ -1185,6 +1200,17 @@ const Reverteables: Createable[] = [
 			[itemID('Heron')]: 1
 		},
 		noCl: true
+	},
+	{
+		name: 'Revert greatish guardian',
+		inputItems: {
+			[itemID('Greatish guardian')]: 1
+		},
+		outputItems: {
+			[itemID('Rift guardian')]: 1,
+			[itemID("Guardian's eye")]: 1
+		},
+		noCl: true
 	}
 ];
 
@@ -1337,9 +1363,7 @@ const Createables: Createable[] = [
 	// Runecrafting Pouches
 	{
 		name: 'Small pouch',
-		inputItems: {
-			[itemID('Leather')]: 10
-		},
+		inputItems: {},
 		outputItems: {
 			[itemID('Small pouch')]: 1
 		},
@@ -1349,45 +1373,50 @@ const Createables: Createable[] = [
 	},
 	{
 		name: 'Medium pouch',
-		inputItems: {
-			[itemID('Leather')]: 20
-		},
+		inputItems: {},
 		outputItems: {
 			[itemID('Medium pouch')]: 1
 		},
 		cantHaveItems: {
 			[itemID('Medium pouch')]: 1
-		},
-
-		requiredSkills: { crafting: 10 }
+		}
 	},
 	{
 		name: 'Large pouch',
-		inputItems: {
-			[itemID('Leather')]: 30
-		},
+		inputItems: {},
 		outputItems: {
 			[itemID('Large pouch')]: 1
 		},
 		cantHaveItems: {
 			[itemID('Large pouch')]: 1
-		},
-
-		requiredSkills: { crafting: 20 }
+		}
 	},
 	{
 		name: 'Giant pouch',
-		inputItems: {
-			[itemID('Leather')]: 40
-		},
+		inputItems: {},
 		outputItems: {
 			[itemID('Giant pouch')]: 1
 		},
 		cantHaveItems: {
 			[itemID('Giant pouch')]: 1
+		}
+	},
+	{
+		name: 'Colossal pouch',
+		inputItems: {
+			[itemID('Abyssal needle')]: 1,
+			[itemID('Small pouch')]: 1,
+			[itemID('Medium pouch')]: 1,
+			[itemID('Large pouch')]: 1,
+			[itemID('Giant pouch')]: 1
 		},
-
-		requiredSkills: { crafting: 30 }
+		outputItems: {
+			[itemID('Colossal pouch')]: 1
+		},
+		cantHaveItems: {
+			[itemID('Colossal pouch')]: 1
+		},
+		requiredSkills: { runecraft: 85, crafting: 56 }
 	},
 	// Spirit Shields
 	{
@@ -1760,6 +1789,50 @@ const Createables: Createable[] = [
 			Cabbage: 10
 		})
 	},
+	{
+		name: 'Bucket of sand (1kg)',
+		inputItems: new Bank({
+			'Sandstone (1kg)': 1,
+			Bucket: 1
+		}),
+		outputItems: new Bank({
+			'Bucket of sand': 1
+		}),
+		GPCost: 50
+	},
+	{
+		name: 'Bucket of sand (2kg)',
+		inputItems: new Bank({
+			'Sandstone (2kg)': 1,
+			Bucket: 2
+		}),
+		outputItems: new Bank({
+			'Bucket of sand': 2
+		}),
+		GPCost: 100
+	},
+	{
+		name: 'Bucket of sand (5kg)',
+		inputItems: new Bank({
+			'Sandstone (5kg)': 1,
+			Bucket: 4
+		}),
+		outputItems: new Bank({
+			'Bucket of sand': 4
+		}),
+		GPCost: 200
+	},
+	{
+		name: 'Bucket of sand (10kg)',
+		inputItems: new Bank({
+			'Sandstone (10kg)': 1,
+			Bucket: 8
+		}),
+		outputItems: new Bank({
+			'Bucket of sand': 8
+		}),
+		GPCost: 400
+	},
 	/* {
 		name: 'Toxic blowpipe (empty)',
 		inputItems: {
@@ -2023,16 +2096,6 @@ const Createables: Createable[] = [
 		}
 	},
 	{
-		name: 'Death tiara',
-		inputItems: new Bank({
-			'Death talisman': 1,
-			Tiara: 1
-		}),
-		outputItems: {
-			[itemID('Death tiara')]: 1
-		}
-	},
-	{
 		name: 'Daeyalt essence',
 		inputItems: new Bank({
 			'Daeyalt shard': 1
@@ -2040,6 +2103,16 @@ const Createables: Createable[] = [
 		outputItems: new Bank({
 			'Daeyalt essence': 1
 		})
+	},
+	{
+		name: 'Celestial signet',
+		inputItems: new Bank({
+			'Celestial ring': 1,
+			'Elven signet': 1,
+			Stardust: 1000,
+			'Crystal shard': 100
+		}),
+		outputItems: new Bank().add('Celestial signet')
 	},
 	...Reverteables,
 	...crystalTools,
@@ -2060,7 +2133,10 @@ const Createables: Createable[] = [
 	...nexCreatables,
 	...amrodCreatables,
 	...goldenProspectorCreatables,
-	...leaguesCreatables
+	...leaguesCreatables,
+	...guardiansOfTheRiftCreatables,
+	...shadesOfMortonCreatables,
+	...toaCreatables
 ];
 
 export default Createables;

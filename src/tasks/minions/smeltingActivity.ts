@@ -3,7 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
+import type { SmeltingActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 
@@ -55,22 +55,6 @@ export const smeltingTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			[
-				'smelt',
-				{
-					name: bar.name,
-					quantity: oldQuantity,
-					blast_furnace: blastf
-				},
-				true
-			],
-			undefined,
-			data,
-			loot
-		);
+		handleTripFinish(user, channelID, str, undefined, data, loot);
 	}
 };

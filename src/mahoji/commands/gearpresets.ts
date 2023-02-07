@@ -2,9 +2,10 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandOption } from 'mahoji/dist/lib/types';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
-import { gearPresetToGear, GearSetupType, globalPresets } from '../../lib/gear';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
+import { GearSetupType } from '../../lib/gear/types';
 import { prisma } from '../../lib/settings/prisma';
+import { gearPresetToGear, globalPresets } from '../../lib/structures/Gear';
 import { cleanString, isValidGearSetup, isValidNickname, stringMatches } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
 import { gearEquipCommand } from '../lib/abstracted_commands/gearCommands';
@@ -12,7 +13,7 @@ import { allEquippableItems, gearPresetOption, gearSetupOption } from '../lib/ma
 import { OSBMahojiCommand } from '../lib/util';
 
 function maxPresets(user: MUser) {
-	return user.perkTier * 2 + 3;
+	return user.perkTier() * 2 + 3;
 }
 
 type InputGear = Partial<Record<EquipmentSlot, string | undefined>>;
@@ -250,6 +251,7 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 				userID: user.id,
 				setup: options.equip.gear_setup,
 				item: undefined,
+				items: undefined,
 				preset: options.equip.preset,
 				quantity: undefined,
 				unEquippedItem: undefined,
@@ -263,7 +265,7 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 				})) || globalPresets.find(i => stringMatches(i.name, options.view?.preset ?? ''));
 			if (!preset) return "You don't have a preset with that name.";
 			const image = await generateGearImage(user, gearPresetToGear(preset), null, null);
-			return { attachments: [{ buffer: image, fileName: 'preset.jpg' }] };
+			return { files: [{ attachment: image, name: 'preset.jpg' }] };
 		}
 
 		return 'Invalid command.';

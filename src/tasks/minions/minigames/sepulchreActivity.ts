@@ -1,8 +1,8 @@
 import { Bank } from 'oldschooljs';
 import { GrandHallowedCoffin } from 'oldschooljs/dist/simulation/misc/GrandHallowedCoffin';
 
+import { trackLoot } from '../../../lib/lootTrack';
 import { openCoffin, sepulchreFloors } from '../../../lib/minions/data/sepulchre';
-import { trackLoot } from '../../../lib/settings/prisma';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
@@ -23,6 +23,7 @@ export const sepulchreTask: MinionTask = {
 		let thievingXP = 0;
 		let numCoffinsOpened = 0;
 
+		const highestCompletedFloor = completedFloors.reduce((prev, next) => (prev.number > next.number ? prev : next));
 		for (let i = 0; i < quantity; i++) {
 			for (const floor of completedFloors) {
 				if (floor.number === 5) {
@@ -34,11 +35,10 @@ export const sepulchreTask: MinionTask = {
 				for (let i = 0; i < numCoffinsToOpen; i++) {
 					loot.add(openCoffin(floor.number, user));
 				}
-
 				agilityXP += floor.xp;
 				thievingXP = 200 * numCoffinsOpened;
 			}
-			if (roll(completedFloors[completedFloors.length - 1].petChance)) {
+			if (roll(highestCompletedFloor.petChance)) {
 				loot.add('Giant squirrel');
 			}
 		}
@@ -62,12 +62,19 @@ export const sepulchreTask: MinionTask = {
 		});
 
 		await trackLoot({
-			loot: itemsAdded,
+			totalLoot: itemsAdded,
 			id: 'sepulchre',
 			type: 'Minigame',
 			changeType: 'loot',
 			duration: data.duration,
-			kc: quantity
+			kc: quantity,
+			users: [
+				{
+					id: user.id,
+					duration,
+					loot: itemsAdded
+				}
+			]
 		});
 
 		let str = `${user}, ${user.minionName} finished doing the Hallowed Sepulchre ${quantity}x times (floor ${
@@ -81,14 +88,6 @@ export const sepulchreTask: MinionTask = {
 			previousCL
 		});
 
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			['minigames', { sepulchre: { start: {} } }, true],
-			image.file.buffer,
-			data,
-			itemsAdded
-		);
+		handleTripFinish(user, channelID, str, image.file.attachment, data, itemsAdded);
 	}
 };

@@ -1,41 +1,43 @@
+import 'source-map-support/register';
 import './lib/data/itemAliases';
 import './lib/crons';
 import './lib/MUser';
+import './lib/util/transactItemsFromBank';
+import './lib/util/logger';
 
 import * as Sentry from '@sentry/node';
 import { Chart } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { watch } from 'chokidar';
-import { TextChannel } from 'discord.js';
-import { debounce } from 'e';
-import {
-	APIInteraction,
-	GatewayDispatchEvents,
-	InteractionResponseType,
-	InteractionType,
-	MahojiClient,
-	MessageFlags,
-	Routes
-} from 'mahoji';
-import { SlashCommandResponse } from 'mahoji/dist/lib/types';
-import { extname, join, sep } from 'path';
+import { GatewayIntentBits, InteractionType, Options, Partials, TextChannel } from 'discord.js';
+import { isObject, Time } from 'e';
+import { MahojiClient } from 'mahoji';
+import { join } from 'path';
 
-import { botToken, CLIENT_ID, DEV_SERVER_ID, production, SENTRY_DSN } from './config';
+import { botToken, CLIENT_ID, DEV_SERVER_ID, production, SENTRY_DSN, SupportServer } from './config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from './lib/blacklists';
-import { clientOptions } from './lib/config';
-import { Channel, Events, SILENT_ERROR } from './lib/constants';
+import { Channel, Events, gitHash } from './lib/constants';
 import { onMessage } from './lib/events';
 import { makeServer } from './lib/http';
 import { modalInteractionHook } from './lib/modals';
+import { runStartupScripts } from './lib/startupScripts';
 import { OldSchoolBotClient } from './lib/structures/OldSchoolBotClient';
-import { initTickers } from './lib/tickers';
+import { syncActivityCache } from './lib/Task';
+import { assert, getInteractionTypeName, runTimedLoggedFn } from './lib/util';
+import { CACHED_ACTIVE_USER_IDS, syncActiveUserIDs } from './lib/util/cachedUserIDs';
 import { interactionHook } from './lib/util/globalInteractions';
+import { handleInteractionError } from './lib/util/interactionReply';
 import { logError } from './lib/util/logError';
 import { sendToChannelID } from './lib/util/webhook';
 import { onStartup } from './mahoji/lib/events';
 import { postCommand } from './mahoji/lib/postCommand';
 import { preCommand } from './mahoji/lib/preCommand';
 import { convertMahojiCommandToAbstractCommand } from './mahoji/lib/util';
+
+debugLog(`Starting... Git Hash ${gitHash}`);
+
+if (!production) {
+	import('./lib/devHotReload');
+}
 
 Chart.register(ChartDataLabels);
 
@@ -45,35 +47,84 @@ if (SENTRY_DSN) {
 	});
 }
 
+assert(process.env.TZ === 'UTC');
+
+const client = new OldSchoolBotClient({
+	shards: 'auto',
+	intents: [
+		GatewayIntentBits.Guilds,
+		GatewayIntentBits.GuildMessages,
+		GatewayIntentBits.GuildMessageReactions,
+		GatewayIntentBits.DirectMessages,
+		GatewayIntentBits.DirectMessageReactions,
+		GatewayIntentBits.GuildWebhooks
+	],
+	partials: [Partials.User, Partials.Channel],
+	allowedMentions: {
+		parse: ['users']
+	},
+	makeCache: Options.cacheWithLimits({
+		MessageManager: {
+			maxSize: 0
+		},
+		UserManager: {
+			maxSize: 1000,
+			keepOverLimit: user => CACHED_ACTIVE_USER_IDS.has(user.id)
+		},
+		GuildMemberManager: {
+			maxSize: 200,
+			keepOverLimit: member => CACHED_ACTIVE_USER_IDS.has(member.user.id)
+		},
+		GuildEmojiManager: { maxSize: 1, keepOverLimit: i => [DEV_SERVER_ID, SupportServer].includes(i.guild.id) },
+		GuildStickerManager: { maxSize: 0 },
+		PresenceManager: { maxSize: 0 },
+		VoiceStateManager: { maxSize: 0 },
+		GuildInviteManager: { maxSize: 0 },
+		ThreadManager: { maxSize: 0 },
+		ThreadMemberManager: { maxSize: 0 }
+	}),
+	sweepers: {
+		guildMembers: {
+			interval: Time.Minute * 15,
+			filter: () => member => !CACHED_ACTIVE_USER_IDS.has(member.user.id)
+		},
+		users: {
+			interval: Time.Minute * 15,
+			filter: () => user => !CACHED_ACTIVE_USER_IDS.has(user.id)
+		}
+	}
+});
+
 export const mahojiClient = new MahojiClient({
-	discordToken: botToken,
 	developmentServerID: DEV_SERVER_ID,
 	applicationID: CLIENT_ID,
 	storeDirs: [join('dist', 'mahoji')],
 	handlers: {
-		preCommand: async ({ command, interaction }) => {
+		preCommand: async ({ command, interaction, options }) => {
 			const result = await preCommand({
 				abstractCommand: convertMahojiCommandToAbstractCommand(command),
-				userID: interaction.userID.toString(),
-				guildID: interaction.guildID?.toString(),
-				channelID: interaction.channelID.toString(),
+				userID: interaction.user.id,
+				guildID: interaction.guildId,
+				channelID: interaction.channelId,
 				bypassInhibitors: false,
-				apiUser: interaction.user
+				apiUser: interaction.user,
+				options
 			});
-			return result?.reason;
+			return result;
 		},
-		postCommand: ({ command, interaction, error, inhibited }) =>
+		postCommand: ({ command, interaction, error, inhibited, options }) =>
 			postCommand({
 				abstractCommand: convertMahojiCommandToAbstractCommand(command),
-				userID: interaction.userID.toString(),
-				guildID: interaction.guildID?.toString(),
-				channelID: interaction.channelID.toString(),
-				args: interaction.options,
+				userID: interaction.user.id,
+				guildID: interaction.guildId,
+				channelID: interaction.channelId,
+				args: options,
 				error,
 				isContinue: false,
 				inhibited
 			})
-	}
+	},
+	djsClient: client
 });
 
 declare global {
@@ -87,81 +138,54 @@ declare global {
 	}
 }
 
-const client = new OldSchoolBotClient(clientOptions);
 client.mahojiClient = mahojiClient;
 global.globalClient = client;
 client.on('messageCreate', onMessage);
-client.on('raw', async event => {
-	if (![GatewayDispatchEvents.InteractionCreate].includes(event.t)) return;
-	const data = event.d as APIInteraction;
+client.on('interactionCreate', async interaction => {
+	if (BLACKLISTED_USERS.has(interaction.user.id)) return;
+	if (interaction.guildId && BLACKLISTED_GUILDS.has(interaction.guildId)) return;
 
 	if (!client.isReady()) {
-		if (data.type === InteractionType.ApplicationCommand) {
-			await mahojiClient.restManager.post(Routes.interactionCallback(data.id, data.token), {
-				body: {
-					data: {
-						content:
-							'Old School Bot is currently down for maintenance/updates, please try again in a couple minutes! Thank you <3',
-						flags: MessageFlags.Ephemeral
-					},
-					type: InteractionResponseType.ChannelMessageWithSource
-				}
+		if (interaction.isChatInputCommand()) {
+			interaction.reply({
+				content:
+					'Old School Bot is currently down for maintenance/updates, please try again in a couple minutes! Thank you <3',
+				ephemeral: true
 			});
 		}
 		return;
 	}
 
-	interactionHook(data);
-	if (data.type === InteractionType.ModalSubmit) return modalInteractionHook(data);
-	const result = await mahojiClient.parseInteraction(data);
-	if (result === null) return;
-
-	if ('error' in result) {
-		if (result.error.message === SILENT_ERROR) return;
-		logError(result.error, {
-			user_id: result.interaction.userID.toString(),
-			name: result.interaction.data.interaction.data?.name ?? 'None'
-		});
-		if (result.type === InteractionType.ApplicationCommand) {
-			const ERROR_RESPONSE: SlashCommandResponse = {
-				response: {
-					data: { content: 'Sorry, an error occured while trying to run this command.' },
-					type: InteractionResponseType.ChannelMessageWithSource
-				},
-				interaction: result.interaction,
-				type: InteractionType.ApplicationCommand
-			};
-			try {
-				await result.interaction.respond(ERROR_RESPONSE);
-			} catch (err: unknown) {
-				logError(err, {
-					user_id: result.interaction.userID.toString(),
-					name: result.interaction.data.interaction.data?.name ?? 'None',
-					command: result.interaction.command.name
-				});
-			}
-		}
-		return;
-	}
-	if (result.type === InteractionType.ApplicationCommand) {
-		try {
-			await result.interaction.respond(result);
-		} catch (err: unknown) {
-			logError(err, {
-				user_id: result.interaction.userID.toString(),
-				name: result.interaction.data.interaction.data?.name ?? 'None',
-				command: result.interaction.command.name
+	try {
+		if (interaction.type !== InteractionType.ApplicationCommandAutocomplete) {
+			debugLog(`Process ${getInteractionTypeName(interaction.type)} interaction`, {
+				type: 'COMMAND_INHIBITED',
+				user_id: interaction.user.id,
+				guild_id: interaction.guildId,
+				channel_id: interaction.channelId,
+				interaction_id: interaction.id,
+				interaction_type: interaction.type
 			});
 		}
-	}
-	if (result.type === InteractionType.ApplicationCommandAutocomplete) {
-		return result.interaction.respond(result);
+		await interactionHook(interaction);
+		if (interaction.isModalSubmit()) {
+			await modalInteractionHook(interaction);
+			return;
+		}
+
+		const result = await mahojiClient.parseInteraction(interaction);
+		if (result === null) return;
+		if (isObject(result) && 'error' in result) {
+			handleInteractionError(result.error, interaction);
+		}
+	} catch (err) {
+		handleInteractionError(err, interaction);
 	}
 });
 
 client.on(Events.ServerNotification, (message: string) => {
 	const channel = globalClient.channels.cache.get(Channel.Notifications);
-	if (channel && globalClient.production) (channel as TextChannel).send(message);
+	if (channel) (channel as TextChannel).send(message);
 });
 let economyLogBuffer: string[] = [];
 
@@ -169,7 +193,8 @@ client.on(Events.EconomyLog, async (message: string) => {
 	economyLogBuffer.push(message);
 	if (economyLogBuffer.length === 10) {
 		await sendToChannelID(Channel.EconomyLogs, {
-			content: economyLogBuffer.join('\n---------------------------------\n')
+			content: economyLogBuffer.join('\n---------------------------------\n'),
+			allowedMentions: { parse: [], users: [], roles: [] }
 		});
 		economyLogBuffer = [];
 	}
@@ -181,54 +206,23 @@ client.on('guildCreate', guild => {
 	}
 });
 
-initTickers();
+client.on('shardDisconnect', ({ wasClean, code, reason }) => debugLog('Shard Disconnect', { wasClean, code, reason }));
+client.on('shardError', err => debugLog('Shard Error', { error: err.message }));
 
 async function main() {
 	client.fastifyServer = makeServer();
-	await mahojiClient.start();
-	console.log('Starting mahoji client...');
-	await client.login(botToken);
-	console.log('Logging in...');
-	await client.init();
-	console.log('Init...');
-	await onStartup();
+	await Promise.all([
+		runTimedLoggedFn('Sync Active User IDs', syncActiveUserIDs),
+		runTimedLoggedFn('Sync Activity Cache', syncActivityCache)
+	]);
+	await Promise.all([
+		runTimedLoggedFn('Start Mahoji Client', async () => mahojiClient.start()),
+		runTimedLoggedFn('Startup Scripts', runStartupScripts)
+	]);
+	await runTimedLoggedFn('Log In', () => client.login(botToken));
+	runTimedLoggedFn('OnStartup', async () => onStartup());
 }
 
-const terminateCb = async () => {
-	await globalClient.destroy();
-	process.exit(0);
-};
-
-process.removeAllListeners('SIGTERM');
-process.removeAllListeners('SIGINT');
-
-process.on('SIGTERM', terminateCb);
-process.on('SIGINT', terminateCb);
 process.on('uncaughtException', logError);
 
 main();
-
-if (!production) {
-	const nodeModules = `${sep}node_modules${sep}`;
-	globalClient._fileChangeWatcher = watch(join(process.cwd(), 'dist/**/*.js'), {
-		persistent: true,
-		ignoreInitial: true
-	});
-
-	const reloadStore = async () => {
-		for (const module of Object.keys(require.cache)) {
-			if (!module.includes(nodeModules) && extname(module) !== '.node') {
-				if (module.includes('OldSchoolBotClient')) continue;
-				if (module.includes(`dist${sep}index`)) continue;
-				delete require.cache[module];
-			}
-		}
-		await mahojiClient.commands.load();
-	};
-
-	for (const event of ['add', 'change', 'unlink']) {
-		if (globalClient._fileChangeWatcher) {
-			globalClient._fileChangeWatcher.on(event, debounce(reloadStore, 1000));
-		}
-	}
-}

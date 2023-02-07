@@ -1,10 +1,9 @@
+import { ChatInputCommandInteraction, User } from 'discord.js';
 import { shuffleArr } from 'e';
-import { APIUser } from 'mahoji';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { Emoji } from '../../../lib/constants';
-import { handleMahojiConfirmation } from '../../mahojiSettings';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 
 const HatTable = new LootTable()
 	.add('Red partyhat', 1, 32)
@@ -31,10 +30,10 @@ export async function crackerCommand({
 	interaction,
 	otherPersonAPIUser
 }: {
-	otherPersonAPIUser: APIUser;
+	otherPersonAPIUser: User;
 	ownerID: string;
 	otherPersonID: string;
-	interaction: SlashCommandInteraction;
+	interaction: ChatInputCommandInteraction;
 }) {
 	const otherPerson = await mUserFetch(otherPersonID);
 	const owner = await mUserFetch(ownerID);

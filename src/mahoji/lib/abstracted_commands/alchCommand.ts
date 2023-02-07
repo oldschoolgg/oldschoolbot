@@ -1,16 +1,17 @@
-import { Time } from 'e';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
+import { ChatInputCommandInteraction } from 'discord.js';
+import { clamp, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { AlchingActivityTaskOptions } from '../../../lib/types/minions';
-import { clamp, formatDuration, toKMB } from '../../../lib/util';
+import { formatDuration, toKMB } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { getItem } from '../../../lib/util/getOSItem';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import resolveItems from '../../../lib/util/resolveItems';
-import { handleMahojiConfirmation, updateBankSetting } from '../../mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 const unlimitedFireRuneProviders = resolveItems([
 	'Staff of fire',
@@ -29,8 +30,8 @@ const unlimitedFireRuneProviders = resolveItems([
 export const timePerAlch = Time.Second * 3;
 
 export async function alchCommand(
-	interaction: SlashCommandInteraction | null,
-	channelID: bigint,
+	interaction: ChatInputCommandInteraction | null,
+	channelID: string,
 	user: MUser,
 	item: string,
 	quantity: number | undefined

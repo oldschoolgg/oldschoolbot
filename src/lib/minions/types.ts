@@ -1,3 +1,4 @@
+import { XpGainSource } from '@prisma/client';
 import { Bank, MonsterKillOptions } from 'oldschooljs';
 import SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
 import { Image } from 'skia-canvas/lib';
@@ -15,10 +16,10 @@ export type BankBackground = {
 	id: number;
 	name: string;
 	available: boolean;
-	collectionLogItemsNeeded?: ItemBank;
+	collectionLogItemsNeeded?: Bank;
 	perkTierNeeded?: PerkTier;
 	gpCost?: number;
-	itemCost?: ItemBank;
+	itemCost?: Bank;
 	repeatImage?: Image | null;
 	bitfield?: BitField;
 	sacValueRequired?: number;
@@ -121,6 +122,7 @@ export interface AddXpParams {
 	multiplier?: boolean;
 	minimal?: boolean;
 	artificial?: boolean;
+	source?: XpGainSource;
 }
 
 export interface AddMonsterXpParams {
@@ -137,7 +139,7 @@ export interface AddMonsterXpParams {
 }
 
 export interface ResolveAttackStylesParams {
-	monsterID: number;
+	monsterID: number | undefined;
 	boostMethod?: string;
 }
 

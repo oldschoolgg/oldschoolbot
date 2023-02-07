@@ -5,13 +5,13 @@ import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueTo
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
-import { roll } from '../../lib/util';
+import { roll, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export const woodcuttingTask: MinionTask = {
 	type: 'Woodcutting',
 	async run(data: WoodcuttingActivityTaskOptions) {
-		const { logID, quantity, userID, channelID, duration } = data;
+		const { logID, quantity, userID, channelID, duration, powerchopping } = data;
 		const user = await mUserFetch(userID);
 
 		const log = Woodcutting.Logs.find(Log => Log.id === logID)!;
@@ -30,7 +30,7 @@ export const woodcuttingTask: MinionTask = {
 			xpReceived += amountToAdd;
 			bonusXP += amountToAdd;
 		} else {
-			// For each lumberjack item, check if they have it, give its' XP boost if so.
+			// For each lumberjack item, check if they have it, give its XP boost if so.
 			for (const [itemID, bonus] of Object.entries(Woodcutting.lumberjackItems)) {
 				if (user.gear.skilling.hasEquipped([parseInt(itemID)], false)) {
 					const amountToAdd = Math.floor(xpReceived * (bonus / 100));
@@ -46,13 +46,25 @@ export const woodcuttingTask: MinionTask = {
 			duration
 		});
 
-		let loot = new Bank({
-			[log.id]: quantity
-		});
+		let loot = new Bank();
 
+		if (!powerchopping) {
+			if (log.lootTable) {
+				loot.add(log.lootTable.roll(quantity));
+			} else {
+				loot.add(log.id, quantity);
+			}
+		}
 		// Add clue scrolls
 		if (log.clueScrollChance) {
-			addSkillingClueToLoot(user, SkillsEnum.Woodcutting, quantity, log.clueScrollChance, loot);
+			addSkillingClueToLoot(
+				user,
+				SkillsEnum.Woodcutting,
+				quantity,
+				log.clueScrollChance,
+				loot,
+				log.clueNestsOnly
+			);
 		}
 
 		let str = `${user}, ${user.minionName} finished woodcutting. ${xpRes}`;
@@ -62,17 +74,20 @@ export const woodcuttingTask: MinionTask = {
 		}
 
 		// Roll for pet
-		if (log.petChance && roll((log.petChance - user.skillLevel(SkillsEnum.Woodcutting) * 25) / quantity)) {
-			loot.add('Beaver');
-			str += "\n**You have a funny feeling you're being followed...**";
-			globalClient.emit(
-				Events.ServerNotification,
-				`${Emoji.Woodcutting} **${user.usernameOrMention}'s** minion, ${
-					user.minionName
-				}, just received a Beaver while cutting ${log.name} at level ${user.skillLevel(
-					'woodcutting'
-				)} Woodcutting!`
-			);
+		if (log.petChance) {
+			const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Woodcutting, log.petChance);
+			if (roll(petDropRate / quantity)) {
+				loot.add('Beaver');
+				str += "\n**You have a funny feeling you're being followed...**";
+				globalClient.emit(
+					Events.ServerNotification,
+					`${Emoji.Woodcutting} **${user.badgedUsername}'s** minion, ${
+						user.minionName
+					}, just received a Beaver while cutting ${log.name} at level ${user.skillLevel(
+						'woodcutting'
+					)} Woodcutting!`
+				);
+			}
 		}
 
 		str += `\nYou received ${loot}.`;
@@ -83,6 +98,6 @@ export const woodcuttingTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		handleTripFinish(user, channelID, str, ['chop', { name: log.name, quantity }, true], undefined, data, loot);
+		handleTripFinish(user, channelID, str, undefined, data, loot);
 	}
 };

@@ -1,5 +1,5 @@
+import { ChatInputCommandInteraction } from 'discord.js';
 import { Time } from 'e';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
 import { LMSBuyables } from '../../../lib/data/CollectionsExport';
@@ -8,8 +8,8 @@ import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, randomVariation, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { getUsersLMSStats } from '../../../tasks/minions/minigames/lmsActivity';
-import { handleMahojiConfirmation } from '../../mahojiSettings';
 
 export async function lmsCommand(
 	options: {
@@ -19,8 +19,8 @@ export async function lmsCommand(
 		simulate?: { names?: string };
 	},
 	user: MUser,
-	channelID: bigint,
-	interaction: SlashCommandInteraction
+	channelID: string,
+	interaction: ChatInputCommandInteraction
 ) {
 	const stats = await getUsersLMSStats(user);
 

@@ -13,7 +13,7 @@ jobs:
         runs-on: ${{ matrix.os }}
         strategy:
             matrix:
-                node_version: [16.14.0]
+                node_version: [18.12.0]
                 os: [ubuntu-latest, windows-latest]
 
         steps:
@@ -40,5 +40,3 @@ jobs:
               run: yarn gen
             - name: Test
               run: yarn test:unit
-            - name: Upload coverage data to Codecov
-              uses: codecov/codecov-action@v1

@@ -1,3 +1,4 @@
+import { ChatInputCommandInteraction } from 'discord.js';
 import {
 	calcPercentOfNum,
 	calcWhatPercent,
@@ -10,10 +11,9 @@ import {
 	uniqueArr
 } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank, Monsters } from 'oldschooljs';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
+import { Item } from 'oldschooljs/dist/meta/types';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import { addArrayOfNumbers, itemID } from 'oldschooljs/dist/util';
 
@@ -21,7 +21,8 @@ import { PvMMethod } from '../../../lib/constants';
 import { Eatables } from '../../../lib/data/eatables';
 import { getSimilarItems } from '../../../lib/data/similarItems';
 import { checkUserCanUseDegradeableItem, degradeItem } from '../../../lib/degradeableItems';
-import { GearSetupType } from '../../../lib/gear';
+import { GearSetupType } from '../../../lib/gear/types';
+import { trackLoot } from '../../../lib/lootTrack';
 import {
 	boostCannon,
 	boostCannonMulti,
@@ -42,12 +43,13 @@ import reducedTimeFromKC from '../../../lib/minions/functions/reducedTimeFromKC'
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
 import { Consumable, KillableMonster } from '../../../lib/minions/types';
 import { calcPOHBoosts } from '../../../lib/poh';
-import { trackLoot } from '../../../lib/settings/prisma';
+import { SkillsEnum } from '../../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../../lib/slayer/slayerUnlocks';
 import { determineBoostChoice, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../../lib/types/minions';
 import {
 	convertAttackStyleToGearSetup,
+	convertPvmStylesToGearSetup,
 	formatDuration,
 	formatItemBoosts,
 	formatItemCosts,
@@ -63,7 +65,8 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import findMonster from '../../../lib/util/findMonster';
 import getOSItem from '../../../lib/util/getOSItem';
-import { hasMonsterRequirements, resolveAvailableItemBoosts, updateBankSetting } from '../../mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { hasMonsterRequirements, resolveAvailableItemBoosts } from '../../mahojiSettings';
 import { nexCommand } from './nexCommand';
 import { nightmareCommand } from './nightmareCommand';
 import { getPOH } from './pohCommand';
@@ -76,7 +79,12 @@ const invalidMonsterMsg = "That isn't a valid monster.\n\nFor example, `/k name:
 
 const { floor } = Math;
 
-const degradeableItemsCanUse = [
+const degradeableItemsCanUse: {
+	item: Item;
+	attackStyle: GearSetupType;
+	charges: (killableMon: KillableMonster, monster: Monster, totalHP: number) => number;
+	boost: number;
+}[] = [
 	{
 		item: getOSItem('Sanguinesti staff'),
 		attackStyle: 'mage',
@@ -113,8 +121,8 @@ function applySkillBoost(user: MUser, duration: number, styles: AttackStyles[]):
 
 export async function minionKillCommand(
 	userID: string,
-	interaction: SlashCommandInteraction,
-	channelID: bigint,
+	interaction: ChatInputCommandInteraction,
+	channelID: string,
 	name: string,
 	quantity: number | undefined,
 	method: PvMMethod | undefined
@@ -210,8 +218,7 @@ export async function minionKillCommand(
 	const degItemBeingUsed = [];
 	for (const degItem of degradeableItemsCanUse) {
 		const isUsing =
-			monster.attackStyleToUse &&
-			convertAttackStyleToGearSetup(monster.attackStyleToUse) === degItem.attackStyle &&
+			convertPvmStylesToGearSetup(attackStyles).includes(degItem.attackStyle) &&
 			user.gear[degItem.attackStyle].hasEquipped(degItem.item.id);
 		if (isUsing) {
 			const estimatedChargesNeeded = degItem.charges(monster, osjsMon!, totalMonsterHP);
@@ -359,6 +366,11 @@ export async function minionKillCommand(
 		quantity = Math.min(quantity, effectiveQtyRemaining);
 	}
 
+	for (const degItem of degItemBeingUsed) {
+		boosts.push(`${degItem.boost}% for ${degItem.item.name}`);
+		timeToFinish = reduceNumByPercent(timeToFinish, degItem.boost);
+	}
+
 	quantity = Math.max(1, quantity);
 	let duration = timeToFinish * quantity;
 	if (quantity > 1 && duration > maxTripLength) {
@@ -367,6 +379,15 @@ export async function minionKillCommand(
 		)}, try a lower quantity. The highest amount you can do for ${monster.name} is ${floor(
 			maxTripLength / timeToFinish
 		)}.`;
+	}
+
+	for (const degItem of degItemBeingUsed) {
+		const chargesNeeded = degItem.charges(monster, osjsMon!, monsterHP * quantity);
+		await degradeItem({
+			item: degItem.item,
+			chargesToDegrade: chargesNeeded,
+			user
+		});
 	}
 
 	const totalCost = new Bank();
@@ -511,17 +532,6 @@ export async function minionKillCommand(
 	// Boosts that don't affect quantity:
 	duration = randomVariation(duration, 3);
 
-	for (const degItem of degItemBeingUsed) {
-		const chargesNeeded = degItem.charges(monster, osjsMon!, monsterHP * quantity);
-		await degradeItem({
-			item: degItem.item,
-			chargesToDegrade: chargesNeeded,
-			user
-		});
-		boosts.push(`${degItem.boost}% for ${degItem.item.name}`);
-		duration = reduceNumByPercent(duration, degItem.boost);
-	}
-
 	if (isWeekend()) {
 		boosts.push('10% for Weekend');
 		duration *= 0.9;
@@ -536,9 +546,15 @@ export async function minionKillCommand(
 	if (totalCost.length > 0) {
 		await trackLoot({
 			id: monster.name,
-			cost: totalCost,
+			totalCost,
 			type: 'Monster',
-			changeType: 'cost'
+			changeType: 'cost',
+			users: [
+				{
+					id: user.id,
+					cost: totalCost
+				}
+			]
 		});
 	}
 
@@ -649,11 +665,13 @@ export async function monsterInfo(user: MUser, name: string): CommandResponse {
 		timeToFinish = reduceNumByPercent(timeToFinish, percent);
 	}
 	let hpString = '';
+	// Find best eatable boost and add 1% extra
+	const noFoodBoost = Math.floor(Math.max(...Eatables.map(eatable => eatable.pvmBoost ?? 0)) + 1);
 	if (monster.healAmountNeeded) {
 		const [hpNeededPerKill] = calculateMonsterFood(monster, user);
 		if (hpNeededPerKill === 0) {
-			timeToFinish = reduceNumByPercent(timeToFinish, 4);
-			hpString = '4% boost for no food';
+			timeToFinish = reduceNumByPercent(timeToFinish, noFoodBoost);
+			hpString = `${noFoodBoost}% boost for no food`;
 		}
 	}
 	const maxCanKillSlay = Math.floor(calcMaxTripLength(user, 'MonsterKilling') / reduceNumByPercent(timeToFinish, 15));

@@ -2,12 +2,12 @@ import { reduceNumByPercent, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { BitField, PHOSANI_NIGHTMARE_ID, ZAM_HASTA_CRUSH } from '../../../lib/constants';
+import { trackLoot } from '../../../lib/lootTrack';
 import { NightmareMonster } from '../../../lib/minions/data/killableMonsters';
 import { calculateMonsterFood } from '../../../lib/minions/functions';
 import hasEnoughFoodForMonster from '../../../lib/minions/functions/hasEnoughFoodForMonster';
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
 import { KillableMonster } from '../../../lib/minions/types';
-import { trackLoot } from '../../../lib/settings/prisma';
 import { Gear } from '../../../lib/structures/Gear';
 import { NightmareActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, hasSkillReqs } from '../../../lib/util';
@@ -15,7 +15,8 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import calcDurQty from '../../../lib/util/calcMassDurationQuantity';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
 import resolveItems from '../../../lib/util/resolveItems';
-import { hasMonsterRequirements, updateBankSetting } from '../../mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { hasMonsterRequirements } from '../../mahojiSettings';
 
 function soloMessage(user: MUser, duration: number, quantity: number, isPhosani: boolean) {
 	const name = isPhosani ? "Phosani's Nightmare" : 'The Nightmare';
@@ -116,7 +117,7 @@ function perUserCost(isPhosani: boolean, quantity: number) {
 	return cost;
 }
 
-export async function nightmareCommand(user: MUser, channelID: bigint, name: string) {
+export async function nightmareCommand(user: MUser, channelID: string, name: string) {
 	name = name.toLowerCase();
 	let isPhosani = false;
 	let type: 'solo' | 'mass' = 'solo';
@@ -209,13 +210,16 @@ export async function nightmareCommand(user: MUser, channelID: bigint, name: str
 		}
 	}
 
-	let [quantity, duration, perKillTime] = await calcDurQty(
+	let durQtyRes = await calcDurQty(
 		users,
 		{ ...NightmareMonster, timeToFinish: effectiveTime },
 		undefined,
 		Time.Minute * 5,
 		Time.Minute * 30
 	);
+	if (typeof durQtyRes === 'string') return durQtyRes;
+	let [quantity, duration, perKillTime] = durQtyRes;
+
 	const secondErr = checkReqs(users, NightmareMonster, quantity, isPhosani);
 	if (secondErr) return secondErr;
 
@@ -223,37 +227,41 @@ export async function nightmareCommand(user: MUser, channelID: bigint, name: str
 
 	const totalCost = new Bank();
 	let soloFoodUsage: Bank | null = null;
-	for (const user of users) {
-		const [healAmountNeeded] = calculateMonsterFood(NightmareMonster, user);
-		const cost = perUserCost(isPhosani, quantity);
-		if (!user.owns(cost)) {
-			return `${user} doesn't own ${cost}.`;
-		}
-		let healingMod = isPhosani ? 1.5 : 1;
-		try {
-			const { foodRemoved } = await removeFoodFromUser({
-				user,
-				totalHealingNeeded: Math.ceil(healAmountNeeded / users.length) * quantity * healingMod,
-				healPerAction: Math.ceil(healAmountNeeded / quantity) * healingMod,
-				activityName: NightmareMonster.name,
-				attackStylesUsed: ['melee']
-			});
+	const [healAmountNeeded] = calculateMonsterFood(NightmareMonster, user);
+	const cost = perUserCost(isPhosani, quantity);
+	if (!user.owns(cost)) {
+		return `${user} doesn't own ${cost}.`;
+	}
+	let healingMod = isPhosani ? 1.5 : 1;
+	try {
+		const { foodRemoved } = await removeFoodFromUser({
+			user,
+			totalHealingNeeded: Math.ceil(healAmountNeeded / users.length) * quantity * healingMod,
+			healPerAction: Math.ceil(healAmountNeeded / quantity) * healingMod,
+			activityName: NightmareMonster.name,
+			attackStylesUsed: ['melee']
+		});
 
-			const { realCost } = await user.specialRemoveItems(cost);
-			soloFoodUsage = realCost.clone().add(foodRemoved);
+		const { realCost } = await user.specialRemoveItems(cost);
+		soloFoodUsage = realCost.clone().add(foodRemoved);
 
-			totalCost.add(foodRemoved).add(realCost);
-		} catch (_err: any) {
-			return typeof _err === 'string' ? _err : _err.message;
-		}
+		totalCost.add(foodRemoved).add(realCost);
+	} catch (_err: any) {
+		return typeof _err === 'string' ? _err : _err.message;
 	}
 
 	await updateBankSetting('nightmare_cost', totalCost);
 	await trackLoot({
 		id: 'nightmare',
-		cost: totalCost,
+		totalCost,
 		type: 'Monster',
-		changeType: 'cost'
+		changeType: 'cost',
+		users: [
+			{
+				id: user.id,
+				cost: totalCost
+			}
+		]
 	});
 
 	await addSubTaskToActivityTask<NightmareActivityTaskOptions>({

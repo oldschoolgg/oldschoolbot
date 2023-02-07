@@ -1,11 +1,13 @@
 import { Embed } from '@discordjs/builders';
+import { ChatInputCommandInteraction } from 'discord.js';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { LootTable } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 
+import { mahojiClientSettingsUpdate } from '../../../lib/util/clientSettings';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import resolveItems from '../../../lib/util/resolveItems';
-import { handleMahojiConfirmation, mahojiClientSettingsUpdate, mahojiParseNumber } from '../../mahojiSettings';
+import { mahojiParseNumber } from '../../mahojiSettings';
 
 export const flowerTable = new LootTable()
 	.add('Red flowers', 1, 150)
@@ -29,7 +31,7 @@ const explanation =
 	"Hot and Cold Rules: You pick hot (red, yellow, orange) or cold (purple, blue, assorted), and if you guess right, you win. If it's mixed, you lose. If its black or white, you win **5x** your bet.";
 
 export async function hotColdCommand(
-	interaction: SlashCommandInteraction,
+	interaction: ChatInputCommandInteraction,
 	user: MUser,
 	choice: 'hot' | 'cold' | undefined,
 	_amount: string | undefined
@@ -48,6 +50,8 @@ export async function hotColdCommand(
 ${explanation}`
 	);
 
+	await user.sync();
+	if (user.GP < amount) return "You can't afford to gamble that much.";
 	await transactItems({
 		userID: user.id,
 		itemsToAdd: flowerLoot,

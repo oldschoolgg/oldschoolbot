@@ -3,9 +3,10 @@ import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
 import { BitField } from '../../../lib/constants';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { GauntletOptions } from '../../../lib/types/minions';
-import { formatDuration, formatSkillRequirements, toTitleCase } from '../../../lib/util';
+import { formatDuration, formatSkillRequirements } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import { toTitleCase } from '../../../lib/util/toTitleCase';
 
 const baseRequirements = {
 	cooking: 70,
@@ -46,7 +47,7 @@ const corruptedRequirements = {
 	woodcutting: 70
 };
 
-export async function gauntletCommand(user: MUser, channelID: bigint, type: 'corrupted' | 'normal' = 'normal') {
+export async function gauntletCommand(user: MUser, channelID: string, type: 'corrupted' | 'normal' = 'normal') {
 	if (user.minionIsBusy) return `${user.minionName} is busy.`;
 	if (user.QP < 200) {
 		return 'You need atleast 200 QP to do the Gauntlet.';

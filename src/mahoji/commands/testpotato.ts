@@ -112,6 +112,7 @@ async function giveGear(user: MUser) {
 }
 
 async function resetAccount(user: MUser) {
+	await prisma.slayerTask.deleteMany({ where: { user_id: user.id } });
 	await prisma.activity.deleteMany({ where: { user_id: BigInt(user.id) } });
 	await prisma.commandUsage.deleteMany({ where: { user_id: BigInt(user.id) } });
 	await prisma.gearPreset.deleteMany({ where: { user_id: user.id } });
@@ -121,7 +122,6 @@ async function resetAccount(user: MUser) {
 	await prisma.newUser.deleteMany({ where: { id: user.id } });
 	await prisma.playerOwnedHouse.deleteMany({ where: { user_id: user.id } });
 	await prisma.user.deleteMany({ where: { id: user.id } });
-	await prisma.slayerTask.deleteMany({ where: { user_id: user.id } });
 	return 'Reset all your data.';
 }
 
@@ -491,7 +491,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						let b = actualPreset[1];
 						if (actualPreset[0] === 'random') {
 							b = new Bank();
-							for (let i = 0; i < 200; i++) {
+							for (let i = 0; i < 1000; i++) {
 								b.add(Items.random().id);
 							}
 						}

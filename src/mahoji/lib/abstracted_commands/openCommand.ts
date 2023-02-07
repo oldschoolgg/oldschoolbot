@@ -1,6 +1,6 @@
+import { ChatInputCommandInteraction } from 'discord.js';
 import { notEmpty, uniqueArr } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { PerkTier } from '../../../lib/constants';
@@ -8,9 +8,9 @@ import { allOpenables, UnifiedOpenable } from '../../../lib/openables';
 import { ItemBank } from '../../../lib/types';
 import { stringMatches } from '../../../lib/util/cleanString';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
-import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { handleMahojiConfirmation, patronMsg, updateGPTrackSetting } from '../../mahojiSettings';
+import { patronMsg, updateGPTrackSetting } from '../../mahojiSettings';
 
 const regex = /^(.*?)( \([0-9]+x Owned\))?$/;
 
@@ -36,13 +36,13 @@ async function addToOpenablesScores(mahojiUser: MUser, kcBank: Bank) {
 }
 
 export async function abstractedOpenUntilCommand(
-	interaction: SlashCommandInteraction,
+	interaction: ChatInputCommandInteraction,
 	userID: string,
 	name: string,
 	openUntilItem: string
 ) {
 	const user = await mUserFetch(userID);
-	const perkTier = getUsersPerkTier(user);
+	const perkTier = user.perkTier();
 	if (perkTier < PerkTier.Three) return patronMsg(PerkTier.Three);
 	name = name.replace(regex, '$1');
 	const openableItem = allOpenables.find(o => o.aliases.some(alias => stringMatches(alias, name)));
@@ -139,12 +139,12 @@ async function finalizeOpening({
 		.join(', ');
 
 	let response: Awaited<CommandResponse> = {
-		attachments: [image.file],
+		files: [image.file],
 		content: `You have now opened a total of ${openedStr}
 ${messages.join(', ')}`
 	};
 	if (response.content!.length > 1900) {
-		response.attachments!.push({ fileName: 'response.txt', buffer: Buffer.from(response.content!) });
+		response.files!.push({ name: 'response.txt', attachment: Buffer.from(response.content!) });
 		response.content =
 			'Due to opening so many things at once, you will have to download the attached text file to read the response.';
 	}
@@ -152,7 +152,7 @@ ${messages.join(', ')}`
 }
 
 export async function abstractedOpenCommand(
-	interaction: SlashCommandInteraction | null,
+	interaction: ChatInputCommandInteraction | null,
 	userID: string,
 	_names: string[],
 	_quantity: number | 'auto' = 1
@@ -168,12 +168,12 @@ export async function abstractedOpenCommand(
 				.filter(notEmpty);
 
 	if (names.includes('all')) {
-		if (!openables.length) return 'You have no openable items.';
-		if (user.perkTier < PerkTier.Two) return patronMsg(PerkTier.Two);
+		if (openables.length === 0) return 'You have no openable items.';
+		if (user.perkTier() < PerkTier.Two) return patronMsg(PerkTier.Two);
 		if (interaction) await handleMahojiConfirmation(interaction, 'Are you sure you want to open ALL your items?');
 	}
 
-	if (!openables.length) return "That's not a valid item.";
+	if (openables.length === 0) return "That's not a valid item.";
 	// This code will only execute if we're not in auto/all mode:
 	if (typeof _quantity === 'number') {
 		for (const openable of openables) {

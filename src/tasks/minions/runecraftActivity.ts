@@ -3,21 +3,22 @@ import { Bank } from 'oldschooljs';
 import { Emoji, Events } from '../../lib/constants';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { RunecraftActivityTaskOptions } from '../../lib/types/minions';
-import { roll } from '../../lib/util';
+import type { RunecraftActivityTaskOptions } from '../../lib/types/minions';
+import { roll, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { calcMaxRCQuantity } from '../../mahoji/mahojiSettings';
 
 export const runecraftTask: MinionTask = {
 	type: 'Runecraft',
 	async run(data: RunecraftActivityTaskOptions) {
-		const { runeID, essenceQuantity, userID, channelID, imbueCasts, duration, useStaminas, daeyaltEssence } = data;
+		const { runeID, essenceQuantity, userID, channelID, imbueCasts, duration, daeyaltEssence } = data;
 		const user = await mUserFetch(userID);
 
 		const rune = Runecraft.Runes.find(_rune => _rune.id === runeID)!;
 
 		const quantityPerEssence = calcMaxRCQuantity(rune, user);
-		const runeQuantity = essenceQuantity * quantityPerEssence;
+		let runeQuantity = essenceQuantity * quantityPerEssence;
+		let bonusQuantity = 0;
 
 		let runeXP = rune.xp;
 
@@ -40,16 +41,37 @@ export const runecraftTask: MinionTask = {
 
 		let str = `${user}, ${user.minionName} finished crafting ${runeQuantity} ${rune.name}. ${xpRes}`;
 
+		// If they have the entire Raiments of the Eye outfit, give an extra 20% quantity bonus (NO bonus XP)
+		if (
+			user.gear.skilling.hasEquipped(
+				Object.keys(Runecraft.raimentsOfTheEyeItems).map(i => parseInt(i)),
+				true
+			)
+		) {
+			const amountToAdd = Math.floor(runeQuantity * (60 / 100));
+			runeQuantity += amountToAdd;
+			bonusQuantity += amountToAdd;
+		} else {
+			// For each Raiments of the Eye item, check if they have it, give its' quantity boost if so (NO bonus XP).
+			for (const [itemID, bonus] of Object.entries(Runecraft.raimentsOfTheEyeItems)) {
+				if (user.gear.skilling.hasEquipped([parseInt(itemID)], false)) {
+					const amountToAdd = Math.floor(runeQuantity * (bonus / 100));
+					bonusQuantity += amountToAdd;
+				}
+			}
+			runeQuantity += bonusQuantity;
+		}
+
 		const loot = new Bank({
 			[rune.id]: runeQuantity
 		});
-
-		if (roll((1_795_758 - user.skillLevel(SkillsEnum.Runecraft) * 25) / essenceQuantity)) {
+		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Runecraft, 1_795_758);
+		if (roll(petDropRate / essenceQuantity)) {
 			loot.add('Rift guardian');
 			str += "\nYou have a funny feeling you're being followed...";
 			globalClient.emit(
 				Events.ServerNotification,
-				`${Emoji.Runecraft} **${user.usernameOrMention}'s** minion, ${
+				`${Emoji.Runecraft} **${user.badgedUsername}'s** minion, ${
 					user.minionName
 				}, just received a Rift guardian while crafting ${rune.name}s at level ${user.skillLevel(
 					SkillsEnum.Runecraft
@@ -63,24 +85,16 @@ export const runecraftTask: MinionTask = {
 
 		str += `\n\nYou received: ${loot}.`;
 
+		if (bonusQuantity > 0) {
+			str += ` **Bonus Quantity:** ${bonusQuantity.toLocaleString()}`;
+		}
+
 		await transactItems({
 			userID: user.id,
 			collectionLog: true,
 			itemsToAdd: loot
 		});
 
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			[
-				'runecraft',
-				{ quantity: essenceQuantity, rune: rune.name, usestams: useStaminas, daeyalt_essence: daeyaltEssence },
-				true
-			],
-			undefined,
-			data,
-			loot
-		);
+		handleTripFinish(user, channelID, str, undefined, data, loot);
 	}
 };

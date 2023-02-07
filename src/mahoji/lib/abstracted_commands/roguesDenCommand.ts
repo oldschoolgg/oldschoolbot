@@ -6,9 +6,9 @@ import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
-export async function roguesDenCommand(user: MUser, channelID: bigint) {
+export async function roguesDenCommand(user: MUser, channelID: string) {
 	if (user.minionIsBusy) return `${user.minionName} is busy.`;
 	if (user.skillLevel(SkillsEnum.Agility) < 50 || user.skillLevel(SkillsEnum.Thieving) < 50) {
 		return "To attempt the Rogues' Den maze you need 50 Agility and 50 Thieving.";

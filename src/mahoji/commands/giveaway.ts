@@ -1,25 +1,19 @@
 import { Duration } from '@sapphire/time-utilities';
-import { ActionRowBuilder, AttachmentBuilder, ButtonBuilder, ButtonStyle, MessageOptions } from 'discord.js';
+import { ActionRowBuilder, AttachmentBuilder, BaseMessageOptions, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { randInt, Time } from 'e';
-import {
-	APIButtonComponentWithCustomId,
-	ApplicationCommandOptionType,
-	CommandRunOptions,
-	ComponentType,
-	MessageFlags
-} from 'mahoji';
+import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { addToGPTaxBalance, prisma } from '../../lib/settings/prisma';
-import { channelIsSendable, makeComponents } from '../../lib/util';
+import { channelIsSendable, isModOrAdmin, makeComponents } from '../../lib/util';
 import { generateGiveawayContent } from '../../lib/util/giveaway';
+import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { logError } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
-function makeGiveawayButtons(giveawayID: number): MessageOptions['components'] {
+function makeGiveawayButtons(giveawayID: number): BaseMessageOptions['components'] {
 	return [
 		new ActionRowBuilder<ButtonBuilder>().addComponents([
 			new ButtonBuilder()
@@ -34,13 +28,12 @@ function makeGiveawayButtons(giveawayID: number): MessageOptions['components'] {
 	];
 }
 
-function makeGiveawayRepeatButton(giveawayID: number): APIButtonComponentWithCustomId {
-	return {
-		custom_id: `GIVEAWAY_REPEAT_${giveawayID}`,
-		label: 'Repeat This Giveaway',
-		style: ButtonStyle.Danger,
-		type: ComponentType.Button
-	};
+function makeGiveawayRepeatButton(giveawayID: number) {
+	return new ButtonBuilder()
+		.setCustomId(`GIVEAWAY_REPEAT_${giveawayID}`)
+		.setLabel('Repeat This Giveaway')
+		.setEmoji('493286312854683654')
+		.setStyle(ButtonStyle.Danger);
 }
 
 export const giveawayCommand: OSBMahojiCommand = {
@@ -88,7 +81,6 @@ export const giveawayCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{ start?: { duration: string; items?: string; filter?: string; search?: string } }>) => {
 		const user = await mUserFetch(userID);
 		if (user.isIronman) return 'You cannot do giveaways!';
-		const mUser = await mahojiUsersSettingsFetch(user.id);
 		const channel = globalClient.channels.cache.get(channelID.toString());
 		if (!channelIsSendable(channel)) return 'Invalid channel.';
 
@@ -99,8 +91,8 @@ export const giveawayCommand: OSBMahojiCommand = {
 					completed: false
 				}
 			});
-			if (existingGiveaways.length >= 5) {
-				return 'You cannot have more than 5 giveaways active at a time.';
+			if (existingGiveaways.length >= 10 && !isModOrAdmin(user)) {
+				return 'You cannot have more than 10 giveaways active at a time.';
 			}
 
 			if (!guildID) {
@@ -110,7 +102,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 			const bank = parseBank({
 				inputStr: options.start.items,
 				inputBank: user.bank,
-				excludeItems: mUser.favoriteItems,
+				excludeItems: user.user.favoriteItems,
 				user,
 				search: options.start.search,
 				filters: [options.start.filter, 'tradeables'],
@@ -158,7 +150,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 								bank,
 								title: `${apiUser?.username ?? user.rawUsername}'s Giveaway`
 							})
-						).file.buffer
+						).file.attachment
 					)
 				],
 				components: makeGiveawayButtons(giveawayID)
@@ -198,7 +190,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 
 			return {
 				content: 'Giveaway started.',
-				flags: MessageFlags.Ephemeral,
+				ephemeral: true,
 				components: makeComponents([makeGiveawayRepeatButton(giveawayID)])
 			};
 		}

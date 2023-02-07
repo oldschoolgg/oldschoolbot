@@ -11,10 +11,10 @@ import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/s
 import { InfernoOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import chatHeadImage from '../../../lib/util/chatHeadImage';
+import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../../lib/util/clientSettings';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
-import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../../mahoji/mahojiSettings';
 
 export const infernoTask: MinionTask = {
 	type: 'Inferno',
@@ -93,6 +93,8 @@ export const infernoTask: MinionTask = {
 				}
 			}
 			if (isOnTask) {
+				text += '**Slayer task cancelled.**\n';
+
 				await prisma.slayerTask.update({
 					where: {
 						id: usersTask.currentTask!.id
@@ -105,14 +107,18 @@ export const infernoTask: MinionTask = {
 			}
 		}
 
-		if (isOnTask) {
-			const points = await calculateSlayerPoints(user.user.slayer_last_task, usersTask.slayerMaster!, user);
+		if (isOnTask && !deathTime) {
 			const { newUser } = await user.update({
-				slayer_points: {
-					increment: points
-				},
 				slayer_task_streak: {
 					increment: 1
+				}
+			});
+
+			const currentStreak = newUser.slayer_task_streak;
+			const points = await calculateSlayerPoints(currentStreak, usersTask.slayerMaster!, user);
+			const secondNewUser = await user.update({
+				slayer_points: {
+					increment: points
 				}
 			});
 
@@ -122,11 +128,11 @@ export const infernoTask: MinionTask = {
 				},
 				data: {
 					quantity_remaining: 0,
-					skipped: deathTime ? true : false
+					skipped: false
 				}
 			});
 
-			text += `\n\n**You've completed ${newUser.slayer_task_streak} tasks and received ${points} points; giving you a total of ${newUser.slayer_points}; return to a Slayer master.**`;
+			text += `\n\n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${secondNewUser.newUser.slayer_points}; return to a Slayer master.**`;
 		}
 
 		if (unusedItems.length > 0) {
@@ -141,12 +147,12 @@ export const infernoTask: MinionTask = {
 		}
 
 		if (diedPreZuk) {
-			text = `You died ${formatDuration(deathTime!)} into your attempt, before you reached Zuk.`;
+			text += `You died ${formatDuration(deathTime!)} into your attempt, before you reached Zuk.`;
 			chatText = `You die before you even reach TzKal-Zuk...atleast you tried, I give you ${baseBank.amount(
 				'Tokkul'
 			)}x Tokkul.`;
 		} else if (diedZuk) {
-			text = `You died ${formatDuration(deathTime!)} into your attempt, during the Zuk fight.`;
+			text += `You died ${formatDuration(deathTime!)} into your attempt, during the Zuk fight.`;
 			chatText = `You died to Zuk. Nice try JalYt, for your effort I give you ${baseBank.amount(
 				'Tokkul'
 			)}x Tokkul.`;
@@ -158,7 +164,7 @@ export const infernoTask: MinionTask = {
 			if (baseBank.has('Jal-nib-rek')) {
 				globalClient.emit(
 					Events.ServerNotification,
-					`**${user.usernameOrMention}** just received their ${formatOrdinal(
+					`**${user.badgedUsername}** just received their ${formatOrdinal(
 						user.cl.amount('Jal-nib-rek') + 1
 					)} Jal-nib-rek pet by killing TzKal-Zuk, on their ${formatOrdinal(
 						await getMinigameScore(user.id, 'inferno')
@@ -170,7 +176,7 @@ export const infernoTask: MinionTask = {
 				const usersWithInfernalCape = await countUsersWithItemInCl(itemID('Infernal cape'), false);
 				globalClient.emit(
 					Events.ServerNotification,
-					`**${user.usernameOrMention}** just received their first Infernal cape on their ${formatOrdinal(
+					`**${user.badgedUsername}** just received their first Infernal cape on their ${formatOrdinal(
 						user.user.inferno_attempts
 					)} attempt! They are the ${formatOrdinal(
 						usersWithInfernalCape + 1
@@ -196,7 +202,6 @@ You made it through ${percentMadeItThrough.toFixed(2)}% of the Inferno${
 					: '.'
 			}
 `,
-			['activities', { inferno: { action: 'start' } }, true],
 			await chatHeadImage({
 				content: chatText,
 				head: 'ketKeh'

@@ -1,9 +1,9 @@
 import { time, userMention } from '@discordjs/builders';
 import { BingoTeam, User } from '@prisma/client';
-import { chunk, uniqueArr } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions, MessageFlags } from 'mahoji';
+import { ChatInputCommandInteraction } from 'discord.js';
+import { chunk, clamp, uniqueArr } from 'e';
+import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
@@ -11,7 +11,8 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { production } from '../../config';
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { prisma } from '../../lib/settings/prisma';
-import { clamp, makeComponents, toKMB } from '../../lib/util';
+import { makeComponents, toKMB } from '../../lib/util';
+import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { logError } from '../../lib/util/logError';
 import {
 	BINGO_TICKET_PRICE,
@@ -24,7 +25,7 @@ import {
 	determineBingoProgress
 } from '../lib/bingo';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 import { doMenu, getPos } from './leaderboard';
 
 type MakeTeamOptions = {
@@ -51,7 +52,7 @@ async function findBingoTeamWithUser(userID: string) {
 	return teamWithUser;
 }
 
-async function bingoLeaderboard(userID: string, channelID: bigint): CommandResponse {
+async function bingoLeaderboard(userID: string, channelID: string): CommandResponse {
 	const allBingoTeams = await prisma.bingoTeam.findMany({});
 	const allBingoUsers = await prisma.user.findMany({
 		where: {
@@ -97,7 +98,7 @@ async function bingoLeaderboard(userID: string, channelID: bigint): CommandRespo
 		'Bingo Leaderboard'
 	);
 	return {
-		flags: MessageFlags.Ephemeral,
+		ephemeral: true,
 		content: 'Loading Bingo Leaderboard...'
 	};
 }
@@ -124,7 +125,7 @@ async function userCanJoinTeam(userID: string) {
 	return true;
 }
 
-async function makeTeamCommand(interaction: SlashCommandInteraction, user: User, options: MakeTeamOptions) {
+async function makeTeamCommand(interaction: ChatInputCommandInteraction, user: User, options: MakeTeamOptions) {
 	if (bingoIsActive() && production) {
 		return 'You cannot make a Bingo team, because the bingo has already started!';
 	}
@@ -167,7 +168,7 @@ async function makeTeamCommand(interaction: SlashCommandInteraction, user: User,
 }
 
 export async function buyBingoTicketCommand(
-	interaction: SlashCommandInteraction | null,
+	interaction: ChatInputCommandInteraction | null,
 	userID: string,
 	quantity = 1
 ): Promise<string> {
@@ -208,7 +209,7 @@ export async function buyBingoTicketCommand(
 	return `You bought ${quantity}x Bingo Tickets for ${toKMB(gpCost)} GP!`;
 }
 
-async function leaveTeamCommand(interaction: SlashCommandInteraction) {
+async function leaveTeamCommand(interaction: ChatInputCommandInteraction) {
 	const bingoTeam = await findBingoTeamWithUser(interaction.user.id);
 	if (!bingoTeam) return "You're not in a bingo team.";
 	if (bingoIsActive() && production) return "You can't leave a bingo team after bingo has started.";

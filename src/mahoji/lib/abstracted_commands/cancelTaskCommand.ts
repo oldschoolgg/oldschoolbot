@@ -1,10 +1,10 @@
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
+import { ChatInputCommandInteraction } from 'discord.js';
 
 import { cancelTask, getActivityOfUser } from '../../../lib/settings/settings';
 import { NexTaskOptions, RaidsOptions } from '../../../lib/types/minions';
-import { handleMahojiConfirmation } from '../../mahojiSettings';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 
-export async function cancelTaskCommand(user: MUser, interaction?: SlashCommandInteraction): Promise<string> {
+export async function cancelTaskCommand(user: MUser, interaction?: ChatInputCommandInteraction): Promise<string> {
 	const currentTask = getActivityOfUser(user.id);
 
 	const mName = user.minionName;
@@ -33,6 +33,10 @@ export async function cancelTaskCommand(user: MUser, interaction?: SlashCommandI
 		if (data.users.length > 1) {
 			return `${mName} is currently doing a raid, they cannot leave their team!`;
 		}
+	}
+
+	if ((currentTask as any).users && (currentTask as any).users.length > 1) {
+		return 'Your minion is on a group activity and cannot cancel!';
 	}
 
 	if (interaction) {

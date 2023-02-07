@@ -1,11 +1,11 @@
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
+import { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 import { table } from 'table';
 
 import { SlayerRewardsShop } from '../../../lib/slayer/slayerUnlocks';
 import { removeFromArr, stringMatches } from '../../../lib/util';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { logError } from '../../../lib/util/logError';
-import { handleMahojiConfirmation } from '../../mahojiSettings';
 
 const slayerPurchaseError =
 	'An error occurred trying to make this purchase. Please try again or contact #help-and-support if the issue persists.';
@@ -21,7 +21,7 @@ export async function slayerShopBuyCommand({
 	buyable: string;
 	quantity?: number;
 	disable?: boolean;
-	interaction?: SlashCommandInteraction;
+	interaction?: ChatInputCommandInteraction;
 }) {
 	const user = await mUserFetch(userID);
 	const buyableObj = SlayerRewardsShop.find(
@@ -106,7 +106,7 @@ export function slayerShopListMyUnlocks(mahojiUser: MUser) {
 	if (content.length > 2000) {
 		return {
 			content: 'Your currently unlocked Slayer rewards',
-			attachments: [{ buffer: Buffer.from(content.replace(/`/g, '')), fileName: 'myUnlocks.txt' }]
+			files: [{ attachment: Buffer.from(content.replace(/`/g, '')), name: 'myUnlocks.txt' }]
 		};
 	}
 	return content;
@@ -118,7 +118,7 @@ export function slayerShopListRewards(type: 'all' | 'unlocks' | 'buyables') {
 	);
 
 	const unlockTable = table([
-		['Slayer Points', 'Name', 'Description', 'Type'],
+		['Slayer Points', 'name: ', 'Description', 'Type'],
 		...availableUnlocks.map(i => [
 			i.slayerPointCost,
 			i.name,
@@ -130,6 +130,6 @@ export function slayerShopListRewards(type: 'all' | 'unlocks' | 'buyables') {
 	const content = type === 'all' ? 'List of all slayer rewards' : `List sof slayer ${type}`;
 	return {
 		content,
-		attachments: [{ buffer: Buffer.from(unlockTable), fileName: 'slayerRewardsUnlocks.txt' }]
+		files: [{ attachment: Buffer.from(unlockTable), name: 'slayerRewardsUnlocks.txt' }]
 	};
 }

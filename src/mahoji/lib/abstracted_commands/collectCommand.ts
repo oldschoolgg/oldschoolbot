@@ -9,7 +9,7 @@ import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
-import { updateBankSetting } from '../../mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { getPOH } from './pohCommand';
 
 export interface Collectable {
@@ -51,6 +51,11 @@ export const collectables: Collectable[] = [
 	},
 	{
 		item: getOSItem('Flax'),
+		quantity: 28,
+		duration: Time.Minute * 1.68
+	},
+	{
+		item: getOSItem('Swamp toad'),
 		quantity: 28,
 		duration: Time.Minute * 1.68
 	},
@@ -136,7 +141,13 @@ export const collectables: Collectable[] = [
 	}
 ];
 
-export async function collectCommand(user: MUser, channelID: bigint, objectName: string, no_stams?: boolean) {
+export async function collectCommand(
+	user: MUser,
+	channelID: string,
+	objectName: string,
+	quantity?: number,
+	no_stams?: boolean
+) {
 	const collectable = collectables.find(c => stringMatches(c.item.name, objectName));
 	if (!collectable) {
 		return `That's not something your minion can collect, you can collect these things: ${collectables
@@ -161,8 +172,9 @@ export async function collectCommand(user: MUser, channelID: bigint, objectName:
 		no_stams = false;
 	}
 
-	const quantity = Math.floor(maxTripLength / collectable.duration);
-
+	if (!quantity) {
+		quantity = Math.floor(maxTripLength / collectable.duration);
+	}
 	let duration = collectable.duration * quantity;
 	if (duration > maxTripLength) {
 		return `${user.minionName} can't go on a trip longer than ${formatDuration(

@@ -1,11 +1,11 @@
 import { roll } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { chompyHats } from '../../../lib/constants';
 import { userhasDiaryTier, WesternProv } from '../../../lib/diaries';
 import { getMinigameEntity, incrementMinigameScore } from '../../../lib/settings/settings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { chompyHats } from '../../../mahoji/lib/abstracted_commands/chompyHuntCommand';
 
 export const chompHuntTask: MinionTask = {
 	type: 'BigChompyBirdHunting',
@@ -41,14 +41,6 @@ export const chompHuntTask: MinionTask = {
 			}
 		}
 
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			['activities', { chompy_hunt: { action: 'start' } }],
-			undefined,
-			data,
-			loot
-		);
+		handleTripFinish(user, channelID, str, undefined, data, loot);
 	}
 };

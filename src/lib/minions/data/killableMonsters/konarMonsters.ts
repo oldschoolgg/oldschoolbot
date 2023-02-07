@@ -2,7 +2,7 @@ import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
 
-import { GearStat } from '../../../gear';
+import { GearStat } from '../../../gear/types';
 import resolveItems from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';
 
@@ -16,7 +16,7 @@ export const konarMonsters: KillableMonster[] = [
 
 		wildy: false,
 
-		notifyDrops: resolveItems(['Dragon metal slice']),
+		notifyDrops: resolveItems(['Dragon metal slice', 'Draconic visage']),
 
 		difficultyRating: 5,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
@@ -262,7 +262,7 @@ export const konarMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 4,
-		notifyDrops: resolveItems(['Dragon chainbody', 'Smoke Battlestaff', 'Pet smoke devil']),
+		notifyDrops: resolveItems(['Dragon chainbody', 'Smoke Battlestaff', 'Jar of smoke', 'Pet smoke devil']),
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 93

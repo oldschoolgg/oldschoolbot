@@ -1,11 +1,22 @@
 import { reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
+import { convertLVLtoXP } from 'oldschooljs/dist/util';
+import { describe, expect, test } from 'vitest';
 
+import { baseModifyBusyCounter } from '../src/lib/busyCounterCache';
 import { deduplicateClueScrolls } from '../src/lib/clues/clueUtils';
 import getUserFoodFromBank from '../src/lib/minions/functions/getUserFoodFromBank';
-import { sanitizeBank, stripEmojis, truncateString, validateItemBankAndThrow } from '../src/lib/util';
+import { SkillsEnum } from '../src/lib/skilling/types';
+import {
+	sanitizeBank,
+	skillingPetDropRate,
+	stripEmojis,
+	truncateString,
+	validateItemBankAndThrow
+} from '../src/lib/util';
 import getOSItem from '../src/lib/util/getOSItem';
 import { sellPriceOfItem, sellStorePriceOfItem } from '../src/mahoji/commands/sell';
+import { mockMUser } from './utils';
 
 describe('util', () => {
 	test('stripEmojis', () => {
@@ -95,5 +106,42 @@ describe('util', () => {
 		// eslint-disable-next-line @typescript-eslint/no-extraneous-class
 		expect(() => validateItemBankAndThrow(class {})).toThrow();
 		expect(validateItemBankAndThrow({ 1: 1 })).toEqual(true);
+	});
+
+	test('skillingPetRateFunction', () => {
+		let testUser = mockMUser({
+			skills_agility: convertLVLtoXP(30)
+		});
+		const baseDropRate = 300_000;
+		// Lvl 30
+		const dropRateLvl30 = Math.floor((baseDropRate - 30 * 25) / 1);
+		expect(skillingPetDropRate(testUser, SkillsEnum.Agility, baseDropRate).petDropRate).toEqual(dropRateLvl30);
+		// Lvl 99
+		testUser = mockMUser({
+			skills_agility: convertLVLtoXP(99)
+		});
+		const dropRateLvl99 = Math.floor((baseDropRate - 99 * 25) / 1);
+		expect(skillingPetDropRate(testUser, SkillsEnum.Agility, baseDropRate).petDropRate).toEqual(dropRateLvl99);
+		// Lvl 99 and 200M xp
+		testUser = mockMUser({
+			skills_agility: 200_000_000
+		});
+		const dropRate200M = Math.floor((baseDropRate - 99 * 25) / 15);
+		expect(skillingPetDropRate(testUser, SkillsEnum.Agility, baseDropRate).petDropRate).toEqual(dropRate200M);
+	});
+
+	test('userBusyCache', () => {
+		const id = '1';
+		const cache = new Map();
+		// expect(() => baseModifyBusyCounter(cache, id, -1)).toThrow();
+		expect(baseModifyBusyCounter(cache, id, 1)).toEqual(1);
+		expect(cache.get(id)).toEqual(1);
+		expect(baseModifyBusyCounter(cache, id, 1)).toEqual(2);
+		expect(cache.get(id)).toEqual(2);
+		expect(baseModifyBusyCounter(cache, id, -1)).toEqual(1);
+		expect(cache.get(id)).toEqual(1);
+		expect(baseModifyBusyCounter(cache, id, -1)).toEqual(0);
+		expect(cache.get(id)).toEqual(0);
+		// expect(() => baseModifyBusyCounter(cache, id, -1)).toThrow();
 	});
 });

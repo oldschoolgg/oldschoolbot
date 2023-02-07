@@ -27,7 +27,7 @@ export const plunderTask: MinionTask = {
 
 		for (let i = 0; i < quantity; i++) {
 			for (const room of completedRooms) {
-				[currentLootRoom, amountUrns] = lootRoom(room.number);
+				[currentLootRoom, amountUrns] = lootRoom(user, room.number);
 				totalAmountUrns += amountUrns;
 				loot.add(currentLootRoom);
 				thievingXP += room.xp;
@@ -47,7 +47,7 @@ export const plunderTask: MinionTask = {
 			str += "\n\n**You have a funny feeling you're being followed...**";
 			globalClient.emit(
 				Events.ServerNotification,
-				`**${user.usernameOrMention}'s** minion, ${
+				`**${user.badgedUsername}'s** minion, ${
 					user.minionName
 				}, just received a **Rocky** <:Rocky:324127378647285771> while doing the Pyramid Plunder, their Thieving level is ${user.skillLevel(
 					SkillsEnum.Thieving
@@ -62,14 +62,6 @@ export const plunderTask: MinionTask = {
 			title: `Loot From ${quantity}x Pyramid Plunder:`
 		});
 
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			['minigames', { pyramid_plunder: {} }, true],
-			image.file.buffer,
-			data,
-			itemsAdded
-		);
+		handleTripFinish(user, channelID, str, image.file.attachment, data, itemsAdded);
 	}
 };

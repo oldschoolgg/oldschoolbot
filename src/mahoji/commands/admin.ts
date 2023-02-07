@@ -1,52 +1,53 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { codeBlock, inlineCode } from '@discordjs/builders';
+import { codeBlock } from '@discordjs/builders';
 import { ClientStorage } from '@prisma/client';
 import { Stopwatch } from '@sapphire/stopwatch';
 import { Duration } from '@sapphire/time-utilities';
-import Type from '@sapphire/type';
 import { isThenable } from '@sentry/utils';
-import { escapeCodeBlock } from 'discord.js';
-import { randArrItem, sleep, Time, uniqueArr } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions, InteractionResponseType, InteractionType } from 'mahoji';
-import { CommandResponse, MahojiAttachment } from 'mahoji/dist/lib/structures/ICommand';
+import { AttachmentBuilder, escapeCodeBlock, InteractionReplyOptions } from 'discord.js';
+import { notEmpty, randArrItem, sleep, Time, uniqueArr } from 'e';
+import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { bulkUpdateCommands } from 'mahoji/dist/lib/util';
 import { inspect } from 'node:util';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { CLIENT_ID, OWNER_IDS, production, SupportServer } from '../../config';
+import { ADMIN_IDS, CLIENT_ID, OWNER_IDS, production, SupportServer } from '../../config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../../lib/blacklists';
-import { badges, BadgesEnum, BitField, BitFieldData, DISABLED_COMMANDS } from '../../lib/constants';
+import { badges, BadgesEnum, BitField, BitFieldData, Channel, DISABLED_COMMANDS } from '../../lib/constants';
+import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
+import { GearSetup } from '../../lib/gear/types';
+import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { patreonTask } from '../../lib/patreon';
 import { runRolesTask } from '../../lib/rolesTask';
 import { countUsersWithItemInCl, prisma } from '../../lib/settings/prisma';
 import { cancelTask, minionActivityCacheDelete } from '../../lib/settings/settings';
-import { tickers } from '../../lib/tickers';
+import { Gear } from '../../lib/structures/Gear';
 import {
 	calcPerHour,
+	cleanString,
 	convertBankToPerHourStats,
 	formatDuration,
 	sanitizeBank,
 	stringMatches,
 	toKMB
 } from '../../lib/util';
-import { getItem } from '../../lib/util/getOSItem';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../lib/util/clientSettings';
+import getOSItem, { getItem } from '../../lib/util/getOSItem';
+import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
+import { deferInteraction, interactionReply } from '../../lib/util/interactionReply';
+import { syncLinkedAccounts } from '../../lib/util/linkedAccountsUtil';
 import { logError } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
+import { sendToChannelID } from '../../lib/util/webhook';
 import { Cooldowns } from '../lib/Cooldowns';
 import { syncCustomPrices } from '../lib/events';
 import { itemOption } from '../lib/mahojiCommandOptions';
 import { allAbstractCommands, OSBMahojiCommand } from '../lib/util';
-import {
-	handleMahojiConfirmation,
-	mahojiClientSettingsFetch,
-	mahojiClientSettingsUpdate,
-	mahojiUsersSettingsFetch
-} from '../mahojiSettings';
-import { mahojiUserSettingsUpdate } from '../settingsUpdate';
+import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 import { getUserInfo } from './minion';
 
 export const gifs = [
@@ -64,13 +65,12 @@ async function unsafeEval({ userID, code }: { userID: string; code: string }) {
 	let result = null;
 	let thenable = false;
 	// eslint-disable-next-line @typescript-eslint/init-declarations
-	let type!: Type;
 	try {
+		code = `\nconst {Gear} = require('../../lib/structures/Gear')\n${code};`;
 		code = `\nconst {Bank} = require('oldschooljs');\n${code}`;
 		// eslint-disable-next-line no-eval
 		result = eval(code);
 		syncTime = stopwatch.toString();
-		type = new Type(result);
 		if (isThenable(result)) {
 			thenable = true;
 			stopwatch.restart();
@@ -79,7 +79,6 @@ async function unsafeEval({ userID, code }: { userID: string; code: string }) {
 		}
 	} catch (error: any) {
 		if (!syncTime) syncTime = stopwatch.toString();
-		if (!type) type = new Type(error);
 		if (thenable && !asyncTime) asyncTime = stopwatch.toString();
 		if (error && error.stack) logError(error);
 		result = error;
@@ -87,13 +86,17 @@ async function unsafeEval({ userID, code }: { userID: string; code: string }) {
 
 	stopwatch.stop();
 	if (result instanceof Bank) {
-		return { files: [await makeBankImage({ bank: result })], rawOutput: result };
+		return { files: [(await makeBankImage({ bank: result })).file] };
+	}
+	if (result instanceof Gear) {
+		const image = await generateGearImage(await mUserFetch(userID), result, null, null);
+		return { files: [image] };
 	}
 
 	if (Buffer.isBuffer(result)) {
 		return {
 			content: 'The result was a buffer.',
-			rawOutput: 'Buffer'
+			files: [result]
 		};
 	}
 
@@ -106,10 +109,8 @@ async function unsafeEval({ userID, code }: { userID: string; code: string }) {
 
 	return {
 		content: `${codeBlock(escapeCodeBlock(result))}
-**Type:** ${inlineCode(type.toString())}
 **Time:** ${asyncTime ? `⏱ ${asyncTime}<${syncTime}>` : `⏱ ${syncTime}`}
-`,
-		rawOutput: result
+`
 	};
 }
 
@@ -122,7 +123,7 @@ async function evalCommand(userID: string, code: string): CommandResponse {
 
 		if (res.content && res.content.length > 2000) {
 			return {
-				attachments: [{ buffer: Buffer.from(res.content), fileName: 'output.txt' }]
+				files: [{ attachment: Buffer.from(res.content), name: 'output.txt' }]
 			};
 		}
 
@@ -134,12 +135,48 @@ async function evalCommand(userID: string, code: string): CommandResponse {
 
 const viewableThings: {
 	name: string;
-	run: (clientSettings: ClientStorage) => Bank;
+	run: (clientSettings: ClientStorage) => Promise<Bank | InteractionReplyOptions>;
 }[] = [
 	{
 		name: 'ToB Cost',
-		run: clientSettings => {
+		run: async clientSettings => {
 			return new Bank(clientSettings.tob_cost as ItemBank);
+		}
+	},
+	{
+		name: 'All Equipped Items',
+		run: async () => {
+			const res = await prisma.$queryRaw<Record<string, GearSetup | null>[]>`SELECT "gear.melee",
+"gear.mage",
+"gear.range",
+"gear.misc",
+"gear.skilling",
+"gear.wildy",
+"gear.fashion",
+"gear.other"
+FROM users
+WHERE last_command_date > now() - INTERVAL '1 weeks'
+AND ("gear.melee" IS NOT NULL OR
+"gear.mage" IS NOT NULL OR
+"gear.range" IS NOT NULL OR
+"gear.misc" IS NOT NULL OR
+"gear.skilling" IS NOT NULL OR
+"gear.wildy" IS NOT NULL OR
+"gear.fashion" IS NOT NULL OR
+"gear.other" IS NOT NULL);`;
+			const bank = new Bank();
+			for (const user of res) {
+				for (const gear of Object.values(user)
+					.map(i => (i === null ? [] : Object.values(i)))
+					.flat()
+					.filter(notEmpty)) {
+					let item = getItem(gear.item);
+					if (item) {
+						bank.add(gear.item, gear.quantity);
+					}
+				}
+			}
+			return bank;
 		}
 	}
 ];
@@ -165,7 +202,7 @@ export const adminCommand: OSBMahojiCommand = {
 					name: 'tier',
 					description: 'The tier to give.',
 					required: true,
-					choices: [1, 2, 3, 4, 5].map(i => ({ name: i.toString(), value: i }))
+					choices: [1, 2, 3, 4, 5, 6].map(i => ({ name: i.toString(), value: i }))
 				},
 				{
 					type: ApplicationCommandOptionType.String,
@@ -423,7 +460,7 @@ export const adminCommand: OSBMahojiCommand = {
 					description: 'The bitfield to add',
 					required: false,
 					autocomplete: async () => {
-						return Object.keys(BitField).map(i => ({ name: i, value: i }));
+						return Object.entries(BitFieldData).map(i => ({ name: i[1].name, value: i[0] }));
 					}
 				},
 				{
@@ -432,7 +469,7 @@ export const adminCommand: OSBMahojiCommand = {
 					description: 'The bitfield to remove',
 					required: false,
 					autocomplete: async () => {
-						return Object.keys(BitField).map(i => ({ name: i, value: i }));
+						return Object.entries(BitFieldData).map(i => ({ name: i[1].name, value: i[0] }));
 					}
 				}
 			]
@@ -440,7 +477,15 @@ export const adminCommand: OSBMahojiCommand = {
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'ltc',
-			description: 'Ltc?'
+			description: 'Ltc?',
+			options: [
+				{
+					...itemOption(),
+					name: 'item',
+					description: 'The item.',
+					required: false
+				}
+			]
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -477,6 +522,11 @@ export const adminCommand: OSBMahojiCommand = {
 					name: 'items',
 					description: 'The items to give',
 					required: true
+				},
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'reason',
+					description: 'The reason'
 				}
 			]
 		}
@@ -507,14 +557,14 @@ export const adminCommand: OSBMahojiCommand = {
 		set_price?: { item: string; price: number };
 		most_active?: {};
 		bitfield?: { user: MahojiUserOption; add?: string; remove?: string };
-		ltc?: {};
+		ltc?: { item?: string };
 		view?: { thing: string };
 		wipe_bingo_temp_cls?: {};
-		give_items?: { user: MahojiUserOption; items: string };
+		give_items?: { user: MahojiUserOption; items: string; reason?: string };
 	}>) => {
-		await interaction.deferReply();
+		await deferInteraction(interaction);
 
-		const adminUser = await mahojiUsersSettingsFetch(userID);
+		const adminUser = await mUserFetch(userID);
 		const isOwner = OWNER_IDS.includes(userID.toString());
 		const isMod = isOwner || adminUser.bitfield.includes(BitField.isModerator);
 		if (!guildID || !isMod || (production && guildID.toString() !== SupportServer)) return randArrItem(gifs);
@@ -555,8 +605,7 @@ export const adminCommand: OSBMahojiCommand = {
 		if (options.cancel_task) {
 			const { user } = options.cancel_task.user;
 			await cancelTask(user.id);
-			globalClient.oneCommandAtATimeCache.delete(user.id);
-			globalClient.secondaryUserBusyCache.delete(user.id);
+			globalClient.busyCounterCache.delete(user.id);
 			Cooldowns.delete(user.id);
 			minionActivityCacheDelete(user.id);
 			return 'Done.';
@@ -564,7 +613,11 @@ export const adminCommand: OSBMahojiCommand = {
 		if (options.sync_roles) {
 			try {
 				const result = await runRolesTask();
-				return result.slice(0, 2500);
+				if (result.length < 2000) return result;
+				return {
+					content: 'The result was too big! Check the file.',
+					files: [new AttachmentBuilder(Buffer.from(result), { name: 'roles.txt' })]
+				};
 			} catch (err: any) {
 				logError(err);
 				return `Failed to run roles task. ${err.message}`;
@@ -572,6 +625,7 @@ export const adminCommand: OSBMahojiCommand = {
 		}
 		if (options.sync_patreon) {
 			await patreonTask.run();
+			syncLinkedAccounts();
 			return 'Finished syncing patrons.';
 		}
 		if (options.add_ironman_alt) {
@@ -649,7 +703,7 @@ export const adminCommand: OSBMahojiCommand = {
 
 			return `${action === 'add' ? 'Added' : 'Removed'} ${badgeName} ${badges[badgeID]} badge to ${
 				options.badges.user.user.username
-			}}.`;
+			}.`;
 		}
 
 		if (options.bypass_age) {
@@ -796,27 +850,16 @@ LIMIT 10;
 		}
 		if (options.reboot) {
 			globalClient.isShuttingDown = true;
-			for (const ticker of tickers) {
-				if (ticker.timer) clearTimeout(ticker.timer);
-			}
 			await sleep(Time.Second * 20);
-			await interaction.respond({
-				response: {
-					data: {
-						content:
-							'https://media.discordapp.net/attachments/357422607982919680/1004657720722464880/freeze.gif'
-					},
-					type: InteractionResponseType.ChannelMessageWithSource
-				},
-				interaction,
-				type: InteractionType.ApplicationCommand
+			await interactionReply(interaction, {
+				content: 'https://media.discordapp.net/attachments/357422607982919680/1004657720722464880/freeze.gif'
 			});
 			process.exit();
 		}
 		if (options.viewbank) {
 			const userToCheck = await mUserFetch(options.viewbank.user.user.id);
 			const bank = userToCheck.allItemsOwned();
-			return { attachments: [(await makeBankImage({ bank, title: userToCheck.usernameOrMention })).file] };
+			return { files: [(await makeBankImage({ bank, title: userToCheck.usernameOrMention })).file] };
 		}
 
 		if (options.add_patron_time) {
@@ -828,11 +871,6 @@ LIMIT 10;
 			const input = await mahojiUsersSettingsFetch(userToGive.user.id);
 
 			const currentBalanceTier = input.premium_balance_tier;
-
-			const oldPerkTier = getUsersPerkTier(input.bitfield);
-			if (oldPerkTier > 1 && !currentBalanceTier && oldPerkTier <= tier + 1) {
-				return `${userToGive.user.username} is already a patron of at least that tier.`;
-			}
 
 			if (currentBalanceTier !== null && currentBalanceTier !== tier) {
 				await handleMahojiConfirmation(
@@ -876,22 +914,13 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 
 		/**
 		 *
-		 * Owner Only Commands
+		 * Admin Only Commands
 		 *
 		 */
-		if (!isOwner) {
+		if (!isOwner && !ADMIN_IDS.includes(userID)) {
 			return randArrItem(gifs);
 		}
 
-		if (options.debug_patreon) {
-			const result = await patreonTask.fetchPatrons();
-			return {
-				attachments: [{ buffer: Buffer.from(JSON.stringify(result, null, 4)), fileName: 'patreon.txt' }]
-			};
-		}
-		if (options.eval) {
-			return evalCommand(userID.toString(), options.eval.code);
-		}
 		if (options.sync_commands) {
 			const global = Boolean(options.sync_commands.global);
 			const totalCommands = globalClient.mahojiClient.commands.values;
@@ -920,6 +949,57 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 ${totalCommands.length} Total commands
 ${globalCommands.length} Global commands
 ${guildCommands.length} Guild commands`;
+		}
+
+		if (options.view) {
+			const thing = viewableThings.find(i => i.name === options.view?.thing);
+			if (!thing) return 'Invalid';
+			const clientSettings = await mahojiClientSettingsFetch();
+			const res = await thing.run(clientSettings);
+			if (!(res instanceof Bank)) return res;
+			const image = await makeBankImage({
+				bank: res,
+				title: thing.name,
+				flags: { sort: thing.name === 'All Equipped Items' ? 'name' : (undefined as any) }
+			});
+			return { files: [image.file] };
+		}
+
+		if (options.give_items) {
+			const items = parseBank({ inputStr: options.give_items.items });
+			const user = await mUserFetch(options.give_items.user.user.id);
+			await handleMahojiConfirmation(
+				interaction,
+				`Are you sure you want to give ${items} to ${user.usernameOrMention}?`
+			);
+			await sendToChannelID(Channel.BotLogs, {
+				content: `${adminUser.logName} sent \`${items}\` to ${user.logName} for ${
+					options.give_items.reason ?? 'No reason'
+				}`
+			});
+
+			await user.addItemsToBank({ items, collectionLog: false });
+			return `Gave ${items} to ${user.mention}`;
+		}
+
+		if (options.debug_patreon) {
+			const result = await patreonTask.fetchPatrons();
+			return {
+				files: [{ attachment: Buffer.from(JSON.stringify(result, null, 4)), name: 'patreon.txt' }]
+			};
+		}
+
+		/**
+		 *
+		 * Owner Only Commands
+		 *
+		 */
+		if (!isOwner) {
+			return randArrItem(gifs);
+		}
+
+		if (options.eval) {
+			return evalCommand(userID.toString(), options.eval.code);
 		}
 		if (options.item_stats) {
 			const item = getItem(options.item_stats.item);
@@ -950,16 +1030,37 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 			] as const;
 
 			let content = `${loot.id} ${formatDuration(loot.total_duration * Time.Minute)} KC${loot.total_kc}`;
-			const attachments: MahojiAttachment[] = [];
+			const files = [];
 			for (const [name, bank] of arr) {
 				content += `\n${convertBankToPerHourStats(bank, durationMillis).join(', ')}`;
-				attachments.push((await makeBankImage({ bank, title: name })).file);
+				files.push((await makeBankImage({ bank, title: name })).file);
 			}
-			return { content, attachments };
+			return { content, files };
 		}
 		if (options.ltc) {
 			let str = '';
 			const results = await prisma.lootTrack.findMany();
+
+			if (options.ltc.item) {
+				str += `${['id', 'total_of_item', 'item_per_kc', 'per_hour'].join('\t')}\n`;
+				const item = getOSItem(options.ltc.item);
+
+				for (const res of results) {
+					const loot = new Bank(res.loot as ItemBank);
+					if (!loot.has(item.id)) continue;
+					const qty = loot.amount(item.id);
+					str += `${[
+						res.id,
+						qty,
+						qty / res.total_kc,
+						calcPerHour(qty, res.total_duration * Time.Minute)
+					].join('\t')}\n`;
+				}
+
+				return {
+					files: [{ attachment: Buffer.from(str), name: `${cleanString(item.name)}.txt` }]
+				};
+			}
 
 			str += `${['id', 'cost_h', 'cost', 'loot_h', 'loot', 'per_hour_h', 'per_hour', 'ratio'].join('\t')}\n`;
 			for (const res of results) {
@@ -988,27 +1089,8 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 			}
 
 			return {
-				attachments: [{ buffer: Buffer.from(str), fileName: 'output.txt' }]
+				files: [{ attachment: Buffer.from(str), name: 'output.txt' }]
 			};
-		}
-
-		if (options.view) {
-			const thing = viewableThings.find(i => i.name === options.view?.thing);
-			if (!thing) return 'Invalid';
-			const clientSettings = await mahojiClientSettingsFetch();
-			const image = await makeBankImage({ bank: thing.run(clientSettings), title: thing.name });
-			return { attachments: [image.file] };
-		}
-
-		if (options.give_items) {
-			const items = parseBank({ inputStr: options.give_items.items });
-			const user = await mUserFetch(options.give_items.user.user.id);
-			await handleMahojiConfirmation(
-				interaction,
-				`Are you sure you want to give ${items} to ${user.usernameOrMention}?`
-			);
-			await user.addItemsToBank({ items, collectionLog: false });
-			return `Gave ${items} to ${user.mention}`;
 		}
 
 		return 'Invalid command.';

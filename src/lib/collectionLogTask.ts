@@ -119,7 +119,6 @@ class CollectionLogTask {
 		if (collection) {
 			collectionLog = await getCollection({
 				user,
-				mahojiUser: options.mahojiUser,
 				search: collection,
 				flags,
 				logType: type
@@ -135,9 +134,9 @@ class CollectionLogTask {
 		if (flags.text) {
 			return {
 				content: 'This is the items on your log:',
-				attachments: [
+				files: [
 					{
-						buffer: Buffer.from(
+						attachment: Buffer.from(
 							collectionLog.collection
 								.map(i => {
 									let _i = getOSItem(i);
@@ -148,7 +147,7 @@ class CollectionLogTask {
 								.filter(f => f)
 								.join(flags.comma ? ', ' : '\n')
 						),
-						fileName: 'yourLogItems.txt'
+						name: 'yourLogItems.txt'
 					}
 				]
 			};
@@ -163,7 +162,7 @@ class CollectionLogTask {
 
 		const fullSize = flags.nl || !collectionLog.leftList;
 
-		const userTotalCl = getTotalCl(user, options.mahojiUser, type);
+		const userTotalCl = getTotalCl(user, type);
 		const leftListCanvas = this.drawLeftList(collectionLog, sprite);
 
 		let leftDivisor = 214;
@@ -225,7 +224,7 @@ class CollectionLogTask {
 		ctx.save();
 		ctx.font = '16px RuneScape Bold 12';
 		ctx.fillStyle = '#FF981F';
-		const title = `${user.usernameOrMention}'s ${
+		const title = `${user.rawUsername}'s ${
 			type === 'sacrifice' ? 'Sacrifice' : type === 'collection' ? 'Collection' : 'Bank'
 		} Log - ${userTotalCl[1].toLocaleString()}/${userTotalCl[0].toLocaleString()} / ${calcWhatPercent(
 			userTotalCl[1],
@@ -359,13 +358,12 @@ class CollectionLogTask {
 					ctx.measureText(drawnSoFar).width +
 						ctx.measureText(` / ${type}: `).width +
 						ctx.measureText(value.toLocaleString()).width >=
-					225
+					255
 				) {
 					pixelLevel += 10;
 					drawnSoFar = '';
 				}
 				if (type !== 'Default') {
-					if (value === 0) continue;
 					ctx.fillStyle = '#FF981F';
 					this.drawText(ctx, ` / ${type}: `, ctx.measureText(drawnSoFar).width, pixelLevel);
 					drawnSoFar += ` / ${type}: `;
@@ -374,7 +372,22 @@ class CollectionLogTask {
 				this.drawText(ctx, value.toLocaleString(), ctx.measureText(drawnSoFar).width, pixelLevel);
 				drawnSoFar += value.toLocaleString();
 			}
+			// TODO: Make looting count generic in future
+			if (collectionLog.name === 'Guardians of the Rift') {
+				ctx.fillStyle = '#FF981F';
+				this.drawText(ctx, ' Rifts searches: ', ctx.measureText(drawnSoFar).width, pixelLevel);
+				drawnSoFar += ' Rifts searches: ';
+				ctx.fillStyle = '#FFFFFF';
+				const stats = await user.fetchStats();
+				this.drawText(
+					ctx,
+					stats.gotr_rift_searches.toLocaleString(),
+					ctx.measureText(drawnSoFar).width,
+					pixelLevel
+				);
+			}
 		}
+
 		ctx.restore();
 
 		ctx.save();
@@ -444,7 +457,7 @@ class CollectionLogTask {
 		}
 
 		return {
-			attachments: [{ buffer: await canvas.toBuffer('png'), fileName: `${type}_log_${new Date().valueOf()}.png` }]
+			files: [{ attachment: await canvas.toBuffer('png'), name: `${type}_log_${new Date().valueOf()}.png` }]
 		};
 	}
 }

@@ -1,18 +1,19 @@
 import { User } from '@prisma/client';
+import { ChatInputCommandInteraction } from 'discord.js';
 import { reduceNumByPercent, Time } from 'e';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
 import { userhasDiaryTier, WesternProv } from '../../../lib/diaries';
 import { getMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, hasSkillReqs, stringMatches, toTitleCase } from '../../../lib/util';
+import { formatDuration, hasSkillReqs, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
-import { handleMahojiConfirmation } from '../../mahojiSettings';
+import { toTitleCase } from '../../../lib/util/toTitleCase';
 
 let itemBoosts = [
 	[['Abyssal whip', 'Abyssal tentacle'].map(getOSItem), 12],
@@ -147,7 +148,7 @@ export async function pestControlBuyCommand(user: MUser, input: string) {
 	return `Successfully purchased ${loot} for ${cost} Void knight commendation points.`;
 }
 
-export async function pestControlStartCommand(user: MUser, channelID: bigint) {
+export async function pestControlStartCommand(user: MUser, channelID: string) {
 	if (minionIsBusy(user.id)) return `${user.minionName} is busy.`;
 	if (user.combatLevel < 40) {
 		return 'You need a combat level of at least 40 to do Pest Control.';
@@ -197,7 +198,7 @@ export async function pestControlStartCommand(user: MUser, channelID: bigint) {
 }
 
 export async function pestControlXPCommand(
-	interaction: SlashCommandInteraction,
+	interaction: ChatInputCommandInteraction,
 	user: MUser,
 	skillName: string,
 	amount: number

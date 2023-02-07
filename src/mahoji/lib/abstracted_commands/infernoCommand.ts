@@ -18,7 +18,7 @@ import { formatDuration, hasSkillReqs, itemNameFromID, randomVariation } from '.
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import getOSItem from '../../../lib/util/getOSItem';
-import { updateBankSetting } from '../../mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 const minimumRangeItems = [
 	'Amulet of fury',
@@ -409,10 +409,10 @@ export async function infernoStatsCommand(user: MUser): CommandResponse {
 	}
 
 	return {
-		attachments: [
+		files: [
 			{
-				fileName: 'image.jpg',
-				buffer: await newChatHeadImage({
+				name: 'image.jpg',
+				attachment: await newChatHeadImage({
 					content: str,
 					head: 'ketKeh'
 				})
@@ -421,7 +421,7 @@ export async function infernoStatsCommand(user: MUser): CommandResponse {
 	};
 }
 
-export async function infernoStartCommand(user: MUser, channelID: bigint): CommandResponse {
+export async function infernoStartCommand(user: MUser, channelID: string): CommandResponse {
 	const attempts = user.user.inferno_attempts;
 	const usersRangeStats = user.gear.range.stats;
 	const zukKC = await getMinigameScore(user.id, 'inferno');
@@ -434,10 +434,10 @@ export async function infernoStartCommand(user: MUser, channelID: bigint): Comma
 
 	if (typeof res === 'string') {
 		return {
-			attachments: [
+			files: [
 				{
-					fileName: 'image.jpg',
-					buffer: await newChatHeadImage({
+					name: 'image.jpg',
+					attachment: await newChatHeadImage({
 						content: res,
 						head: 'ketKeh'
 					})
@@ -462,10 +462,10 @@ export async function infernoStartCommand(user: MUser, channelID: bigint): Comma
 		realCost.add((await user.specialRemoveItems(cost)).realCost);
 	} catch (err: any) {
 		return {
-			attachments: [
+			files: [
 				{
-					fileName: 'image.jpg',
-					buffer: await newChatHeadImage({
+					name: 'image.jpg',
+					attachment: await newChatHeadImage({
 						content: `${err.message}`,
 						head: 'ketKeh'
 					})
@@ -512,10 +512,10 @@ export async function infernoStartCommand(user: MUser, channelID: bigint): Comma
 		}
 
 **Items To Be Used:** ${realCost}`,
-		attachments: [
+		files: [
 			{
-				fileName: 'image.jpg',
-				buffer: await newChatHeadImage({
+				name: 'image.jpg',
+				attachment: await newChatHeadImage({
 					content: "You're on your own now JalYt, you face certain death... prepare to fight for your life.",
 					head: 'ketKeh'
 				})

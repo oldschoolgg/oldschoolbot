@@ -3,6 +3,7 @@ import { Monsters } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { collectables } from '../../mahoji/lib/abstracted_commands/collectCommand';
+import { shades, shadesLogs } from '../../mahoji/lib/abstracted_commands/shadesOfMortonCommand';
 import { ClueTiers } from '../clues/clueTiers';
 import { Emoji } from '../constants';
 import killableMonsters from '../minions/data/killableMonsters';
@@ -29,6 +30,7 @@ import {
 	AgilityActivityTaskOptions,
 	AlchingActivityTaskOptions,
 	BuryingActivityTaskOptions,
+	ButlerActivityTaskOptions,
 	CastingActivityTaskOptions,
 	ClueActivityTaskOptions,
 	CollectingOptions,
@@ -60,15 +62,20 @@ import {
 	RevenantOptions,
 	RunecraftActivityTaskOptions,
 	SawmillActivityTaskOptions,
+	ScatteringActivityTaskOptions,
 	SepulchreActivityTaskOptions,
+	ShadesOfMortonOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
 	TheatreOfBloodTaskOptions,
+	TiaraRunecraftActivityTaskOptions,
+	TOAOptions,
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '../types/minions';
-import { formatDuration, itemNameFromID, randomVariation, toTitleCase } from '../util';
+import { formatDuration, itemNameFromID, randomVariation } from '../util';
 import { stringMatches } from './cleanString';
+import { toTitleCase } from './toTitleCase';
 
 export function minionStatus(user: MUser) {
 	const currentTask = getActivityOfUser(user.id);
@@ -200,6 +207,16 @@ export function minionStatus(user: MUser) {
 			} Prayer level is ${user.skillLevel(SkillsEnum.Prayer)}`;
 		}
 
+		case 'Scattering': {
+			const data = currentTask as ScatteringActivityTaskOptions;
+
+			const ashes = Prayer.Ashes.find(ashes => ashes.inputId === data.ashID);
+
+			return `${name} is currently scattering ${data.quantity}x ${ashes!.name}. ${formattedDuration} Your ${
+				Emoji.Prayer
+			} Prayer level is ${user.skillLevel(SkillsEnum.Prayer)}`;
+		}
+
 		case 'Firemaking': {
 			const data = currentTask as FiremakingActivityTaskOptions;
 
@@ -219,9 +236,15 @@ export function minionStatus(user: MUser) {
 
 			const log = Woodcutting.Logs.find(log => log.id === data.logID);
 
-			return `${name} is currently chopping ${data.quantity}x ${log!.name}. ${formattedDuration} Your ${
-				Emoji.Woodcutting
-			} Woodcutting level is ${user.skillLevel(SkillsEnum.Woodcutting)}`;
+			return `${name} is currently chopping ${log!.name}. ${
+				data.fakeDurationMax === data.fakeDurationMin
+					? formattedDuration
+					: `approximately ${formatDuration(
+							randomVariation(reduceNumByPercent(durationRemaining, 25), 20)
+					  )} **to** ${formatDuration(
+							randomVariation(increaseNumByPercent(durationRemaining, 25), 20)
+					  )} remaining.`
+			} Your ${Emoji.Woodcutting} Woodcutting level is ${user.skillLevel(SkillsEnum.Woodcutting)}`;
 		}
 		case 'Runecraft': {
 			const data = currentTask as RunecraftActivityTaskOptions;
@@ -233,6 +256,15 @@ export function minionStatus(user: MUser) {
 			}. ${formattedDuration} Your ${Emoji.Runecraft} Runecraft level is ${user.skillLevel(
 				SkillsEnum.Runecraft
 			)}`;
+		}
+
+		case 'TiaraRunecraft': {
+			const data = currentTask as TiaraRunecraftActivityTaskOptions;
+			const tiara = Runecraft.Tiaras.find(_tiara => _tiara.id === data.tiaraID);
+
+			return `${name} is currently crafting ${data.tiaraQuantity} ${tiara!.name}. ${formattedDuration} Your ${
+				Emoji.Runecraft
+			} Runecraft level is ${user.skillLevel(SkillsEnum.Runecraft)}`;
 		}
 
 		case 'FightCaves': {
@@ -385,6 +417,14 @@ export function minionStatus(user: MUser) {
 			)}. ${formattedDuration}`;
 		}
 
+		case 'Butler': {
+			const data = currentTask as ButlerActivityTaskOptions;
+			const plank = Planks.find(_plank => _plank.outputItem === data.plankID);
+			return `${name} is currently creating ${data.plankQuantity}x ${itemNameFromID(
+				plank!.outputItem
+			)}s. ${formattedDuration}`;
+		}
+
 		case 'MahoganyHomes': {
 			return `${name} is currently doing Mahogany Homes. ${formattedDuration}`;
 		}
@@ -498,7 +538,7 @@ export function minionStatus(user: MUser) {
 		}
 		case 'KourendFavour': {
 			const data = currentTask as KourendFavourActivityTaskOptions;
-			return `${name} is currently doing ${data.favour.name} Favour tasks. ${formattedDuration}`;
+			return `${name} is currently doing ${data.favour} Favour tasks. ${formattedDuration}`;
 		}
 		case 'Inferno': {
 			const data = currentTask as InfernoOptions;
@@ -550,6 +590,46 @@ export function minionStatus(user: MUser) {
 				durationRemaining
 			)}.`;
 		}
+		case 'ShootingStars': {
+			return `${name} is currently mining a Crashed Star. The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
+		case 'GiantsFoundry': {
+			const data = currentTask as MinigameActivityTaskOptions;
+			return `${name} is currently creating ${
+				data.quantity
+			}x giant weapons for Kovac in the Giants' Foundry minigame. The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
+		case 'GuardiansOfTheRift': {
+			return `${name} is currently helping the Great Guardian to close the rift. The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
+		case 'NightmareZone': {
+			return `${name} is currently killing Monsters in the Nightmare Zone. The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
+		case 'ShadesOfMorton': {
+			const data = currentTask as ShadesOfMortonOptions;
+			const log = shadesLogs.find(i => i.normalLog.id === data.logID)!;
+			const shade = shades.find(i => i.shadeName === data.shadeID)!;
+			return `${name} is currently doing ${data.quantity} trips of Shades of Mort'ton, cremating ${
+				shade.shadeName
+			} remains with ${log.oiledLog.name}! The trip should take ${formatDuration(durationRemaining)}.`;
+		}
+		case 'TombsOfAmascut': {
+			const data = currentTask as TOAOptions;
+			const durationRemaining = data.finishDate - data.duration + data.fakeDuration - Date.now();
+
+			return `${name} is currently attempting the Tombs of Amascut, if your team is successful and doesn't die, the trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
+		case 'HalloweenEvent':
 		case 'Easter':
 		case 'BlastFurnace': {
 			throw new Error('Removed');
