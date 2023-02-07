@@ -485,6 +485,8 @@ model User {
 
   minion_defaultCompostToUse CropUpgradeType @default(compost) @map("minion.defaultCompostToUse")
 
+  last_bonanza_date DateTime? @db.Timestamp(6)
+
   @@index([id, last_command_date])
   @@map("users")
 }
@@ -499,6 +501,7 @@ model Webhook {
 
 enum XpGainSource {
   TombsOfAmascut
+  BalthazarsBigBonanza
 }
 
 model XPGain {
@@ -579,6 +582,7 @@ model Minigame {
   fist_of_guthix           Int @default(0)
   stealing_creation        Int @default(0)
   tinkering_workshop       Int @default(0)
+  balthazars_big_bonanza   Int @default(0)
 
   new_user NewUser?
 
@@ -976,6 +980,7 @@ enum activity_type_enum {
   HalloweenEvent
   ShadesOfMorton
   TombsOfAmascut
+  BalthazarsBigBonanza
 }
 
 enum xp_gains_skill_enum {

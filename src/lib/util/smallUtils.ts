@@ -125,9 +125,10 @@ export function averageBank(bank: Bank, kc: number) {
 
 export function calcBabyYagaHouseDroprate(xpBeingReceived: number, plank: Plank, constructionLevel: number, cl: Bank) {
 	let rate = 1 / (((xpBeingReceived / 30) * constructionLevel) / 50_000_000);
-	rate *= 25;
+	rate *= 75;
 	if (plank === Plank.ElderPlank) rate = reduceNumByPercent(rate, 25);
 	let amountInCl = cl.amount('Baby yaga house');
 	if (amountInCl > 1) rate *= amountInCl;
+	rate -= constructionLevel * 1.5;
 	return Math.floor(rate);
 }

@@ -2473,6 +2473,22 @@ const armorSetsSrc: { unpacked: Bank; packed: Item }[] = [
 	{
 		unpacked: new Bank().add('Masori mask (f)').add('Masori body (f)').add('Masori chaps (f)'),
 		packed: getOSItem('Masori armour set (f)')
+	},
+	{
+		unpacked: new Bank().add('Clown hat').add('Clown shirt').add('Clown leggings').add('Clown shoes'),
+		packed: getOSItem('Clown set')
+	},
+	{
+		unpacked: new Bank().add('Acrobat hood').add('Acrobat shirt').add('Acrobat pants').add('Acrobat shoes'),
+		packed: getOSItem('Acrobat set')
+	},
+	{
+		unpacked: new Bank()
+			.add('Ringmaster hat')
+			.add('Ringmaster shirt')
+			.add('Ringmaster pants')
+			.add('Ringmaster boots'),
+		packed: getOSItem('Ringmaster set')
 	}
 ];
 

@@ -15,12 +15,13 @@ const droprates = [
 	{
 		name: 'Baby yaga house pet',
 		output: () => {
-			const rows = [];
+			const rows: [string, number, number][] = [];
 			for (const lvl of [30, 60, 80, 90, 100, 110, 120]) {
 				for (const con of Constructables) {
 					rows.push([con.name, lvl, calcBabyYagaHouseDroprate(con.xp, lvl, con.input[0], new Bank())]);
 				}
 			}
+			rows.sort((a, b) => a[2] - b[2]);
 			return makeTable(['Object', 'Con Lvl', '1 in X Droprate'], rows);
 		}
 	},

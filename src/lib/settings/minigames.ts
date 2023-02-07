@@ -225,6 +225,11 @@ export const Minigames: readonly BotMinigame[] = [
 		name: 'Tombs of Amascut',
 		aliases: ['toa', 'tombs of amascut'],
 		column: 'tombs_of_amascut'
+	},
+	{
+		name: 'Balthazars Big Bonanza',
+		aliases: ['bbb', 'balthazars big bonanza', 'circus'],
+		column: 'balthazars_big_bonanza'
 	}
 ];
 

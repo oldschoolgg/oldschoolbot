@@ -699,6 +699,14 @@ export const tripHandlers = {
 				}
 			}
 		})
+	},
+	[activity_type_enum.BalthazarsBigBonanza]: {
+		commandName: 'bsominigames',
+		args: () => ({
+			balthazars_big_bonanza: {
+				start: {}
+			}
+		})
 	}
 } as const;
 
