@@ -46,7 +46,7 @@ import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import getOSItem from '../util/getOSItem';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
-import { exponentialPercentScale } from '../util/smallUtils';
+import { bankToStrShortNames, exponentialPercentScale } from '../util/smallUtils';
 import { updateBankSetting } from '../util/updateBankSetting';
 import { TeamLoot } from './TeamLoot';
 
@@ -1191,9 +1191,14 @@ export async function toaStartCommand(
 			totalCost.add(effectiveCost);
 
 			const { total } = calculateUserGearPercents(u.gear, raidLevel);
-			debugStr += `**- ${u.usernameOrMention}** (${Emoji.Gear}${total.toFixed(1)}% ${
-				Emoji.CombatSword
-			} ${calcWhatPercent(reductions[u.id], totalReduction).toFixed(1)}%) used ${realCost}\n\n`;
+
+			const gearMarker = users.length > 5 ? 'Gear: ' : Emoji.Gear;
+			const boostsMarker = users.length > 5 ? 'Boosts: ' : Emoji.CombatSword;
+			debugStr += `**- ${u.usernameOrMention}** (${gearMarker}${total.toFixed(
+				1
+			)}% ${boostsMarker} ${calcWhatPercent(reductions[u.id], totalReduction).toFixed(
+				1
+			)}%) used ${bankToStrShortNames(realCost)}\n\n`;
 			return {
 				userID: u.id,
 				effectiveCost
