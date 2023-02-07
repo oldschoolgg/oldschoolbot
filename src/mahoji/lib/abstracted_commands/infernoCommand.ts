@@ -168,16 +168,8 @@ async function infernoRun({
 	 *
 	 */
 	const itemRequirements = getSimilarItems(itemID('Rune pouch'));
-	let hasPouch = false;
-	itemRequirements.forEach(pouch => {
-		if (user.owns(pouch)) hasPouch = true;
-	});
-	if (!hasPouch) {
-		let pouchNames: string[] = [];
-		itemRequirements.forEach(pouch => {
-			pouchNames.push(itemNameFromID(pouch) as string);
-		});
-		return `To do the Inferno, you need one of these items: ${pouchNames.join(', ')}.`;
+	if (itemRequirements.every(item => !user.owns(item))) {
+		return `${user.usernameOrMention}'s doesn't have a Rune pouch.`;
 	}
 
 	/**
