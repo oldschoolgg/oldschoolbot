@@ -13,8 +13,8 @@ import { convertPercentChance } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { updateLegacyUserBankSetting } from '../../../lib/util/updateLegacyUserBankSetting';
 import { sendToChannelID } from '../../../lib/util/webhook';
-import { updateLegacyUserBankSetting } from '../../../mahoji/mahojiSettings';
 
 const totalXPFromRaid = {
 	[SkillsEnum.Attack]: 12_000,

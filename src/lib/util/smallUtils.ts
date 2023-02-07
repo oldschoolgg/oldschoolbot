@@ -1,10 +1,11 @@
 import { objectEntries, Time } from 'e';
-import { Items } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { MersenneTwister19937, shuffle } from 'random-js';
 
 import { skillEmoji } from '../data/emojis';
 import type { ArrayItemsResolved, Skills } from '../types';
+import getOSItem from './getOSItem';
 import { toTitleCase } from './toTitleCase';
 
 export function itemNameFromID(itemID: number | string) {
@@ -41,10 +42,6 @@ export function formatItemBoosts(items: ItemBank[]) {
 		}
 	}
 	return str.join(', ');
-}
-
-export function clamp(val: number, min: number, max: number) {
-	return Math.min(max, Math.max(min, val));
 }
 
 export function calcPerHour(value: number, duration: number) {
@@ -116,4 +113,29 @@ export function normal(mu = 0, sigma = 1, nsamples = 6) {
 export function shuffleRandom<T>(input: number, arr: readonly T[]): T[] {
 	const engine = MersenneTwister19937.seed(input);
 	return shuffle(engine, [...arr]);
+}
+
+export function averageBank(bank: Bank, kc: number) {
+	let newBank = new Bank();
+	for (const [item, qty] of bank.items()) {
+		newBank.add(item.id, Math.floor(qty / kc));
+	}
+	return newBank;
+}
+
+const shortItemNames = new Map([
+	[getOSItem('Saradomin brew(4)'), 'Brew'],
+	[getOSItem('Super restore(4)'), 'Restore'],
+	[getOSItem('Super combat potion(4)'), 'Super combat'],
+	[getOSItem('Sanfew serum(4)'), 'Sanfew'],
+	[getOSItem('Ranging potion(4)'), 'Range pot']
+]);
+
+export function bankToStrShortNames(bank: Bank) {
+	const str = [];
+	for (const [item, qty] of bank.items()) {
+		const shortName = shortItemNames.get(item);
+		str.push(`${qty}x ${shortName ?? item.name}${qty > 1 ? 's' : ''}`);
+	}
+	return str.join(', ');
 }

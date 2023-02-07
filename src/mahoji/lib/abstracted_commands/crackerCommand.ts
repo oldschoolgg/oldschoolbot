@@ -3,7 +3,7 @@ import { shuffleArr } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { Emoji } from '../../../lib/constants';
-import { handleMahojiConfirmation } from '../../mahojiSettings';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 
 const HatTable = new LootTable()
 	.add('Red partyhat', 1, 32)

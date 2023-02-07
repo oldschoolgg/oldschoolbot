@@ -1,6 +1,7 @@
 import { userMention } from '@discordjs/builders';
 import {
 	calcWhatPercent,
+	clamp,
 	increaseNumByPercent,
 	percentChance,
 	randArrItem,
@@ -19,13 +20,7 @@ import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import itemID from '../util/itemID';
 import { arrows, bolts, bows, crossbows } from '../util/minionUtils';
 import resolveItems from '../util/resolveItems';
-import {
-	clamp,
-	exponentialPercentScale,
-	formatDuration,
-	formatSkillRequirements,
-	itemNameFromID
-} from '../util/smallUtils';
+import { exponentialPercentScale, formatDuration, formatSkillRequirements, itemNameFromID } from '../util/smallUtils';
 import { NexNonUniqueTable, NexUniqueTable } from './misc';
 import { TeamLoot } from './TeamLoot';
 

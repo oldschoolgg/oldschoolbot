@@ -1,7 +1,7 @@
+import { SimpleTable } from '@oldschoolgg/toolkit';
 import { percentChance, roll, sumArr } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 import { LootBank } from 'oldschooljs/dist/meta/types';
-import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 import { convertLootBanksToItemBanks, JSONClone } from 'oldschooljs/dist/util';
 
 import { TOBRooms } from '../data/tob';
