@@ -103,15 +103,15 @@ ${degradeableItems
 	let returnedCharges = new Bank();
 	let unchargedItems = new Bank().add(item.itemsToRefundOnBreak);
 
-	if (item.unchargeItems) {
-		returnedCharges = item.unchargeItems.clone().multiply(unchargeQuant);
+	if (item.unchargable) {
+		returnedCharges = item.chargeInput.cost.clone().multiply(unchargeQuant);
 	}
 	returnedCharges.add(unchargedItems);
 
 	await handleMahojiConfirmation(
 		interaction,
 		`Are you sure you want to uncharge your ${item.item.name}? ${
-			!item.unchargeItems ? `You will only receive some of your items back: ${unchargedItems}` : ''
+			!item.unchargable ? `You will only receive some of your items back: ${unchargedItems}` : ''
 		}`
 	);
 	await transactItems({ userID: user.id, itemsToRemove: cost, itemsToAdd: returnedCharges });
@@ -123,18 +123,3 @@ ${degradeableItems
 
 	return `You uncharged your ${item.item.name} fully, you received **${returnedCharges}**`;
 }
-/*
-
-if (needConvert && !user.hasEquippedOrInBank(item.item.id)) {
-	if (!user.owns(item.unchargedItem!.id)) {
-		return `Your ${item.unchargedItem!.name} disappeared and cannot be charged`;
-	}
-	await user.removeItemsFromBank(new Bank({ [item.unchargedItem!.id]: 1 }));
-	await user.addItemsToBank({ items: { [item.item.id]: 1 }, collectionLog: true, filterLoot: false });
-}
-await transactItems({ userID: user.id, itemsToRemove: cost });
-await user.update({
-	[item.settingsKey]: newCharges
-});
-await updateBankSetting('degraded_items_cost', cost);
-*/
