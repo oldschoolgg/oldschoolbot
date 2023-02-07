@@ -83,7 +83,7 @@ export function makeAutoFarmButton() {
 		.setCustomId('AUTO_FARM')
 		.setLabel('Auto Farm')
 		.setStyle(ButtonStyle.Secondary)
-		.setEmoji('977410792754413668');
+		.setEmoji('630911040355565599');
 }
 
 export function makeAutoContractButton() {
