@@ -167,10 +167,17 @@ async function infernoRun({
 	 * Item Requirements
 	 *
 	 */
-	const itemRequirementsRunePouch = new Bank().add('Rune pouch');
-	const itemRequirementsDivineRunePouch = new Bank().add('Divine Rune pouch');
-	if (!user.owns(itemRequirementsRunePouch) && !user.owns(itemRequirementsDivineRunePouch)) {
-		return `To do the Inferno, you need one of these items: ${itemRequirementsRunePouch}, ${itemRequirementsDivineRunePouch}.`;
+	const itemRequirements = getSimilarItems(itemID('Rune pouch'));
+	let hasPouch: boolean = false;
+	itemRequirements.forEach(pouch => {
+		if (user.owns(pouch)) hasPouch = true;
+	});
+	if (!hasPouch) {
+		let pouchNames: string[] = [];
+		itemRequirements.forEach(pouch => {
+			pouchNames.push(itemNameFromID(pouch));
+		});
+		return `To do the Inferno, you need one of these items: ${pouchNames.join(', ')}.`;
 	}
 
 	/**
