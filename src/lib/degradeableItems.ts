@@ -84,7 +84,7 @@ export const degradeableItems: DegradeableItem[] = [
 		},
 		unchargedItem: getOSItem('Ash sanctifier'),
 		emoji: '<:Ash_sanctifier:1068551364168405032>',
-		unchargeItems: new Bank().add('Death rune', 1)
+		unchargeItems: new Bank().add('Death rune')
 	},
 	{
 		item: getOSItem('Serpentine helm'),
@@ -99,7 +99,7 @@ export const degradeableItems: DegradeableItem[] = [
 		unchargedItem: getOSItem('Serpentine helm (uncharged)'),
 		convertOnCharge: true,
 		emoji: '<:Serpentine_helm:1068491236123619379>',
-		unchargeItems: new Bank().add("Zulrah's scales", 1)
+		unchargeItems: new Bank().add("Zulrah's scales")
 	},
 	{
 		item: getOSItem('Amulet of blood fury'),
