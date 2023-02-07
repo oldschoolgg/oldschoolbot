@@ -1111,7 +1111,7 @@ export async function toaStartCommand(
 		minSize: 1,
 		maxSize,
 		ironmanAllowed: true,
-		message: `${user.usernameOrMention} is hosting a Tombs of Amascut mass! Use the buttons below to join/leave.`,
+		message: `${user.usernameOrMention} is hosting a Tombs of Amascut mass! **Raid Level: ${raidLevel}**. Use the buttons below to join/leave.`,
 		customDenier: async user => {
 			if (user.minionIsBusy) {
 				return [true, `${user.usernameOrMention} minion is busy`];
@@ -1556,7 +1556,7 @@ export async function toaHelpCommand(user: MUser, channelID: string) {
 			  ).toLocaleString()} pts, one unique every ${Math.floor(
 					totalKC / totalUniques
 			  )} raids, one unique every ${formatDuration(
-					(userStats.total_toa_duration_minutes * 1000) / totalUniques
+					(userStats.total_toa_duration_minutes * Time.Minute) / totalUniques
 			  )})`
 			: ''
 	}
