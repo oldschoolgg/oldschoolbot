@@ -46,7 +46,7 @@ import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import getOSItem from '../util/getOSItem';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
-import { exponentialPercentScale } from '../util/smallUtils';
+import { bankToStrShortNames, exponentialPercentScale } from '../util/smallUtils';
 import { updateBankSetting } from '../util/updateBankSetting';
 import { TeamLoot } from './TeamLoot';
 
@@ -1111,7 +1111,7 @@ export async function toaStartCommand(
 		minSize: 1,
 		maxSize,
 		ironmanAllowed: true,
-		message: `${user.usernameOrMention} is hosting a Tombs of Amascut mass! Use the buttons below to join/leave.`,
+		message: `${user.usernameOrMention} is hosting a Tombs of Amascut mass! **Raid Level: ${raidLevel}**. Use the buttons below to join/leave.`,
 		customDenier: async user => {
 			if (user.minionIsBusy) {
 				return [true, `${user.usernameOrMention} minion is busy`];
@@ -1191,9 +1191,14 @@ export async function toaStartCommand(
 			totalCost.add(effectiveCost);
 
 			const { total } = calculateUserGearPercents(u.gear, raidLevel);
-			debugStr += `**- ${u.usernameOrMention}** (${Emoji.Gear}${total.toFixed(1)}% ${
-				Emoji.CombatSword
-			} ${calcWhatPercent(reductions[u.id], totalReduction).toFixed(1)}%) used ${realCost}\n\n`;
+
+			const gearMarker = users.length > 5 ? 'Gear: ' : Emoji.Gear;
+			const boostsMarker = users.length > 5 ? 'Boosts: ' : Emoji.CombatSword;
+			debugStr += `**- ${u.usernameOrMention}** (${gearMarker}${total.toFixed(
+				1
+			)}% ${boostsMarker} ${calcWhatPercent(reductions[u.id], totalReduction).toFixed(
+				1
+			)}%) used ${bankToStrShortNames(realCost)}\n\n`;
 			return {
 				userID: u.id,
 				effectiveCost
@@ -1556,7 +1561,7 @@ export async function toaHelpCommand(user: MUser, channelID: string) {
 			  ).toLocaleString()} pts, one unique every ${Math.floor(
 					totalKC / totalUniques
 			  )} raids, one unique every ${formatDuration(
-					(userStats.total_toa_duration_minutes * 1000) / totalUniques
+					(userStats.total_toa_duration_minutes * Time.Minute) / totalUniques
 			  )})`
 			: ''
 	}
