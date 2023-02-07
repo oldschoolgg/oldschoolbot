@@ -173,7 +173,7 @@ async function infernoRun({
 		for (const item of itemRequirements) {
 			itemRequirementNames.push(itemNameFromID(item) as string);
 		}
-		return `To do the Inferno, you need these items: ${itemRequirementNames.join(', ')}.`;
+		return `To do the Inferno, you need one of these items: ${itemRequirementNames.join(', ')}.`;
 	}
 
 	/**
