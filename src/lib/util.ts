@@ -159,7 +159,7 @@ export function isRaidsActivity(data: any): data is RaidsOptions {
 	return 'challengeMode' in data;
 }
 
-export function isTobActivity(data: any): data is TheatreOfBloodTaskOptions {
+export function isTOBOrTOAActivity(data: any): data is TheatreOfBloodTaskOptions {
 	return 'wipedRoom' in data;
 }
 
