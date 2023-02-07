@@ -1,4 +1,5 @@
 import { Time } from 'e';
+import { describe, expect, test } from 'vitest';
 
 import { PercentCounter } from '../src/lib/structures/PercentCounter';
 

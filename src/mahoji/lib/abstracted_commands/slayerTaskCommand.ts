@@ -17,10 +17,10 @@ import {
 import { AssignableSlayerTask } from '../../../lib/slayer/types';
 import { awaitMessageComponentInteraction, channelIsSendable, removeFromArr } from '../../../lib/util';
 import { stringMatches } from '../../../lib/util/cleanString';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { interactionReply } from '../../../lib/util/interactionReply';
 import { logError } from '../../../lib/util/logError';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
-import { handleMahojiConfirmation } from '../../mahojiSettings';
 
 const returnSuccessButtons = [
 	new ActionRowBuilder<ButtonBuilder>().addComponents([
@@ -320,7 +320,7 @@ export async function slayerNewTaskCommand({
 			if (matchedSlayerMaster.combatLvl) aRequirements.push(`Combat Level: ${matchedSlayerMaster.combatLvl}`);
 			if (matchedSlayerMaster.questPoints) aRequirements.push(`Quest points: ${matchedSlayerMaster.questPoints}`);
 			warningInfo = `You do not have the requirements to use ${matchedSlayerMaster.name}.\n\n`;
-			if (aRequirements.length) warningInfo += `**Requires**:\n${aRequirements.join('\n')}\n\n`;
+			if (aRequirements.length > 0) warningInfo += `**Requires**:\n${aRequirements.join('\n')}\n\n`;
 		}
 
 		let baseInfo = currentTask
