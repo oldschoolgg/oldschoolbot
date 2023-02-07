@@ -46,8 +46,6 @@ const minimumMageItems = [
 const minimumMageAttackStat = sumArr(minimumMageItems.map(i => i.equipment!.attack_magic));
 const minimumMageMagicDefenceStat = sumArr(minimumMageItems.map(i => i.equipment!.defence_magic)) - 10;
 
-const itemRequirements = new Bank().add('Rune pouch');
-
 function consumableCost({
 	projectile,
 	dart,
@@ -163,13 +161,19 @@ async function infernoRun({
 			.map(([name, lvl]) => `${lvl} ${name}`)
 			.join(', ')}.`;
 	}
+
 	/**
 	 *
 	 * Item Requirements
 	 *
 	 */
-	if (!user.owns(itemRequirements)) {
-		return `To do the Inferno, you need these items: ${itemRequirements}.`;
+	const itemRequirementsRunePouch = new Bank().add('Rune pouch');
+	const itemRequirementsDivineRunePouch = new Bank().add('Divine Rune pouch');
+	if (
+		!user.owns(itemRequirementsRunePouch) && 
+		!user.owns(itemRequirementsDivineRunePouch)
+	) {
+		return `To do the Inferno, you need one of these items: ${itemRequirementsRunePouch}, ${itemRequirementsDivineRunePouch}.`;
 	}
 
 	/**
