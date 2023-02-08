@@ -12,8 +12,9 @@ import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import { channelIsSendable } from '../../../lib/util';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../../lib/util/interactionReply';
-import { handleMahojiConfirmation, mahojiParseNumber, updateGPTrackSetting } from '../../mahojiSettings';
+import { mahojiParseNumber, updateGPTrackSetting } from '../../mahojiSettings';
 
 interface Button {
 	name: string;
