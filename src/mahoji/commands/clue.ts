@@ -42,7 +42,7 @@ interface ClueBoost {
 	durationMultiplier: number;
 }
 
-function applyClueBoosts(user: MUser, boostList: ClueBoost[], boosts: any[], duration: number, clueTier: ClueTier) {
+function applyClueBoosts(user: MUser, boostList: ClueBoost[], boosts: string[], duration: number, clueTier: ClueTier) {
 	let hasAchievementDiaryCape = false;
 	for (const boost of boostList) {
 		if (user.hasEquippedOrInBank(boost.item.name)) {
@@ -123,7 +123,7 @@ export const clueCommand: OSBMahojiCommand = {
 			{
 				condition: isWeekend,
 				boost: '10% for Weekend',
-				durationMultiplier: 1
+				durationMultiplier: 0.9
 			},
 			{
 				condition: () => user.hasEquippedOrInBank('Max cape'),
