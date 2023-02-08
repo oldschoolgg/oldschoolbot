@@ -16,7 +16,7 @@ export const konarMonsters: KillableMonster[] = [
 
 		wildy: false,
 
-		notifyDrops: resolveItems(['Dragon metal slice']),
+		notifyDrops: resolveItems(['Dragon metal slice', 'Draconic visage']),
 
 		difficultyRating: 5,
 		itemsRequired: resolveItems(['Anti-dragon shield']),

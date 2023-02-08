@@ -16,8 +16,8 @@ import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import getOSItem from '../../../lib/util/getOSItem';
 import { buildClueButtons } from '../../../lib/util/globalInteractions';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { handleMahojiConfirmation } from '../../mahojiSettings';
 
 export const BarbBuyables = [
 	{

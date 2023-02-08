@@ -58,6 +58,7 @@ type ClientBankKey =
 	| 'gf_loot'
 	| 'nex_cost'
 	| 'nex_loot'
+	| 'nmz_cost'
 	| 'toa_cost'
 	| 'toa_loot';
 

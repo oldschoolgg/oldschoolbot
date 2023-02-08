@@ -38,6 +38,7 @@ const globalInteractionActions = [
 	'CANCEL_TRIP',
 	'AUTO_FARM',
 	'AUTO_FARMING_CONTRACT',
+	'FARMING_CONTRACT_EASIER',
 	'OPEN_SEED_PACK',
 	'BUY_MINION',
 	'BUY_BINGO_TICKET',
@@ -91,6 +92,14 @@ export function makeAutoContractButton() {
 	return new ButtonBuilder()
 		.setCustomId('AUTO_FARMING_CONTRACT')
 		.setLabel('Auto Farming Contract')
+		.setStyle(ButtonStyle.Secondary)
+		.setEmoji('977410792754413668');
+}
+
+export function makeEasierFarmingContractButton() {
+	return new ButtonBuilder()
+		.setCustomId('FARMING_CONTRACT_EASIER')
+		.setLabel('Ask for easier Contract')
 		.setStyle(ButtonStyle.Secondary)
 		.setEmoji('977410792754413668');
 }
@@ -246,7 +255,11 @@ export async function interactionHook(interaction: Interaction) {
 	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, interaction);
 	if (id.includes('REPEAT_TRIP')) return repeatTripHandler(user, interaction);
 	if (id === 'TOA_CHECK') {
-		return interactionReply(interaction, { content: await toaHelpCommand(user), ephemeral: true });
+		const response = await toaHelpCommand(user, interaction.channelId);
+		return interactionReply(interaction, {
+			content: typeof response === 'string' ? response : response.content,
+			ephemeral: true
+		});
 	}
 
 	if (!isValidGlobalInteraction(id)) return;
@@ -428,6 +441,18 @@ export async function interactionHook(interaction: Interaction) {
 			const response = await autoContract(await mUserFetch(user.id), options.channelID, user.id);
 			if (response) interactionReply(interaction, response);
 			return;
+		}
+		case 'FARMING_CONTRACT_EASIER': {
+			return runCommand({
+				commandName: 'farming',
+				args: {
+					contract: {
+						input: 'easier'
+					}
+				},
+				bypassInhibitors: true,
+				...options
+			});
 		}
 		case 'OPEN_SEED_PACK': {
 			return runCommand({

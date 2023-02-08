@@ -1,5 +1,6 @@
 import { GearPreset } from '@prisma/client';
 import { notEmpty, objectKeys, uniqueArr } from 'e';
+import { Bank } from 'oldschooljs';
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 
 import { getSimilarItems, inverseSimilarItems } from '../data/similarItems';
@@ -380,6 +381,18 @@ export class Gear {
 		return uniqueArr(values);
 	}
 
+	allItemsBank() {
+		const gear = this.raw();
+		const values = Object.values(gear).filter(notEmpty);
+
+		const bank = new Bank();
+
+		for (const item of values) {
+			bank.add(item.item, item.quantity);
+		}
+		return bank;
+	}
+
 	hasEquipped(_items: number | string | (string | number)[], every = false, includeSimilar = true) {
 		const items = resolveItems(_items);
 		const allItems = this.allItems();
@@ -391,7 +404,7 @@ export class Gear {
 			let currentCount = 0;
 			for (const i of [...items]) {
 				const similarItems = getSimilarItems(i);
-				if (similarItems.length) {
+				if (similarItems.length > 0) {
 					if (similarItems.some(si => allItems.includes(si))) currentCount++;
 				} else if (allItems.includes(i)) currentCount++;
 			}
@@ -449,6 +462,58 @@ export class Gear {
 			items.push(getOSItem(item).name);
 		}
 		return items.join(', ');
+	}
+
+	clone() {
+		return new Gear({ ...this.raw() });
+	}
+
+	equip(itemToEquip: Item): { refundBank: Bank | null } {
+		if (!itemToEquip.equipment) throw new Error(`${itemToEquip.name} is not equippable.`);
+		const refundBank = new Bank();
+
+		const { slot } = itemToEquip.equipment;
+
+		const unequipAndEquip = () => {
+			const equippedAlready = this[slot];
+			if (equippedAlready) {
+				refundBank.add(equippedAlready.item);
+				this[slot] = null;
+			}
+			this[slot] = { item: itemToEquip.id, quantity: 1 };
+		};
+
+		switch (slot) {
+			case EquipmentSlot.TwoHanded: {
+				// If trying to equip a 2h weapon, remove the weapon and shield.
+				if (this.weapon) {
+					refundBank.add(this.weapon.item);
+					this.weapon = null;
+				}
+				if (this.shield) {
+					refundBank.add(this.shield.item);
+					this.shield = null;
+				}
+				this['2h'] = { item: itemToEquip.id, quantity: 1 };
+				break;
+			}
+			case EquipmentSlot.Weapon:
+			case EquipmentSlot.Shield: {
+				const twoHanded = this['2h'];
+				if (twoHanded) {
+					refundBank.add(twoHanded.item);
+					this['2h'] = null;
+				}
+
+				unequipAndEquip();
+				break;
+			}
+			default: {
+				unequipAndEquip();
+			}
+		}
+
+		return { refundBank: refundBank.length === 0 ? null : refundBank };
 	}
 }
 
