@@ -1,10 +1,9 @@
-import { percentChance } from 'e';
+import { clamp, percentChance } from 'e';
 import { Bank } from 'oldschooljs';
 
 import LeapingFish from '../../lib/skilling/skills/cooking/leapingFish';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { CutLeapingFishActivityTaskOptions } from '../../lib/types/minions';
-import { clamp } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export const cutLeapingFishTask: MinionTask = {
