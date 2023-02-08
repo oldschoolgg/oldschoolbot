@@ -1,8 +1,8 @@
+import { SimpleTable } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { percentChance, randInt, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
-import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { Emoji, Events } from '../../../lib/constants';
 import addSkillingClueToLoot from '../../../lib/minions/functions/addSkillingClueToLoot';
@@ -315,7 +315,10 @@ const activitiesCantGetStars: activity_type_enum[] = [
 	'Inferno',
 	'TokkulShop',
 	'ShootingStars',
-	'Nex'
+	'Nex',
+	'TombsOfAmascut',
+	'TheatreOfBlood',
+	'Raids'
 ];
 
 export const starCache = new Map<string, Star & { expiry: number }>();

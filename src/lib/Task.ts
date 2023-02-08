@@ -50,6 +50,7 @@ import { togTask } from '../tasks/minions/minigames/tearsOfGuthixActivity';
 import { templeTrekkingTask } from '../tasks/minions/minigames/templeTrekkingActivity';
 import { temporossTask } from '../tasks/minions/minigames/temporossActivity';
 import { titheFarmTask } from '../tasks/minions/minigames/titheFarmActivity';
+import { toaTask } from '../tasks/minions/minigames/toaActivity';
 import { tobTask } from '../tasks/minions/minigames/tobActivity';
 import { trawlerTask } from '../tasks/minions/minigames/trawlerActivity';
 import { brewingTask } from '../tasks/minions/minigames/troubleBrewingActivity';
@@ -78,6 +79,7 @@ import { wealthChargeTask } from '../tasks/minions/wealthChargingActivity';
 import { woodcuttingTask } from '../tasks/minions/woodcuttingActivity';
 import { giantsFoundryTask } from './../tasks/minions/minigames/giantsFoundryActivity';
 import { guardiansOfTheRiftTask } from './../tasks/minions/minigames/guardiansOfTheRiftActivity';
+import { nightmareZoneTask } from './../tasks/minions/minigames/nightmareZoneActivity';
 import { modifyBusyCounter } from './busyCounterCache';
 import { convertStoredActivityToFlatActivity, prisma } from './settings/prisma';
 import { activitySync, minionActivityCache, minionActivityCacheDelete } from './settings/settings';
@@ -162,7 +164,9 @@ export const tasks: MinionTask[] = [
 	guardiansOfTheRiftTask,
 	butlerTask,
 	tiaraRunecraftTask,
-	shadesOfMortonTask
+	nightmareZoneTask,
+	shadesOfMortonTask,
+	toaTask
 ];
 
 export async function syncActivityCache() {
