@@ -1518,7 +1518,8 @@ export const allPetsCL = resolveItems([
 	"Lil' creator",
 	'Tiny tempor',
 	'Nexling',
-	'Abyssal protector'
+	'Abyssal protector',
+	"Tumeken's guardian"
 ]);
 export const camdozaalCL = resolveItems([
 	'Barronite mace',

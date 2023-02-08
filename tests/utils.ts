@@ -1,9 +1,9 @@
 import { Prisma, User } from '@prisma/client';
-import { mockRandom, resetMockRandom } from 'jest-mock-random';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import murmurhash from 'murmurhash';
 import { Bank } from 'oldschooljs';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
+import { expect } from 'vitest';
 
 import { BitField } from '../src/lib/constants';
 import type { GearSetup } from '../src/lib/gear/types';
@@ -93,6 +93,8 @@ export const mockMUser = (overrides?: MockUserArgs) => {
 
 export const mockUserMap = new Map<string, MUser>();
 
+const originalMathRandom = Math.random;
+
 export async function testRunCmd({
 	cmd,
 	opts,
@@ -104,7 +106,7 @@ export async function testRunCmd({
 	user?: Omit<MockUserArgs, 'id'>;
 	result: Awaited<CommandResponse>;
 }) {
-	mockRandom([0.5]);
+	Math.random = () => 0.5;
 	const hash = murmurhash(JSON.stringify({ name: cmd.name, opts, user })).toString();
 	const mockedUser = mockMUser({ id: hash, ...user });
 	mockUserMap.set(hash, mockedUser);
@@ -116,6 +118,6 @@ export async function testRunCmd({
 	};
 
 	const commandResponse = await cmd.run(options);
-	resetMockRandom();
+	Math.random = originalMathRandom;
 	return expect(commandResponse).toEqual(result);
 }

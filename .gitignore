@@ -12,6 +12,7 @@ bwd/
 icon_cache/
 .env
 queries.txt
+/logs
 
 npm-debug.log*
 
