@@ -2,12 +2,13 @@ import { ChatInputCommandInteraction } from 'discord.js';
 import { objectEntries, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { getMinigameScore } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { formatDuration, formatSkillRequirements, hasSkillReqs, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { handleMahojiConfirmation } from '../../mahojiSettings';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 
 const skillReqs = {
 	[SkillsEnum.Prayer]: 70,
@@ -174,13 +175,10 @@ export async function volcanicMineCommand(user: MUser, channelID: string, gameQu
 export async function volcanicMineShopCommand(
 	interaction: ChatInputCommandInteraction,
 	user: MUser,
-	item: string | undefined,
+	item: string,
 	quantity = 1
 ) {
 	const currentUserPoints = user.user.volcanic_mine_points;
-	if (!item) {
-		return `You currently have ${currentUserPoints.toLocaleString()} Volcanic Mine points.`;
-	}
 
 	const shopItem = VolcanicMineShop.find(f => stringMatches(f.name, item));
 	if (!shopItem) {
@@ -225,4 +223,12 @@ export async function volcanicMineShopCommand(
 			? `\n${quantity > 1 ? 'These items were' : 'This item was'} directly added to your collection log.`
 			: ''
 	}`;
+}
+
+export async function volcanicMineStatsCommand(user: MUser) {
+	const currentUserPoints = user.user.volcanic_mine_points;
+	const kc = await getMinigameScore(user.id, 'volcanic_mine');
+
+	return `You have ${currentUserPoints.toLocaleString()} Volanic Mine points points.
+You have completed ${kc} games of Volcanic Mine.`;
 }
