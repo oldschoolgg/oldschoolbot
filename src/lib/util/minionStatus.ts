@@ -706,6 +706,11 @@ export function minionStatus(user: MUser) {
 				data.material
 			} materials in the Tinkering Workshop. The trip should take ${formatDuration(durationRemaining)}.`;
 		}
+		case 'NightmareZone': {
+			return `${name} is currently killing Monsters in the Nightmare Zone. The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
 		case 'ShadesOfMorton': {
 			const data = currentTask as ShadesOfMortonOptions;
 			const log = shadesLogs.find(i => i.normalLog.id === data.logID)!;

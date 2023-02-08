@@ -13,11 +13,10 @@ import { GatewayIntentBits, InteractionType, Options, Partials, TextChannel } fr
 import { isObject, Time } from 'e';
 import { MahojiClient } from 'mahoji';
 import { join } from 'path';
-import { debuglog } from 'util';
 
 import { botToken, CLIENT_ID, DEV_SERVER_ID, production, SENTRY_DSN, SupportServer } from './config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from './lib/blacklists';
-import { Channel, Events } from './lib/constants';
+import { Channel, Events, gitHash } from './lib/constants';
 import { onMessage } from './lib/events';
 import { makeServer } from './lib/http';
 import { modalInteractionHook } from './lib/modals';
@@ -35,7 +34,7 @@ import { postCommand } from './mahoji/lib/postCommand';
 import { preCommand } from './mahoji/lib/preCommand';
 import { convertMahojiCommandToAbstractCommand } from './mahoji/lib/util';
 
-debuglog('Starting...');
+debugLog(`Starting... Git Hash ${gitHash}`);
 
 if (!production) {
 	import('./lib/devHotReload');

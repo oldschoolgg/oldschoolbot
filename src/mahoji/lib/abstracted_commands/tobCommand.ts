@@ -5,6 +5,7 @@ import { TOBRooms } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
 import { Emoji } from '../../../lib/constants';
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../../lib/data/CollectionsExport';
 import { bareMinStats } from '../../../lib/data/cox';
+import { getSimilarItems } from '../../../lib/data/similarItems';
 import {
 	baseTOBUniques,
 	calculateTOBDeaths,
@@ -24,8 +25,10 @@ import { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
 import { channelIsSendable, formatDuration, formatSkillRequirements, skillsMeetRequirements } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import getOSItem from '../../../lib/util/getOSItem';
+import itemID from '../../../lib/util/itemID';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { mahojiParseNumber, updateLegacyUserBankSetting } from '../../mahojiSettings';
+import { updateLegacyUserBankSetting } from '../../../lib/util/updateLegacyUserBankSetting';
+import { mahojiParseNumber } from '../../mahojiSettings';
 
 export async function calcTOBInput(u: MUser) {
 	const items = new Bank();
@@ -93,8 +96,13 @@ export async function checkTOBUser(
 		];
 	}
 
+	const similarItems = getSimilarItems(itemID('Rune pouch'));
+	if (similarItems.every(item => !user.owns(item))) {
+		return [true, `${user.usernameOrMention}'s doesn't have a Rune pouch.`];
+	}
+
 	const cost = await calcTOBInput(user);
-	cost.add('Coins', 100_000).add('Rune pouch');
+	cost.add('Coins', 100_000);
 	if (!user.owns(cost)) {
 		return [true, `${user.usernameOrMention} doesn't own ${cost.remove(user.bankWithGP)}`];
 	}

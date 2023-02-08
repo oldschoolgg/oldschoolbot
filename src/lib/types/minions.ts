@@ -1,6 +1,7 @@
 import { CropUpgradeType } from '@prisma/client';
 import { TeamMember } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 
+import { NMZStrategy } from '../constants';
 import { Kibble } from '../data/kibble';
 import { MaterialType } from '../invention';
 import type { IPatchData } from '../minions/farming/types';
@@ -429,6 +430,11 @@ export interface GuardiansOfTheRiftActivityTaskOptions extends MinigameActivityT
 export interface TinkeringWorkshopOptions extends MinigameActivityTaskOptions {
 	material: MaterialType;
 }
+export interface NightmareZoneActivityTaskOptions extends MinigameActivityTaskOptions {
+	strategy: NMZStrategy;
+	quantity: number;
+}
+
 export interface ShadesOfMortonOptions extends MinigameActivityTaskOptions {
 	shadeID: string;
 	logID: number;

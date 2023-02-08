@@ -9,8 +9,9 @@ import { Events } from '../../lib/constants';
 import { defaultMegaDuckLocation, MegaDuckLocation } from '../../lib/minions/types';
 import { getUsername } from '../../lib/util';
 import { canvasImageFromBuffer } from '../../lib/util/canvasUtil';
+import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
+import { mahojiGuildSettingsFetch, mahojiGuildSettingsUpdate } from '../guildSettings';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiGuildSettingsFetch, mahojiGuildSettingsUpdate } from '../mahojiSettings';
 
 const _mapImage = readFileSync('./src/lib/resources/images/megaduckmap.png');
 const noMoveImageBuf = readFileSync('./src/lib/resources/images/megaducknomovemap.png');

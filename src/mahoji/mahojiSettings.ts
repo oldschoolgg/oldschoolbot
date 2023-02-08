@@ -1,39 +1,16 @@
-import type { Guild, Prisma, User, UserStats } from '@prisma/client';
-import {
-	ActionRowBuilder,
-	ButtonBuilder,
-	ButtonInteraction,
-	ButtonStyle,
-	ChatInputCommandInteraction,
-	ComponentType,
-	Guild as DJSGuild,
-	InteractionResponseType,
-	Routes
-} from 'discord.js';
-import { noOp, objectEntries, round, Time } from 'e';
-import LRUCache from 'lru-cache';
+import type { Prisma, User, UserStats } from '@prisma/client';
+import { objectEntries, round } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { CLIENT_ID } from '../config';
-import { SILENT_ERROR } from '../lib/constants';
 import { evalMathExpression } from '../lib/expressionParser';
 import { KillableMonster } from '../lib/minions/types';
-import { mahojiUserSettingsUpdate } from '../lib/MUser';
 import { prisma } from '../lib/settings/prisma';
 import { Rune } from '../lib/skilling/skills/runecraft';
 import { hasGracefulEquipped, readableStatName } from '../lib/structures/Gear';
 import type { ItemBank } from '../lib/types';
-import {
-	anglerBoosts,
-	channelIsSendable,
-	formatItemReqs,
-	hasSkillReqs,
-	itemNameFromID,
-	sanitizeBank,
-	validateItemBankAndThrow
-} from '../lib/util';
+import { anglerBoosts, formatItemReqs, hasSkillReqs, itemNameFromID } from '../lib/util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../lib/util/clientSettings';
-import { deferInteraction, interactionReply } from '../lib/util/interactionReply';
 import resolveItems from '../lib/util/resolveItems';
 
 export function mahojiParseNumber({
@@ -54,105 +31,6 @@ export function mahojiParseNumber({
 	return parsed;
 }
 
-async function silentButtonAck(interaction: ButtonInteraction) {
-	return globalClient.rest.post(Routes.interactionCallback(interaction.id, interaction.token), {
-		body: {
-			type: InteractionResponseType.DeferredMessageUpdate
-		}
-	});
-}
-
-export async function handleMahojiConfirmation(
-	interaction: ChatInputCommandInteraction | ButtonInteraction,
-	str: string,
-	_users?: string[]
-) {
-	const channel = globalClient.channels.cache.get(interaction.channelId.toString());
-	if (!channelIsSendable(channel)) throw new Error('Channel for confirmation not found.');
-	if (!interaction.deferred) {
-		await deferInteraction(interaction);
-	}
-
-	const users = _users ?? [interaction.user.id];
-	let confirmed: string[] = [];
-	const isConfirmed = () => confirmed.length === users.length;
-	const confirmMessage = await channel.send({
-		content: str,
-		components: [
-			new ActionRowBuilder<ButtonBuilder>().addComponents([
-				new ButtonBuilder({
-					label: 'Confirm',
-					style: ButtonStyle.Primary,
-					customId: 'CONFIRM'
-				}),
-				new ButtonBuilder({
-					label: 'Cancel',
-					style: ButtonStyle.Secondary,
-					customId: 'CANCEL'
-				})
-			])
-		]
-	});
-
-	return new Promise<void>(async (resolve, reject) => {
-		const collector = confirmMessage.createMessageComponentCollector<ComponentType.Button>({
-			time: Time.Second * 15
-		});
-
-		async function confirm(id: string) {
-			if (confirmed.includes(id)) return;
-			confirmed.push(id);
-			if (!isConfirmed()) return;
-			collector.stop();
-			await confirmMessage.delete().catch(noOp);
-			resolve();
-		}
-
-		let cancelled = false;
-		const cancel = async (reason: 'time' | 'cancel') => {
-			if (cancelled) return;
-			cancelled = true;
-			await confirmMessage.delete().catch(noOp);
-			if (!interaction.replied) {
-				await interactionReply(interaction, {
-					content: reason === 'cancel' ? 'The confirmation was cancelled.' : 'You did not confirm in time.',
-					ephemeral: true
-				});
-			}
-			collector.stop();
-			reject(new Error(SILENT_ERROR));
-		};
-
-		collector.on('collect', i => {
-			const { id } = i.user;
-			if (!users.includes(id)) {
-				i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
-				return;
-			}
-			if (i.customId === 'CANCEL') {
-				cancel('cancel');
-				return;
-			}
-			if (i.customId === 'CONFIRM') {
-				silentButtonAck(i);
-				confirm(id);
-			}
-		});
-
-		collector.on('end', () => {
-			if (!isConfirmed()) {
-				cancel('time');
-			}
-		});
-	});
-}
-
-/**
- *
- * User
- *
- */
-
 // Is not typesafe, returns only what is selected, but will say it contains everything.
 export async function mahojiUsersSettingsFetch(user: bigint | string, select?: Prisma.UserSelect) {
 	const result = await prisma.user.upsert({
@@ -167,42 +45,6 @@ export async function mahojiUsersSettingsFetch(user: bigint | string, select?: P
 	});
 	if (!result) throw new Error(`mahojiUsersSettingsFetch returned no result for ${user}`);
 	return result as User;
-}
-
-/**
- *
- * Guild
- *
- */
-
-export const untrustedGuildSettingsCache = new LRUCache<string, Guild>({ max: 5000 });
-
-export async function mahojiGuildSettingsFetch(guild: string | DJSGuild) {
-	const id = typeof guild === 'string' ? guild : guild.id;
-	const result = await prisma.guild.upsert({
-		where: {
-			id
-		},
-		update: {},
-		create: {
-			id
-		}
-	});
-	untrustedGuildSettingsCache.set(id, result);
-	return result;
-}
-
-export async function mahojiGuildSettingsUpdate(guild: string | DJSGuild, data: Prisma.GuildUpdateArgs['data']) {
-	const guildID = typeof guild === 'string' ? guild : guild.id;
-
-	const newGuild = await prisma.guild.update({
-		data,
-		where: {
-			id: guildID
-		}
-	});
-	untrustedGuildSettingsCache.set(newGuild.id, newGuild);
-	return { newGuild };
 }
 
 export function patronMsg(tierNeeded: number) {
@@ -436,22 +278,3 @@ export function calcMaxRCQuantity(rune: Rune, user: MUser) {
 	return 0;
 }
 
-export async function updateLegacyUserBankSetting(
-	userID: string,
-	key: 'tob_cost' | 'tob_loot' | 'lottery_input',
-	bankToAdd: Bank
-) {
-	if (bankToAdd === undefined || bankToAdd === null) throw new Error(`Gave null bank for ${key}`);
-	const currentUserSettings = await mahojiUsersSettingsFetch(userID, {
-		[key]: true
-	});
-	const current = new Bank(currentUserSettings[key] as ItemBank);
-	sanitizeBank(current);
-	validateItemBankAndThrow(current.bank);
-	const newBank = new Bank().add(current).add(bankToAdd);
-
-	const res = await mahojiUserSettingsUpdate(userID, {
-		[key]: newBank.bank
-	});
-	return res;
-}

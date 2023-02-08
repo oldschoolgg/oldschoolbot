@@ -10,9 +10,10 @@ import { isElligibleForPresent } from '../../lib/settings/settings';
 import { formatSkillRequirements, itemNameFromID, stringMatches } from '../../lib/util';
 import { mahojiChatHead } from '../../lib/util/chatHeadImage';
 import getOSItem from '../../lib/util/getOSItem';
+import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiParseNumber, multipleUserStatsBankUpdate } from '../mahojiSettings';
+import { mahojiParseNumber, multipleUserStatsBankUpdate } from '../mahojiSettings';
 
 const allBuyablesAutocomplete = [...Buyables, { name: 'Kitten' }];
 

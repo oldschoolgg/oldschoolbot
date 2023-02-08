@@ -10,9 +10,10 @@ import { ItemBank } from '../../../lib/types';
 import { assert } from '../../../lib/util';
 import { stringMatches } from '../../../lib/util/cleanString';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import resolveItems from '../../../lib/util/resolveItems';
-import { handleMahojiConfirmation, patronMsg, updateGPTrackSetting, userStatsBankUpdate } from '../../mahojiSettings';
+import { patronMsg, updateGPTrackSetting, userStatsBankUpdate } from '../../mahojiSettings';
 
 const regex = /^(.*?)( \([0-9]+x Owned\))?$/;
 
@@ -216,12 +217,12 @@ export async function abstractedOpenCommand(
 				.filter(notEmpty);
 
 	if (names.includes('all')) {
-		if (!openables.length) return 'You have no openable items.';
+		if (openables.length === 0) return 'You have no openable items.';
 		if (user.perkTier() < PerkTier.Two) return patronMsg(PerkTier.Two);
 		if (interaction) await handleMahojiConfirmation(interaction, 'Are you sure you want to open ALL your items?');
 	}
 
-	if (!openables.length) return "That's not a valid item.";
+	if (openables.length === 0) return "That's not a valid item.";
 	// This code will only execute if we're not in auto/all mode:
 	if (typeof _quantity === 'number') {
 		for (const openable of openables) {

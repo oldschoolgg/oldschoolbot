@@ -198,7 +198,7 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 	let assignedTask: AssignableSlayerTask | null = null;
 	if (bossTask) {
 		const baseBossTasks = bossTasks.filter(t => userCanUseTask(_user, t, master, true));
-		if (baseBossTasks.length) {
+		if (baseBossTasks.length > 0) {
 			assignedTask = weightedPick(baseBossTasks);
 		} else {
 			assignedTask = weightedPick(baseTasks);

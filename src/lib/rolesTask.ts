@@ -117,7 +117,7 @@ async function addRoles({
 		}
 		str += `\n${userArr.join(',')}`;
 	}
-	if (added.length || removed.length) {
+	if (added.length > 0 || removed.length > 0) {
 		str += '\n';
 	} else {
 		return `**No Changes:** ${str}`;

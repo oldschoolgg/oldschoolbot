@@ -67,6 +67,7 @@ import type {
 } from '../types/minions';
 import { itemNameFromID } from '../util';
 import { giantsFoundryAlloys } from './../../mahoji/lib/abstracted_commands/giantsFoundryCommand';
+import { NightmareZoneActivityTaskOptions } from './../types/minions';
 
 export const taskCanBeRepeated = (type: activity_type_enum) =>
 	!(
@@ -677,6 +678,14 @@ export const tripHandlers = {
 				start: {
 					material: data.material
 				}
+			}
+		})
+	},
+	[activity_type_enum.NightmareZone]: {
+		commandName: 'minigames',
+		args: (data: NightmareZoneActivityTaskOptions) => ({
+			nmz: {
+				start: { strategy: data.strategy }
 			}
 		})
 	},

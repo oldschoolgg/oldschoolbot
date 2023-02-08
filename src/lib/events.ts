@@ -19,41 +19,53 @@ import { minionStatsEmbed } from './util/minionStatsEmbed';
 
 const mentionText = `<@${CLIENT_ID}>`;
 
-const cooldownTimers: { name: string; timeStamp: (user: MUser) => number; cd: number | ((user: MUser) => number) }[] = [
+const cooldownTimers: {
+	name: string;
+	timeStamp: (user: MUser) => number;
+	cd: number | ((user: MUser) => number);
+	command: [string] | [string, string] | [string, string, string];
+}[] = [
 	{
 		name: 'Tears of Guthix',
 		timeStamp: (user: MUser) => Number(user.user.lastTearsOfGuthixTimestamp),
-		cd: Time.Day * 7
+		cd: Time.Day * 7,
+		command: ['minigames', 'tears_of_guthix', 'start']
 	},
 	{
 		name: 'Daily',
 		timeStamp: (user: MUser) => Number(user.user.lastDailyTimestamp),
-		cd: Time.Hour * 12
+		cd: Time.Hour * 12,
+		command: ['minion', 'daily']
 	},
 	{
 		name: 'Spawn Lamp',
 		timeStamp: (user: MUser) => Number(user.user.lastSpawnLamp),
-		cd: (user: MUser) => spawnLampResetTime(user)
+		cd: (user: MUser) => spawnLampResetTime(user),
+		command: ['tools', 'patron', 'spawnlamp']
 	},
 	{
 		name: 'Spawn Box',
 		timeStamp: (user: MUser) => Cooldowns.cooldownMap.get(user.id)?.get('SPAWN_BOX') ?? 0,
-		cd: Time.Minute * 45
+		cd: Time.Minute * 45,
+		command: ['tools', 'patron', 'spawnbox']
 	},
 	{
 		name: 'Give Box',
 		timeStamp: (user: MUser) => Number(user.user.lastGivenBoxx),
-		cd: giveBoxResetTime
+		cd: giveBoxResetTime,
+		command: ['tools', 'patron', 'give_box']
 	},
 	{
 		name: 'Item Contract',
 		timeStamp: (user: MUser) => Number(user.user.last_item_contract_date),
-		cd: itemContractResetTime
+		cd: itemContractResetTime,
+		command: ['ic', 'info']
 	},
 	{
 		name: 'Monthly Double Loot',
 		timeStamp: (user: MUser) => Number(user.user.last_patron_double_time_trigger),
-		cd: PATRON_DOUBLE_LOOT_COOLDOWN
+		cd: PATRON_DOUBLE_LOOT_COOLDOWN,
+		command: ['tools', 'patron', 'doubleloot']
 	}
 ];
 
@@ -183,7 +195,7 @@ const mentionCommands: MentionCommand[] = [
 						const durationRemaining = formatDuration(Date.now() - (lastDone + cooldown));
 						return `${cd.name}: ${durationRemaining}`;
 					}
-					return bold(`${cd.name}: Ready`);
+					return bold(`${cd.name}: Ready ${mentionCommand(cd.command[0], cd.command[1], cd.command[2])}`);
 				})
 				.join('\n');
 

@@ -14,7 +14,7 @@ import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '../../lib/blacklists';
 import { BadgesEnum, BitField, Channel, DISABLED_COMMANDS, minionBuyButton, PerkTier } from '../../lib/constants';
 import { CategoryFlag } from '../../lib/types';
 import { formatDuration } from '../../lib/util';
-import { mahojiGuildSettingsFetch, untrustedGuildSettingsCache } from '../mahojiSettings';
+import { mahojiGuildSettingsFetch, untrustedGuildSettingsCache } from '../guildSettings';
 import { Cooldowns } from './Cooldowns';
 
 export interface AbstractCommandAttributes {

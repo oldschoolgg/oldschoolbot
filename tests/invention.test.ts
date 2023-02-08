@@ -1,3 +1,5 @@
+import { describe, expect, test } from 'vitest';
+
 import { dissasemblyWeighting } from '../src/lib/invention/disassemble';
 import { DisassemblySourceGroups } from '../src/lib/invention/groups';
 

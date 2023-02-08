@@ -554,6 +554,10 @@ export const GLOBAL_BSO_XP_MULTIPLIER = 5;
 export const DISABLED_COMMANDS = new Set<string>();
 export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'none'] as const;
 export type PvMMethod = typeof PVM_METHODS[number];
+
+export const NMZ_STRATEGY = ['experience', 'points'] as const;
+export type NMZStrategy = typeof NMZ_STRATEGY[number];
+
 export const usernameCache = new Map<string, string>();
 export const badgesCache = new Map<string, string>();
 export const minionBuyButton = new ButtonBuilder()

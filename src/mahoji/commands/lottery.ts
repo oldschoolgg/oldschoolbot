@@ -12,11 +12,12 @@ import Runecraft from '../../lib/skilling/skills/runecraft';
 import { assert, isSuperUntradeable } from '../../lib/util';
 import { mahojiClientSettingsFetch } from '../../lib/util/clientSettings';
 import getOSItem from '../../lib/util/getOSItem';
+import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
+import { updateLegacyUserBankSetting } from '../../lib/util/updateLegacyUserBankSetting';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, updateLegacyUserBankSetting } from '../mahojiSettings';
 
 const specialPricesBeforeMultiplying = new Bank()
 	.add('Monkey egg', 4_000_000_000)

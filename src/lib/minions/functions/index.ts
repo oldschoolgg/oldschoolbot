@@ -59,13 +59,13 @@ export function resolveAttackStyles(
 		return [undefined, undefined, [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence, SkillsEnum.Magic]];
 	}
 
-	const killableMon = killableMonsters.find(m => m.id === params.monsterID);
+	const killableMon = params.monsterID ? killableMonsters.find(m => m.id === params.monsterID) : undefined;
 
 	if (!killableMon) {
 		return [undefined, undefined, [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence]];
 	}
 
-	const osjsMon = Monsters.get(params.monsterID);
+	const osjsMon = params.monsterID ? Monsters.get(params.monsterID) : undefined;
 
 	// The styles chosen by this user to use.
 	let attackStyles = user.getAttackStyles();

@@ -20,14 +20,10 @@ import { itemNameFromID, removeFromArr, stringMatches } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
+import { mahojiGuildSettingsFetch, mahojiGuildSettingsUpdate } from '../guildSettings';
 import { itemOption } from '../lib/mahojiCommandOptions';
 import { allAbstractCommands, hasBanMemberPerms, OSBMahojiCommand } from '../lib/util';
-import {
-	mahojiGuildSettingsFetch,
-	mahojiGuildSettingsUpdate,
-	mahojiUsersSettingsFetch,
-	patronMsg
-} from '../mahojiSettings';
+import { mahojiUsersSettingsFetch, patronMsg } from '../mahojiSettings';
 
 const toggles = [
 	{
