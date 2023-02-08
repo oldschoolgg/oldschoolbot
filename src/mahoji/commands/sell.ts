@@ -91,8 +91,9 @@ export const sellCommand: OSBMahojiCommand = {
 		const castleWarsLoot = new Bank();
 		for (const castleWarsBuyable of castleWarsBuyables) {
 			if (bankToSell.has(castleWarsBuyable.name)) {
-				castleWarsBank.add(castleWarsBuyable.name, bankToSell.amount(castleWarsBuyable.name));
-				castleWarsLoot.add(castleWarsBuyable.itemCost).multiply(bankToSell.amount(castleWarsBuyable.name));
+				const itemAmount = bankToSell.amount(castleWarsBuyable.name);
+				castleWarsBank.add(castleWarsBuyable.name, itemAmount);
+				castleWarsLoot.add(new Bank(castleWarsBuyable.itemCost).multiply(itemAmount));
 			}
 		}
 
@@ -102,11 +103,11 @@ export const sellCommand: OSBMahojiCommand = {
 				`${user}, please confirm you want to sell ${castleWarsBank} for **${castleWarsLoot}**.`
 			);
 
-			await user.removeItemsFromBank(castleWarsBank);
 			await transactItems({
 				userID: user.id,
 				collectionLog: false,
-				itemsToAdd: castleWarsLoot
+				itemsToAdd: castleWarsLoot,
+				itemsToRemove: castleWarsBank
 			});
 			return `You exchanged ${castleWarsBank} and received: ${castleWarsLoot}.`;
 		}
