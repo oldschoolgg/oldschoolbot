@@ -231,6 +231,21 @@ describe('Gear', () => {
 		expect(gear['2h']).toEqual({ item: getOSItem('Armadyl godsword').id, quantity: 1 });
 	});
 
+	it('should equip/refund properly if equipping a 2h', () => {
+		const gear = new Gear({
+			ammo: 'Dragon arrow',
+			body: '3rd age platebody',
+			weapon: 'Dragon dagger',
+			shield: 'Bronze kiteshield'
+		});
+
+		const result = gear.equip(getOSItem('Bronze dagger'));
+
+		expect(bankIsEqual(result.refundBank as any, new Bank().add('Dragon dagger'))).toEqual(true);
+		expect(gear.shield).toEqual({ item: getOSItem('Bronze kiteshield').id, quantity: 1 });
+		expect(gear.weapon).toEqual({ item: getOSItem('Bronze dagger').id, quantity: 1 });
+	});
+
 	it('should equip/refund properly if equipping a top', () => {
 		const gear = new Gear({
 			ammo: 'Dragon arrow',
