@@ -203,7 +203,7 @@ export async function degradeItem({
 
 	if (newCharges <= 0) {
 		// If no more charges left, break and refund the item.
-		const hasEquipped = user.gear[degItem.setup].equippedWeapon() === item;
+		const hasEquipped = user.gear[degItem.setup].hasEquipped(item.id, false);
 		const hasInBank = user.owns(item.id);
 		await user.update({
 			[degItem.settingsKey]: 0
