@@ -828,6 +828,19 @@ function calculateTotalEffectiveness({
 	return exponentialPercentScale(sumArr(percents) / percents.length);
 }
 
+function calculateAdditionalDeathChance(raidLevel: RaidLevel, attempts: number) {
+	const minDeathChance = mileStoneBaseDeathChances.find(i => i.level === raidLevel)!.minChance;
+	if (!minDeathChance) return 0;
+	let divisor = 1;
+	for (const number of [50, 100, 200, 300]) {
+		if (attempts >= number) {
+			divisor += 2.5;
+		}
+	}
+	assert(divisor >= 1 && divisor <= 13, `Invalid divisor: ${divisor} [${attempts}]`);
+	return minDeathChance / divisor;
+}
+
 function calculatePointsAndDeaths(
 	effectiveness: number,
 	totalAttempts: number,
@@ -841,10 +854,9 @@ function calculatePointsAndDeaths(
 
 	let points = estimatePoints(raidLevel, teamSize) / teamSize;
 
-	const minDeathChance = mileStoneBaseDeathChances.find(i => i.level === raidLevel)!.minChance;
 	for (const room of TOARooms) {
 		let roomDeathChance = deathChance / TOARooms.length;
-		if (minDeathChance) roomDeathChance += minDeathChance / 10;
+		roomDeathChance += calculateAdditionalDeathChance(raidLevel, totalAttempts);
 		if (percentChance(roomDeathChance) || (totalAttempts < 30 && raidLevel >= 500)) {
 			deaths.push(room.id);
 			points = reduceNumByPercent(points, 20);
