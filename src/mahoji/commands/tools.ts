@@ -44,7 +44,7 @@ import {
 	isGroupActivity,
 	isNexActivity,
 	isRaidsActivity,
-	isTobActivity,
+	isTOBOrTOAActivity,
 	itemID,
 	itemNameFromID,
 	roll,
@@ -694,7 +694,7 @@ async function checkMassesCommand(guildID: string | undefined) {
 		})
 	)
 		.map(convertStoredActivityToFlatActivity)
-		.filter(m => (isRaidsActivity(m) || isGroupActivity(m) || isTobActivity(m)) && m.users.length > 1);
+		.filter(m => (isRaidsActivity(m) || isGroupActivity(m) || isTOBOrTOAActivity(m)) && m.users.length > 1);
 
 	if (masses.length === 0) {
 		return 'There are no active masses in this server.';
@@ -703,15 +703,15 @@ async function checkMassesCommand(guildID: string | undefined) {
 	const massStr = masses
 		.map(m => {
 			const remainingTime =
-				isTobActivity(m) || isNexActivity(m)
+				isTOBOrTOAActivity(m) || isNexActivity(m)
 					? m.finishDate - m.duration + m.fakeDuration - now
 					: m.finishDate - now;
 			if (isGroupActivity(m)) {
 				return [
 					remainingTime,
-					`${m.type}${isRaidsActivity(m) && m.challengeMode ? ' CM' : ''}: ${
-						m.users.length
-					} users returning to <#${m.channelID}> in ${formatDuration(remainingTime)}`
+					`${m.type}${isRaidsActivity(m) && m.challengeMode ? ' CM' : ''}: ${m.users.length} users (<#${
+						m.channelID
+					}> in ${formatDuration(remainingTime, true)})`
 				];
 			}
 		})
@@ -719,7 +719,7 @@ async function checkMassesCommand(guildID: string | undefined) {
 		.map(m => m![1])
 		.join('\n');
 	return `**Masses in this server:**
-${massStr}`;
+${massStr}`.slice(0, 1999);
 }
 
 function calcTime(perkTier: PerkTier) {
