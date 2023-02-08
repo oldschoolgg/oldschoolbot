@@ -12,10 +12,11 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
 import { stringMatches } from '../../lib/util';
+import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiUsersSettingsFetch, userStatsBankUpdate } from '../mahojiSettings';
+import { mahojiUsersSettingsFetch, userStatsBankUpdate } from '../mahojiSettings';
 
 function showAllCreatables(user: MUser) {
 	let content = 'This are the items that you can create:';

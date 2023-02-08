@@ -4,7 +4,7 @@ import { Bank, LootTable } from 'oldschooljs';
 
 import { Emoji } from '../../../lib/constants';
 import { partyHatTableRoll } from '../../../lib/data/holidayItems';
-import { handleMahojiConfirmation } from '../../mahojiSettings';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 
 const JunkTable = new LootTable()
 	.add('Chocolate bar', 1, 1 / 5.2)

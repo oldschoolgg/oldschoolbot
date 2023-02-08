@@ -85,6 +85,7 @@ export type ClientBankKey =
 	| 'bb_loot'
 	| 'moktang_cost'
 	| 'moktang_loot'
+	| 'nmz_cost'
 	| 'toa_cost'
 	| 'toa_loot';
 

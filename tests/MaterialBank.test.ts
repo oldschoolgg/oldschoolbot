@@ -1,3 +1,5 @@
+import { describe, expect, test } from 'vitest';
+
 import { MaterialBank } from '../src/lib/invention/MaterialBank';
 
 describe('materialLoot', () => {

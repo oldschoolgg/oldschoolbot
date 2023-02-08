@@ -716,10 +716,10 @@ const TOARooms = [
 ] as const;
 
 export const mileStoneBaseDeathChances = [
-	{ level: 600, chance: 97, minChance: 90 },
-	{ level: 500, chance: 85, minChance: 80 },
-	{ level: 450, chance: 45.5, minChance: null },
-	{ level: 400, chance: 30, minChance: null },
+	{ level: 600, chance: 97, minChance: 97 },
+	{ level: 500, chance: 85, minChance: 93 },
+	{ level: 450, chance: 48.5, minChance: null },
+	{ level: 400, chance: 36, minChance: null },
 	{ level: 350, chance: 25.5, minChance: null },
 	{ level: 300, chance: 23, minChance: null },
 	{ level: 200, chance: 15, minChance: null },
@@ -841,8 +841,11 @@ function calculatePointsAndDeaths(
 
 	let points = estimatePoints(raidLevel, teamSize) / teamSize;
 
+	const minDeathChance = mileStoneBaseDeathChances.find(i => i.level === raidLevel)!.minChance;
 	for (const room of TOARooms) {
-		if (percentChance(deathChance / TOARooms.length)) {
+		let roomDeathChance = deathChance / TOARooms.length;
+		if (minDeathChance) roomDeathChance += minDeathChance / 2;
+		if (percentChance(roomDeathChance) || (totalAttempts < 30 && raidLevel >= 500)) {
 			deaths.push(room.id);
 			points = reduceNumByPercent(points, 20);
 		}
@@ -1108,7 +1111,7 @@ export async function toaStartCommand(
 		minSize: 1,
 		maxSize,
 		ironmanAllowed: true,
-		message: `${user.usernameOrMention} is hosting a Tombs of Amascut mass! Use the buttons below to join/leave.`,
+		message: `${user.usernameOrMention} is hosting a Tombs of Amascut mass! **Raid Level: ${raidLevel}**. Use the buttons below to join/leave.`,
 		customDenier: async user => {
 			if (user.minionIsBusy) {
 				return [true, `${user.usernameOrMention} minion is busy`];
@@ -1553,7 +1556,7 @@ export async function toaHelpCommand(user: MUser, channelID: string) {
 			  ).toLocaleString()} pts, one unique every ${Math.floor(
 					totalKC / totalUniques
 			  )} raids, one unique every ${formatDuration(
-					(userStats.total_toa_duration_minutes * 1000) / totalUniques
+					(userStats.total_toa_duration_minutes * Time.Minute) / totalUniques
 			  )})`
 			: ''
 	}

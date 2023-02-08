@@ -18,11 +18,12 @@ import { allThirdAgeItems, runeAlchablesTable } from '../../lib/simulation/share
 import { formatDuration, itemID, makeComponents } from '../../lib/util';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';
+import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import resolveItems from '../../lib/util/resolveItems';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { LampTable } from '../../lib/xpLamps';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, updateGPTrackSetting, userStatsBankUpdate } from '../mahojiSettings';
+import { updateGPTrackSetting, userStatsBankUpdate } from '../mahojiSettings';
 
 const contractTable = new LootTable()
 	.every('Coins', [1_000_000, 3_500_000])

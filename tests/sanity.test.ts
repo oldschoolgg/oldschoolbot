@@ -1,5 +1,6 @@
 import { Items, Monsters } from 'oldschooljs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
+import { describe, expect, test } from 'vitest';
 
 import { allMbTables, embTable, PMBTable, tmbTable, umbTable } from '../src/lib/bsoOpenables';
 import { allPetIDs, masterCapesCL, toaCL } from '../src/lib/data/CollectionsExport';
