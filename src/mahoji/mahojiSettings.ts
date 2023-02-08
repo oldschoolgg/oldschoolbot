@@ -277,4 +277,3 @@ export function calcMaxRCQuantity(rune: Rune, user: MUser) {
 
 	return 0;
 }
-
