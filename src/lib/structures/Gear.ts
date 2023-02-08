@@ -481,7 +481,7 @@ export class Gear {
 			const equippedAlready = this[slot];
 			if (equippedAlready) {
 				refundBank.add(equippedAlready.item);
-				this.shield = null;
+				this[slot] = null;
 			}
 			this[slot] = { item: itemToEquip.id, quantity: 1 };
 		};
