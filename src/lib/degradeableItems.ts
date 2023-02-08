@@ -181,7 +181,7 @@ export async function degradeItem({
 		if (hasEquipped) {
 			// If its equipped, unequip and delete it.
 			const gear = { ...user.gear[degItem.setup].raw() };
-			gear.weapon = null;
+			gear[item.equipment!.slot] = null;
 			await user.update({
 				[`gear_${degItem.setup}`]: gear
 			});
