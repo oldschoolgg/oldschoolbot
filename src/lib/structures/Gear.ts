@@ -468,7 +468,7 @@ export class Gear {
 		return new Gear({ ...this.raw() });
 	}
 
-	equip(itemToEquip: Item): { refundBank: Bank | null } {
+	equip(itemToEquip: Item, quantity: number = 1): { refundBank: Bank | null } {
 		if (!itemToEquip.equipment) throw new Error(`${itemToEquip.name} is not equippable.`);
 		const refundBank = new Bank();
 
@@ -477,31 +477,35 @@ export class Gear {
 		const unequipAndEquip = () => {
 			const equippedAlready = this[slot];
 			if (equippedAlready) {
-				refundBank.add(equippedAlready.item);
+				refundBank.add(equippedAlready.item, equippedAlready.quantity);
 				this[slot] = null;
 			}
-			this[slot] = { item: itemToEquip.id, quantity: 1 };
+			this[slot] = { item: itemToEquip.id, quantity };
 		};
 
 		switch (slot) {
 			case EquipmentSlot.TwoHanded: {
 				// If trying to equip a 2h weapon, remove the weapon and shield.
-				if (this.weapon) {
-					refundBank.add(this.weapon.item);
-					this.weapon = null;
+				if (this['2h']) {
+					refundBank.add(this['2h'].item, this['2h'].quantity);
+				} else {
+					if (this.weapon) {
+						refundBank.add(this.weapon.item, this.weapon.quantity);
+						this.weapon = null;
+					}
+					if (this.shield) {
+						refundBank.add(this.shield.item, this.shield.quantity);
+						this.shield = null;
+					}
 				}
-				if (this.shield) {
-					refundBank.add(this.shield.item);
-					this.shield = null;
-				}
-				this['2h'] = { item: itemToEquip.id, quantity: 1 };
+				this['2h'] = { item: itemToEquip.id, quantity };
 				break;
 			}
 			case EquipmentSlot.Weapon:
 			case EquipmentSlot.Shield: {
 				const twoHanded = this['2h'];
 				if (twoHanded) {
-					refundBank.add(twoHanded.item);
+					refundBank.add(twoHanded.item, twoHanded.quantity);
 					this['2h'] = null;
 				}
 
