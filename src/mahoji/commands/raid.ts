@@ -117,7 +117,9 @@ export const raidCommand: OSBMahojiCommand = {
 							type: ApplicationCommandOptionType.Integer,
 							name: 'max_team_size',
 							description: 'Choose a max size for your team.',
-							required: false
+							required: false,
+							min_value: 1,
+							max_value: 8
 						}
 					]
 				},
@@ -148,7 +150,7 @@ export const raidCommand: OSBMahojiCommand = {
 		if (cox?.stats) return coxStatsCommand(user);
 		if (tob?.stats) return tobStatsCommand(user);
 		if (tob?.check) return tobCheckCommand(user, Boolean(tob.check.hard_mode));
-		if (options.toa?.help) return toaHelpCommand(user);
+		if (options.toa?.help) return toaHelpCommand(user, channelID);
 
 		if (minionIsBusy(user.id)) return "Your minion is busy, you can't do this.";
 

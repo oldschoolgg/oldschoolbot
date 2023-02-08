@@ -1,5 +1,6 @@
 import type { activity_type_enum, CropUpgradeType } from '@prisma/client';
 
+import { NMZStrategy } from '../constants';
 import type { IPatchData } from '../minions/farming/types';
 import type { MinigameName } from '../settings/minigames';
 import { RaidLevel } from '../simulation/toa';
@@ -366,6 +367,11 @@ export interface GuardiansOfTheRiftActivityTaskOptions extends MinigameActivityT
 	barrierAndGuardian: number;
 	rolls: number;
 	combinationRunes: boolean;
+}
+
+export interface NightmareZoneActivityTaskOptions extends MinigameActivityTaskOptions {
+	strategy: NMZStrategy;
+	quantity: number;
 }
 
 export interface ShadesOfMortonOptions extends MinigameActivityTaskOptions {

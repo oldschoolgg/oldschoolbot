@@ -1,3 +1,4 @@
+import { SimpleTable } from '@oldschoolgg/toolkit';
 import { UserStats, XpGainSource } from '@prisma/client';
 import { bold } from 'discord.js';
 import {
@@ -18,7 +19,6 @@ import {
 } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, LootTable } from 'oldschooljs';
-import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { mahojiParseNumber, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { mentionCommand } from '../commandMention';
@@ -46,7 +46,7 @@ import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import getOSItem from '../util/getOSItem';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
-import { exponentialPercentScale } from '../util/smallUtils';
+import { bankToStrShortNames, exponentialPercentScale } from '../util/smallUtils';
 import { updateBankSetting } from '../util/updateBankSetting';
 import { TeamLoot } from './TeamLoot';
 
@@ -716,10 +716,10 @@ const TOARooms = [
 ] as const;
 
 export const mileStoneBaseDeathChances = [
-	{ level: 600, chance: 97, minChance: 90 },
-	{ level: 500, chance: 85, minChance: 80 },
-	{ level: 450, chance: 45.5, minChance: null },
-	{ level: 400, chance: 30, minChance: null },
+	{ level: 600, chance: 97, minChance: 97 },
+	{ level: 500, chance: 85, minChance: 93 },
+	{ level: 450, chance: 48.5, minChance: null },
+	{ level: 400, chance: 36, minChance: null },
 	{ level: 350, chance: 25.5, minChance: null },
 	{ level: 300, chance: 23, minChance: null },
 	{ level: 200, chance: 15, minChance: null },
@@ -841,8 +841,11 @@ function calculatePointsAndDeaths(
 
 	let points = estimatePoints(raidLevel, teamSize) / teamSize;
 
+	const minDeathChance = mileStoneBaseDeathChances.find(i => i.level === raidLevel)!.minChance;
 	for (const room of TOARooms) {
-		if (percentChance(deathChance / TOARooms.length)) {
+		let roomDeathChance = deathChance / TOARooms.length;
+		if (minDeathChance) roomDeathChance += minDeathChance / 10;
+		if (percentChance(roomDeathChance) || (totalAttempts < 30 && raidLevel >= 500)) {
 			deaths.push(room.id);
 			points = reduceNumByPercent(points, 20);
 		}
@@ -1015,7 +1018,7 @@ export async function checkTOAUser(
 	}
 
 	const { cost, serpHelmCharges } = await calcTOAInput({ user, duration });
-	if (!user.owns(cost)) {
+	if (!user.owns(cost, { includeGear: true })) {
 		return [true, `${user.usernameOrMention} doesn't own the required supplies: ${cost.remove(user.bankWithGP)}`];
 	}
 
@@ -1075,10 +1078,6 @@ export async function checkTOATeam(users: MUser[], raidLevel: number): Promise<s
 	return null;
 }
 
-const currentTime = Date.now();
-const releaseTimeUnix = 1_675_472_400;
-const releaseTimeJS = releaseTimeUnix * 1000;
-
 export async function toaStartCommand(
 	user: MUser,
 	solo: boolean,
@@ -1086,14 +1085,6 @@ export async function toaStartCommand(
 	raidLevel: RaidLevel,
 	teamSize?: number
 ): CommandResponse {
-	if (currentTime < releaseTimeJS) {
-		return `TOA is not released yet. It will be released... <t:${releaseTimeUnix}:R>  <t:${releaseTimeUnix}:F>. However, you can still check if you're ready for TOA using this command: ${mentionCommand(
-			'raid',
-			'toa',
-			'help'
-		)}`;
-	}
-
 	if (user.minionIsBusy) {
 		return `${user.usernameOrMention} minion is busy`;
 	}
@@ -1120,7 +1111,7 @@ export async function toaStartCommand(
 		minSize: 1,
 		maxSize,
 		ironmanAllowed: true,
-		message: `${user.usernameOrMention} is hosting a Tombs of Amascut mass! Use the buttons below to join/leave.`,
+		message: `${user.usernameOrMention} is hosting a Tombs of Amascut mass! **Raid Level: ${raidLevel}**. Use the buttons below to join/leave.`,
 		customDenier: async user => {
 			if (user.minionIsBusy) {
 				return [true, `${user.usernameOrMention} minion is busy`];
@@ -1200,9 +1191,14 @@ export async function toaStartCommand(
 			totalCost.add(effectiveCost);
 
 			const { total } = calculateUserGearPercents(u.gear, raidLevel);
-			debugStr += `**- ${u.usernameOrMention}** (${Emoji.Gear}${total.toFixed(1)}% ${
-				Emoji.CombatSword
-			} ${calcWhatPercent(reductions[u.id], totalReduction).toFixed(1)}%) used ${realCost}\n\n`;
+
+			const gearMarker = users.length > 5 ? 'Gear: ' : Emoji.Gear;
+			const boostsMarker = users.length > 5 ? 'Boosts: ' : Emoji.CombatSword;
+			debugStr += `**- ${u.usernameOrMention}** (${gearMarker}${total.toFixed(
+				1
+			)}% ${boostsMarker} ${calcWhatPercent(reductions[u.id], totalReduction).toFixed(
+				1
+			)}%) used ${bankToStrShortNames(realCost)}\n\n`;
 			return {
 				userID: u.id,
 				effectiveCost
@@ -1542,7 +1538,7 @@ export async function getToaKCs(user: MUser | UserStats) {
 	return { entryKC, normalKC, expertKC, totalKC: entryKC + normalKC + expertKC };
 }
 
-export async function toaHelpCommand(user: MUser) {
+export async function toaHelpCommand(user: MUser, channelID: string) {
 	const gearStats = calculateUserGearPercents(user.gear, 300);
 	const userStats = await user.fetchStats();
 	const { entryKC, normalKC, expertKC, totalKC } = await getToaKCs(userStats);
@@ -1552,9 +1548,7 @@ export async function toaHelpCommand(user: MUser) {
 		totalUniques += user.cl.amount(item);
 	}
 
-	let str = `**Tombs of Amascut${
-		currentTime < releaseTimeJS ? ` - Released in... <t:${releaseTimeUnix}:R>  <t:${releaseTimeUnix}:F>` : ''
-	}** 
+	let str = `**Tombs of Amascut** 
 
 **Attempts:** ${userStats.toa_attempts} 
 **Entry Mode:** ${entryKC} KC
@@ -1567,7 +1561,7 @@ export async function toaHelpCommand(user: MUser) {
 			  ).toLocaleString()} pts, one unique every ${Math.floor(
 					totalKC / totalUniques
 			  )} raids, one unique every ${formatDuration(
-					(userStats.total_toa_duration_minutes * 1000) / totalUniques
+					(userStats.total_toa_duration_minutes * Time.Minute) / totalUniques
 			  )})`
 			: ''
 	}
@@ -1589,5 +1583,5 @@ ${toaRequirements
 ${calculateBoostString(user)}
 `;
 
-	return str;
+	return channelID === '1069176960523190292' ? { content: str, ephemeral: true } : str;
 }
