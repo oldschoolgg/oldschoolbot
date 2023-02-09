@@ -7,8 +7,9 @@ import { BitField } from '../../../lib/constants';
 import { roboChimpUserFetch } from '../../../lib/roboChimp';
 import { prisma } from '../../../lib/settings/prisma';
 import { assert } from '../../../lib/util';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
-import { handleMahojiConfirmation, mahojiUsersSettingsFetch } from '../../mahojiSettings';
+import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
 
 export async function ironmanCommand(user: MUser, interaction: ChatInputCommandInteraction, permanent?: boolean) {
 	if (minionIsBusy(user.id)) return 'Your minion is busy.';

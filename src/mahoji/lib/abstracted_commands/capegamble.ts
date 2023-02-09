@@ -6,7 +6,7 @@ import { roll } from '../../../lib/util';
 import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import getOSItem from '../../../lib/util/getOSItem';
-import { handleMahojiConfirmation } from '../../mahojiSettings';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 
 export async function capeGambleStatsCommand(user: MUser) {
 	const firesGambled = user.user.stats_fireCapesSacrificed;

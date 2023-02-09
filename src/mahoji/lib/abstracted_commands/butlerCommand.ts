@@ -1,10 +1,10 @@
-import { Time } from 'e';
+import { clamp, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Planks } from '../../../lib/minions/data/planks';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ButlerActivityTaskOptions } from '../../../lib/types/minions';
-import { clamp, formatDuration, itemNameFromID, stringMatches, toKMB } from '../../../lib/util';
+import { formatDuration, itemNameFromID, stringMatches, toKMB } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import resolveItems from '../../../lib/util/resolveItems';
