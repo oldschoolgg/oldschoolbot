@@ -375,4 +375,39 @@ describe('Gear', () => {
 		const gear = new Gear();
 		expect(() => gear.equip('Coal')).toThrow();
 	});
+
+	it('equipping items with quantities', () => {
+		const gear = new Gear({
+			ammo: 'Dragon arrow',
+			body: '3rd age platebody',
+			weapon: 'Dragon knife',
+			shield: 'Bronze kiteshield'
+		});
+		gear.ammo!.quantity = 500;
+		gear.weapon!.quantity = 100;
+
+		// Equip arrows:
+		const resultArrows = gear.equip(getOSItem('Iron arrow'), 50);
+		expect(bankIsEqual(resultArrows.refundBank as any, new Bank().add('Dragon arrow', 500))).toEqual(true);
+		expect(gear.ammo).toEqual({ item: getOSItem('Iron arrow').id, quantity: 50 });
+
+		// Equip darts/stackable weapon:
+
+		const resultDarts = gear.equip(getOSItem('Dragon dart'), 111);
+		expect(bankIsEqual(resultDarts.refundBank as any, new Bank().add('Dragon knife', 100))).toEqual(true);
+		expect(gear.weapon).toEqual({ item: getOSItem('Dragon dart').id, quantity: 111 });
+	});
+
+	it('should equip/refund properly if equipping a 2h over a 2h', () => {
+		const gear = new Gear({
+			'2h': 'Twisted bow'
+		});
+
+		const result = gear.equip(getOSItem('3rd age bow'));
+
+		expect(bankIsEqual(result.refundBank as any, new Bank().add('Twisted bow'))).toEqual(true);
+		expect(gear.shield).toEqual(null);
+		expect(gear.weapon).toEqual(null);
+		expect(gear['2h']).toEqual({ item: getOSItem('3rd age bow').id, quantity: 1 });
+	});
 });
