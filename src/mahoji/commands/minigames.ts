@@ -572,7 +572,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 					options: [
 						{
 							type: ApplicationCommandOptionType.String,
-							name: 'tier',
+							name: 'name',
 							required: false,
 							description: 'The tier contract you wish to do.',
 							autocomplete: async value => {
@@ -1071,7 +1071,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 			buy?: { name: string };
 			points?: {};
 		};
-		mahogany_homes?: { start?: { tier?: string }; buy?: { name: string; quantity?: number } };
+		mahogany_homes?: { start?: { name?: string }; buy?: { name: string; quantity?: number } };
 		tears_of_guthix?: { start?: {} };
 		pyramid_plunder?: { start?: {} };
 		rogues_den?: { start?: {} };
@@ -1275,7 +1275,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 				);
 			}
 			if (options.mahogany_homes.start) {
-				return mahoganyHomesBuildCommand(user, channelID, options.mahogany_homes.start.tier);
+				return mahoganyHomesBuildCommand(user, channelID, options.mahogany_homes.start.name);
 			}
 		}
 

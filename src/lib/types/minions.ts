@@ -235,7 +235,7 @@ export interface MahoganyHomesActivityTaskOptions extends MinigameActivityTaskOp
 	xp: number;
 	quantity: number;
 	points: number;
-	tier: string;
+	tier: number;
 }
 
 export interface NightmareActivityTaskOptions extends ActivityTaskOptions {

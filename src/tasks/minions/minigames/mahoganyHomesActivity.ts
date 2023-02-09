@@ -30,7 +30,7 @@ export const mahoganyHomesTask: MinionTask = {
 			}
 		});
 
-		let str = `${user}, ${user.minionName} finished doing ${quantity}x Mahogany Homes ${tier} contracts, you received ${points} Carpenter points. ${xpRes}`;
+		let str = `${user}, ${user.minionName} finished doing ${quantity}x ${tier} Mahogany Homes contracts, you received ${points} Carpenter points. ${xpRes}`;
 
 		if (bonusXP > 0) {
 			str += `\nYou received ${bonusXP.toLocaleString()} bonus XP from your Carpenter's outfit.`;

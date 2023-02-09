@@ -14,6 +14,7 @@ import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 interface IContract {
 	name: string;
+	tier: number;
 	level: number;
 	plank: Plank;
 	xp: number;
@@ -24,6 +25,7 @@ interface IContract {
 export const contractTiers: IContract[] = [
 	{
 		name: 'Expert (Mahogany Planks)',
+		tier: 4,
 		level: 70,
 		plank: Plank.MahoganyPlank,
 		xp: 2750,
@@ -32,6 +34,7 @@ export const contractTiers: IContract[] = [
 	},
 	{
 		name: 'Adept (Teak Planks)',
+		tier: 3,
 		level: 50,
 		plank: Plank.TeakPlank,
 		xp: 2250,
@@ -40,6 +43,7 @@ export const contractTiers: IContract[] = [
 	},
 	{
 		name: 'Novice (Oak Planks)',
+		tier: 2,
 		level: 20,
 		plank: Plank.OakPlank,
 		xp: 1250,
@@ -48,6 +52,7 @@ export const contractTiers: IContract[] = [
 	},
 	{
 		name: 'Beginner (Planks)',
+		tier: 1,
 		level: 1,
 		plank: Plank.Plank,
 		xp: 500,
@@ -134,7 +139,12 @@ export async function mahoganyHomesBuyCommand(user: MUser, input = '', quantity?
 	return `Successfully purchased ${loot} for ${cost * quantity} Carpenter Points.`;
 }
 
-export async function mahoganyHomesBuildCommand(user: MUser, channelID: string, tier?: string): CommandResponse {
+export async function mahoganyHomesBuildCommand(
+	user: MUser,
+	channelID: string,
+	name?: string,
+	tier?: number
+): CommandResponse {
 	if (user.minionIsBusy) return `${user.minionName} is currently busy.`;
 
 	const conLevel = user.skillLevel(SkillsEnum.Construction);
@@ -142,15 +152,17 @@ export async function mahoganyHomesBuildCommand(user: MUser, channelID: string, 
 
 	let tierData = contractTiers.find(contractTier => conLevel >= contractTier.level)!;
 
-	if (tier) {
+	console.log(name);
+	console.log(tier);
+
+	if (name) {
 		tierData =
-			contractTiers.find(contractTier => tier.toLowerCase() === contractTier.name.toLowerCase()) || tierData;
-		if (!tierData) return 'Error selecting contract tier.';
+			contractTiers.find(contractTier => name.toLowerCase() === contractTier.name.toLowerCase()) || tierData;
 		if (tierData.level > conLevel)
 			return `You need ${tierData.level} Construction for this contract, you have ${conLevel}.`;
+	} else if (tier) {
+		tierData = contractTiers.find(contractTier => tier === contractTier.tier) || tierData;
 	}
-
-	if (!tierData) return 'Error selecting contract tier.';
 
 	const hasSack = user.hasEquippedOrInBank('Plank sack');
 	const [quantity, itemsNeeded, xp, duration, points] = calcTrip(
@@ -176,7 +188,7 @@ export async function mahoganyHomesBuildCommand(user: MUser, channelID: string, 
 		duration,
 		points,
 		xp,
-		tier: tierData.name
+		tier: tierData.tier
 	});
 
 	let str = `${user.minionName} is now doing ${quantity}x Mahogany homes ${
