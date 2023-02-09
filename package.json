@@ -58,6 +58,7 @@
 		"@oldschoolgg/ts-config": "^0.0.1",
 		"@sinclair/typebox": "^0.12.9",
 		"@types/he": "^1.1.2",
+		"@types/madge": "^5.0.0",
 		"@types/math-expression-evaluator": "^1.2.2",
 		"@types/node": "^14.18.12",
 		"@types/node-cron": "^3.0.1",

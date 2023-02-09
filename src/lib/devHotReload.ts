@@ -2,7 +2,6 @@ import { watch } from 'chokidar';
 import { debounce } from 'e';
 import { extname, join, sep } from 'path';
 
-import { mahojiClient } from '..';
 import { production } from '../config';
 
 if (!production) {
@@ -20,7 +19,7 @@ if (!production) {
 				delete require.cache[module];
 			}
 		}
-		await mahojiClient.commands.load();
+		await globalClient.mahojiClient.commands.load();
 	};
 
 	for (const event of ['add', 'change', 'unlink']) {
