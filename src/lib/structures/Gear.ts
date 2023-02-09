@@ -340,7 +340,7 @@ export class Gear {
 			return new Gear(gear);
 		}
 		const setup =
-			(typeof _setup?.ammo === 'undefined' || typeof _setup?.ammo === 'string') && !('user_id' in _setup)
+			(typeof _setup.ammo === 'undefined' || typeof _setup.ammo === 'string') && !('user_id' in _setup)
 				? constructGearSetup(_setup as PartialGearSetup)
 				: (_setup as GearSetup);
 
