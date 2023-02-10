@@ -159,7 +159,7 @@ client.on('interactionCreate', async interaction => {
 	try {
 		if (interaction.type !== InteractionType.ApplicationCommandAutocomplete) {
 			debugLog(`Process ${getInteractionTypeName(interaction.type)} interaction`, {
-				type: 'COMMAND_INHIBITED',
+				type: 'INTERACTION_PROCESS',
 				user_id: interaction.user.id,
 				guild_id: interaction.guildId,
 				channel_id: interaction.channelId,
