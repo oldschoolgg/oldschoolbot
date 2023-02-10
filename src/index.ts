@@ -11,6 +11,7 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { GatewayIntentBits, InteractionType, Options, Partials, TextChannel } from 'discord.js';
 import { isObject, Time } from 'e';
 import { MahojiClient } from 'mahoji';
+import { convertAPIOptionsToCommandOptions } from 'mahoji/dist/lib/util';
 import { join } from 'path';
 
 import { botToken, CLIENT_ID, DEV_SERVER_ID, production, SENTRY_DSN, SupportServer } from './config';
@@ -164,7 +165,16 @@ client.on('interactionCreate', async interaction => {
 				guild_id: interaction.guildId,
 				channel_id: interaction.channelId,
 				interaction_id: interaction.id,
-				interaction_type: interaction.type
+				interaction_type: interaction.type,
+				...(interaction.isChatInputCommand()
+					? {
+							command_name: interaction.commandName,
+							options: convertAPIOptionsToCommandOptions(
+								interaction.options.data,
+								interaction.options.resolved
+							)
+					  }
+					: {})
 			});
 		}
 		await interactionHook(interaction);
