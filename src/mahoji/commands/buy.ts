@@ -3,6 +3,7 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import Buyables from '../../lib/data/buyables/buyables';
+import { fossilIslandNotesCL } from '../../lib/data/CollectionsExport';
 import { leagueBuyables } from '../../lib/data/leaguesBuyables';
 import { kittens } from '../../lib/growablePets';
 import { gotFavour } from '../../lib/minions/data/kourendFavour';
@@ -16,7 +17,12 @@ import { leaguesBuyCommand } from '../lib/abstracted_commands/leaguesBuyCommand'
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiParseNumber, multipleUserStatsBankUpdate } from '../mahojiSettings';
 
-const allBuyablesAutocomplete = [...Buyables, ...leagueBuyables.map(i => ({ name: i.item.name })), { name: 'Kitten' }];
+const allBuyablesAutocomplete = [
+	...Buyables,
+	...leagueBuyables.map(i => ({ name: i.item.name })),
+	{ name: 'Kitten' },
+	{ name: 'Fossil Island Notes' }
+];
 
 export const buyCommand: OSBMahojiCommand = {
 	name: 'buy',
@@ -82,6 +88,37 @@ export const buyCommand: OSBMahojiCommand = {
 				content: `Removed ${cost} from your bank.`
 			};
 		}
+		if (stringMatches(name, 'fossil island notes')) {
+			const cost = new Bank().add('Numulite', 300);
+			if (user.minionIsBusy) {
+				return 'Your minion is busy.';
+			}
+			if (user.QP < 3) {
+				return 'You need 3qp to reach the stone chest';
+			}
+			if (!user.owns(cost)) {
+				return "You don't have enough Numulite.";
+			}
+			const allItemsOwnedBank = user.allItemsOwned();
+			let loot = new Bank();
+			if (fossilIslandNotesCL.every(page => allItemsOwnedBank.has(page))) {
+				const outPage = getOSItem(randArrItem(fossilIslandNotesCL));
+				loot.add(outPage.id);
+			} else {
+				const filteredPages = fossilIslandNotesCL.filter(page => !allItemsOwnedBank.has(page));
+				const outPage = getOSItem(randArrItem(filteredPages));
+				loot.add(outPage.id);
+			}
+			await handleMahojiConfirmation(
+				interaction,
+				`${user}, please confirm that you want to buy a Fossil Island note for: ${cost}.`
+			);
+
+			await transactItems({ userID: user.id, itemsToRemove: cost, itemsToAdd: loot, collectionLog: true });
+
+			return `You purchased ${loot}.`;
+		}
+
 		if (leagueBuyables.some(i => stringMatches(i.item.name, name))) {
 			return leaguesBuyCommand(user, name, quantity);
 		}

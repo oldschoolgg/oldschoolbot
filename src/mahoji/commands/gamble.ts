@@ -8,7 +8,6 @@ import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { capeGambleCommand, capeGambleStatsCommand } from '../lib/abstracted_commands/capegamble';
 import { diceCommand } from '../lib/abstracted_commands/diceCommand';
 import { duelCommand } from '../lib/abstracted_commands/duelCommand';
-import { fossilIslandNotesCommand } from '../lib/abstracted_commands/fossilIslandNotesCommand';
 import { hotColdCommand } from '../lib/abstracted_commands/hotColdCommand';
 import { luckyPickCommand } from '../lib/abstracted_commands/luckyPickCommand';
 import { slotsCommand } from '../lib/abstracted_commands/slotsCommand';
@@ -161,16 +160,6 @@ export const gambleCommand: OSBMahojiCommand = {
 					required: true
 				}
 			]
-		},
-		/**
-		 *
-		 * Fossil Island Note Chest
-		 *
-		 */
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'fossil_island_notes',
-			description: 'Gamble 100 numulites in a stone chest'
 		}
 	],
 	run: async ({
@@ -178,7 +167,6 @@ export const gambleCommand: OSBMahojiCommand = {
 		interaction,
 		userID
 	}: CommandRunOptions<{
-		fossil_island_notes?: any;
 		cape?: { type?: string };
 		dice?: { amount?: string };
 		duel?: { user: MahojiUserOption; amount?: string };
@@ -260,10 +248,6 @@ export const gambleCommand: OSBMahojiCommand = {
 			for (const t of bank) debug.add(t[0].id);
 
 			return `You gave ${qty.toLocaleString()}x ${item.name} to ${recipientuser.usernameOrMention}.`;
-		}
-
-		if (options.fossil_island_notes) {
-			return fossilIslandNotesCommand(user, interaction);
 		}
 
 		return 'Invalid command.';
