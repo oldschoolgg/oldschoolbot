@@ -5,6 +5,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 
 import { growablePets } from '../growablePets';
 import { implings } from '../implings';
+import { MinigameScore } from '../settings/minigames';
 import getOSItem from '../util/getOSItem';
 import resolveItems from '../util/resolveItems';
 import {
@@ -34,7 +35,7 @@ export interface ILeftListStatus {
 }
 
 export interface IKCActivity {
-	[key: string]: string | string[] | ((user: MUser) => Promise<number>);
+	[key: string]: string | string[] | ((user: MUser, minigameScores: MinigameScore[]) => Promise<number>);
 }
 
 export type FormatProgressFunction = ({
@@ -433,6 +434,7 @@ export const chambersOfXericMetamorphPets = resolveItems([
 	'Vespina'
 ]);
 export const tobMetamorphPets = resolveItems(["Lil' Maiden", "Lil' Bloat", "Lil' Nylo", "Lil' Sot", "Lil' Xarp"]);
+export const toaMetamorphPets = resolveItems(['Zebo', "Tumeken's guardian", 'Kephriti', 'Babi', 'Akkhito']);
 export const chambersOfXericNormalCL = resolveItems([
 	'Olmlet',
 	'Twisted bow',
@@ -483,6 +485,35 @@ export const theatreOfBLoodCL = resolveItems([
 	'Sanguine dust',
 	'Holy ornament kit',
 	'Sanguine ornament kit'
+]);
+
+export const toaCL = resolveItems([
+	"Tumeken's guardian",
+	"Tumeken's shadow (uncharged)",
+	"Elidinis' ward",
+	'Masori mask',
+	'Masori body',
+	'Masori chaps',
+	'Lightbearer',
+	"Osmumten's fang",
+	'Thread of elidinis',
+	'Breach of the scarab',
+	'Eye of the corruptor',
+	'Jewel of the sun',
+	'Menaphite ornament kit',
+	'Cursed phalanx',
+	'Masori crafting kit',
+	'Cache of runes',
+	"Icthlarin's shroud (tier 1)",
+	"Icthlarin's shroud (tier 2)",
+	"Icthlarin's shroud (tier 3)",
+	"Icthlarin's shroud (tier 4)",
+	"Icthlarin's shroud (tier 5)",
+	'Remnant of akkha',
+	'Remnant of ba-ba',
+	'Remnant of kephri',
+	'Remnant of zebak',
+	'Ancient remnant'
 ]);
 
 export const cluesBeginnerCL = resolveItems([
@@ -1231,6 +1262,17 @@ export const castleWarsCL = resolveItems([
 	'Guthix halo'
 ]);
 export const fishingTrawlerCL = resolveItems(['Angler hat', 'Angler top', 'Angler waders', 'Angler boots']);
+export const giantsFoundryCL = resolveItems([
+	'Smiths tunic',
+	'Smiths trousers',
+	'Smiths boots',
+	'Smiths gloves',
+	'Colossal blade',
+	'Double ammo mould',
+	"Kovac's grog",
+	'Smithing catalyst',
+	'Ore pack'
+]);
 export const gnomeRestaurantCL = resolveItems(['Grand seed pod', 'Gnome scarf', 'Gnome goggles', 'Mint cake']);
 export const guardiansOfTheRiftCL = resolveItems([
 	'Abyssal protector',
@@ -1350,7 +1392,7 @@ export const roguesDenOutfit = resolveItems([
 export const roguesDenCL = resolveItems([...roguesDenOutfit]);
 
 export const shadesOfMorttonCL = resolveItems([
-	'Amulet of the damned',
+	'Amulet of the damned (full)',
 	'Flamtaer bag',
 	'Fine cloth',
 	'Bronze locks',
@@ -1476,7 +1518,8 @@ export const allPetsCL = resolveItems([
 	"Lil' creator",
 	'Tiny tempor',
 	'Nexling',
-	'Abyssal protector'
+	'Abyssal protector',
+	"Tumeken's guardian"
 ]);
 export const camdozaalCL = resolveItems([
 	'Barronite mace',
@@ -1805,8 +1848,10 @@ export const miscellaneousCL = resolveItems([
 	'Dragonstone platelegs',
 	'Dragonstone gauntlets',
 	'Dragonstone boots',
-	'Uncut onyx'
-	// 'Merfolk trident'
+	'Uncut onyx',
+	'Merfolk trident',
+	'Orange egg sac',
+	'Blue egg sac'
 ]);
 export const holidayCL = resolveItems([
 	'Cow mask',
@@ -2116,7 +2161,8 @@ export const allPetIDs = [
 	...chambersOfXericMetamorphPets,
 	...tobMetamorphPets,
 	...growablePets.map(petSeries => petSeries.stages).flat(1),
-	...metamorphPets
+	...metamorphPets,
+	...toaMetamorphPets
 ];
 
 export const antiSantaOutfit = new Bank({

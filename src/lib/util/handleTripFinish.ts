@@ -1,6 +1,5 @@
 import { activity_type_enum } from '@prisma/client';
 import { AttachmentBuilder, ButtonBuilder, MessageCollector } from 'discord.js';
-import { shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
@@ -82,7 +81,8 @@ export async function handleTripFinish(
 	attachment: AttachmentBuilder | Buffer | undefined,
 	data: ActivityTaskOptions,
 	loot: Bank | null,
-	_messages?: string[]
+	_messages?: string[],
+	_components?: ButtonBuilder[]
 ) {
 	const perkTier = user.perkTier();
 	const messages: string[] = [];
@@ -131,11 +131,15 @@ export async function handleTripFinish(
 		}
 	}
 
+	if (_components) {
+		components.push(..._components);
+	}
+
 	handleTriggerShootingStar(user, data, components);
 
 	sendToChannelID(channelID, {
 		content: message,
 		image: attachment,
-		components: components.length > 0 ? makeComponents(shuffleArr(components)) : undefined
+		components: components.length > 0 ? makeComponents(components) : undefined
 	});
 }

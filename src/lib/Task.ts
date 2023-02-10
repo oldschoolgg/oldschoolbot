@@ -44,11 +44,13 @@ import { puroPuroTask } from '../tasks/minions/minigames/puroPuroActivity';
 import { raidsTask } from '../tasks/minions/minigames/raidsActivity';
 import { roguesDenTask } from '../tasks/minions/minigames/roguesDenMazeActivity';
 import { sepulchreTask } from '../tasks/minions/minigames/sepulchreActivity';
+import { shadesOfMortonTask } from '../tasks/minions/minigames/shadesOfMortonActivity';
 import { soulWarsTask } from '../tasks/minions/minigames/soulWarsActivity';
 import { togTask } from '../tasks/minions/minigames/tearsOfGuthixActivity';
 import { templeTrekkingTask } from '../tasks/minions/minigames/templeTrekkingActivity';
 import { temporossTask } from '../tasks/minions/minigames/temporossActivity';
 import { titheFarmTask } from '../tasks/minions/minigames/titheFarmActivity';
+import { toaTask } from '../tasks/minions/minigames/toaActivity';
 import { tobTask } from '../tasks/minions/minigames/tobActivity';
 import { trawlerTask } from '../tasks/minions/minigames/trawlerActivity';
 import { brewingTask } from '../tasks/minions/minigames/troubleBrewingActivity';
@@ -75,7 +77,9 @@ import { tokkulShopTask } from '../tasks/minions/tokkulShopActivity';
 import { vmTask } from '../tasks/minions/volcanicMineActivity';
 import { wealthChargeTask } from '../tasks/minions/wealthChargingActivity';
 import { woodcuttingTask } from '../tasks/minions/woodcuttingActivity';
+import { giantsFoundryTask } from './../tasks/minions/minigames/giantsFoundryActivity';
 import { guardiansOfTheRiftTask } from './../tasks/minions/minigames/guardiansOfTheRiftActivity';
+import { nightmareZoneTask } from './../tasks/minions/minigames/nightmareZoneActivity';
 import { modifyBusyCounter } from './busyCounterCache';
 import { convertStoredActivityToFlatActivity, prisma } from './settings/prisma';
 import { activitySync, minionActivityCache, minionActivityCacheDelete } from './settings/settings';
@@ -156,9 +160,13 @@ export const tasks: MinionTask[] = [
 	temporossTask,
 	smithingTask,
 	shootingStarTask,
+	giantsFoundryTask,
 	guardiansOfTheRiftTask,
 	butlerTask,
-	tiaraRunecraftTask
+	tiaraRunecraftTask,
+	nightmareZoneTask,
+	shadesOfMortonTask,
+	toaTask
 ];
 
 export async function syncActivityCache() {

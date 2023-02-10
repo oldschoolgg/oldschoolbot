@@ -4,9 +4,9 @@ import { ActionRowBuilder, ButtonBuilder, ButtonStyle, TextChannel } from 'disco
 import { noOp, randInt, shuffleArr, Time } from 'e';
 
 import { production } from '../config';
-import { mahojiUserSettingsUpdate } from '../mahoji/settingsUpdate';
 import { BitField, Channel, informationalButtons } from './constants';
 import { collectMetrics } from './metrics';
+import { mahojiUserSettingsUpdate } from './MUser';
 import { prisma, queryCountStore } from './settings/prisma';
 import { runCommand } from './settings/settings';
 import { getFarmingInfo } from './skilling/functions/getFarmingInfo';
@@ -376,7 +376,9 @@ export function initTickers() {
 		const fn = async () => {
 			try {
 				if (globalClient.isShuttingDown) return;
+				debugLog(`Starting ${ticker.name} ticker`);
 				await ticker.cb();
+				debugLog(`Finished ${ticker.name} ticker`);
 			} catch (err) {
 				logError(err);
 			} finally {

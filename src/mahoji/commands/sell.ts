@@ -1,16 +1,17 @@
-import { reduceNumByPercent } from 'e';
+import { clamp, reduceNumByPercent } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { MAX_INT_JAVA } from '../../lib/constants';
 import { NestBoxesTable } from '../../lib/simulation/misc';
-import { clamp, itemID, toKMB } from '../../lib/util';
+import { itemID, toKMB } from '../../lib/util';
+import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, updateGPTrackSetting, userStatsUpdate } from '../mahojiSettings';
+import { updateGPTrackSetting, userStatsUpdate } from '../mahojiSettings';
 
 /**
  * - Hardcoded prices

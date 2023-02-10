@@ -27,7 +27,9 @@ import {
 	FishingActivityTaskOptions,
 	FletchingActivityTaskOptions,
 	GauntletOptions,
+	GiantsFoundryActivityTaskOptions,
 	GroupMonsterActivityTaskOptions,
+	GuardiansOfTheRiftActivityTaskOptions,
 	HerbloreActivityTaskOptions,
 	HunterActivityTaskOptions,
 	KourendFavourActivityTaskOptions,
@@ -43,15 +45,18 @@ import {
 	RunecraftActivityTaskOptions,
 	SawmillActivityTaskOptions,
 	ScatteringActivityTaskOptions,
+	ShadesOfMortonOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
 	TempleTrekkingActivityTaskOptions,
 	TheatreOfBloodTaskOptions,
 	TiaraRunecraftActivityTaskOptions,
+	TOAOptions,
 	WoodcuttingActivityTaskOptions
 } from '../types/minions';
 import { itemNameFromID } from '../util';
-import { GuardiansOfTheRiftActivityTaskOptions } from './../types/minions';
+import { giantsFoundryAlloys } from './../../mahoji/lib/abstracted_commands/giantsFoundryCommand';
+import { NightmareZoneActivityTaskOptions } from './../types/minions';
 
 export const taskCanBeRepeated = (type: activity_type_enum) =>
 	!(
@@ -505,11 +510,47 @@ export const tripHandlers = {
 			powerchop: data.powerchopping
 		})
 	},
+	[activity_type_enum.GiantsFoundry]: {
+		commandName: 'minigames',
+		args: (data: GiantsFoundryActivityTaskOptions) => ({
+			giants_foundry: {
+				start: { name: giantsFoundryAlloys.find(i => i.id === data.alloyID)?.name, quantity: data.quantity }
+			}
+		})
+	},
 	[activity_type_enum.GuardiansOfTheRift]: {
 		commandName: 'minigames',
 		args: (data: GuardiansOfTheRiftActivityTaskOptions) => ({
 			gotr: {
 				start: { combination_runes: data.combinationRunes }
+			}
+		})
+	},
+	[activity_type_enum.NightmareZone]: {
+		commandName: 'minigames',
+		args: (data: NightmareZoneActivityTaskOptions) => ({
+			nmz: {
+				start: { strategy: data.strategy }
+			}
+		})
+	},
+	[activity_type_enum.ShadesOfMorton]: {
+		commandName: 'minigames',
+		args: (data: ShadesOfMortonOptions) => ({
+			shades_of_morton: {
+				start: { shade: data.shadeID, logs: itemNameFromID(data.logID) }
+			}
+		})
+	},
+	[activity_type_enum.TombsOfAmascut]: {
+		commandName: 'raid',
+		args: (data: TOAOptions) => ({
+			toa: {
+				start: {
+					raid_level: data.raidLevel,
+					max_team_size: data.users.length,
+					solo: data.users.length === 1
+				}
 			}
 		})
 	}

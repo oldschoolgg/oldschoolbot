@@ -1,5 +1,5 @@
 import { Embed } from '@discordjs/builders';
-import { chunk } from 'e';
+import { calcWhatPercent, chunk } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { badges, badgesCache, Emoji, usernameCache } from '../../lib/constants';
@@ -209,14 +209,22 @@ async function clLb(user: MUser, channelID: string, inputType: string, ironmenOn
 	if (!items || items.length === 0) {
 		return "That's not a valid collection log category. Check +cl for all possible logs.";
 	}
-	const users = await fetchCLLeaderboard({ ironmenOnly, items, resultLimit: 50 });
+	const users = await fetchCLLeaderboard({ ironmenOnly, items, resultLimit: 200 });
 
 	inputType = toTitleCase(inputType.toLowerCase());
 	doMenu(
 		user,
 		channelID,
 		chunk(users, LB_PAGE_SIZE).map((subList, i) =>
-			subList.map(({ id, qty }, j) => `${getPos(i, j)}**${getUsername(id)}:** ${qty.toLocaleString()}`).join('\n')
+			subList
+				.map(
+					({ id, qty }, j) =>
+						`${getPos(i, j)}**${getUsername(id)}:** ${qty.toLocaleString()} (${calcWhatPercent(
+							qty,
+							items.length
+						).toFixed(1)}%)`
+				)
+				.join('\n')
 		),
 		`${inputType} Collection Log Leaderboard (${items.length} slots)`
 	);

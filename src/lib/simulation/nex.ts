@@ -1,6 +1,7 @@
 import { userMention } from '@discordjs/builders';
 import {
 	calcWhatPercent,
+	clamp,
 	increaseNumByPercent,
 	percentChance,
 	randArrItem,
@@ -11,21 +12,15 @@ import {
 	Time
 } from 'e';
 import { Bank } from 'oldschooljs';
+import { randomVariation } from 'oldschooljs/dist/util/util';
 
 import { BitField, NEX_ID } from '../constants';
-import { Skills } from '../types';
-import {
-	clamp,
-	exponentialPercentScale,
-	formatDuration,
-	formatSkillRequirements,
-	itemNameFromID,
-	randomVariation
-} from '../util';
+import type { Skills } from '../types';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import itemID from '../util/itemID';
 import { arrows, bolts, bows, crossbows } from '../util/minionUtils';
 import resolveItems from '../util/resolveItems';
+import { exponentialPercentScale, formatDuration, formatSkillRequirements, itemNameFromID } from '../util/smallUtils';
 import { NexNonUniqueTable, NexUniqueTable } from './misc';
 import { TeamLoot } from './TeamLoot';
 
