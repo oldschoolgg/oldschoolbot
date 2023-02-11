@@ -257,11 +257,12 @@ model User {
   QP                         Int      @default(0)
   RSN                        String?
   pets                       Json     @default("{}") @db.Json
-  badges                     Int[]
-  bitfield                   Int[]
-  favoriteItems              Int[]
-  favorite_alchables         Int[]
-  favorite_food              Int[]
+  badges                     Int[]    @default([])
+  badges                     Int[]    @default([])
+  bitfield                   Int[]    @default([])
+  favoriteItems              Int[]    @default([])
+  favorite_alchables         Int[]    @default([])
+  favorite_food              Int[]    @default([])
   lastDailyTimestamp         BigInt   @default(1)
   lastTearsOfGuthixTimestamp BigInt   @default(1)
   sacrificedValue            BigInt   @default(0)
@@ -278,9 +279,9 @@ model User {
   carpenter_points           Int      @default(0)
   zeal_tokens                Int      @default(0)
   openable_scores            Json     @default("{}") @db.Json
-  attack_style               String[]
+  attack_style               String[] @default([])
   total_cox_points           Int      @default(0)
-  combat_options             Int[]
+  combat_options             Int[]    @default([])
   farming_patch_reminders    Boolean  @default(true)
   pest_control_points        Int      @default(0)
   inferno_attempts           Int      @default(0)
@@ -291,14 +292,14 @@ model User {
   foundry_reputation         Int      @default(0)
   nmz_points                 Int      @default(0)
   blowpipe                   Json     @default("{\"scales\":0,\"dartID\":null,\"dartQuantity\":0}") @db.Json
-  ironman_alts               String[]
+  ironman_alts               String[] @default([])
   main_account               String?
   slayer_points              Int      @default(0) @map("slayer.points")
   slayer_task_streak         Int      @default(0) @map("slayer.task_streak")
   slayer_remember_master     String?  @map("slayer.remember_master")
-  slayer_unlocks             Int[]    @map("slayer.unlocks")
-  slayer_blocked_ids         Int[]    @map("slayer.blocked_ids")
-  slayer_autoslay_options    Int[]    @map("slayer.autoslay_options")
+  slayer_unlocks             Int[]    @default([]) @map("slayer.unlocks")
+  slayer_blocked_ids         Int[]    @default([]) @map("slayer.blocked_ids")
+  slayer_autoslay_options    Int[]    @default([]) @map("slayer.autoslay_options")
   slayer_superior_count      Int      @default(0) @map("slayer.superior_count")
   slayer_last_task           Int      @default(0) @map("slayer.last_task")
   slayer_unsired_offered     Int      @default(0) @map("slayer.unsired_offered")
@@ -412,6 +413,9 @@ model User {
   farmed_crops      FarmedCrop[]
 
   minion_defaultCompostToUse CropUpgradeType @default(compost) @map("minion.defaultCompostToUse")
+
+  username      String? @db.VarChar(32)
+  pizazz_points Int     @default(0)
 
   @@index([id, last_command_date])
   @@map("users")
