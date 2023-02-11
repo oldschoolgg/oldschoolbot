@@ -3,6 +3,8 @@ import { objectEntries, Time } from 'e';
 import { Bank, Items } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { MersenneTwister19937, shuffle } from 'random-js';
+import { ClueTiers } from '../clues/clueTiers';
+import { PerkTier } from '../constants';
 
 import { skillEmoji } from '../data/emojis';
 import type { ArrayItemsResolved, Skills } from '../types';
@@ -151,4 +153,21 @@ export function makeEasierFarmingContractButton() {
 		.setLabel('Ask for easier Contract')
 		.setStyle(ButtonStyle.Secondary)
 		.setEmoji('977410792754413668');
+}
+
+export function buildClueButtons(loot: Bank | null, perkTier: number) {
+	const components: ButtonBuilder[] = [];
+	if (loot && perkTier > PerkTier.One) {
+		const clueReceived = ClueTiers.filter(tier => loot.amount(tier.scrollID) > 0);
+		components.push(
+			...clueReceived.map(clue =>
+				new ButtonBuilder()
+					.setCustomId(`DO_${clue.name.toUpperCase()}_CLUE`)
+					.setLabel(`Do ${clue.name} Clue`)
+					.setStyle(ButtonStyle.Secondary)
+					.setEmoji('365003979840552960')
+			)
+		);
+	}
+	return components;
 }

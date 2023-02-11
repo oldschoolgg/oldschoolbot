@@ -6,7 +6,7 @@ import { buyBingoTicketCommand } from '../../mahoji/commands/bingo';
 import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { shootingStarsCommand, starCache } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
 import { Cooldowns } from '../../mahoji/lib/Cooldowns';
-import { ClueTier, ClueTiers } from '../clues/clueTiers';
+import { ClueTier } from '../clues/clueTiers';
 import { PerkTier } from '../constants';
 import { prisma } from '../settings/prisma';
 import { runCommand } from '../settings/settings';
@@ -51,23 +51,6 @@ const globalInteractionActions = [
 export type GlobalInteractionAction = typeof globalInteractionActions[number];
 function isValidGlobalInteraction(str: string): str is GlobalInteractionAction {
 	return globalInteractionActions.includes(str as GlobalInteractionAction);
-}
-
-export function buildClueButtons(loot: Bank | null, perkTier: number) {
-	const components: ButtonBuilder[] = [];
-	if (loot && perkTier > PerkTier.One) {
-		const clueReceived = ClueTiers.filter(tier => loot.amount(tier.scrollID) > 0);
-		components.push(
-			...clueReceived.map(clue =>
-				new ButtonBuilder()
-					.setCustomId(`DO_${clue.name.toUpperCase()}_CLUE`)
-					.setLabel(`Do ${clue.name} Clue`)
-					.setStyle(ButtonStyle.Secondary)
-					.setEmoji('365003979840552960')
-			)
-		);
-	}
-	return components;
 }
 
 export function makeOpenCasketButton(tier: ClueTier) {
