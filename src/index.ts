@@ -11,6 +11,7 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { GatewayIntentBits, InteractionType, Options, Partials, TextChannel } from 'discord.js';
 import { isObject, Time } from 'e';
 import { MahojiClient } from 'mahoji';
+import { convertAPIOptionsToCommandOptions } from 'mahoji/dist/lib/util';
 import { join } from 'path';
 
 import { botToken, CLIENT_ID, DEV_SERVER_ID, production, SENTRY_DSN, SupportServer } from './config';
@@ -159,12 +160,21 @@ client.on('interactionCreate', async interaction => {
 	try {
 		if (interaction.type !== InteractionType.ApplicationCommandAutocomplete) {
 			debugLog(`Process ${getInteractionTypeName(interaction.type)} interaction`, {
-				type: 'COMMAND_INHIBITED',
+				type: 'INTERACTION_PROCESS',
 				user_id: interaction.user.id,
 				guild_id: interaction.guildId,
 				channel_id: interaction.channelId,
 				interaction_id: interaction.id,
-				interaction_type: interaction.type
+				interaction_type: interaction.type,
+				...(interaction.isChatInputCommand()
+					? {
+							command_name: interaction.commandName,
+							options: convertAPIOptionsToCommandOptions(
+								interaction.options.data,
+								interaction.options.resolved
+							)
+					  }
+					: {})
 			});
 		}
 		await interactionHook(interaction);
@@ -208,6 +218,7 @@ client.on('guildCreate', guild => {
 
 client.on('shardDisconnect', ({ wasClean, code, reason }) => debugLog('Shard Disconnect', { wasClean, code, reason }));
 client.on('shardError', err => debugLog('Shard Error', { error: err.message }));
+client.on('ready', () => runTimedLoggedFn('OnStartup', async () => onStartup()));
 
 async function main() {
 	client.fastifyServer = makeServer();
@@ -220,7 +231,6 @@ async function main() {
 		runTimedLoggedFn('Startup Scripts', runStartupScripts)
 	]);
 	await runTimedLoggedFn('Log In', () => client.login(botToken));
-	runTimedLoggedFn('OnStartup', async () => onStartup());
 }
 
 process.on('uncaughtException', logError);
