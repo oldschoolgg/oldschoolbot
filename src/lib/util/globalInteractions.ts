@@ -89,14 +89,6 @@ export function makeAutoContractButton() {
 		.setEmoji('977410792754413668');
 }
 
-export function makeEasierFarmingContractButton() {
-	return new ButtonBuilder()
-		.setCustomId('FARMING_CONTRACT_EASIER')
-		.setLabel('Ask for easier Contract')
-		.setStyle(ButtonStyle.Secondary)
-		.setEmoji('977410792754413668');
-}
-
 export function makeRepeatTripButton() {
 	return new ButtonBuilder()
 		.setCustomId('REPEAT_TRIP')

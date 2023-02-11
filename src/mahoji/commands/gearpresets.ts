@@ -5,7 +5,7 @@ import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { GearSetupType } from '../../lib/gear/types';
 import { prisma } from '../../lib/settings/prisma';
-import { gearPresetToGear, globalPresets } from '../../lib/structures/Gear';
+import { Gear, globalPresets } from '../../lib/structures/Gear';
 import { cleanString, isValidGearSetup, isValidNickname, stringMatches } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
 import { gearEquipCommand } from '../lib/abstracted_commands/gearCommands';
@@ -264,7 +264,7 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 					where: { user_id: userID.toString(), name: options.view.preset }
 				})) || globalPresets.find(i => stringMatches(i.name, options.view?.preset ?? ''));
 			if (!preset) return "You don't have a preset with that name.";
-			const image = await generateGearImage(user, gearPresetToGear(preset), null, null);
+			const image = await generateGearImage(user, new Gear(preset), null, null);
 			return { files: [{ attachment: image, name: 'preset.jpg' }] };
 		}
 
