@@ -64,6 +64,7 @@ const emojiServers = new Set([
 ]);
 
 export function cacheCleanup() {
+	if (!globalClient.isReady()) return;
 	debugLog('Cache Cleanup', {
 		type: 'CACHE_CLEANUP'
 	});
@@ -96,7 +97,7 @@ export function cacheCleanup() {
 		await runTimedLoggedFn('Guild Emoji/Roles/Member cache clear', async () => {
 			for (const guild of globalClient.guilds.cache.values()) {
 				if (emojiServers.has(guild.id)) continue;
-				guild.emojis.cache.clear();
+				guild.emojis?.cache.clear();
 				for (const member of guild.members.cache.values()) {
 					if (!CACHED_ACTIVE_USER_IDS.has(member.user.id)) {
 						guild.members.cache.delete(member.user.id);
