@@ -22,7 +22,7 @@ import {
 
 const { Beginner, Easy, Medium, Hard, Elite, Master } = Clues;
 
-export interface ClueMilestoneReward {
+interface ClueMilestoneReward {
 	itemReward: number;
 	scoreNeeded: number;
 }

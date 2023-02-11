@@ -76,7 +76,7 @@ export const pickaxes = [
 	}
 ];
 
-export const gloves = [
+const gloves = [
 	{
 		id: itemID('Expert mining gloves'),
 		Percentages: new Bank({
@@ -190,7 +190,7 @@ export const varrockArmours = [
 	}
 ];
 
-export const miningCapeOreEffect: Bank = new Bank({
+const miningCapeOreEffect: Bank = new Bank({
 	Clay: 5,
 	'Copper ore': 5,
 	'Tin ore': 5,

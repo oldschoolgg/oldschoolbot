@@ -32,7 +32,7 @@ FontLibrary.use({
 	'RuneScape Quill 8': './src/lib/resources/osrs-font-quill-8.ttf'
 });
 
-export interface BankImageResult {
+interface BankImageResult {
 	image: Buffer;
 	isTransparent: boolean;
 }
