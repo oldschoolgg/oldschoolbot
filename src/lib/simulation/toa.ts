@@ -46,7 +46,7 @@ import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import getOSItem from '../util/getOSItem';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
-import { exponentialPercentScale } from '../util/smallUtils';
+import { bankToStrShortNames, exponentialPercentScale } from '../util/smallUtils';
 import { updateBankSetting } from '../util/updateBankSetting';
 import { TeamLoot } from './TeamLoot';
 
@@ -716,10 +716,10 @@ const TOARooms = [
 ] as const;
 
 export const mileStoneBaseDeathChances = [
-	{ level: 600, chance: 97, minChance: 90 },
-	{ level: 500, chance: 85, minChance: 80 },
-	{ level: 450, chance: 45.5, minChance: null },
-	{ level: 400, chance: 30, minChance: null },
+	{ level: 600, chance: 97, minChance: 97 },
+	{ level: 500, chance: 85, minChance: 93 },
+	{ level: 450, chance: 48.5, minChance: null },
+	{ level: 400, chance: 36, minChance: null },
 	{ level: 350, chance: 25.5, minChance: null },
 	{ level: 300, chance: 23, minChance: null },
 	{ level: 200, chance: 15, minChance: null },
@@ -828,6 +828,19 @@ function calculateTotalEffectiveness({
 	return exponentialPercentScale(sumArr(percents) / percents.length);
 }
 
+function calculateAdditionalDeathChance(raidLevel: RaidLevel, attempts: number) {
+	const minDeathChance = mileStoneBaseDeathChances.find(i => i.level === raidLevel)!.minChance;
+	if (!minDeathChance) return 0;
+	let divisor = 1;
+	for (const number of [50, 100, 200, 300]) {
+		if (attempts >= number) {
+			divisor += 2.5;
+		}
+	}
+	assert(divisor >= 1 && divisor <= 13, `Invalid divisor: ${divisor} [${attempts}]`);
+	return minDeathChance / divisor;
+}
+
 function calculatePointsAndDeaths(
 	effectiveness: number,
 	totalAttempts: number,
@@ -842,7 +855,9 @@ function calculatePointsAndDeaths(
 	let points = estimatePoints(raidLevel, teamSize) / teamSize;
 
 	for (const room of TOARooms) {
-		if (percentChance(deathChance / TOARooms.length)) {
+		let roomDeathChance = deathChance / TOARooms.length;
+		roomDeathChance += calculateAdditionalDeathChance(raidLevel, totalAttempts);
+		if (percentChance(roomDeathChance) || (totalAttempts < 30 && raidLevel >= 500)) {
 			deaths.push(room.id);
 			points = reduceNumByPercent(points, 20);
 		}
@@ -1108,7 +1123,7 @@ export async function toaStartCommand(
 		minSize: 1,
 		maxSize,
 		ironmanAllowed: true,
-		message: `${user.usernameOrMention} is hosting a Tombs of Amascut mass! Use the buttons below to join/leave.`,
+		message: `${user.usernameOrMention} is hosting a Tombs of Amascut mass! **Raid Level: ${raidLevel}**. Use the buttons below to join/leave.`,
 		customDenier: async user => {
 			if (user.minionIsBusy) {
 				return [true, `${user.usernameOrMention} minion is busy`];
@@ -1188,9 +1203,14 @@ export async function toaStartCommand(
 			totalCost.add(effectiveCost);
 
 			const { total } = calculateUserGearPercents(u.gear, raidLevel);
-			debugStr += `**- ${u.usernameOrMention}** (${Emoji.Gear}${total.toFixed(1)}% ${
-				Emoji.CombatSword
-			} ${calcWhatPercent(reductions[u.id], totalReduction).toFixed(1)}%) used ${realCost}\n\n`;
+
+			const gearMarker = users.length > 5 ? 'Gear: ' : Emoji.Gear;
+			const boostsMarker = users.length > 5 ? 'Boosts: ' : Emoji.CombatSword;
+			debugStr += `**- ${u.usernameOrMention}** (${gearMarker}${total.toFixed(
+				1
+			)}% ${boostsMarker} ${calcWhatPercent(reductions[u.id], totalReduction).toFixed(
+				1
+			)}%) used ${bankToStrShortNames(realCost)}\n\n`;
 			return {
 				userID: u.id,
 				effectiveCost
@@ -1553,7 +1573,7 @@ export async function toaHelpCommand(user: MUser, channelID: string) {
 			  ).toLocaleString()} pts, one unique every ${Math.floor(
 					totalKC / totalUniques
 			  )} raids, one unique every ${formatDuration(
-					(userStats.total_toa_duration_minutes * 1000) / totalUniques
+					(userStats.total_toa_duration_minutes * Time.Minute) / totalUniques
 			  )})`
 			: ''
 	}

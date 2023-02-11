@@ -13,7 +13,7 @@ import { convertPercentChance } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { updateLegacyUserBankSetting } from '../../../mahoji/mahojiSettings';
+import { updateLegacyUserBankSetting } from '../../../lib/util/updateLegacyUserBankSetting';
 
 const totalXPFromRaid = {
 	[SkillsEnum.Attack]: 12_000,

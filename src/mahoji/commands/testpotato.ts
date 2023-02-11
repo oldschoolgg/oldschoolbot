@@ -132,6 +132,7 @@ async function giveGear(user: MUser) {
 }
 
 async function resetAccount(user: MUser) {
+	await prisma.slayerTask.deleteMany({ where: { user_id: user.id } });
 	await prisma.activity.deleteMany({ where: { user_id: BigInt(user.id) } });
 	await prisma.commandUsage.deleteMany({ where: { user_id: BigInt(user.id) } });
 	await prisma.gearPreset.deleteMany({ where: { user_id: user.id } });
@@ -140,8 +141,6 @@ async function resetAccount(user: MUser) {
 	await prisma.minigame.deleteMany({ where: { user_id: user.id } });
 	await prisma.playerOwnedHouse.deleteMany({ where: { user_id: user.id } });
 	await prisma.user.deleteMany({ where: { id: user.id } });
-	await prisma.newUser.deleteMany({ where: { id: user.id } });
-	await prisma.slayerTask.deleteMany({ where: { user_id: user.id } });
 	return 'Reset all your data.';
 }
 

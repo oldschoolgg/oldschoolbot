@@ -5,7 +5,7 @@ import { Bank } from 'oldschooljs';
 import { Emoji } from '../../../lib/constants';
 import { roll } from '../../../lib/util';
 import { getItem } from '../../../lib/util/getOSItem';
-import { handleMahojiConfirmation } from '../../mahojiSettings';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 
 // roll(chanceToDouble) to decide if the item doubles
 const chanceToDouble = 100;

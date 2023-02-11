@@ -189,7 +189,11 @@ export function isGroupActivity(data: any): data is GroupMonsterActivityTaskOpti
 	return 'users' in data;
 }
 
-export function isTobActivity(data: any): data is TheatreOfBloodTaskOptions {
+export function isRaidsActivity(data: any): data is RaidsOptions {
+	return 'challengeMode' in data;
+}
+
+export function isTOBOrTOAActivity(data: any): data is TheatreOfBloodTaskOptions {
 	return 'wipedRoom' in data;
 }
 
@@ -358,9 +362,6 @@ export function determineProjectileTypeFromGear(gear: Gear): ProjectileType | nu
 		return 'bolt';
 	}
 	return null;
-}
-export function isRaidsActivity(data: any): data is RaidsOptions {
-	return 'challengeMode' in data;
 }
 
 export function getMonster(str: string): Monster {

@@ -1,5 +1,6 @@
 import { Bank } from 'oldschooljs';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
+import { describe, expect, test } from 'vitest';
 
 import { bankIsEqual } from '../src/lib/stressTest';
 import { mockMUser } from './utils';

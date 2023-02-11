@@ -1,5 +1,5 @@
 import { Embed } from '@discordjs/builders';
-import { chunk } from 'e';
+import { calcWhatPercent, chunk } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { badges, badgesCache, Emoji, usernameCache } from '../../lib/constants';
@@ -233,7 +233,15 @@ async function clLb(user: MUser, channelID: string, inputType: string, ironmenOn
 		user,
 		channelID,
 		chunk(users, LB_PAGE_SIZE).map((subList, i) =>
-			subList.map(({ id, qty }, j) => `${getPos(i, j)}**${getUsername(id)}:** ${qty.toLocaleString()}`).join('\n')
+			subList
+				.map(
+					({ id, qty }, j) =>
+						`${getPos(i, j)}**${getUsername(id)}:** ${qty.toLocaleString()} (${calcWhatPercent(
+							qty,
+							items.length
+						).toFixed(1)}%)`
+				)
+				.join('\n')
 		),
 		`${inputType} Collection Log Leaderboard (${items.length} slots)`
 	);

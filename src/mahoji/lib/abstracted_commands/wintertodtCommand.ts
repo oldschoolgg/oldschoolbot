@@ -4,6 +4,7 @@ import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { Eatables } from '../../../lib/data/eatables';
 import { warmGear } from '../../../lib/data/filterables';
+import { trackLoot } from '../../../lib/lootTrack';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
@@ -71,10 +72,27 @@ export async function wintertodtCommand(user: MUser, channelID: string) {
 		}
 
 		messages.push(`Removed ${amountNeeded}x ${food.name}'s from your bank`);
-		await user.removeItemsFromBank(new Bank().add(food.id, amountNeeded));
+
+		const cost = new Bank().add(food.id, amountNeeded);
+
+		await user.removeItemsFromBank(cost);
 
 		// Track this food cost in Economy Stats
-		await updateBankSetting('economyStats_wintertodtCost', new Bank().add(food.id, amountNeeded));
+		await updateBankSetting('economyStats_wintertodtCost', cost);
+
+		// Track items lost
+		await trackLoot({
+			totalCost: cost,
+			id: 'wintertodt',
+			type: 'Minigame',
+			changeType: 'cost',
+			users: [
+				{
+					id: user.id,
+					cost
+				}
+			]
+		});
 
 		break;
 	}

@@ -212,6 +212,11 @@ export const Minigames: readonly BotMinigame[] = [
 		column: 'stealing_creation'
 	},
 	{
+		name: 'Nightmare Zone',
+		aliases: ['nightmare zone', 'nmz'],
+		column: 'nmz'
+	},
+	{
 		name: "Shades of Mort'ton",
 		aliases: ['som', "shades of mort'ton"],
 		column: 'shades_of_morton'

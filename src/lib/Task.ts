@@ -98,6 +98,7 @@ import { wealthChargeTask } from '../tasks/minions/wealthChargingActivity';
 import { woodcuttingTask } from '../tasks/minions/woodcuttingActivity';
 import { giantsFoundryTask } from './../tasks/minions/minigames/giantsFoundryActivity';
 import { guardiansOfTheRiftTask } from './../tasks/minions/minigames/guardiansOfTheRiftActivity';
+import { nightmareZoneTask } from './../tasks/minions/minigames/nightmareZoneActivity';
 import { modifyBusyCounter } from './busyCounterCache';
 import { convertStoredActivityToFlatActivity, prisma } from './settings/prisma';
 import { activitySync, minionActivityCache, minionActivityCacheDelete } from './settings/settings';
@@ -181,6 +182,7 @@ export const tasks: MinionTask[] = [
 	guardiansOfTheRiftTask,
 	butlerTask,
 	tiaraRunecraftTask,
+	nightmareZoneTask,
 	shadesOfMortonTask,
 	nexTask,
 	bathhouseTask,

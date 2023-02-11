@@ -3,12 +3,12 @@ import { ChatInputCommandInteraction } from 'discord.js';
 import { clamp, shuffleArr, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
-import { handleMahojiConfirmation } from '../../mahoji/mahojiSettings';
 import { SkillsEnum } from '../skilling/types';
 import { ActivityTaskOptions } from '../types/minions';
 import { formatDuration, roll } from '../util';
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
+import { handleMahojiConfirmation } from '../util/handleMahojiConfirmation';
 import { handleTripFinish } from '../util/handleTripFinish';
 import { minionIsBusy } from '../util/minionIsBusy';
 import { minionName } from '../util/minionUtils';

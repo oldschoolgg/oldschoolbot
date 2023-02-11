@@ -1,4 +1,5 @@
 import { itemID } from 'oldschooljs/dist/util';
+import { describe, expect, test } from 'vitest';
 
 import { gorajanWarriorOutfit } from '../src/lib/data/CollectionsExport';
 import { getSimilarItems } from '../src/lib/data/similarItems';
