@@ -38,5 +38,7 @@ jobs:
                   popd
             - name: Generate Prisma Client
               run: yarn gen
+            - name: Build
+              run: yarn build
             - name: Test
               run: yarn test:unit
