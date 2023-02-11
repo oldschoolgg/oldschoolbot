@@ -219,6 +219,7 @@ client.on('guildCreate', guild => {
 
 client.on('shardDisconnect', ({ wasClean, code, reason }) => debugLog('Shard Disconnect', { wasClean, code, reason }));
 client.on('shardError', err => debugLog('Shard Error', { error: err.message }));
+client.on('ready', () => runTimedLoggedFn('OnStartup', async () => onStartup()));
 
 async function main() {
 	client.fastifyServer = makeServer();
@@ -231,7 +232,6 @@ async function main() {
 		runTimedLoggedFn('Startup Scripts', runStartupScripts)
 	]);
 	await runTimedLoggedFn('Log In', () => client.login(botToken));
-	runTimedLoggedFn('OnStartup', async () => onStartup());
 }
 
 process.on('uncaughtException', logError);
