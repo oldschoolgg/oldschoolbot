@@ -64,6 +64,9 @@ class PoHImage {
 	}
 
 	randMinionCoords(): [number, number] {
+		if (process.env.TEST) {
+			return [100, TOP_FLOOR_Y];
+		}
 		const roll = randInt(1, 4);
 		const x = randInt(1, HOUSE_WIDTH);
 		switch (roll) {

@@ -5,6 +5,7 @@ import { Bank, Monsters } from 'oldschooljs';
 import { describe, test } from 'vitest';
 
 import { clImageGenerator } from '../src/lib/collectionLogTask';
+import { pohImageGenerator } from '../src/lib/pohImage';
 import { mahojiChatHead } from '../src/lib/util/chatHeadImage';
 import { makeBankImage } from '../src/lib/util/makeBankImage';
 import { mockMUser } from './utils';
@@ -41,5 +42,16 @@ describe('Images', () => {
 			title: 'Test Image'
 		});
 		await writeFile('./tests/snapshots/bank_1.png', res.file.attachment);
+	});
+
+	test('POH Image', async () => {
+		const result = await pohImageGenerator.run({
+			prayer_altar: 13_197,
+			throne: 13_667,
+			torch: 13_342,
+			mounted_cape: 29_210,
+			background_id: 1
+		} as any);
+		await writeFile('./tests/snapshots/poh_1.png', result);
 	});
 });
