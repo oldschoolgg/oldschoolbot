@@ -4,7 +4,7 @@ import { extname, join, sep } from 'path';
 
 import { production } from '../config';
 
-if (!production) {
+if (!production && !process.env.TEST) {
 	const nodeModules = `${sep}node_modules${sep}`;
 	globalClient._fileChangeWatcher = watch(join(process.cwd(), 'dist/**/*.js'), {
 		persistent: true,

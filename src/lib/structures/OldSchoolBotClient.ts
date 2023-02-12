@@ -1,4 +1,4 @@
-import { FSWatcher } from 'chokidar';
+import type { FSWatcher } from 'chokidar';
 import { Client, ClientOptions, User } from 'discord.js';
 import { FastifyInstance } from 'fastify';
 import { MahojiClient } from 'mahoji';
