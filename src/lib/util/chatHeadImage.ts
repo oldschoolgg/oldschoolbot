@@ -1,6 +1,6 @@
+import { Canvas } from '@napi-rs/canvas';
 import { AttachmentBuilder } from 'discord.js';
 import * as fs from 'fs';
-import { Canvas } from 'skia-canvas/lib';
 
 import { canvasImageFromBuffer, printWrappedText } from './canvasUtil';
 
@@ -62,7 +62,7 @@ export async function newChatHeadImage({ content, head }: { content: string; hea
 	ctx.fillStyle = '#000';
 	printWrappedText(ctx, content, 307, 58, 361);
 
-	return canvas.toBuffer('png');
+	return canvas.encode('png');
 }
 
 export default async function chatHeadImage({ content, head }: { content: string; head: keyof typeof chatHeads }) {

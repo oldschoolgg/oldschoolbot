@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/restrict-plus-operands */
+import { Canvas, Image } from '@napi-rs/canvas';
 import { randInt } from 'e';
 import * as fs from 'fs';
-import fsPromises from 'fs/promises';
+import * as fsPromises from 'fs/promises';
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
-import { Canvas, Image } from 'skia-canvas/lib';
 
 import { monkeyTiers } from '../../monkeyRumble';
 import { Gear } from '../../structures/Gear';
@@ -334,7 +334,7 @@ export async function generateGearImage(
 		}
 	}
 
-	return canvas.toBuffer('png');
+	return canvas.encode('png');
 }
 
 export async function generateAllGearImage(user: MUser) {
@@ -422,5 +422,5 @@ export async function generateAllGearImage(user: MUser) {
 
 	if (!userBg.transparent) bankImageGenerator.drawBorder(ctx, bgSprite, false);
 
-	return canvas.toBuffer('png');
+	return canvas.encode('png');
 }
