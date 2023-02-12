@@ -3,7 +3,7 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import murmurhash from 'murmurhash';
 import { Bank } from 'oldschooljs';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
-import { expect, vi } from 'vitest';
+import { expect } from 'vitest';
 
 import { BitField } from '../src/lib/constants';
 import type { GearSetup } from '../src/lib/gear/types';
