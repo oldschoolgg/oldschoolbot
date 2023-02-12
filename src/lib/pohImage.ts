@@ -34,6 +34,9 @@ const bg2 = fs.readFileSync('./src/lib/poh/images/bg_2.jpg');
 class PoHImage {
 	public imageCache: Map<number, Image> = new Map();
 	public bgImages: Image[] = [];
+	initPromise: Promise<void> | null = this.init();
+	initFinished: boolean = false;
+
 	async init() {
 		this.bgImages.push(await canvasImageFromBuffer(bg));
 		this.bgImages.push(await canvasImageFromBuffer(bg2));
@@ -48,6 +51,7 @@ class PoHImage {
 				this.imageCache.set(id, image);
 			}
 		}
+		this.initFinished = true;
 	}
 
 	generateCanvas(bgId: number): [Canvas, SKRSContext2D] {
@@ -84,6 +88,7 @@ class PoHImage {
 	}
 
 	async run(poh: PlayerOwnedHouse, showSpaces = true) {
+		if (!this.initFinished) await this.initPromise;
 		const [canvas, ctx] = this.generateCanvas(poh.background_id);
 		for (const [key, objects] of objectEntries(Placeholders)) {
 			if (!key || !objects) continue;
@@ -126,4 +131,3 @@ class PoHImage {
 }
 
 export const pohImageGenerator = new PoHImage();
-pohImageGenerator.init();
