@@ -438,6 +438,12 @@ export class BossInstance {
 		await this.init();
 		await this.validateTeam();
 
+		for (const bossUser of this.bossUsers) {
+			if (!bossUser.user.owns(bossUser.itemsToRemove)) {
+				throw `${bossUser.user.rawUsername} doesn't have enough supplies, they need: ${bossUser.itemsToRemove}.`;
+			}
+		}
+
 		const totalCost = new Bank();
 
 		if (this.skipInvalidUsers) {
