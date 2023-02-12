@@ -1,12 +1,11 @@
 import { Canvas, SKRSContext2D } from '@napi-rs/canvas';
-import { User } from '@prisma/client';
 import { calcWhatPercent, objectEntries } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
 import { allCollectionLogs, getCollection, getTotalCl } from '../lib/data/Collections';
 import { IToReturnCollection } from '../lib/data/CollectionsExport';
 import { formatItemStackQuantity, generateHexColorForCashStack, toKMB } from '../lib/util';
-import { fillTextXTimesInCtx, getClippedRegion } from '../lib/util/canvasUtil';
+import { fillTextXTimesInCtx, getClippedRegion, measureTextWidth } from '../lib/util/canvasUtil';
 import getOSItem from '../lib/util/getOSItem';
 import { IBgSprite } from './bankImage';
 
@@ -102,7 +101,6 @@ class CollectionLogTask {
 
 	async generateLogImage(options: {
 		user: MUser;
-		mahojiUser: User;
 		collection: string;
 		type: CollectionLogType;
 		flags: { [key: string]: string | number };
@@ -355,9 +353,9 @@ class CollectionLogTask {
 			let pixelLevel = 25;
 			for (let [type, value] of objectEntries(collectionLog.completions)) {
 				if (
-					ctx.measureText(drawnSoFar).width +
-						ctx.measureText(` / ${type}: `).width +
-						ctx.measureText(value.toLocaleString()).width >=
+					measureTextWidth(ctx, drawnSoFar) +
+						measureTextWidth(ctx, ` / ${type}: `) +
+						measureTextWidth(ctx, value.toLocaleString()) >=
 					255
 				) {
 					pixelLevel += 10;

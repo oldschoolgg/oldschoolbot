@@ -1,6 +1,6 @@
 import { Canvas, Image, loadImage, SKRSContext2D } from '@napi-rs/canvas';
 
-import { formatItemStackQuantity, generateHexColorForCashStack } from '../util';
+import { assert, formatItemStackQuantity, generateHexColorForCashStack } from '../util';
 
 export function fillTextXTimesInCtx(ctx: SKRSContext2D, text: string, x: number, y: number) {
 	ctx.fillText(text, x, y);
@@ -66,7 +66,8 @@ function printMultilineText(ctx: SKRSContext2D, text: string, x: number, y: numb
 		let lineMeasured = ctx.measureText(line);
 		let thisX = Math.floor(x - lineMeasured.width / 2);
 		ctx.fillText(line, thisX, Math.floor(linePositionY));
-		let height = lineMeasured.actualBoundingBoxAscent + lineMeasured.actualBoundingBoxDescent;
+		// eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+		let height: number = lineMeasured.actualBoundingBoxAscent + lineMeasured.actualBoundingBoxDescent;
 		linePositionY += height + 1;
 	}
 }
@@ -76,7 +77,7 @@ const textWrap = (ctx: SKRSContext2D, text: string, wrapWidth: number): string =
 	const result = [];
 	const buffer = [];
 
-	const spaceWidth = ctx.measureText(' ').width;
+	const spaceWidth: number = ctx.measureText(' ').width;
 
 	// Run the loop for each line
 	for (const line of text.split(/\r?\n/)) {
@@ -84,7 +85,7 @@ const textWrap = (ctx: SKRSContext2D, text: string, wrapWidth: number): string =
 
 		// Run the loop for each word
 		for (const word of line.split(' ')) {
-			const wordWidth = ctx.measureText(word).width;
+			const wordWidth: number = ctx.measureText(word).width;
 			const wordWidthWithSpace = wordWidth + spaceWidth;
 
 			if (wordWidthWithSpace > spaceLeft) {
@@ -138,4 +139,10 @@ export async function getClippedRegionImage(
 		ctx.drawImage(image, x, y, width, height, 0, 0, width, height);
 	}
 	return loadImage(await canvas.encode('png'));
+}
+
+export function measureTextWidth(ctx: SKRSContext2D, text: string) {
+	const num = ctx.measureText(text).width as number;
+	assert(typeof num === 'number');
+	return num;
 }
