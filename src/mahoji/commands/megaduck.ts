@@ -1,9 +1,9 @@
 /* eslint-disable prefer-destructuring */
+import { Canvas } from '@napi-rs/canvas';
 import { Time } from 'e';
 import { readFileSync } from 'fs';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
-import { Canvas } from 'skia-canvas/lib';
 
 import { Events } from '../../lib/constants';
 import { defaultMegaDuckLocation, MegaDuckLocation } from '../../lib/minions/types';
@@ -113,7 +113,7 @@ async function makeImage(location: MegaDuckLocation) {
 		ctx.fillRect(xS, yS, 1, 1);
 	}
 
-	const buffer = await canvas.toBuffer('png');
+	const buffer = await canvas.encode('png');
 
 	return {
 		image: buffer,
