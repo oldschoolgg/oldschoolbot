@@ -72,7 +72,7 @@ export function openSeedPack(seedTier: number): Bank {
 	return loot;
 }
 
-export type PlantsList = [number, string, number][];
+type PlantsList = [number, string, number][];
 
 const easyPlants: PlantsList = [
 	// [farmingLevelNeeded, plantToGrow, plantTier]

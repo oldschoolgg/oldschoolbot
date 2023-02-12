@@ -1,7 +1,7 @@
+import { Canvas, Image } from '@napi-rs/canvas';
 import { randArrItem, randInt, roll } from 'e';
 import fs from 'fs/promises';
 import { Item } from 'oldschooljs/dist/meta/types';
-import { Canvas, Image } from 'skia-canvas/lib';
 
 import { canvasImageFromBuffer, printWrappedText } from './util/canvasUtil';
 import { textBoxFile } from './util/chatHeadImage';
@@ -197,7 +197,7 @@ export async function monkeyHeadImage({ monkey, content }: { monkey: Monkey; con
 	ctx.fillStyle = '#000';
 	printWrappedText(ctx, content, 316, 58, 361);
 
-	return canvas.toBuffer('png');
+	return canvas.encode('png');
 }
 
 export interface Monkey {

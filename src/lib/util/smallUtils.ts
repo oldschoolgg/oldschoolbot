@@ -1,10 +1,10 @@
-import { objectEntries, reduceNumByPercent, Time } from 'e';
+import { ButtonBuilder, ButtonStyle } from 'discord.js';
+import { objectEntries, Time } from 'e';
 import { Bank, Items } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { MersenneTwister19937, shuffle } from 'random-js';
 
 import { skillEmoji } from '../data/emojis';
-import { Plank } from '../skilling/skills/construction/constructables';
 import type { ArrayItemsResolved, Skills } from '../types';
 import getOSItem from './getOSItem';
 import { toTitleCase } from './toTitleCase';
@@ -124,13 +124,10 @@ export function averageBank(bank: Bank, kc: number) {
 	return newBank;
 }
 
-export function calcBabyYagaHouseDroprate(xpBeingReceived: number, plank: Plank, constructionLevel: number, cl: Bank) {
-	let rate = 1 / (((xpBeingReceived / 30) * constructionLevel) / 50_000_000);
-	rate *= 75;
-	if (plank === Plank.ElderPlank) rate = reduceNumByPercent(rate, 25);
+export function calcBabyYagaHouseDroprate(xpBeingReceived: number, cl: Bank) {
+	let rate = 1 / (((xpBeingReceived / 30) * 30) / 50_000_000);
 	let amountInCl = cl.amount('Baby yaga house');
 	if (amountInCl > 1) rate *= amountInCl;
-	rate -= constructionLevel * 1.5;
 	return Math.floor(rate);
 }
 
@@ -149,4 +146,16 @@ export function bankToStrShortNames(bank: Bank) {
 		str.push(`${qty}x ${shortName ?? item.name}${qty > 1 ? 's' : ''}`);
 	}
 	return str.join(', ');
+}
+
+export function readableStatName(slot: string) {
+	return toTitleCase(slot.replace('_', ' '));
+}
+
+export function makeEasierFarmingContractButton() {
+	return new ButtonBuilder()
+		.setCustomId('FARMING_CONTRACT_EASIER')
+		.setLabel('Ask for easier Contract')
+		.setStyle(ButtonStyle.Secondary)
+		.setEmoji('977410792754413668');
 }

@@ -1,3 +1,4 @@
+import { Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { table } from 'table';
@@ -10,20 +11,22 @@ import { OSBMahojiCommand } from '../lib/util';
 function makeTable(headers: string[], rows: (string | number)[][]) {
 	return table([headers, ...rows]);
 }
-
 const droprates = [
 	{
 		name: 'Baby yaga house pet',
 		output: () => {
-			const rows: [string, number, number][] = [];
-			for (const lvl of [30, 60, 80, 90, 100, 110, 120]) {
-				for (const con of Constructables) {
-					rows.push([con.name, lvl, calcBabyYagaHouseDroprate(con.xp, lvl, con.input[0], new Bank())]);
-				}
+			const thirtyMinTicks = (Time.Minute * 30) / (Time.Millisecond * 600);
+
+			const rows: [string, number, string][] = [];
+			for (const con of Constructables) {
+				const droprate = calcBabyYagaHouseDroprate(con.xp, new Bank());
+				const numBuiltPerTrip = thirtyMinTicks / con.ticks;
+				rows.push([con.name, droprate, (droprate / numBuiltPerTrip).toFixed(2)]);
 			}
-			rows.sort((a, b) => a[2] - b[2]);
-			return makeTable(['Object', 'Con Lvl', '1 in X Droprate'], rows);
-		}
+			rows.sort((a, b) => a[1] - b[1]);
+			return makeTable(['Object', '1 in X Droprate', 'Num 30min trips'], rows);
+		},
+		notes: ['If more than 1 in CL, droprate is multipled by the amount you have in your CL']
 	},
 	{
 		name: 'Slayer masks/helms',
@@ -60,7 +63,10 @@ export const dropRatesCommand: OSBMahojiCommand = {
 	run: async ({ options }: CommandRunOptions<{ thing: string }>) => {
 		const obj = droprates.find(drop => stringMatches(drop.name, options.thing));
 		if (!obj) return 'Invalid thing';
-		const output = obj.output();
+		let output = obj.output();
+		if (obj.notes) {
+			output += `\n\n**Notes:**\n${obj.notes.join('\n')}`;
+		}
 		if (output.length >= 2000) {
 			return { files: [{ attachment: Buffer.from(output), name: 'droprates.txt' }] };
 		}

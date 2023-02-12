@@ -27,12 +27,7 @@ export const constructionTask: MinionTask = {
 		});
 
 		const loot = new Bank();
-		const petDropRate = calcBabyYagaHouseDroprate(
-			object.xp,
-			object.input[0],
-			user.skillLevel('construction'),
-			user.cl
-		);
+		const petDropRate = calcBabyYagaHouseDroprate(object.xp, user.cl);
 		for (let i = 0; i < quantity; i++) {
 			if (roll(petDropRate)) {
 				loot.add('Baby yaga house');

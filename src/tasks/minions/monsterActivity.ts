@@ -343,7 +343,7 @@ export const monsterTask: MinionTask = {
 			/**
 			 * Slayer masks/helms
 			 */
-			if (effectiveSlayed > 0) {
+			if (effectiveSlayed > 0 && user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.Maskuerade)) {
 				const bankToAdd = new Bank().add(monsterID, effectiveSlayed);
 				const maskHelmForThisMonster = slayerMaskHelms.find(i => i.monsters.includes(monsterID));
 				const matchingMaskOrHelm =
@@ -355,16 +355,7 @@ export const monsterTask: MinionTask = {
 				const currentUserStats = await user.fetchStats();
 				const oldMaskScores = new Bank(currentUserStats.on_task_with_mask_monster_scores as ItemBank);
 				const newMaskScores = oldMaskScores.clone().add(bankToAdd);
-				if (
-					matchingMaskOrHelm &&
-					oldMaskScores.amount(monsterID) < matchingMaskOrHelm.killsRequiredForUpgrade &&
-					newMaskScores.amount(monsterID) > matchingMaskOrHelm.killsRequiredForUpgrade
-				) {
-					loot.add(matchingMaskOrHelm.helm.id);
-				} else if (
-					maskHelmForThisMonster &&
-					!user.owns(maskHelmForThisMonster.mask.id, { includeGear: true })
-				) {
+				if (maskHelmForThisMonster && !user.owns(maskHelmForThisMonster.mask.id, { includeGear: true })) {
 					for (let i = 0; i < effectiveSlayed; i++) {
 						if (roll(maskHelmForThisMonster.maskDropRate)) {
 							loot.add(maskHelmForThisMonster.mask.id);

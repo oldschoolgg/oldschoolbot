@@ -55,19 +55,22 @@ export const bonanzaTask: MinionTask = {
 				amount: calcXP(user, duration, SkillsEnum.Agility),
 				skillName: SkillsEnum.Agility,
 				duration,
-				source: 'BalthazarsBigBonanza'
+				source: 'BalthazarsBigBonanza',
+				minimal: true
 			}),
 			user.addXP({
 				amount: calcXP(user, duration, SkillsEnum.Ranged),
 				skillName: SkillsEnum.Ranged,
 				duration,
-				source: 'BalthazarsBigBonanza'
+				source: 'BalthazarsBigBonanza',
+				minimal: true
 			}),
 			user.addXP({
 				amount: calcXP(user, duration, SkillsEnum.Thieving),
 				skillName: SkillsEnum.Thieving,
 				duration,
-				source: 'BalthazarsBigBonanza'
+				source: 'BalthazarsBigBonanza',
+				minimal: true
 			})
 		]);
 		const loot = new Bank();

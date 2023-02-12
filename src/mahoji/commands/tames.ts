@@ -1,4 +1,5 @@
 import { time } from '@discordjs/builders';
+import { Canvas, Image, loadImage, SKRSContext2D } from '@napi-rs/canvas';
 import { Tame, tame_growth, TameActivity } from '@prisma/client';
 import { toTitleCase } from '@sapphire/utilities';
 import { ChatInputCommandInteraction, User } from 'discord.js';
@@ -18,7 +19,6 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
-import { Canvas, CanvasRenderingContext2D, Image, loadImage } from 'skia-canvas/lib';
 
 import { badges, PerkTier } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
@@ -54,7 +54,7 @@ import {
 	stringMatches
 } from '../../lib/util';
 import { patronMaxTripBonus } from '../../lib/util/calcMaxTripLength';
-import { fillTextXTimesInCtx, getClippedRegion } from '../../lib/util/canvasUtil';
+import { fillTextXTimesInCtx, getClippedRegionImage } from '../../lib/util/canvasUtil';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { makeBankImage } from '../../lib/util/makeBankImage';
@@ -208,15 +208,15 @@ const tameForegrounds = [
 let sprites: {
 	base: {
 		image: Image;
-		slot: Canvas;
-		selectedSlot: Canvas;
-		shinyIcon: Canvas;
+		slot: Image;
+		selectedSlot: Image;
+		shinyIcon: Image;
 	};
 	tames: {
 		id: number;
 		name: string;
 		image: Image;
-		sprites: { type: number; growthStage: Record<tame_growth, Canvas> }[];
+		sprites: { type: number; growthStage: Record<tame_growth, Image> }[];
 	}[];
 	gearIconBg: Image;
 };
@@ -226,9 +226,9 @@ async function initSprites() {
 		gearIconBg: await loadImage(await readFile('./src/lib/resources/images/gear_icon_bg.png')),
 		base: {
 			image: tameSpriteBase,
-			slot: getClippedRegion(tameSpriteBase, 0, 0, 256, 128),
-			selectedSlot: getClippedRegion(tameSpriteBase, 0, 128, 256, 128),
-			shinyIcon: getClippedRegion(tameSpriteBase, 256, 0, 24, 24)
+			slot: await getClippedRegionImage(tameSpriteBase, 0, 0, 256, 128),
+			selectedSlot: await getClippedRegionImage(tameSpriteBase, 0, 128, 256, 128),
+			shinyIcon: await getClippedRegionImage(tameSpriteBase, 256, 0, 24, 24)
 		},
 		tames: await Promise.all(
 			tameSpecies.map(async value => {
@@ -241,16 +241,30 @@ async function initSprites() {
 					id: value.id,
 					name: value.name,
 					image: tameImage,
-					sprites: vars.map(v => {
-						return {
-							type: v,
-							growthStage: {
-								[tame_growth.baby]: getClippedRegion(tameImage, (v - 1) * 96, 0, 96, 96),
-								[tame_growth.juvenile]: getClippedRegion(tameImage, (v - 1) * 96, 96, 96, 96),
-								[tame_growth.adult]: getClippedRegion(tameImage, (v - 1) * 96, 96 * 2, 96, 96)
-							}
-						};
-					})
+					sprites: await Promise.all(
+						vars.map(async v => {
+							return {
+								type: v,
+								growthStage: {
+									[tame_growth.baby]: await getClippedRegionImage(tameImage, (v - 1) * 96, 0, 96, 96),
+									[tame_growth.juvenile]: await getClippedRegionImage(
+										tameImage,
+										(v - 1) * 96,
+										96,
+										96,
+										96
+									),
+									[tame_growth.adult]: await getClippedRegionImage(
+										tameImage,
+										(v - 1) * 96,
+										96 * 2,
+										96,
+										96
+									)
+								}
+							};
+						})
+					)
 				};
 			})
 		)
@@ -258,7 +272,7 @@ async function initSprites() {
 }
 initSprites();
 
-function drawText(ctx: CanvasRenderingContext2D, text: string, x: number, y: number) {
+function drawText(ctx: SKRSContext2D, text: string, x: number, y: number) {
 	const baseFill = ctx.fillStyle;
 	ctx.fillStyle = '#000000';
 	fillTextXTimesInCtx(ctx, text, x, y + 1);
@@ -457,7 +471,7 @@ export async function tameImage(user: MUser): CommandResponse {
 
 	const rawBadges = user.user.badges;
 	const badgesStr = rawBadges.map(num => badges[num]).join(' ');
-	const buffer = await canvas.toBuffer('png');
+	const buffer = await canvas.encode('png');
 
 	return {
 		content: `${badgesStr}${user.usernameOrMention}, ${

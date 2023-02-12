@@ -17,6 +17,7 @@ interface TransactItemsArgs {
 	collectionLog?: boolean;
 	filterLoot?: boolean;
 	dontAddToTempCL?: boolean;
+	otherUpdates?: Prisma.UserUpdateArgs['data'];
 }
 
 declare global {
@@ -115,7 +116,8 @@ export async function transactItemsFromBank({
 		const { newUser } = await mahojiUserSettingsUpdate(userID, {
 			bank: newBank.bank,
 			GP: gpUpdate,
-			...clUpdates
+			...clUpdates,
+			...options.otherUpdates
 		});
 
 		const itemsAdded = new Bank().add(itemsToAdd);

@@ -71,7 +71,8 @@ export enum SlayerTaskUnlocksEnum {
 	// Custom
 	SizeMatters,
 	BlockAndRoll,
-	PoreDecisions
+	PoreDecisions,
+	Maskuerade
 }
 export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 	{
@@ -542,6 +543,14 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		slayerPointCost: 600,
 		canBeRemoved: true,
 		aliases: ['pore decisions', 'poor decisions']
+	},
+	{
+		id: SlayerTaskUnlocksEnum.Maskuerade,
+		name: 'Maskuerade',
+		desc: 'Allows you to get Slayer masks and turn them into helms.',
+		slayerPointCost: 2300,
+		canBeRemoved: true,
+		aliases: ['maskuerade', 'masquerade']
 	}
 ];
 

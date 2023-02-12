@@ -4,10 +4,10 @@ import Monster from 'oldschooljs/dist/structures/Monster';
 
 import { BSOMonsters } from '../minions/data/killableMonsters/custom/customMonsters';
 import { slayerMasters } from '../slayer/slayerMasters';
+import { allSlayerTasks } from '../slayer/tasks';
 import getOSItem from '../util/getOSItem';
-// Mask-erade
+
 // glows if theyre rank 1?
-// masked_kills_on_task
 interface SlayerMaskHelm {
 	mask: Item;
 	helm: Item;
@@ -18,13 +18,12 @@ interface SlayerMaskHelm {
 }
 
 function calculateDroprates(monster: Monster) {
-	let rate = Math.floor((1000 / monster.data.combatLevel ?? 50) * 100 + monster.data.slayerLevelRequired * 5);
-	rate /= 100;
-	rate = Math.trunc(rate);
-	rate *= 100;
+	const task = allSlayerTasks.find(i => i.monsters.includes(monster.id));
+	if (!task) throw new Error(`No slayer task found for ${monster.name}.`);
+	const droprate = task.extendedAmount?.[1] ?? task.amount[1];
 	return {
-		killsRequiredForUpgrade: rate,
-		maskDropRate: Math.floor(rate / 120)
+		killsRequiredForUpgrade: droprate * 5 * 2 * 2,
+		maskDropRate: droprate * 2
 	};
 }
 

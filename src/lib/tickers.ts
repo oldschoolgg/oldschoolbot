@@ -21,7 +21,6 @@ import { logError } from './util/logError';
 import { minionIsBusy } from './util/minionIsBusy';
 
 let lastMessageID: string | null = null;
-let lastMessageGEID: string | null = null;
 const supportEmbed = new Embed()
 	.setAuthor({ name: '⚠️ ⚠️ ⚠️ ⚠️ READ THIS ⚠️ ⚠️ ⚠️ ⚠️' })
 	.addField({
@@ -39,25 +38,6 @@ const supportEmbed = new Embed()
 	.addField({
 		name: '⚠️ Dont ping anyone',
 		value: 'Do not ping mods, or any roles/people in here. You will be muted. Ask your question, and wait.'
-	});
-
-const geEmbed = new Embed()
-	.setAuthor({ name: '⚠️ ⚠️ ⚠️ ⚠️ READ THIS ⚠️ ⚠️ ⚠️ ⚠️' })
-	.addField({
-		name: "⚠️ Don't get scammed",
-		value: 'Beware of people "buying out banks" or buying lots of skilling supplies, which can be worth a lot more in the bot than they pay you. Skilling supplies are often worth a lot more than they are ingame. Don\'t just trust that they\'re giving you a fair price.'
-	})
-	.addField({
-		name: '🔎 Search',
-		value: 'Search this channel first, someone might already be selling/buying what you want.'
-	})
-	.addField({
-		name: '💬 Read the rules/Pins',
-		value: 'Read the pinned rules/instructions before using the channel.'
-	})
-	.addField({
-		name: 'Keep Ads Short',
-		value: 'Keep your ad less than 10 lines long, as short as possible.'
 	});
 
 export const enum PeakTier {
@@ -350,27 +330,6 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 		}
 	},
 	{
-		name: 'ge_channel_messages',
-		timer: null,
-		interval: Time.Minute * 20,
-		cb: async () => {
-			if (!production) return;
-			const guild = getSupportGuild();
-			const channel = guild?.channels.cache.get(Channel.GrandExchange) as TextChannel | undefined;
-			if (!channel) return;
-			const messages = await channel.messages.fetch({ limit: 5 });
-			if (messages.some(m => m.author.id === globalClient.user!.id)) return;
-			if (lastMessageGEID) {
-				const message = await channel.messages.fetch(lastMessageGEID).catch(noOp);
-				if (message) {
-					await message.delete();
-				}
-			}
-			const res = await channel.send({ embeds: [geEmbed] });
-			lastMessageGEID = res.id;
-		}
-	},
-	{
 		name: 'tame_activities',
 		timer: null,
 		interval: Time.Second * 5,
@@ -441,7 +400,9 @@ export function initTickers() {
 		const fn = async () => {
 			try {
 				if (globalClient.isShuttingDown) return;
+				debugLog(`Starting ${ticker.name} ticker`);
 				await ticker.cb();
+				debugLog(`Finished ${ticker.name} ticker`);
 			} catch (err) {
 				logError(err);
 			} finally {
