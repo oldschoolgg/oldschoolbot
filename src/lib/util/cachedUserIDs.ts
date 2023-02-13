@@ -1,4 +1,5 @@
 import { ChannelType } from 'discord.js';
+import { objectEntries } from 'e';
 
 import { CLIENT_ID, OWNER_IDS } from '../../config';
 import { prisma } from '../settings/prisma';
@@ -33,14 +34,30 @@ export function memoryAnalysis() {
 	let voiceChannels = 0;
 	let guildTextChannels = 0;
 	let roles = 0;
+	let members = 0;
+	let channelCounter: Record<string | number, number> = {} as any;
+	let messages = 0;
+
 	for (const guild of globalClient.guilds.cache.values()) {
-		emojis += guild.emojis.cache.size;
 		for (const channel of guild.channels.cache.values()) {
-			if (channel.type === ChannelType.GuildVoice) voiceChannels++;
-			if (channel.type === ChannelType.GuildText) guildTextChannels++;
+			channelCounter[channel.type] ? channelCounter[channel.type]++ : (channelCounter[channel.type] = 1);
+			if ('messages' in channel) {
+				messages += channel.messages.cache.size;
+			}
 		}
 		roles += guild.roles.cache.size;
+		members += guild.members.cache.size;
+		emojis += guild.emojis.cache.size;
 	}
+
+	const channelTypeEntries = Object.entries(ChannelType);
+
+	for (const [key, value] of objectEntries(channelCounter)) {
+		const name = channelTypeEntries.find(i => i[1] === Number(key))?.[0] ?? 'Unknown';
+		delete channelCounter[key];
+		channelCounter[`${name} Channels`] = value;
+	}
+
 	return {
 		guilds,
 		emojis,
@@ -48,7 +65,10 @@ export function memoryAnalysis() {
 		voiceChannels,
 		guildTextChannels,
 		roles,
-		activeIDs: CACHED_ACTIVE_USER_IDS.size
+		activeIDs: CACHED_ACTIVE_USER_IDS.size,
+		members,
+		...channelCounter,
+		messages
 	};
 }
 

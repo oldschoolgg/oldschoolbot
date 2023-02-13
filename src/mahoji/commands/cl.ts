@@ -9,7 +9,6 @@ import {
 import { allCollectionLogs } from '../../lib/data/Collections';
 import { toTitleCase } from '../../lib/util/toTitleCase';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const collectionLogCommand: OSBMahojiCommand = {
 	name: 'cl',
@@ -38,8 +37,7 @@ export const collectionLogCommand: OSBMahojiCommand = {
 							];
 						})
 						.flat(3)
-						.filter(i => (!value ? true : i.name.toLowerCase().includes(value)))
-				];
+				].filter(i => (!value ? true : i.name.toLowerCase().includes(value)));
 			}
 		},
 		{
@@ -87,7 +85,6 @@ export const collectionLogCommand: OSBMahojiCommand = {
 		if (options.all) flags.all = 'all';
 		const result = await clImageGenerator.generateLogImage({
 			user,
-			mahojiUser: await mahojiUsersSettingsFetch(userID),
 			type: options.type ?? 'collection',
 			flags,
 			collection: options.name

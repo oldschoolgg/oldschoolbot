@@ -4,6 +4,7 @@ import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { BitField, Emoji, minionBuyButton } from '../../../lib/constants';
 import { roboChimpSyncData, roboChimpUserFetch } from '../../../lib/roboChimp';
 import { makeComponents } from '../../../lib/util';
+import { makeAutoContractButton, makeBirdHouseTripButton } from '../../../lib/util/globalInteractions';
 import { minionStatus } from '../../../lib/util/minionStatus';
 import { makeRepeatTripButtons } from '../../../lib/util/repeatStoredTrip';
 import { calculateBirdhouseDetails } from './birdhousesCommand';
@@ -73,23 +74,11 @@ export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptio
 	);
 
 	if (!user.minionIsBusy && birdhouseDetails.isReady && !user.bitfield.includes(BitField.DisableBirdhouseRunButton)) {
-		buttons.push(
-			new ButtonBuilder()
-				.setCustomId('DO_BIRDHOUSE_RUN')
-				.setLabel('Birdhouse Run')
-				.setEmoji('692946556399124520')
-				.setStyle(ButtonStyle.Secondary)
-		);
+		buttons.push(makeBirdHouseTripButton());
 	}
 
 	if (!user.minionIsBusy && (await canRunAutoContract(user))) {
-		buttons.push(
-			new ButtonBuilder()
-				.setCustomId('AUTO_FARMING_CONTRACT')
-				.setLabel('Auto Farming Contract')
-				.setEmoji('977410792754413668')
-				.setStyle(ButtonStyle.Secondary)
-		);
+		buttons.push(makeAutoContractButton());
 	}
 
 	if (!user.minionIsBusy) {
