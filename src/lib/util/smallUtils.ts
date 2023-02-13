@@ -3,9 +3,9 @@ import { objectEntries, Time } from 'e';
 import { Bank, Items } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { MersenneTwister19937, shuffle } from 'random-js';
+
 import { ClueTiers } from '../clues/clueTiers';
 import { PerkTier } from '../constants';
-
 import { skillEmoji } from '../data/emojis';
 import type { ArrayItemsResolved, Skills } from '../types';
 import getOSItem from './getOSItem';
