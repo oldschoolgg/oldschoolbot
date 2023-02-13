@@ -3,9 +3,9 @@ import { Bank } from 'oldschooljs';
 
 import { BitField } from '../../../lib/constants';
 import { formatSkillRequirements, stringMatches, toKMB } from '../../../lib/util';
-import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import resolveItems from '../../../lib/util/resolveItems';
-import { handleMahojiConfirmation, updateBankSetting } from '../../mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 export async function bankBgCommand(interaction: ChatInputCommandInteraction, user: MUser, name: string) {
 	const bankImages = bankImageGenerator.backgroundImages;
@@ -60,7 +60,7 @@ export async function bankBgCommand(interaction: ChatInputCommandInteraction, us
 	}
 
 	// Check they have the required perk tier.
-	if (selectedImage.perkTierNeeded && getUsersPerkTier(user) < selectedImage.perkTierNeeded) {
+	if (selectedImage.perkTierNeeded && user.perkTier() < selectedImage.perkTierNeeded) {
 		return `This background is only available for Tier ${Number(selectedImage.perkTierNeeded) - 1} patrons.`;
 	}
 

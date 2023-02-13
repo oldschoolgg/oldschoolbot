@@ -1,13 +1,12 @@
 /* eslint-disable @typescript-eslint/restrict-plus-operands */
+import { Canvas } from '@napi-rs/canvas';
 import * as fs from 'fs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
-import { Canvas } from 'skia-canvas/lib';
 
-import { Gear } from '../../structures/Gear';
-import { toTitleCase } from '../../util';
+import { Gear, maxDefenceStats, maxOffenceStats } from '../../structures/Gear';
 import { canvasImageFromBuffer, drawItemQuantityText, drawTitleText, fillTextXTimesInCtx } from '../../util/canvasUtil';
-import { GearSetupType, GearSetupTypes, maxDefenceStats, maxOffenceStats } from '..';
-import { GearSetup } from '../types';
+import { toTitleCase } from '../../util/toTitleCase';
+import { GearSetup, GearSetupType, GearSetupTypes } from '../types';
 
 const gearTemplateFile = fs.readFileSync('./src/lib/resources/images/gear_template.png');
 const gearTemplateCompactFile = fs.readFileSync('./src/lib/resources/images/gear_template_compact.png');
@@ -234,7 +233,7 @@ export async function generateGearImage(
 		}
 	}
 
-	return canvas.toBuffer('png');
+	return canvas.encode('png');
 }
 
 export async function generateAllGearImage(user: MUser) {
@@ -322,5 +321,5 @@ export async function generateAllGearImage(user: MUser) {
 
 	if (!userBg.transparent) bankImageGenerator.drawBorder(ctx, bgSprite, false);
 
-	return canvas.toBuffer('png');
+	return canvas.encode('png');
 }

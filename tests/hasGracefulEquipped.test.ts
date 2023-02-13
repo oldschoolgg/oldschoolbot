@@ -1,4 +1,6 @@
-import { constructGearSetup, hasGracefulEquipped } from '../src/lib/gear';
+import { describe, expect, test } from 'vitest';
+
+import { constructGearSetup, hasGracefulEquipped } from '../src/lib/structures/Gear';
 
 describe('hasGracefulEquipped', () => {
 	test('has graceful equipped', () => {

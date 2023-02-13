@@ -3,9 +3,9 @@ import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
-import { Events } from '../../../lib/constants';
+import { Events, MAX_LEVEL } from '../../../lib/constants';
 import { hasWildyHuntGearEquipped } from '../../../lib/gear/functions/hasWildyHuntGearEquipped';
-import { trackLoot } from '../../../lib/settings/prisma';
+import { trackLoot } from '../../../lib/lootTrack';
 import { calcLootXPHunting, generateHerbiTable } from '../../../lib/skilling/functions/calcsHunter';
 import Hunter from '../../../lib/skilling/skills/hunter/hunter';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -14,7 +14,7 @@ import { HunterActivityTaskOptions } from '../../../lib/types/minions';
 import { rand, roll, skillingPetDropRate, stringMatches } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
-import { updateBankSetting } from '../../../mahoji/mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { BLACK_CHIN_ID, HERBIBOAR_ID } from './../../../lib/constants';
 
 const riskDeathNumbers = [
@@ -55,7 +55,7 @@ export const hunterTask: MinionTask = {
 		if (!creature) return;
 
 		let [successfulQuantity, xpReceived] = calcLootXPHunting(
-			Math.min(Math.floor(currentLevel + (usingHuntPotion ? 2 : 0)), 99),
+			Math.min(Math.floor(currentLevel + (usingHuntPotion ? 2 : 0)), MAX_LEVEL),
 			creature,
 			quantity
 		);
@@ -191,8 +191,15 @@ export const hunterTask: MinionTask = {
 			changeType: 'loot',
 			duration,
 			kc: quantity,
-			loot,
-			type: 'Skilling'
+			totalLoot: loot,
+			type: 'Skilling',
+			users: [
+				{
+					id: user.id,
+					duration,
+					loot
+				}
+			]
 		});
 
 		handleTripFinish(user, channelID, str, undefined, data, loot);

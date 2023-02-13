@@ -7,8 +7,9 @@ import { BitField } from '../../../lib/constants';
 import { roboChimpUserFetch } from '../../../lib/roboChimp';
 import { prisma } from '../../../lib/settings/prisma';
 import { assert } from '../../../lib/util';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
-import { handleMahojiConfirmation, mahojiUsersSettingsFetch } from '../../mahojiSettings';
+import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
 
 export async function ironmanCommand(user: MUser, interaction: ChatInputCommandInteraction, permanent?: boolean) {
 	if (minionIsBusy(user.id)) return 'Your minion is busy.';
@@ -76,8 +77,6 @@ After becoming an ironman:
 		| 'id'
 		| 'pets'
 		| 'RSN'
-		| 'patreon_id'
-		| 'github_id'
 		| 'bitfield';
 
 	const bitFieldsToKeep: BitField[] = [
@@ -105,8 +104,6 @@ After becoming an ironman:
 		bank_sort_method: mUser.bank_sort_method,
 		bank_sort_weightings: mUser.bank_sort_weightings as ItemBank,
 		minion_bought_date: mUser.minion_bought_date,
-		github_id: mUser.github_id,
-		patreon_id: mUser.patreon_id,
 		RSN: mUser.RSN,
 		premium_balance_expiry_date: mUser.premium_balance_expiry_date,
 		premium_balance_tier: mUser.premium_balance_tier,
@@ -115,6 +112,7 @@ After becoming an ironman:
 	};
 
 	try {
+		await prisma.farmedCrop.deleteMany({ where: { user_id: user.id } }).catch(noOp);
 		await prisma.user.delete({
 			where: { id: user.id }
 		});

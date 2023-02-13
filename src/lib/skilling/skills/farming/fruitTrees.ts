@@ -5,6 +5,7 @@ import { Plant } from '../../types';
 
 const fruitTrees: Plant[] = [
 	{
+		id: itemID('Cooking apple'),
 		level: 27,
 		plantXp: 22,
 		checkXp: 1199.5,
@@ -45,6 +46,7 @@ const fruitTrees: Plant[] = [
 		timePerHarvest: 10
 	},
 	{
+		id: itemID('Banana'),
 		level: 33,
 		plantXp: 28,
 		checkXp: 1750.5,
@@ -85,6 +87,7 @@ const fruitTrees: Plant[] = [
 		timePerHarvest: 10
 	},
 	{
+		id: itemID('Orange'),
 		level: 39,
 		plantXp: 35.5,
 		checkXp: 2470.2,
@@ -125,6 +128,7 @@ const fruitTrees: Plant[] = [
 		timePerHarvest: 10
 	},
 	{
+		id: itemID('Curry leaf'),
 		level: 42,
 		plantXp: 40,
 		checkXp: 2906.9,
@@ -165,6 +169,7 @@ const fruitTrees: Plant[] = [
 		timePerHarvest: 10
 	},
 	{
+		id: itemID('Pineapple'),
 		level: 51,
 		plantXp: 57,
 		checkXp: 4605.7,
@@ -205,6 +210,7 @@ const fruitTrees: Plant[] = [
 		timePerHarvest: 10
 	},
 	{
+		id: itemID('Papaya fruit'),
 		level: 57,
 		plantXp: 72,
 		checkXp: 6146.4,
@@ -245,6 +251,7 @@ const fruitTrees: Plant[] = [
 		timePerHarvest: 10
 	},
 	{
+		id: itemID('Coconut'),
 		level: 68,
 		plantXp: 110.5,
 		checkXp: 10_150.1,
@@ -285,6 +292,7 @@ const fruitTrees: Plant[] = [
 		timePerHarvest: 10
 	},
 	{
+		id: itemID('Dragonfruit'),
 		level: 81,
 		plantXp: 140,
 		checkXp: 17_335,

@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { Guild } from 'discord.js';
 import { noOp, notEmpty } from 'e';
 
@@ -10,6 +11,8 @@ import { prisma } from '../lib/settings/prisma';
 import Skills from '../lib/skilling/skills';
 import { convertXPtoLVL } from '../lib/util';
 import { logError } from '../lib/util/logError';
+import { TeamLoot } from './simulation/TeamLoot';
+import { ItemBank } from './types';
 
 function addToUserMap(userMap: Record<string, string[]>, id: string, reason: string) {
 	if (!userMap[id]) userMap[id] = [];
@@ -19,6 +22,13 @@ function addToUserMap(userMap: Record<string, string[]>, id: string, reason: str
 const minigames = Minigames.map(game => game.column).filter(i => i !== 'tithe_farm');
 
 const collections = ['pets', 'skilling', 'clues', 'bosses', 'minigames', 'raids', 'slayer', 'other', 'custom'];
+
+for (const cl of collections) {
+	const items = getCollectionItems(cl);
+	if (!items || items.length === 0) {
+		throw new Error(`${cl} isn't a valid CL.`);
+	}
+}
 
 const mostSlayerPointsQuery = `SELECT id, 'Most Points' as desc
 FROM users
@@ -53,12 +63,13 @@ async function addRoles({
 }): Promise<string> {
 	let added: string[] = [];
 	let removed: string[] = [];
-	let _role = await g.roles.fetch(role);
-	if (!_role) return 'Could not check role';
+	let _role = await g.roles.fetch(role).catch(noOp);
+	if (!_role) return `\nCould not check ${role} role`;
 	for (const u of users.filter(notEmpty)) {
 		await g.members.fetch(u).catch(noOp);
 	}
 	const roleName = _role.name!;
+	let noChangeUserDescriptions: string[] = [];
 	for (const mem of g.members.cache.values()) {
 		const mUser = await mUserFetch(mem.user.id);
 		if (mem.roles.cache.has(role) && !users.includes(mem.user.id)) {
@@ -75,6 +86,7 @@ async function addRoles({
 		}
 
 		if (users.includes(mem.user.id)) {
+			noChangeUserDescriptions.push(`${mem.user.username}`);
 			if (production && !mem.roles.cache.has(role)) {
 				added.push(mem.user.username);
 				await mem.roles.add(role).catch(noOp);
@@ -103,10 +115,10 @@ async function addRoles({
 		}
 		str += `\n${userArr.join(',')}`;
 	}
-	if (added.length || removed.length) {
+	if (added.length > 0 || removed.length > 0) {
 		str += '\n';
 	} else {
-		return `\nNo changes for **${roleName}**`;
+		return `**No Changes:** ${str}`;
 	}
 	return str;
 }
@@ -116,7 +128,7 @@ export async function runRolesTask() {
 	if (!g) throw new Error('No support guild');
 	const skillVals = Object.values(Skills);
 
-	let result = '';
+	let results: string[] = [];
 	// eslint-disable-next-line @typescript-eslint/unbound-method
 	const q = async <T>(str: string) => {
 		const result = await prisma.$queryRawUnsafe<T>(str).catch(err => {
@@ -171,7 +183,7 @@ export async function runRolesTask() {
 			.sort((a: any, b: any) => b.totalLevel - a.totalLevel)[0];
 		topSkillers.push(rankOneTotal.id);
 
-		result += await addRoles({ g: g!, users: topSkillers, role: Roles.TopSkiller, badge: 9 });
+		results.push(await addRoles({ g: g!, users: topSkillers, role: Roles.TopSkiller, badge: 9 }));
 	}
 
 	// Top Collectors
@@ -256,7 +268,7 @@ SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 			topCollectors.push(id);
 		}
 
-		result += await addRoles({ g: g!, users: topCollectors, role: Roles.TopCollector, badge: 10, userMap });
+		results.push(await addRoles({ g: g!, users: topCollectors, role: Roles.TopCollector, badge: 10, userMap }));
 	}
 
 	// Top sacrificers
@@ -272,10 +284,16 @@ SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
   SELECT (SELECT COUNT(*) FROM JSON_OBJECT_KEYS("sacrificedBank")) sacbanklength, id FROM users
 ) u
 ORDER BY u.sacbanklength DESC LIMIT 1;`);
+		const mostUniquesIron = await q<any[]>(`SELECT u.id, u.sacbanklength FROM (
+  SELECT (SELECT COUNT(*) FROM JSON_OBJECT_KEYS("sacrificedBank")) sacbanklength, id FROM users WHERE "minion.ironman" = true
+) u
+ORDER BY u.sacbanklength DESC LIMIT 1;`);
 		topSacrificers.push(mostUniques[0].id);
 		addToUserMap(userMap, mostUniques[0].id, 'Most Uniques Sacrificed');
+		topSacrificers.push(mostUniquesIron[0].id);
+		addToUserMap(userMap, mostUniquesIron[0].id, 'Most Ironman Uniques Sacrificed');
 
-		result += await addRoles({ g: g!, users: topSacrificers, role: Roles.TopSacrificer, badge: 8, userMap });
+		results.push(await addRoles({ g: g!, users: topSacrificers, role: Roles.TopSacrificer, badge: 8, userMap }));
 	}
 
 	// Top minigamers
@@ -298,13 +316,15 @@ LIMIT 1;`
 			addToUserMap(userMap, id, `Rank 1 ${m}`);
 		}
 
-		result += await addRoles({
-			g: g!,
-			users: topMinigamers.map(i => i[0]),
-			role: Roles.TopMinigamer,
-			badge: 11,
-			userMap
-		});
+		results.push(
+			await addRoles({
+				g: g!,
+				users: topMinigamers.map(i => i[0]),
+				role: Roles.TopMinigamer,
+				badge: 11,
+				userMap
+			})
+		);
 	}
 
 	// Top clue hunters
@@ -331,13 +351,15 @@ LIMIT 1;`
 			addToUserMap(userMap, id, `Rank 1 ${n} Clues`);
 		}
 
-		result += await addRoles({
-			g: g!,
-			users: topClueHunters.map(i => i[0]),
-			role: Roles.TopClueHunter,
-			badge: null,
-			userMap
-		});
+		results.push(
+			await addRoles({
+				g: g!,
+				users: topClueHunters.map(i => i[0]),
+				role: Roles.TopClueHunter,
+				badge: null,
+				userMap
+			})
+		);
 	}
 
 	// Top farmers
@@ -371,13 +393,15 @@ LIMIT 2;`
 			addToUserMap(userMap, id, desc);
 		}
 
-		result += await addRoles({
-			g: g!,
-			users: res.map(i => i[0]),
-			role: '894194027363205150',
-			badge: null,
-			userMap
-		});
+		results.push(
+			await addRoles({
+				g: g!,
+				users: res.map(i => i[0]),
+				role: '894194027363205150',
+				badge: null,
+				userMap
+			})
+		);
 	}
 
 	// Top slayers
@@ -395,13 +419,64 @@ LIMIT 2;`
 			addToUserMap(userMap, id, desc);
 		}
 
-		result += await addRoles({
-			g: g!,
-			users: topSlayers.map(i => i[0]),
-			role: Roles.TopSlayer,
-			badge: null,
-			userMap
+		results.push(
+			await addRoles({
+				g: g!,
+				users: topSlayers.map(i => i[0]),
+				role: Roles.TopSlayer,
+				badge: null,
+				userMap
+			})
+		);
+	}
+
+	// Top giveawayers
+	async function giveaways() {
+		const GIVEAWAY_CHANNELS = [
+			'792691343284764693',
+			'732207379818479756',
+			'342983479501389826',
+			'982989775399174184',
+			'346304390858145792'
+		];
+		const res = await prisma.$queryRaw<{ user_id: string; qty: number }[]>`SELECT user_id, COUNT(user_id) AS qty
+FROM giveaway
+WHERE channel_id IN (${Prisma.join(GIVEAWAY_CHANNELS)})
+AND user_id NOT IN ('157797566833098752')
+GROUP BY user_id
+ORDER BY qty DESC
+LIMIT 50;`;
+		const userIDsToCheck = res.map(i => i.user_id);
+
+		const giveawayBank = new TeamLoot();
+
+		const giveaways = await prisma.giveaway.findMany({
+			where: {
+				channel_id: {
+					in: GIVEAWAY_CHANNELS
+				},
+				user_id: {
+					in: userIDsToCheck
+				}
+			}
 		});
+		for (const giveaway of giveaways) {
+			giveawayBank.add(giveaway.user_id, giveaway.loot as ItemBank);
+		}
+
+		let userMap = {};
+		const [[highestID, loot]] = giveawayBank.entries().sort((a, b) => b[1].value() - a[1].value());
+		addToUserMap(userMap, highestID, `Most Value Given Away (${loot.value()})`);
+
+		results.push(
+			await addRoles({
+				g: g!,
+				users: [highestID],
+				role: '1052481561603346442',
+				badge: null,
+				userMap
+			})
+		);
 	}
 
 	const tup = [
@@ -411,7 +486,8 @@ LIMIT 2;`
 		['Top Sacrificers', topSacrificers],
 		['Top Collectors', topCollector],
 		['Top Skillers', topSkillers],
-		['Top Farmers', farmers]
+		['Top Farmers', farmers],
+		['Top Giveawayers', giveaways]
 	] as const;
 
 	let failed: string[] = [];
@@ -426,8 +502,9 @@ LIMIT 2;`
 		})
 	);
 
-	let res = result || 'Roles task: nothing to add or remove.';
-	res += `\n\n${failed.length > 0 ? `Failed: ${failed.join(', ')}` : ''}`;
+	let res = `**Roles**
+${results.join('\n')}
+${failed.length > 0 ? `Failed: ${failed.join(', ')}` : ''}`;
 
 	return res;
 }

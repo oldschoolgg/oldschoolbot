@@ -1,8 +1,9 @@
 import { activity_type_enum } from '@prisma/client';
-import { ActionRowBuilder, AttachmentBuilder, ButtonBuilder, MessageCollector } from 'discord.js';
+import { AttachmentBuilder, ButtonBuilder, MessageCollector } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
+import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
 import { updateGPTrackSetting, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { ClueTiers } from '../clues/clueTiers';
@@ -12,12 +13,14 @@ import { handlePassiveImplings } from '../implings';
 import { triggerRandomEvent } from '../randomEvents';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import { ActivityTaskOptions } from '../types/minions';
-import { channelIsSendable } from '../util';
+import { channelIsSendable, makeComponents } from '../util';
 import {
+	makeAutoContractButton,
 	makeBirdHouseTripButton,
 	makeDoClueButton,
 	makeNewSlayerTaskButton,
 	makeOpenCasketButton,
+	makeOpenSeedPackButton,
 	makeRepeatTripButton
 } from './globalInteractions';
 import { sendToChannelID } from './webhook';
@@ -79,21 +82,22 @@ export async function handleTripFinish(
 	attachment: AttachmentBuilder | Buffer | undefined,
 	data: ActivityTaskOptions,
 	loot: Bank | null,
-	_messages?: string[]
+	_messages?: string[],
+	_components?: ButtonBuilder[]
 ) {
-	const { perkTier } = user;
+	const perkTier = user.perkTier();
 	const messages: string[] = [];
 	for (const effect of tripFinishEffects) await effect.fn({ data, user, loot, messages });
 
-	const clueReceived = loot ? ClueTiers.find(tier => loot.amount(tier.scrollID) > 0) : undefined;
+	const clueReceived = loot ? ClueTiers.filter(tier => loot.amount(tier.scrollID) > 0) : [];
 
 	if (_messages) messages.push(..._messages);
 	if (messages.length > 0) {
 		message += `\n**Messages:** ${messages.join(', ')}`;
 	}
 
-	if (clueReceived && perkTier < PerkTier.Two) {
-		message += `\n${Emoji.Casket} **You got a ${clueReceived.name} clue scroll** in your loot.`;
+	if (clueReceived.length > 0 && perkTier < PerkTier.Two) {
+		clueReceived.map(clue => (message += `\n${Emoji.Casket} **You got a ${clue.name} clue scroll** in your loot.`));
 	}
 
 	const existingCollector = collectors.get(user.id);
@@ -106,25 +110,39 @@ export async function handleTripFinish(
 	const channel = globalClient.channels.cache.get(channelID);
 	if (!channelIsSendable(channel)) return;
 
-	const components = new ActionRowBuilder<ButtonBuilder>();
-	components.addComponents(makeRepeatTripButton());
+	const components: ButtonBuilder[] = [];
+	components.push(makeRepeatTripButton());
 	const casketReceived = loot ? ClueTiers.find(i => loot?.has(i.id)) : undefined;
-	if (casketReceived) components.addComponents(makeOpenCasketButton(casketReceived));
+	if (casketReceived) components.push(makeOpenCasketButton(casketReceived));
 	if (perkTier > PerkTier.One) {
-		if (clueReceived) components.addComponents(makeDoClueButton(clueReceived));
+		if (clueReceived.length > 0) clueReceived.map(clue => components.push(makeDoClueButton(clue)));
 		const birdHousedetails = await calculateBirdhouseDetails(user.id);
 		if (birdHousedetails.isReady && !user.bitfield.includes(BitField.DisableBirdhouseRunButton))
-			components.addComponents(makeBirdHouseTripButton());
+			components.push(makeBirdHouseTripButton());
+
+		if (await canRunAutoContract(user)) components.push(makeAutoContractButton());
+
 		const { currentTask } = await getUsersCurrentSlayerInfo(user.id);
-		if ((currentTask === null || currentTask.quantity_remaining <= 0) && data.type === 'MonsterKilling') {
-			components.addComponents(makeNewSlayerTaskButton());
+		if (
+			(currentTask === null || currentTask.quantity_remaining <= 0) &&
+			['MonsterKilling', 'Inferno', 'FightCaves'].includes(data.type)
+		) {
+			components.push(makeNewSlayerTaskButton());
+		}
+		if (loot?.has('Seed pack')) {
+			components.push(makeOpenSeedPackButton());
 		}
 	}
+
+	if (_components) {
+		components.push(..._components);
+	}
+
 	handleTriggerShootingStar(user, data, components);
 
 	sendToChannelID(channelID, {
 		content: message,
 		image: attachment,
-		components: components.components.length > 0 ? [components] : undefined
+		components: components.length > 0 ? makeComponents(components) : undefined
 	});
 }

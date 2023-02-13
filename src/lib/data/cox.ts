@@ -1,4 +1,3 @@
-import { captureMessage } from '@sentry/minimal';
 import {
 	calcPercentOfNum,
 	calcWhatPercent,
@@ -14,13 +13,14 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { ChambersOfXericOptions } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 
 import { checkUserCanUseDegradeableItem } from '../degradeableItems';
-import { constructGearSetup, GearStats } from '../gear';
+import { GearStats } from '../gear/types';
 import { getMinigameScore } from '../settings/minigames';
 import { SkillsEnum } from '../skilling/types';
-import { Gear } from '../structures/Gear';
+import { constructGearSetup, Gear } from '../structures/Gear';
 import { Skills } from '../types';
 import { randomVariation } from '../util';
 import getOSItem from '../util/getOSItem';
+import { logError } from '../util/logError';
 
 export const bareMinStats: Skills = {
 	attack: 80,
@@ -105,7 +105,7 @@ export async function createTeam(
 
 		points = Math.floor(randomVariation(points, 5));
 		if (points < 1 || points > 60_000) {
-			captureMessage(`${u.usernameOrMention} had ${points} points in a team of ${users.length}.`);
+			logError(`${u.usernameOrMention} had ${points} points in a team of ${users.length}.`);
 			points = 10_000;
 		}
 
@@ -236,7 +236,7 @@ export const minimumCoxSuppliesNeeded = new Bank({
 	'Super restore(4)': 5
 });
 
-export async function checkCoxTeam(users: MUser[], cm: boolean): Promise<string | null> {
+export async function checkCoxTeam(users: MUser[], cm: boolean, quantity: number = 1): Promise<string | null> {
 	const hasHerbalist = users.some(u => u.skillLevel(SkillsEnum.Herblore) >= 78);
 	if (!hasHerbalist) {
 		return 'nobody with atleast level 78 Herblore';
@@ -245,9 +245,12 @@ export async function checkCoxTeam(users: MUser[], cm: boolean): Promise<string 
 	if (!hasFarmer) {
 		return 'nobody with atleast level 55 Farming';
 	}
-	const userWithoutSupplies = users.find(u => !u.bank.has(minimumCoxSuppliesNeeded));
+	const suppliesNeeded = minimumCoxSuppliesNeeded.clone().multiply(quantity);
+	const userWithoutSupplies = users.find(u => !u.bank.has(suppliesNeeded));
 	if (userWithoutSupplies) {
-		return `${userWithoutSupplies.usernameOrMention} doesn't have enough supplies`;
+		return `${userWithoutSupplies.usernameOrMention} doesn't have enough supplies for ${quantity} Raid${
+			quantity > 1 ? 's' : ''
+		}`;
 	}
 
 	for (const user of users) {
@@ -312,12 +315,6 @@ async function kcEffectiveness(u: MUser, challengeMode: boolean, isSolo: boolean
 	const kcEffectiveness = Math.min(100, calcWhatPercent(kc, cap));
 	return kcEffectiveness;
 }
-
-const speedReductionForGear = 16;
-const speedReductionForKC = 40;
-const totalSpeedReductions = speedReductionForGear + speedReductionForKC + 10 + 5;
-const baseDuration = Time.Minute * 83;
-const baseCmDuration = Time.Minute * 110;
 
 const { ceil } = Math;
 function calcPerc(perc: number, num: number) {
@@ -425,13 +422,25 @@ const itemBoosts: ItemBoost[][] = [
 	]
 ];
 
+const speedReductionForGear = 16;
+const speedReductionForKC = 40;
+
+const maxSpeedReductionFromItems = itemBoosts.reduce(
+	(sum, items) => sum + Math.max(...items.map(item => item.boost)),
+	0
+);
+const maxSpeedReductionUser = speedReductionForGear + speedReductionForKC + maxSpeedReductionFromItems;
+
+const baseDuration = Time.Minute * 83;
+const baseCmDuration = Time.Minute * 110;
+
 export async function calcCoxDuration(
 	_team: MUser[],
 	challengeMode: boolean
 ): Promise<{
 	reductions: Record<string, number>;
 	duration: number;
-	totalReduction: number;
+	maxUserReduction: number;
 	degradeables: { item: Item; user: MUser; chargesToDegrade: number }[];
 }> {
 	const team = shuffleArr(_team).slice(0, 9);
@@ -501,8 +510,7 @@ export async function calcCoxDuration(
 
 	duration -= duration * (teamSizeBoostPercent(size) / 100);
 
-	duration = randomVariation(duration, 5);
-	return { duration, reductions, totalReduction: totalSpeedReductions / size, degradeables: degradeableItems };
+	return { duration, reductions, maxUserReduction: maxSpeedReductionUser / size, degradeables: degradeableItems };
 }
 
 export async function calcCoxInput(u: MUser, solo: boolean) {

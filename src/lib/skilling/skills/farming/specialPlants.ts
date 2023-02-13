@@ -5,6 +5,7 @@ import { Plant } from '../../types';
 
 const specialPlants: Plant[] = [
 	{
+		id: itemID('Marigolds'),
 		level: 2,
 		plantXp: 8.5,
 		checkXp: 0,
@@ -44,6 +45,7 @@ const specialPlants: Plant[] = [
 		timePerHarvest: 5
 	},
 	{
+		id: itemID('Redberries'),
 		level: 10,
 		plantXp: 11.5,
 		checkXp: 64,
@@ -81,6 +83,7 @@ const specialPlants: Plant[] = [
 		timePerHarvest: 10
 	},
 	{
+		id: itemID('Rosemary'),
 		level: 11,
 		plantXp: 12,
 		checkXp: 0,
@@ -120,6 +123,7 @@ const specialPlants: Plant[] = [
 		timePerHarvest: 5
 	},
 	{
+		id: itemID('Cadava berries'),
 		level: 22,
 		plantXp: 18,
 		checkXp: 102.5,
@@ -157,6 +161,7 @@ const specialPlants: Plant[] = [
 		timePerHarvest: 10
 	},
 	{
+		id: itemID('Giant seaweed'),
 		level: 23,
 		plantXp: 19,
 		checkXp: 0,
@@ -192,6 +197,7 @@ const specialPlants: Plant[] = [
 		timePerHarvest: 10
 	},
 	{
+		id: itemID('Nasturtiums'),
 		level: 24,
 		plantXp: 19.5,
 		checkXp: 0,
@@ -230,6 +236,7 @@ const specialPlants: Plant[] = [
 		timePerHarvest: 5
 	},
 	{
+		id: itemID('Woad leaf'),
 		level: 25,
 		plantXp: 20.5,
 		checkXp: 0,
@@ -269,6 +276,7 @@ const specialPlants: Plant[] = [
 		timePerHarvest: 5
 	},
 	{
+		id: itemID('Limpwurt root'),
 		level: 26,
 		plantXp: 21.5,
 		checkXp: 0,
@@ -307,6 +315,7 @@ const specialPlants: Plant[] = [
 		timePerHarvest: 5
 	},
 	{
+		id: itemID('Teak logs'),
 		level: 35,
 		plantXp: 35,
 		checkXp: 7290,
@@ -344,6 +353,7 @@ const specialPlants: Plant[] = [
 		timePerHarvest: 10
 	},
 	{
+		id: itemID('Grapes'),
 		level: 36,
 		plantXp: 31.5,
 		checkXp: 625,
@@ -376,6 +386,7 @@ const specialPlants: Plant[] = [
 		timePerHarvest: 15
 	},
 	{
+		id: itemID('Dwellberries'),
 		level: 36,
 		plantXp: 31.5,
 		checkXp: 177.5,
@@ -413,6 +424,7 @@ const specialPlants: Plant[] = [
 		timePerHarvest: 10
 	},
 	{
+		id: itemID('Jangerberries'),
 		level: 48,
 		plantXp: 50.5,
 		checkXp: 284.5,
@@ -450,6 +462,7 @@ const specialPlants: Plant[] = [
 		timePerHarvest: 10
 	},
 	{
+		id: itemID('Mushroom'),
 		level: 53,
 		plantXp: 61.5,
 		checkXp: 0,
@@ -485,6 +498,7 @@ const specialPlants: Plant[] = [
 		timePerHarvest: 5
 	},
 	{
+		id: itemID('Cactus spine'),
 		level: 55,
 		plantXp: 66.5,
 		checkXp: 374,
@@ -520,6 +534,7 @@ const specialPlants: Plant[] = [
 		timePerHarvest: 10
 	},
 	{
+		id: itemID('Mahogany logs'),
 		level: 55,
 		plantXp: 63,
 		checkXp: 15_720,
@@ -557,6 +572,7 @@ const specialPlants: Plant[] = [
 		timePerHarvest: 10
 	},
 	{
+		id: itemID('White lily'),
 		level: 58,
 		plantXp: 42,
 		checkXp: 0,
@@ -596,6 +612,7 @@ const specialPlants: Plant[] = [
 		timePerHarvest: 5
 	},
 	{
+		id: itemID('White berries'),
 		level: 59,
 		plantXp: 78,
 		checkXp: 437.5,
@@ -633,6 +650,7 @@ const specialPlants: Plant[] = [
 		timePerHarvest: 10
 	},
 	{
+		id: itemID('Cave nightshade'),
 		level: 63,
 		plantXp: 91,
 		checkXp: 0,
@@ -666,6 +684,7 @@ const specialPlants: Plant[] = [
 		timePerHarvest: 5
 	},
 	{
+		id: itemID('Potato cactus'),
 		level: 64,
 		plantXp: 68,
 		checkXp: 230,
@@ -701,6 +720,7 @@ const specialPlants: Plant[] = [
 		timePerHarvest: 10
 	},
 	{
+		id: itemID('Hespori seed'),
 		level: 65,
 		plantXp: 62,
 		checkXp: 12_600,
@@ -735,6 +755,7 @@ const specialPlants: Plant[] = [
 		timePerHarvest: 90
 	},
 	{
+		id: itemID('Poison ivy berries'),
 		level: 70,
 		plantXp: 120,
 		checkXp: 675,
@@ -771,6 +792,7 @@ const specialPlants: Plant[] = [
 		timePerHarvest: 10
 	},
 	{
+		id: itemID('Calquat fruit'),
 		level: 72,
 		plantXp: 129.5,
 		checkXp: 12_096,
@@ -806,6 +828,7 @@ const specialPlants: Plant[] = [
 		timePerHarvest: 10
 	},
 	{
+		id: itemID('Crystal shard'),
 		level: 74,
 		plantXp: 126,
 		checkXp: 13_240,
@@ -848,6 +871,7 @@ const specialPlants: Plant[] = [
 		timePerHarvest: 5
 	},
 	{
+		id: itemID('Spirit seed'),
 		level: 83,
 		plantXp: 199.5,
 		checkXp: 19_301,
@@ -889,6 +913,7 @@ const specialPlants: Plant[] = [
 		timePerHarvest: 1
 	},
 	{
+		id: itemID('Celastrus bark'),
 		level: 85,
 		plantXp: 204,
 		checkXp: 14_130,
@@ -925,6 +950,7 @@ const specialPlants: Plant[] = [
 		timePerHarvest: 10
 	},
 	{
+		id: itemID('Redwood logs'),
 		level: 90,
 		plantXp: 230,
 		checkXp: 22_450,

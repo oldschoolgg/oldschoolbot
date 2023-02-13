@@ -4,9 +4,9 @@ import { roll } from 'e';
 import { Bank, Misc } from 'oldschooljs';
 
 import { ClueTiers } from '../clues/clueTiers';
-import { CasketWorkerArgs } from '.';
+import type { CasketWorkerArgs } from '.';
 
-export default ({ clueTierID, quantity }: CasketWorkerArgs): [Bank, string] => {
+export default async ({ clueTierID, quantity }: CasketWorkerArgs): Promise<[Bank, string]> => {
 	const clueTier = ClueTiers.find(tier => tier.id === clueTierID)!;
 	let loot = clueTier.table.open(quantity);
 	let mimicNumber = 0;

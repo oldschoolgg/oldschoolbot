@@ -10,7 +10,8 @@ import { SkillsEnum } from '../../../lib/skilling/types';
 import { itemNameFromID } from '../../../lib/util';
 import { stringMatches } from '../../../lib/util/cleanString';
 import getOSItem from '../../../lib/util/getOSItem';
-import { handleMahojiConfirmation, updateBankSetting } from '../../mahojiSettings';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 export const pohWallkits = [
 	{

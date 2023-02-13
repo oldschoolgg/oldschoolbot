@@ -1,5 +1,3 @@
-import { Bank } from 'oldschooljs';
-
 import { gracefulItems } from '../skilling/skills/agility';
 import { Craftables } from '../skilling/skills/crafting/craftables';
 import { Fletchables } from '../skilling/skills/fletching/fletchables';
@@ -850,7 +848,7 @@ const diango = resolveItems([
 	'Chaotic handegg',
 	'Rainbow scarf',
 	"Diango's claws",
-	'Event rpg',
+	'Goblin paint cannon',
 	'Green banner',
 	'Spinning plate',
 	'Brown toy horsey',
@@ -1118,11 +1116,19 @@ export const baseFilters: Filterable[] = [
 		aliases: ['not sacrificed', 'not sac'],
 		items: user => {
 			if (!user) return [];
-			const sacBank = new Bank(user.user.sacrificedBank as ItemBank);
-			return user.bank
-				.items()
-				.filter(i => !sacBank.has(i[0].id))
-				.map(i => i[0].id);
+			const sacBank = user.user.sacrificedBank as ItemBank;
+			return Object.entries(user.bank.bank)
+				.filter(i => !sacBank[i[0]])
+				.map(i => Number(i[0]));
+		}
+	},
+	{
+		name: 'Favourite Alchs',
+		aliases: ['favourite alchs', 'favalchs'],
+		items: user => {
+			if (!user) return [];
+
+			return user.user.favorite_alchables;
 		}
 	}
 ];

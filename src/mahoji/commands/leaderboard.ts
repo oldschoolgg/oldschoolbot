@@ -1,8 +1,9 @@
 import { Embed } from '@discordjs/builders';
-import { chunk } from 'e';
+import { calcWhatPercent, chunk } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
-import { badges, Emoji, usernameCache } from '../../lib/constants';
+import { ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
+import { badges, badgesCache, Emoji, usernameCache } from '../../lib/constants';
 import { allClNames, getCollectionItems } from '../../lib/data/Collections';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { allOpenables } from '../../lib/openables';
@@ -19,10 +20,11 @@ import {
 	getUsername,
 	makePaginatedMessage,
 	stringMatches,
-	stripEmojis,
-	toTitleCase
+	stripEmojis
 } from '../../lib/util';
+import { fetchCLLeaderboard } from '../../lib/util/clLeaderboard';
 import { deferInteraction } from '../../lib/util/interactionReply';
+import { toTitleCase } from '../../lib/util/toTitleCase';
 import { sendToChannelID } from '../../lib/util/webhook';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -208,30 +210,22 @@ async function clLb(user: MUser, channelID: string, inputType: string, ironmenOn
 	if (!items || items.length === 0) {
 		return "That's not a valid collection log category. Check +cl for all possible logs.";
 	}
-	const users = (
-		await prisma.$queryRawUnsafe<{ id: string; qty: number }[]>(`
-SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
-				  FROM (
-  SELECT array(SELECT * FROM jsonb_object_keys("collectionLogBank")) "cl_keys",
-  				id, "collectionLogBank",
-			    cardinality(array(SELECT * FROM jsonb_object_keys("collectionLogBank" - array[${items
-					.map(i => `'${i}'`)
-					.join(', ')}]))) "inverse_length"
-  FROM users
-  WHERE "collectionLogBank" ?| array[${items.map(i => `'${i}'`).join(', ')}]
-  ${ironmenOnly ? 'AND "minion.ironman" = true' : ''}
-) u
-ORDER BY qty DESC
-LIMIT 50;
-`)
-	).filter(i => i.qty > 0);
+	const users = await fetchCLLeaderboard({ ironmenOnly, items, resultLimit: 200 });
 
 	inputType = toTitleCase(inputType.toLowerCase());
 	doMenu(
 		user,
 		channelID,
 		chunk(users, LB_PAGE_SIZE).map((subList, i) =>
-			subList.map(({ id, qty }, j) => `${getPos(i, j)}**${getUsername(id)}:** ${qty.toLocaleString()}`).join('\n')
+			subList
+				.map(
+					({ id, qty }, j) =>
+						`${getPos(i, j)}**${getUsername(id)}:** ${qty.toLocaleString()} (${calcWhatPercent(
+							qty,
+							items.length
+						).toFixed(1)}%)`
+				)
+				.join('\n')
 		),
 		`${inputType} Collection Log Leaderboard (${items.length} slots)`
 	);
@@ -449,6 +443,35 @@ async function skillsLb(
 	return lbMsg(`Overall ${skill!.name} ${type}`);
 }
 
+async function cluesLb(user: MUser, channelID: string, clueTierName: string, ironmanOnly: boolean) {
+	const clueTier = ClueTiers.find(i => stringMatches(i.name, clueTierName));
+	if (!clueTier) return "That's not a valid clue tier.";
+	const { id } = clueTier;
+	const users = (
+		await prisma.$queryRawUnsafe<{ id: string; score: number }[]>(
+			`SELECT id, ("collectionLogBank"->>'${id}')::int AS score
+FROM users
+WHERE "collectionLogBank"->>'${id}' IS NOT NULL
+AND ("collectionLogBank"->>'${id}')::int > 25
+${ironmanOnly ? 'AND "minion.ironman" = true ' : ''}
+ORDER BY ("collectionLogBank"->>'${id}')::int DESC
+LIMIT 50;`
+		)
+	).map(res => ({ ...res, score: Number(res.score) }));
+
+	doMenu(
+		user,
+		channelID,
+		chunk(users, LB_PAGE_SIZE).map((subList, i) =>
+			subList
+				.map(({ id, score }, j) => `${getPos(i, j)}**${getUsername(id)}:** ${score.toLocaleString()} Completed`)
+				.join('\n')
+		),
+		`${clueTier.name} Clue Leaderboard`
+	);
+	return lbMsg('Clue Leaderboard', ironmanOnly);
+}
+
 export async function cacheUsernames() {
 	const allNewUsers = await prisma.newUser.findMany({
 		where: {
@@ -468,15 +491,15 @@ export async function cacheUsernames() {
 
 	for (const user of allNewUsers) {
 		const badgeUser = arrayOfIronmenAndBadges.find(i => i.id === user.id);
-		let name = stripEmojis(user.username!);
+		const name = stripEmojis(user.username!);
+		usernameCache.set(user.id, name);
 		if (badgeUser) {
 			const rawBadges = badgeUser.badges.map(num => badges[num]);
 			if (badgeUser.ironman) {
 				rawBadges.push(Emoji.Ironman);
 			}
-			name = `${rawBadges.join(' ')} ${name}`;
+			badgesCache.set(user.id, rawBadges.join(' '));
 		}
-		usernameCache.set(user.id, name);
 	}
 }
 
@@ -664,10 +687,28 @@ export const leaderboardCommand: OSBMahojiCommand = {
 					description: 'The cl you want to select.',
 					required: true,
 					autocomplete: async value => {
-						return ['overall', ...allClNames.map(i => i)]
-							.filter(name => (!value ? true : name.toLowerCase().includes(value.toLowerCase())))
-							.map(i => ({ name: toTitleCase(i), value: i }));
+						return [
+							{ name: 'Overall (Main Leaderboard)', value: 'overall' },
+							...['overall+', ...allClNames.map(i => i)]
+								.filter(name => (!value ? true : name.toLowerCase().includes(value.toLowerCase())))
+								.map(i => ({ name: toTitleCase(i), value: i }))
+						];
 					}
+				},
+				ironmanOnlyOption
+			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'clues',
+			description: 'Check the clue leaderboards.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'clue',
+					description: 'The clue you want to select.',
+					required: true,
+					choices: ClueTiers.map(i => ({ name: i.name, value: i.name }))
 				},
 				ironmanOnlyOption
 			]
@@ -690,6 +731,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		skills?: { skill: string; ironmen_only?: boolean; xp?: boolean };
 		opens?: { openable: string; ironmen_only?: boolean };
 		cl?: { cl: string; ironmen_only?: boolean };
+		clues?: { clue: ClueTier['name']; ironmen_only?: boolean };
 	}>) => {
 		await deferInteraction(interaction);
 		const user = await mUserFetch(userID);
@@ -704,7 +746,8 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			agility_laps,
 			gp,
 			skills,
-			cl
+			cl,
+			clues
 		} = options;
 		if (kc) return kcLb(user, channelID, kc.monster, Boolean(kc.ironmen_only));
 		if (farming_contracts) return farmingContractLb(user, channelID, Boolean(farming_contracts.ironmen_only));
@@ -719,6 +762,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		}
 		if (opens) return openLb(user, channelID, opens.openable, Boolean(opens.ironmen_only));
 		if (cl) return clLb(user, channelID, cl.cl, Boolean(cl.ironmen_only));
+		if (clues) return cluesLb(user, channelID, clues.clue, Boolean(clues.ironmen_only));
 		return 'Invalid input.';
 	}
 };

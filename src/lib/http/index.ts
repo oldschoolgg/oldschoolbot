@@ -7,7 +7,6 @@ import fastifySensible from 'fastify-sensible';
 
 import { HTTP_PORT, production } from '../../config';
 import { logError } from '../util/logError';
-import { initHooks } from './hooks';
 import { initRoutes } from './routes';
 
 export function makeServer() {
@@ -53,7 +52,6 @@ export function makeServer() {
 		routes: [] // array of routes, **`global`** will be ignored, wildcard routes not supported
 	});
 
-	initHooks(server);
 	initRoutes(server);
 
 	server.addContentTypeParser('text/plain', async () => {

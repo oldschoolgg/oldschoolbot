@@ -10,9 +10,9 @@ import { ClueTier } from '../clues/clueTiers';
 import { PerkTier } from '../constants';
 import { prisma } from '../settings/prisma';
 import { runCommand } from '../settings/settings';
+import { toaHelpCommand } from '../simulation/toa';
 import { ItemBank } from '../types';
 import { formatDuration, removeFromArr } from '../util';
-import getUsersPerkTier from './getUsersPerkTier';
 import { updateGiveawayMessage } from './giveaway';
 import { interactionReply } from './interactionReply';
 import { minionIsBusy } from './minionIsBusy';
@@ -38,11 +38,14 @@ const globalInteractionActions = [
 	'CANCEL_TRIP',
 	'AUTO_FARM',
 	'AUTO_FARMING_CONTRACT',
+	'FARMING_CONTRACT_EASIER',
+	'OPEN_SEED_PACK',
 	'BUY_MINION',
 	'BUY_BINGO_TICKET',
 	'NEW_SLAYER_TASK',
 	'VIEW_BANK',
-	'DO_SHOOTING_STAR'
+	'DO_SHOOTING_STAR',
+	'CHECK_TOA'
 ] as const;
 
 export type GlobalInteractionAction = typeof globalInteractionActions[number];
@@ -68,6 +71,22 @@ export function makeOpenCasketButton(tier: ClueTier) {
 		.setLabel(`Open ${tier.name} Casket`)
 		.setStyle(ButtonStyle.Secondary)
 		.setEmoji('365003978678730772');
+}
+
+export function makeOpenSeedPackButton() {
+	return new ButtonBuilder()
+		.setCustomId('OPEN_SEED_PACK')
+		.setLabel('Open Seed Pack')
+		.setStyle(ButtonStyle.Secondary)
+		.setEmoji('977410792754413668');
+}
+
+export function makeAutoContractButton() {
+	return new ButtonBuilder()
+		.setCustomId('AUTO_FARMING_CONTRACT')
+		.setLabel('Auto Farming Contract')
+		.setStyle(ButtonStyle.Secondary)
+		.setEmoji('977410792754413668');
 }
 
 export function makeRepeatTripButton() {
@@ -214,12 +233,24 @@ async function repeatTripHandler(user: MUser, interaction: ButtonInteraction) {
 
 export async function interactionHook(interaction: Interaction) {
 	if (!interaction.isButton()) return;
+	debugLog(`Interaction hook for button [${interaction.customId}]`, {
+		user_id: interaction.user.id,
+		channel_id: interaction.channelId,
+		guild_id: interaction.guildId
+	});
 	const id = interaction.customId;
 	const userID = interaction.user.id;
 
 	const user = await mUserFetch(userID);
 	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, interaction);
 	if (id.includes('REPEAT_TRIP')) return repeatTripHandler(user, interaction);
+	if (id === 'TOA_CHECK') {
+		const response = await toaHelpCommand(user, interaction.channelId);
+		return interactionReply(interaction, {
+			content: typeof response === 'string' ? response : response.content,
+			ephemeral: true
+		});
+	}
 
 	if (!isValidGlobalInteraction(id)) return;
 	if (user.isBusy || globalClient.isShuttingDown) {
@@ -243,7 +274,7 @@ export async function interactionHook(interaction: Interaction) {
 	}
 
 	const timeSinceMessage = Date.now() - new Date(interaction.message.createdTimestamp).getTime();
-	const timeLimit = reactionTimeLimit(getUsersPerkTier(user));
+	const timeLimit = reactionTimeLimit(user.perkTier());
 	if (timeSinceMessage > Time.Day) {
 		console.log(
 			`${user.id} clicked Diff[${formatDuration(timeSinceMessage)}] Button[${id}] Message[${
@@ -329,6 +360,30 @@ export async function interactionHook(interaction: Interaction) {
 		});
 	}
 
+	if (id === 'OPEN_BEGINNER_CASKET') {
+		return openCasket('Beginner');
+	}
+
+	if (id === 'OPEN_EASY_CASKET') {
+		return openCasket('Easy');
+	}
+
+	if (id === 'OPEN_MEDIUM_CASKET') {
+		return openCasket('Medium');
+	}
+
+	if (id === 'OPEN_HARD_CASKET') {
+		return openCasket('Hard');
+	}
+
+	if (id === 'OPEN_ELITE_CASKET') {
+		return openCasket('Elite');
+	}
+
+	if (id === 'OPEN_MASTER_CASKET') {
+		return openCasket('Master');
+	}
+
 	if (minionIsBusy(user.id)) {
 		return interactionReply(interaction, { content: `${user.minionName} is busy.`, ephemeral: true });
 	}
@@ -347,18 +402,6 @@ export async function interactionHook(interaction: Interaction) {
 		case 'DO_MASTER_CLUE':
 			return doClue('Master');
 
-		case 'OPEN_BEGINNER_CASKET':
-			return openCasket('Beginner');
-		case 'OPEN_EASY_CASKET':
-			return openCasket('Easy');
-		case 'OPEN_MEDIUM_CASKET':
-			return openCasket('Medium');
-		case 'OPEN_HARD_CASKET':
-			return openCasket('Hard');
-		case 'OPEN_ELITE_CASKET':
-			return openCasket('Elite');
-		case 'OPEN_MASTER_CASKET':
-			return openCasket('Master');
 		case 'DO_BIRDHOUSE_RUN':
 			return runCommand({
 				commandName: 'activities',
@@ -388,6 +431,28 @@ export async function interactionHook(interaction: Interaction) {
 			const response = await autoContract(await mUserFetch(user.id), options.channelID, user.id);
 			if (response) interactionReply(interaction, response);
 			return;
+		}
+		case 'FARMING_CONTRACT_EASIER': {
+			return runCommand({
+				commandName: 'farming',
+				args: {
+					contract: {
+						input: 'easier'
+					}
+				},
+				bypassInhibitors: true,
+				...options
+			});
+		}
+		case 'OPEN_SEED_PACK': {
+			return runCommand({
+				commandName: 'open',
+				args: {
+					name: 'Seed pack',
+					quantity: 1
+				},
+				...options
+			});
 		}
 		case 'NEW_SLAYER_TASK': {
 			return runCommand({

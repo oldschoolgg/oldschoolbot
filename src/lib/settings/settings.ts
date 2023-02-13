@@ -7,14 +7,15 @@ import {
 	User
 } from 'discord.js';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import { CommandOptions } from 'mahoji/dist/lib/types';
 
-import { CommandArgs } from '../../mahoji/lib/inhibitors';
+import { production } from '../../config';
 import { postCommand } from '../../mahoji/lib/postCommand';
 import { preCommand } from '../../mahoji/lib/preCommand';
 import { convertMahojiCommandToAbstractCommand } from '../../mahoji/lib/util';
 import { ActivityTaskData } from '../types/minions';
 import { channelIsSendable, isGroupActivity } from '../util';
-import { interactionReply } from '../util/interactionReply';
+import { handleInteractionError, interactionReply } from '../util/interactionReply';
 import { logError } from '../util/logError';
 import { convertStoredActivityToFlatActivity, prisma } from './prisma';
 
@@ -42,7 +43,7 @@ declare global {
 }
 export const minionActivityCache: Map<string, ActivityTaskData> = global.minionActivityCache || new Map();
 
-if (process.env.NODE_ENV !== 'production') global.minionActivityCache = minionActivityCache;
+if (production) global.minionActivityCache = minionActivityCache;
 
 export function getActivityOfUser(userID: string) {
 	const task = minionActivityCache.get(userID);
@@ -101,7 +102,7 @@ export async function runMahojiCommand({
 
 export interface RunCommandArgs {
 	commandName: string;
-	args: CommandArgs;
+	args: CommandOptions;
 	user: User | MUser;
 	channelID: string;
 	member: APIInteractionGuildMember | GuildMember | null;
@@ -136,7 +137,8 @@ export async function runCommand({
 			channelID,
 			guildID,
 			bypassInhibitors: bypassInhibitors ?? false,
-			apiUser: null
+			apiUser: null,
+			options: args
 		});
 
 		if (inhibitedReason) {
@@ -167,13 +169,7 @@ export async function runCommand({
 		if (result && !interaction.replied) await interactionReply(interaction, result);
 		return result;
 	} catch (err: any) {
-		if (typeof err === 'string') {
-			if (channelIsSendable(channel)) {
-				channel.send(err);
-				return null;
-			}
-		}
-		error = err as Error;
+		handleInteractionError(err, interaction);
 	} finally {
 		try {
 			await postCommand({

@@ -17,14 +17,10 @@ import { itemNameFromID, removeFromArr, stringMatches } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
+import { mahojiGuildSettingsFetch, mahojiGuildSettingsUpdate } from '../guildSettings';
 import { itemOption } from '../lib/mahojiCommandOptions';
 import { allAbstractCommands, hasBanMemberPerms, OSBMahojiCommand } from '../lib/util';
-import {
-	mahojiGuildSettingsFetch,
-	mahojiGuildSettingsUpdate,
-	mahojiUsersSettingsFetch,
-	patronMsg
-} from '../mahojiSettings';
+import { mahojiUsersSettingsFetch, patronMsg } from '../mahojiSettings';
 
 const toggles = [
 	{
@@ -38,6 +34,10 @@ const toggles = [
 	{
 		name: 'Disable Birdhouse Run Button',
 		bit: BitField.DisableBirdhouseRunButton
+	},
+	{
+		name: 'Disable Ash Sanctifier',
+		bit: BitField.DisableAshSanctifier
 	}
 ];
 
@@ -100,7 +100,7 @@ async function favItemConfig(
 	}.`;
 	if (!item) return currentItems;
 	if (itemToAdd) {
-		let limit = (user.perkTier + 1) * 100;
+		let limit = (user.perkTier() + 1) * 100;
 		if (currentFavorites.length >= limit) {
 			return `You can't favorite anymore items, you can favorite a maximum of ${limit}.`;
 		}
@@ -182,7 +182,7 @@ async function bankSortConfig(
 	const currentMethod = user.user.bank_sort_method;
 	const currentWeightingBank = new Bank(user.user.bank_sort_weightings as ItemBank);
 
-	const { perkTier } = user;
+	const perkTier = user.perkTier();
 	if (perkTier < PerkTier.Two) {
 		return patronMsg(PerkTier.Two);
 	}
@@ -352,7 +352,7 @@ async function handleJModCommentsEnable(
 	const settings = await mahojiGuildSettingsFetch(guild);
 
 	if (choice === 'enable') {
-		if (guild!.memberCount < 20 && user.perkTier < PerkTier.Four) {
+		if (guild!.memberCount < 20 && user.perkTier() < PerkTier.Four) {
 			return 'This server is too small to enable this feature in.';
 		}
 		if (settings.jmodComments === cID) {

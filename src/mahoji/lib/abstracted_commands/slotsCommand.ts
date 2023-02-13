@@ -1,13 +1,20 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, MessageOptions } from 'discord.js';
+import { SimpleTable } from '@oldschoolgg/toolkit';
+import {
+	ActionRowBuilder,
+	BaseMessageOptions,
+	ButtonBuilder,
+	ButtonStyle,
+	ChatInputCommandInteraction
+} from 'discord.js';
 import { chunk, noOp, randInt, shuffleArr, sleep } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
-import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import { channelIsSendable } from '../../../lib/util';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../../lib/util/interactionReply';
-import { handleMahojiConfirmation, mahojiParseNumber, updateGPTrackSetting } from '../../mahojiSettings';
+import { mahojiParseNumber, updateGPTrackSetting } from '../../mahojiSettings';
 
 interface Button {
 	name: string;
@@ -51,7 +58,7 @@ const buttonTable = new SimpleTable<Button>()
 function generateColumn() {
 	const column: ButtonInstance[] = [];
 	while (column.length < 3) {
-		const button = buttonTable.roll().item;
+		const button = buttonTable.rollOrThrow();
 		if (column.some(i => i.name === button.name)) continue;
 		column.push({ ...button, id: randInt(1, 999_999_999).toString() });
 	}
@@ -110,6 +117,7 @@ ${buttonsData.map(b => `${b.name}: ${b.mod(1)}x`).join('\n')}`;
 		interaction,
 		`Are you sure you want to gamble ${toKMB(amount)}? You might lose it all, you might win a lot.`
 	);
+	await user.sync();
 	const currentBalance = user.GP;
 	if (currentBalance < amount) {
 		return "You don't have enough GP to make this bet.";
@@ -121,7 +129,7 @@ ${buttonsData.map(b => `${b.name}: ${b.mod(1)}x`).join('\n')}`;
 
 	const { winningRow, amountReceived } = determineWinnings(amount, buttonsToShow);
 
-	function getCurrentButtons({ columnsToHide }: { columnsToHide: number[] }): MessageOptions['components'] {
+	function getCurrentButtons({ columnsToHide }: { columnsToHide: number[] }): BaseMessageOptions['components'] {
 		return chunkedButtons.map(c =>
 			new ActionRowBuilder<ButtonBuilder>().addComponents(
 				c.map((b, index) => {
