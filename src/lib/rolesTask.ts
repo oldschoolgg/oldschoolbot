@@ -588,7 +588,7 @@ LIMIT 50;`
 		const [[rankOneID]] = entries;
 
 		let note = '**Top Mystery Box Openers**\n\n';
-		for (const [id, score] of entries) {
+		for (const [id, score] of entries.slice(0, 10)) {
 			note += `${usernameCache.get(id) ?? id} - ${score}\n`;
 		}
 
