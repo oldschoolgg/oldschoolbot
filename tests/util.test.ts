@@ -8,6 +8,7 @@ import { deduplicateClueScrolls } from '../src/lib/clues/clueUtils';
 import getUserFoodFromBank from '../src/lib/minions/functions/getUserFoodFromBank';
 import { SkillsEnum } from '../src/lib/skilling/types';
 import {
+	pluraliseItemName,
 	sanitizeBank,
 	skillingPetDropRate,
 	stripEmojis,
@@ -143,5 +144,11 @@ describe('util', () => {
 		expect(baseModifyBusyCounter(cache, id, -1)).toEqual(0);
 		expect(cache.get(id)).toEqual(0);
 		// expect(() => baseModifyBusyCounter(cache, id, -1)).toThrow();
+	});
+
+	test('pluraliseItemName correctly pluralises items', async () => {
+		expect(pluraliseItemName('Steel Axe')).toEqual('Steel Axes');
+		expect(pluraliseItemName('Steel Arrowtips')).toEqual('Steel Arrowtips');
+		expect(pluraliseItemName('Adamantite nails')).toEqual('Adamantite nails');
 	});
 });

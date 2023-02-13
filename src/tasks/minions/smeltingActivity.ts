@@ -6,7 +6,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import type { SmeltingActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
-import { pluraliseItemName } from '../../lib/util/pluraliseItemName';
+import { pluraliseItemName } from '../../lib/util/smallUtils';
 
 export const smeltingTask: MinionTask = {
 	type: 'Smelting',

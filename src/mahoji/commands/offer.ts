@@ -16,7 +16,7 @@ import { stringMatches } from '../../lib/util/cleanString';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';
 import { makeBankImage } from '../../lib/util/makeBankImage';
-import { pluraliseItemName } from '../../lib/util/pluraliseItemName';
+import { pluraliseItemName } from '../../lib/util/smallUtils';
 import { OSBMahojiCommand } from '../lib/util';
 import { userStatsBankUpdate } from '../mahojiSettings';
 

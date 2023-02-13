@@ -7,7 +7,7 @@ import { ScatteringActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { pluraliseItemName } from '../../../lib/util/pluraliseItemName';
+import { pluraliseItemName } from '../../../lib/util/smallUtils';
 
 export async function scatterCommand(user: MUser, channelID: string, ashName: string, quantity?: number) {
 	const speedMod = 1;

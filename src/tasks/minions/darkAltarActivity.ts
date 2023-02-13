@@ -8,7 +8,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { DarkAltarOptions } from '../../lib/types/minions';
 import { skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { pluraliseItemName } from '../../lib/util/pluraliseItemName';
+import { pluraliseItemName } from '../../lib/util/smallUtils';
 
 export const darkAltarTask: MinionTask = {
 	type: 'DarkAltar',

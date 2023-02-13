@@ -152,3 +152,7 @@ export function makeEasierFarmingContractButton() {
 		.setStyle(ButtonStyle.Secondary)
 		.setEmoji('977410792754413668');
 }
+
+export function pluraliseItemName(name: string): string {
+	return name + (name.endsWith('s') ? '' : 's');
+}

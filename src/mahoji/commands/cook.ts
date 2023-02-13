@@ -7,7 +7,7 @@ import { CookingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { pluraliseItemName } from '../../lib/util/pluraliseItemName';
+import { pluraliseItemName } from '../../lib/util/smallUtils';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const cookCommand: OSBMahojiCommand = {

@@ -6,7 +6,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import type { RunecraftActivityTaskOptions } from '../../lib/types/minions';
 import { roll, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { pluraliseItemName } from '../../lib/util/pluraliseItemName';
+import { pluraliseItemName } from '../../lib/util/smallUtils';
 import { calcMaxRCQuantity } from '../../mahoji/mahojiSettings';
 
 export const runecraftTask: MinionTask = {
