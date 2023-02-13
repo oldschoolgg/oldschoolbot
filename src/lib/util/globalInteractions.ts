@@ -89,14 +89,6 @@ export function makeAutoContractButton() {
 		.setEmoji('977410792754413668');
 }
 
-export function makeEasierFarmingContractButton() {
-	return new ButtonBuilder()
-		.setCustomId('FARMING_CONTRACT_EASIER')
-		.setLabel('Ask for easier Contract')
-		.setStyle(ButtonStyle.Secondary)
-		.setEmoji('977410792754413668');
-}
-
 export function makeRepeatTripButton() {
 	return new ButtonBuilder()
 		.setCustomId('REPEAT_TRIP')
@@ -241,6 +233,11 @@ async function repeatTripHandler(user: MUser, interaction: ButtonInteraction) {
 
 export async function interactionHook(interaction: Interaction) {
 	if (!interaction.isButton()) return;
+	debugLog(`Interaction hook for button [${interaction.customId}]`, {
+		user_id: interaction.user.id,
+		channel_id: interaction.channelId,
+		guild_id: interaction.guildId
+	});
 	const id = interaction.customId;
 	const userID = interaction.user.id;
 
