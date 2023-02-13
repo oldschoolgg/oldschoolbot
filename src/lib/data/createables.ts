@@ -20,6 +20,7 @@ import { nexCreatables } from './creatables/nex';
 import { ornamentKits } from './creatables/ornaments';
 import { shadesOfMortonCreatables } from './creatables/shadesOfMorton';
 import { slayerCreatables } from './creatables/slayer';
+import { toaCreatables } from './creatables/toa';
 import { tobCreatables } from './creatables/tob';
 
 export interface Createable {
@@ -2113,6 +2114,18 @@ const Createables: Createable[] = [
 		}),
 		outputItems: new Bank().add('Celestial signet')
 	},
+	{
+		name: 'Eternal teleport crystal',
+		inputItems: new Bank({
+			'Enhanced crystal teleport seed': 1,
+			'Crystal shard': 100
+		}),
+		outputItems: new Bank({
+			'Eternal teleport crystal': 1
+		}),
+		requiredSkills: { smithing: 80, crafting: 80 },
+		QPRequired: 150
+	},
 	...Reverteables,
 	...crystalTools,
 	...ornamentKits,
@@ -2134,7 +2147,8 @@ const Createables: Createable[] = [
 	...goldenProspectorCreatables,
 	...leaguesCreatables,
 	...guardiansOfTheRiftCreatables,
-	...shadesOfMortonCreatables
+	...shadesOfMortonCreatables,
+	...toaCreatables
 ];
 
 export default Createables;

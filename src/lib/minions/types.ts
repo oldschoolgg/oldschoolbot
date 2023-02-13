@@ -1,6 +1,7 @@
+import { Image } from '@napi-rs/canvas';
+import { XpGainSource } from '@prisma/client';
 import { Bank, MonsterKillOptions } from 'oldschooljs';
 import SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
-import { Image } from 'skia-canvas/lib';
 
 import { BitField, PerkTier } from '../constants';
 import { GearSetupType, GearStat, OffenceGearStat } from '../gear/types';
@@ -121,6 +122,7 @@ export interface AddXpParams {
 	multiplier?: boolean;
 	minimal?: boolean;
 	artificial?: boolean;
+	source?: XpGainSource;
 }
 
 export interface AddMonsterXpParams {
@@ -137,7 +139,7 @@ export interface AddMonsterXpParams {
 }
 
 export interface ResolveAttackStylesParams {
-	monsterID: number;
+	monsterID: number | undefined;
 	boostMethod?: string;
 }
 
