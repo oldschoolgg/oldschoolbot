@@ -59,7 +59,6 @@ export async function wintertodtCommand(user: MUser, channelID: string) {
 			continue;
 		}
 
-<<<<<<< HEAD
 		let foodStr: string = `**Food:** ${healAmountNeeded} HP/kill`;
 
 		if (healAmountNeeded !== baseHealAmountNeeded) {
