@@ -10,6 +10,7 @@ import { SmithingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
+import { pluraliseItemName } from '../../lib/util/smallUtils';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -54,7 +55,9 @@ export const smithCommand: OSBMahojiCommand = {
 		if (!smithedItem) return 'That is not a valid item to smith.';
 
 		if (user.skillLevel(SkillsEnum.Smithing) < smithedItem.level) {
-			return `${user.minionName} needs ${smithedItem.level} Smithing to smith ${smithedItem.name}s.`;
+			return `${user.minionName} needs ${smithedItem.level} Smithing to smith ${pluraliseItemName(
+				smithedItem.name
+			)}.`;
 		}
 
 		const userQP = user.QP;
