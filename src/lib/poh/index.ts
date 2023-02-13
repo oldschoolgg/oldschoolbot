@@ -2,7 +2,7 @@ import { objectEntries } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { LevelRequirements } from '../skilling/types';
-import { AmuletSpace } from './objects/amulet_space';
+import { Amulets } from './objects/amulets';
 import { DungeonDecorations } from './objects/dungeon_decorations';
 import { GardenDecorations } from './objects/garden_decorations';
 import { Guards } from './objects/guards';
@@ -71,7 +71,7 @@ export const Placeholders: Partial<Record<PoHSlot, [number, [number, number][]]>
 	mounted_cape: [29_144, [[220, GROUND_FLOOR_Y]]],
 	jewellery_box: [29_142, [[369, GROUND_FLOOR_Y]]],
 	mounted_item: [1111, [[80, GROUND_FLOOR_Y - 70]]],
-	amulet_space: [33_417, [[190, GROUND_FLOOR_Y - 65]]],
+	amulet: [33_417, [[190, GROUND_FLOOR_Y - 65]]],
 
 	// Top floor
 	prayer_altar: [15_270, [[175, TOP_FLOOR_Y]]],
@@ -110,7 +110,7 @@ export const itemsNotRefundable = new Bank()
 export const GroupedPohObjects = {
 	Thrones,
 	JewelleryBoxes,
-	AmuletSpace,
+	Amulets,
 	MountedCapes,
 	PrayerAltars,
 	SpellbookAltars,
