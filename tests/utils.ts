@@ -34,8 +34,9 @@ interface MockUserArgs {
 
 export const mockUser = (overrides?: MockUserArgs): User => {
 	const gearMelee = filterGearSetup(overrides?.meleeGear);
+	const cl = new Bank().add(overrides?.cl ?? {});
 	return {
-		cl: {},
+		cl,
 		gear_fashion: new Gear().raw() as Prisma.JsonValue,
 		gear_mage: new Gear().raw() as Prisma.JsonValue,
 		gear_melee: new Gear(gearMelee).raw() as Prisma.JsonValue,
@@ -84,11 +85,19 @@ export const mockUser = (overrides?: MockUserArgs): User => {
 			Shayzien: 0
 		},
 		sacrificedValue: 0,
-		id: overrides?.id ?? ''
+		id: overrides?.id ?? '',
+		monsterScores: {}
 	} as unknown as User;
 };
+
+class TestMUser extends MUserClass {
+	// @ts-expect-error Mock
+	public readonly rawUsername = 'test';
+}
+
 export const mockMUser = (overrides?: MockUserArgs) => {
-	return new MUserClass(mockUser(overrides));
+	const user = new TestMUser(mockUser(overrides));
+	return user;
 };
 
 export const mockUserMap = new Map<string, MUser>();

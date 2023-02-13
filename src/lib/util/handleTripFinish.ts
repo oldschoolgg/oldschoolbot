@@ -3,6 +3,7 @@ import { AttachmentBuilder, ButtonBuilder, MessageCollector } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
+import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
 import { updateGPTrackSetting, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { ClueTiers } from '../clues/clueTiers';
@@ -117,6 +118,9 @@ export async function handleTripFinish(
 		const birdHousedetails = await calculateBirdhouseDetails(user.id);
 		if (birdHousedetails.isReady && !user.bitfield.includes(BitField.DisableBirdhouseRunButton))
 			components.push(makeBirdHouseTripButton());
+
+		if (await canRunAutoContract(user)) components.push(makeAutoContractButton());
+
 		const { currentTask } = await getUsersCurrentSlayerInfo(user.id);
 		if (
 			(currentTask === null || currentTask.quantity_remaining <= 0) &&
@@ -125,7 +129,6 @@ export async function handleTripFinish(
 			components.push(makeNewSlayerTaskButton());
 		}
 		if (loot?.has('Seed pack')) {
-			components.push(makeAutoContractButton());
 			components.push(makeOpenSeedPackButton());
 		}
 	}

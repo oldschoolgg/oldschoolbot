@@ -319,7 +319,7 @@ export async function tobStartCommand(user: MUser, channelID: string, isHardMode
 
 	const {
 		duration,
-		totalReduction,
+		maxUserReduction,
 		reductions,
 		wipedRoom: _wipedRoom,
 		deathDuration,
@@ -367,7 +367,7 @@ export async function tobStartCommand(user: MUser, channelID: string, isHardMode
 			}
 			debugStr += `**- ${u.usernameOrMention}** (${Emoji.Gear}${total.toFixed(1)}% ${
 				Emoji.CombatSword
-			} ${calcWhatPercent(reductions[u.id], totalReduction).toFixed(1)}%) used ${realCost}\n\n`;
+			} ${calcWhatPercent(reductions[u.id], maxUserReduction).toFixed(1)}%) used ${realCost}\n\n`;
 			return {
 				userID: u.id,
 				effectiveCost
