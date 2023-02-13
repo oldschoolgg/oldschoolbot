@@ -549,6 +549,8 @@ ORDER BY u.uniques DESC LIMIT 300;`);
 		);
 	}
 
+	const notes: string[] = [];
+
 	async function mysterious() {
 		const items = resolveItems([
 			'Pet mystery box',
@@ -581,9 +583,16 @@ LIMIT 50;`
 				userScoreMap[user.id] += user.score / rankOne.score;
 			}
 		}
-		const entries = Object.entries(userScoreMap);
 
+		const entries = Object.entries(userScoreMap).sort((a, b) => b[1] - a[1]);
 		const [[rankOneID]] = entries;
+
+		let note = '**Top Mystery Box Openers**\n\n';
+		for (const [id, score] of entries) {
+			note += `${usernameCache.get(id) ?? id} - ${score}\n`;
+		}
+
+		notes.push(note);
 
 		results.push(
 			await addRoles({
@@ -627,7 +636,8 @@ LIMIT 50;`
 
 	let res = `**Roles**
 ${results.join('\n')}
-${failed.length > 0 ? `Failed: ${failed.join(', ')}` : ''}`;
+${failed.length > 0 ? `Failed: ${failed.join(', ')}` : ''}
+${notes.join('\n')}`;
 
 	return res;
 }
