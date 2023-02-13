@@ -8,6 +8,7 @@ import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import { CoXUniqueTable } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 import { ToBUniqueTable } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
 
+import { ClueTiers } from '../../lib/clues/clueTiers';
 import { allStashUnitsFlat } from '../../lib/clues/stashUnits';
 import { BitField, PerkTier } from '../../lib/constants';
 import { allCLItemsFiltered, allDroppedItems } from '../../lib/data/Collections';
@@ -30,7 +31,7 @@ import {
 	isGroupActivity,
 	isNexActivity,
 	isRaidsActivity,
-	isTobActivity,
+	isTOBOrTOAActivity,
 	itemNameFromID,
 	stringMatches
 } from '../../lib/util';
@@ -189,6 +190,10 @@ LIMIT 10`;
 	return { embeds: [embed] };
 }
 
+const clueItemsOnlyDroppedInOneTier = ClueTiers.map(i =>
+	i.table.allItems.filter(itemID => ClueTiers.filter(i => i.table.allItems.includes(itemID)).length === 1)
+).flat();
+
 interface DrystreakMinigame {
 	name: string;
 	key: MinigameName;
@@ -236,7 +241,7 @@ const dryStreakMinigames: DrystreakMinigame[] = [
 interface DrystreakEntity {
 	name: string;
 	items: number[];
-	run: (args: { item: Item; ironmanOnly: boolean }) => Promise<{ id: string; val: number | string }[]>;
+	run: (args: { item: Item; ironmanOnly: boolean }) => Promise<string | { id: string; val: number | string }[]>;
 	format: (num: number | string) => string;
 }
 const dryStreakEntities: DrystreakEntity[] = [
@@ -365,6 +370,32 @@ LIMIT 10;`);
 			}));
 		},
 		format: num => `${num.toLocaleString()}`
+	},
+	{
+		name: 'Clue Scrolls',
+		items: clueItemsOnlyDroppedInOneTier,
+		run: async ({ ironmanOnly, item }) => {
+			const clueTierWithItem = ClueTiers.filter(t => t.allItems.includes(item.id));
+			if (clueTierWithItem.length !== 1) {
+				return 'You can only check items which are dropped by only 1 clue scroll tier.';
+			}
+			const clueTier = clueTierWithItem[0];
+			const result = await prisma.$queryRawUnsafe<
+				{ id: string; opens: number }[]
+			>(`SELECT id, (openable_scores->>'${clueTier.id}')::int AS opens
+FROM users
+WHERE "collectionLogBank"->>'${item.id}' IS NULL
+AND openable_scores->>'${clueTier.id}' IS NOT NULL
+AND (openable_scores->>'${clueTier.id}')::int > 100
+${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
+ORDER BY opens DESC
+LIMIT 10;`);
+			return result.map(i => ({
+				id: i.id,
+				val: `${i.opens} ${clueTierWithItem[0].name} Casket Opens`
+			}));
+		},
+		format: num => `${num.toLocaleString()}`
 	}
 ];
 for (const minigame of dryStreakMinigames) {
@@ -403,6 +434,7 @@ async function dryStreakCommand(user: MUser, monsterName: string, itemName: stri
 
 		const result = await entity.run({ item, ironmanOnly });
 		if (result.length === 0) return 'No results found.';
+		if (typeof result === 'string') return result;
 
 		return `**Dry Streaks for ${item.name} from ${entity.name}:**\n${result
 			.map(({ id, val }) => `${getUsername(id)}: ${entity.format(val || -1)}`)
@@ -480,7 +512,7 @@ async function checkMassesCommand(guildID: string | undefined) {
 		})
 	)
 		.map(convertStoredActivityToFlatActivity)
-		.filter(m => (isRaidsActivity(m) || isGroupActivity(m) || isTobActivity(m)) && m.users.length > 1);
+		.filter(m => (isRaidsActivity(m) || isGroupActivity(m) || isTOBOrTOAActivity(m)) && m.users.length > 1);
 
 	if (masses.length === 0) {
 		return 'There are no active masses in this server.';
@@ -489,15 +521,15 @@ async function checkMassesCommand(guildID: string | undefined) {
 	const massStr = masses
 		.map(m => {
 			const remainingTime =
-				isTobActivity(m) || isNexActivity(m)
+				isTOBOrTOAActivity(m) || isNexActivity(m)
 					? m.finishDate - m.duration + m.fakeDuration - now
 					: m.finishDate - now;
 			if (isGroupActivity(m)) {
 				return [
 					remainingTime,
-					`${m.type}${isRaidsActivity(m) && m.challengeMode ? ' CM' : ''}: ${
-						m.users.length
-					} users returning to <#${m.channelID}> in ${formatDuration(remainingTime)}`
+					`${m.type}${isRaidsActivity(m) && m.challengeMode ? ' CM' : ''}: ${m.users.length} users (<#${
+						m.channelID
+					}> in ${formatDuration(remainingTime, true)})`
 				];
 			}
 		})
@@ -505,7 +537,7 @@ async function checkMassesCommand(guildID: string | undefined) {
 		.map(m => m![1])
 		.join('\n');
 	return `**Masses in this server:**
-${massStr}`;
+${massStr}`.slice(0, 1999);
 }
 
 export const toolsCommand: OSBMahojiCommand = {
