@@ -15,6 +15,7 @@ import { logError } from '../lib/util/logError';
 import { TeamLoot } from './simulation/TeamLoot';
 import { ItemBank } from './types';
 import { fetchTameCLLeaderboard } from './util/clLeaderboard';
+import resolveItems from './util/resolveItems';
 
 function addToUserMap(userMap: Record<string, string[]>, id: string, reason: string) {
 	if (!userMap[id]) userMap[id] = [];
@@ -537,7 +538,6 @@ ORDER BY u.uniques DESC LIMIT 300;`);
 
 	async function topTamer() {
 		const [rankOne] = await fetchTameCLLeaderboard({ items: overallPlusItems, resultLimit: 1 });
-		console.log(rankOne);
 		results.push(
 			await addRoles({
 				g: g!,
@@ -545,6 +545,53 @@ ORDER BY u.uniques DESC LIMIT 300;`);
 				role: '1054356709222666240',
 				badge: null,
 				userMap: { [rankOne.user_id]: ['Rank 1 Tames CL'] }
+			})
+		);
+	}
+
+	async function mysterious() {
+		const items = resolveItems([
+			'Pet mystery box',
+			'Holiday mystery box',
+			'Equippable mystery box',
+			'Clothing mystery box',
+			'Tradeable mystery box',
+			'Untradeable mystery box'
+		]);
+		const res = await Promise.all(
+			items.map(id =>
+				prisma
+					.$queryRawUnsafe<{ id: string; score: number }[]>(
+						`SELECT id, ("openable_scores"->>'${id}')::int AS score
+FROM users
+WHERE "openable_scores"->>'${id}' IS NOT NULL
+AND ("openable_scores"->>'${id}')::int > 50
+ORDER BY ("openable_scores"->>'${id}')::int DESC
+LIMIT 50;`
+					)
+					.then(i => i.map(t => ({ id: t.id, score: Number(t.score) })))
+			)
+		);
+
+		const userScoreMap: Record<string, number> = {};
+		for (const lb of res) {
+			const [rankOne] = lb;
+			for (const user of lb) {
+				if (!userScoreMap[user.id]) userScoreMap[user.id] = 0;
+				userScoreMap[user.id] += user.score / rankOne.score;
+			}
+		}
+		const entries = Object.entries(userScoreMap);
+
+		const [[rankOneID]] = entries;
+
+		results.push(
+			await addRoles({
+				g: g!,
+				users: [rankOneID],
+				role: '1074592096968785960',
+				badge: null,
+				userMap: { [rankOneID]: ['Rank 1 Mystery Box Opens'] }
 			})
 		);
 	}
@@ -562,7 +609,8 @@ ORDER BY u.uniques DESC LIMIT 300;`);
 		['Top Farmers', farmers],
 		['Top Inventor', topInventor],
 		['Top Leagues', topLeagues],
-		['Top Tamer', topTamer]
+		['Top Tamer', topTamer],
+		['Mysterious', mysterious]
 	] as const;
 
 	let failed: string[] = [];
