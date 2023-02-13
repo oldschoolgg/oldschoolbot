@@ -1,7 +1,9 @@
 import type { activity_type_enum, CropUpgradeType } from '@prisma/client';
 
+import { NMZStrategy } from '../constants';
 import type { IPatchData } from '../minions/farming/types';
 import type { MinigameName } from '../settings/minigames';
+import { RaidLevel } from '../simulation/toa';
 import type { Peak } from '../tickers';
 import type { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
 import type { ItemBank } from '.';
@@ -17,6 +19,10 @@ export interface ActivityTaskOptions {
 
 export interface ActivityTaskOptionsWithQuantity extends ActivityTaskOptions {
 	quantity: number;
+}
+
+export interface ActivityTaskOptionsWithUsers extends ActivityTaskOptions {
+	users: string[];
 }
 
 export interface RunecraftActivityTaskOptions extends ActivityTaskOptions {
@@ -286,14 +292,14 @@ export interface GroupMonsterActivityTaskOptions extends MonsterActivityTaskOpti
 	users: string[];
 }
 
-export interface RaidsOptions extends ActivityTaskOptions {
+export interface RaidsOptions extends ActivityTaskOptionsWithUsers {
 	leader: string;
 	users: string[];
 	challengeMode: boolean;
 	quantity?: number;
 }
 
-export interface TheatreOfBloodTaskOptions extends ActivityTaskOptions {
+export interface TheatreOfBloodTaskOptions extends ActivityTaskOptionsWithUsers {
 	leader: string;
 	users: string[];
 	hardMode: boolean;
@@ -302,10 +308,22 @@ export interface TheatreOfBloodTaskOptions extends ActivityTaskOptions {
 	deaths: number[][];
 }
 
-export interface NexTaskOptions extends ActivityTaskOptions {
+type UserID = string;
+type Points = number;
+type RoomIDsDiedAt = number[];
+
+export interface TOAOptions extends ActivityTaskOptionsWithUsers {
+	leader: string;
+	detailedUsers: [UserID, Points[], RoomIDsDiedAt[]][];
+	raidLevel: RaidLevel;
+	fakeDuration: number;
+	wipedRoom: null | number;
+	quantity: number;
+}
+
+export interface NexTaskOptions extends ActivityTaskOptionsWithUsers {
 	quantity: number;
 	leader: string;
-	users: string[];
 	userDetails: [string, number, number[]][];
 	fakeDuration: number;
 	wipedKill: number | null;
@@ -344,6 +362,11 @@ export interface GuardiansOfTheRiftActivityTaskOptions extends MinigameActivityT
 	barrierAndGuardian: number;
 	rolls: number;
 	combinationRunes: boolean;
+}
+
+export interface NightmareZoneActivityTaskOptions extends MinigameActivityTaskOptions {
+	strategy: NMZStrategy;
+	quantity: number;
 }
 
 export interface ShadesOfMortonOptions extends MinigameActivityTaskOptions {
