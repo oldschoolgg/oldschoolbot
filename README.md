@@ -26,26 +26,49 @@ Anyone is free to create PR's with improvements and additions to Old School Bot.
 
 Please lint your code with the projects' [ESLint](https://eslint.org/) config.
 
-Contributors are listed in this file, and given a Contributor role in the support server. If you have more questions, send me a message on discord.
+Contributors are listed in this file, and given a Contributor role in the support server. If you have more questions, there are lots of helpful Contributors in the `#developers` channel on the Discord server.
 
 ### Setting up the bot to run locally for contributing
 
-**To run the bot, you need the following things first: Git, NodeJS v12+, Postgres, a discord bot account**
+To run the bot, you need the following things first: Git, [NodeJS v18+](https://nodejs.org/en/), [Postgres](https://www.postgresql.org/download/), [Python](https://www.python.org/) and a discord bot account
+
+#### **Setting up a Discord Bot**
+
+1. Head to [Discord Developers](https://discord.com/developers) and create an application
+2. Once created, click into your Application
+3. Copy and store the Application ID, you'll need this later on.
+4. Create a Bot on the Bot tab. Copy and store the token for your bot, you'll need this later on
+5. Ensure your bot has `Privileged Gateway Intents > Server Members Intent` enabled.
+6. Invite your bot to your server via this URL. Be sure to input your `BotID` into the URL. `https://discord.com/api/oauth2/authorize?client_id=<INSERT BOT ID HERE>&permissions=2198754295617&scope=applications.commands%20bot`
+
+#### **Setting up your environment**
 
 1. Clone the repository: `git clone https://github.com/oldschoolgg/oldschoolbot.git`
 2. Change into the new directory: `cd oldschoolbot`
 3. Install the yarn dependency: `npm install --global yarn`
 4. Make a config file from the example: `cp src/config.example.ts src/config.ts`
-5. Edit this new `config.ts` file, input your bot token and Postgres database details; be sure to read the comments for any additional instructions.
-6. Go to https://discord.com/developers/applications and ensure your bot has `Privileged Gateway Intents > Server Members Intent` enabled.
-7. Create a file called `.env` in your project's root directory with the content
-   (change as necessary for your DB, this is known as a DSN): `DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres?schema=public`
-8. Run `yarn` then `yarn install`
-9. Run `npx prisma generate` to generate the Prisma client files and load the DSN from #6
-10. Run `npx prisma db push` to create the tables on the database referenced in .env
-11. Run `yarn build` - then run `yarn start`. In the future, you can type only `yarn start` to start the bot.
+5. Edit this new `config.ts` file:
+   1. Input your bot token you retrieved earlier into `botToken`
+   2. Input your Application ID you retrieved earlier into `BotID`
+   3. Input your Application ID you retrieved earlier into `CLIENT_ID`
+   4. Copy your Discord ID into both `OWNER_IDS` and `ADMIN_IDS`. You can get your Discord ID by opening Settings, selecting My Account, selecting the three dots next to your user name and selecting Copy ID. You may need to enable Developer Mode in Advanced Settings to be given this option.
+   5. Enter the Server ID where you want to Administer your bot from in `SupportServer`. You can get this by right clicking the logo of the server and selecting Copy ID.
+   6. Enter the Server ID into `DEV_SERVER_ID`
+6. Make a .env file copy from the example `cp .env.example .env`. Update `DATABASE_URL` and `ROBOCHIMP_DATABASE_URL` with your Postgres username, password and schema names.
+7. Run `yarn` then `yarn install`
+8. Run `npx prisma generate` to generate the Prisma client files and load the DSN from #6
+9. Run `npx prisma db push` to create the tables on the database referenced in .env
+10. Run `npx prisma generate --schema=./prisma/robochimp.prisma` to generate the Prisma client files and load the DSN from #6 for the `robochimp` database.
+11. Run `npx prisma db push --schema=./prisma/robochimp.prisma` to create the tables on the database referenced in .env for the `robochimp` database.
+12. Run `yarn build` - then run `yarn start`. In the future, you can type only `yarn start` to start the bot.
 
-If you have errors or issues, you can ask us for help in the developer channel in the [discord server](https://discord.gg/ob).
+If you have errors or issues, you can ask us for help in the #developer channel in the [discord server](https://discord.gg/ob).
+
+#### **Shared Testing Server**
+
+In addition to being able your develop on your own server as we have done above, there is a shared dev server which can be joined here: [https://discord.gg/Cup2gwUGwr](https://discord.gg/Cup2gwUGwr)
+
+You can also ask Magna to invite your Bot with your invite link above if you so wish.
 
 ### Contributors
 

@@ -12,6 +12,7 @@ import { production } from '../../config';
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { prisma } from '../../lib/settings/prisma';
 import { makeComponents, toKMB } from '../../lib/util';
+import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { logError } from '../../lib/util/logError';
 import {
 	BINGO_TICKET_PRICE,
@@ -24,7 +25,7 @@ import {
 	determineBingoProgress
 } from '../lib/bingo';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 import { doMenu, getPos } from './leaderboard';
 
 type MakeTeamOptions = {

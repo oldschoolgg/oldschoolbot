@@ -94,7 +94,7 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 	{
 		name: 'metrics',
 		timer: null,
-		interval: production ? Time.Minute : Time.Second,
+		interval: Time.Minute,
 		cb: async () => {
 			let storedCount = queryCountStore.value;
 			queryCountStore.value = 0;
@@ -376,7 +376,9 @@ export function initTickers() {
 		const fn = async () => {
 			try {
 				if (globalClient.isShuttingDown) return;
+				debugLog(`Starting ${ticker.name} ticker`);
 				await ticker.cb();
+				debugLog(`Finished ${ticker.name} ticker`);
 			} catch (err) {
 				logError(err);
 			} finally {

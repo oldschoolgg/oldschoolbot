@@ -8,8 +8,9 @@ import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
 import { TitheFarmActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
-import { handleMahojiConfirmation, userHasGracefulEquipped } from '../../mahojiSettings';
+import { userHasGracefulEquipped } from '../../mahojiSettings';
 
 function determineDuration(user: MUser): [number, string[]] {
 	let baseTime = Time.Second * 1500;
