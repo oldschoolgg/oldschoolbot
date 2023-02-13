@@ -2,6 +2,7 @@ import { Embed } from '@discordjs/builders';
 import { calcWhatPercent, chunk } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
+import { ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
 import { badges, badgesCache, Emoji, usernameCache } from '../../lib/constants';
 import { allClNames, getCollectionItems } from '../../lib/data/Collections';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
@@ -442,6 +443,35 @@ async function skillsLb(
 	return lbMsg(`Overall ${skill!.name} ${type}`);
 }
 
+async function cluesLb(user: MUser, channelID: string, clueTierName: string, ironmanOnly: boolean) {
+	const clueTier = ClueTiers.find(i => stringMatches(i.name, clueTierName));
+	if (!clueTier) return "That's not a valid clue tier.";
+	const { id } = clueTier;
+	const users = (
+		await prisma.$queryRawUnsafe<{ id: string; score: number }[]>(
+			`SELECT id, ("collectionLogBank"->>'${id}')::int AS score
+FROM users
+WHERE "collectionLogBank"->>'${id}' IS NOT NULL
+AND ("collectionLogBank"->>'${id}')::int > 25
+${ironmanOnly ? 'AND "minion.ironman" = true ' : ''}
+ORDER BY ("collectionLogBank"->>'${id}')::int DESC
+LIMIT 50;`
+		)
+	).map(res => ({ ...res, score: Number(res.score) }));
+
+	doMenu(
+		user,
+		channelID,
+		chunk(users, LB_PAGE_SIZE).map((subList, i) =>
+			subList
+				.map(({ id, score }, j) => `${getPos(i, j)}**${getUsername(id)}:** ${score.toLocaleString()} Completed`)
+				.join('\n')
+		),
+		`${clueTier.name} Clue Leaderboard`
+	);
+	return lbMsg('Clue Leaderboard', ironmanOnly);
+}
+
 export async function cacheUsernames() {
 	const allNewUsers = await prisma.newUser.findMany({
 		where: {
@@ -667,6 +697,21 @@ export const leaderboardCommand: OSBMahojiCommand = {
 				},
 				ironmanOnlyOption
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'clues',
+			description: 'Check the clue leaderboards.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'clue',
+					description: 'The clue you want to select.',
+					required: true,
+					choices: ClueTiers.map(i => ({ name: i.name, value: i.name }))
+				},
+				ironmanOnlyOption
+			]
 		}
 	],
 	run: async ({
@@ -686,6 +731,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		skills?: { skill: string; ironmen_only?: boolean; xp?: boolean };
 		opens?: { openable: string; ironmen_only?: boolean };
 		cl?: { cl: string; ironmen_only?: boolean };
+		clues?: { clue: ClueTier['name']; ironmen_only?: boolean };
 	}>) => {
 		await deferInteraction(interaction);
 		const user = await mUserFetch(userID);
@@ -700,7 +746,8 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			agility_laps,
 			gp,
 			skills,
-			cl
+			cl,
+			clues
 		} = options;
 		if (kc) return kcLb(user, channelID, kc.monster, Boolean(kc.ironmen_only));
 		if (farming_contracts) return farmingContractLb(user, channelID, Boolean(farming_contracts.ironmen_only));
@@ -715,6 +762,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		}
 		if (opens) return openLb(user, channelID, opens.openable, Boolean(opens.ironmen_only));
 		if (cl) return clLb(user, channelID, cl.cl, Boolean(cl.ironmen_only));
+		if (clues) return cluesLb(user, channelID, clues.clue, Boolean(clues.ironmen_only));
 		return 'Invalid input.';
 	}
 };

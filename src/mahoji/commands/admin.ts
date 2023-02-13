@@ -34,6 +34,7 @@ import {
 	stringMatches,
 	toKMB
 } from '../../lib/util';
+import { memoryAnalysis } from '../../lib/util/cachedUserIDs';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../lib/util/clientSettings';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
@@ -177,6 +178,16 @@ AND ("gear.melee" IS NOT NULL OR
 				}
 			}
 			return bank;
+		}
+	},
+	{
+		name: 'Memory Analysis',
+		run: async () => {
+			return {
+				content: Object.entries(memoryAnalysis())
+					.map(i => `${i[0]}: ${i[1]}`)
+					.join('\n')
+			};
 		}
 	}
 ];
