@@ -9,9 +9,8 @@ import { difficulties, rewardTokens, trekBankBoosts } from '../../../lib/minions
 import { AddXpParams, GearRequirement } from '../../../lib/minions/types';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { readableStatName } from '../../../lib/structures/Gear';
 import { TempleTrekkingActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, percentChance, rand, stringMatches } from '../../../lib/util';
+import { formatDuration, percentChance, rand, readableStatName, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';

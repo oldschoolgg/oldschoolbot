@@ -12,7 +12,7 @@ declare global {
 }
 
 function makePrismaClient(): PrismaClient {
-	console.log('Making prisma client...');
+	if (!production) console.log('Making prisma client...');
 	return new PrismaClient({
 		log: [
 			{
