@@ -1,5 +1,6 @@
 import { calcPercentOfNum, calcWhatPercent, randFloat, randInt, reduceNumByPercent, round, Time } from 'e';
 import { Bank } from 'oldschooljs';
+import { Item } from 'oldschooljs/dist/meta/types';
 import { randomVariation } from 'oldschooljs/dist/util';
 
 import type { GearStats } from '../gear/types';
@@ -277,11 +278,87 @@ function kcEffectiveness(normalKC: number, hardKC: number, hardMode: boolean) {
 	return kcEffectiveness;
 }
 
+interface ItemBoost {
+	item: Item;
+	boost: number;
+	mustBeEquipped: boolean;
+	setup?: 'mage' | 'range' | 'melee';
+}
+
+const itemBoosts: ItemBoost[][] = [
+	[
+		{
+			item: getOSItem('Scythe of vitur'),
+			boost: 15,
+			mustBeEquipped: true,
+			setup: 'melee'
+		},
+		{
+			item: getOSItem('Scythe of vitur (uncharged)'),
+			boost: 6,
+			mustBeEquipped: true,
+			setup: 'melee'
+		},
+		{
+			item: getOSItem('Blade of saeldor (c)'),
+			boost: 6,
+			mustBeEquipped: true,
+			setup: 'melee'
+		},
+		{
+			item: getOSItem('Abyssal tentacle'),
+			boost: 5.5,
+			mustBeEquipped: true,
+			setup: 'melee'
+		}
+	],
+	[
+		{
+			item: getOSItem('Twisted bow'),
+			boost: 4,
+			mustBeEquipped: true,
+			setup: 'range'
+		}
+	],
+	[
+		{
+			item: getOSItem('Dragon claws'),
+			boost: 6,
+			mustBeEquipped: false
+		},
+		{
+			item: getOSItem('Crystal halberd'),
+			boost: 3,
+			mustBeEquipped: false
+		}
+	],
+	[
+		{
+			item: getOSItem('Dragon warhammer'),
+			boost: 6,
+			mustBeEquipped: false
+		},
+		{
+			item: getOSItem('Bandos godsword'),
+			boost: 3,
+			mustBeEquipped: false
+		}
+	]
+];
+
 const speedReductionForGear = 16;
-const speedReductionForKC = 40;
-const totalSpeedReductions = speedReductionForGear + speedReductionForKC + 15 + 4;
+const speedReductionForKC = 20;
+const speedReductionForDarts = 4;
+
+const maxSpeedReductionFromItems = itemBoosts.reduce(
+	(sum, items) => sum + Math.max(...items.map(item => item.boost)),
+	0
+);
+const maxSpeedReductionUser =
+	(speedReductionForGear + speedReductionForKC + speedReductionForDarts) * 1.3 + maxSpeedReductionFromItems;
+
 const baseDuration = Time.Minute * 70;
-const baseCmDuration = Time.Minute * 75;
+const baseHardDuration = Time.Minute * 75;
 
 const { ceil } = Math;
 function calcPerc(perc: number, num: number) {
@@ -315,13 +392,12 @@ export function createTOBTeam({
 }): {
 	reductions: Record<string, number>;
 	duration: number;
-	totalReduction: number;
+	maxUserReduction: number;
 	parsedTeam: ParsedTeamMember[];
 	wipedRoom: TOBRoom | null;
 	deathDuration: number | null;
 } {
 	const teamSize = team.length;
-	const maxScaling = 350;
 	assert(teamSize > 1 && teamSize < 6, 'TOB team must be 2-5 users');
 
 	let individualReductions = [];
@@ -334,68 +410,45 @@ export function createTOBTeam({
 		let userPercentChange = 0;
 
 		// Reduce time for gear
-		const gearPerecents = calculateTOBUserGearPercents(u.user);
+		const gearPercents = calculateTOBUserGearPercents(u.user);
 		// Blowpipe
 		const darts = u.user.blowpipe.dartID!;
 		const dartItem = getOSItem(darts);
 		const dartIndex = blowpipeDarts.indexOf(dartItem);
-		const blowPipePercent = dartIndex >= 3 ? dartIndex * 0.9 : -(4 * (4 - dartIndex));
-		userPercentChange += calcPerc(gearPerecents.total, (speedReductionForGear + blowPipePercent) / 2);
+		let blowPipePercent = 0;
+		if (dartIndex >= 3) {
+			blowPipePercent = (dartIndex / (blowpipeDarts.length - 1)) * speedReductionForDarts;
+		} else {
+			blowPipePercent = -(4 * (4 - dartIndex)) / 2;
+		}
+		userPercentChange += calcPerc(gearPercents.total, speedReductionForGear + blowPipePercent);
 
 		// Reduce time for KC
-		const kcPercent = kcEffectiveness(
-			Math.min(u.attempts, maxScaling),
-			Math.min(u.hardAttempts, maxScaling),
-			hardMode
-		);
+		const kcPercent = kcEffectiveness(u.attempts, u.hardAttempts, hardMode);
 		userPercentChange += calcPerc(kcPercent, speedReductionForKC);
 
 		const maxKcCurveBonus = 30;
 		const durationCurveModifier = Math.min(maxKcCurveBonus, kcPercent * 0.6);
 		userPercentChange *= 1 + durationCurveModifier / 100;
-
 		/**
 		 *
 		 * Item/Gear Boosts
 		 *
 		 */
-		const meleeWeaponBoosts = [
-			['Scythe of vitur', 15],
-			['Scythe of vitur (uncharged)', 6],
-			['Blade of saeldor (c)', 6],
-			['Abyssal tentacle', 5.5]
-		] as const;
-		for (const [name, percent] of meleeWeaponBoosts) {
-			if (u.gear.melee.hasEquipped(name)) {
-				userPercentChange += percent;
-				break;
-			}
-		}
-		const rangeWeaponBoosts = [['Twisted bow', 4]] as const;
-		for (const [name, percent] of rangeWeaponBoosts) {
-			if (u.gear.range.hasEquipped(name)) {
-				userPercentChange += percent;
-				break;
-			}
-		}
-		const primarySpecWeaponBoosts = [
-			['Dragon claws', 6],
-			['Crystal halberd', 3]
-		] as const;
-		for (const [name, percent] of primarySpecWeaponBoosts) {
-			if (u.user.hasEquippedOrInBank(name)) {
-				userPercentChange += percent;
-				break;
-			}
-		}
-		const secondarySpecWeaponBoosts = [
-			['Dragon warhammer', 6],
-			['Bandos godsword', 3]
-		] as const;
-		for (const [name, percent] of secondarySpecWeaponBoosts) {
-			if (u.user.hasEquippedOrInBank(name)) {
-				userPercentChange += percent;
-				break;
+		for (const itemBoost of itemBoosts) {
+			for (const item of itemBoost) {
+				if (item.mustBeEquipped) {
+					if (item.setup && u.user.gear[item.setup].hasEquipped(item.item.id)) {
+						userPercentChange += item.boost;
+						break;
+					} else if (!item.setup && u.user.hasEquipped(item.item.id)) {
+						userPercentChange += item.boost;
+						break;
+					}
+				} else if (u.user.hasEquippedOrInBank(item.item.id)) {
+					userPercentChange += item.boost;
+					break;
+				}
 			}
 		}
 
@@ -412,7 +465,7 @@ export function createTOBTeam({
 			userPercentChange = reduceNumByPercent(userPercentChange, 10);
 		}
 
-		const deathChances = calculateTOBDeaths(u.kc, u.hardKC, u.attempts, u.hardAttempts, hardMode, gearPerecents);
+		const deathChances = calculateTOBDeaths(u.kc, u.hardKC, u.attempts, u.hardAttempts, hardMode, gearPercents);
 		parsedTeam.push({
 			kc: u.kc,
 			hardKC: u.hardKC,
@@ -440,7 +493,7 @@ export function createTOBTeam({
 		totalReduction = round(totalReduction / teamSize, 2);
 	}
 	if (hardMode) {
-		duration = baseCmDuration;
+		duration = baseHardDuration;
 		duration = reduceNumByPercent(duration, totalReduction / 1.3);
 	} else {
 		duration = reduceNumByPercent(duration, totalReduction);
@@ -485,7 +538,7 @@ export function createTOBTeam({
 	return {
 		duration,
 		reductions,
-		totalReduction: totalSpeedReductions / teamSize,
+		maxUserReduction: maxSpeedReductionUser / teamSize,
 		parsedTeam,
 		wipedRoom,
 		deathDuration

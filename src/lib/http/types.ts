@@ -9,7 +9,6 @@ interface UserAuth {
 declare module 'fastify' {
 	interface RouteOptions {
 		config?: {
-			requiresAuth?: true | false;
 			[key: string]: unknown;
 		};
 	}
