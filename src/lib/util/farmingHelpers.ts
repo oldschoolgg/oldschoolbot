@@ -4,9 +4,8 @@ import { BaseMessageOptions, ButtonBuilder } from 'discord.js';
 import { Emoji } from '../constants';
 import { IPatchData, IPatchDataDetailed } from '../minions/farming/types';
 import Farming from '../skilling/skills/farming';
-import { dateFm, makeComponents } from '../util';
+import { dateFm, makeAutoFarmButton, makeComponents } from '../util';
 import { stringMatches } from './cleanString';
-import { makeAutoFarmButton } from './globalInteractions';
 
 export const farmingPatchNames = [
 	'herb',
