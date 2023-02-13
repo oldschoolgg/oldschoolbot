@@ -34,8 +34,10 @@ import {
 	stringMatches,
 	toKMB
 } from '../../lib/util';
+import { memoryAnalysis } from '../../lib/util/cachedUserIDs';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../lib/util/clientSettings';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
+import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction, interactionReply } from '../../lib/util/interactionReply';
 import { syncLinkedAccounts } from '../../lib/util/linkedAccountsUtil';
 import { logError } from '../../lib/util/logError';
@@ -46,7 +48,7 @@ import { Cooldowns } from '../lib/Cooldowns';
 import { syncCustomPrices } from '../lib/events';
 import { itemOption } from '../lib/mahojiCommandOptions';
 import { allAbstractCommands, OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 import { getUserInfo } from './minion';
 
 export const gifs = [
@@ -176,6 +178,16 @@ AND ("gear.melee" IS NOT NULL OR
 				}
 			}
 			return bank;
+		}
+	},
+	{
+		name: 'Memory Analysis',
+		run: async () => {
+			return {
+				content: Object.entries(memoryAnalysis())
+					.map(i => `${i[0]}: ${i[1]}`)
+					.join('\n')
+			};
 		}
 	}
 ];
@@ -459,7 +471,7 @@ export const adminCommand: OSBMahojiCommand = {
 					description: 'The bitfield to add',
 					required: false,
 					autocomplete: async () => {
-						return Object.keys(BitField).map(i => ({ name: i, value: i }));
+						return Object.entries(BitFieldData).map(i => ({ name: i[1].name, value: i[0] }));
 					}
 				},
 				{
@@ -468,7 +480,7 @@ export const adminCommand: OSBMahojiCommand = {
 					description: 'The bitfield to remove',
 					required: false,
 					autocomplete: async () => {
-						return Object.keys(BitField).map(i => ({ name: i, value: i }));
+						return Object.entries(BitFieldData).map(i => ({ name: i[1].name, value: i[0] }));
 					}
 				}
 			]

@@ -397,6 +397,10 @@ export function shouldTrackCommand(command: AbstractCommand, args: CommandOption
 export const DISABLED_COMMANDS = new Set<string>();
 export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'chinning', 'none'] as const;
 export type PvMMethod = typeof PVM_METHODS[number];
+
+export const NMZ_STRATEGY = ['experience', 'points'] as const;
+export type NMZStrategy = typeof NMZ_STRATEGY[number];
+
 export const usernameCache = new Map<string, string>();
 export const badgesCache = new Map<string, string>();
 export const minionBuyButton = new ButtonBuilder()
@@ -427,3 +431,14 @@ export const chompyHats = [
 ] as const;
 
 export const gitHash = execSync('git rev-parse HEAD').toString().trim();
+
+export const toaPurpleItems = resolveItems([
+	"Tumeken's guardian",
+	"Tumeken's shadow (uncharged)",
+	"Elidinis' ward",
+	'Masori mask',
+	'Masori body',
+	'Masori chaps',
+	'Lightbearer',
+	"Osmumten's fang"
+]);
