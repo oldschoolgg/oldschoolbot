@@ -297,6 +297,7 @@ export async function minionKillCommand(
 	// Calculate Cannon and Barrage boosts + costs:
 	let usingCannon = false;
 	let cannonMulti = false;
+	let chinning = false;
 	let burstOrBarrage = 0;
 	const hasCannon = cannonBanks.some(i => user.owns(i));
 	if ((method === 'burst' || method === 'barrage') && !monster!.canBarrage) {
@@ -340,6 +341,7 @@ export async function minionKillCommand(
 		timeToFinish = reduceNumByPercent(timeToFinish, boostCannon);
 		boosts.push(`${boostCannon}% for Cannon in singles`);
 	} else if (method === 'chinning' && attackStyles.includes(SkillsEnum.Ranged) && monster!.canChinning) {
+		chinning = true;
 		// Check what Chinchompa to use
 		const chinchompas = ['Black chinchompa', 'Red chinchompa', 'Chinchompa'];
 		let chinchompa = 'Black chinchompa';
@@ -349,18 +351,18 @@ export async function minionKillCommand(
 				break;
 			}
 		}
-		const chinBoostRapid = chinchompa === 'Chinchompa' ? 82 : chinchompa === 'Red chinchompa' ? 87 : 90;
-		const chinBoostLongRanged = chinchompa === 'Chinchompa' ? 77 : chinchompa === 'Red chinchompa' ? 83 : 87;
+		const chinBoostRapid = chinchompa === 'Chinchompa' ? 73 : chinchompa === 'Red chinchompa' ? 76 : 82;
+		const chinBoostLongRanged = chinchompa === 'Chinchompa' ? 63 : chinchompa === 'Red chinchompa' ? 69 : 77;
 		const chinningConsumables: Consumable = {
 			itemCost: new Bank().add(chinchompa, 1),
 			qtyPerMinute: attackStyles.includes(SkillsEnum.Defence) ? 24 : 33
 		};
 		if (attackStyles.includes(SkillsEnum.Defence)) {
 			timeToFinish = reduceNumByPercent(timeToFinish, chinBoostLongRanged);
-			boosts.push(`${chinBoostLongRanged}% for ${chinchompa}`);
+			boosts.push(`${chinBoostLongRanged}% for ${chinchompa} Longrange`);
 		} else {
 			timeToFinish = reduceNumByPercent(timeToFinish, chinBoostRapid);
-			boosts.push(`${chinBoostRapid}% for ${chinchompa}`);
+			boosts.push(`${chinBoostRapid}% for ${chinchompa} Rapid`);
 		}
 		consumableCosts.push(chinningConsumables);
 	}
@@ -594,6 +596,7 @@ export async function minionKillCommand(
 		type: 'MonsterKilling',
 		usingCannon: !usingCannon ? undefined : usingCannon,
 		cannonMulti: !cannonMulti ? undefined : cannonMulti,
+		chinning: !chinning ? undefined : chinning,
 		burstOrBarrage: !burstOrBarrage ? undefined : burstOrBarrage
 	});
 	let response = `${minionName} is now killing ${quantity}x ${monster.name}, it'll take around ${formatDuration(

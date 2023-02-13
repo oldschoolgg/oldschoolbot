@@ -107,7 +107,7 @@ const killableMonsters: KillableMonster[] = [
 		id: Monsters.ManiacalMonkey.id,
 		name: Monsters.ManiacalMonkey.name,
 		aliases: Monsters.ManiacalMonkey.aliases,
-		timeToFinish: Time.Second * 20,
+		timeToFinish: Time.Second * 8.4,
 		table: Monsters.ManiacalMonkey,
 		levelRequirements: {
 			prayer: 74,
