@@ -236,7 +236,7 @@ const stalls: Stealable[] = [
 		type: 'stall',
 		aliases: ['xbow', 'crossbow'],
 		level: 49,
-		xp: 22,
+		xp: 52,
 		id: 4719,
 		table: new LootTable().add('Bronze bolts', 3, 7).add('Bronze limbs', 1, 2).add('Wooden stock', 1, 1),
 		respawnTime: Time.Second * 10,
