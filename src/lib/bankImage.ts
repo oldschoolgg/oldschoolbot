@@ -716,7 +716,7 @@ export async function drawChestLootImage(options: {
 		const image = isPurple ? await type.chestImagePurple : await type.chestImage;
 		ctx.drawImage(image, canvas.width - image.width + 25, 44 + canvas.height / 4 - image.height / 2);
 
-		drawTitle(ctx, `${user.rawUsername} (Value: ${toKMB(loot.value())})`, canvas);
+		drawTitle(ctx, `${user.rawUsername} (${toKMB(loot.value())})`, canvas);
 		ctx.font = '16px OSRSFontCompact';
 		bankImageGenerator.drawBorder(ctx, sprite, true);
 		await bankImageGenerator.drawItems(
