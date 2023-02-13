@@ -38,6 +38,7 @@ const globalInteractionActions = [
 	'CANCEL_TRIP',
 	'AUTO_FARM',
 	'AUTO_FARMING_CONTRACT',
+	'FARMING_CONTRACT_EASIER',
 	'OPEN_SEED_PACK',
 	'BUY_MINION',
 	'BUY_BINGO_TICKET',
@@ -232,6 +233,11 @@ async function repeatTripHandler(user: MUser, interaction: ButtonInteraction) {
 
 export async function interactionHook(interaction: Interaction) {
 	if (!interaction.isButton()) return;
+	debugLog(`Interaction hook for button [${interaction.customId}]`, {
+		user_id: interaction.user.id,
+		channel_id: interaction.channelId,
+		guild_id: interaction.guildId
+	});
 	const id = interaction.customId;
 	const userID = interaction.user.id;
 
@@ -425,6 +431,18 @@ export async function interactionHook(interaction: Interaction) {
 			const response = await autoContract(await mUserFetch(user.id), options.channelID, user.id);
 			if (response) interactionReply(interaction, response);
 			return;
+		}
+		case 'FARMING_CONTRACT_EASIER': {
+			return runCommand({
+				commandName: 'farming',
+				args: {
+					contract: {
+						input: 'easier'
+					}
+				},
+				bypassInhibitors: true,
+				...options
+			});
 		}
 		case 'OPEN_SEED_PACK': {
 			return runCommand({

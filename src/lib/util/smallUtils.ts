@@ -1,3 +1,4 @@
+import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { objectEntries, Time } from 'e';
 import { Bank, Items } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
@@ -5,6 +6,7 @@ import { MersenneTwister19937, shuffle } from 'random-js';
 
 import { skillEmoji } from '../data/emojis';
 import type { ArrayItemsResolved, Skills } from '../types';
+import getOSItem from './getOSItem';
 import { toTitleCase } from './toTitleCase';
 
 export function itemNameFromID(itemID: number | string) {
@@ -120,4 +122,33 @@ export function averageBank(bank: Bank, kc: number) {
 		newBank.add(item.id, Math.floor(qty / kc));
 	}
 	return newBank;
+}
+
+const shortItemNames = new Map([
+	[getOSItem('Saradomin brew(4)'), 'Brew'],
+	[getOSItem('Super restore(4)'), 'Restore'],
+	[getOSItem('Super combat potion(4)'), 'Super combat'],
+	[getOSItem('Sanfew serum(4)'), 'Sanfew'],
+	[getOSItem('Ranging potion(4)'), 'Range pot']
+]);
+
+export function bankToStrShortNames(bank: Bank) {
+	const str = [];
+	for (const [item, qty] of bank.items()) {
+		const shortName = shortItemNames.get(item);
+		str.push(`${qty}x ${shortName ?? item.name}${qty > 1 ? 's' : ''}`);
+	}
+	return str.join(', ');
+}
+
+export function readableStatName(slot: string) {
+	return toTitleCase(slot.replace('_', ' '));
+}
+
+export function makeEasierFarmingContractButton() {
+	return new ButtonBuilder()
+		.setCustomId('FARMING_CONTRACT_EASIER')
+		.setLabel('Ask for easier Contract')
+		.setStyle(ButtonStyle.Secondary)
+		.setEmoji('977410792754413668');
 }

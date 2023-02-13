@@ -1,18 +1,23 @@
 import { default as pinoCtor } from 'pino';
+import { pid } from 'process';
 
-import { BOT_TYPE, gitHash } from '../constants';
+import { BOT_TYPE } from '../constants';
+
+const today = new Date();
+const year = today.getFullYear();
+const month = (today.getMonth() + 1).toString().padStart(2, '0');
+const day = today.getDate().toString().padStart(2, '0');
+const formattedDate = `${year}-${month}-${day}`;
 
 const pino = pinoCtor(
 	{
 		level: 'debug',
-		base: {
-			pid: process.pid,
-			gitHash
-		}
+		base: {}
 	},
 	pinoCtor.destination({
-		dest: `./${BOT_TYPE}-debug-logs.log`,
-		minLength: 4096
+		dest: `./logs/${formattedDate}-${pid}-${BOT_TYPE}-debug-logs.log`,
+		minLength: 256,
+		mkdir: true
 	})
 );
 
