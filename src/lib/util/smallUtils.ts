@@ -1,3 +1,4 @@
+import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { objectEntries, Time } from 'e';
 import { Bank, Items } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
@@ -138,4 +139,16 @@ export function bankToStrShortNames(bank: Bank) {
 		str.push(`${qty}x ${shortName ?? item.name}${qty > 1 ? 's' : ''}`);
 	}
 	return str.join(', ');
+}
+
+export function readableStatName(slot: string) {
+	return toTitleCase(slot.replace('_', ' '));
+}
+
+export function makeEasierFarmingContractButton() {
+	return new ButtonBuilder()
+		.setCustomId('FARMING_CONTRACT_EASIER')
+		.setLabel('Ask for easier Contract')
+		.setStyle(ButtonStyle.Secondary)
+		.setEmoji('977410792754413668');
 }

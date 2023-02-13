@@ -20,7 +20,7 @@ export const baseUserKourendFavour: UserKourendFavour = Object.freeze({
 	Shayzien: 0
 });
 
-export interface KourendFavour {
+interface KourendFavour {
 	name: string;
 	alias: string[];
 	duration: number;
