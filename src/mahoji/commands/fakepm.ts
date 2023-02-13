@@ -1,6 +1,6 @@
+import { Canvas, loadImage } from '@napi-rs/canvas';
 import fs from 'fs';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
-import { Canvas, loadImage } from 'skia-canvas/lib';
 
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -36,7 +36,7 @@ export const fakepmCommand: OSBMahojiCommand = {
 		ctx.fillText(`From ${options.username}: ${options.message}`, 5, 97);
 
 		return {
-			files: [{ attachment: await canvas.toBuffer('png'), name: `${Math.round(Math.random() * 10_000)}.jpg` }]
+			files: [{ attachment: await canvas.encode('png'), name: `${Math.round(Math.random() * 10_000)}.jpg` }]
 		};
 	}
 };
