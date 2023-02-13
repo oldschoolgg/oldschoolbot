@@ -43,7 +43,7 @@ export const slayerMaskHelms: SlayerMaskHelm[] = [
 	{
 		mask: getOSItem('Jelly mask'),
 		helm: getOSItem('Jelly slayer helm'),
-		monsters: [Monsters.Jelly.id],
+		monsters: [Monsters.Jelly.id, Monsters.WarpedJelly.id],
 		slayerLevel: 52,
 		...calculateDroprates(Monsters.Jelly)
 	},
