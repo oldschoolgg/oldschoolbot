@@ -1,8 +1,8 @@
 import { shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
-import { ClueTiers } from '../../../lib/clues/clueTiers';
 
+import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { Emoji, Events } from '../../../lib/constants';
 import { chambersOfXericCL, chambersOfXericMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { createTeam } from '../../../lib/data/cox';
