@@ -705,6 +705,12 @@ const questBuyables: Buyable[] = [
 		gpCost: 2_500_000,
 		qpRequired: 25,
 		ironmanPrice: 2000
+	},
+	{
+		name: 'Royal seed pod',
+		gpCost: 2_500_000,
+		qpRequired: 175,
+		ironmanPrice: 2000
 	}
 ];
 
