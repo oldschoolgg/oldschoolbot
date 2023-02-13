@@ -27,7 +27,6 @@ import { assert, getInteractionTypeName, runTimedLoggedFn } from './lib/util';
 import { CACHED_ACTIVE_USER_IDS, syncActiveUserIDs } from './lib/util/cachedUserIDs';
 import { interactionHook } from './lib/util/globalInteractions';
 import { handleInteractionError } from './lib/util/interactionReply';
-import { logError } from './lib/util/logError';
 import { sendToChannelID } from './lib/util/webhook';
 import { onStartup } from './mahoji/lib/events';
 import { postCommand } from './mahoji/lib/postCommand';
@@ -233,6 +232,6 @@ async function main() {
 	await runTimedLoggedFn('Log In', () => client.login(botToken));
 }
 
-process.on('uncaughtException', logError);
+process.on('uncaughtException', console.error);
 
 main();
