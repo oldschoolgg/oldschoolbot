@@ -252,4 +252,14 @@ describe('Gear', () => {
 	test('Divine rune pouch', () => {
 		expect(getSimilarItems(itemID('Rune pouch'))).toEqual(resolveItems(['Rune pouch', 'Divine rune pouch']));
 	});
+
+	test("Inventors' backpack", () => {
+		const gear = new Gear();
+		gear.equip('Invention master cape');
+		expect(gear.hasEquipped("Inventors' backpack")).toEqual(true);
+
+		const gear2 = new Gear();
+		gear2.equip("Inventors' backpack");
+		expect(gear2.hasEquipped('Invention master cape')).toEqual(false);
+	});
 });

@@ -727,6 +727,11 @@ export function minionStatus(user: MUser) {
 				durationRemaining
 			)}.`;
 		}
+		case 'BalthazarsBigBonanza': {
+			return `${name} is currently performing at Balthazars Big Bonanza, the trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
 		case 'HalloweenMiniMinigame':
 		case 'HalloweenEvent':
 		case 'Easter':
