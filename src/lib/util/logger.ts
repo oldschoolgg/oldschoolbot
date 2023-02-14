@@ -1,5 +1,4 @@
 import { default as pinoCtor } from 'pino';
-import { pid } from 'process';
 
 import { BOT_TYPE } from '../constants';
 
@@ -12,10 +11,18 @@ const formattedDate = `${year}-${month}-${day}`;
 const pino = pinoCtor(
 	{
 		level: 'debug',
-		base: {}
+		base: {
+			time: undefined,
+			level: undefined
+		},
+		mixin: () => ({
+			rt: new Date().toISOString(),
+			t: Date.now()
+		}),
+		timestamp: false
 	},
 	pinoCtor.destination({
-		dest: `./logs/${formattedDate}-${pid}-${BOT_TYPE}-debug-logs.log`,
+		dest: `./logs/${formattedDate}-${today.getHours()}-${today.getMinutes()}-${BOT_TYPE}-debug-logs.log`,
 		minLength: 256,
 		mkdir: true
 	})
