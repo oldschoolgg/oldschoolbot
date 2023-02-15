@@ -542,6 +542,7 @@ model LootTrack {
   cost           Json            @default("{}") @db.Json
   user_id        BigInt?
 
+  @@index([key, user_id])
   @@map("loot_track")
 }
 
