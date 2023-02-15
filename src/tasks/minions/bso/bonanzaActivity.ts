@@ -107,7 +107,7 @@ export const bonanzaTask: MinionTask = {
 		)}. You have participated ${incrementResult.newScore} times, come back in a week!`;
 
 		if (messages.length > 0) {
-			str += `\n\n**Messages:**\n${messages.join('\n')}`;
+			str += `\n\n**Messages:** ${messages.join(', ')}`;
 		}
 
 		await user.addItemsToBank({ items: loot, collectionLog: true });
