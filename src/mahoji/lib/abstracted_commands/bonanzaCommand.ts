@@ -1,14 +1,15 @@
 import { Time } from 'e';
 
+import { production } from '../../../config';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 
 export async function bonanzaCommand(user: MUser, channelID: string) {
 	if (user.minionIsBusy) return 'Your minion is busy.';
-	const lastPlayedDate = Number(user.user.lastTearsOfGuthixTimestamp);
+	const lastPlayedDate = Number(user.user.last_bonanza_date);
 	const difference = Date.now() - lastPlayedDate;
-	if (difference < Time.Day * 7) {
+	if (difference < Time.Day * 7 && production) {
 		const duration = formatDuration(Date.now() - (lastPlayedDate + Time.Day * 7));
 		return `You can only participate in Balthazar's Big Bonanza once per week, you can do it again in ${duration}.`;
 	}

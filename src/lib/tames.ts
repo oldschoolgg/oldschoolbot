@@ -183,7 +183,7 @@ export const tameKillableMonsters: TameKillableMonster[] = [
 					],
 					isPhosani: false
 				});
-				loot.add(loot.add(_loot['1']));
+				loot.add(_loot['1']);
 			}
 
 			return loot;

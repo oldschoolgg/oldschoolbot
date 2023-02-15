@@ -83,28 +83,35 @@ export const bonanzaTask: MinionTask = {
 		const tickets = randInt(clamp(averageLevel / 2, 1, 120), averageLevel);
 		loot.add('Circus ticket', tickets);
 
-		let str = `${user}, ${
-			user.minionName
-		} finished participating in Balthazar's Big Bonanza, you received ${loot} and ${xpStrs.join(
-			', '
-		)}. You have participated ${incrementResult.newScore} times, come back in a week!`;
-
 		const freeIgneTames = tames.filter(i => i.tame_activity.length === 0 && i.species_id === TameSpeciesID.Igne);
 		const freeIgneTame = randArrItem(freeIgneTames);
 		const allUserItems = user.allItemsOwned();
 		const unownedSpectatorClothes = shuffleArr(spectatorClothes)
 			.filter(i => !allUserItems.has(i))
 			.slice(0, 3);
+
+		const messages: string[] = [];
 		if (freeIgneTame && unownedSpectatorClothes.length > 0) {
 			for (const item of unownedSpectatorClothes) loot.add(item);
-			str += `\n${tameName(freeIgneTame)} ${randArrItem(tameMessages)}, and gave you their clothes!`;
+			messages.push(`${tameName(freeIgneTame)} ${randArrItem(tameMessages)}, and gave you their clothes!`);
 		}
 		if (!allUserItems.has("Giant's hand") && roll(5)) {
 			loot.add("Giant's hand");
-			str += "\nYou found a Giant's hand!";
+			messages.push("You found a Giant's hand!");
+		}
+
+		let str = `${user}, ${
+			user.minionName
+		} finished participating in Balthazar's Big Bonanza, you received ${loot} and ${xpStrs.join(
+			', '
+		)}. You have participated ${incrementResult.newScore} times, come back in a week!`;
+
+		if (messages.length > 0) {
+			str += `\n\n**Messages:**\n${messages.join('\n')}`;
 		}
 
 		await user.addItemsToBank({ items: loot, collectionLog: true });
+		await user.update({ last_bonanza_date: new Date() });
 
 		handleTripFinish(user, channelID, str, undefined, data, null);
 	}
