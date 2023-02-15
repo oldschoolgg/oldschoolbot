@@ -33,9 +33,6 @@ const droprates = [
 		output: () => {
 			const rows = [];
 			for (const a of slayerMaskHelms) {
-				console.log(
-					`${a.helm.name} requires ${a.killsRequiredForUpgrade} kills to upgrade, 1 in ${a.maskDropRate} to get mask`
-				);
 				rows.push([a.helm.name, a.killsRequiredForUpgrade, a.maskDropRate]);
 			}
 

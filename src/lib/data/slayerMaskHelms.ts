@@ -7,7 +7,6 @@ import { slayerMasters } from '../slayer/slayerMasters';
 import { allSlayerTasks } from '../slayer/tasks';
 import getOSItem from '../util/getOSItem';
 
-// glows if theyre rank 1?
 interface SlayerMaskHelm {
 	mask: Item;
 	helm: Item;

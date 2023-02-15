@@ -587,8 +587,8 @@ export const chompyHats = [
 	[getOSItem('Chompy bird hat (expert ogre dragon archer)'), 3000],
 	[getOSItem('Chompy bird hat (expert dragon archer)'), 4000]
 ] as const;
-//
-export const secretItems: number[] = resolveItems(['Baby yaga house']);
+
+export const secretItems: number[] = resolveItems([]);
 export const gitHash = execSync('git rev-parse HEAD').toString().trim();
 
 export const toaPurpleItems = resolveItems([
