@@ -174,6 +174,7 @@ import {
 } from './CollectionsExport';
 import Createables from './createables';
 import { kibbles } from './kibble';
+import { slayerMaskHelms } from './slayerMaskHelms';
 
 function kcProg(mon: Monster | number): FormatProgressFunction {
 	return ({ getKC }) => `${getKC(mon instanceof Monster ? mon.id : mon)} KC`;
@@ -685,6 +686,11 @@ export const allCollectionLogs: ICollection = {
 				items: slayerCL,
 				fmtProg: skillProg(SkillsEnum.Slayer)
 			},
+			'Slayer Masks/Helms': {
+				alias: ['slayer Masks/Helms'],
+				items: slayerMaskHelms.map(i => [i.helm.id, i.mask.id]).flat(),
+				fmtProg: skillProg(SkillsEnum.Slayer)
+			},
 			TzHaar: {
 				kcActivity: {
 					Default: [Monsters.TzHaarKet.name, Monsters.TzHaarMej.name, Monsters.TzHaarXil.name],
@@ -1093,6 +1099,38 @@ export const allCollectionLogs: ICollection = {
 					'Materials bag'
 				]),
 				fmtProg: mgProg('tinkering_workshop')
+			},
+			"Balthazar's Big Bonanza": {
+				alias: ['bbb', 'balthazars big bananza', 'circus'],
+				items: resolveItems([
+					'A stylish hat (male, yellow)',
+					'Shirt (male, yellow)',
+					'Leggings (yellow)',
+					'A stylish hat (male, maroon)',
+					'Shirt (male, maroon)',
+					'Leggings (maroon)',
+					'A stylish hat (male, green)',
+					'Shirt (male, green)',
+					'Leggings (green)',
+					'A stylish hat (female, yellow)',
+					'Shirt (female, yellow)',
+					'Skirt (yellow)',
+					'A stylish hat (female, maroon)',
+					'Shirt (female, maroon)',
+					'Skirt (maroon)',
+					'A stylish hat (female, green)',
+					'Shirt (female, green)',
+					'Skirt (green)',
+					'Shoes (male, shoes)',
+					'Shoes (male, boots)',
+					'Shoes (female, straps)',
+					'Shoes (female, flats)',
+					"Giant's hand",
+					'Acrobat set',
+					'Clown set',
+					'Ringmaster set'
+				]),
+				fmtProg: mgProg('balthazars_big_bonanza')
 			}
 		}
 	},

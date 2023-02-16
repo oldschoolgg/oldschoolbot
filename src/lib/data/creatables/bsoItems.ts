@@ -11,6 +11,7 @@ import itemID from '../../util/itemID';
 import resolveItems from '../../util/resolveItems';
 import { brokenPernixOutfit, brokenTorvaOutfit, brokenVirtusOutfit } from '../CollectionsExport';
 import { Createable } from '../createables';
+import { slayerMaskCreatables } from './slayerMasks';
 
 const dyeCreatables: Createable[] = [];
 for (const { baseItem, dyedVersions } of dyedItems) {
@@ -1210,5 +1211,6 @@ export const BsoCreateables: Createable[] = [
 		outputItems: {
 			[itemID('Crystal dust')]: 10
 		}
-	}
+	},
+	...slayerMaskCreatables
 ];

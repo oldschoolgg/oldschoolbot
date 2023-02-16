@@ -1,6 +1,7 @@
 import { Bank } from 'oldschooljs';
 
 import { Buyable } from './buyables';
+import { circusBuyables } from './circusBuyables';
 import { fistOfGuthixBuyables } from './fistOfGuthixBuyables';
 import { stealingCreationBuyables } from './stealingCreationBuyables';
 
@@ -66,5 +67,6 @@ export const bsoBuyables: Buyable[] = [
 		gpCost: 1_000_000
 	},
 	...fistOfGuthixBuyables,
-	...stealingCreationBuyables
+	...stealingCreationBuyables,
+	...circusBuyables
 ];

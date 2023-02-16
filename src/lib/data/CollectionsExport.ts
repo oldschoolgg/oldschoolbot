@@ -2274,7 +2274,8 @@ export const customPetsCL = resolveItems([
 	'Cogsworth',
 	'Mini moktang',
 	'Brain lee',
-	'Balloon cat'
+	'Balloon cat',
+	'Baby yaga house'
 ]);
 
 export const discontinuedCustomPetsCL = resolveItems([

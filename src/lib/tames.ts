@@ -11,7 +11,7 @@ import {
 	GuildMember
 } from 'discord.js';
 import { increaseNumByPercent, objectEntries, round, Time } from 'e';
-import { Bank, Items } from 'oldschooljs';
+import { Bank, Items, Misc } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import { ChambersOfXeric, TheatreOfBlood } from 'oldschooljs/dist/simulation/misc';
 
@@ -19,7 +19,7 @@ import { collectables } from '../mahoji/lib/abstracted_commands/collectCommand';
 import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
 import { getSimilarItems } from './data/similarItems';
 import { trackLoot } from './lootTrack';
-import killableMonsters from './minions/data/killableMonsters';
+import killableMonsters, { NightmareMonster } from './minions/data/killableMonsters';
 import { customDemiBosses } from './minions/data/killableMonsters/custom/demiBosses';
 import { KillableMonster } from './minions/types';
 import { prisma } from './settings/prisma';
@@ -40,37 +40,44 @@ export const igneArmors = [
 	{
 		item: getOSItem('Dragon igne armor'),
 		coxDeathChance: 85,
-		foodReduction: 5
+		foodReduction: 5,
+		nightmareDeathChance: 55
 	},
 	{
 		item: getOSItem('Barrows igne armor'),
 		coxDeathChance: 75,
-		foodReduction: 8
+		foodReduction: 8,
+		nightmareDeathChance: 33
 	},
 	{
 		item: getOSItem('Volcanic igne armor'),
 		coxDeathChance: 65,
-		foodReduction: 10
+		foodReduction: 10,
+		nightmareDeathChance: 15
 	},
 	{
 		item: getOSItem('Justiciar igne armor'),
 		coxDeathChance: 50,
-		foodReduction: 15
+		foodReduction: 15,
+		nightmareDeathChance: 8
 	},
 	{
 		item: getOSItem('Drygore igne armor'),
 		coxDeathChance: 30,
-		foodReduction: 22
+		foodReduction: 22,
+		nightmareDeathChance: 4
 	},
 	{
 		item: getOSItem('Dwarven igne armor'),
 		coxDeathChance: 10,
-		foodReduction: 27
+		foodReduction: 27,
+		nightmareDeathChance: 1.5
 	},
 	{
 		item: getOSItem('Gorajan igne armor'),
 		coxDeathChance: 5,
-		foodReduction: 33
+		foodReduction: 33,
+		nightmareDeathChance: 0.5
 	}
 ].map(i => ({ ...i, tameSpecies: [TameSpeciesID.Igne], slot: 'equipped_armor' as const }));
 
@@ -155,6 +162,39 @@ export const tameKillableMonsters: TameKillableMonster[] = [
 			return armorObj.coxDeathChance;
 		},
 		healAmountNeeded: 1888,
+		mustBeAdult: true,
+		oriWorks: false
+	},
+	{
+		id: NightmareMonster.id,
+		name: 'The Nightmare',
+		aliases: ['nightmare', 'the nightmare'],
+		timeToFinish: Time.Minute * 35,
+		itemsRequired: resolveItems([]),
+		loot({ quantity }) {
+			let loot = new Bank();
+			for (let i = 0; i < quantity; i++) {
+				const _loot = Misc.Nightmare.kill({
+					team: [
+						{
+							id: '1',
+							damageDone: 2400
+						}
+					],
+					isPhosani: false
+				});
+				loot.add(_loot['1']);
+			}
+
+			return loot;
+		},
+		deathChance: ({ tame }) => {
+			const armorEquipped = tame.equipped_armor;
+			if (!armorEquipped) return 80;
+			const armorObj = igneArmors.find(i => i.item.id === armorEquipped)!;
+			return armorObj.nightmareDeathChance;
+		},
+		healAmountNeeded: 900,
 		mustBeAdult: true,
 		oriWorks: false
 	},
