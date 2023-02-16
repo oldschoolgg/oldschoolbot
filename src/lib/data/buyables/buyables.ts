@@ -1049,6 +1049,16 @@ const Buyables: Buyable[] = [
 		ironmanPrice: 60_000,
 		qpRequired: 172
 	},
+	{
+		name: 'Mask of rebirth',
+		gpCost: 100_000,
+		ironmanPrice: 10_000,
+		qpRequired: 172,
+		customReq: async (user: MUser) => {
+			const toaKCs = await getToaKCs(user);
+			return toaKCs.expertKC >= 25 ? [true] : [false, 'You need a 25 Expert KC in Tombs of Amascut to buy this.'];
+		}
+	},
 	...sepulchreBuyables,
 	...constructionBuyables,
 	...hunterBuyables,
