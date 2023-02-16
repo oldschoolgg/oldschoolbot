@@ -32,7 +32,7 @@ async function howManyMaxed() {
 	};
 }
 
-export async function onMax(user: MUser) {
+async function onMax(user: MUser) {
 	const { normies, irons } = await howManyMaxed();
 
 	const str = `🎉 ${

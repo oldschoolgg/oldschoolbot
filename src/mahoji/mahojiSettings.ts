@@ -7,9 +7,9 @@ import { evalMathExpression } from '../lib/expressionParser';
 import { KillableMonster } from '../lib/minions/types';
 import { prisma } from '../lib/settings/prisma';
 import { Rune } from '../lib/skilling/skills/runecraft';
-import { hasGracefulEquipped, readableStatName } from '../lib/structures/Gear';
+import { hasGracefulEquipped } from '../lib/structures/Gear';
 import type { ItemBank } from '../lib/types';
-import { anglerBoosts, formatItemReqs, hasSkillReqs, itemNameFromID } from '../lib/util';
+import { anglerBoosts, formatItemReqs, hasSkillReqs, itemNameFromID, readableStatName } from '../lib/util';
 import resolveItems from '../lib/util/resolveItems';
 
 export function mahojiParseNumber({
