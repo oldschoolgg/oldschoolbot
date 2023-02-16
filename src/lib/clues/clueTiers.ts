@@ -21,7 +21,7 @@ import {
 
 const { Beginner, Easy, Medium, Hard, Elite, Master } = Clues;
 
-export interface ClueMilestoneReward {
+interface ClueMilestoneReward {
 	itemReward: number;
 	scoreNeeded: number;
 }
@@ -45,7 +45,7 @@ export const ClueTiers: ClueTier[] = [
 		table: Beginner,
 		id: 23_245,
 		scrollID: 23_182,
-		timeToFinish: Time.Minute * 4.5,
+		timeToFinish: Time.Minute * 2.5,
 		mimicChance: false,
 		allItems: BeginnerClueTable.allItems,
 		stashUnits: beginnerStashes,
@@ -56,7 +56,7 @@ export const ClueTiers: ClueTier[] = [
 		table: Easy,
 		id: 20_546,
 		scrollID: 2677,
-		timeToFinish: Time.Minute * 6.5,
+		timeToFinish: Time.Minute * 5.5,
 		milestoneReward: {
 			itemReward: itemID('Large spade'),
 			scoreNeeded: 500
@@ -71,7 +71,7 @@ export const ClueTiers: ClueTier[] = [
 		table: Medium,
 		id: 20_545,
 		scrollID: 2801,
-		timeToFinish: Time.Minute * 9,
+		timeToFinish: Time.Minute * 7,
 		milestoneReward: {
 			itemReward: itemID('Clueless scroll'),
 			scoreNeeded: 400
@@ -97,7 +97,7 @@ export const ClueTiers: ClueTier[] = [
 		table: Elite,
 		id: 20_543,
 		scrollID: 12_073,
-		timeToFinish: Time.Minute * 15.7,
+		timeToFinish: Time.Minute * 14,
 		milestoneReward: {
 			itemReward: itemID('Heavy casket'),
 			scoreNeeded: 200
