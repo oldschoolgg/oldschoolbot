@@ -2,6 +2,7 @@ import { resolve } from 'node:path';
 import { Bank } from 'oldschooljs';
 import Piscina from 'piscina';
 
+import { production } from '../../config';
 import { ItemBank } from '../types';
 
 export interface CasketWorkerArgs {
@@ -37,9 +38,11 @@ export type FinishWorkerReturn = Promise<
 	| string
 >;
 
-export const finishWorker = new Piscina({ filename: resolve(__dirname, 'finish.worker.js') });
-export const killWorker = new Piscina({ filename: resolve(__dirname, 'kill.worker.js') });
-export const casketWorker = new Piscina({ filename: resolve(__dirname, 'casket.worker.js') });
+const maxThreads = production ? 3 : 1;
+
+export const finishWorker = new Piscina({ filename: resolve(__dirname, 'finish.worker.js'), maxThreads });
+export const killWorker = new Piscina({ filename: resolve(__dirname, 'kill.worker.js'), maxThreads });
+export const casketWorker = new Piscina({ filename: resolve(__dirname, 'casket.worker.js'), maxThreads });
 
 export const Workers = {
 	casketOpen: (args: CasketWorkerArgs): Promise<[Bank, string]> => casketWorker.run(args),
