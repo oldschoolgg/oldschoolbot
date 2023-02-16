@@ -44,6 +44,7 @@ export interface Createable {
 	materialCost?: MaterialBank;
 	onCreate?: (qty: number, user: MUser) => Promise<{ result: boolean; message: string }>;
 	type?: 'pack' | 'unpack';
+	customReq?: (user: MUser) => Promise<string | null>;
 }
 
 const goldenProspectorCreatables: Createable[] = [

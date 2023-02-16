@@ -11,6 +11,7 @@ import {
 import { fishingLocations } from '../../lib/fishingContest';
 import { MaterialType } from '../../lib/invention';
 import { toTitleCase } from '../../lib/util/toTitleCase';
+import { bonanzaCommand } from '../lib/abstracted_commands/bonanzaCommand';
 import {
 	fishingContestStartCommand,
 	fishingContestStatsCommand
@@ -209,6 +210,19 @@ export const minigamesCommand: OSBMahojiCommand = {
 					]
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			name: 'balthazars_big_bonanza',
+			description: 'The balthazars big bonanza minigame.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'start',
+					description: 'Start a balthazars big bonanza trip.',
+					options: []
+				}
+			]
 		}
 	],
 	run: async ({
@@ -243,6 +257,9 @@ export const minigamesCommand: OSBMahojiCommand = {
 			start?: {
 				material: MaterialType;
 			};
+		};
+		balthazars_big_bonanza?: {
+			start?: {};
 		};
 	}>) => {
 		const klasaUser = await mUserFetch(userID);
@@ -299,6 +316,10 @@ export const minigamesCommand: OSBMahojiCommand = {
 		}
 		if (options.tinkering_workshop?.start) {
 			return tinkeringWorkshopCommand(klasaUser, options.tinkering_workshop.start.material, channelID);
+		}
+
+		if (options.balthazars_big_bonanza?.start) {
+			return bonanzaCommand(klasaUser, channelID);
 		}
 
 		return 'Invalid command.';

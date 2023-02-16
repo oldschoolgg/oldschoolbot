@@ -1,8 +1,10 @@
 import { calcPercentOfNum } from 'e';
+import { Bank } from 'oldschooljs';
 
 import Constructables from '../../lib/skilling/skills/construction/constructables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { ConstructionActivityTaskOptions } from '../../lib/types/minions';
+import { calcBabyYagaHouseDroprate, roll } from '../../lib/util';
 import { calcConBonusXP } from '../../lib/util/calcConBonusXP';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
@@ -24,7 +26,21 @@ export const constructionTask: MinionTask = {
 			duration
 		});
 
+		const loot = new Bank();
+		const petDropRate = calcBabyYagaHouseDroprate(object.xp, user.cl);
+		for (let i = 0; i < quantity; i++) {
+			if (roll(petDropRate)) {
+				loot.add('Baby yaga house');
+				break;
+			}
+		}
+
 		let str = `${user}, ${user.minionName} finished constructing ${quantity}x ${object.name}. ${xpRes}`;
+
+		if (loot.length > 0) {
+			await user.addItemsToBank({ items: loot, collectionLog: true });
+			str += `\nYou received: ${loot}`;
+		}
 
 		if (bonusXP > 0) {
 			str += `\nYou received ${bonusXP.toLocaleString()} bonus XP from your Carpenter's outfit.`;

@@ -387,6 +387,7 @@ const source: [string, (string | number)[]][] = [
 	["Elidinis' ward (f)", ["Elidinis' ward (or)"]],
 	['Rune pouch', ['Divine rune pouch']],
 	['Ghrazi rapier', ['Holy ghrazi rapier']],
+	["Inventors' backpack", ['Invention master cape']],
 	// Inventions
 	['Inferno adze', ['Superior inferno adze']],
 	['Gorajan bonecrusher', ['Superior bonecrusher']],

@@ -124,6 +124,13 @@ export function averageBank(bank: Bank, kc: number) {
 	return newBank;
 }
 
+export function calcBabyYagaHouseDroprate(xpBeingReceived: number, cl: Bank) {
+	let rate = 1 / (((xpBeingReceived / 30) * 30) / 50_000_000);
+	let amountInCl = cl.amount('Baby yaga house');
+	if (amountInCl > 1) rate *= amountInCl;
+	return Math.floor(rate);
+}
+
 const shortItemNames = new Map([
 	[getOSItem('Saradomin brew(4)'), 'Brew'],
 	[getOSItem('Super restore(4)'), 'Restore'],
