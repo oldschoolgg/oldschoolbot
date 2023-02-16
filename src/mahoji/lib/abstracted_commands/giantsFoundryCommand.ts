@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction } from 'discord.js';
-import { calcWhatPercent, Time } from 'e';
+import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { TOTAL_GIANT_WEAPONS } from '../../../lib/giantsFoundry';
@@ -195,6 +195,16 @@ export async function giantsFoundryStartCommand(
 	const boosts = [];
 	timePerSection *= (100 - setBonus) / 100;
 	boosts.push(`${setBonus}% faster for Smiths' Uniform item/items`);
+
+	if (user.usingPet('Takon')) {
+		timePerSection = reduceNumByPercent(timePerSection, 15);
+		boosts.push('15% for Takon');
+	}
+	if (user.hasEquipped('Smithing master cape')) {
+		timePerSection = reduceNumByPercent(timePerSection, 15);
+		boosts.push('15% for Smithing mastery');
+	}
+
 	const maxTripLength = calcMaxTripLength(user, 'GiantsFoundry');
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / (alloy.sections * timePerSection));
