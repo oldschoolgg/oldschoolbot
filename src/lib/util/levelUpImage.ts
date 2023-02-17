@@ -1,6 +1,6 @@
+import { Canvas } from '@napi-rs/canvas';
 import { AttachmentBuilder } from 'discord.js';
 import * as fs from 'fs';
-import { Canvas } from 'skia-canvas/lib';
 
 import { canvasImageFromBuffer, printWrappedText } from './canvasUtil';
 import { toTitleCase } from './toTitleCase';
@@ -111,7 +111,7 @@ export async function newLevelUpImage({ lvl, skill }: { lvl: number; skill: keyo
 	}
 	*/
 
-	return canvas.toBuffer('png');
+	return canvas.encode('png');
 }
 
 export default async function levelUpImage({ lvl, skill }: { lvl: number; skill: keyof typeof skillLevelUpImages }) {
