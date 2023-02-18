@@ -1,3 +1,4 @@
+import { User } from 'discord.js';
 import { randArrItem, randInt, roll, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
@@ -16,6 +17,7 @@ import { stringMatches } from '../../lib/util/cleanString';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';
 import { makeBankImage } from '../../lib/util/makeBankImage';
+import resolveItems from '../../lib/util/resolveItems';
 import { OSBMahojiCommand } from '../lib/util';
 import { userStatsBankUpdate } from '../mahojiSettings';
 
@@ -31,6 +33,12 @@ const specialBones = [
 ];
 
 const eggs = ['Red bird egg', 'Green bird egg', 'Blue bird egg'].map(getOSItem);
+
+const offerables = new Set(
+	[...Offerables, ...specialBones.map(i => i.item), ...eggs, ...Prayer.Bones]
+		.map(i => resolveItems(i.name))
+		.map(i => i[0])
+);
 
 function notifyUniques(user: MUser, activity: string, uniques: number[], loot: Bank, qty: number, randQty?: number) {
 	const itemsToAnnounce = loot.filter(item => uniques.includes(item.id), false);
@@ -60,13 +68,17 @@ export const mineCommand: OSBMahojiCommand = {
 			name: 'name',
 			description: 'The thing you want to offer.',
 			required: true,
-			autocomplete: async (value: string) => {
-				return [...Offerables, ...specialBones.map(i => i.item), ...eggs, ...Prayer.Bones]
-					.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
-					.map(i => ({
-						name: i.name,
-						value: i.name
-					}));
+			autocomplete: async (value: string, user: User) => {
+				const botUser = await mUserFetch(user.id);
+
+				return botUser.bank
+					.items()
+					.filter(i => offerables.has(i[0].id))
+					.filter(i => {
+						if (!value) return true;
+						return i[0].name.toLowerCase().includes(value.toLowerCase());
+					})
+					.map(i => ({ name: `${i[0].name} (${i[1]}x Owned)`, value: i[0].name.toLowerCase() }));
 			}
 		},
 		{
