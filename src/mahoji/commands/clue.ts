@@ -118,11 +118,6 @@ export const clueCommand: OSBMahojiCommand = {
 			timeToFinish *= 0.9;
 		}
 
-		if (isWeekend()) {
-			boosts.push('10% for Weekend');
-			timeToFinish *= 0.9;
-		}
-
 		if (user.hasEquippedOrInBank('Achievement diary cape')) {
 			boosts.push('10% for Achievement diary cape');
 			timeToFinish *= 0.9;
