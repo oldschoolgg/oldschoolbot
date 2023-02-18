@@ -1,9 +1,11 @@
+import { Prisma } from '@prisma/client';
 import { clamp, reduceNumByPercent } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { MAX_INT_JAVA } from '../../lib/constants';
+import { prisma } from '../../lib/settings/prisma';
 import { NestBoxesTable } from '../../lib/simulation/misc';
 import { itemID, toKMB } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
@@ -165,16 +167,26 @@ export const sellCommand: OSBMahojiCommand = {
 		let totalPrice = 0;
 		const taxRatePercent = 20;
 
+		const botItemSellData: Prisma.BotItemSellCreateManyInput[] = [];
+
 		for (const [item, qty] of bankToSell.items()) {
 			const specialPrice = specialSoldItems.get(item.id);
+			let pricePerStack = -1;
 			if (specialPrice) {
-				totalPrice += Math.floor(specialPrice * qty);
+				pricePerStack = Math.floor(specialPrice * qty);
 			} else {
 				const { price } = user.isIronman
 					? sellStorePriceOfItem(item, qty)
 					: sellPriceOfItem(item, taxRatePercent);
-				totalPrice += Math.floor(price * qty);
+				pricePerStack = Math.floor(price * qty);
 			}
+			totalPrice += pricePerStack;
+			botItemSellData.push({
+				item_id: item.id,
+				quantity: qty,
+				gp_received: pricePerStack,
+				user_id: user.id
+			});
 		}
 
 		await handleMahojiConfirmation(
@@ -198,7 +210,8 @@ export const sellCommand: OSBMahojiCommand = {
 				sell_gp: {
 					increment: totalPrice
 				}
-			}))
+			})),
+			prisma.botItemSell.createMany({ data: botItemSellData })
 		]);
 
 		return `Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${toKMB(totalPrice)})**${
