@@ -211,11 +211,6 @@ export const toaTask: MinionTask = {
 					text: `${user.deaths} deaths`,
 					x: 149,
 					y: 165
-				},
-				{
-					text: `Loot Value: ${Math.trunc(totalLoot.get(userID).value() / 1000)}K`,
-					x: 149,
-					y: 180
 				}
 			];
 		}

@@ -234,6 +234,9 @@ async function main() {
 	await runTimedLoggedFn('Log In', () => client.login(botToken));
 }
 
-process.on('uncaughtException', logError);
+process.on('uncaughtException', err => {
+	console.error(err);
+	logError(err);
+});
 
 main();

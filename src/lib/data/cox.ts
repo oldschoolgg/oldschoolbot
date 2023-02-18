@@ -326,12 +326,6 @@ async function kcEffectiveness(u: MUser, challengeMode: boolean, isSolo: boolean
 	return kcEffectiveness;
 }
 
-const speedReductionForGear = 15;
-const speedReductionForKC = 40;
-const totalSpeedReductions = speedReductionForGear + speedReductionForKC + 10 + 5;
-const baseDuration = Time.Minute * 83;
-const baseCmDuration = Time.Minute * 110;
-
 const { ceil } = Math;
 function calcPerc(perc: number, num: number) {
 	return ceil(calcPercentOfNum(ceil(perc), num));
@@ -451,13 +445,25 @@ const itemBoosts: ItemBoost[][] = [
 	]
 ];
 
+const speedReductionForGear = 16;
+const speedReductionForKC = 40;
+
+const maxSpeedReductionFromItems = itemBoosts.reduce(
+	(sum, items) => sum + Math.max(...items.map(item => item.boost)),
+	0
+);
+const maxSpeedReductionUser = speedReductionForGear + speedReductionForKC + maxSpeedReductionFromItems;
+
+const baseDuration = Time.Minute * 83;
+const baseCmDuration = Time.Minute * 110;
+
 export async function calcCoxDuration(
 	_team: MUser[],
 	challengeMode: boolean
 ): Promise<{
 	reductions: Record<string, number>;
 	duration: number;
-	totalReduction: number;
+	maxUserReduction: number;
 	degradeables: { item: Item; user: MUser; chargesToDegrade: number }[];
 }> {
 	const team = shuffleArr(_team).slice(0, 9);
@@ -529,7 +535,7 @@ export async function calcCoxDuration(
 
 	duration -= duration * (teamSizeBoostPercent(size) / 100);
 
-	return { duration, reductions, totalReduction: totalSpeedReductions / size, degradeables: degradeableItems };
+	return { duration, reductions, maxUserReduction: maxSpeedReductionUser / size, degradeables: degradeableItems };
 }
 
 export async function calcCoxInput(u: MUser, solo: boolean) {

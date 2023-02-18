@@ -196,8 +196,9 @@ export function activitySync(activity: Activity) {
 	const users: bigint[] | string[] = isGroupActivity(activity.data)
 		? ((activity.data as Prisma.JsonObject).users! as string[])
 		: [activity.user_id];
+	const convertedActivity = convertStoredActivityToFlatActivity(activity);
 	for (const user of users) {
-		minionActivityCache.set(user.toString(), convertStoredActivityToFlatActivity(activity));
+		minionActivityCache.set(user.toString(), convertedActivity);
 	}
 }
 

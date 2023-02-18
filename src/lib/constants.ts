@@ -249,6 +249,7 @@ export enum BitField {
 	DisableBirdhouseRunButton = 22,
 	DisableAshSanctifier = 23,
 	BothBotsMaxedFreeTierOnePerks = 24,
+	HasBloodbarkScroll = 25,
 	HasGivenBirthdayPack = 200,
 	HasPermanentSpawnLamp = 201,
 	HasScrollOfFarming = 202,
@@ -305,6 +306,7 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 		protected: false,
 		userConfigurable: false
 	},
+	[BitField.HasBloodbarkScroll]: { name: 'Runescroll of bloodbark Used', protected: false, userConfigurable: false },
 
 	[BitField.HasGivenBirthdayPack]: { name: 'Has Given Birthday Pack', protected: false, userConfigurable: false },
 	[BitField.BypassAgeRestriction]: { name: 'Bypassed Age Restriction', protected: false, userConfigurable: false },

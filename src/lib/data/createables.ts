@@ -1,10 +1,12 @@
 import { Bank } from 'oldschooljs';
 
+import { BitField } from '../constants';
 import { MaterialBank } from '../invention/MaterialBank';
 import { Favours } from '../minions/data/kourendFavour';
 import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';
 import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import { ItemBank, Skills } from '../types';
+import getOSItem from '../util/getOSItem';
 import itemID from '../util/itemID';
 import { itemNameFromID } from '../util/smallUtils';
 import { chambersOfXericMetamorphPets } from './CollectionsExport';
@@ -45,6 +47,37 @@ export interface Createable {
 	onCreate?: (qty: number, user: MUser) => Promise<{ result: boolean; message: string }>;
 	type?: 'pack' | 'unpack';
 	customReq?: (user: MUser) => Promise<string | null>;
+}
+
+const bloodBarkPairs = [
+	['Bloodbark helm', 'Splitbark helm', 250, 79],
+	['Bloodbark body', 'Splitbark body', 500, 81],
+	['Bloodbark legs', 'Splitbark legs', 500, 81],
+	['Bloodbark boots', 'Splitbark boots', 100, 77],
+	['Bloodbark gauntlets', 'Splitbark gauntlets', 100, 77]
+] as const;
+
+const bloodBarkCreatables: Createable[] = [];
+
+for (const [bbPart, sbPart, bloodRunes, lvlReq] of bloodBarkPairs) {
+	const bbItem = getOSItem(bbPart);
+	const sbItem = getOSItem(sbPart);
+
+	bloodBarkCreatables.push({
+		name: bbItem.name,
+		inputItems: new Bank().add(sbItem.id).add('Blood rune', bloodRunes),
+		outputItems: new Bank().add(bbItem.id),
+		requiredSkills: {
+			runecraft: lvlReq
+		},
+		customReq: async (user: MUser) => {
+			if (!user.bitfield.includes(BitField.HasBloodbarkScroll)) {
+				return 'You need to have used a Runescroll of bloodbark to create this item!';
+			}
+
+			return null;
+		}
+	});
 }
 
 const goldenProspectorCreatables: Createable[] = [
@@ -2129,6 +2162,18 @@ const Createables: Createable[] = [
 		}),
 		outputItems: new Bank().add('Celestial signet')
 	},
+	{
+		name: 'Eternal teleport crystal',
+		inputItems: new Bank({
+			'Enhanced crystal teleport seed': 1,
+			'Crystal shard': 100
+		}),
+		outputItems: new Bank({
+			'Eternal teleport crystal': 1
+		}),
+		requiredSkills: { smithing: 80, crafting: 80 },
+		QPRequired: 150
+	},
 	...Reverteables,
 	...crystalTools,
 	...ornamentKits,
@@ -2154,7 +2199,8 @@ const Createables: Createable[] = [
 	...tameCreatables,
 	...moktangCreatables,
 	...shadesOfMortonCreatables,
-	...toaCreatables
+	...toaCreatables,
+	...bloodBarkCreatables
 ];
 
 export default Createables;

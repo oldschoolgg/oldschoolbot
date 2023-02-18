@@ -138,7 +138,6 @@ export const sacrificeCommand: OSBMahojiCommand = {
 		for (let i = 0; i < Math.floor(totalPrice / 51_530_000); i++) {
 			if (roll(140)) {
 				hammyCount++;
-				break;
 			}
 		}
 		if (hammyCount) {

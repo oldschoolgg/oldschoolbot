@@ -56,18 +56,18 @@ export async function coxStatsCommand(user: MUser) {
 	return `<:Twisted_bow:403018312402862081> Chambers of Xeric <:Olmlet:324127376873357316>
 **Normal:** ${normal} KC (Solo: ${Emoji.Skull} ${(await createTeam([user], false))[0].deathChance.toFixed(1)}% ${
 		Emoji.CombatSword
-	} ${calcWhatPercent(normalSolo.reductions[user.id], normalSolo.totalReduction).toFixed(1)}%, Team: ${
+	} ${calcWhatPercent(normalSolo.reductions[user.id], normalSolo.maxUserReduction).toFixed(1)}%, Team: ${
 		Emoji.Skull
 	} ${(await createTeam(Array(2).fill(user), false))[0].deathChance.toFixed(1)}% ${
 		Emoji.CombatSword
-	} ${calcWhatPercent(normalTeam.reductions[user.id], normalTeam.totalReduction).toFixed(1)}%)
+	} ${calcWhatPercent(normalTeam.reductions[user.id], normalTeam.maxUserReduction).toFixed(1)}%)
 **Challenge Mode:** ${cm} KC (Solo: ${Emoji.Skull} ${(await createTeam([user], true))[0].deathChance.toFixed(1)}%  ${
 		Emoji.CombatSword
-	} ${calcWhatPercent(cmSolo.reductions[user.id], cmSolo.totalReduction).toFixed(1)}%, Team: ${Emoji.Skull} ${(
+	} ${calcWhatPercent(cmSolo.reductions[user.id], cmSolo.maxUserReduction).toFixed(1)}%, Team: ${Emoji.Skull} ${(
 		await createTeam(Array(2).fill(user), true)
 	)[0].deathChance.toFixed(1)}% ${Emoji.CombatSword} ${calcWhatPercent(
 		cmTeam.reductions[user.id],
-		cmTeam.totalReduction
+		cmTeam.maxUserReduction
 	).toFixed(1)}%)
 **Total Points:** ${totalPoints}
 **Total Uniques:** ${totalUniques} ${
@@ -161,7 +161,7 @@ export async function coxCommand(
 
 	const {
 		duration: raidDuration,
-		totalReduction,
+		maxUserReduction,
 		reductions,
 		degradeables
 	} = await calcCoxDuration(users, isChallengeMode);
@@ -199,7 +199,7 @@ export async function coxCommand(
 			const { total } = calculateUserGearPercents(u);
 			debugStr += `${u.usernameOrMention} (${Emoji.Gear}${total.toFixed(1)}% ${
 				Emoji.CombatSword
-			} ${calcWhatPercent(reductions[u.id], totalReduction).toFixed(1)}%) used ${supplies}\n`;
+			} ${calcWhatPercent(reductions[u.id], maxUserReduction).toFixed(1)}%) used ${supplies}\n`;
 			return {
 				userID: u.id,
 				itemsRemoved: supplies
