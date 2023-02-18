@@ -24,7 +24,11 @@ export async function wintertodtCommand(user: MUser, channelID: string) {
 
 	// Up to a 10% boost for 99 WC
 	const wcBoost = (wcLevel + 1) / 10;
-	if (wcBoost > 1) messages.push(`${wcBoost.toFixed(2)}% boost for Woodcutting level`);
+
+	if (wcBoost > 1) {
+		messages.push(`**Boosts:** ${wcBoost.toFixed(2)}% for Woodcutting level\n`);
+	}
+
 	durationPerTodt = reduceNumByPercent(durationPerTodt, wcBoost);
 
 	const baseHealAmountNeeded = 20 * 8;
@@ -71,7 +75,20 @@ export async function wintertodtCommand(user: MUser, channelID: string) {
 			continue;
 		}
 
-		messages.push(`Removed ${amountNeeded}x ${food.name}'s from your bank`);
+		let foodStr: string = `**Food:** ${healAmountNeeded} HP/kill`;
+
+		if (healAmountNeeded !== baseHealAmountNeeded) {
+			foodStr += `. Reduced from ${baseHealAmountNeeded}, -${calcWhatPercent(
+				baseHealAmountNeeded - healAmountNeeded,
+				baseHealAmountNeeded
+			)}% for wearing warm gear. `;
+		} else {
+			foodStr += '. ';
+		}
+
+		foodStr += ` **Removed ${amountNeeded}x ${food.name}**`;
+
+		messages.push(foodStr);
 
 		const cost = new Bank().add(food.id, amountNeeded);
 

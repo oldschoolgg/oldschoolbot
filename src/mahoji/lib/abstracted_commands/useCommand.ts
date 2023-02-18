@@ -73,6 +73,11 @@ const usableUnlocks: UsableUnlock[] = [
 		item: getOSItem('Guthix engram'),
 		bitfield: BitField.HasGuthixEngram,
 		resultMessage: "You place the Guthix engram in Juna's cave, restoring some balance to the world..."
+	},
+	{
+		item: getOSItem('Runescroll of bloodbark'),
+		bitfield: BitField.HasBloodbarkScroll,
+		resultMessage: 'You used your Runescroll of bloodbark, and unlocked the ability to create Bloodbark armour.'
 	}
 ];
 for (const usableUnlock of usableUnlocks) {

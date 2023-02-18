@@ -1,7 +1,9 @@
 import { Embed } from '@discordjs/builders';
-import { calcWhatPercent, chunk } from 'e';
+import { Prisma } from '@prisma/client';
+import { calcWhatPercent, chunk, objectValues, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
+import { ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
 import { badges, badgesCache, Emoji, usernameCache } from '../../lib/constants';
 import { allClNames, getCollectionItems } from '../../lib/data/Collections';
 import { allLeagueTasks } from '../../lib/leagues/leagues';
@@ -460,11 +462,108 @@ async function skillsLb(
 	return lbMsg(`Overall ${skill!.name} ${type}`);
 }
 
+async function cluesLb(user: MUser, channelID: string, clueTierName: string, ironmanOnly: boolean) {
+	const clueTier = ClueTiers.find(i => stringMatches(i.name, clueTierName));
+	if (!clueTier) return "That's not a valid clue tier.";
+	const { id } = clueTier;
+	const users = (
+		await prisma.$queryRawUnsafe<{ id: string; score: number }[]>(
+			`SELECT id, ("collectionLogBank"->>'${id}')::int AS score
+FROM users
+WHERE "collectionLogBank"->>'${id}' IS NOT NULL
+AND ("collectionLogBank"->>'${id}')::int > 25
+${ironmanOnly ? 'AND "minion.ironman" = true ' : ''}
+ORDER BY ("collectionLogBank"->>'${id}')::int DESC
+LIMIT 50;`
+		)
+	).map(res => ({ ...res, score: Number(res.score) }));
+
+	doMenu(
+		user,
+		channelID,
+		chunk(users, LB_PAGE_SIZE).map((subList, i) =>
+			subList
+				.map(({ id, score }, j) => `${getPos(i, j)}**${getUsername(id)}:** ${score.toLocaleString()} Completed`)
+				.join('\n')
+		),
+		`${clueTier.name} Clue Leaderboard`
+	);
+	return lbMsg('Clue Leaderboard', ironmanOnly);
+}
+
 export async function cacheUsernames() {
+	const roboChimpUseresToCache = await roboChimpClient.user.findMany({
+		where: {
+			OR: [
+				{
+					osb_cl_percent: {
+						gte: 80
+					}
+				},
+				{
+					bso_total_level: {
+						gte: 80
+					}
+				},
+				{
+					osb_total_level: {
+						gte: 1500
+					}
+				},
+				{
+					bso_total_level: {
+						gte: 1500
+					}
+				},
+				{
+					leagues_points_total: {
+						gte: 20_000
+					}
+				}
+			]
+		},
+		select: {
+			id: true
+		}
+	});
+
+	let orConditions: Prisma.UserWhereInput[] = [];
+	for (const skill of objectValues(SkillsEnum)) {
+		orConditions.push({
+			[`skills_${skill}`]: {
+				gte: 15_000_000
+			}
+		});
+	}
+	const usersToCache = await prisma.user.findMany({
+		where: {
+			OR: [
+				...orConditions,
+				{
+					last_command_date: {
+						gt: new Date(Date.now() - Number(Time.Month))
+					}
+				}
+			],
+			id: {
+				notIn: roboChimpUseresToCache.map(i => i.id.toString())
+			}
+		},
+		select: {
+			id: true
+		}
+	});
+
+	const userIDsToCache = [...usersToCache, ...roboChimpUseresToCache].map(i => i.id.toString());
+	debugLog(`Caching usernames of ${userIDsToCache.length} users`);
+
 	const allNewUsers = await prisma.newUser.findMany({
 		where: {
 			username: {
 				not: null
+			},
+			id: {
+				in: userIDsToCache
 			}
 		},
 		select: {
@@ -833,6 +932,21 @@ export const leaderboardCommand: OSBMahojiCommand = {
 					choices: ['points', 'tasks', 'hardest_tasks'].map(i => ({ name: i, value: i }))
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'clues',
+			description: 'Check the clue leaderboards.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'clue',
+					description: 'The clue you want to select.',
+					required: true,
+					choices: ClueTiers.map(i => ({ name: i.name, value: i.name }))
+				},
+				ironmanOnlyOption
+			]
 		}
 	],
 	run: async ({
@@ -854,6 +968,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		cl?: { cl: string; ironmen_only?: boolean; tames?: boolean };
 		item_contract_streak?: { ironmen_only?: boolean };
 		leagues?: { type: 'points' | 'tasks' | 'hardest_tasks' };
+		clues?: { clue: ClueTier['name']; ironmen_only?: boolean };
 	}>) => {
 		await deferInteraction(interaction);
 		const user = await mUserFetch(userID);
@@ -870,7 +985,8 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			skills,
 			cl,
 			item_contract_streak,
-			leagues
+			leagues,
+			clues
 		} = options;
 		if (kc) return kcLb(user, channelID, kc.monster, Boolean(kc.ironmen_only));
 		if (farming_contracts) return farmingContractLb(user, channelID, Boolean(farming_contracts.ironmen_only));
@@ -887,6 +1003,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		if (cl) return clLb(user, channelID, cl.cl, Boolean(cl.ironmen_only), Boolean(cl.tames));
 		if (item_contract_streak) return itemContractLb(user, channelID, item_contract_streak.ironmen_only);
 		if (leagues) return leaguesLeaderboard(user, channelID, leagues.type);
+		if (clues) return cluesLb(user, channelID, clues.clue, Boolean(clues.ironmen_only));
 		return 'Invalid input.';
 	}
 };

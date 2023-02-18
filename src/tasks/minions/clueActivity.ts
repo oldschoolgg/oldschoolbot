@@ -3,7 +3,6 @@ import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { ClueTiers } from '../../lib/clues/clueTiers';
-import { Events } from '../../lib/constants';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { rand, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
@@ -30,15 +29,8 @@ export const clueTask: MinionTask = {
 	type: 'ClueCompletion',
 	async run(data: ClueActivityTaskOptions) {
 		const { clueID, userID, channelID, quantity, duration } = data;
-		const clueTier = ClueTiers.find(mon => mon.id === clueID);
+		const clueTier = ClueTiers.find(mon => mon.id === clueID)!;
 		const user = await mUserFetch(userID);
-
-		const logInfo = `ClueID[${clueID}] userID[${userID}] channelID[${channelID}] quantity[${quantity}]`;
-
-		if (!clueTier) {
-			globalClient.emit(Events.Wtf, `Missing user or clue - ${logInfo}`);
-			return;
-		}
 
 		let str = `${user.mention}, ${user.minionName} finished completing ${quantity} ${clueTier.name} clues. ${
 			user.minionName
