@@ -8,7 +8,7 @@ import './lib/util/logger';
 import * as Sentry from '@sentry/node';
 import { Chart } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { GatewayIntentBits, InteractionType, Options, Partials, Routes, TextChannel } from 'discord.js';
+import { GatewayIntentBits, InteractionType, Options, Partials, TextChannel } from 'discord.js';
 import { isObject, Time } from 'e';
 import { MahojiClient } from 'mahoji';
 import { convertAPIOptionsToCommandOptions } from 'mahoji/dist/lib/util';
@@ -214,14 +214,6 @@ client.on('guildCreate', guild => {
 	if (BLACKLISTED_GUILDS.has(guild.id) || BLACKLISTED_USERS.has(guild.ownerId)) {
 		guild.leave();
 	}
-});
-
-export const applicationCommands: { id: string; name: string; guildID: string }[] = [];
-client.on('ready', async () => {
-	const appCommands: any = await globalClient.rest.get(
-		production ? Routes.applicationCommands(CLIENT_ID) : Routes.applicationGuildCommands(CLIENT_ID, DEV_SERVER_ID)
-	);
-	applicationCommands.push(...appCommands);
 });
 
 client.on('shardDisconnect', ({ wasClean, code, reason }) => debugLog('Shard Disconnect', { wasClean, code, reason }));
