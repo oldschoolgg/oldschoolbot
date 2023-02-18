@@ -1,4 +1,6 @@
-import { chunk } from 'e';
+import { Canvas, GlobalFonts, Image, loadImage, SKRSContext2D } from '@napi-rs/canvas';
+import { AttachmentBuilder } from 'discord.js';
+import { chunk, randInt } from 'e';
 import { existsSync } from 'fs';
 import * as fs from 'fs/promises';
 import fetch from 'node-fetch';
@@ -6,9 +8,8 @@ import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { toKMB } from 'oldschooljs/dist/util/util';
 import * as path from 'path';
-import { Canvas, CanvasRenderingContext2D, FontLibrary, Image, loadImage } from 'skia-canvas/lib';
 
-import { BitField, PerkTier } from '../lib/constants';
+import { BitField, PerkTier, toaPurpleItems } from '../lib/constants';
 import { allCLItems } from '../lib/data/Collections';
 import { filterableTypes } from '../lib/data/filterables';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
@@ -16,20 +17,24 @@ import { BankBackground, FlagMap, Flags } from '../lib/minions/types';
 import { BankSortMethod, BankSortMethods, sorts } from '../lib/sorts';
 import { ItemBank } from '../lib/types';
 import { addArrayOfNumbers, cleanString, formatItemStackQuantity, generateHexColorForCashStack } from '../lib/util';
-import { drawImageWithOutline, fillTextXTimesInCtx, getClippedRegion } from '../lib/util/canvasUtil';
+import { drawImageWithOutline, fillTextXTimesInCtx, getClippedRegionImage } from '../lib/util/canvasUtil';
 import itemID from '../lib/util/itemID';
 import { logError } from '../lib/util/logError';
 import { UserError } from './UserError';
 
-FontLibrary.use({
+const fonts = {
 	OSRSFont: './src/lib/resources/osrs-font.ttf',
 	OSRSFontCompact: './src/lib/resources/osrs-font-compact.otf',
 	'RuneScape Bold 12': './src/lib/resources/osrs-font-bold.ttf',
 	'Smallest Pixel-7': './src/lib/resources/small-pixel.ttf',
 	'RuneScape Quill 8': './src/lib/resources/osrs-font-quill-8.ttf'
-});
+} as const;
 
-export interface BankImageResult {
+for (const [key, val] of Object.entries(fonts)) {
+	GlobalFonts.registerFromPath(val, key);
+}
+
+interface BankImageResult {
 	image: Buffer;
 	isTransparent: boolean;
 }
@@ -45,12 +50,12 @@ const { floor, ceil } = Math;
 type BGSpriteName = 'dark' | 'default' | 'transparent';
 export interface IBgSprite {
 	name: BGSpriteName;
-	border: Canvas;
-	borderCorner: Canvas;
-	borderTitle: Canvas;
-	repeatableBg: Canvas;
-	tabBorderInactive: Canvas;
-	tabBorderActive: Canvas;
+	border: Image;
+	borderCorner: Image;
+	borderTitle: Image;
+	repeatableBg: Image;
+	tabBorderInactive: Image;
+	tabBorderActive: Image;
 	oddListColor: string;
 }
 
@@ -183,6 +188,19 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Reward casket (master)'), 'master']
 ]);
 
+function drawTitle(ctx: SKRSContext2D, title: string, canvas: Canvas) {
+	// Draw Bank Title
+	ctx.font = '16px RuneScape Bold 12';
+	const titleWidthPx = ctx.measureText(title);
+	let titleX = Math.floor(floor(canvas.width / 2) - titleWidthPx.width / 2);
+
+	ctx.fillStyle = '#000000';
+	fillTextXTimesInCtx(ctx, title, titleX + 1, 22);
+
+	ctx.fillStyle = '#ff981f';
+	fillTextXTimesInCtx(ctx, title, titleX, 21);
+}
+
 export const bankFlags = [
 	'show_price',
 	'show_alch',
@@ -225,12 +243,12 @@ class BankImageTask {
 			this._bgSpriteData = d;
 			this.bgSpriteList[bgName] = {
 				name: bgName,
-				border: getClippedRegion(d, 0, 0, 18, 6),
-				borderCorner: getClippedRegion(d, 19, 0, 6, 6),
-				borderTitle: getClippedRegion(d, 26, 0, 18, 6),
-				tabBorderInactive: getClippedRegion(d, 0, 7, 75, 20),
-				tabBorderActive: getClippedRegion(d, 0, 45, 75, 20),
-				repeatableBg: getClippedRegion(d, 93, 0, 96, 65),
+				border: await getClippedRegionImage(d, 0, 0, 18, 6),
+				borderCorner: await getClippedRegionImage(d, 19, 0, 6, 6),
+				borderTitle: await getClippedRegionImage(d, 26, 0, 18, 6),
+				tabBorderInactive: await getClippedRegionImage(d, 0, 7, 75, 20),
+				tabBorderActive: await getClippedRegionImage(d, 0, 45, 75, 20),
+				repeatableBg: await getClippedRegionImage(d, 93, 0, 96, 65),
 				oddListColor: colors[bgName]
 			};
 		}
@@ -308,7 +326,7 @@ class BankImageTask {
 		this.itemIconImagesCache.set(itemID, image);
 	}
 
-	drawBorder(ctx: CanvasRenderingContext2D, sprite: IBgSprite, titleLine = true) {
+	drawBorder(ctx: SKRSContext2D, sprite: IBgSprite, titleLine = true) {
 		// Top border
 		ctx.save();
 		ctx.fillStyle = ctx.createPattern(sprite.border, 'repeat-x')!;
@@ -383,7 +401,7 @@ class BankImageTask {
 	}
 
 	async drawItems(
-		ctx: CanvasRenderingContext2D,
+		ctx: SKRSContext2D,
 		compact: boolean,
 		spacer: number,
 		itemsPerRow: number,
@@ -392,7 +410,8 @@ class BankImageTask {
 		flags: FlagMap,
 		currentCL: Bank | undefined,
 		mahojiFlags: BankFlag[] | undefined,
-		weightings: Readonly<ItemBank> | undefined
+		weightings: Readonly<ItemBank> | undefined,
+		verticalSpacer = 0
 	) {
 		// Draw Items
 		ctx.textAlign = 'start';
@@ -402,7 +421,7 @@ class BankImageTask {
 		let xLoc = 0;
 		let yLoc = compact ? 5 : 0;
 		for (let i = 0; i < items.length; i++) {
-			if (i % itemsPerRow === 0) yLoc += floor((itemSize + spacer / 2) * (compact ? 0.9 : 1.08));
+			if (i % itemsPerRow === 0) yLoc += floor((itemSize + spacer / 2) * (compact ? 0.9 : 1.08)) + verticalSpacer;
 			// For some reason, it starts drawing at -2 so we compensate that
 			// Adds the border width
 			// Adds distance from side
@@ -414,25 +433,14 @@ class BankImageTask {
 			const itemWidth = compact ? itemImage.width / 1 : itemImage.width;
 			const isNewCLItem =
 				flags.has('showNewCL') && currentCL && !currentCL.has(item.id) && allCLItems.includes(item.id);
+
+			const x = floor(xLoc + (itemSize - itemWidth) / 2) + 2;
+			const y = floor(yLoc + (itemSize - itemHeight) / 2);
+
 			if (isNewCLItem) {
-				drawImageWithOutline(
-					ctx,
-					itemImage,
-					floor(xLoc + (itemSize - itemWidth) / 2) + 2,
-					floor(yLoc + (itemSize - itemHeight) / 2),
-					itemWidth,
-					itemHeight,
-					'#ac7fff',
-					1
-				);
+				drawImageWithOutline(ctx, itemImage, x, y, itemWidth, itemHeight, '#ac7fff', 1);
 			} else {
-				ctx.drawImage(
-					itemImage,
-					floor(xLoc + (itemSize - itemWidth) / 2) + 2,
-					floor(yLoc + (itemSize - itemHeight) / 2),
-					itemWidth,
-					itemHeight
-				);
+				ctx.drawImage(itemImage, x, y, itemWidth, itemHeight);
 			}
 
 			// Do not draw the item qty if there is 0 of that item in the bank
@@ -639,16 +647,7 @@ class BankImageTask {
 			title += ` (Value: ${toKMB(totalValue)})`;
 		}
 
-		// Draw Bank Title
-		ctx.font = '16px RuneScape Bold 12';
-		const titleWidthPx = ctx.measureText(title);
-		let titleX = Math.floor(floor(canvas.width / 2) - titleWidthPx.width / 2);
-
-		ctx.fillStyle = '#000000';
-		fillTextXTimesInCtx(ctx, title, titleX + 1, 22);
-
-		ctx.fillStyle = '#ff981f';
-		fillTextXTimesInCtx(ctx, title, titleX, 21);
+		drawTitle(ctx, title, canvas);
 
 		// Skips border if noBorder is set
 		if (!isTransparent && noBorder !== 1) {
@@ -667,13 +666,101 @@ class BankImageTask {
 			weightings
 		);
 
-		const image = await canvas.toBuffer('png');
+		const image = await canvas.encode('png');
 
 		return {
 			image,
 			isTransparent
 		};
 	}
+}
+
+const chestLootTypes = [
+	{
+		title: 'Tombs of Amascut',
+		chestImage: loadImage('./src/lib/resources/images/toaChest.png'),
+		chestImagePurple: loadImage('./src/lib/resources/images/toaChestPurple.png'),
+		width: 240,
+		height: 220,
+		purpleItems: toaPurpleItems
+	}
+] as const;
+
+interface CustomText {
+	x: number;
+	y: number;
+	text: string;
+}
+export async function drawChestLootImage(options: {
+	entries: { previousCL: Bank; user: MUser; loot: Bank; customTexts: CustomText[] }[];
+	type: typeof chestLootTypes[number]['title'];
+}) {
+	const type = chestLootTypes.find(t => t.title === options.type);
+	if (!type) throw new Error(`Invalid chest type: ${options.type}`);
+
+	const canvases: Canvas[] = [];
+
+	let anyoneGotPurple = false;
+
+	for (const { previousCL, loot, user, customTexts } of options.entries) {
+		const canvas = new Canvas(type.width, type.height);
+		const ctx = canvas.getContext('2d');
+
+		const { sprite } = bankImageGenerator.getBgAndSprite();
+
+		ctx.imageSmoothingEnabled = false;
+		ctx.fillStyle = ctx.createPattern(sprite.repeatableBg, 'repeat')!;
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
+		const isPurple: boolean = loot.items().some(([item]) => type.purpleItems.includes(item.id));
+		if (isPurple) anyoneGotPurple = true;
+		const image = isPurple ? await type.chestImagePurple : await type.chestImage;
+		ctx.drawImage(image, canvas.width - image.width + 25, 44 + canvas.height / 4 - image.height / 2);
+
+		drawTitle(ctx, `${user.rawUsername} (${toKMB(loot.value())})`, canvas);
+		ctx.font = '16px OSRSFontCompact';
+		bankImageGenerator.drawBorder(ctx, sprite, true);
+		await bankImageGenerator.drawItems(
+			ctx,
+			false,
+			22,
+			2,
+			55,
+			loot.items(),
+			new Map().set('showNewCL', true),
+			previousCL,
+			undefined,
+			undefined,
+			10
+		);
+
+		ctx.fillStyle = '#FFFF00';
+		ctx.font = '16px OSRSFontCompact';
+		for (const text of customTexts) {
+			fillTextXTimesInCtx(ctx, text.text, text.x, text.y);
+		}
+		canvases.push(canvas);
+	}
+
+	const fileName = `${anyoneGotPurple ? 'SPOILER_' : ''}toaloot-${randInt(1, 1000)}.png`;
+
+	if (canvases.length === 1) {
+		return new AttachmentBuilder(await canvases[0].encode('png'), {
+			name: fileName
+		});
+	}
+	let spaceBetweenImages = 15;
+	const combinedCanvas = new Canvas(
+		canvases[0].width * canvases.length + spaceBetweenImages * canvases.length,
+		canvases[0].height
+	);
+	const combinedCtx = combinedCanvas.getContext('2d');
+	for (const c of canvases) {
+		const index = canvases.indexOf(c);
+		combinedCtx.drawImage(c, index * c.width + spaceBetweenImages * index, 0);
+	}
+	return new AttachmentBuilder(await combinedCanvas.encode('png'), {
+		name: fileName
+	});
 }
 
 declare global {

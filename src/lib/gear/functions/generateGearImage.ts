@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/restrict-plus-operands */
+import { Canvas } from '@napi-rs/canvas';
 import * as fs from 'fs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
-import { Canvas } from 'skia-canvas/lib';
 
 import { Gear, maxDefenceStats, maxOffenceStats } from '../../structures/Gear';
 import { canvasImageFromBuffer, drawItemQuantityText, drawTitleText, fillTextXTimesInCtx } from '../../util/canvasUtil';
@@ -233,7 +233,7 @@ export async function generateGearImage(
 		}
 	}
 
-	return canvas.toBuffer('png');
+	return canvas.encode('png');
 }
 
 export async function generateAllGearImage(user: MUser) {
@@ -321,5 +321,5 @@ export async function generateAllGearImage(user: MUser) {
 
 	if (!userBg.transparent) bankImageGenerator.drawBorder(ctx, bgSprite, false);
 
-	return canvas.toBuffer('png');
+	return canvas.encode('png');
 }

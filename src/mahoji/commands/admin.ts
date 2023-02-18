@@ -35,8 +35,10 @@ import {
 	stringMatches,
 	toKMB
 } from '../../lib/util';
+import { memoryAnalysis } from '../../lib/util/cachedUserIDs';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../lib/util/clientSettings';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
+import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction, interactionReply } from '../../lib/util/interactionReply';
 import { syncLinkedAccounts } from '../../lib/util/linkedAccountsUtil';
 import { logError } from '../../lib/util/logError';
@@ -47,7 +49,7 @@ import { Cooldowns } from '../lib/Cooldowns';
 import { syncCustomPrices } from '../lib/events';
 import { itemOption } from '../lib/mahojiCommandOptions';
 import { allAbstractCommands, OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 import { getUserInfo } from './minion';
 
 export const gifs = [
@@ -240,6 +242,16 @@ AND ("gear.melee" IS NOT NULL OR
 					.join('\n')
 			};
 		}
+	},
+	{
+		name: 'Memory Analysis',
+		run: async () => {
+			return {
+				content: Object.entries(memoryAnalysis())
+					.map(i => `${i[0]}: ${i[1]}`)
+					.join('\n')
+			};
+		}
 	}
 ];
 
@@ -314,14 +326,7 @@ export const adminCommand: OSBMahojiCommand = {
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'sync_commands',
 			description: 'Sync commands',
-			options: [
-				{
-					type: ApplicationCommandOptionType.Boolean,
-					name: 'global',
-					description: 'Global?.',
-					required: false
-				}
-			]
+			options: []
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -522,7 +527,7 @@ export const adminCommand: OSBMahojiCommand = {
 					description: 'The bitfield to add',
 					required: false,
 					autocomplete: async () => {
-						return Object.keys(BitField).map(i => ({ name: i, value: i }));
+						return Object.entries(BitFieldData).map(i => ({ name: i[1].name, value: i[0] }));
 					}
 				},
 				{
@@ -531,7 +536,7 @@ export const adminCommand: OSBMahojiCommand = {
 					description: 'The bitfield to remove',
 					required: false,
 					autocomplete: async () => {
-						return Object.keys(BitField).map(i => ({ name: i, value: i }));
+						return Object.entries(BitFieldData).map(i => ({ name: i[1].name, value: i[0] }));
 					}
 				}
 			]
@@ -603,7 +608,7 @@ export const adminCommand: OSBMahojiCommand = {
 		reboot?: {};
 		debug_patreon?: {};
 		eval?: { code: string };
-		sync_commands?: { global?: boolean };
+		sync_commands?: {};
 		item_stats?: { item: string };
 		sync_blacklist?: {};
 		loot_track?: { name: string };
@@ -984,7 +989,7 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 		}
 
 		if (options.sync_commands) {
-			const global = Boolean(options.sync_commands.global);
+			const global = Boolean(production);
 			const totalCommands = globalClient.mahojiClient.commands.values;
 			const globalCommands = totalCommands.filter(i => !i.guildID);
 			const guildCommands = totalCommands.filter(i => Boolean(i.guildID));
@@ -1004,6 +1009,15 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 					client: globalClient.mahojiClient,
 					commands: totalCommands,
 					guildID: guildID.toString()
+				});
+			}
+
+			// If not in production, remove all global commands.
+			if (!production) {
+				await bulkUpdateCommands({
+					client: globalClient.mahojiClient,
+					commands: [],
+					guildID: null
 				});
 			}
 

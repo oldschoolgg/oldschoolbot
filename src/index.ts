@@ -5,19 +5,18 @@ import './lib/MUser';
 import './lib/util/transactItemsFromBank';
 import './lib/util/logger';
 
-import { Stopwatch } from '@sapphire/stopwatch';
 import * as Sentry from '@sentry/node';
 import { Chart } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { GatewayIntentBits, InteractionType, Options, Partials, Routes, TextChannel } from 'discord.js';
 import { isObject, Time } from 'e';
 import { MahojiClient } from 'mahoji';
+import { convertAPIOptionsToCommandOptions } from 'mahoji/dist/lib/util';
 import { join } from 'path';
-import { debuglog } from 'util';
 
 import { botToken, CLIENT_ID, DEV_SERVER_ID, production, SENTRY_DSN, SupportServer } from './config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from './lib/blacklists';
-import { Channel, Events } from './lib/constants';
+import { Channel, Events, gitHash } from './lib/constants';
 import { onMessage } from './lib/events';
 import { makeServer } from './lib/http';
 import { modalInteractionHook } from './lib/modals';
@@ -35,8 +34,7 @@ import { postCommand } from './mahoji/lib/postCommand';
 import { preCommand } from './mahoji/lib/preCommand';
 import { convertMahojiCommandToAbstractCommand } from './mahoji/lib/util';
 
-const stopwatch = new Stopwatch();
-debuglog('Starting...');
+debugLog(`Starting... Git Hash ${gitHash}`);
 
 if (!production) {
 	import('./lib/devHotReload');
@@ -162,12 +160,21 @@ client.on('interactionCreate', async interaction => {
 	try {
 		if (interaction.type !== InteractionType.ApplicationCommandAutocomplete) {
 			debugLog(`Process ${getInteractionTypeName(interaction.type)} interaction`, {
-				type: 'COMMAND_INHIBITED',
+				type: 'INTERACTION_PROCESS',
 				user_id: interaction.user.id,
 				guild_id: interaction.guildId,
 				channel_id: interaction.channelId,
 				interaction_id: interaction.id,
-				interaction_type: interaction.type
+				interaction_type: interaction.type,
+				...(interaction.isChatInputCommand()
+					? {
+							command_name: interaction.commandName,
+							options: convertAPIOptionsToCommandOptions(
+								interaction.options.data,
+								interaction.options.resolved
+							)
+					  }
+					: {})
 			});
 		}
 		await interactionHook(interaction);
@@ -210,7 +217,6 @@ client.on('guildCreate', guild => {
 });
 
 export const applicationCommands: { id: string; name: string; guildID: string }[] = [];
-client.on('ready', () => console.log(`----------- READY AFTER ${stopwatch.stop().toString()} -----------`));
 client.on('ready', async () => {
 	const appCommands: any = await globalClient.rest.get(
 		production ? Routes.applicationCommands(CLIENT_ID) : Routes.applicationGuildCommands(CLIENT_ID, DEV_SERVER_ID)
@@ -220,6 +226,7 @@ client.on('ready', async () => {
 
 client.on('shardDisconnect', ({ wasClean, code, reason }) => debugLog('Shard Disconnect', { wasClean, code, reason }));
 client.on('shardError', err => debugLog('Shard Error', { error: err.message }));
+client.on('ready', () => runTimedLoggedFn('OnStartup', async () => onStartup()));
 
 async function main() {
 	client.fastifyServer = makeServer();
@@ -232,9 +239,11 @@ async function main() {
 		runTimedLoggedFn('Startup Scripts', runStartupScripts)
 	]);
 	await runTimedLoggedFn('Log In', () => client.login(botToken));
-	runTimedLoggedFn('OnStartup', async () => onStartup());
 }
 
-process.on('uncaughtException', logError);
+process.on('uncaughtException', err => {
+	console.error(err);
+	logError(err);
+});
 
 main();

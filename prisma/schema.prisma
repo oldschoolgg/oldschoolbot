@@ -128,6 +128,9 @@ model ClientStorage {
   gotr_loot                    Json     @default("{}") @db.Json
   gf_cost                      Json     @default("{}") @db.Json
   gf_loot                      Json     @default("{}") @db.Json
+  nmz_cost                     Json     @default("{}") @db.Json
+  toa_cost                     Json     @default("{}") @db.Json
+  toa_loot                     Json     @default("{}") @db.Json
 
   @@map("clientStorage")
 }
@@ -286,6 +289,7 @@ model User {
   tob_hard_attempts          Int      @default(0)
   volcanic_mine_points       Int      @default(0)
   foundry_reputation         Int      @default(0)
+  nmz_points                 Int      @default(0)
   blowpipe                   Json     @default("{\"scales\":0,\"dartID\":null,\"dartQuantity\":0}") @db.Json
   ironman_alts               String[]
   main_account               String?
@@ -381,6 +385,9 @@ model User {
   sang_charges           Int @default(0)
   celestial_ring_charges Int @default(0)
   ash_sanctifier_charges Int @default(0)
+  serp_helm_charges      Int @default(0)
+  blood_fury_charges     Int @default(0)
+  tum_shadow_charges     Int @default(0)
 
   gp_luckypick BigInt @default(0)
   gp_dice      BigInt @default(0)
@@ -405,6 +412,7 @@ model User {
   farmed_crops      FarmedCrop[]
 
   minion_defaultCompostToUse CropUpgradeType @default(compost) @map("minion.defaultCompostToUse")
+  botItemSell                BotItemSell[]
 
   @@index([id, last_command_date])
   @@map("users")
@@ -418,6 +426,10 @@ model Webhook {
   @@map("webhook_table")
 }
 
+enum XpGainSource {
+  TombsOfAmascut
+}
+
 model XPGain {
   id         Int                 @id @default(autoincrement())
   user_id    BigInt
@@ -426,6 +438,7 @@ model XPGain {
   xp         Int
   artificial Boolean?
   post_max   Boolean             @default(false)
+  source     XpGainSource?
 
   @@index([date, skill])
   @@map("xp_gains")
@@ -483,7 +496,9 @@ model Minigame {
   puro_puro               Int    @default(0)
   giants_foundry          Int    @default(0)
   guardians_of_the_rift   Int    @default(0)
+  nmz                     Int    @default(0)
   shades_of_morton        Int    @default(0)
+  tombs_of_amascut        Int    @default(0)
 
   new_user NewUser?
 
@@ -528,6 +543,7 @@ model LootTrack {
   cost           Json            @default("{}") @db.Json
   user_id        BigInt?
 
+  @@index([key, user_id])
   @@map("loot_track")
 }
 
@@ -613,6 +629,15 @@ model UserStats {
 
   random_event_completions_bank Json @default("{}") @db.Json
 
+  toa_attempts Int @default(0)
+
+  toa_cost Json @default("{}") @db.Json
+  toa_loot Json @default("{}") @db.Json
+
+  total_toa_points           Int  @default(0)
+  toa_raid_levels_bank       Json @default("{}") @db.Json
+  total_toa_duration_minutes Int  @default(0)
+
   @@map("user_stats")
 }
 
@@ -651,6 +676,19 @@ model FarmedCrop {
   paid_for_protection Boolean
 
   @@map("farmed_crop")
+}
+
+model BotItemSell {
+  id String @id @default(uuid()) @db.Uuid
+
+  item_id     Int
+  quantity    Int
+  gp_received BigInt
+
+  user_id String @db.VarChar(19)
+  user    User   @relation(fields: [user_id], references: [id])
+
+  @@map("bot_item_sell")
 }
 
 enum command_usage_status {
@@ -742,7 +780,9 @@ enum activity_type_enum {
   GiantsFoundry
   GuardiansOfTheRift
   HalloweenEvent
+  NightmareZone
   ShadesOfMorton
+  TombsOfAmascut
 }
 
 enum xp_gains_skill_enum {
