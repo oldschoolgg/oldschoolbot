@@ -199,6 +199,13 @@ export const createCommand: OSBMahojiCommand = {
 			}
 		}
 
+		if (createableItem.customReq) {
+			const customReq = await createableItem.customReq(user);
+			if (typeof customReq === 'string') {
+				return customReq;
+			}
+		}
+
 		await handleMahojiConfirmation(interaction, str);
 
 		// Ensure they have the required items to create the item.
