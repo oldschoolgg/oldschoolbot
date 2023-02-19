@@ -123,6 +123,9 @@ export const clueCommand: OSBMahojiCommand = {
 			timeToFinish *= 0.9;
 		}
 
+		timeToFinish /= 2;
+		boosts.push('👻 2x Boost');
+
 		if (percentReduced >= 1) boosts.push(`${percentReduced}% for Clue score`);
 
 		let { quantity } = options;
