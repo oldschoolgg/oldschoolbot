@@ -548,7 +548,7 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		id: SlayerTaskUnlocksEnum.Maskuerade,
 		name: 'Maskuerade',
 		desc: 'Allows you to get Slayer masks and turn them into helms.',
-		slayerPointCost: 2300,
+		slayerPointCost: 750,
 		canBeRemoved: true,
 		aliases: ['maskuerade', 'masquerade']
 	}
