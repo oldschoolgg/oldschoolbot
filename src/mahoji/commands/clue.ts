@@ -116,6 +116,16 @@ export const clueCommand: OSBMahojiCommand = {
 		// Global Boosts
 		const globalBoosts = [
 			{
+				condition: () => true,
+				boost: '👻 2x Boost',
+				durationMultiplier: 0.5
+			},
+			{
+				condition: () => user.hasEquipped(clueHunterOutfit, true),
+				boost: '2x Boost for Clue hunter outfit',
+				durationMultiplier: 0.5
+			},
+			{
 				condition: isWeekend,
 				boost: '10% for Weekend',
 				durationMultiplier: 0.9
@@ -139,16 +149,6 @@ export const clueCommand: OSBMahojiCommand = {
 				condition: () => !hasOrnateJewelleryBox && hasJewelleryBox,
 				boost: '5% for Basic/Fancy jewellery box',
 				durationMultiplier: 0.95
-			},
-			{
-				condition: () => user.hasEquipped(clueHunterOutfit, true),
-				boost: '2x Boost for Clue hunter outfit',
-				durationMultiplier: 0.5
-			},
-			{
-				condition: () => true,
-				boost: '👻 2x Boost',
-				durationMultiplier: 0.5
 			}
 		];
 
@@ -315,7 +315,10 @@ export const clueCommand: OSBMahojiCommand = {
 
 		await user.removeItemsFromBank(new Bank().add(clueTier.scrollID, quantity));
 
-		const randomAddedDuration = randInt(1, clueTierName === 'Grandmaster' ? 5 : 20);
+		const randomAddedDuration = randInt(
+			clueTierName === 'Grandmaster' ? -5 : 1,
+			clueTierName === 'Grandmaster' ? 5 : 20
+		);
 		duration += (randomAddedDuration * duration) / 100;
 
 		await addSubTaskToActivityTask<ClueActivityTaskOptions>({
