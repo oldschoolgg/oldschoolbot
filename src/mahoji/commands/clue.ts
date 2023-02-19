@@ -108,6 +108,9 @@ export const clueCommand: OSBMahojiCommand = {
 			(user.user.openable_scores as ItemBank)[clueTier.id] ?? 1
 		);
 
+		timeToFinish /= 2;
+		boosts.push('👻 2x Boost');
+
 		if (user.hasEquipped(clueHunterOutfit, true)) {
 			timeToFinish /= 2;
 			boosts.push('2x Boost for Clue hunter outfit');
