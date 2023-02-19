@@ -4872,7 +4872,7 @@ setCustomItem(
 
 setCustomItem(
 	70_300,
-	'Black demon mask',
+	'Black demonical mask',
 	'Rune full helm',
 	{
 		customItemData: {
@@ -4884,7 +4884,7 @@ setCustomItem(
 );
 setCustomItem(
 	70_301,
-	'Black demon slayer helm',
+	'Black demonical slayer helm',
 	'Rune full helm',
 	{
 		customItemData: {
@@ -5097,7 +5097,7 @@ setCustomItem(
 
 setCustomItem(
 	70_318,
-	'Banshee mask',
+	"Banshee's mask",
 	'Rune full helm',
 	{
 		customItemData: {
@@ -5344,7 +5344,7 @@ setCustomItem(
 );
 setCustomItem(
 	70_365,
-	'Clown shoes',
+	'Clown feet',
 	'Rune boots',
 	{
 		customItemData: {
