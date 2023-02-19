@@ -141,12 +141,12 @@ export const clueCommand: OSBMahojiCommand = {
 				durationMultiplier: 0.95
 			},
 			{
-				condition: () => !hasOrnateJewelleryBox && hasJewelleryBox,
+				condition: () => user.hasEquipped(clueHunterOutfit, true),
 				boost: '2x Boost for Clue hunter outfit',
 				durationMultiplier: 0.5
 			},
 			{
-				condition: () => user.hasEquipped(clueHunterOutfit, true),
+				condition: () => true,
 				boost: '👻 2x Boost',
 				durationMultiplier: 0.5
 			}
