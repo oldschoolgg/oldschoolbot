@@ -54,8 +54,8 @@ export const slayerMaskHelms: SlayerMaskHelm[] = [
 		...calculateDroprates(Monsters.AbyssalDemon)
 	},
 	{
-		mask: getOSItem('Black demon mask'),
-		helm: getOSItem('Black demon slayer helm'),
+		mask: getOSItem('Black demonical mask'),
+		helm: getOSItem('Black demonical slayer helm'),
 		monsters: [Monsters.BlackDemon.id],
 		slayerLevel: 1,
 		...calculateDroprates(Monsters.BlackDemon)
@@ -123,7 +123,7 @@ export const slayerMaskHelms: SlayerMaskHelm[] = [
 		...calculateDroprates(Monsters.Bloodveld)
 	},
 	{
-		mask: getOSItem('Banshee mask'),
+		mask: getOSItem("Banshee's mask"),
 		helm: getOSItem('Banshee slayer helm'),
 		monsters: [
 			Monsters.Banshee.id,
