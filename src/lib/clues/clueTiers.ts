@@ -136,7 +136,7 @@ export const ClueTiers: ClueTier[] = [
 		table: GrandmasterClueTable,
 		id: 19_838,
 		scrollID: 19_837,
-		timeToFinish: Time.Minute * 32.3,
+		timeToFinish: Time.Minute * 32.23,
 		mimicChance: false,
 		allItems: GrandmasterClueTable.allItems,
 		stashUnits: masterStashes,
