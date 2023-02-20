@@ -17,7 +17,7 @@ import resolveItems from '../../../lib/util/resolveItems';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
 
-const purpleButNotAnnounced = resolveItems(['Dexterous prayer scroll', 'Arcane prayer scroll']);
+const purpleButNotAnnounced = resolveItems(['Lightbearer', "Elidinis' ward"]);
 
 interface RaidResultUser {
 	points: number;
