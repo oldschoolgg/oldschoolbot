@@ -56,7 +56,7 @@ import {
 } from '../types/minions';
 import { itemNameFromID } from '../util';
 import { giantsFoundryAlloys } from './../../mahoji/lib/abstracted_commands/giantsFoundryCommand';
-import { NightmareZoneActivityTaskOptions } from './../types/minions';
+import { NightmareZoneActivityTaskOptions, UnderwaterAgilityThievingTaskOptions } from './../types/minions';
 
 export const taskCanBeRepeated = (type: activity_type_enum) =>
 	!(
@@ -550,6 +550,18 @@ export const tripHandlers = {
 					raid_level: data.raidLevel,
 					max_team_size: data.users.length,
 					solo: data.users.length === 1
+				}
+			}
+		})
+	},
+	[activity_type_enum.UnderwaterAgilityThieving]: {
+		commandName: 'activities',
+		args: (data: UnderwaterAgilityThievingTaskOptions) => ({
+			underwater: {
+				underwater_agility_thieving: {
+					trainingSkill: data.trainingSkill,
+					minutes: Math.floor(data.duration / Time.Minute),
+					no_stams: data.noStams
 				}
 			}
 		})

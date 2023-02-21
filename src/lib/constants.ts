@@ -403,6 +403,9 @@ export type PvMMethod = typeof PVM_METHODS[number];
 export const NMZ_STRATEGY = ['experience', 'points'] as const;
 export type NMZStrategy = typeof NMZ_STRATEGY[number];
 
+export const UNDERWATER_AGILITY_THIEVING_TRAINING_SKILL = ['agility', 'thieving', 'agility+thieving'] as const;
+export type UnderwaterAgilityThievingTrainingSkill = typeof UNDERWATER_AGILITY_THIEVING_TRAINING_SKILL[number];
+
 export const usernameCache = new Map<string, string>();
 export const badgesCache = new Map<string, string>();
 export const minionBuyButton = new ButtonBuilder()
