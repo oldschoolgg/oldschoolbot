@@ -428,7 +428,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 					options: [
 						{
 							type: ApplicationCommandOptionType.String,
-							name: 'trainingSkill',
+							name: 'training_skill',
 							description: 'The skill/skills to train.',
 							required: true,
 							choices: UNDERWATER_AGILITY_THIEVING_TRAINING_SKILL.map(i => ({ name: i, value: i }))
@@ -523,7 +523,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 		cast?: { spell: string; quantity?: number };
 		underwater?: {
 			underwater_agility_thieving?: {
-				trainingSkill: UnderwaterAgilityThievingTrainingSkill;
+				training_skill: UnderwaterAgilityThievingTrainingSkill;
 				minutes?: number;
 				no_stams?: boolean;
 			};
@@ -621,7 +621,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 				return underwaterAgilityThievingCommand(
 					channelID,
 					user,
-					options.underwater.underwater_agility_thieving.trainingSkill,
+					options.underwater.underwater_agility_thieving.training_skill,
 					options.underwater.underwater_agility_thieving.minutes,
 					options.underwater.underwater_agility_thieving.no_stams
 				);
