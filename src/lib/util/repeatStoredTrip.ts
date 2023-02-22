@@ -228,12 +228,6 @@ export const tripHandlers = {
 			quantity: data.tiaraQuantity
 		})
 	},
-	[activity_type_enum.DriftNet]: {
-		commandName: 'activities',
-		args: (data: ActivityTaskOptionsWithQuantity) => ({
-			driftnet_fishing: { minutes: Math.floor(data.duration / Time.Minute) }
-		})
-	},
 	[activity_type_enum.Enchanting]: {
 		commandName: 'activities',
 		args: (data: EnchantingActivityTaskOptions) => ({
@@ -563,6 +557,14 @@ export const tripHandlers = {
 					minutes: Math.floor(data.duration / Time.Minute),
 					no_stams: data.noStams
 				}
+			}
+		})
+	},
+	[activity_type_enum.DriftNet]: {
+		commandName: 'activities',
+		args: (data: ActivityTaskOptionsWithQuantity) => ({
+			underwater: {
+				driftnet_fishing: { minutes: Math.floor(data.duration / Time.Minute) }
 			}
 		})
 	}
