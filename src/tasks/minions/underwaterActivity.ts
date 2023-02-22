@@ -37,12 +37,15 @@ export const underwaterAgilityThievingTask: MinionTask = {
 			loot.add(clamChestTable.roll());
 		}
 
+		const holesObstacles = quantity / 5;
+
 		// Calculate Agility and Thieving xp from Glistening tears, assumes chests/clams and obstacles gives almost no xp/hour and therefor neglected
 		const agilityXpReceived = Math.round(
 			(trainingSkill === 'agility' ? 1.5 : trainingSkill === 'thieving' ? 0 : 1) *
 				successful *
 				0.018 *
-				Math.pow(currentAgilityLevel, 2)
+				Math.pow(currentAgilityLevel, 2) +
+				4.5 * holesObstacles
 		);
 
 		const thievingXpReceived = Math.round(
