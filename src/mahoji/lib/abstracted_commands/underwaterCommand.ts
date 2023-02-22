@@ -81,7 +81,7 @@ export async function underwaterAgilityThievingCommand(
 	const boosts = [];
 	const itemsToRemove = new Bank();
 	// Adjust numbers to end up with average 1436 loot actions per hour
-	let oneLootActionTime = randFloat(8, 9) * Time.Second;
+	let oneLootActionTime = randFloat(8.8, 9.2) * Time.Second;
 
 	if (user.hasEquipped('Merfolk trident')) {
 		oneLootActionTime = reduceNumByPercent(oneLootActionTime, 10);

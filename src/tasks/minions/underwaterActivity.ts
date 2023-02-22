@@ -21,7 +21,6 @@ export const underwaterAgilityThievingTask: MinionTask = {
 		const currentThievingLevel = user.skillLevel(SkillsEnum.Thieving);
 		const currentAgilityLevel = user.skillLevel(SkillsEnum.Agility);
 
-		const holesObstacles = quantity;
 		let successful = 0;
 		// Search clam/chest until it becomes inactive chance
 		let chanceOfSuccess = 0.043_88 * currentThievingLevel + 11.68;
@@ -29,7 +28,6 @@ export const underwaterAgilityThievingTask: MinionTask = {
 		for (let i = 0; i < quantity; i++) {
 			while (percentChance(chanceOfSuccess)) {
 				successful++;
-				quantity -= 1;
 			}
 		}
 
@@ -39,22 +37,20 @@ export const underwaterAgilityThievingTask: MinionTask = {
 			loot.add(clamChestTable.roll());
 		}
 
-		// Calculate Agility and Thieving xp from Glistening tears
-		const agiGlistXP =
+		// Calculate Agility and Thieving xp from Glistening tears, assumes chests/clams and obstacles gives almost no xp/hour and therefor neglected
+		const agilityXpReceived = Math.round(
 			(trainingSkill === 'agility' ? 1.5 : trainingSkill === 'thieving' ? 0 : 1) *
-			successful *
-			0.018 *
-			Math.pow(currentAgilityLevel, 2);
+				successful *
+				0.018 *
+				Math.pow(currentAgilityLevel, 2)
+		);
 
-		const thievGlistXP =
+		const thievingXpReceived = Math.round(
 			(trainingSkill === 'thieving' ? 1.5 : trainingSkill === 'agility' ? 0 : 1) *
-			successful *
-			0.066 *
-			Math.pow(currentThievingLevel, 2);
-
-		const agilityXpReceived = Math.round(holesObstacles * 4.5 + agiGlistXP);
-
-		const thievingXpReceived = Math.round(holesObstacles * 4.5 + thievGlistXP);
+				successful *
+				0.066 *
+				Math.pow(currentThievingLevel, 2)
+		);
 
 		let xpRes = `\n${await user.addXP({
 			skillName: SkillsEnum.Agility,

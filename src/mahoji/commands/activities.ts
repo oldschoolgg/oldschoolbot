@@ -423,7 +423,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 			options: [
 				{
 					type: ApplicationCommandOptionType.Subcommand,
-					name: 'underwater_agility_thieving',
+					name: 'agility_thieving',
 					description: 'Underwater Agility and Thieving.',
 					options: [
 						{
@@ -522,7 +522,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 		alch?: { item: string; quantity?: number };
 		cast?: { spell: string; quantity?: number };
 		underwater?: {
-			underwater_agility_thieving?: {
+			agility_thieving?: {
 				training_skill: UnderwaterAgilityThievingTrainingSkill;
 				minutes?: number;
 				no_stams?: boolean;
@@ -617,13 +617,13 @@ export const activitiesCommand: OSBMahojiCommand = {
 			return castCommand(channelID, user, options.cast.spell, options.cast.quantity);
 		}
 		if (options.underwater) {
-			if (options.underwater.underwater_agility_thieving) {
+			if (options.underwater.agility_thieving) {
 				return underwaterAgilityThievingCommand(
 					channelID,
 					user,
-					options.underwater.underwater_agility_thieving.training_skill,
-					options.underwater.underwater_agility_thieving.minutes,
-					options.underwater.underwater_agility_thieving.no_stams
+					options.underwater.agility_thieving.training_skill,
+					options.underwater.agility_thieving.minutes,
+					options.underwater.agility_thieving.no_stams
 				);
 			}
 			if (options.underwater.driftnet_fishing) {

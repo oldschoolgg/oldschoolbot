@@ -558,7 +558,7 @@ export const tripHandlers = {
 		commandName: 'activities',
 		args: (data: UnderwaterAgilityThievingTaskOptions) => ({
 			underwater: {
-				underwater_agility_thieving: {
+				agility_thieving: {
 					training_skill: data.trainingSkill,
 					minutes: Math.floor(data.duration / Time.Minute),
 					no_stams: data.noStams
