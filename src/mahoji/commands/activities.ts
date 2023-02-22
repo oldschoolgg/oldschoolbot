@@ -498,7 +498,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 				minutes?: number;
 				no_stams?: boolean;
 			};
-			driftnet_fishing?: { minutes?: number; no_stams?: boolean };
+			drift_net_fishing?: { minutes?: number; no_stams?: boolean };
 		};
 	}>) => {
 		const user = await mUserFetch(userID);
@@ -596,12 +596,12 @@ export const activitiesCommand: OSBMahojiCommand = {
 					options.underwater.agility_thieving.no_stams
 				);
 			}
-			if (options.underwater.driftnet_fishing) {
+			if (options.underwater.drift_net_fishing) {
 				return driftNetCommand(
 					channelID,
 					user,
-					options.underwater.driftnet_fishing.minutes,
-					options.underwater.driftnet_fishing.no_stams
+					options.underwater.drift_net_fishing.minutes,
+					options.underwater.drift_net_fishing.no_stams
 				);
 			}
 		}

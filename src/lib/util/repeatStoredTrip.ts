@@ -564,7 +564,7 @@ export const tripHandlers = {
 		commandName: 'activities',
 		args: (data: ActivityTaskOptionsWithQuantity) => ({
 			underwater: {
-				driftnet_fishing: { minutes: Math.floor(data.duration / Time.Minute) }
+				drift_net_fishing: { minutes: Math.floor(data.duration / Time.Minute) }
 			}
 		})
 	}
