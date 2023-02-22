@@ -62,7 +62,7 @@ export async function underwaterAgilityThievingCommand(
 
 			oneLootActionTime = reduceNumByPercent(oneLootActionTime, 30);
 			boosts.push('30% boost for using Stamina potion(4)');
-			itemsToRemove.add('Stamina potion(4)', 1);
+			itemsToRemove.add('Stamina potion(4)', Math.max(Math.ceil((tripLength / Time.Hour) * 2), 1));
 		} else {
 			noStams = true;
 		}
