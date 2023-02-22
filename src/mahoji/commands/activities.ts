@@ -32,11 +32,7 @@ import puroOptions, { puroPuroStartCommand } from '../lib/abstracted_commands/pu
 import { questCommand } from '../lib/abstracted_commands/questCommand';
 import { sawmillCommand } from '../lib/abstracted_commands/sawmillCommand';
 import { scatterCommand } from '../lib/abstracted_commands/scatterCommand';
-import {
-	mairinsMarketBuyables,
-	underwaterAgilityThievingCommand,
-	underwaterShopCommand
-} from '../lib/abstracted_commands/underwaterCommand';
+import { underwaterAgilityThievingCommand } from '../lib/abstracted_commands/underwaterCommand';
 import { warriorsGuildCommand } from '../lib/abstracted_commands/warriorsGuildCommand';
 import { ownedItemOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
@@ -467,31 +463,6 @@ export const activitiesCommand: OSBMahojiCommand = {
 							required: false
 						}
 					]
-				},
-				{
-					name: 'buy',
-					type: ApplicationCommandOptionType.Subcommand,
-					description: "Buy items with Mermaid's tears.",
-					options: [
-						{
-							type: ApplicationCommandOptionType.String,
-							name: 'item',
-							description: 'The item to buy.',
-							required: false,
-							autocomplete: async (value: string) => {
-								return mairinsMarketBuyables
-									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
-									.map(i => ({ name: `${i.name}`, value: i.name }));
-							}
-						},
-						{
-							type: ApplicationCommandOptionType.Number,
-							name: 'quantity',
-							description: 'Quantity.',
-							required: false,
-							min_value: 1
-						}
-					]
 				}
 			]
 		}
@@ -528,7 +499,6 @@ export const activitiesCommand: OSBMahojiCommand = {
 				no_stams?: boolean;
 			};
 			driftnet_fishing?: { minutes?: number; no_stams?: boolean };
-			buy?: { item: string; quantity?: number };
 		};
 	}>) => {
 		const user = await mUserFetch(userID);
@@ -632,14 +602,6 @@ export const activitiesCommand: OSBMahojiCommand = {
 					user,
 					options.underwater.driftnet_fishing.minutes,
 					options.underwater.driftnet_fishing.no_stams
-				);
-			}
-			if (options.underwater.buy) {
-				return underwaterShopCommand(
-					interaction,
-					user,
-					options.underwater.buy.item,
-					options.underwater.buy.quantity
 				);
 			}
 		}

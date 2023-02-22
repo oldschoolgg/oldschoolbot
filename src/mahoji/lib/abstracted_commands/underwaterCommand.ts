@@ -1,52 +1,11 @@
-import { ChatInputCommandInteraction } from 'discord.js';
 import { randFloat, reduceNumByPercent, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { UnderwaterAgilityThievingTrainingSkill } from '../../../lib/constants';
-import { formatDuration, stringMatches } from '../../../lib/util';
+import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { UnderwaterAgilityThievingTaskOptions } from './../../../lib/types/minions';
-
-export const mairinsMarketBuyables: { name: string; output: Bank; cost: number; aliases: string[] }[] = [
-	{
-		name: 'Unidentified small fossil',
-		output: new Bank().add('Unidentified small fossil', 1),
-		cost: 100,
-		aliases: ['unidentified small fossil']
-	},
-	{
-		name: 'Unidentified medium fossil',
-		output: new Bank().add('Unidentified medium fossil', 1),
-		cost: 200,
-		aliases: ['unidentified medium fossil']
-	},
-	{
-		name: 'Unidentified large fossil',
-		output: new Bank().add('Unidentified large fossil', 1),
-		cost: 300,
-		aliases: ['unidentified large fossil']
-	},
-	{
-		name: 'Merfolk trident',
-		output: new Bank().add('Merfolk trident', 1),
-		cost: 400,
-		aliases: ['merfolk trident']
-	},
-	{
-		name: 'Seaweed spore',
-		output: new Bank().add('Seaweed spore', 1),
-		cost: 20,
-		aliases: ['seaweed spore']
-	},
-	{
-		name: 'Bowl of fish',
-		output: new Bank().add('Bowl of fish', 1),
-		cost: 30,
-		aliases: ['bowl of fish']
-	}
-];
 
 export async function underwaterAgilityThievingCommand(
 	channelID: string,
@@ -140,59 +99,4 @@ export async function underwaterAgilityThievingCommand(
 		str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
 	}
 	return str;
-}
-
-export async function underwaterShopCommand(
-	interaction: ChatInputCommandInteraction,
-	user: MUser,
-	item: string | undefined,
-	quantity = 1
-) {
-	const currentMermaidsTears = user.bank.amount("Mermaid's tear");
-	if (!item) {
-		return `You currently have ${currentMermaidsTears.toLocaleString()} Mermaid's tear${
-			currentMermaidsTears > 1 ? 's' : ''
-		}.`;
-	}
-
-	const shopItem = mairinsMarketBuyables.find(
-		i => stringMatches(item, i.name) || i.aliases.some(alias => stringMatches(alias, item))
-	);
-	if (!shopItem) {
-		return `This is not a valid item to buy. These are the items that can be bought using Mermaid's tears: ${mairinsMarketBuyables
-			.map(v => v.name)
-			.join(', ')}`;
-	}
-
-	const cost = quantity * shopItem.cost;
-	if (cost > currentMermaidsTears) {
-		return `You don't have enough Mermaid's tears to buy ${quantity.toLocaleString()}x ${shopItem.name} (${
-			shopItem.cost
-		} Mermaid's tears each).\nYou have ${currentMermaidsTears} Mermaid's tear${
-			currentMermaidsTears > 1 ? 's' : ''
-		}.\n${
-			currentMermaidsTears < shopItem.cost
-				? "You don't have enough Mermaid's tears for any of this item."
-				: `You only have enough for ${Math.floor(currentMermaidsTears / shopItem.cost).toLocaleString()}`
-		}`;
-	}
-
-	const loot = new Bank(shopItem.output).multiply(quantity);
-	await handleMahojiConfirmation(
-		interaction,
-		`Are you sure you want to spend **${cost.toLocaleString()}** Mermaid's tears to buy **${loot}**?`
-	);
-
-	await transactItems({
-		userID: user.id,
-		collectionLog: true,
-		itemsToRemove: new Bank().add("Mermaid's tear", cost),
-		itemsToAdd: loot
-	});
-
-	return `You successfully bought **${quantity.toLocaleString()}x ${shopItem.name}** for ${(
-		shopItem.cost * quantity
-	).toLocaleString()} Mermaid's tears.\nYou now have ${currentMermaidsTears - cost} Mermaid's tear${
-		currentMermaidsTears > 1 ? 's' : ''
-	} left.`;
 }
