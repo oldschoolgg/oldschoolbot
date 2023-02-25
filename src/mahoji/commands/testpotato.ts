@@ -235,6 +235,50 @@ for (const tier of allStashUnitTiers) {
 	allStashUnitItems.add(tier.cost.clone().multiply(tier.units.length));
 }
 
+const allClueBoostItems = new Bank()
+	.add("zulrah's scales", 50_000)
+	.add('dragon dart', 50_000)
+	.add('Bolt of cloth', 20)
+	.add('Gold Leaf', 20)
+	.add('Ring of Dueling(8)', 20)
+	.add('Games necklace(8)', 20)
+	.add('Skills necklace(4)', 20)
+	.add('Combat Bracelet(4)', 20)
+	.add('Ring of wealth (5)', 20)
+	.add('Amulet of glory(4)', 20)
+	.add('Steel bar', 20)
+	.add('Coins', 20_000_000_000)
+	.add('Clue scroll (easy)', 10_000)
+	.add('Clue scroll (medium)', 10_000)
+	.add('Clue scroll (hard)', 10_000)
+	.add('Clue scroll (elite)', 10_000)
+	.add('Clue scroll (master)', 10_000)
+	.add('Clue scroll (grandmaster)', 10_000)
+	.add('Reward casket (master)', 1000);
+for (const i of [
+	...resolveItems([
+		'Max Cape',
+		'Achievement diary cape',
+		'Eternal teleport crystal',
+		'Toxic blowpipe (empty)',
+		"zulrah's scales",
+		'Dragon claws',
+		'Achievement diary cape',
+		"Pharaoh's sceptre",
+		'Royal seed pod',
+		'Ring of the elements',
+		'Helm of raedwald',
+		'Clue hunter garb',
+		'Clue hunter gloves',
+		'Clue hunter trousers',
+		'Clue hunter boots',
+		'Clue hunter cloak',
+		'Zippy'
+	])
+]) {
+	allClueBoostItems.add(i);
+}
+
 const spawnPresets = [
 	['openables', openablesBank],
 	['random', new Bank()],
@@ -247,7 +291,8 @@ const spawnPresets = [
 	['disassembly', disassembly],
 	['usables', usables],
 	['leagues', leaguesPreset],
-	['stashunits', allStashUnitItems]
+	['stashunits', allStashUnitItems],
+	['clueboosts', allClueBoostItems]
 ] as const;
 
 const nexSupplies = new Bank()
