@@ -320,7 +320,15 @@ class BankImageTask {
 		}
 
 		const imageBuffer = await fs.readFile(path.join(CACHE_DIR, `${itemID}.png`));
-		if (imageBuffer.length < 200) return this.getItemImage(1);
+		if (imageBuffer.length < 200) {
+			// Look for PNG Header to ensure it's really a bad image:
+			const pngHeader = Buffer.from([0x89, 0x50, 0x4e, 0x47]);
+			const testHeader = Buffer.alloc(4);
+			imageBuffer.copy(testHeader, 0, 0, 4);
+			if (pngHeader.compare(testHeader) !== 0) {
+				return this.getItemImage(1);
+			}
+		}
 		try {
 			const image = await loadImage(imageBuffer);
 			this.itemIconImagesCache.set(itemID, image);
