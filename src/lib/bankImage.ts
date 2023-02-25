@@ -216,6 +216,7 @@ class BankImageTask {
 	public itemIconsList: Set<number>;
 	public itemIconImagesCache: Map<number, Image>;
 	public backgroundImages: BankBackground[] = [];
+	public alternateImages: { id: number; bgId: number; image: Image }[] = [];
 
 	public _bgSpriteData: Image = new Image();
 	public bgSpriteList: Record<string, IBgSprite> = {};
@@ -266,6 +267,22 @@ class BankImageTask {
 				const purplePath = img.hasPurple
 					? `./src/lib/resources/images/bank_backgrounds/${img.id}_purple.${ext}`
 					: null;
+
+				if (img.alternateImages) {
+					const images = await Promise.all(
+						img.alternateImages.map(async bgId => ({
+							id: bgId.id,
+							bgId: img.id,
+							image: await loadImage(
+								await fs.readFile(
+									`./src/lib/resources/images/bank_backgrounds/${img.id}_${bgId.id}.${ext}`
+								)
+							)
+						}))
+					);
+					this.alternateImages.push(...images);
+				}
+
 				return {
 					...img,
 					image: existsSync(bgPath) ? await loadImage(await fs.readFile(bgPath)) : null,
@@ -303,6 +320,7 @@ class BankImageTask {
 		}
 
 		const imageBuffer = await fs.readFile(path.join(CACHE_DIR, `${itemID}.png`));
+		if (imageBuffer.length < 200) return this.getItemImage(1);
 		try {
 			const image = await loadImage(imageBuffer);
 			this.itemIconImagesCache.set(itemID, image);
@@ -389,14 +407,33 @@ class BankImageTask {
 		}
 	}
 
-	getBgAndSprite(bankBgId: number = 1) {
-		const background = this.backgroundImages.find(i => i.id === bankBgId)!;
+	getBgAndSprite(bankBgId: number = 1, user?: MUser) {
+		let background = this.backgroundImages.find(i => i.id === bankBgId)!;
+
+		const currentContract = user?.farmingContract();
+		const isFarmingContractReadyToHarvest = Boolean(
+			currentContract &&
+				currentContract.contract.hasContract &&
+				currentContract.matchingPlantedCrop &&
+				currentContract.matchingPlantedCrop.ready
+		);
+
+		let backgroundImage = background.image!;
+		if (bankBgId === 29 && isFarmingContractReadyToHarvest) {
+			backgroundImage = this.alternateImages.find(i => i.bgId === 29)!.image;
+		}
+		if (bankBgId === 30 && isFarmingContractReadyToHarvest) {
+			backgroundImage = this.alternateImages.find(i => i.bgId === 30)!.image;
+		}
+
 		const hasBgSprite = Boolean(this.bgSpriteList[background.name.toLowerCase()]);
 		const bgSprite = hasBgSprite ? this.bgSpriteList[background.name.toLowerCase()] : this.bgSpriteList.default;
+
 		return {
 			uniqueSprite: hasBgSprite,
 			sprite: bgSprite,
-			background
+			background,
+			backgroundImage
 		};
 	}
 
@@ -594,8 +631,9 @@ class BankImageTask {
 		let {
 			sprite: bgSprite,
 			uniqueSprite: hasBgSprite,
-			background: bgImage
-		} = this.getBgAndSprite(bankBackgroundID);
+			background: bgImage,
+			backgroundImage
+		} = this.getBgAndSprite(bankBackgroundID, user);
 
 		const isTransparent = Boolean(bgImage.transparent);
 
@@ -604,7 +642,7 @@ class BankImageTask {
 			currentCL !== undefined &&
 			bank.items().some(([item]) => !currentCL.has(item.id) && allCLItems.includes(item.id));
 
-		let actualBackground = isPurple && bgImage.hasPurple ? bgImage.purpleImage! : bgImage.image!;
+		let actualBackground = isPurple && bgImage.hasPurple ? bgImage.purpleImage! : backgroundImage;
 
 		const hexColor = user?.user.bank_bg_hex;
 
