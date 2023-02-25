@@ -204,7 +204,7 @@ export async function gearEquipCommand(args: {
 		);
 	}
 
-	const result = currentEquippedGear.equip(itemToEquip);
+	const result = currentEquippedGear.equip(itemToEquip, quantity);
 
 	await transactItemsFromBank({
 		userID: user.id,
