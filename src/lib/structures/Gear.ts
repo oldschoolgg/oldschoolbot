@@ -506,25 +506,25 @@ export class Gear {
 			case EquipmentSlot.TwoHanded: {
 				// If trying to equip a 2h weapon, remove the weapon and shield.
 				if (this.weapon) {
-					refundBank.add(this.weapon.item);
+					refundBank.add(this.weapon.item, this.weapon.quantity);
 					this.weapon = null;
 				}
 				if (this.shield) {
-					refundBank.add(this.shield.item);
+					refundBank.add(this.shield.item, this.shield.quantity);
 					this.shield = null;
 				}
 				if (this['2h']) {
-					refundBank.add(this['2h'].item);
+					refundBank.add(this['2h'].item, this['2h'].quantity);
 					this['2h'] = null;
 				}
-				this['2h'] = { item: itemToEquip.id, quantity: 1 };
+				this['2h'] = { item: itemToEquip.id, quantity };
 				break;
 			}
 			case EquipmentSlot.Weapon:
 			case EquipmentSlot.Shield: {
 				const twoHanded = this['2h'];
 				if (twoHanded) {
-					refundBank.add(twoHanded.item);
+					refundBank.add(twoHanded.item, twoHanded.quantity);
 					this['2h'] = null;
 				}
 

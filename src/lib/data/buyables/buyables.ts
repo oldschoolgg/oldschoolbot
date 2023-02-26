@@ -705,6 +705,12 @@ const questBuyables: Buyable[] = [
 		gpCost: 2_500_000,
 		qpRequired: 25,
 		ironmanPrice: 2000
+	},
+	{
+		name: 'Royal seed pod',
+		gpCost: 2_500_000,
+		qpRequired: 175,
+		ironmanPrice: 2000
 	}
 ];
 
@@ -1042,6 +1048,16 @@ const Buyables: Buyable[] = [
 		gpCost: 100_000,
 		ironmanPrice: 60_000,
 		qpRequired: 172
+	},
+	{
+		name: 'Mask of rebirth',
+		gpCost: 100_000,
+		ironmanPrice: 10_000,
+		qpRequired: 172,
+		customReq: async (user: MUser) => {
+			const toaKCs = await getToaKCs(user);
+			return toaKCs.expertKC >= 25 ? [true] : [false, 'You need a 25 Expert KC in Tombs of Amascut to buy this.'];
+		}
 	},
 	...sepulchreBuyables,
 	...constructionBuyables,
