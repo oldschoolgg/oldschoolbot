@@ -94,7 +94,7 @@ export const buyCommand: OSBMahojiCommand = {
 				return 'Your minion is busy.';
 			}
 			if (user.QP < 3) {
-				return 'You need 3qp to reach the stone chest';
+				return 'You need 3 QP to reach the stone chest';
 			}
 			if (!user.owns(cost)) {
 				return "You don't have enough Numulite.";
