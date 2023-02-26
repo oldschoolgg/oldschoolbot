@@ -396,6 +396,13 @@ describe('Gear', () => {
 		const resultDarts = gear.equip(getOSItem('Dragon dart'), 111);
 		expect(bankIsEqual(resultDarts.refundBank as any, new Bank().add('Dragon knife', 100))).toEqual(true);
 		expect(gear.weapon).toEqual({ item: getOSItem('Dragon dart').id, quantity: 111 });
+
+		const result2h = gear.equip(getOSItem('Twisted bow'));
+		expect(
+			bankIsEqual(result2h.refundBank as any, new Bank().add('Dragon dart', 111).add('Bronze kiteshield'))
+		).toEqual(true);
+		expect(gear.weapon).toBeNull();
+		expect(gear['2h']).toEqual({ item: getOSItem('Twisted bow').id, quantity: 1 });
 	});
 
 	it('should equip/refund properly if equipping a 2h over a 2h', () => {

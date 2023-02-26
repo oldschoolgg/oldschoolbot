@@ -171,3 +171,11 @@ export function buildClueButtons(loot: Bank | null, perkTier: number) {
 	}
 	return components;
 }
+
+export function makeAutoFarmButton() {
+	return new ButtonBuilder()
+		.setCustomId('AUTO_FARM')
+		.setLabel('Auto Farm')
+		.setStyle(ButtonStyle.Secondary)
+		.setEmoji('630911040355565599');
+}
