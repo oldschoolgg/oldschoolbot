@@ -64,6 +64,9 @@ const killableBosses: KillableMonster[] = [
 			{
 				[itemID('Dragon hunter lance')]: 15,
 				[itemID('Dragon hunter crossbow')]: 15
+			},
+			{
+				[itemID('Lightbearer')]: 1
 			}
 		],
 		levelRequirements: {
@@ -96,7 +99,8 @@ const killableBosses: KillableMonster[] = [
 				[itemID('Trident of the seas')]: 2,
 				[itemID('Trident of the swamp')]: 3,
 				[itemID('Sanguinesti staff')]: 4,
-				[itemID('Harmonised nightmare staff')]: 5
+				[itemID('Harmonised nightmare staff')]: 5,
+				[itemID("Tumeken's shadow")]: 8
 			},
 			{
 				[itemID('Barrows gloves')]: 3
@@ -161,6 +165,9 @@ const killableBosses: KillableMonster[] = [
 			},
 			{
 				[itemID('Elder maul')]: 5
+			},
+			{
+				[itemID('Keris partisan of breaching')]: 5
 			}
 		],
 		levelRequirements: {
@@ -205,7 +212,11 @@ const killableBosses: KillableMonster[] = [
 			'Jar of spirits'
 		]),
 		qpRequired: 0,
-		itemInBankBoosts: [{ [itemID('Dragon warhammer')]: 10 }, { [itemID('Bandos godsword')]: 5 }],
+		itemInBankBoosts: [
+			{ [itemID('Dragon warhammer')]: 10 },
+			{ [itemID('Bandos godsword')]: 5 },
+			{ [itemID("Osmumten's fang")]: 5 }
+		],
 		groupKillable: true,
 		respawnTime: 20_000,
 		levelRequirements: {

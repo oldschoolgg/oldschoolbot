@@ -84,7 +84,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		slayerOnly: true,
 		itemInBankBoosts: [
 			{
-				[itemID('Arclight')]: 10
+				[itemID('Arclight')]: 10,
+				[itemID("Osmumten's fang")]: 12
 			},
 			{
 				[itemID('Bandos godsword')]: 5,
@@ -556,6 +557,15 @@ export const vannakaMonsters: KillableMonster[] = [
 			{
 				[itemID('Scythe of vitur')]: 10,
 				[itemID('Scythe of vitur (uncharged)')]: 10
+			},
+			{
+				[itemID('Masori body (f)')]: 1
+			},
+			{
+				[itemID('Masori chaps (f)')]: 1
+			},
+			{
+				[itemID('Masori mask (f)')]: 1
 			}
 		],
 		healAmountNeeded: 20 * 12,
