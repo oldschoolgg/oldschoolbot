@@ -3,7 +3,7 @@ import { Bank } from 'oldschooljs';
 import itemID from '../../../../util/itemID';
 import { Mixable } from '../../../types';
 
-const barbMixes: Mixable[] = [
+export const barbMixes: Mixable[] = [
 	{
 		name: 'Attack mix(2)',
 		aliases: ['attack mix roe', 'attack mix(2)', 'attack mix 2 roe'],
@@ -11,7 +11,7 @@ const barbMixes: Mixable[] = [
 		level: 4,
 		xp: 8,
 		inputItems: new Bank({
-			'Attack Potion(2)': 1,
+			'Attack potion(2)': 1,
 			Roe: 1
 		}),
 		tickRate: 1,
@@ -24,7 +24,7 @@ const barbMixes: Mixable[] = [
 		level: 4,
 		xp: 8,
 		inputItems: new Bank({
-			'Antipoison Potion(2)': 1,
+			'Antipoison potion(2)': 1,
 			Roe: 1
 		}),
 		tickRate: 1,
@@ -386,5 +386,3 @@ const barbMixes: Mixable[] = [
 		bankTimePerPotion: 0.088
 	}
 ];
-
-export default barbMixes;

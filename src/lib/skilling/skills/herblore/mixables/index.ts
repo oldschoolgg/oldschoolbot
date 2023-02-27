@@ -1,5 +1,5 @@
 import { Mixable } from '../../../types';
-import barbMixes from './barbMixes';
+import { barbMixes } from './barbMixes';
 import Crush from './crush';
 import Grimy from './grimy';
 import Potions from './potions';
