@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 import { TOBRooms } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
 
 import { Emoji } from '../../../lib/constants';
+import { getSimilarItems } from '../../../lib/data/similarItems';
 import {
 	baseTOBUniques,
 	calculateTOBDeaths,
@@ -22,8 +23,10 @@ import { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
 import { channelIsSendable, formatDuration, formatSkillRequirements, skillsMeetRequirements } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import getOSItem from '../../../lib/util/getOSItem';
+import itemID from '../../../lib/util/itemID';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { mahojiParseNumber, updateLegacyUserBankSetting } from '../../mahojiSettings';
+import { updateLegacyUserBankSetting } from '../../../lib/util/updateLegacyUserBankSetting';
+import { mahojiParseNumber } from '../../mahojiSettings';
 
 const minStats = {
 	attack: 90,
@@ -100,8 +103,13 @@ export async function checkTOBUser(
 		];
 	}
 
+	const similarItems = getSimilarItems(itemID('Rune pouch'));
+	if (similarItems.every(item => !user.owns(item))) {
+		return [true, `${user.usernameOrMention}'s doesn't have a Rune pouch.`];
+	}
+
 	const cost = await calcTOBInput(user);
-	cost.add('Coins', 100_000).add('Rune pouch');
+	cost.add('Coins', 100_000);
 	if (!user.owns(cost)) {
 		return [true, `${user.usernameOrMention} doesn't own ${cost.remove(user.bankWithGP)}`];
 	}
@@ -311,7 +319,7 @@ export async function tobStartCommand(user: MUser, channelID: string, isHardMode
 
 	const {
 		duration,
-		totalReduction,
+		maxUserReduction,
 		reductions,
 		wipedRoom: _wipedRoom,
 		deathDuration,
@@ -359,7 +367,7 @@ export async function tobStartCommand(user: MUser, channelID: string, isHardMode
 			}
 			debugStr += `**- ${u.usernameOrMention}** (${Emoji.Gear}${total.toFixed(1)}% ${
 				Emoji.CombatSword
-			} ${calcWhatPercent(reductions[u.id], totalReduction).toFixed(1)}%) used ${realCost}\n\n`;
+			} ${calcWhatPercent(reductions[u.id], maxUserReduction).toFixed(1)}%) used ${realCost}\n\n`;
 			return {
 				userID: u.id,
 				effectiveCost
