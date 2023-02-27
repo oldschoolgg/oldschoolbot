@@ -1,4 +1,6 @@
+import { Stopwatch } from '@sapphire/stopwatch';
 import { ChannelType } from 'discord.js';
+import { objectEntries } from 'e';
 
 import { CLIENT_ID, OWNER_IDS } from '../../config';
 import { prisma } from '../settings/prisma';
@@ -33,14 +35,30 @@ export function memoryAnalysis() {
 	let voiceChannels = 0;
 	let guildTextChannels = 0;
 	let roles = 0;
+	let members = 0;
+	let channelCounter: Record<string | number, number> = {} as any;
+	let messages = 0;
+
 	for (const guild of globalClient.guilds.cache.values()) {
-		emojis += guild.emojis.cache.size;
 		for (const channel of guild.channels.cache.values()) {
-			if (channel.type === ChannelType.GuildVoice) voiceChannels++;
-			if (channel.type === ChannelType.GuildText) guildTextChannels++;
+			channelCounter[channel.type] ? channelCounter[channel.type]++ : (channelCounter[channel.type] = 1);
+			if ('messages' in channel) {
+				messages += channel.messages.cache.size;
+			}
 		}
 		roles += guild.roles.cache.size;
+		members += guild.members.cache.size;
+		emojis += guild.emojis.cache.size;
 	}
+
+	const channelTypeEntries = Object.entries(ChannelType);
+
+	for (const [key, value] of objectEntries(channelCounter)) {
+		const name = channelTypeEntries.find(i => i[1] === Number(key))?.[0] ?? 'Unknown';
+		delete channelCounter[key];
+		channelCounter[`${name} Channels`] = value;
+	}
+
 	return {
 		guilds,
 		emojis,
@@ -48,7 +66,10 @@ export function memoryAnalysis() {
 		voiceChannels,
 		guildTextChannels,
 		roles,
-		activeIDs: CACHED_ACTIVE_USER_IDS.size
+		activeIDs: CACHED_ACTIVE_USER_IDS.size,
+		members,
+		...channelCounter,
+		messages
 	};
 }
 
@@ -64,7 +85,10 @@ const emojiServers = new Set([
 ]);
 
 export function cacheCleanup() {
-	debugLog('Cache Cleanup', {
+	if (!globalClient.isReady()) return;
+	let stopwatch = new Stopwatch();
+	stopwatch.start();
+	debugLog('Cache Cleanup Start', {
 		type: 'CACHE_CLEANUP'
 	});
 	return runTimedLoggedFn('Cache Cleanup', async () => {
@@ -96,7 +120,7 @@ export function cacheCleanup() {
 		await runTimedLoggedFn('Guild Emoji/Roles/Member cache clear', async () => {
 			for (const guild of globalClient.guilds.cache.values()) {
 				if (emojiServers.has(guild.id)) continue;
-				guild.emojis.cache.clear();
+				guild.emojis?.cache.clear();
 				for (const member of guild.members.cache.values()) {
 					if (!CACHED_ACTIVE_USER_IDS.has(member.user.id)) {
 						guild.members.cache.delete(member.user.id);
@@ -126,6 +150,11 @@ export function cacheCleanup() {
 					delete role.hoist;
 				}
 			}
+		});
+
+		stopwatch.stop();
+		debugLog(`Cache Cleanup Finish After ${stopwatch.toString()}`, {
+			type: 'CACHE_CLEANUP'
 		});
 	});
 }

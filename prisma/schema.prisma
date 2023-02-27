@@ -412,6 +412,7 @@ model User {
   farmed_crops      FarmedCrop[]
 
   minion_defaultCompostToUse CropUpgradeType @default(compost) @map("minion.defaultCompostToUse")
+  botItemSell                BotItemSell[]
 
   @@index([id, last_command_date])
   @@map("users")
@@ -542,6 +543,7 @@ model LootTrack {
   cost           Json            @default("{}") @db.Json
   user_id        BigInt?
 
+  @@index([key, user_id])
   @@map("loot_track")
 }
 
@@ -674,6 +676,19 @@ model FarmedCrop {
   paid_for_protection Boolean
 
   @@map("farmed_crop")
+}
+
+model BotItemSell {
+  id String @id @default(uuid()) @db.Uuid
+
+  item_id     Int
+  quantity    Int
+  gp_received BigInt
+
+  user_id String @db.VarChar(19)
+  user    User   @relation(fields: [user_id], references: [id])
+
+  @@map("bot_item_sell")
 }
 
 enum command_usage_status {
