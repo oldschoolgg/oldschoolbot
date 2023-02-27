@@ -214,8 +214,7 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{ [itemID('Dragon warhammer')]: 10 },
-			{ [itemID('Bandos godsword')]: 5 },
-			{ [itemID("Osmumten's fang")]: 5 }
+			{ [itemID('Bandos godsword')]: 5 }
 		],
 		groupKillable: true,
 		respawnTime: 20_000,
