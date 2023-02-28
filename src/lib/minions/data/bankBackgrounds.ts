@@ -273,12 +273,23 @@ const backgroundImages: BankBackground[] = [
 		transparent: true
 	},
 	{
-		id: 30,
-		name: 'Troll',
+		id: 29,
+		name: 'Farmer Jane (Dynamic)',
 		image: null,
 		available: true,
 		perkTierNeeded: PerkTier.Four,
-		gpCost: 10_000_000
+		gpCost: 500_000,
+		alternateImages: [{ id: 1 }]
+	},
+	{
+		id: 30,
+		name: 'Farmer Jane (Transparent, Dynamic)',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 500_000,
+		transparent: true,
+		alternateImages: [{ id: 1 }]
 	},
 	{
 		id: 32,
@@ -653,6 +664,14 @@ const backgroundImages: BankBackground[] = [
 		image: null,
 		available: false,
 		owners: ['874714227984719922']
+	},
+	{
+		id: 105,
+		name: 'Troll',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 10_000_000
 	}
 ];
 

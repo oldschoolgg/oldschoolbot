@@ -26,6 +26,7 @@ export type BankBackground = {
 	skillsNeeded?: Skills;
 	transparent?: true;
 	owners?: string[];
+	alternateImages?: { id: number }[];
 } & (
 	| {
 			hasPurple: true;

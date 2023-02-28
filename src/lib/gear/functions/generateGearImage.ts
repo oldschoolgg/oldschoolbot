@@ -342,7 +342,7 @@ export async function generateAllGearImage(user: MUser) {
 		sprite: bgSprite,
 		uniqueSprite: hasBgSprite,
 		background: userBg
-	} = bankImageGenerator.getBgAndSprite(user.user.bankBackground ?? 1);
+	} = bankImageGenerator.getBgAndSprite(user.user.bankBackground ?? 1, user);
 
 	const hexColor = user.user.bank_bg_hex;
 

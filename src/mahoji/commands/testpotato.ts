@@ -1,5 +1,5 @@
 import { Prisma, tame_growth, xp_gains_skill_enum } from '@prisma/client';
-import { Time, uniqueArr } from 'e';
+import { noOp, Time, uniqueArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank, Items } from 'oldschooljs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
@@ -25,6 +25,7 @@ import { DisassemblySourceGroups } from '../../lib/invention/groups';
 import { Inventions, transactMaterialsFromUser } from '../../lib/invention/inventions';
 import { MaterialBank } from '../../lib/invention/MaterialBank';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
+import { UserKourendFavour } from '../../lib/minions/data/kourendFavour';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { allOpenables } from '../../lib/openables';
 import { tiers } from '../../lib/patreon';
@@ -62,7 +63,14 @@ async function giveMaxStats(user: MUser, level = 99, qp = MAX_QP) {
 	}
 	await user.update({
 		QP: MAX_QP,
-		...updates
+		...updates,
+		kourend_favour: {
+			Arceuus: 100,
+			Hosidius: 100,
+			Lovakengj: 100,
+			Piscarilius: 100,
+			Shayzien: 100
+		} as UserKourendFavour as any
 	});
 
 	return `Gave you level ${level} in all stats, and ${qp} QP.`;
@@ -131,18 +139,31 @@ async function giveGear(user: MUser) {
 	return `Gave you ${loot}, all BIS setups, 10k tentacle charges, slayer points, 1b GP, blowpipe, gear, supplies.`;
 }
 
-async function resetAccount(user: MUser) {
-	await prisma.slayerTask.deleteMany({ where: { user_id: user.id } });
-	await prisma.activity.deleteMany({ where: { user_id: BigInt(user.id) } });
-	await prisma.commandUsage.deleteMany({ where: { user_id: BigInt(user.id) } });
-	await prisma.gearPreset.deleteMany({ where: { user_id: user.id } });
-	await prisma.giveaway.deleteMany({ where: { user_id: user.id } });
-	await prisma.lastManStandingGame.deleteMany({ where: { user_id: BigInt(user.id) } });
-	await prisma.minigame.deleteMany({ where: { user_id: user.id } });
-	await prisma.playerOwnedHouse.deleteMany({ where: { user_id: user.id } });
-	await prisma.user.deleteMany({ where: { id: user.id } });
-	return 'Reset all your data.';
-}
+const thingsToReset = [
+	{
+		name: 'Everything/All',
+		run: async (user: MUser) => {
+			await prisma.slayerTask.deleteMany({ where: { user_id: user.id } }).catch(noOp);
+			await prisma.activity.deleteMany({ where: { user_id: BigInt(user.id) } }).catch(noOp);
+			await prisma.commandUsage.deleteMany({ where: { user_id: BigInt(user.id) } }).catch(noOp);
+			await prisma.gearPreset.deleteMany({ where: { user_id: user.id } }).catch(noOp);
+			await prisma.giveaway.deleteMany({ where: { user_id: user.id } }).catch(noOp);
+			await prisma.lastManStandingGame.deleteMany({ where: { user_id: BigInt(user.id) } }).catch(noOp);
+			await prisma.minigame.deleteMany({ where: { user_id: user.id } }).catch(noOp);
+			await prisma.newUser.deleteMany({ where: { id: user.id } }).catch(noOp);
+			await prisma.playerOwnedHouse.deleteMany({ where: { user_id: user.id } }).catch(noOp);
+			await prisma.user.deleteMany({ where: { id: user.id } }).catch(noOp);
+			return 'Reset all your data.';
+		}
+	},
+	{
+		name: 'Bank',
+		run: async (user: MUser) => {
+			await user.update({ bank: {} });
+			return 'Reset your bank.';
+		}
+	}
+];
 
 async function setMinigameKC(user: MUser, _minigame: string, kc: number) {
 	const minigame = Minigames.find(m => m.column === _minigame.toLowerCase());
@@ -381,7 +402,16 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				{
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'reset',
-					description: 'Totally reset your account.'
+					description: 'Reset things',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'thing',
+							description: 'The thing to reset.',
+							required: true,
+							choices: thingsToReset.map(i => ({ name: i.name, value: i.name }))
+						}
+					]
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
@@ -539,7 +569,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				max?: {};
 				patron?: { tier: string };
 				gear?: {};
-				reset?: {};
+				reset?: { thing: string };
 				setminigamekc?: { minigame: string; kc: number };
 				setxp?: { skill: string; xp: number };
 				settamelvl?: { lvl: number };
@@ -641,7 +671,9 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					return giveGear(user);
 				}
 				if (options.reset) {
-					return resetAccount(user);
+					const resettable = thingsToReset.find(i => i.name === options.reset?.thing);
+					if (!resettable) return 'Invalid thing to reset.';
+					return resettable.run(user);
 				}
 				if (options.setminigamekc) {
 					return setMinigameKC(user, options.setminigamekc.minigame, options.setminigamekc.kc);

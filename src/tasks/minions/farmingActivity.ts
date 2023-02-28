@@ -4,7 +4,7 @@ import { Bank, Monsters } from 'oldschooljs';
 import { MysteryBoxes } from '../../lib/bsoOpenables';
 import { Emoji, Events } from '../../lib/constants';
 import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
-import { defaultFarmingContract, PatchTypes } from '../../lib/minions/farming';
+import { PatchTypes } from '../../lib/minions/farming';
 import { FarmingContract } from '../../lib/minions/farming/types';
 import { prisma } from '../../lib/settings/prisma';
 import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
@@ -26,7 +26,7 @@ import { getFarmingKeyFromName } from '../../lib/util/farmingHelpers';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { sendToChannelID } from '../../lib/util/webhook';
-import { mahojiUsersSettingsFetch, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
+import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 
 const plantsNotUsedForArcaneHarvester = ['Mysterious tree'].map(i => Farming.Plants.find(p => p.name === i)!);
 assert(!(plantsNotUsedForArcaneHarvester as any[]).includes(undefined));
@@ -100,7 +100,6 @@ export const farmingTask: MinionTask = {
 			duration
 		} = data;
 		const user = await mUserFetch(userID);
-		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 		const currentFarmingLevel = Math.min(99, user.skillLevel(SkillsEnum.Farming));
 		const currentWoodcuttingLevel = Math.min(99, user.skillLevel(SkillsEnum.Woodcutting));
 		let baseBonus = 1;
@@ -499,10 +498,7 @@ export const farmingTask: MinionTask = {
 				[getFarmingKeyFromName(plant.seedType)]: newPatch
 			});
 
-			const currentContract: FarmingContract | null =
-				(mahojiUser.minion_farmingContract as FarmingContract | null) ?? {
-					...defaultFarmingContract
-				};
+			const { contract: currentContract } = user.farmingContract();
 
 			const { contractsCompleted } = currentContract;
 
