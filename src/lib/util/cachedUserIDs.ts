@@ -130,7 +130,13 @@ export function cacheCleanup() {
 
 		await runTimedLoggedFn('Guild Emoji/Roles/Member cache clear', async () => {
 			for (const guild of globalClient.guilds.cache.values()) {
-				if (guild.id !== SupportServer) guild.members.cache.clear();
+				if (guild.id !== SupportServer) {
+					for (const member of guild.members.cache.values()) {
+						if (member.user.id === CLIENT_ID) continue;
+						guild.members.cache.delete(member.user.id);
+					}
+				}
+
 				if (emojiServers.has(guild.id)) continue;
 				guild.emojis?.cache.clear();
 
