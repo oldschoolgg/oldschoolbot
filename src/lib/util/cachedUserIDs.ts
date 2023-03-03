@@ -2,7 +2,7 @@ import { Stopwatch } from '@sapphire/stopwatch';
 import { ChannelType } from 'discord.js';
 import { objectEntries } from 'e';
 
-import { CLIENT_ID, OWNER_IDS } from '../../config';
+import { CLIENT_ID, OWNER_IDS, SupportServer } from '../../config';
 import { prisma } from '../settings/prisma';
 import { runTimedLoggedFn } from '../util';
 
@@ -119,13 +119,10 @@ export function cacheCleanup() {
 
 		await runTimedLoggedFn('Guild Emoji/Roles/Member cache clear', async () => {
 			for (const guild of globalClient.guilds.cache.values()) {
+				if (guild.id !== SupportServer) guild.members.cache.clear();
 				if (emojiServers.has(guild.id)) continue;
 				guild.emojis?.cache.clear();
-				for (const member of guild.members.cache.values()) {
-					if (!CACHED_ACTIVE_USER_IDS.has(member.user.id)) {
-						guild.members.cache.delete(member.user.id);
-					}
-				}
+
 				for (const channel of guild.channels.cache.values()) {
 					if (channel.type === ChannelType.GuildVoice || channel.type === ChannelType.GuildNewsThread) {
 						guild.channels.cache.delete(channel.id);
