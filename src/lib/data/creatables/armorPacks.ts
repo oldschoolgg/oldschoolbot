@@ -2475,7 +2475,7 @@ const armorSetsSrc: { unpacked: Bank; packed: Item }[] = [
 		packed: getOSItem('Masori armour set (f)')
 	},
 	{
-		unpacked: new Bank().add('Clown hat').add('Clown shirt').add('Clown leggings').add('Clown shoes'),
+		unpacked: new Bank().add('Clown hat').add('Clown shirt').add('Clown leggings').add('Clown feet'),
 		packed: getOSItem('Clown set')
 	},
 	{
