@@ -38,6 +38,8 @@ export function memoryAnalysis() {
 	let members = 0;
 	let channelCounter: Record<string | number, number> = {} as any;
 	let messages = 0;
+	let voiceStates = 0;
+	let commands = 0;
 
 	for (const guild of globalClient.guilds.cache.values()) {
 		for (const channel of guild.channels.cache.values()) {
@@ -49,6 +51,8 @@ export function memoryAnalysis() {
 		roles += guild.roles.cache.size;
 		members += guild.members.cache.size;
 		emojis += guild.emojis.cache.size;
+		voiceStates += guild.voiceStates.cache.size;
+		commands += guild.commands.cache.size;
 	}
 
 	const channelTypeEntries = Object.entries(ChannelType);
@@ -69,7 +73,9 @@ export function memoryAnalysis() {
 		activeIDs: CACHED_ACTIVE_USER_IDS.size,
 		members,
 		...channelCounter,
-		messages
+		messages,
+		voiceStates,
+		commands
 	};
 }
 
