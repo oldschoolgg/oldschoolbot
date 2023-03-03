@@ -40,12 +40,16 @@ export function memoryAnalysis() {
 	let messages = 0;
 	let voiceStates = 0;
 	let commands = 0;
+	let permissionOverwrites = 0;
 
 	for (const guild of globalClient.guilds.cache.values()) {
 		for (const channel of guild.channels.cache.values()) {
 			channelCounter[channel.type] ? channelCounter[channel.type]++ : (channelCounter[channel.type] = 1);
 			if ('messages' in channel) {
 				messages += channel.messages.cache.size;
+			}
+			if ('permissionOverwrites' in channel) {
+				permissionOverwrites += channel.permissionOverwrites.cache.size;
 			}
 		}
 		roles += guild.roles.cache.size;
@@ -75,7 +79,8 @@ export function memoryAnalysis() {
 		...channelCounter,
 		messages,
 		voiceStates,
-		commands
+		commands,
+		permissionOverwrites
 	};
 }
 
