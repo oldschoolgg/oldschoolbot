@@ -135,6 +135,17 @@ model ClientStorage {
   @@map("clientStorage")
 }
 
+enum GearSetupType {
+  melee
+  range
+  mage
+  misc
+  skilling
+  wildy
+  fashion
+  other
+}
+
 model GearPreset {
   user_id    String @db.VarChar(19)
   name       String @db.VarChar(24)
@@ -151,6 +162,10 @@ model GearPreset {
   weapon     Int?
   ammo       Int?
   ammo_qty   Int?
+
+  emoji_id       String?        @db.VarChar(19)
+  times_equipped Int            @default(0)
+  pinned_setup   GearSetupType?
 
   @@id([user_id, name])
   @@map("gear_presets")

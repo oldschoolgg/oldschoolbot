@@ -3,16 +3,41 @@ import { BaseMessageOptions, ButtonBuilder, ButtonStyle, ComponentType } from 'd
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { BitField, Emoji, minionBuyButton } from '../../../lib/constants';
 import { roboChimpSyncData, roboChimpUserFetch } from '../../../lib/roboChimp';
-import { makeComponents } from '../../../lib/util';
+import { prisma } from '../../../lib/settings/prisma';
+import { makeComponents, stripNonAlphanumeric } from '../../../lib/util';
 import { makeAutoContractButton, makeBirdHouseTripButton } from '../../../lib/util/globalInteractions';
 import { minionStatus } from '../../../lib/util/minionStatus';
 import { makeRepeatTripButtons } from '../../../lib/util/repeatStoredTrip';
+import { toTitleCase } from '../../../lib/util/toTitleCase';
 import { calculateBirdhouseDetails } from './birdhousesCommand';
 import { isUsersDailyReady } from './dailyCommand';
 import { canRunAutoContract } from './farmingContractCommand';
 
+async function fetchFavoriteGearPresets(userID: string) {
+	const pinnedPresets = await prisma.gearPreset.findMany({
+		where: { user_id: userID, pinned_setup: { not: null } },
+		orderBy: { times_equipped: 'desc' },
+		take: 5
+	});
+
+	if (pinnedPresets.length === 0) return [];
+
+	return pinnedPresets.map(i =>
+		new ButtonBuilder()
+			.setStyle(ButtonStyle.Secondary)
+			.setCustomId(`GPE_${i.pinned_setup}_${stripNonAlphanumeric(i.name)}`)
+			.setLabel(`Equip '${toTitleCase(i.name).replace(/_/g, ' ')}' to ${i.pinned_setup}`)
+			.setEmoji(i.emoji_id ?? Emoji.Gear)
+	);
+}
+
 export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptions> {
-	const roboChimpUser = await roboChimpUserFetch(user.id);
+	const [roboChimpUser, birdhouseDetails, gearPresetButtons] = await Promise.all([
+		roboChimpUserFetch(user.id),
+		calculateBirdhouseDetails(user.id),
+		fetchFavoriteGearPresets(user.id)
+	]);
+
 	roboChimpSyncData(roboChimpUser, user);
 
 	if (!user.user.minion_hasBought) {
@@ -30,8 +55,6 @@ export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptio
 
 	const status = minionStatus(user);
 	const buttons: ButtonBuilder[] = [];
-
-	const birdhouseDetails = await calculateBirdhouseDetails(user.id);
 
 	const dailyIsReady = isUsersDailyReady(user);
 
@@ -118,6 +141,10 @@ export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptio
 				.setStyle(ButtonStyle.Link)
 				.setURL('https://bso-wiki.oldschool.gg/leagues')
 		);
+	}
+
+	if (gearPresetButtons.length > 0) {
+		buttons.push(...gearPresetButtons);
 	}
 
 	return {

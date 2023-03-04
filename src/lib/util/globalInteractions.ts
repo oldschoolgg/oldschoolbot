@@ -12,7 +12,7 @@ import { prisma } from '../settings/prisma';
 import { runCommand } from '../settings/settings';
 import { toaHelpCommand } from '../simulation/toa';
 import { ItemBank } from '../types';
-import { formatDuration, removeFromArr } from '../util';
+import { formatDuration, removeFromArr, stringMatches } from '../util';
 import { updateGiveawayMessage } from './giveaway';
 import { interactionReply } from './interactionReply';
 import { minionIsBusy } from './minionIsBusy';
@@ -231,6 +231,25 @@ async function repeatTripHandler(user: MUser, interaction: ButtonInteraction) {
 	return repeatTrip(interaction, matchingActivity);
 }
 
+async function handleGearPresetEquip(user: MUser, id: string, interaction: ButtonInteraction) {
+	const [, setupName, presetName] = id.split('_');
+	if (!setupName || !presetName) return;
+	const presets = await prisma.gearPreset.findMany({ where: { user_id: user.id } });
+	const matchingPreset = presets.find(p => stringMatches(p.name, presetName));
+	if (!matchingPreset) {
+		return interactionReply(interaction, { content: "You don't have a preset with this name.", ephemeral: true });
+	}
+	await runCommand({
+		commandName: 'gearpresets',
+		args: { equip: { gear_setup: setupName, preset: presetName } },
+		user,
+		member: interaction.member,
+		channelID: interaction.channelId,
+		guildID: interaction.guildId,
+		interaction
+	});
+}
+
 export async function interactionHook(interaction: Interaction) {
 	if (!interaction.isButton()) return;
 	debugLog(`Interaction hook for button [${interaction.customId}]`, {
@@ -244,6 +263,7 @@ export async function interactionHook(interaction: Interaction) {
 	const user = await mUserFetch(userID);
 	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, interaction);
 	if (id.includes('REPEAT_TRIP')) return repeatTripHandler(user, interaction);
+	if (id.startsWith('GPE_')) return handleGearPresetEquip(user, id, interaction);
 	if (id === 'TOA_CHECK') {
 		const response = await toaHelpCommand(user, interaction.channelId);
 		return interactionReply(interaction, {
