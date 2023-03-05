@@ -105,7 +105,7 @@ class CollectionLogTask {
 		type: CollectionLogType;
 		flags: { [key: string]: string | number };
 	}): Promise<CommandResponse> {
-		const { sprite } = bankImageGenerator.getBgAndSprite(options.user.user.bankBackground);
+		const { sprite } = bankImageGenerator.getBgAndSprite(options.user.user.bankBackground, options.user);
 
 		if (options.flags.temp) {
 			options.type = 'temp';
