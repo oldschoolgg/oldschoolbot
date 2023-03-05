@@ -25,6 +25,7 @@ export type BankBackground = {
 	sacValueRequired?: number;
 	skillsNeeded?: Skills;
 	transparent?: true;
+	alternateImages?: { id: number }[];
 } & (
 	| {
 			hasPurple: true;
