@@ -80,7 +80,7 @@ export async function generateGearImage(
 ) {
 	const bankBg = user.user.bankBackground ?? 1;
 
-	let { sprite, uniqueSprite, background: userBgImage } = bankImageGenerator.getBgAndSprite(bankBg);
+	let { sprite, uniqueSprite, background: userBgImage } = bankImageGenerator.getBgAndSprite(bankBg, user);
 
 	const hexColor = user.user.bank_bg_hex;
 
@@ -241,7 +241,7 @@ export async function generateAllGearImage(user: MUser) {
 		sprite: bgSprite,
 		uniqueSprite: hasBgSprite,
 		background: userBg
-	} = bankImageGenerator.getBgAndSprite(user.user.bankBackground ?? 1);
+	} = bankImageGenerator.getBgAndSprite(user.user.bankBackground ?? 1, user);
 
 	const hexColor = user.user.bank_bg_hex;
 

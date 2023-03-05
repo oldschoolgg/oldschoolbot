@@ -2,7 +2,7 @@ import { randInt } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
-import { defaultFarmingContract, PatchTypes } from '../../lib/minions/farming';
+import { PatchTypes } from '../../lib/minions/farming';
 import { FarmingContract } from '../../lib/minions/farming/types';
 import { prisma } from '../../lib/settings/prisma';
 import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
@@ -15,7 +15,7 @@ import { getFarmingKeyFromName } from '../../lib/util/farmingHelpers';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { sendToChannelID } from '../../lib/util/webhook';
-import { mahojiUsersSettingsFetch, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
+import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 
 export const farmingTask: MinionTask = {
 	type: 'Farming',
@@ -23,7 +23,6 @@ export const farmingTask: MinionTask = {
 		const { plantsName, patchType, quantity, upgradeType, payment, userID, channelID, planting, currentDate, pid } =
 			data;
 		const user = await mUserFetch(userID);
-		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 		const currentFarmingLevel = user.skillLevel(SkillsEnum.Farming);
 		const currentWoodcuttingLevel = user.skillLevel(SkillsEnum.Woodcutting);
 		let baseBonus = 1;
@@ -367,10 +366,7 @@ export const farmingTask: MinionTask = {
 				[getFarmingKeyFromName(plant.seedType)]: newPatch
 			});
 
-			const currentContract: FarmingContract | null =
-				(mahojiUser.minion_farmingContract as FarmingContract | null) ?? {
-					...defaultFarmingContract
-				};
+			const { contract: currentContract } = user.farmingContract();
 
 			const { contractsCompleted } = currentContract;
 
