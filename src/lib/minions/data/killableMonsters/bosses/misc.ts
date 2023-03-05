@@ -212,10 +212,7 @@ const killableBosses: KillableMonster[] = [
 			'Jar of spirits'
 		]),
 		qpRequired: 0,
-		itemInBankBoosts: [
-			{ [itemID('Dragon warhammer')]: 10 },
-			{ [itemID('Bandos godsword')]: 5 }
-		],
+		itemInBankBoosts: [{ [itemID('Dragon warhammer')]: 10 }, { [itemID('Bandos godsword')]: 5 }],
 		groupKillable: true,
 		respawnTime: 20_000,
 		levelRequirements: {
