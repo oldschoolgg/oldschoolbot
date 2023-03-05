@@ -238,4 +238,13 @@ process.on('uncaughtException', err => {
 	logError(err);
 });
 
+process.on('unhandledRejection', err => {
+	console.error(err);
+	logError(err);
+});
+
+process.on('exit', exitCode => {
+	debugLog('Process Exit', { type: 'PROCESS_EXIT', exitCode });
+});
+
 main();

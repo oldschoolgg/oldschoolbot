@@ -23,8 +23,8 @@ const pino = pinoCtor(
 	},
 	pinoCtor.destination({
 		dest: `./logs/${formattedDate}-${today.getHours()}-${today.getMinutes()}-${BOT_TYPE}-debug-logs.log`,
-		minLength: 256,
-		mkdir: true
+		mkdir: true,
+		sync: true
 	})
 );
 
