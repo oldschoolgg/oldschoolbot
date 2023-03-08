@@ -1,5 +1,5 @@
 import { Embed, inlineCode } from '@discordjs/builders';
-import { activity_type_enum, GearSetupType } from '@prisma/client';
+import { activity_type_enum } from '@prisma/client';
 import { Guild, HexColorString, resolveColor, User } from 'discord.js';
 import { clamp, uniqueArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
@@ -518,7 +518,6 @@ async function handleRSN(user: MUser, newRSN: string) {
 	}
 	return `Your RSN has been set to: \`${newRSN}\`.`;
 }
-
 
 function pinnedTripLimit(perkTier: number) {
 	return clamp(perkTier + 1, 1, 4);
