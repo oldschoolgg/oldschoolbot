@@ -84,7 +84,7 @@ export function memoryAnalysis() {
 	};
 }
 
-const emojiServers = new Set([
+export const emojiServers = new Set([
 	'342983479501389826',
 	'940758552425955348',
 	'869497440947015730',
