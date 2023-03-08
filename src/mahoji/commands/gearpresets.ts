@@ -291,8 +291,8 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 				options.create.name,
 				false,
 				options.create,
-				options.create?.emoji,
-				options.create?.pinned_setup
+				options.create.emoji,
+				options.create.pinned_setup
 			);
 		}
 		if (options.edit) {
@@ -302,8 +302,8 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 				options.edit.gear_preset,
 				true,
 				options.edit,
-				options.edit?.emoji,
-				options.edit?.pinned_setup
+				options.edit.emoji,
+				options.edit.pinned_setup
 			);
 		}
 		if (options.delete) {
