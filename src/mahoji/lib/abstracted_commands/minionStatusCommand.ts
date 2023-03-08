@@ -31,11 +31,30 @@ async function fetchFavoriteGearPresets(userID: string) {
 	);
 }
 
+async function fetchPinnedTrips(userID: string) {
+	const pinnedPresets = await prisma.pinnedTrip.findMany({
+		where: { user_id: userID },
+		take: 5
+	});
+
+	if (pinnedPresets.length === 0) return [];
+
+	return pinnedPresets.map(i =>
+		new ButtonBuilder()
+			.setStyle(ButtonStyle.Secondary)
+			.setCustomId(`PTR_${i.id}`)
+			.setLabel(`Repeat ${i.custom_name ?? i.activity_type}`)
+			.setEmoji(i.emoji_id ?? '🔁')
+	);
+}
+
 export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptions> {
-	const [roboChimpUser, birdhouseDetails, gearPresetButtons] = await Promise.all([
+	const { minionIsBusy } = user;
+	const [roboChimpUser, birdhouseDetails, gearPresetButtons, pinnedTripButtons] = await Promise.all([
 		roboChimpUserFetch(user.id),
-		calculateBirdhouseDetails(user.id),
-		fetchFavoriteGearPresets(user.id)
+		minionIsBusy ? { isReady: false } : calculateBirdhouseDetails(user.id),
+		minionIsBusy ? [] : fetchFavoriteGearPresets(user.id),
+		minionIsBusy ? [] : fetchPinnedTrips(user.id)
 	]);
 
 	roboChimpSyncData(roboChimpUser, user);
@@ -68,7 +87,7 @@ export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptio
 		);
 	}
 
-	if (user.minionIsBusy) {
+	if (minionIsBusy) {
 		buttons.push(
 			new ButtonBuilder()
 				.setCustomId('CANCEL_TRIP')
@@ -78,7 +97,7 @@ export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptio
 		);
 	}
 
-	if (!user.minionIsBusy) {
+	if (!minionIsBusy) {
 		buttons.push(
 			new ButtonBuilder()
 				.setCustomId('AUTO_SLAY')
@@ -96,22 +115,22 @@ export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptio
 			.setStyle(ButtonStyle.Secondary)
 	);
 
-	if (!user.minionIsBusy && birdhouseDetails.isReady && !user.bitfield.includes(BitField.DisableBirdhouseRunButton)) {
+	if (!minionIsBusy && birdhouseDetails.isReady && !user.bitfield.includes(BitField.DisableBirdhouseRunButton)) {
 		buttons.push(makeBirdHouseTripButton());
 	}
 
-	if (!user.minionIsBusy && (await canRunAutoContract(user))) {
+	if (!minionIsBusy && (await canRunAutoContract(user))) {
 		buttons.push(makeAutoContractButton());
 	}
 
-	if (!user.minionIsBusy) {
+	if (!minionIsBusy) {
 		const repeatButtons = await makeRepeatTripButtons(user);
 		buttons.push(...repeatButtons);
 	}
 
 	const { bank } = user;
 
-	if (!user.minionIsBusy) {
+	if (!minionIsBusy) {
 		for (const tier of ClueTiers.filter(t => bank.has(t.scrollID))
 			.reverse()
 			.slice(0, 3)) {
@@ -125,14 +144,6 @@ export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptio
 		}
 	}
 
-	buttons.push(
-		new ButtonBuilder()
-			.setCustomId('VIEW_BANK')
-			.setLabel('View Bank')
-			.setEmoji('739459924693614653')
-			.setStyle(ButtonStyle.Secondary)
-	);
-
 	if (roboChimpUser.leagues_points_total === 0) {
 		buttons.push(
 			new ButtonBuilder()
@@ -145,6 +156,9 @@ export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptio
 
 	if (gearPresetButtons.length > 0) {
 		buttons.push(...gearPresetButtons);
+	}
+	if (pinnedTripButtons.length > 0) {
+		buttons.push(...pinnedTripButtons);
 	}
 
 	return {
