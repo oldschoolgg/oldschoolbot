@@ -2,7 +2,7 @@ import { Stopwatch } from '@sapphire/stopwatch';
 import { ChannelType } from 'discord.js';
 import { objectEntries } from 'e';
 
-import { CLIENT_ID, OWNER_IDS } from '../../config';
+import { CLIENT_ID, OWNER_IDS, SupportServer } from '../../config';
 import { prisma } from '../settings/prisma';
 import { runTimedLoggedFn } from '../util';
 
@@ -38,6 +38,9 @@ export function memoryAnalysis() {
 	let members = 0;
 	let channelCounter: Record<string | number, number> = {} as any;
 	let messages = 0;
+	let voiceStates = 0;
+	let commands = 0;
+	let permissionOverwrites = 0;
 
 	for (const guild of globalClient.guilds.cache.values()) {
 		for (const channel of guild.channels.cache.values()) {
@@ -45,10 +48,15 @@ export function memoryAnalysis() {
 			if ('messages' in channel) {
 				messages += channel.messages.cache.size;
 			}
+			if ('permissionOverwrites' in channel) {
+				permissionOverwrites += channel.permissionOverwrites.cache.size;
+			}
 		}
 		roles += guild.roles.cache.size;
 		members += guild.members.cache.size;
 		emojis += guild.emojis.cache.size;
+		voiceStates += guild.voiceStates.cache.size;
+		commands += guild.commands.cache.size;
 	}
 
 	const channelTypeEntries = Object.entries(ChannelType);
@@ -69,11 +77,14 @@ export function memoryAnalysis() {
 		activeIDs: CACHED_ACTIVE_USER_IDS.size,
 		members,
 		...channelCounter,
-		messages
+		messages,
+		voiceStates,
+		commands,
+		permissionOverwrites
 	};
 }
 
-const emojiServers = new Set([
+export const emojiServers = new Set([
 	'342983479501389826',
 	'940758552425955348',
 	'869497440947015730',
@@ -119,13 +130,16 @@ export function cacheCleanup() {
 
 		await runTimedLoggedFn('Guild Emoji/Roles/Member cache clear', async () => {
 			for (const guild of globalClient.guilds.cache.values()) {
-				if (emojiServers.has(guild.id)) continue;
-				guild.emojis?.cache.clear();
-				for (const member of guild.members.cache.values()) {
-					if (!CACHED_ACTIVE_USER_IDS.has(member.user.id)) {
+				if (guild.id !== SupportServer) {
+					for (const member of guild.members.cache.values()) {
+						if (member.user.id === CLIENT_ID) continue;
 						guild.members.cache.delete(member.user.id);
 					}
 				}
+
+				if (emojiServers.has(guild.id)) continue;
+				guild.emojis?.cache.clear();
+
 				for (const channel of guild.channels.cache.values()) {
 					if (channel.type === ChannelType.GuildVoice || channel.type === ChannelType.GuildNewsThread) {
 						guild.channels.cache.delete(channel.id);
