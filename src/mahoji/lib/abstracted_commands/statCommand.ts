@@ -1200,7 +1200,7 @@ ${bank
 	},
 	{
 		name: 'Slayer Masks',
-		perkTierNeeded: PerkTier.Four,
+		perkTierNeeded: null,
 		run: async (_, userStats) => {
 			return Object.entries(userStats.on_task_with_mask_monster_scores as ItemBank)
 				.map(i => {
