@@ -7,7 +7,16 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import { production } from '../../config';
-import { championScrolls, skillingPetsCL } from '../../lib/data/CollectionsExport';
+import {
+	championScrolls,
+	commanderZilyanaCL,
+	customPetsCL,
+	generalGraardorCL,
+	godWarsDungeonGodswordShards,
+	kreeArraCL,
+	krilTsutsarothCL,
+	skillingPetsCL
+} from '../../lib/data/CollectionsExport';
 import { prisma } from '../../lib/settings/prisma';
 import { logError } from '../../lib/util/logError';
 import resolveItems from '../../lib/util/resolveItems';
@@ -24,10 +33,13 @@ export function bingoIsActive() {
 }
 type BingoTile = (
 	| {
-			oneOf: number[];
+			oneOf: (number | string)[] | (number | string)[][];
 	  }
 	| {
-			allOf: number[];
+			allOf: (number | string)[];
+	  }
+	| {
+			receiveBank: Bank;
 	  }
 	| {
 			customReq: (cl: Bank) => boolean;
@@ -40,37 +52,8 @@ type BingoTile = (
 export const bingoTiles: BingoTile[] = [
 	{
 		id: 1,
-		name: 'Receive any boss pet',
-		oneOf: resolveItems([
-			'Ikkle hydra',
-			'Callisto cub',
-			'Hellpuppy',
-			'Pet chaos elemental',
-			'Pet zilyana',
-			'Pet dark core',
-			'Pet dagannoth prime',
-			'Pet dagannoth supreme',
-			'Pet dagannoth rex',
-			'Pet general graardor',
-			'Baby mole',
-			'Noon',
-			'Kalphite princess',
-			'Prince black dragon',
-			'Pet kraken',
-			"Pet kree'arra",
-			"Pet k'ril tsutsaroth",
-			"Scorpia's offspring",
-			'Pet smoke devil',
-			'Venenatis spiderling',
-			"Vet'ion jr.",
-			'Vorki',
-			'Pet snakeling',
-			'Olmlet',
-			"Lil' zik",
-			'Sraracha',
-			'Nexling',
-			'Little nightmare'
-		])
+		name: 'Receive any custom pet',
+		oneOf: customPetsCL
 	},
 	{
 		id: 2,
@@ -79,92 +62,128 @@ export const bingoTiles: BingoTile[] = [
 	},
 	{
 		id: 3,
-		name: 'Receive any Torva Armour Piece from Nex',
-		oneOf: resolveItems(['Torva full helm', 'Torva platebody', 'Torva platelegs'])
+		name: 'Receive any Main/off-hand drygore set',
+		oneOf: [
+			['Drygore longsword', 'Offhand drygore longsword'],
+			['Drygore mace', 'Offhand drygore mace'],
+			['Drygore rapier', 'Offhand drygore rapier']
+		]
 	},
 	{
 		id: 4,
-		name: 'Receive a Dragon warhammer',
-		allOf: resolveItems(['Dragon warhammer'])
+		name: 'Receive any Moktang unique',
+		allOf: resolveItems(['Mini moktang', 'Volcanic dye', 'Igne gear frame', 'Volcanic shards'])
 	},
 	{
 		id: 5,
-		name: 'Receive a Ring of endurance (uncharged)',
-		allOf: resolveItems(['Ring of endurance (uncharged)'])
+		name: 'Receive any Vasa Magus unique',
+		allOf: resolveItems(['Jar of magic', 'Tattered robes of Vasa', 'Magus scroll', 'Voidling'])
 	},
 	{
 		id: 6,
-		name: 'Receive any Sigil from Corp',
-		oneOf: resolveItems(['Arcane sigil', 'Elysian sigil', 'Spectral sigil'])
+		name: 'Create any spirit shield from scratch',
+		oneOf: [
+			['Holy elixir', 'Spirit shield', 'Spectral sigil', 'Spectral spirit shield'],
+			['Holy elixir', 'Spirit shield', 'Arcane sigil', 'Arcane spirit shield'],
+			['Holy elixir', 'Spirit shield', 'Elysian sigil', 'Elysian spirit shield'],
+			['Holy elixir', 'Spirit shield', 'Divine sigil', 'Divine spirit shield']
+		]
 	},
 	// Row 2
 	{
 		id: 7,
-		name: 'Receive all 3 Wilderness Rings',
-		allOf: resolveItems(['Tyrannical ring', 'Treasonous ring', 'Ring of the gods'])
+		name: 'Receive any weapon from revs',
+		oneOf: resolveItems([
+			'Amulet of avarice',
+			"Craw's bow (u)",
+			"Thammaron's sceptre (u)",
+			"Viggora's chainmace (u)"
+		])
 	},
 	{
 		id: 8,
-		name: 'Receive a Tanzanite fang or Magic fang from Zulrah',
-		oneOf: resolveItems(['Tanzanite fang', 'Magic fang'])
+		name: 'Receive any TOB unique',
+		oneOf: [
+			'Scythe of vitur (uncharged)',
+			'Ghrazi rapier',
+			'Sanguinesti staff (uncharged)',
+			'Justiciar faceguard',
+			'Justiciar chestguard',
+			'Justiciar legguards',
+			'Avernic defender hilt'
+		]
 	},
 	{
 		id: 9,
-		name: 'Receive any unique seed from Gauntlet',
-		oneOf: resolveItems(['Crystal weapon seed', 'Crystal armour seed', 'Enhanced crystal weapon seed'])
+		name: 'Receive any COX unique',
+		oneOf: resolveItems([
+			'Takon',
+			'Steve',
+			'Olmlet',
+			'Twisted bow',
+			'Elder maul',
+			'Kodai insignia',
+			'Dragon claws',
+			'Ancestral hat',
+			'Ancestral robe top',
+			'Ancestral robe bottom',
+			"Dinh's bulwark",
+			'Dexterous prayer scroll',
+			'Arcane prayer scroll',
+			'Dragon hunter crossbow',
+			'Twisted buckler',
+			'Torn prayer scroll'
+		])
 	},
 	{
 		id: 10,
-		name: 'Create an Odium ward or Malediction ward from scratch',
-		customReq: cl => {
-			return (
-				['Odium shard 1', 'Odium shard 2', 'Odium shard 3', 'Odium ward'].every(item => cl.has(item)) ||
-				['Malediction shard 1', 'Malediction shard 2', 'Malediction shard 3', 'Malediction ward'].every(item =>
-					cl.has(item)
-				)
-			);
-		}
+		name: 'Receive any Ignecarus unique',
+		oneOf: ['Ignis ring', 'Ignecarus dragonclaw', 'Dragon egg']
 	},
 	{
 		id: 11,
-		name: 'Receive all 3 Cerberus crystals',
-		allOf: resolveItems(['Primordial crystal', 'Pegasian crystal', 'Eternal crystal'])
+		name: 'Receive any Malygos unique',
+		allOf: ['Abyssal cape', 'Abyssal thread', 'Ori']
 	},
 	{
 		id: 12,
-		name: 'Receive/mine 12,000 Silver ore',
-		customReq(cl) {
-			return cl.amount('Silver ore') >= 12_000;
-		}
+		name: 'Receive 75 Athelas seeds',
+		receiveBank: new Bank().add('Athelas seed', 75)
 	},
 	// Row 3
 	{
 		id: 13,
-		name: 'Receive/hunt 5000 Red chinchompas',
-		customReq(cl) {
-			return cl.amount('Red chinchompa') >= 5000;
-		}
+		name: 'Receive all Polypore dungeon uniques',
+		allOf: [
+			'Mycelium visor web',
+			'Morchella mushroom spore',
+			'Mycelium leggings web',
+			'Ganodermic gloves',
+			'Ganodermic boots',
+			'Polypore stick',
+			'Tombshroom spore'
+		]
 	},
 	{
 		id: 14,
-		name: 'Obtain one of: Phoenix, Tiny tempor, Youngllef, Smolcano',
-		oneOf: resolveItems(['Phoenix', 'Tiny tempor', 'Youngllef', 'Smolcano'])
+		name: 'Receive all GWD uniques',
+		oneOf: resolveItems([
+			...godWarsDungeonGodswordShards,
+			...commanderZilyanaCL,
+			...generalGraardorCL,
+			...kreeArraCL,
+			...krilTsutsarothCL
+		])
 	},
 	{
 		id: 15,
-		name: 'Receive 2 unique godsword hilts',
-		customReq(cl) {
-			return (
-				resolveItems(['Ancient hilt', 'Armadyl hilt', 'Bandos hilt', 'Saradomin hilt', 'Zamorak hilt']).filter(
-					i => cl.has(i)
-				).length >= 2
-			);
-		}
+		name: 'Receive a Fishing Trophy from Sea Kraken',
+		allOf: ['Fishing trophy']
 	},
 	{
 		id: 16,
-		name: 'Receive a black tourmaline core',
-		allOf: resolveItems(['Black tourmaline core'])
+		name: 'Receive all 3 Dagannoth Kings pets',
+		allOf: resolveItems(['Pet dagannoth prime', 'Pet dagannoth supreme', 'Pet dagannoth rex'])
 	},
 	{
 		id: 17,
@@ -311,9 +330,11 @@ export function determineBingoProgress(_cl: ItemBank | Prisma.JsonValue | Bank) 
 
 		let completed = false;
 		if ('oneOf' in tile) {
-			completed = tile.oneOf.some(id => cl.has([id]));
+			completed = tile.oneOf.some(id => cl.has(id));
 		} else if ('allOf' in tile) {
 			completed = tile.allOf.every(id => cl.has(id));
+		} else if ('receiveBank' in tile) {
+			completed = cl.has(tile.receiveBank);
 		} else {
 			completed = tile.customReq(cl);
 		}
