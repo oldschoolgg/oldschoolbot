@@ -447,3 +447,5 @@ export const toaPurpleItems = resolveItems([
 	'Lightbearer',
 	"Osmumten's fang"
 ]);
+
+export const ParsedCustomEmojiWithGroups = /(?<animated>a?):(?<name>[^:]+):(?<id>\d{17,20})/;
