@@ -5657,19 +5657,6 @@ setCustomItem(
 );
 
 setCustomItem(
-	70_390,
-	'Clown set',
-	'Coal',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
-		}
-	},
-	10_000
-);
-
-setCustomItem(
 	70_391,
 	'White mask',
 	'Bronze full helm',
