@@ -1,12 +1,14 @@
 import { Embed, inlineCode } from '@discordjs/builders';
+import { activity_type_enum } from '@prisma/client';
 import { Guild, HexColorString, resolveColor, User } from 'discord.js';
-import { uniqueArr } from 'e';
+import { clamp, uniqueArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { BitField, PerkTier, secretItems } from '../../lib/constants';
+import { production } from '../../config';
+import { BitField, ParsedCustomEmojiWithGroups, PerkTier, secretItems } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { gearImages } from '../../lib/gear/functions/generateGearImage';
 import { Inventions } from '../../lib/invention/inventions';
@@ -16,7 +18,8 @@ import { prisma } from '../../lib/settings/prisma';
 import { autoslayChoices, slayerMasterChoices } from '../../lib/slayer/constants';
 import { setDefaultAutoslay, setDefaultSlayerMaster } from '../../lib/slayer/slayerUtil';
 import { BankSortMethods } from '../../lib/sorts';
-import { itemNameFromID, removeFromArr, stringMatches } from '../../lib/util';
+import { formatDuration, isValidNickname, itemNameFromID, miniID, removeFromArr, stringMatches } from '../../lib/util';
+import { emojiServers } from '../../lib/util/cachedUserIDs';
 import { getItem } from '../../lib/util/getOSItem';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
@@ -458,6 +461,71 @@ async function handleCombatOptions(user: MUser, command: 'add' | 'remove' | 'lis
 	return `${newcbopt.name} is now ${nextBool ? 'enabled' : 'disabled'} for you.${warningMsg}`;
 }
 
+function pinnedTripLimit(perkTier: number) {
+	return clamp(perkTier + 1, 1, 4);
+}
+async function pinTripCommand(
+	user: MUser,
+	tripId: string | undefined,
+	emoji: string | undefined,
+	customName: string | undefined
+) {
+	if (!tripId) return 'Invalid trip.';
+	const id = Number(tripId);
+	const trip = await prisma.activity.findFirst({ where: { id, user_id: BigInt(user.id) } });
+	if (!trip) return 'Invalid trip.';
+
+	if (emoji) {
+		const cachedEmoji = globalClient.emojis.cache.get(emoji);
+		if ((!cachedEmoji || !emojiServers.has(cachedEmoji.guild.id)) && production) {
+			return "Sorry, that emoji can't be used. Only emojis in the main support server, or our emoji servers can be used.";
+		}
+		const res = ParsedCustomEmojiWithGroups.exec(emoji);
+		if (!res || !res[3]) return "That's not a valid emoji.";
+		// eslint-disable-next-line prefer-destructuring
+		emoji = res[3];
+	}
+
+	if (customName) {
+		if (!isValidNickname(customName) || customName.length >= 32) return 'Invalid custom name.';
+	}
+
+	const limit = pinnedTripLimit(user.perkTier());
+	const currentPinnedTripsCount = await prisma.pinnedTrip.count({ where: { user_id: user.id } });
+	if (currentPinnedTripsCount >= limit) {
+		return `You cannot have more than ${limit}x pinned trips, unpin one first. Your limit is ${limit}, you can get up to 4 by being a patron.`;
+	}
+
+	await prisma.pinnedTrip.create({
+		data: {
+			id: miniID(7),
+			emoji_id: emoji,
+			custom_name: customName,
+			activity: {
+				connect: {
+					id: trip.id
+				}
+			},
+			user: {
+				connect: {
+					id: user.id
+				}
+			},
+			activity_type: trip.type,
+			data: trip.data as object
+		}
+	});
+
+	return `You pinned a ${trip.type} trip. You can now see it in your buttons.`;
+}
+
+async function unpinTripCommand(user: MUser, tripId: string | undefined) {
+	const trip = await prisma.pinnedTrip.findFirst({ where: { id: tripId, user_id: user.id } });
+	if (!trip) return 'Invalid trip.';
+	await prisma.pinnedTrip.delete({ where: { id: trip.id } });
+	return `You unpinned a ${trip.activity_type} trip.`;
+}
+
 export const configCommand: OSBMahojiCommand = {
 	name: 'config',
 	description: 'Commands configuring settings and options.',
@@ -781,6 +849,60 @@ export const configCommand: OSBMahojiCommand = {
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
+					name: 'pin_trip',
+					description: 'Pin a trip so you can easily repeat it whenever you want.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'trip',
+							description: 'The trip you want to pin.',
+							required: false,
+							autocomplete: async (_, user) => {
+								let res = await prisma.$queryRawUnsafe<
+									{ type: activity_type_enum; data: object; id: number; finish_date: string }[]
+								>(`
+SELECT DISTINCT ON ("activity"."type") activity.type, activity.data, activity.id, activity.finish_date
+FROM activity
+WHERE finish_date::date > now() - INTERVAL '31 days'
+AND user_id = '${user.id}'::bigint
+LIMIT 10;`);
+								return res.map(i => ({
+									name: `${i.type} (Finished ${formatDuration(
+										Date.now() - new Date(i.finish_date).getTime()
+									)} ago)`,
+									value: i.id.toString()
+								}));
+							}
+						},
+						{
+							type: ApplicationCommandOptionType.String,
+							required: false,
+							name: 'emoji',
+							description: 'Pick an emoji for the button (optional).'
+						},
+						{
+							type: ApplicationCommandOptionType.String,
+							required: false,
+							name: 'custom_name',
+							description: 'Custom name for the button (optional).'
+						},
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'unpin_trip',
+							description: 'The trip you want to unpin.',
+							required: false,
+							autocomplete: async (_, user) => {
+								const res = await prisma.pinnedTrip.findMany({ where: { user_id: user.id } });
+								return res.map(i => ({
+									name: `${i.activity_type}${i.custom_name ? `- ${i.custom_name}` : ''}`,
+									value: i.id.toString()
+								}));
+							}
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
 					name: 'gearframe',
 					description: 'Change your gear frame.',
 					options: [
@@ -827,6 +949,7 @@ export const configCommand: OSBMahojiCommand = {
 			slayer?: { master?: string; autoslay?: string };
 			toggle_invention?: { invention: string };
 			gearframe?: { name: string };
+			pin_trip?: { trip?: string; unpin_trip?: string; emoji?: string; custom_name?: string };
 		};
 	}>) => {
 		const user = await mUserFetch(userID);
@@ -851,7 +974,8 @@ export const configCommand: OSBMahojiCommand = {
 				favorite_alchs,
 				favorite_food,
 				favorite_items,
-				slayer
+				slayer,
+				pin_trip
 			} = options.user;
 			if (toggle) {
 				return handleToggle(user, toggle.name);
@@ -923,6 +1047,15 @@ export const configCommand: OSBMahojiCommand = {
 					gear_template: matchingFrame.id
 				});
 				return `Your gear frame is now set to **${matchingFrame.name}**!`;
+			}
+			if (pin_trip) {
+				if (pin_trip.trip) {
+					return pinTripCommand(user, pin_trip.trip, pin_trip.emoji, pin_trip.custom_name);
+				}
+				if (pin_trip.unpin_trip) {
+					return unpinTripCommand(user, pin_trip.unpin_trip);
+				}
+				return 'You need to provide a trip to pin or unpin.';
 			}
 		}
 		return 'Invalid command.';
