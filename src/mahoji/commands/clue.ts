@@ -106,7 +106,7 @@ export const clueCommand: OSBMahojiCommand = {
 
 			for (const [key, value] of Object.entries(user.skillsAsLevels)) {
 				if (value < 90) {
-					return `You need atleast level 80 in all skills to do Grandmaster clues, you have level ${value} ${key}.`;
+					return `You need atleast level 90 in all skills to do Grandmaster clues, you have level ${value} ${key}.`;
 				}
 			}
 		}
