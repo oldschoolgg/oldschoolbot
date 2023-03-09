@@ -18,12 +18,12 @@ const ClueHunterTable = new LootTable()
 	.add('Clue hunter cloak');
 
 export const ClueTable = new LootTable()
-	.add('Clue scroll (beginner)')
-	.add('Clue scroll (easy)')
-	.add('Clue scroll (medium)')
-	.add('Clue scroll (hard)')
-	.add('Clue scroll (elite)')
-	.add('Clue scroll (master)')
+	.add('Clue scroll (beginner)', 3)
+	.add('Clue scroll (easy)', 2)
+	.add('Clue scroll (medium)', 2)
+	.add('Clue scroll (hard)', 2)
+	.add('Clue scroll (elite)', 2)
+	.add('Clue scroll (master)', 1)
 	.add(MasterClueTable)
 	.add(EliteClueTable)
 	.add(HardClueTable);
@@ -75,7 +75,7 @@ const table = new LootTable()
 	.tertiary(10_000, DyeTable)
 	.tertiary(8000, 'Ring of luck')
 	.tertiary(4000, 'Deathtouched dart')
-	.tertiary(50, LampTable)
+	.tertiary(47, LampTable)
 	.tertiary(50, new LootTable().add('Ignecarus mask').add('Malygos mask'))
 	.tertiary(
 		130_000,

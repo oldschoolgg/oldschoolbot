@@ -189,8 +189,8 @@ function skillProg(skillName: SkillsEnum): FormatProgressFunction {
 }
 
 function clueProg(tiers: ClueTier['name'][]): FormatProgressFunction {
-	return ({ user }) => {
-		const clueScores = user.clueScores();
+	return async ({ user }) => {
+		const clueScores = await user.clueScores();
 		return tiers
 			.map(i => {
 				const tier = ClueTiers.find(_tier => _tier.name === i)!;

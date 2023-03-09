@@ -88,15 +88,27 @@ export const clueCommand: OSBMahojiCommand = {
 	],
 	run: async ({ options, userID, channelID }: CommandRunOptions<{ tier: string; quantity?: number }>) => {
 		const user = await mUserFetch(userID);
-		const clueScores = user.openableScores();
 
 		const clueTier = ClueTiers.find(
 			tier => stringMatches(tier.id.toString(), options.tier) || stringMatches(tier.name, options.tier)
 		);
 		if (!clueTier) return 'Invalid clue tier.';
 
-		if (clueTier.name === 'Grandmaster' && (!clueScores[19_836] || clueScores[19_836] < 100)) {
-			return "You aren't experienced enough to complete a Grandmaster clue.";
+		if (clueTier.name === 'Grandmaster') {
+			const clueScores = await user.clueScores();
+			for (const { tier, actualOpened } of clueScores) {
+				if (actualOpened < tier.qtyForGrandmasters) {
+					return `You're too inexperienced to complete Grandmaster clues, you need to complete ${tier.qtyForGrandmasters} ${tier.name} clues first.`;
+				}
+			}
+
+			if (user.QP < 250) return 'You need atleast 250 QP to do Grandmaster clues.';
+
+			for (const [key, value] of Object.entries(user.skillsAsLevels)) {
+				if (value < 90) {
+					return `You need atleast level 80 in all skills to do Grandmaster clues, you have level ${value} ${key}.`;
+				}
+			}
 		}
 
 		const maxTripLength = calcMaxTripLength(user, 'ClueCompletion');
