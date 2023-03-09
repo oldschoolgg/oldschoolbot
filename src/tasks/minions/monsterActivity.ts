@@ -348,7 +348,7 @@ export const monsterTask: MinionTask = {
 				const maskHelmForThisMonster = slayerMaskHelms.find(i => i.monsters.includes(monsterID));
 				const matchingMaskOrHelm =
 					maskHelmForThisMonster &&
-					user.hasEquipped([maskHelmForThisMonster.mask.id, maskHelmForThisMonster.helm.id])
+					user.hasEquippedOrInBank([maskHelmForThisMonster.mask.id, maskHelmForThisMonster.helm.id])
 						? maskHelmForThisMonster
 						: null;
 
