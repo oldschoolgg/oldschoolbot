@@ -18,6 +18,7 @@ model Activity {
   type           activity_type_enum
   channel_id     BigInt
   data           Json               @db.Json
+  pinnedTrip     PinnedTrip[]
 
   @@index([user_id, finish_date])
   @@index([group_activity])
@@ -135,6 +136,17 @@ model ClientStorage {
   @@map("clientStorage")
 }
 
+enum GearSetupType {
+  melee
+  range
+  mage
+  misc
+  skilling
+  wildy
+  fashion
+  other
+}
+
 model GearPreset {
   user_id    String @db.VarChar(19)
   name       String @db.VarChar(24)
@@ -151,6 +163,10 @@ model GearPreset {
   weapon     Int?
   ammo       Int?
   ammo_qty   Int?
+
+  emoji_id       String?        @db.VarChar(19)
+  times_equipped Int            @default(0)
+  pinned_setup   GearSetupType?
 
   @@id([user_id, name])
   @@map("gear_presets")
@@ -413,6 +429,7 @@ model User {
 
   minion_defaultCompostToUse CropUpgradeType @default(compost) @map("minion.defaultCompostToUse")
   botItemSell                BotItemSell[]
+  pinnedTrip                 PinnedTrip[]
 
   @@index([id, last_command_date])
   @@map("users")
@@ -689,6 +706,22 @@ model BotItemSell {
   user    User   @relation(fields: [user_id], references: [id])
 
   @@map("bot_item_sell")
+}
+
+model PinnedTrip {
+  id String @id
+
+  user_id       String             @db.VarChar(19)
+  activity_id   Int
+  emoji_id      String?            @db.VarChar(19)
+  activity_type activity_type_enum
+  data          Json?              @db.Json
+  custom_name   String?            @db.VarChar(32)
+
+  activity Activity @relation(fields: [activity_id], references: [id])
+  user     User     @relation(fields: [user_id], references: [id])
+
+  @@map("pinned_trip")
 }
 
 enum command_usage_status {
