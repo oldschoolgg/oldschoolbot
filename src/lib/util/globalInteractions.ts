@@ -16,7 +16,7 @@ import { runCommand } from '../settings/settings';
 import { toaHelpCommand } from '../simulation/toa';
 import { repeatTameTrip } from '../tames';
 import { ItemBank } from '../types';
-import { formatDuration, removeFromArr } from '../util';
+import { formatDuration, removeFromArr, stringMatches } from '../util';
 import { CACHED_ACTIVE_USER_IDS } from './cachedUserIDs';
 import { updateGiveawayMessage } from './giveaway';
 import { handleMahojiConfirmation } from './handleMahojiConfirmation';
@@ -52,7 +52,6 @@ const globalInteractionActions = [
 	'BUY_MINION',
 	'BUY_BINGO_TICKET',
 	'NEW_SLAYER_TASK',
-	'VIEW_BANK',
 	'SPAWN_LAMP',
 	'REPEAT_TAME_TRIP',
 	'ITEM_CONTRACT_SEND',
@@ -320,6 +319,38 @@ ${user.mention} ${await handInContract(null, user)}`,
 	}
 }
 
+async function handleGearPresetEquip(user: MUser, id: string, interaction: ButtonInteraction) {
+	const [, setupName, presetName] = id.split('_');
+	if (!setupName || !presetName) return;
+	const presets = await prisma.gearPreset.findMany({ where: { user_id: user.id } });
+	const matchingPreset = presets.find(p => stringMatches(p.name, presetName));
+	if (!matchingPreset) {
+		return interactionReply(interaction, { content: "You don't have a preset with this name.", ephemeral: true });
+	}
+	await runCommand({
+		commandName: 'gearpresets',
+		args: { equip: { gear_setup: setupName, preset: presetName } },
+		user,
+		member: interaction.member,
+		channelID: interaction.channelId,
+		guildID: interaction.guildId,
+		interaction
+	});
+}
+
+async function handlePinnedTripRepeat(user: MUser, id: string, interaction: ButtonInteraction) {
+	const [, pinnedTripID] = id.split('_');
+	if (!pinnedTripID) return;
+	const trip = await prisma.pinnedTrip.findFirst({ where: { user_id: user.id, id: pinnedTripID } });
+	if (!trip) {
+		return interactionReply(interaction, {
+			content: "You don't have a pinned trip with this ID, and you cannot repeat trips of other users.",
+			ephemeral: true
+		});
+	}
+	await repeatTrip(interaction, { data: trip.data, type: trip.activity_type });
+}
+
 export async function interactionHook(interaction: Interaction) {
 	if (!interaction.isButton()) return;
 	debugLog(`Interaction hook for button [${interaction.customId}]`, {
@@ -334,6 +365,8 @@ export async function interactionHook(interaction: Interaction) {
 	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, interaction);
 	if (id.includes('REPEAT_TRIP')) return repeatTripHandler(user, interaction);
 	if (id.includes('DONATE_IC')) return donateICHandler(interaction);
+	if (id.startsWith('GPE_')) return handleGearPresetEquip(user, id, interaction);
+	if (id.startsWith('PTR_')) return handlePinnedTripRepeat(user, id, interaction);
 	if (id === 'TOA_CHECK') {
 		const response = await toaHelpCommand(user, interaction.channelId);
 		return interactionReply(interaction, {
@@ -472,15 +505,6 @@ export async function interactionHook(interaction: Interaction) {
 			commandName: 'bsominigames',
 			args: { fishing_contest: { fish: {} } },
 			bypassInhibitors: true,
-			...options
-		});
-	}
-
-	if (id === 'VIEW_BANK') {
-		return runCommand({
-			commandName: 'bank',
-			bypassInhibitors: true,
-			args: {},
 			...options
 		});
 	}
