@@ -165,11 +165,12 @@ export const GrimyHerbTable = new LootTable()
 	.add('Grimy snapdragon', [1, 3]);
 
 export const ClueTable = new LootTable()
-	.add('Clue scroll (easy)', 1, 5)
+	.add('Clue scroll (beginner)', 1, 7)
+	.add('Clue scroll (easy)', 1, 6)
 	.add('Clue scroll (medium)', 1, 5)
 	.add('Clue scroll (hard)', 1, 4)
 	.add('Clue scroll (elite)', 1, 3)
-	.add('Clue scroll (master)', 1, 1)
+	.add('Clue scroll (master)', 1, 2)
 	.add('Clue scroll (grandmaster)', 1, 1);
 
 export const StoneSpiritTable = new LootTable()
