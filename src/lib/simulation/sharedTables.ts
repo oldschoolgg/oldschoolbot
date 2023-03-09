@@ -1,4 +1,3 @@
-import { MasterRareTable } from 'oldschooljs/dist/simulation/clues/Master';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { GemRockTable } from '../skilling/skills/mining';
@@ -195,7 +194,7 @@ export const MithrilItemsTable = new LootTable()
 	.add('Mithril spear');
 
 export const CosmeticsTable = new LootTable()
-	.oneIn(32, 'Monkey hat')
+	.oneIn(32, new LootTable().add('Monkey hat', 1, 2).add('Ring of cabbage', 1, 2).add('Sack of mystery boxes'))
 	.add('Penguin head')
 	.add('Penguin torso')
 	.add('Penguin legs')
@@ -208,6 +207,15 @@ export const CosmeticsTable = new LootTable()
 	.add('Map hat')
 	.add('Sombrero')
 	.add('Leprechaun top hat')
-	.add('Oriental fan');
-
-MasterRareTable.add(new LootTable({ limit: 3 }).add(CosmeticsTable));
+	.add('Oriental fan')
+	.add('White mask')
+	.add(
+		new LootTable()
+			.add("Queen's guard hat")
+			.add("Queen's guard trousers")
+			.add("Queen's guard shoes")
+			.add("Queen's guard shirt")
+			.add("Queen's guard staff")
+	)
+	.add(new LootTable().add('Prisoner top').add('Prisoner legs'))
+	.add(new LootTable().add('Fox ears').add('Fox tail'));

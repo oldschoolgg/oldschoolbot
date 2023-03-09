@@ -61,7 +61,7 @@ export async function handleNewCLItems({
 
 	for (const finishedCL of newlyCompletedCLs) {
 		const kcString = finishedCL.fmtProg
-			? `They finished after... ${finishedCL.fmtProg({
+			? `They finished after... ${await finishedCL.fmtProg({
 					getKC: (id: number) => user.getKC(id),
 					user,
 					minigames: await user.fetchMinigames()

@@ -16,6 +16,7 @@ import { GearSetup, UserFullGearSetup } from './gear';
 import { gearImages } from './gear/functions/generateGearImage';
 import { IMaterialBank } from './invention';
 import { MaterialBank } from './invention/MaterialBank';
+import { calcActualClues } from './leagues/stats';
 import { CombatOptionsEnum } from './minions/data/combatConstants';
 import { baseUserKourendFavour, UserKourendFavour } from './minions/data/kourendFavour';
 import { defaultFarmingContract } from './minions/farming';
@@ -622,7 +623,8 @@ export class MUserClass {
 		return result;
 	}
 
-	clueScores() {
+	async clueScores() {
+		const actualClues = await calcActualClues(this);
 		return Object.entries(this.openableScores())
 			.map(entry => {
 				const tier = ClueTiers.find(i => i.id === parseInt(entry[0]));
@@ -631,7 +633,8 @@ export class MUserClass {
 					tier,
 					casket: getOSItem(tier.id),
 					clueScroll: getOSItem(tier.scrollID),
-					opened: this.openableScores()[tier.id] ?? 0
+					opened: this.openableScores()[tier.id] ?? 0,
+					actualOpened: actualClues.amount(tier.id)
 				};
 			})
 			.filter(notEmpty);

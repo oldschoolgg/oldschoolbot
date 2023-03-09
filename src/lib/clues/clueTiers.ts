@@ -39,6 +39,7 @@ export interface ClueTier {
 	aliases: string[];
 	stashUnits: StashUnitTier;
 	reqs: ClueReqs;
+	qtyForGrandmasters: number;
 }
 
 export const ClueTiers: ClueTier[] = [
@@ -52,7 +53,8 @@ export const ClueTiers: ClueTier[] = [
 		mimicChance: false,
 		allItems: BeginnerClueTable.allItems,
 		stashUnits: beginnerStashes,
-		reqs: beginnerReqs
+		reqs: beginnerReqs,
+		qtyForGrandmasters: 0
 	},
 	{
 		name: 'Easy',
@@ -68,7 +70,8 @@ export const ClueTiers: ClueTier[] = [
 		mimicChance: false,
 		allItems: EasyClueTable.allItems,
 		stashUnits: easyStashes,
-		reqs: beginnerReqs
+		reqs: beginnerReqs,
+		qtyForGrandmasters: 300
 	},
 	{
 		name: 'Medium',
@@ -84,7 +87,8 @@ export const ClueTiers: ClueTier[] = [
 		mimicChance: false,
 		allItems: MediumClueTable.allItems,
 		stashUnits: mediumStashes,
-		reqs: beginnerReqs
+		reqs: beginnerReqs,
+		qtyForGrandmasters: 250
 	},
 	{
 		name: 'Hard',
@@ -96,7 +100,8 @@ export const ClueTiers: ClueTier[] = [
 		mimicChance: false,
 		allItems: HardClueTable.allItems,
 		stashUnits: hardStashes,
-		reqs: beginnerReqs
+		reqs: beginnerReqs,
+		qtyForGrandmasters: 200
 	},
 	{
 		name: 'Elite',
@@ -112,7 +117,8 @@ export const ClueTiers: ClueTier[] = [
 		mimicChance: 35,
 		allItems: EliteClueTable.allItems,
 		stashUnits: eliteStashes,
-		reqs: beginnerReqs
+		reqs: beginnerReqs,
+		qtyForGrandmasters: 150
 	},
 	{
 		name: 'Master',
@@ -128,7 +134,8 @@ export const ClueTiers: ClueTier[] = [
 		mimicChance: 15,
 		allItems: MasterClueTable.allItems,
 		stashUnits: masterStashes,
-		reqs: beginnerReqs
+		reqs: beginnerReqs,
+		qtyForGrandmasters: 100
 	},
 	{
 		name: 'Grandmaster',
@@ -140,6 +147,7 @@ export const ClueTiers: ClueTier[] = [
 		mimicChance: false,
 		allItems: GrandmasterClueTable.allItems,
 		stashUnits: masterStashes,
-		reqs: beginnerReqs
+		reqs: beginnerReqs,
+		qtyForGrandmasters: 0
 	}
 ];
