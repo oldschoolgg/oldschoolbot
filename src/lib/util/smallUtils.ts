@@ -160,3 +160,7 @@ export function makeAutoFarmButton() {
 		.setStyle(ButtonStyle.Secondary)
 		.setEmoji('630911040355565599');
 }
+
+export function stripNonAlphanumeric(str: string) {
+	return str.replace(/[^a-zA-Z0-9]/g, '');
+}
