@@ -1,5 +1,6 @@
 import '../src/lib/customItems/customItems';
 import '../src/lib/data/itemAliases';
+import '../src/lib/util/logger';
 
 import { vi } from 'vitest';
 

@@ -20,11 +20,10 @@ import { DougTable, PekyTable } from '../simulation/sharedTables';
 import { SkillsEnum } from '../skilling/types';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import { ActivityTaskOptions } from '../types/minions';
-import { channelIsSendable, itemID, makeComponents, roll, toKMB } from '../util';
+import { buildClueButtons, channelIsSendable, itemID, makeComponents, roll, toKMB } from '../util';
 import {
 	makeAutoContractButton,
 	makeBirdHouseTripButton,
-	makeDoClueButton,
 	makeNewSlayerTaskButton,
 	makeOpenCasketButton,
 	makeOpenSeedPackButton,
@@ -308,7 +307,7 @@ export async function handleTripFinish(
 	const casketReceived = loot ? ClueTiers.find(i => loot?.has(i.id)) : undefined;
 	if (casketReceived) components.push(makeOpenCasketButton(casketReceived));
 	if (perkTier > PerkTier.One) {
-		if (clueReceived.length > 0) clueReceived.map(clue => components.push(makeDoClueButton(clue)));
+		components.push(...buildClueButtons(loot, perkTier));
 		const birdHousedetails = await calculateBirdhouseDetails(user.id);
 		if (birdHousedetails.isReady && !user.bitfield.includes(BitField.DisableBirdhouseRunButton))
 			components.push(makeBirdHouseTripButton());
