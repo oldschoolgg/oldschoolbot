@@ -209,7 +209,7 @@ const BLOOD_FURY_CHARGES_PER_RAID = 150;
 const TUMEKEN_SHADOW_PER_RAID = 150;
 const toaRequirements: {
 	name: string;
-	doesMeet: (options: { user: MUser; gearStats: GearSetupPercents }) => string | true;
+	doesMeet: (options: { user: MUser; gearStats: GearSetupPercents; allItemsOwned: Bank }) => string | true;
 	desc: () => string;
 }[] = [
 	{
@@ -343,9 +343,9 @@ const toaRequirements: {
 	},
 	{
 		name: 'Rune Pouch',
-		doesMeet: ({ user }) => {
+		doesMeet: ({ allItemsOwned }) => {
 			const similarItems = getSimilarItems(itemID('Rune pouch'));
-			if (similarItems.every(item => !user.owns(item))) {
+			if (similarItems.every(item => !allItemsOwned.has(item))) {
 				return 'You need to own a Rune pouch.';
 			}
 			return true;
