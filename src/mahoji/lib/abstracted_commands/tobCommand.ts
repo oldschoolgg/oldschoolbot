@@ -225,8 +225,8 @@ export async function checkTOBTeam(users: MUser[], isHardMode: boolean): Promise
 	if (userWithoutSupplies) {
 		return `${userWithoutSupplies.usernameOrMention} doesn't have enough supplies`;
 	}
-	if (users.length < 2 || users.length > 5) {
-		return 'TOB team must be 2-5 users';
+	if (users.length < 1 || users.length > 5) {
+		return 'TOB team must be 1-5 users';
 	}
 
 	for (const user of users) {

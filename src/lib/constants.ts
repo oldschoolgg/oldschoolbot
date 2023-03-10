@@ -181,7 +181,6 @@ export enum ActivityGroup {
 }
 
 export const enum Events {
-	Debug = 'debug',
 	Error = 'error',
 	Log = 'log',
 	Verbose = 'verbose',
@@ -603,3 +602,5 @@ export const toaPurpleItems = resolveItems([
 	'Lightbearer',
 	"Osmumten's fang"
 ]);
+
+export const ParsedCustomEmojiWithGroups = /(?<animated>a?):(?<name>[^:]+):(?<id>\d{17,20})/;

@@ -50,7 +50,7 @@ export type FormatProgressFunction = ({
 	user: MUser;
 	getKC: (id: number) => number;
 	minigames: Minigame;
-}) => string | string[];
+}) => string | string[] | Promise<string[]>;
 
 export interface ICollectionActivity {
 	[key: string]: {
