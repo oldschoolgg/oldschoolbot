@@ -634,7 +634,7 @@ export class MUserClass {
 					casket: getOSItem(tier.id),
 					clueScroll: getOSItem(tier.scrollID),
 					opened: this.openableScores()[tier.id] ?? 0,
-					actualOpened: actualClues.amount(tier.id)
+					actualOpened: actualClues.amount(tier.scrollID)
 				};
 			})
 			.filter(notEmpty);
