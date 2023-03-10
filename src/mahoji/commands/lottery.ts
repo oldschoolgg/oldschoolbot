@@ -298,11 +298,11 @@ export const lotteryCommand: OSBMahojiCommand = {
 	}>) => {
 		let infoStr = `
 1. This is a regular Lottery (no special event or DC items)
-2. There'll be 5 spins, each winner winning 1/5th of the loot.
+2. There'll be 4 spins, each winner winning 1/4th of the loot.
 3. You can win more than once.
-4. 10% of the items will be deleted (item-sunk), based on a random unbiased roll, and the GP.
-5. The Lottery will run for a month roughly.
-6. Items/GP put into the Lottery are non-refundable.
+4. 5% of the items will be deleted (item-sunk), based on a random unbiased roll, and the GP.
+5. The Lottery will run for a month roughly, possibly longer.
+6. Items/GP put into the Lottery are non-refundable and cannot be taken out.
 7. It's possible that we change the custom prices of items (make them worth more/less), if you already put those items in, your ticket count will automatically update to reflect the new price.`;
 		const active = await isLotteryActive();
 		if (!active) return 'There is no lottery currently going on.';
