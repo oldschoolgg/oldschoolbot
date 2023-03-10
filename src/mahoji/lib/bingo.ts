@@ -8,7 +8,6 @@ import { toKMB } from 'oldschooljs/dist/util';
 
 import { production } from '../../config';
 import {
-	championScrolls,
 	commanderZilyanaCL,
 	customPetsCL,
 	generalGraardorCL,
@@ -17,8 +16,9 @@ import {
 	krilTsutsarothCL,
 	skillingPetsCL
 } from '../../lib/data/CollectionsExport';
+import { TanglerootTable } from '../../lib/minions/data/killableMonsters/custom/Treebeard';
 import { prisma } from '../../lib/settings/prisma';
-import { logError } from '../../lib/util/logError';
+import { assert, logError } from '../../lib/util/logError';
 import resolveItems from '../../lib/util/resolveItems';
 import { sendToChannelID } from '../../lib/util/webhook';
 
@@ -26,7 +26,7 @@ const BINGO_NOTIFICATION_CHANNEL_ID = production ? '1008531589485043764' : '1008
 
 export const bingoStart = 1_662_127_200 * 1000;
 export const bingoEnd = bingoStart + Time.Day * 7;
-export const BINGO_TICKET_PRICE = 150_000_000;
+export const BINGO_TICKET_PRICE = 1_000_000_000;
 
 export function bingoIsActive() {
 	return false; // Date.now() >= bingoStart && Date.now() < bingoEnd;
@@ -187,128 +187,50 @@ export const bingoTiles: BingoTile[] = [
 	},
 	{
 		id: 17,
-		name: 'Receive a Tome of water or Tome of fire',
-		oneOf: resolveItems(['Tome of fire', 'Tome of water (empty)'])
+		name: 'Receive 3 unique nex armor pieces for a certain armor slot',
+		oneOf: [
+			['Torva full helm (broken)', 'Pernix cowl (broken)', 'Virtus mask (broken)'],
+			['Torva platebody (broken)', 'Pernix body (broken)', 'Virtus robe top (broken)'],
+			['Torva platelegs (broken)', 'Pernix chaps (broken)', 'Virtus robe legs (broken)'],
+			['Torva boots (broken)', 'Pernix boots (broken)', 'Virtus boots (broken)'],
+			['Torva gloves (broken)', 'Pernix gloves (broken)', 'Virtus gloves (broken)']
+		]
 	},
 	{
 		id: 18,
-		name: 'Receive any Champion scroll',
-		oneOf: resolveItems(championScrolls)
+		name: 'Receive any Nihiliz unique',
+		oneOf: ['Nihil horn', 'Zaryte vambraces', 'Nexling']
 	},
 	// Row 4
 	{
 		id: 19,
-		name: 'Receive/chop 5000 mahogany logs',
-		customReq(cl) {
-			return cl.amount('Mahogany logs') >= 5000;
-		}
+		name: 'Receive all Tangleroot variants from Treebeard',
+		oneOf: TanglerootTable.allItems
 	},
 	{
 		id: 20,
-		name: 'Receive a Draconic visage',
-		allOf: resolveItems(['Draconic visage'])
+		name: 'Receive 5 Gorajan shards',
+		receiveBank: new Bank().add('Gorajan shard', 5)
 	},
 	{
 		id: 21,
-		name: 'Receive a Dragon pickaxe',
-		allOf: resolveItems(['Dragon pickaxe'])
+		name: 'Receive a unique from Baxtorian Bathhouses',
+		oneOf: ['Phoenix eggling', 'Inferno adze', 'Flame gloves', 'Ring of fire']
 	},
 	{
 		id: 22,
-		name: 'Receive a Basilisk jaw',
-		allOf: resolveItems(['Basilisk jaw'])
+		name: 'Receive a unique from Monkey Rumble',
+		allOf: resolveItems(['Marimbo statue', 'Monkey egg', 'Monkey dye', 'Big banana'])
 	},
 	{
 		id: 23,
-		name: 'Receive a Staff of the dead',
-		allOf: resolveItems(['Staff of the dead'])
+		name: 'Receive 50x Korulsi seeds',
+		receiveBank: new Bank().add('Korulsi seed', 50)
 	},
 	{
 		id: 24,
-		name: 'Receive any orb or armour piece from the Nightmare',
-		oneOf: resolveItems([
-			"Inquisitor's great helm",
-			"Inquisitor's hauberk",
-			"Inquisitor's plateskirt",
-			'Volatile orb',
-			'Harmonised orb',
-			'Eldritch orb'
-		])
-	},
-	// Row 4
-	{
-		id: 25,
-		name: 'Receive any Boss jar',
-		oneOf: resolveItems([
-			'Jar of chemicals',
-			'Jar of darkness',
-			'Jar of decay',
-			'Jar of dirt',
-			'Jar of dreams',
-			'Jar of eyes',
-			'Jar of sand',
-			'Jar of smoke',
-			'Jar of souls',
-			'Jar of spirits',
-			'Jar of stone',
-			'Jar of swamp'
-		])
-	},
-	{
-		id: 26,
-		name: 'Receive a hydra eye, fang and heart.',
-		allOf: resolveItems(["Hydra's eye", "Hydra's fang", "Hydra's heart"])
-	},
-	{
-		id: 27,
-		name: 'Receive a curved bone',
-		allOf: resolveItems(['Curved bone'])
-	},
-	{
-		id: 28,
-		name: 'Receive a Black mask (10)',
-		allOf: resolveItems(['Black mask (10)'])
-	},
-	{
-		id: 29,
-		name: 'Receive Bandos tassets or Bandos chestplate',
-		oneOf: resolveItems(['Bandos tassets', 'Bandos chestplate'])
-	},
-	{
-		id: 30,
-		name: "Receive any armour drop from Kree'arra",
-		oneOf: resolveItems(['Armadyl helmet', 'Armadyl chestplate', 'Armadyl chainskirt'])
-	},
-	// Row 6
-	{
-		id: 31,
-		name: 'Receive an Armadyl crossbow',
-		allOf: resolveItems(['Armadyl crossbow'])
-	},
-	{
-		id: 32,
-		name: 'Receive a Kq head',
-		allOf: resolveItems(['Kq head'])
-	},
-	{
-		id: 33,
-		name: 'Receive a Strange old lockpick',
-		allOf: resolveItems(['Strange old lockpick'])
-	},
-	{
-		id: 34,
-		name: 'Receive a Golden tench',
-		allOf: resolveItems(['Golden tench'])
-	},
-	{
-		id: 35,
-		name: 'Receive a Sarachnis cudgel',
-		allOf: resolveItems(['Sarachnis cudgel'])
-	},
-	{
-		id: 36,
-		name: 'Receive a fedora',
-		allOf: resolveItems(['Fedora'])
+		name: 'Receive a Royal dragon kiteshield from QBD',
+		allOf: ['Royal dragon kiteshield']
 	}
 ];
 
@@ -322,8 +244,8 @@ export function determineBingoProgress(_cl: ItemBank | Prisma.JsonValue | Bank) 
 		['', '', '', '', '', '',
 		 '', '', '', '', '', '',
 		 '', '', '', '', '', '',
-		 '', '', '', '', '', '',
 		 '', '', '', '', '', ''];
+	assert(bingoTable.length === bingoTiles.length);
 
 	for (let i = 0; i < bingoTiles.length; i++) {
 		const tile = bingoTiles[i];
