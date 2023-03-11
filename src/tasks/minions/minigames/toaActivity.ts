@@ -103,6 +103,7 @@ export const toaTask: MinionTask = {
 		const itemsAddedTeamLoot = new TeamLoot();
 
 		for (let x = 0; x < quantity; x++) {
+			if (wipedRooms[x] !== null) continue;
 			const raidLoot = calcTOALoot({
 				users: detailedUsers[x].map(i => {
 					const fullUser = allUsers.find(u => u.id === i.id)!;
@@ -138,6 +139,8 @@ export const toaTask: MinionTask = {
 					quantity > 1 ? 's' : ''
 			  }! Your KC is now ${minigameIncrementResult[0].newScore}.\n`
 			: `<@${leader}> Your Raid${quantity > 1 ? 's have' : ' has'} finished.\n`;
+
+		const shouldShowImage = allUsers.length <= 3 && itemsAddedTeamLoot.entries().every(i => i[1].length <= 6);
 
 		for (let [userID, userData] of raidResults.entries()) {
 			const { points, deaths, mUser: user } = userData;
@@ -192,7 +195,7 @@ export const toaTask: MinionTask = {
 			const str = isPurple ? `${Emoji.Purple} ||${itemsAdded}||` : itemsAdded.toString();
 			const deathStr = deaths === 0 ? '' : new Array(deaths).fill(Emoji.Skull).join(' ');
 
-			if (allUsers.length <= 3) {
+			if (shouldShowImage) {
 				resultMessage += `\n${deathStr} **${user}** ${bold(points.toLocaleString())} points`;
 			} else {
 				resultMessage += `\n${deathStr} **${user}** received: ${str} (${bold(points.toLocaleString())} points)`;
@@ -244,8 +247,6 @@ export const toaTask: MinionTask = {
 				}
 			];
 		}
-
-		const shouldShowImage = allUsers.length <= 3 && itemsAddedTeamLoot.entries().every(i => i[1].length <= 6);
 
 		if (isSolo) {
 			return handleTripFinish(
