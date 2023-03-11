@@ -1160,15 +1160,8 @@ export async function toaStartCommand(
 	})[0].duration;
 	const maxTripLength = Time.Hour * 2; // Math.max(...users.map(i => calcMaxTripLength(i, activity_type_enum.TombsOfAmascut)));
 	const maxQuantity = clamp(Math.floor(maxTripLength / baseDuration), 1, 5);
-	const quantity = clamp(quantityInput ?? 1, 1, maxQuantity);
+	const quantity = clamp(quantityInput ?? maxQuantity, 1, maxQuantity);
 
-	console.log({
-		maxTripLength: formatDuration(maxTripLength),
-		baseDuration: formatDuration(baseDuration),
-		maxQuantity,
-		quantity,
-		quantityInput: quantityInput ?? 1
-	});
 	const toaSimResults = createTOATeam({
 		team: toaSimUsers,
 		raidLevel,
