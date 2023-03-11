@@ -150,7 +150,6 @@ export enum ActivityGroup {
 }
 
 export const enum Events {
-	Debug = 'debug',
 	Error = 'error',
 	Log = 'log',
 	Verbose = 'verbose',
@@ -217,7 +216,8 @@ export enum BitField {
 	IsPatronTier6 = 21,
 	DisableBirdhouseRunButton = 22,
 	DisableAshSanctifier = 23,
-	BothBotsMaxedFreeTierOnePerks = 24
+	BothBotsMaxedFreeTierOnePerks = 24,
+	HasBloodbarkScroll = 25
 }
 
 interface BitFieldData {
@@ -247,6 +247,7 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	[BitField.HasArcaneScroll]: { name: 'Arcane Scroll Used', protected: false, userConfigurable: false },
 	[BitField.HasTornPrayerScroll]: { name: 'Torn Prayer Scroll Used', protected: false, userConfigurable: false },
 	[BitField.HasSlepeyTablet]: { name: 'Slepey Tablet Used', protected: false, userConfigurable: false },
+	[BitField.HasBloodbarkScroll]: { name: 'Runescroll of bloodbark Used', protected: false, userConfigurable: false },
 
 	[BitField.BypassAgeRestriction]: { name: 'Bypassed Age Restriction', protected: false, userConfigurable: false },
 	[BitField.HasPermanentEventBackgrounds]: {
@@ -442,3 +443,5 @@ export const toaPurpleItems = resolveItems([
 	'Lightbearer',
 	"Osmumten's fang"
 ]);
+
+export const ParsedCustomEmojiWithGroups = /(?<animated>a?):(?<name>[^:]+):(?<id>\d{17,20})/;

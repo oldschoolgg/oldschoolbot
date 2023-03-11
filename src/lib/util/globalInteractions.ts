@@ -12,7 +12,7 @@ import { prisma } from '../settings/prisma';
 import { runCommand } from '../settings/settings';
 import { toaHelpCommand } from '../simulation/toa';
 import { ItemBank } from '../types';
-import { formatDuration, removeFromArr } from '../util';
+import { formatDuration, removeFromArr, stringMatches } from '../util';
 import { updateGiveawayMessage } from './giveaway';
 import { interactionReply } from './interactionReply';
 import { minionIsBusy } from './minionIsBusy';
@@ -43,7 +43,6 @@ const globalInteractionActions = [
 	'BUY_MINION',
 	'BUY_BINGO_TICKET',
 	'NEW_SLAYER_TASK',
-	'VIEW_BANK',
 	'DO_SHOOTING_STAR',
 	'CHECK_TOA'
 ] as const;
@@ -51,16 +50,6 @@ const globalInteractionActions = [
 export type GlobalInteractionAction = typeof globalInteractionActions[number];
 function isValidGlobalInteraction(str: string): str is GlobalInteractionAction {
 	return globalInteractionActions.includes(str as GlobalInteractionAction);
-}
-
-export function makeDoClueButton(tier: ClueTier) {
-	const name: Uppercase<ClueTier['name']> = tier.name.toUpperCase() as Uppercase<ClueTier['name']>;
-	const id: GlobalInteractionAction = `DO_${name}_CLUE`;
-	return new ButtonBuilder()
-		.setCustomId(id)
-		.setLabel(`Do ${tier.name} Clue`)
-		.setStyle(ButtonStyle.Secondary)
-		.setEmoji('365003979840552960');
 }
 
 export function makeOpenCasketButton(tier: ClueTier) {
@@ -231,6 +220,38 @@ async function repeatTripHandler(user: MUser, interaction: ButtonInteraction) {
 	return repeatTrip(interaction, matchingActivity);
 }
 
+async function handleGearPresetEquip(user: MUser, id: string, interaction: ButtonInteraction) {
+	const [, setupName, presetName] = id.split('_');
+	if (!setupName || !presetName) return;
+	const presets = await prisma.gearPreset.findMany({ where: { user_id: user.id } });
+	const matchingPreset = presets.find(p => stringMatches(p.name, presetName));
+	if (!matchingPreset) {
+		return interactionReply(interaction, { content: "You don't have a preset with this name.", ephemeral: true });
+	}
+	await runCommand({
+		commandName: 'gearpresets',
+		args: { equip: { gear_setup: setupName, preset: presetName } },
+		user,
+		member: interaction.member,
+		channelID: interaction.channelId,
+		guildID: interaction.guildId,
+		interaction
+	});
+}
+
+async function handlePinnedTripRepeat(user: MUser, id: string, interaction: ButtonInteraction) {
+	const [, pinnedTripID] = id.split('_');
+	if (!pinnedTripID) return;
+	const trip = await prisma.pinnedTrip.findFirst({ where: { user_id: user.id, id: pinnedTripID } });
+	if (!trip) {
+		return interactionReply(interaction, {
+			content: "You don't have a pinned trip with this ID, and you cannot repeat trips of other users.",
+			ephemeral: true
+		});
+	}
+	await repeatTrip(interaction, { data: trip.data, type: trip.activity_type });
+}
+
 export async function interactionHook(interaction: Interaction) {
 	if (!interaction.isButton()) return;
 	debugLog(`Interaction hook for button [${interaction.customId}]`, {
@@ -244,6 +265,8 @@ export async function interactionHook(interaction: Interaction) {
 	const user = await mUserFetch(userID);
 	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, interaction);
 	if (id.includes('REPEAT_TRIP')) return repeatTripHandler(user, interaction);
+	if (id.startsWith('GPE_')) return handleGearPresetEquip(user, id, interaction);
+	if (id.startsWith('PTR_')) return handlePinnedTripRepeat(user, id, interaction);
 	if (id === 'TOA_CHECK') {
 		const response = await toaHelpCommand(user, interaction.channelId);
 		return interactionReply(interaction, {
@@ -349,15 +372,6 @@ export async function interactionHook(interaction: Interaction) {
 
 	if (id === 'BUY_BINGO_TICKET') {
 		return interactionReply(interaction, await buyBingoTicketCommand(null, userID, 1));
-	}
-
-	if (id === 'VIEW_BANK') {
-		return runCommand({
-			commandName: 'bank',
-			bypassInhibitors: true,
-			args: {},
-			...options
-		});
 	}
 
 	if (id === 'OPEN_BEGINNER_CASKET') {

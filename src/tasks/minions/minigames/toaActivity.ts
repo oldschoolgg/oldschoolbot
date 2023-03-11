@@ -17,7 +17,14 @@ import resolveItems from '../../../lib/util/resolveItems';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
 
-const purpleButNotAnnounced = resolveItems(['Dexterous prayer scroll', 'Arcane prayer scroll']);
+const purpleButNotAnnounced = resolveItems([
+	"Elidinis' ward",
+	"Osmumten's fang",
+	'Lightbearer',
+	'Masori mask',
+	'Masori body',
+	'Masori chaps'
+]);
 
 interface RaidResultUser {
 	points: number;
@@ -211,11 +218,6 @@ export const toaTask: MinionTask = {
 					text: `${user.deaths} deaths`,
 					x: 149,
 					y: 165
-				},
-				{
-					text: `Loot Value: ${Math.trunc(totalLoot.get(userID).value() / 1000)}K`,
-					x: 149,
-					y: 180
 				}
 			];
 		}

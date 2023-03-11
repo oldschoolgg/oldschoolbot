@@ -150,7 +150,7 @@ export function handleNexKills({ quantity, team }: NexContext) {
 			if (teamMember.id === uniqueRecipient) {
 				teamLoot.add(teamMember.id, NexUniqueTable.roll());
 			}
-			if (roll(20)) {
+			if (roll(48)) {
 				teamLoot.add(teamMember.id, 'Clue scroll (elite)');
 			}
 		}
