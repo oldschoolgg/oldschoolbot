@@ -8,4 +8,6 @@
 
 ### Other checks:
 
--   [ ] I have tested all my changes thoroughly.
+- [ ] I have tested all my changes thoroughly.
+- [ ] I have linted my project with `yarn lint` before opening a PR.
+- [ ] I have tested my project with `yarn vitest` and all tests are green.
