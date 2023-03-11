@@ -55,7 +55,6 @@ export const toaTask: MinionTask = {
 				deaths: user[2]
 			}))
 		);
-		console.log(JSON.stringify(detailedUsers, null, 4));
 		const wipedRooms = Array.isArray(_wipedRoom) ? _wipedRoom : [_wipedRoom];
 		assert(Array.isArray(detailedUsers[0]) && isObject(detailedUsers[0][0]), `${detailedUsers}`);
 		const isSolo = detailedUsers[0].length === 1;

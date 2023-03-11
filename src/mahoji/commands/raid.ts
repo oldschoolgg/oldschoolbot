@@ -124,7 +124,7 @@ export const raidCommand: OSBMahojiCommand = {
 						{
 							type: ApplicationCommandOptionType.Integer,
 							name: 'quantity',
-							description: 'The quantity to do (Defaults to 1).',
+							description: 'The quantity to do.',
 							required: false,
 							min_value: 1,
 							max_value: 5
