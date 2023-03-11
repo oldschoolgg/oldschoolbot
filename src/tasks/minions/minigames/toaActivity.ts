@@ -140,7 +140,7 @@ export const toaTask: MinionTask = {
 			  }! Your KC is now ${minigameIncrementResult[0].newScore}.\n`
 			: `<@${leader}> Your Raid${quantity > 1 ? 's have' : ' has'} finished.\n`;
 
-		const shouldShowImage = allUsers.length <= 3 && itemsAddedTeamLoot.entries().every(i => i[1].length <= 6);
+		const shouldShowImage = allUsers.length <= 3 && totalLoot.entries().every(i => i[1].length <= 6);
 
 		for (let [userID, userData] of raidResults.entries()) {
 			const { points, deaths, mUser: user } = userData;

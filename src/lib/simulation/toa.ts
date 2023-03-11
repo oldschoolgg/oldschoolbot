@@ -456,25 +456,6 @@ export function calculateXPFromRaid({
 	return promises;
 }
 
-interface BaseTOAUser {
-	id: string;
-}
-
-interface TOAInputUser extends BaseTOAUser {
-	gear: UserFullGearSetup;
-	skills: Required<Skills>;
-	totalKC: number;
-	totalAttempts: number;
-}
-
-interface TOAParsedUser extends TOAInputUser {
-	gearStats: GearSetupPercents;
-	points: number;
-	deaths: number[];
-	user: MUser;
-	totalEffectiveness: number;
-}
-
 const untradeables = [
 	{
 		item: getOSItem('Thread of elidinis'),
@@ -799,7 +780,7 @@ function calcDeathChance(totalAttempts: number, raidLevel: RaidLevel, tobAndCoxK
 
 	deathChance = Math.round(randomVariation(deathChance, 0.5));
 
-	return deathChance;
+	return deathChance * 5;
 }
 
 function calculateTotalEffectiveness({
@@ -1358,7 +1339,7 @@ export function createTOATeam({
 	disableVariation?: true;
 	quantity: number;
 }) {
-	let arr: TOAParsedUser[] = [];
+	let arr = [];
 	const messages: string[] = [];
 
 	for (const { user, userStats, minigameScores } of team) {
@@ -1372,24 +1353,24 @@ export function createTOATeam({
 			gearStats,
 			randomNess: true
 		});
-		const { points, deaths } = calculatePointsAndDeaths(
-			effectiveness,
-			totalAttempts,
-			raidLevel,
-			minigameScores.raids + minigameScores.tob,
-			team.length
-		);
+
 		arr.push({
 			id: user.id,
 			gearStats,
-			points,
-			deaths,
 			user,
 			gear: user.gear,
 			totalAttempts,
 			totalKC,
 			skills: user.getSkills(true),
-			totalEffectiveness: effectiveness
+			totalEffectiveness: effectiveness,
+			calcPointsAndDeaths: () =>
+				calculatePointsAndDeaths(
+					effectiveness,
+					totalAttempts,
+					raidLevel,
+					minigameScores.raids + minigameScores.tob,
+					team.length
+				)
 		});
 	}
 
@@ -1409,7 +1390,7 @@ export function createTOATeam({
 		messages: string[];
 	}[] = [];
 
-	let parsedTeam: ParsedTeamMember[] = [];
+	let parsedTeam = [];
 
 	for (const u of arr) {
 		let userPercentChange = 0;
@@ -1459,9 +1440,8 @@ export function createTOATeam({
 		parsedTeam.push({
 			id: u.id,
 			kc: u.totalKC,
-			deaths: u.deaths,
-			points: u.points,
-			attempts: u.totalAttempts
+			attempts: u.totalAttempts,
+			calcPointsAndDeaths: u.calcPointsAndDeaths
 		});
 	}
 	let duration = baseTOADurations[raidLevel];
@@ -1501,10 +1481,12 @@ export function createTOATeam({
 	duration = Math.floor(randomVariation(duration, 1));
 
 	for (let i = 0; i < quantity; i++) {
+		const usersWithPointsAndDeaths = parsedTeam.map(i => ({ ...i, ...i.calcPointsAndDeaths() }));
+
 		let deathDuration: number | null = 0;
 		let wipedRoom: number | null = null;
 		for (const room of TOARooms) {
-			if (arr.every(u => u.deaths.includes(room.id))) {
+			if (usersWithPointsAndDeaths.every(u => u.deaths.includes(room.id))) {
 				wipedRoom = room.id;
 			}
 		}
@@ -1512,7 +1494,7 @@ export function createTOATeam({
 		for (let i = 0; i < TOARooms.length; i++) {
 			let room = TOARooms[i];
 
-			if (parsedTeam.every(member => member.deaths.includes(i))) {
+			if (usersWithPointsAndDeaths.every(member => member.deaths.includes(i))) {
 				wipedRoom = room.id;
 				deathDuration += Math.floor(
 					calcPercentOfNum(
@@ -1535,7 +1517,7 @@ export function createTOATeam({
 			duration,
 			reductions,
 			totalReduction: 100 / teamSize,
-			parsedTeam,
+			parsedTeam: usersWithPointsAndDeaths,
 			wipedRoom,
 			deathDuration,
 			messages: uniqueArr(messages)
