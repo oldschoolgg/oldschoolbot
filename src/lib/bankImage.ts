@@ -559,6 +559,8 @@ class BankImageTask {
 
 		let items = bank.items();
 
+		debugLog(`Generating a bank image with ${items.length} items`, { title, userID: user?.id });
+
 		// Sorting
 		const favorites = user?.user.favoriteItems;
 		const weightings = user?.user.bank_sort_weightings as ItemBank;
