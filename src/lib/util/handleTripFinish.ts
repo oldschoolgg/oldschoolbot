@@ -86,7 +86,13 @@ export async function handleTripFinish(
 ) {
 	const perkTier = user.perkTier();
 	const messages: string[] = [];
-	for (const effect of tripFinishEffects) await effect.fn({ data, user, loot, messages });
+	console.log(data);
+
+	if (data.type === 'TombsOfAmascut') {
+		for (const effect of tripFinishEffects) await effect.fn({ data, user, loot: null, messages });
+	} else {
+		for (const effect of tripFinishEffects) await effect.fn({ data, user, loot, messages });
+	}
 
 	const clueReceived = loot ? ClueTiers.filter(tier => loot.amount(tier.scrollID) > 0) : [];
 

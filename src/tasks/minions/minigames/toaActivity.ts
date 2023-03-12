@@ -266,7 +266,7 @@ export const toaTask: MinionTask = {
 					  })
 					: undefined,
 				data,
-				null
+				totalLoot.totalLoot()
 			);
 		}
 
