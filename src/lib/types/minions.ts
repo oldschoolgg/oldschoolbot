@@ -354,12 +354,13 @@ type UserID = string;
 type Points = number;
 type RoomIDsDiedAt = number[];
 
+export type TOAUser = [UserID, Points[], RoomIDsDiedAt[]];
 export interface TOAOptions extends ActivityTaskOptionsWithUsers {
 	leader: string;
-	detailedUsers: [UserID, Points[], RoomIDsDiedAt[]][];
+	detailedUsers: TOAUser[] | [UserID, Points, RoomIDsDiedAt][][];
 	raidLevel: RaidLevel;
 	fakeDuration: number;
-	wipedRoom: null | number;
+	wipedRoom: null | number | (number | null)[];
 	quantity: number;
 }
 
