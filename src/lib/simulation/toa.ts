@@ -1502,7 +1502,7 @@ export function createTOATeam({
 	duration = reduceNumByPercent(duration, percentOfUsersWithVoidStaff / 2);
 	duration = reduceNumByPercent(duration, percentOfUsersWithHF / 3);
 
-	duration = clamp(duration, Time.Minute * 15, duration);
+	duration = Math.max(duration, Time.Minute * 15);
 
 	if (team.length < 5) {
 		duration += (5 - team.length) * (Time.Minute * 1.3);
