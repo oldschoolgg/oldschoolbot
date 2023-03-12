@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["metrics"]
 }
 
 datasource db {
@@ -551,6 +552,12 @@ model Metric {
   cpuSystem          Float  @db.Real
   cpuPercent         Float  @db.Real
   qps                Float? @db.Real
+
+  prisma_query_total_queries       Int?
+  prisma_pool_active_connections   Int?
+  prisma_pool_idle_connections     Int?
+  prisma_pool_wait_count           Int?
+  prisma_query_active_transactions Int?
 
   @@map("metrics")
 }
