@@ -52,16 +52,6 @@ function isValidGlobalInteraction(str: string): str is GlobalInteractionAction {
 	return globalInteractionActions.includes(str as GlobalInteractionAction);
 }
 
-export function makeDoClueButton(tier: ClueTier) {
-	const name: Uppercase<ClueTier['name']> = tier.name.toUpperCase() as Uppercase<ClueTier['name']>;
-	const id: GlobalInteractionAction = `DO_${name}_CLUE`;
-	return new ButtonBuilder()
-		.setCustomId(id)
-		.setLabel(`Do ${tier.name} Clue`)
-		.setStyle(ButtonStyle.Secondary)
-		.setEmoji('365003979840552960');
-}
-
 export function makeOpenCasketButton(tier: ClueTier) {
 	const name: Uppercase<ClueTier['name']> = tier.name.toUpperCase() as Uppercase<ClueTier['name']>;
 	const id: GlobalInteractionAction = `OPEN_${name}_CASKET`;
