@@ -119,7 +119,8 @@ export async function handleTripFinish(
 		if (birdHousedetails.isReady && !user.bitfield.includes(BitField.DisableBirdhouseRunButton))
 			components.push(makeBirdHouseTripButton());
 
-		if (await canRunAutoContract(user)) components.push(makeAutoContractButton());
+		if ((await canRunAutoContract(user)) && !user.bitfield.includes(BitField.DisableAutoFarmContractButton))
+			components.push(makeAutoContractButton());
 
 		const { currentTask } = await getUsersCurrentSlayerInfo(user.id);
 		if (
