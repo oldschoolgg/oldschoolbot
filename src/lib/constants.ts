@@ -150,7 +150,6 @@ export enum ActivityGroup {
 }
 
 export const enum Events {
-	Debug = 'debug',
 	Error = 'error',
 	Log = 'log',
 	Verbose = 'verbose',
