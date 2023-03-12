@@ -781,7 +781,7 @@ function calcDeathChance(totalAttempts: number, raidLevel: RaidLevel, tobAndCoxK
 
 	deathChance = Math.round(randomVariation(deathChance, 0.5));
 
-	return deathChance * 5;
+	return deathChance;
 }
 
 function calculateTotalEffectiveness({
