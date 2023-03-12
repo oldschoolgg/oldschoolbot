@@ -199,7 +199,6 @@ const minimumSuppliesNeeded = new Bank({
 
 const miscBoosts = [
 	['Void staff', 50, 'mage'],
-	["Tumeken's shadow", 15, 'mage'],
 	['Bandos godsword', 2, null],
 	['Hellfire bow', 4, 'range']
 ] as const;
