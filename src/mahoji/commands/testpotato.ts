@@ -18,7 +18,6 @@ import {
 	virtusOutfit
 } from '../../lib/data/CollectionsExport';
 import { leaguesCreatables } from '../../lib/data/creatables/leagueCreatables';
-import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
 import { dyedItems } from '../../lib/dyedItems';
 import { materialTypes } from '../../lib/invention';
 import { DisassemblySourceGroups } from '../../lib/invention/groups';
@@ -31,6 +30,7 @@ import { allOpenables } from '../../lib/openables';
 import { tiers } from '../../lib/patreon';
 import { Minigames } from '../../lib/settings/minigames';
 import { prisma } from '../../lib/settings/prisma';
+import { maxMageGear, maxMeleeOver300Gear, maxRangeGear } from '../../lib/simulation/toa';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Skills from '../../lib/skilling/skills';
 import Farming from '../../lib/skilling/skills/farming';
@@ -117,9 +117,9 @@ async function giveGear(user: MUser) {
 		GP: 1_000_000_000,
 		slayer_points: 100_000,
 		tentacle_charges: 10_000,
-		gear_mage: TOBMaxMageGear.raw() as any,
-		gear_melee: TOBMaxMeleeGear.raw() as any,
-		gear_range: TOBMaxRangeGear.raw() as any,
+		gear_mage: maxMageGear.raw() as any,
+		gear_melee: maxMeleeOver300Gear.raw() as any,
+		gear_range: maxRangeGear.raw() as any,
 		blowpipe: {
 			scales: 100_000,
 			dartQuantity: 100_000,

@@ -63,6 +63,7 @@ const teamSizeScale: Record<number, number> = {
 	8: 5.8
 };
 const averageWTPLevel = { 0: 0, 1: 0, 2: 0, 3: 0 };
+const VOID_STAFF_CHARGES_PER_RAID = 30;
 
 function scaleHP(base: number, raidLevel: number, teamSize: keyof typeof teamSizeScale, pathLevel: number): number {
 	let pathMultiplier = 1.0;
@@ -115,64 +116,71 @@ function estimatePoints(raidLevel: number, teamSize: number) {
 }
 
 export const maxMageGear = constructGearSetup({
-	head: 'Ancestral hat',
-	neck: 'Occult necklace',
-	body: 'Ancestral robe top',
+	head: 'Gorajan occult helmet',
+	neck: 'Arcane blast necklace',
+	body: 'Gorajan occult top',
 	cape: 'Imbued saradomin cape',
-	hands: 'Tormented bracelet',
-	legs: 'Ancestral robe bottom',
-	feet: 'Eternal boots',
-	'2h': "Tumeken's shadow",
-	ring: 'Lightbearer'
+	hands: 'Gorajan occult gloves',
+	legs: 'Gorajan occult legs',
+	feet: 'Gorajan occult boots',
+	weapon: 'Void staff',
+	ring: 'Lightbearer',
+	shield: 'Abyssal tome'
 });
 const maxMage = new Gear(maxMageGear);
 
 export const maxRangeGear = constructGearSetup({
-	head: 'Masori mask (f)',
-	neck: 'Necklace of anguish',
-	body: 'Masori body (f)',
+	head: 'Gorajan archer helmet',
+	neck: 'Farsight snapshot necklace',
+	body: 'Gorajan archer top',
 	cape: "Ava's assembler",
-	hands: 'Zaryte vambraces',
-	legs: 'Masori chaps (f)',
-	feet: 'Pegasian boots',
-	'2h': 'Twisted bow',
+	hands: 'Gorajan archer gloves',
+	legs: 'Gorajan archer legs',
+	feet: 'Gorajan archer boots',
+	'2h': 'Hellfire bow',
 	ring: 'Lightbearer',
-	ammo: 'Dragon arrow'
+	ammo: 'Hellfire arrow'
 });
 
 const maxRange = new Gear(maxRangeGear);
 maxRange.ammo!.quantity = 100_000;
 
 export const maxMeleeLessThan300Gear = constructGearSetup({
-	head: 'Torva full helm',
-	neck: 'Amulet of torture',
-	body: 'Torva platebody',
-	cape: 'Infernal cape',
-	hands: 'Ferocious gloves',
-	legs: 'Torva platelegs',
-	feet: 'Primordial boots',
+	cape: 'Tzkal cape',
 	weapon: 'Ghrazi rapier',
 	shield: 'Avernic defender',
-	ring: 'Lightbearer'
+	ring: 'Ignis ring(i)',
+	head: 'Gorajan warrior helmet',
+	neck: "Brawler's hook necklace",
+	body: 'Gorajan warrior top',
+	hands: 'Gorajan warrior gloves',
+	legs: 'Gorajan warrior legs',
+	feet: 'Gorajan warrior boots'
 });
 export const maxMeleeOver300Gear = constructGearSetup({
-	head: 'Torva full helm',
-	neck: 'Amulet of torture',
-	body: 'Torva platebody',
-	cape: 'Infernal cape',
-	hands: 'Ferocious gloves',
-	legs: 'Torva platelegs',
-	feet: 'Primordial boots',
+	head: 'Gorajan warrior helmet',
+	neck: "Brawler's hook necklace",
+	body: 'Gorajan warrior top',
+	cape: 'Tzkal cape',
+	hands: 'Gorajan warrior gloves',
+	legs: 'Gorajan warrior legs',
+	feet: 'Gorajan warrior boots',
 	weapon: "Osmumten's fang",
 	shield: 'Avernic defender',
-	ring: 'Berserker ring(i)'
+	ring: 'Ignis ring(i)'
 });
 
 const SERP_HELM_CHARGES_PER_HOUR = 600;
 function calcSerpHelmCharges(quantity: number, time: number) {
 	return quantity * Math.floor(time / (Time.Hour / SERP_HELM_CHARGES_PER_HOUR));
 }
-const REQUIRED_ARROWS = resolveItems(['Dragon arrow', 'Amethyst arrow', 'Rune arrow', 'Adamant arrow']);
+const REQUIRED_ARROWS = resolveItems([
+	'Dragon arrow',
+	'Amethyst arrow',
+	'Rune arrow',
+	'Adamant arrow',
+	'Hellfire arrow'
+]);
 
 const minTOAStats: Skills = {
 	attack: 90,
@@ -190,17 +198,17 @@ const minimumSuppliesNeeded = new Bank({
 });
 
 const miscBoosts = [
-	['Lightbearer', 5, null],
-	["Tumeken's shadow", 25, 'mage'],
+	['Void staff', 50, 'mage'],
+	["Tumeken's shadow", 15, 'mage'],
 	['Bandos godsword', 2, null],
-	['Twisted bow', 4, 'range']
+	['Hellfire bow', 4, 'range']
 ] as const;
 const primarySpecWeaponBoosts = [
 	['Zaryte crossbow', 9],
 	['Dragon claws', 6]
 ] as const;
 
-const REQUIRED_RANGE_WEAPONS = resolveItems(['Twisted bow', 'Bow of faerdhinen (c)']);
+const REQUIRED_RANGE_WEAPONS = resolveItems(['Hellfire bow', 'Twisted bow', 'Bow of faerdhinen (c)']);
 const MELEE_REQUIRED_WEAPONS = resolveItems(['Zamorakian hasta', 'Ghrazi rapier', "Osmumten's fang"]);
 const MELEE_REQUIRED_ARMOR = resolveItems(['Fire cape', 'Infernal cape']);
 const BP_DARTS_NEEDED = 150;
@@ -258,7 +266,14 @@ const toaRequirements: {
 			const rangeAmmo = user.gear.range.ammo;
 			const rangeWeapon = user.gear.range.equippedWeapon();
 			const arrowsNeeded = BOW_ARROWS_NEEDED * quantity;
-			if (rangeWeapon?.id !== itemID('Bow of faerdhinen (c)')) {
+			if (user.gear.range.hasEquipped('Hellfire bow')) {
+				if (user.gear.range.ammo?.item !== itemID('Hellfire arrow')) {
+					return 'You need Hellfire arrows equipped with the Hellfire bow.';
+				}
+				if (!rangeAmmo || rangeAmmo.quantity < arrowsNeeded) {
+					return `Need ${arrowsNeeded} arrows equipped`;
+				}
+			} else if (rangeWeapon?.id !== itemID('Bow of faerdhinen (c)')) {
 				if (!rangeAmmo || rangeAmmo.quantity < arrowsNeeded) {
 					return `Need ${arrowsNeeded} arrows equipped`;
 				}
@@ -336,6 +351,13 @@ const toaRequirements: {
 			const tumCharges = TUMEKEN_SHADOW_PER_RAID * quantity;
 			if (user.gear.mage.hasEquipped("Tumeken's shadow") && user.user.tum_shadow_charges < tumCharges) {
 				return `You need atleast ${tumCharges} Tumeken's shadow charges to use it, otherwise it has to be unequipped: ${mentionCommand(
+					'minion',
+					'charge'
+				)}`;
+			}
+			const voidStaffCharges = VOID_STAFF_CHARGES_PER_RAID * quantity;
+			if (user.gear.mage.hasEquipped('Void staff') && user.user.void_staff_charges < voidStaffCharges) {
+				return `You need atleast ${voidStaffCharges} Void staff charges to use it, otherwise it has to be unequipped: ${mentionCommand(
 					'minion',
 					'charge'
 				)}`;
@@ -781,7 +803,7 @@ function calcDeathChance(totalAttempts: number, raidLevel: RaidLevel, tobAndCoxK
 
 	deathChance = Math.round(randomVariation(deathChance, 0.5));
 
-	return deathChance * 5;
+	return deathChance;
 }
 
 function calculateTotalEffectiveness({
@@ -1209,7 +1231,13 @@ export async function toaStartCommand(
 					user: u
 				});
 			}
-			if (u.gear.mage.hasEquipped("Tumeken's shadow")) {
+			if (user.gear.mage.hasEquipped('Void staff')) {
+				await degradeItem({
+					item: getOSItem('Void staff'),
+					chargesToDegrade: VOID_STAFF_CHARGES_PER_RAID * quantity,
+					user: u
+				});
+			} else if (u.gear.mage.hasEquipped("Tumeken's shadow")) {
 				await degradeItem({
 					item: getOSItem("Tumeken's shadow"),
 					chargesToDegrade: TUMEKEN_SHADOW_PER_RAID * quantity,
@@ -1462,11 +1490,20 @@ export function createTOATeam({
 		totalReduction = round(totalReduction / teamSize, 2);
 	}
 
+	// Hard boost for Void staff
+	const usersWithVoidStaff = arr.filter(i => i.user.gear.mage.hasEquipped('Void staff'));
+	const percentOfUsersWithVoidStaff = calcWhatPercent(usersWithVoidStaff.length, teamSize);
+
+	// Hard boost for Hellfire bow
+	const usersWithHellfire = arr.filter(i => i.user.gear.range.hasEquipped('Hellfire bow'));
+	const percentOfUsersWithHF = calcWhatPercent(usersWithHellfire.length, teamSize);
+
 	duration = reduceNumByPercent(duration, exponentialPercentScale(totalReduction));
 
-	if (duration < Time.Minute * 20) {
-		duration = Math.max(Time.Minute * 20, duration);
-	}
+	duration = reduceNumByPercent(duration, percentOfUsersWithVoidStaff / 2);
+	duration = reduceNumByPercent(duration, percentOfUsersWithHF / 3);
+
+	duration = clamp(duration, Time.Minute * 15, duration);
 
 	if (team.length < 5) {
 		duration += (5 - team.length) * (Time.Minute * 1.3);
