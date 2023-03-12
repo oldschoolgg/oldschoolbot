@@ -82,7 +82,7 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 			queryCountStore.value = 0;
 			const data = {
 				timestamp: Math.floor(Date.now() / 1000),
-				...collectMetrics(),
+				...(await collectMetrics()),
 				qps: storedCount / 60
 			};
 			if (isNaN(data.eventLoopDelayMean)) {
