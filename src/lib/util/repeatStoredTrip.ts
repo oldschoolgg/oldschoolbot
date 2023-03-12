@@ -543,7 +543,8 @@ export const tripHandlers = {
 				start: {
 					raid_level: data.raidLevel,
 					max_team_size: data.users.length,
-					solo: data.users.length === 1
+					solo: data.users.length === 1,
+					quantity: data.quantity
 				}
 			}
 		})
