@@ -181,7 +181,7 @@ export const puroPuroTask: MinionTask = {
 			if (magicXP > 0) str += `\n${magicXpStr}. You are getting ${magicXpHr}.`;
 
 			if (implingID === itemID('Nature impling jar')) {
-				str += `\n**Boosts:** Due to using Dark Lure, you have are catching 20% more implings. You used: ${itemCost}. ${saved}`;
+				str += `\n**Boosts:** Due to using Dark Lure, you are catching 20% more implings. You used: ${itemCost}. ${saved}`;
 			} else {
 				str += `\n**Boosts:** Due to using Dark Lure, you have an increased chance at getting Nature Implings and above. You used: ${itemCost}. ${saved}`;
 			}
