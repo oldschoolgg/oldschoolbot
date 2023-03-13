@@ -38,7 +38,7 @@ jobs:
                   popd
             - name: Generate Prisma Client
               run: yarn gen
+            - name: Build
+              run: yarn build
             - name: Test
               run: yarn test:unit
-            - name: Upload coverage data to Codecov
-              uses: codecov/codecov-action@v1

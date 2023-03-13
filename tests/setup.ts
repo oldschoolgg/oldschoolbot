@@ -1,13 +1,13 @@
 import '../src/lib/data/itemAliases';
+import '../src/lib/util/logger';
 
-import { PrismaClient } from '@prisma/client';
-import { mockDeep } from 'jest-mock-extended';
+import { vi } from 'vitest';
 
 import { mockMUser, mockUserMap } from './utils';
 
-jest.mock('../src/lib/settings/prisma.ts', () => ({
+vi.mock('../src/lib/settings/prisma.ts', () => ({
 	__esModule: true,
-	prisma: mockDeep<PrismaClient>()
+	prisma: {}
 }));
 
 // @ts-ignore Mock
@@ -20,28 +20,19 @@ global.mUserFetch = (id: string) => {
 	return mocked ?? mockMUser({ id });
 };
 
-jest.mock('../src/lib/util/addSubTaskToActivityTask.ts', () => ({
+vi.mock('../src/lib/util/addSubTaskToActivityTask.ts', () => ({
 	__esModule: true,
 	default: () => {}
 }));
-
-jest.mock('../src/lib/util.ts', () => {
-	const originalModule = jest.requireActual('../src/lib/util.ts');
-	return {
-		__esModule: true,
-		...originalModule
-	};
-});
 
 async function mockTransactItems() {
 	return { newUser: {} };
 }
 
-jest.mock('../src/mahoji/mahojiSettings.ts', () => {
-	const originalModule = jest.requireActual('../src/lib/util.ts');
+vi.mock('../src/mahoji/mahojiSettings.ts', async () => {
+	const actual: any = await vi.importActual('../src/mahoji/mahojiSettings.ts');
 	return {
-		__esModule: true,
-		...originalModule,
+		...actual,
 		transactItems: mockTransactItems
 	};
 });

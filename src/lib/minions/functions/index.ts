@@ -30,8 +30,8 @@ export function resolveAttackStyles(
 	user: MUser,
 	params: ResolveAttackStylesParams
 ): [KillableMonster | undefined, Monster | undefined, AttackStyles[]] {
-	const killableMon = killableMonsters.find(m => m.id === params.monsterID);
-	const osjsMon = Monsters.get(params.monsterID);
+	const killableMon = params.monsterID ? killableMonsters.find(m => m.id === params.monsterID) : undefined;
+	const osjsMon = params.monsterID ? Monsters.get(params.monsterID) : undefined;
 
 	// The styles chosen by this user to use.
 	let attackStyles = user.getAttackStyles();
