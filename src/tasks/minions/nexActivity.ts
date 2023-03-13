@@ -1,10 +1,13 @@
 import { Embed, userMention } from '@discordjs/builders';
+import { ButtonBuilder } from 'discord.js';
 
 import { NEX_ID } from '../../lib/constants';
 import { trackLoot } from '../../lib/lootTrack';
 import { handleNexKills } from '../../lib/simulation/nex';
 import { NexTaskOptions } from '../../lib/types/minions';
+import { makeComponents } from '../../lib/util';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
+import { makeRepeatTripButton } from '../../lib/util/globalInteractions';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { sendToChannelID } from '../../lib/util/webhook';
 
@@ -50,11 +53,15 @@ export const nexTask: MinionTask = {
 		).setDescription(`
 ${loot.formatLoot()}`);
 
+		const components: ButtonBuilder[] = [];
+		components.push(makeRepeatTripButton());
+
 		sendToChannelID(channelID, {
 			embed,
 			content: `${allMention} Your team finished killing ${quantity}x Nex.${
 				wipedKill ? ` Your team wiped on the ${formatOrdinal(wipedKill)} kill.` : ''
-			}`
+			}`,
+			components: components.length > 0 ? makeComponents(components) : undefined
 		});
 	}
 };
