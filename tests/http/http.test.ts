@@ -2,9 +2,11 @@
 import { afterAll, beforeAll, expect, test } from 'vitest';
 
 import { makeServer } from '../../src/lib/http';
+import { FastifyServer } from '../../src/lib/http/types';
 
-const app = makeServer();
+let app: FastifyServer = null!;
 beforeAll(async () => {
+	app = await makeServer();
 	await app.ready();
 });
 
@@ -69,6 +71,19 @@ test('github route', async () => {
 
 	expect(response2.statusCode).toBe(400);
 	expect(response2.payload).toEqual('{"statusCode":400,"error":"Bad Request","message":"Bad Request"}');
+});
+
+test('root route ratelimiting', async () => {
+	await app.inject({
+		method: 'GET',
+		url: '/'
+	});
+	const response = await app.inject({
+		method: 'GET',
+		url: '/'
+	});
+
+	expect(response.statusCode).toBe(429);
 });
 
 afterAll(async () => {

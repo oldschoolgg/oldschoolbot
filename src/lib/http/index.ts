@@ -1,6 +1,5 @@
 import fastifyCors from '@fastify/cors';
 import fastifyHelmet from '@fastify/helmet';
-import fastifyRateLimit from '@fastify/rate-limit';
 import fastifySensible from '@fastify/sensible';
 import fastify from 'fastify';
 import fastifyRawBody from 'fastify-raw-body';
@@ -9,10 +8,18 @@ import { HTTP_PORT, production } from '../../config';
 import { logError } from '../util/logError';
 import { initRoutes } from './routes';
 
-export function makeServer() {
+export async function makeServer() {
 	const server = fastify({
 		logger: false,
 		trustProxy: true
+	});
+
+	server.register(fastifySensible);
+
+	await server.register(import('@fastify/rate-limit'), {
+		errorResponseBuilder: () => {
+			return server.httpErrors.tooManyRequests();
+		}
 	});
 
 	server.setErrorHandler((error, _request, reply) => {
@@ -31,18 +38,7 @@ export function makeServer() {
 
 	server.register(fastifyHelmet);
 
-	server.register(fastifySensible);
-
 	server.register(fastifyCors);
-
-	server.register(fastifyRateLimit, {
-		global: false,
-		max: 20,
-		timeWindow: 120_000,
-		errorResponseBuilder: () => {
-			return server.httpErrors.tooManyRequests();
-		}
-	});
 
 	server.register(fastifyRawBody, {
 		field: 'rawBody', // change the default request.rawBody property name
@@ -51,8 +47,6 @@ export function makeServer() {
 		runFirst: false, // get the body before any preParsing hook change/uncompress it. **Default false**
 		routes: [] // array of routes, **`global`** will be ignored, wildcard routes not supported
 	});
-
-	initRoutes(server);
 
 	server.addContentTypeParser('text/plain', async () => {
 		throw server.httpErrors.badRequest('Bad content type.');
@@ -67,6 +61,8 @@ export function makeServer() {
 		});
 		done();
 	});
+
+	initRoutes(server);
 
 	server.listen({ port: HTTP_PORT });
 	return server;

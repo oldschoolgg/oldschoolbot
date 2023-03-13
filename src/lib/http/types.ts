@@ -7,12 +7,6 @@ interface UserAuth {
 }
 
 declare module 'fastify' {
-	interface RouteOptions {
-		config?: {
-			[key: string]: unknown;
-		};
-	}
-
 	interface FastifyRequest {
 		auth: UserAuth | undefined;
 	}
