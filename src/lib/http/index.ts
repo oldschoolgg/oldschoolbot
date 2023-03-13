@@ -58,6 +58,16 @@ export function makeServer() {
 		throw server.httpErrors.badRequest('Bad content type.');
 	});
 
+	server.addHook('onRequest', (request, _, done) => {
+		debugLog('Received HTTP request', {
+			type: 'HTTP_REQUEST',
+			url: request.raw.url,
+			method: request.raw.method,
+			headers: request.raw.headers
+		});
+		done();
+	});
+
 	server.listen(HTTP_PORT);
 	return server;
 }

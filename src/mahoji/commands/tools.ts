@@ -1,4 +1,4 @@
-import { Embed } from '@discordjs/builders';
+import { EmbedBuilder } from '@discordjs/builders';
 import { Activity, User } from '@prisma/client';
 import { ChannelType } from 'discord.js';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
@@ -144,7 +144,7 @@ LIMIT 10;`);
 	}
 
 	let place = 0;
-	const embed = new Embed()
+	const embed = new EmbedBuilder()
 		.setTitle(`Highest ${skillObj ? skillObj.name : 'Overall'} XP Gains in the past ${interval}`)
 		.setDescription(
 			res
@@ -179,7 +179,7 @@ LIMIT 10`;
 	}
 
 	let place = 0;
-	const embed = new Embed()
+	const embed = new EmbedBuilder()
 		.setTitle(`Highest ${monster.name} KC gains in the past ${interval}`)
 		.setDescription(
 			res
