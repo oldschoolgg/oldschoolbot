@@ -11,7 +11,21 @@ vi.mock('../src/lib/settings/prisma.ts', () => ({
 }));
 
 // @ts-ignore Mock
-global.globalClient = { guilds: { cache: new Map() } } as any;
+global.globalClient = {
+	guilds: { cache: new Map() },
+	mahojiClient: {
+		commands: {
+			values: [
+				{
+					name: 'test',
+					description: 'test description',
+					attributes: { description: 'test description' },
+					options: []
+				}
+			]
+		}
+	}
+} as any;
 import('../src/lib/MUser');
 
 // @ts-ignore Mock

@@ -34,6 +34,7 @@ interface LogContext {
 }
 
 function _debugLog(str: string, context: LogContext = {}) {
+	if (process.env.TEST) return;
 	pino.debug({ ...context, message: str });
 }
 declare global {

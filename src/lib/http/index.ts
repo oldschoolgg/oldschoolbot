@@ -1,9 +1,9 @@
+import fastifyCors from '@fastify/cors';
+import fastifyHelmet from '@fastify/helmet';
+import fastifyRateLimit from '@fastify/rate-limit';
+import fastifySensible from '@fastify/sensible';
 import fastify from 'fastify';
-import fastifyCors from 'fastify-cors';
-import fastifyHelmet from 'fastify-helmet';
-import fastifyRateLimit from 'fastify-rate-limit';
 import fastifyRawBody from 'fastify-raw-body';
-import fastifySensible from 'fastify-sensible';
 
 import { HTTP_PORT, production } from '../../config';
 import { logError } from '../util/logError';
@@ -31,7 +31,7 @@ export function makeServer() {
 
 	server.register(fastifyHelmet);
 
-	server.register(fastifySensible, { errorHandler: false });
+	server.register(fastifySensible);
 
 	server.register(fastifyCors);
 
@@ -68,6 +68,6 @@ export function makeServer() {
 		done();
 	});
 
-	server.listen(HTTP_PORT);
+	server.listen({ port: HTTP_PORT });
 	return server;
 }
