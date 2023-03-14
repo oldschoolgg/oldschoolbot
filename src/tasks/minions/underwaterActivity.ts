@@ -58,11 +58,17 @@ export const underwaterAgilityThievingTask: MinionTask = {
 		let xpRes = `\n${await user.addXP({
 			skillName: SkillsEnum.Agility,
 			amount: agilityXpReceived,
-			duration
+			duration,
+			source: 'UnderwaterAgilityThieving'
 		})}`;
-		xpRes += `\n${await user.addXP({ skillName: SkillsEnum.Thieving, amount: thievingXpReceived, duration })}`;
+		xpRes += `\n${await user.addXP({
+			skillName: SkillsEnum.Thieving,
+			amount: thievingXpReceived,
+			duration,
+			source: 'UnderwaterAgilityThieving'
+		})}`;
 
-		let str = `${user}, ${user.minionName} finished doing Underwater Agility and Thieving. ${xpRes}\n${user.minionName} asks if you'd like them to do another of the same trip.`;
+		let str = `${user}, ${user.minionName} finished doing Underwater Agility and Thieving. ${xpRes}`;
 
 		await transactItems({
 			userID: user.id,
