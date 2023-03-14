@@ -41,6 +41,10 @@ const toggles = [
 	{
 		name: 'Disable Ash Sanctifier',
 		bit: BitField.DisableAshSanctifier
+	},
+	{
+		name: 'Disable Auto Farm Contract Button',
+		bit: BitField.DisableAutoFarmContractButton
 	}
 ];
 
