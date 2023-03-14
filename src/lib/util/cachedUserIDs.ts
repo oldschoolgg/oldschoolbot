@@ -108,22 +108,25 @@ export function cacheCleanup() {
 				if (channel.type === ChannelType.GuildVoice || channel.type === ChannelType.GuildCategory) {
 					globalClient.channels.cache.delete(channel.id);
 				}
-				if (channel.type === ChannelType.GuildText) {
+				// @ts-ignore ignore
+				delete channel.topic;
+				// @ts-ignore ignore
+				delete channel.rateLimitPerUser;
+				// @ts-ignore ignore
+				delete channel.nsfw;
+				// @ts-ignore ignore
+				delete channel.parentId;
+				// @ts-ignore ignore
+				delete channel.name;
+				// @ts-ignore ignore
+				channel.lastMessageId = null;
+				// @ts-ignore ignore
+				channel.lastPinTimestamp = null;
+				if ('permissionOverwrites' in channel) {
+					channel.permissionOverwrites.cache.clear();
+				}
+				if ('threads' in channel) {
 					channel.threads.cache.clear();
-					// @ts-ignore ignore
-					delete channel.topic;
-					// @ts-ignore ignore
-					delete channel.rateLimitPerUser;
-					// @ts-ignore ignore
-					delete channel.nsfw;
-					// @ts-ignore ignore
-					delete channel.parentId;
-					// @ts-ignore ignore
-					delete channel.name;
-					// @ts-ignore ignore
-					channel.lastMessageId = null;
-					// @ts-ignore ignore
-					channel.lastPinTimestamp = null;
 				}
 			}
 		});

@@ -1,4 +1,4 @@
-import { Embed } from '@discordjs/builders';
+import { EmbedBuilder } from '@discordjs/builders';
 import { Activity } from '@prisma/client';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, TextChannel } from 'discord.js';
 import { noOp, randInt, shuffleArr, Time } from 'e';
@@ -21,21 +21,21 @@ import { logError } from './util/logError';
 import { minionIsBusy } from './util/minionIsBusy';
 
 let lastMessageID: string | null = null;
-const supportEmbed = new Embed()
+const supportEmbed = new EmbedBuilder()
 	.setAuthor({ name: '⚠️ ⚠️ ⚠️ ⚠️ READ THIS ⚠️ ⚠️ ⚠️ ⚠️' })
-	.addField({
+	.addFields({
 		name: '📖 Read the FAQ',
 		value: 'The FAQ answers commonly asked questions: https://wiki.oldschool.gg/faq - also make sure to read the other pages of the website, which might contain the information you need.'
 	})
-	.addField({
+	.addFields({
 		name: '🔎 Search',
 		value: 'Search this channel first, you might find your question has already been asked and answered.'
 	})
-	.addField({
+	.addFields({
 		name: '💬 Ask',
 		value: "If your question isn't answered in the FAQ, and you can't find it from searching, simply ask your question and wait for someone to answer. If you don't get an answer, you can post your question again."
 	})
-	.addField({
+	.addFields({
 		name: '⚠️ Dont ping anyone',
 		value: 'Do not ping mods, or any roles/people in here. You will be muted. Ask your question, and wait.'
 	});

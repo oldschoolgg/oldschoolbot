@@ -1,4 +1,4 @@
-import { Embed } from '@discordjs/builders';
+import { EmbedBuilder } from '@discordjs/builders';
 import { BaseMessageOptions, bold, ButtonBuilder, ButtonStyle, Message, time } from 'discord.js';
 import { Time } from 'e';
 import { Items } from 'oldschooljs';
@@ -156,7 +156,7 @@ const mentionCommands: MentionCommand[] = [
 				str += `\n...and ${items.length - 5} others`;
 			}
 
-			return msg.reply({ embeds: [new Embed().setDescription(str)], components });
+			return msg.reply({ embeds: [new EmbedBuilder().setDescription(str)], components });
 		}
 	},
 	{

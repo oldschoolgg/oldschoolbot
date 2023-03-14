@@ -1,6 +1,6 @@
-import { userMention } from '@discordjs/builders';
+import { EmbedBuilder, userMention } from '@discordjs/builders';
 import { Activity, User } from '@prisma/client';
-import { ChannelType, EmbedBuilder } from 'discord.js';
+import { ChannelType } from 'discord.js';
 import { Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';

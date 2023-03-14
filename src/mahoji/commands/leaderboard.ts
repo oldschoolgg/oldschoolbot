@@ -1,4 +1,4 @@
-import { Embed } from '@discordjs/builders';
+import { EmbedBuilder } from '@discordjs/builders';
 import { Prisma } from '@prisma/client';
 import { calcWhatPercent, chunk, objectValues, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
@@ -54,7 +54,7 @@ export async function doMenu(user: MUser, channelID: string, pages: string[], ti
 
 	makePaginatedMessage(
 		channel,
-		pages.map(p => ({ embeds: [new Embed().setTitle(title).setDescription(p)] })),
+		pages.map(p => ({ embeds: [new EmbedBuilder().setTitle(title).setDescription(p)] })),
 		user.id
 	);
 }
