@@ -446,6 +446,7 @@ model Webhook {
 
 enum XpGainSource {
   TombsOfAmascut
+  UnderwaterAgilityThieving
 }
 
 model XPGain {
@@ -823,6 +824,7 @@ enum activity_type_enum {
   NightmareZone
   ShadesOfMorton
   TombsOfAmascut
+  UnderwaterAgilityThieving
 }
 
 enum xp_gains_skill_enum {
