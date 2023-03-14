@@ -139,12 +139,7 @@ export async function mahoganyHomesBuyCommand(user: MUser, input = '', quantity?
 	return `Successfully purchased ${loot} for ${cost * quantity} Carpenter Points.`;
 }
 
-export async function mahoganyHomesBuildCommand(
-	user: MUser,
-	channelID: string,
-	name?: string,
-	tier?: number
-): CommandResponse {
+export async function mahoganyHomesBuildCommand(user: MUser, channelID: string, tier?: number): CommandResponse {
 	if (user.minionIsBusy) return `${user.minionName} is currently busy.`;
 
 	const conLevel = user.skillLevel(SkillsEnum.Construction);
@@ -152,16 +147,13 @@ export async function mahoganyHomesBuildCommand(
 
 	let tierData = contractTiers.find(contractTier => conLevel >= contractTier.level)!;
 
-	console.log(name);
-	console.log(tier);
-
-	if (name) {
-		tierData =
-			contractTiers.find(contractTier => name.toLowerCase() === contractTier.name.toLowerCase()) || tierData;
-		if (tierData.level > conLevel)
+	if (tier) {
+		tierData = contractTiers.find(contractTier => Number(tier) === contractTier.tier) || tierData;
+		if (tierData.level > conLevel) {
 			return `You need ${tierData.level} Construction for this contract, you have ${conLevel}.`;
-	} else if (tier) {
-		tierData = contractTiers.find(contractTier => tier === contractTier.tier) || tierData;
+		}
+	} else {
+		tierData = contractTiers.find(contractTier => conLevel >= contractTier.level)!;
 	}
 
 	const hasSack = user.hasEquippedOrInBank('Plank sack');
@@ -191,9 +183,9 @@ export async function mahoganyHomesBuildCommand(
 		tier: tierData.tier
 	});
 
-	let str = `${user.minionName} is now doing ${quantity}x Mahogany homes ${
+	let str = `${user.minionName} is now doing ${quantity}x ${
 		tierData.name
-	} contracts, the trip will take ${formatDuration(duration)}. Removed ${itemsNeeded} from your bank.`;
+	} Mahogany homes contracts, the trip will take ${formatDuration(duration)}. Removed ${itemsNeeded} from your bank.`;
 
 	if (hasSack) {
 		str += "\nYou're getting more XP/Hr because of your Plank sack!";

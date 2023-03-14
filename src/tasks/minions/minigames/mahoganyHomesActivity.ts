@@ -9,7 +9,7 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 export const mahoganyHomesTask: MinionTask = {
 	type: 'MahoganyHomes',
 	async run(data: MahoganyHomesActivityTaskOptions) {
-		const { channelID, quantity, xp, duration, userID, points, tier } = data;
+		const { channelID, quantity, xp, duration, userID, points } = data;
 		const user = await mUserFetch(userID);
 		await incrementMinigameScore(userID, 'mahogany_homes', quantity);
 
@@ -30,7 +30,7 @@ export const mahoganyHomesTask: MinionTask = {
 			}
 		});
 
-		let str = `${user}, ${user.minionName} finished doing ${quantity}x ${tier} Mahogany Homes contracts, you received ${points} Carpenter points. ${xpRes}`;
+		let str = `${user}, ${user.minionName} finished doing ${quantity}x Mahogany Homes contracts, you received ${points} Carpenter points. ${xpRes}`;
 
 		if (bonusXP > 0) {
 			str += `\nYou received ${bonusXP.toLocaleString()} bonus XP from your Carpenter's outfit.`;
