@@ -530,6 +530,7 @@ function normalizeMahojiResponse(one: Awaited<CommandResponse>): BaseMessageOpti
 	const response: BaseMessageOptions = {};
 	if (one.content) response.content = one.content;
 	if (one.files) response.files = one.files;
+	if (one.components) response.components = one.components;
 	return response;
 }
 
@@ -539,10 +540,11 @@ export function roughMergeMahojiResponse(
 ): InteractionReplyOptions {
 	const first = normalizeMahojiResponse(one);
 	const second = normalizeMahojiResponse(two);
-	const newResponse: InteractionReplyOptions = { content: '', files: [] };
+	const newResponse: InteractionReplyOptions = { content: '', files: [], components: [] };
 	for (const res of [first, second]) {
 		if (res.content) newResponse.content += `${res.content} `;
 		if (res.files) newResponse.files = [...newResponse.files!, ...res.files];
+		if (res.components) newResponse.components = res.components;
 	}
 	return newResponse;
 }
