@@ -8,7 +8,7 @@ import { convertLVLtoXP, itemID } from 'oldschooljs/dist/util';
 import { production } from '../../config';
 import { BathhouseOres, BathwaterMixtures } from '../../lib/baxtorianBathhouses';
 import { allStashUnitsFlat, allStashUnitTiers } from '../../lib/clues/stashUnits';
-import { BitField, MAX_QP } from '../../lib/constants';
+import { BitField, MAX_INT_JAVA, MAX_QP } from '../../lib/constants';
 import {
 	gorajanArcherOutfit,
 	gorajanOccultOutfit,
@@ -18,6 +18,7 @@ import {
 	virtusOutfit
 } from '../../lib/data/CollectionsExport';
 import { leaguesCreatables } from '../../lib/data/creatables/leagueCreatables';
+import { Eatables } from '../../lib/data/eatables';
 import { dyedItems } from '../../lib/dyedItems';
 import { materialTypes } from '../../lib/invention';
 import { DisassemblySourceGroups } from '../../lib/invention/groups';
@@ -25,6 +26,7 @@ import { Inventions, transactMaterialsFromUser } from '../../lib/invention/inven
 import { MaterialBank } from '../../lib/invention/MaterialBank';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { UserKourendFavour } from '../../lib/minions/data/kourendFavour';
+import potions from '../../lib/minions/data/potions';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { allOpenables } from '../../lib/openables';
 import { tiers } from '../../lib/patreon';
@@ -256,6 +258,40 @@ for (const tier of allStashUnitTiers) {
 	allStashUnitItems.add(tier.cost.clone().multiply(tier.units.length));
 }
 
+const potionsPreset = new Bank();
+for (const potion of potions) {
+	for (const actualPotion of potion.items) {
+		potionsPreset.addItem(actualPotion, 10_000);
+	}
+}
+
+const foodPreset = new Bank();
+for (const food of Eatables.map(food => food.id)) {
+	foodPreset.addItem(food, 10_000);
+}
+
+const runePreset = new Bank()
+	.add('Air rune', MAX_INT_JAVA)
+	.add('Mind rune', MAX_INT_JAVA)
+	.add('Water rune', MAX_INT_JAVA)
+	.add('Earth rune', MAX_INT_JAVA)
+	.add('Fire rune', MAX_INT_JAVA)
+	.add('Body rune', MAX_INT_JAVA)
+	.add('Cosmic rune', MAX_INT_JAVA)
+	.add('Chaos rune', MAX_INT_JAVA)
+	.add('Nature rune', MAX_INT_JAVA)
+	.add('Law rune', MAX_INT_JAVA)
+	.add('Death rune', MAX_INT_JAVA)
+	.add('Astral rune', MAX_INT_JAVA)
+	.add('Blood rune', MAX_INT_JAVA)
+	.add('Soul rune', MAX_INT_JAVA)
+	.add('Dust rune', MAX_INT_JAVA)
+	.add('Lava rune', MAX_INT_JAVA)
+	.add('Mist rune', MAX_INT_JAVA)
+	.add('Mud rune', MAX_INT_JAVA)
+	.add('Smoke rune', MAX_INT_JAVA)
+	.add('Steam rune', MAX_INT_JAVA);
+
 const spawnPresets = [
 	['openables', openablesBank],
 	['random', new Bank()],
@@ -268,7 +304,10 @@ const spawnPresets = [
 	['disassembly', disassembly],
 	['usables', usables],
 	['leagues', leaguesPreset],
-	['stashunits', allStashUnitItems]
+	['stashunits', allStashUnitItems],
+	['potions', potionsPreset],
+	['food', foodPreset],
+	['runes', runePreset]
 ] as const;
 
 const nexSupplies = new Bank()
