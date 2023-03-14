@@ -222,7 +222,7 @@ client.on('shardError', err => debugLog('Shard Error', { error: err.message }));
 client.on('ready', () => runTimedLoggedFn('OnStartup', async () => onStartup()));
 
 async function main() {
-	client.fastifyServer = makeServer();
+	client.fastifyServer = await makeServer();
 	await Promise.all([
 		runTimedLoggedFn('Sync Active User IDs', syncActiveUserIDs),
 		runTimedLoggedFn('Sync Activity Cache', syncActivityCache)

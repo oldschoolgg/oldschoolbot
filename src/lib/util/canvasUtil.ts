@@ -147,11 +147,7 @@ export async function getClippedRegionImage(
 ) {
 	const canvas = new Canvas(width, height);
 	const ctx = canvas.getContext('2d');
-	if (image instanceof Canvas) {
-		ctx.drawCanvas(image, x, y, width, height, 0, 0, width, height);
-	} else {
-		ctx.drawImage(image, x, y, width, height, 0, 0, width, height);
-	}
+	ctx.drawImage(image, x, y, width, height, 0, 0, width, height);
 	return loadImage(await canvas.encode('png'));
 }
 

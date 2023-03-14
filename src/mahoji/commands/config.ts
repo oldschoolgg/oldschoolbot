@@ -1,4 +1,4 @@
-import { Embed, inlineCode } from '@discordjs/builders';
+import { EmbedBuilder, inlineCode } from '@discordjs/builders';
 import { activity_type_enum } from '@prisma/client';
 import { Guild, HexColorString, resolveColor, User } from 'discord.js';
 import { clamp, uniqueArr } from 'e';
@@ -252,7 +252,7 @@ async function bankSortConfig(
 async function bgColorConfig(user: MUser, hex?: string) {
 	const currentColor = user.user.bank_bg_hex;
 
-	const embed = new Embed();
+	const embed = new EmbedBuilder();
 
 	if (hex === 'reset') {
 		await user.update({
