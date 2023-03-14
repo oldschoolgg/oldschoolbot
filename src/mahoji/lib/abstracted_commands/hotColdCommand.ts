@@ -1,4 +1,4 @@
-import { Embed } from '@discordjs/builders';
+import { EmbedBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction } from 'discord.js';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { LootTable } from 'oldschooljs';
@@ -58,7 +58,7 @@ ${explanation}`
 		collectionLog: true
 	});
 
-	const embed = new Embed()
+	const embed = new EmbedBuilder()
 		.setTitle(`You picked ${choice} and got '${flower.name}'!`)
 		.setThumbnail(`https://chisel.weirdgloop.org/static/img/osrs-sprite/${flower.id}.png`)
 		.setFooter({
