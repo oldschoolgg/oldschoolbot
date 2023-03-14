@@ -119,7 +119,11 @@ export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptio
 		buttons.push(makeBirdHouseTripButton());
 	}
 
-	if (!minionIsBusy && (await canRunAutoContract(user))) {
+	if (
+		!minionIsBusy &&
+		(await canRunAutoContract(user)) &&
+		!user.bitfield.includes(BitField.DisableAutoFarmContractButton)
+	) {
 		buttons.push(makeAutoContractButton());
 	}
 

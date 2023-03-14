@@ -217,7 +217,8 @@ export enum BitField {
 	DisableBirdhouseRunButton = 22,
 	DisableAshSanctifier = 23,
 	BothBotsMaxedFreeTierOnePerks = 24,
-	HasBloodbarkScroll = 25
+	HasBloodbarkScroll = 25,
+	DisableAutoFarmContractButton = 26
 }
 
 interface BitFieldData {
@@ -269,7 +270,12 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 		protected: false,
 		userConfigurable: true
 	},
-	[BitField.DisableAshSanctifier]: { name: 'Disable Ash Sanctifier', protected: false, userConfigurable: true }
+	[BitField.DisableAshSanctifier]: { name: 'Disable Ash Sanctifier', protected: false, userConfigurable: true },
+	[BitField.DisableAutoFarmContractButton]: {
+		name: 'Disable Auto Farm Contract Button',
+		protected: false,
+		userConfigurable: true
+	}
 } as const;
 
 export const enum PatronTierID {
