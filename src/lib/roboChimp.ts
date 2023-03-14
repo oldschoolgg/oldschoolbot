@@ -15,7 +15,7 @@ declare global {
 	}
 }
 
-global.roboChimpClient = global.roboChimpClient || new PrismaClient();
+global.roboChimpClient = process.env.TEST ? ({} as any) : global.roboChimpClient || new PrismaClient();
 
 export async function getRandomTriviaQuestions(): Promise<TriviaQuestion[]> {
 	const random: TriviaQuestion[] = await roboChimpClient.$queryRaw`SELECT id, question, answers

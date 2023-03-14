@@ -12,7 +12,6 @@ export const commandsRoute = (server: FastifyServer) =>
 		url: '/commands',
 		async handler(_, reply) {
 			const mahojiCommands = globalClient.mahojiClient.commands.values;
-
 			const commandData = allAbstractCommands(globalClient.mahojiClient)
 				.filter(c => typeof c.attributes?.description === 'string' && c.attributes.description.length > 1)
 				.filter(i => !['admin'].includes(i.name))
