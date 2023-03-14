@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["metrics"]
 }
 
 datasource db {
@@ -18,6 +19,7 @@ model Activity {
   type           activity_type_enum
   channel_id     BigInt
   data           Json               @db.Json
+  pinnedTrip     PinnedTrip[]
 
   @@index([user_id, finish_date])
   @@index([group_activity])
@@ -135,6 +137,17 @@ model ClientStorage {
   @@map("clientStorage")
 }
 
+enum GearSetupType {
+  melee
+  range
+  mage
+  misc
+  skilling
+  wildy
+  fashion
+  other
+}
+
 model GearPreset {
   user_id    String @db.VarChar(19)
   name       String @db.VarChar(24)
@@ -151,6 +164,10 @@ model GearPreset {
   weapon     Int?
   ammo       Int?
   ammo_qty   Int?
+
+  emoji_id       String?        @db.VarChar(19)
+  times_equipped Int            @default(0)
+  pinned_setup   GearSetupType?
 
   @@id([user_id, name])
   @@map("gear_presets")
@@ -412,6 +429,8 @@ model User {
   farmed_crops      FarmedCrop[]
 
   minion_defaultCompostToUse CropUpgradeType @default(compost) @map("minion.defaultCompostToUse")
+  botItemSell                BotItemSell[]
+  pinnedTrip                 PinnedTrip[]
 
   @@index([id, last_command_date])
   @@map("users")
@@ -427,6 +446,7 @@ model Webhook {
 
 enum XpGainSource {
   TombsOfAmascut
+  UnderwaterAgilityThieving
 }
 
 model XPGain {
@@ -456,6 +476,12 @@ model Metric {
   cpuSystem          Float  @db.Real
   cpuPercent         Float  @db.Real
   qps                Float? @db.Real
+
+  prisma_query_total_queries       Int?
+  prisma_pool_active_connections   Int?
+  prisma_pool_idle_connections     Int?
+  prisma_pool_wait_count           Int?
+  prisma_query_active_transactions Int?
 
   @@map("metrics")
 }
@@ -542,6 +568,7 @@ model LootTrack {
   cost           Json            @default("{}") @db.Json
   user_id        BigInt?
 
+  @@index([key, user_id])
   @@map("loot_track")
 }
 
@@ -676,6 +703,35 @@ model FarmedCrop {
   @@map("farmed_crop")
 }
 
+model BotItemSell {
+  id String @id @default(uuid()) @db.Uuid
+
+  item_id     Int
+  quantity    Int
+  gp_received BigInt
+
+  user_id String @db.VarChar(19)
+  user    User   @relation(fields: [user_id], references: [id])
+
+  @@map("bot_item_sell")
+}
+
+model PinnedTrip {
+  id String @id
+
+  user_id       String             @db.VarChar(19)
+  activity_id   Int
+  emoji_id      String?            @db.VarChar(19)
+  activity_type activity_type_enum
+  data          Json?              @db.Json
+  custom_name   String?            @db.VarChar(32)
+
+  activity Activity @relation(fields: [activity_id], references: [id])
+  user     User     @relation(fields: [user_id], references: [id])
+
+  @@map("pinned_trip")
+}
+
 enum command_usage_status {
   Unknown
   Success
@@ -768,6 +824,7 @@ enum activity_type_enum {
   NightmareZone
   ShadesOfMorton
   TombsOfAmascut
+  UnderwaterAgilityThieving
 }
 
 enum xp_gains_skill_enum {
