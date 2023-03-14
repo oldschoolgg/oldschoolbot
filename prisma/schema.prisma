@@ -523,6 +523,7 @@ model Webhook {
 enum XpGainSource {
   TombsOfAmascut
   BalthazarsBigBonanza
+  UnderwaterAgilityThieving
 }
 
 model XPGain {
@@ -1040,6 +1041,7 @@ enum activity_type_enum {
   ShadesOfMorton
   TombsOfAmascut
   BalthazarsBigBonanza
+  UnderwaterAgilityThieving
 }
 
 enum xp_gains_skill_enum {

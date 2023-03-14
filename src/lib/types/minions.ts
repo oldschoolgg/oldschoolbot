@@ -1,7 +1,7 @@
 import { CropUpgradeType } from '@prisma/client';
 import { TeamMember } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 
-import { NMZStrategy } from '../constants';
+import { NMZStrategy, UnderwaterAgilityThievingTrainingSkill } from '../constants';
 import { Kibble } from '../data/kibble';
 import { MaterialType } from '../invention';
 import type { IPatchData } from '../minions/farming/types';
@@ -407,6 +407,12 @@ export interface KourendFavourActivityTaskOptions extends ActivityTaskOptions {
 export interface TokkulShopOptions extends ActivityTaskOptions {
 	itemID: number;
 	quantity: number;
+}
+
+export interface UnderwaterAgilityThievingTaskOptions extends ActivityTaskOptions {
+	trainingSkill: UnderwaterAgilityThievingTrainingSkill;
+	quantity: number;
+	noStams: boolean;
 }
 
 export interface PuroPuroActivityTaskOptions extends MinigameActivityTaskOptions {
