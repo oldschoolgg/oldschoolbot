@@ -4339,10 +4339,10 @@ obliterator@^2.0.1:
   resolved "https://registry.yarnpkg.com/obliterator/-/obliterator-2.0.4.tgz#fa650e019b2d075d745e44f1effeb13a2adbe816"
   integrity sha512-lgHwxlxV1qIg1Eap7LgIeoBWIMFibOjbrYPIPJZcI1mmGAI2m3lNYpK12Y+GBdPQ0U1hRwSord7GIaawz962qQ==
 
-oldschooljs@^2.2.2:
-  version "2.2.2"
-  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-2.2.2.tgz#a09b31958b24080569f70876e80a5d9895b7db53"
-  integrity sha512-JCnmukXWCkAPn8qfEnywv5yr7PEI3w+G6KDm61QpUO0AsVaI5NGp9B2HeYYkNZyKigiVExt2/USzxy106atRfA==
+oldschooljs@^2.2.3:
+  version "2.2.3"
+  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-2.2.3.tgz#850ca9187deb7a761e8eb42a27ef40f0649d6846"
+  integrity sha512-IjOlK0x6Ik0+iCI7VUVyprAycXaCcIYqaq/K4fMpDBT/WZi/D+WtvnyHrOjoawdmRXITLJyx01seNy7VNYGzog==
   dependencies:
     "@oldschoolgg/eslint-config" "^1.2.5"
     e "^0.2.1"
