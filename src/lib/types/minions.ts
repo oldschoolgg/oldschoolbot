@@ -176,7 +176,7 @@ export interface HerbloreActivityTaskOptions extends ActivityTaskOptions {
 }
 
 export interface CutLeapingFishActivityTaskOptions extends ActivityTaskOptions {
-	fishName: string;
+	fishID: number;
 	quantity: number;
 }
 

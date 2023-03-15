@@ -1,4 +1,5 @@
 import { Bank } from 'oldschooljs';
+import { Item } from 'oldschooljs/dist/meta/types';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { Emoji } from '../constants';
@@ -188,9 +189,8 @@ export interface Mixable {
 }
 
 export interface CutLeapingFish {
-	name: string;
+	item: Item;
 	aliases: string[];
-	inputItems: Bank;
 	tickRate: number;
 }
 

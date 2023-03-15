@@ -9,9 +9,9 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 export const cutLeapingFishTask: MinionTask = {
 	type: 'CutLeapingFish',
 	async run(data: CutLeapingFishActivityTaskOptions) {
-		let { fishName, userID, channelID, quantity, duration } = data;
+		let { fishID, userID, channelID, quantity, duration } = data;
 		const user = await mUserFetch(userID);
-		const barbarianFish = LeapingFish.find(LeapingFish => LeapingFish.name === fishName)!;
+		const barbarianFish = LeapingFish.find(LeapingFish => LeapingFish.item.id === fishID)!;
 
 		const currentLevel = user.skillLevel(SkillsEnum.Cooking);
 		let caviarChance = 0;
@@ -21,7 +21,7 @@ export const cutLeapingFishTask: MinionTask = {
 		let fishOffcutsChance = 0;
 		let fishOffcutsCreated = 0;
 
-		if (barbarianFish.name === 'Cut leaping sturgeon') {
+		if (barbarianFish.item.name === 'Leaping sturgeon') {
 			caviarChance = clamp(1.25 * currentLevel, 0, 100);
 			fishOffcutsChance = (5 / 6) * 100;
 			for (let i = 0; i < quantity; i++) {
@@ -33,7 +33,7 @@ export const cutLeapingFishTask: MinionTask = {
 				}
 			}
 		}
-		if (barbarianFish.name === 'Cut leaping salmon') {
+		if (barbarianFish.item.name === 'Leaping salmon') {
 			roeChance = clamp(1.25 * currentLevel, 0, 100);
 			fishOffcutsChance = (3 / 4) * 100;
 			for (let i = 0; i < quantity; i++) {
@@ -46,7 +46,7 @@ export const cutLeapingFishTask: MinionTask = {
 			}
 		}
 
-		if (barbarianFish.name === 'Cut leaping trout') {
+		if (barbarianFish.item.name === 'Leaping trout') {
 			roeChance = clamp(0.67 * currentLevel, 0, 100);
 			fishOffcutsChance = (1 / 2) * 100;
 			for (let i = 0; i < quantity; i++) {
@@ -75,7 +75,7 @@ export const cutLeapingFishTask: MinionTask = {
 			duration
 		});
 
-		let str = `${user}, ${user.minionName} finished ${barbarianFish.name}. ${xpRes}\n\n You received: ${loot}.`;
+		let str = `${user}, ${user.minionName} finished cutting ${quantity}x ${barbarianFish.item.name}. ${xpRes}\n\n You received: ${loot}.`;
 
 		await transactItems({
 			userID: user.id,

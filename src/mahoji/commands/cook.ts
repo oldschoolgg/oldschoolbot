@@ -26,7 +26,7 @@ export const cookCommand: OSBMahojiCommand = {
 			description: 'The thing you want to cook.',
 			required: true,
 			autocomplete: async (value: string) => {
-				return [...Cookables.map(i => i.name), ...LeapingFish.map(i => i.name)]
+				return [...Cookables.map(i => i.name), ...LeapingFish.map(i => i.item.name)]
 					.filter(name => (!value ? true : name.toLowerCase().includes(value.toLowerCase())))
 					.map(i => ({
 						name: i,
@@ -42,18 +42,18 @@ export const cookCommand: OSBMahojiCommand = {
 			min_value: 1
 		}
 	],
-	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
+	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number, fishID?: number }>) => {
 		const user = await mUserFetch(userID);
-		let { quantity, name } = options;
+		let { quantity, name, fishID } = options;
 
 		const barbarianFish = LeapingFish.find(
 			_leapingFish =>
-				stringMatches(_leapingFish.name, name) ||
-				stringMatches(_leapingFish.name.split(' ')[0], name) ||
+				stringMatches(_leapingFish.item.name, name) ||
+				stringMatches(_leapingFish.item.name.split(' ')[0], name) ||
 				_leapingFish.aliases.some(alias => stringMatches(alias, name))
 		);
 
-		if (barbarianFish) {
+		if (barbarianFish || fishID) {
 			return cutLeapingFishCommand({ user, channelID, name, quantity });
 		}
 

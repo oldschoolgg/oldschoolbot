@@ -296,7 +296,7 @@ export const tripHandlers = {
 	[activity_type_enum.CutLeapingFish]: {
 		commandName: 'cook',
 		args: (data: CutLeapingFishActivityTaskOptions) => ({
-			name: data.fishName,
+			name: data.fishID,
 			quantity: data.quantity
 		})
 	},

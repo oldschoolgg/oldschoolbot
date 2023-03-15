@@ -1,24 +1,20 @@
-import { Bank } from 'oldschooljs';
-
+import getOSItem from '../../../util/getOSItem';
 import { CutLeapingFish } from '../../types';
 
 const LeapingFish: CutLeapingFish[] = [
 	{
-		name: 'Cut leaping sturgeon',
+		item: getOSItem('Leaping sturgeon'),
 		aliases: ['leaping sturgeon', 'cut leaping sturgeon', 'sturgeon'],
-		inputItems: new Bank({ 'Leaping sturgeon': 1 }),
 		tickRate: 1
 	},
 	{
-		name: 'Cut leaping trout',
+		item: getOSItem('Leaping trout'),
 		aliases: ['leaping trout', 'cut leaping trout'],
-		inputItems: new Bank({ 'Leaping trout': 1 }),
 		tickRate: 1
 	},
 	{
-		name: 'Cut leaping salmon',
+		item: getOSItem('Leaping salmon'),
 		aliases: ['leaping salmon', 'cut leaping salmon'],
-		inputItems: new Bank({ 'Leaping salmon': 1 }),
 		tickRate: 1
 	}
 ];

@@ -6,7 +6,6 @@ import { CutLeapingFishActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 export async function cutLeapingFishCommand({
 	user,
@@ -21,26 +20,26 @@ export async function cutLeapingFishCommand({
 }) {
 	const barbarianFish = LeapingFish.find(
 		_leapingFish =>
-			stringMatches(_leapingFish.name, name) ||
-			stringMatches(_leapingFish.name.split(' ')[0], name) ||
+			stringMatches(_leapingFish.item.name, name) ||
+			stringMatches(_leapingFish.item.name.split(' ')[0], name) ||
 			_leapingFish.aliases.some(alias => stringMatches(alias, name))
 	);
 
 	if (!barbarianFish) return 'That is not a valid fish to cut.';
 
-	let requiredItems = new Bank(barbarianFish.inputItems);
+	let requiredItems = barbarianFish.item.name;
 
 	let timeToCutSingleItem = barbarianFish.tickRate * Time.Second * 0.6;
 
-	const maxTripLength = calcMaxTripLength(user, 'Herblore');
+	const maxTripLength = calcMaxTripLength(user, 'Cooking');
 
 	if (!quantity) quantity = Math.floor(maxTripLength / timeToCutSingleItem);
 
-	const baseCost = new Bank(barbarianFish.inputItems);
+	const baseCost = new Bank().add(requiredItems);
 
-	const maxCanDo = user.bankWithGP.fits(baseCost);
+	const maxCanDo = user.bank.fits(baseCost);
 	if (maxCanDo === 0) {
-		return `You don't have enough supplies to cut even one of this item!\nTo ${barbarianFish.name}, you need to have ${baseCost}.`;
+		return `You don't have enough supplies to cut even one of this item!\nTo cut a ${barbarianFish.item.name}, you need to have ${baseCost}.`;
 	}
 	if (maxCanDo < quantity) {
 		quantity = maxCanDo;
@@ -51,21 +50,21 @@ export async function cutLeapingFishCommand({
 	if (duration > maxTripLength) {
 		return `${user.minionName} can't go on trips longer than ${formatDuration(
 			maxTripLength
-		)}, try a lower quantity. The highest amount of ${barbarianFish.name}s you can cut is ${Math.floor(
+		)}, try a lower quantity. The highest amount of ${barbarianFish.item.name}'s you can cut is ${Math.floor(
 			maxTripLength / timeToCutSingleItem
 		)}.`;
 	}
 
-	const finalCost = requiredItems.multiply(quantity);
+	const finalCost = new Bank();
+	finalCost.add(baseCost.multiply(quantity));
+
 	if (!user.owns(finalCost)) {
 		return `You don't own: ${finalCost}.`;
 	}
 	await user.removeItemsFromBank(finalCost);
 
-	updateBankSetting('herblore_cost_bank', finalCost);
-
 	await addSubTaskToActivityTask<CutLeapingFishActivityTaskOptions>({
-		fishName: barbarianFish.name,
+		fishID: barbarianFish.item.id,
 		userID: user.id,
 		channelID: channelID.toString(),
 		quantity,
@@ -73,7 +72,7 @@ export async function cutLeapingFishCommand({
 		type: 'CutLeapingFish'
 	});
 
-	return `${user.minionName} is now cutting ${quantity} ${barbarianFish.name}, it'll take around ${formatDuration(
-		duration
-	)} to finish.`;
+	return `${user.minionName} is now cutting ${quantity}x ${
+		barbarianFish.item.name
+	}, it'll take around ${formatDuration(duration)} to finish.`;
 }
