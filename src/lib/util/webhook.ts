@@ -1,8 +1,7 @@
-import { Embed } from '@discordjs/builders';
+import { EmbedBuilder } from '@discordjs/builders';
 import {
 	AttachmentBuilder,
 	BaseMessageOptions,
-	EmbedBuilder,
 	Message,
 	PartialGroupDMChannel,
 	PermissionsBitField,
@@ -59,7 +58,7 @@ export async function sendToChannelID(
 	data: {
 		content?: string;
 		image?: Buffer | AttachmentBuilder;
-		embed?: Embed | EmbedBuilder;
+		embed?: EmbedBuilder;
 		files?: BaseMessageOptions['files'];
 		components?: BaseMessageOptions['components'];
 		allowedMentions?: BaseMessageOptions['allowedMentions'];

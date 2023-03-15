@@ -7,6 +7,7 @@ import { getSimilarItems, inverseSimilarItems } from '../data/similarItems';
 import {
 	DefenceGearStat,
 	GearSetup,
+	GearSetupType,
 	GearSlotItem,
 	GearStat,
 	GearStats,
@@ -14,14 +15,10 @@ import {
 	OtherGearStat
 } from '../gear/types';
 import { GearRequirement } from '../minions/types';
+import { assert } from '../util';
 import getOSItem from '../util/getOSItem';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
-import { toTitleCase } from '../util/toTitleCase';
-
-export function readableStatName(slot: string) {
-	return toTitleCase(slot.replace('_', ' '));
-}
 
 export type PartialGearSetup = Partial<{
 	[key in EquipmentSlot]: string;
@@ -81,7 +78,7 @@ export function filterGearSetup(gear: undefined | null | GearSetup | PartialGear
 		: (gear as GearSetup);
 	return filteredGear;
 }
-export const globalPresets: GearPreset[] = [
+export const globalPresets: (GearPreset & { defaultSetup: GearSetupType })[] = [
 	{
 		name: 'graceful',
 		user_id: '123',
@@ -97,7 +94,11 @@ export const globalPresets: GearPreset[] = [
 		weapon: null,
 		ring: null,
 		ammo: null,
-		ammo_qty: null
+		ammo_qty: null,
+		emoji_id: null,
+		times_equipped: 0,
+		defaultSetup: 'skilling',
+		pinned_setup: null
 	},
 	{
 		name: 'carpenter',
@@ -114,7 +115,11 @@ export const globalPresets: GearPreset[] = [
 		weapon: null,
 		ring: null,
 		ammo: null,
-		ammo_qty: null
+		ammo_qty: null,
+		emoji_id: null,
+		times_equipped: 0,
+		defaultSetup: 'skilling',
+		pinned_setup: null
 	},
 	{
 		name: 'rogue',
@@ -131,7 +136,11 @@ export const globalPresets: GearPreset[] = [
 		weapon: null,
 		ring: null,
 		ammo: null,
-		ammo_qty: null
+		ammo_qty: null,
+		emoji_id: null,
+		times_equipped: 0,
+		defaultSetup: 'skilling',
+		pinned_setup: null
 	},
 	{
 		name: 'clue_hunter',
@@ -148,7 +157,11 @@ export const globalPresets: GearPreset[] = [
 		weapon: null,
 		ring: null,
 		ammo: null,
-		ammo_qty: null
+		ammo_qty: null,
+		emoji_id: null,
+		times_equipped: 0,
+		defaultSetup: 'skilling',
+		pinned_setup: null
 	},
 	{
 		name: 'angler',
@@ -165,7 +178,11 @@ export const globalPresets: GearPreset[] = [
 		weapon: null,
 		ring: null,
 		ammo: null,
-		ammo_qty: null
+		ammo_qty: null,
+		emoji_id: null,
+		times_equipped: 0,
+		defaultSetup: 'skilling',
+		pinned_setup: null
 	},
 	{
 		name: 'spirit_angler',
@@ -182,7 +199,11 @@ export const globalPresets: GearPreset[] = [
 		weapon: null,
 		ring: null,
 		ammo: null,
-		ammo_qty: null
+		ammo_qty: null,
+		emoji_id: null,
+		times_equipped: 0,
+		defaultSetup: 'skilling',
+		pinned_setup: null
 	},
 	{
 		name: 'pyromancer',
@@ -199,7 +220,11 @@ export const globalPresets: GearPreset[] = [
 		weapon: null,
 		ring: null,
 		ammo: null,
-		ammo_qty: null
+		ammo_qty: null,
+		emoji_id: null,
+		times_equipped: 0,
+		defaultSetup: 'skilling',
+		pinned_setup: null
 	},
 	{
 		name: 'prospector',
@@ -216,7 +241,11 @@ export const globalPresets: GearPreset[] = [
 		weapon: null,
 		ring: null,
 		ammo: null,
-		ammo_qty: null
+		ammo_qty: null,
+		emoji_id: null,
+		times_equipped: 0,
+		defaultSetup: 'skilling',
+		pinned_setup: null
 	},
 	{
 		name: 'lumberjack',
@@ -233,7 +262,11 @@ export const globalPresets: GearPreset[] = [
 		weapon: null,
 		ring: null,
 		ammo: null,
-		ammo_qty: null
+		ammo_qty: null,
+		emoji_id: null,
+		times_equipped: 0,
+		defaultSetup: 'skilling',
+		pinned_setup: null
 	},
 	{
 		name: 'farmer',
@@ -250,7 +283,11 @@ export const globalPresets: GearPreset[] = [
 		weapon: null,
 		ring: null,
 		ammo: null,
-		ammo_qty: null
+		ammo_qty: null,
+		emoji_id: null,
+		times_equipped: 0,
+		defaultSetup: 'skilling',
+		pinned_setup: null
 	},
 	{
 		name: 'runecraft',
@@ -267,7 +304,11 @@ export const globalPresets: GearPreset[] = [
 		weapon: null,
 		ring: null,
 		ammo: null,
-		ammo_qty: null
+		ammo_qty: null,
+		emoji_id: null,
+		times_equipped: 0,
+		defaultSetup: 'skilling',
+		pinned_setup: null
 	},
 	{
 		name: 'smith',
@@ -284,7 +325,11 @@ export const globalPresets: GearPreset[] = [
 		weapon: null,
 		ring: null,
 		ammo: null,
-		ammo_qty: null
+		ammo_qty: null,
+		emoji_id: null,
+		times_equipped: 0,
+		defaultSetup: 'skilling',
+		pinned_setup: null
 	}
 ];
 
@@ -320,9 +365,31 @@ export class Gear {
 	[EquipmentSlot.Weapon]: GearSlotItem | null = null;
 	stats = baseStats;
 
-	constructor(_setup: GearSetup | PartialGearSetup = {}) {
+	constructor(_setup: GearSetup | PartialGearSetup | GearPreset = {}) {
+		if ('user_id' in _setup) {
+			const gear: GearSetup = {} as GearSetup;
+			for (const key of [
+				'cape',
+				'feet',
+				'hands',
+				'head',
+				'legs',
+				'neck',
+				'ring',
+				'shield',
+				'weapon',
+				'body'
+			] as const) {
+				const val = _setup[key];
+				gear[key] = val !== null ? { item: val, quantity: 1 } : null;
+			}
+
+			gear.ammo = _setup.ammo ? { item: _setup.ammo, quantity: _setup.ammo_qty ?? 1 } : null;
+			gear['2h'] = _setup.two_handed ? { item: _setup.two_handed, quantity: 1 } : null;
+			return new Gear(gear);
+		}
 		const setup =
-			typeof _setup?.ammo === 'undefined' || typeof _setup?.ammo === 'string'
+			(typeof _setup.ammo === 'undefined' || typeof _setup.ammo === 'string') && !('user_id' in _setup)
 				? constructGearSetup(_setup as PartialGearSetup)
 				: (_setup as GearSetup);
 
@@ -430,7 +497,6 @@ export class Gear {
 		const sum = { ...baseStats };
 		for (const id of this.allItems(false)) {
 			const item = getOSItem(id);
-			if (!item) continue;
 			for (const keyToAdd of objectKeys(sum)) {
 				sum[keyToAdd] += item.equipment ? item.equipment[keyToAdd] : 0;
 			}
@@ -468,7 +534,9 @@ export class Gear {
 		return new Gear({ ...this.raw() });
 	}
 
-	equip(itemToEquip: Item): { refundBank: Bank | null } {
+	equip(_itemToEquip: Item | string, quantity = 1): { refundBank: Bank | null } {
+		const itemToEquip: Item = typeof _itemToEquip === 'string' ? getOSItem(_itemToEquip) : _itemToEquip;
+		assert(quantity >= 1, 'Cannot equip less than 1 item.');
 		if (!itemToEquip.equipment) throw new Error(`${itemToEquip.name} is not equippable.`);
 		const refundBank = new Bank();
 
@@ -477,31 +545,35 @@ export class Gear {
 		const unequipAndEquip = () => {
 			const equippedAlready = this[slot];
 			if (equippedAlready) {
-				refundBank.add(equippedAlready.item);
+				refundBank.add(equippedAlready.item, equippedAlready.quantity);
 				this[slot] = null;
 			}
-			this[slot] = { item: itemToEquip.id, quantity: 1 };
+			this[slot] = { item: itemToEquip.id, quantity };
 		};
 
 		switch (slot) {
 			case EquipmentSlot.TwoHanded: {
 				// If trying to equip a 2h weapon, remove the weapon and shield.
 				if (this.weapon) {
-					refundBank.add(this.weapon.item);
+					refundBank.add(this.weapon.item, this.weapon.quantity);
 					this.weapon = null;
 				}
 				if (this.shield) {
-					refundBank.add(this.shield.item);
+					refundBank.add(this.shield.item, this.shield.quantity);
 					this.shield = null;
 				}
-				this['2h'] = { item: itemToEquip.id, quantity: 1 };
+				if (this['2h']) {
+					refundBank.add(this['2h'].item, this['2h'].quantity);
+					this['2h'] = null;
+				}
+				this['2h'] = { item: itemToEquip.id, quantity };
 				break;
 			}
 			case EquipmentSlot.Weapon:
 			case EquipmentSlot.Shield: {
 				const twoHanded = this['2h'];
 				if (twoHanded) {
-					refundBank.add(twoHanded.item);
+					refundBank.add(twoHanded.item, twoHanded.quantity);
 					this['2h'] = null;
 				}
 
@@ -532,16 +604,4 @@ export function constructGearSetup(setup: PartialGearSetup): Gear {
 		shield: setup.shield ? { item: itemID(setup.shield), quantity: 1 } : null,
 		weapon: setup.weapon ? { item: itemID(setup.weapon), quantity: 1 } : null
 	});
-}
-
-export function gearPresetToGear(gearPreset: GearPreset) {
-	const gear: GearSetup = {} as GearSetup;
-	for (const key of ['cape', 'feet', 'hands', 'head', 'legs', 'neck', 'ring', 'shield', 'weapon', 'body'] as const) {
-		const val = gearPreset[key];
-		gear[key] = val !== null ? { item: val, quantity: 1 } : null;
-	}
-
-	gear.ammo = gearPreset.ammo ? { item: gearPreset.ammo, quantity: gearPreset.ammo_qty ?? 1 } : null;
-	gear['2h'] = gearPreset.two_handed ? { item: gearPreset.two_handed, quantity: 1 } : null;
-	return new Gear(gear);
 }
