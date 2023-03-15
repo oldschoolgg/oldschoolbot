@@ -117,7 +117,17 @@ export const raidCommand: OSBMahojiCommand = {
 							type: ApplicationCommandOptionType.Integer,
 							name: 'max_team_size',
 							description: 'Choose a max size for your team.',
-							required: false
+							required: false,
+							min_value: 1,
+							max_value: 8
+						},
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'quantity',
+							description: 'The quantity to do.',
+							required: false,
+							min_value: 1,
+							max_value: 5
 						}
 					]
 				},
@@ -138,7 +148,7 @@ export const raidCommand: OSBMahojiCommand = {
 		cox?: { start?: { type: 'solo' | 'mass'; challenge_mode?: boolean; quantity?: number }; stats?: {} };
 		tob?: { start?: { hard_mode?: boolean; max_team_size?: number }; stats?: {}; check?: { hard_mode?: boolean } };
 		toa?: {
-			start?: { raid_level: RaidLevel; max_team_size?: number; solo?: boolean };
+			start?: { raid_level: RaidLevel; max_team_size?: number; solo?: boolean; quantity?: number };
 			help?: {};
 		};
 	}>) => {
@@ -148,7 +158,7 @@ export const raidCommand: OSBMahojiCommand = {
 		if (cox?.stats) return coxStatsCommand(user);
 		if (tob?.stats) return tobStatsCommand(user);
 		if (tob?.check) return tobCheckCommand(user, Boolean(tob.check.hard_mode));
-		if (options.toa?.help) return toaHelpCommand(user);
+		if (options.toa?.help) return toaHelpCommand(user, channelID);
 
 		if (minionIsBusy(user.id)) return "Your minion is busy, you can't do this.";
 
@@ -165,7 +175,8 @@ export const raidCommand: OSBMahojiCommand = {
 				Boolean(options.toa.start.solo),
 				channelID,
 				options.toa.start.raid_level,
-				options.toa.start.max_team_size
+				options.toa.start.max_team_size,
+				options.toa.start.quantity
 			);
 		}
 

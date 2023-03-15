@@ -1,6 +1,7 @@
 import { Bank } from 'oldschooljs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import { convertLVLtoXP, itemID } from 'oldschooljs/dist/util';
+import { describe, expect, test } from 'vitest';
 
 import { Gear } from '../src/lib/structures/Gear';
 import { gearEquipMultiImpl } from '../src/lib/util/equipMulti';

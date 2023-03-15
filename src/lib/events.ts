@@ -1,12 +1,12 @@
-import { Embed } from '@discordjs/builders';
+import { EmbedBuilder } from '@discordjs/builders';
 import { BaseMessageOptions, bold, ButtonBuilder, ButtonStyle, Message, TextChannel } from 'discord.js';
 import { roll, Time } from 'e';
 import LRUCache from 'lru-cache';
 import { Items } from 'oldschooljs';
 
 import { CLIENT_ID, production, SupportServer } from '../config';
+import { untrustedGuildSettingsCache } from '../mahoji/guildSettings';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
-import { untrustedGuildSettingsCache } from '../mahoji/mahojiSettings';
 import { mentionCommand } from './commandMention';
 import { BitField, Channel, Emoji } from './constants';
 import pets from './data/pets';
@@ -111,16 +111,23 @@ Type \`/tools user mypets\` to see your pets.`);
 
 const mentionText = `<@${CLIENT_ID}>`;
 
-const cooldownTimers: { name: string; timeStamp: (user: MUser) => number; cd: number | ((user: MUser) => number) }[] = [
+const cooldownTimers: {
+	name: string;
+	timeStamp: (user: MUser) => number;
+	cd: number | ((user: MUser) => number);
+	command: [string] | [string, string] | [string, string, string];
+}[] = [
 	{
 		name: 'Tears of Guthix',
 		timeStamp: (user: MUser) => Number(user.user.lastTearsOfGuthixTimestamp),
-		cd: Time.Day * 7
+		cd: Time.Day * 7,
+		command: ['minigames', 'tears_of_guthix', 'start']
 	},
 	{
 		name: 'Daily',
 		timeStamp: (user: MUser) => Number(user.user.lastDailyTimestamp),
-		cd: Time.Hour * 12
+		cd: Time.Hour * 12,
+		command: ['minion', 'daily']
 	}
 ];
 
@@ -206,7 +213,7 @@ const mentionCommands: MentionCommand[] = [
 				str += `\n...and ${items.length - 5} others`;
 			}
 
-			return msg.reply({ embeds: [new Embed().setDescription(str)], components });
+			return msg.reply({ embeds: [new EmbedBuilder().setDescription(str)], components });
 		}
 	},
 	{
@@ -246,7 +253,7 @@ const mentionCommands: MentionCommand[] = [
 							const durationRemaining = formatDuration(Date.now() - (lastDone + cooldown));
 							return `${cd.name}: ${durationRemaining}`;
 						}
-						return bold(`${cd.name}: Ready`);
+						return bold(`${cd.name}: Ready ${mentionCommand(cd.command[0], cd.command[1], cd.command[2])}`);
 					})
 					.join('\n'),
 				components

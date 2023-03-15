@@ -16,11 +16,15 @@ import { getSimilarItems } from './data/similarItems';
 import { GearSetup, UserFullGearSetup } from './gear/types';
 import { CombatOptionsEnum } from './minions/data/combatConstants';
 import { baseUserKourendFavour, UserKourendFavour } from './minions/data/kourendFavour';
+import { defaultFarmingContract } from './minions/farming';
+import { FarmingContract } from './minions/farming/types';
 import { AttackStyles } from './minions/functions';
 import { blowpipeDarts, validateBlowpipeData } from './minions/functions/blowpipeCommand';
 import { AddXpParams, BlowpipeData } from './minions/types';
 import { getMinigameEntity, Minigames, MinigameScore } from './settings/minigames';
 import { prisma } from './settings/prisma';
+import { getFarmingInfoFromUser } from './skilling/functions/getFarmingInfo';
+import Farming from './skilling/skills/farming';
 import { SkillsEnum } from './skilling/types';
 import { BankSortMethod } from './sorts';
 import { defaultGear, Gear } from './structures/Gear';
@@ -565,8 +569,22 @@ export class MUserClass {
 		return true;
 	}
 
-	owns(checkBank: Bank | number | string) {
-		return this.bank.clone().add('Coins', Number(this.user.GP)).has(checkBank);
+	allEquippedGearBank() {
+		const bank = new Bank();
+		for (const gear of Object.values(this.gear).flat()) {
+			bank.add(gear.allItemsBank());
+		}
+		return bank;
+	}
+
+	owns(checkBank: Bank | number | string, { includeGear }: { includeGear: boolean } = { includeGear: false }) {
+		const allItems = this.bank.clone().add('Coins', Number(this.user.GP));
+		if (includeGear) {
+			for (const [item, qty] of this.allEquippedGearBank().items()) {
+				allItems.add(item.id, qty);
+			}
+		}
+		return allItems.has(checkBank);
 	}
 
 	async sync() {
@@ -612,6 +630,19 @@ export class MUserClass {
 
 	get hasMinion() {
 		return Boolean(this.user.minion_hasBought);
+	}
+
+	farmingContract() {
+		const currentFarmingContract = this.user.minion_farmingContract as FarmingContract | null;
+		const plant = !currentFarmingContract
+			? undefined
+			: Farming.Plants.find(i => i.name === currentFarmingContract?.plantToGrow);
+		const detailed = getFarmingInfoFromUser(this.user);
+		return {
+			contract: currentFarmingContract ?? defaultFarmingContract,
+			plant,
+			matchingPlantedCrop: plant ? detailed.patchesDetailed.find(i => i.plant && i.plant === plant) : undefined
+		};
 	}
 }
 declare global {
