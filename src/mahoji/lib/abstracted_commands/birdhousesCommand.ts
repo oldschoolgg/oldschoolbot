@@ -123,7 +123,7 @@ const birdhouseSeedReq = [
 		itemID: itemID('Irit seed'),
 		amount: 5
 	},
-	
+
 	{
 		itemID: itemID('Dwarf weed seed'),
 		amount: 5
