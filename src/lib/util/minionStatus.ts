@@ -644,6 +644,9 @@ export function minionStatus(user: MUser) {
 				durationRemaining
 			)}.`;
 		}
+		case 'UnderwaterAgilityThieving': {
+			return `${name} is currently doing Underwater Agility and Thieving. ${formattedDuration}`;
+		}
 		case 'HalloweenEvent':
 		case 'Easter':
 		case 'BlastFurnace': {
