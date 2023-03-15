@@ -1,17 +1,18 @@
-import { Embed } from '@discordjs/builders';
-import { BaseMessageOptions, bold, Message, TextChannel } from 'discord.js';
+import { EmbedBuilder } from '@discordjs/builders';
+import { BaseMessageOptions, bold, ButtonBuilder, ButtonStyle, Message, TextChannel } from 'discord.js';
 import { roll, Time } from 'e';
 import LRUCache from 'lru-cache';
 import { Items } from 'oldschooljs';
 
 import { CLIENT_ID, production, SupportServer } from '../config';
+import { untrustedGuildSettingsCache } from '../mahoji/guildSettings';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
-import { untrustedGuildSettingsCache } from '../mahoji/mahojiSettings';
-import { Channel, Emoji } from './constants';
+import { mentionCommand } from './commandMention';
+import { BitField, Channel, Emoji } from './constants';
 import pets from './data/pets';
 import { prisma } from './settings/prisma';
 import { ItemBank } from './types';
-import { channelIsSendable, formatDuration, isFunction, toKMB } from './util';
+import { channelIsSendable, formatDuration, isFunction, makeComponents, toKMB } from './util';
 import { makeBankImage } from './util/makeBankImage';
 import { minionStatsEmbed } from './util/minionStatsEmbed';
 
@@ -110,16 +111,23 @@ Type \`/tools user mypets\` to see your pets.`);
 
 const mentionText = `<@${CLIENT_ID}>`;
 
-const cooldownTimers: { name: string; timeStamp: (user: MUser) => number; cd: number | ((user: MUser) => number) }[] = [
+const cooldownTimers: {
+	name: string;
+	timeStamp: (user: MUser) => number;
+	cd: number | ((user: MUser) => number);
+	command: [string] | [string, string] | [string, string, string];
+}[] = [
 	{
 		name: 'Tears of Guthix',
 		timeStamp: (user: MUser) => Number(user.user.lastTearsOfGuthixTimestamp),
-		cd: Time.Day * 7
+		cd: Time.Day * 7,
+		command: ['minigames', 'tears_of_guthix', 'start']
 	},
 	{
 		name: 'Daily',
 		timeStamp: (user: MUser) => Number(user.user.lastDailyTimestamp),
-		cd: Time.Hour * 12
+		cd: Time.Hour * 12,
+		command: ['minion', 'daily']
 	}
 ];
 
@@ -205,7 +213,7 @@ const mentionCommands: MentionCommand[] = [
 				str += `\n...and ${items.length - 5} others`;
 			}
 
-			return msg.reply({ embeds: [new Embed().setDescription(str)], components });
+			return msg.reply({ embeds: [new EmbedBuilder().setDescription(str)], components });
 		}
 	},
 	{
@@ -245,10 +253,34 @@ const mentionCommands: MentionCommand[] = [
 							const durationRemaining = formatDuration(Date.now() - (lastDone + cooldown));
 							return `${cd.name}: ${durationRemaining}`;
 						}
-						return bold(`${cd.name}: Ready`);
+						return bold(`${cd.name}: Ready ${mentionCommand(cd.command[0], cd.command[1], cd.command[2])}`);
 					})
 					.join('\n'),
 				components
+			});
+		}
+	},
+	{
+		name: 'sendtoabutton',
+		aliases: ['sendtoabutton'],
+		description: 'Shows your stats.',
+		run: async ({ msg, user }: MentionCommandOptions) => {
+			if ([BitField.isModerator].every(bit => !user.bitfield.includes(bit))) {
+				return;
+			}
+			msg.reply({
+				content: `Click this button to find out if you're ready to do Tombs of Amascut! You can also use the ${mentionCommand(
+					'raid',
+					'toa',
+					'help'
+				)} command.`,
+				components: makeComponents([
+					new ButtonBuilder()
+						.setStyle(ButtonStyle.Primary)
+						.setCustomId('TOA_CHECK')
+						.setLabel('Check TOA Requirements')
+						.setEmoji('1069174271894638652')
+				])
 			});
 		}
 	},

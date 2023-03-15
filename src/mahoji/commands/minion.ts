@@ -19,6 +19,7 @@ import creatures from '../../lib/skilling/skills/hunter/creatures';
 import { convertLVLtoXP, getUsername, isValidNickname } from '../../lib/util';
 import { getKCByName } from '../../lib/util/getKCByName';
 import getOSItem from '../../lib/util/getOSItem';
+import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
 import {
 	achievementDiaryCommand,
@@ -34,7 +35,7 @@ import { minionBuyCommand } from '../lib/abstracted_commands/minionBuyCommand';
 import { minionStatusCommand } from '../lib/abstracted_commands/minionStatusCommand';
 import { skillOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, patronMsg } from '../mahojiSettings';
+import { patronMsg } from '../mahojiSettings';
 
 const patMessages = [
 	'You pat {name} on the head.',
@@ -193,12 +194,22 @@ export const minionCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.String,
 					name: 'item',
 					description: 'The item you want to use.',
-					autocomplete: async (value: string) => {
-						return Lampables.map(i => i.items)
+					autocomplete: async (value, user) => {
+						const mappedLampables = Lampables.map(i => i.items)
 							.flat(2)
 							.map(getOSItem)
-							.filter(p => (!value ? true : p.name.toLowerCase().includes(value.toLowerCase())))
-							.map(p => ({ name: p.name, value: p.name }));
+							.map(i => ({ id: i.id, name: i.name }));
+
+						const botUser = await mUserFetch(user.id);
+
+						return botUser.bank
+							.items()
+							.filter(i => mappedLampables.map(l => l.id).includes(i[0].id))
+							.filter(i => {
+								if (!value) return true;
+								return i[0].name.toLowerCase().includes(value.toLowerCase());
+							})
+							.map(i => ({ name: `${i[0].name} (${i[1]}x Owned)`, value: i[0].name.toLowerCase() }));
 					},
 					required: true
 				},

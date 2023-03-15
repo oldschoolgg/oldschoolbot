@@ -1,4 +1,9 @@
+import { GearPreset } from '@prisma/client';
+import { Bank } from 'oldschooljs';
+import { describe, expect, it, test } from 'vitest';
+
 import { GearStat } from '../src/lib/gear/types';
+import { bankIsEqual } from '../src/lib/stressTest';
 import { constructGearSetup, Gear } from '../src/lib/structures/Gear';
 import { itemNameFromID } from '../src/lib/util';
 import getOSItem from '../src/lib/util/getOSItem';
@@ -60,7 +65,6 @@ describe('Gear', () => {
 				'Woodcutting cape'
 			].sort()
 		);
-		expect(allItems.length).toEqual(25);
 	});
 
 	test('equippedWeapon', () => {
@@ -161,5 +165,256 @@ describe('Gear', () => {
 	test('toString', () => {
 		expect(testGear.toString()).toEqual('3rd age platebody, Dragon full helm (g), 3rd age platelegs, Twisted bow');
 		expect(new Gear().toString()).toEqual('No items');
+	});
+
+	test('allItemsBank', () => {
+		const gear = new Gear({
+			ammo: 'Dragon arrow',
+			body: '3rd age platebody'
+		});
+		gear.ammo!.quantity = 1000;
+		expect(bankIsEqual(gear.allItemsBank(), new Bank().add('Dragon arrow', 1000).add('3rd age platebody'))).toEqual(
+			true
+		);
+	});
+
+	it('should equip/refund properly if equipping over a 2h', () => {
+		const gear = new Gear({
+			ammo: 'Dragon arrow',
+			body: '3rd age platebody',
+			'2h': 'Armadyl godsword'
+		});
+
+		const result = gear.equip(getOSItem('Dragon dagger'));
+
+		expect(bankIsEqual(result.refundBank as any, new Bank().add('Armadyl godsword'))).toEqual(true);
+		expect(gear['2h']).toEqual(null);
+		expect(gear.shield).toEqual(null);
+		expect(gear.weapon).toEqual({ item: getOSItem('Dragon dagger').id, quantity: 1 });
+	});
+
+	it('should equip/refund properly if equipping a 2h', () => {
+		const gear = new Gear({
+			ammo: 'Dragon arrow',
+			body: '3rd age platebody',
+			weapon: 'Dragon dagger',
+			shield: 'Bronze kiteshield'
+		});
+
+		gear.equip(getOSItem('Armadyl godsword'));
+		gear.equip(getOSItem('Dragon dagger'));
+		gear.equip(getOSItem('Bronze kiteshield'));
+		const result = gear.equip(getOSItem('Armadyl godsword'));
+
+		expect(bankIsEqual(result.refundBank as any, new Bank().add('Dragon dagger').add('Bronze kiteshield'))).toEqual(
+			true
+		);
+		expect(gear.weapon).toEqual(null);
+		expect(gear.shield).toEqual(null);
+		expect(gear['2h']).toEqual({ item: getOSItem('Armadyl godsword').id, quantity: 1 });
+	});
+
+	it('should equip/refund properly if equipping a 2h', () => {
+		const gear = new Gear({
+			ammo: 'Dragon arrow',
+			body: '3rd age platebody',
+			weapon: 'Dragon dagger',
+			shield: 'Bronze kiteshield'
+		});
+
+		const result = gear.equip(getOSItem('Armadyl godsword'));
+
+		expect(bankIsEqual(result.refundBank as any, new Bank().add('Dragon dagger').add('Bronze kiteshield'))).toEqual(
+			true
+		);
+		expect(gear.weapon).toEqual(null);
+		expect(gear.shield).toEqual(null);
+		expect(gear['2h']).toEqual({ item: getOSItem('Armadyl godsword').id, quantity: 1 });
+	});
+
+	it('should equip/refund properly if equipping a 2h', () => {
+		const gear = new Gear({
+			ammo: 'Dragon arrow',
+			body: '3rd age platebody',
+			weapon: 'Dragon dagger',
+			shield: 'Bronze kiteshield'
+		});
+
+		const result = gear.equip(getOSItem('Bronze dagger'));
+
+		expect(bankIsEqual(result.refundBank as any, new Bank().add('Dragon dagger'))).toEqual(true);
+		expect(gear.shield).toEqual({ item: getOSItem('Bronze kiteshield').id, quantity: 1 });
+		expect(gear.weapon).toEqual({ item: getOSItem('Bronze dagger').id, quantity: 1 });
+	});
+
+	it('should equip/refund properly if equipping a top', () => {
+		const gear = new Gear({
+			ammo: 'Dragon arrow',
+			body: '3rd age platebody'
+		});
+
+		const result = gear.equip(getOSItem('Bronze platebody'));
+
+		expect(bankIsEqual(result.refundBank as any, new Bank().add('3rd age platebody'))).toEqual(true);
+		expect(gear.body).toEqual({ item: getOSItem('Bronze platebody').id, quantity: 1 });
+	});
+
+	it('should clone without affecting cloned gear', () => {
+		const gear = new Gear({
+			ammo: 'Dragon arrow',
+			body: '3rd age platebody'
+		});
+
+		const clonedGear = gear.clone();
+
+		expect(gear.raw()).toEqual(clonedGear.raw());
+
+		clonedGear.body = null;
+
+		expect(gear.body).toEqual({ item: getOSItem('3rd age platebody').id, quantity: 1 });
+	});
+
+	it('should handle equipping ammo', () => {
+		const gear = new Gear({
+			ammo: 'Bronze arrow',
+			body: '3rd age platebody'
+		});
+
+		const equipRes1 = gear.equip('Dragon arrow', 1000);
+		expect(equipRes1.refundBank?.bank).toEqual(new Bank().add('Bronze arrow').bank);
+		expect(gear.ammo).toEqual({ item: getOSItem('Dragon arrow').id, quantity: 1000 });
+	});
+
+	it('should refund 2h if wearing 2h', () => {
+		const gear = new Gear({
+			'2h': 'Armadyl godsword'
+		});
+
+		const equipRes1 = gear.equip('Dragon 2h sword');
+		expect(equipRes1.refundBank?.bank).toEqual(new Bank().add('Armadyl godsword').bank);
+		expect(gear['2h']).toEqual({ item: getOSItem('Dragon 2h sword').id, quantity: 1 });
+	});
+
+	it('should refund 2h if equipping 1h', () => {
+		const gear = new Gear({
+			'2h': 'Armadyl godsword'
+		});
+
+		const equipRes1 = gear.equip('Dragon dagger');
+		expect(equipRes1.refundBank?.bank).toEqual(new Bank().add('Armadyl godsword').bank);
+		expect(gear.weapon).toEqual({ item: getOSItem('Dragon dagger').id, quantity: 1 });
+	});
+
+	it('should refund shield if equipping 2h', () => {
+		const gear = new Gear({
+			shield: 'Bronze kiteshield'
+		});
+
+		const equipRes1 = gear.equip('Armadyl godsword');
+		expect(equipRes1.refundBank?.bank).toEqual(new Bank().add('Bronze kiteshield').bank);
+		expect(gear['2h']).toEqual({ item: getOSItem('Armadyl godsword').id, quantity: 1 });
+	});
+
+	it('should make from gear preset', () => {
+		const gearPreset: GearPreset = {
+			name: 'graceful',
+			user_id: '123',
+			head: itemID('Graceful hood'),
+			neck: itemID('Amulet of fury'),
+			body: itemID('Graceful top'),
+			legs: itemID('Graceful legs'),
+			cape: itemID('Graceful cape'),
+			two_handed: itemID('Bronze 2h sword'),
+			hands: itemID('Graceful gloves'),
+			feet: itemID('Graceful boots'),
+			shield: null,
+			weapon: null,
+			ring: itemID('Berserker ring'),
+			ammo: itemID('Dragon arrow'),
+			ammo_qty: 153
+		};
+		const gear = new Gear(gearPreset);
+		expect(gear.allItemsBank()).toEqual(
+			new Bank()
+				.add('Graceful hood')
+				.add('Graceful top')
+				.add('Graceful legs')
+				.add('Graceful cape')
+				.add('Graceful gloves')
+				.add('Graceful boots')
+				.add('Amulet of fury')
+				.add('Berserker ring')
+				.add('Dragon arrow', 153)
+				.add('Bronze 2h sword')
+		);
+	});
+
+	it('should make nothing from empty gear preset', () => {
+		const gearPreset: GearPreset = {
+			name: 'graceful',
+			user_id: '123',
+			head: null,
+			neck: null,
+			body: null,
+			legs: null,
+			cape: null,
+			two_handed: null,
+			hands: null,
+			feet: null,
+			shield: null,
+			weapon: null,
+			ring: null,
+			ammo: null,
+			ammo_qty: null
+		};
+		const gear = new Gear(gearPreset);
+		expect(gear.allItemsBank()).toEqual(new Bank());
+	});
+
+	it('should throw if equip unequippable', () => {
+		const gear = new Gear();
+		expect(() => gear.equip('Coal')).toThrow();
+	});
+
+	it('equipping items with quantities', () => {
+		const gear = new Gear({
+			ammo: 'Dragon arrow',
+			body: '3rd age platebody',
+			weapon: 'Dragon knife',
+			shield: 'Bronze kiteshield'
+		});
+		gear.ammo!.quantity = 500;
+		gear.weapon!.quantity = 100;
+
+		// Equip arrows:
+		const resultArrows = gear.equip(getOSItem('Iron arrow'), 50);
+		expect(bankIsEqual(resultArrows.refundBank as any, new Bank().add('Dragon arrow', 500))).toEqual(true);
+		expect(gear.ammo).toEqual({ item: getOSItem('Iron arrow').id, quantity: 50 });
+
+		// Equip darts/stackable weapon:
+
+		const resultDarts = gear.equip(getOSItem('Dragon dart'), 111);
+		expect(bankIsEqual(resultDarts.refundBank as any, new Bank().add('Dragon knife', 100))).toEqual(true);
+		expect(gear.weapon).toEqual({ item: getOSItem('Dragon dart').id, quantity: 111 });
+
+		const result2h = gear.equip(getOSItem('Twisted bow'));
+		expect(
+			bankIsEqual(result2h.refundBank as any, new Bank().add('Dragon dart', 111).add('Bronze kiteshield'))
+		).toEqual(true);
+		expect(gear.weapon).toBeNull();
+		expect(gear['2h']).toEqual({ item: getOSItem('Twisted bow').id, quantity: 1 });
+	});
+
+	it('should equip/refund properly if equipping a 2h over a 2h', () => {
+		const gear = new Gear({
+			'2h': 'Twisted bow'
+		});
+
+		const result = gear.equip(getOSItem('3rd age bow'));
+
+		expect(bankIsEqual(result.refundBank as any, new Bank().add('Twisted bow'))).toEqual(true);
+		expect(gear.shield).toEqual(null);
+		expect(gear.weapon).toEqual(null);
+		expect(gear['2h']).toEqual({ item: getOSItem('3rd age bow').id, quantity: 1 });
 	});
 });

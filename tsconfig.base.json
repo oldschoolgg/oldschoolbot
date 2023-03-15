@@ -1,10 +1,10 @@
 {
-	"extends": "@oldschoolgg/eslint-config",
+	"extends": "@oldschoolgg/ts-config",
 	"compilerOptions": {
 		"allowJs": true,
 		"checkJs": false,
 		"skipLibCheck": true,
-		"types": ["node", "node-fetch", "discord.js", "jest"],
+		"types": ["node", "node-fetch", "discord.js"],
 		"esModuleInterop": true
 	}
 }

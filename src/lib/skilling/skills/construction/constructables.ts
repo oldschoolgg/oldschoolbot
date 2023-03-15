@@ -1,6 +1,6 @@
 import { itemID } from 'oldschooljs/dist/util';
 
-export interface Constructable {
+interface Constructable {
 	id: number;
 	name: string;
 	input: [Plank, number];

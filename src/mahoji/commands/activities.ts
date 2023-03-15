@@ -1,5 +1,9 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
+import {
+	UNDERWATER_AGILITY_THIEVING_TRAINING_SKILL,
+	UnderwaterAgilityThievingTrainingSkill
+} from '../../lib/constants';
 import { KourendFavours } from '../../lib/minions/data/kourendFavour';
 import { Planks } from '../../lib/minions/data/planks';
 import Potions from '../../lib/minions/data/potions';
@@ -28,6 +32,7 @@ import puroOptions, { puroPuroStartCommand } from '../lib/abstracted_commands/pu
 import { questCommand } from '../lib/abstracted_commands/questCommand';
 import { sawmillCommand } from '../lib/abstracted_commands/sawmillCommand';
 import { scatterCommand } from '../lib/abstracted_commands/scatterCommand';
+import { underwaterAgilityThievingCommand } from '../lib/abstracted_commands/underwaterCommand';
 import { warriorsGuildCommand } from '../lib/abstracted_commands/warriorsGuildCommand';
 import { ownedItemOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
@@ -267,26 +272,6 @@ export const activitiesCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
-			name: 'driftnet_fishing',
-			description: 'The Drift Net fishing activity.',
-			options: [
-				{
-					type: ApplicationCommandOptionType.Integer,
-					name: 'minutes',
-					description: 'How many minutes you want to do (optional).',
-					required: false,
-					min_value: 1
-				},
-				{
-					type: ApplicationCommandOptionType.Boolean,
-					name: 'no_stams',
-					description: "Don't use stams?",
-					required: false
-				}
-			]
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
 			name: 'aerial_fishing',
 			description: 'The Aerial Fishing activity.'
 		},
@@ -426,6 +411,60 @@ export const activitiesCommand: OSBMahojiCommand = {
 					min_value: 1
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			name: 'underwater',
+			description: 'The Underwater.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'agility_thieving',
+					description: 'Underwater Agility and Thieving.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'training_skill',
+							description: 'The skill/skills to train.',
+							required: true,
+							choices: UNDERWATER_AGILITY_THIEVING_TRAINING_SKILL.map(i => ({ name: i, value: i }))
+						},
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'minutes',
+							description: 'How many minutes you want to do (optional).',
+							required: false,
+							min_value: 1
+						},
+						{
+							type: ApplicationCommandOptionType.Boolean,
+							name: 'no_stams',
+							description: "Don't use stams?",
+							required: false
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'drift_net_fishing',
+					description: 'The Drift Net fishing activity.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'minutes',
+							description: 'How many minutes you want to do (optional).',
+							required: false,
+							min_value: 1
+						},
+						{
+							type: ApplicationCommandOptionType.Boolean,
+							name: 'no_stams',
+							description: "Don't use stams?",
+							required: false
+						}
+					]
+				}
+			]
 		}
 	],
 	run: async ({
@@ -446,7 +485,6 @@ export const activitiesCommand: OSBMahojiCommand = {
 		fight_caves?: {};
 		inferno?: { action: string };
 		birdhouses?: { action?: string; birdhouse?: string };
-		driftnet_fishing?: { minutes?: number; no_stams?: boolean };
 		aerial_fishing?: {};
 		enchant?: { name: string; quantity?: number };
 		bury?: { name: string; quantity?: number };
@@ -454,6 +492,14 @@ export const activitiesCommand: OSBMahojiCommand = {
 		puro_puro?: { impling: string; dark_lure?: boolean };
 		alch?: { item: string; quantity?: number };
 		cast?: { spell: string; quantity?: number };
+		underwater?: {
+			agility_thieving?: {
+				training_skill: UnderwaterAgilityThievingTrainingSkill;
+				minutes?: number;
+				no_stams?: boolean;
+			};
+			drift_net_fishing?: { minutes?: number; no_stams?: boolean };
+		};
 	}>) => {
 		const user = await mUserFetch(userID);
 		// Minion can be busy
@@ -519,14 +565,6 @@ export const activitiesCommand: OSBMahojiCommand = {
 		if (options.fight_caves) {
 			return fightCavesCommand(user, channelID);
 		}
-		if (options.driftnet_fishing) {
-			return driftNetCommand(
-				channelID,
-				user,
-				options.driftnet_fishing.minutes,
-				options.driftnet_fishing.no_stams
-			);
-		}
 		if (options.aerial_fishing) {
 			return aerialFishingCommand(user, channelID);
 		}
@@ -547,6 +585,25 @@ export const activitiesCommand: OSBMahojiCommand = {
 		}
 		if (options.cast) {
 			return castCommand(channelID, user, options.cast.spell, options.cast.quantity);
+		}
+		if (options.underwater) {
+			if (options.underwater.agility_thieving) {
+				return underwaterAgilityThievingCommand(
+					channelID,
+					user,
+					options.underwater.agility_thieving.training_skill,
+					options.underwater.agility_thieving.minutes,
+					options.underwater.agility_thieving.no_stams
+				);
+			}
+			if (options.underwater.drift_net_fishing) {
+				return driftNetCommand(
+					channelID,
+					user,
+					options.underwater.drift_net_fishing.minutes,
+					options.underwater.drift_net_fishing.no_stams
+				);
+			}
 		}
 
 		return 'Invalid command.';
