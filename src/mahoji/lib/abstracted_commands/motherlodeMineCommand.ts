@@ -61,7 +61,7 @@ export async function motherlodeMineCommand({
 	const powermine = false;
 
 	// Calculate the time it takes to mine specific quantity or as many as possible
-	let [timeToMine, newQuantity] = determineMiningTime({
+	let [duration, newQuantity] = determineMiningTime({
 		quantity,
 		user,
 		ore: motherlode,
@@ -73,8 +73,6 @@ export async function motherlodeMineCommand({
 		goldSilverBoost,
 		miningLvl: miningLevel
 	});
-
-	const duration = timeToMine;
 
 	const fakeDurationMin = quantity ? randomVariation(reduceNumByPercent(duration, 25), 20) : duration;
 	const fakeDurationMax = quantity ? randomVariation(increaseNumByPercent(duration, 25), 20) : duration;
