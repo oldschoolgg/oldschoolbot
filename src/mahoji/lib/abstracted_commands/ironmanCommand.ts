@@ -152,7 +152,7 @@ After becoming an ironman:
 	});
 	assert(
 		!newUser.GP && !newUser.QP && !newUser.skills_woodcutting && !newUser.total_cox_points,
-		'Ironman sanity check'
+		`Ironman sanity check - ID: ${newUser.id}`
 	);
 	return 'You are now an ironman.';
 }
