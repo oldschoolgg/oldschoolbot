@@ -2,7 +2,8 @@ import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { randomVariation } from 'oldschooljs/dist/util';
 
 import { determineMiningTime } from '../../../lib/skilling/functions/determineMiningTime';
-import Mining, { pickaxes } from '../../../lib/skilling/skills/mining';
+import { pickaxes } from '../../../lib/skilling/functions/miningBoosts';
+import Mining from '../../../lib/skilling/skills/mining';
 import { MotherlodeMiningActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, itemNameFromID } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';

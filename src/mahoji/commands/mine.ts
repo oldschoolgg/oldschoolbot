@@ -2,7 +2,8 @@ import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { determineMiningTime } from '../../lib/skilling/functions/determineMiningTime';
-import Mining, { miningCapeOreEffect, miningGloves, pickaxes, varrockArmours } from '../../lib/skilling/skills/mining';
+import { miningCapeOreEffect, miningGloves, pickaxes, varrockArmours } from '../../lib/skilling/functions/miningBoosts';
+import Mining from '../../lib/skilling/skills/mining';
 import { Skills } from '../../lib/types';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, formatSkillRequirements, itemNameFromID, randomVariation } from '../../lib/util';
