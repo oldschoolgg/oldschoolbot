@@ -56,7 +56,7 @@ import {
 } from '../types/minions';
 import { itemNameFromID } from '../util';
 import { giantsFoundryAlloys } from './../../mahoji/lib/abstracted_commands/giantsFoundryCommand';
-import { NightmareZoneActivityTaskOptions } from './../types/minions';
+import { NightmareZoneActivityTaskOptions, UnderwaterAgilityThievingTaskOptions } from './../types/minions';
 
 export const taskCanBeRepeated = (type: activity_type_enum) =>
 	!(
@@ -226,12 +226,6 @@ export const tripHandlers = {
 		args: (data: TiaraRunecraftActivityTaskOptions) => ({
 			rune: itemNameFromID(data.tiaraID),
 			quantity: data.tiaraQuantity
-		})
-	},
-	[activity_type_enum.DriftNet]: {
-		commandName: 'activities',
-		args: (data: ActivityTaskOptionsWithQuantity) => ({
-			driftnet_fishing: { minutes: Math.floor(data.duration / Time.Minute) }
 		})
 	},
 	[activity_type_enum.Enchanting]: {
@@ -549,8 +543,29 @@ export const tripHandlers = {
 				start: {
 					raid_level: data.raidLevel,
 					max_team_size: data.users.length,
-					solo: data.users.length === 1
+					solo: data.users.length === 1,
+					quantity: data.quantity
 				}
+			}
+		})
+	},
+	[activity_type_enum.UnderwaterAgilityThieving]: {
+		commandName: 'activities',
+		args: (data: UnderwaterAgilityThievingTaskOptions) => ({
+			underwater: {
+				agility_thieving: {
+					training_skill: data.trainingSkill,
+					minutes: Math.floor(data.duration / Time.Minute),
+					no_stams: data.noStams
+				}
+			}
+		})
+	},
+	[activity_type_enum.DriftNet]: {
+		commandName: 'activities',
+		args: (data: ActivityTaskOptionsWithQuantity) => ({
+			underwater: {
+				drift_net_fishing: { minutes: Math.floor(data.duration / Time.Minute) }
 			}
 		})
 	}

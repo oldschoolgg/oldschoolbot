@@ -320,7 +320,6 @@ class BankImageTask {
 		}
 
 		const imageBuffer = await fs.readFile(path.join(CACHE_DIR, `${itemID}.png`));
-		if (imageBuffer.length < 200) return this.getItemImage(1);
 		try {
 			const image = await loadImage(imageBuffer);
 			this.itemIconImagesCache.set(itemID, image);
@@ -559,6 +558,8 @@ class BankImageTask {
 		}
 
 		let items = bank.items();
+
+		debugLog(`Generating a bank image with ${items.length} items`, { title, userID: user?.id });
 
 		// Sorting
 		const favorites = user?.user.favoriteItems;

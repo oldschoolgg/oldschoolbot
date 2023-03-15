@@ -13,11 +13,10 @@ import { handlePassiveImplings } from '../implings';
 import { triggerRandomEvent } from '../randomEvents';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import { ActivityTaskOptions } from '../types/minions';
-import { channelIsSendable, makeComponents } from '../util';
+import { buildClueButtons, channelIsSendable, makeComponents } from '../util';
 import {
 	makeAutoContractButton,
 	makeBirdHouseTripButton,
-	makeDoClueButton,
 	makeNewSlayerTaskButton,
 	makeOpenCasketButton,
 	makeOpenSeedPackButton,
@@ -115,12 +114,13 @@ export async function handleTripFinish(
 	const casketReceived = loot ? ClueTiers.find(i => loot?.has(i.id)) : undefined;
 	if (casketReceived) components.push(makeOpenCasketButton(casketReceived));
 	if (perkTier > PerkTier.One) {
-		if (clueReceived.length > 0) clueReceived.map(clue => components.push(makeDoClueButton(clue)));
+		components.push(...buildClueButtons(loot, perkTier));
 		const birdHousedetails = await calculateBirdhouseDetails(user.id);
 		if (birdHousedetails.isReady && !user.bitfield.includes(BitField.DisableBirdhouseRunButton))
 			components.push(makeBirdHouseTripButton());
 
-		if (await canRunAutoContract(user)) components.push(makeAutoContractButton());
+		if ((await canRunAutoContract(user)) && !user.bitfield.includes(BitField.DisableAutoFarmContractButton))
+			components.push(makeAutoContractButton());
 
 		const { currentTask } = await getUsersCurrentSlayerInfo(user.id);
 		if (

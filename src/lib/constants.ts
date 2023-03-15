@@ -150,7 +150,6 @@ export enum ActivityGroup {
 }
 
 export const enum Events {
-	Debug = 'debug',
 	Error = 'error',
 	Log = 'log',
 	Verbose = 'verbose',
@@ -218,7 +217,8 @@ export enum BitField {
 	DisableBirdhouseRunButton = 22,
 	DisableAshSanctifier = 23,
 	BothBotsMaxedFreeTierOnePerks = 24,
-	HasBloodbarkScroll = 25
+	HasBloodbarkScroll = 25,
+	DisableAutoFarmContractButton = 26
 }
 
 interface BitFieldData {
@@ -270,7 +270,12 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 		protected: false,
 		userConfigurable: true
 	},
-	[BitField.DisableAshSanctifier]: { name: 'Disable Ash Sanctifier', protected: false, userConfigurable: true }
+	[BitField.DisableAshSanctifier]: { name: 'Disable Ash Sanctifier', protected: false, userConfigurable: true },
+	[BitField.DisableAutoFarmContractButton]: {
+		name: 'Disable Auto Farm Contract Button',
+		protected: false,
+		userConfigurable: true
+	}
 } as const;
 
 export const enum PatronTierID {
@@ -403,6 +408,9 @@ export type PvMMethod = typeof PVM_METHODS[number];
 export const NMZ_STRATEGY = ['experience', 'points'] as const;
 export type NMZStrategy = typeof NMZ_STRATEGY[number];
 
+export const UNDERWATER_AGILITY_THIEVING_TRAINING_SKILL = ['agility', 'thieving', 'agility+thieving'] as const;
+export type UnderwaterAgilityThievingTrainingSkill = typeof UNDERWATER_AGILITY_THIEVING_TRAINING_SKILL[number];
+
 export const usernameCache = new Map<string, string>();
 export const badgesCache = new Map<string, string>();
 export const minionBuyButton = new ButtonBuilder()
@@ -444,3 +452,5 @@ export const toaPurpleItems = resolveItems([
 	'Lightbearer',
 	"Osmumten's fang"
 ]);
+
+export const ParsedCustomEmojiWithGroups = /(?<animated>a?):(?<name>[^:]+):(?<id>\d{17,20})/;

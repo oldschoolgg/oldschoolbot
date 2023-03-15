@@ -7,6 +7,7 @@ import { getSimilarItems, inverseSimilarItems } from '../data/similarItems';
 import {
 	DefenceGearStat,
 	GearSetup,
+	GearSetupType,
 	GearSlotItem,
 	GearStat,
 	GearStats,
@@ -77,7 +78,7 @@ export function filterGearSetup(gear: undefined | null | GearSetup | PartialGear
 		: (gear as GearSetup);
 	return filteredGear;
 }
-export const globalPresets: GearPreset[] = [
+export const globalPresets: (GearPreset & { defaultSetup: GearSetupType })[] = [
 	{
 		name: 'graceful',
 		user_id: '123',
@@ -93,7 +94,11 @@ export const globalPresets: GearPreset[] = [
 		weapon: null,
 		ring: null,
 		ammo: null,
-		ammo_qty: null
+		ammo_qty: null,
+		emoji_id: null,
+		times_equipped: 0,
+		defaultSetup: 'skilling',
+		pinned_setup: null
 	},
 	{
 		name: 'carpenter',
@@ -110,7 +115,11 @@ export const globalPresets: GearPreset[] = [
 		weapon: null,
 		ring: null,
 		ammo: null,
-		ammo_qty: null
+		ammo_qty: null,
+		emoji_id: null,
+		times_equipped: 0,
+		defaultSetup: 'skilling',
+		pinned_setup: null
 	},
 	{
 		name: 'rogue',
@@ -127,7 +136,11 @@ export const globalPresets: GearPreset[] = [
 		weapon: null,
 		ring: null,
 		ammo: null,
-		ammo_qty: null
+		ammo_qty: null,
+		emoji_id: null,
+		times_equipped: 0,
+		defaultSetup: 'skilling',
+		pinned_setup: null
 	},
 	{
 		name: 'clue_hunter',
@@ -144,7 +157,11 @@ export const globalPresets: GearPreset[] = [
 		weapon: null,
 		ring: null,
 		ammo: null,
-		ammo_qty: null
+		ammo_qty: null,
+		emoji_id: null,
+		times_equipped: 0,
+		defaultSetup: 'skilling',
+		pinned_setup: null
 	},
 	{
 		name: 'angler',
@@ -161,7 +178,11 @@ export const globalPresets: GearPreset[] = [
 		weapon: null,
 		ring: null,
 		ammo: null,
-		ammo_qty: null
+		ammo_qty: null,
+		emoji_id: null,
+		times_equipped: 0,
+		defaultSetup: 'skilling',
+		pinned_setup: null
 	},
 	{
 		name: 'spirit_angler',
@@ -178,7 +199,11 @@ export const globalPresets: GearPreset[] = [
 		weapon: null,
 		ring: null,
 		ammo: null,
-		ammo_qty: null
+		ammo_qty: null,
+		emoji_id: null,
+		times_equipped: 0,
+		defaultSetup: 'skilling',
+		pinned_setup: null
 	},
 	{
 		name: 'pyromancer',
@@ -195,7 +220,11 @@ export const globalPresets: GearPreset[] = [
 		weapon: null,
 		ring: null,
 		ammo: null,
-		ammo_qty: null
+		ammo_qty: null,
+		emoji_id: null,
+		times_equipped: 0,
+		defaultSetup: 'skilling',
+		pinned_setup: null
 	},
 	{
 		name: 'prospector',
@@ -212,7 +241,11 @@ export const globalPresets: GearPreset[] = [
 		weapon: null,
 		ring: null,
 		ammo: null,
-		ammo_qty: null
+		ammo_qty: null,
+		emoji_id: null,
+		times_equipped: 0,
+		defaultSetup: 'skilling',
+		pinned_setup: null
 	},
 	{
 		name: 'lumberjack',
@@ -229,7 +262,11 @@ export const globalPresets: GearPreset[] = [
 		weapon: null,
 		ring: null,
 		ammo: null,
-		ammo_qty: null
+		ammo_qty: null,
+		emoji_id: null,
+		times_equipped: 0,
+		defaultSetup: 'skilling',
+		pinned_setup: null
 	},
 	{
 		name: 'farmer',
@@ -246,7 +283,11 @@ export const globalPresets: GearPreset[] = [
 		weapon: null,
 		ring: null,
 		ammo: null,
-		ammo_qty: null
+		ammo_qty: null,
+		emoji_id: null,
+		times_equipped: 0,
+		defaultSetup: 'skilling',
+		pinned_setup: null
 	},
 	{
 		name: 'runecraft',
@@ -263,7 +304,11 @@ export const globalPresets: GearPreset[] = [
 		weapon: null,
 		ring: null,
 		ammo: null,
-		ammo_qty: null
+		ammo_qty: null,
+		emoji_id: null,
+		times_equipped: 0,
+		defaultSetup: 'skilling',
+		pinned_setup: null
 	},
 	{
 		name: 'smith',
@@ -280,7 +325,11 @@ export const globalPresets: GearPreset[] = [
 		weapon: null,
 		ring: null,
 		ammo: null,
-		ammo_qty: null
+		ammo_qty: null,
+		emoji_id: null,
+		times_equipped: 0,
+		defaultSetup: 'skilling',
+		pinned_setup: null
 	}
 ];
 
