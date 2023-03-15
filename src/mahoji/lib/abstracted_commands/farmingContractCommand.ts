@@ -5,7 +5,8 @@ import { defaultFarmingContract } from '../../../lib/minions/farming';
 import { ContractOption, FarmingContract, FarmingContractDifficultyLevel } from '../../../lib/minions/farming/types';
 import { getPlantToGrow } from '../../../lib/skilling/functions/calcFarmingContracts';
 import { getFarmingInfo } from '../../../lib/skilling/functions/getFarmingInfo';
-import { roughMergeMahojiResponse } from '../../../lib/util';
+import { plants } from '../../../lib/skilling/skills/farming';
+import { makeComponents, makeEasierFarmingContractButton, roughMergeMahojiResponse } from '../../../lib/util';
 import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import { findPlant } from '../../../lib/util/farmingHelpers';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
@@ -78,18 +79,34 @@ export async function farmingContractCommand(userID: string, input?: ContractOpt
 			await user.update({
 				minion_farmingContract: farmingContractUpdate as any
 			});
-			return janeImage(
-				`I suppose you were too chicken for the challenge. Please could you grow a ${plantToGrow} instead for us? I'll reward you once you have checked its health.`
-			);
+
+			return {
+				files: (
+					await janeImage(
+						`I suppose you were too chicken for the challenge. Please could you grow a ${plantToGrow} instead for us? I'll reward you once you have checked its health.`
+					)
+				).files,
+				components:
+					newContractLevel !== 'easy' ? makeComponents([makeEasierFarmingContractButton()]) : undefined
+			};
 		}
 
 		let easierStr = '';
 		if (currentContract.difficultyLevel !== 'easy') {
 			easierStr = "\nYou can request an easier contract if you'd like.";
 		}
-		return janeImage(
-			`Your current contract (${currentContract.difficultyLevel}) is to grow ${currentContract.plantToGrow}. Please come back when you have finished this contract first.${easierStr}`
-		);
+
+		return {
+			files: (
+				await janeImage(
+					`Your current contract (${currentContract.difficultyLevel}) is to grow ${currentContract.plantToGrow}. Please come back when you have finished this contract first.${easierStr}`
+				)
+			).files,
+			components:
+				currentContract.difficultyLevel !== 'easy'
+					? makeComponents([makeEasierFarmingContractButton()])
+					: undefined
+		};
 	}
 
 	if (minionIsBusy(user.id)) {
@@ -117,16 +134,31 @@ export async function farmingContractCommand(userID: string, input?: ContractOpt
 		minion_farmingContract: farmingContractUpdate as any
 	});
 
-	return janeImage(
-		`Please could you grow a ${plantToGrow} for us? I'll reward you once you have checked its health.`
-	);
+	return {
+		files: (
+			await janeImage(
+				`Please could you grow a ${plantToGrow} for us? I'll reward you once you have checked its health.`
+			)
+		).files,
+		components: input !== 'easy' ? makeComponents([makeEasierFarmingContractButton()]) : undefined
+	};
 }
 
 export async function canRunAutoContract(user: MUser) {
-	const farmingDetails = await getFarmingInfo(user.id);
+	// Must be above 45 farming
+	if (user.skillLevel('farming') < 45) return false;
+
+	// If we don't have a contract, we can auto contract
 	const contract = user.user.minion_farmingContract as FarmingContract | null;
-	const contractedPlant = farmingDetails.patchesDetailed.find(p => p.plant?.name === contract?.plantToGrow);
-	return user.skillLevel('farming') > 45 && (!contractedPlant || contractedPlant.ready !== false);
+	if (!contract || !contract.hasContract) return true;
+
+	const farmingDetails = await getFarmingInfo(user.id);
+
+	// If the patch we're contracted to is ready, we can auto contract
+	const contractedPatch = farmingDetails.patchesDetailed.find(
+		p => p.patchName === plants.find(p => p.name === contract.plantToGrow)?.seedType
+	);
+	return contractedPatch?.ready;
 }
 
 export async function autoContract(user: MUser, channelID: string, userID: string): CommandResponse {

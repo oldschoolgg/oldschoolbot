@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { codeBlock } from '@discordjs/builders';
-import { ClientStorage } from '@prisma/client';
+import { ClientStorage, economy_transaction_type } from '@prisma/client';
 import { Stopwatch } from '@sapphire/stopwatch';
 import { Duration } from '@sapphire/time-utilities';
 import { isThenable } from '@sentry/utils';
@@ -24,6 +24,7 @@ import { patreonTask } from '../../lib/patreon';
 import { runRolesTask } from '../../lib/rolesTask';
 import { countUsersWithItemInCl, prisma } from '../../lib/settings/prisma';
 import { cancelTask, minionActivityCacheDelete } from '../../lib/settings/settings';
+import { sorts } from '../../lib/sorts';
 import { Gear } from '../../lib/structures/Gear';
 import {
 	calcPerHour,
@@ -34,8 +35,10 @@ import {
 	stringMatches,
 	toKMB
 } from '../../lib/util';
+import { memoryAnalysis } from '../../lib/util/cachedUserIDs';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../lib/util/clientSettings';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
+import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction, interactionReply } from '../../lib/util/interactionReply';
 import { syncLinkedAccounts } from '../../lib/util/linkedAccountsUtil';
 import { logError } from '../../lib/util/logError';
@@ -46,7 +49,7 @@ import { Cooldowns } from '../lib/Cooldowns';
 import { syncCustomPrices } from '../lib/events';
 import { itemOption } from '../lib/mahojiCommandOptions';
 import { allAbstractCommands, OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 import { getUserInfo } from './minion';
 
 export const gifs = [
@@ -132,6 +135,40 @@ async function evalCommand(userID: string, code: string): CommandResponse {
 	}
 }
 
+async function getAllTradedItems(giveUniques = false) {
+	const economyTrans = await prisma.economyTransaction.findMany({
+		where: {
+			date: {
+				gt: new Date(Date.now() - Time.Month)
+			},
+			type: economy_transaction_type.trade
+		},
+		select: {
+			items_received: true,
+			items_sent: true
+		}
+	});
+
+	let total = new Bank();
+
+	if (giveUniques) {
+		for (const trans of economyTrans) {
+			let bank = new Bank().add(trans.items_received as ItemBank).add(trans.items_sent as ItemBank);
+
+			for (const item of bank.items()) {
+				total.add(item[0].id);
+			}
+		}
+	} else {
+		for (const trans of economyTrans) {
+			total.add(trans.items_received as ItemBank);
+			total.add(trans.items_sent as ItemBank);
+		}
+	}
+
+	return total;
+}
+
 const viewableThings: {
 	name: string;
 	run: (clientSettings: ClientStorage) => Promise<Bank | InteractionReplyOptions>;
@@ -176,6 +213,44 @@ AND ("gear.melee" IS NOT NULL OR
 				}
 			}
 			return bank;
+		}
+	},
+	{
+		name: 'Most Traded Items (30d, Total Volume)',
+		run: async () => {
+			const items = await getAllTradedItems();
+			return {
+				content: items
+					.items()
+					.sort(sorts.quantity)
+					.slice(0, 10)
+					.map((i, index) => `${++index}. ${i[0].name} - ${i[1].toLocaleString()}x traded`)
+					.join('\n')
+			};
+		}
+	},
+	{
+		name: 'Most Traded Items (30d, Unique trades)',
+		run: async () => {
+			const items = await getAllTradedItems(true);
+			return {
+				content: items
+					.items()
+					.sort(sorts.quantity)
+					.slice(0, 10)
+					.map((i, index) => `${++index}. ${i[0].name} - Traded ${i[1].toLocaleString()}x times`)
+					.join('\n')
+			};
+		}
+	},
+	{
+		name: 'Memory Analysis',
+		run: async () => {
+			return {
+				content: Object.entries(memoryAnalysis())
+					.map(i => `${i[0]}: ${i[1]}`)
+					.join('\n')
+			};
 		}
 	}
 ];
@@ -251,14 +326,7 @@ export const adminCommand: OSBMahojiCommand = {
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'sync_commands',
 			description: 'Sync commands',
-			options: [
-				{
-					type: ApplicationCommandOptionType.Boolean,
-					name: 'global',
-					description: 'Global?.',
-					required: false
-				}
-			]
+			options: []
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -459,7 +527,7 @@ export const adminCommand: OSBMahojiCommand = {
 					description: 'The bitfield to add',
 					required: false,
 					autocomplete: async () => {
-						return Object.keys(BitField).map(i => ({ name: i, value: i }));
+						return Object.entries(BitFieldData).map(i => ({ name: i[1].name, value: i[0] }));
 					}
 				},
 				{
@@ -468,7 +536,7 @@ export const adminCommand: OSBMahojiCommand = {
 					description: 'The bitfield to remove',
 					required: false,
 					autocomplete: async () => {
-						return Object.keys(BitField).map(i => ({ name: i, value: i }));
+						return Object.entries(BitFieldData).map(i => ({ name: i[1].name, value: i[0] }));
 					}
 				}
 			]
@@ -540,7 +608,7 @@ export const adminCommand: OSBMahojiCommand = {
 		reboot?: {};
 		debug_patreon?: {};
 		eval?: { code: string };
-		sync_commands?: { global?: boolean };
+		sync_commands?: {};
 		item_stats?: { item: string };
 		sync_blacklist?: {};
 		loot_track?: { name: string };
@@ -921,7 +989,7 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 		}
 
 		if (options.sync_commands) {
-			const global = Boolean(options.sync_commands.global);
+			const global = Boolean(production);
 			const totalCommands = globalClient.mahojiClient.commands.values;
 			const globalCommands = totalCommands.filter(i => !i.guildID);
 			const guildCommands = totalCommands.filter(i => Boolean(i.guildID));
@@ -941,6 +1009,15 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 					client: globalClient.mahojiClient,
 					commands: totalCommands,
 					guildID: guildID.toString()
+				});
+			}
+
+			// If not in production, remove all global commands.
+			if (!production) {
+				await bulkUpdateCommands({
+					client: globalClient.mahojiClient,
+					commands: [],
+					guildID: null
 				});
 			}
 

@@ -3,8 +3,8 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { PerkTier } from '../../lib/constants';
 import { getAllTrackedLootForUser, getDetailsOfSingleTrackedLoot } from '../../lib/lootTrack';
 import { prisma } from '../../lib/settings/prisma';
+import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation } from '../mahojiSettings';
 
 export const lootCommand: OSBMahojiCommand = {
 	name: 'loot',

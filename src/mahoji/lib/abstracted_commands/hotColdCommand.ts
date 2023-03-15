@@ -1,12 +1,13 @@
-import { Embed } from '@discordjs/builders';
+import { EmbedBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction } from 'discord.js';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { LootTable } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import { mahojiClientSettingsUpdate } from '../../../lib/util/clientSettings';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import resolveItems from '../../../lib/util/resolveItems';
-import { handleMahojiConfirmation, mahojiParseNumber } from '../../mahojiSettings';
+import { mahojiParseNumber } from '../../mahojiSettings';
 
 export const flowerTable = new LootTable()
 	.add('Red flowers', 1, 150)
@@ -57,7 +58,7 @@ ${explanation}`
 		collectionLog: true
 	});
 
-	const embed = new Embed()
+	const embed = new EmbedBuilder()
 		.setTitle(`You picked ${choice} and got '${flower.name}'!`)
 		.setThumbnail(`https://chisel.weirdgloop.org/static/img/osrs-sprite/${flower.id}.png`)
 		.setFooter({

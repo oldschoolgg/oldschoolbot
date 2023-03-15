@@ -8,10 +8,11 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
 import { stringMatches } from '../../lib/util';
+import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, userStatsBankUpdate } from '../mahojiSettings';
+import { userStatsBankUpdate } from '../mahojiSettings';
 
 function showAllCreatables() {
 	let content = 'This are the items that you can create:';
@@ -195,6 +196,13 @@ export const createCommand: OSBMahojiCommand = {
 					str = `${user}, please confirm that you want to unpack **${inItems}** into ${outItems}`;
 					break;
 				}
+			}
+		}
+
+		if (createableItem.customReq) {
+			const customReq = await createableItem.customReq(user);
+			if (typeof customReq === 'string') {
+				return customReq;
 			}
 		}
 

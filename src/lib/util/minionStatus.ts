@@ -608,6 +608,11 @@ export function minionStatus(user: MUser) {
 				durationRemaining
 			)}.`;
 		}
+		case 'NightmareZone': {
+			return `${name} is currently killing Monsters in the Nightmare Zone. The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
 		case 'ShadesOfMorton': {
 			const data = currentTask as ShadesOfMortonOptions;
 			const log = shadesLogs.find(i => i.normalLog.id === data.logID)!;
@@ -623,6 +628,9 @@ export function minionStatus(user: MUser) {
 			return `${name} is currently attempting the Tombs of Amascut, if your team is successful and doesn't die, the trip should take ${formatDuration(
 				durationRemaining
 			)}.`;
+		}
+		case 'UnderwaterAgilityThieving': {
+			return `${name} is currently doing Underwater Agility and Thieving. ${formattedDuration}`;
 		}
 		case 'HalloweenEvent':
 		case 'Easter':

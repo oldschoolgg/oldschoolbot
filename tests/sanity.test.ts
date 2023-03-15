@@ -1,4 +1,5 @@
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
+import { describe, expect, test } from 'vitest';
 
 import { allOpenables } from '../src/lib/openables';
 import { exponentialPercentScale } from '../src/lib/util';

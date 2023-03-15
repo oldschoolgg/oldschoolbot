@@ -1,4 +1,5 @@
 import { itemID } from 'oldschooljs/dist/util';
+import { describe, expect, test } from 'vitest';
 
 import { getSimilarItems } from '../src/lib/data/similarItems';
 import { Gear } from '../src/lib/structures/Gear';
