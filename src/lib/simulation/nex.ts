@@ -1,6 +1,7 @@
 import { userMention } from '@discordjs/builders';
 import {
 	calcWhatPercent,
+	clamp,
 	increaseNumByPercent,
 	percentChance,
 	randArrItem,
@@ -19,13 +20,7 @@ import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import itemID from '../util/itemID';
 import { arrows, bolts, bows, crossbows } from '../util/minionUtils';
 import resolveItems from '../util/resolveItems';
-import {
-	clamp,
-	exponentialPercentScale,
-	formatDuration,
-	formatSkillRequirements,
-	itemNameFromID
-} from '../util/smallUtils';
+import { exponentialPercentScale, formatDuration, formatSkillRequirements, itemNameFromID } from '../util/smallUtils';
 import { NexNonUniqueTable, NexUniqueTable } from './misc';
 import { TeamLoot } from './TeamLoot';
 
@@ -68,7 +63,9 @@ export function checkNexUser(user: MUser): [false] | [true, string] {
 	if (offence < 50) {
 		return [
 			true,
-			`${tag}'s range gear is terrible! You need higher range attack. You have ${offence}%, you need 50%.`
+			`${tag}'s range gear is terrible! You need higher range attack. You have ${offence.toFixed(
+				2
+			)}%, you need 50%.`
 		];
 	}
 	if (defence < 50) return [true, `${tag}'s range gear is terrible! You need higher mage defence.`];
@@ -155,7 +152,7 @@ export function handleNexKills({ quantity, team }: NexContext) {
 			if (teamMember.id === uniqueRecipient) {
 				teamLoot.add(teamMember.id, NexUniqueTable.roll());
 			}
-			if (roll(20)) {
+			if (roll(48)) {
 				teamLoot.add(teamMember.id, 'Clue scroll (elite)');
 			}
 		}

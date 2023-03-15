@@ -1,9 +1,9 @@
 import { Prisma, User } from '@prisma/client';
-import { mockRandom, resetMockRandom } from 'jest-mock-random';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import murmurhash from 'murmurhash';
 import { Bank } from 'oldschooljs';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
+import { expect } from 'vitest';
 
 import { BitField } from '../src/lib/constants';
 import type { GearSetup } from '../src/lib/gear/types';
@@ -34,8 +34,9 @@ interface MockUserArgs {
 
 export const mockUser = (overrides?: MockUserArgs): User => {
 	const gearMelee = filterGearSetup(overrides?.meleeGear);
+	const cl = new Bank().add(overrides?.cl ?? {});
 	return {
-		cl: {},
+		cl,
 		gear_fashion: new Gear().raw() as Prisma.JsonValue,
 		gear_mage: new Gear().raw() as Prisma.JsonValue,
 		gear_melee: new Gear(gearMelee).raw() as Prisma.JsonValue,
@@ -84,14 +85,24 @@ export const mockUser = (overrides?: MockUserArgs): User => {
 			Shayzien: 0
 		},
 		sacrificedValue: 0,
-		id: overrides?.id ?? ''
+		id: overrides?.id ?? '',
+		monsterScores: {}
 	} as unknown as User;
 };
+
+class TestMUser extends MUserClass {
+	// @ts-expect-error Mock
+	public readonly rawUsername = 'test';
+}
+
 export const mockMUser = (overrides?: MockUserArgs) => {
-	return new MUserClass(mockUser(overrides));
+	const user = new TestMUser(mockUser(overrides));
+	return user;
 };
 
 export const mockUserMap = new Map<string, MUser>();
+
+const originalMathRandom = Math.random;
 
 export async function testRunCmd({
 	cmd,
@@ -104,7 +115,7 @@ export async function testRunCmd({
 	user?: Omit<MockUserArgs, 'id'>;
 	result: Awaited<CommandResponse>;
 }) {
-	mockRandom([0.5]);
+	Math.random = () => 0.5;
 	const hash = murmurhash(JSON.stringify({ name: cmd.name, opts, user })).toString();
 	const mockedUser = mockMUser({ id: hash, ...user });
 	mockUserMap.set(hash, mockedUser);
@@ -116,6 +127,6 @@ export async function testRunCmd({
 	};
 
 	const commandResponse = await cmd.run(options);
-	resetMockRandom();
+	Math.random = originalMathRandom;
 	return expect(commandResponse).toEqual(result);
 }

@@ -1,4 +1,5 @@
 import { Bank } from 'oldschooljs';
+import { describe, it } from 'vitest';
 
 import { Gear } from '../../src/lib/structures/Gear';
 import { fishCommand } from '../../src/mahoji/commands/fish';

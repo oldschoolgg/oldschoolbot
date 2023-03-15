@@ -1,4 +1,5 @@
 import { objectEntries } from 'e';
+import { describe, expect, test } from 'vitest';
 
 import { Skills } from '../src/lib/skilling/skills';
 import { convertLVLtoXP, skillsMeetRequirements } from '../src/lib/util';

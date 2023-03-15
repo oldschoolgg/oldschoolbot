@@ -15,6 +15,7 @@ export function assert(condition: boolean, desc?: string, context?: Record<strin
 }
 
 export function logError(err: Error | unknown, context?: Record<string, string>, extra?: Record<string, string>) {
+	debugLog(`${(err as any)?.message ?? JSON.stringify(err)}`, { type: 'ERROR', raw: JSON.stringify(err) });
 	if (production) {
 		captureException(err, {
 			tags: context,
