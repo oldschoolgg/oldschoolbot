@@ -76,7 +76,7 @@ export interface Peak {
 export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | null; cb: () => unknown }[] = [
 	{
 		name: 'giveaways',
-		interval: Time.Second * 5,
+		interval: Time.Second * 10,
 		timer: null,
 		cb: async () => {
 			const result = await prisma.giveaway.findMany({
@@ -376,9 +376,7 @@ export function initTickers() {
 		const fn = async () => {
 			try {
 				if (globalClient.isShuttingDown) return;
-				debugLog(`Starting ${ticker.name} ticker`);
 				await ticker.cb();
-				debugLog(`Finished ${ticker.name} ticker`);
 			} catch (err) {
 				logError(err);
 			} finally {
