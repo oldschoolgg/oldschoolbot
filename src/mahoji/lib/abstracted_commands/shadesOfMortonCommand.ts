@@ -266,9 +266,9 @@ export async function shadesOfMortonStartCommand(user: MUser, channelID: string,
 		if (user.hasEquipped(coffin)) {
 			let bonusTime = i * Time.Minute;
 			if (bonusTime) {
-			totalTime += bonusTime;
-			messages.push(`${formatDuration(bonusTime)} bonus max trip length for ${itemNameFromID(coffin)}`);
-			break;
+				totalTime += bonusTime;
+				messages.push(`${formatDuration(bonusTime)} bonus max trip length for ${itemNameFromID(coffin)}`);
+				break;
 			}
 		}
 	}
