@@ -112,7 +112,11 @@ After becoming an ironman:
 	};
 
 	try {
+		// Delete tables with foreign keys first:
+		await prisma.botItemSell.deleteMany({ where: { user_id: user.id } }).catch(noOp);
+		await prisma.pinnedTrip.deleteMany({ where: { user_id: user.id } }).catch(noOp);
 		await prisma.farmedCrop.deleteMany({ where: { user_id: user.id } }).catch(noOp);
+		// Now we can delete the user
 		await prisma.user.delete({
 			where: { id: user.id }
 		});
@@ -148,7 +152,7 @@ After becoming an ironman:
 	});
 	assert(
 		!newUser.GP && !newUser.QP && !newUser.skills_woodcutting && !newUser.total_cox_points,
-		'Ironman sanity check'
+		`Ironman sanity check - ID: ${newUser.id}`
 	);
 	return 'You are now an ironman.';
 }
