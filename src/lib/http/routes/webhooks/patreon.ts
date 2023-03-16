@@ -7,10 +7,12 @@ export const patreonRoute = (server: FastifyServer) =>
 		method: 'POST',
 		url: '/webhooks/patreon',
 		async handler(request, reply) {
-			if (!request.rawBody || typeof request.rawBody !== 'string') throw reply.badRequest();
+			if (!request.rawBody || typeof request.rawBody !== 'string') {
+				return reply.badRequest();
+			}
 			const isVerified = verifyPatreonSecret(request.rawBody, request.headers['x-patreon-signature']);
 			if (!isVerified) {
-				throw reply.badRequest();
+				return reply.unauthorized();
 			}
 			patreonTask.run();
 			return reply.send({});
