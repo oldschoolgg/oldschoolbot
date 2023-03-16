@@ -42,9 +42,9 @@ export const cookCommand: OSBMahojiCommand = {
 			min_value: 1
 		}
 	],
-	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number, fishID?: number }>) => {
+	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
 		const user = await mUserFetch(userID);
-		let { quantity, name, fishID } = options;
+		let { quantity, name } = options;
 
 		const barbarianFish = LeapingFish.find(
 			_leapingFish =>
@@ -53,7 +53,7 @@ export const cookCommand: OSBMahojiCommand = {
 				_leapingFish.aliases.some(alias => stringMatches(alias, name))
 		);
 
-		if (barbarianFish || fishID) {
+		if (barbarianFish) {
 			return cutLeapingFishCommand({ user, channelID, name, quantity });
 		}
 
