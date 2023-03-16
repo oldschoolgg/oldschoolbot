@@ -4,6 +4,7 @@ import { itemID } from 'oldschooljs/dist/util';
 import { describe, expect, it, test } from 'vitest';
 
 import { GearStat } from '../../src/lib/gear/types';
+import { bankIsEqual } from '../../src/lib/stressTest';
 import { constructGearSetup, Gear } from '../../src/lib/structures/Gear';
 import { itemNameFromID } from '../../src/lib/util';
 import getOSItem from '../../src/lib/util/getOSItem';
@@ -330,7 +331,10 @@ describe('Gear', () => {
 			weapon: null,
 			ring: itemID('Berserker ring'),
 			ammo: itemID('Dragon arrow'),
-			ammo_qty: 153
+			ammo_qty: 153,
+			emoji_id: null,
+			times_equipped: 0,
+			pinned_setup: null
 		};
 		const gear = new Gear(gearPreset);
 		expect(gear.allItemsBank()).toEqual(
@@ -364,7 +368,10 @@ describe('Gear', () => {
 			weapon: null,
 			ring: null,
 			ammo: null,
-			ammo_qty: null
+			ammo_qty: null,
+			emoji_id: null,
+			times_equipped: 0,
+			pinned_setup: null
 		};
 		const gear = new Gear(gearPreset);
 		expect(gear.allItemsBank()).toEqual(new Bank());

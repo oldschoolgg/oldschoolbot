@@ -1,4 +1,4 @@
-import '../src/lib/bankImage';
+import '../../src/lib/bankImage';
 
 import { writeFile } from 'fs/promises';
 import { Bank, Monsters } from 'oldschooljs';
@@ -19,7 +19,7 @@ describe('Images', () => {
 				'Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test',
 			head: 'santa'
 		});
-		await writeFile('./tests/snapshots/chatheads_santa.png', result.files[0].attachment);
+		await writeFile('./tests/unit/snapshots/chatheads_santa.png', result.files[0].attachment);
 	});
 
 	test('Collection Log', async () => {
@@ -29,7 +29,7 @@ describe('Images', () => {
 			type: 'collection',
 			flags: {}
 		});
-		await writeFile('./tests/snapshots/cl_corp.png', result.files[0].attachment);
+		await writeFile('./tests/unit/snapshots/cl_corp.png', result.files[0].attachment);
 	});
 
 	test('Bank Image', async () => {
@@ -43,7 +43,7 @@ describe('Images', () => {
 			bank,
 			title: 'Test Image'
 		});
-		await writeFile('./tests/snapshots/bank_1.png', res.file.attachment);
+		await writeFile('./tests/unit/snapshots/bank_1.png', res.file.attachment);
 	});
 
 	test('POH Image', async () => {
@@ -54,7 +54,7 @@ describe('Images', () => {
 			mounted_cape: 29_210,
 			background_id: 1
 		} as any);
-		await writeFile('./tests/snapshots/poh_1.png', result);
+		await writeFile('./tests/unit/snapshots/poh_1.png', result);
 	});
 
 	test('Chart Image', async () => {
@@ -62,6 +62,6 @@ describe('Images', () => {
 			['Complete Collection Log Items', 20, '#9fdfb2'],
 			['Incomplete Collection Log Items', 80, '#df9f9f']
 		]);
-		await writeFile('./tests/snapshots/chart_1.png', result);
+		await writeFile('./tests/unit/snapshots/chart_1.png', result);
 	});
 });

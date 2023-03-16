@@ -6,7 +6,7 @@ import { vi } from 'vitest';
 import { globalConfig } from '../../src/lib/constants';
 import { mockMUser, mockUserMap } from './utils';
 
-vi.mock('../src/lib/settings/prisma.ts', () => ({
+vi.mock('../../src/lib/settings/prisma.ts', () => ({
 	__esModule: true,
 	prisma: {}
 }));
@@ -27,7 +27,7 @@ global.globalClient = {
 		}
 	}
 } as any;
-import('../src/lib/MUser');
+import('../../src/lib/MUser');
 
 // @ts-ignore Mock
 global.mUserFetch = (id: string) => {
@@ -35,7 +35,7 @@ global.mUserFetch = (id: string) => {
 	return mocked ?? mockMUser({ id });
 };
 
-vi.mock('../src/lib/util/addSubTaskToActivityTask.ts', () => ({
+vi.mock('../../src/lib/util/addSubTaskToActivityTask.ts', () => ({
 	__esModule: true,
 	default: () => {}
 }));
@@ -44,8 +44,8 @@ async function mockTransactItems() {
 	return { newUser: {} };
 }
 
-vi.mock('../src/mahoji/mahojiSettings.ts', async () => {
-	const actual: any = await vi.importActual('../src/mahoji/mahojiSettings.ts');
+vi.mock('../../src/mahoji/mahojiSettings.ts', async () => {
+	const actual: any = await vi.importActual('../../src/mahoji/mahojiSettings.ts');
 	return {
 		...actual,
 		transactItems: mockTransactItems
@@ -55,8 +55,8 @@ vi.mock('../src/mahoji/mahojiSettings.ts', async () => {
 // @ts-ignore Mock
 global.transactItems = mockTransactItems;
 
-vi.mock('../src/lib/patreon', async () => {
-	const actual: any = await vi.importActual('../src/lib/patreon');
+vi.mock('../../src/lib/patreon', async () => {
+	const actual: any = await vi.importActual('../../src/lib/patreon');
 	return {
 		...actual,
 		patreonTask: {
