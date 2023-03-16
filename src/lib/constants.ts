@@ -1,6 +1,9 @@
 import { execSync } from 'child_process';
 import { APIButtonComponent, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
+import * as dotenv from 'dotenv';
 import { CommandOptions } from 'mahoji/dist/lib/types';
+import path from 'node:path';
+import { z } from 'zod';
 
 import { DISCORD_SETTINGS, production } from '../config';
 import type { AbstractCommand } from '../mahoji/lib/inhibitors';
@@ -454,3 +457,18 @@ export const toaPurpleItems = resolveItems([
 ]);
 
 export const ParsedCustomEmojiWithGroups = /(?<animated>a?):(?<name>[^:]+):(?<id>\d{17,20})/;
+
+const globalConfigSchema = z.object({
+	patreonToken: z.string(),
+	patreonCampaignID: z.number().int(),
+	patreonWebhookSecret: z.string(),
+	httpPort: z.number().int()
+});
+dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.example' : '.env') });
+
+export const globalConfig = globalConfigSchema.parse({
+	patreonToken: process.env.PATREON_TOKEN,
+	patreonCampaignID: Number(process.env.PATREON_CAMPAIGN_ID),
+	patreonWebhookSecret: process.env.PATREON_WEBHOOK_SECRET,
+	httpPort: Number(process.env.HTTP_PORT)
+});
