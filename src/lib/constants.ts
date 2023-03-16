@@ -459,10 +459,10 @@ export const toaPurpleItems = resolveItems([
 export const ParsedCustomEmojiWithGroups = /(?<animated>a?):(?<name>[^:]+):(?<id>\d{17,20})/;
 
 const globalConfigSchema = z.object({
-	patreonToken: z.string(),
-	patreonCampaignID: z.number().int(),
-	patreonWebhookSecret: z.string(),
-	httpPort: z.number().int()
+	patreonToken: z.string().default(''),
+	patreonCampaignID: z.number().int().default(1),
+	patreonWebhookSecret: z.string().default(''),
+	httpPort: z.number().int().default(8080)
 });
 dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.example' : '.env') });
 
