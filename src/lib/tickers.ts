@@ -76,7 +76,7 @@ export interface Peak {
 export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | null; cb: () => unknown }[] = [
 	{
 		name: 'giveaways',
-		interval: Time.Second * 5,
+		interval: Time.Second * 10,
 		timer: null,
 		cb: async () => {
 			const result = await prisma.giveaway.findMany({
