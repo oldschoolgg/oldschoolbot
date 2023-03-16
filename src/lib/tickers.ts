@@ -376,9 +376,7 @@ export function initTickers() {
 		const fn = async () => {
 			try {
 				if (globalClient.isShuttingDown) return;
-				debugLog(`Starting ${ticker.name} ticker`);
 				await ticker.cb();
-				debugLog(`Finished ${ticker.name} ticker`);
 			} catch (err) {
 				logError(err);
 			} finally {
