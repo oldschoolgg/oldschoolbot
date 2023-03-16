@@ -4,6 +4,7 @@ import '../src/lib/util/logger';
 
 import { vi } from 'vitest';
 
+import { globalConfig } from '../src/lib/constants';
 import { mockMUser, mockUserMap } from './utils';
 
 vi.mock('../src/lib/settings/prisma.ts', () => ({
@@ -54,3 +55,16 @@ vi.mock('../src/mahoji/mahojiSettings.ts', async () => {
 
 // @ts-ignore Mock
 global.transactItems = mockTransactItems;
+
+vi.mock('../src/lib/patreon', async () => {
+	const actual: any = await vi.importActual('../src/lib/patreon');
+	return {
+		...actual,
+		patreonTask: {
+			run: () => {}
+		}
+	};
+});
+
+export const mockPatreonWebhookSecret = 'test';
+globalConfig.patreonWebhookSecret = mockPatreonWebhookSecret;

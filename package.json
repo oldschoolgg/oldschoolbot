@@ -34,6 +34,7 @@
 		"chokidar": "^3.5.3",
 		"deepmerge": "^4.2.2",
 		"discord.js": "^14.8.0",
+		"dotenv": "^16.0.3",
 		"e": "^0.2.32",
 		"emoji-regex": "^10.2.1",
 		"fastify": "^4.14.1",
@@ -52,7 +53,8 @@
 		"random-js": "^2.1.0",
 		"table": "^6.8.0",
 		"utf-8-validate": "^6.0.3",
-		"zlib-sync": "^0.1.8"
+		"zlib-sync": "^0.1.8",
+		"zod": "^3.21.4"
 	},
 	"devDependencies": {
 		"@oldschoolgg/eslint-config": "^2.0.13",
@@ -63,7 +65,6 @@
 		"@types/node": "^14.18.12",
 		"@types/node-cron": "^3.0.7",
 		"@types/node-fetch": "^2.6.1",
-		"@types/supertest": "^2.0.12",
 		"@types/table": "^6.3.2",
 		"@vitest/coverage-c8": "^0.28.4",
 		"concurrently": "^7.6.0",
@@ -72,7 +73,6 @@
 		"prisma": "^3.15.1",
 		"rimraf": "^4.4.0",
 		"source-map-support": "^0.5.21",
-		"supertest": "^6.3.3",
 		"typescript": "^4.9.5",
 		"vitest": "^0.28.4"
 	},
