@@ -44,10 +44,6 @@ const birdhouseSeedReq = [
 		amount: 5
 	},
 	{
-		itemID: itemID('Jute seed'),
-		amount: 10
-	},
-	{
 		itemID: itemID('Potato seed'),
 		amount: 10
 	},
@@ -109,6 +105,10 @@ const birdhouseSeedReq = [
 	},
 	{
 		itemID: itemID('Harralander seed'),
+		amount: 10
+	},
+	{
+		itemID: itemID('Jute seed'),
 		amount: 10
 	},
 	{
