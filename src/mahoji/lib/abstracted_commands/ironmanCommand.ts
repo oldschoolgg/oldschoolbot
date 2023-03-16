@@ -12,6 +12,7 @@ import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
 
 export async function ironmanCommand(user: MUser, interaction: ChatInputCommandInteraction) {
+	if (1 > 0) return 'Sorry, this is temporarily disabled.';
 	if (minionIsBusy(user.id)) return 'Your minion is busy.';
 	if (user.isIronman) {
 		return 'You are already an ironman.';
