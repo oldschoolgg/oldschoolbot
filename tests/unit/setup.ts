@@ -1,9 +1,9 @@
-import '../src/lib/data/itemAliases';
-import '../src/lib/util/logger';
+import '../../src/lib/data/itemAliases';
+import '../../src/lib/util/logger';
 
 import { vi } from 'vitest';
 
-import { globalConfig } from '../src/lib/constants';
+import { globalConfig } from '../../src/lib/constants';
 import { mockMUser, mockUserMap } from './utils';
 
 vi.mock('../src/lib/settings/prisma.ts', () => ({

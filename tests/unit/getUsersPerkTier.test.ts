@@ -1,8 +1,8 @@
 import { Time } from 'e';
 import { describe, expect, test } from 'vitest';
 
-import { BitField, PerkTier } from '../src/lib/constants';
-import { getUsersPerkTier, MUserClass } from '../src/lib/MUser';
+import { BitField, PerkTier } from '../../src/lib/constants';
+import { getUsersPerkTier, MUserClass } from '../../src/lib/MUser';
 import { mockMUser } from './utils';
 
 describe('getUsersPerkTier', () => {

@@ -5,11 +5,11 @@ import { Bank, Monsters } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 import { describe, test } from 'vitest';
 
-import { clImageGenerator } from '../src/lib/collectionLogTask';
-import { pohImageGenerator } from '../src/lib/pohImage';
-import { pieChart } from '../src/lib/util/chart';
-import { mahojiChatHead } from '../src/lib/util/chatHeadImage';
-import { makeBankImage } from '../src/lib/util/makeBankImage';
+import { clImageGenerator } from '../../src/lib/collectionLogTask';
+import { pohImageGenerator } from '../../src/lib/pohImage';
+import { pieChart } from '../../src/lib/util/chart';
+import { mahojiChatHead } from '../../src/lib/util/chatHeadImage';
+import { makeBankImage } from '../../src/lib/util/makeBankImage';
 import { mockMUser } from './utils';
 
 describe('Images', () => {

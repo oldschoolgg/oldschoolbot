@@ -1,7 +1,7 @@
 import { Time } from 'e';
 import { describe, expect, test } from 'vitest';
 
-import { PercentCounter } from '../src/lib/structures/PercentCounter';
+import { PercentCounter } from '../../src/lib/structures/PercentCounter';
 
 describe('itemArg', () => {
 	test('not applying', async () => {
