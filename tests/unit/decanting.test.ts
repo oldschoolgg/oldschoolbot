@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import decantPotionFromBank from '../src/lib/minions/functions/decantPotionFromBank';
+import decantPotionFromBank from '../../src/lib/minions/functions/decantPotionFromBank';
 
 describe('decantPotionFromBank', () => {
 	test('decantPotionFromBank', () => {

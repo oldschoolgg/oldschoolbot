@@ -2,11 +2,11 @@ import { Bank } from 'oldschooljs';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
 import { describe, expect, test } from 'vitest';
 
-import { GearSetup, GearStat } from '../src/lib/gear/types';
-import getUserBestGearFromBank from '../src/lib/minions/functions/getUserBestGearFromBank';
-import { Gear } from '../src/lib/structures/Gear';
-import { Skills } from '../src/lib/types';
-import itemID from '../src/lib/util/itemID';
+import { GearSetup, GearStat } from '../../src/lib/gear/types';
+import getUserBestGearFromBank from '../../src/lib/minions/functions/getUserBestGearFromBank';
+import { Gear } from '../../src/lib/structures/Gear';
+import { Skills } from '../../src/lib/types';
+import itemID from '../../src/lib/util/itemID';
 
 const userBank = new Bank({
 	'Bandos chestplate': 4,

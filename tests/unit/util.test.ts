@@ -3,19 +3,19 @@ import { Bank } from 'oldschooljs';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
 import { describe, expect, test } from 'vitest';
 
-import { baseModifyBusyCounter } from '../src/lib/busyCounterCache';
-import { deduplicateClueScrolls } from '../src/lib/clues/clueUtils';
-import getUserFoodFromBank from '../src/lib/minions/functions/getUserFoodFromBank';
-import { SkillsEnum } from '../src/lib/skilling/types';
+import { baseModifyBusyCounter } from '../../src/lib/busyCounterCache';
+import { deduplicateClueScrolls } from '../../src/lib/clues/clueUtils';
+import getUserFoodFromBank from '../../src/lib/minions/functions/getUserFoodFromBank';
+import { SkillsEnum } from '../../src/lib/skilling/types';
 import {
 	sanitizeBank,
 	skillingPetDropRate,
 	stripEmojis,
 	truncateString,
 	validateItemBankAndThrow
-} from '../src/lib/util';
-import getOSItem from '../src/lib/util/getOSItem';
-import { sellPriceOfItem, sellStorePriceOfItem } from '../src/mahoji/commands/sell';
+} from '../../src/lib/util';
+import getOSItem from '../../src/lib/util/getOSItem';
+import { sellPriceOfItem, sellStorePriceOfItem } from '../../src/mahoji/commands/sell';
 import { mockMUser } from './utils';
 
 describe('util', () => {

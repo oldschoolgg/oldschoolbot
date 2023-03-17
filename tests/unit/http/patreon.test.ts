@@ -1,8 +1,8 @@
 import { createHmac } from 'node:crypto';
 import { afterAll, beforeAll, expect, test } from 'vitest';
 
-import { makeServer } from '../../src/lib/http';
-import { FastifyServer } from '../../src/lib/http/types';
+import { makeServer } from '../../../src/lib/http';
+import { FastifyServer } from '../../../src/lib/http/types';
 import { mockPatreonWebhookSecret } from '../setup';
 
 let app: FastifyServer = null!;

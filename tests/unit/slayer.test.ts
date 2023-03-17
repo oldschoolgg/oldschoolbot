@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 
-import { allSlayerTasks } from '../src/lib/slayer/tasks';
+import { allSlayerTasks } from '../../src/lib/slayer/tasks';
 
 describe('slayer.test', () => {
 	test('tasks', () => {
