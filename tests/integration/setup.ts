@@ -1,7 +1,7 @@
-import '../../src/lib/data/itemAliases';
-import '../../src/lib/util/logger';
+import '../globalSetup';
 
-// @ts-ignore Mock
-global.globalClient = {
-	isReady: () => true
-} as any;
+import { runStartupScripts } from '../../src/lib/startupScripts';
+
+export async function setup() {
+	await runStartupScripts();
+}
