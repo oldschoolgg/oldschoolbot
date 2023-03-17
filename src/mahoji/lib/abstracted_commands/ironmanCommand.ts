@@ -11,8 +11,7 @@ import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirma
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
 
-export async function ironmanCommand(user: MUser, interaction: ChatInputCommandInteraction) {
-	if (1 > 0) return 'Sorry, this is temporarily disabled.';
+export async function ironmanCommand(user: MUser, interaction: ChatInputCommandInteraction | null) {
 	if (minionIsBusy(user.id)) return 'Your minion is busy.';
 	if (user.isIronman) {
 		return 'You are already an ironman.';
@@ -29,9 +28,10 @@ export async function ironmanCommand(user: MUser, interaction: ChatInputCommandI
 		return "You can't become an ironman because you have active giveaways.";
 	}
 
-	await handleMahojiConfirmation(
-		interaction,
-		`Are you sure you want to start over and play as an ironman?
+	if (interaction) {
+		await handleMahojiConfirmation(
+			interaction,
+			`Are you sure you want to start over and play as an ironman?
 :warning: **Read the following text before confirming. This is your only warning. ** :warning:
 The following things will be COMPLETELY reset/wiped from your account, with no chance of being recovered: Your entire bank, collection log, GP/Coins, QP/Quest Points, Clue Scores, Monster Scores, all XP. If you type \`confirm\`, they will all be wiped.
 After becoming an ironman:
@@ -40,7 +40,8 @@ After becoming an ironman:
 	- You **cannot** de-iron, it is PERMANENT.
     - Your entire BSO account, EVERYTHING, will be reset.
 Type \`confirm permanent ironman\` if you understand the above information, and want to become an ironman now.`
-	);
+		);
+	}
 
 	const mUser = await mahojiUsersSettingsFetch(user.id);
 

@@ -425,7 +425,7 @@ ORDER BY val DESC
 LIMIT 10`);
 			return result;
 		},
-		format: num => `${num} Spooky box${num > 1 ? 'es' : ''}`
+		format: num => `${num} Spooky box${(num as number) > 1 ? 'es' : ''}`
 	},
 	{
 		name: 'Chambers of Xeric (CoX)',
@@ -722,7 +722,7 @@ async function checkMassesCommand(guildID: string | undefined) {
 ${massStr}`.slice(0, 1999);
 }
 
-function calcTime(perkTier: PerkTier) {
+function calcTime(perkTier: PerkTier | 0) {
 	for (const [bit, dur] of [
 		[PerkTier.Seven, Time.Minute * 90],
 		[PerkTier.Six, Time.Minute * 40],
