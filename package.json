@@ -12,8 +12,7 @@
 		"dev": "yarn wipedist && tsc -w -p src",
 		"o": "yarn build && madge --circular ./dist",
 		"test:watch": "vitest --config vitest.unit.config.ts --coverage",
-		"test:integration": "ts-node ./src/scripts/integration-tests.ts",
-		"test:integration:run": "vitest run --config vitest.integration.config.ts"
+		"test:integration": "ts-node ./src/scripts/integration-tests.ts"
 	},
 	"dependencies": {
 		"@discordjs/builders": "^1.5.0",
