@@ -93,8 +93,8 @@ export async function updateBankSetting(key: ClientBankKey, bankToAdd: Bank) {
 	const currentClientSettings = await mahojiClientSettingsFetch({
 		[key]: true
 	});
-	const current = new Bank(currentClientSettings[key] as ItemBank);
-	const newBank = new Bank().add(current).add(bankToAdd);
+	const current = currentClientSettings[key] as ItemBank;
+	const newBank = new Bank(current).add(bankToAdd);
 
 	const res = await mahojiClientSettingsUpdate({
 		[key]: newBank.bank
