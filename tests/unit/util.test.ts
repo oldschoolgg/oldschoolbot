@@ -7,13 +7,7 @@ import { baseModifyBusyCounter } from '../../src/lib/busyCounterCache';
 import { deduplicateClueScrolls } from '../../src/lib/clues/clueUtils';
 import getUserFoodFromBank from '../../src/lib/minions/functions/getUserFoodFromBank';
 import { SkillsEnum } from '../../src/lib/skilling/types';
-import {
-	sanitizeBank,
-	skillingPetDropRate,
-	stripEmojis,
-	truncateString,
-	validateItemBankAndThrow
-} from '../../src/lib/util';
+import { sanitizeBank, skillingPetDropRate, stripEmojis, truncateString } from '../../src/lib/util';
 import getOSItem from '../../src/lib/util/getOSItem';
 import { sellPriceOfItem, sellStorePriceOfItem } from '../../src/mahoji/commands/sell';
 import { mockMUser } from './utils';
@@ -93,19 +87,6 @@ describe('util', () => {
 		expect(sellStorePriceOfItem(item, 1)).toEqual({ price: expectedOneQty, basePrice: cost });
 		expect(sellStorePriceOfItem(item, 22)).toEqual({ price: expectedTwentytwoQty, basePrice: cost });
 		expect(sellStorePriceOfItem(getOSItem('A yellow square'), 1)).toEqual({ price: 0, basePrice: 0 });
-	});
-
-	test('validateItemBankAndThrow', () => {
-		expect(() => validateItemBankAndThrow({ a: 'b' })).toThrow();
-		expect(() => validateItemBankAndThrow({ a: 1 })).toThrow();
-		expect(() => validateItemBankAndThrow(1)).toThrow();
-		expect(() => validateItemBankAndThrow('b')).toThrow();
-		expect(() => validateItemBankAndThrow(() => {})).toThrow();
-		// eslint-disable-next-line func-names
-		expect(() => validateItemBankAndThrow(function () {})).toThrow();
-		// eslint-disable-next-line @typescript-eslint/no-extraneous-class
-		expect(() => validateItemBankAndThrow(class {})).toThrow();
-		expect(validateItemBankAndThrow({ 1: 1 })).toEqual(true);
 	});
 
 	test('skillingPetRateFunction', () => {
