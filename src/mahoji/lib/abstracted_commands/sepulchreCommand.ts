@@ -1,5 +1,4 @@
-import { reduceNumByPercent, Time } from 'e';
-import { addArrayOfNumbers } from 'oldschooljs/dist/util';
+import { reduceNumByPercent, sumArr, Time } from 'e';
 
 import { sepulchreBoosts, sepulchreFloors } from '../../../lib/minions/data/sepulchre';
 import { getMinigameScore } from '../../../lib/settings/minigames';
@@ -27,7 +26,7 @@ export async function sepulchreCommand(user: MUser, channelID: string) {
 	}
 
 	const completableFloors = sepulchreFloors.filter(floor => agilityLevel >= floor.agilityLevel);
-	let lapLength = addArrayOfNumbers(completableFloors.map(floor => floor.time));
+	let lapLength = sumArr(completableFloors.map(floor => floor.time));
 
 	const boosts = [];
 

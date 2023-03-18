@@ -18,7 +18,7 @@ import { IMaterialBank, MaterialType } from '.';
 import { MaterialBank } from './MaterialBank';
 
 const InventionFlags = ['equipped', 'bank'] as const;
-type InventionFlag = typeof InventionFlags[number];
+type InventionFlag = (typeof InventionFlags)[number];
 
 export enum InventionID {
 	SuperiorBonecrusher = 1,

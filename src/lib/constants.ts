@@ -1,3 +1,5 @@
+import path from 'node:path';
+
 import { Prisma } from '@prisma/client';
 import { execSync } from 'child_process';
 import {
@@ -11,7 +13,6 @@ import {
 import * as dotenv from 'dotenv';
 import { Time } from 'e';
 import { CommandOptions } from 'mahoji/dist/lib/types';
-import path from 'node:path';
 import { convertLVLtoXP } from 'oldschooljs/dist/util/util';
 import { z } from 'zod';
 
@@ -563,13 +564,13 @@ export const GLOBAL_BSO_XP_MULTIPLIER = 5;
 
 export const DISABLED_COMMANDS = new Set<string>();
 export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'none'] as const;
-export type PvMMethod = typeof PVM_METHODS[number];
+export type PvMMethod = (typeof PVM_METHODS)[number];
 
 export const NMZ_STRATEGY = ['experience', 'points'] as const;
-export type NMZStrategy = typeof NMZ_STRATEGY[number];
+export type NMZStrategy = (typeof NMZ_STRATEGY)[number];
 
 export const UNDERWATER_AGILITY_THIEVING_TRAINING_SKILL = ['agility', 'thieving', 'agility+thieving'] as const;
-export type UnderwaterAgilityThievingTrainingSkill = typeof UNDERWATER_AGILITY_THIEVING_TRAINING_SKILL[number];
+export type UnderwaterAgilityThievingTrainingSkill = (typeof UNDERWATER_AGILITY_THIEVING_TRAINING_SKILL)[number];
 
 export const usernameCache = new Map<string, string>();
 export const badgesCache = new Map<string, string>();

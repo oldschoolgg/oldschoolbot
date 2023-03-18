@@ -61,7 +61,7 @@ export async function transactItemsFromBank({
 		let clUpdates: Prisma.UserUpdateArgs['data'] = {};
 		if (itemsToAdd) {
 			const { bankLoot, clLoot } = filterLoot
-				? filterLootReplace(settings.allItemsOwned(), itemsToAdd)
+				? filterLootReplace(settings.allItemsOwned, itemsToAdd)
 				: { bankLoot: itemsToAdd, clLoot: itemsToAdd };
 			itemsToAdd = bankLoot;
 

@@ -1,3 +1,5 @@
+import { gzip } from 'node:zlib';
+
 import { PrismaClient } from '@prisma/client';
 import { Stopwatch } from '@sapphire/stopwatch';
 import {
@@ -36,7 +38,6 @@ import {
 } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import murmurHash from 'murmurhash';
-import { gzip } from 'node:zlib';
 import { Bank, Items, Monsters } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import Monster from 'oldschooljs/dist/structures/Monster';
