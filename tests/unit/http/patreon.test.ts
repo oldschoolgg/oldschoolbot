@@ -1,4 +1,5 @@
 import { createHmac } from 'node:crypto';
+
 import { afterAll, beforeAll, expect, test } from 'vitest';
 
 import { makeServer } from '../../../src/lib/http';

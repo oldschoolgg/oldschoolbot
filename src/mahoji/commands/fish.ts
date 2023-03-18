@@ -123,10 +123,10 @@ export const fishCommand: OSBMahojiCommand = {
 			);
 		}
 
-		if (user.allItemsOwned().has('Fish sack barrel') || user.allItemsOwned().has('Fish barrel')) {
+		if (user.allItemsOwned.has('Fish sack barrel') || user.allItemsOwned.has('Fish barrel')) {
 			boosts.push(
 				`+9 trip minutes for having a ${
-					user.allItemsOwned().has('Fish sack barrel') ? 'Fish sack barrel' : 'Fish barrel'
+					user.allItemsOwned.has('Fish sack barrel') ? 'Fish sack barrel' : 'Fish barrel'
 				}`
 			);
 		}

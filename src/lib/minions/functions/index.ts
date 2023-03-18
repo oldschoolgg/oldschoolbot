@@ -19,7 +19,7 @@ export const attackStylesArr = [
 	SkillsEnum.Magic,
 	SkillsEnum.Ranged
 ] as const;
-export type AttackStyles = typeof attackStylesArr[number];
+export type AttackStyles = (typeof attackStylesArr)[number];
 
 const miscHpMap: Record<number, number> = {
 	9415: NIGHTMARES_HP,
