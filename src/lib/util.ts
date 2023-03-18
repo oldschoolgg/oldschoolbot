@@ -1,3 +1,5 @@
+import { gzip } from 'node:zlib';
+
 import { PrismaClient } from '@prisma/client';
 import { Stopwatch } from '@sapphire/stopwatch';
 import {
@@ -26,7 +28,6 @@ import {
 	calcWhatPercent,
 	chunk,
 	increaseNumByPercent,
-	isObject,
 	objectEntries,
 	randArrItem,
 	randInt,
@@ -36,7 +37,6 @@ import {
 } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import murmurHash from 'murmurhash';
-import { gzip } from 'node:zlib';
 import { Bank, Items, Monsters } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import Monster from 'oldschooljs/dist/structures/Monster';
@@ -631,22 +631,6 @@ export function clAdjustedDroprate(user: MUser, item: string | number, baseRate:
 
 export function makeComponents(components: ButtonBuilder[]): InteractionReplyOptions['components'] {
 	return chunk(components, 5).map(i => ({ components: i, type: ComponentType.ActionRow }));
-}
-
-export function validateItemBankAndThrow(input: any): input is ItemBank {
-	if (!isObject(input)) {
-		throw new Error('Invalid bank');
-	}
-	const numbers = [];
-	for (const [key, val] of Object.entries(input)) {
-		numbers.push(parseInt(key), val);
-	}
-	for (const num of numbers) {
-		if (isNaN(num) || typeof num !== 'number' || !Number.isInteger(num) || num < 0) {
-			throw new Error('Invalid bank');
-		}
-	}
-	return true;
 }
 
 type test = CollectorFilter<

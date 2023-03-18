@@ -44,7 +44,7 @@ import mixables from '../skilling/skills/herblore/mixables';
 import smithables from '../skilling/skills/smithing/smithables';
 import { SkillsEnum } from '../skilling/types';
 import type { ItemBank } from '../types';
-import { addArrayOfNumbers, itemID } from '../util';
+import { itemID } from '../util';
 import { stringMatches } from '../util/cleanString';
 import { repairBrokenItemsFromUser } from '../util/repairBrokenItems';
 import resolveItems from '../util/resolveItems';
@@ -626,7 +626,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['revs'],
 				kcActivity: {
 					Default: async user => {
-						return addArrayOfNumbers(
+						return sumArr(
 							[
 								Monsters.RevenantImp.id,
 								Monsters.RevenantGoblin.id,

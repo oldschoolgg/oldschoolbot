@@ -99,7 +99,7 @@ export const raidsTask: MinionTask = {
 
 				const hasDust = userData.loot.has('Metamorphic dust') || userData.mUser.cl.has('Metamorphic dust');
 				if (challengeMode && roll(50) && hasDust) {
-					const { bank } = userData.loot.clone().add(userData.mUser.allItemsOwned());
+					const { bank } = userData.loot.clone().add(userData.mUser.allItemsOwned);
 					const unownedPet = shuffleArr(chambersOfXericMetamorphPets).find(pet => !bank[pet]);
 					if (unownedPet) {
 						userLoot.add(unownedPet);

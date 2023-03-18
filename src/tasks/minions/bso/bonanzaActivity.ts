@@ -85,7 +85,7 @@ export const bonanzaTask: MinionTask = {
 
 		const freeIgneTames = tames.filter(i => i.tame_activity.length === 0 && i.species_id === TameSpeciesID.Igne);
 		const freeIgneTame = randArrItem(freeIgneTames);
-		const allUserItems = user.allItemsOwned();
+		const allUserItems = user.allItemsOwned;
 		const unownedSpectatorClothes = shuffleArr(spectatorClothes)
 			.filter(i => !allUserItems.has(i))
 			.slice(0, 3);

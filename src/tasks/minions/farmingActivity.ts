@@ -125,7 +125,7 @@ export const farmingTask: MinionTask = {
 		let farmersPiecesCheck = 0;
 		let loot = new Bank();
 
-		const hasPlopper = user.allItemsOwned().has('Plopper');
+		const hasPlopper = user.allItemsOwned.has('Plopper');
 
 		const plant = Farming.Plants.find(plant => plant.name === plantsName)!;
 		assert(Boolean(plant));

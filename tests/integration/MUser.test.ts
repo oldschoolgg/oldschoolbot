@@ -1,25 +1,14 @@
 import { Bank } from 'oldschooljs';
+import { ItemBank } from 'oldschooljs/dist/meta/types';
+import { describe, expect, test } from 'vitest';
 
-import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
-import { ItemBank } from './types';
-import { assert } from './util';
+import { GLOBAL_BSO_XP_MULTIPLIER } from '../../src/lib/constants';
+import { prisma } from '../../src/lib/settings/prisma';
+import { SkillsEnum } from '../../src/lib/skilling/types';
+import { assert } from '../../src/lib/util/logError';
+import { mahojiUsersSettingsFetch } from '../../src/mahoji/mahojiSettings';
 
-export function bankIsEqual(bank1: Bank, bank2: Bank) {
-	for (const [item, quantity] of bank1.items()) {
-		if (bank2.amount(item.id) !== quantity) return false;
-	}
-	return (
-		bank1.length === bank2.length &&
-		bank1.value() === bank2.value() &&
-		JSON.stringify(bank1.bank).length === JSON.stringify(bank2.bank).length
-	);
-}
-
-function diffBanks(bank1: Bank, bank2: Bank) {
-	return bank1.clone().remove(bank2).add(bank2.clone().remove(bank1));
-}
-
-export async function stressTest(userID: string) {
+async function stressTest(userID: string) {
 	const user = await mUserFetch(userID);
 	const currentBank = user.bank;
 	const currentGP = user.GP;
@@ -32,11 +21,8 @@ export async function stressTest(userID: string) {
 		const newBank = user.bank;
 		const mUser = await mahojiUsersSettingsFetch(userID);
 		const mahojiBank = new Bank(mUser.bank as ItemBank);
-		assert(bankIsEqual(mahojiBank, newBank), 'Mahoji bank should match');
-		assert(
-			bankIsEqual(mahojiBank, currentBank),
-			`Updated bank should match: ${diffBanks(mahojiBank, currentBank)}`
-		);
+		assert(mahojiBank.equals(newBank), 'Mahoji bank should match');
+		assert(mahojiBank.equals(currentBank), `Updated bank should match: ${mahojiBank.difference(currentBank)}`);
 		assert(currentGP === Number(mUser.GP), `2 GP should match ${currentGP} === ${Number(mUser.GP)}`);
 	}
 	async function fetchCL() {
@@ -73,18 +59,15 @@ export async function stressTest(userID: string) {
 
 	// Collection Log
 	const clBankChange = new Bank().add('Coins').add('Twisted bow').freeze();
-	assert(
-		bankIsEqual(currentCL, await fetchCL()),
-		`CL should not have changed ${diffBanks(currentCL, await fetchCL())}`
-	);
+	assert(currentCL.equals(await fetchCL()), `CL should not have changed ${currentCL.difference(await fetchCL())}`);
 	const { previousCL, newCL } = await transactItems({
 		userID,
 		itemsToAdd: clBankChange,
 		collectionLog: true,
 		filterLoot: false
 	});
-	assert(bankIsEqual(newCL, currentCL.clone().add(clBankChange)), 'Should match 2');
-	assert(bankIsEqual(previousCL, currentCL), 'Should match 3');
+	assert(newCL.equals(currentCL.clone().add(clBankChange)), 'Should match 2');
+	assert(previousCL.equals(currentCL), 'Should match 3');
 	await user.removeItemsFromBank(clBankChange);
 
 	await assertBankMatches();
@@ -93,6 +76,30 @@ export async function stressTest(userID: string) {
 	const specialRemoveBank = new Bank().add('Egg').add('Twisted bow', 100);
 	await user.addItemsToBank({ items: specialRemoveBank });
 	await user.specialRemoveItems(specialRemoveBank);
-
-	return 'Success';
 }
+
+describe('MUser', () => {
+	test('Should pass stress test', async () => {
+		await Promise.all([stressTest('1'), stressTest('2')]);
+	});
+
+	test('Should add XP', async () => {
+		const userId = '123456789';
+		const user = await mUserFetch(userId);
+		expect(user.skillsAsLevels.agility).toEqual(1);
+		const result = await user.addXP({ skillName: SkillsEnum.Agility, amount: 1000 });
+		const xpMultiplied = 1000 * GLOBAL_BSO_XP_MULTIPLIER;
+		expect(user.skillsAsLevels.agility).toEqual(20);
+		expect(result).toEqual(`You received ${xpMultiplied.toLocaleString()} <:agility:630911040355565568> XP
+**Congratulations! Your Agility level is now 20** 🎉`);
+		const xpAdded = await prisma.xPGain.findMany({
+			where: {
+				user_id: BigInt(userId),
+				skill: 'agility',
+				xp: xpMultiplied
+			}
+		});
+		expect(xpAdded.length).toEqual(1);
+		expect(xpAdded[0].xp).toEqual(xpMultiplied);
+	});
+});

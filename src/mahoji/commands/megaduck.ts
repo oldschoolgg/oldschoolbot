@@ -44,7 +44,7 @@ function topFeeders(entries: any[]) {
 }
 
 const directions = ['up', 'down', 'left', 'right'] as const;
-type MegaduckDirection = typeof directions[number];
+type MegaduckDirection = (typeof directions)[number];
 
 function applyDirection(location: MegaDuckLocation, direction: MegaduckDirection): MegaDuckLocation {
 	let newLocation = { ...location };

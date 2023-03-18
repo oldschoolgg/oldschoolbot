@@ -155,7 +155,7 @@ export const createCommand: OSBMahojiCommand = {
 			}
 		}
 		if (createableItem.maxCanOwn) {
-			const allItems = user.allItemsOwned();
+			const allItems = user.allItemsOwned;
 			const amountOwned = allItems.amount(createableItem.name);
 			if (amountOwned >= createableItem.maxCanOwn) {
 				return `You already have ${amountOwned}x ${createableItem.name}, you can't create another.`;
@@ -185,7 +185,7 @@ export const createCommand: OSBMahojiCommand = {
 
 		// Check for any items they cant have 2 of.
 		if (createableItem.cantHaveItems) {
-			const allItemsOwnedBank = user.allItemsOwned();
+			const allItemsOwnedBank = user.allItemsOwned;
 			for (const [itemID, qty] of Object.entries(createableItem.cantHaveItems)) {
 				const numOwned = allItemsOwnedBank.amount(Number(itemID));
 				if (numOwned >= qty) {

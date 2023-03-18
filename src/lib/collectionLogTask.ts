@@ -17,7 +17,7 @@ export const collectionLogTypes = [
 	{ name: 'tame', description: 'Tames Collection Log' },
 	{ name: 'disassembly', description: 'Disassembly Collection Log' }
 ] as const;
-export type CollectionLogType = typeof collectionLogTypes[number]['name'];
+export type CollectionLogType = (typeof collectionLogTypes)[number]['name'];
 export const CollectionLogFlags = [
 	{ name: 'text', description: 'Show your CL in text format.' },
 	{ name: 'missing', description: 'Show only missing items.' }

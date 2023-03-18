@@ -6,7 +6,6 @@ import { handleNewCLItems } from '../handleNewCLItems';
 import { mahojiUserSettingsUpdate } from '../MUser';
 import { filterLootReplace } from '../slayer/slayerUtil';
 import { ItemBank } from '../types';
-import { sanitizeBank } from '../util';
 import { logError } from './logError';
 import { userQueueFn } from './userQueues';
 
@@ -61,7 +60,7 @@ export async function transactItemsFromBank({
 		let clUpdates: Prisma.UserUpdateArgs['data'] = {};
 		if (itemsToAdd) {
 			const { bankLoot, clLoot } = filterLoot
-				? filterLootReplace(settings.allItemsOwned(), itemsToAdd)
+				? filterLootReplace(settings.allItemsOwned, itemsToAdd)
 				: { bankLoot: itemsToAdd, clLoot: itemsToAdd };
 			itemsToAdd = bankLoot;
 
@@ -81,8 +80,6 @@ export async function transactItemsFromBank({
 
 		const newBank = new Bank().add(currentBank);
 		if (itemsToAdd) newBank.add(itemsToAdd);
-
-		sanitizeBank(newBank);
 
 		if (itemsToRemove) {
 			if (itemsToRemove.has('Coins')) {
