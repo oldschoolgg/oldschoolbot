@@ -1,8 +1,8 @@
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { describe, expect, test } from 'vitest';
-import { GLOBAL_BSO_XP_MULTIPLIER } from '../../src/lib/constants';
 
+import { GLOBAL_BSO_XP_MULTIPLIER } from '../../src/lib/constants';
 import { prisma } from '../../src/lib/settings/prisma';
 import { SkillsEnum } from '../../src/lib/skilling/types';
 import { assert } from '../../src/lib/util/logError';
@@ -88,7 +88,7 @@ describe('MUser', () => {
 		const user = await mUserFetch(userId);
 		expect(user.skillsAsLevels.agility).toEqual(1);
 		const result = await user.addXP({ skillName: SkillsEnum.Agility, amount: 1000 });
-		const xpMultiplied =1000 * GLOBAL_BSO_XP_MULTIPLIER;
+		const xpMultiplied = 1000 * GLOBAL_BSO_XP_MULTIPLIER;
 		expect(user.skillsAsLevels.agility).toEqual(20);
 		expect(result).toEqual(`You received ${xpMultiplied.toLocaleString()} <:agility:630911040355565568> XP
 **Congratulations! Your Agility level is now 20** 🎉`);
