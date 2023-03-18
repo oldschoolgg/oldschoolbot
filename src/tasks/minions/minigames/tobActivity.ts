@@ -103,7 +103,7 @@ Unique chance: ${result.percentChanceOfUnique.toFixed(2)}% (1 in ${convertPercen
 			const userDeaths = deaths[users.indexOf(user.id)];
 
 			const userLoot = new Bank(_userLoot);
-			const bank = user.allItemsOwned();
+			const bank = user.allItemsOwned;
 
 			const { cl } = user;
 			if (hardMode && roll(30) && cl.has("Lil' zik") && cl.has('Sanguine dust')) {

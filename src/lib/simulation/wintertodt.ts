@@ -238,16 +238,16 @@ export class WintertodtCrateClass {
 		}
 	}
 
-	public open({ points, itemsOwned, skills }: WintertodtCrateOptions): ItemBank {
+	public open({ points, itemsOwned, skills }: WintertodtCrateOptions): Bank {
 		const rolls = this.calcNumberOfRolls(points);
 		if (rolls <= 0) {
-			return {};
+			return new Bank();
 		}
 
 		const loot = new Bank();
 
 		for (let i = 0; i < rolls; i++) {
-			const rolledUnique = this.rollUnique(new Bank().add(itemsOwned).add(loot.values()));
+			const rolledUnique = this.rollUnique(new Bank().add(itemsOwned).add(loot));
 			if (rolledUnique) {
 				loot.add(rolledUnique);
 				continue;
@@ -255,7 +255,7 @@ export class WintertodtCrateClass {
 			loot.add(this.lootRoll(skills));
 		}
 
-		return loot.values();
+		return loot;
 	}
 }
 

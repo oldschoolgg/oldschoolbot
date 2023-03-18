@@ -1,5 +1,5 @@
 import { EmbedBuilder } from 'discord.js';
-import { shuffleArr } from 'e';
+import { shuffleArr, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 import { SkillsScore } from 'oldschooljs/dist/meta/types';
 import { convertXPtoLVL, toKMB } from 'oldschooljs/dist/util';
@@ -13,14 +13,13 @@ import { effectiveMonsters } from '../minions/data/killableMonsters';
 import { courses } from '../skilling/skills/agility';
 import creatures from '../skilling/skills/hunter/creatures';
 import { ItemBank, Skills } from '../types';
-import { addArrayOfNumbers } from '../util';
 import { logError } from './logError';
 import { toTitleCase } from './toTitleCase';
 
 export async function minionStatsEmbed(user: MUser): Promise<EmbedBuilder> {
 	const { QP } = user;
 
-	const xp = addArrayOfNumbers(Object.values(user.skillsAsXP) as number[]);
+	const xp = sumArr(Object.values(user.skillsAsXP) as number[]);
 	const { totalLevel } = user;
 	const skillCell = (skill: string) => {
 		if (skill === 'overall') {

@@ -66,7 +66,7 @@ export async function transactItemsFromBank({
 				currentBank: currentBank.clone().remove(itemsToRemove ?? {})
 			});
 			const { bankLoot, clLoot } = filterLoot
-				? filterLootReplace(settings.allItemsOwned(), itemsToAdd)
+				? filterLootReplace(settings.allItemsOwned, itemsToAdd)
 				: { bankLoot: itemsToAdd, clLoot: itemsToAdd };
 			itemsToAdd = bankLoot;
 

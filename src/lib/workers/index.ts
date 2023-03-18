@@ -1,4 +1,5 @@
 import { resolve } from 'node:path';
+
 import { Bank } from 'oldschooljs';
 import Piscina from 'piscina';
 
