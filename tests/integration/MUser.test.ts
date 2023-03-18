@@ -1,6 +1,7 @@
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { describe, expect, test } from 'vitest';
+import { GLOBAL_BSO_XP_MULTIPLIER } from '../../src/lib/constants';
 
 import { prisma } from '../../src/lib/settings/prisma';
 import { SkillsEnum } from '../../src/lib/skilling/types';
@@ -87,17 +88,18 @@ describe('MUser', () => {
 		const user = await mUserFetch(userId);
 		expect(user.skillsAsLevels.agility).toEqual(1);
 		const result = await user.addXP({ skillName: SkillsEnum.Agility, amount: 1000 });
-		expect(user.skillsAsLevels.agility).toEqual(9);
-		expect(result).toEqual(`You received 1,000 <:agility:630911040355565568> XP
-**Congratulations! Your Agility level is now 9** 🎉`);
+		const xpMultiplied =1000 * GLOBAL_BSO_XP_MULTIPLIER;
+		expect(user.skillsAsLevels.agility).toEqual(20);
+		expect(result).toEqual(`You received ${xpMultiplied.toLocaleString()} <:agility:630911040355565568> XP
+**Congratulations! Your Agility level is now 20** 🎉`);
 		const xpAdded = await prisma.xPGain.findMany({
 			where: {
 				user_id: BigInt(userId),
 				skill: 'agility',
-				xp: 1000
+				xp: xpMultiplied
 			}
 		});
 		expect(xpAdded.length).toEqual(1);
-		expect(xpAdded[0].xp).toEqual(1000);
+		expect(xpAdded[0].xp).toEqual(xpMultiplied);
 	});
 });
