@@ -37,21 +37,21 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 	const bonuses = [];
 
 	if (isWeekend()) {
-		loot[COINS_ID] *= 2;
+		loot.bank[COINS_ID] *= 2;
 		bonuses.push(Emoji.MoneyBag);
 	}
 
 	if (member) {
-		loot[COINS_ID] = Math.floor(loot[COINS_ID] * 1.5);
+		loot.bank[COINS_ID] = Math.floor(loot.bank[COINS_ID] * 1.5);
 		bonuses.push(Emoji.OSBot);
 	}
 
 	if (user.user.minion_hasBought) {
-		loot[COINS_ID] /= 1.5;
+		loot.bank[COINS_ID] /= 1.5;
 	}
 
 	if (roll(73)) {
-		loot[COINS_ID] = Math.floor(loot[COINS_ID] * 1.73);
+		loot.bank[COINS_ID] = Math.floor(loot.bank[COINS_ID] * 1.73);
 		bonuses.push(Emoji.Joy);
 	}
 
@@ -59,21 +59,21 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 		if (roll(2)) {
 			bonuses.push(Emoji.Bpaptu);
 		} else {
-			loot[COINS_ID] += 1_000_000_000;
+			loot.bank[COINS_ID] += 1_000_000_000;
 			bonuses.push(Emoji.Diamond);
 		}
 	}
 
 	if (!triviaCorrect) {
-		loot[COINS_ID] = Math.floor(loot[COINS_ID] * 0.4);
+		loot.bank[COINS_ID] = Math.floor(loot.bank[COINS_ID] * 0.4);
 	}
 
 	// Ensure amount of GP is an integer
-	loot[COINS_ID] = Math.floor(loot[COINS_ID]);
+	loot.bank[COINS_ID] = Math.floor(loot.bank[COINS_ID]);
 
 	// Check to see if user is iron and remove GP if true.
 	if (user.isIronman) {
-		delete loot[COINS_ID];
+		delete loot.bank[COINS_ID];
 	}
 
 	const correct = triviaCorrect ? 'correct' : 'incorrect';
@@ -98,8 +98,8 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 		dmStr += `\n**${pet.name}** pet! ${pet.emoji}`;
 	}
 
-	if (loot[COINS_ID] > 0) {
-		updateGPTrackSetting('gp_daily', loot[COINS_ID]);
+	if (loot.bank[COINS_ID] > 0) {
+		updateGPTrackSetting('gp_daily', loot.bank[COINS_ID]);
 	}
 
 	const { itemsAdded, previousCL } = await transactItems({

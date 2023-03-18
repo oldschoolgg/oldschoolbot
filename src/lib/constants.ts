@@ -1,8 +1,9 @@
+import path from 'node:path';
+
 import { execSync } from 'child_process';
 import { APIButtonComponent, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 import * as dotenv from 'dotenv';
 import { CommandOptions } from 'mahoji/dist/lib/types';
-import path from 'node:path';
 import { z } from 'zod';
 
 import { DISCORD_SETTINGS, production } from '../config';
@@ -406,13 +407,13 @@ export function shouldTrackCommand(command: AbstractCommand, args: CommandOption
 
 export const DISABLED_COMMANDS = new Set<string>();
 export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'none'] as const;
-export type PvMMethod = typeof PVM_METHODS[number];
+export type PvMMethod = (typeof PVM_METHODS)[number];
 
 export const NMZ_STRATEGY = ['experience', 'points'] as const;
-export type NMZStrategy = typeof NMZ_STRATEGY[number];
+export type NMZStrategy = (typeof NMZ_STRATEGY)[number];
 
 export const UNDERWATER_AGILITY_THIEVING_TRAINING_SKILL = ['agility', 'thieving', 'agility+thieving'] as const;
-export type UnderwaterAgilityThievingTrainingSkill = typeof UNDERWATER_AGILITY_THIEVING_TRAINING_SKILL[number];
+export type UnderwaterAgilityThievingTrainingSkill = (typeof UNDERWATER_AGILITY_THIEVING_TRAINING_SKILL)[number];
 
 export const usernameCache = new Map<string, string>();
 export const badgesCache = new Map<string, string>();

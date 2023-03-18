@@ -60,7 +60,7 @@ export async function nexCommand(interaction: ChatInputCommandInteraction, user:
 
 	for (const user of details.team) {
 		const mUser = await mUserFetch(user.id);
-		if (!mUser.allItemsOwned().has(user.cost)) {
+		if (!mUser.allItemsOwned.has(user.cost)) {
 			return `${mUser.usernameOrMention} doesn't have the required items: ${user.cost}.`;
 		}
 	}

@@ -1,3 +1,5 @@
+import { gzip } from 'node:zlib';
+
 import { Stopwatch } from '@sapphire/stopwatch';
 import {
 	BaseMessageOptions,
@@ -23,7 +25,6 @@ import {
 import { chunk, isObject, objectEntries, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import murmurHash from 'murmurhash';
-import { gzip } from 'node:zlib';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { bool, integer, nodeCrypto, real } from 'random-js';

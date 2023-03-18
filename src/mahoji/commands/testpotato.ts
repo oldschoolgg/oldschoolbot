@@ -21,7 +21,6 @@ import { prisma } from '../../lib/settings/prisma';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Skills from '../../lib/skilling/skills';
 import Farming from '../../lib/skilling/skills/farming';
-import { stressTest } from '../../lib/stressTest';
 import { Gear } from '../../lib/structures/Gear';
 import { stringMatches } from '../../lib/util';
 import {
@@ -477,11 +476,6 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 							choices: farmingPatchNames.map(i => ({ name: i, value: i }))
 						}
 					]
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'stresstest',
-					description: 'Stress test.'
 				}
 			],
 			run: async ({
@@ -500,14 +494,10 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				setmonsterkc?: { monster: string; kc: string };
 				irontoggle?: {};
 				forcegrow?: { patch_name: FarmingPatchName };
-				stresstest?: {};
 			}>) => {
 				if (production) {
 					logError('Test command ran in production', { userID: userID.toString() });
 					return 'This will never happen...';
-				}
-				if (options.stresstest) {
-					return stressTest(userID.toString());
 				}
 				const user = await mUserFetch(userID.toString());
 				const mahojiUser = await mahojiUsersSettingsFetch(user.id);
