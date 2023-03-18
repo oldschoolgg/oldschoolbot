@@ -2,7 +2,6 @@ import { Bank } from 'oldschooljs';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
 import { describe, expect, test } from 'vitest';
 
-import { bankIsEqual } from '../../src/lib/stressTest';
 import { mockMUser } from './utils';
 
 const testUser = mockMUser({
@@ -49,7 +48,7 @@ describe('MUser.test', () => {
 		});
 	});
 	test('bankWithGP', () => {
-		expect(bankIsEqual(testUser.bankWithGP, bankWithGP)).toEqual(true);
+		expect((testUser.bankWithGP).equals(bankWithGP)).toEqual(true);
 	});
 	test('combatLevel', () => {
 		expect(testUser.combatLevel).toEqual(3);
