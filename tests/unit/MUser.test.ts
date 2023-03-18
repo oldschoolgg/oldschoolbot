@@ -48,7 +48,7 @@ describe('MUser.test', () => {
 		});
 	});
 	test('bankWithGP', () => {
-		expect((testUser.bankWithGP).equals(bankWithGP)).toEqual(true);
+		expect(testUser.bankWithGP.equals(bankWithGP)).toEqual(true);
 	});
 	test('combatLevel', () => {
 		expect(testUser.combatLevel).toEqual(3);

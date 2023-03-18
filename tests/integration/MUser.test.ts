@@ -1,9 +1,9 @@
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { describe, expect, test } from 'vitest';
+
 import { prisma } from '../../src/lib/settings/prisma';
 import { SkillsEnum } from '../../src/lib/skilling/types';
-
 import { assert } from '../../src/lib/util/logError';
 import { mahojiUsersSettingsFetch } from '../../src/mahoji/mahojiSettings';
 
