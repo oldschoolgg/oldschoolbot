@@ -21,7 +21,7 @@ const inventorOutfit = resolveItems([
 ]);
 function tinkerLoot(user: MUser, quantity: number) {
 	const loot = new Bank();
-	let effectiveBank = user.allItemsOwned().clone();
+	let effectiveBank = user.allItemsOwned.clone();
 	for (let i = 0; i < quantity; i++) {
 		const outfitPieceNotOwned = randArrItem(inventorOutfit.filter(p => !effectiveBank.has(p)));
 		if (roll(6)) {

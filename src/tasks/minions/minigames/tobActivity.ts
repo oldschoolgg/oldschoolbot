@@ -106,7 +106,7 @@ Unique chance: ${result.percentChanceOfUnique.toFixed(2)}% (1 in ${convertPercen
 				userLoot.add('Clue scroll (grandmaster)');
 			}
 
-			const bank = user.allItemsOwned();
+			const bank = user.allItemsOwned;
 
 			const { cl } = user;
 			if (hardMode && roll(30) && cl.has("Lil' zik") && cl.has('Sanguine dust')) {

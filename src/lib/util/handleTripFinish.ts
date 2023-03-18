@@ -194,7 +194,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Voidling',
 		fn: async ({ data, messages, user }) => {
-			if (!user.allItemsOwned().has('Voidling')) return;
+			if (!user.allItemsOwned.has('Voidling')) return;
 			const voidlingEquipped = user.usingPet('Voidling');
 			const alchResult = alching({
 				user,

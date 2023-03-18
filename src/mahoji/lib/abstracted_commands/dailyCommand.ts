@@ -36,21 +36,21 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 	const bonuses = [];
 
 	if (isWeekend()) {
-		loot[COINS_ID] *= 2;
+		loot.bank[COINS_ID] *= 2;
 		bonuses.push(Emoji.MoneyBag);
 	}
 
 	if (member) {
-		loot[COINS_ID] = Math.floor(loot[COINS_ID] * 1.5);
+		loot.bank[COINS_ID] = Math.floor(loot.bank[COINS_ID] * 1.5);
 		bonuses.push(Emoji.OSBot);
 	}
 
 	if (user.user.minion_hasBought) {
-		loot[COINS_ID] /= 1.5;
+		loot.bank[COINS_ID] /= 1.5;
 	}
 
 	if (roll(73)) {
-		loot[COINS_ID] = Math.floor(loot[COINS_ID] * 1.73);
+		loot.bank[COINS_ID] = Math.floor(loot.bank[COINS_ID] * 1.73);
 		bonuses.push(Emoji.Joy);
 	}
 
@@ -58,24 +58,24 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 		if (roll(2)) {
 			bonuses.push(Emoji.Bpaptu);
 		} else {
-			loot[COINS_ID] += 1_000_000_000;
+			loot.bank[COINS_ID] += 1_000_000_000;
 			bonuses.push(Emoji.Diamond);
 		}
 	}
 
 	if (!triviaCorrect) {
-		loot[COINS_ID] = 0;
-	} else if (loot[COINS_ID] <= 1_000_000_000) {
+		loot.bank[COINS_ID] = 0;
+	} else if (loot.bank[COINS_ID] <= 1_000_000_000) {
 		// Correct daily gives 10% more cash if the jackpot is not won
-		loot[COINS_ID] = Math.floor(loot[COINS_ID] * 1.1);
+		loot.bank[COINS_ID] = Math.floor(loot.bank[COINS_ID] * 1.1);
 	}
 
 	// Ensure amount of GP is an integer
-	loot[COINS_ID] = Math.floor(loot[COINS_ID]);
+	loot.bank[COINS_ID] = Math.floor(loot.bank[COINS_ID]);
 
 	// Check to see if user is iron and remove GP if true.
 	if (user.isIronman) {
-		delete loot[COINS_ID];
+		delete loot.bank[COINS_ID];
 	}
 
 	const correct = triviaCorrect ? 'correct' : 'incorrect';
@@ -87,15 +87,15 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 
 	const hasSkipper = user.usingPet('Skipper') || user.bank.amount('Skipper') > 0;
 	if (!user.isIronman && triviaCorrect && hasSkipper) {
-		loot[COINS_ID] = Math.floor(loot[COINS_ID] * 1.5);
+		loot.bank[COINS_ID] = Math.floor(loot.bank[COINS_ID] * 1.5);
 		dmStr +=
 			'\n<:skipper:755853421801766912> Skipper has negotiated with Diango and gotten you 50% extra GP from your daily!';
 	}
 
-	if (loot[COINS_ID] > 0) {
-		updateGPTrackSetting('gp_daily', loot[COINS_ID]);
+	if (loot.bank[COINS_ID] > 0) {
+		updateGPTrackSetting('gp_daily', loot.bank[COINS_ID]);
 	} else {
-		delete loot[COINS_ID];
+		delete loot.bank[COINS_ID];
 	}
 
 	const { itemsAdded, previousCL } = await transactItems({

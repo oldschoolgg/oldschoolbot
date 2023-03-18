@@ -189,7 +189,7 @@ export async function leaguesCheckUser(userID: string) {
 		skillsXP: mahojiUser.skillsAsXP,
 		poh,
 		gear: mahojiUser.gear,
-		allItemsOwned: mahojiUser.allItemsOwned(),
+		allItemsOwned: mahojiUser.allItemsOwned,
 		monsterScores: mahojiUser.user.monsterScores as ItemBank,
 		creatureScores: mahojiUser.user.creatureScores as ItemBank,
 		opens: new Bank(mahojiUser.user.openable_scores as ItemBank),

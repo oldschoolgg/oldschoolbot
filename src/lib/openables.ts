@@ -147,7 +147,7 @@ for (const clueTier of ClueTiers) {
 			if (
 				clueTier.milestoneReward &&
 				nthCasket >= clueTier.milestoneReward.scoreNeeded &&
-				user.allItemsOwned().amount(clueTier.milestoneReward.itemReward) === 0
+				user.allItemsOwned.amount(clueTier.milestoneReward.itemReward) === 0
 			) {
 				loot.add(clueTier.milestoneReward.itemReward);
 			}
