@@ -139,7 +139,7 @@ export const infernoTask: MinionTask = {
 			await user.addItemsToBank({ items: unusedItems, collectionLog: false });
 
 			const currentData = await mahojiClientSettingsFetch({ inferno_cost: true });
-			const current = new Bank().add(currentData.inferno_cost as ItemBank);
+			const current = new Bank(currentData.inferno_cost as ItemBank);
 			const newBank = current.remove(unusedItems);
 			await mahojiClientSettingsUpdate({
 				inferno_cost: newBank.bank

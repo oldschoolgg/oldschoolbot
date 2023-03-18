@@ -31,9 +31,9 @@ function getOpenableLoot({ openable, quantity, user }: { openable: UnifiedOpenab
 
 async function addToOpenablesScores(mahojiUser: MUser, kcBank: Bank) {
 	await mahojiUser.update({
-		openable_scores: new Bank().add(mahojiUser.user.openable_scores as ItemBank).add(kcBank).bank
+		openable_scores: new Bank(mahojiUser.user.openable_scores as ItemBank).add(kcBank).bank
 	});
-	return new Bank().add(mahojiUser.user.openable_scores as ItemBank);
+	return new Bank(mahojiUser.user.openable_scores as ItemBank);
 }
 
 export async function abstractedOpenUntilCommand(
