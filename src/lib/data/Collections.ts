@@ -1058,7 +1058,7 @@ export const overallPlusItems = [
 ];
 
 export function calcCLDetails(user: MUser) {
-	const clItems = user.cl.filter(i => allCLItemsFiltered.includes(i.id), true);
+	const clItems = user.cl.filter(i => allCLItemsFiltered.includes(i.id));
 	const debugBank = new Bank().add(clItems);
 	const owned = clItems.filter(i => allCLItemsFiltered.includes(i.id));
 	const notOwned = shuffleRandom(
