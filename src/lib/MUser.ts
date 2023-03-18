@@ -269,6 +269,7 @@ export class MUserClass {
 		});
 
 		this.user = newUser;
+		this.updateProperties();
 
 		return this;
 	}
@@ -292,6 +293,7 @@ export class MUserClass {
 			userID: this.id
 		});
 		this.user = res.newUser;
+		this.updateProperties();
 		return res;
 	}
 
@@ -301,6 +303,7 @@ export class MUserClass {
 			itemsToRemove: bankToRemove
 		});
 		this.user = res.newUser;
+		this.updateProperties();
 		return res;
 	}
 
@@ -421,6 +424,7 @@ export class MUserClass {
 			creatureScores: addItemToBank(currentCreatureScores as ItemBank, creatureID, amountToAdd)
 		});
 		this.user = newUser;
+		this.updateProperties();
 	}
 
 	get blowpipe() {
@@ -435,6 +439,7 @@ export class MUserClass {
 		});
 		const { newUser } = await mahojiUserSettingsUpdate(this.id, updates);
 		this.user = newUser;
+		this.updateProperties();
 	}
 
 	async specialRemoveItems(bankToRemove: Bank) {
@@ -540,6 +545,7 @@ export class MUserClass {
 		}
 		const { newUser } = await mahojiUserSettingsUpdate(this.id, updates);
 		this.user = newUser;
+		this.updateProperties();
 		return {
 			realCost
 		};
@@ -597,6 +603,7 @@ export class MUserClass {
 
 	async sync() {
 		this.user = await mahojiUsersSettingsFetch(this.id);
+		this.updateProperties();
 	}
 
 	async fetchStats(): Promise<UserStats> {
