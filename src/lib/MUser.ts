@@ -78,12 +78,32 @@ export function syncPerkTierOfUser(user: MUser) {
 export class MUserClass {
 	user: Readonly<User>;
 	id: string;
+	bank!: Bank;
+	bankWithGP!: Bank;
+	cl!: Bank;
+	allItemsOwned!: Bank;
 
 	constructor(user: User) {
 		this.user = user;
 		this.id = user.id;
+		this.updateProperties();
 
 		syncPerkTierOfUser(this);
+	}
+
+	private updateProperties() {
+		this.bank = new Bank(this.user.bank as ItemBank);
+		this.bank.freeze();
+
+		this.bankWithGP = new Bank(this.user.bank as ItemBank);
+		this.bankWithGP.add('Coins', this.GP);
+		this.bankWithGP.freeze();
+
+		this.cl = new Bank(this.user.collectionLogBank as ItemBank);
+		this.cl.freeze();
+
+		this.allItemsOwned = this.calculateAllItemsOwned();
+		this.allItemsOwned.freeze();
 	}
 
 	countSkillsAtleast99() {
@@ -93,6 +113,7 @@ export class MUserClass {
 	async update(data: Prisma.UserUpdateArgs['data']) {
 		const result = await mahojiUserSettingsUpdate(this.id, data);
 		this.user = result.newUser;
+		this.updateProperties();
 		return result;
 	}
 
@@ -123,10 +144,6 @@ export class MUserClass {
 		await mahojiUserSettingsUpdate(this.id, {
 			attack_style: uniqueArr(newStyles)
 		});
-	}
-
-	get bankWithGP() {
-		return this.bank.add('Coins', this.GP);
 	}
 
 	get kourendFavour() {
@@ -185,16 +202,8 @@ export class MUserClass {
 		};
 	}
 
-	get bank() {
-		return new Bank(this.user.bank as ItemBank);
-	}
-
 	get sacrificedItems() {
 		return new Bank(this.user.sacrificedBank as ItemBank);
-	}
-
-	get cl() {
-		return new Bank(this.user.collectionLogBank as ItemBank);
 	}
 
 	get minionName() {
@@ -310,10 +319,9 @@ export class MUserClass {
 		return false;
 	}
 
-	allItemsOwned() {
-		const bank = new Bank();
+	private calculateAllItemsOwned(): Bank {
+		const bank = new Bank(this.bank);
 
-		bank.add(this.bank);
 		bank.add('Coins', Number(this.user.GP));
 		if (this.user.minion_equippedPet) {
 			bank.add(this.user.minion_equippedPet);
@@ -499,7 +507,7 @@ export class MUserClass {
 			}
 			const scales = Math.ceil((10 / 3) * dart[1]);
 			const rawBlowpipeData = this.blowpipe;
-			if (!this.allItemsOwned().has('Toxic blowpipe') || !rawBlowpipeData) {
+			if (!this.allItemsOwned.has('Toxic blowpipe') || !rawBlowpipeData) {
 				throw new Error("You don't have a Toxic blowpipe.");
 			}
 			if (!rawBlowpipeData.dartID || !rawBlowpipeData.dartQuantity) {
