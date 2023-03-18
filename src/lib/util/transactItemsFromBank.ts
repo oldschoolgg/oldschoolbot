@@ -61,9 +61,9 @@ export async function transactItemsFromBank({
 			});
 			throw errObj;
 		}
-		const currentBank = new Bank().add(settings.user.bank as ItemBank);
-		const previousCL = new Bank().add(settings.user.collectionLogBank as ItemBank);
-		const previousTempCL = new Bank().add(settings.user.temp_cl as ItemBank);
+		const currentBank = new Bank(settings.user.bank as ItemBank);
+		const previousCL = new Bank(settings.user.collectionLogBank as ItemBank);
+		const previousTempCL = new Bank(settings.user.temp_cl as ItemBank);
 
 		let clUpdates: Prisma.UserUpdateArgs['data'] = {};
 		if (itemsToAdd) {
@@ -86,7 +86,7 @@ export async function transactItemsFromBank({
 			}
 		}
 
-		const newBank = new Bank().add(currentBank);
+		const newBank = new Bank(currentBank);
 		if (itemsToAdd) newBank.add(itemsToAdd);
 
 		if (itemsToRemove) {
@@ -125,12 +125,12 @@ export async function transactItemsFromBank({
 			...options.otherUpdates
 		});
 
-		const itemsAdded = new Bank().add(itemsToAdd);
+		const itemsAdded = new Bank(itemsToAdd);
 		if (itemsAdded && gpUpdate && gpUpdate.increment > 0) {
 			itemsAdded.add('Coins', gpUpdate.increment);
 		}
 
-		const itemsRemoved = new Bank().add(itemsToRemove);
+		const itemsRemoved = new Bank(itemsToRemove);
 		if (itemsRemoved && gpUpdate && gpUpdate.increment < 0) {
 			itemsRemoved.add('Coins', gpUpdate.increment);
 		}

@@ -14,7 +14,7 @@ export async function updateLegacyUserBankSetting(
 		[key]: true
 	});
 	const current = currentUserSettings[key] as ItemBank;
-	const newBank = new Bank().add(current).add(bankToAdd);
+	const newBank = new Bank(current).add(bankToAdd);
 
 	const res = await mahojiUserSettingsUpdate(userID, {
 		[key]: newBank.bank

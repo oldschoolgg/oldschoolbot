@@ -271,7 +271,7 @@ export class MUserClass {
 	}
 
 	async incrementKC(monsterID: number, amountToAdd = 1) {
-		const newKCs = new Bank().add(this.user.monsterScores as ItemBank).add(monsterID, amountToAdd);
+		const newKCs = new Bank(this.user.monsterScores as ItemBank).add(monsterID, amountToAdd);
 		const { newUser } = await mahojiUserSettingsUpdate(this.id, {
 			monsterScores: newKCs.bank
 		});
