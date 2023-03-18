@@ -144,7 +144,7 @@ const masterFarmerOutfit = resolveItems([
 ]);
 
 export function userHasMasterFarmerOutfit(user: MUser) {
-	const allItems = user.allItemsOwned
+	const allItems = user.allItemsOwned;
 	for (const item of masterFarmerOutfit) {
 		if (!allItems.has(item)) return false;
 	}

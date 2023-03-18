@@ -1,3 +1,5 @@
+import path from 'node:path';
+
 import { Prisma } from '@prisma/client';
 import { execSync } from 'child_process';
 import {
@@ -11,7 +13,6 @@ import {
 import * as dotenv from 'dotenv';
 import { Time } from 'e';
 import { CommandOptions } from 'mahoji/dist/lib/types';
-import path from 'node:path';
 import { convertLVLtoXP } from 'oldschooljs/dist/util/util';
 import { z } from 'zod';
 

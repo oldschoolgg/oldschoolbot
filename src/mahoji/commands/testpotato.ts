@@ -621,7 +621,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				irontoggle?: {};
 				spawntames?: {};
 				forcegrow?: { patch_name: FarmingPatchName };
-				wipe?: { thing: typeof thingsToWipe[number] };
+				wipe?: { thing: (typeof thingsToWipe)[number] };
 				refreshic?: {};
 			}>) => {
 				await deferInteraction(interaction);

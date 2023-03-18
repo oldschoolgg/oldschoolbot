@@ -109,7 +109,7 @@ export class MUserClass {
 		this.allItemsOwned = this.calculateAllItemsOwned();
 		this.allItemsOwned.freeze();
 	}
-	
+
 	get gearTemplate() {
 		return gearImages.find(i => i.id === this.user.gear_template)!;
 	}
