@@ -715,7 +715,7 @@ export const mileStoneBaseDeathChances = [
 	{ level: 1, chance: 5, minChance: null }
 ] as const;
 
-export type RaidLevel = typeof mileStoneBaseDeathChances[number]['level'];
+export type RaidLevel = (typeof mileStoneBaseDeathChances)[number]['level'];
 
 function calcDeathChance(totalAttempts: number, raidLevel: RaidLevel, tobAndCoxKC: number) {
 	const obj = mileStoneBaseDeathChances.find(i => i.level === raidLevel)!;
@@ -1012,7 +1012,7 @@ export async function checkTOAUser(
 	const setupPercents = calculateUserGearPercents(user.gear, raidLevel);
 	const reqResults = toaRequirements.map(i => ({
 		...i,
-		result: i.doesMeet({ user, gearStats: setupPercents, allItemsOwned: user.allItemsOwned(), quantity })
+		result: i.doesMeet({ user, gearStats: setupPercents, allItemsOwned: user.allItemsOwned, quantity })
 	}));
 	const unmetReqs = reqResults.filter(i => typeof i.result === 'string');
 	if (unmetReqs.length > 0) {
@@ -1617,7 +1617,7 @@ export async function toaHelpCommand(user: MUser, channelID: string) {
 **Requirements**
 ${toaRequirements
 	.map(i => {
-		let res = i.doesMeet({ user, gearStats, quantity: 1, allItemsOwned: user.allItemsOwned() });
+		let res = i.doesMeet({ user, gearStats, quantity: 1, allItemsOwned: user.allItemsOwned });
 		if (typeof res === 'string') {
 			return `- ❌ ${bold(i.name)} ${res}`;
 		}

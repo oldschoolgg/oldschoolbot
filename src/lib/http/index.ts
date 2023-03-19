@@ -4,14 +4,23 @@ import fastifySensible from '@fastify/sensible';
 import fastify from 'fastify';
 import fastifyRawBody from 'fastify-raw-body';
 
-import { HTTP_PORT, production } from '../../config';
+import { production } from '../../config';
+import { globalConfig } from '../constants';
 import { logError } from '../util/logError';
 import { initRoutes } from './routes';
 
-export async function makeServer() {
+export async function makeServer(port = globalConfig.httpPort) {
 	const server = fastify({
 		logger: false,
 		trustProxy: true
+	});
+
+	server.register(fastifyRawBody, {
+		field: 'rawBody', // change the default request.rawBody property name
+		global: true, // add the rawBody to every request. **Default true**
+		encoding: 'utf8', // set it to false to set rawBody as a Buffer **Default utf8**
+		runFirst: false, // get the body before any preParsing hook change/uncompress it. **Default false**
+		routes: [] // array of routes, **`global`** will be ignored, wildcard routes not supported
 	});
 
 	server.register(fastifySensible);
@@ -40,14 +49,6 @@ export async function makeServer() {
 
 	server.register(fastifyCors);
 
-	server.register(fastifyRawBody, {
-		field: 'rawBody', // change the default request.rawBody property name
-		global: true, // add the rawBody to every request. **Default true**
-		encoding: 'utf8', // set it to false to set rawBody as a Buffer **Default utf8**
-		runFirst: false, // get the body before any preParsing hook change/uncompress it. **Default false**
-		routes: [] // array of routes, **`global`** will be ignored, wildcard routes not supported
-	});
-
 	server.addContentTypeParser('text/plain', async () => {
 		throw server.httpErrors.badRequest('Bad content type.');
 	});
@@ -64,6 +65,6 @@ export async function makeServer() {
 
 	initRoutes(server);
 
-	server.listen({ port: HTTP_PORT });
+	server.listen({ port });
 	return server;
 }

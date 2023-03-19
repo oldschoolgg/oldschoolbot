@@ -1,6 +1,10 @@
+import path from 'node:path';
+
 import { execSync } from 'child_process';
 import { APIButtonComponent, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
+import * as dotenv from 'dotenv';
 import { CommandOptions } from 'mahoji/dist/lib/types';
+import { z } from 'zod';
 
 import { DISCORD_SETTINGS, production } from '../config';
 import type { AbstractCommand } from '../mahoji/lib/inhibitors';
@@ -403,13 +407,13 @@ export function shouldTrackCommand(command: AbstractCommand, args: CommandOption
 
 export const DISABLED_COMMANDS = new Set<string>();
 export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'none'] as const;
-export type PvMMethod = typeof PVM_METHODS[number];
+export type PvMMethod = (typeof PVM_METHODS)[number];
 
 export const NMZ_STRATEGY = ['experience', 'points'] as const;
-export type NMZStrategy = typeof NMZ_STRATEGY[number];
+export type NMZStrategy = (typeof NMZ_STRATEGY)[number];
 
 export const UNDERWATER_AGILITY_THIEVING_TRAINING_SKILL = ['agility', 'thieving', 'agility+thieving'] as const;
-export type UnderwaterAgilityThievingTrainingSkill = typeof UNDERWATER_AGILITY_THIEVING_TRAINING_SKILL[number];
+export type UnderwaterAgilityThievingTrainingSkill = (typeof UNDERWATER_AGILITY_THIEVING_TRAINING_SKILL)[number];
 
 export const usernameCache = new Map<string, string>();
 export const badgesCache = new Map<string, string>();
@@ -454,3 +458,18 @@ export const toaPurpleItems = resolveItems([
 ]);
 
 export const ParsedCustomEmojiWithGroups = /(?<animated>a?):(?<name>[^:]+):(?<id>\d{17,20})/;
+
+const globalConfigSchema = z.object({
+	patreonToken: z.string().default(''),
+	patreonCampaignID: z.number().int().default(1),
+	patreonWebhookSecret: z.string().default(''),
+	httpPort: z.number().int().default(8080)
+});
+dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.example' : '.env') });
+
+export const globalConfig = globalConfigSchema.parse({
+	patreonToken: process.env.PATREON_TOKEN,
+	patreonCampaignID: Number(process.env.PATREON_CAMPAIGN_ID),
+	patreonWebhookSecret: process.env.PATREON_WEBHOOK_SECRET,
+	httpPort: Number(process.env.HTTP_PORT)
+});

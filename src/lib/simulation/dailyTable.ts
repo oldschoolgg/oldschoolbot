@@ -51,5 +51,5 @@ export default function dailyRoll(qty = 1, correct = false) {
 		if (correct) loot.add(CommonTable.roll());
 	}
 
-	return loot.values();
+	return loot;
 }

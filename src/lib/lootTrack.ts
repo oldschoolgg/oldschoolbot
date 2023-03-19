@@ -87,7 +87,7 @@ async function trackIndividualsLoot({
 							increment: data.kc
 					  }
 					: undefined,
-			[data.changeType]: bankToAdd.clone().add(current?.[data.changeType] as ItemBank | undefined).bank,
+			[data.changeType]: new Bank(current?.[data.changeType] as ItemBank | undefined).add(bankToAdd).bank,
 			user_id: userID
 		}
 	});
