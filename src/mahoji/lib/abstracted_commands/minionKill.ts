@@ -15,7 +15,7 @@ import { Bank, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 import { Item } from 'oldschooljs/dist/meta/types';
 import Monster from 'oldschooljs/dist/structures/Monster';
-import { addArrayOfNumbers, itemID } from 'oldschooljs/dist/util';
+import { itemID } from 'oldschooljs/dist/util';
 
 import { PvMMethod } from '../../../lib/constants';
 import { Eatables } from '../../../lib/data/eatables';
@@ -100,7 +100,7 @@ const degradeableItemsCanUse: {
 ];
 
 function applySkillBoost(user: MUser, duration: number, styles: AttackStyles[]): [number, string] {
-	const skillTotal = addArrayOfNumbers(styles.map(s => user.skillLevel(s)));
+	const skillTotal = sumArr(styles.map(s => user.skillLevel(s)));
 
 	let newDuration = duration;
 	let str = '';

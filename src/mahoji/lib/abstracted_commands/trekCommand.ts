@@ -28,27 +28,7 @@ export async function trekCommand(user: MUser, channelID: string, difficulty: st
 			const gear = allGear[setup];
 			if (setup && requirements) {
 				let newRequirements: GearRequirement = requirements;
-				let maxMeleeStat:
-					| GearStat
-					| [
-							(
-								| 'attack_stab'
-								| 'attack_slash'
-								| 'attack_crush'
-								| 'attack_magic'
-								| 'attack_ranged'
-								| 'defence_stab'
-								| 'defence_slash'
-								| 'defence_crush'
-								| 'defence_magic'
-								| 'defence_ranged'
-								| 'melee_strength'
-								| 'ranged_strength'
-								| 'magic_damage'
-								| 'prayer'
-							),
-							number
-					  ] = [GearStat.AttackCrush, -500];
+				let maxMeleeStat: [string, number] = [GearStat.AttackCrush, -500];
 				objectEntries(gear.getStats()).map(
 					stat =>
 						(maxMeleeStat =
