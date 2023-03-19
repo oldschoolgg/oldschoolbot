@@ -205,6 +205,14 @@ const Misc: Craftable[] = [
 		inputItems: new Bank({ Amethyst: 1 }),
 		tickRate: 2,
 		outputMultiple: 8
+	},
+	{
+		name: 'Strung rabbit foot',
+		id: itemID('Strung rabbit foot'),
+		level: 37,
+		xp: 4,
+		inputItems: new Bank({ 'Ball of wool': 1, 'Rabbit foot': 1 }),
+		tickRate: 2
 	}
 ];
 
