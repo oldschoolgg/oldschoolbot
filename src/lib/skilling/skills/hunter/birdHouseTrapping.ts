@@ -2,7 +2,7 @@ import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { nestTable } from '../../../simulation/birdsNest';
+import { nestTable, strungRabbitFootNestTable } from '../../../simulation/birdsNest';
 
 export interface Birdhouse {
 	name: string;
@@ -14,6 +14,7 @@ export interface Birdhouse {
 	houseItemReq: Bank;
 	craftItemReq: Bank;
 	table: LootTable;
+	strungRabbitFootTable: LootTable;
 	huntTechnique: string;
 	waitTime: number;
 	runTime: number;
@@ -31,6 +32,10 @@ const birdhouses: Birdhouse[] = [
 		houseItemReq: new Bank().add('Bird house', 1),
 		craftItemReq: new Bank().add('Logs', 1),
 		table: new LootTable().every('Raw bird meat', [1, 5]).tertiary(2, nestTable).tertiary(3, 'Feather', [10, 100]),
+		strungRabbitFootTable: new LootTable()
+			.every('Raw bird meat', [1, 5])
+			.tertiary(2, strungRabbitFootNestTable)
+			.tertiary(3, 'Feather', [10, 100]),
 		huntTechnique: 'bird house trapping',
 		waitTime: 50 * Time.Minute,
 		runTime: 81 * Time.Second,
@@ -48,6 +53,10 @@ const birdhouses: Birdhouse[] = [
 		table: new LootTable()
 			.every('Raw bird meat', [1, 5])
 			.tertiary(2, nestTable, [1, 2])
+			.tertiary(3, 'Feather', [10, 100]),
+		strungRabbitFootTable: new LootTable()
+			.every('Raw bird meat', [1, 5])
+			.tertiary(2, strungRabbitFootNestTable, [1, 2])
 			.tertiary(3, 'Feather', [10, 100]),
 		huntTechnique: 'bird house trapping',
 		waitTime: 50 * Time.Minute,
@@ -67,6 +76,10 @@ const birdhouses: Birdhouse[] = [
 			.every('Raw bird meat', [1, 5])
 			.tertiary(2, nestTable, [1, 3])
 			.tertiary(3, 'Feather', [10, 100]),
+		strungRabbitFootTable: new LootTable()
+			.every('Raw bird meat', [1, 5])
+			.tertiary(2, strungRabbitFootNestTable, [1, 3])
+			.tertiary(3, 'Feather', [10, 100]),
 		huntTechnique: 'bird house trapping',
 		waitTime: 50 * Time.Minute,
 		runTime: 81 * Time.Second,
@@ -84,6 +97,10 @@ const birdhouses: Birdhouse[] = [
 		table: new LootTable()
 			.every('Raw bird meat', [1, 5])
 			.tertiary(2, nestTable, [1, 4])
+			.tertiary(3, 'Feather', [10, 100]),
+		strungRabbitFootTable: new LootTable()
+			.every('Raw bird meat', [1, 5])
+			.tertiary(2, strungRabbitFootNestTable, [1, 4])
 			.tertiary(3, 'Feather', [10, 100]),
 		huntTechnique: 'bird house trapping',
 		waitTime: 50 * Time.Minute,
@@ -103,6 +120,10 @@ const birdhouses: Birdhouse[] = [
 			.every('Raw bird meat', [1, 5])
 			.tertiary(2, nestTable, [1, 5])
 			.tertiary(3, 'Feather', [10, 100]),
+		strungRabbitFootTable: new LootTable()
+			.every('Raw bird meat', [1, 5])
+			.tertiary(2, strungRabbitFootNestTable, [1, 5])
+			.tertiary(3, 'Feather', [10, 100]),
 		huntTechnique: 'bird house trapping',
 		waitTime: 50 * Time.Minute,
 		runTime: 81 * Time.Second,
@@ -120,6 +141,10 @@ const birdhouses: Birdhouse[] = [
 		table: new LootTable()
 			.every('Raw bird meat', [1, 4])
 			.tertiary(2, nestTable, [1, 6])
+			.tertiary(3, 'Feather', [10, 100]),
+		strungRabbitFootTable: new LootTable()
+			.every('Raw bird meat', [1, 4])
+			.tertiary(2, strungRabbitFootNestTable, [1, 6])
 			.tertiary(3, 'Feather', [10, 100]),
 		huntTechnique: 'bird house trapping',
 		waitTime: 50 * Time.Minute,
@@ -139,6 +164,10 @@ const birdhouses: Birdhouse[] = [
 			.every('Raw bird meat', [1, 4])
 			.tertiary(2, nestTable, [1, 7])
 			.tertiary(3, 'Feather', [10, 100]),
+		strungRabbitFootTable: new LootTable()
+			.every('Raw bird meat', [1, 4])
+			.tertiary(2, strungRabbitFootNestTable, [1, 7])
+			.tertiary(3, 'Feather', [10, 100]),
 		huntTechnique: 'bird house trapping',
 		waitTime: 50 * Time.Minute,
 		runTime: 81 * Time.Second,
@@ -157,6 +186,10 @@ const birdhouses: Birdhouse[] = [
 			.every('Raw bird meat', [1, 3])
 			.tertiary(2, nestTable, [1, 8])
 			.tertiary(3, 'Feather', [10, 100]),
+		strungRabbitFootTable: new LootTable()
+			.every('Raw bird meat', [1, 3])
+			.tertiary(2, strungRabbitFootNestTable, [1, 8])
+			.tertiary(3, 'Feather', [10, 100]),
 		huntTechnique: 'bird house trapping',
 		waitTime: 50 * Time.Minute,
 		runTime: 81 * Time.Second,
@@ -174,6 +207,10 @@ const birdhouses: Birdhouse[] = [
 		table: new LootTable()
 			.every('Raw bird meat', [1, 3])
 			.tertiary(2, nestTable, [1, 9])
+			.tertiary(3, 'Feather', [10, 100]),
+		strungRabbitFootTable: new LootTable()
+			.every('Raw bird meat', [1, 3])
+			.tertiary(2, strungRabbitFootNestTable, [1, 9])
 			.tertiary(3, 'Feather', [10, 100]),
 		huntTechnique: 'bird house trapping',
 		waitTime: 50 * Time.Minute,
