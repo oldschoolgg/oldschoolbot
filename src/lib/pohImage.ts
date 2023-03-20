@@ -63,7 +63,7 @@ class PoHImage {
 
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		ctx.drawImage(bgImage, 0, 0, bgImage.width, bgImage.height);
-
+		debugLog('Generating a POH image');
 		return [canvas, ctx];
 	}
 
