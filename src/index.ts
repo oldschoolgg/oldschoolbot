@@ -10,7 +10,7 @@ import * as Sentry from '@sentry/node';
 import { Chart } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { GatewayIntentBits, InteractionType, Options, Partials, TextChannel } from 'discord.js';
-import { isObject, Time } from 'e';
+import { isObject } from 'e';
 import { MahojiClient } from 'mahoji';
 import { convertAPIOptionsToCommandOptions } from 'mahoji/dist/lib/util';
 import { join } from 'path';
@@ -87,11 +87,11 @@ const client = new OldSchoolBotClient({
 	}),
 	sweepers: {
 		guildMembers: {
-			interval: Time.Minute * 15,
+			interval: 60 * 60,
 			filter: () => member => !CACHED_ACTIVE_USER_IDS.has(member.user.id)
 		},
 		users: {
-			interval: Time.Minute * 15,
+			interval: 60 * 60,
 			filter: () => user => !CACHED_ACTIVE_USER_IDS.has(user.id)
 		}
 	}

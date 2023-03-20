@@ -3543,10 +3543,10 @@ obliterator@^2.0.1:
   resolved "https://registry.yarnpkg.com/obliterator/-/obliterator-2.0.4.tgz#fa650e019b2d075d745e44f1effeb13a2adbe816"
   integrity sha512-lgHwxlxV1qIg1Eap7LgIeoBWIMFibOjbrYPIPJZcI1mmGAI2m3lNYpK12Y+GBdPQ0U1hRwSord7GIaawz962qQ==
 
-oldschooljs@^2.2.4:
-  version "2.2.4"
-  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-2.2.4.tgz#1f16c47e598da73d2564341e1d0a6175fc3840fe"
-  integrity sha512-AmhNPRCrMh5McIA8cozSa6di1zU/MKO8sWbhJPzIhwkGCfHMjIhOxO8TBgQEHu5hI3Wn8wE1IEMJF9WC7sccVw==
+oldschooljs@^2.2.5:
+  version "2.2.5"
+  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-2.2.5.tgz#1ecdc29d5f7609f4dc137eb0ccb5f3e84efe82c2"
+  integrity sha512-05fDI7qbCA8EeFqOAWY1bKFR/a3FNcFKO/9jecYAw83J172HgKfiOqSs69AZ6vNRo9lWgwnVZEU7ehhYkkJxBg==
   dependencies:
     e "^0.2.32"
     jsdom "^21.1.1"

@@ -116,8 +116,7 @@ export async function pohBuildCommand(interaction: ChatInputCommandInteraction, 
 	}
 
 	if (obj.itemCost) {
-		const userBank = user.bank.add('Coins', user.GP);
-		if (!userBank.has(obj.itemCost.bank)) {
+		if (!user.bankWithGP.has(obj.itemCost.bank)) {
 			return `You don't have enough items to build a ${obj.name}, you need ${obj.itemCost}.`;
 		}
 		let str = `${user}, please confirm that you want to build a ${obj.name} using ${obj.itemCost}.`;
