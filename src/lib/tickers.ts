@@ -375,12 +375,15 @@ export function initTickers() {
 		if (ticker.timer !== null) clearTimeout(ticker.timer);
 		const fn = async () => {
 			try {
+				debugLog(`Starting ${ticker.name} ticker`, { type: 'TICKER' });
 				if (globalClient.isShuttingDown) return;
 				await ticker.cb();
 			} catch (err) {
 				logError(err);
+				debugLog(`${ticker.name} ticker errored`, { type: 'TICKER' });
 			} finally {
 				ticker.timer = setTimeout(fn, ticker.interval);
+				debugLog(`Finished ${ticker.name} ticker`, { type: 'TICKER' });
 			}
 		};
 		fn();
