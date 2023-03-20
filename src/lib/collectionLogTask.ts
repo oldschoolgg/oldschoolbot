@@ -192,6 +192,8 @@ class CollectionLogTask {
 			)
 		);
 
+		debugLog('Generating a CL image', { collection, ...flags, type, user_id: user.id });
+
 		// Create base canvas
 		const canvas = new Canvas(canvasWidth, canvasHeight);
 		// Get the canvas context

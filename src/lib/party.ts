@@ -13,7 +13,10 @@ import { CACHED_ACTIVE_USER_IDS } from './util/cachedUserIDs';
 
 const partyLockCache = new Set<string>();
 if (production) {
-	setInterval(() => partyLockCache.clear(), Time.Minute * 20);
+	setInterval(() => {
+		debugLog('Clearing partylockcache');
+		partyLockCache.clear();
+	}, Time.Minute * 20);
 }
 
 const buttons = [
