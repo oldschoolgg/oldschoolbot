@@ -1,9 +1,9 @@
 import { Time } from 'e';
 import fetch from 'node-fetch';
 
-import { patreonConfig, production } from '../config';
+import { production } from '../config';
 import { cacheBadges } from './badges';
-import { BadgesEnum, BitField, Channel, PatronTierID, PerkTier } from './constants';
+import { BadgesEnum, BitField, Channel, globalConfig, PatronTierID, PerkTier } from './constants';
 import { fetchSponsors, getUserIdFromGithubID } from './http/util';
 import backgroundImages from './minions/data/bankBackgrounds';
 import { getUsersPerkTier, mahojiUserSettingsUpdate } from './MUser';
@@ -12,7 +12,7 @@ import { Patron } from './types';
 import { logError } from './util/logError';
 import { sendToChannelID } from './util/webhook';
 
-const patreonApiURL = new URL(`https://patreon.com/api/oauth2/v2/campaigns/${patreonConfig?.campaignID}/members`);
+const patreonApiURL = new URL(`https://patreon.com/api/oauth2/v2/campaigns/${globalConfig.patreonCampaignID}/members`);
 
 patreonApiURL.search = new URLSearchParams([
 	['include', ['user', 'currently_entitled_tiers'].join(',')],
@@ -308,7 +308,7 @@ class PatreonTask {
 	async fetchPatrons(url?: string): Promise<Patron[]> {
 		const users: Patron[] = [];
 		const result: any = await fetch(url ?? patreonApiURL.toString(), {
-			headers: { Authorization: `Bearer ${patreonConfig!.token}` }
+			headers: { Authorization: `Bearer ${globalConfig.patreonToken}` }
 		}).then(res => res.json());
 
 		if (result.errors) {
