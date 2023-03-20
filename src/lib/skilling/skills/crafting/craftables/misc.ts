@@ -89,6 +89,46 @@ const Misc: Craftable[] = [
 		tickRate: 3
 	},
 	{
+		name: 'Splitbark gauntlets',
+		id: itemID('Splitbark gauntlets'),
+		level: 60,
+		xp: 62,
+		inputItems: new Bank({ Bark: 1, 'Fine cloth': 1 }),
+		tickRate: 3
+	},
+	{
+		name: 'Splitbark boots',
+		id: itemID('Splitbark boots'),
+		level: 60,
+		xp: 62,
+		inputItems: new Bank({ Bark: 1, 'Fine cloth': 1 }),
+		tickRate: 3
+	},
+	{
+		name: 'Splitbark helm',
+		id: itemID('Splitbark helm'),
+		level: 61,
+		xp: 124,
+		inputItems: new Bank({ Bark: 2, 'Fine cloth': 2 }),
+		tickRate: 3
+	},
+	{
+		name: 'Splitbark legs',
+		id: itemID('Splitbark legs'),
+		level: 60,
+		xp: 186,
+		inputItems: new Bank({ Bark: 3, 'Fine cloth': 3 }),
+		tickRate: 3
+	},
+	{
+		name: 'Splitbark body',
+		id: itemID('Splitbark body'),
+		level: 60,
+		xp: 248,
+		inputItems: new Bank({ Bark: 4, 'Fine cloth': 4 }),
+		tickRate: 3
+	},
+	{
 		name: 'Neitiznot shield',
 		id: itemID('Neitiznot shield'),
 		level: 1,
