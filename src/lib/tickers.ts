@@ -1,4 +1,4 @@
-import { Embed } from '@discordjs/builders';
+import { EmbedBuilder } from '@discordjs/builders';
 import { Activity } from '@prisma/client';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, TextChannel } from 'discord.js';
 import { noOp, randInt, shuffleArr, Time } from 'e';
@@ -20,40 +20,40 @@ import { minionIsBusy } from './util/minionIsBusy';
 
 let lastMessageID: string | null = null;
 let lastMessageGEID: string | null = null;
-const supportEmbed = new Embed()
+const supportEmbed = new EmbedBuilder()
 	.setAuthor({ name: '⚠️ ⚠️ ⚠️ ⚠️ READ THIS ⚠️ ⚠️ ⚠️ ⚠️' })
-	.addField({
+	.addFields({
 		name: '📖 Read the FAQ',
 		value: 'The FAQ answers commonly asked questions: https://wiki.oldschool.gg/faq - also make sure to read the other pages of the website, which might contain the information you need.'
 	})
-	.addField({
+	.addFields({
 		name: '🔎 Search',
 		value: 'Search this channel first, you might find your question has already been asked and answered.'
 	})
-	.addField({
+	.addFields({
 		name: '💬 Ask',
 		value: "If your question isn't answered in the FAQ, and you can't find it from searching, simply ask your question and wait for someone to answer. If you don't get an answer, you can post your question again."
 	})
-	.addField({
+	.addFields({
 		name: '⚠️ Dont ping anyone',
 		value: 'Do not ping mods, or any roles/people in here. You will be muted. Ask your question, and wait.'
 	});
 
-const geEmbed = new Embed()
+const geEmbed = new EmbedBuilder()
 	.setAuthor({ name: '⚠️ ⚠️ ⚠️ ⚠️ READ THIS ⚠️ ⚠️ ⚠️ ⚠️' })
-	.addField({
+	.addFields({
 		name: "⚠️ Don't get scammed",
 		value: 'Beware of people "buying out banks" or buying lots of skilling supplies, which can be worth a lot more in the bot than they pay you. Skilling supplies are often worth a lot more than they are ingame. Don\'t just trust that they\'re giving you a fair price.'
 	})
-	.addField({
+	.addFields({
 		name: '🔎 Search',
 		value: 'Search this channel first, someone might already be selling/buying what you want.'
 	})
-	.addField({
+	.addFields({
 		name: '💬 Read the rules/Pins',
 		value: 'Read the pinned rules/instructions before using the channel.'
 	})
-	.addField({
+	.addFields({
 		name: 'Keep Ads Short',
 		value: 'Keep your ad less than 10 lines long, as short as possible.'
 	});
@@ -76,7 +76,7 @@ export interface Peak {
 export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | null; cb: () => unknown }[] = [
 	{
 		name: 'giveaways',
-		interval: Time.Second * 5,
+		interval: Time.Second * 10,
 		timer: null,
 		cb: async () => {
 			const result = await prisma.giveaway.findMany({
@@ -100,7 +100,7 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 			queryCountStore.value = 0;
 			const data = {
 				timestamp: Math.floor(Date.now() / 1000),
-				...collectMetrics(),
+				...(await collectMetrics()),
 				qps: storedCount / 60
 			};
 			if (isNaN(data.eventLoopDelayMean)) {
@@ -375,14 +375,15 @@ export function initTickers() {
 		if (ticker.timer !== null) clearTimeout(ticker.timer);
 		const fn = async () => {
 			try {
+				debugLog(`Starting ${ticker.name} ticker`, { type: 'TICKER' });
 				if (globalClient.isShuttingDown) return;
-				debugLog(`Starting ${ticker.name} ticker`);
 				await ticker.cb();
-				debugLog(`Finished ${ticker.name} ticker`);
 			} catch (err) {
 				logError(err);
+				debugLog(`${ticker.name} ticker errored`, { type: 'TICKER' });
 			} finally {
 				ticker.timer = setTimeout(fn, ticker.interval);
+				debugLog(`Finished ${ticker.name} ticker`, { type: 'TICKER' });
 			}
 		};
 		fn();

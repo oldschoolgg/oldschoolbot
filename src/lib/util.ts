@@ -1,3 +1,5 @@
+import { gzip } from 'node:zlib';
+
 import { Stopwatch } from '@sapphire/stopwatch';
 import {
 	BaseMessageOptions,
@@ -20,12 +22,10 @@ import {
 	time,
 	User as DJSUser
 } from 'discord.js';
-import { chunk, isObject, objectEntries, Time } from 'e';
+import { chunk, objectEntries, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import murmurHash from 'murmurhash';
-import { gzip } from 'node:zlib';
 import { Bank } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { bool, integer, nodeCrypto, real } from 'random-js';
 
 import { ADMIN_IDS, OWNER_IDS, SupportServer } from '../config';
@@ -385,6 +385,7 @@ function normalizeMahojiResponse(one: Awaited<CommandResponse>): BaseMessageOpti
 	const response: BaseMessageOptions = {};
 	if (one.content) response.content = one.content;
 	if (one.files) response.files = one.files;
+	if (one.components) response.components = one.components;
 	return response;
 }
 
@@ -394,10 +395,11 @@ export function roughMergeMahojiResponse(
 ): InteractionReplyOptions {
 	const first = normalizeMahojiResponse(one);
 	const second = normalizeMahojiResponse(two);
-	const newResponse: InteractionReplyOptions = { content: '', files: [] };
+	const newResponse: InteractionReplyOptions = { content: '', files: [], components: [] };
 	for (const res of [first, second]) {
 		if (res.content) newResponse.content += `${res.content} `;
 		if (res.files) newResponse.files = [...newResponse.files!, ...res.files];
+		if (res.components) newResponse.components = res.components;
 	}
 	return newResponse;
 }
@@ -440,22 +442,6 @@ export function getUsername(id: string | bigint, withBadges: boolean = true) {
 
 export function makeComponents(components: ButtonBuilder[]): InteractionReplyOptions['components'] {
 	return chunk(components, 5).map(i => ({ components: i, type: ComponentType.ActionRow }));
-}
-
-export function validateItemBankAndThrow(input: any): input is ItemBank {
-	if (!isObject(input)) {
-		throw new Error('Invalid bank');
-	}
-	const numbers = [];
-	for (const [key, val] of Object.entries(input)) {
-		numbers.push(parseInt(key), val);
-	}
-	for (const num of numbers) {
-		if (isNaN(num) || typeof num !== 'number' || !Number.isInteger(num) || num < 0) {
-			throw new Error('Invalid bank');
-		}
-	}
-	return true;
 }
 
 type test = CollectorFilter<

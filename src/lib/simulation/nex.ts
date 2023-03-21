@@ -63,7 +63,9 @@ export function checkNexUser(user: MUser): [false] | [true, string] {
 	if (offence < 50) {
 		return [
 			true,
-			`${tag}'s range gear is terrible! You need higher range attack. You have ${offence}%, you need 50%.`
+			`${tag}'s range gear is terrible! You need higher range attack. You have ${offence.toFixed(
+				2
+			)}%, you need 50%.`
 		];
 	}
 	if (defence < 50) return [true, `${tag}'s range gear is terrible! You need higher mage defence.`];
@@ -150,7 +152,7 @@ export function handleNexKills({ quantity, team }: NexContext) {
 			if (teamMember.id === uniqueRecipient) {
 				teamLoot.add(teamMember.id, NexUniqueTable.roll());
 			}
-			if (roll(20)) {
+			if (roll(48)) {
 				teamLoot.add(teamMember.id, 'Clue scroll (elite)');
 			}
 		}

@@ -105,7 +105,7 @@ export async function claimAchievementDiaryCommand(user: MUser, diaryName: strin
 		return `These are the achievement diaries you can claim: ${diaries.map(d => d.name).join(', ')}.`;
 	}
 
-	const allItems = user.allItemsOwned();
+	const allItems = user.allItemsOwned;
 	const { cl } = user;
 
 	for (const tier of ['easy', 'medium', 'hard', 'elite'] as const) {

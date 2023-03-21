@@ -1,8 +1,8 @@
 import { graphql } from '@octokit/graphql';
 import { createHmac } from 'crypto';
 
-import { CLIENT_SECRET, GITHUB_TOKEN, patreonConfig } from '../../config';
-import { PerkTier } from '../constants';
+import { CLIENT_SECRET, GITHUB_TOKEN } from '../../config';
+import { globalConfig, PerkTier } from '../constants';
 
 export function rateLimit(max: number, timeWindow: string) {
 	return {
@@ -27,7 +27,7 @@ export function verifyPatreonSecret(body: string, signature?: string | string[])
 	if (!signature) {
 		return false;
 	}
-	const hmac = createHmac('md5', patreonConfig!.webhookSecret);
+	const hmac = createHmac('md5', globalConfig.patreonWebhookSecret);
 	hmac.update(body);
 	const calculated = hmac.digest('hex');
 	return signature === calculated;

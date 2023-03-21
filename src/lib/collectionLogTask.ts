@@ -15,7 +15,7 @@ export const collectionLogTypes = [
 	{ name: 'bank', description: 'Owned Items Log' },
 	{ name: 'temp', description: 'Temporary Log' }
 ] as const;
-export type CollectionLogType = typeof collectionLogTypes[number]['name'];
+export type CollectionLogType = (typeof collectionLogTypes)[number]['name'];
 export const CollectionLogFlags = [
 	{ name: 'text', description: 'Show your CL in text format.' },
 	{ name: 'missing', description: 'Show only missing items.' }
@@ -191,6 +191,8 @@ class CollectionLogTask {
 				121 + (itemSize + itemSpacer) * Math.ceil(collectionLog.collectionTotal / maxPerLine)
 			)
 		);
+
+		debugLog('Generating a CL image', { collection, ...flags, type, user_id: user.id });
 
 		// Create base canvas
 		const canvas = new Canvas(canvasWidth, canvasHeight);

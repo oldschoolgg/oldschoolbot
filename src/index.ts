@@ -9,7 +9,7 @@ import * as Sentry from '@sentry/node';
 import { Chart } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { GatewayIntentBits, InteractionType, Options, Partials, TextChannel } from 'discord.js';
-import { isObject, Time } from 'e';
+import { isObject } from 'e';
 import { MahojiClient } from 'mahoji';
 import { convertAPIOptionsToCommandOptions } from 'mahoji/dist/lib/util';
 import { join } from 'path';
@@ -86,11 +86,11 @@ const client = new OldSchoolBotClient({
 	}),
 	sweepers: {
 		guildMembers: {
-			interval: Time.Minute * 15,
+			interval: 60 * 60,
 			filter: () => member => !CACHED_ACTIVE_USER_IDS.has(member.user.id)
 		},
 		users: {
-			interval: Time.Minute * 15,
+			interval: 60 * 60,
 			filter: () => user => !CACHED_ACTIVE_USER_IDS.has(user.id)
 		}
 	}
@@ -219,9 +219,10 @@ client.on('guildCreate', guild => {
 client.on('shardDisconnect', ({ wasClean, code, reason }) => debugLog('Shard Disconnect', { wasClean, code, reason }));
 client.on('shardError', err => debugLog('Shard Error', { error: err.message }));
 client.on('ready', () => runTimedLoggedFn('OnStartup', async () => onStartup()));
+client.on('debug', str => debugLog(str, { type: 'DJS-DEBUG' }));
 
 async function main() {
-	client.fastifyServer = makeServer();
+	client.fastifyServer = await makeServer();
 	await Promise.all([
 		runTimedLoggedFn('Sync Active User IDs', syncActiveUserIDs),
 		runTimedLoggedFn('Sync Activity Cache', syncActivityCache)
@@ -236,6 +237,15 @@ async function main() {
 process.on('uncaughtException', err => {
 	console.error(err);
 	logError(err);
+});
+
+process.on('unhandledRejection', err => {
+	console.error(err);
+	logError(err);
+});
+
+process.on('exit', exitCode => {
+	debugLog('Process Exit', { type: 'PROCESS_EXIT', exitCode });
 });
 
 main();
