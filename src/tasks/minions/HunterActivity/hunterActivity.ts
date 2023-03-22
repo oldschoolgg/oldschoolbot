@@ -66,7 +66,7 @@ export const hunterTask: MinionTask = {
 				riskDeathNumbers.find(_peaktier => _peaktier.peakTier === wildyPeak?.peakTier)?.extraChance ?? 0;
 			let riskDeathChance = 20;
 			// The more experienced the less chance of death.
-			riskDeathChance += Math.min(Math.floor((user.getCreatureScore(creature.id) ?? 1) / 100), 200);
+			riskDeathChance += Math.min(Math.floor(((await user.getCreatureScore(creature.id)) ?? 1) / 100), 200);
 
 			// Gives lower death chance depending on what the user got equipped in wildy.
 			const [, , score] = hasWildyHuntGearEquipped(user.gear.wildy);

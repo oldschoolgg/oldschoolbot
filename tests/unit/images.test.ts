@@ -27,7 +27,16 @@ describe('Images', () => {
 			user: mockMUser({ cl: new Bank().add('Elysian sigil') }),
 			collection: 'corp',
 			type: 'collection',
-			flags: {}
+			flags: {},
+			stats: {
+				sacrificedBank: new Bank(),
+				titheFarmsCompleted: 1,
+				lapsScores: {},
+				openableScores: new Bank(),
+				kcBank: {},
+				highGambles: 1,
+				gotrRiftSearches: 1
+			}
 		});
 		await writeFile('./tests/unit/snapshots/cl_corp.png', result.files[0].attachment);
 	});

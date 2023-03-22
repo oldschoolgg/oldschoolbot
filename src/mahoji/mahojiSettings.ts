@@ -1,10 +1,11 @@
 import type { Prisma, User, UserStats } from '@prisma/client';
-import { objectEntries, round } from 'e';
+import { isFunction, objectEntries, round } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { CLIENT_ID } from '../config';
+import { globalConfig } from '../lib/constants';
 import { evalMathExpression } from '../lib/expressionParser';
-import { KillableMonster } from '../lib/minions/types';
+import type { KillableMonster } from '../lib/minions/types';
+import type { SelectedUserStats } from '../lib/MUser';
 import { prisma } from '../lib/settings/prisma';
 import { Rune } from '../lib/skilling/skills/runecraft';
 import { hasGracefulEquipped } from '../lib/structures/Gear';
@@ -52,43 +53,87 @@ export function patronMsg(tierNeeded: number) {
 	} Patron to use this command. You can become a patron to support the bot here: <https://www.patreon.com/oldschoolbot>`;
 }
 
+// TODO: remove this
 export function getMahojiBank(user: User) {
 	return new Bank(user.bank as ItemBank);
 }
 
-export async function userStatsUpdate(userID: string, data: (u: UserStats) => Prisma.UserStatsUpdateInput) {
+// TODO: optimize this, add tests, add select
+export async function userStatsUpdate<T extends Prisma.UserStatsSelect = Prisma.UserStatsSelect>(
+	userID: string,
+	data: Omit<Prisma.UserStatsUpdateInput, 'user_id'> | ((u: UserStats) => Prisma.UserStatsUpdateInput),
+	selectKeys: T
+): Promise<SelectedUserStats<T>> {
 	const id = BigInt(userID);
-	const userStats = await prisma.userStats.upsert({
+
+	let keys: object | undefined = selectKeys;
+	if (Object.keys(selectKeys).length === 0) {
+		keys = undefined;
+	}
+
+	if (isFunction(data)) {
+		const userStats = await prisma.userStats.upsert({
+			create: {
+				user_id: id
+			},
+			update: {},
+			where: {
+				user_id: id
+			}
+		});
+
+		return (await prisma.userStats.update({
+			data: data(userStats),
+			where: {
+				user_id: id
+			},
+			select: keys
+		})) as SelectedUserStats<T>;
+	}
+
+	await prisma.userStats.upsert({
 		create: {
 			user_id: id
 		},
 		update: {},
 		where: {
 			user_id: id
-		}
+		},
+		select: {}
 	});
-	await prisma.userStats.update({
-		data: data(userStats),
+
+	return (await prisma.userStats.update({
+		data,
 		where: {
 			user_id: id
-		}
-	});
+		},
+		select: keys
+	})) as SelectedUserStats<T>;
 }
 
+// TODO: add tests for this
 export async function userStatsBankUpdate(userID: string, key: keyof UserStats, bank: Bank) {
-	await userStatsUpdate(userID, u => ({
-		[key]: bank.clone().add(u[key] as ItemBank).bank
-	}));
+	await userStatsUpdate(
+		userID,
+		u => ({
+			[key]: bank.clone().add(u[key] as ItemBank).bank
+		}),
+		{}
+	);
 }
 
 export async function multipleUserStatsBankUpdate(userID: string, updates: Partial<Record<keyof UserStats, Bank>>) {
-	await userStatsUpdate(userID, u => {
-		let updateObj: Prisma.UserStatsUpdateInput = {};
-		for (const [key, bank] of objectEntries(updates)) {
-			updateObj[key] = bank!.clone().add(u[key] as ItemBank).bank;
-		}
-		return updateObj;
-	});
+	await userStatsUpdate(
+		userID,
+		u => {
+			let updateObj: Prisma.UserStatsUpdateInput = {};
+			for (const [key, bank] of objectEntries(updates)) {
+				updateObj[key] = bank!.clone().add(u[key] as ItemBank).bank;
+			}
+			return updateObj;
+		},
+		{}
+	);
 }
 
 export async function updateGPTrackSetting(
@@ -109,7 +154,7 @@ export async function updateGPTrackSetting(
 	if (!user) {
 		await prisma.clientStorage.update({
 			where: {
-				id: CLIENT_ID
+				id: globalConfig.clientID
 			},
 			data: {
 				[setting]: {
@@ -251,4 +296,28 @@ export function calcMaxRCQuantity(rune: Rune, user: MUser) {
 	}
 
 	return 0;
+}
+
+export async function addToGPTaxBalance(userID: string | string, amount: number) {
+	await Promise.all([
+		prisma.clientStorage.update({
+			where: {
+				id: globalConfig.clientID
+			},
+			data: {
+				gp_tax_balance: {
+					increment: amount
+				}
+			}
+		}),
+		userStatsUpdate(
+			userID,
+			{
+				total_gp_traded: {
+					increment: amount
+				}
+			},
+			{}
+		)
+	]);
 }
