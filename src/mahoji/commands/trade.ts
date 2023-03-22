@@ -14,7 +14,7 @@ import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 import { addToGPTaxBalance, mahojiParseNumber } from '../mahojiSettings';
 
-export const askCommand: OSBMahojiCommand = {
+export const tradeCommand: OSBMahojiCommand = {
 	name: 'trade',
 	description: 'Allows you to trade items with other players.',
 	options: [

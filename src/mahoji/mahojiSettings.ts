@@ -60,7 +60,7 @@ export function getMahojiBank(user: User) {
 export async function userStatsUpdate<T extends Prisma.UserStatsSelect = Prisma.UserStatsSelect>(
 	userID: string,
 	data: Omit<Prisma.UserStatsUpdateInput, 'user_id'> | ((u: UserStats) => Prisma.UserStatsUpdateInput),
-	selectKeys: T
+	selectKeys?: T
 ): Promise<SelectedUserStats<T>> {
 	const id = BigInt(userID);
 

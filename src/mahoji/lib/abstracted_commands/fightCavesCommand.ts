@@ -102,7 +102,7 @@ export async function fightCavesCommand(user: MUser, channelID: string): Command
 	const preJadDeathChance = determineChanceOfDeathPreJad(user, attempts);
 
 	const usersRangeStats = user.gear.range.stats;
-	const jadKC = user.getKC(TzTokJad.id);
+	const jadKC = await user.getKC(TzTokJad.id);
 
 	duration += (rand(1, 5) * duration) / 100;
 
