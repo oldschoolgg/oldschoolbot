@@ -8,7 +8,6 @@ import { convertLVLtoXP, itemID } from 'oldschooljs/dist/util';
 import { production } from '../../config';
 import { allStashUnitsFlat, allStashUnitTiers } from '../../lib/clues/stashUnits';
 import { BitField, MAX_INT_JAVA, MAX_QP } from '../../lib/constants';
-import { maxMeleeGear } from '../../lib/data/cox';
 import { leaguesCreatables } from '../../lib/data/creatables/leagueCreatables';
 import { Eatables } from '../../lib/data/eatables';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
@@ -35,66 +34,8 @@ import { logError } from '../../lib/util/logError';
 import { parseStringBank } from '../../lib/util/parseStringBank';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import { allUsableItems } from '../lib/abstracted_commands/useCommand';
-import { generateRandomBank } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch, userStatsUpdate } from '../mahojiSettings';
-
-async function seedUser(userId: string) {
-	await prisma.user.update({
-		where: { id: userId },
-		data: {
-			bank: generateRandomBank(500).bank,
-			collectionLogBank: generateRandomBank(500).bank,
-			pets: new Bank().add('Herbi').bank,
-			GP: BigInt(100_000_000),
-			QP: 100,
-			minion_equippedPet: itemID('Herbi'),
-			gear_melee: maxMeleeGear.raw() as Prisma.InputJsonObject,
-			sacrificedValue: 100_033
-		}
-	});
-	await prisma.userStats.update({
-		where: {
-			user_id: BigInt(userId)
-		},
-		data: {
-			deaths: 1333,
-			dice_wins: 1333,
-			dice_losses: 1333,
-			duel_losses: 1333,
-			duel_wins: 1333,
-			fight_caves_attempts: 1333,
-			firecapes_sacrificed: 1333,
-			tithe_farm_points: 1333,
-			pest_control_points: 1333,
-			inferno_attempts: 1333,
-			infernal_cape_sacrifices: 1333,
-			tob_attempts: 1333,
-			foundry_reputation: 1333,
-			tob_hard_attempts: 1333,
-			total_cox_points: 1333,
-			honour_level: 1333,
-			last_daily_timestamp: 1333,
-			last_tears_of_guthix_timestamp: 1333,
-			slayer_task_streak: 1333,
-			slayer_superior_count: 1333,
-			slayer_unsired_offered: 1333,
-			slayer_chewed_offered: 1333,
-			total_gp_traded: 1333,
-			gp_luckypick: 1333,
-			gp_dice: 1333,
-			gp_slots: 1333,
-			gp_hotcold: 1333,
-			tob_cost: generateRandomBank(500).bank,
-			tob_loot: generateRandomBank(500).bank,
-			creature_scores: generateRandomBank(500).bank,
-			monster_scores: generateRandomBank(500).bank,
-			laps_scores: generateRandomBank(500).bank,
-			sacrificed_bank: generateRandomBank(500).bank,
-			openable_scores: generateRandomBank(500).bank
-		}
-	});
-}
 
 async function giveMaxStats(user: MUser, level = 99, qp = MAX_QP) {
 	let updates: Prisma.UserUpdateArgs['data'] = {};
@@ -535,11 +476,6 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 							choices: farmingPatchNames.map(i => ({ name: i, value: i }))
 						}
 					]
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'seed',
-					description: 'seed.'
 				}
 			],
 			run: async ({
@@ -558,7 +494,6 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				setmonsterkc?: { monster: string; kc: string };
 				irontoggle?: {};
 				forcegrow?: { patch_name: FarmingPatchName };
-				seed?: {};
 			}>) => {
 				if (production) {
 					logError('Test command ran in production', { userID: userID.toString() });
@@ -566,10 +501,6 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				}
 				const user = await mUserFetch(userID.toString());
 				const mahojiUser = await mahojiUsersSettingsFetch(user.id);
-				if (options.seed) {
-					await seedUser(user.id);
-					return 'Seeded.';
-				}
 				if (options.irontoggle) {
 					const current = mahojiUser.minion_ironman;
 					await user.update({
