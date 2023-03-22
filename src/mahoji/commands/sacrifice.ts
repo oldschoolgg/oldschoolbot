@@ -15,7 +15,6 @@ import { OSBMahojiCommand } from '../lib/util';
 import { userStatsBankUpdate } from '../mahojiSettings';
 import { sellPriceOfItem } from './sell';
 
-// TODO: test
 async function trackSacBank(user: MUser, bank: Bank) {
 	await Promise.all([
 		updateBankSetting('economyStats_sacrificedBank', bank),
