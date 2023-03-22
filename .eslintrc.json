@@ -7,6 +7,12 @@
 		"@typescript-eslint/no-base-to-string": 0,
 		"no-return-await": "error",
 		"import/no-cycle": "error",
-		"@typescript-eslint/strict-boolean-expressions": 0
+		"@typescript-eslint/strict-boolean-expressions": 0,
+		"@typescript-eslint/no-misused-promises": [
+			"error",
+			{
+				"checksVoidReturn": false
+			}
+		]
 	}
 }

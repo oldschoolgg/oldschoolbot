@@ -70,9 +70,11 @@ export const agilityTask: MinionTask = {
 		const xpReceived =
 			(quantity - lapsFailed / 2) * (typeof course.xp === 'number' ? course.xp : course.xp(currentLevel));
 
-		await user.update({
-			lapsScores: addItemToBank(user.user.lapsScores as ItemBank, course.id, quantity - lapsFailed)
-		});
+		const { laps_scores: newLapScores } = await userStatsUpdate(
+			user.id,
+			({ laps_scores }) => addItemToBank(laps_scores as ItemBank, course.id, quantity - lapsFailed),
+			{ laps_scores: true }
+		);
 
 		let xpRes = await user.addXP({
 			skillName: SkillsEnum.Agility,
@@ -91,11 +93,15 @@ export const agilityTask: MinionTask = {
 
 		if (course.name === 'Agility Pyramid') {
 			loot.add('Coins', 10_000 * (quantity - lapsFailed));
-			await userStatsUpdate(user.id, () => ({
-				gp_from_agil_pyramid: {
-					increment: loot.amount('Coins')
-				}
-			}));
+			await userStatsUpdate(
+				user.id,
+				{
+					gp_from_agil_pyramid: {
+						increment: loot.amount('Coins')
+					}
+				},
+				{}
+			);
 		}
 
 		if (alch) {
@@ -117,7 +123,7 @@ export const agilityTask: MinionTask = {
 		}.\n${xpRes}`;
 
 		if (course.id === 6) {
-			const currentLapCount = (user.user.lapsScores as ItemBank)[course.id];
+			const currentLapCount = (newLapScores as ItemBank)[course.id];
 			for (const monkey of Agility.MonkeyBackpacks) {
 				if (currentLapCount < monkey.lapsRequired) break;
 				if (!user.hasEquippedOrInBank(monkey.id)) {

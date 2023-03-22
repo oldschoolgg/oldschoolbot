@@ -13,11 +13,14 @@ import dailyRoll from '../../../lib/simulation/dailyTable';
 import { channelIsSendable, formatDuration, isWeekend } from '../../../lib/util';
 import { deferInteraction } from '../../../lib/util/interactionReply';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { updateGPTrackSetting } from '../../mahojiSettings';
+import { updateGPTrackSetting, userStatsUpdate } from '../../mahojiSettings';
 
-export function isUsersDailyReady(user: MUser): { isReady: true } | { isReady: false; durationUntilReady: number } {
+export async function isUsersDailyReady(
+	user: MUser
+): Promise<{ isReady: true } | { isReady: false; durationUntilReady: number }> {
+	const stats = await user.fetchStats({ last_daily_timestamp: true });
 	const currentDate = new Date().getTime();
-	const lastVoteDate = Number(user.user.lastDailyTimestamp);
+	const lastVoteDate = Number(stats.last_daily_timestamp);
 	const difference = currentDate - lastVoteDate;
 
 	if (difference < Time.Hour * 12) {
@@ -124,16 +127,20 @@ export async function dailyCommand(
 	if (interaction) await deferInteraction(interaction);
 	const channel = globalClient.channels.cache.get(channelID.toString());
 	if (!channelIsSendable(channel)) return 'Invalid channel.';
-	const check = isUsersDailyReady(user);
+	const check = await isUsersDailyReady(user);
 	if (!check.isReady) {
 		return `**${Emoji.Diango} Diango says...** You can claim your next daily in ${formatDuration(
 			check.durationUntilReady
 		)}.`;
 	}
 
-	await user.update({
-		lastDailyTimestamp: new Date().getTime()
-	});
+	await userStatsUpdate(
+		user.id,
+		{
+			last_daily_timestamp: new Date().getTime()
+		},
+		{}
+	);
 
 	const [question, ...fakeQuestions] = await getRandomTriviaQuestions();
 

@@ -26,7 +26,7 @@ export default async function reducedTimeForGroup(
 
 	for (let i = 0; i < users.length; i++) {
 		const user = users[i];
-		const userKc = user.getKC(monster.id);
+		const userKc = await user.getKC(monster.id);
 		const [, userKcReduction] = reducedTimeFromKC(monster, userKc);
 		let userItemBoost = 0;
 		for (const [, boostAmount] of Object.entries(resolveAvailableItemBoosts(user, monster))) {

@@ -14,6 +14,7 @@ import { roll } from '../../lib/util';
 import { ashSanctifierEffect } from '../../lib/util/ashSanctifier';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
+import { userStatsUpdate } from '../../mahoji/mahojiSettings';
 
 export const monsterTask: MinionTask = {
 	type: 'MonsterKilling',
@@ -78,11 +79,15 @@ export const monsterTask: MinionTask = {
 		});
 
 		if (newSuperiorCount && newSuperiorCount > 0) {
-			await user.update({
-				slayer_superior_count: {
-					increment: newSuperiorCount
-				}
-			});
+			await userStatsUpdate(
+				user.id,
+				{
+					slayer_superior_count: {
+						increment: newSuperiorCount
+					}
+				},
+				{}
+			);
 		}
 		const superiorMessage = newSuperiorCount ? `, including **${newSuperiorCount} superiors**` : '';
 		let str =
@@ -119,12 +124,16 @@ export const monsterTask: MinionTask = {
 
 			thisTripFinishesTask = quantityLeft === 0;
 			if (thisTripFinishesTask) {
-				const { newUser } = await user.update({
-					slayer_task_streak: {
-						increment: 1
-					}
-				});
-				const currentStreak = newUser.slayer_task_streak;
+				const newStats = await userStatsUpdate(
+					user.id,
+					{
+						slayer_task_streak: {
+							increment: 1
+						}
+					},
+					{ slayer_task_streak: true }
+				);
+				const currentStreak = newStats.slayer_task_streak;
 				const points = await calculateSlayerPoints(currentStreak, isOnTaskResult.slayerMaster, user);
 				const secondNewUser = await user.update({
 					slayer_points: {

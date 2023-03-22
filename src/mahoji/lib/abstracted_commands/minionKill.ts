@@ -180,7 +180,7 @@ export async function minionKillCommand(
 		return `${user.minionName} needs ${requiredPoints}% Shayzien Favour to kill Lizardman shamans.`;
 	}
 
-	let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, user.getKC(monster.id));
+	let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, await user.getKC(monster.id));
 
 	const [, osjsMon, attackStyles] = resolveAttackStyles(user, {
 		monsterID: monster.id,
@@ -607,7 +607,7 @@ export async function monsterInfo(user: MUser, name: string): CommandResponse {
 		monsterID: monster.id
 	});
 
-	const userKc = user.getKC(monster.id);
+	const userKc = await user.getKC(monster.id);
 	let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, userKc);
 
 	// item boosts

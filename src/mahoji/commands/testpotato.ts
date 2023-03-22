@@ -35,7 +35,7 @@ import { parseStringBank } from '../../lib/util/parseStringBank';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import { allUsableItems } from '../lib/abstracted_commands/useCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { mahojiUsersSettingsFetch, userStatsUpdate } from '../mahojiSettings';
 
 async function giveMaxStats(user: MUser, level = 99, qp = MAX_QP) {
 	let updates: Prisma.UserUpdateArgs['data'] = {};
@@ -625,12 +625,16 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						stringMatches(m.name, options.setmonsterkc?.monster ?? '')
 					);
 					if (!monster) return 'Invalid monster';
-					await user.update({
-						monsterScores: {
-							...(mahojiUser.monsterScores as Record<string, unknown>),
-							[monster.id]: options.setmonsterkc.kc ?? 1
-						}
-					});
+					await userStatsUpdate(
+						user.id,
+						({ monster_scores }) => ({
+							monster_scores: {
+								...(monster_scores as Record<string, unknown>),
+								[monster.id]: options.setmonsterkc?.kc ?? 1
+							}
+						}),
+						{}
+					);
 					return `Set your ${monster.name} KC to ${options.setmonsterkc.kc ?? 1}.`;
 				}
 				if (options.forcegrow) {

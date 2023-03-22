@@ -1,10 +1,10 @@
 import { bulkUpdateCommands } from 'mahoji/dist/lib/util';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { CLIENT_ID, DEV_SERVER_ID, production } from '../../config';
+import { DEV_SERVER_ID, production } from '../../config';
 import { cacheBadges } from '../../lib/badges';
 import { syncBlacklists } from '../../lib/blacklists';
-import { DISABLED_COMMANDS } from '../../lib/constants';
+import { DISABLED_COMMANDS, globalConfig } from '../../lib/constants';
 import { initCrons } from '../../lib/crons';
 import { prisma } from '../../lib/settings/prisma';
 import { initTickers } from '../../lib/tickers';
@@ -28,11 +28,11 @@ export async function onStartup() {
 	// Sync disabled commands
 	const disabledCommands = await prisma.clientStorage.upsert({
 		where: {
-			id: CLIENT_ID
+			id: globalConfig.clientID
 		},
 		select: { disabled_commands: true },
 		create: {
-			id: CLIENT_ID
+			id: globalConfig.clientID
 		},
 		update: {}
 	});
