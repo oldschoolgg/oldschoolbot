@@ -2,7 +2,6 @@ import { userMention } from '@discordjs/builders';
 import { ChannelType, ChatInputCommandInteraction, TextChannel } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { NEX_ID } from '../../../lib/constants';
 import { trackLoot } from '../../../lib/lootTrack';
 import { setupParty } from '../../../lib/party';
 import { calculateNexDetails, checkNexUser } from '../../../lib/simulation/nex';
@@ -114,10 +113,9 @@ export async function nexCommand(interaction: ChatInputCommandInteraction, user:
 
 ${details.team
 	.map(i => {
-		const mUser = mahojiUsers.find(t => t.id === i.id)!;
 		return `${userMention(i.id)}: Contrib[${i.contribution.toFixed(2)}%] Death[${i.deathChance.toFixed(
 			2
-		)}%] KC[${mUser.getKC(NEX_ID)}] Offence[${Math.round(i.totalOffensivePecent)}%] Defence[${Math.round(
+		)}%] Offence[${Math.round(i.totalOffensivePecent)}%] Defence[${Math.round(
 			i.totalDefensivePercent
 		)}%] *${i.messages.join(', ')}*`;
 	})

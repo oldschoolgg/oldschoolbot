@@ -23,7 +23,7 @@ export const monsterTask: MinionTask = {
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 		const user = await mUserFetch(userID);
 		const [hasKourendHard] = await userhasDiaryTier(user, KourendKebosDiary.hard);
-		await user.incrementKC(monsterID, quantity);
+		const { newKC } = await user.incrementKC(monsterID, quantity);
 
 		const isOnTaskResult = await isOnSlayerTask({ user, monsterID, quantityKilled: quantity });
 
@@ -92,7 +92,7 @@ export const monsterTask: MinionTask = {
 		const superiorMessage = newSuperiorCount ? `, including **${newSuperiorCount} superiors**` : '';
 		let str =
 			`${user}, ${user.minionName} finished killing ${quantity} ${monster.name}${superiorMessage}.` +
-			` Your ${monster.name} KC is now ${user.getKC(monsterID)}.\n\n${xpRes.join(' ')}\n`;
+			` Your ${monster.name} KC is now ${newKC}.\n\n${xpRes.join(' ')}\n`;
 		if (
 			monster.id === Monsters.Unicorn.id &&
 			user.hasEquipped('Iron dagger') &&

@@ -134,7 +134,7 @@ import Createables from './createables';
 import { leagueBuyables } from './leaguesBuyables';
 
 function kcProg(mon: Monster): FormatProgressFunction {
-	return ({ getKC }) => `${getKC(mon.id)} KC`;
+	return ({ stats }) => `${stats.kcBank[mon.id] ?? 0} KC`;
 }
 
 function mgProg(minigameName: MinigameName): FormatProgressFunction {
@@ -240,10 +240,10 @@ export const allCollectionLogs: ICollection = {
 					...Monsters.DagannothRex.allItems
 				],
 				items: dagannothKingsCL,
-				fmtProg: ({ getKC }) => [
-					`${getKC(Monsters.DagannothPrime.id)} Prime KC`,
-					`${getKC(Monsters.DagannothRex.id)} Rex KC`,
-					`${getKC(Monsters.DagannothSupreme.id)} Supreme KC`
+				fmtProg: ({ stats }) => [
+					`${stats.kcBank[Monsters.DagannothPrime.id] ?? 0} Prime KC`,
+					`${stats.kcBank[Monsters.DagannothRex.id] ?? 0} Rex KC`,
+					`${stats.kcBank[Monsters.DagannothSupreme.id] ?? 0} Supreme KC`
 				]
 			},
 			'The Fight Caves': {
@@ -330,7 +330,7 @@ export const allCollectionLogs: ICollection = {
 					...resolveItems(['Clue scroll (elite)'])
 				],
 				items: NexCL,
-				fmtProg: ({ getKC }) => `${getKC(NEX_ID)} KC`
+				fmtProg: ({ stats }) => `${stats.kcBank[NEX_ID] ?? 0} KC`
 			},
 			'The Nightmare': {
 				alias: [...NightmareMonster.aliases, 'phosani'],
@@ -339,9 +339,9 @@ export const allCollectionLogs: ICollection = {
 					Phosani: "Phosani's Nightmare"
 				},
 				items: theNightmareCL,
-				fmtProg: ({ getKC }) => [
-					`${getKC(NightmareMonster.id)} KC`,
-					`${getKC(PHOSANI_NIGHTMARE_ID)} Phosani KC`
+				fmtProg: ({ stats }) => [
+					`${stats.kcBank[NightmareMonster.id] ?? 0} KC`,
+					`${stats.kcBank[PHOSANI_NIGHTMARE_ID] ?? 0} Phosani KC`
 				]
 			},
 			Obor: {
@@ -403,7 +403,7 @@ export const allCollectionLogs: ICollection = {
 				items: wintertodtCL,
 				fmtProg: mgProg('wintertodt')
 			},
-			Zalcano: { items: zalcanoCL, fmtProg: ({ getKC }) => `${getKC(ZALCANO_ID)} KC` },
+			Zalcano: { items: zalcanoCL, fmtProg: ({ stats }) => `${stats.kcBank[ZALCANO_ID] ?? 0} KC` },
 			Zulrah: {
 				alias: Monsters.Zulrah.aliases,
 				allItems: Monsters.Zulrah.allItems,
