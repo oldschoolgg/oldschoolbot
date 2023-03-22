@@ -133,7 +133,7 @@ export async function nightmareCommand(user: MUser, channelID: string, name: str
 		type = 'mass';
 	}
 
-	const err = checkReqs([user], NightmareMonster, 2, isPhosani);
+	const err = await checkReqs([user], NightmareMonster, 2, isPhosani);
 	if (err) return err;
 
 	const users = type === 'mass' ? [user, user, user, user] : [user];
@@ -225,7 +225,7 @@ export async function nightmareCommand(user: MUser, channelID: string, name: str
 	if (typeof durQtyRes === 'string') return durQtyRes;
 	let [quantity, duration, perKillTime] = durQtyRes;
 
-	const secondErr = checkReqs(users, NightmareMonster, quantity, isPhosani);
+	const secondErr = await checkReqs(users, NightmareMonster, quantity, isPhosani);
 	if (secondErr) return secondErr;
 
 	duration = quantity * perKillTime - NightmareMonster.respawnTime!;
@@ -281,7 +281,7 @@ export async function nightmareCommand(user: MUser, channelID: string, name: str
 
 	const str =
 		type === 'solo'
-			? `${soloMessage(user, duration, quantity, isPhosani)}
+			? `${await soloMessage(user, duration, quantity, isPhosani)}
 ${soloBoosts.length > 0 ? `**Boosts:** ${soloBoosts.join(', ')}` : ''}
 Removed ${soloFoodUsage} from your bank.`
 			: `${user.usernameOrMention}'s party of ${
