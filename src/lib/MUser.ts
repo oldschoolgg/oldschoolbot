@@ -258,7 +258,6 @@ export class MUserClass {
 		return styles as AttackStyles[];
 	}
 
-	// TODO test?
 	async incrementKC(monsterID: number, amountToAdd = 1) {
 		const stats = await this.fetchStats({ monster_scores: true });
 		const newKCs = new Bank(stats.monster_scores as ItemBank).add(monsterID, amountToAdd);
@@ -608,8 +607,7 @@ export class MUserClass {
 	}
 
 	async fetchStats<T extends Prisma.UserStatsSelect>(selectKeys: T): Promise<SelectedUserStats<T>> {
-		const keys = Object.keys(selectKeys).length === 0 ? undefined : selectKeys;
-		// todo tests
+		const keys = Object.keys(selectKeys).length === 0 ? { user_id: true } : selectKeys;
 		const result = await prisma.userStats.upsert({
 			where: {
 				user_id: BigInt(this.id)

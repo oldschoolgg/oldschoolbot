@@ -53,12 +53,10 @@ export function patronMsg(tierNeeded: number) {
 	} Patron to use this command. You can become a patron to support the bot here: <https://www.patreon.com/oldschoolbot>`;
 }
 
-// TODO: remove this
 export function getMahojiBank(user: User) {
 	return new Bank(user.bank as ItemBank);
 }
 
-// TODO: optimize this, add tests, add select
 export async function userStatsUpdate<T extends Prisma.UserStatsSelect = Prisma.UserStatsSelect>(
 	userID: string,
 	data: Omit<Prisma.UserStatsUpdateInput, 'user_id'> | ((u: UserStats) => Prisma.UserStatsUpdateInput),
@@ -66,9 +64,9 @@ export async function userStatsUpdate<T extends Prisma.UserStatsSelect = Prisma.
 ): Promise<SelectedUserStats<T>> {
 	const id = BigInt(userID);
 
-	let keys: object | undefined = selectKeys;
+	let keys: object = selectKeys;
 	if (Object.keys(selectKeys).length === 0) {
-		keys = undefined;
+		keys = { user_id: true };
 	}
 
 	if (isFunction(data)) {
@@ -99,7 +97,7 @@ export async function userStatsUpdate<T extends Prisma.UserStatsSelect = Prisma.
 		where: {
 			user_id: id
 		},
-		select: {}
+		select: undefined
 	});
 
 	return (await prisma.userStats.update({
@@ -111,7 +109,6 @@ export async function userStatsUpdate<T extends Prisma.UserStatsSelect = Prisma.
 	})) as SelectedUserStats<T>;
 }
 
-// TODO: add tests for this
 export async function userStatsBankUpdate(userID: string, key: keyof UserStats, bank: Bank) {
 	await userStatsUpdate(
 		userID,

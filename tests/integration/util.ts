@@ -23,6 +23,21 @@ interface UserOptions {
 	id?: string;
 }
 
+export async function createTestUser(id = randomSnowflake(), bank?: Bank) {
+	return prisma.user.upsert({
+		create: {
+			id,
+			bank: bank?.bank
+		},
+		update: {
+			bank: bank?.bank
+		},
+		where: {
+			id
+		}
+	});
+}
+
 export async function integrationCmdRun({
 	command,
 	options = {},
@@ -33,18 +48,7 @@ export async function integrationCmdRun({
 	userOptions?: UserOptions;
 }) {
 	const userId = userOptions?.id ?? randomSnowflake();
-	await prisma.user.upsert({
-		create: {
-			id: userId,
-			bank: userOptions?.ownedBank?.bank
-		},
-		update: {
-			bank: userOptions?.ownedBank?.bank
-		},
-		where: {
-			id: userId
-		}
-	});
+	await createTestUser(userId, userOptions?.ownedBank);
 	const result = await command.run({ ...commandRunOptions(userId), options });
 	return result;
 }
