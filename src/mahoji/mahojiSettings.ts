@@ -64,8 +64,8 @@ export async function userStatsUpdate<T extends Prisma.UserStatsSelect = Prisma.
 ): Promise<SelectedUserStats<T>> {
 	const id = BigInt(userID);
 
-	let keys: object = selectKeys;
-	if (Object.keys(selectKeys).length === 0) {
+	let keys: object | undefined = selectKeys;
+	if (!selectKeys || Object.keys(selectKeys).length === 0) {
 		keys = { user_id: true };
 	}
 
