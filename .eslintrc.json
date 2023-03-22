@@ -8,11 +8,11 @@
 		"no-return-await": "error",
 		"import/no-cycle": "error",
 		"@typescript-eslint/strict-boolean-expressions": 0,
-		 "@typescript-eslint/no-misused-promises": [
-    "error",
-    {
-      "checksVoidReturn": false
-    }
-  ]
+		"@typescript-eslint/no-misused-promises": [
+			"error",
+			{
+				"checksVoidReturn": false
+			}
+		]
 	}
 }
