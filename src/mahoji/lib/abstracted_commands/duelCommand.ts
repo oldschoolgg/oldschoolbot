@@ -7,7 +7,7 @@ import { Emoji, Events } from '../../../lib/constants';
 import { MUserClass } from '../../../lib/MUser';
 import { awaitMessageComponentInteraction, channelIsSendable } from '../../../lib/util';
 import { deferInteraction } from '../../../lib/util/interactionReply';
-import { mahojiParseNumber, updateGPTrackSetting } from '../../mahojiSettings';
+import { mahojiParseNumber, updateGPTrackSetting, userStatsUpdate } from '../../mahojiSettings';
 
 async function checkBal(user: MUser, amount: number) {
 	return user.GP >= amount;
@@ -107,16 +107,24 @@ export async function duelCommand(
 		const dividedAmount = tax / 1_000_000;
 		updateGPTrackSetting('duelTaxBank', Math.floor(Math.round(dividedAmount * 100) / 100));
 
-		await winner.update({
-			stats_duelWins: {
-				increment: 1
-			}
-		});
-		await loser.update({
-			stats_duelLosses: {
-				increment: 1
-			}
-		});
+		await userStatsUpdate(
+			winner.id,
+			{
+				duel_wins: {
+					increment: 1
+				}
+			},
+			{}
+		);
+		await userStatsUpdate(
+			loser.id,
+			{
+				duel_losses: {
+					increment: 1
+				}
+			},
+			{}
+		);
 
 		await winner.addItemsToBank({ items: new Bank().add('Coins', winningAmount - tax), collectionLog: false });
 

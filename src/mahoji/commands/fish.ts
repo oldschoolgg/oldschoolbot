@@ -75,8 +75,11 @@ export const fishCommand: OSBMahojiCommand = {
 			return 'You need at least 15 Agility and Strength to do Barbarian Fishing.';
 		}
 
-		if (fish.name === 'Infernal eel' && user.getKC(TzTokJad.id) < 1) {
-			return 'You are not worthy JalYt. Before you can fish Infernal Eels, you need to have defeated the mighty TzTok-Jad!';
+		if (fish.name === 'Infernal eel') {
+			const jadKC = await user.getKC(TzTokJad.id);
+			if (jadKC === 0) {
+				return 'You are not worthy JalYt. Before you can fish Infernal Eels, you need to have defeated the mighty TzTok-Jad!';
+			}
 		}
 		const anglerOutfit = Object.keys(Fishing.anglerItems).map(i => itemNameFromID(parseInt(i)));
 		if (fish.name === 'Minnow' && anglerOutfit.some(test => !user.hasEquippedOrInBank(test!))) {

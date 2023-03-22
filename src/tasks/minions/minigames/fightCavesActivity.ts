@@ -1,6 +1,5 @@
 import { calcPercentOfNum, calcWhatPercent } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
-import TzTokJad from 'oldschooljs/dist/simulation/monsters/special/TzTokJad';
 
 import { Emoji, Events } from '../../../lib/constants';
 import { prisma } from '../../../lib/settings/prisma';
@@ -13,6 +12,7 @@ import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 import { fightCavesCost } from '../../../mahoji/lib/abstracted_commands/fightCavesCommand';
+import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
 
 const TokkulID = itemID('Tokkul');
 
@@ -25,13 +25,17 @@ export const fightCavesTask: MinionTask = {
 		const tokkulReward = rand(2000, 6000);
 		const diedToJad = percentChance(jadDeathChance);
 
-		const { newUser } = await user.update({
-			stats_fightCavesAttempts: {
-				increment: 1
-			}
-		});
+		const { fight_caves_attempts: newFightCavesAttempts } = await userStatsUpdate(
+			user.id,
+			{
+				fight_caves_attempts: {
+					increment: 1
+				}
+			},
+			{ fight_caves_attempts: true }
+		);
 
-		const attemptsStr = `You have tried Fight caves ${newUser.stats_fightCavesAttempts}x times.`;
+		const attemptsStr = `You have tried Fight caves ${newFightCavesAttempts}x times.`;
 
 		// Add slayer
 		const usersTask = await getUsersCurrentSlayerInfo(user.id);
@@ -121,7 +125,7 @@ export const fightCavesTask: MinionTask = {
 			);
 		}
 
-		await user.incrementKC(Monsters.TzTokJad.id, 1);
+		const { newKC } = await user.incrementKC(Monsters.TzTokJad.id, 1);
 		const loot = Monsters.TzTokJad.kill(1, { onSlayerTask: isOnTask });
 
 		if (loot.has('Tzrek-jad')) {
@@ -129,7 +133,7 @@ export const fightCavesTask: MinionTask = {
 				Events.ServerNotification,
 				`**${user.badgedUsername}** just received their ${formatOrdinal(user.cl.amount('Tzrek-jad') + 1)} ${
 					Emoji.TzRekJad
-				} TzRek-jad pet by killing TzTok-Jad, on their ${formatOrdinal(user.getKC(TzTokJad.id))} kill!`
+				} TzRek-jad pet by killing TzTok-Jad, on their ${formatOrdinal(newKC)} kill!`
 			);
 		}
 
@@ -137,7 +141,7 @@ export const fightCavesTask: MinionTask = {
 			globalClient.emit(
 				Events.ServerNotification,
 				`**${user.badgedUsername}** just received their first Fire cape on their ${formatOrdinal(
-					newUser.stats_fightCavesAttempts
+					newFightCavesAttempts
 				)} attempt!`
 			);
 		}
@@ -153,15 +157,18 @@ export const fightCavesTask: MinionTask = {
 
 		let msg = `${rangeXP}. ${hpXP}.`;
 		if (isOnTask) {
-			const { newUser } = await user.update({
-				slayer_task_streak: {
-					increment: 1
-				}
-			});
+			const { slayer_task_streak: currentStreak } = await userStatsUpdate(
+				user.id,
+				{
+					slayer_task_streak: {
+						increment: 1
+					}
+				},
+				{ slayer_task_streak: true }
+			);
 
 			// 25,250 for Jad + 11,760 for waves.
 			const slayerXP = 37_010;
-			const currentStreak = newUser.slayer_task_streak;
 			const points = await calculateSlayerPoints(currentStreak, usersTask.slayerMaster!, user);
 
 			const secondNewUser = await user.update({
@@ -192,7 +199,7 @@ export const fightCavesTask: MinionTask = {
 			`${user} ${msg}`,
 			await chatHeadImage({
 				content: `You defeated TzTok-Jad for the ${formatOrdinal(
-					user.getKC(Monsters.TzTokJad.id)
+					newKC
 				)} time! I am most impressed, I give you... ${loot}.`,
 				head: 'mejJal'
 			}),

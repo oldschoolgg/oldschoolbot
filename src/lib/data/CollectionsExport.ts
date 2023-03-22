@@ -8,6 +8,7 @@ import { implings } from '../implings';
 import { MinigameScore } from '../settings/minigames';
 import getOSItem from '../util/getOSItem';
 import resolveItems from '../util/resolveItems';
+import { UserStatsDataNeededForCL } from './Collections';
 import {
 	gracefulCapes,
 	gracefulFeet,
@@ -35,18 +36,23 @@ export interface ILeftListStatus {
 }
 
 export interface IKCActivity {
-	[key: string]: string | string[] | ((user: MUser, minigameScores: MinigameScore[]) => Promise<number>);
+	[key: string]:
+		| string
+		| string[]
+		| ((user: MUser, minigameScores: MinigameScore[], stats: UserStatsDataNeededForCL) => Promise<number>);
 }
 
 export type FormatProgressFunction = ({
 	getKC,
 	minigames,
-	user
+	user,
+	stats
 }: {
 	user: MUser;
-	getKC: (id: number) => number;
+	getKC: (id: number) => Promise<number>;
 	minigames: Minigame;
-}) => string | string[];
+	stats: UserStatsDataNeededForCL;
+}) => string | string[] | Promise<string | string[]>;
 
 export interface ICollectionActivity {
 	[key: string]: {

@@ -54,7 +54,7 @@ export async function nexCommand(interaction: ChatInputCommandInteraction, user:
 		}
 	}
 
-	const details = calculateNexDetails({
+	const details = await calculateNexDetails({
 		team: mahojiUsers
 	});
 
