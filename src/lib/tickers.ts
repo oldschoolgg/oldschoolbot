@@ -368,7 +368,7 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 	{
 		name: 'pumpkinhead',
 		timer: null,
-		interval: Time.Second * 5,
+		interval: Time.Hour * 5,
 		cb: async () => {
 			const mass = await prisma.bossEvent.findFirst({
 				where: {
