@@ -1,7 +1,4 @@
 import '../globalSetup';
-import '../../src/lib/util/transactItemsFromBank';
-import '../../src/lib/bankImage';
-import '../../src/index';
 
 import { vi } from 'vitest';
 
