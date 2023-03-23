@@ -35,10 +35,10 @@ WHERE "slayer.points" > 50
 ORDER BY "slayer.points" DESC
 LIMIT 1;`;
 
-const longerSlayerTaskStreakQuery = `SELECT id, 'Longest Task Streak' as desc
-FROM users
-WHERE "slayer.task_streak" > 20
-ORDER BY "slayer.task_streak" DESC
+const longerSlayerTaskStreakQuery = `SELECT user_id::text as id, 'Longest Task Streak' as desc
+FROM user_stats
+WHERE "slayer_task_streak" > 20
+ORDER BY "slayer_task_streak" DESC
 LIMIT 1;`;
 
 const mostSlayerTasksDoneQuery = `SELECT user_id::text as id, 'Most Tasks' as desc
@@ -279,11 +279,14 @@ SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 			addToUserMap(userMap, mostValue[i].id, `Rank ${i + 1} Sacrifice Value`);
 		}
 		const mostUniques = await q<any[]>(`SELECT u.id, u.sacbanklength FROM (
-  SELECT (SELECT COUNT(*) FROM JSON_OBJECT_KEYS("sacrificed_bank")) sacbanklength, user_id::text as id FROM user_stats
+  SELECT (SELECT COUNT(*) FROM JSONB_OBJECT_KEYS("sacrificed_bank")) sacbanklength, user_id::text as id FROM user_stats
 ) u
 ORDER BY u.sacbanklength DESC LIMIT 1;`);
+
 		const mostUniquesIron = await q<any[]>(`SELECT u.id, u.sacbanklength FROM (
-  SELECT (SELECT COUNT(*) FROM JSON_OBJECT_KEYS("sacrificed_bank")) sacbanklength, id FROM users WHERE "minion.ironman" = true
+  SELECT (SELECT COUNT(*) FROM JSONB_OBJECT_KEYS("sacrificed_bank")) sacbanklength, user_id::text as id FROM user_stats
+  INNER JOIN users ON "user_stats"."user_id"::text = "users"."id"
+  WHERE "users"."minion.ironman" = true
 ) u
 ORDER BY u.sacbanklength DESC LIMIT 1;`);
 		topSacrificers.push(mostUniques[0].id);
@@ -490,6 +493,9 @@ LIMIT 50;`;
 			try {
 				await fn();
 			} catch (err: any) {
+				if (process.env.TEST) {
+					throw err;
+				}
 				failed.push(`${name} (${err.message})`);
 				logError(err);
 			}
