@@ -30,6 +30,8 @@ describe('Roles Task', async () => {
 				duration: 10_000
 			}
 		});
-		expect(await runRolesTask()).toBeTruthy();
+		const result = await runRolesTask();
+		expect(result).toBeTruthy();
+		expect(result).includes('Roles');
 	});
 });
