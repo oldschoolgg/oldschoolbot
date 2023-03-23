@@ -121,7 +121,6 @@ export function convertXPtoLVL(xp: number, cap = 99) {
 }
 
 export function cryptoRand(min: number, max: number) {
-	if (process.env.TEST) return randInt(min, max);
 	return integer(min, max)(nodeCrypto);
 }
 
