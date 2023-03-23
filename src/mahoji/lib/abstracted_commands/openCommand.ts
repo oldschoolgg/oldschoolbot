@@ -11,7 +11,7 @@ import { stringMatches } from '../../../lib/util/cleanString';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { patronMsg, updateGPTrackSetting, userStatsUpdate } from '../../mahojiSettings';
+import { patronMsg, updateClientGPTrackSetting, userStatsUpdate } from '../../mahojiSettings';
 
 const regex = /^(.*?)( \([0-9]+x Owned\))?$/;
 
@@ -29,11 +29,12 @@ function getOpenableLoot({ openable, quantity, user }: { openable: UnifiedOpenab
 		: openable.output({ user, self: openable, quantity });
 }
 
-// TODO: test
 async function addToOpenablesScores(mahojiUser: MUser, kcBank: Bank) {
 	const { openable_scores: newOpenableScores } = await userStatsUpdate(
 		mahojiUser.id,
-		({ openable_scores }) => new Bank(openable_scores as ItemBank).add(kcBank).bank,
+		({ openable_scores }) => ({
+			openable_scores: new Bank(openable_scores as ItemBank).add(kcBank).bank
+		}),
 		{ openable_scores: true }
 	);
 	return new Bank(newOpenableScores as ItemBank);
@@ -135,7 +136,7 @@ async function finalizeOpening({
 	});
 
 	if (loot.has('Coins')) {
-		await updateGPTrackSetting('gp_open', loot.amount('Coins'));
+		await updateClientGPTrackSetting('gp_open', loot.amount('Coins'));
 	}
 
 	const openedStr = openables

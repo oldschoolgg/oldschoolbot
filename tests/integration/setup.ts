@@ -1,5 +1,6 @@
 import '../globalSetup';
 import '../../src/lib/util/transactItemsFromBank';
+import '../../src/lib/bankImage';
 
 import { vi } from 'vitest';
 
@@ -12,3 +13,7 @@ export async function setup() {
 vi.mock('../../src/lib/util/handleMahojiConfirmation', () => ({
 	handleMahojiConfirmation: vi.fn()
 }));
+
+export function randomMock(random = 0.1) {
+	Math.random = () => random;
+}

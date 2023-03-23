@@ -13,7 +13,7 @@ import dailyRoll from '../../../lib/simulation/dailyTable';
 import { channelIsSendable, formatDuration, isWeekend } from '../../../lib/util';
 import { deferInteraction } from '../../../lib/util/interactionReply';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { updateGPTrackSetting, userStatsUpdate } from '../../mahojiSettings';
+import { updateClientGPTrackSetting, userStatsUpdate } from '../../mahojiSettings';
 
 export async function isUsersDailyReady(
 	user: MUser
@@ -102,7 +102,7 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 	}
 
 	if (loot.bank[COINS_ID] > 0) {
-		updateGPTrackSetting('gp_daily', loot.bank[COINS_ID]);
+		updateClientGPTrackSetting('gp_daily', loot.bank[COINS_ID]);
 	}
 
 	const { itemsAdded, previousCL } = await transactItems({

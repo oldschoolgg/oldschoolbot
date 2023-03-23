@@ -133,35 +133,37 @@ export async function multipleUserStatsBankUpdate(userID: string, updates: Parti
 	);
 }
 
-export async function updateGPTrackSetting(
+export async function updateClientGPTrackSetting(
 	setting:
 		| 'gp_luckypick'
-		| 'gp_daily'
-		| 'gp_open'
-		| 'gp_dice'
+		| 'gp_pickpocket'
+		| 'gp_alch'
 		| 'gp_slots'
+		| 'gp_dice'
+		| 'gp_open'
+		| 'gp_daily'
 		| 'gp_sell'
 		| 'gp_pvm'
-		| 'gp_alch'
-		| 'gp_pickpocket'
-		| 'duelTaxBank',
-	amount: number,
-	user?: MUser
+		| 'economyStats_duelTaxBank',
+	amount: number
 ) {
-	if (!user) {
-		await prisma.clientStorage.update({
-			where: {
-				id: globalConfig.clientID
-			},
-			data: {
-				[setting]: {
-					increment: amount
-				}
+	await prisma.clientStorage.update({
+		where: {
+			id: globalConfig.clientID
+		},
+		data: {
+			[setting]: {
+				increment: amount
 			}
-		});
-		return;
-	}
-	await user.update({
+		}
+	});
+}
+export async function updateGPTrackSetting(
+	setting: 'gp_dice' | 'gp_luckypick' | 'gp_slots',
+	amount: number,
+	user: MUser
+) {
+	await userStatsUpdate(user.id, {
 		[setting]: {
 			increment: amount
 		}
