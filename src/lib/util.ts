@@ -22,7 +22,7 @@ import {
 	time,
 	User as DJSUser
 } from 'discord.js';
-import { chunk, notEmpty, objectEntries, Time } from 'e';
+import { chunk, notEmpty, objectEntries, randInt, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import murmurHash from 'murmurhash';
 import { Bank } from 'oldschooljs';
@@ -120,7 +120,8 @@ export function convertXPtoLVL(xp: number, cap = 99) {
 	return cap;
 }
 
-export function rand(min: number, max: number) {
+export function cryptoRand(min: number, max: number) {
+	if (process.env.TEST) return randInt(min, max);
 	return integer(min, max)(nodeCrypto);
 }
 
@@ -133,7 +134,7 @@ export function percentChance(percent: number) {
 }
 
 export function roll(max: number) {
-	return rand(1, max) === 1;
+	return cryptoRand(1, max) === 1;
 }
 
 const rawEmojiRegex = emojiRegex();

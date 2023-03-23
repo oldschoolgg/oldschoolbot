@@ -1,4 +1,4 @@
-import { calcWhatPercent, percentChance, reduceNumByPercent, Time } from 'e';
+import { calcWhatPercent, percentChance, randInt, reduceNumByPercent, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, Monsters } from 'oldschooljs';
 import TzTokJad from 'oldschooljs/dist/simulation/monsters/special/TzTokJad';
@@ -6,7 +6,7 @@ import { itemID } from 'oldschooljs/dist/util';
 
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { FightCavesActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, rand } from '../../../lib/util';
+import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
@@ -104,7 +104,7 @@ export async function fightCavesCommand(user: MUser, channelID: string): Command
 	const usersRangeStats = user.gear.range.stats;
 	const jadKC = await user.getKC(TzTokJad.id);
 
-	duration += (rand(1, 5) * duration) / 100;
+	duration += (randInt(1, 5) * duration) / 100;
 
 	await user.removeItemsFromBank(fightCavesCost);
 
@@ -124,7 +124,7 @@ export async function fightCavesCommand(user: MUser, channelID: string): Command
 
 	const diedPreJad = percentChance(preJadDeathChance);
 	const fakeDuration = duration;
-	duration = diedPreJad ? rand(Time.Minute * 20, duration) : duration;
+	duration = diedPreJad ? randInt(Time.Minute * 20, duration) : duration;
 	const preJadDeathTime = diedPreJad ? duration : null;
 
 	await addSubTaskToActivityTask<FightCavesActivityTaskOptions>({
