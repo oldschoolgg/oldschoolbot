@@ -24,7 +24,8 @@ GROUP BY data->>'clueID';`);
 		casketsCompleted.add(item.id, res.qty);
 	}
 	const { cl } = user;
-	const opens = new Bank(user.openableScores());
+	const stats = await user.fetchStats({ openable_scores: true });
+	const opens = new Bank(stats.openable_scores as ItemBank);
 
 	// Actual clues are only ones that you have: received in your cl, completed in trips, and opened.
 	const actualClues = new Bank();

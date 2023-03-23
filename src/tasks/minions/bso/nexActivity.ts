@@ -37,7 +37,7 @@ export const nexTask: MinionTask = {
 		for (const id of users) {
 			const user = await mUserFetch(id).catch(noOp);
 			if (!user) continue;
-			const [data] = getNexGearStats(user, users);
+			const [data] = await getNexGearStats(user, users);
 			parsedUsers.push({ ...data, id: user.id, user });
 		}
 

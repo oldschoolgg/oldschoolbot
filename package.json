@@ -1,7 +1,7 @@
 {
 	"scripts": {
 		"gen": "concurrently \"prisma generate\" \"prisma generate --schema prisma/robochimp.prisma\"",
-		"lint": "concurrently \"prettier *.{js,md} --write\" \"eslint *.ts \"{src,tests}/**/*.ts\" --fix\"",
+		"lint": "concurrently \"prettier --use-tabs *.{js,md,json} --write\" \"eslint *.ts \"{src,tests}/**/*.ts\" --fix\"",
 		"build:tsc": "tsc -p src",
 		"build": "concurrently \"yarn wipedist\" \"yarn gen\" && yarn build:tsc",
 		"wipedist": "rimraf \"dist/\"",
@@ -22,7 +22,7 @@
 		"@fastify/sensible": "^5.2.0",
 		"@napi-rs/canvas": "^0.1.38",
 		"@octokit/graphql": "^4.8.0",
-		"@oldschoolgg/toolkit": "^0.0.11",
+		"@oldschoolgg/toolkit": "^0.0.12",
 		"@prisma/client": "^3.15.1",
 		"@sapphire/stopwatch": "^1.4.0",
 		"@sapphire/time-utilities": "^1.6.0",

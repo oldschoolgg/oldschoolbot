@@ -133,9 +133,6 @@ Type \`confirm permanent ironman\` if you understand the above information, and 
 		minion_ironman: true,
 		minion_hasBought: true
 	});
-	assert(
-		!newUser.GP && !newUser.QP && !newUser.skills_woodcutting && !newUser.total_cox_points,
-		`Ironman sanity check - ID: ${newUser.id}`
-	);
+	assert(!newUser.GP && !newUser.QP && !newUser.skills_woodcutting, `Ironman sanity check - ID: ${newUser.id}`);
 	return 'You are now an ironman.';
 }

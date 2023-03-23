@@ -40,7 +40,7 @@ export async function zalcanoCommand(user: MUser, channelID: string) {
 		return 'To fight Zalcano, you need 150 QP.';
 	}
 
-	const kc = user.getKC(ZALCANO_ID);
+	const kc = await user.getKC(ZALCANO_ID);
 	const kcLearned = Math.min(100, calcWhatPercent(kc, 100));
 
 	const boosts = [];

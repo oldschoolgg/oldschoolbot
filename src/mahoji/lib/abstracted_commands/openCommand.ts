@@ -13,7 +13,7 @@ import getOSItem, { getItem } from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import resolveItems from '../../../lib/util/resolveItems';
-import { patronMsg, updateGPTrackSetting, userStatsBankUpdate } from '../../mahojiSettings';
+import { patronMsg, updateGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from '../../mahojiSettings';
 
 const regex = /^(.*?)( \([0-9]+x Owned\))?$/;
 
@@ -42,10 +42,12 @@ function getOpenableLoot({
 }
 
 async function addToOpenablesScores(mahojiUser: MUser, kcBank: Bank) {
-	await mahojiUser.update({
-		openable_scores: new Bank(mahojiUser.user.openable_scores as ItemBank).add(kcBank).bank
-	});
-	return new Bank(mahojiUser.user.openable_scores as ItemBank);
+	const { openable_scores: newOpenableScores } = await userStatsUpdate(
+		mahojiUser.id,
+		({ openable_scores }) => new Bank(openable_scores as ItemBank).add(kcBank).bank,
+		{ openable_scores: true }
+	);
+	return new Bank(newOpenableScores as ItemBank);
 }
 
 export async function abstractedOpenUntilCommand(userID: string, name: string, openUntilItem: string) {

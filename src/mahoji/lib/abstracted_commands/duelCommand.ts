@@ -7,7 +7,7 @@ import { Emoji, Events } from '../../../lib/constants';
 import { MUserClass } from '../../../lib/MUser';
 import { awaitMessageComponentInteraction, channelIsSendable } from '../../../lib/util';
 import { deferInteraction } from '../../../lib/util/interactionReply';
-import { mahojiParseNumber } from '../../mahojiSettings';
+import { mahojiParseNumber, userStatsUpdate } from '../../mahojiSettings';
 
 async function checkBal(user: MUser, amount: number) {
 	return user.GP >= amount;
@@ -103,16 +103,24 @@ export async function duelCommand(
 
 		const winningAmount = amount * 2;
 
-		await winner.update({
-			stats_duelWins: {
-				increment: 1
-			}
-		});
-		await loser.update({
-			stats_duelLosses: {
-				increment: 1
-			}
-		});
+		await userStatsUpdate(
+			winner.id,
+			{
+				duel_wins: {
+					increment: 1
+				}
+			},
+			{}
+		);
+		await userStatsUpdate(
+			loser.id,
+			{
+				duel_losses: {
+					increment: 1
+				}
+			},
+			{}
+		);
 
 		await winner.addItemsToBank({ items: new Bank().add('Coins', winningAmount), collectionLog: false });
 

@@ -523,15 +523,15 @@ export const hardTasks: Task[] = [
 	{
 		id: 2062,
 		name: 'Kill 75 unique monsters',
-		has: async ({ mahojiUser }) => {
-			return Object.keys(mahojiUser.monsterScores as ItemBank).length >= 75;
+		has: async ({ userStats }) => {
+			return Object.keys(userStats.monster_scores as ItemBank).length >= 75;
 		}
 	},
 	{
 		id: 2063,
 		name: 'Slay 50 superior slayer creatures',
-		has: async ({ mahojiUser }) => {
-			return mahojiUser.slayer_superior_count >= 50;
+		has: async ({ userStats }) => {
+			return userStats.slayer_superior_count >= 50;
 		}
 	},
 	{
@@ -881,8 +881,8 @@ export const hardTasks: Task[] = [
 	{
 		id: 2113,
 		name: 'Do 50 High gambles in Barb assault',
-		has: async ({ mahojiUser }) => {
-			return mahojiUser.high_gambles >= 50;
+		has: async ({ userStats }) => {
+			return userStats.high_gambles >= 50;
 		}
 	},
 	{

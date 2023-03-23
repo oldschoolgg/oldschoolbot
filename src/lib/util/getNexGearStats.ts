@@ -5,23 +5,25 @@ import { maxOffenceStats } from '../gear';
 import { GearStats } from '../gear/types';
 import { NexMonster } from '../nex';
 
-export function getNexGearStats(
+export async function getNexGearStats(
 	user: MUser,
 	team: string[]
-): [
-	{
-		chanceOfDeath: number;
-		damageDone: number;
-		percentRangeStrength: number;
-		totalGearPercent: number;
-		percentWeaponAttackRanged: number;
-		attackRangedStat: number;
-		kc: number;
-		gearStats: GearStats;
-	},
-	string
-] {
-	const kc = user.getKC(NexMonster.id);
+): Promise<
+	[
+		{
+			chanceOfDeath: number;
+			damageDone: number;
+			percentRangeStrength: number;
+			totalGearPercent: number;
+			percentWeaponAttackRanged: number;
+			attackRangedStat: number;
+			kc: number;
+			gearStats: GearStats;
+		},
+		string
+	]
+> {
+	const kc = await user.getKC(NexMonster.id);
 	const gear = user.gear.range;
 	const weapon = gear.equippedWeapon();
 	const gearStats = gear.stats;

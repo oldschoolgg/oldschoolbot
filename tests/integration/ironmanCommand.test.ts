@@ -1,9 +1,9 @@
+import { Prisma } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
 import { prisma } from '../../src/lib/settings/prisma';
 import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironmanCommand';
-import { Prisma } from '.prisma/client';
 
 describe('Ironman Command', () => {
 	let activityId = 1;

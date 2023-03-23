@@ -29,7 +29,6 @@ import { barChart, lineChart, pieChart } from '../../../lib/util/chart';
 import { getItem } from '../../../lib/util/getOSItem';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { toTitleCase } from '../../../lib/util/toTitleCase';
-import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
 import { Cooldowns } from '../Cooldowns';
 import { collectables } from './collectCommand';
 
@@ -657,23 +656,23 @@ GROUP BY data->>'plantsName'`;
 	{
 		name: 'Personal TOB Cost',
 		perkTierNeeded: PerkTier.Four,
-		run: async (user: MUser) => {
-			return makeResponseForBank(new Bank(user.user.tob_cost as ItemBank), 'Your TOB Cost');
+		run: async (_, stats) => {
+			return makeResponseForBank(new Bank(stats.tob_cost as ItemBank), 'Your TOB Cost');
 		}
 	},
 	{
 		name: 'Personal TOB Loot',
 		perkTierNeeded: PerkTier.Four,
-		run: async (user: MUser) => {
-			return makeResponseForBank(new Bank(user.user.tob_loot as ItemBank), 'Your TOB Loot');
+		run: async (_, stats) => {
+			return makeResponseForBank(new Bank(stats.tob_loot as ItemBank), 'Your TOB Loot');
 		}
 	},
 	{
 		name: 'Gambling PNL',
-		run: async (user: MUser) => {
-			const gpDice = toKMB(Number(user.user.gp_dice));
-			const gpLuckyPick = toKMB(Number(user.user.gp_luckypick));
-			const gpSlots = toKMB(Number(user.user.gp_slots));
+		run: async (_, stats) => {
+			const gpDice = toKMB(Number(stats.gp_dice));
+			const gpLuckyPick = toKMB(Number(stats.gp_luckypick));
+			const gpSlots = toKMB(Number(stats.gp_slots));
 
 			return {
 				content: `**Dicing:** ${gpDice}
@@ -970,12 +969,8 @@ GROUP BY "bankBackground";`);
 	{
 		name: 'Personal Clue Stats',
 		perkTierNeeded: null,
-		run: async (user: MUser) => {
-			const userData = await mahojiUsersSettingsFetch(user.id, {
-				openable_scores: true
-			});
-
-			const clueScores = getClueScoresFromOpenables(new Bank(userData.openable_scores as ItemBank));
+		run: async (user, stats) => {
+			const clueScores = getClueScoresFromOpenables(new Bank(stats.openable_scores as ItemBank));
 			if (clueScores.length === 0) return "You haven't done any clues yet.";
 
 			let res = `${Emoji.Casket} **${user.minionName}'s Clue Scores:**\n\n`;
@@ -989,15 +984,15 @@ GROUP BY "bankBackground";`);
 	{
 		name: 'Personal Open Stats',
 		perkTierNeeded: null,
-		run: async (user: MUser) => {
-			return makeResponseForBank(new Bank(user.user.openable_scores as ItemBank), "You've opened...");
+		run: async (_, stats) => {
+			return makeResponseForBank(new Bank(stats.openable_scores as ItemBank), "You've opened...");
 		}
 	},
 	{
 		name: 'Personal Agility Stats',
 		perkTierNeeded: null,
-		run: async (user: MUser) => {
-			const entries = Object.entries(user.user.lapsScores as ItemBank).map(arr => [parseInt(arr[0]), arr[1]]);
+		run: async (user, stats) => {
+			const entries = Object.entries(stats.laps_scores as ItemBank).map(arr => [parseInt(arr[0]), arr[1]]);
 			const sepulchreCount = await getMinigameScore(user.id, 'sepulchre');
 			if (sepulchreCount === 0 && entries.length === 0) {
 				return "You haven't done any laps yet! Sad.";

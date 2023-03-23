@@ -3,7 +3,7 @@ import { Bank, Util } from 'oldschooljs';
 
 import { percentChance, rand } from '../../../lib/util';
 import { deferInteraction } from '../../../lib/util/interactionReply';
-import { mahojiParseNumber, updateGPTrackSetting } from '../../mahojiSettings';
+import { mahojiParseNumber, updateGPTrackSetting, userStatsUpdate } from '../../mahojiSettings';
 
 export async function diceCommand(user: MUser, interaction: ChatInputCommandInteraction, diceamount?: string) {
 	await deferInteraction(interaction);
@@ -36,14 +36,22 @@ export async function diceCommand(user: MUser, interaction: ChatInputCommandInte
 	await updateGPTrackSetting('gp_dice', amountToAdd, user);
 
 	if (won) {
-		await user.update({
-			stats_diceWins: { increment: 1 }
-		});
+		await userStatsUpdate(
+			user.id,
+			{
+				dice_wins: { increment: 1 }
+			},
+			{}
+		);
 		await user.addItemsToBank({ items: new Bank().add('Coins', amount) });
 	} else {
-		await user.update({
-			stats_diceLosses: { increment: 1 }
-		});
+		await userStatsUpdate(
+			user.id,
+			{
+				dice_losses: { increment: 1 }
+			},
+			{}
+		);
 		await user.removeItemsFromBank(new Bank().add('Coins', amount));
 	}
 

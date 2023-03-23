@@ -15,7 +15,6 @@ import { GrandmasterClueTable } from '../simulation/grandmasterClue';
 import { gracefulItems } from '../skilling/skills/agility';
 import { Craftables } from '../skilling/skills/crafting/craftables';
 import { Fletchables } from '../skilling/skills/fletching/fletchables';
-import { ItemBank } from '../types';
 import resolveItems from '../util/resolveItems';
 import { XPLamps } from '../xpLamps';
 import { allCollectionLogs } from './Collections';
@@ -1236,17 +1235,6 @@ export const baseFilters: Filterable[] = [
 		name: 'Lamps',
 		aliases: ['lamps'],
 		items: () => XPLamps.map(i => i.itemID)
-	},
-	{
-		name: 'Not Sacrificed',
-		aliases: ['not sacrificed', 'not sac'],
-		items: user => {
-			if (!user) return [];
-			const sacBank = user.user.sacrificedBank as ItemBank;
-			return Object.entries(user.bank.bank)
-				.filter(i => !sacBank[i[0]])
-				.map(i => Number(i[0]));
-		}
 	},
 	{
 		name: 'Favourite Alchs',

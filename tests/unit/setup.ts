@@ -48,3 +48,11 @@ vi.mock('../../src/lib/patreon', async () => {
 
 export const mockPatreonWebhookSecret = 'test';
 globalConfig.patreonWebhookSecret = mockPatreonWebhookSecret;
+
+vi.mock('../../src/lib/settings/minigames.ts', async () => {
+	const actual: any = await vi.importActual('../../src/lib/settings/minigames.ts');
+	return {
+		...actual,
+		getMinigameEntity: async () => ({})
+	};
+});

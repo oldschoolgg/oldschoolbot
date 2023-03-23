@@ -96,6 +96,13 @@ export const mockUser = (overrides?: MockUserArgs): User => {
 class TestMUser extends MUserClass {
 	// @ts-expect-error Mock
 	public readonly rawUsername = 'test';
+
+	// @ts-expect-error Mock
+	async fetchStats() {
+		return {
+			monster_scores: {}
+		};
+	}
 }
 
 export const mockMUser = (overrides?: MockUserArgs) => {

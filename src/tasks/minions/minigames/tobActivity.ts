@@ -13,7 +13,7 @@ import { convertPercentChance } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { updateLegacyUserBankSetting } from '../../../lib/util/updateLegacyUserBankSetting';
+import { userStatsBankUpdate } from '../../../mahoji/mahojiSettings';
 
 const totalXPFromRaid = {
 	[SkillsEnum.Attack]: 12_000,
@@ -83,7 +83,7 @@ export const tobTask: MinionTask = {
 		// Track loot for T3+ patrons
 		await Promise.all(
 			allUsers.map(user => {
-				return updateLegacyUserBankSetting(user.id, 'tob_loot', new Bank(result.loot[user.id]));
+				return userStatsBankUpdate(user.id, 'tob_loot', new Bank(result.loot[user.id]));
 			})
 		);
 

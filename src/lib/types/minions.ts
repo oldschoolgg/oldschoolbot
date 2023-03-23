@@ -1,4 +1,4 @@
-import { CropUpgradeType } from '@prisma/client';
+import { activity_type_enum, CropUpgradeType } from '@prisma/client';
 import { TeamMember } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 
 import { NMZStrategy, UnderwaterAgilityThievingTrainingSkill } from '../constants';
@@ -12,7 +12,6 @@ import { BossUser } from '../structures/Boss';
 import type { Peak } from '../tickers';
 import type { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
 import type { ItemBank } from '.';
-import { activity_type_enum } from '.prisma/client';
 
 export interface ActivityTaskOptions {
 	type: activity_type_enum;

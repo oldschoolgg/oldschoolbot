@@ -38,7 +38,7 @@ export const kalphiteKingTask: MinionTask = {
 		for (const id of users) {
 			const user = await mUserFetch(id).catch(noOp);
 			if (!user) continue;
-			const [data] = getKalphiteKingGearStats(user, users);
+			const [data] = await getKalphiteKingGearStats(user, users);
 			parsedUsers.push({ ...data, id: user.id, user });
 		}
 

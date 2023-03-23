@@ -178,7 +178,11 @@ export async function leaguesCheckUser(userID: string) {
 	const herbloreStats = betterHerbloreStats(_herbloreStats);
 	const smithingSuppliesUsed = calcSuppliesUsedForSmithing(smithingStats);
 
-	const userStats = await mahojiUser.fetchStats();
+	const userStats = await prisma.userStats.upsert({
+		where: { user_id: BigInt(userID) },
+		create: { user_id: BigInt(userID) },
+		update: {}
+	});
 
 	const args: HasFunctionArgs = {
 		cl: mahojiUser.cl,
@@ -190,16 +194,16 @@ export async function leaguesCheckUser(userID: string) {
 		poh,
 		gear: mahojiUser.gear,
 		allItemsOwned: mahojiUser.allItemsOwned,
-		monsterScores: mahojiUser.user.monsterScores as ItemBank,
-		creatureScores: mahojiUser.user.creatureScores as ItemBank,
-		opens: new Bank(mahojiUser.user.openable_scores as ItemBank),
+		monsterScores: userStats.monster_scores as ItemBank,
+		creatureScores: userStats.creature_scores as ItemBank,
+		opens: new Bank(userStats.openable_scores as ItemBank),
 		disassembledItems: new Bank(mahojiUser.user.disassembled_items_bank as ItemBank),
 		tames,
-		sacrificedBank: new Bank(mahojiUser.user.sacrificedBank as ItemBank),
+		sacrificedBank: new Bank(userStats.sacrificed_bank as ItemBank),
 		slayerStats,
 		activityCounts,
 		minigames,
-		lapScores: mahojiUser.user.lapsScores as ItemBank,
+		lapScores: userStats.laps_scores as ItemBank,
 		slayerTasksCompleted,
 		clPercent,
 		conStats,

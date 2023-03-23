@@ -13,7 +13,7 @@ for (const { mask, helm, monsters, killsRequiredForUpgrade } of slayerMaskHelms)
 		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.Maskuerade],
 		outputItems: new Bank().add(helm.id),
 		customReq: async user => {
-			const stats = await user.fetchStats();
+			const stats = await user.fetchStats({ on_task_with_mask_monster_scores: true });
 			const scores: ItemBank = stats.on_task_with_mask_monster_scores as ItemBank;
 			let totalKC = 0;
 			for (const id of monsters) {

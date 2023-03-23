@@ -209,12 +209,16 @@ export const sellCommand: OSBMahojiCommand = {
 		await Promise.all([
 			updateGPTrackSetting('gp_sell', totalPrice),
 			updateBankSetting('sold_items_bank', bankToSell),
-			userStatsUpdate(user.id, userStats => ({
-				items_sold_bank: new Bank(userStats.items_sold_bank as ItemBank).add(bankToSell).bank,
-				sell_gp: {
-					increment: totalPrice
-				}
-			})),
+			userStatsUpdate(
+				user.id,
+				userStats => ({
+					items_sold_bank: new Bank(userStats.items_sold_bank as ItemBank).add(bankToSell).bank,
+					sell_gp: {
+						increment: totalPrice
+					}
+				}),
+				{}
+			),
 			prisma.botItemSell.createMany({ data: botItemSellData })
 		]);
 

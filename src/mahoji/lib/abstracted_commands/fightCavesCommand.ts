@@ -17,13 +17,13 @@ export const fightCavesCost = new Bank({
 	'Super restore(4)': 4
 });
 
-function determineDuration(user: MUser): [number, string] {
+async function determineDuration(user: MUser): Promise<[number, string]> {
 	let baseTime = Time.Hour * 2;
 	const gear = user.gear.range;
 	let debugStr = '';
 
 	// Reduce time based on KC
-	const jadKC = user.getKC(TzTokJad.id);
+	const jadKC = await user.getKC(TzTokJad.id);
 	const percentIncreaseFromKC = Math.min(50, jadKC);
 	baseTime = reduceNumByPercent(baseTime, percentIncreaseFromKC);
 	debugStr += `${percentIncreaseFromKC}% from KC`;
@@ -43,8 +43,7 @@ function determineDuration(user: MUser): [number, string] {
 	return [baseTime, debugStr];
 }
 
-function determineChanceOfDeathPreJad(user: MUser) {
-	const attempts = user.user.stats_fightCavesAttempts;
+function determineChanceOfDeathPreJad(user: MUser, attempts: number) {
 	let deathChance = Math.max(14 - attempts * 2, 5);
 
 	// -4% Chance of dying before Jad if you have SGS.
@@ -55,8 +54,7 @@ function determineChanceOfDeathPreJad(user: MUser) {
 	return deathChance;
 }
 
-function determineChanceOfDeathInJad(user: MUser) {
-	const attempts = user.user.stats_fightCavesAttempts;
+function determineChanceOfDeathInJad(attempts: number) {
 	const chance = Math.floor(100 - (Math.log(attempts) / Math.log(Math.sqrt(15))) * 50);
 
 	// Chance of death cannot be 100% or <5%.
@@ -96,11 +94,13 @@ export async function fightCavesCommand(user: MUser, channelID: string): Command
 		};
 	}
 
-	let [duration, debugStr] = determineDuration(user);
-	const jadDeathChance = determineChanceOfDeathInJad(user);
-	let preJadDeathChance = determineChanceOfDeathPreJad(user);
+	let [duration, debugStr] = await determineDuration(user);
 
-	const attempts = user.user.stats_fightCavesAttempts;
+	const { fight_caves_attempts: attempts } = await user.fetchStats({ fight_caves_attempts: true });
+
+	const jadDeathChance = determineChanceOfDeathInJad(attempts);
+	let preJadDeathChance = determineChanceOfDeathPreJad(user, attempts);
+
 	const usersRangeStats = user.gear.range.stats;
 	const jadKC = user.getKC(TzTokJad.id);
 
