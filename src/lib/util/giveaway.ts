@@ -53,6 +53,7 @@ export const updateGiveawayMessage = debounce(async (_giveaway: Giveaway) => {
 }, Time.Second);
 
 export async function handleGiveawayCompletion(_giveaway: Giveaway) {
+	debugLog('Completing a giveaway.', { type: 'GIVEAWAY_COMPLETE', giveaway_id: _giveaway.id });
 	if (_giveaway.completed) {
 		throw new Error('Tried to complete an already completed giveaway.');
 	}

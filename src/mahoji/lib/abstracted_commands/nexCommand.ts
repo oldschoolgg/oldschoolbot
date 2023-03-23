@@ -19,7 +19,7 @@ import { deferInteraction } from '../../../lib/util/interactionReply';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { hasMonsterRequirements } from '../../mahojiSettings';
 
-function checkReqs(users: MUser[], monster: KillableMonster, quantity: number): string | undefined {
+async function checkReqs(users: MUser[], monster: KillableMonster, quantity: number): Promise<string | undefined> {
 	// Check if every user has the requirements for this monster.
 	for (const user of users) {
 		if (!user.user.minion_hasBought) {
@@ -39,7 +39,7 @@ function checkReqs(users: MUser[], monster: KillableMonster, quantity: number): 
 			return `${user} doesn't have a Frozen key.`;
 		}
 
-		const potionsRequired = calcBossFood(user, NexMonster, users.length, quantity);
+		const potionsRequired = await calcBossFood(user, NexMonster, users.length, quantity);
 		if (!user.bank.has(potionsRequired)) {
 			return `${
 				users.length === 1 ? "You don't" : `${user.usernameOrMention} doesn't`
@@ -64,7 +64,7 @@ export async function nexCommand(
 	}
 	const type = inputName.toLowerCase().includes('mass') ? 'mass' : 'solo';
 
-	const failureReason = checkReqs([user], NexMonster, 2);
+	const failureReason = await checkReqs([user], NexMonster, 2);
 	if (failureReason) return failureReason;
 
 	const partyOptions: MakePartyOptions = {
@@ -98,7 +98,7 @@ export async function nexCommand(
 
 				// Ensure people have enough food for at least 10 kills.
 				// We don't want to overshoot, as the mass will still fail if there's not enough food
-				const potionReq = calcBossFood(user, NexMonster, 1, 10);
+				const potionReq = await calcBossFood(user, NexMonster, 1, 10);
 				if (!user.bank.has(potionReq)) {
 					return [true, `You don't have enough food. You need at least ${potionReq} to Join the mass.`];
 				}
@@ -125,7 +125,7 @@ export async function nexCommand(
 	}
 	const isSolo = users.length === 1;
 
-	const soloKC = users[0].getKC(NexMonster.id);
+	const soloKC = await users[0].getKC(NexMonster.id);
 	if (isSolo && soloKC < 200) {
 		effectiveTime = increaseNumByPercent(effectiveTime, 20);
 	}
@@ -135,7 +135,7 @@ export async function nexCommand(
 	}
 
 	for (const user of users) {
-		const [data] = getNexGearStats(
+		const [data] = await getNexGearStats(
 			user,
 			users.map(u => u.id)
 		);
@@ -250,13 +250,13 @@ export async function nexCommand(
 	);
 	if (typeof durQtyRes === 'string') return durQtyRes;
 	let [quantity, duration, perKillTime] = durQtyRes;
-	const secondCheck = checkReqs(users, NexMonster, quantity);
+	const secondCheck = await checkReqs(users, NexMonster, quantity);
 	if (secondCheck) return secondCheck;
 
 	let foodString = 'Removed brews/restores from users: ';
 	let foodRemoved: string[] = [];
 	for (const user of users) {
-		const food = calcBossFood(user, NexMonster, users.length, quantity);
+		const food = await calcBossFood(user, NexMonster, users.length, quantity);
 		if (!user.bank.has(food)) {
 			return `${user.usernameOrMention} doesn't have enough brews or restores.`;
 		}
@@ -264,7 +264,7 @@ export async function nexCommand(
 
 	const removeResult = await Promise.all(
 		users.map(async user => {
-			const cost = calcBossFood(user, NexMonster, users.length, quantity);
+			const cost = await calcBossFood(user, NexMonster, users.length, quantity);
 			foodRemoved.push(`${cost} from ${user.usernameOrMention}`);
 			await user.removeItemsFromBank(cost);
 			return {

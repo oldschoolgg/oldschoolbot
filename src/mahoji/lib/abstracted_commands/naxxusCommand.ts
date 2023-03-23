@@ -128,7 +128,7 @@ export async function naxxusCommand(user: MUser, channelID: string, quantity: nu
 		boosts.push('5% Weekend boost');
 	}
 
-	const naxxusKc = user.getKC(Naxxus.id);
+	const naxxusKc = await user.getKC(Naxxus.id);
 	for (const [threshold, boost, subThreshold] of naxxusKcBoosts) {
 		if (naxxusKc >= threshold) {
 			if (boost < 0) {
@@ -188,7 +188,7 @@ export async function naxxusCommand(user: MUser, channelID: string, quantity: nu
 		return `The max number of Naxxus you can do is ${Math.floor(maxTripLength / effectiveTime)}!`;
 	}
 
-	const kc = user.getKC(Naxxus.id);
+	const kc = await user.getKC(Naxxus.id);
 	let brewsNeeded = 10;
 	if (kc > 500) brewsNeeded *= 0.2;
 	else if (kc > 400) brewsNeeded *= 0.4;

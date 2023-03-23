@@ -21,7 +21,7 @@ import { deferInteraction } from '../../../lib/util/interactionReply';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { hasMonsterRequirements } from '../../mahojiSettings';
 
-function checkReqs(users: MUser[], monster: KillableMonster, quantity: number): string | undefined {
+async function checkReqs(users: MUser[], monster: KillableMonster, quantity: number): Promise<string | undefined> {
 	// Check if every user has the requirements for this monster.
 	for (const user of users) {
 		if (!user.user.minion_hasBought) {
@@ -37,7 +37,7 @@ function checkReqs(users: MUser[], monster: KillableMonster, quantity: number): 
 			return `${user.usernameOrMention} doesn't have the requirements for this monster: ${reason}`;
 		}
 
-		const potionReq = calcBossFood(user, KalphiteKingMonster, users.length, quantity);
+		const potionReq = await calcBossFood(user, KalphiteKingMonster, users.length, quantity);
 		if (!user.bank.has(potionReq)) {
 			return `${
 				users.length === 1 ? "You don't" : `${user.usernameOrMention} doesn't`
@@ -63,7 +63,7 @@ export async function kkCommand(
 	inputQuantity: number | undefined
 ): CommandResponse {
 	if (interaction) await deferInteraction(interaction);
-	const failureRes = checkReqs([user], KalphiteKingMonster, 2);
+	const failureRes = await checkReqs([user], KalphiteKingMonster, 2);
 	if (failureRes) return failureRes;
 
 	const type = inputName.toLowerCase().includes('mass') ? 'mass' : 'solo';
@@ -95,7 +95,7 @@ export async function kkCommand(
 
 				// Ensure people have enough food for at least 10 kills.
 				// We don't want to overshoot, as the mass will still fail if there's not enough food
-				const potionReq = calcBossFood(user, KalphiteKingMonster, 1, 10);
+				const potionReq = await calcBossFood(user, KalphiteKingMonster, 1, 10);
 				if (!user.bank.has(potionReq)) {
 					return [true, `You don't have enough food. You need at least ${potionReq} to Join the mass.`];
 				}
@@ -129,7 +129,7 @@ export async function kkCommand(
 	}
 
 	for (const user of users) {
-		const [data] = getKalphiteKingGearStats(
+		const [data] = await getKalphiteKingGearStats(
 			user,
 			users.map(u => u.id)
 		);
@@ -265,13 +265,13 @@ export async function kkCommand(
 	);
 	if (typeof durQtyRes === 'string') return durQtyRes;
 	let [quantity, duration, perKillTime] = durQtyRes;
-	const secondCheck = checkReqs(users, KalphiteKingMonster, quantity);
+	const secondCheck = await checkReqs(users, KalphiteKingMonster, quantity);
 	if (secondCheck) return secondCheck;
 
 	let foodString = 'Removed brews/restores from users: ';
 	let foodRemoved: string[] = [];
 	for (const user of users) {
-		const food = calcBossFood(user, KalphiteKingMonster, users.length, quantity);
+		const food = await calcBossFood(user, KalphiteKingMonster, users.length, quantity);
 		if (!user.bank.has(food.bank)) {
 			return `${user.usernameOrMention} doesn't have enough brews or restores.`;
 		}
@@ -279,7 +279,7 @@ export async function kkCommand(
 
 	const removeResult = await Promise.all(
 		users.map(async user => {
-			const cost = calcBossFood(user, KalphiteKingMonster, users.length, quantity);
+			const cost = await calcBossFood(user, KalphiteKingMonster, users.length, quantity);
 			foodRemoved.push(`${cost} from ${user.usernameOrMention}`);
 			await user.removeItemsFromBank(cost);
 			return {

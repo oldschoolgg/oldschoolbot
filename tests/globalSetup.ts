@@ -1,11 +1,10 @@
-import '../src/lib/customItems/customItems';
-import '../src/lib/data/itemAliases';
-import '../src/lib/util/logger';
-import '../src/lib/MUser';
+import '../src/index';
+
+import { Collection } from 'discord.js';
 
 global.globalClient = {
 	isReady: () => true,
-	guilds: { cache: new Map() },
+	guilds: { cache: new Collection() },
 	mahojiClient: {
 		commands: {
 			values: [

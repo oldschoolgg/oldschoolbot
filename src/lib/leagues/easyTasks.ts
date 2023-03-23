@@ -334,15 +334,15 @@ export const easyTasks: Task[] = [
 	{
 		id: 45,
 		name: 'Kill 10 unique monsters',
-		has: async ({ mahojiUser }) => {
-			return Object.keys(mahojiUser.monsterScores as ItemBank).length >= 10;
+		has: async ({ userStats }) => {
+			return Object.keys(userStats.monster_scores as ItemBank).length >= 10;
 		}
 	},
 	{
 		id: 46,
 		name: 'Slay a superior slayer creature',
-		has: async ({ mahojiUser }) => {
-			return mahojiUser.slayer_superior_count >= 1;
+		has: async ({ userStats }) => {
+			return userStats.slayer_superior_count >= 1;
 		}
 	},
 	{
@@ -462,8 +462,8 @@ export const easyTasks: Task[] = [
 	{
 		id: 62,
 		name: 'Do a High gamble in Barb assault',
-		has: async ({ mahojiUser }) => {
-			return mahojiUser.high_gambles >= 1;
+		has: async ({ userStats }) => {
+			return userStats.high_gambles >= 1;
 		}
 	},
 	{

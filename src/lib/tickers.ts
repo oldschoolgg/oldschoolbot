@@ -4,8 +4,9 @@ import { ActionRowBuilder, ButtonBuilder, ButtonStyle, TextChannel } from 'disco
 import { noOp, randInt, shuffleArr, Time } from 'e';
 
 import { production } from '../config';
+import { userStatsUpdate } from '../mahoji/mahojiSettings';
 import { bossEvents, startBossEvent } from './bossEvents';
-import { BitField, Channel, informationalButtons } from './constants';
+import { BitField, Channel, informationalButtons, PeakTier } from './constants';
 import { collectMetrics } from './metrics';
 import { mahojiUserSettingsUpdate } from './MUser';
 import { prisma, queryCountStore } from './settings/prisma';
@@ -40,12 +41,6 @@ const supportEmbed = new EmbedBuilder()
 		value: 'Do not ping mods, or any roles/people in here. You will be muted. Ask your question, and wait.'
 	});
 
-export const enum PeakTier {
-	High = 'high',
-	Medium = 'medium',
-	Low = 'low'
-}
-
 export interface Peak {
 	startTime: number;
 	finishTime: number;
@@ -55,7 +50,7 @@ export interface Peak {
 /**
  * Tickers should idempotent, and be able to run at any time.
  */
-export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | null; cb: () => unknown }[] = [
+export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | null; cb: () => Promise<unknown> }[] = [
 	{
 		name: 'giveaways',
 		interval: Time.Second * 10,
@@ -128,20 +123,28 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 		interval: Time.Minute * 3,
 		timer: null,
 		cb: async () => {
-			const result = await prisma.$queryRawUnsafe<{ id: string }[]>(
-				'SELECT id FROM users WHERE bitfield && \'{2,3,4,5,6,7,8}\'::int[] AND "lastDailyTimestamp" != -1 AND to_timestamp("lastDailyTimestamp" / 1000) < now() - interval \'4 hours\';'
+			const result = await prisma.$queryRawUnsafe<{ id: string; last_daily_timestamp: bigint }[]>(
+				`
+SELECT users.id, user_stats.last_daily_timestamp
+FROM users
+JOIN user_stats ON users.id::bigint = user_stats.user_id
+WHERE bitfield && '{2,3,4,5,6,7,8}'::int[] AND user_stats."last_daily_timestamp" != -1 AND to_timestamp(user_stats."last_daily_timestamp" / 1000) < now() - INTERVAL '4 hours';
+`
 			);
 
 			for (const row of result.values()) {
 				if (!production) continue;
-				const user = await mUserFetch(row.id);
-				if (Number(user.user.lastDailyTimestamp) === -1) continue;
+				if (Number(row.last_daily_timestamp) === -1) continue;
 
-				await user.update({
-					lastDailyTimestamp: -1
-				});
-				const klasaUser = await globalClient.fetchUser(user.id);
-				await klasaUser.send('Your daily is ready!').catch(noOp);
+				await userStatsUpdate(
+					row.id,
+					{
+						last_daily_timestamp: -1
+					},
+					{}
+				);
+				const user = await globalClient.fetchUser(row.id);
+				await user.send('Your daily is ready!').catch(noOp);
 			}
 		}
 	},

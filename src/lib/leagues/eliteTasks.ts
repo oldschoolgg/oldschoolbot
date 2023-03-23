@@ -316,15 +316,15 @@ export const eliteTasks: Task[] = [
 	{
 		id: 3039,
 		name: 'Kill 150 unique monsters',
-		has: async ({ mahojiUser }) => {
-			return Object.keys(mahojiUser.monsterScores as ItemBank).length >= 150;
+		has: async ({ userStats }) => {
+			return Object.keys(userStats.monster_scores as ItemBank).length >= 150;
 		}
 	},
 	{
 		id: 3040,
 		name: 'Slay 250 superior slayer creatures',
-		has: async ({ mahojiUser }) => {
-			return mahojiUser.slayer_superior_count >= 250;
+		has: async ({ userStats }) => {
+			return userStats.slayer_superior_count >= 250;
 		}
 	},
 	{

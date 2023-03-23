@@ -1,9 +1,12 @@
+import { randomSnowflake } from '@oldschoolgg/toolkit';
+import { Prisma } from '@prisma/client';
+import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
 import { prisma } from '../../src/lib/settings/prisma';
+import { miniID } from '../../src/lib/util';
 import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironmanCommand';
-import { Prisma } from '.prisma/client';
 
 describe('Ironman Command', () => {
 	let activityId = 1;
@@ -13,14 +16,13 @@ describe('Ironman Command', () => {
 			data: { id: userId, skills_agility: 100_000_000, skills_attack: 100_000_000, ...userData }
 		});
 		await prisma.newUser.create({ data: { id: userId } });
-		await prisma.activity.create({
+		const activity = await prisma.activity.create({
 			data: {
-				id: activityId,
 				user_id: BigInt(userId),
 				start_date: new Date(),
-				finish_date: new Date(),
-				duration: 1,
-				completed: false,
+				finish_date: new Date(Date.now() + Time.Hour),
+				duration: Time.Hour,
+				completed: true,
 				group_activity: false,
 				type: 'AerialFishing',
 				channel_id: BigInt(1),
@@ -43,7 +45,7 @@ describe('Ironman Command', () => {
 		await Promise.all([
 			prisma.botItemSell.create({ data: { user_id: userId, item_id: 1, quantity: 1, gp_received: 1 } }),
 			prisma.pinnedTrip.create({
-				data: { user_id: userId, id: '1', activity_id: activityId, activity_type: 'Mining' }
+				data: { user_id: userId, id: miniID(10), activity_id: activity.id, activity_type: 'Mining' }
 			}),
 			prisma.farmedCrop.create({
 				data: {
@@ -88,7 +90,7 @@ describe('Ironman Command', () => {
 	}
 
 	test('Should reset everything', async () => {
-		const userId = '1234569669';
+		const userId = randomSnowflake();
 		await createUserWithEverything(userId);
 
 		const result = await ironmanCommand(await mUserFetch(userId), null);
@@ -123,7 +125,7 @@ describe('Ironman Command', () => {
 	});
 
 	test('Should de-iron', async () => {
-		const userId = '23242';
+		const userId = randomSnowflake();
 		await createUserWithEverything(userId, { minion_ironman: true });
 		const initialUser = await mUserFetch(userId);
 		expect(initialUser.isIronman).toEqual(true);

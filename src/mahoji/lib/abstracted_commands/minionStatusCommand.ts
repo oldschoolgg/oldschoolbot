@@ -54,13 +54,15 @@ async function fetchPinnedTrips(userID: string) {
 
 export async function minionStatusCommand(user: MUser, channelID: string): Promise<BaseMessageOptions> {
 	const { minionIsBusy } = user;
-	const [roboChimpUser, birdhouseDetails, gearPresetButtons, pinnedTripButtons, fishingResult] = await Promise.all([
-		roboChimpUserFetch(user.id),
-		minionIsBusy ? { isReady: false } : calculateBirdhouseDetails(user.id),
-		minionIsBusy ? [] : fetchFavoriteGearPresets(user.id),
-		minionIsBusy ? [] : fetchPinnedTrips(user.id),
-		getUsersFishingContestDetails(user)
-	]);
+	const [roboChimpUser, birdhouseDetails, gearPresetButtons, pinnedTripButtons, fishingResult, dailyIsReady] =
+		await Promise.all([
+			roboChimpUserFetch(user.id),
+			minionIsBusy ? { isReady: false } : calculateBirdhouseDetails(user.id),
+			minionIsBusy ? [] : fetchFavoriteGearPresets(user.id),
+			minionIsBusy ? [] : fetchPinnedTrips(user.id),
+			getUsersFishingContestDetails(user),
+			isUsersDailyReady(user)
+		]);
 
 	roboChimpSyncData(roboChimpUser, user);
 
@@ -94,8 +96,6 @@ export async function minionStatusCommand(user: MUser, channelID: string): Promi
 				.setStyle(ButtonStyle.Secondary)
 		);
 	}
-
-	const dailyIsReady = isUsersDailyReady(user);
 
 	if (dailyIsReady.isReady) {
 		buttons.push(

@@ -140,7 +140,8 @@ for (const clueTier of ClueTiers) {
 				message += `${mimicNumber ? ' ' : ''}${extraClueRolls} extra rolls`;
 			}
 
-			const nthCasket = ((user.user.openable_scores as ItemBank)[clueTier.id] ?? 0) + quantity;
+			const stats = await user.fetchStats({ openable_scores: true });
+			const nthCasket = ((stats.openable_scores as ItemBank)[clueTier.id] ?? 0) + quantity;
 
 			// If this tier has a milestone reward, and their new score meets the req, and
 			// they don't own it already, add it to the loot.

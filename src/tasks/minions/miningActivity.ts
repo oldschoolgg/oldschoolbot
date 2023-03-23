@@ -1,4 +1,4 @@
-import { roll, Time } from 'e';
+import { randInt, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
@@ -9,7 +9,7 @@ import Mining from '../../lib/skilling/skills/mining';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
-import { rand, skillingPetDropRate } from '../../lib/util';
+import { skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import resolveItems from '../../lib/util/resolveItems';
 import { mahojiUsersSettingsFetch, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
@@ -77,7 +77,7 @@ export const miningTask: MinionTask = {
 		}
 
 		if (numberOfMinutes > 10 && ore.nuggets) {
-			let numberOfNuggets = rand(0, Math.floor(numberOfMinutes / 4));
+			let numberOfNuggets = randInt(0, Math.floor(numberOfMinutes / 4));
 			if (user.hasEquipped('Mining master cape')) {
 				numberOfNuggets *= 2;
 			}
@@ -152,7 +152,7 @@ export const miningTask: MinionTask = {
 				}
 			} else if (ore.name === 'Daeyalt essence rock') {
 				for (let i = 0; i < quantity; i++) {
-					daeyaltQty += rand(2, 3);
+					daeyaltQty += randInt(2, 3);
 				}
 				loot.add(ore.id, daeyaltQty);
 			} else {

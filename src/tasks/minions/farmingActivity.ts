@@ -17,7 +17,6 @@ import {
 	increaseBankQuantitesByPercent,
 	itemID,
 	itemNameFromID,
-	rand,
 	roll,
 	skillingPetDropRate
 } from '../../lib/util';
@@ -339,11 +338,11 @@ export const farmingTask: MinionTask = {
 							typeof plantToHarvest.woodcuttingXp === 'number'
 					);
 
-					const amountOfLogs = rand(5, 10) * alivePlants;
+					const amountOfLogs = randInt(5, 10) * alivePlants;
 					loot.add(plantToHarvest.outputLogs, amountOfLogs);
 
 					if (plantToHarvest.outputRoots) {
-						loot.add(plantToHarvest.outputRoots, rand(1, 4) * alivePlants);
+						loot.add(plantToHarvest.outputRoots, randInt(1, 4) * alivePlants);
 					}
 
 					woodcuttingXp += amountOfLogs * plantToHarvest.woodcuttingXp!;

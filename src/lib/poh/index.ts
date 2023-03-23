@@ -1,3 +1,4 @@
+import { PlayerOwnedHouse } from '@prisma/client';
 import { objectEntries } from 'e';
 import { Bank } from 'oldschooljs';
 
@@ -17,7 +18,6 @@ import { SpellbookAltars } from './objects/spellbook_altars';
 import { Teleports } from './objects/teleports';
 import { Thrones } from './objects/thrones';
 import { Torches } from './objects/torches';
-import { PlayerOwnedHouse } from '.prisma/client';
 
 export interface PoH {
 	background: 1;

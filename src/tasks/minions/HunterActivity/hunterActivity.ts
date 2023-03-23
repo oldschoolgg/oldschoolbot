@@ -1,17 +1,16 @@
 import { Prisma } from '@prisma/client';
-import { Time } from 'e';
+import { randInt, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
-import { Events, MAX_LEVEL } from '../../../lib/constants';
+import { Events, MAX_LEVEL, PeakTier } from '../../../lib/constants';
 import { hasWildyHuntGearEquipped } from '../../../lib/gear/functions/hasWildyHuntGearEquipped';
 import { trackLoot } from '../../../lib/lootTrack';
 import { calcLootXPHunting, generateHerbiTable } from '../../../lib/skilling/functions/calcsHunter';
 import Hunter from '../../../lib/skilling/skills/hunter/hunter';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { PeakTier } from '../../../lib/tickers';
 import { HunterActivityTaskOptions } from '../../../lib/types/minions';
-import { rand, roll, skillingPetDropRate, stringMatches } from '../../../lib/util';
+import { roll, skillingPetDropRate, stringMatches } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
@@ -66,7 +65,7 @@ export const hunterTask: MinionTask = {
 				riskDeathNumbers.find(_peaktier => _peaktier.peakTier === wildyPeak?.peakTier)?.extraChance ?? 0;
 			let riskDeathChance = 20;
 			// The more experienced the less chance of death.
-			riskDeathChance += Math.min(Math.floor((user.getCreatureScore(creature.id) ?? 1) / 100), 200);
+			riskDeathChance += Math.min(Math.floor(((await user.getCreatureScore(creature.id)) ?? 1) / 100), 200);
 
 			// Gives lower death chance depending on what the user got equipped in wildy.
 			const [, , score] = hasWildyHuntGearEquipped(user.gear.wildy);
@@ -96,8 +95,8 @@ export const hunterTask: MinionTask = {
 			}
 			if (gotPked && !died) {
 				if (userBank.amount('Saradomin brew(4)') >= 10 && userBank.amount('Super restore(4)') >= 5) {
-					let lostBrew = rand(1, 10);
-					let lostRestore = rand(1, 5);
+					let lostBrew = randInt(1, 10);
+					let lostRestore = randInt(1, 5);
 					const cost = new Bank().add('Saradomin brew(4)', lostBrew).add('Super restore(4)', lostRestore);
 					await transactItems({ userID: user.id, itemsToRemove: cost });
 
@@ -129,7 +128,7 @@ export const hunterTask: MinionTask = {
 			}
 			// TODO: Check wiki in future for herblore xp from herbiboar
 			if (currentHerbLevel >= 31) {
-				herbXP += quantity * rand(25, 75);
+				herbXP += quantity * randInt(25, 75);
 				xpStr = await user.addXP({
 					skillName: SkillsEnum.Herblore,
 					amount: herbXP,

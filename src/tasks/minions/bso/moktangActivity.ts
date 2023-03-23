@@ -66,7 +66,7 @@ export const moktangTask: MinionTask = {
 			previousCL: res.previousCL
 		});
 
-		const newKC = user.getKC(MOKTANG_ID);
+		const newKC = await user.getKC(MOKTANG_ID);
 		for (const item of resolveItems(['Igne gear frame', 'Mini moktang'])) {
 			if (loot.has(item)) {
 				globalClient.emit(

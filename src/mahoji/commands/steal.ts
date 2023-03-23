@@ -1,5 +1,5 @@
 import { User } from 'discord.js';
-import { reduceNumByPercent } from 'e';
+import { randInt, reduceNumByPercent } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
@@ -8,7 +8,7 @@ import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { Stealable, stealables } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, rand } from '../../lib/util';
+import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
@@ -173,7 +173,7 @@ export const stealCommand: OSBMahojiCommand = {
 			str += ` Removed ${foodRemoved}.`;
 		} else {
 			// Up to 5% fail chance, random
-			successfulQuantity = Math.floor((quantity * rand(95, 100)) / 100);
+			successfulQuantity = Math.floor((quantity * randInt(95, 100)) / 100);
 			xpReceived = successfulQuantity * stealable.xp;
 		}
 

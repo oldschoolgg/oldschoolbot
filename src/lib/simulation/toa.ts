@@ -1,5 +1,5 @@
 import { SimpleTable } from '@oldschoolgg/toolkit';
-import { Minigame, UserStats, XpGainSource } from '@prisma/client';
+import { Minigame, XpGainSource } from '@prisma/client';
 import { bold } from 'discord.js';
 import {
 	calcPercentOfNum,
@@ -28,7 +28,6 @@ import { getSimilarItems } from '../data/similarItems';
 import { degradeItem } from '../degradeableItems';
 import { GearStats, UserFullGearSetup } from '../gear/types';
 import { trackLoot } from '../lootTrack';
-import { MUserClass } from '../MUser';
 import { setupParty } from '../party';
 import { getMinigameScore } from '../settings/minigames';
 import { SkillsEnum } from '../skilling/types';
@@ -1173,7 +1172,11 @@ export async function toaStartCommand(
 		};
 	}
 	const toaSimUsers = await Promise.all(
-		users.map(async i => ({ user: i, userStats: await i.fetchStats(), minigameScores: await i.fetchMinigames() }))
+		users.map(async i => ({
+			user: i,
+			minigameScores: await i.fetchMinigames(),
+			toaAttempts: (await i.fetchStats({ toa_attempts: true })).toa_attempts
+		}))
 	);
 	const baseDuration = createTOATeam({
 		team: toaSimUsers,
@@ -1356,16 +1359,16 @@ export function createTOATeam({
 	quantity
 }: {
 	raidLevel: RaidLevel;
-	team: { user: MUser; userStats: UserStats; minigameScores: Minigame }[];
+	team: { user: MUser; toaAttempts: number; minigameScores: Minigame }[];
 	disableVariation?: true;
 	quantity: number;
 }) {
 	let arr = [];
 	const messages: string[] = [];
 
-	for (const { user, userStats, minigameScores } of team) {
+	for (const { user, toaAttempts, minigameScores } of team) {
 		let gearStats = calculateUserGearPercents(user.gear, raidLevel);
-		const totalAttempts = userStats.toa_attempts;
+		const totalAttempts = toaAttempts;
 		const totalKC = minigameScores.tombs_of_amascut;
 		const effectiveness = calculateTotalEffectiveness({
 			totalAttempts,
@@ -1602,8 +1605,8 @@ function calculateBoostString(user: MUser) {
 	return str;
 }
 
-export async function getToaKCs(user: MUser | UserStats) {
-	const userStats = user instanceof MUserClass ? await user.fetchStats() : user;
+export async function getToaKCs(user: MUser) {
+	const userStats = await user.fetchStats({ toa_raid_levels_bank: true });
 	let entryKC = 0;
 	let normalKC = 0;
 	let expertKC = 0;
@@ -1624,8 +1627,12 @@ export async function getToaKCs(user: MUser | UserStats) {
 
 export async function toaHelpCommand(user: MUser, channelID: string) {
 	const gearStats = calculateUserGearPercents(user.gear, 300);
-	const userStats = await user.fetchStats();
-	const { entryKC, normalKC, expertKC, totalKC } = await getToaKCs(userStats);
+	const { entryKC, normalKC, expertKC, totalKC } = await getToaKCs(user);
+	const stats = await user.fetchStats({
+		total_toa_points: true,
+		total_toa_duration_minutes: true,
+		toa_attempts: true
+	});
 
 	let totalUniques = 0;
 	for (const item of TOAUniqueTable.allItems) {
@@ -1634,18 +1641,18 @@ export async function toaHelpCommand(user: MUser, channelID: string) {
 
 	let str = `**Tombs of Amascut** 
 
-**Attempts:** ${userStats.toa_attempts} 
+**Attempts:** ${stats.toa_attempts} 
 **Entry Mode:** ${entryKC} KC
 **Normal Mode:** ${normalKC} KC
 **Expert Mode:** ${expertKC} KC
 **Total Uniques:** ${totalUniques} ${
 		totalUniques > 0
 			? `(1 unique per ${Math.floor(
-					userStats.total_toa_points / totalUniques
+					stats.total_toa_points / totalUniques
 			  ).toLocaleString()} pts, one unique every ${Math.floor(
 					totalKC / totalUniques
 			  )} raids, one unique every ${formatDuration(
-					(userStats.total_toa_duration_minutes * Time.Minute) / totalUniques
+					(stats.total_toa_duration_minutes * Time.Minute) / totalUniques
 			  )})`
 			: ''
 	}
