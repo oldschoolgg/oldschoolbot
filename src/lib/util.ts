@@ -22,7 +22,7 @@ import {
 	time,
 	User as DJSUser
 } from 'discord.js';
-import { chunk, notEmpty, objectEntries, randInt, Time } from 'e';
+import { chunk, notEmpty, objectEntries, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import murmurHash from 'murmurhash';
 import { Bank } from 'oldschooljs';
