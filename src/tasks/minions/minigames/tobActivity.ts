@@ -13,7 +13,7 @@ import { convertPercentChance } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { userStatsBankUpdate } from '../../../mahoji/mahojiSettings';
+import { userStatsBankUpdate, userStatsUpdate } from '../../../mahoji/mahojiSettings';
 
 const totalXPFromRaid = {
 	[SkillsEnum.Attack]: 12_000,
@@ -59,8 +59,9 @@ export const tobTask: MinionTask = {
 		if (!diedToMaiden) {
 			await Promise.all(
 				allUsers.map(u => {
-					return u.update({
-						[hardMode ? 'tob_hard_attempts' : 'tob_attempts']: {
+					const key = hardMode ? 'tob_hard_attempts' : 'tob_attempts';
+					return userStatsUpdate(u.id, {
+						[key]: {
 							increment: 1
 						}
 					});
