@@ -1,6 +1,7 @@
 import fastifyCors from '@fastify/cors';
 import fastifyHelmet from '@fastify/helmet';
 import fastifySensible from '@fastify/sensible';
+import { randInt } from 'e';
 import fastify from 'fastify';
 import fastifyRawBody from 'fastify-raw-body';
 
@@ -10,6 +11,9 @@ import { logError } from '../util/logError';
 import { initRoutes } from './routes';
 
 export async function makeServer(port = globalConfig.httpPort) {
+	if (process.env.TEST) {
+		port = randInt(1000, 9999);
+	}
 	const server = fastify({
 		logger: false,
 		trustProxy: true

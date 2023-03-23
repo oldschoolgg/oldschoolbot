@@ -5,7 +5,7 @@ import { noOp, randInt, shuffleArr, Time } from 'e';
 
 import { production } from '../config';
 import { userStatsUpdate } from '../mahoji/mahojiSettings';
-import { BitField, Channel, informationalButtons } from './constants';
+import { BitField, Channel, informationalButtons, PeakTier } from './constants';
 import { collectMetrics } from './metrics';
 import { mahojiUserSettingsUpdate } from './MUser';
 import { prisma, queryCountStore } from './settings/prisma';
@@ -59,12 +59,6 @@ const geEmbed = new EmbedBuilder()
 		value: 'Keep your ad less than 10 lines long, as short as possible.'
 	});
 
-export const enum PeakTier {
-	High = 'high',
-	Medium = 'medium',
-	Low = 'low'
-}
-
 export interface Peak {
 	startTime: number;
 	finishTime: number;
@@ -74,7 +68,7 @@ export interface Peak {
 /**
  * Tickers should idempotent, and be able to run at any time.
  */
-export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | null; cb: () => unknown }[] = [
+export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | null; cb: () => Promise<unknown> }[] = [
 	{
 		name: 'giveaways',
 		interval: Time.Second * 10,

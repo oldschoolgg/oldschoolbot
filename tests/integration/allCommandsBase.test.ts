@@ -1,4 +1,4 @@
-import { describe, test } from 'vitest';
+import { describe, test, vi } from 'vitest';
 
 import { activitiesCommand } from '../../src/mahoji/commands/activities';
 import { askCommand } from '../../src/mahoji/commands/ask';
@@ -79,6 +79,18 @@ const commands: [OSBMahojiCommand, null | object][] = [
 	[stealCommand, null],
 	[smeltingCommand, null]
 ];
+
+// Don't let any of these commands create an activity
+vi.mock('../../src/lib/util/addSubTaskToActivityTask', async () => {
+	const actual: any = await vi.importActual('../../src/lib/util/addSubTaskToActivityTask');
+	return {
+		...actual,
+		default: async (args: any) => {
+			console.log(`Sending ${args}`);
+		}
+	};
+});
+
 describe('All Commands Base Test', async () => {
 	randomMock();
 	for (const [command, options] of commands) {
