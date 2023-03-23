@@ -72,7 +72,9 @@ export const agilityTask: MinionTask = {
 
 		const { laps_scores: newLapScores } = await userStatsUpdate(
 			user.id,
-			({ laps_scores }) => addItemToBank(laps_scores as ItemBank, course.id, quantity - lapsFailed),
+			({ laps_scores }) => ({
+				laps_scores: addItemToBank(laps_scores as ItemBank, course.id, quantity - lapsFailed)
+			}),
 			{ laps_scores: true }
 		);
 
