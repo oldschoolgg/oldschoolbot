@@ -3,12 +3,11 @@ import { BaseMessageOptions, bold, ButtonBuilder, ButtonStyle, Message, time } f
 import { Time } from 'e';
 import { Items } from 'oldschooljs';
 
-import { CLIENT_ID } from '../config';
 import { PATRON_DOUBLE_LOOT_COOLDOWN } from '../mahoji/commands/tools';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
 import { Cooldowns } from '../mahoji/lib/Cooldowns';
 import { mentionCommand } from './commandMention';
-import { BitField, Emoji, secretItems } from './constants';
+import { BitField, Emoji, globalConfig, secretItems } from './constants';
 import { customItems } from './customItems/util';
 import { DOUBLE_LOOT_FINISH_TIME_CACHE, isDoubleLootActive } from './doubleLoot';
 import { giveBoxResetTime, itemContractResetTime, spawnLampResetTime } from './MUser';
@@ -17,7 +16,7 @@ import { channelIsSendable, formatDuration, isFunction, makeComponents, toKMB } 
 import { makeBankImage } from './util/makeBankImage';
 import { minionStatsEmbed } from './util/minionStatsEmbed';
 
-const mentionText = `<@${CLIENT_ID}>`;
+const mentionText = `<@${globalConfig.clientID}>`;
 
 const cooldownTimers: {
 	name: string;

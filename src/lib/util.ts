@@ -44,9 +44,9 @@ import Monster from 'oldschooljs/dist/structures/Monster';
 import { convertLVLtoXP } from 'oldschooljs/dist/util/util';
 import { bool, integer, nodeCrypto, real } from 'random-js';
 
-import { ADMIN_IDS, CLIENT_ID, OWNER_IDS, production, SupportServer } from '../config';
+import { ADMIN_IDS, OWNER_IDS, production, SupportServer } from '../config';
 import { ClueTiers } from './clues/clueTiers';
-import { badgesCache, BitField, ProjectileType, usernameCache } from './constants';
+import { badgesCache, BitField, globalConfig, ProjectileType, usernameCache } from './constants';
 import { UserStatsDataNeededForCL } from './data/Collections';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
 import { calcActualClues } from './leagues/stats';
@@ -506,7 +506,7 @@ export function moidLink(items: number[]) {
 export { cleanString, stringMatches } from './util/cleanString';
 export async function bankValueWithMarketPrices(prisma: PrismaClient, bank: Bank) {
 	const marketPrices = (await prisma.clientStorage.findFirst({
-		where: { id: CLIENT_ID },
+		where: { id: globalConfig.clientID },
 		select: {
 			market_prices: true
 		}
