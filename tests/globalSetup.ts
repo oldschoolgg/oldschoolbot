@@ -1,8 +1,10 @@
 import '../src/index';
 
+import { Collection } from 'discord.js';
+
 global.globalClient = {
 	isReady: () => true,
-	guilds: { cache: new Map() },
+	guilds: { cache: new Collection() },
 	mahojiClient: {
 		commands: {
 			values: [
