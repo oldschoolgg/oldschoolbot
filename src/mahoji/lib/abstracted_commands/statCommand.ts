@@ -301,9 +301,16 @@ GROUP BY data->>'monsterID';`);
 				.map(i => [i[0].name, i[0].price * i[1]]);
 			const everythingElse = items.slice(20, items.length);
 			let everythingElseBank = new Bank();
-			for (const i of everythingElse) everythingElseBank.add(i[0].id, i[1]);
+			for (const i of everythingElse) everythingElseBank.add(i[0].name, i[1]);
 			dataPoints.push(['Everything else', everythingElseBank.value()]);
-			const buffer = await barChart('Your Top Bank Value Items', val => `${toKMB(val)} GP`, dataPoints);
+			const buffer = await barChart(
+				'Your Top Bank Value Items',
+				val => {
+					if (typeof val === 'string') return val;
+					return `${toKMB(val)} GP`;
+				},
+				dataPoints
+			);
 			return makeResponseForBuffer(buffer);
 		}
 	},
