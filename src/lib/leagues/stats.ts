@@ -1,4 +1,5 @@
 import { UserStats } from '@prisma/client';
+import { User as RoboChimpUser } from '@prisma/robochimp';
 import { sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 
@@ -43,4 +44,23 @@ GROUP BY data->>'clueID';`);
 
 export function totalLampedXP(userStats: UserStats) {
 	return sumArr(Object.values(userStats.lamped_xp as ItemBank));
+}
+
+export async function calcLeaguesRanking(user: RoboChimpUser) {
+	const [pointsRanking, tasksRanking] = await Promise.all([
+		roboChimpClient.user.count({
+			where: {
+				leagues_points_total: {
+					gt: user.leagues_points_total
+				}
+			}
+		}),
+		roboChimpClient.$queryRaw<any>`SELECT COUNT(*) AS count
+FROM public.user
+WHERE COALESCE(cardinality(leagues_completed_tasks_ids), 0) > ${user.leagues_completed_tasks_ids.length};`
+	]);
+	return {
+		pointsRanking: pointsRanking + 1,
+		tasksRanking: (tasksRanking[0].count as number) + 1
+	};
 }

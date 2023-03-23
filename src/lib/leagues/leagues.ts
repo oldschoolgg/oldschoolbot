@@ -1,5 +1,4 @@
 import { activity_type_enum, User } from '@prisma/client';
-import { User as RoboChimpUser } from '@prisma/robochimp';
 import { calcWhatPercent } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
@@ -34,7 +33,7 @@ import { hardTasks } from './hardTasks';
 import { betterHerbloreStats, HasFunctionArgs, Task } from './leaguesUtils';
 import { masterTasks } from './masterTasks';
 import { mediumTasks } from './mediumTasks';
-import { calcActualClues, totalLampedXP } from './stats';
+import { calcActualClues, calcLeaguesRanking, totalLampedXP } from './stats';
 
 export const leagueTasks = [
 	{ name: 'Easy', tasks: easyTasks, points: 20 },
@@ -110,25 +109,6 @@ function calcSuppliesUsedForSmithing(itemsSmithed: Bank) {
 		input.add(new Bank(smithable.inputBars).multiply(qty));
 	}
 	return input;
-}
-
-export async function calcLeaguesRanking(user: RoboChimpUser) {
-	const [pointsRanking, tasksRanking] = await Promise.all([
-		roboChimpClient.user.count({
-			where: {
-				leagues_points_total: {
-					gt: user.leagues_points_total
-				}
-			}
-		}),
-		roboChimpClient.$queryRaw<any>`SELECT COUNT(*) AS count
-FROM public.user
-WHERE COALESCE(cardinality(leagues_completed_tasks_ids), 0) > ${user.leagues_completed_tasks_ids.length};`
-	]);
-	return {
-		pointsRanking: pointsRanking + 1,
-		tasksRanking: (tasksRanking[0].count as number) + 1
-	};
 }
 
 export async function leaguesCheckUser(userID: string) {
