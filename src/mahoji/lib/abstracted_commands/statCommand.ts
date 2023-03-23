@@ -334,6 +334,7 @@ WHERE type = 'Inferno'
 AND completed = true
 AND data->>'deathTime' IS NOT NULL) death_mins
 GROUP BY mins;`;
+			if (result.length === 0) return 'No results.';
 			const buffer = await lineChart(
 				'Global Inferno Death Times',
 				val => `${val} Mins`,
@@ -354,6 +355,7 @@ AND user_id = ${BigInt(user.id)}
 AND completed = true
 AND data->>'deathTime' IS NOT NULL) death_mins
 GROUP BY mins;`);
+			if (result.length === 0) return 'No results.';
 			const buffer = await lineChart(
 				'Personal Inferno Death Times',
 				val => `${val} Mins`,
@@ -750,7 +752,7 @@ GROUP BY "bankBackground";`);
 			const totalBank: { [key: string]: number } = {};
 
 			const res: any = await prisma.$queryRawUnsafe(
-				'SELECT ARRAY(SELECT "monsterScores" FROM users WHERE "monsterScores"::text <> \'{}\'::text);'
+				'SELECT ARRAY(SELECT "monster_scores" FROM user_stats WHERE "monster_scores"::text <> \'{}\'::text);'
 			);
 
 			const banks: ItemBank[] = res[0].array;
@@ -780,7 +782,7 @@ GROUP BY "bankBackground";`);
 			const totalBank: { [key: string]: number } = {};
 
 			const res: any = await prisma.$queryRawUnsafe(
-				'SELECT ARRAY(SELECT "openable_scores" FROM users WHERE "openable_scores"::text <> \'{}\'::text);'
+				'SELECT ARRAY(SELECT "openable_scores" FROM user_stats WHERE "openable_scores"::text <> \'{}\'::text);'
 			);
 
 			const banks: ItemBank[] = res[0].array;

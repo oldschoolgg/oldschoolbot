@@ -4,7 +4,6 @@ export const botToken = '';
 export const production = false;
 
 export const SENTRY_DSN: string | null = null;
-export const HTTP_PORT = 1234;
 export const CLIENT_SECRET = '';
 export const DEV_SERVER_ID = '';
 export const GITHUB_TOKEN = '';

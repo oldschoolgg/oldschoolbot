@@ -457,6 +457,12 @@ export const toaPurpleItems = resolveItems([
 	"Osmumten's fang"
 ]);
 
+export enum PeakTier {
+	High = 'high',
+	Medium = 'medium',
+	Low = 'low'
+}
+
 export const ParsedCustomEmojiWithGroups = /(?<animated>a?):(?<name>[^:]+):(?<id>\d{17,20})/;
 
 const globalConfigSchema = z.object({

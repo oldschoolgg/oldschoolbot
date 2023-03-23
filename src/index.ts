@@ -231,6 +231,8 @@ async function main() {
 		runTimedLoggedFn('Start Mahoji Client', async () => mahojiClient.start()),
 		runTimedLoggedFn('Startup Scripts', runStartupScripts)
 	]);
+
+	if (process.env.TEST) return;
 	await runTimedLoggedFn('Log In', () => client.login(botToken));
 }
 
