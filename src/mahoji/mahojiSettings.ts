@@ -155,6 +155,9 @@ export async function updateClientGPTrackSetting(
 			[setting]: {
 				increment: amount
 			}
+		},
+		select: {
+			id: true
 		}
 	});
 }
@@ -307,6 +310,9 @@ export async function addToGPTaxBalance(userID: string | string, amount: number)
 				gp_tax_balance: {
 					increment: amount
 				}
+			},
+			select: {
+				id: true
 			}
 		}),
 		userStatsUpdate(
