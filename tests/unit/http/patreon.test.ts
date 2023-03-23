@@ -9,7 +9,7 @@ import { mockPatreonWebhookSecret } from '../setup';
 let app: FastifyServer = null!;
 
 beforeAll(async () => {
-	app = await makeServer(5050);
+	app = await makeServer();
 	await app.ready();
 });
 

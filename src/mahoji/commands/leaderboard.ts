@@ -63,10 +63,11 @@ async function kcLb(user: MUser, channelID: string, name: string, ironmanOnly: b
 	const monster = effectiveMonsters.find(mon => [mon.name, ...mon.aliases].some(alias => stringMatches(alias, name)));
 	if (!monster) return "That's not a valid monster!";
 	let list = await prisma.$queryRawUnsafe<{ id: string; kc: number }[]>(
-		`SELECT id, CAST("monsterScores"->>'${monster.id}' AS INTEGER) as kc
-		 FROM users
-		 WHERE CAST("monsterScores"->>'${monster.id}' AS INTEGER) > 5
-		 ${ironmanOnly ? ' AND "minion.ironman" = true ' : ''}
+		`SELECT id, CAST("monster_scores"->>'${monster.id}' AS INTEGER) as kc
+		 FROM user_stats
+		${ironmanOnly ? 'INNER JOIN "users" on "users"."id" = "user_stats"."user_id"::text' : ''}
+		 WHERE CAST("monster_scores"->>'${monster.id}' AS INTEGER) > 5
+		 ${ironmanOnly ? ' AND "users"."minion.ironman" = true ' : ''}
 		 ORDER BY kc DESC
 		 LIMIT 2000;`
 	);
@@ -259,8 +260,8 @@ async function creaturesLb(user: MUser, channelID: string, creatureName: string)
 
 	if (!creature) return 'Thats not a valid creature.';
 
-	const query = `SELECT id, ("creatureScores"->>'${creature.id}')::int as count
-				   FROM users WHERE "creatureScores"->>'${creature.id}' IS NOT NULL
+	const query = `SELECT user_id::text as id, ("creature_scores"->>'${creature.id}')::int as count
+				   FROM users WHERE "creature_scores"->>'${creature.id}' IS NOT NULL
 				   ORDER BY count DESC LIMIT 50;`;
 	const data: { id: string; count: number }[] = await prisma.$queryRawUnsafe(query);
 	doMenu(
@@ -282,9 +283,9 @@ async function lapsLb(user: MUser, channelID: string, courseName: string) {
 	if (!course) return 'Thats not a valid agility course.';
 
 	const data: { id: string; count: number }[] = await prisma.$queryRawUnsafe(
-		`SELECT id, ("lapsScores"->>'${course.id}')::int as count
+		`SELECT user_id::text as id, ("laps_scores"->>'${course.id}')::int as count
 			 FROM users
-			 WHERE "lapsScores"->>'${course.id}' IS NOT NULL
+			 WHERE "laps_scores"->>'${course.id}' IS NOT NULL
 			 ORDER BY count DESC LIMIT 50;`
 	);
 	doMenu(

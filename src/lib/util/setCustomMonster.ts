@@ -23,7 +23,7 @@ export default function setCustomMonster(
 	baseItem: Omit<Monster, 'kill'>,
 	newItemData?: Partial<Monster>
 ) {
-	if (Monsters.get(id)) {
+	if (Monsters.get(id) && !process.env.TEST) {
 		console.error(`Tried to set custom monster, but one already existed with the same ID: ${id}`);
 	}
 	Monsters.set(id, {

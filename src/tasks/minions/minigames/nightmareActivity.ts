@@ -107,7 +107,7 @@ export const nightmareTask: MinionTask = {
 				previousCL
 			});
 
-			const kc = user.getKC(monsterID);
+			const kc = await user.getKC(monsterID);
 			handleTripFinish(
 				user,
 				channelID,

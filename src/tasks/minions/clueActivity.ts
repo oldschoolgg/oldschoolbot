@@ -1,10 +1,10 @@
-import { Time } from 'e';
+import { randInt, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
-import { rand, roll } from '../../lib/util';
+import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
@@ -44,7 +44,7 @@ export const clueTask: MinionTask = {
 			let bonusLoot = new Bank();
 			const numberOfMinutes = Math.floor(duration / Time.Minute);
 
-			for (let i = 0; i < numberOfMinutes / rand(5, 10); i++) {
+			for (let i = 0; i < numberOfMinutes / randInt(5, 10); i++) {
 				const item = possibleFound.roll().items()[0][0].id;
 				bonusLoot.add(item);
 			}

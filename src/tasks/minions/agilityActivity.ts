@@ -12,7 +12,7 @@ import { AgilityActivityTaskOptions } from '../../lib/types/minions';
 import { addItemToBank, clAdjustedDroprate, randomVariation, skillingPetDropRate } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { updateGPTrackSetting, userStatsUpdate } from '../../mahoji/mahojiSettings';
+import { updateClientGPTrackSetting, userStatsUpdate } from '../../mahoji/mahojiSettings';
 
 function chanceOfFailingAgilityPyramid(user: MUser) {
 	const lvl = user.skillLevel(SkillsEnum.Agility);
@@ -118,7 +118,7 @@ export const agilityTask: MinionTask = {
 				amount: alch.quantity * 65,
 				duration
 			})}`;
-			updateGPTrackSetting('gp_alch', alchGP);
+			updateClientGPTrackSetting('gp_alch', alchGP);
 		}
 
 		let str = `${user}, ${user.minionName} finished ${quantity} ${

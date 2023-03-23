@@ -197,7 +197,7 @@ export const kalphiteKingTask: MinionTask = {
 					? `${leaderUser}, ${leaderUser.minionName} died in all their attempts to kill the Kalphite King, they apologize and promise to try harder next time.`
 					: `${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${
 							KalphiteKingMonster.name
-					  }, you died ${deaths[userID] ?? 0} times. Your Kalphite King KC is now ${leaderUser.getKC(
+					  }, you died ${deaths[userID] ?? 0} times. Your Kalphite King KC is now ${await leaderUser.getKC(
 							KalphiteKingMonster.id
 					  )}.\n\n${soloXP}`,
 				image!,

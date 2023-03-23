@@ -1146,7 +1146,7 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 			if (currentBalanceTier !== null && currentBalanceTier !== tier) {
 				await handleMahojiConfirmation(
 					interaction,
-					`${input} already has Tier ${currentBalanceTier}; this will replace the existing balance entirely, are you sure?`
+					`They already have Tier ${currentBalanceTier}; this will replace the existing balance entirely, are you sure?`
 				);
 			}
 			await handleMahojiConfirmation(

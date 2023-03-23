@@ -156,7 +156,8 @@ export function convertXPtoLVL(xp: number, cap = 120) {
 	return cap;
 }
 
-export function rand(min: number, max: number) {
+export function cryptoRand(min: number, max: number) {
+	// if (process.env.TEST) return randInt(min, max);
 	return integer(min, max)(nodeCrypto);
 }
 
@@ -169,7 +170,7 @@ export function percentChance(percent: number) {
 }
 
 export function roll(max: number) {
-	return rand(1, max) === 1;
+	return cryptoRand(1, max) === 1;
 }
 
 const rawEmojiRegex = emojiRegex();

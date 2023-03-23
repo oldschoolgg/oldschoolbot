@@ -1,4 +1,4 @@
-import { calcPercentOfNum, calcWhatPercent } from 'e';
+import { calcPercentOfNum, calcWhatPercent, randInt } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
@@ -7,7 +7,7 @@ import { prisma } from '../../../lib/settings/prisma';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { FightCavesActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, percentChance, rand } from '../../../lib/util';
+import { formatDuration, percentChance } from '../../../lib/util';
 import chatHeadImage from '../../../lib/util/chatHeadImage';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -23,7 +23,7 @@ export const fightCavesTask: MinionTask = {
 		const { userID, channelID, jadDeathChance, preJadDeathTime, duration, fakeDuration } = data;
 		const user = await mUserFetch(userID);
 
-		const tokkulReward = rand(2000, 6000);
+		const tokkulReward = randInt(2000, 6000);
 		const diedToJad = percentChance(jadDeathChance);
 
 		const { fight_caves_attempts: newFightCavesAttempts } = await userStatsUpdate(

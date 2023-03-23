@@ -4,7 +4,6 @@
 		"@typescript-eslint/naming-convention": 0,
 		"@typescript-eslint/no-throw-literal": 0,
 		"@typescript-eslint/default-param-last": 0,
-		"@typescript-eslint/no-base-to-string": 0,
 		"no-return-await": "error",
 		"import/no-cycle": "error",
 		"@typescript-eslint/strict-boolean-expressions": 0,
@@ -13,6 +12,7 @@
 			{
 				"checksVoidReturn": false
 			}
-		]
+		],
+		"@typescript-eslint/no-base-to-string": "error"
 	}
 }

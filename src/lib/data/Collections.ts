@@ -176,7 +176,7 @@ import { kibbles } from './kibble';
 import { slayerMaskHelms } from './slayerMaskHelms';
 
 function kcProg(mon: Monster | number): FormatProgressFunction {
-	return ({ getKC }) => `${getKC(mon instanceof Monster ? mon.id : mon)} KC`;
+	return ({ stats }) => `${stats.kcBank[typeof mon === 'number' ? mon : mon.id] ?? 0} KC`;
 }
 
 function mgProg(minigameName: MinigameName): FormatProgressFunction {
@@ -319,10 +319,10 @@ export const allCollectionLogs: ICollection = {
 					...Monsters.DagannothRex.allItems
 				],
 				items: dagannothKingsCL,
-				fmtProg: ({ getKC }) => [
-					`${getKC(Monsters.DagannothPrime.id)} Prime KC`,
-					`${getKC(Monsters.DagannothRex.id)} Rex KC`,
-					`${getKC(Monsters.DagannothSupreme.id)} Supreme KC`
+				fmtProg: ({ stats }) => [
+					`${stats.kcBank[Monsters.DagannothPrime.id] ?? 0} Prime KC`,
+					`${stats.kcBank[Monsters.DagannothRex.id] ?? 0} Rex KC`,
+					`${stats.kcBank[Monsters.DagannothSupreme.id] ?? 0} Supreme KC`
 				]
 			},
 			'The Fight Caves': {
@@ -413,9 +413,9 @@ export const allCollectionLogs: ICollection = {
 					Phosani: "Phosani's Nightmare"
 				},
 				items: theNightmareCL,
-				fmtProg: ({ getKC }) => [
-					`${getKC(NightmareMonster.id)} KC`,
-					`${getKC(PHOSANI_NIGHTMARE_ID)} Phosani KC`
+				fmtProg: ({ stats }) => [
+					`${stats.kcBank[NightmareMonster.id] ?? 0} KC`,
+					`${stats.kcBank[PHOSANI_NIGHTMARE_ID] ?? 0} Phosani KC`
 				]
 			},
 			Obor: {
@@ -483,7 +483,7 @@ export const allCollectionLogs: ICollection = {
 				items: wintertodtCL,
 				fmtProg: mgProg('wintertodt')
 			},
-			Zalcano: { items: zalcanoCL, fmtProg: ({ getKC }) => `${getKC(ZALCANO_ID)} KC` },
+			Zalcano: { items: zalcanoCL, fmtProg: ({ stats }) => `${stats.kcBank[ZALCANO_ID] ?? 0} KC` },
 			Zulrah: {
 				alias: Monsters.Zulrah.aliases,
 				allItems: Monsters.Zulrah.allItems,

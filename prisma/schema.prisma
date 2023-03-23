@@ -25,6 +25,7 @@ model Activity {
   @@index([group_activity])
   @@index([completed])
   @@index([user_id, type])
+  @@index([finish_date])
   @@map("activity")
 }
 

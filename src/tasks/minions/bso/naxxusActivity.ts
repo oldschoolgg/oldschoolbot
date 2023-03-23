@@ -58,7 +58,7 @@ export const naxxusTask: MinionTask = {
 
 		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
 
-		await user.incrementKC(Naxxus.id, quantity);
+		const { newKC } = await user.incrementKC(Naxxus.id, quantity);
 
 		announceLoot({
 			user,
@@ -94,9 +94,7 @@ export const naxxusTask: MinionTask = {
 		handleTripFinish(
 			user,
 			channelID,
-			`${user}, ${user.minionName} finished killing ${quantity} ${
-				Naxxus.name
-			}. Your Naxxus KC is now ${user.getKC(Naxxus.id)}.\n\n${xpStr}`,
+			`${user}, ${user.minionName} finished killing ${quantity} ${Naxxus.name}. Your Naxxus KC is now ${newKC}.\n\n${xpStr}`,
 			image.file.attachment,
 			data,
 			itemsAdded

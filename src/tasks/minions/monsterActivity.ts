@@ -164,7 +164,7 @@ export const monsterTask: MinionTask = {
 		}
 
 		const [hasKourendHard] = await userhasDiaryTier(user, KourendKebosDiary.hard);
-		await user.incrementKC(monsterID, quantity);
+		const { newKC } = await user.incrementKC(monsterID, quantity);
 
 		// Abyssal set bonuses -- grants the user a few extra kills
 		let boostedQuantity = quantity;
@@ -240,7 +240,7 @@ export const monsterTask: MinionTask = {
 		const messages: string[] = [];
 		let str =
 			`${user}, ${user.minionName} finished killing ${quantity} ${monster.name}${superiorMessage}.` +
-			` Your ${monster.name} KC is now ${user.getKC(monsterID)}.\n${xpRes}\n`;
+			` Your ${monster.name} KC is now ${newKC}.\n${xpRes}\n`;
 
 		if (masterCapeRolls > 0) {
 			messages.push(`${Emoji.SlayerMasterCape} You received ${masterCapeRolls}x bonus superior rolls`);

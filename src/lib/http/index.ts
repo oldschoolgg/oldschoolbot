@@ -6,10 +6,15 @@ import fastifyRawBody from 'fastify-raw-body';
 
 import { production } from '../../config';
 import { globalConfig } from '../constants';
+import { cryptoRand } from '../util';
 import { logError } from '../util/logError';
 import { initRoutes } from './routes';
 
 export async function makeServer(port = globalConfig.httpPort) {
+	if (process.env.TEST) {
+		port = cryptoRand(3000, 3500);
+		console.log({ port });
+	}
 	const server = fastify({
 		logger: false,
 		trustProxy: true

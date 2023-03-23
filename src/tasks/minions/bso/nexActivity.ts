@@ -181,7 +181,7 @@ export const nexTask: MinionTask = {
 					? `${leaderUser}, ${leaderUser.minionName} died in all their attempts to kill Nex, they apologize and promise to try harder next time.`
 					: `${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${
 							NexMonster.name
-					  }, you died ${deaths[userID] ?? 0} times. Your Nex KC is now ${leaderUser.getKC(
+					  }, you died ${deaths[userID] ?? 0} times. Your Nex KC is now ${await leaderUser.getKC(
 							NexMonster.id
 					  )}.\n\n${soloXP}`,
 				image!,

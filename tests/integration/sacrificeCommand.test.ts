@@ -40,7 +40,7 @@ Your current sacrificed value is: 0 (0)`);
 		expect(user.bank.equals(new Bank())).toBe(true);
 		expect(new Bank(stats.sacrificed_bank as ItemBank).equals(new Bank().add('Coal', 10).add('Trout'))).toBe(true);
 		expect(user.user.sacrificedValue).toEqual(BigInt(1635));
-		const clientSettings = await mahojiClientSettingsFetch();
+		const clientSettings = await mahojiClientSettingsFetch({ economyStats_sacrificedBank: true });
 		expect(
 			new Bank(clientSettings.economyStats_sacrificedBank as ItemBank).equals(
 				new Bank().add('Coal', 10).add('Trout')
@@ -63,7 +63,7 @@ Your current sacrificed value is: 0 (0)`);
 		).toBe(true);
 		expect(user.user.sacrificedValue).toEqual(BigInt(1841));
 
-		const clientSettings2 = await mahojiClientSettingsFetch();
+		const clientSettings2 = await mahojiClientSettingsFetch({ economyStats_sacrificedBank: true });
 		expect(
 			new Bank(clientSettings2.economyStats_sacrificedBank as ItemBank).equals(
 				new Bank().add('Coal', 10).add('Trout', 2).add('Cake')

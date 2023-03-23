@@ -1,7 +1,8 @@
+import { randInt } from 'e';
+
 import { userHasMasterFarmerOutfit } from '../../../mahoji/mahojiSettings';
 import { BitField } from '../../constants';
 import { Favours, gotFavour } from '../../minions/data/kourendFavour';
-import { rand } from '../../util';
 import { Plant, SkillsEnum } from '../types';
 
 export function calcNumOfPatches(plant: Plant, user: MUser, qp: number): [number, string | undefined] {
@@ -54,14 +55,14 @@ export function calcVariableYield(
 		for (const [upgradeTypeNeeded, min, max] of plant.variableOutputAmount) {
 			if (upgradeType === upgradeTypeNeeded) {
 				for (let i = 0; i < quantityAlive; i++) {
-					cropYield += rand(min, max);
+					cropYield += randInt(min, max);
 				}
 				break;
 			}
 		}
 	} else if (plant.name === 'Limpwurt' || plant.name === 'Belladonna') {
 		for (let i = 0; i < quantityAlive; i++) {
-			cropYield += 3 + rand(1, Math.floor(farmingLevel / 10));
+			cropYield += 3 + randInt(1, Math.floor(farmingLevel / 10));
 		}
 	}
 

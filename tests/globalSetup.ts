@@ -1,7 +1,4 @@
-import '../src/lib/customItems/customItems';
-import '../src/lib/data/itemAliases';
-import '../src/lib/util/logger';
-import '../src/lib/MUser';
+import '../src/index';
 
 global.globalClient = {
 	isReady: () => true,
