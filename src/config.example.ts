@@ -2,15 +2,9 @@ import { IDiscordSettings } from './lib/types';
 
 export const botToken = '';
 export const production = false;
-export const patreonConfig: null | {
-	campaignID: number;
-	token: string;
-	webhookSecret: string;
-} = null;
+
 export const SENTRY_DSN: string | null = null;
-export const HTTP_PORT = 1234;
 export const CLIENT_SECRET = '';
-export const CLIENT_ID = '';
 export const DEV_SERVER_ID = '';
 export const GITHUB_TOKEN = '';
 export const DISCORD_SETTINGS: Partial<IDiscordSettings> = {

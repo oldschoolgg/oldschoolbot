@@ -3,6 +3,7 @@ import { calcWhatPercent, round } from 'e';
 
 import { getTotalCl } from './data/Collections';
 import { MUserClass } from './MUser';
+import { fetchStatsForCL } from './util';
 
 declare global {
 	const roboChimpClient: PrismaClient;
@@ -30,7 +31,7 @@ const levelKey: keyof User = 'bso_total_level';
 
 export async function roboChimpSyncData(user: User, _mUser?: MUserClass) {
 	const mUser = _mUser ?? (await mUserFetch(user.id.toString()));
-	const [totalClItems, clItems] = await getTotalCl(mUser, 'collection');
+	const [totalClItems, clItems] = await getTotalCl(mUser, 'collection', await fetchStatsForCL(mUser));
 
 	const newUser = await roboChimpClient.user.update({
 		where: {

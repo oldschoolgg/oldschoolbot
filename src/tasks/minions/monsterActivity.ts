@@ -164,7 +164,7 @@ export const monsterTask: MinionTask = {
 		}
 
 		const [hasKourendHard] = await userhasDiaryTier(user, KourendKebosDiary.hard);
-		await user.incrementKC(monsterID, quantity);
+		const { newKC } = await user.incrementKC(monsterID, quantity);
 
 		// Abyssal set bonuses -- grants the user a few extra kills
 		let boostedQuantity = quantity;
@@ -240,7 +240,7 @@ export const monsterTask: MinionTask = {
 		const messages: string[] = [];
 		let str =
 			`${user}, ${user.minionName} finished killing ${quantity} ${monster.name}${superiorMessage}.` +
-			` Your ${monster.name} KC is now ${user.getKC(monsterID)}.\n${xpRes}\n`;
+			` Your ${monster.name} KC is now ${newKC}.\n${xpRes}\n`;
 
 		if (masterCapeRolls > 0) {
 			messages.push(`${Emoji.SlayerMasterCape} You received ${masterCapeRolls}x bonus superior rolls`);
@@ -304,11 +304,15 @@ export const monsterTask: MinionTask = {
 		announceLoot({ user, monsterID: monster.id, loot, notifyDrops: monster.notifyDrops });
 
 		if (newSuperiorCount && newSuperiorCount > 0) {
-			await user.update({
-				slayer_superior_count: {
-					increment: newSuperiorCount
-				}
-			});
+			await userStatsUpdate(
+				user.id,
+				{
+					slayer_superior_count: {
+						increment: newSuperiorCount
+					}
+				},
+				{}
+			);
 		}
 
 		if (
@@ -352,7 +356,7 @@ export const monsterTask: MinionTask = {
 						? maskHelmForThisMonster
 						: null;
 
-				const currentUserStats = await user.fetchStats();
+				const currentUserStats = await user.fetchStats({ on_task_with_mask_monster_scores: true });
 				const oldMaskScores = new Bank(currentUserStats.on_task_with_mask_monster_scores as ItemBank);
 				const newMaskScores = oldMaskScores.clone().add(bankToAdd);
 				if (maskHelmForThisMonster && !user.owns(maskHelmForThisMonster.mask.id, { includeGear: true })) {
@@ -376,12 +380,16 @@ export const monsterTask: MinionTask = {
 
 			thisTripFinishesTask = quantityLeft === 0;
 			if (thisTripFinishesTask) {
-				const { newUser } = await user.update({
-					slayer_task_streak: {
-						increment: 1
-					}
-				});
-				const currentStreak = newUser.slayer_task_streak;
+				const newStats = await userStatsUpdate(
+					user.id,
+					{
+						slayer_task_streak: {
+							increment: 1
+						}
+					},
+					{ slayer_task_streak: true }
+				);
+				const currentStreak = newStats.slayer_task_streak;
 				const points = await calculateSlayerPoints(currentStreak, isOnTaskResult.slayerMaster, user);
 				const secondNewUser = await user.update({
 					slayer_points: {

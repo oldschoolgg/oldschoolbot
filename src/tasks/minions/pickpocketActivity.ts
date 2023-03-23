@@ -11,7 +11,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import resolveItems from '../../lib/util/resolveItems';
-import { rogueOutfitPercentBonus, updateGPTrackSetting } from '../../mahoji/mahojiSettings';
+import { rogueOutfitPercentBonus, updateClientGPTrackSetting } from '../../mahoji/mahojiSettings';
 import { clueUpgraderEffect } from './monsterActivity';
 
 const notMultiplied = resolveItems([
@@ -117,7 +117,7 @@ export const pickpocketTask: MinionTask = {
 		}
 
 		if (loot.has('Coins')) {
-			updateGPTrackSetting('gp_pickpocket', loot.amount('Coins'));
+			updateClientGPTrackSetting('gp_pickpocket', loot.amount('Coins'));
 		}
 
 		const { previousCL, itemsAdded } = await transactItems({

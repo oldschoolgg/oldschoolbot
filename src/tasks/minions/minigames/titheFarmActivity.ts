@@ -6,6 +6,7 @@ import { SkillsEnum } from '../../../lib/skilling/types';
 import { TitheFarmActivityTaskOptions } from '../../../lib/types/minions';
 import { roll, skillingPetDropRate } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
 
 export const titheFarmTask: MinionTask = {
 	type: 'TitheFarm',
@@ -16,10 +17,11 @@ export const titheFarmTask: MinionTask = {
 		const levelStr: string[] = [];
 
 		const user = await mUserFetch(userID);
+		const userStats = await user.fetchStats({ tithe_farm_points: true, tithe_farms_completed: true });
 
 		const farmingLvl = user.skillLevel(SkillsEnum.Farming);
-		const titheFarmsCompleted = user.user.stats_titheFarmsCompleted;
-		const titheFarmPoints = user.user.stats_titheFarmPoints;
+		const titheFarmsCompleted = userStats.tithe_farms_completed;
+		const titheFarmPoints = userStats.tithe_farm_points;
 
 		const determineHarvest = baseHarvest + Math.min(15, titheFarmsCompleted);
 		let determinePoints = determineHarvest - 74;
@@ -29,14 +31,18 @@ export const titheFarmTask: MinionTask = {
 			determinePoints *= 2;
 		}
 
-		await user.update({
-			stats_titheFarmsCompleted: {
-				increment: 1
+		await userStatsUpdate(
+			user.id,
+			{
+				tithe_farms_completed: {
+					increment: 1
+				},
+				tithe_farm_points: {
+					increment: determinePoints
+				}
 			},
-			stats_titheFarmPoints: {
-				increment: determinePoints
-			}
-		});
+			{}
+		);
 
 		let fruit = '';
 		let fruitXp = 0;

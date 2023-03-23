@@ -53,7 +53,7 @@ export async function igneCommand(
 		gearSetup: 'melee',
 		itemCost: async data => {
 			const userBank = data.user.bank;
-			const kc = data.user.getKC(Ignecarus.id);
+			const kc = await data.user.getKC(Ignecarus.id);
 
 			let brewsNeeded = Math.max(1, 10 - Math.max(1, Math.ceil((kc + 1) / 30))) + 2;
 			if (data.solo) {

@@ -3,12 +3,12 @@ import { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../lib/constants';
-import { addToGPTaxBalance, prisma } from '../../lib/settings/prisma';
+import { prisma } from '../../lib/settings/prisma';
 import { toKMB } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiParseNumber, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { addToGPTaxBalance, mahojiParseNumber, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const payCommand: OSBMahojiCommand = {
 	name: 'pay',

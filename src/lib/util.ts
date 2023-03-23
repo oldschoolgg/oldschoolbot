@@ -28,6 +28,7 @@ import {
 	calcWhatPercent,
 	chunk,
 	increaseNumByPercent,
+	notEmpty,
 	objectEntries,
 	randArrItem,
 	randInt,
@@ -43,9 +44,12 @@ import Monster from 'oldschooljs/dist/structures/Monster';
 import { convertLVLtoXP } from 'oldschooljs/dist/util/util';
 import { bool, integer, nodeCrypto, real } from 'random-js';
 
-import { ADMIN_IDS, CLIENT_ID, OWNER_IDS, production, SupportServer } from '../config';
-import { badgesCache, BitField, ProjectileType, usernameCache } from './constants';
+import { ADMIN_IDS, OWNER_IDS, production, SupportServer } from '../config';
+import { ClueTiers } from './clues/clueTiers';
+import { badgesCache, BitField, globalConfig, ProjectileType, usernameCache } from './constants';
+import { UserStatsDataNeededForCL } from './data/Collections';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
+import { calcActualClues } from './leagues/stats';
 import type { Consumable } from './minions/types';
 import { MUserClass } from './MUser';
 import { PaginatedMessage } from './PaginatedMessage';
@@ -59,7 +63,7 @@ import type {
 	RaidsOptions,
 	TheatreOfBloodTaskOptions
 } from './types/minions';
-import { getItem } from './util/getOSItem';
+import getOSItem, { getItem } from './util/getOSItem';
 import itemID from './util/itemID';
 import resolveItems from './util/resolveItems';
 
@@ -152,7 +156,7 @@ export function convertXPtoLVL(xp: number, cap = 120) {
 	return cap;
 }
 
-export function rand(min: number, max: number) {
+export function cryptoRand(min: number, max: number) {
 	return integer(min, max)(nodeCrypto);
 }
 
@@ -161,11 +165,12 @@ export function randFloat(min: number, max: number) {
 }
 
 export function percentChance(percent: number) {
+	if (process.env.TEST) return false;
 	return bool(percent / 100)(nodeCrypto);
 }
 
 export function roll(max: number) {
-	return rand(1, max) === 1;
+	return cryptoRand(1, max) === 1;
 }
 
 const rawEmojiRegex = emojiRegex();
@@ -501,7 +506,7 @@ export function moidLink(items: number[]) {
 export { cleanString, stringMatches } from './util/cleanString';
 export async function bankValueWithMarketPrices(prisma: PrismaClient, bank: Bank) {
 	const marketPrices = (await prisma.clientStorage.findFirst({
-		where: { id: CLIENT_ID },
+		where: { id: globalConfig.clientID },
 		select: {
 			market_prices: true
 		}
@@ -714,6 +719,47 @@ export function getInteractionTypeName(type: InteractionType) {
 
 export function isModOrAdmin(user: MUser) {
 	return [...OWNER_IDS, ...ADMIN_IDS].includes(user.id) || user.bitfield.includes(BitField.isModerator);
+}
+
+export async function calcClueScores(user: MUser) {
+	const actualClues = await calcActualClues(user);
+	const stats = await user.fetchStats({ openable_scores: true });
+	const openableBank = new Bank(stats.openable_scores as ItemBank);
+	return openableBank
+		.items()
+		.map(entry => {
+			const tier = ClueTiers.find(i => i.id === entry[0].id);
+			if (!tier) return;
+			return {
+				tier,
+				casket: getOSItem(tier.id),
+				clueScroll: getOSItem(tier.scrollID),
+				opened: openableBank.amount(tier.id),
+				actualOpened: actualClues.amount(tier.scrollID)
+			};
+		})
+		.filter(notEmpty);
+}
+
+export async function fetchStatsForCL(user: MUser): Promise<UserStatsDataNeededForCL> {
+	const userStats = await user.fetchStats({
+		sacrificed_bank: true,
+		tithe_farms_completed: true,
+		laps_scores: true,
+		openable_scores: true,
+		monster_scores: true,
+		high_gambles: true,
+		gotr_rift_searches: true
+	});
+	return {
+		sacrificedBank: new Bank(userStats.sacrificed_bank as ItemBank),
+		titheFarmsCompleted: userStats.tithe_farms_completed,
+		lapsScores: userStats.laps_scores as ItemBank,
+		openableScores: new Bank(userStats.openable_scores as ItemBank),
+		kcBank: userStats.monster_scores as ItemBank,
+		highGambles: userStats.high_gambles,
+		gotrRiftSearches: userStats.gotr_rift_searches
+	};
 }
 
 export { assert } from './util/logError';

@@ -369,15 +369,15 @@ export const mediumTasks: Task[] = [
 	{
 		id: 1053,
 		name: 'Offer a chewed bones',
-		has: async ({ mahojiUser }) => {
-			return mahojiUser.slayer_chewed_offered >= 1;
+		has: async ({ userStats }) => {
+			return userStats.slayer_chewed_offered >= 1;
 		}
 	},
 	{
 		id: 1054,
 		name: 'Offer an unsired',
-		has: async ({ mahojiUser }) => {
-			return mahojiUser.slayer_unsired_offered >= 1;
+		has: async ({ userStats }) => {
+			return userStats.slayer_unsired_offered >= 1;
 		}
 	},
 	{
@@ -404,15 +404,15 @@ export const mediumTasks: Task[] = [
 	{
 		id: 1058,
 		name: 'Kill 25 unique monsters',
-		has: async ({ mahojiUser }) => {
-			return Object.keys(mahojiUser.monsterScores as ItemBank).length >= 25;
+		has: async ({ userStats }) => {
+			return Object.keys(userStats.monster_scores as ItemBank).length >= 25;
 		}
 	},
 	{
 		id: 1059,
 		name: 'Slay 20 superior slayer creatures',
-		has: async ({ mahojiUser }) => {
-			return mahojiUser.slayer_superior_count >= 20;
+		has: async ({ userStats }) => {
+			return userStats.slayer_superior_count >= 20;
 		}
 	},
 	{
@@ -425,8 +425,8 @@ export const mediumTasks: Task[] = [
 	{
 		id: 1061,
 		name: 'Reach honour level 5',
-		has: async ({ mahojiUser }) => {
-			return mahojiUser.honour_level === 5;
+		has: async ({ userStats }) => {
+			return userStats.honour_level === 5;
 		}
 	},
 	{
@@ -711,8 +711,8 @@ export const mediumTasks: Task[] = [
 	{
 		id: 1099,
 		name: 'Do 10 High gambles in Barb assault',
-		has: async ({ mahojiUser }) => {
-			return mahojiUser.high_gambles >= 10;
+		has: async ({ userStats }) => {
+			return userStats.high_gambles >= 10;
 		}
 	},
 	{

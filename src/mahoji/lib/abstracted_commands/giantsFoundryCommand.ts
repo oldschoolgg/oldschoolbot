@@ -13,7 +13,7 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { userStatsBankUpdate } from '../../mahojiSettings';
+import { userStatsBankUpdate, userStatsUpdate } from '../../mahojiSettings';
 import { GiantsFoundryBank } from './../../../lib/giantsFoundry';
 
 export const giantsFoundryAlloys = [
@@ -142,7 +142,7 @@ export const giantsFoundryBuyables: { name: string; output: Bank; cost: number; 
 
 export async function giantsFoundryStatsCommand(user: MUser) {
 	const scores = await getMinigameEntity(user.id);
-	const stats = await user.fetchStats();
+	const stats = await user.fetchStats({ gf_weapons_made: true, foundry_reputation: true });
 	const weaponsMade = stats.gf_weapons_made as GiantsFoundryBank;
 	return `**Giants' Foundry Stats:**
 
@@ -153,7 +153,7 @@ export async function giantsFoundryStatsCommand(user: MUser) {
 		Object.keys(weaponsMade).length,
 		TOTAL_GIANT_WEAPONS
 	).toFixed(2)}% Collected.
-**Foundry Reputation:** ${user.user.foundry_reputation} Reputation.`;
+**Foundry Reputation:** ${stats.foundry_reputation} Reputation.`;
 }
 
 export async function giantsFoundryStartCommand(
@@ -256,7 +256,7 @@ export async function giantsFoundryShopCommand(
 	item: string | undefined,
 	quantity = 1
 ) {
-	const currentUserReputation = user.user.foundry_reputation;
+	const { foundry_reputation: currentUserReputation } = await user.fetchStats({ foundry_reputation: true });
 	if (!item) {
 		return `You currently have ${currentUserReputation.toLocaleString()} Foundry Reputation.`;
 	}
@@ -294,13 +294,17 @@ export async function giantsFoundryShopCommand(
 		itemsToAdd: new Bank(shopItem.output).multiply(quantity)
 	});
 
-	await user.update({
-		foundry_reputation: {
-			decrement: cost
-		}
-	});
+	const { foundry_reputation: newRep } = await userStatsUpdate(
+		user.id,
+		{
+			foundry_reputation: {
+				decrement: cost
+			}
+		},
+		{ foundry_reputation: true }
+	);
 
 	return `You successfully bought **${quantity.toLocaleString()}x ${shopItem.name}** for ${(
 		shopItem.cost * quantity
-	).toLocaleString()} Foundry Reputation.\nYou now have ${currentUserReputation - cost} Foundry Reputation left.`;
+	).toLocaleString()} Foundry Reputation.\nYou now have ${newRep} Foundry Reputation left.`;
 }

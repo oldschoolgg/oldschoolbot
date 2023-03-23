@@ -507,12 +507,13 @@
     eslint-plugin-unicorn "^44.0.2"
     prettier "^2.7.1"
 
-"@oldschoolgg/toolkit@^0.0.11":
-  version "0.0.11"
-  resolved "https://registry.yarnpkg.com/@oldschoolgg/toolkit/-/toolkit-0.0.11.tgz#86db22132aafbb0d72cd352666f467f8385c5100"
-  integrity sha512-dwpHXodibgT4tsbL91AXd12p3LTA7yHslmMI8AzZKLYrt1urzp5BRvKL4FahlZYgJ2b47MA8qGkX6QW21L0IIQ==
+"@oldschoolgg/toolkit@^0.0.12":
+  version "0.0.12"
+  resolved "https://registry.yarnpkg.com/@oldschoolgg/toolkit/-/toolkit-0.0.12.tgz#4b3767267f34c17b1ea3a82cd7199624afe6d6a9"
+  integrity sha512-cXwGNbhvZHkIPwyweSHfE8wp/vpr8SRIkY+5RlFDYYcppJzPrLGneNeMJwSrDM2yPl8wPwSohE2l7gLYnQ1FfA==
   dependencies:
     e "^0.2.3"
+    math-expression-evaluator "^1.3.14"
 
 "@oldschoolgg/ts-config@^0.0.1":
   version "0.0.1"

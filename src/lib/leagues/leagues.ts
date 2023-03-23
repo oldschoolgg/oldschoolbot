@@ -1,5 +1,4 @@
 import { activity_type_enum, User } from '@prisma/client';
-import { User as RoboChimpUser } from '@prisma/robochimp';
 import { calcWhatPercent } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
@@ -34,7 +33,7 @@ import { hardTasks } from './hardTasks';
 import { betterHerbloreStats, HasFunctionArgs, Task } from './leaguesUtils';
 import { masterTasks } from './masterTasks';
 import { mediumTasks } from './mediumTasks';
-import { calcActualClues, totalLampedXP } from './stats';
+import { calcActualClues, calcLeaguesRanking, totalLampedXP } from './stats';
 
 export const leagueTasks = [
 	{ name: 'Easy', tasks: easyTasks, points: 20 },
@@ -112,25 +111,6 @@ function calcSuppliesUsedForSmithing(itemsSmithed: Bank) {
 	return input;
 }
 
-export async function calcLeaguesRanking(user: RoboChimpUser) {
-	const [pointsRanking, tasksRanking] = await Promise.all([
-		roboChimpClient.user.count({
-			where: {
-				leagues_points_total: {
-					gt: user.leagues_points_total
-				}
-			}
-		}),
-		roboChimpClient.$queryRaw<any>`SELECT COUNT(*) AS count
-FROM public.user
-WHERE COALESCE(cardinality(leagues_completed_tasks_ids), 0) > ${user.leagues_completed_tasks_ids.length};`
-	]);
-	return {
-		pointsRanking: pointsRanking + 1,
-		tasksRanking: (tasksRanking[0].count as number) + 1
-	};
-}
-
 export async function leaguesCheckUser(userID: string) {
 	const [mahojiUser, roboChimpUser] = await Promise.all([mUserFetch(userID), roboChimpUserFetch(userID)]);
 	const [
@@ -178,7 +158,11 @@ export async function leaguesCheckUser(userID: string) {
 	const herbloreStats = betterHerbloreStats(_herbloreStats);
 	const smithingSuppliesUsed = calcSuppliesUsedForSmithing(smithingStats);
 
-	const userStats = await mahojiUser.fetchStats();
+	const userStats = await prisma.userStats.upsert({
+		where: { user_id: BigInt(userID) },
+		create: { user_id: BigInt(userID) },
+		update: {}
+	});
 
 	const args: HasFunctionArgs = {
 		cl: mahojiUser.cl,
@@ -190,16 +174,16 @@ export async function leaguesCheckUser(userID: string) {
 		poh,
 		gear: mahojiUser.gear,
 		allItemsOwned: mahojiUser.allItemsOwned,
-		monsterScores: mahojiUser.user.monsterScores as ItemBank,
-		creatureScores: mahojiUser.user.creatureScores as ItemBank,
-		opens: new Bank(mahojiUser.user.openable_scores as ItemBank),
+		monsterScores: userStats.monster_scores as ItemBank,
+		creatureScores: userStats.creature_scores as ItemBank,
+		opens: new Bank(userStats.openable_scores as ItemBank),
 		disassembledItems: new Bank(mahojiUser.user.disassembled_items_bank as ItemBank),
 		tames,
-		sacrificedBank: new Bank(mahojiUser.user.sacrificedBank as ItemBank),
+		sacrificedBank: new Bank(userStats.sacrificed_bank as ItemBank),
 		slayerStats,
 		activityCounts,
 		minigames,
-		lapScores: mahojiUser.user.lapsScores as ItemBank,
+		lapScores: userStats.laps_scores as ItemBank,
 		slayerTasksCompleted,
 		clPercent,
 		conStats,

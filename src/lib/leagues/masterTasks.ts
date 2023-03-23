@@ -774,8 +774,8 @@ export const masterTasks: Task[] = [
 	{
 		id: 4107,
 		name: 'Slay 500 superior slayer creatures',
-		has: async ({ mahojiUser }) => {
-			return mahojiUser.slayer_superior_count >= 500;
+		has: async ({ userStats }) => {
+			return userStats.slayer_superior_count >= 500;
 		}
 	},
 	{

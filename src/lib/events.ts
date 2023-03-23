@@ -3,12 +3,11 @@ import { BaseMessageOptions, bold, ButtonBuilder, ButtonStyle, Message, time } f
 import { Time } from 'e';
 import { Items } from 'oldschooljs';
 
-import { CLIENT_ID } from '../config';
 import { PATRON_DOUBLE_LOOT_COOLDOWN } from '../mahoji/commands/tools';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
 import { Cooldowns } from '../mahoji/lib/Cooldowns';
 import { mentionCommand } from './commandMention';
-import { BitField, Emoji, secretItems } from './constants';
+import { BitField, Emoji, globalConfig, secretItems } from './constants';
 import { customItems } from './customItems/util';
 import { DOUBLE_LOOT_FINISH_TIME_CACHE, isDoubleLootActive } from './doubleLoot';
 import { giveBoxResetTime, itemContractResetTime, spawnLampResetTime } from './MUser';
@@ -17,23 +16,23 @@ import { channelIsSendable, formatDuration, isFunction, makeComponents, toKMB } 
 import { makeBankImage } from './util/makeBankImage';
 import { minionStatsEmbed } from './util/minionStatsEmbed';
 
-const mentionText = `<@${CLIENT_ID}>`;
+const mentionText = `<@${globalConfig.clientID}>`;
 
 const cooldownTimers: {
 	name: string;
-	timeStamp: (user: MUser) => number;
+	timeStamp: (user: MUser, stats: { last_daily_timestamp: bigint; last_tears_of_guthix_timestamp: bigint }) => number;
 	cd: number | ((user: MUser) => number);
 	command: [string] | [string, string] | [string, string, string];
 }[] = [
 	{
 		name: 'Tears of Guthix',
-		timeStamp: (user: MUser) => Number(user.user.lastTearsOfGuthixTimestamp),
+		timeStamp: (_, stats) => Number(stats.last_tears_of_guthix_timestamp),
 		cd: Time.Day * 7,
 		command: ['minigames', 'tears_of_guthix', 'start']
 	},
 	{
 		name: 'Daily',
-		timeStamp: (user: MUser) => Number(user.user.lastDailyTimestamp),
+		timeStamp: (_, stats) => Number(stats.last_daily_timestamp),
 		cd: Time.Hour * 12,
 		command: ['minion', 'daily']
 	},
@@ -134,7 +133,6 @@ const mentionCommands: MentionCommand[] = [
 
 					if (user.cl.has(item.id)) icons.push(Emoji.CollectionLog);
 					if (user.bank.has(item.id)) icons.push(Emoji.Bank);
-					if (user.sacrificedItems.has(item.id)) icons.push(Emoji.Incinerator);
 					const isCustom = customItems.includes(item.id);
 					if (isCustom) icons.push(Emoji.BSO);
 
@@ -186,9 +184,10 @@ const mentionCommands: MentionCommand[] = [
 		aliases: ['cd'],
 		description: 'Shows your cooldowns.',
 		run: async ({ msg, user, components }: MentionCommandOptions) => {
+			const stats = await user.fetchStats({ last_daily_timestamp: true, last_tears_of_guthix_timestamp: true });
 			let content = cooldownTimers
 				.map(cd => {
-					const lastDone = cd.timeStamp(user);
+					const lastDone = cd.timeStamp(user, stats);
 					const difference = Date.now() - lastDone;
 					const cooldown = isFunction(cd.cd) ? cd.cd(user) : cd.cd;
 					if (difference < cooldown) {

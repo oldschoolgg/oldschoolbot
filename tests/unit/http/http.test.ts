@@ -5,7 +5,7 @@ import { FastifyServer } from '../../../src/lib/http/types';
 
 let app: FastifyServer = null!;
 beforeAll(async () => {
-	app = await makeServer(5040);
+	app = await makeServer();
 	await app.ready();
 });
 

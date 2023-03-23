@@ -7,7 +7,7 @@ import { ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
 import { clueHunterOutfit } from '../../lib/data/CollectionsExport';
 import { getPOHObject } from '../../lib/poh';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, isWeekend, stringMatches } from '../../lib/util';
+import { calcClueScores, formatDuration, isWeekend, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import getOSItem from '../../lib/util/getOSItem';
@@ -95,7 +95,7 @@ export const clueCommand: OSBMahojiCommand = {
 		if (!clueTier) return 'Invalid clue tier.';
 
 		if (clueTier.name === 'Grandmaster') {
-			const clueScores = await user.clueScores();
+			const clueScores = await calcClueScores(user);
 			for (const { tier, actualOpened } of clueScores) {
 				if (actualOpened < tier.qtyForGrandmasters) {
 					return `You're too inexperienced to complete Grandmaster clues, you need to complete ${tier.qtyForGrandmasters} ${tier.name} clues first.`;
@@ -114,10 +114,11 @@ export const clueCommand: OSBMahojiCommand = {
 		const maxTripLength = calcMaxTripLength(user, 'ClueCompletion');
 
 		const boosts = [];
+		const stats = await user.fetchStats({ openable_scores: true });
 
 		let [timeToFinish, percentReduced] = reducedClueTime(
 			clueTier,
-			(user.user.openable_scores as ItemBank)[clueTier.id] ?? 1
+			(stats.openable_scores as ItemBank)[clueTier.id] ?? 1
 		);
 
 		if (user.hasEquipped(clueHunterOutfit, true)) {

@@ -1,3 +1,4 @@
+import { activity_type_enum } from '@prisma/client';
 import { AttachmentBuilder, BaseMessageOptions, TextChannel } from 'discord.js';
 import { calcPercentOfNum, calcWhatPercent, randFloat, reduceNumByPercent, sumArr, Time } from 'e';
 import { Bank } from 'oldschooljs';
@@ -14,7 +15,6 @@ import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import { ClientBankKey, updateBankSetting } from '../util/updateBankSetting';
 import { Gear } from './Gear';
-import { activity_type_enum } from '.prisma/client';
 
 export const gpCostPerKill = (user: MUser) =>
 	user.gear.melee.hasEquipped(['Ring of charos', 'Ring of charos(a)'], false) ? 5_000_000 : 10_000_000;
@@ -337,7 +337,7 @@ export class BossInstance {
 	}
 
 	async calcFoodForUser(user: MUser, solo = false) {
-		const kc = user.getKC(this.id);
+		const kc = await user.getKC(this.id);
 		let itemsToRemove = calcFood(solo, kc);
 		if (this.itemCost) {
 			return this.itemCost({ user, kills: this.quantity ?? 0, baseFood: itemsToRemove, solo });
@@ -373,7 +373,7 @@ export class BossInstance {
 			debugStr.push(`**Gear**[${gearPercent.toFixed(1)}%]`);
 
 			// KC
-			const kc = user.getKC(this.id);
+			const kc = await user.getKC(this.id);
 			const kcPercent = Math.min(100, calcWhatPercent(kc, this.kcLearningCap));
 			const kcBoostPercent = calcPercentOfNum(kcPercent, speedReductionForKC);
 			userPercentChange += kcBoostPercent;

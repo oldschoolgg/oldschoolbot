@@ -1,5 +1,6 @@
 /* eslint-disable no-case-declarations */
 import { userMention } from '@discordjs/builders';
+import { Tame, tame_growth, TameActivity, User } from '@prisma/client';
 import {
 	ActionRowBuilder,
 	APIInteractionGuildMember,
@@ -29,7 +30,6 @@ import getOSItem from './util/getOSItem';
 import { handleSpecialCoxLoot } from './util/handleSpecialCoxLoot';
 import { makeBankImage } from './util/makeBankImage';
 import resolveItems from './util/resolveItems';
-import { Tame, tame_growth, TameActivity, User } from '.prisma/client';
 
 export enum TameSpeciesID {
 	Igne = 1,

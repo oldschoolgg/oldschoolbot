@@ -26,7 +26,7 @@ export const nightmareTask: MinionTask = {
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 		const team = method === 'solo' ? [user.id] : [user.id, '1', '2', '3'];
 
-		const [userStats] = getNightmareGearStats(user, team, isPhosani);
+		const [userStats] = await getNightmareGearStats(user, team, isPhosani);
 		const parsedUsers = team.map(id => ({ ...userStats, id }));
 		const userLoot = new Bank();
 		let kc = 0;
@@ -107,7 +107,7 @@ export const nightmareTask: MinionTask = {
 				previousCL
 			});
 
-			const kc = user.getKC(monsterID);
+			const kc = await user.getKC(monsterID);
 			handleTripFinish(
 				user,
 				channelID,

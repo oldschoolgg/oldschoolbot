@@ -3,9 +3,9 @@ import { Bank } from 'oldschooljs';
 import calculateMonsterFood from '../minions/functions/calculateMonsterFood';
 import { KillableMonster } from '../minions/types';
 
-export function calcBossFood(user: MUser, monster: KillableMonster, teamSize: number, quantity: number) {
+export async function calcBossFood(user: MUser, monster: KillableMonster, teamSize: number, quantity: number) {
 	let [healAmountNeeded] = calculateMonsterFood(monster, user);
-	const kc = user.getKC(monster.id);
+	const kc = await user.getKC(monster.id);
 	if (kc > 50) healAmountNeeded *= 0.5;
 	else if (kc > 30) healAmountNeeded *= 0.6;
 	else if (kc > 15) healAmountNeeded *= 0.7;
