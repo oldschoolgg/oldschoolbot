@@ -619,9 +619,16 @@ async function dryStreakCommand(user: MUser, monsterName: string, itemName: stri
 	}
 
 	const ironmanPart = ironmanOnly ? 'AND "minion.ironman" = true' : '';
-	const key = 'monsterScores';
+	const key = 'monster_scores';
 	const { id } = mon;
-	const query = `SELECT "id", "${key}"->>'${id}' AS "KC" FROM users WHERE "collectionLogBank"->>'${item.id}' IS NULL AND "${key}"->>'${id}' IS NOT NULL ${ironmanPart} ORDER BY ("${key}"->>'${id}')::int DESC LIMIT 10;`;
+	const query = `SELECT id, "${key}"->>'${id}' AS "KC" 
+				FROM users
+				INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
+				WHERE "collectionLogBank"->>'${item.id}' IS NULL 
+						AND "${key}"->>'${id}' IS NOT NULL 
+						${ironmanPart}
+				ORDER BY ("${key}"->>'${id}')::int DESC
+				LIMIT 10;`;
 
 	const result = await prisma.$queryRawUnsafe<
 		{
