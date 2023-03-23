@@ -7,6 +7,7 @@ import { prisma } from '../../src/lib/settings/prisma';
 import { SkillsEnum } from '../../src/lib/skilling/types';
 import { assert } from '../../src/lib/util/logError';
 import { mahojiUsersSettingsFetch } from '../../src/mahoji/mahojiSettings';
+import { createTestUser } from './util';
 
 async function stressTest(userID: string) {
 	const user = await mUserFetch(userID);
@@ -84,8 +85,7 @@ describe('MUser', () => {
 	});
 
 	test('Should add XP', async () => {
-		const userId = '123456789';
-		const user = await mUserFetch(userId);
+		const user = await createTestUser();
 		expect(user.skillsAsLevels.agility).toEqual(1);
 		const result = await user.addXP({ skillName: SkillsEnum.Agility, amount: 1000 });
 		const xpMultiplied = 1000 * GLOBAL_BSO_XP_MULTIPLIER;
@@ -94,7 +94,7 @@ describe('MUser', () => {
 **Congratulations! Your Agility level is now 20** 🎉`);
 		const xpAdded = await prisma.xPGain.findMany({
 			where: {
-				user_id: BigInt(userId),
+				user_id: BigInt(user.id),
 				skill: 'agility',
 				xp: xpMultiplied
 			}

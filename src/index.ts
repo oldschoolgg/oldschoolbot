@@ -223,6 +223,7 @@ client.on('ready', () => runTimedLoggedFn('OnStartup', async () => onStartup()))
 client.on('debug', str => debugLog(str, { type: 'DJS-DEBUG' }));
 
 async function main() {
+	if (process.env.TEST) return;
 	client.fastifyServer = await makeServer();
 	await Promise.all([
 		runTimedLoggedFn('Sync Active User IDs', syncActiveUserIDs),
@@ -233,7 +234,6 @@ async function main() {
 		runTimedLoggedFn('Startup Scripts', runStartupScripts)
 	]);
 
-	if (process.env.TEST) return;
 	await runTimedLoggedFn('Log In', () => client.login(botToken));
 }
 

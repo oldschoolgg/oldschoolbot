@@ -536,14 +536,16 @@ ORDER BY u.uniques DESC LIMIT 300;`);
 
 	async function topTamer() {
 		const [rankOne] = await fetchTameCLLeaderboard({ items: overallPlusItems, resultLimit: 1 });
-		results.push(
-			await addRoles({
-				users: [rankOne.user_id],
-				role: '1054356709222666240',
-				badge: null,
-				userMap: { [rankOne.user_id]: ['Rank 1 Tames CL'] }
-			})
-		);
+		if (rankOne) {
+			results.push(
+				await addRoles({
+					users: [rankOne.user_id],
+					role: '1054356709222666240',
+					badge: null,
+					userMap: { [rankOne.user_id]: ['Rank 1 Tames CL'] }
+				})
+			);
+		}
 	}
 
 	const notes: string[] = [];

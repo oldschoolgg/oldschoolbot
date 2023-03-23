@@ -22,7 +22,7 @@ describe('Ironman Command', () => {
 				start_date: new Date(),
 				finish_date: new Date(Date.now() + Time.Hour),
 				duration: Time.Hour,
-				completed: false,
+				completed: true,
 				group_activity: false,
 				type: 'AerialFishing',
 				channel_id: BigInt(1),
