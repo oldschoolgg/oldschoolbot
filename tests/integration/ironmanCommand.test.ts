@@ -1,5 +1,6 @@
 import { randomSnowflake } from '@oldschoolgg/toolkit';
 import { Prisma } from '@prisma/client';
+import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
@@ -19,8 +20,8 @@ describe('Ironman Command', () => {
 			data: {
 				user_id: BigInt(userId),
 				start_date: new Date(),
-				finish_date: new Date(),
-				duration: 1,
+				finish_date: new Date(Date.now() + Time.Hour),
+				duration: Time.Hour,
 				completed: false,
 				group_activity: false,
 				type: 'AerialFishing',

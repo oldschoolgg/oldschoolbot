@@ -412,22 +412,6 @@ ORDER BY val DESC LIMIT 10`);
 		format: num => `${num} Mini-Minigames`
 	},
 	{
-		name: 'Spooky box',
-		items: spookyTable.allItems,
-		run: async ({ item, ironmanOnly }) => {
-			const spookyBox = getItem('Spooky box');
-			const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(`
-SELECT id, (openable_scores->>'${spookyBox!.id}')::int as val FROM users WHERE
-${ironmanOnly ? '"minion.ironman" = true AND' : ''}
-openable_scores->>'${spookyBox!.id}' IS NOT NULL AND
-"collectionLogBank"->'${item.id}' IS NULL
-ORDER BY val DESC
-LIMIT 10`);
-			return result;
-		},
-		format: num => `${num} Spooky box${(num as number) > 1 ? 'es' : ''}`
-	},
-	{
 		name: 'Chambers of Xeric (CoX)',
 		items: CoXUniqueTable.allItems,
 		run: async ({ item, ironmanOnly }) => {
