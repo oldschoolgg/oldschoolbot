@@ -72,7 +72,7 @@ export const monsterTask: MinionTask = {
 		if (hasKourendHard) await ashSanctifierEffect(user, loot, duration, xpRes);
 
 		announceLoot({
-			user: await mUserFetch(user.id),
+			user,
 			monsterID: monster.id,
 			loot,
 			notifyDrops: monster.notifyDrops

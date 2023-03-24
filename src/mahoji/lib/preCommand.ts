@@ -1,7 +1,7 @@
 import { InteractionReplyOptions, TextChannel, User } from 'discord.js';
 import { CommandOptions } from 'mahoji/dist/lib/types';
 
-import { modifyBusyCounter } from '../../lib/busyCounterCache';
+import { modifyBusyCounter, userIsBusy } from '../../lib/busyCounterCache';
 import { badges, badgesCache, Emoji, usernameCache } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
 import { removeMarkdownEmojis, stripEmojis } from '../../lib/util';
@@ -63,6 +63,14 @@ export async function preCommand({
 			dontRunPostCommand?: boolean;
 	  }
 > {
+	debugLog('Attempt to run command', {
+		type: 'RUN_COMMAND',
+		command_name: abstractCommand.name,
+		user_id: userID,
+		guild_id: guildID,
+		channel_id: channelID,
+		options
+	});
 	CACHED_ACTIVE_USER_IDS.add(userID);
 	if (globalClient.isShuttingDown) {
 		return {
@@ -71,8 +79,8 @@ export async function preCommand({
 			dontRunPostCommand: true
 		};
 	}
-	const user = await mUserFetch(userID.toString());
-	if (user.isBusy && !bypassInhibitors && abstractCommand.name !== 'admin') {
+	const user = await mUserFetch(userID);
+	if (userIsBusy(userID) && !bypassInhibitors && abstractCommand.name !== 'admin') {
 		return { silent: true, reason: { content: 'You cannot use a command right now.' }, dontRunPostCommand: true };
 	}
 	modifyBusyCounter(userID, 1);
@@ -103,13 +111,4 @@ export async function preCommand({
 		});
 		return inhibitResult;
 	}
-
-	debugLog('Attempt to run command', {
-		type: 'RUN_COMMAND',
-		command_name: abstractCommand.name,
-		user_id: userID,
-		guild_id: guildID,
-		channel_id: channelID,
-		options
-	});
 }

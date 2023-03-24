@@ -35,7 +35,7 @@ import { parseStringBank } from '../../lib/util/parseStringBank';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import { allUsableItems } from '../lib/abstracted_commands/useCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch, userStatsUpdate } from '../mahojiSettings';
+import { userStatsUpdate } from '../mahojiSettings';
 
 async function giveMaxStats(user: MUser, level = 99, qp = MAX_QP) {
 	let updates: Prisma.UserUpdateArgs['data'] = {};
@@ -500,9 +500,8 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					return 'This will never happen...';
 				}
 				const user = await mUserFetch(userID.toString());
-				const mahojiUser = await mahojiUsersSettingsFetch(user.id);
 				if (options.irontoggle) {
-					const current = mahojiUser.minion_ironman;
+					const current = user.isIronman;
 					await user.update({
 						minion_ironman: !current
 					});
@@ -595,7 +594,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						skills_hitpoints: convertLVLtoXP(99),
 						skills_defence: convertLVLtoXP(99),
 						bank: user.bank.add(nexSupplies).bank,
-						GP: mahojiUser.GP + BigInt(10_000_000)
+						GP: user.GP + 10_000_000
 					});
 					return 'Gave you range gear, gp, gear and stats for nex.';
 				}

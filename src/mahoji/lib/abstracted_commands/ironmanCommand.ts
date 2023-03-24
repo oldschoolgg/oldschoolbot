@@ -9,7 +9,6 @@ import { prisma } from '../../../lib/settings/prisma';
 import { assert } from '../../../lib/util';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
-import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
 
 export async function ironmanCommand(
 	user: MUser,
@@ -73,7 +72,7 @@ After becoming an ironman:
 		);
 	}
 
-	const mUser = await mahojiUsersSettingsFetch(user.id);
+	const mUser = (await mUserFetch(user.id)).user;
 
 	type KeysThatArentReset =
 		| 'ironman_alts'
