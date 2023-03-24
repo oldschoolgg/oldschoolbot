@@ -9,6 +9,7 @@ import { z } from 'zod';
 import { DISCORD_SETTINGS, production } from '../config';
 import type { AbstractCommand } from '../mahoji/lib/inhibitors';
 import { SkillsEnum } from './skilling/types';
+import type { ActivityTaskData } from './types/minions';
 import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
 
@@ -462,6 +463,10 @@ export enum PeakTier {
 	Medium = 'medium',
 	Low = 'low'
 }
+
+export const perkTierCache = new Map<string, number>();
+
+export const minionActivityCache: Map<string, ActivityTaskData> = new Map();
 
 export const ParsedCustomEmojiWithGroups = /(?<animated>a?):(?<name>[^:]+):(?<id>\d{17,20})/;
 
