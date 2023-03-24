@@ -1,0 +1,16 @@
+# Set the version of docker compose to use
+version: '3.9'
+
+# The containers that compose the project
+services:
+  db:
+    image: postgres:13
+    restart: always
+    container_name: integration-tests-prisma
+    ports:
+      - '5435:1234'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: osb_integration_test
+      PGPORT: 1234

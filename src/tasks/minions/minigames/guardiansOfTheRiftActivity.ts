@@ -127,11 +127,15 @@ export const guardiansOfTheRiftTask: MinionTask = {
 		}
 		rewardsGuardianLoot.add(rewardsGuardianTable.roll(rewardsQty));
 
-		await userStatsUpdate(user.id, () => ({
-			gotr_rift_searches: {
-				increment: rewardsQty
-			}
-		}));
+		await userStatsUpdate(
+			user.id,
+			{
+				gotr_rift_searches: {
+					increment: rewardsQty
+				}
+			},
+			{}
+		);
 
 		const totalLoot = new Bank();
 		totalLoot.add(rewardsGuardianLoot);

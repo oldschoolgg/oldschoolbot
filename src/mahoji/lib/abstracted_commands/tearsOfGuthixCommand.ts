@@ -21,7 +21,10 @@ const ironmanExtraReqs = {
 export async function tearsOfGuthixCommand(user: MUser, channelID: string) {
 	if (minionIsBusy(user.id)) return `${user.minionName} is busy.`;
 	const currentDate = new Date().getTime();
-	const lastPlayedDate = Number(user.user.lastTearsOfGuthixTimestamp);
+
+	const currentStats = await user.fetchStats({ last_tears_of_guthix_timestamp: true });
+
+	const lastPlayedDate = Number(currentStats.last_tears_of_guthix_timestamp);
 	const difference = currentDate - lastPlayedDate;
 
 	// If they have already claimed a ToG in the past 7days

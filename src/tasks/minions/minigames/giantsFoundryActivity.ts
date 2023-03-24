@@ -33,8 +33,8 @@ export const giantsFoundryTask: MinionTask = {
 		let weaponName = '';
 		let highestQuality = 0;
 		let highestQualitySword = '';
-		const stats = await user.fetchStats();
-		const newWeapons = deepClone(stats.gf_weapons_made) as GiantsFoundryBank;
+		const currentStats = await user.fetchStats({ gf_weapons_made: true });
+		const newWeapons = deepClone(currentStats.gf_weapons_made) as GiantsFoundryBank;
 
 		for (let i = 0; i < quantity; i++) {
 			let quality = Math.min(Math.floor(randomVariation(metalScore - 5 + avgMouldBonus, 10)), 199);
@@ -60,15 +60,16 @@ export const giantsFoundryTask: MinionTask = {
 			duration
 		});
 
-		const currentUserReputation = user.user.foundry_reputation;
-
-		await userStatsUpdate(user.id, () => ({
-			gf_weapons_made: newWeapons
-		}));
-
-		await user.update({
-			foundry_reputation: currentUserReputation + reputationReceived
-		});
+		await userStatsUpdate(
+			user.id,
+			{
+				foundry_reputation: {
+					increment: reputationReceived
+				},
+				gf_weapons_made: newWeapons
+			},
+			{}
+		);
 
 		await incrementMinigameScore(userID, 'giants_foundry', quantity);
 

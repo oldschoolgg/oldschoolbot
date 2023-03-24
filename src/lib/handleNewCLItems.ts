@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 import { Events } from './constants';
 import { allCLItems, allCollectionLogsFlat } from './data/Collections';
 import { prisma } from './settings/prisma';
+import { fetchStatsForCL } from './util';
 import { fetchCLLeaderboard } from './util/clLeaderboard';
 import { formatOrdinal } from './util/formatOrdinal';
 
@@ -61,10 +62,11 @@ export async function handleNewCLItems({
 
 	for (const finishedCL of newlyCompletedCLs) {
 		const kcString = finishedCL.fmtProg
-			? `They finished after... ${finishedCL.fmtProg({
+			? `They finished after... ${await finishedCL.fmtProg({
 					getKC: (id: number) => user.getKC(id),
 					user,
-					minigames: await user.fetchMinigames()
+					minigames: await user.fetchMinigames(),
+					stats: await fetchStatsForCL(user)
 			  })}!`
 			: '';
 

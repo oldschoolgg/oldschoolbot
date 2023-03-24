@@ -10,7 +10,6 @@ import { randomVariation } from '../../../lib/util';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { getMahojiBank, mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings';
 import { NightmareMonster } from './../../../lib/minions/data/killableMonsters/index';
 
 const RawNightmare = Misc.Nightmare;
@@ -23,10 +22,9 @@ export const nightmareTask: MinionTask = {
 		const monsterID = isPhosani ? PHOSANI_NIGHTMARE_ID : NightmareMonster.id;
 		const monsterName = isPhosani ? "Phosani's Nightmare" : 'Nightmare';
 		const user = await mUserFetch(userID);
-		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 		const team = method === 'solo' ? [user.id] : [user.id, '1', '2', '3'];
 
-		const [userStats] = getNightmareGearStats(user, team, isPhosani);
+		const [userStats] = await getNightmareGearStats(user, team, isPhosani);
 		const parsedUsers = team.map(id => ({ ...userStats, id }));
 		const userLoot = new Bank();
 		let kc = 0;
@@ -58,8 +56,7 @@ export const nightmareTask: MinionTask = {
 			taskQuantity: null
 		});
 
-		const bank = getMahojiBank(mahojiUser);
-		if (bank.has('Slepey tablet') || mahojiUser.bitfield.includes(BitField.HasSlepeyTablet)) {
+		if (user.bank.has('Slepey tablet') || user.bitfield.includes(BitField.HasSlepeyTablet)) {
 			userLoot.remove('Slepey tablet', userLoot.amount('Slepey tablet'));
 		}
 		// Fix purple items on solo kills
@@ -68,7 +65,7 @@ export const nightmareTask: MinionTask = {
 		if (kc) await user.incrementKC(monsterID, kc);
 
 		announceLoot({
-			user: await mUserFetch(user.id),
+			user,
 			monsterID,
 			loot: itemsAdded,
 			notifyDrops: NightmareMonster.notifyDrops
@@ -107,7 +104,7 @@ export const nightmareTask: MinionTask = {
 				previousCL
 			});
 
-			const kc = user.getKC(monsterID);
+			const kc = await user.getKC(monsterID);
 			handleTripFinish(
 				user,
 				channelID,
