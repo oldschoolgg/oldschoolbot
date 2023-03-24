@@ -13,7 +13,6 @@ import { DisassembleTaskOptions } from '../invention/disassemble';
 import { ResearchTaskOptions } from '../invention/research';
 import killableMonsters from '../minions/data/killableMonsters';
 import { Planks } from '../minions/data/planks';
-import { getActivityOfUser } from '../settings/settings';
 import Agility from '../skilling/skills/agility';
 import Cooking from '../skilling/skills/cooking';
 import Crafting from '../skilling/skills/crafting';
@@ -86,6 +85,7 @@ import {
 import { formatDuration, itemNameFromID, randomVariation } from '../util';
 import { stringMatches } from './cleanString';
 import { formatOrdinal } from './formatOrdinal';
+import { getActivityOfUser } from './minionIsBusy';
 import { toTitleCase } from './toTitleCase';
 
 export function minionStatus(user: MUser) {

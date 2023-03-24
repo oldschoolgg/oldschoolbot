@@ -8,7 +8,7 @@ import { timePerAlch } from '../mahoji/lib/abstracted_commands/alchCommand';
 import { userStatsUpdate } from '../mahoji/mahojiSettings';
 import { addXP } from './addXP';
 import { userIsBusy } from './busyCounterCache';
-import { badges, BitField, Emoji, PerkTier, projectiles, Roles, usernameCache } from './constants';
+import { badges, BitField, Emoji, PerkTier, perkTierCache, projectiles, Roles, usernameCache } from './constants';
 import { allPetIDs } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
 import { GearSetup, UserFullGearSetup } from './gear';
@@ -70,8 +70,6 @@ const tier3ElligibleBits = [
 	BitField.isModerator,
 	BitField.IsWikiContributor
 ];
-
-const perkTierCache = new Map<string, number>();
 
 export function syncPerkTierOfUser(user: MUser) {
 	perkTierCache.set(user.id, user.perkTier(true));
