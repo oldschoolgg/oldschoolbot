@@ -65,7 +65,7 @@ export const groupoMonsterTask: MinionTask = {
 			resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${loot}||\n`;
 
 			announceLoot({
-				user: await mUserFetch(user.id),
+				user,
 				monsterID: monster.id,
 				loot,
 				notifyDrops: monster.notifyDrops,

@@ -45,7 +45,7 @@ export async function buttonUserPicker({
 
 		collector.on('collect', async i => {
 			const { id } = i.user;
-			const mUser = await mahojiUsersSettingsFetch(id);
+			const mUser = await mahojiUsersSettingsFetch(id, { minion_ironman: true });
 			const isCreator = id === creator;
 			let notAllowed = !ironmenAllowed && mUser.minion_ironman;
 			if (notAllowed && !isCreator) {

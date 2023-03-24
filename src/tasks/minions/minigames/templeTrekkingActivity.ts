@@ -44,7 +44,7 @@ export const templeTrekkingTask: MinionTask = {
 		const { channelID, quantity, userID, difficulty, duration } = data;
 		const user = await mUserFetch(userID);
 		await incrementMinigameScore(user.id, 'temple_trekking', quantity);
-		const userBank = user.bank;
+		const userBank = user.bank.clone();
 		let loot = new Bank();
 
 		const rewardToken = stringMatches(difficulty, 'hard')

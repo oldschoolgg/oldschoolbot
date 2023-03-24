@@ -9,7 +9,6 @@ import { prisma } from '../../../lib/settings/prisma';
 import { assert } from '../../../lib/util';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
-import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
 
 export async function ironmanCommand(user: MUser, interaction: ChatInputCommandInteraction | null) {
 	if (minionIsBusy(user.id)) return 'Your minion is busy.';
@@ -43,7 +42,7 @@ Type \`confirm permanent ironman\` if you understand the above information, and 
 		);
 	}
 
-	const mUser = await mahojiUsersSettingsFetch(user.id);
+	const mUser = (await mUserFetch(user.id)).user;
 
 	type KeysThatArentReset =
 		| 'ironman_alts'
