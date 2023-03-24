@@ -41,11 +41,6 @@ export async function mahojiUsersSettingsFetch<T extends Prisma.UserSelect = Pri
 ): Promise<SelectedUser<T>> {
 	const id = BigInt(userID);
 
-	let keys: object | undefined = selectKeys;
-	if (!selectKeys || Object.keys(selectKeys).length === 0) {
-		keys = { user_id: true };
-	}
-
 	return prisma.user.upsert({
 		create: {
 			id: id.toString()
@@ -54,7 +49,7 @@ export async function mahojiUsersSettingsFetch<T extends Prisma.UserSelect = Pri
 		where: {
 			id: id.toString()
 		},
-		select: keys
+		select: selectKeys
 	}) as SelectedUser<T>;
 }
 
