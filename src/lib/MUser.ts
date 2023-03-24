@@ -6,11 +6,10 @@ import { Item } from 'oldschooljs/dist/meta/types';
 
 import { SupportServer } from '../config';
 import { timePerAlch } from '../mahoji/lib/abstracted_commands/alchCommand';
-import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
+import { userStatsUpdate } from '../mahoji/mahojiSettings';
 import { addXP } from './addXP';
 import { userIsBusy } from './busyCounterCache';
-import { ClueTiers } from './clues/clueTiers';
-import { badges, BitField, Emoji, PerkTier, projectiles, Roles, usernameCache } from './constants';
+import { badges, BitField, Emoji, PerkTier, perkTierCache, projectiles, Roles, usernameCache } from './constants';
 import { allPetIDs } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
 import { GearSetup, UserFullGearSetup } from './gear/types';
@@ -38,7 +37,7 @@ import { minionIsBusy } from './util/minionIsBusy';
 import { minionName } from './util/minionUtils';
 import resolveItems from './util/resolveItems';
 
-export async function mahojiUserSettingsUpdate(user: string | bigint, data: Prisma.UserUpdateArgs['data']) {
+export async function mahojiUserSettingsUpdate(user: string | bigint, data: Prisma.UserUncheckedUpdateInput) {
 	try {
 		const newUser = await prisma.user.update({
 			data,
@@ -69,30 +68,53 @@ const tier3ElligibleBits = [
 	BitField.IsWikiContributor
 ];
 
-const perkTierCache = new Map<string, number>();
-
 export function syncPerkTierOfUser(user: MUser) {
 	perkTierCache.set(user.id, user.perkTier(true));
 }
 
+export type SelectedUserStats<T extends Prisma.UserStatsSelect> = {
+	[K in keyof T]: K extends keyof UserStats ? UserStats[K] : never;
+};
+
 export class MUserClass {
 	user: Readonly<User>;
 	id: string;
+	bank!: Bank;
+	bankWithGP!: Bank;
+	cl!: Bank;
+	allItemsOwned!: Bank;
 
 	constructor(user: User) {
 		this.user = user;
 		this.id = user.id;
+		this.updateProperties();
 
 		syncPerkTierOfUser(this);
+	}
+
+	private updateProperties() {
+		this.bank = new Bank(this.user.bank as ItemBank);
+		this.bank.freeze();
+
+		this.bankWithGP = new Bank(this.user.bank as ItemBank);
+		this.bankWithGP.add('Coins', this.GP);
+		this.bankWithGP.freeze();
+
+		this.cl = new Bank(this.user.collectionLogBank as ItemBank);
+		this.cl.freeze();
+
+		this.allItemsOwned = this.calculateAllItemsOwned();
+		this.allItemsOwned.freeze();
 	}
 
 	countSkillsAtleast99() {
 		return Object.values(this.skillsAsLevels).filter(lvl => lvl >= 99).length;
 	}
 
-	async update(data: Prisma.UserUpdateArgs['data']) {
+	async update(data: Prisma.UserUncheckedUpdateInput) {
 		const result = await mahojiUserSettingsUpdate(this.id, data);
 		this.user = result.newUser;
+		this.updateProperties();
 		return result;
 	}
 
@@ -115,18 +137,10 @@ export class MUserClass {
 			.sort((a, b) => alchPrice(bank, b, duration) - alchPrice(bank, a, duration));
 	}
 
-	openableScores() {
-		return this.user.openable_scores as ItemBank;
-	}
-
 	async setAttackStyle(newStyles: AttackStyles[]) {
 		await mahojiUserSettingsUpdate(this.id, {
 			attack_style: uniqueArr(newStyles)
 		});
-	}
-
-	get bankWithGP() {
-		return this.bank.add('Coins', this.GP);
 	}
 
 	get kourendFavour() {
@@ -185,18 +199,6 @@ export class MUserClass {
 		};
 	}
 
-	get bank() {
-		return new Bank(this.user.bank as ItemBank);
-	}
-
-	get sacrificedItems() {
-		return new Bank(this.user.sacrificedBank as ItemBank);
-	}
-
-	get cl() {
-		return new Bank(this.user.collectionLogBank as ItemBank);
-	}
-
 	get minionName() {
 		return minionName(this);
 	}
@@ -241,8 +243,9 @@ export class MUserClass {
 		return addXP(this, params);
 	}
 
-	getKC(monsterID: number) {
-		return (this.user.monsterScores as ItemBank)[monsterID] ?? 0;
+	async getKC(monsterID: number) {
+		const stats = await this.fetchStats({ monster_scores: true });
+		return (stats.monster_scores as ItemBank)[monsterID] ?? 0;
 	}
 
 	getAttackStyles(): AttackStyles[] {
@@ -254,14 +257,16 @@ export class MUserClass {
 	}
 
 	async incrementKC(monsterID: number, amountToAdd = 1) {
-		const newKCs = new Bank().add(this.user.monsterScores as ItemBank).add(monsterID, amountToAdd);
-		const { newUser } = await mahojiUserSettingsUpdate(this.id, {
-			monsterScores: newKCs.bank
-		});
-
-		this.user = newUser;
-
-		return this;
+		const stats = await this.fetchStats({ monster_scores: true });
+		const newKCs = new Bank(stats.monster_scores as ItemBank).add(monsterID, amountToAdd);
+		await userStatsUpdate(
+			this.id,
+			{
+				monster_scores: newKCs.bank
+			},
+			{}
+		);
+		return { newKC: newKCs.amount(monsterID) };
 	}
 
 	public async addItemsToBank({
@@ -283,6 +288,7 @@ export class MUserClass {
 			userID: this.id
 		});
 		this.user = res.newUser;
+		this.updateProperties();
 		return res;
 	}
 
@@ -292,6 +298,7 @@ export class MUserClass {
 			itemsToRemove: bankToRemove
 		});
 		this.user = res.newUser;
+		this.updateProperties();
 		return res;
 	}
 
@@ -310,10 +317,9 @@ export class MUserClass {
 		return false;
 	}
 
-	allItemsOwned() {
-		const bank = new Bank();
+	private calculateAllItemsOwned(): Bank {
+		const bank = new Bank(this.bank);
 
-		bank.add(this.bank);
 		bank.add('Coins', Number(this.user.GP));
 		if (this.user.minion_equippedPet) {
 			bank.add(this.user.minion_equippedPet);
@@ -408,11 +414,14 @@ export class MUserClass {
 	}
 
 	async incrementCreatureScore(creatureID: number, amountToAdd = 1) {
-		const currentCreatureScores = this.user.creatureScores;
-		const { newUser } = await mahojiUserSettingsUpdate(this.id, {
-			creatureScores: addItemToBank(currentCreatureScores as ItemBank, creatureID, amountToAdd)
-		});
-		this.user = newUser;
+		const stats = await this.fetchStats({ creature_scores: true });
+		await userStatsUpdate(
+			this.id,
+			{
+				creature_scores: addItemToBank(stats.creature_scores as ItemBank, creatureID, amountToAdd)
+			},
+			{}
+		);
 	}
 
 	get blowpipe() {
@@ -427,6 +436,7 @@ export class MUserClass {
 		});
 		const { newUser } = await mahojiUserSettingsUpdate(this.id, updates);
 		this.user = newUser;
+		this.updateProperties();
 	}
 
 	async specialRemoveItems(bankToRemove: Bank) {
@@ -499,7 +509,7 @@ export class MUserClass {
 			}
 			const scales = Math.ceil((10 / 3) * dart[1]);
 			const rawBlowpipeData = this.blowpipe;
-			if (!this.allItemsOwned().has('Toxic blowpipe') || !rawBlowpipeData) {
+			if (!this.allItemsOwned.has('Toxic blowpipe') || !rawBlowpipeData) {
 				throw new Error("You don't have a Toxic blowpipe.");
 			}
 			if (!rawBlowpipeData.dartID || !rawBlowpipeData.dartQuantity) {
@@ -532,13 +542,15 @@ export class MUserClass {
 		}
 		const { newUser } = await mahojiUserSettingsUpdate(this.id, updates);
 		this.user = newUser;
+		this.updateProperties();
 		return {
 			realCost
 		};
 	}
 
-	getCreatureScore(creatureID: number) {
-		return (this.user.creatureScores as ItemBank)[creatureID] ?? 0;
+	async getCreatureScore(creatureID: number) {
+		const stats = await this.fetchStats({ creature_scores: true });
+		return (stats.creature_scores as ItemBank)[creatureID] ?? 0;
 	}
 
 	calculateAddItemsToCLUpdates({
@@ -588,10 +600,14 @@ export class MUserClass {
 	}
 
 	async sync() {
-		this.user = await mahojiUsersSettingsFetch(this.id);
+		const newUser = await prisma.user.findUnique({ where: { id: this.id } });
+		if (!newUser) throw new Error(`Failed to sync user ${this.id}, no record was found`);
+		this.user = newUser;
+		this.updateProperties();
 	}
 
-	async fetchStats(): Promise<UserStats> {
+	async fetchStats<T extends Prisma.UserStatsSelect>(selectKeys: T): Promise<SelectedUserStats<T>> {
+		const keys = Object.keys(selectKeys).length === 0 ? { user_id: true } : selectKeys;
 		const result = await prisma.userStats.upsert({
 			where: {
 				user_id: BigInt(this.id)
@@ -599,25 +615,12 @@ export class MUserClass {
 			create: {
 				user_id: BigInt(this.id)
 			},
-			update: {}
+			update: {},
+			select: keys
 		});
-		if (!result) throw new Error(`fetchStats returned no result for ${this.id}`);
-		return result;
-	}
 
-	clueScores() {
-		return Object.entries(this.openableScores())
-			.map(entry => {
-				const tier = ClueTiers.find(i => i.id === parseInt(entry[0]));
-				if (!tier) return;
-				return {
-					tier,
-					casket: getOSItem(tier.id),
-					clueScroll: getOSItem(tier.scrollID),
-					opened: this.openableScores()[tier.id] ?? 0
-				};
-			})
-			.filter(notEmpty);
+		if (!result) throw new Error(`fetchStats returned no result for ${this.id}`);
+		return result as SelectedUserStats<T>;
 	}
 
 	get logName() {
@@ -648,8 +651,17 @@ export class MUserClass {
 declare global {
 	export type MUser = MUserClass;
 }
-export async function srcMUserFetch(userID: string | string) {
-	const user = await mahojiUsersSettingsFetch(userID);
+
+export async function srcMUserFetch(userID: string) {
+	const user = await prisma.user.upsert({
+		create: {
+			id: userID
+		},
+		update: {},
+		where: {
+			id: userID
+		}
+	});
 	return new MUserClass(user);
 }
 
