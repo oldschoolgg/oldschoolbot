@@ -49,7 +49,7 @@ export function determineMiningTime({
 	let userMaxTripTicks = (calcMaxTripLength(user, 'Mining') - passedDuration) / (Time.Second * 0.6);
 
 	if (ore.name === 'Amethyst') {
-		userMaxTripTicks *= 2;
+		userMaxTripTicks *= 1.5;
 	}
 
 	while (timeElapsed < userMaxTripTicks) {
