@@ -31,20 +31,31 @@ export function mahojiParseNumber({
 	return parsed;
 }
 
-// Is not typesafe, returns only what is selected, but will say it contains everything.
-export async function mahojiUsersSettingsFetch(user: bigint | string, select?: Prisma.UserSelect) {
-	const result = await prisma.user.upsert({
-		where: {
-			id: user.toString()
-		},
-		select,
+export type SelectedUser<T extends Prisma.UserSelect> = {
+	[K in keyof T]: K extends keyof User ? User[K] : never;
+};
+
+export async function mahojiUsersSettingsFetch<T extends Prisma.UserSelect = Prisma.UserSelect>(
+	userID: string | bigint,
+	selectKeys: T
+): Promise<SelectedUser<T>> {
+	const id = BigInt(userID);
+
+	let keys: object | undefined = selectKeys;
+	if (!selectKeys || Object.keys(selectKeys).length === 0) {
+		keys = { user_id: true };
+	}
+
+	return prisma.user.upsert({
 		create: {
-			id: user.toString()
+			id: id.toString()
 		},
-		update: {}
-	});
-	if (!result) throw new Error(`mahojiUsersSettingsFetch returned no result for ${user}`);
-	return result as User;
+		update: {},
+		where: {
+			id: id.toString()
+		},
+		select: keys
+	}) as SelectedUser<T>;
 }
 
 export function patronMsg(tierNeeded: number) {
@@ -53,7 +64,7 @@ export function patronMsg(tierNeeded: number) {
 	} Patron to use this command. You can become a patron to support the bot here: <https://www.patreon.com/oldschoolbot>`;
 }
 
-export function getMahojiBank(user: User) {
+export function getMahojiBank(user: { bank: Prisma.JsonValue }) {
 	return new Bank(user.bank as ItemBank);
 }
 

@@ -8,6 +8,7 @@ import { fetchSponsors, getUserIdFromGithubID } from './http/util';
 import backgroundImages from './minions/data/bankBackgrounds';
 import { getUsersPerkTier, mahojiUserSettingsUpdate } from './MUser';
 import { roboChimpUserFetch } from './roboChimp';
+import { prisma } from './settings/prisma';
 import { Patron } from './types';
 import { logError } from './util/logError';
 import { sendToChannelID } from './util/webhook';
@@ -83,7 +84,8 @@ class PatreonTask {
 	public enabled = production;
 
 	async validatePerks(userID: string, shouldHave: PerkTier): Promise<string | null> {
-		const user = await mUserFetch(userID);
+		const user = await prisma.user.findFirst({ where: { id: userID }, select: { bitfield: true } });
+		if (!user) return null;
 		let perkTier: PerkTier | 0 | null = getUsersPerkTier([...user.bitfield]);
 		if (perkTier === 0 || perkTier === PerkTier.One) perkTier = null;
 
@@ -99,7 +101,11 @@ class PatreonTask {
 	}
 
 	async changeTier(userID: string, from: PerkTier, to: PerkTier) {
-		const user = await mUserFetch(userID);
+		const user = await prisma.user.findFirst({
+			where: { id: userID },
+			select: { bitfield: true, bankBackground: true }
+		});
+		if (!user) return null;
 
 		const userBitfield = user.bitfield;
 
@@ -109,29 +115,33 @@ class PatreonTask {
 
 		// Remove any/all the patron bits from this user.
 		try {
-			await user.update({
+			await mahojiUserSettingsUpdate(userID, {
 				bitfield: newBitfield
 			});
 		} catch (_) {}
 
 		// Remove patron bank background
-		const bg = backgroundImages.find(bg => bg.id === user.user.bankBackground);
+		const bg = backgroundImages.find(bg => bg.id === user.bankBackground);
 		if (bg && bg.perkTierNeeded && bg.perkTierNeeded > to) {
-			await user.update({
+			await mahojiUserSettingsUpdate(userID, {
 				bankBackground: 1
 			});
 		}
 	}
 
 	async givePerks(userID: string, perkTier: PerkTier) {
-		const user = await mUserFetch(userID);
+		const user = await prisma.user.findFirst({
+			where: { id: userID },
+			select: { bitfield: true, badges: true }
+		});
+		if (!user) return null;
 
-		const userBadges = user.user.badges;
+		const userBadges = user.badges;
 
 		// If they have neither the limited time badge or normal badge, give them the normal one.
 		if (!userBadges.includes(BadgesEnum.Patron) && !userBadges.includes(BadgesEnum.LimitedPatron)) {
 			try {
-				await user.update({
+				await mahojiUserSettingsUpdate(userID, {
 					badges: {
 						push: BadgesEnum.Patron
 					}
@@ -147,17 +157,21 @@ class PatreonTask {
 				bitFieldFromPerkTier(perkTier)
 			];
 
-			await user.update({
+			await mahojiUserSettingsUpdate(userID, {
 				bitfield: newField
 			});
 		} catch (_) {}
 	}
 
 	async removePerks(userID: string) {
-		const user = await mUserFetch(userID);
+		const user = await prisma.user.findFirst({
+			where: { id: userID },
+			select: { bitfield: true, badges: true, bank_bg_hex: true, bankBackground: true }
+		});
+		if (!user) return null;
 
 		const userBitfield = user.bitfield;
-		const userBadges = user.user.badges;
+		const userBadges = user.badges;
 
 		// Remove any/all the patron bits from this user.
 
@@ -172,13 +186,13 @@ class PatreonTask {
 		});
 
 		// Remove patron bank background
-		const bg = backgroundImages.find(bg => bg.id === user.user.bankBackground);
+		const bg = backgroundImages.find(bg => bg.id === user.bankBackground);
 		if (bg?.perkTierNeeded) {
 			await mahojiUserSettingsUpdate(userID, {
 				bankBackground: 1
 			});
 		}
-		if (user.user.bank_bg_hex !== null) {
+		if (user.bank_bg_hex !== null) {
 			await mahojiUserSettingsUpdate(userID, {
 				bank_bg_hex: null
 			});
@@ -201,6 +215,7 @@ class PatreonTask {
 	}
 
 	async run() {
+		debugLog('Starting patreon task...');
 		const fetchedPatrons = await this.fetchPatrons();
 		let result = [];
 
@@ -225,7 +240,8 @@ class PatreonTask {
 				continue;
 			}
 
-			const user = await mUserFetch(patron.discordID);
+			const user = await prisma.user.findFirst({ where: { id: patron.discordID }, select: { bitfield: true } });
+			if (!user) continue;
 
 			const roboChimpUser = await roboChimpUserFetch(patron.discordID);
 
@@ -303,6 +319,7 @@ class PatreonTask {
 		}
 
 		cacheBadges();
+		debugLog('Finished running patreon task...');
 	}
 
 	async fetchPatrons(url?: string): Promise<Patron[]> {

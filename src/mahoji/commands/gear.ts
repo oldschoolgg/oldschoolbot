@@ -108,7 +108,7 @@ export const gearCommand: OSBMahojiCommand = {
 					description: 'Equip a pet.',
 					required: false,
 					autocomplete: async (value, user) => {
-						const bank = getMahojiBank(await mahojiUsersSettingsFetch(user.id));
+						const bank = getMahojiBank(await mahojiUsersSettingsFetch(user.id, { bank: true }));
 						return allPetIDs
 							.filter(i => bank.has(i))
 							.map(i => itemNameFromID(i)!)
