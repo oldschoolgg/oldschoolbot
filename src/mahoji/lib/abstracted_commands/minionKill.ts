@@ -174,14 +174,13 @@ function applySkillBoost(user: MUser, duration: number, styles: AttackStyles[]):
 }
 
 export async function minionKillCommand(
-	userID: string,
+	user: MUser,
 	interaction: ChatInputCommandInteraction,
 	channelID: string,
 	name: string,
 	quantity: number | undefined,
 	method: PvMMethod | undefined
 ) {
-	const user = await mUserFetch(userID);
 	if (user.minionIsBusy) {
 		return 'Your minion is busy.';
 	}

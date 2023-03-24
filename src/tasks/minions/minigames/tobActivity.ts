@@ -1,4 +1,4 @@
-import { calcPercentOfNum, calcWhatPercent, noOp, objectEntries, roll, shuffleArr } from 'e';
+import { calcPercentOfNum, calcWhatPercent, objectEntries, roll, shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
@@ -97,7 +97,7 @@ Unique chance: ${result.percentChanceOfUnique.toFixed(2)}% (1 in ${convertPercen
 		await Promise.all(allUsers.map(u => incrementMinigameScore(u.id, minigameID, 1)));
 
 		for (let [userID, _userLoot] of Object.entries(result.loot)) {
-			const user = await mUserFetch(userID).catch(noOp);
+			const user = allUsers.find(i => i.id === userID);
 			if (!user) continue;
 			const userDeaths = deaths[users.indexOf(user.id)];
 

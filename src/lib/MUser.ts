@@ -5,10 +5,10 @@ import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { timePerAlch } from '../mahoji/lib/abstracted_commands/alchCommand';
-import { mahojiUsersSettingsFetch, userStatsUpdate } from '../mahoji/mahojiSettings';
+import { userStatsUpdate } from '../mahoji/mahojiSettings';
 import { addXP } from './addXP';
 import { userIsBusy } from './busyCounterCache';
-import { badges, BitField, Emoji, PerkTier, projectiles, Roles, usernameCache } from './constants';
+import { badges, BitField, Emoji, PerkTier, perkTierCache, projectiles, Roles, usernameCache } from './constants';
 import { allPetIDs } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
 import { GearSetup, UserFullGearSetup } from './gear';
@@ -40,7 +40,7 @@ import { minionIsBusy } from './util/minionIsBusy';
 import { minionName } from './util/minionUtils';
 import resolveItems from './util/resolveItems';
 
-export async function mahojiUserSettingsUpdate(user: string | bigint, data: Prisma.UserUpdateArgs['data']) {
+export async function mahojiUserSettingsUpdate(user: string | bigint, data: Prisma.UserUncheckedUpdateInput) {
 	try {
 		const newUser = await prisma.user.update({
 			data,
@@ -70,8 +70,6 @@ const tier3ElligibleBits = [
 	BitField.isModerator,
 	BitField.IsWikiContributor
 ];
-
-const perkTierCache = new Map<string, number>();
 
 export function syncPerkTierOfUser(user: MUser) {
 	perkTierCache.set(user.id, user.perkTier(true));
@@ -120,7 +118,7 @@ export class MUserClass {
 		return Object.values(this.skillsAsLevels).filter(lvl => lvl >= 99).length;
 	}
 
-	async update(data: Prisma.UserUpdateArgs['data']) {
+	async update(data: Prisma.UserUncheckedUpdateInput) {
 		const result = await mahojiUserSettingsUpdate(this.id, data);
 		this.user = result.newUser;
 		this.updateProperties();
@@ -560,8 +558,8 @@ export class MUserClass {
 	}
 
 	async getCreatureScore(creatureID: number) {
-		const creatureScores = await this.fetchStats({ creature_scores: true });
-		return (creatureScores as ItemBank)[creatureID] ?? 0;
+		const stats = await this.fetchStats({ creature_scores: true });
+		return (stats.creature_scores as ItemBank)[creatureID] ?? 0;
 	}
 
 	calculateAddItemsToCLUpdates({
@@ -619,7 +617,9 @@ export class MUserClass {
 	}
 
 	async sync() {
-		this.user = await mahojiUsersSettingsFetch(this.id);
+		const newUser = await prisma.user.findUnique({ where: { id: this.id } });
+		if (!newUser) throw new Error(`Failed to sync user ${this.id}, no record was found`);
+		this.user = newUser;
 		this.updateProperties();
 	}
 
@@ -668,8 +668,17 @@ export class MUserClass {
 declare global {
 	export type MUser = MUserClass;
 }
-export async function srcMUserFetch(userID: string | string) {
-	const user = await mahojiUsersSettingsFetch(userID);
+
+export async function srcMUserFetch(userID: string) {
+	const user = await prisma.user.upsert({
+		create: {
+			id: userID
+		},
+		update: {},
+		where: {
+			id: userID
+		}
+	});
 	return new MUserClass(user);
 }
 

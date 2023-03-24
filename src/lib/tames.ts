@@ -599,7 +599,6 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 			const collectable = collectables.find(c => c.item.id === itemID)!;
 			const totalQuantity = quantity * collectable.quantity;
 			const loot = new Bank().add(collectable.item.id, totalQuantity);
-			const user = await mUserFetch(activity.user_id);
 			let str = `${user}, ${tameName(tame)} finished collecting ${totalQuantity}x ${
 				collectable.item.name
 			}. (${Math.round((totalQuantity / (activity.duration / Time.Minute)) * 60).toLocaleString()}/hr)`;

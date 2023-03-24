@@ -53,7 +53,7 @@ import resolveItems from '../../lib/util/resolveItems';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import { allUsableItems } from '../lib/abstracted_commands/useCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch, userStatsUpdate } from '../mahojiSettings';
+import { userStatsUpdate } from '../mahojiSettings';
 import { generateNewTame } from './nursery';
 import { tameImage } from './tames';
 
@@ -630,7 +630,6 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					return 'This will never happen...';
 				}
 				const user = await mUserFetch(userID.toString());
-				const mahojiUser = await mahojiUsersSettingsFetch(user.id);
 
 				if (options.settamelvl) {
 					const tame = await getUsersTame(user);
@@ -653,7 +652,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					return 'reset your last contract date';
 				}
 				if (options.irontoggle) {
-					const current = mahojiUser.minion_ironman;
+					const current = user.isIronman;
 					await user.update({
 						minion_ironman: !current
 					});
@@ -803,7 +802,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						.add('Crystal acorn', 100)
 						.add('Grand crystal acorn', 100);
 
-					const currentBitfields = mahojiUser.bitfield ?? [];
+					const currentBitfields = user.bitfield ?? [];
 					await mahojiUserSettingsUpdate(user.id, {
 						gear_melee: melee.raw() as Prisma.InputJsonObject,
 						gear_mage: mage.raw() as Prisma.InputJsonObject,
@@ -821,7 +820,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						skills_farming: convertLVLtoXP(120),
 						QP: 5000,
 						bank: user.bank.add(supplies).bank,
-						GP: mahojiUser.GP + BigInt(1_000_000_000),
+						GP: user.GP + 1_000_000_000,
 						void_staff_charges: 10_000,
 						bitfield: [...new Set([...currentBitfields, BitField.HasScrollOfFarming])]
 					});
@@ -849,7 +848,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						skills_hitpoints: convertLVLtoXP(99),
 						skills_defence: convertLVLtoXP(99),
 						bank: user.bank.add(nexSupplies).bank,
-						GP: mahojiUser.GP + BigInt(10_000_000)
+						GP: user.GP + 10_000_000
 					});
 					return 'Gave you range gear, gp, gear and stats for nex.';
 				}

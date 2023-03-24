@@ -1,4 +1,4 @@
-import { tame_growth, User } from '@prisma/client';
+import { tame_growth } from '@prisma/client';
 import { ChatInputCommandInteraction } from 'discord.js';
 import { randArrItem, reduceNumByPercent } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
@@ -14,7 +14,6 @@ import { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export async function generateNewTame(user: MUser, species: Species) {
 	let shinyChance = user.hasEquippedOrInBank(['Ring of luck'])
@@ -49,8 +48,8 @@ export async function generateNewTame(user: MUser, species: Species) {
 	return tame;
 }
 
-async function view(user: MUser, mahojiUser: User) {
-	const nursery = mahojiUser.nursery as Nursery;
+async function view(user: MUser) {
+	const nursery = user.user.nursery as Nursery;
 	if (!nursery) {
 		return "You don't have a nursery built yet! You can build one using `/nursery build`";
 	}
@@ -94,8 +93,8 @@ async function view(user: MUser, mahojiUser: User) {
 	)} until it hatches. You put it in ${formatDuration(diff)} ago.${masterString}`;
 }
 
-async function fuelCommand(interaction: ChatInputCommandInteraction, user: MUser, mahojiUser: User) {
-	const nursery = mahojiUser.nursery as Nursery;
+async function fuelCommand(interaction: ChatInputCommandInteraction, user: MUser) {
+	const nursery = user.user.nursery as Nursery;
 	if (!nursery) {
 		return "You don't have a nursery.";
 	}
@@ -123,8 +122,8 @@ async function fuelCommand(interaction: ChatInputCommandInteraction, user: MUser
 	return `You fueled your nursery, it's now ready to keep an egg warm! Removed ${cost} from your bank.`;
 }
 
-async function buildCommand(user: MUser, mahojiUser: User) {
-	const nursery = mahojiUser.nursery as Nursery;
+async function buildCommand(user: MUser) {
+	const nursery = user.user.nursery as Nursery;
 	if (nursery) {
 		return 'You already have a nursery built.';
 	}
@@ -153,8 +152,8 @@ async function buildCommand(user: MUser, mahojiUser: User) {
 	}`;
 }
 
-async function addCommand(interaction: ChatInputCommandInteraction, user: MUser, mahojiUser: User, itemName: string) {
-	const nursery = mahojiUser.nursery as Nursery | null;
+async function addCommand(interaction: ChatInputCommandInteraction, user: MUser, itemName: string) {
+	const nursery = user.user.nursery as Nursery | null;
 	if (!nursery) {
 		return "You don't have a nursery built yet, so you can't add an egg to it.";
 	}
@@ -233,10 +232,9 @@ export const nurseryCommand: OSBMahojiCommand = {
 		interaction
 	}: CommandRunOptions<{ build?: {}; fuel?: {}; add_egg?: { item: string }; check?: {} }>) => {
 		const user = await mUserFetch(userID);
-		const mahojiUser = await mahojiUsersSettingsFetch(userID);
-		if (options.build) return buildCommand(user, mahojiUser);
-		if (options.fuel) return fuelCommand(interaction, user, mahojiUser);
-		if (options.add_egg) return addCommand(interaction, user, mahojiUser, options.add_egg.item);
-		return view(user, mahojiUser);
+		if (options.build) return buildCommand(user);
+		if (options.fuel) return fuelCommand(interaction, user);
+		if (options.add_egg) return addCommand(interaction, user, options.add_egg.item);
+		return view(user);
 	}
 };

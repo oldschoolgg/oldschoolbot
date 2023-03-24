@@ -188,7 +188,9 @@ const tripFinishEffects: TripFinishEffect[] = [
 				default: {
 				}
 			}
-			await user.addItemsToBank({ items: bonusLoot, collectionLog: true });
+			if (bonusLoot.length > 0) {
+				await user.addItemsToBank({ items: bonusLoot, collectionLog: true });
+			}
 		}
 	},
 	{
