@@ -9,7 +9,7 @@ import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
 import Farming from '../../lib/skilling/skills/farming';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FarmingActivityTaskOptions } from '../../lib/types/minions';
-import { assert, rand, roll, skillingPetDropRate } from '../../lib/util';
+import { assert, roll, skillingPetDropRate } from '../../lib/util';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import { getFarmingKeyFromName } from '../../lib/util/farmingHelpers';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
@@ -242,11 +242,11 @@ export const farmingTask: MinionTask = {
 							typeof plantToHarvest.woodcuttingXp === 'number'
 					);
 
-					const amountOfLogs = rand(5, 10) * alivePlants;
+					const amountOfLogs = randInt(5, 10) * alivePlants;
 					loot.add(plantToHarvest.outputLogs, amountOfLogs);
 
 					if (plantToHarvest.outputRoots) {
-						loot.add(plantToHarvest.outputRoots, rand(1, 4) * alivePlants);
+						loot.add(plantToHarvest.outputRoots, randInt(1, 4) * alivePlants);
 					}
 
 					woodcuttingXp += amountOfLogs * plantToHarvest.woodcuttingXp!;

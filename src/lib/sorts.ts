@@ -2,7 +2,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 
 export const BankSortMethods = ['value', 'alch', 'name', 'quantity'] as const;
 
-export type BankSortMethod = typeof BankSortMethods[number];
+export type BankSortMethod = (typeof BankSortMethods)[number];
 type SortFn = (a: [Item, number], b: [Item, number]) => number;
 export const sorts: Record<BankSortMethod, SortFn> = {
 	value: (a, b) => b[0].price * b[1] - a[0].price * a[1],

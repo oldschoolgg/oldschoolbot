@@ -13,8 +13,8 @@ import { convertPercentChance } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { updateLegacyUserBankSetting } from '../../../lib/util/updateLegacyUserBankSetting';
 import { sendToChannelID } from '../../../lib/util/webhook';
+import { userStatsBankUpdate, userStatsUpdate } from '../../../mahoji/mahojiSettings';
 
 const totalXPFromRaid = {
 	[SkillsEnum.Attack]: 12_000,
@@ -60,8 +60,9 @@ export const tobTask: MinionTask = {
 		if (!diedToMaiden) {
 			await Promise.all(
 				allUsers.map(u => {
-					return u.update({
-						[hardMode ? 'tob_hard_attempts' : 'tob_attempts']: {
+					const key = hardMode ? 'tob_hard_attempts' : 'tob_attempts';
+					return userStatsUpdate(u.id, {
+						[key]: {
 							increment: 1
 						}
 					});
@@ -85,7 +86,7 @@ export const tobTask: MinionTask = {
 		// Track loot for T3+ patrons
 		await Promise.all(
 			allUsers.map(user => {
-				return updateLegacyUserBankSetting(user.id, 'tob_loot', new Bank(result.loot[user.id]));
+				return userStatsBankUpdate(user.id, 'tob_loot', new Bank(result.loot[user.id]));
 			})
 		);
 
@@ -103,7 +104,7 @@ Unique chance: ${result.percentChanceOfUnique.toFixed(2)}% (1 in ${convertPercen
 			const userDeaths = deaths[users.indexOf(user.id)];
 
 			const userLoot = new Bank(_userLoot);
-			const bank = user.allItemsOwned();
+			const bank = user.allItemsOwned;
 
 			const { cl } = user;
 			if (hardMode && roll(30) && cl.has("Lil' zik") && cl.has('Sanguine dust')) {

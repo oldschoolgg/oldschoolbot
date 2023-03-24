@@ -36,4 +36,4 @@ export interface FarmingContract {
 }
 
 export const ContractOptions = ['easy', 'medium', 'hard', 'easier'] as const;
-export type ContractOption = typeof ContractOptions[number];
+export type ContractOption = (typeof ContractOptions)[number];
