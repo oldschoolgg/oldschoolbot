@@ -19,7 +19,7 @@ import getOSItem from '../../lib/util/getOSItem';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import resolveItems from '../../lib/util/resolveItems';
 import { OSBMahojiCommand } from '../lib/util';
-import { userStatsBankUpdate } from '../mahojiSettings';
+import { userStatsBankUpdate, userStatsUpdate } from '../mahojiSettings';
 
 const specialBones = [
 	{
@@ -117,19 +117,24 @@ export const mineCommand: OSBMahojiCommand = {
 				itemsToAdd: loot
 			});
 			if (whichOfferable.economyCounter) {
-				const { newUser } = await user.update({
-					[whichOfferable.economyCounter]: {
-						increment: quantity
-					}
-				}); // Notify uniques
+				const newStats = await userStatsUpdate(
+					user.id,
+					{
+						[whichOfferable.economyCounter]: {
+							increment: quantity
+						}
+					},
+					{ slayer_chewed_offered: true, slayer_unsired_offered: true }
+				); // Notify uniques
 				if (whichOfferable.uniques) {
+					let current = newStats[whichOfferable.economyCounter];
 					notifyUniques(
 						user,
 						whichOfferable.name,
 						whichOfferable.uniques,
 						itemsAdded,
 						quantity,
-						newUser[whichOfferable.economyCounter] + randInt(1, quantity)
+						current + randInt(1, quantity)
 					);
 				}
 			}
