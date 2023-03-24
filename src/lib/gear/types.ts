@@ -8,7 +8,7 @@ export type UserFullGearSetup = {
 
 export const GearSetupTypes = ['melee', 'range', 'mage', 'misc', 'skilling', 'wildy', 'fashion', 'other'] as const;
 
-export type GearSetupType = typeof GearSetupTypes[number];
+export type GearSetupType = (typeof GearSetupTypes)[number];
 
 export enum GearStat {
 	AttackStab = 'attack_stab',

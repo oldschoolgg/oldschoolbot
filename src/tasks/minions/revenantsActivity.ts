@@ -90,15 +90,15 @@ export const revenantsTask: MinionTask = {
 			return;
 		}
 
-		await user.incrementKC(monsterID, quantity);
+		const { newKC } = await user.incrementKC(monsterID, quantity);
 
 		const loot = monster.table.kill(quantity, { skulled });
 		let str =
 			`${user}, ${user.minionName} finished killing ${quantity} ${monster.name}.` +
-			` Your ${monster.name} KC is now ${user.getKC(monsterID)}.\n`;
+			` Your ${monster.name} KC is now ${newKC}.\n`;
 
 		announceLoot({
-			user: await mUserFetch(user.id),
+			user,
 			monsterID: monster.id,
 			loot,
 			notifyDrops: monster.notifyDrops
