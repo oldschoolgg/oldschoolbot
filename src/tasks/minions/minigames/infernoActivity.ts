@@ -47,9 +47,8 @@ export const infernoTask: MinionTask = {
 
 		const percentMadeItThrough = deathTime === null ? 100 : calcWhatPercent(deathTime, fakeDuration);
 
-		const mahojiUser = await mUserFetch(userID);
 		let tokkul = Math.ceil(calcPercentOfNum(calcWhatPercent(duration, fakeDuration), 16_440));
-		const [hasDiary] = await userhasDiaryTier(mahojiUser, diariesObject.KaramjaDiary.elite);
+		const [hasDiary] = await userhasDiaryTier(user, diariesObject.KaramjaDiary.elite);
 		if (hasDiary) tokkul *= 2;
 		const baseBank = new Bank().add('Tokkul', tokkul);
 

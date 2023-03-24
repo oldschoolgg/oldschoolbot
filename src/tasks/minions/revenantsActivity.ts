@@ -98,7 +98,7 @@ export const revenantsTask: MinionTask = {
 			` Your ${monster.name} KC is now ${newKC}.\n`;
 
 		announceLoot({
-			user: await mUserFetch(user.id),
+			user,
 			monsterID: monster.id,
 			loot,
 			notifyDrops: monster.notifyDrops

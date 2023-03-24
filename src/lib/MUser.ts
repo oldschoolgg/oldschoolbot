@@ -6,7 +6,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 
 import { SupportServer } from '../config';
 import { timePerAlch } from '../mahoji/lib/abstracted_commands/alchCommand';
-import { mahojiUsersSettingsFetch, userStatsUpdate } from '../mahoji/mahojiSettings';
+import { userStatsUpdate } from '../mahoji/mahojiSettings';
 import { addXP } from './addXP';
 import { userIsBusy } from './busyCounterCache';
 import { badges, BitField, Emoji, PerkTier, projectiles, Roles, usernameCache } from './constants';
@@ -37,7 +37,7 @@ import { minionIsBusy } from './util/minionIsBusy';
 import { minionName } from './util/minionUtils';
 import resolveItems from './util/resolveItems';
 
-export async function mahojiUserSettingsUpdate(user: string | bigint, data: Prisma.UserUpdateArgs['data']) {
+export async function mahojiUserSettingsUpdate(user: string | bigint, data: Prisma.UserUncheckedUpdateInput) {
 	try {
 		const newUser = await prisma.user.update({
 			data,
@@ -113,7 +113,7 @@ export class MUserClass {
 		return Object.values(this.skillsAsLevels).filter(lvl => lvl >= 99).length;
 	}
 
-	async update(data: Prisma.UserUpdateArgs['data']) {
+	async update(data: Prisma.UserUncheckedUpdateInput) {
 		const result = await mahojiUserSettingsUpdate(this.id, data);
 		this.user = result.newUser;
 		this.updateProperties();
@@ -602,7 +602,9 @@ export class MUserClass {
 	}
 
 	async sync() {
-		this.user = await mahojiUsersSettingsFetch(this.id);
+		const newUser = await prisma.user.findUnique({ where: { id: this.id } });
+		if (!newUser) throw new Error(`Failed to sync user ${this.id}, no record was found`);
+		this.user = newUser;
 		this.updateProperties();
 	}
 
@@ -651,8 +653,17 @@ export class MUserClass {
 declare global {
 	export type MUser = MUserClass;
 }
-export async function srcMUserFetch(userID: string | string) {
-	const user = await mahojiUsersSettingsFetch(userID);
+
+export async function srcMUserFetch(userID: string) {
+	const user = await prisma.user.upsert({
+		create: {
+			id: userID
+		},
+		update: {},
+		where: {
+			id: userID
+		}
+	});
 	return new MUserClass(user);
 }
 
