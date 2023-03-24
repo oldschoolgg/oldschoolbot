@@ -33,7 +33,9 @@ export default function getUserFoodFromBank(
 		});
 
 	if (minimumHealAmount) {
-		sorted = sorted.filter(i => i.healAmount >= minimumHealAmount);
+		sorted = sorted.filter(i =>
+			typeof i.healAmount === 'number' ? i.healAmount : i.healAmount(user) >= minimumHealAmount
+		);
 	}
 
 	// Gets all the eatables in the user bank

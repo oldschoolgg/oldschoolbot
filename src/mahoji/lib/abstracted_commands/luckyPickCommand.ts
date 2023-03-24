@@ -14,7 +14,7 @@ import { SILENT_ERROR } from '../../../lib/constants';
 import { awaitMessageComponentInteraction, channelIsSendable } from '../../../lib/util';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { logError } from '../../../lib/util/logError';
-import { mahojiParseNumber, updateGPTrackSetting } from '../../mahojiSettings';
+import { mahojiParseNumber, updateClientGPTrackSetting, updateGPTrackSetting } from '../../mahojiSettings';
 
 export async function luckyPickCommand(
 	user: MUser,
@@ -142,7 +142,7 @@ export async function luckyPickCommand(
 	}) => {
 		let amountReceived = Math.floor(button.mod(amount));
 		await user.addItemsToBank({ items: new Bank().add('Coins', amountReceived) });
-		await updateGPTrackSetting('gp_luckypick', amountReceived - amount);
+		await updateClientGPTrackSetting('gp_luckypick', amountReceived - amount);
 		await updateGPTrackSetting('gp_luckypick', amountReceived - amount, user);
 
 		await interaction.update({ components: getCurrentButtons({ showTrueNames: true }) }).catch(noOp);

@@ -7,11 +7,13 @@ import { convertLVLtoXP, itemID } from 'oldschooljs/dist/util';
 
 import { production } from '../../config';
 import { allStashUnitsFlat, allStashUnitTiers } from '../../lib/clues/stashUnits';
-import { BitField, MAX_QP } from '../../lib/constants';
+import { BitField, MAX_INT_JAVA, MAX_QP } from '../../lib/constants';
 import { leaguesCreatables } from '../../lib/data/creatables/leagueCreatables';
+import { Eatables } from '../../lib/data/eatables';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { UserKourendFavour } from '../../lib/minions/data/kourendFavour';
+import potions from '../../lib/minions/data/potions';
 import { allOpenables } from '../../lib/openables';
 import { tiers } from '../../lib/patreon';
 import { Minigames } from '../../lib/settings/minigames';
@@ -19,7 +21,6 @@ import { prisma } from '../../lib/settings/prisma';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Skills from '../../lib/skilling/skills';
 import Farming from '../../lib/skilling/skills/farming';
-import { stressTest } from '../../lib/stressTest';
 import { Gear } from '../../lib/structures/Gear';
 import { stringMatches } from '../../lib/util';
 import {
@@ -34,7 +35,7 @@ import { parseStringBank } from '../../lib/util/parseStringBank';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import { allUsableItems } from '../lib/abstracted_commands/useCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { userStatsUpdate } from '../mahojiSettings';
 
 async function giveMaxStats(user: MUser, level = 99, qp = MAX_QP) {
 	let updates: Prisma.UserUpdateArgs['data'] = {};
@@ -201,6 +202,40 @@ for (const tier of allStashUnitTiers) {
 	allStashUnitItems.add(tier.cost.clone().multiply(tier.units.length));
 }
 
+const potionsPreset = new Bank();
+for (const potion of potions) {
+	for (const actualPotion of potion.items) {
+		potionsPreset.addItem(actualPotion, 10_000);
+	}
+}
+
+const foodPreset = new Bank();
+for (const food of Eatables.map(food => food.id)) {
+	foodPreset.addItem(food, 10_000);
+}
+
+const runePreset = new Bank()
+	.add('Air rune', MAX_INT_JAVA)
+	.add('Mind rune', MAX_INT_JAVA)
+	.add('Water rune', MAX_INT_JAVA)
+	.add('Earth rune', MAX_INT_JAVA)
+	.add('Fire rune', MAX_INT_JAVA)
+	.add('Body rune', MAX_INT_JAVA)
+	.add('Cosmic rune', MAX_INT_JAVA)
+	.add('Chaos rune', MAX_INT_JAVA)
+	.add('Nature rune', MAX_INT_JAVA)
+	.add('Law rune', MAX_INT_JAVA)
+	.add('Death rune', MAX_INT_JAVA)
+	.add('Astral rune', MAX_INT_JAVA)
+	.add('Blood rune', MAX_INT_JAVA)
+	.add('Soul rune', MAX_INT_JAVA)
+	.add('Dust rune', MAX_INT_JAVA)
+	.add('Lava rune', MAX_INT_JAVA)
+	.add('Mist rune', MAX_INT_JAVA)
+	.add('Mud rune', MAX_INT_JAVA)
+	.add('Smoke rune', MAX_INT_JAVA)
+	.add('Steam rune', MAX_INT_JAVA);
+
 const spawnPresets = [
 	['openables', openablesBank],
 	['random', new Bank()],
@@ -208,7 +243,10 @@ const spawnPresets = [
 	['farming', farmingPreset],
 	['usables', usables],
 	['leagues', leaguesPreset],
-	['stashunits', allStashUnitItems]
+	['stashunits', allStashUnitItems],
+	['potions', potionsPreset],
+	['food', foodPreset],
+	['runes', runePreset]
 ] as const;
 
 const nexSupplies = new Bank()
@@ -438,11 +476,6 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 							choices: farmingPatchNames.map(i => ({ name: i, value: i }))
 						}
 					]
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'stresstest',
-					description: 'Stress test.'
 				}
 			],
 			run: async ({
@@ -461,19 +494,14 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				setmonsterkc?: { monster: string; kc: string };
 				irontoggle?: {};
 				forcegrow?: { patch_name: FarmingPatchName };
-				stresstest?: {};
 			}>) => {
 				if (production) {
 					logError('Test command ran in production', { userID: userID.toString() });
 					return 'This will never happen...';
 				}
-				if (options.stresstest) {
-					return stressTest(userID.toString());
-				}
 				const user = await mUserFetch(userID.toString());
-				const mahojiUser = await mahojiUsersSettingsFetch(user.id);
 				if (options.irontoggle) {
-					const current = mahojiUser.minion_ironman;
+					const current = user.isIronman;
 					await user.update({
 						minion_ironman: !current
 					});
@@ -566,7 +594,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						skills_hitpoints: convertLVLtoXP(99),
 						skills_defence: convertLVLtoXP(99),
 						bank: user.bank.add(nexSupplies).bank,
-						GP: mahojiUser.GP + BigInt(10_000_000)
+						GP: user.GP + 10_000_000
 					});
 					return 'Gave you range gear, gp, gear and stats for nex.';
 				}
@@ -596,12 +624,16 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						stringMatches(m.name, options.setmonsterkc?.monster ?? '')
 					);
 					if (!monster) return 'Invalid monster';
-					await user.update({
-						monsterScores: {
-							...(mahojiUser.monsterScores as Record<string, unknown>),
-							[monster.id]: options.setmonsterkc.kc ?? 1
-						}
-					});
+					await userStatsUpdate(
+						user.id,
+						({ monster_scores }) => ({
+							monster_scores: {
+								...(monster_scores as Record<string, unknown>),
+								[monster.id]: options.setmonsterkc?.kc ?? 1
+							}
+						}),
+						{}
+					);
 					return `Set your ${monster.name} KC to ${options.setmonsterkc.kc ?? 1}.`;
 				}
 				if (options.forcegrow) {

@@ -1,6 +1,6 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
-import { rand } from '../../lib/util';
+import { cryptoRand } from '../../lib/util';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const rollCommand: OSBMahojiCommand = {
@@ -18,6 +18,9 @@ export const rollCommand: OSBMahojiCommand = {
 	],
 	run: async ({ options, user }: CommandRunOptions<{ limit?: number }>) => {
 		const limit = options.limit ?? 10;
-		return `**${user.username}** rolled a random number from 1 to ${limit}...\n\n**${rand(1, limit).toString()}**`;
+		return `**${user.username}** rolled a random number from 1 to ${limit}...\n\n**${cryptoRand(
+			1,
+			limit
+		).toString()}**`;
 	}
 };

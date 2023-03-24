@@ -32,7 +32,7 @@ export async function slayerShopBuyCommand({
 	}
 	if (buyableObj.item) {
 		// Handle buying items with slayer points:
-		if (buyableObj.haveOne && user.allItemsOwned().has(buyableObj.item)) {
+		if (buyableObj.haveOne && user.allItemsOwned.has(buyableObj.item)) {
 			return `You already own a ${buyableObj.name}`;
 		}
 		const qty = buyableObj.haveOne ? 1 : quantity ?? 1;

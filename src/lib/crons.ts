@@ -113,17 +113,24 @@ GROUP BY item_id;`);
 	/**
 	 * Analytics
 	 */
-	schedule('*/5 * * * *', analyticsTick);
+	schedule('*/5 * * * *', () => {
+		debugLog('Analytics cronjob starting');
+		return analyticsTick();
+	});
 
 	/**
 	 * prescence
 	 */
-	schedule('0 * * * *', () => globalClient.user?.setActivity('/help'));
+	schedule('0 * * * *', () => {
+		debugLog('Set Activity cronjob starting');
+		globalClient.user?.setActivity('/help');
+	});
 
 	/**
 	 * Delete all voice channels
 	 */
 	schedule('0 0 */1 * *', async () => {
+		debugLog('Cache cleanup cronjob starting');
 		cacheCleanup();
 	});
 }

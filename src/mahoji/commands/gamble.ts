@@ -12,7 +12,6 @@ import { hotColdCommand } from '../lib/abstracted_commands/hotColdCommand';
 import { luckyPickCommand } from '../lib/abstracted_commands/luckyPickCommand';
 import { slotsCommand } from '../lib/abstracted_commands/slotsCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const gambleCommand: OSBMahojiCommand = {
 	name: 'gamble',
@@ -206,8 +205,6 @@ export const gambleCommand: OSBMahojiCommand = {
 			return slotsCommand(interaction, user, options.slots.amount);
 		}
 
-		const mahojiUser = await mahojiUsersSettingsFetch(user.id);
-
 		if (options.hot_cold) {
 			return hotColdCommand(interaction, user, options.hot_cold.choice, options.hot_cold.amount);
 		}
@@ -231,7 +228,7 @@ export const gambleCommand: OSBMahojiCommand = {
 			const bank = senderUser.bank
 				.items()
 				.filter(i => itemIsTradeable(i[0].id))
-				.filter(i => !mahojiUser.favoriteItems.includes(i[0].id));
+				.filter(i => !user.user.favoriteItems.includes(i[0].id));
 			const entry = randArrItem(bank);
 			if (!entry) return 'You have no items you can give away!';
 			const [item, qty] = entry;

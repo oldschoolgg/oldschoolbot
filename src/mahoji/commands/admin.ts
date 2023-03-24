@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { inspect } from 'node:util';
+
 import { codeBlock } from '@discordjs/builders';
 import { ClientStorage, economy_transaction_type } from '@prisma/client';
 import { Stopwatch } from '@sapphire/stopwatch';
@@ -10,13 +12,20 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { bulkUpdateCommands } from 'mahoji/dist/lib/util';
-import { inspect } from 'node:util';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { ADMIN_IDS, CLIENT_ID, OWNER_IDS, production, SupportServer } from '../../config';
+import { ADMIN_IDS, OWNER_IDS, production, SupportServer } from '../../config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../../lib/blacklists';
-import { badges, BadgesEnum, BitField, BitFieldData, Channel, DISABLED_COMMANDS } from '../../lib/constants';
+import {
+	badges,
+	BadgesEnum,
+	BitField,
+	BitFieldData,
+	Channel,
+	DISABLED_COMMANDS,
+	globalConfig
+} from '../../lib/constants';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { GearSetup } from '../../lib/gear/types';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
@@ -696,8 +705,19 @@ export const adminCommand: OSBMahojiCommand = {
 			return 'Finished syncing patrons.';
 		}
 		if (options.add_ironman_alt) {
-			const mainAccount = await mahojiUsersSettingsFetch(options.add_ironman_alt.main.user.id);
-			const altAccount = await mahojiUsersSettingsFetch(options.add_ironman_alt.ironman_alt.user.id);
+			const mainAccount = await mahojiUsersSettingsFetch(options.add_ironman_alt.main.user.id, {
+				minion_ironman: true,
+				id: true,
+				ironman_alts: true,
+				main_account: true
+			});
+			const altAccount = await mahojiUsersSettingsFetch(options.add_ironman_alt.ironman_alt.user.id, {
+				minion_ironman: true,
+				bitfield: true,
+				id: true,
+				ironman_alts: true,
+				main_account: true
+			});
 			const mainUser = await mUserFetch(mainAccount.id);
 			const altUser = await mUserFetch(altAccount.id);
 			if (mainAccount === altAccount) return "They're they same account.";
@@ -753,7 +773,10 @@ export const adminCommand: OSBMahojiCommand = {
 			if (!badge) return 'Invalid badge.';
 			const [badgeName, badgeID] = badge;
 
-			const userToUpdateBadges = await mahojiUsersSettingsFetch(options.badges.user.user.id);
+			const userToUpdateBadges = await mahojiUsersSettingsFetch(options.badges.user.user.id, {
+				badges: true,
+				id: true
+			});
 			let newBadges = [...userToUpdateBadges.badges];
 
 			if (action === 'add') {
@@ -774,7 +797,7 @@ export const adminCommand: OSBMahojiCommand = {
 		}
 
 		if (options.bypass_age) {
-			const input = await mahojiUsersSettingsFetch(options.bypass_age.user.user.id);
+			const input = await mahojiUsersSettingsFetch(options.bypass_age.user.user.id, { bitfield: true, id: true });
 			if (input.bitfield.includes(BitField.BypassAgeRestriction)) {
 				return 'This user is already bypassed.';
 			}
@@ -791,7 +814,7 @@ export const adminCommand: OSBMahojiCommand = {
 			const { enable } = options.command;
 
 			const currentDisabledCommands = (await prisma.clientStorage.findFirst({
-				where: { id: CLIENT_ID },
+				where: { id: globalConfig.clientID },
 				select: { disabled_commands: true }
 			}))!.disabled_commands;
 
@@ -807,7 +830,7 @@ export const adminCommand: OSBMahojiCommand = {
 				const newDisabled = [...currentDisabledCommands, command.name.toLowerCase()];
 				await prisma.clientStorage.update({
 					where: {
-						id: CLIENT_ID
+						id: globalConfig.clientID
 					},
 					data: {
 						disabled_commands: newDisabled
@@ -822,7 +845,7 @@ export const adminCommand: OSBMahojiCommand = {
 				}
 				await prisma.clientStorage.update({
 					where: {
-						id: CLIENT_ID
+						id: globalConfig.clientID
 					},
 					data: {
 						disabled_commands: currentDisabledCommands.filter(i => i !== command.name)
@@ -925,7 +948,7 @@ LIMIT 10;
 		}
 		if (options.viewbank) {
 			const userToCheck = await mUserFetch(options.viewbank.user.user.id);
-			const bank = userToCheck.allItemsOwned();
+			const bank = userToCheck.allItemsOwned;
 			return { files: [(await makeBankImage({ bank, title: userToCheck.usernameOrMention })).file] };
 		}
 
@@ -935,14 +958,18 @@ LIMIT 10;
 			const duration = new Duration(time);
 			const ms = duration.offset;
 			if (ms < Time.Second || ms > Time.Year * 3) return 'Invalid input.';
-			const input = await mahojiUsersSettingsFetch(userToGive.user.id);
+			const input = await mahojiUsersSettingsFetch(userToGive.user.id, {
+				premium_balance_tier: true,
+				premium_balance_expiry_date: true,
+				id: true
+			});
 
 			const currentBalanceTier = input.premium_balance_tier;
 
 			if (currentBalanceTier !== null && currentBalanceTier !== tier) {
 				await handleMahojiConfirmation(
 					interaction,
-					`${input} already has Tier ${currentBalanceTier}; this will replace the existing balance entirely, are you sure?`
+					`They already have Tier ${currentBalanceTier}; this will replace the existing balance entirely, are you sure?`
 				);
 			}
 			await handleMahojiConfirmation(
