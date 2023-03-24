@@ -551,8 +551,8 @@ export class MUserClass {
 	}
 
 	async getCreatureScore(creatureID: number) {
-		const creatureScores = await this.fetchStats({ creature_scores: true });
-		return (creatureScores as ItemBank)[creatureID] ?? 0;
+		const stats = await this.fetchStats({ creature_scores: true });
+		return (stats.creature_scores as ItemBank)[creatureID] ?? 0;
 	}
 
 	calculateAddItemsToCLUpdates({
