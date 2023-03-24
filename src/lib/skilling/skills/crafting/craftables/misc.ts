@@ -211,7 +211,7 @@ const Misc: Craftable[] = [
 		id: itemID('Strung rabbit foot'),
 		level: 37,
 		xp: 4,
-		inputItems: new Bank({ 'Ball of wool': 1, 'Rabbit foot': 1 }),
+		inputItems: new Bank().add('Ball of wool').add('Rabbit foot'),
 		tickRate: 2
 	}
 ];

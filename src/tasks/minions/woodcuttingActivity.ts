@@ -77,7 +77,7 @@ export const woodcuttingTask: MinionTask = {
 		}
 
 		if (strungRabbitFoot && !log.clueNestsOnly) {
-			str += "\nYour strung rabbit foot necklace increases the chance of recieving bird's eggs and rings.";
+			str += "\nYour strung rabbit foot necklace increases the chance of receiving bird's eggs and rings.";
 		}
 
 		// Roll for pet

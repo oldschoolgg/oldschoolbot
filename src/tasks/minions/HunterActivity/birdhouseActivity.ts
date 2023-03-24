@@ -122,7 +122,7 @@ export const birdHouseTask: MinionTask = {
 			str += `\n\nYou received: ${loot}.`;
 
 			if (strungRabbitFoot) {
-				str += "\nYour strung rabbit foot necklace increases the chance of recieving bird's eggs and rings.";
+				str += "\nYour strung rabbit foot necklace increases the chance of receiving bird's eggs and rings.";
 			}
 
 			let updateBirdhouseData: BirdhouseData = {
