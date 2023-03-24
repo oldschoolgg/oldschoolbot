@@ -25,8 +25,7 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import getOSItem from '../../../lib/util/getOSItem';
 import itemID from '../../../lib/util/itemID';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { updateLegacyUserBankSetting } from '../../../lib/util/updateLegacyUserBankSetting';
-import { mahojiParseNumber } from '../../mahojiSettings';
+import { mahojiParseNumber, userStatsBankUpdate } from '../../mahojiSettings';
 
 const minStats = {
 	attack: 90,
@@ -231,10 +230,12 @@ export async function checkTOBTeam(users: MUser[], isHardMode: boolean): Promise
 }
 
 export async function tobStatsCommand(user: MUser) {
-	const hardKC = await getMinigameScore(user.id, 'tob_hard');
-	const kc = await getMinigameScore(user.id, 'tob');
-	const attempts = user.user.tob_attempts;
-	const hardAttempts = user.user.tob_hard_attempts;
+	const [minigameScores, { tob_attempts: attempts, tob_hard_attempts: hardAttempts }] = await Promise.all([
+		user.fetchMinigames(),
+		user.fetchStats({ tob_attempts: true, tob_hard_attempts: true })
+	]);
+	const hardKC = minigameScores.tob_hard;
+	const kc = minigameScores.tob;
 	const gear = calculateTOBUserGearPercents(user);
 	const deathChances = calculateTOBDeaths(kc, hardKC, attempts, hardAttempts, false, gear);
 	const hardDeathChances = calculateTOBDeaths(kc, hardKC, attempts, hardAttempts, true, gear);
@@ -326,15 +327,21 @@ export async function tobStartCommand(user: MUser, channelID: string, isHardMode
 		parsedTeam
 	} = createTOBTeam({
 		team: await Promise.all(
-			users.map(async u => ({
-				user: u,
-				bank: u.bank,
-				gear: u.gear,
-				attempts: u.user.tob_attempts,
-				hardAttempts: u.user.tob_hard_attempts,
-				kc: await getMinigameScore(u.id, 'tob'),
-				hardKC: await getMinigameScore(u.id, 'tob_hard')
-			}))
+			users.map(async u => {
+				const [minigameScores, { tob_attempts, tob_hard_attempts }] = await Promise.all([
+					u.fetchMinigames(),
+					u.fetchStats({ tob_attempts: true, tob_hard_attempts: true })
+				]);
+				return {
+					user: u,
+					bank: u.bank,
+					gear: u.gear,
+					attempts: tob_attempts,
+					hardAttempts: tob_hard_attempts,
+					kc: minigameScores.tob,
+					hardKC: minigameScores.tob_hard
+				};
+			})
 		),
 		hardMode: isHardMode
 	});
@@ -355,7 +362,7 @@ export async function tobStartCommand(user: MUser, channelID: string, isHardMode
 					.add(blowpipeData.dartID!, Math.floor(Math.min(blowpipeData.dartQuantity, 156)))
 					.add(u.gear.range.ammo!.item, 100)
 			);
-			await updateLegacyUserBankSetting(u.id, 'tob_cost', realCost);
+			await userStatsBankUpdate(u.id, 'tob_cost', realCost);
 			const effectiveCost = realCost.clone().remove('Coins', realCost.amount('Coins'));
 			totalCost.add(effectiveCost);
 			if (u.gear.melee.hasEquipped('Abyssal tentacle')) {

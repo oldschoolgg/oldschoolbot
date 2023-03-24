@@ -457,13 +457,20 @@ export const toaPurpleItems = resolveItems([
 	"Osmumten's fang"
 ]);
 
+export enum PeakTier {
+	High = 'high',
+	Medium = 'medium',
+	Low = 'low'
+}
+
 export const ParsedCustomEmojiWithGroups = /(?<animated>a?):(?<name>[^:]+):(?<id>\d{17,20})/;
 
 const globalConfigSchema = z.object({
 	patreonToken: z.coerce.string().default(''),
 	patreonCampaignID: z.coerce.number().int().default(1),
 	patreonWebhookSecret: z.coerce.string().default(''),
-	httpPort: z.coerce.number().int().default(8080)
+	httpPort: z.coerce.number().int().default(8080),
+	clientID: z.string().min(15).max(25)
 });
 dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.example' : '.env') });
 
@@ -471,5 +478,6 @@ export const globalConfig = globalConfigSchema.parse({
 	patreonToken: process.env.PATREON_TOKEN,
 	patreonCampaignID: process.env.PATREON_CAMPAIGN_ID,
 	patreonWebhookSecret: process.env.PATREON_WEBHOOK_SECRET,
-	httpPort: process.env.HTTP_PORT
+	httpPort: process.env.HTTP_PORT,
+	clientID: process.env.CLIENT_ID
 });

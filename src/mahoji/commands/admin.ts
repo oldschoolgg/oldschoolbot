@@ -15,9 +15,17 @@ import { bulkUpdateCommands } from 'mahoji/dist/lib/util';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { ADMIN_IDS, CLIENT_ID, OWNER_IDS, production, SupportServer } from '../../config';
+import { ADMIN_IDS, OWNER_IDS, production, SupportServer } from '../../config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../../lib/blacklists';
-import { badges, BadgesEnum, BitField, BitFieldData, Channel, DISABLED_COMMANDS } from '../../lib/constants';
+import {
+	badges,
+	BadgesEnum,
+	BitField,
+	BitFieldData,
+	Channel,
+	DISABLED_COMMANDS,
+	globalConfig
+} from '../../lib/constants';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { GearSetup } from '../../lib/gear/types';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
@@ -792,7 +800,7 @@ export const adminCommand: OSBMahojiCommand = {
 			const { enable } = options.command;
 
 			const currentDisabledCommands = (await prisma.clientStorage.findFirst({
-				where: { id: CLIENT_ID },
+				where: { id: globalConfig.clientID },
 				select: { disabled_commands: true }
 			}))!.disabled_commands;
 
@@ -808,7 +816,7 @@ export const adminCommand: OSBMahojiCommand = {
 				const newDisabled = [...currentDisabledCommands, command.name.toLowerCase()];
 				await prisma.clientStorage.update({
 					where: {
-						id: CLIENT_ID
+						id: globalConfig.clientID
 					},
 					data: {
 						disabled_commands: newDisabled
@@ -823,7 +831,7 @@ export const adminCommand: OSBMahojiCommand = {
 				}
 				await prisma.clientStorage.update({
 					where: {
-						id: CLIENT_ID
+						id: globalConfig.clientID
 					},
 					data: {
 						disabled_commands: currentDisabledCommands.filter(i => i !== command.name)
@@ -943,7 +951,7 @@ LIMIT 10;
 			if (currentBalanceTier !== null && currentBalanceTier !== tier) {
 				await handleMahojiConfirmation(
 					interaction,
-					`${input} already has Tier ${currentBalanceTier}; this will replace the existing balance entirely, are you sure?`
+					`They already have Tier ${currentBalanceTier}; this will replace the existing balance entirely, are you sure?`
 				);
 			}
 			await handleMahojiConfirmation(

@@ -6,10 +6,9 @@ import { Item } from 'oldschooljs/dist/meta/types';
 
 import { SupportServer } from '../config';
 import { timePerAlch } from '../mahoji/lib/abstracted_commands/alchCommand';
-import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
+import { mahojiUsersSettingsFetch, userStatsUpdate } from '../mahoji/mahojiSettings';
 import { addXP } from './addXP';
 import { userIsBusy } from './busyCounterCache';
-import { ClueTiers } from './clues/clueTiers';
 import { badges, BitField, Emoji, PerkTier, projectiles, Roles, usernameCache } from './constants';
 import { allPetIDs } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
@@ -75,6 +74,10 @@ export function syncPerkTierOfUser(user: MUser) {
 	perkTierCache.set(user.id, user.perkTier(true));
 }
 
+export type SelectedUserStats<T extends Prisma.UserStatsSelect> = {
+	[K in keyof T]: K extends keyof UserStats ? UserStats[K] : never;
+};
+
 export class MUserClass {
 	user: Readonly<User>;
 	id: string;
@@ -134,10 +137,6 @@ export class MUserClass {
 			.map(getOSItem)
 			.filter(i => i.highalch !== undefined && i.highalch > 0 && i.tradeable)
 			.sort((a, b) => alchPrice(bank, b, duration) - alchPrice(bank, a, duration));
-	}
-
-	openableScores() {
-		return this.user.openable_scores as ItemBank;
 	}
 
 	async setAttackStyle(newStyles: AttackStyles[]) {
@@ -202,10 +201,6 @@ export class MUserClass {
 		};
 	}
 
-	get sacrificedItems() {
-		return new Bank(this.user.sacrificedBank as ItemBank);
-	}
-
 	get minionName() {
 		return minionName(this);
 	}
@@ -250,8 +245,9 @@ export class MUserClass {
 		return addXP(this, params);
 	}
 
-	getKC(monsterID: number) {
-		return (this.user.monsterScores as ItemBank)[monsterID] ?? 0;
+	async getKC(monsterID: number) {
+		const stats = await this.fetchStats({ monster_scores: true });
+		return (stats.monster_scores as ItemBank)[monsterID] ?? 0;
 	}
 
 	getAttackStyles(): AttackStyles[] {
@@ -263,15 +259,16 @@ export class MUserClass {
 	}
 
 	async incrementKC(monsterID: number, amountToAdd = 1) {
-		const newKCs = new Bank(this.user.monsterScores as ItemBank).add(monsterID, amountToAdd);
-		const { newUser } = await mahojiUserSettingsUpdate(this.id, {
-			monsterScores: newKCs.bank
-		});
-
-		this.user = newUser;
-		this.updateProperties();
-
-		return this;
+		const stats = await this.fetchStats({ monster_scores: true });
+		const newKCs = new Bank(stats.monster_scores as ItemBank).add(monsterID, amountToAdd);
+		await userStatsUpdate(
+			this.id,
+			{
+				monster_scores: newKCs.bank
+			},
+			{}
+		);
+		return { newKC: newKCs.amount(monsterID) };
 	}
 
 	public async addItemsToBank({
@@ -419,12 +416,14 @@ export class MUserClass {
 	}
 
 	async incrementCreatureScore(creatureID: number, amountToAdd = 1) {
-		const currentCreatureScores = this.user.creatureScores;
-		const { newUser } = await mahojiUserSettingsUpdate(this.id, {
-			creatureScores: addItemToBank(currentCreatureScores as ItemBank, creatureID, amountToAdd)
-		});
-		this.user = newUser;
-		this.updateProperties();
+		const stats = await this.fetchStats({ creature_scores: true });
+		await userStatsUpdate(
+			this.id,
+			{
+				creature_scores: addItemToBank(stats.creature_scores as ItemBank, creatureID, amountToAdd)
+			},
+			{}
+		);
 	}
 
 	get blowpipe() {
@@ -551,8 +550,9 @@ export class MUserClass {
 		};
 	}
 
-	getCreatureScore(creatureID: number) {
-		return (this.user.creatureScores as ItemBank)[creatureID] ?? 0;
+	async getCreatureScore(creatureID: number) {
+		const stats = await this.fetchStats({ creature_scores: true });
+		return (stats.creature_scores as ItemBank)[creatureID] ?? 0;
 	}
 
 	calculateAddItemsToCLUpdates({
@@ -606,7 +606,8 @@ export class MUserClass {
 		this.updateProperties();
 	}
 
-	async fetchStats(): Promise<UserStats> {
+	async fetchStats<T extends Prisma.UserStatsSelect>(selectKeys: T): Promise<SelectedUserStats<T>> {
+		const keys = Object.keys(selectKeys).length === 0 ? { user_id: true } : selectKeys;
 		const result = await prisma.userStats.upsert({
 			where: {
 				user_id: BigInt(this.id)
@@ -614,25 +615,12 @@ export class MUserClass {
 			create: {
 				user_id: BigInt(this.id)
 			},
-			update: {}
+			update: {},
+			select: keys
 		});
-		if (!result) throw new Error(`fetchStats returned no result for ${this.id}`);
-		return result;
-	}
 
-	clueScores() {
-		return Object.entries(this.openableScores())
-			.map(entry => {
-				const tier = ClueTiers.find(i => i.id === parseInt(entry[0]));
-				if (!tier) return;
-				return {
-					tier,
-					casket: getOSItem(tier.id),
-					clueScroll: getOSItem(tier.scrollID),
-					opened: this.openableScores()[tier.id] ?? 0
-				};
-			})
-			.filter(notEmpty);
+		if (!result) throw new Error(`fetchStats returned no result for ${this.id}`);
+		return result as SelectedUserStats<T>;
 	}
 
 	get logName() {
