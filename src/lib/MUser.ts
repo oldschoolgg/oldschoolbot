@@ -1,7 +1,6 @@
 import { userMention } from '@discordjs/builders';
 import { Prisma, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
-import { notEmpty, objectEntries, sumArr, Time, uniqueArr } from 'e';
-import { writeFileSync } from 'fs';
+import { notEmpty, objectEntries, sumArr, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
