@@ -14,9 +14,9 @@ import { MahojiClient } from 'mahoji';
 import { convertAPIOptionsToCommandOptions } from 'mahoji/dist/lib/util';
 import { join } from 'path';
 
-import { botToken, CLIENT_ID, DEV_SERVER_ID, production, SENTRY_DSN, SupportServer } from './config';
+import { botToken, DEV_SERVER_ID, production, SENTRY_DSN, SupportServer } from './config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from './lib/blacklists';
-import { Channel, Events, gitHash } from './lib/constants';
+import { Channel, Events, gitHash, globalConfig } from './lib/constants';
 import { onMessage } from './lib/events';
 import { makeServer } from './lib/http';
 import { modalInteractionHook } from './lib/modals';
@@ -98,7 +98,7 @@ const client = new OldSchoolBotClient({
 
 export const mahojiClient = new MahojiClient({
 	developmentServerID: DEV_SERVER_ID,
-	applicationID: CLIENT_ID,
+	applicationID: globalConfig.clientID,
 	storeDirs: [join('dist', 'mahoji')],
 	handlers: {
 		preCommand: async ({ command, interaction, options }) => {
@@ -222,6 +222,7 @@ client.on('ready', () => runTimedLoggedFn('OnStartup', async () => onStartup()))
 client.on('debug', str => debugLog(str, { type: 'DJS-DEBUG' }));
 
 async function main() {
+	if (process.env.TEST) return;
 	client.fastifyServer = await makeServer();
 	await Promise.all([
 		runTimedLoggedFn('Sync Active User IDs', syncActiveUserIDs),
@@ -231,6 +232,7 @@ async function main() {
 		runTimedLoggedFn('Start Mahoji Client', async () => mahojiClient.start()),
 		runTimedLoggedFn('Startup Scripts', runStartupScripts)
 	]);
+
 	await runTimedLoggedFn('Log In', () => client.login(botToken));
 }
 

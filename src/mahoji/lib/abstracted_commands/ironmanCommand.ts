@@ -9,7 +9,6 @@ import { prisma } from '../../../lib/settings/prisma';
 import { assert } from '../../../lib/util';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
-import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
 
 export async function ironmanCommand(
 	user: MUser,
@@ -73,7 +72,7 @@ After becoming an ironman:
 		);
 	}
 
-	const mUser = await mahojiUsersSettingsFetch(user.id);
+	const mUser = (await mUserFetch(user.id)).user;
 
 	type KeysThatArentReset =
 		| 'ironman_alts'
@@ -160,9 +159,6 @@ After becoming an ironman:
 		minion_ironman: true,
 		minion_hasBought: true
 	});
-	assert(
-		!newUser.GP && !newUser.QP && !newUser.skills_woodcutting && !newUser.total_cox_points,
-		`Ironman sanity check - ID: ${newUser.id}`
-	);
+	assert(!newUser.GP && !newUser.QP && !newUser.skills_woodcutting, `Ironman sanity check - ID: ${newUser.id}`);
 	return 'You are now an ironman.';
 }

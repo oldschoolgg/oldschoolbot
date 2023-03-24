@@ -9,6 +9,7 @@ export default defineConfig({
 			provider: 'c8',
 			reporter: 'text',
 			include: ['src/lib/MUser.ts']
-		}
+		},
+		testTimeout: 30_000
 	}
 });

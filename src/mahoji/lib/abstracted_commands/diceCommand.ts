@@ -1,13 +1,18 @@
 import { ChatInputCommandInteraction } from 'discord.js';
 import { Bank, Util } from 'oldschooljs';
 
-import { rand } from '../../../lib/util';
+import { cryptoRand } from '../../../lib/util';
 import { deferInteraction } from '../../../lib/util/interactionReply';
-import { mahojiParseNumber, updateGPTrackSetting } from '../../mahojiSettings';
+import {
+	mahojiParseNumber,
+	updateClientGPTrackSetting,
+	updateGPTrackSetting,
+	userStatsUpdate
+} from '../../mahojiSettings';
 
 export async function diceCommand(user: MUser, interaction: ChatInputCommandInteraction, diceamount?: string) {
 	await deferInteraction(interaction);
-	const roll = rand(1, 100);
+	const roll = cryptoRand(1, 100);
 	const amount = mahojiParseNumber({ input: diceamount, min: 1, max: 500_000_000_000 });
 
 	if (!diceamount) {
@@ -32,18 +37,26 @@ export async function diceCommand(user: MUser, interaction: ChatInputCommandInte
 	const won = roll >= 55;
 	let amountToAdd = won ? amount : -amount;
 
-	await updateGPTrackSetting('gp_dice', amountToAdd);
+	await updateClientGPTrackSetting('gp_dice', amountToAdd);
 	await updateGPTrackSetting('gp_dice', amountToAdd, user);
 
 	if (won) {
-		await user.update({
-			stats_diceWins: { increment: 1 }
-		});
+		await userStatsUpdate(
+			user.id,
+			{
+				dice_wins: { increment: 1 }
+			},
+			{}
+		);
 		await user.addItemsToBank({ items: new Bank().add('Coins', amount) });
 	} else {
-		await user.update({
-			stats_diceLosses: { increment: 1 }
-		});
+		await userStatsUpdate(
+			user.id,
+			{
+				dice_losses: { increment: 1 }
+			},
+			{}
+		);
 		await user.removeItemsFromBank(new Bank().add('Coins', amount));
 	}
 
