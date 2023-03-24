@@ -177,9 +177,19 @@ export const Minigames: readonly BotMinigame[] = [
 		column: 'guardians_of_the_rift'
 	},
 	{
+		name: 'Nightmare Zone',
+		aliases: ['nightmare zone', 'nmz'],
+		column: 'nmz'
+	},
+	{
 		name: "Shades of Mort'ton",
 		aliases: ['som', "shades of mort'ton"],
 		column: 'shades_of_morton'
+	},
+	{
+		name: 'Tombs of Amascut',
+		aliases: ['toa', 'tombs of amascut'],
+		column: 'tombs_of_amascut'
 	}
 ];
 

@@ -7,9 +7,9 @@ import {
 	collectionLogTypes
 } from '../../lib/collectionLogTask';
 import { allCollectionLogs } from '../../lib/data/Collections';
+import { fetchStatsForCL } from '../../lib/util';
 import { toTitleCase } from '../../lib/util/toTitleCase';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const collectionLogCommand: OSBMahojiCommand = {
 	name: 'cl',
@@ -38,8 +38,7 @@ export const collectionLogCommand: OSBMahojiCommand = {
 							];
 						})
 						.flat(3)
-						.filter(i => (!value ? true : i.name.toLowerCase().includes(value)))
-				];
+				].filter(i => (!value ? true : i.name.toLowerCase().includes(value)));
 			}
 		},
 		{
@@ -57,6 +56,13 @@ export const collectionLogCommand: OSBMahojiCommand = {
 			choices: CollectionLogFlags.map(i => ({ name: `${toTitleCase(i.name)} (${i.description})`, value: i.name }))
 		},
 		{
+			type: ApplicationCommandOptionType.String,
+			name: 'flag_extra',
+			description: 'An additional flag you want to pass.',
+			required: false,
+			choices: CollectionLogFlags.map(i => ({ name: `${toTitleCase(i.name)} (${i.description})`, value: i.name }))
+		},
+		{
 			type: ApplicationCommandOptionType.Boolean,
 			name: 'all',
 			description: 'Show all items?',
@@ -66,17 +72,24 @@ export const collectionLogCommand: OSBMahojiCommand = {
 	run: async ({
 		options,
 		userID
-	}: CommandRunOptions<{ name: string; type?: CollectionLogType; flag?: string; all?: boolean }>) => {
+	}: CommandRunOptions<{
+		name: string;
+		type?: CollectionLogType;
+		flag?: string;
+		flag_extra?: string;
+		all?: boolean;
+	}>) => {
 		const user = await mUserFetch(userID);
 		let flags: Record<string, string> = {};
 		if (options.flag) flags[options.flag] = options.flag;
+		if (options.flag_extra) flags[options.flag_extra] = options.flag_extra;
 		if (options.all) flags.all = 'all';
 		const result = await clImageGenerator.generateLogImage({
 			user,
-			mahojiUser: await mahojiUsersSettingsFetch(userID),
 			type: options.type ?? 'collection',
 			flags,
-			collection: options.name
+			collection: options.name,
+			stats: await fetchStatsForCL(user)
 		});
 		return result;
 	}

@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 import getOSItem, { getItem } from '../../util/getOSItem';
 import { BlowpipeData } from '../types';
 
-export const defaultBlowpipe: BlowpipeData = {
+const defaultBlowpipe: BlowpipeData = {
 	scales: 0,
 	dartID: null,
 	dartQuantity: 0

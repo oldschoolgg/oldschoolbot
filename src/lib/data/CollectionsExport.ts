@@ -8,6 +8,7 @@ import { implings } from '../implings';
 import { MinigameScore } from '../settings/minigames';
 import getOSItem from '../util/getOSItem';
 import resolveItems from '../util/resolveItems';
+import { UserStatsDataNeededForCL } from './Collections';
 import {
 	gracefulCapes,
 	gracefulFeet,
@@ -35,18 +36,23 @@ export interface ILeftListStatus {
 }
 
 export interface IKCActivity {
-	[key: string]: string | string[] | ((user: MUser, minigameScores: MinigameScore[]) => Promise<number>);
+	[key: string]:
+		| string
+		| string[]
+		| ((user: MUser, minigameScores: MinigameScore[], stats: UserStatsDataNeededForCL) => Promise<number>);
 }
 
 export type FormatProgressFunction = ({
 	getKC,
 	minigames,
-	user
+	user,
+	stats
 }: {
 	user: MUser;
-	getKC: (id: number) => number;
+	getKC: (id: number) => Promise<number>;
 	minigames: Minigame;
-}) => string | string[];
+	stats: UserStatsDataNeededForCL;
+}) => string | string[] | Promise<string | string[]>;
 
 export interface ICollectionActivity {
 	[key: string]: {
@@ -434,6 +440,7 @@ export const chambersOfXericMetamorphPets = resolveItems([
 	'Vespina'
 ]);
 export const tobMetamorphPets = resolveItems(["Lil' Maiden", "Lil' Bloat", "Lil' Nylo", "Lil' Sot", "Lil' Xarp"]);
+export const toaMetamorphPets = resolveItems(['Zebo', "Tumeken's guardian", 'Kephriti', 'Babi', 'Akkhito']);
 export const chambersOfXericNormalCL = resolveItems([
 	'Olmlet',
 	'Twisted bow',
@@ -484,6 +491,35 @@ export const theatreOfBLoodCL = resolveItems([
 	'Sanguine dust',
 	'Holy ornament kit',
 	'Sanguine ornament kit'
+]);
+
+export const toaCL = resolveItems([
+	"Tumeken's guardian",
+	"Tumeken's shadow (uncharged)",
+	"Elidinis' ward",
+	'Masori mask',
+	'Masori body',
+	'Masori chaps',
+	'Lightbearer',
+	"Osmumten's fang",
+	'Thread of elidinis',
+	'Breach of the scarab',
+	'Eye of the corruptor',
+	'Jewel of the sun',
+	'Menaphite ornament kit',
+	'Cursed phalanx',
+	'Masori crafting kit',
+	'Cache of runes',
+	"Icthlarin's shroud (tier 1)",
+	"Icthlarin's shroud (tier 2)",
+	"Icthlarin's shroud (tier 3)",
+	"Icthlarin's shroud (tier 4)",
+	"Icthlarin's shroud (tier 5)",
+	'Remnant of akkha',
+	'Remnant of ba-ba',
+	'Remnant of kephri',
+	'Remnant of zebak',
+	'Ancient remnant'
 ]);
 
 export const cluesBeginnerCL = resolveItems([
@@ -1488,7 +1524,8 @@ export const allPetsCL = resolveItems([
 	"Lil' creator",
 	'Tiny tempor',
 	'Nexling',
-	'Abyssal protector'
+	'Abyssal protector',
+	"Tumeken's guardian"
 ]);
 export const camdozaalCL = resolveItems([
 	'Barronite mace',
@@ -2130,7 +2167,8 @@ export const allPetIDs = [
 	...chambersOfXericMetamorphPets,
 	...tobMetamorphPets,
 	...growablePets.map(petSeries => petSeries.stages).flat(1),
-	...metamorphPets
+	...metamorphPets,
+	...toaMetamorphPets
 ];
 
 export const antiSantaOutfit = new Bank({

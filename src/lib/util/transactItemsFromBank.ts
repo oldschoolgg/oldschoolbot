@@ -7,7 +7,6 @@ import { handleNewCLItems } from '../handleNewCLItems';
 import { mahojiUserSettingsUpdate } from '../MUser';
 import { filterLootReplace } from '../slayer/slayerUtil';
 import { ItemBank } from '../types';
-import { sanitizeBank } from '../util';
 import { logError } from './logError';
 import { userQueueFn } from './userQueues';
 
@@ -18,6 +17,7 @@ interface TransactItemsArgs {
 	collectionLog?: boolean;
 	filterLoot?: boolean;
 	dontAddToTempCL?: boolean;
+	otherUpdates?: Prisma.UserUpdateArgs['data'];
 }
 
 declare global {
@@ -41,6 +41,14 @@ export async function transactItemsFromBank({
 	let itemsToAdd = options.itemsToAdd ? options.itemsToAdd.clone() : undefined;
 	let itemsToRemove = options.itemsToRemove ? options.itemsToRemove.clone() : undefined;
 	return userQueueFn(userID, async () => {
+		debugLog('transactItemsFromBank', {
+			type: 'TRANSACT_ITEMS',
+			userID,
+			itemsToAdd: itemsToAdd?.bank,
+			itemsToRemove: itemsToRemove?.bank,
+			collectionLog,
+			filterLoot
+		});
 		const settings = await mUserFetch(userID);
 		const gpToRemove = (itemsToRemove?.amount('Coins') ?? 0) - (itemsToAdd?.amount('Coins') ?? 0);
 		if (itemsToRemove && settings.GP < gpToRemove) {
@@ -54,9 +62,9 @@ export async function transactItemsFromBank({
 			});
 			throw errObj;
 		}
-		const currentBank = new Bank().add(settings.user.bank as ItemBank);
-		const previousCL = new Bank().add(settings.user.collectionLogBank as ItemBank);
-		const previousTempCL = new Bank().add(settings.user.temp_cl as ItemBank);
+		const currentBank = new Bank(settings.user.bank as ItemBank);
+		const previousCL = new Bank(settings.user.collectionLogBank as ItemBank);
+		const previousTempCL = new Bank(settings.user.temp_cl as ItemBank);
 
 		let clUpdates: Prisma.UserUpdateArgs['data'] = {};
 		if (itemsToAdd) {
@@ -65,7 +73,7 @@ export async function transactItemsFromBank({
 				currentBank: currentBank.clone().remove(itemsToRemove ?? {})
 			});
 			const { bankLoot, clLoot } = filterLoot
-				? filterLootReplace(settings.allItemsOwned(), itemsToAdd)
+				? filterLootReplace(settings.allItemsOwned, itemsToAdd)
 				: { bankLoot: itemsToAdd, clLoot: itemsToAdd };
 			itemsToAdd = bankLoot;
 
@@ -83,10 +91,8 @@ export async function transactItemsFromBank({
 			}
 		}
 
-		const newBank = new Bank().add(currentBank);
+		const newBank = new Bank(currentBank);
 		if (itemsToAdd) newBank.add(itemsToAdd);
-
-		sanitizeBank(newBank);
 
 		if (itemsToRemove) {
 			if (itemsToRemove.has('Coins')) {
@@ -120,15 +126,16 @@ export async function transactItemsFromBank({
 		const { newUser } = await mahojiUserSettingsUpdate(userID, {
 			bank: newBank.bank,
 			GP: gpUpdate,
-			...clUpdates
+			...clUpdates,
+			...options.otherUpdates
 		});
 
-		const itemsAdded = new Bank().add(itemsToAdd);
+		const itemsAdded = new Bank(itemsToAdd);
 		if (itemsAdded && gpUpdate && gpUpdate.increment > 0) {
 			itemsAdded.add('Coins', gpUpdate.increment);
 		}
 
-		const itemsRemoved = new Bank().add(itemsToRemove);
+		const itemsRemoved = new Bank(itemsToRemove);
 		if (itemsRemoved && gpUpdate && gpUpdate.increment < 0) {
 			itemsRemoved.add('Coins', gpUpdate.increment);
 		}

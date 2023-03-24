@@ -8,10 +8,11 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
 import { stringMatches } from '../../lib/util';
+import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, userStatsBankUpdate } from '../mahojiSettings';
+import { userStatsBankUpdate } from '../mahojiSettings';
 
 function showAllCreatables() {
 	let content = 'This are the items that you can create:';
@@ -150,7 +151,7 @@ export const createCommand: OSBMahojiCommand = {
 			}
 		}
 		if (createableItem.maxCanOwn) {
-			const allItems = user.allItemsOwned();
+			const allItems = user.allItemsOwned;
 			const amountOwned = allItems.amount(createableItem.name);
 			if (amountOwned >= createableItem.maxCanOwn) {
 				return `You already have ${amountOwned}x ${createableItem.name}, you can't create another.`;
@@ -167,7 +168,7 @@ export const createCommand: OSBMahojiCommand = {
 
 		// Check for any items they cant have 2 of.
 		if (createableItem.cantHaveItems) {
-			const allItemsOwnedBank = user.allItemsOwned();
+			const allItemsOwnedBank = user.allItemsOwned;
 			for (const [itemID, qty] of Object.entries(createableItem.cantHaveItems)) {
 				const numOwned = allItemsOwnedBank.amount(Number(itemID));
 				if (numOwned >= qty) {
@@ -195,6 +196,13 @@ export const createCommand: OSBMahojiCommand = {
 					str = `${user}, please confirm that you want to unpack **${inItems}** into ${outItems}`;
 					break;
 				}
+			}
+		}
+
+		if (createableItem.customReq) {
+			const customReq = await createableItem.customReq(user);
+			if (typeof customReq === 'string') {
+				return customReq;
 			}
 		}
 

@@ -1,4 +1,3 @@
-import { User } from '@prisma/client';
 import { ChatInputCommandInteraction } from 'discord.js';
 import { reduceNumByPercent, Time } from 'e';
 import { Bank } from 'oldschooljs';
@@ -11,9 +10,10 @@ import { formatDuration, hasSkillReqs, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 import { toTitleCase } from '../../../lib/util/toTitleCase';
-import { handleMahojiConfirmation } from '../../mahojiSettings';
+import { userStatsUpdate } from '../../mahojiSettings';
 
 let itemBoosts = [
 	[['Abyssal whip', 'Abyssal tentacle'].map(getOSItem), 12],
@@ -116,7 +116,7 @@ export async function pestControlBuyCommand(user: MUser, input: string) {
 	}
 
 	const { item, cost } = buyable;
-	const balance = user.user.pest_control_points;
+	const { pest_control_points: balance } = await user.fetchStats({ pest_control_points: true });
 	if (balance < cost) {
 		return `You don't have enough Void knight commendation points to buy the ${item.name}. You need ${cost}, but you have only ${balance}.`;
 	}
@@ -137,11 +137,15 @@ export async function pestControlBuyCommand(user: MUser, input: string) {
 		}
 		await transactItems({ userID: user.id, itemsToRemove: new Bank().add(buyable.inputItem.id) });
 	}
-	await user.update({
-		pest_control_points: {
-			decrement: cost
-		}
-	});
+	await userStatsUpdate(
+		user.id,
+		{
+			pest_control_points: {
+				decrement: cost
+			}
+		},
+		{}
+	);
 	const loot = new Bank().add(item.id);
 	await transactItems({ userID: user.id, itemsToAdd: loot, collectionLog: true });
 
@@ -216,7 +220,7 @@ export async function pestControlXPCommand(
 	}
 	const xpPerPoint = Math.floor(Math.pow(level, 2) / 600) * xpMultiplier[skillName as keyof typeof xpMultiplier];
 
-	const balance = user.user.pest_control_points;
+	const { pest_control_points: balance } = await user.fetchStats({ pest_control_points: true });
 	if (balance < amount) {
 		return `You cannot afford this, because you have only ${balance} points.`;
 	}
@@ -224,11 +228,15 @@ export async function pestControlXPCommand(
 		interaction,
 		`Are you sure you want to spend ${amount} points on ${xpPerPoint * amount} ${toTitleCase(skillName)} XP?`
 	);
-	await user.update({
-		pest_control_points: {
-			decrement: amount
-		}
-	});
+	await userStatsUpdate(
+		user.id,
+		{
+			pest_control_points: {
+				decrement: amount
+			}
+		},
+		{}
+	);
 	const xpRes = await user.addXP({
 		skillName: skillName as SkillsEnum,
 		amount: xpPerPoint * amount,
@@ -241,8 +249,11 @@ export async function pestControlXPCommand(
 ${xpRes}`;
 }
 
-export async function pestControlStatsCommand(user: User) {
-	const kc = await getMinigameScore(user.id, 'pest_control');
-	return `You have ${user.pest_control_points} Void knight commendation points.
+export async function pestControlStatsCommand(user: MUser) {
+	const [kc, stats] = await Promise.all([
+		getMinigameScore(user.id, 'pest_control'),
+		user.fetchStats({ pest_control_points: true })
+	]);
+	return `You have ${stats.pest_control_points} Void knight commendation points.
 You have completed ${kc} games of Pest Control.`;
 }

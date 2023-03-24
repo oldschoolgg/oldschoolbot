@@ -3,7 +3,15 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
 
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
-import { badges, BitField, BitFieldData, FormattedCustomEmoji, MAX_LEVEL, PerkTier } from '../../lib/constants';
+import {
+	badges,
+	BitField,
+	BitFieldData,
+	FormattedCustomEmoji,
+	MAX_LEVEL,
+	minionActivityCache,
+	PerkTier
+} from '../../lib/constants';
 import { degradeableItems } from '../../lib/degradeableItems';
 import { diaries } from '../../lib/diaries';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
@@ -13,12 +21,12 @@ import { degradeableItemsCommand } from '../../lib/minions/functions/degradeable
 import { allPossibleStyles, trainCommand } from '../../lib/minions/functions/trainCommand';
 import { roboChimpUserFetch } from '../../lib/roboChimp';
 import { Minigames } from '../../lib/settings/minigames';
-import { minionActivityCache } from '../../lib/settings/settings';
 import Skills from '../../lib/skilling/skills';
 import creatures from '../../lib/skilling/skills/hunter/creatures';
 import { convertLVLtoXP, getUsername, isValidNickname } from '../../lib/util';
 import { getKCByName } from '../../lib/util/getKCByName';
 import getOSItem from '../../lib/util/getOSItem';
+import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
 import {
 	achievementDiaryCommand,
@@ -34,7 +42,7 @@ import { minionBuyCommand } from '../lib/abstracted_commands/minionBuyCommand';
 import { minionStatusCommand } from '../lib/abstracted_commands/minionStatusCommand';
 import { skillOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, patronMsg } from '../mahojiSettings';
+import { patronMsg } from '../mahojiSettings';
 
 const patMessages = [
 	'You pat {name} on the head.',
@@ -193,12 +201,22 @@ export const minionCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.String,
 					name: 'item',
 					description: 'The item you want to use.',
-					autocomplete: async (value: string) => {
-						return Lampables.map(i => i.items)
+					autocomplete: async (value, user) => {
+						const mappedLampables = Lampables.map(i => i.items)
 							.flat(2)
 							.map(getOSItem)
-							.filter(p => (!value ? true : p.name.toLowerCase().includes(value.toLowerCase())))
-							.map(p => ({ name: p.name, value: p.name }));
+							.map(i => ({ id: i.id, name: i.name }));
+
+						const botUser = await mUserFetch(user.id);
+
+						return botUser.bank
+							.items()
+							.filter(i => mappedLampables.map(l => l.id).includes(i[0].id))
+							.filter(i => {
+								if (!value) return true;
+								return i[0].name.toLowerCase().includes(value.toLowerCase());
+							})
+							.map(i => ({ name: `${i[0].name} (${i[1]}x Owned)`, value: i[0].name.toLowerCase() }));
 					},
 					required: true
 				},

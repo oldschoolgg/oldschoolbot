@@ -10,10 +10,11 @@ import { getMinigameScore, Minigames } from '../../lib/settings/minigames';
 import { formatSkillRequirements, itemNameFromID, stringMatches } from '../../lib/util';
 import { mahojiChatHead } from '../../lib/util/chatHeadImage';
 import getOSItem from '../../lib/util/getOSItem';
+import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { leaguesBuyCommand } from '../lib/abstracted_commands/leaguesBuyCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiParseNumber, multipleUserStatsBankUpdate } from '../mahojiSettings';
+import { mahojiParseNumber, multipleUserStatsBankUpdate } from '../mahojiSettings';
 
 const allBuyablesAutocomplete = [...Buyables, ...leagueBuyables.map(i => ({ name: i.item.name })), { name: 'Kitten' }];
 
@@ -58,7 +59,7 @@ export const buyCommand: OSBMahojiCommand = {
 				});
 			}
 
-			const allItemsOwnedBank = user.allItemsOwned();
+			const allItemsOwnedBank = user.allItemsOwned;
 			if (kittens.some(kitten => allItemsOwnedBank.has(kitten))) {
 				return mahojiChatHead({
 					head: 'gertrude',

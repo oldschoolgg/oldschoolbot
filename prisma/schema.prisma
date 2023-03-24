@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["metrics"]
 }
 
 datasource db {
@@ -18,11 +19,13 @@ model Activity {
   type           activity_type_enum
   channel_id     BigInt
   data           Json               @db.Json
+  pinnedTrip     PinnedTrip[]
 
   @@index([user_id, finish_date])
   @@index([group_activity])
   @@index([completed])
   @@index([user_id, type])
+  @@index([finish_date])
   @@map("activity")
 }
 
@@ -128,8 +131,22 @@ model ClientStorage {
   gotr_loot                    Json     @default("{}") @db.Json
   gf_cost                      Json     @default("{}") @db.Json
   gf_loot                      Json     @default("{}") @db.Json
+  nmz_cost                     Json     @default("{}") @db.Json
+  toa_cost                     Json     @default("{}") @db.Json
+  toa_loot                     Json     @default("{}") @db.Json
 
   @@map("clientStorage")
+}
+
+enum GearSetupType {
+  melee
+  range
+  mage
+  misc
+  skilling
+  wildy
+  fashion
+  other
 }
 
 model GearPreset {
@@ -148,6 +165,10 @@ model GearPreset {
   weapon     Int?
   ammo       Int?
   ammo_qty   Int?
+
+  emoji_id       String?        @db.VarChar(19)
+  times_equipped Int            @default(0)
+  pinned_setup   GearSetupType?
 
   @@id([user_id, name])
   @@map("gear_presets")
@@ -249,162 +270,137 @@ enum bank_sort_method_enum {
 }
 
 model User {
-  id                         String   @id @db.VarChar(19)
-  GP                         BigInt   @default(0)
-  QP                         Int      @default(0)
-  RSN                        String?
-  pets                       Json     @default("{}") @db.Json
-  badges                     Int[]
-  bitfield                   Int[]
-  favoriteItems              Int[]
-  favorite_alchables         Int[]
-  favorite_food              Int[]
-  lastDailyTimestamp         BigInt   @default(1)
-  lastTearsOfGuthixTimestamp BigInt   @default(1)
-  sacrificedValue            BigInt   @default(0)
-  bank                       Json     @default("{}") @db.Json
-  collectionLogBank          Json     @default("{}") @db.JsonB
-  creatureScores             Json     @default("{}") @db.Json
-  monsterScores              Json     @default("{}") @db.Json
-  lapsScores                 Json     @default("{}") @db.Json
-  bankBackground             Int      @default(1)
-  sacrificedBank             Json     @default("{}") @db.Json
-  honour_level               Int      @default(1)
-  honour_points              Int      @default(0)
-  high_gambles               Int      @default(0)
-  carpenter_points           Int      @default(0)
-  zeal_tokens                Int      @default(0)
-  openable_scores            Json     @default("{}") @db.Json
-  attack_style               String[]
-  total_cox_points           Int      @default(0)
-  combat_options             Int[]
-  farming_patch_reminders    Boolean  @default(true)
-  pest_control_points        Int      @default(0)
-  inferno_attempts           Int      @default(0)
-  infernal_cape_sacrifices   Int      @default(0)
-  tob_attempts               Int      @default(0)
-  tob_hard_attempts          Int      @default(0)
-  volcanic_mine_points       Int      @default(0)
-  foundry_reputation         Int      @default(0)
-  blowpipe                   Json     @default("{\"scales\":0,\"dartID\":null,\"dartQuantity\":0}") @db.Json
-  ironman_alts               String[]
-  main_account               String?
-  slayer_points              Int      @default(0) @map("slayer.points")
-  slayer_task_streak         Int      @default(0) @map("slayer.task_streak")
-  slayer_remember_master     String?  @map("slayer.remember_master")
-  slayer_unlocks             Int[]    @map("slayer.unlocks")
-  slayer_blocked_ids         Int[]    @map("slayer.blocked_ids")
-  slayer_autoslay_options    Int[]    @map("slayer.autoslay_options")
-  slayer_superior_count      Int      @default(0) @map("slayer.superior_count")
-  slayer_last_task           Int      @default(0) @map("slayer.last_task")
-  slayer_unsired_offered     Int      @default(0) @map("slayer.unsired_offered")
-  slayer_chewed_offered      Int      @default(0) @map("slayer.chewed_offered")
-  bank_bg_hex                String?
-  minion_name                String?  @map("minion.name")
-  minion_hasBought           Boolean  @default(false) @map("minion.hasBought")
-  minion_ironman             Boolean  @default(false) @map("minion.ironman")
-  minion_icon                String?  @map("minion.icon")
-  minion_equippedPet         Int?     @map("minion.equippedPet")
-  minion_farmingContract     Json?    @map("minion.farmingContract") @db.Json
-  minion_defaultPay          Boolean  @default(false) @map("minion.defaultPay")
-  minion_birdhouseTraps      Json?    @map("minion.birdhouseTraps") @db.Json
-  stats_deaths               Int      @default(0) @map("stats.deaths")
-  stats_diceWins             Int      @default(0) @map("stats.diceWins")
-  stats_diceLosses           Int      @default(0) @map("stats.diceLosses")
-  stats_duelLosses           Int      @default(0) @map("stats.duelLosses")
-  stats_duelWins             Int      @default(0) @map("stats.duelWins")
-  stats_fightCavesAttempts   Int      @default(0) @map("stats.fightCavesAttempts")
-  stats_fireCapesSacrificed  Int      @default(0) @map("stats.fireCapesSacrificed")
-  stats_titheFarmsCompleted  Int      @default(0) @map("stats.titheFarmsCompleted")
-  stats_titheFarmPoints      Int      @default(0) @map("stats.titheFarmPoints")
-  skills_agility             BigInt   @default(0) @map("skills.agility")
-  skills_cooking             BigInt   @default(0) @map("skills.cooking")
-  skills_fishing             BigInt   @default(0) @map("skills.fishing")
-  skills_mining              BigInt   @default(0) @map("skills.mining")
-  skills_smithing            BigInt   @default(0) @map("skills.smithing")
-  skills_woodcutting         BigInt   @default(0) @map("skills.woodcutting")
-  skills_firemaking          BigInt   @default(0) @map("skills.firemaking")
-  skills_runecraft           BigInt   @default(0) @map("skills.runecraft")
-  skills_crafting            BigInt   @default(0) @map("skills.crafting")
-  skills_prayer              BigInt   @default(0) @map("skills.prayer")
-  skills_fletching           BigInt   @default(0) @map("skills.fletching")
-  skills_thieving            BigInt   @default(0) @map("skills.thieving")
-  skills_farming             BigInt   @default(0) @map("skills.farming")
-  skills_herblore            BigInt   @default(0) @map("skills.herblore")
-  skills_hunter              BigInt   @default(0) @map("skills.hunter")
-  skills_construction        BigInt   @default(0) @map("skills.construction")
-  skills_magic               BigInt   @default(0) @map("skills.magic")
-  skills_ranged              BigInt   @default(0) @map("skills.ranged")
-  skills_attack              BigInt   @default(0) @map("skills.attack")
-  skills_strength            BigInt   @default(0) @map("skills.strength")
-  skills_defence             BigInt   @default(0) @map("skills.defence")
-  skills_slayer              BigInt   @default(0) @map("skills.slayer")
-  skills_hitpoints           BigInt   @default(1154) @map("skills.hitpoints")
-  gear_melee                 Json?    @map("gear.melee") @db.Json
-  gear_mage                  Json?    @map("gear.mage") @db.Json
-  gear_range                 Json?    @map("gear.range") @db.Json
-  gear_misc                  Json?    @map("gear.misc") @db.Json
-  gear_skilling              Json?    @map("gear.skilling") @db.Json
-  gear_wildy                 Json?    @map("gear.wildy") @db.Json
-  gear_fashion               Json?    @map("gear.fashion") @db.Json
-  gear_other                 Json?    @map("gear.other") @db.Json
-  farmingPatches_herb        Json?    @map("farmingPatches.herb") @db.Json
-  farmingPatches_fruit_tree  Json?    @map("farmingPatches.fruit tree") @db.Json
-  farmingPatches_tree        Json?    @map("farmingPatches.tree") @db.Json
-  farmingPatches_allotment   Json?    @map("farmingPatches.allotment") @db.Json
-  farmingPatches_hops        Json?    @map("farmingPatches.hops") @db.Json
-  farmingPatches_cactus      Json?    @map("farmingPatches.cactus") @db.Json
-  farmingPatches_bush        Json?    @map("farmingPatches.bush") @db.Json
-  farmingPatches_spirit      Json?    @map("farmingPatches.spirit") @db.Json
-  farmingPatches_hardwood    Json?    @map("farmingPatches.hardwood") @db.Json
-  farmingPatches_seaweed     Json?    @map("farmingPatches.seaweed") @db.Json
-  farmingPatches_vine        Json?    @map("farmingPatches.vine") @db.Json
-  farmingPatches_calquat     Json?    @map("farmingPatches.calquat") @db.Json
-  farmingPatches_redwood     Json?    @map("farmingPatches.redwood") @db.Json
-  farmingPatches_crystal     Json?    @map("farmingPatches.crystal") @db.Json
-  farmingPatches_celastrus   Json?    @map("farmingPatches.celastrus") @db.Json
-  farmingPatches_hespori     Json?    @map("farmingPatches.hespori") @db.Json
-  farmingPatches_flower      Json?    @map("farmingPatches.flower") @db.Json
-  farmingPatches_mushroom    Json?    @map("farmingPatches.mushroom") @db.Json
-  farmingPatches_belladonna  Json?    @map("farmingPatches.belladonna") @db.Json
-  kourend_favour             Json?    @map("kourend_favour") @db.Json
-  bank_sort_method           String?  @db.VarChar(16)
-  bank_sort_weightings       Json     @default("{}") @db.Json
-
+  id                          String    @id @db.VarChar(19)
+  last_command_date           DateTime? @db.Timestamp(6)
+  minion_bought_date          DateTime? @db.Timestamp(6)
+  minion_hasBought            Boolean   @default(false) @map("minion.hasBought")
+  minion_ironman              Boolean   @default(false) @map("minion.ironman")
   premium_balance_tier        Int?
   premium_balance_expiry_date BigInt?
 
-  temp_cl            Json      @default("{}") @db.Json
-  last_temp_cl_reset DateTime? @db.Timestamp(6)
+  RSN  String?
+  pets Json    @default("{}") @db.Json
 
-  tentacle_charges       Int @default(0)
-  sang_charges           Int @default(0)
-  celestial_ring_charges Int @default(0)
-  ash_sanctifier_charges Int @default(0)
+  sacrificedValue BigInt @default(0)
 
-  gp_luckypick BigInt @default(0)
-  gp_dice      BigInt @default(0)
-  gp_slots     BigInt @default(0)
-  gp_hotcold   BigInt @default(0)
-
-  tob_cost Json @default("{}") @db.Json
-  tob_loot Json @default("{}") @db.Json
-
-  total_gp_traded BigInt @default(0)
-
-  lms_points Int @default(0)
-
-  minion_bought_date DateTime? @db.Timestamp(6)
-
-  auto_farm_filter AutoFarmFilterEnum @default(AllFarm)
+  GP                     BigInt    @default(0)
+  QP                     Int       @default(0)
+  bank                   Json      @default("{}") @db.Json
+  collectionLogBank      Json      @default("{}") @db.JsonB
+  blowpipe               Json      @default("{\"scales\":0,\"dartID\":null,\"dartQuantity\":0}") @db.Json
+  ironman_alts           String[]
+  main_account           String?
+  slayer_unlocks         Int[]     @map("slayer.unlocks")
+  slayer_blocked_ids     Int[]     @map("slayer.blocked_ids")
+  slayer_last_task       Int       @default(0) @map("slayer.last_task")
+  badges                 Int[]
+  bitfield               Int[]
+  temp_cl                Json      @default("{}") @db.Json
+  last_temp_cl_reset     DateTime? @db.Timestamp(6)
+  minion_equippedPet     Int?      @map("minion.equippedPet")
+  minion_farmingContract Json?     @map("minion.farmingContract") @db.Json
+  minion_birdhouseTraps  Json?     @map("minion.birdhouseTraps") @db.Json
 
   bingo_tickets_bought Int    @default(0)
   bingo_gp_contributed BigInt @default(0)
 
-  last_command_date DateTime?    @db.Timestamp(6)
-  farmed_crops      FarmedCrop[]
+  // Relations
+  farmedCrops FarmedCrop[]
+  botItemSell BotItemSell[]
+  pinnedTrip  PinnedTrip[]
 
-  minion_defaultCompostToUse CropUpgradeType @default(compost) @map("minion.defaultCompostToUse")
+  // Configs/Settings
+  minion_defaultCompostToUse CropUpgradeType    @default(compost) @map("minion.defaultCompostToUse")
+  auto_farm_filter           AutoFarmFilterEnum @default(AllFarm)
+  favoriteItems              Int[]
+  favorite_alchables         Int[]
+  favorite_food              Int[]
+  minion_defaultPay          Boolean            @default(false) @map("minion.defaultPay")
+  minion_icon                String?            @map("minion.icon")
+  minion_name                String?            @map("minion.name")
+  bank_bg_hex                String?
+  bankBackground             Int                @default(1)
+  attack_style               String[]
+  combat_options             Int[]
+  farming_patch_reminders    Boolean            @default(true)
+  slayer_remember_master     String?            @map("slayer.remember_master")
+  slayer_autoslay_options    Int[]              @map("slayer.autoslay_options")
+  bank_sort_method           String?            @db.VarChar(16)
+  bank_sort_weightings       Json               @default("{}") @db.Json
+
+  // Skills
+  skills_agility      BigInt @default(0) @map("skills.agility")
+  skills_cooking      BigInt @default(0) @map("skills.cooking")
+  skills_fishing      BigInt @default(0) @map("skills.fishing")
+  skills_mining       BigInt @default(0) @map("skills.mining")
+  skills_smithing     BigInt @default(0) @map("skills.smithing")
+  skills_woodcutting  BigInt @default(0) @map("skills.woodcutting")
+  skills_firemaking   BigInt @default(0) @map("skills.firemaking")
+  skills_runecraft    BigInt @default(0) @map("skills.runecraft")
+  skills_crafting     BigInt @default(0) @map("skills.crafting")
+  skills_prayer       BigInt @default(0) @map("skills.prayer")
+  skills_fletching    BigInt @default(0) @map("skills.fletching")
+  skills_thieving     BigInt @default(0) @map("skills.thieving")
+  skills_farming      BigInt @default(0) @map("skills.farming")
+  skills_herblore     BigInt @default(0) @map("skills.herblore")
+  skills_hunter       BigInt @default(0) @map("skills.hunter")
+  skills_construction BigInt @default(0) @map("skills.construction")
+  skills_magic        BigInt @default(0) @map("skills.magic")
+  skills_ranged       BigInt @default(0) @map("skills.ranged")
+  skills_attack       BigInt @default(0) @map("skills.attack")
+  skills_strength     BigInt @default(0) @map("skills.strength")
+  skills_defence      BigInt @default(0) @map("skills.defence")
+  skills_slayer       BigInt @default(0) @map("skills.slayer")
+  skills_hitpoints    BigInt @default(1154) @map("skills.hitpoints")
+
+  // Gear
+  gear_melee    Json? @map("gear.melee") @db.Json
+  gear_mage     Json? @map("gear.mage") @db.Json
+  gear_range    Json? @map("gear.range") @db.Json
+  gear_misc     Json? @map("gear.misc") @db.Json
+  gear_skilling Json? @map("gear.skilling") @db.Json
+  gear_wildy    Json? @map("gear.wildy") @db.Json
+  gear_fashion  Json? @map("gear.fashion") @db.Json
+  gear_other    Json? @map("gear.other") @db.Json
+
+  // Charges
+  tentacle_charges       Int @default(0)
+  sang_charges           Int @default(0)
+  celestial_ring_charges Int @default(0)
+  ash_sanctifier_charges Int @default(0)
+  serp_helm_charges      Int @default(0)
+  blood_fury_charges     Int @default(0)
+  tum_shadow_charges     Int @default(0)
+
+  // Balances
+  lms_points           Int @default(0)
+  volcanic_mine_points Int @default(0)
+  nmz_points           Int @default(0)
+  carpenter_points     Int @default(0)
+  zeal_tokens          Int @default(0)
+  slayer_points        Int @default(0) @map("slayer.points")
+
+  // Migrate
+  farmingPatches_herb       Json? @map("farmingPatches.herb") @db.Json
+  farmingPatches_fruit_tree Json? @map("farmingPatches.fruit tree") @db.Json
+  farmingPatches_tree       Json? @map("farmingPatches.tree") @db.Json
+  farmingPatches_allotment  Json? @map("farmingPatches.allotment") @db.Json
+  farmingPatches_hops       Json? @map("farmingPatches.hops") @db.Json
+  farmingPatches_cactus     Json? @map("farmingPatches.cactus") @db.Json
+  farmingPatches_bush       Json? @map("farmingPatches.bush") @db.Json
+  farmingPatches_spirit     Json? @map("farmingPatches.spirit") @db.Json
+  farmingPatches_hardwood   Json? @map("farmingPatches.hardwood") @db.Json
+  farmingPatches_seaweed    Json? @map("farmingPatches.seaweed") @db.Json
+  farmingPatches_vine       Json? @map("farmingPatches.vine") @db.Json
+  farmingPatches_calquat    Json? @map("farmingPatches.calquat") @db.Json
+  farmingPatches_redwood    Json? @map("farmingPatches.redwood") @db.Json
+  farmingPatches_crystal    Json? @map("farmingPatches.crystal") @db.Json
+  farmingPatches_celastrus  Json? @map("farmingPatches.celastrus") @db.Json
+  farmingPatches_hespori    Json? @map("farmingPatches.hespori") @db.Json
+  farmingPatches_flower     Json? @map("farmingPatches.flower") @db.Json
+  farmingPatches_mushroom   Json? @map("farmingPatches.mushroom") @db.Json
+  farmingPatches_belladonna Json? @map("farmingPatches.belladonna") @db.Json
+  kourend_favour            Json? @map("kourend_favour") @db.Json
 
   @@index([id, last_command_date])
   @@map("users")
@@ -418,6 +414,11 @@ model Webhook {
   @@map("webhook_table")
 }
 
+enum XpGainSource {
+  TombsOfAmascut
+  UnderwaterAgilityThieving
+}
+
 model XPGain {
   id         Int                 @id @default(autoincrement())
   user_id    BigInt
@@ -426,6 +427,7 @@ model XPGain {
   xp         Int
   artificial Boolean?
   post_max   Boolean             @default(false)
+  source     XpGainSource?
 
   @@index([date, skill])
   @@map("xp_gains")
@@ -444,6 +446,12 @@ model Metric {
   cpuSystem          Float  @db.Real
   cpuPercent         Float  @db.Real
   qps                Float? @db.Real
+
+  prisma_query_total_queries       Int?
+  prisma_pool_active_connections   Int?
+  prisma_pool_idle_connections     Int?
+  prisma_pool_wait_count           Int?
+  prisma_query_active_transactions Int?
 
   @@map("metrics")
 }
@@ -483,7 +491,9 @@ model Minigame {
   puro_puro               Int    @default(0)
   giants_foundry          Int    @default(0)
   guardians_of_the_rift   Int    @default(0)
+  nmz                     Int    @default(0)
   shades_of_morton        Int    @default(0)
+  tombs_of_amascut        Int    @default(0)
 
   new_user NewUser?
 
@@ -528,6 +538,7 @@ model LootTrack {
   cost           Json            @default("{}") @db.Json
   user_id        BigInt?
 
+  @@index([key, user_id])
   @@map("loot_track")
 }
 
@@ -613,6 +624,58 @@ model UserStats {
 
   random_event_completions_bank Json @default("{}") @db.Json
 
+  toa_attempts Int @default(0)
+
+  toa_cost Json @default("{}") @db.Json
+  toa_loot Json @default("{}") @db.Json
+
+  total_toa_points           Int  @default(0)
+  toa_raid_levels_bank       Json @default("{}") @db.Json
+  total_toa_duration_minutes Int  @default(0)
+
+  deaths                   Int @default(0)
+  dice_wins                Int @default(0)
+  dice_losses              Int @default(0)
+  duel_losses              Int @default(0)
+  duel_wins                Int @default(0)
+  fight_caves_attempts     Int @default(0)
+  firecapes_sacrificed     Int @default(0)
+  tithe_farms_completed    Int @default(0)
+  tithe_farm_points        Int @default(0)
+  pest_control_points      Int @default(0)
+  inferno_attempts         Int @default(0)
+  infernal_cape_sacrifices Int @default(0)
+  tob_attempts             Int @default(0)
+  foundry_reputation       Int @default(0)
+  tob_hard_attempts        Int @default(0)
+  total_cox_points         Int @default(0)
+  honour_level             Int @default(1)
+  high_gambles             Int @default(0)
+  honour_points            Int @default(0)
+
+  slayer_task_streak     Int @default(0)
+  slayer_superior_count  Int @default(0)
+  slayer_unsired_offered Int @default(0)
+  slayer_chewed_offered  Int @default(0)
+
+  tob_cost        Json @default("{}")
+  tob_loot        Json @default("{}")
+  creature_scores Json @default("{}")
+  monster_scores  Json @default("{}")
+  laps_scores     Json @default("{}")
+  sacrificed_bank Json @default("{}")
+  openable_scores Json @default("{}")
+
+  gp_luckypick BigInt @default(0)
+  gp_dice      BigInt @default(0)
+  gp_slots     BigInt @default(0)
+  gp_hotcold   BigInt @default(0)
+
+  total_gp_traded BigInt @default(0)
+
+  last_daily_timestamp           BigInt @default(0)
+  last_tears_of_guthix_timestamp BigInt @default(0)
+
   @@map("user_stats")
 }
 
@@ -651,6 +714,35 @@ model FarmedCrop {
   paid_for_protection Boolean
 
   @@map("farmed_crop")
+}
+
+model BotItemSell {
+  id String @id @default(uuid()) @db.Uuid
+
+  item_id     Int
+  quantity    Int
+  gp_received BigInt
+
+  user_id String @db.VarChar(19)
+  user    User   @relation(fields: [user_id], references: [id])
+
+  @@map("bot_item_sell")
+}
+
+model PinnedTrip {
+  id String @id
+
+  user_id       String             @db.VarChar(19)
+  activity_id   Int
+  emoji_id      String?            @db.VarChar(19)
+  activity_type activity_type_enum
+  data          Json?              @db.Json
+  custom_name   String?            @db.VarChar(32)
+
+  activity Activity @relation(fields: [activity_id], references: [id])
+  user     User     @relation(fields: [user_id], references: [id])
+
+  @@map("pinned_trip")
 }
 
 enum command_usage_status {
@@ -742,7 +834,10 @@ enum activity_type_enum {
   GiantsFoundry
   GuardiansOfTheRift
   HalloweenEvent
+  NightmareZone
   ShadesOfMorton
+  TombsOfAmascut
+  UnderwaterAgilityThieving
 }
 
 enum xp_gains_skill_enum {

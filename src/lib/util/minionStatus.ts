@@ -8,7 +8,6 @@ import { ClueTiers } from '../clues/clueTiers';
 import { Emoji } from '../constants';
 import killableMonsters from '../minions/data/killableMonsters';
 import { Planks } from '../minions/data/planks';
-import { getActivityOfUser } from '../settings/settings';
 import Agility from '../skilling/skills/agility';
 import Cooking from '../skilling/skills/cooking';
 import Crafting from '../skilling/skills/crafting';
@@ -69,11 +68,13 @@ import {
 	SmithingActivityTaskOptions,
 	TheatreOfBloodTaskOptions,
 	TiaraRunecraftActivityTaskOptions,
+	TOAOptions,
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '../types/minions';
 import { formatDuration, itemNameFromID, randomVariation } from '../util';
 import { stringMatches } from './cleanString';
+import { getActivityOfUser } from './minionIsBusy';
 import { toTitleCase } from './toTitleCase';
 
 export function minionStatus(user: MUser) {
@@ -607,6 +608,11 @@ export function minionStatus(user: MUser) {
 				durationRemaining
 			)}.`;
 		}
+		case 'NightmareZone': {
+			return `${name} is currently killing Monsters in the Nightmare Zone. The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
 		case 'ShadesOfMorton': {
 			const data = currentTask as ShadesOfMortonOptions;
 			const log = shadesLogs.find(i => i.normalLog.id === data.logID)!;
@@ -614,6 +620,17 @@ export function minionStatus(user: MUser) {
 			return `${name} is currently doing ${data.quantity} trips of Shades of Mort'ton, cremating ${
 				shade.shadeName
 			} remains with ${log.oiledLog.name}! The trip should take ${formatDuration(durationRemaining)}.`;
+		}
+		case 'TombsOfAmascut': {
+			const data = currentTask as TOAOptions;
+			const durationRemaining = data.finishDate - data.duration + data.fakeDuration - Date.now();
+
+			return `${name} is currently attempting the Tombs of Amascut, if your team is successful and doesn't die, the trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
+		case 'UnderwaterAgilityThieving': {
+			return `${name} is currently doing Underwater Agility and Thieving. ${formattedDuration}`;
 		}
 		case 'HalloweenEvent':
 		case 'Easter':

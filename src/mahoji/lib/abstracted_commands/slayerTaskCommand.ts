@@ -17,10 +17,11 @@ import {
 import { AssignableSlayerTask } from '../../../lib/slayer/types';
 import { awaitMessageComponentInteraction, channelIsSendable, removeFromArr } from '../../../lib/util';
 import { stringMatches } from '../../../lib/util/cleanString';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { interactionReply } from '../../../lib/util/interactionReply';
 import { logError } from '../../../lib/util/logError';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
-import { handleMahojiConfirmation } from '../../mahojiSettings';
+import { userStatsUpdate } from '../../mahojiSettings';
 
 const returnSuccessButtons = [
 	new ActionRowBuilder<ButtonBuilder>().addComponents([
@@ -98,7 +99,8 @@ export function slayerListBlocksCommand(mahojiUser: MUser) {
 
 export async function slayerStatusCommand(mahojiUser: MUser) {
 	const { currentTask, assignedTask, slayerMaster } = await getUsersCurrentSlayerInfo(mahojiUser.id);
-	const { slayer_points: slayerPoints, slayer_task_streak: slayerStreak } = mahojiUser.user;
+	const { slayer_points: slayerPoints } = mahojiUser.user;
+	const { slayer_task_streak: slayerStreak } = await mahojiUser.fetchStats({ slayer_task_streak: true });
 	return (
 		`${
 			currentTask
@@ -288,7 +290,7 @@ export async function slayerNewTaskCommand({
 				quantity_remaining: 0
 			}
 		});
-		await user.update({ slayer_task_streak: 0 });
+		await userStatsUpdate(user.id, { slayer_task_streak: 0 }, {});
 		const newSlayerTask = await assignNewSlayerTask(user, slayerMaster);
 		let commonName = getCommonTaskName(newSlayerTask.assignedTask!.monster);
 		const returnMessage =
@@ -320,7 +322,7 @@ export async function slayerNewTaskCommand({
 			if (matchedSlayerMaster.combatLvl) aRequirements.push(`Combat Level: ${matchedSlayerMaster.combatLvl}`);
 			if (matchedSlayerMaster.questPoints) aRequirements.push(`Quest points: ${matchedSlayerMaster.questPoints}`);
 			warningInfo = `You do not have the requirements to use ${matchedSlayerMaster.name}.\n\n`;
-			if (aRequirements.length) warningInfo += `**Requires**:\n${aRequirements.join('\n')}\n\n`;
+			if (aRequirements.length > 0) warningInfo += `**Requires**:\n${aRequirements.join('\n')}\n\n`;
 		}
 
 		let baseInfo = currentTask

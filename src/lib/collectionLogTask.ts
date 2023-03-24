@@ -1,12 +1,11 @@
-import { User } from '@prisma/client';
+import { Canvas, SKRSContext2D } from '@napi-rs/canvas';
 import { calcWhatPercent, objectEntries } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { Canvas, CanvasRenderingContext2D } from 'skia-canvas/lib';
 
-import { allCollectionLogs, getCollection, getTotalCl } from '../lib/data/Collections';
+import { allCollectionLogs, getCollection, getTotalCl, UserStatsDataNeededForCL } from '../lib/data/Collections';
 import { IToReturnCollection } from '../lib/data/CollectionsExport';
 import { formatItemStackQuantity, generateHexColorForCashStack, toKMB } from '../lib/util';
-import { fillTextXTimesInCtx, getClippedRegion } from '../lib/util/canvasUtil';
+import { fillTextXTimesInCtx, getClippedRegion, measureTextWidth } from '../lib/util/canvasUtil';
 import getOSItem from '../lib/util/getOSItem';
 import { IBgSprite } from './bankImage';
 
@@ -16,7 +15,7 @@ export const collectionLogTypes = [
 	{ name: 'bank', description: 'Owned Items Log' },
 	{ name: 'temp', description: 'Temporary Log' }
 ] as const;
-export type CollectionLogType = typeof collectionLogTypes[number]['name'];
+export type CollectionLogType = (typeof collectionLogTypes)[number]['name'];
 export const CollectionLogFlags = [
 	{ name: 'text', description: 'Show your CL in text format.' },
 	{ name: 'missing', description: 'Show only missing items.' }
@@ -25,12 +24,12 @@ export const CollectionLogFlags = [
 class CollectionLogTask {
 	run() {}
 
-	drawBorder(ctx: CanvasRenderingContext2D, sprite: IBgSprite) {
+	drawBorder(ctx: SKRSContext2D, sprite: IBgSprite) {
 		return bankImageGenerator.drawBorder(ctx, sprite);
 	}
 
 	drawSquare(
-		ctx: CanvasRenderingContext2D,
+		ctx: SKRSContext2D,
 		x: number,
 		y: number,
 		w: number,
@@ -55,7 +54,7 @@ class CollectionLogTask {
 		ctx.restore();
 	}
 
-	drawText(ctx: CanvasRenderingContext2D, text: string, x: number, y: number) {
+	drawText(ctx: SKRSContext2D, text: string, x: number, y: number) {
 		const baseFill = ctx.fillStyle;
 		ctx.fillStyle = '#000000';
 		fillTextXTimesInCtx(ctx, text, x + 1, y + 1);
@@ -102,12 +101,12 @@ class CollectionLogTask {
 
 	async generateLogImage(options: {
 		user: MUser;
-		mahojiUser: User;
 		collection: string;
 		type: CollectionLogType;
 		flags: { [key: string]: string | number };
+		stats: UserStatsDataNeededForCL;
 	}): Promise<CommandResponse> {
-		const { sprite } = bankImageGenerator.getBgAndSprite(options.user.user.bankBackground);
+		const { sprite } = bankImageGenerator.getBgAndSprite(options.user.user.bankBackground, options.user);
 
 		if (options.flags.temp) {
 			options.type = 'temp';
@@ -162,7 +161,7 @@ class CollectionLogTask {
 
 		const fullSize = flags.nl || !collectionLog.leftList;
 
-		const userTotalCl = getTotalCl(user, type);
+		const userTotalCl = getTotalCl(user, type, options.stats);
 		const leftListCanvas = this.drawLeftList(collectionLog, sprite);
 
 		let leftDivisor = 214;
@@ -193,6 +192,8 @@ class CollectionLogTask {
 				121 + (itemSize + itemSpacer) * Math.ceil(collectionLog.collectionTotal / maxPerLine)
 			)
 		);
+
+		debugLog('Generating a CL image', { collection, ...flags, type, user_id: user.id });
 
 		// Create base canvas
 		const canvas = new Canvas(canvasWidth, canvasHeight);
@@ -355,16 +356,15 @@ class CollectionLogTask {
 			let pixelLevel = 25;
 			for (let [type, value] of objectEntries(collectionLog.completions)) {
 				if (
-					ctx.measureText(drawnSoFar).width +
-						ctx.measureText(` / ${type}: `).width +
-						ctx.measureText(value.toLocaleString()).width >=
-					225
+					measureTextWidth(ctx, drawnSoFar) +
+						measureTextWidth(ctx, ` / ${type}: `) +
+						measureTextWidth(ctx, value.toLocaleString()) >=
+					255
 				) {
 					pixelLevel += 10;
 					drawnSoFar = '';
 				}
 				if (type !== 'Default') {
-					if (value === 0) continue;
 					ctx.fillStyle = '#FF981F';
 					this.drawText(ctx, ` / ${type}: `, ctx.measureText(drawnSoFar).width, pixelLevel);
 					drawnSoFar += ` / ${type}: `;
@@ -379,10 +379,9 @@ class CollectionLogTask {
 				this.drawText(ctx, ' Rifts searches: ', ctx.measureText(drawnSoFar).width, pixelLevel);
 				drawnSoFar += ' Rifts searches: ';
 				ctx.fillStyle = '#FFFFFF';
-				const stats = await user.fetchStats();
 				this.drawText(
 					ctx,
-					stats.gotr_rift_searches.toLocaleString(),
+					options.stats.gotrRiftSearches.toLocaleString(),
 					ctx.measureText(drawnSoFar).width,
 					pixelLevel
 				);
@@ -458,7 +457,7 @@ class CollectionLogTask {
 		}
 
 		return {
-			files: [{ attachment: await canvas.toBuffer('png'), name: `${type}_log_${new Date().valueOf()}.png` }]
+			files: [{ attachment: await canvas.encode('png'), name: `${type}_log_${new Date().valueOf()}.png` }]
 		};
 	}
 }

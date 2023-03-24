@@ -1,3 +1,5 @@
+import { gzip } from 'node:zlib';
+
 import { Stopwatch } from '@sapphire/stopwatch';
 import {
 	BaseMessageOptions,
@@ -8,7 +10,6 @@ import {
 	Collection,
 	CollectorFilter,
 	ComponentType,
-	DMChannel,
 	escapeMarkdown,
 	Guild,
 	GuildTextBasedChannel,
@@ -16,36 +17,35 @@ import {
 	InteractionType,
 	Message,
 	MessageEditOptions,
-	PermissionsBitField,
 	SelectMenuInteraction,
 	TextChannel,
 	time,
 	User as DJSUser
 } from 'discord.js';
-import { chunk, isObject, objectEntries, Time } from 'e';
+import { chunk, notEmpty, objectEntries, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import murmurHash from 'murmurhash';
-import { gzip } from 'node:zlib';
 import { Bank } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { bool, integer, nodeCrypto, real } from 'random-js';
 
 import { ADMIN_IDS, OWNER_IDS, SupportServer } from '../config';
+import { ClueTiers } from './clues/clueTiers';
 import { badgesCache, BitField, usernameCache } from './constants';
+import { UserStatsDataNeededForCL } from './data/Collections';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
 import type { Consumable } from './minions/types';
 import { MUserClass } from './MUser';
 import { PaginatedMessage } from './PaginatedMessage';
 import type { POHBoosts } from './poh';
 import { SkillsEnum } from './skilling/types';
-import type { Skills } from './types';
+import type { ItemBank, Skills } from './types';
 import type {
 	GroupMonsterActivityTaskOptions,
 	NexTaskOptions,
 	RaidsOptions,
 	TheatreOfBloodTaskOptions
 } from './types/minions';
-import { getItem } from './util/getOSItem';
+import getOSItem, { getItem } from './util/getOSItem';
 import itemID from './util/itemID';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -120,7 +120,7 @@ export function convertXPtoLVL(xp: number, cap = 99) {
 	return cap;
 }
 
-export function rand(min: number, max: number) {
+export function cryptoRand(min: number, max: number) {
 	return integer(min, max)(nodeCrypto);
 }
 
@@ -133,7 +133,7 @@ export function percentChance(percent: number) {
 }
 
 export function roll(max: number) {
-	return rand(1, max) === 1;
+	return cryptoRand(1, max) === 1;
 }
 
 const rawEmojiRegex = emojiRegex();
@@ -161,7 +161,7 @@ export function isRaidsActivity(data: any): data is RaidsOptions {
 	return 'challengeMode' in data;
 }
 
-export function isTobActivity(data: any): data is TheatreOfBloodTaskOptions {
+export function isTOBOrTOAActivity(data: any): data is TheatreOfBloodTaskOptions {
 	return 'wipedRoom' in data;
 }
 
@@ -176,23 +176,6 @@ export function getSupportGuild(): Guild | null {
 	return guild;
 }
 
-/**
- * Checks if the bot can send a message to a channel object.
- * @param channel The channel to check if the bot can send a message to.
- */
-export function channelIsSendable(channel: Channel | undefined | null): channel is TextChannel {
-	if (!channel) return false;
-	if (!channel.isTextBased()) return false;
-	if (!('guild' in channel)) return true;
-	const canSend = channel.guild
-		? channel.permissionsFor(globalClient.user!)!.has(PermissionsBitField.Flags.ViewChannel)
-		: true;
-	if (!(channel instanceof DMChannel) && !(channel instanceof TextChannel) && canSend) {
-		return false;
-	}
-
-	return true;
-}
 export function calcCombatLevel(skills: Skills) {
 	const defence = skills.defence ? convertXPtoLVL(skills.defence) : 1;
 	const ranged = skills.ranged ? convertXPtoLVL(skills.ranged) : 1;
@@ -404,6 +387,7 @@ function normalizeMahojiResponse(one: Awaited<CommandResponse>): BaseMessageOpti
 	const response: BaseMessageOptions = {};
 	if (one.content) response.content = one.content;
 	if (one.files) response.files = one.files;
+	if (one.components) response.components = one.components;
 	return response;
 }
 
@@ -413,10 +397,11 @@ export function roughMergeMahojiResponse(
 ): InteractionReplyOptions {
 	const first = normalizeMahojiResponse(one);
 	const second = normalizeMahojiResponse(two);
-	const newResponse: InteractionReplyOptions = { content: '', files: [] };
+	const newResponse: InteractionReplyOptions = { content: '', files: [], components: [] };
 	for (const res of [first, second]) {
 		if (res.content) newResponse.content += `${res.content} `;
 		if (res.files) newResponse.files = [...newResponse.files!, ...res.files];
+		if (res.components) newResponse.components = res.components;
 	}
 	return newResponse;
 }
@@ -459,22 +444,6 @@ export function getUsername(id: string | bigint, withBadges: boolean = true) {
 
 export function makeComponents(components: ButtonBuilder[]): InteractionReplyOptions['components'] {
 	return chunk(components, 5).map(i => ({ components: i, type: ComponentType.ActionRow }));
-}
-
-export function validateItemBankAndThrow(input: any): input is ItemBank {
-	if (!isObject(input)) {
-		throw new Error('Invalid bank');
-	}
-	const numbers = [];
-	for (const [key, val] of Object.entries(input)) {
-		numbers.push(parseInt(key), val);
-	}
-	for (const num of numbers) {
-		if (isNaN(num) || typeof num !== 'number' || !Number.isInteger(num) || num < 0) {
-			throw new Error('Invalid bank');
-		}
-	}
-	return true;
 }
 
 type test = CollectorFilter<
@@ -551,5 +520,45 @@ export function isModOrAdmin(user: MUser) {
 	return [...OWNER_IDS, ...ADMIN_IDS].includes(user.id) || user.bitfield.includes(BitField.isModerator);
 }
 
+export async function calcClueScores(user: MUser) {
+	const stats = await user.fetchStats({ openable_scores: true });
+	const openableBank = new Bank(stats.openable_scores as ItemBank);
+	return openableBank
+		.items()
+		.map(entry => {
+			const tier = ClueTiers.find(i => i.id === entry[0].id);
+			if (!tier) return;
+			return {
+				tier,
+				casket: getOSItem(tier.id),
+				clueScroll: getOSItem(tier.scrollID),
+				opened: openableBank.amount(tier.id)
+			};
+		})
+		.filter(notEmpty);
+}
+
+export async function fetchStatsForCL(user: MUser): Promise<UserStatsDataNeededForCL> {
+	const userStats = await user.fetchStats({
+		sacrificed_bank: true,
+		tithe_farms_completed: true,
+		laps_scores: true,
+		openable_scores: true,
+		monster_scores: true,
+		high_gambles: true,
+		gotr_rift_searches: true
+	});
+	return {
+		sacrificedBank: new Bank(userStats.sacrificed_bank as ItemBank),
+		titheFarmsCompleted: userStats.tithe_farms_completed,
+		lapsScores: userStats.laps_scores as ItemBank,
+		openableScores: new Bank(userStats.openable_scores as ItemBank),
+		kcBank: userStats.monster_scores as ItemBank,
+		highGambles: userStats.high_gambles,
+		gotrRiftSearches: userStats.gotr_rift_searches
+	};
+}
+
 export { assert } from './util/logError';
 export * from './util/smallUtils';
+export { channelIsSendable } from '@oldschoolgg/toolkit';

@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { SimpleTable } from '@oldschoolgg/toolkit';
 import { calcPercentOfNum, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
-import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 import { convertXPtoLVL } from 'oldschooljs/dist/util/util';
 
 import { LevelRequirements, SkillsEnum } from '../skilling/types';
@@ -173,7 +173,7 @@ export class WintertodtCrateClass {
 		const roll = randInt(1, 9);
 
 		if (roll <= 6) {
-			const matTable = roll === 1 ? SeedTables.roll() : MaterialTables.roll();
+			const matTable = roll === 1 ? SeedTables.rollOrThrow() : MaterialTables.rollOrThrow();
 			const skill = this.determineSkillOfTableSlot(matTable);
 			const skillLevel = convertXPtoLVL(skills[skill] ?? 1);
 			const rolledItem = this.pickWeightedLootItem<WintertodtTableSlot>(skillLevel, matTable);
@@ -238,16 +238,16 @@ export class WintertodtCrateClass {
 		}
 	}
 
-	public open({ points, itemsOwned, skills }: WintertodtCrateOptions): ItemBank {
+	public open({ points, itemsOwned, skills }: WintertodtCrateOptions): Bank {
 		const rolls = this.calcNumberOfRolls(points);
 		if (rolls <= 0) {
-			return {};
+			return new Bank();
 		}
 
 		const loot = new Bank();
 
 		for (let i = 0; i < rolls; i++) {
-			const rolledUnique = this.rollUnique(new Bank().add(itemsOwned).add(loot.values()));
+			const rolledUnique = this.rollUnique(new Bank().add(itemsOwned).add(loot));
 			if (rolledUnique) {
 				loot.add(rolledUnique);
 				continue;
@@ -255,7 +255,7 @@ export class WintertodtCrateClass {
 			loot.add(this.lootRoll(skills));
 		}
 
-		return loot.values();
+		return loot;
 	}
 }
 

@@ -1,27 +1,27 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { Events } from '../../lib/constants';
 import { cats } from '../../lib/growablePets';
 import minionIcons from '../../lib/minions/data/minionIcons';
+import { ItemBank } from '../../lib/types';
 import { toKMB } from '../../lib/util';
+import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation } from '../mahojiSettings';
+import { userStatsBankUpdate } from '../mahojiSettings';
 import { sellPriceOfItem } from './sell';
 
 async function trackSacBank(user: MUser, bank: Bank) {
-	const currentSacBank = new Bank(user.user.sacrificedBank as ItemBank);
-	currentSacBank.add(bank);
-	updateBankSetting('economyStats_sacrificedBank', bank);
-	await user.update({
-		sacrificedBank: currentSacBank.bank
-	});
-	return currentSacBank.clone();
+	await Promise.all([
+		updateBankSetting('economyStats_sacrificedBank', bank),
+		userStatsBankUpdate(user.id, 'sacrificed_bank', bank)
+	]);
+	const stats = await user.fetchStats({ sacrificed_bank: true });
+	return new Bank(stats.sacrificed_bank as ItemBank);
 }
 
 export const sacrificeCommand: OSBMahojiCommand = {
@@ -56,7 +56,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 		}
 
 		deferInteraction(interaction);
-		const user = await mUserFetch(userID.toString());
+		const user = await mUserFetch(userID);
 
 		const bankToSac = parseBank({
 			inputStr: options.items,
@@ -123,12 +123,13 @@ export const sacrificeCommand: OSBMahojiCommand = {
 			globalClient.emit(Events.ServerNotification, `${user.badgedUsername} just sacrificed ${bankToSac}!`);
 		}
 
-		const { newUser } = await user.update({
+		await user.update({
 			sacrificedValue: {
 				increment: totalPrice
 			}
 		});
-		const newValue = newUser.sacrificedValue;
+
+		const newValue = user.user.sacrificedValue;
 
 		await trackSacBank(user, bankToSac);
 
