@@ -65,5 +65,5 @@ export async function getFarmingInfo(userID: string) {
 	let keys: Partial<Record<keyof User, true>> = {};
 	for (const key of farmingKeys) keys[key] = true;
 	const userData = await mahojiUsersSettingsFetch(userID, keys);
-	return getFarmingInfoFromUser(userData);
+	return getFarmingInfoFromUser(userData as User);
 }

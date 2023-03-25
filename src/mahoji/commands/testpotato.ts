@@ -21,7 +21,6 @@ import { prisma } from '../../lib/settings/prisma';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Skills from '../../lib/skilling/skills';
 import Farming from '../../lib/skilling/skills/farming';
-import { stressTest } from '../../lib/stressTest';
 import { Gear } from '../../lib/structures/Gear';
 import { stringMatches } from '../../lib/util';
 import {
@@ -36,7 +35,7 @@ import { parseStringBank } from '../../lib/util/parseStringBank';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import { allUsableItems } from '../lib/abstracted_commands/useCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { userStatsUpdate } from '../mahojiSettings';
 
 async function giveMaxStats(user: MUser, level = 99, qp = MAX_QP) {
 	let updates: Prisma.UserUpdateArgs['data'] = {};
@@ -477,11 +476,6 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 							choices: farmingPatchNames.map(i => ({ name: i, value: i }))
 						}
 					]
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'stresstest',
-					description: 'Stress test.'
 				}
 			],
 			run: async ({
@@ -500,19 +494,14 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				setmonsterkc?: { monster: string; kc: string };
 				irontoggle?: {};
 				forcegrow?: { patch_name: FarmingPatchName };
-				stresstest?: {};
 			}>) => {
 				if (production) {
 					logError('Test command ran in production', { userID: userID.toString() });
 					return 'This will never happen...';
 				}
-				if (options.stresstest) {
-					return stressTest(userID.toString());
-				}
 				const user = await mUserFetch(userID.toString());
-				const mahojiUser = await mahojiUsersSettingsFetch(user.id);
 				if (options.irontoggle) {
-					const current = mahojiUser.minion_ironman;
+					const current = user.isIronman;
 					await user.update({
 						minion_ironman: !current
 					});
@@ -605,7 +594,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						skills_hitpoints: convertLVLtoXP(99),
 						skills_defence: convertLVLtoXP(99),
 						bank: user.bank.add(nexSupplies).bank,
-						GP: mahojiUser.GP + BigInt(10_000_000)
+						GP: user.GP + 10_000_000
 					});
 					return 'Gave you range gear, gp, gear and stats for nex.';
 				}
@@ -635,12 +624,16 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						stringMatches(m.name, options.setmonsterkc?.monster ?? '')
 					);
 					if (!monster) return 'Invalid monster';
-					await user.update({
-						monsterScores: {
-							...(mahojiUser.monsterScores as Record<string, unknown>),
-							[monster.id]: options.setmonsterkc.kc ?? 1
-						}
-					});
+					await userStatsUpdate(
+						user.id,
+						({ monster_scores }) => ({
+							monster_scores: {
+								...(monster_scores as Record<string, unknown>),
+								[monster.id]: options.setmonsterkc?.kc ?? 1
+							}
+						}),
+						{}
+					);
 					return `Set your ${monster.name} KC to ${options.setmonsterkc.kc ?? 1}.`;
 				}
 				if (options.forcegrow) {

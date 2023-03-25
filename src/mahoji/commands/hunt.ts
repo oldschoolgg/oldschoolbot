@@ -122,7 +122,7 @@ export const huntCommand: OSBMahojiCommand = {
 		let [percentReduced, catchTime] = [
 			Math.min(
 				Math.floor(
-					(user.getCreatureScore(creature.id) ?? 1) /
+					(await user.getCreatureScore(creature.id)) /
 						(Time.Hour / ((creature.catchTime * Time.Second) / traps))
 				),
 				creature.huntTechnique === HunterTechniqueEnum.Tracking ? 20 : 10

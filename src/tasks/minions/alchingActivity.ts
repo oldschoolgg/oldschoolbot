@@ -6,7 +6,7 @@ import { roll } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
-import { updateGPTrackSetting } from '../../mahoji/mahojiSettings';
+import { updateClientGPTrackSetting } from '../../mahoji/mahojiSettings';
 
 const bryophytasStaffId = itemID("Bryophyta's staff");
 
@@ -36,7 +36,7 @@ export const alchingTask: MinionTask = {
 			}
 		}
 		await user.addItemsToBank({ items: loot });
-		updateGPTrackSetting('gp_alch', alchValue);
+		updateClientGPTrackSetting('gp_alch', alchValue);
 
 		const xpReceived = quantity * 65;
 		const xpRes = await user.addXP({
