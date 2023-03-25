@@ -8,7 +8,6 @@ import { ClueTiers } from '../clues/clueTiers';
 import { Emoji } from '../constants';
 import killableMonsters from '../minions/data/killableMonsters';
 import { Planks } from '../minions/data/planks';
-import { getActivityOfUser } from '../settings/settings';
 import Agility from '../skilling/skills/agility';
 import Cooking from '../skilling/skills/cooking';
 import Crafting from '../skilling/skills/crafting';
@@ -75,6 +74,7 @@ import {
 } from '../types/minions';
 import { formatDuration, itemNameFromID, randomVariation } from '../util';
 import { stringMatches } from './cleanString';
+import { getActivityOfUser } from './minionIsBusy';
 import { toTitleCase } from './toTitleCase';
 
 export function minionStatus(user: MUser) {

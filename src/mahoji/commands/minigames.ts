@@ -1141,7 +1141,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 			);
 		}
 		if (options.barb_assault?.stats) {
-			return barbAssaultStatsCommand(user.user);
+			return barbAssaultStatsCommand(user);
 		}
 
 		/**
@@ -1168,7 +1168,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 * Pest Control
 		 *
 		 */
-		if (options.pest_control?.stats) return pestControlStatsCommand(user.user);
+		if (options.pest_control?.stats) return pestControlStatsCommand(user);
 		if (options.pest_control?.xp) {
 			return pestControlXPCommand(
 				interaction,

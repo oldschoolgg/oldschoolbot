@@ -166,7 +166,7 @@ export function handleNexKills({ quantity, team }: NexContext) {
 	return teamLoot;
 }
 
-export function calculateNexDetails({ team }: { team: MUser[] }) {
+export async function calculateNexDetails({ team }: { team: MUser[] }) {
 	let maxTripLength = Math.max(...team.map(u => calcMaxTripLength(u)));
 	let lengthPerKill = Time.Minute * 35;
 	let resultTeam: TeamMember[] = [];
@@ -174,7 +174,7 @@ export function calculateNexDetails({ team }: { team: MUser[] }) {
 	for (const member of team) {
 		let { offence, defence, rangeGear } = nexGearStats(member);
 		let deathChance = 100;
-		let nexKC = member.getKC(NEX_ID);
+		let nexKC = await member.getKC(NEX_ID);
 		const kcLearningCap = 500;
 		const kcPercent = clamp(calcWhatPercent(nexKC, kcLearningCap), 0, 100);
 		const messages: string[] = [];

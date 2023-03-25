@@ -1,4 +1,4 @@
-import { calcPercentOfNum, percentChance } from 'e';
+import { calcPercentOfNum, percentChance, randInt } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
@@ -6,7 +6,7 @@ import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueTo
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FishingActivityTaskOptions } from '../../lib/types/minions';
-import { rand, roll, skillingPetDropRate } from '../../lib/util';
+import { roll, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 import { anglerBoostPercent } from '../../mahoji/mahojiSettings';
@@ -147,8 +147,8 @@ export const fishingTask: MinionTask = {
 			} else if (fish.id === itemID('Minnow')) {
 				lootQuantity +=
 					blessingEquipped && percentChance(blessingChance)
-						? rand(baseMinnow[0], baseMinnow[1]) * 2
-						: rand(baseMinnow[0], baseMinnow[1]);
+						? randInt(baseMinnow[0], baseMinnow[1]) * 2
+						: randInt(baseMinnow[0], baseMinnow[1]);
 			} else {
 				lootQuantity += blessingEquipped && percentChance(blessingChance) ? 2 : 1;
 			}
