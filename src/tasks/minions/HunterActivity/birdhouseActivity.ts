@@ -89,10 +89,11 @@ export const birdHouseTask: MinionTask = {
 
 			hunterXP = birdhouseToCollect.huntXP * 4;
 			for (let i = 0; i < 4; i++) {
+				loot.add(birdhouseToCollect.table.roll());
 				if (strungRabbitFoot) {
 					loot.add(birdhouseToCollect.strungRabbitFootTable.roll());
 				} else {
-					loot.add(birdhouseToCollect.table.roll());
+					loot.add(birdhouseToCollect.normalNestTable.roll());
 				}
 			}
 			await transactItems({
