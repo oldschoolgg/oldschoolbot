@@ -1,22 +1,32 @@
 import { Bank } from 'oldschooljs';
 
+import { modifyBusyCounter } from '../busyCounterCache';
 import { prisma } from '../settings/prisma';
 import { logError } from './logError';
 import { userQueueFn } from './userQueues';
 
-export const activeTradeCache = new Map();
+// export const activeTradeCache = new Map();
 
 function timeout(ms: number) {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-export function tradePlayerItemsImpl(sender: MUser, recipient: MUser, lootSent: Bank, lootReceived: Bank) {}
+// export function tradePlayerItemsImpl(sender: MUser, recipient: MUser, lootSent: Bank, lootReceived: Bank) {}
 export async function tradePlayerItems(sender: MUser, recipient: MUser, _itemsToSend?: Bank, _itemsToReceive?: Bank) {
+	/*
 	if (activeTradeCache.get(sender.id) || activeTradeCache.get(recipient.id)) {
 		return { success: false, message: 'Only one trade per player can be active at a time!' };
 	}
 	activeTradeCache.set(sender.id, true);
 	activeTradeCache.set(recipient.id, true);
+
+	 */
+	// Check if user is busy. This check can probably be removed.
+	if (recipient.isBusy) {
+		return { success: false, message: `${recipient.usernameOrMention} is busy.` };
+	}
+	modifyBusyCounter(sender.id, 1);
+	modifyBusyCounter(recipient.id, 1);
 
 	const itemsToSend = _itemsToSend ? _itemsToSend.clone() : new Bank();
 	const itemsToReceive = _itemsToReceive ? _itemsToReceive.clone() : new Bank();
@@ -88,8 +98,12 @@ export async function tradePlayerItems(sender: MUser, recipient: MUser, _itemsTo
 			});
 			return { success: false, message: 'Temporary error, please try again.' };
 		} finally {
+			modifyBusyCounter(sender.id, -1);
+			modifyBusyCounter(recipient.id, -1);
+			/*
 			activeTradeCache.delete(sender.id);
 			activeTradeCache.delete(recipient.id);
+			 */
 		}
 	});
 
