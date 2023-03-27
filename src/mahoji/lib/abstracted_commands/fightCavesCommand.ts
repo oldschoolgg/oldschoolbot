@@ -1,4 +1,4 @@
-import { calcWhatPercent, percentChance, reduceNumByPercent, Time } from 'e';
+import { calcWhatPercent, percentChance, randInt, reduceNumByPercent, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, Monsters } from 'oldschooljs';
 import TzTokJad from 'oldschooljs/dist/simulation/monsters/special/TzTokJad';
@@ -6,7 +6,7 @@ import { itemID } from 'oldschooljs/dist/util';
 
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { FightCavesActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, rand } from '../../../lib/util';
+import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
@@ -17,13 +17,13 @@ export const fightCavesCost = new Bank({
 	'Super restore(4)': 4
 });
 
-function determineDuration(user: MUser): [number, string] {
+async function determineDuration(user: MUser): Promise<[number, string]> {
 	let baseTime = Time.Hour * 2;
 	const gear = user.gear.range;
 	let debugStr = '';
 
 	// Reduce time based on KC
-	const jadKC = user.getKC(TzTokJad.id);
+	const jadKC = await user.getKC(TzTokJad.id);
 	const percentIncreaseFromKC = Math.min(50, jadKC);
 	baseTime = reduceNumByPercent(baseTime, percentIncreaseFromKC);
 	debugStr += `${percentIncreaseFromKC}% from KC`;
@@ -43,8 +43,7 @@ function determineDuration(user: MUser): [number, string] {
 	return [baseTime, debugStr];
 }
 
-function determineChanceOfDeathPreJad(user: MUser) {
-	const attempts = user.user.stats_fightCavesAttempts;
+function determineChanceOfDeathPreJad(user: MUser, attempts: number) {
 	let deathChance = Math.max(14 - attempts * 2, 5);
 
 	// -4% Chance of dying before Jad if you have SGS.
@@ -55,8 +54,7 @@ function determineChanceOfDeathPreJad(user: MUser) {
 	return deathChance;
 }
 
-function determineChanceOfDeathInJad(user: MUser) {
-	const attempts = user.user.stats_fightCavesAttempts;
+function determineChanceOfDeathInJad(attempts: number) {
 	const chance = Math.floor(100 - (Math.log(attempts) / Math.log(Math.sqrt(15))) * 50);
 
 	// Chance of death cannot be 100% or <5%.
@@ -96,15 +94,17 @@ export async function fightCavesCommand(user: MUser, channelID: string): Command
 		};
 	}
 
-	let [duration, debugStr] = determineDuration(user);
-	const jadDeathChance = determineChanceOfDeathInJad(user);
-	const preJadDeathChance = determineChanceOfDeathPreJad(user);
+	let [duration, debugStr] = await determineDuration(user);
 
-	const attempts = user.user.stats_fightCavesAttempts;
+	const { fight_caves_attempts: attempts } = await user.fetchStats({ fight_caves_attempts: true });
+
+	const jadDeathChance = determineChanceOfDeathInJad(attempts);
+	const preJadDeathChance = determineChanceOfDeathPreJad(user, attempts);
+
 	const usersRangeStats = user.gear.range.stats;
-	const jadKC = user.getKC(TzTokJad.id);
+	const jadKC = await user.getKC(TzTokJad.id);
 
-	duration += (rand(1, 5) * duration) / 100;
+	duration += (randInt(1, 5) * duration) / 100;
 
 	await user.removeItemsFromBank(fightCavesCost);
 
@@ -124,7 +124,7 @@ export async function fightCavesCommand(user: MUser, channelID: string): Command
 
 	const diedPreJad = percentChance(preJadDeathChance);
 	const fakeDuration = duration;
-	duration = diedPreJad ? rand(Time.Minute * 20, duration) : duration;
+	duration = diedPreJad ? randInt(Time.Minute * 20, duration) : duration;
 	const preJadDeathTime = diedPreJad ? duration : null;
 
 	await addSubTaskToActivityTask<FightCavesActivityTaskOptions>({

@@ -4,8 +4,8 @@ import * as fs from 'fs';
 import path from 'path';
 
 import { DUNGEON_FLOOR_Y, GROUND_FLOOR_Y, HOUSE_WIDTH, Placeholders, TOP_FLOOR_Y } from './poh';
-import { getActivityOfUser } from './settings/settings';
 import { canvasImageFromBuffer } from './util/canvasUtil';
+import { getActivityOfUser } from './util/minionIsBusy';
 import { PlayerOwnedHouse } from '.prisma/client';
 
 const CONSTRUCTION_IMG_DIR = './src/lib/poh/images';
@@ -63,7 +63,7 @@ class PoHImage {
 
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		ctx.drawImage(bgImage, 0, 0, bgImage.width, bgImage.height);
-
+		debugLog('Generating a POH image');
 		return [canvas, ctx];
 	}
 

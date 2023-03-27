@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction } from 'discord.js';
-import { objectEntries, reduceNumByPercent } from 'e';
+import { objectEntries, randInt, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
 import TrekShopItems, { TrekExperience } from '../../../lib/data/buyables/trekBuyables';
@@ -10,7 +10,7 @@ import { AddXpParams, GearRequirement } from '../../../lib/minions/types';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { TempleTrekkingActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, percentChance, rand, readableStatName, stringMatches } from '../../../lib/util';
+import { formatDuration, percentChance, readableStatName, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
@@ -28,27 +28,7 @@ export async function trekCommand(user: MUser, channelID: string, difficulty: st
 			const gear = allGear[setup];
 			if (setup && requirements) {
 				let newRequirements: GearRequirement = requirements;
-				let maxMeleeStat:
-					| GearStat
-					| [
-							(
-								| 'attack_stab'
-								| 'attack_slash'
-								| 'attack_crush'
-								| 'attack_magic'
-								| 'attack_ranged'
-								| 'defence_stab'
-								| 'defence_slash'
-								| 'defence_crush'
-								| 'defence_magic'
-								| 'defence_ranged'
-								| 'melee_strength'
-								| 'ranged_strength'
-								| 'magic_damage'
-								| 'prayer'
-							),
-							number
-					  ] = [GearStat.AttackCrush, -500];
+				let maxMeleeStat: [string, number] = [GearStat.AttackCrush, -500];
 				objectEntries(gear.getStats()).map(
 					stat =>
 						(maxMeleeStat =
@@ -238,15 +218,15 @@ export async function trekShop(
 		switch (difficulty) {
 			case 'Easy':
 				inItems.addItem(rewardTokens.easy, 1);
-				outputTotal = rand(specifiedItem.easyRange[0], specifiedItem.easyRange[1]);
+				outputTotal = randInt(specifiedItem.easyRange[0], specifiedItem.easyRange[1]);
 				break;
 			case 'Medium':
 				inItems.addItem(rewardTokens.medium, 1);
-				outputTotal = rand(specifiedItem.medRange[0], specifiedItem.medRange[1]);
+				outputTotal = randInt(specifiedItem.medRange[0], specifiedItem.medRange[1]);
 				break;
 			case 'Hard':
 				inItems.addItem(rewardTokens.hard, 1);
-				outputTotal = rand(specifiedItem.hardRange[0], specifiedItem.hardRange[1]);
+				outputTotal = randInt(specifiedItem.hardRange[0], specifiedItem.hardRange[1]);
 				break;
 		}
 		if (specifiedItem.name === 'Herbs') {

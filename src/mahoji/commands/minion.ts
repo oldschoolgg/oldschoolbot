@@ -3,7 +3,15 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
 
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
-import { badges, BitField, BitFieldData, FormattedCustomEmoji, MAX_LEVEL, PerkTier } from '../../lib/constants';
+import {
+	badges,
+	BitField,
+	BitFieldData,
+	FormattedCustomEmoji,
+	MAX_LEVEL,
+	minionActivityCache,
+	PerkTier
+} from '../../lib/constants';
 import { degradeableItems } from '../../lib/degradeableItems';
 import { diaries } from '../../lib/diaries';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
@@ -13,7 +21,6 @@ import { degradeableItemsCommand } from '../../lib/minions/functions/degradeable
 import { allPossibleStyles, trainCommand } from '../../lib/minions/functions/trainCommand';
 import { roboChimpUserFetch } from '../../lib/roboChimp';
 import { Minigames } from '../../lib/settings/minigames';
-import { minionActivityCache } from '../../lib/settings/settings';
 import Skills from '../../lib/skilling/skills';
 import creatures from '../../lib/skilling/skills/hunter/creatures';
 import { convertLVLtoXP, getUsername, isValidNickname } from '../../lib/util';

@@ -1,4 +1,4 @@
-import { roll, Time } from 'e';
+import { randInt, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
@@ -6,7 +6,7 @@ import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueTo
 import Mining from '../../lib/skilling/skills/mining';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
-import { rand, skillingPetDropRate } from '../../lib/util';
+import { skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export const miningTask: MinionTask = {
@@ -119,7 +119,7 @@ export const miningTask: MinionTask = {
 				}
 			} else if (ore.name === 'Daeyalt essence rock') {
 				for (let i = 0; i < quantity; i++) {
-					daeyaltQty += rand(2, 3);
+					daeyaltQty += randInt(2, 3);
 				}
 				loot.add(ore.id, daeyaltQty);
 			} else {
