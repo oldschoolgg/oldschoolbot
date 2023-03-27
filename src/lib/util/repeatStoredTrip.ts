@@ -33,6 +33,7 @@ import {
 	HerbloreActivityTaskOptions,
 	HunterActivityTaskOptions,
 	KourendFavourActivityTaskOptions,
+	MahoganyHomesActivityTaskOptions,
 	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
 	NexTaskOptions,
@@ -327,7 +328,7 @@ export const tripHandlers = {
 	},
 	[activity_type_enum.MahoganyHomes]: {
 		commandName: 'minigames',
-		args: () => ({ mahogany_homes: { start: {} } })
+		args: (data: MahoganyHomesActivityTaskOptions) => ({ mahogany_homes: { start: { tier: data.tier } } })
 	},
 	[activity_type_enum.Mining]: {
 		commandName: 'mine',
