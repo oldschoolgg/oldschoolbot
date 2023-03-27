@@ -1,4 +1,4 @@
-import { Embed } from '@discordjs/builders';
+import { EmbedBuilder } from '@discordjs/builders';
 import { MessageEditOptions } from 'discord.js';
 import { chunk } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
@@ -61,12 +61,12 @@ export const bossrecordCommand: OSBMahojiCommand = {
 
 		const pages: MessageEditOptions[] = [];
 		for (const page of chunk(sortedEntries, 12)) {
-			const embed = new Embed()
+			const embed = new EmbedBuilder()
 				.setAuthor({ name: `${toTitleCase(options.rsn)} - Boss Records` })
 				.setColor(52_224);
 
 			for (const [name, { rank, score }] of page) {
-				embed.addField({
+				embed.addFields({
 					name: `${getEmojiForBoss(name) || ''} ${bossNameMap.get(name as keyof BossRecords)}`,
 					value: `**KC:** ${score.toLocaleString()}\n**Rank:** ${rank.toLocaleString()}`,
 					inline: true

@@ -14,7 +14,7 @@ import { parseBank } from '../../lib/util/parseStringBank';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { updateGPTrackSetting, userStatsUpdate } from '../mahojiSettings';
+import { updateClientGPTrackSetting, userStatsUpdate } from '../mahojiSettings';
 
 /**
  * - Hardcoded prices
@@ -229,14 +229,18 @@ export const sellCommand: OSBMahojiCommand = {
 		});
 
 		await Promise.all([
-			updateGPTrackSetting('gp_sell', totalPrice),
+			updateClientGPTrackSetting('gp_sell', totalPrice),
 			updateBankSetting('sold_items_bank', bankToSell),
-			userStatsUpdate(user.id, userStats => ({
-				items_sold_bank: new Bank(userStats.items_sold_bank as ItemBank).add(bankToSell).bank,
-				sell_gp: {
-					increment: totalPrice
-				}
-			})),
+			userStatsUpdate(
+				user.id,
+				userStats => ({
+					items_sold_bank: new Bank(userStats.items_sold_bank as ItemBank).add(bankToSell).bank,
+					sell_gp: {
+						increment: totalPrice
+					}
+				}),
+				{}
+			),
 			prisma.botItemSell.createMany({ data: botItemSellData })
 		]);
 

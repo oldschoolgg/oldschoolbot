@@ -76,11 +76,8 @@ export const cyclopsTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		let str = `${user}, ${user.minionName} finished killing ${quantity} Cyclops. Your Cyclops KC is now ${
-			user.getKC(cyclopsID) + quantity
-		}.`;
-
-		await user.incrementKC(cyclopsID, quantity);
+		const { newKC } = await user.incrementKC(cyclopsID, quantity);
+		let str = `${user}, ${user.minionName} finished killing ${quantity} Cyclops. Your Cyclops KC is now ${newKC}.`;
 
 		const image = await makeBankImage({
 			bank: itemsAdded,

@@ -1,5 +1,8 @@
+import { Prisma } from '@prisma/client';
 import os, { CpuInfo } from 'os';
 import { monitorEventLoopDelay } from 'perf_hooks';
+
+import { prisma } from './settings/prisma';
 
 const h = monitorEventLoopDelay();
 h.enable();
@@ -48,13 +51,23 @@ function getCPUMetrics() {
 	};
 }
 
-export function collectMetrics() {
-	let metrics = {
+export async function collectMetrics() {
+	const prismaMetrics = await prisma.$metrics.json();
+	const transformed = Object.fromEntries(
+		[...prismaMetrics.counters, ...prismaMetrics.gauges, ...prismaMetrics.histograms].map(i => [i.key, i.value])
+	);
+
+	let metrics: Omit<Prisma.MetricCreateInput, 'timestamp'> = {
 		eventLoopDelayMin: h.min * 1e-6,
 		eventLoopDelayMax: h.max * 1e-6,
 		eventLoopDelayMean: h.mean * 1e-6,
 		...getMemoryMetrics(),
-		...getCPUMetrics()
+		...getCPUMetrics(),
+		prisma_query_total_queries: transformed.query_total_queries as number,
+		prisma_pool_active_connections: transformed.pool_active_connections as number,
+		prisma_pool_idle_connections: transformed.pool_idle_connections as number,
+		prisma_pool_wait_count: transformed.pool_wait_count as number,
+		prisma_query_active_transactions: transformed.query_active_transactions as number
 	};
 	h.reset();
 	debugLog('Collected metrics', { ...metrics, type: 'COLLECT_METRICS' });

@@ -1,7 +1,6 @@
 import { Bank } from 'oldschooljs';
 
 import { ItemBank } from '../types';
-import { validateItemBankAndThrow } from '../util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from './clientSettings';
 
 type ClientBankKey =
@@ -68,8 +67,7 @@ export async function updateBankSetting(key: ClientBankKey, bankToAdd: Bank) {
 		[key]: true
 	});
 	const current = currentClientSettings[key] as ItemBank;
-	validateItemBankAndThrow(current);
-	const newBank = new Bank().add(current).add(bankToAdd);
+	const newBank = new Bank(current).add(bankToAdd);
 
 	const res = await mahojiClientSettingsUpdate({
 		[key]: newBank.bank
