@@ -38,6 +38,7 @@ import {
 	mageTrainingArenaStartCommand
 } from '../lib/abstracted_commands/mageTrainingArenaCommand';
 import {
+	contractTiers,
 	mahoganyHomesBuildCommand,
 	mahoganyHomesBuyables,
 	mahoganyHomesBuyCommand
@@ -567,7 +568,20 @@ export const minigamesCommand: OSBMahojiCommand = {
 				{
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'start',
-					description: 'Start a trip.'
+					description: 'Start a trip.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'tier',
+							required: false,
+							description: 'The tier contract you wish to do.',
+							autocomplete: async value => {
+								return contractTiers
+									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
+									.map(i => ({ name: i.name, value: i.tier }));
+							}
+						}
+					]
 				},
 				{
 					name: 'buy',
@@ -1057,7 +1071,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 			buy?: { name: string };
 			points?: {};
 		};
-		mahogany_homes?: { start?: {}; buy?: { name: string; quantity?: number } };
+		mahogany_homes?: { start?: { tier?: number }; buy?: { name: string; quantity?: number } };
 		tears_of_guthix?: { start?: {} };
 		pyramid_plunder?: { start?: {} };
 		rogues_den?: { start?: {} };
@@ -1261,7 +1275,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 				);
 			}
 			if (options.mahogany_homes.start) {
-				return mahoganyHomesBuildCommand(user, channelID);
+				return mahoganyHomesBuildCommand(user, channelID, options.mahogany_homes.start.tier);
 			}
 		}
 
