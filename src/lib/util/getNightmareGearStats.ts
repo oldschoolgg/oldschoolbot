@@ -4,23 +4,25 @@ import { NIGHTMARES_HP, PHOSANI_NIGHTMARE_ID, ZAM_HASTA_CRUSH } from '../constan
 import { NightmareMonster } from '../minions/data/killableMonsters';
 import { maxOtherStats } from '../structures/Gear';
 
-export function getNightmareGearStats(
+export async function getNightmareGearStats(
 	user: MUser,
 	team: string[],
 	isPhosani: boolean
-): [
-	{
-		chanceOfDeath: number;
-		damageDone: number;
-		percentMeleeStrength: number;
-		totalGearPercent: number;
-		percentWeaponAttackCrush: number;
-		attackCrushStat: number;
-		kc: number;
-	},
-	string
-] {
-	const kc = user.getKC(isPhosani ? PHOSANI_NIGHTMARE_ID : NightmareMonster.id) || 1;
+): Promise<
+	[
+		{
+			chanceOfDeath: number;
+			damageDone: number;
+			percentMeleeStrength: number;
+			totalGearPercent: number;
+			percentWeaponAttackCrush: number;
+			attackCrushStat: number;
+			kc: number;
+		},
+		string
+	]
+> {
+	const kc = (await user.getKC(isPhosani ? PHOSANI_NIGHTMARE_ID : NightmareMonster.id)) || 1;
 	const gear = user.gear.melee;
 	const weapon = gear.equippedWeapon();
 	const gearStats = gear.stats;

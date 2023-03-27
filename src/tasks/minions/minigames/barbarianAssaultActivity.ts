@@ -4,17 +4,20 @@ import { KandarinDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
 
 export const barbAssaultTask: MinionTask = {
 	type: 'BarbarianAssault',
 	async run(data: MinigameActivityTaskOptions) {
 		const { channelID, quantity, userID } = data;
 		const user = await mUserFetch(userID);
+		const { honour_level: currentHonourLevel } = await user.fetchStats({ honour_level: true });
+
 		let basePoints = 35;
 
-		let resultStr = `The base amount of points is 35. Your Honour Level is ${user.user.honour_level}. `;
+		let resultStr = `The base amount of points is 35. Your Honour Level is ${currentHonourLevel}. `;
 
-		const teamSkillPercent = calcWhatPercent(user.user.honour_level, 5);
+		const teamSkillPercent = calcWhatPercent(currentHonourLevel, 5);
 
 		basePoints += calcPercentOfNum(teamSkillPercent, 20);
 
@@ -28,11 +31,15 @@ export const barbAssaultTask: MinionTask = {
 		let totalPoints = Math.floor(pts * quantity);
 
 		await incrementMinigameScore(user.id, 'barb_assault', quantity);
-		await user.update({
-			honour_points: {
-				increment: totalPoints
-			}
-		});
+		await userStatsUpdate(
+			user.id,
+			{
+				honour_points: {
+					increment: totalPoints
+				}
+			},
+			{}
+		);
 
 		resultStr = `${user.mention}, ${user.minionName} finished doing ${quantity} waves of Barbarian Assault, you received ${totalPoints} Honour Points.
 ${resultStr}`;

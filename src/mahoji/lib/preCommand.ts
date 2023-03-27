@@ -1,17 +1,18 @@
 import { InteractionReplyOptions, TextChannel, User } from 'discord.js';
 import { CommandOptions } from 'mahoji/dist/lib/types';
 
-import { modifyBusyCounter } from '../../lib/busyCounterCache';
+import { modifyBusyCounter, userIsBusy } from '../../lib/busyCounterCache';
 import { badges, badgesCache, Emoji, usernameCache } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
 import { removeMarkdownEmojis, stripEmojis } from '../../lib/util';
 import { CACHED_ACTIVE_USER_IDS } from '../../lib/util/cachedUserIDs';
+import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 import { AbstractCommand, runInhibitors } from './inhibitors';
 
 function cleanUsername(username: string) {
 	return removeMarkdownEmojis(username).substring(0, 32);
 }
-export async function syncNewUserUsername(user: MUser, username: string) {
+export async function syncNewUserUsername(user: PrecommandUser, username: string) {
 	const newUsername = cleanUsername(username);
 	const newUser = await prisma.newUser.findUnique({
 		where: { id: user.id }
@@ -32,12 +33,24 @@ export async function syncNewUserUsername(user: MUser, username: string) {
 	}
 	let name = stripEmojis(username);
 	usernameCache.set(user.id, name);
-	const rawBadges = user.user.badges.map(num => badges[num]);
-	if (user.isIronman) {
+	const rawBadges = user.badges.map(num => badges[num]);
+	if (user.minion_ironman) {
 		rawBadges.push(Emoji.Ironman);
 	}
 	badgesCache.set(user.id, rawBadges.join(' '));
 }
+
+async function fetchPrecommandUser(userID: string) {
+	return mahojiUsersSettingsFetch(userID, {
+		id: true,
+		bitfield: true,
+		badges: true,
+		minion_hasBought: true,
+		minion_ironman: true
+	});
+}
+
+export type PrecommandUser = Awaited<ReturnType<typeof fetchPrecommandUser>>;
 
 export async function preCommand({
 	abstractCommand,
@@ -63,6 +76,14 @@ export async function preCommand({
 			dontRunPostCommand?: boolean;
 	  }
 > {
+	debugLog('Attempt to run command', {
+		type: 'RUN_COMMAND',
+		command_name: abstractCommand.name,
+		user_id: userID,
+		guild_id: guildID,
+		channel_id: channelID,
+		options
+	});
 	CACHED_ACTIVE_USER_IDS.add(userID);
 	if (globalClient.isShuttingDown) {
 		return {
@@ -71,8 +92,8 @@ export async function preCommand({
 			dontRunPostCommand: true
 		};
 	}
-	const user = await mUserFetch(userID.toString());
-	if (user.isBusy && !bypassInhibitors && abstractCommand.name !== 'admin') {
+	const user: PrecommandUser = await fetchPrecommandUser(userID);
+	if (userIsBusy(userID) && !bypassInhibitors && abstractCommand.name !== 'admin') {
 		return { silent: true, reason: { content: 'You cannot use a command right now.' }, dontRunPostCommand: true };
 	}
 	modifyBusyCounter(userID, 1);
@@ -103,13 +124,4 @@ export async function preCommand({
 		});
 		return inhibitResult;
 	}
-
-	debugLog('Attempt to run command', {
-		type: 'RUN_COMMAND',
-		command_name: abstractCommand.name,
-		user_id: userID,
-		guild_id: guildID,
-		channel_id: channelID,
-		options
-	});
 }
