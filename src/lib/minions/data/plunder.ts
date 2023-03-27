@@ -1,9 +1,10 @@
+import { randInt } from 'e';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { SkillsEnum } from '../../skilling/types';
 import { ItemBank } from '../../types';
-import { rand, roll, skillingPetDropRate } from '../../util';
+import { roll, skillingPetDropRate } from '../../util';
 import { MUserClass } from './../../MUser';
 
 const Room1Table = new LootTable().add('Ivory Comb', 1, 3).add('Pottery scarab').add('Pottery statuette');
@@ -141,7 +142,7 @@ export function lootRoom(user: MUserClass, room: number): [ItemBank, number] {
 		}
 	}
 
-	const amountUrns = rand(9, 14);
+	const amountUrns = randInt(9, 14);
 	for (let i = 0; i < amountUrns; i++) {
 		loot.add(roomObj.roomTable.roll());
 	}

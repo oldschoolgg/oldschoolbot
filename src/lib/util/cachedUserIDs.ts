@@ -2,12 +2,13 @@ import { Stopwatch } from '@sapphire/stopwatch';
 import { ChannelType } from 'discord.js';
 import { objectEntries } from 'e';
 
-import { CLIENT_ID, OWNER_IDS, SupportServer } from '../../config';
+import { OWNER_IDS, SupportServer } from '../../config';
+import { globalConfig } from '../constants';
 import { prisma } from '../settings/prisma';
 import { runTimedLoggedFn } from '../util';
 
 export const CACHED_ACTIVE_USER_IDS = new Set();
-CACHED_ACTIVE_USER_IDS.add(CLIENT_ID);
+CACHED_ACTIVE_USER_IDS.add(globalConfig.clientID);
 for (const id of OWNER_IDS) CACHED_ACTIVE_USER_IDS.add(id);
 
 export async function syncActiveUserIDs() {
@@ -108,22 +109,25 @@ export function cacheCleanup() {
 				if (channel.type === ChannelType.GuildVoice || channel.type === ChannelType.GuildCategory) {
 					globalClient.channels.cache.delete(channel.id);
 				}
-				if (channel.type === ChannelType.GuildText) {
+				// @ts-ignore ignore
+				delete channel.topic;
+				// @ts-ignore ignore
+				delete channel.rateLimitPerUser;
+				// @ts-ignore ignore
+				delete channel.nsfw;
+				// @ts-ignore ignore
+				delete channel.parentId;
+				// @ts-ignore ignore
+				delete channel.name;
+				// @ts-ignore ignore
+				channel.lastMessageId = null;
+				// @ts-ignore ignore
+				channel.lastPinTimestamp = null;
+				if ('permissionOverwrites' in channel) {
+					channel.permissionOverwrites.cache.clear();
+				}
+				if ('threads' in channel) {
 					channel.threads.cache.clear();
-					// @ts-ignore ignore
-					delete channel.topic;
-					// @ts-ignore ignore
-					delete channel.rateLimitPerUser;
-					// @ts-ignore ignore
-					delete channel.nsfw;
-					// @ts-ignore ignore
-					delete channel.parentId;
-					// @ts-ignore ignore
-					delete channel.name;
-					// @ts-ignore ignore
-					channel.lastMessageId = null;
-					// @ts-ignore ignore
-					channel.lastPinTimestamp = null;
 				}
 			}
 		});
@@ -132,7 +136,7 @@ export function cacheCleanup() {
 			for (const guild of globalClient.guilds.cache.values()) {
 				if (guild.id !== SupportServer) {
 					for (const member of guild.members.cache.values()) {
-						if (member.user.id === CLIENT_ID) continue;
+						if (member.user.id === globalConfig.clientID) continue;
 						guild.members.cache.delete(member.user.id);
 					}
 				}

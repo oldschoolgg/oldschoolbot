@@ -5,7 +5,7 @@ import { Bank } from 'oldschooljs';
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
 import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
-import { updateGPTrackSetting, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
+import { updateClientGPTrackSetting, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { ClueTiers } from '../clues/clueTiers';
 import { BitField, COINS_ID, Emoji, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
@@ -43,7 +43,7 @@ const tripFinishEffects: {
 			if (loot && activitiesToTrackAsPVMGPSource.includes(data.type)) {
 				const GP = loot.amount(COINS_ID);
 				if (typeof GP === 'number') {
-					updateGPTrackSetting('gp_pvm', GP);
+					updateClientGPTrackSetting('gp_pvm', GP);
 				}
 			}
 		}
@@ -119,7 +119,8 @@ export async function handleTripFinish(
 		if (birdHousedetails.isReady && !user.bitfield.includes(BitField.DisableBirdhouseRunButton))
 			components.push(makeBirdHouseTripButton());
 
-		if (await canRunAutoContract(user)) components.push(makeAutoContractButton());
+		if ((await canRunAutoContract(user)) && !user.bitfield.includes(BitField.DisableAutoFarmContractButton))
+			components.push(makeAutoContractButton());
 
 		const { currentTask } = await getUsersCurrentSlayerInfo(user.id);
 		if (

@@ -1,14 +1,6 @@
 /* eslint-disable prefer-promise-reject-errors */
 import { userMention } from '@discordjs/builders';
-import {
-	BaseMessageOptions,
-	ButtonBuilder,
-	ButtonStyle,
-	ComponentType,
-	InteractionCollector,
-	MessageEditOptions,
-	TextChannel
-} from 'discord.js';
+import { ButtonBuilder, ButtonStyle, ComponentType, InteractionCollector, TextChannel } from 'discord.js';
 import { debounce, noOp, Time } from 'e';
 
 import { production } from '../config';
@@ -21,7 +13,10 @@ import { CACHED_ACTIVE_USER_IDS } from './util/cachedUserIDs';
 
 const partyLockCache = new Set<string>();
 if (production) {
-	setInterval(() => partyLockCache.clear(), Time.Minute * 20);
+	setInterval(() => {
+		debugLog('Clearing partylockcache');
+		partyLockCache.clear();
+	}, Time.Minute * 20);
 }
 
 const buttons = [
@@ -48,7 +43,7 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 	let deleted = false;
 	let massStarted = false;
 
-	function getMessageContent(): BaseMessageOptions & MessageEditOptions {
+	function getMessageContent() {
 		return {
 			content: `${options.message}\n\n**Users Joined:** ${usersWhoConfirmed
 				.map(u => usernameCache.get(u) ?? userMention(u))

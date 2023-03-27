@@ -14,6 +14,7 @@ import { roll } from '../../lib/util';
 import { ashSanctifierEffect } from '../../lib/util/ashSanctifier';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
+import { userStatsUpdate } from '../../mahoji/mahojiSettings';
 
 export const monsterTask: MinionTask = {
 	type: 'MonsterKilling',
@@ -22,7 +23,7 @@ export const monsterTask: MinionTask = {
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 		const user = await mUserFetch(userID);
 		const [hasKourendHard] = await userhasDiaryTier(user, KourendKebosDiary.hard);
-		await user.incrementKC(monsterID, quantity);
+		const { newKC } = await user.incrementKC(monsterID, quantity);
 
 		const isOnTaskResult = await isOnSlayerTask({ user, monsterID, quantityKilled: quantity });
 
@@ -71,23 +72,27 @@ export const monsterTask: MinionTask = {
 		if (hasKourendHard) await ashSanctifierEffect(user, loot, duration, xpRes);
 
 		announceLoot({
-			user: await mUserFetch(user.id),
+			user,
 			monsterID: monster.id,
 			loot,
 			notifyDrops: monster.notifyDrops
 		});
 
 		if (newSuperiorCount && newSuperiorCount > 0) {
-			await user.update({
-				slayer_superior_count: {
-					increment: newSuperiorCount
-				}
-			});
+			await userStatsUpdate(
+				user.id,
+				{
+					slayer_superior_count: {
+						increment: newSuperiorCount
+					}
+				},
+				{}
+			);
 		}
 		const superiorMessage = newSuperiorCount ? `, including **${newSuperiorCount} superiors**` : '';
 		let str =
 			`${user}, ${user.minionName} finished killing ${quantity} ${monster.name}${superiorMessage}.` +
-			` Your ${monster.name} KC is now ${user.getKC(monsterID)}.\n\n${xpRes.join(' ')}\n`;
+			` Your ${monster.name} KC is now ${newKC}.\n\n${xpRes.join(' ')}\n`;
 		if (
 			monster.id === Monsters.Unicorn.id &&
 			user.hasEquipped('Iron dagger') &&
@@ -119,12 +124,16 @@ export const monsterTask: MinionTask = {
 
 			thisTripFinishesTask = quantityLeft === 0;
 			if (thisTripFinishesTask) {
-				const { newUser } = await user.update({
-					slayer_task_streak: {
-						increment: 1
-					}
-				});
-				const currentStreak = newUser.slayer_task_streak;
+				const newStats = await userStatsUpdate(
+					user.id,
+					{
+						slayer_task_streak: {
+							increment: 1
+						}
+					},
+					{ slayer_task_streak: true }
+				);
+				const currentStreak = newStats.slayer_task_streak;
 				const points = await calculateSlayerPoints(currentStreak, isOnTaskResult.slayerMaster, user);
 				const secondNewUser = await user.update({
 					slayer_points: {
