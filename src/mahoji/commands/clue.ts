@@ -89,9 +89,11 @@ export const clueCommand: OSBMahojiCommand = {
 
 		const boosts = [];
 
+		const stats = await user.fetchStats({ openable_scores: true });
+
 		const [timeToFinish, percentReduced] = reducedClueTime(
 			clueTier,
-			(user.user.openable_scores as ItemBank)[clueTier.id] ?? 1
+			(stats.openable_scores as ItemBank)[clueTier.id] ?? 1
 		);
 
 		if (percentReduced >= 1) boosts.push(`${percentReduced}% for Clue score`);

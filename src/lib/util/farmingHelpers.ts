@@ -29,7 +29,7 @@ export const farmingPatchNames = [
 	'belladonna'
 ] as const;
 
-export type FarmingPatchName = typeof farmingPatchNames[number];
+export type FarmingPatchName = (typeof farmingPatchNames)[number];
 
 export function isPatchName(name: string): name is FarmingPatchName {
 	return farmingPatchNames.includes(name as FarmingPatchName);

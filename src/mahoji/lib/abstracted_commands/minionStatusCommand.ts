@@ -50,11 +50,12 @@ async function fetchPinnedTrips(userID: string) {
 
 export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptions> {
 	const { minionIsBusy } = user;
-	const [roboChimpUser, birdhouseDetails, gearPresetButtons, pinnedTripButtons] = await Promise.all([
+	const [roboChimpUser, birdhouseDetails, gearPresetButtons, pinnedTripButtons, dailyIsReady] = await Promise.all([
 		roboChimpUserFetch(user.id),
 		minionIsBusy ? { isReady: false } : calculateBirdhouseDetails(user.id),
 		minionIsBusy ? [] : fetchFavoriteGearPresets(user.id),
-		minionIsBusy ? [] : fetchPinnedTrips(user.id)
+		minionIsBusy ? [] : fetchPinnedTrips(user.id),
+		isUsersDailyReady(user)
 	]);
 
 	roboChimpSyncData(roboChimpUser, user);
@@ -74,8 +75,6 @@ export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptio
 
 	const status = minionStatus(user);
 	const buttons: ButtonBuilder[] = [];
-
-	const dailyIsReady = isUsersDailyReady(user);
 
 	if (dailyIsReady.isReady) {
 		buttons.push(

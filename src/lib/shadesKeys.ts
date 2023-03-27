@@ -295,7 +295,7 @@ for (const chest of chests) {
 			output: async args =>
 				openShadeChest({
 					item: args.self.openedItem,
-					allItemsOwned: args.user.allItemsOwned(),
+					allItemsOwned: args.user.allItemsOwned,
 					qty: args.quantity
 				}),
 			allItems: chest.table.allItems

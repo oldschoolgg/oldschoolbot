@@ -164,6 +164,6 @@ export default function getUserBestGearFromBank(
 		toRemoveFromGear,
 		toRemoveFromBank,
 		gearToEquip,
-		userFinalBank: new Bank().add(userBank).add(toRemoveFromGear).remove(toRemoveFromBank)
+		userFinalBank: new Bank(userBank).add(toRemoveFromGear).remove(toRemoveFromBank)
 	};
 }

@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { Events } from '../../lib/constants';
-import { addToGPTaxBalance, prisma } from '../../lib/settings/prisma';
+import { prisma } from '../../lib/settings/prisma';
 import { discrimName, truncateString } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
@@ -12,9 +12,9 @@ import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiParseNumber } from '../mahojiSettings';
+import { addToGPTaxBalance, mahojiParseNumber } from '../mahojiSettings';
 
-export const askCommand: OSBMahojiCommand = {
+export const tradeCommand: OSBMahojiCommand = {
 	name: 'trade',
 	description: 'Allows you to trade items with other players.',
 	options: [
