@@ -91,7 +91,7 @@ export async function stashUnitBuildAllCommand(user: MUser) {
 	const notBuilt = parsedUnits.filter(i => i.builtUnit === undefined);
 	if (notBuilt.length === 0) return 'You have already built all STASH units.';
 	const stats = user.skillsAsLevels;
-	const checkBank = user.bank;
+	const checkBank = user.bank.clone();
 	const costBank = new Bank();
 
 	const toBuild: ParsedUnit[] = [];

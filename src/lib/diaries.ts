@@ -49,8 +49,9 @@ export async function userhasDiaryTier(user: MUser, tier: DiaryTier): Promise<[t
 	const { bank } = user;
 	const { cl } = user;
 	const qp = user.QP;
-	const lapScores = user.user.lapsScores as ItemBank;
-	const monsterScores = user.user.monsterScores as ItemBank;
+	const stats = await user.fetchStats({ laps_scores: true, monster_scores: true });
+	const lapScores = stats.laps_scores as ItemBank;
+	const monsterScores = stats.monster_scores as ItemBank;
 
 	if (tier.ownedItems) {
 		const unownedItems = tier.ownedItems.filter(i => !bank.has(i));
@@ -656,7 +657,8 @@ export const KandarinDiary: Diary = {
 		collectionLogReqs: resolveItems(['Grimy dwarf weed', 'Shark']),
 		customReq: async (user, summary) => {
 			if (summary) return [false, 'Barbarian Assault Honour Level of 5.'];
-			const honourLevel = user.user.honour_level;
+			const stats = await user.fetchStats({ honour_level: true });
+			const honourLevel = stats.honour_level;
 			if (honourLevel < 5) {
 				return [false, 'your Barbarian Assault Honour Level is less than 5'];
 			}

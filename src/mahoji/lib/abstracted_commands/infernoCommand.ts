@@ -144,7 +144,9 @@ async function infernoRun({
 	const zukDeathChance = new PercentCounter(baseZukDeathChance(attempts), 'percent');
 	const preZukDeathChance = new PercentCounter(basePreZukDeathChance(attempts), 'percent');
 
-	if (!(user.user.sacrificedBank as ItemBank)[itemID('Fire cape')]) {
+	const { sacrificed_bank: sacrificedBank } = await user.fetchStats({ sacrificed_bank: true });
+
+	if (!(sacrificedBank as ItemBank)[itemID('Fire cape')]) {
 		return 'To do the Inferno, you must have sacrificed a fire cape.';
 	}
 
@@ -391,8 +393,10 @@ async function infernoRun({
 }
 
 export async function infernoStatsCommand(user: MUser): CommandResponse {
-	const attempts = user.user.inferno_attempts;
-	const zukKC = await getMinigameScore(user.id, 'inferno');
+	const [zukKC, { inferno_attempts: attempts }] = await Promise.all([
+		getMinigameScore(user.id, 'inferno'),
+		user.fetchStats({ inferno_attempts: true })
+	]);
 
 	let str = 'You have never attempted the Inferno, I recommend you stay that way.';
 	if (attempts && !zukKC) {
@@ -426,9 +430,11 @@ export async function infernoStatsCommand(user: MUser): CommandResponse {
 }
 
 export async function infernoStartCommand(user: MUser, channelID: string): CommandResponse {
-	const attempts = user.user.inferno_attempts;
 	const usersRangeStats = user.gear.range.stats;
-	const zukKC = await getMinigameScore(user.id, 'inferno');
+	const [zukKC, { inferno_attempts: attempts }] = await Promise.all([
+		getMinigameScore(user.id, 'inferno'),
+		user.fetchStats({ inferno_attempts: true })
+	]);
 
 	const res = await infernoRun({
 		user,

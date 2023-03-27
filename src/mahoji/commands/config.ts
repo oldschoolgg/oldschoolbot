@@ -1,4 +1,4 @@
-import { Embed, inlineCode } from '@discordjs/builders';
+import { EmbedBuilder, inlineCode } from '@discordjs/builders';
 import { activity_type_enum } from '@prisma/client';
 import { Guild, HexColorString, resolveColor, User } from 'discord.js';
 import { clamp, uniqueArr } from 'e';
@@ -41,6 +41,10 @@ const toggles = [
 	{
 		name: 'Disable Ash Sanctifier',
 		bit: BitField.DisableAshSanctifier
+	},
+	{
+		name: 'Disable Auto Farm Contract Button',
+		bit: BitField.DisableAutoFarmContractButton
 	}
 ];
 
@@ -245,7 +249,7 @@ async function bankSortConfig(
 async function bgColorConfig(user: MUser, hex?: string) {
 	const currentColor = user.user.bank_bg_hex;
 
-	const embed = new Embed();
+	const embed = new EmbedBuilder();
 
 	if (hex === 'reset') {
 		await user.update({
@@ -417,7 +421,7 @@ async function handleCommandEnable(
 const priorityWarningMsg =
 	"\n\n**Important: By default, 'Always barrage/burst' will take priority if 'Always cannon' is also enabled.**";
 async function handleCombatOptions(user: MUser, command: 'add' | 'remove' | 'list' | 'help', option?: string) {
-	const settings = await mahojiUsersSettingsFetch(user.id);
+	const settings = await mahojiUsersSettingsFetch(user.id, { combat_options: true });
 	if (!command || (command && command === 'list')) {
 		// List enabled combat options:
 		const cbOpts = settings.combat_options.map(o => CombatOptionsArray.find(coa => coa!.id === o)!.name);
@@ -491,8 +495,7 @@ async function handleCombatOptions(user: MUser, command: 'add' | 'remove' | 'lis
 }
 
 async function handleRSN(user: MUser, newRSN: string) {
-	const settings = await mahojiUsersSettingsFetch(user.id);
-	const { RSN } = settings;
+	const { RSN } = user.user;
 	if (!newRSN && RSN) {
 		return `Your current RSN is: \`${RSN}\``;
 	}
