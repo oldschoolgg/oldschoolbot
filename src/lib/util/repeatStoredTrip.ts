@@ -42,6 +42,7 @@ import type {
 	InfernoOptions,
 	KibbleOptions,
 	KourendFavourActivityTaskOptions,
+	MahoganyHomesActivityTaskOptions,
 	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
 	NewBossOptions,
@@ -356,7 +357,7 @@ export const tripHandlers = {
 	},
 	[activity_type_enum.MahoganyHomes]: {
 		commandName: 'minigames',
-		args: () => ({ mahogany_homes: { start: {} } })
+		args: (data: MahoganyHomesActivityTaskOptions) => ({ mahogany_homes: { start: { tier: data.tier } } })
 	},
 	[activity_type_enum.Mining]: {
 		commandName: 'mine',
