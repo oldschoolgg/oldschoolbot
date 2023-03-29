@@ -14,6 +14,7 @@ import { isObject } from 'e';
 import { MahojiClient } from 'mahoji';
 import { convertAPIOptionsToCommandOptions } from 'mahoji/dist/lib/util';
 import { join } from 'path';
+import SegfaultHandler from 'segfault-handler';
 
 import { botToken, DEV_SERVER_ID, production, SENTRY_DSN, SupportServer } from './config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from './lib/blacklists';
@@ -35,6 +36,7 @@ import { postCommand } from './mahoji/lib/postCommand';
 import { preCommand } from './mahoji/lib/preCommand';
 import { convertMahojiCommandToAbstractCommand } from './mahoji/lib/util';
 
+SegfaultHandler.registerHandler('crash.log');
 debugLog(`Starting... Git Hash ${gitHash}`);
 
 if (!production) {

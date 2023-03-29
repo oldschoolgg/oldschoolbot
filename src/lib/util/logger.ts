@@ -24,7 +24,8 @@ const pino = pinoCtor(
 	pinoCtor.destination({
 		dest: `./logs/${formattedDate}-${today.getHours()}-${today.getMinutes()}-${BOT_TYPE}-debug-logs.log`,
 		mkdir: true,
-		sync: true
+		sync: false,
+		minLength: 4096
 	})
 );
 
