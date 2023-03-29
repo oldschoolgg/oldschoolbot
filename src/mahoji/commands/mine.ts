@@ -339,7 +339,7 @@ export const mineCommand: OSBMahojiCommand = {
 			}
 		}
 
-		if (!powermine) {
+		if (!powermine || (ore.bankingTime == 0)) {
 			powermine = false;
 		} else {
 			boosts.push('**Powermining**');
