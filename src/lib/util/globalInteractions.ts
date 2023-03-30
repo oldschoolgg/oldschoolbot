@@ -1,5 +1,5 @@
 import { ButtonBuilder, ButtonInteraction, ButtonStyle, Interaction } from 'discord.js';
-import { Time, uniqueArr } from 'e';
+import { removeFromArr, Time, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { buyBingoTicketCommand } from '../../mahoji/commands/bingo';
@@ -12,7 +12,7 @@ import { prisma } from '../settings/prisma';
 import { runCommand } from '../settings/settings';
 import { toaHelpCommand } from '../simulation/toa';
 import { ItemBank } from '../types';
-import { formatDuration, removeFromArr, stringMatches } from '../util';
+import { formatDuration, stringMatches } from '../util';
 import { updateGiveawayMessage } from './giveaway';
 import { interactionReply } from './interactionReply';
 import { minionIsBusy } from './minionIsBusy';
