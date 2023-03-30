@@ -8,4 +8,4 @@
 
 ### Other checks:
 
--   [ ] I have tested all my changes thoroughly.
+- [ ] I have tested all my changes thoroughly.

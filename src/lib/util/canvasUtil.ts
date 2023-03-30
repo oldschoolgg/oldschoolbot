@@ -1,6 +1,7 @@
 import { Canvas, Image, loadImage, SKRSContext2D } from '@napi-rs/canvas';
+import { formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit';
 
-import { assert, formatItemStackQuantity, generateHexColorForCashStack } from '../util';
+import { assert } from '../util';
 
 export function fillTextXTimesInCtx(ctx: SKRSContext2D, text: string, x: number, y: number) {
 	ctx.fillText(text, x, y);
