@@ -133,7 +133,7 @@ export const buildCommand: OSBMahojiCommand = {
 
 		await transactItems({ userID: user.id, itemsToRemove: cost });
 
-		updateBankSetting('construction_cost_bank', cost);
+		await updateBankSetting('construction_cost_bank', cost);
 
 		await addSubTaskToActivityTask<ConstructionActivityTaskOptions>({
 			objectID: object.id,

@@ -1,10 +1,13 @@
 import '../src/index';
 
 import { Collection } from 'discord.js';
+import mitm from 'mitm';
 
 global.globalClient = {
+	emit: () => {},
 	isReady: () => true,
-	guilds: { cache: new Collection() },
+	channels: { cache: new Collection() },
+	guilds: { cache: new Collection(), channels: { cache: new Collection() } },
 	mahojiClient: {
 		commands: {
 			values: [
@@ -18,3 +21,15 @@ global.globalClient = {
 		}
 	}
 } as any;
+
+const mitmInstance = mitm();
+mitmInstance.on('connect', () => {
+	throw new Error('connect');
+});
+mitmInstance.on('connection', () => {
+	throw new Error('connection');
+});
+
+mitmInstance.on('request', () => {
+	throw new Error('request');
+});

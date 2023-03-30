@@ -20,6 +20,6 @@ export const brewingTask: MinionTask = {
 
 		let str = `${user}, ${user.minionName} finished doing ${quantity}x games of Trouble Brewing, you received: ${loot}.`;
 
-		handleTripFinish(user, channelID, str, undefined, data, null);
+		return handleTripFinish(user, channelID, str, undefined, data, null);
 	}
 };

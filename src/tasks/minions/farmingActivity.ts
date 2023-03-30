@@ -121,7 +121,7 @@ export const farmingTask: MinionTask = {
 
 			if (loot.length > 0) str += `\n\nYou received: ${loot}.`;
 
-			updateBankSetting('farming_loot_bank', loot);
+			await updateBankSetting('farming_loot_bank', loot);
 			await transactItems({
 				userID: user.id,
 				collectionLog: true,
@@ -144,7 +144,7 @@ export const farmingTask: MinionTask = {
 
 			str += `\n\n${user.minionName} tells you to come back after your plants have finished growing!`;
 
-			handleTripFinish(user, channelID, str, undefined, data, null);
+			return handleTripFinish(user, channelID, str, undefined, data, null);
 		} else if (patchType.patchPlanted) {
 			// If they do have something planted here, harvest it and possibly replant.
 			const plantToHarvest = Farming.Plants.find(plant => plant.name === patchType.lastPlanted)!;
@@ -404,7 +404,7 @@ export const farmingTask: MinionTask = {
 				infoStr.push(`\n${user.minionName} tells you to come back after your plants have finished growing!`);
 			}
 
-			updateBankSetting('farming_loot_bank', loot);
+			await updateBankSetting('farming_loot_bank', loot);
 			await transactItems({
 				userID: user.id,
 				collectionLog: true,
@@ -422,7 +422,7 @@ export const farmingTask: MinionTask = {
 				});
 			}
 
-			handleTripFinish(
+			return handleTripFinish(
 				user,
 				channelID,
 				infoStr.join('\n'),

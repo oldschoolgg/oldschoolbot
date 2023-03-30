@@ -39,11 +39,11 @@ const tripFinishEffects: {
 }[] = [
 	{
 		name: 'Track GP Analytics',
-		fn: ({ data, loot }) => {
+		fn: async ({ data, loot }) => {
 			if (loot && activitiesToTrackAsPVMGPSource.includes(data.type)) {
 				const GP = loot.amount(COINS_ID);
 				if (typeof GP === 'number') {
-					updateClientGPTrackSetting('gp_pvm', GP);
+					await updateClientGPTrackSetting('gp_pvm', GP);
 				}
 			}
 		}
@@ -55,7 +55,7 @@ const tripFinishEffects: {
 			if (imp && imp.bank.length > 0) {
 				const many = imp.bank.length > 1;
 				messages.push(`Caught ${many ? 'some' : 'an'} impling${many ? 's' : ''}, you received: ${imp.bank}`);
-				userStatsBankUpdate(user.id, 'passive_implings_bank', imp.bank);
+				await userStatsBankUpdate(user.id, 'passive_implings_bank', imp.bank);
 				await transactItems({ userID: user.id, itemsToAdd: imp.bank, collectionLog: true });
 			}
 		}
@@ -140,6 +140,7 @@ export async function handleTripFinish(
 
 	handleTriggerShootingStar(user, data, components);
 
+	// eslint-disable-next-line @typescript-eslint/no-floating-promises
 	sendToChannelID(channelID, {
 		content: message,
 		image: attachment,

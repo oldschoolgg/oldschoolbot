@@ -44,6 +44,6 @@ export const barbAssaultTask: MinionTask = {
 		resultStr = `${user.mention}, ${user.minionName} finished doing ${quantity} waves of Barbarian Assault, you received ${totalPoints} Honour Points.
 ${resultStr}`;
 
-		handleTripFinish(user, channelID, resultStr, undefined, data, null);
+		return handleTripFinish(user, channelID, resultStr, undefined, data, null);
 	}
 };

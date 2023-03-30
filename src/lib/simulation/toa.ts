@@ -1239,7 +1239,7 @@ export async function toaStartCommand(
 		})
 	);
 
-	updateBankSetting('toa_cost', totalCost);
+	await updateBankSetting('toa_cost', totalCost);
 	await trackLoot({
 		totalCost,
 		id: 'tombs_of_amascut',

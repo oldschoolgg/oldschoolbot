@@ -142,7 +142,7 @@ export async function duelCommand(
 			`${winner.mention} won ${winningAmount} GP in a duel with ${loser.mention}.`
 		);
 
-		duelMessage.edit(
+		await duelMessage.edit(
 			`Congratulations ${winner.badgedUsername}! You won ${Util.toKMB(winningAmount)}, and paid ${Util.toKMB(
 				tax
 			)} tax.`
@@ -154,9 +154,9 @@ export async function duelCommand(
 	try {
 		const selection = await awaitMessageComponentInteraction({
 			message: duelMessage,
-			filter: i => {
+			filter: async i => {
 				if (i.user.id !== (duelTargetUser.id ?? interaction.user.id).toString()) {
-					i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
+					await i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
 					return false;
 				}
 				return true;

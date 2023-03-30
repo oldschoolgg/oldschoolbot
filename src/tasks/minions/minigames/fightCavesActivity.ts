@@ -193,7 +193,7 @@ export const fightCavesTask: MinionTask = {
 			// End slayer code
 		}
 
-		handleTripFinish(
+		return handleTripFinish(
 			user,
 			channelID,
 			`${user} ${msg}`,

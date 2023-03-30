@@ -157,7 +157,7 @@ export async function guardiansOfTheRiftStartCommand(
 		rolls += 2;
 		boosts.push('Extra 2 rolls for Combination runecrafting');
 		await user.removeItemsFromBank(removeRunesAndNecks);
-		updateBankSetting('gotr_cost', removeRunesAndNecks);
+		await updateBankSetting('gotr_cost', removeRunesAndNecks);
 		await trackLoot({
 			id: 'guardians_of_the_rift',
 			type: 'Minigame',

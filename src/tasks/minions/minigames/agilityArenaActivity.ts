@@ -50,7 +50,7 @@ export const agilityArenaTask: MinionTask = {
 		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Agility, 26_404);
 		for (let i = 0; i < ticketsReceived; i++) {
 			if (roll(petDropRate)) {
-				user.addItemsToBank({
+				await user.addItemsToBank({
 					items: new Bank().add('Giant Squirrel'),
 					collectionLog: true
 				});
@@ -81,6 +81,6 @@ export const agilityArenaTask: MinionTask = {
 			collectionLog: true
 		});
 
-		handleTripFinish(user, channelID, str, undefined, data, null);
+		return handleTripFinish(user, channelID, str, undefined, data, null);
 	}
 };

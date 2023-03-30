@@ -125,7 +125,7 @@ export const wintertodtTask: MinionTask = {
 			collectionLog: true,
 			itemsToAdd: loot
 		});
-		incrementMinigameScore(user.id, 'wintertodt', quantity);
+		await incrementMinigameScore(user.id, 'wintertodt', quantity);
 
 		const image = await makeBankImage({
 			bank: itemsAdded,
@@ -159,6 +159,6 @@ export const wintertodtTask: MinionTask = {
 			]
 		});
 
-		handleTripFinish(user, channelID, output, image.file.attachment, data, itemsAdded);
+		return handleTripFinish(user, channelID, output, image.file.attachment, data, itemsAdded);
 	}
 };

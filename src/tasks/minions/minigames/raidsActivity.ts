@@ -147,7 +147,7 @@ export const raidsTask: MinionTask = {
 			}${deathChance.toFixed(0)}%) `;
 		}
 
-		updateBankSetting('cox_loot', totalLoot);
+		await updateBankSetting('cox_loot', totalLoot);
 		await trackLoot({
 			totalLoot,
 			id: minigameID,
@@ -162,6 +162,6 @@ export const raidsTask: MinionTask = {
 			}))
 		});
 
-		handleTripFinish(allUsers[0], channelID, resultMessage, undefined, data, null);
+		return handleTripFinish(allUsers[0], channelID, resultMessage, undefined, data, null);
 	}
 };

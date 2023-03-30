@@ -139,7 +139,7 @@ export async function fightCavesCommand(user: MUser, channelID: string): Command
 		fakeDuration
 	});
 
-	updateBankSetting('economyStats_fightCavesCost', fightCavesCost);
+	await updateBankSetting('economyStats_fightCavesCost', fightCavesCost);
 
 	const totalDeathChance = (((100 - preJadDeathChance) * (100 - jadDeathChance)) / 100).toFixed(1);
 

@@ -33,6 +33,6 @@ export const mageArenaTwoTask: MinionTask = {
 			str = `${user}, ${user.minionName} finished the Mage Arena II, you received: ${loot}.`;
 		}
 
-		handleTripFinish(user, channelID, str, undefined, data, loot ?? null);
+		return handleTripFinish(user, channelID, str, undefined, data, loot ?? null);
 	}
 };

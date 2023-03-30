@@ -203,8 +203,8 @@ export const sellCommand: OSBMahojiCommand = {
 		});
 
 		await Promise.all([
-			updateClientGPTrackSetting('gp_sell', totalPrice),
-			updateBankSetting('sold_items_bank', bankToSell),
+			await updateClientGPTrackSetting('gp_sell', totalPrice),
+			await updateBankSetting('sold_items_bank', bankToSell),
 			userStatsUpdate(
 				user.id,
 				userStats => ({

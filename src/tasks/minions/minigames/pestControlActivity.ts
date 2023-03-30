@@ -31,6 +31,6 @@ export const pestControlTask: MinionTask = {
 		let perHour = `(${toKMB((points / (duration / Time.Minute)) * 60)}/Hr)`;
 		let str = `${user}, ${user.minionName} finished ${quantity}x games of Pest Control on the ${boatType} boat. You received ${points}x Void Knight commendation points, you now have ${newUserStats.pest_control_points} points. ${perHour}`;
 
-		handleTripFinish(user, channelID, str, undefined, data, null);
+		return handleTripFinish(user, channelID, str, undefined, data, null);
 	}
 };

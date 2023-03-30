@@ -90,7 +90,7 @@ export const pickpocketTask: MinionTask = {
 		}
 
 		if (loot.has('Coins')) {
-			updateClientGPTrackSetting('gp_pickpocket', loot.amount('Coins'));
+			await updateClientGPTrackSetting('gp_pickpocket', loot.amount('Coins'));
 		}
 
 		const { previousCL, itemsAdded } = await transactItems({
@@ -140,6 +140,6 @@ export const pickpocketTask: MinionTask = {
 						previousCL
 				  });
 
-		handleTripFinish(user, channelID, str, image?.file.attachment, data, loot);
+		return handleTripFinish(user, channelID, str, image?.file.attachment, data, loot);
 	}
 };

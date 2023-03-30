@@ -808,6 +808,7 @@ export const toolsCommand: OSBMahojiCommand = {
 			unfill?: { unit: string };
 		};
 	}>) => {
+		// eslint-disable-next-line @typescript-eslint/no-floating-promises
 		deferInteraction(interaction);
 		const mahojiUser = await mUserFetch(userID);
 
@@ -860,6 +861,7 @@ export const toolsCommand: OSBMahojiCommand = {
 				return xpGains(patron.xp_gains.time, patron.xp_gains.skill);
 			}
 			if (patron.minion_stats) {
+				// eslint-disable-next-line @typescript-eslint/no-floating-promises
 				deferInteraction(interaction);
 				if (mahojiUser.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return minionStats(mahojiUser.user);

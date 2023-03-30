@@ -70,6 +70,6 @@ export const kourendTask: MinionTask = {
 			totalPoints ? ` You now have a total of ${totalPoints}%.` : ''
 		}${loot ? ` You also received ${loot}.` : ''}`;
 
-		handleTripFinish(user, channelID, str, undefined, data, loot ?? null);
+		return handleTripFinish(user, channelID, str, undefined, data, loot ?? null);
 	}
 };

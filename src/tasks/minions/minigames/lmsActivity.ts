@@ -117,7 +117,7 @@ export const lmsTask: MinionTask = {
 			}
 		});
 
-		handleTripFinish(
+		return handleTripFinish(
 			user,
 			channelID,
 			`${user}, ${

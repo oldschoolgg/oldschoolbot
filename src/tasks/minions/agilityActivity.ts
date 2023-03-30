@@ -115,7 +115,7 @@ export const agilityTask: MinionTask = {
 				amount: alch.quantity * 65,
 				duration
 			})}`;
-			updateClientGPTrackSetting('gp_alch', alchGP);
+			await updateClientGPTrackSetting('gp_alch', alchGP);
 		}
 
 		let str = `${user}, ${user.minionName} finished ${quantity} ${
@@ -152,6 +152,6 @@ export const agilityTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		return handleTripFinish(user, channelID, str, undefined, data, loot);
 	}
 };

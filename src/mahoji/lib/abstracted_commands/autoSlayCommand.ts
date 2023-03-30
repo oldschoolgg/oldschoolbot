@@ -271,7 +271,7 @@ export async function autoSlayCommand({
 
 		if (currentMonID === null) throw new Error('Could not get Monster data to find a task.');
 
-		runCommand({
+		await runCommand({
 			commandName: 'k',
 			args: {
 				name: Monsters.get(currentMonID)!.name
@@ -291,7 +291,7 @@ export async function autoSlayCommand({
 
 		// If we don't have the requirements for the efficient monster, revert to default monster
 		if (ehpKillable?.levelRequirements !== undefined && !hasSkillReqs(user, ehpKillable.levelRequirements)[0]) {
-			runCommand({
+			await runCommand({
 				commandName: 'k',
 				args: {
 					name: usersTask.assignedTask!.monster.name
@@ -309,7 +309,7 @@ export async function autoSlayCommand({
 			if (ehpMonster.efficientMethod) {
 				args.method = ehpMonster.efficientMethod;
 			}
-			runCommand({
+			await runCommand({
 				commandName: 'k',
 				args,
 				bypassInhibitors: true,
@@ -317,7 +317,7 @@ export async function autoSlayCommand({
 			});
 			return;
 		}
-		runCommand({
+		await runCommand({
 			commandName: 'k',
 			args: {
 				name: usersTask.assignedTask!.monster.name
@@ -332,7 +332,7 @@ export async function autoSlayCommand({
 		const myQPs = await user.QP;
 		let commonName = getCommonTaskName(usersTask.assignedTask!.monster);
 		if (commonName === 'TzHaar') {
-			runCommand({
+			await runCommand({
 				commandName: 'activities',
 				args: { fight_caves: {} },
 				bypassInhibitors: true,
@@ -361,7 +361,7 @@ export async function autoSlayCommand({
 		}
 
 		if (maxMobName) {
-			runCommand({
+			await runCommand({
 				commandName: 'k',
 				args: { name: maxMobName },
 				bypassInhibitors: true,
@@ -369,7 +369,10 @@ export async function autoSlayCommand({
 			});
 			return;
 		}
-		interaction.reply({ content: "Can't find any monsters you have the requirements to kill!", ephemeral: true });
+		await interaction.reply({
+			content: "Can't find any monsters you have the requirements to kill!",
+			ephemeral: true
+		});
 		return;
 	}
 	await runCommand({

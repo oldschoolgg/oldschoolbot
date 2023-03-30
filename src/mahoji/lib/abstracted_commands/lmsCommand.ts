@@ -36,6 +36,7 @@ export async function lmsCommand(
 	}
 
 	if (options.simulate) {
+		// eslint-disable-next-line @typescript-eslint/no-floating-promises
 		lmsSimCommand(globalClient.channels.cache.get(channelID.toString()), options.simulate.names);
 		return {
 			content: 'Starting simulation...'

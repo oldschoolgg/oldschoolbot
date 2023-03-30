@@ -51,6 +51,6 @@ export const nightmareZoneTask: MinionTask = {
 		} finished killing ${quantity}x Nightmare Zone monsters. Your Nightmare Zone KC is now ${score.newScore}.
  \n**XP Gains:** ${res.join(' ')}\nYou gained **${pointsReceived.toLocaleString()}** Nightmare Zone points.`;
 
-		handleTripFinish(user, channelID, str, undefined, data, null);
+		return handleTripFinish(user, channelID, str, undefined, data, null);
 	}
 };

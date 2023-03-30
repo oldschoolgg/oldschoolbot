@@ -813,4 +813,5 @@ declare global {
 	}
 }
 global.bankImageGenerator = new BankImageTask();
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
 bankImageGenerator.init();

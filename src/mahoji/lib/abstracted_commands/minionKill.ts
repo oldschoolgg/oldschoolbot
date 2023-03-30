@@ -537,7 +537,7 @@ export async function minionKillCommand(
 	}
 
 	if (lootToRemove.length > 0) {
-		updateBankSetting('economyStats_PVMCost', lootToRemove);
+		await updateBankSetting('economyStats_PVMCost', lootToRemove);
 		await user.removeItemsFromBank(lootToRemove);
 		totalCost.add(lootToRemove);
 	}

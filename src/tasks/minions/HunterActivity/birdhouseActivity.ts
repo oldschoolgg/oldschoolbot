@@ -55,7 +55,7 @@ export const birdHouseTask: MinionTask = {
 
 			str += `\n\n${user.minionName} tells you to come back after your birdhouses are full!`;
 
-			sendToChannelID(channelID, { content: str });
+			await sendToChannelID(channelID, { content: str });
 		} else {
 			let str = '';
 			const birdhouseToCollect = birdhouses.find(_birdhouse => _birdhouse.name === birdhouseData.lastPlaced);
@@ -140,7 +140,7 @@ export const birdHouseTask: MinionTask = {
 				str += `\n${user.minionName} tells you to come back after your birdhouses are full!`;
 			}
 
-			handleTripFinish(user, channelID, str, undefined, data, loot);
+			return handleTripFinish(user, channelID, str, undefined, data, loot);
 		}
 	}
 };

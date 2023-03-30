@@ -131,7 +131,7 @@ export const mineCommand: OSBMahojiCommand = {
 		}
 		await user.removeItemsFromBank(finalCost);
 
-		updateBankSetting('herblore_cost_bank', finalCost);
+		await updateBankSetting('herblore_cost_bank', finalCost);
 
 		await addSubTaskToActivityTask<HerbloreActivityTaskOptions>({
 			mixableID: mixableItem.id,

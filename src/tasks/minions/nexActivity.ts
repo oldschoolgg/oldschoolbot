@@ -50,7 +50,7 @@ export const nexTask: MinionTask = {
 		).setDescription(`
 ${loot.formatLoot()}`);
 
-		sendToChannelID(channelID, {
+		await sendToChannelID(channelID, {
 			embed,
 			content: `${allMention} Your team finished killing ${quantity}x Nex.${
 				wipedKill ? ` Your team wiped on the ${formatOrdinal(wipedKill)} kill.` : ''

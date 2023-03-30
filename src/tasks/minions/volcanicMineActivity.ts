@@ -98,6 +98,6 @@ export const vmTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		handleTripFinish(user, channelID, str, undefined, data, itemsAdded);
+		return handleTripFinish(user, channelID, str, undefined, data, itemsAdded);
 	}
 };

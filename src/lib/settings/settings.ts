@@ -152,7 +152,7 @@ export async function runCommand({
 		if (result && !interaction.replied) await interactionReply(interaction, result);
 		return result;
 	} catch (err: any) {
-		handleInteractionError(err, interaction);
+		await handleInteractionError(err, interaction);
 	} finally {
 		try {
 			await postCommand({

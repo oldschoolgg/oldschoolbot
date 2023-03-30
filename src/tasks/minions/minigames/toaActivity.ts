@@ -174,7 +174,7 @@ export const toaTask: MinionTask = {
 
 			itemsAddedTeamLoot.add(userID, itemsAdded);
 
-			userStatsUpdate(
+			await userStatsUpdate(
 				user.id,
 				u => {
 					return {
@@ -229,7 +229,7 @@ export const toaTask: MinionTask = {
 			resultMessage += `\n\n${messages.join('\n')}`;
 		}
 
-		updateBankSetting('toa_loot', totalLoot.totalLoot());
+		await updateBankSetting('toa_loot', totalLoot.totalLoot());
 		await trackLoot({
 			totalLoot: totalLoot.totalLoot(),
 			id: 'tombs_of_amascut',
@@ -283,7 +283,7 @@ export const toaTask: MinionTask = {
 			);
 		}
 
-		handleTripFinish(
+		return handleTripFinish(
 			allUsers[0],
 			channelID,
 			resultMessage,

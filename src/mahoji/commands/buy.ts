@@ -174,8 +174,8 @@ export const buyCommand: OSBMahojiCommand = {
 			itemsToRemove: totalCost
 		});
 
-		updateBankSetting('buy_cost_bank', totalCost);
-		updateBankSetting('buy_loot_bank', outItems);
+		await updateBankSetting('buy_cost_bank', totalCost);
+		await updateBankSetting('buy_loot_bank', outItems);
 		await multipleUserStatsBankUpdate(user.id, {
 			buy_cost_bank: totalCost,
 			buy_loot_bank: outItems

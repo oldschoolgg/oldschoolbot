@@ -112,14 +112,14 @@ export class PaginatedMessage {
 
 		collector.on('collect', async interaction => {
 			if (targetUsers && !targetUsers.includes(interaction.user.id)) {
-				interaction.reply({ content: "This isn't your message!", ephemeral: true });
+				await interaction.reply({ content: "This isn't your message!", ephemeral: true });
 				return;
 			}
 			for (const action of controlButtons) {
 				if (interaction.customId === action.customId) {
 					const previousIndex = this.index;
 
-					action.run({
+					await action.run({
 						paginatedMessage: this
 					});
 
@@ -131,8 +131,8 @@ export class PaginatedMessage {
 			}
 		});
 
-		collector.on('end', () => {
-			message.edit({ components: [] });
+		collector.on('end', async () => {
+			await message.edit({ components: [] });
 		});
 	}
 }

@@ -88,7 +88,7 @@ export const giantsFoundryTask: MinionTask = {
 			collectionLog: true,
 			itemsToAdd: loot
 		});
-		updateBankSetting('gf_loot', loot);
+		await updateBankSetting('gf_loot', loot);
 		await trackLoot({
 			id: 'giants_foundry',
 			type: 'Minigame',
@@ -106,6 +106,6 @@ export const giantsFoundryTask: MinionTask = {
 		});
 		await userStatsBankUpdate(user.id, 'gf_loot', loot);
 
-		handleTripFinish(user, channelID, str, undefined, data, itemsAdded);
+		return handleTripFinish(user, channelID, str, undefined, data, itemsAdded);
 	}
 };

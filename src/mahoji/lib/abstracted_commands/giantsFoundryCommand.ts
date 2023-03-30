@@ -215,7 +215,7 @@ export async function giantsFoundryStartCommand(
 	}
 
 	await user.removeItemsFromBank(totalCost);
-	updateBankSetting('gf_cost', totalCost);
+	await updateBankSetting('gf_cost', totalCost);
 	await trackLoot({
 		id: 'giants_foundry',
 		type: 'Minigame',

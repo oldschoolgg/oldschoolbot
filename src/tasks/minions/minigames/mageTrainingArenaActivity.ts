@@ -28,17 +28,24 @@ export const mageTrainingTask: MinionTask = {
 			duration
 		});
 		const pizazzPoints = Math.floor((pizazzPointsPerHour / (Time.Minute * 60)) * duration);
-		await prisma.newUser.update({
-			where: { id: userID },
-			data: {
+
+		await prisma.newUser.upsert({
+			create: {
+				id: userID,
+				pizazz_points: pizazzPoints
+			},
+			update: {
 				pizazz_points: {
 					increment: pizazzPoints
 				}
+			},
+			where: {
+				id: userID
 			}
 		});
 
 		let str = `${user}, ${user.minionName} finished completing ${quantity}x Magic Training Arena rooms. You received **${pizazzPoints} Pizazz points**. ${xpRes}`;
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		return handleTripFinish(user, channelID, str, undefined, data, loot);
 	}
 };

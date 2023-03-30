@@ -79,7 +79,7 @@ GROUP BY item_id;`);
 					channel.permissionsFor(globalClient.user!)?.has(PermissionsBitField.Flags.EmbedLinks) &&
 					channel.permissionsFor(globalClient.user!)?.has(PermissionsBitField.Flags.SendMessages)
 				) {
-					sendToChannelID(channel.id, { content: `<${url}>`, embed });
+					await sendToChannelID(channel.id, { content: `<${url}>`, embed });
 				}
 			}
 		}
@@ -101,7 +101,7 @@ GROUP BY item_id;`);
 				for (const entity of _result.data) {
 					if (!entity.author_flair_text || !entity.author_flair_text.includes(':jagexmod:')) continue;
 					if (alreadySentCache.has(entity.id)) continue;
-					sendReddit({ post: entity, type });
+					await sendReddit({ post: entity, type });
 					alreadySentCache.add(entity.id);
 				}
 				redditApiFailures = 0;
@@ -131,6 +131,6 @@ GROUP BY item_id;`);
 	 */
 	schedule('0 0 */1 * *', async () => {
 		debugLog('Cache cleanup cronjob starting');
-		cacheCleanup();
+		await cacheCleanup();
 	});
 }

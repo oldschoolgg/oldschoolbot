@@ -125,7 +125,7 @@ export async function pohBuildCommand(interaction: ChatInputCommandInteraction, 
 		}
 		await handleMahojiConfirmation(interaction, str);
 		await user.removeItemsFromBank(obj.itemCost);
-		updateBankSetting('construction_cost_bank', obj.itemCost);
+		await updateBankSetting('construction_cost_bank', obj.itemCost);
 	}
 
 	let refunded: Bank | null = null;

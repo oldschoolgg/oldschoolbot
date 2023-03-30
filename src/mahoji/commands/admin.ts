@@ -701,7 +701,7 @@ export const adminCommand: OSBMahojiCommand = {
 		}
 		if (options.sync_patreon) {
 			await patreonTask.run();
-			syncLinkedAccounts();
+			await syncLinkedAccounts();
 			return 'Finished syncing patrons.';
 		}
 		if (options.add_ironman_alt) {

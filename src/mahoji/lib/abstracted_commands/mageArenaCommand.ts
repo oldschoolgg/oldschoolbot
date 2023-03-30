@@ -37,7 +37,7 @@ export async function mageArenaCommand(user: MUser, channelID: string) {
 
 	await user.removeItemsFromBank(itemsNeeded);
 
-	updateBankSetting('mage_arena_cost', totalCost);
+	await updateBankSetting('mage_arena_cost', totalCost);
 
 	await addSubTaskToActivityTask<ActivityTaskOptions>({
 		userID: user.id,

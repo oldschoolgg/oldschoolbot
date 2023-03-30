@@ -37,10 +37,11 @@ export const commandsRoute = (server: FastifyServer) =>
 					};
 				})
 				.sort((a, b) => a.name.localeCompare(b.name));
-			reply.header(
-				'Cache-Control',
-				`public, max-age=${(Time.Minute * 5) / 1000}, s-maxage=${(Time.Minute * 5) / 1000}`
-			);
-			reply.send(commandData);
+			return reply
+				.header(
+					'Cache-Control',
+					`public, max-age=${(Time.Minute * 5) / 1000}, s-maxage=${(Time.Minute * 5) / 1000}`
+				)
+				.send(commandData);
 		}
 	});

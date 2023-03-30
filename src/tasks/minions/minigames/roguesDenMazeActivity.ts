@@ -28,7 +28,7 @@ export const roguesDenTask: MinionTask = {
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { channelID, quantity, userID } = data;
 
-		incrementMinigameScore(userID, 'rogues_den', quantity);
+		await incrementMinigameScore(userID, 'rogues_den', quantity);
 
 		const loot = new Bank();
 		const user = await mUserFetch(userID);
@@ -62,6 +62,6 @@ export const roguesDenTask: MinionTask = {
 			previousCL
 		});
 
-		handleTripFinish(user, channelID, str, gotLoot ? image.file.attachment : undefined, data, itemsAdded);
+		return handleTripFinish(user, channelID, str, gotLoot ? image.file.attachment : undefined, data, itemsAdded);
 	}
 };

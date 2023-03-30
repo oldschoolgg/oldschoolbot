@@ -494,7 +494,7 @@ export async function infernoStartCommand(user: MUser, channelID: string): Comma
 		cost: realCost.bank
 	});
 
-	updateBankSetting('inferno_cost', realCost);
+	await updateBankSetting('inferno_cost', realCost);
 
 	return {
 		content: `

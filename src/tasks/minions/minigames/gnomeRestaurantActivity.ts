@@ -62,7 +62,7 @@ export const gnomeResTask: MinionTask = {
 	async run(data: GnomeRestaurantActivityTaskOptions) {
 		const { channelID, quantity, duration, userID, gloriesRemoved } = data;
 
-		incrementMinigameScore(userID, 'gnome_restaurant', quantity);
+		await incrementMinigameScore(userID, 'gnome_restaurant', quantity);
 
 		const loot = new Bank();
 
@@ -91,8 +91,8 @@ export const gnomeResTask: MinionTask = {
 
 		let str = `<@${userID}>, ${user.minionName} finished completing ${quantity}x Gnome Restaurant deliveries. You received **${loot}**. ${xpRes}`;
 
-		updateBankSetting('gnome_res_loot', loot);
+		await updateBankSetting('gnome_res_loot', loot);
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		return handleTripFinish(user, channelID, str, undefined, data, loot);
 	}
 };

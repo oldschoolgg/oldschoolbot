@@ -36,8 +36,8 @@ export const collectingTask: MinionTask = {
 			str += '\n\n**Boosts:** 2x for Morytania Hard diary';
 		}
 
-		updateBankSetting('collecting_loot', loot);
+		await updateBankSetting('collecting_loot', loot);
 
-		handleTripFinish(user, channelID, str, undefined, data, loot ?? null);
+		return handleTripFinish(user, channelID, str, undefined, data, loot ?? null);
 	}
 };

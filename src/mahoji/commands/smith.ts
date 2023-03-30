@@ -131,7 +131,7 @@ export const smithCommand: OSBMahojiCommand = {
 		}
 
 		await transactItems({ userID: user.id, itemsToRemove: cost });
-		updateBankSetting('smithing_cost', cost);
+		await updateBankSetting('smithing_cost', cost);
 
 		await addSubTaskToActivityTask<SmithingActivityTaskOptions>({
 			smithedBarID: smithedItem.id,

@@ -73,7 +73,7 @@ export const tobTask: MinionTask = {
 		// GIVE XP HERE
 		// 100k tax if they wipe
 		if (wipedRoom !== null) {
-			sendToChannelID(channelID, {
+			await sendToChannelID(channelID, {
 				content: `${allTag} Your team wiped in the Theatre of Blood, in the ${TOBRooms[wipedRoom].name} room!${
 					diedToMaiden ? ' The team died very early, and nobody learnt much from this raid.' : ''
 				}`
@@ -145,7 +145,7 @@ Unique chance: ${result.percentChanceOfUnique.toFixed(2)}% (1 in ${convertPercen
 			resultMessage += `\n${deathStr}**${user}** received: ${str}`;
 		}
 
-		updateBankSetting('tob_loot', totalLoot);
+		await updateBankSetting('tob_loot', totalLoot);
 		await trackLoot({
 			totalLoot,
 			id: minigameID,
@@ -160,6 +160,6 @@ Unique chance: ${result.percentChanceOfUnique.toFixed(2)}% (1 in ${convertPercen
 			}))
 		});
 
-		handleTripFinish(allUsers[0], channelID, resultMessage, undefined, data, null);
+		return handleTripFinish(allUsers[0], channelID, resultMessage, undefined, data, null);
 	}
 };

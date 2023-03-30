@@ -102,7 +102,7 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 	}
 
 	if (loot.bank[COINS_ID] > 0) {
-		updateClientGPTrackSetting('gp_daily', loot.bank[COINS_ID]);
+		await updateClientGPTrackSetting('gp_daily', loot.bank[COINS_ID]);
 	}
 
 	const { itemsAdded, previousCL } = await transactItems({

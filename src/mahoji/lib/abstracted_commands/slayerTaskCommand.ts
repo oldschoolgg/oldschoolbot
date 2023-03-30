@@ -134,6 +134,7 @@ async function returnSuccess(channelID: string, user: MUser, content: string) {
 			message: sentMessage,
 			filter: i => {
 				if (i.user.id !== user.id) {
+					// eslint-disable-next-line @typescript-eslint/no-floating-promises
 					i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
 					return false;
 				}
@@ -231,7 +232,7 @@ export async function slayerNewTaskCommand({
 	const { slayer_remember_master: rememberedSlayerMaster } = user.user;
 
 	if (user.minionIsBusy) {
-		interaction.reply(
+		await interaction.reply(
 			`Your minion is busy, but you can still manage your block list: \`/slayer manage list_blocks\`${await slayerStatusCommand(
 				user
 			)}`
@@ -273,7 +274,7 @@ export async function slayerNewTaskCommand({
 	// Special handling for Turael skip
 	if (currentTask && slayerMasterOverride && slayerMaster && slayerMaster.name === 'Turael') {
 		if (slayerMaster.tasks.find(t => t.monster.id === currentTask.monster_id)) {
-			interaction.reply('You cannot skip this task because Turael assigns it.');
+			await interaction.reply('You cannot skip this task because Turael assigns it.');
 			return;
 		}
 
@@ -300,11 +301,11 @@ export async function slayerNewTaskCommand({
 			)}.`;
 
 		if (showButtons) {
-			returnSuccess(channelID, await mUserFetch(user.id), `${extraContent ?? ''}\n\n${returnMessage}`);
-			interaction.reply({ content: 'Slayer task assigned.', ephemeral: true });
+			await returnSuccess(channelID, await mUserFetch(user.id), `${extraContent ?? ''}\n\n${returnMessage}`);
+			await interaction.reply({ content: 'Slayer task assigned.', ephemeral: true });
 			return;
 		}
-		interaction.reply(`${extraContent ?? ''}\n\n${returnMessage}`);
+		await interaction.reply(`${extraContent ?? ''}\n\n${returnMessage}`);
 		return;
 	}
 	let resultMessage = '';
@@ -333,12 +334,12 @@ export async function slayerNewTaskCommand({
 		resultMessage += `${warningInfo}${baseInfo}`;
 		if (currentTask && !warningInfo) {
 			if (showButtons) {
-				returnSuccess(channelID, await mUserFetch(user.id), resultMessage);
-				interaction.reply({ content: 'Here is your current slayer task', ephemeral: true });
+				await returnSuccess(channelID, await mUserFetch(user.id), resultMessage);
+				await interaction.reply({ content: 'Here is your current slayer task', ephemeral: true });
 				return;
 			}
 		}
-		interaction.reply(resultMessage);
+		await interaction.reply(resultMessage);
 		return;
 	}
 
@@ -375,11 +376,11 @@ export async function slayerNewTaskCommand({
 		newSlayerTask.currentTask.quantity
 	}x ${commonName}${getAlternateMonsterList(newSlayerTask.assignedTask)}.`;
 	if (showButtons) {
-		returnSuccess(channelID, await mUserFetch(user.id), resultMessage);
-		interaction.reply({ content: 'Slayer task assigned.', ephemeral: true });
+		await returnSuccess(channelID, await mUserFetch(user.id), resultMessage);
+		await interaction.reply({ content: 'Slayer task assigned.', ephemeral: true });
 		return;
 	}
-	interaction.reply(resultMessage);
+	await interaction.reply(resultMessage);
 }
 
 export async function slayerSkipTaskCommand({
@@ -400,7 +401,7 @@ export async function slayerSkipTaskCommand({
 	const myBlockList = user.user.slayer_blocked_ids;
 	const maxBlocks = calcMaxBlockedTasks(user);
 	if (minionIsBusy(user.id)) {
-		interaction.reply('You cannot change your task while your minion is busy.');
+		await interaction.reply('You cannot change your task while your minion is busy.');
 		return;
 	}
 	if (!currentTask) {
@@ -412,12 +413,12 @@ export async function slayerSkipTaskCommand({
 				showButtons: true
 			});
 		}
-		interaction.reply("You don't have an active task!");
+		await interaction.reply("You don't have an active task!");
 		return;
 	}
 
 	if (block && myBlockList.length >= maxBlocks) {
-		interaction.reply(
+		await interaction.reply(
 			`You cannot have more than ${maxBlocks} slayer blocks!\n\nUse:\n` +
 				'`st --unblock kalphite`\n to remove a block.\n' +
 				'`st --list` for list of blocked monsters and their IDs.'
@@ -426,7 +427,7 @@ export async function slayerSkipTaskCommand({
 	}
 	let slayerPoints = user.user.slayer_points ?? 0;
 	if (slayerPoints < (block ? 100 : 30)) {
-		interaction.reply(
+		await interaction.reply(
 			`You need ${block ? 100 : 30} points to ${block ? 'block' : 'cancel'},` +
 				` you only have: ${slayerPoints.toLocaleString()}`
 		);
@@ -465,7 +466,7 @@ export async function slayerSkipTaskCommand({
 				showButtons: true
 			});
 		}
-		interaction.reply(resultMessage);
+		await interaction.reply(resultMessage);
 		return;
 	} catch (e) {
 		logError(e, {
@@ -474,7 +475,7 @@ export async function slayerSkipTaskCommand({
 			current_task_id: currentTask.id.toString(),
 			current_task: currentTask.monster_id.toString()
 		});
-		interactionReply(
+		await interactionReply(
 			interaction,
 			'An error occurred while performing this action. Please try again, or contact #help-and-support if the issue persists.'
 		);

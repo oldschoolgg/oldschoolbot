@@ -23,7 +23,7 @@ export async function syncCustomPrices() {
 }
 
 export async function onStartup() {
-	globalClient.application.commands.fetch({ guildId: production ? undefined : DEV_SERVER_ID });
+	await globalClient.application.commands.fetch({ guildId: production ? undefined : DEV_SERVER_ID });
 
 	// Sync disabled commands
 	const disabledCommands = await prisma.clientStorage.upsert({
@@ -53,12 +53,20 @@ export async function onStartup() {
 		});
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-floating-promises
 	runTimedLoggedFn('Syncing prices', syncCustomPrices);
 
+	// eslint-disable-next-line @typescript-eslint/no-floating-promises
 	runTimedLoggedFn('Caching badges', cacheBadges);
+	// eslint-disable-next-line @typescript-eslint/no-floating-promises
+
+	// eslint-disable-next-line @typescript-eslint/no-floating-promises
 	runTimedLoggedFn('Cache Usernames', cacheUsernames);
+
+	// eslint-disable-next-line @typescript-eslint/no-floating-promises
 	cacheCleanup();
 
+	// eslint-disable-next-line @typescript-eslint/no-floating-promises
 	runTimedLoggedFn('Sync Linked Accounts', syncLinkedAccounts);
 
 	initCrons();

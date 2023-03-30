@@ -66,6 +66,6 @@ export const shadesOfMortonTask: MinionTask = {
 			str += `\n**Messages:** ${messages.join(', ')}`;
 		}
 
-		handleTripFinish(user, channelID, str, undefined, data, itemsAdded);
+		return handleTripFinish(user, channelID, str, undefined, data, itemsAdded);
 	}
 };

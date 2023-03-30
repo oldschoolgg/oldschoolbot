@@ -215,6 +215,6 @@ export const fishingTask: MinionTask = {
 			str += `\nYour Rada's Blessing gives ${blessingChance}% chance of extra fish.`;
 		}
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		return handleTripFinish(user, channelID, str, undefined, data, loot);
 	}
 };

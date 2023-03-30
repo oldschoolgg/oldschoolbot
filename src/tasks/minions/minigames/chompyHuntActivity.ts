@@ -41,6 +41,6 @@ export const chompHuntTask: MinionTask = {
 			}
 		}
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		return handleTripFinish(user, channelID, str, undefined, data, loot);
 	}
 };

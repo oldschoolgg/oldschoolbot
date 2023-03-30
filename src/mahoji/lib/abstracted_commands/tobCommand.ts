@@ -382,7 +382,7 @@ export async function tobStartCommand(user: MUser, channelID: string, isHardMode
 		})
 	);
 
-	updateBankSetting('tob_cost', totalCost);
+	await updateBankSetting('tob_cost', totalCost);
 	await trackLoot({
 		totalCost,
 		id: isHardMode ? 'tob_hard' : 'tob',

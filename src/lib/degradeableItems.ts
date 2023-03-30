@@ -176,7 +176,7 @@ export async function degradeItem({
 		});
 		const itemsDeleted = new Bank().add(item.id);
 
-		updateBankSetting('degraded_items_cost', itemsDeleted);
+		await updateBankSetting('degraded_items_cost', itemsDeleted);
 
 		if (hasEquipped) {
 			// If its equipped, unequip and delete it.

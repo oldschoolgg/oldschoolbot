@@ -53,7 +53,7 @@ export const groupoMonsterTask: MinionTask = {
 
 			resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${loot}||\n`;
 
-			announceLoot({
+			await announceLoot({
 				user,
 				monsterID: monster.id,
 				loot,
@@ -71,6 +71,6 @@ export const groupoMonsterTask: MinionTask = {
 			resultStr += `${usersWithoutLoot.map(id => `<@${id}>`).join(', ')} - Got no loot, sad!`;
 		}
 
-		handleTripFinish(leaderUser, channelID, resultStr, undefined, data, totalLoot);
+		return handleTripFinish(leaderUser, channelID, resultStr, undefined, data, totalLoot);
 	}
 };

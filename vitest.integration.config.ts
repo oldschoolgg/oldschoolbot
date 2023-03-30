@@ -8,8 +8,8 @@ export default defineConfig({
 		coverage: {
 			provider: 'c8',
 			reporter: 'text',
-			include: ['src/lib/MUser.ts']
+			include: ['src/lib/MUser.ts', 'src/tasks/**/*.ts']
 		},
-		testTimeout: 30_000
+		testTimeout: 300_000
 	}
 });

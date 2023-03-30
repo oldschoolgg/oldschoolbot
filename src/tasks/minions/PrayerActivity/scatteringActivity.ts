@@ -34,6 +34,6 @@ export const scatteringTask: MinionTask = {
 
 		await userStatsBankUpdate(user.id, 'scattered_ashes_bank', new Bank().add(ash.inputId, quantity));
 
-		handleTripFinish(user, channelID, str, undefined, data, null);
+		return handleTripFinish(user, channelID, str, undefined, data, null);
 	}
 };

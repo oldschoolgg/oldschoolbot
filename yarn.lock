@@ -683,6 +683,13 @@
   resolved "https://registry.yarnpkg.com/@types/math-expression-evaluator/-/math-expression-evaluator-1.2.2.tgz#05970d669d8c27c43f97d1557fa2a67e79698100"
   integrity sha512-eHy3f0C2mfFdHbK2zoKRXaM830dm2pSTUBWZ3aJCWxFsOxErWsXNPziFLliqBddGYreCM4Nyl1IZwFCt0jwRNg==
 
+"@types/mitm@^1.3.4":
+  version "1.3.4"
+  resolved "https://registry.yarnpkg.com/@types/mitm/-/mitm-1.3.4.tgz#10f574de40f212f741794007c4be1ccbab944b97"
+  integrity sha512-naBjh9oaree25z0dkFdXq59QIeejVJe7MfKO2ciqvZD5o9daqFmqVWw9Wn8gPMl8ssIeFPWtaAQVlgrWED2AsA==
+  dependencies:
+    "@types/node" "*"
+
 "@types/node-cron@^3.0.7":
   version "3.0.7"
   resolved "https://registry.yarnpkg.com/@types/node-cron/-/node-cron-3.0.7.tgz#978bf75f7247385c61d23b6a060ba9eedb03e2f4"
@@ -3367,6 +3374,14 @@ minipass@^4.0.2, minipass@^4.2.4:
   resolved "https://registry.yarnpkg.com/minipass/-/minipass-4.2.5.tgz#9e0e5256f1e3513f8c34691dd68549e85b2c8ceb"
   integrity sha512-+yQl7SX3bIT83Lhb4BVorMAHVuqsskxRdlmO9kTpyukp8vsm2Sn/fUOV9xlnG8/a5JsypJzap21lz/y3FBMJ8Q==
 
+mitm@^1.7.2:
+  version "1.7.2"
+  resolved "https://registry.yarnpkg.com/mitm/-/mitm-1.7.2.tgz#d079c44c763a333b15a0f7bfd02446fb8dbbe8e8"
+  integrity sha512-SuiJbc5xisP/iUYvsKAvrvPeoyJQbYI3WOfnp8A7XHDn4wkdtmGZe2ZTFXIo3K1of05oxUiaJIK+GoAU5KgFOw==
+  dependencies:
+    semver ">= 5 < 6"
+    underscore ">= 1.1.6 < 1.14"
+
 mlly@^1.0.0, mlly@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/mlly/-/mlly-1.1.0.tgz#9e23c5e675ef7b10cc47ee6281795cb1a7aa3aa2"
@@ -4258,7 +4273,7 @@ segfault-handler@^1.3.0:
     bindings "^1.2.1"
     nan "^2.14.0"
 
-"semver@2 || 3 || 4 || 5":
+"semver@2 || 3 || 4 || 5", "semver@>= 5 < 6":
   version "5.7.1"
   resolved "https://registry.yarnpkg.com/semver/-/semver-5.7.1.tgz#a954f931aeba508d307bbf069eff0c01c96116f7"
   integrity sha512-sauaDf/PZdVgrLTNYHRtpXa1iRiKcaebiKQ1BJdpQlWH2lCvexQdX55snPFyK7QzpudqbCI0qXFfOasHdyNDGQ==
@@ -4813,6 +4828,11 @@ unbox-primitive@^1.0.2:
     has-bigints "^1.0.2"
     has-symbols "^1.0.3"
     which-boxed-primitive "^1.0.2"
+
+"underscore@>= 1.1.6 < 1.14":
+  version "1.13.6"
+  resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.13.6.tgz#04786a1f589dc6c09f761fc5f45b89e935136441"
+  integrity sha512-+A5Sja4HP1M08MaXya7p5LvjuM7K6q/2EaC0+iovj/wOcMsTzMvDFbasi/oSapiwOlt252IqsKqPjCl7huKS0A==
 
 undici@^5.20.0:
   version "5.20.0"

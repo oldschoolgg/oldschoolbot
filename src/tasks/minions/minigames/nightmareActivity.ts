@@ -62,9 +62,9 @@ export const nightmareTask: MinionTask = {
 		// Fix purple items on solo kills
 		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: userLoot, collectionLog: true });
 
-		if (kc) await user.incrementKC(monsterID, kc);
+		const { newKC } = await user.incrementKC(monsterID, kc);
 
-		announceLoot({
+		await announceLoot({
 			user,
 			monsterID,
 			loot: itemsAdded,
@@ -88,7 +88,7 @@ export const nightmareTask: MinionTask = {
 		});
 
 		if (!kc) {
-			handleTripFinish(
+			return handleTripFinish(
 				user,
 				channelID,
 				`${user}, ${user.minionName} died in all their attempts to kill the ${monsterName}, they apologize and promise to try harder next time.`,
@@ -96,23 +96,21 @@ export const nightmareTask: MinionTask = {
 				data,
 				null
 			);
-		} else {
-			const image = await makeBankImage({
-				bank: itemsAdded,
-				title: `${quantity}x Nightmare`,
-				user,
-				previousCL
-			});
-
-			const kc = await user.getKC(monsterID);
-			handleTripFinish(
-				user,
-				channelID,
-				`${user}, ${user.minionName} finished killing ${quantity} ${monsterName}, you died ${deaths} times. Your ${monsterName} KC is now ${kc}.`,
-				image.file.attachment,
-				data,
-				itemsAdded
-			);
 		}
+		const image = await makeBankImage({
+			bank: itemsAdded,
+			title: `${quantity}x Nightmare`,
+			user,
+			previousCL
+		});
+
+		return handleTripFinish(
+			user,
+			channelID,
+			`${user}, ${user.minionName} finished killing ${quantity} ${monsterName}, you died ${deaths} times. Your ${monsterName} KC is now ${newKC}.`,
+			image.file.attachment,
+			data,
+			itemsAdded
+		);
 	}
 };

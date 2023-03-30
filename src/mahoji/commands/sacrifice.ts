@@ -17,7 +17,7 @@ import { sellPriceOfItem } from './sell';
 
 async function trackSacBank(user: MUser, bank: Bank) {
 	await Promise.all([
-		updateBankSetting('economyStats_sacrificedBank', bank),
+		await updateBankSetting('economyStats_sacrificedBank', bank),
 		userStatsBankUpdate(user.id, 'sacrificed_bank', bank)
 	]);
 	const stats = await user.fetchStats({ sacrificed_bank: true });
@@ -55,6 +55,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 			return "You didn't provide any items, filter or search.";
 		}
 
+		// eslint-disable-next-line @typescript-eslint/no-floating-promises
 		deferInteraction(interaction);
 		const user = await mUserFetch(userID);
 

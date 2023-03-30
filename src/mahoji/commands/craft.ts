@@ -112,7 +112,7 @@ export const craftCommand: OSBMahojiCommand = {
 
 		await user.removeItemsFromBank(itemsNeeded);
 
-		updateBankSetting('crafting_cost', itemsNeeded);
+		await updateBankSetting('crafting_cost', itemsNeeded);
 
 		await addSubTaskToActivityTask<CraftingActivityTaskOptions>({
 			craftableID: craftable.id,

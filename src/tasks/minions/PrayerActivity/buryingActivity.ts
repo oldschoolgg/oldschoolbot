@@ -61,6 +61,6 @@ export const buryingTask: MinionTask = {
 			str += '\n\nWhile digging a hole to bury bones in, you find a garb and pair of trousers.';
 		}
 
-		handleTripFinish(user, channelID, str, undefined, data, null);
+		return handleTripFinish(user, channelID, str, undefined, data, null);
 	}
 };

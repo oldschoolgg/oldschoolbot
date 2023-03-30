@@ -55,6 +55,6 @@ export const castingTask: MinionTask = {
 			loot ?? 'no items'
 		}. ${xpRes} ${craftXpRes}${prayerXpRes}`;
 
-		handleTripFinish(user, channelID, str, undefined, data, loot ?? null);
+		return handleTripFinish(user, channelID, str, undefined, data, loot ?? null);
 	}
 };

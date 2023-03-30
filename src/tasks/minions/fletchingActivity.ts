@@ -44,7 +44,7 @@ export const fletchingTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		handleTripFinish(
+		return handleTripFinish(
 			user,
 			channelID,
 			`${user}, ${user.minionName} finished fletching ${quantity}${sets} ${fletchableItem.name}, and received ${loot}. ${xpRes}. ${craftXpRes}`,

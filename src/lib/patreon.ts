@@ -290,7 +290,7 @@ class PatreonTask {
 				const perkTier = getUsersPerkTier([...userBitfield]);
 				if (perkTier < PerkTier.Two) continue;
 				result.push(`${userIdentifier} hasn't paid in over 1 month, so removing perks (T${perkTier + 1}).`);
-				this.removePerks(patron.discordID);
+				await this.removePerks(patron.discordID);
 				continue;
 			}
 
@@ -311,13 +311,14 @@ class PatreonTask {
 		result = result.concat(githubResult);
 
 		if (production) {
-			sendToChannelID(Channel.PatronLogs, {
+			await sendToChannelID(Channel.PatronLogs, {
 				files: [{ attachment: Buffer.from(result.join('\n')), name: 'patron.txt' }]
 			});
 		} else {
 			console.log(result.join('\n'));
 		}
 
+		// eslint-disable-next-line @typescript-eslint/no-floating-promises
 		cacheBadges();
 		debugLog('Finished running patreon task...');
 	}

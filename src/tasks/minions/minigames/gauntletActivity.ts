@@ -66,7 +66,7 @@ export const gauntletTask: MinionTask = {
 			);
 		}
 
-		updateBankSetting('gauntlet_loot', loot);
+		await updateBankSetting('gauntlet_loot', loot);
 
 		const image = await makeBankImage({
 			bank: loot,
@@ -75,6 +75,6 @@ export const gauntletTask: MinionTask = {
 			previousCL
 		});
 
-		handleTripFinish(user, channelID, str, image.file.attachment, data, loot);
+		return handleTripFinish(user, channelID, str, image.file.attachment, data, loot);
 	}
 };

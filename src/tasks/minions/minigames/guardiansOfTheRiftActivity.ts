@@ -174,7 +174,7 @@ export const guardiansOfTheRiftTask: MinionTask = {
 			);
 		}
 
-		updateBankSetting('gotr_loot', totalLoot);
+		await updateBankSetting('gotr_loot', totalLoot);
 		await trackLoot({
 			id: 'guardians_of_the_rift',
 			type: 'Minigame',
@@ -191,6 +191,6 @@ export const guardiansOfTheRiftTask: MinionTask = {
 			]
 		});
 
-		handleTripFinish(user, channelID, str, image.file.attachment, data, null);
+		return handleTripFinish(user, channelID, str, image.file.attachment, data, null);
 	}
 };

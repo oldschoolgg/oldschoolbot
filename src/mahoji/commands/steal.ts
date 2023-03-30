@@ -158,7 +158,7 @@ export const stealCommand: OSBMahojiCommand = {
 				attackStylesUsed: []
 			});
 
-			updateBankSetting('economyStats_thievingCost', foodRemoved);
+			await updateBankSetting('economyStats_thievingCost', foodRemoved);
 			str += ` Removed ${foodRemoved}.`;
 		} else {
 			// Up to 5% fail chance, random

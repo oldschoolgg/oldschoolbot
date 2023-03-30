@@ -20,5 +20,5 @@ export async function modalInteractionHook(interaction: ModalSubmitInteraction) 
 	const listener = modalListeners.find(i => i.customID === interaction.customId);
 	if (!listener) return interaction.reply('Invalid modal.');
 	const response = listener.run(interaction);
-	interaction.reply(response);
+	await interaction.reply(response);
 }

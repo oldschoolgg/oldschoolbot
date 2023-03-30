@@ -107,6 +107,7 @@ export async function sendToChannelID(
 			});
 		}
 	}
+	// eslint-disable-next-line @typescript-eslint/no-floating-promises
 	queue.add(queuedFn);
 }
 

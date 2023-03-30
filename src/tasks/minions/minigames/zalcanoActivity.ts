@@ -68,7 +68,7 @@ export const zalcanoTask: MinionTask = {
 			previousCL
 		});
 
-		handleTripFinish(
+		return handleTripFinish(
 			user,
 			channelID,
 			`${user}, ${

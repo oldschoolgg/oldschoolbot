@@ -19,9 +19,9 @@ export function interactionReply(interaction: RepliableInteraction, response: st
 
 export function deferInteraction(interaction: ButtonInteraction | ChatInputCommandInteraction) {
 	if (!interaction.deferred) {
-		const promise = interaction.deferReply();
+		// eslint-disable-next-line @typescript-eslint/no-floating-promises
+		interaction.deferReply();
 		interaction.deferred = true;
-		return promise;
 	}
 }
 

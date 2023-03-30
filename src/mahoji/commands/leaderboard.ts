@@ -44,13 +44,16 @@ export function getPos(page: number, record: number) {
 	return `${page * LB_PAGE_SIZE + 1 + record}. `;
 }
 
-export async function doMenu(user: MUser, channelID: string, pages: string[], title: string) {
+export function doMenu(user: MUser, channelID: string, pages: string[], title: string) {
 	if (pages.length === 0) {
+		// eslint-disable-next-line @typescript-eslint/no-floating-promises
 		sendToChannelID(channelID.toString(), { content: 'Nobody is on this leaderboard.' });
+		return;
 	}
 	const channel = globalClient.channels.cache.get(channelID.toString());
 	if (!channelIsSendable(channel)) return;
 
+	// eslint-disable-next-line @typescript-eslint/no-floating-promises
 	makePaginatedMessage(
 		channel,
 		pages.map(p => ({ embeds: [new EmbedBuilder().setTitle(title).setDescription(p)] })),

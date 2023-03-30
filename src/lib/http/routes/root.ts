@@ -6,7 +6,7 @@ export default (server: FastifyServer) =>
 		method: 'GET',
 		url: '/',
 		async handler(request, reply) {
-			reply.send(`${JSON.stringify(request.headers, null, 4)}\n\n\n${server.printRoutes()}`);
+			return reply.send(`${JSON.stringify(request.headers, null, 4)}\n\n\n${server.printRoutes()}`);
 		},
 		config: {
 			...rateLimit(1, '1 minute')

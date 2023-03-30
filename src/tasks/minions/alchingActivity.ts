@@ -36,7 +36,7 @@ export const alchingTask: MinionTask = {
 			}
 		}
 		await user.addItemsToBank({ items: loot });
-		updateClientGPTrackSetting('gp_alch', alchValue);
+		await updateClientGPTrackSetting('gp_alch', alchValue);
 
 		const xpReceived = quantity * 65;
 		const xpRes = await user.addXP({
@@ -50,6 +50,6 @@ export const alchingTask: MinionTask = {
 			`${user}, ${user.minionName} has finished alching ${quantity}x ${item.name}! ${loot} has been added to your bank. ${xpRes}. ${saved}`
 		].join('\n');
 
-		handleTripFinish(user, channelID, responses, undefined, data, loot);
+		return handleTripFinish(user, channelID, responses, undefined, data, loot);
 	}
 };

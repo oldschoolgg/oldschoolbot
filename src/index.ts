@@ -5,15 +5,16 @@ import './lib/MUser';
 import './lib/util/transactItemsFromBank';
 import './lib/util/logger';
 
+import { isMainThread } from 'node:worker_threads';
+
 import * as Sentry from '@sentry/node';
 import { Chart } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { GatewayIntentBits, InteractionType, Options, Partials, TextChannel } from 'discord.js';
-import { isObject } from 'e';
+import { isObject, noOp } from 'e';
 import { MahojiClient } from 'mahoji';
 import { convertAPIOptionsToCommandOptions } from 'mahoji/dist/lib/util';
 import { join } from 'path';
-import SegfaultHandler from 'segfault-handler';
 
 import { botToken, DEV_SERVER_ID, production, SENTRY_DSN, SupportServer } from './config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from './lib/blacklists';
@@ -35,7 +36,11 @@ import { postCommand } from './mahoji/lib/postCommand';
 import { preCommand } from './mahoji/lib/preCommand';
 import { convertMahojiCommandToAbstractCommand } from './mahoji/lib/util';
 
-SegfaultHandler.registerHandler('crash.log');
+if (isMainThread) {
+	// @ts-ignore FFFF
+	// eslint-disable-next-line @typescript-eslint/no-var-requires
+	require('segfault-handler').registerHandler('crash.log');
+}
 debugLog(`Starting... Git Hash ${gitHash}`);
 
 if (!production) {
@@ -150,11 +155,14 @@ client.on('interactionCreate', async interaction => {
 
 	if (!client.isReady()) {
 		if (interaction.isChatInputCommand()) {
-			interaction.reply({
-				content:
-					'Old School Bot is currently down for maintenance/updates, please try again in a couple minutes! Thank you <3',
-				ephemeral: true
-			});
+			interaction
+				.reply({
+					content:
+						'Old School Bot is currently down for maintenance/updates, please try again in a couple minutes! Thank you <3',
+					ephemeral: true
+				})
+				.catch(noOp);
+			return;
 		}
 		return;
 	}
@@ -188,16 +196,16 @@ client.on('interactionCreate', async interaction => {
 		const result = await mahojiClient.parseInteraction(interaction);
 		if (result === null) return;
 		if (isObject(result) && 'error' in result) {
-			handleInteractionError(result.error, interaction);
+			await handleInteractionError(result.error, interaction);
 		}
 	} catch (err) {
-		handleInteractionError(err, interaction);
+		await handleInteractionError(err, interaction);
 	}
 });
 
-client.on(Events.ServerNotification, (message: string) => {
+client.on(Events.ServerNotification, async (message: string) => {
 	const channel = globalClient.channels.cache.get(Channel.Notifications);
-	if (channel) (channel as TextChannel).send(message);
+	if (channel) await (channel as TextChannel).send(message);
 });
 let economyLogBuffer: string[] = [];
 
@@ -211,10 +219,10 @@ client.on(Events.EconomyLog, async (message: string) => {
 		economyLogBuffer = [];
 	}
 });
-client.on('guildCreate', guild => {
+client.on('guildCreate', async guild => {
 	if (!guild.available) return;
 	if (BLACKLISTED_GUILDS.has(guild.id) || BLACKLISTED_USERS.has(guild.ownerId)) {
-		guild.leave();
+		await guild.leave();
 	}
 });
 
@@ -252,4 +260,5 @@ process.on('exit', exitCode => {
 	debugLog('Process Exit', { type: 'PROCESS_EXIT', exitCode });
 });
 
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
 main();

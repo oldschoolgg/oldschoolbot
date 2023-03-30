@@ -14,7 +14,7 @@ export const mageArenaTask: MinionTask = {
 			collectionLog: true,
 			itemsToAdd: loot
 		});
-		handleTripFinish(
+		return handleTripFinish(
 			user,
 			channelID,
 			`${user}, ${user.minionName} finished the Mage Arena, you received: ${loot}.`,

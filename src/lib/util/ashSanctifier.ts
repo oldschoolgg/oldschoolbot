@@ -50,7 +50,7 @@ export async function ashSanctifierEffect(user: MUser, loot: Bank, duration: num
 		user
 	});
 
-	userStatsUpdate(
+	await userStatsUpdate(
 		user.id,
 		{
 			ash_sanctifier_prayer_xp: {

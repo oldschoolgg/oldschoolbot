@@ -163,9 +163,9 @@ export async function luckyPickCommand(
 	try {
 		const selection = await awaitMessageComponentInteraction({
 			message: sentMessage,
-			filter: i => {
+			filter: async i => {
 				if (i.user.id !== (user.id ?? interaction.user.id).toString()) {
-					i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
+					await i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
 					return false;
 				}
 				return true;

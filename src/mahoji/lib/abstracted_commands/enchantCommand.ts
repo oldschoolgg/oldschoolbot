@@ -57,7 +57,7 @@ export async function enchantCommand(user: MUser, channelID: string, name: strin
 	}
 	await transactItems({ userID: user.id, itemsToRemove: cost });
 
-	updateBankSetting('magic_cost_bank', cost);
+	await updateBankSetting('magic_cost_bank', cost);
 
 	await addSubTaskToActivityTask<EnchantingActivityTaskOptions>({
 		itemID: enchantable.id,

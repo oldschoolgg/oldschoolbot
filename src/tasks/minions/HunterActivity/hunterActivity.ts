@@ -184,7 +184,7 @@ export const hunterTask: MinionTask = {
 			);
 		}
 
-		updateBankSetting('hunter_loot', loot);
+		await updateBankSetting('hunter_loot', loot);
 		await trackLoot({
 			id: creature.name,
 			changeType: 'loot',
@@ -201,6 +201,6 @@ export const hunterTask: MinionTask = {
 			]
 		});
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		return handleTripFinish(user, channelID, str, undefined, data, loot);
 	}
 };

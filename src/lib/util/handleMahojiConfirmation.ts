@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
 import { channelIsSendable } from '@oldschoolgg/toolkit';
 import {
 	ActionRowBuilder,

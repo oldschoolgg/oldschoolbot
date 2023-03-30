@@ -211,7 +211,7 @@ export async function coxCommand(
 		})
 	]);
 
-	updateBankSetting('cox_cost', totalCost);
+	await updateBankSetting('cox_cost', totalCost);
 
 	await trackLoot({
 		id: minigameID,

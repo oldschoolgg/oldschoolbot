@@ -275,7 +275,7 @@ export async function farmingPlantCommand({
 	if (!user.owns(cost)) return `You don't own ${cost}.`;
 	await transactItems({ userID: user.id, itemsToRemove: cost });
 
-	updateBankSetting('farming_cost_bank', cost);
+	await updateBankSetting('farming_cost_bank', cost);
 	// If user does not have something already planted, just plant the new seeds.
 	if (!patchType.patchPlanted) {
 		infoStr.unshift(`${user.minionName} is now planting ${quantity}x ${plant.name}.`);

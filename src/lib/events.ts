@@ -1,6 +1,6 @@
 import { EmbedBuilder } from '@discordjs/builders';
 import { BaseMessageOptions, bold, ButtonBuilder, ButtonStyle, Message, TextChannel } from 'discord.js';
-import { roll, Time } from 'e';
+import { noOp, roll, Time } from 'e';
 import LRUCache from 'lru-cache';
 import { Items } from 'oldschooljs';
 
@@ -57,8 +57,8 @@ function rareRoles(msg: Message) {
 			if (!production) {
 				return msg.channel.send(`${msg.author}, you would've gotten the **${name}** role.`);
 			}
-			msg.member?.roles.add(roleID);
-			msg.react(Emoji.Gift);
+			msg.member?.roles.add(roleID).catch(noOp);
+			msg.react(Emoji.Gift).catch(noOp);
 
 			const channel = globalClient.channels.cache.get(Channel.Notifications);
 
@@ -68,7 +68,7 @@ function rareRoles(msg: Message) {
 					.map(i => i[2])
 					.includes(name)
 			) {
-				(channel as TextChannel).send(
+				return (channel as TextChannel).send(
 					`${Emoji.Fireworks} **${msg.author.username}** just received the **${name}** role. `
 				);
 			}
@@ -101,11 +101,12 @@ async function petMessages(msg: Message) {
 		});
 		if (!channelIsSendable(msg.channel)) return;
 		if (userPets[pet.id] > 1) {
-			msg.channel.send(`${msg.author} has a funny feeling like they would have been followed. ${pet.emoji}`);
-		} else {
-			msg.channel.send(`You have a funny feeling like you’re being followed, ${msg.author} ${pet.emoji}
-Type \`/tools user mypets\` to see your pets.`);
+			return msg.channel.send(
+				`${msg.author} has a funny feeling like they would have been followed. ${pet.emoji}`
+			);
 		}
+		return msg.channel.send(`You have a funny feeling like you’re being followed, ${msg.author} ${pet.emoji}
+Type \`/tools user mypets\` to see your pets.`);
 	}
 }
 
@@ -150,7 +151,7 @@ const mentionCommands: MentionCommand[] = [
 		aliases: ['bs'],
 		description: 'Searches your bank.',
 		run: async ({ msg, user, components, content }: MentionCommandOptions) => {
-			msg.reply({
+			return msg.reply({
 				files: [
 					(
 						await makeBankImage({
@@ -169,7 +170,7 @@ const mentionCommands: MentionCommand[] = [
 		aliases: ['bal', 'gp'],
 		description: 'Shows how much GP you have.',
 		run: async ({ msg, user, components }: MentionCommandOptions) => {
-			msg.reply({
+			return msg.reply({
 				content: `${Emoji.MoneyBag} You have ${toKMB(user.GP)} (${user.GP.toLocaleString()}) GP.`,
 				components
 			});
@@ -220,7 +221,7 @@ const mentionCommands: MentionCommand[] = [
 		aliases: ['b', 'bank'],
 		description: 'Shows your bank.',
 		run: async ({ msg, user, components }: MentionCommandOptions) => {
-			msg.reply({
+			return msg.reply({
 				files: [
 					(
 						await makeBankImage({
@@ -243,7 +244,7 @@ const mentionCommands: MentionCommand[] = [
 		description: 'Shows your cooldowns.',
 		run: async ({ msg, user, components }: MentionCommandOptions) => {
 			const stats = await user.fetchStats({ last_daily_timestamp: true, last_tears_of_guthix_timestamp: true });
-			msg.reply({
+			return msg.reply({
 				content: cooldownTimers
 					.map(cd => {
 						const lastDone = cd.timeStamp(user, stats);
@@ -268,7 +269,7 @@ const mentionCommands: MentionCommand[] = [
 			if ([BitField.isModerator].every(bit => !user.bitfield.includes(bit))) {
 				return;
 			}
-			msg.reply({
+			return msg.reply({
 				content: `Click this button to find out if you're ready to do Tombs of Amascut! You can also use the ${mentionCommand(
 					'raid',
 					'toa',
@@ -289,7 +290,7 @@ const mentionCommands: MentionCommand[] = [
 		aliases: ['s', 'stats'],
 		description: 'Shows your stats.',
 		run: async ({ msg, user, components }: MentionCommandOptions) => {
-			msg.reply({
+			return msg.reply({
 				embeds: [await minionStatsEmbed(user)],
 				components
 			});
@@ -298,7 +299,9 @@ const mentionCommands: MentionCommand[] = [
 ];
 
 export async function onMessage(msg: Message) {
+	// eslint-disable-next-line @typescript-eslint/no-floating-promises
 	rareRoles(msg);
+	// eslint-disable-next-line @typescript-eslint/no-floating-promises
 	petMessages(msg);
 	if (!msg.content || msg.author.bot || !channelIsSendable(msg.channel)) return;
 	const content = msg.content.trim();
@@ -331,5 +334,5 @@ export async function onMessage(msg: Message) {
 	msg.reply({
 		content: result.content,
 		components
-	});
+	}).catch(noOp);
 }

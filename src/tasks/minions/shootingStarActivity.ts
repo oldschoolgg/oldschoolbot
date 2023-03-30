@@ -32,5 +32,5 @@ export async function shootingStarsActivity(data: ShootingStarsData) {
 		);
 	}
 
-	handleTripFinish(user, data.channelID, str, undefined, data, loot);
+	return handleTripFinish(user, data.channelID, str, undefined, data, loot);
 }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable prefer-promise-reject-errors */
 import { userMention } from '@discordjs/builders';
 import { ButtonBuilder, ButtonStyle, ComponentType, InteractionCollector, TextChannel } from 'discord.js';

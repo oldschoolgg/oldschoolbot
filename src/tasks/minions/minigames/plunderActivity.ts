@@ -62,6 +62,6 @@ export const plunderTask: MinionTask = {
 			title: `Loot From ${quantity}x Pyramid Plunder:`
 		});
 
-		handleTripFinish(user, channelID, str, image.file.attachment, data, itemsAdded);
+		return handleTripFinish(user, channelID, str, image.file.attachment, data, itemsAdded);
 	}
 };

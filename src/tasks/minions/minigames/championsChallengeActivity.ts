@@ -19,7 +19,7 @@ export const championsChallengeTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		handleTripFinish(
+		return handleTripFinish(
 			user,
 			channelID,
 			`${user}, ${user.minionName} completed the Champion's Challenge! You have received the **Champion's cape**.`,

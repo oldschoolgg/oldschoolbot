@@ -81,7 +81,7 @@ export const dropCommand: OSBMahojiCommand = {
 		}
 
 		await user.removeItemsFromBank(bank);
-		updateBankSetting('dropped_items', bank);
+		await updateBankSetting('dropped_items', bank);
 
 		return `Dropped ${bank}.`;
 	}

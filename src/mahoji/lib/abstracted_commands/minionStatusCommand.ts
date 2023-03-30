@@ -58,7 +58,7 @@ export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptio
 		isUsersDailyReady(user)
 	]);
 
-	roboChimpSyncData(roboChimpUser, user);
+	await roboChimpSyncData(roboChimpUser, user);
 
 	if (!user.user.minion_hasBought) {
 		return {

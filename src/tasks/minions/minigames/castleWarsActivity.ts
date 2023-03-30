@@ -12,7 +12,7 @@ export const castleWarsTask: MinionTask = {
 	async run(data: MinigameActivityTaskOptions) {
 		const { channelID, quantity, userID } = data;
 
-		incrementMinigameScore(userID, 'castle_wars', quantity);
+		await incrementMinigameScore(userID, 'castle_wars', quantity);
 
 		const user = await mUserFetch(userID);
 		const loot = new Bank();
@@ -25,7 +25,7 @@ export const castleWarsTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		handleTripFinish(
+		return handleTripFinish(
 			user,
 			channelID,
 			`${user.mention}, ${user.minionName} finished ${quantity}x Castle Wars games and received ${loot}.`,

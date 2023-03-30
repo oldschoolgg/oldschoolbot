@@ -77,6 +77,6 @@ export const underwaterAgilityThievingTask: MinionTask = {
 		});
 		str += `\n\nYou received: ${loot}.`;
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		return handleTripFinish(user, channelID, str, undefined, data, loot);
 	}
 };

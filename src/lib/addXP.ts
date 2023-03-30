@@ -150,7 +150,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 
 		if (currentTotalLevel < MAX_TOTAL_LEVEL && user.totalLevel >= MAX_TOTAL_LEVEL) {
 			str += '\n\n**Congratulations, your minion has reached the maximum total level!**\n\n';
-			onMax(user);
+			await onMax(user);
 		} else if (currentLevel !== newLevel) {
 			str += params.minimal
 				? `(Levelled up to ${newLevel})`

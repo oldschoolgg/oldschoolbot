@@ -86,12 +86,12 @@ export class DynamicButtons {
 		});
 		const collectedInteraction = await awaitMessageComponentInteraction({
 			message: this.message,
-			filter: i => {
+			filter: async i => {
 				if (BLACKLISTED_USERS.has(i.user.id)) return false;
 				if (this.usersWhoCanInteract.includes(i.user.id)) {
 					return true;
 				}
-				i.reply({ ephemeral: true, content: 'This is not your message.' });
+				await i.reply({ ephemeral: true, content: 'This is not your message.' });
 				return false;
 			},
 			time: this.timer ?? Time.Second * 20
@@ -105,6 +105,7 @@ export class DynamicButtons {
 		if (collectedInteraction) {
 			for (const button of this.buttons) {
 				if (collectedInteraction.customId === button.id) {
+					// eslint-disable-next-line @typescript-eslint/no-floating-promises
 					collectedInteraction.deferUpdate();
 					if (minionIsBusy(collectedInteraction.user.id) && button.cantBeBusy) {
 						return collectedInteraction.reply({

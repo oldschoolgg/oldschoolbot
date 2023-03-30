@@ -268,7 +268,7 @@ export const slayerCommand: OSBMahojiCommand = {
 		const mahojiUser = await mUserFetch(userID);
 
 		if (options.autoslay) {
-			autoSlayCommand({
+			await autoSlayCommand({
 				mahojiUser,
 				channelID,
 				modeOverride: options.autoslay.mode,
@@ -278,7 +278,7 @@ export const slayerCommand: OSBMahojiCommand = {
 			return null;
 		}
 		if (options.new_task) {
-			slayerNewTaskCommand({
+			await slayerNewTaskCommand({
 				userID: mahojiUser.id,
 				interaction,
 				channelID,
@@ -293,7 +293,7 @@ export const slayerCommand: OSBMahojiCommand = {
 				return slayerListBlocksCommand(mahojiUser);
 			}
 			if (options.manage.command === 'skip' || options.manage.command === 'block') {
-				slayerSkipTaskCommand({
+				await slayerSkipTaskCommand({
 					userID: mahojiUser.id,
 					block: options.manage.command === 'block',
 					newTask: Boolean(options.manage.new),

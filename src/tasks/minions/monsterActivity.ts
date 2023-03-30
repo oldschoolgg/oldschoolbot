@@ -45,7 +45,7 @@ export const monsterTask: MinionTask = {
 		// Regular loot
 		const loot = monster.table.kill(quantity - newSuperiorCount, killOptions);
 		if (monster.specialLoot) {
-			monster.specialLoot(loot, user, data);
+			await monster.specialLoot(loot, user, data);
 		}
 		if (newSuperiorCount) {
 			// Superior loot and totems if in catacombs
@@ -71,7 +71,7 @@ export const monsterTask: MinionTask = {
 
 		if (hasKourendHard) await ashSanctifierEffect(user, loot, duration, xpRes);
 
-		announceLoot({
+		await announceLoot({
 			user,
 			monsterID: monster.id,
 			loot,
@@ -203,6 +203,6 @@ export const monsterTask: MinionTask = {
 						previousCL
 				  });
 
-		handleTripFinish(user, channelID, str, image?.file.attachment, data, itemsAdded, messages);
+		return handleTripFinish(user, channelID, str, image?.file.attachment, data, itemsAdded, messages);
 	}
 };

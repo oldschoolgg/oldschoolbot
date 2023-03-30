@@ -169,7 +169,7 @@ export async function mahoganyHomesBuildCommand(user: MUser, channelID: string, 
 	}
 	await user.removeItemsFromBank(itemsNeeded);
 
-	updateBankSetting('construction_cost_bank', itemsNeeded);
+	await updateBankSetting('construction_cost_bank', itemsNeeded);
 
 	await addSubTaskToActivityTask<MahoganyHomesActivityTaskOptions>({
 		userID: user.id,

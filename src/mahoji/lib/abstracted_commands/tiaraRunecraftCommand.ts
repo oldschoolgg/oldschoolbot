@@ -94,7 +94,7 @@ export async function tiaraRunecraftCommand({
 	totalCost.add('Tiara', quantity);
 
 	await user.removeItemsFromBank(totalCost);
-	updateBankSetting('runecraft_cost', totalCost);
+	await updateBankSetting('runecraft_cost', totalCost);
 
 	await addSubTaskToActivityTask<TiaraRunecraftActivityTaskOptions>({
 		tiaraID: tiaraObj.id,

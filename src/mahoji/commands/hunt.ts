@@ -205,7 +205,7 @@ export const huntCommand: OSBMahojiCommand = {
 			boosts.push(`+2 hunter level for using ${hunterPotionQuantity}x Hunter potion(4) every 2nd minute.`);
 		}
 
-		updateBankSetting('hunter_cost', removeBank);
+		await updateBankSetting('hunter_cost', removeBank);
 		await user.removeItemsFromBank(removeBank);
 
 		let wildyPeak = null;

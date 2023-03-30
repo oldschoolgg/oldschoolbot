@@ -281,7 +281,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 		if (!user.owns(totalCost)) return `You don't own: ${totalCost}.`;
 
 		await user.removeItemsFromBank(totalCost);
-		updateBankSetting('runecraft_cost', totalCost);
+		await updateBankSetting('runecraft_cost', totalCost);
 
 		await addSubTaskToActivityTask<RunecraftActivityTaskOptions>({
 			runeID: runeObj.id,

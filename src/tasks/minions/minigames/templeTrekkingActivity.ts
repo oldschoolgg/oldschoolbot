@@ -98,6 +98,6 @@ export const templeTrekkingTask: MinionTask = {
 			previousCL
 		});
 
-		handleTripFinish(user, channelID, str, image.file.attachment, data, itemsAdded);
+		return handleTripFinish(user, channelID, str, image.file.attachment, data, itemsAdded);
 	}
 };

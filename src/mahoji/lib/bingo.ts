@@ -335,7 +335,7 @@ export function determineBingoProgress(_cl: ItemBank | Prisma.JsonValue | Bank) 
 	};
 }
 
-export async function onFinishTile(
+export function onFinishTile(
 	user: User,
 	before: ReturnType<typeof determineBingoProgress>,
 	after: ReturnType<typeof determineBingoProgress>
@@ -347,6 +347,7 @@ export async function onFinishTile(
 	}
 	if (!user.bingo_tickets_bought) return;
 	const tile = bingoTiles.find(i => i.id === finishedTile)!;
+	// eslint-disable-next-line @typescript-eslint/no-floating-promises
 	sendToChannelID(BINGO_NOTIFICATION_CHANNEL_ID, {
 		content: `${userMention(user.id)} just finished the '${tile.name}' tile! This is their ${
 			after.tilesCompletedCount

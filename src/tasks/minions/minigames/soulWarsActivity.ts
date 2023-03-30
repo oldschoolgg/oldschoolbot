@@ -42,6 +42,6 @@ export const soulWarsTask: MinionTask = {
 
 		const str = `${user}, ${user.minionName} finished doing ${quantity}x games of Soul Wars, you received ${points} Zeal Tokens, you now have ${user.user.zeal_tokens}.\n\n`;
 
-		handleTripFinish(user, channelID, str, undefined!, data, null);
+		return handleTripFinish(user, channelID, str, undefined!, data, null);
 	}
 };

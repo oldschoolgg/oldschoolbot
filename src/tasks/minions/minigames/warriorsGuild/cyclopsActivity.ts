@@ -1,4 +1,5 @@
 import { Bank } from 'oldschooljs';
+import { z } from 'zod';
 
 import { CyclopsTable } from '../../../../lib/simulation/cyclops';
 import { ActivityTaskOptionsWithQuantity } from '../../../../lib/types/minions';
@@ -46,6 +47,13 @@ const defenders = [
 
 export const cyclopsTask: MinionTask = {
 	type: 'Cyclops',
+	optionSchema: z.object({
+		patreonToken: z.coerce.string().default(''),
+		patreonCampaignID: z.coerce.number().int().default(1),
+		patreonWebhookSecret: z.coerce.string().default(''),
+		httpPort: z.coerce.number().int().default(8080),
+		clientID: z.string().min(15).max(25)
+	}),
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { userID, channelID, quantity } = data;
 		const user = await mUserFetch(userID);
@@ -86,6 +94,6 @@ export const cyclopsTask: MinionTask = {
 			previousCL
 		});
 
-		handleTripFinish(user, channelID, str, image.file.attachment, data, itemsAdded);
+		return handleTripFinish(user, channelID, str, image.file.attachment, data, itemsAdded);
 	}
 };

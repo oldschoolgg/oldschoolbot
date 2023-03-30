@@ -1,5 +1,5 @@
 import { Channel, Message, TextChannel } from 'discord.js';
-import { chunk, sleep } from 'e';
+import { chunk, noOp, sleep } from 'e';
 
 import LastManStandingUsage, { LMS_FINAL, LMS_PREP, LMS_ROUND } from '../../structures/LastManStandingUsage';
 import { channelIsSendable, cleanMentions } from '../../util';
@@ -117,22 +117,22 @@ export async function lmsSimCommand(channel: Channel | undefined, names?: string
 	} else {
 		filtered = new Set(splitContestants);
 		if (filtered.size !== splitContestants.length) {
-			channel.send('I am sorry, but a user cannot play twice.');
+			return channel.send('I am sorry, but a user cannot play twice.');
 		}
 
 		if (filtered.size < 4) {
-			channel.send(
+			return channel.send(
 				'Please specify atleast 4 players for Last Man Standing, like so: `+lms Alex, Kyra, Magna, Rick`, or type `+lms auto` to automatically pick people from the chat.'
 			);
 		}
 
 		if (filtered.size > 48) {
-			channel.send('I am sorry but the amount of players can be no greater than 48.');
+			return channel.send('I am sorry but the amount of players can be no greater than 48.');
 		}
 	}
 
 	if (playing.has(channel.guildId)) {
-		channel.send('There is a game in progress in this server already, try again when it finishes.');
+		return channel.send('There is a game in progress in this server already, try again when it finishes.');
 	}
 
 	playing.add(channel.guildId);
@@ -163,7 +163,7 @@ export async function lmsSimCommand(channel: Channel | undefined, names?: string
 			await sleep(Math.max(gameMessage!.content.length / 20, 7) * 700);
 
 			// Delete the previous message, and if stopped, send stop.
-			gameMessage?.delete();
+			gameMessage?.delete().catch(noOp);
 		}
 
 		if (game.prep) game.prep = false;

@@ -159,7 +159,7 @@ export const lapsCommand: OSBMahojiCommand = {
 
 			await user.removeItemsFromBank(alchResult.bankToRemove);
 			response += `\n\nYour minion is alching ${alchResult.maxCasts}x ${alchResult.itemToAlch.name} while training. Removed ${alchResult.bankToRemove} from your bank.`;
-			updateBankSetting('magic_cost_bank', alchResult.bankToRemove);
+			await updateBankSetting('magic_cost_bank', alchResult.bankToRemove);
 		}
 
 		await addSubTaskToActivityTask<AgilityActivityTaskOptions>({

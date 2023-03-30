@@ -17,7 +17,7 @@ export const tokkulShopTask: MinionTask = {
 		});
 
 		await updateBankSetting('tks_loot', loot);
-		handleTripFinish(
+		return handleTripFinish(
 			user,
 			channelID,
 			`${user}, ${user.minionName} finished shopping in Tzhaar City and received ${loot}.`,

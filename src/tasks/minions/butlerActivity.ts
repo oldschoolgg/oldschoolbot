@@ -17,6 +17,6 @@ export const butlerTask: MinionTask = {
 
 		await user.addItemsToBank({ items: loot, collectionLog: true });
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		return handleTripFinish(user, channelID, str, undefined, data, loot);
 	}
 };

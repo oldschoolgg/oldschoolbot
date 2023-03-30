@@ -187,7 +187,7 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 				}
 			}
 		});
-		updateGiveawayMessage(giveaway);
+		await updateGiveawayMessage(giveaway);
 		return interactionReply(interaction, { content: 'You are now entered in this giveaway.', ephemeral: true });
 	}
 	if (!giveaway.users_entered.includes(user.id)) {
@@ -204,7 +204,7 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 			users_entered: uniqueArr(removeFromArr(giveaway.users_entered, user.id))
 		}
 	});
-	updateGiveawayMessage(giveaway);
+	await updateGiveawayMessage(giveaway);
 	return interactionReply(interaction, { content: 'You left the giveaway.', ephemeral: true });
 }
 
@@ -315,7 +315,7 @@ export async function interactionHook(interaction: Interaction) {
 	}
 
 	async function doClue(tier: ClueTier['name']) {
-		runCommand({
+		await runCommand({
 			commandName: 'clue',
 			args: { tier },
 			bypassInhibitors: true,
@@ -324,7 +324,7 @@ export async function interactionHook(interaction: Interaction) {
 	}
 
 	async function openCasket(tier: ClueTier['name']) {
-		runCommand({
+		await runCommand({
 			commandName: 'open',
 			args: {
 				name: tier,
@@ -443,7 +443,7 @@ export async function interactionHook(interaction: Interaction) {
 		}
 		case 'AUTO_FARMING_CONTRACT': {
 			const response = await autoContract(await mUserFetch(user.id), options.channelID, user.id);
-			if (response) interactionReply(interaction, response);
+			if (response) await interactionReply(interaction, response);
 			return;
 		}
 		case 'FARMING_CONTRACT_EASIER': {

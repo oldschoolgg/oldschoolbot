@@ -292,6 +292,7 @@ WHERE bitfield && '{2,3,4,5,6,7,8}'::int[] AND user_stats."last_daily_timestamp"
 							filter: () => true
 						});
 						if (!selection.isButton()) return;
+						// eslint-disable-next-line @typescript-eslint/no-floating-promises
 						message.edit({ components: [] });
 
 						// Check disable first so minion doesn't have to be free to disable reminders.
@@ -303,11 +304,13 @@ WHERE bitfield && '{2,3,4,5,6,7,8}'::int[] AND user_stats."last_daily_timestamp"
 							return;
 						}
 						if (minionIsBusy(user.id)) {
+							// eslint-disable-next-line @typescript-eslint/no-floating-promises
 							selection.reply({ content: 'Your minion is busy.' });
 							return;
 						}
 						if (selection.customId === 'HARVEST') {
 							message.author = user;
+							// eslint-disable-next-line @typescript-eslint/no-floating-promises
 							runCommand({
 								commandName: 'farming',
 								args: { harvest: { patch_name: patchType } },
@@ -320,6 +323,7 @@ WHERE bitfield && '{2,3,4,5,6,7,8}'::int[] AND user_stats."last_daily_timestamp"
 							});
 						}
 					} catch {
+						// eslint-disable-next-line @typescript-eslint/no-floating-promises
 						message.edit({ components: [] });
 					}
 				}
@@ -389,6 +393,8 @@ export function initTickers() {
 				debugLog(`Finished ${ticker.name} ticker`, { type: 'TICKER' });
 			}
 		};
+
+		// eslint-disable-next-line @typescript-eslint/no-floating-promises
 		fn();
 	}
 }

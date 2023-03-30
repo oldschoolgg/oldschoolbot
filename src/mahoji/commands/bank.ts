@@ -179,7 +179,7 @@ export const bankCommand: OSBMahojiCommand = {
 			const channel = globalClient.channels.cache.get(channelID.toString());
 			if (!channelIsSendable(channel)) return 'Failed to send paginated bank message, sorry.';
 
-			makePaginatedMessage(channel, pages, user.id);
+			await makePaginatedMessage(channel, pages, user.id);
 			return { content: 'Here is your selected bank:', ephemeral: true };
 		}
 		if (options.format === 'json') {
@@ -229,6 +229,7 @@ export const bankCommand: OSBMahojiCommand = {
 			channel,
 			startingPage: Number(flags.page)
 		});
+		// eslint-disable-next-line @typescript-eslint/no-floating-promises
 		m.run([user.id]);
 		return {
 			content: 'Click the buttons below to view different pages of your bank.',

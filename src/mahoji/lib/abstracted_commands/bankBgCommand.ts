@@ -126,7 +126,7 @@ export async function bankBgCommand(interaction: ChatInputCommandInteraction, us
 		bankBackground: selectedImage.id
 	});
 
-	updateBankSetting('economyStats_bankBgCostBank', economyCost);
+	await updateBankSetting('economyStats_bankBgCostBank', economyCost);
 
 	return `Your bank background is now **${selectedImage.name}**!`;
 }

@@ -84,7 +84,7 @@ export async function revsCommand(
 		cost.add('Prayer potion(4)', 5);
 	}
 
-	updateBankSetting('economyStats_PVMCost', cost);
+	await updateBankSetting('economyStats_PVMCost', cost);
 	await transactItems({ userID: user.id, itemsToRemove: cost });
 	if (cost.length > 0) {
 		await trackLoot({

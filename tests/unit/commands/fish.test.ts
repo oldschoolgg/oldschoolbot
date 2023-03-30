@@ -6,16 +6,16 @@ import { fishCommand } from '../../../src/mahoji/commands/fish';
 import { testRunCmd } from '../utils';
 
 describe('Fish Command', () => {
-	it('should handle insufficient fishing level', () => {
-		testRunCmd({
+	it('should handle insufficient fishing level', async () => {
+		await testRunCmd({
 			cmd: fishCommand,
 			opts: { name: 'trout', quantity: 1 },
 			result: '<:minion:778418736180494347> Your minion needs 20 Fishing to fish Trout.'
 		});
 	});
 
-	it('should handle insufficient QP', () => {
-		testRunCmd({
+	it('should handle insufficient QP', async () => {
+		await testRunCmd({
 			cmd: fishCommand,
 			opts: { name: 'karambwanji', quantity: 1 },
 			user: { skills_fishing: 9_999_999, QP: 0 },
@@ -23,16 +23,16 @@ describe('Fish Command', () => {
 		});
 	});
 
-	it('should handle invalid fish', () => {
-		testRunCmd({
+	it('should handle invalid fish', async () => {
+		await testRunCmd({
 			cmd: fishCommand,
 			opts: { name: 'asdf' },
 			result: 'Thats not a valid fish to catch.'
 		});
 	});
 
-	it('should handle insufficient barb fishing levels', () => {
-		testRunCmd({
+	it('should handle insufficient barb fishing levels', async () => {
+		await testRunCmd({
 			cmd: fishCommand,
 			opts: { name: 'Barbarian fishing' },
 			user: { skills_fishing: 1 },
@@ -40,16 +40,16 @@ describe('Fish Command', () => {
 		});
 	});
 
-	it('should fish', () => {
-		testRunCmd({
+	it('should fish', async () => {
+		await testRunCmd({
 			cmd: fishCommand,
 			opts: { name: 'shrimps' },
 			result: "<:minion:778418736180494347> Your minion is now fishing 251x Shrimps, it'll take around 29 minutes, 58 seconds to finish."
 		});
 	});
 
-	it('should catch insufficient feathers', () => {
-		testRunCmd({
+	it('should catch insufficient feathers', async () => {
+		await testRunCmd({
 			cmd: fishCommand,
 			opts: { name: 'Barbarian fishing' },
 			user: {
@@ -62,8 +62,8 @@ describe('Fish Command', () => {
 		});
 	});
 
-	it('should boost', () => {
-		testRunCmd({
+	it('should boost', async () => {
+		await testRunCmd({
 			cmd: fishCommand,
 			opts: { name: 'Barbarian fishing' },
 			user: {
@@ -79,8 +79,8 @@ describe('Fish Command', () => {
 		});
 	});
 
-	it('should fish barrel boost', () => {
-		testRunCmd({
+	it('should fish barrel boost', async () => {
+		await testRunCmd({
 			cmd: fishCommand,
 			opts: { name: 'shrimps' },
 			user: {

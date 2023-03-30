@@ -14,6 +14,7 @@ export const patreonRoute = (server: FastifyServer) =>
 			if (!isVerified) {
 				return reply.unauthorized();
 			}
+			// eslint-disable-next-line @typescript-eslint/no-floating-promises
 			patreonTask.run();
 			return reply.send({});
 		},

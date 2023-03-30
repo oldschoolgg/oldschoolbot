@@ -355,7 +355,7 @@ export async function nightmareZoneStartCommand(user: MUser, strategy: NMZStrate
 	}
 
 	await user.removeItemsFromBank(totalCost);
-	updateBankSetting('nmz_cost', totalCost);
+	await updateBankSetting('nmz_cost', totalCost);
 	await trackLoot({
 		id: 'nmz',
 		type: 'Minigame',

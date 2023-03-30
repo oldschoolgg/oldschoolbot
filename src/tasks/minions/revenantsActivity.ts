@@ -40,7 +40,7 @@ export const revenantsTask: MinionTask = {
 				gear_wildy: calc.newGear as Prisma.InputJsonObject
 			});
 
-			updateBankSetting('revs_cost', calc.lostItems);
+			await updateBankSetting('revs_cost', calc.lostItems);
 			// Track items lost
 			await trackLoot({
 				totalCost: calc.lostItems,
@@ -71,7 +71,7 @@ export const revenantsTask: MinionTask = {
 				]
 			});
 
-			handleTripFinish(
+			return handleTripFinish(
 				user,
 				channelID,
 				`${user} ${
@@ -97,7 +97,7 @@ export const revenantsTask: MinionTask = {
 			`${user}, ${user.minionName} finished killing ${quantity} ${monster.name}.` +
 			` Your ${monster.name} KC is now ${newKC}.\n`;
 
-		announceLoot({
+		await announceLoot({
 			user,
 			monsterID: monster.id,
 			loot,
@@ -133,6 +133,6 @@ export const revenantsTask: MinionTask = {
 			previousCL
 		});
 
-		handleTripFinish(user, channelID, str, image.file.attachment, data, itemsAdded);
+		return handleTripFinish(user, channelID, str, image.file.attachment, data, itemsAdded);
 	}
 };

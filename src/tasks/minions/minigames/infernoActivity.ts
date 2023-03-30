@@ -195,7 +195,7 @@ export const infernoTask: MinionTask = {
 
 		await user.addItemsToBank({ items: baseBank, collectionLog: true });
 
-		handleTripFinish(
+		return handleTripFinish(
 			user,
 			channelID,
 			`${user} ${text}

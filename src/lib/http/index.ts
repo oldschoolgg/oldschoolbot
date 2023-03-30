@@ -19,7 +19,7 @@ export async function makeServer(port = globalConfig.httpPort) {
 		trustProxy: true
 	});
 
-	server.register(fastifyRawBody, {
+	await server.register(fastifyRawBody, {
 		field: 'rawBody', // change the default request.rawBody property name
 		global: true, // add the rawBody to every request. **Default true**
 		encoding: 'utf8', // set it to false to set rawBody as a Buffer **Default utf8**
@@ -27,7 +27,7 @@ export async function makeServer(port = globalConfig.httpPort) {
 		routes: [] // array of routes, **`global`** will be ignored, wildcard routes not supported
 	});
 
-	server.register(fastifySensible);
+	await server.register(fastifySensible);
 
 	await server.register(import('@fastify/rate-limit'), {
 		errorResponseBuilder: () => {
@@ -37,8 +37,7 @@ export async function makeServer(port = globalConfig.httpPort) {
 
 	server.setErrorHandler((error, _request, reply) => {
 		if (reply.statusCode) {
-			reply.send(error);
-			return;
+			return reply.send(error);
 		}
 		if (production) {
 			logError(error);
@@ -49,9 +48,9 @@ export async function makeServer(port = globalConfig.httpPort) {
 		}
 	});
 
-	server.register(fastifyHelmet);
+	await server.register(fastifyHelmet);
 
-	server.register(fastifyCors);
+	await server.register(fastifyCors);
 
 	server.addContentTypeParser('text/plain', async () => {
 		throw server.httpErrors.badRequest('Bad content type.');
@@ -69,6 +68,6 @@ export async function makeServer(port = globalConfig.httpPort) {
 
 	initRoutes(server);
 
-	server.listen({ port });
+	await server.listen({ port });
 	return server;
 }
