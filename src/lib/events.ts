@@ -1,6 +1,6 @@
 import { EmbedBuilder } from '@discordjs/builders';
 import { BaseMessageOptions, bold, ButtonBuilder, ButtonStyle, Message, TextChannel } from 'discord.js';
-import { roll, Time } from 'e';
+import { isFunction, roll, Time } from 'e';
 import LRUCache from 'lru-cache';
 import { Items } from 'oldschooljs';
 
@@ -13,7 +13,7 @@ import pets from './data/pets';
 import { prisma } from './settings/prisma';
 import { ItemBank } from './types';
 import { UserError } from './UserError';
-import { channelIsSendable, formatDuration, isFunction, makeComponents, toKMB } from './util';
+import { channelIsSendable, formatDuration, makeComponents, toKMB } from './util';
 import { logError } from './util/logError';
 import { makeBankImage } from './util/makeBankImage';
 import { minionStatsEmbed } from './util/minionStatsEmbed';
