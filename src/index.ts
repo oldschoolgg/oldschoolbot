@@ -147,7 +147,9 @@ declare global {
 
 client.mahojiClient = mahojiClient;
 global.globalClient = client;
-client.on('messageCreate', onMessage);
+client.on('messageCreate', msg => {
+	onMessage(msg);
+});
 client.on('interactionCreate', async interaction => {
 	if (BLACKLISTED_USERS.has(interaction.user.id)) return;
 	if (interaction.guildId && BLACKLISTED_GUILDS.has(interaction.guildId)) return;
