@@ -1,3 +1,4 @@
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
@@ -8,7 +9,6 @@ import { pohImageGenerator } from '../../../lib/pohImage';
 import { prisma } from '../../../lib/settings/prisma';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { formatSkillRequirements, itemNameFromID } from '../../../lib/util';
-import { stringMatches } from '../../../lib/util/cleanString';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';

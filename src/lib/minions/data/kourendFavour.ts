@@ -1,7 +1,7 @@
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { stringMatches } from '../../util/cleanString';
+import { stringMatches } from '../../util';
 import { Skills } from './../../types/index';
 
 export interface UserKourendFavour {
