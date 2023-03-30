@@ -51,10 +51,6 @@ export function calcPerHour(value: number, duration: number) {
 	return (value / (duration / Time.Minute)) * 60;
 }
 
-export function removeFromArr<T>(arr: T[] | readonly T[], item: T) {
-	return arr.filter(i => i !== item);
-}
-
 export function formatDuration(ms: number, short = false) {
 	if (ms < 0) ms = -ms;
 	const time = {
@@ -178,8 +174,4 @@ export function makeAutoFarmButton() {
 		.setLabel('Auto Farm')
 		.setStyle(ButtonStyle.Secondary)
 		.setEmoji('630911040355565599');
-}
-
-export function stripNonAlphanumeric(str: string) {
-	return str.replace(/[^a-zA-Z0-9]/g, '');
 }
