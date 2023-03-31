@@ -3,7 +3,7 @@ import { ApplicationCommandOptionType } from 'mahoji';
 
 import { AbstractCommand } from '../../../mahoji/lib/inhibitors';
 import { allAbstractCommands } from '../../../mahoji/lib/util';
-import { stringMatches } from '../../util/cleanString';
+import { stringMatches } from '../../util';
 import { FastifyServer } from '../types';
 
 export const commandsRoute = (server: FastifyServer) =>
