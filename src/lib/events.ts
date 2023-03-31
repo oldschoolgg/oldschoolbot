@@ -1,6 +1,6 @@
 import { EmbedBuilder } from '@discordjs/builders';
 import { BaseMessageOptions, bold, ButtonBuilder, ButtonStyle, Message, TextChannel } from 'discord.js';
-import { roll, Time } from 'e';
+import { isFunction, roll, Time } from 'e';
 import LRUCache from 'lru-cache';
 import { Items } from 'oldschooljs';
 
@@ -12,7 +12,9 @@ import { BitField, Channel, Emoji, globalConfig } from './constants';
 import pets from './data/pets';
 import { prisma } from './settings/prisma';
 import { ItemBank } from './types';
-import { channelIsSendable, formatDuration, isFunction, makeComponents, toKMB } from './util';
+import { UserError } from './UserError';
+import { channelIsSendable, formatDuration, makeComponents, toKMB } from './util';
+import { logError } from './util/logError';
 import { makeBankImage } from './util/makeBankImage';
 import { minionStatsEmbed } from './util/minionStatsEmbed';
 
@@ -150,7 +152,7 @@ const mentionCommands: MentionCommand[] = [
 		aliases: ['bs'],
 		description: 'Searches your bank.',
 		run: async ({ msg, user, components, content }: MentionCommandOptions) => {
-			msg.reply({
+			return msg.reply({
 				files: [
 					(
 						await makeBankImage({
@@ -169,7 +171,7 @@ const mentionCommands: MentionCommand[] = [
 		aliases: ['bal', 'gp'],
 		description: 'Shows how much GP you have.',
 		run: async ({ msg, user, components }: MentionCommandOptions) => {
-			msg.reply({
+			return msg.reply({
 				content: `${Emoji.MoneyBag} You have ${toKMB(user.GP)} (${user.GP.toLocaleString()}) GP.`,
 				components
 			});
@@ -220,7 +222,7 @@ const mentionCommands: MentionCommand[] = [
 		aliases: ['b', 'bank'],
 		description: 'Shows your bank.',
 		run: async ({ msg, user, components }: MentionCommandOptions) => {
-			msg.reply({
+			return msg.reply({
 				files: [
 					(
 						await makeBankImage({
@@ -243,7 +245,7 @@ const mentionCommands: MentionCommand[] = [
 		description: 'Shows your cooldowns.',
 		run: async ({ msg, user, components }: MentionCommandOptions) => {
 			const stats = await user.fetchStats({ last_daily_timestamp: true, last_tears_of_guthix_timestamp: true });
-			msg.reply({
+			return msg.reply({
 				content: cooldownTimers
 					.map(cd => {
 						const lastDone = cd.timeStamp(user, stats);
@@ -268,7 +270,7 @@ const mentionCommands: MentionCommand[] = [
 			if ([BitField.isModerator].every(bit => !user.bitfield.includes(bit))) {
 				return;
 			}
-			msg.reply({
+			return msg.reply({
 				content: `Click this button to find out if you're ready to do Tombs of Amascut! You can also use the ${mentionCommand(
 					'raid',
 					'toa',
@@ -289,7 +291,7 @@ const mentionCommands: MentionCommand[] = [
 		aliases: ['s', 'stats'],
 		description: 'Shows your stats.',
 		run: async ({ msg, user, components }: MentionCommandOptions) => {
-			msg.reply({
+			return msg.reply({
 				embeds: [await minionStatsEmbed(user)],
 				components
 			});
@@ -324,7 +326,14 @@ export async function onMessage(msg: Message) {
 				is_mention_command: true
 			}
 		});
-		await command.run({ msg, user, components, content: msgContentWithoutCommand });
+
+		try {
+			await command.run({ msg, user, components, content: msgContentWithoutCommand });
+		} catch (err) {
+			if (typeof err === 'string') return msg.reply(err);
+			if (err instanceof UserError) return msg.reply(err.message);
+			logError(err);
+		}
 		return;
 	}
 
