@@ -2,10 +2,10 @@ import '../customItems/customItems';
 import '../data/itemAliases';
 import '../minions/data/killableMonsters/index';
 
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, Misc, Monsters } from 'oldschooljs';
 
 import { MoktangLootTable } from '../minions/data/killableMonsters/custom/bosses/Moktang';
-import { stringMatches } from '../util/cleanString';
 import type { KillWorkerArgs, KillWorkerReturn } from '.';
 
 export default async ({ quantity, bossName, limit, catacombs, onTask }: KillWorkerArgs): KillWorkerReturn => {

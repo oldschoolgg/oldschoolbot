@@ -1,9 +1,9 @@
+import { evalMathExpression } from '@oldschoolgg/toolkit/dist/util/expressionParser';
 import type { Prisma, User, UserStats } from '@prisma/client';
 import { isFunction, objectEntries, round } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { globalConfig } from '../lib/constants';
-import { evalMathExpression } from '../lib/expressionParser';
 import type { KillableMonster } from '../lib/minions/types';
 import type { SelectedUserStats } from '../lib/MUser';
 import { prisma } from '../lib/settings/prisma';

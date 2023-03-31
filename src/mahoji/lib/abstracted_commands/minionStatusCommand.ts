@@ -1,5 +1,6 @@
 import { toTitleCase } from '@sapphire/utilities';
 import { BaseMessageOptions, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
+import { stripNonAlphanumeric } from 'e';
 
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { BitField, Emoji, minionBuyButton, PerkTier } from '../../../lib/constants';
@@ -7,7 +8,7 @@ import { getUsersFishingContestDetails } from '../../../lib/fishingContest';
 import { roboChimpSyncData, roboChimpUserFetch } from '../../../lib/roboChimp';
 import { prisma } from '../../../lib/settings/prisma';
 import { getUsersTame, shortTameTripDesc, tameLastFinishedActivity } from '../../../lib/tames';
-import { makeComponents, stripNonAlphanumeric } from '../../../lib/util';
+import { makeComponents } from '../../../lib/util';
 import { makeAutoContractButton, makeBirdHouseTripButton } from '../../../lib/util/globalInteractions';
 import { minionStatus } from '../../../lib/util/minionStatus';
 import { makeRepeatTripButtons } from '../../../lib/util/repeatStoredTrip';

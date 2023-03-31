@@ -82,8 +82,7 @@ import {
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '../types/minions';
-import { formatDuration, itemNameFromID, randomVariation } from '../util';
-import { stringMatches } from './cleanString';
+import { formatDuration, itemNameFromID, randomVariation, stringMatches } from '../util';
 import { formatOrdinal } from './formatOrdinal';
 import { getActivityOfUser } from './minionIsBusy';
 import { toTitleCase } from './toTitleCase';

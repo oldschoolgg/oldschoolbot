@@ -86,6 +86,4 @@ export const Skills: Record<string, Skill> = {
 	}
 };
 
-export const skillsValues = Object.values(Skills);
-
 export default Skills;
