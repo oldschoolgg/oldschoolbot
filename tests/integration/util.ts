@@ -36,14 +36,18 @@ export class TestUser extends MUserClass {
 	}
 
 	async clMatch(bankToMatch: Bank) {
+		await this.sync();
 		if (!this.cl.equals(bankToMatch)) {
 			throw new Error(`Expected CL to match, difference: ${this.cl.difference(bankToMatch)}`);
 		}
 	}
 
 	async bankMatch(bankToMatch: Bank) {
+		await this.sync();
 		if (!this.bank.equals(bankToMatch)) {
-			throw new Error(`Expected bank to match, difference: ${this.bank.difference(bankToMatch)}`);
+			throw new Error(
+				`Expected bank to match, CURRENT[${this.bank.toString()}] EXPECTED[${bankToMatch.toString()}]`
+			);
 		}
 	}
 
@@ -56,6 +60,7 @@ export class TestUser extends MUserClass {
 
 	async runCommand(command: OSBMahojiCommand, options: object = {}) {
 		const result = await command.run({ ...commandRunOptions(this.id), options });
+		await this.sync();
 		return result;
 	}
 
