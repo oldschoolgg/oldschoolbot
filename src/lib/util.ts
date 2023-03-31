@@ -1,5 +1,6 @@
 import { gzip } from 'node:zlib';
 
+import { stripEmojis } from '@oldschoolgg/toolkit';
 import { PrismaClient } from '@prisma/client';
 import { Stopwatch } from '@sapphire/stopwatch';
 import {
@@ -8,21 +9,18 @@ import {
 	ButtonBuilder,
 	ButtonInteraction,
 	CacheType,
-	Channel,
 	Collection,
 	CollectorFilter,
 	ComponentType,
 	escapeMarkdown,
 	Guild,
-	GuildTextBasedChannel,
 	InteractionReplyOptions,
 	InteractionType,
 	Message,
 	MessageEditOptions,
 	SelectMenuInteraction,
 	TextChannel,
-	time,
-	User as DJSUser
+	time
 } from 'discord.js';
 import {
 	calcWhatPercent,
@@ -67,9 +65,7 @@ import getOSItem, { getItem } from './util/getOSItem';
 import itemID from './util/itemID';
 import resolveItems from './util/resolveItems';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const emojiRegex = require('emoji-regex');
-
+export { cleanString, stringMatches, stripEmojis } from '@oldschoolgg/toolkit';
 export * from 'oldschooljs/dist/util/index';
 
 const zeroWidthSpace = '\u200b';
@@ -97,27 +93,6 @@ export function cleanMentions(guild: Guild | null, input: string, showAt = true)
 					return `<${type}${zeroWidthSpace}${id}>`;
 			}
 		});
-}
-
-export function generateHexColorForCashStack(coins: number) {
-	if (coins > 9_999_999) {
-		return '#00FF80';
-	}
-
-	if (coins > 99_999) {
-		return '#FFFFFF';
-	}
-
-	return '#FFFF00';
-}
-
-export function formatItemStackQuantity(quantity: number) {
-	if (quantity > 9_999_999) {
-		return `${Math.floor(quantity / 1_000_000)}M`;
-	} else if (quantity > 99_999) {
-		return `${Math.floor(quantity / 1000)}K`;
-	}
-	return quantity.toString();
 }
 
 export function inlineCodeblock(input: string) {
@@ -171,12 +146,6 @@ export function percentChance(percent: number) {
 
 export function roll(max: number) {
 	return cryptoRand(1, max) === 1;
-}
-
-const rawEmojiRegex = emojiRegex();
-
-export function stripEmojis(str: string) {
-	return str.replace(rawEmojiRegex, '');
 }
 
 export const anglerBoosts = [
@@ -503,7 +472,6 @@ export function removeMarkdownEmojis(str: string) {
 export function moidLink(items: number[]) {
 	return `https://chisel.weirdgloop.org/moid/item_id.html#${items.join(',')}`;
 }
-export { cleanString, stringMatches } from './util/cleanString';
 export async function bankValueWithMarketPrices(prisma: PrismaClient, bank: Bank) {
 	const marketPrices = (await prisma.clientStorage.findFirst({
 		where: { id: globalConfig.clientID },
@@ -519,10 +487,6 @@ export async function bankValueWithMarketPrices(prisma: PrismaClient, bank: Bank
 		price += (marketPrices[item.id] ?? item.price * 0.8) * qty;
 	}
 	return price;
-}
-
-export function discrimName(user: DJSUser) {
-	return `${user.username}#${user.discriminator}`;
 }
 
 export function isValidSkill(skill: string): skill is SkillsEnum {
@@ -663,10 +627,6 @@ export function awaitMessageComponentInteraction({
 	});
 }
 
-export function isGuildChannel(channel?: Channel): channel is GuildTextBasedChannel {
-	return channel !== undefined && !channel.isDMBased() && Boolean(channel.guild);
-}
-
 export async function runTimedLoggedFn(name: string, fn: () => Promise<unknown>) {
 	debugLog(`Starting ${name}...`);
 	const stopwatch = new Stopwatch();
@@ -683,10 +643,6 @@ export function getAllIDsOfUser(user: MUser) {
 		allAccounts.push(main);
 	}
 	return allAccounts;
-}
-
-export function isFunction(input: unknown): input is Function {
-	return typeof input === 'function';
 }
 
 export function dateFm(date: Date) {

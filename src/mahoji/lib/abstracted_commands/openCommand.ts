@@ -1,3 +1,4 @@
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { notEmpty, roll, uniqueArr } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
@@ -8,7 +9,6 @@ import { allOpenables, UnifiedOpenable } from '../../../lib/openables';
 import { roboChimpUserFetch } from '../../../lib/roboChimp';
 import { ItemBank } from '../../../lib/types';
 import { assert, buildClueButtons, makeComponents } from '../../../lib/util';
-import { stringMatches } from '../../../lib/util/cleanString';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { makeBankImage } from '../../../lib/util/makeBankImage';

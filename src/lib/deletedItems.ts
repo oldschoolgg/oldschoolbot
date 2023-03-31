@@ -1,7 +1,7 @@
+import { cleanString } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 import { itemNameMap } from 'oldschooljs/dist/structures/Items';
 
-import { cleanString } from './util/cleanString';
 import getOSItem from './util/getOSItem';
 
 export const itemsToDelete = [

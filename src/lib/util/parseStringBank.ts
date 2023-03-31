@@ -1,3 +1,4 @@
+import { evalMathExpression } from '@oldschoolgg/toolkit/dist/util/expressionParser';
 import { notEmpty } from 'e';
 import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
@@ -5,7 +6,6 @@ import { itemNameMap } from 'oldschooljs/dist/structures/Items';
 
 import { ensureCustomItemName } from '../customItems/util';
 import { filterableTypes } from '../data/filterables';
-import { evalMathExpression } from '../expressionParser';
 import { cleanString, stringMatches } from '../util';
 
 const { floor, max, min } = Math;

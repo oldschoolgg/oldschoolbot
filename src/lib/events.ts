@@ -1,6 +1,6 @@
 import { EmbedBuilder } from '@discordjs/builders';
 import { BaseMessageOptions, bold, ButtonBuilder, ButtonStyle, Message, time } from 'discord.js';
-import { Time } from 'e';
+import { isFunction, Time } from 'e';
 import { Items } from 'oldschooljs';
 
 import { PATRON_DOUBLE_LOOT_COOLDOWN } from '../mahoji/commands/tools';
@@ -12,7 +12,9 @@ import { customItems } from './customItems/util';
 import { DOUBLE_LOOT_FINISH_TIME_CACHE, isDoubleLootActive } from './doubleLoot';
 import { giveBoxResetTime, itemContractResetTime, spawnLampResetTime } from './MUser';
 import { prisma } from './settings/prisma';
-import { channelIsSendable, formatDuration, isFunction, makeComponents, toKMB } from './util';
+import { UserError } from './UserError';
+import { channelIsSendable, formatDuration, makeComponents, toKMB } from './util';
+import { logError } from './util/logError';
 import { makeBankImage } from './util/makeBankImage';
 import { minionStatsEmbed } from './util/minionStatsEmbed';
 
@@ -87,7 +89,7 @@ const mentionCommands: MentionCommand[] = [
 		aliases: ['bs'],
 		description: 'Searches your bank.',
 		run: async ({ msg, user, components, content }: MentionCommandOptions) => {
-			msg.reply({
+			return msg.reply({
 				files: [
 					(
 						await makeBankImage({
@@ -106,7 +108,7 @@ const mentionCommands: MentionCommand[] = [
 		aliases: ['bal', 'gp'],
 		description: 'Shows how much GP you have.',
 		run: async ({ msg, user, components }: MentionCommandOptions) => {
-			msg.reply({
+			return msg.reply({
 				content: `${Emoji.MoneyBag} You have ${toKMB(user.GP)} (${user.GP.toLocaleString()}) GP.`,
 				components
 			});
@@ -162,7 +164,7 @@ const mentionCommands: MentionCommand[] = [
 		aliases: ['b', 'bank'],
 		description: 'Shows your bank.',
 		run: async ({ msg, user, components }: MentionCommandOptions) => {
-			msg.reply({
+			return msg.reply({
 				files: [
 					(
 						await makeBankImage({
@@ -216,7 +218,7 @@ const mentionCommands: MentionCommand[] = [
 			if ([BitField.isModerator].every(bit => !user.bitfield.includes(bit))) {
 				return;
 			}
-			msg.reply({
+			return msg.reply({
 				content: `Click this button to find out if you're ready to do Tombs of Amascut! You can also use the ${mentionCommand(
 					'raid',
 					'toa',
@@ -237,7 +239,7 @@ const mentionCommands: MentionCommand[] = [
 		aliases: ['s', 'stats'],
 		description: 'Shows your stats.',
 		run: async ({ msg, user, components }: MentionCommandOptions) => {
-			msg.reply({
+			return msg.reply({
 				embeds: [await minionStatsEmbed(user)],
 				components
 			});
@@ -270,7 +272,14 @@ export async function onMessage(msg: Message) {
 				is_mention_command: true
 			}
 		});
-		await command.run({ msg, user, components, content: msgContentWithoutCommand });
+
+		try {
+			await command.run({ msg, user, components, content: msgContentWithoutCommand });
+		} catch (err) {
+			if (typeof err === 'string') return msg.reply(err);
+			if (err instanceof UserError) return msg.reply(err.message);
+			logError(err);
+		}
 		return;
 	}
 

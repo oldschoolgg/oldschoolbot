@@ -1,5 +1,5 @@
 import { AttachmentBuilder } from 'discord.js';
-import { calcWhatPercent, isObject, notEmpty, sumArr, uniqueArr } from 'e';
+import { calcWhatPercent, isObject, notEmpty, removeFromArr, sumArr, uniqueArr } from 'e';
 import { Bank, Clues, Monsters } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
@@ -43,11 +43,10 @@ import mixables from '../skilling/skills/herblore/mixables';
 import smithables from '../skilling/skills/smithing/smithables';
 import { SkillsEnum } from '../skilling/types';
 import type { ItemBank } from '../types';
-import { fetchStatsForCL, itemID } from '../util';
-import { stringMatches } from '../util/cleanString';
+import { fetchStatsForCL, itemID, stringMatches } from '../util';
 import { repairBrokenItemsFromUser } from '../util/repairBrokenItems';
 import resolveItems from '../util/resolveItems';
-import { removeFromArr, shuffleRandom } from '../util/smallUtils';
+import { shuffleRandom } from '../util/smallUtils';
 import {
 	abyssalDragonCL,
 	abyssalSireCL,
