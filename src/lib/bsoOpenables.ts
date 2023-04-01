@@ -648,7 +648,7 @@ export const bsoOpenables: UnifiedOpenable[] = [
 					continue;
 				}
 
-				if (roll(20) && !ownsSmokey) {
+				if (roll(2) && !ownsSmokey) {
 					loot.add(88_888);
 				} else {
 					loot.add(user.isIronman ? IronmanPMBTable.roll(1) : PMBTable.roll(1));
