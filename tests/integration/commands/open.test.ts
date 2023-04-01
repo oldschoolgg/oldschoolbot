@@ -1,22 +1,18 @@
-import { randomSnowflake } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 import { beforeEach, describe, expect, test } from 'vitest';
 
-import { openCommand } from '../../src/mahoji/commands/open';
-import { randomMock } from './setup';
-import { createTestUser, mockClient } from './util';
+import { openCommand } from '../../../src/mahoji/commands/open';
+import { randomMock } from '../setup';
+import { createTestUser, mockClient } from '../util';
 
 describe('Open Command', async () => {
 	await mockClient();
-	const userID = randomSnowflake();
-	const sampleOpenablesBank = new Bank().add('Reward casket (beginner)', 100).freeze();
-
-	const user = await createTestUser(userID);
+	const user = await createTestUser();
 
 	beforeEach(async () => {
 		randomMock();
 		await user.reset();
-		await user.addItemsToBank({ items: sampleOpenablesBank });
+		await user.addItemsToBank({ items: new Bank().add('Reward casket (beginner)', 100) });
 	});
 
 	test('Open with no quantity', async () => {
