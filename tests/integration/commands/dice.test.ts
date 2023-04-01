@@ -1,14 +1,13 @@
-import { randomSnowflake } from '@oldschoolgg/toolkit';
 import { randInt } from 'e';
 import { Bank } from 'oldschooljs';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 
-import { gambleCommand } from '../../src/mahoji/commands/gamble';
-import { randomMock } from './setup';
-import { createTestUser, mockClient } from './util';
+import { gambleCommand } from '../../../src/mahoji/commands/gamble';
+import { randomMock } from '../setup';
+import { createTestUser, mockClient } from '../util';
 
-vi.mock('../../src/lib/util', async () => {
-	const actual: any = await vi.importActual('../../src/lib/util');
+vi.mock('../../../src/lib/util', async () => {
+	const actual: any = await vi.importActual('../../../src/lib/util');
 	return {
 		...actual,
 		cryptoRand: (min: number, max: number) => randInt(min, max)
@@ -17,9 +16,7 @@ vi.mock('../../src/lib/util', async () => {
 
 describe('Dice Command', async () => {
 	const client = await mockClient();
-	const userID = randomSnowflake();
-
-	const user = await createTestUser(userID);
+	const user = await createTestUser();
 
 	beforeEach(async () => {
 		await user.reset();
