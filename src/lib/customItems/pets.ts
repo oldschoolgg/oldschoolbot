@@ -454,12 +454,30 @@ setCustomItem(
 );
 
 setCustomItem(
+	88_888,
+	'Smokey',
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true,
+			isSuperUntradeable: true,
+			cantBeDropped: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
 	737,
 	'Smokey',
 	'Herbi',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true,
+			isSuperUntradeable: true,
+			cantBeDropped: true
 		}
 	},
 	1_000_000

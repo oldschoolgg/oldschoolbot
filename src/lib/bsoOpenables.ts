@@ -638,9 +638,25 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		id: 3062,
 		openedItem: getOSItem(3062),
 		aliases: ['pet mystery box', 'pmb'],
-		output: async ({ user, quantity }) => ({
-			bank: user.isIronman ? IronmanPMBTable.roll(quantity) : PMBTable.roll(quantity)
-		}),
+		output: async ({ user, quantity }) => {
+			const loot = new Bank();
+			const ownsSmokey = user.allItemsOwned.has('Smokey') || user.allItemsOwned.has(88_888);
+
+			for (let i = 0; i < quantity; i++) {
+				if (user.isIronman) {
+					loot.add(IronmanPMBTable.roll(1));
+					continue;
+				}
+
+				if (roll(20) && !ownsSmokey) {
+					loot.add(88_888);
+				} else {
+					loot.add(user.isIronman ? IronmanPMBTable.roll(1) : PMBTable.roll(1));
+				}
+			}
+
+			return { bank: loot };
+		},
 		allItems: PMBTable.allItems,
 		smokeyApplies: true
 	},

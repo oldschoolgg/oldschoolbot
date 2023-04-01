@@ -20,6 +20,7 @@ interface CustomItemData {
 	isSuperUntradeable?: boolean;
 	cantDropFromMysteryBoxes?: boolean;
 	cantBeSacrificed?: true;
+	cantBeDropped?: true;
 }
 declare module 'oldschooljs/dist/meta/types' {
 	interface Item {
@@ -42,7 +43,7 @@ export function setCustomItem(id: number, name: string, baseItem: string, newIte
 	if (hasSet.some(i => i.id === id)) {
 		throw new Error(`Tried to add 2 custom items with same id ${id}, called ${name}`);
 	}
-	if (hasSet.some(i => i.name === name)) {
+	if (hasSet.some(i => i.name === name) && name !== 'Smokey') {
 		throw new Error(`Tried to add 2 custom items with same name, called ${name}`);
 	}
 	const data = deepMerge({ ...getOSItem(baseItem) }, { ...newItemData, name, id });
