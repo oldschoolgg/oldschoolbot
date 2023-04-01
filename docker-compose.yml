@@ -3,14 +3,26 @@ version: '3.9'
 
 # The containers that compose the project
 services:
-  db:
+  osb:
     image: postgres:13
     restart: always
-    container_name: integration-tests-prisma
+    container_name: osb_database
     ports:
       - '5435:1234'
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: osb_integration_test
+      PGPORT: 1234
+
+  robochimp:
+    image: postgres:13
+    restart: always
+    container_name: robochimp_database
+    ports:
+      - '5436:1234'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: robochimp_integration_test
       PGPORT: 1234

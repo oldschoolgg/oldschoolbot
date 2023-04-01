@@ -56,7 +56,17 @@ describe('Ironman Command', () => {
 			prisma.minigame.create({ data: { user_id: userId } }),
 			prisma.xPGain.create({ data: { user_id: BigInt(userId), skill: 'agility', xp: 1 } }),
 			prisma.stashUnit.create({ data: { user_id: BigInt(userId), stash_id: 1, has_built: false } }),
-			prisma.userStats.create({ data: { user_id: BigInt(userId) } })
+			prisma.userStats.create({ data: { user_id: BigInt(userId) } }),
+			prisma.historicalData.create({
+				data: {
+					user_id: userId,
+					GP: 100_000,
+					total_xp: 10_000,
+					cl_completion_percentage: 5,
+					cl_completion_count: 5,
+					cl_global_rank: 5
+				}
+			})
 		]);
 	}
 
@@ -84,7 +94,8 @@ describe('Ironman Command', () => {
 			prisma.minigame.count({ where: { user_id: userId } }),
 			prisma.xPGain.count({ where: { user_id: BigInt(userId) } }),
 			prisma.stashUnit.count({ where: { user_id: BigInt(userId) } }),
-			prisma.userStats.count({ where: { user_id: BigInt(userId) } })
+			prisma.userStats.count({ where: { user_id: BigInt(userId) } }),
+			prisma.historicalData.count({ where: { user_id: userId } })
 		]);
 
 		for (const count of results) {

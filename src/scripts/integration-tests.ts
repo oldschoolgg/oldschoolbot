@@ -7,6 +7,7 @@ async function main() {
 		await sleep(200);
 
 		execSync('dotenv -e .env.example -- prisma db push', { stdio: 'inherit' });
+		execSync('dotenv -e .env.example -- prisma db push --schema="./prisma/robochimp.prisma"', { stdio: 'inherit' });
 		await sleep(200);
 
 		execSync('vitest run --coverage --config vitest.integration.config.ts', { stdio: 'inherit' });
