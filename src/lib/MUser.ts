@@ -1,6 +1,7 @@
 import { userMention } from '@discordjs/builders';
 import { Prisma, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
 import { notEmpty, objectEntries, sumArr, uniqueArr } from 'e';
+import LRUCache from 'lru-cache';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
@@ -658,17 +659,44 @@ declare global {
 	export type MUser = MUserClass;
 }
 
+const mUserCache = new LRUCache<string, MUser>({ max: 500 });
+const mUserLoadingCache = new LRUCache<string, Promise<MUser>>({ max: 500 });
+
 export async function srcMUserFetch(userID: string) {
-	const user = await prisma.user.upsert({
-		create: {
-			id: userID
-		},
-		update: {},
-		where: {
-			id: userID
-		}
-	});
-	return new MUserClass(user);
+	const cached = mUserCache.get(userID);
+	if (cached) {
+		console.log('-------  CACHED ----------');
+		await cached.sync();
+		return cached;
+	}
+
+	const cachedPromise = mUserLoadingCache.get(userID);
+	if (cachedPromise) {
+		console.log('-------  CACHEDPROMISE ----------');
+		const resolved = await cachedPromise;
+		await resolved.sync();
+		return resolved;
+	}
+
+	console.log('-------- DOING ACTUAL FETCH!!! --------');
+	mUserLoadingCache.set(
+		userID,
+		(async () => {
+			const user = await prisma.user.upsert({
+				create: {
+					id: userID
+				},
+				update: {},
+				where: {
+					id: userID
+				}
+			});
+			const result = new MUserClass(user);
+			mUserCache.set(userID, result);
+			return result;
+		})()
+	);
+	return mUserLoadingCache.get(userID)!;
 }
 
 declare global {
