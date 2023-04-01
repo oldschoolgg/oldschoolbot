@@ -48,10 +48,16 @@ export async function mahojiUserSettingsUpdate(user: string | bigint, data: Pris
 
 		return { newUser };
 	} catch (err) {
-		logError(err, {
-			user_id: user.toString(),
-			updated_data: JSON.stringify(data)
-		});
+		logError(
+			err,
+			{
+				user_id: user.toString()
+			},
+			{
+				user_id: user.toString(),
+				updated_data: JSON.stringify(data)
+			}
+		);
 		throw err;
 	}
 }
