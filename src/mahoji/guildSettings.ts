@@ -8,7 +8,7 @@ type CachedGuild = Pick<
 	Guild,
 	'disabledCommands' | 'id' | 'tweetchannel' | 'jmodComments' | 'petchannel' | 'staffOnlyChannels'
 >;
-export const untrustedGuildSettingsCache = new LRUCache<string, CachedGuild>({ max: 5000 });
+export const untrustedGuildSettingsCache = new LRUCache<string, CachedGuild>({ max: 1000 });
 
 export async function mahojiGuildSettingsFetch(guild: string | DJSGuild) {
 	const id = typeof guild === 'string' ? guild : guild.id;
