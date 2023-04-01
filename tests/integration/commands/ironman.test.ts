@@ -3,9 +3,9 @@ import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { prisma } from '../../src/lib/settings/prisma';
-import { miniID } from '../../src/lib/util';
-import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironmanCommand';
+import { prisma } from '../../../src/lib/settings/prisma';
+import { miniID } from '../../../src/lib/util';
+import { ironmanCommand } from '../../../src/mahoji/lib/abstracted_commands/ironmanCommand';
 import { Prisma } from '.prisma/client';
 
 describe('Ironman Command', () => {
