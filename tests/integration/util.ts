@@ -1,4 +1,4 @@
-import { randomSnowflake } from '@oldschoolgg/toolkit';
+import { randomCryptoSnowflake } from '@oldschoolgg/toolkit';
 import { CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
@@ -6,6 +6,7 @@ import { globalConfig } from '../../src/lib/constants';
 import { MUserClass } from '../../src/lib/MUser';
 import { prisma } from '../../src/lib/settings/prisma';
 import { ItemBank } from '../../src/lib/types';
+import { cryptoRand } from '../../src/lib/util';
 import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironmanCommand';
 import { OSBMahojiCommand } from '../../src/mahoji/lib/util';
 import { ClientStorage, User, UserStats } from '.prisma/client';
@@ -92,7 +93,7 @@ interface UserOptions {
 	id?: string;
 }
 
-export async function createTestUser(id = randomSnowflake(), bank?: Bank) {
+export async function createTestUser(id = randomCryptoSnowflake(), bank?: Bank) {
 	const user = await prisma.user.upsert({
 		create: {
 			id,
@@ -118,7 +119,7 @@ export async function integrationCmdRun({
 	options?: object;
 	userOptions?: UserOptions;
 }) {
-	const userId = userOptions?.id ?? randomSnowflake();
+	const userId = userOptions?.id ?? randomCryptoSnowflake();
 	await createTestUser(userId, userOptions?.ownedBank);
 	const result = await command.run({ ...commandRunOptions(userId), options });
 	return result;
@@ -148,7 +149,7 @@ class TestClient {
 }
 
 export async function mockClient() {
-	const clientId = randomSnowflake();
+	const clientId = randomCryptoSnowflake();
 	const client = await prisma.clientStorage.create({
 		data: {
 			id: clientId
@@ -157,4 +158,22 @@ export async function mockClient() {
 
 	globalConfig.clientID = clientId;
 	return new TestClient(client);
+}
+
+const discordEpoch = 1_420_070_400_000;
+
+export function randomCryptoSnowflake(): string {
+	const timestamp = Date.now() - discordEpoch;
+	const workerId = cryptoRand(0, 32);
+	const processId = cryptoRand(0, 32);
+	const increment = cryptoRand(0, 4096);
+
+	const timestampPart = BigInt(timestamp) << 22n;
+	const workerIdPart = BigInt(workerId) << 17n;
+	const processIdPart = BigInt(processId) << 12n;
+	const incrementPart = BigInt(increment);
+
+	const snowflakeBigInt = timestampPart | workerIdPart | processIdPart | incrementPart;
+
+	return snowflakeBigInt.toString();
 }

@@ -1,15 +1,14 @@
-import { randomSnowflake } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { describe, expect, test } from 'vitest';
 
 import { mahojiClientSettingsFetch } from '../../../src/lib/util/clientSettings';
 import { sacrificeCommand } from '../../../src/mahoji/commands/sacrifice';
-import { integrationCmdRun, mockClient } from '../util';
+import { integrationCmdRun, mockClient, randomCryptoSnowflake } from '../util';
 
 describe('Sacrifice Command', async () => {
 	await mockClient();
-	const userID = randomSnowflake();
+	const userID = randomCryptoSnowflake();
 
 	test('No options provided', async () => {
 		const result = await integrationCmdRun({ command: sacrificeCommand, options: {}, userOptions: { id: userID } });

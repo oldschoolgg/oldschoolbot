@@ -1,12 +1,11 @@
-import { randomSnowflake } from '@oldschoolgg/toolkit';
 import { describe, expect, test } from 'vitest';
 
 import { userStatsUpdate } from '../../src/mahoji/mahojiSettings';
-import { createTestUser, mockClient } from './util';
+import { createTestUser, mockClient, randomCryptoSnowflake } from './util';
 
 describe('User Stats', async () => {
 	await mockClient();
-	const userID = randomSnowflake();
+	const userID = randomCryptoSnowflake();
 
 	test('Should return nothing', async () => {
 		await createTestUser(userID);

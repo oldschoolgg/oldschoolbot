@@ -1,13 +1,12 @@
-import { randomSnowflake } from '@oldschoolgg/toolkit';
 import { describe, test } from 'vitest';
 
 import { prisma } from '../../src/lib/settings/prisma';
 import { dataPoints } from '../../src/mahoji/lib/abstracted_commands/statCommand';
-import { createTestUser, mockClient } from './util';
+import { createTestUser, mockClient, randomCryptoSnowflake } from './util';
 
 describe('Datapoints', async () => {
 	await mockClient();
-	const userID = randomSnowflake();
+	const userID = randomCryptoSnowflake();
 
 	test('Data points', async () => {
 		const user = await createTestUser(userID);

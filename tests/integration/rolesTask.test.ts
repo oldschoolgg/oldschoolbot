@@ -1,4 +1,3 @@
-import { randomSnowflake } from '@oldschoolgg/toolkit';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
@@ -6,7 +5,7 @@ import { describe, expect, test } from 'vitest';
 import { runRolesTask } from '../../src/lib/rolesTask';
 import { prisma } from '../../src/lib/settings/prisma';
 import { userStatsBankUpdate } from '../../src/mahoji/mahojiSettings';
-import { createTestUser } from './util';
+import { createTestUser, randomCryptoSnowflake } from './util';
 
 describe('Roles Task', async () => {
 	test('Should not throw', async () => {
@@ -23,8 +22,8 @@ describe('Roles Task', async () => {
 				start_date: new Date(),
 				finish_date: new Date(Date.now() + Time.Hour),
 				channel_id: '792691343284764693',
-				message_id: randomSnowflake(),
-				reaction_id: randomSnowflake(),
+				message_id: randomCryptoSnowflake(),
+				reaction_id: randomCryptoSnowflake(),
 				users_entered: [],
 				id: 1,
 				completed: false,
