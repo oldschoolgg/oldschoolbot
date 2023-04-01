@@ -120,7 +120,14 @@ export const bankCommand: OSBMahojiCommand = {
 	}>) => {
 		if (interaction) await deferInteraction(interaction);
 		const mUser = await mUserFetch(user.id);
-		const baseBank = mUser.bankWithGP;
+		let baseBank = mUser.user.has_been_migrated ? new Bank().add('Coins', mUser.GP) : mUser.bankWithGP;
+		if (mUser.user.has_been_migrated) {
+			if (mUser.user.instance_commands_used >= 3) {
+				baseBank = mUser.bankWithGP;
+			} else {
+				await mUser.update({ instance_commands_used: { increment: 1 } });
+			}
+		}
 		const mahojiFlags: BankFlag[] = [];
 
 		if (options.flag) mahojiFlags.push(options.flag);
