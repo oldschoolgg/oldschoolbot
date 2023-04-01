@@ -3,9 +3,9 @@ import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { describe, expect, test } from 'vitest';
 
-import { mahojiClientSettingsFetch } from '../../src/lib/util/clientSettings';
-import { sacrificeCommand } from '../../src/mahoji/commands/sacrifice';
-import { integrationCmdRun, mockClient } from './util';
+import { mahojiClientSettingsFetch } from '../../../src/lib/util/clientSettings';
+import { sacrificeCommand } from '../../../src/mahoji/commands/sacrifice';
+import { integrationCmdRun, mockClient } from '../util';
 
 describe('Sacrifice Command', async () => {
 	await mockClient();
