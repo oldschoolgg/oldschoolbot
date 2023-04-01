@@ -808,7 +808,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		cl?: { cl: string; ironmen_only?: boolean };
 		clues?: { clue: ClueTier['name']; ironmen_only?: boolean };
 	}>) => {
-		await deferInteraction(interaction);
+		deferInteraction(interaction);
 		const user = await mUserFetch(userID);
 		const {
 			opens,

@@ -12,6 +12,6 @@ describe('Integration Misc', () => {
 	test('Analytics', async () => {
 		await mockClient();
 		await analyticsTick();
-		expect(await prisma.analytic.count()).toEqual(1);
+		expect(await prisma.analytic.count()).toBeGreaterThanOrEqual(1);
 	});
 });

@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 
 import { mahojiParseNumber } from '../../../mahoji/mahojiSettings';
 import { degradeableItems } from '../../degradeableItems';
-import { stringMatches } from '../../util/cleanString';
+import { stringMatches } from '../../util';
 import { handleMahojiConfirmation } from '../../util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../util/updateBankSetting';
 
