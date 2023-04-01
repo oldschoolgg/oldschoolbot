@@ -22,7 +22,9 @@ export function logError(err: Error | unknown, context?: Record<string, string>,
 			extra
 		});
 	} else {
-		console.error(context, err);
+		console.error(err);
+		console.log(context);
+		console.log(extra);
 	}
 }
 
@@ -35,8 +37,12 @@ export function logErrorForInteraction(err: Error | unknown, interaction: Intera
 		interaction_type: interaction.type
 	};
 	if (interaction.isChatInputCommand()) {
-		context.options = convertAPIOptionsToCommandOptions(interaction.options.data, interaction.options.resolved);
+		context.options = JSON.stringify(
+			convertAPIOptionsToCommandOptions(interaction.options.data, interaction.options.resolved)
+		);
 		context.command_name = interaction.commandName;
+	} else if (interaction.isButton()) {
+		context.button_id = interaction.customId;
 	}
 
 	logError(err, context);

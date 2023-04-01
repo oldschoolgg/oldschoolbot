@@ -66,11 +66,15 @@ export const toaTask: MinionTask = {
 		// Increment all users attempts
 		await Promise.all(
 			allUsers.map(i =>
-				userStatsUpdate(i.id, () => ({
-					toa_attempts: {
-						increment: quantity
-					}
-				}))
+				userStatsUpdate(
+					i.id,
+					{
+						toa_attempts: {
+							increment: quantity
+						}
+					},
+					{}
+				)
 			)
 		);
 		if (wipedRooms.every(i => i !== null)) {
@@ -143,11 +147,15 @@ export const toaTask: MinionTask = {
 
 		for (let [userID, userData] of raidResults.entries()) {
 			const { points, deaths, mUser: user } = userData;
-			await userStatsUpdate(user.id, () => ({
-				total_toa_points: {
-					increment: points
-				}
-			}));
+			await userStatsUpdate(
+				user.id,
+				{
+					total_toa_points: {
+						increment: points
+					}
+				},
+				{}
+			);
 
 			// If the user already has these in their bank they cannot get another
 			for (const itemID of [...toaPetTransmogItems, ...toaOrnamentKits.map(i => i[0].id)]) {
@@ -166,16 +174,21 @@ export const toaTask: MinionTask = {
 
 			itemsAddedTeamLoot.add(userID, itemsAdded);
 
-			userStatsUpdate(user.id, u => {
-				return {
-					toa_raid_levels_bank: new Bank().add(u.toa_raid_levels_bank as ItemBank).add(raidLevel, quantity)
-						.bank,
-					total_toa_duration_minutes: {
-						increment: Math.floor(duration / Time.Minute)
-					},
-					toa_loot: new Bank(u.toa_loot as ItemBank).add(totalLoot.get(userID)).bank
-				};
-			});
+			userStatsUpdate(
+				user.id,
+				u => {
+					return {
+						toa_raid_levels_bank: new Bank()
+							.add(u.toa_raid_levels_bank as ItemBank)
+							.add(raidLevel, quantity).bank,
+						total_toa_duration_minutes: {
+							increment: Math.floor(duration / Time.Minute)
+						},
+						toa_loot: new Bank(u.toa_loot as ItemBank).add(totalLoot.get(userID)).bank
+					};
+				},
+				{}
+			);
 
 			const items = itemsAdded.items();
 

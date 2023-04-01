@@ -1,3 +1,4 @@
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { calcPercentOfNum, randInt, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
@@ -10,7 +11,6 @@ import { FishingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemID, itemNameFromID } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { stringMatches } from '../../lib/util/cleanString';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const fishCommand: OSBMahojiCommand = {
@@ -75,8 +75,11 @@ export const fishCommand: OSBMahojiCommand = {
 			return 'You need at least 15 Agility and Strength to do Barbarian Fishing.';
 		}
 
-		if (fish.name === 'Infernal eel' && user.getKC(TzTokJad.id) < 1) {
-			return 'You are not worthy JalYt. Before you can fish Infernal Eels, you need to have defeated the mighty TzTok-Jad!';
+		if (fish.name === 'Infernal eel') {
+			const jadKC = await user.getKC(TzTokJad.id);
+			if (jadKC === 0) {
+				return 'You are not worthy JalYt. Before you can fish Infernal Eels, you need to have defeated the mighty TzTok-Jad!';
+			}
 		}
 		const anglerOutfit = Object.keys(Fishing.anglerItems).map(i => itemNameFromID(parseInt(i)));
 		if (fish.name === 'Minnow' && anglerOutfit.some(test => !user.hasEquippedOrInBank(test!))) {
@@ -123,10 +126,10 @@ export const fishCommand: OSBMahojiCommand = {
 			);
 		}
 
-		if (user.allItemsOwned().has('Fish sack barrel') || user.allItemsOwned().has('Fish barrel')) {
+		if (user.allItemsOwned.has('Fish sack barrel') || user.allItemsOwned.has('Fish barrel')) {
 			boosts.push(
 				`+9 trip minutes for having a ${
-					user.allItemsOwned().has('Fish sack barrel') ? 'Fish sack barrel' : 'Fish barrel'
+					user.allItemsOwned.has('Fish sack barrel') ? 'Fish sack barrel' : 'Fish barrel'
 				}`
 			);
 		}

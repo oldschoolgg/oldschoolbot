@@ -1,6 +1,6 @@
 import type { activity_type_enum, CropUpgradeType } from '@prisma/client';
 
-import { NMZStrategy } from '../constants';
+import { NMZStrategy, UnderwaterAgilityThievingTrainingSkill } from '../constants';
 import type { IPatchData } from '../minions/farming/types';
 import type { MinigameName } from '../settings/minigames';
 import { RaidLevel } from '../simulation/toa';
@@ -235,6 +235,7 @@ export interface MahoganyHomesActivityTaskOptions extends MinigameActivityTaskOp
 	xp: number;
 	quantity: number;
 	points: number;
+	tier: number;
 }
 
 export interface NightmareActivityTaskOptions extends ActivityTaskOptions {
@@ -344,6 +345,12 @@ export interface KourendFavourActivityTaskOptions extends ActivityTaskOptions {
 export interface TokkulShopOptions extends ActivityTaskOptions {
 	itemID: number;
 	quantity: number;
+}
+
+export interface UnderwaterAgilityThievingTaskOptions extends ActivityTaskOptions {
+	trainingSkill: UnderwaterAgilityThievingTrainingSkill;
+	quantity: number;
+	noStams: boolean;
 }
 
 export interface PuroPuroActivityTaskOptions extends MinigameActivityTaskOptions {

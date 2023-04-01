@@ -144,3 +144,11 @@ export const gearPresetOption: CommandOption = {
 			.concat(globalPresets.map(i => ({ name: `${i.name} (Global)`, value: i.name })));
 	}
 };
+
+export function generateRandomBank(size: number) {
+	const bank = new Bank();
+	for (let i = 0; i < size; i++) {
+		bank.add(allEquippableItems[i]);
+	}
+	return bank;
+}

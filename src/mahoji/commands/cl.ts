@@ -7,6 +7,7 @@ import {
 	collectionLogTypes
 } from '../../lib/collectionLogTask';
 import { allCollectionLogs } from '../../lib/data/Collections';
+import { fetchStatsForCL } from '../../lib/util';
 import { toTitleCase } from '../../lib/util/toTitleCase';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -87,7 +88,8 @@ export const collectionLogCommand: OSBMahojiCommand = {
 			user,
 			type: options.type ?? 'collection',
 			flags,
-			collection: options.name
+			collection: options.name,
+			stats: await fetchStatsForCL(user)
 		});
 		return result;
 	}

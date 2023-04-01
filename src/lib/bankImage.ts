@@ -1,6 +1,7 @@
 import { Canvas, GlobalFonts, Image, loadImage, SKRSContext2D } from '@napi-rs/canvas';
+import { cleanString, formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit';
 import { AttachmentBuilder } from 'discord.js';
-import { chunk, randInt } from 'e';
+import { chunk, randInt, sumArr } from 'e';
 import { existsSync } from 'fs';
 import * as fs from 'fs/promises';
 import fetch from 'node-fetch';
@@ -16,7 +17,6 @@ import backgroundImages from '../lib/minions/data/bankBackgrounds';
 import { BankBackground, FlagMap, Flags } from '../lib/minions/types';
 import { BankSortMethod, BankSortMethods, sorts } from '../lib/sorts';
 import { ItemBank } from '../lib/types';
-import { addArrayOfNumbers, cleanString, formatItemStackQuantity, generateHexColorForCashStack } from '../lib/util';
 import { drawImageWithOutline, fillTextXTimesInCtx, getClippedRegionImage } from '../lib/util/canvasUtil';
 import itemID from '../lib/util/itemID';
 import { logError } from '../lib/util/logError';
@@ -210,7 +210,7 @@ export const bankFlags = [
 	'show_all',
 	'wide'
 ] as const;
-export type BankFlag = typeof bankFlags[number];
+export type BankFlag = (typeof bankFlags)[number];
 
 class BankImageTask {
 	public itemIconsList: Set<number>;
@@ -594,7 +594,7 @@ class BankImageTask {
 			});
 		}
 
-		const totalValue = addArrayOfNumbers(items.map(([i, q]) => i.price * q));
+		const totalValue = sumArr(items.map(([i, q]) => i.price * q));
 
 		const chunkSize = compact ? 140 : 56;
 		const chunked = chunk(items, chunkSize);
@@ -732,7 +732,7 @@ interface CustomText {
 }
 export async function drawChestLootImage(options: {
 	entries: { previousCL: Bank; user: MUser; loot: Bank; customTexts: CustomText[] }[];
-	type: typeof chestLootTypes[number]['title'];
+	type: (typeof chestLootTypes)[number]['title'];
 }) {
 	const type = chestLootTypes.find(t => t.title === options.type);
 	if (!type) throw new Error(`Invalid chest type: ${options.type}`);
