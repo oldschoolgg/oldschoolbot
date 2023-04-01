@@ -159,6 +159,7 @@ export const mineCommand: OSBMahojiCommand = {
 			}
 			if (!quantity) quantity = quantityOwned;
 			const cost = new Bank().add(egg.id, quantity);
+			if (!user.owns(cost)) return "You don't own enough of these eggs.";
 			await user.removeItemsFromBank(cost);
 			await userStatsBankUpdate(user.id, 'bird_eggs_offered_bank', cost);
 			let loot = new Bank();

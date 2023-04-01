@@ -22,7 +22,9 @@ export function logError(err: Error | unknown, context?: Record<string, string>,
 			extra
 		});
 	} else {
-		console.error(context, err);
+		console.error(err);
+		console.log(context);
+		console.log(extra);
 	}
 }
 

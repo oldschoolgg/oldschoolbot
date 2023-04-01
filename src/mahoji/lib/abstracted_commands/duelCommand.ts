@@ -102,8 +102,7 @@ export async function duelCommand(
 		await sleep(2000);
 
 		const winningAmount = amount * 2;
-		const tax = winningAmount - winningAmount * 0.95;
-
+		const tax = winningAmount - Math.floor(winningAmount * 0.95);
 		const dividedAmount = tax / 1_000_000;
 		await updateClientGPTrackSetting('economyStats_duelTaxBank', Math.floor(Math.round(dividedAmount * 100) / 100));
 
