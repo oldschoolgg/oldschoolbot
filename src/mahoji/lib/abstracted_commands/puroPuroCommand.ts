@@ -45,7 +45,7 @@ export const puroOptions: PuroImpling[] = [
 		name: 'High-tier Implings',
 		hunterLevel: 58,
 		spell: true,
-		item: getOSItem('Nature impling jar')
+		item: null
 	},
 	{
 		name: 'Eclectic Implings',
@@ -159,6 +159,7 @@ export async function puroPuroStartCommand(
 
 	await addSubTaskToActivityTask<PuroPuroActivityTaskOptions>({
 		implingID: impToHunt.item?.id ?? null,
+		implingLvl: impToHunt.hunterLevel,
 		quantity,
 		userID: user.id,
 		duration,

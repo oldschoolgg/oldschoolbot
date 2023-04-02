@@ -58,7 +58,7 @@ const bryophytasStaffId = itemID("Bryophyta's staff");
 export const puroPuroTask: MinionTask = {
 	type: 'PuroPuro',
 	async run(data: PuroPuroActivityTaskOptions) {
-		const { channelID, userID, quantity, implingID, darkLure } = data;
+		const { channelID, userID, quantity, implingID, darkLure, implingLvl } = data;
 		const user = await mUserFetch(userID);
 
 		await incrementMinigameScore(userID, 'puro_puro', quantity);
@@ -75,7 +75,21 @@ export const puroPuroTask: MinionTask = {
 		const allImpQty = allImpHunt(minutes, user);
 		let highTierImpQty = highTierImpHunt(minutes, user);
 		const singleImpQty = singleImpHunt(minutes, user);
-		switch (implingID) {
+		if (implingLvl === 58) {
+			if (darkLure) highTierImpQty *= 1.2;
+			for (let j = 0; j < highTierImpQty; j++) {
+				const loot = puroImpHighTierTable.roll();
+				if (loot.length === 0) continue;
+				const implingReceived = implings[loot.items()[0][0].id]!;
+				if (hunterLevel < implingReceived.level) missed.add(loot);
+				else {
+					bank.add(loot);
+					const implingReceivedXP = puroImplings[loot.items()[0][0].id]!;
+					hunterXP += Number(implingReceivedXP.catchXP);
+				}
+			}
+		}
+		else switch (implingID) {
 			case itemID('Eclectic impling jar'):
 				bank.add('Eclectic impling jar', singleImpQty);
 				hunterXP += 30 * singleImpQty;
@@ -100,21 +114,6 @@ export const puroPuroTask: MinionTask = {
 				bank.add('Baby impling jar', singleImpQty);
 				hunterXP += 18 * singleImpQty;
 				break;
-			case itemID('Nature impling jar'): {
-				if (darkLure) highTierImpQty *= 1.2;
-				for (let j = 0; j < highTierImpQty; j++) {
-					const loot = puroImpHighTierTable.roll();
-					if (loot.length === 0) continue;
-					const implingReceived = implings[loot.items()[0][0].id]!;
-					if (hunterLevel < implingReceived.level) missed.add(loot);
-					else {
-						bank.add(loot);
-						const implingReceivedXP = puroImplings[loot.items()[0][0].id]!;
-						hunterXP += Number(implingReceivedXP.catchXP);
-					}
-				}
-				break;
-			}
 			default:
 				for (let j = 0; j < allImpQty; j++) {
 					const loot = darkLure ? puroImpSpellTable.roll() : puroImpNormalTable.roll();
@@ -127,7 +126,6 @@ export const puroPuroTask: MinionTask = {
 						hunterXP += Number(implingReceivedXP.catchXP);
 					}
 				}
-
 				break;
 		}
 
