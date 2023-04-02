@@ -88,46 +88,46 @@ export const puroPuroTask: MinionTask = {
 					hunterXP += Number(implingReceivedXP.catchXP);
 				}
 			}
-		}
-		else switch (implingID) {
-			case itemID('Eclectic impling jar'):
-				bank.add('Eclectic impling jar', singleImpQty);
-				hunterXP += 30 * singleImpQty;
-				break;
-			case itemID('Essence impling jar'):
-				bank.add('Essence impling jar', singleImpQty);
-				hunterXP += 22 * singleImpQty;
-				break;
-			case itemID('Earth impling jar'):
-				bank.add('Earth impling jar', singleImpQty);
-				hunterXP += 25 * singleImpQty;
-				break;
-			case itemID('Gourmet impling jar'):
-				bank.add('Gourmet impling jar', singleImpQty);
-				hunterXP += 22 * singleImpQty;
-				break;
-			case itemID('Young impling jar'):
-				bank.add('Young impling jar', singleImpQty);
-				hunterXP += 20 * singleImpQty;
-				break;
-			case itemID('Baby impling jar'):
-				bank.add('Baby impling jar', singleImpQty);
-				hunterXP += 18 * singleImpQty;
-				break;
-			default:
-				for (let j = 0; j < allImpQty; j++) {
-					const loot = darkLure ? puroImpSpellTable.roll() : puroImpNormalTable.roll();
-					if (loot.length === 0) continue;
-					const implingReceived = implings[loot.items()[0][0].id]!;
-					if (hunterLevel < implingReceived.level) missed.add(loot);
-					else {
-						bank.add(loot);
-						const implingReceivedXP = puroImplings[loot.items()[0][0].id]!;
-						hunterXP += Number(implingReceivedXP.catchXP);
+		} else
+			switch (implingID) {
+				case itemID('Eclectic impling jar'):
+					bank.add('Eclectic impling jar', singleImpQty);
+					hunterXP += 30 * singleImpQty;
+					break;
+				case itemID('Essence impling jar'):
+					bank.add('Essence impling jar', singleImpQty);
+					hunterXP += 22 * singleImpQty;
+					break;
+				case itemID('Earth impling jar'):
+					bank.add('Earth impling jar', singleImpQty);
+					hunterXP += 25 * singleImpQty;
+					break;
+				case itemID('Gourmet impling jar'):
+					bank.add('Gourmet impling jar', singleImpQty);
+					hunterXP += 22 * singleImpQty;
+					break;
+				case itemID('Young impling jar'):
+					bank.add('Young impling jar', singleImpQty);
+					hunterXP += 20 * singleImpQty;
+					break;
+				case itemID('Baby impling jar'):
+					bank.add('Baby impling jar', singleImpQty);
+					hunterXP += 18 * singleImpQty;
+					break;
+				default:
+					for (let j = 0; j < allImpQty; j++) {
+						const loot = darkLure ? puroImpSpellTable.roll() : puroImpNormalTable.roll();
+						if (loot.length === 0) continue;
+						const implingReceived = implings[loot.items()[0][0].id]!;
+						if (hunterLevel < implingReceived.level) missed.add(loot);
+						else {
+							bank.add(loot);
+							const implingReceivedXP = puroImplings[loot.items()[0][0].id]!;
+							hunterXP += Number(implingReceivedXP.catchXP);
+						}
 					}
-				}
-				break;
-		}
+					break;
+			}
 
 		let str = `<@${userID}>, ${user.minionName} finished hunting in Puro-Puro. `;
 
