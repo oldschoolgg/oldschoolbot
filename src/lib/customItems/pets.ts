@@ -455,8 +455,8 @@ setCustomItem(
 
 setCustomItem(
 	88_888,
-	'Smokey',
-	'Herbi',
+	'Bucket of dung',
+	'Coal',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
@@ -474,10 +474,7 @@ setCustomItem(
 	'Herbi',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			cantBeSacrificed: true,
-			isSuperUntradeable: true,
-			cantBeDropped: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	1_000_000
