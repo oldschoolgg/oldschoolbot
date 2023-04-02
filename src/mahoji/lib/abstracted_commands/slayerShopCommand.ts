@@ -1,9 +1,10 @@
 import { ChatInputCommandInteraction } from 'discord.js';
+import { removeFromArr } from 'e';
 import { Bank } from 'oldschooljs';
 import { table } from 'table';
 
 import { SlayerRewardsShop } from '../../../lib/slayer/slayerUnlocks';
-import { removeFromArr, stringMatches } from '../../../lib/util';
+import { stringMatches } from '../../../lib/util';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { logError } from '../../../lib/util/logError';
 

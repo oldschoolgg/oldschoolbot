@@ -1,10 +1,11 @@
 import { Canvas, SKRSContext2D } from '@napi-rs/canvas';
+import { formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit';
 import { calcWhatPercent, objectEntries } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import { Util } from 'oldschooljs';
 
-import { allCollectionLogs, getCollection, getTotalCl } from '../lib/data/Collections';
+import { allCollectionLogs, getCollection, getTotalCl, UserStatsDataNeededForCL } from '../lib/data/Collections';
 import { IToReturnCollection } from '../lib/data/CollectionsExport';
-import { formatItemStackQuantity, generateHexColorForCashStack, toKMB } from '../lib/util';
 import { fillTextXTimesInCtx, getClippedRegion, measureTextWidth } from '../lib/util/canvasUtil';
 import getOSItem from '../lib/util/getOSItem';
 import { IBgSprite } from './bankImage';
@@ -104,6 +105,7 @@ class CollectionLogTask {
 		collection: string;
 		type: CollectionLogType;
 		flags: { [key: string]: string | number };
+		stats: UserStatsDataNeededForCL;
 	}): Promise<CommandResponse> {
 		const { sprite } = bankImageGenerator.getBgAndSprite(options.user.user.bankBackground, options.user);
 
@@ -160,7 +162,7 @@ class CollectionLogTask {
 
 		const fullSize = flags.nl || !collectionLog.leftList;
 
-		const userTotalCl = getTotalCl(user, type);
+		const userTotalCl = getTotalCl(user, type, options.stats);
 		const leftListCanvas = this.drawLeftList(collectionLog, sprite);
 
 		let leftDivisor = 214;
@@ -378,10 +380,9 @@ class CollectionLogTask {
 				this.drawText(ctx, ' Rifts searches: ', ctx.measureText(drawnSoFar).width, pixelLevel);
 				drawnSoFar += ' Rifts searches: ';
 				ctx.fillStyle = '#FFFFFF';
-				const stats = await user.fetchStats();
 				this.drawText(
 					ctx,
-					stats.gotr_rift_searches.toLocaleString(),
+					options.stats.gotrRiftSearches.toLocaleString(),
 					ctx.measureText(drawnSoFar).width,
 					pixelLevel
 				);
@@ -393,7 +394,7 @@ class CollectionLogTask {
 		ctx.save();
 		ctx.font = '16px OSRSFontCompact';
 		ctx.fillStyle = generateHexColorForCashStack(totalPrice);
-		let value = toKMB(totalPrice);
+		let value = Util.toKMB(totalPrice);
 		this.drawText(ctx, value, ctx.canvas.width - 15 - ctx.measureText(value).width, 75 + 25);
 		ctx.restore();
 

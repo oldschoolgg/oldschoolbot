@@ -1,54 +1,52 @@
 import { gzip } from 'node:zlib';
 
+import { stripEmojis } from '@oldschoolgg/toolkit';
 import { Stopwatch } from '@sapphire/stopwatch';
 import {
 	BaseMessageOptions,
 	ButtonBuilder,
 	ButtonInteraction,
 	CacheType,
-	Channel,
 	Collection,
 	CollectorFilter,
 	ComponentType,
 	escapeMarkdown,
 	Guild,
-	GuildTextBasedChannel,
 	InteractionReplyOptions,
 	InteractionType,
 	Message,
 	MessageEditOptions,
 	SelectMenuInteraction,
 	TextChannel,
-	time,
-	User as DJSUser
+	time
 } from 'discord.js';
-import { chunk, objectEntries, Time } from 'e';
+import { chunk, notEmpty, objectEntries, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import murmurHash from 'murmurhash';
 import { Bank } from 'oldschooljs';
 import { bool, integer, nodeCrypto, real } from 'random-js';
 
 import { ADMIN_IDS, OWNER_IDS, SupportServer } from '../config';
+import { ClueTiers } from './clues/clueTiers';
 import { badgesCache, BitField, usernameCache } from './constants';
+import { UserStatsDataNeededForCL } from './data/Collections';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
 import type { Consumable } from './minions/types';
 import { MUserClass } from './MUser';
 import { PaginatedMessage } from './PaginatedMessage';
 import type { POHBoosts } from './poh';
 import { SkillsEnum } from './skilling/types';
-import type { Skills } from './types';
+import type { ItemBank, Skills } from './types';
 import type {
 	GroupMonsterActivityTaskOptions,
 	NexTaskOptions,
 	RaidsOptions,
 	TheatreOfBloodTaskOptions
 } from './types/minions';
-import { getItem } from './util/getOSItem';
+import getOSItem, { getItem } from './util/getOSItem';
 import itemID from './util/itemID';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const emojiRegex = require('emoji-regex');
-
+export { cleanString, stringMatches, stripEmojis } from '@oldschoolgg/toolkit';
 export * from 'oldschooljs/dist/util/index';
 
 const zeroWidthSpace = '\u200b';
@@ -78,27 +76,6 @@ export function cleanMentions(guild: Guild | null, input: string, showAt = true)
 		});
 }
 
-export function generateHexColorForCashStack(coins: number) {
-	if (coins > 9_999_999) {
-		return '#00FF80';
-	}
-
-	if (coins > 99_999) {
-		return '#FFFFFF';
-	}
-
-	return '#FFFF00';
-}
-
-export function formatItemStackQuantity(quantity: number) {
-	if (quantity > 9_999_999) {
-		return `${Math.floor(quantity / 1_000_000)}M`;
-	} else if (quantity > 99_999) {
-		return `${Math.floor(quantity / 1000)}K`;
-	}
-	return quantity.toString();
-}
-
 export function isWeekend() {
 	const currentDate = new Date(Date.now() - Time.Hour * 6);
 	return [6, 0].includes(currentDate.getDay());
@@ -118,7 +95,7 @@ export function convertXPtoLVL(xp: number, cap = 99) {
 	return cap;
 }
 
-export function rand(min: number, max: number) {
+export function cryptoRand(min: number, max: number) {
 	return integer(min, max)(nodeCrypto);
 }
 
@@ -131,13 +108,7 @@ export function percentChance(percent: number) {
 }
 
 export function roll(max: number) {
-	return rand(1, max) === 1;
-}
-
-const rawEmojiRegex = emojiRegex();
-
-export function stripEmojis(str: string) {
-	return str.replace(rawEmojiRegex, '');
+	return cryptoRand(1, max) === 1;
 }
 
 export const anglerBoosts = [
@@ -369,11 +340,6 @@ export function truncateString(str: string, maxLen: number) {
 export function removeMarkdownEmojis(str: string) {
 	return escapeMarkdown(stripEmojis(str));
 }
-export { cleanString, stringMatches } from './util/cleanString';
-
-export function discrimName(user: DJSUser) {
-	return `${user.username}#${user.discriminator}`;
-}
 
 export function isValidSkill(skill: string): skill is SkillsEnum {
 	return Object.values(SkillsEnum).includes(skill as SkillsEnum);
@@ -469,10 +435,6 @@ export function awaitMessageComponentInteraction({
 	});
 }
 
-export function isGuildChannel(channel?: Channel): channel is GuildTextBasedChannel {
-	return channel !== undefined && !channel.isDMBased() && Boolean(channel.guild);
-}
-
 export async function runTimedLoggedFn(name: string, fn: () => Promise<unknown>) {
 	debugLog(`Starting ${name}...`);
 	const stopwatch = new Stopwatch();
@@ -480,10 +442,6 @@ export async function runTimedLoggedFn(name: string, fn: () => Promise<unknown>)
 	await fn();
 	stopwatch.stop();
 	debugLog(`Finished ${name} in ${stopwatch.toString()}`);
-}
-
-export function isFunction(input: unknown): input is Function {
-	return typeof input === 'function';
 }
 
 export function dateFm(date: Date) {
@@ -516,6 +474,45 @@ export function getInteractionTypeName(type: InteractionType) {
 
 export function isModOrAdmin(user: MUser) {
 	return [...OWNER_IDS, ...ADMIN_IDS].includes(user.id) || user.bitfield.includes(BitField.isModerator);
+}
+
+export async function calcClueScores(user: MUser) {
+	const stats = await user.fetchStats({ openable_scores: true });
+	const openableBank = new Bank(stats.openable_scores as ItemBank);
+	return openableBank
+		.items()
+		.map(entry => {
+			const tier = ClueTiers.find(i => i.id === entry[0].id);
+			if (!tier) return;
+			return {
+				tier,
+				casket: getOSItem(tier.id),
+				clueScroll: getOSItem(tier.scrollID),
+				opened: openableBank.amount(tier.id)
+			};
+		})
+		.filter(notEmpty);
+}
+
+export async function fetchStatsForCL(user: MUser): Promise<UserStatsDataNeededForCL> {
+	const userStats = await user.fetchStats({
+		sacrificed_bank: true,
+		tithe_farms_completed: true,
+		laps_scores: true,
+		openable_scores: true,
+		monster_scores: true,
+		high_gambles: true,
+		gotr_rift_searches: true
+	});
+	return {
+		sacrificedBank: new Bank(userStats.sacrificed_bank as ItemBank),
+		titheFarmsCompleted: userStats.tithe_farms_completed,
+		lapsScores: userStats.laps_scores as ItemBank,
+		openableScores: new Bank(userStats.openable_scores as ItemBank),
+		kcBank: userStats.monster_scores as ItemBank,
+		highGambles: userStats.high_gambles,
+		gotrRiftSearches: userStats.gotr_rift_searches
+	};
 }
 
 export { assert } from './util/logError';

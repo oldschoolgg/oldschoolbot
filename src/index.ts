@@ -13,10 +13,11 @@ import { isObject } from 'e';
 import { MahojiClient } from 'mahoji';
 import { convertAPIOptionsToCommandOptions } from 'mahoji/dist/lib/util';
 import { join } from 'path';
+import { isMainThread } from 'worker_threads';
 
-import { botToken, CLIENT_ID, DEV_SERVER_ID, production, SENTRY_DSN, SupportServer } from './config';
+import { botToken, DEV_SERVER_ID, production, SENTRY_DSN, SupportServer } from './config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from './lib/blacklists';
-import { Channel, Events, gitHash } from './lib/constants';
+import { Channel, Events, gitHash, globalConfig } from './lib/constants';
 import { onMessage } from './lib/events';
 import { makeServer } from './lib/http';
 import { modalInteractionHook } from './lib/modals';
@@ -35,6 +36,11 @@ import { preCommand } from './mahoji/lib/preCommand';
 import { convertMahojiCommandToAbstractCommand } from './mahoji/lib/util';
 
 debugLog(`Starting... Git Hash ${gitHash}`);
+
+if (production && !process.env.TEST && isMainThread) {
+	// eslint-disable-next-line @typescript-eslint/no-var-requires
+	require('segfault-handler').registerHandler('crash.log');
+}
 
 if (!production) {
 	import('./lib/devHotReload');
@@ -98,7 +104,7 @@ const client = new OldSchoolBotClient({
 
 export const mahojiClient = new MahojiClient({
 	developmentServerID: DEV_SERVER_ID,
-	applicationID: CLIENT_ID,
+	applicationID: globalConfig.clientID,
 	storeDirs: [join('dist', 'mahoji')],
 	handlers: {
 		preCommand: async ({ command, interaction, options }) => {
@@ -141,7 +147,9 @@ declare global {
 
 client.mahojiClient = mahojiClient;
 global.globalClient = client;
-client.on('messageCreate', onMessage);
+client.on('messageCreate', msg => {
+	onMessage(msg);
+});
 client.on('interactionCreate', async interaction => {
 	if (BLACKLISTED_USERS.has(interaction.user.id)) return;
 	if (interaction.guildId && BLACKLISTED_GUILDS.has(interaction.guildId)) return;
@@ -222,6 +230,7 @@ client.on('ready', () => runTimedLoggedFn('OnStartup', async () => onStartup()))
 client.on('debug', str => debugLog(str, { type: 'DJS-DEBUG' }));
 
 async function main() {
+	if (process.env.TEST) return;
 	client.fastifyServer = await makeServer();
 	await Promise.all([
 		runTimedLoggedFn('Sync Active User IDs', syncActiveUserIDs),
@@ -231,6 +240,7 @@ async function main() {
 		runTimedLoggedFn('Start Mahoji Client', async () => mahojiClient.start()),
 		runTimedLoggedFn('Startup Scripts', runStartupScripts)
 	]);
+
 	await runTimedLoggedFn('Log In', () => client.login(botToken));
 }
 

@@ -8,7 +8,7 @@ import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
 import { skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
-import { rogueOutfitPercentBonus, updateGPTrackSetting } from '../../mahoji/mahojiSettings';
+import { rogueOutfitPercentBonus, updateClientGPTrackSetting } from '../../mahoji/mahojiSettings';
 
 export function calcLootXPPickpocketing(
 	currentLevel: number,
@@ -90,7 +90,7 @@ export const pickpocketTask: MinionTask = {
 		}
 
 		if (loot.has('Coins')) {
-			updateGPTrackSetting('gp_pickpocket', loot.amount('Coins'));
+			updateClientGPTrackSetting('gp_pickpocket', loot.amount('Coins'));
 		}
 
 		const { previousCL, itemsAdded } = await transactItems({

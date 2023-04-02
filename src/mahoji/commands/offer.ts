@@ -1,3 +1,4 @@
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { User } from 'discord.js';
 import { randArrItem, randInt, roll, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
@@ -13,13 +14,12 @@ import { OfferingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { stringMatches } from '../../lib/util/cleanString';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import resolveItems from '../../lib/util/resolveItems';
 import { OSBMahojiCommand } from '../lib/util';
-import { userStatsBankUpdate } from '../mahojiSettings';
+import { userStatsBankUpdate, userStatsUpdate } from '../mahojiSettings';
 
 const specialBones = [
 	{
@@ -117,19 +117,24 @@ export const mineCommand: OSBMahojiCommand = {
 				itemsToAdd: loot
 			});
 			if (whichOfferable.economyCounter) {
-				const { newUser } = await user.update({
-					[whichOfferable.economyCounter]: {
-						increment: quantity
-					}
-				}); // Notify uniques
+				const newStats = await userStatsUpdate(
+					user.id,
+					{
+						[whichOfferable.economyCounter]: {
+							increment: quantity
+						}
+					},
+					{ slayer_chewed_offered: true, slayer_unsired_offered: true }
+				); // Notify uniques
 				if (whichOfferable.uniques) {
+					let current = newStats[whichOfferable.economyCounter];
 					notifyUniques(
 						user,
 						whichOfferable.name,
 						whichOfferable.uniques,
 						itemsAdded,
 						quantity,
-						newUser[whichOfferable.economyCounter] + randInt(1, quantity)
+						current + randInt(1, quantity)
 					);
 				}
 			}
@@ -154,6 +159,7 @@ export const mineCommand: OSBMahojiCommand = {
 			}
 			if (!quantity) quantity = quantityOwned;
 			const cost = new Bank().add(egg.id, quantity);
+			if (!user.owns(cost)) return "You don't own enough of these eggs.";
 			await user.removeItemsFromBank(cost);
 			await userStatsBankUpdate(user.id, 'bird_eggs_offered_bank', cost);
 			let loot = new Bank();

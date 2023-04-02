@@ -15,7 +15,6 @@ import {
 } from '../lib/abstracted_commands/pohCommand';
 import { ownedItemOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const pohCommand: OSBMahojiCommand = {
 	name: 'poh',
@@ -124,8 +123,7 @@ export const pohCommand: OSBMahojiCommand = {
 		items?: { name: string };
 	}>) => {
 		const user = await mUserFetch(userID);
-		const mahojiUser = await mahojiUsersSettingsFetch(userID);
-		if (!mahojiUser.minion_hasBought) return "You don't own a minion yet, so you have no PoH!";
+		if (!user.hasMinion) return "You don't own a minion yet, so you have no PoH!";
 		if (options.view) {
 			return makePOHImage(user, options.view.build_mode);
 		}
