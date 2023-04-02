@@ -1,3 +1,4 @@
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { StashUnit, User } from '@prisma/client';
 import { partition } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
@@ -6,7 +7,6 @@ import Bank from 'oldschooljs/dist/structures/Bank';
 import { allStashUnitsFlat, allStashUnitTiers, IStashUnit, StashUnitTier } from '../../../lib/clues/stashUnits';
 import { prisma } from '../../../lib/settings/prisma';
 import { assert } from '../../../lib/util';
-import { stringMatches } from '../../../lib/util/cleanString';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { itemNameFromID } from '../../../lib/util/smallUtils';
 import { getMahojiBank } from '../../mahojiSettings';
