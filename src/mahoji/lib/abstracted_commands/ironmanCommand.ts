@@ -121,7 +121,7 @@ After becoming an ironman:
 
 	try {
 		// Delete tables with foreign keys first:
-		await prisma.historicalData.deleteMany({ where: { user_id: user.id } });
+		// await prisma.historicalData.deleteMany({ where: { user_id: user.id } });
 		await prisma.botItemSell.deleteMany({ where: { user_id: user.id } });
 		await prisma.pinnedTrip.deleteMany({ where: { user_id: user.id } });
 		await prisma.farmedCrop.deleteMany({ where: { user_id: user.id } });
@@ -139,8 +139,7 @@ After becoming an ironman:
 		await prisma.newUser.delete({ where: { id: user.id } });
 		await prisma.activity.deleteMany({ where: { user_id: BigInt(user.id) } });
 		await prisma.stashUnit.deleteMany({ where: { user_id: BigInt(user.id) } });
-		const t = await prisma.userStats.deleteMany({ where: { user_id: BigInt(user.id) } });
-		console.log(`Deleted ${t.count} userstats`);
+		await prisma.userStats.deleteMany({ where: { user_id: BigInt(user.id) } });
 
 		// Refund the leagues points they spent
 		const roboChimpUser = await roboChimpUserFetch(user.id);

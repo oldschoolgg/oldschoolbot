@@ -6,6 +6,7 @@ import { describe, expect, test } from 'vitest';
 import { prisma } from '../../../src/lib/settings/prisma';
 import { miniID } from '../../../src/lib/util';
 import { ironmanCommand } from '../../../src/mahoji/lib/abstracted_commands/ironmanCommand';
+import { randomCryptoSnowflake } from '../util';
 
 describe('Ironman Command', () => {
 	async function createUserWithEverything(userId: string, userData: Partial<Prisma.UserCreateInput> = {}) {
@@ -70,7 +71,7 @@ describe('Ironman Command', () => {
 	}
 
 	test('Should reset everything', async () => {
-		const userId = '111115';
+		const userId = randomCryptoSnowflake();
 		await createUserWithEverything(userId);
 
 		const result = await ironmanCommand(await mUserFetch(userId), null, false);
@@ -93,11 +94,14 @@ describe('Ironman Command', () => {
 		expect(await prisma.xPGain.count({ where: { user_id: BigInt(userId) } })).toEqual(0);
 		expect(await prisma.stashUnit.count({ where: { user_id: BigInt(userId) } })).toEqual(0);
 		expect(await prisma.userStats.count({ where: { user_id: BigInt(userId) } })).toEqual(0);
+
+		console.log(await prisma.historicalData.findMany({ where: { user_id: userId } }));
+
 		expect(await prisma.historicalData.count({ where: { user_id: userId } })).toEqual(0);
 	});
 
 	test('Should de-iron', async () => {
-		const userId = '511153';
+		const userId = randomCryptoSnowflake();
 		await createUserWithEverything(userId, { minion_ironman: true });
 		const initialUser = await mUserFetch(userId);
 		expect(initialUser.isIronman).toEqual(true);
