@@ -93,6 +93,7 @@ export interface RunCommandArgs {
 	bypassInhibitors?: true;
 	guildID: string | undefined | null;
 	interaction: ButtonInteraction | ChatInputCommandInteraction;
+	showResponse: boolean;
 }
 export async function runCommand({
 	commandName,
@@ -103,7 +104,8 @@ export async function runCommand({
 	guildID,
 	user,
 	member,
-	interaction
+	interaction,
+	showErrors
 }: RunCommandArgs): Promise<null | CommandResponse> {
 	const channel = globalClient.channels.cache.get(channelID.toString());
 	if (!channel || !channelIsSendable(channel)) return null;
@@ -113,6 +115,7 @@ export async function runCommand({
 
 	let error: Error | null = null;
 	let inhibited = false;
+	let runPostCommand = true;
 	try {
 		const inhibitedReason = await preCommand({
 			abstractCommand,
@@ -126,7 +129,8 @@ export async function runCommand({
 
 		if (inhibitedReason) {
 			inhibited = true;
-			if (inhibitedReason.silent) return null;
+			if (inhibitedReason.dontRunPostCommand) runPostCommand = false;
+			if (!showErrors && inhibitedReason.silent) return null;
 
 			await interaction.reply({
 				content:
@@ -155,16 +159,18 @@ export async function runCommand({
 		handleInteractionError(err, interaction);
 	} finally {
 		try {
-			await postCommand({
-				abstractCommand,
-				userID: user.id,
-				guildID,
-				channelID,
-				args,
-				error,
-				isContinue: isContinue ?? false,
-				inhibited
-			});
+			if (runPostCommand) {
+				await postCommand({
+					abstractCommand,
+					userID: user.id,
+					guildID,
+					channelID,
+					args,
+					error,
+					isContinue: isContinue ?? false,
+					inhibited
+				});
+			}
 		} catch (err) {
 			logError(err);
 		}
