@@ -93,7 +93,7 @@ export interface RunCommandArgs {
 	bypassInhibitors?: true;
 	guildID: string | undefined | null;
 	interaction: ButtonInteraction | ChatInputCommandInteraction;
-	showResponse: boolean;
+	showResponse?: boolean;
 }
 export async function runCommand({
 	commandName,
