@@ -21,6 +21,7 @@ const basePOH: PlayerOwnedHouse = {
 	prison: null,
 	pool: null,
 	teleport: null,
+	amulet: null,
 	garden_decoration: null
 } as const;
 

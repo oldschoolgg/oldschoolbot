@@ -1,10 +1,10 @@
 import '../data/itemAliases';
 
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, Misc, Monsters } from 'oldschooljs';
 
 import { handleNexKills } from '../simulation/nex';
 import { calcDropRatesFromBank } from '../util/calcDropRatesFromBank';
-import { stringMatches } from '../util/cleanString';
 import resolveItems from '../util/resolveItems';
 import type { KillWorkerArgs, KillWorkerReturn } from '.';
 

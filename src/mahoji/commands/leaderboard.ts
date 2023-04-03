@@ -271,7 +271,7 @@ async function lapsLb(user: MUser, channelID: string, courseName: string) {
 
 	const data: { id: string; count: number }[] = await prisma.$queryRawUnsafe(
 		`SELECT user_id::text as id, ("laps_scores"->>'${course.id}')::int as count
-			 FROM users
+			 FROM user_stats
 			 WHERE "laps_scores"->>'${course.id}' IS NOT NULL
 			 ORDER BY count DESC LIMIT 50;`
 	);
@@ -808,7 +808,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		cl?: { cl: string; ironmen_only?: boolean };
 		clues?: { clue: ClueTier['name']; ironmen_only?: boolean };
 	}>) => {
-		await deferInteraction(interaction);
+		deferInteraction(interaction);
 		const user = await mUserFetch(userID);
 		const {
 			opens,

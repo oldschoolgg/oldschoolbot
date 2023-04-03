@@ -1,3 +1,4 @@
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { User } from 'discord.js';
 import { randArrItem, randInt, roll, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
@@ -13,7 +14,6 @@ import { OfferingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { stringMatches } from '../../lib/util/cleanString';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';
 import { makeBankImage } from '../../lib/util/makeBankImage';
@@ -159,6 +159,7 @@ export const mineCommand: OSBMahojiCommand = {
 			}
 			if (!quantity) quantity = quantityOwned;
 			const cost = new Bank().add(egg.id, quantity);
+			if (!user.owns(cost)) return "You don't own enough of these eggs.";
 			await user.removeItemsFromBank(cost);
 			await userStatsBankUpdate(user.id, 'bird_eggs_offered_bank', cost);
 			let loot = new Bank();

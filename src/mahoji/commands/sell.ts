@@ -222,6 +222,11 @@ export const sellCommand: OSBMahojiCommand = {
 			)}).`
 		);
 
+		await user.sync();
+		if (!user.owns(bankToSell)) {
+			return "You don't have the items you're trying to sell.";
+		}
+
 		await transactItems({
 			userID: user.id,
 			itemsToAdd: new Bank().add('Coins', totalPrice),
