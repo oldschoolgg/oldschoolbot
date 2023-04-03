@@ -16,6 +16,7 @@ import { castleWarsBuyables } from './castleWars';
 import { fremennikClothes } from './frem';
 import { gnomeClothes } from './gnomeClothes';
 import { guardiansOfTheRiftBuyables } from './guardiansOfTheRifBuyables';
+import { mairinsMarketBuyables } from './mairinsMarketBuyables';
 import { miningBuyables } from './mining';
 import { godCapes, perduBuyables, prayerBooks } from './perdu';
 import { runeBuyables } from './runes';
@@ -1049,6 +1050,16 @@ const Buyables: Buyable[] = [
 		ironmanPrice: 60_000,
 		qpRequired: 172
 	},
+	{
+		name: 'Mask of rebirth',
+		gpCost: 100_000,
+		ironmanPrice: 10_000,
+		qpRequired: 172,
+		customReq: async (user: MUser) => {
+			const toaKCs = await getToaKCs(user);
+			return toaKCs.expertKC >= 25 ? [true] : [false, 'You need a 25 Expert KC in Tombs of Amascut to buy this.'];
+		}
+	},
 	...sepulchreBuyables,
 	...constructionBuyables,
 	...hunterBuyables,
@@ -1075,7 +1086,8 @@ const Buyables: Buyable[] = [
 	...ironmenBuyables,
 	...shootingStarsBuyables,
 	...guardiansOfTheRiftBuyables,
-	...toaCapes
+	...toaCapes,
+	...mairinsMarketBuyables
 ];
 
 for (const [chompyHat, qty] of chompyHats) {

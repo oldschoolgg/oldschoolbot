@@ -1,5 +1,5 @@
 import { bold } from 'discord.js';
-import { Time, uniqueArr } from 'e';
+import { isObject, Time, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
@@ -13,11 +13,19 @@ import { calcTOALoot, calculateXPFromRaid, toaOrnamentKits, toaPetTransmogItems 
 import { TOAOptions } from '../../../lib/types/minions';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { assert } from '../../../lib/util/logError';
 import resolveItems from '../../../lib/util/resolveItems';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
 
-const purpleButNotAnnounced = resolveItems(['Dexterous prayer scroll', 'Arcane prayer scroll']);
+const purpleButNotAnnounced = resolveItems([
+	"Elidinis' ward",
+	"Osmumten's fang",
+	'Lightbearer',
+	'Masori mask',
+	'Masori body',
+	'Masori chaps'
+]);
 
 interface RaidResultUser {
 	points: number;
@@ -29,9 +37,28 @@ interface RaidResultUser {
 export const toaTask: MinionTask = {
 	type: 'TombsOfAmascut',
 	async run(data: TOAOptions) {
-		const { channelID, raidLevel, duration, leader, quantity, wipedRoom, detailedUsers } = data;
-		const isSolo = detailedUsers.length === 1;
-		const allUsers = await Promise.all(detailedUsers.map(async u => mUserFetch(u[0])));
+		const {
+			channelID,
+			raidLevel,
+			duration,
+			leader,
+			quantity,
+			wipedRoom: _wipedRoom,
+			detailedUsers: _detailedUsers
+		} = data;
+		const detailedUsers = (
+			(Array.isArray(_detailedUsers[0]) ? _detailedUsers : [_detailedUsers]) as [string, number, number[]][][]
+		).map(userArr =>
+			userArr.map(user => ({
+				id: user[0],
+				points: user[1],
+				deaths: user[2]
+			}))
+		);
+		const wipedRooms = Array.isArray(_wipedRoom) ? _wipedRoom : [_wipedRoom];
+		assert(Array.isArray(detailedUsers[0]) && isObject(detailedUsers[0][0]), `${detailedUsers}`);
+		const isSolo = detailedUsers[0].length === 1;
+		const allUsers = await Promise.all(detailedUsers[0].map(async u => mUserFetch(u.id)));
 		const leaderSoloUser = allUsers[0];
 
 		const previousCLs = allUsers.map(i => i.cl.clone());
@@ -39,14 +66,18 @@ export const toaTask: MinionTask = {
 		// Increment all users attempts
 		await Promise.all(
 			allUsers.map(i =>
-				userStatsUpdate(i.id, () => ({
-					toa_attempts: {
-						increment: quantity
-					}
-				}))
+				userStatsUpdate(
+					i.id,
+					{
+						toa_attempts: {
+							increment: quantity
+						}
+					},
+					{}
+				)
 			)
 		);
-		if (wipedRoom) {
+		if (wipedRooms.every(i => i !== null)) {
 			return handleTripFinish(
 				allUsers[0],
 				channelID,
@@ -75,23 +106,24 @@ export const toaTask: MinionTask = {
 		const itemsAddedTeamLoot = new TeamLoot();
 
 		for (let x = 0; x < quantity; x++) {
+			if (wipedRooms[x] !== null) continue;
 			const raidLoot = calcTOALoot({
-				users: detailedUsers.map(i => {
-					const fullUser = allUsers.find(u => u.id === i[0])!;
+				users: detailedUsers[x].map(i => {
+					const fullUser = allUsers.find(u => u.id === i.id)!;
 					return {
-						id: i[0],
-						points: i[1][x],
+						id: i.id,
+						points: i.points,
 						cl: fullUser.cl,
-						kc: raidResults.get(i[0])!.kc,
-						deaths: i[2][x]
+						kc: raidResults.get(i.id)!.kc,
+						deaths: i.deaths
 					};
 				}),
 				raidLevel
 			});
-			for (const [id, points, deaths] of detailedUsers) {
+			for (const { id, points, deaths } of detailedUsers[x]) {
 				const currentUser = raidResults.get(id)!;
-				currentUser.points += points[x];
-				currentUser.deaths += deaths[x].length;
+				currentUser.points += points;
+				currentUser.deaths += deaths.length;
 				currentUser.kc += 1;
 				raidResults.set(id, currentUser);
 			}
@@ -106,16 +138,24 @@ export const toaTask: MinionTask = {
 		);
 
 		let resultMessage = isSolo
-			? `${leaderSoloUser}, your minion finished a Tombs of Amascut raid! Your KC is now ${minigameIncrementResult[0].newScore}.\n`
+			? `${leaderSoloUser}, your minion finished ${quantity === 1 ? 'a' : `${quantity}x`} Tombs of Amascut raid${
+					quantity > 1 ? 's' : ''
+			  }! Your KC is now ${minigameIncrementResult[0].newScore}.\n`
 			: `<@${leader}> Your Raid${quantity > 1 ? 's have' : ' has'} finished.\n`;
+
+		const shouldShowImage = allUsers.length <= 3 && totalLoot.entries().every(i => i[1].length <= 6);
 
 		for (let [userID, userData] of raidResults.entries()) {
 			const { points, deaths, mUser: user } = userData;
-			await userStatsUpdate(user.id, () => ({
-				total_toa_points: {
-					increment: points
-				}
-			}));
+			await userStatsUpdate(
+				user.id,
+				{
+					total_toa_points: {
+						increment: points
+					}
+				},
+				{}
+			);
 
 			// If the user already has these in their bank they cannot get another
 			for (const itemID of [...toaPetTransmogItems, ...toaOrnamentKits.map(i => i[0].id)]) {
@@ -134,16 +174,21 @@ export const toaTask: MinionTask = {
 
 			itemsAddedTeamLoot.add(userID, itemsAdded);
 
-			userStatsUpdate(user.id, u => {
-				return {
-					toa_raid_levels_bank: new Bank().add(u.toa_raid_levels_bank as ItemBank).add(raidLevel, quantity)
-						.bank,
-					total_toa_duration_minutes: {
-						increment: Math.floor(duration / Time.Minute)
-					},
-					toa_loot: new Bank(u.toa_loot as ItemBank).add(totalLoot.get(userID)).bank
-				};
-			});
+			userStatsUpdate(
+				user.id,
+				u => {
+					return {
+						toa_raid_levels_bank: new Bank()
+							.add(u.toa_raid_levels_bank as ItemBank)
+							.add(raidLevel, quantity).bank,
+						total_toa_duration_minutes: {
+							increment: Math.floor(duration / Time.Minute)
+						},
+						toa_loot: new Bank(u.toa_loot as ItemBank).add(totalLoot.get(userID)).bank
+					};
+				},
+				{}
+			);
 
 			const items = itemsAdded.items();
 
@@ -162,7 +207,7 @@ export const toaTask: MinionTask = {
 			const str = isPurple ? `${Emoji.Purple} ||${itemsAdded}||` : itemsAdded.toString();
 			const deathStr = deaths === 0 ? '' : new Array(deaths).fill(Emoji.Skull).join(' ');
 
-			if (allUsers.length <= 3) {
+			if (shouldShowImage) {
 				resultMessage += `\n${deathStr} **${user}** ${bold(points.toLocaleString())} points`;
 			} else {
 				resultMessage += `\n${deathStr} **${user}** received: ${str} (${bold(points.toLocaleString())} points)`;
@@ -211,11 +256,6 @@ export const toaTask: MinionTask = {
 					text: `${user.deaths} deaths`,
 					x: 149,
 					y: 165
-				},
-				{
-					text: `Loot Value: ${Math.trunc(totalLoot.get(userID).value() / 1000)}K`,
-					x: 149,
-					y: 180
 				}
 			];
 		}
@@ -225,17 +265,19 @@ export const toaTask: MinionTask = {
 				allUsers[0],
 				channelID,
 				resultMessage,
-				await drawChestLootImage({
-					entries: [
-						{
-							loot: itemsAddedTeamLoot.totalLoot(),
-							user: allUsers[0],
-							previousCL: previousCLs[0],
-							customTexts: makeCustomTexts(leaderSoloUser.id)
-						}
-					],
-					type: 'Tombs of Amascut'
-				}),
+				shouldShowImage
+					? await drawChestLootImage({
+							entries: [
+								{
+									loot: itemsAddedTeamLoot.totalLoot(),
+									user: allUsers[0],
+									previousCL: previousCLs[0],
+									customTexts: makeCustomTexts(leaderSoloUser.id)
+								}
+							],
+							type: 'Tombs of Amascut'
+					  })
+					: undefined,
 				data,
 				null
 			);
@@ -245,7 +287,7 @@ export const toaTask: MinionTask = {
 			allUsers[0],
 			channelID,
 			resultMessage,
-			allUsers.length <= 3
+			shouldShowImage
 				? await drawChestLootImage({
 						entries: allUsers.map((u, index) => ({
 							loot: itemsAddedTeamLoot.get(u.id),

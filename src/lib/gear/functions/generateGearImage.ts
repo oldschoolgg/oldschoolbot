@@ -78,9 +78,10 @@ export async function generateGearImage(
 	gearType: GearSetupType | null,
 	petID: number | null
 ) {
+	debugLog('Generating gear image', { user_id: user.id });
 	const bankBg = user.user.bankBackground ?? 1;
 
-	let { sprite, uniqueSprite, background: userBgImage } = bankImageGenerator.getBgAndSprite(bankBg);
+	let { sprite, uniqueSprite, background: userBgImage } = bankImageGenerator.getBgAndSprite(bankBg, user);
 
 	const hexColor = user.user.bank_bg_hex;
 
@@ -241,10 +242,10 @@ export async function generateAllGearImage(user: MUser) {
 		sprite: bgSprite,
 		uniqueSprite: hasBgSprite,
 		background: userBg
-	} = bankImageGenerator.getBgAndSprite(user.user.bankBackground ?? 1);
+	} = bankImageGenerator.getBgAndSprite(user.user.bankBackground ?? 1, user);
 
 	const hexColor = user.user.bank_bg_hex;
-
+	debugLog('Generating all-gear image', { user_id: user.id });
 	const gearTemplateImage = await canvasImageFromBuffer(gearTemplateCompactFile);
 	const canvas = new Canvas((gearTemplateImage.width + 10) * 4 + 20, Number(gearTemplateImage.height) * 2 + 70);
 	const ctx = canvas.getContext('2d');

@@ -1,18 +1,20 @@
-import { Embed } from '@discordjs/builders';
+import { EmbedBuilder } from '@discordjs/builders';
 import { BaseMessageOptions, bold, ButtonBuilder, ButtonStyle, Message, TextChannel } from 'discord.js';
-import { roll, Time } from 'e';
+import { isFunction, roll, Time } from 'e';
 import LRUCache from 'lru-cache';
 import { Items } from 'oldschooljs';
 
-import { CLIENT_ID, production, SupportServer } from '../config';
+import { production, SupportServer } from '../config';
 import { untrustedGuildSettingsCache } from '../mahoji/guildSettings';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
 import { mentionCommand } from './commandMention';
-import { BitField, Channel, Emoji } from './constants';
+import { BitField, Channel, Emoji, globalConfig } from './constants';
 import pets from './data/pets';
 import { prisma } from './settings/prisma';
 import { ItemBank } from './types';
-import { channelIsSendable, formatDuration, isFunction, makeComponents, toKMB } from './util';
+import { UserError } from './UserError';
+import { channelIsSendable, formatDuration, makeComponents, toKMB } from './util';
+import { logError } from './util/logError';
 import { makeBankImage } from './util/makeBankImage';
 import { minionStatsEmbed } from './util/minionStatsEmbed';
 
@@ -77,7 +79,7 @@ function rareRoles(msg: Message) {
 	}
 }
 
-const petCache = new LRUCache<string, number>({ max: 1000 });
+const petCache = new LRUCache<string, number>({ max: 2000 });
 async function petMessages(msg: Message) {
 	if (!msg.guild) return;
 	const cachedSettings = untrustedGuildSettingsCache.get(msg.guild.id);
@@ -109,23 +111,23 @@ Type \`/tools user mypets\` to see your pets.`);
 	}
 }
 
-const mentionText = `<@${CLIENT_ID}>`;
+const mentionText = `<@${globalConfig.clientID}>`;
 
 const cooldownTimers: {
 	name: string;
-	timeStamp: (user: MUser) => number;
+	timeStamp: (user: MUser, stats: { last_daily_timestamp: bigint; last_tears_of_guthix_timestamp: bigint }) => number;
 	cd: number | ((user: MUser) => number);
 	command: [string] | [string, string] | [string, string, string];
 }[] = [
 	{
 		name: 'Tears of Guthix',
-		timeStamp: (user: MUser) => Number(user.user.lastTearsOfGuthixTimestamp),
+		timeStamp: (_, stats) => Number(stats.last_tears_of_guthix_timestamp),
 		cd: Time.Day * 7,
 		command: ['minigames', 'tears_of_guthix', 'start']
 	},
 	{
 		name: 'Daily',
-		timeStamp: (user: MUser) => Number(user.user.lastDailyTimestamp),
+		timeStamp: (_, stats) => Number(stats.last_daily_timestamp),
 		cd: Time.Hour * 12,
 		command: ['minion', 'daily']
 	}
@@ -150,7 +152,7 @@ const mentionCommands: MentionCommand[] = [
 		aliases: ['bs'],
 		description: 'Searches your bank.',
 		run: async ({ msg, user, components, content }: MentionCommandOptions) => {
-			msg.reply({
+			return msg.reply({
 				files: [
 					(
 						await makeBankImage({
@@ -169,7 +171,7 @@ const mentionCommands: MentionCommand[] = [
 		aliases: ['bal', 'gp'],
 		description: 'Shows how much GP you have.',
 		run: async ({ msg, user, components }: MentionCommandOptions) => {
-			msg.reply({
+			return msg.reply({
 				content: `${Emoji.MoneyBag} You have ${toKMB(user.GP)} (${user.GP.toLocaleString()}) GP.`,
 				components
 			});
@@ -194,7 +196,6 @@ const mentionCommands: MentionCommand[] = [
 
 					if (user.cl.has(item.id)) icons.push(Emoji.CollectionLog);
 					if (user.bank.has(item.id)) icons.push(Emoji.Bank);
-					if (user.sacrificedItems.has(item.id)) icons.push(Emoji.Incinerator);
 
 					const price = toKMB(Math.floor(item.price));
 
@@ -213,7 +214,7 @@ const mentionCommands: MentionCommand[] = [
 				str += `\n...and ${items.length - 5} others`;
 			}
 
-			return msg.reply({ embeds: [new Embed().setDescription(str)], components });
+			return msg.reply({ embeds: [new EmbedBuilder().setDescription(str)], components });
 		}
 	},
 	{
@@ -221,7 +222,7 @@ const mentionCommands: MentionCommand[] = [
 		aliases: ['b', 'bank'],
 		description: 'Shows your bank.',
 		run: async ({ msg, user, components }: MentionCommandOptions) => {
-			msg.reply({
+			return msg.reply({
 				files: [
 					(
 						await makeBankImage({
@@ -243,10 +244,11 @@ const mentionCommands: MentionCommand[] = [
 		aliases: ['cd'],
 		description: 'Shows your cooldowns.',
 		run: async ({ msg, user, components }: MentionCommandOptions) => {
-			msg.reply({
+			const stats = await user.fetchStats({ last_daily_timestamp: true, last_tears_of_guthix_timestamp: true });
+			return msg.reply({
 				content: cooldownTimers
 					.map(cd => {
-						const lastDone = cd.timeStamp(user);
+						const lastDone = cd.timeStamp(user, stats);
 						const difference = Date.now() - lastDone;
 						const cooldown = isFunction(cd.cd) ? cd.cd(user) : cd.cd;
 						if (difference < cooldown) {
@@ -268,7 +270,7 @@ const mentionCommands: MentionCommand[] = [
 			if ([BitField.isModerator].every(bit => !user.bitfield.includes(bit))) {
 				return;
 			}
-			msg.reply({
+			return msg.reply({
 				content: `Click this button to find out if you're ready to do Tombs of Amascut! You can also use the ${mentionCommand(
 					'raid',
 					'toa',
@@ -289,7 +291,7 @@ const mentionCommands: MentionCommand[] = [
 		aliases: ['s', 'stats'],
 		description: 'Shows your stats.',
 		run: async ({ msg, user, components }: MentionCommandOptions) => {
-			msg.reply({
+			return msg.reply({
 				embeds: [await minionStatsEmbed(user)],
 				components
 			});
@@ -324,7 +326,14 @@ export async function onMessage(msg: Message) {
 				is_mention_command: true
 			}
 		});
-		await command.run({ msg, user, components, content: msgContentWithoutCommand });
+
+		try {
+			await command.run({ msg, user, components, content: msgContentWithoutCommand });
+		} catch (err) {
+			if (typeof err === 'string') return msg.reply(err);
+			if (err instanceof UserError) return msg.reply(err.message);
+			logError(err);
+		}
 		return;
 	}
 

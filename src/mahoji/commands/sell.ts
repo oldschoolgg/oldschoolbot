@@ -1,9 +1,11 @@
+import { Prisma } from '@prisma/client';
 import { clamp, reduceNumByPercent } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { MAX_INT_JAVA } from '../../lib/constants';
+import { prisma } from '../../lib/settings/prisma';
 import { NestBoxesTable } from '../../lib/simulation/misc';
 import { itemID, toKMB } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
@@ -11,7 +13,7 @@ import { parseBank } from '../../lib/util/parseStringBank';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { updateGPTrackSetting, userStatsUpdate } from '../mahojiSettings';
+import { updateClientGPTrackSetting, userStatsUpdate } from '../mahojiSettings';
 
 /**
  * - Hardcoded prices
@@ -165,16 +167,26 @@ export const sellCommand: OSBMahojiCommand = {
 		let totalPrice = 0;
 		const taxRatePercent = 20;
 
+		const botItemSellData: Prisma.BotItemSellCreateManyInput[] = [];
+
 		for (const [item, qty] of bankToSell.items()) {
 			const specialPrice = specialSoldItems.get(item.id);
+			let pricePerStack = -1;
 			if (specialPrice) {
-				totalPrice += Math.floor(specialPrice * qty);
+				pricePerStack = Math.floor(specialPrice * qty);
 			} else {
 				const { price } = user.isIronman
 					? sellStorePriceOfItem(item, qty)
 					: sellPriceOfItem(item, taxRatePercent);
-				totalPrice += Math.floor(price * qty);
+				pricePerStack = Math.floor(price * qty);
 			}
+			totalPrice += pricePerStack;
+			botItemSellData.push({
+				item_id: item.id,
+				quantity: qty,
+				gp_received: pricePerStack,
+				user_id: user.id
+			});
 		}
 
 		await handleMahojiConfirmation(
@@ -184,6 +196,11 @@ export const sellCommand: OSBMahojiCommand = {
 			)}).`
 		);
 
+		await user.sync();
+		if (!user.owns(bankToSell)) {
+			return "You don't have the items you're trying to sell.";
+		}
+
 		await transactItems({
 			userID: user.id,
 			itemsToAdd: new Bank().add('Coins', totalPrice),
@@ -191,14 +208,19 @@ export const sellCommand: OSBMahojiCommand = {
 		});
 
 		await Promise.all([
-			updateGPTrackSetting('gp_sell', totalPrice),
+			updateClientGPTrackSetting('gp_sell', totalPrice),
 			updateBankSetting('sold_items_bank', bankToSell),
-			userStatsUpdate(user.id, userStats => ({
-				items_sold_bank: new Bank(userStats.items_sold_bank as ItemBank).add(bankToSell).bank,
-				sell_gp: {
-					increment: totalPrice
-				}
-			}))
+			userStatsUpdate(
+				user.id,
+				userStats => ({
+					items_sold_bank: new Bank(userStats.items_sold_bank as ItemBank).add(bankToSell).bank,
+					sell_gp: {
+						increment: totalPrice
+					}
+				}),
+				{}
+			),
+			prisma.botItemSell.createMany({ data: botItemSellData })
 		]);
 
 		return `Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${toKMB(totalPrice)})**${

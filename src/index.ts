@@ -9,14 +9,15 @@ import * as Sentry from '@sentry/node';
 import { Chart } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { GatewayIntentBits, InteractionType, Options, Partials, TextChannel } from 'discord.js';
-import { isObject, Time } from 'e';
+import { isObject } from 'e';
 import { MahojiClient } from 'mahoji';
 import { convertAPIOptionsToCommandOptions } from 'mahoji/dist/lib/util';
 import { join } from 'path';
+import { isMainThread } from 'worker_threads';
 
-import { botToken, CLIENT_ID, DEV_SERVER_ID, production, SENTRY_DSN, SupportServer } from './config';
+import { botToken, DEV_SERVER_ID, production, SENTRY_DSN, SupportServer } from './config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from './lib/blacklists';
-import { Channel, Events, gitHash } from './lib/constants';
+import { Channel, Events, gitHash, globalConfig } from './lib/constants';
 import { onMessage } from './lib/events';
 import { makeServer } from './lib/http';
 import { modalInteractionHook } from './lib/modals';
@@ -27,6 +28,7 @@ import { assert, getInteractionTypeName, runTimedLoggedFn } from './lib/util';
 import { CACHED_ACTIVE_USER_IDS, syncActiveUserIDs } from './lib/util/cachedUserIDs';
 import { interactionHook } from './lib/util/globalInteractions';
 import { handleInteractionError } from './lib/util/interactionReply';
+import { logError } from './lib/util/logError';
 import { sendToChannelID } from './lib/util/webhook';
 import { onStartup } from './mahoji/lib/events';
 import { postCommand } from './mahoji/lib/postCommand';
@@ -34,6 +36,11 @@ import { preCommand } from './mahoji/lib/preCommand';
 import { convertMahojiCommandToAbstractCommand } from './mahoji/lib/util';
 
 debugLog(`Starting... Git Hash ${gitHash}`);
+
+if (production && !process.env.TEST && isMainThread) {
+	// eslint-disable-next-line @typescript-eslint/no-var-requires
+	require('segfault-handler').registerHandler('crash.log');
+}
 
 if (!production) {
 	import('./lib/devHotReload');
@@ -85,11 +92,11 @@ const client = new OldSchoolBotClient({
 	}),
 	sweepers: {
 		guildMembers: {
-			interval: Time.Minute * 15,
+			interval: 60 * 60,
 			filter: () => member => !CACHED_ACTIVE_USER_IDS.has(member.user.id)
 		},
 		users: {
-			interval: Time.Minute * 15,
+			interval: 60 * 60,
 			filter: () => user => !CACHED_ACTIVE_USER_IDS.has(user.id)
 		}
 	}
@@ -97,7 +104,7 @@ const client = new OldSchoolBotClient({
 
 export const mahojiClient = new MahojiClient({
 	developmentServerID: DEV_SERVER_ID,
-	applicationID: CLIENT_ID,
+	applicationID: globalConfig.clientID,
 	storeDirs: [join('dist', 'mahoji')],
 	handlers: {
 		preCommand: async ({ command, interaction, options }) => {
@@ -140,7 +147,9 @@ declare global {
 
 client.mahojiClient = mahojiClient;
 global.globalClient = client;
-client.on('messageCreate', onMessage);
+client.on('messageCreate', msg => {
+	onMessage(msg);
+});
 client.on('interactionCreate', async interaction => {
 	if (BLACKLISTED_USERS.has(interaction.user.id)) return;
 	if (interaction.guildId && BLACKLISTED_GUILDS.has(interaction.guildId)) return;
@@ -218,9 +227,11 @@ client.on('guildCreate', guild => {
 client.on('shardDisconnect', ({ wasClean, code, reason }) => debugLog('Shard Disconnect', { wasClean, code, reason }));
 client.on('shardError', err => debugLog('Shard Error', { error: err.message }));
 client.on('ready', () => runTimedLoggedFn('OnStartup', async () => onStartup()));
+client.on('debug', str => debugLog(str, { type: 'DJS-DEBUG' }));
 
 async function main() {
-	client.fastifyServer = makeServer();
+	if (process.env.TEST) return;
+	client.fastifyServer = await makeServer();
 	await Promise.all([
 		runTimedLoggedFn('Sync Active User IDs', syncActiveUserIDs),
 		runTimedLoggedFn('Sync Activity Cache', syncActivityCache)
@@ -229,9 +240,22 @@ async function main() {
 		runTimedLoggedFn('Start Mahoji Client', async () => mahojiClient.start()),
 		runTimedLoggedFn('Startup Scripts', runStartupScripts)
 	]);
+
 	await runTimedLoggedFn('Log In', () => client.login(botToken));
 }
 
-process.on('uncaughtException', console.error);
+process.on('uncaughtException', err => {
+	console.error(err);
+	logError(err);
+});
+
+process.on('unhandledRejection', err => {
+	console.error(err);
+	logError(err);
+});
+
+process.on('exit', exitCode => {
+	debugLog('Process Exit', { type: 'PROCESS_EXIT', exitCode });
+});
 
 main();

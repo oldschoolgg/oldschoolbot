@@ -80,9 +80,11 @@ import { woodcuttingTask } from '../tasks/minions/woodcuttingActivity';
 import { giantsFoundryTask } from './../tasks/minions/minigames/giantsFoundryActivity';
 import { guardiansOfTheRiftTask } from './../tasks/minions/minigames/guardiansOfTheRiftActivity';
 import { nightmareZoneTask } from './../tasks/minions/minigames/nightmareZoneActivity';
+import { underwaterAgilityThievingTask } from './../tasks/minions/underwaterActivity';
 import { modifyBusyCounter } from './busyCounterCache';
+import { minionActivityCache } from './constants';
 import { convertStoredActivityToFlatActivity, prisma } from './settings/prisma';
-import { activitySync, minionActivityCache, minionActivityCacheDelete } from './settings/settings';
+import { activitySync, minionActivityCacheDelete } from './settings/settings';
 import { logError } from './util/logError';
 
 export const tasks: MinionTask[] = [
@@ -166,7 +168,8 @@ export const tasks: MinionTask[] = [
 	tiaraRunecraftTask,
 	nightmareZoneTask,
 	shadesOfMortonTask,
-	toaTask
+	toaTask,
+	underwaterAgilityThievingTask
 ];
 
 export async function syncActivityCache() {
@@ -180,6 +183,8 @@ export async function syncActivityCache() {
 
 export async function completeActivity(_activity: Activity) {
 	const activity = convertStoredActivityToFlatActivity(_activity);
+	debugLog(`Attemping to complete activity ID[${activity.id}] TYPE[${activity.type}] USER[${activity.userID}]`);
+
 	if (_activity.completed) {
 		throw new Error('Tried to complete an already completed task.');
 	}
@@ -191,13 +196,13 @@ export async function completeActivity(_activity: Activity) {
 
 	modifyBusyCounter(activity.userID, 1);
 	try {
-		globalClient.emit('debug', `Running ${task.type} for ${activity.userID}`);
 		await task.run(activity);
 	} catch (err) {
 		logError(err);
 	} finally {
 		modifyBusyCounter(activity.userID, -1);
 		minionActivityCacheDelete(activity.userID);
+		debugLog(`Finished completing activity ID[${activity.id}] TYPE[${activity.type}] USER[${activity.userID}]`);
 	}
 }
 

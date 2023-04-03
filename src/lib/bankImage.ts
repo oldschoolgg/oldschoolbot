@@ -1,6 +1,7 @@
 import { Canvas, GlobalFonts, Image, loadImage, SKRSContext2D } from '@napi-rs/canvas';
+import { cleanString, formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit';
 import { AttachmentBuilder } from 'discord.js';
-import { chunk, randInt } from 'e';
+import { chunk, randInt, sumArr } from 'e';
 import { existsSync } from 'fs';
 import * as fs from 'fs/promises';
 import fetch from 'node-fetch';
@@ -16,7 +17,6 @@ import backgroundImages from '../lib/minions/data/bankBackgrounds';
 import { BankBackground, FlagMap, Flags } from '../lib/minions/types';
 import { BankSortMethod, BankSortMethods, sorts } from '../lib/sorts';
 import { ItemBank } from '../lib/types';
-import { addArrayOfNumbers, cleanString, formatItemStackQuantity, generateHexColorForCashStack } from '../lib/util';
 import { drawImageWithOutline, fillTextXTimesInCtx, getClippedRegionImage } from '../lib/util/canvasUtil';
 import itemID from '../lib/util/itemID';
 import { logError } from '../lib/util/logError';
@@ -210,12 +210,13 @@ export const bankFlags = [
 	'show_all',
 	'wide'
 ] as const;
-export type BankFlag = typeof bankFlags[number];
+export type BankFlag = (typeof bankFlags)[number];
 
 class BankImageTask {
 	public itemIconsList: Set<number>;
 	public itemIconImagesCache: Map<number, Image>;
 	public backgroundImages: BankBackground[] = [];
+	public alternateImages: { id: number; bgId: number; image: Image }[] = [];
 
 	public _bgSpriteData: Image = new Image();
 	public bgSpriteList: Record<string, IBgSprite> = {};
@@ -266,6 +267,22 @@ class BankImageTask {
 				const purplePath = img.hasPurple
 					? `./src/lib/resources/images/bank_backgrounds/${img.id}_purple.${ext}`
 					: null;
+
+				if (img.alternateImages) {
+					const images = await Promise.all(
+						img.alternateImages.map(async bgId => ({
+							id: bgId.id,
+							bgId: img.id,
+							image: await loadImage(
+								await fs.readFile(
+									`./src/lib/resources/images/bank_backgrounds/${img.id}_${bgId.id}.${ext}`
+								)
+							)
+						}))
+					);
+					this.alternateImages.push(...images);
+				}
+
 				return {
 					...img,
 					image: existsSync(bgPath) ? await loadImage(await fs.readFile(bgPath)) : null,
@@ -389,14 +406,33 @@ class BankImageTask {
 		}
 	}
 
-	getBgAndSprite(bankBgId: number = 1) {
-		const background = this.backgroundImages.find(i => i.id === bankBgId)!;
+	getBgAndSprite(bankBgId: number = 1, user?: MUser) {
+		let background = this.backgroundImages.find(i => i.id === bankBgId)!;
+
+		const currentContract = user?.farmingContract();
+		const isFarmingContractReadyToHarvest = Boolean(
+			currentContract &&
+				currentContract.contract.hasContract &&
+				currentContract.matchingPlantedCrop &&
+				currentContract.matchingPlantedCrop.ready
+		);
+
+		let backgroundImage = background.image!;
+		if (bankBgId === 29 && isFarmingContractReadyToHarvest) {
+			backgroundImage = this.alternateImages.find(i => i.bgId === 29)!.image;
+		}
+		if (bankBgId === 30 && isFarmingContractReadyToHarvest) {
+			backgroundImage = this.alternateImages.find(i => i.bgId === 30)!.image;
+		}
+
 		const hasBgSprite = Boolean(this.bgSpriteList[background.name.toLowerCase()]);
 		const bgSprite = hasBgSprite ? this.bgSpriteList[background.name.toLowerCase()] : this.bgSpriteList.default;
+
 		return {
 			uniqueSprite: hasBgSprite,
 			sprite: bgSprite,
-			background
+			background,
+			backgroundImage
 		};
 	}
 
@@ -523,6 +559,8 @@ class BankImageTask {
 
 		let items = bank.items();
 
+		debugLog(`Generating a bank image with ${items.length} items`, { title, userID: user?.id });
+
 		// Sorting
 		const favorites = user?.user.favoriteItems;
 		const weightings = user?.user.bank_sort_weightings as ItemBank;
@@ -556,7 +594,7 @@ class BankImageTask {
 			});
 		}
 
-		const totalValue = addArrayOfNumbers(items.map(([i, q]) => i.price * q));
+		const totalValue = sumArr(items.map(([i, q]) => i.price * q));
 
 		const chunkSize = compact ? 140 : 56;
 		const chunked = chunk(items, chunkSize);
@@ -594,8 +632,9 @@ class BankImageTask {
 		let {
 			sprite: bgSprite,
 			uniqueSprite: hasBgSprite,
-			background: bgImage
-		} = this.getBgAndSprite(bankBackgroundID);
+			background: bgImage,
+			backgroundImage
+		} = this.getBgAndSprite(bankBackgroundID, user);
 
 		const isTransparent = Boolean(bgImage.transparent);
 
@@ -604,7 +643,7 @@ class BankImageTask {
 			currentCL !== undefined &&
 			bank.items().some(([item]) => !currentCL.has(item.id) && allCLItems.includes(item.id));
 
-		let actualBackground = isPurple && bgImage.hasPurple ? bgImage.purpleImage! : bgImage.image!;
+		let actualBackground = isPurple && bgImage.hasPurple ? bgImage.purpleImage! : backgroundImage;
 
 		const hexColor = user?.user.bank_bg_hex;
 
@@ -693,7 +732,7 @@ interface CustomText {
 }
 export async function drawChestLootImage(options: {
 	entries: { previousCL: Bank; user: MUser; loot: Bank; customTexts: CustomText[] }[];
-	type: typeof chestLootTypes[number]['title'];
+	type: (typeof chestLootTypes)[number]['title'];
 }) {
 	const type = chestLootTypes.find(t => t.title === options.type);
 	if (!type) throw new Error(`Invalid chest type: ${options.type}`);

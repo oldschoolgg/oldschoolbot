@@ -46,7 +46,11 @@ export function determineMiningTime({
 		passedDuration = 0;
 	}
 
-	const userMaxTripTicks = (calcMaxTripLength(user, 'Mining') - passedDuration) / (Time.Second * 0.6);
+	let userMaxTripTicks = (calcMaxTripLength(user, 'Mining') - passedDuration) / (Time.Second * 0.6);
+
+	if (ore.name === 'Amethyst' || ore.name === 'Daeyalt essence rock') {
+		userMaxTripTicks *= 1.5;
+	}
 
 	while (timeElapsed < userMaxTripTicks) {
 		while (!percentChance(chanceOfSuccess)) {

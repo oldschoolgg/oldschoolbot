@@ -20,7 +20,7 @@ export default async function announceLoot({
 }) {
 	if (!_notifyDrops) return;
 	const notifyDrops = _notifyDrops.flat(Infinity);
-	const kc = user.getKC(monsterID);
+	const kc = await user.getKC(monsterID);
 	const itemsToAnnounce = loot.clone().filter(i => notifyDrops.includes(i.id));
 	if (itemsToAnnounce.length > 0) {
 		let notif = '';
