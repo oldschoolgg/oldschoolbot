@@ -1,6 +1,5 @@
 import { Prisma } from '@prisma/client';
 import { ChatInputCommandInteraction } from 'discord.js';
-import { noOp } from 'e';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { BitField } from '../../../lib/constants';
