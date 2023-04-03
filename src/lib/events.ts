@@ -13,7 +13,7 @@ import pets from './data/pets';
 import { prisma } from './settings/prisma';
 import { ItemBank } from './types';
 import { UserError } from './UserError';
-import { channelIsSendable, formatDuration, makeComponents, toKMB } from './util';
+import { channelIsSendable, formatDuration, isModOrAdmin, makeComponents, toKMB } from './util';
 import { logError } from './util/logError';
 import { makeBankImage } from './util/makeBankImage';
 import { minionStatsEmbed } from './util/minionStatsEmbed';
@@ -295,6 +295,16 @@ const mentionCommands: MentionCommand[] = [
 				embeds: [await minionStatsEmbed(user)],
 				components
 			});
+		}
+	},
+	{
+		name: 'shutdownlock',
+		aliases: ['shutdownlock'],
+		description: 'shutdownlock.',
+		run: async ({ msg, user }: MentionCommandOptions) => {
+			if (!isModOrAdmin(user)) return;
+			globalClient.isShuttingDown = true;
+			return msg.reply('https://tenor.com/view/coffee-morning-monkey-drinking-coffee-shot-gif-20859464');
 		}
 	}
 ];
