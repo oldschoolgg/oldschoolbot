@@ -79,7 +79,7 @@ function rareRoles(msg: Message) {
 	}
 }
 
-const petCache = new LRUCache<string, number>({ max: 1000 });
+const petCache = new LRUCache<string, number>({ max: 2000 });
 async function petMessages(msg: Message) {
 	if (!msg.guild) return;
 	const cachedSettings = untrustedGuildSettingsCache.get(msg.guild.id);

@@ -243,6 +243,7 @@ model PlayerOwnedHouse {
   pool               Int?
   teleport           Int?
   garden_decoration  Int?
+  amulet             Int?
 
   @@map("poh")
 }
