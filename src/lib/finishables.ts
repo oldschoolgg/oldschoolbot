@@ -156,7 +156,8 @@ export const finishables: Finishable[] = [
 						mining: 99,
 						crafting: 99,
 						farming: 99
-					}
+					},
+					firemakingXP: 1000
 				})
 			)
 	},
