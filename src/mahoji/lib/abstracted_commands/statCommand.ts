@@ -1049,7 +1049,7 @@ GROUP BY "bankBackground";`);
 	},
 	{
 		name: 'Ashes Scattered',
-		perkTierNeeded: PerkTier.Four,
+		perkTierNeeded: null,
 		run: async (_, stats) => {
 			return makeResponseForBank(new Bank(stats.scattered_ashes_bank as ItemBank), "You've scattered...");
 		}
