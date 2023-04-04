@@ -4,6 +4,7 @@ import { analyticsTick } from './analytics';
 import { syncPrescence } from './doubleLoot';
 import { prisma } from './settings/prisma';
 import { cacheCleanup } from './util/cachedUserIDs';
+import { syncSlayerMaskLeaderboardCache } from './util/slayerMaskLeaderboard';
 
 export function initCrons() {
 	/**
@@ -45,5 +46,9 @@ GROUP BY item_id;`);
 	schedule('0 0 */1 * *', async () => {
 		debugLog('Cache cleanup cronjob starting');
 		cacheCleanup();
+	});
+
+	schedule('0 0 * * *', async () => {
+		syncSlayerMaskLeaderboardCache();
 	});
 }

@@ -498,8 +498,7 @@ export const tripHandlers = {
 		args: (data: TheatreOfBloodTaskOptions) => ({
 			tob: {
 				start: {
-					hard_mode: data.hardMode,
-					max_team_size: data.users.length
+					hard_mode: data.hardMode
 				}
 			}
 		})

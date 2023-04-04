@@ -840,11 +840,15 @@ export const configCommand: OSBMahojiCommand = {
 							type: ApplicationCommandOptionType.String,
 							description: 'The invention you want to toggle on/off.',
 							required: true,
-							autocomplete: async value => {
+							autocomplete: async (value, user) => {
+								const settings = await mahojiUsersSettingsFetch(user.id, { disabled_inventions: true });
+
 								return Inventions.filter(i =>
 									!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 								).map(i => ({
-									name: i.name,
+									name: `${i.name} (Currently ${
+										settings.disabled_inventions.includes(i.id) ? 'DISABLED' : 'Enabled'
+									})`,
 									value: i.name
 								}));
 							}

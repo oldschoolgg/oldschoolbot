@@ -154,7 +154,8 @@ export const finishables: Finishable[] = [
 						mining: 99,
 						crafting: 99,
 						farming: 99
-					}
+					},
+					firemakingXP: 1000
 				})
 			);
 			// Wintertoad: Assume 1 game per 5 minutes, Wintertoad rate is 1 in 3k minutes

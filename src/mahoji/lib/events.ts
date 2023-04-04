@@ -13,6 +13,7 @@ import { runTimedLoggedFn } from '../../lib/util';
 import { cacheCleanup } from '../../lib/util/cachedUserIDs';
 import { mahojiClientSettingsFetch } from '../../lib/util/clientSettings';
 import { syncLinkedAccounts } from '../../lib/util/linkedAccountsUtil';
+import { syncSlayerMaskLeaderboardCache } from '../../lib/util/slayerMaskLeaderboard';
 import { cacheUsernames } from '../commands/leaderboard';
 import { CUSTOM_PRICE_CACHE } from '../commands/sell';
 
@@ -65,4 +66,6 @@ export async function onStartup() {
 
 	initCrons();
 	initTickers();
+
+	syncSlayerMaskLeaderboardCache();
 }
