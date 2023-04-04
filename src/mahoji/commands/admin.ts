@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { inspect } from 'node:util';
 
-import { codeBlock } from '@discordjs/builders';
+import { codeBlock, userMention } from '@discordjs/builders';
 import { ClientStorage, economy_transaction_type } from '@prisma/client';
 import { Stopwatch } from '@sapphire/stopwatch';
 import { Duration } from '@sapphire/time-utilities';
@@ -26,6 +26,7 @@ import {
 	DISABLED_COMMANDS,
 	globalConfig
 } from '../../lib/constants';
+import { slayerMaskHelms } from '../../lib/data/slayerMaskHelms';
 import { addToDoubleLootTimer } from '../../lib/doubleLoot';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { GearSetup } from '../../lib/gear/types';
@@ -48,13 +49,13 @@ import {
 import { memoryAnalysis } from '../../lib/util/cachedUserIDs';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../lib/util/clientSettings';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
-import { getUsersTamesCollectionLog } from '../../lib/util/getUsersTameCL';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction, interactionReply } from '../../lib/util/interactionReply';
 import { syncLinkedAccounts } from '../../lib/util/linkedAccountsUtil';
 import { logError } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
+import { slayerMaskLeaderboardCache } from '../../lib/util/slayerMaskLeaderboard';
 import { sendToChannelID } from '../../lib/util/webhook';
 import { Cooldowns } from '../lib/Cooldowns';
 import { syncCustomPrices } from '../lib/events';
@@ -267,6 +268,25 @@ AND ("gear.melee" IS NOT NULL OR
 				content: Object.entries(memoryAnalysis())
 					.map(i => `${i[0]}: ${i[1]}`)
 					.join('\n')
+			};
+		}
+	},
+	{
+		name: 'Slayer Mask Leaderboard',
+		run: async () => {
+			let res = '';
+
+			for (const [maskID, userID] of slayerMaskLeaderboardCache.entries()) {
+				const mask = slayerMaskHelms.find(i => i.mask.id === maskID);
+				if (!mask) continue;
+				res += `${mask.mask.name}: ${userMention(userID)}\n`;
+			}
+
+			return {
+				content: res,
+				allowedMentions: {
+					users: []
+				}
 			};
 		}
 	}
@@ -1286,13 +1306,6 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 		// 	};
 		// }
 
-		if (options.migrate_tames) {
-			const tameOwners = await prisma.$queryRaw<{ user_id: string }[]>`SELECT DISTINCT(user_id)
-FROM tames;`;
-			for (const { user_id } of tameOwners) {
-				await getUsersTamesCollectionLog(user_id);
-			}
-		}
 		return 'Invalid command.';
 	}
 };

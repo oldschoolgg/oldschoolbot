@@ -23,6 +23,7 @@ import itemID from '../lib/util/itemID';
 import { logError } from '../lib/util/logError';
 import { SkillsEnum } from './skilling/types';
 import { UserError } from './UserError';
+import { allSlayerMaskHelmsAndMasks, slayerMaskLeaderboardCache } from './util/slayerMaskLeaderboard';
 
 const fonts = {
 	OSRSFont: './src/lib/resources/osrs-font.ttf',
@@ -504,7 +505,12 @@ class BankImageTask {
 
 			const x = floor(xLoc + (itemSize - itemWidth) / 2) + 2;
 			const y = floor(yLoc + (itemSize - itemHeight) / 2);
-			const glow = this.glows.get(item.id);
+			let glow = this.glows.get(item.id);
+			if (allSlayerMaskHelmsAndMasks.has(item.id)) {
+				if (slayerMaskLeaderboardCache.get(item.id) === user?.id) {
+					glow = this.redGlow!;
+				}
+			}
 			if (glow) {
 				const centerX = xLoc + itemImage.width / 2;
 				const centerY = yLoc + itemImage.height / 2;

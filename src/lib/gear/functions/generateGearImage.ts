@@ -15,6 +15,7 @@ import {
 	fillTextXTimesInCtx
 } from '../../util/canvasUtil';
 import getOSItem from '../../util/getOSItem';
+import { allSlayerMaskHelmsAndMasks, slayerMaskLeaderboardCache } from '../../util/slayerMaskLeaderboard';
 import { toTitleCase } from '../../util/toTitleCase';
 import { GearSetup, GearSetupType, GearSetupTypes, GearStats, maxDefenceStats, maxOffenceStats } from '..';
 
@@ -326,6 +327,21 @@ export async function generateGearImage(
 
 		if (transMogImage) {
 			x += 200;
+		}
+
+		let glow: Image | null = null;
+		if (allSlayerMaskHelmsAndMasks.has(item.item)) {
+			if (slayerMaskLeaderboardCache.get(item.item) === user?.id) {
+				glow = bankImageGenerator.redGlow;
+			}
+		}
+		if (glow) {
+			const centerX = x + image.width / 2;
+			const centerY = y + image.height / 2;
+			const glowX = centerX - glow.width / 2;
+			const glowY = centerY - glow.width / 2;
+			ctx.strokeStyle = 'red';
+			ctx.drawImage(glow, glowX, glowY, glow.width, glow.height);
 		}
 
 		ctx.drawImage(image, x, y, image.width, image.height);
