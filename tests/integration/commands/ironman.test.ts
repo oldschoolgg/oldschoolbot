@@ -6,7 +6,6 @@ import { describe, expect, test } from 'vitest';
 import { prisma } from '../../../src/lib/settings/prisma';
 import { miniID } from '../../../src/lib/util';
 import { ironmanCommand } from '../../../src/mahoji/lib/abstracted_commands/ironmanCommand';
-import { randomCryptoSnowflake } from '../util';
 
 describe('Ironman Command', () => {
 	async function createUserWithEverything(userId: string, userData: Partial<Prisma.UserCreateInput> = {}) {
@@ -94,10 +93,10 @@ describe('Ironman Command', () => {
 		expect(await prisma.xPGain.count({ where: { user_id: BigInt(userId) } })).toEqual(0);
 		expect(await prisma.stashUnit.count({ where: { user_id: BigInt(userId) } })).toEqual(0);
 		expect(await prisma.userStats.count({ where: { user_id: BigInt(userId) } })).toEqual(0);
-
-		console.log(await prisma.historicalData.findMany({ where: { user_id: userId } }));
-
 		expect(await prisma.historicalData.count({ where: { user_id: userId } })).toEqual(0);
+		expect(await prisma.userStats.count({ where: { user_id: BigInt(userId) } })).toEqual(1);
+		const userStats = await prisma.userStats.findFirst({ where: { user_id: BigInt(userId) } });
+		expect(userStats?.cl_array_length).toEqual(0);
 	});
 
 	test('Should de-iron', async () => {

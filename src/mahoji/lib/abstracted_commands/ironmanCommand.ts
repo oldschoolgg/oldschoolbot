@@ -121,7 +121,7 @@ After becoming an ironman:
 
 	try {
 		// Delete tables with foreign keys first:
-		// await prisma.historicalData.deleteMany({ where: { user_id: user.id } });
+		await prisma.historicalData.deleteMany({ where: { user_id: user.id } });
 		await prisma.botItemSell.deleteMany({ where: { user_id: user.id } });
 		await prisma.pinnedTrip.deleteMany({ where: { user_id: user.id } });
 		await prisma.farmedCrop.deleteMany({ where: { user_id: user.id } });

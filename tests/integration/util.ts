@@ -1,4 +1,5 @@
-import { randomCryptoSnowflake } from '@oldschoolgg/toolkit';
+import { randomSnowflake } from '@oldschoolgg/toolkit';
+import { uniqueArr } from 'e';
 import { CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
@@ -6,7 +7,7 @@ import { globalConfig } from '../../src/lib/constants';
 import { MUserClass } from '../../src/lib/MUser';
 import { prisma } from '../../src/lib/settings/prisma';
 import { ItemBank } from '../../src/lib/types';
-import { cryptoRand } from '../../src/lib/util';
+import { assert } from '../../src/lib/util';
 import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironmanCommand';
 import { OSBMahojiCommand } from '../../src/mahoji/lib/util';
 import { ClientStorage, User, UserStats } from '.prisma/client';
@@ -160,20 +161,4 @@ export async function mockClient() {
 	return new TestClient(client);
 }
 
-const discordEpoch = 1_420_070_400_000;
-
-export function randomCryptoSnowflake(): string {
-	const timestamp = Date.now() - discordEpoch;
-	const workerId = cryptoRand(0, 32);
-	const processId = cryptoRand(0, 32);
-	const increment = cryptoRand(0, 4096);
-
-	const timestampPart = BigInt(timestamp) << 22n;
-	const workerIdPart = BigInt(workerId) << 17n;
-	const processIdPart = BigInt(processId) << 12n;
-	const incrementPart = BigInt(increment);
-
-	const snowflakeBigInt = timestampPart | workerIdPart | processIdPart | incrementPart;
-
-	return snowflakeBigInt.toString();
-}
+assert(uniqueArr([randomSnowflake(), randomSnowflake(), randomSnowflake()]).length === 3);
