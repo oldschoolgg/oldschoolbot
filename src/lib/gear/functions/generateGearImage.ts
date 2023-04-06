@@ -14,6 +14,7 @@ import {
 	drawTitleText,
 	fillTextXTimesInCtx
 } from '../../util/canvasUtil';
+import { customItemEffect } from '../../util/customItemEffects';
 import getOSItem from '../../util/getOSItem';
 import { allSlayerMaskHelmsAndMasks, slayerMaskLeaderboardCache } from '../../util/slayerMaskLeaderboard';
 import { toTitleCase } from '../../util/toTitleCase';
@@ -307,8 +308,9 @@ export async function generateGearImage(
 	// Draw items
 	if (petID) {
 		const image = await bankImageGenerator.getItemImage(petID);
+		const effect = customItemEffect.get(petID);
 		ctx.drawImage(
-			image,
+			effect ? effect(image, user.id) : image,
 			(transMogImage ? 200 : 0) + 178 + slotSize / 2 - image.width / 2,
 			190 + slotSize / 2 - image.height / 2,
 			image.width,

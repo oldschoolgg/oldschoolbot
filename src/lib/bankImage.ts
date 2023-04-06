@@ -23,6 +23,7 @@ import itemID from '../lib/util/itemID';
 import { logError } from '../lib/util/logError';
 import { SkillsEnum } from './skilling/types';
 import { UserError } from './UserError';
+import { customItemEffect } from './util/customItemEffects';
 import { allSlayerMaskHelmsAndMasks, slayerMaskLeaderboardCache } from './util/slayerMaskLeaderboard';
 
 const fonts = {
@@ -520,10 +521,20 @@ class BankImageTask {
 				ctx.drawImage(glow, glowX, glowY, glow.width, glow.height);
 			}
 
+			const effect = customItemEffect.get(item.id);
 			if (isNewCLItem) {
-				drawImageWithOutline(ctx, itemImage, x, y, itemWidth, itemHeight, '#ac7fff', 1);
+				drawImageWithOutline(
+					ctx,
+					effect ? effect(itemImage, user?.id) : itemImage,
+					x,
+					y,
+					itemWidth,
+					itemHeight,
+					'#ac7fff',
+					1
+				);
 			} else {
-				ctx.drawImage(itemImage, x, y, itemWidth, itemHeight);
+				ctx.drawImage(effect ? effect(itemImage, user?.id) : itemImage, x, y, itemWidth, itemHeight);
 			}
 
 			// Do not draw the item qty if there is 0 of that item in the bank
