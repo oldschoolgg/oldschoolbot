@@ -25,9 +25,9 @@ vi.mock('../../src/lib/roboChimp.ts', async () => {
 	return {
 		...actual,
 		roboChimpUserFetch: () => ({
-			leagues_points_total: 1000,
-			leagues_points_balance_osb: 1,
-			leagues_points_balance_bso: 1,
+			leagues_points_total: 0,
+			leagues_points_balance_osb: 0,
+			leagues_points_balance_bso: 0,
 			leagues_completed_tasks_ids: []
 		})
 	};

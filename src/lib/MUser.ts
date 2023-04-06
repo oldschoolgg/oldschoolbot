@@ -630,7 +630,7 @@ export class MUserClass {
 	}
 
 	async fetchStats<T extends Prisma.UserStatsSelect>(selectKeys: T): Promise<SelectedUserStats<T>> {
-		const keys = Object.keys(selectKeys).length === 0 ? { user_id: true } : selectKeys;
+		const keysToSelect = Object.keys(selectKeys).length === 0 ? { user_id: true } : selectKeys;
 		const result = await prisma.userStats.upsert({
 			where: {
 				user_id: BigInt(this.id)
@@ -639,10 +639,9 @@ export class MUserClass {
 				user_id: BigInt(this.id)
 			},
 			update: {},
-			select: keys
+			select: keysToSelect
 		});
 
-		if (!result) throw new Error(`fetchStats returned no result for ${this.id}`);
 		return result as SelectedUserStats<T>;
 	}
 
