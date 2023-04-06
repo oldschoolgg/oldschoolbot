@@ -174,7 +174,7 @@ export async function eggNameEffect(user: MUser, firstName: EggType, lastName: E
 	}
 
 	const userMessage = userEggMessages.get(user.id);
-	if (userMessage && roll(8)) {
+	if (userMessage && roll(3)) {
 		return `Thank you for the ${firstName} ${lastName} egg! ${userMessage}`;
 	}
 	return `Thank you for the ${firstName} ${lastName} egg!`;
