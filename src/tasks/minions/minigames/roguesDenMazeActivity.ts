@@ -32,7 +32,7 @@ export const roguesDenTask: MinionTask = {
 
 		const loot = new Bank();
 		const user = await mUserFetch(userID);
-		const userBankCopy = user.allItemsOwned();
+		const userBankCopy = user.allItemsOwned.clone();
 
 		let str = `<@${userID}>, ${user.minionName} finished completing ${quantity}x laps of the Rogues' Den Maze.`;
 

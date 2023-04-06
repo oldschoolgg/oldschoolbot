@@ -1,18 +1,29 @@
-import { calcPercentOfNum, calcWhatPercent, noOp, objectEntries, roll, shuffleArr } from 'e';
+import { calcPercentOfNum, calcWhatPercent, objectEntries, roll, shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
 import { tobMetamorphPets } from '../../../lib/data/CollectionsExport';
-import { TOBRooms, TOBUniques, TOBUniquesToAnnounce, totalXPFromRaid } from '../../../lib/data/tob';
+import { TOBRooms, TOBUniques, TOBUniquesToAnnounce } from '../../../lib/data/tob';
 import { trackLoot } from '../../../lib/lootTrack';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import { TheatreOfBlood } from '../../../lib/simulation/tob';
+import { SkillsEnum } from '../../../lib/skilling/types';
 import { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
 import { convertPercentChance } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { sendToChannelID } from '../../../lib/util/webhook';
-import { updateBankSetting, updateLegacyUserBankSetting } from '../../../mahoji/mahojiSettings';
+import { userStatsBankUpdate, userStatsUpdate } from '../../../mahoji/mahojiSettings';
+
+const totalXPFromRaid = {
+	[SkillsEnum.Attack]: 12_000,
+	[SkillsEnum.Hitpoints]: 13_100,
+	[SkillsEnum.Strength]: 12_000,
+	[SkillsEnum.Ranged]: 1000,
+	[SkillsEnum.Defence]: 12_000,
+	[SkillsEnum.Magic]: 1000
+} as const;
 
 export const tobTask: MinionTask = {
 	type: 'TheatreOfBlood',
@@ -49,8 +60,9 @@ export const tobTask: MinionTask = {
 		if (!diedToMaiden) {
 			await Promise.all(
 				allUsers.map(u => {
-					return u.update({
-						[hardMode ? 'tob_hard_attempts' : 'tob_attempts']: {
+					const key = hardMode ? 'tob_hard_attempts' : 'tob_attempts';
+					return userStatsUpdate(u.id, {
+						[key]: {
 							increment: 1
 						}
 					});
@@ -74,7 +86,7 @@ export const tobTask: MinionTask = {
 		// Track loot for T3+ patrons
 		await Promise.all(
 			allUsers.map(user => {
-				return updateLegacyUserBankSetting(user.id, 'tob_loot', new Bank(result.loot[user.id]));
+				return userStatsBankUpdate(user.id, 'tob_loot', new Bank(result.loot[user.id]));
 			})
 		);
 
@@ -87,12 +99,12 @@ Unique chance: ${result.percentChanceOfUnique.toFixed(2)}% (1 in ${convertPercen
 		await Promise.all(allUsers.map(u => incrementMinigameScore(u.id, minigameID, 1)));
 
 		for (let [userID, _userLoot] of Object.entries(result.loot)) {
-			const user = await mUserFetch(userID).catch(noOp);
+			const user = allUsers.find(i => i.id === userID);
 			if (!user) continue;
 			const userDeaths = deaths[users.indexOf(user.id)];
 
 			const userLoot = new Bank(_userLoot);
-			const bank = user.allItemsOwned();
+			const bank = user.allItemsOwned;
 
 			const { cl } = user;
 			if (hardMode && roll(30) && cl.has("Lil' zik") && cl.has('Sanguine dust')) {
@@ -119,7 +131,7 @@ Unique chance: ${result.percentChanceOfUnique.toFixed(2)}% (1 in ${convertPercen
 				globalClient.emit(
 					Events.ServerNotification,
 					`${Emoji.Purple} ${
-						user.usernameOrMention
+						user.badgedUsername
 					} just received **${itemsToAnnounce}** on their ${formatOrdinal(
 						await getMinigameScore(user.id, minigameID)
 					)} raid.`

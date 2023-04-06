@@ -8,17 +8,18 @@ import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
 import { TitheFarmActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
-import { handleMahojiConfirmation, userHasGracefulEquipped } from '../../mahojiSettings';
+import { userHasGracefulEquipped, userStatsUpdate } from '../../mahojiSettings';
 
-function determineDuration(user: MUser): [number, string[]] {
+async function determineDuration(user: MUser): Promise<[number, string[]]> {
 	let baseTime = Time.Second * 1500;
 	let nonGracefulTimeAddition = Time.Second * 123;
 
 	const boostStr = [];
 
 	// Reduce time based on tithe farm completions
-	const titheFarmsCompleted = user.user.stats_titheFarmsCompleted;
+	const { tithe_farms_completed: titheFarmsCompleted } = await user.fetchStats({ tithe_farms_completed: true });
 	const percentIncreaseFromCompletions = Math.floor(Math.min(50, titheFarmsCompleted) / 2) / 100;
 	baseTime = Math.floor(baseTime * (1 - percentIncreaseFromCompletions));
 	Math.floor(percentIncreaseFromCompletions * 100) > 0
@@ -49,7 +50,7 @@ export async function titheFarmCommand(user: MUser, channelID: string) {
 		return `${user.minionName} needs ${requiredPoints}% Hosidius Favour to use the Tithe Farm!`;
 	}
 
-	const [duration, boostStr] = determineDuration(user);
+	const [duration, boostStr] = await determineDuration(user);
 
 	await addSubTaskToActivityTask<TitheFarmActivityTaskOptions>({
 		minigameID: 'tithe_farm',
@@ -88,7 +89,7 @@ export async function titheFarmShopCommand(
 	const loot = new Bank(buyable.outputItems).multiply(quantity);
 	const cost = buyable.titheFarmPoints * quantity;
 
-	const titheFarmPoints = user.user.stats_titheFarmPoints;
+	const { tithe_farm_points: titheFarmPoints } = await user.fetchStats({ tithe_farm_points: true });
 
 	if (titheFarmPoints < cost) {
 		return `You need ${cost} Tithe Farm points to make this purchase.`;
@@ -97,11 +98,15 @@ export async function titheFarmShopCommand(
 	let purchaseMsg = `${loot} for ${cost} Tithe Farm points`;
 
 	await handleMahojiConfirmation(interaction, `${user}, please confirm that you want to purchase ${purchaseMsg}.`);
-	await user.update({
-		stats_titheFarmPoints: {
-			decrement: cost
-		}
-	});
+	await userStatsUpdate(
+		user.id,
+		{
+			tithe_farm_points: {
+				decrement: cost
+			}
+		},
+		{}
+	);
 
 	await transactItems({
 		userID: user.id,

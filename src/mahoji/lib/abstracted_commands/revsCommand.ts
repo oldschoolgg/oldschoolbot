@@ -14,7 +14,8 @@ import { formatDuration, percentChance, stringMatches } from '../../../lib/util'
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
-import { handleMahojiConfirmation, updateBankSetting } from '../../mahojiSettings';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 const specialWeapons = {
 	melee: getOSItem("Viggora's chainmace"),

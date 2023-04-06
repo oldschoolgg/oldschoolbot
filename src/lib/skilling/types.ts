@@ -92,7 +92,7 @@ export interface Course {
 	id: number;
 	name: string;
 	level: number;
-	xp: number;
+	xp: number | ((agilityLevel: number) => number);
 	marksPer60?: number;
 	lapTime: number;
 	petChance: number;
@@ -169,6 +169,7 @@ export interface Fletchable {
 	tickRate: number;
 	outputMultiple?: number;
 	requiredSlayerUnlocks?: SlayerTaskUnlocksEnum[];
+	craftingXp?: number;
 }
 
 export interface Mixable {
@@ -219,6 +220,7 @@ export interface Plankable {
 }
 
 export interface Plant {
+	id: number;
 	level: number;
 	plantXp: number;
 	checkXp: number;

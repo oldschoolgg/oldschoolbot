@@ -2,10 +2,11 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { itemNameFromID } from '../../lib/util';
+import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { parseBank } from '../../lib/util/parseStringBank';
+import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiUsersSettingsFetch, updateBankSetting } from '../mahojiSettings';
 
 export const dropCommand: OSBMahojiCommand = {
 	name: 'drop',
@@ -37,11 +38,10 @@ export const dropCommand: OSBMahojiCommand = {
 			return "You didn't provide any items, filter or search.";
 		}
 		const user = await mUserFetch(userID);
-		const mUser = await mahojiUsersSettingsFetch(userID, { favoriteItems: true });
 		const bank = parseBank({
 			inputStr: options.items,
 			inputBank: user.bank,
-			excludeItems: mUser.favoriteItems,
+			excludeItems: user.user.favoriteItems,
 			user,
 			search: options.search,
 			filters: [options.filter],

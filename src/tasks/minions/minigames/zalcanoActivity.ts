@@ -4,17 +4,16 @@ import { Bank, Misc } from 'oldschooljs';
 import { Events, ZALCANO_ID } from '../../../lib/constants';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ZalcanoActivityTaskOptions } from '../../../lib/types/minions';
+import { ashSanctifierEffect } from '../../../lib/util/ashSanctifier';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { ashSanctifierEffect } from '../monsterActivity';
 
 export const zalcanoTask: MinionTask = {
 	type: 'Zalcano',
 	async run(data: ZalcanoActivityTaskOptions) {
 		const { channelID, quantity, duration, userID, performance, isMVP } = data;
 		const user = await mUserFetch(userID);
-		const kc = user.getKC(ZALCANO_ID);
-		await user.incrementKC(ZALCANO_ID, quantity);
+		const { newKC } = await user.incrementKC(ZALCANO_ID, quantity);
 
 		const loot = new Bank();
 
@@ -50,9 +49,9 @@ export const zalcanoTask: MinionTask = {
 		if (loot.amount('Smolcano') > 0) {
 			globalClient.emit(
 				Events.ServerNotification,
-				`**${user.usernameOrMention}'s** minion, ${
+				`**${user.badgedUsername}'s** minion, ${
 					user.minionName
-				}, just received **Smolcano**, their Zalcano KC is ${randInt(kc || 1, (kc || 1) + quantity)}!`
+				}, just received **Smolcano**, their Zalcano KC is ${randInt(newKC - quantity, newKC)}!`
 			);
 		}
 
@@ -72,9 +71,11 @@ export const zalcanoTask: MinionTask = {
 		handleTripFinish(
 			user,
 			channelID,
-			`${user}, ${user.minionName} finished killing ${quantity}x Zalcano. Your Zalcano KC is now ${
-				kc + quantity
-			}.\n\n **XP Gains:** ${xpRes.join(', ')}\n`,
+			`${user}, ${
+				user.minionName
+			} finished killing ${quantity}x Zalcano. Your Zalcano KC is now ${newKC}.\n\n **XP Gains:** ${xpRes.join(
+				', '
+			)}\n`,
 			image.file.attachment,
 			data,
 			itemsAdded

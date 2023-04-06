@@ -26,7 +26,7 @@ export const kourendTask: MinionTask = {
 			}
 		}
 		const confirmedFavour = KourendFavours.find(i => i.name === favour.name)!;
-		const loot = confirmedFavour.itemsRecieved?.clone().multiply(quantity);
+		const loot = confirmedFavour.itemsReceived?.clone().multiply(quantity);
 		if (shayzienDone && loot) {
 			loot.add(
 				new Bank({
@@ -68,7 +68,7 @@ export const kourendTask: MinionTask = {
 
 		let str = `${user}, ${user.minionName} finished gaining ${favour.name} Favour, adding ${favourPoints}%.${
 			totalPoints ? ` You now have a total of ${totalPoints}%.` : ''
-		}${loot ? ` You also recieved ${loot}.` : ''}`;
+		}${loot ? ` You also received ${loot}.` : ''}`;
 
 		handleTripFinish(user, channelID, str, undefined, data, loot ?? null);
 	}

@@ -1,4 +1,6 @@
+import { isGuildChannel } from '@oldschoolgg/toolkit';
 import { ChatInputCommandInteraction } from 'discord.js';
+import { CommandOptions } from 'mahoji/dist/lib/types';
 import { Monsters } from 'oldschooljs';
 
 import { PvMMethod } from '../../../lib/constants';
@@ -6,7 +8,7 @@ import killableMonsters from '../../../lib/minions/data/killableMonsters';
 import { runCommand } from '../../../lib/settings/settings';
 import { autoslayModes, AutoslayOptionsEnum } from '../../../lib/slayer/constants';
 import { getCommonTaskName, getUsersCurrentSlayerInfo, SlayerMasterEnum } from '../../../lib/slayer/slayerUtil';
-import { hasSkillReqs, isGuildChannel, stringMatches } from '../../../lib/util';
+import { hasSkillReqs, stringMatches } from '../../../lib/util';
 import { slayerNewTaskCommand } from './slayerTaskCommand';
 
 interface AutoslayLink {
@@ -302,12 +304,15 @@ export async function autoSlayCommand({
 		}
 
 		if (ehpMonster && ehpMonster.efficientName) {
+			let args: CommandOptions = {
+				name: ehpMonster.efficientName
+			};
+			if (ehpMonster.efficientMethod) {
+				args.method = ehpMonster.efficientMethod;
+			}
 			runCommand({
 				commandName: 'k',
-				args: {
-					name: ehpMonster.efficientName,
-					method: ehpMonster.efficientMethod
-				},
+				args,
 				bypassInhibitors: true,
 				...cmdRunOptions
 			});

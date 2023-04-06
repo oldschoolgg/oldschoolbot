@@ -42,5 +42,31 @@ model User {
     leagues_points_balance_bso  Int   @default(0)
     leagues_points_total        Int   @default(0)
 
+    react_emoji_id String?
+
+    osb_total_level Int?
+    bso_total_level Int?
+    osb_cl_percent  Float?
+    bso_cl_percent  Float?
+    tag             Tag[]
+
     @@map("user")
+}
+
+model PingableRole {
+    role_id String @id
+    name    String @unique @db.VarChar(32)
+
+    @@map("pingable_role")
+}
+
+model Tag {
+    id      Int    @id @unique @default(autoincrement())
+    name    String @unique @db.VarChar(32)
+    content String @db.VarChar(2000)
+
+    user_id BigInt
+    creator User   @relation(fields: [user_id], references: [id])
+
+    @@map("tag")
 }

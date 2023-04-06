@@ -1,12 +1,13 @@
-import { calcPercentOfNum } from 'e';
+import { calcPercentOfNum, randInt } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
+import addSkillingClueToLoot from '../../../lib/minions/functions/addSkillingClueToLoot';
 import Fishing from '../../../lib/skilling/skills/fishing';
 import aerialFishingCreatures from '../../../lib/skilling/skills/hunter/aerialFishing';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { rand, roll, skillingPetDropRate } from '../../../lib/util';
+import { roll, skillingPetDropRate } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { anglerBoostPercent } from '../../../mahoji/mahojiSettings';
 
@@ -38,7 +39,7 @@ export const aerialFishingTask: MinionTask = {
 			if (roll(100 - ((maxRoll - 40) * 25) / 59)) {
 				molchPearls++;
 			}
-			let currentRoll = rand(0, maxRoll);
+			let currentRoll = randInt(0, maxRoll);
 			loot.add(bluegill.table.roll());
 
 			if (
@@ -135,6 +136,10 @@ export const aerialFishingTask: MinionTask = {
 			str += `\n\n${user.minionName}'s Fishing level is now ${newFishLevel}!`;
 		}
 
+		// Add clue scrolls
+		const clueScrollChance = 636_833;
+		addSkillingClueToLoot(user, SkillsEnum.Fishing, quantity, clueScrollChance, loot);
+
 		// Heron Pet roll
 		const totalFishCaught = greaterSirenCaught + mottledEelCaught + commonTenchCaught + bluegillCaught;
 		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Fishing, 636_833);
@@ -143,7 +148,7 @@ export const aerialFishingTask: MinionTask = {
 			str += "\nYou have a funny feeling you're being followed...";
 			globalClient.emit(
 				Events.ServerNotification,
-				`${Emoji.Fishing} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a **Heron** while Aerial fishing at level ${currentFishLevel} Fishing!`
+				`${Emoji.Fishing} **${user.badgedUsername}'s** minion, ${user.minionName}, just received a **Heron** while Aerial fishing at level ${currentFishLevel} Fishing!`
 			);
 		}
 

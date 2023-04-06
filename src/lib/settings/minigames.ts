@@ -167,9 +167,29 @@ export const Minigames: readonly BotMinigame[] = [
 		column: 'trouble_brewing'
 	},
 	{
+		name: "Giants' Foundry",
+		aliases: ['giants', 'foundry', 'giants foundry', "giants' foundry"],
+		column: 'giants_foundry'
+	},
+	{
 		name: 'Guardians Of The Rift',
 		aliases: ['guardians of the rift', 'gotr', 'guardian of the rift'],
 		column: 'guardians_of_the_rift'
+	},
+	{
+		name: 'Nightmare Zone',
+		aliases: ['nightmare zone', 'nmz'],
+		column: 'nmz'
+	},
+	{
+		name: "Shades of Mort'ton",
+		aliases: ['som', "shades of mort'ton"],
+		column: 'shades_of_morton'
+	},
+	{
+		name: 'Tombs of Amascut',
+		aliases: ['toa', 'tombs of amascut'],
+		column: 'tombs_of_amascut'
 	}
 ];
 

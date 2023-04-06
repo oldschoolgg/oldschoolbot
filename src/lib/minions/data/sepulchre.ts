@@ -1,9 +1,8 @@
-import { randInt, Time } from 'e';
+import { randInt, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { ItemBank } from '../../types';
-import { roll } from '../../util';
 import resolveItems from '../../util/resolveItems';
 
 const LowTierCoffin = new LootTable()
@@ -146,7 +145,7 @@ export function openCoffin(floor: number, user: MUser): ItemBank {
 	const page = pages[floor - 1];
 
 	if (roll(10)) {
-		const bank = user.allItemsOwned();
+		const bank = user.allItemsOwned;
 		if (!bank.has(page)) {
 			loot.add(page);
 		}

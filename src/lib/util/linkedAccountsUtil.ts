@@ -16,11 +16,14 @@ async function syncLinkedAccountPerks(user: MUser) {
 				id: true,
 				premium_balance_tier: true,
 				premium_balance_expiry_date: true,
-				bitfield: true
+				bitfield: true,
+				ironman_alts: true,
+				main_account: true,
+				minion_ironman: true
 			})
 		)
 	);
-	allUsers.map(u => new MUserClass(u));
+	allUsers.map(u => new MUserClass(u as User));
 }
 
 export async function syncLinkedAccounts() {

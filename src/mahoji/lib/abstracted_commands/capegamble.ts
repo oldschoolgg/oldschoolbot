@@ -6,34 +6,45 @@ import { roll } from '../../../lib/util';
 import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import getOSItem from '../../../lib/util/getOSItem';
-import { handleMahojiConfirmation } from '../../mahojiSettings';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
+import { userStatsUpdate } from '../../mahojiSettings';
 
 export async function capeGambleStatsCommand(user: MUser) {
-	const firesGambled = user.user.stats_fireCapesSacrificed;
-	const infernalsGambled = user.user.infernal_cape_sacrifices;
+	const stats = await user.fetchStats({ firecapes_sacrificed: true, infernal_cape_sacrifices: true });
 
 	return `You can gamble Fire capes and Infernal capes like this: \"\gamble cape fire/infernal\"
 
-**Fire Cape's Sacrificed:** ${firesGambled}
-**Infernal Cape's Gambled:** ${infernalsGambled}`;
+**Fire Cape's Sacrificed:** ${stats.firecapes_sacrificed}
+**Infernal Cape's Gambled:** ${stats.infernal_cape_sacrifices}`;
 }
 
 export async function capeGambleCommand(user: MUser, type: string, interaction: ChatInputCommandInteraction) {
 	const item = getOSItem(type === 'fire' ? 'Fire cape' : 'Infernal cape');
-	const key: 'infernal_cape_sacrifices' | 'stats_fireCapesSacrificed' =
-		type === 'fire' ? 'stats_fireCapesSacrificed' : 'infernal_cape_sacrifices';
-	const capesOwned = await user.bank.amount(item.id);
+	const key: 'infernal_cape_sacrifices' | 'firecapes_sacrificed' =
+		type === 'fire' ? 'firecapes_sacrificed' : 'infernal_cape_sacrifices';
+	const capesOwned = user.bank.amount(item.id);
 
 	if (capesOwned < 1) return `You have no ${item.name}'s to gamble!`;
 
 	await handleMahojiConfirmation(interaction, `Are you sure you want to gamble a ${item.name}?`);
 
-	const newUser = await user.update({
-		[key]: {
-			increment: 1
+	// Double check after confirmation dialogue:
+	await user.sync();
+	if (user.bank.amount(item.id) < 1) return `You have no ${item.name}'s to gamble!`;
+
+	const newStats = await userStatsUpdate(
+		user.id,
+		{
+			[key]: {
+				increment: 1
+			}
+		},
+		{
+			infernal_cape_sacrifices: true,
+			firecapes_sacrificed: true
 		}
-	});
-	const newSacrificedCount = newUser.newUser[key];
+	);
+	const newSacrificedCount = newStats[key];
 	await user.removeItemsFromBank(new Bank().add(item.id));
 
 	const chance = type === 'fire' ? 200 : 100;
@@ -43,7 +54,7 @@ export async function capeGambleCommand(user: MUser, type: string, interaction: 
 		await user.addItemsToBank({ items: new Bank().add(pet.id), collectionLog: true });
 		globalClient.emit(
 			Events.ServerNotification,
-			`**${user.usernameOrMention}'s** just received their ${formatOrdinal(
+			`**${user.badgedUsername}'s** just received their ${formatOrdinal(
 				(await mUserFetch(user.id)).cl.amount(pet.id)
 			)} ${pet.name} pet by sacrificing a ${item.name} for the ${formatOrdinal(newSacrificedCount)} time!`
 		);

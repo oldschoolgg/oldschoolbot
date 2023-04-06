@@ -1,3 +1,4 @@
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { notEmpty, randArrItem, roll } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 import BeginnerClueTable from 'oldschooljs/dist/simulation/clues/Beginner';
@@ -30,20 +31,23 @@ import {
 	wintertodtCL
 } from './data/CollectionsExport';
 import pets from './data/pets';
+import { openShadeChest } from './shadesKeys';
 import { birdsNestID, treeSeedsNest } from './simulation/birdsNest';
 import { gauntlet } from './simulation/gauntlet';
 import { handleNexKills } from './simulation/nex';
 import { getTemporossLoot } from './simulation/tempoross';
 import { TheatreOfBlood } from './simulation/tob';
 import { WintertodtCrate } from './simulation/wintertodt';
-import { stringMatches } from './util/cleanString';
+import getOSItem from './util/getOSItem';
 import itemID from './util/itemID';
+import resolveItems from './util/resolveItems';
 
 interface KillArgs {
 	accumulatedLoot: Bank;
+	totalRuns: number;
 }
 
-interface Finishable {
+export interface Finishable {
 	name: string;
 	aliases?: string[];
 	cl: number[];
@@ -152,7 +156,8 @@ export const finishables: Finishable[] = [
 						mining: 99,
 						crafting: 99,
 						farming: 99
-					}
+					},
+					firemakingXP: 1000
 				})
 			)
 	},
@@ -227,6 +232,35 @@ export const finishables: Finishable[] = [
 				loot.add(treeSeedsNest.roll());
 			}
 			return loot;
+		}
+	},
+	{
+		name: 'Shades of Morton (Gold Keys)',
+		cl: resolveItems([
+			'Amulet of the damned (full)',
+			'Flamtaer bag',
+			'Fine cloth',
+			'Bronze locks',
+			'Steel locks',
+			'Black locks',
+			'Silver locks',
+			'Gold locks',
+			"Zealot's helm",
+			"Zealot's robe top",
+			"Zealot's robe bottom",
+			"Zealot's boots",
+			"Tree wizards' journal",
+			'Bloody notes'
+		]),
+		aliases: ['shades of morton'],
+		kill: ({ accumulatedLoot, totalRuns }) => {
+			for (const tier of ['Bronze', 'Steel', 'Black', 'Silver', 'Gold'] as const) {
+				const key = getOSItem(`${tier} key red`);
+				const lock = getOSItem(`${tier} locks`);
+				if (accumulatedLoot.has(lock.id) && tier !== 'Gold') continue;
+				return openShadeChest({ item: key, allItemsOwned: accumulatedLoot, qty: totalRuns }).bank;
+			}
+			throw new Error('Not possible!');
 		}
 	}
 ];

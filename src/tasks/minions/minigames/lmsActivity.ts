@@ -1,11 +1,11 @@
-import { percentChance } from 'e';
-import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
+import { SimpleTable } from '@oldschoolgg/toolkit';
+import { clamp, percentChance, sumArr } from 'e';
 
 import { Emoji } from '../../../lib/constants';
 import { prisma } from '../../../lib/settings/prisma';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
-import { addArrayOfNumbers, calcPerHour, clamp, gaussianRandom } from '../../../lib/util';
+import { calcPerHour, gaussianRandom } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
@@ -69,7 +69,7 @@ function calculateResultOfLMSGames(qty: number, lmsStats: Awaited<ReturnType<typ
 	chanceToWinFight += experienceFactor * 75;
 
 	for (let i = 0; i < qty; i++) {
-		const encounters = 3 + extraEncountersTable.roll().item;
+		const encounters = 3 + extraEncountersTable.rollOrThrow();
 		let kills = 0;
 		let died = false;
 		for (let t = 0; t < encounters; t++) {
@@ -109,7 +109,7 @@ export const lmsTask: MinionTask = {
 		await prisma.lastManStandingGame.createMany({
 			data: result.map(i => ({ ...i, user_id: BigInt(user.id), points: undefined }))
 		});
-		const points = addArrayOfNumbers(result.map(i => i.points));
+		const points = sumArr(result.map(i => i.points));
 
 		const { newUser } = await user.update({
 			lms_points: {

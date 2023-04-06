@@ -1,7 +1,6 @@
 import { gracefulItems } from '../skilling/skills/agility';
 import { Craftables } from '../skilling/skills/crafting/craftables';
 import { Fletchables } from '../skilling/skills/fletching/fletchables';
-import { ItemBank } from '../types';
 import resolveItems from '../util/resolveItems';
 import { allCollectionLogs } from './Collections';
 import {
@@ -1112,14 +1111,12 @@ export const baseFilters: Filterable[] = [
 		items: () => [...new Set([...cluesHardRareCL, ...cluesEliteRareCL, ...cluesMasterRareCL])]
 	},
 	{
-		name: 'Not Sacrificed',
-		aliases: ['not sacrificed', 'not sac'],
+		name: 'Favourite Alchs',
+		aliases: ['favourite alchs', 'favalchs'],
 		items: user => {
 			if (!user) return [];
-			const sacBank = user.user.sacrificedBank as ItemBank;
-			return Object.entries(user.bank.bank)
-				.filter(i => !sacBank[i[0]])
-				.map(i => Number(i[0]));
+
+			return user.user.favorite_alchables;
 		}
 	}
 ];

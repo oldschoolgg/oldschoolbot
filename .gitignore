@@ -1,4 +1,5 @@
 # Klasa
+*.log
 bot/bwd/provider/json/
 src/bwd/provider/json/
 /config/private.js
@@ -11,6 +12,7 @@ bwd/
 icon_cache/
 .env
 queries.txt
+/logs
 
 npm-debug.log*
 

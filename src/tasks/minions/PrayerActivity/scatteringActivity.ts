@@ -1,7 +1,10 @@
+import { Bank } from 'oldschooljs';
+
 import Prayer from '../../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ScatteringActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { userStatsBankUpdate } from '../../../mahoji/mahojiSettings';
 
 export const scatteringTask: MinionTask = {
 	type: 'Scattering',
@@ -28,6 +31,8 @@ export const scatteringTask: MinionTask = {
 		if (newLevel > currentLevel) {
 			str += `\n\n${user.minionName}'s Prayer level is now ${newLevel}!`;
 		}
+
+		await userStatsBankUpdate(user.id, 'scattered_ashes_bank', new Bank().add(ash.inputId, quantity));
 
 		handleTripFinish(user, channelID, str, undefined, data, null);
 	}

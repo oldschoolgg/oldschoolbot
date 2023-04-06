@@ -10,7 +10,16 @@ import { AgilityActivityTaskOptions } from '../../lib/types/minions';
 import { addItemToBank, skillingPetDropRate } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { updateGPTrackSetting } from '../../mahoji/mahojiSettings';
+import { updateClientGPTrackSetting, userStatsUpdate } from '../../mahoji/mahojiSettings';
+
+function chanceOfFailingAgilityPyramid(user: MUser) {
+	const lvl = user.skillLevel(SkillsEnum.Agility);
+	if (lvl < 40) return 95;
+	if (lvl < 50) return 30;
+	if (lvl < 60) return 20;
+	if (lvl < 75) return 5;
+	return 0;
+}
 
 export const agilityTask: MinionTask = {
 	type: 'Agility',
@@ -23,9 +32,17 @@ export const agilityTask: MinionTask = {
 
 		// Calculate failed laps
 		let lapsFailed = 0;
-		for (let t = 0; t < quantity; t++) {
-			if (randInt(1, 100) > (100 * user.skillLevel(SkillsEnum.Agility)) / (course.level + 5)) {
-				lapsFailed += 1;
+		if (course.name === 'Agility Pyramid') {
+			for (let t = 0; t < quantity; t++) {
+				if (randInt(1, 100) < chanceOfFailingAgilityPyramid(user)) {
+					lapsFailed += 1;
+				}
+			}
+		} else {
+			for (let t = 0; t < quantity; t++) {
+				if (randInt(1, 100) > (100 * user.skillLevel(SkillsEnum.Agility)) / (course.level + 5)) {
+					lapsFailed += 1;
+				}
 			}
 		}
 
@@ -50,11 +67,16 @@ export const agilityTask: MinionTask = {
 			totalMarks = Math.floor(increaseNumByPercent(totalMarks, 25));
 		}
 
-		const xpReceived = (quantity - lapsFailed / 2) * course.xp;
+		const xpReceived =
+			(quantity - lapsFailed / 2) * (typeof course.xp === 'number' ? course.xp : course.xp(currentLevel));
 
-		await user.update({
-			lapsScores: addItemToBank(user.user.lapsScores as ItemBank, course.id, quantity - lapsFailed)
-		});
+		const { laps_scores: newLapScores } = await userStatsUpdate(
+			user.id,
+			({ laps_scores }) => ({
+				laps_scores: addItemToBank(laps_scores as ItemBank, course.id, quantity - lapsFailed)
+			}),
+			{ laps_scores: true }
+		);
 
 		let xpRes = await user.addXP({
 			skillName: SkillsEnum.Agility,
@@ -71,6 +93,19 @@ export const agilityTask: MinionTask = {
 			loot.add('Crystal shard', Math.floor((duration / Time.Hour) * 15));
 		}
 
+		if (course.name === 'Agility Pyramid') {
+			loot.add('Coins', 10_000 * (quantity - lapsFailed));
+			await userStatsUpdate(
+				user.id,
+				{
+					gp_from_agil_pyramid: {
+						increment: loot.amount('Coins')
+					}
+				},
+				{}
+			);
+		}
+
 		if (alch) {
 			const alchedItem = getOSItem(alch.itemID);
 			const alchGP = alchedItem.highalch! * alch.quantity;
@@ -80,7 +115,7 @@ export const agilityTask: MinionTask = {
 				amount: alch.quantity * 65,
 				duration
 			})}`;
-			updateGPTrackSetting('gp_alch', alchGP);
+			updateClientGPTrackSetting('gp_alch', alchGP);
 		}
 
 		let str = `${user}, ${user.minionName} finished ${quantity} ${
@@ -90,7 +125,7 @@ export const agilityTask: MinionTask = {
 		}.\n${xpRes}`;
 
 		if (course.id === 6) {
-			const currentLapCount = (user.user.lapsScores as ItemBank)[course.id];
+			const currentLapCount = (newLapScores as ItemBank)[course.id];
 			for (const monkey of Agility.MonkeyBackpacks) {
 				if (currentLapCount < monkey.lapsRequired) break;
 				if (!user.hasEquippedOrInBank(monkey.id)) {

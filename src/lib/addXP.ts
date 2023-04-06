@@ -1,11 +1,12 @@
 import { noOp, Time } from 'e';
+import { convertXPtoLVL, toKMB } from 'oldschooljs/dist/util/util';
 
 import { MAXING_MESSAGE, SupportServer } from '../config';
-import { Events, LEVEL_99_XP, MAX_TOTAL_LEVEL, MAX_XP, skillEmoji } from './constants';
+import { Events, LEVEL_99_XP, MAX_TOTAL_LEVEL, MAX_XP } from './constants';
+import { skillEmoji } from './data/emojis';
 import { AddXpParams } from './minions/types';
 import { prisma } from './settings/prisma';
 import Skills from './skilling/skills';
-import { convertXPtoLVL, toKMB } from './util';
 import { formatOrdinal } from './util/formatOrdinal';
 import { toTitleCase } from './util/toTitleCase';
 import { sendToChannelID } from './util/webhook';
@@ -30,11 +31,11 @@ async function howManyMaxed() {
 	};
 }
 
-export async function onMax(user: MUser) {
+async function onMax(user: MUser) {
 	const { normies, irons } = await howManyMaxed();
 
 	const str = `🎉 ${
-		user.usernameOrMention
+		user.badgedUsername
 	}'s minion just achieved level 99 in every skill, they are the **${formatOrdinal(normies)}** minion to be maxed${
 		user.isIronman ? `, and the **${formatOrdinal(irons)}** ironman to max.` : '.'
 	} 🎉`;
@@ -67,7 +68,8 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 				user_id: BigInt(user.id),
 				skill: params.skillName,
 				xp: Math.floor(totalXPAdded),
-				artificial: params.artificial ? true : null
+				artificial: params.artificial ? true : null,
+				source: params.source
 			}
 		});
 	}
@@ -80,7 +82,8 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 				skill: params.skillName,
 				xp: Math.floor(params.amount - totalXPAdded),
 				artificial: params.artificial ? true : null,
-				post_max: true
+				post_max: true,
+				source: params.source
 			}
 		});
 	}
@@ -93,7 +96,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 			if (currentXP < XPMilestone && newXP >= XPMilestone) {
 				globalClient.emit(
 					Events.ServerNotification,
-					`${skill.emoji} **${user.usernameOrMention}'s** minion, ${
+					`${skill.emoji} **${user.badgedUsername}'s** minion, ${
 						user.minionName
 					}, just achieved ${newXP.toLocaleString()} XP in ${toTitleCase(params.skillName)}!`
 				);
@@ -111,7 +114,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 			}[]
 		>(`SELECT COUNT(*) FROM users WHERE "skills.${params.skillName}" >= ${LEVEL_99_XP};`);
 
-		let str = `${skill.emoji} **${user.usernameOrMention}'s** minion, ${
+		let str = `${skill.emoji} **${user.badgedUsername}'s** minion, ${
 			user.minionName
 		}, just achieved level 99 in ${skillNameCased}! They are the ${formatOrdinal(
 			parseInt(usersWith.count) + 1

@@ -11,6 +11,7 @@ import { getNewUser } from '../settings/settings';
 import { SkillsEnum } from '../skilling/types';
 import { bankHasItem, roll, stringMatches } from '../util';
 import itemID from '../util/itemID';
+import { logError } from '../util/logError';
 import resolveItems from '../util/resolveItems';
 import { autoslayModes } from './constants';
 import { slayerMasters } from './slayerMasters';
@@ -178,7 +179,7 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 	let assignedTask: AssignableSlayerTask | null = null;
 	if (bossTask) {
 		const baseBossTasks = bossTasks.filter(t => userCanUseTask(_user, t, master, true));
-		if (baseBossTasks.length) {
+		if (baseBossTasks.length > 0) {
 			assignedTask = weightedPick(baseBossTasks);
 		} else {
 			assignedTask = weightedPick(baseTasks);
@@ -261,11 +262,32 @@ export async function getUsersCurrentSlayerInfo(id: string) {
 		}
 	});
 
-	const slayerMaster = currentTask ? slayerMasters.find(master => master.id === currentTask.slayer_master_id) : null;
+	if (!currentTask) {
+		return {
+			currentTask: null,
+			assignedTask: null,
+			slayerMaster: null
+		};
+	}
+
+	const slayerMaster = slayerMasters.find(master => master.id === currentTask.slayer_master_id);
+	const assignedTask = slayerMaster!.tasks.find(m => m.monster.id === currentTask.monster_id)!;
+
+	if (!assignedTask || !slayerMaster) {
+		logError(
+			`Could not find task or slayer master for user ${id} task ${currentTask.monster_id} master ${currentTask.slayer_master_id}`,
+			{ userID: id }
+		);
+		return {
+			currentTask: null,
+			assignedTask: null,
+			slayerMaster: null
+		};
+	}
 
 	return {
-		currentTask: currentTask ?? null,
-		assignedTask: currentTask ? slayerMaster!.tasks.find(m => m.monster.id === currentTask.monster_id)! : null,
+		currentTask,
+		assignedTask,
 		slayerMaster
 	};
 }
@@ -329,6 +351,20 @@ export function hasSlayerUnlock(
 	return { success, errors };
 }
 
+const filterLootItems = resolveItems([
+	'Black mask (10)',
+	"Hydra's eye",
+	"Hydra's fang",
+	"Hydra's heart",
+	'Dark totem base',
+	'Dark totem middle',
+	'Dark totem top',
+	'Bludgeon claw'
+]);
+const ringPieces = resolveItems(["Hydra's eye", "Hydra's fang", "Hydra's heart"]);
+const totemPieces = resolveItems(['Dark totem base', 'Dark totem middle', 'Dark totem top']);
+const bludgeonPieces = resolveItems(['Bludgeon claw', 'Bludgeon spine', 'Bludgeon axon']);
+
 export function filterLootReplace(myBank: Bank, myLoot: Bank) {
 	// Order: Fang, eye, heart.
 	const numBlackMask = myLoot.amount('Black mask (10)');
@@ -337,22 +373,11 @@ export function filterLootReplace(myBank: Bank, myLoot: Bank) {
 	numHydraEyes += myLoot.amount("Hydra's heart");
 	const numDarkTotemBases = myLoot.amount('Dark totem base');
 	const numBludgeonPieces = myLoot.amount('Bludgeon claw');
-	const ringPieces = resolveItems(["Hydra's eye", "Hydra's fang", "Hydra's heart"]) as number[];
-	const totemPieces = resolveItems(['Dark totem base', 'Dark totem middle', 'Dark totem top']) as number[];
-	const bludgeonPieces = resolveItems(['Bludgeon claw', 'Bludgeon spine', 'Bludgeon axon']) as number[];
+	if (!numBludgeonPieces && !numDarkTotemBases && !numHydraEyes && !numBlackMask) {
+		return { bankLoot: myLoot, clLoot: myLoot };
+	}
 
-	myLoot.filter(l => {
-		return (
-			l.id !== itemID('Black mask (10)') &&
-			l.id !== itemID("Hydra's eye") &&
-			l.id !== itemID("Hydra's fang") &&
-			l.id !== itemID("Hydra's heart") &&
-			l.id !== itemID('Dark totem base') &&
-			l.id !== itemID('Dark totem middle') &&
-			l.id !== itemID('Dark totem top') &&
-			l.id !== itemID('Bludgeon claw')
-		);
-	}, true);
+	myLoot.filter(i => !filterLootItems.includes(i.id), true);
 
 	const myClLoot = new Bank(myLoot.bank);
 
@@ -363,7 +388,7 @@ export function filterLootReplace(myBank: Bank, myLoot: Bank) {
 		}
 	}
 
-	const combinedBank = new Bank().add(myBank).add(myLoot);
+	const combinedBank = new Bank(myBank).add(myLoot);
 	if (numBludgeonPieces) {
 		for (let x = 0; x < numBludgeonPieces; x++) {
 			const bank: number[] = [];
@@ -492,4 +517,33 @@ export async function setDefaultAutoslay(
 		slayer_autoslay_options: [autoslayOption.key]
 	});
 	return { success: true, message: `Autoslay method updated to: ${autoslayOption.name} (${autoslayOption.focus})` };
+}
+
+export async function isOnSlayerTask({
+	user,
+	monsterID,
+	quantityKilled
+}: {
+	user: MUser;
+	monsterID: number;
+	quantityKilled: number;
+}) {
+	const usersTask = await getUsersCurrentSlayerInfo(user.id);
+	const isOnTask =
+		usersTask.assignedTask !== null &&
+		usersTask.currentTask !== null &&
+		usersTask.assignedTask.monsters.includes(monsterID);
+
+	const hasSuperiorsUnlocked = user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.BiggerAndBadder);
+
+	if (!isOnTask) return { isOnTask, hasSuperiorsUnlocked };
+
+	const quantitySlayed = Math.min(usersTask.currentTask.quantity_remaining, quantityKilled);
+
+	return {
+		isOnTask,
+		hasSuperiorsUnlocked,
+		quantitySlayed,
+		...usersTask
+	};
 }

@@ -1,4 +1,4 @@
-import { Embed } from '@discordjs/builders';
+import { EmbedBuilder } from '@discordjs/builders';
 import { Activity, User } from '@prisma/client';
 import { ChannelType } from 'discord.js';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
@@ -8,17 +8,17 @@ import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import { CoXUniqueTable } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 import { ToBUniqueTable } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
 
-import {
-	allStashUnitsFlat,
-	getParsedStashUnits,
-	stashUnitBuildAllCommand,
-	stashUnitFillAllCommand,
-	stashUnitUnfillCommand,
-	stashUnitViewCommand
-} from '../../lib/clues/stashUnits';
+import { ClueTiers } from '../../lib/clues/clueTiers';
+import { allStashUnitsFlat } from '../../lib/clues/stashUnits';
 import { BitField, PerkTier } from '../../lib/constants';
 import { allCLItemsFiltered, allDroppedItems } from '../../lib/data/Collections';
-import { anglerOutfit, gnomeRestaurantCL } from '../../lib/data/CollectionsExport';
+import {
+	anglerOutfit,
+	evilChickenOutfit,
+	gnomeRestaurantCL,
+	guardiansOfTheRiftCL,
+	toaCL
+} from '../../lib/data/CollectionsExport';
 import pets from '../../lib/data/pets';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import { MinigameName, Minigames } from '../../lib/settings/minigames';
@@ -31,17 +31,25 @@ import {
 	isGroupActivity,
 	isNexActivity,
 	isRaidsActivity,
-	isTobActivity,
+	isTOBOrTOAActivity,
 	itemNameFromID,
 	stringMatches
 } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
+import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import resolveItems from '../../lib/util/resolveItems';
+import {
+	getParsedStashUnits,
+	stashUnitBuildAllCommand,
+	stashUnitFillAllCommand,
+	stashUnitUnfillCommand,
+	stashUnitViewCommand
+} from '../lib/abstracted_commands/stashUnitsCommand';
 import { itemOption, monsterOption, skillOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, patronMsg } from '../mahojiSettings';
+import { patronMsg } from '../mahojiSettings';
 
 const TimeIntervals = ['day', 'week'] as const;
 const skillsVals = Object.values(Skills);
@@ -136,7 +144,7 @@ LIMIT 10;`);
 	}
 
 	let place = 0;
-	const embed = new Embed()
+	const embed = new EmbedBuilder()
 		.setTitle(`Highest ${skillObj ? skillObj.name : 'Overall'} XP Gains in the past ${interval}`)
 		.setDescription(
 			res
@@ -171,14 +179,20 @@ LIMIT 10`;
 	}
 
 	let place = 0;
-	const embed = new Embed()
+	const embed = new EmbedBuilder()
 		.setTitle(`Highest ${monster.name} KC gains in the past ${interval}`)
 		.setDescription(
-			res.map((i: any) => `${++place}. **${getUsername(i.user)}**: ${Number(i.qty).toLocaleString()}`).join('\n')
+			res
+				.map((i: any) => `${++place}. **${getUsername(i.user_id)}**: ${Number(i.qty).toLocaleString()}`)
+				.join('\n')
 		);
 
 	return { embeds: [embed] };
 }
+
+const clueItemsOnlyDroppedInOneTier = ClueTiers.map(i =>
+	i.table.allItems.filter(itemID => ClueTiers.filter(i => i.table.allItems.includes(itemID)).length === 1)
+).flat();
 
 interface DrystreakMinigame {
 	name: string;
@@ -216,27 +230,33 @@ const dryStreakMinigames: DrystreakMinigame[] = [
 		name: 'Wintertodt',
 		key: 'wintertodt',
 		items: resolveItems(['Tome of fire', 'Phoenix', 'Bruma torch', 'Warm gloves'])
+	},
+	{
+		name: 'Tombs of Amascut',
+		key: 'tombs_of_amascut',
+		items: toaCL
 	}
 ];
 
 interface DrystreakEntity {
 	name: string;
 	items: number[];
-	run: (args: { item: Item; ironmanOnly: boolean }) => Promise<{ id: string; val: number }[]>;
-	format: (num: number) => string;
+	run: (args: { item: Item; ironmanOnly: boolean }) => Promise<string | { id: string; val: number | string }[]>;
+	format: (num: number | string) => string;
 }
-const dryStreakEntities: DrystreakEntity[] = [
+export const dryStreakEntities: DrystreakEntity[] = [
 	{
 		name: 'Chambers of Xeric (CoX)',
 		items: CoXUniqueTable.allItems,
 		run: async ({ item, ironmanOnly }) => {
 			const result = await prisma.$queryRawUnsafe<
 				{ id: string; val: number }[]
-			>(`SELECT id, total_cox_points AS val
-FROM users
+			>(`SELECT id, "user_stats".total_cox_points AS val
+FROM user_stats
+INNER JOIN "users" on "users"."id" = "user_stats"."user_id"::text
 WHERE "collectionLogBank"->>'${item.id}' IS NULL
 ${ironmanOnly ? ' AND "minion.ironman" = true' : ''}
-ORDER BY total_cox_points DESC
+ORDER BY "user_stats".total_cox_points DESC
 LIMIT 10;`);
 			return result;
 		},
@@ -257,15 +277,17 @@ LIMIT 10;`);
 		run: async ({ item, ironmanOnly }) => {
 			const result = await prisma.$queryRawUnsafe<
 				{ id: string; val: number }[]
-			>(`SELECT "id", ("monsterScores"->>'${NightmareMonster.id}')::int AS val
-				   FROM users
-				   WHERE "collectionLogBank"->>'${item.id}' IS NULL
-				   AND "monsterScores"->>'${NightmareMonster.id}' IS NOT NULL 
-				   ${ironmanOnly ? 'AND "minion.ironman" = true' : ''} 
-				   ORDER BY ("monsterScores"->>'${NightmareMonster.id}')::int DESC
-				   LIMIT 10;`);
+			>(`SELECT "id", ("monster_scores"->>'${NightmareMonster.id}')::int AS val
+		   FROM users
+		   INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
+		   WHERE "collectionLogBank"->>'${item.id}' IS NULL
+		   AND "monster_scores"->>'${NightmareMonster.id}' IS NOT NULL 
+		   ${ironmanOnly ? 'AND "minion.ironman" = true' : ''} 
+		   ORDER BY ("monster_scores"->>'${NightmareMonster.id}')::int DESC
+		   LIMIT 10;`);
 			return result;
 		},
+
 		format: num => `${num.toLocaleString()} KC`
 	},
 	{
@@ -274,6 +296,7 @@ LIMIT 10;`);
 		run: async ({ item, ironmanOnly }) => {
 			const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(`SELECT "id", high_gambles AS val
 				   FROM users
+				   INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
 				   WHERE "collectionLogBank"->>'${item.id}' IS NULL
 				   AND high_gambles > 0
 				   ${ironmanOnly ? 'AND "minion.ironman" = true' : ''} 
@@ -282,6 +305,103 @@ LIMIT 10;`);
 			return result;
 		},
 		format: num => `${num.toLocaleString()} Gambles`
+	},
+	{
+		name: 'Guardians of the Rift',
+		items: guardiansOfTheRiftCL,
+		run: async ({ item, ironmanOnly }) => {
+			const result = await prisma.$queryRawUnsafe<
+				{ id: string; val: number }[]
+			>(`SELECT users.id, gotr_rift_searches AS val
+            FROM users
+            INNER JOIN "user_stats" "userstats" on "userstats"."user_id"::text = "users"."id"
+            WHERE "collectionLogBank"->>'${item.id}' IS NULL
+            ${ironmanOnly ? ' AND "minion.ironman" = true' : ''}
+            ORDER BY gotr_rift_searches DESC
+            LIMIT 10;`);
+			return result;
+		},
+		format: num => `${num.toLocaleString()} Rift Searches`
+	},
+	{
+		name: 'Evil Chicken Outfit',
+		items: evilChickenOutfit,
+		run: async ({ item, ironmanOnly }) => {
+			const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(`
+            SELECT *
+			FROM
+			(
+			SELECT users.id::text
+            , COALESCE(SUM((bird_eggs_offered_bank->>'5076')::int),0)
+                + COALESCE(SUM((bird_eggs_offered_bank->>'5077')::int),0)
+                + COALESCE(SUM((bird_eggs_offered_bank->>'5078')::int),0) AS val
+            FROM users
+            INNER JOIN "user_stats" "userstats" on "userstats"."user_id"::text = "users"."id"
+            WHERE "collectionLogBank"->>'${item.id}' IS NULL
+            ${ironmanOnly ? ' AND "minion.ironman" = true' : ''}
+            GROUP BY users.id
+            ORDER BY val DESC
+            LIMIT 10 
+			)
+			AS eggs
+			WHERE eggs.val > 0;`);
+			return result;
+		},
+		format: num => `${num.toLocaleString()} Bird Eggs Offered`
+	},
+	{
+		name: 'Random Events',
+		items: resolveItems(['Stale baguette']),
+		run: async ({ ironmanOnly }) => {
+			const result = await prisma.$queryRawUnsafe<
+				{ id: string; mbox_opens: number; baguettes_received: number }[]
+			>(`SELECT id, (openable_scores->>'6199')::int AS mbox_opens, ("collectionLogBank"->>'6961')::int AS baguettes_received, 
+
+(openable_scores->>'6199')::int + (("collectionLogBank"->>'6961')::int * 4) AS factor
+
+FROM users
+INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
+WHERE "collectionLogBank"->>'6199' IS NOT NULL
+AND "collectionLogBank"->>'6961' IS NOT NULL
+AND "collectionLogBank"->>'20590' IS NULL
+AND openable_scores->>'6199' IS NOT NULL
+AND (openable_scores->>'6199')::int > 3
+${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
+ORDER BY factor DESC
+LIMIT 10;`);
+			return result.map(i => ({
+				id: i.id,
+				val: `${i.mbox_opens} Mystery box Opens, ${i.baguettes_received} Baguettes`
+			}));
+		},
+		format: num => `${num.toLocaleString()}`
+	},
+	{
+		name: 'Clue Scrolls',
+		items: clueItemsOnlyDroppedInOneTier,
+		run: async ({ ironmanOnly, item }) => {
+			const clueTierWithItem = ClueTiers.filter(t => t.allItems.includes(item.id));
+			if (clueTierWithItem.length !== 1) {
+				return 'You can only check items which are dropped by only 1 clue scroll tier.';
+			}
+			const clueTier = clueTierWithItem[0];
+			const result = await prisma.$queryRawUnsafe<
+				{ id: string; opens: number }[]
+			>(`SELECT id, (openable_scores->>'${clueTier.id}')::int AS opens
+FROM users
+INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
+WHERE "collectionLogBank"->>'${item.id}' IS NULL
+AND openable_scores->>'${clueTier.id}' IS NOT NULL
+AND (openable_scores->>'${clueTier.id}')::int > 100
+${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
+ORDER BY opens DESC
+LIMIT 10;`);
+			return result.map(i => ({
+				id: i.id,
+				val: `${i.opens} ${clueTierWithItem[0].name} Casket Opens`
+			}));
+		},
+		format: num => `${num.toLocaleString()}`
 	}
 ];
 for (const minigame of dryStreakMinigames) {
@@ -320,6 +440,7 @@ async function dryStreakCommand(user: MUser, monsterName: string, itemName: stri
 
 		const result = await entity.run({ item, ironmanOnly });
 		if (result.length === 0) return 'No results found.';
+		if (typeof result === 'string') return result;
 
 		return `**Dry Streaks for ${item.name} from ${entity.name}:**\n${result
 			.map(({ id, val }) => `${getUsername(id)}: ${entity.format(val || -1)}`)
@@ -332,9 +453,16 @@ async function dryStreakCommand(user: MUser, monsterName: string, itemName: stri
 	}
 
 	const ironmanPart = ironmanOnly ? 'AND "minion.ironman" = true' : '';
-	const key = 'monsterScores';
+	const key = 'monster_scores';
 	const { id } = mon;
-	const query = `SELECT "id", "${key}"->>'${id}' AS "KC" FROM users WHERE "collectionLogBank"->>'${item.id}' IS NULL AND "${key}"->>'${id}' IS NOT NULL ${ironmanPart} ORDER BY ("${key}"->>'${id}')::int DESC LIMIT 10;`;
+	const query = `SELECT id, "${key}"->>'${id}' AS "KC" 
+				FROM users
+				INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
+				WHERE "collectionLogBank"->>'${item.id}' IS NULL 
+						AND "${key}"->>'${id}' IS NOT NULL 
+						${ironmanPart}
+				ORDER BY ("${key}"->>'${id}')::int DESC
+				LIMIT 10;`;
 
 	const result = await prisma.$queryRawUnsafe<
 		{
@@ -397,7 +525,7 @@ async function checkMassesCommand(guildID: string | undefined) {
 		})
 	)
 		.map(convertStoredActivityToFlatActivity)
-		.filter(m => (isRaidsActivity(m) || isGroupActivity(m) || isTobActivity(m)) && m.users.length > 1);
+		.filter(m => (isRaidsActivity(m) || isGroupActivity(m) || isTOBOrTOAActivity(m)) && m.users.length > 1);
 
 	if (masses.length === 0) {
 		return 'There are no active masses in this server.';
@@ -406,15 +534,15 @@ async function checkMassesCommand(guildID: string | undefined) {
 	const massStr = masses
 		.map(m => {
 			const remainingTime =
-				isTobActivity(m) || isNexActivity(m)
+				isTOBOrTOAActivity(m) || isNexActivity(m)
 					? m.finishDate - m.duration + m.fakeDuration - now
 					: m.finishDate - now;
 			if (isGroupActivity(m)) {
 				return [
 					remainingTime,
-					`${m.type}${isRaidsActivity(m) && m.challengeMode ? ' CM' : ''}: ${
-						m.users.length
-					} users returning to <#${m.channelID}> in ${formatDuration(remainingTime)}`
+					`${m.type}${isRaidsActivity(m) && m.challengeMode ? ' CM' : ''}: ${m.users.length} users (<#${
+						m.channelID
+					}> in ${formatDuration(remainingTime, true)})`
 				];
 			}
 		})
@@ -422,7 +550,7 @@ async function checkMassesCommand(guildID: string | undefined) {
 		.map(m => m![1])
 		.join('\n');
 	return `**Masses in this server:**
-${massStr}`;
+${massStr}`.slice(0, 1999);
 }
 
 export const toolsCommand: OSBMahojiCommand = {
@@ -701,8 +829,9 @@ export const toolsCommand: OSBMahojiCommand = {
 			}
 			if (patron.sacrificed_bank) {
 				if (mahojiUser.perkTier() < PerkTier.Two) return patronMsg(PerkTier.Two);
+				const sacBank = await mahojiUser.fetchStats({ sacrificed_bank: true });
 				const image = await makeBankImage({
-					bank: new Bank(mahojiUser.user.sacrificedBank as ItemBank),
+					bank: new Bank(sacBank.sacrificed_bank as ItemBank),
 					title: 'Your Sacrificed Items'
 				});
 				return {
@@ -777,7 +906,7 @@ export const toolsCommand: OSBMahojiCommand = {
 			}
 		}
 		if (options.user?.temp_cl) {
-			if (options.user.temp_cl === true) {
+			if (options.user.temp_cl.reset === true) {
 				await handleMahojiConfirmation(interaction, 'Are you sure you want to reset your temporary CL?');
 				await mahojiUser.update({
 					temp_cl: {},

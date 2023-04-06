@@ -1,15 +1,14 @@
 import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
 
-import { chompyHats } from '../../../mahoji/lib/abstracted_commands/chompyHuntCommand';
 import { soteSkillRequirements } from '../../../mahoji/lib/abstracted_commands/zalcanoCommand';
-import { MAX_QP } from '../../constants';
+import { chompyHats, MAX_QP } from '../../constants';
 import { CombatCannonItemBank } from '../../minions/data/combatConstants';
 import { Favours } from '../../minions/data/kourendFavour';
 import { MinigameName } from '../../settings/settings';
+import { getToaKCs } from '../../simulation/toa';
 import { Skills } from '../../types';
-import getOSItem from '../../util/getOSItem';
 import itemID from '../../util/itemID';
+import { allTeamCapes } from '../misc';
 import { aerialFishBuyables } from './aerialFishBuyables';
 import { canifisClothes } from './canifisClothes';
 import { capeBuyables } from './capes';
@@ -17,8 +16,9 @@ import { castleWarsBuyables } from './castleWars';
 import { fremennikClothes } from './frem';
 import { gnomeClothes } from './gnomeClothes';
 import { guardiansOfTheRiftBuyables } from './guardiansOfTheRifBuyables';
+import { mairinsMarketBuyables } from './mairinsMarketBuyables';
 import { miningBuyables } from './mining';
-import { perduBuyables } from './perdu';
+import { godCapes, perduBuyables, prayerBooks } from './perdu';
 import { runeBuyables } from './runes';
 import { shootingStarsBuyables } from './shootingStarsBuyables';
 import { skillCapeBuyables } from './skillCapeBuyables';
@@ -80,6 +80,30 @@ const ironmenBuyables: Buyable[] = ['Ironman helm', 'Ironman platebody', 'Ironma
 	},
 	gpCost: 1000
 }));
+
+const ichCapes = [
+	["Icthlarin's shroud (tier 1)", 100],
+	["Icthlarin's shroud (tier 2)", 500],
+	["Icthlarin's shroud (tier 3)", 1000],
+	["Icthlarin's shroud (tier 4)", 1500],
+	["Icthlarin's shroud (tier 5)", 2000],
+	["Icthlarin's hood (tier 5)", 2000]
+] as const;
+
+const toaCapes: Buyable[] = [];
+
+for (const [capeName, kcReq] of ichCapes) {
+	toaCapes.push({
+		name: capeName,
+		gpCost: kcReq * 10,
+		customReq: async (user: MUser) => {
+			const toaKCs = await getToaKCs(user);
+			return toaKCs.normalKC + toaKCs.expertKC >= kcReq
+				? [true]
+				: [false, `You need a combined amount of ${kcReq} Normal/Expert Tombs of Amascut KCs to buy this.`];
+		}
+	});
+}
 
 const tobCapes: Buyable[] = [
 	{
@@ -682,6 +706,12 @@ const questBuyables: Buyable[] = [
 		gpCost: 2_500_000,
 		qpRequired: 25,
 		ironmanPrice: 2000
+	},
+	{
+		name: 'Royal seed pod',
+		gpCost: 2_500_000,
+		qpRequired: 175,
+		ironmanPrice: 2000
 	}
 ];
 
@@ -901,6 +931,11 @@ const Buyables: Buyable[] = [
 		ironmanPrice: 100
 	},
 	{
+		name: 'Pink skirt',
+		gpCost: 1000,
+		ironmanPrice: 2
+	},
+	{
 		name: 'Bull roarer',
 		gpCost: 1000,
 		ironmanPrice: 100
@@ -1005,6 +1040,26 @@ const Buyables: Buyable[] = [
 		gpCost: 2000,
 		ironmanPrice: 200
 	},
+	{
+		name: 'Broken coffin',
+		gpCost: 2000
+	},
+	{
+		name: 'Keris partisan',
+		gpCost: 100_000,
+		ironmanPrice: 60_000,
+		qpRequired: 172
+	},
+	{
+		name: 'Mask of rebirth',
+		gpCost: 100_000,
+		ironmanPrice: 10_000,
+		qpRequired: 172,
+		customReq: async (user: MUser) => {
+			const toaKCs = await getToaKCs(user);
+			return toaKCs.expertKC >= 25 ? [true] : [false, 'You need a 25 Expert KC in Tombs of Amascut to buy this.'];
+		}
+	},
 	...sepulchreBuyables,
 	...constructionBuyables,
 	...hunterBuyables,
@@ -1023,12 +1078,16 @@ const Buyables: Buyable[] = [
 	...randomEventBuyables,
 	...tobCapes,
 	...perduBuyables,
+	...prayerBooks,
+	...godCapes,
 	...skillCapeBuyables,
 	...aerialFishBuyables,
 	...troubleBrewingBuyables,
 	...ironmenBuyables,
 	...shootingStarsBuyables,
-	...guardiansOfTheRiftBuyables
+	...guardiansOfTheRiftBuyables,
+	...toaCapes,
+	...mairinsMarketBuyables
 ];
 
 for (const [chompyHat, qty] of chompyHats) {
@@ -1040,10 +1099,6 @@ for (const [chompyHat, qty] of chompyHats) {
 	});
 }
 
-export const allTeamCapes: Item[] = [];
-for (let i = 1; i < 51; i++) {
-	allTeamCapes.push(getOSItem(`Team-${i} cape`));
-}
 for (const cape of allTeamCapes) {
 	Buyables.push({
 		name: cape.name,

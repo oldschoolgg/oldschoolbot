@@ -1,6 +1,6 @@
+import { SimpleTable } from '@oldschoolgg/toolkit';
 import { randInt } from 'e';
 import { Bank } from 'oldschooljs';
-import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { Emoji, Events } from '../../../lib/constants';
 import { trackLoot } from '../../../lib/lootTrack';
@@ -11,7 +11,7 @@ import { SkillsEnum } from '../../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { updateBankSetting } from '../../../mahoji/mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 const PointsTable = new SimpleTable<number>()
 	.add(420)
@@ -48,14 +48,15 @@ export const wintertodtTask: MinionTask = {
 		let totalPoints = 0;
 
 		for (let i = 0; i < quantity; i++) {
-			const points = PointsTable.roll().item;
+			const points = PointsTable.rollOrThrow();
 			totalPoints += points;
 
 			loot.add(
 				WintertodtCrate.open({
 					points,
-					itemsOwned: user.allItemsOwned().clone().add(loot).bank,
-					skills: user.skillsAsXP
+					itemsOwned: user.allItemsOwned.clone().add(loot).bank,
+					skills: user.skillsAsXP,
+					firemakingXP: user.skillsAsXP.firemaking
 				})
 			);
 		}
@@ -66,7 +67,7 @@ export const wintertodtTask: MinionTask = {
 		if (loot.has('Phoenix')) {
 			globalClient.emit(
 				Events.ServerNotification,
-				`${Emoji.Phoenix} **${user.usernameOrMention}'s** minion, ${
+				`${Emoji.Phoenix} **${user.badgedUsername}'s** minion, ${
 					user.minionName
 				}, just received a Phoenix! Their Wintertodt KC is ${
 					(await getMinigameScore(user.id, 'wintertodt')) + quantity

@@ -1,10 +1,8 @@
 import { graphql } from '@octokit/graphql';
 import { createHmac } from 'crypto';
-import { onRequestHookHandler } from 'fastify';
-import * as jwt from 'jwt-simple';
 
-import { CLIENT_SECRET, GITHUB_TOKEN, patreonConfig } from '../../config';
-import { PerkTier } from '../constants';
+import { CLIENT_SECRET, GITHUB_TOKEN } from '../../config';
+import { globalConfig, PerkTier } from '../constants';
 
 export function rateLimit(max: number, timeWindow: string) {
 	return {
@@ -29,7 +27,7 @@ export function verifyPatreonSecret(body: string, signature?: string | string[])
 	if (!signature) {
 		return false;
 	}
-	const hmac = createHmac('md5', patreonConfig!.webhookSecret);
+	const hmac = createHmac('md5', globalConfig.patreonWebhookSecret);
 	hmac.update(body);
 	const calculated = hmac.digest('hex');
 	return signature === calculated;
@@ -54,7 +52,7 @@ export function parseStrToTier(str: string) {
 		case '$46 a month':
 			return PerkTier.Six;
 		case '$99 a month':
-			return PerkTier.Six;
+			return PerkTier.Seven;
 		default:
 			return null;
 	}
@@ -124,26 +122,3 @@ export async function getUserIdFromGithubID(githubID: string) {
 	if (!result) return null;
 	return result.id.toString();
 }
-
-export function encryptJWT(payload: unknown, secret = CLIENT_SECRET) {
-	return jwt.encode(payload, secret, 'HS512');
-}
-
-export function decryptJWT(payload: string, secret = CLIENT_SECRET) {
-	return jwt.decode(payload, secret);
-}
-
-export const authenticate: onRequestHookHandler = async (request, reply) => {
-	const token = request.headers.authentication;
-
-	if (!token || Array.isArray(token)) {
-		throw reply.unauthorized('No authorization token.');
-	}
-
-	try {
-		const result = decryptJWT(token, CLIENT_SECRET);
-		request.auth = result;
-	} catch (_) {
-		throw reply.badRequest('Authentication failed.');
-	}
-};

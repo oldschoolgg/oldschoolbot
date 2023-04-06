@@ -17,7 +17,6 @@ import { fishingTask } from '../tasks/minions/fishingActivity';
 import { fletchingTask } from '../tasks/minions/fletchingActivity';
 import { gloryChargingTask } from '../tasks/minions/gloryChargingActivity';
 import { groupoMonsterTask } from '../tasks/minions/groupMonsterActivity';
-import { halloweenTask } from '../tasks/minions/halloweenActivity';
 import { herbloreTask } from '../tasks/minions/herbloreActivity';
 import { aerialFishingTask } from '../tasks/minions/HunterActivity/aerialFishingActivity';
 import { birdHouseTask } from '../tasks/minions/HunterActivity/birdhouseActivity';
@@ -45,11 +44,13 @@ import { puroPuroTask } from '../tasks/minions/minigames/puroPuroActivity';
 import { raidsTask } from '../tasks/minions/minigames/raidsActivity';
 import { roguesDenTask } from '../tasks/minions/minigames/roguesDenMazeActivity';
 import { sepulchreTask } from '../tasks/minions/minigames/sepulchreActivity';
+import { shadesOfMortonTask } from '../tasks/minions/minigames/shadesOfMortonActivity';
 import { soulWarsTask } from '../tasks/minions/minigames/soulWarsActivity';
 import { togTask } from '../tasks/minions/minigames/tearsOfGuthixActivity';
 import { templeTrekkingTask } from '../tasks/minions/minigames/templeTrekkingActivity';
 import { temporossTask } from '../tasks/minions/minigames/temporossActivity';
 import { titheFarmTask } from '../tasks/minions/minigames/titheFarmActivity';
+import { toaTask } from '../tasks/minions/minigames/toaActivity';
 import { tobTask } from '../tasks/minions/minigames/tobActivity';
 import { trawlerTask } from '../tasks/minions/minigames/trawlerActivity';
 import { brewingTask } from '../tasks/minions/minigames/troubleBrewingActivity';
@@ -76,10 +77,14 @@ import { tokkulShopTask } from '../tasks/minions/tokkulShopActivity';
 import { vmTask } from '../tasks/minions/volcanicMineActivity';
 import { wealthChargeTask } from '../tasks/minions/wealthChargingActivity';
 import { woodcuttingTask } from '../tasks/minions/woodcuttingActivity';
+import { giantsFoundryTask } from './../tasks/minions/minigames/giantsFoundryActivity';
 import { guardiansOfTheRiftTask } from './../tasks/minions/minigames/guardiansOfTheRiftActivity';
+import { nightmareZoneTask } from './../tasks/minions/minigames/nightmareZoneActivity';
+import { underwaterAgilityThievingTask } from './../tasks/minions/underwaterActivity';
 import { modifyBusyCounter } from './busyCounterCache';
+import { minionActivityCache } from './constants';
 import { convertStoredActivityToFlatActivity, prisma } from './settings/prisma';
-import { activitySync, minionActivityCache, minionActivityCacheDelete } from './settings/settings';
+import { activitySync, minionActivityCacheDelete } from './settings/settings';
 import { logError } from './util/logError';
 
 export const tasks: MinionTask[] = [
@@ -157,10 +162,14 @@ export const tasks: MinionTask[] = [
 	temporossTask,
 	smithingTask,
 	shootingStarTask,
+	giantsFoundryTask,
 	guardiansOfTheRiftTask,
 	butlerTask,
 	tiaraRunecraftTask,
-	halloweenTask
+	nightmareZoneTask,
+	shadesOfMortonTask,
+	toaTask,
+	underwaterAgilityThievingTask
 ];
 
 export async function syncActivityCache() {
@@ -174,6 +183,8 @@ export async function syncActivityCache() {
 
 export async function completeActivity(_activity: Activity) {
 	const activity = convertStoredActivityToFlatActivity(_activity);
+	debugLog(`Attemping to complete activity ID[${activity.id}] TYPE[${activity.type}] USER[${activity.userID}]`);
+
 	if (_activity.completed) {
 		throw new Error('Tried to complete an already completed task.');
 	}
@@ -185,13 +196,13 @@ export async function completeActivity(_activity: Activity) {
 
 	modifyBusyCounter(activity.userID, 1);
 	try {
-		globalClient.emit('debug', `Running ${task.type} for ${activity.userID}`);
 		await task.run(activity);
 	} catch (err) {
 		logError(err);
 	} finally {
 		modifyBusyCounter(activity.userID, -1);
 		minionActivityCacheDelete(activity.userID);
+		debugLog(`Finished completing activity ID[${activity.id}] TYPE[${activity.type}] USER[${activity.userID}]`);
 	}
 }
 
@@ -206,7 +217,8 @@ declare global {
 const ignored: activity_type_enum[] = [
 	activity_type_enum.BirthdayEvent,
 	activity_type_enum.BlastFurnace,
-	activity_type_enum.Easter
+	activity_type_enum.Easter,
+	activity_type_enum.HalloweenEvent
 ];
 for (const a of Object.values(activity_type_enum)) {
 	if (ignored.includes(a)) {

@@ -3,7 +3,6 @@ import { ChatInputCommandInteraction } from 'discord.js';
 import { objectValues } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
-import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { MAX_INT_JAVA, PATRON_ONLY_GEAR_SETUP, PerkTier } from '../../../lib/constants';
 import { generateAllGearImage, generateGearImage } from '../../../lib/gear/functions/generateGearImage';
@@ -15,9 +14,11 @@ import { defaultGear, Gear, globalPresets } from '../../../lib/structures/Gear';
 import { assert, formatSkillRequirements, isValidGearSetup, stringMatches } from '../../../lib/util';
 import { gearEquipMultiImpl } from '../../../lib/util/equipMulti';
 import { getItem } from '../../../lib/util/getOSItem';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 import { toTitleCase } from '../../../lib/util/toTitleCase';
-import { handleMahojiConfirmation, mahojiParseNumber } from '../../mahojiSettings';
+import { transactItemsFromBank } from '../../../lib/util/transactItemsFromBank';
+import { mahojiParseNumber } from '../../mahojiSettings';
 
 export async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName: string): CommandResponse {
 	if (user.minionIsBusy) {
@@ -105,6 +106,8 @@ export async function gearEquipMultiCommand(
 		);
 	}
 
+	// We must update the user after any confirmation because the bank/gear could change from something else.
+	await user.sync();
 	const {
 		success: resultSuccess,
 		failMsg,
@@ -176,27 +179,9 @@ export async function gearEquipCommand(args: {
 	const cost = new Bank().add(itemToEquip.id, quantity);
 	if (!bank.has(cost)) return `You don't own ${cost}.`;
 
-	const { slot } = itemToEquip.equipment!;
 	const dbKey = `gear_${setup}` as const;
 	const allGear = user.gear;
 	const currentEquippedGear = allGear[setup];
-
-	/**
-	 * Handle 2h items
-	 */
-	if (
-		slot === EquipmentSlot.TwoHanded &&
-		(currentEquippedGear[EquipmentSlot.Weapon] || currentEquippedGear[EquipmentSlot.Shield])
-	) {
-		return "You can't equip this two-handed item because you have items equipped in your weapon/shield slots.";
-	}
-
-	if (
-		[EquipmentSlot.Weapon, EquipmentSlot.Shield, EquipmentSlot.TwoHanded].includes(slot) &&
-		currentEquippedGear[EquipmentSlot.TwoHanded]
-	) {
-		return "You can't equip this weapon or shield, because you have a 2H weapon equipped, and need to unequip it first.";
-	}
 
 	if (!itemToEquip.stackable && quantity > 1) {
 		return "You can't equip more than 1 of this item at once, as it isn't stackable!";
@@ -218,43 +203,19 @@ export async function gearEquipCommand(args: {
 			"You are equipping items to your **wilderness** setup. *Every* item in this setup can potentially be lost if you're doing activities in the wilderness. Are you sure you want to equip it?"
 		);
 	}
-	/**
-	 * If there's already an item equipped in this slot, unequip it,
-	 * then recursively call this function again.
-	 */
-	const equippedInThisSlot = currentEquippedGear[slot];
-	if (equippedInThisSlot) {
-		const newGear = { ...currentEquippedGear.raw() };
-		newGear[slot] = null;
 
-		const loot = new Bank().add(equippedInThisSlot.item, equippedInThisSlot.quantity);
-		await user.addItemsToBank({ items: loot, collectionLog: false });
-		await user.update({
-			[dbKey]: newGear
-		});
-		return gearEquipCommand({
-			interaction,
-			setup,
-			item,
-			items,
-			preset,
-			quantity,
-			unEquippedItem: loot,
-			auto: undefined,
-			userID: user.id
-		});
-	}
+	const result = currentEquippedGear.equip(itemToEquip, quantity);
 
-	await user.removeItemsFromBank(cost);
-
-	const newGear = { ...currentEquippedGear.raw() };
-	newGear[slot] = {
-		item: itemToEquip.id,
-		quantity
-	};
+	await transactItemsFromBank({
+		userID: user.id,
+		collectionLog: false,
+		dontAddToTempCL: true,
+		itemsToAdd: result.refundBank ?? undefined,
+		itemsToRemove: cost
+	});
 
 	const { newUser } = await user.update({
-		[dbKey]: newGear
+		[dbKey]: currentEquippedGear.raw()
 	});
 	const image = await generateGearImage(user, newUser[dbKey] as GearSetup, setup, user.user.minion_equippedPet);
 

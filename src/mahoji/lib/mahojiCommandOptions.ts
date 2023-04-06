@@ -44,6 +44,17 @@ export const itemOption = (filter?: (item: Item) => boolean): CommandOption => (
 		return res.map(i => ({ name: `${i.name}`, value: i.id.toString() }));
 	}
 });
+export const equipableItemOption = (filter?: (item: Item) => boolean): CommandOption => ({
+	type: ApplicationCommandOptionType.String,
+	name: 'item',
+	description: 'The item you want to pick.',
+	required: false,
+	autocomplete: async value => {
+		let res = allEquippableItems.filter(i => i.name.includes(value.toLowerCase()));
+		if (filter) res = res.filter(filter);
+		return res.map(i => ({ name: `${i.name}`, value: i.id.toString() }));
+	}
+});
 
 export const monsterOption: CommandOption = {
 	type: ApplicationCommandOptionType.String,
@@ -133,3 +144,11 @@ export const gearPresetOption: CommandOption = {
 			.concat(globalPresets.map(i => ({ name: `${i.name} (Global)`, value: i.name })));
 	}
 };
+
+export function generateRandomBank(size: number) {
+	const bank = new Bank();
+	for (let i = 0; i < size; i++) {
+		bank.add(allEquippableItems[i]);
+	}
+	return bank;
+}
