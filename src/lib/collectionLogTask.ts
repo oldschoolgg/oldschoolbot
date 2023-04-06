@@ -1,10 +1,11 @@
 import { Canvas, SKRSContext2D } from '@napi-rs/canvas';
+import { formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit';
 import { calcWhatPercent, objectEntries } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import { Util } from 'oldschooljs';
 
 import { allCollectionLogs, getCollection, getTotalCl, UserStatsDataNeededForCL } from '../lib/data/Collections';
 import { IToReturnCollection } from '../lib/data/CollectionsExport';
-import { formatItemStackQuantity, generateHexColorForCashStack, toKMB } from '../lib/util';
 import { fillTextXTimesInCtx, getClippedRegion, measureTextWidth } from '../lib/util/canvasUtil';
 import getOSItem from '../lib/util/getOSItem';
 import { IBgSprite } from './bankImage';
@@ -393,7 +394,7 @@ class CollectionLogTask {
 		ctx.save();
 		ctx.font = '16px OSRSFontCompact';
 		ctx.fillStyle = generateHexColorForCashStack(totalPrice);
-		let value = toKMB(totalPrice);
+		let value = Util.toKMB(totalPrice);
 		this.drawText(ctx, value, ctx.canvas.width - 15 - ctx.measureText(value).width, 75 + 25);
 		ctx.restore();
 
