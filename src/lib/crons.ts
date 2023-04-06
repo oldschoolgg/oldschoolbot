@@ -37,7 +37,7 @@ GROUP BY item_id;`);
 	schedule('0 * * * *', () => {
 		debugLog('Set Activity cronjob starting');
 		syncPrescence();
-		globalClient.user?.setActivity('/help');
+		globalClient.user?.setActivity('Easter Event LIVE!');
 	});
 
 	/**
