@@ -83,10 +83,7 @@ const birdhouses: Birdhouse[] = [
 		craftXP: 30,
 		houseItemReq: new Bank().add('Teak bird house', 1),
 		craftItemReq: new Bank().add('Teak logs', 1),
-		table: new LootTable()
-			.every('Raw bird meat', [1, 5])
-
-			.tertiary(3, 'Feather', [10, 100]),
+		table: new LootTable().every('Raw bird meat', [1, 5]).tertiary(3, 'Feather', [10, 100]),
 		normalNestTable: new LootTable().tertiary(2, nestTable, [1, 4]),
 		strungRabbitFootTable: new LootTable().tertiary(2, strungRabbitFootNestTable, [1, 4]),
 		huntTechnique: 'bird house trapping',
