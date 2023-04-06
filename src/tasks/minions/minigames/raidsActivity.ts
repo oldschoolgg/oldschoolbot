@@ -2,6 +2,7 @@ import { shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 
+import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { Emoji, Events } from '../../../lib/constants';
 import { chambersOfXericCL, chambersOfXericMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { createTeam } from '../../../lib/data/cox';
@@ -141,8 +142,10 @@ export const raidsTask: MinionTask = {
 			}
 			const str = specialLoot ? `${emote} ||${itemsAdded}||` : itemsAdded.toString();
 			const deathStr = deaths === 0 ? '' : new Array(deaths).fill(Emoji.Skull).join(' ');
-
-			resultMessage += `\n${deathStr} **${user}** received: ${str} (${personalPoints?.toLocaleString()} pts, ${
+			const clue = ClueTiers.some(t => itemsAdded.has(t.scrollID));
+			resultMessage += `\n${deathStr}${
+				clue ? Emoji.Clue : ''
+			} **${user}** received: ${str} (${personalPoints?.toLocaleString()} pts, ${
 				Emoji.Skull
 			}${deathChance.toFixed(0)}%) `;
 		}
