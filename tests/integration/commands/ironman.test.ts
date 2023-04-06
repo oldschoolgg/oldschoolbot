@@ -1,3 +1,4 @@
+import { randomSnowflake } from '@oldschoolgg/toolkit';
 import { Prisma } from '@prisma/client';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
@@ -70,7 +71,7 @@ describe('Ironman Command', () => {
 	}
 
 	test('Should reset everything', async () => {
-		const userId = randomCryptoSnowflake();
+		const userId = randomSnowflake();
 		await createUserWithEverything(userId);
 
 		const result = await ironmanCommand(await mUserFetch(userId), null, false);
@@ -92,7 +93,6 @@ describe('Ironman Command', () => {
 		expect(await prisma.minigame.count({ where: { user_id: userId } })).toEqual(0);
 		expect(await prisma.xPGain.count({ where: { user_id: BigInt(userId) } })).toEqual(0);
 		expect(await prisma.stashUnit.count({ where: { user_id: BigInt(userId) } })).toEqual(0);
-		expect(await prisma.userStats.count({ where: { user_id: BigInt(userId) } })).toEqual(0);
 		expect(await prisma.historicalData.count({ where: { user_id: userId } })).toEqual(0);
 		expect(await prisma.userStats.count({ where: { user_id: BigInt(userId) } })).toEqual(1);
 		const userStats = await prisma.userStats.findFirst({ where: { user_id: BigInt(userId) } });
@@ -100,7 +100,7 @@ describe('Ironman Command', () => {
 	});
 
 	test('Should de-iron', async () => {
-		const userId = randomCryptoSnowflake();
+		const userId = randomSnowflake();
 		await createUserWithEverything(userId, { minion_ironman: true });
 		const initialUser = await mUserFetch(userId);
 		expect(initialUser.isIronman).toEqual(true);

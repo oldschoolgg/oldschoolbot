@@ -94,7 +94,7 @@ interface UserOptions {
 	id?: string;
 }
 
-export async function createTestUser(id = randomCryptoSnowflake(), bank?: Bank) {
+export async function createTestUser(id = randomSnowflake(), bank?: Bank) {
 	const user = await prisma.user.upsert({
 		create: {
 			id,
@@ -120,7 +120,7 @@ export async function integrationCmdRun({
 	options?: object;
 	userOptions?: UserOptions;
 }) {
-	const userId = userOptions?.id ?? randomCryptoSnowflake();
+	const userId = userOptions?.id ?? randomSnowflake();
 	await createTestUser(userId, userOptions?.ownedBank);
 	const result = await command.run({ ...commandRunOptions(userId), options });
 	return result;
@@ -150,7 +150,7 @@ class TestClient {
 }
 
 export async function mockClient() {
-	const clientId = randomCryptoSnowflake();
+	const clientId = randomSnowflake();
 	const client = await prisma.clientStorage.create({
 		data: {
 			id: clientId
