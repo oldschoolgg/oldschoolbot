@@ -143,12 +143,15 @@ After becoming an ironman:
 	// Refund the leagues points they spent
 	const roboChimpUser = await roboChimpUserFetch(user.id);
 	if (roboChimpUser.leagues_points_total >= 0) {
-		await roboChimpClient.user.update({
+		await roboChimpClient.user.upsert({
 			where: {
 				id: BigInt(user.id)
 			},
-			data: {
+			update: {
 				leagues_points_balance_osb: roboChimpUser.leagues_points_balance_osb
+			},
+			create: {
+				id: BigInt(user.id)
 			}
 		});
 	}
