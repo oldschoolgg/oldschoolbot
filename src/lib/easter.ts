@@ -146,7 +146,9 @@ const userEggMessages = new Map([
 	['433470856530755587', 'OOK OOK OOK'],
 	['348971906768044033', 'A very dark egg.'],
 	['164490892533563393', 'This egg is iconic.'],
-	['507686806624534529', 'Ayy tone']
+	['507686806624534529', 'Ayy tone'],
+	['132647937091043329', 'My name jeff.'],
+	['269343001325600769', 'Pro work.']
 ]);
 
 export async function eggNameEffect(user: MUser, firstName: EggType, lastName: EggType) {
