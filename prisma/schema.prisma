@@ -306,9 +306,10 @@ model User {
   bingo_gp_contributed BigInt @default(0)
 
   // Relations
-  farmedCrops FarmedCrop[]
-  botItemSell BotItemSell[]
-  pinnedTrip  PinnedTrip[]
+  farmedCrops    FarmedCrop[]
+  botItemSell    BotItemSell[]
+  pinnedTrip     PinnedTrip[]
+  historicalData HistoricalData[]
 
   // Configs/Settings
   minion_defaultCompostToUse CropUpgradeType    @default(compost) @map("minion.defaultCompostToUse")
@@ -744,6 +745,22 @@ model PinnedTrip {
   user     User     @relation(fields: [user_id], references: [id])
 
   @@map("pinned_trip")
+}
+
+model HistoricalData {
+  id      String   @id @default(uuid()) @db.Uuid
+  user_id String   @db.VarChar(19)
+  date    DateTime @default(now())
+
+  cl_global_rank           Int
+  cl_completion_percentage Float
+  cl_completion_count      Int
+  GP                       BigInt
+  total_xp                 BigInt
+
+  user User @relation(fields: [user_id], references: [id])
+
+  @@map("historical_data")
 }
 
 enum command_usage_status {

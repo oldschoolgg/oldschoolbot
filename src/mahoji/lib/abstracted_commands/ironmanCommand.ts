@@ -1,6 +1,5 @@
 import { Prisma } from '@prisma/client';
 import { ChatInputCommandInteraction } from 'discord.js';
-import { noOp } from 'e';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { BitField } from '../../../lib/constants';
@@ -120,40 +119,39 @@ After becoming an ironman:
 		bitfield: bitFieldsToKeep.filter(i => user.bitfield.includes(i))
 	};
 
-	try {
-		// Delete tables with foreign keys first:
-		await prisma.botItemSell.deleteMany({ where: { user_id: user.id } }).catch(noOp);
-		await prisma.pinnedTrip.deleteMany({ where: { user_id: user.id } }).catch(noOp);
-		await prisma.farmedCrop.deleteMany({ where: { user_id: user.id } }).catch(noOp);
-		// Now we can delete the user
-		await prisma.user.delete({
-			where: { id: user.id }
-		});
-		await prisma.user.create({
-			data: createOptions
-		});
-		await prisma.slayerTask.deleteMany({ where: { user_id: user.id } }).catch(noOp);
-		await prisma.playerOwnedHouse.delete({ where: { user_id: user.id } }).catch(noOp);
-		await prisma.minigame.delete({ where: { user_id: user.id } }).catch(noOp);
-		await prisma.xPGain.deleteMany({ where: { user_id: BigInt(user.id) } }).catch(noOp);
-		await prisma.newUser.delete({ where: { id: user.id } }).catch(noOp);
-		await prisma.activity.deleteMany({ where: { user_id: BigInt(user.id) } }).catch(noOp);
-		await prisma.stashUnit.deleteMany({ where: { user_id: BigInt(user.id) } }).catch(noOp);
-		await prisma.userStats.deleteMany({ where: { user_id: BigInt(user.id) } }).catch(noOp);
+	// Delete tables with foreign keys first:
+	await prisma.historicalData.deleteMany({ where: { user_id: user.id } });
+	await prisma.botItemSell.deleteMany({ where: { user_id: user.id } });
+	await prisma.pinnedTrip.deleteMany({ where: { user_id: user.id } });
+	await prisma.farmedCrop.deleteMany({ where: { user_id: user.id } });
+	// Now we can delete the user
+	await prisma.user.deleteMany({
+		where: { id: user.id }
+	});
+	await prisma.user.create({
+		data: createOptions
+	});
+	await prisma.slayerTask.deleteMany({ where: { user_id: user.id } });
+	await prisma.playerOwnedHouse.deleteMany({ where: { user_id: user.id } });
+	await prisma.minigame.deleteMany({ where: { user_id: user.id } });
+	await prisma.xPGain.deleteMany({ where: { user_id: BigInt(user.id) } });
+	await prisma.newUser.deleteMany({ where: { id: user.id } });
+	await prisma.activity.deleteMany({ where: { user_id: BigInt(user.id) } });
+	await prisma.stashUnit.deleteMany({ where: { user_id: BigInt(user.id) } });
+	await prisma.userStats.deleteMany({ where: { user_id: BigInt(user.id) } });
 
-		// Refund the leagues points they spent
-		const roboChimpUser = await roboChimpUserFetch(user.id);
-		if (roboChimpUser.leagues_points_total >= 0) {
-			await roboChimpClient.user.update({
-				where: {
-					id: BigInt(user.id)
-				},
-				data: {
-					leagues_points_balance_osb: roboChimpUser.leagues_points_balance_osb
-				}
-			});
-		}
-	} catch (_) {}
+	// Refund the leagues points they spent
+	const roboChimpUser = await roboChimpUserFetch(user.id);
+	if (roboChimpUser.leagues_points_total >= 0) {
+		await roboChimpClient.user.update({
+			where: {
+				id: BigInt(user.id)
+			},
+			data: {
+				leagues_points_balance_osb: roboChimpUser.leagues_points_balance_osb
+			}
+		});
+	}
 
 	const { newUser } = await user.update({
 		minion_ironman: true,
