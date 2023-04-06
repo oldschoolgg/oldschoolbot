@@ -12,9 +12,20 @@ import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
-const contractTiers = [
+interface IContract {
+	name: string;
+	tier: number;
+	level: number;
+	plank: Plank;
+	xp: number;
+	points: number;
+	plankXP: number[];
+}
+
+export const contractTiers: IContract[] = [
 	{
-		name: 'Expert',
+		name: 'Expert (Mahogany Planks)',
+		tier: 4,
 		level: 70,
 		plank: Plank.MahoganyPlank,
 		xp: 2750,
@@ -22,7 +33,8 @@ const contractTiers = [
 		plankXP: [112, 240]
 	},
 	{
-		name: 'Adept',
+		name: 'Adept (Teak Planks)',
+		tier: 3,
 		level: 50,
 		plank: Plank.TeakPlank,
 		xp: 2250,
@@ -30,7 +42,8 @@ const contractTiers = [
 		plankXP: [72, 190]
 	},
 	{
-		name: 'Novice',
+		name: 'Novice (Oak Planks)',
+		tier: 2,
 		level: 20,
 		plank: Plank.OakPlank,
 		xp: 1250,
@@ -38,7 +51,8 @@ const contractTiers = [
 		plankXP: [48, 160]
 	},
 	{
-		name: 'Beginner',
+		name: 'Beginner (Planks)',
+		tier: 1,
 		level: 1,
 		plank: Plank.Plank,
 		xp: 500,
@@ -49,12 +63,16 @@ const contractTiers = [
 
 const planksTable = [1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 4];
 
-function calcTrip(level: number, kc: number, maxLen: number, hasSack: boolean): [number, Bank, number, number, number] {
+function calcTrip(
+	tier: IContract,
+	kc: number,
+	maxLen: number,
+	hasSack: boolean
+): [number, Bank, number, number, number] {
 	const percentSkill = Math.min(100, calcWhatPercent(kc, 300));
 	const qtyPerHour = 31 + Math.ceil(calcPercentOfNum(percentSkill, 5)) + (hasSack ? 6 : 0);
 	const qtyPerMaxLen = (qtyPerHour / Time.Hour) * maxLen;
 	const lenPerQty = maxLen / qtyPerMaxLen;
-	const tier = contractTiers.find(tier => level >= tier.level)!;
 
 	const qty = Math.floor(maxLen / lenPerQty);
 	let itemsNeeded = new Bank();
@@ -121,15 +139,26 @@ export async function mahoganyHomesBuyCommand(user: MUser, input = '', quantity?
 	return `Successfully purchased ${loot} for ${cost * quantity} Carpenter Points.`;
 }
 
-export async function mahoganyHomesBuildCommand(user: MUser, channelID: string): CommandResponse {
+export async function mahoganyHomesBuildCommand(user: MUser, channelID: string, tier?: number): CommandResponse {
 	if (user.minionIsBusy) return `${user.minionName} is currently busy.`;
 
 	const conLevel = user.skillLevel(SkillsEnum.Construction);
 	const kc = await getMinigameScore(user.id, 'mahogany_homes');
 
+	let tierData = contractTiers.find(contractTier => conLevel >= contractTier.level)!;
+
+	if (tier) {
+		tierData = contractTiers.find(contractTier => Number(tier) === contractTier.tier) || tierData;
+		if (tierData.level > conLevel) {
+			return `You need ${tierData.level} Construction for this contract, you have ${conLevel}.`;
+		}
+	} else {
+		tierData = contractTiers.find(contractTier => conLevel >= contractTier.level)!;
+	}
+
 	const hasSack = user.hasEquippedOrInBank('Plank sack');
 	const [quantity, itemsNeeded, xp, duration, points] = calcTrip(
-		conLevel,
+		tierData,
 		kc,
 		calcMaxTripLength(user, 'MahoganyHomes'),
 		hasSack
@@ -150,14 +179,13 @@ export async function mahoganyHomesBuildCommand(user: MUser, channelID: string):
 		quantity,
 		duration,
 		points,
-		xp
+		xp,
+		tier: tierData.tier
 	});
 
-	let str = `${
-		user.minionName
-	} is now doing ${quantity}x Mahogany homes contracts, the trip will take ${formatDuration(
-		duration
-	)}. Removed ${itemsNeeded} from your bank.`;
+	let str = `${user.minionName} is now doing ${quantity}x ${
+		tierData.name
+	} Mahogany homes contracts, the trip will take ${formatDuration(duration)}. Removed ${itemsNeeded} from your bank.`;
 
 	if (hasSack) {
 		str += "\nYou're getting more XP/Hr because of your Plank sack!";

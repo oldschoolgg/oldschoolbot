@@ -4,7 +4,7 @@ import { OSBMahojiCommand } from '../lib/util';
 import { bankCommand } from './bank';
 
 const bankFormats = ['json', 'text_paged', 'text_full'] as const;
-type BankFormat = typeof bankFormats[number];
+type BankFormat = (typeof bankFormats)[number];
 
 export const bsCommand: OSBMahojiCommand = {
 	name: 'bs',

@@ -1,3 +1,4 @@
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { notEmpty, randArrItem, roll } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 import BeginnerClueTable from 'oldschooljs/dist/simulation/clues/Beginner';
@@ -37,7 +38,6 @@ import { handleNexKills } from './simulation/nex';
 import { getTemporossLoot } from './simulation/tempoross';
 import { TheatreOfBlood } from './simulation/tob';
 import { WintertodtCrate } from './simulation/wintertodt';
-import { stringMatches } from './util/cleanString';
 import getOSItem from './util/getOSItem';
 import itemID from './util/itemID';
 import resolveItems from './util/resolveItems';
@@ -156,7 +156,8 @@ export const finishables: Finishable[] = [
 						mining: 99,
 						crafting: 99,
 						farming: 99
-					}
+					},
+					firemakingXP: 1000
 				})
 			)
 	},

@@ -9,6 +9,6 @@ export default (server: FastifyServer) =>
 			reply.send(`${JSON.stringify(request.headers, null, 4)}\n\n\n${server.printRoutes()}`);
 		},
 		config: {
-			...rateLimit(1, '5 seconds')
+			...rateLimit(1, '1 minute')
 		}
 	});

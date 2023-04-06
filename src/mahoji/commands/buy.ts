@@ -65,7 +65,7 @@ export const buyCommand: OSBMahojiCommand = {
 				});
 			}
 
-			const allItemsOwnedBank = user.allItemsOwned();
+			const allItemsOwnedBank = user.allItemsOwned;
 			if (kittens.some(kitten => allItemsOwnedBank.has(kitten))) {
 				return mahojiChatHead({
 					head: 'gertrude',

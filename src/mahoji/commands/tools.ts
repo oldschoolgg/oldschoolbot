@@ -1,4 +1,4 @@
-import { Embed } from '@discordjs/builders';
+import { EmbedBuilder } from '@discordjs/builders';
 import { Activity, User } from '@prisma/client';
 import { ChannelType } from 'discord.js';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
@@ -144,7 +144,7 @@ LIMIT 10;`);
 	}
 
 	let place = 0;
-	const embed = new Embed()
+	const embed = new EmbedBuilder()
 		.setTitle(`Highest ${skillObj ? skillObj.name : 'Overall'} XP Gains in the past ${interval}`)
 		.setDescription(
 			res
@@ -179,7 +179,7 @@ LIMIT 10`;
 	}
 
 	let place = 0;
-	const embed = new Embed()
+	const embed = new EmbedBuilder()
 		.setTitle(`Highest ${monster.name} KC gains in the past ${interval}`)
 		.setDescription(
 			res
@@ -244,18 +244,19 @@ interface DrystreakEntity {
 	run: (args: { item: Item; ironmanOnly: boolean }) => Promise<string | { id: string; val: number | string }[]>;
 	format: (num: number | string) => string;
 }
-const dryStreakEntities: DrystreakEntity[] = [
+export const dryStreakEntities: DrystreakEntity[] = [
 	{
 		name: 'Chambers of Xeric (CoX)',
 		items: CoXUniqueTable.allItems,
 		run: async ({ item, ironmanOnly }) => {
 			const result = await prisma.$queryRawUnsafe<
 				{ id: string; val: number }[]
-			>(`SELECT id, total_cox_points AS val
-FROM users
+			>(`SELECT id, "user_stats".total_cox_points AS val
+FROM user_stats
+INNER JOIN "users" on "users"."id" = "user_stats"."user_id"::text
 WHERE "collectionLogBank"->>'${item.id}' IS NULL
 ${ironmanOnly ? ' AND "minion.ironman" = true' : ''}
-ORDER BY total_cox_points DESC
+ORDER BY "user_stats".total_cox_points DESC
 LIMIT 10;`);
 			return result;
 		},
@@ -276,15 +277,17 @@ LIMIT 10;`);
 		run: async ({ item, ironmanOnly }) => {
 			const result = await prisma.$queryRawUnsafe<
 				{ id: string; val: number }[]
-			>(`SELECT "id", ("monsterScores"->>'${NightmareMonster.id}')::int AS val
-				   FROM users
-				   WHERE "collectionLogBank"->>'${item.id}' IS NULL
-				   AND "monsterScores"->>'${NightmareMonster.id}' IS NOT NULL 
-				   ${ironmanOnly ? 'AND "minion.ironman" = true' : ''} 
-				   ORDER BY ("monsterScores"->>'${NightmareMonster.id}')::int DESC
-				   LIMIT 10;`);
+			>(`SELECT "id", ("monster_scores"->>'${NightmareMonster.id}')::int AS val
+		   FROM users
+		   INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
+		   WHERE "collectionLogBank"->>'${item.id}' IS NULL
+		   AND "monster_scores"->>'${NightmareMonster.id}' IS NOT NULL 
+		   ${ironmanOnly ? 'AND "minion.ironman" = true' : ''} 
+		   ORDER BY ("monster_scores"->>'${NightmareMonster.id}')::int DESC
+		   LIMIT 10;`);
 			return result;
 		},
+
 		format: num => `${num.toLocaleString()} KC`
 	},
 	{
@@ -293,6 +296,7 @@ LIMIT 10;`);
 		run: async ({ item, ironmanOnly }) => {
 			const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(`SELECT "id", high_gambles AS val
 				   FROM users
+				   INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
 				   WHERE "collectionLogBank"->>'${item.id}' IS NULL
 				   AND high_gambles > 0
 				   ${ironmanOnly ? 'AND "minion.ironman" = true' : ''} 
@@ -356,6 +360,7 @@ LIMIT 10;`);
 (openable_scores->>'6199')::int + (("collectionLogBank"->>'6961')::int * 4) AS factor
 
 FROM users
+INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
 WHERE "collectionLogBank"->>'6199' IS NOT NULL
 AND "collectionLogBank"->>'6961' IS NOT NULL
 AND "collectionLogBank"->>'20590' IS NULL
@@ -384,6 +389,7 @@ LIMIT 10;`);
 				{ id: string; opens: number }[]
 			>(`SELECT id, (openable_scores->>'${clueTier.id}')::int AS opens
 FROM users
+INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
 WHERE "collectionLogBank"->>'${item.id}' IS NULL
 AND openable_scores->>'${clueTier.id}' IS NOT NULL
 AND (openable_scores->>'${clueTier.id}')::int > 100
@@ -447,9 +453,16 @@ async function dryStreakCommand(user: MUser, monsterName: string, itemName: stri
 	}
 
 	const ironmanPart = ironmanOnly ? 'AND "minion.ironman" = true' : '';
-	const key = 'monsterScores';
+	const key = 'monster_scores';
 	const { id } = mon;
-	const query = `SELECT "id", "${key}"->>'${id}' AS "KC" FROM users WHERE "collectionLogBank"->>'${item.id}' IS NULL AND "${key}"->>'${id}' IS NOT NULL ${ironmanPart} ORDER BY ("${key}"->>'${id}')::int DESC LIMIT 10;`;
+	const query = `SELECT id, "${key}"->>'${id}' AS "KC" 
+				FROM users
+				INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
+				WHERE "collectionLogBank"->>'${item.id}' IS NULL 
+						AND "${key}"->>'${id}' IS NOT NULL 
+						${ironmanPart}
+				ORDER BY ("${key}"->>'${id}')::int DESC
+				LIMIT 10;`;
 
 	const result = await prisma.$queryRawUnsafe<
 		{
@@ -816,8 +829,9 @@ export const toolsCommand: OSBMahojiCommand = {
 			}
 			if (patron.sacrificed_bank) {
 				if (mahojiUser.perkTier() < PerkTier.Two) return patronMsg(PerkTier.Two);
+				const sacBank = await mahojiUser.fetchStats({ sacrificed_bank: true });
 				const image = await makeBankImage({
-					bank: new Bank(mahojiUser.user.sacrificedBank as ItemBank),
+					bank: new Bank(sacBank.sacrificed_bank as ItemBank),
 					title: 'Your Sacrificed Items'
 				});
 				return {

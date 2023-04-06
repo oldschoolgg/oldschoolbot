@@ -1,4 +1,4 @@
-import { Embed } from '@discordjs/builders';
+import { EmbedBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction } from 'discord.js';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { LootTable } from 'oldschooljs';
@@ -7,7 +7,7 @@ import { toKMB } from 'oldschooljs/dist/util';
 import { mahojiClientSettingsUpdate } from '../../../lib/util/clientSettings';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import resolveItems from '../../../lib/util/resolveItems';
-import { mahojiParseNumber } from '../../mahojiSettings';
+import { mahojiParseNumber, userStatsUpdate } from '../../mahojiSettings';
 
 export const flowerTable = new LootTable()
 	.add('Red flowers', 1, 150)
@@ -58,7 +58,7 @@ ${explanation}`
 		collectionLog: true
 	});
 
-	const embed = new Embed()
+	const embed = new EmbedBuilder()
 		.setTitle(`You picked ${choice} and got '${flower.name}'!`)
 		.setThumbnail(`https://chisel.weirdgloop.org/static/img/osrs-sprite/${flower.id}.png`)
 		.setFooter({
@@ -72,13 +72,19 @@ ${explanation}`
 	if (blackAndWhite.includes(flower.id)) {
 		const amountWon = amount * 5;
 		await user.update({
-			gp_hotcold: {
-				increment: amountWon
-			},
 			GP: {
 				increment: amountWon
 			}
 		});
+		await userStatsUpdate(
+			user.id,
+			{
+				gp_hotcold: {
+					increment: amountWon
+				}
+			},
+			{}
+		);
 		await mahojiClientSettingsUpdate({
 			gp_hotcold: {
 				decrement: amountWon
@@ -111,19 +117,29 @@ ${explanation}`
 		await user.update({
 			GP: {
 				increment: amount * 2
-			},
-			gp_hotcold: {
-				increment: amount
 			}
 		});
+		await userStatsUpdate(
+			user.id,
+			{
+				gp_hotcold: {
+					increment: amount
+				}
+			},
+			{}
+		);
 		embed.setDescription(`You **won** ${toKMB(amountWon)}!`).setColor(6_875_960);
 		return response;
 	}
-	await user.update({
-		gp_hotcold: {
-			decrement: amount
-		}
-	});
+	await userStatsUpdate(
+		user.id,
+		{
+			gp_hotcold: {
+				decrement: amount
+			}
+		},
+		{}
+	);
 
 	embed.setDescription(`You lost ${toKMB(amount)}.`).setColor(15_417_396);
 	return response;
