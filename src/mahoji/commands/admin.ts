@@ -6,8 +6,8 @@ import { ClientStorage, economy_transaction_type } from '@prisma/client';
 import { Stopwatch } from '@sapphire/stopwatch';
 import { Duration } from '@sapphire/time-utilities';
 import { isThenable } from '@sentry/utils';
-import { AttachmentBuilder, escapeCodeBlock, InteractionReplyOptions } from 'discord.js';
-import { notEmpty, randArrItem, sleep, Time, uniqueArr } from 'e';
+import { AttachmentBuilder, escapeCodeBlock, InteractionReplyOptions, Message, TextChannel } from 'discord.js';
+import { noOp, notEmpty, randArrItem, roll, sleep, Time, uniqueArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
@@ -17,6 +17,7 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { ADMIN_IDS, OWNER_IDS, production, SupportServer } from '../../config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../../lib/blacklists';
+import { boxFrenzy } from '../../lib/boxFrenzy';
 import {
 	badges,
 	BadgesEnum,
@@ -57,6 +58,7 @@ import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { slayerMaskLeaderboardCache } from '../../lib/util/slayerMaskLeaderboard';
 import { sendToChannelID } from '../../lib/util/webhook';
+import { LampTable } from '../../lib/xpLamps';
 import { Cooldowns } from '../lib/Cooldowns';
 import { syncCustomPrices } from '../lib/events';
 import { itemOption } from '../lib/mahojiCommandOptions';
@@ -319,19 +321,6 @@ export const adminCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.String,
 					name: 'time',
 					description: 'The time.',
-					required: true
-				}
-			]
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'viewbank',
-			description: 'View a users bank.',
-			options: [
-				{
-					type: ApplicationCommandOptionType.User,
-					name: 'user',
-					description: 'The user.',
 					required: true
 				}
 			]
@@ -639,11 +628,6 @@ export const adminCommand: OSBMahojiCommand = {
 		// },
 		{
 			type: ApplicationCommandOptionType.Subcommand,
-			name: 'migrate_tames',
-			description: 'migrate tames'
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
 			name: 'give_items',
 			description: 'Spawn items for a user',
 			options: [
@@ -665,13 +649,44 @@ export const adminCommand: OSBMahojiCommand = {
 					description: 'The reason'
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'box_frenzy',
+			description: 'Box frenzy',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Integer,
+					name: 'amount',
+					description: 'The amount',
+					required: true,
+					min_value: 1,
+					max_value: 500
+				}
+			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'lamp_frenzy',
+			description: 'Lamp frenzy',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Integer,
+					name: 'amount',
+					description: 'The amount',
+					required: true,
+					min_value: 1,
+					max_value: 20
+				}
+			]
 		}
 	],
 	run: async ({
 		options,
 		userID,
 		interaction,
-		guildID
+		guildID,
+		channelID
 	}: CommandRunOptions<{
 		givetgb?: { user: MahojiUserOption };
 		viewbank?: { user: MahojiUserOption };
@@ -699,7 +714,8 @@ export const adminCommand: OSBMahojiCommand = {
 		view?: { thing: string };
 		wipe_bingo_temp_cls?: {};
 		give_items?: { user: MahojiUserOption; items: string; reason?: string };
-		migrate_tames?: {};
+		box_frenzy?: { amount: number };
+		lamp_frenzy?: { amount: number };
 	}>) => {
 		await deferInteraction(interaction);
 
@@ -1305,6 +1321,45 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 		// 		]
 		// 	};
 		// }
+
+		if (options.box_frenzy) {
+			boxFrenzy(channelID, 'Box Frenzy started!', options.box_frenzy.amount);
+			return null;
+		}
+
+		if (options.lamp_frenzy) {
+			const channel = globalClient.channels.cache.get(channelID)! as TextChannel;
+			const wonCache = new Set();
+
+			const message = await channel.send(
+				`Giving out ${options.lamp_frenzy.amount} lamps! To win, just say something.`
+			);
+
+			const totalLoot = new Bank();
+
+			await channel
+				.awaitMessages({
+					time: 20_000,
+					errors: ['time'],
+					filter: async (_msg: Message) => {
+						if (!roll(3)) return false;
+						if (wonCache.has(_msg.author.id)) return false;
+						wonCache.add(_msg.author.id);
+
+						const loot = LampTable.roll();
+						totalLoot.add(loot);
+
+						const user = await mUserFetch(_msg.author.id);
+						await user.addItemsToBank({ items: loot, collectionLog: true });
+						_msg.channel.send(`${_msg.author} won ${loot}.`);
+						return false;
+					}
+				})
+				.then(() => message.edit({ content: 'Finished!', files: [] }))
+				.catch(noOp);
+
+			await channel.send(`Spawnlamp frenzy finished! ${totalLoot} was given out.`);
+		}
 
 		return 'Invalid command.';
 	}
