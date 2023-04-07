@@ -1344,6 +1344,7 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 					filter: async (_msg: Message) => {
 						if (!roll(3)) return false;
 						if (wonCache.has(_msg.author.id)) return false;
+						if (wonCache.size >= options.lamp_frenzy!.amount) return false;
 						wonCache.add(_msg.author.id);
 
 						const loot = LampTable.roll();
