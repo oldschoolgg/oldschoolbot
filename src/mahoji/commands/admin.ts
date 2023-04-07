@@ -17,6 +17,7 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { ADMIN_IDS, OWNER_IDS, production, SupportServer } from '../../config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../../lib/blacklists';
+import { boxFrenzy } from '../../lib/boxFrenzy';
 import {
 	badges,
 	BadgesEnum,
@@ -639,11 +640,6 @@ export const adminCommand: OSBMahojiCommand = {
 		// },
 		{
 			type: ApplicationCommandOptionType.Subcommand,
-			name: 'migrate_tames',
-			description: 'migrate tames'
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
 			name: 'give_items',
 			description: 'Spawn items for a user',
 			options: [
@@ -665,13 +661,29 @@ export const adminCommand: OSBMahojiCommand = {
 					description: 'The reason'
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'box_frenzy',
+			description: 'Box frenzy',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Integer,
+					name: 'amount',
+					description: 'The amount',
+					required: true,
+					min_value: 1,
+					max_value: 500
+				}
+			]
 		}
 	],
 	run: async ({
 		options,
 		userID,
 		interaction,
-		guildID
+		guildID,
+		channelID
 	}: CommandRunOptions<{
 		givetgb?: { user: MahojiUserOption };
 		viewbank?: { user: MahojiUserOption };
@@ -699,7 +711,7 @@ export const adminCommand: OSBMahojiCommand = {
 		view?: { thing: string };
 		wipe_bingo_temp_cls?: {};
 		give_items?: { user: MahojiUserOption; items: string; reason?: string };
-		migrate_tames?: {};
+		box_frenzy?: { amount: number };
 	}>) => {
 		await deferInteraction(interaction);
 
@@ -1305,6 +1317,11 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 		// 		]
 		// 	};
 		// }
+
+		if (options.box_frenzy) {
+			boxFrenzy(channelID, 'Box Frenzy started!', options.box_frenzy.amount);
+			return null;
+		}
 
 		return 'Invalid command.';
 	}
