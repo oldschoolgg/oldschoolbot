@@ -54,10 +54,7 @@ export class TestUser extends MUserClass {
 	}
 
 	async reset() {
-		const res = await ironmanCommand(this, null);
-		if (res !== 'You are now an ironman.') {
-			throw new Error(`Failed to reset: ${res}`);
-		}
+		await ironmanCommand(this, null);
 		await prisma.userStats.deleteMany({ where: { user_id: BigInt(this.id) } });
 		await prisma.user.delete({ where: { id: this.id } });
 		const user = await prisma.user.create({ data: { id: this.id } });

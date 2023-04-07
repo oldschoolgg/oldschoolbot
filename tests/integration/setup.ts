@@ -20,19 +20,6 @@ vi.mock('../../src/lib/util/webhook', async () => {
 	};
 });
 
-vi.mock('../../src/lib/roboChimp.ts', async () => {
-	const actual: any = await vi.importActual('../../src/lib/roboChimp');
-	return {
-		...actual,
-		roboChimpUserFetch: () => ({
-			leagues_points_total: 0,
-			leagues_points_balance_osb: 0,
-			leagues_points_balance_bso: 0,
-			leagues_completed_tasks_ids: []
-		})
-	};
-});
-
 vi.mock('../../src/lib/leagues/stats', async () => {
 	const actual: any = await vi.importActual('../../src/lib/leagues/stats');
 	return {
