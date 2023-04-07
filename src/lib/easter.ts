@@ -148,7 +148,19 @@ const userEggMessages = new Map([
 	['164490892533563393', 'This egg is iconic.'],
 	['507686806624534529', 'Ayy tone'],
 	['132647937091043329', 'My name jeff.'],
-	['269343001325600769', 'Pro work.']
+	['269343001325600769', 'Pro work.'],
+	['343215201870544907', 'A very purely crafted egg.'],
+	['295326931417694212', 'Go hunt me more eggs!'],
+	['610666234836418581', 'smugCat'],
+	['248898439474184192', 'This looks more like a ruben sandwich than an egg...'],
+	['302647855489875978', 'The easter bunny looks mad, mate.'],
+	['365586476420825109', 'This egg was left out and got mossy.'],
+	['331532617394421764', 'Mmm Rum, Ham, and eggs!'],
+	['301524810763206658', 'This is the best egg iV seen in ages!'],
+	['190287163844329473', 'The government approves this egg.'],
+	['354873929522741248', 'Operator, this egg is particularly smooth!'],
+	['268901875158351872', 'A crow steals this egg and hides it in the abyss.'],
+	['974331525019611166', 'Is this egg covered in oil?']
 ]);
 
 export async function eggNameEffect(user: MUser, firstName: EggType, lastName: EggType) {
