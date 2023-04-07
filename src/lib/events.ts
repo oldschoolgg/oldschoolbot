@@ -347,8 +347,10 @@ export async function onMessage(msg: Message) {
 		return;
 	}
 
-	msg.reply({
-		content: result.content,
-		components
-	});
+	if (content === mentionText) {
+		return msg.reply({
+			content: result.content,
+			components
+		});
+	}
 }
