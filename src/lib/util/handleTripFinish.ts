@@ -298,12 +298,12 @@ const tripFinishEffects: TripFinishEffect[] = [
 			}
 
 			if (user.hasEquipped('Cute magic egg') && user.user.cute_egg_hatching_percent < 100) {
-				const newPercent = clamp(user.user.cute_egg_hatching_percent + Math.floor(minutes / 13), 0, 100);
+				const newPercent = clamp(user.user.cute_egg_hatching_percent + Math.floor(minutes / 8.5), 0, 100);
 				await user.update({
 					cute_egg_hatching_percent: newPercent
 				});
 
-				if (roll(5) && newPercent >= 20) {
+				if (roll(3) && newPercent >= 20) {
 					messages.push('You feel the Cute magic egg wiggling around...');
 				}
 				if (newPercent === 100) {
