@@ -13,7 +13,7 @@ import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import getOSItem from '../../lib/util/getOSItem';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { getMahojiBank, mahojiUsersSettingsFetch, userHasGracefulEquipped } from '../mahojiSettings';
+import { getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 function reducedClueTime(clueTier: ClueTier, score: number) {
 	// Every 3 hours become 1% better to a cap of 10%
@@ -121,55 +121,7 @@ export const clueCommand: OSBMahojiCommand = {
 			(stats.openable_scores as ItemBank)[clueTier.id] ?? 1
 		);
 
-		if (user.hasEquipped(clueHunterOutfit, true)) {
-			timeToFinish /= 2;
-			boosts.push('2x Boost for Clue hunter outfit');
-		}
-
-		if (userHasGracefulEquipped(user)) {
-			boosts.push('10% for Graceful');
-			timeToFinish *= 0.9;
-		}
-
-		if (user.hasEquippedOrInBank('Achievement diary cape')) {
-			boosts.push('10% for Achievement diary cape');
-			timeToFinish *= 0.9;
-		}
-
-		timeToFinish /= 2;
-		boosts.push('👻 2x Boost');
-
 		if (percentReduced >= 1) boosts.push(`${percentReduced}% for Clue score`);
-
-		let { quantity } = options;
-		const maxPerTrip = Math.floor(maxTripLength / timeToFinish);
-
-		if (!quantity) {
-			quantity = maxPerTrip;
-		}
-		quantity = clamp(quantity, 1, user.bank.amount(clueTier.scrollID));
-
-		let duration = timeToFinish * quantity;
-
-		if (duration > maxTripLength) {
-			return `${user.minionName} can't go on Clue trips longer than ${formatDuration(
-				maxTripLength
-			)}, try a lower quantity. The highest amount you can do for ${clueTier.name} is ${Math.floor(
-				maxTripLength / timeToFinish
-			)}.`;
-		}
-
-		const { bank } = user;
-		const numOfScrolls = bank.amount(clueTier.scrollID);
-
-		if (!numOfScrolls || numOfScrolls < quantity) {
-			return `You don't have ${quantity} ${clueTier.name} clue scrolls.`;
-		}
-
-		await user.removeItemsFromBank(new Bank().add(clueTier.scrollID, quantity));
-
-		const randomAddedDuration = randInt(1, 20);
-		duration += (randomAddedDuration * duration) / 100;
 		const poh = await getPOH(user.id);
 		const hasOrnateJewelleryBox = poh.jewellery_box === getPOHObject('Ornate jewellery box').id;
 		const hasJewelleryBox = poh.jewellery_box !== null;
@@ -177,6 +129,16 @@ export const clueCommand: OSBMahojiCommand = {
 
 		// Global Boosts
 		const globalBoosts = [
+			{
+				condition: () => true,
+				boost: '👻 2x Boost',
+				durationMultiplier: 0.5
+			},
+			{
+				condition: () => user.hasEquipped(clueHunterOutfit, true),
+				boost: '2x Boost for Clue hunter outfit',
+				durationMultiplier: 0.5
+			},
 			{
 				condition: isWeekend,
 				boost: '10% for Weekend',
@@ -207,14 +169,14 @@ export const clueCommand: OSBMahojiCommand = {
 		for (const { condition, boost, durationMultiplier } of globalBoosts) {
 			if (condition()) {
 				boosts.push(boost);
-				duration *= durationMultiplier;
+				timeToFinish *= durationMultiplier;
 			}
 		}
 
 		// Xeric's Talisman boost
 		if (clueTier.name === 'Medium' && hasXericTalisman) {
 			boosts.push("2% for Mounted Xeric's Talisman");
-			duration *= 0.98;
+			timeToFinish *= 0.98;
 		}
 
 		// Specific boosts
@@ -331,14 +293,53 @@ export const clueCommand: OSBMahojiCommand = {
 					durationMultiplier: 0.99
 				}
 			],
-			Grandmaster: []
+			Grandmaster: [
+				{
+					item: getOSItem('Achievement diary cape'),
+					boost: '10% for Achievement diary cape',
+					durationMultiplier: 0.9
+				}
+			]
 		};
 
 		const clueTierName = clueTier.name;
 		const boostList = clueTierBoosts[clueTierName];
-		const result = applyClueBoosts(user, boostList, boosts, duration, clueTier);
+		const result = applyClueBoosts(user, boostList, boosts, timeToFinish, clueTier);
 
-		duration = result.duration;
+		timeToFinish = result.duration;
+
+		let { quantity } = options;
+		const maxPerTrip = Math.floor(maxTripLength / timeToFinish);
+
+		if (!quantity) {
+			quantity = maxPerTrip;
+		}
+		quantity = clamp(quantity, 1, user.bank.amount(clueTier.scrollID));
+
+		let duration = timeToFinish * quantity;
+
+		if (duration > maxTripLength) {
+			return `${user.minionName} can't go on Clue trips longer than ${formatDuration(
+				maxTripLength
+			)}, try a lower quantity. The highest amount you can do for ${clueTier.name} is ${Math.floor(
+				maxTripLength / timeToFinish
+			)}.`;
+		}
+
+		const { bank } = user;
+		const numOfScrolls = bank.amount(clueTier.scrollID);
+
+		if (!numOfScrolls || numOfScrolls < quantity) {
+			return `You don't have ${quantity} ${clueTier.name} clue scrolls.`;
+		}
+
+		await user.removeItemsFromBank(new Bank().add(clueTier.scrollID, quantity));
+
+		const randomAddedDuration = randInt(
+			clueTierName === 'Grandmaster' ? -5 : 1,
+			clueTierName === 'Grandmaster' ? 5 : 20
+		);
+		duration += (randomAddedDuration * duration) / 100;
 
 		await addSubTaskToActivityTask<ClueActivityTaskOptions>({
 			clueID: clueTier.id,
