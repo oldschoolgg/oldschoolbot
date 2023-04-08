@@ -6,7 +6,7 @@ import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { SmeltingActivityTaskOptions } from '../../lib/types/minions';
-import { roll } from '../../lib/util';
+import { clAdjustedDroprate, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 
@@ -67,8 +67,9 @@ export const smeltingTask: MinionTask = {
 
 		if (duration >= MIN_LENGTH_FOR_PET && !blastf && user.QP > 10) {
 			const numMinutes = duration / Time.Minute;
+			const petChance = clAdjustedDroprate(user, 'Zak', 6500, 1.3);
 			for (let i = 0; i < numMinutes; i++) {
-				if (roll(6500)) {
+				if (roll(petChance)) {
 					str +=
 						'\n\n<:zak:751035589952012298> While Smelting ores on Neitiznot, a Yak approaches you and says "Moooo". and is now following you around. You decide to name him \'Zak\'.';
 					loot.add('Zak');

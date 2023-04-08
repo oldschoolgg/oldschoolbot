@@ -20,7 +20,6 @@ export const VasaMagusLootTable = new LootTable()
 	.tertiary(19, 'Clue scroll (grandmaster)')
 	.tertiary(15, MysteryBoxes)
 	.tertiary(1000, 'Jar of magic')
-	.tertiary(500, 'Voidling')
 	.tertiary(350, 'Magus scroll')
 	.tertiary(350, 'Tattered robes of Vasa')
 	.tertiary(9, 'Magical artifact');

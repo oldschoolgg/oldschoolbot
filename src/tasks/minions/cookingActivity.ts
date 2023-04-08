@@ -46,7 +46,7 @@ export const cookingTask: MinionTask = {
 		loot.add(cookable.burntCookable, burnedAmount);
 
 		if (duration >= MIN_LENGTH_FOR_PET) {
-			const dropRate = clAdjustedDroprate(user, 'Remy', 5000, 1.2);
+			const dropRate = clAdjustedDroprate(user, 'Remy', 5000, 2);
 			const minutesInTrip = Math.ceil(duration / 1000 / 60);
 			for (let i = 0; i < minutesInTrip; i++) {
 				if (roll(dropRate)) {
