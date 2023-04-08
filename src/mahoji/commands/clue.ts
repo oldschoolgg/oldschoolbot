@@ -176,7 +176,7 @@ export const clueCommand: OSBMahojiCommand = {
 		// Xeric's Talisman boost
 		if (clueTier.name === 'Medium' && hasXericTalisman) {
 			boosts.push("2% for Mounted Xeric's Talisman");
-			duration *= 0.98;
+			timeToFinish *= 0.98;
 		}
 
 		// Specific boosts
