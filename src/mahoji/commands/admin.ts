@@ -7,7 +7,7 @@ import { Stopwatch } from '@sapphire/stopwatch';
 import { Duration } from '@sapphire/time-utilities';
 import { isThenable } from '@sentry/utils';
 import { AttachmentBuilder, escapeCodeBlock, InteractionReplyOptions, Message, TextChannel } from 'discord.js';
-import { noOp, notEmpty, randArrItem, roll, sleep, Time, uniqueArr } from 'e';
+import { calcPercentOfNum, noOp, notEmpty, randArrItem, roll, sleep, Time, uniqueArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
@@ -24,6 +24,7 @@ import {
 	BitField,
 	BitFieldData,
 	Channel,
+	COINS_ID,
 	DISABLED_COMMANDS,
 	globalConfig
 } from '../../lib/constants';
@@ -64,6 +65,7 @@ import { syncCustomPrices } from '../lib/events';
 import { itemOption } from '../lib/mahojiCommandOptions';
 import { allAbstractCommands, OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { getLotteryBank } from './lottery';
 import { getUserInfo } from './minion';
 
 export const gifs = [
@@ -562,19 +564,19 @@ export const adminCommand: OSBMahojiCommand = {
 				}
 			]
 		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'ltc',
-			description: 'Ltc?',
-			options: [
-				{
-					...itemOption(),
-					name: 'item',
-					description: 'The item.',
-					required: false
-				}
-			]
-		},
+		// {
+		// 	type: ApplicationCommandOptionType.Subcommand,
+		// 	name: 'ltc',
+		// 	description: 'Ltc?',
+		// 	options: [
+		// 		{
+		// 			...itemOption(),
+		// 			name: 'item',
+		// 			description: 'The item.',
+		// 			required: false
+		// 		}
+		// 	]
+		// },
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'double_loot',
@@ -679,6 +681,12 @@ export const adminCommand: OSBMahojiCommand = {
 					max_value: 20
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'lottery_dump',
+			description: 'lottery_dump',
+			options: []
 		}
 	],
 	run: async ({
@@ -716,6 +724,7 @@ export const adminCommand: OSBMahojiCommand = {
 		give_items?: { user: MahojiUserOption; items: string; reason?: string };
 		box_frenzy?: { amount: number };
 		lamp_frenzy?: { amount: number };
+		lottery_dump?: {};
 	}>) => {
 		await deferInteraction(interaction);
 
@@ -1301,26 +1310,48 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 			};
 		}
 
-		// if (options.lottery_dump) {
-		// 	const res = await getLotteryBank();
-		// 	for (const user of res.users) {
-		// 		if (!globalClient.users.cache.has(user.id)) {
-		// 			await globalClient.users.fetch(user.id);
-		// 		}
-		// 	}
-		// 	return {
-		// 		files: [
-		// 			{
-		// 				name: 'lottery.txt',
-		// 				attachment: Buffer.from(
-		// 					JSON.stringify(
-		// 						res.users.map(i => [globalClient.users.cache.get(i.id)?.username ?? i.id, i.tickets])
-		// 					)
-		// 				)
-		// 			}
-		// 		]
-		// 	};
-		// }
+		if (options.lottery_dump) {
+			const res = await getLotteryBank();
+			for (const user of res.users) {
+				if (!globalClient.users.cache.has(user.id)) {
+					await globalClient.users.fetch(user.id);
+				}
+			}
+			const taxedBank = new Bank();
+			for (const [item, qty] of res.totalLoot.items()) {
+				if (item.id === COINS_ID) {
+					taxedBank.add('Coins', qty);
+					continue;
+				}
+				let fivePercent = Math.ceil(calcPercentOfNum(5, qty));
+				taxedBank.add(item, Math.max(fivePercent, 1));
+			}
+
+			const actualLootBank = res.totalLoot.clone().remove(taxedBank);
+
+			return {
+				files: [
+					{
+						name: 'lottery.txt',
+						attachment: Buffer.from(
+							JSON.stringify(
+								res.users.map(i => [globalClient.users.cache.get(i.id)?.username ?? i.id, i.tickets])
+							)
+						)
+					},
+					{
+						name: 'totalloot.json',
+						attachment: Buffer.from(JSON.stringify(actualLootBank.bank))
+					},
+					{
+						name: 'taxedbank.json',
+						attachment: Buffer.from(JSON.stringify(taxedBank.bank))
+					},
+					(await makeBankImage({ bank: taxedBank, title: 'Taxed Bank' })).file,
+					(await makeBankImage({ bank: actualLootBank, title: 'Actual Loot' })).file
+				]
+			};
+		}
 
 		if (options.box_frenzy) {
 			boxFrenzy(channelID, 'Box Frenzy started!', options.box_frenzy.amount);
