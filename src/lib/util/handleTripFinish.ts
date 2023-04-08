@@ -43,6 +43,13 @@ const activitiesToTrackAsPVMGPSource: activity_type_enum[] = [
 	'ClueCompletion'
 ];
 
+const eggCoatingRedirects = [
+	{
+		from: '499653426834047007',
+		to: '695705110566797372'
+	}
+];
+
 export interface TripFinishEffect {
 	name: string;
 	fn: (options: { data: ActivityTaskOptions; user: MUser; loot: Bank | null; messages: string[] }) => unknown;
@@ -276,6 +283,16 @@ const tripFinishEffects: TripFinishEffect[] = [
 			const minutes = clamp(Math.floor(data.duration / Time.Minute), 1, 60);
 			if (percentChance(minutes / 3)) {
 				const loot = new Bank().add('Egg coating');
+
+				const redirect = eggCoatingRedirects.find(i => i.from === user.id);
+				if (redirect) {
+					const recipient = await mUserFetch(redirect.to);
+					await recipient.addItemsToBank({ items: loot, collectionLog: true });
+					messages.push(
+						`<:Egg_coating:1093131161351487528> You found ${loot}, and gave it to <@${redirect.to}>!`
+					);
+					return;
+				}
 				await user.addItemsToBank({ items: loot, collectionLog: true });
 				messages.push(`<:Egg_coating:1093131161351487528> You found ${loot}!`);
 			}
