@@ -76,7 +76,8 @@ export const keepEggs = [
 	['fancy', 'ancient', getOSItem('Fancy ancient egg')],
 	['sweet', 'small', getOSItem('Sweet small egg')],
 	['magic', 'mysterious', getOSItem('Mysterious magic egg')],
-	['big', 'ancient', getOSItem('Big ancient egg')]
+	['big', 'ancient', getOSItem('Big ancient egg')],
+	['fancy', 'sweet', getOSItem('Fancy sweet egg')]
 ] as const;
 
 const userEggMessages = new Map([

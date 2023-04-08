@@ -255,6 +255,11 @@ for (const [, , egg] of keepEggs) {
 		run: async (user: MUser) => {
 			if (!user.owns(egg.id)) return `You don't have a ${egg.name}.`;
 			if (!user.owns('Hoppy')) return "You don't have a Hoppy.";
+
+			if (egg.name === 'Cute magic egg') {
+				return 'Hoppy does not want to eat it.';
+			}
+
 			await user.removeItemsFromBank(new Bank().add(egg.id));
 			const { loot, message } = roll(6)
 				? {
