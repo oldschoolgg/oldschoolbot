@@ -210,7 +210,7 @@ export const bingoTiles: BingoTile[] = [
 	{
 		id: 20,
 		name: 'Receive 5 Gorajan shards',
-		receiveBank: new Bank().add('Gorajan shard', 5)
+		receiveBank: new Bank().add('Gorajan shards', 5)
 	},
 	{
 		id: 21,
