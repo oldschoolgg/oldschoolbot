@@ -22,7 +22,7 @@ import { assert, logError } from '../../lib/util/logError';
 import resolveItems from '../../lib/util/resolveItems';
 import { sendToChannelID } from '../../lib/util/webhook';
 
-const BINGO_NOTIFICATION_CHANNEL_ID = production ? '1008531589485043764' : '1008794250974089266';
+const BINGO_NOTIFICATION_CHANNEL_ID = production ? '1094693702536007750' : '1042760447830536212';
 
 export const bingoStart = 1_662_127_200 * 1000;
 export const bingoEnd = bingoStart + Time.Day * 7;
