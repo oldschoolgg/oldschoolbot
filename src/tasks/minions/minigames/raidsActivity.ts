@@ -16,6 +16,7 @@ import { handleSpecialCoxLoot } from '../../../lib/util/handleSpecialCoxLoot';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import resolveItems from '../../../lib/util/resolveItems';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
 
 interface RaidResultUser {
 	personalPoints: number;
@@ -99,7 +100,7 @@ export const raidsTask: MinionTask = {
 
 				const hasDust = userData.loot.has('Metamorphic dust') || userData.mUser.cl.has('Metamorphic dust');
 				if (challengeMode && roll(50) && hasDust) {
-					const { bank } = userData.loot.clone().add(userData.mUser.allItemsOwned());
+					const { bank } = userData.loot.clone().add(userData.mUser.allItemsOwned);
 					const unownedPet = shuffleArr(chambersOfXericMetamorphPets).find(pet => !bank[pet]);
 					if (unownedPet) {
 						userLoot.add(unownedPet);
@@ -129,11 +130,15 @@ export const raidsTask: MinionTask = {
 			if (!user) continue;
 			if (naturalDouble) loot.add(MysteryBoxes.roll());
 
-			await user.update({
-				total_cox_points: {
-					increment: personalPoints
-				}
-			});
+			await userStatsUpdate(
+				user.id,
+				{
+					total_cox_points: {
+						increment: personalPoints
+					}
+				},
+				{}
+			);
 
 			const { itemsAdded } = await transactItems({
 				userID,

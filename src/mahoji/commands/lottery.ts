@@ -6,6 +6,7 @@ import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { ores, secondaries, seedsFilter } from '../../lib/data/filterables';
 import { Herb } from '../../lib/invention/groups/Herb';
+import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { prisma } from '../../lib/settings/prisma';
 import Firemaking from '../../lib/skilling/skills/firemaking';
 import Runecraft from '../../lib/skilling/skills/runecraft';
@@ -15,9 +16,22 @@ import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
-import { updateLegacyUserBankSetting } from '../../lib/util/updateLegacyUserBankSetting';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
+import { mahojiUsersSettingsFetch } from '../mahojiSettings';
+
+async function addToLotteryBank(userID: string, bankToAdd: Bank) {
+	const currentUserSettings = await mahojiUsersSettingsFetch(userID, {
+		lottery_input: true
+	});
+	const current = currentUserSettings.lottery_input as ItemBank;
+	const newBank = new Bank(current).add(bankToAdd);
+
+	const res = await mahojiUserSettingsUpdate(userID, {
+		lottery_input: newBank.bank
+	});
+	return res;
+}
 
 const specialPricesBeforeMultiplying = new Bank()
 	.add('Monkey egg', 4_000_000_000)
@@ -333,7 +347,7 @@ export const lotteryCommand: OSBMahojiCommand = {
 			if (!user.owns(bankToSell)) return "You don't have enough GP to buy these tickets.";
 			await user.removeItemsFromBank(bankToSell);
 
-			await updateLegacyUserBankSetting(user.id, 'lottery_input', bankToSell);
+			await addToLotteryBank(user.id, bankToSell);
 
 			return `You put ${bankToSell} to the bank lottery, and received ${amountOfTickets}x bank lottery tickets.`;
 		}
@@ -398,7 +412,7 @@ export const lotteryCommand: OSBMahojiCommand = {
 			if (!user.owns(bankToSell)) return 'You do not own these items.';
 			await user.removeItemsFromBank(bankToSell);
 
-			await updateLegacyUserBankSetting(user.id, 'lottery_input', bankToSell);
+			await addToLotteryBank(user.id, bankToSell);
 
 			return `You put ${bankToSell} to the bank lottery, and received ${amountOfTickets}x bank lottery tickets.`;
 		}

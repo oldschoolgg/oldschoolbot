@@ -1,13 +1,13 @@
 import { ClientStorage, Prisma } from '@prisma/client';
 
-import { CLIENT_ID } from '../../config';
+import { globalConfig } from '../constants';
 import { prisma } from '../settings/prisma';
 
 // Is not typesafe, returns only what is selected, but will say it contains everything.
-export async function mahojiClientSettingsFetch(select?: Prisma.ClientStorageSelect) {
+export async function mahojiClientSettingsFetch(select: Prisma.ClientStorageSelect = { id: true }) {
 	const clientSettings = await prisma.clientStorage.findFirst({
 		where: {
-			id: CLIENT_ID
+			id: globalConfig.clientID
 		},
 		select
 	});
@@ -17,8 +17,11 @@ export async function mahojiClientSettingsFetch(select?: Prisma.ClientStorageSel
 export async function mahojiClientSettingsUpdate(data: Prisma.ClientStorageUpdateInput) {
 	await prisma.clientStorage.update({
 		where: {
-			id: CLIENT_ID
+			id: globalConfig.clientID
 		},
-		data
+		data,
+		select: {
+			id: true
+		}
 	});
 }

@@ -1,5 +1,3 @@
-import { TextChannel } from 'discord.js';
-
 import { boxFrenzy } from '../../../boxFrenzy';
 import { Channel } from '../../../constants';
 import { addPatronLootTime } from '../../../doubleLoot';
@@ -36,7 +34,7 @@ const githubSponsors = (server: FastifyServer) =>
 
 					for (const id of [Channel.BSOChannel, Channel.BSOGeneral]) {
 						boxFrenzy(
-							globalClient.channels.cache.get(id) as TextChannel,
+							id,
 							`🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉
 🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉
 ${data.sender.login} became a Github sponsor, as a reward for everyone, here is a box frenzy, guess any of the items in the image for a mystery box.

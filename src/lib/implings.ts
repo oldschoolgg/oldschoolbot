@@ -151,7 +151,9 @@ export async function handlePassiveImplings(user: MUser, data: ActivityTaskOptio
 			activity_type_enum.FistOfGuthix,
 			activity_type_enum.Construction,
 			activity_type_enum.TombsOfAmascut,
-			activity_type_enum.BalthazarsBigBonanza
+			activity_type_enum.BalthazarsBigBonanza,
+			activity_type_enum.DriftNet,
+			activity_type_enum.UnderwaterAgilityThieving
 		].includes(data.type)
 	)
 		return null;

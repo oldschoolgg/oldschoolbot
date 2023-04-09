@@ -1,3 +1,4 @@
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { notEmpty, roll, uniqueArr } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
@@ -8,12 +9,11 @@ import { allOpenables, UnifiedOpenable } from '../../../lib/openables';
 import { roboChimpUserFetch } from '../../../lib/roboChimp';
 import { ItemBank } from '../../../lib/types';
 import { assert, buildClueButtons, makeComponents } from '../../../lib/util';
-import { stringMatches } from '../../../lib/util/cleanString';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import resolveItems from '../../../lib/util/resolveItems';
-import { patronMsg, updateGPTrackSetting, userStatsBankUpdate } from '../../mahojiSettings';
+import { patronMsg, updateClientGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from '../../mahojiSettings';
 
 const regex = /^(.*?)( \([0-9]+x Owned\))?$/;
 
@@ -42,10 +42,14 @@ function getOpenableLoot({
 }
 
 async function addToOpenablesScores(mahojiUser: MUser, kcBank: Bank) {
-	await mahojiUser.update({
-		openable_scores: new Bank().add(mahojiUser.user.openable_scores as ItemBank).add(kcBank).bank
-	});
-	return new Bank().add(mahojiUser.user.openable_scores as ItemBank);
+	const { openable_scores: newOpenableScores } = await userStatsUpdate(
+		mahojiUser.id,
+		({ openable_scores }) => ({
+			openable_scores: new Bank(openable_scores as ItemBank).add(kcBank).bank
+		}),
+		{ openable_scores: true }
+	);
+	return new Bank(newOpenableScores as ItemBank);
 }
 
 export async function abstractedOpenUntilCommand(userID: string, name: string, openUntilItem: string) {
@@ -177,7 +181,7 @@ async function finalizeOpening({
 	});
 
 	if (loot.has('Coins')) {
-		await updateGPTrackSetting('gp_open', loot.amount('Coins'));
+		await updateClientGPTrackSetting('gp_open', loot.amount('Coins'));
 	}
 
 	const openedStr = openables
@@ -248,7 +252,7 @@ export async function abstractedOpenCommand(
 			openable,
 			quantity,
 			user,
-			totalLeaguesPoints: (await roboChimpUserFetch(user.id)).leagues_points_total
+			totalLeaguesPoints: process.env.TEST ? 0 : (await roboChimpUserFetch(user.id)).leagues_points_total
 		});
 		loot.add(thisLoot.bank);
 		if (thisLoot.message) messages.push(thisLoot.message);

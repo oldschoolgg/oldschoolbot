@@ -1,13 +1,13 @@
 import { activity_type_enum } from '@prisma/client';
 import { AttachmentBuilder, ButtonBuilder, MessageCollector } from 'discord.js';
-import { randInt, Time } from 'e';
+import { randInt, shuffleArr, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { alching } from '../../mahoji/commands/laps';
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
 import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
-import { updateGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from '../../mahoji/mahojiSettings';
+import { updateClientGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from '../../mahoji/mahojiSettings';
 import { MysteryBoxes } from '../bsoOpenables';
 import { ClueTiers } from '../clues/clueTiers';
 import { BitField, COINS_ID, Emoji, PerkTier } from '../constants';
@@ -53,7 +53,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 			if (loot && activitiesToTrackAsPVMGPSource.includes(data.type)) {
 				const GP = loot.amount(COINS_ID);
 				if (typeof GP === 'number') {
-					updateGPTrackSetting('gp_pvm', GP);
+					updateClientGPTrackSetting('gp_pvm', GP);
 				}
 			}
 		}
@@ -188,13 +188,15 @@ const tripFinishEffects: TripFinishEffect[] = [
 				default: {
 				}
 			}
-			await user.addItemsToBank({ items: bonusLoot, collectionLog: true });
+			if (bonusLoot.length > 0) {
+				await user.addItemsToBank({ items: bonusLoot, collectionLog: true });
+			}
 		}
 	},
 	{
 		name: 'Voidling',
 		fn: async ({ data, messages, user }) => {
-			if (!user.allItemsOwned().has('Voidling')) return;
+			if (!user.allItemsOwned.has('Voidling')) return;
 			const voidlingEquipped = user.usingPet('Voidling');
 			const alchResult = alching({
 				user,
@@ -214,7 +216,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 
 				updateBankSetting('magic_cost_bank', alchResult.bankToRemove);
 
-				updateGPTrackSetting('gp_alch', alchResult.bankToAdd.amount('Coins'));
+				updateClientGPTrackSetting('gp_alch', alchResult.bankToAdd.amount('Coins'));
 				messages.push(
 					`Your Voidling alched ${alchResult.maxCasts}x ${alchResult.itemToAlch.name}. Removed ${
 						alchResult.bankToRemove
@@ -312,7 +314,8 @@ export async function handleTripFinish(
 		if (birdHousedetails.isReady && !user.bitfield.includes(BitField.DisableBirdhouseRunButton))
 			components.push(makeBirdHouseTripButton());
 
-		if (await canRunAutoContract(user)) components.push(makeAutoContractButton());
+		if ((await canRunAutoContract(user)) && !user.bitfield.includes(BitField.DisableAutoFarmContractButton))
+			components.push(makeAutoContractButton());
 
 		const { currentTask } = await getUsersCurrentSlayerInfo(user.id);
 		if ((currentTask === null || currentTask.quantity_remaining <= 0) && data.type === 'MonsterKilling') {
@@ -332,6 +335,6 @@ export async function handleTripFinish(
 	sendToChannelID(channelID, {
 		content: message,
 		image: attachment,
-		components: components.length > 0 ? makeComponents(components) : undefined
+		components: components.length > 0 ? makeComponents(shuffleArr(components)) : undefined
 	});
 }

@@ -1,3 +1,4 @@
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { StashUnit, User } from '@prisma/client';
 import { partition } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
@@ -6,7 +7,6 @@ import Bank from 'oldschooljs/dist/structures/Bank';
 import { allStashUnitsFlat, allStashUnitTiers, IStashUnit, StashUnitTier } from '../../../lib/clues/stashUnits';
 import { prisma } from '../../../lib/settings/prisma';
 import { assert } from '../../../lib/util';
-import { stringMatches } from '../../../lib/util/cleanString';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { itemNameFromID } from '../../../lib/util/smallUtils';
 import { getMahojiBank } from '../../mahojiSettings';
@@ -91,7 +91,7 @@ export async function stashUnitBuildAllCommand(user: MUser) {
 	const notBuilt = parsedUnits.filter(i => i.builtUnit === undefined);
 	if (notBuilt.length === 0) return 'You have already built all STASH units.';
 	const stats = user.skillsAsLevels;
-	const checkBank = user.bank;
+	const checkBank = user.bank.clone();
 	const costBank = new Bank();
 
 	const toBuild: ParsedUnit[] = [];

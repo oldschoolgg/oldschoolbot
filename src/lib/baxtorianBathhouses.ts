@@ -22,7 +22,7 @@ import resolveItems, { resolveOSItems } from './util/resolveItems';
 import { updateBankSetting } from './util/updateBankSetting';
 
 export const bathhouseTierNames = ['Warm', 'Hot', 'Fiery'] as const;
-type BathhouseTierName = typeof bathhouseTierNames[number];
+type BathhouseTierName = (typeof bathhouseTierNames)[number];
 
 export interface BathhouseTaskOptions extends MinigameActivityTaskOptions {
 	mixture: string;
@@ -137,7 +137,7 @@ export const BathwaterMixtures = [
 	{ items: resolveOSItems(['Toadflax', 'Dwarf weed']), name: 'Invigorating' },
 	{ items: resolveOSItems(['Irit leaf', 'Torstol']), name: 'Healing' }
 ] as const;
-type BathwaterMixtureName = typeof BathwaterMixtures[number]['name'];
+type BathwaterMixtureName = (typeof BathwaterMixtures)[number]['name'];
 
 interface BathhouseSpecies {
 	name: string;

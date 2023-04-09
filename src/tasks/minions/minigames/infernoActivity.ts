@@ -15,6 +15,7 @@ import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../../
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
+import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
 
 export function calculateInfernoItemRefund(percentMadeItThrough: number, cost: Bank) {
 	const percSuppliesRefunded = Math.max(0, Math.min(100, 100 - percentMadeItThrough));
@@ -53,11 +54,16 @@ export const infernoTask: MinionTask = {
 			score > 0 &&
 			usersTask.currentTask!.quantity_remaining === usersTask.currentTask!.quantity;
 
-		await user.update({
-			inferno_attempts: {
-				increment: 1
-			}
-		});
+		const { inferno_attempts: newInfernoAttempts } = await userStatsUpdate(
+			user.id,
+			{
+				inferno_attempts: {
+					increment: 1
+				}
+			},
+			{ inferno_attempts: true }
+		);
+
 		if (isEmergedZuk) {
 			await user.update({
 				emerged_inferno_attempts: {
@@ -131,13 +137,17 @@ export const infernoTask: MinionTask = {
 		}
 
 		if (isOnTask && !deathTime) {
-			const { newUser } = await user.update({
-				slayer_task_streak: {
-					increment: 1
-				}
-			});
+			const newUserStats = await userStatsUpdate(
+				user.id,
+				{
+					slayer_task_streak: {
+						increment: 1
+					}
+				},
+				{ slayer_task_streak: true }
+			);
 
-			const currentStreak = newUser.slayer_task_streak;
+			const currentStreak = newUserStats.slayer_task_streak;
 			const points = await calculateSlayerPoints(currentStreak, usersTask.slayerMaster!, user);
 			const secondNewUser = await user.update({
 				slayer_points: {
@@ -162,7 +172,7 @@ export const infernoTask: MinionTask = {
 			await user.addItemsToBank({ items: unusedItems, collectionLog: false });
 
 			const currentData = await mahojiClientSettingsFetch({ inferno_cost: true });
-			const current = new Bank().add(currentData.inferno_cost as ItemBank);
+			const current = new Bank(currentData.inferno_cost as ItemBank);
 			const newBank = current.remove(unusedItems);
 			await mahojiClientSettingsUpdate({
 				inferno_cost: newBank.bank
@@ -231,7 +241,7 @@ export const infernoTask: MinionTask = {
 				globalClient.emit(
 					Events.ServerNotification,
 					`**${user.badgedUsername}** just received their first Infernal cape on their ${formatOrdinal(
-						user.user.inferno_attempts
+						newInfernoAttempts
 					)} attempt! They are the ${formatOrdinal(
 						usersWithInfernalCape + 1
 					)} person to get an Infernal cape.`

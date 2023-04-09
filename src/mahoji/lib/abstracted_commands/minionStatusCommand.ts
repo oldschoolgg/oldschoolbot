@@ -1,5 +1,6 @@
 import { toTitleCase } from '@sapphire/utilities';
 import { BaseMessageOptions, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
+import { stripNonAlphanumeric } from 'e';
 
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { BitField, Emoji, minionBuyButton, PerkTier } from '../../../lib/constants';
@@ -7,7 +8,7 @@ import { getUsersFishingContestDetails } from '../../../lib/fishingContest';
 import { roboChimpSyncData, roboChimpUserFetch } from '../../../lib/roboChimp';
 import { prisma } from '../../../lib/settings/prisma';
 import { getUsersTame, shortTameTripDesc, tameLastFinishedActivity } from '../../../lib/tames';
-import { makeComponents, stripNonAlphanumeric } from '../../../lib/util';
+import { makeComponents } from '../../../lib/util';
 import { makeAutoContractButton, makeBirdHouseTripButton } from '../../../lib/util/globalInteractions';
 import { minionStatus } from '../../../lib/util/minionStatus';
 import { makeRepeatTripButtons } from '../../../lib/util/repeatStoredTrip';
@@ -54,13 +55,15 @@ async function fetchPinnedTrips(userID: string) {
 
 export async function minionStatusCommand(user: MUser, channelID: string): Promise<BaseMessageOptions> {
 	const { minionIsBusy } = user;
-	const [roboChimpUser, birdhouseDetails, gearPresetButtons, pinnedTripButtons, fishingResult] = await Promise.all([
-		roboChimpUserFetch(user.id),
-		minionIsBusy ? { isReady: false } : calculateBirdhouseDetails(user.id),
-		minionIsBusy ? [] : fetchFavoriteGearPresets(user.id),
-		minionIsBusy ? [] : fetchPinnedTrips(user.id),
-		getUsersFishingContestDetails(user)
-	]);
+	const [roboChimpUser, birdhouseDetails, gearPresetButtons, pinnedTripButtons, fishingResult, dailyIsReady] =
+		await Promise.all([
+			roboChimpUserFetch(user.id),
+			minionIsBusy ? { isReady: false } : calculateBirdhouseDetails(user.id),
+			minionIsBusy ? [] : fetchFavoriteGearPresets(user.id),
+			minionIsBusy ? [] : fetchPinnedTrips(user.id),
+			getUsersFishingContestDetails(user),
+			isUsersDailyReady(user)
+		]);
 
 	roboChimpSyncData(roboChimpUser, user);
 
@@ -94,8 +97,6 @@ export async function minionStatusCommand(user: MUser, channelID: string): Promi
 				.setStyle(ButtonStyle.Secondary)
 		);
 	}
-
-	const dailyIsReady = isUsersDailyReady(user);
 
 	if (dailyIsReady.isReady) {
 		buttons.push(
@@ -139,7 +140,11 @@ export async function minionStatusCommand(user: MUser, channelID: string): Promi
 		buttons.push(makeBirdHouseTripButton());
 	}
 
-	if (!minionIsBusy && (await canRunAutoContract(user))) {
+	if (
+		!minionIsBusy &&
+		(await canRunAutoContract(user)) &&
+		!user.bitfield.includes(BitField.DisableAutoFarmContractButton)
+	) {
 		buttons.push(makeAutoContractButton());
 	}
 

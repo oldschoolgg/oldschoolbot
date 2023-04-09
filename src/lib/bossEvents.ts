@@ -116,7 +116,7 @@ export const bossEvents: BossEvent[] = [
 				const items = pumpkinHeadUniqueTable.roll();
 				const numPetsInCL = cl.amount('Mini Pumpkinhead');
 				let pheadDropRate = 40 * (numPetsInCL + 1);
-				const userPhKc = recip.user.getKC(PUMPKINHEAD_ID);
+				const userPhKc = await recip.user.getKC(PUMPKINHEAD_ID);
 				if (numPetsInCL === 0) {
 					// 140 kc gets 60%
 					const reductionPercent = calcPercentOfNum(calcWhatPercent(Math.min(140, userPhKc), 140), 60);

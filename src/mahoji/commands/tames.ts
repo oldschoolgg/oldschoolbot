@@ -87,7 +87,7 @@ async function tameAutocomplete(value: string, user: User) {
 
 export const tameEquipSlots = ['equipped_primary', 'equipped_armor'] as const;
 
-export type TameEquipSlot = typeof tameEquipSlots[number];
+export type TameEquipSlot = (typeof tameEquipSlots)[number];
 interface TameEquippable {
 	item: Item;
 	tameSpecies: TameSpeciesID[];

@@ -12,7 +12,6 @@ export async function repairBrokenItemsFromUser({ user }: MUser): Promise<[strin
 	const rawBank = user.bank as ItemBank;
 	const rawCL = user.collectionLogBank as ItemBank;
 	const rawTempCL = user.temp_cl as ItemBank;
-	const rawSB = user.sacrificedBank as ItemBank;
 	const favorites = user.favoriteItems;
 
 	const rawAllGear = GearSetupTypes.map(i => user[`gear_${i}`]);
@@ -30,7 +29,6 @@ export async function repairBrokenItemsFromUser({ user }: MUser): Promise<[strin
 		['bank', Object.keys(rawBank)],
 		['cl', Object.keys(rawCL)],
 		['tempcl', Object.keys(rawTempCL)],
-		['sacbank', Object.keys(rawSB)],
 		['favs', favorites],
 		['gear', allGearItemIDs]
 	] as const;
@@ -49,12 +47,10 @@ export async function repairBrokenItemsFromUser({ user }: MUser): Promise<[strin
 	const newBank = { ...rawBank };
 	const newCL = { ...rawCL };
 	const newTempCL = { ...rawTempCL };
-	const newSB = { ...rawSB };
 	for (const id of brokenBank) {
 		delete newBank[id];
 		delete newCL[id];
 		delete newTempCL[id];
-		delete newSB[id];
 	}
 
 	for (const setupType of GearSetupTypes) {
@@ -76,8 +72,7 @@ export async function repairBrokenItemsFromUser({ user }: MUser): Promise<[strin
 		changes.bank = newBank;
 		changes.collectionLogBank = newCL;
 		changes.temp_cl = newTempCL;
-		changes.sacrificedBank = newSB;
-		if (newFavs.includes(NaN) || [newBank, newCL, newTempCL, newSB].some(i => Boolean(i['NaN']))) {
+		if (newFavs.includes(NaN) || [newBank, newCL, newTempCL].some(i => Boolean(i['NaN']))) {
 			return ['Oopsie...'];
 		}
 
@@ -86,9 +81,10 @@ export async function repairBrokenItemsFromUser({ user }: MUser): Promise<[strin
 		return [
 			`You had ${
 				brokenBank.length
-			} broken items in your bank/collection log/sacrifices/favorites/gear, they were removed. ${moidLink(
-				brokenBank
-			).slice(0, 500)}`,
+			} broken items in your bank/collection log/favorites/gear, they were removed. ${moidLink(brokenBank).slice(
+				0,
+				500
+			)}`,
 			Object.keys(brokenBank)
 		];
 	}

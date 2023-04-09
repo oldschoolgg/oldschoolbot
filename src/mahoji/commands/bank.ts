@@ -1,4 +1,4 @@
-import { codeBlock, Embed } from '@discordjs/builders';
+import { codeBlock, EmbedBuilder } from '@discordjs/builders';
 import { chunk } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
@@ -17,7 +17,7 @@ import { OSBMahojiCommand } from '../lib/util';
 
 const bankFormats = ['json', 'text_paged', 'text_full'] as const;
 const bankItemsPerPage = 10;
-type BankFormat = typeof bankFormats[number];
+type BankFormat = (typeof bankFormats)[number];
 
 async function getBankPage({
 	user,
@@ -121,6 +121,7 @@ export const bankCommand: OSBMahojiCommand = {
 		if (interaction) await deferInteraction(interaction);
 		const mUser = await mUserFetch(user.id);
 		const baseBank = mUser.bankWithGP;
+
 		const mahojiFlags: BankFlag[] = [];
 
 		if (options.flag) mahojiFlags.push(options.flag);
@@ -171,7 +172,9 @@ export const bankCommand: OSBMahojiCommand = {
 			const pages = [];
 			for (const page of chunk(textBank, bankItemsPerPage)) {
 				pages.push({
-					embeds: [new Embed().setTitle(`${mUser.usernameOrMention}'s Bank`).setDescription(page.join('\n'))]
+					embeds: [
+						new EmbedBuilder().setTitle(`${mUser.usernameOrMention}'s Bank`).setDescription(page.join('\n'))
+					]
 				});
 			}
 			const channel = globalClient.channels.cache.get(channelID.toString());

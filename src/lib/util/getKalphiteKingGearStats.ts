@@ -4,23 +4,25 @@ import { maxOffenceStats } from '../gear';
 import { GearStats } from '../gear/types';
 import { KalphiteKingMonster } from '../minions/data/killableMonsters/custom/bosses/KalphiteKing';
 
-export function getKalphiteKingGearStats(
+export async function getKalphiteKingGearStats(
 	user: MUser,
 	team: string[]
-): [
-	{
-		chanceOfDeath: number;
-		damageDone: number;
-		percentAttackStrength: number;
-		totalGearPercent: number;
-		percentWeaponAttackCrush: number;
-		attackCrushStat: number;
-		kc: number;
-		gearStats: GearStats;
-	},
-	string
-] {
-	const kc = user.getKC(KalphiteKingMonster.id);
+): Promise<
+	[
+		{
+			chanceOfDeath: number;
+			damageDone: number;
+			percentAttackStrength: number;
+			totalGearPercent: number;
+			percentWeaponAttackCrush: number;
+			attackCrushStat: number;
+			kc: number;
+			gearStats: GearStats;
+		},
+		string
+	]
+> {
+	const kc = await user.getKC(KalphiteKingMonster.id);
 	const gear = user.gear.melee;
 	const weapon = gear.equippedWeapon();
 	const gearStats = gear.stats;

@@ -134,6 +134,14 @@ export const raidCommand: OSBMahojiCommand = {
 							required: false,
 							min_value: 1,
 							max_value: 8
+						},
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'quantity',
+							description: 'The quantity to do.',
+							required: false,
+							min_value: 1,
+							max_value: 5
 						}
 					]
 				},
@@ -158,7 +166,7 @@ export const raidCommand: OSBMahojiCommand = {
 			check?: { hard_mode?: boolean };
 		};
 		toa?: {
-			start?: { raid_level: RaidLevel; max_team_size?: number; solo?: boolean };
+			start?: { raid_level: RaidLevel; max_team_size?: number; solo?: boolean; quantity?: number };
 			help?: {};
 		};
 	}>) => {
@@ -193,7 +201,8 @@ export const raidCommand: OSBMahojiCommand = {
 				Boolean(options.toa.start.solo),
 				channelID,
 				options.toa.start.raid_level,
-				options.toa.start.max_team_size
+				options.toa.start.max_team_size,
+				options.toa.start.quantity
 			);
 		}
 

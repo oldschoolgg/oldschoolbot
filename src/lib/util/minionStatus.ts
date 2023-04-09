@@ -13,8 +13,8 @@ import { DisassembleTaskOptions } from '../invention/disassemble';
 import { ResearchTaskOptions } from '../invention/research';
 import killableMonsters from '../minions/data/killableMonsters';
 import { Planks } from '../minions/data/planks';
-import { getActivityOfUser } from '../settings/settings';
 import Agility from '../skilling/skills/agility';
+import Constructables from '../skilling/skills/construction/constructables';
 import Cooking from '../skilling/skills/cooking';
 import Crafting from '../skilling/skills/crafting';
 import { DungeoneeringOptions } from '../skilling/skills/dung/dungData';
@@ -83,9 +83,9 @@ import {
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '../types/minions';
-import { formatDuration, itemNameFromID, randomVariation } from '../util';
-import { stringMatches } from './cleanString';
+import { formatDuration, itemNameFromID, randomVariation, stringMatches } from '../util';
 import { formatOrdinal } from './formatOrdinal';
+import { getActivityOfUser } from './minionIsBusy';
 import { toTitleCase } from './toTitleCase';
 
 export function minionStatus(user: MUser) {
@@ -423,9 +423,9 @@ export function minionStatus(user: MUser) {
 
 		case 'Construction': {
 			const data = currentTask as ConstructionActivityTaskOptions;
-			return `${name} is currently building ${data.quantity}x ${itemNameFromID(
-				data.objectID
-			)}. ${formattedDuration}`;
+			const pohObject = Constructables.find(i => i.id === data.objectID);
+			if (!pohObject) throw new Error(`No POH object found with ID ${data.objectID}.`);
+			return `${name} is currently building ${data.quantity}x ${pohObject.name}. ${formattedDuration}`;
 		}
 
 		case 'Butler': {
@@ -731,6 +731,9 @@ export function minionStatus(user: MUser) {
 			return `${name} is currently performing at Balthazars Big Bonanza, the trip should take ${formatDuration(
 				durationRemaining
 			)}.`;
+		}
+		case 'UnderwaterAgilityThieving': {
+			return `${name} is currently doing Underwater Agility and Thieving. ${formattedDuration}`;
 		}
 		case 'HalloweenMiniMinigame':
 		case 'HalloweenEvent':

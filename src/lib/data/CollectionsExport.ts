@@ -11,6 +11,7 @@ import getOSItem from '../util/getOSItem';
 import { assert } from '../util/logError';
 import resolveItems from '../util/resolveItems';
 import { LampTable } from '../xpLamps';
+import { UserStatsDataNeededForCL } from './Collections';
 import {
 	gracefulCapes,
 	gracefulFeet,
@@ -39,18 +40,23 @@ export interface ILeftListStatus {
 }
 
 export interface IKCActivity {
-	[key: string]: string | string[] | ((user: MUser, minigameScores: MinigameScore[]) => Promise<number>);
+	[key: string]:
+		| string
+		| string[]
+		| ((user: MUser, minigameScores: MinigameScore[], stats: UserStatsDataNeededForCL) => Promise<number>);
 }
 
 export type FormatProgressFunction = ({
 	getKC,
 	minigames,
-	user
+	user,
+	stats
 }: {
 	user: MUser;
-	getKC: (id: number) => number;
+	getKC: (id: number) => Promise<number>;
 	minigames: Minigame;
-}) => string | string[] | Promise<string[]>;
+	stats: UserStatsDataNeededForCL;
+}) => string | string[] | Promise<string | string[]>;
 
 export interface ICollectionActivity {
 	[key: string]: {

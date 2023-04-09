@@ -1,10 +1,11 @@
 import { Canvas, SKRSContext2D } from '@napi-rs/canvas';
+import { formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit';
 import { calcWhatPercent, objectEntries } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import { Util } from 'oldschooljs';
 
-import { allCollectionLogs, getCollection, getTotalCl } from '../lib/data/Collections';
+import { allCollectionLogs, getCollection, getTotalCl, UserStatsDataNeededForCL } from '../lib/data/Collections';
 import { IToReturnCollection } from '../lib/data/CollectionsExport';
-import { formatItemStackQuantity, generateHexColorForCashStack, toKMB } from '../lib/util';
 import { fillTextXTimesInCtx, getClippedRegion, measureTextWidth } from '../lib/util/canvasUtil';
 import getOSItem from '../lib/util/getOSItem';
 import { IBgSprite } from './bankImage';
@@ -17,7 +18,7 @@ export const collectionLogTypes = [
 	{ name: 'tame', description: 'Tames Collection Log' },
 	{ name: 'disassembly', description: 'Disassembly Collection Log' }
 ] as const;
-export type CollectionLogType = typeof collectionLogTypes[number]['name'];
+export type CollectionLogType = (typeof collectionLogTypes)[number]['name'];
 export const CollectionLogFlags = [
 	{ name: 'text', description: 'Show your CL in text format.' },
 	{ name: 'missing', description: 'Show only missing items.' }
@@ -106,6 +107,7 @@ class CollectionLogTask {
 		collection: string;
 		type: CollectionLogType;
 		flags: { [key: string]: string | number };
+		stats: UserStatsDataNeededForCL;
 	}): Promise<CommandResponse> {
 		const { sprite } = bankImageGenerator.getBgAndSprite(options.user.user.bankBackground, options.user);
 
@@ -166,7 +168,7 @@ class CollectionLogTask {
 
 		const fullSize = flags.nl || !collectionLog.leftList;
 
-		const userTotalCl = await getTotalCl(user, type);
+		const userTotalCl = await getTotalCl(user, type, options.stats);
 		const leftListCanvas = this.drawLeftList(collectionLog, sprite);
 
 		let leftDivisor = 214;
@@ -197,6 +199,8 @@ class CollectionLogTask {
 				121 + (itemSize + itemSpacer) * Math.ceil(collectionLog.collectionTotal / maxPerLine)
 			)
 		);
+
+		debugLog('Generating a CL image', { collection, ...flags, type, user_id: user.id });
 
 		// Create base canvas
 		const canvas = new Canvas(canvasWidth, canvasHeight);
@@ -388,10 +392,9 @@ class CollectionLogTask {
 				this.drawText(ctx, ' Rifts searches: ', ctx.measureText(drawnSoFar).width, pixelLevel);
 				drawnSoFar += ' Rifts searches: ';
 				ctx.fillStyle = '#FFFFFF';
-				const stats = await user.fetchStats();
 				this.drawText(
 					ctx,
-					stats.gotr_rift_searches.toLocaleString(),
+					options.stats.gotrRiftSearches.toLocaleString(),
 					ctx.measureText(drawnSoFar).width,
 					pixelLevel
 				);
@@ -403,7 +406,7 @@ class CollectionLogTask {
 		ctx.save();
 		ctx.font = '16px OSRSFontCompact';
 		ctx.fillStyle = generateHexColorForCashStack(totalPrice);
-		let value = toKMB(totalPrice);
+		let value = Util.toKMB(totalPrice);
 		this.drawText(ctx, value, ctx.canvas.width - 15 - ctx.measureText(value).width, 75 + 25);
 		ctx.restore();
 

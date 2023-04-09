@@ -1,7 +1,7 @@
+import { cleanString } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 import { itemNameMap } from 'oldschooljs/dist/structures/Items';
 
-import { cleanString } from './util/cleanString';
 import getOSItem from './util/getOSItem';
 
 export const itemsToDelete = [
@@ -97,7 +97,10 @@ export const itemsToDelete = [
 
 export function deleteItem(itemID: number, itemName: string) {
 	const existing = Items.get(itemID);
-	if (!existing) throw new Error(`Tried to delete non-existant item ${itemName}${itemID}`);
+	if (!existing) {
+		if (!process.env.TEST) console.warn(`Tried to delete non-existent item ${itemName}${itemID}`);
+		return;
+	}
 	if (existing.name !== itemName) throw new Error(`Tried to delete item with non-matching name ${itemName}${itemID}`);
 	Items.delete(itemID);
 	const cleanName = cleanString(itemName);

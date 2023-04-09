@@ -23,7 +23,7 @@ import resolveItems from '../../lib/util/resolveItems';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { LampTable } from '../../lib/xpLamps';
 import { OSBMahojiCommand } from '../lib/util';
-import { updateGPTrackSetting, userStatsBankUpdate } from '../mahojiSettings';
+import { updateClientGPTrackSetting, userStatsBankUpdate } from '../mahojiSettings';
 
 const contractTable = new LootTable()
 	.every('Coins', [1_000_000, 3_500_000])
@@ -217,7 +217,7 @@ export async function handInContract(interaction: ChatInputCommandInteraction | 
 	await Promise.all([
 		updateBankSetting('item_contract_cost', cost),
 		updateBankSetting('item_contract_loot', loot),
-		updateGPTrackSetting('gp_ic', loot.amount('Coins')),
+		updateClientGPTrackSetting('gp_ic', loot.amount('Coins')),
 		userStatsBankUpdate(user.id, 'ic_cost_bank', cost),
 		userStatsBankUpdate(user.id, 'ic_loot_bank', loot)
 	]);

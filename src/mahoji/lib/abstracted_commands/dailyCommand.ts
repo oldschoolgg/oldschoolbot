@@ -12,11 +12,14 @@ import dailyRoll from '../../../lib/simulation/dailyTable';
 import { channelIsSendable, formatDuration, isWeekend } from '../../../lib/util';
 import { deferInteraction } from '../../../lib/util/interactionReply';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { updateGPTrackSetting } from '../../mahojiSettings';
+import { updateClientGPTrackSetting, userStatsUpdate } from '../../mahojiSettings';
 
-export function isUsersDailyReady(user: MUser): { isReady: true } | { isReady: false; durationUntilReady: number } {
+export async function isUsersDailyReady(
+	user: MUser
+): Promise<{ isReady: true } | { isReady: false; durationUntilReady: number }> {
+	const stats = await user.fetchStats({ last_daily_timestamp: true });
 	const currentDate = new Date().getTime();
-	const lastVoteDate = Number(user.user.lastDailyTimestamp);
+	const lastVoteDate = Number(stats.last_daily_timestamp);
 	const difference = currentDate - lastVoteDate;
 
 	if (difference < dailyResetTime) {
@@ -36,21 +39,21 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 	const bonuses = [];
 
 	if (isWeekend()) {
-		loot[COINS_ID] *= 2;
+		loot.bank[COINS_ID] *= 2;
 		bonuses.push(Emoji.MoneyBag);
 	}
 
 	if (member) {
-		loot[COINS_ID] = Math.floor(loot[COINS_ID] * 1.5);
+		loot.bank[COINS_ID] = Math.floor(loot.bank[COINS_ID] * 1.5);
 		bonuses.push(Emoji.OSBot);
 	}
 
 	if (user.user.minion_hasBought) {
-		loot[COINS_ID] /= 1.5;
+		loot.bank[COINS_ID] /= 1.5;
 	}
 
 	if (roll(73)) {
-		loot[COINS_ID] = Math.floor(loot[COINS_ID] * 1.73);
+		loot.bank[COINS_ID] = Math.floor(loot.bank[COINS_ID] * 1.73);
 		bonuses.push(Emoji.Joy);
 	}
 
@@ -58,24 +61,24 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 		if (roll(2)) {
 			bonuses.push(Emoji.Bpaptu);
 		} else {
-			loot[COINS_ID] += 1_000_000_000;
+			loot.bank[COINS_ID] += 1_000_000_000;
 			bonuses.push(Emoji.Diamond);
 		}
 	}
 
 	if (!triviaCorrect) {
-		loot[COINS_ID] = 0;
-	} else if (loot[COINS_ID] <= 1_000_000_000) {
+		loot.bank[COINS_ID] = 0;
+	} else if (loot.bank[COINS_ID] <= 1_000_000_000) {
 		// Correct daily gives 10% more cash if the jackpot is not won
-		loot[COINS_ID] = Math.floor(loot[COINS_ID] * 1.1);
+		loot.bank[COINS_ID] = Math.floor(loot.bank[COINS_ID] * 1.1);
 	}
 
 	// Ensure amount of GP is an integer
-	loot[COINS_ID] = Math.floor(loot[COINS_ID]);
+	loot.bank[COINS_ID] = Math.floor(loot.bank[COINS_ID]);
 
 	// Check to see if user is iron and remove GP if true.
 	if (user.isIronman) {
-		delete loot[COINS_ID];
+		delete loot.bank[COINS_ID];
 	}
 
 	const correct = triviaCorrect ? 'correct' : 'incorrect';
@@ -87,15 +90,15 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 
 	const hasSkipper = user.usingPet('Skipper') || user.bank.amount('Skipper') > 0;
 	if (!user.isIronman && triviaCorrect && hasSkipper) {
-		loot[COINS_ID] = Math.floor(loot[COINS_ID] * 1.5);
+		loot.bank[COINS_ID] = Math.floor(loot.bank[COINS_ID] * 1.5);
 		dmStr +=
 			'\n<:skipper:755853421801766912> Skipper has negotiated with Diango and gotten you 50% extra GP from your daily!';
 	}
 
-	if (loot[COINS_ID] > 0) {
-		updateGPTrackSetting('gp_daily', loot[COINS_ID]);
+	if (loot.bank[COINS_ID] > 0) {
+		updateClientGPTrackSetting('gp_daily', loot.bank[COINS_ID]);
 	} else {
-		delete loot[COINS_ID];
+		delete loot.bank[COINS_ID];
 	}
 
 	const { itemsAdded, previousCL } = await transactItems({
@@ -120,16 +123,20 @@ export async function dailyCommand(
 	if (interaction) await deferInteraction(interaction);
 	const channel = globalClient.channels.cache.get(channelID.toString());
 	if (!channelIsSendable(channel)) return 'Invalid channel.';
-	const check = isUsersDailyReady(user);
+	const check = await isUsersDailyReady(user);
 	if (!check.isReady) {
 		return `**${Emoji.Diango} Diango says...** You can claim your next daily in ${formatDuration(
 			check.durationUntilReady
 		)}.`;
 	}
 
-	await user.update({
-		lastDailyTimestamp: new Date().getTime()
-	});
+	await userStatsUpdate(
+		user.id,
+		{
+			last_daily_timestamp: new Date().getTime()
+		},
+		{}
+	);
 
 	const [question, ...fakeQuestions] = await getRandomTriviaQuestions();
 

@@ -1,5 +1,6 @@
 /* eslint-disable no-case-declarations */
 import { userMention } from '@discordjs/builders';
+import { Tame, tame_growth, TameActivity, User } from '@prisma/client';
 import {
 	ActionRowBuilder,
 	APIInteractionGuildMember,
@@ -29,7 +30,6 @@ import getOSItem from './util/getOSItem';
 import { handleSpecialCoxLoot } from './util/handleSpecialCoxLoot';
 import { makeBankImage } from './util/makeBankImage';
 import resolveItems from './util/resolveItems';
-import { Tame, tame_growth, TameActivity, User } from '.prisma/client';
 
 export enum TameSpeciesID {
 	Igne = 1,
@@ -599,7 +599,6 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 			const collectable = collectables.find(c => c.item.id === itemID)!;
 			const totalQuantity = quantity * collectable.quantity;
 			const loot = new Bank().add(collectable.item.id, totalQuantity);
-			const user = await mUserFetch(activity.user_id);
 			let str = `${user}, ${tameName(tame)} finished collecting ${totalQuantity}x ${
 				collectable.item.name
 			}. (${Math.round((totalQuantity / (activity.duration / Time.Minute)) * 60).toLocaleString()}/hr)`;

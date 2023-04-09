@@ -1,3 +1,4 @@
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { notEmpty, randArrItem, roll } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 import BeginnerClueTable from 'oldschooljs/dist/simulation/clues/Beginner';
@@ -41,7 +42,6 @@ import { birdsNestID, treeSeedsNest } from './simulation/birdsNest';
 import { gauntlet } from './simulation/gauntlet';
 import { getTemporossLoot } from './simulation/tempoross';
 import { WintertodtCrate } from './simulation/wintertodt';
-import { stringMatches } from './util/cleanString';
 import getOSItem from './util/getOSItem';
 import itemID from './util/itemID';
 import resolveItems from './util/resolveItems';
@@ -154,7 +154,8 @@ export const finishables: Finishable[] = [
 						mining: 99,
 						crafting: 99,
 						farming: 99
-					}
+					},
+					firemakingXP: 1000
 				})
 			);
 			// Wintertoad: Assume 1 game per 5 minutes, Wintertoad rate is 1 in 3k minutes

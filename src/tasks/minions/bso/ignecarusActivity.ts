@@ -1,4 +1,4 @@
-import { objectValues, percentChance, shuffleArr } from 'e';
+import { objectValues, percentChance, shuffleArr, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Emoji } from '../../../lib/constants';
@@ -16,7 +16,6 @@ import { TeamLoot } from '../../../lib/simulation/TeamLoot';
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { BossUser } from '../../../lib/structures/Boss';
 import { NewBossOptions } from '../../../lib/types/minions';
-import { addArrayOfNumbers } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { sendToChannelID } from '../../../lib/util/webhook';
@@ -61,7 +60,7 @@ export const ignecarusTask: MinionTask = {
 			});
 		}
 
-		if (addArrayOfNumbers(objectValues(deaths).map(d => d.qty)) === idArr.length * quantity) {
+		if (sumArr(objectValues(deaths).map(d => d.qty)) === idArr.length * quantity) {
 			handleTripFinish(bossUsers[0].user, channelID, `${tagAll}\n\nYour team all died.`, undefined, data, null);
 			return;
 		}

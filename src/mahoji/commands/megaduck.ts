@@ -7,10 +7,11 @@ import { Bank } from 'oldschooljs';
 
 import { Events } from '../../lib/constants';
 import { defaultMegaDuckLocation, MegaDuckLocation } from '../../lib/minions/types';
+import { prisma } from '../../lib/settings/prisma';
 import { getUsername } from '../../lib/util';
 import { canvasImageFromBuffer } from '../../lib/util/canvasUtil';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { mahojiGuildSettingsFetch, mahojiGuildSettingsUpdate } from '../guildSettings';
+import { mahojiGuildSettingsUpdate } from '../guildSettings';
 import { OSBMahojiCommand } from '../lib/util';
 
 const _mapImage = readFileSync('./src/lib/resources/images/megaduckmap.png');
@@ -44,7 +45,7 @@ function topFeeders(entries: any[]) {
 }
 
 const directions = ['up', 'down', 'left', 'right'] as const;
-type MegaduckDirection = typeof directions[number];
+type MegaduckDirection = (typeof directions)[number];
 
 function applyDirection(location: MegaDuckLocation, direction: MegaduckDirection): MegaDuckLocation {
 	let newLocation = { ...location };
@@ -149,14 +150,23 @@ export const megaDuckCommand: OSBMahojiCommand = {
 		guildID,
 		interaction
 	}: CommandRunOptions<{ move?: MegaduckDirection; reset?: boolean }>) => {
-		debugLog('Mega Duck Command Running', {
-			type: 'MEGA_DUCK',
-			user_id: userID
-		});
 		const user = await mUserFetch(userID);
 		const guild = guildID ? globalClient.guilds.cache.get(guildID.toString()) : null;
 		if (!guild) return 'You can only run this in a guild.';
-		const settings = await mahojiGuildSettingsFetch(guild);
+
+		const settings = await prisma.guild.upsert({
+			where: {
+				id: guild.id
+			},
+			update: {},
+			create: {
+				id: guild.id
+			},
+			select: {
+				mega_duck_location: true,
+				id: true
+			}
+		});
 		const location: Readonly<MegaDuckLocation> = {
 			...((settings.mega_duck_location as any) || defaultMegaDuckLocation)
 		};

@@ -1,3 +1,6 @@
+import { gzip } from 'node:zlib';
+
+import { stripEmojis } from '@oldschoolgg/toolkit';
 import { PrismaClient } from '@prisma/client';
 import { Stopwatch } from '@sapphire/stopwatch';
 import {
@@ -6,27 +9,24 @@ import {
 	ButtonBuilder,
 	ButtonInteraction,
 	CacheType,
-	Channel,
 	Collection,
 	CollectorFilter,
 	ComponentType,
 	escapeMarkdown,
 	Guild,
-	GuildTextBasedChannel,
 	InteractionReplyOptions,
 	InteractionType,
 	Message,
 	MessageEditOptions,
 	SelectMenuInteraction,
 	TextChannel,
-	time,
-	User as DJSUser
+	time
 } from 'discord.js';
 import {
 	calcWhatPercent,
 	chunk,
 	increaseNumByPercent,
-	isObject,
+	notEmpty,
 	objectEntries,
 	randArrItem,
 	randInt,
@@ -36,16 +36,18 @@ import {
 } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import murmurHash from 'murmurhash';
-import { gzip } from 'node:zlib';
 import { Bank, Items, Monsters } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import { convertLVLtoXP } from 'oldschooljs/dist/util/util';
 import { bool, integer, nodeCrypto, real } from 'random-js';
 
-import { ADMIN_IDS, CLIENT_ID, OWNER_IDS, production, SupportServer } from '../config';
-import { badgesCache, BitField, ProjectileType, usernameCache } from './constants';
+import { ADMIN_IDS, OWNER_IDS, production, SupportServer } from '../config';
+import { ClueTiers } from './clues/clueTiers';
+import { badgesCache, BitField, globalConfig, ProjectileType, usernameCache } from './constants';
+import { UserStatsDataNeededForCL } from './data/Collections';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
+import { calcActualClues } from './leagues/stats';
 import type { Consumable } from './minions/types';
 import { MUserClass } from './MUser';
 import { PaginatedMessage } from './PaginatedMessage';
@@ -59,13 +61,11 @@ import type {
 	RaidsOptions,
 	TheatreOfBloodTaskOptions
 } from './types/minions';
-import { getItem } from './util/getOSItem';
+import getOSItem, { getItem } from './util/getOSItem';
 import itemID from './util/itemID';
 import resolveItems from './util/resolveItems';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const emojiRegex = require('emoji-regex');
-
+export { cleanString, stringMatches, stripEmojis } from '@oldschoolgg/toolkit';
 export * from 'oldschooljs/dist/util/index';
 
 const zeroWidthSpace = '\u200b';
@@ -93,27 +93,6 @@ export function cleanMentions(guild: Guild | null, input: string, showAt = true)
 					return `<${type}${zeroWidthSpace}${id}>`;
 			}
 		});
-}
-
-export function generateHexColorForCashStack(coins: number) {
-	if (coins > 9_999_999) {
-		return '#00FF80';
-	}
-
-	if (coins > 99_999) {
-		return '#FFFFFF';
-	}
-
-	return '#FFFF00';
-}
-
-export function formatItemStackQuantity(quantity: number) {
-	if (quantity > 9_999_999) {
-		return `${Math.floor(quantity / 1_000_000)}M`;
-	} else if (quantity > 99_999) {
-		return `${Math.floor(quantity / 1000)}K`;
-	}
-	return quantity.toString();
 }
 
 export function inlineCodeblock(input: string) {
@@ -152,7 +131,7 @@ export function convertXPtoLVL(xp: number, cap = 120) {
 	return cap;
 }
 
-export function rand(min: number, max: number) {
+export function cryptoRand(min: number, max: number) {
 	return integer(min, max)(nodeCrypto);
 }
 
@@ -161,17 +140,12 @@ export function randFloat(min: number, max: number) {
 }
 
 export function percentChance(percent: number) {
+	if (process.env.TEST) return false;
 	return bool(percent / 100)(nodeCrypto);
 }
 
 export function roll(max: number) {
-	return rand(1, max) === 1;
-}
-
-const rawEmojiRegex = emojiRegex();
-
-export function stripEmojis(str: string) {
-	return str.replace(rawEmojiRegex, '');
+	return cryptoRand(1, max) === 1;
 }
 
 export const anglerBoosts = [
@@ -498,10 +472,9 @@ export function removeMarkdownEmojis(str: string) {
 export function moidLink(items: number[]) {
 	return `https://chisel.weirdgloop.org/moid/item_id.html#${items.join(',')}`;
 }
-export { cleanString, stringMatches } from './util/cleanString';
 export async function bankValueWithMarketPrices(prisma: PrismaClient, bank: Bank) {
 	const marketPrices = (await prisma.clientStorage.findFirst({
-		where: { id: CLIENT_ID },
+		where: { id: globalConfig.clientID },
 		select: {
 			market_prices: true
 		}
@@ -516,10 +489,6 @@ export async function bankValueWithMarketPrices(prisma: PrismaClient, bank: Bank
 	return price;
 }
 
-export function discrimName(user: DJSUser) {
-	return `${user.username}#${user.discriminator}`;
-}
-
 export function isValidSkill(skill: string): skill is SkillsEnum {
 	return Object.values(SkillsEnum).includes(skill as SkillsEnum);
 }
@@ -530,6 +499,7 @@ function normalizeMahojiResponse(one: Awaited<CommandResponse>): BaseMessageOpti
 	const response: BaseMessageOptions = {};
 	if (one.content) response.content = one.content;
 	if (one.files) response.files = one.files;
+	if (one.components) response.components = one.components;
 	return response;
 }
 
@@ -539,10 +509,11 @@ export function roughMergeMahojiResponse(
 ): InteractionReplyOptions {
 	const first = normalizeMahojiResponse(one);
 	const second = normalizeMahojiResponse(two);
-	const newResponse: InteractionReplyOptions = { content: '', files: [] };
+	const newResponse: InteractionReplyOptions = { content: '', files: [], components: [] };
 	for (const res of [first, second]) {
 		if (res.content) newResponse.content += `${res.content} `;
 		if (res.files) newResponse.files = [...newResponse.files!, ...res.files];
+		if (res.components) newResponse.components = res.components;
 	}
 	return newResponse;
 }
@@ -631,22 +602,6 @@ export function makeComponents(components: ButtonBuilder[]): InteractionReplyOpt
 	return chunk(components, 5).map(i => ({ components: i, type: ComponentType.ActionRow }));
 }
 
-export function validateItemBankAndThrow(input: any): input is ItemBank {
-	if (!isObject(input)) {
-		throw new Error('Invalid bank');
-	}
-	const numbers = [];
-	for (const [key, val] of Object.entries(input)) {
-		numbers.push(parseInt(key), val);
-	}
-	for (const num of numbers) {
-		if (isNaN(num) || typeof num !== 'number' || !Number.isInteger(num) || num < 0) {
-			throw new Error('Invalid bank');
-		}
-	}
-	return true;
-}
-
 type test = CollectorFilter<
 	[
 		ButtonInteraction<CacheType> | SelectMenuInteraction<CacheType>,
@@ -672,10 +627,6 @@ export function awaitMessageComponentInteraction({
 	});
 }
 
-export function isGuildChannel(channel?: Channel): channel is GuildTextBasedChannel {
-	return channel !== undefined && !channel.isDMBased() && Boolean(channel.guild);
-}
-
 export async function runTimedLoggedFn(name: string, fn: () => Promise<unknown>) {
 	debugLog(`Starting ${name}...`);
 	const stopwatch = new Stopwatch();
@@ -692,10 +643,6 @@ export function getAllIDsOfUser(user: MUser) {
 		allAccounts.push(main);
 	}
 	return allAccounts;
-}
-
-export function isFunction(input: unknown): input is Function {
-	return typeof input === 'function';
 }
 
 export function dateFm(date: Date) {
@@ -728,6 +675,47 @@ export function getInteractionTypeName(type: InteractionType) {
 
 export function isModOrAdmin(user: MUser) {
 	return [...OWNER_IDS, ...ADMIN_IDS].includes(user.id) || user.bitfield.includes(BitField.isModerator);
+}
+
+export async function calcClueScores(user: MUser) {
+	const actualClues = await calcActualClues(user);
+	const stats = await user.fetchStats({ openable_scores: true });
+	const openableBank = new Bank(stats.openable_scores as ItemBank);
+	return openableBank
+		.items()
+		.map(entry => {
+			const tier = ClueTiers.find(i => i.id === entry[0].id);
+			if (!tier) return;
+			return {
+				tier,
+				casket: getOSItem(tier.id),
+				clueScroll: getOSItem(tier.scrollID),
+				opened: openableBank.amount(tier.id),
+				actualOpened: actualClues.amount(tier.scrollID)
+			};
+		})
+		.filter(notEmpty);
+}
+
+export async function fetchStatsForCL(user: MUser): Promise<UserStatsDataNeededForCL> {
+	const userStats = await user.fetchStats({
+		sacrificed_bank: true,
+		tithe_farms_completed: true,
+		laps_scores: true,
+		openable_scores: true,
+		monster_scores: true,
+		high_gambles: true,
+		gotr_rift_searches: true
+	});
+	return {
+		sacrificedBank: new Bank(userStats.sacrificed_bank as ItemBank),
+		titheFarmsCompleted: userStats.tithe_farms_completed,
+		lapsScores: userStats.laps_scores as ItemBank,
+		openableScores: new Bank(userStats.openable_scores as ItemBank),
+		kcBank: userStats.monster_scores as ItemBank,
+		highGambles: userStats.high_gambles,
+		gotrRiftSearches: userStats.gotr_rift_searches
+	};
 }
 
 export { assert } from './util/logError';

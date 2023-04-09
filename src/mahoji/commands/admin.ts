@@ -1,22 +1,34 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { codeBlock } from '@discordjs/builders';
+import { inspect } from 'node:util';
+
+import { codeBlock, userMention } from '@discordjs/builders';
 import { ClientStorage, economy_transaction_type } from '@prisma/client';
 import { Stopwatch } from '@sapphire/stopwatch';
 import { Duration } from '@sapphire/time-utilities';
 import { isThenable } from '@sentry/utils';
-import { AttachmentBuilder, escapeCodeBlock, InteractionReplyOptions } from 'discord.js';
-import { notEmpty, randArrItem, sleep, Time, uniqueArr } from 'e';
+import { AttachmentBuilder, escapeCodeBlock, InteractionReplyOptions, Message, TextChannel } from 'discord.js';
+import { calcPercentOfNum, noOp, notEmpty, randArrItem, roll, sleep, Time, uniqueArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { bulkUpdateCommands } from 'mahoji/dist/lib/util';
-import { inspect } from 'node:util';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { ADMIN_IDS, CLIENT_ID, OWNER_IDS, production, SupportServer } from '../../config';
+import { ADMIN_IDS, OWNER_IDS, production, SupportServer } from '../../config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../../lib/blacklists';
-import { badges, BadgesEnum, BitField, BitFieldData, Channel, DISABLED_COMMANDS } from '../../lib/constants';
+import { boxFrenzy } from '../../lib/boxFrenzy';
+import {
+	badges,
+	BadgesEnum,
+	BitField,
+	BitFieldData,
+	Channel,
+	COINS_ID,
+	DISABLED_COMMANDS,
+	globalConfig
+} from '../../lib/constants';
+import { slayerMaskHelms } from '../../lib/data/slayerMaskHelms';
 import { addToDoubleLootTimer } from '../../lib/doubleLoot';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { GearSetup } from '../../lib/gear/types';
@@ -39,19 +51,21 @@ import {
 import { memoryAnalysis } from '../../lib/util/cachedUserIDs';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../lib/util/clientSettings';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
-import { getUsersTamesCollectionLog } from '../../lib/util/getUsersTameCL';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction, interactionReply } from '../../lib/util/interactionReply';
 import { syncLinkedAccounts } from '../../lib/util/linkedAccountsUtil';
 import { logError } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
+import { slayerMaskLeaderboardCache } from '../../lib/util/slayerMaskLeaderboard';
 import { sendToChannelID } from '../../lib/util/webhook';
+import { LampTable } from '../../lib/xpLamps';
 import { Cooldowns } from '../lib/Cooldowns';
 import { syncCustomPrices } from '../lib/events';
 import { itemOption } from '../lib/mahojiCommandOptions';
 import { allAbstractCommands, OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { getLotteryBank } from './lottery';
 import { getUserInfo } from './minion';
 
 export const gifs = [
@@ -260,6 +274,25 @@ AND ("gear.melee" IS NOT NULL OR
 					.join('\n')
 			};
 		}
+	},
+	{
+		name: 'Slayer Mask Leaderboard',
+		run: async () => {
+			let res = '';
+
+			for (const [maskID, userID] of slayerMaskLeaderboardCache.entries()) {
+				const mask = slayerMaskHelms.find(i => i.mask.id === maskID);
+				if (!mask) continue;
+				res += `${mask.mask.name}: ${userMention(userID)}\n`;
+			}
+
+			return {
+				content: res,
+				allowedMentions: {
+					users: []
+				}
+			};
+		}
 	}
 ];
 
@@ -290,19 +323,6 @@ export const adminCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.String,
 					name: 'time',
 					description: 'The time.',
-					required: true
-				}
-			]
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'viewbank',
-			description: 'View a users bank.',
-			options: [
-				{
-					type: ApplicationCommandOptionType.User,
-					name: 'user',
-					description: 'The user.',
 					required: true
 				}
 			]
@@ -544,19 +564,19 @@ export const adminCommand: OSBMahojiCommand = {
 				}
 			]
 		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'ltc',
-			description: 'Ltc?',
-			options: [
-				{
-					...itemOption(),
-					name: 'item',
-					description: 'The item.',
-					required: false
-				}
-			]
-		},
+		// {
+		// 	type: ApplicationCommandOptionType.Subcommand,
+		// 	name: 'ltc',
+		// 	description: 'Ltc?',
+		// 	options: [
+		// 		{
+		// 			...itemOption(),
+		// 			name: 'item',
+		// 			description: 'The item.',
+		// 			required: false
+		// 		}
+		// 	]
+		// },
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'double_loot',
@@ -610,11 +630,6 @@ export const adminCommand: OSBMahojiCommand = {
 		// },
 		{
 			type: ApplicationCommandOptionType.Subcommand,
-			name: 'migrate_tames',
-			description: 'migrate tames'
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
 			name: 'give_items',
 			description: 'Spawn items for a user',
 			options: [
@@ -636,13 +651,50 @@ export const adminCommand: OSBMahojiCommand = {
 					description: 'The reason'
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'box_frenzy',
+			description: 'Box frenzy',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Integer,
+					name: 'amount',
+					description: 'The amount',
+					required: true,
+					min_value: 1,
+					max_value: 500
+				}
+			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'lamp_frenzy',
+			description: 'Lamp frenzy',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Integer,
+					name: 'amount',
+					description: 'The amount',
+					required: true,
+					min_value: 1,
+					max_value: 20
+				}
+			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'lottery_dump',
+			description: 'lottery_dump',
+			options: []
 		}
 	],
 	run: async ({
 		options,
 		userID,
 		interaction,
-		guildID
+		guildID,
+		channelID
 	}: CommandRunOptions<{
 		givetgb?: { user: MahojiUserOption };
 		viewbank?: { user: MahojiUserOption };
@@ -670,7 +722,9 @@ export const adminCommand: OSBMahojiCommand = {
 		view?: { thing: string };
 		wipe_bingo_temp_cls?: {};
 		give_items?: { user: MahojiUserOption; items: string; reason?: string };
-		migrate_tames?: {};
+		box_frenzy?: { amount: number };
+		lamp_frenzy?: { amount: number };
+		lottery_dump?: {};
 	}>) => {
 		await deferInteraction(interaction);
 
@@ -754,8 +808,19 @@ export const adminCommand: OSBMahojiCommand = {
 			return 'Finished syncing patrons.';
 		}
 		if (options.add_ironman_alt) {
-			const mainAccount = await mahojiUsersSettingsFetch(options.add_ironman_alt.main.user.id);
-			const altAccount = await mahojiUsersSettingsFetch(options.add_ironman_alt.ironman_alt.user.id);
+			const mainAccount = await mahojiUsersSettingsFetch(options.add_ironman_alt.main.user.id, {
+				minion_ironman: true,
+				id: true,
+				ironman_alts: true,
+				main_account: true
+			});
+			const altAccount = await mahojiUsersSettingsFetch(options.add_ironman_alt.ironman_alt.user.id, {
+				minion_ironman: true,
+				bitfield: true,
+				id: true,
+				ironman_alts: true,
+				main_account: true
+			});
 			const mainUser = await mUserFetch(mainAccount.id);
 			const altUser = await mUserFetch(altAccount.id);
 			if (mainAccount === altAccount) return "They're they same account.";
@@ -808,7 +873,10 @@ export const adminCommand: OSBMahojiCommand = {
 			if (!badge) return 'Invalid badge.';
 			const [badgeName, badgeID] = badge;
 
-			const userToUpdateBadges = await mahojiUsersSettingsFetch(options.badges.user.user.id);
+			const userToUpdateBadges = await mahojiUsersSettingsFetch(options.badges.user.user.id, {
+				badges: true,
+				id: true
+			});
 			let newBadges = [...userToUpdateBadges.badges];
 
 			if (action === 'add') {
@@ -829,7 +897,7 @@ export const adminCommand: OSBMahojiCommand = {
 		}
 
 		if (options.bypass_age) {
-			const input = await mahojiUsersSettingsFetch(options.bypass_age.user.user.id);
+			const input = await mahojiUsersSettingsFetch(options.bypass_age.user.user.id, { bitfield: true, id: true });
 			if (input.bitfield.includes(BitField.BypassAgeRestriction)) {
 				return 'This user is already bypassed.';
 			}
@@ -846,7 +914,7 @@ export const adminCommand: OSBMahojiCommand = {
 			const { enable } = options.command;
 
 			const currentDisabledCommands = (await prisma.clientStorage.findFirst({
-				where: { id: CLIENT_ID },
+				where: { id: globalConfig.clientID },
 				select: { disabled_commands: true }
 			}))!.disabled_commands;
 
@@ -862,7 +930,7 @@ export const adminCommand: OSBMahojiCommand = {
 				const newDisabled = [...currentDisabledCommands, command.name.toLowerCase()];
 				await prisma.clientStorage.update({
 					where: {
-						id: CLIENT_ID
+						id: globalConfig.clientID
 					},
 					data: {
 						disabled_commands: newDisabled
@@ -877,7 +945,7 @@ export const adminCommand: OSBMahojiCommand = {
 				}
 				await prisma.clientStorage.update({
 					where: {
-						id: CLIENT_ID
+						id: globalConfig.clientID
 					},
 					data: {
 						disabled_commands: currentDisabledCommands.filter(i => i !== command.name)
@@ -980,7 +1048,7 @@ LIMIT 10;
 		}
 		if (options.viewbank) {
 			const userToCheck = await mUserFetch(options.viewbank.user.user.id);
-			const bank = userToCheck.allItemsOwned();
+			const bank = userToCheck.allItemsOwned;
 			return { files: [(await makeBankImage({ bank, title: userToCheck.usernameOrMention })).file] };
 		}
 
@@ -1130,14 +1198,18 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 			const duration = new Duration(time);
 			const ms = duration.offset;
 			if (ms < Time.Second || ms > Time.Year * 3) return 'Invalid input.';
-			const input = await mahojiUsersSettingsFetch(userToGive.user.id);
+			const input = await mahojiUsersSettingsFetch(userToGive.user.id, {
+				premium_balance_expiry_date: true,
+				id: true,
+				premium_balance_tier: true
+			});
 
 			const currentBalanceTier = input.premium_balance_tier;
 
 			if (currentBalanceTier !== null && currentBalanceTier !== tier) {
 				await handleMahojiConfirmation(
 					interaction,
-					`${input} already has Tier ${currentBalanceTier}; this will replace the existing balance entirely, are you sure?`
+					`They already have Tier ${currentBalanceTier}; this will replace the existing balance entirely, are you sure?`
 				);
 			}
 			await handleMahojiConfirmation(
@@ -1238,34 +1310,89 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 			};
 		}
 
-		// if (options.lottery_dump) {
-		// 	const res = await getLotteryBank();
-		// 	for (const user of res.users) {
-		// 		if (!globalClient.users.cache.has(user.id)) {
-		// 			await globalClient.users.fetch(user.id);
-		// 		}
-		// 	}
-		// 	return {
-		// 		files: [
-		// 			{
-		// 				name: 'lottery.txt',
-		// 				attachment: Buffer.from(
-		// 					JSON.stringify(
-		// 						res.users.map(i => [globalClient.users.cache.get(i.id)?.username ?? i.id, i.tickets])
-		// 					)
-		// 				)
-		// 			}
-		// 		]
-		// 	};
-		// }
-
-		if (options.migrate_tames) {
-			const tameOwners = await prisma.$queryRaw<{ user_id: string }[]>`SELECT DISTINCT(user_id)
-FROM tames;`;
-			for (const { user_id } of tameOwners) {
-				await getUsersTamesCollectionLog(user_id);
+		if (options.lottery_dump) {
+			const res = await getLotteryBank();
+			for (const user of res.users) {
+				if (!globalClient.users.cache.has(user.id)) {
+					await globalClient.users.fetch(user.id);
+				}
 			}
+			const taxedBank = new Bank();
+			for (const [item, qty] of res.totalLoot.items()) {
+				if (item.id === COINS_ID) {
+					taxedBank.add('Coins', qty);
+					continue;
+				}
+				let fivePercent = Math.ceil(calcPercentOfNum(5, qty));
+				taxedBank.add(item, Math.max(fivePercent, 1));
+			}
+
+			const actualLootBank = res.totalLoot.clone().remove(taxedBank);
+
+			return {
+				files: [
+					{
+						name: 'lottery.txt',
+						attachment: Buffer.from(
+							JSON.stringify(
+								res.users.map(i => [globalClient.users.cache.get(i.id)?.username ?? i.id, i.tickets])
+							)
+						)
+					},
+					{
+						name: 'totalloot.json',
+						attachment: Buffer.from(JSON.stringify(actualLootBank.bank))
+					},
+					{
+						name: 'taxedbank.json',
+						attachment: Buffer.from(JSON.stringify(taxedBank.bank))
+					},
+					(await makeBankImage({ bank: taxedBank, title: 'Taxed Bank' })).file,
+					(await makeBankImage({ bank: actualLootBank, title: 'Actual Loot' })).file
+				]
+			};
 		}
+
+		if (options.box_frenzy) {
+			boxFrenzy(channelID, 'Box Frenzy started!', options.box_frenzy.amount);
+			return null;
+		}
+
+		if (options.lamp_frenzy) {
+			const channel = globalClient.channels.cache.get(channelID)! as TextChannel;
+			const wonCache = new Set();
+
+			const message = await channel.send(
+				`Giving out ${options.lamp_frenzy.amount} lamps! To win, just say something.`
+			);
+
+			const totalLoot = new Bank();
+
+			await channel
+				.awaitMessages({
+					time: 20_000,
+					errors: ['time'],
+					filter: async (_msg: Message) => {
+						if (!roll(3)) return false;
+						if (wonCache.has(_msg.author.id)) return false;
+						if (wonCache.size >= options.lamp_frenzy!.amount) return false;
+						wonCache.add(_msg.author.id);
+
+						const loot = LampTable.roll();
+						totalLoot.add(loot);
+
+						const user = await mUserFetch(_msg.author.id);
+						await user.addItemsToBank({ items: loot, collectionLog: true });
+						_msg.channel.send(`${_msg.author} won ${loot}.`);
+						return false;
+					}
+				})
+				.then(() => message.edit({ content: 'Finished!', files: [] }))
+				.catch(noOp);
+
+			await channel.send(`Spawnlamp frenzy finished! ${totalLoot} was given out.`);
+		}
+
 		return 'Invalid command.';
 	}
 };

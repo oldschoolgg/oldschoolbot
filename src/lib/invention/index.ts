@@ -37,7 +37,7 @@ export const materialTypes = [
 	'justiciar'
 ] as const;
 
-export type MaterialType = typeof materialTypes[number];
+export type MaterialType = (typeof materialTypes)[number];
 
 export type IMaterialBank = {
 	[key in MaterialType]?: number;

@@ -99,9 +99,11 @@ import { woodcuttingTask } from '../tasks/minions/woodcuttingActivity';
 import { giantsFoundryTask } from './../tasks/minions/minigames/giantsFoundryActivity';
 import { guardiansOfTheRiftTask } from './../tasks/minions/minigames/guardiansOfTheRiftActivity';
 import { nightmareZoneTask } from './../tasks/minions/minigames/nightmareZoneActivity';
+import { underwaterAgilityThievingTask } from './../tasks/minions/underwaterActivity';
 import { modifyBusyCounter } from './busyCounterCache';
+import { minionActivityCache } from './constants';
 import { convertStoredActivityToFlatActivity, prisma } from './settings/prisma';
-import { activitySync, minionActivityCache, minionActivityCacheDelete } from './settings/settings';
+import { activitySync, minionActivityCacheDelete } from './settings/settings';
 import { logError } from './util/logError';
 
 export const tasks: MinionTask[] = [
@@ -204,7 +206,9 @@ export const tasks: MinionTask[] = [
 	bossEventTask,
 	twTask,
 	toaTask,
-	bonanzaTask
+	bonanzaTask,
+	toaTask,
+	underwaterAgilityThievingTask
 ];
 
 export async function syncActivityCache() {
@@ -255,7 +259,8 @@ const ignored: activity_type_enum[] = [
 	activity_type_enum.Easter,
 	activity_type_enum.HalloweenMiniMinigame,
 	activity_type_enum.TrickOrTreat,
-	activity_type_enum.BossEvent
+	activity_type_enum.BossEvent,
+	activity_type_enum.HalloweenEvent
 ];
 for (const a of Object.values(activity_type_enum)) {
 	if (ignored.includes(a)) {

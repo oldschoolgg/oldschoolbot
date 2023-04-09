@@ -1,12 +1,11 @@
 import { AttachmentBuilder } from 'discord.js';
-import { calcWhatPercent, isObject, notEmpty, sumArr, uniqueArr } from 'e';
+import { calcWhatPercent, isObject, notEmpty, removeFromArr, sumArr, uniqueArr } from 'e';
 import { Bank, Clues, Monsters } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import { table } from 'table';
 
-import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 import { ClueTier, ClueTiers } from '../clues/clueTiers';
 import { CollectionLogType } from '../collectionLogTask';
 import { PHOSANI_NIGHTMARE_ID, ZALCANO_ID } from '../constants';
@@ -44,11 +43,10 @@ import mixables from '../skilling/skills/herblore/mixables';
 import smithables from '../skilling/skills/smithing/smithables';
 import { SkillsEnum } from '../skilling/types';
 import type { ItemBank } from '../types';
-import { addArrayOfNumbers, itemID } from '../util';
-import { stringMatches } from '../util/cleanString';
+import { fetchStatsForCL, itemID, stringMatches } from '../util';
 import { repairBrokenItemsFromUser } from '../util/repairBrokenItems';
 import resolveItems from '../util/resolveItems';
-import { removeFromArr, shuffleRandom } from '../util/smallUtils';
+import { shuffleRandom } from '../util/smallUtils';
 import {
 	abyssalDragonCL,
 	abyssalSireCL,
@@ -177,7 +175,7 @@ import { kibbles } from './kibble';
 import { slayerMaskHelms } from './slayerMaskHelms';
 
 function kcProg(mon: Monster | number): FormatProgressFunction {
-	return ({ getKC }) => `${getKC(mon instanceof Monster ? mon.id : mon)} KC`;
+	return ({ stats }) => `${stats.kcBank[typeof mon === 'number' ? mon : mon.id] ?? 0} KC`;
 }
 
 function mgProg(minigameName: MinigameName): FormatProgressFunction {
@@ -189,14 +187,11 @@ function skillProg(skillName: SkillsEnum): FormatProgressFunction {
 }
 
 function clueProg(tiers: ClueTier['name'][]): FormatProgressFunction {
-	return async ({ user }) => {
-		const clueScores = await user.clueScores();
+	return async ({ stats }) => {
 		return tiers
 			.map(i => {
 				const tier = ClueTiers.find(_tier => _tier.name === i)!;
-				const score = clueScores.find(i => i.tier.name === tier.name);
-				if (!score) return;
-				return `${score.opened} ${tier.name} Opens`;
+				return `${stats.openableScores.amount(tier.id)} ${tier.name} Opens`;
 			})
 			.filter(notEmpty);
 	};
@@ -265,12 +260,14 @@ export const allCollectionLogs: ICollection = {
 				kcActivity: {
 					Default: async user => {
 						return sumArr(
-							[
-								Monsters.GeneralGraardor.id,
-								Monsters.CommanderZilyana.id,
-								Monsters.Kreearra.id,
-								Monsters.KrilTsutsaroth.id
-							].map(i => user.getKC(i))
+							await Promise.all(
+								[
+									Monsters.GeneralGraardor.id,
+									Monsters.CommanderZilyana.id,
+									Monsters.Kreearra.id,
+									Monsters.KrilTsutsaroth.id
+								].map(i => user.getKC(i))
+							)
 						);
 					}
 				},
@@ -321,10 +318,10 @@ export const allCollectionLogs: ICollection = {
 					...Monsters.DagannothRex.allItems
 				],
 				items: dagannothKingsCL,
-				fmtProg: ({ getKC }) => [
-					`${getKC(Monsters.DagannothPrime.id)} Prime KC`,
-					`${getKC(Monsters.DagannothRex.id)} Rex KC`,
-					`${getKC(Monsters.DagannothSupreme.id)} Supreme KC`
+				fmtProg: ({ stats }) => [
+					`${stats.kcBank[Monsters.DagannothPrime.id] ?? 0} Prime KC`,
+					`${stats.kcBank[Monsters.DagannothRex.id] ?? 0} Rex KC`,
+					`${stats.kcBank[Monsters.DagannothSupreme.id] ?? 0} Supreme KC`
 				]
 			},
 			'The Fight Caves': {
@@ -415,9 +412,9 @@ export const allCollectionLogs: ICollection = {
 					Phosani: "Phosani's Nightmare"
 				},
 				items: theNightmareCL,
-				fmtProg: ({ getKC }) => [
-					`${getKC(NightmareMonster.id)} KC`,
-					`${getKC(PHOSANI_NIGHTMARE_ID)} Phosani KC`
+				fmtProg: ({ stats }) => [
+					`${stats.kcBank[NightmareMonster.id] ?? 0} KC`,
+					`${stats.kcBank[PHOSANI_NIGHTMARE_ID] ?? 0} Phosani KC`
 				]
 			},
 			Obor: {
@@ -485,7 +482,7 @@ export const allCollectionLogs: ICollection = {
 				items: wintertodtCL,
 				fmtProg: mgProg('wintertodt')
 			},
-			Zalcano: { items: zalcanoCL, fmtProg: ({ getKC }) => `${getKC(ZALCANO_ID)} KC` },
+			Zalcano: { items: zalcanoCL, fmtProg: ({ stats }) => `${stats.kcBank[ZALCANO_ID] ?? 0} KC` },
 			Zulrah: {
 				alias: Monsters.Zulrah.aliases,
 				allItems: Monsters.Zulrah.allItems,
@@ -625,8 +622,8 @@ export const allCollectionLogs: ICollection = {
 			Revenants: {
 				alias: ['revs'],
 				kcActivity: {
-					Default: async user => {
-						return addArrayOfNumbers(
+					Default: async (_, __, stats) => {
+						return sumArr(
 							[
 								Monsters.RevenantImp.id,
 								Monsters.RevenantGoblin.id,
@@ -639,7 +636,7 @@ export const allCollectionLogs: ICollection = {
 								Monsters.RevenantDarkBeast.id,
 								Monsters.RevenantKnight.id,
 								Monsters.RevenantDragon.id
-							].map(i => user.getKC(i))
+							].map(i => stats.kcBank[i] ?? 0)
 						);
 					}
 				},
@@ -713,7 +710,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['beginner', 'clues beginner', 'clue beginner'],
 				allItems: Clues.Beginner.allItems,
 				kcActivity: {
-					Default: async user => user.openableScores()[23_245] || 0
+					Default: async (_, __, { openableScores }) => openableScores.amount(23_245)
 				},
 				items: cluesBeginnerCL,
 				isActivity: true,
@@ -723,7 +720,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['easy', 'clues easy', 'clue easy'],
 				allItems: Clues.Easy.allItems,
 				kcActivity: {
-					Default: async user => user.openableScores()[20_546] || 0
+					Default: async (_, __, { openableScores }) => openableScores.amount(20_546)
 				},
 				items: cluesEasyCL,
 				isActivity: true,
@@ -733,7 +730,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['medium', 'clues medium', 'clue medium'],
 				allItems: Clues.Medium.allItems,
 				kcActivity: {
-					Default: async user => user.openableScores()[20_545] || 0
+					Default: async (_, __, { openableScores }) => openableScores.amount(20_545)
 				},
 				items: cluesMediumCL,
 				isActivity: true,
@@ -743,7 +740,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['hard', 'clues hard', 'clue hard'],
 				allItems: Clues.Hard.allItems,
 				kcActivity: {
-					Default: async user => user.openableScores()[20_544] || 0
+					Default: async (_, __, { openableScores }) => openableScores.amount(20_544)
 				},
 				items: cluesHardCL,
 				isActivity: true,
@@ -753,7 +750,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['elite', 'clues elite', 'clue elite'],
 				allItems: Clues.Elite.allItems,
 				kcActivity: {
-					Default: async user => user.openableScores()[20_543] || 0
+					Default: async (_, __, { openableScores }) => openableScores.amount(20_543)
 				},
 				items: cluesEliteCL,
 				isActivity: true,
@@ -763,7 +760,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['master', 'clues master', 'clue master'],
 				allItems: Clues.Master.allItems,
 				kcActivity: {
-					Default: async user => user.openableScores()[19_836] || 0
+					Default: async (_, __, { openableScores }) => openableScores.amount(19_836)
 				},
 				items: cluesMasterCL,
 				isActivity: true,
@@ -773,7 +770,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['grandmaster', 'clues grandmaster', 'clue grandmaster', 'clue gm', 'gm'],
 				allItems: GrandmasterClueTable.table.allItems,
 				kcActivity: {
-					Default: async user => user.openableScores()[19_838] || 0
+					Default: async (_, __, { openableScores }) => openableScores.amount(19_838)
 				},
 				items: cluesGrandmasterCL,
 				isActivity: true,
@@ -790,7 +787,7 @@ export const allCollectionLogs: ICollection = {
 					'clues rare hard'
 				],
 				kcActivity: {
-					Default: async user => user.openableScores()[20_544] || 0
+					Default: async (_, __, { openableScores }) => openableScores.amount(20_544)
 				},
 				items: cluesHardRareCL,
 				isActivity: true,
@@ -807,7 +804,7 @@ export const allCollectionLogs: ICollection = {
 					'clues rare elite'
 				],
 				kcActivity: {
-					Default: async user => user.openableScores()[20_543] || 0
+					Default: async (_, __, { openableScores }) => openableScores.amount(20_543)
 				},
 				items: cluesEliteRareCL,
 				isActivity: true,
@@ -824,7 +821,7 @@ export const allCollectionLogs: ICollection = {
 					'clues rare master'
 				],
 				kcActivity: {
-					Default: async user => user.openableScores()[19_836] || 0
+					Default: async (_, __, { openableScores }) => openableScores.amount(19_836)
 				},
 				items: cluesMasterRareCL,
 				isActivity: true,
@@ -833,15 +830,14 @@ export const allCollectionLogs: ICollection = {
 			'Shared Treasure Trail Rewards': {
 				alias: ['shared', 'clues shared', 'clue shared'],
 				kcActivity: {
-					Default: async user => {
-						const scores = user.openableScores();
+					Default: async (_, __, { openableScores }) => {
 						return (
-							(scores[23_245] ?? 0) +
-							(scores[20_546] ?? 0) +
-							(scores[20_545] ?? 0) +
-							(scores[20_544] ?? 0) +
-							(scores[20_543] ?? 0) +
-							(scores[19_836] ?? 0)
+							openableScores.amount(23_245) +
+							openableScores.amount(20_546) +
+							openableScores.amount(20_545) +
+							openableScores.amount(20_544) +
+							openableScores.amount(20_543) +
+							openableScores.amount(19_836)
 						);
 					}
 				},
@@ -852,9 +848,12 @@ export const allCollectionLogs: ICollection = {
 			'Rare Treasure Trail Rewards': {
 				alias: ['clues rare', 'rares'],
 				kcActivity: {
-					Default: async user => {
-						const scores = user.openableScores();
-						return (scores[20_544] ?? 0) + (scores[20_543] ?? 0) + (scores[19_836] ?? 0);
+					Default: async (_, __, { openableScores }) => {
+						return (
+							openableScores.amount(20_544) +
+							openableScores.amount(20_543) +
+							openableScores.amount(19_836)
+						);
 					}
 				},
 				items: [...cluesHardRareCL, ...cluesEliteRareCL, ...cluesMasterRareCL],
@@ -871,11 +870,11 @@ export const allCollectionLogs: ICollection = {
 				kcActivity: {
 					Default: async (_, minigameScores) =>
 						minigameScores.find(i => i.minigame.column === 'barb_assault')!.score,
-					'High Gambles': async user => user.user.high_gambles
+					'High Gambles': async (_, __, stats) => stats.highGambles
 				},
 				isActivity: true,
-				fmtProg: ({ user, minigames }) => {
-					return [`${minigames.barb_assault} KC`, `${user.user.high_gambles} Gambles`];
+				fmtProg: ({ minigames, stats }) => {
+					return [`${minigames.barb_assault} KC`, `${stats.highGambles} Gambles`];
 				}
 			},
 			'Brimhaven Agility Arena': {
@@ -1000,11 +999,11 @@ export const allCollectionLogs: ICollection = {
 			'Tithe Farm': {
 				alias: ['tithe'],
 				kcActivity: {
-					Default: async user => user.user.stats_titheFarmsCompleted
+					Default: async (_, __, stats) => stats.titheFarmsCompleted
 				},
 				items: titheFarmCL,
 				isActivity: true,
-				fmtProg: ({ user }) => `${user.user.stats_titheFarmsCompleted} Completions`
+				fmtProg: ({ stats }) => `${stats.titheFarmsCompleted} Completions`
 			},
 			'Trouble Brewing': {
 				items: troubleBrewingCL,
@@ -1185,7 +1184,7 @@ export const allCollectionLogs: ICollection = {
 			'Monkey Backpacks': {
 				alias: ['monkey', 'monkey bps', 'backpacks'],
 				kcActivity: {
-					Default: async user => (user.user.lapsScores as ItemBank)[6] || 0
+					Default: async (_, __, u) => u.lapsScores[6] || 0
 				},
 				items: monkeyBackpacksCL,
 				isActivity: true
@@ -1635,8 +1634,8 @@ export const overallPlusItems = [
 ];
 
 export function calcCLDetails(user: MUser) {
-	const clItems = user.cl.filter(i => allCLItemsFiltered.includes(i.id), true);
-	const debugBank = new Bank().add(clItems);
+	const clItems = user.cl.filter(i => allCLItemsFiltered.includes(i.id));
+	const debugBank = new Bank(clItems);
 	const owned = clItems.filter(i => allCLItemsFiltered.includes(i.id));
 	const notOwned = shuffleRandom(
 		Number(user.id),
@@ -1679,44 +1678,46 @@ function getLeftList(
 	return leftList;
 }
 
-export async function getBank(user: MUser, type: CollectionLogType) {
-	const userCheckBank = new Bank();
+export interface UserStatsDataNeededForCL {
+	sacrificedBank: Bank;
+	titheFarmsCompleted: number;
+	lapsScores: ItemBank;
+	openableScores: Bank;
+	kcBank: ItemBank;
+	highGambles: number;
+	gotrRiftSearches: number;
+}
+
+type CLType = 'sacrifice' | 'bank' | 'collection' | 'temp' | 'tame' | 'disassembly';
+
+export async function getBank(user: MUser, type: CLType, { sacrificedBank }: UserStatsDataNeededForCL) {
 	switch (type) {
 		case 'collection':
-			userCheckBank.add(user.cl);
-			break;
+			return new Bank(user.cl);
 		case 'bank':
-			userCheckBank.add(user.bankWithGP);
-			break;
+			return new Bank(user.bankWithGP);
 		case 'sacrifice':
-			userCheckBank.add(user.user.sacrificedBank as ItemBank);
-			break;
+			return new Bank(sacrificedBank);
 		case 'tame': {
 			const { getUsersTamesCollectionLog } = await import('../util/getUsersTameCL');
 			return getUsersTamesCollectionLog(user.id);
 		}
 		case 'temp':
-			userCheckBank.add(user.user.temp_cl as ItemBank);
-			break;
+			return new Bank(user.user.temp_cl as ItemBank);
 		case 'disassembly': {
-			const items = await mahojiUsersSettingsFetch(user.id, { disassembled_items_bank: true });
-			userCheckBank.add(items.disassembled_items_bank as ItemBank);
-			break;
+			return new Bank(user.user.disassembled_items_bank as ItemBank);
 		}
 	}
-	return userCheckBank;
 }
 
-// Get the total items the user has in its CL and the total items to collect
-export async function getTotalCl(user: MUser, logType: CollectionLogType) {
-	const b = await getBank(user, logType);
+export async function getTotalCl(user: MUser, logType: CLType, userStats: UserStatsDataNeededForCL) {
 	let result = undefined;
 	try {
-		result = getUserClData(b, allCLItemsFiltered);
+		result = getUserClData(await getBank(user, logType, userStats), allCLItemsFiltered);
 	} catch (_e) {
 		await repairBrokenItemsFromUser(user);
 		const newUser = await mUserFetch(user.id);
-		const newBank = await getBank(newUser, logType);
+		const newBank = await getBank(newUser, logType, userStats);
 		result = getUserClData(newBank, allCLItemsFiltered);
 	}
 	return result;
@@ -1816,7 +1817,10 @@ export async function getCollection(options: {
 	if (flags.tame) {
 		logType = 'tame';
 	}
-	const userCheckBank = await getBank(user, logType);
+
+	const minigameScores = await user.fetchMinigameScores();
+	const userStats = await fetchStatsForCL(user);
+	const userCheckBank = await getBank(user, logType, userStats);
 	let clItems = getCollectionItems(search, allItems, logType === 'sacrifice');
 	const isOverall = search.toLowerCase().startsWith('overall');
 
@@ -1881,7 +1885,7 @@ export async function getCollection(options: {
 									userKC[type] += (await user.getKCByName(name))[1];
 								}
 							} else if (typeof value === 'function') {
-								userKC[type] += await value(user, await user.fetchMinigameScores());
+								userKC[type] += await value(user, minigameScores, userStats);
 							} else {
 								userKC[type] += (await user.getKCByName(value))[1];
 							}
@@ -1921,7 +1925,7 @@ export async function getCollection(options: {
 			category: 'Other',
 			name: monster.name,
 			collection: clItems,
-			completions: { Default: user.getKC(monster.id) },
+			completions: { Default: await user.getKC(monster.id) },
 			collectionObtained: userAmount,
 			collectionTotal: totalCl,
 			userItems: userCheckBank,
