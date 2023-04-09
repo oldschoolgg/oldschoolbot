@@ -298,7 +298,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 			}
 
 			if (user.hasEquipped('Cute magic egg') && user.user.cute_egg_hatching_percent < 100) {
-				const newPercent = clamp(user.user.cute_egg_hatching_percent + Math.floor(minutes / 8.5), 0, 100);
+				const newPercent = clamp(user.user.cute_egg_hatching_percent + Math.floor(minutes / 4.5), 0, 100);
 				await user.update({
 					cute_egg_hatching_percent: newPercent
 				});
