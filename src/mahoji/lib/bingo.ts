@@ -29,7 +29,8 @@ export const bingoEnd = bingoStart + Time.Day * 7;
 export const BINGO_TICKET_PRICE = 1_000_000_000;
 
 export function bingoIsActive() {
-	return false; // Date.now() >= bingoStart && Date.now() < bingoEnd;
+	return true;
+	// return false; // Date.now() >= bingoStart && Date.now() < bingoEnd;
 }
 type BingoTile = (
 	| {
@@ -327,13 +328,13 @@ ${mapped.map((i, index) => `${++index}. <@${i.id}> - ${i.tilesCompletedCount} ti
 
 interface ParsedBingoTeam {
 	id: number;
-	users: [string, string, string];
+	users: string[];
 }
 async function fetchAndParseAllBingoTeams(): Promise<ParsedBingoTeam[]> {
 	const teams = await prisma.bingoTeam.findMany();
 	return teams.map(i => ({
 		id: i.id,
-		users: [i.first_user, i.second_user, i.third_user]
+		users: i.users
 	}));
 }
 
