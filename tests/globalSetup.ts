@@ -1,4 +1,5 @@
 import '../src/index';
+import '../src/lib/roboChimp';
 
 import { Collection } from 'discord.js';
 
