@@ -81,12 +81,6 @@ export const raidCommand: OSBMahojiCommand = {
 							name: 'max_team_size',
 							description: 'Choose a max size for your team.',
 							required: false
-						},
-						{
-							type: ApplicationCommandOptionType.Boolean,
-							name: 'solo',
-							description: 'Solo with a team of 3 bots.',
-							required: false
 						}
 					]
 				},
