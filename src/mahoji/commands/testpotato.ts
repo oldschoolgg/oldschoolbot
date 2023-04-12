@@ -593,7 +593,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						skills_prayer: convertLVLtoXP(99),
 						skills_hitpoints: convertLVLtoXP(99),
 						skills_defence: convertLVLtoXP(99),
-						bank: user.bank.add(nexSupplies).bank,
+						bank: user.bank.clone().add(nexSupplies).bank,
 						GP: user.GP + 10_000_000
 					});
 					return 'Gave you range gear, gp, gear and stats for nex.';
