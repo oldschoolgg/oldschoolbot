@@ -125,6 +125,21 @@ async function unsafeEval({ userID, code }: { userID: string; code: string }) {
 	};
 }
 
+async function allEquippedPets() {
+	const pets = await prisma.$queryRawUnsafe<
+		{ pet: number; qty: number }[]
+	>(`SELECT "minion.equippedPet" AS pet, COUNT("minion.equippedPet") AS qty
+FROM users
+WHERE "minion.equippedPet" IS NOT NULL
+GROUP BY "minion.equippedPet"
+ORDER BY qty DESC;`);
+	const bank = new Bank();
+	for (const { pet, qty } of pets) {
+		bank.add(pet, qty);
+	}
+	return bank;
+}
+
 async function evalCommand(userID: string, code: string): CommandResponse {
 	try {
 		if (!OWNER_IDS.includes(userID)) {
@@ -260,6 +275,45 @@ AND ("gear.melee" IS NOT NULL OR
 					.map(i => `${i[0]}: ${i[1]}`)
 					.join('\n')
 			};
+		}
+	},
+	{
+		name: 'Economy Bank',
+		run: async () => {
+			const [blowpipeRes, totalGP, result] = await prisma.$transaction([
+				prisma.$queryRawUnsafe<
+					{ scales: number; dart: number; qty: number }[]
+				>(`SELECT (blowpipe->>'scales')::int AS scales, (blowpipe->>'dartID')::int AS dart, (blowpipe->>'dartQuantity')::int AS qty
+FROM users
+WHERE blowpipe iS NOT NULL and (blowpipe->>'dartQuantity')::int != 0;`),
+				prisma.$queryRawUnsafe<{ sum: number }[]>('SELECT SUM("GP") FROM users;'),
+				prisma.$queryRawUnsafe<{ banks: ItemBank }[]>(`SELECT
+				json_object_agg(itemID, itemQTY)::jsonb as banks
+			 from (
+				select key as itemID, sum(value::bigint) as itemQTY
+				from users
+				cross join json_each_text(bank)
+				group by key
+			 ) s;`)
+			]);
+			const totalBank: ItemBank = result[0].banks;
+			const economyBank = new Bank(totalBank);
+			economyBank.add('Coins', totalGP[0].sum);
+
+			const allPets = await allEquippedPets();
+			economyBank.add(allPets);
+
+			for (const { dart, scales, qty } of blowpipeRes) {
+				economyBank.add("Zulrah's scales", scales);
+				economyBank.add(dart, qty);
+			}
+			return economyBank;
+		}
+	},
+	{
+		name: 'Equipped Pets',
+		run: async () => {
+			return allEquippedPets();
 		}
 	}
 ];
