@@ -307,6 +307,7 @@ WHERE blowpipe iS NOT NULL and (blowpipe->>'dartQuantity')::int != 0;`),
 				economyBank.add("Zulrah's scales", scales);
 				economyBank.add(dart, qty);
 			}
+			sanitizeBank(economyBank);
 			return {
 				files: [
 					(await makeBankImage({ bank: economyBank })).file,
