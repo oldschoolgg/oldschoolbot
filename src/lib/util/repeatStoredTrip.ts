@@ -469,7 +469,8 @@ export const tripHandlers = {
 		args: (data: TheatreOfBloodTaskOptions) => ({
 			tob: {
 				start: {
-					hard_mode: data.hardMode
+					hard_mode: data.hardMode,
+					solo: data.solo
 				}
 			}
 		})
