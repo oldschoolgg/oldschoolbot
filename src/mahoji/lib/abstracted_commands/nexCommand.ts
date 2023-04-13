@@ -8,7 +8,6 @@ import { calculateNexDetails, checkNexUser } from '../../../lib/simulation/nex';
 import { NexTaskOptions } from '../../../lib/types/minions';
 import { calcPerHour, formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { deferInteraction } from '../../../lib/util/interactionReply';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 export async function nexCommand(interaction: ChatInputCommandInteraction, user: MUser, channelID: string) {
@@ -20,7 +19,7 @@ export async function nexCommand(interaction: ChatInputCommandInteraction, user:
 		return `You can't start a Nex mass: ${ownerCheck[1]}`;
 	}
 
-	await deferInteraction(interaction);
+	await interaction.deferReply();
 
 	let usersWhoConfirmed: MUser[] = [];
 	try {
