@@ -1,3 +1,4 @@
+import { roll } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { ActivityTaskOptions } from '../../lib/types/minions';
@@ -19,6 +20,7 @@ export const easterTask: MinionTask = {
 		for (let i = 0; i < 15; i++) {
 			loot.add(itemsNotOwned[i]);
 		}
+		if (roll(5)) loot.add('Easter egg');
 
 		await transactItems({
 			userID: user.id,
