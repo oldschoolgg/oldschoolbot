@@ -630,6 +630,7 @@ export async function repeatTrip(
 	interaction: ButtonInteraction,
 	data: { data: Prisma.JsonValue; type: activity_type_enum }
 ) {
+	await interaction.deferReply();
 	const handler = tripHandlers[data.type];
 	return runCommand({
 		commandName: handler.commandName,

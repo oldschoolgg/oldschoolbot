@@ -5,7 +5,6 @@ import { Bank } from 'oldschooljs';
 import { finishables } from '../../lib/finishables';
 import { sorts } from '../../lib/sorts';
 import { stringMatches } from '../../lib/util';
-import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { Workers } from '../../lib/workers';
 import { OSBMahojiCommand } from '../lib/util';
@@ -27,7 +26,7 @@ export const finishCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ interaction, options }: CommandRunOptions<{ input: string }>) => {
-		await deferInteraction(interaction);
+		await interaction.deferReply();
 		const val = finishables.find(
 			i => stringMatches(i.name, options.input) || i.aliases?.some(alias => stringMatches(alias, options.input))
 		);

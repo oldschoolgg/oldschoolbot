@@ -37,7 +37,6 @@ import {
 } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import resolveItems from '../../lib/util/resolveItems';
 import {
@@ -808,7 +807,7 @@ export const toolsCommand: OSBMahojiCommand = {
 			unfill?: { unit: string };
 		};
 	}>) => {
-		deferInteraction(interaction);
+		await interaction.deferReply();
 		const mahojiUser = await mUserFetch(userID);
 
 		if (options.patron) {
@@ -860,7 +859,6 @@ export const toolsCommand: OSBMahojiCommand = {
 				return xpGains(patron.xp_gains.time, patron.xp_gains.skill);
 			}
 			if (patron.minion_stats) {
-				deferInteraction(interaction);
 				if (mahojiUser.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return minionStats(mahojiUser.user);
 			}

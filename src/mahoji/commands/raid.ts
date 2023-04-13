@@ -1,7 +1,6 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { mileStoneBaseDeathChances, RaidLevel, toaHelpCommand, toaStartCommand } from '../../lib/simulation/toa';
-import { deferInteraction } from '../../lib/util/interactionReply';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
 import { coxCommand, coxStatsCommand } from '../lib/abstracted_commands/coxCommand';
 import { tobCheckCommand, tobStartCommand, tobStatsCommand } from '../lib/abstracted_commands/tobCommand';
@@ -162,7 +161,7 @@ export const raidCommand: OSBMahojiCommand = {
 			help?: {};
 		};
 	}>) => {
-		if (interaction) await deferInteraction(interaction);
+		if (interaction) await interaction.deferReply();
 		const user = await mUserFetch(userID);
 		const { cox, tob } = options;
 		if (cox?.stats) return coxStatsCommand(user);
