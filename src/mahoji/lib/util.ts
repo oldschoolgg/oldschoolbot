@@ -4,7 +4,7 @@ import { isObject } from 'e';
 import { ICommand, MahojiClient } from 'mahoji';
 import { CommandOptions, MahojiUserOption } from 'mahoji/dist/lib/types';
 
-import { AbstractCommand, AbstractCommandAttributes } from './inhibitors';
+import type { AbstractCommand, AbstractCommandAttributes } from './inhibitors';
 
 export interface OSBMahojiCommand extends ICommand {
 	attributes?: Omit<AbstractCommandAttributes, 'description'>;
