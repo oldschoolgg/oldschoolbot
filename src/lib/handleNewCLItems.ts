@@ -65,7 +65,7 @@ export async function handleNewCLItems({
 		return;
 	}
 
-	clArrayUpdate(user, newCL);
+	await clArrayUpdate(user, newCL);
 
 	const clsWithTheseItems = allCollectionLogsFlat.filter(
 		cl => cl.counts !== false && newCLItems.items().some(([newItem]) => cl.items.includes(newItem.id))
