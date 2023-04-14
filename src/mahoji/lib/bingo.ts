@@ -54,12 +54,42 @@ export const bingoTiles: BingoTile[] = [
 	{
 		id: 1,
 		name: 'Receive any custom pet',
-		oneOf: customPetsCL
+		oneOf: [
+			'Doug',
+			'Zippy',
+			'Shelldon',
+			'Remy',
+			'Lil Lamb',
+			'Harry',
+			'Klik',
+			'Wintertoad',
+			'Scruffy',
+			'Zak',
+			'Skipper',
+			'Ori',
+			'Takon',
+			'Obis',
+			'Peky',
+			'Plopper',
+			'Brock',
+			'Wilvus',
+			'Sandy',
+			'Baby kalphite king',
+			'Steve',
+			'Voidling',
+			'Jal-MejJak',
+			'Queen black dragonling',
+			'Phoenix eggling',
+			'Cogsworth',
+			'Mini moktang',
+			'Balloon cat',
+			'Baby yaga house'
+		]
 	},
 	{
 		id: 2,
 		name: 'Receive any skilling pet',
-		oneOf: skillingPetsCL
+		oneOf: ['Heron', 'Rock golem', 'Beaver', 'Baby chinchompa', 'Giant squirrel', 'Rocky', 'Rift guardian']
 	},
 	{
 		id: 3,
@@ -72,13 +102,13 @@ export const bingoTiles: BingoTile[] = [
 	},
 	{
 		id: 4,
-		name: 'Receive any Moktang unique',
-		allOf: resolveItems(['Mini moktang', 'Volcanic dye', 'Igne gear frame', 'Volcanic shards'])
+		name: 'Receive a Moktang pet, dye or frame',
+		allOf: resolveItems(['Mini moktang', 'Volcanic dye', 'Igne gear frame'])
 	},
 	{
 		id: 5,
-		name: 'Receive any Vasa Magus unique',
-		allOf: resolveItems(['Jar of magic', 'Tattered robes of Vasa', 'Magus scroll', 'Voidling'])
+		name: 'Receive a Vasa Magus pet, jar or robes',
+		allOf: resolveItems(['Jar of magic', 'Tattered robes of Vasa', 'Voidling'])
 	},
 	{
 		id: 6,
@@ -116,7 +146,7 @@ export const bingoTiles: BingoTile[] = [
 	},
 	{
 		id: 9,
-		name: 'Receive any COX unique',
+		name: 'Receive any COX unique (excluding scrolls)',
 		oneOf: resolveItems([
 			'Takon',
 			'Steve',
@@ -129,11 +159,9 @@ export const bingoTiles: BingoTile[] = [
 			'Ancestral robe top',
 			'Ancestral robe bottom',
 			"Dinh's bulwark",
-			'Dexterous prayer scroll',
 			'Arcane prayer scroll',
 			'Dragon hunter crossbow',
-			'Twisted buckler',
-			'Torn prayer scroll'
+			'Twisted buckler'
 		])
 	},
 	{
@@ -167,14 +195,32 @@ export const bingoTiles: BingoTile[] = [
 	},
 	{
 		id: 14,
-		name: 'Receive all GWD uniques',
-		oneOf: resolveItems([
-			...godWarsDungeonGodswordShards,
-			...commanderZilyanaCL,
-			...generalGraardorCL,
-			...kreeArraCL,
-			...krilTsutsarothCL
-		])
+		name: 'Receive all GWD uniques (excluding pets)',
+		oneOf: [
+			'Godsword shard 1',
+			'Godsword shard 2',
+			'Godsword shard 3',
+
+			'Armadyl crossbow',
+			'Saradomin hilt',
+			'Saradomin sword',
+			"Saradomin's light",
+
+			'Bandos chestplate',
+			'Bandos tassets',
+			'Bandos boots',
+			'Bandos hilt',
+
+			'Armadyl helmet',
+			'Armadyl chestplate',
+			'Armadyl chainskirt',
+			'Armadyl hilt',
+
+			'Staff of the dead',
+			'Zamorakian spear',
+			'Steam battlestaff',
+			'Zamorak hilt'
+		]
 	},
 	{
 		id: 15,
@@ -184,7 +230,7 @@ export const bingoTiles: BingoTile[] = [
 	{
 		id: 16,
 		name: 'Receive all 3 Dagannoth Kings pets',
-		allOf: resolveItems(['Pet dagannoth prime', 'Pet dagannoth supreme', 'Pet dagannoth rex'])
+		allOf: ['Pet dagannoth prime', 'Pet dagannoth supreme', 'Pet dagannoth rex']
 	},
 	{
 		id: 17,
@@ -221,7 +267,7 @@ export const bingoTiles: BingoTile[] = [
 	{
 		id: 22,
 		name: 'Receive a unique from Monkey Rumble',
-		allOf: resolveItems(['Marimbo statue', 'Monkey egg', 'Monkey dye', 'Big banana'])
+		allOf: resolveItems(['Marimbo statue', 'Monkey egg', 'Big banana'])
 	},
 	{
 		id: 23,
