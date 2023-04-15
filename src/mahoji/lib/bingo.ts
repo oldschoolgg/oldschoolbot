@@ -103,12 +103,12 @@ export const bingoTiles: BingoTile[] = [
 	{
 		id: 4,
 		name: 'Receive a Moktang pet, dye or frame',
-		allOf: resolveItems(['Mini moktang', 'Volcanic dye', 'Igne gear frame'])
+		oneOf: resolveItems(['Mini moktang', 'Volcanic dye', 'Igne gear frame'])
 	},
 	{
 		id: 5,
 		name: 'Receive a Vasa Magus pet, jar or robes',
-		allOf: resolveItems(['Jar of magic', 'Tattered robes of Vasa', 'Voidling'])
+		oneOf: resolveItems(['Jar of magic', 'Tattered robes of Vasa', 'Voidling'])
 	},
 	{
 		id: 6,
@@ -172,7 +172,7 @@ export const bingoTiles: BingoTile[] = [
 	{
 		id: 11,
 		name: 'Receive any Malygos unique',
-		allOf: ['Abyssal cape', 'Abyssal thread', 'Ori']
+		oneOf: ['Abyssal cape', 'Abyssal thread', 'Ori']
 	},
 	{
 		id: 12,
@@ -189,14 +189,16 @@ export const bingoTiles: BingoTile[] = [
 			'Mycelium leggings web',
 			'Ganodermic gloves',
 			'Ganodermic boots',
-			'Polypore stick',
-			'Tombshroom spore'
+			'Tombshroom spore',
+			'Mycelium poncho web',
+			'Grifolic gloves',
+			'Grifolic orb'
 		]
 	},
 	{
 		id: 14,
 		name: 'Receive all GWD uniques (excluding pets)',
-		oneOf: [
+		allOf: [
 			'Godsword shard 1',
 			'Godsword shard 2',
 			'Godsword shard 3',
