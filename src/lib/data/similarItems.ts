@@ -311,7 +311,13 @@ const source: [string, (string | number)[]][] = [
 	["Osmumten's fang", ["Osmumten's fang (or)"]],
 	["Elidinis' ward (f)", ["Elidinis' ward (or)"]],
 	['Rune pouch', ['Divine rune pouch']],
-	['Ghrazi rapier', ['Holy ghrazi rapier']]
+	['Ghrazi rapier', ['Holy ghrazi rapier']],
+	["Karil's coif", ['Armadyl helmet', 'Masori mask (f)', 'Masori mask']],
+	["Karil's leathertop", ['Armadyl chestplate', 'Masori body (f)', 'Masori body']],
+	["Karil's leatherskirt", ['Armadyl chainskirt', 'Masori chaps (f)', 'Masori chaps']],
+	['Armadyl helmet', ['Masori mask (f)', 'Masori mask']],
+	['Armadyl chestplate', ['Armadyl chestplate', 'Masori body (f)', 'Masori body']],
+	['Armadyl chainskirt', ['Masori chaps (f)', 'Masori chaps']]
 ];
 
 export const similarItems: Map<number, number[]> = new Map(
