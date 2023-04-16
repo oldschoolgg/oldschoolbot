@@ -23,17 +23,16 @@ export async function buyFossilIslandNotes(user: MUser, interaction: ChatInputCo
 		`${user}, please confirm that you want to buy ${quantity}x Fossil Island note for: ${cost}.`
 	);
 
-	const allItemsOwnedBank = user.allItemsOwned;
+	const tempClWithNewUniques = user.cl ? user.cl.clone() : new Bank();
 	let loot = new Bank();
 	for (let i = 0; i < quantity; i++) {
-		if (fossilIslandNotesCL.every(page => allItemsOwnedBank.has(page))) {
-			const outPage = getOSItem(randArrItem(fossilIslandNotesCL));
-			loot.add(outPage.id);
-		} else {
-			const filteredPages = fossilIslandNotesCL.filter(page => !allItemsOwnedBank.has(page));
-			const outPage = getOSItem(randArrItem(filteredPages));
-			loot.add(outPage.id);
-		}
+		const filteredPages = fossilIslandNotesCL.filter(page => !tempClWithNewUniques.has(page));
+		const outPage =
+			filteredPages.length === 0
+				? getOSItem(randArrItem(fossilIslandNotesCL))
+				: getOSItem(randArrItem(filteredPages));
+		tempClWithNewUniques.add(outPage);
+		loot.add(outPage);
 	}
 
 	await transactItems({ userID: user.id, itemsToRemove: cost, itemsToAdd: loot, collectionLog: true });
