@@ -112,6 +112,7 @@ Type \`/tools user mypets\` to see your pets.`);
 }
 
 const mentionText = `<@${globalConfig.clientID}>`;
+const mentionRegex = new RegExp(`^(\\s*<@&?[0-9]+>)*\\s*<@${globalConfig.clientID}>\\s*(<@&?[0-9]+>\\s*)*$`);
 
 const cooldownTimers: {
 	name: string;
@@ -347,8 +348,10 @@ export async function onMessage(msg: Message) {
 		return;
 	}
 
-	msg.reply({
-		content: result.content,
-		components
-	});
+	if (content.match(mentionRegex)) {
+		return msg.reply({
+			content: result.content,
+			components
+		});
+	}
 }

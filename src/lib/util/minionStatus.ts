@@ -9,6 +9,7 @@ import { Emoji } from '../constants';
 import killableMonsters from '../minions/data/killableMonsters';
 import { Planks } from '../minions/data/planks';
 import Agility from '../skilling/skills/agility';
+import Constructables from '../skilling/skills/construction/constructables';
 import Cooking from '../skilling/skills/cooking';
 import Crafting from '../skilling/skills/crafting';
 import Farming from '../skilling/skills/farming';
@@ -411,9 +412,9 @@ export function minionStatus(user: MUser) {
 
 		case 'Construction': {
 			const data = currentTask as ConstructionActivityTaskOptions;
-			return `${name} is currently building ${data.quantity}x ${itemNameFromID(
-				data.objectID
-			)}. ${formattedDuration}`;
+			const pohObject = Constructables.find(i => i.id === data.objectID);
+			if (!pohObject) throw new Error(`No POH object found with ID ${data.objectID}.`);
+			return `${name} is currently building ${data.quantity}x ${pohObject.name}. ${formattedDuration}`;
 		}
 
 		case 'Butler': {
@@ -631,8 +632,12 @@ export function minionStatus(user: MUser) {
 		case 'UnderwaterAgilityThieving': {
 			return `${name} is currently doing Underwater Agility and Thieving. ${formattedDuration}`;
 		}
+		case 'Easter': {
+			return `${name} is currently doing the Easter Event! The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
 		case 'HalloweenEvent':
-		case 'Easter':
 		case 'BlastFurnace': {
 			throw new Error('Removed');
 		}
