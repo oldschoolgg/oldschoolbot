@@ -70,7 +70,8 @@ export const NaxxusLootTable = new LootTable()
 	.add(naxxusLoot, 2)
 	.tertiary(9, 'Clue scroll (grandmaster)')
 	.tertiary(10, 'Korulsi seed')
-	.tertiary(25, 'Grand crystal acorn');
+	.tertiary(25, 'Grand crystal acorn')
+	.tertiary(2500, 'Tormented skull');
 
 export const NaxxusLootTableFinishable = NaxxusLootTable.clone()
 	.tertiary(500, 'Spellbound ring')
