@@ -6,7 +6,6 @@ import { Bank, LootTable } from 'oldschooljs';
 
 import { Emoji, PerkTier } from '../../../lib/constants';
 import { allOpenables, UnifiedOpenable } from '../../../lib/openables';
-import { roboChimpUserFetch } from '../../../lib/roboChimp';
 import { ItemBank } from '../../../lib/types';
 import { assert, buildClueButtons, makeComponents } from '../../../lib/util';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
@@ -82,7 +81,7 @@ export async function abstractedOpenUntilCommand(userID: string, name: string, o
 			openable,
 			quantity: 1,
 			user,
-			totalLeaguesPoints: (await roboChimpUserFetch(user.id)).leagues_points_total
+			totalLeaguesPoints: 0
 		});
 		loot.add(thisLoot.bank);
 		amountOpened++;
@@ -153,7 +152,7 @@ async function finalizeOpening({
 						user,
 						openable,
 						quantity: smokeyBonus,
-						totalLeaguesPoints: (await roboChimpUserFetch(user.id)).leagues_points_total
+						totalLeaguesPoints: 0
 					})
 				).bank
 			);
@@ -252,7 +251,7 @@ export async function abstractedOpenCommand(
 			openable,
 			quantity,
 			user,
-			totalLeaguesPoints: process.env.TEST ? 0 : (await roboChimpUserFetch(user.id)).leagues_points_total
+			totalLeaguesPoints: 0
 		});
 		loot.add(thisLoot.bank);
 		if (thisLoot.message) messages.push(thisLoot.message);

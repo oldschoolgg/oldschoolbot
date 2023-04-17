@@ -262,7 +262,7 @@ export async function onMessage(msg: Message) {
 	const content = msg.content.trim();
 	if (!content.includes(mentionText)) return;
 	const user = await mUserFetch(msg.author.id);
-	const result = await minionStatusCommand(user, msg.channelId);
+	const result = await minionStatusCommand(user);
 	const { components } = result;
 
 	const command = mentionCommands.find(i =>

@@ -19,7 +19,6 @@ import { AttackStyles } from '../../lib/minions/functions';
 import { blowpipeCommand, blowpipeDarts } from '../../lib/minions/functions/blowpipeCommand';
 import { degradeableItemsCommand } from '../../lib/minions/functions/degradeableItemsCommand';
 import { allPossibleStyles, trainCommand } from '../../lib/minions/functions/trainCommand';
-import { roboChimpUserFetch } from '../../lib/roboChimp';
 import { Minigames } from '../../lib/settings/minigames';
 import Skills from '../../lib/skilling/skills';
 import creatures from '../../lib/skilling/skills/hunter/creatures';
@@ -35,9 +34,7 @@ import {
 import { bankBgCommand } from '../lib/abstracted_commands/bankBgCommand';
 import { cancelTaskCommand } from '../lib/abstracted_commands/cancelTaskCommand';
 import { crackerCommand } from '../lib/abstracted_commands/crackerCommand';
-import { dailyCommand } from '../lib/abstracted_commands/dailyCommand';
 import { feedHammyCommand } from '../lib/abstracted_commands/hammyCommand';
-import { ironmanCommand } from '../lib/abstracted_commands/ironmanCommand';
 import { Lampables, lampCommand } from '../lib/abstracted_commands/lampCommand';
 import { minionBuyCommand } from '../lib/abstracted_commands/minionBuyCommand';
 import { minionStatusCommand } from '../lib/abstracted_commands/minionStatusCommand';
@@ -57,8 +54,6 @@ const patMessages = [
 const randomPatMessage = (minionName: string) => randArrItem(patMessages).replace('{name}', minionName);
 
 export async function getUserInfo(user: MUser) {
-	const roboChimpUser = await roboChimpUserFetch(user.id);
-
 	const bitfields = `${(user.bitfield as BitField[])
 		.map(i => BitFieldData[i])
 		.filter(notEmpty)
@@ -87,9 +82,7 @@ export async function getUserInfo(user: MUser) {
 		}`,
 		isIronman: user.isIronman,
 		bitfields,
-		currentTask: taskText,
-		patreon: roboChimpUser.patreon_id ? 'Yes' : 'None',
-		github: roboChimpUser.github_id ? 'Yes' : 'None'
+		currentTask: taskText
 	};
 	return {
 		...result,
@@ -101,9 +94,7 @@ export async function getUserInfo(user: MUser) {
 **Ironman Alts:** ${result.ironmanAlts}
 **Patron Balance:** ${result.premiumBalance}
 **Ironman:** ${result.isIronman}
-**Bitfields:** ${result.bitfields}
-**Patreon Connected:** ${result.patreon}
-**Github Connected:** ${result.github}`
+**Bitfields:** ${result.bitfields}`
 	};
 }
 
@@ -305,19 +296,6 @@ export const minionCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
-			name: 'ironman',
-			description: 'Become an ironman, or de-iron.',
-			options: [
-				{
-					type: ApplicationCommandOptionType.Boolean,
-					name: 'permanent',
-					description: 'Do you want to become a permanent ironman?',
-					required: false
-				}
-			]
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
 			name: 'charge',
 			description: 'Charge an item.',
 			options: [
@@ -335,11 +313,6 @@ export const minionCommand: OSBMahojiCommand = {
 					required: false
 				}
 			]
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'daily',
-			description: 'Claim some daily free GP.'
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -415,8 +388,7 @@ export const minionCommand: OSBMahojiCommand = {
 	run: async ({
 		userID,
 		options,
-		interaction,
-		channelID
+		interaction
 	}: CommandRunOptions<{
 		stats?: { stat?: string };
 		achievementdiary?: { diary?: string; claim?: boolean };
@@ -429,9 +401,7 @@ export const minionCommand: OSBMahojiCommand = {
 		level?: { skill: string };
 		kc?: { name: string };
 		buy?: { ironman?: boolean };
-		ironman?: { permanent?: boolean };
 		charge?: { item?: string; amount?: number };
-		daily?: {};
 		train?: { style: AttackStyles };
 		pat?: {};
 		blowpipe?: { remove_darts?: boolean; uncharge?: boolean; add?: string; quantity?: number };
@@ -445,7 +415,7 @@ export const minionCommand: OSBMahojiCommand = {
 		const perkTier = user.perkTier();
 
 		if (options.info) return (await getUserInfo(user)).everythingString;
-		if (options.status) return minionStatusCommand(user, channelID.toString());
+		if (options.status) return minionStatusCommand(user);
 
 		if (options.stats) {
 			return { embeds: [await minionStatsEmbed(user)] };
@@ -521,13 +491,9 @@ export const minionCommand: OSBMahojiCommand = {
 
 		if (options.buy)
 			return minionBuyCommand(await globalClient.users.fetch(user.id), user, Boolean(options.buy.ironman));
-		if (options.ironman) return ironmanCommand(user, interaction);
 
 		if (options.charge) {
 			return degradeableItemsCommand(interaction, user, options.charge.item, options.charge.amount);
-		}
-		if (options.daily) {
-			return dailyCommand(interaction, channelID, user);
 		}
 		if (options.train) return trainCommand(user, options.train.style);
 		if (options.pat) return randomPatMessage(user.minionName);

@@ -1,4 +1,3 @@
-import { roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
 import { Stopwatch } from '@sapphire/stopwatch';
 import { sumArr } from 'e';
 import { Bank } from 'oldschooljs';
@@ -19,7 +18,6 @@ async function clArrayUpdate(user: MUser, newCL: Bank) {
 	} as const;
 
 	const clStats = calcCLDetails(user);
-	const clRank = await roboChimpClient.$queryRawUnsafe<{ count: number }[]>(roboChimpCLRankQuery(BigInt(user.id)));
 
 	await prisma.$transaction([
 		prisma.userStats.upsert({
@@ -41,7 +39,7 @@ async function clArrayUpdate(user: MUser, newCL: Bank) {
 				total_xp: sumArr(Object.values(user.skillsAsXP)),
 				cl_completion_percentage: clStats.percent,
 				cl_completion_count: clStats.owned.length,
-				cl_global_rank: Number(clRank[0].count)
+				cl_global_rank: -1
 			}
 		})
 	]);

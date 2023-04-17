@@ -6,7 +6,6 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
 import { badges, badgesCache, Emoji, usernameCache } from '../../lib/constants';
 import { allClNames, getCollectionItems } from '../../lib/data/Collections';
-import { allLeagueTasks } from '../../lib/leagues/leagues';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { allOpenables } from '../../lib/openables';
 import { Minigames } from '../../lib/settings/minigames';
@@ -498,41 +497,6 @@ LIMIT 50;`
 }
 
 export async function cacheUsernames() {
-	const roboChimpUseresToCache = await roboChimpClient.user.findMany({
-		where: {
-			OR: [
-				{
-					osb_cl_percent: {
-						gte: 80
-					}
-				},
-				{
-					bso_total_level: {
-						gte: 80
-					}
-				},
-				{
-					osb_total_level: {
-						gte: 1500
-					}
-				},
-				{
-					bso_total_level: {
-						gte: 1500
-					}
-				},
-				{
-					leagues_points_total: {
-						gte: 20_000
-					}
-				}
-			]
-		},
-		select: {
-			id: true
-		}
-	});
-
 	let orConditions: Prisma.UserWhereInput[] = [];
 	for (const skill of objectValues(SkillsEnum)) {
 		orConditions.push({
@@ -550,17 +514,14 @@ export async function cacheUsernames() {
 						gt: new Date(Date.now() - Number(Time.Month))
 					}
 				}
-			],
-			id: {
-				notIn: roboChimpUseresToCache.map(i => i.id.toString())
-			}
+			]
 		},
 		select: {
 			id: true
 		}
 	});
 
-	const userIDsToCache = [...usersToCache, ...roboChimpUseresToCache].map(i => i.id.toString());
+	const userIDsToCache = [...usersToCache].map(i => i.id.toString());
 	debugLog(`Caching usernames of ${userIDsToCache.length} users`);
 
 	const allNewUsers = await prisma.newUser.findMany({
@@ -623,97 +584,6 @@ async function itemContractLb(user: MUser, channelID: string, ironmanOnly?: bool
 		'Item Contract Streak Leaderboard'
 	);
 	return lbMsg('Item Contract Streak');
-}
-
-async function leaguesPointsLeaderboard(user: MUser, channelID: string) {
-	const result = await roboChimpClient.user.findMany({
-		where: {
-			leagues_points_total: {
-				gt: 0
-			}
-		},
-		orderBy: {
-			leagues_points_total: 'desc'
-		},
-		take: 100
-	});
-	doMenu(
-		user,
-		channelID,
-		chunk(result, 10).map(subList =>
-			subList
-				.map(
-					({ id, leagues_points_total }) =>
-						`**${getUsername(id)}:** ${leagues_points_total.toLocaleString()} Pts`
-				)
-				.join('\n')
-		),
-		'Leagues Points Leaderboard'
-	);
-	return lbMsg('Leagues Points');
-}
-
-async function leastCompletedLeagueTasksLb() {
-	const taskCounts = await roboChimpClient.$queryRaw<
-		{ task_id: number; qty: number }[]
-	>`SELECT task_id, count(*) AS qty
-FROM (
-   SELECT unnest(leagues_completed_tasks_ids) AS task_id
-   FROM public.user
-   ) sub
-GROUP BY 1
-ORDER BY 2 ASC;`;
-	let taskObj: Record<number, number> = {};
-	for (const task of allLeagueTasks) {
-		taskObj[task.id] = 0;
-	}
-	for (const task of taskCounts) {
-		taskObj[task.task_id] = task.qty;
-	}
-
-	return `**Least Commonly Completed Tasks:**
-${Object.entries(taskObj)
-	.sort((a, b) => a[1] - b[1])
-	.slice(0, 10)
-	.map(task => {
-		const taskObj = allLeagueTasks.find(t => t.id === parseInt(task[0]))!;
-		return `${taskObj.name}: ${task[1]} users completed`;
-	})
-	.join('\n')}	
-	
-**Most Commonly Completed Tasks:**
-${Object.entries(taskObj)
-	.sort((a, b) => b[1] - a[1])
-	.slice(0, 10)
-	.map((task, index) => {
-		const taskObj = allLeagueTasks.find(t => t.id === parseInt(task[0]))!;
-		return `${index + 1}. ${taskObj.name}`;
-	})
-	.join('\n')}`;
-}
-
-async function leaguesLeaderboard(user: MUser, channelID: string, type: 'points' | 'tasks' | 'hardest_tasks') {
-	if (type === 'points') return leaguesPointsLeaderboard(user, channelID);
-	if (type === 'hardest_tasks') return leastCompletedLeagueTasksLb();
-	const result: { id: number; tasks_completed: number }[] =
-		await roboChimpClient.$queryRaw`SELECT id::text, COALESCE(cardinality(leagues_completed_tasks_ids), 0) AS tasks_completed
-										  FROM public.user
-										  ORDER BY tasks_completed DESC
-										  LIMIT 100;`;
-	doMenu(
-		user,
-		channelID,
-		chunk(result, 10).map(subList =>
-			subList
-				.map(
-					({ id, tasks_completed }) =>
-						`**${getUsername(id.toString())}:** ${tasks_completed.toLocaleString()} Tasks`
-				)
-				.join('\n')
-		),
-		'Leagues Tasks Leaderboard'
-	);
-	return lbMsg('Leagues Tasks');
 }
 
 const ironmanOnlyOption = {
@@ -991,7 +861,6 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			skills,
 			cl,
 			item_contract_streak,
-			leagues,
 			clues
 		} = options;
 		if (kc) return kcLb(user, channelID, kc.monster, Boolean(kc.ironmen_only));
@@ -1008,7 +877,6 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		if (opens) return openLb(user, channelID, opens.openable, Boolean(opens.ironmen_only));
 		if (cl) return clLb(user, channelID, cl.cl, Boolean(cl.ironmen_only), Boolean(cl.tames));
 		if (item_contract_streak) return itemContractLb(user, channelID, item_contract_streak.ironmen_only);
-		if (leagues) return leaguesLeaderboard(user, channelID, leagues.type);
 		if (clues) return cluesLb(user, channelID, clues.clue, Boolean(clues.ironmen_only));
 		return 'Invalid input.';
 	}

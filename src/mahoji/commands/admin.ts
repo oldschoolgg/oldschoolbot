@@ -7,7 +7,7 @@ import { Stopwatch } from '@sapphire/stopwatch';
 import { Duration } from '@sapphire/time-utilities';
 import { isThenable } from '@sentry/utils';
 import { AttachmentBuilder, escapeCodeBlock, InteractionReplyOptions, Message, TextChannel } from 'discord.js';
-import { calcPercentOfNum, noOp, notEmpty, randArrItem, roll, sleep, Time, uniqueArr } from 'e';
+import { noOp, notEmpty, randArrItem, roll, sleep, Time, uniqueArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
@@ -24,7 +24,6 @@ import {
 	BitField,
 	BitFieldData,
 	Channel,
-	COINS_ID,
 	DISABLED_COMMANDS,
 	globalConfig
 } from '../../lib/constants';
@@ -33,8 +32,6 @@ import { addToDoubleLootTimer } from '../../lib/doubleLoot';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { GearSetup } from '../../lib/gear/types';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
-import { patreonTask } from '../../lib/patreon';
-import { runRolesTask } from '../../lib/rolesTask';
 import { countUsersWithItemInCl, prisma } from '../../lib/settings/prisma';
 import { cancelTask, minionActivityCacheDelete } from '../../lib/settings/settings';
 import { sorts } from '../../lib/sorts';
@@ -53,7 +50,6 @@ import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../lib
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction, interactionReply } from '../../lib/util/interactionReply';
-import { syncLinkedAccounts } from '../../lib/util/linkedAccountsUtil';
 import { logError } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
@@ -65,7 +61,6 @@ import { syncCustomPrices } from '../lib/events';
 import { itemOption } from '../lib/mahojiCommandOptions';
 import { allAbstractCommands, OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
-import { getLotteryBank } from './lottery';
 import { getUserInfo } from './minion';
 
 export const gifs = [
@@ -849,24 +844,7 @@ export const adminCommand: OSBMahojiCommand = {
 			minionActivityCacheDelete(user.id);
 			return 'Done.';
 		}
-		if (options.sync_roles) {
-			try {
-				const result = await runRolesTask();
-				if (result.length < 2000) return result;
-				return {
-					content: 'The result was too big! Check the file.',
-					files: [new AttachmentBuilder(Buffer.from(result), { name: 'roles.txt' })]
-				};
-			} catch (err: any) {
-				logError(err);
-				return `Failed to run roles task. ${err.message}`;
-			}
-		}
-		if (options.sync_patreon) {
-			await patreonTask.run();
-			syncLinkedAccounts();
-			return 'Finished syncing patrons.';
-		}
+
 		if (options.add_ironman_alt) {
 			const mainAccount = await mahojiUsersSettingsFetch(options.add_ironman_alt.main.user.id, {
 				minion_ironman: true,
@@ -1197,13 +1175,6 @@ ${guildCommands.length} Guild commands`;
 			return `Gave ${items} to ${user.mention}`;
 		}
 
-		if (options.debug_patreon) {
-			const result = await patreonTask.fetchPatrons();
-			return {
-				files: [{ attachment: Buffer.from(JSON.stringify(result, null, 4)), name: 'patreon.txt' }]
-			};
-		}
-
 		/**
 		 *
 		 * Owner Only Commands
@@ -1367,49 +1338,6 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 
 			return {
 				files: [{ attachment: Buffer.from(str), name: 'output.txt' }]
-			};
-		}
-
-		if (options.lottery_dump) {
-			const res = await getLotteryBank();
-			for (const user of res.users) {
-				if (!globalClient.users.cache.has(user.id)) {
-					await globalClient.users.fetch(user.id);
-				}
-			}
-			const taxedBank = new Bank();
-			for (const [item, qty] of res.totalLoot.items()) {
-				if (item.id === COINS_ID) {
-					taxedBank.add('Coins', qty);
-					continue;
-				}
-				let fivePercent = Math.ceil(calcPercentOfNum(5, qty));
-				taxedBank.add(item, Math.max(fivePercent, 1));
-			}
-
-			const actualLootBank = res.totalLoot.clone().remove(taxedBank);
-
-			return {
-				files: [
-					{
-						name: 'lottery.txt',
-						attachment: Buffer.from(
-							JSON.stringify(
-								res.users.map(i => [globalClient.users.cache.get(i.id)?.username ?? i.id, i.tickets])
-							)
-						)
-					},
-					{
-						name: 'totalloot.json',
-						attachment: Buffer.from(JSON.stringify(actualLootBank.bank))
-					},
-					{
-						name: 'taxedbank.json',
-						attachment: Buffer.from(JSON.stringify(taxedBank.bank))
-					},
-					(await makeBankImage({ bank: taxedBank, title: 'Taxed Bank' })).file,
-					(await makeBankImage({ bank: actualLootBank, title: 'Actual Loot' })).file
-				]
 			};
 		}
 
