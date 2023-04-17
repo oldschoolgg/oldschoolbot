@@ -269,7 +269,7 @@ export const bingoTiles: BingoTile[] = [
 	{
 		id: 22,
 		name: 'Receive a unique from Monkey Rumble',
-		allOf: resolveItems(['Marimbo statue', 'Monkey egg', 'Big banana'])
+		oneOf: resolveItems(['Marimbo statue', 'Monkey egg', 'Big banana'])
 	},
 	{
 		id: 23,
