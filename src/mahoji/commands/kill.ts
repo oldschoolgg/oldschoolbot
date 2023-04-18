@@ -2,6 +2,7 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { PerkTier } from '../../lib/constants';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { toTitleCase } from '../../lib/util/toTitleCase';
 import { Workers } from '../../lib/workers';
@@ -69,7 +70,7 @@ export const killCommand: OSBMahojiCommand = {
 	],
 	run: async ({ options, userID, interaction }: CommandRunOptions<{ name: string; quantity: number }>) => {
 		const user = await mUserFetch(userID);
-		await interaction.deferReply();
+		await deferInteraction(interaction);
 
 		const result = await Workers.kill({
 			quantity: options.quantity,
