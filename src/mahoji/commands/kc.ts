@@ -1,10 +1,9 @@
-import { stringMatches } from '@oldschoolgg/toolkit';
+import { stringMatches, toTitleCase } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Hiscores } from 'oldschooljs';
 import { bossNameMap, mappedBossNames } from 'oldschooljs/dist/constants';
 import { BossRecords } from 'oldschooljs/dist/meta/types';
 
-import { toTitleCase } from '../../lib/util/toTitleCase';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const kcCommand: OSBMahojiCommand = {
