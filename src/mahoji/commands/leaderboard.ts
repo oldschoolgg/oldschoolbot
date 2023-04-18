@@ -1,4 +1,5 @@
 import { EmbedBuilder } from '@discordjs/builders';
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { Prisma } from '@prisma/client';
 import { calcWhatPercent, chunk, objectValues, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
@@ -25,7 +26,6 @@ import {
 } from '../../lib/util';
 import { fetchCLLeaderboard } from '../../lib/util/clLeaderboard';
 import { deferInteraction } from '../../lib/util/interactionReply';
-import { toTitleCase } from '../../lib/util/toTitleCase';
 import { sendToChannelID } from '../../lib/util/webhook';
 import { OSBMahojiCommand } from '../lib/util';
 

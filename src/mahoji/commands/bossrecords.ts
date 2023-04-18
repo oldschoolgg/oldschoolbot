@@ -1,4 +1,5 @@
 import { EmbedBuilder } from '@discordjs/builders';
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { MessageEditOptions } from 'discord.js';
 import { chunk } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
@@ -9,7 +10,6 @@ import { BossRecords } from 'oldschooljs/dist/meta/types';
 import pets from '../../lib/data/pets';
 import { channelIsSendable, makePaginatedMessage } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
-import { toTitleCase } from '../../lib/util/toTitleCase';
 import { OSBMahojiCommand } from '../lib/util';
 
 // Emojis for bosses with no pets

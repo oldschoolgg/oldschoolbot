@@ -1,4 +1,6 @@
 import { EmbedBuilder } from '@discordjs/builders';
+import { mentionCommand } from '@oldschoolgg/toolkit';
+import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
 import { BaseMessageOptions, bold, ButtonBuilder, ButtonStyle, Message, TextChannel } from 'discord.js';
 import { isFunction, roll, Time } from 'e';
 import LRUCache from 'lru-cache';
@@ -7,12 +9,10 @@ import { Items } from 'oldschooljs';
 import { production, SupportServer } from '../config';
 import { untrustedGuildSettingsCache } from '../mahoji/guildSettings';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
-import { mentionCommand } from './commandMention';
 import { BitField, Channel, Emoji, globalConfig } from './constants';
 import pets from './data/pets';
 import { prisma } from './settings/prisma';
 import { ItemBank } from './types';
-import { UserError } from './UserError';
 import { channelIsSendable, formatDuration, isModOrAdmin, makeComponents, toKMB } from './util';
 import { logError } from './util/logError';
 import { makeBankImage } from './util/makeBankImage';
@@ -256,7 +256,14 @@ const mentionCommands: MentionCommand[] = [
 							const durationRemaining = formatDuration(Date.now() - (lastDone + cooldown));
 							return `${cd.name}: ${durationRemaining}`;
 						}
-						return bold(`${cd.name}: Ready ${mentionCommand(cd.command[0], cd.command[1], cd.command[2])}`);
+						return bold(
+							`${cd.name}: Ready ${mentionCommand(
+								globalClient,
+								cd.command[0],
+								cd.command[1],
+								cd.command[2]
+							)}`
+						);
 					})
 					.join('\n'),
 				components
@@ -273,6 +280,7 @@ const mentionCommands: MentionCommand[] = [
 			}
 			return msg.reply({
 				content: `Click this button to find out if you're ready to do Tombs of Amascut! You can also use the ${mentionCommand(
+					globalClient,
 					'raid',
 					'toa',
 					'help'

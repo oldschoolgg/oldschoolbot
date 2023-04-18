@@ -1,10 +1,10 @@
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { PerkTier } from '../../lib/constants';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
-import { toTitleCase } from '../../lib/util/toTitleCase';
 import { Workers } from '../../lib/workers';
 import { OSBMahojiCommand } from '../lib/util';
 
