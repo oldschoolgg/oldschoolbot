@@ -12,7 +12,7 @@ import {
 import { noOp, Time } from 'e';
 
 import { SILENT_ERROR } from '../constants';
-import { interactionReply } from './interactionReply';
+import { deferInteraction, interactionReply } from './interactionReply';
 
 async function silentButtonAck(interaction: ButtonInteraction) {
 	return globalClient.rest.post(Routes.interactionCallback(interaction.id, interaction.token), {
@@ -29,9 +29,7 @@ export async function handleMahojiConfirmation(
 ) {
 	const channel = globalClient.channels.cache.get(interaction.channelId.toString());
 	if (!channelIsSendable(channel)) throw new Error('Channel for confirmation not found.');
-	if (!interaction.deferred) {
-		await interaction.deferReply();
-	}
+	await deferInteraction(interaction);
 
 	const users = _users ?? [interaction.user.id];
 	let confirmed: string[] = [];
