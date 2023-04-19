@@ -1,4 +1,4 @@
-import { discrimName } from '@oldschoolgg/toolkit';
+import { discrimName, truncateString } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { Bank } from 'oldschooljs';
@@ -6,8 +6,8 @@ import { Bank } from 'oldschooljs';
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { Events } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
-import { truncateString } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption } from '../lib/mahojiCommandOptions';
@@ -64,7 +64,7 @@ export const tradeCommand: OSBMahojiCommand = {
 		filter?: string;
 		search?: string;
 	}>) => {
-		await interaction.deferReply();
+		await deferInteraction(interaction);
 		if (!guildID) return 'You can only run this in a server.';
 		const senderUser = await mUserFetch(userID);
 		const senderAPIUser = user;
