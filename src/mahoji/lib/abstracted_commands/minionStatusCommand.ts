@@ -1,14 +1,15 @@
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { BaseMessageOptions, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
+import { stripNonAlphanumeric } from 'e';
 
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { BitField, Emoji, minionBuyButton } from '../../../lib/constants';
 import { roboChimpSyncData, roboChimpUserFetch } from '../../../lib/roboChimp';
 import { prisma } from '../../../lib/settings/prisma';
-import { makeComponents, stripNonAlphanumeric } from '../../../lib/util';
+import { makeComponents } from '../../../lib/util';
 import { makeAutoContractButton, makeBirdHouseTripButton } from '../../../lib/util/globalInteractions';
 import { minionStatus } from '../../../lib/util/minionStatus';
 import { makeRepeatTripButtons } from '../../../lib/util/repeatStoredTrip';
-import { toTitleCase } from '../../../lib/util/toTitleCase';
 import { calculateBirdhouseDetails } from './birdhousesCommand';
 import { isUsersDailyReady } from './dailyCommand';
 import { canRunAutoContract } from './farmingContractCommand';

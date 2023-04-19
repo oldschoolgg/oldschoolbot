@@ -1,3 +1,4 @@
+import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
 import {
 	ActionRowBuilder,
 	BaseMessageOptions,
@@ -9,7 +10,6 @@ import {
 } from 'discord.js';
 import { Time } from 'e';
 
-import { UserError } from './UserError';
 import { PaginatedMessagePage } from './util';
 import { logError } from './util/logError';
 

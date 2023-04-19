@@ -1,3 +1,4 @@
+import { channelIsSendable } from '@oldschoolgg/toolkit';
 import { EmbedBuilder, PermissionsBitField, resolveColor, TextChannel } from 'discord.js';
 import { Time } from 'e';
 import he from 'he';
@@ -71,15 +72,20 @@ GROUP BY item_id;`);
 				const guild = globalClient.guilds.cache.get(id);
 				if (!guild) continue;
 
-				const channel = guild.channels.cache.get(jmodComments!);
+				if (!jmodComments) continue;
+				const channel = guild.channels.cache.get(jmodComments);
+				if (!channel) continue;
+
+				const perms = channel.permissionsFor(globalClient.user!);
+				if (!perms) continue;
+				if (!channelIsSendable(channel)) continue;
 
 				if (
-					channel &&
 					channel instanceof TextChannel &&
-					channel.permissionsFor(globalClient.user!)?.has(PermissionsBitField.Flags.EmbedLinks) &&
-					channel.permissionsFor(globalClient.user!)?.has(PermissionsBitField.Flags.SendMessages)
+					perms.has(PermissionsBitField.Flags.EmbedLinks) &&
+					perms.has(PermissionsBitField.Flags.SendMessages)
 				) {
-					sendToChannelID(channel.id, { content: `<${url}>`, embed });
+					await sendToChannelID(channel.id, { content: `<${url}>`, embed });
 				}
 			}
 		}
@@ -101,7 +107,7 @@ GROUP BY item_id;`);
 				for (const entity of _result.data) {
 					if (!entity.author_flair_text || !entity.author_flair_text.includes(':jagexmod:')) continue;
 					if (alreadySentCache.has(entity.id)) continue;
-					sendReddit({ post: entity, type });
+					await sendReddit({ post: entity, type });
 					alreadySentCache.add(entity.id);
 				}
 				redditApiFailures = 0;

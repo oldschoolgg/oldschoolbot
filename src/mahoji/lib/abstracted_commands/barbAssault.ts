@@ -1,3 +1,4 @@
+import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { calcWhatPercent, clamp, reduceNumByPercent, roll, round, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
@@ -19,7 +20,6 @@ import {
 } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { makeBankImage } from '../../../lib/util/makeBankImage';

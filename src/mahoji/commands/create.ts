@@ -9,37 +9,35 @@ import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
 import { stringMatches } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { deferInteraction } from '../../lib/util/interactionReply';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { OSBMahojiCommand } from '../lib/util';
 import { userStatsBankUpdate } from '../mahojiSettings';
 
-function showAllCreatables() {
-	let content = 'This are the items that you can create:';
-	const creatableTable = table([
-		['Item name', 'Input Items', 'Output Items', 'GP Cost', 'Skills Required', 'QP Required'],
-		...Createables.map(i => {
-			return [
-				i.name,
-				`${new Bank(i.inputItems)}`,
-				`${new Bank(i.outputItems)}`,
-				`${i.GPCost ?? 0}`,
-				`${
-					i.requiredSkills === undefined
-						? ''
-						: Object.entries(i.requiredSkills)
-								.map(entry => `${entry[0]}: ${entry[1]}`)
-								.join('\n')
-				}`,
-				`${i.QPRequired ?? ''}`
-			];
-		})
-	]);
-	return {
-		content,
-		files: [{ attachment: Buffer.from(creatableTable), name: 'Creatables.txt' }]
-	};
-}
+let content = 'Theses are the items that you can create:';
+const creatableTable = table([
+	['Item name', 'Input Items', 'Output Items', 'GP Cost', 'Skills Required', 'QP Required'],
+	...Createables.map(i => {
+		return [
+			i.name,
+			`${new Bank(i.inputItems)}`,
+			`${new Bank(i.outputItems)}`,
+			`${i.GPCost ?? 0}`,
+			`${
+				i.requiredSkills === undefined
+					? ''
+					: Object.entries(i.requiredSkills)
+							.map(entry => `${entry[0]}: ${entry[1]}`)
+							.join('\n')
+			}`,
+			`${i.QPRequired ?? ''}`
+		];
+	})
+]);
+
+const allCreatablesTable = {
+	content,
+	files: [{ attachment: Buffer.from(creatableTable), name: 'Creatables.txt' }]
+};
 
 export const createCommand: OSBMahojiCommand = {
 	name: 'create',
@@ -84,8 +82,7 @@ export const createCommand: OSBMahojiCommand = {
 		const itemName = options.item.toLowerCase();
 		let { quantity } = options;
 		if (options.showall) {
-			await deferInteraction(interaction);
-			return showAllCreatables();
+			return allCreatablesTable;
 		}
 
 		const createableItem = Createables.find(item => stringMatches(item.name, itemName));

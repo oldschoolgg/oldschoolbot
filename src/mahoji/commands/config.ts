@@ -1,7 +1,8 @@
 import { EmbedBuilder, inlineCode } from '@discordjs/builders';
+import { miniID } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
 import { Guild, HexColorString, resolveColor, User } from 'discord.js';
-import { clamp, uniqueArr } from 'e';
+import { clamp, removeFromArr, uniqueArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
@@ -15,7 +16,7 @@ import { prisma } from '../../lib/settings/prisma';
 import { autoslayChoices, slayerMasterChoices } from '../../lib/slayer/constants';
 import { setDefaultAutoslay, setDefaultSlayerMaster } from '../../lib/slayer/slayerUtil';
 import { BankSortMethods } from '../../lib/sorts';
-import { formatDuration, isValidNickname, itemNameFromID, miniID, removeFromArr, stringMatches } from '../../lib/util';
+import { formatDuration, isValidNickname, itemNameFromID, stringMatches } from '../../lib/util';
 import { emojiServers } from '../../lib/util/cachedUserIDs';
 import { getItem } from '../../lib/util/getOSItem';
 import { makeBankImage } from '../../lib/util/makeBankImage';

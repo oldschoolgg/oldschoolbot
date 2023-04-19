@@ -11,6 +11,7 @@ import { cookingTask } from '../tasks/minions/cookingActivity';
 import { craftingTask } from '../tasks/minions/craftingActivity';
 import { cutLeapingFishTask } from '../tasks/minions/cutLeapingFishActivity';
 import { darkAltarTask } from '../tasks/minions/darkAltarActivity';
+import { easterTask } from '../tasks/minions/easterActivity';
 import { enchantingTask } from '../tasks/minions/enchantingActivity';
 import { farmingTask } from '../tasks/minions/farmingActivity';
 import { firemakingTask } from '../tasks/minions/firemakingActivity';
@@ -171,7 +172,8 @@ export const tasks: MinionTask[] = [
 	shadesOfMortonTask,
 	cutLeapingFishTask,
 	toaTask,
-	underwaterAgilityThievingTask
+	underwaterAgilityThievingTask,
+	easterTask
 ];
 
 export async function syncActivityCache() {

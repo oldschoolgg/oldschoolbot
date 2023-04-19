@@ -13,6 +13,7 @@ import { isObject } from 'e';
 import { MahojiClient } from 'mahoji';
 import { convertAPIOptionsToCommandOptions } from 'mahoji/dist/lib/util';
 import { join } from 'path';
+import { isMainThread } from 'worker_threads';
 
 import { botToken, DEV_SERVER_ID, production, SENTRY_DSN, SupportServer } from './config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from './lib/blacklists';
@@ -35,6 +36,11 @@ import { preCommand } from './mahoji/lib/preCommand';
 import { convertMahojiCommandToAbstractCommand } from './mahoji/lib/util';
 
 debugLog(`Starting... Git Hash ${gitHash}`);
+
+if (production && !process.env.TEST && isMainThread) {
+	// eslint-disable-next-line @typescript-eslint/no-var-requires
+	require('segfault-handler').registerHandler('crash.log');
+}
 
 if (!production) {
 	import('./lib/devHotReload');
@@ -141,14 +147,16 @@ declare global {
 
 client.mahojiClient = mahojiClient;
 global.globalClient = client;
-client.on('messageCreate', onMessage);
+client.on('messageCreate', msg => {
+	onMessage(msg);
+});
 client.on('interactionCreate', async interaction => {
 	if (BLACKLISTED_USERS.has(interaction.user.id)) return;
 	if (interaction.guildId && BLACKLISTED_GUILDS.has(interaction.guildId)) return;
 
 	if (!client.isReady()) {
 		if (interaction.isChatInputCommand()) {
-			interaction.reply({
+			await interaction.reply({
 				content:
 					'Old School Bot is currently down for maintenance/updates, please try again in a couple minutes! Thank you <3',
 				ephemeral: true
@@ -186,10 +194,10 @@ client.on('interactionCreate', async interaction => {
 		const result = await mahojiClient.parseInteraction(interaction);
 		if (result === null) return;
 		if (isObject(result) && 'error' in result) {
-			handleInteractionError(result.error, interaction);
+			await handleInteractionError(result.error, interaction);
 		}
 	} catch (err) {
-		handleInteractionError(err, interaction);
+		await handleInteractionError(err, interaction);
 	}
 });
 
