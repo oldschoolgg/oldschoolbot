@@ -876,7 +876,7 @@ const Buyables: Buyable[] = [
 	{
 		name: 'Bronze pickaxe',
 		gpCost: 500,
-		ironmanPrice: 1
+		ironmanPrice: 100
 	},
 	{
 		name: 'Iron pickaxe',
@@ -1028,7 +1028,7 @@ const Buyables: Buyable[] = [
 	{
 		name: 'Bronze axe',
 		gpCost: 500,
-		ironmanPrice: 16
+		ironmanPrice: 100
 	},
 	{
 		name: 'Iron axe',
