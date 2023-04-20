@@ -420,6 +420,26 @@ LIMIT 10;`);
 			}));
 		},
 		format: num => `${num.toLocaleString()}`
+	},
+	{
+		name: 'Superior Slayer Creatures',
+		items: resolveItems(['Imbued heart', 'Eternal gem']),
+		run: async ({ ironmanOnly, item }) => {
+			const result = await prisma.$queryRawUnsafe<
+				{ id: string; slayer_superior_count: number }[]
+			>(`SELECT id, slayer_superior_count
+FROM users
+INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
+WHERE "collectionLogBank"->>'${item.id}' IS NULL
+${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
+ORDER BY slayer_superior_count DESC
+LIMIT 10;`);
+			return result.map(i => ({
+				id: i.id,
+				val: `${i.slayer_superior_count} Superiors Slayed`
+			}));
+		},
+		format: num => `${num.toLocaleString()}`
 	}
 ];
 for (const minigame of dryStreakMinigames) {
