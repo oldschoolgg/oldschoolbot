@@ -787,6 +787,13 @@ const chestLootTypes = [
 		width: 240,
 		height: 220,
 		purpleItems: toaPurpleItems
+	},
+	{
+		title: 'Vault',
+		chestImage: loadImage('./src/lib/resources/images/vault.png'),
+		chestImagePurple: loadImage('./src/lib/resources/images/vault.png'),
+		width: 240,
+		height: 220
 	}
 ] as const;
 
@@ -796,7 +803,7 @@ interface CustomText {
 	text: string;
 }
 export async function drawChestLootImage(options: {
-	entries: { previousCL: Bank; user: MUser; loot: Bank; customTexts: CustomText[] }[];
+	entries: { previousCL: Bank; user: MUser; loot: Bank; customTexts: CustomText[]; title?: string }[];
 	type: (typeof chestLootTypes)[number]['title'];
 }) {
 	const type = chestLootTypes.find(t => t.title === options.type);
@@ -806,7 +813,7 @@ export async function drawChestLootImage(options: {
 
 	let anyoneGotPurple = false;
 
-	for (const { previousCL, loot, user, customTexts } of options.entries) {
+	for (const { previousCL, loot, user, customTexts, title } of options.entries) {
 		const canvas = new Canvas(type.width, type.height);
 		const ctx = canvas.getContext('2d');
 
@@ -815,12 +822,13 @@ export async function drawChestLootImage(options: {
 		ctx.imageSmoothingEnabled = false;
 		ctx.fillStyle = ctx.createPattern(sprite.repeatableBg, 'repeat')!;
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
-		const isPurple: boolean = loot.items().some(([item]) => type.purpleItems.includes(item.id));
+		const isPurple: boolean =
+			'purpleItems' in type ? loot.items().some(([item]) => type.purpleItems.includes(item.id)) : false;
 		if (isPurple) anyoneGotPurple = true;
 		const image = isPurple ? await type.chestImagePurple : await type.chestImage;
 		ctx.drawImage(image, canvas.width - image.width + 25, 44 + canvas.height / 4 - image.height / 2);
 
-		drawTitle(ctx, `${user.rawUsername} (${toKMB(loot.value())})`, canvas);
+		drawTitle(ctx, title ?? `${user.rawUsername} (${toKMB(loot.value())})`, canvas);
 		ctx.font = '16px OSRSFontCompact';
 		bankImageGenerator.drawBorder(ctx, sprite, true);
 		await bankImageGenerator.drawItems(

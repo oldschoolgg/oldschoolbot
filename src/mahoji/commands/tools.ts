@@ -56,7 +56,6 @@ import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { repairBrokenItemsFromUser } from '../../lib/util/repairBrokenItems';
 import resolveItems from '../../lib/util/resolveItems';
-import { LampTable } from '../../lib/xpLamps';
 import {
 	getParsedStashUnits,
 	stashUnitBuildAllCommand,
@@ -262,30 +261,7 @@ export function spawnLampIsReady(user: MUser, channelID: string): [true] | [fals
 	}
 	return [true];
 }
-async function spawnLampCommand(user: MUser, channelID: string): CommandResponse {
-	const [lampIsReady, reason] = spawnLampIsReady(user, channelID.toString());
-	if (!lampIsReady && reason) return reason;
 
-	await mahojiUserSettingsUpdate(user.id, {
-		lastSpawnLamp: Date.now()
-	});
-
-	const { answers, question, explainAnswer } = generateXPLevelQuestion();
-
-	const winnerID = await buttonUserPicker({
-		channelID,
-		str: `<:Huge_lamp:988325171498721290> ${userMention(user.id)} spawned a Lamp: ${question}`,
-		ironmenAllowed: false,
-		answers,
-		creator: user.id,
-		creatorGetsTwoGuesses: true
-	});
-	if (!winnerID) return `Nobody got it. ${explainAnswer}`;
-	const winner = await mUserFetch(winnerID);
-	const loot = LampTable.roll();
-	await winner.addItemsToBank({ items: loot, collectionLog: false });
-	return `${winner} got it, and won **${loot}**! ${explainAnswer}`;
-}
 async function spawnBoxCommand(user: MUser, channelID: string): CommandResponse {
 	const perkTier = getUsersPerkTier(user, true);
 	if (perkTier < PerkTier.Four && !user.bitfield.includes(BitField.HasPermanentEventBackgrounds)) {
@@ -882,11 +858,6 @@ export const toolsCommand: OSBMahojiCommand = {
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
-					name: 'spawnlamp',
-					description: 'Allows you to spawn a lamp.'
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
 					name: 'spawnbox',
 					description: 'Allows you to spawn a mystery box.'
 				},
@@ -1059,7 +1030,6 @@ export const toolsCommand: OSBMahojiCommand = {
 				user: MahojiUserOption;
 			};
 			activity_export?: {};
-			spawnlamp?: {};
 			spawnbox?: {};
 			stats?: { stat: string };
 			doubleloot?: {};
@@ -1142,9 +1112,7 @@ export const toolsCommand: OSBMahojiCommand = {
 				const result = await promise;
 				return result;
 			}
-			if (patron.spawnlamp) {
-				return spawnLampCommand(mahojiUser, channelID);
-			}
+
 			if (patron.spawnbox) return spawnBoxCommand(mahojiUser, channelID);
 			if (patron.stats) {
 				return statsCommand(mahojiUser, patron.stats.stat);

@@ -10,7 +10,7 @@ import { mentionCommand } from './commandMention';
 import { BitField, Emoji, globalConfig, secretItems } from './constants';
 import { customItems } from './customItems/util';
 import { DOUBLE_LOOT_FINISH_TIME_CACHE, isDoubleLootActive } from './doubleLoot';
-import { giveBoxResetTime, itemContractResetTime, spawnLampResetTime } from './MUser';
+import { giveBoxResetTime, itemContractResetTime } from './MUser';
 import { prisma } from './settings/prisma';
 import { UserError } from './UserError';
 import { channelIsSendable, formatDuration, isModOrAdmin, makeComponents, toKMB } from './util';
@@ -37,12 +37,6 @@ const cooldownTimers: {
 		timeStamp: (_, stats) => Number(stats.last_daily_timestamp),
 		cd: Time.Hour * 12,
 		command: ['minion', 'daily']
-	},
-	{
-		name: 'Spawn Lamp',
-		timeStamp: (user: MUser) => Number(user.user.lastSpawnLamp),
-		cd: (user: MUser) => spawnLampResetTime(user),
-		command: ['tools', 'patron', 'spawnlamp']
 	},
 	{
 		name: 'Spawn Box',
