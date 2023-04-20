@@ -175,3 +175,6 @@ export function makeAutoFarmButton() {
 		.setStyle(ButtonStyle.Secondary)
 		.setEmoji('630911040355565599');
 }
+
+export const SQL_sumOfAllCLItems = (clItems: number[]) =>
+	`NULLIF(${clItems.map(i => `COALESCE(("collectionLogBank"->>'${i}')::int, 0)`).join(' + ')}, 0)`;

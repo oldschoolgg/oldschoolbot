@@ -5,7 +5,6 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
-import { CoXUniqueTable } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 import { ToBUniqueTable } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
 
 import { ClueTiers } from '../../lib/clues/clueTiers';
@@ -244,23 +243,42 @@ interface DrystreakEntity {
 	run: (args: { item: Item; ironmanOnly: boolean }) => Promise<string | { id: string; val: number | string }[]>;
 	format: (num: number | string) => string;
 }
+
 export const dryStreakEntities: DrystreakEntity[] = [
 	{
 		name: 'Chambers of Xeric (CoX)',
-		items: CoXUniqueTable.allItems,
+		items: resolveItems([
+			'Dexterous prayer scroll',
+			'Arcane prayer scroll',
+			'Twisted buckler',
+			'Dragon hunter crossbow',
+			"Dinh's bulwark",
+			'Ancestral hat',
+			'Ancestral robe top',
+			'Ancestral robe bottom',
+			'Dragon claws',
+			'Elder maul',
+			'Kodai insignia',
+			'Twisted bow',
+			'Olmlet'
+		]),
 		run: async ({ item, ironmanOnly }) => {
 			const result = await prisma.$queryRawUnsafe<
-				{ id: string; val: number }[]
-			>(`SELECT id, "user_stats".total_cox_points AS val
+				{ id: string; points: number; raids_total_kc: number }[]
+			>(`SELECT "users"."id", "user_stats".total_cox_points AS points, "minigames"."raids" + "minigames"."raids_challenge_mode" AS raids_total_kc
 FROM user_stats
 INNER JOIN "users" on "users"."id" = "user_stats"."user_id"::text
+INNER JOIN "minigames" on "minigames"."user_id" = "user_stats"."user_id"::text
 WHERE "collectionLogBank"->>'${item.id}' IS NULL
 ${ironmanOnly ? ' AND "minion.ironman" = true' : ''}
 ORDER BY "user_stats".total_cox_points DESC
 LIMIT 10;`);
-			return result;
+			return result.map(i => ({
+				id: i.id,
+				val: `${i.points.toLocaleString()} points / ${i.raids_total_kc} KC`
+			}));
 		},
-		format: num => `${num.toLocaleString()} points`
+		format: num => num.toString()
 	},
 	{
 		name: 'Nightmare',
