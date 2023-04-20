@@ -1,5 +1,5 @@
-import { Prisma, tame_growth, xp_gains_skill_enum } from '@prisma/client';
-import { noOp, Time, uniqueArr } from 'e';
+import { Prisma, tame_growth } from '@prisma/client';
+import { noOp, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank, Items } from 'oldschooljs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
@@ -8,7 +8,7 @@ import { convertLVLtoXP, itemID } from 'oldschooljs/dist/util';
 import { production } from '../../config';
 import { BathhouseOres, BathwaterMixtures } from '../../lib/baxtorianBathhouses';
 import { allStashUnitsFlat, allStashUnitTiers } from '../../lib/clues/stashUnits';
-import { BitField, MAX_INT_JAVA, MAX_QP } from '../../lib/constants';
+import { BitField, MAX_INT_JAVA } from '../../lib/constants';
 import {
 	gorajanArcherOutfit,
 	gorajanOccultOutfit,
@@ -25,11 +25,9 @@ import { DisassemblySourceGroups } from '../../lib/invention/groups';
 import { Inventions, transactMaterialsFromUser } from '../../lib/invention/inventions';
 import { MaterialBank } from '../../lib/invention/MaterialBank';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
-import { UserKourendFavour } from '../../lib/minions/data/kourendFavour';
 import potions from '../../lib/minions/data/potions';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { allOpenables } from '../../lib/openables';
-import { tiers } from '../../lib/patreon';
 import { Minigames } from '../../lib/settings/minigames';
 import { prisma } from '../../lib/settings/prisma';
 import { maxMageGear, maxMeleeOver300Gear, maxRangeGear } from '../../lib/simulation/toa';
@@ -56,42 +54,6 @@ import { OSBMahojiCommand } from '../lib/util';
 import { userStatsUpdate } from '../mahojiSettings';
 import { generateNewTame } from './nursery';
 import { tameImage } from './tames';
-
-async function giveMaxStats(user: MUser, level = 99, qp = MAX_QP) {
-	let updates: Prisma.UserUpdateArgs['data'] = {};
-	for (const skill of Object.values(xp_gains_skill_enum)) {
-		updates[`skills_${skill}`] = convertLVLtoXP(level);
-	}
-	await user.update({
-		QP: MAX_QP,
-		...updates,
-		kourend_favour: {
-			Arceuus: 100,
-			Hosidius: 100,
-			Lovakengj: 100,
-			Piscarilius: 100,
-			Shayzien: 100
-		} as UserKourendFavour as any
-	});
-
-	return `Gave you level ${level} in all stats, and ${qp} QP.`;
-}
-
-async function givePatronLevel(user: MUser, tier: number) {
-	const tierToGive = tiers[tier];
-	const currentBitfield = user.bitfield;
-	if (!tier || !tierToGive) {
-		await user.update({
-			bitfield: currentBitfield.filter(i => !tiers.map(t => t[1]).includes(i))
-		});
-		return 'Removed patron perks.';
-	}
-	const newBitField: BitField[] = [...currentBitfield, tierToGive[1]];
-	await user.update({
-		bitfield: uniqueArr(newBitField)
-	});
-	return `Gave you tier ${tierToGive[1] - 1} patron.`;
-}
 
 async function giveGear(user: MUser) {
 	const loot = new Bank()
@@ -674,26 +636,6 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						return 'Reset your materials owned.';
 					}
 					return 'Invalid thing to reset.';
-				}
-				if (options.max) {
-					await roboChimpClient.user.upsert({
-						where: {
-							id: BigInt(user.id)
-						},
-						create: {
-							id: BigInt(user.id),
-							leagues_points_balance_osb: 25_000
-						},
-						update: {
-							leagues_points_balance_osb: {
-								increment: 25_000
-							}
-						}
-					});
-					return giveMaxStats(user);
-				}
-				if (options.patron) {
-					return givePatronLevel(user, Number(options.patron.tier));
 				}
 				if (options.gear) {
 					return giveGear(user);

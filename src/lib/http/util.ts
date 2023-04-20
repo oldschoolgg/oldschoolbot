@@ -113,12 +113,3 @@ export async function fetchSponsors() {
 
 	return data;
 }
-
-export async function getUserIdFromGithubID(githubID: string) {
-	const result = await roboChimpClient.user.findFirst({
-		select: { id: true },
-		where: { github_id: Number(githubID) }
-	});
-	if (!result) return null;
-	return result.id.toString();
-}

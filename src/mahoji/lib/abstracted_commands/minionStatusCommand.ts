@@ -5,17 +5,12 @@ import { stripNonAlphanumeric } from 'e';
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { BitField, Emoji, minionBuyButton, PerkTier } from '../../../lib/constants';
 import { getUsersFishingContestDetails } from '../../../lib/fishingContest';
-import { roboChimpSyncData, roboChimpUserFetch } from '../../../lib/roboChimp';
 import { prisma } from '../../../lib/settings/prisma';
-import { getUsersTame, shortTameTripDesc, tameLastFinishedActivity } from '../../../lib/tames';
 import { makeComponents } from '../../../lib/util';
 import { makeAutoContractButton, makeBirdHouseTripButton } from '../../../lib/util/globalInteractions';
 import { minionStatus } from '../../../lib/util/minionStatus';
 import { makeRepeatTripButtons } from '../../../lib/util/repeatStoredTrip';
-import { getItemContractDetails } from '../../commands/ic';
-import { spawnLampIsReady } from '../../commands/tools';
 import { calculateBirdhouseDetails } from './birdhousesCommand';
-import { isUsersDailyReady } from './dailyCommand';
 import { canRunAutoContract } from './farmingContractCommand';
 
 async function fetchFavoriteGearPresets(userID: string) {
@@ -53,19 +48,14 @@ async function fetchPinnedTrips(userID: string) {
 	);
 }
 
-export async function minionStatusCommand(user: MUser, channelID: string): Promise<BaseMessageOptions> {
+export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptions> {
 	const { minionIsBusy } = user;
-	const [roboChimpUser, birdhouseDetails, gearPresetButtons, pinnedTripButtons, fishingResult, dailyIsReady] =
-		await Promise.all([
-			roboChimpUserFetch(user.id),
-			minionIsBusy ? { isReady: false } : calculateBirdhouseDetails(user.id),
-			minionIsBusy ? [] : fetchFavoriteGearPresets(user.id),
-			minionIsBusy ? [] : fetchPinnedTrips(user.id),
-			getUsersFishingContestDetails(user),
-			isUsersDailyReady(user)
-		]);
-
-	roboChimpSyncData(roboChimpUser, user);
+	const [birdhouseDetails, gearPresetButtons, pinnedTripButtons, fishingResult] = await Promise.all([
+		minionIsBusy ? { isReady: false } : calculateBirdhouseDetails(user.id),
+		minionIsBusy ? [] : fetchFavoriteGearPresets(user.id),
+		minionIsBusy ? [] : fetchPinnedTrips(user.id),
+		getUsersFishingContestDetails(user)
+	]);
 
 	if (!user.user.minion_hasBought) {
 		return {
@@ -94,16 +84,6 @@ export async function minionStatusCommand(user: MUser, channelID: string): Promi
 				.setCustomId('DO_FISHING_CONTEST')
 				.setLabel('Fishing Contest')
 				.setEmoji('630911040091193356')
-				.setStyle(ButtonStyle.Secondary)
-		);
-	}
-
-	if (dailyIsReady.isReady) {
-		buttons.push(
-			new ButtonBuilder()
-				.setCustomId('CLAIM_DAILY')
-				.setLabel('Claim Daily')
-				.setEmoji('493286312854683654')
 				.setStyle(ButtonStyle.Secondary)
 		);
 	}
@@ -167,55 +147,6 @@ export async function minionStatusCommand(user: MUser, channelID: string): Promi
 					.setStyle(ButtonStyle.Secondary)
 			);
 		}
-	}
-
-	const perkTier = user.perkTier();
-	if (perkTier >= PerkTier.Two) {
-		const { tame, species, activity } = await getUsersTame(user);
-		if (tame && !activity) {
-			const lastTameAct = await tameLastFinishedActivity(user);
-			if (lastTameAct) {
-				buttons.push(
-					new ButtonBuilder()
-						.setCustomId('REPEAT_TAME_TRIP')
-						.setLabel(`Repeat ${shortTameTripDesc(lastTameAct)}`)
-						.setEmoji(species!.emojiID)
-						.setStyle(ButtonStyle.Secondary)
-				);
-			}
-		}
-	}
-
-	const [spawnLampReady] = spawnLampIsReady(user, channelID);
-	if (spawnLampReady) {
-		buttons.push(
-			new ButtonBuilder()
-				.setCustomId('SPAWN_LAMP')
-				.setLabel('Spawn Lamp')
-				.setEmoji('988325171498721290')
-				.setStyle(ButtonStyle.Secondary)
-		);
-	}
-
-	const icDetails = getItemContractDetails(user);
-	if (perkTier >= PerkTier.Two && icDetails.currentItem && icDetails.owns) {
-		buttons.push(
-			new ButtonBuilder()
-				.setCustomId('ITEM_CONTRACT_SEND')
-				.setLabel(`IC: ${icDetails.currentItem.name.slice(0, 20)}`)
-				.setEmoji('988422348434718812')
-				.setStyle(ButtonStyle.Secondary)
-		);
-	}
-
-	if (roboChimpUser.leagues_points_total === 0) {
-		buttons.push(
-			new ButtonBuilder()
-				.setLabel('OSB/BSO Leagues')
-				.setEmoji('660333438016028723')
-				.setStyle(ButtonStyle.Link)
-				.setURL('https://bso-wiki.oldschool.gg/leagues')
-		);
 	}
 
 	if (gearPresetButtons.length > 0) {

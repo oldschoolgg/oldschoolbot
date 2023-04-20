@@ -26,7 +26,6 @@ import {
 	calcWhatPercent,
 	chunk,
 	increaseNumByPercent,
-	notEmpty,
 	objectEntries,
 	randArrItem,
 	randInt,
@@ -43,11 +42,9 @@ import { convertLVLtoXP } from 'oldschooljs/dist/util/util';
 import { bool, integer, nodeCrypto, real } from 'random-js';
 
 import { ADMIN_IDS, OWNER_IDS, production, SupportServer } from '../config';
-import { ClueTiers } from './clues/clueTiers';
 import { badgesCache, BitField, globalConfig, ProjectileType, usernameCache } from './constants';
 import { UserStatsDataNeededForCL } from './data/Collections';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
-import { calcActualClues } from './leagues/stats';
 import type { Consumable } from './minions/types';
 import { MUserClass } from './MUser';
 import { PaginatedMessage } from './PaginatedMessage';
@@ -61,7 +58,7 @@ import type {
 	RaidsOptions,
 	TheatreOfBloodTaskOptions
 } from './types/minions';
-import getOSItem, { getItem } from './util/getOSItem';
+import { getItem } from './util/getOSItem';
 import itemID from './util/itemID';
 import resolveItems from './util/resolveItems';
 
@@ -675,26 +672,6 @@ export function getInteractionTypeName(type: InteractionType) {
 
 export function isModOrAdmin(user: MUser) {
 	return [...OWNER_IDS, ...ADMIN_IDS].includes(user.id) || user.bitfield.includes(BitField.isModerator);
-}
-
-export async function calcClueScores(user: MUser) {
-	const actualClues = await calcActualClues(user);
-	const stats = await user.fetchStats({ openable_scores: true });
-	const openableBank = new Bank(stats.openable_scores as ItemBank);
-	return openableBank
-		.items()
-		.map(entry => {
-			const tier = ClueTiers.find(i => i.id === entry[0].id);
-			if (!tier) return;
-			return {
-				tier,
-				casket: getOSItem(tier.id),
-				clueScroll: getOSItem(tier.scrollID),
-				opened: openableBank.amount(tier.id),
-				actualOpened: actualClues.amount(tier.scrollID)
-			};
-		})
-		.filter(notEmpty);
 }
 
 export async function fetchStatsForCL(user: MUser): Promise<UserStatsDataNeededForCL> {
