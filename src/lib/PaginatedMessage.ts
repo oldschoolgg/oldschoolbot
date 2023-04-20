@@ -58,7 +58,7 @@ type PaginatedPages =
 
 export class PaginatedMessage {
 	public index = 0;
-	public pages: PaginatedPages;
+	public pages!: PaginatedPages;
 	public channel: TextChannel;
 	public totalPages: number;
 
@@ -78,22 +78,26 @@ export class PaginatedMessage {
 	}
 
 	async render(): Promise<MessageEditOptions | string> {
+		const numberOfPages = Array.isArray(this.pages) ? this.pages.length : this.pages.numPages;
 		try {
 			const rawPage = !Array.isArray(this.pages)
 				? await this.pages.generate({ currentPage: this.index })
 				: this.pages[this.index];
 			return {
 				...rawPage,
-				components: [
-					new ActionRowBuilder<ButtonBuilder>().addComponents(
-						controlButtons.map(i =>
-							new ButtonBuilder()
-								.setStyle(ButtonStyle.Secondary)
-								.setCustomId(i.customId)
-								.setEmoji(i.emoji)
-						)
-					)
-				]
+				components:
+					numberOfPages === 1
+						? []
+						: [
+								new ActionRowBuilder<ButtonBuilder>().addComponents(
+									controlButtons.map(i =>
+										new ButtonBuilder()
+											.setStyle(ButtonStyle.Secondary)
+											.setCustomId(i.customId)
+											.setEmoji(i.emoji)
+									)
+								)
+						  ]
 			};
 		} catch (err) {
 			if (typeof err === 'string') return err;
