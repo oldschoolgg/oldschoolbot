@@ -1,14 +1,16 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
+import { Item } from 'oldschooljs/dist/meta/types';
 
 import { Events } from '../../lib/constants';
 import { cats } from '../../lib/growablePets';
 import minionIcons from '../../lib/minions/data/minionIcons';
 import { ItemBank } from '../../lib/types';
-import { toKMB } from '../../lib/util';
+import { itemID, toKMB } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { parseBank } from '../../lib/util/parseStringBank';
+import resolveItems from '../../lib/util/resolveItems';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
@@ -22,6 +24,29 @@ async function trackSacBank(user: MUser, bank: Bank) {
 	]);
 	const stats = await user.fetchStats({ sacrificed_bank: true });
 	return new Bank(stats.sacrificed_bank as ItemBank);
+}
+
+const noSacPrice = resolveItems([
+	'Fishing bait',
+	'Vial of water',
+	'Vial',
+	'Rolling pin',
+	'Bronze axe',
+	'Iron axe',
+	'Bucket of water',
+	'Magic stone',
+	'Gold leaf',
+	'Marble block',
+	'Elemental shield',
+	'Limestone brick',
+	'Helm of neitiznot',
+	'Cannon barrels',
+	'Broad arrowheads'
+]);
+
+export function sacrificePriceOfItem(item: Item, qty: number) {
+	const price = noSacPrice.includes(item.id) ? 1 : sellPriceOfItem(item, 0).basePrice;
+	return Math.floor(price * qty);
 }
 
 export const sacrificeCommand: OSBMahojiCommand = {
@@ -108,7 +133,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 
 		let totalPrice = 0;
 		for (const [item, qty] of bankToSac.items()) {
-			totalPrice += Math.floor(sellPriceOfItem(item, 0).basePrice * qty);
+			totalPrice += sacrificePriceOfItem(item, qty);
 		}
 
 		await handleMahojiConfirmation(
