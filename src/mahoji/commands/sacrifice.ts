@@ -6,7 +6,7 @@ import { Events } from '../../lib/constants';
 import { cats } from '../../lib/growablePets';
 import minionIcons from '../../lib/minions/data/minionIcons';
 import { ItemBank } from '../../lib/types';
-import { itemID, toKMB } from '../../lib/util';
+import { toKMB } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { parseBank } from '../../lib/util/parseStringBank';
