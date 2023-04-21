@@ -1,4 +1,6 @@
 import { EmbedBuilder } from '@discordjs/builders';
+import { mentionCommand } from '@oldschoolgg/toolkit';
+import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
 import { BaseMessageOptions, bold, ButtonBuilder, ButtonStyle, Message, time } from 'discord.js';
 import { isFunction, Time } from 'e';
 import { Items } from 'oldschooljs';
@@ -6,19 +8,18 @@ import { Items } from 'oldschooljs';
 import { PATRON_DOUBLE_LOOT_COOLDOWN } from '../mahoji/commands/tools';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
 import { Cooldowns } from '../mahoji/lib/Cooldowns';
-import { mentionCommand } from './commandMention';
 import { BitField, Emoji, globalConfig, secretItems } from './constants';
 import { customItems } from './customItems/util';
 import { DOUBLE_LOOT_FINISH_TIME_CACHE, isDoubleLootActive } from './doubleLoot';
 import { giveBoxResetTime, itemContractResetTime, spawnLampResetTime } from './MUser';
 import { prisma } from './settings/prisma';
-import { UserError } from './UserError';
 import { channelIsSendable, formatDuration, isModOrAdmin, makeComponents, toKMB } from './util';
 import { logError } from './util/logError';
 import { makeBankImage } from './util/makeBankImage';
 import { minionStatsEmbed } from './util/minionStatsEmbed';
 
 const mentionText = `<@${globalConfig.clientID}>`;
+const mentionRegex = new RegExp(`^(\\s*<@&?[0-9]+>)*\\s*<@${globalConfig.clientID}>\\s*(<@&?[0-9]+>\\s*)*$`);
 
 const cooldownTimers: {
 	name: string;
@@ -196,7 +197,9 @@ const mentionCommands: MentionCommand[] = [
 						const durationRemaining = formatDuration(Date.now() - (lastDone + cooldown));
 						return `${cd.name}: ${durationRemaining}`;
 					}
-					return bold(`${cd.name}: Ready ${mentionCommand(cd.command[0], cd.command[1], cd.command[2])}`);
+					return bold(
+						`${cd.name}: Ready ${mentionCommand(globalClient, cd.command[0], cd.command[1], cd.command[2])}`
+					);
 				})
 				.join('\n');
 
@@ -220,6 +223,7 @@ const mentionCommands: MentionCommand[] = [
 			}
 			return msg.reply({
 				content: `Click this button to find out if you're ready to do Tombs of Amascut! You can also use the ${mentionCommand(
+					globalClient,
 					'raid',
 					'toa',
 					'help'
@@ -293,7 +297,7 @@ export async function onMessage(msg: Message) {
 		return;
 	}
 
-	if (content === mentionText) {
+	if (content.match(mentionRegex)) {
 		return msg.reply({
 			content: result.content,
 			components

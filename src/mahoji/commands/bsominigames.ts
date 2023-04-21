@@ -1,3 +1,4 @@
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import {
@@ -10,7 +11,6 @@ import {
 } from '../../lib/baxtorianBathhouses';
 import { fishingLocations } from '../../lib/fishingContest';
 import { MaterialType } from '../../lib/invention';
-import { toTitleCase } from '../../lib/util/toTitleCase';
 import { bonanzaCommand } from '../lib/abstracted_commands/bonanzaCommand';
 import {
 	fishingContestStartCommand,

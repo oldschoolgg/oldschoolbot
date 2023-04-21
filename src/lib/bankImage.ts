@@ -1,5 +1,6 @@
 import { Canvas, GlobalFonts, Image, loadImage, SKRSContext2D } from '@napi-rs/canvas';
 import { cleanString, formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit';
+import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
 import { AttachmentBuilder } from 'discord.js';
 import { chunk, randInt, sumArr } from 'e';
 import { existsSync } from 'fs';
@@ -22,7 +23,6 @@ import { drawImageWithOutline, fillTextXTimesInCtx, getClippedRegionImage } from
 import itemID from '../lib/util/itemID';
 import { logError } from '../lib/util/logError';
 import { SkillsEnum } from './skilling/types';
-import { UserError } from './UserError';
 import { allSlayerMaskHelmsAndMasks, slayerMaskLeaderboardCache } from './util/slayerMaskLeaderboard';
 
 const fonts = {

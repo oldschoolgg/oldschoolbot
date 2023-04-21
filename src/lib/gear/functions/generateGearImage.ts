@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/restrict-plus-operands */
 import { Canvas, Image } from '@napi-rs/canvas';
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { randInt } from 'e';
 import * as fs from 'fs';
 import * as fsPromises from 'fs/promises';
@@ -16,7 +17,6 @@ import {
 } from '../../util/canvasUtil';
 import getOSItem from '../../util/getOSItem';
 import { allSlayerMaskHelmsAndMasks, slayerMaskLeaderboardCache } from '../../util/slayerMaskLeaderboard';
-import { toTitleCase } from '../../util/toTitleCase';
 import { GearSetup, GearSetupType, GearSetupTypes, GearStats, maxDefenceStats, maxOffenceStats } from '..';
 
 const banana = canvasImageFromBuffer(fs.readFileSync('./src/lib/resources/images/banana.png'));

@@ -1,3 +1,4 @@
+import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { bold } from 'discord.js';
 import { increaseNumByPercent, randInt, roll } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
@@ -8,7 +9,6 @@ import { incrementMinigameScore } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ShadesOfMortonOptions } from '../../../lib/types/minions';
 import { assert, clAdjustedDroprate } from '../../../lib/util';
-import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { shades, shadesLogs } from '../../../mahoji/lib/abstracted_commands/shadesOfMortonCommand';
 

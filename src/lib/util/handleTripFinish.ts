@@ -79,7 +79,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Random Events',
 		fn: async ({ data, messages, user }) => {
-			await triggerRandomEvent(user, data.duration, messages);
+			await triggerRandomEvent(user, data.type, data.duration, messages);
 		}
 	},
 	{

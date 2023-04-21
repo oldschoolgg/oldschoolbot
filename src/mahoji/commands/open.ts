@@ -1,7 +1,7 @@
+import { truncateString } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { allOpenables, allOpenablesIDs } from '../../lib/openables';
-import { truncateString } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import {
 	abstractedOpenCommand,

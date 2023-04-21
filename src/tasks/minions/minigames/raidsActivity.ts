@@ -1,3 +1,4 @@
+import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
@@ -11,7 +12,6 @@ import { trackLoot } from '../../../lib/lootTrack';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import { RaidsOptions } from '../../../lib/types/minions';
 import { randomVariation, roll } from '../../../lib/util';
-import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleSpecialCoxLoot } from '../../../lib/util/handleSpecialCoxLoot';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import resolveItems from '../../../lib/util/resolveItems';
