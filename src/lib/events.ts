@@ -149,6 +149,16 @@ interface MentionCommand {
 
 const mentionCommands: MentionCommand[] = [
 	{
+		name: 'shutdownlock',
+		aliases: ['shutdownlock'],
+		description: 'shutdownlock.',
+		run: async ({ msg, user }: MentionCommandOptions) => {
+			if (!isModOrAdmin(user)) return;
+			globalClient.isShuttingDown = true;
+			return msg.reply('https://tenor.com/view/coffee-morning-monkey-drinking-coffee-shot-gif-20859464');
+		}
+	},
+	{
 		name: 'bs',
 		aliases: ['bs'],
 		description: 'Searches your bank.',
@@ -304,16 +314,6 @@ const mentionCommands: MentionCommand[] = [
 				embeds: [await minionStatsEmbed(user)],
 				components
 			});
-		}
-	},
-	{
-		name: 'shutdownlock',
-		aliases: ['shutdownlock'],
-		description: 'shutdownlock.',
-		run: async ({ msg, user }: MentionCommandOptions) => {
-			if (!isModOrAdmin(user)) return;
-			globalClient.isShuttingDown = true;
-			return msg.reply('https://tenor.com/view/coffee-morning-monkey-drinking-coffee-shot-gif-20859464');
 		}
 	}
 ];
