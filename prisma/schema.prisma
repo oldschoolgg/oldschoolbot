@@ -583,6 +583,8 @@ model Minigame {
   stealing_creation        Int @default(0)
   tinkering_workshop       Int @default(0)
   balthazars_big_bonanza   Int @default(0)
+  depths_of_atlantis       Int @default(0)
+  depths_of_atlantis_cm    Int @default(0)
 
   new_user NewUser?
 
@@ -871,6 +873,10 @@ model UserStats {
 
   last_daily_timestamp           BigInt @default(0)
   last_tears_of_guthix_timestamp BigInt @default(0)
+
+  doa_attempts Int @default(0)
+  doa_cost     Int @default(0)
+  doa_loot     Int @default(0)
 
   @@map("user_stats")
 }
