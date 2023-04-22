@@ -187,7 +187,7 @@ const constructionBuyables: Buyable[] = [
 	{
 		name: 'Red dye',
 		gpCost: 100_000,
-		ironmanPrice: 25
+		ironmanPrice: 500
 	},
 	{
 		name: 'Skull',
@@ -217,7 +217,7 @@ const constructionBuyables: Buyable[] = [
 	{
 		name: 'Bucket of water',
 		gpCost: 500,
-		ironmanPrice: 7
+		ironmanPrice: 12
 	}
 ];
 
@@ -283,7 +283,7 @@ const hunterBuyables: Buyable[] = [
 const magicBuyables: Buyable[] = [
 	{
 		name: 'Mystic hat',
-		gpCost: 15_000,
+		gpCost: 25_000,
 		skillsNeeded: {
 			magic: 66
 		}
@@ -937,7 +937,7 @@ const Buyables: Buyable[] = [
 	{
 		name: 'Bronze pickaxe',
 		gpCost: 500,
-		ironmanPrice: 1
+		ironmanPrice: 100
 	},
 	{
 		name: 'Iron pickaxe',
@@ -976,7 +976,7 @@ const Buyables: Buyable[] = [
 	{
 		name: 'Mithril seeds',
 		gpCost: 3000,
-		ironmanPrice: 600,
+		ironmanPrice: 1000,
 		outputItems: new Bank({
 			'Mithril seeds': 1
 		})
@@ -984,17 +984,17 @@ const Buyables: Buyable[] = [
 	{
 		name: 'Brown apron',
 		gpCost: 1000,
-		ironmanPrice: 100
+		ironmanPrice: 250
 	},
 	{
 		name: 'White apron',
 		gpCost: 1000,
-		ironmanPrice: 100
+		ironmanPrice: 250
 	},
 	{
 		name: 'Pink skirt',
 		gpCost: 1000,
-		ironmanPrice: 2
+		ironmanPrice: 100
 	},
 	{
 		name: 'Bull roarer',
@@ -1003,7 +1003,7 @@ const Buyables: Buyable[] = [
 	},
 	{
 		name: 'Rolling pin',
-		gpCost: 50_000,
+		gpCost: 70_000,
 		ironmanPrice: 18_720
 	},
 	{
@@ -1028,8 +1028,7 @@ const Buyables: Buyable[] = [
 		'Pirate leggings (red)'
 	].map(i => ({
 		name: i,
-		gpCost: 2000,
-		ironmanPrice: 100
+		gpCost: 20_000
 	})),
 	...[
 		'Ghostly boots',
@@ -1068,19 +1067,19 @@ const Buyables: Buyable[] = [
 	},
 	{
 		name: 'Bone club',
-		gpCost: 1000
+		gpCost: 5000
 	},
 	{
 		name: 'Bone spear',
-		gpCost: 1000
+		gpCost: 5000
 	},
 	{
 		name: 'Bone dagger',
-		gpCost: 2500
+		gpCost: 8000
 	},
 	{
 		name: 'Dorgeshuun crossbow',
-		gpCost: 2500
+		gpCost: 4000
 	},
 	{
 		name: 'Crystal bow',
@@ -1166,8 +1165,9 @@ for (const cape of allTeamCapes) {
 	Buyables.push({
 		name: cape.name,
 		outputItems: new Bank().add(cape.id),
-		gpCost: 1000
+		gpCost: 5000
 	});
 }
 
 export default Buyables;
+export { Buyables };

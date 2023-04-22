@@ -1,4 +1,4 @@
-import { roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
+import { formatOrdinal, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
 import { Stopwatch } from '@sapphire/stopwatch';
 import { sumArr } from 'e';
 import { Bank } from 'oldschooljs';
@@ -8,7 +8,6 @@ import { allCLItems, allCollectionLogsFlat, calcCLDetails } from './data/Collect
 import { prisma } from './settings/prisma';
 import { fetchStatsForCL } from './util';
 import { fetchCLLeaderboard } from './util/clLeaderboard';
-import { formatOrdinal } from './util/formatOrdinal';
 
 async function clArrayUpdate(user: MUser, newCL: Bank) {
 	const id = BigInt(user.id);
@@ -65,7 +64,7 @@ export async function handleNewCLItems({
 		return;
 	}
 
-	clArrayUpdate(user, newCL);
+	await clArrayUpdate(user, newCL);
 
 	const clsWithTheseItems = allCollectionLogsFlat.filter(
 		cl => cl.counts !== false && newCLItems.items().some(([newItem]) => cl.items.includes(newItem.id))

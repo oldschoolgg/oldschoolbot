@@ -1,4 +1,4 @@
-import { toTitleCase } from '@sapphire/utilities';
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { BaseMessageOptions, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 import { stripNonAlphanumeric } from 'e';
 

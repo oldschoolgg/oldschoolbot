@@ -1,4 +1,4 @@
-import { SimpleTable } from '@oldschoolgg/toolkit';
+import { mentionCommand, SimpleTable } from '@oldschoolgg/toolkit';
 import { Minigame, XpGainSource } from '@prisma/client';
 import { bold } from 'discord.js';
 import {
@@ -22,7 +22,6 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { mahojiParseNumber, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
-import { mentionCommand } from '../commandMention';
 import { Emoji } from '../constants';
 import { getSimilarItems } from '../data/similarItems';
 import { degradeItem } from '../degradeableItems';
@@ -228,7 +227,7 @@ const toaRequirements: {
 		name: 'Blowpipe',
 		doesMeet: ({ user, quantity }) => {
 			const blowpipeData = user.blowpipe;
-			const cmdMention = mentionCommand('minion', 'blowpipe');
+			const cmdMention = mentionCommand(globalClient, 'minion', 'blowpipe');
 			if (!user.owns('Toxic blowpipe')) {
 				return 'Needs Toxic blowpipe (with darts and scales equipped) in bank';
 			}
@@ -341,6 +340,7 @@ const toaRequirements: {
 			const bfCharges = BLOOD_FURY_CHARGES_PER_RAID * quantity;
 			if (user.gear.melee.hasEquipped('Amulet of blood fury') && user.user.blood_fury_charges < bfCharges) {
 				return `You need atleast ${bfCharges} Blood fury charges to use it, otherwise it has to be unequipped: ${mentionCommand(
+					globalClient,
 					'minion',
 					'charge'
 				)}`;
@@ -349,6 +349,7 @@ const toaRequirements: {
 			const tumCharges = TUMEKEN_SHADOW_PER_RAID * quantity;
 			if (user.gear.mage.hasEquipped("Tumeken's shadow") && user.user.tum_shadow_charges < tumCharges) {
 				return `You need atleast ${tumCharges} Tumeken's shadow charges to use it, otherwise it has to be unequipped: ${mentionCommand(
+					globalClient,
 					'minion',
 					'charge'
 				)}`;
@@ -356,6 +357,7 @@ const toaRequirements: {
 			const voidStaffCharges = VOID_STAFF_CHARGES_PER_RAID * quantity;
 			if (user.gear.mage.hasEquipped('Void staff') && user.user.void_staff_charges < voidStaffCharges) {
 				return `You need atleast ${voidStaffCharges} Void staff charges to use it, otherwise it has to be unequipped: ${mentionCommand(
+					globalClient,
 					'minion',
 					'charge'
 				)}`;
@@ -1566,7 +1568,12 @@ export async function toaCheckCommand(user: MUser) {
 		return `🔴 You aren't able to join a Tombs of Amascut raid, address these issues first: ${result[1]}`;
 	}
 
-	return `✅ You are ready to do the Tombs of Amascut! Start a raid: ${mentionCommand('raid', 'toa', 'start')}`;
+	return `✅ You are ready to do the Tombs of Amascut! Start a raid: ${mentionCommand(
+		globalClient,
+		'raid',
+		'toa',
+		'start'
+	)}`;
 }
 
 function calculateBoostString(user: MUser) {

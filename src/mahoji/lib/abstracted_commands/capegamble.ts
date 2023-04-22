@@ -1,10 +1,10 @@
+import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../../lib/constants';
 import { roll } from '../../../lib/util';
 import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
-import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { userStatsUpdate } from '../../mahojiSettings';
