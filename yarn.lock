@@ -527,10 +527,10 @@
     eslint-plugin-unicorn "^44.0.2"
     prettier "^2.7.1"
 
-"@oldschoolgg/toolkit@^0.0.15":
-  version "0.0.15"
-  resolved "https://registry.yarnpkg.com/@oldschoolgg/toolkit/-/toolkit-0.0.15.tgz#9cb79810c4bcc3815babef164b81306856d5ab9a"
-  integrity sha512-DEg7rqKHswmdUBVSHk9KkMvH2br/lsDzexNlqawJ05//dZ3/nzWRCBYLgqcjTH7BFMbUbqRHK+m2ehaFYnWXQQ==
+"@oldschoolgg/toolkit@^0.0.16":
+  version "0.0.16"
+  resolved "https://registry.yarnpkg.com/@oldschoolgg/toolkit/-/toolkit-0.0.16.tgz#7f582dfc9d75a7650ffa1cafef422aa6c447bd10"
+  integrity sha512-7+/rSD3ybuxIFUghaP2afH0iyYXKvU/OGp7P2WoNk2Nz+Z5bqIWwFumhNnmy5mCWqzJGgI9+q7Mg6v3pzTCSqQ==
   dependencies:
     e "^0.2.3"
     emoji-regex "^10.2.1"
