@@ -101,6 +101,7 @@ function pickcontestants(contestant: string, round: Set<string>, amount: number)
 	array.unshift(contestant);
 	return array.slice(0, amount);
 }
+
 export async function lmsSimCommand(channel: Channel | undefined, names?: string) {
 	if (!channel) return;
 	if (!(channel instanceof TextChannel)) return;

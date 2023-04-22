@@ -1,5 +1,5 @@
 import { EmbedBuilder, inlineCode } from '@discordjs/builders';
-import { miniID } from '@oldschoolgg/toolkit';
+import { hasBanMemberPerms, miniID } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
 import { Guild, HexColorString, resolveColor, User } from 'discord.js';
 import { clamp, removeFromArr, uniqueArr } from 'e';
@@ -23,7 +23,7 @@ import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { mahojiGuildSettingsFetch, mahojiGuildSettingsUpdate } from '../guildSettings';
 import { itemOption } from '../lib/mahojiCommandOptions';
-import { allAbstractCommands, hasBanMemberPerms, OSBMahojiCommand } from '../lib/util';
+import { allAbstractCommands, OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch, patronMsg } from '../mahojiSettings';
 
 const toggles = [
