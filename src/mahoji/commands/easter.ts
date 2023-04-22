@@ -1,9 +1,9 @@
+import { mentionCommand } from '@oldschoolgg/toolkit';
 import { InteractionReplyOptions } from 'discord.js';
 import { randArrItem, roll } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
-import { mentionCommand } from '../../lib/commandMention';
 import { decodeEggNames, eggNameEffect, EggType, eggTypes, encodeEggNames, validateEggType } from '../../lib/easter';
 import { mahojiChatHead } from '../../lib/util/chatHeadImage';
 import { resolveOSItems } from '../../lib/util/resolveItems';
@@ -83,9 +83,10 @@ export const easterCommand: OSBMahojiCommand = {
 			return {
 				...(await bunnyMsg(msg)),
 				content: `You received: ${loot}. Find *Egg coating*'s while doing trips, and use those and Chocolate bars to create Easter eggs using${mentionCommand(
+					globalClient,
 					'easter',
 					'create_egg'
-				)} - then hand them into the Easter Bunny using ${mentionCommand('easter', 'hand_in')}.`
+				)} - then hand them into the Easter Bunny using ${mentionCommand(globalClient, 'easter', 'hand_in')}.`
 			};
 		}
 
@@ -111,6 +112,7 @@ export const easterCommand: OSBMahojiCommand = {
 			});
 
 			return `You created a ${firstName} ${lastName} egg! Hand it in to the Easter Bunny now: ${mentionCommand(
+				globalClient,
 				'easter',
 				'hand_in'
 			)}`;

@@ -23,7 +23,6 @@ import { drawImageWithOutline, fillTextXTimesInCtx, getClippedRegionImage } from
 import itemID from '../lib/util/itemID';
 import { logError } from '../lib/util/logError';
 import { SkillsEnum } from './skilling/types';
-import { UserError } from './UserError';
 import { customItemEffect } from './util/customItemEffects';
 import { allSlayerMaskHelmsAndMasks, slayerMaskLeaderboardCache } from './util/slayerMaskLeaderboard';
 
