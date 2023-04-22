@@ -1,12 +1,14 @@
 import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
+import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 
 import { Emoji, Events } from '../../../lib/constants';
 import { chambersOfXericCL, chambersOfXericMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { createTeam } from '../../../lib/data/cox';
 import { trackLoot } from '../../../lib/lootTrack';
+import { resolveAttackStyles } from '../../../lib/minions/functions';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import { RaidsOptions } from '../../../lib/types/minions';
 import { randomVariation, roll } from '../../../lib/util';
@@ -30,6 +32,29 @@ const blueItems = resolveItems(['Metamorphic dust']);
 const purpleButNotAnnounced = resolveItems(['Dexterous prayer scroll', 'Arcane prayer scroll']);
 
 const purpleItems = chambersOfXericCL.filter(i => !notPurple.includes(i));
+
+const baseXPPerRaid = {
+	ranged: 10_000,
+	magic: 1500,
+	melee: 8000
+};
+
+async function handleCoxXP(user: MUser) {
+	const results = [];
+	results.push(await user.addXP({ skillName: SkillsEnum.Ranged, amount: baseXPPerRaid.ranged, minimal: true }));
+	results.push(await user.addXP({ skillName: SkillsEnum.Magic, amount: baseXPPerRaid.magic, minimal: true }));
+	let [, , styles] = resolveAttackStyles(user, {
+		monsterID: -1
+	});
+	if (([SkillsEnum.Magic, SkillsEnum.Ranged] as const).some(style => styles.includes(style))) {
+		styles = [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence];
+	}
+	const meleeXP = baseXPPerRaid.melee / styles.length;
+	for (const style of styles) {
+		results.push(await user.addXP({ skillName: style, amount: meleeXP, minimal: true }));
+	}
+	return results;
+}
 
 export const raidsTask: MinionTask = {
 	type: 'Raids',
@@ -106,21 +131,24 @@ export const raidsTask: MinionTask = {
 			const { personalPoints, deaths, deathChance, loot, mUser: user } = userData;
 			if (!user) continue;
 
-			await userStatsUpdate(
-				user.id,
-				{
-					total_cox_points: {
-						increment: personalPoints
-					}
-				},
-				{}
-			);
+			const [xpResult, { itemsAdded }] = await Promise.all([
+				handleCoxXP(user),
+				transactItems({
+					userID,
+					itemsToAdd: loot,
+					collectionLog: true
+				}),
+				userStatsUpdate(
+					user.id,
+					{
+						total_cox_points: {
+							increment: personalPoints
+						}
+					},
+					{}
+				)
+			]);
 
-			const { itemsAdded } = await transactItems({
-				userID,
-				itemsToAdd: loot,
-				collectionLog: true
-			});
 			totalLoot.add(itemsAdded);
 
 			const items = itemsAdded.items();
@@ -144,7 +172,7 @@ export const raidsTask: MinionTask = {
 
 			resultMessage += `\n${deathStr} **${user}** received: ${str} (${personalPoints?.toLocaleString()} pts, ${
 				Emoji.Skull
-			}${deathChance.toFixed(0)}%) `;
+			}${deathChance.toFixed(0)}%) ${xpResult}`;
 		}
 
 		updateBankSetting('cox_loot', totalLoot);
