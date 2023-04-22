@@ -159,7 +159,6 @@ export const bingoTiles: BingoTile[] = [
 			'Ancestral robe top',
 			'Ancestral robe bottom',
 			"Dinh's bulwark",
-			'Arcane prayer scroll',
 			'Dragon hunter crossbow',
 			'Twisted buckler'
 		])
