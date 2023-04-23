@@ -33,25 +33,29 @@ const purpleButNotAnnounced = resolveItems(['Dexterous prayer scroll', 'Arcane p
 
 const purpleItems = chambersOfXericCL.filter(i => !notPurple.includes(i));
 
-const baseXPPerRaid = {
-	ranged: 10_000,
-	magic: 1500,
-	melee: 8000
-};
+async function handleCoxXP(user: MUser, qty: number, isCm: boolean) {
+	let rangeXP = 10_000 * qty;
+	let magicXP = 1500 * qty;
+	let meleeXP = 8000 * qty;
 
-async function handleCoxXP(user: MUser) {
+	if (isCm) {
+		rangeXP *= 1.5;
+		magicXP *= 1.5;
+		meleeXP *= 1.5;
+	}
+
 	const results = [];
-	results.push(await user.addXP({ skillName: SkillsEnum.Ranged, amount: baseXPPerRaid.ranged, minimal: true }));
-	results.push(await user.addXP({ skillName: SkillsEnum.Magic, amount: baseXPPerRaid.magic, minimal: true }));
+	results.push(await user.addXP({ skillName: SkillsEnum.Ranged, amount: rangeXP, minimal: true }));
+	results.push(await user.addXP({ skillName: SkillsEnum.Magic, amount: magicXP, minimal: true }));
 	let [, , styles] = resolveAttackStyles(user, {
 		monsterID: -1
 	});
 	if (([SkillsEnum.Magic, SkillsEnum.Ranged] as const).some(style => styles.includes(style))) {
 		styles = [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence];
 	}
-	const meleeXP = baseXPPerRaid.melee / styles.length;
+	const perSkillMeleeXP = meleeXP / styles.length;
 	for (const style of styles) {
-		results.push(await user.addXP({ skillName: style, amount: meleeXP, minimal: true }));
+		results.push(await user.addXP({ skillName: style, amount: perSkillMeleeXP, minimal: true }));
 	}
 	return results;
 }
@@ -132,7 +136,7 @@ export const raidsTask: MinionTask = {
 			if (!user) continue;
 
 			const [xpResult, { itemsAdded }] = await Promise.all([
-				handleCoxXP(user),
+				handleCoxXP(user, quantity, challengeMode),
 				transactItems({
 					userID,
 					itemsToAdd: loot,
