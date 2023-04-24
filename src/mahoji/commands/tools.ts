@@ -804,6 +804,19 @@ export const toolsCommand: OSBMahojiCommand = {
 					]
 				}
 			]
+		},
+		{
+			name: 'export',
+			description: 'Export data from your account.',
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'minion',
+					description: 'Export general information on your minion.',
+					options: []
+				}
+			]
 		}
 	],
 	run: async ({
@@ -844,6 +857,9 @@ export const toolsCommand: OSBMahojiCommand = {
 			build_all?: {};
 			fill_all?: {};
 			unfill?: { unit: string };
+		};
+		export?: {
+			minion?: {};
 		};
 	}>) => {
 		await deferInteraction(interaction);
