@@ -25,7 +25,7 @@ export const agilityArenaTask: MinionTask = {
 		let agilityXP = randomVariation((duration / Time.Minute) * 416, 1);
 		agilityXP = reduceNumByPercent(agilityXP, 100 - calcWhatPercent(currentLevel, 99));
 
-		// 10% bonus tickets for karamja med
+		// 10% bonus tickets for karamja elite
 		let bonusTickets = 0;
 		const [hasKaramjaElite] = await userhasDiaryTier(user, KaramjaDiary.elite);
 		if (hasKaramjaElite) {
@@ -67,7 +67,7 @@ export const agilityArenaTask: MinionTask = {
 		}
 
 		if (bonusTickets > 0) {
-			str += `\nYou received ${bonusTickets} bonus tickets for the Karamja Medium Diary.`;
+			str += `\nYou received ${bonusTickets} bonus tickets for the Karamja Elite Diary.`;
 		}
 
 		let xpFromTickets = determineXPFromTickets(ticketsReceived, user, hasKaramjaElite);
