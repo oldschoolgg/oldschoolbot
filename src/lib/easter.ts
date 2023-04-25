@@ -13,7 +13,8 @@ export const eggTypes = [
 	'bitter',
 	'magic',
 	'fancy',
-	'ancient'
+	'ancient',
+	'rough'
 ] as const;
 
 export type EggType = (typeof eggTypes)[number];
