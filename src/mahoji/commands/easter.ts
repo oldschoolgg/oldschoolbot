@@ -161,7 +161,11 @@ export const easterCommand: OSBMahojiCommand = {
 			const allPossibleEggs = eggTypes.flatMap(first => eggTypes.map(second => encodeEggNames(first, second)));
 			const notMade = allPossibleEggs.filter(i => !eggsMade.includes(i));
 			if (notMade.length === 0) return 'You have made all the eggs!';
-			return `You have not made the following eggs: ${notMade.map(i => decodeEggNames(i).join(' ')).join(', ')}`;
+			return `You have not made the following eggs: ${notMade
+				.map(i => decodeEggNames(i))
+				.filter(a => validateEggType(...a) === null)
+				.map(t => t.join(' '))
+				.join(', ')}`;
 		}
 
 		return 'Invalid command.';
