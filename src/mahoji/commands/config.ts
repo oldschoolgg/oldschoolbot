@@ -936,7 +936,8 @@ SELECT DISTINCT ON ("activity"."type") activity.type, activity.data, activity.id
 FROM activity
 WHERE finish_date::date > now() - INTERVAL '31 days'
 AND user_id = '${user.id}'::bigint
-LIMIT 10;`);
+ORDER BY ("activity"."data")::text, finish_date DESC
+LIMIT 20;`);
 								return res.map(i => ({
 									name: `${i.type} (Finished ${formatDuration(
 										Date.now() - new Date(i.finish_date).getTime()
