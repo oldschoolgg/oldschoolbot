@@ -1,4 +1,4 @@
-import { randArrItem, roll } from 'e';
+import { randArrItem } from 'e';
 import { Bank } from 'oldschooljs';
 
 import getOSItem from './util/getOSItem';
