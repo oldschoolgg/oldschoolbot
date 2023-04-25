@@ -53,6 +53,11 @@ export const easterCommand: OSBMahojiCommand = {
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'hand_in',
 			description: 'Hand in an Easter Egg!'
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'not_handed_in',
+			description: "See what eggs you haven't handed in"
 		}
 	],
 	run: async ({
@@ -65,6 +70,7 @@ export const easterCommand: OSBMahojiCommand = {
 			second_type: string;
 		};
 		hand_in?: {};
+		not_handed_in?: {};
 	}>) => {
 		const user = await mUserFetch(userID);
 		if (options.start) {
@@ -131,10 +137,16 @@ export const easterCommand: OSBMahojiCommand = {
 			const response: InteractionReplyOptions = {
 				...(await bunnyMsg(await eggNameEffect(user, ...egg)))
 			};
-			if (roll(10)) {
-				const unownedCosmetic = resolveOSItems(['Floppy bunny ears', 'Easter egg backpack']).filter(
-					i => !user.cl.has(i.id)
-				);
+
+			const unownedCosmetic = resolveOSItems(['Floppy bunny ears', 'Easter egg backpack']).filter(
+				i => !user.cl.has(i.id)
+			);
+			const eggsHandedIn = user.user.easter_egg_types_made.length;
+			const isMissingAnItem = unownedCosmetic.length > 0;
+
+			const dropRate = isMissingAnItem ? (eggsHandedIn > 35 ? 2 : 10) : 10;
+
+			if (roll(dropRate)) {
 				if (unownedCosmetic.length > 0) {
 					const item = randArrItem(unownedCosmetic);
 					const loot = new Bank().add(item.id);
@@ -143,6 +155,13 @@ export const easterCommand: OSBMahojiCommand = {
 				}
 			}
 			return response;
+		}
+
+		if (options.not_handed_in) {
+			const allPossibleEggs = eggTypes.flatMap(first => eggTypes.map(second => encodeEggNames(first, second)));
+			const notMade = allPossibleEggs.filter(i => !eggsMade.includes(i));
+			if (notMade.length === 0) return 'You have made all the eggs!';
+			return `You have not made the following eggs: ${notMade.map(i => decodeEggNames(i).join(' ')).join(', ')}`;
 		}
 
 		return 'Invalid command.';
