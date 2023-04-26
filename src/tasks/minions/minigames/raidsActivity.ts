@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 
+import { drawChestLootImage } from '../../../lib/bankImage';
 import { Emoji, Events } from '../../../lib/constants';
 import { chambersOfXericCL, chambersOfXericMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { createTeam } from '../../../lib/data/cox';
@@ -66,6 +67,7 @@ export const raidsTask: MinionTask = {
 		const { channelID, users, challengeMode, duration, leader, quantity: _quantity } = data;
 		const quantity = _quantity ?? 1;
 		const allUsers = await Promise.all(users.map(async u => mUserFetch(u)));
+		const previousCLs = allUsers.map(i => i.cl.clone());
 
 		let totalPoints = 0;
 		const raidResults = new Map<string, RaidResultUser>();
@@ -194,6 +196,33 @@ export const raidsTask: MinionTask = {
 			}))
 		});
 
-		handleTripFinish(allUsers[0], channelID, resultMessage, undefined, data, null);
+		const shouldShowImage = allUsers.length <= 3 && Array.from(raidResults.values()).every(i => i.loot.length <= 6);
+
+		let attachment = undefined;
+		if (users.length === 1) {
+			attachment = await drawChestLootImage({
+				entries: [
+					{
+						loot: totalLoot,
+						user: allUsers[0],
+						previousCL: previousCLs[0],
+						customTexts: []
+					}
+				],
+				type: 'Chambers of Xerician'
+			});
+		} else if (shouldShowImage) {
+			attachment = await drawChestLootImage({
+				entries: allUsers.map((u, index) => ({
+					loot: raidResults.get(u.id)!.loot,
+					user: u,
+					previousCL: previousCLs[index],
+					customTexts: []
+				})),
+				type: 'Tombs of Amascut'
+			});
+		}
+
+		handleTripFinish(allUsers[0], channelID, resultMessage, attachment, data, null);
 	}
 };
