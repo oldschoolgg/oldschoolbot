@@ -721,7 +721,22 @@ const chestLootTypes = [
 		chestImagePurple: loadImage('./src/lib/resources/images/toaChestPurple.png'),
 		width: 240,
 		height: 220,
-		purpleItems: toaPurpleItems
+		purpleItems: toaPurpleItems,
+		position: (canvas: Canvas, image: Image) => [
+			canvas.width - image.width + 25,
+			44 + canvas.height / 4 - image.height / 2
+		],
+		itemRect: [21, 50, 120, 160]
+	},
+	{
+		title: 'Chambers of Xerician',
+		chestImage: loadImage('./src/lib/resources/images/cox.png'),
+		chestImagePurple: loadImage('./src/lib/resources/images/cox.png'),
+		width: 260,
+		height: 180,
+		purpleItems: toaPurpleItems,
+		position: () => [12, 44],
+		itemRect: [135, 45, 120, 120]
 	}
 ] as const;
 
@@ -753,15 +768,21 @@ export async function drawChestLootImage(options: {
 		const isPurple: boolean = loot.items().some(([item]) => type.purpleItems.includes(item.id));
 		if (isPurple) anyoneGotPurple = true;
 		const image = isPurple ? await type.chestImagePurple : await type.chestImage;
-		ctx.drawImage(image, canvas.width - image.width + 25, 44 + canvas.height / 4 - image.height / 2);
-
+		const [x, y] = type.position(canvas, image);
+		ctx.drawImage(image, x, y);
 		drawTitle(ctx, `${user.rawUsername} (${toKMB(loot.value())})`, canvas);
 		ctx.font = '16px OSRSFontCompact';
 		bankImageGenerator.drawBorder(ctx, sprite, true);
+
+		const xOffset = 10;
+		const yOffset = 45;
+		const [iX, iY, iW, iH] = type.itemRect;
+		const itemCanvas = new Canvas(iW + xOffset, iH + yOffset);
+
 		await bankImageGenerator.drawItems(
-			ctx,
+			itemCanvas.getContext('2d'),
 			false,
-			22,
+			5,
 			2,
 			55,
 			loot.items(),
@@ -769,8 +790,10 @@ export async function drawChestLootImage(options: {
 			previousCL,
 			undefined,
 			undefined,
-			10
+			5
 		);
+
+		ctx.drawImage(itemCanvas, iX - xOffset, iY - yOffset);
 
 		ctx.fillStyle = '#FFFF00';
 		ctx.font = '16px OSRSFontCompact';
