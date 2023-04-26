@@ -1070,7 +1070,7 @@ ${unluckiest
 	},
 	{
 		name: 'Items In Bank Not Sacrificed',
-		perkTierNeeded: PerkTier.Four,
+		perkTierNeeded: null,
 		run: (user, userStats) => {
 			const sacrificedItems = new Bank(userStats.sacrificed_bank as ItemBank).items().map(i => i[0].id);
 			const itemsNotSac = user.bank.items().map(i => i[0].id);
