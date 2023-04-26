@@ -56,6 +56,8 @@ export async function createTeam(
 	cm: boolean
 ): Promise<Array<{ deaths: number; deathChance: number } & ChambersOfXericOptions['team'][0]>> {
 	let res = [];
+	const isSolo = users.length === 1;
+
 	for (const u of users) {
 		let points = 24_000;
 		const { total } = calculateUserGearPercents(u);
@@ -94,6 +96,10 @@ export async function createTeam(
 
 		if (cm && kc > 20) {
 			points += 5000;
+		}
+
+		if (isSolo && kc < 50) {
+			deathChance += Math.max(30 - kc, 0);
 		}
 
 		let deaths = 0;

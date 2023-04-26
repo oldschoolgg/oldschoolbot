@@ -1,5 +1,5 @@
 import { EmbedBuilder, inlineCode } from '@discordjs/builders';
-import { miniID } from '@oldschoolgg/toolkit';
+import { hasBanMemberPerms, miniID } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
 import { Guild, HexColorString, resolveColor, User } from 'discord.js';
 import { clamp, removeFromArr, uniqueArr } from 'e';
@@ -26,7 +26,7 @@ import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { mahojiGuildSettingsFetch, mahojiGuildSettingsUpdate } from '../guildSettings';
 import { itemOption } from '../lib/mahojiCommandOptions';
-import { allAbstractCommands, hasBanMemberPerms, OSBMahojiCommand } from '../lib/util';
+import { allAbstractCommands, OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch, patronMsg } from '../mahojiSettings';
 
 const toggles = [
@@ -874,7 +874,8 @@ SELECT DISTINCT ON ("activity"."type") activity.type, activity.data, activity.id
 FROM activity
 WHERE finish_date::date > now() - INTERVAL '31 days'
 AND user_id = '${user.id}'::bigint
-LIMIT 10;`);
+ORDER BY ("activity"."data")::text, finish_date DESC
+LIMIT 20;`);
 								return res.map(i => ({
 									name: `${i.type} (Finished ${formatDuration(
 										Date.now() - new Date(i.finish_date).getTime()
