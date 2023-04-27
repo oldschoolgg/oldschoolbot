@@ -292,6 +292,15 @@ const backgroundImages: BankBackground[] = [
 		alternateImages: [{ id: 1 }]
 	},
 	{
+		id: 31,
+		name: 'Swans (Transparent)',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 500_000,
+		transparent: true
+	},
+	{
 		id: 32,
 		name: 'Peepo Scooter',
 		image: null,
