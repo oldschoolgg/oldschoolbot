@@ -1,3 +1,4 @@
+import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { calcPercentOfNum, calcWhatPercent } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
@@ -12,9 +13,9 @@ import { InfernoOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import chatHeadImage from '../../../lib/util/chatHeadImage';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../../lib/util/clientSettings';
-import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
+import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
 
 export const infernoTask: MinionTask = {
 	type: 'Inferno',
@@ -34,17 +35,20 @@ export const infernoTask: MinionTask = {
 		const unusedItems = new Bank();
 		const cost = new Bank(data.cost);
 
-		await user.update({
-			inferno_attempts: {
-				increment: 1
-			}
-		});
+		const { inferno_attempts: newInfernoAttempts } = await userStatsUpdate(
+			user.id,
+			{
+				inferno_attempts: {
+					increment: 1
+				}
+			},
+			{ inferno_attempts: true }
+		);
 
 		const percentMadeItThrough = deathTime === null ? 100 : calcWhatPercent(deathTime, fakeDuration);
 
-		const mahojiUser = await mUserFetch(userID);
 		let tokkul = Math.ceil(calcPercentOfNum(calcWhatPercent(duration, fakeDuration), 16_440));
-		const [hasDiary] = await userhasDiaryTier(mahojiUser, diariesObject.KaramjaDiary.elite);
+		const [hasDiary] = await userhasDiaryTier(user, diariesObject.KaramjaDiary.elite);
 		if (hasDiary) tokkul *= 2;
 		const baseBank = new Bank().add('Tokkul', tokkul);
 
@@ -108,13 +112,17 @@ export const infernoTask: MinionTask = {
 		}
 
 		if (isOnTask && !deathTime) {
-			const { newUser } = await user.update({
-				slayer_task_streak: {
-					increment: 1
-				}
-			});
+			const newUserStats = await userStatsUpdate(
+				user.id,
+				{
+					slayer_task_streak: {
+						increment: 1
+					}
+				},
+				{ slayer_task_streak: true }
+			);
 
-			const currentStreak = newUser.slayer_task_streak;
+			const currentStreak = newUserStats.slayer_task_streak;
 			const points = await calculateSlayerPoints(currentStreak, usersTask.slayerMaster!, user);
 			const secondNewUser = await user.update({
 				slayer_points: {
@@ -139,7 +147,7 @@ export const infernoTask: MinionTask = {
 			await user.addItemsToBank({ items: unusedItems, collectionLog: false });
 
 			const currentData = await mahojiClientSettingsFetch({ inferno_cost: true });
-			const current = new Bank().add(currentData.inferno_cost as ItemBank);
+			const current = new Bank(currentData.inferno_cost as ItemBank);
 			const newBank = current.remove(unusedItems);
 			await mahojiClientSettingsUpdate({
 				inferno_cost: newBank.bank
@@ -177,7 +185,7 @@ export const infernoTask: MinionTask = {
 				globalClient.emit(
 					Events.ServerNotification,
 					`**${user.badgedUsername}** just received their first Infernal cape on their ${formatOrdinal(
-						user.user.inferno_attempts
+						newInfernoAttempts
 					)} attempt! They are the ${formatOrdinal(
 						usersWithInfernalCape + 1
 					)} person to get an Infernal cape.`

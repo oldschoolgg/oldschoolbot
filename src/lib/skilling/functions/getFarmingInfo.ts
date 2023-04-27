@@ -1,3 +1,4 @@
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { User } from '@prisma/client';
 import { Time } from 'e';
 
@@ -6,20 +7,15 @@ import { defaultPatches } from '../../minions/farming';
 import { IPatchData, IPatchDataDetailed } from '../../minions/farming/types';
 import { assert, formatDuration } from '../../util';
 import { farmingKeys, FarmingPatchName, farmingPatchNames, findPlant } from '../../util/farmingHelpers';
-import { toTitleCase } from '../../util/toTitleCase';
 
-export async function getFarmingInfo(userID: string | string) {
-	let keys: Partial<Record<keyof User, true>> = {};
-	for (const key of farmingKeys) keys[key] = true;
-	const userData = await mahojiUsersSettingsFetch(userID, keys);
-
+export function getFarmingInfoFromUser(user: User) {
 	const patches: Record<FarmingPatchName, IPatchData> = {} as Record<FarmingPatchName, IPatchData>;
 	const patchesDetailed: IPatchDataDetailed[] = [];
 
 	const now = Date.now();
 
 	for (const key of farmingKeys) {
-		const patch: IPatchData = (userData[key] as IPatchData | null) ?? defaultPatches;
+		const patch: IPatchData = (user[key] as IPatchData | null) ?? defaultPatches;
 		const patchName: FarmingPatchName = key.replace('farmingPatches_', '') as FarmingPatchName;
 		assert(farmingPatchNames.includes(patchName));
 		patches[patchName] = patch;
@@ -63,4 +59,11 @@ export async function getFarmingInfo(userID: string | string) {
 		patches,
 		patchesDetailed
 	};
+}
+
+export async function getFarmingInfo(userID: string) {
+	let keys: Partial<Record<keyof User, true>> = {};
+	for (const key of farmingKeys) keys[key] = true;
+	const userData = await mahojiUsersSettingsFetch(userID, keys);
+	return getFarmingInfoFromUser(userData as User);
 }

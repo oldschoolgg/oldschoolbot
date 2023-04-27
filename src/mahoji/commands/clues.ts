@@ -1,8 +1,8 @@
-import { Embed } from '@discordjs/builders';
+import { EmbedBuilder } from '@discordjs/builders';
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Hiscores } from 'oldschooljs';
 
-import { toTitleCase } from '../../lib/util/toTitleCase';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const cluesCommand: OSBMahojiCommand = {
@@ -23,13 +23,13 @@ export const cluesCommand: OSBMahojiCommand = {
 		try {
 			const { clues } = await Hiscores.fetch(options.rsn);
 
-			const embed = new Embed()
+			const embed = new EmbedBuilder()
 				.setAuthor({ name: options.rsn })
 				.setColor(52_224)
 				.setThumbnail('https://i.imgur.com/azW3cSB.png');
 
 			for (const tier of Object.keys(clues) as (keyof typeof clues)[]) {
-				embed.addField({
+				embed.addFields({
 					name: toTitleCase(tier),
 					value: `**Rank:** ${clues[tier].rank.toLocaleString()}\n**Score:** ${clues[
 						tier

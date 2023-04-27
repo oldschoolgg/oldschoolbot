@@ -89,9 +89,11 @@ export const clueCommand: OSBMahojiCommand = {
 
 		const boosts = [];
 
+		const stats = await user.fetchStats({ openable_scores: true });
+
 		const [timeToFinish, percentReduced] = reducedClueTime(
 			clueTier,
-			(user.user.openable_scores as ItemBank)[clueTier.id] ?? 1
+			(stats.openable_scores as ItemBank)[clueTier.id] ?? 1
 		);
 
 		if (percentReduced >= 1) boosts.push(`${percentReduced}% for Clue score`);
@@ -117,6 +119,7 @@ export const clueCommand: OSBMahojiCommand = {
 		const poh = await getPOH(user.id);
 		const hasOrnateJewelleryBox = poh.jewellery_box === getPOHObject('Ornate jewellery box').id;
 		const hasJewelleryBox = poh.jewellery_box !== null;
+		const hasXericTalisman = poh.amulet === getPOHObject("Mounted xeric's talisman").id;
 
 		// Global Boosts
 		const globalBoosts = [
@@ -152,6 +155,12 @@ export const clueCommand: OSBMahojiCommand = {
 				boosts.push(boost);
 				duration *= durationMultiplier;
 			}
+		}
+
+		// Xeric's Talisman boost
+		if (clueTier.name === 'Medium' && hasXericTalisman) {
+			boosts.push("2% for Mounted Xeric's Talisman");
+			duration *= 0.98;
 		}
 
 		// Specific boosts

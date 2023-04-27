@@ -1,11 +1,13 @@
+import { formatOrdinal, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
 import { Stopwatch } from '@sapphire/stopwatch';
+import { sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Events } from './constants';
-import { allCLItems, allCollectionLogsFlat } from './data/Collections';
+import { allCLItems, allCollectionLogsFlat, calcCLDetails } from './data/Collections';
 import { prisma } from './settings/prisma';
+import { fetchStatsForCL } from './util';
 import { fetchCLLeaderboard } from './util/clLeaderboard';
-import { formatOrdinal } from './util/formatOrdinal';
 
 async function clArrayUpdate(user: MUser, newCL: Bank) {
 	const id = BigInt(user.id);
@@ -14,18 +16,34 @@ async function clArrayUpdate(user: MUser, newCL: Bank) {
 		cl_array: newCLArray,
 		cl_array_length: newCLArray.length
 	} as const;
-	await prisma.userStats.upsert({
-		where: {
-			user_id: id
-		},
-		create: {
-			user_id: id,
-			...updateObj
-		},
-		update: {
-			...updateObj
-		}
-	});
+
+	const clStats = calcCLDetails(user);
+	const clRank = await roboChimpClient.$queryRawUnsafe<{ count: number }[]>(roboChimpCLRankQuery(BigInt(user.id)));
+
+	await prisma.$transaction([
+		prisma.userStats.upsert({
+			where: {
+				user_id: id
+			},
+			create: {
+				user_id: id,
+				...updateObj
+			},
+			update: {
+				...updateObj
+			}
+		}),
+		prisma.historicalData.create({
+			data: {
+				user_id: user.id,
+				GP: user.GP,
+				total_xp: sumArr(Object.values(user.skillsAsXP)),
+				cl_completion_percentage: clStats.percent,
+				cl_completion_count: clStats.owned.length,
+				cl_global_rank: Number(clRank[0].count)
+			}
+		})
+	]);
 }
 
 export async function handleNewCLItems({
@@ -46,7 +64,7 @@ export async function handleNewCLItems({
 		return;
 	}
 
-	clArrayUpdate(user, newCL);
+	await clArrayUpdate(user, newCL);
 
 	const clsWithTheseItems = allCollectionLogsFlat.filter(
 		cl => cl.counts !== false && newCLItems.items().some(([newItem]) => cl.items.includes(newItem.id))
@@ -61,10 +79,11 @@ export async function handleNewCLItems({
 
 	for (const finishedCL of newlyCompletedCLs) {
 		const kcString = finishedCL.fmtProg
-			? `They finished after... ${finishedCL.fmtProg({
+			? `They finished after... ${await finishedCL.fmtProg({
 					getKC: (id: number) => user.getKC(id),
 					user,
-					minigames: await user.fetchMinigames()
+					minigames: await user.fetchMinigames(),
+					stats: await fetchStatsForCL(user)
 			  })}!`
 			: '';
 

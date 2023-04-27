@@ -1,5 +1,7 @@
-import { Embed } from '@discordjs/builders';
-import { calcWhatPercent, chunk } from 'e';
+import { EmbedBuilder } from '@discordjs/builders';
+import { toTitleCase } from '@oldschoolgg/toolkit';
+import { Prisma } from '@prisma/client';
+import { calcWhatPercent, chunk, objectValues, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
@@ -24,7 +26,6 @@ import {
 } from '../../lib/util';
 import { fetchCLLeaderboard } from '../../lib/util/clLeaderboard';
 import { deferInteraction } from '../../lib/util/interactionReply';
-import { toTitleCase } from '../../lib/util/toTitleCase';
 import { sendToChannelID } from '../../lib/util/webhook';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -52,7 +53,7 @@ export async function doMenu(user: MUser, channelID: string, pages: string[], ti
 
 	makePaginatedMessage(
 		channel,
-		pages.map(p => ({ embeds: [new Embed().setTitle(title).setDescription(p)] })),
+		pages.map(p => ({ embeds: [new EmbedBuilder().setTitle(title).setDescription(p)] })),
 		user.id
 	);
 }
@@ -61,10 +62,11 @@ async function kcLb(user: MUser, channelID: string, name: string, ironmanOnly: b
 	const monster = effectiveMonsters.find(mon => [mon.name, ...mon.aliases].some(alias => stringMatches(alias, name)));
 	if (!monster) return "That's not a valid monster!";
 	let list = await prisma.$queryRawUnsafe<{ id: string; kc: number }[]>(
-		`SELECT id, CAST("monsterScores"->>'${monster.id}' AS INTEGER) as kc
-		 FROM users
-		 WHERE CAST("monsterScores"->>'${monster.id}' AS INTEGER) > 5
-		 ${ironmanOnly ? ' AND "minion.ironman" = true ' : ''}
+		`SELECT user_id::text AS id, CAST("monster_scores"->>'${monster.id}' AS INTEGER) as kc
+		 FROM user_stats
+		${ironmanOnly ? 'INNER JOIN "users" on "users"."id" = "user_stats"."user_id"::text' : ''}
+		 WHERE CAST("monster_scores"->>'${monster.id}' AS INTEGER) > 5
+		 ${ironmanOnly ? ' AND "users"."minion.ironman" = true ' : ''}
 		 ORDER BY kc DESC
 		 LIMIT 2000;`
 	);
@@ -153,11 +155,15 @@ async function sacrificeLb(user: MUser, channelID: string, type: 'value' | 'uniq
 		return lbMsg('Most Value Sacrificed');
 	}
 
-	const mostUniques: { id: string; sacbanklength: number }[] =
-		await prisma.$queryRaw`SELECT u.id, u.sacbanklength FROM (
-  SELECT (SELECT COUNT(*) FROM JSON_OBJECT_KEYS("sacrificedBank")) sacbanklength, id FROM users
-) u
-ORDER BY u.sacbanklength DESC LIMIT 10;`;
+	const mostUniques: { id: string; sacbanklength: number }[] = await prisma.$queryRawUnsafe(
+		`SELECT u.user_id::text AS id, u.sacbanklength 
+				FROM (
+  					SELECT (SELECT COUNT(*) FROM JSONB_OBJECT_KEYS(sacrificed_bank)) sacbanklength, user_id FROM user_stats
+  						${ironmanOnly ? 'INNER JOIN users ON users.id::bigint = user_stats.user_id WHERE "minion.ironman" = true' : ''}
+				) u
+				ORDER BY u.sacbanklength DESC LIMIT 10;
+`
+	);
 	doMenu(
 		user,
 		channelID,
@@ -241,8 +247,8 @@ async function creaturesLb(user: MUser, channelID: string, creatureName: string)
 
 	if (!creature) return 'Thats not a valid creature.';
 
-	const query = `SELECT id, ("creatureScores"->>'${creature.id}')::int as count
-				   FROM users WHERE "creatureScores"->>'${creature.id}' IS NOT NULL
+	const query = `SELECT user_id::text as id, ("creature_scores"->>'${creature.id}')::int as count
+				   FROM user_stats WHERE "creature_scores"->>'${creature.id}' IS NOT NULL
 				   ORDER BY count DESC LIMIT 50;`;
 	const data: { id: string; count: number }[] = await prisma.$queryRawUnsafe(query);
 	doMenu(
@@ -264,9 +270,9 @@ async function lapsLb(user: MUser, channelID: string, courseName: string) {
 	if (!course) return 'Thats not a valid agility course.';
 
 	const data: { id: string; count: number }[] = await prisma.$queryRawUnsafe(
-		`SELECT id, ("lapsScores"->>'${course.id}')::int as count
-			 FROM users
-			 WHERE "lapsScores"->>'${course.id}' IS NOT NULL
+		`SELECT user_id::text as id, ("laps_scores"->>'${course.id}')::int as count
+			 FROM user_stats
+			 WHERE "laps_scores"->>'${course.id}' IS NOT NULL
 			 ORDER BY count DESC LIMIT 50;`
 	);
 	doMenu(
@@ -305,7 +311,8 @@ async function openLb(user: MUser, channelID: string, name: string, ironmanOnly:
 	}
 
 	let list = await prisma.$queryRawUnsafe<{ id: string; qty: number }[]>(
-		`SELECT id, ("${key}"->>'${entityID}')::int as qty FROM users
+		`SELECT user_id::text AS id, ("${key}"->>'${entityID}')::int as qty FROM user_stats
+			${ironmanOnly ? 'INNER JOIN users ON users.id::bigint = user_stats.user_id' : ''}
 			WHERE ("${key}"->>'${entityID}')::int > 3
 			${ironmanOnly ? ' AND "minion.ironman" = true ' : ''}
 			ORDER BY qty DESC LIMIT 30;`
@@ -473,10 +480,78 @@ LIMIT 50;`
 }
 
 export async function cacheUsernames() {
+	const roboChimpUseresToCache = await roboChimpClient.user.findMany({
+		where: {
+			OR: [
+				{
+					osb_cl_percent: {
+						gte: 80
+					}
+				},
+				{
+					bso_total_level: {
+						gte: 80
+					}
+				},
+				{
+					osb_total_level: {
+						gte: 1500
+					}
+				},
+				{
+					bso_total_level: {
+						gte: 1500
+					}
+				},
+				{
+					leagues_points_total: {
+						gte: 20_000
+					}
+				}
+			]
+		},
+		select: {
+			id: true
+		}
+	});
+
+	let orConditions: Prisma.UserWhereInput[] = [];
+	for (const skill of objectValues(SkillsEnum)) {
+		orConditions.push({
+			[`skills_${skill}`]: {
+				gte: 15_000_000
+			}
+		});
+	}
+	const usersToCache = await prisma.user.findMany({
+		where: {
+			OR: [
+				...orConditions,
+				{
+					last_command_date: {
+						gt: new Date(Date.now() - Number(Time.Month))
+					}
+				}
+			],
+			id: {
+				notIn: roboChimpUseresToCache.map(i => i.id.toString())
+			}
+		},
+		select: {
+			id: true
+		}
+	});
+
+	const userIDsToCache = [...usersToCache, ...roboChimpUseresToCache].map(i => i.id.toString());
+	debugLog(`Caching usernames of ${userIDsToCache.length} users`);
+
 	const allNewUsers = await prisma.newUser.findMany({
 		where: {
 			username: {
 				not: null
+			},
+			id: {
+				in: userIDsToCache
 			}
 		},
 		select: {
@@ -733,7 +808,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		cl?: { cl: string; ironmen_only?: boolean };
 		clues?: { clue: ClueTier['name']; ironmen_only?: boolean };
 	}>) => {
-		await deferInteraction(interaction);
+		deferInteraction(interaction);
 		const user = await mUserFetch(userID);
 		const {
 			opens,

@@ -1,9 +1,9 @@
-import { Embed } from '@discordjs/builders';
+import { EmbedBuilder } from '@discordjs/builders';
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { Player } from 'oldschooljs';
 import { CluesScore, SkillScore, SkillsScore } from 'oldschooljs/dist/meta/types';
 
 import { skillEmoji } from '../data/emojis';
-import { toTitleCase } from './toTitleCase';
 
 export function statsEmbed({
 	username,
@@ -25,26 +25,26 @@ export function statsEmbed({
 			skill as keyof SkillsScore
 		][key].toLocaleString()}`;
 
-	const embed = new Embed()
+	const embed = new EmbedBuilder()
 		.setColor(color)
 		.setTitle(
 			`${globalClient._badgeCache.get(username.toLowerCase()) || ''} ${toTitleCase(username)}${postfix ?? ''}`
 		)
-		.addField({
+		.addFields({
 			name: '\u200b',
 			value: ['attack', 'strength', 'defence', 'ranged', 'prayer', 'magic', 'runecraft', 'construction']
 				.map(skillCell)
 				.join('\n'),
 			inline: true
 		})
-		.addField({
+		.addFields({
 			name: '\u200b',
 			value: ['hitpoints', 'agility', 'herblore', 'thieving', 'crafting', 'fletching', 'slayer', 'hunter']
 				.map(skillCell)
 				.join('\n'),
 			inline: true
 		})
-		.addField({
+		.addFields({
 			name: '\u200b',
 			value: ['mining', 'smithing', 'fishing', 'cooking', 'firemaking', 'woodcutting', 'farming', 'overall']
 				.map(skillCell)
@@ -54,7 +54,7 @@ export function statsEmbed({
 
 	if (showExtra) {
 		embed
-			.addField({
+			.addFields({
 				name: `${skillEmoji.total} Overall`,
 				value: `**Rank:** ${player.skills.overall.rank.toLocaleString()}
 **Level:** ${player.skills.overall.level}
@@ -62,7 +62,7 @@ export function statsEmbed({
 **Combat Level:** ${player.combatLevel}`,
 				inline: true
 			})
-			.addField({
+			.addFields({
 				name: '<:minigame_icon:630400565070921761> Minigame Scores',
 				value: `**BH:** ${player.minigames.bountyHunter.score.toLocaleString()}
 **BH-Rogue:** ${player.minigames.bountyHunterRogue.score.toLocaleString()}
@@ -70,7 +70,7 @@ export function statsEmbed({
 `,
 				inline: true
 			})
-			.addField({
+			.addFields({
 				name: '<:Clue_scroll:365003979840552960> Clue Scores',
 				value: Object.keys(player.clues)
 					.slice(1)

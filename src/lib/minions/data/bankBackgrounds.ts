@@ -343,6 +343,34 @@ const backgroundImages: BankBackground[] = [
 		perkTierNeeded: PerkTier.Four,
 		gpCost: 20_000_000,
 		transparent: true
+	},
+	{
+		id: 29,
+		name: 'Farmer Jane (Dynamic)',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 500_000,
+		alternateImages: [{ id: 1 }]
+	},
+	{
+		id: 30,
+		name: 'Farmer Jane (Transparent, Dynamic)',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 500_000,
+		transparent: true,
+		alternateImages: [{ id: 1 }]
+	},
+	{
+		id: 31,
+		name: 'Swans (Transparent)',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 500_000,
+		transparent: true
 	}
 ];
 

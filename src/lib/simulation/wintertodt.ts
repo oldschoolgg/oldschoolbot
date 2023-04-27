@@ -5,6 +5,7 @@ import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 import { convertXPtoLVL } from 'oldschooljs/dist/util/util';
 
+import { MAX_XP } from '../constants';
 import { LevelRequirements, SkillsEnum } from '../skilling/types';
 import { ItemBank } from '../types';
 import itemID from '../util/itemID';
@@ -15,6 +16,7 @@ interface WintertodtCrateOptions {
 	points: number;
 	itemsOwned: ItemBank;
 	skills: Partial<LevelRequirements>;
+	firemakingXP: number;
 }
 
 type WintertodtTableSlot = [number, [number, number]];
@@ -197,10 +199,16 @@ export class WintertodtCrateClass {
 		return rolls + 1;
 	}
 
-	public rollUnique(itemsOwned: Bank): number | undefined {
+	public rollUnique(itemsOwned: Bank, firemakingXP: number): number | undefined {
 		// https://oldschool.runescape.wiki/w/Supply_crate#Reward_rolls
 		if (roll(10_000)) return itemID('Dragon axe');
-		if (roll(5000)) return itemID('Phoenix');
+
+		let phoenixDroprate = 5000;
+		if (firemakingXP === MAX_XP) {
+			phoenixDroprate = Math.floor(phoenixDroprate / 15);
+		}
+
+		if (roll(phoenixDroprate)) return itemID('Phoenix');
 		if (roll(1000)) return itemID('Tome of fire');
 		if (roll(150)) {
 			const glovesOwned = itemsOwned.amount('Warm gloves');
@@ -238,16 +246,16 @@ export class WintertodtCrateClass {
 		}
 	}
 
-	public open({ points, itemsOwned, skills }: WintertodtCrateOptions): ItemBank {
+	public open({ points, itemsOwned, skills, firemakingXP }: WintertodtCrateOptions): Bank {
 		const rolls = this.calcNumberOfRolls(points);
 		if (rolls <= 0) {
-			return {};
+			return new Bank();
 		}
 
 		const loot = new Bank();
 
 		for (let i = 0; i < rolls; i++) {
-			const rolledUnique = this.rollUnique(new Bank().add(itemsOwned).add(loot.values()));
+			const rolledUnique = this.rollUnique(new Bank().add(itemsOwned).add(loot), firemakingXP);
 			if (rolledUnique) {
 				loot.add(rolledUnique);
 				continue;
@@ -255,7 +263,7 @@ export class WintertodtCrateClass {
 			loot.add(this.lootRoll(skills));
 		}
 
-		return loot.values();
+		return loot;
 	}
 }
 

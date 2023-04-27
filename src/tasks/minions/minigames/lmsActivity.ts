@@ -1,12 +1,11 @@
-import { SimpleTable } from '@oldschoolgg/toolkit';
-import { clamp, percentChance } from 'e';
+import { formatOrdinal, SimpleTable } from '@oldschoolgg/toolkit';
+import { clamp, percentChance, sumArr } from 'e';
 
 import { Emoji } from '../../../lib/constants';
 import { prisma } from '../../../lib/settings/prisma';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
-import { addArrayOfNumbers, calcPerHour, gaussianRandom } from '../../../lib/util';
-import { formatOrdinal } from '../../../lib/util/formatOrdinal';
+import { calcPerHour, gaussianRandom } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 interface LMSGameSimulated {
@@ -109,7 +108,7 @@ export const lmsTask: MinionTask = {
 		await prisma.lastManStandingGame.createMany({
 			data: result.map(i => ({ ...i, user_id: BigInt(user.id), points: undefined }))
 		});
-		const points = addArrayOfNumbers(result.map(i => i.points));
+		const points = sumArr(result.map(i => i.points));
 
 		const { newUser } = await user.update({
 			lms_points: {

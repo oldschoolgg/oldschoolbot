@@ -4,7 +4,11 @@ import LRUCache from 'lru-cache';
 
 import { prisma } from '../lib/settings/prisma';
 
-export const untrustedGuildSettingsCache = new LRUCache<string, Guild>({ max: 5000 });
+type CachedGuild = Pick<
+	Guild,
+	'disabledCommands' | 'id' | 'tweetchannel' | 'jmodComments' | 'petchannel' | 'staffOnlyChannels'
+>;
+export const untrustedGuildSettingsCache = new LRUCache<string, CachedGuild>({ max: 1000 });
 
 export async function mahojiGuildSettingsFetch(guild: string | DJSGuild) {
 	const id = typeof guild === 'string' ? guild : guild.id;
@@ -15,6 +19,14 @@ export async function mahojiGuildSettingsFetch(guild: string | DJSGuild) {
 		update: {},
 		create: {
 			id
+		},
+		select: {
+			disabledCommands: true,
+			id: true,
+			tweetchannel: true,
+			jmodComments: true,
+			petchannel: true,
+			staffOnlyChannels: true
 		}
 	});
 	untrustedGuildSettingsCache.set(id, result);

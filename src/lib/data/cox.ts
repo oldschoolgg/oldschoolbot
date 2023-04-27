@@ -55,6 +55,8 @@ export async function createTeam(
 	cm: boolean
 ): Promise<Array<{ deaths: number; deathChance: number } & ChambersOfXericOptions['team'][0]>> {
 	let res = [];
+	const isSolo = users.length === 1;
+
 	for (const u of users) {
 		let points = 24_000;
 		const { total } = calculateUserGearPercents(u);
@@ -93,6 +95,10 @@ export async function createTeam(
 
 		if (cm && kc > 20) {
 			points += 5000;
+		}
+
+		if (isSolo && kc < 50) {
+			deathChance += Math.max(30 - kc, 0);
 		}
 
 		let deaths = 0;
@@ -306,8 +312,9 @@ export async function checkCoxTeam(users: MUser[], cm: boolean, quantity: number
 	return null;
 }
 
-async function kcEffectiveness(u: MUser, challengeMode: boolean, isSolo: boolean) {
-	const kc = await getMinigameScore(u.id, challengeMode ? 'raids_challenge_mode' : 'raids');
+function kcEffectiveness(challengeMode: boolean, isSolo: boolean, normalKC: number, cmKC: number) {
+	const kc = challengeMode ? cmKC : normalKC;
+
 	let cap = isSolo ? 250 : 400;
 	if (challengeMode) {
 		cap = isSolo ? 75 : 100;
@@ -461,7 +468,8 @@ export async function calcCoxDuration(
 		userPercentChange += calcPerc(total, speedReductionForGear);
 
 		// Reduce time for KC
-		const kcPercent = await kcEffectiveness(u, challengeMode, team.length === 1);
+		const stats = await u.fetchMinigames();
+		const kcPercent = kcEffectiveness(challengeMode, team.length === 1, stats.raids, stats.raids_challenge_mode);
 		userPercentChange += calcPerc(kcPercent, speedReductionForKC);
 
 		// Reduce time for item boosts
