@@ -1,3 +1,4 @@
+import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { bold } from 'discord.js';
 import { isObject, Time, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
@@ -11,7 +12,6 @@ import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/
 import { TeamLoot } from '../../../lib/simulation/TeamLoot';
 import { calcTOALoot, calculateXPFromRaid, toaOrnamentKits, toaPetTransmogItems } from '../../../lib/simulation/toa';
 import { TOAOptions } from '../../../lib/types/minions';
-import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { assert } from '../../../lib/util/logError';
 import resolveItems from '../../../lib/util/resolveItems';
