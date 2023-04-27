@@ -21,10 +21,11 @@ import { Castables } from '../../../lib/skilling/skills/magic/castables';
 import { getSlayerTaskStats } from '../../../lib/slayer/slayerUtil';
 import { sorts } from '../../../lib/sorts';
 import { InfernoOptions } from '../../../lib/types/minions';
-import { formatDuration, sanitizeBank, stringMatches } from '../../../lib/util';
+import { formatDuration, getUsername, sanitizeBank, SQL_sumOfAllCLItems, stringMatches } from '../../../lib/util';
 import { barChart, lineChart, pieChart } from '../../../lib/util/chart';
 import { getItem } from '../../../lib/util/getOSItem';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
+import resolveItems from '../../../lib/util/resolveItems';
 import { Cooldowns } from '../Cooldowns';
 import { collectables } from './collectCommand';
 
@@ -1001,6 +1002,82 @@ ${bank
 		perkTierNeeded: PerkTier.Four,
 		run: (_, userStats) => {
 			return makeResponseForBank(new Bank(userStats.toa_loot as ItemBank), 'Your TOA Loot');
+		}
+	},
+	{
+		name: 'Raids/CoX Luckiest and Unluckiest',
+		perkTierNeeded: PerkTier.Four,
+		run: async () => {
+			const items = resolveItems([
+				'Dexterous prayer scroll',
+				'Arcane prayer scroll',
+				'Twisted buckler',
+				'Dragon hunter crossbow',
+				"Dinh's bulwark",
+				'Ancestral hat',
+				'Ancestral robe top',
+				'Ancestral robe bottom',
+				'Dragon claws',
+				'Elder maul',
+				'Kodai insignia',
+				'Twisted bow'
+			]);
+			const totalCoxItemsText = SQL_sumOfAllCLItems(items);
+			const [luckiestSQL, unluckiestSQL] = ['ASC', 'DESC'].map(
+				order => `SELECT "users"."id", "user_stats".total_cox_points AS points, "minigames"."raids" + "minigames"."raids_challenge_mode" AS raids_total_kc, ${totalCoxItemsText} AS total_cox_items, "user_stats".total_cox_points / ${totalCoxItemsText} AS points_per_item
+FROM user_stats
+INNER JOIN "users" on "users"."id" = "user_stats"."user_id":: text
+INNER JOIN "minigames" on "minigames"."user_id" = "user_stats"."user_id":: text
+WHERE "user_stats".total_cox_points > 0 AND ${totalCoxItemsText} > 10
+ORDER BY points_per_item ${order}
+LIMIT 5;`
+			);
+
+			const [luckiest, unluckiest] = (await Promise.all([
+				prisma.$queryRawUnsafe(luckiestSQL),
+				prisma.$queryRawUnsafe(unluckiestSQL)
+			])) as {
+				id: string;
+				points: number;
+				raids_total_kc: number;
+				total_cox_items: number;
+				points_per_item: number;
+			}[][];
+
+			const response = `**Luckiest CoX Raiders**
+${luckiest
+	.map(
+		i =>
+			`${getUsername(i.id)}: ${i.points_per_item.toLocaleString()} points per item / 1 in ${(
+				i.raids_total_kc / i.total_cox_items
+			).toFixed(1)} raids`
+	)
+	.join('\n')}
+
+**Unluckiest CoX Raiders**
+${unluckiest
+	.map(
+		i =>
+			`${getUsername(i.id)}: ${i.points_per_item.toLocaleString()} points per item / 1 in ${(
+				i.raids_total_kc / i.total_cox_items
+			).toFixed(1)} raids`
+	)
+	.join('\n')}`;
+			return {
+				content: response
+			};
+		}
+	},
+	{
+		name: 'Items In Bank Not Sacrificed',
+		perkTierNeeded: null,
+		run: (user, userStats) => {
+			const sacrificedItems = new Bank(userStats.sacrificed_bank as ItemBank).items().map(i => i[0].id);
+			const itemsNotSac = user.bank.items().map(i => i[0].id);
+			const itemsNotSacFiltered = itemsNotSac.filter(i => !sacrificedItems.includes(i));
+			const itemsNotSacBank = new Bank();
+			for (const item of itemsNotSacFiltered) itemsNotSacBank.add(item);
+			return makeResponseForBank(itemsNotSacBank, 'Not Sacrificed Items');
 		}
 	}
 ] as const;

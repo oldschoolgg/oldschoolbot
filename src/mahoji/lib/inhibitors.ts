@@ -11,15 +11,8 @@ import {
 
 import { OWNER_IDS, SupportServer } from '../../config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '../../lib/blacklists';
-import {
-	BadgesEnum,
-	BitField,
-	Channel,
-	DISABLED_COMMANDS,
-	minionBuyButton,
-	PerkTier,
-	perkTierCache
-} from '../../lib/constants';
+import { BadgesEnum, BitField, Channel, DISABLED_COMMANDS, minionBuyButton, PerkTier } from '../../lib/constants';
+import { perkTierCache, syncPerkTierOfUser } from '../../lib/perkTiers';
 import { CategoryFlag } from '../../lib/types';
 import { formatDuration } from '../../lib/util';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
@@ -159,8 +152,11 @@ const inhibitors: Inhibitor[] = [
 			if (!guild || guild.id !== SupportServer) return false;
 			if (channel.id !== Channel.General) return false;
 
-			const perkTier = perkTierCache.get(user.id);
-			if (member && perkTier && perkTier >= PerkTier.Two) {
+			let perkTier = perkTierCache.get(user.id);
+			if (!perkTier) {
+				perkTier = syncPerkTierOfUser(user);
+			}
+			if (member && perkTier >= PerkTier.Two) {
 				return false;
 			}
 
