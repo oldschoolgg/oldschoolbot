@@ -54,7 +54,8 @@ export const wintertodtTask: MinionTask = {
 				WintertodtCrate.open({
 					points,
 					itemsOwned: user.allItemsOwned.clone().add(loot).bank,
-					skills: user.skillsAsXP
+					skills: user.skillsAsXP,
+					firemakingXP: user.skillsAsXP.firemaking
 				})
 			);
 		}

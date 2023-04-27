@@ -1,3 +1,4 @@
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { ChatInputCommandInteraction } from 'discord.js';
 import { reduceNumByPercent, Time } from 'e';
 import { Bank } from 'oldschooljs';
@@ -12,7 +13,6 @@ import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
-import { toTitleCase } from '../../../lib/util/toTitleCase';
 import { userStatsUpdate } from '../../mahojiSettings';
 
 let itemBoosts = [

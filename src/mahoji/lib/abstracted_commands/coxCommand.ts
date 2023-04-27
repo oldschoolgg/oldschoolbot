@@ -92,11 +92,6 @@ export async function coxCommand(
 
 	const minigameID = isChallengeMode ? 'raids_challenge_mode' : 'raids';
 
-	const userKC = await getMinigameScore(user.id, minigameID);
-	if (!isChallengeMode && userKC < 50 && type === 'solo') {
-		return 'You need at least 50 Chambers of Xeric KC before you can attempt a solo raid.';
-	}
-
 	if (isChallengeMode) {
 		const normalKC = await getMinigameScore(user.id, 'raids');
 		if (normalKC < 200) {

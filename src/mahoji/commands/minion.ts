@@ -1,3 +1,4 @@
+import { formatOrdinal, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
 import { notEmpty, randArrItem } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
@@ -57,6 +58,15 @@ const randomPatMessage = (minionName: string) => randArrItem(patMessages).replac
 
 export async function getUserInfo(user: MUser) {
 	const roboChimpUser = await roboChimpUserFetch(user.id);
+	const leaguesRanking = await roboChimpClient.user.count({
+		where: {
+			leagues_points_total: {
+				gte: roboChimpUser.leagues_points_total
+			}
+		}
+	});
+	const clRankRaw = await roboChimpClient.$queryRawUnsafe<{ count: number }[]>(roboChimpCLRankQuery(BigInt(user.id)));
+	const clRank = clRankRaw[0].count;
 
 	const bitfields = `${(user.bitfield as BitField[])
 		.map(i => BitFieldData[i])
@@ -90,9 +100,15 @@ export async function getUserInfo(user: MUser) {
 		patreon: roboChimpUser.patreon_id ? 'Yes' : 'None',
 		github: roboChimpUser.github_id ? 'Yes' : 'None'
 	};
+
+	const globalCLPercent = (((roboChimpUser.bso_cl_percent ?? 0) + (roboChimpUser.osb_cl_percent ?? 0)) / 2).toFixed(
+		2
+	);
+
 	return {
 		...result,
 		everythingString: `${user.badgedUsername}[${user.id}]
+**Current Trip:** ${taskText}
 **Perk Tier:** ${result.perkTier}
 **Blacklisted:** ${result.isBlacklisted}
 **Badges:** ${result.badges.join(' ')}
@@ -102,7 +118,12 @@ export async function getUserInfo(user: MUser) {
 **Ironman:** ${result.isIronman}
 **Bitfields:** ${result.bitfields}
 **Patreon Connected:** ${result.patreon}
-**Github Connected:** ${result.github}`
+**Github Connected:** ${result.github}
+**Leagues:** ${roboChimpUser.leagues_completed_tasks_ids.length} tasks, ${
+			roboChimpUser.leagues_points_total
+		} points (Rank ${leaguesRanking > 500 ? 'Unranked! Get more points!' : formatOrdinal(leaguesRanking)})
+**Global CL:** ${globalCLPercent}% (${clRank > 500 ? 'Unranked! Get more CL slots completed!' : formatOrdinal(clRank)})
+`
 	};
 }
 
