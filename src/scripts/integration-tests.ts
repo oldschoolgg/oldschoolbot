@@ -6,8 +6,8 @@ async function main() {
 		execSync('docker compose up -d --wait', { stdio: 'inherit' });
 		await sleep(200);
 
-		execSync('dotenv -e .env.example -- prisma db push', { stdio: 'inherit' });
-		await sleep(200);
+		execSync('dotenv -e .env.example -- prisma db push --schema="./prisma/schema.prisma"', { stdio: 'inherit' });
+		execSync('dotenv -e .env.example -- prisma db push --schema="./prisma/robochimp.prisma"', { stdio: 'inherit' });
 
 		execSync('vitest run --coverage --config vitest.integration.config.ts', { stdio: 'inherit' });
 	} catch (err) {
