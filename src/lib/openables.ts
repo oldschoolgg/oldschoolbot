@@ -1,3 +1,4 @@
+import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { Bank, LootTable, Openables } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { Mimic } from 'oldschooljs/dist/simulation/misc';
@@ -20,7 +21,6 @@ import {
 import { openSeedPack } from './skilling/functions/calcFarmingContracts';
 import { ItemBank } from './types';
 import { itemID, roll } from './util';
-import { formatOrdinal } from './util/formatOrdinal';
 import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
 

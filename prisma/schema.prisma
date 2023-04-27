@@ -419,6 +419,8 @@ model Webhook {
 enum XpGainSource {
   TombsOfAmascut
   UnderwaterAgilityThieving
+  ChambersOfXeric
+  TheatreOfBlood
 }
 
 model XPGain {

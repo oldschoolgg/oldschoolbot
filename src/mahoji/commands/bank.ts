@@ -9,6 +9,7 @@ import { Flags } from '../../lib/minions/types';
 import { PaginatedMessage } from '../../lib/PaginatedMessage';
 import { BankSortMethod, BankSortMethods } from '../../lib/sorts';
 import { channelIsSendable, makePaginatedMessage } from '../../lib/util';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption, itemOption } from '../lib/mahojiCommandOptions';
@@ -117,7 +118,7 @@ export const bankCommand: OSBMahojiCommand = {
 		flag?: BankFlag;
 		flag_extra?: BankFlag;
 	}>) => {
-		if (interaction) await interaction.deferReply();
+		if (interaction) await deferInteraction(interaction);
 		const mUser = await mUserFetch(user.id);
 		const baseBank = mUser.bankWithGP;
 
