@@ -187,14 +187,26 @@ const source: [string, (string | number)[]][] = [
 	['Dragonfire shield', [11_284]],
 	['Ancient wyvern shield', [21_634]],
 	['Avernic defender', ['Avernic defender (l)']],
-	['Void melee helm', ['Void melee helm (l)']],
-	['Void mage helm', ['Void mage helm (l)']],
-	['Void ranger helm', ['Void ranger helm (l)']],
-	['Void knight top', ['Void knight top (l)', 'Elite void top', 'Elite void top (l)']],
-	['Elite void top', ['Elite void top (l)']],
-	['Void knight robe', ['Void knight robe (l)', 'Elite void robe', 'Elite void robe (l)']],
-	['Elite void robe', ['Elite void robe (l)']],
-	['Void knight gloves', ['Void knight gloves (l)']],
+	['Void melee helm', ['Void melee helm (l)', 'Void melee helm (or)']],
+	['Void mage helm', ['Void mage helm (l)', 'Void mage helm (or)']],
+	['Void ranger helm', ['Void ranger helm (l)', 'Void ranger helm (or)']],
+	[
+		'Void knight top',
+		['Void knight top (l)', 'Void knight top (or)', 'Elite void top', 'Elite void top (l)', 'Elite void top (or)']
+	],
+	[
+		'Void knight robe',
+		[
+			'Void knight robe (l)',
+			'Void knight robe (or)',
+			'Elite void robe',
+			'Elite void robe (l)',
+			'Elite void robe (or)'
+		]
+	],
+	['Elite void top', ['Elite void top (l)', 'Elite void top (or)']],
+	['Elite void robe', ['Elite void robe (l)', 'Elite void robe (or)']],
+	['Void knight gloves', ['Void knight gloves (l)', 'Void knight gloves (or)']],
 	['Trident of the seas', ['Trident of the seas (full)', 'Trident of the seas (e)']],
 	['Trident of the swamp', ['Trident of the swamp (e)']],
 	['Bow of faerdhinen (c)', bowfaCorruptSimilar],
@@ -312,9 +324,12 @@ const source: [string, (string | number)[]][] = [
 	["Elidinis' ward (f)", ["Elidinis' ward (or)"]],
 	['Rune pouch', ['Divine rune pouch']],
 	['Ghrazi rapier', ['Holy ghrazi rapier']],
-	['Armadyl chestplate', ['Masori body (f)']],
-	['Armadyl chainskirt', ['Masori chaps (f)']],
-	['Armadyl helmet', ['Masori mask (f)', 'Armadyl helmet (or)']]
+	["Karil's coif", ['Armadyl helmet', 'Masori mask (f)', 'Masori mask']],
+	["Karil's leathertop", ['Armadyl chestplate', 'Masori body (f)', 'Masori body']],
+	["Karil's leatherskirt", ['Armadyl chainskirt', 'Masori chaps (f)', 'Masori chaps']],
+	['Armadyl helmet', ['Masori mask (f)', 'Masori mask']],
+	['Armadyl chestplate', ['Armadyl chestplate', 'Masori body (f)', 'Masori body']],
+	['Armadyl chainskirt', ['Masori chaps (f)', 'Masori chaps']]
 ];
 
 export const similarItems: Map<number, number[]> = new Map(

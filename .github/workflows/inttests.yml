@@ -36,8 +36,6 @@ jobs:
                   pushd src &&
                   cp config.example.ts config.ts &&
                   popd
-            - name: Generate Prisma Client
-              run: yarn gen
             - name: Build
               run: yarn build
             - name: Test
