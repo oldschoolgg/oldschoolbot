@@ -1,3 +1,4 @@
+import { formatOrdinal, toTitleCase } from '@oldschoolgg/toolkit';
 import { noOp, Time } from 'e';
 import { convertXPtoLVL, toKMB } from 'oldschooljs/dist/util/util';
 
@@ -7,8 +8,6 @@ import { skillEmoji } from './data/emojis';
 import { AddXpParams } from './minions/types';
 import { prisma } from './settings/prisma';
 import Skills from './skilling/skills';
-import { formatOrdinal } from './util/formatOrdinal';
-import { toTitleCase } from './util/toTitleCase';
 import { sendToChannelID } from './util/webhook';
 
 const skillsVals = Object.values(Skills);

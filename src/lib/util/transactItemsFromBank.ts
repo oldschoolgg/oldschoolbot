@@ -152,7 +152,7 @@ export async function transactItemsFromBank({
 			}
 		}
 
-		handleNewCLItems({ itemsAdded, user: settings, previousCL, newCL });
+		await handleNewCLItems({ itemsAdded, user: settings, previousCL, newCL });
 
 		return {
 			previousCL,

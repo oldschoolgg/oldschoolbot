@@ -1,3 +1,4 @@
+import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { calcPercentOfNum, calcWhatPercent, randInt } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
@@ -8,7 +9,6 @@ import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/s
 import { FightCavesActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, percentChance } from '../../../lib/util';
 import chatHeadImage from '../../../lib/util/chatHeadImage';
-import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 import { fightCavesCost } from '../../../mahoji/lib/abstracted_commands/fightCavesCommand';

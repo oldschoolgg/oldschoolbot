@@ -308,6 +308,7 @@ export interface TheatreOfBloodTaskOptions extends ActivityTaskOptionsWithUsers 
 	fakeDuration: number;
 	wipedRoom: null | number;
 	deaths: number[][];
+	solo?: boolean;
 }
 
 type UserID = string;

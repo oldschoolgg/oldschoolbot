@@ -1,3 +1,4 @@
+import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
 import {
 	ButtonInteraction,
 	ChatInputCommandInteraction,
@@ -7,7 +8,6 @@ import {
 } from 'discord.js';
 
 import { SILENT_ERROR } from '../constants';
-import { UserError } from '../UserError';
 import { logErrorForInteraction } from './logError';
 
 export function interactionReply(interaction: RepliableInteraction, response: string | InteractionReplyOptions) {
