@@ -1,7 +1,8 @@
+import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
+
 import { prisma } from '../settings/prisma';
 import { activitySync } from '../settings/settings';
 import { ActivityTaskOptions } from '../types/minions';
-import { UserError } from '../UserError';
 import { isGroupActivity } from '../util';
 import { logError } from './logError';
 import { getActivityOfUser } from './minionIsBusy';
