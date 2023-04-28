@@ -2,6 +2,7 @@ import { calcPercentOfNum, randInt } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
+import addSkillingClueToLoot from '../../../lib/minions/functions/addSkillingClueToLoot';
 import Fishing from '../../../lib/skilling/skills/fishing';
 import aerialFishingCreatures from '../../../lib/skilling/skills/hunter/aerialFishing';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -125,6 +126,10 @@ export const aerialFishingTask: MinionTask = {
 		if (bonusXP > 0) {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
 		}
+
+		// Add clue scrolls
+		const clueScrollChance = 636_833;
+		addSkillingClueToLoot(user, SkillsEnum.Fishing, quantity, clueScrollChance, loot);
 
 		// Heron Pet roll
 		const totalFishCaught = greaterSirenCaught + mottledEelCaught + commonTenchCaught + bluegillCaught;

@@ -121,6 +121,7 @@ export const bankCommand: OSBMahojiCommand = {
 		if (interaction) await deferInteraction(interaction);
 		const mUser = await mUserFetch(user.id);
 		const baseBank = mUser.bankWithGP;
+
 		const mahojiFlags: BankFlag[] = [];
 
 		if (options.flag) mahojiFlags.push(options.flag);

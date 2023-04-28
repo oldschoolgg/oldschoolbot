@@ -1,8 +1,8 @@
 import { EmbedBuilder } from '@discordjs/builders';
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Hiscores } from 'oldschooljs';
 
-import { toTitleCase } from '../../lib/util/toTitleCase';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const cluesCommand: OSBMahojiCommand = {

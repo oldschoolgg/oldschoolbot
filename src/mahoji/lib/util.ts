@@ -1,10 +1,9 @@
 import { Prisma } from '@prisma/client';
-import { Guild, PermissionsBitField } from 'discord.js';
 import { isObject } from 'e';
 import { ICommand, MahojiClient } from 'mahoji';
 import { CommandOptions, MahojiUserOption } from 'mahoji/dist/lib/types';
 
-import { AbstractCommand, AbstractCommandAttributes } from './inhibitors';
+import type { AbstractCommand, AbstractCommandAttributes } from './inhibitors';
 
 export interface OSBMahojiCommand extends ICommand {
 	attributes?: Omit<AbstractCommandAttributes, 'description'>;
@@ -68,10 +67,4 @@ export function getCommandArgs(
 
 export function allAbstractCommands(mahojiClient: MahojiClient): AbstractCommand[] {
 	return mahojiClient.commands.values.map(convertMahojiCommandToAbstractCommand);
-}
-
-export async function hasBanMemberPerms(userID: string, guild: Guild) {
-	const member = await guild.members.fetch(userID).catch(() => null);
-	if (!member) return false;
-	return member.permissions.has(PermissionsBitField.Flags.BanMembers);
 }

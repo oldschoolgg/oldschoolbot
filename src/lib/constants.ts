@@ -324,7 +324,7 @@ export const badges: { [key: number]: string } = {
 	[BadgesEnum.SotWTrophy]: Emoji.SOTWTrophy
 };
 
-export const MAX_QP = 290;
+export const MAX_QP = 293;
 export const MAX_XP = 200_000_000;
 
 export const MIMIC_MONSTER_ID = 23_184;
@@ -463,8 +463,6 @@ export enum PeakTier {
 	Medium = 'medium',
 	Low = 'low'
 }
-
-export const perkTierCache = new Map<string, number>();
 
 export const minionActivityCache: Map<string, ActivityTaskData> = new Map();
 

@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/restrict-plus-operands */
 import { Canvas } from '@napi-rs/canvas';
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import * as fs from 'fs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { Gear, maxDefenceStats, maxOffenceStats } from '../../structures/Gear';
 import { canvasImageFromBuffer, drawItemQuantityText, drawTitleText, fillTextXTimesInCtx } from '../../util/canvasUtil';
-import { toTitleCase } from '../../util/toTitleCase';
 import { GearSetup, GearSetupType, GearSetupTypes } from '../types';
 
 const gearTemplateFile = fs.readFileSync('./src/lib/resources/images/gear_template.png');

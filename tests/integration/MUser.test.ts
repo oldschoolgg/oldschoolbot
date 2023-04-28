@@ -13,19 +13,19 @@ async function stressTest(userID: string) {
 	const currentGP = user.GP;
 	const gpBank = new Bank().add('Coins', currentGP);
 	async function assertGP(amnt: number) {
-		const mUser = await mahojiUsersSettingsFetch(userID);
+		const mUser = await mahojiUsersSettingsFetch(userID, { GP: true });
 		assert(Number(mUser.GP) === amnt, `1 GP should match ${amnt} === ${Number(mUser.GP)}`);
 	}
 	async function assertBankMatches() {
 		const newBank = user.bank;
-		const mUser = await mahojiUsersSettingsFetch(userID);
+		const mUser = await mahojiUsersSettingsFetch(userID, { bank: true, GP: true });
 		const mahojiBank = new Bank(mUser.bank as ItemBank);
 		assert(mahojiBank.equals(newBank), 'Mahoji bank should match');
 		assert(mahojiBank.equals(currentBank), `Updated bank should match: ${mahojiBank.difference(currentBank)}`);
 		assert(currentGP === Number(mUser.GP), `2 GP should match ${currentGP} === ${Number(mUser.GP)}`);
 	}
 	async function fetchCL() {
-		const mUser = await mahojiUsersSettingsFetch(userID);
+		const mUser = await mahojiUsersSettingsFetch(userID, { collectionLogBank: true });
 		const mahojiBank = new Bank(mUser.collectionLogBank as ItemBank);
 		return mahojiBank;
 	}
