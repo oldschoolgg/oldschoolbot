@@ -494,7 +494,10 @@ const cantBeDropped = resolveItems([
 	...cmbClothes,
 	...theatreOfBloodHardUniques,
 	...theatreOfBloodNormalUniques,
-	...toaCL
+	...toaCL,
+	'Heavy ballista',
+	'Unstrung heavy ballista',
+	'Monkey tail'
 ]);
 
 export const tmbTable: number[] = [];
