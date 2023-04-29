@@ -2,7 +2,6 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import Buyables from '../../lib/data/buyables/buyables';
-import { leagueBuyables } from '../../lib/data/leaguesBuyables';
 import { gotFavour } from '../../lib/minions/data/kourendFavour';
 import { getMinigameScore, Minigames } from '../../lib/settings/minigames';
 import { formatSkillRequirements, itemNameFromID, stringMatches } from '../../lib/util';
@@ -13,12 +12,7 @@ import { buyKitten } from '../lib/abstracted_commands/buyKitten';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiParseNumber, multipleUserStatsBankUpdate } from '../mahojiSettings';
 
-const allBuyablesAutocomplete = [
-	...Buyables,
-	...leagueBuyables.map(i => ({ name: i.item.name })),
-	{ name: 'Kitten' },
-	{ name: 'Fossil Island Notes' }
-];
+const allBuyablesAutocomplete = [...Buyables, { name: 'Kitten' }, { name: 'Fossil Island Notes' }];
 
 export const buyCommand: OSBMahojiCommand = {
 	name: 'buy',
