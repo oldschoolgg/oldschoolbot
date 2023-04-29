@@ -19,6 +19,7 @@ import {
 	toaCL
 } from '../../lib/data/CollectionsExport';
 import pets from '../../lib/data/pets';
+import { minionExport, tradeExports } from '../../lib/dataExporting';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import { MinigameName, Minigames } from '../../lib/settings/minigames';
 import { convertStoredActivityToFlatActivity, prisma } from '../../lib/settings/prisma';
@@ -32,6 +33,7 @@ import {
 	isRaidsActivity,
 	isTOBOrTOAActivity,
 	itemNameFromID,
+	makeJSONFile,
 	stringMatches
 } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
@@ -815,6 +817,12 @@ export const toolsCommand: OSBMahojiCommand = {
 					name: 'minion',
 					description: 'Export general information on your minion.',
 					options: []
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'trades',
+					description: 'Export all your trades.',
+					options: []
 				}
 			]
 		}
@@ -860,6 +868,7 @@ export const toolsCommand: OSBMahojiCommand = {
 		};
 		export?: {
 			minion?: {};
+			trades?: {};
 		};
 	}>) => {
 		await deferInteraction(interaction);
@@ -985,6 +994,15 @@ You last reset your temporary CL: ${
 		if (options.user?.checkmasses) {
 			return checkMassesCommand(guildID);
 		}
+
+		if (options.export?.minion) {
+			return makeJSONFile(await minionExport(mahojiUser));
+		}
+
+		if (options.export?.trades) {
+			return makeJSONFile(await tradeExports(mahojiUser));
+		}
+
 		return 'Invalid command!';
 	}
 };

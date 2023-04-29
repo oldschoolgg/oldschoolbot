@@ -9,6 +9,7 @@ import { ClueTiers } from '../clues/clueTiers';
 import { PerkTier } from '../constants';
 import { skillEmoji } from '../data/emojis';
 import type { ArrayItemsResolved, Skills } from '../types';
+import { asyncGzip } from '../util';
 import getOSItem from './getOSItem';
 
 export function itemNameFromID(itemID: number | string) {
@@ -178,3 +179,13 @@ export function makeAutoFarmButton() {
 
 export const SQL_sumOfAllCLItems = (clItems: number[]) =>
 	`NULLIF(${clItems.map(i => `COALESCE(("collectionLogBank"->>'${i}')::int, 0)`).join(' + ')}, 0)`;
+
+export async function makeJSONFile(file: string | Record<any, any>, compress = false) {
+	let fileName = 'data.json';
+	if (compress) fileName += '.gz';
+	const buff = Buffer.from(typeof file === 'string' ? file : JSON.stringify(file));
+
+	return {
+		files: [{ name: fileName, attachment: compress ? await asyncGzip(buff) : buff }]
+	};
+}
