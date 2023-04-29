@@ -283,3 +283,12 @@ setItemAlias(27_149, 'Flower crown (non-binary)');
 setItemAlias(27_151, 'Flower crown (genderqueer)');
 setItemAlias(27_153, 'Flower crown (lesbian)');
 setItemAlias(27_155, 'Flower crown (gay)');
+
+// BSO (Twisted) trophies
+setItemAlias(24_372, 'BSO dragon trophy');
+setItemAlias(24_374, 'BSO rune trophy');
+setItemAlias(24_376, 'BSO adamant trophy');
+setItemAlias(24_378, 'BSO mithril trophy');
+setItemAlias(24_380, 'BSO steel trophy');
+setItemAlias(24_382, 'BSO iron trophy');
+setItemAlias(24_384, 'BSO bronze trophy');
