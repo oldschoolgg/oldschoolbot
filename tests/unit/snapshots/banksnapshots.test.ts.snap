@@ -373,6 +373,126 @@ exports[`OSB Buyables 1`] = `
       },
       "frozen": false,
     },
+    "name": "Flower crown (bisexual)",
+    "outputItems": Bank {
+      "bank": {
+        "27141": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "995": 5000,
+      },
+      "frozen": false,
+    },
+    "name": "Flower crown (asexual)",
+    "outputItems": Bank {
+      "bank": {
+        "27143": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "995": 5000,
+      },
+      "frozen": false,
+    },
+    "name": "Flower crown (transgender)",
+    "outputItems": Bank {
+      "bank": {
+        "27145": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "995": 5000,
+      },
+      "frozen": false,
+    },
+    "name": "Flower crown (pansexual)",
+    "outputItems": Bank {
+      "bank": {
+        "27147": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "995": 5000,
+      },
+      "frozen": false,
+    },
+    "name": "Flower crown (non-binary)",
+    "outputItems": Bank {
+      "bank": {
+        "27149": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "995": 5000,
+      },
+      "frozen": false,
+    },
+    "name": "Flower crown (genderqueer)",
+    "outputItems": Bank {
+      "bank": {
+        "27151": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "995": 5000,
+      },
+      "frozen": false,
+    },
+    "name": "Flower crown (lesbian)",
+    "outputItems": Bank {
+      "bank": {
+        "27153": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "995": 5000,
+      },
+      "frozen": false,
+    },
+    "name": "Flower crown (gay)",
+    "outputItems": Bank {
+      "bank": {
+        "27155": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "995": 5000,
+      },
+      "frozen": false,
+    },
     "name": "Flower crown",
     "outputItems": Bank {
       "bank": {

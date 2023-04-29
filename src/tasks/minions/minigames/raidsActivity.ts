@@ -46,8 +46,12 @@ async function handleCoxXP(user: MUser, qty: number, isCm: boolean) {
 	}
 
 	const results = [];
-	results.push(await user.addXP({ skillName: SkillsEnum.Ranged, amount: rangeXP, minimal: true }));
-	results.push(await user.addXP({ skillName: SkillsEnum.Magic, amount: magicXP, minimal: true }));
+	results.push(
+		await user.addXP({ skillName: SkillsEnum.Ranged, amount: rangeXP, minimal: true, source: 'ChambersOfXeric' })
+	);
+	results.push(
+		await user.addXP({ skillName: SkillsEnum.Magic, amount: magicXP, minimal: true, source: 'ChambersOfXeric' })
+	);
 	let [, , styles] = resolveAttackStyles(user, {
 		monsterID: -1
 	});
@@ -56,7 +60,9 @@ async function handleCoxXP(user: MUser, qty: number, isCm: boolean) {
 	}
 	const perSkillMeleeXP = meleeXP / styles.length;
 	for (const style of styles) {
-		results.push(await user.addXP({ skillName: style, amount: perSkillMeleeXP, minimal: true }));
+		results.push(
+			await user.addXP({ skillName: style, amount: perSkillMeleeXP, minimal: true, source: 'ChambersOfXeric' })
+		);
 	}
 	return results;
 }
