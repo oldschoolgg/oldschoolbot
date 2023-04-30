@@ -305,15 +305,12 @@ export const bingoCommand: OSBMahojiCommand = {
 		const endUnix = Math.floor(bingoEnd / 1000);
 		const teamCount = await prisma.bingoTeam.count();
 
-		if (!bingoIsActive()) {
-			return 'There is no Bingo!';
-		}
-
 		const str = `**#2 - BSO Bingo** ${teamCount} teams, ${toKMB(prizePool)} Prize Pool
 **Start:** ${time(startUnix)}  (${time(startUnix, 'R')})
 **Finish:** ${time(endUnix)} (${time(endUnix, 'R')})
 You have ${tilesCompletedCount} tiles completed.
-${bingoTableStr}`;
+${bingoTableStr}
+${bingoIsActive() ? '' : '\n**The Bingo has not started yet!**'}`;
 		return {
 			content: str,
 			components,

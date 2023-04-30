@@ -7,15 +7,6 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import { production } from '../../config';
-import {
-	commanderZilyanaCL,
-	customPetsCL,
-	generalGraardorCL,
-	godWarsDungeonGodswordShards,
-	kreeArraCL,
-	krilTsutsarothCL,
-	skillingPetsCL
-} from '../../lib/data/CollectionsExport';
 import { TanglerootTable } from '../../lib/minions/data/killableMonsters/custom/Treebeard';
 import { prisma } from '../../lib/settings/prisma';
 import { assert, logError } from '../../lib/util/logError';
@@ -24,7 +15,7 @@ import { sendToChannelID } from '../../lib/util/webhook';
 
 const BINGO_NOTIFICATION_CHANNEL_ID = production ? '1094693702536007750' : '1042760447830536212';
 
-export const bingoStart = 1_662_127_200 * 1000;
+export const bingoStart = 1_683_295_200 * 1000;
 export const bingoEnd = bingoStart + Time.Day * 7;
 export const BINGO_TICKET_PRICE = 1_000_000_000;
 
@@ -267,7 +258,7 @@ export const bingoTiles: BingoTile[] = [
 	},
 	{
 		id: 22,
-		name: 'Receive a unique from Monkey Rumble',
+		name: 'Receive a statue, egg or banana from Monkey Rumble',
 		oneOf: resolveItems(['Marimbo statue', 'Monkey egg', 'Big banana'])
 	},
 	{
