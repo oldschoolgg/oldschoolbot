@@ -499,6 +499,8 @@ enum XpGainSource {
   TombsOfAmascut
   BalthazarsBigBonanza
   UnderwaterAgilityThieving
+  ChambersOfXeric
+  TheatreOfBlood
 }
 
 model XPGain {

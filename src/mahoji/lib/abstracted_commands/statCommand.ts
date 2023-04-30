@@ -1279,6 +1279,18 @@ ${unluckiest
 				content: response
 			};
 		}
+	},
+	{
+		name: 'Items In Bank Not Sacrificed',
+		perkTierNeeded: null,
+		run: (user, userStats) => {
+			const sacrificedItems = new Bank(userStats.sacrificed_bank as ItemBank).items().map(i => i[0].id);
+			const itemsNotSac = user.bank.items().map(i => i[0].id);
+			const itemsNotSacFiltered = itemsNotSac.filter(i => !sacrificedItems.includes(i));
+			const itemsNotSacBank = new Bank();
+			for (const item of itemsNotSacFiltered) itemsNotSacBank.add(item);
+			return makeResponseForBank(itemsNotSacBank, 'Not Sacrificed Items');
+		}
 	}
 ] as const;
 
