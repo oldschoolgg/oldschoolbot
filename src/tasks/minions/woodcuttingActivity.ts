@@ -108,6 +108,10 @@ export const woodcuttingTask: MinionTask = {
 			str += "\nYour strung rabbit foot necklace increases the chance of receiving bird's eggs and rings.";
 		}
 
+		if (strungRabbitFoot && !log.clueNestsOnly) {
+			str += "\nYour strung rabbit foot necklace increases the chance of receiving bird's eggs and rings.";
+		}
+
 		// Roll for pet
 		if (log.petChance) {
 			const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Woodcutting, log.petChance);
