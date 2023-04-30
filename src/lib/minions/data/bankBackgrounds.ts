@@ -690,6 +690,15 @@ const backgroundImages: BankBackground[] = [
 		owners: ['354873929522741248'],
 		purpleImage: null,
 		hasPurple: true
+	},
+	{
+		id: 501,
+		name: 'Timebrawler CustomBG',
+		image: null,
+		available: false,
+		owners: ['235883747658956802'],
+		purpleImage: null,
+		hasPurple: true
 	}
 ];
 
