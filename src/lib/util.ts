@@ -255,16 +255,6 @@ export function formatItemCosts(consumable: Consumable, timeToFinish: number) {
 	return str.join('');
 }
 
-export function formatMissingItems(consumables: Consumable[], timeToFinish: number) {
-	const str = [];
-
-	for (const consumable of consumables) {
-		str.push(formatItemCosts(consumable, timeToFinish));
-	}
-
-	return str.join(', ');
-}
-
 export function formatPohBoosts(boosts: POHBoosts) {
 	const bonusStr = [];
 	const slotStr = [];
@@ -460,11 +450,6 @@ export function isAtleastThisOld(date: Date | number, age: number) {
 	return difference >= age;
 }
 
-export function truncateString(str: string, maxLen: number) {
-	if (str.length < maxLen) return str;
-	return `${str.slice(0, maxLen - 3)}...`;
-}
-
 export function removeMarkdownEmojis(str: string) {
 	return escapeMarkdown(stripEmojis(str));
 }
@@ -647,20 +632,6 @@ export function getAllIDsOfUser(user: MUser) {
 
 export function dateFm(date: Date) {
 	return `${time(date, 'T')} (${time(date, 'R')})`;
-}
-
-const validChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-
-export function miniID(length: number): string {
-	let id = '';
-
-	for (let i = 0; i < length; i++) {
-		const randomChar = validChars[Math.floor(Math.random() * validChars.length)];
-
-		id += randomChar;
-	}
-
-	return id;
 }
 
 export function getInteractionTypeName(type: InteractionType) {

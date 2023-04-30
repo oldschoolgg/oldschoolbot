@@ -22,7 +22,8 @@ const arrayColumns = [
 	['users', 'monkeys_fought'],
 	['users', 'unlocked_blueprints'],
 	['users', 'disabled_inventions'],
-	['users', 'unlocked_gear_templates']
+	['users', 'unlocked_gear_templates'],
+	['users', 'easter_egg_types_made']
 ];
 
 for (const [table, column] of arrayColumns) {

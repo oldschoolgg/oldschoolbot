@@ -10,7 +10,7 @@ import {
 	leaguesClaimCommand,
 	leagueTasks
 } from '../../lib/leagues/leagues';
-import { getUsersPerkTier } from '../../lib/MUser';
+import { getUsersPerkTier } from '../../lib/perkTiers';
 import { formatDuration } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { Cooldowns } from '../lib/Cooldowns';

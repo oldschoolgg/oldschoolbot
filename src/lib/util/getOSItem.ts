@@ -1,8 +1,8 @@
+import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
 import { Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { production } from '../../config';
-import { UserError } from '../UserError';
 
 const cache = new Map();
 

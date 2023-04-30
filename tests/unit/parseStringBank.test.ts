@@ -378,7 +378,6 @@ describe('Bank Parsers', () => {
 
 	test('ensureOldNamesDontWorkForCustomItems', () => {
 		const usersBank = new Bank()
-			.add('Smokey', 10)
 			.add('Doug', 3)
 			.add('Lil lamb', 10)
 			.add('Tradeable mystery box', 6)
@@ -410,8 +409,8 @@ describe('Bank Parsers', () => {
 		expect(
 			parseBank({
 				inputBank: usersBank,
-				inputStr: 'Huge lamp, Lil lamb, Smokey, average lamp'
+				inputStr: 'Huge lamp, Lil lamb, average lamp'
 			}).toString()
-		).toEqual('33x Huge lamp, 10x Smokey, 10x Lil Lamb, 1x Average lamp');
+		).toEqual('33x Huge lamp, 10x Lil Lamb, 1x Average lamp');
 	});
 });

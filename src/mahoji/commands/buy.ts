@@ -1,21 +1,18 @@
-import { randArrItem } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import Buyables from '../../lib/data/buyables/buyables';
-import { kittens } from '../../lib/growablePets';
 import { gotFavour } from '../../lib/minions/data/kourendFavour';
 import { getMinigameScore, Minigames } from '../../lib/settings/minigames';
-import { isElligibleForPresent } from '../../lib/settings/settings';
 import { formatSkillRequirements, itemNameFromID, stringMatches } from '../../lib/util';
-import { mahojiChatHead } from '../../lib/util/chatHeadImage';
-import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
+import { buyFossilIslandNotes } from '../lib/abstracted_commands/buyFossilIslandNotes';
+import { buyKitten } from '../lib/abstracted_commands/buyKitten';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiParseNumber, multipleUserStatsBankUpdate } from '../mahojiSettings';
 
-const allBuyablesAutocomplete = [...Buyables, { name: 'Kitten' }];
+const allBuyablesAutocomplete = [...Buyables, { name: 'Kitten' }, { name: 'Fossil Island Notes' }];
 
 export const buyCommand: OSBMahojiCommand = {
 	name: 'buy',
@@ -44,42 +41,10 @@ export const buyCommand: OSBMahojiCommand = {
 		const { name } = options;
 		let quantity = mahojiParseNumber({ input: options.quantity, min: 1 }) ?? 1;
 		if (stringMatches(name, 'kitten')) {
-			const cost = new Bank().add('Coins', 1000);
-			if (!user.owns(cost)) {
-				return mahojiChatHead({
-					head: 'gertrude',
-					content: "You don't have enough GP to buy a kitten! They cost 1000 coins."
-				});
-			}
-			if (user.QP < 10) {
-				return mahojiChatHead({
-					head: 'gertrude',
-					content: "You haven't done enough quests to raise a kitten yet!"
-				});
-			}
-
-			const allItemsOwnedBank = user.allItemsOwned;
-			if (kittens.some(kitten => allItemsOwnedBank.has(kitten))) {
-				return mahojiChatHead({
-					head: 'gertrude',
-					content: "You are already raising a kitten! You can't handle a second."
-				});
-			}
-
-			const kitten = getOSItem(randArrItem(kittens));
-
-			const loot = new Bank().add(kitten.id);
-
-			await transactItems({ userID: user.id, itemsToRemove: cost });
-			await transactItems({ userID: userID.toString(), itemsToAdd: loot, collectionLog: true });
-
-			return {
-				...(await mahojiChatHead({
-					head: 'gertrude',
-					content: `Here's a ${kitten.name}, raise it well and take care of it, please!`
-				})),
-				content: `Removed ${cost} from your bank.`
-			};
+			return buyKitten(user);
+		}
+		if (stringMatches(name, 'Fossil Island Notes')) {
+			return buyFossilIslandNotes(user, interaction, quantity);
 		}
 
 		const buyable = Buyables.find(
@@ -139,19 +104,6 @@ export const buyCommand: OSBMahojiCommand = {
 		}
 
 		let gpCost = user.isIronman && buyable.ironmanPrice !== undefined ? buyable.ironmanPrice : buyable.gpCost;
-
-		if (buyable.name === getOSItem('Festive present').name) {
-			if (!(await isElligibleForPresent(user))) {
-				return "Santa doesn't want to sell you a Festive present!";
-			}
-			quantity = 1;
-			const previouslyBought = user.cl.amount('Festive present');
-			if (user.isIronman) {
-				gpCost = Math.floor(10_000_000 * (previouslyBought + 1) * ((previouslyBought + 1) / 6));
-			} else {
-				gpCost = Math.floor(100_000_000 * (previouslyBought + 1) * ((previouslyBought + 1) / 3));
-			}
-		}
 
 		// If itemCost is undefined, it creates a new empty Bank, like we want:
 		const singleCost: Bank = new Bank(buyable.itemCost);

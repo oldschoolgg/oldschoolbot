@@ -157,7 +157,7 @@ client.on('interactionCreate', async interaction => {
 
 	if (!client.isReady()) {
 		if (interaction.isChatInputCommand()) {
-			interaction.reply({
+			await interaction.reply({
 				content:
 					'BSO is currently down for maintenance/updates, please try again in a couple minutes! Thank you <3',
 				ephemeral: true
@@ -195,10 +195,10 @@ client.on('interactionCreate', async interaction => {
 		const result = await mahojiClient.parseInteraction(interaction);
 		if (result === null) return;
 		if (isObject(result) && 'error' in result) {
-			handleInteractionError(result.error, interaction);
+			await handleInteractionError(result.error, interaction);
 		}
 	} catch (err) {
-		handleInteractionError(err, interaction);
+		await handleInteractionError(err, interaction);
 	}
 });
 

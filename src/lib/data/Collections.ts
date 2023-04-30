@@ -1449,6 +1449,24 @@ export const allCollectionLogs: ICollection = {
 				items: resolveItems(['Chickaxe', 'Leia', 'Decorative easter eggs']),
 				counts: false
 			},
+			'Easter 2023': {
+				items: resolveItems([
+					'Cute magic egg',
+					'Fancy magic egg',
+					'Big mysterious egg',
+					'Fancy ancient egg',
+					'Sweet small egg',
+					'Mysterious magic egg',
+					'Big ancient egg',
+					'Fancy sweet egg',
+					'Eggy',
+					'Easter egg backpack',
+					'Floppy bunny ears',
+					'Egg coating',
+					'Chocolate pot'
+				]),
+				counts: false
+			},
 			'Thanksgiving 2021': {
 				items: resolveItems(['Raw turkey', 'Turkey', 'Turkey drumstick', 'Burnt turkey', 'Cornucopia']),
 				counts: false

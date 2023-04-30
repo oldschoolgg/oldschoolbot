@@ -1,6 +1,6 @@
 import { activity_type_enum } from '@prisma/client';
 import { AttachmentBuilder, ButtonBuilder, MessageCollector } from 'discord.js';
-import { randInt, shuffleArr, Time } from 'e';
+import { clamp, percentChance, randInt, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { alching } from '../../mahoji/commands/laps';
@@ -11,6 +11,7 @@ import { updateClientGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from
 import { MysteryBoxes } from '../bsoOpenables';
 import { ClueTiers } from '../clues/clueTiers';
 import { BitField, COINS_ID, Emoji, PerkTier } from '../constants';
+import { UserFullGearSetup } from '../gear/types';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
 import { inventionBoosts, InventionID, inventionItemBoost } from '../invention/inventions';
@@ -19,6 +20,7 @@ import { RuneTable, WilvusTable, WoodTable } from '../simulation/seedTable';
 import { DougTable, PekyTable } from '../simulation/sharedTables';
 import { SkillsEnum } from '../skilling/types';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
+import { Gear } from '../structures/Gear';
 import { ActivityTaskOptions } from '../types/minions';
 import { buildClueButtons, channelIsSendable, itemID, makeComponents, roll, toKMB } from '../util';
 import {
@@ -39,6 +41,13 @@ const activitiesToTrackAsPVMGPSource: activity_type_enum[] = [
 	'MonsterKilling',
 	'Raids',
 	'ClueCompletion'
+];
+
+const eggCoatingRedirects = [
+	{
+		from: '499653426834047007',
+		to: '695705110566797372'
+	}
 ];
 
 export interface TripFinishEffect {
@@ -79,7 +88,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Random Events',
 		fn: async ({ data, messages, user }) => {
-			await triggerRandomEvent(user, data.duration, messages);
+			await triggerRandomEvent(user, data.type, data.duration, messages);
 		}
 	},
 	{
@@ -266,6 +275,54 @@ const tripFinishEffects: TripFinishEffect[] = [
 				}
 			}
 		}
+	},
+	{
+		name: 'Easter',
+		fn: async ({ data, messages, user }) => {
+			if (!user.owns('Chocolate pot')) return;
+			const minutes = clamp(Math.floor(data.duration / Time.Minute), 1, 60);
+			if (percentChance(minutes / 3)) {
+				const loot = new Bank().add('Egg coating');
+
+				const redirect = eggCoatingRedirects.find(i => i.from === user.id);
+				if (redirect) {
+					const recipient = await mUserFetch(redirect.to);
+					await recipient.addItemsToBank({ items: loot, collectionLog: true });
+					messages.push(
+						`<:Egg_coating:1093131161351487528> You found ${loot}, and gave it to <@${redirect.to}>!`
+					);
+					return;
+				}
+				await user.addItemsToBank({ items: loot, collectionLog: true });
+				messages.push(`<:Egg_coating:1093131161351487528> You found ${loot}!`);
+			}
+
+			if (user.hasEquipped('Cute magic egg') && user.user.cute_egg_hatching_percent < 100) {
+				const newPercent = clamp(user.user.cute_egg_hatching_percent + Math.floor(minutes / 4.5), 0, 100);
+				await user.update({
+					cute_egg_hatching_percent: newPercent
+				});
+
+				if (roll(3) && newPercent >= 20) {
+					messages.push('You feel the Cute magic egg wiggling around...');
+				}
+				if (newPercent === 100) {
+					messages.push('Your Cute magic egg has hatched!');
+					const gearSetupWithEgg = (Object.entries(user.gear) as [keyof UserFullGearSetup, Gear][]).find(i =>
+						i[1].hasEquipped('Cute magic egg')
+					);
+					if (!gearSetupWithEgg) {
+						throw new Error(`Expected user to have Cute magic egg equipped. ${user.id} / ${newPercent}`);
+					}
+					const gear = user.gear[gearSetupWithEgg[0]].clone();
+					gear.shield = null;
+					await user.update({
+						[`gear_${gearSetupWithEgg[0]}`]: gear.raw()
+					});
+					await user.addItemsToBank({ items: new Bank().add('Eggy'), collectionLog: true });
+				}
+			}
+		}
 	}
 ];
 
@@ -335,6 +392,6 @@ export async function handleTripFinish(
 	sendToChannelID(channelID, {
 		content: message,
 		image: attachment,
-		components: components.length > 0 ? makeComponents(shuffleArr(components)) : undefined
+		components: components.length > 0 ? makeComponents(components) : undefined
 	});
 }

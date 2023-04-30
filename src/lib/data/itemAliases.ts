@@ -325,3 +325,13 @@ setItemAlias(6108, 'Ghostly robe bottom');
 
 // JMOD Scythe:
 setItemAlias(22_664, 'Scythe of vitur (JMod)');
+
+// Flower crowns
+setItemAlias(27_141, 'Flower crown (bisexual)');
+setItemAlias(27_143, 'Flower crown (asexual)');
+setItemAlias(27_145, 'Flower crown (transgender)');
+setItemAlias(27_147, 'Flower crown (pansexual)');
+setItemAlias(27_149, 'Flower crown (non-binary)');
+setItemAlias(27_151, 'Flower crown (genderqueer)');
+setItemAlias(27_153, 'Flower crown (lesbian)');
+setItemAlias(27_155, 'Flower crown (gay)');

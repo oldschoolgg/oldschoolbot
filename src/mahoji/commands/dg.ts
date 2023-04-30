@@ -1,3 +1,4 @@
+import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { reduceNumByPercent, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
@@ -20,7 +21,6 @@ import { MakePartyOptions } from '../../lib/types';
 import { channelIsSendable, formatDuration, formatSkillRequirements, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { OSBMahojiCommand } from '../lib/util';
 

@@ -1,3 +1,4 @@
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { FishingContestCatch } from '@prisma/client';
 import { calcPercentOfNum, randArrItem } from 'e';
 import { Item } from 'oldschooljs/dist/meta/types';
@@ -15,7 +16,6 @@ import { prisma } from './settings/prisma';
 import { SkillsEnum } from './skilling/types';
 import { averageArr, gaussianRandom, ISODateString, murMurSort } from './util';
 import getOSItem from './util/getOSItem';
-import { toTitleCase } from './util/toTitleCase';
 
 const warmVerbs = ['freshwater', 'waterborn', 'silver'];
 const coldVerbs = ['pacific', 'long-finned', 'spotted'];

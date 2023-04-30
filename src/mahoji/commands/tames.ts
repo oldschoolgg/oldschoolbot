@@ -25,7 +25,7 @@ import { Eatables } from '../../lib/data/eatables';
 import { getSimilarItems } from '../../lib/data/similarItems';
 import { trackLoot } from '../../lib/lootTrack';
 import getUserFoodFromBank from '../../lib/minions/functions/getUserFoodFromBank';
-import { getUsersPerkTier } from '../../lib/MUser';
+import { getUsersPerkTier } from '../../lib/perkTiers';
 import { prisma } from '../../lib/settings/prisma';
 import { SkillsEnum } from '../../lib/skilling/types';
 import {

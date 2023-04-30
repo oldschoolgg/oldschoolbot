@@ -28,6 +28,7 @@ export const birdHouseTask: MinionTask = {
 		const currentCraftingLevel = user.skillLevel(SkillsEnum.Crafting);
 		let hunterXP = 0;
 		let craftingXP = 0;
+		let strungRabbitFoot = user.hasEquipped('Strung rabbit foot');
 		const loot = new Bank();
 
 		const birdhouse = birdhouses.find(_birdhouse => _birdhouse.name === birdhouseName);
@@ -92,6 +93,11 @@ export const birdHouseTask: MinionTask = {
 			hunterXP = birdhouseToCollect.huntXP * birdHouses;
 			for (let i = 0; i < birdHouses; i++) {
 				loot.add(birdhouseToCollect.table.roll());
+				if (strungRabbitFoot) {
+					loot.add(birdhouseToCollect.strungRabbitFootTable.roll());
+				} else {
+					loot.add(birdhouseToCollect.normalNestTable.roll());
+				}
 			}
 			await transactItems({
 				userID: user.id,
@@ -118,6 +124,10 @@ export const birdHouseTask: MinionTask = {
 			}
 
 			str += `\n\nYou received: ${loot}.`;
+
+			if (strungRabbitFoot) {
+				str += "\nYour strung rabbit foot necklace increases the chance of receiving bird's eggs and rings.";
+			}
 
 			let updateBirdhouseData: BirdhouseData = {
 				lastPlaced: null,
