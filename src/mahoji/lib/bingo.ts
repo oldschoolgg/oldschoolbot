@@ -13,15 +13,21 @@ import { assert, logError } from '../../lib/util/logError';
 import resolveItems from '../../lib/util/resolveItems';
 import { sendToChannelID } from '../../lib/util/webhook';
 
-const BINGO_NOTIFICATION_CHANNEL_ID = production ? '1094693702536007750' : '1042760447830536212';
+const start = 1_683_295_200;
 
-export const bingoStart = 1_683_295_200 * 1000;
-export const bingoEnd = bingoStart + Time.Day * 7;
-export const BINGO_TICKET_PRICE = 1_000_000_000;
+export const BINGO_CONFIG = {
+	startDate: start * 1000,
+	endDate: start * 1000 + Time.Day * 7,
+	startUnixDate: start,
+	endUnixDate: start + Time.Day * 7,
+	ticketPrice: 1_000_000_000,
+	teamSize: 1,
+	notificationsChannelID: production ? '1094693702536007750' : '1042760447830536212',
+	title: '#2 - BSO Bingo'
+};
 
 export function bingoIsActive() {
-	return true;
-	// return false; // Date.now() >= bingoStart && Date.now() < bingoEnd;
+	return production ? Date.now() >= BINGO_CONFIG.startDate && Date.now() < BINGO_CONFIG.endDate : true;
 }
 type BingoTile = (
 	| {
@@ -329,7 +335,7 @@ export async function onFinishTile(
 	}
 	if (!user.bingo_tickets_bought) return;
 	const tile = bingoTiles.find(i => i.id === finishedTile)!;
-	sendToChannelID(BINGO_NOTIFICATION_CHANNEL_ID, {
+	sendToChannelID(BINGO_CONFIG.notificationsChannelID, {
 		content: `${userMention(user.id)} just finished the '${tile.name}' tile! This is their ${
 			after.tilesCompletedCount
 		}/${bingoTiles.length} finished tile.`
@@ -356,12 +362,6 @@ async function getAllBingoPlayers() {
 export async function csvDumpBingoPlayers() {
 	const users = await getAllBingoPlayers();
 	return users.map(i => `${i.id}\t${i.tilesCompletedCount}\t${i.tilesCompleted.join(',')}`).join('\n');
-}
-
-export async function bingoLeaderboard() {
-	const mapped = (await getAllBingoPlayers()).slice(0, 10);
-	return `Bingo Leaderboard
-${mapped.map((i, index) => `${++index}. <@${i.id}> - ${i.tilesCompletedCount} tiles`).join('\n')}`;
 }
 
 interface ParsedBingoTeam {
@@ -407,7 +407,7 @@ export async function calculateBingoTeamDetails(oneTeamMember: string | string[]
 
 export const buyBingoTicketButton = new ButtonBuilder()
 	.setCustomId('BUY_BINGO_TICKET')
-	.setLabel(`Buy Bingo Ticket (${toKMB(BINGO_TICKET_PRICE)})`)
+	.setLabel(`Buy Bingo Ticket (${toKMB(BINGO_CONFIG.ticketPrice)})`)
 	.setEmoji('739459924693614653')
 	.setStyle(ButtonStyle.Secondary);
 

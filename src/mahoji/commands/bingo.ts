@@ -11,10 +11,8 @@ import { prisma } from '../../lib/settings/prisma';
 import { makeComponents, toKMB } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import {
-	BINGO_TICKET_PRICE,
-	bingoEnd,
+	BINGO_CONFIG,
 	bingoIsActive,
-	bingoStart,
 	buyBingoTicketButton,
 	countTotalGPInPrizePool,
 	determineBingoProgress
@@ -22,11 +20,6 @@ import {
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 import { doMenu, getPos } from './leaderboard';
-
-// type MakeTeamOptions = {
-// 	first_user: MahojiUserOption;
-// 	second_user: MahojiUserOption;
-// } & {};
 
 async function findBingoTeamWithUser(userID: string) {
 	const teamWithUser = await prisma.bingoTeam.findFirst({
@@ -37,6 +30,11 @@ async function findBingoTeamWithUser(userID: string) {
 		}
 	});
 	return teamWithUser;
+}
+function calculatePercentile(arr: number[], value: number) {
+	const sortedArr = arr.slice().sort((a, b) => a - b);
+	const rank = sortedArr.findIndex(el => el >= value);
+	return 100 - (rank / (sortedArr.length - 1)) * 100;
 }
 
 async function bingoLeaderboard(userID: string, channelID: string): CommandResponse {
@@ -52,7 +50,7 @@ async function bingoLeaderboard(userID: string, channelID: string): CommandRespo
 			id: true
 		}
 	});
-	const parsedTeams: { team: BingoTeam; tilesCompleted: number; users: string[] }[] = [];
+	const parsedTeams: { team: BingoTeam; tilesCompleted: number; users: string[]; percentile: number }[] = [];
 
 	for (const team of allBingoTeams) {
 		let totalCL = new Bank();
@@ -64,8 +62,14 @@ async function bingoLeaderboard(userID: string, channelID: string): CommandRespo
 		parsedTeams.push({
 			tilesCompleted: progress.tilesCompletedCount,
 			team,
-			users: team.users
+			users: team.users,
+			percentile: -1
 		});
+	}
+
+	const countArray = parsedTeams.map(item => item.tilesCompleted);
+	for (const team of parsedTeams) {
+		team.percentile = Math.ceil(calculatePercentile(countArray, team.tilesCompleted));
 	}
 
 	parsedTeams.sort((a, b) => b.tilesCompleted - a.tilesCompleted);
@@ -78,7 +82,7 @@ async function bingoLeaderboard(userID: string, channelID: string): CommandRespo
 					(user, j) =>
 						`${getPos(i, j)}**${user.users
 							.map(userMention)
-							.join(', ')}:** ${user.tilesCompleted.toLocaleString()}`
+							.join(', ')}:** ${user.tilesCompleted.toLocaleString()} (Top ${user.percentile.toFixed()}%)`
 				)
 				.join('\n')
 		),
@@ -164,8 +168,12 @@ export async function buyBingoTicketCommand(
 	const user = await mUserFetch(userID);
 
 	quantity = clamp(quantity, 1, 1000);
-	const gpCost = quantity * BINGO_TICKET_PRICE;
+	const gpCost = quantity * BINGO_CONFIG.ticketPrice;
 	const cost = new Bank().add('Coins', gpCost);
+
+	if (bingoIsActive()) {
+		return 'You cannot buy a Bingo ticket, because the bingo has already started!';
+	}
 
 	if ((user.user.bingo_tickets_bought > 0 || quantity > 1) && interaction) {
 		await handleMahojiConfirmation(
@@ -185,7 +193,7 @@ export async function buyBingoTicketCommand(
 			increment: quantity
 		},
 		bingo_gp_contributed: {
-			increment: quantity * BINGO_TICKET_PRICE
+			increment: quantity * BINGO_CONFIG.ticketPrice
 		}
 	});
 
@@ -277,7 +285,6 @@ export const bingoCommand: OSBMahojiCommand = {
 		channelID
 	}: CommandRunOptions<{
 		leaderboard?: {};
-		// make_team?: MakeTeamOptions;
 		leave_team?: {};
 		buy_ticket?: { quantity?: number };
 	}>) => {
@@ -288,8 +295,6 @@ export const bingoCommand: OSBMahojiCommand = {
 			id: true
 		});
 		const components = user.bingo_tickets_bought > 0 ? undefined : makeComponents([buyBingoTicketButton]);
-		// if (options.make_team) return makeTeamCommand(interaction, user, options.make_team);
-		// if (options.leave_team) return leaveTeamCommand(interaction);
 
 		if (options.buy_ticket) {
 			return buyBingoTicketCommand(interaction, userID, options.buy_ticket.quantity);
@@ -301,16 +306,20 @@ export const bingoCommand: OSBMahojiCommand = {
 		const { bingoTableStr, tilesCompletedCount } = determineBingoProgress(user.temp_cl);
 		const prizePool = await countTotalGPInPrizePool();
 
-		const startUnix = Math.floor(bingoStart / 1000);
-		const endUnix = Math.floor(bingoEnd / 1000);
+		const startUnix = Math.floor(BINGO_CONFIG.startUnixDate);
+		const endUnix = Math.floor(BINGO_CONFIG.endUnixDate);
 		const teamCount = await prisma.bingoTeam.count();
 
-		const str = `**#2 - BSO Bingo** ${teamCount} teams, ${toKMB(prizePool)} Prize Pool
+		let str = `**${BINGO_CONFIG.title}** ${teamCount} participants, ${toKMB(prizePool)} Prize Pool
 **Start:** ${time(startUnix)}  (${time(startUnix, 'R')})
 **Finish:** ${time(endUnix)} (${time(endUnix, 'R')})
 You have ${tilesCompletedCount} tiles completed.
-${bingoTableStr}
-${bingoIsActive() ? '' : '\n**The Bingo has not started yet!**'}`;
+${bingoTableStr}`;
+
+		if (bingoIsActive()) {
+		} else {
+			str += '\n\n**The Bingo has not started.**';
+		}
 		return {
 			content: str,
 			components,
