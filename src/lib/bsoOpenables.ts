@@ -496,7 +496,7 @@ const cantBeDropped = resolveItems([
 	...theatreOfBloodHardUniques,
 	...theatreOfBloodNormalUniques,
 	...toaCL,
-	...allTrophyItems.map(i => i.id)
+	...allTrophyItems
 ]);
 
 export const tmbTable: number[] = [];
