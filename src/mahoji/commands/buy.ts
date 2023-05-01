@@ -4,7 +4,9 @@ import { Bank } from 'oldschooljs';
 import Buyables from '../../lib/data/buyables/buyables';
 import { gotFavour } from '../../lib/minions/data/kourendFavour';
 import { getMinigameScore, Minigames } from '../../lib/settings/minigames';
+import { isElligibleForPresent } from '../../lib/settings/settings';
 import { formatSkillRequirements, itemNameFromID, stringMatches } from '../../lib/util';
+import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { buyFossilIslandNotes } from '../lib/abstracted_commands/buyFossilIslandNotes';
@@ -104,6 +106,19 @@ export const buyCommand: OSBMahojiCommand = {
 		}
 
 		let gpCost = user.isIronman && buyable.ironmanPrice !== undefined ? buyable.ironmanPrice : buyable.gpCost;
+
+		if (buyable.name === getOSItem('Festive present').name) {
+			if (!(await isElligibleForPresent(user))) {
+				return "Santa doesn't want to sell you a Festive present!";
+			}
+			quantity = 1;
+			const previouslyBought = user.cl.amount('Festive present');
+			if (user.isIronman) {
+				gpCost = Math.floor(10_000_000 * (previouslyBought + 1) * ((previouslyBought + 1) / 6));
+			} else {
+				gpCost = Math.floor(100_000_000 * (previouslyBought + 1) * ((previouslyBought + 1) / 3));
+			}
+		}
 
 		// If itemCost is undefined, it creates a new empty Bank, like we want:
 		const singleCost: Bank = new Bank(buyable.itemCost);
