@@ -57,7 +57,3 @@ export const UN_EQUIPPABLE = {
 	equipment: undefined,
 	equipable_by_player: undefined
 };
-
-export function setDataOfNonCustomItem(item: Item, data: Partial<Item>) {
-	Items.set(item.id, deepMerge(item, data));
-}

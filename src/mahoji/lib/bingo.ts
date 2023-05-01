@@ -222,8 +222,8 @@ export const bingoTiles: BingoTile[] = [
 	},
 	{
 		id: 15,
-		name: 'Receive a Fishing Trophy from Sea Kraken',
-		allOf: ['Fishing trophy']
+		name: 'Receive any Naxxus unique',
+		oneOf: ['Dark crystal', 'Abyssal gem', 'Tattered tome', 'Spellbound ring']
 	},
 	{
 		id: 16,

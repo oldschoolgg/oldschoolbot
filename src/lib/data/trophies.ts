@@ -59,7 +59,9 @@ for (const item of allTrophyItems) {
 		tradeable: false,
 		tradeable_on_ge: false,
 		customItemData: {
-			cantBeSacrificed: true
+			cantBeSacrificed: true,
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true
 		}
 	});
 }
