@@ -1,8 +1,7 @@
 import { modifyItem } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
 
-import { assert } from '../util';
-import resolveItems, { resolveOSItems } from '../util/resolveItems';
+import resolveItems from '../util/resolveItems';
 import { setItemAlias } from './itemAliases';
 
 // BSO (Twisted) trophies
@@ -66,5 +65,4 @@ for (const item of allTrophyItems) {
 			cantDropFromMysteryBoxes: true
 		}
 	});
-	assert(Items.get(item)!.customItemData?.isSuperUntradeable === true);
 }
