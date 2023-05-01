@@ -15,6 +15,6 @@ test('trophies', async () => {
 	expect(getOSItem('Placeholder bronze trophy')).toMatchObject({ id: 26_503 });
 
 	for (const trophy of allTrophyItems) {
-		expect(itemIsTradeable(trophy.id)).toEqual(false);
+		expect(itemIsTradeable(trophy)).toEqual(false);
 	}
 });
