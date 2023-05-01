@@ -154,13 +154,12 @@ let lastDrop = 0;
 const channelID = production ? '792691343284764693' : '944924763405574174';
 
 export async function boxSpawnHandler(msg: Message) {
+	if (!production) return;
 	if (msg.channel.id !== channelID || msg.author.bot) {
 		return;
 	}
-	if (production) {
-		if (Date.now() - lastDrop < Time.Minute * 5) return;
-		if (!roll(20)) return;
-	}
+	if (Date.now() - lastDrop < Time.Minute * 5) return;
+	if (!roll(20)) return;
 	lastDrop = Date.now();
 
 	const item: Challenge = randArrItem([itemChallenge, triviaChallenge, createdChallenge]);

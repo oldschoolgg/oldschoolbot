@@ -112,7 +112,10 @@ const itemsThatDontAddToTempCL = resolveItems([
 	'Untradeable Mystery box',
 	'Pet Mystery box',
 	'Holiday Mystery box',
-	'Tradeable Mystery box'
+	'Tradeable Mystery box',
+	'Monkey crate',
+	'Magic crate',
+	'Chimpling jar'
 ]);
 
 async function finalizeOpening({

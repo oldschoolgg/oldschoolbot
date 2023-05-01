@@ -1,7 +1,6 @@
-import getOSItem from '../util/getOSItem';
-import { setDataOfNonCustomItem } from './util';
+import { modifyItem } from '@oldschoolgg/toolkit';
 
-setDataOfNonCustomItem(getOSItem('Seed pack'), {
+modifyItem('Seed pack', {
 	customItemData: {
 		isSuperUntradeable: true,
 		cantDropFromMysteryBoxes: true

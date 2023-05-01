@@ -886,9 +886,7 @@ model UserStats {
 model BingoTeam {
   id Int @id @unique @default(autoincrement())
 
-  first_user  String @unique @db.VarChar(19)
-  second_user String @unique @db.VarChar(19)
-  third_user  String @unique @db.VarChar(19)
+  users String[]
 
   @@map("bingo_team")
 }
