@@ -104,8 +104,8 @@ export const bingoTiles: BingoTile[] = [
 	},
 	{
 		id: 5,
-		name: 'Receive a Vasa Magus pet, jar or robes',
-		oneOf: resolveItems(['Jar of magic', 'Tattered robes of Vasa', 'Voidling'])
+		name: 'Receive a Vasa Magus pet, jar, scroll, or robes',
+		oneOf: resolveItems(['Jar of magic', 'Tattered robes of Vasa', 'Voidling', 'Magus scroll'])
 	},
 	{
 		id: 6,
