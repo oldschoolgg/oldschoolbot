@@ -16,18 +16,6 @@ export function isCustomItem(itemID: number) {
 	return customItems.includes(itemID);
 }
 
-interface CustomItemData {
-	isSuperUntradeable?: boolean;
-	cantDropFromMysteryBoxes?: boolean;
-	cantBeSacrificed?: true;
-	cantBeDropped?: true;
-}
-declare module 'oldschooljs/dist/meta/types' {
-	interface Item {
-		customItemData?: CustomItemData;
-	}
-}
-
 export const hasSet: Item[] = [];
 
 // Prevent old item names from matching customItems

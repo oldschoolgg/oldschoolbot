@@ -140,6 +140,9 @@ export const sacrificeCommand: OSBMahojiCommand = {
 		let totalPrice = 0;
 		for (const [item, qty] of bankToSac.items()) {
 			totalPrice += sacrificePriceOfItem(item, qty);
+			if (item.customItemData?.cantBeSacrificed) {
+				return `${item.name} can't be sacrificed!`;
+			}
 		}
 
 		await handleMahojiConfirmation(
