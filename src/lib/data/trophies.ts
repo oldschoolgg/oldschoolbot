@@ -1,6 +1,6 @@
 import { modifyItem } from '@oldschoolgg/toolkit';
 
-import { resolveOSItems } from '../util/resolveItems';
+import resolveItems from '../util/resolveItems';
 import { setItemAlias } from './itemAliases';
 
 // BSO (Twisted) trophies
@@ -30,7 +30,7 @@ setItemAlias(26_507, 'Placeholder steel trophy');
 setItemAlias(26_505, 'Placeholder iron trophy');
 setItemAlias(26_503, 'Placeholder bronze trophy');
 
-export const allTrophyItems = resolveOSItems([
+export const allTrophyItems = resolveItems([
 	'BSO dragon trophy',
 	'BSO rune trophy',
 	'BSO adamant trophy',
@@ -55,7 +55,7 @@ export const allTrophyItems = resolveOSItems([
 ]);
 
 for (const item of allTrophyItems) {
-	modifyItem(item.id, {
+	modifyItem(item, {
 		tradeable: false,
 		tradeable_on_ge: false,
 		customItemData: {
