@@ -3,11 +3,10 @@ import '../lib/itemMods';
 
 import { writeFileSync } from 'fs';
 
-import { allTrophyItems } from '../lib/data/trophies';
 import { GearSetupTypes } from '../lib/gear/types';
 import { itemNameFromID } from '../lib/util';
 
-const items = allTrophyItems;
+const items: number[] = [1];
 
 let FINAL_QUERY = `-- Nuke these items: ${items
 	.map(itemNameFromID)
