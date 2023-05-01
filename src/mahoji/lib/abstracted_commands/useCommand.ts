@@ -1,11 +1,10 @@
-import { notEmpty, randInt, roll, Time } from 'e';
+import { notEmpty, randInt, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { BitField } from '../../../lib/constants';
 import { addToDoubleLootTimer } from '../../../lib/doubleLoot';
 import { allDyes, dyedItems } from '../../../lib/dyedItems';
-import { keepEggs } from '../../../lib/easter';
 import { gearImages } from '../../../lib/gear/functions/generateGearImage';
 import { assert } from '../../../lib/util';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
@@ -249,33 +248,6 @@ usables.push({
 	}
 });
 
-for (const [, , egg] of keepEggs) {
-	usables.push({
-		items: [egg, getOSItem('Hoppy')],
-		run: async (user: MUser) => {
-			if (!user.owns(egg.id)) return `You don't have a ${egg.name}.`;
-			if (!user.owns('Hoppy')) return "You don't have a Hoppy.";
-
-			if (egg.name === 'Cute magic egg') {
-				return 'Hoppy does not want to eat it.';
-			}
-
-			await user.removeItemsFromBank(new Bank().add(egg.id));
-			const { loot, message } = roll(6)
-				? {
-						loot: new Bank().add('Chocolate rabbit'),
-						message: 'Hoppy nibbled onto the egg, and sculpted it into a Chocolate rabbit.'
-				  }
-				: {
-						loot: new Bank().add('Chocolate dust'),
-						message: 'Hoppy eats the egg, and... you get back just some chocolate dust.'
-				  };
-
-			await user.addItemsToBank({ items: loot, collectionLog: true });
-			return message;
-		}
-	});
-}
 export const allUsableItems = new Set(usables.map(i => i.items.map(i => i.id)).flat(2));
 
 export async function useCommand(user: MUser, _firstItem: string, _secondItem?: string) {

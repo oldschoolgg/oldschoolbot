@@ -479,10 +479,6 @@ model User {
   farmingPatches_belladonna Json? @map("farmingPatches.belladonna") @db.Json
   kourend_favour            Json? @map("kourend_favour") @db.Json
 
-  easter_egg_types_made     String[]
-  easter_egg_to_hand_in     String?
-  cute_egg_hatching_percent Int      @default(0)
-
   @@index([id, last_command_date])
   @@map("users")
 }
