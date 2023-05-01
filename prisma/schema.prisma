@@ -310,6 +310,7 @@ model User {
   botItemSell    BotItemSell[]
   pinnedTrip     PinnedTrip[]
   geTransactions GETransaction[]
+  historicalData HistoricalData[]
 
   // Configs/Settings
   minion_defaultCompostToUse CropUpgradeType    @default(compost) @map("minion.defaultCompostToUse")
@@ -419,6 +420,8 @@ model Webhook {
 enum XpGainSource {
   TombsOfAmascut
   UnderwaterAgilityThieving
+  ChambersOfXeric
+  TheatreOfBlood
 }
 
 model XPGain {
@@ -747,6 +750,22 @@ model PinnedTrip {
   @@map("pinned_trip")
 }
 
+model HistoricalData {
+  id      String   @id @default(uuid()) @db.Uuid
+  user_id String   @db.VarChar(19)
+  date    DateTime @default(now())
+
+  cl_global_rank           Int
+  cl_completion_percentage Float
+  cl_completion_count      Int
+  GP                       BigInt
+  total_xp                 BigInt
+
+  user User @relation(fields: [user_id], references: [id])
+
+  @@map("historical_data")
+}
+
 enum command_usage_status {
   Unknown
   Success
@@ -890,14 +909,16 @@ model GEListing {
 }
 
 model GETransaction {
-  id              Int       @id @unique @default(autoincrement())
-  date            DateTime  @default(now())
+  id              Int      @id @unique @default(autoincrement())
+  date            DateTime @default(now())
   quantity_bought Int
   price_per_item  Int
-  buyer           User      @relation(fields: [user_id], references: [id])
-  user_id         String    @db.VarChar(19)
-  ge_listing      GEListing @relation(fields: [ge_listing_id], references: [id])
-  ge_listing_id   Int
+
+  buyer   User   @relation(fields: [user_id], references: [id])
+  user_id String @db.VarChar(19)
+
+  ge_listing    GEListing @relation(fields: [ge_listing_id], references: [id])
+  ge_listing_id Int
 
   @@map("ge_transaction")
 }

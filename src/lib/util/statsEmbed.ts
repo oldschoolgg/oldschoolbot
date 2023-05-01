@@ -1,9 +1,9 @@
 import { EmbedBuilder } from '@discordjs/builders';
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { Player } from 'oldschooljs';
 import { CluesScore, SkillScore, SkillsScore } from 'oldschooljs/dist/meta/types';
 
 import { skillEmoji } from '../data/emojis';
-import { toTitleCase } from './toTitleCase';
 
 export function statsEmbed({
 	username,
