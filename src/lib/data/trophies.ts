@@ -1,5 +1,4 @@
 import { modifyItem } from '@oldschoolgg/toolkit';
-import { Items } from 'oldschooljs';
 
 import resolveItems from '../util/resolveItems';
 import { setItemAlias } from './itemAliases';
