@@ -300,6 +300,7 @@ export const bingoCommand: OSBMahojiCommand = {
 			return buyBingoTicketCommand(interaction, userID, options.buy_ticket.quantity);
 		}
 		if (options.leaderboard) {
+			if (!bingoIsActive()) return 'The bingo has not started yet.';
 			return bingoLeaderboard(userID, channelID);
 		}
 
