@@ -135,6 +135,8 @@ model ClientStorage {
   toa_cost                     Json     @default("{}") @db.Json
   toa_loot                     Json     @default("{}") @db.Json
 
+  grand_exchange_owned_bank Json @default("{}") @db.Json
+
   @@map("clientStorage")
 }
 
@@ -309,7 +311,6 @@ model User {
   farmedCrops    FarmedCrop[]
   botItemSell    BotItemSell[]
   pinnedTrip     PinnedTrip[]
-  geTransactions GETransaction[]
   historicalData HistoricalData[]
 
   // Configs/Settings
@@ -404,6 +405,8 @@ model User {
   farmingPatches_mushroom   Json? @map("farmingPatches.mushroom") @db.Json
   farmingPatches_belladonna Json? @map("farmingPatches.belladonna") @db.Json
   kourend_favour            Json? @map("kourend_favour") @db.Json
+
+  geListings GEListing[]
 
   @@index([id, last_command_date])
   @@map("users")
@@ -892,33 +895,47 @@ enum AutoFarmFilterEnum {
   Replant
 }
 
+enum GEListingType {
+  Buy
+  Sell
+}
+
 model GEListing {
-  id                    Int             @id @unique @default(autoincrement())
-  is_open               Boolean         @default(true)
-  userfacing_id         Int
-  user_id               String          @db.VarChar(19)
-  created_at            DateTime        @default(now())
-  asking_price_per_item Int
+  id   Int           @id @unique @default(autoincrement())
+  type GEListingType
+
+  userfacing_id String
+
+  user_id String @db.VarChar(19)
+  user    User   @relation(fields: [user_id], references: [id])
+
+  created_at   DateTime  @default(now())
+  cancelled_at DateTime?
+  fulfilled_at DateTime?
+
   item_id               Int
+  asking_price_per_item BigInt
   total_quantity        BigInt
   quantity_remaining    Int
-  locked                Boolean         @default(false)
-  ge_transaction        GETransaction[]
+
+  buyTransactions  GETransaction[] @relation("buy_transactions")
+  sellTransactions GETransaction[] @relation("sell_transactions")
 
   @@map("ge_listing")
 }
 
 model GETransaction {
-  id              Int      @id @unique @default(autoincrement())
-  date            DateTime @default(now())
+  id Int @id @unique @default(autoincrement())
+
+  created_at      DateTime @default(now())
   quantity_bought Int
-  price_per_item  Int
+  price_per_item  BigInt
 
-  buyer   User   @relation(fields: [user_id], references: [id])
-  user_id String @db.VarChar(19)
+  buy_listing    GEListing @relation("buy_transactions", fields: [buy_listing_id], references: [id])
+  buy_listing_id Int
 
-  ge_listing    GEListing @relation(fields: [ge_listing_id], references: [id])
-  ge_listing_id Int
+  sell_listing    GEListing @relation("sell_transactions", fields: [sell_listing_id], references: [id])
+  sell_listing_id Int
 
   @@map("ge_transaction")
 }
