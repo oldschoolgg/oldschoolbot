@@ -135,7 +135,10 @@ class GrandExchangeSingleton {
 
 		const quantityToBuy = Math.min(buyerListing.quantity_remaining, sellerListing.quantity_remaining);
 		validateNumber(quantityToBuy);
-		const pricePerItem = Number(sellerListing.asking_price_per_item);
+		const pricePerItem = Math.max(
+			Number(buyerListing.asking_price_per_item),
+			Number(sellerListing.asking_price_per_item)
+		);
 		const totalPrice = quantityToBuy * pricePerItem;
 		validateNumber(totalPrice);
 
@@ -296,15 +299,15 @@ class GrandExchangeSingleton {
 		for (const listing of allListings) {
 			sanityCheckListing(listing);
 		}
-		for (const listing of buyListings) {
+		for (const buyListing of buyListings) {
 			const matchingSellListing = sellListings.find(
-				l =>
-					l.item_id === listing.item_id &&
-					l.asking_price_per_item <= listing.asking_price_per_item &&
-					listing.user_id !== l.user_id
+				sellListing =>
+					sellListing.item_id === buyListing.item_id &&
+					sellListing.asking_price_per_item >= buyListing.asking_price_per_item &&
+					buyListing.user_id !== sellListing.user_id
 			);
 			if (!matchingSellListing) continue;
-			await this.createTransaction(listing, matchingSellListing);
+			await this.createTransaction(buyListing, matchingSellListing);
 			break;
 		}
 	}
