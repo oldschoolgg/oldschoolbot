@@ -21,7 +21,7 @@ import { ItemBank } from '../lib/types';
 import { drawImageWithOutline, fillTextXTimesInCtx, getClippedRegionImage } from '../lib/util/canvasUtil';
 import itemID from '../lib/util/itemID';
 import { logError } from '../lib/util/logError';
-import { coxPurpleItems } from '../tasks/minions/minigames/raidsActivity';
+import resolveItems from './util/resolveItems';
 
 const fonts = {
 	OSRSFont: './src/lib/resources/osrs-font.ttf',
@@ -735,7 +735,28 @@ const chestLootTypes = [
 		chestImagePurple: loadImage('./src/lib/resources/images/cox.png'),
 		width: 260,
 		height: 180,
-		purpleItems: coxPurpleItems,
+		purpleItems: resolveItems([
+			'Metamorphic dust',
+			'Twisted ancestral colour kit',
+			"Xeric's guard",
+			"Xeric's warrior",
+			"Xeric's sentinel",
+			"Xeric's general",
+			"Xeric's champion",
+			'Olmlet',
+			'Twisted bow',
+			'Elder maul',
+			'Kodai insignia',
+			'Dragon claws',
+			'Ancestral hat',
+			'Ancestral robe top',
+			'Ancestral robe bottom',
+			"Dinh's bulwark",
+			'Dexterous prayer scroll',
+			'Arcane prayer scroll',
+			'Dragon hunter crossbow',
+			'Twisted buckler'
+		]),
 		position: () => [12, 44],
 		itemRect: [135, 45, 120, 120]
 	}
