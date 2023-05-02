@@ -128,17 +128,13 @@ class GrandExchangeSingleton {
 		assert(buyerListing.type !== sellerListing.type, 'Buyer and seller listings are the same type.');
 		assert(sellerListing.type === 'Sell' && buyerListing.type === 'Buy', 'Wrong listing types');
 		assert(buyerListing.item_id === sellerListing.item_id, 'Buyer and seller listings are not for the same item.');
-		assert(buyerListing.asking_price_per_item >= sellerListing.asking_price_per_item, 'Buy price < sell price');
 		assert(buyerListing.quantity_remaining > 0, 'Buyer listing has 0 quantity remaining.');
 		assert(sellerListing.quantity_remaining > 0, 'Seller listing has 0 quantity remaining.');
 		assert(buyerListing.user_id !== sellerListing.user_id, 'Buyer and seller are the same user.');
 
 		const quantityToBuy = Math.min(buyerListing.quantity_remaining, sellerListing.quantity_remaining);
 		validateNumber(quantityToBuy);
-		const pricePerItem = Math.max(
-			Number(buyerListing.asking_price_per_item),
-			Number(sellerListing.asking_price_per_item)
-		);
+		const pricePerItem = Number(sellerListing.asking_price_per_item);
 		const totalPrice = quantityToBuy * pricePerItem;
 		validateNumber(totalPrice);
 
@@ -229,7 +225,9 @@ class GrandExchangeSingleton {
 		// 	`You sold ${quantityToBuy}x ${itemName} for ${totalPrice} GP each, and receievd ${sellerLoot}.`
 		// );
 		await sendToChannelID('1103025439804502137', {
-			content: `${buyerUser} bought ${quantityToBuy}x ${itemName} for ${toKMB(
+			content: `BuyListingID[${buyerListing.userfacing_id}] SellListingID[${
+				sellerListing.userfacing_id
+			}] ${buyerUser} bought ${quantityToBuy}x ${itemName} for ${toKMB(
 				totalPrice
 			)} GP (${pricePerItem} ea) from ${sellerUser}`
 		});

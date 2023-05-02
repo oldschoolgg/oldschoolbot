@@ -181,7 +181,7 @@ export const geCommand: OSBMahojiCommand = {
 					content: `Listings:\n${allListings
 						.map(
 							l =>
-								`${getUsername(l.user_id)} has a listing to ${l.type} ${
+								`[${l.userfacing_id}] ${getUsername(l.user_id)} has a listing to ${l.type} ${
 									l.total_quantity
 								}x ${itemNameFromID(l.item_id)} for ${l.asking_price_per_item} GP each, there are ${
 									l.quantity_remaining
@@ -215,9 +215,11 @@ Transactions:\n${allTransactions
 
 				if (typeof result.error === 'string') return result.error;
 
-				return `Successfully created a listing to buy ${result.createdListing.total_quantity}x ${itemNameFromID(
-					result.createdListing.item_id
-				)} for ${result.createdListing.asking_price_per_item} GP each.`;
+				return `Successfully created a listing[${result.createdListing.userfacing_id}] to buy ${
+					result.createdListing.total_quantity
+				}x ${itemNameFromID(result.createdListing.item_id)} for ${
+					result.createdListing.asking_price_per_item
+				} GP each.`;
 			}
 
 			if (options.sell) {
@@ -231,7 +233,7 @@ Transactions:\n${allTransactions
 
 				if (typeof result.error === 'string') return result.error;
 
-				return `Successfully created a listing to sell ${
+				return `Successfully created a listing[${result.createdListing.userfacing_id}] to sell ${
 					result.createdListing.total_quantity
 				}x ${itemNameFromID(result.createdListing.item_id)} for ${
 					result.createdListing.asking_price_per_item
@@ -279,7 +281,7 @@ Transactions:\n${allTransactions
 					grand_exchange_owned_bank: (await fetchOwnedBank()).remove(refundBank).bank
 				});
 
-				return `Successfully cancelled your listing, you have been refunded ${refundBank}.`;
+				return `Successfully cancelled your listing[${newListing.userfacing_id}], you have been refunded ${refundBank}.`;
 			}
 
 			return 'Invalid command.';
