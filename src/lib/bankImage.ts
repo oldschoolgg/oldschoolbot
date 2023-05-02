@@ -21,6 +21,7 @@ import { ItemBank } from '../lib/types';
 import { drawImageWithOutline, fillTextXTimesInCtx, getClippedRegionImage } from '../lib/util/canvasUtil';
 import itemID from '../lib/util/itemID';
 import { logError } from '../lib/util/logError';
+import { coxPurpleItems } from '../tasks/minions/minigames/raidsActivity';
 
 const fonts = {
 	OSRSFont: './src/lib/resources/osrs-font.ttf',
@@ -734,7 +735,7 @@ const chestLootTypes = [
 		chestImagePurple: loadImage('./src/lib/resources/images/cox.png'),
 		width: 260,
 		height: 180,
-		purpleItems: toaPurpleItems,
+		purpleItems: coxPurpleItems,
 		position: () => [12, 44],
 		itemRect: [135, 45, 120, 120]
 	}
