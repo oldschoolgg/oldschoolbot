@@ -58,7 +58,7 @@ const bryophytasStaffId = itemID("Bryophyta's staff");
 export const puroPuroTask: MinionTask = {
 	type: 'PuroPuro',
 	async run(data: PuroPuroActivityTaskOptions) {
-		const { channelID, userID, quantity, implingID, darkLure, implingTier } = data;
+		const { channelID, userID, quantity, implingName, darkLure, implingTier } = data;
 		const user = await mUserFetch(userID);
 
 		await incrementMinigameScore(userID, 'puro_puro', quantity);
@@ -101,7 +101,7 @@ export const puroPuroTask: MinionTask = {
 				}
 			}
 		} else
-			switch (implingID) {
+			switch (implingTier) {
 				case itemID('Eclectic impling jar'):
 					bank.add('Eclectic impling jar', singleImpQty);
 					hunterXP += 30 * singleImpQty;
@@ -136,7 +136,7 @@ export const puroPuroTask: MinionTask = {
 			(hunterXP / (data.duration / Time.Minute)) * 60
 		).toLocaleString()} Hunter XP/Hr`;
 
-		const huntedImplingName = puroOptions.find(i => (i.item?.id ?? null) === implingID)!.name;
+		const huntedImplingName = puroOptions.find(i => i.name === implingName)!.name;
 
 		if (hunterXP > 0) {
 			str += `\n${xpStr}. You are getting ${hunterXpHr}.`;
@@ -177,7 +177,7 @@ export const puroPuroTask: MinionTask = {
 
 			if (magicXP > 0) str += `\n${magicXpStr}. You are getting ${magicXpHr}.`;
 
-			if (implingID === itemID('Nature impling jar')) {
+			if (implingTier === 2) {
 				str += `\n**Boosts:** Due to using Dark Lure, you are catching 20% more implings. You used: ${itemCost}. ${saved}`;
 			} else {
 				str += `\n**Boosts:** Due to using Dark Lure, you have an increased chance at getting Nature Implings and above. You used: ${itemCost}. ${saved}`;

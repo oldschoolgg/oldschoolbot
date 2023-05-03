@@ -356,7 +356,7 @@ export interface UnderwaterAgilityThievingTaskOptions extends ActivityTaskOption
 
 export interface PuroPuroActivityTaskOptions extends MinigameActivityTaskOptions {
 	quantity: number;
-	implingID: number | null;
+	implingName: string | null;
 	darkLure: boolean;
 	implingTier: number | null;
 }

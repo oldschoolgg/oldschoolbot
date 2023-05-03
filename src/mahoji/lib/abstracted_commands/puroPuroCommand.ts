@@ -113,12 +113,7 @@ export async function puroPuroStartCommand(
 		return 'To hunt in Puro-Puro, you need 3 QP.';
 	}
 
-	const impToHunt = puroOptions.find(
-		i =>
-			stringMatches(i.name, impling) ||
-			stringMatches(i.item?.id.toString() ?? '', impling) ||
-			stringMatches(i.name.split(' ')[0], impling)
-	);
+	const impToHunt = puroOptions.find(i => stringMatches(i.name, impling));
 
 	if (!impToHunt) {
 		return 'Error selecting impling, please try again.';
@@ -161,7 +156,7 @@ export async function puroPuroStartCommand(
 	}
 
 	await addSubTaskToActivityTask<PuroPuroActivityTaskOptions>({
-		implingID: impToHunt.item?.id ?? null,
+		implingName: impToHunt.name,
 		implingTier: impToHunt.tier ?? null,
 		quantity,
 		userID: user.id,
