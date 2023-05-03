@@ -14,6 +14,7 @@ interface PuroImpling {
 	hunterLevel: number;
 	spell: boolean;
 	item: Item | null;
+	tier?: number;
 }
 
 const puroPuroSkillRequirements: Skills = {
@@ -39,13 +40,15 @@ export const puroOptions: PuroImpling[] = [
 		name: 'All Implings',
 		hunterLevel: 17,
 		spell: true,
-		item: null
+		item: null,
+		tier: 1
 	},
 	{
 		name: 'High-tier Implings',
 		hunterLevel: 58,
 		spell: true,
-		item: null
+		item: null,
+		tier: 2
 	},
 	{
 		name: 'Eclectic Implings',
@@ -148,7 +151,7 @@ export async function puroPuroStartCommand(
 		const { bank } = user;
 		const natureRuneID = itemID('Nature rune');
 		const deathRuneID = itemID('Death rune');
-		if (impToHunt.name === 'High-tier Implings') {
+		if (impToHunt.tier === 2) {
 			if (bank.amount(natureRuneID) < 100 || bank.amount(deathRuneID) < 100) {
 				return "You don't have enough Nature and Death runes to start this trip, you need at least 100 of each.";
 			}
@@ -159,7 +162,7 @@ export async function puroPuroStartCommand(
 
 	await addSubTaskToActivityTask<PuroPuroActivityTaskOptions>({
 		implingID: impToHunt.item?.id ?? null,
-		implingLvl: impToHunt.hunterLevel,
+		implingTier: impToHunt.tier ?? null,
 		quantity,
 		userID: user.id,
 		duration,

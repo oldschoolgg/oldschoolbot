@@ -58,7 +58,7 @@ const bryophytasStaffId = itemID("Bryophyta's staff");
 export const puroPuroTask: MinionTask = {
 	type: 'PuroPuro',
 	async run(data: PuroPuroActivityTaskOptions) {
-		const { channelID, userID, quantity, implingID, darkLure, implingLvl } = data;
+		const { channelID, userID, quantity, implingID, darkLure, implingTier } = data;
 		const user = await mUserFetch(userID);
 
 		await incrementMinigameScore(userID, 'puro_puro', quantity);
@@ -75,10 +75,22 @@ export const puroPuroTask: MinionTask = {
 		const allImpQty = allImpHunt(minutes, user);
 		let highTierImpQty = highTierImpHunt(minutes, user);
 		const singleImpQty = singleImpHunt(minutes, user);
-		if (implingLvl === 58) {
+		if (implingTier === 2) {
 			if (darkLure) highTierImpQty *= 1.2;
 			for (let j = 0; j < highTierImpQty; j++) {
 				const loot = puroImpHighTierTable.roll();
+				if (loot.length === 0) continue;
+				const implingReceived = implings[loot.items()[0][0].id]!;
+				if (hunterLevel < implingReceived.level) missed.add(loot);
+				else {
+					bank.add(loot);
+					const implingReceivedXP = puroImplings[loot.items()[0][0].id]!;
+					hunterXP += Number(implingReceivedXP.catchXP);
+				}
+			}
+		} else if (implingTier === 1) {
+			for (let j = 0; j < allImpQty; j++) {
+				const loot = darkLure ? puroImpSpellTable.roll() : puroImpNormalTable.roll();
 				if (loot.length === 0) continue;
 				const implingReceived = implings[loot.items()[0][0].id]!;
 				if (hunterLevel < implingReceived.level) missed.add(loot);
@@ -113,19 +125,6 @@ export const puroPuroTask: MinionTask = {
 				case itemID('Baby impling jar'):
 					bank.add('Baby impling jar', singleImpQty);
 					hunterXP += 18 * singleImpQty;
-					break;
-				default:
-					for (let j = 0; j < allImpQty; j++) {
-						const loot = darkLure ? puroImpSpellTable.roll() : puroImpNormalTable.roll();
-						if (loot.length === 0) continue;
-						const implingReceived = implings[loot.items()[0][0].id]!;
-						if (hunterLevel < implingReceived.level) missed.add(loot);
-						else {
-							bank.add(loot);
-							const implingReceivedXP = puroImplings[loot.items()[0][0].id]!;
-							hunterXP += Number(implingReceivedXP.catchXP);
-						}
-					}
 					break;
 			}
 
