@@ -135,7 +135,8 @@ model ClientStorage {
   toa_cost                     Json     @default("{}") @db.Json
   toa_loot                     Json     @default("{}") @db.Json
 
-  grand_exchange_owned_bank Json @default("{}") @db.Json
+  grand_exchange_owned_bank Json    @default("{}") @db.Json
+  grand_exchange_is_locked  Boolean @default(false)
 
   @@map("clientStorage")
 }
@@ -914,8 +915,8 @@ model GEListing {
   fulfilled_at DateTime?
 
   item_id               Int
-  asking_price_per_item BigInt
-  total_quantity        BigInt
+  asking_price_per_item Int
+  total_quantity        Int
   quantity_remaining    Int
 
   buyTransactions  GETransaction[] @relation("buy_transactions")
@@ -929,7 +930,10 @@ model GETransaction {
 
   created_at      DateTime @default(now())
   quantity_bought Int
-  price_per_item  BigInt
+  price_per_item  Int
+
+  buyer_refund_amount  BigInt?
+  seller_refund_amount BigInt?
 
   buy_listing    GEListing @relation("buy_transactions", fields: [buy_listing_id], references: [id])
   buy_listing_id Int

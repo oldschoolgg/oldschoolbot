@@ -473,7 +473,8 @@ const globalConfigSchema = z.object({
 	patreonCampaignID: z.coerce.number().int().default(1),
 	patreonWebhookSecret: z.coerce.string().default(''),
 	httpPort: z.coerce.number().int().default(8080),
-	clientID: z.string().min(15).max(25)
+	clientID: z.string().min(15).max(25),
+	geAdminChannelID: z.string().min(15).max(25).default('')
 });
 dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.example' : '.env') });
 
@@ -482,5 +483,6 @@ export const globalConfig = globalConfigSchema.parse({
 	patreonCampaignID: process.env.PATREON_CAMPAIGN_ID,
 	patreonWebhookSecret: process.env.PATREON_WEBHOOK_SECRET,
 	httpPort: process.env.HTTP_PORT,
-	clientID: process.env.CLIENT_ID
+	clientID: process.env.CLIENT_ID,
+	geAdminChannelID: process.env.GE_ADMIN_CHANNEL_ID
 });

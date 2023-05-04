@@ -1,4 +1,6 @@
+import type { GEListing, GETransaction } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
+import { sumArr } from 'e';
 import { CommandRunOptions } from 'mahoji';
 import { CommandOption } from 'mahoji/dist/lib/types';
 import { Bank } from 'oldschooljs';
@@ -6,11 +8,51 @@ import { Bank } from 'oldschooljs';
 import { MAX_INT_JAVA } from '../../lib/constants';
 import { fetchOwnedBank, GrandExchange } from '../../lib/grandExchange';
 import { prisma } from '../../lib/settings/prisma';
-import { getUsername, itemNameFromID } from '../../lib/util';
+import { getUsername, itemNameFromID, toKMB } from '../../lib/util';
 import { mahojiClientSettingsUpdate } from '../../lib/util/clientSettings';
+import getOSItem from '../../lib/util/getOSItem';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { itemOption, ownedItemOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
+
+type GEListingWithTransactions = GEListing & {
+	buyTransactions: GETransaction[];
+	sellTransactions: GETransaction[];
+};
+
+function geListingToString(
+	listing: GEListingWithTransactions,
+	buyLimit?: Awaited<ReturnType<(typeof GrandExchange)['checkBuyLimitForListing']>>
+) {
+	const item = getOSItem(listing.item_id);
+	const allTransactions = [...listing.buyTransactions, ...listing.sellTransactions];
+	const verb = listing.type === 'Buy' ? 'Buying' : 'Selling';
+	const pastVerb = listing.type === 'Buy' ? 'Bought' : 'Sold';
+	const action = listing.type.toLowerCase();
+	const itemQty = `${toKMB(listing.total_quantity)} ${item.name}`;
+
+	const totalSold = listing.total_quantity - listing.quantity_remaining;
+	const totalPricePaidSoFar = toKMB(sumArr(allTransactions.map(i => i.quantity_bought * i.price_per_item)));
+
+	if (listing.cancelled_at) {
+		return `Cancelled offer to ${action} ${itemQty}. ${totalSold} were ${pastVerb}.`;
+	}
+
+	if (listing.fulfilled_at) {
+		return `Completed offer to ${action} ${itemQty}. ${totalSold} were ${pastVerb} for a total amount of ${totalPricePaidSoFar}`;
+	}
+
+	const buyLimitStr =
+		buyLimit !== undefined && buyLimit.remainingItemsCanBuy !== buyLimit.buyLimit
+			? ` (${buyLimit.remainingItemsCanBuy.toLocaleString()}/${buyLimit.buyLimit.toLocaleString()} remaining in buy limit currently)`
+			: '';
+
+	return `${verb} ${itemQty}, ${toKMB(
+		listing.quantity_remaining
+	)} are remaining to ${listing.type.toLowerCase()}, asking for ${toKMB(listing.asking_price_per_item)} GP each. ${
+		allTransactions.length
+	}x transactions made.${buyLimitStr}`;
+}
 
 const quantityOption: CommandOption = {
 	name: 'quantity',
@@ -66,8 +108,8 @@ export const geCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
-			name: 'list',
-			description: 'List ALLLL g.e listings and transactions',
+			name: 'my_listings',
+			description: 'View your listings',
 			options: []
 		},
 		{
@@ -91,6 +133,12 @@ export const geCommand: OSBMahojiCommand = {
 					}
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'global_reset',
+			description: 'Nuke the g.e',
+			options: []
 		}
 	],
 	run: async ({
@@ -112,22 +160,95 @@ export const geCommand: OSBMahojiCommand = {
 		cancel?: {
 			listing: string;
 		};
+		my_listings?: {};
+		global_reset?: {};
 	}>) => {
 		return GrandExchange.queue.add(async () => {
 			const user = await mUserFetch(userID);
 			await interaction.deferReply();
-			if (options.list) {
-				const allListings = await prisma.gEListing.findMany({
-					orderBy: {
-						created_at: 'desc'
-					},
+
+			if (options.global_reset) {
+				await mahojiClientSettingsUpdate({
+					grand_exchange_is_locked: false,
+					grand_exchange_owned_bank: {}
+				});
+				await prisma.gETransaction.deleteMany();
+				await prisma.gEListing.deleteMany();
+				await prisma.user.updateMany({
+					data: {
+						bank: new Bank().add('Egg', 1000).add('Coal', 1000).add('Trout', 1000).add('Flax', 1000).bank,
+						GP: 1_000_000_000
+					}
+				});
+				return "Grand Exchange has been reset. It's now open for business! Also made everyone have identical banks.";
+			}
+
+			if (options.my_listings) {
+				const activeListings = await prisma.gEListing.findMany({
 					where: {
+						user_id: user.id,
 						quantity_remaining: {
 							gt: 0
 						},
 						fulfilled_at: null,
 						cancelled_at: null
+					},
+					include: {
+						buyTransactions: true,
+						sellTransactions: true
+					},
+					orderBy: {
+						created_at: 'desc'
 					}
+				});
+				const recentInactiveListings = await prisma.gEListing.findMany({
+					where: {
+						user_id: user.id,
+						OR: [
+							{
+								fulfilled_at: {
+									not: null
+								}
+							},
+							{
+								cancelled_at: {
+									not: null
+								}
+							},
+							{
+								quantity_remaining: 0
+							}
+						]
+					},
+					include: {
+						buyTransactions: true,
+						sellTransactions: true
+					},
+					orderBy: {
+						created_at: 'desc'
+					},
+					take: 5
+				});
+
+				return `**Active Listings**
+${(
+	await Promise.all(
+		activeListings.map(async listing => {
+			const buyLimit = await GrandExchange.checkBuyLimitForListing(listing);
+			return geListingToString(listing, buyLimit);
+		})
+	)
+).join('\n')}
+
+**Recent Fulfilled/Cancelled Listings**
+${recentInactiveListings.map(i => geListingToString(i)).join('\n')}`;
+			}
+			if (options.list) {
+				const allListings = await prisma.gEListing.findMany({
+					orderBy: {
+						created_at: 'desc'
+					},
+					where: {}
 				});
 				const allTransactions = await prisma.gETransaction.findMany({
 					orderBy: {
