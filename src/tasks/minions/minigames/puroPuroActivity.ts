@@ -127,9 +127,9 @@ export const puroPuroTask: MinionTask = {
 					hunterXP += 18 * singleImpQty;
 					break;
 				default:
-        			// Handle the case when implingTier is null or any other unexpected value
-        			console.error(`Unexpected implingTier value: ${implingTier}`);
-        			break;
+					// Handle the case when implingTier is null or any other unexpected value
+					console.error(`Unexpected implingTier value: ${implingTier}`);
+					break;
 			}
 
 		let str = `<@${userID}>, ${user.minionName} finished hunting in Puro-Puro. `;
