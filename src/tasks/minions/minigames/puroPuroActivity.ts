@@ -1,4 +1,4 @@
-import { randFloat, reduceNumByPercent, roll, Time } from 'e';
+import { randInt, reduceNumByPercent, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
@@ -18,7 +18,7 @@ import { userHasGracefulEquipped, userStatsBankUpdate } from '../../../mahoji/ma
 
 function hunt(minutes: number, user: MUser, min: number, max: number) {
 	let totalQty = 0;
-	for (let i = 0; i < minutes; i++) totalQty += randFloat(min, max);
+	for (let i = 0; i < minutes; i++) totalQty += randInt(min, max);
 	if (!userHasGracefulEquipped(user)) totalQty = Math.floor(reduceNumByPercent(totalQty, 20));
 	return totalQty;
 }
