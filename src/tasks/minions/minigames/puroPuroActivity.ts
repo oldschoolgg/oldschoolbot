@@ -1,4 +1,4 @@
-import { randFloat, randInt, reduceNumByPercent, roll, Time } from 'e';
+import { randFloat, reduceNumByPercent, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
@@ -16,40 +16,10 @@ import itemID from '../../../lib/util/itemID';
 import puroOptions from '../../../mahoji/lib/abstracted_commands/puroPuroCommand';
 import { userHasGracefulEquipped, userStatsBankUpdate } from '../../../mahoji/mahojiSettings';
 
-function singleImpHunt(minutes: number, user: MUser) {
+function hunt(minutes: number, user: MUser, min: number, max: number) {
 	let totalQty = 0;
-	for (let i = 0; i < minutes; i++) {
-		let qty = randInt(5, 6);
-		totalQty += qty;
-	}
-	if (!userHasGracefulEquipped(user)) {
-		totalQty = Math.floor(reduceNumByPercent(totalQty, 20));
-	}
-	return totalQty;
-}
-
-function allImpHunt(minutes: number, user: MUser) {
-	let totalQty = 0;
-	for (let i = 0; i < minutes; i++) {
-		let qty = randInt(1, 3);
-		totalQty += qty;
-	}
-	if (!userHasGracefulEquipped(user)) {
-		totalQty = Math.floor(reduceNumByPercent(totalQty, 20));
-	}
-	return totalQty;
-}
-
-function highTierImpHunt(minutes: number, user: MUser) {
-	let totalQty = 0;
-	for (let i = 0; i < minutes; i++) {
-		let qty = randFloat(0.75, 1);
-		totalQty += qty;
-	}
-	totalQty = Math.floor(totalQty);
-	if (!userHasGracefulEquipped(user)) {
-		totalQty = Math.floor(reduceNumByPercent(totalQty, 20));
-	}
+	for (let i = 0; i < minutes; i++) totalQty += randFloat(min, max);
+	if (!userHasGracefulEquipped(user)) totalQty = Math.floor(reduceNumByPercent(totalQty, 20));
 	return totalQty;
 }
 
@@ -60,24 +30,18 @@ export const puroPuroTask: MinionTask = {
 	async run(data: PuroPuroActivityTaskOptions) {
 		const { channelID, userID, quantity, implingName, darkLure, implingTier } = data;
 		const user = await mUserFetch(userID);
-
 		await incrementMinigameScore(userID, 'puro_puro', quantity);
-
 		const minutes = Math.floor(data.duration / Time.Minute);
-
 		const bank = new Bank();
 		const missed = new Bank();
 		const itemCost = new Bank();
 		let hunterXP = 0;
-
-		const hunterLevel = user.skillLevel(SkillsEnum.Hunter);
-
-		const allImpQty = allImpHunt(minutes, user);
-		let highTierImpQty = highTierImpHunt(minutes, user);
-		const singleImpQty = singleImpHunt(minutes, user);
+		let hunterLevel = user.skillLevel(SkillsEnum.Hunter);
+		const allImpQty = hunt(minutes, user, 1, 3);
+		const highTierImpQty = hunt(minutes, user, 0.75, 1) * (darkLure ? 1.2 : 1);
+		const singleImpQty = hunt(minutes, user, 5, 6);
 		switch (implingTier) {
 			case 2:
-				if (darkLure) highTierImpQty *= 1.2;
 				for (let j = 0; j < highTierImpQty; j++) {
 					const loot = puroImpHighTierTable.roll();
 					if (loot.length === 0) continue;
