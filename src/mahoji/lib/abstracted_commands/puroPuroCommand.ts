@@ -54,37 +54,43 @@ export const puroOptions: PuroImpling[] = [
 		name: 'Eclectic Implings',
 		hunterLevel: 50,
 		spell: false,
-		item: getOSItem('Eclectic impling jar')
+		item: getOSItem('Eclectic impling jar'),
+		tier: 3
 	},
 	{
 		name: 'Essence Implings',
 		hunterLevel: 42,
 		spell: false,
-		item: getOSItem('Essence impling jar')
+		item: getOSItem('Essence impling jar'),
+		tier: 4
 	},
 	{
 		name: 'Earth Implings',
 		hunterLevel: 36,
 		spell: false,
-		item: getOSItem('Earth impling jar')
+		item: getOSItem('Earth impling jar'),
+		tier: 5
 	},
 	{
 		name: 'Gourmet Implings',
 		hunterLevel: 28,
 		spell: false,
-		item: getOSItem('Gourmet impling jar')
+		item: getOSItem('Gourmet impling jar'),
+		tier: 6
 	},
 	{
 		name: 'Young Implings',
 		hunterLevel: 22,
 		spell: false,
-		item: getOSItem('Young impling jar')
+		item: getOSItem('Young impling jar'),
+		tier: 7
 	},
 	{
 		name: 'Baby Implings',
 		hunterLevel: 17,
 		spell: false,
-		item: getOSItem('Baby impling jar')
+		item: getOSItem('Baby impling jar'),
+		tier: 8
 	}
 ];
 
