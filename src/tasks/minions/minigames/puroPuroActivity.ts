@@ -94,13 +94,10 @@ export const puroPuroTask: MinionTask = {
 		}
 
 		let str = `<@${userID}>, ${user.minionName} finished hunting in Puro-Puro. `;
-
 		const xpStr = await user.addXP({ skillName: SkillsEnum.Hunter, amount: hunterXP });
-
 		const hunterXpHr = `${Math.round(
 			(hunterXP / (data.duration / Time.Minute)) * 60
 		).toLocaleString()} Hunter XP/Hr`;
-
 		str += `\n${xpStr}. You are getting ${hunterXpHr}.`;
 
 		if (darkLure) {
@@ -123,17 +120,12 @@ export const puroPuroTask: MinionTask = {
 
 			const saved = savedRunes > 0 ? `\nYour Bryophyta's staff saved you ${savedRunes} Nature runes.` : '';
 			let magicXP = 0;
-
 			magicXP += spellsUsed * 60;
-
 			const magicXpStr = await user.addXP({ skillName: SkillsEnum.Magic, amount: magicXP });
-
 			const magicXpHr = `${Math.round(
 				(magicXP / (data.duration / Time.Minute)) * 60
 			).toLocaleString()} Magic XP/Hr`;
-
 			if (magicXP > 0) str += `\n${magicXpStr}. You are getting ${magicXpHr}.`;
-
 			if (implingTier === 2) {
 				str += `\n**Boosts:** Due to using Dark Lure, you are catching 20% more implings. You used: ${itemCost}. ${saved}`;
 			} else {
