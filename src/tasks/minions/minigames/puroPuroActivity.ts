@@ -13,7 +13,6 @@ import { incrementMinigameScore } from '../../../lib/settings/minigames';
 import { PuroPuroActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
-import puroOptions from '../../../mahoji/lib/abstracted_commands/puroPuroCommand';
 import { userHasGracefulEquipped, userStatsBankUpdate } from '../../../mahoji/mahojiSettings';
 
 function hunt(minutes: number, user: MUser, min: number, max: number) {
@@ -28,7 +27,7 @@ const bryophytasStaffId = itemID("Bryophyta's staff");
 export const puroPuroTask: MinionTask = {
 	type: 'PuroPuro',
 	async run(data: PuroPuroActivityTaskOptions) {
-		const { channelID, userID, quantity, implingName, darkLure, implingTier } = data;
+		const { channelID, userID, quantity, darkLure, implingTier } = data;
 		const user = await mUserFetch(userID);
 		await incrementMinigameScore(userID, 'puro_puro', quantity);
 		const minutes = Math.floor(data.duration / Time.Minute);
@@ -102,15 +101,7 @@ export const puroPuroTask: MinionTask = {
 			(hunterXP / (data.duration / Time.Minute)) * 60
 		).toLocaleString()} Hunter XP/Hr`;
 
-		const huntedImplingName = puroOptions.find(i => i.name === implingName)!.name;
-
-		if (hunterXP > 0) {
-			str += `\n${xpStr}. You are getting ${hunterXpHr}.`;
-		} else {
-			str += `\n${user.minionName} failed to spot any ${huntedImplingName} this trip.`;
-			handleTripFinish(user, channelID, str, undefined, data, bank);
-			return;
-		}
+		str += `\n${xpStr}. You are getting ${hunterXpHr}.`;
 
 		if (darkLure) {
 			const spellsUsed = bank.items().reduce((prev, curr) => {
