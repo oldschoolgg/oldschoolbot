@@ -1,18 +1,20 @@
 import { EmbedBuilder } from '@discordjs/builders';
+import { mentionCommand } from '@oldschoolgg/toolkit';
+import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
 import { BaseMessageOptions, bold, ButtonBuilder, ButtonStyle, Message, TextChannel } from 'discord.js';
-import { roll, Time } from 'e';
+import { isFunction, roll, Time } from 'e';
 import LRUCache from 'lru-cache';
 import { Items } from 'oldschooljs';
 
 import { production, SupportServer } from '../config';
 import { untrustedGuildSettingsCache } from '../mahoji/guildSettings';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
-import { mentionCommand } from './commandMention';
 import { BitField, Channel, Emoji, globalConfig } from './constants';
 import pets from './data/pets';
 import { prisma } from './settings/prisma';
 import { ItemBank } from './types';
-import { channelIsSendable, formatDuration, isFunction, makeComponents, toKMB } from './util';
+import { channelIsSendable, formatDuration, isModOrAdmin, makeComponents, toKMB } from './util';
+import { logError } from './util/logError';
 import { makeBankImage } from './util/makeBankImage';
 import { minionStatsEmbed } from './util/minionStatsEmbed';
 
@@ -77,7 +79,7 @@ function rareRoles(msg: Message) {
 	}
 }
 
-const petCache = new LRUCache<string, number>({ max: 1000 });
+const petCache = new LRUCache<string, number>({ max: 2000 });
 async function petMessages(msg: Message) {
 	if (!msg.guild) return;
 	const cachedSettings = untrustedGuildSettingsCache.get(msg.guild.id);
@@ -110,6 +112,7 @@ Type \`/tools user mypets\` to see your pets.`);
 }
 
 const mentionText = `<@${globalConfig.clientID}>`;
+const mentionRegex = new RegExp(`^(\\s*<@&?[0-9]+>)*\\s*<@${globalConfig.clientID}>\\s*(<@&?[0-9]+>\\s*)*$`);
 
 const cooldownTimers: {
 	name: string;
@@ -146,11 +149,21 @@ interface MentionCommand {
 
 const mentionCommands: MentionCommand[] = [
 	{
+		name: 'shutdownlock',
+		aliases: ['shutdownlock'],
+		description: 'shutdownlock.',
+		run: async ({ msg, user }: MentionCommandOptions) => {
+			if (!isModOrAdmin(user)) return;
+			globalClient.isShuttingDown = true;
+			return msg.reply('https://tenor.com/view/coffee-morning-monkey-drinking-coffee-shot-gif-20859464');
+		}
+	},
+	{
 		name: 'bs',
 		aliases: ['bs'],
 		description: 'Searches your bank.',
 		run: async ({ msg, user, components, content }: MentionCommandOptions) => {
-			msg.reply({
+			return msg.reply({
 				files: [
 					(
 						await makeBankImage({
@@ -169,7 +182,7 @@ const mentionCommands: MentionCommand[] = [
 		aliases: ['bal', 'gp'],
 		description: 'Shows how much GP you have.',
 		run: async ({ msg, user, components }: MentionCommandOptions) => {
-			msg.reply({
+			return msg.reply({
 				content: `${Emoji.MoneyBag} You have ${toKMB(user.GP)} (${user.GP.toLocaleString()}) GP.`,
 				components
 			});
@@ -220,7 +233,7 @@ const mentionCommands: MentionCommand[] = [
 		aliases: ['b', 'bank'],
 		description: 'Shows your bank.',
 		run: async ({ msg, user, components }: MentionCommandOptions) => {
-			msg.reply({
+			return msg.reply({
 				files: [
 					(
 						await makeBankImage({
@@ -243,7 +256,7 @@ const mentionCommands: MentionCommand[] = [
 		description: 'Shows your cooldowns.',
 		run: async ({ msg, user, components }: MentionCommandOptions) => {
 			const stats = await user.fetchStats({ last_daily_timestamp: true, last_tears_of_guthix_timestamp: true });
-			msg.reply({
+			return msg.reply({
 				content: cooldownTimers
 					.map(cd => {
 						const lastDone = cd.timeStamp(user, stats);
@@ -253,7 +266,14 @@ const mentionCommands: MentionCommand[] = [
 							const durationRemaining = formatDuration(Date.now() - (lastDone + cooldown));
 							return `${cd.name}: ${durationRemaining}`;
 						}
-						return bold(`${cd.name}: Ready ${mentionCommand(cd.command[0], cd.command[1], cd.command[2])}`);
+						return bold(
+							`${cd.name}: Ready ${mentionCommand(
+								globalClient,
+								cd.command[0],
+								cd.command[1],
+								cd.command[2]
+							)}`
+						);
 					})
 					.join('\n'),
 				components
@@ -268,8 +288,9 @@ const mentionCommands: MentionCommand[] = [
 			if ([BitField.isModerator].every(bit => !user.bitfield.includes(bit))) {
 				return;
 			}
-			msg.reply({
+			return msg.reply({
 				content: `Click this button to find out if you're ready to do Tombs of Amascut! You can also use the ${mentionCommand(
+					globalClient,
 					'raid',
 					'toa',
 					'help'
@@ -289,7 +310,7 @@ const mentionCommands: MentionCommand[] = [
 		aliases: ['s', 'stats'],
 		description: 'Shows your stats.',
 		run: async ({ msg, user, components }: MentionCommandOptions) => {
-			msg.reply({
+			return msg.reply({
 				embeds: [await minionStatsEmbed(user)],
 				components
 			});
@@ -324,12 +345,21 @@ export async function onMessage(msg: Message) {
 				is_mention_command: true
 			}
 		});
-		await command.run({ msg, user, components, content: msgContentWithoutCommand });
+
+		try {
+			await command.run({ msg, user, components, content: msgContentWithoutCommand });
+		} catch (err) {
+			if (typeof err === 'string') return msg.reply(err);
+			if (err instanceof UserError) return msg.reply(err.message);
+			logError(err);
+		}
 		return;
 	}
 
-	msg.reply({
-		content: result.content,
-		components
-	});
+	if (content.match(mentionRegex)) {
+		return msg.reply({
+			content: result.content,
+			components
+		});
+	}
 }

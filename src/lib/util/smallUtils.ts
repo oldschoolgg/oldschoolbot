@@ -1,3 +1,4 @@
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { objectEntries, Time } from 'e';
 import { Bank, Items } from 'oldschooljs';
@@ -9,7 +10,6 @@ import { PerkTier } from '../constants';
 import { skillEmoji } from '../data/emojis';
 import type { ArrayItemsResolved, Skills } from '../types';
 import getOSItem from './getOSItem';
-import { toTitleCase } from './toTitleCase';
 
 export function itemNameFromID(itemID: number | string) {
 	return Items.get(itemID)?.name;
@@ -49,10 +49,6 @@ export function formatItemBoosts(items: ItemBank[]) {
 
 export function calcPerHour(value: number, duration: number) {
 	return (value / (duration / Time.Minute)) * 60;
-}
-
-export function removeFromArr<T>(arr: T[] | readonly T[], item: T) {
-	return arr.filter(i => i !== item);
 }
 
 export function formatDuration(ms: number, short = false) {
@@ -180,6 +176,5 @@ export function makeAutoFarmButton() {
 		.setEmoji('630911040355565599');
 }
 
-export function stripNonAlphanumeric(str: string) {
-	return str.replace(/[^a-zA-Z0-9]/g, '');
-}
+export const SQL_sumOfAllCLItems = (clItems: number[]) =>
+	`NULLIF(${clItems.map(i => `COALESCE(("collectionLogBank"->>'${i}')::int, 0)`).join(' + ')}, 0)`;

@@ -3,9 +3,9 @@ import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { describe, expect, test } from 'vitest';
 
-import { mahojiClientSettingsFetch } from '../../src/lib/util/clientSettings';
-import { sacrificeCommand } from '../../src/mahoji/commands/sacrifice';
-import { integrationCmdRun, mockClient } from './util';
+import { mahojiClientSettingsFetch } from '../../../src/lib/util/clientSettings';
+import { sacrificeCommand } from '../../../src/mahoji/commands/sacrifice';
+import { integrationCmdRun, mockClient } from '../util';
 
 describe('Sacrifice Command', async () => {
 	await mockClient();
@@ -69,5 +69,14 @@ Your current sacrificed value is: 0 (0)`);
 				new Bank().add('Coal', 10).add('Trout', 2).add('Cake')
 			)
 		).toEqual(true);
+	});
+
+	test('Cant be sac', async () => {
+		const result = await integrationCmdRun({
+			command: sacrificeCommand,
+			options: { items: 'BSO dragon trophy' },
+			userOptions: { id: userID, ownedBank: new Bank().add('BSO dragon trophy') }
+		});
+		expect(result).toEqual("BSO dragon trophy can't be sacrificed!");
 	});
 });

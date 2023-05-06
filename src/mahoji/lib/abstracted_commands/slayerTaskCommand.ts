@@ -1,5 +1,6 @@
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction } from 'discord.js';
-import { notEmpty, randInt, Time } from 'e';
+import { notEmpty, randInt, removeFromArr, Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
 import killableMonsters from '../../../lib/minions/data/killableMonsters';
@@ -15,8 +16,7 @@ import {
 	userCanUseMaster
 } from '../../../lib/slayer/slayerUtil';
 import { AssignableSlayerTask } from '../../../lib/slayer/types';
-import { awaitMessageComponentInteraction, channelIsSendable, removeFromArr } from '../../../lib/util';
-import { stringMatches } from '../../../lib/util/cleanString';
+import { awaitMessageComponentInteraction, channelIsSendable } from '../../../lib/util';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { interactionReply } from '../../../lib/util/interactionReply';
 import { logError } from '../../../lib/util/logError';
@@ -231,7 +231,8 @@ export async function slayerNewTaskCommand({
 	const { slayer_remember_master: rememberedSlayerMaster } = user.user;
 
 	if (user.minionIsBusy) {
-		interaction.reply(
+		await interactionReply(
+			interaction,
 			`Your minion is busy, but you can still manage your block list: \`/slayer manage list_blocks\`${await slayerStatusCommand(
 				user
 			)}`
@@ -300,11 +301,11 @@ export async function slayerNewTaskCommand({
 			)}.`;
 
 		if (showButtons) {
-			returnSuccess(channelID, await mUserFetch(user.id), `${extraContent ?? ''}\n\n${returnMessage}`);
-			interaction.reply({ content: 'Slayer task assigned.', ephemeral: true });
+			await returnSuccess(channelID, await mUserFetch(user.id), `${extraContent ?? ''}\n\n${returnMessage}`);
+			await interactionReply(interaction, { content: 'Slayer task assigned.', ephemeral: true });
 			return;
 		}
-		interaction.reply(`${extraContent ?? ''}\n\n${returnMessage}`);
+		await interactionReply(interaction, `${extraContent ?? ''}\n\n${returnMessage}`);
 		return;
 	}
 	let resultMessage = '';
@@ -376,10 +377,10 @@ export async function slayerNewTaskCommand({
 	}x ${commonName}${getAlternateMonsterList(newSlayerTask.assignedTask)}.`;
 	if (showButtons) {
 		returnSuccess(channelID, await mUserFetch(user.id), resultMessage);
-		interaction.reply({ content: 'Slayer task assigned.', ephemeral: true });
+		await interactionReply(interaction, { content: 'Slayer task assigned.', ephemeral: true });
 		return;
 	}
-	interaction.reply(resultMessage);
+	await interactionReply(interaction, resultMessage);
 }
 
 export async function slayerSkipTaskCommand({
@@ -400,7 +401,7 @@ export async function slayerSkipTaskCommand({
 	const myBlockList = user.user.slayer_blocked_ids;
 	const maxBlocks = calcMaxBlockedTasks(user);
 	if (minionIsBusy(user.id)) {
-		interaction.reply('You cannot change your task while your minion is busy.');
+		interactionReply(interaction, 'You cannot change your task while your minion is busy.');
 		return;
 	}
 	if (!currentTask) {

@@ -19,7 +19,7 @@ exports[`OSB Buyables 1`] = `
       },
       "frozen": false,
     },
-    "qpRequired": 290,
+    "qpRequired": 293,
   },
   {
     "aliases": [
@@ -308,7 +308,7 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "gpCost": 500,
-    "ironmanPrice": 1,
+    "ironmanPrice": 100,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -373,6 +373,126 @@ exports[`OSB Buyables 1`] = `
       },
       "frozen": false,
     },
+    "name": "Flower crown (bisexual)",
+    "outputItems": Bank {
+      "bank": {
+        "27141": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "995": 5000,
+      },
+      "frozen": false,
+    },
+    "name": "Flower crown (asexual)",
+    "outputItems": Bank {
+      "bank": {
+        "27143": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "995": 5000,
+      },
+      "frozen": false,
+    },
+    "name": "Flower crown (transgender)",
+    "outputItems": Bank {
+      "bank": {
+        "27145": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "995": 5000,
+      },
+      "frozen": false,
+    },
+    "name": "Flower crown (pansexual)",
+    "outputItems": Bank {
+      "bank": {
+        "27147": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "995": 5000,
+      },
+      "frozen": false,
+    },
+    "name": "Flower crown (non-binary)",
+    "outputItems": Bank {
+      "bank": {
+        "27149": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "995": 5000,
+      },
+      "frozen": false,
+    },
+    "name": "Flower crown (genderqueer)",
+    "outputItems": Bank {
+      "bank": {
+        "27151": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "995": 5000,
+      },
+      "frozen": false,
+    },
+    "name": "Flower crown (lesbian)",
+    "outputItems": Bank {
+      "bank": {
+        "27153": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "995": 5000,
+      },
+      "frozen": false,
+    },
+    "name": "Flower crown (gay)",
+    "outputItems": Bank {
+      "bank": {
+        "27155": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "995": 5000,
+      },
+      "frozen": false,
+    },
     "name": "Flower crown",
     "outputItems": Bank {
       "bank": {
@@ -383,7 +503,7 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "gpCost": 3000,
-    "ironmanPrice": 600,
+    "ironmanPrice": 1000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -398,7 +518,7 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "gpCost": 1000,
-    "ironmanPrice": 100,
+    "ironmanPrice": 250,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -408,7 +528,7 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "gpCost": 1000,
-    "ironmanPrice": 100,
+    "ironmanPrice": 250,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -418,7 +538,7 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "gpCost": 1000,
-    "ironmanPrice": 2,
+    "ironmanPrice": 100,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -437,7 +557,7 @@ exports[`OSB Buyables 1`] = `
     "outputItems": undefined,
   },
   {
-    "gpCost": 50000,
+    "gpCost": 70000,
     "ironmanPrice": 18720,
     "itemCost": Bank {
       "bank": {},
@@ -468,8 +588,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 2000,
-    "ironmanPrice": 100,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -478,8 +597,7 @@ exports[`OSB Buyables 1`] = `
     "outputItems": undefined,
   },
   {
-    "gpCost": 2000,
-    "ironmanPrice": 100,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -488,8 +606,7 @@ exports[`OSB Buyables 1`] = `
     "outputItems": undefined,
   },
   {
-    "gpCost": 2000,
-    "ironmanPrice": 100,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -498,8 +615,7 @@ exports[`OSB Buyables 1`] = `
     "outputItems": undefined,
   },
   {
-    "gpCost": 2000,
-    "ironmanPrice": 100,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -508,8 +624,7 @@ exports[`OSB Buyables 1`] = `
     "outputItems": undefined,
   },
   {
-    "gpCost": 2000,
-    "ironmanPrice": 100,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -518,8 +633,7 @@ exports[`OSB Buyables 1`] = `
     "outputItems": undefined,
   },
   {
-    "gpCost": 2000,
-    "ironmanPrice": 100,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -528,8 +642,7 @@ exports[`OSB Buyables 1`] = `
     "outputItems": undefined,
   },
   {
-    "gpCost": 2000,
-    "ironmanPrice": 100,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -538,8 +651,7 @@ exports[`OSB Buyables 1`] = `
     "outputItems": undefined,
   },
   {
-    "gpCost": 2000,
-    "ironmanPrice": 100,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -548,8 +660,7 @@ exports[`OSB Buyables 1`] = `
     "outputItems": undefined,
   },
   {
-    "gpCost": 2000,
-    "ironmanPrice": 100,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -558,8 +669,7 @@ exports[`OSB Buyables 1`] = `
     "outputItems": undefined,
   },
   {
-    "gpCost": 2000,
-    "ironmanPrice": 100,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -568,8 +678,7 @@ exports[`OSB Buyables 1`] = `
     "outputItems": undefined,
   },
   {
-    "gpCost": 2000,
-    "ironmanPrice": 100,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -578,8 +687,7 @@ exports[`OSB Buyables 1`] = `
     "outputItems": undefined,
   },
   {
-    "gpCost": 2000,
-    "ironmanPrice": 100,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -694,7 +802,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -703,7 +811,7 @@ exports[`OSB Buyables 1`] = `
     "outputItems": undefined,
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -712,7 +820,7 @@ exports[`OSB Buyables 1`] = `
     "outputItems": undefined,
   },
   {
-    "gpCost": 2500,
+    "gpCost": 8000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -721,7 +829,7 @@ exports[`OSB Buyables 1`] = `
     "outputItems": undefined,
   },
   {
-    "gpCost": 2500,
+    "gpCost": 4000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -972,7 +1080,7 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "gpCost": 100000,
-    "ironmanPrice": 25,
+    "ironmanPrice": 500,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -1032,7 +1140,7 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "gpCost": 500,
-    "ironmanPrice": 7,
+    "ironmanPrice": 12,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -1059,7 +1167,7 @@ exports[`OSB Buyables 1`] = `
     "outputItems": undefined,
   },
   {
-    "gpCost": 15000,
+    "gpCost": 25000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -1984,7 +2092,7 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "gpCost": 100000,
-    "ironmanPrice": 160,
+    "ironmanPrice": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -1994,7 +2102,7 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "gpCost": 100000,
-    "ironmanPrice": 160,
+    "ironmanPrice": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -2004,7 +2112,7 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "gpCost": 100000,
-    "ironmanPrice": 160,
+    "ironmanPrice": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -2014,7 +2122,7 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "gpCost": 100000,
-    "ironmanPrice": 160,
+    "ironmanPrice": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -2024,7 +2132,7 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "gpCost": 100000,
-    "ironmanPrice": 160,
+    "ironmanPrice": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -2034,7 +2142,7 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "gpCost": 100000,
-    "ironmanPrice": 180,
+    "ironmanPrice": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -2044,7 +2152,7 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "gpCost": 100000,
-    "ironmanPrice": 180,
+    "ironmanPrice": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -2054,7 +2162,7 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "gpCost": 100000,
-    "ironmanPrice": 180,
+    "ironmanPrice": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -2064,7 +2172,7 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "gpCost": 100000,
-    "ironmanPrice": 180,
+    "ironmanPrice": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -2074,7 +2182,7 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "gpCost": 100000,
-    "ironmanPrice": 180,
+    "ironmanPrice": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -2084,7 +2192,7 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "gpCost": 100000,
-    "ironmanPrice": 180,
+    "ironmanPrice": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -2094,7 +2202,7 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "gpCost": 100000,
-    "ironmanPrice": 180,
+    "ironmanPrice": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -2104,7 +2212,7 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "gpCost": 100000,
-    "ironmanPrice": 180,
+    "ironmanPrice": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -2114,7 +2222,7 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "gpCost": 100000,
-    "ironmanPrice": 180,
+    "ironmanPrice": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -2124,7 +2232,7 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "gpCost": 100000,
-    "ironmanPrice": 180,
+    "ironmanPrice": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -2134,7 +2242,7 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "gpCost": 100000,
-    "ironmanPrice": 200,
+    "ironmanPrice": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -2144,7 +2252,7 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "gpCost": 100000,
-    "ironmanPrice": 200,
+    "ironmanPrice": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -2154,7 +2262,7 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "gpCost": 100000,
-    "ironmanPrice": 200,
+    "ironmanPrice": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -2164,7 +2272,7 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "gpCost": 100000,
-    "ironmanPrice": 200,
+    "ironmanPrice": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -2174,7 +2282,7 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "gpCost": 100000,
-    "ironmanPrice": 200,
+    "ironmanPrice": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -5821,7 +5929,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -5835,7 +5943,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -5849,7 +5957,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -5863,7 +5971,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -5877,7 +5985,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -5891,7 +5999,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -5905,7 +6013,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -5919,7 +6027,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -5933,7 +6041,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -5947,7 +6055,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -5961,7 +6069,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -5975,7 +6083,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -5989,7 +6097,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6003,7 +6111,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6017,7 +6125,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6031,7 +6139,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6045,7 +6153,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6059,7 +6167,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6073,7 +6181,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6087,7 +6195,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6101,7 +6209,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6115,7 +6223,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6129,7 +6237,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6143,7 +6251,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6157,7 +6265,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6171,7 +6279,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6185,7 +6293,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6199,7 +6307,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6213,7 +6321,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6227,7 +6335,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6241,7 +6349,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6255,7 +6363,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6269,7 +6377,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6283,7 +6391,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6297,7 +6405,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6311,7 +6419,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6325,7 +6433,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6339,7 +6447,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6353,7 +6461,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6367,7 +6475,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6381,7 +6489,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6395,7 +6503,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6409,7 +6517,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6423,7 +6531,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6437,7 +6545,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6451,7 +6559,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6465,7 +6573,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6479,7 +6587,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6493,7 +6601,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6507,7 +6615,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,

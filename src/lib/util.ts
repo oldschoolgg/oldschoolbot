@@ -1,26 +1,24 @@
 import { gzip } from 'node:zlib';
 
+import { stripEmojis } from '@oldschoolgg/toolkit';
 import { Stopwatch } from '@sapphire/stopwatch';
 import {
 	BaseMessageOptions,
 	ButtonBuilder,
 	ButtonInteraction,
 	CacheType,
-	Channel,
 	Collection,
 	CollectorFilter,
 	ComponentType,
 	escapeMarkdown,
 	Guild,
-	GuildTextBasedChannel,
 	InteractionReplyOptions,
 	InteractionType,
 	Message,
 	MessageEditOptions,
 	SelectMenuInteraction,
 	TextChannel,
-	time,
-	User as DJSUser
+	time
 } from 'discord.js';
 import { chunk, notEmpty, objectEntries, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
@@ -48,9 +46,7 @@ import type {
 import getOSItem, { getItem } from './util/getOSItem';
 import itemID from './util/itemID';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const emojiRegex = require('emoji-regex');
-
+export { cleanString, stringMatches, stripEmojis } from '@oldschoolgg/toolkit';
 export * from 'oldschooljs/dist/util/index';
 
 const zeroWidthSpace = '\u200b';
@@ -78,27 +74,6 @@ export function cleanMentions(guild: Guild | null, input: string, showAt = true)
 					return `<${type}${zeroWidthSpace}${id}>`;
 			}
 		});
-}
-
-export function generateHexColorForCashStack(coins: number) {
-	if (coins > 9_999_999) {
-		return '#00FF80';
-	}
-
-	if (coins > 99_999) {
-		return '#FFFFFF';
-	}
-
-	return '#FFFF00';
-}
-
-export function formatItemStackQuantity(quantity: number) {
-	if (quantity > 9_999_999) {
-		return `${Math.floor(quantity / 1_000_000)}M`;
-	} else if (quantity > 99_999) {
-		return `${Math.floor(quantity / 1000)}K`;
-	}
-	return quantity.toString();
 }
 
 export function isWeekend() {
@@ -134,12 +109,6 @@ export function percentChance(percent: number) {
 
 export function roll(max: number) {
 	return cryptoRand(1, max) === 1;
-}
-
-const rawEmojiRegex = emojiRegex();
-
-export function stripEmojis(str: string) {
-	return str.replace(rawEmojiRegex, '');
 }
 
 export const anglerBoosts = [
@@ -243,16 +212,6 @@ export function formatItemCosts(consumable: Consumable, timeToFinish: number) {
 	}
 
 	return str.join('');
-}
-
-export function formatMissingItems(consumables: Consumable[], timeToFinish: number) {
-	const str = [];
-
-	for (const consumable of consumables) {
-		str.push(formatItemCosts(consumable, timeToFinish));
-	}
-
-	return str.join(', ');
 }
 
 export function formatPohBoosts(boosts: POHBoosts) {
@@ -363,18 +322,8 @@ export function convertBankToPerHourStats(bank: Bank, time: number) {
 	return result;
 }
 
-export function truncateString(str: string, maxLen: number) {
-	if (str.length < maxLen) return str;
-	return `${str.slice(0, maxLen - 3)}...`;
-}
-
 export function removeMarkdownEmojis(str: string) {
 	return escapeMarkdown(stripEmojis(str));
-}
-export { cleanString, stringMatches } from './util/cleanString';
-
-export function discrimName(user: DJSUser) {
-	return `${user.username}#${user.discriminator}`;
 }
 
 export function isValidSkill(skill: string): skill is SkillsEnum {
@@ -471,10 +420,6 @@ export function awaitMessageComponentInteraction({
 	});
 }
 
-export function isGuildChannel(channel?: Channel): channel is GuildTextBasedChannel {
-	return channel !== undefined && !channel.isDMBased() && Boolean(channel.guild);
-}
-
 export async function runTimedLoggedFn(name: string, fn: () => Promise<unknown>) {
 	debugLog(`Starting ${name}...`);
 	const stopwatch = new Stopwatch();
@@ -484,26 +429,8 @@ export async function runTimedLoggedFn(name: string, fn: () => Promise<unknown>)
 	debugLog(`Finished ${name} in ${stopwatch.toString()}`);
 }
 
-export function isFunction(input: unknown): input is Function {
-	return typeof input === 'function';
-}
-
 export function dateFm(date: Date) {
 	return `${time(date, 'T')} (${time(date, 'R')})`;
-}
-
-const validChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-
-export function miniID(length: number): string {
-	let id = '';
-
-	for (let i = 0; i < length; i++) {
-		const randomChar = validChars[Math.floor(Math.random() * validChars.length)];
-
-		id += randomChar;
-	}
-
-	return id;
 }
 
 export function getInteractionTypeName(type: InteractionType) {

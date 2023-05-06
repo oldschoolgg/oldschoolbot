@@ -1,15 +1,14 @@
 import { userMention } from '@discordjs/builders';
 import { Prisma, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
-import { notEmpty, objectEntries, sumArr, uniqueArr } from 'e';
+import { objectEntries, sumArr, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { SupportServer } from '../config';
 import { timePerAlch } from '../mahoji/lib/abstracted_commands/alchCommand';
 import { userStatsUpdate } from '../mahoji/mahojiSettings';
 import { addXP } from './addXP';
 import { userIsBusy } from './busyCounterCache';
-import { badges, BitField, Emoji, PerkTier, perkTierCache, projectiles, Roles, usernameCache } from './constants';
+import { badges, BitField, Emoji, projectiles, usernameCache } from './constants';
 import { allPetIDs } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
 import { GearSetup, UserFullGearSetup } from './gear/types';
@@ -20,6 +19,7 @@ import { FarmingContract } from './minions/farming/types';
 import { AttackStyles } from './minions/functions';
 import { blowpipeDarts, validateBlowpipeData } from './minions/functions/blowpipeCommand';
 import { AddXpParams, BlowpipeData } from './minions/types';
+import { getUsersPerkTier, syncPerkTierOfUser } from './perkTiers';
 import { getMinigameEntity, Minigames, MinigameScore } from './settings/minigames';
 import { prisma } from './settings/prisma';
 import { getFarmingInfoFromUser } from './skilling/functions/getFarmingInfo';
@@ -48,10 +48,16 @@ export async function mahojiUserSettingsUpdate(user: string | bigint, data: Pris
 
 		return { newUser };
 	} catch (err) {
-		logError(err, {
-			user_id: user.toString(),
-			updated_data: JSON.stringify(data)
-		});
+		logError(
+			err,
+			{
+				user_id: user.toString()
+			},
+			{
+				user_id: user.toString(),
+				updated_data: JSON.stringify(data)
+			}
+		);
 		throw err;
 	}
 }
@@ -59,17 +65,6 @@ export async function mahojiUserSettingsUpdate(user: string | bigint, data: Pris
 function alchPrice(bank: Bank, item: Item, tripLength: number) {
 	const maxCasts = Math.min(Math.floor(tripLength / timePerAlch), bank.amount(item.id));
 	return maxCasts * (item.highalch ?? 0);
-}
-
-const tier3ElligibleBits = [
-	BitField.IsPatronTier3,
-	BitField.isContributor,
-	BitField.isModerator,
-	BitField.IsWikiContributor
-];
-
-export function syncPerkTierOfUser(user: MUser) {
-	perkTierCache.set(user.id, user.perkTier(true));
 }
 
 export type SelectedUserStats<T extends Prisma.UserStatsSelect> = {
@@ -607,7 +602,7 @@ export class MUserClass {
 	}
 
 	async fetchStats<T extends Prisma.UserStatsSelect>(selectKeys: T): Promise<SelectedUserStats<T>> {
-		const keys = Object.keys(selectKeys).length === 0 ? { user_id: true } : selectKeys;
+		const keysToSelect = Object.keys(selectKeys).length === 0 ? { user_id: true } : selectKeys;
 		const result = await prisma.userStats.upsert({
 			where: {
 				user_id: BigInt(this.id)
@@ -616,10 +611,9 @@ export class MUserClass {
 				user_id: BigInt(this.id)
 			},
 			update: {},
-			select: keys
+			select: keysToSelect
 		});
 
-		if (!result) throw new Error(`fetchStats returned no result for ${this.id}`);
 		return result as SelectedUserStats<T>;
 	}
 
@@ -667,86 +661,15 @@ export async function srcMUserFetch(userID: string) {
 
 declare global {
 	const mUserFetch: typeof srcMUserFetch;
+	const GlobalMUserClass: typeof MUserClass;
 }
 declare global {
 	namespace NodeJS {
 		interface Global {
 			mUserFetch: typeof srcMUserFetch;
+			GlobalMUserClass: typeof MUserClass;
 		}
 	}
 }
 global.mUserFetch = srcMUserFetch;
-
-export function getUsersPerkTier(
-	userOrBitfield: MUser | User | BitField[],
-	noCheckOtherAccounts?: boolean
-): PerkTier | 0 {
-	if (userOrBitfield instanceof MUserClass && userOrBitfield.user.premium_balance_tier !== null) {
-		const date = userOrBitfield.user.premium_balance_expiry_date;
-		if (date && Date.now() < date) {
-			return userOrBitfield.user.premium_balance_tier + 1;
-		} else if (date && Date.now() > date) {
-			userOrBitfield
-				.update({
-					premium_balance_tier: null,
-					premium_balance_expiry_date: null
-				})
-				.catch(e => {
-					logError(e, { user_id: userOrBitfield.id, message: 'Could not remove premium time' });
-				});
-		}
-	}
-
-	if (noCheckOtherAccounts !== true && userOrBitfield instanceof MUserClass) {
-		let main = userOrBitfield.user.main_account;
-		const allAccounts: string[] = [...userOrBitfield.user.ironman_alts, userOrBitfield.id];
-		if (main) {
-			allAccounts.push(main);
-		}
-
-		const allAccountTiers = allAccounts.map(id => perkTierCache.get(id)).filter(notEmpty);
-
-		const highestAccountTier = Math.max(0, ...allAccountTiers);
-		return highestAccountTier;
-	}
-
-	const bitfield = Array.isArray(userOrBitfield) ? userOrBitfield : userOrBitfield.bitfield;
-
-	if (bitfield.includes(BitField.IsPatronTier6)) {
-		return PerkTier.Seven;
-	}
-
-	if (bitfield.includes(BitField.IsPatronTier5)) {
-		return PerkTier.Six;
-	}
-
-	if (bitfield.includes(BitField.IsPatronTier4)) {
-		return PerkTier.Five;
-	}
-
-	if (tier3ElligibleBits.some(bit => bitfield.includes(bit))) {
-		return PerkTier.Four;
-	}
-
-	if (bitfield.includes(BitField.IsPatronTier2)) {
-		return PerkTier.Three;
-	}
-
-	if (
-		bitfield.includes(BitField.IsPatronTier1) ||
-		bitfield.includes(BitField.HasPermanentTierOne) ||
-		bitfield.includes(BitField.BothBotsMaxedFreeTierOnePerks)
-	) {
-		return PerkTier.Two;
-	}
-
-	if (userOrBitfield instanceof MUserClass) {
-		const guild = globalClient.guilds.cache.get(SupportServer);
-		const member = guild?.members.cache.get(userOrBitfield.id);
-		if (member && [Roles.Booster].some(roleID => member.roles.cache.has(roleID))) {
-			return PerkTier.One;
-		}
-	}
-
-	return 0;
-}
+global.GlobalMUserClass = MUserClass;
