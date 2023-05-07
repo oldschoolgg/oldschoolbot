@@ -1,12 +1,15 @@
+import { toTitleCase } from '@oldschoolgg/toolkit';
+import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { objectEntries, Time } from 'e';
 import { Bank, Items } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { MersenneTwister19937, shuffle } from 'random-js';
 
+import { ClueTiers } from '../clues/clueTiers';
+import { PerkTier } from '../constants';
 import { skillEmoji } from '../data/emojis';
 import type { ArrayItemsResolved, Skills } from '../types';
 import getOSItem from './getOSItem';
-import { toTitleCase } from './toTitleCase';
 
 export function itemNameFromID(itemID: number | string) {
 	return Items.get(itemID)?.name;
@@ -46,10 +49,6 @@ export function formatItemBoosts(items: ItemBank[]) {
 
 export function calcPerHour(value: number, duration: number) {
 	return (value / (duration / Time.Minute)) * 60;
-}
-
-export function removeFromArr<T>(arr: T[] | readonly T[], item: T) {
-	return arr.filter(i => i !== item);
 }
 
 export function formatDuration(ms: number, short = false) {
@@ -139,3 +138,43 @@ export function bankToStrShortNames(bank: Bank) {
 	}
 	return str.join(', ');
 }
+
+export function readableStatName(slot: string) {
+	return toTitleCase(slot.replace('_', ' '));
+}
+
+export function makeEasierFarmingContractButton() {
+	return new ButtonBuilder()
+		.setCustomId('FARMING_CONTRACT_EASIER')
+		.setLabel('Ask for easier Contract')
+		.setStyle(ButtonStyle.Secondary)
+		.setEmoji('977410792754413668');
+}
+
+export function buildClueButtons(loot: Bank | null, perkTier: number) {
+	const components: ButtonBuilder[] = [];
+	if (loot && perkTier > PerkTier.One) {
+		const clueReceived = ClueTiers.filter(tier => loot.amount(tier.scrollID) > 0);
+		components.push(
+			...clueReceived.map(clue =>
+				new ButtonBuilder()
+					.setCustomId(`DO_${clue.name.toUpperCase()}_CLUE`)
+					.setLabel(`Do ${clue.name} Clue`)
+					.setStyle(ButtonStyle.Secondary)
+					.setEmoji('365003979840552960')
+			)
+		);
+	}
+	return components;
+}
+
+export function makeAutoFarmButton() {
+	return new ButtonBuilder()
+		.setCustomId('AUTO_FARM')
+		.setLabel('Auto Farm')
+		.setStyle(ButtonStyle.Secondary)
+		.setEmoji('630911040355565599');
+}
+
+export const SQL_sumOfAllCLItems = (clItems: number[]) =>
+	`NULLIF(${clItems.map(i => `COALESCE(("collectionLogBank"->>'${i}')::int, 0)`).join(' + ')}, 0)`;

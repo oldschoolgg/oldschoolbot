@@ -1,5 +1,6 @@
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction } from 'discord.js';
-import { notEmpty, randInt, Time } from 'e';
+import { notEmpty, randInt, removeFromArr, Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
 import killableMonsters from '../../../lib/minions/data/killableMonsters';
@@ -15,12 +16,12 @@ import {
 	userCanUseMaster
 } from '../../../lib/slayer/slayerUtil';
 import { AssignableSlayerTask } from '../../../lib/slayer/types';
-import { awaitMessageComponentInteraction, channelIsSendable, removeFromArr } from '../../../lib/util';
-import { stringMatches } from '../../../lib/util/cleanString';
+import { awaitMessageComponentInteraction, channelIsSendable } from '../../../lib/util';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { interactionReply } from '../../../lib/util/interactionReply';
 import { logError } from '../../../lib/util/logError';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
+import { userStatsUpdate } from '../../mahojiSettings';
 
 const returnSuccessButtons = [
 	new ActionRowBuilder<ButtonBuilder>().addComponents([
@@ -98,7 +99,8 @@ export function slayerListBlocksCommand(mahojiUser: MUser) {
 
 export async function slayerStatusCommand(mahojiUser: MUser) {
 	const { currentTask, assignedTask, slayerMaster } = await getUsersCurrentSlayerInfo(mahojiUser.id);
-	const { slayer_points: slayerPoints, slayer_task_streak: slayerStreak } = mahojiUser.user;
+	const { slayer_points: slayerPoints } = mahojiUser.user;
+	const { slayer_task_streak: slayerStreak } = await mahojiUser.fetchStats({ slayer_task_streak: true });
 	return (
 		`${
 			currentTask
@@ -229,7 +231,8 @@ export async function slayerNewTaskCommand({
 	const { slayer_remember_master: rememberedSlayerMaster } = user.user;
 
 	if (user.minionIsBusy) {
-		interaction.reply(
+		await interactionReply(
+			interaction,
 			`Your minion is busy, but you can still manage your block list: \`/slayer manage list_blocks\`${await slayerStatusCommand(
 				user
 			)}`
@@ -288,7 +291,7 @@ export async function slayerNewTaskCommand({
 				quantity_remaining: 0
 			}
 		});
-		await user.update({ slayer_task_streak: 0 });
+		await userStatsUpdate(user.id, { slayer_task_streak: 0 }, {});
 		const newSlayerTask = await assignNewSlayerTask(user, slayerMaster);
 		let commonName = getCommonTaskName(newSlayerTask.assignedTask!.monster);
 		const returnMessage =
@@ -298,11 +301,11 @@ export async function slayerNewTaskCommand({
 			)}.`;
 
 		if (showButtons) {
-			returnSuccess(channelID, await mUserFetch(user.id), `${extraContent ?? ''}\n\n${returnMessage}`);
-			interaction.reply({ content: 'Slayer task assigned.', ephemeral: true });
+			await returnSuccess(channelID, await mUserFetch(user.id), `${extraContent ?? ''}\n\n${returnMessage}`);
+			await interactionReply(interaction, { content: 'Slayer task assigned.', ephemeral: true });
 			return;
 		}
-		interaction.reply(`${extraContent ?? ''}\n\n${returnMessage}`);
+		await interactionReply(interaction, `${extraContent ?? ''}\n\n${returnMessage}`);
 		return;
 	}
 	let resultMessage = '';
@@ -374,10 +377,10 @@ export async function slayerNewTaskCommand({
 	}x ${commonName}${getAlternateMonsterList(newSlayerTask.assignedTask)}.`;
 	if (showButtons) {
 		returnSuccess(channelID, await mUserFetch(user.id), resultMessage);
-		interaction.reply({ content: 'Slayer task assigned.', ephemeral: true });
+		await interactionReply(interaction, { content: 'Slayer task assigned.', ephemeral: true });
 		return;
 	}
-	interaction.reply(resultMessage);
+	await interactionReply(interaction, resultMessage);
 }
 
 export async function slayerSkipTaskCommand({
@@ -398,7 +401,7 @@ export async function slayerSkipTaskCommand({
 	const myBlockList = user.user.slayer_blocked_ids;
 	const maxBlocks = calcMaxBlockedTasks(user);
 	if (minionIsBusy(user.id)) {
-		interaction.reply('You cannot change your task while your minion is busy.');
+		interactionReply(interaction, 'You cannot change your task while your minion is busy.');
 		return;
 	}
 	if (!currentTask) {

@@ -67,6 +67,12 @@ export const raidCommand: OSBMahojiCommand = {
 							name: 'max_team_size',
 							description: 'Choose a max size for your team.',
 							required: false
+						},
+						{
+							type: ApplicationCommandOptionType.Boolean,
+							name: 'solo',
+							description: 'Solo with a team of 3 bots.',
+							required: false
 						}
 					]
 				},
@@ -120,6 +126,14 @@ export const raidCommand: OSBMahojiCommand = {
 							required: false,
 							min_value: 1,
 							max_value: 8
+						},
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'quantity',
+							description: 'The quantity to do.',
+							required: false,
+							min_value: 1,
+							max_value: 5
 						}
 					]
 				},
@@ -138,9 +152,13 @@ export const raidCommand: OSBMahojiCommand = {
 		channelID
 	}: CommandRunOptions<{
 		cox?: { start?: { type: 'solo' | 'mass'; challenge_mode?: boolean; quantity?: number }; stats?: {} };
-		tob?: { start?: { hard_mode?: boolean; max_team_size?: number }; stats?: {}; check?: { hard_mode?: boolean } };
+		tob?: {
+			start?: { hard_mode?: boolean; max_team_size?: number; solo?: boolean };
+			stats?: {};
+			check?: { hard_mode?: boolean };
+		};
 		toa?: {
-			start?: { raid_level: RaidLevel; max_team_size?: number; solo?: boolean };
+			start?: { raid_level: RaidLevel; max_team_size?: number; solo?: boolean; quantity?: number };
 			help?: {};
 		};
 	}>) => {
@@ -158,7 +176,13 @@ export const raidCommand: OSBMahojiCommand = {
 			return coxCommand(channelID, user, cox.start.type, Boolean(cox.start.challenge_mode), cox.start.quantity);
 		}
 		if (tob?.start) {
-			return tobStartCommand(user, channelID, Boolean(tob.start.hard_mode), tob.start.max_team_size);
+			return tobStartCommand(
+				user,
+				channelID,
+				Boolean(tob.start.hard_mode),
+				tob.start.max_team_size,
+				Boolean(tob.start.solo)
+			);
 		}
 
 		if (options.toa?.start) {
@@ -167,7 +191,8 @@ export const raidCommand: OSBMahojiCommand = {
 				Boolean(options.toa.start.solo),
 				channelID,
 				options.toa.start.raid_level,
-				options.toa.start.max_team_size
+				options.toa.start.max_team_size,
+				options.toa.start.quantity
 			);
 		}
 

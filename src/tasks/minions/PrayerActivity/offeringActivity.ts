@@ -1,10 +1,10 @@
-import { percentChance } from 'e';
+import { percentChance, randInt } from 'e';
 
 import { zealOutfit } from '../../../lib/shadesKeys';
 import Prayer from '../../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { OfferingActivityTaskOptions } from '../../../lib/types/minions';
-import { rand, roll } from '../../../lib/util';
+import { roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export function zealOutfitBoost(user: MUser) {
@@ -50,9 +50,9 @@ export const offeringTask: MinionTask = {
 		}
 		// calc how many bones are lost
 		for (let i = 0; i < deathCounter; i++) {
-			bonesLost += rand(1, maxPK);
+			bonesLost += randInt(1, maxPK);
 		}
-		const bonesSaved = Math.floor(quantity * (rand(90, 110) / 100));
+		const bonesSaved = Math.floor(quantity * (randInt(90, 110) / 100));
 		let zealBonesSaved = 0;
 
 		if (zealOutfitAmount > 0) {

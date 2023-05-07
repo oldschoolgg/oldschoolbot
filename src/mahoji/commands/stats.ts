@@ -1,14 +1,16 @@
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Hiscores } from 'oldschooljs';
-import { AccountType } from 'oldschooljs/dist/meta/types';
+import { ACCOUNT_TYPES, hiscoreURLs } from 'oldschooljs/dist/constants';
 
 import { statsEmbed } from '../../lib/util/statsEmbed';
-import { toTitleCase } from '../../lib/util/toTitleCase';
 import { OSBMahojiCommand } from '../lib/util';
 
-const accountTypeOptions = Object.values(AccountType).map(val => {
+const accountTypeOptions = ACCOUNT_TYPES.map(val => {
 	let name: string = val;
 	if (name === 'seasonal') name = 'Leagues (Seasonal)';
+	if (name === 'skiller') name = 'Skiller';
+	if (name === 'skiller_defence') name = '1-defence pure';
 	return {
 		name: toTitleCase(name),
 		value: val
@@ -39,16 +41,18 @@ export const statsCommand: OSBMahojiCommand = {
 			required: false
 		}
 	],
-	run: async ({ options }: CommandRunOptions<{ username: string; type?: AccountType; virtual?: boolean }>) => {
+	run: async ({
+		options
+	}: CommandRunOptions<{ username: string; type?: keyof typeof hiscoreURLs; virtual?: boolean }>) => {
 		try {
 			if (!options.type) {
-				options.type = AccountType.Normal;
+				options.type = 'normal';
 			}
 			const player = await Hiscores.fetch(options.username, {
 				type: options.type,
 				virtualLevels: Boolean(options.virtual)
 			});
-			const postfix = options.type === AccountType.Seasonal ? 'Shattered Relics Leagues' : options.type ?? null;
+			const postfix = options.type === 'seasonal' ? 'Shattered Relics Leagues' : options.type ?? null;
 			return {
 				embeds: [
 					statsEmbed({

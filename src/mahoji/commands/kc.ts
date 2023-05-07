@@ -1,10 +1,9 @@
+import { stringMatches, toTitleCase } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Hiscores } from 'oldschooljs';
 import { bossNameMap, mappedBossNames } from 'oldschooljs/dist/constants';
 import { BossRecords } from 'oldschooljs/dist/meta/types';
 
-import { cleanString } from '../../lib/util/cleanString';
-import { toTitleCase } from '../../lib/util/toTitleCase';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const kcCommand: OSBMahojiCommand = {
@@ -37,7 +36,7 @@ export const kcCommand: OSBMahojiCommand = {
 			const { bossRecords } = await Hiscores.fetch(options.rsn);
 
 			for (const [boss, { rank, score }] of Object.entries(bossRecords)) {
-				if (cleanString(boss) === cleanString(options.boss)) {
+				if (stringMatches(boss, options.boss)) {
 					if (score === -1 || rank === -1) {
 						return `${toTitleCase(options.rsn)}'s has no recorded KC for that boss.`;
 					}

@@ -1,3 +1,4 @@
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import {
@@ -7,9 +8,8 @@ import {
 	collectionLogTypes
 } from '../../lib/collectionLogTask';
 import { allCollectionLogs } from '../../lib/data/Collections';
-import { toTitleCase } from '../../lib/util/toTitleCase';
+import { fetchStatsForCL } from '../../lib/util';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const collectionLogCommand: OSBMahojiCommand = {
 	name: 'cl',
@@ -38,8 +38,7 @@ export const collectionLogCommand: OSBMahojiCommand = {
 							];
 						})
 						.flat(3)
-						.filter(i => (!value ? true : i.name.toLowerCase().includes(value)))
-				];
+				].filter(i => (!value ? true : i.name.toLowerCase().includes(value)));
 			}
 		},
 		{
@@ -87,10 +86,10 @@ export const collectionLogCommand: OSBMahojiCommand = {
 		if (options.all) flags.all = 'all';
 		const result = await clImageGenerator.generateLogImage({
 			user,
-			mahojiUser: await mahojiUsersSettingsFetch(userID),
 			type: options.type ?? 'collection',
 			flags,
-			collection: options.name
+			collection: options.name,
+			stats: await fetchStatsForCL(user)
 		});
 		return result;
 	}

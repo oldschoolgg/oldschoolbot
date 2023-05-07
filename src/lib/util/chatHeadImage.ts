@@ -1,6 +1,6 @@
+import { Canvas } from '@napi-rs/canvas';
 import { AttachmentBuilder } from 'discord.js';
 import * as fs from 'fs';
-import { Canvas } from 'skia-canvas/lib';
 
 import { canvasImageFromBuffer, printWrappedText } from './canvasUtil';
 
@@ -13,6 +13,7 @@ const alryTheAnglerChatHead = fs.readFileSync('./src/lib/resources/images/alryTh
 const ketKehChatHead = fs.readFileSync('./src/lib/resources/images/ketKeh.png');
 const gertrudeChatHead = fs.readFileSync('./src/lib/resources/images/gertrude.png');
 const antiSantaChatHead = fs.readFileSync('./src/lib/resources/images/antisanta.png');
+const bunnyChatHead = fs.readFileSync('./src/lib/resources/images/bunny.png');
 
 export const chatHeads = {
 	mejJal: mejJalChatHead,
@@ -22,7 +23,8 @@ export const chatHeads = {
 	alry: alryTheAnglerChatHead,
 	ketKeh: ketKehChatHead,
 	gertrude: gertrudeChatHead,
-	antiSanta: antiSantaChatHead
+	antiSanta: antiSantaChatHead,
+	bunny: bunnyChatHead
 };
 
 const names: Record<keyof typeof chatHeads, string> = {
@@ -33,7 +35,8 @@ const names: Record<keyof typeof chatHeads, string> = {
 	alry: 'Alry the Angler',
 	ketKeh: 'Tzhaar-Ket-Keh',
 	gertrude: 'Gertrude',
-	antiSanta: 'Anti-Santa'
+	antiSanta: 'Anti-Santa',
+	bunny: 'Easter Bunny'
 };
 
 export async function newChatHeadImage({ content, head }: { content: string; head: keyof typeof chatHeads }) {
@@ -53,7 +56,7 @@ export async function newChatHeadImage({ content, head }: { content: string; hea
 	ctx.fillStyle = '#000';
 	printWrappedText(ctx, content, 307, 58, 361);
 
-	return canvas.toBuffer('png');
+	return canvas.encode('png');
 }
 
 export default async function chatHeadImage({ content, head }: { content: string; head: keyof typeof chatHeads }) {

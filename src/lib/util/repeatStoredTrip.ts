@@ -33,6 +33,7 @@ import {
 	HerbloreActivityTaskOptions,
 	HunterActivityTaskOptions,
 	KourendFavourActivityTaskOptions,
+	MahoganyHomesActivityTaskOptions,
 	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
 	NexTaskOptions,
@@ -56,7 +57,8 @@ import {
 } from '../types/minions';
 import { itemNameFromID } from '../util';
 import { giantsFoundryAlloys } from './../../mahoji/lib/abstracted_commands/giantsFoundryCommand';
-import { NightmareZoneActivityTaskOptions } from './../types/minions';
+import { NightmareZoneActivityTaskOptions, UnderwaterAgilityThievingTaskOptions } from './../types/minions';
+import { deferInteraction } from './interactionReply';
 
 export const taskCanBeRepeated = (type: activity_type_enum) =>
 	!(
@@ -228,12 +230,6 @@ export const tripHandlers = {
 			quantity: data.tiaraQuantity
 		})
 	},
-	[activity_type_enum.DriftNet]: {
-		commandName: 'activities',
-		args: (data: ActivityTaskOptionsWithQuantity) => ({
-			driftnet_fishing: { minutes: Math.floor(data.duration / Time.Minute) }
-		})
-	},
 	[activity_type_enum.Enchanting]: {
 		commandName: 'activities',
 		args: (data: EnchantingActivityTaskOptions) => ({
@@ -333,7 +329,7 @@ export const tripHandlers = {
 	},
 	[activity_type_enum.MahoganyHomes]: {
 		commandName: 'minigames',
-		args: () => ({ mahogany_homes: { start: {} } })
+		args: (data: MahoganyHomesActivityTaskOptions) => ({ mahogany_homes: { start: { tier: data.tier } } })
 	},
 	[activity_type_enum.Mining]: {
 		commandName: 'mine',
@@ -475,7 +471,7 @@ export const tripHandlers = {
 			tob: {
 				start: {
 					hard_mode: data.hardMode,
-					max_team_size: data.users.length
+					solo: data.solo
 				}
 			}
 		})
@@ -549,8 +545,29 @@ export const tripHandlers = {
 				start: {
 					raid_level: data.raidLevel,
 					max_team_size: data.users.length,
-					solo: data.users.length === 1
+					solo: data.users.length === 1,
+					quantity: data.quantity
 				}
+			}
+		})
+	},
+	[activity_type_enum.UnderwaterAgilityThieving]: {
+		commandName: 'activities',
+		args: (data: UnderwaterAgilityThievingTaskOptions) => ({
+			underwater: {
+				agility_thieving: {
+					training_skill: data.trainingSkill,
+					minutes: Math.floor(data.duration / Time.Minute),
+					no_stams: data.noStams
+				}
+			}
+		})
+	},
+	[activity_type_enum.DriftNet]: {
+		commandName: 'activities',
+		args: (data: ActivityTaskOptionsWithQuantity) => ({
+			underwater: {
+				drift_net_fishing: { minutes: Math.floor(data.duration / Time.Minute) }
 			}
 		})
 	}
@@ -614,6 +631,7 @@ export async function repeatTrip(
 	interaction: ButtonInteraction,
 	data: { data: Prisma.JsonValue; type: activity_type_enum }
 ) {
+	await deferInteraction(interaction);
 	const handler = tripHandlers[data.type];
 	return runCommand({
 		commandName: handler.commandName,
