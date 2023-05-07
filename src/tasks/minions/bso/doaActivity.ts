@@ -1,5 +1,4 @@
 import { formatOrdinal } from '@oldschoolgg/toolkit';
-import { bold } from 'discord.js';
 import { randArrItem, roll, Time, uniqueArr } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
@@ -19,7 +18,7 @@ import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
 
 const UniqueTable = new LootTable().add('Oceanic relic').add('Oceanic dye').add('Aquifer aegis').add('Shark jaw');
-const NonUniqueTable = new LootTable()
+const BaseNonUniqueTable = new LootTable()
 	.add('Coal', [1000, 2000])
 	.add('Runite ore', [10, 20])
 	.add('Dragon arrowtips', [100, 200])
@@ -35,6 +34,8 @@ const NonUniqueTable = new LootTable()
 	.add('Dragon arrow', [100, 200])
 	.add('Dragon dart', [100, 200])
 	.add('Dragon javelin', [100, 200]);
+
+const NonUniqueTable = new LootTable().every(BaseNonUniqueTable, 3);
 
 async function handleDOAXP(user: MUser, qty: number, isCm: boolean) {
 	let rangeXP = 10_000 * qty;
@@ -70,7 +71,6 @@ async function handleDOAXP(user: MUser, qty: number, isCm: boolean) {
 }
 
 interface RaidResultUser {
-	points: number;
 	mUser: MUser;
 	deaths: number;
 	kc: number;
@@ -80,7 +80,7 @@ export const doaTask: MinionTask = {
 	type: 'DepthsOfAtlantis',
 	async run(data: DOAOptions) {
 		const { channelID, cm, duration, leader, quantity, users, raids } = data;
-		const isSolo = users.length === 0;
+		const isSolo = users.length === 1;
 		const allUsers = await Promise.all(users.map(async u => mUserFetch(u)));
 		const leaderSoloUser = allUsers[0];
 
@@ -118,7 +118,6 @@ export const doaTask: MinionTask = {
 		for (const user of allUsers) {
 			raidResults.set(user.id, {
 				mUser: user,
-				points: 0,
 				deaths: 0,
 				kc: await getMinigameScore(user.id, 'tombs_of_amascut')
 			});
@@ -149,18 +148,18 @@ export const doaTask: MinionTask = {
 		);
 
 		let resultMessage = isSolo
-			? `${leaderSoloUser}, your minion finished ${
-					quantity === 1 ? 'a' : `${quantity}x`
+			? `${leaderSoloUser}, your minion finished ${quantity === 1 ? 'a' : `${quantity}x`}${
+					cm ? 'Challenge Mode' : ''
 			  } Depths of Atlantis raid${quantity > 1 ? 's' : ''}! Your KC is now ${
 					minigameIncrementResult[0].newScore
 			  }.\n`
-			: `<@${leader}> Your Raid${quantity > 1 ? 's have' : ' has'} finished.\n`;
+			: `<@${leader}> Your Depths of Atlantis Raid${quantity > 1 ? 's have' : ' has'} finished.\n`;
 
 		const shouldShowImage = allUsers.length <= 3 && totalLoot.entries().every(i => i[1].length <= 6);
 
 		await Promise.all(
 			Array.from(raidResults.entries()).map(async ([userID, userData]) => {
-				const { points, deaths, mUser: user } = userData;
+				const { deaths, mUser: user } = userData;
 
 				const { itemsAdded } = await transactItems({
 					userID,
@@ -209,11 +208,9 @@ export const doaTask: MinionTask = {
 				const deathStr = deaths === 0 ? '' : new Array(deaths).fill(Emoji.Skull).join(' ');
 
 				if (shouldShowImage) {
-					resultMessage += `\n${deathStr} **${user}** ${bold(points.toLocaleString())} points`;
+					resultMessage += `\n${deathStr} **${user}**`;
 				} else {
-					resultMessage += `\n${deathStr} **${user}** received: ${str} (${bold(
-						points.toLocaleString()
-					)} points)`;
+					resultMessage += `\n${deathStr} **${user}** received: ${str}`;
 				}
 
 				const xpStrings = await handleDOAXP(user, quantity, cm);
@@ -240,22 +237,6 @@ export const doaTask: MinionTask = {
 			}))
 		});
 
-		function makeCustomTexts(userID: string) {
-			const user = raidResults.get(userID)!;
-			return [
-				{
-					text: `${user.points.toLocaleString()} points`,
-					x: 149,
-					y: 150
-				},
-				{
-					text: `${user.deaths} deaths`,
-					x: 149,
-					y: 165
-				}
-			];
-		}
-
 		if (isSolo) {
 			return handleTripFinish(
 				allUsers[0],
@@ -268,7 +249,7 @@ export const doaTask: MinionTask = {
 									loot: teamLoot.totalLoot(),
 									user: allUsers[0],
 									previousCL: previousCLs[0],
-									customTexts: makeCustomTexts(leaderSoloUser.id)
+									customTexts: []
 								}
 							],
 							type: 'Depths of Atlantis'
@@ -289,7 +270,7 @@ export const doaTask: MinionTask = {
 							loot: teamLoot.get(u.id),
 							user: u,
 							previousCL: previousCLs[index],
-							customTexts: makeCustomTexts(u.id)
+							customTexts: []
 						})),
 						type: 'Depths of Atlantis'
 				  })

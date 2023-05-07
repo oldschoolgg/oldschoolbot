@@ -503,7 +503,6 @@ export function createDOATeam({
 				let baseDeathChance = getPercentage(roomKCs[room.id]);
 				if (challengeMode) baseDeathChance *= 1.5;
 				let deathChanceForThisUserRoom = clamp(baseDeathChance + room.addedDeathChance(user), 5, 99);
-				deathChanceForThisUserRoom = 0;
 				messages.push(
 					`${user.usernameOrMention} has a ${deathChanceForThisUserRoom}% chance of dying in the ${room.name} room`
 				);
