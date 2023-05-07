@@ -3,6 +3,7 @@ import { Interaction } from 'discord.js';
 import { convertAPIOptionsToCommandOptions } from 'mahoji/dist/lib/util';
 
 import { production } from '../../config';
+import getOSItem from './getOSItem';
 
 export function assert(condition: boolean, desc?: string, context?: Record<string, string>) {
 	if (!condition) {
@@ -13,6 +14,7 @@ export function assert(condition: boolean, desc?: string, context?: Record<strin
 		}
 	}
 }
+assert(getOSItem('Smokey').id === 737);
 
 export function logError(err: Error | unknown, context?: Record<string, string>, extra?: Record<string, string>) {
 	console.error(context, err);

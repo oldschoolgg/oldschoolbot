@@ -1,4 +1,5 @@
 import { EmbedBuilder, inlineCode } from '@discordjs/builders';
+import { hasBanMemberPerms, miniID } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
 import { Guild, HexColorString, resolveColor, User } from 'discord.js';
 import { clamp, removeFromArr, uniqueArr } from 'e';
@@ -18,14 +19,14 @@ import { prisma } from '../../lib/settings/prisma';
 import { autoslayChoices, slayerMasterChoices } from '../../lib/slayer/constants';
 import { setDefaultAutoslay, setDefaultSlayerMaster } from '../../lib/slayer/slayerUtil';
 import { BankSortMethods } from '../../lib/sorts';
-import { formatDuration, isValidNickname, itemNameFromID, miniID, stringMatches } from '../../lib/util';
+import { formatDuration, isValidNickname, itemNameFromID, stringMatches } from '../../lib/util';
 import { emojiServers } from '../../lib/util/cachedUserIDs';
 import { getItem } from '../../lib/util/getOSItem';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { mahojiGuildSettingsFetch, mahojiGuildSettingsUpdate } from '../guildSettings';
 import { itemOption } from '../lib/mahojiCommandOptions';
-import { allAbstractCommands, hasBanMemberPerms, OSBMahojiCommand } from '../lib/util';
+import { allAbstractCommands, OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch, patronMsg } from '../mahojiSettings';
 
 const toggles = [
@@ -869,11 +870,13 @@ export const configCommand: OSBMahojiCommand = {
 								let res = await prisma.$queryRawUnsafe<
 									{ type: activity_type_enum; data: object; id: number; finish_date: string }[]
 								>(`
-SELECT DISTINCT ON ("activity"."type") activity.type, activity.data, activity.id, activity.finish_date
+SELECT DISTINCT ON (activity.type) activity.type, activity.data, activity.id, activity.finish_date
 FROM activity
 WHERE finish_date::date > now() - INTERVAL '31 days'
 AND user_id = '${user.id}'::bigint
-LIMIT 10;`);
+ORDER BY activity.type, finish_date DESC
+LIMIT 20;
+;`);
 								return res.map(i => ({
 									name: `${i.type} (Finished ${formatDuration(
 										Date.now() - new Date(i.finish_date).getTime()

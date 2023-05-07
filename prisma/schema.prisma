@@ -495,6 +495,8 @@ enum XpGainSource {
   TombsOfAmascut
   BalthazarsBigBonanza
   UnderwaterAgilityThieving
+  ChambersOfXeric
+  TheatreOfBlood
 }
 
 model XPGain {
@@ -872,15 +874,15 @@ model UserStats {
   last_daily_timestamp           BigInt @default(0)
   last_tears_of_guthix_timestamp BigInt @default(0)
 
+  main_server_challenges_won Int @default(0)
+
   @@map("user_stats")
 }
 
 model BingoTeam {
   id Int @id @unique @default(autoincrement())
 
-  first_user  String @unique @db.VarChar(19)
-  second_user String @unique @db.VarChar(19)
-  third_user  String @unique @db.VarChar(19)
+  users String[]
 
   @@map("bingo_team")
 }

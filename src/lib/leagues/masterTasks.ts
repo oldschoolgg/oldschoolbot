@@ -1092,7 +1092,7 @@ export const masterTasks: Task[] = [
 			return loot
 				.items()
 				.filter(i => i[0].name !== 'Lucky impling jar')
-				.every(i => i[1] >= 100);
+				.every(i => i[1] >= 100 || (i[0].name === 'Mystery impling jar' && i[1] >= 50));
 		}
 	},
 	{

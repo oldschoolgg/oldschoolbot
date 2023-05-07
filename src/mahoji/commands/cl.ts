@@ -1,3 +1,4 @@
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import {
@@ -9,7 +10,6 @@ import {
 import { allCollectionLogs } from '../../lib/data/Collections';
 import { fetchStatsForCL } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
-import { toTitleCase } from '../../lib/util/toTitleCase';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const collectionLogCommand: OSBMahojiCommand = {

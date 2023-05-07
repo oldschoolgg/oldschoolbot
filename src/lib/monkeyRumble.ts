@@ -1,4 +1,5 @@
 import { Canvas, Image } from '@napi-rs/canvas';
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { randArrItem, randInt, roll } from 'e';
 import fs from 'fs/promises';
 import { Item } from 'oldschooljs/dist/meta/types';
@@ -6,7 +7,6 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { canvasImageFromBuffer, printWrappedText } from './util/canvasUtil';
 import { textBoxFile } from './util/chatHeadImage';
 import getOSItem from './util/getOSItem';
-import { toTitleCase } from './util/toTitleCase';
 
 interface MonkeyTier {
 	id: number;

@@ -92,7 +92,7 @@ class CollectionLogTask {
 				ctxl.fillStyle = index % 2 === 0 ? colors.odd : 'transparent';
 			}
 			ctxl.fillRect(1, index * 15, canvasList.width, 15);
-			ctxl.fillStyle = colors[status];
+			ctxl.fillStyle = collectionLog.category === 'Discontinued' ? colors.not_started : colors[status];
 			const measuredName = ctxl.measureText(name).width;
 			if (measuredName > widestName) widestName = measuredName;
 			this.drawText(ctxl, name, 4, index * 15 + 13);
@@ -342,7 +342,9 @@ class CollectionLogTask {
 		const toDraw = flags.missing ? 'Missing: ' : type === 'sacrifice' ? 'Sacrificed: ' : 'Obtained: ';
 		const obtainableMeasure = ctx.measureText(toDraw);
 		this.drawText(ctx, toDraw, 0, 13);
-		if (collectionLog.collectionTotal === collectionLog.collectionObtained) {
+		if (collectionLog.category === 'Discontinued') {
+			ctx.fillStyle = '#FF981F';
+		} else if (collectionLog.collectionTotal === collectionLog.collectionObtained) {
 			ctx.fillStyle = '#00FF00';
 		} else if (collectionLog.collectionObtained === 0) {
 			ctx.fillStyle = '#FF0000';

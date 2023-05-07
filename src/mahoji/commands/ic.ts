@@ -1,3 +1,4 @@
+import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { ButtonBuilder, ButtonStyle, ChatInputCommandInteraction } from 'discord.js';
 import { randArrItem, roll } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
@@ -16,7 +17,6 @@ import { nexLootTable } from '../../lib/nex';
 import { DragonTable } from '../../lib/simulation/grandmasterClue';
 import { allThirdAgeItems, runeAlchablesTable } from '../../lib/simulation/sharedTables';
 import { formatDuration, itemID, makeComponents } from '../../lib/util';
-import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import resolveItems from '../../lib/util/resolveItems';

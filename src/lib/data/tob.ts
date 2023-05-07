@@ -7,7 +7,7 @@ import type { GearStats } from '../gear/types';
 import { blowpipeDarts } from '../minions/functions/blowpipeCommand';
 import { constructGearSetup, Gear } from '../structures/Gear';
 import getOSItem from '../util/getOSItem';
-import { assert, logError } from '../util/logError';
+import { logError } from '../util/logError';
 import resolveItems from '../util/resolveItems';
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from './CollectionsExport';
 
@@ -396,7 +396,6 @@ export function createTOBTeam({
 	deathDuration: number | null;
 } {
 	const teamSize = team.length;
-	assert(teamSize > 0 && teamSize < 6, 'TOB team must be 1-5 users');
 
 	let individualReductions = [];
 

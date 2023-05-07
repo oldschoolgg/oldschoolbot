@@ -1,5 +1,6 @@
 import { Canvas, GlobalFonts, Image, loadImage, SKRSContext2D } from '@napi-rs/canvas';
 import { cleanString, formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit';
+import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
 import { AttachmentBuilder } from 'discord.js';
 import { chunk, randInt, sumArr } from 'e';
 import { existsSync } from 'fs';
@@ -22,7 +23,8 @@ import { drawImageWithOutline, fillTextXTimesInCtx, getClippedRegionImage } from
 import itemID from '../lib/util/itemID';
 import { logError } from '../lib/util/logError';
 import { SkillsEnum } from './skilling/types';
-import { UserError } from './UserError';
+import { customItemEffect } from './util/customItemEffects';
+import resolveItems from './util/resolveItems';
 import { allSlayerMaskHelmsAndMasks, slayerMaskLeaderboardCache } from './util/slayerMaskLeaderboard';
 
 const fonts = {
@@ -520,10 +522,20 @@ class BankImageTask {
 				ctx.drawImage(glow, glowX, glowY, glow.width, glow.height);
 			}
 
+			const effect = customItemEffect.get(item.id);
 			if (isNewCLItem) {
-				drawImageWithOutline(ctx, itemImage, x, y, itemWidth, itemHeight, '#ac7fff', 1);
+				drawImageWithOutline(
+					ctx,
+					effect ? effect(itemImage, user?.id) : itemImage,
+					x,
+					y,
+					itemWidth,
+					itemHeight,
+					'#ac7fff',
+					1
+				);
 			} else {
-				ctx.drawImage(itemImage, x, y, itemWidth, itemHeight);
+				ctx.drawImage(effect ? effect(itemImage, user?.id) : itemImage, x, y, itemWidth, itemHeight);
 			}
 
 			// Do not draw the item qty if there is 0 of that item in the bank
@@ -786,7 +798,43 @@ const chestLootTypes = [
 		chestImagePurple: loadImage('./src/lib/resources/images/toaChestPurple.png'),
 		width: 240,
 		height: 220,
-		purpleItems: toaPurpleItems
+		purpleItems: toaPurpleItems,
+		position: (canvas: Canvas, image: Image) => [
+			canvas.width - image.width + 25,
+			44 + canvas.height / 4 - image.height / 2
+		],
+		itemRect: [21, 50, 120, 160]
+	},
+	{
+		title: 'Chambers of Xerician',
+		chestImage: loadImage('./src/lib/resources/images/cox.png'),
+		chestImagePurple: loadImage('./src/lib/resources/images/cox.png'),
+		width: 260,
+		height: 180,
+		purpleItems: resolveItems([
+			'Metamorphic dust',
+			'Twisted ancestral colour kit',
+			"Xeric's guard",
+			"Xeric's warrior",
+			"Xeric's sentinel",
+			"Xeric's general",
+			"Xeric's champion",
+			'Olmlet',
+			'Twisted bow',
+			'Elder maul',
+			'Kodai insignia',
+			'Dragon claws',
+			'Ancestral hat',
+			'Ancestral robe top',
+			'Ancestral robe bottom',
+			"Dinh's bulwark",
+			'Dexterous prayer scroll',
+			'Arcane prayer scroll',
+			'Dragon hunter crossbow',
+			'Twisted buckler'
+		]),
+		position: () => [12, 44],
+		itemRect: [135, 45, 120, 120]
 	}
 ] as const;
 
@@ -818,15 +866,21 @@ export async function drawChestLootImage(options: {
 		const isPurple: boolean = loot.items().some(([item]) => type.purpleItems.includes(item.id));
 		if (isPurple) anyoneGotPurple = true;
 		const image = isPurple ? await type.chestImagePurple : await type.chestImage;
-		ctx.drawImage(image, canvas.width - image.width + 25, 44 + canvas.height / 4 - image.height / 2);
-
+		const [x, y] = type.position(canvas, image);
+		ctx.drawImage(image, x, y);
 		drawTitle(ctx, `${user.rawUsername} (${toKMB(loot.value())})`, canvas);
 		ctx.font = '16px OSRSFontCompact';
 		bankImageGenerator.drawBorder(ctx, sprite, true);
+
+		const xOffset = 10;
+		const yOffset = 45;
+		const [iX, iY, iW, iH] = type.itemRect;
+		const itemCanvas = new Canvas(iW + xOffset, iH + yOffset);
+
 		await bankImageGenerator.drawItems(
-			ctx,
+			itemCanvas.getContext('2d'),
 			false,
-			22,
+			5,
 			2,
 			55,
 			loot.items(),
@@ -835,8 +889,10 @@ export async function drawChestLootImage(options: {
 			user,
 			undefined,
 			undefined,
-			10
+			5
 		);
+
+		ctx.drawImage(itemCanvas, iX - xOffset, iY - yOffset);
 
 		ctx.fillStyle = '#FFFF00';
 		ctx.font = '16px OSRSFontCompact';

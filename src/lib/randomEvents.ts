@@ -1,3 +1,4 @@
+import { activity_type_enum } from '@prisma/client';
 import { randArrItem, roll, Time } from 'e';
 import LRUCache from 'lru-cache';
 import { Bank } from 'oldschooljs';
@@ -133,7 +134,10 @@ export const RandomEvents: RandomEvent[] = [
 
 const cache = new LRUCache<string, number>({ max: 500 });
 
-export async function triggerRandomEvent(user: MUser, duration: number, messages: string[]) {
+const doesntGetRandomEvent: activity_type_enum[] = [activity_type_enum.TombsOfAmascut];
+
+export async function triggerRandomEvent(user: MUser, type: activity_type_enum, duration: number, messages: string[]) {
+	if (doesntGetRandomEvent.includes(type)) return;
 	const minutes = Math.min(30, duration / Time.Minute);
 	const randomEventChance = 60 - minutes;
 	if (!roll(randomEventChance)) return;

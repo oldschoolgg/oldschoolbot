@@ -129,7 +129,7 @@ export async function runCommand({
 			inhibited = true;
 			if (inhibitedReason.silent) return null;
 
-			await interaction.reply({
+			await interactionReply(interaction, {
 				content:
 					typeof inhibitedReason.reason! === 'string'
 						? inhibitedReason.reason
@@ -153,7 +153,7 @@ export async function runCommand({
 		if (result && !interaction.replied) await interactionReply(interaction, result);
 		return result;
 	} catch (err: any) {
-		handleInteractionError(err, interaction);
+		await handleInteractionError(err, interaction);
 	} finally {
 		try {
 			await postCommand({

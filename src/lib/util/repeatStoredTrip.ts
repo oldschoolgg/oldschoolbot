@@ -69,6 +69,7 @@ import type {
 import { itemNameFromID } from '../util';
 import { giantsFoundryAlloys } from './../../mahoji/lib/abstracted_commands/giantsFoundryCommand';
 import { NightmareZoneActivityTaskOptions, UnderwaterAgilityThievingTaskOptions } from './../types/minions';
+import { deferInteraction } from './interactionReply';
 
 export const taskCanBeRepeated = (type: activity_type_enum) =>
 	!(
@@ -498,7 +499,8 @@ export const tripHandlers = {
 		args: (data: TheatreOfBloodTaskOptions) => ({
 			tob: {
 				start: {
-					hard_mode: data.hardMode
+					hard_mode: data.hardMode,
+					solo: data.solo
 				}
 			}
 		})
@@ -792,6 +794,7 @@ export async function repeatTrip(
 	interaction: ButtonInteraction,
 	data: { data: Prisma.JsonValue; type: activity_type_enum }
 ) {
+	await deferInteraction(interaction);
 	const handler = tripHandlers[data.type];
 	return runCommand({
 		commandName: handler.commandName,

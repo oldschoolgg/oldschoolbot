@@ -190,7 +190,7 @@ export const raidCommand: OSBMahojiCommand = {
 					channelID,
 					Boolean(tob.start.hard_mode),
 					tob.start.max_team_size,
-					tob.start.solo
+					Boolean(tob.start.solo)
 				);
 			}
 		}

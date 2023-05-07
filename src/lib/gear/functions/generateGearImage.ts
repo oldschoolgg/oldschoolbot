@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/restrict-plus-operands */
 import { Canvas, Image } from '@napi-rs/canvas';
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { randInt } from 'e';
 import * as fs from 'fs';
 import * as fsPromises from 'fs/promises';
@@ -14,9 +15,9 @@ import {
 	drawTitleText,
 	fillTextXTimesInCtx
 } from '../../util/canvasUtil';
+import { customItemEffect } from '../../util/customItemEffects';
 import getOSItem from '../../util/getOSItem';
 import { allSlayerMaskHelmsAndMasks, slayerMaskLeaderboardCache } from '../../util/slayerMaskLeaderboard';
-import { toTitleCase } from '../../util/toTitleCase';
 import { GearSetup, GearSetupType, GearSetupTypes, GearStats, maxDefenceStats, maxOffenceStats } from '..';
 
 const banana = canvasImageFromBuffer(fs.readFileSync('./src/lib/resources/images/banana.png'));
@@ -307,8 +308,9 @@ export async function generateGearImage(
 	// Draw items
 	if (petID) {
 		const image = await bankImageGenerator.getItemImage(petID);
+		const effect = customItemEffect.get(petID);
 		ctx.drawImage(
-			image,
+			effect ? effect(image, user.id) : image,
 			(transMogImage ? 200 : 0) + 178 + slotSize / 2 - image.width / 2,
 			190 + slotSize / 2 - image.height / 2,
 			image.width,

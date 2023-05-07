@@ -247,6 +247,7 @@ usables.push({
 		return 'You used your Double Loot Token!';
 	}
 });
+
 export const allUsableItems = new Set(usables.map(i => i.items.map(i => i.id)).flat(2));
 
 export async function useCommand(user: MUser, _firstItem: string, _secondItem?: string) {
