@@ -711,5 +711,12 @@ export const globalDroprates = {
 		minLength: false,
 		rolledPer: 'trip',
 		notes: ['Can also be received from hunting Eastern ferrets']
+	},
+	scruffy: {
+		name: 'Scruffy (pet)',
+		baseRate: 4000,
+		clIncrease: 1.5,
+		minLength: true,
+		rolledPer: 'minute'
 	}
 };
