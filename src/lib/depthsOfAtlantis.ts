@@ -348,6 +348,7 @@ async function calcDOAInput({
 	cost.add('Saradomin brew(4)', brewsNeeded * quantity);
 	cost.add('Super restore(4)', restoresNeeded * quantity);
 	cost.add('Blood rune', SANG_BLOOD_RUNES_PER_RAID * quantity);
+	cost.add('Enhanced stamina potion', quantity);
 
 	const rangeWeapon = user.gear.range.equippedWeapon();
 	if (!rangeWeapon) {
