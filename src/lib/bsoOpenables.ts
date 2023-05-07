@@ -13,6 +13,7 @@ import {
 	toaCL
 } from './data/CollectionsExport';
 import { baseHolidayItems, PartyhatTable } from './data/holidayItems';
+import { allTrophyItems } from './data/trophies';
 import { FishTable } from './minions/data/killableMonsters/custom/SeaKraken';
 import { UnifiedOpenable } from './openables';
 import { ChimplingImpling, EternalImpling, InfernalImpling, MysteryImpling } from './simulation/customImplings';
@@ -497,7 +498,8 @@ const cantBeDropped = resolveItems([
 	...toaCL,
 	'Heavy ballista',
 	'Unstrung heavy ballista',
-	'Monkey tail'
+	'Monkey tail',
+	...allTrophyItems
 ]);
 
 export const tmbTable: number[] = [];

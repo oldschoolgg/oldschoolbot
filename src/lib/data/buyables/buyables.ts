@@ -964,15 +964,23 @@ const Buyables: Buyable[] = [
 		gpCost: 100_000,
 		ironmanPrice: 32_000
 	},
-	{
-		name: 'Flower crown',
+	...[
+		'Flower crown (bisexual)',
+		'Flower crown (asexual)',
+		'Flower crown (transgender)',
+		'Flower crown (pansexual)',
+		'Flower crown (non-binary)',
+		'Flower crown (genderqueer)',
+		'Flower crown (lesbian)',
+		'Flower crown (gay)',
+		'Flower crown'
+	].map(name => ({
+		name,
 		itemCost: new Bank({
 			Coins: 5000
 		}),
-		outputItems: new Bank({
-			'Flower crown': 1
-		})
-	},
+		outputItems: new Bank().add(name)
+	})),
 	{
 		name: 'Mithril seeds',
 		gpCost: 3000,

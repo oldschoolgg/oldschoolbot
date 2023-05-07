@@ -167,6 +167,8 @@ model ClientStorage {
   bb_loot                 Json   @default("{}") @db.Json
   moktang_cost            Json   @default("{}") @db.Json
   moktang_loot            Json   @default("{}") @db.Json
+  doa_cost                Json   @default("{}") @db.Json
+  doa_loot                Json   @default("{}") @db.Json
 
   lottery_is_active Boolean @default(false)
 
@@ -495,6 +497,8 @@ enum XpGainSource {
   TombsOfAmascut
   BalthazarsBigBonanza
   UnderwaterAgilityThieving
+  ChambersOfXeric
+  TheatreOfBlood
 }
 
 model XPGain {
@@ -874,10 +878,13 @@ model UserStats {
   last_daily_timestamp           BigInt @default(0)
   last_tears_of_guthix_timestamp BigInt @default(0)
 
-  doa_attempts     Int  @default(0)
-  doa_cost         Int  @default(0)
-  doa_loot         Int  @default(0)
-  doa_room_kc_bank Json @default("{}") @db.Json
+  main_server_challenges_won Int @default(0)
+
+  doa_attempts             Int  @default(0)
+  doa_cost                 Json @default("{}")
+  doa_loot                 Json @default("{}")
+  doa_room_attempts_bank   Json @default("{}") @db.Json
+  doa_total_minutes_raided Int  @default(0)
 
   @@map("user_stats")
 }
@@ -885,9 +892,7 @@ model UserStats {
 model BingoTeam {
   id Int @id @unique @default(autoincrement())
 
-  first_user  String @unique @db.VarChar(19)
-  second_user String @unique @db.VarChar(19)
-  third_user  String @unique @db.VarChar(19)
+  users String[]
 
   @@map("bingo_team")
 }
@@ -1078,6 +1083,7 @@ enum activity_type_enum {
   TombsOfAmascut
   BalthazarsBigBonanza
   UnderwaterAgilityThieving
+  DepthsOfAtlantis
 }
 
 enum xp_gains_skill_enum {

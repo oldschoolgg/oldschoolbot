@@ -5,6 +5,7 @@ import './lib/crons';
 import './lib/MUser';
 import './lib/util/transactItemsFromBank';
 import './lib/util/logger';
+import './lib/data/trophies';
 
 import * as Sentry from '@sentry/node';
 import { Chart } from 'chart.js';

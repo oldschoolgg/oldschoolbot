@@ -18,6 +18,9 @@ export const woodcuttingTask: MinionTask = {
 
 		const log = Woodcutting.Logs.find(Log => Log.id === logID)!;
 		let clueChance = log.clueScrollChance;
+
+		let strungRabbitFoot = user.hasEquipped('Strung rabbit foot');
+
 		let xpReceived = quantity * log.xp;
 		if (logID === itemID('Elder logs')) {
 			const userWcLevel = user.skillLevel(SkillsEnum.Woodcutting);
@@ -79,7 +82,15 @@ export const woodcuttingTask: MinionTask = {
 
 		// Add clue scrolls
 		if (clueChance) {
-			addSkillingClueToLoot(user, SkillsEnum.Woodcutting, quantity, clueChance, loot, log.clueNestsOnly);
+			addSkillingClueToLoot(
+				user,
+				SkillsEnum.Woodcutting,
+				quantity,
+				clueChance,
+				loot,
+				log.clueNestsOnly,
+				strungRabbitFoot
+			);
 		}
 
 		let str = `${user}, ${user.minionName} finished woodcutting. ${xpRes}`;
@@ -91,6 +102,14 @@ export const woodcuttingTask: MinionTask = {
 				str +=
 					'\n<:peky:787028037031559168> A small pigeon has taken a liking to you, and hides itself in your bank.';
 			}
+		}
+
+		if (strungRabbitFoot && !log.clueNestsOnly) {
+			str += "\nYour strung rabbit foot necklace increases the chance of receiving bird's eggs and rings.";
+		}
+
+		if (strungRabbitFoot && !log.clueNestsOnly) {
+			str += "\nYour strung rabbit foot necklace increases the chance of receiving bird's eggs and rings.";
 		}
 
 		// Roll for pet

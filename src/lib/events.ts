@@ -8,6 +8,7 @@ import { Items } from 'oldschooljs';
 import { PATRON_DOUBLE_LOOT_COOLDOWN } from '../mahoji/commands/tools';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
 import { Cooldowns } from '../mahoji/lib/Cooldowns';
+import { boxSpawnHandler } from './boxSpawns';
 import { BitField, Emoji, globalConfig, secretItems } from './constants';
 import { customItems } from './customItems/util';
 import { DOUBLE_LOOT_FINISH_TIME_CACHE, isDoubleLootActive } from './doubleLoot';
@@ -85,6 +86,16 @@ interface MentionCommand {
 }
 
 const mentionCommands: MentionCommand[] = [
+	{
+		name: 'shutdownlock',
+		aliases: ['shutdownlock'],
+		description: 'shutdownlock.',
+		run: async ({ msg, user }: MentionCommandOptions) => {
+			if (!isModOrAdmin(user)) return;
+			globalClient.isShuttingDown = true;
+			return msg.reply('https://tenor.com/view/coffee-morning-monkey-drinking-coffee-shot-gif-20859464');
+		}
+	},
 	{
 		name: 'bs',
 		aliases: ['bs'],
@@ -248,20 +259,11 @@ const mentionCommands: MentionCommand[] = [
 				components
 			});
 		}
-	},
-	{
-		name: 'shutdownlock',
-		aliases: ['shutdownlock'],
-		description: 'shutdownlock.',
-		run: async ({ msg, user }: MentionCommandOptions) => {
-			if (!isModOrAdmin(user)) return;
-			globalClient.isShuttingDown = true;
-			return msg.reply('https://tenor.com/view/coffee-morning-monkey-drinking-coffee-shot-gif-20859464');
-		}
 	}
 ];
 
 export async function onMessage(msg: Message) {
+	boxSpawnHandler(msg);
 	if (!msg.content || msg.author.bot || !channelIsSendable(msg.channel)) return;
 	const content = msg.content.trim();
 	if (!content.includes(mentionText)) return;

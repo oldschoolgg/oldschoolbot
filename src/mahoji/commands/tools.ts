@@ -1218,7 +1218,10 @@ export const toolsCommand: OSBMahojiCommand = {
 		}
 		if (options.user?.temp_cl) {
 			if (options.user.temp_cl.reset === true) {
-				await handleMahojiConfirmation(interaction, 'Are you sure you want to reset your temporary CL?');
+				await handleMahojiConfirmation(
+					interaction,
+					'Are you sure you want to reset your temporary CL? If you are participating in a Bingo, this will reset your progress.'
+				);
 				await mahojiUser.update({
 					temp_cl: {},
 					last_temp_cl_reset: new Date()
@@ -1233,6 +1236,7 @@ export const toolsCommand: OSBMahojiCommand = {
 					last_temp_cl_reset: true
 				}
 			});
+
 			return `You can view your temporary CL using, for example, \`/cl name:PvM type:Temp\`.
 You last reset your temporary CL: ${
 				Boolean(lastReset?.last_temp_cl_reset)

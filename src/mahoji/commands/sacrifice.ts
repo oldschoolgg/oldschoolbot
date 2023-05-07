@@ -103,7 +103,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 
 		const cantSac = bankToSac.items().find(i => i[0].customItemData?.cantBeSacrificed);
 		if (cantSac) {
-			return `You cannot sacrifice ${cantSac[0].name}.`;
+			return `${cantSac[0].name} can't be sacrificed!`;
 		}
 
 		if (bankToSac.length === 0) {
@@ -140,6 +140,9 @@ export const sacrificeCommand: OSBMahojiCommand = {
 		let totalPrice = 0;
 		for (const [item, qty] of bankToSac.items()) {
 			totalPrice += sacrificePriceOfItem(item, qty);
+			if (item.customItemData?.cantBeSacrificed) {
+				return `${item.name} can't be sacrificed!`;
+			}
 		}
 
 		await handleMahojiConfirmation(

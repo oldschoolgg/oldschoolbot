@@ -73,6 +73,7 @@ import getOSItem from '../../../lib/util/getOSItem';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { sendToChannelID } from '../../../lib/util/webhook';
 import { hasMonsterRequirements, resolveAvailableItemBoosts, userStatsUpdate } from '../../mahojiSettings';
+import { bingoIsActive } from '../bingo';
 import { igneCommand } from './igneCommand';
 import { kgCommand } from './kgCommand';
 import { kkCommand } from './kkCommand';
@@ -742,6 +743,9 @@ export async function minionKillCommand(
 	const rangeSetup = { ...user.gear.range.raw() };
 	let usedDart = false;
 	if (rangeSetup.weapon?.item === itemID('Deathtouched dart')) {
+		if (bingoIsActive()) {
+			return 'You cannot use Deathtouched darts while the Bingo is active.';
+		}
 		duration = 1;
 		if (rangeSetup.weapon.quantity > 1) {
 			rangeSetup.weapon.quantity--;

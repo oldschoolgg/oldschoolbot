@@ -16,17 +16,6 @@ export function isCustomItem(itemID: number) {
 	return customItems.includes(itemID);
 }
 
-interface CustomItemData {
-	isSuperUntradeable?: boolean;
-	cantDropFromMysteryBoxes?: boolean;
-	cantBeSacrificed?: true;
-}
-declare module 'oldschooljs/dist/meta/types' {
-	interface Item {
-		customItemData?: CustomItemData;
-	}
-}
-
 export const hasSet: Item[] = [];
 
 // Prevent old item names from matching customItems
@@ -42,7 +31,7 @@ export function setCustomItem(id: number, name: string, baseItem: string, newIte
 	if (hasSet.some(i => i.id === id)) {
 		throw new Error(`Tried to add 2 custom items with same id ${id}, called ${name}`);
 	}
-	if (hasSet.some(i => i.name === name)) {
+	if (hasSet.some(i => i.name === name) && name !== 'Smokey') {
 		throw new Error(`Tried to add 2 custom items with same name, called ${name}`);
 	}
 	const data = deepMerge({ ...getOSItem(baseItem) }, { ...newItemData, name, id });
@@ -68,7 +57,3 @@ export const UN_EQUIPPABLE = {
 	equipment: undefined,
 	equipable_by_player: undefined
 };
-
-export function setDataOfNonCustomItem(item: Item, data: Partial<Item>) {
-	Items.set(item.id, deepMerge(item, data));
-}
