@@ -12,6 +12,7 @@ import './baxBath';
 import './dwarven';
 import './moktang';
 import './leagues';
+import './depthsOfAtlantis';
 
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 

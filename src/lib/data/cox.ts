@@ -129,7 +129,7 @@ export async function createTeam(
 	return res;
 }
 
-function calcSetupPercent(
+export function calcSetupPercent(
 	maxStats: GearStats,
 	userStats: GearStats,
 	heavyPenalizeStat: keyof GearStats,

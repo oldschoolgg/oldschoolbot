@@ -6,6 +6,7 @@ import { bossEventTask } from '../tasks/minions/bossEventActivity';
 import { bathhouseTask } from '../tasks/minions/bso/bathhousesActivity';
 import { bonanzaTask } from '../tasks/minions/bso/bonanzaActivity';
 import { disassemblingTask } from '../tasks/minions/bso/disassemblingActivity';
+import { doaTask } from '../tasks/minions/bso/doaActivity';
 import { dungeoneeringTask } from '../tasks/minions/bso/dungeoneeringActivity';
 import { fishingContestTask } from '../tasks/minions/bso/fishingContestActivity';
 import { fogTask } from '../tasks/minions/bso/fogActivity';
@@ -208,7 +209,8 @@ export const tasks: MinionTask[] = [
 	toaTask,
 	bonanzaTask,
 	toaTask,
-	underwaterAgilityThievingTask
+	underwaterAgilityThievingTask,
+	doaTask
 ];
 
 export async function syncActivityCache() {

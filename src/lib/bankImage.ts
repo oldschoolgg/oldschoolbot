@@ -11,7 +11,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { toKMB } from 'oldschooljs/dist/util/util';
 import * as path from 'path';
 
-import { BitField, PerkTier, toaPurpleItems } from '../lib/constants';
+import { BitField, doaPurples, PerkTier, toaPurpleItems } from '../lib/constants';
 import { allCLItems } from '../lib/data/Collections';
 import { filterableTypes } from '../lib/data/filterables';
 import { calcWholeDisXP, findDisassemblyGroup } from '../lib/invention/disassemble';
@@ -811,6 +811,16 @@ const chestLootTypes = [
 		width: 260,
 		height: 180,
 		purpleItems: toaPurpleItems,
+		position: () => [12, 44],
+		itemRect: [135, 45, 120, 120]
+	},
+	{
+		title: 'Depths of Atlantis',
+		chestImage: loadImage('./src/lib/resources/images/doa.png'),
+		chestImagePurple: loadImage('./src/lib/resources/images/doa.png'),
+		width: 260,
+		height: 180,
+		purpleItems: doaPurples,
 		position: () => [12, 44],
 		itemRect: [135, 45, 120, 120]
 	}

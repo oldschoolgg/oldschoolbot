@@ -1,5 +1,6 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
+import { doaHelpCommand, doaStartCommand } from '../../lib/depthsOfAtlantis';
 import { mileStoneBaseDeathChances, RaidLevel, toaHelpCommand, toaStartCommand } from '../../lib/simulation/toa';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
@@ -151,6 +152,53 @@ export const raidCommand: OSBMahojiCommand = {
 					description: 'Shows helpful information and stats about TOA.'
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			name: 'doa',
+			description: 'The Depths of Atlantis.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'start',
+					description: 'Start a Depths of Atlantis trip',
+					options: [
+						{
+							type: ApplicationCommandOptionType.Number,
+							name: 'challenge_mode',
+							description: 'Try if you dare.',
+							required: false
+						},
+						{
+							type: ApplicationCommandOptionType.Boolean,
+							name: 'solo',
+							description: 'Do you want to solo?',
+							required: false
+						},
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'max_team_size',
+							description: 'Choose a max size for your team.',
+							required: false,
+							min_value: 1,
+							max_value: 8
+						},
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'quantity',
+							description: 'The quantity to do.',
+							required: false,
+							min_value: 1,
+							max_value: 5
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'help',
+					description: 'Shows helpful information and stats about DOA.'
+				}
+			]
 		}
 	],
 	run: async ({
@@ -167,6 +215,10 @@ export const raidCommand: OSBMahojiCommand = {
 		};
 		toa?: {
 			start?: { raid_level: RaidLevel; max_team_size?: number; solo?: boolean; quantity?: number };
+			help?: {};
+		};
+		doa?: {
+			start?: { challenge_mode?: boolean; max_team_size?: number; solo?: boolean; quantity?: number };
 			help?: {};
 		};
 	}>) => {
@@ -204,6 +256,21 @@ export const raidCommand: OSBMahojiCommand = {
 				options.toa.start.max_team_size,
 				options.toa.start.quantity
 			);
+		}
+
+		if (options.doa?.start) {
+			return doaStartCommand(
+				user,
+				Boolean(options.doa.start.challenge_mode),
+				Boolean(options.doa.start.solo),
+				channelID,
+				options.doa.start.max_team_size,
+				options.doa.start.quantity
+			);
+		}
+
+		if (options.doa?.help) {
+			return doaHelpCommand(user);
 		}
 
 		return 'Invalid command.';

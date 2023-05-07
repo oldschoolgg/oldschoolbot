@@ -617,6 +617,8 @@ export const toaPurpleItems = resolveItems([
 	"Osmumten's fang"
 ]);
 
+export const doaPurples = resolveItems(['Oceanic relic', 'Oceanic dye', 'Aquifer aegis', 'Shark tooth', 'Shark jaw']);
+
 export enum PeakTier {
 	High = 'high',
 	Medium = 'medium',

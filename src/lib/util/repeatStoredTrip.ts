@@ -733,6 +733,14 @@ export const tripHandlers = {
 				drift_net_fishing: { minutes: Math.floor(data.duration / Time.Minute) }
 			}
 		})
+	},
+	[activity_type_enum.DepthsOfAtlantis]: {
+		commandName: 'activities',
+		args: (data: ActivityTaskOptionsWithQuantity) => ({
+			underwater: {
+				drift_net_fishing: { minutes: Math.floor(data.duration / Time.Minute) }
+			}
+		})
 	}
 } as const;
 
