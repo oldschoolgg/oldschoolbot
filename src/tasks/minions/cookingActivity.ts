@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
+import { globalDroprates, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import calcBurntCookables from '../../lib/skilling/functions/calcBurntCookables';
 import Cooking from '../../lib/skilling/skills/cooking';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -46,7 +46,12 @@ export const cookingTask: MinionTask = {
 		loot.add(cookable.burntCookable, burnedAmount);
 
 		if (duration >= MIN_LENGTH_FOR_PET) {
-			const dropRate = clAdjustedDroprate(user, 'Remy', 5000, 1.5);
+			const dropRate = clAdjustedDroprate(
+				user,
+				'Remy',
+				globalDroprates.remy.baseRate,
+				globalDroprates.remy.clIncrease
+			);
 			const minutesInTrip = Math.ceil(duration / 1000 / 60);
 			for (let i = 0; i < minutesInTrip; i++) {
 				if (roll(dropRate)) {

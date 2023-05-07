@@ -1,15 +1,20 @@
 import { roll } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { globalDroprates } from '../constants';
 import { clAdjustedDroprate } from '../util';
 
 // user is null if tame is killing
 export function handleSpecialCoxLoot(user: MUser | null, loot: Bank) {
-	const takonDropRate = user ? clAdjustedDroprate(user, 'Takon', 600, 1.5) : 4500;
+	const takonDropRate = user
+		? clAdjustedDroprate(user, 'Takon', globalDroprates.takon.baseRate, globalDroprates.takon.clIncrease)
+		: globalDroprates.takon.tameBaseRate!;
 	if (roll(takonDropRate)) {
 		loot.add('Takon');
 	}
-	const steveDropRate = user ? clAdjustedDroprate(user, 'Steve', 300, 1.5) : 500;
+	const steveDropRate = user
+		? clAdjustedDroprate(user, 'Steve', globalDroprates.steve.baseRate, globalDroprates.steve.clIncrease)
+		: globalDroprates.steve.tameBaseRate!;
 	if (roll(steveDropRate)) {
 		loot.add('Steve');
 	}

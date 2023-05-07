@@ -2,6 +2,7 @@ import { objectEntries, randArrItem, randInt, roll } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
+import { globalDroprates } from '../../../lib/constants';
 import { isDoubleLootActive } from '../../../lib/doubleLoot';
 import { kittens } from '../../../lib/growablePets';
 import { trackLoot } from '../../../lib/lootTrack';
@@ -46,7 +47,12 @@ export const vasaTask: MinionTask = {
 
 		const lootOf: Record<string, number> = {};
 
-		const petDroprate = clAdjustedDroprate(user, 'Voidling', 500, 1.5);
+		const petDroprate = clAdjustedDroprate(
+			user,
+			'Voidling',
+			globalDroprates.voidling.baseRate,
+			globalDroprates.voidling.clIncrease
+		);
 		for (let i = 0; i < quantity; i++) {
 			loot.add(VasaMagusLootTable.roll());
 			if (roll(petDroprate)) loot.add('Voidling');

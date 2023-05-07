@@ -1,7 +1,7 @@
 import { calcPercentOfNum, percentChance, randInt } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Emoji, Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
+import { Emoji, Events, globalDroprates, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import { Cookables } from '../../lib/skilling/skills/cooking';
 import Fishing from '../../lib/skilling/skills/fishing';
@@ -213,7 +213,12 @@ export const fishingTask: MinionTask = {
 
 		if (duration >= MIN_LENGTH_FOR_PET) {
 			const minutesInTrip = Math.ceil(duration / 1000 / 60);
-			const petChance = clAdjustedDroprate(user, 'Shelldon', 8000, 1.5);
+			const petChance = clAdjustedDroprate(
+				user,
+				'Shelldon',
+				globalDroprates.shelldon.baseRate,
+				globalDroprates.shelldon.clIncrease
+			);
 			for (let i = 0; i < minutesInTrip; i++) {
 				if (roll(petChance)) {
 					loot.add('Shelldon');

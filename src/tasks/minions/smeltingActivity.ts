@@ -2,7 +2,7 @@ import { randInt, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { BlacksmithOutfit } from '../../lib/bsoOpenables';
-import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
+import { globalDroprates, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { SmeltingActivityTaskOptions } from '../../lib/types/minions';
@@ -67,7 +67,12 @@ export const smeltingTask: MinionTask = {
 
 		if (duration >= MIN_LENGTH_FOR_PET && !blastf && user.QP > 10) {
 			const numMinutes = duration / Time.Minute;
-			const petChance = clAdjustedDroprate(user, 'Zak', 6500, 1.3);
+			const petChance = clAdjustedDroprate(
+				user,
+				'Zak',
+				globalDroprates.zak.baseRate,
+				globalDroprates.zak.clIncrease
+			);
 			for (let i = 0; i < numMinutes; i++) {
 				if (roll(petChance)) {
 					str +=

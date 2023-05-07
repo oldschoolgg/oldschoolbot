@@ -1,7 +1,7 @@
 import { randInt, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Emoji, Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
+import { Emoji, Events, globalDroprates, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { InventionID } from '../../lib/invention/inventions';
 import { stoneSpirits } from '../../lib/minions/data/stoneSpirits';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
@@ -98,7 +98,12 @@ export const miningTask: MinionTask = {
 
 		if (duration >= MIN_LENGTH_FOR_PET) {
 			const minutesInTrip = Math.ceil(duration / Time.Minute);
-			const droprate = clAdjustedDroprate(user, 'Doug', 7000, 1.5);
+			const droprate = clAdjustedDroprate(
+				user,
+				'Doug',
+				globalDroprates.doug.baseRate,
+				globalDroprates.doug.clIncrease
+			);
 			for (let i = 0; i < minutesInTrip; i++) {
 				if (roll(droprate)) {
 					loot.add('Doug');
