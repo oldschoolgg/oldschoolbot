@@ -24,6 +24,7 @@ import itemID from '../lib/util/itemID';
 import { logError } from '../lib/util/logError';
 import { SkillsEnum } from './skilling/types';
 import { customItemEffect } from './util/customItemEffects';
+import resolveItems from './util/resolveItems';
 import { allSlayerMaskHelmsAndMasks, slayerMaskLeaderboardCache } from './util/slayerMaskLeaderboard';
 
 const fonts = {
@@ -810,7 +811,28 @@ const chestLootTypes = [
 		chestImagePurple: loadImage('./src/lib/resources/images/cox.png'),
 		width: 260,
 		height: 180,
-		purpleItems: toaPurpleItems,
+		purpleItems: resolveItems([
+			'Metamorphic dust',
+			'Twisted ancestral colour kit',
+			"Xeric's guard",
+			"Xeric's warrior",
+			"Xeric's sentinel",
+			"Xeric's general",
+			"Xeric's champion",
+			'Olmlet',
+			'Twisted bow',
+			'Elder maul',
+			'Kodai insignia',
+			'Dragon claws',
+			'Ancestral hat',
+			'Ancestral robe top',
+			'Ancestral robe bottom',
+			"Dinh's bulwark",
+			'Dexterous prayer scroll',
+			'Arcane prayer scroll',
+			'Dragon hunter crossbow',
+			'Twisted buckler'
+		]),
 		position: () => [12, 44],
 		itemRect: [135, 45, 120, 120]
 	}

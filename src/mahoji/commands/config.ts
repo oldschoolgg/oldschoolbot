@@ -870,12 +870,13 @@ export const configCommand: OSBMahojiCommand = {
 								let res = await prisma.$queryRawUnsafe<
 									{ type: activity_type_enum; data: object; id: number; finish_date: string }[]
 								>(`
-SELECT DISTINCT ON ("activity"."type") activity.type, activity.data, activity.id, activity.finish_date
+SELECT DISTINCT ON (activity.type) activity.type, activity.data, activity.id, activity.finish_date
 FROM activity
 WHERE finish_date::date > now() - INTERVAL '31 days'
 AND user_id = '${user.id}'::bigint
-ORDER BY ("activity"."data")::text, finish_date DESC
-LIMIT 20;`);
+ORDER BY activity.type, finish_date DESC
+LIMIT 20;
+;`);
 								return res.map(i => ({
 									name: `${i.type} (Finished ${formatDuration(
 										Date.now() - new Date(i.finish_date).getTime()
