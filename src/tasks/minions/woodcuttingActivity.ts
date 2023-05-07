@@ -97,7 +97,7 @@ export const woodcuttingTask: MinionTask = {
 
 		if (duration >= MIN_LENGTH_FOR_PET) {
 			const minutes = duration / Time.Minute;
-			const droprate = clAdjustedDroprate(user, 'Peky', Math.floor(4000 / minutes), 2);
+			const droprate = clAdjustedDroprate(user, 'Peky', Math.floor(4000 / minutes), 1.5);
 			if (roll(droprate)) {
 				loot.add('Peky');
 				str +=
