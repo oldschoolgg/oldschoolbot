@@ -87,7 +87,7 @@ export const runecraftTask: MinionTask = {
 
 		if (duration >= MIN_LENGTH_FOR_PET) {
 			const minutes = duration / Time.Minute;
-			const droprate = clAdjustedDroprate(user, 'Doug', Math.floor(5000 / minutes), 2);
+			const droprate = clAdjustedDroprate(user, 'Obis', Math.floor(5000 / minutes), 1.5);
 			if (roll(droprate)) {
 				str +=
 					'\n**<:obis:787028036792614974> An enchantment guardian takes note of your prowess in runecrafting and elects to join you.**';

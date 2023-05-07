@@ -213,7 +213,7 @@ export const fishingTask: MinionTask = {
 
 		if (duration >= MIN_LENGTH_FOR_PET) {
 			const minutesInTrip = Math.ceil(duration / 1000 / 60);
-			const petChance = clAdjustedDroprate(user, 'Shelldon', 8000, 2);
+			const petChance = clAdjustedDroprate(user, 'Shelldon', 8000, 1.5);
 			for (let i = 0; i < minutesInTrip; i++) {
 				if (roll(petChance)) {
 					loot.add('Shelldon');

@@ -98,7 +98,7 @@ export const miningTask: MinionTask = {
 
 		if (duration >= MIN_LENGTH_FOR_PET) {
 			const minutesInTrip = Math.ceil(duration / Time.Minute);
-			const droprate = clAdjustedDroprate(user, 'Doug', 7000, 2.5);
+			const droprate = clAdjustedDroprate(user, 'Doug', 7000, 1.5);
 			for (let i = 0; i < minutesInTrip; i++) {
 				if (roll(droprate)) {
 					loot.add('Doug');
