@@ -1,13 +1,13 @@
 import { calcPercentOfNum, percentChance, randInt } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Emoji, Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
+import { Emoji, Events, globalDroprates, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import { Cookables } from '../../lib/skilling/skills/cooking';
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FishingActivityTaskOptions } from '../../lib/types/minions';
-import { roll, skillingPetDropRate } from '../../lib/util';
+import { clAdjustedDroprate, roll, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 import { anglerBoostPercent } from '../../mahoji/mahojiSettings';
@@ -213,8 +213,14 @@ export const fishingTask: MinionTask = {
 
 		if (duration >= MIN_LENGTH_FOR_PET) {
 			const minutesInTrip = Math.ceil(duration / 1000 / 60);
+			const petChance = clAdjustedDroprate(
+				user,
+				'Shelldon',
+				globalDroprates.shelldon.baseRate,
+				globalDroprates.shelldon.clIncrease
+			);
 			for (let i = 0; i < minutesInTrip; i++) {
-				if (roll(8000)) {
+				if (roll(petChance)) {
 					loot.add('Shelldon');
 					str +=
 						'\n<:shelldon:748496988407988244> A crab steals your fish just as you catch it! After some talking, the crab, called shelldon, decides to join you on your fishing adventures. You can equip Shelldon and he will help you fish!';

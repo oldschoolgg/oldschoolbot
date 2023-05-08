@@ -3,14 +3,14 @@ import { randInt, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
-import { Events, MAX_LEVEL, PeakTier } from '../../../lib/constants';
+import { Events, globalDroprates, MAX_LEVEL, PeakTier } from '../../../lib/constants';
 import { hasWildyHuntGearEquipped } from '../../../lib/gear/functions/hasWildyHuntGearEquipped';
 import { trackLoot } from '../../../lib/lootTrack';
 import { calcLootXPHunting, generateHerbiTable } from '../../../lib/skilling/functions/calcsHunter';
 import Hunter from '../../../lib/skilling/skills/hunter/hunter';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { HunterActivityTaskOptions } from '../../../lib/types/minions';
-import { roll, skillingPetDropRate, stringMatches } from '../../../lib/util';
+import { clAdjustedDroprate, roll, skillingPetDropRate, stringMatches } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
@@ -144,14 +144,14 @@ export const hunterTask: MinionTask = {
 			}
 		}
 		if (creature.name === 'Eastern ferret') {
-			const { cl } = user;
-			const amountOfZippysGotten = cl.amount('Zippy');
-			let baseDropRatePer = 3500;
-			if (amountOfZippysGotten > 0) {
-				baseDropRatePer = 3500 * (amountOfZippysGotten * 1.5);
-			}
+			const zippyDroprate = clAdjustedDroprate(
+				user,
+				'Zippy',
+				globalDroprates.zippyHunter.baseRate,
+				globalDroprates.zippyHunter.clIncrease
+			);
 			for (let i = 0; i < quantity; i++) {
-				if (roll(baseDropRatePer)) {
+				if (roll(zippyDroprate)) {
 					loot.add('Zippy');
 				}
 			}

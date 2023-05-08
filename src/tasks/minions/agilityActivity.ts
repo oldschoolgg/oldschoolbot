@@ -2,7 +2,7 @@ import { increaseNumByPercent, randInt, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { Emoji, Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
+import { Emoji, Events, globalDroprates, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import { isDoubleLootActive } from '../../lib/doubleLoot';
 import Agility from '../../lib/skilling/skills/agility';
@@ -145,8 +145,14 @@ export const agilityTask: MinionTask = {
 		if (duration >= MIN_LENGTH_FOR_PET) {
 			const minutes = duration / Time.Minute;
 			if (course.id === 4) {
+				const scruffyDroprate = clAdjustedDroprate(
+					user,
+					'Scruffy',
+					globalDroprates.scruffy.baseRate,
+					globalDroprates.scruffy.clIncrease
+				);
 				for (let i = 0; i < minutes; i++) {
-					if (roll(4000)) {
+					if (roll(scruffyDroprate)) {
 						loot.add('Scruffy');
 						str +=
 							"\n\n<:scruffy:749945071146762301> As you jump off the rooftop in Varrock, a stray dog covered in flies approaches you. You decide to adopt the dog, and name him 'Scruffy'.";

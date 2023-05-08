@@ -431,7 +431,7 @@ export const farmingTask: MinionTask = {
 					user,
 					'Plopper',
 					(plantToHarvest.petChance - currentFarmingLevel * 25) / patchType.lastQuantity / 5,
-					1.2
+					2
 				);
 				if (roll(plopperDroprate)) loot.add('Plopper');
 			} else if (
@@ -446,7 +446,7 @@ export const farmingTask: MinionTask = {
 					user,
 					'Plopper',
 					(plantToHarvest.petChance - currentFarmingLevel * 25) / alivePlants / 5,
-					1.2
+					2
 				);
 				if (roll(plopperDroprate)) loot.add('Plopper');
 			}

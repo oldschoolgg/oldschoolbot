@@ -2,6 +2,7 @@ import { objectEntries, randArrItem, randInt, roll } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
+import { globalDroprates } from '../../../lib/constants';
 import { isDoubleLootActive } from '../../../lib/doubleLoot';
 import { kittens } from '../../../lib/growablePets';
 import { trackLoot } from '../../../lib/lootTrack';
@@ -10,7 +11,7 @@ import { VasaMagus, VasaMagusLootTable } from '../../../lib/minions/data/killabl
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import { NewBossOptions } from '../../../lib/types/minions';
-import { getMonster, itemNameFromID } from '../../../lib/util';
+import { clAdjustedDroprate, getMonster, itemNameFromID } from '../../../lib/util';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
@@ -45,8 +46,16 @@ export const vasaTask: MinionTask = {
 		const loot = new Bank();
 
 		const lootOf: Record<string, number> = {};
+
+		const petDroprate = clAdjustedDroprate(
+			user,
+			'Voidling',
+			globalDroprates.voidling.baseRate,
+			globalDroprates.voidling.clIncrease
+		);
 		for (let i = 0; i < quantity; i++) {
 			loot.add(VasaMagusLootTable.roll());
+			if (roll(petDroprate)) loot.add('Voidling');
 			let mon = randArrItem(vasaBosses);
 			let qty = randInt(1, 3);
 			lootOf[mon.name] = (lootOf[mon.name] ?? 0) + qty;
