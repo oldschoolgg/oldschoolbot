@@ -249,20 +249,21 @@ class GrandExchangeSingleton {
 		let sellerGPRefundAmount: number | undefined = undefined;
 		let buyerGPRefundAmount: number | undefined = undefined;
 
-		if (buyerListing.asking_price_per_item > sellerListing.asking_price_per_item) {
-			const priceDifference = buyerListing.asking_price_per_item - sellerListing.asking_price_per_item;
-			const extraAmount = quantityToBuy * priceDifference;
-			validateNumber(extraAmount);
-			const extraLoot = new Bank().add('Coins', extraAmount);
-			sellerLoot.add(extraLoot);
+		// if (buyerListing.asking_price_per_item > sellerListing.asking_price_per_item) {
+		// 	const priceDifference = buyerListing.asking_price_per_item - sellerListing.asking_price_per_item;
+		// 	const extraAmount = quantityToBuy * priceDifference;
+		// 	validateNumber(extraAmount);
+		// 	const extraLoot = new Bank().add('Coins', extraAmount);
+		// 	buyerGPRefundAmount = extraAmount;
+		// 	sellerLoot.add(extraLoot);
 
-			logContext = {
-				...logContext,
-				priceDifference: priceDifference.toString(),
-				extraAmount: extraAmount.toString(),
-				extraLoot: extraLoot.toString()
-			};
-		}
+		// 	logContext = {
+		// 		...logContext,
+		// 		priceDifference: priceDifference.toString(),
+		// 		extraAmount: extraAmount.toString(),
+		// 		extraLoot: extraLoot.toString()
+		// 	};
+		// }
 
 		logContext = {
 			...logContext,

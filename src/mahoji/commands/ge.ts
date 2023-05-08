@@ -402,7 +402,7 @@ Transactions:\n${allTransactions
 					grand_exchange_owned_bank: (await fetchOwnedBank()).remove(refundBank).bank
 				});
 
-				return `Successfully cancelled your listing[${newListing.userfacing_id}], you have been refunded ${refundBank}.`;
+				return `Successfully cancelled your listing, you have been refunded ${refundBank}.`;
 			}
 
 			return 'Invalid command.';
