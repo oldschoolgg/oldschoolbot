@@ -253,7 +253,7 @@ export const monsterTask: MinionTask = {
 		let gotKlik = false;
 		const minutes = Math.ceil(duration / Time.Minute);
 		if (fullMonster?.data.attributes.includes(MonsterAttribute.Dragon)) {
-			const dropRate = clAdjustedDroprate(user, 'Klik', 8500, 1.2);
+			const dropRate = clAdjustedDroprate(user, 'Klik', 8500, 1.5);
 			for (let i = 0; i < minutes; i++) {
 				if (roll(dropRate)) {
 					gotKlik = true;

@@ -7,7 +7,7 @@ import Firemaking from '../../lib/skilling/skills/firemaking';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
-import { itemID, roll, skillingPetDropRate } from '../../lib/util';
+import { clAdjustedDroprate, itemID, roll, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export const woodcuttingTask: MinionTask = {
@@ -97,7 +97,8 @@ export const woodcuttingTask: MinionTask = {
 
 		if (duration >= MIN_LENGTH_FOR_PET) {
 			const minutes = duration / Time.Minute;
-			if (roll(Math.floor(4000 / minutes))) {
+			const droprate = clAdjustedDroprate(user, 'Peky', Math.floor(4000 / minutes), 1.5);
+			if (roll(droprate)) {
 				loot.add('Peky');
 				str +=
 					'\n<:peky:787028037031559168> A small pigeon has taken a liking to you, and hides itself in your bank.';
