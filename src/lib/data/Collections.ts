@@ -596,6 +596,32 @@ export const allCollectionLogs: ICollection = {
 					return [`${minigames.tombs_of_amascut} KC`];
 				}
 			},
+			'Depths of Atlantis': {
+				alias: ['doa'],
+				kcActivity: {
+					Default: async (_, minigameScores) =>
+						minigameScores.find(i => i.minigame.column === 'depths_of_atlantis')!.score,
+					'Challenge Mode': async (_, minigameScores) =>
+						minigameScores.find(i => i.minigame.column === 'depths_of_atlantis_cm')!.score
+				},
+				items: resolveItems([
+					'Shark jaw',
+					'Shark tooth',
+					'Oceanic relic',
+					'Aquifer aegis',
+					'Oceanic dye',
+					'Crush',
+					'Oceanic shroud (tier 1)',
+					'Oceanic shroud (tier 2)',
+					'Oceanic shroud (tier 3)',
+					'Oceanic shroud (tier 4)',
+					'Oceanic shroud (tier 5)'
+				]),
+				isActivity: true,
+				fmtProg: ({ minigames }) => {
+					return [`${minigames.depths_of_atlantis} KC`, `${minigames.depths_of_atlantis_cm} CM KC`];
+				}
+			},
 			'Tormented Demons': {
 				items: resolveItems([
 					'Dragon claw',

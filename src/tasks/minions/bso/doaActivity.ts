@@ -7,35 +7,36 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { drawChestLootImage } from '../../../lib/bankImage';
 import { Emoji, Events, toaPurpleItems } from '../../../lib/constants';
 import { toaCL } from '../../../lib/data/CollectionsExport';
-import { DOARooms } from '../../../lib/depthsOfAtlantis';
+import { chanceOfDOAUnique, DOARooms, pickUniqueToGiveUser } from '../../../lib/depthsOfAtlantis';
 import { trackLoot } from '../../../lib/lootTrack';
 import { resolveAttackStyles } from '../../../lib/minions/functions';
-import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
+import { incrementMinigameScore } from '../../../lib/settings/settings';
+import { ClueTable, GrimyHerbTable, runeAlchablesTable, StoneSpiritTable } from '../../../lib/simulation/sharedTables';
 import { TeamLoot } from '../../../lib/simulation/TeamLoot';
+import { GemRockTable } from '../../../lib/skilling/skills/mining';
 import { DOAOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
 
-const UniqueTable = new LootTable().add('Oceanic relic').add('Oceanic dye').add('Aquifer aegis').add('Shark jaw');
-const BaseNonUniqueTable = new LootTable()
-	.add('Coal', [1000, 2000])
-	.add('Runite ore', [10, 20])
-	.add('Dragon arrowtips', [100, 200])
-	.add('Dragon dart tip', [100, 200])
-	.add('Dragon javelin heads', [100, 200])
-	.add('Dragonstone bolt tips', [100, 200])
-	.add('Onyx bolt tips', [100, 200])
-	.add('Dragon arrow', [100, 200])
-	.add('Dragon dart', [100, 200])
-	.add('Dragon javelin', [100, 200])
-	.add('Dragonstone bolts', [100, 200])
-	.add('Onyx bolts', [100, 200])
-	.add('Dragon arrow', [100, 200])
-	.add('Dragon dart', [100, 200])
-	.add('Dragon javelin', [100, 200]);
+const DragonTable = new LootTable()
+	.add('Dragon arrowtips', [10, 20])
+	.add('Dragon dart tip', [10, 20])
+	.add('Dragon javelin heads', [10, 20]);
 
-const NonUniqueTable = new LootTable().every(BaseNonUniqueTable, 3);
+const BaseNonUniqueTable = new LootTable()
+	.add(GemRockTable, [10, 20])
+	.add(DragonTable, [3, 5])
+	.add(runeAlchablesTable, [10, 15])
+	.add(GrimyHerbTable, [4, 10])
+	.add(StoneSpiritTable, [4, 10]);
+
+export const DOANonUniqueTable = new LootTable()
+	.tertiary(500, 'Crush')
+	.tertiary(250, 'Oceanic dye')
+	.oneIn(70, 'Shark tooth')
+	.tertiary(5, ClueTable)
+	.every(BaseNonUniqueTable, 3);
 
 async function handleDOAXP(user: MUser, qty: number, isCm: boolean) {
 	let rangeXP = 10_000 * qty;
@@ -73,7 +74,7 @@ async function handleDOAXP(user: MUser, qty: number, isCm: boolean) {
 interface RaidResultUser {
 	mUser: MUser;
 	deaths: number;
-	kc: number;
+	// kc: number;
 }
 
 export const doaTask: MinionTask = {
@@ -118,25 +119,26 @@ export const doaTask: MinionTask = {
 		for (const user of allUsers) {
 			raidResults.set(user.id, {
 				mUser: user,
-				deaths: 0,
-				kc: await getMinigameScore(user.id, 'tombs_of_amascut')
+				deaths: 0
 			});
 		}
 
 		let messages: string[] = [];
+		const uniqueChance = chanceOfDOAUnique(users.length, cm);
+		messages.push(`Your team has a 1 in ${uniqueChance} unique chance per raid.`);
 
 		const teamLoot = new TeamLoot();
 
 		for (const raid of raids) {
 			if (raid.wipedRoom) continue;
-			const uniqueRecipient = roll(100) ? randArrItem(allUsers) : undefined;
+			const uniqueRecipient = roll(uniqueChance) ? randArrItem(allUsers) : undefined;
 			for (let i = 0; i < raid.users.length; i++) {
 				if (raid.users[i].deaths.length >= 2) continue;
 				const user = allUsers[i];
 				if (uniqueRecipient && user.id === uniqueRecipient.id) {
-					teamLoot.add(uniqueRecipient.id, UniqueTable.roll());
+					teamLoot.add(uniqueRecipient.id, pickUniqueToGiveUser(user.cl));
 				} else {
-					teamLoot.add(user.id, NonUniqueTable.roll());
+					teamLoot.add(user.id, DOANonUniqueTable.roll());
 				}
 			}
 		}

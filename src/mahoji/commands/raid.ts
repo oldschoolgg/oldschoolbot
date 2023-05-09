@@ -1,9 +1,23 @@
+import { roll, sumArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { Bank } from 'oldschooljs';
 
-import { doaHelpCommand, doaStartCommand } from '../../lib/depthsOfAtlantis';
+import {
+	calcDOAInput,
+	chanceOfDOAUnique,
+	createDOATeam,
+	doaHelpCommand,
+	DOARooms,
+	doaStartCommand,
+	pickUniqueToGiveUser
+} from '../../lib/depthsOfAtlantis';
 import { mileStoneBaseDeathChances, RaidLevel, toaHelpCommand, toaStartCommand } from '../../lib/simulation/toa';
+import { averageBank, formatDuration, itemNameFromID } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
+import { makeBankImage } from '../../lib/util/makeBankImage';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
+import resolveItems from '../../lib/util/resolveItems';
+import { DOANonUniqueTable } from '../../tasks/minions/bso/doaActivity';
 import { coxCommand, coxStatsCommand } from '../lib/abstracted_commands/coxCommand';
 import { tobCheckCommand, tobStartCommand, tobStatsCommand } from '../lib/abstracted_commands/tobCommand';
 import { OSBMahojiCommand } from '../lib/util';
@@ -197,6 +211,11 @@ export const raidCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'help',
 					description: 'Shows helpful information and stats about DOA.'
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'simulate',
+					description: 'Shows helpful information and stats about DOA.'
 				}
 			]
 		}
@@ -220,6 +239,7 @@ export const raidCommand: OSBMahojiCommand = {
 		doa?: {
 			start?: { challenge_mode?: boolean; max_team_size?: number; solo?: boolean; quantity?: number };
 			help?: {};
+			simulate?: {};
 		};
 	}>) => {
 		if (interaction) await deferInteraction(interaction);
@@ -271,6 +291,115 @@ export const raidCommand: OSBMahojiCommand = {
 
 		if (options.doa?.help) {
 			return doaHelpCommand(user);
+		}
+
+		if (options.doa?.simulate) {
+			const samples = 100;
+			const results: {
+				loot: Bank;
+				time: number;
+				cost: Bank;
+				kcFinishedAt: number;
+			}[] = [];
+
+			for (let t = 0; t < samples; t++) {
+				let i = 0;
+				const totalLoot = new Bank();
+				const items = resolveItems([
+					'Shark jaw',
+					'Shark tooth',
+					'Oceanic relic',
+					'Aquifer aegis',
+					'Oceanic dye',
+					'Crush'
+				]);
+				let time = 0;
+				let kcGotAt = [];
+				const totalCost = new Bank();
+
+				while (items.some(item => !totalLoot.has(item))) {
+					i++;
+
+					let loot = new Bank();
+					if (roll(chanceOfDOAUnique(1, false))) {
+						loot.add(pickUniqueToGiveUser(totalLoot));
+					} else {
+						loot.add(DOANonUniqueTable.roll());
+					}
+
+					for (const item of items) {
+						if (!totalLoot.has(item) && loot.has(item)) {
+							kcGotAt.push(`${itemNameFromID(item)}: ${i}`);
+						}
+					}
+
+					totalLoot.add(loot);
+
+					const kcBank = new Bank();
+					for (const room of DOARooms) {
+						kcBank.add(room.id, i);
+					}
+
+					const result = createDOATeam({
+						team: [{ user, kc: i, attempts: i, roomKCs: kcBank.bank as any }],
+						challengeMode: false,
+						quantity: 1
+					});
+
+					const cost = await calcDOAInput({
+						user,
+						kcOverride: i,
+						challengeMode: false,
+						quantity: 1,
+						duration: result.fakeDuration
+					});
+					totalCost.add(cost.cost);
+					totalCost.add(cost.blowpipeCost);
+
+					time += result.fakeDuration;
+				}
+
+				results.push({ time, cost: totalCost, loot: totalLoot, kcFinishedAt: i });
+			}
+
+			const luckiest = results.sort((a, b) => a.kcFinishedAt - b.kcFinishedAt)[0];
+			const unluckiest = results.sort((a, b) => b.kcFinishedAt - a.kcFinishedAt)[0];
+			const fastest = results.sort((a, b) => a.time - b.time)[0];
+			const slowest = results.sort((a, b) => b.time - a.time)[0];
+			const totalLoot = new Bank();
+			const totalCost = new Bank();
+			let totalTime = 0;
+
+			for (const result of results) {
+				totalLoot.add(result.loot);
+				totalCost.add(result.cost);
+				totalTime += result.time;
+			}
+
+			const averageLoot = averageBank(totalLoot, samples);
+			const averageCost = averageBank(totalCost, samples);
+			const averageTime = totalTime / samples;
+			const averageKC = sumArr(results.map(r => r.kcFinishedAt)) / samples;
+
+			return {
+				content: `
+Average time to finish: ${formatDuration(averageTime)}
+Average KC finished at: ${averageKC}
+
+Solo
+NOT Challenge Mode
+Total cost does not include charges (e.g. blood runes from sang staff)
+
+Luckiest finish: ${luckiest.kcFinishedAt} KC
+Unluckiest finish: ${unluckiest.kcFinishedAt} KC
+Fastest finish: ${formatDuration(fastest.time)}
+Slowest finish: ${formatDuration(slowest.time)}
+`,
+				files: [
+					(await makeBankImage({ bank: averageLoot, title: 'Average Loot' })).file,
+					(await makeBankImage({ bank: averageCost, title: 'Average Cost' })).file
+				]
+			};
 		}
 
 		return 'Invalid command.';

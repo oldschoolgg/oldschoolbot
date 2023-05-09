@@ -1,6 +1,6 @@
-import { channelIsSendable, mentionCommand } from '@oldschoolgg/toolkit';
+import { channelIsSendable, formatOrdinal, mentionCommand } from '@oldschoolgg/toolkit';
 import { bold } from 'discord.js';
-import { calcPercentOfNum, clamp, percentChance, randInt, reduceNumByPercent, Time } from 'e';
+import { calcPercentOfNum, clamp, percentChance, randArrItem, randInt, reduceNumByPercent, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { UniqueTable } from 'oldschooljs/dist/simulation/clues/Beginner';
@@ -95,7 +95,7 @@ const TUMEKEN_SHADOW_PER_RAID = 150;
 const JAVELLINS_PER_RAID = 100;
 const JAVELLINS = resolveItems(['Amethyst javelin', 'Dragon javelin', 'Obsidian javelin']);
 const BP_DARTS_NEEDED = 150;
-const SANG_BLOOD_RUNES_PER_RAID = 500;
+const SANG_BLOOD_RUNES_PER_RAID = 200;
 
 const requirements: {
 	name: string;
@@ -277,12 +277,12 @@ export const DOARooms: AtlantisRoom[] = [
 		speedBoosts: [
 			{
 				name: 'Titan ballista',
-				percent: 35,
+				percent: 20,
 				has: user => user.gear.range.hasEquipped('Titan ballista')
 			},
 			{
 				name: 'Obsidian javelins',
-				percent: 35,
+				percent: 20,
 				has: user => user.gear.range.hasEquipped('Obsidian javelin')
 			}
 		]
@@ -305,7 +305,13 @@ export const DOARooms: AtlantisRoom[] = [
 			return addition;
 		},
 		baseTime: Time.Minute * 25,
-		speedBoosts: []
+		speedBoosts: [
+			{
+				name: 'Atlantean trident',
+				percent: 10,
+				has: user => user.gear.melee.hasEquipped('Atlantean trident')
+			}
+		]
 	},
 	{
 		id: 4,
@@ -315,11 +321,17 @@ export const DOARooms: AtlantisRoom[] = [
 			return addition;
 		},
 		baseTime: Time.Minute * 15,
-		speedBoosts: []
+		speedBoosts: [
+			{
+				name: 'Atlantean trident',
+				percent: 10,
+				has: user => user.gear.melee.hasEquipped('Atlantean trident')
+			}
+		]
 	}
 ];
 
-async function calcDOAInput({
+export async function calcDOAInput({
 	user,
 	kcOverride,
 	quantity,
@@ -475,42 +487,62 @@ export function createDOATeam({
 	let fakeDuration = 0;
 	const results = [];
 	const raids: DOAStoredRaid[] = [];
+	const messages: string[] = [];
 
 	for (let i = 0; i < quantity; i++) {
 		let wipedRoom = null;
-		const messages: string[] = [];
 		const missedBoosts: string[] = [];
 		const deathsPerUser = new Map<string, number[]>();
 		for (const user of team) deathsPerUser.set(user.user.id, []);
+		messages.push(`Simulating ${formatOrdinal(i + 1)} raid`);
 
 		for (const room of DOARooms) {
 			let deaths = 0;
 			let roomTime = room.baseTime;
 
 			for (const { user, roomKCs } of team) {
+				messages.push(`  Checking boosts for ${user.usernameOrMention}`);
 				for (const boost of room.speedBoosts) {
 					let percent = boost.percent / team.length;
 					let actualDecrease = calcPercentOfNum(percent, roomTime);
 					if (boost.has(user)) {
 						roomTime -= reduceNumByPercent(roomTime, percent);
 						messages.push(
-							`${user.usernameOrMention} ${boost.name} boost removed ${formatDuration(actualDecrease)}`
+							`    ${user.usernameOrMention} ${boost.name} boost removed ${formatDuration(
+								actualDecrease
+							)}`
 						);
 					} else {
 						missedBoosts.push(`${user.usernameOrMention} missed the ${boost.name} boost`);
+						messages.push(
+							`    ${user.usernameOrMention} missed the ${
+								boost.name
+							} boost, it wouldve saved ${formatDuration(actualDecrease)}`
+						);
 					}
 				}
 
+				messages.push(`  Calculating death chance for ${user.usernameOrMention} in ${room.name} room...`);
 				let baseDeathChance = getPercentage(roomKCs[room.id]);
-				if (challengeMode) baseDeathChance *= 1.5;
-				let deathChanceForThisUserRoom = clamp(baseDeathChance + room.addedDeathChance(user), 5, 99);
+				messages.push(`    Base chance of ${baseDeathChance}% chance`);
+				if (challengeMode) {
+					baseDeathChance *= 1.5;
+					messages.push(`    Multiplied by 1.5x because challenge mode, now ${baseDeathChance}%`);
+				}
+				const addedDeathChance = room.addedDeathChance(user);
+				if (addedDeathChance !== 0) {
+					messages.push(`    Had an extra ${addedDeathChance}% added because of one of the rooms mechanics`);
+				}
+				let deathChanceForThisUserRoom = clamp(baseDeathChance + addedDeathChance, 5, 99);
 				messages.push(
-					`${user.usernameOrMention} has a ${deathChanceForThisUserRoom}% chance of dying in the ${room.name} room`
+					`    Final death chance for ${user.usernameOrMention} in ${room.name} room: ${deathChanceForThisUserRoom}%`
 				);
 				if (percentChance(deathChanceForThisUserRoom)) {
 					deaths++;
 					deathsPerUser.get(user.id)!.push(room.id);
+					messages.push(`    ${user.usernameOrMention} died in ${room.name} room`);
 				}
+				messages.push('');
 			}
 
 			fakeDuration += roomTime;
@@ -519,9 +551,11 @@ export function createDOATeam({
 			if (deaths === team.length) {
 				wipedRoom = room.id;
 				realDuration += randInt(1, roomTime);
+				if (!wipedRoom) messages.push(`  Wiped in ${room.name} room`);
 			} else {
 				realDuration += roomTime;
 			}
+			messages.push('');
 		}
 
 		results.push({
@@ -535,6 +569,8 @@ export function createDOATeam({
 			}))
 		});
 	}
+
+	messages.push('');
 
 	return { realDuration, fakeDuration, results, raids };
 }
@@ -731,7 +767,11 @@ export async function doaStartCommand(
 	str += ` \n\n${debugStr}`;
 
 	if (createdDOATeam.results[0].messages.length > 0) {
-		str += `\n**Message:** ${createdDOATeam.results[0].messages.join(',')}`;
+		// str += `\n**Message:** ${createdDOATeam.results[0].messages.join(',')}`;
+		return {
+			content: str,
+			files: [{ attachment: Buffer.from(createdDOATeam.results[0].messages.join('\n')), name: 'doa.txt' }]
+		};
 	}
 
 	return str;
@@ -803,4 +843,20 @@ ${requirements
 `;
 
 	return str;
+}
+
+export function chanceOfDOAUnique(teamSize: number, cm: boolean) {
+	let base = 40 - clamp(teamSize, 1, 3);
+	if (cm) base -= 3;
+	return base;
+}
+
+const uniques = resolveItems(['Oceanic relic', 'Aquifer aegis', 'Shark jaw']);
+
+export function pickUniqueToGiveUser(cl: Bank) {
+	const unownedUniques = uniques.filter(i => !cl.has(i));
+	if (unownedUniques.length > 0) {
+		return randArrItem(unownedUniques);
+	}
+	return randArrItem(uniques);
 }

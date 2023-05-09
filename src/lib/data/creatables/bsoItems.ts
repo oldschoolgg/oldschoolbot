@@ -2,6 +2,7 @@ import { Bank } from 'oldschooljs';
 import { resolveBank } from 'oldschooljs/dist/util';
 
 import { dyedItems } from '../../dyedItems';
+import { MaterialBank } from '../../invention/MaterialBank';
 import { nexBrokenArmorDetails } from '../../nex';
 import { bones } from '../../skilling/skills/prayer';
 import { Bone } from '../../skilling/types';
@@ -88,6 +89,24 @@ const nexCreatables: Createable[] = [
 	}))
 ];
 
+const masoriComponents: Createable[] = [
+	{
+		name: 'Revert masori mask',
+		inputItems: new Bank().add('Masori mask'),
+		outputItems: new Bank().add('Masori components', 2)
+	},
+	{
+		name: 'Revert masori body',
+		inputItems: new Bank().add('Masori body'),
+		outputItems: new Bank().add('Masori components', 3)
+	},
+	{
+		name: 'Revert masori chaps',
+		inputItems: new Bank().add('Masori chaps'),
+		outputItems: new Bank().add('Masori components', 3)
+	}
+];
+
 const componentRevertables: Createable[] = [
 	{
 		name: 'Revert bandos chestplate',
@@ -160,7 +179,8 @@ const componentRevertables: Createable[] = [
 		outputItems: {
 			[itemID('Ancestral components')]: 3
 		}
-	}
+	},
+	...masoriComponents
 ];
 
 const chaoticCreatables: Createable[] = [
@@ -1212,5 +1232,72 @@ export const BsoCreateables: Createable[] = [
 			[itemID('Crystal dust')]: 10
 		}
 	},
-	...slayerMaskCreatables
+	...slayerMaskCreatables,
+	{
+		name: 'Titan ballista',
+		inputItems: new Bank().add('Heavy ballista', 1).add('Monkey tail', 3),
+		materialCost: new MaterialBank().add('heavy', 5000).add('flexible', 5000).add('powerful', 5000),
+		outputItems: new Bank().add('Titan ballista'),
+		requiredSkills: {
+			crafting: 105,
+			fletching: 105
+		}
+	},
+	{
+		name: 'Piercing trident',
+		inputItems: new Bank().add('Merfolk trident', 2).add('Ignecarus dragonclaw', 3),
+		outputItems: new Bank().add('Piercing trident'),
+		requiredSkills: {
+			crafting: 99,
+			smithing: 99
+		}
+	},
+	{
+		name: 'Atlantean trident',
+		inputItems: new Bank().add('Piercing trident').add('Oceanic relic'),
+		outputItems: new Bank().add('Atlantean trident'),
+		materialCost: new MaterialBank()
+			.add('treasured', 5000)
+			.add('magic', 5000)
+			.add('precious', 1000)
+			.add('powerful', 1000)
+			.add('swift', 1000),
+		requiredSkills: {
+			crafting: 105,
+			smithing: 105,
+			magic: 105
+		}
+	},
+	{
+		name: 'Shark tooth necklace',
+		inputItems: new Bank().add('Shark tooth', 5),
+		outputItems: new Bank().add('Shark tooth necklace'),
+		requiredSkills: {
+			crafting: 105,
+			magic: 105
+		}
+	},
+	{
+		name: 'Ring of piercing',
+		inputItems: new Bank().add('Archers ring', 10),
+		outputItems: new Bank().add('Ring of piercing'),
+		requiredSkills: {
+			crafting: 110
+		}
+	},
+	{
+		name: 'Ring of piercing (i)',
+		inputItems: new Bank().add('Ring of piercing').add('Magus scroll'),
+		outputItems: new Bank().add('Ring of piercing (i)')
+	},
+	{
+		name: 'Tidal collector',
+		inputItems: new Bank()
+			.add('Masori assembler')
+			.add('Shark jaw')
+			.add('Masori components', 10)
+			.add('Abyssal cape')
+			.add('Armadylean components', 10),
+		outputItems: new Bank().add('Ring of piercing (i)')
+	}
 ];

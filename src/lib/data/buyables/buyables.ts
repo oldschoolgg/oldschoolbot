@@ -134,6 +134,34 @@ const tobCapes: Buyable[] = [
 	}
 ];
 
+const oceanicShrouds: Buyable[] = [
+	{
+		name: 'Oceanic shroud (tier 1)',
+		gpCost: 100_000,
+		minigameScoreReq: ['depths_of_atlantis', 100]
+	},
+	{
+		name: 'Oceanic shroud (tier 2)',
+		gpCost: 500_000,
+		minigameScoreReq: ['depths_of_atlantis', 250]
+	},
+	{
+		name: 'Oceanic shroud (tier 3)',
+		gpCost: 500_000,
+		minigameScoreReq: ['depths_of_atlantis', 500]
+	},
+	{
+		name: 'Oceanic shroud (tier 4)',
+		gpCost: 1_000_000,
+		minigameScoreReq: ['depths_of_atlantis', 750]
+	},
+	{
+		name: 'Oceanic shroud (tier 5)',
+		gpCost: 1_000_000,
+		minigameScoreReq: ['depths_of_atlantis', 1000]
+	}
+];
+
 const cmCapes: Buyable[] = [
 	{
 		name: "Xeric's guard",
@@ -1157,7 +1185,8 @@ const Buyables: Buyable[] = [
 	...shootingStarsBuyables,
 	...guardiansOfTheRiftBuyables,
 	...toaCapes,
-	...mairinsMarketBuyables
+	...mairinsMarketBuyables,
+	...oceanicShrouds
 ];
 
 for (const [chompyHat, qty] of chompyHats) {

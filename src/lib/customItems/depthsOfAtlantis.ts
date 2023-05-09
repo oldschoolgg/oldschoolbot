@@ -46,7 +46,7 @@ setCustomItem(
 setCustomItem(
 	70_423,
 	'Obsidian javelin',
-	'Heavy ballista',
+	'Dragon javelin',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true
@@ -158,7 +158,7 @@ setCustomItem(
 
 setCustomItem(
 	70_432,
-	'Call of the sea',
+	'Tidal collector',
 	'Masori assembler',
 	{
 		customItemData: {
@@ -282,4 +282,75 @@ setCustomItem(
 		}
 	},
 	1_000_000
+);
+
+setCustomItem(
+	70_442,
+	'Oceanic shroud (tier 1)',
+	'Fire cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_443,
+	'Oceanic shroud (tier 2)',
+	'Fire cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+setCustomItem(
+	70_444,
+	'Oceanic shroud (tier 3)',
+	'Fire cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_445,
+	'Oceanic shroud (tier 4)',
+	'Fire cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_446,
+	'Oceanic shroud (tier 5)',
+	'Fire cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	70_447,
+	'Masori components',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
 );

@@ -326,7 +326,9 @@ const doaSupplies = new Bank()
 	.add('Ranging potion(4)', 100_000)
 	.add('Magic potion(4)', 100_000)
 	.add('Enhanced stamina potion', 100_000)
-	.add('Sanfew serum(4)', 100_000);
+	.add('Sanfew serum(4)', 100_000)
+	.add('Javelin shaft', 100_000)
+	.add('Obsidian shards', 100_000);
 
 const thingsToWipe = ['bank', 'materials'] as const;
 
