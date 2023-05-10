@@ -9,15 +9,7 @@ import { ADMIN_IDS, OWNER_IDS, production } from '../config';
 import { globalConfig } from './constants';
 import { prisma } from './settings/prisma';
 import { ItemBank } from './types';
-import {
-	assert,
-	formatDuration,
-	generateGrandExchangeID,
-	getUsername,
-	itemNameFromID,
-	toKMB,
-	validateBankAndThrow
-} from './util';
+import { assert, generateGrandExchangeID, itemNameFromID, toKMB, validateBankAndThrow } from './util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from './util/clientSettings';
 import getOSItem, { getItem } from './util/getOSItem';
 import { logError } from './util/logError';
@@ -163,11 +155,7 @@ class GrandExchangeSingleton {
 		const buyLimit = item.buy_limit ?? this.config.buyLimit.fallbackBuyLimit(item);
 		const totalSold = sumArr(allActiveListingsInTimePeriod.map(listing => listing.quantity_bought));
 		const remainingItemsCanBuy = Math.max(0, buyLimit - totalSold);
-		console.log(
-			`${getUsername(geListing.user_id)} has bought ${totalSold} of ${item.name} in the last ${formatDuration(
-				this.config.buyLimit.interval
-			)}, they have ${remainingItemsCanBuy} remaining in the buy limit of ${buyLimit}`
-		);
+
 		validateNumber(buyLimit);
 		validateNumber(totalSold);
 		validateNumber(remainingItemsCanBuy);
@@ -526,7 +514,6 @@ class GrandExchangeSingleton {
 		await this.queue.add(async () => {
 			if (this.isTicking) throw new Error('Already ticking.');
 			try {
-				console.log('Tick starting...');
 				await this._tick();
 			} finally {
 				this.isTicking = false;
