@@ -33,7 +33,7 @@ const BaseNonUniqueTable = new LootTable()
 
 export const DOANonUniqueTable = new LootTable()
 	.tertiary(500, 'Crush')
-	.tertiary(250, 'Oceanic dye')
+	.tertiary(100, 'Oceanic dye')
 	.oneIn(70, 'Shark tooth')
 	.tertiary(5, ClueTable)
 	.every(BaseNonUniqueTable, 3);

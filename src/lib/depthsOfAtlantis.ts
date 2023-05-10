@@ -307,9 +307,9 @@ export const DOARooms: AtlantisRoom[] = [
 		baseTime: Time.Minute * 25,
 		speedBoosts: [
 			{
-				name: 'Atlantean trident',
+				name: 'Atlantian trident',
 				percent: 10,
-				has: user => user.gear.melee.hasEquipped('Atlantean trident')
+				has: user => user.gear.melee.hasEquipped('Atlantian trident')
 			}
 		]
 	},
@@ -323,9 +323,9 @@ export const DOARooms: AtlantisRoom[] = [
 		baseTime: Time.Minute * 15,
 		speedBoosts: [
 			{
-				name: 'Atlantean trident',
+				name: 'Atlantian trident',
 				percent: 10,
-				has: user => user.gear.melee.hasEquipped('Atlantean trident')
+				has: user => user.gear.melee.hasEquipped('Atlantian trident')
 			}
 		]
 	}

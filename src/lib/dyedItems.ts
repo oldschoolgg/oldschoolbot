@@ -71,6 +71,10 @@ const gorajan = [
 			{
 				item: getOSItem('Gorajan warrior helmet (Primal)'),
 				dye: getOSItem('Dungeoneering dye')
+			},
+			{
+				item: getOSItem('Gorajan warrior helmet (Oceanic)'),
+				dye: getOSItem('Oceanic dye')
 			}
 		]
 	},
@@ -80,6 +84,10 @@ const gorajan = [
 			{
 				item: getOSItem('Gorajan warrior top (Primal)'),
 				dye: getOSItem('Dungeoneering dye')
+			},
+			{
+				item: getOSItem('Gorajan warrior top (Oceanic)'),
+				dye: getOSItem('Oceanic dye')
 			}
 		]
 	},
@@ -89,6 +97,10 @@ const gorajan = [
 			{
 				item: getOSItem('Gorajan warrior legs (Primal)'),
 				dye: getOSItem('Dungeoneering dye')
+			},
+			{
+				item: getOSItem('Gorajan warrior legs (Oceanic)'),
+				dye: getOSItem('Oceanic dye')
 			}
 		]
 	},
@@ -98,6 +110,10 @@ const gorajan = [
 			{
 				item: getOSItem('Gorajan warrior gloves (Primal)'),
 				dye: getOSItem('Dungeoneering dye')
+			},
+			{
+				item: getOSItem('Gorajan warrior gloves (Oceanic)'),
+				dye: getOSItem('Oceanic dye')
 			}
 		]
 	},
@@ -107,6 +123,10 @@ const gorajan = [
 			{
 				item: getOSItem('Gorajan warrior boots (Primal)'),
 				dye: getOSItem('Dungeoneering dye')
+			},
+			{
+				item: getOSItem('Gorajan warrior boots (Oceanic)'),
+				dye: getOSItem('Oceanic dye')
 			}
 		]
 	},
@@ -117,6 +137,10 @@ const gorajan = [
 			{
 				item: getOSItem('Gorajan occult helmet (Celestial)'),
 				dye: getOSItem('Dungeoneering dye')
+			},
+			{
+				item: getOSItem('Gorajan occult helmet (Oceanic)'),
+				dye: getOSItem('Oceanic dye')
 			}
 		]
 	},
@@ -126,6 +150,10 @@ const gorajan = [
 			{
 				item: getOSItem('Gorajan occult top (Celestial)'),
 				dye: getOSItem('Dungeoneering dye')
+			},
+			{
+				item: getOSItem('Gorajan occult top (Oceanic)'),
+				dye: getOSItem('Oceanic dye')
 			}
 		]
 	},
@@ -135,6 +163,10 @@ const gorajan = [
 			{
 				item: getOSItem('Gorajan occult legs (Celestial)'),
 				dye: getOSItem('Dungeoneering dye')
+			},
+			{
+				item: getOSItem('Gorajan occult legs (Oceanic)'),
+				dye: getOSItem('Oceanic dye')
 			}
 		]
 	},
@@ -144,6 +176,10 @@ const gorajan = [
 			{
 				item: getOSItem('Gorajan occult gloves (Celestial)'),
 				dye: getOSItem('Dungeoneering dye')
+			},
+			{
+				item: getOSItem('Gorajan occult gloves (Oceanic)'),
+				dye: getOSItem('Oceanic dye')
 			}
 		]
 	},
@@ -153,6 +189,10 @@ const gorajan = [
 			{
 				item: getOSItem('Gorajan occult boots (Celestial)'),
 				dye: getOSItem('Dungeoneering dye')
+			},
+			{
+				item: getOSItem('Gorajan occult boots (Oceanic)'),
+				dye: getOSItem('Oceanic dye')
 			}
 		]
 	},
@@ -163,6 +203,10 @@ const gorajan = [
 			{
 				item: getOSItem('Gorajan archer helmet (Sagittarian)'),
 				dye: getOSItem('Dungeoneering dye')
+			},
+			{
+				item: getOSItem('Gorajan archer helmet (Oceanic)'),
+				dye: getOSItem('Oceanic dye')
 			}
 		]
 	},
@@ -172,6 +216,10 @@ const gorajan = [
 			{
 				item: getOSItem('Gorajan archer top (Sagittarian)'),
 				dye: getOSItem('Dungeoneering dye')
+			},
+			{
+				item: getOSItem('Gorajan archer top (Oceanic)'),
+				dye: getOSItem('Oceanic dye')
 			}
 		]
 	},
@@ -181,6 +229,10 @@ const gorajan = [
 			{
 				item: getOSItem('Gorajan archer legs (Sagittarian)'),
 				dye: getOSItem('Dungeoneering dye')
+			},
+			{
+				item: getOSItem('Gorajan archer legs (Oceanic)'),
+				dye: getOSItem('Oceanic dye')
 			}
 		]
 	},
@@ -190,6 +242,10 @@ const gorajan = [
 			{
 				item: getOSItem('Gorajan archer gloves (Sagittarian)'),
 				dye: getOSItem('Dungeoneering dye')
+			},
+			{
+				item: getOSItem('Gorajan archer gloves (Oceanic)'),
+				dye: getOSItem('Oceanic dye')
 			}
 		]
 	},
@@ -199,6 +255,10 @@ const gorajan = [
 			{
 				item: getOSItem('Gorajan archer boots (Sagittarian)'),
 				dye: getOSItem('Dungeoneering dye')
+			},
+			{
+				item: getOSItem('Gorajan archer boots (Oceanic)'),
+				dye: getOSItem('Oceanic dye')
 			}
 		]
 	}
