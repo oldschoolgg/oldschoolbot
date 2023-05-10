@@ -137,6 +137,8 @@ model ClientStorage {
 
   grand_exchange_owned_bank Json    @default("{}") @db.Json
   grand_exchange_is_locked  Boolean @default(false)
+  grand_exchange_total_tax  BigInt  @default(0)
+  grand_exchange_tax_bank   BigInt  @default(0)
 
   @@map("clientStorage")
 }
@@ -928,12 +930,14 @@ model GEListing {
 model GETransaction {
   id Int @id @unique @default(autoincrement())
 
-  created_at      DateTime @default(now())
-  quantity_bought Int
-  price_per_item  Int
+  created_at DateTime @default(now())
 
-  buyer_refund_amount  BigInt?
-  seller_refund_amount BigInt?
+  quantity_bought           Int
+  price_per_item_before_tax Int
+  price_per_item_after_tax  Int
+
+  // Should be before - after * quantity?
+  total_tax_paid BigInt
 
   buy_listing    GEListing @relation("buy_transactions", fields: [buy_listing_id], references: [id])
   buy_listing_id Int

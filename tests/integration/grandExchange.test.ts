@@ -1,10 +1,11 @@
-import { sleep } from 'e';
+import { calcPercentOfNum } from 'e';
 import { Bank } from 'oldschooljs';
 import { afterAll, beforeEach, describe, expect, test } from 'vitest';
 
 import { usernameCache } from '../../src/lib/constants';
 import { GrandExchange } from '../../src/lib/grandExchange';
 import { prisma } from '../../src/lib/settings/prisma';
+import { mahojiClientSettingsFetch } from '../../src/lib/util/clientSettings';
 import { geCommand } from '../../src/mahoji/commands/ge';
 import { createTestUser, mockClient, TestUser } from './util';
 
@@ -114,20 +115,56 @@ describe('Grand Exchange', async () => {
 		expect(await prisma.gEListing.count()).toBe(2);
 
 		await GrandExchange.tick();
+		await GrandExchange.tick();
+
+		const amountSold = 50;
+		const priceSoldAt = 100;
+		const totalGPBeforeTax = amountSold * priceSoldAt;
+		const taxPerItem = calcPercentOfNum(1, priceSoldAt);
+		expect(taxPerItem).toEqual(1);
+		const totalTax = taxPerItem * amountSold;
+		expect(taxPerItem).toEqual(1);
+		const gpShouldBeReceivedAfterTax = totalGPBeforeTax - totalTax;
+		expect(gpShouldBeReceivedAfterTax).toEqual(4950);
 
 		expect(await prisma.gETransaction.count()).toBeGreaterThan(0);
-
 		expect(await cancelAllListings(wes)).toEqual('You cannot cancel a listing that has already been fulfilled.');
 		expect(await cancelAllListings(magnaboy)).toEqual(
 			'Successfully cancelled your listing, you have been refunded 5,000x Coins.'
 		);
 
-		expect(wes.bankWithGP.toString()).toEqual('1,000,005,000x Coins, 1,000x Trout, 1,000x Coal, 950x Egg');
-		expect(magnaboy.bankWithGP.toString()).toEqual('999,995,000x Coins, 1,050x Egg, 1,000x Trout, 1,000x Coal');
+		expect(wes.bankWithGP.toString()).toEqual(
+			new Bank()
+				.add('Egg', 1000 - amountSold)
+				.add('Coal', 1000)
+				.add('Trout', 1000)
+				.add('Coins', 1_000_000_000 + gpShouldBeReceivedAfterTax)
+				.toString()
+		);
+
+		expect(magnaboy.bankWithGP.toString()).toEqual(
+			new Bank()
+				.add('Egg', 1000 + amountSold)
+				.add('Coal', 1000)
+				.add('Trout', 1000)
+				.add('Coins', 1_000_000_000 - totalGPBeforeTax)
+				.toString()
+		);
 
 		expect(magnaboy.bankWithGP.clone().add(wes.bankWithGP).toString()).toEqual(
-			sampleBank.clone().multiply(2).toString()
+			sampleBank.clone().multiply(2).remove('Coins', totalTax).toString()
 		);
+
+		const bank = await GrandExchange.fetchOwnedBank();
+		expect(bank.length).toEqual(0);
+
+		const clientSettings = await mahojiClientSettingsFetch({
+			grand_exchange_tax_bank: true,
+			grand_exchange_total_tax: true
+		});
+
+		expect(Number(clientSettings.grand_exchange_tax_bank)).toEqual(totalTax);
+		expect(Number(clientSettings.grand_exchange_total_tax)).toEqual(totalTax);
 	});
 
 	beforeEach(async () => {
