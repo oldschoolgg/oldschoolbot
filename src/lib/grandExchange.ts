@@ -9,7 +9,15 @@ import { ADMIN_IDS, OWNER_IDS, production } from '../config';
 import { globalConfig } from './constants';
 import { prisma } from './settings/prisma';
 import { ItemBank } from './types';
-import { assert, generateGrandExchangeID, itemNameFromID, toKMB, validateBankAndThrow } from './util';
+import {
+	assert,
+	formatDuration,
+	generateGrandExchangeID,
+	getUsername,
+	itemNameFromID,
+	toKMB,
+	validateBankAndThrow
+} from './util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from './util/clientSettings';
 import getOSItem, { getItem } from './util/getOSItem';
 import { logError } from './util/logError';
@@ -83,6 +91,20 @@ class GrandExchangeSingleton {
 		}
 	};
 
+	getInterval() {
+		const currentTime = new Date();
+		const minutes = currentTime.getMinutes();
+		const startInterval = new Date(currentTime);
+		startInterval.setMinutes(minutes - (minutes % 5), 0, 0);
+		const endInterval = new Date(startInterval);
+		endInterval.setMinutes(startInterval.getMinutes() + 5);
+
+		return {
+			start: startInterval,
+			end: endInterval
+		};
+	}
+
 	async fetchOwnedBank() {
 		const geBank = new Bank(
 			(await mahojiClientSettingsFetch({ grand_exchange_owned_bank: true })).grand_exchange_owned_bank as ItemBank
@@ -91,11 +113,15 @@ class GrandExchangeSingleton {
 	}
 
 	calculateTaxForTransaction({ pricePerItem }: { pricePerItem: number }) {
-		let amount = calcPercentOfNum(this.config.tax.rate(), pricePerItem);
+		const rate = this.config.tax.rate();
+		let amount = calcPercentOfNum(rate, pricePerItem);
 		amount = Math.floor(amount);
 		amount = clamp(amount, 0, this.config.tax.cap());
 		validateNumber(amount);
-		return amount;
+		return {
+			taxedAmount: amount,
+			rate
+		};
 	}
 
 	async lockGE(reason: string) {
@@ -118,21 +144,30 @@ class GrandExchangeSingleton {
 	}
 
 	async checkBuyLimitForListing(geListing: GEListing) {
-		const allActiveListingsInTimePeriod = await prisma.gEListing.findMany({
+		const interval = this.getInterval();
+
+		const allActiveListingsInTimePeriod = await prisma.gETransaction.findMany({
 			where: {
-				item_id: geListing.item_id,
-				type: 'Buy',
-				user_id: geListing.user_id,
+				buy_listing: {
+					user_id: geListing.user_id,
+					item_id: geListing.item_id
+				},
 				created_at: {
-					gte: new Date(Date.now() - this.config.buyLimit.interval)
+					gte: interval.start,
+					lt: interval.end
 				}
 			}
 		});
 
 		const item = getOSItem(geListing.item_id);
 		const buyLimit = item.buy_limit ?? this.config.buyLimit.fallbackBuyLimit(item);
-		const totalSold = sumArr(allActiveListingsInTimePeriod.map(listing => this.countItemsSoldInListing(listing)));
+		const totalSold = sumArr(allActiveListingsInTimePeriod.map(listing => listing.quantity_bought));
 		const remainingItemsCanBuy = Math.max(0, buyLimit - totalSold);
+		console.log(
+			`${getUsername(geListing.user_id)} has bought ${totalSold} of ${item.name} in the last ${formatDuration(
+				this.config.buyLimit.interval
+			)}, they have ${remainingItemsCanBuy} remaining in the buy limit of ${buyLimit}`
+		);
 		validateNumber(buyLimit);
 		validateNumber(totalSold);
 		validateNumber(remainingItemsCanBuy);
@@ -250,8 +285,8 @@ class GrandExchangeSingleton {
 		validateNumber(pricePerItemBeforeTax);
 		validateNumber(totalPriceBeforeTax);
 
-		const pricePerItemAfterTax =
-			pricePerItemBeforeTax - this.calculateTaxForTransaction({ pricePerItem: pricePerItemBeforeTax });
+		const { taxedAmount, rate } = this.calculateTaxForTransaction({ pricePerItem: pricePerItemBeforeTax });
+		const pricePerItemAfterTax = pricePerItemBeforeTax - taxedAmount;
 		const totalPriceAfterTax = quantityToBuy * pricePerItemAfterTax;
 
 		validateNumber(pricePerItemAfterTax);
@@ -326,7 +361,8 @@ class GrandExchangeSingleton {
 					quantity_bought: quantityToBuy,
 					price_per_item_before_tax: pricePerItemBeforeTax,
 					price_per_item_after_tax: pricePerItemAfterTax,
-					total_tax_paid: totalTaxPaid
+					total_tax_paid: totalTaxPaid,
+					tax_rate_percent: rate
 				}
 			}),
 			prisma.gEListing.update({
@@ -392,9 +428,9 @@ class GrandExchangeSingleton {
 				totalPriceBeforeTax
 			)} GP from ${sellerUser}. The seller received ${toKMB(totalPriceAfterTax)}. There are ${
 				newBuyerListing.quantity_remaining
-			}x remaining in the buy border, ${
-				newSellingListing.quantity_remaining
-			}x remaining in the sell order. ${remainingItemsInBuyLimit}x remaining in buy limit.`
+			}x remaining in the buy border, ${newSellingListing.quantity_remaining}x remaining in the sell order. ${
+				remainingItemsInBuyLimit - quantityToBuy
+			}x remaining in buy limit.`
 		});
 	}
 
@@ -490,6 +526,7 @@ class GrandExchangeSingleton {
 		await this.queue.add(async () => {
 			if (this.isTicking) throw new Error('Already ticking.');
 			try {
+				console.log('Tick starting...');
 				await this._tick();
 			} finally {
 				this.isTicking = false;
@@ -527,6 +564,7 @@ class GrandExchangeSingleton {
 			} catch (err: any) {
 				await this.lockGE(err.message);
 				logError(err);
+				break;
 			}
 
 			// Process only one transaction per tick

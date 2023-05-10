@@ -935,6 +935,7 @@ model GETransaction {
   quantity_bought           Int
   price_per_item_before_tax Int
   price_per_item_after_tax  Int
+  tax_rate_percent          Int @db.SmallInt
 
   // Should be before - after * quantity?
   total_tax_paid BigInt

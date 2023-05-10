@@ -9,7 +9,7 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { MAX_INT_JAVA } from '../../lib/constants';
 import { GrandExchange } from '../../lib/grandExchange';
 import { prisma } from '../../lib/settings/prisma';
-import { getUsername, itemNameFromID, toKMB } from '../../lib/util';
+import { dateFm, formatDuration, getUsername, itemNameFromID, toKMB } from '../../lib/util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../lib/util/clientSettings';
 import getOSItem from '../../lib/util/getOSItem';
 import { makeBankImage } from '../../lib/util/makeBankImage';
@@ -37,11 +37,11 @@ function geListingToString(
 	const totalTaxPaidSoFar = toKMB(sumArr(allTransactions.map(i => i.quantity_bought * Number(i.total_tax_paid))));
 
 	if (listing.cancelled_at) {
-		return `Cancelled offer to ${action} ${itemQty}. ${totalSold} were ${pastVerb}.`;
+		return `${listing.userfacing_id} Cancelled offer to ${action} ${itemQty}. ${totalSold} were ${pastVerb}.`;
 	}
 
 	if (listing.fulfilled_at) {
-		return `Completed offer to ${action} ${itemQty}. ${totalSold} were ${pastVerb} for a total amount of ${totalPricePaidSoFar} (${totalTaxPaidSoFar} tax paid).`;
+		return `${listing.userfacing_id} Completed offer to ${action} ${itemQty}. ${totalSold} were ${pastVerb} for a total amount of ${totalPricePaidSoFar} (${totalTaxPaidSoFar} tax paid).`;
 	}
 
 	const buyLimitStr =
@@ -49,7 +49,7 @@ function geListingToString(
 			? ` (${buyLimit.remainingItemsCanBuy.toLocaleString()}/${buyLimit.buyLimit.toLocaleString()} remaining in buy limit currently)`
 			: '';
 
-	return `${verb} ${itemQty}, ${toKMB(
+	return `${listing.userfacing_id} ${verb} ${itemQty}, ${toKMB(
 		listing.quantity_remaining
 	)} are remaining to ${listing.type.toLowerCase()}, asking for ${toKMB(listing.asking_price_per_item)} GP each. ${
 		allTransactions.length
@@ -395,8 +395,13 @@ Transactions:\n${allTransactions
 				}
 			}
 
+			const buyLimitInterval = GrandExchange.getInterval();
 			return {
 				content: `**Grand Exchange Data**
+
+The next buy limit reset is at: ${dateFm(buyLimitInterval.end)}, it resets every ${formatDuration(
+					GrandExchange.config.buyLimit.interval
+				)}.
 **Tax Rate:** ${GrandExchange.config.tax.rate()}%
 **Tax Cap (per item):** ${toKMB(GrandExchange.config.tax.cap())}
 **Total GP Removed From Taxation:** ${settings.grand_exchange_total_tax.toLocaleString()} GP
@@ -435,9 +440,11 @@ Transactions:\n${allTransactions
 
 				if (typeof result.error === 'string') return result.error;
 
-				return `Successfully created a listing to buy ${result.createdListing.total_quantity}x ${itemNameFromID(
-					result.createdListing.item_id
-				)} for ${toKMB(result.createdListing.asking_price_per_item)} GP each.`;
+				return `${result.createdListing.userfacing_id} Successfully created a listing to buy ${
+					result.createdListing.total_quantity
+				}x ${itemNameFromID(result.createdListing.item_id)} for ${toKMB(
+					result.createdListing.asking_price_per_item
+				)} GP each.`;
 			}
 
 			if (options.sell) {
@@ -451,7 +458,7 @@ Transactions:\n${allTransactions
 
 				if (typeof result.error === 'string') return result.error;
 
-				return `Successfully created a listing to sell ${
+				return `${result.createdListing.userfacing_id} Successfully created a listing to sell ${
 					result.createdListing.total_quantity
 				}x ${itemNameFromID(result.createdListing.item_id)} for ${toKMB(
 					result.createdListing.asking_price_per_item
