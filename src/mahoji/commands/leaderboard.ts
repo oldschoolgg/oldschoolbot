@@ -579,6 +579,57 @@ export async function cacheUsernames() {
 	}
 }
 
+const globalLbTypes = ['xp', 'cl'] as const;
+type GlobalLbType = (typeof globalLbTypes)[number];
+async function globalLb(user: MUser, channelID: string, type: GlobalLbType) {
+	if (type === 'xp') {
+		const result = await roboChimpClient.$queryRaw<
+			{ id: string; total_xp: number }[]
+		>`SELECT id::text, osb_total_xp + bso_total_xp as total_xp
+		  FROM public.user
+		  WHERE osb_total_xp IS NOT NULL AND bso_total_xp IS NOT NULL
+		  ORDER BY osb_total_xp + bso_total_xp DESC
+		  LIMIT 10;`;
+		doMenu(
+			user,
+			channelID,
+			chunk(result, LB_PAGE_SIZE).map((subList, i) =>
+				subList
+					.map(
+						({ id, total_xp }, j) =>
+							`${getPos(i, j)}**${getUsername(id)}:** ${total_xp.toLocaleString()} XP`
+					)
+					.join('\n')
+			),
+			'Global XP Leaderboard'
+		);
+		return lbMsg('Global XP Leaderboard');
+	}
+
+	const result = await roboChimpClient.$queryRaw<
+		{ id: string; total_cl_percent: number }[]
+	>`SELECT ((osb_cl_percent + bso_cl_percent) / 2) AS total_cl_percent, id::text AS id
+FROM public.user
+WHERE osb_cl_percent IS NOT NULL AND bso_cl_percent IS NOT NULL
+ORDER BY total_cl_percent DESC
+LIMIT 20;`;
+
+	doMenu(
+		user,
+		channelID,
+		chunk(result, LB_PAGE_SIZE).map((subList, i) =>
+			subList
+				.map(
+					({ id, total_cl_percent }, j) =>
+						`${getPos(i, j)}**${getUsername(id)}:** ${total_cl_percent.toLocaleString()}%`
+				)
+				.join('\n')
+		),
+		'Global CL Leaderboard'
+	);
+	return lbMsg('Global CL Leaderboard');
+}
+
 const gainersTypes = ['overall', 'top_250'] as const;
 type GainersType = (typeof gainersTypes)[number];
 async function gainersLB(user: MUser, channelID: string, type: GainersType) {
@@ -885,6 +936,20 @@ export const leaderboardCommand: OSBMahojiCommand = {
 					choices: gainersTypes.map(i => ({ name: i, value: i }))
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'global',
+			description: 'Check the global leaderboards.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'type',
+					description: 'The global leaderboard type you want to check.',
+					required: true,
+					choices: globalLbTypes.map(i => ({ name: i, value: i }))
+				}
+			]
 		}
 	],
 	run: async ({
@@ -906,6 +971,9 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		cl?: { cl: string; ironmen_only?: boolean };
 		clues?: { clue: ClueTier['name']; ironmen_only?: boolean };
 		movers?: { type: GainersType };
+		global?: {
+			type: GlobalLbType;
+		};
 	}>) => {
 		deferInteraction(interaction);
 		const user = await mUserFetch(userID);
@@ -922,7 +990,8 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			skills,
 			cl,
 			clues,
-			movers
+			movers,
+			global
 		} = options;
 		if (kc) return kcLb(user, channelID, kc.monster, Boolean(kc.ironmen_only));
 		if (farming_contracts) return farmingContractLb(user, channelID, Boolean(farming_contracts.ironmen_only));
@@ -939,6 +1008,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		if (cl) return clLb(user, channelID, cl.cl, Boolean(cl.ironmen_only));
 		if (clues) return cluesLb(user, channelID, clues.clue, Boolean(clues.ironmen_only));
 		if (movers) return gainersLB(user, channelID, movers.type);
+		if (global) return globalLb(user, channelID, global.type);
 		return 'Invalid input.';
 	}
 };
