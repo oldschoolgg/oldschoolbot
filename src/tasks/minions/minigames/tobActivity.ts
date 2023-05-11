@@ -1,3 +1,4 @@
+import { formatOrdinal, miniID } from '@oldschoolgg/toolkit';
 import { calcPercentOfNum, calcWhatPercent, objectEntries, roll, shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
 
@@ -9,8 +10,7 @@ import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/
 import { TheatreOfBlood } from '../../../lib/simulation/tob';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
-import { convertPercentChance, miniID } from '../../../lib/util';
-import { formatOrdinal } from '../../../lib/util/formatOrdinal';
+import { convertPercentChance } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { sendToChannelID } from '../../../lib/util/webhook';
@@ -54,7 +54,8 @@ export const tobTask: MinionTask = {
 							skillName: val[0],
 							amount: wipedRoom
 								? val[1]
-								: calcPercentOfNum(calcWhatPercent(duration, fakeDuration), val[1])
+								: calcPercentOfNum(calcWhatPercent(duration, fakeDuration), val[1]),
+							source: 'TheatreOfBlood'
 						})
 					)
 				)

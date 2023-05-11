@@ -1,3 +1,4 @@
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { Monsters } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
@@ -75,7 +76,6 @@ import {
 } from '../types/minions';
 import { formatDuration, itemNameFromID, randomVariation, stringMatches } from '../util';
 import { getActivityOfUser } from './minionIsBusy';
-import { toTitleCase } from './toTitleCase';
 
 export function minionStatus(user: MUser) {
 	const currentTask = getActivityOfUser(user.id);
@@ -632,8 +632,12 @@ export function minionStatus(user: MUser) {
 		case 'UnderwaterAgilityThieving': {
 			return `${name} is currently doing Underwater Agility and Thieving. ${formattedDuration}`;
 		}
+		case 'Easter': {
+			return `${name} is currently doing the Easter Event! The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
 		case 'HalloweenEvent':
-		case 'Easter':
 		case 'BlastFurnace': {
 			throw new Error('Removed');
 		}
