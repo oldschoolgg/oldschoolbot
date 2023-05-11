@@ -57,6 +57,54 @@ const checkConstraints: CheckConstraint[] = [
 		column: '"QP"',
 		name: 'users_qp',
 		body: '"QP" >= 0'
+	},
+	{
+		table: 'ge_listing',
+		column: 'asking_price_per_item',
+		name: 'asking_price_per_item_min',
+		body: 'asking_price_per_item_min >= 1'
+	},
+	{
+		table: 'ge_listing',
+		column: 'total_quantity',
+		name: 'total_quantity_min',
+		body: 'total_quantity >= 1'
+	},
+	{
+		table: 'ge_listing',
+		column: 'quantity_remaining',
+		name: 'quantity_remaining_min',
+		body: 'quantity_remaining >= 0'
+	},
+	{
+		table: 'ge_transaction',
+		column: 'quantity_bought',
+		name: 'quantity_bought_min',
+		body: 'quantity_bought >= 0'
+	},
+	{
+		table: 'ge_transaction',
+		column: 'price_per_item_before_tax',
+		name: 'price_per_item_before_tax_min',
+		body: 'price_per_item_before_tax >= 1'
+	},
+	{
+		table: 'ge_transaction',
+		column: 'price_per_item_after_tax',
+		name: 'price_per_item_after_tax_min',
+		body: 'price_per_item_after_tax >= 1'
+	},
+	{
+		table: 'ge_transaction',
+		column: 'tax_rate_percent_min',
+		name: 'tax_rate_percent_min',
+		body: 'tax_rate_percent >= 1'
+	},
+	{
+		table: 'ge_transaction',
+		column: 'total_tax_paid',
+		name: 'total_tax_paid_min',
+		body: 'total_tax_paid >= 0'
 	}
 ];
 for (const { table, name, body } of checkConstraints) {

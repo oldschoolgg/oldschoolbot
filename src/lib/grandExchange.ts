@@ -1,4 +1,4 @@
-import { GEListing, GEListingType } from '@prisma/client';
+import { GEListing, GEListingType, GETransaction } from '@prisma/client';
 import { userMention } from 'discord.js';
 import { calcPercentOfNum, clamp, noOp, sumArr, Time } from 'e';
 import { Bank } from 'oldschooljs';
@@ -59,6 +59,25 @@ function sanityCheckListing(listing: GEListing) {
 	if (listing.cancelled_at && listing.fulfilled_at) {
 		throw new Error(`Listing ${listing.id} has both fulfilled and cancelled.`);
 	}
+}
+
+function sanityCheckTransaction({
+	id,
+	total_tax_paid,
+	tax_rate_percent,
+	price_per_item_after_tax,
+	price_per_item_before_tax
+}: GETransaction) {
+	if (price_per_item_before_tax < price_per_item_after_tax) {
+		throw new Error(`Transaction ${id} has price before tax less than price after tax.`);
+	}
+
+	assert(
+		Number(total_tax_paid) === Number(price_per_item_before_tax) - Number(price_per_item_after_tax),
+		`Transaction ${id} total_tax_paid should equal price_per_item_before_tax - price_per_item_after_tax. Transaction ${id} has ${total_tax_paid} total_tax_paid, ${price_per_item_before_tax} price_per_item_before_tax, and ${price_per_item_after_tax} price_per_item_after_tax.`
+	);
+
+	validateNumber(tax_rate_percent);
 }
 
 class GrandExchangeSingleton {
@@ -150,6 +169,8 @@ class GrandExchangeSingleton {
 				}
 			}
 		});
+
+		for (const tx of allActiveListingsInTimePeriod) sanityCheckTransaction(tx);
 
 		const item = getOSItem(geListing.item_id);
 		const buyLimit = item.buy_limit ?? this.config.buyLimit.fallbackBuyLimit(item);
@@ -295,22 +316,6 @@ class GrandExchangeSingleton {
 
 		const buyerLoot = new Bank().add(buyerListing.item_id, quantityToBuy);
 		const sellerLoot = new Bank().add('Coins', totalPriceAfterTax);
-
-		// if (buyerListing.asking_price_per_item > sellerListing.asking_price_per_item) {
-		// 	const priceDifference = buyerListing.asking_price_per_item - sellerListing.asking_price_per_item;
-		// 	const extraAmount = quantityToBuy * priceDifference;
-		// 	validateNumber(extraAmount);
-		// 	const extraLoot = new Bank().add('Coins', extraAmount);
-		// 	buyerGPRefundAmount = extraAmount;
-		// 	sellerLoot.add(extraLoot);
-
-		// 	logContext = {
-		// 		...logContext,
-		// 		priceDifference: priceDifference.toString(),
-		// 		extraAmount: extraAmount.toString(),
-		// 		extraLoot: extraLoot.toString()
-		// 	};
-		// }
 
 		const totalItems = new Bank().add(buyerLoot).add(sellerLoot);
 
@@ -460,7 +465,34 @@ class GrandExchangeSingleton {
 		return { buyListings, sellListings };
 	}
 
-	async calculateExpectedGEBank() {
+	private async checkGECanFullFilAllListings() {
+		const shouldHave = new Bank();
+		const { buyListings, sellListings } = await this.fetchActiveListings();
+		for (const listing of buyListings) {
+			shouldHave.add('Coins', listing.asking_price_per_item * listing.quantity_remaining);
+		}
+
+		for (const listing of sellListings) {
+			shouldHave.add(listing.item_id, listing.quantity_remaining);
+		}
+
+		const ownedBank = await this.fetchOwnedBank();
+		if (!ownedBank.equals(shouldHave)) {
+			throw new Error(
+				`GE doesn't have the items to cover the active listings, difference: ${shouldHave.difference(
+					ownedBank
+				)}`
+			);
+		} else {
+			console.log(
+				`GE has the items to cover the ${
+					[...buyListings, ...sellListings].length
+				}x active listings! Difference: ${shouldHave.difference(ownedBank)}`
+			);
+		}
+	}
+
+	private async calculateExpectedGEBank() {
 		const currentGEBank = await this.fetchOwnedBank();
 		const expectedGEBank = new Bank();
 
@@ -481,6 +513,7 @@ class GrandExchangeSingleton {
 					buy_listing_id: listing.id
 				}
 			});
+			for (const tx of transactionsForThisListing) sanityCheckTransaction(tx);
 			const totalGP = sumArr(transactionsForThisListing.map(t => t.quantity_bought * t.price_per_item_after_tax));
 			validateNumber(totalGP);
 			expectedGEBank.add('Coins', totalGP);
@@ -525,6 +558,7 @@ class GrandExchangeSingleton {
 		const { buyListings, sellListings } = await this.fetchActiveListings();
 		if (this.locked) return;
 		// await this.calculateExpectedGEBank();
+		await this.checkGECanFullFilAllListings();
 
 		const allListings = [...buyListings, ...sellListings];
 		for (const listing of allListings) {

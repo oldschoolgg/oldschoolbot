@@ -51,7 +51,7 @@ export async function transactItemsFromBank({
 			filterLoot
 		});
 		const settings = await mUserFetch(userID);
-		console.log(`${settings.rawUsername} is receiving ${itemsToAdd}, removing ${itemsToRemove}`);
+		// console.log(`${settings.rawUsername} is receiving ${itemsToAdd}, removing ${itemsToRemove}`);
 
 		const gpToRemove = (itemsToRemove?.amount('Coins') ?? 0) - (itemsToAdd?.amount('Coins') ?? 0);
 		if (itemsToRemove && settings.GP < gpToRemove) {
