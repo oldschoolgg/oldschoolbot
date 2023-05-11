@@ -939,7 +939,6 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		if (cl) return clLb(user, channelID, cl.cl, Boolean(cl.ironmen_only));
 		if (clues) return cluesLb(user, channelID, clues.clue, Boolean(clues.ironmen_only));
 		if (movers) return gainersLB(user, channelID, movers.type);
-		gainersLB;
 		return 'Invalid input.';
 	}
 };
