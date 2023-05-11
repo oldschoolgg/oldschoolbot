@@ -54,7 +54,6 @@ import {
 	formatItemBoosts,
 	formatItemCosts,
 	formatItemReqs,
-	formatMissingItems,
 	formatPohBoosts,
 	isWeekend,
 	itemNameFromID,
@@ -76,6 +75,16 @@ import { wintertodtCommand } from './wintertodtCommand';
 import { zalcanoCommand } from './zalcanoCommand';
 
 const invalidMonsterMsg = "That isn't a valid monster.\n\nFor example, `/k name:zulrah quantity:5`";
+
+function formatMissingItems(consumables: Consumable[], timeToFinish: number) {
+	const str = [];
+
+	for (const consumable of consumables) {
+		str.push(formatItemCosts(consumable, timeToFinish));
+	}
+
+	return str.join(', ');
+}
 
 const { floor } = Math;
 

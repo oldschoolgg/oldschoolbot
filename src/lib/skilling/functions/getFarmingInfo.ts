@@ -1,3 +1,4 @@
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { User } from '@prisma/client';
 import { Time } from 'e';
 
@@ -6,7 +7,6 @@ import { defaultPatches } from '../../minions/farming';
 import { IPatchData, IPatchDataDetailed } from '../../minions/farming/types';
 import { assert, formatDuration } from '../../util';
 import { farmingKeys, FarmingPatchName, farmingPatchNames, findPlant } from '../../util/farmingHelpers';
-import { toTitleCase } from '../../util/toTitleCase';
 
 export function getFarmingInfoFromUser(user: User) {
 	const patches: Record<FarmingPatchName, IPatchData> = {} as Record<FarmingPatchName, IPatchData>;

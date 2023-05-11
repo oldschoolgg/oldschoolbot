@@ -34,9 +34,9 @@ ALTER TABLE "${table}"
 }
 
 interface CheckConstraint {
-	table: 'users';
-	column: 'lms_points';
-	name: `${CheckConstraint['table']}_${CheckConstraint['column']}_${string}`;
+	table: string;
+	column: string;
+	name: string;
 	body: string;
 }
 const checkConstraints: CheckConstraint[] = [
@@ -45,6 +45,18 @@ const checkConstraints: CheckConstraint[] = [
 		column: 'lms_points',
 		name: 'users_lms_points_min',
 		body: 'lms_points >= 0'
+	},
+	{
+		table: 'users',
+		column: '"GP"',
+		name: 'users_gp',
+		body: '"GP" >= 0'
+	},
+	{
+		table: 'users',
+		column: '"QP"',
+		name: 'users_qp',
+		body: '"QP" >= 0'
 	}
 ];
 for (const { table, name, body } of checkConstraints) {
