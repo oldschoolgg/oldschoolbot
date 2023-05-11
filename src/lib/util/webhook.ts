@@ -1,4 +1,5 @@
 import { EmbedBuilder } from '@discordjs/builders';
+import { splitMessage } from '@oldschoolgg/toolkit';
 import {
 	AttachmentBuilder,
 	BaseMessageOptions,
@@ -12,7 +13,6 @@ import PQueue from 'p-queue';
 import { prisma } from '../settings/prisma';
 import { channelIsSendable } from '../util';
 import { logError } from './logError';
-import { splitMessage } from './splitMessage';
 
 export async function resolveChannel(channelID: string): Promise<WebhookClient | Message['channel'] | undefined> {
 	const channel = globalClient.channels.cache.get(channelID);
