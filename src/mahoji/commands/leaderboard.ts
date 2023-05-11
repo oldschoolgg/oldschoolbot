@@ -601,9 +601,9 @@ async function globalLb(user: MUser, channelID: string, type: GlobalLbType) {
 					)
 					.join('\n')
 			),
-			'Global XP Leaderboard'
+			'Global (OSB+BSO) XP Leaderboard'
 		);
-		return lbMsg('Global XP Leaderboard');
+		return lbMsg('Global (OSB+BSO) XP Leaderboard');
 	}
 
 	const result = await roboChimpClient.$queryRaw<
@@ -625,9 +625,9 @@ LIMIT 20;`;
 				)
 				.join('\n')
 		),
-		'Global CL Leaderboard'
+		'Global (OSB+BSO) CL Leaderboard'
 	);
-	return lbMsg('Global CL Leaderboard');
+	return lbMsg('Global (OSB+BSO) CL Leaderboard');
 }
 
 const gainersTypes = ['overall', 'top_250'] as const;
@@ -940,7 +940,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'global',
-			description: 'Check the global leaderboards.',
+			description: 'Check the global (OSB+BSO) leaderboards.',
 			options: [
 				{
 					type: ApplicationCommandOptionType.String,
