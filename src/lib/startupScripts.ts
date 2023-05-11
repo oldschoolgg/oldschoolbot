@@ -105,6 +105,12 @@ const checkConstraints: CheckConstraint[] = [
 		column: 'total_tax_paid',
 		name: 'total_tax_paid_min',
 		body: 'total_tax_paid >= 0'
+	},
+	{
+		table: 'ge_bank',
+		column: 'quantity',
+		name: 'ge_bank_quantity_min',
+		body: 'quantity >= 0'
 	}
 ];
 for (const { table, name, body } of checkConstraints) {

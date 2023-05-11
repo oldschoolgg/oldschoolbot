@@ -74,14 +74,16 @@ describe('Grand Exchange', async () => {
 			}
 		}
 
+		await Promise.all(promises);
+
 		const geBank = await GrandExchange.fetchOwnedBank();
+
 		if (!totalItemsPutIntoGE.equals(geBank)) {
 			throw new Error(
 				`GE bank did not match expected bank: ${geBank.difference(totalItemsPutIntoGE).toString()}`
 			);
 		}
 
-		await Promise.all(promises);
 		for (const result of promises) {
 			expect(await result).toContain('Successfully created');
 		}

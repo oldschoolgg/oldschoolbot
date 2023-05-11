@@ -8,12 +8,11 @@ import PQueue from 'p-queue';
 import { ADMIN_IDS, OWNER_IDS, production } from '../config';
 import { globalConfig } from './constants';
 import { prisma } from './settings/prisma';
-import { ItemBank } from './types';
+import { fetchTableBank, makeTransactFromTableBankQueries, transactFromTableBank } from './tableBank';
 import { assert, generateGrandExchangeID, itemNameFromID, toKMB, validateBankAndThrow } from './util';
-import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from './util/clientSettings';
+import { mahojiClientSettingsUpdate } from './util/clientSettings';
 import getOSItem, { getItem } from './util/getOSItem';
 import { logError } from './util/logError';
-import { updateBankSetting } from './util/updateBankSetting';
 import { sendToChannelID } from './util/webhook';
 
 interface CreateListingArgs {
@@ -117,9 +116,7 @@ class GrandExchangeSingleton {
 	}
 
 	async fetchOwnedBank() {
-		const geBank = new Bank(
-			(await mahojiClientSettingsFetch({ grand_exchange_owned_bank: true })).grand_exchange_owned_bank as ItemBank
-		);
+		const geBank = await fetchTableBank('ge_bank');
 		return geBank;
 	}
 
@@ -227,7 +224,8 @@ class GrandExchangeSingleton {
 		}
 
 		await user.removeItemsFromBank(cost);
-		await updateBankSetting('grand_exchange_owned_bank', cost);
+
+		await transactFromTableBank({ table: prisma.gEBank, bankToAdd: cost });
 
 		const listing = await prisma.gEListing.create({
 			data: {
@@ -344,7 +342,7 @@ class GrandExchangeSingleton {
 		validateNumber(totalTaxPaid);
 
 		const taxedGP = new Bank().add('Coins', totalTaxPaid);
-		const newGEBank = geBank.remove(totalItems).remove(taxedGP);
+		const bankToRemoveFromGeBank = new Bank().add(totalItems).remove(taxedGP);
 
 		const [, newBuyerListing, newSellingListing] = await prisma.$transaction([
 			prisma.gETransaction.create({
@@ -381,7 +379,6 @@ class GrandExchangeSingleton {
 					id: globalConfig.clientID
 				},
 				data: {
-					grand_exchange_owned_bank: newGEBank.bank,
 					grand_exchange_tax_bank: {
 						increment: totalTaxPaid
 					},
@@ -392,7 +389,8 @@ class GrandExchangeSingleton {
 				select: {
 					id: true
 				}
-			})
+			}),
+			...makeTransactFromTableBankQueries({ table: prisma.gEBank, bankToRemove: bankToRemoveFromGeBank })
 		]);
 
 		debugLog(`${logID} Created transaction/updated listings.`, logContext);

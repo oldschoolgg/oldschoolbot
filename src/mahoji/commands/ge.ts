@@ -4,11 +4,11 @@ import { sumArr } from 'e';
 import { CommandRunOptions } from 'mahoji';
 import { CommandOption } from 'mahoji/dist/lib/types';
 import { Bank } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { MAX_INT_JAVA } from '../../lib/constants';
 import { GrandExchange } from '../../lib/grandExchange';
 import { prisma } from '../../lib/settings/prisma';
+import { transactFromTableBank } from '../../lib/tableBank';
 import { dateFm, formatDuration, getUsername, itemNameFromID, toKMB } from '../../lib/util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../lib/util/clientSettings';
 import getOSItem from '../../lib/util/getOSItem';
@@ -177,10 +177,10 @@ export const geCommand: OSBMahojiCommand = {
 		if (options.global_reset) {
 			await mahojiClientSettingsUpdate({
 				grand_exchange_is_locked: false,
-				grand_exchange_owned_bank: {},
 				grand_exchange_tax_bank: 0,
 				grand_exchange_total_tax: 0
 			});
+			await prisma.gEBank.deleteMany();
 			await prisma.gETransaction.deleteMany();
 			await prisma.gEListing.deleteMany();
 			await prisma.user.updateMany({
@@ -334,7 +334,6 @@ Transactions:\n${allTransactions
 		if (options.data) {
 			const settings = await mahojiClientSettingsFetch({
 				grand_exchange_is_locked: true,
-				grand_exchange_owned_bank: true,
 				grand_exchange_tax_bank: true,
 				grand_exchange_total_tax: true
 			});
@@ -412,7 +411,7 @@ The next buy limit reset is at: ${dateFm(buyLimitInterval.end)}, it resets every
 				files: [
 					(
 						await makeBankImage({
-							bank: new Bank(settings.grand_exchange_owned_bank as ItemBank),
+							bank: await GrandExchange.fetchOwnedBank(),
 							title: 'Items in the G.E'
 						})
 					).file,
@@ -502,8 +501,9 @@ The next buy limit reset is at: ${dateFm(buyLimitInterval.end)}, it resets every
 					collectionLog: false,
 					dontAddToTempCL: true
 				});
-				await mahojiClientSettingsUpdate({
-					grand_exchange_owned_bank: (await GrandExchange.fetchOwnedBank()).remove(refundBank).bank
+				await transactFromTableBank({
+					table: prisma.gEBank,
+					bankToRemove: refundBank
 				});
 
 				return `Successfully cancelled your listing, you have been refunded ${refundBank}.`;

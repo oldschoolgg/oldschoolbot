@@ -135,10 +135,9 @@ model ClientStorage {
   toa_cost                     Json     @default("{}") @db.Json
   toa_loot                     Json     @default("{}") @db.Json
 
-  grand_exchange_owned_bank Json    @default("{}") @db.Json
-  grand_exchange_is_locked  Boolean @default(false)
-  grand_exchange_total_tax  BigInt  @default(0)
-  grand_exchange_tax_bank   BigInt  @default(0)
+  grand_exchange_is_locked Boolean @default(false)
+  grand_exchange_total_tax BigInt  @default(0)
+  grand_exchange_tax_bank  BigInt  @default(0)
 
   @@map("clientStorage")
 }
@@ -947,4 +946,11 @@ model GETransaction {
   sell_listing_id Int
 
   @@map("ge_transaction")
+}
+
+model GEBank {
+  item_id  Int    @id
+  quantity BigInt
+
+  @@map("ge_bank")
 }
