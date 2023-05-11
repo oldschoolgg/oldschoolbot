@@ -342,7 +342,7 @@ class GrandExchangeSingleton {
 		validateNumber(totalTaxPaid);
 
 		const taxedGP = new Bank().add('Coins', totalTaxPaid);
-		const bankToRemoveFromGeBank = new Bank().add(totalItems).remove(taxedGP);
+		const bankToRemoveFromGeBank = new Bank().add(totalItems).add(taxedGP);
 
 		const [, newBuyerListing, newSellingListing] = await prisma.$transaction([
 			prisma.gETransaction.create({
@@ -477,7 +477,7 @@ class GrandExchangeSingleton {
 		const ownedBank = await this.fetchOwnedBank();
 		if (!ownedBank.equals(shouldHave)) {
 			throw new Error(
-				`GE doesn't have the items to cover the active listings, difference: ${shouldHave.difference(
+				`GE doesn't have the items to cover the active listings. The GE has ${ownedBank} but should have ${shouldHave}. Difference: ${shouldHave.difference(
 					ownedBank
 				)}`
 			);

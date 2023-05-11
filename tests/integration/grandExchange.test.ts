@@ -1,6 +1,6 @@
 import { calcPercentOfNum, randArrItem } from 'e';
 import { Bank } from 'oldschooljs';
-import { afterAll, beforeEach, describe, expect, test } from 'vitest';
+import { afterAll, describe, expect, test } from 'vitest';
 
 import { usernameCache } from '../../src/lib/constants';
 import { GrandExchange } from '../../src/lib/grandExchange';
@@ -69,25 +69,48 @@ describe('Grand Exchange', async () => {
 				if (method === 'buy') {
 					totalItemsPutIntoGE.add(item, quantity);
 				} else {
-					totalItemsPutIntoGE.remove('Coins', price * quantity);
+					totalItemsPutIntoGE.add('Coins', price * quantity);
 				}
 			}
 		}
 
 		await Promise.all(promises);
-
-		const geBank = await GrandExchange.fetchOwnedBank();
-
-		if (!totalItemsPutIntoGE.equals(geBank)) {
-			throw new Error(
-				`GE bank did not match expected bank: ${geBank.difference(totalItemsPutIntoGE).toString()}`
-			);
-		}
-
 		for (const result of promises) {
 			expect(await result).toContain('Successfully created');
 		}
-		console.log(promises);
+
+		const geBank = await GrandExchange.fetchOwnedBank();
+		console.log(geBank.toString());
+
+		const activeTransactions = await prisma.gETransaction.findMany({
+			where: {
+				OR: [
+					{
+						buy_listing: {
+							user_id: {
+								in: users.map(u => u.id)
+							}
+						}
+					},
+					{
+						sell_listing: {
+							user_id: {
+								in: users.map(u => u.id)
+							}
+						}
+					}
+				]
+			}
+		});
+
+		for (const tx of activeTransactions) totalItemsPutIntoGE.remove('Coins', Number(tx.total_tax_paid));
+
+		if (!totalItemsPutIntoGE.equals(geBank)) {
+			throw new Error(
+				`GE bank did not match expected bank: The GE Bank has ${geBank.toString()}, but we expected ${totalItemsPutIntoGE.toString()}`
+			);
+		}
+
 		await GrandExchange.tick();
 		expect(await prisma.gETransaction.count()).toBeGreaterThan(0);
 		expect(await prisma.gEListing.count()).toBeGreaterThan(0);
@@ -105,89 +128,84 @@ describe('Grand Exchange', async () => {
 		}
 	});
 
-	// test('Refund issue', async () => {
-	// 	const wes = await createTestUser();
-	// 	const magnaboy = await createTestUser();
+	test('Refund issue', async () => {
+		const wes = await createTestUser();
+		const magnaboy = await createTestUser();
 
-	// 	usernameCache.set(wes.id, 'Wes');
-	// 	usernameCache.set(magnaboy.id, 'Magnaboy');
+		usernameCache.set(wes.id, 'Wes');
+		usernameCache.set(magnaboy.id, 'Magnaboy');
 
-	// 	await magnaboy.addItemsToBank({ items: sampleBank });
-	// 	await wes.addItemsToBank({ items: sampleBank });
+		await magnaboy.addItemsToBank({ items: sampleBank });
+		await wes.addItemsToBank({ items: sampleBank });
 
-	// 	await magnaboy.runCommand(geCommand, {
-	// 		buy: {
-	// 			item: 'egg',
-	// 			quantity: 100,
-	// 			price: 100
-	// 		}
-	// 	});
-	// 	expect(await prisma.gEListing.count()).toBe(1);
+		await magnaboy.runCommand(geCommand, {
+			buy: {
+				item: 'egg',
+				quantity: 100,
+				price: 100
+			}
+		});
+		expect(await prisma.gEListing.count()).toBe(1);
 
-	// 	await wes.runCommand(geCommand, {
-	// 		sell: {
-	// 			item: 'egg',
-	// 			quantity: 50,
-	// 			price: 50
-	// 		}
-	// 	});
-	// 	expect(await prisma.gEListing.count()).toBe(2);
+		await wes.runCommand(geCommand, {
+			sell: {
+				item: 'egg',
+				quantity: 50,
+				price: 50
+			}
+		});
+		expect(await prisma.gEListing.count()).toBe(2);
 
-	// 	await GrandExchange.tick();
-	// 	await GrandExchange.tick();
+		await GrandExchange.tick();
+		await GrandExchange.tick();
 
-	// 	const amountSold = 50;
-	// 	const priceSoldAt = 100;
-	// 	const totalGPBeforeTax = amountSold * priceSoldAt;
-	// 	const taxPerItem = calcPercentOfNum(1, priceSoldAt);
-	// 	expect(taxPerItem).toEqual(1);
-	// 	const totalTax = taxPerItem * amountSold;
-	// 	expect(taxPerItem).toEqual(1);
-	// 	const gpShouldBeReceivedAfterTax = totalGPBeforeTax - totalTax;
-	// 	expect(gpShouldBeReceivedAfterTax).toEqual(4950);
+		const amountSold = 50;
+		const priceSoldAt = 100;
+		const totalGPBeforeTax = amountSold * priceSoldAt;
+		const taxPerItem = calcPercentOfNum(1, priceSoldAt);
+		expect(taxPerItem).toEqual(1);
+		const totalTax = taxPerItem * amountSold;
+		expect(taxPerItem).toEqual(1);
+		const gpShouldBeReceivedAfterTax = totalGPBeforeTax - totalTax;
+		expect(gpShouldBeReceivedAfterTax).toEqual(4950);
 
-	// 	expect(await cancelAllListings(wes)).toEqual('You cannot cancel a listing that has already been fulfilled.');
-	// 	expect(await cancelAllListings(magnaboy)).toEqual(
-	// 		'Successfully cancelled your listing, you have been refunded 5,000x Coins.'
-	// 	);
+		expect(await cancelAllListings(wes)).toEqual('You cannot cancel a listing that has already been fulfilled.');
+		expect(await cancelAllListings(magnaboy)).toEqual(
+			'Successfully cancelled your listing, you have been refunded 5,000x Coins.'
+		);
 
-	// 	expect(wes.bankWithGP.toString()).toEqual(
-	// 		new Bank()
-	// 			.add('Egg', 1000 - amountSold)
-	// 			.add('Coal', 1000)
-	// 			.add('Trout', 1000)
-	// 			.add('Coins', 1_000_000_000 + gpShouldBeReceivedAfterTax)
-	// 			.toString()
-	// 	);
+		expect(wes.bankWithGP.toString()).toEqual(
+			new Bank()
+				.add('Egg', 1000 - amountSold)
+				.add('Coal', 1000)
+				.add('Trout', 1000)
+				.add('Coins', 1_000_000_000 + gpShouldBeReceivedAfterTax)
+				.toString()
+		);
 
-	// 	expect(magnaboy.bankWithGP.toString()).toEqual(
-	// 		new Bank()
-	// 			.add('Egg', 1000 + amountSold)
-	// 			.add('Coal', 1000)
-	// 			.add('Trout', 1000)
-	// 			.add('Coins', 1_000_000_000 - totalGPBeforeTax)
-	// 			.toString()
-	// 	);
+		expect(magnaboy.bankWithGP.toString()).toEqual(
+			new Bank()
+				.add('Egg', 1000 + amountSold)
+				.add('Coal', 1000)
+				.add('Trout', 1000)
+				.add('Coins', 1_000_000_000 - totalGPBeforeTax)
+				.toString()
+		);
 
-	// 	expect(magnaboy.bankWithGP.clone().add(wes.bankWithGP).toString()).toEqual(
-	// 		sampleBank.clone().multiply(2).remove('Coins', totalTax).toString()
-	// 	);
+		expect(magnaboy.bankWithGP.clone().add(wes.bankWithGP).toString()).toEqual(
+			sampleBank.clone().multiply(2).remove('Coins', totalTax).toString()
+		);
 
-	// 	const bank = await GrandExchange.fetchOwnedBank();
-	// 	expect(bank.length).toEqual(0);
+		const bank = await GrandExchange.fetchOwnedBank();
+		expect(bank.length).toEqual(0);
 
-	// 	const clientSettings = await mahojiClientSettingsFetch({
-	// 		grand_exchange_tax_bank: true,
-	// 		grand_exchange_total_tax: true
-	// 	});
+		const clientSettings = await mahojiClientSettingsFetch({
+			grand_exchange_tax_bank: true,
+			grand_exchange_total_tax: true
+		});
 
-	// 	expect(Number(clientSettings.grand_exchange_tax_bank)).toEqual(totalTax);
-	// 	expect(Number(clientSettings.grand_exchange_total_tax)).toEqual(totalTax);
-	// });
-
-	beforeEach(async () => {
-		await prisma.gETransaction.deleteMany();
-		await prisma.gEListing.deleteMany();
+		expect(Number(clientSettings.grand_exchange_tax_bank)).toEqual(totalTax);
+		expect(Number(clientSettings.grand_exchange_total_tax)).toEqual(totalTax);
 	});
 
 	afterAll(() => {
