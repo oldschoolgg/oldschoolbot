@@ -269,8 +269,11 @@ export const DOARooms: AtlantisRoom[] = [
 	{
 		id: 2,
 		name: 'Steelmaw the Whale',
-		addedDeathChance: (_user: MUser) => {
+		addedDeathChance: (user: MUser) => {
 			let addition = 0;
+			if (user.skillsAsLevels.agility < 90) {
+				addition += 50;
+			}
 			return addition;
 		},
 		baseTime: Time.Minute * 25,
@@ -361,6 +364,13 @@ export async function calcDOAInput({
 	cost.add('Super restore(4)', restoresNeeded * quantity);
 	cost.add('Blood rune', SANG_BLOOD_RUNES_PER_RAID * quantity);
 	cost.add('Enhanced stamina potion', quantity);
+
+	if (challengeMode) {
+		cost.add('Enhanced stamina potion', quantity);
+		cost.add('Saradomin brew(4)', 3 * quantity);
+		cost.add('Super restore(4)', quantity);
+		cost.add('Blood rune', 30 * quantity);
+	}
 
 	const rangeWeapon = user.gear.range.equippedWeapon();
 	if (!rangeWeapon) {
@@ -811,12 +821,10 @@ export async function doaHelpCommand(user: MUser) {
 	let str = `**Depths of Atlantis** 
 
 **Attempts:** 
-
 ${DOARooms.map(i => `- ${i.name}: ${(stats.doa_room_attempts_bank as ItemBank)[i.id] ?? 0} KC`).join('\n')}
 
 **KC**: ${minigameStats.depths_of_atlantis} KC
 **Challenge Mode KC:** ${minigameStats.depths_of_atlantis_cm} KC
-
 **Total Uniques:** ${totalUniques} ${
 		totalUniques > 0
 			? `(one unique every ${Math.floor(

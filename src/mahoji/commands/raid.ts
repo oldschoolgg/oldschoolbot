@@ -11,6 +11,7 @@ import {
 	doaStartCommand,
 	pickUniqueToGiveUser
 } from '../../lib/depthsOfAtlantis';
+import { prisma } from '../../lib/settings/prisma';
 import { mileStoneBaseDeathChances, RaidLevel, toaHelpCommand, toaStartCommand } from '../../lib/simulation/toa';
 import { averageBank, formatDuration, itemNameFromID } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
@@ -21,6 +22,7 @@ import { DOANonUniqueTable } from '../../tasks/minions/bso/doaActivity';
 import { coxCommand, coxStatsCommand } from '../lib/abstracted_commands/coxCommand';
 import { tobCheckCommand, tobStartCommand, tobStatsCommand } from '../lib/abstracted_commands/tobCommand';
 import { OSBMahojiCommand } from '../lib/util';
+import { userStatsUpdate } from '../mahojiSettings';
 
 export const raidCommand: OSBMahojiCommand = {
 	name: 'raid',
@@ -216,6 +218,11 @@ export const raidCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'simulate',
 					description: 'Shows helpful information and stats about DOA.'
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'reset',
+					description: 'Reset all your DOA stuff.'
 				}
 			]
 		}
@@ -240,6 +247,7 @@ export const raidCommand: OSBMahojiCommand = {
 			start?: { challenge_mode?: boolean; max_team_size?: number; solo?: boolean; quantity?: number };
 			help?: {};
 			simulate?: {};
+			reset?: {};
 		};
 	}>) => {
 		if (interaction) await deferInteraction(interaction);
@@ -293,6 +301,28 @@ export const raidCommand: OSBMahojiCommand = {
 			return doaHelpCommand(user);
 		}
 
+		if (options.doa?.reset) {
+			await userStatsUpdate(userID, {
+				doa_attempts: 0,
+				doa_cost: {},
+				doa_loot: {},
+				doa_room_attempts_bank: {},
+				doa_total_minutes_raided: 0
+			});
+
+			await user.update({ collectionLogBank: {} });
+
+			await prisma.minigame.update({
+				where: {
+					user_id: userID
+				},
+				data: {
+					depths_of_atlantis: 0,
+					depths_of_atlantis_cm: 0
+				}
+			});
+			return 'Reset your CL, doa attempts, cost, loot, kc and total time raided.';
+		}
 		if (options.doa?.simulate) {
 			const samples = 100;
 			const results: {

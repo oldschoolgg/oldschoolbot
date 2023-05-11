@@ -25,11 +25,11 @@ const DragonTable = new LootTable()
 	.add('Dragon javelin heads', [10, 20]);
 
 const BaseNonUniqueTable = new LootTable()
-	.add(GemRockTable, [10, 20])
-	.add(DragonTable, [3, 5])
-	.add(runeAlchablesTable, [10, 15])
-	.add(GrimyHerbTable, [4, 10])
-	.add(StoneSpiritTable, [4, 10]);
+	.add(GemRockTable, [10, 20], undefined, { multiply: true })
+	.add(DragonTable, [3, 5], undefined, { multiply: true })
+	.add(runeAlchablesTable, [10, 15], undefined, { multiply: true })
+	.add(GrimyHerbTable, [4, 10], undefined, { multiply: true })
+	.add(StoneSpiritTable, [4, 10], undefined, { multiply: true });
 
 export const DOANonUniqueTable = new LootTable()
 	.tertiary(500, 'Crush')
@@ -87,20 +87,31 @@ export const doaTask: MinionTask = {
 
 		const previousCLs = allUsers.map(i => i.cl.clone());
 
+		const newRoomAttempts = new Bank();
+		for (const raid of raids) {
+			for (const room of DOARooms) {
+				if (!raid.wipedRoom || room.id < raid.wipedRoom) {
+					newRoomAttempts.add(room.id);
+				}
+			}
+		}
 		// Increment all users attempts
 		await Promise.all(
 			allUsers.map(i =>
 				userStatsUpdate(
 					i.id,
-					{
-						toa_attempts: {
-							increment: quantity
-						}
+					u => {
+						const currentKCBank = new Bank(u.doa_room_attempts_bank as ItemBank);
+						return {
+							doa_room_attempts_bank: currentKCBank.add(newRoomAttempts).bank,
+							doa_attempts: quantity
+						};
 					},
 					{}
 				)
 			)
 		);
+
 		if (raids.every(i => i.wipedRoom !== null)) {
 			return handleTripFinish(
 				allUsers[0],
@@ -169,24 +180,14 @@ export const doaTask: MinionTask = {
 					collectionLog: true
 				});
 
-				const newRoomAttempts = new Bank();
-				for (const raid of raids) {
-					for (const room of DOARooms) {
-						if (!raid.wipedRoom || room.id < raid.wipedRoom) [newRoomAttempts.add(room.id)];
-					}
-				}
-
 				await userStatsUpdate(
 					user.id,
 					u => {
-						const currentKCBank = new Bank(u.doa_room_attempts_bank as ItemBank);
 						return {
 							doa_total_minutes_raided: {
 								increment: Math.floor(duration / Time.Minute)
 							},
-							doa_loot: new Bank(u.doa_loot as ItemBank).add(totalLoot.get(userID)).bank,
-							doa_attempts: quantity,
-							doa_room_attempts_bank: currentKCBank.add(newRoomAttempts).bank
+							doa_loot: new Bank(u.doa_loot as ItemBank).add(totalLoot.get(userID)).bank
 						};
 					},
 					{}
