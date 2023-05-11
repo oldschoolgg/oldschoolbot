@@ -123,18 +123,18 @@ ${whereInMassClause(id)};`)
 `;
 }
 
-async function xpGains(interval: string, skill?: string) {
+async function xpGains(interval: string, skill?: string, ironmanOnly?: boolean) {
 	if (!TimeIntervals.includes(interval as any)) return 'Invalid time.';
 	const skillObj = skill
 		? skillsVals.find(_skill => _skill.aliases.some(name => stringMatches(name, skill)))
 		: undefined;
-
 	const res: any =
 		await prisma.$queryRawUnsafe(`SELECT user_id::text AS user, sum(xp) AS total_xp, max(date) AS lastDate
 FROM xp_gains
 WHERE date > now() - INTERVAL '1 ${interval.toLowerCase() === 'day' ? 'day' : 'week'}'
 ${skillObj ? `AND skill = '${skillObj.id}'` : ''}
 GROUP BY user_id
+${ironmanOnly ? ' AND "minion.ironman" = true' : ''}
 ORDER BY total_xp DESC, lastDate ASC
 LIMIT 10;`);
 
@@ -154,24 +154,28 @@ LIMIT 10;`);
 	return { embeds: [embed] };
 }
 
-async function kcGains(user: MUser, interval: string, monsterName: string): CommandResponse {
+async function kcGains(user: MUser, interval: string, monsterName: string, ironmanOnly?: boolean): CommandResponse {
 	if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 	if (!TimeIntervals.includes(interval as any)) return 'Invalid time interval.';
 	const monster = killableMonsters.find(
 		k => stringMatches(k.name, monsterName) || k.aliases.some(a => stringMatches(a, monsterName))
 	);
+
 	if (!monster) {
 		return 'Invalid monster.';
 	}
 
-	const query = `SELECT user_id::text, SUM(("data"->>'quantity')::int) AS qty, MAX(finish_date) AS lastDate FROM activity
-WHERE type = 'MonsterKilling' AND ("data"->>'monsterID')::int = ${monster.id}
-AND finish_date >= now() - interval '${interval === 'day' ? 1 : 7}' day AND completed = true
-GROUP BY 1
+	const query = `SELECT a.user_id::text, SUM((a."data"->>'quantity')::int) AS qty, MAX(a.finish_date) AS lastDate 
+FROM activity a
+JOIN users u ON a.user_id = u.id::text
+WHERE a.type = 'MonsterKilling' AND (a."data"->>'monsterID')::int = ${monster.id}
+AND a.finish_date >= now() - interval '${interval === 'day' ? 1 : 7}' day AND a.completed = true
+${ironmanOnly ? ' AND u."minion"->>\'ironman\' = \'true\'' : ''}
+GROUP BY a.user_id
 ORDER BY qty DESC, lastDate ASC
 LIMIT 10`;
 
-	const res = await prisma.$queryRawUnsafe<{ user_id: string; qty: number }[]>(query);
+const res = await prisma.$queryRawUnsafe<{ user_id: string; qty: number }[]>(query);
 
 	if (res.length === 0) {
 		return 'No results found.';
@@ -612,7 +616,13 @@ export const toolsCommand: OSBMahojiCommand = {
 							required: true,
 							choices: ['day', 'week'].map(i => ({ name: i, value: i }))
 						},
-						monsterOption
+						monsterOption,
+						{
+							type: ApplicationCommandOptionType.Boolean,
+							name: 'ironman',
+							description: 'Only check ironmen accounts.',
+							required: false
+						}
 					]
 				},
 				{
@@ -627,7 +637,13 @@ export const toolsCommand: OSBMahojiCommand = {
 							required: true,
 							choices: ['day', 'week'].map(i => ({ name: i, value: i }))
 						},
-						skillOption
+						skillOption,
+						{
+							type: ApplicationCommandOptionType.Boolean,
+							name: 'ironman',
+							description: 'Only check ironmen accounts.',
+							required: false
+						}
 					]
 				},
 				{
@@ -816,10 +832,12 @@ export const toolsCommand: OSBMahojiCommand = {
 			kc_gains?: {
 				time: 'day' | 'week';
 				monster: string;
+				ironman?: boolean;
 			};
 			xp_gains?: {
 				time: 'day' | 'week';
 				skill?: string;
+				ironman?: boolean;
 			};
 			drystreak?: {
 				monster: string;
@@ -852,7 +870,12 @@ export const toolsCommand: OSBMahojiCommand = {
 		if (options.patron) {
 			const { patron } = options;
 			if (patron.kc_gains) {
-				return kcGains(mahojiUser, patron.kc_gains.time, patron.kc_gains.monster);
+				return kcGains(
+					mahojiUser,
+					patron.kc_gains.time,
+					patron.kc_gains.monster,
+					Boolean(patron.kc_gains.ironman)
+				);
 			}
 			if (patron.drystreak) {
 				return dryStreakCommand(
@@ -895,7 +918,7 @@ export const toolsCommand: OSBMahojiCommand = {
 			}
 			if (patron.xp_gains) {
 				if (mahojiUser.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
-				return xpGains(patron.xp_gains.time, patron.xp_gains.skill);
+				return xpGains(patron.xp_gains.time, patron.xp_gains.skill, patron.xp_gains.ironman);
 			}
 			if (patron.minion_stats) {
 				if (mahojiUser.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
