@@ -1,4 +1,5 @@
 import { randomSnowflake } from '@oldschoolgg/toolkit';
+import { uniqueArr } from 'e';
 import { CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
@@ -6,6 +7,7 @@ import { globalConfig } from '../../src/lib/constants';
 import { MUserClass } from '../../src/lib/MUser';
 import { prisma } from '../../src/lib/settings/prisma';
 import { ItemBank } from '../../src/lib/types';
+import { assert } from '../../src/lib/util';
 import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironmanCommand';
 import { OSBMahojiCommand } from '../../src/mahoji/lib/util';
 import { ClientStorage, User, UserStats } from '.prisma/client';
@@ -52,7 +54,11 @@ export class TestUser extends MUserClass {
 	}
 
 	async reset() {
-		await ironmanCommand(this, null);
+		const res = await ironmanCommand(this, null);
+		if (res !== 'You are now an ironman.') {
+			throw new Error(`Failed to reset: ${res}`);
+		}
+		await prisma.userStats.deleteMany({ where: { user_id: BigInt(this.id) } });
 		await prisma.user.delete({ where: { id: this.id } });
 		const user = await prisma.user.create({ data: { id: this.id } });
 		this.user = user;
@@ -158,3 +164,5 @@ export async function mockClient() {
 	globalConfig.clientID = clientId;
 	return new TestClient(client);
 }
+
+assert(uniqueArr([randomSnowflake(), randomSnowflake(), randomSnowflake()]).length === 3);

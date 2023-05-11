@@ -46,7 +46,11 @@ async function fetchPrecommandUser(userID: string) {
 		bitfield: true,
 		badges: true,
 		minion_hasBought: true,
-		minion_ironman: true
+		minion_ironman: true,
+		premium_balance_expiry_date: true,
+		premium_balance_tier: true,
+		ironman_alts: true,
+		main_account: true
 	});
 }
 

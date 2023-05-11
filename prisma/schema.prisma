@@ -306,9 +306,10 @@ model User {
   bingo_gp_contributed BigInt @default(0)
 
   // Relations
-  farmedCrops FarmedCrop[]
-  botItemSell BotItemSell[]
-  pinnedTrip  PinnedTrip[]
+  farmedCrops    FarmedCrop[]
+  botItemSell    BotItemSell[]
+  pinnedTrip     PinnedTrip[]
+  historicalData HistoricalData[]
 
   // Configs/Settings
   minion_defaultCompostToUse CropUpgradeType    @default(compost) @map("minion.defaultCompostToUse")
@@ -418,6 +419,8 @@ model Webhook {
 enum XpGainSource {
   TombsOfAmascut
   UnderwaterAgilityThieving
+  ChambersOfXeric
+  TheatreOfBlood
 }
 
 model XPGain {
@@ -744,6 +747,22 @@ model PinnedTrip {
   user     User     @relation(fields: [user_id], references: [id])
 
   @@map("pinned_trip")
+}
+
+model HistoricalData {
+  user_id String   @db.VarChar(19)
+  date    DateTime @default(now())
+
+  cl_global_rank           Int     @db.SmallInt
+  cl_completion_percentage Decimal @db.Decimal(5, 2)
+  cl_completion_count      Int     @db.SmallInt
+  GP                       Decimal @db.Decimal(13, 0)
+  total_xp                 Decimal @db.Decimal(13, 0)
+
+  user User @relation(fields: [user_id], references: [id])
+
+  @@id([user_id, date])
+  @@map("historical_data")
 }
 
 enum command_usage_status {

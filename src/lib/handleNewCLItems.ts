@@ -1,12 +1,27 @@
+import { formatOrdinal, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
 import { Stopwatch } from '@sapphire/stopwatch';
+import { roll, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Events } from './constants';
-import { allCLItems, allCollectionLogsFlat } from './data/Collections';
+import { allCLItems, allCollectionLogsFlat, calcCLDetails } from './data/Collections';
 import { prisma } from './settings/prisma';
 import { fetchStatsForCL } from './util';
 import { fetchCLLeaderboard } from './util/clLeaderboard';
-import { formatOrdinal } from './util/formatOrdinal';
+
+export async function createHistoricalData(user: MUser) {
+	const clStats = calcCLDetails(user);
+	const clRank = await roboChimpClient.$queryRawUnsafe<{ count: number }[]>(roboChimpCLRankQuery(BigInt(user.id)));
+
+	return {
+		user_id: user.id,
+		GP: user.GP,
+		total_xp: sumArr(Object.values(user.skillsAsXP)),
+		cl_completion_percentage: clStats.percent,
+		cl_completion_count: clStats.owned.length,
+		cl_global_rank: Number(clRank[0].count)
+	};
+}
 
 async function clArrayUpdate(user: MUser, newCL: Bank) {
 	const id = BigInt(user.id);
@@ -15,18 +30,21 @@ async function clArrayUpdate(user: MUser, newCL: Bank) {
 		cl_array: newCLArray,
 		cl_array_length: newCLArray.length
 	} as const;
-	await prisma.userStats.upsert({
-		where: {
-			user_id: id
-		},
-		create: {
-			user_id: id,
-			...updateObj
-		},
-		update: {
-			...updateObj
-		}
-	});
+
+	await prisma.$transaction([
+		prisma.userStats.upsert({
+			where: {
+				user_id: id
+			},
+			create: {
+				user_id: id,
+				...updateObj
+			},
+			update: {
+				...updateObj
+			}
+		})
+	]);
 }
 
 export async function handleNewCLItems({
@@ -43,11 +61,15 @@ export async function handleNewCLItems({
 	const newCLItems = itemsAdded
 		?.clone()
 		.filter(i => !previousCL.has(i.id) && newCL.has(i.id) && allCLItems.includes(i.id));
-	if (!newCLItems || newCLItems.length === 0) {
-		return;
+
+	const didGetNewCLItem = newCLItems && newCLItems.length > 0;
+	if (didGetNewCLItem || roll(30)) {
+		await prisma.historicalData.create({ data: await createHistoricalData(user) });
 	}
 
-	clArrayUpdate(user, newCL);
+	if (!didGetNewCLItem) return;
+
+	await clArrayUpdate(user, newCL);
 
 	const clsWithTheseItems = allCollectionLogsFlat.filter(
 		cl => cl.counts !== false && newCLItems.items().some(([newItem]) => cl.items.includes(newItem.id))

@@ -70,4 +70,13 @@ Your current sacrificed value is: 0 (0)`);
 			)
 		).toEqual(true);
 	});
+
+	test('Cant be sac', async () => {
+		const result = await integrationCmdRun({
+			command: sacrificeCommand,
+			options: { items: 'BSO dragon trophy' },
+			userOptions: { id: userID, ownedBank: new Bank().add('BSO dragon trophy') }
+		});
+		expect(result).toEqual("BSO dragon trophy can't be sacrificed!");
+	});
 });
