@@ -128,15 +128,27 @@ async function xpGains(interval: string, skill?: string, ironmanOnly?: boolean) 
 	const skillObj = skill
 		? skillsVals.find(_skill => _skill.aliases.some(name => stringMatches(name, skill)))
 		: undefined;
-	const res: any =
-		await prisma.$queryRawUnsafe(`SELECT user_id::text AS user, sum(xp) AS total_xp, max(date) AS lastDate
-FROM xp_gains
-WHERE date > now() - INTERVAL '1 ${interval.toLowerCase() === 'day' ? 'day' : 'week'}'
-${skillObj ? `AND skill = '${skillObj.id}'` : ''}
-GROUP BY user_id
-${ironmanOnly ? ' AND "minion.ironman" = true' : ''}
-ORDER BY total_xp DESC, lastDate ASC
-LIMIT 10;`);
+
+	const res: any = await prisma.$queryRawUnsafe(`
+        SELECT 
+            x.user_id::text AS user, 
+            sum(x.xp) AS total_xp, 
+            max(x.date) AS lastDate
+        FROM 
+            xp_gains AS x
+        INNER JOIN 
+            users AS u ON u.id = x.user_id::text
+        WHERE 
+            x.date > now() - INTERVAL '1 ${interval.toLowerCase() === 'day' ? 'day' : 'week'}'
+            ${skillObj ? `AND x.skill = '${skillObj.id}'` : ''}
+			${ironmanOnly ? ' AND u."minion.ironman" = true' : ''}
+        GROUP BY 
+            x.user_id
+        ORDER BY 
+            total_xp DESC, 
+            lastDate ASC
+        LIMIT 10;
+    `);
 
 	if (res.length === 0) {
 		return 'No results found.';
@@ -166,16 +178,16 @@ async function kcGains(user: MUser, interval: string, monsterName: string, ironm
 	}
 
 	const query = `SELECT a.user_id::text, SUM((a."data"->>'quantity')::int) AS qty, MAX(a.finish_date) AS lastDate 
-FROM activity a
-JOIN users u ON a.user_id = u.id::text
-WHERE a.type = 'MonsterKilling' AND (a."data"->>'monsterID')::int = ${monster.id}
-AND a.finish_date >= now() - interval '${interval === 'day' ? 1 : 7}' day AND a.completed = true
-${ironmanOnly ? ' AND u."minion"->>\'ironman\' = \'true\'' : ''}
-GROUP BY a.user_id
-ORDER BY qty DESC, lastDate ASC
-LIMIT 10`;
+    FROM activity a
+    JOIN users u ON a.user_id::text = u.id
+    WHERE a.type = 'MonsterKilling' AND (a."data"->>'monsterID')::int = ${monster.id}
+    AND a.finish_date >= now() - interval '${interval === 'day' ? 1 : 7}' day AND a.completed = true
+    ${ironmanOnly ? ' AND u."minion.ironman" = true' : ''}
+    GROUP BY a.user_id
+    ORDER BY qty DESC, lastDate ASC
+    LIMIT 10`;
 
-const res = await prisma.$queryRawUnsafe<{ user_id: string; qty: number }[]>(query);
+	const res = await prisma.$queryRawUnsafe<{ user_id: string; qty: number }[]>(query);
 
 	if (res.length === 0) {
 		return 'No results found.';
