@@ -9,7 +9,6 @@
 		"test": "concurrently \"tsc -p src\" \"yarn test:lint\" \"yarn test:unit\"",
 		"test:lint": "eslint *.ts \"{src,tests}/**/*.ts\"",
 		"test:unit": "vitest run --coverage --config vitest.unit.config.ts",
-		"test:unit:prof": "node --cpu-prof --cpu-prof-dir=./vitest-profile ./node_modules/vitest/vitest.mjs run --coverage --config vitest.unit.config.ts",
 		"dev": "yarn wipedist && tsc -w -p src",
 		"test:watch": "vitest --config vitest.unit.config.ts --coverage",
 		"test:integration": "ts-node ./src/scripts/integration-tests.ts",
