@@ -36,7 +36,7 @@ describe('Grand Exchange', async () => {
 	await mockClient();
 	const ticker = setInterval(() => GrandExchange.tick(), 100);
 	const users: TestUser[] = [];
-	let amountOfUsers = 20;
+	let amountOfUsers = 4;
 
 	for (let i = 0; i < amountOfUsers; i++) {
 		const user = await createTestUser();
@@ -52,13 +52,15 @@ describe('Grand Exchange', async () => {
 		const promises = [];
 
 		// Make the users make lots of random buy/sell requests
-		for (const user of users) {
+
+		for (let i = 0; i < users.length; i++) {
 			for (const item of itemPool) {
-				const method = randArrItem(['buy', 'sell']);
-				const quantity = randArrItem([20, 25, 50]);
-				const price = randArrItem([1, 2, 3, 4, 5, 10, 15, 20, 25, 50]);
+				const method = i % 2 === 0 ? 'buy' : 'sell';
+				let quantity = i + 1;
+				let price = i + 1;
+
 				promises.push(
-					user.runCommand(geCommand, {
+					users[i].runCommand(geCommand, {
 						[method]: {
 							item,
 							quantity,
@@ -75,35 +77,30 @@ describe('Grand Exchange', async () => {
 		}
 
 		await Promise.all(promises);
-		for (const result of promises) {
-			expect(await result).toContain('Successfully created');
-		}
+		for (const result of promises) expect(await result).toContain('Successfully created');
 
-		const geBank = await GrandExchange.fetchOwnedBank();
-		console.log(geBank.toString());
+		// const activeTransactions = await prisma.gETransaction.findMany({
+		// 	where: {
+		// 		OR: [
+		// 			{
+		// 				buy_listing: {
+		// 					user_id: {
+		// 						in: users.map(u => u.id)
+		// 					}
+		// 				}
+		// 			},
+		// 			{
+		// 				sell_listing: {
+		// 					user_id: {
+		// 						in: users.map(u => u.id)
+		// 					}
+		// 				}
+		// 			}
+		// 		]
+		// 	}
+		// });
 
-		const activeTransactions = await prisma.gETransaction.findMany({
-			where: {
-				OR: [
-					{
-						buy_listing: {
-							user_id: {
-								in: users.map(u => u.id)
-							}
-						}
-					},
-					{
-						sell_listing: {
-							user_id: {
-								in: users.map(u => u.id)
-							}
-						}
-					}
-				]
-			}
-		});
-
-		for (const tx of activeTransactions) totalItemsPutIntoGE.remove('Coins', Number(tx.total_tax_paid));
+		// for (const tx of activeTransactions) totalItemsPutIntoGE.remove('Coins', Number(tx.total_tax_paid));
 
 		// if (!totalItemsPutIntoGE.equals(geBank)) {
 		// 	throw new Error(

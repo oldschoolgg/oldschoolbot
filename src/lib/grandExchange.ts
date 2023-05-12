@@ -293,6 +293,8 @@ class GrandExchangeSingleton {
 		validateNumber(totalPriceBeforeTax);
 
 		const { taxedAmount, rate } = this.calculateTaxForTransaction({ pricePerItem: pricePerItemBeforeTax });
+		validateNumber(taxedAmount);
+		validateNumber(rate);
 		const pricePerItemAfterTax = pricePerItemBeforeTax - taxedAmount;
 		const totalPriceAfterTax = quantityToBuy * pricePerItemAfterTax;
 
@@ -341,8 +343,10 @@ class GrandExchangeSingleton {
 		const totalTaxPaid = totalPriceBeforeTax - totalPriceAfterTax;
 		validateNumber(totalTaxPaid);
 
-		const taxedGP = new Bank().add('Coins', totalTaxPaid);
-		const bankToRemoveFromGeBank = new Bank().add(totalItems).add(taxedGP);
+		const bankToRemoveFromGeBank = new Bank().add(totalItems).add('Coins', totalTaxPaid);
+
+		console.log(`Current GE Bank: ${(await this.fetchOwnedBank()).toString()}`);
+		console.log('Completing a transaction', { totalPriceAfterTax, totalTaxPaid, totalPriceBeforeTax });
 
 		const [, newBuyerListing, newSellingListing] = await prisma.$transaction([
 			prisma.gETransaction.create({
@@ -392,6 +396,8 @@ class GrandExchangeSingleton {
 			}),
 			...makeTransactFromTableBankQueries({ table: prisma.gEBank, bankToRemove: bankToRemoveFromGeBank })
 		]);
+
+		console.log(`New GE Bank: ${(await this.fetchOwnedBank()).toString()}`);
 
 		debugLog(`${logID} Created transaction/updated listings.`, logContext);
 		const buyerUser = await mUserFetch(buyerListing.user_id);

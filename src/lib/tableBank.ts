@@ -73,7 +73,6 @@ export async function fetchTableBank(tableName: 'ge_bank') {
 	const result = await prisma.$queryRawUnsafe<{ bank: ItemBank }[]>(
 		`SELECT json_object_agg(item_id, quantity) as bank FROM ${tableName} WHERE quantity != 0;`
 	);
-	console.log(result);
 	const bank = new Bank(result[0].bank);
 	validateBankAndThrow(bank);
 	return bank;
