@@ -13,7 +13,7 @@ import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { OSBMahojiCommand } from '../lib/util';
 import { userStatsBankUpdate } from '../mahojiSettings';
 
-const creatablesTable = readFileSync('../../lib/data/creatablesTable.txt', 'utf8');
+const creatablesTable = readFileSync('./src/lib/data/creatablesTable.txt', 'utf8');
 
 let content = 'Theses are the items that you can create:';
 const allCreatablesTable = {
