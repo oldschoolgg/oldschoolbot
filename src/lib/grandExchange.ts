@@ -344,7 +344,7 @@ class GrandExchangeSingleton {
 
 		let buyerRefund = 0;
 
-		if (buyerListing.asking_price_per_item > sellerListing.asking_price_per_item) {
+		if (priceWinner === 'buyer' && buyerListing.asking_price_per_item > sellerListing.asking_price_per_item) {
 			let extraAmount = buyerListing.asking_price_per_item * quantityToBuy;
 			extraAmount -= totalPriceAfterTax;
 			validateNumber(extraAmount);
