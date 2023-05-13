@@ -12,6 +12,7 @@ import { transactFromTableBank } from '../../lib/tableBank';
 import { dateFm, formatDuration, getUsername, itemNameFromID, toKMB } from '../../lib/util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../lib/util/clientSettings';
 import getOSItem from '../../lib/util/getOSItem';
+import { logError } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { itemOption, ownedItemOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
@@ -491,9 +492,19 @@ The next buy limit reset is at: ${dateFm(buyLimitInterval.end)}, it resets every
 
 				const refundBank = new Bank();
 				if (newListing.type === 'Buy') {
-					refundBank.add('Coins', Number(newListing.asking_price_per_item) * newListing.quantity_remaining);
+					refundBank.add('Coins', newListing.asking_price_per_item * newListing.quantity_remaining);
 				} else {
 					refundBank.add(newListing.item_id, newListing.quantity_remaining);
+				}
+
+				const geBank = await GrandExchange.fetchOwnedBank();
+				if (!geBank.has(refundBank)) {
+					const error = new Error(
+						`GE doesn't have ${refundBank} to refund ${user.id}, listing ${listing.id}`
+					);
+					logError(error);
+					await GrandExchange.lockGE(error.message);
+					return 'Something went wrong, please try again later.';
 				}
 
 				await user.addItemsToBank({

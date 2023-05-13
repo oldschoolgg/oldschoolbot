@@ -39,7 +39,7 @@ export function makeTransactFromTableBankQueries({
 	if (bankToRemove) {
 		for (const [item, quantity] of bankToRemove.items()) {
 			queries.push(
-				table.updateMany({
+				table.update({
 					where: {
 						item_id: item.id
 					},
@@ -69,11 +69,16 @@ export async function transactFromTableBank({
 	await prisma.$transaction(queries);
 }
 
-export async function fetchTableBank(tableName: 'ge_bank') {
-	const result = await prisma.$queryRawUnsafe<{ bank: ItemBank }[]>(
-		`SELECT json_object_agg(item_id, quantity) as bank FROM ${tableName} WHERE quantity != 0;`
-	);
-	const bank = new Bank(result[0].bank);
-	validateBankAndThrow(bank);
+export async function fetchTableBank(_tableName: 'ge_bank') {
+	// const result = await prisma.$queryRawUnsafe<{ bank: ItemBank }[]>(
+	// 	`SELECT json_object_agg(item_id, quantity) as bank FROM ${tableName} WHERE quantity != 0;`
+	// );
+	// const bank = new Bank(result[0].bank);
+	// validateBankAndThrow(bank);
+	const bank = new Bank();
+	const all = await prisma.gEBank.findMany();
+	for (const item of all) {
+		bank.add(item.item_id, Number(item.quantity));
+	}
 	return bank;
 }

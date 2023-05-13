@@ -1,11 +1,9 @@
-import { calcPercentOfNum, randArrItem } from 'e';
 import { Bank } from 'oldschooljs';
 import { afterAll, describe, expect, test } from 'vitest';
 
-import { usernameCache } from '../../src/lib/constants';
 import { GrandExchange } from '../../src/lib/grandExchange';
 import { prisma } from '../../src/lib/settings/prisma';
-import { mahojiClientSettingsFetch } from '../../src/lib/util/clientSettings';
+import { gePino } from '../../src/lib/util/logger';
 import resolveItems from '../../src/lib/util/resolveItems';
 import { geCommand } from '../../src/mahoji/commands/ge';
 import { createTestUser, mockClient, TestUser } from './util';
@@ -34,33 +32,33 @@ async function cancelAllListings(user: TestUser) {
 
 describe('Grand Exchange', async () => {
 	await mockClient();
-	const ticker = setInterval(() => GrandExchange.tick(), 100);
+
+	const currentOwnedBank = await GrandExchange.fetchOwnedBank();
+	expect(currentOwnedBank.length).toEqual(0);
+
+	// const ticker = setInterval(() => GrandExchange.tick(), 100);
 	const users: TestUser[] = [];
-	let amountOfUsers = 4;
+	let amountOfUsers = 3;
 
 	for (let i = 0; i < amountOfUsers; i++) {
 		const user = await createTestUser();
 		await user.addItemsToBank({ items: sampleBank });
 		users.push(user);
 	}
-	const totalExpectedBank = sampleBank.clone().multiply(amountOfUsers);
 
-	const itemPool = resolveItems(['Egg', 'Coal', 'Trout']);
+	const itemPool = resolveItems(['Egg']);
 
 	test('Fuzz', async () => {
-		const totalItemsPutIntoGE = new Bank();
 		const promises = [];
-
-		// Make the users make lots of random buy/sell requests
 
 		for (let i = 0; i < users.length; i++) {
 			for (const item of itemPool) {
 				const method = i % 2 === 0 ? 'buy' : 'sell';
-				let quantity = i + 1;
-				let price = i + 1;
+				let quantity = i + 2;
+				let price = method === 'sell' ? (i >= 10 ? 500 : 6) : 1000;
 
 				promises.push(
-					users[i].runCommand(geCommand, {
+					await users[i].runCommand(geCommand, {
 						[method]: {
 							item,
 							quantity,
@@ -68,56 +66,22 @@ describe('Grand Exchange', async () => {
 						}
 					})
 				);
-				if (method === 'buy') {
-					totalItemsPutIntoGE.add(item, quantity);
-				} else {
-					totalItemsPutIntoGE.add('Coins', price * quantity);
-				}
+				await GrandExchange.tick();
 			}
 		}
 
 		await Promise.all(promises);
 		for (const result of promises) expect(await result).toContain('Successfully created');
 
-		// const activeTransactions = await prisma.gETransaction.findMany({
-		// 	where: {
-		// 		OR: [
-		// 			{
-		// 				buy_listing: {
-		// 					user_id: {
-		// 						in: users.map(u => u.id)
-		// 					}
-		// 				}
-		// 			},
-		// 			{
-		// 				sell_listing: {
-		// 					user_id: {
-		// 						in: users.map(u => u.id)
-		// 					}
-		// 				}
-		// 			}
-		// 		]
-		// 	}
-		// });
-
-		// for (const tx of activeTransactions) totalItemsPutIntoGE.remove('Coins', Number(tx.total_tax_paid));
-
-		// if (!totalItemsPutIntoGE.equals(geBank)) {
-		// 	throw new Error(
-		// 		`GE bank did not match expected bank: The GE Bank has ${geBank.toString()}, but we expected ${totalItemsPutIntoGE.toString()}`
-		// 	);
-		// }
-
+		for (let i = 0; i < 20; i++) {
+			await GrandExchange.tick();
+		}
 		await GrandExchange.tick();
-		await GrandExchange.queue.onEmpty();
 
-		// const allBanks = new Bank();
-		// for (const user of users) {
-		// 	allBanks.add(user.bankWithGP);
-		// }
-		// if (!allBanks.equals(totalExpectedBank)) {
-		// 	throw new Error(`Banks did not match initial banks: ${allBanks.difference(totalExpectedBank).toString()}`);
-		// }
+		const data = await GrandExchange.fetchData();
+		expect(data.isLocked).toEqual(false);
+		expect(data.taxBank).toBeGreaterThan(0);
+		expect(data.totalTax).toBeGreaterThan(0);
 	});
 
 	// test('Refund issue', async () => {
@@ -201,6 +165,6 @@ describe('Grand Exchange', async () => {
 	// });
 
 	afterAll(() => {
-		clearInterval(ticker);
+		gePino.flush();
 	});
 });

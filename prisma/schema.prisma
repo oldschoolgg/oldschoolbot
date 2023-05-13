@@ -915,6 +915,7 @@ model GEListing {
   cancelled_at DateTime?
   fulfilled_at DateTime?
 
+  gp_refunded           BigInt @default(0)
   item_id               Int
   asking_price_per_item Int
   total_quantity        Int
