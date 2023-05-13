@@ -584,24 +584,37 @@ type GlobalLbType = (typeof globalLbTypes)[number];
 async function globalLb(user: MUser, channelID: string, type: GlobalLbType) {
 	if (type === 'xp') {
 		const result = await roboChimpClient.$queryRaw<
-			{ id: string; total_xp: number }[]
-		>`SELECT id::text, osb_total_xp + bso_total_xp as total_xp
-		  FROM public.user
-		  WHERE osb_total_xp IS NOT NULL AND bso_total_xp IS NOT NULL
-		  ORDER BY osb_total_xp + bso_total_xp DESC
-		  LIMIT 10;`;
+			{
+				id: string;
+				osb_total_xp: number;
+				bso_total_xp: number;
+				osb_xp_percent: number;
+				bso_xp_percent: number;
+				average_percentage: number;
+			}[]
+		>`SELECT id::text, osb_total_xp, bso_total_xp,
+       (osb_total_xp / (200000000.0 * 23) * 100) as osb_xp_percent,
+       (bso_total_xp / (5000000000.0 * 25) * 100) as bso_xp_percent,
+       (((osb_total_xp / (200000000.0 * 23) * 100) + (bso_total_xp / (5000000000.0 * 25) * 100)) / 2) as average_percentage
+FROM public.user
+WHERE osb_total_xp IS NOT NULL AND bso_total_xp IS NOT NULL
+ORDER BY average_percentage DESC
+LIMIT 10;
+`;
 		doMenu(
 			user,
 			channelID,
 			chunk(result, LB_PAGE_SIZE).map((subList, i) =>
 				subList
 					.map(
-						({ id, total_xp }, j) =>
-							`${getPos(i, j)}**${getUsername(id)}:** ${total_xp.toLocaleString()} XP`
+						({ id, osb_xp_percent, bso_xp_percent }, j) =>
+							`${getPos(i, j)}**${getUsername(id)}:** ${osb_xp_percent.toFixed(
+								2
+							)}% OSB, ${bso_xp_percent.toFixed(2)}% BSO`
 					)
 					.join('\n')
 			),
-			'Global (OSB+BSO) XP Leaderboard'
+			'Global (OSB+BSO) XP Leaderboard (% of the max XP)'
 		);
 		return lbMsg('Global (OSB+BSO) XP Leaderboard');
 	}
