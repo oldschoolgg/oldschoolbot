@@ -4,12 +4,18 @@ import { afterAll, describe, expect, test } from 'vitest';
 
 import { GrandExchange } from '../../src/lib/grandExchange';
 import { prisma } from '../../src/lib/settings/prisma';
+import { assert } from '../../src/lib/util';
 import { gePino } from '../../src/lib/util/logger';
 import resolveItems from '../../src/lib/util/resolveItems';
 import { geCommand } from '../../src/mahoji/commands/ge';
 import { createTestUser, mockClient, TestUser } from './util';
 
-const sampleBank = new Bank().add('Coins', 1_000_000_000).add('Egg', 1000).add('Coal', 1000).add('Trout', 1000);
+const sampleBank = new Bank()
+	.add('Coins', 1_000_000_000)
+	.add('Egg', 1000)
+	.add('Coal', 1000)
+	.add('Trout', 1000)
+	.freeze();
 
 async function cancelAllListings(user: TestUser) {
 	const results: string[] = [];
@@ -37,14 +43,17 @@ describe('Grand Exchange', async () => {
 	const currentOwnedBank = await GrandExchange.fetchOwnedBank();
 	expect(currentOwnedBank.toString()).toEqual(new Bank().toString());
 
-	// const ticker = setInterval(() => GrandExchange.tick(), 100);
+	const totalExpectedBank = new Bank();
+
 	const users: TestUser[] = [];
-	let amountOfUsers = 35;
+	let amountOfUsers = 50;
 
 	for (let i = 0; i < amountOfUsers; i++) {
 		const user = await createTestUser();
 		await user.addItemsToBank({ items: sampleBank });
 		users.push(user);
+		totalExpectedBank.add(sampleBank);
+		assert(user.bankWithGP.equals(sampleBank));
 	}
 
 	const itemPool = resolveItems(['Egg', 'Trout', 'Coal']);
@@ -56,7 +65,7 @@ describe('Grand Exchange', async () => {
 			for (const item of itemPool) {
 				const method = i % 2 === 0 ? 'buy' : 'sell';
 				let quantity = randArrItem([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
-				let price = randArrItem([1, 2, 3, 4, 5, 1005, 2005, 3005, 4005, 5005]);
+				let price = randArrItem([1, 2, 3, 4, 5, 1005, 2005, 3005, 4005, 5005, 100_000]);
 
 				promises.push(
 					users[i].runCommand(geCommand, {
@@ -75,13 +84,44 @@ describe('Grand Exchange', async () => {
 
 		for (let i = 0; i < 20; i++) {
 			await GrandExchange.tick();
+			await GrandExchange.checkGECanFullFilAllListings();
+			await GrandExchange.extensiveVerification();
 		}
 		await GrandExchange.tick();
+
+		const testBank = new Bank();
+		for (const user of users) {
+			await cancelAllListings(user);
+			await user.sync();
+			testBank.add(user.bankWithGP);
+		}
+
+		await GrandExchange.checkGECanFullFilAllListings();
+		await GrandExchange.extensiveVerification();
 
 		const data = await GrandExchange.fetchData();
 		expect(data.isLocked).toEqual(false);
 		expect(data.taxBank).toBeGreaterThan(0);
 		expect(data.totalTax).toBeGreaterThan(0);
+
+		const totalTaxed = await prisma.gETransaction.aggregate({
+			_sum: {
+				total_tax_paid: true
+			}
+		});
+		const totalTaxGP = Number(totalTaxed._sum.total_tax_paid!);
+		expect(totalTaxGP).toEqual(data.taxBank);
+		expect(totalTaxGP).toEqual(data.totalTax);
+		expect(testBank.amount('Coins')).toBeLessThanOrEqual(totalExpectedBank.amount('Coins'));
+		console.log({
+			tbAmount: testBank.amount('Coins'),
+			taxGP: totalTaxGP,
+			added: totalTaxGP + testBank.amount('Coins')
+		});
+		expect(testBank.amount('Coins') + totalTaxGP).toEqual(totalExpectedBank.amount('Coins'));
+		// totalExpectedBank.remove('Coins', totalTaxGP);
+
+		// expect(testBank.toString()).toEqual(totalExpectedBank.toString());
 	});
 
 	// test('Refund issue', async () => {

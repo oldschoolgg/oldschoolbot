@@ -344,7 +344,7 @@ class GrandExchangeSingleton {
 
 		let buyerRefund = 0;
 
-		if (priceWinner === 'buyer' && buyerListing.asking_price_per_item > sellerListing.asking_price_per_item) {
+		if (buyerListing.asking_price_per_item > sellerListing.asking_price_per_item) {
 			let extraAmount = buyerListing.asking_price_per_item * quantityToBuy;
 			extraAmount -= totalPriceAfterTax;
 			validateNumber(extraAmount);
@@ -520,20 +520,17 @@ class GrandExchangeSingleton {
 		return { buyListings, sellListings };
 	}
 
-	private async checkGECanFullFilAllListings() {
+	async extensiveVerification() {
+		const allListings = await prisma.gEListing.findMany();
+		for (const listing of allListings) sanityCheckListing(listing);
+
+		const allTransactions = await prisma.gETransaction.findMany();
+		for (const transaction of allTransactions) sanityCheckTransaction(transaction);
+	}
+
+	async checkGECanFullFilAllListings() {
 		const shouldHave = new Bank();
 		const { buyListings, sellListings } = await this.fetchActiveListings();
-		// const refunds = await prisma.gEListing.aggregate({
-		// 	_sum: {
-		// 		gp_refunded: true
-		// 	},
-		// 	where: {}
-		// });
-		// const totalTaxPaid = await prisma.gETransaction.aggregate({
-		// 	_sum: {
-		// 		total_tax_paid: true
-		// 	}
-		// });
 
 		// How much GP the g.e still has from this listing
 		for (const listing of buyListings) {
@@ -600,7 +597,6 @@ class GrandExchangeSingleton {
 	private async _tick() {
 		const { buyListings, sellListings } = await this.fetchActiveListings();
 		if (this.locked) return;
-		// await this.calculateExpectedGEBank();
 		await this.checkGECanFullFilAllListings();
 
 		const allListings = [...buyListings, ...sellListings];
