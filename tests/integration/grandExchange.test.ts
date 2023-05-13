@@ -1,3 +1,4 @@
+import { randArrItem } from 'e';
 import { Bank } from 'oldschooljs';
 import { afterAll, describe, expect, test } from 'vitest';
 
@@ -34,11 +35,11 @@ describe('Grand Exchange', async () => {
 	await mockClient();
 
 	const currentOwnedBank = await GrandExchange.fetchOwnedBank();
-	expect(currentOwnedBank.length).toEqual(0);
+	expect(currentOwnedBank.toString()).toEqual(new Bank().toString());
 
 	// const ticker = setInterval(() => GrandExchange.tick(), 100);
 	const users: TestUser[] = [];
-	let amountOfUsers = 3;
+	let amountOfUsers = 35;
 
 	for (let i = 0; i < amountOfUsers; i++) {
 		const user = await createTestUser();
@@ -46,7 +47,7 @@ describe('Grand Exchange', async () => {
 		users.push(user);
 	}
 
-	const itemPool = resolveItems(['Egg']);
+	const itemPool = resolveItems(['Egg', 'Trout', 'Coal']);
 
 	test('Fuzz', async () => {
 		const promises = [];
@@ -54,11 +55,11 @@ describe('Grand Exchange', async () => {
 		for (let i = 0; i < users.length; i++) {
 			for (const item of itemPool) {
 				const method = i % 2 === 0 ? 'buy' : 'sell';
-				let quantity = i + 2;
-				let price = method === 'sell' ? (i >= 10 ? 500 : 6) : 1000;
+				let quantity = randArrItem([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+				let price = randArrItem([1, 2, 3, 4, 5, 1005, 2005, 3005, 4005, 5005]);
 
 				promises.push(
-					await users[i].runCommand(geCommand, {
+					users[i].runCommand(geCommand, {
 						[method]: {
 							item,
 							quantity,
@@ -66,7 +67,6 @@ describe('Grand Exchange', async () => {
 						}
 					})
 				);
-				await GrandExchange.tick();
 			}
 		}
 

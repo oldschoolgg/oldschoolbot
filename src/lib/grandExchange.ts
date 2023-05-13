@@ -1,6 +1,7 @@
 import { GEListing, GEListingType, GETransaction } from '@prisma/client';
 import { userMention } from 'discord.js';
 import { calcPercentOfNum, clamp, noOp, sumArr, Time } from 'e';
+import { writeFileSync } from 'fs';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import PQueue from 'p-queue';
@@ -66,14 +67,16 @@ function sanityCheckTransaction({
 	total_tax_paid,
 	tax_rate_percent,
 	price_per_item_after_tax,
-	price_per_item_before_tax
+	price_per_item_before_tax,
+	quantity_bought
 }: GETransaction) {
 	if (price_per_item_before_tax < price_per_item_after_tax) {
 		throw new Error(`Transaction ${id} has price before tax less than price after tax.`);
 	}
 
 	assert(
-		Number(total_tax_paid) === Number(price_per_item_before_tax) - Number(price_per_item_after_tax),
+		Number(total_tax_paid) ===
+			(Number(price_per_item_before_tax) - Number(price_per_item_after_tax)) * quantity_bought,
 		`Transaction ${id} total_tax_paid should equal price_per_item_before_tax - price_per_item_after_tax. Transaction ${id} has ${total_tax_paid} total_tax_paid, ${price_per_item_before_tax} price_per_item_before_tax, and ${price_per_item_after_tax} price_per_item_after_tax.`
 	);
 
@@ -129,7 +132,8 @@ class GrandExchangeSingleton {
 		validateNumber(amount);
 		return {
 			taxedAmount: amount,
-			rate
+			rate,
+			newPrice: pricePerItem - amount
 		};
 	}
 
@@ -287,11 +291,14 @@ class GrandExchangeSingleton {
 			);
 		}
 
+		let priceWinner: 'buyer' | 'seller' = 'buyer';
 		let pricePerItemBeforeTax: number = -1;
 		if (buyerListing.created_at < sellerListing.created_at) {
 			pricePerItemBeforeTax = Number(buyerListing.asking_price_per_item);
+			priceWinner = 'buyer';
 		} else {
 			pricePerItemBeforeTax = Number(sellerListing.asking_price_per_item);
+			priceWinner = 'seller';
 		}
 		const totalPriceBeforeTax = quantityToBuy * pricePerItemBeforeTax;
 		validateNumber(pricePerItemBeforeTax);
@@ -332,41 +339,45 @@ class GrandExchangeSingleton {
 
 		const buyerLoot = new Bank().add(buyerListing.item_id, quantityToBuy);
 		const sellerLoot = new Bank().add('Coins', totalPriceAfterTax);
+		const bankToRemoveFromGeBank = new Bank().add(buyerLoot).add(sellerLoot);
+		bankToRemoveFromGeBank.add('Coins', totalTaxPaid);
 
 		let buyerRefund = 0;
 
 		if (buyerListing.asking_price_per_item > sellerListing.asking_price_per_item) {
-			const priceDifference = buyerListing.asking_price_per_item - sellerListing.asking_price_per_item;
-			const extraAmount = quantityToBuy * priceDifference;
+			let extraAmount = buyerListing.asking_price_per_item * quantityToBuy;
+			extraAmount -= totalPriceAfterTax;
 			validateNumber(extraAmount);
 			buyerLoot.add('Coins', extraAmount);
+			bankToRemoveFromGeBank.add('Coins', extraAmount);
 			buyerRefund = extraAmount;
 
 			geLog(
-				`Buyer got refunded ${extraAmount} GP due to price difference of ${priceDifference}. Buyer was asking ${buyerListing.asking_price_per_item}GP, seller was asking ${sellerListing.asking_price_per_item}GP, and the post-tax price per item was ${pricePerItemAfterTax}`,
+				`Buyer got refunded ${extraAmount} GP due to price difference. Buyer was asking ${buyerListing.asking_price_per_item}GP for each of the ${quantityToBuy}x items, seller was asking ${sellerListing.asking_price_per_item}GP, and the post-tax price per item was ${pricePerItemAfterTax}`,
 				logContext
 			);
 		}
 
-		const totalItems = new Bank().add(buyerLoot).add(sellerLoot);
-
-		try {
-			validateBankAndThrow(totalItems);
-		} catch (err: any) {
-			const str = `Buyer/Seller Loot banks are invalid: ${err.message} `;
-			await this.lockGE(str);
-			logError(str, logContext);
-			geLog(str);
-			return;
-		}
-
-		const bankToRemoveFromGeBank = new Bank().add(totalItems).add('Coins', totalTaxPaid);
-		bankToRemoveFromGeBank.remove('Coins', buyerRefund);
-
 		const geBank = await this.fetchOwnedBank();
-		if (!geBank.has(bankToRemoveFromGeBank.clone().remove('Coins', buyerRefund))) {
-			const missingItems = bankToRemoveFromGeBank.clone().remove(geBank);
-			const str = `The GE did not have enough items to cover this transaction! We tried to remove ${bankToRemoveFromGeBank} missing: ${missingItems}. TotalTaxPaid[${totalTaxPaid}] BuyerRefund[${buyerRefund}]`;
+		const bankGEShouldHave = bankToRemoveFromGeBank.clone();
+
+		const debug = `PriceWinner[${priceWinner}] PricePerItemBeforeTax[${pricePerItemBeforeTax}] PricePerItemAfterTax[${pricePerItemAfterTax}] BuyerPrice[${
+			buyerListing.asking_price_per_item
+		}] SellerPrice[${
+			sellerListing.asking_price_per_item
+		}] TotalPriceBeforeTax[${totalPriceBeforeTax}] QuantityToBuy[${quantityToBuy}] TotalTaxPaid[${totalTaxPaid}] BuyerRefund[${buyerRefund}] BuyerLoot[${buyerLoot}] SellerLoot[${sellerLoot}] CurrentGEBank[${geBank}] BankToRemoveFromGeBank[${bankToRemoveFromGeBank}] ExpectedAfterBank[${geBank
+			.clone()
+			.remove(bankToRemoveFromGeBank)}]`;
+		assert(
+			bankToRemoveFromGeBank.amount('Coins') === buyerListing.asking_price_per_item * quantityToBuy,
+			`The G.E Must be removing the full amount the buyer put in, otherwise there's extra GP leftover in their buyerListing. Expected ${bankToRemoveFromGeBank.amount(
+				'Coins'
+			)} === ${buyerListing.asking_price_per_item * quantityToBuy}. ${debug}`
+		);
+
+		if (!geBank.has(bankGEShouldHave)) {
+			const missingItems = bankGEShouldHave.clone().remove(geBank);
+			const str = `The GE did not have enough items to cover this transaction! We tried to remove ${bankGEShouldHave} missing: ${missingItems}. TotalPriceBeforeTax[${totalPriceBeforeTax}] QuantityToBuy[${quantityToBuy}] TotalTaxPaid[${totalTaxPaid}] BuyerRefund[${buyerRefund}] BuyerLoot[${buyerLoot}] SellerLoot[${sellerLoot}]`;
 			logError(str, logContext);
 			geLog(str, logContext);
 			throw new Error(str);
@@ -377,11 +388,10 @@ class GrandExchangeSingleton {
 				totalPriceAfterTax,
 				totalTaxPaid,
 				totalPriceBeforeTax,
-				bankToRemoveFromGeBank: bankToRemoveFromGeBank.toString()
+				bankToRemoveFromGeBank: bankToRemoveFromGeBank.toString(),
+				currentGEBank: geBank.toString()
 			},
-			`Completing a transaction, removing ${bankToRemoveFromGeBank} from the GE bank, ${totalTaxPaid} in taxed gp and ${totalItems}. The current GE bank is ${(
-				await this.fetchOwnedBank()
-			).toString()}. ${totalTaxPaid} tax is being paid in total.`
+			`Completing a transaction, removing ${bankToRemoveFromGeBank} from the GE bank, ${totalTaxPaid} in taxed gp. The current GE bank is ${geBank.toString()}.`
 		);
 
 		const [, newBuyerListing, newSellingListing] = await prisma.$transaction([
@@ -434,13 +444,8 @@ class GrandExchangeSingleton {
 			...makeTransactFromTableBankQueries({ table: prisma.gEBank, bankToRemove: bankToRemoveFromGeBank })
 		]);
 
-		geLog(
-			`Transaction completed between ${buyerListing.userfacing_id} and ${
-				sellerListing.userfacing_id
-			} for ${quantityToBuy}x ${itemNameFromID(
-				sellerListing.item_id
-			)}. The new G.E bank is ${await this.fetchOwnedBank()}}. ${buyerRefund}x GP was refunded in this transaction.`
-		);
+		geLog(`Transaction completed, the new G.E bank is ${await this.fetchOwnedBank()}.`);
+		await this.checkGECanFullFilAllListings();
 
 		const buyerUser = await mUserFetch(buyerListing.user_id);
 		const sellerUser = await mUserFetch(sellerListing.user_id);
@@ -483,6 +488,10 @@ class GrandExchangeSingleton {
 				},
 				orderBy: {
 					created_at: 'asc'
+				},
+				include: {
+					buyTransactions: true,
+					sellTransactions: true
 				}
 			}),
 			prisma.gEListing.findMany({
@@ -514,43 +523,31 @@ class GrandExchangeSingleton {
 	private async checkGECanFullFilAllListings() {
 		const shouldHave = new Bank();
 		const { buyListings, sellListings } = await this.fetchActiveListings();
-		const refunds = await prisma.gEListing.aggregate({
-			_sum: {
-				gp_refunded: true
-			},
-			where: {
-				gp_refunded: {
-					not: 0
-				}
-			}
-		});
+		// const refunds = await prisma.gEListing.aggregate({
+		// 	_sum: {
+		// 		gp_refunded: true
+		// 	},
+		// 	where: {}
+		// });
+		// const totalTaxPaid = await prisma.gETransaction.aggregate({
+		// 	_sum: {
+		// 		total_tax_paid: true
+		// 	}
+		// });
 
 		// How much GP the g.e still has from this listing
 		for (const listing of buyListings) {
-			let total = listing.asking_price_per_item * listing.quantity_remaining;
-			geLog(
-				`Adding ${total}x Coins to the expected bank because of listing ${listing.userfacing_id}(${listing.quantity_remaining}/${listing.total_quantity}x remaining at ${listing.asking_price_per_item}gp each)`
-			);
-
-			geLog(`Removing ${listing.gp_refunded}GP due to refund`);
-			const finalAmount = listing.asking_price_per_item * listing.quantity_remaining;
-			shouldHave.add('Coins', finalAmount);
+			shouldHave.add('Coins', listing.asking_price_per_item * listing.quantity_remaining);
 		}
 
 		for (const listing of sellListings) {
 			shouldHave.add(listing.item_id, listing.quantity_remaining);
-			geLog(
-				`Adding ${listing.quantity_remaining}x ${itemNameFromID(
-					listing.item_id
-				)} to the expected bank because of listing ${listing.userfacing_id}`
-			);
 		}
-
-		shouldHave.remove('Coins', Number(refunds._sum.gp_refunded));
 
 		geLog(`Expected G.E Bank: ${shouldHave}`);
 		const ownedBank = await this.fetchOwnedBank();
 		if (!ownedBank.equals(shouldHave)) {
+			writeFileSync('debug.json', JSON.stringify({ buyListings, sellListings }, null, 4));
 			throw new Error(
 				`GE either has extra or insufficient items. The GE has ${ownedBank} but should have ${shouldHave}. Difference: ${shouldHave.difference(
 					ownedBank
@@ -564,57 +561,6 @@ class GrandExchangeSingleton {
 			);
 		}
 	}
-
-	// private async calculateExpectedGEBank() {
-	// 	const currentGEBank = await this.fetchOwnedBank();
-	// 	const expectedGEBank = new Bank();
-
-	// 	const buyListings = await prisma.gEListing.findMany({
-	// 		where: {
-	// 			type: GEListingType.Buy
-	// 		}
-	// 	});
-	// 	const sellListings = await prisma.gEListing.findMany({
-	// 		where: {
-	// 			type: GEListingType.Sell
-	// 		}
-	// 	});
-
-	// 	for (const listing of buyListings) {
-	// 		const transactionsForThisListing = await prisma.gETransaction.findMany({
-	// 			where: {
-	// 				buy_listing_id: listing.id
-	// 			}
-	// 		});
-	// 		for (const tx of transactionsForThisListing) sanityCheckTransaction(tx);
-	// 		const totalGP = sumArr(transactionsForThisListing.map(t => t.quantity_bought * t.price_per_item_after_tax));
-	// 		validateNumber(totalGP);
-	// 		expectedGEBank.add('Coins', totalGP);
-	// 	}
-
-	// 	for (const listing of sellListings) {
-	// 		if (listing.cancelled_at) continue;
-	// 		const transactionsForThisListing = await prisma.gETransaction.findMany({
-	// 			where: {
-	// 				sell_listing_id: listing.id
-	// 			}
-	// 		});
-
-	// 		const totalQuantitySold = sumArr(transactionsForThisListing.map(t => t.quantity_bought));
-	// 		const expectedAmount = listing.total_quantity - totalQuantitySold;
-	// 		validateNumber(expectedAmount);
-	// 		expectedGEBank.add(listing.item_id, expectedAmount);
-	// 	}
-
-	// 	validateBankAndThrow(currentGEBank);
-	// 	validateBankAndThrow(expectedGEBank);
-
-	// 	if (!currentGEBank.equals(expectedGEBank)) {
-	// 		const str = `Current GE bank does not match expected GE bank! ${currentGEBank.difference(expectedGEBank)}`;
-	// 		await this.lockGE(str);
-	// 		logError(str);
-	// 	}
-	// }
 
 	async tick() {
 		await this.queue.add(async () => {
