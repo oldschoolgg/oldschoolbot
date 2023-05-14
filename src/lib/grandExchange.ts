@@ -1,7 +1,6 @@
 import { GEListing, GEListingType, GETransaction } from '@prisma/client';
 import { userMention } from 'discord.js';
 import { calcPercentOfNum, clamp, noOp, sumArr, Time } from 'e';
-import { writeFileSync } from 'fs';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import PQueue from 'p-queue';
@@ -489,10 +488,6 @@ class GrandExchangeSingleton {
 				},
 				orderBy: {
 					created_at: 'asc'
-				},
-				include: {
-					buyTransactions: true,
-					sellTransactions: true
 				}
 			}),
 			prisma.gEListing.findMany({
@@ -545,7 +540,6 @@ class GrandExchangeSingleton {
 		geLog(`Expected G.E Bank: ${shouldHave}`);
 		const ownedBank = await this.fetchOwnedBank();
 		if (!ownedBank.equals(shouldHave)) {
-			writeFileSync('debug.json', JSON.stringify({ buyListings, sellListings }, null, 4));
 			throw new Error(
 				`GE either has extra or insufficient items. The GE has ${ownedBank} but should have ${shouldHave}. Difference: ${shouldHave.difference(
 					ownedBank

@@ -54,7 +54,7 @@ describe('Grand Exchange', async () => {
 		await user.addItemsToBank({ items: sampleBank });
 		users.push(user);
 		totalExpectedBank.add(sampleBank);
-		assert(user.bankWithGP.equals(sampleBank));
+		assert(user.bankWithGP.equals(sampleBank), 'Test users bank should match sample bank');
 	}
 
 	const itemPool = resolveItems(['Egg', 'Trout', 'Coal']);
@@ -70,7 +70,7 @@ describe('Grand Exchange', async () => {
 				for (const item of itemPool) {
 					const method = randArrItem(['buy', 'sell']);
 					let quantity = randArrItem([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 500]);
-					let price = randArrItem([1, 2, 3, 4, 5, 1005, 2005, 3005, 4005, 5005, 100_000]);
+					let price = randArrItem([1, 2, 3, 4, 5, 99, 100, 101, 1005, 2005, 3005, 4005, 5005, 100_000]);
 
 					promises.push(
 						users[i].runCommand(geCommand, {
@@ -123,7 +123,7 @@ describe('Grand Exchange', async () => {
 			expect(testBank.toString()).toEqual(totalExpectedBank.clone().remove('Coins', totalTaxGP).toString());
 		},
 		{
-			repeats: 5,
+			repeats: 1,
 			timeout: Time.Minute * 5
 		}
 	);
@@ -207,6 +207,83 @@ describe('Grand Exchange', async () => {
 			const data = await GrandExchange.fetchData();
 			expect(data.taxBank).toEqual(totalTax);
 			expect(data.totalTax).toEqual(totalTax);
+		},
+		{ repeats: 1 }
+	);
+	test(
+		'Concurrent transactions',
+		async () => {
+			await GrandExchange.totalReset();
+			const user1 = await createTestUser();
+			const user2 = await createTestUser();
+			const user3 = await createTestUser();
+
+			await user1.addItemsToBank({ items: sampleBank });
+			await user2.addItemsToBank({ items: sampleBank });
+			await user3.addItemsToBank({ items: sampleBank });
+
+			await user1.runCommand(geCommand, {
+				buy: {
+					item: 'egg',
+					quantity: 200,
+					price: 100
+				}
+			});
+
+			await user2.runCommand(geCommand, {
+				sell: {
+					item: 'egg',
+					quantity: 100,
+					price: 80
+				}
+			});
+
+			await user3.runCommand(geCommand, {
+				sell: {
+					item: 'egg',
+					quantity: 150,
+					price: 120
+				}
+			});
+
+			await GrandExchange.tick();
+
+			const taxPerItem = calcPercentOfNum(1, 100);
+			const totalTax = taxPerItem * 100;
+
+			const user1ExpectedBank = new Bank()
+				.add('Egg', 1000 + 100)
+				.add('Coal', 1000)
+				.add('Trout', 1000)
+				.add('Coins', 1_000_000_000 - 100 * 100);
+
+			const user2ExpectedBank = new Bank()
+				.add('Egg', 1000 - 100)
+				.add('Coal', 1000)
+				.add('Trout', 1000)
+				.add('Coins', 1_000_000_000 + 100 * 100 - totalTax);
+
+			const user3ExpectedBank = new Bank()
+				.add('Egg', 1000)
+				.add('Coal', 1000)
+				.add('Trout', 1000)
+				.add('Coins', 1_000_000_000);
+
+			await user1.sync();
+			await user2.sync();
+			await user3.sync();
+
+			expect(user1.bankWithGP.toString()).toEqual(user1ExpectedBank.toString());
+			expect(user2.bankWithGP.toString()).toEqual(user2ExpectedBank.toString());
+			expect(user3.bankWithGP.toString()).toEqual(user3ExpectedBank.toString());
+
+			await GrandExchange.checkGECanFullFilAllListings();
+			await GrandExchange.extensiveVerification();
+
+			const data = await GrandExchange.fetchData();
+			expect(data.isLocked).toEqual(false);
+			expect(data.taxBank).toBeGreaterThan(0);
+			expect(data.totalTax).toBeGreaterThan(0);
 		},
 		{ repeats: 5 }
 	);

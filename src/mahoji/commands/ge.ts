@@ -1,6 +1,6 @@
 import type { GEListing, GETransaction } from '@prisma/client';
 import { ApplicationCommandOptionType, AttachmentBuilder } from 'discord.js';
-import { sumArr } from 'e';
+import { sumArr, uniqueArr } from 'e';
 import { CommandRunOptions } from 'mahoji';
 import { CommandOption } from 'mahoji/dist/lib/types';
 import { Bank } from 'oldschooljs';
@@ -14,7 +14,7 @@ import { mahojiClientSettingsFetch } from '../../lib/util/clientSettings';
 import getOSItem from '../../lib/util/getOSItem';
 import { logError } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
-import { itemOption, ownedItemOption } from '../lib/mahojiCommandOptions';
+import { ownedItemOption, tradeableItemArr } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 
 type GEListingWithTransactions = GEListing & {
@@ -85,10 +85,32 @@ export const geCommand: OSBMahojiCommand = {
 			description: 'Purchase something from the grand exchange.',
 			options: [
 				{
-					...itemOption(item => Boolean(item.tradeable_on_ge)),
+					type: ApplicationCommandOptionType.String,
 					name: 'item',
-					description: 'The item you want to buy.',
-					required: true
+					description: 'The item you want to pick.',
+					required: true,
+					autocomplete: async (value, user) => {
+						if (!value) {
+							const tradesOfUser = (
+								await prisma.gEListing.findMany({
+									where: {
+										user_id: user.id,
+										type: 'Buy'
+									},
+									select: {
+										item_id: true
+									},
+									take: 10
+								})
+							).map(i => i.item_id);
+							return uniqueArr(tradesOfUser).map(itemID => ({
+								name: itemNameFromID(itemID)!,
+								value: itemID.toString()
+							}));
+						}
+						let res = tradeableItemArr.filter(i => i.key.includes(value.toLowerCase()));
+						return res.map(i => ({ name: `${i.name}`, value: i.id.toString() }));
+					}
 				},
 				quantityOption,
 				priceOption
@@ -130,7 +152,7 @@ export const geCommand: OSBMahojiCommand = {
 						return listings
 							.filter(i => !i.cancelled_at && !i.fulfilled_at && i.quantity_remaining > 0)
 							.map(l => ({
-								name: `${l.type} ${l.total_quantity}x ${itemNameFromID(l.item_id)!.slice(0, 10)}`,
+								name: `${l.type} ${l.total_quantity}x ${itemNameFromID(l.item_id)!}`,
 								value: l.userfacing_id
 							}));
 					}
