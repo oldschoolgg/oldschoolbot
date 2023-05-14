@@ -10,7 +10,7 @@ import { ADMIN_IDS, OWNER_IDS, production } from '../config';
 import { globalConfig } from './constants';
 import { prisma } from './settings/prisma';
 import { fetchTableBank, makeTransactFromTableBankQueries, transactFromTableBank } from './tableBank';
-import { assert, generateGrandExchangeID, itemNameFromID, toKMB, validateBankAndThrow } from './util';
+import { assert, generateGrandExchangeID, itemNameFromID, toKMB } from './util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from './util/clientSettings';
 import getOSItem, { getItem } from './util/getOSItem';
 import { logError } from './util/logError';
