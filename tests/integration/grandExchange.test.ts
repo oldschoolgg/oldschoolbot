@@ -59,6 +59,8 @@ describe('Grand Exchange', async () => {
 
 	const itemPool = resolveItems(['Egg', 'Trout', 'Coal']);
 
+	GrandExchange.calculateSlotsOfUser = async () => ({ slots: 500 } as any);
+
 	test(
 		'Fuzz',
 		async () => {
