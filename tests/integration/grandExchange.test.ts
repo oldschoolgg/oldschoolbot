@@ -1,7 +1,8 @@
-import { randArrItem } from 'e';
+import { calcPercentOfNum, randArrItem, shuffleArr, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { afterAll, describe, expect, test } from 'vitest';
 
+import { usernameCache } from '../../src/lib/constants';
 import { GrandExchange } from '../../src/lib/grandExchange';
 import { prisma } from '../../src/lib/settings/prisma';
 import { assert } from '../../src/lib/util';
@@ -45,8 +46,8 @@ describe('Grand Exchange', async () => {
 
 	const totalExpectedBank = new Bank();
 
-	const users: TestUser[] = [];
-	let amountOfUsers = 50;
+	let users: TestUser[] = [];
+	let amountOfUsers = 100;
 
 	for (let i = 0; i < amountOfUsers; i++) {
 		const user = await createTestUser();
@@ -58,151 +59,156 @@ describe('Grand Exchange', async () => {
 
 	const itemPool = resolveItems(['Egg', 'Trout', 'Coal']);
 
-	test('Fuzz', async () => {
-		const promises = [];
+	test(
+		'Fuzz',
+		async () => {
+			const promises = [];
 
-		for (let i = 0; i < users.length; i++) {
-			for (const item of itemPool) {
-				const method = i % 2 === 0 ? 'buy' : 'sell';
-				let quantity = randArrItem([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
-				let price = randArrItem([1, 2, 3, 4, 5, 1005, 2005, 3005, 4005, 5005, 100_000]);
+			users = shuffleArr(users);
 
-				promises.push(
-					users[i].runCommand(geCommand, {
-						[method]: {
-							item,
-							quantity,
-							price
-						}
-					})
-				);
+			for (let i = 0; i < users.length; i++) {
+				for (const item of itemPool) {
+					const method = randArrItem(['buy', 'sell']);
+					let quantity = randArrItem([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 500]);
+					let price = randArrItem([1, 2, 3, 4, 5, 1005, 2005, 3005, 4005, 5005, 100_000]);
+
+					promises.push(
+						users[i].runCommand(geCommand, {
+							[method]: {
+								item,
+								quantity,
+								price
+							}
+						})
+					);
+				}
 			}
-		}
 
-		await Promise.all(promises);
-		for (const result of promises) expect(await result).toContain('Successfully created');
+			await Promise.all(promises);
+			for (const result of promises) expect(await result).toContain('Successfully created');
 
-		for (let i = 0; i < 20; i++) {
+			for (let i = 0; i < 50; i++) {
+				await GrandExchange.tick();
+				await GrandExchange.checkGECanFullFilAllListings();
+				await GrandExchange.extensiveVerification();
+			}
 			await GrandExchange.tick();
+
+			const testBank = new Bank();
+			for (const user of shuffleArr(users)) {
+				await cancelAllListings(user);
+				await user.sync();
+				testBank.add(user.bankWithGP);
+			}
+
 			await GrandExchange.checkGECanFullFilAllListings();
 			await GrandExchange.extensiveVerification();
+
+			const data = await GrandExchange.fetchData();
+			expect(data.isLocked).toEqual(false);
+			expect(data.taxBank).toBeGreaterThan(0);
+			expect(data.totalTax).toBeGreaterThan(0);
+
+			const totalTaxed = await prisma.gETransaction.aggregate({
+				_sum: {
+					total_tax_paid: true
+				}
+			});
+			const totalTaxGP = Number(totalTaxed._sum.total_tax_paid!);
+			expect(totalTaxGP).toEqual(data.taxBank);
+			expect(totalTaxGP).toEqual(data.totalTax);
+			expect(testBank.amount('Coins')).toBeLessThanOrEqual(totalExpectedBank.amount('Coins'));
+			expect(testBank.amount('Coins') + totalTaxGP).toEqual(totalExpectedBank.amount('Coins'));
+			expect(testBank.toString()).toEqual(totalExpectedBank.clone().remove('Coins', totalTaxGP).toString());
+		},
+		{
+			repeats: 5,
+			timeout: Time.Minute * 5
 		}
-		await GrandExchange.tick();
+	);
 
-		const testBank = new Bank();
-		for (const user of users) {
-			await cancelAllListings(user);
-			await user.sync();
-			testBank.add(user.bankWithGP);
-		}
+	test(
+		'Refund issue',
+		async () => {
+			await GrandExchange.totalReset();
+			const wes = await createTestUser();
+			const magnaboy = await createTestUser();
 
-		await GrandExchange.checkGECanFullFilAllListings();
-		await GrandExchange.extensiveVerification();
+			usernameCache.set(wes.id, 'Wes');
+			usernameCache.set(magnaboy.id, 'Magnaboy');
 
-		const data = await GrandExchange.fetchData();
-		expect(data.isLocked).toEqual(false);
-		expect(data.taxBank).toBeGreaterThan(0);
-		expect(data.totalTax).toBeGreaterThan(0);
+			await magnaboy.addItemsToBank({ items: sampleBank });
+			await wes.addItemsToBank({ items: sampleBank });
 
-		const totalTaxed = await prisma.gETransaction.aggregate({
-			_sum: {
-				total_tax_paid: true
-			}
-		});
-		const totalTaxGP = Number(totalTaxed._sum.total_tax_paid!);
-		expect(totalTaxGP).toEqual(data.taxBank);
-		expect(totalTaxGP).toEqual(data.totalTax);
-		expect(testBank.amount('Coins')).toBeLessThanOrEqual(totalExpectedBank.amount('Coins'));
-		console.log({
-			tbAmount: testBank.amount('Coins'),
-			taxGP: totalTaxGP,
-			added: totalTaxGP + testBank.amount('Coins')
-		});
-		expect(testBank.amount('Coins') + totalTaxGP).toEqual(totalExpectedBank.amount('Coins'));
-		// totalExpectedBank.remove('Coins', totalTaxGP);
+			await magnaboy.runCommand(geCommand, {
+				buy: {
+					item: 'egg',
+					quantity: 100,
+					price: 100
+				}
+			});
+			expect(await prisma.gEListing.count()).toBe(1);
 
-		// expect(testBank.toString()).toEqual(totalExpectedBank.toString());
-	});
+			await wes.runCommand(geCommand, {
+				sell: {
+					item: 'egg',
+					quantity: 50,
+					price: 50
+				}
+			});
+			expect(await prisma.gEListing.count()).toBe(2);
 
-	// test('Refund issue', async () => {
-	// 	const wes = await createTestUser();
-	// 	const magnaboy = await createTestUser();
+			await GrandExchange.tick();
+			await GrandExchange.tick();
 
-	// 	usernameCache.set(wes.id, 'Wes');
-	// 	usernameCache.set(magnaboy.id, 'Magnaboy');
+			const amountSold = 50;
+			const priceSoldAt = 100;
+			const totalGPBeforeTax = amountSold * priceSoldAt;
+			const taxPerItem = calcPercentOfNum(1, priceSoldAt);
+			expect(taxPerItem).toEqual(1);
+			const totalTax = taxPerItem * amountSold;
+			expect(taxPerItem).toEqual(1);
+			const gpShouldBeReceivedAfterTax = totalGPBeforeTax - totalTax;
+			expect(gpShouldBeReceivedAfterTax).toEqual(4950);
 
-	// 	await magnaboy.addItemsToBank({ items: sampleBank });
-	// 	await wes.addItemsToBank({ items: sampleBank });
+			expect(await cancelAllListings(wes)).toEqual(
+				'You cannot cancel a listing that has already been fulfilled.'
+			);
+			expect(await cancelAllListings(magnaboy)).toEqual(
+				'Successfully cancelled your listing, you have been refunded 5,000x Coins.'
+			);
 
-	// 	await magnaboy.runCommand(geCommand, {
-	// 		buy: {
-	// 			item: 'egg',
-	// 			quantity: 100,
-	// 			price: 100
-	// 		}
-	// 	});
-	// 	expect(await prisma.gEListing.count()).toBe(1);
+			expect(wes.bankWithGP.toString()).toEqual(
+				new Bank()
+					.add('Egg', 1000 - amountSold)
+					.add('Coal', 1000)
+					.add('Trout', 1000)
+					.add('Coins', 1_000_000_000 + gpShouldBeReceivedAfterTax)
+					.toString()
+			);
 
-	// 	await wes.runCommand(geCommand, {
-	// 		sell: {
-	// 			item: 'egg',
-	// 			quantity: 50,
-	// 			price: 50
-	// 		}
-	// 	});
-	// 	expect(await prisma.gEListing.count()).toBe(2);
+			expect(magnaboy.bankWithGP.toString()).toEqual(
+				new Bank()
+					.add('Egg', 1000 + amountSold)
+					.add('Coal', 1000)
+					.add('Trout', 1000)
+					.add('Coins', 1_000_000_000 - totalGPBeforeTax)
+					.toString()
+			);
 
-	// 	await GrandExchange.tick();
-	// 	await GrandExchange.tick();
+			expect(magnaboy.bankWithGP.clone().add(wes.bankWithGP).toString()).toEqual(
+				sampleBank.clone().multiply(2).remove('Coins', totalTax).toString()
+			);
 
-	// 	const amountSold = 50;
-	// 	const priceSoldAt = 100;
-	// 	const totalGPBeforeTax = amountSold * priceSoldAt;
-	// 	const taxPerItem = calcPercentOfNum(1, priceSoldAt);
-	// 	expect(taxPerItem).toEqual(1);
-	// 	const totalTax = taxPerItem * amountSold;
-	// 	expect(taxPerItem).toEqual(1);
-	// 	const gpShouldBeReceivedAfterTax = totalGPBeforeTax - totalTax;
-	// 	expect(gpShouldBeReceivedAfterTax).toEqual(4950);
+			const bank = await GrandExchange.fetchOwnedBank();
+			expect(bank.length).toEqual(0);
 
-	// 	expect(await cancelAllListings(wes)).toEqual('You cannot cancel a listing that has already been fulfilled.');
-	// 	expect(await cancelAllListings(magnaboy)).toEqual(
-	// 		'Successfully cancelled your listing, you have been refunded 5,000x Coins.'
-	// 	);
-
-	// 	expect(wes.bankWithGP.toString()).toEqual(
-	// 		new Bank()
-	// 			.add('Egg', 1000 - amountSold)
-	// 			.add('Coal', 1000)
-	// 			.add('Trout', 1000)
-	// 			.add('Coins', 1_000_000_000 + gpShouldBeReceivedAfterTax)
-	// 			.toString()
-	// 	);
-
-	// 	expect(magnaboy.bankWithGP.toString()).toEqual(
-	// 		new Bank()
-	// 			.add('Egg', 1000 + amountSold)
-	// 			.add('Coal', 1000)
-	// 			.add('Trout', 1000)
-	// 			.add('Coins', 1_000_000_000 - totalGPBeforeTax)
-	// 			.toString()
-	// 	);
-
-	// 	expect(magnaboy.bankWithGP.clone().add(wes.bankWithGP).toString()).toEqual(
-	// 		sampleBank.clone().multiply(2).remove('Coins', totalTax).toString()
-	// 	);
-
-	// 	const bank = await GrandExchange.fetchOwnedBank();
-	// 	expect(bank.length).toEqual(0);
-
-	// 	const clientSettings = await mahojiClientSettingsFetch({
-	// 		grand_exchange_tax_bank: true,
-	// 		grand_exchange_total_tax: true
-	// 	});
-
-	// 	expect(Number(clientSettings.grand_exchange_tax_bank)).toEqual(totalTax);
-	// 	expect(Number(clientSettings.grand_exchange_total_tax)).toEqual(totalTax);
-	// });
+			const data = await GrandExchange.fetchData();
+			expect(data.taxBank).toEqual(totalTax);
+			expect(data.totalTax).toEqual(totalTax);
+		},
+		{ repeats: 5 }
+	);
 
 	afterAll(() => {
 		gePino.flush();

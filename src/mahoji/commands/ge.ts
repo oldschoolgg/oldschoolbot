@@ -176,14 +176,7 @@ export const geCommand: OSBMahojiCommand = {
 		await interaction.deferReply();
 
 		if (options.global_reset) {
-			await mahojiClientSettingsUpdate({
-				grand_exchange_is_locked: false,
-				grand_exchange_tax_bank: 0,
-				grand_exchange_total_tax: 0
-			});
-			await prisma.gEBank.deleteMany();
-			await prisma.gETransaction.deleteMany();
-			await prisma.gEListing.deleteMany();
+			await GrandExchange.totalReset();
 			await prisma.user.updateMany({
 				data: {
 					bank: new Bank().add('Egg', 1000).add('Coal', 1000).add('Trout', 1000).add('Flax', 1000).bank,

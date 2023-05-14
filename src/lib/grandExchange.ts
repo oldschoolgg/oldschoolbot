@@ -343,17 +343,17 @@ class GrandExchangeSingleton {
 		bankToRemoveFromGeBank.add('Coins', totalTaxPaid);
 
 		let buyerRefund = 0;
-
 		if (buyerListing.asking_price_per_item > sellerListing.asking_price_per_item) {
-			let extraAmount = buyerListing.asking_price_per_item * quantityToBuy;
-			extraAmount -= totalPriceAfterTax;
-			validateNumber(extraAmount);
-			buyerLoot.add('Coins', extraAmount);
-			bankToRemoveFromGeBank.add('Coins', extraAmount);
-			buyerRefund = extraAmount;
+			const buyerPricePerItemBeforeTax = buyerListing.asking_price_per_item;
+			const totalAmountToRemove = buyerPricePerItemBeforeTax * quantityToBuy;
+			buyerRefund = totalAmountToRemove - totalPriceBeforeTax;
+
+			validateNumber(buyerRefund);
+			buyerLoot.add('Coins', buyerRefund);
+			bankToRemoveFromGeBank.add('Coins', buyerRefund);
 
 			geLog(
-				`Buyer got refunded ${extraAmount} GP due to price difference. Buyer was asking ${buyerListing.asking_price_per_item}GP for each of the ${quantityToBuy}x items, seller was asking ${sellerListing.asking_price_per_item}GP, and the post-tax price per item was ${pricePerItemAfterTax}`,
+				`Buyer got refunded ${buyerRefund} GP due to price difference. Buyer was asking ${buyerListing.asking_price_per_item}GP for each of the ${quantityToBuy}x items, seller was asking ${sellerListing.asking_price_per_item}GP, and the post-tax price per item was ${pricePerItemAfterTax}`,
 				logContext
 			);
 		}
@@ -368,11 +368,12 @@ class GrandExchangeSingleton {
 		}] TotalPriceBeforeTax[${totalPriceBeforeTax}] QuantityToBuy[${quantityToBuy}] TotalTaxPaid[${totalTaxPaid}] BuyerRefund[${buyerRefund}] BuyerLoot[${buyerLoot}] SellerLoot[${sellerLoot}] CurrentGEBank[${geBank}] BankToRemoveFromGeBank[${bankToRemoveFromGeBank}] ExpectedAfterBank[${geBank
 			.clone()
 			.remove(bankToRemoveFromGeBank)}]`;
+
 		assert(
 			bankToRemoveFromGeBank.amount('Coins') === buyerListing.asking_price_per_item * quantityToBuy,
-			`The G.E Must be removing the full amount the buyer put in, otherwise there's extra GP leftover in their buyerListing. Expected ${bankToRemoveFromGeBank.amount(
-				'Coins'
-			)} === ${buyerListing.asking_price_per_item * quantityToBuy}. ${debug}`
+			`The G.E Must be removing the full amount the buyer put in, otherwise there's extra/notenough GP leftover in their buyerListing. Expected to be removing ${
+				buyerListing.asking_price_per_item * quantityToBuy
+			}, but we're removing ${bankToRemoveFromGeBank.amount('Coins')} ${debug}`
 		);
 
 		if (!geBank.has(bankGEShouldHave)) {
@@ -632,6 +633,18 @@ class GrandExchangeSingleton {
 			// Process only one transaction per tick
 			break;
 		}
+	}
+
+	async totalReset() {
+		if (production) throw new Error("You can't reset the GE in production.");
+		await mahojiClientSettingsUpdate({
+			grand_exchange_is_locked: false,
+			grand_exchange_tax_bank: 0,
+			grand_exchange_total_tax: 0
+		});
+		await prisma.gEBank.deleteMany();
+		await prisma.gETransaction.deleteMany();
+		await prisma.gEListing.deleteMany();
 	}
 }
 
