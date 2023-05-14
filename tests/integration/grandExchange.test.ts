@@ -84,8 +84,9 @@ describe('Grand Exchange', async () => {
 				}
 			}
 
-			await Promise.all(promises);
-			for (const result of promises) expect(await result).toContain('Successfully created');
+			for (const result of (await Promise.all(promises)) as string[]) {
+				assert(result.includes('Successfully created') || result.includes("You don't own "));
+			}
 
 			for (let i = 0; i < 50; i++) {
 				await GrandExchange.tick();

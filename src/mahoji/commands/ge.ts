@@ -10,7 +10,7 @@ import { GrandExchange } from '../../lib/grandExchange';
 import { prisma } from '../../lib/settings/prisma';
 import { transactFromTableBank } from '../../lib/tableBank';
 import { dateFm, formatDuration, getUsername, itemNameFromID, toKMB } from '../../lib/util';
-import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../lib/util/clientSettings';
+import { mahojiClientSettingsFetch } from '../../lib/util/clientSettings';
 import getOSItem from '../../lib/util/getOSItem';
 import { logError } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
