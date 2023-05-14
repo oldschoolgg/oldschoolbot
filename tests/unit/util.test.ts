@@ -1,3 +1,4 @@
+import { truncateString } from '@oldschoolgg/toolkit';
 import { calcPercentOfNum, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
@@ -7,7 +8,7 @@ import { baseModifyBusyCounter } from '../../src/lib/busyCounterCache';
 import { Eatables } from '../../src/lib/data/eatables';
 import getUserFoodFromBank from '../../src/lib/minions/functions/getUserFoodFromBank';
 import { SkillsEnum } from '../../src/lib/skilling/types';
-import { clAdjustedDroprate, sanitizeBank, skillingPetDropRate, stripEmojis, truncateString } from '../../src/lib/util';
+import { clAdjustedDroprate, sanitizeBank, skillingPetDropRate, stripEmojis } from '../../src/lib/util';
 import getOSItem from '../../src/lib/util/getOSItem';
 import { sellPriceOfItem, sellStorePriceOfItem } from '../../src/mahoji/commands/sell';
 import { mockMUser } from './utils';

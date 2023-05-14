@@ -1,3 +1,4 @@
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { APIApplicationCommandOptionChoice, ApplicationCommandOptionType, User } from 'discord.js';
 import { uniqueArr } from 'e';
 import { CommandOption } from 'mahoji/dist/lib/types';
@@ -14,7 +15,6 @@ import { prisma } from '../../lib/settings/prisma';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { globalPresets } from '../../lib/structures/Gear';
 import getOSItem from '../../lib/util/getOSItem';
-import { toTitleCase } from '../../lib/util/toTitleCase';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const filterOption: CommandOption = {

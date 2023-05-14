@@ -13,7 +13,6 @@ import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
 import { stringMatches } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { deferInteraction } from '../../lib/util/interactionReply';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch, userStatsBankUpdate } from '../mahojiSettings';
@@ -87,7 +86,6 @@ export const createCommand: OSBMahojiCommand = {
 		const itemName = options.item.toLowerCase();
 		let { quantity } = options;
 		if (options.showall) {
-			deferInteraction(interaction);
 			return allCreatablesTable;
 		}
 

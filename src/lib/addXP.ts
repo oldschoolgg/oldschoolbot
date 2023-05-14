@@ -1,3 +1,4 @@
+import { formatOrdinal, toTitleCase } from '@oldschoolgg/toolkit';
 import { increaseNumByPercent, noOp, notEmpty, objectValues, Time } from 'e';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { convertLVLtoXP, convertXPtoLVL, toKMB } from 'oldschooljs/dist/util/util';
@@ -13,10 +14,8 @@ import Skillcapes from './skilling/skillcapes';
 import Skills from './skilling/skills';
 import { SkillsEnum } from './skilling/types';
 import { itemNameFromID } from './util';
-import { formatOrdinal } from './util/formatOrdinal';
 import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
-import { toTitleCase } from './util/toTitleCase';
 import { sendToChannelID } from './util/webhook';
 
 const skillsVals = Object.values(Skills);

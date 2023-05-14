@@ -1,7 +1,7 @@
 import { randInt } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Emoji, MAX_QP } from '../../lib/constants';
+import { Emoji, globalDroprates, MAX_QP } from '../../lib/constants';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
@@ -48,7 +48,7 @@ export const questingTask: MinionTask = {
 			str += `${Emoji.Herblore} You received 250 Herblore XP for completing Druidic Ritual.`;
 		}
 
-		if (roll(350)) {
+		if (roll(globalDroprates.zippyQuesting.baseRate)) {
 			str +=
 				'\n<:zippy:749240799090180196> While you walk through the forest north of falador, a small ferret jumps onto your back and joins you on your adventures!';
 			await user.addItemsToBank({ items: new Bank().add('Zippy'), collectionLog: true });

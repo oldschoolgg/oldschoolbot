@@ -1,10 +1,9 @@
-import '../../src/lib/bankImage';
-
 import { writeFile } from 'fs/promises';
 import { Bank, Monsters } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 import { describe, test } from 'vitest';
 
+import { drawChestLootImage } from '../../src/lib/bankImage';
 import { clImageGenerator } from '../../src/lib/collectionLogTask';
 import { pohImageGenerator } from '../../src/lib/pohImage';
 import { pieChart } from '../../src/lib/util/chart';
@@ -72,5 +71,47 @@ describe('Images', () => {
 			['Incomplete Collection Log Items', 80, '#df9f9f']
 		]);
 		await writeFile('./tests/unit/snapshots/chart_1.png', result);
+	});
+
+	test('TOA Image', async () => {
+		const image = await drawChestLootImage({
+			entries: [
+				{
+					loot: new Bank()
+						.add('Twisted bow')
+						.add('Coal')
+						.add('Egg')
+						.add('Elysian sigil')
+						.add('Trout')
+						.add('Salmon'),
+					user: mockMUser() as any,
+					previousCL: new Bank().add('Twisted bow').add('Coal'),
+					customTexts: []
+				}
+			],
+			type: 'Tombs of Amascut'
+		});
+		await writeFile('./tests/unit/snapshots/toa_1.png', image.attachment as Buffer);
+	});
+
+	test('COX Image', async () => {
+		const image = await drawChestLootImage({
+			entries: [
+				{
+					loot: new Bank()
+						.add('Twisted bow')
+						.add('Coal')
+						.add('Egg')
+						.add('Elysian sigil')
+						.add('Trout')
+						.add('Salmon'),
+					user: mockMUser() as any,
+					previousCL: new Bank().add('Twisted bow').add('Coal'),
+					customTexts: []
+				}
+			],
+			type: 'Chambers of Xerician'
+		});
+		await writeFile('./tests/unit/snapshots/cox_1.png', image.attachment as Buffer);
 	});
 });

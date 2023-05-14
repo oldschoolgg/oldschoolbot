@@ -475,7 +475,7 @@ LIMIT 50;`;
 		results.push(
 			await addRoles({
 				users: [highestID],
-				role: '1052481561603346442',
+				role: '1104155653745946746',
 				badge: null,
 				userMap
 			})

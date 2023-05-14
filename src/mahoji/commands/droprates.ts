@@ -3,9 +3,10 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { table } from 'table';
 
+import { globalDroprates, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { slayerMaskHelms } from '../../lib/data/slayerMaskHelms';
 import Constructables from '../../lib/skilling/skills/construction/constructables';
-import { calcBabyYagaHouseDroprate, stringMatches } from '../../lib/util';
+import { calcBabyYagaHouseDroprate, formatDuration, stringMatches } from '../../lib/util';
 import { OSBMahojiCommand } from '../lib/util';
 
 function makeTable(headers: string[], rows: (string | number)[][]) {
@@ -40,6 +41,29 @@ const droprates = [
 		}
 	}
 ];
+
+for (const droprate of Object.values(globalDroprates)) {
+	droprates.push({
+		name: droprate.name,
+		output: () => {
+			let str = `**${droprate.name}**\n\n`;
+			str += `${droprate.name} drops at a rate of **1/${droprate.baseRate}** per ${droprate.rolledPer}.\n`;
+			if (droprate.minLength) {
+				str += `Requires a minimum trip length of **${formatDuration(MIN_LENGTH_FOR_PET)}** to receive.\n`;
+			}
+			if ('tameBaseRate' in droprate) {
+				str += `Tames have a different base rate of **1/${droprate.tameBaseRate}**.\n`;
+			}
+			if ('clIncrease' in droprate) {
+				str += `For each pet in your CL, the droprate is multiplied (made rarer) by **${droprate.clIncrease}x**.\n`;
+			}
+			if ('notes' in droprate) {
+				str += `\n**Notes:**\n${droprate.notes.join('\n')}`;
+			}
+			return str;
+		}
+	});
+}
 
 export const dropRatesCommand: OSBMahojiCommand = {
 	name: 'droprate',

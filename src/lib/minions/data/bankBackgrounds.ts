@@ -292,6 +292,15 @@ const backgroundImages: BankBackground[] = [
 		alternateImages: [{ id: 1 }]
 	},
 	{
+		id: 31,
+		name: 'Swans (Transparent)',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 500_000,
+		transparent: true
+	},
+	{
 		id: 32,
 		name: 'Peepo Scooter',
 		image: null,
@@ -672,6 +681,24 @@ const backgroundImages: BankBackground[] = [
 		available: true,
 		perkTierNeeded: PerkTier.Four,
 		gpCost: 10_000_000
+	},
+	{
+		id: 500,
+		name: 'Kabe CustomBG',
+		image: null,
+		available: false,
+		owners: ['354873929522741248'],
+		purpleImage: null,
+		hasPurple: true
+	},
+	{
+		id: 501,
+		name: 'Timebrawler CustomBG',
+		image: null,
+		available: false,
+		owners: ['235883747658956802'],
+		purpleImage: null,
+		hasPurple: true
 	}
 ];
 

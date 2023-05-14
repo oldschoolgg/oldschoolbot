@@ -495,6 +495,8 @@ enum XpGainSource {
   TombsOfAmascut
   BalthazarsBigBonanza
   UnderwaterAgilityThieving
+  ChambersOfXeric
+  TheatreOfBlood
 }
 
 model XPGain {
@@ -872,15 +874,15 @@ model UserStats {
   last_daily_timestamp           BigInt @default(0)
   last_tears_of_guthix_timestamp BigInt @default(0)
 
+  main_server_challenges_won Int @default(0)
+
   @@map("user_stats")
 }
 
 model BingoTeam {
   id Int @id @unique @default(autoincrement())
 
-  first_user  String @unique @db.VarChar(19)
-  second_user String @unique @db.VarChar(19)
-  third_user  String @unique @db.VarChar(19)
+  users String[]
 
   @@map("bingo_team")
 }
@@ -942,18 +944,18 @@ model PinnedTrip {
 }
 
 model HistoricalData {
-  id      String   @id @default(uuid()) @db.Uuid
   user_id String   @db.VarChar(19)
   date    DateTime @default(now())
 
-  cl_global_rank           Int
-  cl_completion_percentage Float
-  cl_completion_count      Int
-  GP                       BigInt
-  total_xp                 BigInt
+  cl_global_rank           Int     @db.SmallInt
+  cl_completion_percentage Decimal @db.Decimal(5, 2)
+  cl_completion_count      Int     @db.SmallInt
+  GP                       Decimal @db.Decimal(13, 0)
+  total_xp                 Decimal @db.Decimal(13, 0)
 
   user User @relation(fields: [user_id], references: [id])
 
+  @@id([user_id, date])
   @@map("historical_data")
 }
 

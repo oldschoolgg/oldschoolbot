@@ -1,7 +1,7 @@
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { calcPercentOfNum } from 'e';
 
 import { assert } from '../util';
-import { toTitleCase } from '../util/toTitleCase';
 import { IMaterialBank, MaterialType, materialTypes } from '.';
 
 export class MaterialBank {
