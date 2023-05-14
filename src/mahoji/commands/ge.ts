@@ -201,7 +201,7 @@ export const geCommand: OSBMahojiCommand = {
 			await GrandExchange.totalReset();
 			await prisma.user.updateMany({
 				data: {
-					bank: new Bank().add('Egg', 1000).add('Coal', 1000).add('Trout', 1000).add('Flax', 1000).bank,
+					bank: new Bank().add('Egg', 5_000_000).add('Coal', 1000).add('Trout', 1000).add('Flax', 1000).bank,
 					GP: 1_000_000_000
 				}
 			});

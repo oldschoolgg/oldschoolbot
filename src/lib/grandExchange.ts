@@ -6,7 +6,8 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import PQueue from 'p-queue';
 
 import { ADMIN_IDS, OWNER_IDS, production } from '../config';
-import { globalConfig } from './constants';
+import { globalConfig, PerkTier } from './constants';
+import { RobochimpUser, roboChimpUserFetch } from './roboChimp';
 import { prisma } from './settings/prisma';
 import { fetchTableBank, makeTransactFromTableBankQueries, transactFromTableBank } from './tableBank';
 import { assert, generateGrandExchangeID, itemNameFromID, toKMB } from './util';
@@ -85,11 +86,10 @@ function sanityCheckTransaction({
 class GrandExchangeSingleton {
 	public queue = new PQueue({ concurrency: 1 });
 	public locked = false;
-	public taxRatePercentage = 1;
 	public isTicking = false;
 	public config = {
 		buyLimit: {
-			interval: Time.Minute * 5, // Time.Hour * 4,
+			interval: Time.Hour * 4,
 			fallbackBuyLimit: (item: Item) => (item.price > 1_000_000 ? 1 : 1000)
 		},
 		tax: {
@@ -101,8 +101,54 @@ class GrandExchangeSingleton {
 			cap: () => {
 				return 5_000_000;
 			}
+		},
+		slots: {
+			slotBoosts: [
+				{
+					has: () => true,
+					name: 'Base',
+					amount: 1
+				},
+				...[100, 250, 1000].map(num => ({
+					has: (user: MUser) => user.totalLevel >= num,
+					name: `${num} Total Level`,
+					amount: 1
+				})),
+				{
+					has: (_: MUser, robochimpUser: RobochimpUser) =>
+						robochimpUser.osb_cl_percent && robochimpUser.osb_cl_percent >= 30,
+					name: '30% CL Completion',
+					amount: 1
+				},
+				{
+					has: (_: MUser, robochimpUser: RobochimpUser) => robochimpUser.leagues_points_total >= 10_000,
+					name: '10k Leagues Points',
+					amount: 1
+				},
+				{
+					has: (user: MUser) => user.perkTier() >= PerkTier.Four,
+					name: 'Tier 3 Patron',
+					amount: 3
+				}
+			]
 		}
 	};
+
+	async calculateSlotsOfUser(user: MUser) {
+		const robochimpUser = await roboChimpUserFetch(user.id);
+		let slots = 0;
+		const doesntHaveNames = [];
+		let possibleExtra = 0;
+		for (const boost of this.config.slots.slotBoosts) {
+			if (boost.has(user, robochimpUser)) {
+				slots += boost.amount;
+			} else {
+				doesntHaveNames.push(boost.name);
+				possibleExtra += boost.amount;
+			}
+		}
+		return { slots, doesntHaveNames, possibleExtra };
+	}
 
 	getInterval() {
 		const currentTime = new Date();
@@ -211,6 +257,23 @@ class GrandExchangeSingleton {
 		}
 		if (!quantity || quantity < 0 || isNaN(quantity) || !Number.isInteger(quantity) || quantity > 5_000_000) {
 			return { error: 'Invalid quantity, the quantity must be a number between 1 and 5m.' };
+		}
+
+		const theirCurrentListings = await prisma.gEListing.findMany({
+			where: {
+				user_id: user.id,
+				cancelled_at: null,
+				fulfilled_at: null
+			}
+		});
+		const { slots, doesntHaveNames, possibleExtra } = await this.calculateSlotsOfUser(user);
+		if (theirCurrentListings.length >= slots) {
+			let str = `You can't make this listing, because all your slots are full. You have ${theirCurrentListings.length} active listings, and ${slots} slots. One of your slots needs to be cancelled or fulfilled before you can make another.`;
+			if (possibleExtra > 0) {
+				str += `\n\nYou can get ${possibleExtra} extra slots through: ${doesntHaveNames.join(', ')}.`;
+			}
+
+			return { error: str };
 		}
 
 		await user.sync();
@@ -498,6 +561,15 @@ class GrandExchangeSingleton {
 				},
 				orderBy: {
 					created_at: 'asc'
+				},
+				// Take the last purchase transaction for each sell listing
+				include: {
+					sellTransactions: {
+						orderBy: {
+							created_at: 'desc'
+						},
+						take: 1
+					}
 				}
 			}),
 			prisma.clientStorage.findFirst({
@@ -605,13 +677,26 @@ class GrandExchangeSingleton {
 			}
 		}
 		for (const buyListing of buyListings) {
-			const matchingSellListing = sellListings.find(
+			// These are all valid, matching sell listings we can match with this buy listing.
+			const matchingSellListings = sellListings.filter(
 				sellListing =>
 					sellListing.item_id === buyListing.item_id &&
 					// "Trades succeed when one player's buy offer is greater than or equal to another player's sell offer."
 					buyListing.asking_price_per_item >= sellListing.asking_price_per_item &&
 					buyListing.user_id !== sellListing.user_id
 			);
+
+			/**
+			 * If we have multiple matching sell listings, sort them so we buy from the *least*
+			 * active one. To prevent buying over and over from the same person.
+			 */
+			matchingSellListings.sort((a, b) => {
+				const aLastSale = a.sellTransactions[0]?.created_at ?? a.created_at;
+				const bLastSale = b.sellTransactions[0]?.created_at ?? b.created_at;
+				return aLastSale.getTime() - bLastSale.getTime();
+			});
+
+			const matchingSellListing = matchingSellListings[0];
 			if (!matchingSellListing) continue;
 			try {
 				const { remainingItemsCanBuy } = await this.checkBuyLimitForListing(buyListing);
