@@ -1,7 +1,7 @@
 import { roll } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { globalDroprates } from '../constants';
+import { globalDroprates } from '../data/globalDroprates';
 import { clAdjustedDroprate } from '../util';
 
 // user is null if tame is killing

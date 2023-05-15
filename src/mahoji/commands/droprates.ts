@@ -3,7 +3,8 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { table } from 'table';
 
-import { globalDroprates, MIN_LENGTH_FOR_PET } from '../../lib/constants';
+import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
+import { globalDroprates } from '../../lib/data/globalDroprates';
 import { slayerMaskHelms } from '../../lib/data/slayerMaskHelms';
 import Constructables from '../../lib/skilling/skills/construction/constructables';
 import { calcBabyYagaHouseDroprate, formatDuration, stringMatches } from '../../lib/util';
@@ -48,7 +49,7 @@ for (const droprate of Object.values(globalDroprates)) {
 		output: () => {
 			let str = `**${droprate.name}**\n\n`;
 			str += `${droprate.name} drops at a rate of **1/${droprate.baseRate}** per ${droprate.rolledPer}.\n`;
-			if (droprate.minLength) {
+			if ('minLength' in droprate) {
 				str += `Requires a minimum trip length of **${formatDuration(MIN_LENGTH_FOR_PET)}** to receive.\n`;
 			}
 			if ('tameBaseRate' in droprate) {

@@ -3,7 +3,6 @@ import { bold } from 'discord.js';
 import { calcPercentOfNum, clamp, percentChance, randArrItem, randInt, reduceNumByPercent, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
-import { UniqueTable } from 'oldschooljs/dist/simulation/clues/Beginner';
 
 import { mahojiParseNumber, userStatsBankUpdate } from '../mahoji/mahojiSettings';
 import { Emoji } from './constants';
@@ -52,7 +51,7 @@ export const maxMage = new Gear({
 	head: 'Gorajan occult helmet',
 	neck: 'Arcane blast necklace',
 	body: 'Gorajan occult top',
-	cape: 'Imbued saradomin cape',
+	cape: 'Vasa cloak',
 	hands: 'Gorajan occult gloves',
 	legs: 'Gorajan occult legs',
 	feet: 'Gorajan occult boots',
@@ -65,12 +64,12 @@ export const maxRange = new Gear({
 	head: 'Gorajan archer helmet',
 	neck: 'Farsight snapshot necklace',
 	body: 'Gorajan archer top',
-	cape: "Ava's assembler",
+	cape: 'Tidal collector',
 	hands: 'Gorajan archer gloves',
 	legs: 'Gorajan archer legs',
 	feet: 'Gorajan archer boots',
 	'2h': 'Titan ballista',
-	ring: 'Lightbearer',
+	ring: 'Ring of piercing (i)',
 	ammo: 'Obsidian javelin'
 });
 maxRange.ammo!.quantity = 100_000;
@@ -92,10 +91,17 @@ const REQUIRED_MAGE_WEAPONS = resolveItems(['Void staff', "Tumeken's shadow"]);
 const REQUIRED_RANGE_WEAPONS = resolveItems(['Heavy ballista', 'Titan ballista']);
 const VOID_STAFF_CHARGES_PER_RAID = 30;
 const TUMEKEN_SHADOW_PER_RAID = 150;
-const JAVELLINS_PER_RAID = 100;
+const JAVELLINS_PER_RAID = (rangeLevel: number) => {
+	if (rangeLevel === 120) return 15;
+	if (rangeLevel >= 118) return 16;
+	if (rangeLevel >= 116) return 17;
+	if (rangeLevel >= 114) return 18;
+	if (rangeLevel >= 112) return 19;
+	return 20;
+};
 const JAVELLINS = resolveItems(['Amethyst javelin', 'Dragon javelin', 'Obsidian javelin']);
 const BP_DARTS_NEEDED = 150;
-const SANG_BLOOD_RUNES_PER_RAID = 200;
+const SANG_BLOOD_RUNES_PER_RAID = 220;
 
 const requirements: {
 	name: string;
@@ -119,7 +125,7 @@ const requirements: {
 			}
 
 			const rangeAmmo = user.gear.range.ammo;
-			const arrowsNeeded = JAVELLINS_PER_RAID * quantity;
+			const arrowsNeeded = JAVELLINS_PER_RAID(user.skillsAsLevels.ranged) * quantity;
 
 			if (!rangeAmmo || !rangeAmmo.item || !JAVELLINS.includes(rangeAmmo.item)) {
 				return `You need to have javellins equipped in your range setup, one of: ${JAVELLINS.map(
@@ -356,8 +362,8 @@ export async function calcDOAInput({
 	cost.add('Ranging potion(4)', quantity);
 	cost.add('Sanfew serum(4)', quantity);
 
-	// Between 8-1 brews
-	let brewsNeeded = Math.max(1, 9 - Math.max(1, Math.ceil((kc + 1) / 12)));
+	let brewsNeeded = Math.max(4, 9 - Math.max(1, Math.ceil((kc + 1) / 12)));
+	brewsNeeded += 8;
 	let restoresNeeded = Math.max(2, Math.floor(brewsNeeded / 3));
 
 	cost.add('Saradomin brew(4)', brewsNeeded * quantity);
@@ -367,7 +373,7 @@ export async function calcDOAInput({
 
 	if (challengeMode) {
 		cost.add('Enhanced stamina potion', quantity);
-		cost.add('Saradomin brew(4)', 3 * quantity);
+		cost.add('Saradomin brew(4)', 4 * quantity);
 		cost.add('Super restore(4)', quantity);
 		cost.add('Blood rune', 30 * quantity);
 	}
@@ -376,6 +382,12 @@ export async function calcDOAInput({
 	if (!rangeWeapon) {
 		throw new Error(`${user.logName} had no range weapon for DOA`);
 	}
+
+	const rangeAmmo = user.gear.range.ammo;
+	if (!rangeAmmo || !JAVELLINS.includes(rangeAmmo.item)) {
+		throw new Error(`${user.logName} had no javellins for DOA`);
+	}
+	cost.add(rangeAmmo.item, JAVELLINS_PER_RAID(user.skillsAsLevels.ranged) * quantity);
 
 	const { blowpipe } = user;
 	const dartID = blowpipe.dartID ?? itemID('Rune dart');
@@ -790,7 +802,7 @@ export async function doaStartCommand(
 export async function doaCheckCommand(user: MUser) {
 	const result = await checkDOAUser({ user, challengeMode: false, duration: Time.Hour, quantity: 1 });
 	if (typeof result === 'string') {
-		return `🔴 You aren't able to join a Tombs of Amascut raid, address these issues first: ${result[1]}`;
+		return `🔴 You aren't able to join a Depths of Atlantis raid, address these issues first: ${result}`;
 	}
 
 	return `✅ You are ready to do the Depths of Atlantis! Start a raid: ${mentionCommand(
@@ -800,6 +812,7 @@ export async function doaCheckCommand(user: MUser) {
 		'start'
 	)}`;
 }
+const uniques = resolveItems(['Oceanic relic', 'Aquifer aegis', 'Shark jaw']);
 
 export async function doaHelpCommand(user: MUser) {
 	const gearStats = calculateUserGearPercents(user.gear);
@@ -812,7 +825,7 @@ export async function doaHelpCommand(user: MUser) {
 	});
 
 	let totalUniques = 0;
-	for (const item of UniqueTable.allItems) {
+	for (const item of uniques) {
 		totalUniques += user.cl.amount(item);
 	}
 
@@ -854,12 +867,10 @@ ${requirements
 }
 
 export function chanceOfDOAUnique(teamSize: number, cm: boolean) {
-	let base = 40 - clamp(teamSize, 1, 3);
-	if (cm) base -= 3;
+	let base = 80 - clamp(teamSize, 1, 5);
+	if (cm) base -= 5;
 	return base;
 }
-
-const uniques = resolveItems(['Oceanic relic', 'Aquifer aegis', 'Shark jaw']);
 
 export function pickUniqueToGiveUser(cl: Bank) {
 	const unownedUniques = uniques.filter(i => !cl.has(i));

@@ -235,6 +235,16 @@ export const Minigames: readonly BotMinigame[] = [
 		name: 'Balthazars Big Bonanza',
 		aliases: ['bbb', 'balthazars big bonanza', 'circus'],
 		column: 'balthazars_big_bonanza'
+	},
+	{
+		name: 'Depths of Atlantis',
+		aliases: ['doa'],
+		column: 'depths_of_atlantis'
+	},
+	{
+		name: 'Depths of Atlantis - Challenge Mode',
+		aliases: ['doa cm'],
+		column: 'depths_of_atlantis_cm'
 	}
 ];
 

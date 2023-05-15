@@ -91,6 +91,7 @@ import {
 	demonicGorillaCL,
 	diariesCL,
 	discontinuedCustomPetsCL,
+	doaCL,
 	expertCapesCL,
 	fightCavesCL,
 	fishingContestCL,
@@ -604,19 +605,7 @@ export const allCollectionLogs: ICollection = {
 					'Challenge Mode': async (_, minigameScores) =>
 						minigameScores.find(i => i.minigame.column === 'depths_of_atlantis_cm')!.score
 				},
-				items: resolveItems([
-					'Shark jaw',
-					'Shark tooth',
-					'Oceanic relic',
-					'Aquifer aegis',
-					'Oceanic dye',
-					'Crush',
-					'Oceanic shroud (tier 1)',
-					'Oceanic shroud (tier 2)',
-					'Oceanic shroud (tier 3)',
-					'Oceanic shroud (tier 4)',
-					'Oceanic shroud (tier 5)'
-				]),
+				items: doaCL,
 				isActivity: true,
 				fmtProg: ({ minigames }) => {
 					return [`${minigames.depths_of_atlantis} KC`, `${minigames.depths_of_atlantis_cm} CM KC`];

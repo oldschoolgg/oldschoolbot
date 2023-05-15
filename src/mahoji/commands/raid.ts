@@ -1,7 +1,9 @@
-import { roll, sumArr } from 'e';
+import { randArrItem, roll, sumArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
+import { doaMetamorphPets } from '../../lib/data/CollectionsExport';
+import { globalDroprates } from '../../lib/data/globalDroprates';
 import {
 	calcDOAInput,
 	chanceOfDOAUnique,
@@ -180,7 +182,7 @@ export const raidCommand: OSBMahojiCommand = {
 					description: 'Start a Depths of Atlantis trip',
 					options: [
 						{
-							type: ApplicationCommandOptionType.Number,
+							type: ApplicationCommandOptionType.Boolean,
 							name: 'challenge_mode',
 							description: 'Try if you dare.',
 							required: false
@@ -217,7 +219,23 @@ export const raidCommand: OSBMahojiCommand = {
 				{
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'simulate',
-					description: 'Shows helpful information and stats about DOA.'
+					description: 'Shows helpful information and stats about DOA.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.Boolean,
+							name: 'challenge_mode',
+							description: 'Try if you dare.',
+							required: false
+						},
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'team_size',
+							description: 'Team size (1-5).',
+							required: false,
+							min_value: 1,
+							max_value: 5
+						}
+					]
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
@@ -246,7 +264,10 @@ export const raidCommand: OSBMahojiCommand = {
 		doa?: {
 			start?: { challenge_mode?: boolean; max_team_size?: number; solo?: boolean; quantity?: number };
 			help?: {};
-			simulate?: {};
+			simulate?: {
+				challenge_mode?: boolean;
+				team_size?: number;
+			};
 			reset?: {};
 		};
 	}>) => {
@@ -324,7 +345,7 @@ export const raidCommand: OSBMahojiCommand = {
 			return 'Reset your CL, doa attempts, cost, loot, kc and total time raided.';
 		}
 		if (options.doa?.simulate) {
-			const samples = 100;
+			const samples = 500;
 			const results: {
 				loot: Bank;
 				time: number;
@@ -332,10 +353,13 @@ export const raidCommand: OSBMahojiCommand = {
 				kcFinishedAt: number;
 			}[] = [];
 
+			const cm = Boolean(options.doa.simulate.challenge_mode);
+			const teamSize = options.doa.simulate.team_size ?? 1;
+
 			for (let t = 0; t < samples; t++) {
 				let i = 0;
 				const totalLoot = new Bank();
-				const items = resolveItems([
+				let items = resolveItems([
 					'Shark jaw',
 					'Shark tooth',
 					'Oceanic relic',
@@ -343,6 +367,11 @@ export const raidCommand: OSBMahojiCommand = {
 					'Oceanic dye',
 					'Crush'
 				]);
+
+				if (cm) {
+					items.push(...doaMetamorphPets);
+				}
+
 				let time = 0;
 				let kcGotAt = [];
 				const totalCost = new Bank();
@@ -351,10 +380,17 @@ export const raidCommand: OSBMahojiCommand = {
 					i++;
 
 					let loot = new Bank();
-					if (roll(chanceOfDOAUnique(1, false))) {
+					if (roll(chanceOfDOAUnique(teamSize, cm))) {
 						loot.add(pickUniqueToGiveUser(totalLoot));
 					} else {
 						loot.add(DOANonUniqueTable.roll());
+					}
+
+					if (cm && roll(globalDroprates.doaMetamorphPet.baseRate)) {
+						const unownedCMPets = randArrItem(doaMetamorphPets.filter(b => !user.cl.has(b)));
+						if (unownedCMPets) {
+							loot.add(unownedCMPets);
+						}
 					}
 
 					for (const item of items) {
@@ -370,16 +406,21 @@ export const raidCommand: OSBMahojiCommand = {
 						kcBank.add(room.id, i);
 					}
 
+					let team = [];
+					for (let a = 0; a < teamSize; a++) {
+						team.push({ user, kc: a, attempts: a, roomKCs: kcBank.bank as any });
+					}
+
 					const result = createDOATeam({
-						team: [{ user, kc: i, attempts: i, roomKCs: kcBank.bank as any }],
-						challengeMode: false,
+						team,
+						challengeMode: cm,
 						quantity: 1
 					});
 
 					const cost = await calcDOAInput({
 						user,
 						kcOverride: i,
-						challengeMode: false,
+						challengeMode: cm,
 						quantity: 1,
 						duration: result.fakeDuration
 					});
@@ -416,8 +457,8 @@ export const raidCommand: OSBMahojiCommand = {
 Average time to finish: ${formatDuration(averageTime)}
 Average KC finished at: ${averageKC}
 
-Solo
-NOT Challenge Mode
+Team Size: ${teamSize}
+${cm ? 'Challenge Mode' : 'NOT Challenge Mode'}
 Total cost does not include charges (e.g. blood runes from sang staff)
 
 Luckiest finish: ${luckiest.kcFinishedAt} KC

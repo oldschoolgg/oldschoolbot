@@ -1298,6 +1298,6 @@ export const BsoCreateables: Createable[] = [
 			.add('Masori components', 10)
 			.add('Abyssal cape')
 			.add('Armadylean components', 10),
-		outputItems: new Bank().add('Ring of piercing (i)')
+		outputItems: new Bank().add('Tidal collector')
 	}
 ];
