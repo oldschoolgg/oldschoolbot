@@ -79,7 +79,7 @@ const priceOption: CommandOption = {
 
 export const geCommand: OSBMahojiCommand = {
 	name: 'ge',
-	description: 'Exchange grandly!',
+	description: 'Exchange grandly with other players on the bot!',
 	options: [
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -163,12 +163,6 @@ export const geCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
-			name: 'global_reset',
-			description: 'Nuke the g.e',
-			options: []
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
 			name: 'stats',
 			description: 'View your g.e stats',
 			options: []
@@ -193,7 +187,6 @@ export const geCommand: OSBMahojiCommand = {
 			listing: string;
 		};
 		my_listings?: {};
-		global_reset?: {};
 		stats?: {};
 	}>) => {
 		await interaction.deferReply();
@@ -243,16 +236,6 @@ The next buy limit reset is at: ${GrandExchange.getInterval().nextResetStr}, it 
 **Total Tax Paid on your sales AND purchases:** ${totalGPYourTransactions._sum.total_tax_paid?.toLocaleString()} GP}`;
 		}
 
-		if (options.global_reset) {
-			await GrandExchange.totalReset();
-			await prisma.user.updateMany({
-				data: {
-					bank: new Bank().add('Egg', 5_000_000).add('Coal', 1000).add('Trout', 1000).add('Flax', 1000).bank,
-					GP: 1_000_000_000
-				}
-			});
-			return "Grand Exchange has been reset. It's now open for business! Also made everyone have identical banks.";
-		}
 		if (options.my_listings) {
 			const activeListings = await prisma.gEListing.findMany({
 				where: {
