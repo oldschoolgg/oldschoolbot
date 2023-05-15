@@ -132,94 +132,94 @@ describe('Grand Exchange', async () => {
 			assert(GrandExchange.queue.size === 0, 'Queue should be empty');
 		},
 		{
-			repeats: 1,
+			repeats: 5,
 			timeout: Time.Minute * 5
 		}
 	);
 
-	// test(
-	// 	'Refund issue',
-	// 	async () => {
-	// 		await GrandExchange.totalReset();
-	// 		await GrandExchange.init();
+	test(
+		'Refund issue',
+		async () => {
+			await GrandExchange.totalReset();
+			await GrandExchange.init();
 
-	// 		const currentOwnedBank = await GrandExchange.fetchOwnedBank();
-	// 		expect(currentOwnedBank.toString()).toEqual(new Bank().toString());
+			const currentOwnedBank = await GrandExchange.fetchOwnedBank();
+			expect(currentOwnedBank.toString()).toEqual(new Bank().toString());
 
-	// 		const wes = await createTestUser();
-	// 		const magnaboy = await createTestUser();
+			const wes = await createTestUser();
+			const magnaboy = await createTestUser();
 
-	// 		usernameCache.set(wes.id, 'Wes');
-	// 		usernameCache.set(magnaboy.id, 'Magnaboy');
+			usernameCache.set(wes.id, 'Wes');
+			usernameCache.set(magnaboy.id, 'Magnaboy');
 
-	// 		await magnaboy.addItemsToBank({ items: sampleBank });
-	// 		await wes.addItemsToBank({ items: sampleBank });
-	// 		assert(magnaboy.bankWithGP.equals(sampleBank), 'Test users bank should match sample bank');
-	// 		assert(wes.bankWithGP.equals(sampleBank), 'Test users bank should match sample bank');
+			await magnaboy.addItemsToBank({ items: sampleBank });
+			await wes.addItemsToBank({ items: sampleBank });
+			assert(magnaboy.bankWithGP.equals(sampleBank), 'Test users bank should match sample bank');
+			assert(wes.bankWithGP.equals(sampleBank), 'Test users bank should match sample bank');
 
-	// 		await magnaboy.runCommand(geCommand, {
-	// 			buy: {
-	// 				item: 'egg',
-	// 				quantity: 100,
-	// 				price: 100
-	// 			}
-	// 		});
+			await magnaboy.runCommand(geCommand, {
+				buy: {
+					item: 'egg',
+					quantity: 100,
+					price: 100
+				}
+			});
 
-	// 		await wes.runCommand(geCommand, {
-	// 			sell: {
-	// 				item: 'egg',
-	// 				quantity: 50,
-	// 				price: 50
-	// 			}
-	// 		});
+			await wes.runCommand(geCommand, {
+				sell: {
+					item: 'egg',
+					quantity: 50,
+					price: 50
+				}
+			});
 
-	// 		await GrandExchange.tick();
-	// 		await GrandExchange.tick();
+			await GrandExchange.tick();
+			await GrandExchange.tick();
 
-	// 		const amountSold = 50;
-	// 		const priceSoldAt = 100;
-	// 		const totalGPBeforeTax = amountSold * priceSoldAt;
-	// 		const taxPerItem = calcPercentOfNum(1, priceSoldAt);
-	// 		expect(taxPerItem).toEqual(1);
-	// 		const totalTax = taxPerItem * amountSold;
-	// 		expect(taxPerItem).toEqual(1);
-	// 		const gpShouldBeReceivedAfterTax = totalGPBeforeTax - totalTax;
-	// 		expect(gpShouldBeReceivedAfterTax).toEqual(4950);
+			const amountSold = 50;
+			const priceSoldAt = 100;
+			const totalGPBeforeTax = amountSold * priceSoldAt;
+			const taxPerItem = calcPercentOfNum(1, priceSoldAt);
+			expect(taxPerItem).toEqual(1);
+			const totalTax = taxPerItem * amountSold;
+			expect(taxPerItem).toEqual(1);
+			const gpShouldBeReceivedAfterTax = totalGPBeforeTax - totalTax;
+			expect(gpShouldBeReceivedAfterTax).toEqual(4950);
 
-	// 		await cancelAllListings(wes);
-	// 		await cancelAllListings(magnaboy);
+			await cancelAllListings(wes);
+			await cancelAllListings(magnaboy);
 
-	// 		expect(wes.bankWithGP.toString()).toEqual(
-	// 			new Bank()
-	// 				.add('Egg', 1000 - amountSold)
-	// 				.add('Coal', 1000)
-	// 				.add('Trout', 1000)
-	// 				.add('Coins', 1_000_000_000 + gpShouldBeReceivedAfterTax)
-	// 				.toString()
-	// 		);
+			expect(wes.bankWithGP.toString()).toEqual(
+				new Bank()
+					.add('Egg', 1000 - amountSold)
+					.add('Coal', 1000)
+					.add('Trout', 1000)
+					.add('Coins', 1_000_000_000 + gpShouldBeReceivedAfterTax)
+					.toString()
+			);
 
-	// 		expect(magnaboy.bankWithGP.toString()).toEqual(
-	// 			new Bank()
-	// 				.add('Egg', 1000 + amountSold)
-	// 				.add('Coal', 1000)
-	// 				.add('Trout', 1000)
-	// 				.add('Coins', 1_000_000_000 - totalGPBeforeTax)
-	// 				.toString()
-	// 		);
+			expect(magnaboy.bankWithGP.toString()).toEqual(
+				new Bank()
+					.add('Egg', 1000 + amountSold)
+					.add('Coal', 1000)
+					.add('Trout', 1000)
+					.add('Coins', 1_000_000_000 - totalGPBeforeTax)
+					.toString()
+			);
 
-	// 		expect(magnaboy.bankWithGP.clone().add(wes.bankWithGP).toString()).toEqual(
-	// 			sampleBank.clone().multiply(2).remove('Coins', totalTax).toString()
-	// 		);
+			expect(magnaboy.bankWithGP.clone().add(wes.bankWithGP).toString()).toEqual(
+				sampleBank.clone().multiply(2).remove('Coins', totalTax).toString()
+			);
 
-	// 		const bank = await GrandExchange.fetchOwnedBank();
-	// 		expect(bank.length).toEqual(0);
+			const bank = await GrandExchange.fetchOwnedBank();
+			expect(bank.length).toEqual(0);
 
-	// 		const data = await GrandExchange.fetchData();
-	// 		expect(data.taxBank).toEqual(totalTax);
-	// 		expect(data.totalTax).toEqual(totalTax);
-	// 	},
-	// 	{ repeats: 5 }
-	// );
+			const data = await GrandExchange.fetchData();
+			expect(data.taxBank).toEqual(totalTax);
+			expect(data.totalTax).toEqual(totalTax);
+		},
+		{ repeats: 5 }
+	);
 
 	afterAll(() => {
 		gePino.flush();
