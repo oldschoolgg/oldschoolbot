@@ -4,15 +4,13 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { sumArr, uniqueArr } from 'e';
 import { CommandRunOptions } from 'mahoji';
 import { CommandOption } from 'mahoji/dist/lib/types';
-import { Bank } from 'oldschooljs';
 
-import { GrandExchange } from '../../lib/grandExchange';
+import { createGECancelButton, GrandExchange } from '../../lib/grandExchange';
 import { prisma } from '../../lib/settings/prisma';
-import { makeTransactFromTableBankQueries } from '../../lib/tableBank';
-import { formatDuration, itemNameFromID, toKMB } from '../../lib/util';
+import { formatDuration, itemNameFromID, makeComponents, toKMB } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { logError } from '../../lib/util/logError';
+import { cancelGEListingCommand } from '../lib/abstracted_commands/cancelGEListingCommand';
 import { ownedItemOption, tradeableItemArr } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -232,8 +230,10 @@ The next buy limit reset is at: ${GrandExchange.getInterval().nextResetStr}, it 
 
 
 **G.E Slots You Can Use:** ${slots}
-**Taxes you have paid:** ${totalGPYourSales._sum.total_tax_paid?.toLocaleString()} GP
-**Total Tax Paid on your sales AND purchases:** ${totalGPYourTransactions._sum.total_tax_paid?.toLocaleString()} GP}`;
+**Taxes you have paid:** ${(totalGPYourSales._sum.total_tax_paid ?? 0).toLocaleString()} GP
+**Total Tax Paid on your sales AND purchases:** ${(
+				totalGPYourTransactions._sum.total_tax_paid ?? 0
+			).toLocaleString()} GP`;
 		}
 
 		if (options.my_listings) {
@@ -311,94 +311,54 @@ ${recentInactiveListings.map(i => geListingToString(i)).join('\n')}`;
 			await handleMahojiConfirmation(interaction, result.confirmationStr);
 		}
 
-		return GrandExchange.queue.add(async () => {
-			if (options.buy) {
-				const result = await GrandExchange.createListing({
-					user,
-					itemName: options.buy!.item,
-					price: parseNumber(options.buy!.price),
-					quantity: parseNumber(options.buy!.quantity),
-					type: 'Buy'
-				});
+		if (options.cancel) {
+			return cancelGEListingCommand(user, options.cancel.listing);
+		}
 
-				if (typeof result.error === 'string') return result.error;
-				const { createdListing } = result;
+		if (options.buy) {
+			const result = await GrandExchange.createListing({
+				user,
+				itemName: options.buy!.item,
+				price: parseNumber(options.buy!.price),
+				quantity: parseNumber(options.buy!.quantity),
+				type: 'Buy'
+			});
 
-				return `Successfully created a listing to buy ${createdListing.total_quantity}x ${itemNameFromID(
-					createdListing.item_id
-				)} for ${toKMB(createdListing.asking_price_per_item)} GP each.`;
-			}
+			if (typeof result.error === 'string') return result.error;
+			const { createdListing } = result;
 
-			if (options.sell) {
-				const result = await GrandExchange.createListing({
-					user,
-					itemName: options.sell.item,
-					price: parseNumber(options.sell.price),
-					quantity: parseNumber(options.sell.quantity),
-					type: 'Sell'
-				});
+			return {
+				content: `Successfully created a listing to buy ${toKMB(
+					createdListing.total_quantity
+				)} ${itemNameFromID(createdListing.item_id)} for ${toKMB(
+					createdListing.asking_price_per_item
+				)} GP each.`,
+				components: makeComponents([createGECancelButton(createdListing)])
+			};
+		}
 
-				if (typeof result.error === 'string') return result.error;
-				const { createdListing } = result;
+		if (options.sell) {
+			const result = await GrandExchange.createListing({
+				user,
+				itemName: options.sell.item,
+				price: parseNumber(options.sell.price),
+				quantity: parseNumber(options.sell.quantity),
+				type: 'Sell'
+			});
 
-				return `Successfully created a listing to sell ${createdListing.total_quantity}x ${itemNameFromID(
-					createdListing.item_id
-				)} for ${toKMB(createdListing.asking_price_per_item)} GP each.`;
-			}
+			if (typeof result.error === 'string') return result.error;
+			const { createdListing } = result;
 
-			if (options.cancel) {
-				const listing = await prisma.gEListing.findFirst({
-					where: {
-						user_id: user.id,
-						userfacing_id: options.cancel.listing
-					}
-				});
-				if (!listing) {
-					return 'You do not have a listing with that ID.';
-				}
-				if (listing.fulfilled_at || listing.quantity_remaining === 0) {
-					return 'You cannot cancel a listing that has already been fulfilled.';
-				}
-				if (listing.cancelled_at) {
-					return 'You cannot cancel a listing that has already been cancelled.';
-				}
-				const newListing = await prisma.gEListing.update({
-					where: {
-						id: listing.id
-					},
-					data: {
-						cancelled_at: new Date()
-					}
-				});
+			return {
+				content: `Successfully created a listing to sell ${toKMB(
+					createdListing.total_quantity
+				)} ${itemNameFromID(createdListing.item_id)} for ${toKMB(
+					createdListing.asking_price_per_item
+				)} GP each.`,
+				components: makeComponents([createGECancelButton(createdListing)])
+			};
+		}
 
-				const refundBank = new Bank();
-				if (newListing.type === 'Buy') {
-					refundBank.add('Coins', newListing.asking_price_per_item * newListing.quantity_remaining);
-				} else {
-					refundBank.add(newListing.item_id, newListing.quantity_remaining);
-				}
-
-				const geBank = await GrandExchange.fetchOwnedBank();
-				if (!geBank.has(refundBank)) {
-					const error = new Error(
-						`GE doesn't have ${refundBank} to refund ${user.id}, listing ${listing.id}`
-					);
-					logError(error);
-					await GrandExchange.lockGE(error.message);
-					return 'Something went wrong, please try again later.';
-				}
-
-				await user.addItemsToBank({
-					items: refundBank,
-					collectionLog: false,
-					dontAddToTempCL: true
-				});
-
-				await prisma.$transaction(makeTransactFromTableBankQueries({ bankToRemove: refundBank }));
-
-				return `Successfully cancelled your listing, you have been refunded ${refundBank}.`;
-			}
-			return 'Invalid command.';
-		});
+		return 'Invalid command.';
 	}
 };

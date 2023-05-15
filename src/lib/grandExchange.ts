@@ -1,16 +1,16 @@
 import { GEListing, GEListingType, GETransaction } from '@prisma/client';
-import { bold, userMention } from 'discord.js';
+import { bold, ButtonBuilder, ButtonStyle, userMention } from 'discord.js';
 import { calcPercentOfNum, clamp, noOp, sumArr, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import PQueue from 'p-queue';
 
 import { ADMIN_IDS, OWNER_IDS, production } from '../config';
-import { globalConfig, PerkTier } from './constants';
+import { BitField, globalConfig, PerkTier } from './constants';
 import { RobochimpUser, roboChimpUserFetch } from './roboChimp';
 import { prisma } from './settings/prisma';
 import { fetchTableBank, makeTransactFromTableBankQueries } from './tableBank';
-import { assert, dateFm, generateGrandExchangeID, itemNameFromID, toKMB } from './util';
+import { assert, dateFm, generateGrandExchangeID, itemNameFromID, makeComponents, toKMB } from './util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from './util/clientSettings';
 import getOSItem, { getItem } from './util/getOSItem';
 import { logError } from './util/logError';
@@ -81,6 +81,17 @@ function sanityCheckTransaction({
 	);
 
 	validateNumber(tax_rate_percent);
+}
+
+export function createGECancelButton(listing: GEListing) {
+	const button = new ButtonBuilder()
+		.setCustomId(`ge_cancel_${listing.userfacing_id}`)
+		.setLabel(
+			`Cancel ${listing.type} ${toKMB(listing.total_quantity)} ${itemNameFromID(listing.item_id)}`.slice(0, 79)
+		)
+		.setStyle(ButtonStyle.Secondary);
+
+	return button;
 }
 
 class GrandExchangeSingleton {
@@ -331,33 +342,35 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 		quantity,
 		type
 	}: CreateListingArgs): Promise<{ error: string } | { createdListing: GEListing; error: null }> {
-		const result = await this.preCreateListing({ user, itemName, price, quantity, type });
-		if ('error' in result) return result;
+		return this.queue.add(async () => {
+			const result = await this.preCreateListing({ user, itemName, price, quantity, type });
+			if ('error' in result) return result;
 
-		await user.removeItemsFromBank(result.cost);
+			await user.removeItemsFromBank(result.cost);
 
-		const [listing] = await prisma.$transaction([
-			prisma.gEListing.create({
-				data: {
-					user_id: user.id,
-					item_id: result.item.id,
-					asking_price_per_item: price,
-					total_quantity: quantity,
-					type,
-					quantity_remaining: quantity,
-					userfacing_id: generateGrandExchangeID()
-				}
-			})
-		]);
+			const [listing] = await prisma.$transaction([
+				prisma.gEListing.create({
+					data: {
+						user_id: user.id,
+						item_id: result.item.id,
+						asking_price_per_item: price,
+						total_quantity: quantity,
+						type,
+						quantity_remaining: quantity,
+						userfacing_id: generateGrandExchangeID()
+					}
+				})
+			]);
 
-		await prisma.$transaction(makeTransactFromTableBankQueries({ bankToAdd: result.cost }));
+			await prisma.$transaction(makeTransactFromTableBankQueries({ bankToAdd: result.cost }));
 
-		geLog(`${user.id} created ${type} listing, removing ${result.cost}, adding it to the g.e bank.`);
+			geLog(`${user.id} created ${type} listing, removing ${result.cost}, adding it to the g.e bank.`);
 
-		return {
-			createdListing: listing,
-			error: null
-		};
+			return {
+				createdListing: listing,
+				error: null
+			};
+		});
 	}
 
 	private async createTransaction(
@@ -482,7 +495,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 
 		if (!geBank.has(bankGEShouldHave)) {
 			const missingItems = bankGEShouldHave.clone().remove(geBank);
-			const str = `The GE did not have enough items to cover this transaction! We tried to remove ${bankGEShouldHave} missing: ${missingItems}. TotalPriceBeforeTax[${totalPriceBeforeTax}] QuantityToBuy[${quantityToBuy}] TotalTaxPaid[${totalTaxPaid}] BuyerRefund[${buyerRefund}] BuyerLoot[${buyerLoot}] SellerLoot[${sellerLoot}]`;
+			const str = `The GE did not have enough items to cover this transaction! We tried to remove ${bankGEShouldHave} missing: ${missingItems}. ${debug}`;
 			logError(str, logContext);
 			geLog(str, logContext);
 			throw new Error(str);
@@ -550,7 +563,6 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 		]);
 
 		geLog(`Transaction completed, the new G.E bank is ${await this.fetchOwnedBank()}.`);
-		// await this.checkGECanFullFilAllListings();
 
 		const buyerUser = await mUserFetch(buyerListing.user_id);
 		const sellerUser = await mUserFetch(sellerListing.user_id);
@@ -570,8 +582,13 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 
 		const itemName = itemNameFromID(buyerListing.item_id)!;
 
-		const buyerDJSUser = await globalClient.fetchUser(buyerUser.id).catch(noOp);
-		if (buyerDJSUser) {
+		const disableDMsButton = new ButtonBuilder()
+			.setCustomId('ge_cancel_dms')
+			.setLabel('Disable These DMs')
+			.setStyle(ButtonStyle.Secondary);
+
+		const buyerDJSUser = await globalClient.fetchUser(buyerListing.user_id).catch(noOp);
+		if (buyerDJSUser && !buyerUser.bitfield.includes(BitField.DisableGrandExchangeDMs)) {
 			let str = `You bought ${quantityToBuy.toLocaleString()}x ${itemName} for ${toKMB(
 				pricePerItemAfterTax
 			)} GP each, for a total of ${toKMB(totalPriceAfterTax)} GP${totalTaxPaid > 0 ? ', after tax' : ''}.`;
@@ -598,11 +615,17 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 					this.getInterval().nextResetStr
 				}.`;
 			}
-			await buyerDJSUser.send(str).catch(noOp);
+
+			const components = [disableDMsButton];
+			if (newBuyerListingQuantityRemaining > 0) {
+				components.push(createGECancelButton(buyerListing));
+			}
+
+			await buyerDJSUser.send({ content: str, components: makeComponents(components) }).catch(noOp);
 		}
 
-		const sellerDJSUser = await globalClient.fetchUser(sellerUser.id).catch(noOp);
-		if (sellerDJSUser) {
+		const sellerDJSUser = await globalClient.fetchUser(sellerListing.user_id).catch(noOp);
+		if (sellerDJSUser && !sellerUser.bitfield.includes(BitField.DisableGrandExchangeDMs)) {
 			let str = `You sold ${quantityToBuy.toLocaleString()}x ${itemName} for ${toKMB(
 				pricePerItemAfterTax
 			)} GP each and received ${sellerLoot}.`;
@@ -611,7 +634,13 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			} else {
 				str += ' No tax was paid.';
 			}
-			await sellerDJSUser.send(str).catch(noOp);
+
+			const components = [disableDMsButton];
+			if (newSellerListingQuantityRemaining > 0) {
+				components.push(createGECancelButton(sellerListing));
+			}
+
+			await sellerDJSUser.send({ content: str, components: makeComponents(components) }).catch(noOp);
 		}
 	}
 

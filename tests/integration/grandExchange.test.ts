@@ -72,9 +72,26 @@ describe('Grand Exchange', async () => {
 			for (let i = 0; i < users.length; i++) {
 				for (const item of itemPool) {
 					const method = randArrItem(['buy', 'sell']);
-					let quantity = randArrItem([-1, 0, 100_000_000_000_000, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 500]);
+					let quantity = randArrItem([-1, 0, 100_000_000_000_000, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 500, '5*5']);
 					let price = randArrItem([
-						-1, 0, 100_000_000_000_000, 1, 2, 3, 4, 5, 99, 100, 101, 1005, 2005, 3005, 4005, 5005, 100_000
+						-1,
+						0,
+						100_000_000_000_000,
+						1,
+						2,
+						3,
+						4,
+						5,
+						99,
+						100,
+						101,
+						1005,
+						2005,
+						3005,
+						4005,
+						5005,
+						100_000,
+						'5*9999999'
 					]);
 
 					const promise = users[i].runCommand(geCommand, {
