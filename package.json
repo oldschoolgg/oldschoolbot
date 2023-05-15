@@ -3,16 +3,16 @@
 		"gen": "concurrently \"prisma generate\" \"prisma generate --schema prisma/robochimp.prisma\"",
 		"lint": "concurrently \"prettier --use-tabs *.{js,md,json} --write\" \"eslint *.ts \"{src,tests}/**/*.ts\" --fix\" \"prettier --use-tabs {src,tests}/**/*.{js,md,json} --write\"",
 		"build:tsc": "tsc -p src",
-		"build": "concurrently \"yarn wipedist\" \"yarn gen\" && yarn build:tsc",
+		"build": "concurrently \"yarn wipedist\" \"yarn gen\" \"yarn prebuild:scripts\" && yarn build:tsc",
 		"wipedist": "rimraf \"dist/\"",
 		"start": "yarn build && concurrently \"tsc -w -p src\" \"node dist/\"",
 		"test": "concurrently \"tsc -p src\" \"yarn test:lint\" \"yarn test:unit\"",
 		"test:lint": "eslint *.ts \"{src,tests}/**/*.ts\"",
 		"test:unit": "vitest run --coverage --config vitest.unit.config.ts",
 		"dev": "yarn wipedist && tsc -w -p src",
-		"o": "yarn build && madge --circular ./dist",
 		"test:watch": "vitest --config vitest.unit.config.ts --coverage",
-		"test:integration": "ts-node ./src/scripts/integration-tests.ts"
+		"test:integration": "ts-node ./src/scripts/integration-tests.ts",
+		"prebuild:scripts": "ts-node -T ./src/scripts/render-creatables-file.ts"
 	},
 	"dependencies": {
 		"@discordjs/builders": "^1.5.0",
