@@ -1,5 +1,56 @@
+import { Stopwatch } from '@sapphire/stopwatch';
+
+import { allCLItemsFiltered } from '../data/Collections';
 import { prisma } from '../settings/prisma';
 
+export async function calculateUsersCLRank({
+	userId,
+	ironmenOnly,
+	items,
+	maxRank
+}: {
+	userId: string;
+	ironmenOnly: boolean;
+	items: number[];
+	maxRank: number;
+}) {
+	const userRankData = await prisma.$queryRawUnsafe<{ rank: number }[]>(
+		`
+	WITH filtered_users AS (
+		SELECT us."user_id"::text, cl_array
+		FROM user_stats us
+		${ironmenOnly ? 'INNER JOIN "users" ON "users"."id" = us."user_id"::text' : ''}
+		WHERE "cl_array_length" >= 1500
+		${ironmenOnly ? 'AND "users"."minion.ironman" = true' : ''} 
+	)
+	SELECT RANK() OVER (
+			ORDER BY CARDINALITY(cl_array) - CARDINALITY(cl_array - array[${items.map(i => `${i}`).join(', ')}]) DESC
+		) AS rank
+	FROM filtered_users
+	WHERE "user_id"::text = $1;
+	`,
+		userId
+	);
+
+	if (userRankData.length > 0 && userRankData[0].rank <= maxRank) {
+		return userRankData[0].rank;
+	}
+	return null;
+}
+
+async function asdf() {
+	const a = new Stopwatch();
+	console.log(
+		await calculateUsersCLRank({
+			userId: '794368001856110594',
+			ironmenOnly: false,
+			items: allCLItemsFiltered,
+			maxRank: 1000
+		})
+	);
+	console.log(a.stop().toString());
+}
+asdf();
 export async function fetchCLLeaderboard({
 	ironmenOnly,
 	items,
