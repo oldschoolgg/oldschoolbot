@@ -1,6 +1,6 @@
 import { calcPercentOfNum, randArrItem, randInt, shuffleArr, Time } from 'e';
 import { Bank } from 'oldschooljs';
-import { afterAll, beforeEach, describe, expect, test } from 'vitest';
+import { afterAll, describe, expect, test } from 'vitest';
 
 import { usernameCache } from '../../src/lib/constants';
 import { GrandExchange } from '../../src/lib/grandExchange';
@@ -77,17 +77,19 @@ describe('Grand Exchange', async () => {
 						-1, 0, 100_000_000_000_000, 1, 2, 3, 4, 5, 99, 100, 101, 1005, 2005, 3005, 4005, 5005, 100_000
 					]);
 
-					promises.push(
-						users[i].runCommand(geCommand, {
-							[method]: {
-								item,
-								quantity,
-								price
-							}
-						})
-					);
+					const promise = users[i].runCommand(geCommand, {
+						[method]: {
+							item,
+							quantity,
+							price
+						}
+					});
+
+					if (i % 2 === 0) promises.push(promise);
 				}
 			}
+
+			await Promise.all(promises);
 
 			for (let i = 0; i < 50; i++) {
 				await GrandExchange.tick();
