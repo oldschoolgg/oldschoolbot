@@ -12,6 +12,7 @@ export default defineConfig({
 		},
 		testTimeout: 30_000,
 		threads: false,
-		bail: 1
+		bail: 1,
+		isolate: true
 	}
 });

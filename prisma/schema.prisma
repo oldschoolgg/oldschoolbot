@@ -937,7 +937,6 @@ model GETransaction {
   price_per_item_after_tax  Int
   tax_rate_percent          Int @db.SmallInt
 
-  // Should be before - after * quantity?
   total_tax_paid BigInt
 
   buy_listing    GEListing @relation("buy_transactions", fields: [buy_listing_id], references: [id])

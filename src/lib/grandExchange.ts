@@ -1,5 +1,5 @@
 import { GEListing, GEListingType, GETransaction } from '@prisma/client';
-import { userMention } from 'discord.js';
+import { bold, userMention } from 'discord.js';
 import { calcPercentOfNum, clamp, noOp, sumArr, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
@@ -9,8 +9,8 @@ import { ADMIN_IDS, OWNER_IDS, production } from '../config';
 import { globalConfig, PerkTier } from './constants';
 import { RobochimpUser, roboChimpUserFetch } from './roboChimp';
 import { prisma } from './settings/prisma';
-import { fetchTableBank, makeTransactFromTableBankQueries, transactFromTableBank } from './tableBank';
-import { assert, generateGrandExchangeID, itemNameFromID, toKMB } from './util';
+import { fetchTableBank, makeTransactFromTableBankQueries } from './tableBank';
+import { assert, dateFm, generateGrandExchangeID, itemNameFromID, toKMB } from './util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from './util/clientSettings';
 import getOSItem, { getItem } from './util/getOSItem';
 import { logError } from './util/logError';
@@ -87,6 +87,8 @@ class GrandExchangeSingleton {
 	public queue = new PQueue({ concurrency: 1 });
 	public locked = false;
 	public isTicking = false;
+	public ready = false;
+
 	public config = {
 		buyLimit: {
 			interval: Time.Hour * 4,
@@ -134,12 +136,26 @@ class GrandExchangeSingleton {
 		}
 	};
 
+	async init() {
+		try {
+			await this.fetchOwnedBank();
+			await this.extensiveVerification();
+			await this.checkGECanFullFilAllListings();
+		} catch (err: any) {
+			await this.lockGE(err.message);
+		} finally {
+			this.ready = true;
+		}
+	}
+
 	async calculateSlotsOfUser(user: MUser) {
 		const robochimpUser = await roboChimpUserFetch(user.id);
 		let slots = 0;
 		const doesntHaveNames = [];
 		let possibleExtra = 0;
+		let maxPossible = 0;
 		for (const boost of this.config.slots.slotBoosts) {
+			maxPossible += boost.amount;
 			if (boost.has(user, robochimpUser)) {
 				slots += boost.amount;
 			} else {
@@ -147,7 +163,7 @@ class GrandExchangeSingleton {
 				possibleExtra += boost.amount;
 			}
 		}
-		return { slots, doesntHaveNames, possibleExtra };
+		return { slots, doesntHaveNames, possibleExtra, maxPossible };
 	}
 
 	getInterval() {
@@ -160,12 +176,13 @@ class GrandExchangeSingleton {
 
 		return {
 			start: startInterval,
-			end: endInterval
+			end: endInterval,
+			nextResetStr: dateFm(endInterval)
 		};
 	}
 
 	async fetchOwnedBank() {
-		const geBank = await fetchTableBank('ge_bank');
+		const geBank = await fetchTableBank();
 		return geBank;
 	}
 
@@ -195,10 +212,6 @@ class GrandExchangeSingleton {
 			grand_exchange_is_locked: true
 		});
 		this.locked = true;
-	}
-
-	countItemsSoldInListing(listing: GEListing) {
-		return listing.total_quantity - listing.quantity_remaining;
 	}
 
 	async checkBuyLimitForListing(geListing: GEListing) {
@@ -236,14 +249,16 @@ class GrandExchangeSingleton {
 		};
 	}
 
-	async createListing({
+	async preCreateListing({
 		user,
 		itemName,
 		price,
 		quantity,
 		type
-	}: CreateListingArgs): Promise<{ error: string } | { createdListing: GEListing; error: null }> {
-		if (this.locked) {
+	}: CreateListingArgs): Promise<
+		{ error: string } | { confirmationStr: string; cost: Bank; price: number; quantity: number; item: Item }
+	> {
+		if (this.locked || !this.ready) {
 			return { error: 'The Grand Exchange is temporarily closed! Sorry, please try again later.' };
 		}
 		if (user.isIronman) return { error: "You're an ironman." };
@@ -252,10 +267,10 @@ class GrandExchangeSingleton {
 			return { error: 'Invalid item.' };
 		}
 
-		if (!price || price < 0 || isNaN(price) || !Number.isInteger(price) || price > 2_000_000_000) {
+		if (!price || price <= 0 || isNaN(price) || !Number.isInteger(price) || price > 2_000_000_000) {
 			return { error: 'Invalid price, the price must be a number between 1 and 2b.' };
 		}
-		if (!quantity || quantity < 0 || isNaN(quantity) || !Number.isInteger(quantity) || quantity > 5_000_000) {
+		if (!quantity || quantity <= 0 || isNaN(quantity) || !Number.isInteger(quantity) || quantity > 5_000_000) {
 			return { error: 'Invalid quantity, the quantity must be a number between 1 and 5m.' };
 		}
 
@@ -290,27 +305,54 @@ class GrandExchangeSingleton {
 			return { error: `You don't own ${cost}.` };
 		}
 
-		await user.removeItemsFromBank(cost);
+		const applicableTax = this.calculateTaxForTransaction({ pricePerItem: price });
 
-		await transactFromTableBank({ table: prisma.gEBank, bankToAdd: cost });
+		const total = price * quantity;
+		const totalAfterTax = applicableTax.newPrice * quantity;
+		return {
+			confirmationStr: `Are you sure you want to create this listing?
 
-		const listing = await prisma.gEListing.create({
-			data: {
-				user_id: user.id,
-				item_id: item.id,
-				asking_price_per_item: price,
-				total_quantity: quantity,
-				type,
-				quantity_remaining: quantity,
-				userfacing_id: generateGrandExchangeID()
-			}
-		});
+${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of ${toKMB(total)}.${
+				applicableTax.taxedAmount > 0
+					? ` At this price, you will receive ${toKMB(totalAfterTax)} after taxes.`
+					: ' No tax will be charged on these items.'
+			}`,
+			cost,
+			item,
+			price,
+			quantity
+		};
+	}
 
-		geLog(
-			`${
-				user.id
-			} created ${type} listing, removing ${cost}, adding it to the g.e bank. New G.E bank is now ${await this.fetchOwnedBank()}`
-		);
+	async createListing({
+		user,
+		itemName,
+		price,
+		quantity,
+		type
+	}: CreateListingArgs): Promise<{ error: string } | { createdListing: GEListing; error: null }> {
+		const result = await this.preCreateListing({ user, itemName, price, quantity, type });
+		if ('error' in result) return result;
+
+		await user.removeItemsFromBank(result.cost);
+
+		const [listing] = await prisma.$transaction([
+			prisma.gEListing.create({
+				data: {
+					user_id: user.id,
+					item_id: result.item.id,
+					asking_price_per_item: price,
+					total_quantity: quantity,
+					type,
+					quantity_remaining: quantity,
+					userfacing_id: generateGrandExchangeID()
+				}
+			})
+		]);
+
+		await prisma.$transaction(makeTransactFromTableBankQueries({ bankToAdd: result.cost }));
+
+		geLog(`${user.id} created ${type} listing, removing ${result.cost}, adding it to the g.e bank.`);
 
 		return {
 			createdListing: listing,
@@ -457,7 +499,7 @@ class GrandExchangeSingleton {
 			`Completing a transaction, removing ${bankToRemoveFromGeBank} from the GE bank, ${totalTaxPaid} in taxed gp. The current GE bank is ${geBank.toString()}.`
 		);
 
-		const [, newBuyerListing, newSellingListing] = await prisma.$transaction([
+		await prisma.$transaction([
 			prisma.gETransaction.create({
 				data: {
 					buy_listing_id: buyerListing.id,
@@ -504,11 +546,11 @@ class GrandExchangeSingleton {
 					id: true
 				}
 			}),
-			...makeTransactFromTableBankQueries({ table: prisma.gEBank, bankToRemove: bankToRemoveFromGeBank })
+			...makeTransactFromTableBankQueries({ bankToRemove: bankToRemoveFromGeBank })
 		]);
 
 		geLog(`Transaction completed, the new G.E bank is ${await this.fetchOwnedBank()}.`);
-		await this.checkGECanFullFilAllListings();
+		// await this.checkGECanFullFilAllListings();
 
 		const buyerUser = await mUserFetch(buyerListing.user_id);
 		const sellerUser = await mUserFetch(sellerListing.user_id);
@@ -526,19 +568,51 @@ class GrandExchangeSingleton {
 			filterLoot: false
 		});
 
-		const itemName = itemNameFromID(buyerListing.item_id);
+		const itemName = itemNameFromID(buyerListing.item_id)!;
 
-		await sendToChannelID('1103025439804502137', {
-			content: `BuyListingID[${buyerListing.userfacing_id}] SellListingID[${
-				sellerListing.userfacing_id
-			}] ${buyerUser} bought ${quantityToBuy}x ${itemName} for ${toKMB(
-				totalPriceBeforeTax
-			)} GP from ${sellerUser}. The seller received ${toKMB(totalPriceAfterTax)}. There are ${
-				newBuyerListing.quantity_remaining
-			}x remaining in the buy border, ${newSellingListing.quantity_remaining}x remaining in the sell order. ${
-				remainingItemsInBuyLimit - quantityToBuy
-			}x remaining in buy limit.`
-		});
+		const buyerDJSUser = await globalClient.fetchUser(buyerUser.id).catch(noOp);
+		if (buyerDJSUser) {
+			let str = `You bought ${quantityToBuy.toLocaleString()}x ${itemName} for ${toKMB(
+				pricePerItemAfterTax
+			)} GP each, for a total of ${toKMB(totalPriceAfterTax)} GP${totalTaxPaid > 0 ? ', after tax' : ''}.`;
+			if (totalTaxPaid > 0) {
+				str += ` ${toKMB(totalTaxPaid)} GP in tax was paid.`;
+			} else {
+				str += ' No tax was paid.';
+			}
+			if (buyerRefund) {
+				str += ` ${toKMB(buyerRefund)} GP was refunded to you, because you offered more than the seller.`;
+			}
+
+			str += ` You received ${buyerLoot}.`;
+
+			if (newBuyerListingQuantityRemaining === 0) {
+				str += ` ${bold('This listing has now been fully fulfilled.')}`;
+			} else {
+				str += ` There are ${newBuyerListingQuantityRemaining}x remaining to buy in your listing.`;
+			}
+
+			const remainingBuyLimit = remainingItemsInBuyLimit - quantityToBuy;
+			if (remainingBuyLimit <= 0) {
+				str += ` You have reached your buy limit for this item, your buy limit will reset at ${
+					this.getInterval().nextResetStr
+				}.`;
+			}
+			await buyerDJSUser.send(str).catch(noOp);
+		}
+
+		const sellerDJSUser = await globalClient.fetchUser(sellerUser.id).catch(noOp);
+		if (sellerDJSUser) {
+			let str = `You sold ${quantityToBuy.toLocaleString()}x ${itemName} for ${toKMB(
+				pricePerItemAfterTax
+			)} GP each and received ${sellerLoot}.`;
+			if (totalTaxPaid > 0) {
+				str += ` ${toKMB(totalTaxPaid)} GP in tax was paid.`;
+			} else {
+				str += ' No tax was paid.';
+			}
+			await sellerDJSUser.send(str).catch(noOp);
+		}
 	}
 
 	async fetchActiveListings() {
@@ -662,8 +736,9 @@ class GrandExchangeSingleton {
 	}
 
 	private async _tick() {
-		const { buyListings, sellListings } = await this.fetchActiveListings();
+		if (!this.ready) return;
 		if (this.locked) return;
+		const { buyListings, sellListings } = await this.fetchActiveListings();
 		await this.checkGECanFullFilAllListings();
 
 		const allListings = [...buyListings, ...sellListings];

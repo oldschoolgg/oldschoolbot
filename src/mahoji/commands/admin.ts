@@ -342,6 +342,66 @@ LIMIT 10;
 					.join('\n')}`
 			};
 		}
+	},
+	{
+		name: 'Grand Exchange',
+		run: async () => {
+			const settings = await GrandExchange.fetchData();
+
+			const allTx: string[][] = [];
+			const allTransactions = await prisma.gETransaction.findMany({
+				orderBy: {
+					created_at: 'desc'
+				}
+			});
+			if (allTransactions.length > 0) {
+				allTx.push(Object.keys(allTransactions[0]));
+				for (const tx of allTransactions) {
+					allTx.push(Object.values(tx).map(i => i.toString()));
+				}
+			}
+
+			const allLi: string[][] = [];
+			const allListings = await prisma.gEListing.findMany({
+				orderBy: {
+					created_at: 'desc'
+				}
+			});
+			if (allListings.length > 0) {
+				allLi.push(Object.keys(allListings[0]));
+				for (const tx of allListings) {
+					allLi.push(Object.values(tx).map(i => (i === null ? '' : i.toString())));
+				}
+			}
+
+			const buyLimitInterval = GrandExchange.getInterval();
+			return {
+				content: `**Grand Exchange Data**
+
+The next buy limit reset is at: ${buyLimitInterval.nextResetStr}, it resets every ${formatDuration(
+					GrandExchange.config.buyLimit.interval
+				)}.
+**Tax Rate:** ${GrandExchange.config.tax.rate()}%
+**Tax Cap (per item):** ${toKMB(GrandExchange.config.tax.cap())}
+**Total GP Removed From Taxation:** ${settings.totalTax.toLocaleString()} GP
+**Total Tax GP G.E Has To Spend on Item Sinks:** ${settings.taxBank.toLocaleString()} GP
+`,
+				files: [
+					(
+						await makeBankImage({
+							bank: await GrandExchange.fetchOwnedBank(),
+							title: 'Items in the G.E'
+						})
+					).file,
+					new AttachmentBuilder(Buffer.from(allTx.map(i => i.join('\t')).join('\n')), {
+						name: 'transactions.txt'
+					}),
+					new AttachmentBuilder(Buffer.from(allLi.map(i => i.join('\t')).join('\n')), {
+						name: 'listings.txt'
+					})
+				]
+			};
+		}
 	}
 ];
 

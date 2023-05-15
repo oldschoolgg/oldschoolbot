@@ -1,19 +1,18 @@
-import type { GEListing, GETransaction } from '@prisma/client';
-import { ApplicationCommandOptionType, AttachmentBuilder } from 'discord.js';
+import { evalMathExpression } from '@oldschoolgg/toolkit/dist/util/expressionParser';
+import { GEListing, GETransaction } from '@prisma/client';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { sumArr, uniqueArr } from 'e';
 import { CommandRunOptions } from 'mahoji';
 import { CommandOption } from 'mahoji/dist/lib/types';
 import { Bank } from 'oldschooljs';
 
-import { MAX_INT_JAVA } from '../../lib/constants';
 import { GrandExchange } from '../../lib/grandExchange';
 import { prisma } from '../../lib/settings/prisma';
-import { transactFromTableBank } from '../../lib/tableBank';
-import { dateFm, formatDuration, getUsername, itemNameFromID, toKMB } from '../../lib/util';
-import { mahojiClientSettingsFetch } from '../../lib/util/clientSettings';
+import { makeTransactFromTableBankQueries } from '../../lib/tableBank';
+import { formatDuration, itemNameFromID, toKMB } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
+import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { logError } from '../../lib/util/logError';
-import { makeBankImage } from '../../lib/util/makeBankImage';
 import { ownedItemOption, tradeableItemArr } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -21,6 +20,13 @@ type GEListingWithTransactions = GEListing & {
 	buyTransactions: GETransaction[];
 	sellTransactions: GETransaction[];
 };
+
+function parseNumber(str: string) {
+	if (typeof str === 'number') str = `${str}`;
+	const number = evalMathExpression(str);
+	if (!number) return -1;
+	return number;
+}
 
 function geListingToString(
 	listing: GEListingWithTransactions,
@@ -38,11 +44,11 @@ function geListingToString(
 	const totalTaxPaidSoFar = toKMB(sumArr(allTransactions.map(i => i.quantity_bought * Number(i.total_tax_paid))));
 
 	if (listing.cancelled_at) {
-		return `${listing.userfacing_id} Cancelled offer to ${action} ${itemQty}. ${totalSold} were ${pastVerb}.`;
+		return `Cancelled offer to ${action} ${itemQty}. ${totalSold} were ${pastVerb}.`;
 	}
 
 	if (listing.fulfilled_at) {
-		return `${listing.userfacing_id} Completed offer to ${action} ${itemQty}. ${totalSold} were ${pastVerb} for a total amount of ${totalPricePaidSoFar} (${totalTaxPaidSoFar} tax paid).`;
+		return `Completed offer to ${action} ${itemQty}. ${totalSold} were ${pastVerb} for a total amount of ${totalPricePaidSoFar} (${totalTaxPaidSoFar} tax paid).`;
 	}
 
 	const buyLimitStr =
@@ -50,7 +56,7 @@ function geListingToString(
 			? ` (${buyLimit.remainingItemsCanBuy.toLocaleString()}/${buyLimit.buyLimit.toLocaleString()} remaining in buy limit currently)`
 			: '';
 
-	return `${listing.userfacing_id} ${verb} ${itemQty}, ${toKMB(
+	return `${verb} ${itemQty}, ${toKMB(
 		listing.quantity_remaining
 	)} are remaining to ${listing.type.toLowerCase()}, asking for ${toKMB(listing.asking_price_per_item)} GP each. ${
 		allTransactions.length
@@ -59,19 +65,15 @@ function geListingToString(
 
 const quantityOption: CommandOption = {
 	name: 'quantity',
-	description: 'The quantity of the item to exchange.',
-	type: ApplicationCommandOptionType.Integer,
-	min_value: 1,
-	max_value: MAX_INT_JAVA,
+	description: 'The quantity of the item to exchange (e.g. 7, 5k, 10m).',
+	type: ApplicationCommandOptionType.String,
 	required: true
 };
 
 const priceOption: CommandOption = {
 	name: 'price',
-	description: 'The price to exchange each item at.',
-	type: ApplicationCommandOptionType.Integer,
-	min_value: 1,
-	max_value: MAX_INT_JAVA * 10,
+	description: 'The price to exchange each item at. (e.g. 7, 5k, 10m).',
+	type: ApplicationCommandOptionType.String,
 	required: true
 };
 
@@ -167,8 +169,8 @@ export const geCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
-			name: 'data',
-			description: 'Data',
+			name: 'stats',
+			description: 'View your g.e stats',
 			options: []
 		}
 	],
@@ -179,23 +181,67 @@ export const geCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{
 		buy?: {
 			item: string;
-			quantity: number;
-			price: number;
+			quantity: string;
+			price: string;
 		};
 		sell?: {
 			item: string;
-			quantity: number;
-			price: number;
+			quantity: string;
+			price: string;
 		};
-		list?: {};
 		cancel?: {
 			listing: string;
 		};
 		my_listings?: {};
 		global_reset?: {};
-		data?: {};
+		stats?: {};
 	}>) => {
 		await interaction.deferReply();
+		const user = await mUserFetch(userID);
+
+		if (options.stats) {
+			const totalGPYourSales = await prisma.gETransaction.aggregate({
+				where: {
+					sell_listing: {
+						user_id: userID
+					}
+				},
+				_sum: {
+					total_tax_paid: true
+				}
+			});
+			const totalGPYourTransactions = await prisma.gETransaction.aggregate({
+				where: {
+					OR: [
+						{
+							sell_listing: {
+								user_id: userID
+							}
+						},
+						{
+							buy_listing: {
+								user_id: userID
+							}
+						}
+					]
+				},
+				_sum: {
+					total_tax_paid: true
+				}
+			});
+
+			const { slots } = await GrandExchange.calculateSlotsOfUser(user);
+
+			return `
+The next buy limit reset is at: ${GrandExchange.getInterval().nextResetStr}, it resets every ${formatDuration(
+				GrandExchange.config.buyLimit.interval
+			)}.
+
+
+**G.E Slots You Can Use:** ${slots}
+**Taxes you have paid:** ${totalGPYourSales._sum.total_tax_paid?.toLocaleString()} GP
+**Total Tax Paid on your sales AND purchases:** ${totalGPYourTransactions._sum.total_tax_paid?.toLocaleString()} GP}`;
+		}
 
 		if (options.global_reset) {
 			await GrandExchange.totalReset();
@@ -267,217 +313,54 @@ ${(
 **Recent Fulfilled/Cancelled Listings**
 ${recentInactiveListings.map(i => geListingToString(i)).join('\n')}`;
 		}
-		if (options.list) {
-			const allListings = await prisma.gEListing.findMany({
-				orderBy: {
-					created_at: 'desc'
-				},
-				where: {}
-			});
-			const allTransactions = await prisma.gETransaction.findMany({
-				orderBy: {
-					created_at: 'desc'
-				},
-				select: {
-					quantity_bought: true,
-					buy_listing: {
-						select: {
-							id: true,
-							user: {
-								select: {
-									id: true
-								}
-							}
-						}
-					},
-					sell_listing: {
-						select: {
-							id: true,
-							user: {
-								select: {
-									id: true
-								}
-							}
-						}
-					}
-				},
-				where: {
-					OR: [
-						{
-							buy_listing_id: {
-								in: allListings.map(i => i.id)
-							}
-						},
-						{
-							sell_listing_id: {
-								in: allListings.map(i => i.id)
-							}
-						}
-					]
-				}
+
+		if (options.buy || options.sell) {
+			const result = await GrandExchange.preCreateListing({
+				user,
+				itemName: (options.buy?.item ?? options.sell?.item)!,
+				price: parseNumber((options.buy?.price ?? options.sell?.price)!),
+				quantity: parseNumber((options.buy?.quantity ?? options.sell?.quantity)!),
+				type: Boolean(options.buy) ? 'Buy' : 'Sell'
 			});
 
-			const geOwnedBank = await makeBankImage({
-				bank: await GrandExchange.fetchOwnedBank(),
-				title: 'Items in G.E'
-			});
+			if ('error' in result) return result.error;
 
-			return {
-				content: `Listings:\n${allListings
-					.map(
-						l =>
-							`[${l.userfacing_id}] ${getUsername(l.user_id)} has a listing to ${l.type} ${
-								l.total_quantity
-							}x ${itemNameFromID(l.item_id)} for ${l.asking_price_per_item} GP each, there are ${
-								l.quantity_remaining
-							}x left. `
-					)
-					.join('\n')}
-
-Transactions:\n${allTransactions
-					.map(t => {
-						const listing = allListings.find(l => l.id === t.buy_listing.id || l.id === t.sell_listing.id)!;
-						const buyer = getUsername(t.buy_listing.user.id);
-						const seller = getUsername(t.sell_listing.user.id);
-						const items = new Bank().add(listing.item_id, t.quantity_bought);
-						return `${buyer} bought ${items} from ${seller}'s listing, the listing now has ${listing.quantity_remaining}x left.`;
-					})
-					.join('\n')}`,
-				files: [geOwnedBank.file]
-			};
-		}
-
-		if (options.data) {
-			const settings = await mahojiClientSettingsFetch({
-				grand_exchange_is_locked: true,
-				grand_exchange_tax_bank: true,
-				grand_exchange_total_tax: true
-			});
-
-			const totalGPYourSales = await prisma.gETransaction.aggregate({
-				where: {
-					sell_listing: {
-						user_id: userID
-					}
-				},
-				_sum: {
-					total_tax_paid: true
-				}
-			});
-			const totalGPYourTransactions = await prisma.gETransaction.aggregate({
-				where: {
-					OR: [
-						{
-							sell_listing: {
-								user_id: userID
-							}
-						},
-						{
-							buy_listing: {
-								user_id: userID
-							}
-						}
-					]
-				},
-				_sum: {
-					total_tax_paid: true
-				}
-			});
-
-			const allTx: string[][] = [];
-			const allTransactions = await prisma.gETransaction.findMany({
-				orderBy: {
-					created_at: 'desc'
-				}
-			});
-			if (allTransactions.length > 0) {
-				allTx.push(Object.keys(allTransactions[0]));
-				for (const tx of allTransactions) {
-					allTx.push(Object.values(tx).map(i => i.toString()));
-				}
-			}
-
-			const allLi: string[][] = [];
-			const allListings = await prisma.gEListing.findMany({
-				orderBy: {
-					created_at: 'desc'
-				}
-			});
-			if (allListings.length > 0) {
-				allLi.push(Object.keys(allListings[0]));
-				for (const tx of allListings) {
-					allLi.push(Object.values(tx).map(i => (i === null ? '' : i.toString())));
-				}
-			}
-
-			const buyLimitInterval = GrandExchange.getInterval();
-			return {
-				content: `**Grand Exchange Data**
-
-The next buy limit reset is at: ${dateFm(buyLimitInterval.end)}, it resets every ${formatDuration(
-					GrandExchange.config.buyLimit.interval
-				)}.
-**Tax Rate:** ${GrandExchange.config.tax.rate()}%
-**Tax Cap (per item):** ${toKMB(GrandExchange.config.tax.cap())}
-**Total GP Removed From Taxation:** ${settings.grand_exchange_total_tax.toLocaleString()} GP
-**Total Tax GP G.E Has To Spend on Item Sinks:** ${settings.grand_exchange_tax_bank.toLocaleString()} GP
-**Total Tax Paid on your sales:** ${totalGPYourSales._sum.total_tax_paid?.toLocaleString()} GP
-**Total Tax Paid on your sales AND purchases:** ${totalGPYourTransactions._sum.total_tax_paid?.toLocaleString()} GP
-`,
-				files: [
-					(
-						await makeBankImage({
-							bank: await GrandExchange.fetchOwnedBank(),
-							title: 'Items in the G.E'
-						})
-					).file,
-					new AttachmentBuilder(Buffer.from(allTx.map(i => i.join('\t')).join('\n')), {
-						name: 'transactions.txt'
-					}),
-					new AttachmentBuilder(Buffer.from(allLi.map(i => i.join('\t')).join('\n')), {
-						name: 'listings.txt'
-					})
-				]
-			};
+			await handleMahojiConfirmation(interaction, result.confirmationStr);
 		}
 
 		return GrandExchange.queue.add(async () => {
-			const user = await mUserFetch(userID);
-
 			if (options.buy) {
 				const result = await GrandExchange.createListing({
 					user,
-					itemName: options.buy.item,
-					price: options.buy.price,
-					quantity: options.buy.quantity,
+					itemName: options.buy!.item,
+					price: parseNumber(options.buy!.price),
+					quantity: parseNumber(options.buy!.quantity),
 					type: 'Buy'
 				});
 
 				if (typeof result.error === 'string') return result.error;
+				const { createdListing } = result;
 
-				return `${result.createdListing.userfacing_id} Successfully created a listing to buy ${
-					result.createdListing.total_quantity
-				}x ${itemNameFromID(result.createdListing.item_id)} for ${toKMB(
-					result.createdListing.asking_price_per_item
-				)} GP each.`;
+				return `Successfully created a listing to buy ${createdListing.total_quantity}x ${itemNameFromID(
+					createdListing.item_id
+				)} for ${toKMB(createdListing.asking_price_per_item)} GP each.`;
 			}
 
 			if (options.sell) {
 				const result = await GrandExchange.createListing({
 					user,
 					itemName: options.sell.item,
-					price: options.sell.price,
-					quantity: options.sell.quantity,
+					price: parseNumber(options.sell.price),
+					quantity: parseNumber(options.sell.quantity),
 					type: 'Sell'
 				});
 
 				if (typeof result.error === 'string') return result.error;
+				const { createdListing } = result;
 
-				return `${result.createdListing.userfacing_id} Successfully created a listing to sell ${
-					result.createdListing.total_quantity
-				}x ${itemNameFromID(result.createdListing.item_id)} for ${toKMB(
-					result.createdListing.asking_price_per_item
-				)} GP each.`;
+				return `Successfully created a listing to sell ${createdListing.total_quantity}x ${itemNameFromID(
+					createdListing.item_id
+				)} for ${toKMB(createdListing.asking_price_per_item)} GP each.`;
 			}
 
 			if (options.cancel) {
@@ -527,14 +410,11 @@ The next buy limit reset is at: ${dateFm(buyLimitInterval.end)}, it resets every
 					collectionLog: false,
 					dontAddToTempCL: true
 				});
-				await transactFromTableBank({
-					table: prisma.gEBank,
-					bankToRemove: refundBank
-				});
+
+				await prisma.$transaction(makeTransactFromTableBankQueries({ bankToRemove: refundBank }));
 
 				return `Successfully cancelled your listing, you have been refunded ${refundBank}.`;
 			}
-
 			return 'Invalid command.';
 		});
 	}

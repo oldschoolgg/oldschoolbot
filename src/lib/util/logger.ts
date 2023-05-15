@@ -45,7 +45,7 @@ export const gePino = pinoCtor(
 	pinoCtor.destination({
 		dest: `./logs/ge-${formattedDate}.log`,
 		mkdir: true,
-		sync: true,
+		sync: false,
 		minLength: 4096
 	})
 );
