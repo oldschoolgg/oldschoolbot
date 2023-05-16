@@ -6,7 +6,7 @@ import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import PQueue from 'p-queue';
 
 import { ADMIN_IDS, OWNER_IDS, production } from '../config';
-import { BitField, globalConfig, PerkTier } from './constants';
+import { BitField, globalConfig, ONE_TRILLION, PerkTier } from './constants';
 import { RobochimpUser, roboChimpUserFetch } from './roboChimp';
 import { prisma } from './settings/prisma';
 import { fetchTableBank, makeTransactFromTableBankQueries } from './tableBank';
@@ -26,7 +26,7 @@ interface CreateListingArgs {
 }
 
 function validateNumber(num: number) {
-	if (num < 0 || isNaN(num) || !Number.isInteger(num)) {
+	if (num < 0 || isNaN(num) || !Number.isInteger(num) || num > Number.MAX_SAFE_INTEGER) {
 		throw new Error(`Invalid number: ${num}.`);
 	}
 }
@@ -60,6 +60,9 @@ function sanityCheckListing(listing: GEListing) {
 	if (listing.cancelled_at && listing.fulfilled_at) {
 		throw new Error(`Listing ${listing.id} has both fulfilled and cancelled.`);
 	}
+	validateNumber(Number(listing.asking_price_per_item));
+	validateNumber(Number(listing.total_quantity));
+	validateNumber(Number(listing.gp_refunded));
 }
 
 function sanityCheckTransaction({
@@ -73,6 +76,10 @@ function sanityCheckTransaction({
 	if (price_per_item_before_tax < price_per_item_after_tax) {
 		throw new Error(`Transaction ${id} has price before tax less than price after tax.`);
 	}
+
+	validateNumber(Number(price_per_item_before_tax));
+	validateNumber(Number(price_per_item_before_tax));
+	validateNumber(Number(total_tax_paid));
 
 	assert(
 		Number(total_tax_paid) ===
@@ -101,6 +108,8 @@ class GrandExchangeSingleton {
 	public ready = false;
 
 	public config = {
+		maxPricePerItem: ONE_TRILLION,
+		maxTotalPrice: ONE_TRILLION,
 		buyLimit: {
 			interval: Time.Hour * 4,
 			fallbackBuyLimit: (item: Item) => (item.price > 1_000_000 ? 1 : 1000)
@@ -179,11 +188,15 @@ class GrandExchangeSingleton {
 
 	getInterval() {
 		const currentTime = new Date();
-		const minutes = currentTime.getMinutes();
+		const currentHour = currentTime.getHours();
+
+		// Find the nearest interval start hour (0, 4, 8, etc.)
+		const startHour = currentHour - (currentHour % 4);
 		const startInterval = new Date(currentTime);
-		startInterval.setMinutes(minutes - (minutes % 5), 0, 0);
+		startInterval.setHours(startHour, 0, 0, 0);
+
 		const endInterval = new Date(startInterval);
-		endInterval.setMinutes(startInterval.getMinutes() + 5);
+		endInterval.setHours(startHour + 4);
 
 		return {
 			start: startInterval,
@@ -203,10 +216,14 @@ class GrandExchangeSingleton {
 		amount = Math.floor(amount);
 		amount = clamp(amount, 0, this.config.tax.cap());
 		validateNumber(amount);
+
+		const newPrice = pricePerItem - amount;
+		validateNumber(newPrice);
+
 		return {
 			taxedAmount: amount,
 			rate,
-			newPrice: pricePerItem - amount
+			newPrice
 		};
 	}
 
@@ -278,11 +295,19 @@ class GrandExchangeSingleton {
 			return { error: 'Invalid item.' };
 		}
 
-		if (!price || price <= 0 || isNaN(price) || !Number.isInteger(price) || price > 2_000_000_000) {
-			return { error: 'Invalid price, the price must be a number between 1 and 2b.' };
+		if (!price || price <= 0 || isNaN(price) || !Number.isInteger(price) || price > this.config.maxPricePerItem) {
+			return {
+				error: `Invalid price, the price must be a number between 1 and ${toKMB(this.config.maxPricePerItem)}.`
+			};
 		}
 		if (!quantity || quantity <= 0 || isNaN(quantity) || !Number.isInteger(quantity) || quantity > 5_000_000) {
 			return { error: 'Invalid quantity, the quantity must be a number between 1 and 5m.' };
+		}
+
+		if (price * quantity > this.config.maxTotalPrice) {
+			return {
+				error: `You cannot make a listing with a total price of more than ${toKMB(this.config.maxTotalPrice)}.`
+			};
 		}
 
 		const theirCurrentListings = await prisma.gEListing.findMany({
@@ -463,7 +488,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 		let buyerRefund = 0;
 		if (buyerListing.asking_price_per_item > sellerListing.asking_price_per_item) {
 			const buyerPricePerItemBeforeTax = buyerListing.asking_price_per_item;
-			const totalAmountToRemove = buyerPricePerItemBeforeTax * quantityToBuy;
+			const totalAmountToRemove = Number(buyerPricePerItemBeforeTax) * quantityToBuy;
 			buyerRefund = totalAmountToRemove - totalPriceBeforeTax;
 
 			validateNumber(buyerRefund);
@@ -488,9 +513,9 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			.remove(bankToRemoveFromGeBank)}]`;
 
 		assert(
-			bankToRemoveFromGeBank.amount('Coins') === buyerListing.asking_price_per_item * quantityToBuy,
+			bankToRemoveFromGeBank.amount('Coins') === Number(buyerListing.asking_price_per_item) * quantityToBuy,
 			`The G.E Must be removing the full amount the buyer put in, otherwise there's extra/notenough GP leftover in their buyerListing. Expected to be removing ${
-				buyerListing.asking_price_per_item * quantityToBuy
+				Number(buyerListing.asking_price_per_item) * quantityToBuy
 			}, but we're removing ${bankToRemoveFromGeBank.amount('Coins')} ${debug}`
 		);
 
@@ -709,7 +734,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 
 		// How much GP the g.e still has from this listing
 		for (const listing of buyListings) {
-			shouldHave.add('Coins', listing.asking_price_per_item * listing.quantity_remaining);
+			shouldHave.add('Coins', Number(listing.asking_price_per_item) * listing.quantity_remaining);
 		}
 
 		for (const listing of sellListings) {
