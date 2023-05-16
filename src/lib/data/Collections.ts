@@ -1235,6 +1235,10 @@ export async function getCollection(options: {
 	const userCheckBank = getBank(user, logType, userStats);
 	let clItems = getCollectionItems(search, allItems, logType === 'sacrifice');
 
+	if (clItems.length >= 500) {
+		flags.missing = 'missing';
+	}
+
 	if (Boolean(flags.missing)) {
 		clItems = clItems.filter(i => !userCheckBank.has(i));
 	}
