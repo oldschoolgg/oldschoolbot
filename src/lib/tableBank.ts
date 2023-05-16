@@ -11,16 +11,6 @@ export function makeTransactFromTableBankQueries({
 	bankToAdd?: Bank;
 	bankToRemove?: Bank;
 }) {
-	if (bankToAdd && bankToRemove) {
-		if (bankToAdd.items().some(i => bankToRemove.has(i[0].id))) {
-			throw new Error('Cannot add and remove the same item in the same transaction.');
-		}
-
-		if (bankToRemove.items().some(i => bankToAdd.has(i[0].id))) {
-			throw new Error('Cannot add and remove the same item in the same transaction.');
-		}
-	}
-
 	const queries = [];
 
 	if (bankToAdd) {
