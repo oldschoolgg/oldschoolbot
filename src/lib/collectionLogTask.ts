@@ -139,7 +139,7 @@ class CollectionLogTask {
 
 		if (flags.text) {
 			return {
-				content: 'This is the items on your log:',
+				content: 'These are the items on your log:',
 				files: [
 					{
 						attachment: Buffer.from(

@@ -14,7 +14,7 @@ import { customItems } from './customItems/util';
 import { DOUBLE_LOOT_FINISH_TIME_CACHE, isDoubleLootActive } from './doubleLoot';
 import { giveBoxResetTime, itemContractResetTime, spawnLampResetTime } from './MUser';
 import { prisma } from './settings/prisma';
-import { channelIsSendable, formatDuration, isModOrAdmin, makeComponents, toKMB } from './util';
+import { channelIsSendable, formatDuration, makeComponents, toKMB } from './util';
 import { logError } from './util/logError';
 import { makeBankImage } from './util/makeBankImage';
 import { minionStatsEmbed } from './util/minionStatsEmbed';
@@ -86,16 +86,6 @@ interface MentionCommand {
 }
 
 const mentionCommands: MentionCommand[] = [
-	{
-		name: 'shutdownlock',
-		aliases: ['shutdownlock'],
-		description: 'shutdownlock.',
-		run: async ({ msg, user }: MentionCommandOptions) => {
-			if (!isModOrAdmin(user)) return;
-			globalClient.isShuttingDown = true;
-			return msg.reply('https://tenor.com/view/coffee-morning-monkey-drinking-coffee-shot-gif-20859464');
-		}
-	},
 	{
 		name: 'bs',
 		aliases: ['bs'],

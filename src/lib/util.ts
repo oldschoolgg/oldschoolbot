@@ -437,6 +437,28 @@ export function sanitizeBank(bank: Bank) {
 		}
 	}
 }
+
+export function validateBankAndThrow(bank: Bank) {
+	if (!bank || typeof bank !== 'object') {
+		throw new Error('Invalid bank object');
+	}
+	for (const [key, value] of Object.entries(bank.bank)) {
+		const pair = [key, value].join('-');
+		if (value < 1) {
+			throw new Error(`Less than 1 qty: ${pair}`);
+		}
+
+		if (!Number.isInteger(value)) {
+			throw new Error(`Non-integer value: ${pair}`);
+		}
+
+		const item = getItem(key);
+		if (!item) {
+			throw new Error(`Invalid item ID: ${pair}`);
+		}
+	}
+}
+
 export function convertBankToPerHourStats(bank: Bank, time: number) {
 	let result = [];
 	for (const [item, qty] of bank.items()) {

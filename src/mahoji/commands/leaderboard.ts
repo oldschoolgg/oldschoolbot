@@ -626,6 +626,71 @@ async function itemContractLb(user: MUser, channelID: string, ironmanOnly?: bool
 	return lbMsg('Item Contract Streak');
 }
 
+const globalLbTypes = ['xp', 'cl'] as const;
+type GlobalLbType = (typeof globalLbTypes)[number];
+async function globalLb(user: MUser, channelID: string, type: GlobalLbType) {
+	if (type === 'xp') {
+		const result = await roboChimpClient.$queryRaw<
+			{
+				id: string;
+				osb_total_xp: number;
+				bso_total_xp: number;
+				osb_xp_percent: number;
+				bso_xp_percent: number;
+				average_percentage: number;
+			}[]
+		>`SELECT id::text, osb_total_xp, bso_total_xp,
+       (osb_total_xp / (200000000.0 * 23) * 100) as osb_xp_percent,
+       (bso_total_xp / (5000000000.0 * 25) * 100) as bso_xp_percent,
+       (((osb_total_xp / (200000000.0 * 23) * 100) + (bso_total_xp / (5000000000.0 * 25) * 100)) / 2) as average_percentage
+FROM public.user
+WHERE osb_total_xp IS NOT NULL AND bso_total_xp IS NOT NULL
+ORDER BY average_percentage DESC
+LIMIT 10;
+`;
+		doMenu(
+			user,
+			channelID,
+			chunk(result, LB_PAGE_SIZE).map((subList, i) =>
+				subList
+					.map(
+						({ id, osb_xp_percent, bso_xp_percent }, j) =>
+							`${getPos(i, j)}**${getUsername(id)}:** ${osb_xp_percent.toFixed(
+								2
+							)}% OSB, ${bso_xp_percent.toFixed(2)}% BSO`
+					)
+					.join('\n')
+			),
+			'Global (OSB+BSO) XP Leaderboard (% of the max XP)'
+		);
+		return lbMsg('Global (OSB+BSO) XP Leaderboard');
+	}
+
+	const result = await roboChimpClient.$queryRaw<
+		{ id: string; total_cl_percent: number }[]
+	>`SELECT ((osb_cl_percent + bso_cl_percent) / 2) AS total_cl_percent, id::text AS id
+FROM public.user
+WHERE osb_cl_percent IS NOT NULL AND bso_cl_percent IS NOT NULL
+ORDER BY total_cl_percent DESC
+LIMIT 20;`;
+
+	doMenu(
+		user,
+		channelID,
+
+		chunk(result, LB_PAGE_SIZE).map((subList, i) =>
+			subList
+				.map(
+					({ id, total_cl_percent }, j) =>
+						`${getPos(i, j)}**${getUsername(id)}:** ${total_cl_percent.toLocaleString()}%`
+				)
+				.join('\n')
+		),
+		'Global (OSB+BSO) CL Leaderboard'
+	);
+	return lbMsg('Global (OSB+BSO) CL Leaderboard');
+}
+
 async function leaguesPointsLeaderboard(user: MUser, channelID: string) {
 	const result = await roboChimpClient.user.findMany({
 		where: {
@@ -1051,6 +1116,20 @@ export const leaderboardCommand: OSBMahojiCommand = {
 					choices: gainersTypes.map(i => ({ name: i, value: i }))
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'global',
+			description: 'Check the global (OSB+BSO) leaderboards.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'type',
+					description: 'The global leaderboard type you want to check.',
+					required: true,
+					choices: globalLbTypes.map(i => ({ name: i, value: i }))
+				}
+			]
 		}
 	],
 	run: async ({
@@ -1074,6 +1153,9 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		leagues?: { type: 'points' | 'tasks' | 'hardest_tasks' };
 		clues?: { clue: ClueTier['name']; ironmen_only?: boolean };
 		movers?: { type: GainersType };
+		global?: {
+			type: GlobalLbType;
+		};
 	}>) => {
 		deferInteraction(interaction);
 		const user = await mUserFetch(userID);
@@ -1092,7 +1174,8 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			item_contract_streak,
 			leagues,
 			clues,
-			movers
+			movers,
+			global
 		} = options;
 		if (kc) return kcLb(user, channelID, kc.monster, Boolean(kc.ironmen_only));
 		if (farming_contracts) return farmingContractLb(user, channelID, Boolean(farming_contracts.ironmen_only));
@@ -1111,7 +1194,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		if (leagues) return leaguesLeaderboard(user, channelID, leagues.type);
 		if (clues) return cluesLb(user, channelID, clues.clue, Boolean(clues.ironmen_only));
 		if (movers) return gainersLB(user, channelID, movers.type);
-		gainersLB;
+		if (global) return globalLb(user, channelID, global.type);
 		return 'Invalid input.';
 	}
 };

@@ -255,6 +255,7 @@ export enum BitField {
 	BothBotsMaxedFreeTierOnePerks = 24,
 	HasBloodbarkScroll = 25,
 	DisableAutoFarmContractButton = 26,
+	DisableGrandExchangeDMs = 27,
 	HasGivenBirthdayPack = 200,
 	HasPermanentSpawnLamp = 201,
 	HasScrollOfFarming = 202,
@@ -347,6 +348,11 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	[BitField.DisableAshSanctifier]: { name: 'Disable Ash Sanctifier', protected: false, userConfigurable: true },
 	[BitField.DisableAutoFarmContractButton]: {
 		name: 'Disable Auto Farm Contract Button',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisableGrandExchangeDMs]: {
+		name: 'Disable Grand Exchange DMs',
 		protected: false,
 		userConfigurable: true
 	}
@@ -632,7 +638,8 @@ const globalConfigSchema = z.object({
 	patreonCampaignID: z.coerce.number().int().default(1),
 	patreonWebhookSecret: z.coerce.string().default(''),
 	httpPort: z.coerce.number().int().default(8080),
-	clientID: z.string().min(15).max(25)
+	clientID: z.string().min(15).max(25),
+	geAdminChannelID: z.string().default('')
 });
 dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.example' : '.env') });
 
@@ -641,7 +648,8 @@ export const globalConfig = globalConfigSchema.parse({
 	patreonCampaignID: process.env.PATREON_CAMPAIGN_ID,
 	patreonWebhookSecret: process.env.PATREON_WEBHOOK_SECRET,
 	httpPort: process.env.HTTP_PORT,
-	clientID: process.env.CLIENT_ID
+	clientID: process.env.CLIENT_ID,
+	geAdminChannelID: process.env.GE_ADMIN_CHANNEL_ID
 });
 
 export const globalDroprates = {
@@ -720,3 +728,4 @@ export const globalDroprates = {
 		rolledPer: 'minute'
 	}
 };
+export const ONE_TRILLION = 1_000_000_000_000;
