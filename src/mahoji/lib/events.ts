@@ -6,6 +6,7 @@ import { cacheBadges } from '../../lib/badges';
 import { syncBlacklists } from '../../lib/blacklists';
 import { DISABLED_COMMANDS, globalConfig } from '../../lib/constants';
 import { initCrons } from '../../lib/crons';
+import { GrandExchange } from '../../lib/grandExchange';
 import { prisma } from '../../lib/settings/prisma';
 import { initTickers } from '../../lib/tickers';
 import { runTimedLoggedFn } from '../../lib/util';
@@ -60,6 +61,7 @@ export async function onStartup() {
 	cacheCleanup();
 
 	runTimedLoggedFn('Sync Linked Accounts', syncLinkedAccounts);
+	runTimedLoggedFn('Init Grand Exchange', GrandExchange.init.bind(GrandExchange));
 
 	initCrons();
 	initTickers();
