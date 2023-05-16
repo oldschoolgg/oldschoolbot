@@ -10,7 +10,7 @@ setCustomItem(476, 'Dwarven pickaxe', 'Dragon pickaxe', {}, 1_000_000);
 // 2x faster smithing and crafting
 setCustomItem(474, 'Dwarven greathammer', 'Dragon warhammer', {}, 1_000_000);
 // 2x faster smelting
-setCustomItem(12_594, 'Dwarven gauntlets', 'Cooking gauntlets', {}, 1_000_000);
+setCustomItem(12_594, 'Dwarven gauntlets', 'Cooking gauntlets', { tradeable: true, tradeable_on_ge: true }, 1_000_000);
 
 setCustomItem(478, 'Dwarven knife', 'Bronze knife', {}, 1_000_000);
 // setCustomItem(11923, 'Dwarven tinderbox', ('Tinderbox'));

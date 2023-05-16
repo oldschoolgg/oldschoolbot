@@ -17,6 +17,8 @@ setCustomItem(
 	'Flame gloves',
 	'Dragon gloves',
 	{
+		tradeable: true,
+		tradeable_on_ge: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -29,6 +31,8 @@ setCustomItem(
 	'Ring of fire',
 	'Gold ring',
 	{
+		tradeable: true,
+		tradeable_on_ge: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -41,6 +45,8 @@ setCustomItem(
 	'Phoenix eggling',
 	'Herbi',
 	{
+		tradeable: true,
+		tradeable_on_ge: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}

@@ -348,6 +348,8 @@ setCustomItem(
 	'Torva gloves',
 	'Rune gloves',
 	{
+		tradeable_on_ge: true,
+		tradeable: true,
 		equipment: {
 			attack_stab: 18,
 			attack_slash: 16,
@@ -369,7 +371,6 @@ setCustomItem(
 			requirements: null
 		},
 		highalch: 50_000_000,
-		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -516,6 +517,8 @@ setCustomItem(
 	'Pernix gloves',
 	'Rune gloves',
 	{
+		tradeable_on_ge: true,
+		tradeable: true,
 		equipment: {
 			attack_stab: 0,
 			attack_slash: 0,
@@ -537,7 +540,7 @@ setCustomItem(
 			requirements: null
 		},
 		highalch: 50_000_000,
-		tradeable: true,
+
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -684,6 +687,8 @@ setCustomItem(
 	'Virtus gloves',
 	'Rune gloves',
 	{
+		tradeable_on_ge: true,
+		tradeable: true,
 		equipment: {
 			attack_stab: 15,
 			attack_slash: 15,
@@ -705,7 +710,7 @@ setCustomItem(
 			requirements: null
 		},
 		highalch: 50_000_000,
-		tradeable: true,
+
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -846,6 +851,7 @@ setCustomItem(
 			requirements: null
 		},
 		highalch: 50_000_000,
+		tradeable_on_ge: true,
 		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true

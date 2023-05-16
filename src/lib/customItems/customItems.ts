@@ -18,10 +18,19 @@ import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import getOSItem from '../util/getOSItem';
 import { setCustomItem, UN_EQUIPPABLE } from './util';
 
-setCustomItem(19_939, 'Untradeable Mystery Box', 'Mystery box', {}, 100_000);
-setCustomItem(6199, 'Tradeable Mystery Box', 'Mystery box', {}, 100_000);
-setCustomItem(3062, 'Pet Mystery Box', 'Mystery box', {}, 100_000);
-setCustomItem(3713, 'Holiday Mystery Box', 'Mystery box', {}, 100_000);
+setCustomItem(
+	19_939,
+	'Untradeable Mystery Box',
+	'Mystery box',
+	{
+		tradeable_on_ge: true,
+		tradeable: true
+	},
+	100_000
+);
+setCustomItem(6199, 'Tradeable Mystery Box', 'Mystery box', { tradeable_on_ge: true, tradeable: true }, 100_000);
+setCustomItem(3062, 'Pet Mystery Box', 'Mystery box', { tradeable_on_ge: true, tradeable: true }, 100_000);
+setCustomItem(3713, 'Holiday Mystery Box', 'Mystery box', { tradeable_on_ge: true, tradeable: true }, 100_000);
 setCustomItem(13_345, 'Tester Gift Box', 'Mystery box', {}, 100_000);
 setCustomItem(12_592, 'Divine sigil', 'Elysian sigil', {}, 930_000_000);
 setCustomItem(3454, 'Divine spirit shield', 'Elysian spirit shield', {}, 900_000_000);
@@ -80,21 +89,29 @@ setCustomItem(3454, 'Divine spirit shield', 'Elysian spirit shield', {}, 900_000
 // });
 
 // Abyssal thread || 24212 = Victor's cape (50) [DUPLICATE]
-setCustomItem(24_212, 'Abyssal thread', 'Giant pouch', {}, 10_000_000);
+setCustomItem(24_212, 'Abyssal thread', 'Giant pouch', { tradeable: true, tradeable_on_ge: true }, 10_000_000);
 
 // Abyssal pouch || 24210 = Victor's cape (10) [DUPLICATE]
-setCustomItem(24_210, 'Abyssal pouch', 'Giant pouch', {}, 100_000);
+setCustomItem(24_210, 'Abyssal pouch', 'Giant pouch', { tradeable: true, tradeable_on_ge: true }, 100_000);
 
 // Ori Pet || 4149	 = Abyssal demon
 
 // Abyssal bones || 24199 = Seren halo [DUPLICATE]
-setCustomItem(24_199, 'Abyssal dragon bones', 'Superior dragon bones', {}, 20_000);
+setCustomItem(
+	24_199,
+	'Abyssal dragon bones',
+	'Superior dragon bones',
+	{ tradeable: true, tradeable_on_ge: true },
+	20_000
+);
 
 setCustomItem(
 	6796,
 	'Tiny lamp',
 	'Lamp',
 	{
+		tradeable: true,
+		tradeable_on_ge: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -106,6 +123,8 @@ setCustomItem(
 	'Small lamp',
 	'Lamp',
 	{
+		tradeable: true,
+		tradeable_on_ge: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -117,6 +136,8 @@ setCustomItem(
 	'Average lamp',
 	'Lamp',
 	{
+		tradeable: true,
+		tradeable_on_ge: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -128,6 +149,8 @@ setCustomItem(
 	'Large lamp',
 	'Lamp',
 	{
+		tradeable: true,
+		tradeable_on_ge: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -139,6 +162,8 @@ setCustomItem(
 	'Huge lamp',
 	'Lamp',
 	{
+		tradeable: true,
+		tradeable_on_ge: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -187,8 +212,11 @@ setCustomItem(
 	},
 	50_000_000
 );
-setCustomItem(19_837, 'Clue scroll (grandmaster)', 'Clue scroll (easy)');
-setCustomItem(19_838, 'Reward casket (grandmaster)', 'Reward casket (master)');
+setCustomItem(19_837, 'Clue scroll (grandmaster)', 'Clue scroll (easy)', { tradeable: true, tradeable_on_ge: true });
+setCustomItem(19_838, 'Reward casket (grandmaster)', 'Reward casket (master)', {
+	tradeable: true,
+	tradeable_on_ge: true
+});
 setCustomItem(516, 'Nuts of monkey', 'Rune platelegs');
 
 /**
@@ -817,18 +845,18 @@ setCustomItem(45_108, 'Ring of luck', 'Berserker ring', {}, 1000);
 // Royal mystery box
 setCustomItem(47_500, 'Diamond sceptre', 'Rune sword', {}, 1_000_000);
 setCustomItem(47_501, 'Diamond crown', 'Bronze full helm', {}, 1_000_000);
-setCustomItem(47_502, 'Royal mystery box', 'Mystery box', {}, 1_000_000);
+setCustomItem(47_502, 'Royal mystery box', 'Mystery box', { tradeable_on_ge: true, tradeable: true }, 1_000_000);
 
 // 1st age
 setCustomItem(47_503, 'First age tiara', 'Rune full helm', {}, 100_000_000);
 setCustomItem(47_504, 'First age amulet', 'Amulet of strength', {}, 100_000_000);
-setCustomItem(47_505, 'First age cape', 'Fire cape', {}, 100_000_000);
-setCustomItem(47_506, 'First age bracelet', 'Barrows gloves', {}, 100_000_000);
+setCustomItem(47_505, 'First age cape', 'Fire cape', { tradeable_on_ge: true, tradeable: true }, 100_000_000);
+setCustomItem(47_506, 'First age bracelet', 'Barrows gloves', { tradeable_on_ge: true, tradeable: true }, 100_000_000);
 setCustomItem(47_507, 'First age ring', 'Berserker ring', {}, 100_000_000);
 
 setCustomItem(47_508, 'Broken dwarven warhammer', 'Rune warhammer', {}, 1_000_000_000);
 
-setCustomItem(47_509, 'Equippable mystery box', 'Mystery box', {}, 1_000_000);
+setCustomItem(47_509, 'Equippable mystery box', 'Mystery box', { tradeable_on_ge: true, tradeable: true }, 1_000_000);
 
 setCustomItem(47_510, 'Deathtouched dart', 'Rune dart', {}, 5_000_000);
 
@@ -1005,7 +1033,7 @@ setCustomItem(
 
 setCustomItem(47_517, 'Perfect chitin', 'Magic seed', {}, 1_000_000);
 
-setCustomItem(47_521, 'Beach mystery box', 'Mystery box', {}, 1_000_000);
+setCustomItem(47_521, 'Beach mystery box', 'Mystery box', { tradeable_on_ge: true, tradeable: true }, 1_000_000);
 setCustomItem(47_523, 'Beach ball', 'Coal', {}, 100_000);
 setCustomItem(47_524, 'Water balloon', 'Coal', {}, 100_000);
 setCustomItem(47_525, 'Ice cream', 'Coal', {}, 100_000);
@@ -1386,6 +1414,8 @@ setCustomItem(
 	'Hellfire arrow',
 	'Barbed arrow',
 	{
+		tradeable: true,
+		tradeable_on_ge: true,
 		equipment: {
 			attack_stab: 0,
 			attack_slash: 0,
@@ -1434,7 +1464,7 @@ setCustomItem(48_228, 'Monkey dye', 'Egg', {}, 10_000_000);
 setCustomItem(48_229, 'Marimbo statue', 'Egg', {}, 10_000_000);
 setCustomItem(48_230, 'Big banana', 'Bronze kiteshield', {}, 100_000);
 
-setCustomItem(48_324, 'Blacksmith crate', 'Mystery box', {}, 100_000);
+setCustomItem(48_324, 'Blacksmith crate', 'Mystery box', { tradeable: true, tradeable_on_ge: true }, 100_000);
 
 setCustomItem(48_240, 'Ignecarus mask', 'Rune full helm', {}, 1_000_000);
 setCustomItem(48_241, 'Malygos mask', 'Rune full helm', {}, 1_000_000);
@@ -1636,6 +1666,8 @@ setCustomItem(
 	'Leia',
 	'Herbi',
 	{
+		tradeable: true,
+		tradeable_on_ge: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -2991,12 +3023,12 @@ setCustomItem(
 	},
 	10_000
 );
-setCustomItem(52_617, 'Lava flower crown', 'Flower crown', { tradeable: false }, 10_000);
-setCustomItem(52_618, 'Purple flower crown', 'Flower crown', { tradeable: false }, 10_000);
+setCustomItem(52_617, 'Lava flower crown', 'Flower crown', { tradeable: true, tradeable_on_ge: true }, 10_000);
+setCustomItem(52_618, 'Purple flower crown', 'Flower crown', { tradeable: true, tradeable_on_ge: true }, 10_000);
 setCustomItem(52_630, 'Beehive', 'Coal', {}, 10_000);
 setCustomItem(52_631, 'Honeycomb', 'Coal', {}, 10_000);
 setCustomItem(52_632, 'Honey', 'Coal', {}, 10_000);
-setCustomItem(52_633, 'Buzz', 'Herbi', {}, 1_000_000);
+setCustomItem(52_633, 'Buzz', 'Herbi', { tradeable: true, tradeable_on_ge: true }, 1_000_000);
 setCustomItem(
 	52_634,
 	'Elder table',
@@ -3504,6 +3536,8 @@ setCustomItem(
 	'Kuro',
 	'Herbi',
 	{
+		tradeable: true,
+		tradeable_on_ge: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -4219,6 +4253,8 @@ setCustomItem(
 	'Frosty',
 	'Herbi',
 	{
+		tradeable: true,
+		tradeable_on_ge: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -4747,6 +4783,8 @@ setCustomItem(
 	'Gary',
 	'Herbi',
 	{
+		tradeable: true,
+		tradeable_on_ge: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -5952,6 +5990,8 @@ setCustomItem(
 	'Eggy',
 	'Herbi',
 	{
+		tradeable: true,
+		tradeable_on_ge: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
