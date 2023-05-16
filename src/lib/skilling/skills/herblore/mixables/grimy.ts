@@ -1,7 +1,6 @@
 import { Bank } from 'oldschooljs';
 
 import getOSItem from '../../../../util/getOSItem';
-import itemID from '../../../../util/itemID';
 import { Mixable } from '../../../types';
 
 const Grimy: Mixable[] = [
