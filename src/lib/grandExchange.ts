@@ -7,6 +7,7 @@ import PQueue from 'p-queue';
 
 import { ADMIN_IDS, OWNER_IDS, production } from '../config';
 import { BitField, globalConfig, ONE_TRILLION, PerkTier } from './constants';
+import { isCustomItem } from './customItems/util';
 import { RobochimpUser, roboChimpUserFetch } from './roboChimp';
 import { prisma } from './settings/prisma';
 import { fetchTableBank, makeTransactFromTableBankQueries } from './tableBank';
@@ -139,14 +140,14 @@ class GrandExchangeSingleton {
 					name: 'Base',
 					amount: 1
 				},
-				...[100, 250, 1000].map(num => ({
+				...[200, 400, 1250].map(num => ({
 					has: (user: MUser) => user.totalLevel >= num,
 					name: `${num} Total Level`,
 					amount: 1
 				})),
 				{
 					has: (_: MUser, robochimpUser: RobochimpUser) =>
-						robochimpUser.osb_cl_percent && robochimpUser.osb_cl_percent >= 30,
+						robochimpUser.bso_cl_percent && robochimpUser.bso_cl_percent >= 30,
 					name: '30% CL Completion',
 					amount: 1
 				},
