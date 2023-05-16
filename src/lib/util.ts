@@ -44,7 +44,7 @@ import { bool, integer, nodeCrypto, real } from 'random-js';
 
 import { ADMIN_IDS, OWNER_IDS, production, SupportServer } from '../config';
 import { ClueTiers } from './clues/clueTiers';
-import { badgesCache, BitField, globalConfig, ProjectileType, usernameCache } from './constants';
+import { badgesCache, BitField, globalConfig, ONE_TRILLION, ProjectileType, usernameCache } from './constants';
 import { UserStatsDataNeededForCL } from './data/Collections';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
 import { calcActualClues } from './leagues/stats';
@@ -601,6 +601,7 @@ export function clAdjustedDroprate(user: MUser, item: string | number, baseRate:
 	let newRate = baseRate;
 	for (let i = 0; i < amountInCL; i++) {
 		newRate *= increaseMultiplier;
+		if (newRate >= ONE_TRILLION) break;
 	}
 	return Math.floor(newRate);
 }
