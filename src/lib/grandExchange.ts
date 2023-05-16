@@ -324,7 +324,9 @@ class GrandExchangeSingleton {
 			confirmationStr: `Are you sure you want to create this listing?
 
 ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of ${toKMB(total)}.${
-				applicableTax.taxedAmount > 0
+				type === 'Buy'
+					? ''
+					: applicableTax.taxedAmount > 0
 					? ` At this price, you will receive ${toKMB(totalAfterTax)} after taxes.`
 					: ' No tax will be charged on these items.'
 			}`,
