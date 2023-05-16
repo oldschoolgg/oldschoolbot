@@ -135,6 +135,10 @@ model ClientStorage {
   toa_cost                     Json     @default("{}") @db.Json
   toa_loot                     Json     @default("{}") @db.Json
 
+  grand_exchange_is_locked Boolean @default(false)
+  grand_exchange_total_tax BigInt  @default(0)
+  grand_exchange_tax_bank  BigInt  @default(0)
+
   @@map("clientStorage")
 }
 
@@ -403,6 +407,8 @@ model User {
   farmingPatches_mushroom   Json? @map("farmingPatches.mushroom") @db.Json
   farmingPatches_belladonna Json? @map("farmingPatches.belladonna") @db.Json
   kourend_favour            Json? @map("kourend_favour") @db.Json
+
+  geListings GEListing[]
 
   @@index([id, last_command_date])
   @@map("users")
@@ -890,4 +896,62 @@ enum xp_gains_skill_enum {
 enum AutoFarmFilterEnum {
   AllFarm
   Replant
+}
+
+enum GEListingType {
+  Buy
+  Sell
+}
+
+model GEListing {
+  id   Int           @id @unique @default(autoincrement())
+  type GEListingType
+
+  userfacing_id String
+
+  user_id String @db.VarChar(19)
+  user    User   @relation(fields: [user_id], references: [id])
+
+  created_at   DateTime  @default(now())
+  cancelled_at DateTime?
+  fulfilled_at DateTime?
+
+  gp_refunded           BigInt @default(0)
+  item_id               Int
+  asking_price_per_item BigInt
+  total_quantity        Int
+  quantity_remaining    Int
+
+  buyTransactions  GETransaction[] @relation("buy_transactions")
+  sellTransactions GETransaction[] @relation("sell_transactions")
+
+  @@map("ge_listing")
+}
+
+model GETransaction {
+  id Int @id @unique @default(autoincrement())
+
+  created_at DateTime @default(now())
+
+  quantity_bought           Int
+  price_per_item_before_tax BigInt
+  price_per_item_after_tax  BigInt
+  tax_rate_percent          Int    @db.SmallInt
+
+  total_tax_paid BigInt
+
+  buy_listing    GEListing @relation("buy_transactions", fields: [buy_listing_id], references: [id])
+  buy_listing_id Int
+
+  sell_listing    GEListing @relation("sell_transactions", fields: [sell_listing_id], references: [id])
+  sell_listing_id Int
+
+  @@map("ge_transaction")
+}
+
+model GEBank {
+  item_id  Int    @id
+  quantity BigInt
+
+  @@map("ge_bank")
 }
