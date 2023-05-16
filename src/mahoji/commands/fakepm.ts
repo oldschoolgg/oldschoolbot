@@ -1,10 +1,10 @@
-import { Canvas, loadImage } from '@napi-rs/canvas';
-import fs from 'fs';
+import { Canvas } from '@napi-rs/canvas';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
+import { loadAndCacheLocalImage } from '../../lib/util/canvasUtil';
 import { OSBMahojiCommand } from '../lib/util';
 
-const bg = loadImage(fs.readFileSync('./src/lib/resources/images/pm-bg.png'));
+const bg = loadAndCacheLocalImage('./src/lib/resources/images/pm-bg.png');
 
 export const fakepmCommand: OSBMahojiCommand = {
 	name: 'fakepm',

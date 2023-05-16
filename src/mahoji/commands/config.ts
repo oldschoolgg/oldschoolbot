@@ -46,6 +46,10 @@ const toggles = [
 	{
 		name: 'Disable Auto Farm Contract Button',
 		bit: BitField.DisableAutoFarmContractButton
+	},
+	{
+		name: "Disable Grand Exchange DM's",
+		bit: BitField.DisableGrandExchangeDMs
 	}
 ];
 

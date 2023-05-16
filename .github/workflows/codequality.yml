@@ -54,6 +54,8 @@ jobs:
                   pushd src &&
                   cp config.example.ts config.ts &&
                   popd
+            - name: Copy env
+              run: cp .env.example .env 
             - name: Generate Prisma Client
               run: yarn gen
             - name: Build code
