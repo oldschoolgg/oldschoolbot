@@ -2,7 +2,7 @@ import { GEListing, GEListingType, GETransaction } from '@prisma/client';
 import { bold, ButtonBuilder, ButtonStyle, userMention } from 'discord.js';
 import { calcPercentOfNum, clamp, noOp, sumArr, Time } from 'e';
 import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import PQueue from 'p-queue';
 
 import { ADMIN_IDS, OWNER_IDS, production } from '../config';
@@ -359,10 +359,9 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 						quantity_remaining: quantity,
 						userfacing_id: generateGrandExchangeID()
 					}
-				})
+				}),
+				...makeTransactFromTableBankQueries({ bankToAdd: result.cost })
 			]);
-
-			await prisma.$transaction(makeTransactFromTableBankQueries({ bankToAdd: result.cost }));
 
 			geLog(`${user.id} created ${type} listing, removing ${result.cost}, adding it to the g.e bank.`);
 
@@ -645,7 +644,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 	}
 
 	async fetchActiveListings() {
-		const [buyListings, sellListings, clientStorage] = await prisma.$transaction([
+		const [buyListings, sellListings, clientStorage, currentBankRaw] = await prisma.$transaction([
 			prisma.gEListing.findMany({
 				where: {
 					type: GEListingType.Buy,
@@ -680,7 +679,10 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 				select: {
 					grand_exchange_is_locked: true
 				}
-			})
+			}),
+			prisma.$queryRawUnsafe<{ bank: ItemBank }[]>(
+				'SELECT json_object_agg(item_id, quantity) as bank FROM ge_bank WHERE quantity != 0;'
+			)
 		]);
 
 		if (clientStorage?.grand_exchange_is_locked) {
@@ -688,7 +690,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 		} else if (clientStorage?.grand_exchange_is_locked === false) {
 			this.locked = false;
 		}
-		return { buyListings, sellListings };
+		return { buyListings, sellListings, currentBank: new Bank(currentBankRaw[0].bank) };
 	}
 
 	async extensiveVerification() {
@@ -701,7 +703,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 
 	async checkGECanFullFilAllListings() {
 		const shouldHave = new Bank();
-		const { buyListings, sellListings } = await this.fetchActiveListings();
+		const { buyListings, sellListings, currentBank } = await this.fetchActiveListings();
 
 		// How much GP the g.e still has from this listing
 		for (const listing of buyListings) {
@@ -713,18 +715,17 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 		}
 
 		geLog(`Expected G.E Bank: ${shouldHave}`);
-		const ownedBank = await this.fetchOwnedBank();
-		if (!ownedBank.equals(shouldHave)) {
+		if (!currentBank.equals(shouldHave)) {
 			throw new Error(
-				`GE either has extra or insufficient items. The GE has ${ownedBank} but should have ${shouldHave}. Difference: ${shouldHave.difference(
-					ownedBank
+				`GE either has extra or insufficient items. The GE has ${currentBank} but should have ${shouldHave}. Difference: ${shouldHave.difference(
+					currentBank
 				)}`
 			);
 		} else {
 			geLog(
-				`GE has ${ownedBank}, which is enough to cover the ${
+				`GE has ${currentBank}, which is enough to cover the ${
 					[...buyListings, ...sellListings].length
-				}x active listings! Difference: ${shouldHave.difference(ownedBank)}`
+				}x active listings! Difference: ${shouldHave.difference(currentBank)}`
 			);
 		}
 	}

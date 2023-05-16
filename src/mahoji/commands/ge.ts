@@ -33,7 +33,7 @@ function geListingToString(
 	const item = getOSItem(listing.item_id);
 	const allTransactions = [...listing.buyTransactions, ...listing.sellTransactions];
 	const verb = listing.type === 'Buy' ? 'Buying' : 'Selling';
-	const pastVerb = listing.type === 'Buy' ? 'Bought' : 'Sold';
+	const pastVerb = listing.type === 'Buy' ? 'bought' : 'sold';
 	const action = listing.type.toLowerCase();
 	const itemQty = `${toKMB(listing.total_quantity)} ${item.name}`;
 
@@ -42,11 +42,11 @@ function geListingToString(
 	const totalTaxPaidSoFar = toKMB(sumArr(allTransactions.map(i => i.quantity_bought * Number(i.total_tax_paid))));
 
 	if (listing.cancelled_at) {
-		return `Cancelled offer to ${action} ${itemQty}. ${totalSold} were ${pastVerb}.`;
+		return `Cancelled offer to ${action} ${itemQty}. ${totalSold} ${pastVerb}.`;
 	}
 
 	if (listing.fulfilled_at) {
-		return `Completed offer to ${action} ${itemQty}. ${totalSold} were ${pastVerb} for a total amount of ${totalPricePaidSoFar} (${totalTaxPaidSoFar} tax paid).`;
+		return `Completed offer to ${action} ${itemQty}. ${totalSold} ${pastVerb} for a total amount of ${totalPricePaidSoFar} (${totalTaxPaidSoFar} tax paid).`;
 	}
 
 	const buyLimitStr =
