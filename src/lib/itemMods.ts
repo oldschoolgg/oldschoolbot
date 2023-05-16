@@ -1,4 +1,4 @@
-interface CustomItemData {
+export interface CustomItemData {
 	cantBeSacrificed?: true;
 }
 declare module 'oldschooljs/dist/meta/types' {

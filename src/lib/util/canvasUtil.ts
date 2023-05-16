@@ -143,3 +143,12 @@ export function measureTextWidth(ctx: SKRSContext2D, text: string) {
 	assert(typeof num === 'number');
 	return num;
 }
+
+const localImageCache = new Map<string, Image>();
+
+export async function loadAndCacheLocalImage(path: string) {
+	const cached = localImageCache.get(path);
+	if (cached) return cached;
+	const image = await loadImage(path);
+	return image;
+}
