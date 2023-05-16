@@ -1,8 +1,10 @@
+import { mentionCommand } from '@oldschoolgg/toolkit';
 import { Prisma } from '@prisma/client';
 import { ChatInputCommandInteraction } from 'discord.js';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { BitField } from '../../../lib/constants';
+import { GrandExchange } from '../../../lib/grandExchange';
 import { roboChimpUserFetch } from '../../../lib/roboChimp';
 import { prisma } from '../../../lib/settings/prisma';
 import { assert } from '../../../lib/util';
@@ -53,6 +55,15 @@ export async function ironmanCommand(
 
 	if (existingGiveaways.length !== 0) {
 		return "You can't become an ironman because you have active giveaways.";
+	}
+
+	const activeGEListings = await GrandExchange.fetchActiveListings();
+	if ([...activeGEListings.buyListings, ...activeGEListings.sellListings].some(i => i.user_id === user.id)) {
+		return `You can't become an ironman because you have active Grand Exchange listings. Cancel them and try again: ${mentionCommand(
+			globalClient,
+			'ge',
+			'cancel'
+		)}`;
 	}
 
 	if (interaction) {
