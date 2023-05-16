@@ -33,7 +33,7 @@ export async function cancelGEListingCommand(user: MUser, idToCancel: string) {
 
 		const refundBank = new Bank();
 		if (newListing.type === 'Buy') {
-			refundBank.add('Coins', newListing.asking_price_per_item * newListing.quantity_remaining);
+			refundBank.add('Coins', Number(newListing.asking_price_per_item) * newListing.quantity_remaining);
 		} else {
 			refundBank.add(newListing.item_id, newListing.quantity_remaining);
 		}

@@ -492,3 +492,5 @@ export const globalConfig = globalConfigSchema.parse({
 	clientID: process.env.CLIENT_ID,
 	geAdminChannelID: process.env.GE_ADMIN_CHANNEL_ID
 });
+
+export const ONE_TRILLION = 1_000_000_000_000;

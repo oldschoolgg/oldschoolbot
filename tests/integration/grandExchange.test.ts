@@ -45,6 +45,7 @@ describe('Grand Exchange', async () => {
 	test(
 		'Fuzz',
 		async () => {
+			assert(randInt(1, 100_000) !== randInt(1, 100_000));
 			await mockClient();
 
 			await GrandExchange.totalReset();
@@ -55,7 +56,7 @@ describe('Grand Exchange', async () => {
 
 			const totalExpectedBank = new Bank();
 			let users: TestUser[] = [];
-			let amountOfUsers = randInt(73, 99);
+			let amountOfUsers = randInt(200, 300);
 
 			for (let i = 0; i < amountOfUsers; i++) {
 				const user = await createTestUser();
@@ -65,48 +66,48 @@ describe('Grand Exchange', async () => {
 				assert(user.bankWithGP.equals(sampleBank), 'Test users bank should match sample bank');
 			}
 
-			const promises = [];
-
 			users = shuffleArr(users);
 
 			for (let i = 0; i < users.length; i++) {
 				for (const item of itemPool) {
 					const method = randArrItem(['buy', 'sell']);
-					let quantity = randArrItem([-1, 0, 100_000_000_000_000, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 500, '5*5']);
+					let quantity = randArrItem([
+						-1,
+						0,
+						100_000_000_000_000_000,
+						1,
+						2,
+						38,
+						1_000_000_000_000,
+						500,
+						'5*5'
+					]);
 					let price = randArrItem([
 						-1,
 						0,
-						100_000_000_000_000,
+						100_000_000_000_000_000,
 						1,
 						2,
-						3,
-						4,
-						5,
+						1_000_000_000_000,
 						99,
 						100,
 						101,
 						1005,
-						2005,
-						3005,
 						4005,
 						5005,
 						100_000,
 						'5*9999999'
 					]);
 
-					const promise = users[i].runCommand(geCommand, {
+					users[i].runCommand(geCommand, {
 						[method]: {
 							item,
 							quantity,
 							price
 						}
 					});
-
-					if (i % 2 === 0) promises.push(promise);
 				}
 			}
-
-			await Promise.all(promises);
 
 			for (let i = 0; i < 50; i++) {
 				await GrandExchange.tick();

@@ -38,7 +38,9 @@ function geListingToString(
 	const itemQty = `${toKMB(listing.total_quantity)} ${item.name}`;
 
 	const totalSold = listing.total_quantity - listing.quantity_remaining;
-	const totalPricePaidSoFar = toKMB(sumArr(allTransactions.map(i => i.quantity_bought * i.price_per_item_after_tax)));
+	const totalPricePaidSoFar = toKMB(
+		sumArr(allTransactions.map(i => i.quantity_bought * Number(i.price_per_item_after_tax)))
+	);
 	const totalTaxPaidSoFar = toKMB(sumArr(allTransactions.map(i => i.quantity_bought * Number(i.total_tax_paid))));
 
 	if (listing.cancelled_at) {
@@ -56,9 +58,9 @@ function geListingToString(
 
 	return `${verb} ${itemQty}, ${toKMB(
 		listing.quantity_remaining
-	)} are remaining to ${listing.type.toLowerCase()}, asking for ${toKMB(listing.asking_price_per_item)} GP each. ${
-		allTransactions.length
-	}x transactions made.${buyLimitStr}`;
+	)} are remaining to ${listing.type.toLowerCase()}, asking for ${toKMB(
+		Number(listing.asking_price_per_item)
+	)} GP each. ${allTransactions.length}x transactions made.${buyLimitStr}`;
 }
 
 const quantityOption: CommandOption = {
@@ -331,7 +333,7 @@ ${recentInactiveListings.map(i => geListingToString(i)).join('\n')}`;
 				content: `Successfully created a listing to buy ${toKMB(
 					createdListing.total_quantity
 				)} ${itemNameFromID(createdListing.item_id)} for ${toKMB(
-					createdListing.asking_price_per_item
+					Number(createdListing.asking_price_per_item)
 				)} GP each.`,
 				components: makeComponents([createGECancelButton(createdListing)])
 			};
@@ -353,7 +355,7 @@ ${recentInactiveListings.map(i => geListingToString(i)).join('\n')}`;
 				content: `Successfully created a listing to sell ${toKMB(
 					createdListing.total_quantity
 				)} ${itemNameFromID(createdListing.item_id)} for ${toKMB(
-					createdListing.asking_price_per_item
+					Number(createdListing.asking_price_per_item)
 				)} GP each.`,
 				components: makeComponents([createGECancelButton(createdListing)])
 			};
