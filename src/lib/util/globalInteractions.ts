@@ -299,6 +299,14 @@ async function handleGEButton(user: MUser, id: string, interaction: ButtonIntera
 
 export async function interactionHook(interaction: Interaction) {
 	if (!interaction.isButton()) return;
+
+	if (globalClient.isShuttingDown) {
+		return interactionReply(interaction, {
+			content: 'The bot is currently rebooting, please try again in a couple minutes.',
+			ephemeral: true
+		});
+	}
+
 	debugLog(`Interaction hook for button [${interaction.customId}]`, {
 		user_id: interaction.user.id,
 		channel_id: interaction.channelId,
@@ -322,7 +330,7 @@ export async function interactionHook(interaction: Interaction) {
 	if (id.startsWith('ge_')) return handleGEButton(user, id, interaction);
 
 	if (!isValidGlobalInteraction(id)) return;
-	if (user.isBusy || globalClient.isShuttingDown) {
+	if (user.isBusy) {
 		return interactionReply(interaction, { content: 'You cannot use a command right now.', ephemeral: true });
 	}
 

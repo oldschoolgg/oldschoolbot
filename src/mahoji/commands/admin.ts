@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { execSync } from 'node:child_process';
 import { inspect } from 'node:util';
 
 import { codeBlock } from '@discordjs/builders';
@@ -22,6 +23,7 @@ import {
 	BadgesEnum,
 	BitField,
 	BitFieldData,
+	BOT_TYPE,
 	Channel,
 	DISABLED_COMMANDS,
 	globalConfig
@@ -1080,7 +1082,7 @@ export const adminCommand: OSBMahojiCommand = {
 				content: `Shutting down in ${dateFm(new Date(Date.now() + timer))}.`
 			});
 			await Promise.all([sleep(timer), GrandExchange.queue.onEmpty()]);
-			process.exit(1);
+			execSync(`pm2 stop ${BOT_TYPE === 'OSB' ? 'osb' : 'bso'}`);
 		}
 		if (options.viewbank) {
 			const userToCheck = await mUserFetch(options.viewbank.user.user.id);
