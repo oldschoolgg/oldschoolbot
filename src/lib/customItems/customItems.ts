@@ -5997,7 +5997,8 @@ setCustomItem(
 	'Heavy ballista',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
 		},
 		equipment: {
 			...getOSItem('Heavy ballista').equipment!,
@@ -6553,4 +6554,32 @@ setCustomItem(
 		}
 	},
 	55_000_000
+);
+
+setCustomItem(
+	70_463,
+	'TzKal cape (Volcanic)',
+	'TzKal cape',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true
+		}
+	},
+	5_000_000
+);
+
+setCustomItem(
+	70_464,
+	'TzKal cape (Oceanic)',
+	'TzKal cape',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true
+		}
+	},
+	5_000_000
 );

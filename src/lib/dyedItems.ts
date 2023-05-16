@@ -549,6 +549,19 @@ export const dyedItems: DyedItem[] = [
 			}
 		]
 	},
+	{
+		baseItem: getOSItem('TzKal cape'),
+		dyedVersions: [
+			{
+				item: getOSItem('TzKal cape (Oceanic)'),
+				dye: getOSItem('Oceanic dye')
+			},
+			{
+				item: getOSItem('TzKal cape (Volcanic)'),
+				dye: getOSItem('Volcanic dye')
+			}
+		]
+	},
 	...gorajan,
 	...dwarvenDyed
 ];

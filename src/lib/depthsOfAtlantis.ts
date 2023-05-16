@@ -569,8 +569,8 @@ export function createDOATeam({
 
 			fakeDuration += roomTime;
 
-			// Wiped
-			if (deaths === team.length) {
+			// Wipe if half of the team dies
+			if (deaths >= Math.ceil(team.length / 2)) {
 				wipedRoom = room.id;
 				realDuration += randInt(1, roomTime);
 				if (!wipedRoom) messages.push(`  Wiped in ${room.name} room`);
