@@ -1,8 +1,15 @@
+import '../customItems/customItems';
+
 import { Items } from 'oldschooljs';
 import { itemNameMap } from 'oldschooljs/dist/structures/Items';
 import { cleanString } from 'oldschooljs/dist/util/cleanString';
 
+import { customItems } from '../customItems/util';
+
 export function setItemAlias(id: number, name: string | string[], rename = true) {
+	if (customItems.length === 0) {
+		throw new Error('Custom items have not been loaded yet.');
+	}
 	const existingItem = Items.get(id);
 	if (!existingItem) {
 		throw new Error(`Tried to add item alias for a non-existant item: ${name} ${id}`);

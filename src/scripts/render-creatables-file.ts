@@ -14,7 +14,6 @@ export function makeCreatablesTable() {
 			return [
 				i.name,
 				`${isFunction(i.inputItems) ? 'Unknown/Dynamic' : new Bank(i.inputItems)}`,
-				,
 				`${new Bank(i.outputItems)}`,
 				`${i.GPCost ?? 0}`
 			];
