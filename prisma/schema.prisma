@@ -917,7 +917,7 @@ model GEListing {
 
   gp_refunded           BigInt @default(0)
   item_id               Int
-  asking_price_per_item Int
+  asking_price_per_item BigInt
   total_quantity        Int
   quantity_remaining    Int
 
@@ -933,9 +933,9 @@ model GETransaction {
   created_at DateTime @default(now())
 
   quantity_bought           Int
-  price_per_item_before_tax Int
-  price_per_item_after_tax  Int
-  tax_rate_percent          Int @db.SmallInt
+  price_per_item_before_tax BigInt
+  price_per_item_after_tax  BigInt
+  tax_rate_percent          Int    @db.SmallInt
 
   total_tax_paid BigInt
 
