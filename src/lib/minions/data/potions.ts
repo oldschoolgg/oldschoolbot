@@ -296,11 +296,11 @@ const Potions = [
 	},
 	{
 		name: 'Prayer mix',
-		items: resolveItems(['Superattack mix(1)', 'Superattack mix(2)'])
+		items: resolveItems(['Prayer mix(1)', 'Prayer mix(2)'])
 	},
 	{
 		name: 'Superattack mix',
-		items: resolveItems(['Defence mix(1)', 'Defence mix(2)'])
+		items: resolveItems(['Superattack mix(1)', 'Superattack mix(2)'])
 	},
 	{
 		name: 'Anti-poison supermix',

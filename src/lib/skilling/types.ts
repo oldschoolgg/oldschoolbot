@@ -174,9 +174,8 @@ export interface Fletchable {
 }
 
 export interface Mixable {
-	name: string;
-	aliases: string[];
-	id: number;
+	item: Item;
+	aliases?: string[];
 	level: number;
 	xp: number;
 	inputItems: Bank;
