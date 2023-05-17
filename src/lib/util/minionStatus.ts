@@ -291,9 +291,9 @@ export function minionStatus(user: MUser) {
 		}
 		case 'Herblore': {
 			const data = currentTask as HerbloreActivityTaskOptions;
-			const mixable = Herblore.Mixables.find(item => item.id === data.mixableID);
+			const mixable = Herblore.Mixables.find(i => i.item.id === data.mixableID);
 
-			return `${name} is currently mixing ${data.quantity}x ${mixable!.name}. ${formattedDuration} Your ${
+			return `${name} is currently mixing ${data.quantity}x ${mixable!.item.name}. ${formattedDuration} Your ${
 				Emoji.Herblore
 			} Herblore level is ${user.skillLevel(SkillsEnum.Herblore)}`;
 		}

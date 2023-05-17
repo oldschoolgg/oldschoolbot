@@ -184,6 +184,7 @@ const Potions: Mixable[] = [
 	},
 	{
 		item: getOSItem('Weapon poison'),
+		aliases: ['weapon poison(+)'],
 		level: 60,
 		xp: 137.5,
 		inputItems: new Bank({ 'Kwuarm potion (unf)': 1, 'Dragon scale dust': 1 }),
