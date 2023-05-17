@@ -13,7 +13,7 @@ describe('decantPotionFromBank', () => {
 			'Attack potion (2)': 1000,
 			'Strength potion (1)': 1000,
 			'Prayer mix (2)': 1000,
-			'Extended antifire mix (2)': 667
+			'Extended antifire mix (1)': 667
 		});
 		expect(decantPotionFromBank(userBank, 'magic potion', 4)).toMatchObject({
 			potionsToAdd: new Bank({ 'Magic potion (4)': 750 }),
@@ -28,7 +28,7 @@ describe('decantPotionFromBank', () => {
 				'Attack potion (2)': 1000,
 				'Strength potion (1)': 1000,
 				'Prayer mix (2)': 1000,
-				'Extended antifire mix (2)': 667
+				'Extended antifire mix (1)': 667
 			})
 		});
 		expect(decantPotionFromBank(userBank, 'defence potion', 2)).toMatchObject({
@@ -50,7 +50,7 @@ describe('decantPotionFromBank', () => {
 				'Attack potion (2)': 1000,
 				'Strength potion (1)': 1000,
 				'Prayer mix (2)': 1000,
-				'Extended antifire mix (2)': 667
+				'Extended antifire mix (1)': 667
 			})
 		});
 		expect(decantPotionFromBank(userBank, 'attack potion', 2)).toEqual({
@@ -125,7 +125,7 @@ describe('decantPotionFromBank', () => {
 				'Extended antifire mix (1)': 1
 			}),
 			potionsToRemove: new Bank({
-				'Extended antifire mix (2)': 667
+				'Extended antifire mix (1)': 667
 			}),
 			sumOfPots: 667,
 			potionName: 'Extended antifire mix',
@@ -138,7 +138,8 @@ describe('decantPotionFromBank', () => {
 				'Strength potion (3)': 333,
 				'Strength potion (1)': 1,
 				'Prayer mix (1)': 2000,
-				'Extended antifire mix (1)': 667
+				'Extended antifire mix (2)': 333,
+				'Extended antifire mix (1)': 1
 			})
 		});
 	});
