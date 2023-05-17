@@ -106,7 +106,7 @@ describe('decantPotionFromBank', () => {
 				'Prayer mix (2)': 1000
 			}),
 			sumOfPots: 1000,
-			potionName: 'Strength potion',
+			potionName: 'Prayer mix',
 			finalUserBank: new Bank({
 				'Magic potion (3)': 1000,
 				'Defence potion (4)': 733,
@@ -128,7 +128,7 @@ describe('decantPotionFromBank', () => {
 				'Extended antifire mix (2)': 667
 			}),
 			sumOfPots: 667,
-			potionName: 'Strength potion',
+			potionName: 'Extended antifire mix',
 			finalUserBank: new Bank({
 				'Magic potion (3)': 1000,
 				'Defence potion (4)': 733,
