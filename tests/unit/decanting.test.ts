@@ -112,9 +112,8 @@ describe('decantPotionFromBank', () => {
 				'Defence potion (4)': 733,
 				'Defence potion (3)': 233,
 				'Defence potion (1)': 8,
-				'Attack potion (2)': 1000,
-				'Strength potion (3)': 333,
-				'Strength potion (1)': 1,
+				'Attack potion (4)': 5000,
+				'Strength potion (1)': 1000,
 				'Prayer mix (1)': 2000,
 				'Extended antifire mix (1)': 667
 			})
@@ -135,9 +134,8 @@ describe('decantPotionFromBank', () => {
 				'Defence potion (3)': 233,
 				'Defence potion (1)': 8,
 				'Attack potion (2)': 1000,
-				'Strength potion (3)': 333,
-				'Strength potion (1)': 1,
-				'Prayer mix (1)': 2000,
+				'Strength potion (1)': 1000,
+				'Prayer mix (2)': 1000,
 				'Extended antifire mix (2)': 333,
 				'Extended antifire mix (1)': 1
 			})
