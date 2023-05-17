@@ -112,7 +112,7 @@ describe('decantPotionFromBank', () => {
 				'Defence potion (4)': 733,
 				'Defence potion (3)': 233,
 				'Defence potion (1)': 8,
-				'Attack potion (4)': 5000,
+				'Attack potion (2)': 1000,
 				'Strength potion (1)': 1000,
 				'Prayer mix (1)': 2000,
 				'Extended antifire mix (1)': 667
