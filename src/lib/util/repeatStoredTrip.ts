@@ -36,6 +36,7 @@ import {
 	MahoganyHomesActivityTaskOptions,
 	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
+	MotherlodeMiningActivityTaskOptions,
 	NexTaskOptions,
 	NightmareActivityTaskOptions,
 	OfferingActivityTaskOptions,
@@ -337,6 +338,13 @@ export const tripHandlers = {
 			name: data.oreID,
 			quantity: data.quantity,
 			powermine: data.powermine
+		})
+	},
+	[activity_type_enum.MotherlodeMining]: {
+		commandName: 'mine',
+		args: (data: MotherlodeMiningActivityTaskOptions) => ({
+			name: 'Motherlode mine',
+			quantity: data.quantity
 		})
 	},
 	[activity_type_enum.MonsterKilling]: {
