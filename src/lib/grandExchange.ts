@@ -678,9 +678,14 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 					fulfilled_at: null,
 					cancelled_at: null
 				},
-				orderBy: {
-					created_at: 'asc'
-				}
+				orderBy: [
+					{
+						asking_price_per_item: 'desc'
+					},
+					{
+						created_at: 'asc'
+					}
+				]
 			}),
 			prisma.gEListing.findMany({
 				where: {
@@ -688,9 +693,14 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 					fulfilled_at: null,
 					cancelled_at: null
 				},
-				orderBy: {
-					created_at: 'asc'
-				},
+				orderBy: [
+					{
+						asking_price_per_item: 'asc'
+					},
+					{
+						created_at: 'asc'
+					}
+				],
 				// Take the last purchase transaction for each sell listing
 				include: {
 					sellTransactions: {
@@ -823,9 +833,14 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			 * active one. To prevent buying over and over from the same person.
 			 */
 			matchingSellListings.sort((a, b) => {
-				const aLastSale = a.sellTransactions[0]?.created_at ?? a.created_at;
-				const bLastSale = b.sellTransactions[0]?.created_at ?? b.created_at;
-				return aLastSale.getTime() - bLastSale.getTime();
+				const aPrice = a.asking_price_per_item;
+				const bPrice = b.asking_price_per_item;
+				if (aPrice === bPrice) {
+					const aLastSale = a.sellTransactions[0]?.created_at ?? a.created_at;
+					const bLastSale = b.sellTransactions[0]?.created_at ?? b.created_at;
+					return aLastSale.getTime() - bLastSale.getTime();
+				}
+				return Number(aPrice - bPrice);
 			});
 
 			const matchingSellListing = matchingSellListings[0];
