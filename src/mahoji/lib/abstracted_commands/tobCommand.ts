@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 import { TOBRooms } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
 
 import { Emoji } from '../../../lib/constants';
+import { getSimilarItems } from '../../../lib/data/similarItems';
 import {
 	baseTOBUniques,
 	calculateTOBDeaths,
@@ -22,8 +23,9 @@ import { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
 import { channelIsSendable, formatDuration, formatSkillRequirements, skillsMeetRequirements } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import getOSItem from '../../../lib/util/getOSItem';
+import itemID from '../../../lib/util/itemID';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { mahojiParseNumber, updateLegacyUserBankSetting } from '../../mahojiSettings';
+import { mahojiParseNumber, userStatsBankUpdate } from '../../mahojiSettings';
 
 const minStats = {
 	attack: 90,
@@ -100,8 +102,13 @@ export async function checkTOBUser(
 		];
 	}
 
+	const similarItems = getSimilarItems(itemID('Rune pouch'));
+	if (similarItems.every(item => !user.owns(item))) {
+		return [true, `${user.usernameOrMention}'s doesn't have a Rune pouch.`];
+	}
+
 	const cost = await calcTOBInput(user);
-	cost.add('Coins', 100_000).add('Rune pouch');
+	cost.add('Coins', 100_000);
 	if (!user.owns(cost)) {
 		return [true, `${user.usernameOrMention} doesn't own ${cost.remove(user.bankWithGP)}`];
 	}
@@ -200,12 +207,12 @@ export async function checkTOBUser(
 	return [false];
 }
 
-export async function checkTOBTeam(users: MUser[], isHardMode: boolean): Promise<string | null> {
+export async function checkTOBTeam(users: MUser[], isHardMode: boolean, solo: boolean): Promise<string | null> {
 	const userWithoutSupplies = users.find(u => !u.bank.has(minimumTOBSuppliesNeeded));
 	if (userWithoutSupplies) {
 		return `${userWithoutSupplies.usernameOrMention} doesn't have enough supplies`;
 	}
-	if (users.length < 2 || users.length > 5) {
+	if ((!solo && users.length < 2) || users.length > 5) {
 		return 'TOB team must be 2-5 users';
 	}
 
@@ -223,10 +230,12 @@ export async function checkTOBTeam(users: MUser[], isHardMode: boolean): Promise
 }
 
 export async function tobStatsCommand(user: MUser) {
-	const hardKC = await getMinigameScore(user.id, 'tob_hard');
-	const kc = await getMinigameScore(user.id, 'tob');
-	const attempts = user.user.tob_attempts;
-	const hardAttempts = user.user.tob_hard_attempts;
+	const [minigameScores, { tob_attempts: attempts, tob_hard_attempts: hardAttempts }] = await Promise.all([
+		user.fetchMinigames(),
+		user.fetchStats({ tob_attempts: true, tob_hard_attempts: true })
+	]);
+	const hardKC = minigameScores.tob_hard;
+	const kc = minigameScores.tob;
 	const gear = calculateTOBUserGearPercents(user);
 	const deathChances = calculateTOBDeaths(kc, hardKC, attempts, hardAttempts, false, gear);
 	const hardDeathChances = calculateTOBDeaths(kc, hardKC, attempts, hardAttempts, true, gear);
@@ -253,7 +262,13 @@ export async function tobStatsCommand(user: MUser) {
 		.join(', ')}`;
 }
 
-export async function tobStartCommand(user: MUser, channelID: string, isHardMode: boolean, maxSizeInput?: number) {
+export async function tobStartCommand(
+	user: MUser,
+	channelID: string,
+	isHardMode: boolean,
+	maxSizeInput: number | undefined,
+	solo: boolean
+) {
 	if (user.minionIsBusy) {
 		return `${user.usernameOrMention} minion is busy`;
 	}
@@ -282,20 +297,24 @@ export async function tobStartCommand(user: MUser, channelID: string, isHardMode
 		message: `${user.usernameOrMention} is hosting a ${
 			isHardMode ? '**Hard mode** ' : ''
 		}Theatre of Blood mass! Use the buttons below to join/leave.`,
-		customDenier: async user => {
-			if (user.minionIsBusy) {
-				return [true, `${user.usernameOrMention} minion is busy`];
+		customDenier: async _user => {
+			if (_user.minionIsBusy) {
+				return [true, `${_user.usernameOrMention} minion is busy`];
 			}
 
-			return checkTOBUser(user, isHardMode);
+			return checkTOBUser(_user, isHardMode);
 		}
 	};
 
-	const channel = globalClient.channels.cache.get(channelID.toString());
+	const channel = globalClient.channels.cache.get(channelID);
 	if (!channelIsSendable(channel)) return 'No channel found.';
 	let usersWhoConfirmed = [];
 	try {
-		usersWhoConfirmed = await setupParty(channel, user, partyOptions);
+		if (solo) {
+			usersWhoConfirmed = [user];
+		} else {
+			usersWhoConfirmed = await setupParty(channel, user, partyOptions);
+		}
 	} catch (err: any) {
 		return {
 			content: typeof err === 'string' ? err : 'Your mass failed to start.',
@@ -304,29 +323,35 @@ export async function tobStartCommand(user: MUser, channelID: string, isHardMode
 	}
 	const users = usersWhoConfirmed.filter(u => !u.minionIsBusy).slice(0, maxSize);
 
-	const teamCheckFailure = await checkTOBTeam(users, isHardMode);
+	const teamCheckFailure = await checkTOBTeam(users, isHardMode, solo);
 	if (teamCheckFailure) {
 		return `Your mass failed to start because of this reason: ${teamCheckFailure} ${users}`;
 	}
 
 	const {
 		duration,
-		totalReduction,
+		maxUserReduction,
 		reductions,
 		wipedRoom: _wipedRoom,
 		deathDuration,
 		parsedTeam
 	} = createTOBTeam({
 		team: await Promise.all(
-			users.map(async u => ({
-				user: u,
-				bank: u.bank,
-				gear: u.gear,
-				attempts: u.user.tob_attempts,
-				hardAttempts: u.user.tob_hard_attempts,
-				kc: await getMinigameScore(u.id, 'tob'),
-				hardKC: await getMinigameScore(u.id, 'tob_hard')
-			}))
+			users.map(async u => {
+				const [minigameScores, { tob_attempts, tob_hard_attempts }] = await Promise.all([
+					u.fetchMinigames(),
+					u.fetchStats({ tob_attempts: true, tob_hard_attempts: true })
+				]);
+				return {
+					user: u,
+					bank: u.bank,
+					gear: u.gear,
+					attempts: tob_attempts,
+					hardAttempts: tob_hard_attempts,
+					kc: minigameScores.tob,
+					hardKC: minigameScores.tob_hard
+				};
+			})
 		),
 		hardMode: isHardMode
 	});
@@ -347,7 +372,7 @@ export async function tobStartCommand(user: MUser, channelID: string, isHardMode
 					.add(blowpipeData.dartID!, Math.floor(Math.min(blowpipeData.dartQuantity, 156)))
 					.add(u.gear.range.ammo!.item, 100)
 			);
-			await updateLegacyUserBankSetting(u.id, 'tob_cost', realCost);
+			await userStatsBankUpdate(u.id, 'tob_cost', realCost);
 			const effectiveCost = realCost.clone().remove('Coins', realCost.amount('Coins'));
 			totalCost.add(effectiveCost);
 			if (u.gear.melee.hasEquipped('Abyssal tentacle')) {
@@ -359,7 +384,7 @@ export async function tobStartCommand(user: MUser, channelID: string, isHardMode
 			}
 			debugStr += `**- ${u.usernameOrMention}** (${Emoji.Gear}${total.toFixed(1)}% ${
 				Emoji.CombatSword
-			} ${calcWhatPercent(reductions[u.id], totalReduction).toFixed(1)}%) used ${realCost}\n\n`;
+			} ${calcWhatPercent(reductions[u.id], maxUserReduction).toFixed(1)}%) used ${realCost}\n\n`;
 			return {
 				userID: u.id,
 				effectiveCost
@@ -367,7 +392,7 @@ export async function tobStartCommand(user: MUser, channelID: string, isHardMode
 		})
 	);
 
-	updateBankSetting('tob_cost', totalCost);
+	await updateBankSetting('tob_cost', totalCost);
 	await trackLoot({
 		totalCost,
 		id: isHardMode ? 'tob_hard' : 'tob',
@@ -390,12 +415,15 @@ export async function tobStartCommand(user: MUser, channelID: string, isHardMode
 		hardMode: isHardMode,
 		wipedRoom: wipedRoom === null ? null : TOBRooms.indexOf(wipedRoom),
 		fakeDuration: duration,
-		deaths: parsedTeam.map(i => i.deaths)
+		deaths: parsedTeam.map(i => i.deaths),
+		solo
 	});
 
 	let str = `${partyOptions.leader.usernameOrMention}'s party (${users
 		.map(u => u.usernameOrMention)
-		.join(', ')}) is now off to do a Theatre of Blood raid - the total trip will take ${formatDuration(duration)}.`;
+		.join(', ')}) is now off to do a Theatre of Blood raid - the total trip will take ${formatDuration(duration)}.${
+		solo ? " You're in a team of 3." : ''
+	}`;
 
 	str += ` \n\n${debugStr}`;
 

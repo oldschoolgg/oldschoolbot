@@ -1,4 +1,5 @@
-import { calcPercentOfNum, calcWhatPercent, noOp, objectEntries, roll, shuffleArr } from 'e';
+import { formatOrdinal, miniID } from '@oldschoolgg/toolkit';
+import { calcPercentOfNum, calcWhatPercent, objectEntries, roll, shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
@@ -10,11 +11,10 @@ import { TheatreOfBlood } from '../../../lib/simulation/tob';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
 import { convertPercentChance } from '../../../lib/util';
-import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { sendToChannelID } from '../../../lib/util/webhook';
-import { updateLegacyUserBankSetting } from '../../../mahoji/mahojiSettings';
+import { userStatsBankUpdate, userStatsUpdate } from '../../../mahoji/mahojiSettings';
 
 const totalXPFromRaid = {
 	[SkillsEnum.Attack]: 12_000,
@@ -30,9 +30,15 @@ export const tobTask: MinionTask = {
 	async run(data: TheatreOfBloodTaskOptions) {
 		const { channelID, users, hardMode, leader, wipedRoom, duration, fakeDuration, deaths } = data;
 		const allUsers = await Promise.all(users.map(async u => mUserFetch(u)));
+
+		const tobUsers = users.map((i, index) => ({ id: i, deaths: deaths[index] }));
+		if (data.solo) {
+			tobUsers.push({ id: miniID(3), deaths: [] });
+			tobUsers.push({ id: miniID(3), deaths: [] });
+		}
 		const result = TheatreOfBlood.complete({
 			hardMode,
-			team: users.map((i, index) => ({ id: i, deaths: deaths[index] }))
+			team: tobUsers
 		});
 
 		const minigameID = hardMode ? 'tob_hard' : 'tob';
@@ -48,7 +54,8 @@ export const tobTask: MinionTask = {
 							skillName: val[0],
 							amount: wipedRoom
 								? val[1]
-								: calcPercentOfNum(calcWhatPercent(duration, fakeDuration), val[1])
+								: calcPercentOfNum(calcWhatPercent(duration, fakeDuration), val[1]),
+							source: 'TheatreOfBlood'
 						})
 					)
 				)
@@ -60,8 +67,9 @@ export const tobTask: MinionTask = {
 		if (!diedToMaiden) {
 			await Promise.all(
 				allUsers.map(u => {
-					return u.update({
-						[hardMode ? 'tob_hard_attempts' : 'tob_attempts']: {
+					const key = hardMode ? 'tob_hard_attempts' : 'tob_attempts';
+					return userStatsUpdate(u.id, {
+						[key]: {
 							increment: 1
 						}
 					});
@@ -69,10 +77,9 @@ export const tobTask: MinionTask = {
 			);
 		}
 
-		// GIVE XP HERE
 		// 100k tax if they wipe
 		if (wipedRoom !== null) {
-			sendToChannelID(channelID, {
+			await sendToChannelID(channelID, {
 				content: `${allTag} Your team wiped in the Theatre of Blood, in the ${TOBRooms[wipedRoom].name} room!${
 					diedToMaiden ? ' The team died very early, and nobody learnt much from this raid.' : ''
 				}`
@@ -85,7 +92,7 @@ export const tobTask: MinionTask = {
 		// Track loot for T3+ patrons
 		await Promise.all(
 			allUsers.map(user => {
-				return updateLegacyUserBankSetting(user.id, 'tob_loot', new Bank(result.loot[user.id]));
+				return userStatsBankUpdate(user.id, 'tob_loot', new Bank(result.loot[user.id]));
 			})
 		);
 
@@ -98,12 +105,13 @@ Unique chance: ${result.percentChanceOfUnique.toFixed(2)}% (1 in ${convertPercen
 		await Promise.all(allUsers.map(u => incrementMinigameScore(u.id, minigameID, 1)));
 
 		for (let [userID, _userLoot] of Object.entries(result.loot)) {
-			const user = await mUserFetch(userID).catch(noOp);
+			if (data.solo && userID !== leader) continue;
+			const user = allUsers.find(i => i.id === userID);
 			if (!user) continue;
 			const userDeaths = deaths[users.indexOf(user.id)];
 
 			const userLoot = new Bank(_userLoot);
-			const bank = user.allItemsOwned();
+			const bank = user.allItemsOwned;
 
 			const { cl } = user;
 			if (hardMode && roll(30) && cl.has("Lil' zik") && cl.has('Sanguine dust')) {
@@ -144,7 +152,7 @@ Unique chance: ${result.percentChanceOfUnique.toFixed(2)}% (1 in ${convertPercen
 			resultMessage += `\n${deathStr}**${user}** received: ${str}`;
 		}
 
-		updateBankSetting('tob_loot', totalLoot);
+		await updateBankSetting('tob_loot', totalLoot);
 		await trackLoot({
 			totalLoot,
 			id: minigameID,
@@ -159,6 +167,6 @@ Unique chance: ${result.percentChanceOfUnique.toFixed(2)}% (1 in ${convertPercen
 			}))
 		});
 
-		handleTripFinish(allUsers[0], channelID, resultMessage, undefined, data, null);
+		return handleTripFinish(allUsers[0], channelID, resultMessage, undefined, data, null, undefined);
 	}
 };

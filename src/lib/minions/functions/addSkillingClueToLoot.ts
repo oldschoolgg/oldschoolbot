@@ -1,8 +1,9 @@
+import { sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { birdsNestID, nestTable } from '../../simulation/birdsNest';
+import { birdsNestID, nestTable, strungRabbitFootNestTable } from '../../simulation/birdsNest';
 import { SkillsEnum } from '../../skilling/types';
-import { addArrayOfNumbers, randFloat, roll } from '../../util';
+import { randFloat, roll } from '../../util';
 import itemID from '../../util/itemID';
 
 const clues = [
@@ -18,16 +19,21 @@ export default function addSkillingClueToLoot(
 	quantity: number,
 	clueChance: number,
 	loot: Bank,
-	clueNestsOnly?: boolean
+	clueNestsOnly?: boolean,
+	strungRabbitFoot?: boolean
 ) {
 	const userLevel = user.skillLevel(skill);
 	const chance = Math.floor(clueChance / (100 + userLevel));
 	let nests = 0;
-	const cluesTotalWeight = addArrayOfNumbers(clues.map(c => c[1]));
+	const cluesTotalWeight = sumArr(clues.map(c => c[1]));
 
 	for (let i = 0; i < quantity; i++) {
 		if (skill === SkillsEnum.Woodcutting && !clueNestsOnly && roll(256)) {
-			loot.add(nestTable.roll());
+			if (strungRabbitFoot) {
+				loot.add(strungRabbitFootNestTable.roll());
+			} else {
+				loot.add(nestTable.roll());
+			}
 		}
 
 		if (!roll(chance)) continue;

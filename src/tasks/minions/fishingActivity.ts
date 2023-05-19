@@ -1,4 +1,4 @@
-import { calcPercentOfNum, percentChance } from 'e';
+import { calcPercentOfNum, percentChance, randInt } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
@@ -6,7 +6,7 @@ import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueTo
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FishingActivityTaskOptions } from '../../lib/types/minions';
-import { rand, roll, skillingPetDropRate } from '../../lib/util';
+import { roll, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 import { anglerBoostPercent } from '../../mahoji/mahojiSettings';
@@ -51,29 +51,27 @@ export const fishingTask: MinionTask = {
 		let leapingTrout = 0;
 		let agilityXpReceived = 0;
 		let strengthXpReceived = 0;
+
+		const stats = user.skillsAsLevels;
+		const canGetSturgeon = stats.fishing >= 70 && stats.agility >= 45 && stats.strength >= 45;
+		const canGetSalmon = stats.fishing >= 58 && stats.agility >= 30 && stats.strength >= 30;
+		const sturgeonChance = 255 / (8 + Math.floor(0.5714 * stats.fishing));
+		const salmonChance = 255 / (16 + Math.floor(0.8616 * stats.fishing));
+		const leapingChance = 255 / (32 + Math.floor(1.632 * stats.fishing));
+
 		if (fish.name === 'Barbarian fishing') {
 			for (let i = 0; i < quantity; i++) {
-				if (
-					roll(255 / (8 + Math.floor(0.5714 * user.skillLevel(SkillsEnum.Fishing)))) &&
-					user.skillLevel(SkillsEnum.Fishing) >= 70 &&
-					user.skillLevel(SkillsEnum.Agility) >= 45 &&
-					user.skillLevel(SkillsEnum.Strength) >= 45
-				) {
+				if (canGetSturgeon && roll(sturgeonChance)) {
 					xpReceived += 80;
 					leapingSturgeon += blessingEquipped && percentChance(blessingChance) ? 2 : 1;
 					agilityXpReceived += 7;
 					strengthXpReceived += 7;
-				} else if (
-					roll(255 / (16 + Math.floor(0.8616 * user.skillLevel(SkillsEnum.Fishing)))) &&
-					user.skillLevel(SkillsEnum.Fishing) >= 58 &&
-					user.skillLevel(SkillsEnum.Agility) >= 30 &&
-					user.skillLevel(SkillsEnum.Strength) >= 30
-				) {
+				} else if (canGetSalmon && roll(salmonChance)) {
 					xpReceived += 70;
 					leapingSalmon += blessingEquipped && percentChance(blessingChance) ? 2 : 1;
 					agilityXpReceived += 6;
 					strengthXpReceived += 6;
-				} else if (roll(255 / (32 + Math.floor(1.632 * user.skillLevel(SkillsEnum.Fishing))))) {
+				} else if (roll(leapingChance)) {
 					xpReceived += 50;
 					leapingTrout += blessingEquipped && percentChance(blessingChance) ? 2 : 1;
 					agilityXpReceived += 5;
@@ -147,8 +145,8 @@ export const fishingTask: MinionTask = {
 			} else if (fish.id === itemID('Minnow')) {
 				lootQuantity +=
 					blessingEquipped && percentChance(blessingChance)
-						? rand(baseMinnow[0], baseMinnow[1]) * 2
-						: rand(baseMinnow[0], baseMinnow[1]);
+						? randInt(baseMinnow[0], baseMinnow[1]) * 2
+						: randInt(baseMinnow[0], baseMinnow[1]);
 			} else {
 				lootQuantity += blessingEquipped && percentChance(blessingChance) ? 2 : 1;
 			}

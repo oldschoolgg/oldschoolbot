@@ -2,6 +2,7 @@ import { objectEntries } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { LevelRequirements } from '../skilling/types';
+import { Amulets } from './objects/amulets';
 import { DungeonDecorations } from './objects/dungeon_decorations';
 import { GardenDecorations } from './objects/garden_decorations';
 import { Guards } from './objects/guards';
@@ -32,6 +33,7 @@ export interface PoH {
 	teleport: number | null;
 	mountedItem: number | null;
 	gardenDecoration: number | null;
+	amulet: number | null;
 
 	torch: number | null;
 	guard: number | null;
@@ -62,15 +64,18 @@ export interface PoHObject {
 }
 
 export const Placeholders: Partial<Record<PoHSlot, [number, [number, number][]]>> = {
+	// Ground floor
 	mounted_head: [15_382, [[430, GROUND_FLOOR_Y - 60]]],
 	mounted_fish: [15_383, [[240, GROUND_FLOOR_Y - 70]]],
-
 	throne: [15_426, [[HOUSE_WIDTH / 2, GROUND_FLOOR_Y]]],
 	mounted_cape: [29_144, [[220, GROUND_FLOOR_Y]]],
 	jewellery_box: [29_142, [[369, GROUND_FLOOR_Y]]],
+	mounted_item: [1111, [[80, GROUND_FLOOR_Y - 70]]],
+	amulet: [33_417, [[190, GROUND_FLOOR_Y - 65]]],
+
+	// Top floor
 	prayer_altar: [15_270, [[175, TOP_FLOOR_Y]]],
 	spellbook_altar: [29_140, [[60, TOP_FLOOR_Y]]],
-	mounted_item: [1111, [[80, GROUND_FLOOR_Y - 70]]],
 
 	// Dungeon
 	guard: [15_323, [[350, DUNGEON_FLOOR_Y]]],
@@ -105,6 +110,7 @@ export const itemsNotRefundable = new Bank()
 export const GroupedPohObjects = {
 	Thrones,
 	JewelleryBoxes,
+	Amulets,
 	MountedCapes,
 	PrayerAltars,
 	SpellbookAltars,

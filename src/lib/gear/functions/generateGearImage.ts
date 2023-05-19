@@ -1,15 +1,16 @@
 /* eslint-disable @typescript-eslint/restrict-plus-operands */
-import * as fs from 'fs';
+import { Canvas } from '@napi-rs/canvas';
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
-import { Canvas } from 'skia-canvas/lib';
 
 import { Gear, maxDefenceStats, maxOffenceStats } from '../../structures/Gear';
-import { canvasImageFromBuffer, drawItemQuantityText, drawTitleText, fillTextXTimesInCtx } from '../../util/canvasUtil';
-import { toTitleCase } from '../../util/toTitleCase';
+import {
+	drawItemQuantityText,
+	drawTitleText,
+	fillTextXTimesInCtx,
+	loadAndCacheLocalImage
+} from '../../util/canvasUtil';
 import { GearSetup, GearSetupType, GearSetupTypes } from '../types';
-
-const gearTemplateFile = fs.readFileSync('./src/lib/resources/images/gear_template.png');
-const gearTemplateCompactFile = fs.readFileSync('./src/lib/resources/images/gear_template_compact.png');
 
 /**
  * The default gear in a gear setup, when nothing is equipped.
@@ -78,14 +79,15 @@ export async function generateGearImage(
 	gearType: GearSetupType | null,
 	petID: number | null
 ) {
+	debugLog('Generating gear image', { user_id: user.id });
 	const bankBg = user.user.bankBackground ?? 1;
 
-	let { sprite, uniqueSprite, background: userBgImage } = bankImageGenerator.getBgAndSprite(bankBg);
+	let { sprite, uniqueSprite, background: userBgImage } = bankImageGenerator.getBgAndSprite(bankBg, user);
 
 	const hexColor = user.user.bank_bg_hex;
 
 	const gearStats = gearSetup instanceof Gear ? gearSetup.stats : new Gear(gearSetup).stats;
-	const gearTemplateImage = await canvasImageFromBuffer(gearTemplateFile);
+	const gearTemplateImage = await loadAndCacheLocalImage('./src/lib/resources/images/gear_template.png');
 	const canvas = new Canvas(gearTemplateImage.width, gearTemplateImage.height);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
@@ -233,7 +235,7 @@ export async function generateGearImage(
 		}
 	}
 
-	return canvas.toBuffer('png');
+	return canvas.encode('png');
 }
 
 export async function generateAllGearImage(user: MUser) {
@@ -241,11 +243,11 @@ export async function generateAllGearImage(user: MUser) {
 		sprite: bgSprite,
 		uniqueSprite: hasBgSprite,
 		background: userBg
-	} = bankImageGenerator.getBgAndSprite(user.user.bankBackground ?? 1);
+	} = bankImageGenerator.getBgAndSprite(user.user.bankBackground ?? 1, user);
 
 	const hexColor = user.user.bank_bg_hex;
-
-	const gearTemplateImage = await canvasImageFromBuffer(gearTemplateCompactFile);
+	debugLog('Generating all-gear image', { user_id: user.id });
+	const gearTemplateImage = await loadAndCacheLocalImage('./src/lib/resources/images/gear_template_compact.png');
 	const canvas = new Canvas((gearTemplateImage.width + 10) * 4 + 20, Number(gearTemplateImage.height) * 2 + 70);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
@@ -321,5 +323,5 @@ export async function generateAllGearImage(user: MUser) {
 
 	if (!userBg.transparent) bankImageGenerator.drawBorder(ctx, bgSprite, false);
 
-	return canvas.toBuffer('png');
+	return canvas.encode('png');
 }

@@ -12,10 +12,13 @@ import {
 import { OWNER_IDS, SupportServer } from '../../config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '../../lib/blacklists';
 import { BadgesEnum, BitField, Channel, DISABLED_COMMANDS, minionBuyButton, PerkTier } from '../../lib/constants';
+import { perkTierCache, syncPerkTierOfUser } from '../../lib/perkTiers';
 import { CategoryFlag } from '../../lib/types';
 import { formatDuration } from '../../lib/util';
-import { mahojiGuildSettingsFetch, untrustedGuildSettingsCache } from '../mahojiSettings';
+import { minionIsBusy } from '../../lib/util/minionIsBusy';
+import { mahojiGuildSettingsFetch, untrustedGuildSettingsCache } from '../guildSettings';
 import { Cooldowns } from './Cooldowns';
+import { PrecommandUser } from './preCommand';
 
 export interface AbstractCommandAttributes {
 	examples?: string[];
@@ -37,7 +40,7 @@ interface Inhibitor {
 	name: string;
 	run: (options: {
 		APIUser: User;
-		user: MUser;
+		user: PrecommandUser;
 		command: AbstractCommand;
 		guild: Guild | null;
 		channel: TextChannel | DMChannel;
@@ -81,7 +84,7 @@ const inhibitors: Inhibitor[] = [
 		run: async ({ user, command }) => {
 			if (!command.attributes?.requiresMinion) return false;
 
-			if (!user.user.minion_hasBought) {
+			if (!user.minion_hasBought) {
 				return {
 					content: 'You need a minion to use this command.',
 					components: [
@@ -103,7 +106,7 @@ const inhibitors: Inhibitor[] = [
 		run: async ({ user, command }) => {
 			if (!command.attributes?.requiresMinionNotBusy) return false;
 
-			if (user.minionIsBusy) {
+			if (minionIsBusy(user.id)) {
 				return { content: 'Your minion must not be busy to use this command.' };
 			}
 
@@ -149,7 +152,11 @@ const inhibitors: Inhibitor[] = [
 			if (!guild || guild.id !== SupportServer) return false;
 			if (channel.id !== Channel.General) return false;
 
-			if (member && user.perkTier() >= PerkTier.Two) {
+			let perkTier = perkTierCache.get(user.id);
+			if (!perkTier) {
+				perkTier = syncPerkTierOfUser(user);
+			}
+			if (member && perkTier >= PerkTier.Two) {
 				return false;
 			}
 
@@ -163,7 +170,7 @@ const inhibitors: Inhibitor[] = [
 		run: async ({ channel, guild, user, member }) => {
 			if (!guild || !member) return false;
 			// Allow green gem badge holders to run commands in support channel:
-			if (channel.id === Channel.HelpAndSupport && user.user.badges.includes(BadgesEnum.GreenGem)) {
+			if (channel.id === Channel.HelpAndSupport && user.badges.includes(BadgesEnum.GreenGem)) {
 				return false;
 			}
 
@@ -217,6 +224,26 @@ const inhibitors: Inhibitor[] = [
 		},
 		canBeDisabled: false,
 		silent: true
+	},
+	{
+		name: 'toa_commands_channel',
+		run: async ({ user, guild, channel, command }) => {
+			if (!guild || guild.id !== SupportServer) return false;
+			if (channel.id !== '1069176960523190292') return false;
+
+			if (user.bitfield.includes(BitField.isModerator)) {
+				return false;
+			}
+
+			if (command.name === 'raid') return false;
+
+			return {
+				content: 'You can only send TOA commands in this channel! Please use <#346304390858145792> instead.',
+				ephemeral: true
+			};
+		},
+		canBeDisabled: false,
+		silent: true
 	}
 ];
 
@@ -229,7 +256,7 @@ export async function runInhibitors({
 	bypassInhibitors,
 	APIUser
 }: {
-	user: MUser;
+	user: PrecommandUser;
 	APIUser: User;
 	channel: TextChannel | DMChannel;
 	member: GuildMember | null;

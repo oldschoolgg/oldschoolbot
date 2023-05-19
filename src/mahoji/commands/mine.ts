@@ -1,3 +1,4 @@
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
@@ -8,7 +9,6 @@ import { Skills } from '../../lib/types';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, formatSkillRequirements, itemNameFromID, randomVariation } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { stringMatches } from '../../lib/util/cleanString';
 import itemID from '../../lib/util/itemID';
 import { minionName } from '../../lib/util/minionUtils';
 import { OSBMahojiCommand } from '../lib/util';
@@ -66,7 +66,7 @@ export const pickaxes = [
 	}
 ];
 
-export const gloves = [
+const gloves = [
 	{
 		id: itemID('Expert mining gloves'),
 		Percentages: new Bank({
@@ -180,7 +180,7 @@ export const varrockArmours = [
 	}
 ];
 
-export const miningCapeOreEffect: Bank = new Bank({
+const miningCapeOreEffect: Bank = new Bank({
 	Clay: 5,
 	'Copper ore': 5,
 	'Tin ore': 5,
@@ -339,7 +339,7 @@ export const mineCommand: OSBMahojiCommand = {
 			}
 		}
 
-		if (!powermine) {
+		if (!powermine || ore.bankingTime === 0) {
 			powermine = false;
 		} else {
 			boosts.push('**Powermining**');

@@ -4,17 +4,6 @@ export interface ItemBank {
 	[key: string]: number;
 }
 
-export interface CachedItemPrice {
-	price: number;
-	fetchedAt: number;
-}
-
-export interface ItemPriceCache {
-	[key: string]: CachedItemPrice;
-}
-
-export type AnyObject = Record<PropertyKey, unknown> | {};
-
 export interface Patron {
 	patreonID: string;
 	discordID?: string;
@@ -26,7 +15,7 @@ export interface Patron {
 	pledgeRelationshipStart: string;
 }
 
-export type ResolvableItem = number | string;
+type ResolvableItem = number | string;
 export type ArrayItemsResolvable = (ResolvableItem | ResolvableItem[])[];
 export type ArrayItemsResolved = (number | number[])[];
 

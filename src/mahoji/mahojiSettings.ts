@@ -1,37 +1,16 @@
-import type { Guild, Prisma, User, UserStats } from '@prisma/client';
-import {
-	ActionRowBuilder,
-	ButtonBuilder,
-	ButtonInteraction,
-	ButtonStyle,
-	ChatInputCommandInteraction,
-	ComponentType,
-	Guild as DJSGuild,
-	InteractionResponseType,
-	Routes
-} from 'discord.js';
-import { noOp, objectEntries, round, Time } from 'e';
-import LRUCache from 'lru-cache';
+import { evalMathExpression } from '@oldschoolgg/toolkit/dist/util/expressionParser';
+import type { Prisma, User, UserStats } from '@prisma/client';
+import { isFunction, objectEntries, round } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { CLIENT_ID } from '../config';
-import { SILENT_ERROR } from '../lib/constants';
-import { evalMathExpression } from '../lib/expressionParser';
-import { KillableMonster } from '../lib/minions/types';
-import { mahojiUserSettingsUpdate } from '../lib/MUser';
+import { globalConfig } from '../lib/constants';
+import type { KillableMonster } from '../lib/minions/types';
+import type { SelectedUserStats } from '../lib/MUser';
 import { prisma } from '../lib/settings/prisma';
 import { Rune } from '../lib/skilling/skills/runecraft';
-import { hasGracefulEquipped, readableStatName } from '../lib/structures/Gear';
+import { hasGracefulEquipped } from '../lib/structures/Gear';
 import type { ItemBank } from '../lib/types';
-import {
-	anglerBoosts,
-	channelIsSendable,
-	formatItemReqs,
-	hasSkillReqs,
-	itemNameFromID,
-	validateItemBankAndThrow
-} from '../lib/util';
-import { deferInteraction, interactionReply } from '../lib/util/interactionReply';
+import { anglerBoosts, formatItemReqs, hasSkillReqs, itemNameFromID, readableStatName } from '../lib/util';
 import resolveItems from '../lib/util/resolveItems';
 
 export function mahojiParseNumber({
@@ -52,155 +31,26 @@ export function mahojiParseNumber({
 	return parsed;
 }
 
-async function silentButtonAck(interaction: ButtonInteraction) {
-	return globalClient.rest.post(Routes.interactionCallback(interaction.id, interaction.token), {
-		body: {
-			type: InteractionResponseType.DeferredMessageUpdate
-		}
-	});
-}
+export type SelectedUser<T extends Prisma.UserSelect> = {
+	[K in keyof T]: K extends keyof User ? User[K] : never;
+};
 
-export async function handleMahojiConfirmation(
-	interaction: ChatInputCommandInteraction,
-	str: string,
-	_users?: string[]
-) {
-	const channel = globalClient.channels.cache.get(interaction.channelId.toString());
-	if (!channelIsSendable(channel)) throw new Error('Channel for confirmation not found.');
-	if (!interaction.deferred) {
-		await deferInteraction(interaction);
-	}
+export async function mahojiUsersSettingsFetch<T extends Prisma.UserSelect = Prisma.UserSelect>(
+	userID: string | bigint,
+	selectKeys: T
+): Promise<SelectedUser<T>> {
+	const id = BigInt(userID);
 
-	const users = _users ?? [interaction.user.id];
-	let confirmed: string[] = [];
-	const isConfirmed = () => confirmed.length === users.length;
-	const confirmMessage = await channel.send({
-		content: str,
-		components: [
-			new ActionRowBuilder<ButtonBuilder>().addComponents([
-				new ButtonBuilder({
-					label: 'Confirm',
-					style: ButtonStyle.Primary,
-					customId: 'CONFIRM'
-				}),
-				new ButtonBuilder({
-					label: 'Cancel',
-					style: ButtonStyle.Secondary,
-					customId: 'CANCEL'
-				})
-			])
-		]
-	});
-
-	return new Promise<void>(async (resolve, reject) => {
-		const collector = confirmMessage.createMessageComponentCollector<ComponentType.Button>({
-			time: Time.Second * 15
-		});
-
-		async function confirm(id: string) {
-			if (confirmed.includes(id)) return;
-			confirmed.push(id);
-			if (!isConfirmed()) return;
-			collector.stop();
-			await confirmMessage.delete().catch(noOp);
-			resolve();
-		}
-
-		let cancelled = false;
-		const cancel = async (reason: 'time' | 'cancel') => {
-			if (cancelled) return;
-			cancelled = true;
-			await confirmMessage.delete().catch(noOp);
-			if (!interaction.replied) {
-				await interactionReply(interaction, {
-					content: reason === 'cancel' ? 'The confirmation was cancelled.' : 'You did not confirm in time.',
-					ephemeral: true
-				});
-			}
-			collector.stop();
-			reject(new Error(SILENT_ERROR));
-		};
-
-		collector.on('collect', i => {
-			const { id } = i.user;
-			if (!users.includes(id)) {
-				i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
-				return;
-			}
-			if (i.customId === 'CANCEL') {
-				cancel('cancel');
-				return;
-			}
-			if (i.customId === 'CONFIRM') {
-				silentButtonAck(i);
-				confirm(id);
-			}
-		});
-
-		collector.on('end', () => {
-			if (!isConfirmed()) {
-				cancel('time');
-			}
-		});
-	});
-}
-
-/**
- *
- * User
- *
- */
-
-// Is not typesafe, returns only what is selected, but will say it contains everything.
-export async function mahojiUsersSettingsFetch(user: bigint | string, select?: Prisma.UserSelect) {
-	const result = await prisma.user.upsert({
-		where: {
-			id: user.toString()
-		},
-		select,
+	return prisma.user.upsert({
 		create: {
-			id: user.toString()
-		},
-		update: {}
-	});
-	if (!result) throw new Error(`mahojiUsersSettingsFetch returned no result for ${user}`);
-	return result as User;
-}
-
-/**
- *
- * Guild
- *
- */
-
-export const untrustedGuildSettingsCache = new LRUCache<string, Guild>({ max: 5000 });
-
-export async function mahojiGuildSettingsFetch(guild: string | DJSGuild) {
-	const id = typeof guild === 'string' ? guild : guild.id;
-	const result = await prisma.guild.upsert({
-		where: {
-			id
+			id: id.toString()
 		},
 		update: {},
-		create: {
-			id
-		}
-	});
-	untrustedGuildSettingsCache.set(id, result);
-	return result;
-}
-
-export async function mahojiGuildSettingsUpdate(guild: string | DJSGuild, data: Prisma.GuildUpdateArgs['data']) {
-	const guildID = typeof guild === 'string' ? guild : guild.id;
-
-	const newGuild = await prisma.guild.update({
-		data,
 		where: {
-			id: guildID
-		}
-	});
-	untrustedGuildSettingsCache.set(newGuild.id, newGuild);
-	return { newGuild };
+			id: id.toString()
+		},
+		select: selectKeys
+	}) as SelectedUser<T>;
 }
 
 export function patronMsg(tierNeeded: number) {
@@ -209,74 +59,120 @@ export function patronMsg(tierNeeded: number) {
 	} Patron to use this command. You can become a patron to support the bot here: <https://www.patreon.com/oldschoolbot>`;
 }
 
-export function getMahojiBank(user: User) {
+export function getMahojiBank(user: { bank: Prisma.JsonValue }) {
 	return new Bank(user.bank as ItemBank);
 }
 
-export async function userStatsUpdate(userID: string, data: (u: UserStats) => Prisma.UserStatsUpdateInput) {
+export async function userStatsUpdate<T extends Prisma.UserStatsSelect = Prisma.UserStatsSelect>(
+	userID: string,
+	data: Omit<Prisma.UserStatsUpdateInput, 'user_id'> | ((u: UserStats) => Prisma.UserStatsUpdateInput),
+	selectKeys?: T
+): Promise<SelectedUserStats<T>> {
 	const id = BigInt(userID);
-	const userStats = await prisma.userStats.upsert({
+
+	let keys: object | undefined = selectKeys;
+	if (!selectKeys || Object.keys(selectKeys).length === 0) {
+		keys = { user_id: true };
+	}
+
+	if (isFunction(data)) {
+		const userStats = await prisma.userStats.upsert({
+			create: {
+				user_id: id
+			},
+			update: {},
+			where: {
+				user_id: id
+			}
+		});
+
+		return (await prisma.userStats.update({
+			data: data(userStats),
+			where: {
+				user_id: id
+			},
+			select: keys
+		})) as SelectedUserStats<T>;
+	}
+
+	await prisma.userStats.upsert({
 		create: {
 			user_id: id
 		},
 		update: {},
 		where: {
 			user_id: id
-		}
+		},
+		select: undefined
 	});
-	await prisma.userStats.update({
-		data: data(userStats),
+
+	return (await prisma.userStats.update({
+		data,
 		where: {
 			user_id: id
-		}
-	});
+		},
+		select: keys
+	})) as SelectedUserStats<T>;
 }
 
 export async function userStatsBankUpdate(userID: string, key: keyof UserStats, bank: Bank) {
-	await userStatsUpdate(userID, u => ({
-		[key]: bank.clone().add(u[key] as ItemBank).bank
-	}));
+	await userStatsUpdate(
+		userID,
+		u => ({
+			[key]: bank.clone().add(u[key] as ItemBank).bank
+		}),
+		{}
+	);
 }
 
 export async function multipleUserStatsBankUpdate(userID: string, updates: Partial<Record<keyof UserStats, Bank>>) {
-	await userStatsUpdate(userID, u => {
-		let updateObj: Prisma.UserStatsUpdateInput = {};
-		for (const [key, bank] of objectEntries(updates)) {
-			updateObj[key] = bank!.clone().add(u[key] as ItemBank).bank;
-		}
-		return updateObj;
-	});
+	await userStatsUpdate(
+		userID,
+		u => {
+			let updateObj: Prisma.UserStatsUpdateInput = {};
+			for (const [key, bank] of objectEntries(updates)) {
+				updateObj[key] = bank!.clone().add(u[key] as ItemBank).bank;
+			}
+			return updateObj;
+		},
+		{}
+	);
 }
 
-export async function updateGPTrackSetting(
+export async function updateClientGPTrackSetting(
 	setting:
 		| 'gp_luckypick'
-		| 'gp_daily'
-		| 'gp_open'
-		| 'gp_dice'
+		| 'gp_pickpocket'
+		| 'gp_alch'
 		| 'gp_slots'
+		| 'gp_dice'
+		| 'gp_open'
+		| 'gp_daily'
 		| 'gp_sell'
 		| 'gp_pvm'
-		| 'gp_alch'
-		| 'gp_pickpocket'
-		| 'duelTaxBank',
-	amount: number,
-	user?: MUser
+		| 'economyStats_duelTaxBank',
+	amount: number
 ) {
-	if (!user) {
-		await prisma.clientStorage.update({
-			where: {
-				id: CLIENT_ID
-			},
-			data: {
-				[setting]: {
-					increment: amount
-				}
+	await prisma.clientStorage.update({
+		where: {
+			id: globalConfig.clientID
+		},
+		data: {
+			[setting]: {
+				increment: amount
 			}
-		});
-		return;
-	}
-	await user.update({
+		},
+		select: {
+			id: true
+		}
+	});
+}
+export async function updateGPTrackSetting(
+	setting: 'gp_dice' | 'gp_luckypick' | 'gp_slots',
+	amount: number,
+	user: MUser
+) {
+	await userStatsUpdate(user.id, {
 		[setting]: {
 			increment: amount
 		}
@@ -410,17 +306,29 @@ export function calcMaxRCQuantity(rune: Rune, user: MUser) {
 	return 0;
 }
 
-export async function updateLegacyUserBankSetting(userID: string, key: 'tob_cost' | 'tob_loot', bankToAdd: Bank) {
-	if (bankToAdd === undefined || bankToAdd === null) throw new Error(`Gave null bank for ${key}`);
-	const currentUserSettings = await mahojiUsersSettingsFetch(userID, {
-		[key]: true
-	});
-	const current = currentUserSettings[key] as ItemBank;
-	validateItemBankAndThrow(current);
-	const newBank = new Bank().add(current).add(bankToAdd);
-
-	const res = await mahojiUserSettingsUpdate(userID, {
-		[key]: newBank.bank
-	});
-	return res;
+export async function addToGPTaxBalance(userID: string | string, amount: number) {
+	await Promise.all([
+		prisma.clientStorage.update({
+			where: {
+				id: globalConfig.clientID
+			},
+			data: {
+				gp_tax_balance: {
+					increment: amount
+				}
+			},
+			select: {
+				id: true
+			}
+		}),
+		userStatsUpdate(
+			userID,
+			{
+				total_gp_traded: {
+					increment: amount
+				}
+			},
+			{}
+		)
+	]);
 }

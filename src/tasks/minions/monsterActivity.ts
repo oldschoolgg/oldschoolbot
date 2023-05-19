@@ -8,12 +8,13 @@ import announceLoot from '../../lib/minions/functions/announceLoot';
 import { prisma } from '../../lib/settings/prisma';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
-import { calculateSlayerPoints, getSlayerMasterOSJSbyID, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
+import { calculateSlayerPoints, isOnSlayerTask } from '../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
 import { ashSanctifierEffect } from '../../lib/util/ashSanctifier';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
+import { userStatsUpdate } from '../../mahoji/mahojiSettings';
 
 export const monsterTask: MinionTask = {
 	type: 'MonsterKilling',
@@ -22,36 +23,23 @@ export const monsterTask: MinionTask = {
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 		const user = await mUserFetch(userID);
 		const [hasKourendHard] = await userhasDiaryTier(user, KourendKebosDiary.hard);
-		await user.incrementKC(monsterID, quantity);
+		const { newKC } = await user.incrementKC(monsterID, quantity);
 
-		const usersTask = await getUsersCurrentSlayerInfo(user.id);
-		const isOnTask =
-			usersTask.assignedTask !== null &&
-			usersTask.currentTask !== null &&
-			usersTask.assignedTask.monsters.includes(monsterID);
-		const quantitySlayed = isOnTask ? Math.min(usersTask.currentTask!.quantity_remaining, quantity) : null;
+		const isOnTaskResult = await isOnSlayerTask({ user, monsterID, quantityKilled: quantity });
 
-		const mySlayerUnlocks = user.user.slayer_unlocks;
-
-		const slayerMaster = isOnTask ? getSlayerMasterOSJSbyID(usersTask.slayerMaster!.id) : undefined;
-		// Check if superiors unlock is purchased
-		const superiorsUnlocked = isOnTask
-			? mySlayerUnlocks.includes(SlayerTaskUnlocksEnum.BiggerAndBadder)
-			: undefined;
-
-		const superiorTable = superiorsUnlocked && monster.superior ? monster.superior : undefined;
+		const superiorTable = isOnTaskResult.hasSuperiorsUnlocked && monster.superior ? monster.superior : undefined;
 		const isInCatacombs = !usingCannon ? monster.existsInCatacombs ?? undefined : undefined;
 
 		const killOptions: MonsterKillOptions = {
-			onSlayerTask: isOnTask,
-			slayerMaster,
+			onSlayerTask: isOnTaskResult.isOnTask,
+			slayerMaster: isOnTaskResult.isOnTask ? isOnTaskResult.slayerMaster.osjsEnum : undefined,
 			hasSuperiors: superiorTable,
 			inCatacombs: isInCatacombs
 		};
 
 		// Calculate superiors and assign loot.
 		let newSuperiorCount = 0;
-		if (superiorTable && isOnTask) {
+		if (superiorTable && isOnTaskResult.isOnTask) {
 			for (let i = 0; i < quantity; i++) if (roll(200)) newSuperiorCount++;
 		}
 		// Regular loot
@@ -71,8 +59,8 @@ export const monsterTask: MinionTask = {
 				monsterID,
 				quantity,
 				duration,
-				isOnTask,
-				taskQuantity: quantitySlayed,
+				isOnTask: isOnTaskResult.isOnTask,
+				taskQuantity: isOnTaskResult.isOnTask ? isOnTaskResult.quantitySlayed : null,
 				minimal: true,
 				usingCannon,
 				cannonMulti,
@@ -84,23 +72,27 @@ export const monsterTask: MinionTask = {
 		if (hasKourendHard) await ashSanctifierEffect(user, loot, duration, xpRes);
 
 		announceLoot({
-			user: await mUserFetch(user.id),
+			user,
 			monsterID: monster.id,
 			loot,
 			notifyDrops: monster.notifyDrops
 		});
 
 		if (newSuperiorCount && newSuperiorCount > 0) {
-			await user.update({
-				slayer_superior_count: {
-					increment: newSuperiorCount
-				}
-			});
+			await userStatsUpdate(
+				user.id,
+				{
+					slayer_superior_count: {
+						increment: newSuperiorCount
+					}
+				},
+				{}
+			);
 		}
 		const superiorMessage = newSuperiorCount ? `, including **${newSuperiorCount} superiors**` : '';
 		let str =
 			`${user}, ${user.minionName} finished killing ${quantity} ${monster.name}${superiorMessage}.` +
-			` Your ${monster.name} KC is now ${user.getKC(monsterID)}.\n\n${xpRes.join(' ')}\n`;
+			` Your ${monster.name} KC is now ${newKC}.\n\n${xpRes.join(' ')}\n`;
 		if (
 			monster.id === Monsters.Unicorn.id &&
 			user.hasEquipped('Iron dagger') &&
@@ -114,47 +106,53 @@ export const monsterTask: MinionTask = {
 
 		let thisTripFinishesTask = false;
 
-		if (isOnTask) {
+		if (isOnTaskResult.isOnTask) {
+			const { quantitySlayed } = isOnTaskResult;
 			const effectiveSlayed =
 				monsterID === Monsters.KrilTsutsaroth.id &&
-				usersTask.currentTask!.monster_id !== Monsters.KrilTsutsaroth.id
+				isOnTaskResult.currentTask!.monster_id !== Monsters.KrilTsutsaroth.id
 					? quantitySlayed! * 2
-					: monsterID === Monsters.Kreearra.id && usersTask.currentTask!.monster_id !== Monsters.Kreearra.id
-					? quantitySlayed! * 4
+					: monsterID === Monsters.Kreearra.id &&
+					  isOnTaskResult.currentTask.monster_id !== Monsters.Kreearra.id
+					? quantitySlayed * 4
 					: monsterID === Monsters.GrotesqueGuardians.id &&
 					  user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.DoubleTrouble)
-					? quantitySlayed! * 2
-					: quantitySlayed!;
+					? quantitySlayed * 2
+					: quantitySlayed;
 
-			const quantityLeft = Math.max(0, usersTask.currentTask!.quantity_remaining - effectiveSlayed);
+			const quantityLeft = Math.max(0, isOnTaskResult.currentTask!.quantity_remaining - effectiveSlayed);
 
 			thisTripFinishesTask = quantityLeft === 0;
 			if (thisTripFinishesTask) {
-				const { newUser } = await user.update({
-					slayer_task_streak: {
-						increment: 1
-					}
-				});
-				const currentStreak = newUser.slayer_task_streak;
-				const points = await calculateSlayerPoints(currentStreak, usersTask.slayerMaster!, user);
+				const newStats = await userStatsUpdate(
+					user.id,
+					{
+						slayer_task_streak: {
+							increment: 1
+						}
+					},
+					{ slayer_task_streak: true }
+				);
+				const currentStreak = newStats.slayer_task_streak;
+				const points = await calculateSlayerPoints(currentStreak, isOnTaskResult.slayerMaster, user);
 				const secondNewUser = await user.update({
 					slayer_points: {
 						increment: points
 					}
 				});
 				str += `\n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${secondNewUser.newUser.slayer_points}; return to a Slayer master.**`;
-				if (usersTask.assignedTask?.isBoss) {
+				if (isOnTaskResult.assignedTask.isBoss) {
 					str += ` ${await user.addXP({ skillName: SkillsEnum.Slayer, amount: 5000, minimal: true })}`;
 					str += ' for completing your boss task.';
 				}
 			} else {
 				str += `\nYou killed ${effectiveSlayed}x of your ${
-					usersTask.currentTask!.quantity_remaining
+					isOnTaskResult.currentTask!.quantity_remaining
 				} remaining kills, you now have ${quantityLeft} kills remaining.`;
 			}
 			await prisma.slayerTask.update({
 				where: {
-					id: usersTask.currentTask!.id
+					id: isOnTaskResult.currentTask!.id
 				},
 				data: {
 					quantity_remaining: quantityLeft

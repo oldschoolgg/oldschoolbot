@@ -1,10 +1,10 @@
-import fs from 'fs';
+import { Canvas } from '@napi-rs/canvas';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
-import { Canvas, loadImage } from 'skia-canvas/lib';
 
+import { loadAndCacheLocalImage } from '../../lib/util/canvasUtil';
 import { OSBMahojiCommand } from '../lib/util';
 
-const bg = loadImage(fs.readFileSync('./src/lib/resources/images/pm-bg.png'));
+const bg = loadAndCacheLocalImage('./src/lib/resources/images/pm-bg.png');
 
 export const fakepmCommand: OSBMahojiCommand = {
 	name: 'fakepm',
@@ -36,7 +36,7 @@ export const fakepmCommand: OSBMahojiCommand = {
 		ctx.fillText(`From ${options.username}: ${options.message}`, 5, 97);
 
 		return {
-			files: [{ attachment: await canvas.toBuffer('png'), name: `${Math.round(Math.random() * 10_000)}.jpg` }]
+			files: [{ attachment: await canvas.encode('png'), name: `${Math.round(Math.random() * 10_000)}.jpg` }]
 		};
 	}
 };

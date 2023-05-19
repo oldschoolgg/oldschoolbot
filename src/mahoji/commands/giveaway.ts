@@ -3,15 +3,16 @@ import { ActionRowBuilder, AttachmentBuilder, BaseMessageOptions, ButtonBuilder,
 import { randInt, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
-import { addToGPTaxBalance, prisma } from '../../lib/settings/prisma';
+import { prisma } from '../../lib/settings/prisma';
 import { channelIsSendable, isModOrAdmin, makeComponents } from '../../lib/util';
 import { generateGiveawayContent } from '../../lib/util/giveaway';
+import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { logError } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation } from '../mahojiSettings';
+import { addToGPTaxBalance } from '../mahojiSettings';
 
 function makeGiveawayButtons(giveawayID: number): BaseMessageOptions['components'] {
 	return [

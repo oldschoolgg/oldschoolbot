@@ -1,7 +1,7 @@
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { stringMatches } from '../../util/cleanString';
+import { stringMatches } from '../../util';
 import { Skills } from './../../types/index';
 
 export interface UserKourendFavour {
@@ -20,7 +20,7 @@ export const baseUserKourendFavour: UserKourendFavour = Object.freeze({
 	Shayzien: 0
 });
 
-export interface KourendFavour {
+interface KourendFavour {
 	name: string;
 	alias: string[];
 	duration: number;
