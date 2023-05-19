@@ -20,12 +20,22 @@ import { updateClientGPTrackSetting, userStatsUpdate } from '../mahojiSettings';
  * - Can be sold by ironmen
  */
 const specialSoldItems = new Map([
+	// Emblem Trader Items
 	[itemID('Ancient emblem'), 500_000],
 	[itemID('Ancient totem'), 1_000_000],
 	[itemID('Ancient statuette'), 2_000_000],
 	[itemID('Ancient medallion'), 4_000_000],
 	[itemID('Ancient effigy'), 8_000_000],
-	[itemID('Ancient relic'), 16_000_000]
+	[itemID('Ancient relic'), 16_000_000],
+	// Simon Templeton Items
+	[itemID('Ivory comb'), 50],
+	[itemID('Pottery scarab'), 75],
+	[itemID('Stone seal'), 100],
+	[itemID('Stone scarab'), 175],
+	[itemID('Stone statuette'), 200],
+	[itemID('Gold seal'), 750],
+	[itemID('Golden scarab'), 1000],
+	[itemID('Golden statuette'), 1250]
 ]);
 
 export const CUSTOM_PRICE_CACHE = new Map<number, number>();
