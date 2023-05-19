@@ -151,7 +151,8 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 			member: interaction.member,
 			channelID: interaction.channelId,
 			guildID: interaction.guildId,
-			interaction
+			interaction,
+			showErrors: true
 		});
 	}
 
@@ -211,7 +212,7 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 }
 
 async function repeatTripHandler(user: MUser, interaction: ButtonInteraction) {
-	if (user.minionIsBusy) return 'Your minion is busy.';
+	if (user.minionIsBusy) return interactionReply(interaction, { content: 'Your minion is busy.', ephemeral: true });
 	const trips = await fetchRepeatTrips(interaction.user.id);
 	if (trips.length === 0)
 		return interactionReply(interaction, { content: "Couldn't find a trip to repeat.", ephemeral: true });
@@ -237,7 +238,8 @@ async function handleGearPresetEquip(user: MUser, id: string, interaction: Butto
 		member: interaction.member,
 		channelID: interaction.channelId,
 		guildID: interaction.guildId,
-		interaction
+		interaction,
+		showErrors: true
 	});
 }
 
@@ -339,7 +341,8 @@ export async function interactionHook(interaction: Interaction) {
 		member: interaction.member ?? null,
 		channelID: interaction.channelId,
 		guildID: interaction.guildId,
-		interaction
+		interaction,
+		showErrors: true
 	};
 
 	const cd = Cooldowns.get(userID, 'button', Time.Second * 3);
