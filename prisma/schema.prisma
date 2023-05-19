@@ -139,6 +139,14 @@ model ClientStorage {
   grand_exchange_total_tax BigInt  @default(0)
   grand_exchange_tax_bank  BigInt  @default(0)
 
+  item_sink_tax_bank          BigInt @default(0)
+  item_sink_tax_bank_total    BigInt @default(0)
+  item_sink_items_bought_bank Json   @default("{}") @db.Json
+  item_sink_slots_gp          BigInt @default(0)
+  item_sink_dice_gp           BigInt @default(0)
+  item_sink_luckypick_gp      BigInt @default(0)
+  item_sink_hotcold_gp        BigInt @default(0)
+
   @@map("clientStorage")
 }
 

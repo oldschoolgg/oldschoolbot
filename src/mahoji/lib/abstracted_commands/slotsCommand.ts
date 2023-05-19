@@ -11,10 +11,11 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 
+import { handleGamblingOutcome } from '../../../lib/itemSinkTax';
 import { channelIsSendable } from '../../../lib/util';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../../lib/util/interactionReply';
-import { mahojiParseNumber, updateClientGPTrackSetting, updateGPTrackSetting } from '../../mahojiSettings';
+import { mahojiParseNumber } from '../../mahojiSettings';
 
 interface Button {
 	name: string;
@@ -156,6 +157,7 @@ ${buttonsData.map(b => `${b.name}: ${b.mod(1)}x`).join('\n')}`;
 			components: getCurrentButtons({ columnsToHide: [0, 1, 2] })
 		})
 		.catch(noOp);
+
 	await sleep(2000);
 
 	const finishContent =
@@ -165,8 +167,9 @@ ${buttonsData.map(b => `${b.name}: ${b.mod(1)}x`).join('\n')}`;
 	sentMessage?.edit({ content: finishContent, components: getCurrentButtons({ columnsToHide: [] }) }).catch(noOp);
 
 	await user.addItemsToBank({ items: new Bank().add('Coins', amountReceived), collectionLog: false });
-	await updateClientGPTrackSetting('gp_slots', amountReceived - amount);
-	await updateGPTrackSetting('gp_slots', amountReceived - amount, user);
+	const finalAmount = amountReceived - amount;
+
+	await handleGamblingOutcome({ type: 'Slots', user, totalAmount: finalAmount });
 
 	return {
 		content: finishContent

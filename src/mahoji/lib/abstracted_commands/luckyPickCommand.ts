@@ -11,10 +11,11 @@ import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import { SILENT_ERROR } from '../../../lib/constants';
+import { handleGamblingOutcome } from '../../../lib/itemSinkTax';
 import { awaitMessageComponentInteraction, channelIsSendable } from '../../../lib/util';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { logError } from '../../../lib/util/logError';
-import { mahojiParseNumber, updateClientGPTrackSetting, updateGPTrackSetting } from '../../mahojiSettings';
+import { mahojiParseNumber } from '../../mahojiSettings';
 
 export async function luckyPickCommand(
 	user: MUser,
@@ -97,33 +98,37 @@ export async function luckyPickCommand(
 	const buttonsToShow = getButtons();
 	function getCurrentButtons({ showTrueNames }: { showTrueNames: boolean }): BaseMessageOptions['components'] {
 		let chunkedButtons = chunk(buttonsToShow, 5);
-		return chunkedButtons.map(c =>
-			new ActionRowBuilder<ButtonBuilder>().addComponents(
-				c.map(b => {
-					let button = new ButtonBuilder()
+		try {
+			return chunkedButtons.map(c =>
+				new ActionRowBuilder<ButtonBuilder>().addComponents(
+					c.map(b => {
+						let button = new ButtonBuilder()
 
-						.setCustomId(b.id.toString())
-						.setStyle(
-							b.picked
-								? b.name !== '0'
-									? ButtonStyle.Success
-									: ButtonStyle.Danger
-								: ButtonStyle.Secondary
-						);
+							.setCustomId(b.id.toString())
+							.setStyle(
+								b.picked
+									? b.name !== '0'
+										? ButtonStyle.Success
+										: ButtonStyle.Danger
+									: ButtonStyle.Secondary
+							);
 
-					if (showTrueNames) {
-						button.setLabel(b.name);
-					}
-					if (!showTrueNames) {
-						button.setEmoji('680783258488799277');
-					}
-					if (b.name === '10x' && !b.picked && showTrueNames) {
-						button.setStyle(ButtonStyle.Primary);
-					}
-					return button;
-				})
-			)
-		);
+						if (showTrueNames) {
+							button.setLabel(b.name);
+						}
+						if (!showTrueNames) {
+							button.setEmoji('680783258488799277');
+						}
+						if (b.name === '10x' && !b.picked && showTrueNames) {
+							button.setStyle(ButtonStyle.Primary);
+						}
+						return button;
+					})
+				)
+			);
+		} catch (err) {
+			console.log(err);
+		}
 	}
 
 	const channel = globalClient.channels.cache.get(interaction.channelId);
@@ -142,8 +147,8 @@ export async function luckyPickCommand(
 	}) => {
 		let amountReceived = Math.floor(button.mod(amount));
 		await user.addItemsToBank({ items: new Bank().add('Coins', amountReceived) });
-		await updateClientGPTrackSetting('gp_luckypick', amountReceived - amount);
-		await updateGPTrackSetting('gp_luckypick', amountReceived - amount, user);
+		const finalAmount = amountReceived - amount;
+		await handleGamblingOutcome({ type: 'Lucky Pick', user, totalAmount: finalAmount });
 
 		await interaction.update({ components: getCurrentButtons({ showTrueNames: true }) }).catch(noOp);
 		return amountReceived === 0
