@@ -2,15 +2,14 @@ import { percentChance } from 'e';
 import { Bank, Misc } from 'oldschooljs';
 
 import { BitField, NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID } from '../../../lib/constants';
+import { trackLoot } from '../../../lib/lootTrack';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
-import { trackLoot } from '../../../lib/settings/prisma';
 import { NightmareActivityTaskOptions } from '../../../lib/types/minions';
 import { randomVariation } from '../../../lib/util';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { getMahojiBank, mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings';
 import { NightmareMonster } from './../../../lib/minions/data/killableMonsters/index';
 
 const RawNightmare = Misc.Nightmare;
@@ -23,10 +22,9 @@ export const nightmareTask: MinionTask = {
 		const monsterID = isPhosani ? PHOSANI_NIGHTMARE_ID : NightmareMonster.id;
 		const monsterName = isPhosani ? "Phosani's Nightmare" : 'Nightmare';
 		const user = await mUserFetch(userID);
-		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 		const team = method === 'solo' ? [user.id] : [user.id, '1', '2', '3'];
 
-		const [userStats] = getNightmareGearStats(user, team, isPhosani);
+		const [userStats] = await getNightmareGearStats(user, team, isPhosani);
 		const parsedUsers = team.map(id => ({ ...userStats, id }));
 		const userLoot = new Bank();
 		let kc = 0;
@@ -58,29 +56,40 @@ export const nightmareTask: MinionTask = {
 			taskQuantity: null
 		});
 
-		const bank = getMahojiBank(mahojiUser);
-		if (bank.has('Slepey tablet') || mahojiUser.bitfield.includes(BitField.HasSlepeyTablet)) {
+		const { newKC } = await user.incrementKC(monsterID, kc);
+
+		const ownsOrUsedTablet = user.bank.has('Slepey tablet') || user.bitfield.includes(BitField.HasSlepeyTablet);
+		if (ownsOrUsedTablet) {
 			userLoot.remove('Slepey tablet', userLoot.amount('Slepey tablet'));
 		}
+		if (!ownsOrUsedTablet && kc > 0 && newKC >= 100 && !userLoot.has('Slepey tablet')) {
+			userLoot.add('Slepey tablet');
+		}
+
 		// Fix purple items on solo kills
 		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: userLoot, collectionLog: true });
 
-		if (kc) await user.incrementKC(monsterID, kc);
-
 		announceLoot({
-			user: await mUserFetch(user.id),
+			user,
 			monsterID,
 			loot: itemsAdded,
 			notifyDrops: NightmareMonster.notifyDrops
 		});
 
 		await trackLoot({
-			loot: itemsAdded,
+			totalLoot: itemsAdded,
 			id: monsterName,
 			type: 'Monster',
 			changeType: 'loot',
 			duration,
-			kc: quantity
+			kc: quantity,
+			users: [
+				{
+					id: user.id,
+					duration,
+					loot: itemsAdded
+				}
+			]
 		});
 
 		if (!kc) {
@@ -100,7 +109,7 @@ export const nightmareTask: MinionTask = {
 				previousCL
 			});
 
-			const kc = user.getKC(monsterID);
+			const kc = await user.getKC(monsterID);
 			handleTripFinish(
 				user,
 				channelID,

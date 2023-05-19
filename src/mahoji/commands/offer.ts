@@ -1,3 +1,5 @@
+import { formatOrdinal, stringMatches } from '@oldschoolgg/toolkit';
+import { User } from 'discord.js';
 import { randArrItem, randInt, roll, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
@@ -12,12 +14,11 @@ import { OfferingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { stringMatches } from '../../lib/util/cleanString';
-import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';
 import { makeBankImage } from '../../lib/util/makeBankImage';
+import resolveItems from '../../lib/util/resolveItems';
 import { OSBMahojiCommand } from '../lib/util';
-import { userStatsBankUpdate } from '../mahojiSettings';
+import { userStatsBankUpdate, userStatsUpdate } from '../mahojiSettings';
 
 const specialBones = [
 	{
@@ -32,12 +33,18 @@ const specialBones = [
 
 const eggs = ['Red bird egg', 'Green bird egg', 'Blue bird egg'].map(getOSItem);
 
+const offerables = new Set(
+	[...Offerables, ...specialBones.map(i => i.item), ...eggs, ...Prayer.Bones]
+		.map(i => resolveItems(i.name))
+		.map(i => i[0])
+);
+
 function notifyUniques(user: MUser, activity: string, uniques: number[], loot: Bank, qty: number, randQty?: number) {
 	const itemsToAnnounce = loot.filter(item => uniques.includes(item.id), false);
 	if (itemsToAnnounce.length > 0) {
 		globalClient.emit(
 			Events.ServerNotification,
-			`**${user.usernameOrMention}'s** minion, ${
+			`**${user.badgedUsername}'s** minion, ${
 				user.minionName
 			}, while offering ${qty}x ${activity}, found **${itemsToAnnounce}**${
 				randQty ? ` on their ${formatOrdinal(randQty)} offering!` : '!'
@@ -60,13 +67,17 @@ export const mineCommand: OSBMahojiCommand = {
 			name: 'name',
 			description: 'The thing you want to offer.',
 			required: true,
-			autocomplete: async (value: string) => {
-				return [...Offerables, ...specialBones.map(i => i.item), ...eggs, ...Prayer.Bones]
-					.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
-					.map(i => ({
-						name: i.name,
-						value: i.name
-					}));
+			autocomplete: async (value: string, user: User) => {
+				const botUser = await mUserFetch(user.id);
+
+				return botUser.bank
+					.items()
+					.filter(i => offerables.has(i[0].id))
+					.filter(i => {
+						if (!value) return true;
+						return i[0].name.toLowerCase().includes(value.toLowerCase());
+					})
+					.map(i => ({ name: `${i[0].name} (${i[1]}x Owned)`, value: i[0].name.toLowerCase() }));
 			}
 		},
 		{
@@ -105,19 +116,24 @@ export const mineCommand: OSBMahojiCommand = {
 				itemsToAdd: loot
 			});
 			if (whichOfferable.economyCounter) {
-				const { newUser } = await user.update({
-					[whichOfferable.economyCounter]: {
-						increment: quantity
-					}
-				}); // Notify uniques
+				const newStats = await userStatsUpdate(
+					user.id,
+					{
+						[whichOfferable.economyCounter]: {
+							increment: quantity
+						}
+					},
+					{ slayer_chewed_offered: true, slayer_unsired_offered: true }
+				); // Notify uniques
 				if (whichOfferable.uniques) {
+					let current = newStats[whichOfferable.economyCounter];
 					notifyUniques(
 						user,
 						whichOfferable.name,
 						whichOfferable.uniques,
 						itemsAdded,
 						quantity,
-						newUser[whichOfferable.economyCounter] + randInt(1, quantity)
+						current + randInt(1, quantity)
 					);
 				}
 			}
@@ -142,6 +158,7 @@ export const mineCommand: OSBMahojiCommand = {
 			}
 			if (!quantity) quantity = quantityOwned;
 			const cost = new Bank().add(egg.id, quantity);
+			if (!user.owns(cost)) return "You don't own enough of these eggs.";
 			await user.removeItemsFromBank(cost);
 			await userStatsBankUpdate(user.id, 'bird_eggs_offered_bank', cost);
 			let loot = new Bank();

@@ -1,3 +1,4 @@
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
@@ -7,10 +8,10 @@ import { getPOHObject, GroupedPohObjects, itemsNotRefundable, PoHObjects } from 
 import { pohImageGenerator } from '../../../lib/pohImage';
 import { prisma } from '../../../lib/settings/prisma';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { itemNameFromID } from '../../../lib/util';
-import { stringMatches } from '../../../lib/util/cleanString';
+import { formatSkillRequirements, itemNameFromID } from '../../../lib/util';
 import getOSItem from '../../../lib/util/getOSItem';
-import { handleMahojiConfirmation, updateBankSetting } from '../../mahojiSettings';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 export const pohWallkits = [
 	{
@@ -89,9 +90,14 @@ export async function pohBuildCommand(interaction: ChatInputCommandInteraction, 
 	}
 
 	const level = user.skillLevel(SkillsEnum.Construction);
-	if (level < obj.level) {
-		return `You need level ${obj.level} Construction to build a ${obj.name} in your house.`;
+	if (typeof obj.level === 'number') {
+		if (level < obj.level) {
+			return `You need level ${obj.level} Construction to build a ${obj.name} in your house.`;
+		}
+	} else if (!user.hasSkillReqs(obj.level)) {
+		return `You need level ${formatSkillRequirements(obj.level)} to build a ${obj.name} in your house.`;
 	}
+
 	if (obj.id === 29_149 || obj.id === 31_858) {
 		const [hasFavour, requiredPoints] = gotFavour(user, Favours.Arceuus, 100);
 		if (!hasFavour) {
@@ -110,8 +116,7 @@ export async function pohBuildCommand(interaction: ChatInputCommandInteraction, 
 	}
 
 	if (obj.itemCost) {
-		const userBank = user.bank.add('Coins', user.GP);
-		if (!userBank.has(obj.itemCost.bank)) {
+		if (!user.bankWithGP.has(obj.itemCost.bank)) {
 			return `You don't have enough items to build a ${obj.name}, you need ${obj.itemCost}.`;
 		}
 		let str = `${user}, please confirm that you want to build a ${obj.name} using ${obj.itemCost}.`;

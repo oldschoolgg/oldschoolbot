@@ -1,4 +1,4 @@
-import { randInt } from 'e';
+import { objectValues, randInt } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { templeTrekkingOutfit } from '../../../lib/data/CollectionsExport';
@@ -22,7 +22,7 @@ function getLowestCountOutfitPiece(bank: Bank, user: MUser): number {
 	for (const piece of templeTrekkingOutfit) {
 		let amount = bank.amount(piece);
 
-		for (const setup of Object.values(user.gear)) {
+		for (const setup of objectValues(user.gear)) {
 			const thisItemEquipped = Object.values(setup).find(setup => setup?.item === piece);
 			if (thisItemEquipped) amount += thisItemEquipped.quantity;
 		}
@@ -43,7 +43,7 @@ export const templeTrekkingTask: MinionTask = {
 		const { channelID, quantity, userID, difficulty } = data;
 		const user = await mUserFetch(userID);
 		await incrementMinigameScore(user.id, 'temple_trekking', quantity);
-		const userBank = user.bank;
+		const userBank = user.bank.clone();
 		let loot = new Bank();
 
 		const rewardToken = stringMatches(difficulty, 'hard')

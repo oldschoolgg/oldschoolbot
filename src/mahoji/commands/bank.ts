@@ -1,4 +1,4 @@
-import { codeBlock, Embed } from '@discordjs/builders';
+import { codeBlock, EmbedBuilder } from '@discordjs/builders';
 import { chunk } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
@@ -17,7 +17,7 @@ import { OSBMahojiCommand } from '../lib/util';
 
 const bankFormats = ['json', 'text_paged', 'text_full'] as const;
 const bankItemsPerPage = 10;
-type BankFormat = typeof bankFormats[number];
+type BankFormat = (typeof bankFormats)[number];
 
 async function getBankPage({
 	user,
@@ -32,7 +32,7 @@ async function getBankPage({
 	mahojiFlags: BankFlag[];
 	flags?: Record<string, number | string>;
 }) {
-	const msg = {
+	return {
 		files: [
 			(
 				await makeBankImage({
@@ -48,7 +48,6 @@ async function getBankPage({
 			).file
 		]
 	};
-	return msg;
 }
 
 export const bankCommand: OSBMahojiCommand = {
@@ -120,8 +119,9 @@ export const bankCommand: OSBMahojiCommand = {
 		flag_extra?: BankFlag;
 	}>) => {
 		if (interaction) await deferInteraction(interaction);
-		const klasaUser = await mUserFetch(user.id);
-		const baseBank = klasaUser.bankWithGP;
+		const mUser = await mUserFetch(user.id);
+		const baseBank = mUser.bankWithGP;
+
 		const mahojiFlags: BankFlag[] = [];
 
 		if (options.flag) mahojiFlags.push(options.flag);
@@ -143,7 +143,7 @@ export const bankCommand: OSBMahojiCommand = {
 				filter: options.filter
 			},
 			inputStr: options.item ?? options.items,
-			user: klasaUser,
+			user: mUser,
 			filters: options.filter ? [options.filter] : []
 		});
 
@@ -173,7 +173,7 @@ export const bankCommand: OSBMahojiCommand = {
 			for (const page of chunk(textBank, bankItemsPerPage)) {
 				pages.push({
 					embeds: [
-						new Embed().setTitle(`${klasaUser.usernameOrMention}'s Bank`).setDescription(page.join('\n'))
+						new EmbedBuilder().setTitle(`${mUser.usernameOrMention}'s Bank`).setDescription(page.join('\n'))
 					]
 				});
 			}
@@ -197,7 +197,7 @@ export const bankCommand: OSBMahojiCommand = {
 		if (options.sort) flags.sort = options.sort;
 
 		const params: Parameters<typeof getBankPage>['0'] = {
-			user: klasaUser,
+			user: mUser,
 			bank,
 			flags,
 			mahojiFlags,
@@ -207,17 +207,19 @@ export const bankCommand: OSBMahojiCommand = {
 		const result = await getBankPage(params);
 
 		const channel = globalClient.channels.cache.get(channelID);
+		const bankSize = Math.ceil(bank.length / 56);
+
 		if (
 			!channel ||
 			!channelIsSendable(channel) ||
-			options.flag === 'show_all' ||
-			options.flag_extra === 'wide' ||
-			klasaUser.perkTier < PerkTier.Four
+			mahojiFlags.includes('show_all') ||
+			mahojiFlags.includes('wide') ||
+			mUser.perkTier() < PerkTier.Two ||
+			bankSize === 1
 		) {
 			return result;
 		}
 
-		const bankSize = Math.ceil(bank.length / 56);
 		const m = new PaginatedMessage({
 			pages: {
 				numPages: bankSize,

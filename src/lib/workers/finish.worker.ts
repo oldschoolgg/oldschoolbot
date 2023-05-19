@@ -2,11 +2,11 @@ import '../data/itemAliases';
 
 import { Bank } from 'oldschooljs';
 
-import { finishables } from '../finishables';
-import { itemNameFromID } from '../util';
-import { FinishWorkerArgs, FinishWorkerReturn } from '.';
+import getOSItem from '../util/getOSItem';
+import type { FinishWorkerArgs, FinishWorkerReturn } from '.';
 
-export default ({ name }: FinishWorkerArgs): FinishWorkerReturn => {
+export default async ({ name }: FinishWorkerArgs): FinishWorkerReturn => {
+	const { finishables } = await import('../finishables');
 	const val = finishables.find(i => i.name === name)!;
 	let loot = new Bank();
 	const kcBank = new Bank();
@@ -15,7 +15,7 @@ export default ({ name }: FinishWorkerArgs): FinishWorkerReturn => {
 	for (let i = 0; i < maxAttempts; i++) {
 		if (val.cl.every(id => loot.has(id))) break;
 		kc++;
-		const thisLoot = val.kill({ accumulatedLoot: loot });
+		const thisLoot = val.kill({ accumulatedLoot: loot, totalRuns: i });
 
 		if (val.tertiaryDrops) {
 			for (const drop of val.tertiaryDrops) {
@@ -31,7 +31,8 @@ export default ({ name }: FinishWorkerArgs): FinishWorkerReturn => {
 		if (kc === maxAttempts) {
 			return `After ${maxAttempts.toLocaleString()} KC, you still didn't finish the CL, so we're giving up! Missing: ${val.cl
 				.filter(id => !loot.has(id))
-				.map(itemNameFromID)
+				.map(getOSItem)
+				.map(i => i.name)
 				.join(', ')}`;
 		}
 	}

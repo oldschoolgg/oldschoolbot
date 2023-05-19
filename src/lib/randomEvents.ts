@@ -1,8 +1,10 @@
+import { activity_type_enum } from '@prisma/client';
 import { randArrItem, roll, Time } from 'e';
 import LRUCache from 'lru-cache';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
+import { userStatsBankUpdate } from '../mahoji/mahojiSettings';
 import { BitField } from './constants';
 import resolveItems from './util/resolveItems';
 
@@ -12,6 +14,8 @@ export interface RandomEvent {
 	outfit?: number[];
 	loot: LootTable;
 }
+
+const baguetteTable = new LootTable().add('Baguette', 1, 63).add('Stale baguette', 1, 1);
 
 export const beekeeperOutfit = resolveItems([
 	"Beekeeper's hat",
@@ -90,7 +94,7 @@ export const RandomEvents: RandomEvent[] = [
 		id: 10,
 		name: 'Sandwich lady',
 		loot: new LootTable()
-			.add('Baguette')
+			.add(baguetteTable)
 			.add('Triangle sandwich')
 			.add('Square sandwich')
 			.add('Chocolate bar')
@@ -130,7 +134,10 @@ export const RandomEvents: RandomEvent[] = [
 
 const cache = new LRUCache<string, number>({ max: 500 });
 
-export async function triggerRandomEvent(user: MUser, duration: number, messages: string[]) {
+const doesntGetRandomEvent: activity_type_enum[] = [activity_type_enum.TombsOfAmascut];
+
+export async function triggerRandomEvent(user: MUser, type: activity_type_enum, duration: number, messages: string[]) {
+	if (doesntGetRandomEvent.includes(type)) return;
 	const minutes = Math.min(30, duration / Time.Minute);
 	const randomEventChance = 60 - minutes;
 	if (!roll(randomEventChance)) return;
@@ -158,5 +165,6 @@ export async function triggerRandomEvent(user: MUser, duration: number, messages
 	}
 	loot.add(event.loot.roll());
 	await transactItems({ userID: user.id, itemsToAdd: loot, collectionLog: true });
+	await userStatsBankUpdate(user.id, 'random_event_completions_bank', new Bank().add(event.id));
 	messages.push(`Did ${event.name} random event and got ${loot}`);
 }

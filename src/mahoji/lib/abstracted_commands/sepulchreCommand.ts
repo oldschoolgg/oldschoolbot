@@ -1,10 +1,9 @@
-import { objectEntries, reduceNumByPercent, Time } from 'e';
-import { addArrayOfNumbers } from 'oldschooljs/dist/util';
+import { reduceNumByPercent, sumArr, Time } from 'e';
 
 import { sepulchreBoosts, sepulchreFloors } from '../../../lib/minions/data/sepulchre';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, itemNameFromID } from '../../../lib/util';
+import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { userHasGracefulEquipped } from '../../mahojiSettings';
@@ -27,7 +26,7 @@ export async function sepulchreCommand(user: MUser, channelID: string) {
 	}
 
 	const completableFloors = sepulchreFloors.filter(floor => agilityLevel >= floor.agilityLevel);
-	let lapLength = addArrayOfNumbers(completableFloors.map(floor => floor.time));
+	let lapLength = sumArr(completableFloors.map(floor => floor.time));
 
 	const boosts = [];
 
@@ -41,9 +40,9 @@ export async function sepulchreCommand(user: MUser, channelID: string) {
 
 	lapLength = reduceNumByPercent(lapLength, percentReduced);
 
-	for (const [id, percent] of objectEntries(sepulchreBoosts)) {
-		if (user.hasEquippedOrInBank([Number(id)])) {
-			boosts.push(`${percent}% for ${itemNameFromID(Number(id))}`);
+	for (const [item, percent] of sepulchreBoosts.items()) {
+		if (user.hasEquippedOrInBank(item.id)) {
+			boosts.push(`${percent}% for ${item.name}`);
 			lapLength = reduceNumByPercent(lapLength, percent);
 		}
 	}

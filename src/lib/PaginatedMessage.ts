@@ -1,14 +1,15 @@
+import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
 import {
 	ActionRowBuilder,
+	BaseMessageOptions,
 	ButtonBuilder,
 	ButtonStyle,
+	ComponentType,
 	MessageEditOptions,
-	MessageOptions,
 	TextChannel
 } from 'discord.js';
 import { Time } from 'e';
 
-import { UserError } from './UserError';
 import { PaginatedMessagePage } from './util';
 import { logError } from './util/logError';
 
@@ -57,7 +58,7 @@ type PaginatedPages =
 
 export class PaginatedMessage {
 	public index = 0;
-	public pages: PaginatedPages;
+	public pages!: PaginatedPages;
 	public channel: TextChannel;
 	public totalPages: number;
 
@@ -77,22 +78,26 @@ export class PaginatedMessage {
 	}
 
 	async render(): Promise<MessageEditOptions | string> {
+		const numberOfPages = Array.isArray(this.pages) ? this.pages.length : this.pages.numPages;
 		try {
 			const rawPage = !Array.isArray(this.pages)
 				? await this.pages.generate({ currentPage: this.index })
 				: this.pages[this.index];
 			return {
 				...rawPage,
-				components: [
-					new ActionRowBuilder<ButtonBuilder>().addComponents(
-						controlButtons.map(i =>
-							new ButtonBuilder()
-								.setStyle(ButtonStyle.Secondary)
-								.setCustomId(i.customId)
-								.setEmoji(i.emoji)
-						)
-					)
-				]
+				components:
+					numberOfPages === 1
+						? []
+						: [
+								new ActionRowBuilder<ButtonBuilder>().addComponents(
+									controlButtons.map(i =>
+										new ButtonBuilder()
+											.setStyle(ButtonStyle.Secondary)
+											.setCustomId(i.customId)
+											.setEmoji(i.emoji)
+									)
+								)
+						  ]
 			};
 		} catch (err) {
 			if (typeof err === 'string') return err;
@@ -103,9 +108,9 @@ export class PaginatedMessage {
 	}
 
 	async run(targetUsers?: string[]) {
-		const message = await this.channel.send((await this.render()) as MessageOptions);
+		const message = await this.channel.send((await this.render()) as BaseMessageOptions);
 		if (this.totalPages === 1) return;
-		const collector = await message.createMessageComponentCollector({
+		const collector = await message.createMessageComponentCollector<ComponentType.Button>({
 			time: Time.Minute * 10
 		});
 

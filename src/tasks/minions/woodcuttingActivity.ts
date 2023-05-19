@@ -16,6 +16,8 @@ export const woodcuttingTask: MinionTask = {
 
 		const log = Woodcutting.Logs.find(Log => Log.id === logID)!;
 
+		let strungRabbitFoot = user.hasEquipped('Strung rabbit foot');
+
 		let xpReceived = quantity * log.xp;
 		let bonusXP = 0;
 
@@ -63,7 +65,8 @@ export const woodcuttingTask: MinionTask = {
 				quantity,
 				log.clueScrollChance,
 				loot,
-				log.clueNestsOnly
+				log.clueNestsOnly,
+				strungRabbitFoot
 			);
 		}
 
@@ -71,6 +74,10 @@ export const woodcuttingTask: MinionTask = {
 
 		if (bonusXP > 0) {
 			str += `. **Bonus XP:** ${bonusXP.toLocaleString()}`;
+		}
+
+		if (strungRabbitFoot && !log.clueNestsOnly) {
+			str += "\nYour strung rabbit foot necklace increases the chance of receiving bird's eggs and rings.";
 		}
 
 		// Roll for pet
@@ -81,7 +88,7 @@ export const woodcuttingTask: MinionTask = {
 				str += "\n**You have a funny feeling you're being followed...**";
 				globalClient.emit(
 					Events.ServerNotification,
-					`${Emoji.Woodcutting} **${user.usernameOrMention}'s** minion, ${
+					`${Emoji.Woodcutting} **${user.badgedUsername}'s** minion, ${
 						user.minionName
 					}, just received a Beaver while cutting ${log.name} at level ${user.skillLevel(
 						'woodcutting'

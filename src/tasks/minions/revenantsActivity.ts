@@ -1,24 +1,24 @@
-import { Prisma } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import { deepClone, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
+import { trackLoot } from '../../lib/lootTrack';
 import { revenantMonsters } from '../../lib/minions/data/killableMonsters/revs';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { filterLootReplace } from '../../lib/slayer/slayerUtil';
 import { Gear } from '../../lib/structures/Gear';
-import { RevenantOptions } from '../../lib/types/minions';
+import type { RevenantOptions } from '../../lib/types/minions';
 import { hasSkillReqs } from '../../lib/util';
 import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLostOnDeathWilderness';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
-import { updateBankSetting } from '../../mahoji/mahojiSettings';
+import { updateBankSetting } from '../../lib/util/updateBankSetting';
 
 export const revenantsTask: MinionTask = {
 	type: 'Revenants',
 	async run(data: RevenantOptions) {
-		const { monsterID, userID, channelID, quantity, died, skulled } = data;
+		const { monsterID, userID, channelID, quantity, died, skulled, duration } = data;
 		const monster = revenantMonsters.find(mon => mon.id === monsterID)!;
 		const user = await mUserFetch(userID);
 		if (died) {
@@ -41,6 +41,35 @@ export const revenantsTask: MinionTask = {
 			});
 
 			updateBankSetting('revs_cost', calc.lostItems);
+			// Track items lost
+			await trackLoot({
+				totalCost: calc.lostItems,
+				id: monster.name,
+				type: 'Monster',
+				changeType: 'cost',
+				users: [
+					{
+						id: user.id,
+						cost: calc.lostItems
+					}
+				]
+			});
+			// Track loot (For duration)
+			await trackLoot({
+				totalLoot: new Bank(),
+				id: monster.name,
+				type: 'Monster',
+				changeType: 'loot',
+				duration,
+				kc: quantity,
+				users: [
+					{
+						id: user.id,
+						loot: new Bank(),
+						duration
+					}
+				]
+			});
 
 			handleTripFinish(
 				user,
@@ -61,29 +90,40 @@ export const revenantsTask: MinionTask = {
 			return;
 		}
 
-		await user.incrementKC(monsterID, quantity);
+		const { newKC } = await user.incrementKC(monsterID, quantity);
 
 		const loot = monster.table.kill(quantity, { skulled });
 		let str =
 			`${user}, ${user.minionName} finished killing ${quantity} ${monster.name}.` +
-			` Your ${monster.name} KC is now ${user.getKC(monsterID)}.\n`;
+			` Your ${monster.name} KC is now ${newKC}.\n`;
 
 		announceLoot({
-			user: await mUserFetch(user.id),
+			user,
 			monsterID: monster.id,
 			loot,
 			notifyDrops: monster.notifyDrops
 		});
 
-		const { clLoot } = filterLootReplace(user.allItemsOwned(), loot);
-
-		await user.update({
-			collectionLogBank: new Bank(user.cl).add(clLoot).bank
-		});
 		const { previousCL, itemsAdded } = await transactItems({
 			userID: user.id,
 			itemsToAdd: loot,
-			collectionLog: false
+			collectionLog: true
+		});
+
+		await trackLoot({
+			totalLoot: itemsAdded,
+			id: monster.name,
+			type: 'Monster',
+			changeType: 'loot',
+			duration,
+			kc: quantity,
+			users: [
+				{
+					id: user.id,
+					loot: itemsAdded,
+					duration
+				}
+			]
 		});
 
 		const image = await makeBankImage({

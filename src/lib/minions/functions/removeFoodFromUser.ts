@@ -1,12 +1,12 @@
+import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
 import { objectEntries, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
 
-import { updateBankSetting } from '../../../mahoji/mahojiSettings';
 import { Emoji } from '../../constants';
 import { Eatables } from '../../data/eatables';
-import { GearSetupType } from '../../gear';
-import { UserError } from '../../UserError';
+import { GearSetupType } from '../../gear/types';
+import { updateBankSetting } from '../../util/updateBankSetting';
 import getUserFoodFromBank from './getUserFoodFromBank';
 
 export default async function removeFoodFromUser({

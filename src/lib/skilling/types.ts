@@ -92,7 +92,7 @@ export interface Course {
 	id: number;
 	name: string;
 	level: number;
-	xp: number;
+	xp: number | ((agilityLevel: number) => number);
 	marksPer60?: number;
 	lapTime: number;
 	petChance: number;
@@ -169,6 +169,7 @@ export interface Fletchable {
 	tickRate: number;
 	outputMultiple?: number;
 	requiredSlayerUnlocks?: SlayerTaskUnlocksEnum[];
+	craftingXp?: number;
 }
 
 export interface Mixable {
@@ -177,7 +178,7 @@ export interface Mixable {
 	id: number;
 	level: number;
 	xp: number;
-	inputItems: ItemBank;
+	inputItems: Bank;
 	tickRate: number;
 	bankTimePerPotion: number;
 	outputMultiple?: number;
@@ -187,6 +188,13 @@ export interface Mixable {
 }
 
 export interface Bone {
+	level: number;
+	xp: number;
+	name: string;
+	inputId: number;
+}
+
+export interface Ash {
 	level: number;
 	xp: number;
 	name: string;
@@ -212,6 +220,7 @@ export interface Plankable {
 }
 
 export interface Plant {
+	id: number;
 	level: number;
 	plantXp: number;
 	checkXp: number;

@@ -1,3 +1,5 @@
+import { CropUpgradeType } from '@prisma/client';
+
 import { Plant } from '../../skilling/types';
 import { FarmingPatchName } from '../../util/farmingHelpers';
 
@@ -6,9 +8,10 @@ export interface IPatchData {
 	patchPlanted: boolean; // false -> nothing planted, true -> something planted
 	plantTime: number;
 	lastQuantity: number;
-	lastUpgradeType: string | null;
+	lastUpgradeType: CropUpgradeType | null;
 	lastPayment: boolean;
 	wasReminded?: true;
+	pid?: number;
 }
 export interface IPatchDataDetailed extends IPatchData {
 	ready: boolean | null;
@@ -33,4 +36,4 @@ export interface FarmingContract {
 }
 
 export const ContractOptions = ['easy', 'medium', 'hard', 'easier'] as const;
-export type ContractOption = typeof ContractOptions[number];
+export type ContractOption = (typeof ContractOptions)[number];

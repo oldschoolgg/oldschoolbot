@@ -1,8 +1,11 @@
+import '../lib/abstracted_commands/spinsCommand';
+
 import { randArrItem } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { Bank } from 'oldschooljs';
 
+import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { capeGambleCommand, capeGambleStatsCommand } from '../lib/abstracted_commands/capegamble';
 import { diceCommand } from '../lib/abstracted_commands/diceCommand';
@@ -11,7 +14,6 @@ import { hotColdCommand } from '../lib/abstracted_commands/hotColdCommand';
 import { luckyPickCommand } from '../lib/abstracted_commands/luckyPickCommand';
 import { slotsCommand } from '../lib/abstracted_commands/slotsCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const gambleCommand: OSBMahojiCommand = {
 	name: 'gamble',
@@ -159,6 +161,24 @@ export const gambleCommand: OSBMahojiCommand = {
 					required: true
 				}
 			]
+		},
+		/**
+		 *
+		 * Spins
+		 *
+		 */
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'spin',
+			description: 'Spin a wheel for a chance at winning a big prize.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Integer,
+					name: 'gamble_amount',
+					description: 'The user to give a random item too.',
+					required: true
+				}
+			]
 		}
 	],
 	run: async ({
@@ -205,8 +225,6 @@ export const gambleCommand: OSBMahojiCommand = {
 			return slotsCommand(interaction, user, options.slots.amount);
 		}
 
-		const mahojiUser = await mahojiUsersSettingsFetch(user.id);
-
 		if (options.hot_cold) {
 			return hotColdCommand(interaction, user, options.hot_cold.choice, options.hot_cold.amount);
 		}
@@ -226,10 +244,11 @@ export const gambleCommand: OSBMahojiCommand = {
 				`Are you sure you want to give a random stack of items from your bank to ${recipientuser.usernameOrMention}? Untradeable and favorited items are not included.`
 			);
 
+			await senderUser.sync();
 			const bank = senderUser.bank
 				.items()
 				.filter(i => itemIsTradeable(i[0].id))
-				.filter(i => !mahojiUser.favoriteItems.includes(i[0].id));
+				.filter(i => !user.user.favoriteItems.includes(i[0].id));
 			const entry = randArrItem(bank);
 			if (!entry) return 'You have no items you can give away!';
 			const [item, qty] = entry;

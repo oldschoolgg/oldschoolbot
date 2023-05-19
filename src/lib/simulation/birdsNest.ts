@@ -65,3 +65,9 @@ export const nestTable = new LootTable()
 	.add(eggNest, 1, 3)
 	.add(ringNests, 1, 32)
 	.add(treeSeedsNest, 1, 65);
+
+export const strungRabbitFootNestTable = new LootTable()
+	.every(birdsNestID)
+	.add(eggNest, 1, 3)
+	.add(ringNests, 1, 32)
+	.add(treeSeedsNest, 1, 60);

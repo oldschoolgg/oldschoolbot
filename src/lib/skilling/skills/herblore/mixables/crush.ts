@@ -1,4 +1,5 @@
-import { resolveNameBank } from '../../../../util';
+import { Bank } from 'oldschooljs';
+
 import itemID from '../../../../util/itemID';
 import { Mixable } from '../../../types';
 
@@ -9,9 +10,9 @@ const Crush: Mixable[] = [
 		id: itemID('Unicorn horn dust'),
 		level: 1,
 		xp: 0,
-		inputItems: resolveNameBank({ 'Unicorn horn': 1 }),
-		tickRate: 2,
-		bankTimePerPotion: 0.17,
+		inputItems: new Bank({ 'Unicorn horn': 1 }),
+		tickRate: 1,
+		bankTimePerPotion: 0,
 		wesley: true
 	},
 	{
@@ -20,9 +21,9 @@ const Crush: Mixable[] = [
 		id: itemID('Chocolate dust'),
 		level: 1,
 		xp: 0,
-		inputItems: resolveNameBank({ 'Chocolate bar': 1 }),
-		tickRate: 2,
-		bankTimePerPotion: 0.17,
+		inputItems: new Bank({ 'Chocolate bar': 1 }),
+		tickRate: 1,
+		bankTimePerPotion: 0,
 		wesley: true
 	},
 	{
@@ -31,9 +32,9 @@ const Crush: Mixable[] = [
 		id: itemID('Kebbit teeth dust'),
 		level: 1,
 		xp: 0,
-		inputItems: resolveNameBank({ 'Kebbit teeth': 1 }),
-		tickRate: 2,
-		bankTimePerPotion: 0.17,
+		inputItems: new Bank({ 'Kebbit teeth': 1 }),
+		tickRate: 1,
+		bankTimePerPotion: 0,
 		wesley: true
 	},
 	{
@@ -42,9 +43,9 @@ const Crush: Mixable[] = [
 		id: itemID('Crushed nest'),
 		level: 1,
 		xp: 0,
-		inputItems: { 5075: 1 },
-		tickRate: 2,
-		bankTimePerPotion: 0.17,
+		inputItems: new Bank({ 5075: 1 }),
+		tickRate: 1,
+		bankTimePerPotion: 0,
 		wesley: true
 	},
 	{
@@ -53,9 +54,9 @@ const Crush: Mixable[] = [
 		id: itemID('Goat horn dust'),
 		level: 1,
 		xp: 0,
-		inputItems: resolveNameBank({ 'Desert goat horn': 1 }),
-		tickRate: 2,
-		bankTimePerPotion: 0.17,
+		inputItems: new Bank({ 'Desert goat horn': 1 }),
+		tickRate: 1,
+		bankTimePerPotion: 0,
 		wesley: true
 	},
 	{
@@ -64,9 +65,9 @@ const Crush: Mixable[] = [
 		id: itemID('Silver dust'),
 		level: 1,
 		xp: 0,
-		inputItems: resolveNameBank({ 'Silver bar': 1 }),
-		tickRate: 6,
-		bankTimePerPotion: 1,
+		inputItems: new Bank({ 'Silver bar': 1 }),
+		tickRate: 1,
+		bankTimePerPotion: 0,
 		wesley: false
 	},
 	{
@@ -81,9 +82,9 @@ const Crush: Mixable[] = [
 		id: itemID('Crushed superior dragon bones'),
 		level: 1,
 		xp: 0,
-		inputItems: resolveNameBank({ 'Superior dragon bones': 1 }),
-		tickRate: 2,
-		bankTimePerPotion: 0.17,
+		inputItems: new Bank({ 'Superior dragon bones': 1 }),
+		tickRate: 1,
+		bankTimePerPotion: 0,
 		wesley: true
 	},
 	{
@@ -92,9 +93,9 @@ const Crush: Mixable[] = [
 		id: itemID('Dragon scale dust'),
 		level: 1,
 		xp: 0,
-		inputItems: resolveNameBank({ 'Blue dragon scale': 1 }),
-		tickRate: 2,
-		bankTimePerPotion: 0.17,
+		inputItems: new Bank({ 'Blue dragon scale': 1 }),
+		tickRate: 1,
+		bankTimePerPotion: 0,
 		wesley: true
 	},
 	{
@@ -103,8 +104,8 @@ const Crush: Mixable[] = [
 		id: itemID('Nihil dust'),
 		level: 1,
 		xp: 0,
-		inputItems: resolveNameBank({ 'Nihil shard': 1 }),
-		tickRate: 2,
+		inputItems: new Bank({ 'Nihil shard': 1 }),
+		tickRate: 1,
 		bankTimePerPotion: 0,
 		wesley: true
 	}

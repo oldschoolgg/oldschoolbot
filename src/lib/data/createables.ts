@@ -1,23 +1,28 @@
 import { Bank } from 'oldschooljs';
 
+import { BitField } from '../constants';
 import { Favours } from '../minions/data/kourendFavour';
 import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';
 import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import { ItemBank, Skills } from '../types';
-import { itemNameFromID } from '../util';
+import getOSItem from '../util/getOSItem';
 import itemID from '../util/itemID';
+import { itemNameFromID } from '../util/smallUtils';
 import { chambersOfXericMetamorphPets } from './CollectionsExport';
 import { amrodCreatables } from './creatables/amrod';
 import { armorAndItemPacks } from './creatables/armorPacks';
 import { capeCreatables } from './creatables/capes';
 import { dragonFireShieldCreatables } from './creatables/dragonfireShields';
 import { gracefulOutfitCreatables } from './creatables/gracefulOutfits';
+import { guardiansOfTheRiftCreatables } from './creatables/guardiansOfTheRiftCreatables';
 import { leaguesCreatables } from './creatables/leagueCreatables';
 import { lmsCreatables } from './creatables/lms';
 import { mysticStavesCreatables } from './creatables/mysticStaves';
 import { nexCreatables } from './creatables/nex';
 import { ornamentKits } from './creatables/ornaments';
+import { shadesOfMortonCreatables } from './creatables/shadesOfMorton';
 import { slayerCreatables } from './creatables/slayer';
+import { toaCreatables } from './creatables/toa';
 import { tobCreatables } from './creatables/tob';
 
 export interface Createable {
@@ -35,6 +40,39 @@ export interface Createable {
 	requiredFavour?: Favours;
 	maxCanOwn?: number;
 	onCreate?: (qty: number, user: MUser) => Promise<{ result: boolean; message: string }>;
+	type?: 'pack' | 'unpack';
+	customReq?: (user: MUser) => Promise<string | null>;
+}
+
+const bloodBarkPairs = [
+	['Bloodbark helm', 'Splitbark helm', 250, 79],
+	['Bloodbark body', 'Splitbark body', 500, 81],
+	['Bloodbark legs', 'Splitbark legs', 500, 81],
+	['Bloodbark boots', 'Splitbark boots', 100, 77],
+	['Bloodbark gauntlets', 'Splitbark gauntlets', 100, 77]
+] as const;
+
+const bloodBarkCreatables: Createable[] = [];
+
+for (const [bbPart, sbPart, bloodRunes, lvlReq] of bloodBarkPairs) {
+	const bbItem = getOSItem(bbPart);
+	const sbItem = getOSItem(sbPart);
+
+	bloodBarkCreatables.push({
+		name: bbItem.name,
+		inputItems: new Bank().add(sbItem.id).add('Blood rune', bloodRunes),
+		outputItems: new Bank().add(bbItem.id),
+		requiredSkills: {
+			runecraft: lvlReq
+		},
+		customReq: async (user: MUser) => {
+			if (!user.bitfield.includes(BitField.HasBloodbarkScroll)) {
+				return 'You need to have used a Runescroll of bloodbark to create this item!';
+			}
+
+			return null;
+		}
+	});
 }
 
 const goldenProspectorCreatables: Createable[] = [
@@ -560,6 +598,16 @@ const metamorphPets: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Great blue heron')]: 1
+		}
+	},
+	{
+		name: 'Greatish guardian',
+		inputItems: {
+			[itemID('Rift guardian')]: 1,
+			[itemID("Guardian's eye")]: 1
+		},
+		outputItems: {
+			[itemID('Greatish guardian')]: 1
 		}
 	}
 ];
@@ -1186,6 +1234,17 @@ const Reverteables: Createable[] = [
 			[itemID('Heron')]: 1
 		},
 		noCl: true
+	},
+	{
+		name: 'Revert greatish guardian',
+		inputItems: {
+			[itemID('Greatish guardian')]: 1
+		},
+		outputItems: {
+			[itemID('Rift guardian')]: 1,
+			[itemID("Guardian's eye")]: 1
+		},
+		noCl: true
 	}
 ];
 
@@ -1338,9 +1397,7 @@ const Createables: Createable[] = [
 	// Runecrafting Pouches
 	{
 		name: 'Small pouch',
-		inputItems: {
-			[itemID('Leather')]: 10
-		},
+		inputItems: {},
 		outputItems: {
 			[itemID('Small pouch')]: 1
 		},
@@ -1350,45 +1407,50 @@ const Createables: Createable[] = [
 	},
 	{
 		name: 'Medium pouch',
-		inputItems: {
-			[itemID('Leather')]: 20
-		},
+		inputItems: {},
 		outputItems: {
 			[itemID('Medium pouch')]: 1
 		},
 		cantHaveItems: {
 			[itemID('Medium pouch')]: 1
-		},
-
-		requiredSkills: { crafting: 10 }
+		}
 	},
 	{
 		name: 'Large pouch',
-		inputItems: {
-			[itemID('Leather')]: 30
-		},
+		inputItems: {},
 		outputItems: {
 			[itemID('Large pouch')]: 1
 		},
 		cantHaveItems: {
 			[itemID('Large pouch')]: 1
-		},
-
-		requiredSkills: { crafting: 20 }
+		}
 	},
 	{
 		name: 'Giant pouch',
-		inputItems: {
-			[itemID('Leather')]: 40
-		},
+		inputItems: {},
 		outputItems: {
 			[itemID('Giant pouch')]: 1
 		},
 		cantHaveItems: {
 			[itemID('Giant pouch')]: 1
+		}
+	},
+	{
+		name: 'Colossal pouch',
+		inputItems: {
+			[itemID('Abyssal needle')]: 1,
+			[itemID('Small pouch')]: 1,
+			[itemID('Medium pouch')]: 1,
+			[itemID('Large pouch')]: 1,
+			[itemID('Giant pouch')]: 1
 		},
-
-		requiredSkills: { crafting: 30 }
+		outputItems: {
+			[itemID('Colossal pouch')]: 1
+		},
+		cantHaveItems: {
+			[itemID('Colossal pouch')]: 1
+		},
+		requiredSkills: { runecraft: 85, crafting: 56 }
 	},
 	// Spirit Shields
 	{
@@ -2068,16 +2130,6 @@ const Createables: Createable[] = [
 		}
 	},
 	{
-		name: 'Death tiara',
-		inputItems: new Bank({
-			'Death talisman': 1,
-			Tiara: 1
-		}),
-		outputItems: {
-			[itemID('Death tiara')]: 1
-		}
-	},
-	{
 		name: 'Daeyalt essence',
 		inputItems: new Bank({
 			'Daeyalt shard': 1
@@ -2095,6 +2147,18 @@ const Createables: Createable[] = [
 			'Crystal shard': 100
 		}),
 		outputItems: new Bank().add('Celestial signet')
+	},
+	{
+		name: 'Eternal teleport crystal',
+		inputItems: new Bank({
+			'Enhanced crystal teleport seed': 1,
+			'Crystal shard': 100
+		}),
+		outputItems: new Bank({
+			'Eternal teleport crystal': 1
+		}),
+		requiredSkills: { smithing: 80, crafting: 80 },
+		QPRequired: 150
 	},
 	...Reverteables,
 	...crystalTools,
@@ -2115,7 +2179,11 @@ const Createables: Createable[] = [
 	...nexCreatables,
 	...amrodCreatables,
 	...goldenProspectorCreatables,
-	...leaguesCreatables
+	...leaguesCreatables,
+	...guardiansOfTheRiftCreatables,
+	...shadesOfMortonCreatables,
+	...toaCreatables,
+	...bloodBarkCreatables
 ];
 
 export default Createables;

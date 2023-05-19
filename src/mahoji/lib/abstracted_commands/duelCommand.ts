@@ -7,7 +7,7 @@ import { Emoji, Events } from '../../../lib/constants';
 import { MUserClass } from '../../../lib/MUser';
 import { awaitMessageComponentInteraction, channelIsSendable } from '../../../lib/util';
 import { deferInteraction } from '../../../lib/util/interactionReply';
-import { mahojiParseNumber, updateGPTrackSetting } from '../../mahojiSettings';
+import { mahojiParseNumber, updateClientGPTrackSetting, userStatsUpdate } from '../../mahojiSettings';
 
 async function checkBal(user: MUser, amount: number) {
 	return user.GP >= amount;
@@ -74,6 +74,8 @@ export async function duelCommand(
 
 	async function confirm(amount: number) {
 		duelMessage.edit({ components: [] }).catch(noOp);
+		await duelSourceUser.sync();
+		await duelTargetUser.sync();
 		if (!(await checkBal(duelSourceUser, amount)) || !(await checkBal(duelTargetUser, amount))) {
 			duelMessage.delete().catch(noOp);
 			return 'User appears to be less wealthy than expected (they lost some money before accepting...).';
@@ -84,12 +86,12 @@ export async function duelCommand(
 		await duelTargetUser.removeItemsFromBank(b);
 
 		await duelMessage
-			.edit(`${duelTargetUser.usernameOrMention} accepted the duel. You both enter the duel arena...`)
+			.edit(`${duelTargetUser.badgedUsername} accepted the duel. You both enter the duel arena...`)
 			.catch(noOp);
 
 		await sleep(2000);
 		await duelMessage
-			.edit(`${duelSourceUser.usernameOrMention} and ${duelTargetUser.usernameOrMention} begin fighting...`)
+			.edit(`${duelSourceUser.badgedUsername} and ${duelTargetUser.badgedUsername} begin fighting...`)
 			.catch(noOp);
 
 		const [winner, loser] =
@@ -100,30 +102,37 @@ export async function duelCommand(
 		await sleep(2000);
 
 		const winningAmount = amount * 2;
-		const tax = winningAmount - winningAmount * 0.95;
-
+		const tax = winningAmount - Math.floor(winningAmount * 0.95);
 		const dividedAmount = tax / 1_000_000;
-		updateGPTrackSetting('duelTaxBank', Math.floor(Math.round(dividedAmount * 100) / 100));
+		await updateClientGPTrackSetting('economyStats_duelTaxBank', Math.floor(Math.round(dividedAmount * 100) / 100));
 
-		await winner.update({
-			stats_duelWins: {
-				increment: 1
-			}
-		});
-		await loser.update({
-			stats_duelLosses: {
-				increment: 1
-			}
-		});
+		await userStatsUpdate(
+			winner.id,
+			{
+				duel_wins: {
+					increment: 1
+				}
+			},
+			{}
+		);
+		await userStatsUpdate(
+			loser.id,
+			{
+				duel_losses: {
+					increment: 1
+				}
+			},
+			{}
+		);
 
 		await winner.addItemsToBank({ items: new Bank().add('Coins', winningAmount - tax), collectionLog: false });
 
 		if (amount >= 1_000_000_000) {
 			globalClient.emit(
 				Events.ServerNotification,
-				`${Emoji.MoneyBag} **${winner.usernameOrMention}** just won a **${Util.toKMB(
+				`${Emoji.MoneyBag} **${winner.badgedUsername}** just won a **${Util.toKMB(
 					winningAmount
-				)}** GP duel against ${loser.usernameOrMention}.`
+				)}** GP duel against ${loser.badgedUsername}.`
 			);
 		}
 
@@ -133,7 +142,7 @@ export async function duelCommand(
 		);
 
 		duelMessage.edit(
-			`Congratulations ${winner.usernameOrMention}! You won ${Util.toKMB(winningAmount)}, and paid ${Util.toKMB(
+			`Congratulations ${winner.badgedUsername}! You won ${Util.toKMB(winningAmount)}, and paid ${Util.toKMB(
 				tax
 			)} tax.`
 		);

@@ -1,11 +1,11 @@
-import { randFloat, roll, Time } from 'e';
+import { randFloat, randInt, roll, Time } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
 import { incrementMinigameScore } from '../../lib/settings/settings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
-import { rand, skillingPetDropRate } from '../../lib/util';
+import { skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { VolcanicMineGameTime } from '../../mahoji/lib/abstracted_commands/volcanicMineCommand';
 
@@ -69,7 +69,7 @@ export const vmTask: MinionTask = {
 
 		await incrementMinigameScore(userID, 'volcanic_mine', quantity);
 
-		const fragmentRolls = rand(38, 40) * quantity;
+		const fragmentRolls = randInt(38, 40) * quantity;
 		const loot = new Bank().add(fragmentTable.roll(fragmentRolls));
 		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Mining, 60_000);
 		// Iterate over the fragments received
@@ -86,7 +86,7 @@ export const vmTask: MinionTask = {
 			str += "\nYou have a funny feeling you're being followed...";
 			globalClient.emit(
 				Events.ServerNotification,
-				`${Emoji.Mining} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received ${
+				`${Emoji.Mining} **${user.badgedUsername}'s** minion, ${user.minionName}, just received ${
 					loot.amount('Rock golem') > 1 ? `${loot.amount('Rock golem')}x ` : 'a'
 				} Rock golem while mining on the Volcanic Mine at level ${userMiningLevel} Mining!`
 			);

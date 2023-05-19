@@ -7,7 +7,8 @@ import defaultBirdhouseTrap, { BirdhouseData } from '../../../lib/skilling/skill
 import { BirdhouseActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, itemID, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { mahojiUsersSettingsFetch, updateBankSetting, userHasGracefulEquipped } from '../../mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { mahojiUsersSettingsFetch, userHasGracefulEquipped } from '../../mahojiSettings';
 
 interface BirdhouseDetails {
 	raw: BirdhouseData;
@@ -43,7 +44,51 @@ const birdhouseSeedReq = [
 		amount: 5
 	},
 	{
-		itemID: itemID('Jute seed'),
+		itemID: itemID('Potato seed'),
+		amount: 10
+	},
+	{
+		itemID: itemID('Onion seed'),
+		amount: 10
+	},
+	{
+		itemID: itemID('Cabbage seed'),
+		amount: 10
+	},
+	{
+		itemID: itemID('Tomato seed'),
+		amount: 10
+	},
+	{
+		itemID: itemID('Sweetcorn seed'),
+		amount: 10
+	},
+	{
+		itemID: itemID('Strawberry seed'),
+		amount: 10
+	},
+	{
+		itemID: itemID('Watermelon seed'),
+		amount: 10
+	},
+	{
+		itemID: itemID('Marigold seed'),
+		amount: 10
+	},
+	{
+		itemID: itemID('Rosemary seed'),
+		amount: 10
+	},
+	{
+		itemID: itemID('Nasturtium seed'),
+		amount: 10
+	},
+	{
+		itemID: itemID('Woad seed'),
+		amount: 10
+	},
+	{
+		itemID: itemID('Limpwurt seed'),
 		amount: 10
 	},
 	{
@@ -59,13 +104,26 @@ const birdhouseSeedReq = [
 		amount: 10
 	},
 	{
-		itemID: itemID('Irit seed'),
-		amount: 5
-	},
-	{
 		itemID: itemID('Harralander seed'),
 		amount: 10
 	},
+	{
+		itemID: itemID('Jute seed'),
+		amount: 10
+	},
+	{
+		itemID: itemID('White lily seed'),
+		amount: 10
+	},
+	{
+		itemID: itemID('Snape grass seed'),
+		amount: 10
+	},
+	{
+		itemID: itemID('Irit seed'),
+		amount: 5
+	},
+
 	{
 		itemID: itemID('Dwarf weed seed'),
 		amount: 5

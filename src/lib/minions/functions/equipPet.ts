@@ -1,11 +1,12 @@
 import { Bank } from 'oldschooljs';
 
 import { allPetIDs } from '../../data/CollectionsExport';
-import getOSItem from '../../util/getOSItem';
+import { getItem } from '../../util/getOSItem';
 import { unequipPet } from './unequipPet';
 
 export async function equipPet(user: MUser, itemName: string) {
-	const petItem = getOSItem(itemName);
+	const petItem = getItem(itemName);
+	if (!petItem) return "That's not a valid item.";
 	const cost = new Bank().add(petItem.id);
 
 	if (!allPetIDs.includes(petItem.id) || !user.owns(cost)) {

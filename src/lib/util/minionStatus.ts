@@ -1,14 +1,16 @@
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { Monsters } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { collectables } from '../../mahoji/lib/abstracted_commands/collectCommand';
+import { shades, shadesLogs } from '../../mahoji/lib/abstracted_commands/shadesOfMortonCommand';
 import { ClueTiers } from '../clues/clueTiers';
 import { Emoji } from '../constants';
 import killableMonsters from '../minions/data/killableMonsters';
 import { Planks } from '../minions/data/planks';
-import { getActivityOfUser } from '../settings/settings';
 import Agility from '../skilling/skills/agility';
+import Constructables from '../skilling/skills/construction/constructables';
 import Cooking from '../skilling/skills/cooking';
 import Crafting from '../skilling/skills/crafting';
 import Farming from '../skilling/skills/farming';
@@ -61,15 +63,19 @@ import {
 	RevenantOptions,
 	RunecraftActivityTaskOptions,
 	SawmillActivityTaskOptions,
+	ScatteringActivityTaskOptions,
 	SepulchreActivityTaskOptions,
+	ShadesOfMortonOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
 	TheatreOfBloodTaskOptions,
+	TiaraRunecraftActivityTaskOptions,
+	TOAOptions,
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '../types/minions';
-import { formatDuration, itemNameFromID, randomVariation, toTitleCase } from '../util';
-import { stringMatches } from './cleanString';
+import { formatDuration, itemNameFromID, randomVariation, stringMatches } from '../util';
+import { getActivityOfUser } from './minionIsBusy';
 
 export function minionStatus(user: MUser) {
 	const currentTask = getActivityOfUser(user.id);
@@ -201,6 +207,16 @@ export function minionStatus(user: MUser) {
 			} Prayer level is ${user.skillLevel(SkillsEnum.Prayer)}`;
 		}
 
+		case 'Scattering': {
+			const data = currentTask as ScatteringActivityTaskOptions;
+
+			const ashes = Prayer.Ashes.find(ashes => ashes.inputId === data.ashID);
+
+			return `${name} is currently scattering ${data.quantity}x ${ashes!.name}. ${formattedDuration} Your ${
+				Emoji.Prayer
+			} Prayer level is ${user.skillLevel(SkillsEnum.Prayer)}`;
+		}
+
 		case 'Firemaking': {
 			const data = currentTask as FiremakingActivityTaskOptions;
 
@@ -240,6 +256,15 @@ export function minionStatus(user: MUser) {
 			}. ${formattedDuration} Your ${Emoji.Runecraft} Runecraft level is ${user.skillLevel(
 				SkillsEnum.Runecraft
 			)}`;
+		}
+
+		case 'TiaraRunecraft': {
+			const data = currentTask as TiaraRunecraftActivityTaskOptions;
+			const tiara = Runecraft.Tiaras.find(_tiara => _tiara.id === data.tiaraID);
+
+			return `${name} is currently crafting ${data.tiaraQuantity} ${tiara!.name}. ${formattedDuration} Your ${
+				Emoji.Runecraft
+			} Runecraft level is ${user.skillLevel(SkillsEnum.Runecraft)}`;
 		}
 
 		case 'FightCaves': {
@@ -387,9 +412,9 @@ export function minionStatus(user: MUser) {
 
 		case 'Construction': {
 			const data = currentTask as ConstructionActivityTaskOptions;
-			return `${name} is currently building ${data.quantity}x ${itemNameFromID(
-				data.objectID
-			)}. ${formattedDuration}`;
+			const pohObject = Constructables.find(i => i.id === data.objectID);
+			if (!pohObject) throw new Error(`No POH object found with ID ${data.objectID}.`);
+			return `${name} is currently building ${data.quantity}x ${pohObject.name}. ${formattedDuration}`;
 		}
 
 		case 'Butler': {
@@ -570,7 +595,49 @@ export function minionStatus(user: MUser) {
 				durationRemaining
 			)}.`;
 		}
-		case 'Easter':
+		case 'GiantsFoundry': {
+			const data = currentTask as MinigameActivityTaskOptions;
+			return `${name} is currently creating ${
+				data.quantity
+			}x giant weapons for Kovac in the Giants' Foundry minigame. The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
+		case 'GuardiansOfTheRift': {
+			return `${name} is currently helping the Great Guardian to close the rift. The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
+		case 'NightmareZone': {
+			return `${name} is currently killing Monsters in the Nightmare Zone. The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
+		case 'ShadesOfMorton': {
+			const data = currentTask as ShadesOfMortonOptions;
+			const log = shadesLogs.find(i => i.normalLog.id === data.logID)!;
+			const shade = shades.find(i => i.shadeName === data.shadeID)!;
+			return `${name} is currently doing ${data.quantity} trips of Shades of Mort'ton, cremating ${
+				shade.shadeName
+			} remains with ${log.oiledLog.name}! The trip should take ${formatDuration(durationRemaining)}.`;
+		}
+		case 'TombsOfAmascut': {
+			const data = currentTask as TOAOptions;
+			const durationRemaining = data.finishDate - data.duration + data.fakeDuration - Date.now();
+
+			return `${name} is currently attempting the Tombs of Amascut, if your team is successful and doesn't die, the trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
+		case 'UnderwaterAgilityThieving': {
+			return `${name} is currently doing Underwater Agility and Thieving. ${formattedDuration}`;
+		}
+		case 'Easter': {
+			return `${name} is currently doing the Easter Event! The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
+		case 'HalloweenEvent':
 		case 'BlastFurnace': {
 			throw new Error('Removed');
 		}

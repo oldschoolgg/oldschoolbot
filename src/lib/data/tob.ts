@@ -1,36 +1,14 @@
-import { calcPercentOfNum, calcWhatPercent, randInt, reduceNumByPercent, round, Time } from 'e';
+import { calcPercentOfNum, calcWhatPercent, randFloat, randInt, reduceNumByPercent, round, Time } from 'e';
 import { Bank } from 'oldschooljs';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
+import { Item } from 'oldschooljs/dist/meta/types';
+import { randomVariation } from 'oldschooljs/dist/util';
 
-import { checkUserCanUseDegradeableItem } from '../degradeableItems';
-import { constructGearSetup, GearStats } from '../gear';
+import type { GearStats } from '../gear/types';
 import { blowpipeDarts } from '../minions/functions/blowpipeCommand';
-import getUserFoodFromBank from '../minions/functions/getUserFoodFromBank';
-import { getMinigameScore } from '../settings/minigames';
-import { Gear } from '../structures/Gear';
-import { Skills } from '../types';
-import { assert, formatSkillRequirements, randFloat, randomVariation, skillsMeetRequirements } from '../util';
+import { constructGearSetup, Gear } from '../structures/Gear';
 import getOSItem from '../util/getOSItem';
 import { logError } from '../util/logError';
 import resolveItems from '../util/resolveItems';
-
-export const bareMinStats: Skills = {
-	attack: 90,
-	strength: 90,
-	defence: 90,
-	ranged: 90,
-	magic: 94,
-	prayer: 77
-};
-
-export const totalXPFromRaid = {
-	[SkillsEnum.Attack]: 12_000,
-	[SkillsEnum.Hitpoints]: 13_100,
-	[SkillsEnum.Strength]: 12_000,
-	[SkillsEnum.Ranged]: 1000,
-	[SkillsEnum.Defence]: 12_000,
-	[SkillsEnum.Magic]: 1000
-} as const;
 
 export interface TOBRoom {
 	name: string;
@@ -290,162 +268,6 @@ export const minimumTOBSuppliesNeeded = new Bank({
 
 export const TENTACLE_CHARGES_PER_RAID = 400;
 
-export async function checkTOBUser(
-	user: MUser,
-	isHardMode: boolean,
-	teamSize?: number
-): Promise<[false] | [true, string]> {
-	if (!user.user.minion_hasBought) {
-		return [true, `${user.usernameOrMention} doesn't have a minion`];
-	}
-
-	if (!skillsMeetRequirements(user.skillsAsXP, bareMinStats)) {
-		return [
-			true,
-			`${
-				user.usernameOrMention
-			} doesn't meet the skill requirements to do the Theatre of Blood, you need: ${formatSkillRequirements(
-				bareMinStats
-			)}.`
-		];
-	}
-
-	if (!user.owns(minimumTOBSuppliesNeeded)) {
-		return [
-			true,
-			`${user.usernameOrMention} doesn't have enough items, you need a minimum of this amount of items: ${minimumTOBSuppliesNeeded}.`
-		];
-	}
-	const { total } = calculateTOBUserGearPercents(user);
-	if (total < 20) {
-		return [
-			true,
-			`${user.usernameOrMention}'s gear is terrible! You do not stand a chance in the Theatre of Blood.`
-		];
-	}
-
-	const cost = await calcTOBInput(user);
-	cost.add('Coins', 100_000).add('Rune pouch');
-	if (!user.owns(cost)) {
-		return [true, `${user.usernameOrMention} doesn't own ${cost.remove(user.bankWithGP)}`];
-	}
-
-	/**
-	 *
-	 *
-	 * Gear
-	 *
-	 *
-	 */
-
-	// Melee
-	const meleeGear = user.gear.melee;
-	if (
-		!meleeGear.hasEquipped([
-			'Abyssal tentacle',
-			'Blade of saeldor (c)',
-			'Scythe of vitur (uncharged)',
-			'Scythe of vitur'
-		]) ||
-		!meleeGear.hasEquipped(['Fire cape', 'Infernal cape'])
-	) {
-		return [
-			true,
-			`${user.usernameOrMention} needs an Abyssal tentacle/Blade of saeldor(c)/Scythe of vitur and Fire/Infernal cape in their melee setup!`
-		];
-	}
-
-	if (meleeGear.hasEquipped('Abyssal tentacle')) {
-		const tentacleResult = checkUserCanUseDegradeableItem({
-			item: getOSItem('Abyssal tentacle'),
-			chargesToDegrade: TENTACLE_CHARGES_PER_RAID,
-			user
-		});
-		if (!tentacleResult.hasEnough) {
-			return [true, tentacleResult.userMessage];
-		}
-	}
-
-	// Range
-	const blowpipeData = user.blowpipe;
-	if (!user.owns('Toxic blowpipe') || !blowpipeData.scales || !blowpipeData.dartID || !blowpipeData.dartQuantity) {
-		return [
-			true,
-			`${user.usernameOrMention} needs a Toxic blowpipe (with darts and scales equipped) in their bank to do the Theatre of Blood.`
-		];
-	}
-	if (blowpipeData.dartQuantity < 150) {
-		return [true, `${user.usernameOrMention}, you need atleast 150 darts in your blowpipe.`];
-	}
-	if (blowpipeData.scales < 1000) {
-		return [true, `${user.usernameOrMention}, you need atleast 1000 scales in your blowpipe.`];
-	}
-	const dartIndex = blowpipeDarts.indexOf(getOSItem(blowpipeData.dartID));
-	if (dartIndex < 5) {
-		return [true, `${user.usernameOrMention}'s darts are too weak`];
-	}
-
-	const rangeGear = user.gear.range;
-	if (
-		!rangeGear.hasEquipped(['Magic shortbow', 'Twisted bow']) ||
-		!rangeGear.hasEquipped(['Amethyst arrow', 'Rune arrow', 'Dragon arrow'])
-	) {
-		return [
-			true,
-			`${user.usernameOrMention} needs a Magic shortbow or Twisted bow, and rune/dragon arrows, in their range setup!`
-		];
-	}
-	if (rangeGear.hasEquipped(['Dragon arrow', 'Magic shortbow'], true)) {
-		return [true, `${user.usernameOrMention}, you can't use Dragon arrows with a Magic shortbow 🤨`];
-	}
-
-	if (rangeGear.ammo!.quantity < 150) {
-		return [true, `${user.usernameOrMention}, you need atleast 150 arrows equipped in your range setup.`];
-	}
-
-	if (isHardMode) {
-		const kc = await getMinigameScore(user.id, 'tob');
-
-		if (kc < 250) {
-			return [true, `${user.usernameOrMention} needs atleast 250 Theatre of Blood KC before doing Hard mode.`];
-		}
-		if (!meleeGear.hasEquipped('Infernal cape')) {
-			return [true, `${user.usernameOrMention} needs an Infernal cape to do Hard mode.`];
-		}
-	}
-
-	if (teamSize === 2) {
-		const kc = await getMinigameScore(user.id, isHardMode ? 'tob_hard' : 'tob');
-		if (kc < 150) {
-			return [true, `${user.usernameOrMention} needs atleast 150 KC before doing duo's.`];
-		}
-	}
-
-	return [false];
-}
-
-export async function checkTOBTeam(users: MUser[], isHardMode: boolean): Promise<string | null> {
-	const userWithoutSupplies = users.find(u => !u.bank.has(minimumTOBSuppliesNeeded));
-	if (userWithoutSupplies) {
-		return `${userWithoutSupplies.usernameOrMention} doesn't have enough supplies`;
-	}
-	if (users.length < 2 || users.length > 5) {
-		return 'TOB team must be 2-5 users';
-	}
-
-	for (const user of users) {
-		if (user.minionIsBusy) return `${user.usernameOrMention}'s minion is busy.`;
-		const checkResult = await checkTOBUser(user, isHardMode, users.length);
-		if (!checkResult[0]) {
-			continue;
-		} else {
-			return checkResult[1];
-		}
-	}
-
-	return null;
-}
-
 function kcEffectiveness(normalKC: number, hardKC: number, hardMode: boolean) {
 	const kc = hardMode ? hardKC : normalKC;
 	let cap = 400;
@@ -456,17 +278,92 @@ function kcEffectiveness(normalKC: number, hardKC: number, hardMode: boolean) {
 	return kcEffectiveness;
 }
 
+interface ItemBoost {
+	item: Item;
+	boost: number;
+	mustBeEquipped: boolean;
+	setup?: 'mage' | 'range' | 'melee';
+}
+
+const itemBoosts: ItemBoost[][] = [
+	[
+		{
+			item: getOSItem('Scythe of vitur'),
+			boost: 15,
+			mustBeEquipped: true,
+			setup: 'melee'
+		},
+		{
+			item: getOSItem('Scythe of vitur (uncharged)'),
+			boost: 6,
+			mustBeEquipped: true,
+			setup: 'melee'
+		},
+		{
+			item: getOSItem('Blade of saeldor (c)'),
+			boost: 6,
+			mustBeEquipped: true,
+			setup: 'melee'
+		},
+		{
+			item: getOSItem('Abyssal tentacle'),
+			boost: 5.5,
+			mustBeEquipped: true,
+			setup: 'melee'
+		}
+	],
+	[
+		{
+			item: getOSItem('Twisted bow'),
+			boost: 4,
+			mustBeEquipped: true,
+			setup: 'range'
+		}
+	],
+	[
+		{
+			item: getOSItem('Dragon claws'),
+			boost: 6,
+			mustBeEquipped: false
+		},
+		{
+			item: getOSItem('Crystal halberd'),
+			boost: 3,
+			mustBeEquipped: false
+		}
+	],
+	[
+		{
+			item: getOSItem('Dragon warhammer'),
+			boost: 6,
+			mustBeEquipped: false
+		},
+		{
+			item: getOSItem('Bandos godsword'),
+			boost: 3,
+			mustBeEquipped: false
+		}
+	]
+];
+
 const speedReductionForGear = 16;
-const speedReductionForKC = 40;
-const totalSpeedReductions = speedReductionForGear + speedReductionForKC + 15 + 4;
+const speedReductionForKC = 20;
+const speedReductionForDarts = 4;
+
+const maxSpeedReductionFromItems = itemBoosts.reduce(
+	(sum, items) => sum + Math.max(...items.map(item => item.boost)),
+	0
+);
+const maxSpeedReductionUser =
+	(speedReductionForGear + speedReductionForKC + speedReductionForDarts) * 1.3 + maxSpeedReductionFromItems;
+
 const baseDuration = Time.Minute * 70;
-const baseCmDuration = Time.Minute * 75;
+const baseHardDuration = Time.Minute * 75;
 
 const { ceil } = Math;
 function calcPerc(perc: number, num: number) {
 	return ceil(calcPercentOfNum(ceil(perc), num));
 }
-
 interface ParsedTeamMember {
 	id: string;
 	kc: number;
@@ -495,14 +392,12 @@ export function createTOBTeam({
 }): {
 	reductions: Record<string, number>;
 	duration: number;
-	totalReduction: number;
+	maxUserReduction: number;
 	parsedTeam: ParsedTeamMember[];
 	wipedRoom: TOBRoom | null;
 	deathDuration: number | null;
 } {
 	const teamSize = team.length;
-	const maxScaling = 350;
-	assert(teamSize > 1 && teamSize < 6, 'TOB team must be 2-5 users');
 
 	let individualReductions = [];
 
@@ -514,68 +409,45 @@ export function createTOBTeam({
 		let userPercentChange = 0;
 
 		// Reduce time for gear
-		const gearPerecents = calculateTOBUserGearPercents(u.user);
+		const gearPercents = calculateTOBUserGearPercents(u.user);
 		// Blowpipe
 		const darts = u.user.blowpipe.dartID!;
 		const dartItem = getOSItem(darts);
 		const dartIndex = blowpipeDarts.indexOf(dartItem);
-		const blowPipePercent = dartIndex >= 3 ? dartIndex * 0.9 : -(4 * (4 - dartIndex));
-		userPercentChange += calcPerc(gearPerecents.total, (speedReductionForGear + blowPipePercent) / 2);
+		let blowPipePercent = 0;
+		if (dartIndex >= 3) {
+			blowPipePercent = (dartIndex / (blowpipeDarts.length - 1)) * speedReductionForDarts;
+		} else {
+			blowPipePercent = -(4 * (4 - dartIndex)) / 2;
+		}
+		userPercentChange += calcPerc(gearPercents.total, speedReductionForGear + blowPipePercent);
 
 		// Reduce time for KC
-		const kcPercent = kcEffectiveness(
-			Math.min(u.attempts, maxScaling),
-			Math.min(u.hardAttempts, maxScaling),
-			hardMode
-		);
+		const kcPercent = kcEffectiveness(u.attempts, u.hardAttempts, hardMode);
 		userPercentChange += calcPerc(kcPercent, speedReductionForKC);
 
 		const maxKcCurveBonus = 30;
 		const durationCurveModifier = Math.min(maxKcCurveBonus, kcPercent * 0.6);
 		userPercentChange *= 1 + durationCurveModifier / 100;
-
 		/**
 		 *
 		 * Item/Gear Boosts
 		 *
 		 */
-		const meleeWeaponBoosts = [
-			['Scythe of vitur', 15],
-			['Scythe of vitur (uncharged)', 6],
-			['Blade of saeldor (c)', 6],
-			['Abyssal tentacle', 5.5]
-		] as const;
-		for (const [name, percent] of meleeWeaponBoosts) {
-			if (u.gear.melee.hasEquipped(name)) {
-				userPercentChange += percent;
-				break;
-			}
-		}
-		const rangeWeaponBoosts = [['Twisted bow', 4]] as const;
-		for (const [name, percent] of rangeWeaponBoosts) {
-			if (u.gear.range.hasEquipped(name)) {
-				userPercentChange += percent;
-				break;
-			}
-		}
-		const primarySpecWeaponBoosts = [
-			['Dragon claws', 6],
-			['Crystal halberd', 3]
-		] as const;
-		for (const [name, percent] of primarySpecWeaponBoosts) {
-			if (u.user.hasEquippedOrInBank(name)) {
-				userPercentChange += percent;
-				break;
-			}
-		}
-		const secondarySpecWeaponBoosts = [
-			['Dragon warhammer', 6],
-			['Bandos godsword', 3]
-		] as const;
-		for (const [name, percent] of secondarySpecWeaponBoosts) {
-			if (u.user.hasEquippedOrInBank(name)) {
-				userPercentChange += percent;
-				break;
+		for (const itemBoost of itemBoosts) {
+			for (const item of itemBoost) {
+				if (item.mustBeEquipped) {
+					if (item.setup && u.user.gear[item.setup].hasEquipped(item.item.id)) {
+						userPercentChange += item.boost;
+						break;
+					} else if (!item.setup && u.user.hasEquipped(item.item.id)) {
+						userPercentChange += item.boost;
+						break;
+					}
+				} else if (u.user.hasEquippedOrInBank(item.item.id)) {
+					userPercentChange += item.boost;
+					break;
+				}
 			}
 		}
 
@@ -592,7 +464,7 @@ export function createTOBTeam({
 			userPercentChange = reduceNumByPercent(userPercentChange, 10);
 		}
 
-		const deathChances = calculateTOBDeaths(u.kc, u.hardKC, u.attempts, u.hardAttempts, hardMode, gearPerecents);
+		const deathChances = calculateTOBDeaths(u.kc, u.hardKC, u.attempts, u.hardAttempts, hardMode, gearPercents);
 		parsedTeam.push({
 			kc: u.kc,
 			hardKC: u.hardKC,
@@ -620,7 +492,7 @@ export function createTOBTeam({
 		totalReduction = round(totalReduction / teamSize, 2);
 	}
 	if (hardMode) {
-		duration = baseCmDuration;
+		duration = baseHardDuration;
 		duration = reduceNumByPercent(duration, totalReduction / 1.3);
 	} else {
 		duration = reduceNumByPercent(duration, totalReduction);
@@ -665,41 +537,9 @@ export function createTOBTeam({
 	return {
 		duration,
 		reductions,
-		totalReduction: totalSpeedReductions / teamSize,
+		maxUserReduction: maxSpeedReductionUser / teamSize,
 		parsedTeam,
 		wipedRoom,
 		deathDuration
 	};
-}
-
-export async function calcTOBInput(u: MUser) {
-	const items = new Bank();
-	const kc = await getMinigameScore(u.id, 'tob');
-	items.add('Super combat potion(4)', 1);
-	items.add('Ranging potion(4)', 1);
-
-	let brewsNeeded = Math.max(1, 6 - Math.max(1, Math.ceil((kc + 1) / 10)));
-	const restoresNeeded = Math.max(2, Math.floor(brewsNeeded / 3));
-
-	let healingNeeded = 60;
-	if (kc < 20) {
-		items.add('Cooked karambwan', 3);
-		healingNeeded += 40;
-	}
-
-	items.add(getUserFoodFromBank(u, healingNeeded, u.user.favorite_food, 20) || new Bank().add('Shark', 5));
-
-	items.add('Saradomin brew(4)', brewsNeeded);
-	items.add('Super restore(4)', restoresNeeded);
-
-	items.add('Blood rune', 110);
-	items.add('Death rune', 100);
-	items.add('Water rune', 800);
-
-	if (u.gear.melee.hasEquipped('Scythe of vitur')) {
-		items.add('Blood rune', 600);
-		items.add('Vial of blood', 2);
-	}
-
-	return items;
 }

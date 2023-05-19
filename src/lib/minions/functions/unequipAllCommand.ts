@@ -1,7 +1,8 @@
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { defaultGear, GearSetupType, GearSetupTypes } from '../../gear';
-import { toTitleCase } from '../../util';
+import { GearSetupType, GearSetupTypes } from '../../gear/types';
+import { defaultGear } from '../../structures/Gear';
 
 export async function unEquipAllCommand(userID: string, gearType: GearSetupType | undefined): Promise<string> {
 	if (!gearType || !GearSetupTypes.includes(gearType)) {

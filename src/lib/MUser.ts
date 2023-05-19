@@ -1,54 +1,115 @@
 import { userMention } from '@discordjs/builders';
-import { Prisma, User, xp_gains_skill_enum } from '@prisma/client';
+import { Prisma, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
 import { objectEntries, sumArr, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { timePerAlch } from '../mahoji/lib/abstracted_commands/alchCommand';
-import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
-import { mahojiUserSettingsUpdate } from '../mahoji/settingsUpdate';
+import { userStatsUpdate } from '../mahoji/mahojiSettings';
 import { addXP } from './addXP';
 import { userIsBusy } from './busyCounterCache';
-import { BitField, projectiles, usernameCache } from './constants';
+import { badges, BitField, Emoji, projectiles, usernameCache } from './constants';
 import { allPetIDs } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
-import { defaultGear, GearSetup, UserFullGearSetup } from './gear';
+import { GearSetup, UserFullGearSetup } from './gear/types';
 import { CombatOptionsEnum } from './minions/data/combatConstants';
 import { baseUserKourendFavour, UserKourendFavour } from './minions/data/kourendFavour';
+import { defaultFarmingContract } from './minions/farming';
+import { FarmingContract } from './minions/farming/types';
 import { AttackStyles } from './minions/functions';
 import { blowpipeDarts, validateBlowpipeData } from './minions/functions/blowpipeCommand';
 import { AddXpParams, BlowpipeData } from './minions/types';
+import { getUsersPerkTier, syncPerkTierOfUser } from './perkTiers';
+import { getMinigameEntity, Minigames, MinigameScore } from './settings/minigames';
+import { prisma } from './settings/prisma';
+import { getFarmingInfoFromUser } from './skilling/functions/getFarmingInfo';
+import Farming from './skilling/skills/farming';
 import { SkillsEnum } from './skilling/types';
 import { BankSortMethod } from './sorts';
-import { Gear } from './structures/Gear';
+import { defaultGear, Gear } from './structures/Gear';
 import { ItemBank, Skills } from './types';
-import { addItemToBank, assert, getSkillsOfMahojiUser, itemNameFromID, percentChance } from './util';
+import { addItemToBank, assert, convertXPtoLVL, itemNameFromID, percentChance } from './util';
 import { determineRunes } from './util/determineRunes';
+import { getKCByName } from './util/getKCByName';
 import getOSItem from './util/getOSItem';
-import getUsersPerkTier, { syncPerkTierOfUser } from './util/getUsersPerkTier';
+import { logError } from './util/logError';
 import { minionIsBusy } from './util/minionIsBusy';
 import { minionName } from './util/minionUtils';
 import resolveItems from './util/resolveItems';
+
+export async function mahojiUserSettingsUpdate(user: string | bigint, data: Prisma.UserUncheckedUpdateInput) {
+	try {
+		const newUser = await prisma.user.update({
+			data,
+			where: {
+				id: user.toString()
+			}
+		});
+
+		return { newUser };
+	} catch (err) {
+		logError(
+			err,
+			{
+				user_id: user.toString()
+			},
+			{
+				user_id: user.toString(),
+				updated_data: JSON.stringify(data)
+			}
+		);
+		throw err;
+	}
+}
 
 function alchPrice(bank: Bank, item: Item, tripLength: number) {
 	const maxCasts = Math.min(Math.floor(tripLength / timePerAlch), bank.amount(item.id));
 	return maxCasts * (item.highalch ?? 0);
 }
 
+export type SelectedUserStats<T extends Prisma.UserStatsSelect> = {
+	[K in keyof T]: K extends keyof UserStats ? UserStats[K] : never;
+};
+
 export class MUserClass {
 	user: Readonly<User>;
 	id: string;
+	bank!: Bank;
+	bankWithGP!: Bank;
+	cl!: Bank;
+	allItemsOwned!: Bank;
 
 	constructor(user: User) {
 		this.user = user;
 		this.id = user.id;
+		this.updateProperties();
 
 		syncPerkTierOfUser(this);
 	}
 
-	async update(data: Prisma.UserUpdateArgs['data']) {
+	private updateProperties() {
+		this.bank = new Bank(this.user.bank as ItemBank);
+		this.bank.freeze();
+
+		this.bankWithGP = new Bank(this.user.bank as ItemBank);
+		this.bankWithGP.add('Coins', this.GP);
+		this.bankWithGP.freeze();
+
+		this.cl = new Bank(this.user.collectionLogBank as ItemBank);
+		this.cl.freeze();
+
+		this.allItemsOwned = this.calculateAllItemsOwned();
+		this.allItemsOwned.freeze();
+	}
+
+	countSkillsAtleast99() {
+		return Object.values(this.skillsAsLevels).filter(lvl => lvl >= 99).length;
+	}
+
+	async update(data: Prisma.UserUncheckedUpdateInput) {
 		const result = await mahojiUserSettingsUpdate(this.id, data);
 		this.user = result.newUser;
+		this.updateProperties();
 		return result;
 	}
 
@@ -71,18 +132,10 @@ export class MUserClass {
 			.sort((a, b) => alchPrice(bank, b, duration) - alchPrice(bank, a, duration));
 	}
 
-	openableScores() {
-		return this.user.openable_scores as ItemBank;
-	}
-
 	async setAttackStyle(newStyles: AttackStyles[]) {
 		await mahojiUserSettingsUpdate(this.id, {
 			attack_style: uniqueArr(newStyles)
 		});
-	}
-
-	get bankWithGP() {
-		return this.bank.add('Coins', this.GP);
 	}
 
 	get kourendFavour() {
@@ -120,13 +173,12 @@ export class MUserClass {
 		return this.user.bitfield as readonly BitField[];
 	}
 
-	get perkTier() {
-		return getUsersPerkTier(this);
+	perkTier(noCheckOtherAccounts?: boolean | undefined) {
+		return getUsersPerkTier(this, noCheckOtherAccounts);
 	}
 
 	skillLevel(skill: xp_gains_skill_enum) {
-		const skills = getSkillsOfMahojiUser(this.user, true);
-		return skills[skill];
+		return this.skillsAsLevels[skill];
 	}
 
 	get gear(): UserFullGearSetup {
@@ -140,18 +192,6 @@ export class MUserClass {
 			fashion: new Gear((this.user.gear_fashion as GearSetup | null) ?? { ...defaultGear }),
 			other: new Gear((this.user.gear_other as GearSetup | null) ?? { ...defaultGear })
 		};
-	}
-
-	get bank() {
-		return new Bank(this.user.bank as ItemBank);
-	}
-
-	get sacrificedItems() {
-		return new Bank(this.user.sacrificedBank as ItemBank);
-	}
-
-	get cl() {
-		return new Bank(this.user.collectionLogBank as ItemBank);
 	}
 
 	get minionName() {
@@ -170,6 +210,18 @@ export class MUserClass {
 		return usernameCache.get(this.id) ?? this.mention;
 	}
 
+	get badgeString() {
+		const rawBadges = this.user.badges.map(num => badges[num]);
+		if (this.isIronman) {
+			rawBadges.push(Emoji.Ironman);
+		}
+		return rawBadges.join(' ');
+	}
+
+	get badgedUsername() {
+		return `${this.badgeString} ${this.usernameOrMention}`;
+	}
+
 	toString() {
 		return this.mention;
 	}
@@ -183,11 +235,12 @@ export class MUserClass {
 	}
 
 	addXP(params: AddXpParams) {
-		return addXP(this.id, params);
+		return addXP(this, params);
 	}
 
-	getKC(monsterID: number) {
-		return (this.user.monsterScores as ItemBank)[monsterID] ?? 0;
+	async getKC(monsterID: number) {
+		const stats = await this.fetchStats({ monster_scores: true });
+		return (stats.monster_scores as ItemBank)[monsterID] ?? 0;
 	}
 
 	getAttackStyles(): AttackStyles[] {
@@ -199,14 +252,16 @@ export class MUserClass {
 	}
 
 	async incrementKC(monsterID: number, amountToAdd = 1) {
-		const newKCs = new Bank().add(this.user.monsterScores as ItemBank).add(monsterID, amountToAdd);
-		const { newUser } = await mahojiUserSettingsUpdate(this.id, {
-			monsterScores: newKCs.bank
-		});
-
-		this.user = newUser;
-
-		return this;
+		const stats = await this.fetchStats({ monster_scores: true });
+		const newKCs = new Bank(stats.monster_scores as ItemBank).add(monsterID, amountToAdd);
+		await userStatsUpdate(
+			this.id,
+			{
+				monster_scores: newKCs.bank
+			},
+			{}
+		);
+		return { newKC: newKCs.amount(monsterID) };
 	}
 
 	public async addItemsToBank({
@@ -228,6 +283,7 @@ export class MUserClass {
 			userID: this.id
 		});
 		this.user = res.newUser;
+		this.updateProperties();
 		return res;
 	}
 
@@ -237,6 +293,7 @@ export class MUserClass {
 			itemsToRemove: bankToRemove
 		});
 		this.user = res.newUser;
+		this.updateProperties();
 		return res;
 	}
 
@@ -255,10 +312,9 @@ export class MUserClass {
 		return false;
 	}
 
-	allItemsOwned() {
-		const bank = new Bank();
+	private calculateAllItemsOwned(): Bank {
+		const bank = new Bank(this.bank);
 
-		bank.add(this.bank);
 		bank.add('Coins', Number(this.user.GP));
 		if (this.user.minion_equippedPet) {
 			bank.add(this.user.minion_equippedPet);
@@ -273,6 +329,20 @@ export class MUserClass {
 		}
 
 		return bank;
+	}
+
+	async fetchMinigameScores() {
+		const userMinigames = await getMinigameEntity(this.id);
+		const scores: MinigameScore[] = [];
+		for (const minigame of Minigames) {
+			const score = userMinigames[minigame.column];
+			scores.push({ minigame, score });
+		}
+		return scores;
+	}
+
+	async fetchMinigames() {
+		return getMinigameEntity(this.id);
 	}
 
 	hasEquippedOrInBank(_items: string | number | (string | number)[], type: 'every' | 'one' = 'one') {
@@ -292,12 +362,46 @@ export class MUserClass {
 		return type === 'one' ? false : true;
 	}
 
+	getSkills(levels: boolean) {
+		const skills: Required<Skills> = {
+			agility: Number(this.user.skills_agility),
+			cooking: Number(this.user.skills_cooking),
+			fishing: Number(this.user.skills_fishing),
+			mining: Number(this.user.skills_mining),
+			smithing: Number(this.user.skills_smithing),
+			woodcutting: Number(this.user.skills_woodcutting),
+			firemaking: Number(this.user.skills_firemaking),
+			runecraft: Number(this.user.skills_runecraft),
+			crafting: Number(this.user.skills_crafting),
+			prayer: Number(this.user.skills_prayer),
+			fletching: Number(this.user.skills_fletching),
+			farming: Number(this.user.skills_farming),
+			herblore: Number(this.user.skills_herblore),
+			thieving: Number(this.user.skills_thieving),
+			hunter: Number(this.user.skills_hunter),
+			construction: Number(this.user.skills_construction),
+			magic: Number(this.user.skills_magic),
+			attack: Number(this.user.skills_attack),
+			strength: Number(this.user.skills_strength),
+			defence: Number(this.user.skills_defence),
+			ranged: Number(this.user.skills_ranged),
+			hitpoints: Number(this.user.skills_hitpoints),
+			slayer: Number(this.user.skills_slayer)
+		};
+		if (levels) {
+			for (const [key, val] of Object.entries(skills) as [keyof Skills, number][]) {
+				skills[key] = convertXPtoLVL(val);
+			}
+		}
+		return skills;
+	}
+
 	get skillsAsXP() {
-		return getSkillsOfMahojiUser(this.user, false);
+		return this.getSkills(false);
 	}
 
 	get skillsAsLevels() {
-		return getSkillsOfMahojiUser(this.user, true);
+		return this.getSkills(true);
 	}
 
 	get minionIsBusy() {
@@ -305,11 +409,14 @@ export class MUserClass {
 	}
 
 	async incrementCreatureScore(creatureID: number, amountToAdd = 1) {
-		const currentCreatureScores = this.user.creatureScores;
-		const { newUser } = await mahojiUserSettingsUpdate(this.id, {
-			creatureScores: addItemToBank(currentCreatureScores as ItemBank, creatureID, amountToAdd)
-		});
-		this.user = newUser;
+		const stats = await this.fetchStats({ creature_scores: true });
+		await userStatsUpdate(
+			this.id,
+			{
+				creature_scores: addItemToBank(stats.creature_scores as ItemBank, creatureID, amountToAdd)
+			},
+			{}
+		);
 	}
 
 	get blowpipe() {
@@ -324,6 +431,7 @@ export class MUserClass {
 		});
 		const { newUser } = await mahojiUserSettingsUpdate(this.id, updates);
 		this.user = newUser;
+		this.updateProperties();
 	}
 
 	async specialRemoveItems(bankToRemove: Bank) {
@@ -396,7 +504,7 @@ export class MUserClass {
 			}
 			const scales = Math.ceil((10 / 3) * dart[1]);
 			const rawBlowpipeData = this.blowpipe;
-			if (!this.allItemsOwned().has('Toxic blowpipe') || !rawBlowpipeData) {
+			if (!this.allItemsOwned.has('Toxic blowpipe') || !rawBlowpipeData) {
 				throw new Error("You don't have a Toxic blowpipe.");
 			}
 			if (!rawBlowpipeData.dartID || !rawBlowpipeData.dartQuantity) {
@@ -429,13 +537,15 @@ export class MUserClass {
 		}
 		const { newUser } = await mahojiUserSettingsUpdate(this.id, updates);
 		this.user = newUser;
+		this.updateProperties();
 		return {
 			realCost
 		};
 	}
 
-	getCreatureScore(creatureID: number) {
-		return (this.user.creatureScores as ItemBank)[creatureID] ?? 0;
+	async getCreatureScore(creatureID: number) {
+		const stats = await this.fetchStats({ creature_scores: true });
+		return (stats.creature_scores as ItemBank)[creatureID] ?? 0;
 	}
 
 	calculateAddItemsToCLUpdates({
@@ -466,30 +576,100 @@ export class MUserClass {
 		return true;
 	}
 
-	owns(checkBank: Bank | number | string) {
-		return this.bank.clone().add('Coins', Number(this.user.GP)).has(checkBank);
+	allEquippedGearBank() {
+		const bank = new Bank();
+		for (const gear of Object.values(this.gear).flat()) {
+			bank.add(gear.allItemsBank());
+		}
+		return bank;
+	}
+
+	owns(checkBank: Bank | number | string, { includeGear }: { includeGear: boolean } = { includeGear: false }) {
+		const allItems = this.bank.clone().add('Coins', Number(this.user.GP));
+		if (includeGear) {
+			for (const [item, qty] of this.allEquippedGearBank().items()) {
+				allItems.add(item.id, qty);
+			}
+		}
+		return allItems.has(checkBank);
 	}
 
 	async sync() {
-		this.user = await mahojiUsersSettingsFetch(this.id);
+		const newUser = await prisma.user.findUnique({ where: { id: this.id } });
+		if (!newUser) throw new Error(`Failed to sync user ${this.id}, no record was found`);
+		this.user = newUser;
+		this.updateProperties();
+	}
+
+	async fetchStats<T extends Prisma.UserStatsSelect>(selectKeys: T): Promise<SelectedUserStats<T>> {
+		const keysToSelect = Object.keys(selectKeys).length === 0 ? { user_id: true } : selectKeys;
+		const result = await prisma.userStats.upsert({
+			where: {
+				user_id: BigInt(this.id)
+			},
+			create: {
+				user_id: BigInt(this.id)
+			},
+			update: {},
+			select: keysToSelect
+		});
+
+		return result as SelectedUserStats<T>;
+	}
+
+	get logName() {
+		return `${this.rawUsername}[${this.id}]`;
+	}
+
+	async getKCByName(name: string) {
+		return getKCByName(this, name);
+	}
+
+	get hasMinion() {
+		return Boolean(this.user.minion_hasBought);
+	}
+
+	farmingContract() {
+		const currentFarmingContract = this.user.minion_farmingContract as FarmingContract | null;
+		const plant = !currentFarmingContract
+			? undefined
+			: Farming.Plants.find(i => i.name === currentFarmingContract?.plantToGrow);
+		const detailed = getFarmingInfoFromUser(this.user);
+		return {
+			contract: currentFarmingContract ?? defaultFarmingContract,
+			plant,
+			matchingPlantedCrop: plant ? detailed.patchesDetailed.find(i => i.plant && i.plant === plant) : undefined
+		};
 	}
 }
 declare global {
 	export type MUser = MUserClass;
 }
-export async function srcMUserFetch(userID: string | string) {
-	const user = await mahojiUsersSettingsFetch(userID);
+
+export async function srcMUserFetch(userID: string) {
+	const user = await prisma.user.upsert({
+		create: {
+			id: userID
+		},
+		update: {},
+		where: {
+			id: userID
+		}
+	});
 	return new MUserClass(user);
 }
 
 declare global {
 	const mUserFetch: typeof srcMUserFetch;
+	const GlobalMUserClass: typeof MUserClass;
 }
 declare global {
 	namespace NodeJS {
 		interface Global {
 			mUserFetch: typeof srcMUserFetch;
+			GlobalMUserClass: typeof MUserClass;
 		}
 	}
 }
 global.mUserFetch = srcMUserFetch;
+global.GlobalMUserClass = MUserClass;

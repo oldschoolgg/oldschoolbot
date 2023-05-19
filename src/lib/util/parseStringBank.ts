@@ -1,10 +1,11 @@
+import { evalMathExpression } from '@oldschoolgg/toolkit/dist/util/expressionParser';
 import { notEmpty } from 'e';
 import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { itemNameMap } from 'oldschooljs/dist/structures/Items';
 
+import { ONE_TRILLION } from '../constants';
 import { filterableTypes } from '../data/filterables';
-import { evalMathExpression } from '../expressionParser';
 import { cleanString, stringMatches } from '../util';
 import itemIsTradeable from './itemIsTradeable';
 
@@ -50,7 +51,7 @@ export function parseQuantityAndItem(str = '', inputBank?: Bank): [Item[], numbe
 	}
 	if (osItems.length === 0) return [];
 
-	let quantity = floor(min(100_000_000_000, max(0, parsedQty ?? 0)));
+	let quantity = floor(min(ONE_TRILLION, max(0, parsedQty ?? 0)));
 
 	return [osItems, quantity];
 }

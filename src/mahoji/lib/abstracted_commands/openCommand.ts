@@ -1,4 +1,5 @@
-import { ChatInputCommandInteraction } from 'discord.js';
+import { stringMatches } from '@oldschoolgg/toolkit';
+import { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { notEmpty, uniqueArr } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, LootTable } from 'oldschooljs';
@@ -6,11 +7,11 @@ import { Bank, LootTable } from 'oldschooljs';
 import { PerkTier } from '../../../lib/constants';
 import { allOpenables, UnifiedOpenable } from '../../../lib/openables';
 import { ItemBank } from '../../../lib/types';
-import { stringMatches } from '../../../lib/util/cleanString';
+import { buildClueButtons, makeComponents } from '../../../lib/util';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
-import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { handleMahojiConfirmation, patronMsg, updateGPTrackSetting } from '../../mahojiSettings';
+import { patronMsg, updateClientGPTrackSetting, userStatsUpdate } from '../../mahojiSettings';
 
 const regex = /^(.*?)( \([0-9]+x Owned\))?$/;
 
@@ -29,10 +30,14 @@ function getOpenableLoot({ openable, quantity, user }: { openable: UnifiedOpenab
 }
 
 async function addToOpenablesScores(mahojiUser: MUser, kcBank: Bank) {
-	await mahojiUser.update({
-		openable_scores: new Bank().add(mahojiUser.user.openable_scores as ItemBank).add(kcBank).bank
-	});
-	return new Bank().add(mahojiUser.user.openable_scores as ItemBank);
+	const { openable_scores: newOpenableScores } = await userStatsUpdate(
+		mahojiUser.id,
+		({ openable_scores }) => ({
+			openable_scores: new Bank(openable_scores as ItemBank).add(kcBank).bank
+		}),
+		{ openable_scores: true }
+	);
+	return new Bank(newOpenableScores as ItemBank);
 }
 
 export async function abstractedOpenUntilCommand(
@@ -42,7 +47,7 @@ export async function abstractedOpenUntilCommand(
 	openUntilItem: string
 ) {
 	const user = await mUserFetch(userID);
-	const perkTier = getUsersPerkTier(user);
+	const perkTier = user.perkTier();
 	if (perkTier < PerkTier.Three) return patronMsg(PerkTier.Three);
 	name = name.replace(regex, '$1');
 	const openableItem = allOpenables.find(o => o.aliases.some(alias => stringMatches(alias, name)));
@@ -131,17 +136,21 @@ async function finalizeOpening({
 	});
 
 	if (loot.has('Coins')) {
-		await updateGPTrackSetting('gp_open', loot.amount('Coins'));
+		await updateClientGPTrackSetting('gp_open', loot.amount('Coins'));
 	}
 
 	const openedStr = openables
 		.map(({ openedItem }) => `${newOpenableScores.amount(openedItem.id)}x ${openedItem.name}`)
 		.join(', ');
 
+	const perkTier = user.perkTier();
+	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier);
+
 	let response: Awaited<CommandResponse> = {
 		files: [image.file],
 		content: `You have now opened a total of ${openedStr}
-${messages.join(', ')}`
+${messages.join(', ')}`,
+		components: components.length > 0 ? makeComponents(components) : undefined
 	};
 	if (response.content!.length > 1900) {
 		response.files!.push({ name: 'response.txt', attachment: Buffer.from(response.content!) });
@@ -168,12 +177,12 @@ export async function abstractedOpenCommand(
 				.filter(notEmpty);
 
 	if (names.includes('all')) {
-		if (!openables.length) return 'You have no openable items.';
-		if (user.perkTier < PerkTier.Two) return patronMsg(PerkTier.Two);
+		if (openables.length === 0) return 'You have no openable items.';
+		if (user.perkTier() < PerkTier.Two) return patronMsg(PerkTier.Two);
 		if (interaction) await handleMahojiConfirmation(interaction, 'Are you sure you want to open ALL your items?');
 	}
 
-	if (!openables.length) return "That's not a valid item.";
+	if (openables.length === 0) return "That's not a valid item.";
 	// This code will only execute if we're not in auto/all mode:
 	if (typeof _quantity === 'number') {
 		for (const openable of openables) {

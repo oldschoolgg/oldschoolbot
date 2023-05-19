@@ -20,7 +20,7 @@ export const baseUserKourendFavour: UserKourendFavour = Object.freeze({
 	Shayzien: 0
 });
 
-export interface KourendFavour {
+interface KourendFavour {
 	name: string;
 	alias: string[];
 	duration: number;
@@ -28,7 +28,7 @@ export interface KourendFavour {
 	skillReqs?: Skills;
 	xp?: number;
 	itemCost?: Bank;
-	itemsRecieved: Bank | null;
+	itemsReceived: Bank | null;
 	qpRequired?: number;
 }
 
@@ -49,7 +49,7 @@ export const KourendFavours: KourendFavour[] = [
 		itemCost: new Bank({
 			'Stamina potion(4)': 2
 		}),
-		itemsRecieved: new Bank({
+		itemsReceived: new Bank({
 			'Book of arcane knowledge': 13
 		})
 	},
@@ -62,7 +62,7 @@ export const KourendFavours: KourendFavour[] = [
 			Compost: 475,
 			Saltpetre: 475
 		}),
-		itemsRecieved: null
+		itemsReceived: null
 	},
 	{
 		name: 'Lovakengj',
@@ -73,7 +73,7 @@ export const KourendFavours: KourendFavour[] = [
 			mining: 65,
 			smithing: 73
 		},
-		itemsRecieved: new Bank({
+		itemsReceived: new Bank({
 			'Volcanic sulphur': 9
 		})
 	},
@@ -90,7 +90,7 @@ export const KourendFavours: KourendFavour[] = [
 			Plank: 45,
 			'Steel bar': 25
 		}),
-		itemsRecieved: null
+		itemsReceived: null
 	},
 	{
 		name: 'Shayzien',
@@ -108,7 +108,7 @@ export const KourendFavours: KourendFavour[] = [
 			'Stamina potion(4)': 2,
 			'Prayer potion(4)': 2
 		}),
-		itemsRecieved: new Bank({
+		itemsReceived: new Bank({
 			'Training manual': 3
 		})
 	}

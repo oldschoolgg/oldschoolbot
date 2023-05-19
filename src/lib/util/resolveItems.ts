@@ -1,6 +1,6 @@
 import { Items } from 'oldschooljs';
 
-import { ArrayItemsResolvable, ArrayItemsResolved } from '../types';
+import type { ArrayItemsResolvable, ArrayItemsResolved } from '../types';
 
 // Resolve an array of item IDs or names into an array of item IDs
 export default function resolveItems(_itemArray: string | number | (string | number)[]): number[] {
@@ -41,4 +41,8 @@ export function deepResolveItems(itemArray: ArrayItemsResolvable): ArrayItemsRes
 	}
 
 	return newArray;
+}
+
+export function resolveOSItems(...args: Parameters<typeof resolveItems>) {
+	return resolveItems(...args).map(i => Items.get(i)!);
 }

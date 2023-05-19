@@ -1,3 +1,4 @@
+import { MonsterSlayerMaster } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
@@ -29,6 +30,7 @@ export interface SlayerMaster {
 	combatLvl?: number;
 	slayerLvl?: number;
 	questPoints?: number;
+	osjsEnum: MonsterSlayerMaster;
 }
 
 export interface SlayerShopItem {

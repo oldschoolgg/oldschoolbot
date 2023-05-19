@@ -18,7 +18,7 @@ import { formatDuration, hasSkillReqs, itemNameFromID, randomVariation } from '.
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import getOSItem from '../../../lib/util/getOSItem';
-import { updateBankSetting } from '../../mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 const minimumRangeItems = [
 	'Amulet of fury',
@@ -45,8 +45,6 @@ const minimumMageItems = [
 
 const minimumMageAttackStat = sumArr(minimumMageItems.map(i => i.equipment!.attack_magic));
 const minimumMageMagicDefenceStat = sumArr(minimumMageItems.map(i => i.equipment!.defence_magic)) - 10;
-
-const itemRequirements = new Bank().add('Rune pouch');
 
 function consumableCost({
 	projectile,
@@ -146,7 +144,9 @@ async function infernoRun({
 	const zukDeathChance = new PercentCounter(baseZukDeathChance(attempts), 'percent');
 	const preZukDeathChance = new PercentCounter(basePreZukDeathChance(attempts), 'percent');
 
-	if (!(user.user.sacrificedBank as ItemBank)[itemID('Fire cape')]) {
+	const { sacrificed_bank: sacrificedBank } = await user.fetchStats({ sacrificed_bank: true });
+
+	if (!(sacrificedBank as ItemBank)[itemID('Fire cape')]) {
 		return 'To do the Inferno, you must have sacrificed a fire cape.';
 	}
 
@@ -163,13 +163,15 @@ async function infernoRun({
 			.map(([name, lvl]) => `${lvl} ${name}`)
 			.join(', ')}.`;
 	}
+
 	/**
 	 *
 	 * Item Requirements
 	 *
 	 */
-	if (!user.owns(itemRequirements)) {
-		return `To do the Inferno, you need these items: ${itemRequirements}.`;
+	const itemRequirements = getSimilarItems(itemID('Rune pouch'));
+	if (itemRequirements.every(item => !user.owns(item))) {
+		return `To do the Inferno, you need one of these items: ${itemRequirements.map(itemNameFromID).join(', ')}.`;
 	}
 
 	/**
@@ -387,8 +389,10 @@ async function infernoRun({
 }
 
 export async function infernoStatsCommand(user: MUser): CommandResponse {
-	const attempts = user.user.inferno_attempts;
-	const zukKC = await getMinigameScore(user.id, 'inferno');
+	const [zukKC, { inferno_attempts: attempts }] = await Promise.all([
+		getMinigameScore(user.id, 'inferno'),
+		user.fetchStats({ inferno_attempts: true })
+	]);
 
 	let str = 'You have never attempted the Inferno, I recommend you stay that way.';
 	if (attempts && !zukKC) {
@@ -422,9 +426,11 @@ export async function infernoStatsCommand(user: MUser): CommandResponse {
 }
 
 export async function infernoStartCommand(user: MUser, channelID: string): CommandResponse {
-	const attempts = user.user.inferno_attempts;
 	const usersRangeStats = user.gear.range.stats;
-	const zukKC = await getMinigameScore(user.id, 'inferno');
+	const [zukKC, { inferno_attempts: attempts }] = await Promise.all([
+		getMinigameScore(user.id, 'inferno'),
+		user.fetchStats({ inferno_attempts: true })
+	]);
 
 	const res = await infernoRun({
 		user,

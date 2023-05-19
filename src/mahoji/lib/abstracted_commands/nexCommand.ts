@@ -2,15 +2,14 @@ import { userMention } from '@discordjs/builders';
 import { ChannelType, ChatInputCommandInteraction, TextChannel } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { setupParty } from '../../../extendables/Message/Party';
-import { NEX_ID } from '../../../lib/constants';
-import { trackLoot } from '../../../lib/settings/prisma';
+import { trackLoot } from '../../../lib/lootTrack';
+import { setupParty } from '../../../lib/party';
 import { calculateNexDetails, checkNexUser } from '../../../lib/simulation/nex';
 import { NexTaskOptions } from '../../../lib/types/minions';
 import { calcPerHour, formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { deferInteraction } from '../../../lib/util/interactionReply';
-import { updateBankSetting } from '../../mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 export async function nexCommand(interaction: ChatInputCommandInteraction, user: MUser, channelID: string) {
 	const channel = globalClient.channels.cache.get(channelID.toString());
@@ -54,30 +53,41 @@ export async function nexCommand(interaction: ChatInputCommandInteraction, user:
 		}
 	}
 
-	const details = calculateNexDetails({
+	const details = await calculateNexDetails({
 		team: mahojiUsers
 	});
 
-	const totalCost = new Bank();
 	for (const user of details.team) {
 		const mUser = await mUserFetch(user.id);
-		if (!mUser.allItemsOwned().has(user.cost)) {
+		if (!mUser.allItemsOwned.has(user.cost)) {
 			return `${mUser.usernameOrMention} doesn't have the required items: ${user.cost}.`;
 		}
-		totalCost.add(user.cost);
 	}
 
+	const removeResult = await Promise.all(
+		details.team.map(async i => {
+			const klasaUser = await mUserFetch(i.id);
+			return {
+				id: klasaUser.id,
+				cost: (await klasaUser.specialRemoveItems(i.cost)).realCost
+			};
+		})
+	);
+
+	const totalCost = new Bank();
+	for (const u of removeResult) totalCost.add(u.cost);
+
 	await Promise.all([
-		await updateBankSetting('tob_cost', totalCost),
+		await updateBankSetting('nex_cost', totalCost),
 		await trackLoot({
-			cost: totalCost,
+			totalCost,
 			id: 'nex',
 			type: 'Monster',
-			changeType: 'cost'
-		}),
-		...details.team.map(async i => {
-			const klasaUser = await mUserFetch(i.id);
-			await klasaUser.specialRemoveItems(i.cost);
+			changeType: 'cost',
+			users: removeResult.map(i => ({
+				id: i.id,
+				cost: i.cost
+			}))
 		})
 	]);
 
@@ -103,10 +113,9 @@ export async function nexCommand(interaction: ChatInputCommandInteraction, user:
 
 ${details.team
 	.map(i => {
-		const mUser = mahojiUsers.find(t => t.id === i.id)!;
 		return `${userMention(i.id)}: Contrib[${i.contribution.toFixed(2)}%] Death[${i.deathChance.toFixed(
 			2
-		)}%] KC[${mUser.getKC(NEX_ID)}] Offence[${Math.round(i.totalOffensivePecent)}%] Defence[${Math.round(
+		)}%] Offence[${Math.round(i.totalOffensivePecent)}%] Defence[${Math.round(
 			i.totalDefensivePercent
 		)}%] *${i.messages.join(', ')}*`;
 	})

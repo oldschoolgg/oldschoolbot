@@ -1,3 +1,4 @@
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { APIApplicationCommandOptionChoice, ApplicationCommandOptionType } from 'discord.js';
 import { uniqueArr } from 'e';
 import { CommandOption } from 'mahoji/dist/lib/types';
@@ -5,11 +6,11 @@ import { Bank, Items } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { baseFilters, filterableTypes } from '../../lib/data/filterables';
-import { GearSetupTypes, globalPresets } from '../../lib/gear';
+import { GearSetupTypes } from '../../lib/gear/types';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { prisma } from '../../lib/settings/prisma';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { toTitleCase } from '../../lib/util';
+import { globalPresets } from '../../lib/structures/Gear';
 import getOSItem from '../../lib/util/getOSItem';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
@@ -30,6 +31,8 @@ export const filterOption: CommandOption = {
 
 const itemArr = Items.array().map(i => ({ ...i, key: `${i.name.toLowerCase()}${i.id}` }));
 
+export const tradeableItemArr = itemArr.filter(i => i.tradeable_on_ge);
+
 export const allEquippableItems = Items.array().filter(i => i.equipable && i.equipment?.slot);
 
 export const itemOption = (filter?: (item: Item) => boolean): CommandOption => ({
@@ -39,6 +42,17 @@ export const itemOption = (filter?: (item: Item) => boolean): CommandOption => (
 	required: false,
 	autocomplete: async value => {
 		let res = itemArr.filter(i => i.key.includes(value.toLowerCase()));
+		if (filter) res = res.filter(filter);
+		return res.map(i => ({ name: `${i.name}`, value: i.id.toString() }));
+	}
+});
+export const equipableItemOption = (filter?: (item: Item) => boolean): CommandOption => ({
+	type: ApplicationCommandOptionType.String,
+	name: 'item',
+	description: 'The item you want to pick.',
+	required: false,
+	autocomplete: async value => {
+		let res = allEquippableItems.filter(i => i.name.includes(value.toLowerCase()));
 		if (filter) res = res.filter(filter);
 		return res.map(i => ({ name: `${i.name}`, value: i.id.toString() }));
 	}
@@ -132,3 +146,11 @@ export const gearPresetOption: CommandOption = {
 			.concat(globalPresets.map(i => ({ name: `${i.name} (Global)`, value: i.name })));
 	}
 };
+
+export function generateRandomBank(size: number) {
+	const bank = new Bank();
+	for (let i = 0; i < size; i++) {
+		bank.add(allEquippableItems[i]);
+	}
+	return bank;
+}

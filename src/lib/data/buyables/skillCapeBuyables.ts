@@ -1,8 +1,7 @@
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { countSkillsAtleast99 } from '../../../mahoji/mahojiSettings';
 import Skillcapes from '../../skilling/skillcapes';
-import { toTitleCase } from '../../util';
 import { Buyable } from './buyables';
 
 export const skillCapeBuyables: Buyable[] = [];
@@ -13,7 +12,7 @@ for (const skillcape of Skillcapes) {
 		outputItems: (user: MUser) => {
 			const output = new Bank().add(skillcape.hood);
 
-			if (countSkillsAtleast99(user) > 1) {
+			if (user.countSkillsAtleast99() > 1) {
 				output.add(skillcape.trimmed);
 			} else {
 				output.add(skillcape.untrimmed);

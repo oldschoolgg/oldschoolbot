@@ -2,12 +2,12 @@ import { reduceNumByPercent, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { BitField, PHOSANI_NIGHTMARE_ID, ZAM_HASTA_CRUSH } from '../../../lib/constants';
+import { trackLoot } from '../../../lib/lootTrack';
 import { NightmareMonster } from '../../../lib/minions/data/killableMonsters';
 import { calculateMonsterFood } from '../../../lib/minions/functions';
 import hasEnoughFoodForMonster from '../../../lib/minions/functions/hasEnoughFoodForMonster';
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
 import { KillableMonster } from '../../../lib/minions/types';
-import { trackLoot } from '../../../lib/settings/prisma';
 import { Gear } from '../../../lib/structures/Gear';
 import { NightmareActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, hasSkillReqs } from '../../../lib/util';
@@ -15,11 +15,12 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import calcDurQty from '../../../lib/util/calcMassDurationQuantity';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
 import resolveItems from '../../../lib/util/resolveItems';
-import { hasMonsterRequirements, updateBankSetting } from '../../mahojiSettings';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { hasMonsterRequirements } from '../../mahojiSettings';
 
-function soloMessage(user: MUser, duration: number, quantity: number, isPhosani: boolean) {
+async function soloMessage(user: MUser, duration: number, quantity: number, isPhosani: boolean) {
 	const name = isPhosani ? "Phosani's Nightmare" : 'The Nightmare';
-	const kc = user.getKC(isPhosani ? PHOSANI_NIGHTMARE_ID : NightmareMonster.id);
+	const kc = await user.getKC(isPhosani ? PHOSANI_NIGHTMARE_ID : NightmareMonster.id);
 	let str = `${user.minionName} is now off to kill ${name} ${quantity} times.`;
 	if (kc < 5) {
 		str += ` They are terrified to face ${name}, and set off to fight it with great fear.`;
@@ -55,7 +56,12 @@ export const phosaniBISGear = new Gear({
 	ammo: "Rada's blessing 4"
 });
 
-function checkReqs(users: MUser[], monster: KillableMonster, quantity: number, isPhosani: boolean): string | undefined {
+async function checkReqs(
+	users: MUser[],
+	monster: KillableMonster,
+	quantity: number,
+	isPhosani: boolean
+): Promise<string | undefined> {
 	// Check if every user has the requirements for this monster.
 	for (const user of users) {
 		if (!user.user.minion_hasBought) {
@@ -96,7 +102,7 @@ function checkReqs(users: MUser[], monster: KillableMonster, quantity: number, i
 			if (!requirements[0]) {
 				return `${user.usernameOrMention} doesn't meet the requirements: ${requirements[1]}`;
 			}
-			if (user.getKC(NightmareMonster.id) < 50) {
+			if ((await user.getKC(NightmareMonster.id)) < 50) {
 				return "You need to have killed The Nightmare atleast 50 times before you can face the Phosani's Nightmare.";
 			}
 		}
@@ -127,14 +133,14 @@ export async function nightmareCommand(user: MUser, channelID: string, name: str
 		type = 'mass';
 	}
 
-	const err = checkReqs([user], NightmareMonster, 2, isPhosani);
+	const err = await checkReqs([user], NightmareMonster, 2, isPhosani);
 	if (err) return err;
 
 	const users = type === 'mass' ? [user, user, user, user] : [user];
 	const soloBoosts: string[] = [];
 
 	let effectiveTime = NightmareMonster.timeToFinish;
-	const [data] = getNightmareGearStats(
+	const [data] = await getNightmareGearStats(
 		user,
 		users.map(u => u.id),
 		isPhosani
@@ -219,44 +225,48 @@ export async function nightmareCommand(user: MUser, channelID: string, name: str
 	if (typeof durQtyRes === 'string') return durQtyRes;
 	let [quantity, duration, perKillTime] = durQtyRes;
 
-	const secondErr = checkReqs(users, NightmareMonster, quantity, isPhosani);
+	const secondErr = await checkReqs(users, NightmareMonster, quantity, isPhosani);
 	if (secondErr) return secondErr;
 
 	duration = quantity * perKillTime - NightmareMonster.respawnTime!;
 
 	const totalCost = new Bank();
 	let soloFoodUsage: Bank | null = null;
-	for (const user of users) {
-		const [healAmountNeeded] = calculateMonsterFood(NightmareMonster, user);
-		const cost = perUserCost(isPhosani, quantity);
-		if (!user.owns(cost)) {
-			return `${user} doesn't own ${cost}.`;
-		}
-		let healingMod = isPhosani ? 1.5 : 1;
-		try {
-			const { foodRemoved } = await removeFoodFromUser({
-				user,
-				totalHealingNeeded: Math.ceil(healAmountNeeded / users.length) * quantity * healingMod,
-				healPerAction: Math.ceil(healAmountNeeded / quantity) * healingMod,
-				activityName: NightmareMonster.name,
-				attackStylesUsed: ['melee']
-			});
+	const [healAmountNeeded] = calculateMonsterFood(NightmareMonster, user);
+	const cost = perUserCost(isPhosani, quantity);
+	if (!user.owns(cost)) {
+		return `${user} doesn't own ${cost}.`;
+	}
+	let healingMod = isPhosani ? 1.5 : 1;
+	try {
+		const { foodRemoved } = await removeFoodFromUser({
+			user,
+			totalHealingNeeded: Math.ceil(healAmountNeeded / users.length) * quantity * healingMod,
+			healPerAction: Math.ceil(healAmountNeeded / quantity) * healingMod,
+			activityName: NightmareMonster.name,
+			attackStylesUsed: ['melee']
+		});
 
-			const { realCost } = await user.specialRemoveItems(cost);
-			soloFoodUsage = realCost.clone().add(foodRemoved);
+		const { realCost } = await user.specialRemoveItems(cost);
+		soloFoodUsage = realCost.clone().add(foodRemoved);
 
-			totalCost.add(foodRemoved).add(realCost);
-		} catch (_err: any) {
-			return typeof _err === 'string' ? _err : _err.message;
-		}
+		totalCost.add(foodRemoved).add(realCost);
+	} catch (_err: any) {
+		return typeof _err === 'string' ? _err : _err.message;
 	}
 
 	await updateBankSetting('nightmare_cost', totalCost);
 	await trackLoot({
 		id: 'nightmare',
-		cost: totalCost,
+		totalCost,
 		type: 'Monster',
-		changeType: 'cost'
+		changeType: 'cost',
+		users: [
+			{
+				id: user.id,
+				cost: totalCost
+			}
+		]
 	});
 
 	await addSubTaskToActivityTask<NightmareActivityTaskOptions>({
@@ -271,7 +281,7 @@ export async function nightmareCommand(user: MUser, channelID: string, name: str
 
 	const str =
 		type === 'solo'
-			? `${soloMessage(user, duration, quantity, isPhosani)}
+			? `${await soloMessage(user, duration, quantity, isPhosani)}
 ${soloBoosts.length > 0 ? `**Boosts:** ${soloBoosts.join(', ')}` : ''}
 Removed ${soloFoodUsage} from your bank.`
 			: `${user.usernameOrMention}'s party of ${

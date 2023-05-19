@@ -10,6 +10,7 @@ import { constructionTask } from '../tasks/minions/constructionActivity';
 import { cookingTask } from '../tasks/minions/cookingActivity';
 import { craftingTask } from '../tasks/minions/craftingActivity';
 import { darkAltarTask } from '../tasks/minions/darkAltarActivity';
+import { easterTask } from '../tasks/minions/easterActivity';
 import { enchantingTask } from '../tasks/minions/enchantingActivity';
 import { farmingTask } from '../tasks/minions/farmingActivity';
 import { firemakingTask } from '../tasks/minions/firemakingActivity';
@@ -44,11 +45,13 @@ import { puroPuroTask } from '../tasks/minions/minigames/puroPuroActivity';
 import { raidsTask } from '../tasks/minions/minigames/raidsActivity';
 import { roguesDenTask } from '../tasks/minions/minigames/roguesDenMazeActivity';
 import { sepulchreTask } from '../tasks/minions/minigames/sepulchreActivity';
+import { shadesOfMortonTask } from '../tasks/minions/minigames/shadesOfMortonActivity';
 import { soulWarsTask } from '../tasks/minions/minigames/soulWarsActivity';
 import { togTask } from '../tasks/minions/minigames/tearsOfGuthixActivity';
 import { templeTrekkingTask } from '../tasks/minions/minigames/templeTrekkingActivity';
 import { temporossTask } from '../tasks/minions/minigames/temporossActivity';
 import { titheFarmTask } from '../tasks/minions/minigames/titheFarmActivity';
+import { toaTask } from '../tasks/minions/minigames/toaActivity';
 import { tobTask } from '../tasks/minions/minigames/tobActivity';
 import { trawlerTask } from '../tasks/minions/minigames/trawlerActivity';
 import { brewingTask } from '../tasks/minions/minigames/troubleBrewingActivity';
@@ -62,6 +65,7 @@ import { nexTask } from '../tasks/minions/nexActivity';
 import { pickpocketTask } from '../tasks/minions/pickpocketActivity';
 import { buryingTask } from '../tasks/minions/PrayerActivity/buryingActivity';
 import { offeringTask } from '../tasks/minions/PrayerActivity/offeringActivity';
+import { scatteringTask } from '../tasks/minions/PrayerActivity/scatteringActivity';
 import { questingTask } from '../tasks/minions/questingActivity';
 import { revenantsTask } from '../tasks/minions/revenantsActivity';
 import { runecraftTask } from '../tasks/minions/runecraftActivity';
@@ -69,13 +73,19 @@ import { sawmillTask } from '../tasks/minions/sawmillActivity';
 import { shootingStarTask } from '../tasks/minions/shootingStarsActivity';
 import { smeltingTask } from '../tasks/minions/smeltingActivity';
 import { smithingTask } from '../tasks/minions/smithingActivity';
+import { tiaraRunecraftTask } from '../tasks/minions/tiaraRunecraftActivity';
 import { tokkulShopTask } from '../tasks/minions/tokkulShopActivity';
 import { vmTask } from '../tasks/minions/volcanicMineActivity';
 import { wealthChargeTask } from '../tasks/minions/wealthChargingActivity';
 import { woodcuttingTask } from '../tasks/minions/woodcuttingActivity';
+import { giantsFoundryTask } from './../tasks/minions/minigames/giantsFoundryActivity';
+import { guardiansOfTheRiftTask } from './../tasks/minions/minigames/guardiansOfTheRiftActivity';
+import { nightmareZoneTask } from './../tasks/minions/minigames/nightmareZoneActivity';
+import { underwaterAgilityThievingTask } from './../tasks/minions/underwaterActivity';
 import { modifyBusyCounter } from './busyCounterCache';
+import { minionActivityCache } from './constants';
 import { convertStoredActivityToFlatActivity, prisma } from './settings/prisma';
-import { activitySync, minionActivityCache, minionActivityCacheDelete } from './settings/settings';
+import { activitySync, minionActivityCacheDelete } from './settings/settings';
 import { logError } from './util/logError';
 
 export const tasks: MinionTask[] = [
@@ -112,6 +122,7 @@ export const tasks: MinionTask[] = [
 	wintertodtTask,
 	zalcanoTask,
 	buryingTask,
+	scatteringTask,
 	offeringTask,
 	agilityTask,
 	alchingTask,
@@ -151,8 +162,16 @@ export const tasks: MinionTask[] = [
 	titheFarmTask,
 	temporossTask,
 	smithingTask,
+	shootingStarTask,
+	giantsFoundryTask,
+	guardiansOfTheRiftTask,
 	butlerTask,
-	shootingStarTask
+	tiaraRunecraftTask,
+	nightmareZoneTask,
+	shadesOfMortonTask,
+	toaTask,
+	underwaterAgilityThievingTask,
+	easterTask
 ];
 
 export async function syncActivityCache() {
@@ -166,6 +185,8 @@ export async function syncActivityCache() {
 
 export async function completeActivity(_activity: Activity) {
 	const activity = convertStoredActivityToFlatActivity(_activity);
+	debugLog(`Attemping to complete activity ID[${activity.id}] TYPE[${activity.type}] USER[${activity.userID}]`);
+
 	if (_activity.completed) {
 		throw new Error('Tried to complete an already completed task.');
 	}
@@ -177,13 +198,13 @@ export async function completeActivity(_activity: Activity) {
 
 	modifyBusyCounter(activity.userID, 1);
 	try {
-		globalClient.emit('debug', `Running ${task.type} for ${activity.userID}`);
 		await task.run(activity);
 	} catch (err) {
 		logError(err);
 	} finally {
 		modifyBusyCounter(activity.userID, -1);
 		minionActivityCacheDelete(activity.userID);
+		debugLog(`Finished completing activity ID[${activity.id}] TYPE[${activity.type}] USER[${activity.userID}]`);
 	}
 }
 
@@ -198,7 +219,8 @@ declare global {
 const ignored: activity_type_enum[] = [
 	activity_type_enum.BirthdayEvent,
 	activity_type_enum.BlastFurnace,
-	activity_type_enum.Easter
+	activity_type_enum.Easter,
+	activity_type_enum.HalloweenEvent
 ];
 for (const a of Object.values(activity_type_enum)) {
 	if (ignored.includes(a)) {

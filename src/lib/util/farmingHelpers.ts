@@ -1,10 +1,10 @@
-import { time } from '@discordjs/builders';
-import { User } from '@prisma/client';
+import { FarmedCrop, User } from '@prisma/client';
+import { BaseMessageOptions, ButtonBuilder } from 'discord.js';
 
 import { Emoji } from '../constants';
 import { IPatchData, IPatchDataDetailed } from '../minions/farming/types';
 import Farming from '../skilling/skills/farming';
-import { stringMatches } from './cleanString';
+import { dateFm, makeAutoFarmButton, makeComponents, stringMatches } from '../util';
 
 export const farmingPatchNames = [
 	'herb',
@@ -28,7 +28,7 @@ export const farmingPatchNames = [
 	'belladonna'
 ] as const;
 
-export type FarmingPatchName = typeof farmingPatchNames[number];
+export type FarmingPatchName = (typeof farmingPatchNames)[number];
 
 export function isPatchName(name: string): name is FarmingPatchName {
 	return farmingPatchNames.includes(name as FarmingPatchName);
@@ -48,7 +48,7 @@ export function findPlant(lastPlanted: IPatchData['lastPlanted']) {
 	if (!plant) return null;
 	return plant;
 }
-export function userGrowingProgressStr(patchesDetailed: IPatchDataDetailed[]) {
+export function userGrowingProgressStr(patchesDetailed: IPatchDataDetailed[]): BaseMessageOptions {
 	let str = '';
 	for (const patch of patchesDetailed.filter(i => i.ready === true)) {
 		str += `${Emoji.Tick} **${patch.friendlyName}**: ${patch.lastQuantity} ${patch.lastPlanted} is ready to be harvested!\n`;
@@ -56,9 +56,33 @@ export function userGrowingProgressStr(patchesDetailed: IPatchDataDetailed[]) {
 	for (const patch of patchesDetailed.filter(i => i.ready === false)) {
 		str += `${Emoji.Stopwatch} **${patch.friendlyName}**: ${patch.lastQuantity} ${
 			patch.lastPlanted
-		} ready at ${time(patch.readyAt!, 'T')} (${time(patch.readyAt!, 'R')})\n`;
+		} ready at ${dateFm(patch.readyAt!)}\n`;
 	}
 	const notReady = patchesDetailed.filter(i => i.ready === null);
 	str += `${Emoji.RedX} **Nothing planted:** ${notReady.map(i => i.friendlyName).join(', ')}.`;
-	return str;
+
+	const buttons: ButtonBuilder[] = [];
+
+	if (patchesDetailed.filter(i => i.ready === true).length > 0) {
+		buttons.push(makeAutoFarmButton());
+	}
+
+	return {
+		content: str,
+		components: makeComponents(buttons)
+	};
+}
+
+export function parseFarmedCrop(crop: FarmedCrop) {
+	return {
+		id: crop.id,
+		userID: crop.user_id,
+		datePlanted: crop.date_planted,
+		dateHarvested: crop.date_harvested,
+		itemID: crop.item_id,
+		plant: Farming.Plants.find(i => i.id === crop.item_id)!,
+		quantityPlanted: crop.quantity_planted,
+		upgradeType: crop.upgrade_type,
+		paid: crop.paid_for_protection
+	};
 }
