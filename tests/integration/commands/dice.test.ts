@@ -1,7 +1,8 @@
-import { randInt } from 'e';
+import { calcPercentOfNum, randInt, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 
+import { ITEM_SINK_TAX_PERCENT } from '../../../src/lib/itemSinkTax';
 import { gambleCommand } from '../../../src/mahoji/commands/gamble';
 import { randomMock } from '../setup';
 import { createTestUser, mockClient } from '../util';
@@ -32,7 +33,11 @@ describe('Dice Command', async () => {
 		await user.gpMatch(0);
 		await user.statsMatch('dice_losses', 1);
 		await user.statsMatch('gp_dice', BigInt(-100_000_000));
-		await client.expectValueMatch('gp_dice', BigInt(-100_000_000));
+		await client.expectValueMatch('gp_dice', BigInt(-reduceNumByPercent(100_000_000, ITEM_SINK_TAX_PERCENT)));
+		await client.expectValueMatch(
+			'item_sink_dice_gp',
+			BigInt(calcPercentOfNum(ITEM_SINK_TAX_PERCENT, 100_000_000))
+		);
 	});
 
 	test('Won dice', async () => {
@@ -44,5 +49,6 @@ describe('Dice Command', async () => {
 		await user.statsMatch('dice_wins', 1);
 		await user.statsMatch('gp_dice', BigInt(100_000_000));
 		await client.expectValueMatch('gp_dice', BigInt(100_000_000));
+		await client.expectValueMatch('item_sink_dice_gp', BigInt(0));
 	});
 });
