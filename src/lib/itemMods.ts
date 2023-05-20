@@ -1,4 +1,4 @@
-interface CustomItemData {
+export interface CustomItemData {
 	cantBeSacrificed?: true;
 	isSuperUntradeable?: boolean;
 	cantDropFromMysteryBoxes?: boolean;

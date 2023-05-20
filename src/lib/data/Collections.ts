@@ -1855,9 +1855,12 @@ export async function getCollection(options: {
 	const userStats = await fetchStatsForCL(user);
 	const userCheckBank = await getBank(user, logType, userStats);
 	let clItems = getCollectionItems(search, allItems, logType === 'sacrifice');
-	const isOverall = search.toLowerCase().startsWith('overall');
 
-	if (isOverall || Boolean(flags.missing)) {
+	if (clItems.length >= 500) {
+		flags.missing = 'missing';
+	}
+
+	if (Boolean(flags.missing)) {
 		clItems = clItems.filter(i => !userCheckBank.has(i));
 	}
 

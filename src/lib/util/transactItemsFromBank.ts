@@ -39,6 +39,7 @@ export async function transactItemsFromBank({
 }: TransactItemsArgs) {
 	let itemsToAdd = options.itemsToAdd ? options.itemsToAdd.clone() : undefined;
 	let itemsToRemove = options.itemsToRemove ? options.itemsToRemove.clone() : undefined;
+
 	return userQueueFn(userID, async () => {
 		debugLog('transactItemsFromBank', {
 			type: 'TRANSACT_ITEMS',
@@ -49,9 +50,12 @@ export async function transactItemsFromBank({
 			filterLoot
 		});
 		const settings = await mUserFetch(userID);
+
 		const gpToRemove = (itemsToRemove?.amount('Coins') ?? 0) - (itemsToAdd?.amount('Coins') ?? 0);
 		if (itemsToRemove && settings.GP < gpToRemove) {
-			const errObj = new Error(`${settings.usernameOrMention} doesn't have enough coins!`);
+			const errObj = new Error(
+				`${settings.usernameOrMention} doesn't have enough coins! They need ${gpToRemove} GP, but only have ${settings.GP} GP.`
+			);
 			logError(errObj, undefined, {
 				userID: settings.id,
 				previousGP: settings.GP.toString(),

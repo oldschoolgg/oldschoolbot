@@ -7,6 +7,7 @@ import { production } from '../config';
 import { userStatsUpdate } from '../mahoji/mahojiSettings';
 import { bossEvents, startBossEvent } from './bossEvents';
 import { BitField, Channel, informationalButtons, PeakTier } from './constants';
+import { GrandExchange } from './grandExchange';
 import { collectMetrics } from './metrics';
 import { mahojiUserSettingsUpdate } from './MUser';
 import { prisma, queryCountStore } from './settings/prisma';
@@ -394,6 +395,14 @@ WHERE bitfield && '{2,3,4,5,6,7,8}'::int[] AND user_stats."last_daily_timestamp"
 					.catch(noOp);
 			}
 		}
+	},
+	{
+		name: 'ge_ticker',
+		timer: null,
+		interval: Time.Second * 3,
+		cb: async () => {
+			await GrandExchange.tick();
+		}
 	}
 ];
 
@@ -402,8 +411,8 @@ export function initTickers() {
 		if (ticker.timer !== null) clearTimeout(ticker.timer);
 		const fn = async () => {
 			try {
-				debugLog(`Starting ${ticker.name} ticker`, { type: 'TICKER' });
 				if (globalClient.isShuttingDown) return;
+				debugLog(`Starting ${ticker.name} ticker`, { type: 'TICKER' });
 				await ticker.cb();
 			} catch (err) {
 				logError(err);

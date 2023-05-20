@@ -29,6 +29,29 @@ const pino = pinoCtor(
 	})
 );
 
+export const gePino = pinoCtor(
+	{
+		level: 'debug',
+		base: {
+			time: undefined,
+			level: undefined
+		},
+		mixin: () => ({
+			rt: new Date().toISOString(),
+			t: Date.now()
+		}),
+		timestamp: false
+	},
+	pinoCtor.destination({
+		dest: `./logs/ge-${formattedDate}.log`,
+		mkdir: true,
+		sync: false,
+		minLength: 4096
+	})
+);
+
+export const geLog = gePino.info.bind(gePino);
+
 interface LogContext {
 	type?: string;
 	[key: string]: unknown;

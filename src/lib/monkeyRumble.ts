@@ -184,7 +184,7 @@ export async function monkeyHeadImage({ monkey, content }: { monkey: Monkey; con
 	const canvas = new Canvas(519, 142);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
-	const bg = await canvasImageFromBuffer(textBoxFile);
+	const bg = await textBoxFile;
 	const headImage = await canvasImageFromBuffer(
 		await [...normalHeads, ...specialHeads].find(h => h[1] === monkey.head)![0]
 	);

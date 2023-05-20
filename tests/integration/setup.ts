@@ -14,9 +14,7 @@ vi.mock('../../src/lib/util/webhook', async () => {
 	const actual: any = await vi.importActual('../../src/lib/util/webhook');
 	return {
 		...actual,
-		sendToChannelID: async (args: any) => {
-			console.log(`Sending ${args}`);
-		}
+		sendToChannelID: async (args: any) => {}
 	};
 });
 
@@ -29,4 +27,9 @@ vi.mock('../../src/lib/leagues/stats', async () => {
 			tasksRanking: 1
 		})
 	};
+});
+
+// @ts-ignore mock
+globalClient.fetchUser = async () => ({
+	send: async () => {}
 });

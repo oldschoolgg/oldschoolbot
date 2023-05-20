@@ -17,6 +17,8 @@ declare global {
 	}
 }
 
+export type RobochimpUser = User;
+
 global.roboChimpClient = global.roboChimpClient || new PrismaClient();
 
 export async function getRandomTriviaQuestions(): Promise<TriviaQuestion[]> {

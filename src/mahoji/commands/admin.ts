@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { execSync } from 'node:child_process';
 import { inspect } from 'node:util';
 
 import { codeBlock, userMention } from '@discordjs/builders';
@@ -23,6 +24,7 @@ import {
 	BadgesEnum,
 	BitField,
 	BitFieldData,
+	BOT_TYPE,
 	Channel,
 	COINS_ID,
 	DISABLED_COMMANDS,
@@ -32,6 +34,7 @@ import { slayerMaskHelms } from '../../lib/data/slayerMaskHelms';
 import { addToDoubleLootTimer } from '../../lib/doubleLoot';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { GearSetup } from '../../lib/gear/types';
+import { GrandExchange } from '../../lib/grandExchange';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { patreonTask } from '../../lib/patreon';
 import { runRolesTask } from '../../lib/rolesTask';
@@ -43,6 +46,7 @@ import {
 	calcPerHour,
 	cleanString,
 	convertBankToPerHourStats,
+	dateFm,
 	formatDuration,
 	sanitizeBank,
 	stringMatches,
@@ -353,6 +357,85 @@ WHERE blowpipe iS NOT NULL and (blowpipe->>'dartQuantity')::int != 0;`),
 		run: async () => {
 			return allEquippedPets();
 		}
+	},
+	{
+		name: 'Most Active',
+		run: async () => {
+			const res = await prisma.$queryRawUnsafe<{ num: number; username: string }[]>(`
+SELECT sum(duration) as num, "new_user"."username", user_id
+FROM activity
+INNER JOIN "new_users" "new_user" on "new_user"."id" = "activity"."user_id"::text
+WHERE start_date > now() - interval '2 days'
+GROUP BY user_id, "new_user"."username"
+ORDER BY num DESC
+LIMIT 10;
+`);
+			return {
+				content: `Most Active Users in past 48h\n${res
+					.map((i, ind) => `${ind + 1} ${i.username}: ${formatDuration(i.num)}`)
+					.join('\n')}`
+			};
+		}
+	},
+	{
+		name: 'Grand Exchange',
+		run: async () => {
+			const settings = await GrandExchange.fetchData();
+
+			const allTx: string[][] = [];
+			const allTransactions = await prisma.gETransaction.findMany({
+				orderBy: {
+					created_at: 'desc'
+				}
+			});
+			if (allTransactions.length > 0) {
+				allTx.push(Object.keys(allTransactions[0]));
+				for (const tx of allTransactions) {
+					allTx.push(Object.values(tx).map(i => i.toString()));
+				}
+			}
+
+			const allLi: string[][] = [];
+			const allListings = await prisma.gEListing.findMany({
+				orderBy: {
+					created_at: 'desc'
+				}
+			});
+			if (allListings.length > 0) {
+				allLi.push(Object.keys(allListings[0]));
+				for (const tx of allListings) {
+					allLi.push(Object.values(tx).map(i => (i === null ? '' : i.toString())));
+				}
+			}
+
+			const buyLimitInterval = GrandExchange.getInterval();
+			return {
+				content: `**Grand Exchange Data**
+
+The next buy limit reset is at: ${buyLimitInterval.nextResetStr}, it resets every ${formatDuration(
+					GrandExchange.config.buyLimit.interval
+				)}.
+**Tax Rate:** ${GrandExchange.config.tax.rate()}%
+**Tax Cap (per item):** ${toKMB(GrandExchange.config.tax.cap())}
+**Total GP Removed From Taxation:** ${settings.totalTax.toLocaleString()} GP
+**Total Tax GP G.E Has To Spend on Item Sinks:** ${settings.taxBank.toLocaleString()} GP
+`,
+				files: [
+					(
+						await makeBankImage({
+							bank: await GrandExchange.fetchOwnedBank(),
+							title: 'Items in the G.E'
+						})
+					).file,
+					new AttachmentBuilder(Buffer.from(allTx.map(i => i.join('\t')).join('\n')), {
+						name: 'transactions.txt'
+					}),
+					new AttachmentBuilder(Buffer.from(allLi.map(i => i.join('\t')).join('\n')), {
+						name: 'listings.txt'
+					})
+				]
+			};
+		}
 	}
 ];
 
@@ -386,6 +469,24 @@ export const adminCommand: OSBMahojiCommand = {
 					required: true
 				}
 			]
+		},
+		// {
+		// 	type: ApplicationCommandOptionType.Subcommand,
+		// 	name: 'viewbank',
+		// 	description: 'View a users bank.',
+		// 	options: [
+		// 		{
+		// 			type: ApplicationCommandOptionType.User,
+		// 			name: 'user',
+		// 			description: 'The user.',
+		// 			required: true
+		// 		}
+		// 	]
+		// },
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'shut_down',
+			description: 'Shut down the bot without rebooting.'
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -590,11 +691,6 @@ export const adminCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
-			name: 'most_active',
-			description: 'Most active'
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
 			name: 'bitfield',
 			description: 'Manage bitfield of a user',
 			options: [
@@ -759,6 +855,7 @@ export const adminCommand: OSBMahojiCommand = {
 		givetgb?: { user: MahojiUserOption };
 		viewbank?: { user: MahojiUserOption };
 		reboot?: {};
+		shut_down?: {};
 		debug_patreon?: {};
 		eval?: { code: string };
 		sync_commands?: {};
@@ -775,7 +872,6 @@ export const adminCommand: OSBMahojiCommand = {
 		command?: { enable?: string; disable?: string };
 		view_user?: { user: MahojiUserOption };
 		set_price?: { item: string; price: number };
-		most_active?: {};
 		bitfield?: { user: MahojiUserOption; add?: string; remove?: string };
 		ltc?: { item?: string };
 		double_loot?: { reset?: boolean; add?: string };
@@ -1040,20 +1136,6 @@ export const adminCommand: OSBMahojiCommand = {
 			await syncCustomPrices();
 			return `Set the price of \`${item.name}\` to \`${price.toLocaleString()}\`.`;
 		}
-		if (options.most_active) {
-			const res = await prisma.$queryRawUnsafe<{ num: number; username: string }[]>(`
-SELECT sum(duration) as num, "new_user"."username", user_id
-FROM activity
-INNER JOIN "new_users" "new_user" on "new_user"."id" = "activity"."user_id"::text
-WHERE start_date > now() - interval '2 days'
-GROUP BY user_id, "new_user"."username"
-ORDER BY num DESC
-LIMIT 10;
-`);
-			return `Most Active Users in past 48h\n${res
-				.map((i, ind) => `${ind + 1} ${i.username}: ${formatDuration(i.num)}`)
-				.join('\n')}`;
-		}
 
 		if (options.bitfield) {
 			const bitInput = options.bitfield.add ?? options.bitfield.remove;
@@ -1105,6 +1187,15 @@ LIMIT 10;
 				content: 'https://media.discordapp.net/attachments/357422607982919680/1004657720722464880/freeze.gif'
 			});
 			process.exit();
+		}
+		if (options.shut_down) {
+			globalClient.isShuttingDown = true;
+			let timer = production ? Time.Second * 30 : Time.Second * 5;
+			await interactionReply(interaction, {
+				content: `Shutting down in ${dateFm(new Date(Date.now() + timer))}.`
+			});
+			await Promise.all([sleep(timer), GrandExchange.queue.onEmpty()]);
+			execSync(`pm2 stop ${BOT_TYPE === 'OSB' ? 'osb' : 'bso'}`);
 		}
 		if (options.viewbank) {
 			const userToCheck = await mUserFetch(options.viewbank.user.user.id);

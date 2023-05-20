@@ -255,6 +255,7 @@ export enum BitField {
 	BothBotsMaxedFreeTierOnePerks = 24,
 	HasBloodbarkScroll = 25,
 	DisableAutoFarmContractButton = 26,
+	DisableGrandExchangeDMs = 27,
 	HasGivenBirthdayPack = 200,
 	HasPermanentSpawnLamp = 201,
 	HasScrollOfFarming = 202,
@@ -347,6 +348,11 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	[BitField.DisableAshSanctifier]: { name: 'Disable Ash Sanctifier', protected: false, userConfigurable: true },
 	[BitField.DisableAutoFarmContractButton]: {
 		name: 'Disable Auto Farm Contract Button',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisableGrandExchangeDMs]: {
+		name: 'Disable Grand Exchange DMs',
 		protected: false,
 		userConfigurable: true
 	}
@@ -635,7 +641,8 @@ const globalConfigSchema = z.object({
 	patreonCampaignID: z.coerce.number().int().default(1),
 	patreonWebhookSecret: z.coerce.string().default(''),
 	httpPort: z.coerce.number().int().default(8080),
-	clientID: z.string().min(15).max(25)
+	clientID: z.string().min(15).max(25),
+	geAdminChannelID: z.string().default('')
 });
 dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.example' : '.env') });
 
@@ -644,5 +651,84 @@ export const globalConfig = globalConfigSchema.parse({
 	patreonCampaignID: process.env.PATREON_CAMPAIGN_ID,
 	patreonWebhookSecret: process.env.PATREON_WEBHOOK_SECRET,
 	httpPort: process.env.HTTP_PORT,
-	clientID: process.env.CLIENT_ID
+	clientID: process.env.CLIENT_ID,
+	geAdminChannelID: process.env.GE_ADMIN_CHANNEL_ID
 });
+
+export const globalDroprates = {
+	doug: {
+		name: 'Doug (pet)',
+		baseRate: 7000,
+		clIncrease: 1.5,
+		minLength: true,
+		rolledPer: 'minute'
+	},
+	takon: {
+		name: 'Takon (pet)',
+		baseRate: 600,
+		clIncrease: 1.5,
+		tameBaseRate: 4500,
+		rolledPer: 'kc',
+		minLength: false
+	},
+	steve: {
+		name: 'Steve (pet)',
+		baseRate: 300,
+		clIncrease: 1.5,
+		tameBaseRate: 500,
+		rolledPer: 'kc',
+		minLength: false
+	},
+	voidling: {
+		name: 'Voidling (pet)',
+		baseRate: 500,
+		clIncrease: 1.5,
+		rolledPer: 'kc',
+		minLength: false
+	},
+	remy: {
+		name: 'Remy (pet)',
+		baseRate: 5000,
+		clIncrease: 1.5,
+		rolledPer: 'minute',
+		minLength: true
+	},
+	shelldon: {
+		name: 'Shelldon (pet)',
+		baseRate: 8000,
+		clIncrease: 1.5,
+		rolledPer: 'minute',
+		minLength: true
+	},
+	zak: {
+		name: 'Zak (pet)',
+		baseRate: 6500,
+		clIncrease: 1.3,
+		minLength: true,
+		rolledPer: 'minute',
+		notes: ['Drops when smelting things (Excluding blast furnace)', 'Requires 10 QP']
+	},
+	zippyHunter: {
+		name: 'Zippy (pet) (hunter)',
+		baseRate: 3500,
+		clIncrease: 1.5,
+		minLength: false,
+		rolledPer: 'catch',
+		notes: ['Received when hunting Eastern ferrets', 'Can also be received from questing']
+	},
+	zippyQuesting: {
+		name: 'Zippy (pet) (questing)',
+		baseRate: 350,
+		minLength: false,
+		rolledPer: 'trip',
+		notes: ['Can also be received from hunting Eastern ferrets']
+	},
+	scruffy: {
+		name: 'Scruffy (pet)',
+		baseRate: 4000,
+		clIncrease: 1.5,
+		minLength: true,
+		rolledPer: 'minute'
+	}
+};
+export const ONE_TRILLION = 1_000_000_000_000;

@@ -94,6 +94,8 @@ setCustomItem(
 	'Offhand volcanic pickaxe',
 	'Rune defender',
 	{
+		tradeable_on_ge: true,
+		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}

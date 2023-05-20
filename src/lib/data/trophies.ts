@@ -1,3 +1,5 @@
+import '../customItems/customItems';
+
 import { modifyItem } from '@oldschoolgg/toolkit';
 
 import resolveItems from '../util/resolveItems';

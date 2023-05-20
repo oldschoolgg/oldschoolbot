@@ -5,6 +5,8 @@ setCustomItem(
 	'Remy',
 	'Herbi',
 	{
+		tradeable_on_ge: true,
+		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -17,6 +19,8 @@ setCustomItem(
 	'Shelldon',
 	'Herbi',
 	{
+		tradeable_on_ge: true,
+		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -29,6 +33,8 @@ setCustomItem(
 	'Doug',
 	'Herbi',
 	{
+		tradeable_on_ge: true,
+		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -41,6 +47,8 @@ setCustomItem(
 	'Lil Lamb',
 	'Herbi',
 	{
+		tradeable_on_ge: true,
+		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -53,6 +61,8 @@ setCustomItem(
 	'Zippy',
 	'Herbi',
 	{
+		tradeable_on_ge: true,
+		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -65,6 +75,8 @@ setCustomItem(
 	'Harry',
 	'Herbi',
 	{
+		tradeable_on_ge: true,
+		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -77,6 +89,8 @@ setCustomItem(
 	'Wintertoad',
 	'Herbi',
 	{
+		tradeable_on_ge: true,
+		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -89,6 +103,8 @@ setCustomItem(
 	'Klik',
 	'Herbi',
 	{
+		tradeable_on_ge: true,
+		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -101,6 +117,8 @@ setCustomItem(
 	'Scruffy',
 	'Herbi',
 	{
+		tradeable_on_ge: true,
+		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -113,6 +131,8 @@ setCustomItem(
 	'Zak',
 	'Herbi',
 	{
+		tradeable_on_ge: true,
+		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -125,6 +145,8 @@ setCustomItem(
 	'Hammy',
 	'Herbi',
 	{
+		tradeable_on_ge: true,
+		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -137,6 +159,8 @@ setCustomItem(
 	'Skipper',
 	'Herbi',
 	{
+		tradeable_on_ge: true,
+		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -149,6 +173,8 @@ setCustomItem(
 	'Ori',
 	'Herbi',
 	{
+		tradeable_on_ge: true,
+		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -161,6 +187,8 @@ setCustomItem(
 	'Takon',
 	'Herbi',
 	{
+		tradeable_on_ge: true,
+		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -173,6 +201,8 @@ setCustomItem(
 	'Peky',
 	'Herbi',
 	{
+		tradeable_on_ge: true,
+		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -185,6 +215,8 @@ setCustomItem(
 	'Obis',
 	'Herbi',
 	{
+		tradeable_on_ge: true,
+		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -197,6 +229,8 @@ setCustomItem(
 	'Plopper',
 	'Herbi',
 	{
+		tradeable_on_ge: true,
+		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -209,6 +243,8 @@ setCustomItem(
 	'Brock',
 	'Herbi',
 	{
+		tradeable_on_ge: true,
+		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -221,6 +257,8 @@ setCustomItem(
 	'Wilvus',
 	'Herbi',
 	{
+		tradeable_on_ge: true,
+		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -233,6 +271,8 @@ setCustomItem(
 	'Voidling',
 	'Herbi',
 	{
+		tradeable_on_ge: true,
+		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -245,6 +285,8 @@ setCustomItem(
 	'Mr. E',
 	'Herbi',
 	{
+		tradeable_on_ge: true,
+		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -257,6 +299,8 @@ setCustomItem(
 	'Frostbite',
 	'Herbi',
 	{
+		tradeable_on_ge: true,
+		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -269,6 +313,8 @@ setCustomItem(
 	'Ishi',
 	'Herbi',
 	{
+		tradeable_on_ge: true,
+		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -281,6 +327,8 @@ setCustomItem(
 	'Corgi',
 	'Herbi',
 	{
+		tradeable_on_ge: true,
+		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -293,6 +341,8 @@ setCustomItem(
 	'Sandy',
 	'Herbi',
 	{
+		tradeable_on_ge: true,
+		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -305,6 +355,8 @@ setCustomItem(
 	'Baby kalphite king',
 	'Herbi',
 	{
+		tradeable_on_ge: true,
+		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -317,6 +369,8 @@ setCustomItem(
 	'Steve',
 	'Herbi',
 	{
+		tradeable_on_ge: true,
+		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -355,6 +409,8 @@ setCustomItem(
 	'Nexterminator',
 	'Herbi',
 	{
+		tradeable_on_ge: true,
+		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -370,6 +426,8 @@ setCustomItem(
 	'Black swan',
 	'Herbi',
 	{
+		tradeable_on_ge: true,
+		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -398,6 +456,8 @@ setCustomItem(
 	'Mini Pumpkinhead',
 	'Herbi',
 	{
+		tradeable_on_ge: true,
+		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -410,6 +470,8 @@ setCustomItem(
 	'Snappy the Turtle',
 	'Herbi',
 	{
+		tradeable_on_ge: true,
+		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -422,6 +484,8 @@ setCustomItem(
 	'Gregoyle',
 	'Herbi',
 	{
+		tradeable_on_ge: true,
+		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -434,6 +498,8 @@ setCustomItem(
 	'Flappy',
 	'Herbi',
 	{
+		tradeable_on_ge: true,
+		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -446,6 +512,8 @@ setCustomItem(
 	'Seer',
 	'Herbi',
 	{
+		tradeable_on_ge: true,
+		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -473,6 +541,8 @@ setCustomItem(
 	'Smokey',
 	'Herbi',
 	{
+		tradeable_on_ge: true,
+		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -485,6 +555,8 @@ setCustomItem(
 	'Hoppy',
 	'Herbi',
 	{
+		tradeable_on_ge: true,
+		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -497,6 +569,8 @@ setCustomItem(
 	'Cob',
 	'Herbi',
 	{
+		tradeable_on_ge: true,
+		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -509,6 +583,8 @@ setCustomItem(
 	'Craig',
 	'Herbi',
 	{
+		tradeable_on_ge: true,
+		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -521,6 +597,8 @@ setCustomItem(
 	'Balloon cat',
 	'Herbi',
 	{
+		tradeable_on_ge: true,
+		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
 			isSuperUntradeable: true
