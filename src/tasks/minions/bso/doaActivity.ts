@@ -90,7 +90,6 @@ async function handleDOAXP(user: MUser, qty: number, isCm: boolean) {
 interface RaidResultUser {
 	mUser: MUser;
 	deaths: number;
-	// kc: number;
 }
 
 export const doaTask: MinionTask = {
