@@ -54,7 +54,7 @@ export async function makeWheel(_entries: [string, number][]) {
 			size: (i[1] / totalWeight) * 360,
 			textFillStyle: '#FFFF00',
 			textFontFamily: 'OSRSFontCompact',
-			textFontSize: clamp(Math.round(i[1] * 5), 16, 50)
+			textFontSize: clamp(Math.round(i[1] * 5), 20, 50)
 		};
 	});
 
@@ -67,7 +67,7 @@ export async function makeWheel(_entries: [string, number][]) {
 		pointerAngle: 90,
 		pointerGuide: {
 			display: true,
-			strokeStyle: 'red',
+			strokeStyle: 'black',
 			lineWidth: 3
 		}
 	});
@@ -90,7 +90,7 @@ export async function makeWheel(_entries: [string, number][]) {
 	ctx.drawImage(wheelCanvas, padding / 2, padding / 2);
 
 	return {
-		image: canvas.toBuffer('image/png'),
+		image: await canvas.encode('png'),
 		winner: result.winner
 	};
 }

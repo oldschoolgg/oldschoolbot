@@ -241,7 +241,6 @@ class BankImageTask {
 		const files = await fs.readdir(basePath);
 		for (const file of files) {
 			const bgName: BGSpriteName = file.split('\\').pop()!.split('/').pop()!.split('.').shift()! as BGSpriteName;
-			console.log({ bgName });
 			let d = await loadImage(await fs.readFile(basePath + file));
 			this._bgSpriteData = d;
 			this.bgSpriteList[bgName] = {

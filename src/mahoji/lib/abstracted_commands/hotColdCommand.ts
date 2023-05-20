@@ -4,6 +4,7 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { LootTable } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 
+import { handleGamblingOutcome } from '../../../lib/itemSinkTax';
 import { mahojiClientSettingsUpdate } from '../../../lib/util/clientSettings';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import resolveItems from '../../../lib/util/resolveItems';
@@ -105,12 +106,8 @@ ${explanation}`
 	});
 	const arrToCheck = choice === 'hot' ? hot : cold;
 	const playerDidWin = flower.name !== 'Mixed flowers' && arrToCheck.includes(flower.id);
-	const key = playerDidWin ? 'increment' : 'decrement';
-	await mahojiClientSettingsUpdate({
-		gp_hotcold: {
-			[key]: amount
-		}
-	});
+
+	await handleGamblingOutcome({ type: 'Hot and Cold', user, totalAmount: playerDidWin ? amount : -amount });
 
 	if (playerDidWin) {
 		const amountWon = amount * 2;
@@ -119,27 +116,10 @@ ${explanation}`
 				increment: amount * 2
 			}
 		});
-		await userStatsUpdate(
-			user.id,
-			{
-				gp_hotcold: {
-					increment: amount
-				}
-			},
-			{}
-		);
+
 		embed.setDescription(`You **won** ${toKMB(amountWon)}!`).setColor(6_875_960);
 		return response;
 	}
-	await userStatsUpdate(
-		user.id,
-		{
-			gp_hotcold: {
-				decrement: amount
-			}
-		},
-		{}
-	);
 
 	embed.setDescription(`You lost ${toKMB(amount)}.`).setColor(15_417_396);
 	return response;

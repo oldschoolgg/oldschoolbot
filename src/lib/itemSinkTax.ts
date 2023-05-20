@@ -29,6 +29,12 @@ const gamblingData = [
 		itemSinkKey: 'item_sink_hotcold_gp',
 		economyTrackKey: 'gp_hotcold',
 		personalUserKey: 'gp_hotcold'
+	},
+	{
+		name: 'Spins',
+		itemSinkKey: 'item_sink_spins_gp',
+		economyTrackKey: 'gp_spins',
+		personalUserKey: 'gp_spins'
 	}
 ] as const;
 

@@ -6,6 +6,15 @@ vi.mock('../../src/lib/util/handleMahojiConfirmation', () => ({
 	handleMahojiConfirmation: vi.fn()
 }));
 
+vi.mock('../../src/lib/util/interactionReply', () => ({
+	deferInteraction: vi.fn()
+}));
+
+const originalRandom = Math.random;
+
+export function restoreMathRandom() {
+	Math.random = originalRandom;
+}
 export function randomMock(random = 0.1) {
 	Math.random = () => random;
 }
