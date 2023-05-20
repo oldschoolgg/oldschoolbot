@@ -46,8 +46,9 @@ export default puroOptions;
 export async function puroPuroStartCommand(
 	user: MUser,
 	channelID: string,
-	impling: string,
-	darkLure: boolean | undefined
+	impling: string | undefined,
+	darkLure: boolean | undefined,
+	implingTier: number | undefined
 ) {
 	const timePerGame = Time.Minute * 10;
 	const maxTripLength = calcMaxTripLength(user, 'PuroPuro');
@@ -59,7 +60,12 @@ export async function puroPuroStartCommand(
 	const [hasDarkLureSkillReqs, lureReason] = hasSkillReqs(user, darkLureSkillRequirements);
 	if (!hasReqs) return `To hunt in Puro-Puro, you need: ${reason}.`;
 	if (user.QP < 3) return 'To hunt in Puro-Puro, you need 3 QP.';
-	const impToHunt = puroOptions.find(i => stringMatches(i.name, impling));
+	let impToHunt: PuroImpling | undefined = undefined;
+	if (impling) {
+		impToHunt = puroOptions.find(i => stringMatches(i.name, impling));
+	} else if (implingTier) {
+		impToHunt = puroOptions.find(i => i.tier === implingTier);
+	}
 	if (!impToHunt) return 'Error selecting impling, please try again.';
 	if (hunterLevel < impToHunt.hunterLevel)
 		return `${user.minionName} needs atleast level ${impToHunt.hunterLevel} hunter to hunt ${impToHunt.name} in Puro-Puro.`;
@@ -84,7 +90,6 @@ export async function puroPuroStartCommand(
 	}
 
 	await addSubTaskToActivityTask<PuroPuroActivityTaskOptions>({
-		implingName: impToHunt.name,
 		implingTier: impToHunt.tier ?? null,
 		quantity,
 		userID: user.id,
