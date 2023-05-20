@@ -837,6 +837,7 @@ enum activity_type_enum {
   Raids
   Collecting
   MageTrainingArena
+  MotherlodeMining
   BlastFurnace
   MageArena2
   BigChompyBirdHunting
