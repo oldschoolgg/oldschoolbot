@@ -505,6 +505,7 @@ enum XpGainSource {
   UnderwaterAgilityThieving
   ChambersOfXeric
   TheatreOfBlood
+  DepthsOfAtlantis
 }
 
 model XPGain {

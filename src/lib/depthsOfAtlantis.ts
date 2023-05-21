@@ -527,7 +527,6 @@ export function createDOATeam({
 
 	for (let i = 0; i < quantity; i++) {
 		let wipedRoom = null;
-		const missedBoosts: string[] = [];
 		const deathsPerUser = new Map<string, number[]>();
 		for (const user of team) deathsPerUser.set(user.user.id, []);
 		messages.push(`Simulating ${formatOrdinal(i + 1)} raid`);
@@ -549,7 +548,6 @@ export function createDOATeam({
 							)}`
 						);
 					} else {
-						missedBoosts.push(`${user.usernameOrMention} missed the ${percent}% ${boost.name} boost`);
 						messages.push(
 							`    ${user.usernameOrMention} missed the ${
 								boost.name

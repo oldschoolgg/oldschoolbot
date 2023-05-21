@@ -67,10 +67,10 @@ async function handleDOAXP(user: MUser, qty: number, isCm: boolean) {
 
 	const results = [];
 	results.push(
-		await user.addXP({ skillName: SkillsEnum.Ranged, amount: rangeXP, minimal: true, source: 'ChambersOfXeric' })
+		user.addXP({ skillName: SkillsEnum.Ranged, amount: rangeXP, minimal: true, source: 'DepthsOfAtlantis' })
 	);
 	results.push(
-		await user.addXP({ skillName: SkillsEnum.Magic, amount: magicXP, minimal: true, source: 'ChambersOfXeric' })
+		user.addXP({ skillName: SkillsEnum.Magic, amount: magicXP, minimal: true, source: 'DepthsOfAtlantis' })
 	);
 	let [, , styles] = resolveAttackStyles(user, {
 		monsterID: -1
@@ -81,10 +81,14 @@ async function handleDOAXP(user: MUser, qty: number, isCm: boolean) {
 	const perSkillMeleeXP = meleeXP / styles.length;
 	for (const style of styles) {
 		results.push(
-			await user.addXP({ skillName: style, amount: perSkillMeleeXP, minimal: true, source: 'ChambersOfXeric' })
+			user.addXP({ skillName: style, amount: perSkillMeleeXP, minimal: true, source: 'DepthsOfAtlantis' })
 		);
 	}
-	return results;
+	results.push(
+		user.addXP({ skillName: SkillsEnum.Hitpoints, amount: meleeXP, minimal: true, source: 'DepthsOfAtlantis' })
+	);
+
+	return Promise.all(results);
 }
 
 interface RaidResultUser {
