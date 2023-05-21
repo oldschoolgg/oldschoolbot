@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 
 import { doaMetamorphPets } from '../../lib/data/CollectionsExport';
 import { globalDroprates } from '../../lib/data/globalDroprates';
+import { degradeableItems } from '../../lib/degradeableItems';
 import {
 	calcDOAInput,
 	chanceOfDOAUnique,
@@ -278,46 +279,6 @@ export const raidCommand: OSBMahojiCommand = {
 		if (tob?.stats) return tobStatsCommand(user);
 		if (tob?.check) return tobCheckCommand(user, Boolean(tob.check.hard_mode));
 		if (options.toa?.help) return toaHelpCommand(user, channelID);
-
-		if (minionIsBusy(user.id)) return "Your minion is busy, you can't do this.";
-
-		if (cox && cox.start) {
-			return coxCommand(channelID, user, cox.start.type, Boolean(cox.start.challenge_mode), cox.start.quantity);
-		}
-		if (tob) {
-			if (tob.start) {
-				return tobStartCommand(
-					user,
-					channelID,
-					Boolean(tob.start.hard_mode),
-					tob.start.max_team_size,
-					Boolean(tob.start.solo)
-				);
-			}
-		}
-
-		if (options.toa?.start) {
-			return toaStartCommand(
-				user,
-				Boolean(options.toa.start.solo),
-				channelID,
-				options.toa.start.raid_level,
-				options.toa.start.max_team_size,
-				options.toa.start.quantity
-			);
-		}
-
-		if (options.doa?.start) {
-			return doaStartCommand(
-				user,
-				Boolean(options.doa.start.challenge_mode),
-				Boolean(options.doa.start.solo),
-				channelID,
-				options.doa.start.max_team_size,
-				options.doa.start.quantity
-			);
-		}
-
 		if (options.doa?.help) {
 			return doaHelpCommand(user);
 		}
@@ -344,6 +305,7 @@ export const raidCommand: OSBMahojiCommand = {
 			});
 			return 'Reset your CL, doa attempts, cost, loot, kc and total time raided.';
 		}
+
 		if (options.doa?.simulate) {
 			const samples = 500;
 			const results: {
@@ -417,15 +379,30 @@ export const raidCommand: OSBMahojiCommand = {
 						quantity: 1
 					});
 
-					const cost = await calcDOAInput({
-						user,
-						kcOverride: i,
-						challengeMode: cm,
-						quantity: 1,
-						duration: result.fakeDuration
-					});
+					let cost: any = null;
+					try {
+						cost = await calcDOAInput({
+							user,
+							kcOverride: i,
+							challengeMode: cm,
+							quantity: 1,
+							duration: result.fakeDuration
+						});
+					} catch (err: any) {
+						return err.message;
+					}
 					totalCost.add(cost.cost);
-					totalCost.add(cost.blowpipeCost);
+					totalCost.add('Blood rune', cost.sangCharges * 3);
+
+					const vStaff = degradeableItems.find(t => t.item.name === 'Void staff')!;
+					if (cost.voidStaffCharges) {
+						totalCost.add(vStaff.chargeInput.cost.clone().multiply(cost.voidStaffCharges));
+					}
+
+					const tShadow = degradeableItems.find(t => t.item.name === "Tumeken's shadow")!;
+					if (cost.tumShadowCharges) {
+						totalCost.add(tShadow.chargeInput.cost.clone().multiply(cost.tumShadowCharges));
+					}
 
 					time += result.fakeDuration;
 				}
@@ -471,6 +448,45 @@ Slowest finish: ${formatDuration(slowest.time)}
 					(await makeBankImage({ bank: averageCost, title: 'Average Cost' })).file
 				]
 			};
+		}
+
+		if (minionIsBusy(user.id)) return "Your minion is busy, you can't do this.";
+
+		if (cox && cox.start) {
+			return coxCommand(channelID, user, cox.start.type, Boolean(cox.start.challenge_mode), cox.start.quantity);
+		}
+		if (tob) {
+			if (tob.start) {
+				return tobStartCommand(
+					user,
+					channelID,
+					Boolean(tob.start.hard_mode),
+					tob.start.max_team_size,
+					Boolean(tob.start.solo)
+				);
+			}
+		}
+
+		if (options.toa?.start) {
+			return toaStartCommand(
+				user,
+				Boolean(options.toa.start.solo),
+				channelID,
+				options.toa.start.raid_level,
+				options.toa.start.max_team_size,
+				options.toa.start.quantity
+			);
+		}
+
+		if (options.doa?.start) {
+			return doaStartCommand(
+				user,
+				Boolean(options.doa.start.challenge_mode),
+				Boolean(options.doa.start.solo),
+				channelID,
+				options.doa.start.max_team_size,
+				options.doa.start.quantity
+			);
 		}
 
 		return 'Invalid command.';

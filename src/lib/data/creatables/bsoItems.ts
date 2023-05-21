@@ -98,7 +98,7 @@ const masoriComponents: Createable[] = [
 	{
 		name: 'Revert masori body',
 		inputItems: new Bank().add('Masori body'),
-		outputItems: new Bank().add('Masori components', 3)
+		outputItems: new Bank().add('Masori components', 4)
 	},
 	{
 		name: 'Revert masori chaps',

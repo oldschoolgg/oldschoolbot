@@ -1,6 +1,6 @@
 import { channelIsSendable, formatOrdinal, mentionCommand } from '@oldschoolgg/toolkit';
 import { bold } from 'discord.js';
-import { calcPercentOfNum, clamp, percentChance, randArrItem, randInt, reduceNumByPercent, Time } from 'e';
+import { calcPercentOfNum, clamp, increaseNumByPercent, percentChance, randArrItem, randInt, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
@@ -23,6 +23,8 @@ import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
 import { updateBankSetting } from './util/updateBankSetting';
 
+const { floor } = Math;
+
 const minDOAStats: Skills = {
 	attack: 110,
 	strength: 110,
@@ -40,11 +42,11 @@ interface GearSetupPercents {
 }
 
 const minimumSuppliesNeeded = new Bank({
-	'Saradomin brew(4)': 10,
-	'Super restore(4)': 5,
-	'Ranging potion(4)': 1,
-	'Super combat potion(4)': 1,
-	'Magic potion(4)': 1
+	'Saradomin brew(4)': 22,
+	'Super restore(4)': 15,
+	'Ranging potion(4)': 2,
+	'Super combat potion(4)': 2,
+	'Magic potion(4)': 2
 });
 
 export const maxMage = new Gear({
@@ -100,8 +102,7 @@ const JAVELLINS_PER_RAID = (rangeLevel: number) => {
 	return 20;
 };
 const JAVELLINS = resolveItems(['Amethyst javelin', 'Dragon javelin', 'Obsidian javelin']);
-const BP_DARTS_NEEDED = 150;
-const SANG_BLOOD_RUNES_PER_RAID = 220;
+const SANG_CHARGES_PER_RAID = 550;
 
 const requirements: {
 	name: string;
@@ -183,13 +184,13 @@ const requirements: {
 	},
 	{
 		name: 'Sanguinesti staff',
-		doesMeet: ({ user }) => {
+		doesMeet: ({ user, quantity }) => {
 			if (!user.bank.has('Sanguinesti staff')) {
 				return 'You need a Sanguinesti staff in your bank';
 			}
 
-			if (user.bank.amount('Blood rune') < SANG_BLOOD_RUNES_PER_RAID) {
-				return `You need atleast ${SANG_BLOOD_RUNES_PER_RAID} Blood runes in your bank to charge your Sanguinesti staff`;
+			if (user.user.sang_charges < SANG_CHARGES_PER_RAID * quantity) {
+				return `You need atleast ${SANG_CHARGES_PER_RAID} charges in your Sanguinesti staff per raid`;
 			}
 
 			return true;
@@ -269,8 +270,14 @@ export const DOARooms: AtlantisRoom[] = [
 			let addition = 0;
 			return addition;
 		},
-		baseTime: Time.Minute * 10,
-		speedBoosts: []
+		baseTime: Time.Minute * 20,
+		speedBoosts: [
+			{
+				name: 'Void staff',
+				percent: 20,
+				has: user => user.gear.mage.hasEquipped('Void staff')
+			}
+		]
 	},
 	{
 		id: 2,
@@ -286,7 +293,7 @@ export const DOARooms: AtlantisRoom[] = [
 		speedBoosts: [
 			{
 				name: 'Titan ballista',
-				percent: 20,
+				percent: 15,
 				has: user => user.gear.range.hasEquipped('Titan ballista')
 			},
 			{
@@ -333,7 +340,7 @@ export const DOARooms: AtlantisRoom[] = [
 		speedBoosts: [
 			{
 				name: 'Atlantian trident',
-				percent: 10,
+				percent: 25,
 				has: user => user.gear.melee.hasEquipped('Atlantian trident')
 			}
 		]
@@ -351,10 +358,7 @@ export async function calcDOAInput({
 	duration: number;
 	quantity: number;
 	challengeMode: boolean;
-}): Promise<{
-	cost: Bank;
-	blowpipeCost: Bank;
-}> {
+}) {
 	const cost = new Bank();
 	const kc =
 		kcOverride ?? (await getMinigameScore(user.id, challengeMode ? 'depths_of_atlantis' : 'depths_of_atlantis_cm'));
@@ -363,19 +367,33 @@ export async function calcDOAInput({
 	cost.add('Sanfew serum(4)', quantity);
 
 	let brewsNeeded = Math.max(4, 9 - Math.max(1, Math.ceil((kc + 1) / 12)));
-	brewsNeeded += 8;
+	brewsNeeded += 10;
 	let restoresNeeded = Math.max(2, Math.floor(brewsNeeded / 3));
 
 	cost.add('Saradomin brew(4)', brewsNeeded * quantity);
 	cost.add('Super restore(4)', restoresNeeded * quantity);
-	cost.add('Blood rune', SANG_BLOOD_RUNES_PER_RAID * quantity);
 	cost.add('Enhanced stamina potion', quantity);
+
+	let sangCharges = SANG_CHARGES_PER_RAID * quantity;
+
+	let voidStaffCharges = null;
+	let tumShadowCharges = null;
+
+	if (user.gear.mage.hasEquipped('Void staff')) {
+		voidStaffCharges = VOID_STAFF_CHARGES_PER_RAID * quantity;
+	} else if (user.gear.mage.hasEquipped("Tumeken's shadow")) {
+		tumShadowCharges = TUMEKEN_SHADOW_PER_RAID * quantity;
+	} else {
+		throw new Error(`${user.logName} has no mage weapon for DOA`);
+	}
 
 	if (challengeMode) {
 		cost.add('Enhanced stamina potion', quantity);
 		cost.add('Saradomin brew(4)', 4 * quantity);
 		cost.add('Super restore(4)', quantity);
-		cost.add('Blood rune', 30 * quantity);
+		sangCharges += 30 * quantity;
+		if (voidStaffCharges) voidStaffCharges = floor(increaseNumByPercent(voidStaffCharges, 20));
+		if (tumShadowCharges) tumShadowCharges = floor(increaseNumByPercent(tumShadowCharges, 20));
 	}
 
 	const rangeWeapon = user.gear.range.equippedWeapon();
@@ -389,15 +407,11 @@ export async function calcDOAInput({
 	}
 	cost.add(rangeAmmo.item, JAVELLINS_PER_RAID(user.skillsAsLevels.ranged) * quantity);
 
-	const { blowpipe } = user;
-	const dartID = blowpipe.dartID ?? itemID('Rune dart');
-	const dartQuantity = blowpipe.dartQuantity ?? BP_DARTS_NEEDED;
-	const blowpipeCost = new Bank();
-	blowpipeCost.add(dartID, Math.floor(Math.min(dartQuantity, BP_DARTS_NEEDED)) * quantity);
-
 	return {
 		cost,
-		blowpipeCost
+		sangCharges,
+		voidStaffCharges,
+		tumShadowCharges
 	};
 }
 
@@ -528,14 +542,14 @@ export function createDOATeam({
 					let percent = boost.percent / team.length;
 					let actualDecrease = calcPercentOfNum(percent, roomTime);
 					if (boost.has(user)) {
-						roomTime -= reduceNumByPercent(roomTime, percent);
+						roomTime -= actualDecrease;
 						messages.push(
-							`    ${user.usernameOrMention} ${boost.name} boost removed ${formatDuration(
+							`    ${user.usernameOrMention} ${percent}% ${boost.name} boost removed ${formatDuration(
 								actualDecrease
 							)}`
 						);
 					} else {
-						missedBoosts.push(`${user.usernameOrMention} missed the ${boost.name} boost`);
+						missedBoosts.push(`${user.usernameOrMention} missed the ${percent}% ${boost.name} boost`);
 						messages.push(
 							`    ${user.usernameOrMention} missed the ${
 								boost.name
@@ -547,6 +561,12 @@ export function createDOATeam({
 				messages.push(`  Calculating death chance for ${user.usernameOrMention} in ${room.name} room...`);
 				let baseDeathChance = getPercentage(roomKCs[room.id]);
 				messages.push(`    Base chance of ${baseDeathChance}% chance`);
+
+				if (challengeMode) {
+					baseDeathChance *= 2;
+					messages.push(`    Base death chance increasing to ${baseDeathChance}% because CM`);
+				}
+
 				if (challengeMode) {
 					baseDeathChance *= 1.5;
 					messages.push(`    Multiplied by 1.5x because challenge mode, now ${baseDeathChance}%`);
@@ -555,7 +575,7 @@ export function createDOATeam({
 				if (addedDeathChance !== 0) {
 					messages.push(`    Had an extra ${addedDeathChance}% added because of one of the rooms mechanics`);
 				}
-				let deathChanceForThisUserRoom = clamp(baseDeathChance + addedDeathChance, 5, 99);
+				let deathChanceForThisUserRoom = clamp(baseDeathChance + addedDeathChance, 2, 99);
 				messages.push(
 					`    Final death chance for ${user.usernameOrMention} in ${room.name} room: ${deathChanceForThisUserRoom}%`
 				);
@@ -714,24 +734,30 @@ export async function doaStartCommand(
 
 	const costResult = await Promise.all(
 		users.map(async u => {
-			const { cost, blowpipeCost } = await calcDOAInput({
+			const { cost, sangCharges, voidStaffCharges, tumShadowCharges } = await calcDOAInput({
 				user: u,
 				duration: createdDOATeam.fakeDuration,
 				quantity,
 				challengeMode
 			});
-			const { realCost } = await u.specialRemoveItems(cost.clone().add(blowpipeCost));
+			const { realCost } = await u.specialRemoveItems(cost.clone());
 
-			if (user.gear.mage.hasEquipped('Void staff')) {
+			await degradeItem({
+				item: getOSItem('Sanguinesti staff'),
+				chargesToDegrade: sangCharges,
+				user: u
+			});
+
+			if (voidStaffCharges) {
 				await degradeItem({
 					item: getOSItem('Void staff'),
-					chargesToDegrade: VOID_STAFF_CHARGES_PER_RAID * quantity,
+					chargesToDegrade: voidStaffCharges,
 					user: u
 				});
-			} else if (u.gear.mage.hasEquipped("Tumeken's shadow")) {
+			} else if (tumShadowCharges) {
 				await degradeItem({
 					item: getOSItem("Tumeken's shadow"),
-					chargesToDegrade: TUMEKEN_SHADOW_PER_RAID * quantity,
+					chargesToDegrade: tumShadowCharges,
 					user: u
 				});
 			} else {
@@ -834,7 +860,7 @@ export async function doaHelpCommand(user: MUser) {
 	let str = `**Depths of Atlantis** 
 
 **Attempts:** 
-${DOARooms.map(i => `- ${i.name}: ${(stats.doa_room_attempts_bank as ItemBank)[i.id] ?? 0} KC`).join('\n')}
+${DOARooms.map(i => `- ${i.name}: ${(stats.doa_room_attempts_bank as ItemBank)[i.id] ?? 0} Attempts`).join('\n')}
 
 **KC**: ${minigameStats.depths_of_atlantis} KC
 **Challenge Mode KC:** ${minigameStats.depths_of_atlantis_cm} KC

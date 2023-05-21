@@ -154,11 +154,20 @@ export const doaTask: MinionTask = {
 		messages.push(`Your team has a 1 in ${uniqueChance} unique chance per raid.`);
 
 		for (const raid of raids) {
-			if (raid.wipedRoom) continue;
+			if (raid.wipedRoom) {
+				messages.push('  Your team wiped in this raid, no loot will be given to anyone.');
+				continue;
+			}
 			const uniqueRecipient = roll(uniqueChance) ? randArrItem(allUsers) : undefined;
 			for (let i = 0; i < raid.users.length; i++) {
-				if (raid.users[i].deaths.length >= 2) continue;
 				const user = allUsers[i];
+
+				if (raid.users[i].deaths.length >= 2) {
+					messages.push(
+						`  ${user.rawUsername} died more than twice, and will not receive any loot in this raid.`
+					);
+					continue;
+				}
 				if (uniqueRecipient && user.id === uniqueRecipient.id) {
 					totalLoot.add(uniqueRecipient.id, pickUniqueToGiveUser(user.cl));
 				} else {
