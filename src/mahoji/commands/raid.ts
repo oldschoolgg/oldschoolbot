@@ -1,4 +1,4 @@
-import { randArrItem, roll, sumArr } from 'e';
+import { randArrItem, reduceNumByPercent, roll, sumArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
@@ -307,7 +307,7 @@ export const raidCommand: OSBMahojiCommand = {
 		}
 
 		if (options.doa?.simulate) {
-			const samples = 500;
+			const samples = 1000;
 			const results: {
 				loot: Bank;
 				time: number;
@@ -330,18 +330,22 @@ export const raidCommand: OSBMahojiCommand = {
 					'Crush'
 				]);
 
-				if (cm) {
-					items.push(...doaMetamorphPets);
-				}
+				// if (cm) {
+				// 	items.push(...doaMetamorphPets);
+				// }
 
 				let time = 0;
 				const totalCost = new Bank();
+
+				const uniqueChance = chanceOfDOAUnique(teamSize, cm);
+				let petDroprate = globalDroprates.doaCrush.baseRate;
+				if (cm) petDroprate = reduceNumByPercent(petDroprate, globalDroprates.doaCrush.cmReduction);
 
 				while (items.some(item => !totalLoot.has(item))) {
 					i++;
 
 					let loot = new Bank();
-					if (roll(chanceOfDOAUnique(teamSize, cm))) {
+					if (roll(uniqueChance)) {
 						loot.add(pickUniqueToGiveUser(totalLoot));
 					} else {
 						loot.add(DOANonUniqueTable.roll());
@@ -352,6 +356,10 @@ export const raidCommand: OSBMahojiCommand = {
 						if (unownedCMPets) {
 							loot.add(unownedCMPets);
 						}
+					}
+
+					if (roll(petDroprate)) {
+						loot.add('Crush');
 					}
 
 					totalLoot.add(loot);

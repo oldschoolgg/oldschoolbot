@@ -1,5 +1,5 @@
 import { formatOrdinal } from '@oldschoolgg/toolkit';
-import { randArrItem, roll, Time, uniqueArr } from 'e';
+import { randArrItem, reduceNumByPercent, roll, Time, uniqueArr } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
@@ -13,7 +13,7 @@ import { trackLoot } from '../../../lib/lootTrack';
 import { resolveAttackStyles } from '../../../lib/minions/functions';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { DragonTable } from '../../../lib/simulation/grandmasterClue';
-import { ClueTable, runeAlchablesTable, StoneSpiritTable } from '../../../lib/simulation/sharedTables';
+import { runeAlchablesTable, StoneSpiritTable } from '../../../lib/simulation/sharedTables';
 import { TeamLoot } from '../../../lib/simulation/TeamLoot';
 import { DOAOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -33,7 +33,6 @@ const RareGemRockTable = new LootTable()
 	.add('Uncut diamond', 1, 4);
 
 const RareOreTable = new LootTable()
-	.add('Gold ore', [30, 300], 70)
 	.add('Mithril ore', [10, 70], 55)
 	.add('Adamantite ore', [15, 50], 55)
 	.add('Runite ore', [1, 20], 45)
@@ -47,12 +46,18 @@ const BaseNonUniqueTable = new LootTable()
 	.add(DragonTable, [11, 18], undefined, { multiply: true })
 	.add(StoneSpiritTable, [10, 15], undefined, { multiply: true });
 
+const DOAClueTable = new LootTable()
+	.add('Clue scroll (medium)', 1, 5)
+	.add('Clue scroll (hard)', 1, 4)
+	.add('Clue scroll (elite)', 1, 3)
+	.add('Clue scroll (master)', 1, 2)
+	.add('Clue scroll (grandmaster)', 1, 2);
+
 export const DOANonUniqueTable = new LootTable()
-	.tertiary(300, 'Crush')
 	.tertiary(100, 'Oceanic dye')
 	.oneIn(40, 'Shark tooth')
-	.every(ClueTable, 2, { multiply: true })
-	.every(BaseNonUniqueTable, 2);
+	.every(DOAClueTable, 2, { multiply: true })
+	.every(BaseNonUniqueTable, 3, { multiply: true });
 
 async function handleDOAXP(user: MUser, qty: number, isCm: boolean) {
 	let rangeXP = 10_000 * qty;
@@ -153,6 +158,9 @@ export const doaTask: MinionTask = {
 			});
 		}
 
+		let petDroprate = globalDroprates.doaCrush.baseRate;
+		if (cm) petDroprate = reduceNumByPercent(petDroprate, globalDroprates.doaCrush.cmReduction);
+
 		let messages: string[] = [];
 		const uniqueChance = chanceOfDOAUnique(users.length, cm);
 		messages.push(`Your team has a 1 in ${uniqueChance} unique chance per raid.`);
@@ -183,6 +191,10 @@ export const doaTask: MinionTask = {
 					if (unownedCMPets) {
 						totalLoot.add(user.id, unownedCMPets);
 					}
+				}
+
+				if (roll(petDroprate)) {
+					totalLoot.add(user.id, 'Crush');
 				}
 			}
 		}

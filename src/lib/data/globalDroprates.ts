@@ -78,8 +78,15 @@ export const globalDroprates = {
 	},
 	doaMetamorphPet: {
 		name: `Depths of Atlantis Metamorph (${doaMetamorphPets.map(itemNameFromID).join(', ')})`,
-		baseRate: 100,
+		baseRate: 30,
 		rolledPer: 'kc',
 		notes: ['Dropped only in Challenge Mode', "Can't receive duplicates"]
+	},
+	doaCrush: {
+		name: 'Crush (Depths of Atlantis pet)',
+		baseRate: 300,
+		cmReduction: 17,
+		rolledPer: 'kc',
+		notes: ["Droprate increased by 17% in CM's"]
 	}
 };

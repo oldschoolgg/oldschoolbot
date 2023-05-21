@@ -1,6 +1,15 @@
 import { channelIsSendable, formatOrdinal, mentionCommand } from '@oldschoolgg/toolkit';
 import { bold } from 'discord.js';
-import { calcPercentOfNum, clamp, increaseNumByPercent, percentChance, randArrItem, randInt, Time } from 'e';
+import {
+	calcPercentOfNum,
+	clamp,
+	increaseNumByPercent,
+	percentChance,
+	randArrItem,
+	randInt,
+	reduceNumByPercent,
+	Time
+} from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
@@ -85,10 +94,10 @@ export const maxMelee = new Gear({
 	hands: 'Gorajan warrior gloves',
 	legs: 'Gorajan warrior legs',
 	feet: 'Gorajan warrior boots',
-	'2h': 'Atlantian trident'
+	'2h': 'Atlantean trident'
 });
 
-const REQUIRED_MELEE_WEAPONS = resolveItems(['Piercing trident', 'Atlantian trident']);
+const REQUIRED_MELEE_WEAPONS = resolveItems(['Piercing trident', 'Atlantean trident']);
 const REQUIRED_MAGE_WEAPONS = resolveItems(['Void staff', "Tumeken's shadow"]);
 const REQUIRED_RANGE_WEAPONS = resolveItems(['Heavy ballista', 'Titan ballista']);
 const VOID_STAFF_CHARGES_PER_RAID = 30;
@@ -270,12 +279,27 @@ export const DOARooms: AtlantisRoom[] = [
 			let addition = 0;
 			return addition;
 		},
-		baseTime: Time.Minute * 20,
+		baseTime: Time.Minute * 16,
 		speedBoosts: [
 			{
 				name: 'Void staff',
-				percent: 20,
+				percent: 25,
 				has: user => user.gear.mage.hasEquipped('Void staff')
+			},
+			{
+				name: 'Imbued heart',
+				percent: 7,
+				has: user => user.bank.has('Imbued heart')
+			},
+			{
+				name: 'Abyssal tome',
+				percent: 7,
+				has: user => user.gear.mage.hasEquipped('Abyssal tome')
+			},
+			{
+				name: 'Vasa cloak',
+				percent: 7,
+				has: user => user.gear.mage.hasEquipped('Vasa cloak')
 			}
 		]
 	},
@@ -289,17 +313,27 @@ export const DOARooms: AtlantisRoom[] = [
 			}
 			return addition;
 		},
-		baseTime: Time.Minute * 25,
+		baseTime: Time.Minute * 19,
 		speedBoosts: [
 			{
 				name: 'Titan ballista',
-				percent: 15,
+				percent: 25,
 				has: user => user.gear.range.hasEquipped('Titan ballista')
 			},
 			{
 				name: 'Obsidian javelins',
-				percent: 20,
+				percent: 25,
 				has: user => user.gear.range.hasEquipped('Obsidian javelin')
+			},
+			{
+				name: 'Ring of piercing',
+				percent: 7,
+				has: user => user.gear.range.hasEquipped('Ring of piercing')
+			},
+			{
+				name: 'Tidal collector',
+				percent: 7,
+				has: user => user.gear.range.hasEquipped('Tidal collector')
 			}
 		]
 	},
@@ -320,12 +354,32 @@ export const DOARooms: AtlantisRoom[] = [
 			}
 			return addition;
 		},
-		baseTime: Time.Minute * 25,
+		baseTime: Time.Minute * 17,
 		speedBoosts: [
 			{
-				name: 'Atlantian trident',
-				percent: 10,
-				has: user => user.gear.melee.hasEquipped('Atlantian trident')
+				name: 'Atlantean trident',
+				percent: 25,
+				has: user => user.gear.melee.hasEquipped('Atlantean trident')
+			},
+			{
+				name: '120 Strength',
+				percent: 5,
+				has: user => user.skillsAsLevels.strength >= 120
+			},
+			{
+				name: '120 Attack',
+				percent: 5,
+				has: user => user.skillsAsLevels.attack >= 120
+			},
+			{
+				name: 'TzKal cape',
+				percent: 9,
+				has: user => user.gear.melee.hasEquipped('TzKal cape')
+			},
+			{
+				name: 'Ignis ring',
+				percent: 7,
+				has: user => user.gear.melee.hasEquipped('Ignis ring')
 			}
 		]
 	},
@@ -336,12 +390,27 @@ export const DOARooms: AtlantisRoom[] = [
 			let addition = 0;
 			return addition;
 		},
-		baseTime: Time.Minute * 15,
+		baseTime: Time.Minute * 13,
 		speedBoosts: [
 			{
-				name: 'Atlantian trident',
+				name: 'Atlantean trident',
 				percent: 25,
-				has: user => user.gear.melee.hasEquipped('Atlantian trident')
+				has: user => user.gear.melee.hasEquipped('Atlantean trident')
+			},
+			{
+				name: '120 Magic',
+				percent: 5,
+				has: user => user.skillsAsLevels.magic >= 120
+			},
+			{
+				name: '120 Attack',
+				percent: 5,
+				has: user => user.skillsAsLevels.attack >= 120
+			},
+			{
+				name: '120 Agility',
+				percent: 5,
+				has: user => user.skillsAsLevels.agility >= 120
 			}
 		]
 	}
@@ -588,7 +657,7 @@ export function createDOATeam({
 			fakeDuration += roomTime;
 
 			// Wipe if half of the team dies
-			if (deaths >= Math.ceil(team.length / 2)) {
+			if (deaths >= Math.ceil((team.length + 1) / 2)) {
 				wipedRoom = room.id;
 				realDuration += randInt(1, roomTime);
 				if (!wipedRoom) messages.push(`  Wiped in ${room.name} room`);
@@ -891,8 +960,8 @@ ${requirements
 }
 
 export function chanceOfDOAUnique(teamSize: number, cm: boolean) {
-	let base = 80 - clamp(teamSize, 1, 5);
-	if (cm) base -= 5;
+	let base = 100 - clamp(teamSize, 1, 5) * 5;
+	if (cm) base = Math.floor(reduceNumByPercent(base, 20));
 	return base;
 }
 

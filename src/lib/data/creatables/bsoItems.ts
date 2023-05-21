@@ -1253,9 +1253,9 @@ export const BsoCreateables: Createable[] = [
 		}
 	},
 	{
-		name: 'Atlantian trident',
+		name: 'Atlantean trident',
 		inputItems: new Bank().add('Piercing trident').add('Oceanic relic'),
-		outputItems: new Bank().add('Atlantian trident'),
+		outputItems: new Bank().add('Atlantean trident'),
 		materialCost: new MaterialBank()
 			.add('treasured', 5000)
 			.add('magic', 5000)

@@ -6187,7 +6187,7 @@ setCustomItem(
 
 setCustomItem(
 	70_431,
-	'Atlantian trident',
+	'Atlantean trident',
 	'Piercing trident',
 	{
 		customItemData: {
