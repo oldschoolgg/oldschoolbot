@@ -16,7 +16,7 @@ import {
 } from '../../lib/depthsOfAtlantis';
 import { prisma } from '../../lib/settings/prisma';
 import { mileStoneBaseDeathChances, RaidLevel, toaHelpCommand, toaStartCommand } from '../../lib/simulation/toa';
-import { averageBank, formatDuration, itemNameFromID } from '../../lib/util';
+import { averageBank, formatDuration } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
@@ -335,7 +335,6 @@ export const raidCommand: OSBMahojiCommand = {
 				}
 
 				let time = 0;
-				let kcGotAt = [];
 				const totalCost = new Bank();
 
 				while (items.some(item => !totalLoot.has(item))) {
@@ -352,12 +351,6 @@ export const raidCommand: OSBMahojiCommand = {
 						const unownedCMPets = randArrItem(doaMetamorphPets.filter(b => !user.cl.has(b)));
 						if (unownedCMPets) {
 							loot.add(unownedCMPets);
-						}
-					}
-
-					for (const item of items) {
-						if (!totalLoot.has(item) && loot.has(item)) {
-							kcGotAt.push(`${itemNameFromID(item)}: ${i}`);
 						}
 					}
 

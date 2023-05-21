@@ -242,14 +242,16 @@ export const doaTask: MinionTask = {
 				const str = isPurple ? `${Emoji.Purple} ||${itemsAdded}||` : itemsAdded.toString();
 				const deathStr = deaths === 0 ? '' : new Array(deaths).fill(Emoji.Skull).join(' ');
 
+				let usersResult = '';
 				if (shouldShowImage) {
-					resultMessage += `\n${deathStr} **${user}**`;
+					usersResult += `\n${deathStr} **${user}**`;
 				} else {
-					resultMessage += `\n${deathStr} **${user}** received: ${str}`;
+					usersResult += `\n${deathStr} **${user}** received: ${str}`;
 				}
 
 				const xpStrings = await handleDOAXP(user, quantity, cm);
-				resultMessage += ` ${xpStrings.join(', ')}`;
+				usersResult += ` ${xpStrings.join(', ')}`;
+				resultMessage += usersResult;
 			})
 		);
 
