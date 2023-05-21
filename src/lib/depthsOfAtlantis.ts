@@ -300,6 +300,11 @@ export const DOARooms: AtlantisRoom[] = [
 				name: 'Vasa cloak',
 				percent: 7,
 				has: user => user.gear.mage.hasEquipped('Vasa cloak')
+			},
+			{
+				name: '120 Fishing',
+				percent: 3,
+				has: user => user.skillsAsLevels.fishing >= 120
 			}
 		]
 	},
@@ -334,6 +339,11 @@ export const DOARooms: AtlantisRoom[] = [
 				name: 'Tidal collector',
 				percent: 7,
 				has: user => user.gear.range.hasEquipped('Tidal collector')
+			},
+			{
+				name: '120 Fishing',
+				percent: 3,
+				has: user => user.skillsAsLevels.fishing >= 120
 			}
 		]
 	},
@@ -380,6 +390,11 @@ export const DOARooms: AtlantisRoom[] = [
 				name: 'Ignis ring',
 				percent: 7,
 				has: user => user.gear.melee.hasEquipped('Ignis ring')
+			},
+			{
+				name: '120 Fishing',
+				percent: 3,
+				has: user => user.skillsAsLevels.fishing >= 120
 			}
 		]
 	},
@@ -411,6 +426,11 @@ export const DOARooms: AtlantisRoom[] = [
 				name: '120 Agility',
 				percent: 5,
 				has: user => user.skillsAsLevels.agility >= 120
+			},
+			{
+				name: '120 Fishing',
+				percent: 3,
+				has: user => user.skillsAsLevels.fishing >= 120
 			}
 		]
 	}

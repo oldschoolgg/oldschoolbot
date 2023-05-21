@@ -272,7 +272,8 @@ export const allDyes = [
 	'Third age dye',
 	'Monkey dye',
 	'Volcanic dye',
-	'Christmas dye'
+	'Christmas dye',
+	'Oceanic dye'
 ].map(getOSItem);
 
 export const dyedItems: DyedItem[] = [

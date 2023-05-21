@@ -400,6 +400,8 @@ const source: [string, (string | number)[]][] = [
 	['Rune pouch', ['Divine rune pouch']],
 	['Ghrazi rapier', ['Holy ghrazi rapier']],
 	["Inventors' backpack", ['Invention master cape']],
+	['Ignis ring', ['Ignis ring (i)']],
+	['Ring of piercing', ['Ring of piercing (i)']],
 	// Inventions
 	['Inferno adze', ['Superior inferno adze']],
 	['Gorajan bonecrusher', ['Superior bonecrusher']],
