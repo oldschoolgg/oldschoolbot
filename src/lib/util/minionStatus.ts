@@ -1,3 +1,4 @@
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { Monsters } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
@@ -8,8 +9,8 @@ import { ClueTiers } from '../clues/clueTiers';
 import { Emoji } from '../constants';
 import killableMonsters from '../minions/data/killableMonsters';
 import { Planks } from '../minions/data/planks';
-import { getActivityOfUser } from '../settings/settings';
 import Agility from '../skilling/skills/agility';
+import Constructables from '../skilling/skills/construction/constructables';
 import Cooking from '../skilling/skills/cooking';
 import Crafting from '../skilling/skills/crafting';
 import Farming from '../skilling/skills/farming';
@@ -53,6 +54,7 @@ import {
 	MinigameActivityTaskOptions,
 	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
+	MotherlodeMiningActivityTaskOptions,
 	NexTaskOptions,
 	NightmareActivityTaskOptions,
 	OfferingActivityTaskOptions,
@@ -73,9 +75,8 @@ import {
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '../types/minions';
-import { formatDuration, itemNameFromID, randomVariation } from '../util';
-import { stringMatches } from './cleanString';
-import { toTitleCase } from './toTitleCase';
+import { formatDuration, itemNameFromID, randomVariation, stringMatches } from '../util';
+import { getActivityOfUser } from './minionIsBusy';
 
 export function minionStatus(user: MUser) {
 	const currentTask = getActivityOfUser(user.id);
@@ -157,6 +158,20 @@ export function minionStatus(user: MUser) {
 			const ore = Mining.Ores.find(ore => ore.id === data.oreID);
 
 			return `${name} is currently mining ${ore!.name}. ${
+				data.fakeDurationMax === data.fakeDurationMin
+					? formattedDuration
+					: `approximately ${formatDuration(
+							randomVariation(reduceNumByPercent(durationRemaining, 25), 20)
+					  )} **to** ${formatDuration(
+							randomVariation(increaseNumByPercent(durationRemaining, 25), 20)
+					  )} remaining.`
+			} Your ${Emoji.Mining} Mining level is ${user.skillLevel(SkillsEnum.Mining)}`;
+		}
+
+		case 'MotherlodeMining': {
+			const data = currentTask as MotherlodeMiningActivityTaskOptions;
+
+			return `${name} is currently mining at the Motherlode Mine. ${
 				data.fakeDurationMax === data.fakeDurationMin
 					? formattedDuration
 					: `approximately ${formatDuration(
@@ -412,9 +427,9 @@ export function minionStatus(user: MUser) {
 
 		case 'Construction': {
 			const data = currentTask as ConstructionActivityTaskOptions;
-			return `${name} is currently building ${data.quantity}x ${itemNameFromID(
-				data.objectID
-			)}. ${formattedDuration}`;
+			const pohObject = Constructables.find(i => i.id === data.objectID);
+			if (!pohObject) throw new Error(`No POH object found with ID ${data.objectID}.`);
+			return `${name} is currently building ${data.quantity}x ${pohObject.name}. ${formattedDuration}`;
 		}
 
 		case 'Butler': {
@@ -629,8 +644,15 @@ export function minionStatus(user: MUser) {
 				durationRemaining
 			)}.`;
 		}
+		case 'UnderwaterAgilityThieving': {
+			return `${name} is currently doing Underwater Agility and Thieving. ${formattedDuration}`;
+		}
+		case 'Easter': {
+			return `${name} is currently doing the Easter Event! The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
 		case 'HalloweenEvent':
-		case 'Easter':
 		case 'BlastFurnace': {
 			throw new Error('Removed');
 		}

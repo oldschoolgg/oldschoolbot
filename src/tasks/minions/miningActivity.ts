@@ -1,4 +1,4 @@
-import { roll, Time } from 'e';
+import { randInt, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
@@ -6,7 +6,7 @@ import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueTo
 import Mining from '../../lib/skilling/skills/mining';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
-import { rand, skillingPetDropRate } from '../../lib/util';
+import { skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export const miningTask: MinionTask = {
@@ -71,10 +71,7 @@ export const miningTask: MinionTask = {
 
 		const numberOfMinutes = duration / Time.Minute;
 
-		if (numberOfMinutes > 10 && ore.nuggets) {
-			const numberOfNuggets = rand(0, Math.floor(numberOfMinutes / 4));
-			loot.add('Golden nugget', numberOfNuggets);
-		} else if (numberOfMinutes > 10 && ore.minerals && user.skillLevel(SkillsEnum.Mining) >= 60) {
+		if (numberOfMinutes > 10 && ore.minerals && user.skillLevel(SkillsEnum.Mining) >= 60) {
 			let numberOfMinerals = 0;
 			for (let i = 0; i < quantity; i++) {
 				if (roll(ore.minerals)) numberOfMinerals++;
@@ -122,13 +119,14 @@ export const miningTask: MinionTask = {
 				}
 			} else if (ore.name === 'Daeyalt essence rock') {
 				for (let i = 0; i < quantity; i++) {
-					daeyaltQty += rand(2, 3);
+					daeyaltQty += randInt(2, 3);
 				}
 				loot.add(ore.id, daeyaltQty);
 			} else {
 				loot.add(ore.id, quantity);
 			}
 		}
+
 		str += `\n\nYou received: ${loot}.`;
 		if (bonusXP > 0) {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;

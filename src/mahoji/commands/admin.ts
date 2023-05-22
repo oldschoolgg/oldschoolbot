@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { execSync } from 'node:child_process';
+import { inspect } from 'node:util';
+
 import { codeBlock } from '@discordjs/builders';
-import { ClientStorage } from '@prisma/client';
+import { ClientStorage, economy_transaction_type } from '@prisma/client';
 import { Stopwatch } from '@sapphire/stopwatch';
 import { Duration } from '@sapphire/time-utilities';
 import { isThenable } from '@sentry/utils';
@@ -10,30 +13,42 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { bulkUpdateCommands } from 'mahoji/dist/lib/util';
-import { inspect } from 'node:util';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { ADMIN_IDS, CLIENT_ID, OWNER_IDS, production, SupportServer } from '../../config';
+import { ADMIN_IDS, OWNER_IDS, production, SupportServer } from '../../config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../../lib/blacklists';
-import { badges, BadgesEnum, BitField, BitFieldData, Channel, DISABLED_COMMANDS } from '../../lib/constants';
+import {
+	badges,
+	BadgesEnum,
+	BitField,
+	BitFieldData,
+	BOT_TYPE,
+	Channel,
+	DISABLED_COMMANDS,
+	globalConfig
+} from '../../lib/constants';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { GearSetup } from '../../lib/gear/types';
+import { GrandExchange } from '../../lib/grandExchange';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { patreonTask } from '../../lib/patreon';
 import { runRolesTask } from '../../lib/rolesTask';
 import { countUsersWithItemInCl, prisma } from '../../lib/settings/prisma';
 import { cancelTask, minionActivityCacheDelete } from '../../lib/settings/settings';
+import { sorts } from '../../lib/sorts';
 import { Gear } from '../../lib/structures/Gear';
 import {
 	calcPerHour,
 	cleanString,
 	convertBankToPerHourStats,
+	dateFm,
 	formatDuration,
 	sanitizeBank,
 	stringMatches,
 	toKMB
 } from '../../lib/util';
+import { memoryAnalysis } from '../../lib/util/cachedUserIDs';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../lib/util/clientSettings';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
@@ -114,6 +129,21 @@ async function unsafeEval({ userID, code }: { userID: string; code: string }) {
 	};
 }
 
+async function allEquippedPets() {
+	const pets = await prisma.$queryRawUnsafe<
+		{ pet: number; qty: number }[]
+	>(`SELECT "minion.equippedPet" AS pet, COUNT("minion.equippedPet") AS qty
+FROM users
+WHERE "minion.equippedPet" IS NOT NULL
+GROUP BY "minion.equippedPet"
+ORDER BY qty DESC;`);
+	const bank = new Bank();
+	for (const { pet, qty } of pets) {
+		bank.add(pet, qty);
+	}
+	return bank;
+}
+
 async function evalCommand(userID: string, code: string): CommandResponse {
 	try {
 		if (!OWNER_IDS.includes(userID)) {
@@ -131,6 +161,40 @@ async function evalCommand(userID: string, code: string): CommandResponse {
 	} catch (err: any) {
 		return err.message ?? err;
 	}
+}
+
+async function getAllTradedItems(giveUniques = false) {
+	const economyTrans = await prisma.economyTransaction.findMany({
+		where: {
+			date: {
+				gt: new Date(Date.now() - Time.Month)
+			},
+			type: economy_transaction_type.trade
+		},
+		select: {
+			items_received: true,
+			items_sent: true
+		}
+	});
+
+	let total = new Bank();
+
+	if (giveUniques) {
+		for (const trans of economyTrans) {
+			let bank = new Bank().add(trans.items_received as ItemBank).add(trans.items_sent as ItemBank);
+
+			for (const item of bank.items()) {
+				total.add(item[0].id);
+			}
+		}
+	} else {
+		for (const trans of economyTrans) {
+			total.add(trans.items_received as ItemBank);
+			total.add(trans.items_sent as ItemBank);
+		}
+	}
+
+	return total;
 }
 
 const viewableThings: {
@@ -177,6 +241,168 @@ AND ("gear.melee" IS NOT NULL OR
 				}
 			}
 			return bank;
+		}
+	},
+	{
+		name: 'Most Traded Items (30d, Total Volume)',
+		run: async () => {
+			const items = await getAllTradedItems();
+			return {
+				content: items
+					.items()
+					.sort(sorts.quantity)
+					.slice(0, 10)
+					.map((i, index) => `${++index}. ${i[0].name} - ${i[1].toLocaleString()}x traded`)
+					.join('\n')
+			};
+		}
+	},
+	{
+		name: 'Most Traded Items (30d, Unique trades)',
+		run: async () => {
+			const items = await getAllTradedItems(true);
+			return {
+				content: items
+					.items()
+					.sort(sorts.quantity)
+					.slice(0, 10)
+					.map((i, index) => `${++index}. ${i[0].name} - Traded ${i[1].toLocaleString()}x times`)
+					.join('\n')
+			};
+		}
+	},
+	{
+		name: 'Memory Analysis',
+		run: async () => {
+			return {
+				content: Object.entries(memoryAnalysis())
+					.map(i => `${i[0]}: ${i[1]}`)
+					.join('\n')
+			};
+		}
+	},
+	{
+		name: 'Economy Bank',
+		run: async () => {
+			const [blowpipeRes, totalGP, result] = await prisma.$transaction([
+				prisma.$queryRawUnsafe<
+					{ scales: number; dart: number; qty: number }[]
+				>(`SELECT (blowpipe->>'scales')::int AS scales, (blowpipe->>'dartID')::int AS dart, (blowpipe->>'dartQuantity')::int AS qty
+FROM users
+WHERE blowpipe iS NOT NULL and (blowpipe->>'dartQuantity')::int != 0;`),
+				prisma.$queryRawUnsafe<{ sum: number }[]>('SELECT SUM("GP") FROM users;'),
+				prisma.$queryRawUnsafe<{ banks: ItemBank }[]>(`SELECT
+				json_object_agg(itemID, itemQTY)::jsonb as banks
+			 from (
+				select key as itemID, sum(value::bigint) as itemQTY
+				from users
+				cross join json_each_text(bank)
+				group by key
+			 ) s;`)
+			]);
+			const totalBank: ItemBank = result[0].banks;
+			const economyBank = new Bank(totalBank);
+			economyBank.add('Coins', totalGP[0].sum);
+
+			const allPets = await allEquippedPets();
+			economyBank.add(allPets);
+
+			for (const { dart, scales, qty } of blowpipeRes) {
+				economyBank.add("Zulrah's scales", scales);
+				economyBank.add(dart, qty);
+			}
+			sanitizeBank(economyBank);
+			return {
+				files: [
+					(await makeBankImage({ bank: economyBank })).file,
+					new AttachmentBuilder(Buffer.from(JSON.stringify(economyBank.bank, null, 4)), { name: 'bank.json' })
+				]
+			};
+		}
+	},
+	{
+		name: 'Equipped Pets',
+		run: async () => {
+			return allEquippedPets();
+		}
+	},
+	{
+		name: 'Most Active',
+		run: async () => {
+			const res = await prisma.$queryRawUnsafe<{ num: number; username: string }[]>(`
+SELECT sum(duration) as num, "new_user"."username", user_id
+FROM activity
+INNER JOIN "new_users" "new_user" on "new_user"."id" = "activity"."user_id"::text
+WHERE start_date > now() - interval '2 days'
+GROUP BY user_id, "new_user"."username"
+ORDER BY num DESC
+LIMIT 10;
+`);
+			return {
+				content: `Most Active Users in past 48h\n${res
+					.map((i, ind) => `${ind + 1} ${i.username}: ${formatDuration(i.num)}`)
+					.join('\n')}`
+			};
+		}
+	},
+	{
+		name: 'Grand Exchange',
+		run: async () => {
+			const settings = await GrandExchange.fetchData();
+
+			const allTx: string[][] = [];
+			const allTransactions = await prisma.gETransaction.findMany({
+				orderBy: {
+					created_at: 'desc'
+				}
+			});
+			if (allTransactions.length > 0) {
+				allTx.push(Object.keys(allTransactions[0]));
+				for (const tx of allTransactions) {
+					allTx.push(Object.values(tx).map(i => i.toString()));
+				}
+			}
+
+			const allLi: string[][] = [];
+			const allListings = await prisma.gEListing.findMany({
+				orderBy: {
+					created_at: 'desc'
+				}
+			});
+			if (allListings.length > 0) {
+				allLi.push(Object.keys(allListings[0]));
+				for (const tx of allListings) {
+					allLi.push(Object.values(tx).map(i => (i === null ? '' : i.toString())));
+				}
+			}
+
+			const buyLimitInterval = GrandExchange.getInterval();
+			return {
+				content: `**Grand Exchange Data**
+
+The next buy limit reset is at: ${buyLimitInterval.nextResetStr}, it resets every ${formatDuration(
+					GrandExchange.config.buyLimit.interval
+				)}.
+**Tax Rate:** ${GrandExchange.config.tax.rate()}%
+**Tax Cap (per item):** ${toKMB(GrandExchange.config.tax.cap())}
+**Total GP Removed From Taxation:** ${settings.totalTax.toLocaleString()} GP
+**Total Tax GP G.E Has To Spend on Item Sinks:** ${settings.taxBank.toLocaleString()} GP
+`,
+				files: [
+					(
+						await makeBankImage({
+							bank: await GrandExchange.fetchOwnedBank(),
+							title: 'Items in the G.E'
+						})
+					).file,
+					new AttachmentBuilder(Buffer.from(allTx.map(i => i.join('\t')).join('\n')), {
+						name: 'transactions.txt'
+					}),
+					new AttachmentBuilder(Buffer.from(allLi.map(i => i.join('\t')).join('\n')), {
+						name: 'listings.txt'
+					})
+				]
+			};
 		}
 	}
 ];
@@ -227,6 +453,11 @@ export const adminCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
+			name: 'shut_down',
+			description: 'Shut down the bot without rebooting.'
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
 			name: 'reboot',
 			description: 'Reboot the bot.'
 		},
@@ -252,14 +483,7 @@ export const adminCommand: OSBMahojiCommand = {
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'sync_commands',
 			description: 'Sync commands',
-			options: [
-				{
-					type: ApplicationCommandOptionType.Boolean,
-					name: 'global',
-					description: 'Global?.',
-					required: false
-				}
-			]
+			options: []
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -440,11 +664,6 @@ export const adminCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
-			name: 'most_active',
-			description: 'Most active'
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
 			name: 'bitfield',
 			description: 'Manage bitfield of a user',
 			options: [
@@ -501,11 +720,11 @@ export const adminCommand: OSBMahojiCommand = {
 				}
 			]
 		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'wipe_bingo_temp_cls',
-			description: 'Wipe all temp cls of bingo users'
-		},
+		// {
+		// 	type: ApplicationCommandOptionType.Subcommand,
+		// 	name: 'wipe_bingo_temp_cls',
+		// 	description: 'Wipe all temp cls of bingo users'
+		// },
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'give_items',
@@ -539,9 +758,10 @@ export const adminCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{
 		viewbank?: { user: MahojiUserOption };
 		reboot?: {};
+		shut_down?: {};
 		debug_patreon?: {};
 		eval?: { code: string };
-		sync_commands?: { global?: boolean };
+		sync_commands?: {};
 		item_stats?: { item: string };
 		sync_blacklist?: {};
 		loot_track?: { name: string };
@@ -555,7 +775,6 @@ export const adminCommand: OSBMahojiCommand = {
 		command?: { enable?: string; disable?: string };
 		view_user?: { user: MahojiUserOption };
 		set_price?: { item: string; price: number };
-		most_active?: {};
 		bitfield?: { user: MahojiUserOption; add?: string; remove?: string };
 		ltc?: { item?: string };
 		view?: { thing: string };
@@ -629,8 +848,19 @@ export const adminCommand: OSBMahojiCommand = {
 			return 'Finished syncing patrons.';
 		}
 		if (options.add_ironman_alt) {
-			const mainAccount = await mahojiUsersSettingsFetch(options.add_ironman_alt.main.user.id);
-			const altAccount = await mahojiUsersSettingsFetch(options.add_ironman_alt.ironman_alt.user.id);
+			const mainAccount = await mahojiUsersSettingsFetch(options.add_ironman_alt.main.user.id, {
+				minion_ironman: true,
+				id: true,
+				ironman_alts: true,
+				main_account: true
+			});
+			const altAccount = await mahojiUsersSettingsFetch(options.add_ironman_alt.ironman_alt.user.id, {
+				minion_ironman: true,
+				bitfield: true,
+				id: true,
+				ironman_alts: true,
+				main_account: true
+			});
 			const mainUser = await mUserFetch(mainAccount.id);
 			const altUser = await mUserFetch(altAccount.id);
 			if (mainAccount === altAccount) return "They're they same account.";
@@ -686,7 +916,10 @@ export const adminCommand: OSBMahojiCommand = {
 			if (!badge) return 'Invalid badge.';
 			const [badgeName, badgeID] = badge;
 
-			const userToUpdateBadges = await mahojiUsersSettingsFetch(options.badges.user.user.id);
+			const userToUpdateBadges = await mahojiUsersSettingsFetch(options.badges.user.user.id, {
+				badges: true,
+				id: true
+			});
 			let newBadges = [...userToUpdateBadges.badges];
 
 			if (action === 'add') {
@@ -707,7 +940,7 @@ export const adminCommand: OSBMahojiCommand = {
 		}
 
 		if (options.bypass_age) {
-			const input = await mahojiUsersSettingsFetch(options.bypass_age.user.user.id);
+			const input = await mahojiUsersSettingsFetch(options.bypass_age.user.user.id, { bitfield: true, id: true });
 			if (input.bitfield.includes(BitField.BypassAgeRestriction)) {
 				return 'This user is already bypassed.';
 			}
@@ -724,7 +957,7 @@ export const adminCommand: OSBMahojiCommand = {
 			const { enable } = options.command;
 
 			const currentDisabledCommands = (await prisma.clientStorage.findFirst({
-				where: { id: CLIENT_ID },
+				where: { id: globalConfig.clientID },
 				select: { disabled_commands: true }
 			}))!.disabled_commands;
 
@@ -740,7 +973,7 @@ export const adminCommand: OSBMahojiCommand = {
 				const newDisabled = [...currentDisabledCommands, command.name.toLowerCase()];
 				await prisma.clientStorage.update({
 					where: {
-						id: CLIENT_ID
+						id: globalConfig.clientID
 					},
 					data: {
 						disabled_commands: newDisabled
@@ -755,7 +988,7 @@ export const adminCommand: OSBMahojiCommand = {
 				}
 				await prisma.clientStorage.update({
 					where: {
-						id: CLIENT_ID
+						id: globalConfig.clientID
 					},
 					data: {
 						disabled_commands: currentDisabledCommands.filter(i => i !== command.name)
@@ -789,20 +1022,6 @@ export const adminCommand: OSBMahojiCommand = {
 			});
 			await syncCustomPrices();
 			return `Set the price of \`${item.name}\` to \`${price.toLocaleString()}\`.`;
-		}
-		if (options.most_active) {
-			const res = await prisma.$queryRawUnsafe<{ num: number; username: string }[]>(`
-SELECT sum(duration) as num, "new_user"."username", user_id
-FROM activity
-INNER JOIN "new_users" "new_user" on "new_user"."id" = "activity"."user_id"::text
-WHERE start_date > now() - interval '2 days'
-GROUP BY user_id, "new_user"."username"
-ORDER BY num DESC
-LIMIT 10;
-`);
-			return `Most Active Users in past 48h\n${res
-				.map((i, ind) => `${ind + 1} ${i.username}: ${formatDuration(i.num)}`)
-				.join('\n')}`;
 		}
 
 		if (options.bitfield) {
@@ -856,9 +1075,18 @@ LIMIT 10;
 			});
 			process.exit();
 		}
+		if (options.shut_down) {
+			globalClient.isShuttingDown = true;
+			let timer = production ? Time.Second * 30 : Time.Second * 5;
+			await interactionReply(interaction, {
+				content: `Shutting down in ${dateFm(new Date(Date.now() + timer))}.`
+			});
+			await Promise.all([sleep(timer), GrandExchange.queue.onEmpty()]);
+			execSync(`pm2 stop ${BOT_TYPE === 'OSB' ? 'osb' : 'bso'}`);
+		}
 		if (options.viewbank) {
 			const userToCheck = await mUserFetch(options.viewbank.user.user.id);
-			const bank = userToCheck.allItemsOwned();
+			const bank = userToCheck.allItemsOwned;
 			return { files: [(await makeBankImage({ bank, title: userToCheck.usernameOrMention })).file] };
 		}
 
@@ -868,14 +1096,18 @@ LIMIT 10;
 			const duration = new Duration(time);
 			const ms = duration.offset;
 			if (ms < Time.Second || ms > Time.Year * 3) return 'Invalid input.';
-			const input = await mahojiUsersSettingsFetch(userToGive.user.id);
+			const input = await mahojiUsersSettingsFetch(userToGive.user.id, {
+				premium_balance_tier: true,
+				premium_balance_expiry_date: true,
+				id: true
+			});
 
 			const currentBalanceTier = input.premium_balance_tier;
 
 			if (currentBalanceTier !== null && currentBalanceTier !== tier) {
 				await handleMahojiConfirmation(
 					interaction,
-					`${input} already has Tier ${currentBalanceTier}; this will replace the existing balance entirely, are you sure?`
+					`They already have Tier ${currentBalanceTier}; this will replace the existing balance entirely, are you sure?`
 				);
 			}
 			await handleMahojiConfirmation(
@@ -922,7 +1154,7 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 		}
 
 		if (options.sync_commands) {
-			const global = Boolean(options.sync_commands.global);
+			const global = Boolean(production);
 			const totalCommands = globalClient.mahojiClient.commands.values;
 			const globalCommands = totalCommands.filter(i => !i.guildID);
 			const guildCommands = totalCommands.filter(i => Boolean(i.guildID));
@@ -942,6 +1174,15 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 					client: globalClient.mahojiClient,
 					commands: totalCommands,
 					guildID: guildID.toString()
+				});
+			}
+
+			// If not in production, remove all global commands.
+			if (!production) {
+				await bulkUpdateCommands({
+					client: globalClient.mahojiClient,
+					commands: [],
+					guildID: null
 				});
 			}
 

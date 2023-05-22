@@ -1,6 +1,6 @@
 import { Activity, activity_type_enum, Prisma, PrismaClient } from '@prisma/client';
 
-import { CLIENT_ID, production } from '../../config';
+import { production } from '../../config';
 import { ActivityTaskData } from '../types/minions';
 
 declare global {
@@ -12,7 +12,7 @@ declare global {
 }
 
 function makePrismaClient(): PrismaClient {
-	console.log('Making prisma client...');
+	if (!production && !process.env.TEST) console.log('Making prisma client...');
 	return new PrismaClient({
 		log: [
 			{
@@ -62,29 +62,4 @@ export async function countUsersWithItemInCl(itemID: number, ironmenOnly: boolea
 		throw new Error(`countUsersWithItemInCl produced invalid number '${result}' for ${itemID}`);
 	}
 	return result;
-}
-
-export async function addToGPTaxBalance(userID: string | string, amount: number) {
-	await Promise.all([
-		prisma.clientStorage.update({
-			where: {
-				id: CLIENT_ID
-			},
-			data: {
-				gp_tax_balance: {
-					increment: amount
-				}
-			}
-		}),
-		prisma.user.update({
-			where: {
-				id: userID.toString()
-			},
-			data: {
-				total_gp_traded: {
-					increment: amount
-				}
-			}
-		})
-	]);
 }

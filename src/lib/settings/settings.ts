@@ -9,11 +9,10 @@ import {
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { CommandOptions } from 'mahoji/dist/lib/types';
 
-import { production } from '../../config';
 import { postCommand } from '../../mahoji/lib/postCommand';
 import { preCommand } from '../../mahoji/lib/preCommand';
 import { convertMahojiCommandToAbstractCommand } from '../../mahoji/lib/util';
-import { ActivityTaskData } from '../types/minions';
+import { minionActivityCache } from '../constants';
 import { channelIsSendable, isGroupActivity } from '../util';
 import { handleInteractionError, interactionReply } from '../util/interactionReply';
 import { logError } from '../util/logError';
@@ -32,22 +31,6 @@ export async function getNewUser(id: string): Promise<NewUser> {
 		});
 	}
 	return value;
-}
-
-declare global {
-	namespace NodeJS {
-		interface Global {
-			minionActivityCache: Map<string, ActivityTaskData> | undefined;
-		}
-	}
-}
-export const minionActivityCache: Map<string, ActivityTaskData> = global.minionActivityCache || new Map();
-
-if (production) global.minionActivityCache = minionActivityCache;
-
-export function getActivityOfUser(userID: string) {
-	const task = minionActivityCache.get(userID);
-	return task ?? null;
 }
 
 export function minionActivityCacheDelete(userID: string) {
@@ -145,7 +128,7 @@ export async function runCommand({
 			inhibited = true;
 			if (inhibitedReason.silent) return null;
 
-			await interaction.reply({
+			await interactionReply(interaction, {
 				content:
 					typeof inhibitedReason.reason! === 'string'
 						? inhibitedReason.reason
@@ -169,7 +152,7 @@ export async function runCommand({
 		if (result && !interaction.replied) await interactionReply(interaction, result);
 		return result;
 	} catch (err: any) {
-		handleInteractionError(err, interaction);
+		await handleInteractionError(err, interaction);
 	} finally {
 		try {
 			await postCommand({
@@ -194,7 +177,8 @@ export function activitySync(activity: Activity) {
 	const users: bigint[] | string[] = isGroupActivity(activity.data)
 		? ((activity.data as Prisma.JsonObject).users! as string[])
 		: [activity.user_id];
+	const convertedActivity = convertStoredActivityToFlatActivity(activity);
 	for (const user of users) {
-		minionActivityCache.set(user.toString(), convertStoredActivityToFlatActivity(activity));
+		minionActivityCache.set(user.toString(), convertedActivity);
 	}
 }

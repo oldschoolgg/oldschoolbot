@@ -15,7 +15,7 @@ import { Bank, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 import { Item } from 'oldschooljs/dist/meta/types';
 import Monster from 'oldschooljs/dist/structures/Monster';
-import { addArrayOfNumbers, itemID } from 'oldschooljs/dist/util';
+import { itemID } from 'oldschooljs/dist/util';
 
 import { PvMMethod } from '../../../lib/constants';
 import { Eatables } from '../../../lib/data/eatables';
@@ -54,7 +54,6 @@ import {
 	formatItemBoosts,
 	formatItemCosts,
 	formatItemReqs,
-	formatMissingItems,
 	formatPohBoosts,
 	isWeekend,
 	itemNameFromID,
@@ -76,6 +75,16 @@ import { wintertodtCommand } from './wintertodtCommand';
 import { zalcanoCommand } from './zalcanoCommand';
 
 const invalidMonsterMsg = "That isn't a valid monster.\n\nFor example, `/k name:zulrah quantity:5`";
+
+function formatMissingItems(consumables: Consumable[], timeToFinish: number) {
+	const str = [];
+
+	for (const consumable of consumables) {
+		str.push(formatItemCosts(consumable, timeToFinish));
+	}
+
+	return str.join(', ');
+}
 
 const { floor } = Math;
 
@@ -100,7 +109,7 @@ const degradeableItemsCanUse: {
 ];
 
 function applySkillBoost(user: MUser, duration: number, styles: AttackStyles[]): [number, string] {
-	const skillTotal = addArrayOfNumbers(styles.map(s => user.skillLevel(s)));
+	const skillTotal = sumArr(styles.map(s => user.skillLevel(s)));
 
 	let newDuration = duration;
 	let str = '';
@@ -120,14 +129,13 @@ function applySkillBoost(user: MUser, duration: number, styles: AttackStyles[]):
 }
 
 export async function minionKillCommand(
-	userID: string,
+	user: MUser,
 	interaction: ChatInputCommandInteraction,
 	channelID: string,
 	name: string,
 	quantity: number | undefined,
 	method: PvMMethod | undefined
 ) {
-	const user = await mUserFetch(userID);
 	if (user.minionIsBusy) {
 		return 'Your minion is busy.';
 	}
@@ -180,7 +188,7 @@ export async function minionKillCommand(
 		return `${user.minionName} needs ${requiredPoints}% Shayzien Favour to kill Lizardman shamans.`;
 	}
 
-	let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, user.getKC(monster.id));
+	let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, await user.getKC(monster.id));
 
 	const [, osjsMon, attackStyles] = resolveAttackStyles(user, {
 		monsterID: monster.id,
@@ -607,7 +615,7 @@ export async function monsterInfo(user: MUser, name: string): CommandResponse {
 		monsterID: monster.id
 	});
 
-	const userKc = user.getKC(monster.id);
+	const userKc = await user.getKC(monster.id);
 	let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, userKc);
 
 	// item boosts

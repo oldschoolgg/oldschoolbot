@@ -34,8 +34,8 @@ model BlacklistedEntity {
 model User {
     id         BigInt  @id @unique
     bits       Int[]
-    github_id  Int?    @unique
-    patreon_id String? @unique
+    github_id  Int?
+    patreon_id String?
 
     leagues_completed_tasks_ids Int[]
     leagues_points_balance_osb  Int   @default(0)
@@ -46,8 +46,11 @@ model User {
 
     osb_total_level Int?
     bso_total_level Int?
+    osb_total_xp    BigInt?
+    bso_total_xp    BigInt?
     osb_cl_percent  Float?
     bso_cl_percent  Float?
+    tag             Tag[]
 
     @@map("user")
 }
@@ -57,4 +60,15 @@ model PingableRole {
     name    String @unique @db.VarChar(32)
 
     @@map("pingable_role")
+}
+
+model Tag {
+    id      Int    @id @unique @default(autoincrement())
+    name    String @unique @db.VarChar(32)
+    content String @db.VarChar(2000)
+
+    user_id BigInt
+    creator User   @relation(fields: [user_id], references: [id])
+
+    @@map("tag")
 }

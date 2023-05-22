@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 
 import { mahojiParseNumber } from '../../../mahoji/mahojiSettings';
 import { degradeableItems } from '../../degradeableItems';
-import { stringMatches } from '../../util/cleanString';
+import { stringMatches } from '../../util';
 import { handleMahojiConfirmation } from '../../util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../util/updateBankSetting';
 
@@ -17,8 +17,8 @@ export async function degradeableItemsCommand(
 	const item = degradeableItems.find(i => [i.item.name, ...i.aliases].some(n => stringMatches(n, input ?? '')));
 	const number = mahojiParseNumber({ input: quantity, min: 1, max: 1_000_000 });
 
-	if (!input || !number || !item || number < 1 || number > 10_000) {
-		return `Use \`/minion charge [${degradeableItems.map(i => i.item.name).join('|')}], [1-10,000]\`
+	if (!input || !number || !item || number < 1 || number > 100_000) {
+		return `Use \`/minion charge item: [${degradeableItems.map(i => i.item.name).join('|')}] amount:[1-100,000]\`
 ${degradeableItems
 	.map(i => {
 		const charges = user.user[i.settingsKey];

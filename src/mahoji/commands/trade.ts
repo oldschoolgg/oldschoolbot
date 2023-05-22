@@ -1,20 +1,20 @@
+import { discrimName, mentionCommand, truncateString } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { Bank } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { Events } from '../../lib/constants';
-import { addToGPTaxBalance, prisma } from '../../lib/settings/prisma';
-import { discrimName, truncateString } from '../../lib/util';
+import { prisma } from '../../lib/settings/prisma';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiParseNumber } from '../mahojiSettings';
+import { addToGPTaxBalance, mahojiParseNumber } from '../mahojiSettings';
 
-export const askCommand: OSBMahojiCommand = {
+export const tradeCommand: OSBMahojiCommand = {
 	name: 'trade',
 	description: 'Allows you to trade items with other players.',
 	options: [
@@ -156,6 +156,8 @@ Both parties must click confirm to make the trade.`,
 
 		return `${discrimName(senderAPIUser)} sold ${itemsSent} to ${discrimName(
 			recipientAPIUser
-		)} in return for ${itemsReceived}.`;
+		)} in return for ${itemsReceived}.
+
+You can now buy/sell items in the Grand Exchange: ${mentionCommand(globalClient, 'ge')}`;
 	}
 };

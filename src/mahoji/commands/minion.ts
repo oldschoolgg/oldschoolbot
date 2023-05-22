@@ -1,9 +1,18 @@
+import { formatOrdinal, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
 import { notEmpty, randArrItem } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
 
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
-import { badges, BitField, BitFieldData, FormattedCustomEmoji, MAX_LEVEL, PerkTier } from '../../lib/constants';
+import {
+	badges,
+	BitField,
+	BitFieldData,
+	FormattedCustomEmoji,
+	MAX_LEVEL,
+	minionActivityCache,
+	PerkTier
+} from '../../lib/constants';
 import { degradeableItems } from '../../lib/degradeableItems';
 import { diaries } from '../../lib/diaries';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
@@ -13,7 +22,6 @@ import { degradeableItemsCommand } from '../../lib/minions/functions/degradeable
 import { allPossibleStyles, trainCommand } from '../../lib/minions/functions/trainCommand';
 import { roboChimpUserFetch } from '../../lib/roboChimp';
 import { Minigames } from '../../lib/settings/minigames';
-import { minionActivityCache } from '../../lib/settings/settings';
 import Skills from '../../lib/skilling/skills';
 import creatures from '../../lib/skilling/skills/hunter/creatures';
 import { convertLVLtoXP, getUsername, isValidNickname } from '../../lib/util';
@@ -50,6 +58,15 @@ const randomPatMessage = (minionName: string) => randArrItem(patMessages).replac
 
 export async function getUserInfo(user: MUser) {
 	const roboChimpUser = await roboChimpUserFetch(user.id);
+	const leaguesRanking = await roboChimpClient.user.count({
+		where: {
+			leagues_points_total: {
+				gte: roboChimpUser.leagues_points_total
+			}
+		}
+	});
+	const clRankRaw = await roboChimpClient.$queryRawUnsafe<{ count: number }[]>(roboChimpCLRankQuery(BigInt(user.id)));
+	const clRank = clRankRaw[0].count;
 
 	const bitfields = `${(user.bitfield as BitField[])
 		.map(i => BitFieldData[i])
@@ -83,9 +100,15 @@ export async function getUserInfo(user: MUser) {
 		patreon: roboChimpUser.patreon_id ? 'Yes' : 'None',
 		github: roboChimpUser.github_id ? 'Yes' : 'None'
 	};
+
+	const globalCLPercent = (((roboChimpUser.bso_cl_percent ?? 0) + (roboChimpUser.osb_cl_percent ?? 0)) / 2).toFixed(
+		2
+	);
+
 	return {
 		...result,
 		everythingString: `${user.badgedUsername}[${user.id}]
+**Current Trip:** ${taskText}
 **Perk Tier:** ${result.perkTier}
 **Blacklisted:** ${result.isBlacklisted}
 **Badges:** ${result.badges.join(' ')}
@@ -95,7 +118,12 @@ export async function getUserInfo(user: MUser) {
 **Ironman:** ${result.isIronman}
 **Bitfields:** ${result.bitfields}
 **Patreon Connected:** ${result.patreon}
-**Github Connected:** ${result.github}`
+**Github Connected:** ${result.github}
+**Leagues:** ${roboChimpUser.leagues_completed_tasks_ids.length} tasks, ${
+			roboChimpUser.leagues_points_total
+		} points (Rank ${leaguesRanking > 500 ? 'Unranked! Get more points!' : formatOrdinal(leaguesRanking)})
+**Global CL:** ${globalCLPercent}% (${clRank > 500 ? 'Unranked! Get more CL slots completed!' : formatOrdinal(clRank)})
+`
 	};
 }
 
@@ -194,12 +222,22 @@ export const minionCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.String,
 					name: 'item',
 					description: 'The item you want to use.',
-					autocomplete: async (value: string) => {
-						return Lampables.map(i => i.items)
+					autocomplete: async (value, user) => {
+						const mappedLampables = Lampables.map(i => i.items)
 							.flat(2)
 							.map(getOSItem)
-							.filter(p => (!value ? true : p.name.toLowerCase().includes(value.toLowerCase())))
-							.map(p => ({ name: p.name, value: p.name }));
+							.map(i => ({ id: i.id, name: i.name }));
+
+						const botUser = await mUserFetch(user.id);
+
+						return botUser.bank
+							.items()
+							.filter(i => mappedLampables.map(l => l.id).includes(i[0].id))
+							.filter(i => {
+								if (!value) return true;
+								return i[0].name.toLowerCase().includes(value.toLowerCase());
+							})
+							.map(i => ({ name: `${i[0].name} (${i[1]}x Owned)`, value: i[0].name.toLowerCase() }));
 					},
 					required: true
 				},

@@ -1,8 +1,10 @@
 import { PrismaClient, TriviaQuestion, User } from '@prisma/robochimp';
-import { calcWhatPercent, round } from 'e';
+import { calcWhatPercent, round, sumArr } from 'e';
 
+import { BOT_TYPE } from './constants';
 import { getTotalCl } from './data/Collections';
 import { MUserClass } from './MUser';
+import { fetchStatsForCL } from './util';
 
 declare global {
 	const roboChimpClient: PrismaClient;
@@ -14,6 +16,8 @@ declare global {
 		}
 	}
 }
+
+export type RobochimpUser = User;
 
 global.roboChimpClient = global.roboChimpClient || new PrismaClient();
 
@@ -27,10 +31,11 @@ LIMIT 10;`;
 
 const clKey: keyof User = 'osb_cl_percent';
 const levelKey: keyof User = 'osb_total_level';
+const totalXPKey: keyof User = BOT_TYPE === 'OSB' ? 'osb_total_xp' : 'bso_total_xp';
 
 export async function roboChimpSyncData(user: User, _mUser?: MUserClass) {
 	const mUser = _mUser ?? (await mUserFetch(user.id.toString()));
-	const [totalClItems, clItems] = getTotalCl(mUser, 'collection');
+	const [totalClItems, clItems] = getTotalCl(mUser, 'collection', await fetchStatsForCL(mUser));
 
 	const newUser = await roboChimpClient.user.update({
 		where: {
@@ -38,7 +43,8 @@ export async function roboChimpSyncData(user: User, _mUser?: MUserClass) {
 		},
 		data: {
 			[clKey]: round(calcWhatPercent(clItems, totalClItems), 2),
-			[levelKey]: mUser.totalLevel
+			[levelKey]: mUser.totalLevel,
+			[totalXPKey]: sumArr(Object.values(mUser.skillsAsXP))
 		}
 	});
 

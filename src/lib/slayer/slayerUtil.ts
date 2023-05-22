@@ -351,6 +351,20 @@ export function hasSlayerUnlock(
 	return { success, errors };
 }
 
+const filterLootItems = resolveItems([
+	'Black mask (10)',
+	"Hydra's eye",
+	"Hydra's fang",
+	"Hydra's heart",
+	'Dark totem base',
+	'Dark totem middle',
+	'Dark totem top',
+	'Bludgeon claw'
+]);
+const ringPieces = resolveItems(["Hydra's eye", "Hydra's fang", "Hydra's heart"]);
+const totemPieces = resolveItems(['Dark totem base', 'Dark totem middle', 'Dark totem top']);
+const bludgeonPieces = resolveItems(['Bludgeon claw', 'Bludgeon spine', 'Bludgeon axon']);
+
 export function filterLootReplace(myBank: Bank, myLoot: Bank) {
 	// Order: Fang, eye, heart.
 	const numBlackMask = myLoot.amount('Black mask (10)');
@@ -359,22 +373,11 @@ export function filterLootReplace(myBank: Bank, myLoot: Bank) {
 	numHydraEyes += myLoot.amount("Hydra's heart");
 	const numDarkTotemBases = myLoot.amount('Dark totem base');
 	const numBludgeonPieces = myLoot.amount('Bludgeon claw');
-	const ringPieces = resolveItems(["Hydra's eye", "Hydra's fang", "Hydra's heart"]) as number[];
-	const totemPieces = resolveItems(['Dark totem base', 'Dark totem middle', 'Dark totem top']) as number[];
-	const bludgeonPieces = resolveItems(['Bludgeon claw', 'Bludgeon spine', 'Bludgeon axon']) as number[];
+	if (!numBludgeonPieces && !numDarkTotemBases && !numHydraEyes && !numBlackMask) {
+		return { bankLoot: myLoot, clLoot: myLoot };
+	}
 
-	myLoot.filter(l => {
-		return (
-			l.id !== itemID('Black mask (10)') &&
-			l.id !== itemID("Hydra's eye") &&
-			l.id !== itemID("Hydra's fang") &&
-			l.id !== itemID("Hydra's heart") &&
-			l.id !== itemID('Dark totem base') &&
-			l.id !== itemID('Dark totem middle') &&
-			l.id !== itemID('Dark totem top') &&
-			l.id !== itemID('Bludgeon claw')
-		);
-	}, true);
+	myLoot.filter(i => !filterLootItems.includes(i.id), true);
 
 	const myClLoot = new Bank(myLoot.bank);
 
@@ -385,7 +388,7 @@ export function filterLootReplace(myBank: Bank, myLoot: Bank) {
 		}
 	}
 
-	const combinedBank = new Bank().add(myBank).add(myLoot);
+	const combinedBank = new Bank(myBank).add(myLoot);
 	if (numBludgeonPieces) {
 		for (let x = 0; x < numBludgeonPieces; x++) {
 			const bank: number[] = [];

@@ -6,7 +6,7 @@ export interface GithubSponsorsWebhookData {
 	effective_date?: string;
 }
 
-export interface Sponsorship {
+interface Sponsorship {
 	node_id: string;
 	created_at: string;
 	sponsorable: Sponsorable;
@@ -15,7 +15,7 @@ export interface Sponsorship {
 	tier: Tier;
 }
 
-export interface Sponsorable {
+interface Sponsorable {
 	login: string;
 	id: number;
 	node_id: string;
@@ -36,7 +36,7 @@ export interface Sponsorable {
 	site_admin: boolean;
 }
 
-export interface Sponsor {
+interface Sponsor {
 	login: string;
 	id: number;
 	node_id: string;
@@ -57,7 +57,7 @@ export interface Sponsor {
 	site_admin: boolean;
 }
 
-export interface Tier {
+interface Tier {
 	node_id: string;
 	created_at: string;
 	description: string;
@@ -66,7 +66,7 @@ export interface Tier {
 	name: string;
 }
 
-export interface GithubUser {
+interface GithubUser {
 	login: string;
 	id: number;
 	node_id: string;
@@ -87,15 +87,15 @@ export interface GithubUser {
 	site_admin: boolean;
 }
 
-export interface Changes {
+interface Changes {
 	tier: Tier2;
 }
 
-export interface Tier2 {
+interface Tier2 {
 	from: From;
 }
 
-export interface From {
+interface From {
 	node_id: string;
 	created_at: string;
 	description: string;

@@ -96,7 +96,8 @@ export const tksCommand: OSBMahojiCommand = {
 		const [hasKaramjaDiary] = await userhasDiaryTier(user, KaramjaDiary.easy);
 		const item = TokkulShopItems.find(i => stringMatches(i.name, options.buy?.name ?? options.sell?.name ?? ''));
 		if (!item) return "That's not a valid item.";
-		if (item.requireFireCape && user.getKC(TzTokJad.id) < 1) {
+		const jadKC = await user.getKC(TzTokJad.id);
+		if (item.requireFireCape && jadKC < 1) {
 			return `You are not worthy JalYt. Before you can buy/sell ${item.name}, you need to have defeated the might TzTok-Jad!`;
 		}
 		const { bank } = user;

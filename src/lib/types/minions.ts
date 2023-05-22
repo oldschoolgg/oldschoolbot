@@ -1,6 +1,6 @@
 import type { activity_type_enum, CropUpgradeType } from '@prisma/client';
 
-import { NMZStrategy } from '../constants';
+import { NMZStrategy, UnderwaterAgilityThievingTrainingSkill } from '../constants';
 import type { IPatchData } from '../minions/farming/types';
 import type { MinigameName } from '../settings/minigames';
 import { RaidLevel } from '../simulation/toa';
@@ -96,6 +96,12 @@ export interface MiningActivityTaskOptions extends ActivityTaskOptions {
 	oreID: number;
 	quantity: number;
 	powermine: boolean;
+}
+
+export interface MotherlodeMiningActivityTaskOptions extends ActivityTaskOptions {
+	fakeDurationMax: number;
+	fakeDurationMin: number;
+	quantity: number;
 }
 
 export interface SmeltingActivityTaskOptions extends ActivityTaskOptions {
@@ -235,6 +241,7 @@ export interface MahoganyHomesActivityTaskOptions extends MinigameActivityTaskOp
 	xp: number;
 	quantity: number;
 	points: number;
+	tier: number;
 }
 
 export interface NightmareActivityTaskOptions extends ActivityTaskOptions {
@@ -306,18 +313,20 @@ export interface TheatreOfBloodTaskOptions extends ActivityTaskOptionsWithUsers 
 	fakeDuration: number;
 	wipedRoom: null | number;
 	deaths: number[][];
+	solo?: boolean;
 }
 
 type UserID = string;
 type Points = number;
 type RoomIDsDiedAt = number[];
 
+export type TOAUser = [UserID, Points[], RoomIDsDiedAt[]];
 export interface TOAOptions extends ActivityTaskOptionsWithUsers {
 	leader: string;
-	detailedUsers: [UserID, Points[], RoomIDsDiedAt[]][];
+	detailedUsers: TOAUser[] | [UserID, Points, RoomIDsDiedAt][][];
 	raidLevel: RaidLevel;
 	fakeDuration: number;
-	wipedRoom: null | number;
+	wipedRoom: null | number | (number | null)[];
 	quantity: number;
 }
 
@@ -343,6 +352,12 @@ export interface KourendFavourActivityTaskOptions extends ActivityTaskOptions {
 export interface TokkulShopOptions extends ActivityTaskOptions {
 	itemID: number;
 	quantity: number;
+}
+
+export interface UnderwaterAgilityThievingTaskOptions extends ActivityTaskOptions {
+	trainingSkill: UnderwaterAgilityThievingTrainingSkill;
+	quantity: number;
+	noStams: boolean;
 }
 
 export interface PuroPuroActivityTaskOptions extends MinigameActivityTaskOptions {
