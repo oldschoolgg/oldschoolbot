@@ -230,7 +230,6 @@ const ores: Ore[] = [
 		slope: 0.1,
 		intercept: -0.7,
 		petChance: 50_000,
-		nuggets: false,
 		requiredPickaxes: resolveItems(['Crystal pickaxe', 'Dwarven pickaxe', 'Volcanic pickaxe'])
 	},
 	{
