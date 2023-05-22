@@ -1,8 +1,7 @@
-import 'source-map-support/register';
+// import 'source-map-support/register';
 import './lib/data/itemAliases';
 import './lib/crons';
 import './lib/MUser';
-import './lib/wheel';
 import './lib/util/transactItemsFromBank';
 import './lib/util/logger';
 import './lib/data/trophies';

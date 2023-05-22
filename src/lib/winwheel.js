@@ -2,7 +2,7 @@
     The MIT License (MIT)
     Copyright (c) 2012-2019 Douglas McKechie
 */
-import { randInt, sumArr } from "e";
+import { randFloat, sumArr } from "e";
 import { Canvas } from "@napi-rs/canvas";
 
 export function Winwheel(options, drawWheel) {
@@ -1426,15 +1426,13 @@ Winwheel.prototype.stopAnimation = function (canCallback) {
 };
 
 Winwheel.prototype.staticSpin = async function () {
-	const oldCanvas = await this.canvas.encode("png");
-	this.rotationAngle = randInt(0, 360);
+	this.rotationAngle = randFloat(0, 360);
 	this.draw();
 	const winner = this.getIndicatedSegment();
 	return {
 		winner: winner.text,
 		winnerIndex: this.getIndicatedSegmentNumber(),
 		newCanvas:  this.canvas,
-		oldCanvas:  oldCanvas,
 	};
 };
 
