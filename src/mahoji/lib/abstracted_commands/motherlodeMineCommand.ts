@@ -20,7 +20,7 @@ export async function motherlodeMineCommand({
 }) {
 	let miningLevel = user.skillsAsLevels.mining;
 	if (miningLevel < 30) {
-		return `${minionName(user)} needs 30 Mining to mine at the ${name}.`;
+		return `${minionName(user)} needs 30 Mining to mine at the Motherlode Mine.`;
 	}
 
 	const motherlode = Mining.MotherlodeMine;

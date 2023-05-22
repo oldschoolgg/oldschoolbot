@@ -1,7 +1,7 @@
-import { Time, roll } from 'e';
+import { roll, Time } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { Emoji, Events, MIN_LENGTH_FOR_PET, globalDroprates } from '../../lib/constants';
+import { Emoji, Events, globalDroprates, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
 import Mining from '../../lib/skilling/skills/mining';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -68,21 +68,21 @@ export const motherlodeMiningTask: MinionTask = {
 		const coalWeight = 10_000 - (nuggetWeight + runiteWeight + adamantiteWeight + mithrilWeight + goldWeight);
 
 		let table = new LootTable()
-		.add('Golden nugget', 1, nuggetWeight)
-		.add('Runite ore', 1, runiteWeight)
-		.add('Adamantite ore', 1, adamantiteWeight)
-		.add('Mithril ore', 1, mithrilWeight)
-		.add('Gold ore', 1, goldWeight)
-		.add('Coal', 1, coalWeight);
-
-		if (user.hasEquipped('Mining master cape')) {
-			table = new LootTable()
-			.add('Golden nugget', 2, nuggetWeight)
+			.add('Golden nugget', 1, nuggetWeight)
 			.add('Runite ore', 1, runiteWeight)
 			.add('Adamantite ore', 1, adamantiteWeight)
 			.add('Mithril ore', 1, mithrilWeight)
 			.add('Gold ore', 1, goldWeight)
 			.add('Coal', 1, coalWeight);
+
+		if (user.hasEquipped('Mining master cape')) {
+			table = new LootTable()
+				.add('Golden nugget', 2, nuggetWeight)
+				.add('Runite ore', 1, runiteWeight)
+				.add('Adamantite ore', 1, adamantiteWeight)
+				.add('Mithril ore', 1, mithrilWeight)
+				.add('Gold ore', 1, goldWeight)
+				.add('Coal', 1, coalWeight);
 		}
 
 		loot.add(table.roll(quantity));
