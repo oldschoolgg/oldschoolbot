@@ -6766,67 +6766,52 @@ exports[`BSO Buyables 1`] = `
     "outputItems": undefined,
   },
   {
-    "gpCost": 100000,
+    "customReq": [Function],
+    "gpCost": 1000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
     },
-    "minigameScoreReq": [
-      "depths_of_atlantis",
-      100,
-    ],
     "name": "Oceanic shroud (tier 1)",
     "outputItems": undefined,
   },
   {
-    "gpCost": 500000,
+    "customReq": [Function],
+    "gpCost": 2500,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
     },
-    "minigameScoreReq": [
-      "depths_of_atlantis",
-      250,
-    ],
     "name": "Oceanic shroud (tier 2)",
     "outputItems": undefined,
   },
   {
-    "gpCost": 500000,
+    "customReq": [Function],
+    "gpCost": 5000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
     },
-    "minigameScoreReq": [
-      "depths_of_atlantis",
-      500,
-    ],
     "name": "Oceanic shroud (tier 3)",
     "outputItems": undefined,
   },
   {
-    "gpCost": 1000000,
+    "customReq": [Function],
+    "gpCost": 7500,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
     },
-    "minigameScoreReq": [
-      "depths_of_atlantis",
-      750,
-    ],
     "name": "Oceanic shroud (tier 4)",
     "outputItems": undefined,
   },
   {
-    "gpCost": 1000000,
+    "customReq": [Function],
+    "gpCost": 10000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
     },
-    "minigameScoreReq": [
-      "depths_of_atlantis",
-      1000,
-    ],
     "name": "Oceanic shroud (tier 5)",
     "outputItems": undefined,
   },
@@ -20229,6 +20214,40 @@ exports[`BSO Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
+        "48322": 1,
+        "70441": 1,
+      },
+      "frozen": false,
+    },
+    "name": "TzKal cape (Oceanic)",
+    "outputItems": Bank {
+      "bank": {
+        "70464": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "48322": 1,
+        "52672": 1,
+      },
+      "frozen": false,
+    },
+    "name": "TzKal cape (Volcanic)",
+    "outputItems": Bank {
+      "bank": {
+        "70463": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
         "40033": 1,
         "48254": 1,
       },
@@ -21897,7 +21916,7 @@ exports[`BSO Creatables 1`] = `
     "name": "Revert masori body",
     "outputItems": Bank {
       "bank": {
-        "70447": 3,
+        "70447": 4,
       },
       "frozen": false,
     },
@@ -22547,7 +22566,7 @@ exports[`BSO Creatables 1`] = `
         "treasured": 5000,
       },
     },
-    "name": "Atlantian trident",
+    "name": "Atlantean trident",
     "outputItems": Bank {
       "bank": {
         "70431": 1,
@@ -22631,7 +22650,7 @@ exports[`BSO Creatables 1`] = `
     "name": "Tidal collector",
     "outputItems": Bank {
       "bank": {
-        "70430": 1,
+        "70432": 1,
       },
       "frozen": false,
     },
