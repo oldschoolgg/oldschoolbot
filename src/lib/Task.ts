@@ -80,6 +80,7 @@ import { wintertodtTask } from '../tasks/minions/minigames/wintertodtActivity';
 import { zalcanoTask } from '../tasks/minions/minigames/zalcanoActivity';
 import { miningTask } from '../tasks/minions/miningActivity';
 import { monsterTask } from '../tasks/minions/monsterActivity';
+import { motherlodeMiningTask } from '../tasks/minions/motherlodeMineActivity';
 import { pickpocketTask } from '../tasks/minions/pickpocketActivity';
 import { buryingTask } from '../tasks/minions/PrayerActivity/buryingActivity';
 import { offeringTask } from '../tasks/minions/PrayerActivity/offeringActivity';
@@ -161,6 +162,7 @@ export const tasks: MinionTask[] = [
 	herbloreTask,
 	fletchingTask,
 	miningTask,
+	motherlodeMiningTask,
 	runecraftTask,
 	sawmillTask,
 	revenantsTask,
@@ -257,9 +259,6 @@ const ignored: activity_type_enum[] = [
 	activity_type_enum.BirthdayEvent,
 	activity_type_enum.BlastFurnace,
 	activity_type_enum.Easter,
-	activity_type_enum.HalloweenMiniMinigame,
-	activity_type_enum.TrickOrTreat,
-	activity_type_enum.BossEvent,
 	activity_type_enum.HalloweenEvent
 ];
 for (const a of Object.values(activity_type_enum)) {

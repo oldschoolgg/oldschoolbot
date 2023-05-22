@@ -7,6 +7,7 @@ import { prisma } from '../../lib/settings/prisma';
 import { channelIsSendable, isModOrAdmin, isSuperUntradeable, makeComponents } from '../../lib/util';
 import { generateGiveawayContent } from '../../lib/util/giveaway';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
+import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { logError } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
@@ -102,7 +103,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 
 			const bank = parseBank({
 				inputStr: options.start.items,
-				inputBank: user.bank,
+				inputBank: user.bankWithGP,
 				excludeItems: user.user.favoriteItems,
 				user,
 				search: options.start.search,
@@ -114,8 +115,12 @@ export const giveawayCommand: OSBMahojiCommand = {
 				return 'You are trying to sell unsellable items.';
 			}
 
-			if (!user.bank.has(bank)) {
+			if (!user.bankWithGP.has(bank)) {
 				return "You don't own those items.";
+			}
+
+			if (bank.items().some(i => !itemIsTradeable(i[0].id, true))) {
+				return "You can't giveaway untradeable items.";
 			}
 
 			if (interaction) {
@@ -132,7 +137,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 			}
 
 			await user.sync();
-			if (!user.bank.has(bank)) {
+			if (!user.bankWithGP.has(bank)) {
 				return "You don't own those items.";
 			}
 
