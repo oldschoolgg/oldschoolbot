@@ -1,12 +1,12 @@
-import { roll } from 'e';
+import { Time, roll } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { Emoji, Events } from '../../lib/constants';
+import { Emoji, Events, MIN_LENGTH_FOR_PET, globalDroprates } from '../../lib/constants';
 import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
 import Mining from '../../lib/skilling/skills/mining';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { MotherlodeMiningActivityTaskOptions } from '../../lib/types/minions';
-import { skillingPetDropRate } from '../../lib/util';
+import { clAdjustedDroprate, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export const motherlodeMiningTask: MinionTask = {
@@ -67,13 +67,23 @@ export const motherlodeMiningTask: MinionTask = {
 
 		const coalWeight = 10_000 - (nuggetWeight + runiteWeight + adamantiteWeight + mithrilWeight + goldWeight);
 
-		const table = new LootTable()
-			.add('Golden nugget', 1, nuggetWeight)
+		let table = new LootTable()
+		.add('Golden nugget', 1, nuggetWeight)
+		.add('Runite ore', 1, runiteWeight)
+		.add('Adamantite ore', 1, adamantiteWeight)
+		.add('Mithril ore', 1, mithrilWeight)
+		.add('Gold ore', 1, goldWeight)
+		.add('Coal', 1, coalWeight);
+
+		if (user.hasEquipped('Mining master cape')) {
+			table = new LootTable()
+			.add('Golden nugget', 2, nuggetWeight)
 			.add('Runite ore', 1, runiteWeight)
 			.add('Adamantite ore', 1, adamantiteWeight)
 			.add('Mithril ore', 1, mithrilWeight)
 			.add('Gold ore', 1, goldWeight)
 			.add('Coal', 1, coalWeight);
+		}
 
 		loot.add(table.roll(quantity));
 		if (loot.has('Runite ore')) {
@@ -108,9 +118,31 @@ export const motherlodeMiningTask: MinionTask = {
 			);
 		}
 
+		if (duration >= MIN_LENGTH_FOR_PET) {
+			const minutesInTrip = Math.ceil(duration / Time.Minute);
+			const droprate = clAdjustedDroprate(
+				user,
+				'Doug',
+				globalDroprates.doug.baseRate,
+				globalDroprates.doug.clIncrease
+			);
+			for (let i = 0; i < minutesInTrip; i++) {
+				if (roll(droprate)) {
+					loot.add('Doug');
+					str +=
+						"\n<:doug:748892864813203591> A pink-colored mole emerges from where you're mining, and decides to join you on your adventures after seeing your groundbreaking new methods of mining.";
+					break;
+				}
+			}
+		}
+
 		str += `\n\nYou received: ${loot}.`;
 		if (bonusXP > 0) {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
+		}
+
+		if (user.hasEquipped('Mining master cape')) {
+			str += '\n2x nuggets for Mining master cape.';
 		}
 
 		await transactItems({

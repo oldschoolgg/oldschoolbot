@@ -94,6 +94,10 @@ export async function motherlodeMineCommand({
 			: formatDuration(duration)
 	} to finish.`;
 
+	if (user.usingPet('Doug')) {
+		response += '\n<:doug:748892864813203591> Doug joins you on your mining trip!';
+	}
+
 	if (boosts.length > 0) {
 		response += `\n\n**Boosts:** ${boosts.join(', ')}.`;
 	}

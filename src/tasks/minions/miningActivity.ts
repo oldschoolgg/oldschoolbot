@@ -211,7 +211,7 @@ export const miningTask: MinionTask = {
 		}
 
 		if (user.hasEquipped('Mining master cape')) {
-			str += '\n2x minerals/nuggets for Mining master cape.';
+			str += '\n2x minerals for Mining master cape.';
 		}
 
 		await transactItems({
