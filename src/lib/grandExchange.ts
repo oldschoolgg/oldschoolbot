@@ -304,7 +304,7 @@ class GrandExchangeSingleton {
 		}
 		if (user.isIronman) return { error: "You're an ironman." };
 		const item = getItem(itemName);
-		if (!item || !item.tradeable_on_ge || ['Coins'].includes(item.name)) {
+		if (!item || ['Coins'].includes(item.name)) {
 			return { error: 'Invalid item.' };
 		}
 
