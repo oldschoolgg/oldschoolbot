@@ -213,7 +213,7 @@ export const tripHandlers = {
 	},
 	[activity_type_enum.DarkAltar]: {
 		commandName: 'runecraft',
-		args: (data: DarkAltarOptions) => ({ rune: darkAltarRunes[data.rune].item.name })
+		args: (data: DarkAltarOptions) => ({ rune: darkAltarRunes[data.rune] })
 	},
 	[activity_type_enum.Runecraft]: {
 		commandName: 'runecraft',

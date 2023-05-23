@@ -5,9 +5,10 @@ import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { darkAltarCommand } from '../../lib/minions/functions/darkAltarCommand';
+import { sinsOfTheFatherSkillRequirements } from '../../lib/skilling/functions/questRequirements';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import { RunecraftActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, itemID, stringMatches } from '../../lib/util';
+import { formatDuration, formatSkillRequirements, itemID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../lib/util/determineRunes';
@@ -34,8 +35,8 @@ export const runecraftCommand: OSBMahojiCommand = {
 			autocomplete: async value => {
 				return [
 					...Runecraft.Runes.map(i => i.name),
-					'blood rune',
-					'soul rune',
+					'blood rune (zeah)',
+					'soul rune (zeah)',
 					...Runecraft.Tiaras.map(i => i.name)
 				]
 					.filter(name => (!value ? true : name.toLowerCase().includes(value.toLowerCase())))
@@ -74,6 +75,8 @@ export const runecraftCommand: OSBMahojiCommand = {
 		const user = await mUserFetch(userID.toString());
 		let { rune, quantity, usestams, daeyalt_essence } = options;
 
+		console.log(rune);
+
 		rune = rune.toLowerCase().replace('rune', '').trim();
 
 		if (rune !== 'chaos' && rune.endsWith('s')) {
@@ -85,7 +88,9 @@ export const runecraftCommand: OSBMahojiCommand = {
 		if (tiaraObj) {
 			return tiaraRunecraftCommand({ user, channelID, name: rune, quantity });
 		}
-		if (['blood', 'soul'].includes(rune)) {
+		console.log(rune);
+
+		if (rune.toLowerCase().includes('zeah')) {
 			return darkAltarCommand({ user, channelID, name: rune });
 		}
 
@@ -112,6 +117,14 @@ export const runecraftCommand: OSBMahojiCommand = {
 
 		if (runeObj.qpRequired && user.user.QP < runeObj.qpRequired) {
 			return `You need ${runeObj.qpRequired} QP to craft this rune.`;
+		}
+
+		// Check for blood rune requirements.
+		const hasBloodReqs = user.hasSkillReqs(sinsOfTheFatherSkillRequirements);
+		if (rune === 'Blood rune') {
+			if (!hasBloodReqs) {
+				return `To runecraft ${rune}, you need ${formatSkillRequirements(sinsOfTheFatherSkillRequirements)}.`;
+			}
 		}
 
 		const { bank } = user;
