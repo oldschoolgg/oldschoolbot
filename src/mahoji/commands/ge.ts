@@ -11,7 +11,7 @@ import { formatDuration, itemNameFromID, makeComponents, toKMB } from '../../lib
 import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { cancelGEListingCommand } from '../lib/abstracted_commands/cancelGEListingCommand';
-import { itemArr, ownedItemOption, tradeableItemArr } from '../lib/mahojiCommandOptions';
+import { itemArr, ownedItemOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 
 type GEListingWithTransactions = GEListing & {
