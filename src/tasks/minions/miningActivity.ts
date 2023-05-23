@@ -71,10 +71,7 @@ export const miningTask: MinionTask = {
 
 		const numberOfMinutes = duration / Time.Minute;
 
-		if (numberOfMinutes > 10 && ore.nuggets) {
-			const numberOfNuggets = randInt(0, Math.floor(numberOfMinutes / 4));
-			loot.add('Golden nugget', numberOfNuggets);
-		} else if (numberOfMinutes > 10 && ore.minerals && user.skillLevel(SkillsEnum.Mining) >= 60) {
+		if (numberOfMinutes > 10 && ore.minerals && user.skillLevel(SkillsEnum.Mining) >= 60) {
 			let numberOfMinerals = 0;
 			for (let i = 0; i < quantity; i++) {
 				if (roll(ore.minerals)) numberOfMinerals++;
@@ -129,6 +126,7 @@ export const miningTask: MinionTask = {
 				loot.add(ore.id, quantity);
 			}
 		}
+
 		str += `\n\nYou received: ${loot}.`;
 		if (bonusXP > 0) {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;

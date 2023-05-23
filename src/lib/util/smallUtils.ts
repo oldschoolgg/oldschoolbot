@@ -1,4 +1,6 @@
-import { toTitleCase } from '@oldschoolgg/toolkit';
+import { exec } from 'node:child_process';
+
+import { miniID, toTitleCase } from '@oldschoolgg/toolkit';
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { objectEntries, Time } from 'e';
 import { Bank, Items } from 'oldschooljs';
@@ -178,3 +180,17 @@ export function makeAutoFarmButton() {
 
 export const SQL_sumOfAllCLItems = (clItems: number[]) =>
 	`NULLIF(${clItems.map(i => `COALESCE(("collectionLogBank"->>'${i}')::int, 0)`).join(' + ')}, 0)`;
+
+export const generateGrandExchangeID = () => miniID(5).toLowerCase();
+
+export function tailFile(fileName: string, numLines: number): Promise<string> {
+	return new Promise((resolve, reject) => {
+		exec(`tail -n ${numLines} ${fileName}`, (error, stdout) => {
+			if (error) {
+				reject(error);
+			} else {
+				resolve(stdout);
+			}
+		});
+	});
+}

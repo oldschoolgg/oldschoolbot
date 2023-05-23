@@ -98,6 +98,12 @@ export interface MiningActivityTaskOptions extends ActivityTaskOptions {
 	powermine: boolean;
 }
 
+export interface MotherlodeMiningActivityTaskOptions extends ActivityTaskOptions {
+	fakeDurationMax: number;
+	fakeDurationMin: number;
+	quantity: number;
+}
+
 export interface SmeltingActivityTaskOptions extends ActivityTaskOptions {
 	barID: number;
 	quantity: number;
@@ -356,8 +362,8 @@ export interface UnderwaterAgilityThievingTaskOptions extends ActivityTaskOption
 
 export interface PuroPuroActivityTaskOptions extends MinigameActivityTaskOptions {
 	quantity: number;
-	implingID: number | null;
 	darkLure: boolean;
+	implingTier: number | null;
 }
 
 export interface GiantsFoundryActivityTaskOptions extends MinigameActivityTaskOptions {

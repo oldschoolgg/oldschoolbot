@@ -21,6 +21,7 @@ import { ItemBank } from '../lib/types';
 import { drawImageWithOutline, fillTextXTimesInCtx, getClippedRegionImage } from '../lib/util/canvasUtil';
 import itemID from '../lib/util/itemID';
 import { logError } from '../lib/util/logError';
+import resolveItems from './util/resolveItems';
 
 const fonts = {
 	OSRSFont: './src/lib/resources/osrs-font.ttf',
@@ -185,7 +186,35 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Reward casket (elite)'), 'elite'],
 
 	[i('Clue scroll (master)'), 'master'],
-	[i('Reward casket (master)'), 'master']
+	[i('Reward casket (master)'), 'master'],
+
+	// Unf pots
+	[i('Avantoe potion (unf)'), 'avan'],
+	[i('Cadantine potion (unf)'), 'cadan'],
+	[i('Dwarf weed potion (unf)'), 'dwarf'],
+	[i('Guam potion (unf)'), 'guam'],
+	[i('Harralander potion (unf)'), 'harra'],
+	[i('Irit potion (unf)'), 'irit'],
+	[i('Kwuarm potion (unf)'), 'kwuarm'],
+	[i('Lantadyme potion (unf)'), 'lanta'],
+	[i('Marrentill potion (unf)'), 'marren'],
+	[i('Ranarr potion (unf)'), 'ranarr'],
+	[i('Snapdragon potion (unf)'), 'snap'],
+	[i('Tarromin potion (unf)'), 'tarro'],
+	[i('Toadflax potion (unf)'), 'toad'],
+	[i('Torstol potion (unf)'), 'torstol'],
+
+	// Logs
+	[i('Logs'), 'Logs'],
+	[i('Oak logs'), 'Oak'],
+	[i('Willow logs'), 'Willow'],
+	[i('Teak logs'), 'Teak'],
+	[i('Arctic pine logs'), 'ArctPine'],
+	[i('Maple logs'), 'Maple'],
+	[i('Mahogany logs'), 'Mahog'],
+	[i('Yew logs'), 'Yew'],
+	[i('Magic logs'), 'Magic'],
+	[i('Redwood logs'), 'Redwood']
 ]);
 
 function drawTitle(ctx: SKRSContext2D, title: string, canvas: Canvas) {
@@ -734,7 +763,28 @@ const chestLootTypes = [
 		chestImagePurple: loadImage('./src/lib/resources/images/cox.png'),
 		width: 260,
 		height: 180,
-		purpleItems: toaPurpleItems,
+		purpleItems: resolveItems([
+			'Metamorphic dust',
+			'Twisted ancestral colour kit',
+			"Xeric's guard",
+			"Xeric's warrior",
+			"Xeric's sentinel",
+			"Xeric's general",
+			"Xeric's champion",
+			'Olmlet',
+			'Twisted bow',
+			'Elder maul',
+			'Kodai insignia',
+			'Dragon claws',
+			'Ancestral hat',
+			'Ancestral robe top',
+			'Ancestral robe bottom',
+			"Dinh's bulwark",
+			'Dexterous prayer scroll',
+			'Arcane prayer scroll',
+			'Dragon hunter crossbow',
+			'Twisted buckler'
+		]),
 		position: () => [12, 44],
 		itemRect: [135, 45, 120, 120]
 	}
