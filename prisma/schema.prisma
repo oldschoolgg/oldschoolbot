@@ -838,6 +838,7 @@ enum activity_type_enum {
   Collecting
   MageTrainingArena
   CutLeapingFish
+  MotherlodeMining
   BlastFurnace
   MageArena2
   BigChompyBirdHunting

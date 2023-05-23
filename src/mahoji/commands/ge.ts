@@ -41,7 +41,7 @@ function geListingToString(
 	const totalPricePaidSoFar = toKMB(
 		sumArr(allTransactions.map(i => i.quantity_bought * Number(i.price_per_item_after_tax)))
 	);
-	const totalTaxPaidSoFar = toKMB(sumArr(allTransactions.map(i => i.quantity_bought * Number(i.total_tax_paid))));
+	const totalTaxPaidSoFar = toKMB(sumArr(allTransactions.map(i => Number(i.total_tax_paid))));
 
 	if (listing.cancelled_at) {
 		return `Cancelled offer to ${action} ${itemQty}. ${totalSold} ${pastVerb}.`;

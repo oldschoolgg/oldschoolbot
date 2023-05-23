@@ -62,6 +62,7 @@ import { wintertodtTask } from '../tasks/minions/minigames/wintertodtActivity';
 import { zalcanoTask } from '../tasks/minions/minigames/zalcanoActivity';
 import { miningTask } from '../tasks/minions/miningActivity';
 import { monsterTask } from '../tasks/minions/monsterActivity';
+import { motherlodeMiningTask } from '../tasks/minions/motherlodeMineActivity';
 import { nexTask } from '../tasks/minions/nexActivity';
 import { pickpocketTask } from '../tasks/minions/pickpocketActivity';
 import { buryingTask } from '../tasks/minions/PrayerActivity/buryingActivity';
@@ -144,6 +145,7 @@ export const tasks: MinionTask[] = [
 	herbloreTask,
 	fletchingTask,
 	miningTask,
+	motherlodeMiningTask,
 	runecraftTask,
 	sawmillTask,
 	revenantsTask,
