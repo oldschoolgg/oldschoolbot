@@ -8,7 +8,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		amount: [75, 125],
 		extendedAmount: [200, 250],
 		weight: 5,
-		monsters: [124],
+		monsters: [Monsters.AbyssalDemon.id],
 		combatLevel: 124,
 		unlocked: true
 	},
@@ -17,7 +17,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		amount: [75, 125],
 		extendedAmount: [91, 150],
 		weight: 6,
-		monsters: [86, 98],
+		monsters: [Monsters.Ankou.id],
 		combatLevel: 86,
 		unlocked: true
 	},
@@ -26,7 +26,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		amount: [75, 125],
 		extendedAmount: [200, 250],
 		weight: 7,
-		monsters: [69, 137],
+		monsters: [Monsters.Aviansie.id],
 		combatLevel: 69,
 		unlocked: true
 	},
