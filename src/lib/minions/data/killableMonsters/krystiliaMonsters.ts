@@ -37,9 +37,7 @@ export const krystiliaMonsters: KillableMonster[] = [
 		aliases: Monsters.DarkWarrior.aliases,
 		timeToFinish: Time.Second * 18,
 		table: Monsters.DarkWarrior,
-
 		wildy: true,
-
 		difficultyRating: 3,
 		qpRequired: 0,
 		canCannon: true,
@@ -52,9 +50,7 @@ export const krystiliaMonsters: KillableMonster[] = [
 		aliases: Monsters.DeadlyRedSpider.aliases,
 		timeToFinish: Time.Second * 24,
 		table: Monsters.DeadlyRedSpider,
-
 		wildy: true,
-
 		difficultyRating: 3,
 		qpRequired: 0,
 		canCannon: true,
