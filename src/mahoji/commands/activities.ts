@@ -512,7 +512,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 		bury?: { name: string; quantity?: number };
 		scatter?: { name: string; quantity?: number };
 		puro_puro?: { impling: string; dark_lure?: boolean; implingTier?: number };
-		alch?: { item: string; quantity?: number };
+		alch?: { item: string; quantity?: number; speed?: number };
 		cast?: { spell: string; quantity?: number };
 		underwater?: {
 			agility_thieving?: {
