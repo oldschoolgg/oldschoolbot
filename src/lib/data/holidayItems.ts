@@ -142,7 +142,8 @@ export const PartyhatTable = new LootTable()
 	.add('Blue partyhat')
 	.add('Purple partyhat')
 	.add('Green partyhat')
-	.add('White partyhat');
+	.add('White partyhat')
+	.add('Silver partyhat');
 
 export const partyHatTableRoll = () => {
 	return PartyhatTable.roll();
