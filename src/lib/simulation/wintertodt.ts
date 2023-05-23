@@ -199,36 +199,37 @@ export class WintertodtCrateClass {
 		return rolls + 1;
 	}
 
-	public rollUnique(itemsOwned: Bank, firemakingXP: number): number | undefined {
+	public rollUnique(itemsOwned: Bank, firemakingXP: number): [number, number] | undefined {
 		// https://oldschool.runescape.wiki/w/Supply_crate#Reward_rolls
-		if (roll(10_000)) return itemID('Dragon axe');
+		if (roll(10_000)) return [itemID('Dragon axe'), 1];
 
 		let phoenixDroprate = 5000;
 		if (firemakingXP === MAX_XP) {
 			phoenixDroprate = Math.floor(phoenixDroprate / 15);
 		}
 
-		if (roll(phoenixDroprate)) return itemID('Phoenix');
-		if (roll(1000)) return itemID('Tome of fire');
+		if (roll(phoenixDroprate)) return [itemID('Phoenix'), 1];
+		if (roll(1000)) return [itemID('Tome of fire'), 1];
 		if (roll(150)) {
 			const glovesOwned = itemsOwned.amount('Warm gloves');
 
 			// If they already own 3 gloves, give only magic seeds.
 			if (glovesOwned && glovesOwned >= 3) {
-				return itemID('Magic seed');
+				return [itemID('Magic seed'), 1];
 			}
-			return itemID('Warm gloves');
+			return [itemID('Warm gloves'), 1];
 		}
 
 		if (roll(150)) {
 			const torchID = itemID('Bruma torch');
 			const torchesOwned = itemsOwned.amount(torchID);
 
-			// If they already own 3 gloves, give only magic seeds.
+			// If they already own 3 torches, give only torstol seeds.
 			if (torchesOwned && torchesOwned >= 3) {
-				return itemID('Torstol seed');
+				const quantity = Math.random() < 0.5 ? 2 : 3;
+				return [itemID('Torstol seed'), quantity];
 			}
-			return torchID;
+			return [torchID, 1];
 		}
 
 		if (roll(150)) {
@@ -241,7 +242,7 @@ export class WintertodtCrateClass {
 			}
 			const minBank = Math.min(...bank);
 			for (let i = 0; i < bank.length; i++) {
-				if (bank[i] === minBank) return pyroPieces[i];
+				if (bank[i] === minBank) return [pyroPieces[i], 1];
 			}
 		}
 	}
@@ -256,10 +257,14 @@ export class WintertodtCrateClass {
 
 		for (let i = 0; i < rolls; i++) {
 			const rolledUnique = this.rollUnique(new Bank().add(itemsOwned).add(loot), firemakingXP);
-			if (rolledUnique) {
-				loot.add(rolledUnique);
+
+			if (rolledUnique instanceof Array) {
+				const [itemID, qty] = rolledUnique;
+				loot.add(itemID, qty);
 				continue;
 			}
+
+			loot.add(rolledUnique);
 			loot.add(this.lootRoll(skills));
 		}
 
