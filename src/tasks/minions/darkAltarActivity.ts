@@ -88,8 +88,6 @@ export const darkAltarTask: MinionTask = {
 			);
 		}
 
-		console.log(rune);
-
 		await transactItems({
 			userID: user.id,
 			collectionLog: true,

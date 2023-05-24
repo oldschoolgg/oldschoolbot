@@ -18,7 +18,7 @@ export const darkAltarRunes = {
 		level: 90,
 		petChance: 782_999
 	},
-	'blood rune (zeah)': {
+	blood: {
 		item: getOSItem('Blood rune'),
 		baseTime: Time.Second * 2.2,
 		xp: 17.2,
@@ -33,6 +33,7 @@ const mediumDiaryBoost = 20;
 
 export async function darkAltarCommand({ user, channelID, name }: { user: MUser; channelID: string; name: string }) {
 	const stats = user.skillsAsLevels;
+	if (!['blood', 'soul'].includes(name.split(" ")[0])) return 'Invalid rune.';
 	const [hasReqs, neededReqs] = hasSkillReqs(user, {
 		mining: 38,
 		crafting: 38
@@ -44,7 +45,7 @@ export async function darkAltarCommand({ user, channelID, name }: { user: MUser;
 	if (!hasFavour) {
 		return `Crafting Blood/Soul runes at the Dark Altar requires ${requiredPoints}% Arceuus Favour.`;
 	}
-	const rune = name.toLowerCase().includes('soul') ? 'soul' : 'blood rune (zeah)';
+	const rune = name.toLowerCase().includes('soul') ? 'soul' : 'blood';
 	const runeData = darkAltarRunes[rune];
 
 	if (stats.runecraft < runeData.level) {
@@ -55,7 +56,7 @@ export async function darkAltarCommand({ user, channelID, name }: { user: MUser;
 
 	const boosts = [];
 	const [hasEliteDiary] = await userhasDiaryTier(user, KourendKebosDiary.elite);
-	if (hasEliteDiary && rune === 'blood rune (zeah)') {
+	if (hasEliteDiary && rune === 'blood') {
 		boosts.push('10% additional runes for Kourend/Kebos elite diary');
 	}
 

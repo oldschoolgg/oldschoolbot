@@ -239,7 +239,7 @@ const Runes: Rune[] = [
 		name: 'Blood rune',
 		levels: [[77, 1]],
 		qpRequired: 125,
-		tripLength: Time.Minute * 0.917
+		tripLength: Time.Minute * 0.8
 	},
 	{
 		xp: 8,

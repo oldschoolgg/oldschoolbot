@@ -41,7 +41,7 @@ export interface TiaraRunecraftActivityTaskOptions extends ActivityTaskOptions {
 export interface DarkAltarOptions extends ActivityTaskOptions {
 	quantity: number;
 	hasElite: boolean;
-	rune: 'blood rune (zeah)' | 'soul';
+	rune: 'blood' | 'soul';
 }
 
 export interface AgilityActivityTaskOptions extends ActivityTaskOptions {

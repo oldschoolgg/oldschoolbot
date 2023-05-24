@@ -75,8 +75,6 @@ export const runecraftCommand: OSBMahojiCommand = {
 		const user = await mUserFetch(userID.toString());
 		let { rune, quantity, usestams, daeyalt_essence } = options;
 
-		console.log(rune);
-
 		rune = rune.toLowerCase().replace('rune', '').trim();
 
 		if (rune !== 'chaos' && rune.endsWith('s')) {
@@ -88,9 +86,8 @@ export const runecraftCommand: OSBMahojiCommand = {
 		if (tiaraObj) {
 			return tiaraRunecraftCommand({ user, channelID, name: rune, quantity });
 		}
-		console.log(rune);
 
-		if (rune.toLowerCase().includes('zeah')) {
+		if (rune.includes("(zeah)")) {
 			return darkAltarCommand({ user, channelID, name: rune });
 		}
 
