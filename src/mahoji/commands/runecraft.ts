@@ -200,15 +200,11 @@ export const runecraftCommand: OSBMahojiCommand = {
 			if (!hasBloodReqs) {
 				return `To runecraft ${rune}, you need ${formatSkillRequirements(sinsOfTheFatherSkillRequirements)}.`;
 			}
-
 			const bloodEssenceCharges = await checkDegradeableItemCharges({
 				item: getOSItem('Blood essence (active)'),
 				user
 			});
-
-			if (bloodEssenceCharges >= quantity) {
-				bloodEssence = true;
-			}
+			bloodEssence = bloodEssenceCharges > quantity * 1.6;
 		}
 
 		const totalCost = new Bank();
@@ -331,6 +327,10 @@ export const runecraftCommand: OSBMahojiCommand = {
 		)} to finish, this will take ${numberOfInventories}x trips to the altar. You'll get ${
 			quantityPerEssence * quantity
 		}x runes due to the multiplier.\n\n**Boosts:** ${boosts.join(', ')}`;
+
+		if (bloodEssence) {
+			response += '\n Your charged blood essence gives you a 50% chance to craft an extra blood rune.';
+		}
 
 		if (!runeObj.stams) {
 			response += `\nNote: You are unable to use Stamina Potion's when crafting ${runeObj.name}s.`;
