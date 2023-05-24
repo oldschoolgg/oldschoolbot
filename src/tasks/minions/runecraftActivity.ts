@@ -73,10 +73,11 @@ export const runecraftTask: MinionTask = {
 				}
 			}
 			await degradeItem({
-				item: getOSItem('Blood essence'),
+				item: getOSItem('Blood essence (active)'),
 				chargesToDegrade: bloodEssenceQuantity,
 				user
 			});
+			runeQuantity += bloodEssenceQuantity;
 		}
 
 		const loot = new Bank({

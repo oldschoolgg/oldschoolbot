@@ -195,18 +195,18 @@ export const runecraftCommand: OSBMahojiCommand = {
 
 		let bloodEssence = false;
 
-		if (rune === 'Blood rune') {
+		if (rune === 'blood') {
 			const hasBloodReqs = user.hasSkillReqs(sinsOfTheFatherSkillRequirements);
 			if (!hasBloodReqs) {
 				return `To runecraft ${rune}, you need ${formatSkillRequirements(sinsOfTheFatherSkillRequirements)}.`;
 			}
 
-			let startingBloodEssenceCharges = await checkDegradeableItemCharges({
+			const bloodEssenceCharges = await checkDegradeableItemCharges({
 				item: getOSItem('Blood essence (active)'),
 				user
 			});
 
-			if (startingBloodEssenceCharges >= quantity) {
+			if (bloodEssenceCharges >= quantity) {
 				bloodEssence = true;
 			}
 		}
@@ -304,8 +304,6 @@ export const runecraftCommand: OSBMahojiCommand = {
 
 		await user.removeItemsFromBank(totalCost);
 		updateBankSetting('runecraft_cost', totalCost);
-
-		console.log(bloodEssence);
 
 		await addSubTaskToActivityTask<RunecraftActivityTaskOptions>({
 			runeID: runeObj.id,
