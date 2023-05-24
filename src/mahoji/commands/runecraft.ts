@@ -328,8 +328,13 @@ export const runecraftCommand: OSBMahojiCommand = {
 			quantityPerEssence * quantity
 		}x runes due to the multiplier.\n\n**Boosts:** ${boosts.join(', ')}`;
 
-		if (bloodEssence) {
-			response += '\n Your charged blood essence gives you a 50% chance to craft an extra blood rune.';
+		if ((rune = 'blood')) {
+			if (bloodEssence) {
+				response += '\nYour charged blood essence gives you a 50% chance to craft an extra blood rune.';
+			} else if (!bloodEssence) {
+				response +=
+					"\n**Missed:**You haven't got enough charges in your blood essence for it's effects to take place.";
+			}
 		}
 
 		if (!runeObj.stams) {

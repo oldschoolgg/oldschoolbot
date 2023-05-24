@@ -2,9 +2,11 @@ import { increaseNumByPercent, reduceNumByPercent, Time } from 'e';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { userHasGracefulEquipped } from '../../../mahoji/mahojiSettings';
+import { checkDegradeableItemCharges } from '../../degradeableItems';
 import { KourendKebosDiary, userhasDiaryTier } from '../../diaries';
+import { sinsOfTheFatherSkillRequirements } from '../../skilling/functions/questRequirements';
 import { DarkAltarOptions } from '../../types/minions';
-import { formatDuration, hasSkillReqs } from '../../util';
+import { formatDuration, formatSkillRequirements, hasSkillReqs } from '../../util';
 import addSubTaskToActivityTask from '../../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../util/calcMaxTripLength';
 import getOSItem from '../../util/getOSItem';
@@ -78,6 +80,21 @@ export async function darkAltarCommand({ user, channelID, name }: { user: MUser;
 
 	const maxTripLength = calcMaxTripLength(user, 'DarkAltar');
 	const quantity = Math.floor(maxTripLength / timePerRune);
+
+	let bloodEssence = false;
+
+	if (rune === 'blood') {
+		const hasBloodReqs = user.hasSkillReqs(sinsOfTheFatherSkillRequirements);
+		if (!hasBloodReqs) {
+			return `To runecraft ${rune}, you need ${formatSkillRequirements(sinsOfTheFatherSkillRequirements)}.`;
+		}
+		const bloodEssenceCharges = await checkDegradeableItemCharges({
+			item: getOSItem('Blood essence (active)'),
+			user
+		});
+		bloodEssence = bloodEssenceCharges > quantity * 1.6;
+	}
+
 	await addSubTaskToActivityTask<DarkAltarOptions>({
 		userID: user.id,
 		channelID: channelID.toString(),
@@ -85,7 +102,8 @@ export async function darkAltarCommand({ user, channelID, name }: { user: MUser;
 		duration: maxTripLength,
 		type: 'DarkAltar',
 		hasElite: hasEliteDiary,
-		rune
+		rune,
+		bloodEssence
 	});
 
 	let response = `${user.minionName} is now going to Runecraft ${runeData.item.name}'s for ${formatDuration(
@@ -94,6 +112,15 @@ export async function darkAltarCommand({ user, channelID, name }: { user: MUser;
 
 	if (boosts.length > 0) {
 		response += `\n\n**Boosts:** ${boosts.join(', ')}.`;
+	}
+
+	if (rune === 'blood') {
+		if (bloodEssence) {
+			response += '\nYour charged blood essence gives you a 50% chance to craft an extra blood rune.';
+		} else if (!bloodEssence) {
+			response +=
+				"\n**Missed:**You haven't got enough charges in your blood essence for it's effects to take place.";
+		}
 	}
 
 	return response;

@@ -1,18 +1,20 @@
-import { increaseNumByPercent, roll } from 'e';
+import { increaseNumByPercent, percentChance, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../lib/constants';
+import { degradeItem } from '../../lib/degradeableItems';
 import { darkAltarRunes } from '../../lib/minions/functions/darkAltarCommand';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { DarkAltarOptions } from '../../lib/types/minions';
 import { skillingPetDropRate } from '../../lib/util';
+import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export const darkAltarTask: MinionTask = {
 	type: 'DarkAltar',
 	async run(data: DarkAltarOptions) {
-		const { quantity, userID, channelID, duration, hasElite, rune } = data;
+		const { quantity, userID, channelID, duration, hasElite, rune, bloodEssence } = data;
 		const user = await mUserFetch(userID);
 
 		const runeData = darkAltarRunes[rune];
@@ -37,6 +39,7 @@ export const darkAltarTask: MinionTask = {
 
 		let runeQuantity = quantity;
 		let bonusQuantity = 0;
+		let bloodEssenceQuantity = 0;
 		if (hasElite) {
 			runeQuantity = Math.floor(increaseNumByPercent(runeQuantity, 10));
 		}
@@ -62,6 +65,20 @@ export const darkAltarTask: MinionTask = {
 			runeQuantity += bonusQuantity;
 		}
 
+		if (bloodEssence) {
+			for (let i = 0; i < runeQuantity; i++) {
+				if (percentChance(50)) {
+					bloodEssenceQuantity += 1;
+				}
+			}
+			await degradeItem({
+				item: getOSItem('Blood essence (active)'),
+				chargesToDegrade: bloodEssenceQuantity,
+				user
+			});
+			runeQuantity += bloodEssenceQuantity;
+		}
+
 		let loot = new Bank().add(runeData.item.id, runeQuantity);
 		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Runecraft, runeData.petChance);
 		for (let i = 0; i < quantity; i++) {
@@ -74,6 +91,10 @@ export const darkAltarTask: MinionTask = {
 
 		if (bonusQuantity > 0) {
 			str += ` **Bonus Quantity:** ${bonusQuantity.toLocaleString()}`;
+		}
+
+		if (bloodEssenceQuantity > 0) {
+			str += ` **Blood essence Quantity:** ${bloodEssenceQuantity.toLocaleString()}`;
 		}
 
 		if (loot.amount('Rift guardian') > 0) {
