@@ -33,7 +33,7 @@ const mediumDiaryBoost = 20;
 
 export async function darkAltarCommand({ user, channelID, name }: { user: MUser; channelID: string; name: string }) {
 	const stats = user.skillsAsLevels;
-	if (!['blood', 'soul'].includes(name.split(" ")[0])) return 'Invalid rune.';
+	if (!['blood', 'soul'].includes(name.split(' ')[0])) return 'Invalid rune.';
 	const [hasReqs, neededReqs] = hasSkillReqs(user, {
 		mining: 38,
 		crafting: 38

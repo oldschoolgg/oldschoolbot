@@ -1,17 +1,20 @@
+import { percentChance } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
+import { degradeItem } from '../../lib/degradeableItems';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { RunecraftActivityTaskOptions } from '../../lib/types/minions';
 import { roll, skillingPetDropRate } from '../../lib/util';
+import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { calcMaxRCQuantity } from '../../mahoji/mahojiSettings';
 
 export const runecraftTask: MinionTask = {
 	type: 'Runecraft',
 	async run(data: RunecraftActivityTaskOptions) {
-		const { runeID, essenceQuantity, userID, channelID, imbueCasts, duration, daeyaltEssence } = data;
+		const { runeID, essenceQuantity, userID, channelID, imbueCasts, duration, daeyaltEssence, bloodEssence } = data;
 		const user = await mUserFetch(userID);
 
 		const rune = Runecraft.Runes.find(_rune => _rune.id === runeID)!;
@@ -19,6 +22,7 @@ export const runecraftTask: MinionTask = {
 		const quantityPerEssence = calcMaxRCQuantity(rune, user);
 		let runeQuantity = essenceQuantity * quantityPerEssence;
 		let bonusQuantity = 0;
+		let bloodEssenceQuantity = 0;
 
 		let runeXP = rune.xp;
 
@@ -62,6 +66,19 @@ export const runecraftTask: MinionTask = {
 			runeQuantity += bonusQuantity;
 		}
 
+		if (bloodEssence) {
+			for (let i = 0; i < runeQuantity; i++) {
+				if (percentChance(50)) {
+					bloodEssenceQuantity += 1;
+				}
+			}
+			await degradeItem({
+				item: getOSItem('Blood essence'),
+				chargesToDegrade: bloodEssenceQuantity,
+				user
+			});
+		}
+
 		const loot = new Bank({
 			[rune.id]: runeQuantity
 		});
@@ -87,6 +104,10 @@ export const runecraftTask: MinionTask = {
 
 		if (bonusQuantity > 0) {
 			str += ` **Bonus Quantity:** ${bonusQuantity.toLocaleString()}`;
+		}
+
+		if (bloodEssenceQuantity > 0) {
+			str += ` **Blood essence Quantity:** ${bloodEssenceQuantity.toLocaleString()}`;
 		}
 
 		await transactItems({

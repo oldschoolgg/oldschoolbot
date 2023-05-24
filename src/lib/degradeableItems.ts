@@ -15,7 +15,8 @@ interface DegradeableItem {
 		| 'ash_sanctifier_charges'
 		| 'serp_helm_charges'
 		| 'blood_fury_charges'
-		| 'tum_shadow_charges';
+		| 'tum_shadow_charges'
+		| 'blood_essence_charges';
 	itemsToRefundOnBreak: Bank;
 	setup: GearSetupType;
 	aliases: string[];
@@ -123,6 +124,18 @@ export const degradeableItems: DegradeableItem[] = [
 		unchargedItem: getOSItem("Tumeken's shadow (uncharged)"),
 		convertOnCharge: true,
 		emoji: '<:Tumekens_shadow:1068491239302901831>'
+	},
+	{
+		item: getOSItem('Blood essence (active)'),
+		settingsKey: 'blood_essence_charges',
+		itemsToRefundOnBreak: new Bank(),
+		setup: 'skilling',
+		aliases: ['blood essence'],
+		chargeInput: {
+			cost: new Bank().add('Blood essence'),
+			charges: 1000
+		},
+		emoji: ''
 	}
 ];
 

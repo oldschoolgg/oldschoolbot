@@ -4,6 +4,7 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
+import { checkDegradeableItemCharges } from '../../lib/degradeableItems';
 import { darkAltarCommand } from '../../lib/minions/functions/darkAltarCommand';
 import { sinsOfTheFatherSkillRequirements } from '../../lib/skilling/functions/questRequirements';
 import Runecraft from '../../lib/skilling/skills/runecraft';
@@ -12,6 +13,7 @@ import { formatDuration, formatSkillRequirements, itemID, stringMatches } from '
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../lib/util/determineRunes';
+import getOSItem from '../../lib/util/getOSItem';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { tiaraRunecraftCommand } from '../lib/abstracted_commands/tiaraRunecraftCommand';
 import { OSBMahojiCommand } from '../lib/util';
@@ -87,7 +89,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 			return tiaraRunecraftCommand({ user, channelID, name: rune, quantity });
 		}
 
-		if (rune.includes("(zeah)")) {
+		if (rune.includes('(zeah)')) {
 			return darkAltarCommand({ user, channelID, name: rune });
 		}
 
@@ -114,14 +116,6 @@ export const runecraftCommand: OSBMahojiCommand = {
 
 		if (runeObj.qpRequired && user.user.QP < runeObj.qpRequired) {
 			return `You need ${runeObj.qpRequired} QP to craft this rune.`;
-		}
-
-		// Check for blood rune requirements.
-		const hasBloodReqs = user.hasSkillReqs(sinsOfTheFatherSkillRequirements);
-		if (rune === 'Blood rune') {
-			if (!hasBloodReqs) {
-				return `To runecraft ${rune}, you need ${formatSkillRequirements(sinsOfTheFatherSkillRequirements)}.`;
-			}
 		}
 
 		const { bank } = user;
@@ -197,6 +191,24 @@ export const runecraftCommand: OSBMahojiCommand = {
 			return `${user.minionName} can't go on trips longer than ${formatDuration(
 				maxTripLength
 			)}, try a lower quantity. The highest amount of ${runeObj.name} you can craft is ${Math.floor(maxCanDo)}.`;
+		}
+
+		let bloodEssence = false;
+
+		if (rune === 'Blood rune') {
+			const hasBloodReqs = user.hasSkillReqs(sinsOfTheFatherSkillRequirements);
+			if (!hasBloodReqs) {
+				return `To runecraft ${rune}, you need ${formatSkillRequirements(sinsOfTheFatherSkillRequirements)}.`;
+			}
+
+			let startingBloodEssenceCharges = await checkDegradeableItemCharges({
+				item: getOSItem('Blood essence (active)'),
+				user
+			});
+
+			if (startingBloodEssenceCharges >= quantity) {
+				bloodEssence = true;
+			}
 		}
 
 		const totalCost = new Bank();
@@ -293,6 +305,8 @@ export const runecraftCommand: OSBMahojiCommand = {
 		await user.removeItemsFromBank(totalCost);
 		updateBankSetting('runecraft_cost', totalCost);
 
+		console.log(bloodEssence);
+
 		await addSubTaskToActivityTask<RunecraftActivityTaskOptions>({
 			runeID: runeObj.id,
 			userID: user.id,
@@ -302,7 +316,8 @@ export const runecraftCommand: OSBMahojiCommand = {
 			daeyaltEssence: daeyalt_essence,
 			duration,
 			imbueCasts,
-			type: 'Runecraft'
+			type: 'Runecraft',
+			bloodEssence
 		});
 
 		let response = `${user.minionName} is now turning ${quantity}x`;
