@@ -183,12 +183,12 @@ export const maxRangeGear = constructGearSetup({
 	head: 'Pernix cowl',
 	neck: 'Farsight snapshot necklace',
 	body: 'Pernix body',
-	cape: "Ava's assembler",
+	cape: 'Tidal collector',
 	hands: 'Pernix gloves',
 	legs: 'Pernix chaps',
 	feet: 'Pernix boots',
 	'2h': 'Twisted bow',
-	ring: 'Archers ring(i)',
+	ring: 'Ring of piercing(i)',
 	ammo: 'Dragon arrow'
 });
 const maxRange = new Gear(maxRangeGear);

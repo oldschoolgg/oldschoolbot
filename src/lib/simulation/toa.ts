@@ -131,12 +131,12 @@ export const maxRangeGear = constructGearSetup({
 	head: 'Gorajan archer helmet',
 	neck: 'Farsight snapshot necklace',
 	body: 'Gorajan archer top',
-	cape: "Ava's assembler",
+	cape: 'Tidal collector',
 	hands: 'Gorajan archer gloves',
 	legs: 'Gorajan archer legs',
 	feet: 'Gorajan archer boots',
 	'2h': 'Hellfire bow',
-	ring: 'Lightbearer',
+	ring: 'Ring of piercing(i)',
 	ammo: 'Hellfire arrow'
 });
 

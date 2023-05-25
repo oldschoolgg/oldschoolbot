@@ -205,12 +205,12 @@ export const TOBMaxRangeGear = constructGearSetup({
 	head: 'Void ranger helm',
 	neck: 'Necklace of anguish',
 	body: 'Elite void top',
-	cape: "Ava's assembler",
+	cape: 'Tidal collector',
 	hands: 'Void knight gloves',
 	legs: 'Elite void robe',
 	feet: 'Pegasian boots',
 	'2h': 'Twisted bow',
-	ring: 'Archers ring(i)',
+	ring: 'Ring of piercing(i)',
 	ammo: 'Dragon arrow'
 });
 const maxRange = new Gear(TOBMaxRangeGear);
