@@ -6207,6 +6207,26 @@ setCustomItem(
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
 			isSuperUntradeable: true
+		},
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 0,
+			attack_ranged: 8,
+			defence_stab: 1,
+			defence_slash: 1,
+			defence_crush: 1,
+			defence_magic: 8,
+			defence_ranged: 2,
+			melee_strength: 0,
+			ranged_strength: 2,
+			magic_damage: 0,
+			prayer: 0,
+			slot: EquipmentSlot.Cape,
+			requirements: {
+				ranged: 70
+			}
 		}
 	},
 	10_000
