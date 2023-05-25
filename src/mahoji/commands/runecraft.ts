@@ -4,7 +4,6 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
-import { checkDegradeableItemCharges } from '../../lib/degradeableItems';
 import { darkAltarCommand } from '../../lib/minions/functions/darkAltarCommand';
 import { sinsOfTheFatherSkillRequirements } from '../../lib/skilling/functions/questRequirements';
 import Runecraft from '../../lib/skilling/skills/runecraft';
@@ -13,7 +12,6 @@ import { formatDuration, formatSkillRequirements, itemID, stringMatches } from '
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../lib/util/determineRunes';
-import getOSItem from '../../lib/util/getOSItem';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { tiaraRunecraftCommand } from '../lib/abstracted_commands/tiaraRunecraftCommand';
 import { OSBMahojiCommand } from '../lib/util';
@@ -193,18 +191,11 @@ export const runecraftCommand: OSBMahojiCommand = {
 			)}, try a lower quantity. The highest amount of ${runeObj.name} you can craft is ${Math.floor(maxCanDo)}.`;
 		}
 
-		let bloodEssence = false;
-
 		if (rune === 'blood') {
 			const hasBloodReqs = user.hasSkillReqs(sinsOfTheFatherSkillRequirements);
 			if (!hasBloodReqs) {
 				return `To runecraft ${rune}, you need ${formatSkillRequirements(sinsOfTheFatherSkillRequirements)}.`;
 			}
-			const bloodEssenceCharges = await checkDegradeableItemCharges({
-				item: getOSItem('Blood essence (active)'),
-				user
-			});
-			bloodEssence = bloodEssenceCharges > quantity * 1.6;
 		}
 
 		const totalCost = new Bank();
@@ -310,8 +301,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 			daeyaltEssence: daeyalt_essence,
 			duration,
 			imbueCasts,
-			type: 'Runecraft',
-			bloodEssence
+			type: 'Runecraft'
 		});
 
 		let response = `${user.minionName} is now turning ${quantity}x`;
@@ -327,15 +317,6 @@ export const runecraftCommand: OSBMahojiCommand = {
 		)} to finish, this will take ${numberOfInventories}x trips to the altar. You'll get ${
 			quantityPerEssence * quantity
 		}x runes due to the multiplier.\n\n**Boosts:** ${boosts.join(', ')}`;
-
-		if ((rune = 'blood')) {
-			if (bloodEssence) {
-				response += '\nYour blood essence (active) gives you a 50% chance to craft an extra blood rune.';
-			} else if (!bloodEssence) {
-				response +=
-					"\n**Missed:**You haven't got enough charges in your blood essence for it's effects to take place.";
-			}
-		}
 
 		if (!runeObj.stams) {
 			response += `\nNote: You are unable to use Stamina Potion's when crafting ${runeObj.name}s.`;

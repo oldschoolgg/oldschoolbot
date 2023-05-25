@@ -2,7 +2,6 @@ import { increaseNumByPercent, reduceNumByPercent, Time } from 'e';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { userHasGracefulEquipped } from '../../../mahoji/mahojiSettings';
-import { checkDegradeableItemCharges } from '../../degradeableItems';
 import { KourendKebosDiary, userhasDiaryTier } from '../../diaries';
 import { sinsOfTheFatherSkillRequirements } from '../../skilling/functions/questRequirements';
 import { DarkAltarOptions } from '../../types/minions';
@@ -81,18 +80,11 @@ export async function darkAltarCommand({ user, channelID, name }: { user: MUser;
 	const maxTripLength = calcMaxTripLength(user, 'DarkAltar');
 	const quantity = Math.floor(maxTripLength / timePerRune);
 
-	let bloodEssence = false;
-
 	if (rune === 'blood') {
 		const hasBloodReqs = user.hasSkillReqs(sinsOfTheFatherSkillRequirements);
 		if (!hasBloodReqs) {
 			return `To runecraft ${rune}, you need ${formatSkillRequirements(sinsOfTheFatherSkillRequirements)}.`;
 		}
-		const bloodEssenceCharges = await checkDegradeableItemCharges({
-			item: getOSItem('Blood essence (active)'),
-			user
-		});
-		bloodEssence = bloodEssenceCharges > quantity * 1.6;
 	}
 
 	await addSubTaskToActivityTask<DarkAltarOptions>({
@@ -102,8 +94,7 @@ export async function darkAltarCommand({ user, channelID, name }: { user: MUser;
 		duration: maxTripLength,
 		type: 'DarkAltar',
 		hasElite: hasEliteDiary,
-		rune,
-		bloodEssence
+		rune
 	});
 
 	let response = `${user.minionName} is now going to Runecraft ${runeData.item.name}'s for ${formatDuration(
@@ -113,15 +104,5 @@ export async function darkAltarCommand({ user, channelID, name }: { user: MUser;
 	if (boosts.length > 0) {
 		response += `\n\n**Boosts:** ${boosts.join(', ')}.`;
 	}
-
-	if (rune === 'blood') {
-		if (bloodEssence) {
-			response += '\nYour blood essence (active) gives you a 50% chance to craft an extra blood rune.';
-		} else if (!bloodEssence) {
-			response +=
-				"\n**Missed:**You haven't got enough charges in your blood essence for it's effects to take place.";
-		}
-	}
-
 	return response;
 }

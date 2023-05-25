@@ -1,20 +1,18 @@
-import { percentChance } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
-import { degradeItem } from '../../lib/degradeableItems';
+import { bloodEssence, raimentBonus } from '../../lib/skilling/functions/calcsRunecrafting';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { RunecraftActivityTaskOptions } from '../../lib/types/minions';
-import { roll, skillingPetDropRate } from '../../lib/util';
-import getOSItem from '../../lib/util/getOSItem';
+import { itemID, roll, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { calcMaxRCQuantity } from '../../mahoji/mahojiSettings';
 
 export const runecraftTask: MinionTask = {
 	type: 'Runecraft',
 	async run(data: RunecraftActivityTaskOptions) {
-		const { runeID, essenceQuantity, userID, channelID, imbueCasts, duration, daeyaltEssence, bloodEssence } = data;
+		const { runeID, essenceQuantity, userID, channelID, imbueCasts, duration, daeyaltEssence } = data;
 		const user = await mUserFetch(userID);
 
 		const rune = Runecraft.Runes.find(_rune => _rune.id === runeID)!;
@@ -22,7 +20,6 @@ export const runecraftTask: MinionTask = {
 		const quantityPerEssence = calcMaxRCQuantity(rune, user);
 		let runeQuantity = essenceQuantity * quantityPerEssence;
 		let bonusQuantity = 0;
-		let bloodEssenceQuantity = 0;
 
 		let runeXP = rune.xp;
 
@@ -45,39 +42,14 @@ export const runecraftTask: MinionTask = {
 
 		let str = `${user}, ${user.minionName} finished crafting ${runeQuantity} ${rune.name}. ${xpRes}`;
 
-		// If they have the entire Raiments of the Eye outfit, give an extra 20% quantity bonus (NO bonus XP)
-		if (
-			user.gear.skilling.hasEquipped(
-				Object.keys(Runecraft.raimentsOfTheEyeItems).map(i => parseInt(i)),
-				true
-			)
-		) {
-			const amountToAdd = Math.floor(runeQuantity * (60 / 100));
-			runeQuantity += amountToAdd;
-			bonusQuantity += amountToAdd;
-		} else {
-			// For each Raiments of the Eye item, check if they have it, give its' quantity boost if so (NO bonus XP).
-			for (const [itemID, bonus] of Object.entries(Runecraft.raimentsOfTheEyeItems)) {
-				if (user.gear.skilling.hasEquipped([parseInt(itemID)], false)) {
-					const amountToAdd = Math.floor(runeQuantity * (bonus / 100));
-					bonusQuantity += amountToAdd;
-				}
-			}
-			runeQuantity += bonusQuantity;
-		}
+		const raimentQuantity = raimentBonus(user, essenceQuantity);
+		runeQuantity += raimentQuantity;
+		bonusQuantity += raimentQuantity;
 
-		if (bloodEssence) {
-			for (let i = 0; i < runeQuantity; i++) {
-				if (percentChance(50)) {
-					bloodEssenceQuantity += 1;
-				}
-			}
-			await degradeItem({
-				item: getOSItem('Blood essence (active)'),
-				chargesToDegrade: bloodEssenceQuantity,
-				user
-			});
-			runeQuantity += bloodEssenceQuantity;
+		let bonusBlood = 0;
+		if (runeID === itemID('Blood rune')) {
+			bonusBlood = await bloodEssence(user, essenceQuantity);
+			runeQuantity += bonusBlood;
 		}
 
 		const loot = new Bank({
@@ -107,8 +79,8 @@ export const runecraftTask: MinionTask = {
 			str += ` **Bonus Quantity:** ${bonusQuantity.toLocaleString()}`;
 		}
 
-		if (bloodEssenceQuantity > 0) {
-			str += ` **Blood essence Quantity:** ${bloodEssenceQuantity.toLocaleString()}`;
+		if (bonusBlood > 0) {
+			str += ` **Blood essence Quantity:** ${bonusBlood.toLocaleString()}`;
 		}
 
 		await transactItems({
