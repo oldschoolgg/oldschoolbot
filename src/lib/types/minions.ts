@@ -31,7 +31,6 @@ export interface RunecraftActivityTaskOptions extends ActivityTaskOptions {
 	imbueCasts: number;
 	useStaminas?: boolean;
 	daeyaltEssence?: boolean;
-	bloodEssence?: boolean;
 }
 
 export interface TiaraRunecraftActivityTaskOptions extends ActivityTaskOptions {
@@ -43,7 +42,6 @@ export interface DarkAltarOptions extends ActivityTaskOptions {
 	quantity: number;
 	hasElite: boolean;
 	rune: 'blood' | 'soul';
-	bloodEssence?: boolean;
 }
 
 export interface AgilityActivityTaskOptions extends ActivityTaskOptions {
