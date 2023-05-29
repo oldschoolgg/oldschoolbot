@@ -454,6 +454,7 @@ export async function calcDOAInput({
 	cost.add('Super combat potion(4)', quantity);
 	cost.add('Ranging potion(4)', quantity);
 	cost.add('Sanfew serum(4)', quantity);
+	cost.add('Magic potion(4)', quantity);
 
 	let brewsNeeded = Math.max(4, 9 - Math.max(1, Math.ceil((kc + 1) / 12)));
 	brewsNeeded += 10;
