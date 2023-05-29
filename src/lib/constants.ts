@@ -403,7 +403,7 @@ export const projectiles = {
 		savedByAvas: true
 	},
 	javelin: {
-		items: resolveItems(['Amethyst javelin', 'Rune javelin', 'Dragon javelin', 'Obsidian javelin']),
+		items: resolveItems(['Amethyst javelin', 'Rune javelin', 'Dragon javelin']),
 		savedByAvas: false
 	}
 } as const;
