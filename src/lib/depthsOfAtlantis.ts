@@ -111,7 +111,7 @@ const JAVELLINS_PER_RAID = (rangeLevel: number) => {
 	return 20;
 };
 const JAVELLINS = resolveItems(['Amethyst javelin', 'Dragon javelin', 'Obsidian javelin']);
-const SANG_CHARGES_PER_RAID = 550;
+const SANG_CHARGES_PER_RAID = 500;
 
 const requirements: {
 	name: string;
@@ -463,7 +463,15 @@ export async function calcDOAInput({
 	cost.add('Super restore(4)', restoresNeeded * quantity);
 	cost.add('Enhanced stamina potion', quantity);
 
-	let sangCharges = SANG_CHARGES_PER_RAID * quantity;
+	let effectiveSangChargesPerRaid = SANG_CHARGES_PER_RAID;
+	const octopusRoom = DOARooms[0];
+	for (const boost of octopusRoom.speedBoosts) {
+		if (boost.has(user)) {
+			effectiveSangChargesPerRaid = reduceNumByPercent(effectiveSangChargesPerRaid, boost.percent);
+		}
+	}
+
+	let sangCharges = effectiveSangChargesPerRaid * quantity;
 
 	let voidStaffCharges = null;
 	let tumShadowCharges = null;
