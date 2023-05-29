@@ -1,5 +1,7 @@
+import { objectEntries } from 'e';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
+import { convertLVLtoXP } from 'oldschooljs/dist/util';
 import { describe, expect, test } from 'vitest';
 
 import { GLOBAL_BSO_XP_MULTIPLIER } from '../../src/lib/constants';
@@ -101,5 +103,27 @@ describe('MUser', () => {
 		});
 		expect(xpAdded.length).toEqual(1);
 		expect(xpAdded[0].xp).toEqual(xpMultiplied);
+	});
+
+	test('skillsAsLevels/skillsAsXP', async () => {
+		const user = await createTestUser();
+		for (const [key, val] of objectEntries(user.skillsAsLevels)) {
+			let expectedVal = key === 'hitpoints' ? 10 : 1;
+			expect(val).toEqual(expectedVal);
+		}
+		for (const [key, val] of objectEntries(user.skillsAsXP)) {
+			let expectedVal = key === 'hitpoints' ? convertLVLtoXP(10) : convertLVLtoXP(1);
+			expect(val).toEqual(expectedVal);
+		}
+		expect(user.skillsAsLevels.dungeoneering).toEqual(1);
+		await user.addXP({ skillName: SkillsEnum.Agility, amount: convertLVLtoXP(50) });
+		await user.addXP({ skillName: SkillsEnum.Attack, amount: convertLVLtoXP(50) });
+		await user.addXP({ skillName: SkillsEnum.Invention, amount: convertLVLtoXP(50) });
+
+		expect(user.skillsAsLevels.agility).toEqual(50);
+		expect(user.skillsAsLevels.attack).toEqual(50);
+		expect(user.skillsAsXP.agility).toEqual(convertLVLtoXP(50));
+		expect(user.skillsAsXP.attack).toEqual(convertLVLtoXP(50));
+		expect(user.skillsAsLevels.invention).toEqual(50);
 	});
 });
