@@ -332,7 +332,7 @@ async function infernoRun({
 		return 'You have no projectiles equipped in your range setup.';
 	}
 	const projectileType: ProjectileType = rangeGear.equippedWeapon()!.name === 'Twisted bow' ? 'arrow' : 'bolt';
-	const projectilesForTheirType = projectiles[projectileType];
+	const projectilesForTheirType = projectiles[projectileType].items;
 	if (!projectilesForTheirType.includes(projectile.item)) {
 		return `You're using incorrect projectiles, you're using a ${
 			rangeGear.equippedWeapon()!.name
