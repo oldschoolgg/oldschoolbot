@@ -424,8 +424,8 @@ export interface UnderwaterAgilityThievingTaskOptions extends ActivityTaskOption
 
 export interface PuroPuroActivityTaskOptions extends MinigameActivityTaskOptions {
 	quantity: number;
-	implingID: number | null;
 	darkLure: boolean;
+	implingTier: number | null;
 }
 
 export interface GiantsFoundryActivityTaskOptions extends MinigameActivityTaskOptions {

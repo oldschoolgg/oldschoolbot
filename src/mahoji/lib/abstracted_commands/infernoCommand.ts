@@ -480,7 +480,7 @@ async function infernoRun({
 	if (!projectileType) {
 		return "You aren't wearing an appropriate ranged weapon.";
 	}
-	const projectilesForTheirType = projectiles[projectileType];
+	const projectilesForTheirType = projectiles[projectileType].items;
 	if (!projectilesForTheirType.includes(projectile.item)) {
 		return `You're using incorrect projectiles, you're using a ${
 			rangeGear.equippedWeapon()!.name

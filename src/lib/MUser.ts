@@ -461,7 +461,8 @@ export class MUserClass {
 				dart = [item, quantity];
 				continue;
 			}
-			if (Object.values(projectiles).flat(2).includes(item.id)) {
+			const projectileCategory = Object.values(projectiles).find(i => i.items.includes(item.id));
+			if (projectileCategory && projectileCategory.savedByAvas) {
 				if (ammoRemove !== null) {
 					bankRemove.add(item.id, quantity);
 					continue;
