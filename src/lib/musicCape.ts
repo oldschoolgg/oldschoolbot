@@ -128,7 +128,8 @@ AND data->>'runeID' IS NOT NULL;`;
 				activity_type_enum.Easter,
 				activity_type_enum.HalloweenEvent,
 				activity_type_enum.GroupMonsterKilling,
-				activity_type_enum.BirthdayEvent
+				activity_type_enum.BirthdayEvent,
+				activity_type_enum.Questing
 			];
 			const activityCounts = await getUsersActivityCounts(user);
 
@@ -149,7 +150,8 @@ AND data->>'runeID' IS NOT NULL;`;
 			const typesNotRequiredForMusicCape: MinigameName[] = [
 				'corrupted_gauntlet',
 				'raids_challenge_mode',
-				'tob_hard'
+				'tob_hard',
+				'tithe_farm'
 			];
 
 			const minigameScores = await user.fetchMinigames();

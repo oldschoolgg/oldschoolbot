@@ -52,7 +52,7 @@ export class Requirements {
 		}
 
 		if ('skillRequirements' in requirement) {
-			if (!skillsMeetRequirements(user.skillsAsLevels, requirement.skillRequirements)) {
+			if (!skillsMeetRequirements(user.skillsAsXP, requirement.skillRequirements)) {
 				return {
 					doesHave: false,
 					reason: `You need ${formatSkillRequirements(requirement.skillRequirements)}.`
