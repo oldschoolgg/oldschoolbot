@@ -664,6 +664,19 @@ const Reverteables: Createable[] = [
 		noCl: true
 	},
 	{
+		name: 'Revert trident of the seas',
+		inputItems: {
+			[itemID('Trident of the seas (full)')]: 1
+		},
+		outputItems: {
+			[itemID('Uncharged trident')]: 1,
+			[itemID('Death rune')]: 2500,
+			[itemID('Chaos rune')]: 2500,
+			[itemID('Fire rune')]: 12_500
+		},
+		noCl: true
+	},
+	{
 		name: 'Revert volatile nightmare staff',
 		outputItems: new Bank({
 			'Nightmare staff': 1,
