@@ -1,6 +1,8 @@
 import { Bank } from 'oldschooljs';
 
+import { MAX_QP } from '../../constants';
 import { diaries, userhasDiaryTier } from '../../diaries';
+import { musicCapeRequirements } from '../../musicCape';
 import { Buyable } from './buyables';
 
 export const capeBuyables: Buyable[] = [
@@ -32,6 +34,46 @@ export const capeBuyables: Buyable[] = [
 		customReq: async user => {
 			if (user.totalLevel < 2277) {
 				return [false, "You can't buy this because you aren't maxed!"];
+			}
+			return [true];
+		}
+	},
+	{
+		name: 'Music cape',
+		outputItems: new Bank({
+			'Music cape': 1
+		}),
+		gpCost: 99_000,
+		customReq: async user => {
+			const meetsReqs = await musicCapeRequirements.check(user);
+			if (!meetsReqs.hasAll) {
+				return [false, `You don't meet the requirements to buy this: ${meetsReqs.reasonsDoesnt.join('\n - ')}`];
+			}
+			return [true];
+		}
+	},
+	{
+		name: 'Music cape(t)',
+		outputItems: new Bank({
+			'Music cape(t)': 1
+		}),
+		gpCost: 99_000,
+		customReq: async user => {
+			const meetsReqs = await musicCapeRequirements.check(user);
+			if (!meetsReqs.hasAll) {
+				return [false, `You don't meet the requirements to buy this: ${meetsReqs.reasonsDoesnt.join('\n - ')}`];
+			}
+			if (user.QP < MAX_QP) {
+				return [false, "You can't buy this because you haven't completed all the quests!"];
+			}
+			for (const diary of diaries.map(d => d.elite)) {
+				const [has] = await userhasDiaryTier(user, diary);
+				if (!has) {
+					return [
+						false,
+						"You can't buy this because you haven't completed all the Elite Achievement diaries!"
+					];
+				}
 			}
 			return [true];
 		}
