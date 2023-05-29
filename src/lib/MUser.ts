@@ -448,7 +448,7 @@ export class MUserClass {
 				continue;
 			}
 			const projectileCategory = Object.values(projectiles).find(i => i.items.includes(item.id));
-			if (projectileCategory && projectileCategory.savedByAvas) {
+			if (projectileCategory) {
 				if (ammoRemove !== null) {
 					bankRemove.add(item.id, quantity);
 					continue;
@@ -470,7 +470,8 @@ export class MUserClass {
 			const newRangeGear = { ...this.gear.range };
 			const ammo = newRangeGear.ammo?.quantity;
 
-			if (hasAvas && !projectiles.javelin.includes(equippedAmmo)) {
+			const projectileCategory = Object.values(projectiles).find(i => i.items.includes(equippedAmmo));
+			if (hasAvas && projectileCategory!.savedByAvas) {
 				let ammoCopy = ammoRemove[1];
 				for (let i = 0; i < ammoCopy; i++) {
 					if (percentChance(80)) {
