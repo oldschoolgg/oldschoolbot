@@ -387,17 +387,27 @@ export const mahojiInformationalButtons: APIButtonComponent[] = buttonSource.map
 export const PATRON_ONLY_GEAR_SETUP =
 	'Sorry - but the `other` gear setup is only available for Tier 3 Patrons (and higher) to use.';
 
-export type ProjectileType = 'arrow' | 'bolt';
-export const projectiles: Record<ProjectileType, number[]> = {
-	arrow: resolveItems(['Adamant arrow', 'Rune arrow', 'Amethyst arrow', 'Dragon arrow']),
-	bolt: resolveItems([
-		'Runite bolts',
-		'Dragon bolts',
-		'Diamond bolts (e)',
-		'Diamond dragon bolts (e)',
-		'Ruby dragon bolts (e)'
-	])
-};
+export const projectiles = {
+	arrow: {
+		items: resolveItems(['Adamant arrow', 'Rune arrow', 'Amethyst arrow', 'Dragon arrow']),
+		savedByAvas: true
+	},
+	bolt: {
+		items: resolveItems([
+			'Runite bolts',
+			'Dragon bolts',
+			'Diamond bolts (e)',
+			'Diamond dragon bolts (e)',
+			'Ruby dragon bolts (e)'
+		]),
+		savedByAvas: true
+	},
+	javelin: {
+		items: resolveItems(['Amethyst javelin', 'Rune javelin', 'Dragon javelin']),
+		savedByAvas: false
+	}
+} as const;
+export type ProjectileType = keyof typeof projectiles;
 
 export const BOT_TYPE: 'BSO' | 'OSB' = 'OSB';
 export const PHOSANI_NIGHTMARE_ID = 9416;
