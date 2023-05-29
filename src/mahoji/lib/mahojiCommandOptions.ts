@@ -32,7 +32,7 @@ export const filterOption: CommandOption = {
 	}
 };
 
-const itemArr = Items.array().map(i => ({ ...i, key: `${i.name.toLowerCase()}${i.id}` }));
+export const itemArr = Items.array().map(i => ({ ...i, key: `${i.name.toLowerCase()}${i.id}` }));
 
 export const tradeableItemArr = itemArr.filter(i => i.tradeable_on_ge);
 

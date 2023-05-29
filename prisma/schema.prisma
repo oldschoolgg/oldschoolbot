@@ -1045,6 +1045,7 @@ enum activity_type_enum {
   MageArena
   Collecting
   MageTrainingArena
+  MotherlodeMining
   BlastFurnace
   MageArena2
   BigChompyBirdHunting

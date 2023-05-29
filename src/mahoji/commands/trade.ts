@@ -1,4 +1,4 @@
-import { discrimName, truncateString } from '@oldschoolgg/toolkit';
+import { discrimName, mentionCommand, truncateString } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { Bank } from 'oldschooljs';
@@ -156,6 +156,8 @@ Both parties must click confirm to make the trade.`,
 
 		return `${discrimName(senderAPIUser)} sold ${itemsSent} to ${discrimName(
 			recipientAPIUser
-		)} in return for ${itemsReceived}.`;
+		)} in return for ${itemsReceived}.
+
+You can now buy/sell items in the Grand Exchange: ${mentionCommand(globalClient, 'ge')}`;
 	}
 };

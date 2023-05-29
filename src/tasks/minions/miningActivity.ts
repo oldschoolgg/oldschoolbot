@@ -77,13 +77,7 @@ export const miningTask: MinionTask = {
 			}
 		}
 
-		if (numberOfMinutes > 10 && ore.nuggets) {
-			let numberOfNuggets = randInt(0, Math.floor(numberOfMinutes / 4));
-			if (user.hasEquipped('Mining master cape')) {
-				numberOfNuggets *= 2;
-			}
-			loot.add('Golden nugget', numberOfNuggets);
-		} else if (numberOfMinutes > 10 && ore.minerals && user.skillLevel(SkillsEnum.Mining) >= 60) {
+		if (numberOfMinutes > 10 && ore.minerals && user.skillLevel(SkillsEnum.Mining) >= 60) {
 			let numberOfMinerals = 0;
 			for (let i = 0; i < quantity; i++) {
 				if (roll(ore.minerals)) numberOfMinerals++;
@@ -211,13 +205,14 @@ export const miningTask: MinionTask = {
 				str += ' Your Superior inferno adze smelted all the ore you mined (No materials used).';
 			}
 		}
+
 		str += `\n\nYou received: ${loot}.`;
 		if (bonusXP > 0) {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
 		}
 
 		if (user.hasEquipped('Mining master cape')) {
-			str += '\n2x minerals/nuggets for Mining master cape.';
+			str += '\n2x minerals for Mining master cape.';
 		}
 
 		await transactItems({

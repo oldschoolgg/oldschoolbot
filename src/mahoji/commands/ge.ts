@@ -11,7 +11,7 @@ import { formatDuration, itemNameFromID, makeComponents, toKMB } from '../../lib
 import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { cancelGEListingCommand } from '../lib/abstracted_commands/cancelGEListingCommand';
-import { ownedItemOption, tradeableItemArr } from '../lib/mahojiCommandOptions';
+import { itemArr, ownedItemOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 
 type GEListingWithTransactions = GEListing & {
@@ -41,7 +41,7 @@ function geListingToString(
 	const totalPricePaidSoFar = toKMB(
 		sumArr(allTransactions.map(i => i.quantity_bought * Number(i.price_per_item_after_tax)))
 	);
-	const totalTaxPaidSoFar = toKMB(sumArr(allTransactions.map(i => i.quantity_bought * Number(i.total_tax_paid))));
+	const totalTaxPaidSoFar = toKMB(sumArr(allTransactions.map(i => Number(i.total_tax_paid))));
 
 	if (listing.cancelled_at) {
 		return `Cancelled offer to ${action} ${itemQty}. ${totalSold} ${pastVerb}.`;
@@ -110,7 +110,7 @@ export const geCommand: OSBMahojiCommand = {
 								value: itemID.toString()
 							}));
 						}
-						let res = tradeableItemArr.filter(i => i.key.includes(value.toLowerCase()));
+						let res = itemArr.filter(i => i.key.includes(value.toLowerCase()));
 						return res.map(i => ({ name: `${i.name}`, value: i.id.toString() }));
 					}
 				},

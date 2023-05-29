@@ -63,7 +63,7 @@ export const agilityTask: MinionTask = {
 
 		if (user.usingPet('Harry')) {
 			totalMarks = Math.ceil(randomVariation(totalMarks * 2, 10));
-		} else if (user.skillLevel(SkillsEnum.Agility) >= course.level + 20) {
+		} else if (course.id !== 5 && user.skillLevel(SkillsEnum.Agility) >= course.level + 20) {
 			totalMarks = Math.ceil(totalMarks / 5);
 		}
 

@@ -501,18 +501,27 @@ export const scaryEatables = [
 	}
 ];
 
-export type ProjectileType = 'arrow' | 'bolt' | 'javelin';
-export const projectiles: Record<ProjectileType, number[]> = {
-	arrow: resolveItems(['Adamant arrow', 'Rune arrow', 'Amethyst arrow', 'Dragon arrow', 'Hellfire arrow']),
-	bolt: resolveItems([
-		'Runite bolts',
-		'Dragon bolts',
-		'Diamond bolts (e)',
-		'Diamond dragon bolts (e)',
-		'Ruby dragon bolts (e)'
-	]),
-	javelin: resolveItems(['Amethyst javelin', 'Rune javelin', 'Dragon javelin', 'Obsidian javelin'])
-};
+export const projectiles = {
+	arrow: {
+		items: resolveItems(['Adamant arrow', 'Rune arrow', 'Amethyst arrow', 'Dragon arrow', 'Hellfire arrow']),
+		savedByAvas: true
+	},
+	bolt: {
+		items: resolveItems([
+			'Runite bolts',
+			'Dragon bolts',
+			'Diamond bolts (e)',
+			'Diamond dragon bolts (e)',
+			'Ruby dragon bolts (e)'
+		]),
+		savedByAvas: true
+	},
+	javelin: {
+		items: resolveItems(['Amethyst javelin', 'Rune javelin', 'Dragon javelin', 'Obsidian javelin']),
+		savedByAvas: false
+	}
+} as const;
+export type ProjectileType = keyof typeof projectiles;
 
 export const PHOSANI_NIGHTMARE_ID = 9416;
 

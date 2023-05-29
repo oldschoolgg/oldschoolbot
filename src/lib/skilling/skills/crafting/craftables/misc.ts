@@ -195,14 +195,6 @@ const Misc: Craftable[] = [
 		tickRate: 3
 	},
 	{
-		name: 'Crossbow string',
-		id: itemID('Crossbow string'),
-		level: 10,
-		xp: 15,
-		inputItems: new Bank({ Sinew: 1 }),
-		tickRate: 3
-	},
-	{
 		name: 'Clockwork',
 		id: itemID('Clockwork'),
 		level: 8,

@@ -511,7 +511,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 		enchant?: { name: string; quantity?: number };
 		bury?: { name: string; quantity?: number };
 		scatter?: { name: string; quantity?: number };
-		puro_puro?: { impling: string; dark_lure?: boolean };
+		puro_puro?: { impling: string; dark_lure?: boolean; implingTier?: number };
 		alch?: { item: string; quantity?: number; speed?: number };
 		cast?: { spell: string; quantity?: number };
 		underwater?: {
@@ -618,7 +618,13 @@ export const activitiesCommand: OSBMahojiCommand = {
 			);
 		}
 		if (options.puro_puro) {
-			return puroPuroStartCommand(user, channelID, options.puro_puro.impling, options.puro_puro.dark_lure);
+			return puroPuroStartCommand(
+				user,
+				channelID,
+				options.puro_puro.impling,
+				options.puro_puro.dark_lure,
+				options.puro_puro.implingTier
+			);
 		}
 		if (options.cast) {
 			return castCommand(channelID, user, options.cast.spell, options.cast.quantity);
