@@ -126,15 +126,19 @@ ${whereInMassClause(id)};`)
 async function clueGains(user: MUser, interval: string, tier?: string, ironmanOnly?: boolean) {
 	if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 	if (!TimeIntervals.includes(interval as any)) return 'Invalid time interval.';
-  
+
 	let tierFilter = '';
-if (tier) {
-  const clueTier = ClueTiers.find(t => t.name.toLowerCase() === tier.toLowerCase());
-  if (!clueTier) return 'Invalid clue scroll tier.';
-  const tierId = clueTier.id; // Use the id property from the ClueTier object
-  tierFilter = `AND (a."data"->>'clueID')::int = ${tierId}`;
-}
-	
+	let title = `Highest clue scroll gains in the past ${interval}`;
+	if (tier) {
+		const clueTier = ClueTiers.find(t => t.name.toLowerCase() === tier.toLowerCase());
+		if (!clueTier) return 'Invalid clue scroll tier.';
+		const tierId = clueTier.id; // Use the id property from the ClueTier object
+		tierFilter = `AND (a."data"->>'clueID')::int = ${tierId}`;
+		title = `Highest ${clueTier.name} clue scroll gains in the past ${interval}`;
+	} else {
+		title = `Highest All clue scroll gains in the past ${interval}`;
+	}
+
 	const query = `SELECT a.user_id::text, SUM((a."data"->>'quantity')::int) AS qty, MAX(a.finish_date) AS lastDate 
 	  FROM activity a
 	  JOIN users u ON a.user_id::text = u.id
@@ -145,26 +149,25 @@ if (tier) {
 	  GROUP BY a.user_id
 	  ORDER BY qty DESC, lastDate ASC
 	  LIMIT 10`;
-  
-	console.log('Generated Query:', query);
-  
+
 	const res = await prisma.$queryRawUnsafe<{ user_id: string; qty: number }[]>(query);
-  
+
 	if (res.length === 0) {
-	  console.log('No results found');
-	  return 'No results found.';
+		return 'No results found.';
 	}
-  
+
 	let place = 0;
 	const embed = new EmbedBuilder()
-	  .setTitle(`Highest clue scroll gains in the past ${interval}`)
-	  .setDescription(
-		res.map((i: any) => `${++place}. **${getUsername(i.user_id)}**: ${Number(i.qty).toLocaleString()}`).join('\n')
-	  );
-  
+		.setTitle(title)
+		.setDescription(
+			res
+				.map((i: any) => `${++place}. **${getUsername(i.user_id)}**: ${Number(i.qty).toLocaleString()}`)
+				.join('\n')
+		);
+
 	return { embeds: [embed] };
-  }
-  
+}
+
 async function xpGains(interval: string, skill?: string, ironmanOnly?: boolean) {
 	if (!TimeIntervals.includes(interval as any)) return 'Invalid time.';
 	const skillObj = skill
@@ -676,9 +679,7 @@ export const toolsCommand: OSBMahojiCommand = {
 							description: 'The tier of clue scroll.',
 							required: false,
 							autocomplete: async value => {
-								return [
-									...ClueTiers.map(i => ({ name: i.name, value: i }))
-								]
+								return [...ClueTiers.map(i => ({ name: i.name, value: i }))]
 									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 									.map(i => ({ name: i.name, value: i.name }));
 							}
@@ -962,7 +963,12 @@ export const toolsCommand: OSBMahojiCommand = {
 		if (options.patron) {
 			const { patron } = options;
 			if (patron.clue_gains) {
-				return clueGains(mahojiUser, patron.clue_gains.time, patron.clue_gains.tier, Boolean(patron.clue_gains.ironman));
+				return clueGains(
+					mahojiUser,
+					patron.clue_gains.time,
+					patron.clue_gains.tier,
+					Boolean(patron.clue_gains.ironman)
+				);
 			}
 			if (patron.kc_gains) {
 				return kcGains(
