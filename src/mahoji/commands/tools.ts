@@ -123,6 +123,48 @@ ${whereInMassClause(id)};`)
 `;
 }
 
+async function clueGains(user: MUser, interval: string, tier?: string, ironmanOnly?: boolean) {
+	if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
+	if (!TimeIntervals.includes(interval as any)) return 'Invalid time interval.';
+  
+	let tierFilter = '';
+if (tier) {
+  const clueTier = ClueTiers.find(t => t.name.toLowerCase() === tier.toLowerCase());
+  if (!clueTier) return 'Invalid clue scroll tier.';
+  const tierId = clueTier.id; // Use the id property from the ClueTier object
+  tierFilter = `AND (a."data"->>'clueID')::int = ${tierId}`;
+}
+	
+	const query = `SELECT a.user_id::text, SUM((a."data"->>'quantity')::int) AS qty, MAX(a.finish_date) AS lastDate 
+	  FROM activity a
+	  JOIN users u ON a.user_id::text = u.id
+	  WHERE a.type = 'ClueCompletion'
+	  AND a.finish_date >= now() - interval '${interval === 'day' ? 1 : 7}' day AND a.completed = true
+	  ${ironmanOnly ? ' AND u."minion.ironman" = true' : ''}
+	  ${tierFilter}
+	  GROUP BY a.user_id
+	  ORDER BY qty DESC, lastDate ASC
+	  LIMIT 10`;
+  
+	console.log('Generated Query:', query);
+  
+	const res = await prisma.$queryRawUnsafe<{ user_id: string; qty: number }[]>(query);
+  
+	if (res.length === 0) {
+	  console.log('No results found');
+	  return 'No results found.';
+	}
+  
+	let place = 0;
+	const embed = new EmbedBuilder()
+	  .setTitle(`Highest clue scroll gains in the past ${interval}`)
+	  .setDescription(
+		res.map((i: any) => `${++place}. **${getUsername(i.user_id)}**: ${Number(i.qty).toLocaleString()}`).join('\n')
+	  );
+  
+	return { embeds: [embed] };
+  }
+  
 async function xpGains(interval: string, skill?: string, ironmanOnly?: boolean) {
 	if (!TimeIntervals.includes(interval as any)) return 'Invalid time.';
 	const skillObj = skill
@@ -618,6 +660,39 @@ export const toolsCommand: OSBMahojiCommand = {
 			options: [
 				{
 					type: ApplicationCommandOptionType.Subcommand,
+					name: 'clue_gains',
+					description: "Show's who has the highest clue scroll gains for a given time period.",
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'time',
+							description: 'The time period.',
+							required: true,
+							choices: ['day', 'week'].map(i => ({ name: i, value: i }))
+						},
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'tier',
+							description: 'The tier of clue scroll.',
+							required: false,
+							autocomplete: async value => {
+								return [
+									...ClueTiers.map(i => ({ name: i.name, value: i }))
+								]
+									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
+									.map(i => ({ name: i.name, value: i.name }));
+							}
+						},
+						{
+							type: ApplicationCommandOptionType.Boolean,
+							name: 'ironman',
+							description: 'Only check ironmen accounts.',
+							required: false
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
 					name: 'kc_gains',
 					description: "Show's who has the highest KC gains for a given time period.",
 					options: [
@@ -841,6 +916,11 @@ export const toolsCommand: OSBMahojiCommand = {
 		guildID
 	}: CommandRunOptions<{
 		patron?: {
+			clue_gains?: {
+				time: 'day' | 'week';
+				tier?: string;
+				ironman?: boolean;
+			};
 			kc_gains?: {
 				time: 'day' | 'week';
 				monster: string;
@@ -881,6 +961,9 @@ export const toolsCommand: OSBMahojiCommand = {
 
 		if (options.patron) {
 			const { patron } = options;
+			if (patron.clue_gains) {
+				return clueGains(mahojiUser, patron.clue_gains.time, patron.clue_gains.tier, Boolean(patron.clue_gains.ironman));
+			}
 			if (patron.kc_gains) {
 				return kcGains(
 					mahojiUser,
