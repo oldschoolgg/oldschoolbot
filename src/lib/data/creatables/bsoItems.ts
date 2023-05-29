@@ -1279,7 +1279,11 @@ export const BsoCreateables: Createable[] = [
 	},
 	{
 		name: 'Ring of piercing',
-		inputItems: new Bank().add('Archers ring', 10),
+		inputItems: new Bank()
+			.add('Archers ring', 10)
+			.add('Masori components', 6)
+			.add('Armadylean components', 3)
+			.add('Aquifer aegis'),
 		outputItems: new Bank().add('Ring of piercing'),
 		requiredSkills: {
 			crafting: 110
