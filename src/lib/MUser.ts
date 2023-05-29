@@ -82,6 +82,9 @@ export class MUserClass {
 	bankWithGP!: Bank;
 	cl!: Bank;
 	allItemsOwned!: Bank;
+	gear!: UserFullGearSetup;
+	skillsAsXP!: Required<Skills>;
+	skillsAsLevels!: Required<Skills>;
 
 	constructor(user: User) {
 		this.user = user;
@@ -102,8 +105,22 @@ export class MUserClass {
 		this.cl = new Bank(this.user.collectionLogBank as ItemBank);
 		this.cl.freeze();
 
+		this.gear = {
+			melee: new Gear((this.user.gear_melee as GearSetup | null) ?? { ...defaultGear }),
+			mage: new Gear((this.user.gear_mage as GearSetup | null) ?? { ...defaultGear }),
+			range: new Gear((this.user.gear_range as GearSetup | null) ?? { ...defaultGear }),
+			misc: new Gear((this.user.gear_misc as GearSetup | null) ?? { ...defaultGear }),
+			skilling: new Gear((this.user.gear_skilling as GearSetup | null) ?? { ...defaultGear }),
+			wildy: new Gear((this.user.gear_wildy as GearSetup | null) ?? { ...defaultGear }),
+			fashion: new Gear((this.user.gear_fashion as GearSetup | null) ?? { ...defaultGear }),
+			other: new Gear((this.user.gear_other as GearSetup | null) ?? { ...defaultGear })
+		};
+
 		this.allItemsOwned = this.calculateAllItemsOwned();
 		this.allItemsOwned.freeze();
+
+		this.skillsAsXP = this.getSkills(false);
+		this.skillsAsLevels = this.getSkills(true);
 	}
 
 	get gearTemplate() {
@@ -187,19 +204,6 @@ export class MUserClass {
 
 	skillLevel(skill: xp_gains_skill_enum) {
 		return this.skillsAsLevels[skill];
-	}
-
-	get gear(): UserFullGearSetup {
-		return {
-			melee: new Gear((this.user.gear_melee as GearSetup | null) ?? { ...defaultGear }),
-			mage: new Gear((this.user.gear_mage as GearSetup | null) ?? { ...defaultGear }),
-			range: new Gear((this.user.gear_range as GearSetup | null) ?? { ...defaultGear }),
-			misc: new Gear((this.user.gear_misc as GearSetup | null) ?? { ...defaultGear }),
-			skilling: new Gear((this.user.gear_skilling as GearSetup | null) ?? { ...defaultGear }),
-			wildy: new Gear((this.user.gear_wildy as GearSetup | null) ?? { ...defaultGear }),
-			fashion: new Gear((this.user.gear_fashion as GearSetup | null) ?? { ...defaultGear }),
-			other: new Gear((this.user.gear_other as GearSetup | null) ?? { ...defaultGear })
-		};
 	}
 
 	get minionName() {
@@ -406,14 +410,6 @@ export class MUserClass {
 		return skills;
 	}
 
-	get skillsAsXP() {
-		return this.getSkills(false);
-	}
-
-	get skillsAsLevels() {
-		return this.getSkills(true);
-	}
-
 	get minionIsBusy() {
 		return minionIsBusy(this.id);
 	}
@@ -462,7 +458,7 @@ export class MUserClass {
 				continue;
 			}
 			const projectileCategory = Object.values(projectiles).find(i => i.items.includes(item.id));
-			if (projectileCategory && projectileCategory.savedByAvas) {
+			if (projectileCategory) {
 				if (ammoRemove !== null) {
 					bankRemove.add(item.id, quantity);
 					continue;
@@ -484,7 +480,8 @@ export class MUserClass {
 			const newRangeGear = { ...this.gear.range };
 			const ammo = newRangeGear.ammo?.quantity;
 
-			if (hasAvas) {
+			const projectileCategory = Object.values(projectiles).find(i => i.items.includes(equippedAmmo));
+			if (hasAvas && projectileCategory!.savedByAvas) {
 				let ammoCopy = ammoRemove[1];
 				for (let i = 0; i < ammoCopy; i++) {
 					if (percentChance(80)) {
