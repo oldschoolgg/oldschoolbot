@@ -34,7 +34,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.Bandits,
 		amount: [75, 125],
 		weight: 4,
-		monsters: [22, 34, 130],
+		monsters: [Monsters.bandit],
 		combatLevel: 22,
 		unlocked: true
 	},
