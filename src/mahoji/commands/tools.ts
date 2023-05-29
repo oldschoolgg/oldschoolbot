@@ -128,15 +128,15 @@ async function clueGains(user: MUser, interval: string, tier?: string, ironmanOn
 	if (!TimeIntervals.includes(interval as any)) return 'Invalid time interval.';
 
 	let tierFilter = '';
-	let title = `Highest clue scroll gains in the past ${interval}`;
+	let title = '';
 	if (tier) {
 		const clueTier = ClueTiers.find(t => t.name.toLowerCase() === tier.toLowerCase());
 		if (!clueTier) return 'Invalid clue scroll tier.';
-		const tierId = clueTier.id; // Use the id property from the ClueTier object
+		const tierId = clueTier.id;
 		tierFilter = `AND (a."data"->>'clueID')::int = ${tierId}`;
-		title = `Highest ${clueTier.name} clue scroll gains in the past ${interval}`;
+		title = `Highest ${clueTier.name} clue scroll completions in the past ${interval}`;
 	} else {
-		title = `Highest All clue scroll gains in the past ${interval}`;
+		title = `Highest All clue scroll completions in the past ${interval}`;
 	}
 
 	const query = `SELECT a.user_id::text, SUM((a."data"->>'quantity')::int) AS qty, MAX(a.finish_date) AS lastDate 
