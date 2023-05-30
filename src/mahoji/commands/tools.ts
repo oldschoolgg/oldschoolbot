@@ -664,7 +664,7 @@ export const toolsCommand: OSBMahojiCommand = {
 				{
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'clue_gains',
-					description: "Show's who has the highest clue scroll gains for a given time period.",
+					description: "Show's who has the highest clue scroll completions for a given time period.",
 					options: [
 						{
 							type: ApplicationCommandOptionType.String,
