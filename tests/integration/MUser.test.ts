@@ -116,9 +116,9 @@ describe('MUser', () => {
 			expect(val).toEqual(expectedVal);
 		}
 		expect(user.skillsAsLevels.dungeoneering).toEqual(1);
-		await user.addXP({ skillName: SkillsEnum.Agility, amount: convertLVLtoXP(50) });
-		await user.addXP({ skillName: SkillsEnum.Attack, amount: convertLVLtoXP(50) });
-		await user.addXP({ skillName: SkillsEnum.Invention, amount: convertLVLtoXP(50) });
+		await user.addXP({ skillName: SkillsEnum.Agility, amount: convertLVLtoXP(50) / 5 });
+		await user.addXP({ skillName: SkillsEnum.Attack, amount: convertLVLtoXP(50) / 5 });
+		await user.addXP({ skillName: SkillsEnum.Invention, amount: convertLVLtoXP(50) / 5 });
 
 		expect(user.skillsAsLevels.agility).toEqual(50);
 		expect(user.skillsAsLevels.attack).toEqual(50);
